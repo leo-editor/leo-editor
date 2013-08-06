@@ -186,397 +186,274 @@
 <v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028550b302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473550b302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473550b302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473550b302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20100805165051.7177"
+expanded="edream.110203163054.63,"><vh>@file release_notes.txt</vh></v>
 </v>
-<v t="ekr.20120229094652.14053"><vh>Leo 4.10 Release notes</vh>
-<v t="ekr.20120229094652.14757"><vh>Bugs</vh>
-<v t="ekr.20120318075211.6163"><vh>Significant bugs</vh>
-<v t="ekr.20120229094652.14758"><vh>Fixed ancient hanger in paste-retaining-clones</vh></v>
-<v t="ekr.20120229094652.14780"><vh>Fixed serious atFile read bug</vh></v>
-<v t="ekr.20120229094652.14934"><vh>Fixed bug: @button @key=x does not override x</vh></v>
-<v t="ekr.20120229094652.14973"><vh>Fixed the wretched scrolling bug</vh></v>
-<v t="ekr.20120318075211.6165"><vh>Fixed several node-selection bugs related to hoists &amp; chaptesr</vh>
-<v t="ekr.20120313074006.14657"><vh>Fixed bug 823267: when a tab is closed focus may go to a tab other than the visible one</vh></v>
-<v t="ekr.20120313074006.14771"><vh>Fixed bug 875327: Positioning outside of hoisted outline" usually causes problems</vh></v>
-<v t="ekr.20120313074006.14663"><vh>Fixed bug 917814: Switching Log Pane tabs is done incompletely</vh></v>
-<v t="ekr.20120313074006.14740"><vh>Fixed bug 875323: Hoist an @chapter node leaves a non-visible node selected</vh></v>
-<v t="ekr.20120313074006.14765"><vh>Fixed bug 831658: @url doesn't leave Chapter</vh></v>
-</v>
-</v>
-<v t="ekr.20120318075211.6164"><vh>Minor bugs</vh>
-<v t="ekr.20120229094652.14759"><vh>Fixed bug in p.setAllAncestorAtFileNodesDirty</vh></v>
-<v t="ekr.20120229094652.14761"><vh>Fixed double-click problem</vh></v>
-<v t="ekr.20120229094652.14762"><vh>Fixed url focus issues</vh></v>
-<v t="ekr.20120229094652.14763"><vh>Fixed p1 &gt; p2</vh></v>
-<v t="ekr.20120229094652.14764"><vh>Fixed cacher problem</vh></v>
-<v t="ekr.20120229094652.14765"><vh>Fixed encoding problem with @shadow</vh></v>
-<v t="ekr.20120229094652.14767"><vh>Fixed a major DnD bug</vh></v>
-<v t="ekr.20120229094652.14769"><vh>Regularized slashes in @edit/@file</vh></v>
-<v t="ekr.20120229094652.14770"><vh>Made sure Leo's write code auto-detects file extension</vh></v>
-<v t="ekr.20120229094652.14772"><vh>Fixed cycle-editor-focus bug</vh></v>
-<v t="ekr.20120229094652.14775"><vh>Fixed Py3k crash in quicksearch.py</vh></v>
-<v t="ekr.20120229094652.14779"><vh>Macro expansion now forces a full recolor</vh></v>
-<v t="ekr.20120229094652.14781"><vh>Fixed unicode bugs with @shadow</vh></v>
-<v t="ekr.20120229094652.14782"><vh>Recompute width of hard tabs depending on @tabwidth</vh></v>
-<v t="ekr.20120229094652.14783"><vh>Applied patch for Bug 800311: Undo: Word granularity should recognize cursor movements</vh></v>
-<v t="ekr.20120229094652.14784"><vh>Applied patch for Bug 800312: Collapsing node moves should be optional</vh></v>
-<v t="ekr.20120229094652.14785"><vh>Fixed Bug 880975: Binding Meta and print-bindings</vh></v>
-<v t="ekr.20120229094652.14786"><vh>Fixed bug 823601: cascade-windows fails</vh></v>
-<v t="ekr.20120229094652.14817"><vh>Fixed html colorizing by fixing a bad bug in g.importFromPath</vh></v>
-<v t="ekr.20120229094652.14818"><vh>Allow lower case keywords in colorizer</vh></v>
-<v t="ekr.20120229094652.14820"><vh>Fixed rst3 pdf problem</vh></v>
-<v t="ekr.20120229094652.14822"><vh>Removed traceback when cancelling a write</vh></v>
-<v t="ekr.20120229094652.14823"><vh>Fixed removeBlankLinesTokens</vh></v>
-<v t="ekr.20120229094652.14824"><vh>Fixed crasher in config.set</vh></v>
-<v t="ekr.20120229094652.14825"><vh>Fixed resize-to-screen and minimize-all</vh></v>
-<v t="ekr.20120229094652.14826"><vh>Fixed html import problems</vh></v>
-<v t="ekr.20120229094652.14827"><vh>Removed extra newlines in g.trace</vh></v>
-<v t="ekr.20120229094652.14828"><vh>Fixed crash in compareTokens</vh></v>
-<v t="ekr.20120229094652.14829"><vh>Finished import work</vh></v>
-<v t="ekr.20120229094652.14831"><vh>Fixed hard crash when deleting body editor 3 times</vh></v>
-<v t="ekr.20120229094652.14832"><vh>Fixed add/delete html comments</vh></v>
-<v t="ekr.20120229094652.14833"><vh>Fixed bug that prevented text bindings from working in log tabs</vh></v>
-<v t="ekr.20120229094652.14834"><vh>Fixed cycle-all-focus command</vh></v>
-<v t="ekr.20120229094652.14835"><vh>Fixed crashers involving calls to w.setSelectionRange</vh></v>
-<v t="ekr.20120229094652.14836"><vh>Fixed hang in cycleAllFocus</vh></v>
-<v t="ekr.20120229094652.14837"><vh>Fixed crasher in k.handleDefaultChar</vh></v>
-<v t="ekr.20120229094652.14838"><vh>Fixed bug: Focus lost after opening or closing tab</vh></v>
-<v t="ekr.20120229094652.14839"><vh>Ignore unbound Alt/Ctrl keys, especially Alt/Ctrl-N</vh></v>
-<v t="ekr.20120229094652.14840"><vh>Fixed bug: ensure global @buttons work</vh></v>
-<v t="ekr.20120229094652.14841"><vh>Fixed bug in p.moveToFirstChild</vh></v>
-<v t="ekr.20120229094652.14842"><vh>Fixed bug 804960: Refreshing unlinks clones, just reopening connects them again</vh></v>
-<v t="ekr.20120229094652.14848"><vh>Fixed crasher in reportMismatch</vh></v>
-<v t="ekr.20120229094652.14850"><vh>Fix bug: Allow @all only in top-level @&lt;file&gt; nodes (test2.leo)</vh></v>
-<v t="ekr.20120229094652.14855"><vh>Fixed erroneous "file changed" message</vh></v>
-<v t="ekr.20120229094652.14856"><vh>Fixed bug 889175: Changing @auto paths overwrites files without warning</vh></v>
-<v t="ekr.20120229094652.14891"><vh>Fixed bug in DynamicWindow.setGeometry</vh></v>
-<v t="ekr.20120229094652.14892"><vh>Fixed bug 87933: Redefining a key binding breaks menu items with same binding</vh>
-<v t="ekr.20120229094652.14893"><vh> Report</vh></v>
-<v t="ekr.20120229094652.14894"><vh>Bug 815564: Plugin Menu-Keystroke binding can prevent plugin help display</vh></v>
-<v t="ekr.20120229094652.14925"><vh>Updating dependent dicts</vh></v>
-</v>
-<v t="ekr.20120229094652.14941"><vh>Fixed Bug: @mark-for-unit-tests nodes</vh></v>
-<v t="ekr.20120229094652.14942"><vh>The recent files commands now work</vh></v>
-<v t="ekr.20120229094652.15012"><vh>Fixed bug: @int pagewidth now set c.page_width</vh></v>
-<v t="ekr.20120229094652.15013"><vh>Fixed bug: goto end line handler is broken</vh></v>
-<v t="ekr.20120229094652.14520"><vh>Removed unused color tags</vh></v>
-<v t="ekr.20120229094652.15147"><vh>Fixed bug: End only goes to physical line</vh></v>
-<v t="ekr.20120229094652.15146"><vh>Fixed bug 87933 with major key reorg</vh></v>
-<v t="ekr.20120313074006.14648"><vh>Fixed Bug 930726 re expandNodeAndGoToFirstChild</vh></v>
-<v t="ekr.20120313074006.14650"><vh>Fixed Bug 869429 (undo &amp; redo when deleting nodes from contextmenu)</vh></v>
-<v t="ekr.20120313074006.14697"><vh>Fixed bug 924123: Some SyntaxError's thrown when compiling the whole source with Python 3</vh></v>
-<v t="ekr.20120313074006.14702"><vh>Fixed bug 501636: Leo's import code should support non-ascii xml tags</vh></v>
-<v t="ekr.20120313074006.14713"><vh>Fixed bug 799695: colorizer bug after move-lines-up into a docstring</vh></v>
-<v t="ekr.20120313074006.14714"><vh>Fixed bug 824087: Alt+F4 is not the same as Alt+F, c</vh></v>
-<v t="ekr.20120313074006.14715"><vh>Fixed bug 923301: Unicode error when executing 'rst3' command</vh></v>
-<v t="ekr.20120313074006.14738"><vh>Fixed g.os_startfile on Linux</vh></v>
-<v t="ekr.20120313074006.14800"><vh>Fixed Bug: multiple @language directive not colored correctly</vh></v>
-<v t="ekr.20120313074006.14906"><vh>Fixed Bug: multiple @language directives mess up add-comments command</vh></v>
-<v t="ekr.20120313074006.15120"><vh>Fixed bug 952365: Leo-Editor can't write a file created from the command line</vh></v>
-<v t="ekr.20120313074006.15125"><vh>Fixed bug 951921: Opening myLeoSettings.leo can clutter the console unworthwhile messages</vh></v>
-<v t="ekr.20120328102352.5897"><vh>Fixed crasher in flattenOutline</vh></v>
-<v t="ekr.20120328102352.5899"><vh>Fix viewrendered crash</vh></v>
-<v t="ekr.20120328102352.5900"><vh>Fixed most scrolling problem with multiple editors</vh></v>
-<v t="ekr.20120328102352.5936"><vh>Ensure selected @test node is run</vh></v>
-<v t="ekr.20120328102352.5938"><vh>fixed problem with file:/// url's on Windows</vh></v>
-</v>
-<v t="ekr.20120318075211.6166"><vh>Unfixed bugs</vh>
-<v t="ekr.20120313074006.14698"><vh>Failed to fix bug 844953: copy-clone-pasted node appears in other tab</vh></v>
+<v t="ekr.20130806072439.19990"><vh>Leo 4.11 Release notes (TO DO)</vh>
+<v t="ekr.20130806072439.19991"><vh>Bugs</vh>
+<v t="ekr.20130806072439.19992"><vh>Significant bugs</vh>
+<v t="ekr.20130806072439.19993"><vh>Fixed ancient hanger in paste-retaining-clones</vh></v>
+<v t="ekr.20130806072439.19994"><vh>Fixed serious atFile read bug</vh></v>
+<v t="ekr.20130806072439.19995"><vh>Fixed bug: @button @key=x does not override x</vh></v>
+<v t="ekr.20130806072439.19996"><vh>Fixed the wretched scrolling bug</vh></v>
+<v t="ekr.20130806072439.19997"><vh>Fixed several node-selection bugs related to hoists &amp; chaptesr</vh>
+<v t="ekr.20130806072439.19998"><vh>Fixed bug 823267: when a tab is closed focus may go to a tab other than the visible one</vh></v>
+<v t="ekr.20130806072439.19999"><vh>Fixed bug 875327: Positioning outside of hoisted outline" usually causes problems</vh></v>
+<v t="ekr.20130806072439.20000"><vh>Fixed bug 917814: Switching Log Pane tabs is done incompletely</vh></v>
+<v t="ekr.20130806072439.20001"><vh>Fixed bug 875323: Hoist an @chapter node leaves a non-visible node selected</vh></v>
+<v t="ekr.20130806072439.20002"><vh>Fixed bug 831658: @url doesn't leave Chapter</vh></v>
 </v>
 </v>
-<v t="ekr.20120229094652.14518"><vh>Code improvements</vh>
-<v t="ekr.20120229094652.15142"><vh>Leo's new classes</vh>
-<v t="ekr.20120318075211.6168"><vh>LoadManager</vh></v>
-<v t="ekr.20120318075211.6169"><vh>ModeController &amp; ModeInfo (not used yet)</vh></v>
-<v t="ekr.20120318075211.6170"><vh>LogManager (not used yet)</vh></v>
-<v t="ekr.20120318075211.6172"><vh>KeyStroke &amp; ShortcutInfo</vh></v>
-<v t="ekr.20120318075211.6173"><vh>EditCommandsManager</vh></v>
+<v t="ekr.20130806072439.20003"><vh>Minor bugs</vh>
+<v t="ekr.20130806072439.20004"><vh>Fixed bug in p.setAllAncestorAtFileNodesDirty</vh></v>
+<v t="ekr.20130806072439.20005"><vh>Fixed double-click problem</vh></v>
+<v t="ekr.20130806072439.20006"><vh>Fixed url focus issues</vh></v>
+<v t="ekr.20130806072439.20007"><vh>Fixed p1 &gt; p2</vh></v>
+<v t="ekr.20130806072439.20008"><vh>Fixed cacher problem</vh></v>
+<v t="ekr.20130806072439.20009"><vh>Fixed encoding problem with @shadow</vh></v>
+<v t="ekr.20130806072439.20010"><vh>Fixed a major DnD bug</vh></v>
+<v t="ekr.20130806072439.20011"><vh>Regularized slashes in @edit/@file</vh></v>
+<v t="ekr.20130806072439.20012"><vh>Made sure Leo's write code auto-detects file extension</vh></v>
+<v t="ekr.20130806072439.20013"><vh>Fixed cycle-editor-focus bug</vh></v>
+<v t="ekr.20130806072439.20014"><vh>Fixed Py3k crash in quicksearch.py</vh></v>
+<v t="ekr.20130806072439.20015"><vh>Macro expansion now forces a full recolor</vh></v>
+<v t="ekr.20130806072439.20016"><vh>Fixed unicode bugs with @shadow</vh></v>
+<v t="ekr.20130806072439.20017"><vh>Recompute width of hard tabs depending on @tabwidth</vh></v>
+<v t="ekr.20130806072439.20018"><vh>Applied patch for Bug 800311: Undo: Word granularity should recognize cursor movements</vh></v>
+<v t="ekr.20130806072439.20019"><vh>Applied patch for Bug 800312: Collapsing node moves should be optional</vh></v>
+<v t="ekr.20130806072439.20020"><vh>Fixed Bug 880975: Binding Meta and print-bindings</vh></v>
+<v t="ekr.20130806072439.20021"><vh>Fixed bug 823601: cascade-windows fails</vh></v>
+<v t="ekr.20130806072439.20022"><vh>Fixed html colorizing by fixing a bad bug in g.importFromPath</vh></v>
+<v t="ekr.20130806072439.20023"><vh>Allow lower case keywords in colorizer</vh></v>
+<v t="ekr.20130806072439.20024"><vh>Fixed rst3 pdf problem</vh></v>
+<v t="ekr.20130806072439.20025"><vh>Removed traceback when cancelling a write</vh></v>
+<v t="ekr.20130806072439.20026"><vh>Fixed removeBlankLinesTokens</vh></v>
+<v t="ekr.20130806072439.20027"><vh>Fixed crasher in config.set</vh></v>
+<v t="ekr.20130806072439.20028"><vh>Fixed resize-to-screen and minimize-all</vh></v>
+<v t="ekr.20130806072439.20029"><vh>Fixed html import problems</vh></v>
+<v t="ekr.20130806072439.20030"><vh>Removed extra newlines in g.trace</vh></v>
+<v t="ekr.20130806072439.20031"><vh>Fixed crash in compareTokens</vh></v>
+<v t="ekr.20130806072439.20032"><vh>Finished import work</vh></v>
+<v t="ekr.20130806072439.20033"><vh>Fixed hard crash when deleting body editor 3 times</vh></v>
+<v t="ekr.20130806072439.20034"><vh>Fixed add/delete html comments</vh></v>
+<v t="ekr.20130806072439.20035"><vh>Fixed bug that prevented text bindings from working in log tabs</vh></v>
+<v t="ekr.20130806072439.20036"><vh>Fixed cycle-all-focus command</vh></v>
+<v t="ekr.20130806072439.20037"><vh>Fixed crashers involving calls to w.setSelectionRange</vh></v>
+<v t="ekr.20130806072439.20038"><vh>Fixed hang in cycleAllFocus</vh></v>
+<v t="ekr.20130806072439.20039"><vh>Fixed crasher in k.handleDefaultChar</vh></v>
+<v t="ekr.20130806072439.20040"><vh>Fixed bug: Focus lost after opening or closing tab</vh></v>
+<v t="ekr.20130806072439.20041"><vh>Ignore unbound Alt/Ctrl keys, especially Alt/Ctrl-N</vh></v>
+<v t="ekr.20130806072439.20042"><vh>Fixed bug: ensure global @buttons work</vh></v>
+<v t="ekr.20130806072439.20043"><vh>Fixed bug in p.moveToFirstChild</vh></v>
+<v t="ekr.20130806072439.20044"><vh>Fixed bug 804960: Refreshing unlinks clones, just reopening connects them again</vh></v>
+<v t="ekr.20130806072439.20045"><vh>Fixed crasher in reportMismatch</vh></v>
+<v t="ekr.20130806072439.20046"><vh>Fix bug: Allow @all only in top-level @&lt;file&gt; nodes (test2.leo)</vh></v>
+<v t="ekr.20130806072439.20047"><vh>Fixed erroneous "file changed" message</vh></v>
+<v t="ekr.20130806072439.20048"><vh>Fixed bug 889175: Changing @auto paths overwrites files without warning</vh></v>
+<v t="ekr.20130806072439.20049"><vh>Fixed bug in DynamicWindow.setGeometry</vh></v>
+<v t="ekr.20130806072439.20050"><vh>Fixed bug 87933: Redefining a key binding breaks menu items with same binding</vh>
+<v t="ekr.20130806072439.20051"><vh> Report</vh></v>
+<v t="ekr.20130806072439.20052"><vh>Bug 815564: Plugin Menu-Keystroke binding can prevent plugin help display</vh></v>
+<v t="ekr.20130806072439.20053"><vh>Updating dependent dicts</vh></v>
 </v>
-<v t="ekr.20120318075211.6174"><vh>Most files now import just leo.core.leoGlobals</vh></v>
-<v t="ekr.20120318075211.6175"><vh>Global switches are now all in leoGlobals.py</vh></v>
-<v t="ekr.20120229094652.15138"><vh>version.py now uses bzr_version.py</vh></v>
-<v t="ekr.20120229094652.15176"><vh>Minor</vh>
-<v t="ekr.20120229094652.14522"><vh>Eliminated the low-level interface</vh></v>
-<v t="ekr.20120229094652.14523"><vh>Removed unused cruft from high-level interface</vh></v>
-<v t="ekr.20120229094652.14525"><vh>Unified the high-level interface</vh></v>
-<v t="ekr.20120229094652.14526"><vh>Create properties for logCtrl &amp; bodyCtrl</vh></v>
-<v t="ekr.20120229094652.14527"><vh>Added eventFilters to top-level frames</vh></v>
-<v t="ekr.20120229094652.14528"><vh>Added log.orderedTabNames</vh></v>
-<v t="ekr.20120229094652.14532"><vh>Created the TestManager class</vh></v>
-<v t="ekr.20120229094652.14533"><vh>Created the LoadManager class (docs)</vh></v>
-<v t="ekr.20120229094652.14534"><vh>Removed c argument from g.app.config getters</vh></v>
-<v t="ekr.20120229094652.14535"><vh>Delay "reading settings" message until after signon</vh></v>
-<v t="ekr.20120229094652.14538"><vh>Use at.readOneAtAutoNode instead of ic.readOneAtAutoNode</vh></v>
-<v t="ekr.20120229094652.14578"><vh>Added p.positionAfterDeletedTree</vh></v>
-<v t="ekr.20120229094652.14577"><vh>Removed Leo's old syntax coloring code</vh></v>
-<v t="ekr.20120229094652.14583"><vh>Rewrote shell-command commands</vh></v>
-<v t="ekr.20120229094652.14608"><vh>Added g.app.isExternalUnitTest</vh></v>
-<v t="ekr.20120229094652.14611"><vh>Added c.config.set</vh></v>
-<v t="ekr.20120229094652.14595"><vh>help-for-command now uses g.getDocStringFromFunction</vh></v>
+<v t="ekr.20130806072439.20054"><vh>Fixed Bug: @mark-for-unit-tests nodes</vh></v>
+<v t="ekr.20130806072439.20055"><vh>The recent files commands now work</vh></v>
+<v t="ekr.20130806072439.20056"><vh>Fixed bug: @int pagewidth now set c.page_width</vh></v>
+<v t="ekr.20130806072439.20057"><vh>Fixed bug: goto end line handler is broken</vh></v>
+<v t="ekr.20130806072439.20058"><vh>Removed unused color tags</vh></v>
+<v t="ekr.20130806072439.20059"><vh>Fixed bug: End only goes to physical line</vh></v>
+<v t="ekr.20130806072439.20060"><vh>Fixed bug 87933 with major key reorg</vh></v>
+<v t="ekr.20130806072439.20061"><vh>Fixed Bug 930726 re expandNodeAndGoToFirstChild</vh></v>
+<v t="ekr.20130806072439.20062"><vh>Fixed Bug 869429 (undo &amp; redo when deleting nodes from contextmenu)</vh></v>
+<v t="ekr.20130806072439.20063"><vh>Fixed bug 924123: Some SyntaxError's thrown when compiling the whole source with Python 3</vh></v>
+<v t="ekr.20130806072439.20064"><vh>Fixed bug 501636: Leo's import code should support non-ascii xml tags</vh></v>
+<v t="ekr.20130806072439.20065"><vh>Fixed bug 799695: colorizer bug after move-lines-up into a docstring</vh></v>
+<v t="ekr.20130806072439.20066"><vh>Fixed bug 824087: Alt+F4 is not the same as Alt+F, c</vh></v>
+<v t="ekr.20130806072439.20067"><vh>Fixed bug 923301: Unicode error when executing 'rst3' command</vh></v>
+<v t="ekr.20130806072439.20068"><vh>Fixed g.os_startfile on Linux</vh></v>
+<v t="ekr.20130806072439.20069"><vh>Fixed Bug: multiple @language directive not colored correctly</vh></v>
+<v t="ekr.20130806072439.20070"><vh>Fixed Bug: multiple @language directives mess up add-comments command</vh></v>
+<v t="ekr.20130806072439.20071"><vh>Fixed bug 952365: Leo-Editor can't write a file created from the command line</vh></v>
+<v t="ekr.20130806072439.20072"><vh>Fixed bug 951921: Opening myLeoSettings.leo can clutter the console unworthwhile messages</vh></v>
+<v t="ekr.20130806072439.20073"><vh>Fixed crasher in flattenOutline</vh></v>
+<v t="ekr.20130806072439.20074"><vh>Fix viewrendered crash</vh></v>
+<v t="ekr.20130806072439.20075"><vh>Fixed most scrolling problem with multiple editors</vh></v>
+<v t="ekr.20130806072439.20076"><vh>Ensure selected @test node is run</vh></v>
+<v t="ekr.20130806072439.20077"><vh>fixed problem with file:/// url's on Windows</vh></v>
 </v>
-<v t="ekr.20120229094652.15157"><vh>Investigations</vh>
-<v t="ekr.20120229094652.15158"><vh>Investigated unicode problems with print</vh></v>
-<v t="ekr.20120229094652.15159"><vh>Investigated autocomplete popup bug</vh></v>
-</v>
-</v>
-<v t="ekr.20120229094652.15162"><vh>Major new features</vh>
-<v t="ekr.20120318075211.6167"><vh>Improved handling of URL's</vh></v>
-<v t="ekr.20120229094652.14593"><vh>Tab completion shows all @command/@button commands</vh></v>
-<v t="ekr.20120229094652.15093"><vh>Weightless unit testsing</vh></v>
-<v t="ekr.20120313134250.14232"><vh>Leo's File:Open With command now works with Qt</vh></v>
-<v t="ekr.20120229094652.14585"><vh>Added quick edit/save mode</vh></v>
-<v t="ekr.20120229094652.15153"><vh>Detached windows</vh></v>
-<v t="ekr.20120229094652.15135"><vh>The leoInspect module</vh></v>
-<v t="ekr.20120313074006.14640"><vh>Instant abbreviations (~a)</vh></v>
-</v>
-<v t="ekr.20120229094652.15163"><vh>Minor new features</vh>
-<v t="ekr.20120328102352.5946"><vh>Improved Leo's home page</vh></v>
-<v t="ekr.20120229094652.14787"><vh>Generalized stylesheet handling</vh></v>
-<v t="ekr.20120229094652.15151"><vh>Leo now raises a dialog on @ignore @&lt;file&gt; nodes</vh></v>
-<v t="ekr.20120229094652.14596"><vh>@ignore now prevents local @button/@command node definitions</vh></v>
-<v t="ekr.20120229094652.14592"><vh>Added support for tags in @button nodes</vh></v>
-<v t="ekr.20120229094652.14610"><vh>bridgeController.initLeo now kills events if plugins not loaded</vh></v>
-<v t="ekr.20120229094652.14607"><vh>Call unselect1 hook only once</vh></v>
-<v t="ekr.20120229094652.14613"><vh>Improved scannerUnitTest</vh></v>
-<v t="ekr.20120314095341.14216"><vh>Leo supports @ignore when scanning for @command and @button nodes.</vh></v>
-<v t="ekr.20120229094652.14777"><vh>Support @ignore when installing @command/@button nodes</vh></v>
-<v t="ekr.20120229094652.14541"><vh>set g.app.execute_script during script execution</vh></v>
-<v t="ekr.20120229094652.14600"><vh>Support single-line nodes like &lt;node/&gt; xml import code</vh></v>
-<v t="ekr.20120229094652.14576"><vh>The Find tab now scrolls</vh></v>
-<v t="ekr.20120229094652.14621"><vh>Warn when importing/reading/writing @ignored nodes</vh></v>
-<v t="ekr.20120229094652.14849"><vh>Disabled section-reference handling in @auto files</vh></v>
-<v t="ekr.20120313074006.14772"><vh>Dragging a binary file to Leo creates an @url node</vh></v>
-<v t="ekr.20120229094652.14612"><vh>Alt-left-arrow collapses all children when selecting the parent</vh></v>
-<v t="ekr.20120313074006.14643"><vh>Reinstated warnings for conflicting definitions</vh></v>
-<v t="ekr.20120229094652.14589"><vh>Searches from Leo's web pages now work</vh></v>
-<v t="ekr.20120229094652.14601"><vh>Leo's home page now shows the latest postings from leo-editor.</vh></v>
-<v t="ekr.20120328102352.5942"><vh>Alt-Home &amp; Alt-End collapse all possible nodes</vh></v>
-</v>
-<v t="ekr.20120229094652.15164"><vh>New &amp; improved commands</vh>
-<v t="ekr.20120229094652.14590"><vh>Added @button split-defs</vh></v>
-<v t="ekr.20120229094652.14544"><vh>Added beautify-c command</vh></v>
-<v t="ekr.20120229094652.14545"><vh>Added c-to-python command</vh></v>
-<v t="ekr.20120229094652.14625"><vh>Added clone-find-all-flattened command</vh></v>
-<v t="ekr.20120229094652.15090"><vh>Added clone/move/delete-marked-nodes commands</vh></v>
-<v t="ekr.20120229094652.14602"><vh>Added run-marked-unit-tests-locally/externally</vh></v>
-<v t="ekr.20120229094652.14542"><vh>Added select-to-matching-bracket command</vh></v>
-<v t="ekr.20120229094652.14616"><vh>Improved add/delete-comments</vh></v>
-<v t="ekr.20120229094652.14581"><vh>Improved open command</vh></v>
-<v t="ekr.20120229094652.15169"><vh>Improved page-up &amp; page-down commands</vh></v>
-<v t="ekr.20120229094652.14622"><vh>Improved presentation of autocompletion list</vh></v>
-<v t="ekr.20120229094652.14618"><vh>Improved print-bindings &amp; print-commands</vh></v>
-<v t="ekr.20120313134250.14294"><vh>Improved rst3 command</vh></v>
-<v t="ekr.20120229094652.14599"><vh>Improved word jumps/deletes</vh></v>
-</v>
-<v t="ekr.20120229094652.15165"><vh>Plugins</vh>
-<v t="ekr.20120229094652.15091"><vh>Improved quicksearch plugin</vh></v>
-<v t="ekr.20120313074006.16135"><vh>New bigdash plugin</vh></v>
-<v t="ekr.20120229094652.14776"><vh>Removed scrolledmessage plugin</vh></v>
-<v t="ekr.20120313074006.14655"><vh>vim and xemacs plugins now work smoothly with contextmenu plugin.</vh></v>
-<v t="ekr.20120229094652.14540"><vh>Supported auto-hide in viewrendered plugin</vh></v>
-</v>
-<v t="ekr.20120229094652.15166"><vh>Scripts</vh>
-<v t="ekr.20120229094652.14582"><vh>Improved create @auto nodes script</vh></v>
-<v t="ekr.20120229094652.14567"><vh>Added import-org-mode script</vh></v>
-<v t="ekr.20120229094652.15131"><vh>Code for displaying a function call hierarchy in Leo</vh>
-<v t="ekr.20120229094652.15132"><vh>call tree</vh>
-<v t="ekr.20120229094652.15133"><vh>displayCalltree</vh></v>
-<v t="ekr.20120229094652.15134"><vh>trace session</vh></v>
+<v t="ekr.20130806072439.20078"><vh>Unfixed bugs</vh>
+<v t="ekr.20130806072439.20079"><vh>Failed to fix bug 844953: copy-clone-pasted node appears in other tab</vh></v>
 </v>
 </v>
-<v t="ekr.20120229094652.14543"><vh>Improved recursive import script</vh></v>
-<v t="ekr.20120229094652.15149"><vh>Replacing Qt stylesheets on the fly</vh></v>
-<v t="ekr.20120229094652.15089"><vh>Terry added bookmark scripts</vh></v>
-<v t="ekr.20120229173025.20633"><vh>Document Terry's magic refactor button</vh>
-<v t="ekr.20120229173025.20635"><vh>@button fac</vh></v>
+<v t="ekr.20130806072439.20080"><vh>Code improvements</vh>
+<v t="ekr.20130806072439.20081"><vh>Leo's new classes</vh>
+<v t="ekr.20130806072439.20082"><vh>LoadManager</vh></v>
+<v t="ekr.20130806072439.20083"><vh>ModeController &amp; ModeInfo (not used yet)</vh></v>
+<v t="ekr.20130806072439.20084"><vh>LogManager (not used yet)</vh></v>
+<v t="ekr.20130806072439.20085"><vh>KeyStroke &amp; ShortcutInfo</vh></v>
+<v t="ekr.20130806072439.20086"><vh>EditCommandsManager</vh></v>
 </v>
-<v t="ekr.20120229094652.15139"><vh>Changed calling signatures of g.openWithFileName and g.app.newCommander</vh></v>
-<v t="ekr.20120229094652.19777"><vh>The open-with event now has a new format</vh></v>
+<v t="ekr.20130806072439.20087"><vh>Most files now import just leo.core.leoGlobals</vh></v>
+<v t="ekr.20130806072439.20088"><vh>Global switches are now all in leoGlobals.py</vh></v>
+<v t="ekr.20130806072439.20089"><vh>version.py now uses bzr_version.py</vh></v>
+<v t="ekr.20130806072439.20090"><vh>Minor</vh>
+<v t="ekr.20130806072439.20091"><vh>Eliminated the low-level interface</vh></v>
+<v t="ekr.20130806072439.20092"><vh>Removed unused cruft from high-level interface</vh></v>
+<v t="ekr.20130806072439.20093"><vh>Unified the high-level interface</vh></v>
+<v t="ekr.20130806072439.20094"><vh>Create properties for logCtrl &amp; bodyCtrl</vh></v>
+<v t="ekr.20130806072439.20095"><vh>Added eventFilters to top-level frames</vh></v>
+<v t="ekr.20130806072439.20096"><vh>Added log.orderedTabNames</vh></v>
+<v t="ekr.20130806072439.20097"><vh>Created the TestManager class</vh></v>
+<v t="ekr.20130806072439.20098"><vh>Created the LoadManager class (docs)</vh></v>
+<v t="ekr.20130806072439.20099"><vh>Removed c argument from g.app.config getters</vh></v>
+<v t="ekr.20130806072439.20100"><vh>Delay "reading settings" message until after signon</vh></v>
+<v t="ekr.20130806072439.20101"><vh>Use at.readOneAtAutoNode instead of ic.readOneAtAutoNode</vh></v>
+<v t="ekr.20130806072439.20102"><vh>Added p.positionAfterDeletedTree</vh></v>
+<v t="ekr.20130806072439.20103"><vh>Removed Leo's old syntax coloring code</vh></v>
+<v t="ekr.20130806072439.20104"><vh>Rewrote shell-command commands</vh></v>
+<v t="ekr.20130806072439.20105"><vh>Added g.app.isExternalUnitTest</vh></v>
+<v t="ekr.20130806072439.20106"><vh>Added c.config.set</vh></v>
+<v t="ekr.20130806072439.20107"><vh>help-for-command now uses g.getDocStringFromFunction</vh></v>
 </v>
-<v t="ekr.20120229094652.15168"><vh>Settings</vh>
-<v t="ekr.20120229094652.14615"><vh>Added @bool indent_added_comments setting</vh></v>
-<v t="ekr.20120229094652.14606"><vh>Added @bool use_body_focus_border</vh></v>
-<v t="ekr.20120229094652.14598"><vh>Added border around selected pane</vh></v>
-<v t="ekr.20120229094652.14584"><vh>Added shell commands to Cmds menu</vh></v>
-<v t="ekr.20120229094652.14619"><vh>Added show-decoration-selected: 1 to stylesheet</vh></v>
-<v t="ekr.20120229094652.14620"><vh>Added stylesheets for Log &amp; Find tabs</vh></v>
-<v t="ekr.20120229094652.15143"><vh>Eliminated the -c option</vh></v>
-<v t="ekr.20120318075211.7524"><vh>New default settings for run unit tests commands</vh></v>
-<v t="ekr.20120229094652.15140"><vh>New format for @openwith settings nodes</vh></v>
-<v t="ekr.20120229094652.15144"><vh>New search order for leoSettings.leo &amp; myLeoSettings.leo</vh></v>
+<v t="ekr.20130806072439.20108"><vh>Investigations</vh>
+<v t="ekr.20130806072439.20109"><vh>Investigated unicode problems with print</vh></v>
+<v t="ekr.20130806072439.20110"><vh>Investigated autocomplete popup bug</vh></v>
 </v>
 </v>
-<v t="ekr.20130404104418.5951"><vh>*Everything* an implementor must know</vh></v>
-<v t="ekr.20050903074833"><vh>Event handlers</vh>
-<v t="ekr.20050903074833.1"><vh>@rst-no-head Summary of event handlers</vh></v>
-<v t="ekr.20071021102946"><vh>Enabling idle time event handlers</vh></v>
+<v t="ekr.20130806072439.20111"><vh>Major new features</vh>
+<v t="ekr.20130806072439.20112"><vh>Improved handling of URL's</vh></v>
+<v t="ekr.20130806072439.20113"><vh>Tab completion shows all @command/@button commands</vh></v>
+<v t="ekr.20130806072439.20114"><vh>Weightless unit testsing</vh></v>
+<v t="ekr.20130806072439.20115"><vh>Leo's File:Open With command now works with Qt</vh></v>
+<v t="ekr.20130806072439.20116"><vh>Added quick edit/save mode</vh></v>
+<v t="ekr.20130806072439.20117"><vh>Detached windows</vh></v>
+<v t="ekr.20130806072439.20118"><vh>The leoInspect module</vh></v>
+<v t="ekr.20130806072439.20119"><vh>Instant abbreviations (~a)</vh></v>
 </v>
-<v t="ekr.20130411023340.5976"><vh>Tutorial scripts</vh>
-<v t="ekr.20130413153344.14589"><vh>What makes Leo special: shorter</vh></v>
-<v t="ekr.20130411135403.5972"><vh>What makes Leo special</vh></v>
-<v t="ekr.20130411023340.5978"><vh>Scripting</vh></v>
-<v t="ekr.20130411023340.5979"><vh>External files</vh></v>
-<v t="ekr.20130411023340.5980"><vh>The screenshots plugin</vh></v>
-<v t="ekr.20130411023340.5981"><vh>The contextmenu plugin</vh></v>
-<v t="ekr.20130411023340.5982"><vh>The bookmarks plugin</vh></v>
-<v t="ekr.20130411023340.5983"><vh>The todo plugin</vh></v>
+<v t="ekr.20130806072439.20120"><vh>Minor new features</vh>
+<v t="ekr.20130806072439.20121"><vh>Improved Leo's home page</vh></v>
+<v t="ekr.20130806072439.20122"><vh>Generalized stylesheet handling</vh></v>
+<v t="ekr.20130806072439.20123"><vh>Leo now raises a dialog on @ignore @&lt;file&gt; nodes</vh></v>
+<v t="ekr.20130806072439.20124"><vh>@ignore now prevents local @button/@command node definitions</vh></v>
+<v t="ekr.20130806072439.20125"><vh>Added support for tags in @button nodes</vh></v>
+<v t="ekr.20130806072439.20126"><vh>bridgeController.initLeo now kills events if plugins not loaded</vh></v>
+<v t="ekr.20130806072439.20127"><vh>Call unselect1 hook only once</vh></v>
+<v t="ekr.20130806072439.20128"><vh>Improved scannerUnitTest</vh></v>
+<v t="ekr.20130806072439.20129"><vh>Leo supports @ignore when scanning for @command and @button nodes.</vh></v>
+<v t="ekr.20130806072439.20130"><vh>Support @ignore when installing @command/@button nodes</vh></v>
+<v t="ekr.20130806072439.20131"><vh>set g.app.execute_script during script execution</vh></v>
+<v t="ekr.20130806072439.20132"><vh>Support single-line nodes like &lt;node/&gt; xml import code</vh></v>
+<v t="ekr.20130806072439.20133"><vh>The Find tab now scrolls</vh></v>
+<v t="ekr.20130806072439.20134"><vh>Warn when importing/reading/writing @ignored nodes</vh></v>
+<v t="ekr.20130806072439.20135"><vh>Disabled section-reference handling in @auto files</vh></v>
+<v t="ekr.20130806072439.20136"><vh>Dragging a binary file to Leo creates an @url node</vh></v>
+<v t="ekr.20130806072439.20137"><vh>Alt-left-arrow collapses all children when selecting the parent</vh></v>
+<v t="ekr.20130806072439.20138"><vh>Reinstated warnings for conflicting definitions</vh></v>
+<v t="ekr.20130806072439.20139"><vh>Searches from Leo's web pages now work</vh></v>
+<v t="ekr.20130806072439.20140"><vh>Leo's home page now shows the latest postings from leo-editor.</vh></v>
+<v t="ekr.20130806072439.20141"><vh>Alt-Home &amp; Alt-End collapse all possible nodes</vh></v>
+</v>
+<v t="ekr.20130806072439.20142"><vh>New &amp; improved commands</vh>
+<v t="ekr.20130806072439.20143"><vh>Added @button split-defs</vh></v>
+<v t="ekr.20130806072439.20144"><vh>Added beautify-c command</vh></v>
+<v t="ekr.20130806072439.20145"><vh>Added c-to-python command</vh></v>
+<v t="ekr.20130806072439.20146"><vh>Added clone-find-all-flattened command</vh></v>
+<v t="ekr.20130806072439.20147"><vh>Added clone/move/delete-marked-nodes commands</vh></v>
+<v t="ekr.20130806072439.20148"><vh>Added run-marked-unit-tests-locally/externally</vh></v>
+<v t="ekr.20130806072439.20149"><vh>Added select-to-matching-bracket command</vh></v>
+<v t="ekr.20130806072439.20150"><vh>Improved add/delete-comments</vh></v>
+<v t="ekr.20130806072439.20151"><vh>Improved open command</vh></v>
+<v t="ekr.20130806072439.20152"><vh>Improved page-up &amp; page-down commands</vh></v>
+<v t="ekr.20130806072439.20153"><vh>Improved presentation of autocompletion list</vh></v>
+<v t="ekr.20130806072439.20154"><vh>Improved print-bindings &amp; print-commands</vh></v>
+<v t="ekr.20130806072439.20155"><vh>Improved rst3 command</vh></v>
+<v t="ekr.20130806072439.20156"><vh>Improved word jumps/deletes</vh></v>
+</v>
+<v t="ekr.20130806072439.20157"><vh>Plugins</vh>
+<v t="ekr.20130806072439.20158"><vh>Improved quicksearch plugin</vh></v>
+<v t="ekr.20130806072439.20159"><vh>New bigdash plugin</vh></v>
+<v t="ekr.20130806072439.20160"><vh>Removed scrolledmessage plugin</vh></v>
+<v t="ekr.20130806072439.20161"><vh>vim and xemacs plugins now work smoothly with contextmenu plugin.</vh></v>
+<v t="ekr.20130806072439.20162"><vh>Supported auto-hide in viewrendered plugin</vh></v>
+</v>
+<v t="ekr.20130806072439.20163"><vh>Scripts</vh>
+<v t="ekr.20130806072439.20164"><vh>Improved create @auto nodes script</vh></v>
+<v t="ekr.20130806072439.20165"><vh>Added import-org-mode script</vh></v>
+<v t="ekr.20130806072439.20166"><vh>Code for displaying a function call hierarchy in Leo</vh>
+<v t="ekr.20130806072439.20167"><vh>call tree</vh>
+<v t="ekr.20130806072439.20168"><vh>displayCalltree</vh></v>
+<v t="ekr.20130806072439.20169"><vh>trace session</vh></v>
+</v>
+</v>
+<v t="ekr.20130806072439.20170"><vh>Improved recursive import script</vh></v>
+<v t="ekr.20130806072439.20171"><vh>Replacing Qt stylesheets on the fly</vh></v>
+<v t="ekr.20130806072439.20172"><vh>Terry added bookmark scripts</vh></v>
+<v t="ekr.20130806072439.20173"><vh>Document Terry's magic refactor button</vh>
+<v t="ekr.20130806072439.20174"><vh>@button fac</vh></v>
+</v>
+<v t="ekr.20130806072439.20175"><vh>Changed calling signatures of g.openWithFileName and g.app.newCommander</vh></v>
+<v t="ekr.20130806072439.20176"><vh>The open-with event now has a new format</vh></v>
+</v>
+<v t="ekr.20130806072439.20177"><vh>Settings</vh>
+<v t="ekr.20130806072439.20178"><vh>Added @bool indent_added_comments setting</vh></v>
+<v t="ekr.20130806072439.20179"><vh>Added @bool use_body_focus_border</vh></v>
+<v t="ekr.20130806072439.20180"><vh>Added border around selected pane</vh></v>
+<v t="ekr.20130806072439.20181"><vh>Added shell commands to Cmds menu</vh></v>
+<v t="ekr.20130806072439.20182"><vh>Added show-decoration-selected: 1 to stylesheet</vh></v>
+<v t="ekr.20130806072439.20183"><vh>Added stylesheets for Log &amp; Find tabs</vh></v>
+<v t="ekr.20130806072439.20184"><vh>Eliminated the -c option</vh></v>
+<v t="ekr.20130806072439.20185"><vh>New default settings for run unit tests commands</vh></v>
+<v t="ekr.20130806072439.20186"><vh>New format for @openwith settings nodes</vh></v>
+<v t="ekr.20130806072439.20187"><vh>New search order for leoSettings.leo &amp; myLeoSettings.leo</vh></v>
+</v>
 </v>
 <v t="ekr.20130526065545.14924"><vh>To be documented (do not delete!!)</vh>
-<v t="ekr.20130803073926.17119"><vh>Wish list</vh>
-<v t="ekr.20130526065545.17507"><vh>Wish list: xiki window for leo</vh>
-<v t="ekr.20130526065545.17508"><vh>Re: Wish list: xiki window for leo</vh></v>
-<v t="ekr.20130526065545.17509"><vh>Re: Wish list: xiki window for leo</vh></v>
-<v t="ekr.20130526065545.17510"><vh>Re: Wish list: xiki window for leo</vh></v>
-<v t="ekr.20130526065545.17512"><vh>Re: Wish list: xiki window for leo</vh></v>
-<v t="ekr.20130526065545.17513"><vh>Re: Wish list: xiki window for leo</vh></v>
-</v>
-<v t="ekr.20130526065545.17564"><vh>Export Full Content</vh>
-<v t="ekr.20130526065545.17561"><vh>Re: Export Full Content</vh></v>
-<v t="ekr.20130526065545.17562"><vh>Re: Export Full Content</vh></v>
-<v t="ekr.20130526065545.17563"><vh>Re: Export Full Content</vh></v>
-<v t="ekr.20130526065545.17565"><vh>Re: Export Full Content</vh></v>
-<v t="ekr.20130526065545.17566"><vh>Re: Export Full Content</vh></v>
-</v>
-<v t="ekr.20130526065545.17568"><vh>Automated playback</vh>
-<v t="ekr.20130526065545.17567"><vh>Re: Automated playback</vh></v>
-<v t="ekr.20130526065545.17569"><vh>Re: Automated playback</vh></v>
-<v t="ekr.20130526065545.17570"><vh>Re: Automated playback</vh></v>
-<v t="ekr.20130526065545.17571"><vh>Re: Automated playback</vh></v>
-<v t="ekr.20130526065545.17573"><vh>Re: Automated playback</vh></v>
-<v t="ekr.20130526065545.17574"><vh>Re: Automated playback</vh></v>
-</v>
-<v t="ekr.20130526065545.17491"><vh>Idea/needed: system command queue</vh></v>
-<v t="ekr.20130526065545.17600"><vh>Parameterized template nodes</vh>
-<v t="ekr.20130526065545.17596"><vh>Re: Parameterized template nodes</vh></v>
-<v t="ekr.20130526065545.17597"><vh>Re: Parameterized template nodes</vh></v>
-<v t="ekr.20130526065545.17599"><vh>Re: Parameterized template nodes</vh></v>
-<v t="ekr.20130526065545.17601"><vh>Re: Parameterized template nodes</vh></v>
-<v t="ekr.20130526065545.17602"><vh>Re: Parameterized template nodes</vh></v>
-</v>
-<v t="ekr.20130526065545.17603"><vh>Obstacles to using Leo, from a potential new user.</vh>
-<v t="ekr.20130526065545.17604"><vh>Re: Obstacles to using Leo, from a potential new user.</vh></v>
-</v>
-<v t="ekr.20130526065545.17555"><vh>Background Images in body pane?</vh>
-<v t="ekr.20130526065545.17556"><vh>Re: Background Images in body pane?</vh></v>
-<v t="ekr.20130526065545.17557"><vh>Re: Background Images in body pane?</vh></v>
-<v t="ekr.20130526065545.17558"><vh>Re: Background Images in body pane?</vh></v>
-</v>
-</v>
-<v t="ekr.20130803073926.17116"><vh>User comments</vh>
-<v t="ekr.20130526065545.14932"><vh>Leo as PIM and authoring tool</vh></v>
-<v t="ekr.20130526065545.17480"><vh>Blog on pelican and GH-pages: first light ;-)</vh>
-<v t="ekr.20130526065545.17466"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17467"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17468"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17469"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17470"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17471"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17475"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17476"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17477"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17478"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17479"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17481"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17482"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17483"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17484"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17485"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-<v t="ekr.20130526065545.17486"><vh>Re: Blog on pelican and GH-pages: first light ;-)</vh></v>
-</v>
-<v t="ekr.20130526065545.17537"><vh>Blog post about how Leo can improve organization of code bases</vh>
-<v t="ekr.20130526065545.17535"><vh>Re: Blog post about how Leo can improve organization of code bases</vh></v>
-<v t="ekr.20130526065545.17536"><vh>Re: Blog post about how Leo can improve organization of code bases</vh></v>
-<v t="ekr.20130526065545.17538"><vh>Re: Blog post about how Leo can improve organization of code bases</vh></v>
-<v t="ekr.20130526065545.17539"><vh>Re: Blog post about how Leo can improve organization of code bases</vh></v>
-</v>
-<v t="ekr.20130526065545.17543"><vh>why Leo</vh>
-<v t="ekr.20130526065545.17534"><vh>Fw: why Leo</vh>
-<v t="ekr.20130526065545.17533"><vh>Re: Fw: why Leo</vh></v>
-<v t="ekr.20130526065545.17540"><vh>Re: why Leo</vh></v>
-<v t="ekr.20130526065545.17541"><vh>Re: why Leo</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20130803073926.17117"><vh>Help</vh>
-<v t="ekr.20130526065545.17530"><vh>How to make body text insertion at cursor permanent?</vh>
-<v t="ekr.20130526065545.17527"><vh>Re: How to make body text insertion at cursor permanent?</vh></v>
-<v t="ekr.20130526065545.17528"><vh>Re: How to make body text insertion at cursor permanent?</vh></v>
-<v t="ekr.20130526065545.17529"><vh>Re: How to make body text insertion at cursor permanent?</vh></v>
-<v t="ekr.20130526065545.17531"><vh>Re: the workflow of write leo scripts?</vh></v>
-</v>
-<v t="ekr.20130526065545.17532"><vh>the workflow of write leo scripts?</vh></v>
-</v>
-<v t="ekr.20130803073926.17125"><vh>To document</vh>
-<v t="ekr.20130803125244.17080"><vh>* Document Windows associations</vh></v>
-<v t="ekr.20130526065545.17439"><vh>Create Pane For matplotlib chart</vh>
-<v t="ekr.20130526065545.17437"><vh>Re: Create Pane For matplotlib chart</vh></v>
-<v t="ekr.20130526065545.17438"><vh>Re: Create Pane For matplotlib chart</vh></v>
-<v t="ekr.20130526065545.17440"><vh>Re: Create Pane For matplotlib chart</vh></v>
-<v t="ekr.20130526065545.17441"><vh>Re: Create Pane For matplotlib chart</vh></v>
-</v>
-<v t="ekr.20130526065545.17516"><vh>Terry, how do you create the buttons with dropdown menus?</vh>
-<v t="ekr.20130526065545.17518"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
-<v t="ekr.20130526065545.17519"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
-<v t="ekr.20130526065545.17520"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
-<v t="ekr.20130526065545.17521"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
-<v t="ekr.20130526065545.17522"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
-<v t="ekr.20130526065545.17523"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
-<v t="ekr.20130526065545.17524"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
-<v t="ekr.20130526065545.17525"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
-<v t="ekr.20130526065545.17526" a="M"><vh>Re: Terry, how do you create the buttons with dropdown menus?</vh></v>
-</v>
-<v t="ekr.20130803073926.17114"><vh>Plugins</vh>
-<v t="ekr.20130526065545.14926"><vh>bookmarks.py</vh></v>
-<v t="ekr.20130526065545.17435"><vh>screen_capture.py</vh>
-<v t="ekr.20130526065545.17429"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
-<v t="ekr.20130526065545.17430"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
-<v t="ekr.20130526065545.17431"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
-<v t="ekr.20130526065545.17432"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
-<v t="ekr.20130526065545.17433"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
-<v t="ekr.20130526065545.17434"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
-<v t="ekr.20130526065545.17436"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
-</v>
-<v t="ekr.20130803073926.17123"><vh>valuespace.py</vh>
-<v t="ekr.20130526065545.17506"><vh>Quick valuespace.py update: it now support...</vh></v>
-<v t="ekr.20130526065545.17618"><vh>Blog post about valuespace up on leo-editor.github.io</vh>
-<v t="ekr.20130526065545.17614"><vh>Re: Blog post about valuespace up on leo-editor.github.io</vh></v>
-<v t="ekr.20130526065545.17615"><vh>Re: Blog post about valuespace up on leo-editor.github.io</vh></v>
-<v t="ekr.20130526065545.17616"><vh>Re: Blog post about valuespace up on leo-editor.github.io</vh></v>
-<v t="ekr.20130526065545.17617"><vh>Re: Blog post about valuespace up on leo-editor.github.io</vh></v>
-</v>
-<v t="ekr.20130803125244.17094"><vh>Document valuespace from Ville's blog</vh></v>
-</v>
-<v t="ekr.20130526065545.17620"><vh>printing.py</vh>
-<v t="ekr.20130526065545.17621"><vh>Re: [ANN] New plugin - printing.py</vh></v>
-<v t="ekr.20130526065545.17622"><vh>Re: [ANN] New plugin - printing.py</vh></v>
-<v t="ekr.20130526065545.17623"><vh>Re: [ANN] New plugin - printing.py</vh></v>
-<v t="ekr.20130526065545.17624"><vh>Re: [ANN] New plugin - printing.py</vh></v>
-</v>
-</v>
-<v t="ekr.20130803073926.17115"><vh>Scripts</vh>
-<v t="ekr.20130526065545.14929"><vh>Rev 5378: cleanup-imported-nodes script in scripts.leo &amp; an Aha</vh></v>
-<v t="ekr.20130526065545.14930"><vh>Revised recursive import script</vh></v>
-<v t="ekr.20130526065545.17546"><vh>Tool for diffing Leo files</vh>
-<v t="ekr.20130526065545.17545"><vh>Re: Tool for diffing Leo files</vh></v>
-</v>
-<v t="ekr.20130526065545.17487"><vh>Indexing files for full text search</vh>
-<v t="ekr.20130526065545.17488"><vh>Re: Indexing files for full text search</vh></v>
-<v t="ekr.20130526065545.17489"><vh>Re: Idea/needed: system command queue</vh></v>
-<v t="ekr.20130526065545.17490"><vh>Re: Idea/needed: system command queue</vh></v>
-</v>
-<v t="ekr.20130803125244.17095"><vh>position script (put in scripting chapter?)</vh></v>
-</v>
 <v t="ekr.20130803073926.17113"><vh>Features</vh>
-<v t="ekr.20130526065545.14925"><vh>Full text searches</vh></v>
+<v t="ekr.20130526065545.17594"><vh>@wrap now suppresses horizontal scrolling</vh>
+<v t="ekr.20130526065545.17593"><vh>Re: @wrap now suppresses horizontal scrolling</vh></v>
+</v>
+<v t="ekr.20130806072439.19486"><vh>About @testsetup</vh>
 <v t="ekr.20130526065545.17428"><vh>Eureka! @testsetup</vh>
 <v t="ekr.20130526065545.17427"><vh>Re: Eureka! @testsetup</vh></v>
 </v>
+</v>
+<v t="ekr.20130526065545.17495"><vh>ANN: zoom-in/out commands</vh>
+<v t="ekr.20130526065545.17494"><vh>Re: ANN: zoom-in/out commands</vh></v>
+<v t="ekr.20130526065545.17496"><vh>Re: ANN: zoom-in/out commands</vh></v>
+<v t="ekr.20130526065545.17497"><vh>Re: ANN: zoom-in/out commands</vh></v>
+<v t="ekr.20130526065545.17498"><vh>Re: ANN: zoom-in/out commands</vh></v>
+<v t="ekr.20130526065545.17499"><vh>Re: ANN: zoom-in/out commands</vh></v>
+<v t="ekr.20130526065545.17500"><vh>Re: ANN: zoom-in/out commands</vh></v>
+<v t="ekr.20130526065545.17501"><vh>Re: ANN: zoom-in/out commands</vh></v>
+<v t="ekr.20130526065545.17502"><vh>Re: ANN: zoom-in/out commands</vh></v>
+<v t="ekr.20130526065545.17503"><vh>Re: ANN: zoom-in/out commands</vh></v>
+<v t="ekr.20130526065545.17504"><vh>Re: ANN: zoom-in/out commands</vh></v>
+<v t="ekr.20130526065545.17505"><vh>body text zooming pushed</vh></v>
+</v>
+<v t="ekr.20130526065545.14925"><vh>Full text searches</vh></v>
 <v t="ekr.20130526065545.17445"><vh>Major additions to abbreviations</vh>
 <v t="ekr.20130526065545.17442"><vh>Re: Major additions to abbreviations</vh></v>
 <v t="ekr.20130526065545.17443"><vh>Re: Major additions to abbreviations</vh></v>
 <v t="ekr.20130526065545.17444"><vh>Re: Major additions to abbreviations</vh></v>
 <v t="ekr.20130526065545.17446"><vh>Re: Major additions to abbreviations</vh></v>
 </v>
+<v t="ekr.20130526065545.14927"><vh>outline-otl Leo as a web app</vh>
+<v t="ekr.20130526065545.14928"><vh>NEW: LeoReader, as web app</vh></v>
+</v>
+<v t="ekr.20130526065545.17634"><vh>persistent state with json as a leo abbreviation</vh>
+<v t="ekr.20130526065545.17633"><vh>Re: persistent state with json as a leo abbreviation</vh></v>
+<v t="ekr.20130526065545.17635"><vh>Re: persistent state with json as a leo abbreviation</vh></v>
+<v t="ekr.20130526065545.17636"><vh>Re: persistent state with json as a leo abbreviation</vh></v>
+<v t="ekr.20130526065545.17637"><vh>Re: persistent state with json as a leo abbreviation</vh></v>
+<v t="ekr.20130526065545.17638"><vh>Re: persistent state with json as a leo abbreviation</vh></v>
+</v>
+<v t="ekr.20130806072439.19631"><vh>sublime text &amp; other themes</vh>
+<v t="ekr.20130526065545.17514"><vh>New theme in leoSettings.leo: Sublime Text...</vh></v>
+<v t="ekr.20130526065545.17589"><vh>go-anywhere a'la sublime text: first light"</vh>
+<v t="ekr.20130526065545.17590"><vh>"Subject: Re: go-anywhere a'la sublime text: first light"</vh></v>
+<v t="ekr.20130526065545.17592"><vh>"Subject: Re: go-anywhere a'la sublime text: first light"</vh></v>
+</v>
+<v t="ekr.20130526065545.17515"><vh>ANN: Sublime Text 2 like dark theme</vh></v>
 <v t="ekr.20130526065545.17459"><vh>ANN: dark theme pushed to trunk</vh>
 <v t="ekr.20130526065545.17451"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
 <v t="ekr.20130526065545.17452"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
@@ -593,72 +470,178 @@
 <v t="ekr.20130526065545.17464"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
 <v t="ekr.20130526065545.17465"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
 </v>
-<v t="ekr.20130526065545.17495"><vh>ANN: zoom-in/out commands</vh>
-<v t="ekr.20130526065545.17494"><vh>Re: ANN: zoom-in/out commands</vh></v>
-<v t="ekr.20130526065545.17496"><vh>Re: ANN: zoom-in/out commands</vh></v>
-<v t="ekr.20130526065545.17497"><vh>Re: ANN: zoom-in/out commands</vh></v>
-<v t="ekr.20130526065545.17498"><vh>Re: ANN: zoom-in/out commands</vh></v>
-<v t="ekr.20130526065545.17499"><vh>Re: ANN: zoom-in/out commands</vh></v>
-<v t="ekr.20130526065545.17500"><vh>Re: ANN: zoom-in/out commands</vh></v>
-<v t="ekr.20130526065545.17501"><vh>Re: ANN: zoom-in/out commands</vh></v>
-<v t="ekr.20130526065545.17502"><vh>Re: ANN: zoom-in/out commands</vh></v>
-<v t="ekr.20130526065545.17503"><vh>Re: ANN: zoom-in/out commands</vh></v>
-<v t="ekr.20130526065545.17504"><vh>Re: ANN: zoom-in/out commands</vh></v>
-<v t="ekr.20130526065545.17505"><vh>body text zooming pushed</vh></v>
 </v>
-<v t="ekr.20130526065545.17515"><vh>ANN: Sublime Text 2 like dark theme</vh></v>
-<v t="ekr.20130526065545.17514"><vh>New theme in leoSettings.leo: Sublime Text...</vh></v>
 <v t="ekr.20130526065545.17576"><vh>Templates with macro expansions</vh>
 <v t="ekr.20130526065545.17575"><vh>Re: Templates with macro expansions</vh></v>
 <v t="ekr.20130526065545.17577"><vh>Re: Templates with macro expansions</vh></v>
 </v>
-<v t="ekr.20130526065545.17589"><vh>go-anywhere a'la sublime text: first light"</vh>
-<v t="ekr.20130526065545.17590"><vh>"Subject: Re: go-anywhere a'la sublime text: first light"</vh></v>
-<v t="ekr.20130526065545.17592"><vh>"Subject: Re: go-anywhere a'la sublime text: first light"</vh></v>
 </v>
-<v t="ekr.20130526065545.17594"><vh>@wrap now suppresses horizontal scrolling</vh>
-<v t="ekr.20130526065545.17593"><vh>Re: @wrap now suppresses horizontal scrolling</vh></v>
+<v t="ekr.20130404104418.5951"><vh>For Implementors</vh>
+<v t="ekr.20130806072439.19789"><vh>"About Project Threads (PT's)"</vh></v>
+<v t="ekr.20130806072439.19788"><vh>Centralizing focus handling (to make debugging easier)</vh>
+<v t="ekr.20130806072439.19787"><vh>Re: Centralizing focus handling (to make debugging easier)</vh></v>
 </v>
-<v t="ekr.20130526065545.17634"><vh>persistent state with json as a leo abbreviation</vh>
-<v t="ekr.20130526065545.17633"><vh>Re: persistent state with json as a leo abbreviation</vh></v>
-<v t="ekr.20130526065545.17635"><vh>Re: persistent state with json as a leo abbreviation</vh></v>
-<v t="ekr.20130526065545.17636"><vh>Re: persistent state with json as a leo abbreviation</vh></v>
-<v t="ekr.20130526065545.17637"><vh>Re: persistent state with json as a leo abbreviation</vh></v>
-<v t="ekr.20130526065545.17638"><vh>Re: persistent state with json as a leo abbreviation</vh></v>
+<v t="ekr.20130806072439.19790"><vh>Free "continuous integration" for Leo</vh>
+<v t="ekr.20130806072439.19791"><vh>Re: Free "continuous integration" for Leo</vh></v>
 </v>
-<v t="ekr.20130526065545.14927"><vh>outline-otl Leo as a web app</vh>
-<v t="ekr.20130526065545.14928"><vh>NEW: LeoReader, as web app</vh></v>
-</v>
-<v t="ekr.20130526065545.17550"><vh>A beautiful pattern for composing large strings</vh>
-<v t="ekr.20130526065545.17547"><vh>Re: A beautiful pattern for composing large strings</vh></v>
-<v t="ekr.20130526065545.17548"><vh>Re: A beautiful pattern for composing large strings</vh></v>
-<v t="ekr.20130526065545.17549"><vh>Re: A beautiful pattern for composing large strings</vh></v>
-<v t="ekr.20130526065545.17551"><vh>Re: A beautiful pattern for composing large strings</vh></v>
-<v t="ekr.20130526065545.17552"><vh>Re: A beautiful pattern for composing large strings</vh></v>
-<v t="ekr.20130526065545.17553"><vh>Re: A beautiful pattern for composing large strings</vh></v>
-<v t="ekr.20130526065545.17554"><vh>Re: A beautiful pattern for composing large strings</vh></v>
+<v t="ekr.20130806072439.19785"><vh>Toolkit independent apis</vh>
+<v t="ekr.20130806072439.19786"><vh>Re: Toolkit independent apis</vh></v>
 </v>
 </v>
-<v t="ekr.20130803073926.17122"><vh>Tutorials</vh>
-<v t="ekr.20130526065545.17595"><vh>Draft: unit-testing tutorial</vh></v>
-<v t="ekr.20130526065545.17578"><vh>All about clone conflicts</vh>
-<v t="ekr.20130526065545.17579"><vh>Re: All about clone conflicts</vh></v>
+<v t="ekr.20130803073926.17115"><vh>Scripts</vh>
+<v t="ekr.20130526065545.14929"><vh>Rev 5378: cleanup-imported-nodes script in scripts.leo &amp; an Aha</vh></v>
+<v t="ekr.20130526065545.14930"><vh>Revised recursive import script</vh></v>
+<v t="ekr.20130526065545.17546"><vh>Tool for diffing Leo files</vh>
+<v t="ekr.20130526065545.17545"><vh>Re: Tool for diffing Leo files</vh></v>
+</v>
+<v t="ekr.20130526065545.17487"><vh>Indexing files for full text search</vh>
+<v t="ekr.20130526065545.17488"><vh>Re: Indexing files for full text search</vh></v>
+<v t="ekr.20130526065545.17489"><vh>Re: Idea/needed: system command queue</vh></v>
+<v t="ekr.20130526065545.17490"><vh>Re: Idea/needed: system command queue</vh></v>
+</v>
+<v t="ekr.20130803125244.17095"><vh>position script (put in scripting chapter?)</vh></v>
+</v>
+<v t="ekr.20130803073926.17114"><vh>Plugins</vh>
+<v t="ekr.20130806072439.18495"><vh>ANN: in body python calculations commands</vh>
+<v t="ekr.20130806072439.18496"><vh>Re: ANN: in body python calculations commands</vh></v>
+<v t="ekr.20130806072439.18497"><vh>Re: ANN: in body python calculations commands</vh></v>
+<v t="ekr.20130806072439.18498"><vh>Re: ANN: in body python calculations commands</vh></v>
+</v>
+<v t="ekr.20130526065545.14926"><vh>bookmarks.py</vh>
+<v t="ekr.20130806072439.18499"><vh>ANN: more fluid bookmark pane control</vh></v>
+</v>
+<v t="ekr.20130806072439.18508"><vh>Cross-outline node editing</vh>
+<v t="ekr.20130806072439.18509"><vh>Re: Cross-outline node editing</vh></v>
+<v t="ekr.20130806072439.18510"><vh>Re: Cross-outline node editing</vh></v>
+<v t="ekr.20130806072439.18511"><vh>Re: Cross-outline node editing</vh></v>
+</v>
+<v t="ekr.20130806072439.18512"><vh>Full tree preview: wishlist item? ... or am I missing something?</vh>
+<v t="ekr.20130806072439.18513"><vh>Re: Full tree preview: wishlist item? ... or am I missing something?</vh></v>
+<v t="ekr.20130806072439.18514"><vh>Re: Full tree preview: wishlist item? ... or am I missing something?</vh></v>
+<v t="ekr.20130806072439.18515"><vh>Re: Full tree preview: wishlist item? ... or am I missing something?</vh></v>
+<v t="ekr.20130806072439.18516"><vh>Re: Full tree preview: wishlist item? ... or am I missing something?</vh></v>
+<v t="ekr.20130806072439.18517"><vh>Re: Full tree preview: wishlist item? ... or am I missing something?</vh></v>
+<v t="ekr.20130806072439.18518"><vh>Re: Full tree preview: wishlist item? ... or am I missing something?</vh></v>
+<v t="ekr.20130806072439.18519"><vh>Re: Full tree preview: wishlist item? ... or am I missing something?</vh></v>
+<v t="ekr.20130806072439.18520"><vh>Re: Full tree preview: wishlist item? ... or am I missing something?</vh></v>
+<v t="ekr.20130806072439.18521"><vh>Re: Full tree preview: wishlist item? ... or am I missing something?</vh></v>
+<v t="ekr.20130806072439.18522"><vh>Re: Full tree preview: wishlist item? ... or am I missing something?</vh></v>
+<v t="ekr.20130806072439.18523"><vh>Re: Full tree preview: wishlist item? ... or am I missing something?</vh></v>
+<v t="ekr.20130806072439.18524"><vh>Re: Full tree preview: wishlist item? ... or am I missing something?</vh></v>
+<v t="ekr.20130806072439.18525"><vh>Re: Full tree preview: wishlist item? ... or am I missing something?</vh></v>
+<v t="ekr.20130806072439.18526"><vh>Re: Full tree preview: wishlist item? ... or am I missing something?</vh></v>
+<v t="ekr.20130806072439.18527"><vh>Re: Full tree preview: wishlist item? ... or am I missing something?</vh></v>
+<v t="ekr.20130806072439.18528"><vh>Re: Full tree preview: wishlist item? ... or am I missing something?</vh></v>
+<v t="ekr.20130806072439.18529"><vh>Re: Full tree preview: wishlist item? ... or am I missing something?</vh></v>
+<v t="ekr.20130806072439.18530"><vh>Re: Full tree preview: wishlist item? ... or am I missing something?</vh></v>
+</v>
+<v t="ekr.20130806072439.18531"><vh>Gauging interest: markdown processing addition to viewrendered?</vh>
+<v t="ekr.20130806072439.18532"><vh>Re: Gauging interest: markdown processing addition to viewrendered?</vh></v>
+<v t="ekr.20130806072439.18533"><vh>Re: Gauging interest: markdown processing addition to viewrendered?</vh></v>
+<v t="ekr.20130806072439.18534"><vh>Re: Gauging interest: markdown processing addition to viewrendered?</vh></v>
+<v t="ekr.20130806072439.18535"><vh>Re: Gauging interest: markdown processing addition to viewrendered?</vh></v>
+<v t="ekr.20130806072439.18536"><vh>Re: Gauging interest: markdown processing addition to viewrendered?</vh></v>
+<v t="ekr.20130806072439.18537"><vh>Re: Gauging interest: markdown processing addition to viewrendered?</vh></v>
+<v t="ekr.20130806072439.18538"><vh>Re: Gauging interest: markdown processing addition to viewrendered?</vh></v>
+<v t="ekr.20130806072439.18539"><vh>Re: Gauging interest: markdown processing addition to viewrendered?</vh></v>
+<v t="ekr.20130806072439.18540"><vh>Re: Gauging interest: markdown processing addition to viewrendered?</vh></v>
+</v>
+<v t="ekr.20130806072439.18541"><vh>Ipython now has cell magic</vh></v>
+<v t="ekr.20130806072439.18542"><vh>new jump to error command for leoscreen</vh></v>
+<v t="ekr.20130526065545.17620"><vh>printing.py</vh>
+<v t="ekr.20130806072439.18804"><vh>[ANN] New plugin - printing.py</vh>
+<v t="ekr.20130806072439.18805"><vh>Re: [ANN] New plugin - printing.py</vh></v>
+<v t="ekr.20130806072439.18806"><vh>Re: [ANN] New plugin - printing.py</vh></v>
+<v t="ekr.20130806072439.18807"><vh>Re: [ANN] New plugin - printing.py</vh></v>
+<v t="ekr.20130806072439.18808"><vh>Re: [ANN] New plugin - printing.py</vh></v>
+<v t="ekr.20130526065545.17621"><vh>Re: [ANN] New plugin - printing.py</vh></v>
+<v t="ekr.20130526065545.17622"><vh>Re: [ANN] New plugin - printing.py</vh></v>
+<v t="ekr.20130526065545.17623"><vh>Re: [ANN] New plugin - printing.py</vh></v>
+<v t="ekr.20130526065545.17624"><vh>Re: [ANN] New plugin - printing.py</vh></v>
+</v>
+</v>
+<v t="ekr.20130806072439.18543"><vh>Read / write json files added to valuespace.py plugin</vh>
+<v t="ekr.20130806072439.18544"><vh>Re: Read / write json files added to valuespace.py plugin</vh></v>
+<v t="ekr.20130806072439.18545"><vh>Re: Read / write json files added to valuespace.py plugin</vh></v>
+<v t="ekr.20130806072439.18546"><vh>Re: Read / write json files added to valuespace.py plugin</vh></v>
+<v t="ekr.20130806072439.18547"><vh>Re: Read / write json files added to valuespace.py plugin</vh></v>
+<v t="ekr.20130806072439.18548"><vh>Re: Read / write json files added to valuespace.py plugin</vh></v>
+<v t="ekr.20130806072439.18549"><vh>Re: Read / write json files added to valuespace.py plugin</vh></v>
+<v t="ekr.20130806072439.18550"><vh>Re: Read / write json files added to valuespace.py plugin</vh></v>
+<v t="ekr.20130806072439.18551"><vh>Re: Read / write json files added to valuespace.py plugin</vh></v>
+</v>
+<v t="ekr.20130526065545.17435"><vh>screen_capture.py</vh>
+<v t="ekr.20130526065545.17429"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
+<v t="ekr.20130526065545.17430"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
+<v t="ekr.20130526065545.17431"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
+<v t="ekr.20130526065545.17432"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
+<v t="ekr.20130526065545.17433"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
+<v t="ekr.20130526065545.17434"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
+<v t="ekr.20130526065545.17436"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
+</v>
+<v t="ekr.20130806072439.18552"><vh>should add "refresh from disk" at parent node is a good idea?</vh>
+<v t="ekr.20130806072439.18553"><vh>Re: should add "refresh from disk" at parent node is a good idea?</vh></v>
+<v t="ekr.20130806072439.18554"><vh>Re: should add "refresh from disk" at parent node is a good idea?</vh></v>
+<v t="ekr.20130806072439.18555"><vh>Re: should add "refresh from disk" at parent node is a good idea?</vh></v>
+<v t="ekr.20130806072439.18556"><vh>Re: should add "refresh from disk" at parent node is a good idea?</vh></v>
+</v>
+<v t="ekr.20130803073926.17123"><vh>valuespace.py</vh>
+<v t="ekr.20130526065545.17506"><vh>Quick valuespace.py update: it now support...</vh></v>
+<v t="ekr.20130803125244.17094"><vh>Document valuespace from Ville's blog</vh></v>
+<v t="ekr.20130806072439.18889"><vh>Blog post about valuespace up on leo-editor.github.io</vh>
+<v t="ekr.20130806072439.18890"><vh>Re: update about Leo google group</vh></v>
+<v t="ekr.20130806072439.18891"><vh>Re: Blog post about valuespace up on leo-editor.github.io</vh></v>
+<v t="ekr.20130806072439.18892"><vh>Re: Blog post about valuespace up on leo-editor.github.io</vh></v>
+<v t="ekr.20130806072439.18893"><vh>Re: Blog post about valuespace up on leo-editor.github.io</vh></v>
+<v t="ekr.20130806072439.18894"><vh>Re: Blog post about valuespace up on leo-editor.github.io</vh></v>
+</v>
+</v>
+<v t="ekr.20130806072439.18557"><vh>Ville, please help make leoIPython.py work with legacy IPython</vh>
+<v t="ekr.20130806072439.18558"><vh>Re: Ville, please help make leoIPython.py work with legacy IPython</vh></v>
+<v t="ekr.20130806072439.18559"><vh>Re: Ville, please help make leoIPython.py work with legacy IPython</vh></v>
+<v t="ekr.20130806072439.18560"><vh>Re: Ville, please help make leoIPython.py work with legacy IPython</vh></v>
+<v t="ekr.20130806072439.18561"><vh>Re: Ville, please help make leoIPython.py work with legacy IPython</vh></v>
+<v t="ekr.20130806072439.18562"><vh>Re: Ville, please help make leoIPython.py work with legacy IPython</vh></v>
+<v t="ekr.20130806072439.18563"><vh>Re: Ville, please help make leoIPython.py work with legacy IPython</vh></v>
+<v t="ekr.20130806072439.18564"><vh>Re: Ville, please help make leoIPython.py work with legacy IPython</vh></v>
+<v t="ekr.20130806072439.18565"><vh>Re: Ville, please help make leoIPython.py work with legacy IPython</vh></v>
+<v t="ekr.20130806072439.18566"><vh>Re: Ville, please help make leoIPython.py work with legacy IPython</vh></v>
+<v t="ekr.20130806072439.18567"><vh>"Mylyn" with the new hooks</vh>
+<v t="ekr.20130806072439.18568"><vh>Re: "Mylyn" with the new hooks</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20130803073926.17122"><vh>Tutorials &amp; how-to</vh>
+<v t="ekr.20130806072439.19664"><vh>A beautiful pattern for composing large strings</vh>
+<v t="ekr.20130806072439.19665"><vh>Re: A beautiful pattern for composing large strings</vh></v>
+<v t="ekr.20130806072439.19666"><vh>Re: A beautiful pattern for composing large strings</vh></v>
+<v t="ekr.20130806072439.19667"><vh>Re: A beautiful pattern for composing large strings</vh></v>
+<v t="ekr.20130806072439.19668"><vh>Re: A beautiful pattern for composing large strings</vh></v>
+<v t="ekr.20130806072439.19669"><vh>Re: A beautiful pattern for composing large strings</vh></v>
+<v t="ekr.20130806072439.19670"><vh>Re: A beautiful pattern for composing large strings</vh></v>
+<v t="ekr.20130806072439.19671"><vh>Re: A beautiful pattern for composing large strings</vh></v>
+</v>
+<v t="ekr.20130806072439.19654"><vh>All about clone conflicts</vh>
+<v t="ekr.20130806072439.19655"><vh>Re: All about clone conflicts</vh></v>
 </v>
 <v t="ekr.20130803125244.17092"><vh>Draft: Position tutorial</vh>
 <v t="ekr.20130803125244.17093"><vh>other info</vh></v>
 </v>
+<v t="ekr.20130526065545.17595"><vh>Draft: unit-testing tutorial</vh></v>
+<v t="ekr.20130411023340.5976"><vh>Tutorial scripts (To be written)</vh>
+<v t="ekr.20130413153344.14589"><vh>What makes Leo special: shorter</vh></v>
+<v t="ekr.20130411135403.5972"><vh>What makes Leo special</vh></v>
+<v t="ekr.20130411023340.5978"><vh>Scripting</vh></v>
+<v t="ekr.20130411023340.5979"><vh>External files</vh></v>
+<v t="ekr.20130411023340.5980"><vh>The screenshots plugin</vh></v>
+<v t="ekr.20130411023340.5981"><vh>The contextmenu plugin</vh></v>
+<v t="ekr.20130411023340.5982"><vh>The bookmarks plugin</vh></v>
+<v t="ekr.20130411023340.5983"><vh>The todo plugin</vh></v>
 </v>
-<v t="ekr.20130526065545.17629"><vh>How to call functions from LeoPyRef.Leo</vh>
-<v t="ekr.20130526065545.17625"><vh>Re: How to call functions from LeoPyRef.Leo</vh></v>
-<v t="ekr.20130526065545.17626"><vh>Re: How to call functions from LeoPyRef.Leo</vh></v>
-<v t="ekr.20130526065545.17627"><vh>Re: How to call functions from LeoPyRef.Leo</vh></v>
-<v t="ekr.20130526065545.17628"><vh>Re: How to call functions from LeoPyRef.Leo</vh></v>
-<v t="ekr.20130526065545.17630"><vh>Re: How to call functions from LeoPyRef.Leo</vh></v>
-</v>
-<v t="ekr.20130526065545.17580"><vh>How to use leo to make mathematical notes?</vh></v>
 </v>
 </v>
 <v t="ekr.20130803073926.17124"><vh>Doc bugs</vh>
+<v t="ekr.20130803125244.17080"><vh>* Document Windows associations</vh></v>
 <v t="ekr.20130805080841.17066"><vh>Update list of commands in the docs</vh></v>
 <v t="ekr.20130526065545.14931"><vh>Suggestion for docs: Find and replace, missing a step\</vh></v>
 <v t="ekr.20130526065545.17607"><vh>Outdated info in "rst3"</vh>
@@ -762,199 +745,6 @@ http://leoeditor.com/intro.html
 For help, please ask questions at:
 http://groups.google.com/group/leo-editor</t>
 <t tx="ekr.20050901084134"></t>
-<t tx="ekr.20050903074833">Plugins and other scripts can register event handlers (also known as hooks) with code such as::
-
-    leoPlugins.registerHandler("after-create-leo-frame",onCreate)
-    leoPlugins.registerHandler("idle", on_idle) 
-    leoPlugins.registerHandler(("start2","open2","command2"), create_open_with_menu) 
-
-As shown above, a plugin may register one or more event handlers with a single call to
-leoPlugins.registerHandler. Once a hook is registered, Leo will call the
-registered function' at the named **hook time**. For example::
-
-    leoPlugins.registerHandler("idle", on_idle)
-
-causes Leo to call on_idle at "idle" time.
-
-Event handlers must have the following signature::
-
-    def myHook (tag, keywords):
-        whatever
-
--   tag is the name of the hook (a string).
--   keywords is a Python dictionary containing additional information.
-    The following section describes the contents of the keywords dictionary in detail.
-
-**Important**: hooks should get the proper commander this way::
-
-    c = keywords.get('c')
-</t>
-<t tx="ekr.20050903074833.1">The following table tells about each event handler: its name, when it is called,
-and the additional arguments passed to the hook in the keywords dictionary.
-For some kind of hooks, Leo will skip its own normal processing if the hook
-returns anything *other* than None. The table indicates such hooks with 'yes' in
-the 'Stop?' column.
-
-**Important**: Ever since Leo 4.2, the v, old_v and new_v keys in
-the keyword dictionary contain *positions*, not vnodes. These keys are
-deprecated. The new_c key is also deprecated. Plugins should use the c key instead.
-
-============================= ======== =================================== =============================
-Event name (tag argument)     Stop?    When called                         Keys in keywords dict
-============================= ======== =================================== =============================
-'after-auto'                           after each @auto file loaded        c,p (note 13)
-'after-create-leo-frame'               after creating any frame            c
-'after-redraw-outline'                 end of tree.redraw                  c (note 6)
-'before-create-leo-frame'              before frame.finishCreate           c
-'bodyclick1'                   yes     before normal click in body         c,p,v,event
-'bodyclick2'                           after normal click in body          c,p,v,event
-'bodydclick1'                  yes     before double click in body         c,p,v,event
-'bodydclick2'                          after  double click in body         c,p,v,event
-'bodykey1'                     yes     before body keystrokes              c,p,v,ch,oldSel,undoType
-'bodykey2'                             after  body keystrokes              c,p,v,ch,oldSel,undoType
-'bodyrclick1'                  yes     before right click in body          c,p,v,event
-'bodyrclick2'                          after  right click in body          c,p,v,event
-'boxclick1'                    yes     before click in +- box              c,p,v,event
-'boxclick2'                            after  click in +- box              c,p,v,event
-'clear-all-marks'                      after clear-all-marks command       c,p,v
-'clear-mark'                           when mark is set                    c,p,v
-'close-frame'                          in app.closeLeoWindow               c
-'color-optional-markup'        yes *   (note 7)                            colorer,p,v,s,i,j,colortag (note 7)
-'command1'                     yes     before each command                 c,p,v,label (note 2)
-'command2'                             after  each command                 c,p,v,label (note 2)
-'create-optional-menus'                (note 8)                            c (note 8)
-'create-popup-menu-items'              in tree.OnPopup                     c,p,v,event (new)
-'draw-outline-box'             yes     when drawing +- box                 tree,p,v,x,y
-'draw-outline-icon'            yes     when drawing icon                   tree,p,v,x,y
-'draw-outline-node'            yes     when drawing node                   tree,p,v,x,y
-'draw-outline-text-box'        yes     when drawing headline               tree,p,v,x,y
-'drag1'                        yes     before start of drag                c,p,v,event
-'drag2'                                after  start of drag                c,p,v,event
-'dragging1'                    yes     before continuing to drag           c,p,v,event
-'dragging2'                            after  continuing to drag           c,p,v,event
-'enable-popup-menu-items'              in tree.OnPopup                     c,p,v,event
-'end1'                                 start of app.quit()                 None
-'enddrag1'                     yes     before end of drag                  c,p,v,event
-'enddrag2'                             after  end of drag                  c,p,v,event
-'headclick1'                   yes     before normal click in headline     c,p,v,event
-'headclick2'                           after  normal click in headline     c,p,v,event
-'headrclick1'                  yes     before right click in headline      c,p,v,event
-'headrclick2'                          after  right click in headline      c,p,v,event
-'headkey1'                     yes     before headline keystrokes          c,p,v,ch (note 12)
-'headkey2'                             after  headline keystrokes          c,p,v,ch (note 12)
-'hoist-changed'                        whenever the hoist stack changes    c
-'hypercclick1'                 yes     before control click in hyperlink   c,p,v,event
-'hypercclick2'                         after  control click in hyperlink   c,p,v,event
-'hyperenter1'                  yes     before entering hyperlink           c,p,v,event
-'hyperenter2'                          after  entering hyperlink           c,p,v,event
-'hyperleave1'                  yes     before leaving  hyperlink           c,p,v,event
-'hyperleave2'                          after  leaving  hyperlink           c,p,v,event
-'iconclick1'                   yes     before single click in icon box     c,p,v,event
-'iconclick2'                           after  single click in icon box     c,p,v,event
-'iconrclick1'                  yes     before right click in icon box      c,p,v,event
-'iconrclick2'                          after  right click in icon box      c,p,v,event
-'icondclick1'                  yes     before double click in icon box     c,p,v,event
-'icondclick2'                          after  double click in icon box     c,p,v,event
-'idle'                                 periodically (at idle time)         c
-'init-color-markup'                    (note 7)                            colorer,p,v (note 7)
-'menu1'                        yes     before creating menus               c,p,v (note 3)
-'menu2'                        yes     during creating menus               c,p,v (note 3)
-'menu-update'                  yes     before updating menus               c,p,v
-'new'                                  start of New command                c,old_c,new_c (note 9)
-'open1'                        yes     before opening any file             c,old_c,new_c,fileName (note 4)
-'open2'                                after  opening any file             c,old_c,new_c,fileName (note 4)
-'openwith1'                    yes     before Open With command            c,p,v,d (note 14)
-'openwith2'                            after  Open With command            c,p,v,(note 14)
-'recentfiles1'                 yes     before Recent Files command         c,p,v,fileName,closeFlag
-'recentfiles2'                         after  Recent Files command         c,p,v,fileName,closeFlag
-'redraw-entire-outline'        yes     start of tree.redraw                c (note 6)
-'save1'                        yes     before any Save command             c,p,v,fileName
-'save2'                                after  any Save command             c,p,v,fileName
-'scan-directives'                      in scanDirectives                   c,p,v,s,old_dict,dict,pluginsList (note 10)
-'select1'                      yes     before selecting a position         c,new_p,old_p,new_v,new_v
-'select2'                              after  selecting a position         c,new_p,old_p,new_v,old_v
-'select3'                              after  selecting a position         c,new_p,old_p,new_v,old_v
-'set-mark'                             when a mark is set                  c,p,v
-'show-popup-menu'                      in tree.OnPopup                     c,p,v,event
-'start1'                               after app.finishCreate()            None
-'start2'                               after opening first Leo window      c,p,v,fileName
-'unselect1'                    yes     before unselecting a vnode          c,new_p,old_p,new_v,old_v
-'unselect2'                            after  unselecting a vnode          c,new_p,old_p,old_v,old_v
-'\@url1'                        yes     before double-click @url node       c,p,v,url (note 5)
-'\@url2'                                after  double-click @url node       c,p,v(note 5)
-============================= ======== =================================== =============================
-
-**Notes**:
-
-1.  'activate' and 'deactivate' hooks have been removed because they do not work as expected.
-
-2.  'commands' hooks: The label entry in the keywords dict contains the
-    'canonicalized' form of the command, that is, the lowercase name of the command
-    with all non-alphabetic characters removed.
-    Commands hooks now set the label for undo and redo commands 'undo' and 'redo'
-    rather than 'cantundo' and 'cantredo'.
-
-3.  'menu1' hook: Setting g.app.realMenuNameDict in this hook is an easy way of
-    translating menu names to other languages. **Note**: the 'new' names created this
-    way affect only the actual spelling of the menu items, they do *not* affect how
-    you specify shortcuts settings, nor do they affect the 'official'
-    command names passed in g.app.commandName. For example::
-
-        app().realMenuNameDict['Open...'] = 'Ouvre'.
-
-4.  'open1' and 'open2' hooks: These are called with a keywords dict containing the following entries:
-
-    - c:          The commander of the newly opened window.
-    - old_c:      The commander of the previously open window.
-    - new_c:      (deprecated: use 'c' instead) The commander of the newly opened window.
-    - fileName:   The name of the file being opened.
-
-    You can use old_c.p and c.p to get the current position in the old and new windows.
-    Leo calls the 'open1' and 'open2' hooks only if the file is not already open. Leo
-    will also call the 'open1' and 'open2' hooks if: a) a file is opened using the
-    Recent Files menu and b) the file is not already open.
-
-5.  '\@url1' and '\@url2' hooks are only executed if the 'icondclick1' hook returns None.
-
-6.  These hooks are useful for testing.
-
-7.  These hooks allow plugins to parse and handle markup within doc parts,
-    comments and Python ''' strings. Note that these hooks are *not* called in
-    Python ''' strings. See the color_markup plugin for a complete example of how to
-    use these hooks.
-
-8.  Leo calls the 'create-optional-menus' hook when creating menus. This hook need
-    only create new menus in the correct order, without worrying about the placement
-    of the menus in the menu bar. See the plugins_menu and scripts_menu plugins for
-    examples of how to use this hook.
-
-9.  The New command calls 'new'.
-    The 'new_c' key is deprecated.  Use the 'c' key instead.
-
-10. g.scanDirectives calls 'scan-directives' hook.
-    g.scanDirectives returns a dictionary, say d.
-    d.get('pluginsList') is an a list of tuples (d,v,s,k) where:
-
-    - d is the spelling of the @directive, without the leading @.
-    - v is the vnode containing the directive, _not_ the original vnode.
-    - s[k:] is a string containing whatever follows the @directive.
-      k has already been moved past any whitespace that follows the @directive.
-
-    See the add_directives plugins directive for a complete example of how to use
-    the 'scan-directives' hook.
-
-11. g.app.closeLeoWindow calls the 'close-frame' hook just before
-    removing the window from g.app.windowList. The hook code may remove the window
-    from app.windowList to prevent g.app.closeLeoWindow from destroying the window.
-
-12. Leo calls the 'headkey1' and 'headkey2' when the headline *might* have changed.
-
-13. p is the new node (position) containing '@auto filename.ext'
-
-14. New in Leo 4.10: the d argument to the open-with event handlers is a python
-    dictionary whose keys are all the tags specified by the user in the body of the
-    @open-with node.
-</t>
 <t tx="ekr.20050912125144"></t>
 <t tx="ekr.20051202072010"></t>
 <t tx="ekr.20060430221745"></t>
@@ -967,12 +757,6 @@ Event name (tag argument)     Stop?    When called                         Keys 
 <t tx="ekr.20070610174018"></t>
 <t tx="ekr.20070628083442"></t>
 <t tx="ekr.20070701101808"></t>
-<t tx="ekr.20071021102946">Two methods in leoGlobals.py allow scripts and plugins to enable and disable 'idle' events.
-**g.enableIdleTimeHook(idleTimeDelay=100)** enables the "idle" hook.
-Afterwards, Leo will call the "idle" hook approximately every idleTimeDelay milliseconds.
-Leo will continue to call the "idle" hook periodically until disableIdleTimeHook is called.
-**g.disableIdleTimeHook()** disables the "idle" hook.
-</t>
 <t tx="ekr.20080203101507"></t>
 <t tx="ekr.20080412124815.1"></t>
 <t tx="ekr.20080730212711.14"></t>
@@ -1112,1929 +896,7 @@ Important files:
 run-all-unit-tests-externally = Alt-5
 </t>
 <t tx="ekr.20111127144911.5545"></t>
-<t tx="ekr.20120229094652.14053">@language rest
-
-Leo 4.10 final                                         March 29, 2012
-
-Leo 4.10 final is now available at: http://sourceforge.net/projects/leo/files/Leo/4.10%20final/
-
-Leo is a text editor, data organizer, project manager and much more.
-See http://leoeditor.com/intro.html
-
-Leo 4.10 contains 9 months of intense work on Leo. Several very important
-features are subtle; you could almost call them Easter Eggs, so please read
-the following notes carefully.
-
-The highlights of Leo 4.10:
---------------------------
-
-* Dozens of new and improved features and commands, including...
-  - Tab completion now shows all @command &amp; @button nodes.
-  - Leo tabs may be detached from the main window.
-  - The Open With menu now works.
-  - The leoInspect module answers questions about Python code.
-  - Leo can highlight the pane containing the focus.
-  - The bigdash plugin searches across multiple files.
-  - Improved abbreviation capabilities.
-  - Improved handling of URL's.
-  - Improved editing of non-Leo files.
-  - Improvements create "weightless" unit testing.
-  - Improved Leo's home page.
-* Easier installation on MacOS.
-* Fixed almost 70 bugs.
-
-The Easter Eggs
----------------
-
-1. Tab completion now shows all @command &amp; @button nodes.
-
-Put all your common scripts in @command nodes in myLeoSettings.leo.
-Typing &lt;Alt-X&gt;@c&lt;Tab&gt; will remind you of the names of these scripts.
-You can execute the scripts by name without the "@command-" prefix.
-
-2. Improved abbreviation capabilities.
-
-Virtually any kind of abbreviation is possible. For example, ~a to ã.
-
-3. Improved handling of URL's.
-
-URL's can be used as links to other Leo outlines.
-
-4 Weightless unit testing.
-
-The mantra is edit, alt-4 (run-marked-unit-tests-externally), edit,
-alt-4,... Several seemingly innocuous changes made this work without
-"friction". The result is a remarkable increase in productivity.
-
-Links:
-------
-Leo:      http://leoeditor.com
-Forum:    http://groups.google.com/group/leo-editor
-Download: http://sourceforge.net/projects/leo/files/
-Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://leoeditor.com/testimonials.html
-</t>
-<t tx="ekr.20120229094652.14518"></t>
-<t tx="ekr.20120229094652.14520">The following tabs remain.  They are Leo-specific, not jEdit specific:
-blank, docpart, leokeyword, link, name, nameBrackets, tab, url.
-</t>
-<t tx="ekr.20120229094652.14522">Only the high-level interface (baseTextWidget) used the low-level interface.
-</t>
-<t tx="ekr.20120229094652.14523">Removed the following unused methods::
-    
-    bind                c.bind also removed.
-    configure
-    cget
-    event_generate      g.app.gui.event_generate does exist.
-    getWidth
-    indexIsVisible      Also removed for leoEditCommands: scrollHelper and measure.
-    mark_set
-    onChar              Fortunately, never used anywhere
-    pack                Used only in Tk code
-    scrollLines
-    set_width           Removed do-nothing calls in Leo's core.
-    tag_add             Removed do-nothing calls in qt colorizer.
-    tag_bind            Removed do-nothing calls in qt colorizer.
-    tag_delete          Removed do-nothing calls in qt colorizer.
-    tag_names
-    tag_ranges
-    tag_remove
-    update
-    update_idletasks
-    xyToPythonIndex
-    yview
-</t>
-<t tx="ekr.20120229094652.14525">leoQTextEditWidget overrides base toPythonIndex toPythonIndexRowCol.
-
-The versions that call g.toPythonIndex are much slower than
-leoQTextEditWidget.toPythonIndex.
-
-The following classes have a toPythonIndex method:
-
-leoQTextEditWidget (fast)
-
-HighLevelInterface: calls g.toPythonIndex.
-baseTextWidget: calls g.toPythonIndex.
-leoFind: calls g.toPytonIndex.
-leoQtBaseTextWidget: calls g.toPythonIndex.
-</t>
-<t tx="ekr.20120229094652.14526">This is an important addition to reliability.
-
-It ensures that body/log.widget and body.bodyCtrl/log.logCtrl are always in synch.
-</t>
-<t tx="ekr.20120229094652.14527">Added eventFilter in createFrame in SDI/TabbedFrameFactory classes
-</t>
-<t tx="ekr.20120229094652.14528"></t>
-<t tx="ekr.20120229094652.14532">All top-level code in leoTest.py now resides in the
-TestManager class.
-
-The c.testManager object eliminates the need for imports of
-leo.core.leoTest within unitTest.leo, an excellent
-simplification.
-
-Furthermore, there is no need to access the testUtils class:
-everything is in c.testManager.
-
-The TestManager class substantially clarifies *all* the code
-in leoTest.leo. This is surprisingly important because the
-testing code is hardly straightforward.
-</t>
-<t tx="ekr.20120229094652.14533">This is a major restructuring of Leo's code:
-    
-Initing settings files and local files is now as simple as possible.
-
-g.openWithFileName now simply calls lm.loadLocalFile.
-
-Commands.__init__ now calls c.finshCreate.
-
-g.app.newCommander now simply calls Commands.__init__,
-a *huge* collapse in complexity.
-
-===== Details
-
-The g.app.config class is now substantially simpler:
-complex methods have moved to the LoadManager.
-
-The new LoadManager class handles all aspects of Leo's
-complex startup process, including most importantly the very
-complex process by which Leo reads user settings.
-
-As a side effect, c.config.get is now *much* simpler than
-before: it search one, and *only* one dictionary to discover
-settings.
-
-Reading local files must be done *twice*. The first read
-discovers settings, the second read uses those settings to
-open the file. The first read always uses a null gui; the
-second read uses g.app.gui, whatever that happens to be.
-
-LM.openLocalFile embodies all aspects of the complex
-strategy necessary for opening a local file twice. The first
-read creates a PreviousSetting object, which is then passed
-to LM.openFileByName, which in turn passes the
-PreviousSetting object to the ctor for the Commander.
-Finally, the PreviousSetting object inits c.config.
-
-Because of the previousSettings object, the call to
-LM.openFileByName does *not* need to "synthesize" a link to
-c1 using c.hash. This stamps out bug 568452 at its source.
-
-The crucial point is the previous settings get passed along
-to the Commander ctor, *before* LM.openFileByName calls
-c.fileCommands.openLeoFile to create the outline.
-
-</t>
-<t tx="ekr.20120229094652.14534">- Moved findSettingsPosition to LocalConfigManager.
-
-- Moved printSettings to LocalConfigManager.
-</t>
-<t tx="ekr.20120229094652.14535"></t>
-<t tx="ekr.20120229094652.14538">It's important to use only one version of the code.
-</t>
-<t tx="ekr.20120229094652.14540"></t>
-<t tx="ekr.20120229094652.14541">This allows the following pattern to appear in Leo source files::
-
-    class myClass:
-        @others
-        
-    if g.app.testing:
-        myClass(c).test()
-        
-This is better than enabling the test with "if 1:" because c is not defined
-while importing the module, so the import will fail if I forget to change
-"if 1:" to "if 0" when saving the .leo file.
-</t>
-<t tx="ekr.20120229094652.14542"></t>
-<t tx="ekr.20120229094652.14543">- Generates only @auto, does not do an actual import.
-
-- Creates @path nodes so actual @auto nodes are short.
-</t>
-<t tx="ekr.20120229094652.14544">Added class CPrettyPrinter &amp; beatifyCCode
-</t>
-<t tx="ekr.20120229094652.14545">This command is a rewrapping of the first Python script I ever wrote. It
-takes much of the scut work away from the task of converting C code to
-Python code.</t>
-<t tx="ekr.20120229094652.14567"></t>
-<t tx="ekr.20120229094652.14576">The change was to DynamicWindow.createLogPane.
-</t>
-<t tx="ekr.20120229094652.14577">This was Tk code, and so can not possibly be useful now.
-
-Also removed the settings specific to the Tk colorizer.
-</t>
-<t tx="ekr.20120229094652.14578">This important new method allows scripts to traverse an outline, deleting nodes
-during the traversal. The pattern is::
-
-    p = c.rootPosition()
-    while p:
-    if &lt;delete p?&gt;:
-        next = p.positionAfterDeletedTree()
-        p.doDelete()
-        p = next
-    else:
-        p.moveToThreadNext()
-        
-This method also allows scripts to *move* nodes during a traversal, **provided**
-that nodes are moved to a "safe" spot so that moving a node does not change the
-position of any other nodes.
-
-For example, the move-marked-nodes command first creates a **move node**, called
-'Clones of marked nodes'. All moved nodes become children of this node.
-**Inserting** these nodes as children of the "move node" does not change the
-positions of other nodes. **Deleting** these nodes *may* change the position of
-nodes, but the pattern above handles this complication cleanly.
-</t>
-<t tx="ekr.20120229094652.14581">Leo creates @file nodes (not @thin nodes) when opening an external file.
-
-Changed g.openWrapperLeoFile to create @file instead of @edit when possible.
-
-Open now shows all files. This is a cue that *any* file may be opened:
-non-Leo files are opened in @edit nodes.</t>
-<t tx="ekr.20120229094652.14582"></t>
-<t tx="ekr.20120229094652.14583">Rewrote the shellCommand, shellCommandOnRegion and executeSubprocess methods.
-</t>
-<t tx="ekr.20120229094652.14584"></t>
-<t tx="ekr.20120229094652.14585">Leo can act like a drop-in replacement for SciTe. Suppose you do::
-    
-    leo x.y
-    
-where y is not "leo". Leo now opens an unnamed .leo file consisting of
-@edit x.y. if x.y exists, the @edit node contains the entire file;
-otherwise the node is empty.
-
-When you save the .leo files or close the Leo window Leo saves x.y if it
-has been changed, but Leo does *not* prompt you to save the "temporary"
-.leo file.
-
-https://bugs.launchpad.net/leo-editor/+bug/381527</t>
-<t tx="ekr.20120229094652.14589">Updating Sphinx and using new .js files did the trick.
-</t>
-<t tx="ekr.20120229094652.14590"></t>
-<t tx="ekr.20120229094652.14592">The mod_scripting plugin so that the name of the command created by an @button
-nodes does not include any [&lt;tag&gt;] that immediately follows @button. Examples::
-
-    @button [ekr] x
-    @button [edit] y
-    @button [important] z
-
-These buttons create commands named x, y and z, and the name of the buttons are
-x, y and z.
-
-Note that the '[' must be the first non-blank after @button to be recognized and
-removed.
-
-The code is a straightforward addition to cleanButtonText in mod_scripting.py:
-it is unlikely to have any impact whatsoever to existing @button nodes.
-
-The intended use is for searches of the form @button [some tag].
-</t>
-<t tx="ekr.20120229094652.14593">Wouldn't it be great if we all could remember what we, and others, have
-already done? Now there is an easy way to do so: just put your
-commonly-used scripts in global @command nodes. You do this by placing each
-@command node as a child of an @commands node in your @settings tree in
-myLeoSettings.leo.
-
-Leo's tab completion now shows you all @command nodes, all @button nodes
-and all the commands associated with those nodes.  To see the list of
-all your @command nodes, simply type::
-
-    &lt;Alt-X&gt;@c&lt;Tab&gt;
-    
-When I do that, I see::
-
-    @command-align-eq-signs
-    @command-c-to-python-clean-docs
-    @command-clean-all-blank-lines
-    @command-clean-body
-    @command-clean-diff
-    @command-clean-spellpyx
-    @command-cls
-    @command-count-pages
-    @command-create-@auto-nodes
-    @command-create-def-list
-    @command-flatten-script
-    @command-join-node-above
-    @command-join-node-below
-    @command-load-all-leo-files
-    @command-preview-node
-    @command-preview-tree
-    @command-print-cmd-docstrings
-    @command-promote-bodies
-    @command-remove-newlines
-    @command-split-defs
-    
-For each @command (and @button node) Leo creates the correspond commands
-without the leading "@command-", so you can use typing completion on the
-shorter command name. For example, when writing documentation, I often use
-the promote-bodies script. After the reminder above, I can execute the
-script with::
-
-    &lt;Alt-X&gt;prom&lt;Tab&gt;-&lt;Tab&gt;&lt;Return&gt;
-    
-Of course, to rexecute the command later, I can use repeat-complex-command
-(Ctrl-P).
-
-Summary
-=======
-
-If you put all your commonly-used scripts in @command nodes, you can use
-&lt;Alt-X&gt;@c&lt;Tab&gt; to remind yourself of their names. That is, Leo's typing
-completion eliminates the need for memory-intensive retrieval. I'm not
-likely ever to forget typing completion.
-
-This scheme takes full advantage of Leo's organization strengths and
-*concentrates* those strengths by putting all the to-be-organized material
-in one place. This allows for easy reorganization: changing command-name
-prefixes, for instance, would be straightforward.
-</t>
-<t tx="ekr.20120229094652.14595"></t>
-<t tx="ekr.20120229094652.14596">There is no longer any need for @@button, etc.: just put under an @ignore node.</t>
-<t tx="ekr.20120229094652.14598">Configurable and optional::
-
-    @color focus_border_color = red
-    @int focus_border_width = 1
-    @bool use_body_focus_border  = True
-    @bool use_focus_border = True</t>
-<t tx="ekr.20120229094652.14599">Many editors allow you to jump over, select and delete words, especially
-those containing or surrounded by special characters, in a smarter way than
-just "going to the beginning of the word before" (back-word) or "going to
-the end of the next word" (forward-word).
-
-Patches add "-smart" equivalents of the jump, select and delete commands.
-Users wanting to use these commands can set in their myLeoSettings.leo::
-
-  back-word-smart                  = Ctrl-LtArrow
-  back-word-smart-extend-selection = Ctrl-Shift-LtArrow
-
-  forward-word-smart                  = Ctrl-RtArrow
-  forward-word-smart-extend-selection = Ctrl-Shift-RtArrow
-
-  delete-word-smart          = Ctrl-Delete
-  backward-delete-word-smart = Ctrl-BackSpace</t>
-<t tx="ekr.20120229094652.14600">The single-line nodes should end in a newline. Otherwise the created node
-will add a newline, and the checkers will complain.
-
-The new class is xmlScanner and htmlScanner in leoImport.py.
-</t>
-<t tx="ekr.20120229094652.14601">Leo's home page now shows the latest postings on the leo-editor group.
-</t>
-<t tx="ekr.20120229094652.14602">The new command names and default bindings are::
-
-    run-all-unit-tests-externally       = None
-    run-all-unit-tests-locally          = None
-    run-marked-unit-tests-externally    = Alt-4 # The new standard
-    run-marked-unit-tests-locally       = None
-    run-selected-unit-tests-externally  = Alt-5 # The new standard
-    run-selected-unit-tests-locally     = None
-</t>
-<t tx="ekr.20120229094652.14606"></t>
-<t tx="ekr.20120229094652.14607">http://groups.google.com/group/leo-editor/browse_thread/thread/e2980a2b86af913e
-
-I see the following
-- when a file is opened
-  - one message listing the root node
-  - 7 repeats of the message for the current node
-
-- when the file is saved in a session with several tabs
-  - a message is generated for each current node in each tab
-
-- shifting focus from body to headline doesn't generate the message,
-  shifting focus with &lt;Ctrl-H&gt; does
-
-- switching from one tab to another doesn't generate the message 
-</t>
-<t tx="ekr.20120229094652.14608">Unit tests can test this ivar.
-</t>
-<t tx="ekr.20120229094652.14610">The new code monkey-patches g.doHook to a do-nothing::
-    
-    if not self.loadPlugins:
-        def dummyDoHook(tag,*args,**keys):
-            pass
-        g.doHook = dummyDoHook
-</t>
-<t tx="ekr.20120229094652.14611">An useful convenience method now that external unit tests can use config settings.
-</t>
-<t tx="ekr.20120229094652.14612">Under control of @bool collapse_on_lt_arrow option, default *True*.
-</t>
-<t tx="ekr.20120229094652.14613">The error message is now part of the failed assert.  Very helpful.
-</t>
-<t tx="ekr.20120229094652.14615">The default, True, is the legacy operation, which I recommend.
-
-</t>
-<t tx="ekr.20120229094652.14616">add-comments preserves trailing whitespace.
-
-delete-comments now works whether or not blanks surround comments delims.
-</t>
-<t tx="ekr.20120229094652.14618">- print-bindings: Alt/Ctrl+Key+N now printed with plain Alt/Ctrl keys and shown as Alt/Ctrl+N.
-
-- print-commands: Alt/Ctrl+Key+N now printed as Alt/Ctrl+N.
-
-- print-commands &amp; print-bindings do not print 'all'.</t>
-<t tx="ekr.20120229094652.14619">Added show-decoration-selected: 1 to QTreeWidget stylesheet.
-
-This causes the entire headline row to be shown when select, a big improvement, imo.
-</t>
-<t tx="ekr.20120229094652.14620"></t>
-<t tx="ekr.20120229094652.14621">What I did:
-    
-1. Created c.init_error_dialogs &amp; c.raise_error_dialogs.
-
-These are called from the following methods:
-    
-c.importAnyFile
-c.open
-c.readAtAutoNodes
-c.readAtFileNodes
-at.readAll
-c.save
-c.saveAs
-c.saveTo
-fc.writeAtFileNodes
-fc.writeAtShadowNodes
-fc.writeDirtyAtFileNodes
-
-2. Disabled log messages in several of the above methods during unit testing.
-
-3. Disabled runOpenFileDialog and runSaveFileDialog during unit testing.
-</t>
-<t tx="ekr.20120229094652.14622">- don't print 'all' in bindings.
-
-- pad bindings properly, as is done in print-commands/bindings.
-</t>
-<t tx="ekr.20120229094652.14625">The clone-find-all command includes nodes only once: if a node's ancestor
-appears in the list, the node is not include again in the top-level list.
-The new clone-find-all-flattened command includes every found node in the
-top-level list of nodes. I find this less confusing.
-</t>
-<t tx="ekr.20120229094652.14757"></t>
-<t tx="ekr.20120229094652.14758">https://bugs.launchpad.net/leo-editor/+bug/800157
-
-Fixed at rev 5077.</t>
-<t tx="ekr.20120229094652.14759">The code that marks descendant @&lt;file&gt; nodes dirty now tests
-p2.isAnyAtFileNode().  The old code tested p2.isAtThinFileNode().
-</t>
-<t tx="ekr.20120229094652.14761">CAUTION: new double click handling code
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/dbd63b9b38911906
-
-The problem isn't single/double, but double click not stopping the
-event processing.  It has the correct form:
-
-if g.doHook('doubleClick1') is None:
-   do-normal-double-click-stuff
-g.doHook('doubleClick2')
-
-but I think some other route through the code, or additional processing
-of the event means that even thought the handler registered on
-doubleClick1 returns non-None, the node goes into headline edit mode,
-with focus.
-
-This is bad, because the doubleClick1 on an @url node attempts to
-select and raise a different commander (tab), so now you're looking at
-one commander but focus is in another, so what you type trashes the
-headline in the original commander.
-
-The timer shouldn't be needed - a 'doubleClick1' hook which returns
-non-None should stop the headline going into edit mode.  If you can
-make that be the case, all is well.
-</t>
-<t tx="ekr.20120229094652.14762"></t>
-<t tx="ekr.20120229094652.14763"></t>
-<t tx="ekr.20120229094652.14764">- leoCommands.__init__ now sets self.db = {}
-- initGlobalDB now returns {} instead of None if there is no cacher.
-</t>
-<t tx="ekr.20120229094652.14765">readOpenFile reads the private shadow file, detecting the encoding.
-</t>
-<t tx="ekr.20120229094652.14767"></t>
-<t tx="ekr.20120229094652.14769">Examples:
-    
-    @edit C:/leo.repo/ipython-0.12/IPython/frontend/qt/console/pygments_highlighter.py
-        # The filename comes from g.app.gui.runOpenFileDialog
-    
-    @file C:\leo.repo\ipython-0.12\IPython\frontend\qt\console\pygments_highlighter.py
-        # Created by import.
-        
-The problem was the call to g.os_path_normpath in importDerived files:
-it converts slashes to backslashes on windows (!!)
-</t>
-<t tx="ekr.20120229094652.14770">- Added getLanguageFromAncestorAtFileNode.
-
-- Revised code in at.scanAllDirectives &amp; leoQtColorizer.scanColorDirectives.
-</t>
-<t tx="ekr.20120229094652.14772">qtBody can use the leoBody code.
-</t>
-<t tx="ekr.20120229094652.14775">Traceback (most recent call last):
-  File "c:\leo.repo\trunk\leo\plugins\quicksearch.py", line 187, in returnPressed
-    self.scon.doSearch(t)
-  File "c:\leo.repo\trunk\leo\plugins\quicksearch.py", line 289, in doSearch
-    self.addBodyMatches(bm)
-  File "c:\leo.repo\trunk\leo\plugins\quicksearch.py", line 257, in addBodyMatches
-    self.its[it] = (p, None)
-TypeError: unhashable type: 'QListWidgetItem'
-</t>
-<t tx="ekr.20120229094652.14776">The scrolledmessage plugin no longer exists. The runScrolledMessageDialog
-*does* still exist, but it now uses the viewrendered plugin.
-</t>
-<t tx="ekr.20120229094652.14777">Changed doButtons and doCommands kind handlers.
-
-This allows us to put example nodes in leoSettings.leo.
-</t>
-<t tx="ekr.20120229094652.14779"></t>
-<t tx="ekr.20120229094652.14780">Changed at.readEndOthers and at.readEndRef so that they
-always set at.inCode = True
-</t>
-<t tx="ekr.20120229094652.14781">Fixed several encoding problems related to this thread: @shadow - @encoding windows-1250 - problem
-http://groups.google.com/group/leo-editor/browse_thread/thread/a4ba80559447218a/9a37a4ed6c44d452
-
-There were several real problems fixed.  The summary: @encoding directives were always required.
-
-In detail:
-
-1. at.initWriteIvars now checks for a Python # -*- coding: line.
-   If present, it must be the very first line.
-   If present, it will override any @encoding directives.
-
-2. g.getPythonEncodingFromString now can deal with either of the following lines:
-
-    @first # -*- coding: utf-8 -*-
-    # -*- coding: utf-8 -*-
-
-That is, g.getPythonEncodingFromString can strip the leading @first.
-
-3. g.readlineForceUnixNewline and x.propagate_changes now catch UnicodeDecodeError.
-   This is very important: previously decoding errors crashed Leo!.
-
-All unit tests pass with both Python 2.x and 3.x.
-
-</t>
-<t tx="ekr.20120229094652.14782">Added configure_hard_tab_width method.
-</t>
-<t tx="ekr.20120229094652.14783">https://bugs.launchpad.net/leo-editor/+bug/800311
-
-Having set undo to word granularity, I often change something, move to a
-different line and continue editing there. When I want to undo my last change,
-Leo also undoes the change in the other place, as word granularity currently
-only recognizes a new undo step when a new word is started, no matter if we
-moved to a completely different position first.
-
-The attached patch fixes the issue by remembering the previous cursor position.
-
-Something else about the undo code:
-
-- oldSel and newSel are never set to None in the constructor -&gt; it's quite hard
-  to know they are there without reading the whole code
-
-- It would be cool if there could be some more comments in that section; e.g. to
-  tell that oldSel and newSel from which old_row, old_col, new_row and new_col
-  actually mean: old = "the position right before doing the change" and new =
-  "the position right after doing the change" and that old != "the position
-  after the change before" (which I added as prevSel) - it took me ages to
-  discover this
-
-- There are duplicate "The new and old characters are not contiguous." checks.
-  Are they different/necessary?
-
-- The "We have just inserted a line." section is not only entered on a new line
-  (see other attached patch)
-</t>
-<t tx="ekr.20120229094652.14784">https://bugs.launchpad.net/leo-editor/+bug/800312
-</t>
-<t tx="ekr.20120229094652.14785">https://bugs.launchpad.net/leo-editor/+bug/880975
-
-Bug: The Meta+Ctrl section [of print-bindings] is always empty and this makes it
-misleading.
-
-Fix: the prefix list in k.printBindings must be sure that if two prefixes have a
-common leading part the longer prefix appears first in the lists.
-</t>
-<t tx="ekr.20120229094652.14786">https://bugs.launchpad.net/leo-editor/+bug/823601
-</t>
-<t tx="ekr.20120229094652.14787">Code that wants to set a particular part of a widget's style sheet calls::
-
-   g.app.gui.update_style_sheet(w,key,value)
-
-where w is the widget whose stylesheet is to be changed, key is unique
-to the method (or group of methods), and value is the new version of
-the stylesheet **for the particular key** to be added.  Examples::
-
-   # In setEditorColors.
-   sheet = 'background-color: %s; color: %s' % (bg,fg)
-   g.app.gui.update_style_sheet(obj,'colors',sheet)
-
-   # In add_border.
-   sheet = "border: %spx solid %s" % (
-       c.focus_border_width,c.focus_border_color)
-   self.update_style_sheet(w,'border',sheet)
-
-   # In remove_border.
-   sheet = "border: %spx solid white" % (c.focus_border_width)
-   self.update_style_sheet(w,'border',sheet)
-
-So add_border and remove_border work together because they use the
-same 'border' key.
-
-g.app.gui.update_style_sheet is straightforward: it injects a Python
-dict called leo_stylesheet_dict into the widget, and computes the
-total stylesheet as follows::
-
-   # Step one: update the dict.
-   d = hasattr(w,'leo_styles_dict') and w.leo_styles_dict or {}
-   d[key] = value
-   w.leo_styles_dict = d
-
-   # Step two: update the stylesheet.
-   aList = [d.get(key) for key in list(d.keys())]
-   s = ';'.join(aList)
-   w.setStyleSheet(s)
-</t>
-<t tx="ekr.20120229094652.14817">g.importFromPath ('html','C:/leo.repo/trunk/leo/modes/html.py')
-returned the standard Python html module!
-
-</t>
-<t tx="ekr.20120229094652.14818">The fix was to use lowercase versions of docPart,leoKeyword,nameBrackets.
-</t>
-<t tx="ekr.20120229094652.14820">Worked around docutils problem in writeToDocutils.
-</t>
-<t tx="ekr.20120229094652.14822">not written: c:\recent\data3.html
-exception removing: 
-Traceback (most recent call last):
-  File "c:\leo.repo\trunk\leo\core\leoAtFile.py", line 5280, in remove
-    os.remove(fileName)
-WindowsError: [Error 3] The system cannot find the path specified: ''
-</t>
-<t tx="ekr.20120229094652.14823">There were two bugs:
-    
-- baseScannerClass.skipWsToken must not skip newlines!
-- tokenize must add any remaining whitespace at the end of the loop.
-</t>
-<t tx="ekr.20120229094652.14824">The code didn't work for c == None.
-</t>
-<t tx="ekr.20120229094652.14825"></t>
-<t tx="ekr.20120229094652.14826">http://groups.google.com/group/leo-editor/browse_thread/thread/3c319daba37cd0ef
-
-- Created a separate html importer, a very simple subclass of the xml scanner
-  whose only difference is that it uses @data import_html_tags instead of @data
-  import_xml_tags.
-
-- The case of tags in @data import_html_tags and @data import_xml_tags no longer matters.
-
-- checkTrialWrite now writes a file *with* sentinels, to handle @others correctly.
-  It then removes the sentinels.
-  
-  This means that the import tests must use the correct @language directives.
-  
-- The import check now uses a token-based comparison.  
-</t>
-<t tx="ekr.20120229094652.14827">The fix was in g.pr:
-    
-Restored the call to sys.stdout.write(s2) (instead of print)
-
-sys.stdout.write(s2) writes no additional newline at the end of s2.
-
-Aha!  At last I know how to unit test g.pr, g.trace, etc.: redirect stdout!
-</t>
-<t tx="ekr.20120229094652.14828"> File "/usr/fetching/leo-editor/leo/core/leoImport.py", line 2074, in
-scanAndCompare
-   n1,n2,ok = self.compareTokens(tokens1,tokens2)
- File "/usr/fetching/leo-editor/leo/core/leoImport.py", line 2094, in
-compareTokens
-   else:      kind1,val1 = 'eof','',n1
-ValueError: too many values to unpack
-</t>
-<t tx="ekr.20120229094652.14829">- Created stand-alone unit tests from @test import dataN.html.
-- All leoImport unit tests may now be run externally.
-    The Python unit tests were failing because of intermixed tabs and blanks.
-    This was fixed by putting @tabwidth -4 in all @test nodes for Python.
-- Made sure lines are printed when unit tests fail unexpectedly.
-- Added .js &amp; javascript entries to global data structures for javascript unit tests.
-- Completed xmlScanner.filterTokens.
-- Don't create declaration nodes for html.
-- Make sure html tags are as expected.
-- Ignore case of html/xml tags.
-
-Rev 4774.1.1:
-
-Fixed all known html-import problems in a clean way. Unit tests exists, but they
-use external files. They will be converted soon.
-
-Important changes:
-
-1. Added hasNestedClasses ivar in the baseScannerClass, True only for xml/html scanners.
-
-When True, scanHelper and skipDecls allocate a substring to be used for all further scanning.
-This is the *only* way to limit Leo's scanners properly.
-
-This was, in essence, the fix for duplicate code generation arising from unbalanced tags:
-skipToEndOfTag and skipToMatchingTag can't match outside the present tag because
-the 's' argument passed to those methods has already been truncated.
-
-This is a simple, elegant solution, and in essence the *only* proper solution.
-For example, it would not work to past an 'end' argument to skipToEndOfTag and skipToMatchingTag
-because the scanners inside those methods do not understand an 'end' argument.
-
-Thus, the simplest, most efficient solution is for scanHelper and skipDecls to truncate the
-string to be scanned. That way, the truncation happens at most once per "class".
-
-2. Added hasDecls in the baseScannerClass, False only for xml/html scanners.
-
-Various methods call skipDecls only if this ivar is True.
-
-Rev 4773:
-
-Fixed recent botch: both single and double quotes are allowed in html. 
-
-Rev 4772:
-
-Solved "between element" problem by extending classes up to the next class.
-data.html imports "correctly", but not perfectly due to tag mismatches in
-skipToMatchingTag.
-</t>
-<t tx="ekr.20120229094652.14831">http://groups.google.com/group/leo-editor/browse_thread/thread/421ebf4c3f2d5f59
-
-Adding/deleting body editor 3 times hard-crashed Python
-
-The changes were straightforward:
-    
-- set w.leo_label to None when calling unpackWidget.
-
-- Test for w.leo_label before using it.
-
-Added a minitest.  To test by hand, add the following @button nodes:
-    
-    @button add-ed
-    w = c.frame.body.addEditor()
-    
-    @button del-ed
-    w = c.frame.body.deleteEditor()
-    
-Click away in any order...</t>
-<t tx="ekr.20120229094652.14832">The new add-comments command adds the comment character at the leftmost column.
-
-The new delete-comments command will remove the comment characters inserted by
-either the old or new version of the add-comments command.
-</t>
-<t tx="ekr.20120229094652.14833">Example: ctrl-shift-home.
-
-The fix was to set self.widget = contents in leoQtLog.selectTab.
-</t>
-<t tx="ekr.20120229094652.14834">- Added disabled code to inject event filter in TabbedFrameFactory.createFrame.
-
-- Added cycle-tab-focus command.
-
-- cycle-all-focus command uses cycleTabFocus as a helper: this greatly simplifies the code.
-    
-- Added binding for "Find" tab in leoQtLog.createTab.
-
-- DynamicWindow.createFindTab injects leo_find_widget ivar for leoQtLog.createTab.
-
-- Added isLogWidget to leoQtLog and nullLog classes.  They are helpers for cycleAllFocus.
-
-- Revised leoQtLog.selectHelper: selecting a new tab does *not* change logCtrl (log.widget).
-
-- Added bindings to Find tab
-</t>
-<t tx="ekr.20120229094652.14835"></t>
-<t tx="ekr.20120229094652.14836">The safe default pane is the body pane.  It's also the simplest code.
-</t>
-<t tx="ekr.20120229094652.14837">The code must be careful that the log widget supports the HighLevelInterface.
-</t>
-<t tx="ekr.20120229094652.14838"></t>
-<t tx="ekr.20120229094652.14839">The bug was in k.handleDefaultChar.  No substantial change made to eventFilter.
-</t>
-<t tx="ekr.20120229094652.14840">What I did:
-    
-1. Fixed major bug in settingsTreeParser.visitNode.
-   It now does p.copy() to protect the callers traverals.
-   This could have significant impacts on people's settings.
-   
-2. Added g.app.unitTestDict for unit testing.
-
-3. Leo now extends the list of @buttons and @commands, rather than replacing them.
-   This is reasonable only because leoSettings.leo should never define *active*
-   buttons or commands.
-</t>
-<t tx="ekr.20120229094652.14841"></t>
-<t tx="ekr.20120229094652.14842">https://bugs.launchpad.net/leo-editor/+bug/804960
-
-When we clone a node inside an @shadow (containing @others) node and then
-refresh the @shadow node from file, the clone is unlinked and marked as changed.
-If we now save, close the .leo file and open it again, the nodes are linked
-again! (showing "cloned" symbol) User's thought: "How the heck can the file
-change _between save and re-open_ when I changed nothing?"
-
-I think what should be done about this is the check that Leo does when it opens
-the file again, and that check should be done immediately after the "refresh
-node from file" operation. Also, at this point, the "Recovered nodes" node
-should appear (if file and node have both changed), not only after the next .leo
-file close/reopen (as that happens quite infrequently, I guess, e.g. once a day
-for me). Otherwise, the user can easily lose data.
-</t>
-<t tx="ekr.20120229094652.14848">&gt;  File "/path/to/leo/core/leoImport.py", line 2070, in reportMismatch
-&gt;    line = repr(lines2[i])
-&gt; IndexError: list index out of range
-</t>
-<t tx="ekr.20120229094652.14849"></t>
-<t tx="ekr.20120229094652.14850">The fix was to at.putBody.
-</t>
-<t tx="ekr.20120229094652.14855">http://groups.google.com/group/leo-editor/browse_thread/thread/daf581ace0de871e
-
-"has been modified outside of Leo. Overwrite this file?"
-
-Steps to reproduce:
-
-- Create a node "@edit ~/aaa.txt" assuming aaa.txt does not exist
-- Ctrl-S save outline, log reports creating ~/aaa.txt
-- Edit text in body
-- Ctrl-S save outline, pop-up pops-up erroneously.
-
-The problem was that replaceTargetFileIfDifferent should set root.v.at_read.
-Now it does.
-
-Note: both replaceFileWithString methods are part of the @shadow logic,
-so there is no need to set any at_read bit in those methods.
-</t>
-<t tx="ekr.20120229094652.14856">https://bugs.launchpad.net/leo-editor/+bug/889175
-
-I loaded an outline with @auto nodes pointing to an out of date path. So body
-texts were empty. I updated the paths in the node headlines and saved the file,
-expecting to be prompted for overwriting the existing files (now the paths were
-correct again), but they were over-written with the blank content without
-warning. Damn.
-
-Steps to reproduce in a simpler way below, but don't write the
-below of as contrived, because the above is the real problem.
-
-Create @auto /home/tbrown/text.txt
-
-enter text, save file
-
-Edit headline to @auto /home/tbrown/Desktop/text.txt
-
-enter text, save file
-
-Edit headline back to /home/tbrown/text.txt
-
------
-
-I now see this happens also if the path change is in a @path node ancestor of the @auto node.
-</t>
-<t tx="ekr.20120229094652.14891">DynamicWindow.setGeometry now does *not* change the window size when using the qttabs gui.
-
-Added a comment to this effect in leoSettings.leo.
-</t>
-<t tx="ekr.20120229094652.14892">https://bugs.launchpad.net/leo-editor/+bug/87933
-    
-- Fixed the Shift-Tab buglet by adding lower-case entries in app.tkNamesList
-    This matches what is done in k.settingsNameDict.
-- Created &lt;&lt; define global key dicts &gt;&gt; in leoApp.py.
-- Changed si.val to si.stroke.
-- Replaced g.bunch by GeneralSetting &amp; ShortcutInfo.
-- Replaced bunchList by aList.
-- Removed dynamic_menus "compile-time" constant.
-- onAboutToShow now recomputes the contents of menus whenever menus are invoked.
-- leo_update_shortcut now shows all shortcuts for a command.
-- Wrote and tested merge_settings_dict.
-</t>
-<t tx="ekr.20120229094652.14893">Bug 879331: Redefining a key binding breaks menu items with same binding
-
-https://bugs.launchpad.net/leo-editor/+bug/879331
-
-&gt; Now I understand.  If I override the shortcut associated with the menu
-&gt; item, in this case Alt-A, the menu breaks.
-
-This is a serious bug!  The menu item now executes the command bound
-to Alt-A!  Very bad.
-
-=========
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/762e832909c3c530/d99d48eed45d1061
-
-http://mail.google.com/mail/#inbox/1331909dd653f3c9
-
-Redefining a binding, say for Alt-a, in x.leo will cause the sort-siblings menu
-(bound to alt-a) to execute the command specified by the command bound to Alt-a!
-
-https://bugs.launchpad.net/leo-editor/+bug/815564
-
-This anomaly only occurs when all of the following conditions are true:
-
-1) There is a global command name X that is the "same" as the root name of the
-file containing a plugin Y. Here, "same" means equal after the command name is
-converted to lower case and all underlines in the root name are replaced by
-dashes.
-
-2) A shortcut (a.k.a. keystroke) is bound to command name X.
-
-When these conditions are true, then the Plugins dropdown menu shows the key
-binding next to the plugin name and left-clicking the plugin name executes the
-global command--and, there is no way to display the plugin's help.
-
-Plugin Help Rendering: Plugin help is rendered by the viewrendered plugin, not
-by the old scrolledmessage.py plugin.
-
-Leo-editor revision: 4433
-OS: Ubuntu 11.04 (natty)
-
-Startup log pane:
-Leo Log Window
-Leo 4.9 final, build 4411, June 21, 2011
-Python 2.7.1, qt version 4.7.2
-linux2
-</t>
-<t tx="ekr.20120229094652.14894">https://bugs.launchpad.net/leo-editor/+bug/815564
-
-===== Probably the same as bug 879331 =====
-
-This anomaly only occurs when all of the following conditions are true:
-
-1) There is a global command name X that is the "same" as the root name of the
-file containing a plugin Y. Here, "same" means equal after the command name is
-converted to lower case and all underlines in the root name are replaced by
-dashes.
-
-2) A shortcut (a.k.a. keystroke) is bound to command name X.
-
-When these conditions are true, then the Plugins dropdown menu shows the key
-binding next to the plugin name and left-clicking the plugin name executes the
-global command--and, there is no way to display the plugin's help.
-
-Plugin Help Rendering: Plugin help is rendered by the viewrendered plugin, not
-by the old scrolledmessage.py plugin.
-
-Leo-editor revision: 4433
-OS: Ubuntu 11.04 (natty)
-
-Startup log pane:
-Leo Log Window
-Leo 4.9 final, build 4411, June 21, 2011
-Python 2.7.1, qt version 4.7.2
-linux2
-</t>
-<t tx="ekr.20120229094652.14925">k.computeInversBinding() called by print-commands and for auto-completion.
-
-k.bindKey sets k.bindingsDict.
-
-k.bindKeyToDict sets k.masterBindingDict.
-</t>
-<t tx="ekr.20120229094652.14934">Created k.kill_one_shortcut, called from k.remove_conflicting_definitions.
-</t>
-<t tx="ekr.20120229094652.14941">The new TM.findMarkForUnitTestNodes allows both
-TM.FindAllUnitTestsNodes and createOutline to be much simpler.
-</t>
-<t tx="ekr.20120229094652.14942"></t>
-<t tx="ekr.20120229094652.14973">The fix was to save/restore YScroll position in body.setSelectionAreas.
-
-Failure case 1:
-    - Search for something.
-    - Manually scroll the pane.
-    - Click scrolls the pane again.
-    
-Failure case 2:
-    - reformat-paragraph.
-</t>
-<t tx="ekr.20120229094652.15012">Fixing this bug is important: it allows you to set a default
-page width in myLeoSettings.leo for use, for example, in the
-reformat-paragraph command.
-
-Without a proper default c.page_width setting, you would have
-to use @page_width instead, which is much less convenient.
-
-The fix was the following lines in c.initConfigSettings:
-    
-    c.page_width = getInt('page_width') or 132
-        # 2012/02/27: this appears to be a fix of an *ancient* bug.
-</t>
-<t tx="ekr.20120229094652.15013">The fix was easy: moveWithinLineHelper does *not* call
-leoMoveCursorHelper for the case spot == 'end-line'
-</t>
-<t tx="ekr.20120229094652.15089">http://groups.google.com/group/leo-editor/browse_thread/thread/b17d140b7ceb8fc9
-
-I've added web page bookmarking from your browser to Leo.
-
-Docs., appended to the mod_http plugin, where this functionality lives,
-are pasted below.
-
-Screen shot of the form which pops up when you click the Bookmark
-button in your browser attached.  The body text of the corresponding
-bookmark node created in Leo is:
-
-    Leo's Home Page
-        http://leoeditor.com
-
-        Tags: leo, python
-
-        Leo's Home Page
-
-        Collected: Sun 02 Oct 2011 02:52:51 PM CDT
-
-        Keep this under your pillow.
-
-If you had some text selected on the page in your browser that would
-also appear in the above, and repeatedly bookmarking the same page with
-different selections incrementally adds such quotes to the bookmark
-node.
-
-Here are the docs.:
-
-Can also be used for bookmarking directly from the browser to Leo.  To
-do this, add a bookmark to the browser with the following URL / Location:
-
-    javascript:w=window;if(w.content){w=w.content}; d=w.document; w.open('http://localhost:8130/_/add/bkmk/?&amp;name=' + escape(d.title) + '&amp;selection=' + escape(window.getSelection()) + '&amp;url=' + escape(w.location.href),%22_blank%22,%22toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=yes, copyhistory=no, width=800, height=300, status=no%22);void(0)
-
-and edit the port (8130 in the example above) to match the port you're using
-for mod_http.
-
-Bookmarks are created as the first node in the outline which has been opened longest.
-You can set the ``@string`` ``http_bookmark_unl`` to specify an alternative location,
-e.g.::
-
-    @string http_bookmark_unl = /home/tbrown/.bookmarks.leo#@bookmarks--&gt;Incoming
-
-to place them in the `Incoming` node in the `@bookmarks` node in the `.bookmarks.leo` outline.
-
-The headline is preceeded with '@url ' *unless* the ``bookmarks`` plugin is loaded.
-If the ``bookmarks`` plugin is loaded the bookmark will have to be moved to a ``@bookmarks`` tree to be useful.
-
-The browser may or may not be able to close the bookmark form window for you, depending on settings - set ``dom.allow_scripts_to_close_windows`` to true
-in ``about:config`` in Firefox. 
-</t>
-<t tx="ekr.20120229094652.15090">http://groups.google.com/group/leo-editor/browse_thread/thread/4686ebad81bb1ea1
-</t>
-<t tx="ekr.20120229094652.15091">- Selecting any node using arrow keys shows the node in the outline immediately.
-
-- Clicking a node or hitting &lt;return&gt; puts focus in body pane.
-</t>
-<t tx="ekr.20120229094652.15093">Small improvements the unit testing framework created big results. They
-completely eliminate the overhead in running unit tests:
-
-    - The run-marked-unit-tests-externally (Alt-4) command runs all marked
-      @test nodes. To choose tests, just mark them.
-    - Alt-4 now saves the .leo file first.
-    - Almost all unit tests may now be run externally:
-        - External unit tests always read config settings.
-        - The nullGui now uses a fully capable string-based body widget.
-        - The nullGui now uses the regular undoer.
-    - Unit tests now always have the sources available.
-    - Disabled messages on external unit tests.
-    - The unit test commands always run a selected @test node.
-
-These improvements mean that almost all unit tests may be run externally.
-In turn, this creates a remarkable work flow::
-
-    Edit
-    Alt-4
-    Edit
-    Alt-4
-    ...
-
-The energy difference between weightless and heavy is astounding. Try the
-new way: you will surely like it.
-
-**Notes**:
-
-Experience shows that being able to run the desired unit tests *without*
-selecting any particular node makes an amazingly large difference. Being
-able to run all and only marked unit tests is a big step forward.
-
-If a marked node is neither an @test node nor an @suite node, all nodes in
-the tree are considered to be marked.
-</t>
-<t tx="ekr.20120229094652.15131">From Brian Theado
-
-The other day I stumbled across Ville's code in scripts.leo which displays the
-output of python's trace module in a leo outline. The output of the trace module
-is not very friendly and I didn't find the result very usable. I was inspired to
-write some code to translate the output so the tree of function calls is
-displayed via Leo headlines. Thanks to Ville for sharing that code. I never
-would have figure this out without that starting point.
-
-Just copy (Ctrl-Shift-V) the child outline into a leo outline and hit ctrl-b on
-the "call tree" node. The execution tree of the 'scroll-outline-up-line'
-minibuffer command will be displayed to stdout and also as a tree of leo
-headlines.
-</t>
-<t tx="ekr.20120229094652.15132">import trace
-
-@language python
-@others
-
-# http://docs.python.org/library/trace.html for documentation
-# on the trace module
-tracer = trace.Trace(countcallers=1)
-
-# Trace a minibuffer command.
-
-# Any function call will work. Leo's minibuffer commands are easily discoverable
-# via tab completion and the 'print-commands' command.
-
-#tracer.runfunc(c.executeMinibufferCommand, 'goto-prev-node')
-tracer.runfunc(c.executeMinibufferCommand, 'scroll-outline-up-line')
-
-top = p.insertAsLastChild().copy()
-top.h = 'trace session'
-displayCalltree(top, tracer.results().callers.keys())
-c.redraw()
-</t>
-<t tx="ekr.20120229094652.15133">def displayCalltree(p, callinfo):
-   '''
-   Converts the function call hierarchy in 'callinfo' into a tree of function
-   calls.  The function call tree is displayed to stdout as indented text
-   and is inserted as a tree of leo nodes rooted at the given position 'p'
-   '''
-   callers = [k[0] for k in callinfo]
-   callees = [k[1] for k in callinfo]
-
-   # The first set of children will be those that don't have any callers
-   # listed in callinfo
-   toplevels = list(set(callers) - set(callees))
-   positions = {}
-   path = []
-
-   # Depth-first traversal of the call hierarchy represented by 'callinfo'
-   # 'levels' is a stack which grows during descend and shrinks
-   # during ascend.  Each element of 'levels' is a list of unprocessed
-   # siblings of each other
-   levels = [toplevels]
-   while len(levels) &gt; 0:
-       while len(levels[-1]) &gt; 0:
-           # Process the first element in the 'deepest' (i.e. last) list of siblings
-           cur = levels[-1][0]
-           levels[-1] = levels[-1][1:]
-           indent = " " * 4 * (len(levels)-1)
-           if cur not in path:
-               if cur in positions.keys():
-                   # Function already seen, so make a clone
-                   clone = positions[cur].clone()
-                   clone.moveToLastChildOf(p)
-                   print (indent + "%s %s ..." % cur[1:])
-               else:
-                   # Haven't seen this function, so insert a new headline
-                   p = p.insertAsLastChild().copy()
-                   p.h = "%s %s" % cur[1:]
-                   print (indent + p.h)
-
-                   # Remember the position so it can be cloned if seen again
-                   positions[cur] = p
-
-                   # Find all callees of this function and descend
-                   levels.append([c[1] for c in callinfo if c[0] == cur])
-                   path.append(cur)
-           else:
-               r = p.insertAsLastChild().copy()
-               r.h = "(recursive call) %s %s" % (cur[1], cur[2])
-               print(indent + r.h + "...")
-
-       # Ascend back up one level
-       path = path[0:-1]
-       p = p.parent()
-       levels = levels[0:-1]
-</t>
-<t tx="ekr.20120229094652.15134"></t>
-<t tx="ekr.20120229094652.15135">The leoInspect module provides answers to questions about Python source
-code. leoInspect is an elegant and easy-to-use front end for Python's AST
-(Abstract Syntax Tree) trees *and* a window into a richly connected set of
-semantic data built *from* AST trees.
-
-For details, see http://leoeditor.com/leoInspect.html</t>
-<t tx="ekr.20120229094652.15138">http://groups.google.com/group/leo-editor/browse_thread/thread/5fdadfba113e12d9/fa329534654ecfec
-
-Leo now reports bzr version numbers and dates automatically.  Very important.
-</t>
-<t tx="ekr.20120229094652.15139">Note: in rev 4990, the g.app.newCommander method (formerly called
-g.app.newLeoCommanderAndFrame) also returns a single value (a
-Commander) rather than the tuple (c,c.frame). 
-</t>
-<t tx="ekr.20120229094652.15140">http://groups.google.com/group/leo-editor/browse_thread/thread/dd5907529208ee98
-
-The body of @openwith nodes contains one or more lines of the following
-form::
-
-   tag: value
-
-The possible tags are::
-
-    kind: &lt;a string&gt;
-
-The value specifies the **opener logic**, that is, the method used to
-launch the external editor, one of 'subprocess.Popen', 'os.startfile',
-'os.spawnl', 'os.spawnv', 'exec'.
-
-    arg: &lt;a string&gt;
-
-There may be many such arg lines. Each line will be a string to be passed
-as an argument to the opener logic, in a format that is compatible with the
-specified opener logic.
-
-Quotes in &lt;a string&gt; will be *retained*, allowing the user to specify
-exactly the arguments to be passed to opener logic.
-
-..  custom: &lt;a string&gt;
-..  Here, &lt;a string&gt; *will* be eval'd, yielding an object to be used as
-..  the opener logic.
-</t>
-<t tx="ekr.20120229094652.15142">http://groups.google.com/group/leo-editor/browse_thread/thread/808ba29fec64e590
-
-For almost 15 years Leo has been written using a limited set of classes.
-These were "big" classes, implementing major modules of Leo. There is
-nothing wrong with these classes, and they will remain unchanged, except
-insofar as they will be simplified by the classes I am about to discuss.
-
-Recently, I have become aware that Leo's code could be considerably
-simplified by adding "smallish" classes. Indeed, I now think the
-distinction between big and small classes is unhelpful. The most important
-part of the design of a class is simply whether a class implements an
-understandable concept.
-
-With this introduction, here is a short summary of Leo's new classes. Some
-have not been fully implemented. Getting them all to work is a big part of
-the rewrite of Leo's config, loading and key-handling code.
-
-</t>
-<t tx="ekr.20120229094652.15143"></t>
-<t tx="ekr.20120229094652.15144">leoSettings.leo:
-
-table = (
-        # First, leoSettings.leo in the home directories.
-        join(g.app.homeDir,     settings_fn),
-        join(g.app.homeLeoDir,  settings_fn),
-
-        # Next, &lt;machine-name&gt;leoSettings.leo in the home directories.
-        # join(g.app.homeDir,     machine_fn),
-        # join(g.app.homeLeoDir,  machine_fn),
-
-        # Last, leoSettings.leo in leo/config directory.
-        join(g.app.globalConfigDir, settings_fn)
-    )
-
-myLeoSettings.leo:
-
-    table = (
-        # First, myLeoSettings.leo in the local directory
-        join(localDir,          settings_fn),
-
-        # Next, myLeoSettings.leo in the home directories.
-        join(g.app.homeDir,     settings_fn),
-        join(g.app.homeLeoDir,  settings_fn),
-    
-        # Next, &lt;machine-name&gt;myLeoSettings.leo in the home directories.
-        join(g.app.homeDir,     machine_fn),
-        join(g.app.homeLeoDir,  machine_fn),
-
-        # Last, leoSettings.leo in leo/config directory.
-        join(g.app.globalConfigDir, settings_fn),
-    )
-</t>
-<t tx="ekr.20120229094652.15146">http://groups.google.com/group/leo-editor/browse_thread/thread/c933b28c27d3b9a7
-
-Ref 4952 of the trunk fixes bug 87933:
-"Redefining a key binding breaks menu items with same binding"
-
-This was a difficult bug to fix--I rewrote significant parts of Leo's
-code that deals with settings for key binding.
-
-Besides fixing the bug, Leo computes accelerators in menu items
-dynamically when the user activates a menu.  The accelerator shows
-*all* keys bound to the command associated with the menu item.
-
-From the checkin log:
-
-A major reorganization of the configuration code that fixes bug 87933
-Redefining a key binding breaks menu items with same binding
-
-- Replaced g.bunches with ShortcutInfo objects...
-
-- Wrote and tested make_settings_dict and its helpers,
-  merge_settings_dicts, invert and uninvert.
-
-- Leo computes menu texts dynamically in onAboutToShow.
-
-- leo_update_shortcut now shows all shortcuts for a command.
-
-- leoMenu.define_enable_dict encapsulates data used to enable/disable
-  commands regardless of where those commands appear in Leo's menu. The old
-  code assumed that a fixed menu location for all commands that could be
-  enabled or disabled.</t>
-<t tx="ekr.20120229094652.15147">End going to only physical line and not to the logical (wrapped) one)... 
-</t>
-<t tx="ekr.20120229094652.15149">http://groups.google.com/group/leo-editor/browse_thread/thread/ba9eb63337467d42/a3f3750d0ce6e847
-
-&gt; Here's a one line @button node you can add to myLeoSettings.leo
-&gt;
-&gt; @button set-style
-&gt;    c.frame.top.leo_ui.setStyleSheet(p.b)
-
-Cool.  I've added this to my "pre-writing" pile of things to be
-included in the next set of docs.
-
-Important:  setStyleSheet *replaces* the previous stylesheet with the
-new stylesheet, so you had best set all the attributes of Leo's
-default stylesheet.
-
-As an alternative, if w is any Qt widget, w.setStyleSheet(p.b) will
-set the stylesheet for that widget only: the top-level stylesheet (the
-stylesheet for c.frame.top.leo_ui) remains unchanged.
-</t>
-<t tx="ekr.20120229094652.15151">http://groups.google.com/group/leo-editor/browse_thread/thread/b49d23010703aa61/32e1271d25ba2cfb
-</t>
-<t tx="ekr.20120229094652.15153">http://groups.google.com/group/leo-editor/browse_thread/thread/3666397da2a0d05f/758071d6d9516ab9
-
-The right-click context menu on the tabs in the tabbed window mode (the
-default) has a 'Detach' option, if there's more than one outline/tab, and a
-Re-attach all option, if there's a detached outline window out there.
-
-Now there's also 'Horizontal tile', and 'Vertical tile', which detach the
-tab and then tile its window with the window from which it was detached.
-
-This is very helpful for moving nodes between outlines, I was rearranging
-the windows by hand and setting one to 'always on top' with the window
-manager before. Note: there's a @setting to determine whether dragging
-nodes between outlines copies or moves them.
-
-Depending on your OS / window manager, tiling / placement may be somewhat
-off, and may work better with or without the window being maximized before
-tiling, you'll have to experiment.
-
-When you close an outline window created by detaching a tab the outline is
-just re-attached as a tab. This means it's now possible to reattach just
-one outline, rather than having to use the 'reattach all' option.
-</t>
-<t tx="ekr.20120229094652.15157"></t>
-<t tx="ekr.20120229094652.15158">After so many years of confusion the problem is now apparent:
-the Windows console uses code page 437: which is just extended ascii.
-
-chcp 65001 is equivalent to utf-8, and it would be good to use,
-but at present bzr goes nuts and changes to another code page!
-
-So for the moment I'll have to live with what is, in effect, plain ascii.
-</t>
-<t tx="ekr.20120229094652.15159">On Ubuntu only, the auto complete popup is system-wide modal, it should only be modal over Leo windows.
-
-However, there does not seem to be any fix:
-http://groups.google.com/group/leo-editor/browse_thread/thread/171aaf79e0bea256
-
-All works well on Windows 7.  I do see the "system-wide" model
-behavior on Ubuntu.
-
-This appears to be a Ubuntu-specific bug.  Indeed, the popup is a
-QListWidget.  Such widgets have a setWindowModality method::
-
-    setWindowModality ( Qt::WindowModality windowModality )
-
-The valid modalities are at: http://doc.qt.nokia.com/4.7-snapshot/qt.html#WindowModality-enum
-
-NonModal: The window is not modal and does not block input to other
-windows.
-
-WindowModal: The window is modal to a single window hierarchy and
-blocks input to its parent window, all grandparent windows, and all
-siblings of its parent and grandparent windows.
-
-ApplicationModal: The window is modal to the application and blocks
-input to all windows.
-
-None of these would appear to be a system-wide modality, and
-furthermore, the default is supposed to be NonModal.
-
-Anyway, calling setWindowModality(QtCore.Qt.NonModal) does not seem to
-have much effect on Ubuntu, so I think I can safely say there is
-nothing more I can do. 
-</t>
-<t tx="ekr.20120229094652.15162"></t>
-<t tx="ekr.20120229094652.15163"></t>
-<t tx="ekr.20120229094652.15164"></t>
-<t tx="ekr.20120229094652.15165"></t>
-<t tx="ekr.20120229094652.15166"></t>
-<t tx="ekr.20120229094652.15168"></t>
-<t tx="ekr.20120229094652.15169"></t>
-<t tx="ekr.20120229094652.15176"></t>
-<t tx="ekr.20120229094652.19777">- open-with hook has changed: it now uses a "d" arg.</t>
-<t tx="ekr.20120229173025.20633">http://groups.google.com/group/leo-editor/browse_thread/thread/d21349c52dabd066
-
-Ever find that you have a whole lot of:
-
-.. sourcecode:: py
-
-  rec[f['analyte']] ... rec[f['sample_type']] ...
-
-expressions in your code, and now things have changed and you want them
-all to be:
-
-.. sourcecode:: py
-
-  row.Analyte ... row.Sample_Type ...
-
-basically if str variable s was::
-
-  rec[f['analyte']]
-
-then you want to perform:
-
-.. sourcecode:: py
-
-  s = "row."+s.split("'")[1].title()
-
-on each one.  In general it would be nice to be able to use a python
-expression when search and replace doesn't cut it.
-
-The button code below creates a button, ``fac``, which, when pressed,
-creates another button, with some name you choose, which, when pressed,
-executes some python code to fix the selected text in the body.
-
-You can define the code to be executed in two ways, either in its own
-node:
-
- - insert a new node with a headline which describes the refactor
- - enter code in the node which modifies the string variable ``s``,
-   which is initially set to the selected text in the body
- - press the ``fac`` button, which creates a new button named
-   after this code node
- - select each offending piece of text and press the button created
-   in the previous step to fix
-
-or
-
- - type some code modifying ``s`` right in the body you're working on
- - press the ``fac`` button, which creates a new button named "fix"
- - select each offending piece of text and press the button created
-   in the previous step to fix
-
-Note:
-
- - unlike regular button nodes, changing the code after the
-   button's created (first option above) doesn't change the code
-   executed by the button
- - replacing selection text makes Leo reposition the insert point at
-   the top of the window, this is annoying but unrelated to this code
-
-Here's the button code:
-
-.. sourcecode:: py
-
-  @button fac
-    from leo.plugins.mod_scripting import scriptingController
-
-    sc = scriptingController(c)
-
-    if c.frame.body.hasSelection():
-        code = c.frame.body.getSelectedText()
-        heading = 'fix'
-    else:
-        code = p.b
-        heading = p.h
-
-    def transform(c=c, code=code):
-        s = c.frame.body.getSelectedText()
-        g.es(s)
-        exec code
-        g.es(s)
-        c.frame.body.deleteTextSelection()
-        i = c.frame.body.getInsertPoint()
-        c.frame.body.insert(i, s)
-        p.b = c.frame.body.getAllText()
-        c.frame.body.setInsertPoint(i)
-
-    b = sc.createIconButton(
-        heading,
-        command = transform,
-        shortcut = None,
-        statusLine = 'Make filter button',
-        bg = "LightBlue"
-    ) </t>
-<t tx="ekr.20120229173025.20635">@language python
-
-from leo.plugins.mod_scripting import scriptingController
-
-sc = scriptingController(c)
-
-if c.frame.body.hasSelection():
-    code = c.frame.body.getSelectedText()
-    heading = 'fix'
-else:
-    code,heading = p.b,p.h
-
-def transform(c=c,code=code):
-    w = c.frame.body
-    s = w.getSelectedText()
-    g.es(s)
-    exec(code)
-    g.es(s)
-    w.deleteTextSelection()
-    i = w.getInsertPoint()
-    w.insert(i,s)
-    p.b = w.getAllText()
-    w.setInsertPoint(i)
-
-sc.createIconButton(
-    heading,
-    command = transform,
-    shortcut = None,
-    statusLine = 'Make filter button',
-    bg = "LightBlue"
-)</t>
-<t tx="ekr.20120313074006.14640">Leo's abbreviation code is now simpler and more general than before. The
-downside is that you will likely have to revise your abbreviations. I
-believe the extra work will be well worthwhile.
-
-Here are the changes:
-
-1. Abbreviations may consist of *any* sequence of characters, including
-whitespace or "special" characters. You may include whitespace characters
-in definitions using the '\t' and '\n' escapes. However, whitespace may
-only appear at the *end* of definitions.
-
-2. You must take care to disambiguate abbreviations if one is a prefix of
-   another.
-
-Here is an example of both points.  As always, you define
-abbreviations in the body of an @global-abbreviation node or
-@abbreviation node::
-
-    nc =@nocolor\n
-    nc\n=@nocolor\n
-    nc\t=@nocolor\n
-
-    ncn=@nocolor-node\n
-
-As you can see, the definitions uses whitespace at the end
-of the definition of "nc" to prevent it from being expanded
-when typing "ncn".
-
-3. The reason I call these abbreviations "instant" is that they can be
-triggered on *any* keystroke, not just the end of a "word".  This
-allows you to define::
-
-    teh=the
-
-Hurray!
-
-4. Two rules limit scans.  They are useful and shouldn't cause
-hardships.
-
-A.  The backspace and delete characters *never* trigger substitutions.
-
-B. The scan for definitions ends at the first newline
-character. Therefore, whitespace will have effect only at
-the *end* of a definition.
-
-**Important**: these rules can cause problems when *defining*
-abbreviations:  it's easy to trigger an unwanted definition.  The
-solution is to use rule 4B:
-
-I want to type::
-
-    ncn=@nocolor-node\n
-
-But I **cant** type this directly if nc is already defined!  The trick
-is to type::
-
-   nxcn=@nocolor-node\n
-
-and then delete the leading x with a backspace character.
-
-Of course, you could also turn abbrevions off while defining abbreviations...
-
-Instant abbreviations solve the problems with Brazilian
-keyboards. Just define::
-
-    ~a=ã
-    ~A=Ã
-    etc.
-
-This works regardless of keyboard, regardless of OS, etc.
-You might want to define::
-
-    ~\a=~a
-    ~\A=~A
-
-in the somewhat unlikely event that you want to type ~a rather than,
-say, ~+a.  Of course, you don't need these, provided you remember to
-type ~xa &lt;Right&gt;&lt;Delete&gt; :-)
-</t>
-<t tx="ekr.20120313074006.14643">k.remove_conflicting_definitions always gives the warning, not just when tracing.
-
-The warning isn't the best, and it is usually duplicated, but it is much better than nothing.
-</t>
-<t tx="ekr.20120313074006.14648">https://bugs.launchpad.net/leo-editor/+bug/930726
-
-Bug: If the node is not expanded already, then the position
-is left on the parent, not the first child.
-
-Function expandNodeAndGoToFirstChild() is referenced only
-once in LeoPyRef.leo. This reference is in table of public
-Leo commands.
-
-The node in which expandNodeAndGoToFirstChild() is defined
-also contains the definition of function
-expandNodeOrGoToFirstChild(). At present these two functions
-are equivalent. The comments including the header for the
-node imply that they should not be equivalent and that
-expandNodeAndGoToFirstChild() is not correctly implemented.
-</t>
-<t tx="ekr.20120313074006.14650">https://bugs.launchpad.net/leo-editor/+bug/869429
-Undo and Redo delete from context menu does not redo properly
-
-The fix was to deletenodes_rclick in contextmenu.py.
-The fallback position should be c.rootPosition()</t>
-<t tx="ekr.20120313074006.14655"></t>
-<t tx="ekr.20120313074006.14657">https://bugs.launchpad.net/leo-editor/+bug/823267
-
-When tabs are closed with the close tab 'X' on the tab, focus
-should go to whichever tab becomes visible, but it does not,
-it goes to an arbitrary tab which may not be visible. If you
-then hit Alt-X expecting to cut the highlighted node in the
-visible tab, you cut a node you can not see in a different
-commander.
-
-What I did:
-    
-- Refactored part of g.app.closeLeoWindow into g.app.selectLeoWindow.
-- Added the new_c argument to g.app.closeLeoWindow and c.close.
-- Changed several event handlers in TabbedFrameFactor so that they
-  call g.app.selectLeoWindow as appropriate.</t>
-<t tx="ekr.20120313074006.14663">https://bugs.launchpad.net/leo-editor/+bug/917814
-</t>
-<t tx="ekr.20120313074006.14697">https://bugs.launchpad.net/leo-editor/+bug/924123
-
-These syntax errors were minor in the sense that they had no
-effect on Leo's users, but they were a significant
-distribution issue because Linux packages are not to have
-such errors.
-
-I removed the following files. Apparently, they are used nowhere in Leo. 
-    
-    leo/core/leo_Debugger.py
-    leo/core/leo_FileList.py"
-    leo/core/leo_RemoteDebugger.py
-    leo/core/leo_Shell.py
-    leo/core/leo_run.py
-
-This files no longer exists:
-
-    leosax.py</t>
-<t tx="ekr.20120313074006.14698">https://bugs.launchpad.net/leo-editor/+bug/844953
-
-1. Open two empty files with the LEO revision 4451/trunk using the qttabs GUI and save them both.
-2. Create a new node and write "Abc" in its head.
-3. Select "Copy Node" from the outline menu.
-4. Select "Paste Node As Clone" from the outline menu:
-   Node is not inserted as clone, but inserted as a copy in the second file/tab.
-
-Sometimes even a standard Copy-Paste action results in the node being inserted in the other file.
-
-EKR: This a unity menu problem, not a problem with the paste commands per se.
-
-http://qt-project.org/forums/viewthread/15366/
-
-</t>
-<t tx="ekr.20120313074006.14702">https://bugs.launchpad.net/leo-editor/+bug/501636
-</t>
-<t tx="ekr.20120313074006.14713">https://bugs.launchpad.net/leo-editor/+bug/799695
-
-The fix was simply to call c.recolor_now(incremental=False)
-</t>
-<t tx="ekr.20120313074006.14714">https://bugs.launchpad.net/leo-editor/+bug/824087
-
-The fix was to bind Ctrl-F4 to close-window, instead of Alt-F4.
-
-I instantly like this new binding.
-</t>
-<t tx="ekr.20120313074006.14715">https://bugs.launchpad.net/leo-editor/+bug/923301
-</t>
-<t tx="ekr.20120313074006.14738"></t>
-<t tx="ekr.20120313074006.14740">https://bugs.launchpad.net/leo-editor/+bug/875323
-</t>
-<t tx="ekr.20120313074006.14765">https://bugs.launchpad.net/leo-editor/+bug/831658
-</t>
-<t tx="ekr.20120313074006.14771">https://bugs.launchpad.net/leo-editor/+bug/875327
-</t>
-<t tx="ekr.20120313074006.14772">https://bugs.launchpad.net/leo-editor/+bug/807561
-
-The isBinaryFile helper returns True if the file's extension is not known.
-This isn't great, but it's safe. The list of known text types includes:
-    
-1. '.css','.html','.leo','.txt'
-2. All extensions in g.app.extension_dict.keys().
-</t>
-<t tx="ekr.20120313074006.14800">@language rest
-
-Example: typing in this rest section recolors as *Python*.
-The correct coloring is restored when the entire text is recolored.
-
-In this case, a workaround, and a performance improvement, would be to put
-the ``@language python`` directive before the ``language rest``.
-
-@language python
-
-
-</t>
-<t tx="ekr.20120313074006.14906">- Added scanToCursor argument to c.scanAllDirectives in c.insert/removedComments.
-
-- Added scanToCursor argument to get_directives_dict_list in c.scanAllDirectives.
-
-- get_directives_dict_list sets scanToCursor only for the initial (root) node.
-
-- g.get_directives_dict scans to cursor for @language directives is scanToCursor is True.
-</t>
-<t tx="ekr.20120313074006.15120">https://bugs.launchpad.net/leo-editor/+bug/952365
-
-Improved error reporting and checking, but the file won't be created if
-createActualFile takes an IOError.
-</t>
-<t tx="ekr.20120313074006.15125">https://bugs.launchpad.net/leo-editor/+bug/951921
-</t>
-<t tx="ekr.20120313074006.16135">http://groups.google.com/group/leo-editor/browse_thread/thread/f7eaf4dd4e84a535
-
-Screenshot here:
-
-https://plus.google.com/103097156557482112329/posts/6qSngscG38Y
-
-Instructions (with current trunk):
-
-- enable bigdash.py plugin
-- alt-x global-search
-- Enter "s somesearch" in the line editor and press enter
-- Browse the hits. Click on link to navigate to the node.
-
-Caveat:
-
-If the document is not in currently active tab, the navigation is
-done "in the background". Correct implementation would be to activate
-the tab in order to bring attention to it. 
-</t>
-<t tx="ekr.20120313134250.14232">Support for the open-with command is now part of Leo's core.</t>
-<t tx="ekr.20120313134250.14294">**Important**: This was all done in Leo 4.9, but not properly documented.
-
-Allow section references in rst3 command.
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
-
-- Added support for the following options:
-    - expand_noweb_references:  default False for compatibility.
-    - ignore_noweb definitions: default False for compatibility.
-
-- When expand_noweb_references is True, definitions (typically clones)
-  must be descendants of the referencing node (in the @rst tree)
-</t>
-<t tx="ekr.20120314095341.14216">There no need to disable buttons and commands with \@@button or \@@command.
-</t>
 <t tx="ekr.20120315101404.14224">@pagewidth 70</t>
-<t tx="ekr.20120318075211.6163"></t>
-<t tx="ekr.20120318075211.6164"></t>
-<t tx="ekr.20120318075211.6165"></t>
-<t tx="ekr.20120318075211.6166"></t>
-<t tx="ekr.20120318075211.6167">Leo's core now supports opening URL's in several ways:
-
-1. By Control-Clicking the headline of a node containing a URL in its
-   headline or the *first* line of its body text.
-   
-2. The open-url command opens a URL in a nodes headline or the first
-   line of its body text.
-   
-3. By Control-Clicking any URL in the body text.
-
-Notes::
-
-- URL's may optionally start with ``@url``.  Leo removes this prefix
-  before trying to open the URL.
-
-- Names of existing files are considered valid URL's. In that case, Leo
-  prepends ``file://`` to the file name.
-  
-- Relative file names are resolved to c.openDirectory, the directory of the
-  .leo file.
-  
-- You may use the {{expression}} syntax in any ``file://`` URL, including
-  ``file://`` URL's created from file names.
-  
-- The bookmarks.py plugin supports all of the features listed above.</t>
-<t tx="ekr.20120318075211.6168">This class handles all the messy details of loading .leo files at startup.
-This class encapsulates almost all the code in runLeo.py, as well as some
-methods in leoGlobals.py that really belong somewhere else.
-
-Creating a class simplifies the code to a surprising degree: 5 or 6 ivars
-of the class represent command-line options. These ivars are always
-available: there is no need to pass them around as arguments.
-</t>
-<t tx="ekr.20120318075211.6169">The ModeController class represents a collection of modes. The ModeInfo
-class represents a single mode.
-
-Without these classes, the code in leoKeys.py is extremely hard to
-understand. In fact, the old code was a perfect example of the problems
-with procedural programming: client code was burdened with knowing way too
-many details about matters that it shouldn't have to know about.
-Furthermore, that data itself is hard to understand: it's too "raw". These
-classes provide "identity" for data. repr(aModeInfo) is surprisingly
-useful.</t>
-<t tx="ekr.20120318075211.6170">This class represents the global log.  It hides the details of the log
-from the g.app class and several other pieces of code.
-
-At present, the interface to this class is procedural.  That is, the
-present g.app methods that will be moved into this class have a
-procedural rather than descriptive nature.  I'm not sure how much this
-will change, but creating this class may create opportunities that
-were not apparently previously.
-
-</t>
-<t tx="ekr.20120318075211.6172">The KeyStroke class is a wrapper for plain strings. It's most important
-attribute is its *identity*. It announces that its contents is a
-canonicalized value, not a raw user settings string or any other kind of
-data associated with key handling.
-
-Similar remarks apply to ShortcutInfo objects. Their identity clarifies the
-code. The former code used g.bunches. In complex code such as leoKeys.py,
-such anonymous objects really obfuscate matters.
-
-</t>
-<t tx="ekr.20120318075211.6173">This class solves a problem that has been annoying me ever since I created
-leoEditCommands.py. The problem is this: without this class the classesList
-has to be defined at the end of the module, after all classes have been
-imported. Worse, several module-level methods were needed to manage the
-classesList.
-
-In the new scheme, each Commander creates an EditCommandsManager, and the
-code that previously had to call the module-level method
-leoEditCommands.x(c) now simply calls c.editCommandManager.x(). This is
-much cleaner and avoids several very ugly imports. Which brings me to...
-</t>
-<t tx="ekr.20120318075211.6174">Now, most modules import only leo.core.leoGlobals. This simplifies Leo's
-startup process considerably. This is something that I've wanted to do for
-a long time. To make this work, it is *essential* that leoGlobals.py import
-*no* other Leo modules.
-
-However, Leo's core still imports leo.core.leoNodes in order to create
-positions, vnodes, etc. It would be straightforward to eliminate these by
-creating g.app factory methods, but there is no urgent reason to do so.
-
-The ctor for the Commands class imports many modules. This is essential to
-break what would otherwise be circular dependencies among Python imports.
-We can extend this pattern by creating more classes, as was done with the
-EditCommandsManager class.
-</t>
-<t tx="ekr.20120318075211.6175">leoGlobals.py now contains a section called ``&lt;&lt; global switches &gt;&gt;``
-
-This contains global tracing switches. Experience shows that leoGlobals.py
-is the most convenient place for such switches. This section also contains
-switches that enable new code bases. Recent examples were::
-
-   new_load = False # True: .leo files are loaded at most once.
-   if new_load: print('***** new_load')
-
-   new_modes = False # True: use ModeController and ModeInfo classes.
-   if new_modes: print('***** new_modes')
-</t>
-<t tx="ekr.20120318075211.7524">The new command names and default bindings are::
-
-    run-all-unit-tests-externally       = None
-    run-all-unit-tests-locally          = None
-    run-marked-unit-tests-externally    = Alt-4 # The new standard
-    run-marked-unit-tests-locally       = None
-    run-selected-unit-tests-externally  = Alt-5 # The new standard
-    run-selected-unit-tests-locally     = None
-</t>
-<t tx="ekr.20120328102352.5897">Traceback (most recent call last):
-  File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 553, in doCommand
-    val = command(event)
-  File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 2120, in flattenOutline
-    c.importCommands.flattenOutline(fileName)
-  File "c:\leo.repo\trunk\leo\core\leoImport.py", line 479, in flattenOutline
-    theFile.write(s)
-TypeError: must be str, not bytes
-</t>
-<t tx="ekr.20120328102352.5899">Traceback (most recent call last):
-  File "c:\leo.repo\trunk\leo\core\leoPlugins.py", line 337, in callTagHandler
-    result = handler(tag,keywords)
-  File "c:\leo.repo\trunk\leo\plugins\viewrendered.py", line 560, in update
-    f(s,keywords)
-  File "c:\leo.repo\trunk\leo\plugins\viewrendered.py", line 655, in update_graphics_script
-    pc.gs = QtGui.QGraphicsScene(pc.splitter)
-AttributeError: 'ViewRenderedController' object has no attribute 'splitter'
-</t>
-<t tx="ekr.20120328102352.5900">Selecting body editor with clicks doesn't save/restore visual ivars.
-The solution would be to create a new onClick event handler...
-</t>
-<t tx="ekr.20120328102352.5936">In earlier version of Leo if one runs test externally with the selected
-position under @test node, that @test was executed with (run-marked-unit-tests-externally)
-
-The fix was to the "important special case" in TM.findAllUnitTestNodes.
-</t>
-<t tx="ekr.20120328102352.5938">http://groups.google.com/group/leo-editor/browse_thread/thread/bb063866875a81c3#
-
-The fix is simply to special-case file:/// on Windows in g.computeFileUrl.
-</t>
-<t tx="ekr.20120328102352.5942"></t>
-<t tx="ekr.20120328102352.5946">http://leoeditor.com
-
-- Added link to home page from the TOC.
-
-- Removed online-tutorial link.
-
-- Added search box to Leo's home page.
-
-- Added link to glossary from Leo's home page.
-
-- Added scaled screen shot to Leo's home page.
-
-- Brought screen shots up to date.
-</t>
 <t tx="ekr.20130327143919.5868">&lt;html&gt;
 &lt;head&gt;
 &lt;title&gt;Leo's home page has moved&lt;/title&gt;
@@ -3366,179 +1228,6 @@ to just to the next.
 
 But you're right about the docs, something this basic should be clear.
 </t>
-<t tx="ekr.20130526065545.14932">Josef &lt;joe_da@gmx.net&gt;
-7/30/12
-		
-Recently I evaluated docear - a mind-mapping tool for collecting reference
-data (written in Java). It automatically extracts bookmarks and annotations
-from PDF files, and more, but it's support for authoring is still not up to
-the task. I think it would be great if Leo could do some of the tasks
-docear is doing.
-
-Leo is primarily a literate programming editor, but also quite good at
-organizing bits of information. Dragging a PDF into Leo currently just
-creates an url to the PDF. This could be expanded to also extract data
-(bookmarks, notes) from the PDF and to sync this data between Leo and the
-PDF. This info could be placed in child nodes: bookmarks and notes could
-even jump directly to the page in the PDF (although each PDF viewer seems
-to have a different syntax for doing that). This would be a great way to
-organize data sheets and specifications stemming from external sources.
-
-Combining the above with an improved LaTeX support, one would get a very
-powerful research and authoring tool - in my opinion with a much more
-convenient interface than docear.
-
-Perhaps it is too much work to duplicate all the work docear is doing. An
-alternative may be to sync data somehow between docear and Leo. Docear
-stores the data in a freeplane mind-map. Has anyone else thoughts about
-this? Offray Vladimir Luna Cárdenas offray@riseup.net via googlegroups.com
-	
-7/30/12
-		
-I have been using Leo to write my thesis. I didn't know about Docear, but
-my use was in some sense similar. I have a lot of @url links pointint to
-the pdfs files and in a subtree I cut and paste the text of the pdf I want
-to comment and made the comments inside the tree. These pdf were part of my
-bibliographic entries and I'm now writing a .bib file for these, so I can
-have in only one Leo tree all my thesis, with all the references to
-external files and the annotations and bibtex entries for them. For me the
-key point of Leo in academic writing is the tree view plus the clones and
-ignore nodes. My thesis can have several layers, the external ones being
-the actual writing and the deeper ones the references, texts, images, tools
-that enable me to do that writing. Using clones and @rst-no-head directives
-I can have the level of granularity of a paragraph, something that is not
-possible on traditional word processor which are the writing tool of tools
-like docear. This approach have some glitches:
-
-* I still need to do some fine tunning to the LaTeX export for writing the
-pdf as I want. I imagine that putting sphinx in the tool chain could change
-that.
-
-* I can not get much people of my companions using this advangages, besides
-of myself, because of the difficult installation process of Leo in
-Windows/Mac and the not so friendly interface for non-programmers. Other
-light markup structured text writing programs like Nested[1] are more
-easily used and understood despite of not having all the advantages and
-flexibility of Leo.
-
-So, in resume, may be the better approach is connecting Leo to Docear, so
-you can have the advantages of both in terms of easy multiplataform
-installation and friendly interface of the later and programmability,
-flexibility and deeper organic structure of the former.
-
-Offray
-
-Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-
-&gt; Recently I evaluated docear - a mind-mapping tool for collecting reference
-&gt; data (written in Java). It automatically extracts bookmarks and annotations
-&gt; from PDF files, and more, but it's support for authoring is still not up to
-&gt; the task. I think it would be great if Leo could do some of the tasks
-&gt; docear is doing.
-&gt;
-&gt; Leo is primarily a literate programming editor, but also quite good at
-&gt; organizing bits of information.
-
-I would describe it as an general purpose outline that's very good at
-editing code.
-
-&gt; Dragging a PDF into Leo currently just
-&gt; creates an url to the PDF. This could be expanded to also extract data
-&gt; (bookmarks, notes) from the PDF and to sync this data between Leo and the
-&gt; PDF. This info could be placed in child nodes: bookmarks and notes could
-&gt; even jump directly to the page in the PDF (although each PDF viewer seems
-&gt; to have a different syntax for doing that). This would be a great way to
-&gt; organize data sheets and specifications stemming from external sources.
-
-I'm not really sure how notes get embedded in PDFs.  As an aside, there
-is also capability for using Leo to manage bookmarks to web pages, with
-notes, tags, and snippets.  Look at the mod_http plugin.  It uses a
-javascript bookmark button in your browser to communicate with Leo.
-
-&gt; Combining the above with an improved LaTeX support, one would get a very
-&gt; powerful research and authoring tool - in my opinion with a much more
-&gt; convenient interface than docear.
-&gt;
-&gt; Perhaps it is too much work to duplicate all the work docear is doing. An
-&gt; alternative may be to sync data somehow between docear and Leo. Docear
-&gt; stores the data in a freeplane mind-map. Has anyone else thoughts about
-&gt; this?
-
-Syncing between the two sounds a little cumbersome to me.  I wonder if
-the PDF stuff could be integrated with some sort of BibTeX .bib file
-management?
-
-Do you really need the mindmap UI of docear?  I used to use Freemind
-which has a very similar interface, but switched to Leo.  I like what
-http://cmap.ihmc.us/ does, but it only does idea organization, no
-authoring etc.  To me cmaptools is better at idea organizing than
-mindmaps.
-
-There is also the backlinks plugin for Leo, which allows arbitrary
-networks of links instead of just the directed tree, and graphcanvas,
-which allows graph layout of nodes.  There aren't comparable with the
-mindmap layouts, but they head in that direction.  Also note Leo's
-hidden UI flexibility in the context menus on the pane dividers, you
-can open a new window for the graphcanvas plugin, which gives it much
-needed screen real estate.
-
-Cheers -Terry
-
-Josef &lt;joe_da@gmx.net&gt;
-7/30/12
-		
-no, I do not need the mindmap stuff at all. I had a look at short look at
-cmaptools, and I agree the generalized graph approach seems better than a
-standard mindmap. But I am quite happy with the tree view in Leo and as you
-already mentioned, this can be extended with backlinks etc. I have used Leo
-already to organize reference documents and write documentation (using
-Latex).
-
-What I do want is links to a particular page of a PDF - links to just a
-file are not enough when you refer to documents with 100+ pages.
-Unfortunately this seems to be difficult to achieve in a cross-platform
-way, particular when trying to support different PDF viewers. Docear is
-solving this (and other compatibility problems) by developing its own
-integrated viewer (I do not suggest to do this for Leo).
-
-On second thought, I don't think that extracting the bookmark and
-annotation info is really important to me - I would keep that info in the
-PDF, anyhow. I would write inside Leo addional notes, and the output text
-(in Latex).
-
-Some integration of Bibtex may be a good thing and needs to be thought out
-- perhaps by using JabRef for this, or by recycling some pyBibliographer
-code, but this is also low on my priority list.
-
-Offray seems to have a very similar use case as I - although I do not write
-a thesis, but specifications for scientific instruments. The point about
-cross-platform installation ease is also well taken, so I will look into
-some inter-operability here (either with docear or cmaptools). I see Leo
-mainly as a personal project / information manager: the leo tree is not
-easily shared with others, while the files Leo points to with @url, @auto,
-@file etc can be shared quite easily. In this I use Leo as *my personal*
-view on the project.
-
-Ville Vainio &lt;vivainio@gmail.com&gt;
-7/30/12
-		
-It seems that e.g. w/ foxit reader, you can open selected page from command
-line (-n 123). Abstracting this for other pdf readers that support such a
-thing should be no problem.
- 
-On Monday, July 30, 2012 8:08:23 PM UTC+2, Ville M. Vainio wrote:
-     
-    It seems that e.g. w/ foxit reader, you can open selected page from
-    command line (-n 123). Abstracting this for other pdf readers that
-    support such a thing should be no problem.
-    
-Yes, I suppose one could translate from a canonical representation inside
-Leo to whatever the tool needs (using @setting). Ideally, one would even
-have a choice between opening the new page in a different or in the same
-PDF viewer instance as the last page, but few viewers support that (Okular
-does - but I don't know any cross-platform solution).
-</t>
 <t tx="ekr.20130526065545.17427">@nocolor
 
 From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
@@ -3785,303 +1474,6 @@ On Wednesday, April 24, 2013 8:41:02 PM UTC-4, lewis wrote:
 &gt;&gt; Cheers -Terry 
 &gt;&gt;
 &gt;
-
-</t>
-<t tx="ekr.20130526065545.17437">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-On Tue, 18 Sep 2012 05:59:59 -0700 (PDT)
-felix74 &lt;hjuucy@googlemail.com&gt; wrote:
-
-&gt; Terry,
-&gt;  
-&gt; Thanks for your help with this it was very helpful and a lot simpler than I 
-&gt; feared. I have managed to get a matplotlib graph embedded within a pane in 
-&gt; leo as a widget. I now need some help with how to interact with the 
-&gt; widget using scripts in leo. I am unsure about the following:
-&gt;  
-&gt; *1/ How do I expose the widget within th leo python environment?* 
-
-If you were only going to have one and you weren't going to destroy it,
-you could just do something simple like c._matplot = self in its
-constrictor (assuming c was passed to the constructor).
-
-If you're going to have more than one and they may be destroyed, it
-might be simplest to let the free_layout / nested_splitter system manage
-them.
-
-ts = c.free_layout.get_top_splitter()
-matplotters = ts.findChildren(myMatplotWidget)
-
-should return a list of the widgets of your class in the layout, but
-only if they're in the main window, widgets in extra windows opened
-from the "Open window" context menu item would be missed, I can add a
-find_children() method to complement the find_child() method the
-splitters already have to account for this.
-
-Detail: the above is just using Qt's QObject.findChildren(), the
-nested_splitter find_child() and (not yet written) find_children()
-versions search the extra windows as well.
-
-&gt; Here I have created a self.mat in your MatplotPaneProvider class to make 
-&gt; the windget accessible but it doesn't feel like the correct way to do this. 
-
-It should probably provide a fresh myMatplotWidget every time it's
-called, so don't construct one in the Provider's init, but in the
-ns_provide method.
-
-&gt; from PyQt4 import QtGui
-&gt; class MatplotPaneProvider:
-&gt; def __init__(self, c):
-&gt;      self.c = c
-&gt;     * self.mat = myMatplotWidget()*
-&gt;      if hasattr(c, 'free_layout'):
-[snip]  
-&gt; I would also like to make the widget accessible from any script within 
-&gt; leo. What's the leo way of doing this?*
-
-See above.
-
-&gt; If I create more than 1 pane containing these widgest. How do I switch 
-&gt; between them in scripts?*
-
-Above again :-)
- 
-&gt; Running this script more than once creates multiple items for Add 
-&gt; Matplot when pressing the Action button. How do I stop this from happening? 
-&gt; I have alrewady tried returning a unique integer in * ns_provider_id *but 
-&gt; that did not work.*
-
-The value returned by ns_provider_id should be unique for the provider
-class, but constant.  So it can just return "matplotlib provider ver 1"
-or something.</t>
-<t tx="ekr.20130526065545.17438">@nocolor
-
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-On Mon, Sep 17, 2012 at 11:46 AM, Terry Brown &lt;terry_n_brown@yahoo.com&gt;wrote:
-
-&gt; On Sun, 16 Sep 2012 22:23:18 -0700 (PDT)
-&gt; felix74 &lt;hjuucy@googlemail.com&gt; wrote:
-&gt;
-&gt; &gt; I'm trying to create a interactive chart in a embedded in a new leo pane
-&gt; &gt; using matplotlib. However, I am not sure about the the best way  to
-&gt; &gt; implement this. I would appreciate some guidance on this please? The
-&gt; &gt; questions I would like answered are:
-&gt; &gt; 1/ How do I create a new blank pane for embedding a chart as well as
-&gt; other
-&gt; &gt; QtWidgets.
-&gt; &gt; 2/ Can I do this in a script or do I need to work with leo source
-&gt;
-&gt; You can run this script from any body pane:
-&gt;
-
-[Snip]
-
-I'm going to file this under Leo/To Document for now.
-
-Would this be a good blog item?  These blog items might eventually find
-their way into an ever-expanding "Topics" chapter.  What do you think?
-</t>
-<t tx="ekr.20130526065545.17439">@nocolor
-
-From: felix74 &lt;hjuucy@googlemail.com&gt;
-
-I'm trying to create a interactive chart in a embedded in a new leo pane 
-using matplotlib. However, I am not sure about the the best way  to 
-implement this. I would appreciate some guidance on this please? The 
-questions I would like answered are:
-1/ How do I create a new blank pane for embedding a chart as well as other 
-QtWidgets.
-2/ Can I do this in a script or do I need to work with leo source 
-
-The context for wanting to do this is that I want to create a data 
-processing and visualization tool kit in leo. Like Excel but using nodes 
-instead of columns. As such I have data in nodes and can create new data 
-nodes by applying python functions to data in existing nodes. The thing 
-missing is the visualization within a leo pane (I can easily launch a chart 
-in it's own window) .
-
-</t>
-<t tx="ekr.20130526065545.17440">@nocolor
-
-From: felix74 &lt;hjuucy@googlemail.com&gt;
-
-
-Terry,
- 
-Thanks for your help with this it was very helpful and a lot simpler than I 
-feared. I have managed to get a matplotlib graph embedded within a pane in 
-leo as a widget. I now need some help with how to interact with the 
-widget using scripts in leo. I am unsure about the following:
- 
-*1/ How do I expose the widget within th leo python environment?* 
-Here I have created a self.mat in your MatplotPaneProvider class to make 
-the windget accessible but it doesn't feel like the correct way to do this. 
- 
-from PyQt4 import QtGui
-class MatplotPaneProvider:
-def __init__(self, c):
-     self.c = c
-    * self.mat = myMatplotWidget()*
-     if hasattr(c, 'free_layout'):
-         splitter = c.free_layout.get_top_splitter()
-     if splitter:
-         splitter.register_provider(self)
-    def ns_provides(self):
-         return[('Add matplot', '_add_matplot_pane')]
-    def ns_provide(self, id_):
-         if id_ == '_add_matplot_pane':
-         c = self.c
-         return self.mat
- 
-    def ns_provider_id(self):
-
-# used by register_provider() to unregister previously registered
-# providers of the same service
-# provider ID is not the same as the service id_ above
-return "completely unique value here"
-
- 
-*mat = MatplotPaneProvider(c)*
-*mat.mat.someMethod()*
-*mat.mat.someOtherMethod()*
- 
-*2/I would also like to make the widget accessible from any script within 
-leo. What's the leo way of doing this?*
- 
-*3/ If I create more than 1 pane containing these widgest. How do I switch 
-between them in scripts?*
-** 
-*4/ Running this script more than once creates multiple items for Add 
-Matplot when pressing the Action button. How do I stop this from happening? 
-I have alrewady tried returning a unique integer in * ns_provider_id *but 
-that did not work.*
- 
-cheers
-Hetal
---
-
-On Monday, September 17, 2012 5:48:32 PM UTC+1, Terry wrote:
-
-&gt; On Sun, 16 Sep 2012 22:23:18 -0700 (PDT) 
-&gt; felix74 &lt;hju...@googlemail.com &lt;javascript:&gt;&gt; wrote: 
-&gt;
-&gt; &gt; I'm trying to create a interactive chart in a embedded in a new leo pane 
-&gt; &gt; using matplotlib. However, I am not sure about the the best way  to 
-&gt; &gt; implement this. I would appreciate some guidance on this please? The 
-&gt; &gt; questions I would like answered are: 
-&gt; &gt; 1/ How do I create a new blank pane for embedding a chart as well as 
-&gt; other 
-&gt; &gt; QtWidgets. 
-&gt; &gt; 2/ Can I do this in a script or do I need to work with leo source 
-&gt;
-&gt; You can run this script from any body pane: 
-&gt; ---cut here--- 
-&gt; from PyQt4 import QtGui 
-&gt; class MatplotPaneProvider: 
-&gt;     def __init__(self, c): 
-&gt;         self.c = c 
-&gt;         if hasattr(c, 'free_layout'): 
-&gt;             splitter = c.free_layout.get_top_splitter() 
-&gt;             if splitter: 
-&gt;                 splitter.register_provider(self) 
-&gt;     def ns_provides(self): 
-&gt;         return[('Add matplot', '_add_matplot_pane')] 
-&gt;     def ns_provide(self, id_): 
-&gt;         if id_ == '_add_matplot_pane': 
-&gt;             c = self.c 
-&gt;             w = QtGui.QSlider() 
-&gt;             return w 
-&gt;     def ns_provider_id(self): 
-&gt;         # used by register_provider() to unregister previously registered 
-&gt;         # providers of the same service 
-&gt;         # provider ID is not the same as the service id_ above 
-&gt;         return "completely unique value here" 
-&gt;
-&gt; MatplotPaneProvider(c) 
-&gt; ---cut here--- 
-&gt;
-&gt; Paste just as above and run the script.  Nothing happens.  Right click 
-&gt; on one of the pane dividers and select Insert.  A new pane with a 
-&gt; button 'Action' appears.  Click it, and select "Add matplot" from the 
-&gt; context menu. 
-&gt;
-&gt; Instead of "w = QtGui.QSlider()", you want "w = myMatplotWidget()" 
-&gt;
-&gt; Cheers -Terry 
-&gt;
-&gt;
-&gt; &gt; The context for wanting to do this is that I want to create a data 
-&gt; &gt; processing and visualization tool kit in leo. Like Excel but using nodes 
-&gt; &gt; instead of columns. As such I have data in nodes and can create new data 
-&gt; &gt; nodes by applying python functions to data in existing nodes. The thing 
-&gt; &gt; missing is the visualization within a leo pane (I can easily launch a 
-&gt; chart 
-&gt; &gt; in it's own window) . 
-&gt; &gt; 
-&gt;
-
-</t>
-<t tx="ekr.20130526065545.17441">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-On Sun, 16 Sep 2012 22:23:18 -0700 (PDT)
-felix74 &lt;hjuucy@googlemail.com&gt; wrote:
-
-&gt; I'm trying to create a interactive chart in a embedded in a new leo pane 
-&gt; using matplotlib. However, I am not sure about the the best way  to 
-&gt; implement this. I would appreciate some guidance on this please? The 
-&gt; questions I would like answered are:
-&gt; 1/ How do I create a new blank pane for embedding a chart as well as other 
-&gt; QtWidgets.
-&gt; 2/ Can I do this in a script or do I need to work with leo source 
-
-You can run this script from any body pane:
----cut here---
-from PyQt4 import QtGui
-class MatplotPaneProvider:
-    def __init__(self, c):
-        self.c = c
-        if hasattr(c, 'free_layout'):
-            splitter = c.free_layout.get_top_splitter()
-            if splitter:
-                splitter.register_provider(self)
-    def ns_provides(self):
-        return[('Add matplot', '_add_matplot_pane')]
-    def ns_provide(self, id_):
-        if id_ == '_add_matplot_pane':
-            c = self.c
-            w = QtGui.QSlider()
-            return w
-    def ns_provider_id(self):
-        # used by register_provider() to unregister previously registered
-        # providers of the same service
-        # provider ID is not the same as the service id_ above
-        return "completely unique value here"
-
-MatplotPaneProvider(c)
----cut here---
-
-Paste just as above and run the script.  Nothing happens.  Right click
-on one of the pane dividers and select Insert.  A new pane with a
-button 'Action' appears.  Click it, and select "Add matplot" from the
-context menu.
-
-Instead of "w = QtGui.QSlider()", you want "w = myMatplotWidget()"
-
-Cheers -Terry
-
-
-&gt; The context for wanting to do this is that I want to create a data 
-&gt; processing and visualization tool kit in leo. Like Excel but using nodes 
-&gt; instead of columns. As such I have data in nodes and can create new data 
-&gt; nodes by applying python functions to data in existing nodes. The thing 
-&gt; missing is the visualization within a leo pane (I can easily launch a chart 
-&gt; in it's own window) .
-&gt; 
 
 </t>
 <t tx="ekr.20130526065545.17442">@nocolor
@@ -4717,276 +2109,6 @@ Very cool.  Many thanks for all this work.
 Edward
 
 </t>
-<t tx="ekr.20130526065545.17466">@nocolor
-
-From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
-
-First batch of access rights has been granted
-
-
-On Fri, Apr 19, 2013 at 10:22 PM, Ville M. Vainio &lt;vivainio@gmail.com&gt;wrote:
-
-&gt; http://leo-editor.github.io/
-&gt;
-
-</t>
-<t tx="ekr.20130526065545.17467">@nocolor
-
-From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
-
-
-
-Note that github rule won't work, since we need to commit to master branch,
-not gh-pages branch. We need new make rule for this (cp, git add, commit,
-push)
-
-</t>
-<t tx="ekr.20130526065545.17468">@nocolor
-
-From: HaveF &lt;iamaplayer@gmail.com&gt;
-
-As a primary user, maybe I can post some questions and anwsers which I asked ;-)
-</t>
-<t tx="ekr.20130526065545.17469">@nocolor
-
-From: HaveF &lt;iamaplayer@gmail.com&gt;
-
-On Sun, Apr 21, 2013 at 4:37 AM, Ville M. Vainio &lt;vivainio@gmail.com&gt; wrote:
-
-&gt; Update: I added Disqus comments, with the unfortunate side effect that we
-&gt; now see some ads in the blog. If we find the ads annoying, we can remove
-&gt; the comments feature.
-&gt;
-
-maybe the ads can be configured?
-see this page:
-http://software-carpentry.org/4_0/invperc/
-it also use Disqus, but I can't find any ad...
-</t>
-<t tx="ekr.20130526065545.17470">@nocolor
-
-From: Matt Wilkie &lt;maphew@gmail.com&gt;
-
-
-
-&gt; leo-editor is a github team I just created, so I can add people interested
-&gt; in blogging there to the team (once I get the github account names)
-&gt;
-
-https://github.com/maphew  &lt;maphew@gmail.com&gt;
-
-</t>
-<t tx="ekr.20130526065545.17471">@nocolor
-
-From: gatesphere &lt;gatesphere@gmail.com&gt;
-
-The ads can be disabled.  My blog uses Disqus, and I had to disable them 
-manually.  Go to Settings -&gt; Discovery, and choose either "Increased 
-Traffic" so that the ads are specifically targeting our blog (i.e., they 
-will be links to "similar" articles), or to "Just Comments" to turn them 
-off completely.
-
---&gt;Jake
-</t>
-<t tx="ekr.20130526065545.17475">@nocolor
-
-From: Matt Wilkie &lt;maphew@gmail.com&gt;
-
-It occurs to be me that an alternative to managing a list of committers
-would be to aggregate posts along the lines of
-http://www.planetdjango.org/(I've no idea how that's put together or
-if it is indeed less work; just
-thought I'd throw it out there).</t>
-<t tx="ekr.20130526065545.17476">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-On Fri, 19 Apr 2013 22:22:38 +0300
-"Ville M. Vainio" &lt;vivainio@gmail.com&gt; wrote:
-
-&gt; http://leo-editor.github.io/
-
-So I made a post.  I could not work out how to get the STATIC_PATH
-mechanism working, despite RTFM and reading the source.  So I just
-modified the Makefile to copy static/* into output.
-
-Also in the source repo
-
-make github
-make: ghp-import: Command not found
-
-so I just copied the output into the blog repo as Ville described - we
-need a better way of doing that.
-
-Finally it needs to handle images better, preferable a scaled version
-that expands to full size when clicked - but I'm sure that's possible.
-
-Wondering what the relationship between posts about plugins and the
-plugin's docstring should be - I guess that can evolve over time.
-
-Cheers -Terry
-
-</t>
-<t tx="ekr.20130526065545.17477">@nocolor
-
-From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
-
-I checked on the STATIC_PATH thing, it works ok.
-
-The trick is that if you have e.g.
-
-STATIC_PATHS =3D ['images','mystatic']
-
-you need to put the static files under 'content', i.e. in content/images
-and content/mystatic
-</t>
-<t tx="ekr.20130526065545.17478">@nocolor
-
-From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
-
-I propose working freely at least for the time being.
-</t>
-<t tx="ekr.20130526065545.17479">@nocolor
-
-From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
-
-I have now added "fabfile.py" with recipe for easy publishing. You need
-Fabric installed (usual pip stuff) to use it.
-
-Your workflow will probably be:
-
-"make html"
-
-(or more likely, you'll have devserver running at all times for live
-preview)
-
-When you are happy, do "fab publish" and this should publish the updated
-version to git.
-
-The script will instruct you if you are doing something wrong, but I
-recommend you to review it before trusting it too much.
-
-
-
-
-
-On Fri, Apr 19, 2013 at 10:22 PM, Ville M. Vainio &lt;vivainio@gmail.com&gt;wrote:
-
-&gt; http://leo-editor.github.io/
-&gt;
-
-</t>
-<t tx="ekr.20130526065545.17480">@nocolor
-
-From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
-
-http://leo-editor.github.io/
-
-</t>
-<t tx="ekr.20130526065545.17481">@nocolor
-
-From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
-
-Thanks, I was able to disable the ads from Disqus dashboard.
-</t>
-<t tx="ekr.20130526065545.17482">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-On Sat, 20 Apr 2013 22:02:33 +0300
-"Ville M. Vainio" &lt;vivainio@gmail.com&gt; wrote:
-
-&gt; STATIC_PATHS = ['images','mystatic']
-&gt; 
-&gt; you need to put the static files under 'content', i.e. in content/images
-&gt; and content/mystatic
-
-Ah, didn't think to try there, obvious though it is :-)
-
-Cheers -Terry
-
-</t>
-<t tx="ekr.20130526065545.17483">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-On Fri, 19 Apr 2013 23:21:50 +0300
-"Ville M. Vainio" &lt;vivainio@gmail.com&gt; wrote:
-
-&gt; (once I get the github account names)
-
-tbnorth / terry_n_brown@yahoo.com
-
-Cheers -Terry
-
-</t>
-<t tx="ekr.20130526065545.17484">@nocolor
-
-From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
-
-
-
-I pushed some updated content to the blog, and created a repository to host
-the "sources" from which the blog is generated here:
-
-https://github.com/leo-editor/leo-blog
-
-Browsing the source should be instructive.
-
-After installing the dependencies and checking out that repo, you should be
-able to "make html" or (better) "make devserver" and browse the result in
-"output" directory. What I did was cp -r the contents of "output/"
-directory to the publishing repository (
-https://github.com/leo-editor/leo-editor.github.io), but we can probably
-make it quite easy in the future.
-
-leo-editor is a github team I just created, so I can add people interested
-in blogging there to the team (once I get the github account names)
-
-
-
-
-On Fri, Apr 19, 2013 at 10:22 PM, Ville M. Vainio &lt;vivainio@gmail.com&gt;wrote:
-
-&gt; http://leo-editor.github.io/
-&gt;
-
-</t>
-<t tx="ekr.20130526065545.17485">@nocolor
-
-From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
-
-
-
-Update: I added Disqus comments, with the unfortunate side effect that we
-now see some ads in the blog. If we find the ads annoying, we can remove
-the comments feature.
-
-E.g. check towards the end here;
-
-http://leo-editor.github.io/valuespace-intro.html
-
-
-On Fri, Apr 19, 2013 at 10:22 PM, Ville M. Vainio &lt;vivainio@gmail.com&gt;wrote:
-
-&gt; http://leo-editor.github.io/
-&gt;
-
-</t>
-<t tx="ekr.20130526065545.17486">@nocolor
-
-From: HaveF &lt;iamaplayer@gmail.com&gt;
-
-That's great!
-I merged the Matt Wilkie's  first patch about the link in
-README.md&lt;https://github.com/leo-editor/leo-blog/commit/546940be4337e90c1d18d297e516048e12c8dc27&gt;.
-(push merge button feels great ;-)
-
-We do these things freely about the blog?
-Or have someone as a master to review pull request?
-
-any idea?
-</t>
 <t tx="ekr.20130526065545.17487">@nocolor
 
 From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
@@ -5107,42 +2229,6 @@ Cheers -Terry
 &gt; Unless anyone has something like this already, I plan to create it "later"
 &gt; with QProcess.
 &gt; 
-
-</t>
-<t tx="ekr.20130526065545.17491">@nocolor
-
-From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
-
-Often, I find myself wanting to execute system commands in serial fashion
-(first in, first out), capture their output, and allow browsing it, BUT not
-blocking Leo or ipython terminal.
-
-I'd like to show stderr and stdout in g.es, or separate log page, and
-provide callback after task has been completed.
-
-Unless anyone has something like this already, I plan to create it "later"
-with QProcess.
-
-===== Terry
-
-There's the leoscreen stuff for integration with the GNU `screen` terminal
-switcher / manager. Push lines from the body to the terminal, pull lines
-back the other way. But more for interactive interaction with terminal
-programs than batch oriented work. Leo doesn't block.
-
-===== Ville
-
-A challenge I can imagine with the "screen" workflow is detecting when a
-command has been executed (and capturing stderr/stdout). Do you have a
-solution for that in mind?
-
-===== Terry
-
-I tried more direct communication (subprocess.Popen.communicate()) before
-the screen approach, it's hard and probably app. specific. leoscreen avoids
-that by basically being interactive, so it might not be a fit for your
-case. Basically it's leveraging the intelligence of the user to keep track
-of execution.
 
 </t>
 <t tx="ekr.20130526065545.17494">@nocolor
@@ -5477,327 +2563,6 @@ Google+.
 Leo Editor
 https://plus.google.com/_/notifications/emlink?emr=02870587547267324596&amp;emid=CIDgu4qX0bYCFapzTAod51wAAA&amp;path=%2Fcommunities%2F104562683923003520885&amp;dt=1366183753416&amp;ub=63
 </t>
-<t tx="ekr.20130526065545.17507">@nocolor
-
-From: wgw &lt;wgwinder@gmail.com&gt;
-
-Xiki.org gives a demo of a "wiki" shell for command execution. Leo should 
-be able to do the same thing (and more!), in the sense that leoscreen, for 
-example, has two way communication with the command line. I suppose a 
-"Lxiki" is really just a question of setting up the right shortcuts (like a 
-shift-ctrl-b that would run highlighted python code from the command 
-line... with a tmp file?).
-
-Just an idea for the Leo melting pot. 
-
-</t>
-<t tx="ekr.20130526065545.17508">@nocolor
-
-From: wgw &lt;wgwinder@gmail.com&gt;
-
-
-
-Thanks for the tip -- it will take me a while to get my head around vspace
-(will keep an eye on Ville's blog post).
-
-I'm just beginning to appreciate (or imagine) what Ipython, sublime text
-editor, leo, xiki, etc could mean for some kind of intelligent document
-workbench. Of course the big hurdle is not so much the string processing
-(sublime is a good example of how that can be done), but rather the syntax
-processing -- i.e. the docbench  (to coin a phrase) should understand the
-syntax of whatever is being input and then offer syntax-aware functions....
-Sorry, getting a little obscure: all I mean by syntax-aware is the ability
-to propose text completions (Leo's autocompletion is a good example --
-everything should work like autocomplete!) and allow for intelligent text
-changes depending on a database of information (for example, a search and
-replace that would  know how to search on "caterpillar" and turn it into
-"butterfly" but would not touch "caterpillar truck").
-
-Seems like Leo is not far from doing that synthesis, but it would require
-more database integration. So for example, even the python help system does
-not have autocomplete. (No criticism there! The great thing about Leo is
-that if you want something, you just have to dive in and build it. My day
-job might just let me do that!)
-
-Thanks!
-
-Bill
-Le dimanche 28 avril 2013 08:37:20 UTC-7, Terry a =E9crit :
-&gt;
-&gt; On Sat, 27 Apr 2013 17:44:13 -0700 (PDT)
-&gt; wgw &lt;wgwi...@gmail.com &lt;javascript:&gt;&gt; wrote:
-&gt;
-&gt; &gt; Xiki.org gives a demo of a "wiki" shell for command execution. Leo
-&gt; should
-&gt; &gt; be able to do the same thing (and more!), in the sense that leoscreen,
-&gt; for
-&gt; &gt; example, has two way communication with the command line. I suppose a
-&gt; &gt; "Lxiki" is really just a question of setting up the right shortcuts
-&gt; (like a
-&gt; &gt; shift-ctrl-b that would run highlighted python code from the command
-&gt; &gt; line... with a tmp file?).
-&gt; &gt;
-&gt; &gt; Just an idea for the Leo melting pot.
-&gt;
-&gt; In addition to the outline as a active data document functions of
-&gt; Ville's value-space plugin, I recently added some simple ;-) commands:
-&gt;
-&gt; Alt+A vs-eval
-&gt; Alt+S vs-last
-&gt; Alt+D vs-last-pretty
-&gt; (my key bindings)
-&gt;
-&gt; vs-eval evaluates the selected python in the c.vs namespace.  It makes
-&gt; an effort to workout what the output should be, and puts it in the
-&gt; log.  It captures print output to the log too.  It selects the next
-&gt; line, ready for execution.
-&gt;
-&gt; vs-last inserts the last result into the body, and vs-last-pretty
-&gt; does the same, but using pprint formatting.
-&gt;
-&gt; Ctrl-B also runs the script in the body, but not in a persistent
-&gt; namespace, running only the selected text doesn't seem to be working,
-&gt; and it doesn't work so hard to work out the output.
-&gt;
-&gt; I guess leoscreen would do the same things as the vs-* commands if you
-&gt; used it against a python shell.  The inspiration for the vs-* commands
-&gt; was wanting Leo to tell you what 3.57 * 365 / 12 was without a lot of
-&gt; effort, but of course you can define functions etc. etc.
-&gt;
-&gt; Cheers -Terry
-&gt;
-
-</t>
-<t tx="ekr.20130526065545.17509">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-On Sun, 28 Apr 2013 15:24:40 -0700 (PDT)
-wgw &lt;wgwinder@gmail.com&gt; wrote:
-
-&gt; Thanks for the tip -- it will take me a while to get my head around vspace
-&gt; (will keep an eye on Ville's blog post).
-
-Just to clarify, vs-eval, vs-last, vs-last-pretty are quite straight
-forward, as I described them below, and do not require comprehension of
-the esoterica of value-space :-) I just put them in that plugin (a) to
-avoid creating yet another plugin, and (b) because it seemed sensible
-to have them use the value-space namespace c.vs, but all that means for
-vs-eval, vs-last, vs-last-pretty is that
-
-  a =3D 7
-
-executed by vs-eval assigns a value to a which can be used by
-subsequent vs-eval calls (persistent for the lifetime of the session).
-
-For example, make a body with this text
-
-a =3D 7
-b =3D 3
-a + b
-
-and place the cursor in front of the first 'a'
-
-execute (Alt-x or key binding) vs-eval 4 times
-
- - first time executes the empty selection and selects the next line
- - second time assigns 7 to a and report 7 in the log
- - third time assigns 3 to b and report 3 in the log
- - forth time calculates a + b and report 10 in the log
-
-executing vs-last(-pretty) would insert the last result (None, 7, 3,
-10) in the body.
-
-Cheers -Terry
-
-
-
-&gt; I'm just beginning to appreciate (or imagine) what Ipython, sublime text
-&gt; editor, leo, xiki, etc could mean for some kind of intelligent document
-&gt; workbench. Of course the big hurdle is not so much the string processing
-&gt; (sublime is a good example of how that can be done), but rather the syntax
-&gt; processing -- i.e. the docbench  (to coin a phrase) should understand the
-&gt; syntax of whatever is being input and then offer syntax-aware functions....
-&gt; Sorry, getting a little obscure: all I mean by syntax-aware is the ability
-&gt; to propose text completions (Leo's autocompletion is a good example --
-&gt; everything should work like autocomplete!) and allow for intelligent text
-&gt; changes depending on a database of information (for example, a search and
-&gt; replace that would  know how to search on "caterpillar" and turn it into
-&gt; "butterfly" but would not touch "caterpillar truck").
-&gt;
-&gt; Seems like Leo is not far from doing that synthesis, but it would require
-&gt; more database integration. So for example, even the python help system does
-&gt; not have autocomplete. (No criticism there! The great thing about Leo is
-&gt; that if you want something, you just have to dive in and build it. My day
-&gt; job might just let me do that!)
-&gt;
-&gt; Thanks!
-&gt;
-&gt; Bill
-&gt; Le dimanche 28 avril 2013 08:37:20 UTC-7, Terry a =E9crit :
-&gt; &gt;
-&gt; &gt; On Sat, 27 Apr 2013 17:44:13 -0700 (PDT)
-&gt; &gt; wgw &lt;wgwi...@gmail.com &lt;javascript:&gt;&gt; wrote:
-&gt; &gt;
-&gt; &gt; &gt; Xiki.org gives a demo of a "wiki" shell for command execution. Leo
-&gt; &gt; should
-&gt; &gt; &gt; be able to do the same thing (and more!), in the sense that leoscreen,
-&gt; &gt; for
-&gt; &gt; &gt; example, has two way communication with the command line. I suppose a
-&gt; &gt; &gt; "Lxiki" is really just a question of setting up the right shortcuts
-&gt; &gt; (like a
-&gt; &gt; &gt; shift-ctrl-b that would run highlighted python code from the command
-&gt; &gt; &gt; line... with a tmp file?).
-&gt; &gt; &gt;
-&gt; &gt; &gt; Just an idea for the Leo melting pot.
-&gt; &gt;
-&gt; &gt; In addition to the outline as a active data document functions of
-&gt; &gt; Ville's value-space plugin, I recently added some simple ;-) commands:
-&gt; &gt;
-&gt; &gt; Alt+A vs-eval
-&gt; &gt; Alt+S vs-last
-&gt; &gt; Alt+D vs-last-pretty
-&gt; &gt; (my key bindings)
-&gt; &gt;
-&gt; &gt; vs-eval evaluates the selected python in the c.vs namespace.  It makes
-&gt; &gt; an effort to workout what the output should be, and puts it in the
-&gt; &gt; log.  It captures print output to the log too.  It selects the next
-&gt; &gt; line, ready for execution.
-&gt; &gt;
-&gt; &gt; vs-last inserts the last result into the body, and vs-last-pretty
-&gt; &gt; does the same, but using pprint formatting.
-&gt; &gt;
-&gt; &gt; Ctrl-B also runs the script in the body, but not in a persistent
-&gt; &gt; namespace, running only the selected text doesn't seem to be working,
-&gt; &gt; and it doesn't work so hard to work out the output.
-&gt; &gt;
-&gt; &gt; I guess leoscreen would do the same things as the vs-* commands if you
-&gt; &gt; used it against a python shell.  The inspiration for the vs-* commands
-&gt; &gt; was wanting Leo to tell you what 3.57 * 365 / 12 was without a lot of
-&gt; &gt; effort, but of course you can define functions etc. etc.
-&gt; &gt;
-&gt; &gt; Cheers -Terry
-&gt; &gt;
-&gt;
-
-</t>
-<t tx="ekr.20130526065545.17510">@nocolor
-
-From: wgw &lt;wgwinder@gmail.com&gt;
-
-Got it! The value of valuespace (!) is that that you can make a pythonesque
-session persist. I did not realize that there was no direct two-way bridge
-to the python window that leo launches. Even if there were, we would want
-to make the session persist by logging it into the outline, as
-valuespace (vs-create-tree) does.
-
-Thanks for getting me up and running.
-
-Best, Bill
-
-Le dimanche 28 avril 2013 16:03:52 UTC-7, Terry a =E9crit :
-&gt;
-&gt; On Sun, 28 Apr 2013 15:24:40 -0700 (PDT)
-&gt; wgw &lt;wgwi...@gmail.com &lt;javascript:&gt;&gt; wrote:
-&gt;
-&gt; &gt; Thanks for the tip -- it will take me a while to get my head around
-&gt; vspace
-&gt; &gt; (will keep an eye on Ville's blog post).
-&gt;
-&gt; Just to clarify, vs-eval, vs-last, vs-last-pretty are quite straight
-&gt; forward, as I described them below, and do not require comprehension of
-&gt; the esoterica of value-space :-) I just put them in that plugin (a) to
-&gt; avoid creating yet another plugin, and (b) because it seemed sensible
-&gt; to have them use the value-space namespace c.vs, but all that means for
-&gt; vs-eval, vs-last, vs-last-pretty is that
-&gt;
-&gt;   a =3D 7
-&gt;
-&gt; executed by vs-eval assigns a value to a which can be used by
-&gt; subsequent vs-eval calls (persistent for the lifetime of the session).
-&gt;
-&gt; For example, make a body with this text
-&gt;
-&gt; a =3D 7
-&gt; b =3D 3
-&gt; a + b
-&gt;
-&gt; and place the cursor in front of the first 'a'
-&gt;
-&gt; execute (Alt-x or key binding) vs-eval 4 times
-&gt;
-&gt;  - first time executes the empty selection and selects the next line
-&gt;  - second time assigns 7 to a and report 7 in the log
-&gt;  - third time assigns 3 to b and report 3 in the log
-&gt;  - forth time calculates a + b and report 10 in the log
-&gt;
-&gt; executing vs-last(-pretty) would insert the last result (None, 7, 3,
-&gt; 10) in the body.
-&gt;
-&gt; Cheers -Terry
-&gt;
-&gt;
-&gt;
-
-</t>
-<t tx="ekr.20130526065545.17512">@nocolor
-
-From: Jacob Peck &lt;gatesphere@gmail.com&gt;
-
-On 4/29/2013 4:42 AM, Ville M. Vainio wrote:
-&gt; Hey, it's not that esoteric ;-).
-&gt;
-&gt; (Really looking forward to writing that blog post, just have had a 
-&gt; horrible lack of spare time recently)
-&gt;
-I'm really looking forward to it, as well!  But I hear you - time has 
-been disappearing lately.
-
-</t>
-<t tx="ekr.20130526065545.17513">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-On Sat, 27 Apr 2013 17:44:13 -0700 (PDT)
-wgw &lt;wgwinder@gmail.com&gt; wrote:
-
-&gt; Xiki.org gives a demo of a "wiki" shell for command execution. Leo should 
-&gt; be able to do the same thing (and more!), in the sense that leoscreen, for 
-&gt; example, has two way communication with the command line. I suppose a 
-&gt; "Lxiki" is really just a question of setting up the right shortcuts (like a 
-&gt; shift-ctrl-b that would run highlighted python code from the command 
-&gt; line... with a tmp file?).
-&gt; 
-&gt; Just an idea for the Leo melting pot. 
-
-In addition to the outline as a active data document functions of
-Ville's value-space plugin, I recently added some simple ;-) commands:
-
-Alt+A vs-eval
-Alt+S vs-last
-Alt+D vs-last-pretty
-(my key bindings)
-
-vs-eval evaluates the selected python in the c.vs namespace.  It makes
-an effort to workout what the output should be, and puts it in the
-log.  It captures print output to the log too.  It selects the next
-line, ready for execution.
-
-vs-last inserts the last result into the body, and vs-last-pretty
-does the same, but using pprint formatting.
-
-Ctrl-B also runs the script in the body, but not in a persistent
-namespace, running only the selected text doesn't seem to be working,
-and it doesn't work so hard to work out the output.
-
-I guess leoscreen would do the same things as the vs-* commands if you
-used it against a python shell.  The inspiration for the vs-* commands
-was wanting Leo to tell you what 3.57 * 365 / 12 was without a lot of
-effort, but of course you can define functions etc. etc.
-
-Cheers -Terry
-
-</t>
 <t tx="ekr.20130526065545.17514">@nocolor
 
 From: "Ville Vainio (Google+)" &lt;noreply-7dc29aba@plus.google.com&gt;
@@ -5817,789 +2582,6 @@ From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
 
 Link to G+: https://plus.google.com/103097156557482112329/posts/6D9GPRCdXVh
 
-</t>
-<t tx="ekr.20130526065545.17516">@nocolor
-
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-I have a note that it was an @rclick node handled by the context_menu.py 
-plugin, but I am not able to see code or documentation anywhere.  This 
-seems *well* hidden :-)
-</t>
-<t tx="ekr.20130526065545.17518">From: Kent Tenney &lt;ktenney@gmail.com&gt;
-
-I don't have any visual indication of the existence of @rclick nodes,
-it would be nice.
-
-Something I've found useful is adding a @click node like:
-@rclick -------------
-
-that separates my entries from the ever present
-'Remove Button' and 'Goto Script' entries
-
-</t>
-<t tx="ekr.20130526065545.17519">@nocolor
-
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-
-On Thu, Apr 11, 2013 at 8:38 PM, Terry Brown &lt;terry_n_brown@yahoo.com&gt;wrote:
-
-&gt; On Thu, 11 Apr 2013 20:15:33 -0500
-&gt; "Edward K. Ream" &lt;edreamleo@gmail.com&gt; wrote:
-&gt;
-&gt; &gt; On Thu, Apr 11, 2013 at 8:10 PM, Edward K. Ream &lt;edreamleo@gmail.com&gt;
-&gt; wrote:
-&gt; &gt;
-&gt; &gt; I prefer a bigger triangle:  =E2=96=BC U=3D25BC: Black Down-Pointing Triangle.
-&gt; &gt;
-&gt; &gt; One more thing.  It's reasonable to have the top-level button just be a
-&gt; &gt; placeholder for subsidiary @rclick nodes.  To do that without getting a
-&gt; &gt; warning when clicking the top-level button, set its script to "empty
-&gt; &gt; string".
-&gt;
-&gt; I think you mean set its script to a docstring describing the
-&gt; functions it groups together for the tooltip hover text :-)
-&gt;
-
-Right.
-
-EKR
-</t>
-<t tx="ekr.20130526065545.17520">@nocolor
-
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-
-On Thu, Apr 11, 2013 at 8:10 PM, Edward K. Ream &lt;edreamleo@gmail.com&gt; wrote:
-
-I prefer a bigger triangle:  =E2=96=BC U=3D25BC: Black Down-Pointing Triangle.
-
-One more thing.  It's reasonable to have the top-level button just be a
-placeholder for subsidiary @rclick nodes.  To do that without getting a
-warning when clicking the top-level button, set its script to "empty
-string".
-
-EKR
-</t>
-<t tx="ekr.20130526065545.17521">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-On Thu, 11 Apr 2013 00:56:51 -0700 (PDT)
-"Edward K. Ream" &lt;edreamleo@gmail.com&gt; wrote:
-
-&gt; I have a note that it was an @rclick node handled by the context_menu.py 
-&gt; plugin, but I am not able to see code or documentation anywhere.  This 
-&gt; seems *well* hidden :-)
-
-:) It's in the core, not context_menu.py.  It was a long time ago, but
-I remember finding the @button code tricky, so I'm not sure if it's an
-ideal implementation.  OTOH it hasn't broken for 1-2 years.
-
-Cheers -Terry
-
-</t>
-<t tx="ekr.20130526065545.17522">@nocolor
-
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-
-
-On Thu, Apr 11, 2013 at 2:56 AM, Edward K. Ream &lt;edreamleo@gmail.com&gt; wrote:
-
-One more thing.  I can now put an @rclick node under an @button node, and
-right-clicking the created top-level button work pretty much as expected.
-
-But I remember that on your machine there was some indicator (a triangle?)
-in the top-level button indicating that it had structure.  Is that the
-case?  If so, how did you create such buttons?
-
-Edward
-</t>
-<t tx="ekr.20130526065545.17523">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-On Thu, 11 Apr 2013 13:50:25 -0500
-"Edward K. Ream" &lt;edreamleo@gmail.com&gt; wrote:
-
-&gt; On Thu, Apr 11, 2013 at 2:56 AM, Edward K. Ream &lt;edreamleo@gmail.com&gt; wrote:
-&gt;
-&gt; One more thing.  I can now put an @rclick node under an @button node, and
-&gt; right-clicking the created top-level button work pretty much as expected.
-&gt;
-&gt; But I remember that on your machine there was some indicator (a triangle?)
-&gt; in the top-level button indicating that it had structure.  Is that the
-&gt; case?  If so, how did you create such buttons?
-
-@settings
-   @string mod_scripting_subtext =3D =E2=96=BE
-
-Cheers -Terry
-
-</t>
-<t tx="ekr.20130526065545.17524">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-On Thu, 11 Apr 2013 20:15:33 -0500
-"Edward K. Ream" &lt;edreamleo@gmail.com&gt; wrote:
-
-&gt; On Thu, Apr 11, 2013 at 8:10 PM, Edward K. Ream &lt;edreamleo@gmail.com&gt; wrote:
-&gt;
-&gt; I prefer a bigger triangle:  =E2=96=BC U=3D25BC: Black Down-Pointing Triangle.
-&gt;
-&gt; One more thing.  It's reasonable to have the top-level button just be a
-&gt; placeholder for subsidiary @rclick nodes.  To do that without getting a
-&gt; warning when clicking the top-level button, set its script to "empty
-&gt; string".
-
-I think you mean set its script to a docstring describing the
-functions it groups together for the tooltip hover text :-)
-
-Cheers -Terry
-
-</t>
-<t tx="ekr.20130526065545.17525">@nocolor
-
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-On Thu, Apr 11, 2013 at 2:24 PM, Terry Brown &lt;terry_n_brown@yahoo.com&gt;wrote:
-
-
-&gt;    @string mod_scripting_subtext =3D =E2=96=BE
-&gt;
-
-Thanks!  I prefer a bigger triangle:  =E2=96=BC U=3D25BC: Black Down-Pointing
-Triangle.
-
-EKR
-</t>
-<t tx="ekr.20130526065545.17526">@nocolor
-
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-On Thu, Apr 11, 2013 at 7:29 AM, Terry Brown &lt;terry_n_brown@yahoo.com&gt;wrote:
-
-&gt; On Thu, 11 Apr 2013 00:56:51 -0700 (PDT)
-&gt; "Edward K. Ream" &lt;edreamleo@gmail.com&gt; wrote:
-&gt;
-&gt; &gt; I have a note that it was an @rclick node handled by the context_menu.py
-&gt; &gt; plugin, but I am not able to see code or documentation anywhere.  This
-&gt; &gt; seems *well* hidden :-)
-&gt;
-&gt; :) It's in the core, not context_menu.py.  It was a long time ago, but
-&gt; I remember finding the @button code tricky, so I'm not sure if it's an
-&gt; ideal implementation.  OTOH it hasn't broken for 1-2 years.
-&gt;
-
-Thanks.  I could have sworn I searched Leo's core for @rclick.  Must have
-been a searching failure :-)  The code is in
-qtIconBarClass.setCommandForButton.
-
-I'll add documentation for this, in leoSettings.leo and also in the
-customizing Leo chapter.
-</t>
-<t tx="ekr.20130526065545.17527">@nocolor
-
-From: SegundoBob &lt;bhossley@ieee.org&gt;
-
-I'm sorry no one has suggested a better way to make the changes
-permanent.  How does Leo-Editor notice that typing has inserted a few
-more characters?  Couldn't the same mechanism be used here?
-
-On 04/17/2013 12:29 PM, Terry Brown wrote:&gt; I think that's the way,
-see also:
-&gt;
-&gt; https://groups.google.com/forum/?fromgroups=#!searchin/leo-editor/insert$20text$20will$20disappear$20after$20insert$20children$20node$20and$20redraw/leo-editor/0haTWrUlNVg/lFU1JkMHrosJ
-&gt;
-Thanks.  I vaguely remembered this thread, but I couldn't find it.
-
-&gt; Depending on your use you might want to
-&gt;
-&gt;     oldins = w.getInsertPoint()
-&gt;
-&gt;     ...
-&gt;
-&gt;     w.setInsertPoint(oldins+len(inserted_text))
-
-http://pastebin.com/GAc15jRL  uses both w.getInsertPoint() and
-w.setInsertPoint()
-
-&gt;
-&gt; to get the cursor where you want it afterwards, lots of variations how
-&gt; the new position might be calculated.
-&gt;
-&gt; Other possibly useful methods:
-&gt;
-&gt;     i,j = w.getSelectionRange(sort=True)
-&gt;     s = w.getSelectedText()
-
-Yes, these are very useful.
-</t>
-<t tx="ekr.20130526065545.17528">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-On Wed, 17 Apr 2013 12:09:52 -0700 (PDT)
-SegundoBob &lt;bhossley@ieee.org&gt; wrote:
-
-&gt; This thread gives a recipe for inserting text into the body of a node
-&gt; at the current cursor:
-&gt; 
-&gt; http://groups.google.com/group/leo-editor/browse_thread/thread/a08d122e0cf59359/60be2b02f3ef3e94
-&gt; 
-&gt; Unfortunately, this recipe has a problem:  When focus is moved away
-&gt; from and then back to the modified node, the inserted text
-&gt; disappears.  That is, Leo-Editor seems unaware of the insertion.
-&gt; 
-&gt; The following recipe fixes this problem:
-&gt; 
-&gt; http://pastebin.com/GAc15jRL
-&gt; 
-&gt; Is this recipe the right way to do it or is there a better way?
-
-I think that's the way, see also:
-
-https://groups.google.com/forum/?fromgroups=#!searchin/leo-editor/insert$20text$20will$20disappear$20after$20insert$20children$20node$20and$20redraw/leo-editor/0haTWrUlNVg/lFU1JkMHrosJ
-
-Depending on your use you might want to
-   
-    oldins = w.getInsertPoint() 
-
-    ...
-
-    w.setInsertPoint(oldins+len(inserted_text)) 
-
-to get the cursor where you want it afterwards, lots of variations how
-the new position might be calculated.
-
-Other possibly useful methods:
-
-    i,j = w.getSelectionRange(sort=True)
-    s = w.getSelectedText()  
-
-Cheers -Terry
-</t>
-<t tx="ekr.20130526065545.17529">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-On Wed, 17 Apr 2013 16:53:10 -0700 (PDT)
-SegundoBob &lt;bhossley@ieee.org&gt; wrote:
-
-&gt; I'm sorry no one has suggested a better way to make the changes
-&gt; permanent.  How does Leo-Editor notice that typing has inserted a few
-&gt; more characters?  Couldn't the same mechanism be used here?
-
-I don't think Leo constantly updates p.b from w.getAllText(), but just
-does it when focus is lost - not sure about that though.
-
-Here's a thought for a higher level interface.
-
-c.get_edit_state() gives you an instance of a LeoEditState class with
-these attributes:
-
-  text attributes
-
-  les.all_text
-  les.text_before_select
-  les.text_after_select
-  les.selected_text
-  les.text_before_cursor
-  les.text_after_cursor
-
-  integer attributes
-
-  les.selection_start
-  les.selection_end
-  les.cursor_index
-
-then you can either do
-
-c.set_edit_state(les)
-
-which sets the editor text and p.b to les.all_text and sets up
-selection and insert position appropriately from the integers,
-
-or c.set_edit_state(les, mode='selection')
-or c.set_edit_state(les, mode='cursor')
-
-which assembles things based on the selection or cursor text attributes.
-
-Thoughts?  So long since I wrote any emacs text manipulation stuff I
-can't remember the idiom it used.
-
-Cheers -Terry
-
-
-
-&gt; On 04/17/2013 12:29 PM, Terry Brown wrote:&gt; I think that's the way,
-&gt; see also:
-&gt; &gt;
-&gt; &gt; https://groups.google.com/forum/?fromgroups=#!searchin/leo-editor/insert$20text$20will$20disappear$20after$20insert$20children$20node$20and$20redraw/leo-editor/0haTWrUlNVg/lFU1JkMHrosJ
-&gt; &gt;
-&gt; Thanks.  I vaguely remembered this thread, but I couldn't find it.
-&gt; 
-&gt; &gt; Depending on your use you might want to
-&gt; &gt;
-&gt; &gt;     oldins = w.getInsertPoint()
-&gt; &gt;
-&gt; &gt;     ...
-&gt; &gt;
-&gt; &gt;     w.setInsertPoint(oldins+len(inserted_text))
-&gt; 
-&gt; http://pastebin.com/GAc15jRL  uses both w.getInsertPoint() and
-&gt; w.setInsertPoint()
-&gt; 
-&gt; &gt;
-&gt; &gt; to get the cursor where you want it afterwards, lots of variations how
-&gt; &gt; the new position might be calculated.
-&gt; &gt;
-&gt; &gt; Other possibly useful methods:
-&gt; &gt;
-&gt; &gt;     i,j = w.getSelectionRange(sort=True)
-&gt; &gt;     s = w.getSelectedText()
-&gt; 
-&gt; Yes, these are very useful.
-&gt; 
-</t>
-<t tx="ekr.20130526065545.17530">From: SegundoBob &lt;bhossley@ieee.org&gt;
-
-This thread gives a recipe for inserting text into the body of a node
-at the current cursor:
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/a08d122e0cf59359/60be2b02f3ef3e94
-
-Unfortunately, this recipe has a problem:  When focus is moved away
-from and then back to the modified node, the inserted text
-disappears.  That is, Leo-Editor seems unaware of the insertion.
-
-The following recipe fixes this problem:
-
-http://pastebin.com/GAc15jRL
-
-Is this recipe the right way to do it or is there a better way?
-</t>
-<t tx="ekr.20130526065545.17531">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-On Fri, 12 Apr 2013 10:09:40 +0800
-HaveF &lt;iamaplayer@gmail.com&gt; wrote:
-
-&gt; My workflow is like this
-&gt; [e.g., I want to select some text in the body and make transform, then
-&gt; insert to the body again]:
-
-Your workflow make sense for the general case of doing any arbitrary
-thing with Leo.  For the specific case of manipulating text, I think
-the API could be improved, or, seeing the existing API make sense for
-what it is, we could have additional "easy text manipulation" API.
-So long since I used Emacs I can't really remember its model, and if it
-would apply here.
-
-Cheers -Terry
-
-</t>
-<t tx="ekr.20130526065545.17532">@nocolor
-
-From: HaveF &lt;iamaplayer@gmail.com&gt;
-
-I have read the scripting chapter of leo-editor, and already make my daily
-life easier with these quick dirty, but useful scripts.
-
-And I just want to know your workflow of writing leo scripts.
-
-My workflow is like this
-[e.g., I want to select some text in the body and make transform, then
-insert to the body again]:
-
-1. Abstract the action of word.
-[in this case, I choose "select" and "insert" as my key words]
-
-2. search the words at http://leoeditor.com/scripting.html see if there is
-existing some related topics.
-[I have luck to find
-i = w.getInsertPoint()              # Return the location of the cursor.
-...
-i,j = w.getSelectionRange(sort=True)
-...
-s = w.getSelectedText()             # Return the selected text, if any.
-]
-
-3. but I still don't know how to insert the text to body. So I search the
-above function names in the scripts.leo to see the code.
-[ I find in
-scripts.leo#Scripts--&gt;@thin leoScripts.txt--&gt;Text editing scripts--&gt;insert
-begin/endUpdate
-...
-w.insert(i,s1+'\\n\\t\\t\\n'+s2)
-...
-seems to help
-]
-
-4. test the scripts to see if it works, if it doesn't work, go to 3, to
-find more example code.
-
-Any suggestion to improve this workflow?
-</t>
-<t tx="ekr.20130526065545.17533">@nocolor
-
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-
-
-On Sun, Apr 7, 2013 at 11:21 AM, Terry Brown &lt;terry_n_brown@yahoo.com&gt;wrote:
-
-&gt;
-&gt;
-&gt; Begin forwarded message:
-&gt;
-&gt; Date: Fri, 1 Feb 2013 13:08:30 -0600
-&gt; From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-&gt; To: leo-editor@googlegroups.com
-&gt; Subject: why Leo
-&gt;
-&gt;
-&gt; Because I have two nodes which were originally identical but are now
-&gt; different and I want to see the differences.
-&gt;
-&gt; My outline loads a @file called ~/.leo/t/gen which contains a @button
-&gt; with several @rclick children for commonly used tasks.  So I add a new
-&gt; one, @rclick diff
-&gt;
-&gt;   selected = c.getSelectedPositions()
-&gt;   open('/tmp/a_diff', 'w').write(selected[0].b)
-&gt;   open('/tmp/b_diff', 'w').write(selected[1].b)
-&gt;   import os
-&gt;   os.system("xxdiff /tmp/a_diff /tmp/b_diff &amp;")
-&gt;
-&gt; which is horrible for a number of reasons but also took only moments
-&gt; to write.  And now, not only does this Leo session have a visual node
-&gt; diff capability, but also every future session which loads ~/.leo/t/gen.
-&gt;
-&gt; When you can go from wanting to having a feature in less time than it
-&gt; takes to write an email about it - well, that's "why Leo".
-&gt;
-&gt; (I also have @file ~/.leo/sql and @file ~/.leo/dml for commands for
-&gt; handling SQL and an XML dialect I use a lot, it's a great way to manage
-&gt; little snippet functions)
-&gt;
-&gt; Cheers -Terry
-&gt;
-
-My present thinking is that such tidbits will be lost unless they get put
-in an official place.
-
-I have a Leo/To be documented mail folder, and this message is going there
-:-)  However, I think this subject would make a good Leo blog entry.
-
-Edward
-
-</t>
-<t tx="ekr.20130526065545.17534">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-
-
-Begin forwarded message:
-
-Date: Fri, 1 Feb 2013 13:08:30 -0600
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-To: leo-editor@googlegroups.com
-Subject: why Leo
-
-
-Because I have two nodes which were originally identical but are now
-different and I want to see the differences.
-
-My outline loads a @file called ~/.leo/t/gen which contains a @button
-with several @rclick children for commonly used tasks.  So I add a new
-one, @rclick diff
-
-  selected = c.getSelectedPositions()
-  open('/tmp/a_diff', 'w').write(selected[0].b)
-  open('/tmp/b_diff', 'w').write(selected[1].b)
-  import os
-  os.system("xxdiff /tmp/a_diff /tmp/b_diff &amp;")
-
-which is horrible for a number of reasons but also took only moments
-to write.  And now, not only does this Leo session have a visual node
-diff capability, but also every future session which loads ~/.leo/t/gen.
-
-When you can go from wanting to having a feature in less time than it
-takes to write an email about it - well, that's "why Leo".
-
-(I also have @file ~/.leo/sql and @file ~/.leo/dml for commands for
-handling SQL and an XML dialect I use a lot, it's a great way to manage
-little snippet functions)
-
-Cheers -Terry
-</t>
-<t tx="ekr.20130526065545.17535">@nocolor
-
-From: Randy Kramer &lt;rhkramer@gmail.com&gt;
-
-Rickard,
-
-Very interesting--I'm happy to see someone thinking about how to make 
-understanding code bases easier.  (I'm a rather old wannabee programmer, so 
-I'm not sure it will ever be of much use to me, nor that I can offer cogent 
-comments.)
-
-I will add some comments or questions anyway: ;-)
-
-   * Are you familiar with the concept of literate programming as espoused by 
-Donald Knuth and others?  If so, did that influence you at all, and, if so 
-how?  (Not that I think literate programming is the way forward, although I 
-like the concept and have experimented with it--I once wrote a rather large 
-Visual Basic (I know, what can I say, I was stuck in the Microsoft world at 
-the time) program using a literate programming approach.  I got it working to 
-a degree, but eventually had to devote more time to other things so never got 
-it fully up to spec.
-
-   * Darn, I know I had another comment, but I won't remember it until 
-sometime after I hit "send" ;-)
-
-The main purpose of my email is to encourage you--anything that can improve 
-the understanding of a code base is a good thing--thanks for your efforts!
-
-Randy Kramer
-
-
-
-
-
-On Sunday 24 February 2013 6:12:16 am Rickard Lindberg wrote:
-&gt; I wrote a blog post about how Leo can be used to improve the organization
-&gt; of our code bases.
-&gt;
-&gt; If you are interested, you can read it over here:
-&gt; http://reflectionsonprogramming.com/2013/02/related-things-are-not-kept-tog
-&gt;ether/
-&gt;
-&gt; /Rickard
-
-
-</t>
-<t tx="ekr.20130526065545.17536">@nocolor
-
-From: Rickard Lindberg &lt;ricli85@gmail.com&gt;
-
-On Sun, Feb 24, 2013 at 9:07 PM, Randy Kramer &lt;rhkramer@gmail.com&gt; wrote:
-&gt; Rickard,
-&gt;
-&gt; Very interesting--I'm happy to see someone thinking about how to make
-&gt; understanding code bases easier.  (I'm a rather old wannabee programmer, so
-&gt; I'm not sure it will ever be of much use to me, nor that I can offer cogent
-&gt; comments.)
-
-Thank you. Glad you find it interesting.
-
-&gt;    * Are you familiar with the concept of literate programming as espoused by
-&gt; Donald Knuth and others?
-
-Yes. I've read about literate programming and also tried it. I found that it
-didn't work so well for me for the following reasons (At least that's what I
-remember. It was many years since I tried.):
-
-* Focus on text first instead of code made it harder for me to produce working
-  code. I sometimes learn how to do something by trying it out and then
-  refactor the solution.
-
-* Unless you read the PDF (or whatever the final output is) you loose the
-  structure. At least I did. It was just one big file with all kinds of things
-  mixed together. An outline structure solves this problem.
-
-&gt; If so, did that influence you at all, and, if so
-&gt; how?  (Not that I think literate programming is the way forward, although I
-&gt; like the concept and have experimented with it--I once wrote a rather large
-&gt; Visual Basic (I know, what can I say, I was stuck in the Microsoft world at
-&gt; the time) program using a literate programming approach.  I got it working to
-&gt; a degree, but eventually had to devote more time to other things so never got
-&gt; it fully up to spec.
-
-It influenced me mostly in that I started to think about how to best present
-programs so that humans can understand them. I'm not sure literate programming
-like Knuth uses it is the best way (in particular, I think the programs are
-harder to modify), but I also think that a folder with just source code is not
-so good either.
-
-&gt; The main purpose of my email is to encourage you--anything that can improve
-&gt; the understanding of a code base is a good thing--thanks for your efforts!
-
-Thanks for the encouragements.
-
-/Rickard
-
-</t>
-<t tx="ekr.20130526065545.17537">@nocolor
-
-From: Rickard Lindberg &lt;ricli85@gmail.com&gt;
-
-I wrote a blog post about how Leo can be used to improve the organization 
-of our code bases.
-
-If you are interested, you can read it over here: 
-http://reflectionsonprogramming.com/2013/02/related-things-are-not-kept-together/
-</t>
-<t tx="ekr.20130526065545.17538">@nocolor
-
-From: Matt Wilkie &lt;maphew@gmail.com&gt;
-
-
-
-Nice article Rickard, I think it captures the background problem well.
-
-I'm not sure the images communicate clones effectively -- but don't really
-have an alternative suggestion that would be an improvement. It's just
-really hard to appreciate how well they work without experiencing them!
-
-cheers,
-
--matt
-
-
-On Sun, Feb 24, 2013 at 3:12 AM, Rickard Lindberg &lt;ricli85@gmail.com&gt; wrote:
-
-&gt; I wrote a blog post about how Leo can be used to improve the organization
-&gt; of our code bases.
-&gt;
-&gt; If you are interested, you can read it over here:
-&gt; http://reflectionsonprogramming.com/2013/02/related-things-are-not-kept-together/
-&gt;
-&gt; /Rickard
-&gt;
-&gt;
-&gt;
-
-</t>
-<t tx="ekr.20130526065545.17539">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-On Sun, 24 Feb 2013 03:12:16 -0800 (PST)
-Rickard Lindberg &lt;ricli85@gmail.com&gt; wrote:
-
-&gt; I wrote a blog post about how Leo can be used to improve the organization 
-&gt; of our code bases.
-&gt; 
-&gt; If you are interested, you can read it over here: 
-&gt; http://reflectionsonprogramming.com/2013/02/related-things-are-not-kept-together/
-
-Interesting - the python web application framework Django is really
-tough in that regard, you might simultaneously want to work on python,
-html template, css, java-script, url-dispatch, tests, model definitions.
-In fact I've just made some updates to the bookmarks display plugin
-which make using it effectively smoother, for a mouse user, anyway, to
-help with this.  Will push them soon.
-
-Cheers -Terry
-
-</t>
-<t tx="ekr.20130526065545.17540">@nocolor
-
-From: Haroldo Stenger &lt;haroldo.stenger@gmail.com&gt;
-
-I'm slowly trying to grok leo. I love meld, it's simply the best text
-comparison I've ever seen. I wonder if a greater bit of integration between
-meld and leo is possible, and in which ways. Undoubtedly calling it as an
-external process is better than anything.
-</t>
-<t tx="ekr.20130526065545.17541">@nocolor
-
-From: wgw &lt;wgwinder@gmail.com&gt;
-
-
-Useful!
-
-For fun (and perhaps of some use), here is a brute compare of trees. I use
-meld, which has a great interface.
-
-I think I will set up a pyflakes button as well; I haven't seen it as part
-of Leo, though the Leo error python messages are good.
-
------------------------
-
-def add_text(nd):
-    """recursively add to text"""
-    text =3D "\\n\\n&gt;&gt; " + nd.h
-    text +=3D "\\n\\n%s" % nd.b
-    for child in nd.children():
-        text +=3D add_text(child)
-    return text
-
-selected =3D c.getSelectedPositions()
-open('/tmp/a_diff', 'w').write(add_text(selected[0]).encode("utf-8"))
-open('/tmp/b_diff', 'w').write(add_text(selected[1]).encode("utf-8"))
-import os
-os.system("meld /tmp/a_diff /tmp/b_diff &amp;")
-
--------------
-
-
-Le vendredi 1 f=E9vrier 2013 11:08:30 UTC-8, Terry a =E9crit :
-&gt;
-&gt; Because I have two nodes which were originally identical but are now
-&gt; different and I want to see the differences.
-&gt;
-&gt; My outline loads a @file called ~/.leo/t/gen which contains a @button
-&gt; with several @rclick children for commonly used tasks.  So I add a new
-&gt; one, @rclick diff
-&gt;
-&gt;   selected =3D c.getSelectedPositions()
-&gt;   open('/tmp/a_diff', 'w').write(selected[0].b)
-&gt;   open('/tmp/b_diff', 'w').write(selected[1].b)
-&gt;   import os
-&gt;   os.system("xxdiff /tmp/a_diff /tmp/b_diff &amp;")
-&gt;
-&gt; which is horrible for a number of reasons but also took only moments
-&gt; to write.  And now, not only does this Leo session have a visual node
-&gt; diff capability, but also every future session which loads ~/.leo/t/gen.
-
-&gt;
-&gt; When you can go from wanting to having a feature in less time than it
-&gt; takes to write an email about it - well, that's "why Leo".
-&gt;
-&gt; (I also have @file ~/.leo/sql and @file ~/.leo/dml for commands for
-&gt; handling SQL and an XML dialect I use a lot, it's a great way to manage=
-
-&gt; little snippet functions)
-&gt;
-&gt; Cheers -Terry
-&gt;
-
-</t>
-<t tx="ekr.20130526065545.17543">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-Because I have two nodes which were originally identical but are now
-different and I want to see the differences.
-
-My outline loads a @file called ~/.leo/t/gen which contains a @button
-with several @rclick children for commonly used tasks.  So I add a new
-one, @rclick diff
-
-  selected = c.getSelectedPositions()
-  open('/tmp/a_diff', 'w').write(selected[0].b)
-  open('/tmp/b_diff', 'w').write(selected[1].b)
-  import os
-  os.system("xxdiff /tmp/a_diff /tmp/b_diff &amp;")
-
-which is horrible for a number of reasons but also took only moments
-to write.  And now, not only does this Leo session have a visual node
-diff capability, but also every future session which loads ~/.leo/t/gen.
-
-When you can go from wanting to having a feature in less time than it
-takes to write an email about it - well, that's "why Leo".
-
-(I also have @file ~/.leo/sql and @file ~/.leo/dml for commands for
-handling SQL and an XML dialect I use a lot, it's a great way to manage
-little snippet functions)
 </t>
 <t tx="ekr.20130526065545.17545">@nocolor
 
@@ -6781,372 +2763,6 @@ c.bringToFront()
 c.redraw()
 
 </t>
-<t tx="ekr.20130526065545.17547">@nocolor
-
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-On Wednesday, January 2, 2013 10:02:40 AM UTC-6, Edward K. Ream wrote:
-
-ReportTraverser uses this pattern at rev 288.  It is a remarkable 
-simplification.
- 
-
-&gt; The revised r.div method will be something like::
-&gt;
-&gt;     def div(self,aList):
-&gt;         compute old and new indents
-&gt;         return [
-&gt;             &lt;div&gt;, with old indent,
-&gt;             aList, with new indent,
-&gt;             &lt;/div&gt;, with old indent,
-&gt;         ]
-&gt;
-
-This doesn't work!  aList won't have the proper indentation.  In 
-particular, the following won't work::
-
-    [['  ',z] for z in aList],
-
-flatten_list will add the two spaces before the line, that is, before a 
-newline. Instead, a hack is needed:
-
-    return [
-        div,
-        join_list(aList,indent='  '),
-        '\\n&lt;/div&gt;'
-    ]
-
-The new 'indent' keyword tells flatten_list to add the given indentation 
-(two spaces, here), to strings that start with a newline.  The new code in 
-flatten_list is::
-
-        for i,item in enumerate(aList):
-            if leading:                  yield leading
-            for s in flatten_list(item):
-                if indent:
-                    if s.startswith('\\n'):
-                        yield '\\n'+indent+s[1:]
-                    else:
-                        yield s
-                else:
-                    yield s
-            if sep and i &lt; len(aList)-1: yield sep
-            if trailing:                 yield trailing
-
-The point is that the indentation must be "moved behind the newline".
-
-Edward
-
-</t>
-<t tx="ekr.20130526065545.17548">@nocolor
-
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-On Wednesday, January 2, 2013 2:01:17 PM UTC-6, Ville M. Vainio wrote:
-&gt;
-&gt; This seems like a spiritual relative of "rope" data structure:
-&gt;
-&gt; http://en.wikipedia.org/wiki/Rope_(data_structure)
-&gt;
-&gt; http://www.sgi.com/tech/stl/Rope.html
-&gt;
-
-Thanks for these links.  Yes, there is a similarity.  However, the real 
-beauty of new pattern is the flatten_list method.  It's the combination of 
-the lists and flatten_list that gives the pattern real power.  We've just 
-seen how the 'indent' keyword hack allows sophisticated processing of the 
-lists.  I wouldn't expect more hacks to be needed, but I've been surprised 
-before ;-)
-
-Edward
-
-</t>
-<t tx="ekr.20130526065545.17549">@nocolor
-
-From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
-
-This seems like a spiritual relative of "rope" data structure:
-
-http://en.wikipedia.org/wiki/Rope_(data_structure)
-
-http://www.sgi.com/tech/stl/Rope.html
-
-
-On Wed, Jan 2, 2013 at 3:03 AM, Edward K. Ream &lt;edreamleo@gmail.com&gt; wrote:
-
-&gt; I continue to work feverishly on various aspects of static type checking.
-&gt;
-&gt; That work lead to a discovery that may benefit you.  It's one of the most
-&gt; beautiful patterns I've ever created: it allows a program to simply and
-&gt; naturally build up huge strings without using any string operations.
-&gt; Generating an html file with minimal stress on the gc is an obvious
-&gt; application.  You could also say that the pattern creates a Pythonic way of
-&gt; using lisp-like algorithms, but more safely than in lisp.
-&gt;
-&gt; Full details at the stc documentation page::
-&gt;
-&gt; http://webpages.charter.net/edreamleo/stc/stc.html#a-beautiful-pattern-for-building-large-strings
-&gt;
-</t>
-<t tx="ekr.20130526065545.17550">@nocolor
-
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-I continue to work feverishly on various aspects of static type checking.
-
-That work lead to a discovery that may benefit you.  It's one of the most 
-beautiful patterns I've ever created: it allows a program to simply and 
-naturally build up huge strings without using any string operations.  
-Generating an html file with minimal stress on the gc is an obvious 
-application.  You could also say that the pattern creates a Pythonic way of 
-using lisp-like algorithms, but more safely than in lisp.
-
-Full details at the stc documentation page::
-http://webpages.charter.net/edreamleo/stc/stc.html#a-beautiful-pattern-for-building-large-strings
-
-</t>
-<t tx="ekr.20130526065545.17551">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-On Tue, 1 Jan 2013 17:03:05 -0800 (PST)
-"Edward K. Ream" &lt;edreamleo@gmail.com&gt; wrote:
-
-&gt; Generating an html file with minimal stress on the gc is an obvious 
-&gt; application.
-
-Nice.  An HTML specific approach which avoids things like the
-r.div_end() construct is the LXML element factory:
-http://lxml.de/tutorial.html#the-e-factory
-
-Cheers -Terry
-
-</t>
-<t tx="ekr.20130526065545.17552">@nocolor
-
-From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
-
-
-
-Yes, it's indeed an interesting pattern.
-
-It would seem more useful in faster languages than python though; in
-python, string operations (and gc) are faster in comparison to executing
-other code, whereas in fast, more static languages (C++, Java, Go) avoiding
-GC gives you great benefits (I saw 5x perf increase reported for some Go
-app when eliminating GC).
-
-</t>
-<t tx="ekr.20130526065545.17553">@nocolor
-
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-On Thursday, January 3, 2013 3:28:52 AM UTC-6, Ville M. Vainio wrote:
-&gt;
-&gt; Yes, it's indeed an interesting pattern. 
-&gt;
-&gt; It would seem more useful in faster languages than python though; in 
-&gt; python, string operations (and gc) are faster in comparison to executing 
-&gt; other code, whereas in fast, more static languages (C++, Java, Go) avoiding 
-&gt; GC gives you great benefits (I saw 5x perf increase reported for some Go 
-&gt; app when eliminating GC).
-&gt;
-
-Thanks for these remarks.  I've enjoyed thinking about them.  A few 
-responses:
-
-1. This is a smallish pattern--it can't change the world, except insofar as 
-something beautiful changes the world.
-
-2. Otoh, the pattern changes the way I think about lisp and lisp-like 
-patterns.  That's not nothing. For the first time, it makes list-oriented  
-programming pattern completely safe.  It does this because it doesn't 
-matter what each component list contains, nor does it matter *at all* what 
-the shape of any part of the tree is.  This makes the pattern completely 
-flexible.
-
-3. The pattern can be generalized.  The pattern I described uses a tree of 
-component strings to describe a (large) resulting string.  But one can 
-easily imagine using lists to hold anything at all (of whatever tree shape) 
-and then use another version of flatten_list to compose results of other 
-types.  Alternatively, rather than composing a result, the analog of 
-flatten_list could process the tree of lists in other ways.  So the most 
-general version of the pattern is:
-
-A) The tree of lists can contain any data whatever, especially including 
-None,
-B) The "producers" (visitors) can create subtrees of whatever shape,
-C) The analog of flatten_list is free to do anything whatever with the 
-resulting tree.
-
-I suspect that these features are what appeal to lisp programmers ;-)
-
-4. I'm not sure whether the pattern is more useful in "faster" languages or 
-not.  True, anything that helps a feeble language like C++ will seem useful 
-:-)  But points 1-3 above have nothing to do with speed: they just make 
-programming simpler, more flexible, more powerful and more fun.
-
-Imo, gc issues are important both in Python and in C++.  For stc, the only 
-way to get reproducible timing statistics for tests was to do the following 
-before running the test::
-
-    for z in (0,1,2): gc.collect(z)
-
-The ReportTraverser class no longer contains *any* calls to string.join, so 
-one could imagine that all strings used in the code would be interned.  The 
-generated tree actually contains nothing but *references* to strings, and 
-if all strings are interned the references will not themselves cause any 
-new strings to be allocated.
-
-Naturally, gc issues are even more important in language like C++ without a 
-gc.  Lol.  The preceding paragraph is more important for C++ than in 
-Python.  So yes, in this sense I agree with you completely that the pattern 
-is more useful for "fast" languages than for Python.
-
-Thanks, Ville, for provoking all these pleasant thoughts :-)
-
-Edward
-
-</t>
-<t tx="ekr.20130526065545.17554">@nocolor
-
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-
-
-On Tue, Jan 1, 2013 at 9:48 PM, Terry Brown &lt;terry_n_brown@yahoo.com&gt; wrote:
-
-&gt; On Tue, 1 Jan 2013 17:03:05 -0800 (PST)
-&gt; "Edward K. Ream" &lt;edreamleo@gmail.com&gt; wrote:
-&gt;
-&gt; &gt; Generating an html file with minimal stress on the gc is an obvious
-&gt; &gt; application.
-&gt;
-&gt; Nice.  An HTML specific approach which avoids things like the
-&gt; r.div_end() construct is the LXML element factory:
-&gt; http://lxml.de/tutorial.html#the-e-factory
-&gt;
-
-Beautiful.  With the list framework the revised r.div method would be
-something like::
-
-    def div(self,aList):
-        compute old and new indents
-        return [
-            &lt;div&gt;, with old indent,
-            aList, with new indent,
-            &lt;/div&gt;, with old indent,
-        ]
-
-An example of the pattern in use::
-
-    return [
-        ...
-        r.div([
-            contents of the div,
-        ]),
-        ...
-    ]
-
-Similarly for span, etc. Thanks for pointing this out.  This is too good to
-ignore.  I'll do it soon.
-
-Edward</t>
-<t tx="ekr.20130526065545.17555">@nocolor
-
-From: tfer &lt;tfetherston@aol.com&gt;
-
-I was wondering if the Qt widget used for body text has a provision for 
-background images?
-
-I'm thinking that it might be interesting to have some wallpapers/tiles to 
-visually represent various categories of methods, e.g. initors, setters, 
-getters, etc.  Maybe ones that hint at the uses of a particular design 
-pattern.  Maybe us a uA to control setting?
-</t>
-<t tx="ekr.20130526065545.17556">@nocolor
-
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-On Fri, Jul 13, 2012 at 3:57 PM, tfer &lt;tfetherston@aol.com&gt; wrote:
-
-&gt; I was wondering if the Qt widget used for body text has a provision for
-&gt; background images?
-&gt;
-
-Sorry for the delay in responding.  Leo's body pane is a QTextBrowser:
-http://qt-project.org/doc/qt-4.8/qtextbrowser.html
-a subclass of QTextEdit.  QTextBrowser also inherits from QFrame and
-QWidget, so there *might* be a way to have a background image "leak"
-through the text.</t>
-<t tx="ekr.20130526065545.17557">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
---MP_/NJ5QIult88.7_K/HpvnV2eA
-
-On Wed, 1 May 2013 04:19:52 -0500
-"Edward K. Ream" &lt;edreamleo@gmail.com&gt; wrote:
-
-&gt; On Fri, Jul 13, 2012 at 3:57 PM, tfer &lt;tfetherston@aol.com&gt; wrote:
-&gt; 
-&gt; &gt; I was wondering if the Qt widget used for body text has a provision for
-&gt; &gt; background images?
-&gt; &gt;
-&gt; 
-&gt; Sorry for the delay in responding.  Leo's body pane is a QTextBrowser:
-&gt; http://qt-project.org/doc/qt-4.8/qtextbrowser.html
-&gt; a subclass of QTextEdit.  QTextBrowser also inherits from QFrame and
-&gt; QWidget, so there *might* be a way to have a background image "leak"
-&gt; through the text.
-&gt; 
-&gt; Edward
-&gt; 
-
-QTextEdit#richTextEdit { background-image: url('/home/tbrown/Desktop/cow2.jpg'); }
-
-in the stylesheet gives the effect attached (i.e. it works).
-
-If you wanted node specific backgrounds Leo would have to start setting
-an attribute on the body widget, probably the gnx, so you could do
-
-QTextEdit#richTextEdit[leo_gnx='tbrown.20130430222443.19340'] { 
-  background-image: url('/home/tbrown/Desktop/cow2.jpg'); 
-}
-
-Cheers -Terry
-
-</t>
-<t tx="ekr.20130526065545.17558">@nocolor
-
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-
-
-On Wed, May 1, 2013 at 8:42 AM, Terry Brown &lt;terry_n_brown@yahoo.com&gt; wrote:
-
-&gt;
-&gt;
-&gt; QTextEdit#richTextEdit { background-image:
-&gt; url('/home/tbrown/Desktop/cow2.jpg'); }
-&gt;
-&gt; in the stylesheet gives the effect attached (i.e. it works).
-&gt;
-&gt; If you wanted node specific backgrounds Leo would have to start setting
-&gt; an attribute on the body widget, probably the gnx, so you could do
-&gt;
-&gt; QTextEdit#richTextEdit[leo_gnx='tbrown.20130430222443.19340'] {
-&gt;   background-image: url('/home/tbrown/Desktop/cow2.jpg');
-&gt; }
-&gt;
-
-Wow!  Thanks for this.  LeoUser wrote a version of Leo in Jython (using the
-Swing classes), and he claimed that he could watch *movies* in the body
-pane :-)
-
-I'll add this to the Leo/To Document list.  Not sure yet how that list is
-going to get translated into action.  Still reading Getting Things Done :-)
-</t>
 <t tx="ekr.20130526065545.17559">@nocolor
 
 From: Chema Cortes &lt;pych3m4@gmail.com&gt;
@@ -7183,490 +2799,6 @@ trying to save an @edit file with children:
     To save your work, convert @edit to @auto or @thin.
 
 I'll make a to-do item to fix this documentation bug.
-</t>
-<t tx="ekr.20130526065545.17561">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-On Wed, 12 Sep 2012 13:06:19 -0700 (PDT)
-Terry &lt;webtourist@gmail.com&gt; wrote:
-
-&gt; Can LEO generate OPML file ? I'm looking at the tool theoutlinerofgiants
-
-There's a leoOPML plugin, I don't know what its status is, try
-enabling it... I think OPML support has been through several
-iterations, not sure if the plugin was the last of them.
-
-Cheers -Terry
-
-</t>
-<t tx="ekr.20130526065545.17562">@nocolor
-
-From: Terry &lt;webtourist@gmail.com&gt;
-
-
-On Tuesday, September 11, 2012 4:57:10 PM UTC-4, Terry wrote:
-&gt;
-&gt; &gt; You could run this script (below): 
-&gt;
-
-
-Terry, how do i run it ?  I'm guessing it's not at the cmdline like "python 
-this_script.py" 
-thanks
-
-</t>
-<t tx="ekr.20130526065545.17563">@nocolor
-
-From: Terry &lt;webtourist@gmail.com&gt;
-
-Can LEO generate OPML file ? I'm looking at the tool theoutlinerofgiants
-
-</t>
-<t tx="ekr.20130526065545.17564">@nocolor
-
-From: Terry &lt;webtourist@gmail.com&gt;
-
-I need to present to people who don't have leo installation, in easily 
-readable format, the full content of a .leo file, not just the outline, but 
-all nodes and all contents.
-
-What do I need to do ?
-</t>
-<t tx="ekr.20130526065545.17565">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-On Tue, 11 Sep 2012 13:33:16 -0700 (PDT)
-Terry &lt;webtourist@gmail.com&gt; wrote:
-
-&gt; I need to present to people who don't have leo installation, in easily 
-&gt; readable format, the full content of a .leo file, not just the outline, but 
-&gt; all nodes and all contents.
-&gt; 
-&gt; What do I need to do ?
-
-You could run this script (below):
-
-It only exports selected nodes, so if you want to export everything,
-you have to select all the top level nodes, i.e. collapse all the nodes
-so only the top level is visible, click the first one, and shift-click
-the last one.
-
-It exports to plain text... although you might be able to use the
-template to describe HTML, not sure.
-
----cut here---
-# template is everything between r""" and second """
-# placeholders are H heading B body C children
-# use \\n in B and C lines for conditional blank lines
-
-template = r"""H
-    B
-  * C"""
-
-lines=[]
-exp_only = g.app.gui.runAskYesNoCancelDialog(
-    c, 'Expanded nodes only?', 'Expanded nodes only?')
-if exp_only == 'no':
-    exp_only = False
-    
-def export_text(p, indent=''):
-    
-    spaces = ' '*(len(indent) - len(indent.lstrip(' ')))
-    
-    for line in template.split('\\n'):
-        
-        if 'H' in line:
-            lines.append(indent + line.replace('H', p.h))
-        elif 'B' in line and p.b.strip():
-            prefix = line[:line.find('B')].replace('\\\\n', '\\n')
-            for i in p.b.strip().split('\\n'):
-                lines.append(spaces + prefix + i)
-                prefix = line[:line.find('B')].replace('\\\\n', '')
-            if line.endswith('\\\\n'):
-                lines.append('')
-        elif 'C' in line and (not exp_only or p.isExpanded()):
-            prefix = line[:line.find('C')].replace('\\\\n', '\\n')
-            for child in p.children():
-                export_text(child, indent=spaces + prefix)
-            if line.endswith('\\\\n'):
-                lines.append('')
-        elif 'C' not in line and 'B' not in line:
-            lines.append(line)
-
-if exp_only != 'cancel':
-    for i in c.getSelectedPositions():
-        export_text(i)
-    
-    filename = g.app.gui.runSaveFileDialog('Save to file')
-    # filename = '/home/tbrown/del.txt'
-    
-    if filename is not None:
-        open(filename,'w').write('\\n'.join(lines))
----cut here---
-
-</t>
-<t tx="ekr.20130526065545.17566">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-On Wed, 12 Sep 2012 06:31:09 -0700 (PDT)
-Terry &lt;webtourist@gmail.com&gt; wrote:
-
-&gt; Terry, how do i run it ?  I'm guessing it's not at the cmdline like "python 
-&gt; this_script.py" 
-
-Right.  Paste the content into a node, then click the script-button
-button to create a new button for running this script.  The button's
-name will be the node's name, what it is doesn't matter but 'export'
-would be an obvious choice.  Then select the node(s) you want exported
-- presumably not including the node containing the script :)
-
-Then it will ask for a file name and whether to include unexpanded
-nodes.
-
-Cheers -Terry
-
-</t>
-<t tx="ekr.20130526065545.17567">@nocolor
-
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-
-On Wednesday, September 12, 2012 3:12:52 PM UTC-5, Edward K. Ream wrote:
-&gt;
-&gt; The more I think about it, the more I think Leo needs an automated 
-&gt; playback capability. 
-&gt;
-... 
-
-&gt; The main question is, how easy will it be to create and edit playbacks? 
-
-
-Rev 5432 provides some answers.  test.leo contains the node, "Prototype of 
-screencast script".  It took many hours of happy experimentation to get the 
-script to work, but the results are worth all the futzing.  Here is the 
-first script::
-
-    s = p.b # This script.
-    c = c.new()
-    p = c.p
-    p.h = ''
-    n1,n2 = 0.01,0.2 # Small difference are important.
-    head_keys('This is headline text',n1,n2)
-    body_keys('This is some body text.\\n',0.0,0.0) # n1,n2)
-    body_keys('Some more body text.\\n',0.0,0.0)
-    body_keys(s,0.0,0.0)
-
-The head_keys and body_keys (not shown) simulate typing, with a range of 
-typing speed indicated by the n1 and n2 params.  The result is really fun 
-to watch.  As you will see, there is a wait method that waits a variable 
-number of seconds.  This will be useful in other contexts.
-
-This is the most fun I've had in quite awhile. It's becoming clear that 
-being able to generate screencasts from scripts will be an excellent tool 
-for those trying to explain Leo.  Imo, creating screencasts from such 
-scripts will be *much* simpler than making slideshows.
-
-I've got lots of ideas for improvements to screencasts.  I should have 
-something pretty cool to show in a week or so...
-
-Edward
-
-P.S.  The head_keys and body_keys methods cost me a *lot* of work.  It's 
-tricky to show the typing immediately without flash.  These are the first 
-of several planned helper methods for use in screencasts::
-
-     def head_keys(s,n1=0.04,n2=0.1):
-        import leo.core.leoGui as leoGui
-        p = c.p
-        tree = c.frame.tree
-        c.editHeadline()
-        w = tree.edit_widget(p)
-        for ch in s:
-            p.h = p.h + ch
-            tree.repaint() # *not* tree.update.
-            wait(n1,n2)
-            event = leoGui.leoKeyEvent(c,ch,ch,w,x=0,y=0,x_root=0,y_root=0)
-            c.k.masterKeyHandler(event)
-        c.frame.tree.repaint()
-        c.redraw()
-
-    def body_keys(s,n1=0.04,n2=0.1):
-        c.bodyWantsFocusNow()
-        p = c.p
-        w = c.frame.body.bodyCtrl.widget
-        for ch in s:
-            p.b = p.b + ch
-            w.repaint()
-            wait(n1,n2)
-        c.redraw()
-
-EKR
-
-</t>
-<t tx="ekr.20130526065545.17568">@nocolor
-
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-The more I think about it, the more I think Leo needs an automated playback 
-capability.  I had some initial thoughts in the thread, "PyOhio Leo Video 
-up on youtube", 
-https://groups.google.com/forum/?fromgroups=#!topic/leo-editor/nmBweM3wI3o.
-
-There as several immediate applications for automated playback:
-
-1. As a helper for those preparing demos of Leo.  It eliminates the need to 
-think, talk and type at the same time ;-)  The hope is that the narrator 
-would be more comfortable and relaxed during the recording, but perhaps 
-that is wishful thinking.
-
-2. As an automated, scripted, demo of what Leo can do.  You could even 
-imagine the quickstart.leo would "create itself" when it was opened.  You 
-would simply need to start the demo when the file was opened!
-
-As I was thinking about playback, I considered how the playback would draw 
-attention to various parts of the screen.  In other words, we need 
-something akin to the big red arrows in the Leo slideshows. One easy way to 
-do this would be with a DialogWithImage call, that would pop up a dialog 
-showing, say, a magnified image of a dirty icon box.  Depending on options, 
-the dialog might go away after a few seconds, or remain until the use hits 
-any key.
-
-The main question is, how easy will it be to create and edit playbacks?  
-I'm not sure.  Any such playback capability would essentially be a 
-(detailed!) script.  We can imagine a script that is essentially Python:  
-Something like:
-
-goto_sibling_node(&lt;&lt;node name&gt;&gt;)
-dialog(&lt;&lt;dialog name&gt;&gt;,&lt;&lt; when dismissed&gt;&gt;)
-edit_headline
-type_individual_letters('This is the headline',&lt;&lt;delay between letters&gt;&gt;)
-type_text('This is the headline')
-insert_sibling_node()
-insert_child_node()
-select_find_tab()
-etc! etc!
-
-Leo already has most of the capability go generate this as we use Leo:  
-it's the so-called "lossage" history in k.masterKeyHandler.  I'm thinking 
-that there is no urgent need to capture the mouse: we might as well 
-demonstrate mouseless Leo!
-
-Actually, we might forgo capturing actions altogether, and just write the 
-script directly.  We'll have to see whether that makes sense.
-
-Your comments, please, Amigos.
-
-Edward
-
-</t>
-<t tx="ekr.20130526065545.17569">@nocolor
-
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-
-
-
-On Friday, September 14, 2012 8:54:42 AM UTC-5, Edward K. Ream wrote:
-&gt;
-&gt;
-&gt; Rev  5434 packages this into the new screencast plugin.  Yesterdays work, 
-&gt; in screencast.py and the node "@command screencast @key=Alt-9" in test.leo 
-&gt; taught me several things.  In the notes below, m is an instance of 
-&gt; ScreenCastController.  m stands for "movie" :-)
-&gt;
-
-Screencasts promise to be easy to be *much* easier to create than 
-slideshows, while also being more interesting, informative and flashy.  It 
-is *so* much easier to write a screencast script than it is to lay out a 
-slide, take a screenshot, and then manage resulting slide.
-
-In particular, there are few continuity problems with screencasts.  
-Continuity is a *huge* problem with slideshows!  If I change one slide, I 
-am likely to want to change all following slides.  Which means I have to 
-retake all the slides, and file the new versions in the proper places.  In 
-contrast, any changes to screencasts naturally propagate forward.  There 
-might be an effect on following screencasts scenes, but this will happen 
-rarely with a reasonable scene design, and any problems should be easy to 
-fix.
-
-With screencasts, the *movie* script is also the *python* script!  There is 
-no "translation" from one to the other.  Furthermore, all the work to 
-produce a screencast is done (naturally!) within Leo.  No need to create 
-and manage external data.  This is another huge advantage and it make 
-producing screencasts much faster than producing slideshows.
-
-Screencasts are likely to be the long-awaited tools that will allow me to 
-show Leo in action so that other will finally be able to understand it 
-easily.  This is an exciting prospect!
-
-Edward
-
-</t>
-<t tx="ekr.20130526065545.17570">@nocolor
-
-From: HaveF &lt;iamaplayer@gmail.com&gt;
-
-
-
-On Fri, Sep 14, 2012 at 9:54 PM, Edward K. Ream &lt;edreamleo@gmail.com&gt; wrote:
-
-&gt; On Wednesday, September 12, 2012 10:57:35 PM UTC-5, Edward K. Ream wrote:
-&gt;
-&gt;     test.leo contains the node, "Prototype of screencast script".  It took
-&gt; many hours of happy experimentation to get the script to work, but the
-&gt; results are worth all the futzing.
-&gt;
-&gt; Rev  5434 packages this into the new screencast plugin.  Yesterdays work,
-&gt; in screencast.py and the node "@command screencast @key=Alt-9" in test.leo
-&gt; taught me several things.  In the notes below, m is an instance of
-&gt; ScreenCastController.  m stands for "movie" :-)
-&gt;
-&gt; 1. It's probably best to not to open a new Leo window for screencasts.
-&gt; This avoid problems with w.repaint occurring in a another repaint
-&gt; operation, thereby freezing Leo.  This is not a major constraint: we
-&gt; typically will want to have screencasts operate on the local .leo file.
-&gt;
-&gt; 2. I spent a lot of time trying to adjust the delay between
-&gt; "transitions".  The arguments to m.wait specify the range of waiting
-&gt; allowed.  The plugin multiplies these nominal factors by a **speed
-&gt; factor**, initially 1.0.  m.set_speed sets this factor. To double the
-&gt; presentation speed, set the factor to 0.5.
-&gt;
-
-This seems strange. In my intuition, if you want to double the speed, the
-factor should be 2.0. (use new_factor = 1.0/old_factor instead?)
-
-</t>
-<t tx="ekr.20130526065545.17571">@nocolor
-
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-
-On Friday, September 14, 2012 9:31:33 AM UTC-5, HaveF wrote:
-&gt;
-&gt;
-&gt; 2. I spent a lot of time trying to adjust the delay between 
-&gt;&gt; "transitions".  The arguments to m.wait specify the range of waiting 
-&gt;&gt; allowed.  The plugin multiplies these nominal factors by a **speed 
-&gt;&gt; factor**, initially 1.0.  m.set_speed sets this factor. To double the 
-&gt;&gt; presentation speed, set the factor to 0.5.
-&gt;&gt;
-&gt;
-&gt; This seems strange. In my intuition, if you want to double the speed, the 
-&gt; factor should be 2.0. (use new_factor = 1.0/old_factor instead?)
-&gt;
-
-But then how do you set the wait to zero? :-)
-
-Anyway, it's a minor point: now that manual play is coming the speed factor 
-will not be important.
-
-EKR
-
-</t>
-<t tx="ekr.20130526065545.17573">@nocolor
-
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-
-On Wednesday, September 12, 2012 10:57:35 PM UTC-5, Edward K. Ream wrote:
-
-    test.leo contains the node, "Prototype of screencast script".  It took 
-many hours of happy experimentation to get the script to work, but the 
-results are worth all the futzing. 
-
-Rev  5434 packages this into the new screencast plugin.  Yesterdays work, 
-in screencast.py and the node "@command screencast @key=Alt-9" in test.leo 
-taught me several things.  In the notes below, m is an instance of 
-ScreenCastController.  m stands for "movie" :-)
-
-1. It's probably best to not to open a new Leo window for screencasts.  
-This avoid problems with w.repaint occurring in a another repaint 
-operation, thereby freezing Leo.  This is not a major constraint: we 
-typically will want to have screencasts operate on the local .leo file.
-
-2. I spent a lot of time trying to adjust the delay between "transitions".  
-The arguments to m.wait specify the range of waiting allowed.  The plugin 
-multiplies these nominal factors by a **speed factor**, initially 1.0.  
-m.set_speed sets this factor. To double the presentation speed, set the 
-factor to 0.5.
-
-The m.log call writes a message to the log pane, with calls to m.wait(1) 
-before and after inserting the text.  Both waits are important.  The 
-"opening" wait allows the user to see the effect of the previous operation; 
-the "closing" wait allows the user to read the new comment in the log pane 
-before the next operation happens.
-
-3. The futzing with speed and waits convinces me that specifying waits "by 
-hand" isn't good enough.  Pre-specified waits will be useful only for an 
-**unattended mode** that just plays the screencast from start to finish.  
-But for most presentations we want the presenter to switch from one 
-**scene** of the movie to the next by hitting the RightArrow key.  The 
-LeftArrow key will go back to the previous scene. Thus, in **attended 
-mode**, most calls to m.wait will have no effect.  (An exception will be 
-the calls to m.wait in the code the simulates a person typing in headline 
-or body text.  Thus calls should always have effect, so we will have a 
-"force" arg to m.wait.)
-
-It will be relatively straightforward to do the first draft of attended 
-mode.  At the programming level, it will work like any minibuffer command 
-that prompts for user input.  That is, the plugin will create a so-called 
-state handler for the slideshow.
-
-At the design level,  the main idea is to treat every node under the main 
-@screencast node as a scene.  This natural division allows the screencast 
-to organize the material using all of Leo's organizational capabilities.
-
-The state handler will, when seeing the RightArrow key, "play" the next 
-scene merely by moving to the next node and then executing the script in 
-it's body text.  This script could contain *any* Leo script, but most often 
-it will call ScreenCastController methods.   Moving to the previous scene 
-can be done by Leo's undo command, automatically managed by the 
-ScreenCastController.  This will be a bit tricky, but not hugely so.
-
-4. Putting comments in the log pane is ok for a prototype, but it's pretty 
-lame.  Instead, I'd like to use some kind of popup that can be associated 
-with individual items on the screen and located with precision relative to 
-those items. The popup should be able to contain both text and graphics. 
-Does anyone have a suggestion for what Qt widget to use?
-
-Your comments please, Amigos.
-
-Edward
-
-</t>
-<t tx="ekr.20130526065545.17574">@nocolor
-
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-
-
-On Friday, September 14, 2012 8:54:42 AM UTC-5, Edward K. Ream wrote:
-
-&gt; It will be relatively straightforward to do the first draft of attended 
-mode. 
-
-Indeed it was.  Rev  5435 contains the new code in screencast.py and new 
-test code in test.leo.  To run the test, just do Alt-9, then hit the right 
-arrow key until done.  Escape or Ctrl-g will abort the screencast.  All 
-other keys get ignored.
-
-**Warning**: the present screen cast insert a node in a somewhat random 
-location.
-
-The code that looks for the next node assumes that if it has a script if 
-p.b.strip() is True.  Before making this check, it should strip off python 
-comment lines so the speaker can add comments.
-
-There is still lots of work to be done, but already we have a fun sandbox 
-to play in.  As you will see, all the code in ScreenCastController is dead 
-easy, which bodes well for future work.
-
-Edward
-
 </t>
 <t tx="ekr.20130526065545.17575">@nocolor
 
@@ -7822,183 +2954,6 @@ not.
 Cheers -Terry
 
 </t>
-<t tx="ekr.20130526065545.17578">@nocolor
-
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-Some people seem to think that it is difficult to understand how Leo
-handles "clone wars":  differing values for a cloned nodes that appear
-in several external files.  That's not true.  The rule is::
-
-    **The last clone that Leo reads wins.**
-
-That is, for any cloned node C, Leo takes the value of C.h and C.b to
-be the values specified by the last copy that Leo reads.
-
-There is only one complication::
-
-    **Leo reads the entire outline before reading any external
-files.**
-
-Thus, if C appears in x.leo, y.py and z.py, Leo will choose the value
-for C in x.py or y.py, depending on which @&lt;file&gt; node appears later
-in the outline.
-
-Notes:
-
-1. Whenever Leo detects multiple values for C when opening an outline,
-Leo creates a "Recovered nodes" tree.  This tree contains all the
-various values for C, nicely formatted so that it is easy to determine
-where the differences are.
-
-2. I've just refreshed my memory by looking at the code.  The relevant
-methods are:
-
-    fc.getLeoFile # Reads the outline, then calls at.readAll to read
-all external files.
-    at.indicateNodeChanged # Adds data to c.nodeConflictList
-    cacher.reportChangedClone # Adds data to c.nodeConflictList
-    fc.handleNodeConflicts # Creates "Recovered Nodes" node and its
-children.
-
-3. The present code is the simplest code that could possibly work.
-There is no way Leo is going to do AI in order to implement complex
-rules for which clones are "more important" than others.  Thus, if you
-use cross-file clones, it is up to *you* to know these rules and
-handle any resulting conflicts.  Imo, the "Recovered Nodes" feature is
-a big step forward for Leo, and makes it impossible to lose data
-unless you willfully refuse to examine the data.
-
-Edward
-
-</t>
-<t tx="ekr.20130526065545.17579">@nocolor
-
-From: Joon Ro &lt;joonpyro@gmail.com&gt;
-
-Thanks for the explanation. As a matter of fact, I was having hard time 
-understanding this. 
-
-I had my source file in a @shadow node, and then I had a backup of that 
-file as @file node, which had clones of the nodes of the source @shadow 
-file and some other codes that I stashed. 
-
-Whenever I changed the source code externally with leo closed, when I open 
-leo, it made recovered nodes. The problem was since @file was placed 
-"later" in the outline, leo kept putting the new changes I made to old, 
-instead of new.
-
-Now I understand how this works. but I think in multiple external file 
-cases, it would make more sense if leo checks the file modification time 
-when it makes decision which node is new, instead of just depending on the 
-order of files in the outline. In above case, it is natural for me to have 
-actual source nodes on the top of the outline and backup nodes on the 
-bottom. Please let me know what you think. 
-
-Best regards,
-Joon
-
-
-
-On Monday, January 16, 2012 6:26:58 AM UTC-6, Edward K. Ream wrote:
-&gt;
-&gt; Some people seem to think that it is difficult to understand how Leo 
-&gt; handles "clone wars":  differing values for a cloned nodes that appear 
-&gt; in several external files.  That's not true.  The rule is:: 
-&gt;
-&gt;     **The last clone that Leo reads wins.** 
-&gt;
-&gt; That is, for any cloned node C, Leo takes the value of C.h and C.b to 
-&gt; be the values specified by the last copy that Leo reads. 
-&gt;
-&gt; There is only one complication:: 
-&gt;
-&gt;     **Leo reads the entire outline before reading any external 
-&gt; files.** 
-&gt;
-&gt; Thus, if C appears in x.leo, y.py and z.py, Leo will choose the value 
-&gt; for C in x.py or y.py, depending on which @&lt;file&gt; node appears later 
-&gt; in the outline. 
-&gt;
-&gt; Notes: 
-&gt;
-&gt; 1. Whenever Leo detects multiple values for C when opening an outline, 
-&gt; Leo creates a "Recovered nodes" tree.  This tree contains all the 
-&gt; various values for C, nicely formatted so that it is easy to determine 
-&gt; where the differences are. 
-&gt;
-&gt; 2. I've just refreshed my memory by looking at the code.  The relevant 
-&gt; methods are: 
-&gt;
-&gt;     fc.getLeoFile # Reads the outline, then calls at.readAll to read 
-&gt; all external files. 
-&gt;     at.indicateNodeChanged # Adds data to c.nodeConflictList 
-&gt;     cacher.reportChangedClone # Adds data to c.nodeConflictList 
-&gt;     fc.handleNodeConflicts # Creates "Recovered Nodes" node and its 
-&gt; children. 
-&gt;
-&gt; 3. The present code is the simplest code that could possibly work. 
-&gt; There is no way Leo is going to do AI in order to implement complex 
-&gt; rules for which clones are "more important" than others.  Thus, if you 
-&gt; use cross-file clones, it is up to *you* to know these rules and 
-&gt; handle any resulting conflicts.  Imo, the "Recovered Nodes" feature is 
-&gt; a big step forward for Leo, and makes it impossible to lose data 
-&gt; unless you willfully refuse to examine the data. 
-&gt;
-&gt; Edward
-
-</t>
-<t tx="ekr.20130526065545.17580">@nocolor
-
-From: &lt;lzyerste@gmail.com&gt;
-
-If I want to use leo to make mathematical notes, how can I type in some
-special mathematical sysbols? Or is there a good way to make mathematical
-notes using leo?
-
-===== Terry
-
-I use itex2MML with reStructuredText.  So within Leo you're looking at
-LaTeX math markup, and you get outputs in PDF and XHTML, with MathML in
-the latter.
-
-===== &lt;jose.i.rojas@gmail.com&gt;
-
-I've been doing this for about a year now.  I use the math docutils 
-directive.  A custom .XCompose file (for example: 
-https://github.com/kragen/xcompose)  also helps.
-
-===== Terry
-
-I think math was added to docutils after I started using itex2mml,
-neater to use docutils built in math now I think.
-
-Although having said that, playing with docutils math a bit suggests
-itex2mml gives more complete support for both MathMML and perhaps LaTeX
-math (with the PDF target).
-
-===== jose
-
-Terry, your setup is probably more flexible, but I haven't had any problems with 
-docutils math. It seems to support all the syntax that I've found necessary.
-
-I forgot to mention that the viewrendered plug-in doesn't display math 
-correctly.  I'm not sure what the problem is, I remember trying to figure 
-it out a while back, but I never got anywhere.  It's not really a big 
-problem though, I have scripts to compile nodes to html/pdfs and open them 
-in firefox/pdf reader; math works fine that way.
-
-===== From: offray@riseup.net
-
-Is not properly Leo, but is python related, tailored for math and with a
-web interface and has leo bindings, check Ipython:
-
-http://ipython.org/
-
-I'm using it for all my math related writing and I think that point the
-future of interactive writing in Python. I dream of a body pane on leo
-with the features of the pyton qt console.
-</t>
 <t tx="ekr.20130526065545.17589">@nocolor
 
 From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
@@ -8147,318 +3102,6 @@ You only need to be concerned about unit tests that start failing after you
 make your changes.
 
 </t>
-<t tx="ekr.20130526065545.17596">@nocolor
-
-From: &lt;fidelperez@gmail.com&gt;
-
-I know a programming IDE
-&lt;http://sourceforge.net/projects/doublesvsoop/&gt;which bases its existence in
-that concept:
-
-You write "code Masks" and whenever you call a piece of code it will ask
-only for the parameters, and write the rest of the code. There are already
-some languages with most of the masks (all the primary functions and some
-complex ones) and its growing.
-
-For instance, if you write:
-
-"window" it will add the window to the code and let you edit the params.
-
-Their functionality would be awesome in Leo and when I know a bit better I
-will try to emulate on it. Sticking to Leo tho since it has a much superior
-way of managing data.
-</t>
-<t tx="ekr.20130526065545.17597">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-On Sun, 5 May 2013 16:35:59 -0700 (PDT) &lt;fidelperez@gmail.com&gt; wrote:
-
-&gt; I know a programming IDE &lt;http://sourceforge.net/projects/doublesvsoop/&gt;which bases its existence in that concept:
-&gt;
-&gt; You write "code Masks" and whenever you call a piece of code it will ask
-&gt; only for the parameters, and write the rest of the code. There are already
-&gt; some languages with most of the masks (all the primary functions and some
-&gt; complex ones) and its growing.
-
-I suspect different people have different things in mind when they talk
-about templates.
-
-Leo's abbreviation system is already quite advanced when it comes to
-filling in skeletons of common code layouts.  I type
-
-  def;;
-
-and I get
-
-  def foo(this, that=3D3):
-      """foo - Return
- 
-      :Parameters:
-      - `this`: &lt;|describe this|&gt;
-      - `that`: &lt;|describe that|&gt;
-      """
- 
-      &lt;|code|&gt;
-
-Two "parameters" are interactively requested, the function name, and
-the list of arguments.  The node name is presented as the default for
-the function name, and 'self' is included in the list of arguments, so,
-assuming the node was already called 'foo', all I type is this, that=3D3.
-The layout above is the rst form of the epydoc/sphinx docstring with
-formally identified parameters.
-
-The cursor is positioned after Return, where the was an empty &lt;||&gt;
-placeholder.  Pressing ,, selects the next placeholder so that typing
-replaces it.
-
-There's more, see
-https://groups.google.com/forum/?fromgroups=3D#!topic/leo-editor/5ni2PwfmBz8
-and the screencast linked from there
-http://www.greygreen.org/tmp/leoabbrev.ogv
-
-Other people, Jacob etc. I think, have been talking about templates
-where the input parameters are stored in the outline, allowing for
-some of them to be altered and the template generation step re-run.
-More like generating a website from data etc.</t>
-<t tx="ekr.20130526065545.17599">@nocolor
-
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-On Wed, Nov 21, 2012 at 8:55 AM, Jo=E3o Alexandre Toledo &lt;
-jalexandretoledo@gmail.com&gt; wrote:
-
-&gt; As I use Leo to write PL/SQL code, I need to write similar text several
-&gt; times, changing only small parts of it. It would be great if I could create
-&gt; a node with the "template" and then clone it everywhere it should be
-&gt; written, and then providing the parameters to be used in this writing.
-
-Variants of this seem to be wanted by many people.  Most recently, there is
-the thread, "Templates with macro expansions",
-https://groups.google.com/forum/?fromgroups=3D#!topic/leo-editor/nF2lUEUtaUE
-
-Does that do what you want?
-
-Edward
-
-</t>
-<t tx="ekr.20130526065545.17600">@nocolor
-
-From: =?UTF-8?Q?Jo=C3=A3o_Alexandre_Toledo?= &lt;jalexandretoledo@gmail.com&gt;
-
-
-Hi.
-
-As I use Leo to write PL/SQL code, I need to write similar text several
-times, changing only small parts of it. It would be great if I could create
-a node with the "template" and then clone it everywhere it should be
-written, and then providing the parameters to be used in this writing.
-
-Let me try to clarify it. I'd like to create a tree like this:
-
- +- @file something.sql
-           +- Section 1
-              + &lt;&lt; Clone &gt;&gt; with Parameters A, B
-           +- Section 2
-              + &lt;&lt; Clone &gt;&gt; with Parameters C, D
-
-In this tree, both "Clone" nodes would be generated from a template
-specified somewhere in the tree, and would have parts of its text replaced
-with values "A" and "B" in Section 1, and "C" and "D" in Section 2.
-
-I've searched but couldn't find anything like this, then I've thought of
-trying to write a hook to intercept the "save" command, but couldn't think
-of a way to pass the parameters; I think the obvious way would be to put
-the parameters after the "&lt;&lt; &gt;&gt;", but then all cloned nodes are changed, so
-it wouldn't work.
-
-Another alternative would be creating some kind of directive @something,
-but I have no idea of how to do that.
-
-Any ideas?
-</t>
-<t tx="ekr.20130526065545.17601">@nocolor
-
-From: =?UTF-8?Q?Fidel_P=C3=A9rez?= &lt;fidelperez@gmail.com&gt;
-
-Thank you Terry, that is exactly what I would like meant.
-
-Is there a website where abbreviation files are shared so newcomers can
-quickly being to use advanced abbreviations?
-Id love to download a python version x)
-
-On Monday, May 6, 2013 5:13:42 AM UTC+2, Terry wrote:
-&gt;
-&gt; On Sun, 5 May 2013 16:35:59 -0700 (PDT)
-&gt; Fidel P=E9rez &lt;fidel...@gmail.com &lt;javascript:&gt;&gt; wrote:
-&gt;
-&gt; &gt; I know a programming IDE &lt;http://sourceforge.net/projects/doublesvsoop/&gt;which
-&gt; bases its existence in that concept:
-&gt; &gt;
-&gt; &gt; You write "code Masks" and whenever you call a piece of code it will ask
-&gt; &gt; only for the parameters, and write the rest of the code. There are
-&gt; already
-&gt; &gt; some languages with most of the masks (all the primary functions and
-&gt; some
-&gt; &gt; complex ones) and its growing.
-&gt;
-&gt; I suspect different people have different things in mind when they talk
-&gt; about templates.
-&gt;
-&gt; Leo's abbreviation system is already quite advanced when it comes to
-&gt; filling in skeletons of common code layouts.  I type
-&gt;
-&gt;   def;;
-&gt;
-&gt; and I get
-&gt;
-&gt;   def foo(this, that=3D3):
-&gt;       """foo - Return
-&gt;  
-&gt;       :Parameters:
-&gt;       - `this`: &lt;|describe this|&gt;
-&gt;       - `that`: &lt;|describe that|&gt;
-&gt;       """
-&gt;  
-&gt;       &lt;|code|&gt;
-&gt;
-&gt; Two "parameters" are interactively requested, the function name, and
-&gt; the list of arguments.  The node name is presented as the default for
-&gt; the function name, and 'self' is included in the list of arguments, so,
-&gt; assuming the node was already called 'foo', all I type is this, that=3D3.
-&gt; The layout above is the rst form of the epydoc/sphinx docstring with
-&gt; formally identified parameters.
-&gt;
-&gt; The cursor is positioned after Return, where the was an empty &lt;||&gt;
-&gt; placeholder.  Pressing ,, selects the next placeholder so that typing
-&gt; replaces it.
-&gt;
-&gt; There's more, see
-&gt; https://groups.google.com/forum/?fromgroups=3D#!topic/leo-editor/5ni2PwfmBz8
-&gt; and the screencast linked from there
-&gt; http://www.greygreen.org/tmp/leoabbrev.ogv
-&gt;
-&gt; Other people, Jacob etc. I think, have been talking about templates
-&gt; where the input parameters are stored in the outline, allowing for
-&gt; some of them to be altered and the template generation step re-run.
-&gt; More like generating a website from data etc.
-&gt;
-&gt; Cheers -Terry
-&gt;
-
-</t>
-<t tx="ekr.20130526065545.17602">@nocolor
-
-From: =?UTF-8?Q?Jo=C3=A3o_Alexandre_Toledo?= &lt;jalexandretoledo@gmail.com&gt;
-
-I've tried it and it's great, I think it will be useful, but it's not what
-I was thinking of...
-
-Let me try to explain what I had tougth about... What I would like to do is:
-
- 1. create a new .leo file
- 2. add a "template" node (eventually with sub nodes) with some ${schema}
-and ${table} macro place holders in its contents
- 3. add a @file node to the .leo file
- 4. add to this @file node a new one with definitions such as
-schema=3DSCHEMA_NAME and table=3DTABLE_NAME
- 5. add as a sub node to this last one a clone from the "template" node;
- 6. then, when I save everything, the @file would have "SCHEMA_NAME" and
-"TABLE_NAME" everywhere a "${schema}" or a "${table}" were in the original
-template node.
-
-It would be important that, when I reopen the .leo file later, the macros
-in the @file node where shown as ${schema} and ${table}, and not as it's
-substituted text.
-
-Now that I've described it, I can't see how it would be done... The
-${macro} place holders should be on the contents of the @file node, so
-after substitution, how could we recover it?
-
-That's also why the code from Jacob is not what I need (but I'm already
-thinking of other uses for it :) ): it will create a text when the button
-is pressed, but the generated nodes will be just static text.
-</t>
-<t tx="ekr.20130526065545.17603">@nocolor
-
-From: Sheng &lt;jmmxwll@gmail.com&gt;
-
-Hello,
-I recently discovered Leo in my search for an editor or IDE for python 
-programming -- I'm a beginner but am working on a larger project and trying 
-out a modular approach requiring organisation of lots of files. Leo would 
-be an attractive option if not for various obstacles, including among 
-others the following:
-
-  1. Doesn't automatically open previously loaded workbooks, or by file 
-click
-     * Even when file directly clicked, doesn't open.
-     * Only opens from File menu. Annoying &amp; inconvenient. 
-  2. Same file as node opened in notepad then edited while still open in 
-Leo doesn't update, even on refresh.
-  3. Does not open python files in Idle with selection of menu item: File 
---&gt; Open With --&gt; Idle
-  
-I'm on Windows 8. I've already spent several hours solving other problems 
-and reading Leo documentation. Any links or tips to overcome these problems 
-quickly would be appreciated.
-
-Sheng.
-
-</t>
-<t tx="ekr.20130526065545.17604">@nocolor
-
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-
-
-On Tue, May 7, 2013 at 2:09 AM, Sheng &lt;jmmxwll@gmail.com&gt; wrote:
-
-
-&gt; Leo would be an attractive option if not for various obstacles, including
-&gt; among others the following:
-&gt;
-&gt;   1. Doesn't automatically open previously loaded workbooks, or by file
-&gt; click
-&gt;      * Even when file directly clicked, doesn't open.
-&gt;      * Only opens from File menu. Annoying &amp; inconvenient.
-&gt;
-
-You must set the file association manually, at present.  Getting this to
-happen automatically is a top priority.
-
-Hmm.  It seems like setting file associations isn't documented anywhere.
-That's a major hole.
-
-We are currently discussing this topic in this thread:
-Bat file launchers for nightly builds:
-https://groups.google.com/forum/?fromgroups=#!topic/leo-editor/li9ILUWuNAs
-Anyone want to summarize the results?
-
-  2. Same file as node opened in notepad then edited while still open in
-&gt; Leo doesn't update, even on refresh.
-&gt;
-
-The vim and xemacs plugins do an automatic refresh.  It won't be possible
-to update Leo automagically from scite until you save the file in site.
-This could be called a bug: please feel free to file a bug report.
-
-
-&gt;   3. Does not open python files in Idle with selection of menu item: File
-&gt; --&gt; Open With --&gt; Idle
-&gt;
-
-OpenWith:Idle opens a Leo *node*, not a file.  However, you could use @edit
-to put an entire file into a node, and then open the @edit node with Idle.
-
-I personally never use Idle, which is probably why OpenWith:Idle isn't very
-useful.  Instead, I use g.pdb.
-
-Thanks for your comments.  Please feel free to continue this conversation.
-
-Edward
-
-</t>
 <t tx="ekr.20130526065545.17606">@nocolor
 
 From: =?UTF-8?Q?Fidel_P=C3=A9rez?= &lt;fidelperez@gmail.com&gt;
@@ -8556,77 +3199,6 @@ but leolaunchleo.py doesnt even exist anymore (the post is old).
   workbook) at least until the user changes some config and prevents that
   from happening. Is there any "load previous tabs" functionality? (IE open
   the Leo files which where open when it was closed the last time)
-</t>
-<t tx="ekr.20130526065545.17614">@nocolor
-
-From: gatesphere &lt;gatesphere@gmail.com&gt;
-
-Looks really interesting, Ville!  Thanks for sharing, looking forward to 
-diving in.
-
-I'm thinking of some uses for in a rulebook and a few blog posts I'm 
-writing right now.  Being able to have my document be executable seems 
-awesome.
-
---&gt;Jake
-</t>
-<t tx="ekr.20130526065545.17615">@nocolor
-
-From: HaveF &lt;iamaplayer@gmail.com&gt;
-
-
-Thanks!
-
-Although it beyond my current requirements, maybe, 
-I need to read valuespace_example.leo to find more typical usage.
-
-On Tuesday, May 14, 2013 4:15:12 AM UTC+8, Ville M. Vainio wrote:
-&gt;
-&gt; This one is not "exhaustive", but in the interest of time management, I 
-&gt; decided to push it as is. I'll blog about more features later on.
-&gt;
-&gt; http://leo-editor.github.io/valuespace-intro.html
-&gt;
-&gt; Hope it already helps alleviate the mystery of what it's all about :)
-&gt;
-
-</t>
-<t tx="ekr.20130526065545.17616">@nocolor
-
-From: Matt Wilkie &lt;maphew@gmail.com&gt;
-
-Thank you so much Ville.
-
-That looks awesomely powerful. And I have a use for the json slurper right
-now! I can't wait to try it out.
-</t>
-<t tx="ekr.20130526065545.17617">@nocolor
-
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-
-
-On Mon, May 13, 2013 at 3:15 PM, Ville M. Vainio &lt;vivainio@gmail.com&gt; wrote:
-
-&gt; This one is not "exhaustive", but in the interest of time management, I
-&gt; decided to push it as is. I'll blog about more features later on.
-&gt;
-&gt; http://leo-editor.github.io/valuespace-intro.html
-&gt;
-
-Thanks Ville, I'll look at it in detail later today.
-</t>
-<t tx="ekr.20130526065545.17618">@nocolor
-
-From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
-
-This one is not "exhaustive", but in the interest of time management, I
-decided to push it as is. I'll blog about more features later on.
-
-http://leo-editor.github.io/valuespace-intro.html
-
-Hope it already helps alleviate the mystery of what it's all about :)
-
 </t>
 <t tx="ekr.20130526065545.17620">@nocolor
 
@@ -8907,253 +3479,6 @@ situation now we have print.
 Too late?
 
 </t>
-<t tx="ekr.20130526065545.17625">@nocolor
-
-From: =?UTF-8?Q?Fidel_P=C3=A9rez?= &lt;fidelperez@gmail.com&gt;
-
-Sounds great!
-So, in the search results, will I be able to know how to call that function?
-IE, if I find insertIconFromFile, will I be able to know that I can call it
-through using c.editCommands.insertIconFromFile?
-
-
-On Monday, May 20, 2013 3:47:35 PM UTC+2, Terry wrote:
-&gt;
-&gt; On Mon, 20 May 2013 04:00:59 -0700 (PDT)
-&gt; Fidel P=E9rez &lt;fidel...@gmail.com &lt;javascript:&gt;&gt; wrote:
-&gt;
-&gt; &gt; Ok, in order to print icons, the code is this:
-&gt; &gt;
-&gt; &gt; c.editCommands.insertIconFromFile(path)
-&gt; &gt;
-&gt; &gt; Im quoting from this Leo manual&lt;
-&gt; http://leoeditor.com/scripting.html#import-objects&gt;,
-&gt; &gt; "inserting and deleting icons" section -_-
-&gt; &gt;
-&gt; &gt; Although I still have a mess on which functions can be called how, and
-&gt; &gt; where to find the list of classes that can be called such as
-&gt; "editCommands"
-&gt; &gt; and the rest that they might exist.
-&gt;
-&gt; I'm not aware of a general solution to the problem of finding the
-&gt; various pieces of Leo's class structure.  Basically there are all these
-&gt; classes defined in the source, and instances of these are attached to
-&gt; each other in a hierarchical network (with loops).
-&gt;
-&gt; I've written an introspection function which lists the methods and
-&gt; instance variables (and class variables) of an arbitrary object by name
-&gt; and by type.  I should release it.  It builds its lists in a Leo
-&gt; outline, so you can navigate around that outline and expand nodes by
-&gt; introspection as needed.
-&gt;
-&gt; It occurs to me that the same code could be used to search Leo's
-&gt; runtime object hierarchy for you, i.e. you enter 'insertIconFromFile'
-&gt; and it recursively searches for it.
-&gt;
-&gt; Cheers -Terry
-&gt;
-
-</t>
-<t tx="ekr.20130526065545.17626">@nocolor
-
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-On Mon, May 20, 2013 at 8:47 AM, Terry Brown &lt;terry_n_brown@yahoo.com&gt;wrote:
-
-&gt; On Mon, 20 May 2013 04:00:59 -0700 (PDT)
-&gt; Fidel P=C3=A9rez &lt;fidelperez@gmail.com&gt; wrote:
-&gt;
-
-&gt; Although I still have a mess on which functions can be called how, and
-&gt; where to find the list of classes that can be called such as
-"editCommands"
-&gt; and the rest that they might exist.
-
-I'm not aware of a general solution to the problem of finding the
-&gt; various pieces of Leo's class structure.  Basically there are all these
-&gt; classes defined in the source, and instances of these are attached to
-&gt; each other in a hierarchical network (with loops).
-&gt;
-
-I suppose you could say that there is no general solution, but the
-situation isn't really all that difficult.
-
-Start with c.  We know what that is:  it is a commander object representing
-an open outline.
-
-There are **official ivars** of c, all referring to wrapper classes defined
-in leoFrame.py:
-
-c.frame: an instance of leoFrame.
-c.frame.tree: an instance of  leoTree.
-c.frame.body: an instance of leoBody.
-c.frame.log: an instance of leoLog.
-
-The tree, body and log objects have a *ctrl* objects, which are *wrapper*
-classes:
-
-c.frame.tree.treeCtrl
-c.frame.body.bodyCtrl
-c.frame.log.logCtrl
-
-In particular, see
-http://leoeditor.com/scripting.html#c-frame-body-bodyctrlfor a
-description of the high-level text interface supported by all
-high-level text widgets, including the log and body classes.
-
-These wrapper classes have a widget ivar, which is a reference to the
-corresponding Qt widget object.  For example::
-
-    import PyQt4.QtGui as QtGui
-    w =3D c.frame.body.bodyCtrl.widget
-    g.es(w)
-    g.es(isinstance(w,QtGui.QTextBrowser)
-
-yields::
-
-    (LeoQTextBrowser) 62418136
-    True
-
-As shown, the LeoQTextBrowser class is a real (subclass of) QTextBrowser.
-
-HTH.  I've made a note to discuss official ivars in more detail in the
-scripting chapter.
-</t>
-<t tx="ekr.20130526065545.17627">@nocolor
-
-From: =?UTF-8?Q?Fidel_P=C3=A9rez?= &lt;fidelperez@gmail.com&gt;
-Content-Transfer-Encoding: quoted-printable
-
-Ok, in order to print icons, the code is this:
-
-c.editCommands.insertIconFromFile(path)
-
-Im quoting from this Leo manual&lt;http://leoeditor.com/scripting.html#import-objects&gt;,
-"inserting and deleting icons" section -_-
-
-Although I still have a mess on which functions can be called how, and
-where to find the list of classes that can be called such as "editCommands"
-and the rest that they might exist.
-Thanks!
-
-On Sunday, May 19, 2013 12:43:50 PM UTC+2, Fidel P=E9rez wrote:
-&gt;
-&gt; Hi, I am going through something similar Matt Wilkie went through in this
-&gt; post&lt;https://groups.google.com/forum/?fromgroups=3D#!searchin/leo-editor/leopyref/leo-editor/pWyd5ae952I/kvxf_H-QBq4J&gt;
-&gt; .
-&gt;
-&gt; Basically I can find interesting functions in LeoPyRef.leo but I dont know
-&gt; how to access them from my new leo scripts.
-&gt;
-&gt; I dont get the difference when I have to call them using g.Functionname(),
-&gt; c.functionname(), or when those wont do.
-&gt;
-&gt; How can I call the function "insertIconFromFile"?
-&gt; How can I know how to call functions found in LeoPyRef.leo?
-&gt;
-&gt; Thanks!
-&gt;
-&gt; Pd: When I get that, I will already have a bookmarks importer from
-&gt; chrome/mozilla which will also import the icons of the links! x)
-&gt; I will prepare some more interesting utils (import mindmap, etc) then
-&gt; release them together with manuals oriented to noob users.
-&gt;
-
-</t>
-<t tx="ekr.20130526065545.17628">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-On Mon, 20 May 2013 04:00:59 -0700 (PDT) &lt;fidelperez@gmail.com&gt; wrote:
-
-&gt; Ok, in order to print icons, the code is this:
-&gt;
-&gt; c.editCommands.insertIconFromFile(path)
-&gt;
-&gt; Im quoting from this Leo manual&lt;http://leoeditor.com/scripting.html#import-objects&gt;,
-&gt; "inserting and deleting icons" section -_-
-&gt;
-&gt; Although I still have a mess on which functions can be called how, and
-&gt; where to find the list of classes that can be called such as "editCommands"
-&gt; and the rest that they might exist.
-
-I'm not aware of a general solution to the problem of finding the
-various pieces of Leo's class structure.  Basically there are all these
-classes defined in the source, and instances of these are attached to
-each other in a hierarchical network (with loops).
-
-I've written an introspection function which lists the methods and
-instance variables (and class variables) of an arbitrary object by name
-and by type.  I should release it.  It builds its lists in a Leo
-outline, so you can navigate around that outline and expand nodes by
-introspection as needed.
-
-It occurs to me that the same code could be used to search Leo's
-runtime object hierarchy for you, i.e. you enter 'insertIconFromFile'
-and it recursively searches for it.
-
-Cheers -Terry
-
-</t>
-<t tx="ekr.20130526065545.17629">@nocolor
-
-From: &lt;fidelperez@gmail.com&gt;
-
-I am going through something similar Matt Wilkie went through in this
-post&lt;https://groups.google.com/forum/?fromgroups=#!searchin/leo-editor/leopyref/leo-editor/pWyd5ae952I/kvxf_H-QBq4J&gt;
-.
-
-Basically I can find interesting functions in LeoPyRef.leo but I dont know 
-how to access them from my new leo scripts.
-
-I dont get the difference when I have to call them using g.Functionname(), 
-c.functionname(), or when those wont do.
-
-How can I call the function "insertIconFromFile"?
-How can I know how to call functions found in LeoPyRef.leo?
-
-Thanks!
-
-Ps: When I get that, I will already have a bookmarks importer from 
-chrome/mozilla which will also import the icons of the links! x)
-I will prepare some more interesting utils (import mindmap, etc) then 
-release them together with manuals oriented to noob users.
-
-</t>
-<t tx="ekr.20130526065545.17630">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-On Mon, 20 May 2013 08:47:35 -0500
-Terry Brown &lt;terry_n_brown@yahoo.com&gt; wrote:
-
-&gt; On Mon, 20 May 2013 04:00:59 -0700 (PDT)
-&gt; Fidel P=E9rez &lt;fidelperez@gmail.com&gt; wrote:
-&gt;
-&gt; &gt; Ok, in order to print icons, the code is this:
-&gt; &gt;
-&gt; &gt; c.editCommands.insertIconFromFile(path)
-&gt; &gt;
-&gt; &gt; Im quoting from this Leo manual&lt;http://leoeditor.com/scripting.html#import-objects&gt;,
-&gt; &gt; "inserting and deleting icons" section -_-
-&gt; &gt;
-&gt; &gt; Although I still have a mess on which functions can be called how, and
-&gt; &gt; where to find the list of classes that can be called such as "editCommands"
-&gt; &gt; and the rest that they might exist.
-&gt;
-&gt; I'm not aware of a general solution to the problem of finding the
-&gt; various pieces of Leo's class structure.  Basically there are all these
-&gt; classes defined in the source, and instances of these are attached to
-&gt; each other in a hierarchical network (with loops).
-
-I didn't really finish the above para.  The problem is that it's hard
-to guess what the names of the attachment points are, and the attaching
-is done in a variety of places, sometimes by factory functions which
-further obscure linkages.  Not a fault with Leo, just the way programs
-work.  So the tool I've written may be the best approach to mapping
-Leo's runtime structure. Another thing it could do, try and map 'major'
-classes, or at least classes from leo.core.* - i.e. ignore the built in
-types.</t>
 <t tx="ekr.20130526065545.17633">@nocolor
 
 From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
@@ -9391,13 +3716,9 @@ if __name__ == '__main__':
 <t tx="ekr.20130803073926.17113"></t>
 <t tx="ekr.20130803073926.17114"></t>
 <t tx="ekr.20130803073926.17115"></t>
-<t tx="ekr.20130803073926.17116"></t>
-<t tx="ekr.20130803073926.17117"></t>
-<t tx="ekr.20130803073926.17119"></t>
 <t tx="ekr.20130803073926.17122"></t>
 <t tx="ekr.20130803073926.17123"></t>
 <t tx="ekr.20130803073926.17124"></t>
-<t tx="ekr.20130803073926.17125"></t>
 <t tx="ekr.20130803125244.17080">Installing Leo on Windows
 
     Install Python from http://www.python.org/download/releases/
@@ -9555,6 +3876,9496 @@ Also these appear to exist in leo but they do not appear in commands.html:
 I am particularly interested in the various enter-x-mode commands. Have
 these been moved to @mode nodes in leoSettings files? Where can I find
 them? </t>
+<t tx="ekr.20130806072439.18495">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+
+--===============6499910529404615799==
+Content-Type: text/plain; charset=ISO-8859-1
+MIME-Version: 1.0
+
+I\'ve added ``vs-eval``, ``vs-last``, and ``vs-last-pretty`` commands to
+the ``valuespace.py`` plug-in.  Update docs below.
+
+Ville - if you don\'t want them in there, let me know and I\'ll move them
+- I put them in there to avoid creating yet another plug-in, they\'re
+sort of a light weight local calculation tool, vs. ``valuespace.py``\'s
+outline wide calcs.
+
+valuespace.py
+=============
+
+vs-eval
+-------
+
+Execute the selected text, if any.  Select next line of text.
+    
+Tries hard to capture the result of from the last expression in the
+selected text::
+    
+    import datetime
+    today = datetime.date.today()
+    
+will captue the value of ``today`` even though the last line is a
+statement, not an expression.
+    
+Stores results in ``c.vs[\'_last\']`` for insertion
+into body by ``vs-last`` or ``vs-last-pretty``.
+
+Removes common indentation (``textwrap.dedent()``) before executing,
+allowing execution of indented code.
+
+``g``, ``c``, and ``p`` are available to executing code, assignments
+are made in the ``c.vs`` namespace and persist for the life of ``c``.
+    
+vs-last
+-------
+
+Insert the last result from ``vs-eval``.  Inserted as a string,
+so ``"1\\n2\\n3\\n4"`` will cover four lines and insert no quotes,
+for ``repr()`` style insertion use ``vs-last-pretty``.
+    
+vs-last-pretty
+--------------
+
+Insert the last result from ``vs-eval``.  Formatted by
+``pprint.pformat()``,  so ``"1\\n2\\n3\\n4"`` will appear as
+\'``"1\\n2\\n3\\n4"``\', see all ``vs-last``.
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+For more options, visit https://groups.google.com/groups/opt_out.
+
+
+
+--===============6499910529404615799==
+Content-Type: text/html; charset=ISO-8859-1
+MIME-Version: 1.0
+
+&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+&lt;meta name="generator" content="Docutils 0.8.1: http://docutils.sourceforge.net/" /&gt;
+&lt;title&gt;&lt;/title&gt;
+&lt;style type="text/css"&gt;
+
+/*
+TNB mods.
+
+:Author: David Goodger (goodger@python.org)
+:Id: $Id: html4css1.css 6194 2009-11-11 12:05:10Z milde $
+:Copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+
+See http://docutils.sf.net/docs/howto/html-stylesheets.html for how to
+customize this style sheet.
+*/
+
+/* used to remove borders from tables and images */
+.borderless, table.borderless td, table.borderless th {
+  border: 0 }
+
+table.borderless td, table.borderless th {
+  /* Override padding for "table.docutils td" with "! important".
+     The right padding separates the table cells. */
+  padding: 0 0.5em 0 0 ! important }
+
+.first {
+  /* Override more specific margin styles with "! important". */
+  margin-top: 0 ! important }
+
+.last, .with-subtitle {
+  margin-bottom: 0 ! important }
+
+.hidden {
+  display: none }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+blockquote.epigraph {
+  margin: 2em 5em ; }
+
+dl.docutils dd {
+  margin-bottom: 0.5em; margin-left: 2em }
+
+dl.docutils dt {
+  font-weight: bold }
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.admonition, div.attention, div.caution, div.danger, div.error,
+div.hint, div.important, div.note, div.tip, div.warning {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.admonition p.admonition-title, div.hint p.admonition-title,
+div.important p.admonition-title, div.note p.admonition-title,
+div.tip p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+/* Uncomment (and remove this text!) to get reduced vertical space in
+   compound paragraphs.
+div.compound .compound-first, div.compound .compound-middle {
+  margin-bottom: 0.5em }
+
+div.compound .compound-last, div.compound .compound-middle {
+  margin-top: 0.5em }
+*/
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+div.footer, div.header {
+  clear: both;
+  font-size: smaller }
+
+div.line-block {
+  display: block ;
+  margin-top: 1em ;
+  margin-bottom: 1em }
+
+div.line-block div.line-block {
+  margin-top: 0 ;
+  margin-bottom: 0 ;
+  margin-left: 1.5em }
+
+div.sidebar {
+  margin: 0 0 0.5em 1em ;
+  border: medium outset ;
+  padding: 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.section-subtitle, h2.section-subtitle, h3.section-subtitle,
+h4.section-subtitle, h5.section-subtitle, h6.section-subtitle {
+  margin-top: 0.4em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+hr.docutils {
+  width: 75% }
+
+img.align-left, .figure.align-left{
+  clear: left ;
+  float: left ;
+  margin-right: 1em }
+
+img.align-right, .figure.align-right {
+  clear: right ;
+  float: right ;
+  margin-left: 1em }
+
+img.align-center, .figure.align-center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.align-left {
+  text-align: left }
+
+.align-center {
+  clear: both ;
+  text-align: center }
+
+.align-right {
+  text-align: right }
+
+/* reset inner alignment in figures */
+div.align-right {
+  text-align: left }
+
+/* div.align-center * { */
+/*   text-align: left } */
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font: inherit }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+span.section-subtitle {
+  /* font-size relative to parent (h1..h6 element) */
+  font-size: 80% }
+
+table.citation {
+  border-left: solid 1px gray;
+  margin-left: 1px }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.docutils {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.footnote {
+  border-left: solid 1px black;
+  margin-left: 1px }
+
+table.docutils td, table.docutils th,
+table.docinfo td, table.docinfo th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+table.docutils th.field-name, table.docinfo th.docinfo-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap ;
+  padding-left: 0 }
+
+h1 tt.docutils, h2 tt.docutils, h3 tt.docutils,
+h4 tt.docutils, h5 tt.docutils, h6 tt.docutils {
+  font-size: 100% }
+
+ul.auto-toc {
+  list-style-type: none }
+
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="document"&gt;
+
+
+&lt;p&gt;I\'ve added &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;vs-eval&lt;/span&gt;&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;vs-last&lt;/span&gt;&lt;/tt&gt;, and &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;vs-last-pretty&lt;/span&gt;&lt;/tt&gt; commands to
+the &lt;tt class="docutils literal"&gt;valuespace.py&lt;/tt&gt; plug-in.  Update docs below.&lt;/p&gt;
+&lt;p&gt;Ville - if you don\'t want them in there, let me know and I\'ll move them
+- I put them in there to avoid creating yet another plug-in, they\'re
+sort of a light weight local calculation tool, vs. &lt;tt class="docutils literal"&gt;valuespace.py&lt;/tt&gt;\'s
+outline wide calcs.&lt;/p&gt;
+&lt;div class="section" id="valuespace-py"&gt;
+&lt;h1&gt;valuespace.py&lt;/h1&gt;
+&lt;div class="section" id="vs-eval"&gt;
+&lt;h2&gt;vs-eval&lt;/h2&gt;
+&lt;p&gt;Execute the selected text, if any.  Select next line of text.&lt;/p&gt;
+&lt;p&gt;Tries hard to capture the result of from the last expression in the
+selected text:&lt;/p&gt;
+&lt;pre class="literal-block"&gt;
+import datetime
+today = datetime.date.today()
+&lt;/pre&gt;
+&lt;p&gt;will captue the value of &lt;tt class="docutils literal"&gt;today&lt;/tt&gt; even though the last line is a
+statement, not an expression.&lt;/p&gt;
+&lt;p&gt;Stores results in &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;c.vs[\'_last\']&lt;/span&gt;&lt;/tt&gt; for insertion
+into body by &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;vs-last&lt;/span&gt;&lt;/tt&gt; or &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;vs-last-pretty&lt;/span&gt;&lt;/tt&gt;.&lt;/p&gt;
+&lt;p&gt;Removes common indentation (&lt;tt class="docutils literal"&gt;textwrap.dedent()&lt;/tt&gt;) before executing,
+allowing execution of indented code.&lt;/p&gt;
+&lt;p&gt;&lt;tt class="docutils literal"&gt;g&lt;/tt&gt;, &lt;tt class="docutils literal"&gt;c&lt;/tt&gt;, and &lt;tt class="docutils literal"&gt;p&lt;/tt&gt; are available to executing code, assignments
+are made in the &lt;tt class="docutils literal"&gt;c.vs&lt;/tt&gt; namespace and persist for the life of &lt;tt class="docutils literal"&gt;c&lt;/tt&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="vs-last"&gt;
+&lt;h2&gt;vs-last&lt;/h2&gt;
+&lt;p&gt;Insert the last result from &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;vs-eval&lt;/span&gt;&lt;/tt&gt;.  Inserted as a string,
+so &lt;tt class="docutils literal"&gt;&amp;quot;1\\n2\\n3\\n4&amp;quot;&lt;/tt&gt; will cover four lines and insert no quotes,
+for &lt;tt class="docutils literal"&gt;repr()&lt;/tt&gt; style insertion use &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;vs-last-pretty&lt;/span&gt;&lt;/tt&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class="section" id="vs-last-pretty"&gt;
+&lt;h2&gt;vs-last-pretty&lt;/h2&gt;
+&lt;p&gt;Insert the last result from &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;vs-eval&lt;/span&gt;&lt;/tt&gt;.  Formatted by
+&lt;tt class="docutils literal"&gt;pprint.pformat()&lt;/tt&gt;,  so &lt;tt class="docutils literal"&gt;&amp;quot;1\\n2\\n3\\n4&amp;quot;&lt;/tt&gt; will appear as
+\'&lt;tt class="docutils literal"&gt;&amp;quot;1\\n2\\n3\\n4&amp;quot;&lt;/tt&gt;\', see all &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;vs-last&lt;/span&gt;&lt;/tt&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+-- &lt;br /&gt;
+You received this message because you are subscribed to the Google Groups &amp;quot;leo-editor&amp;quot; group.&lt;br /&gt;
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.&lt;br /&gt;
+&lt;br /&gt;
+Visit this group at &lt;a href="http://groups.google.com/group/leo-editor?hl=en"&gt;http://groups.google.com/group/leo-editor?hl=en&lt;/a&gt;.&lt;br /&gt;
+For more options, visit &lt;a href="https://groups.google.com/groups/opt_out"&gt;https://groups.google.com/groups/opt_out&lt;/a&gt;.&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+
+--===============6499910529404615799==--</t>
+<t tx="ekr.20130806072439.18496">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
+
+--f46d04339d40de1c7b04d6cde5b1
+Content-Type: text/plain; charset=ISO-8859-1
+
+Tried it out.
+
+vs-last didn\'t work (returned None every time), vs-last-pretty did. I
+pushed a fix to bzr.
+
+
+On Thu, Feb 28, 2013 at 4:59 PM, Terry Brown &lt;terry_n_brown@yahoo.com&gt;wrote:
+
+&gt; ** **
+&gt;
+&gt; I\'ve added vs-eval, vs-last, and vs-last-pretty commands to the
+&gt; valuespace.py plug-in. Update docs below.
+&gt;
+&gt; Ville - if you don\'t want them in there, let me know and I\'ll move them -
+&gt; I put them in there to avoid creating yet another plug-in, they\'re sort of
+&gt; a light weight local calculation tool, vs. valuespace.py\'s outline wide
+&gt; calcs.
+&gt;  valuespace.py
+&gt; vs-eval
+&gt;
+&gt; Execute the selected text, if any. Select next line of text.
+&gt;
+&gt; Tries hard to capture the result of from the last expression in the
+&gt; selected text:
+&gt;
+&gt; import datetime
+&gt; today = datetime.date.today()
+&gt;
+&gt; will captue the value of today even though the last line is a statement,
+&gt; not an expression.
+&gt;
+&gt; Stores results in c.vs[\'_last\'] for insertion into body by vs-last or
+&gt; vs-last-pretty.
+&gt;
+&gt; Removes common indentation (textwrap.dedent()) before executing, allowing
+&gt; execution of indented code.
+&gt;
+&gt; g, c, and p are available to executing code, assignments are made in the
+&gt; c.vs namespace and persist for the life of c.
+&gt;  vs-last
+&gt;
+&gt; Insert the last result from vs-eval. Inserted as a string, so "1\\n2\\n3\\n4"will cover four lines and insert no quotes, for
+&gt; repr() style insertion use vs-last-pretty.
+&gt;  vs-last-pretty
+&gt;
+&gt; Insert the last result from vs-eval. Formatted by pprint.pformat(), so
+&gt; "1\\n2\\n3\\n4" will appear as \'"1\\n2\\n3\\n4"\', see all vs-last.
+&gt;
+&gt; --
+&gt; You received this message because you are subscribed to the Google Groups
+&gt; "leo-editor" group.
+&gt; To unsubscribe from this group and stop receiving emails from it, send an
+&gt; email to leo-editor+unsubscribe@googlegroups.com.
+&gt; 
+&gt; Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+&gt; For more options, visit https://groups.google.com/groups/opt_out.
+&gt;
+&gt;
+&gt;
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+For more options, visit https://groups.google.com/groups/opt_out.
+
+
+
+--f46d04339d40de1c7b04d6cde5b1
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+&lt;div dir=3D"ltr"&gt;&lt;div style&gt;Tried it out.&lt;/div&gt;&lt;div style&gt;&lt;br&gt;&lt;/div&gt;vs-last=
+ didn&amp;#39;t work (returned None every time), vs-last-pretty did. I pushed a=
+ fix to bzr.&lt;/div&gt;&lt;div class=3D"gmail_extra"&gt;&lt;br&gt;&lt;br&gt;&lt;div class=3D"gmail_qu=
+ote"&gt;
+On Thu, Feb 28, 2013 at 4:59 PM, Terry Brown &lt;span dir=3D"ltr"&gt;&amp;lt;&lt;a href=
+=3D"mailto:terry_n_brown@yahoo.com" target=3D"_blank"&gt;terry_n_brown@yahoo.c=
+om&lt;/a&gt;&amp;gt;&lt;/span&gt; wrote:&lt;br&gt;&lt;blockquote class=3D"gmail_quote" style=3D"marg=
+in:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex"&gt;
+&lt;u&gt;&lt;/u&gt;
+&lt;u&gt;&lt;/u&gt;
+
+
+
+
+
+
+
+&lt;div&gt;
+&lt;div&gt;
+
+
+&lt;p&gt;I&amp;#39;ve added &lt;tt&gt;&lt;span&gt;vs-eval&lt;/span&gt;&lt;/tt&gt;, &lt;tt&gt;&lt;span&gt;vs-last&lt;/span&gt;&lt;/=
+tt&gt;, and &lt;tt&gt;&lt;span&gt;vs-last-pretty&lt;/span&gt;&lt;/tt&gt; commands to
+the &lt;tt&gt;valuespace.py&lt;/tt&gt; plug-in.  Update docs below.&lt;/p&gt;
+&lt;p&gt;Ville - if you don&amp;#39;t want them in there, let me know and I&amp;#39;ll mo=
+ve them
+- I put them in there to avoid creating yet another plug-in, they&amp;#39;re
+sort of a light weight local calculation tool, vs. &lt;tt&gt;valuespace.py&lt;/tt&gt;&amp;#=
+39;s
+outline wide calcs.&lt;/p&gt;
+&lt;div&gt;
+&lt;h1&gt;valuespace.py&lt;/h1&gt;
+&lt;div&gt;
+&lt;h2&gt;vs-eval&lt;/h2&gt;
+&lt;p&gt;Execute the selected text, if any.  Select next line of text.&lt;/p&gt;
+&lt;p&gt;Tries hard to capture the result of from the last expression in the
+selected text:&lt;/p&gt;
+&lt;pre&gt;import datetime
+today =3D datetime.date.today()
+&lt;/pre&gt;
+&lt;p&gt;will captue the value of &lt;tt&gt;today&lt;/tt&gt; even though the last line is a
+statement, not an expression.&lt;/p&gt;
+&lt;p&gt;Stores results in &lt;tt&gt;&lt;span&gt;c.vs[&amp;#39;_last&amp;#39;]&lt;/span&gt;&lt;/tt&gt; for insert=
+ion
+into body by &lt;tt&gt;&lt;span&gt;vs-last&lt;/span&gt;&lt;/tt&gt; or &lt;tt&gt;&lt;span&gt;vs-last-pretty&lt;/spa=
+n&gt;&lt;/tt&gt;.&lt;/p&gt;
+&lt;p&gt;Removes common indentation (&lt;tt&gt;textwrap.dedent()&lt;/tt&gt;) before executing=
+,
+allowing execution of indented code.&lt;/p&gt;
+&lt;p&gt;&lt;tt&gt;g&lt;/tt&gt;, &lt;tt&gt;c&lt;/tt&gt;, and &lt;tt&gt;p&lt;/tt&gt; are available to executing code, =
+assignments
+are made in the &lt;tt&gt;c.vs&lt;/tt&gt; namespace and persist for the life of &lt;tt&gt;c&lt;/=
+tt&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;h2&gt;vs-last&lt;/h2&gt;
+&lt;p&gt;Insert the last result from &lt;tt&gt;&lt;span&gt;vs-eval&lt;/span&gt;&lt;/tt&gt;.  Inserted as =
+a string,
+so &lt;tt&gt;&amp;quot;1\\n2\\n3\\n4&amp;quot;&lt;/tt&gt; will cover four lines and insert no quot=
+es,
+for &lt;tt&gt;repr()&lt;/tt&gt; style insertion use &lt;tt&gt;&lt;span&gt;vs-last-pretty&lt;/span&gt;&lt;/tt=
+&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;h2&gt;vs-last-pretty&lt;/h2&gt;
+&lt;p&gt;Insert the last result from &lt;tt&gt;&lt;span&gt;vs-eval&lt;/span&gt;&lt;/tt&gt;.  Formatted by
+&lt;tt&gt;pprint.pformat()&lt;/tt&gt;,  so &lt;tt&gt;&amp;quot;1\\n2\\n3\\n4&amp;quot;&lt;/tt&gt; will appear =
+as
+&amp;#39;&lt;tt&gt;&amp;quot;1\\n2\\n3\\n4&amp;quot;&lt;/tt&gt;&amp;#39;, see all &lt;tt&gt;&lt;span&gt;vs-last&lt;/span&gt;=
+&lt;/tt&gt;.&lt;/p&gt;&lt;span class=3D"HOEnZb"&gt;&lt;font color=3D"#888888"&gt;
+&lt;/font&gt;&lt;/span&gt;&lt;/div&gt;&lt;span class=3D"HOEnZb"&gt;&lt;font color=3D"#888888"&gt;
+&lt;/font&gt;&lt;/span&gt;&lt;/div&gt;&lt;span class=3D"HOEnZb"&gt;&lt;font color=3D"#888888"&gt;
+&lt;/font&gt;&lt;/span&gt;&lt;/div&gt;&lt;span class=3D"HOEnZb"&gt;&lt;font color=3D"#888888"&gt;
+&lt;/font&gt;&lt;/span&gt;&lt;/div&gt;&lt;span class=3D"HOEnZb"&gt;&lt;font color=3D"#888888"&gt;
+
+
+&lt;p&gt;&lt;/p&gt;
+
+-- &lt;br&gt;
+You received this message because you are subscribed to the Google Groups &amp;=
+quot;leo-editor&amp;quot; group.&lt;br&gt;
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to &lt;a href=3D"mailto:leo-editor%2Bunsubscribe@googlegroups.com" target=
+=3D"_blank"&gt;leo-editor+unsubscribe@googlegroups.com&lt;/a&gt;.&lt;br&gt;
+To post to this group, send email to &lt;a href=3D"mailto:leo-editor@googlegro=
+ups.com" target=3D"_blank"&gt;leo-editor@googlegroups.com&lt;/a&gt;.&lt;br&gt;
+Visit this group at &lt;a href=3D"http://groups.google.com/group/leo-editor?hl=
+=3Den" target=3D"_blank"&gt;http://groups.google.com/group/leo-editor?hl=3Den&lt;=
+/a&gt;.&lt;br&gt;
+For more options, visit &lt;a href=3D"https://groups.google.com/groups/opt_out=
+" target=3D"_blank"&gt;https://groups.google.com/groups/opt_out&lt;/a&gt;.&lt;br&gt;
+=A0&lt;br&gt;
+=A0&lt;br&gt;
+&lt;/font&gt;&lt;/span&gt;&lt;/blockquote&gt;&lt;/div&gt;&lt;br&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+-- &lt;br /&gt;
+You received this message because you are subscribed to the Google Groups &amp;=
+quot;leo-editor&amp;quot; group.&lt;br /&gt;
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to leo-editor+unsubscribe@googlegroups.com.&lt;br /&gt;
+&lt;br /&gt;
+Visit this group at &lt;a href=3D"http://groups.google.com/group/leo-editor?hl=
+=3Den"&gt;http://groups.google.com/group/leo-editor?hl=3Den&lt;/a&gt;.&lt;br /&gt;
+For more options, visit &lt;a href=3D"https://groups.google.com/groups/opt_out=
+"&gt;https://groups.google.com/groups/opt_out&lt;/a&gt;.&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+
+--f46d04339d40de1c7b04d6cde5b1--</t>
+<t tx="ekr.20130806072439.18497">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
+
+--14dae9340445204cf904d6ca318a
+Content-Type: text/plain; charset=ISO-8859-1
+
+No, I think they make sense in valuespace plugin since you can use them to
+execute stuff in the vs namespace.
+
+
+On Thu, Feb 28, 2013 at 4:59 PM, Terry Brown &lt;terry_n_brown@yahoo.com&gt;wrote:
+
+&gt; ** **
+&gt;
+&gt; I\'ve added vs-eval, vs-last, and vs-last-pretty commands to the
+&gt; valuespace.py plug-in. Update docs below.
+&gt;
+&gt; Ville - if you don\'t want them in there, let me know and I\'ll move them -
+&gt; I put them in there to avoid creating yet another plug-in, they\'re sort of
+&gt; a light weight local calculation tool, vs. valuespace.py\'s outline wide
+&gt; calcs.
+&gt;  valuespace.py
+&gt; vs-eval
+&gt;
+&gt; Execute the selected text, if any. Select next line of text.
+&gt;
+&gt; Tries hard to capture the result of from the last expression in the
+&gt; selected text:
+&gt;
+&gt; import datetime
+&gt; today = datetime.date.today()
+&gt;
+&gt; will captue the value of today even though the last line is a statement,
+&gt; not an expression.
+&gt;
+&gt; Stores results in c.vs[\'_last\'] for insertion into body by vs-last or
+&gt; vs-last-pretty.
+&gt;
+&gt; Removes common indentation (textwrap.dedent()) before executing, allowing
+&gt; execution of indented code.
+&gt;
+&gt; g, c, and p are available to executing code, assignments are made in the
+&gt; c.vs namespace and persist for the life of c.
+&gt;  vs-last
+&gt;
+&gt; Insert the last result from vs-eval. Inserted as a string, so "1\\n2\\n3\\n4"will cover four lines and insert no quotes, for
+&gt; repr() style insertion use vs-last-pretty.
+&gt;  vs-last-pretty
+&gt;
+&gt; Insert the last result from vs-eval. Formatted by pprint.pformat(), so
+&gt; "1\\n2\\n3\\n4" will appear as \'"1\\n2\\n3\\n4"\', see all vs-last.
+&gt;
+&gt; --
+&gt; You received this message because you are subscribed to the Google Groups
+&gt; "leo-editor" group.
+&gt; To unsubscribe from this group and stop receiving emails from it, send an
+&gt; email to leo-editor+unsubscribe@googlegroups.com.
+&gt; 
+&gt; Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+&gt; For more options, visit https://groups.google.com/groups/opt_out.
+&gt;
+&gt;
+&gt;
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+For more options, visit https://groups.google.com/groups/opt_out.
+
+
+
+--14dae9340445204cf904d6ca318a
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+&lt;div dir=3D"ltr"&gt;No, I think they make sense in valuespace plugin since you=
+ can use them to execute stuff in the vs namespace.&lt;/div&gt;&lt;div class=3D"gmai=
+l_extra"&gt;&lt;br&gt;&lt;br&gt;&lt;div class=3D"gmail_quote"&gt;On Thu, Feb 28, 2013 at 4:59 PM=
+, Terry Brown &lt;span dir=3D"ltr"&gt;&amp;lt;&lt;a href=3D"mailto:terry_n_brown@yahoo.c=
+om" target=3D"_blank"&gt;terry_n_brown@yahoo.com&lt;/a&gt;&amp;gt;&lt;/span&gt; wrote:&lt;br&gt;
+&lt;blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1p=
+x #ccc solid;padding-left:1ex"&gt;&lt;u&gt;&lt;/u&gt;
+&lt;u&gt;&lt;/u&gt;
+
+
+
+
+
+
+
+&lt;div&gt;
+&lt;div&gt;
+
+
+&lt;p&gt;I&amp;#39;ve added &lt;tt&gt;&lt;span&gt;vs-eval&lt;/span&gt;&lt;/tt&gt;, &lt;tt&gt;&lt;span&gt;vs-last&lt;/span&gt;&lt;/=
+tt&gt;, and &lt;tt&gt;&lt;span&gt;vs-last-pretty&lt;/span&gt;&lt;/tt&gt; commands to
+the &lt;tt&gt;valuespace.py&lt;/tt&gt; plug-in.  Update docs below.&lt;/p&gt;
+&lt;p&gt;Ville - if you don&amp;#39;t want them in there, let me know and I&amp;#39;ll mo=
+ve them
+- I put them in there to avoid creating yet another plug-in, they&amp;#39;re
+sort of a light weight local calculation tool, vs. &lt;tt&gt;valuespace.py&lt;/tt&gt;&amp;#=
+39;s
+outline wide calcs.&lt;/p&gt;
+&lt;div&gt;
+&lt;h1&gt;valuespace.py&lt;/h1&gt;
+&lt;div&gt;
+&lt;h2&gt;vs-eval&lt;/h2&gt;
+&lt;p&gt;Execute the selected text, if any.  Select next line of text.&lt;/p&gt;
+&lt;p&gt;Tries hard to capture the result of from the last expression in the
+selected text:&lt;/p&gt;
+&lt;pre&gt;import datetime
+today =3D datetime.date.today()
+&lt;/pre&gt;
+&lt;p&gt;will captue the value of &lt;tt&gt;today&lt;/tt&gt; even though the last line is a
+statement, not an expression.&lt;/p&gt;
+&lt;p&gt;Stores results in &lt;tt&gt;&lt;span&gt;c.vs[&amp;#39;_last&amp;#39;]&lt;/span&gt;&lt;/tt&gt; for insert=
+ion
+into body by &lt;tt&gt;&lt;span&gt;vs-last&lt;/span&gt;&lt;/tt&gt; or &lt;tt&gt;&lt;span&gt;vs-last-pretty&lt;/spa=
+n&gt;&lt;/tt&gt;.&lt;/p&gt;
+&lt;p&gt;Removes common indentation (&lt;tt&gt;textwrap.dedent()&lt;/tt&gt;) before executing=
+,
+allowing execution of indented code.&lt;/p&gt;
+&lt;p&gt;&lt;tt&gt;g&lt;/tt&gt;, &lt;tt&gt;c&lt;/tt&gt;, and &lt;tt&gt;p&lt;/tt&gt; are available to executing code, =
+assignments
+are made in the &lt;tt&gt;c.vs&lt;/tt&gt; namespace and persist for the life of &lt;tt&gt;c&lt;/=
+tt&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;h2&gt;vs-last&lt;/h2&gt;
+&lt;p&gt;Insert the last result from &lt;tt&gt;&lt;span&gt;vs-eval&lt;/span&gt;&lt;/tt&gt;.  Inserted as =
+a string,
+so &lt;tt&gt;&amp;quot;1\\n2\\n3\\n4&amp;quot;&lt;/tt&gt; will cover four lines and insert no quot=
+es,
+for &lt;tt&gt;repr()&lt;/tt&gt; style insertion use &lt;tt&gt;&lt;span&gt;vs-last-pretty&lt;/span&gt;&lt;/tt=
+&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;h2&gt;vs-last-pretty&lt;/h2&gt;
+&lt;p&gt;Insert the last result from &lt;tt&gt;&lt;span&gt;vs-eval&lt;/span&gt;&lt;/tt&gt;.  Formatted by
+&lt;tt&gt;pprint.pformat()&lt;/tt&gt;,  so &lt;tt&gt;&amp;quot;1\\n2\\n3\\n4&amp;quot;&lt;/tt&gt; will appear =
+as
+&amp;#39;&lt;tt&gt;&amp;quot;1\\n2\\n3\\n4&amp;quot;&lt;/tt&gt;&amp;#39;, see all &lt;tt&gt;&lt;span&gt;vs-last&lt;/span&gt;=
+&lt;/tt&gt;.&lt;/p&gt;&lt;span class=3D"HOEnZb"&gt;&lt;font color=3D"#888888"&gt;
+&lt;/font&gt;&lt;/span&gt;&lt;/div&gt;&lt;span class=3D"HOEnZb"&gt;&lt;font color=3D"#888888"&gt;
+&lt;/font&gt;&lt;/span&gt;&lt;/div&gt;&lt;span class=3D"HOEnZb"&gt;&lt;font color=3D"#888888"&gt;
+&lt;/font&gt;&lt;/span&gt;&lt;/div&gt;&lt;span class=3D"HOEnZb"&gt;&lt;font color=3D"#888888"&gt;
+&lt;/font&gt;&lt;/span&gt;&lt;/div&gt;&lt;span class=3D"HOEnZb"&gt;&lt;font color=3D"#888888"&gt;
+
+
+&lt;p&gt;&lt;/p&gt;
+
+-- &lt;br&gt;
+You received this message because you are subscribed to the Google Groups &amp;=
+quot;leo-editor&amp;quot; group.&lt;br&gt;
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to &lt;a href=3D"mailto:leo-editor%2Bunsubscribe@googlegroups.com" target=
+=3D"_blank"&gt;leo-editor+unsubscribe@googlegroups.com&lt;/a&gt;.&lt;br&gt;
+To post to this group, send email to &lt;a href=3D"mailto:leo-editor@googlegro=
+ups.com" target=3D"_blank"&gt;leo-editor@googlegroups.com&lt;/a&gt;.&lt;br&gt;
+Visit this group at &lt;a href=3D"http://groups.google.com/group/leo-editor?hl=
+=3Den" target=3D"_blank"&gt;http://groups.google.com/group/leo-editor?hl=3Den&lt;=
+/a&gt;.&lt;br&gt;
+For more options, visit &lt;a href=3D"https://groups.google.com/groups/opt_out=
+" target=3D"_blank"&gt;https://groups.google.com/groups/opt_out&lt;/a&gt;.&lt;br&gt;
+=A0&lt;br&gt;
+=A0&lt;br&gt;
+&lt;/font&gt;&lt;/span&gt;&lt;/blockquote&gt;&lt;/div&gt;&lt;br&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+-- &lt;br /&gt;
+You received this message because you are subscribed to the Google Groups &amp;=
+quot;leo-editor&amp;quot; group.&lt;br /&gt;
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to leo-editor+unsubscribe@googlegroups.com.&lt;br /&gt;
+&lt;br /&gt;
+Visit this group at &lt;a href=3D"http://groups.google.com/group/leo-editor?hl=
+=3Den"&gt;http://groups.google.com/group/leo-editor?hl=3Den&lt;/a&gt;.&lt;br /&gt;
+For more options, visit &lt;a href=3D"https://groups.google.com/groups/opt_out=
+"&gt;https://groups.google.com/groups/opt_out&lt;/a&gt;.&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+
+--14dae9340445204cf904d6ca318a--</t>
+<t tx="ekr.20130806072439.18498">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+
+On Thu, 28 Feb 2013 21:28:39 +0200
+"Ville M. Vainio" &lt;vivainio@gmail.com&gt; wrote:
+
+&gt; vs-last didn\'t work (returned None every time), vs-last-pretty did. I
+&gt; pushed a fix to bzr.
+
+Thanks, nice timing, I had just noticed but was dealing with another
+email first :-)
+
+Cheers -Terry
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+For more options, visit https://groups.google.com/groups/opt_out.</t>
+<t tx="ekr.20130806072439.18499">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+
+--===============5479120180738723609==
+Content-Type: text/plain; charset=ISO-8859-1
+MIME-Version: 1.0
+
+Here\'s the updated docs. for the bookmarks.py plugin - it provides a
+pane with colored links to nodes, they can now be added and removed
+with mouse clicks, making navigation back and forward between related
+nodes quick and easy.
+
+bookmarks.py
+------------
+
+Open bookmarks in a list, and show bookmarks in a pane.
+
+Adds the ``bookmarks-open-bookmark`` command which opens the bookmark in the
+selected node **if** the node has an ancestor which contains ``@bookmarks``
+in its heading.  Useful for binding to double-click.
+
+Also ``bookmarks-open-node``, like ``bookmarks-open-bookmark`` but without
+the ancestor requirement.
+
+*Note:* bookmarks treats file urls missing the ``file://`` part as urls,
+which deviates from Leo\'s behavior elsewhere.  It also recognizes local UNLs
+like ``#ToDo--&gt;Critical`` as urls.
+
+The ``bookmarks-show`` command will add a tab or pane (if free_layout is enabled)
+showing the bookmarks **in the current subtree** with unique colors. You can
+very quickly jump around between nodes in a file using this. 
+
+Nodes can be added and removed from the display with the following mouse actions:
+    
+**left-click on node**
+    Jump to that node.
+**left-click on background**
+    Add a bookmark at the position clicked, unless already present,
+    in which case the existing link is highlighted.
+**control-left-click on node**
+    Remove node.
+**alt-left-click on node**
+    Edit clicked node in bookmark list, to change link text.
+**alt-left-click on background**
+    Edit bookmark list.
+    
+The ``quickMove.py`` plugin also provides actions for adding nodes to a bookmark list.
+
+The free_layout Action button context menu will also allow you to add one of
+these bookmark panes, and they will be saved and loaded again if the layout is
+saved and loaded.
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+For more options, visit https://groups.google.com/groups/opt_out.
+
+
+
+--===============5479120180738723609==
+Content-Type: text/html; charset=ISO-8859-1
+MIME-Version: 1.0
+
+&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+&lt;meta name="generator" content="Docutils 0.8.1: http://docutils.sourceforge.net/" /&gt;
+&lt;title&gt;&lt;/title&gt;
+&lt;style type="text/css"&gt;
+
+/*
+TNB mods.
+
+:Author: David Goodger (goodger@python.org)
+:Id: $Id: html4css1.css 6194 2009-11-11 12:05:10Z milde $
+:Copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+
+See http://docutils.sf.net/docs/howto/html-stylesheets.html for how to
+customize this style sheet.
+*/
+
+/* used to remove borders from tables and images */
+.borderless, table.borderless td, table.borderless th {
+  border: 0 }
+
+table.borderless td, table.borderless th {
+  /* Override padding for "table.docutils td" with "! important".
+     The right padding separates the table cells. */
+  padding: 0 0.5em 0 0 ! important }
+
+.first {
+  /* Override more specific margin styles with "! important". */
+  margin-top: 0 ! important }
+
+.last, .with-subtitle {
+  margin-bottom: 0 ! important }
+
+.hidden {
+  display: none }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+blockquote.epigraph {
+  margin: 2em 5em ; }
+
+dl.docutils dd {
+  margin-bottom: 0.5em; margin-left: 2em }
+
+dl.docutils dt {
+  font-weight: bold }
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.admonition, div.attention, div.caution, div.danger, div.error,
+div.hint, div.important, div.note, div.tip, div.warning {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.admonition p.admonition-title, div.hint p.admonition-title,
+div.important p.admonition-title, div.note p.admonition-title,
+div.tip p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+/* Uncomment (and remove this text!) to get reduced vertical space in
+   compound paragraphs.
+div.compound .compound-first, div.compound .compound-middle {
+  margin-bottom: 0.5em }
+
+div.compound .compound-last, div.compound .compound-middle {
+  margin-top: 0.5em }
+*/
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+div.footer, div.header {
+  clear: both;
+  font-size: smaller }
+
+div.line-block {
+  display: block ;
+  margin-top: 1em ;
+  margin-bottom: 1em }
+
+div.line-block div.line-block {
+  margin-top: 0 ;
+  margin-bottom: 0 ;
+  margin-left: 1.5em }
+
+div.sidebar {
+  margin: 0 0 0.5em 1em ;
+  border: medium outset ;
+  padding: 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.section-subtitle, h2.section-subtitle, h3.section-subtitle,
+h4.section-subtitle, h5.section-subtitle, h6.section-subtitle {
+  margin-top: 0.4em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+hr.docutils {
+  width: 75% }
+
+img.align-left, .figure.align-left{
+  clear: left ;
+  float: left ;
+  margin-right: 1em }
+
+img.align-right, .figure.align-right {
+  clear: right ;
+  float: right ;
+  margin-left: 1em }
+
+img.align-center, .figure.align-center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.align-left {
+  text-align: left }
+
+.align-center {
+  clear: both ;
+  text-align: center }
+
+.align-right {
+  text-align: right }
+
+/* reset inner alignment in figures */
+div.align-right {
+  text-align: left }
+
+/* div.align-center * { */
+/*   text-align: left } */
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font: inherit }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em }
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+span.section-subtitle {
+  /* font-size relative to parent (h1..h6 element) */
+  font-size: 80% }
+
+table.citation {
+  border-left: solid 1px gray;
+  margin-left: 1px }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.docutils {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.footnote {
+  border-left: solid 1px black;
+  margin-left: 1px }
+
+table.docutils td, table.docutils th,
+table.docinfo td, table.docinfo th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+table.docutils th.field-name, table.docinfo th.docinfo-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap ;
+  padding-left: 0 }
+
+h1 tt.docutils, h2 tt.docutils, h3 tt.docutils,
+h4 tt.docutils, h5 tt.docutils, h6 tt.docutils {
+  font-size: 100% }
+
+ul.auto-toc {
+  list-style-type: none }
+
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="document"&gt;
+
+
+&lt;p&gt;Here\'s the updated docs. for the bookmarks.py plugin - it provides a
+pane with colored links to nodes, they can now be added and removed
+with mouse clicks, making navigation back and forward between related
+nodes quick and easy.&lt;/p&gt;
+&lt;div class="section" id="bookmarks-py"&gt;
+&lt;h1&gt;bookmarks.py&lt;/h1&gt;
+&lt;p&gt;Open bookmarks in a list, and show bookmarks in a pane.&lt;/p&gt;
+&lt;p&gt;Adds the &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;bookmarks-open-bookmark&lt;/span&gt;&lt;/tt&gt; command which opens the bookmark in the
+selected node &lt;strong&gt;if&lt;/strong&gt; the node has an ancestor which contains &lt;tt class="docutils literal"&gt;&amp;#64;bookmarks&lt;/tt&gt;
+in its heading.  Useful for binding to double-click.&lt;/p&gt;
+&lt;p&gt;Also &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;bookmarks-open-node&lt;/span&gt;&lt;/tt&gt;, like &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;bookmarks-open-bookmark&lt;/span&gt;&lt;/tt&gt; but without
+the ancestor requirement.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Note:&lt;/em&gt; bookmarks treats file urls missing the &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;file://&lt;/span&gt;&lt;/tt&gt; part as urls,
+which deviates from Leo\'s behavior elsewhere.  It also recognizes local UNLs
+like &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;#ToDo--&amp;gt;Critical&lt;/span&gt;&lt;/tt&gt; as urls.&lt;/p&gt;
+&lt;p&gt;The &lt;tt class="docutils literal"&gt;&lt;span class="pre"&gt;bookmarks-show&lt;/span&gt;&lt;/tt&gt; command will add a tab or pane (if free_layout is enabled)
+showing the bookmarks &lt;strong&gt;in the current subtree&lt;/strong&gt; with unique colors. You can
+very quickly jump around between nodes in a file using this.&lt;/p&gt;
+&lt;p&gt;Nodes can be added and removed from the display with the following mouse actions:&lt;/p&gt;
+&lt;dl class="docutils"&gt;
+&lt;dt&gt;&lt;strong&gt;left-click on node&lt;/strong&gt;&lt;/dt&gt;
+&lt;dd&gt;Jump to that node.&lt;/dd&gt;
+&lt;dt&gt;&lt;strong&gt;left-click on background&lt;/strong&gt;&lt;/dt&gt;
+&lt;dd&gt;Add a bookmark at the position clicked, unless already present,
+in which case the existing link is highlighted.&lt;/dd&gt;
+&lt;dt&gt;&lt;strong&gt;control-left-click on node&lt;/strong&gt;&lt;/dt&gt;
+&lt;dd&gt;Remove node.&lt;/dd&gt;
+&lt;dt&gt;&lt;strong&gt;alt-left-click on node&lt;/strong&gt;&lt;/dt&gt;
+&lt;dd&gt;Edit clicked node in bookmark list, to change link text.&lt;/dd&gt;
+&lt;dt&gt;&lt;strong&gt;alt-left-click on background&lt;/strong&gt;&lt;/dt&gt;
+&lt;dd&gt;Edit bookmark list.&lt;/dd&gt;
+&lt;/dl&gt;
+&lt;p&gt;The &lt;tt class="docutils literal"&gt;quickMove.py&lt;/tt&gt; plugin also provides actions for adding nodes to a bookmark list.&lt;/p&gt;
+&lt;p&gt;The free_layout Action button context menu will also allow you to add one of
+these bookmark panes, and they will be saved and loaded again if the layout is
+saved and loaded.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+-- &lt;br /&gt;
+You received this message because you are subscribed to the Google Groups &amp;quot;leo-editor&amp;quot; group.&lt;br /&gt;
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.&lt;br /&gt;
+&lt;br /&gt;
+Visit this group at &lt;a href="http://groups.google.com/group/leo-editor?hl=en"&gt;http://groups.google.com/group/leo-editor?hl=en&lt;/a&gt;.&lt;br /&gt;
+For more options, visit &lt;a href="https://groups.google.com/groups/opt_out"&gt;https://groups.google.com/groups/opt_out&lt;/a&gt;.&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+
+--===============5479120180738723609==--</t>
+<t tx="ekr.20130806072439.18508">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+
+I\'ve found that having edits on a node in one outline simultaneously
+reflected in another node in another outline works surprisingly well.
+
+I do a lot of to-do item project managing with Leo, with lists of todo
+items (managed with the todo plugin) in each projects outline.
+
+A script rapidly assembles a global list of todo items using
+the .../external/leosax.py parser to scan all the project files without
+leo having to fully load them.  The script builds a tree of todo items
+which uses the UNLs to make them into bookmarks which can jump to the
+corresponding node in the project\'s outline, opening it if necessary.
+
+Which works fine for general "what should I work on next" use, but is
+still clumsy if you want to edit a lot of todo items at once, adjusting
+due date or priority etc.  You have to double-click the item in the
+global view to jump to its source in its project\'s outline, edit it
+there, switch back to the main outline, etc.
+
+So now the script which generates the global view tags the items with a
+marker which, when seen by the todo plugin, causes it to apply todo
+item edits in the global view to the corresponding node in the
+project\'s file as well.  This means the first time you edit a todo item
+there may be a pause while that project\'s outline is loaded, but
+everything carries on as it should afterwards, and on-going todo item
+editing is quick once the outlines are loaded.
+
+I\'ll push the updated todo.py code which checks for a
+v.u[\'annotate\'][\'src_unl\'] marker to know if a todo item is a proxy for
+one in another file and propagate the edits, but unless you have a
+script which assembles todo items from diverse files and tags them as
+proxies it doesn\'t really do anything.
+
+Really I just wanted to highlight how this approach, edits on a proxy
+node causing the opening and editing of a node in another outline,
+really can work in a usable way - I\'m sure there are all sorts of
+possible applications.
+
+Cheers -Terry
+
+
+
+To unsubscribe from this group, send email to leo-editor+unsubscribe@googlegroups.com.
+For more options, visit this group at http://groups.google.com/group/leo-editor?hl=en.</t>
+<t tx="ekr.20130806072439.18509">From: Matt Wilkie &lt;maphew@gmail.com&gt;
+
+--f46d0447882d3a9afa04cfb07423
+Content-Type: text/plain; charset=ISO-8859-1
+
+Kent, I echo your thoughts :)
+
+as I was reading Terry\'s post I kept thinking I\'d like to watch him work
+sometime. A few times I\'ve tried setting up a Todo system in Leo for
+myself, but I\'ve thus far always abandoned the project as it turned into
+more work than a simpe pad and pen kept close at hand. (Albeit with
+drawbacks. There\'s a pad at work, another at home, a 3rd in my jacket
+sometimes, and content intermixed between them "on the wrong one").
+
+cheers,
+
+-matt
+
+On Thu, Nov 29, 2012 at 12:19 PM, Kent Tenney &lt;ktenney@gmail.com&gt; wrote:
+
+&gt; That flow would sure make a great webcast!
+&gt;
+&gt; (ie: I don\'t get it, but I can tell it\'s cool)
+&gt;
+&gt; On Thu, Nov 29, 2012 at 1:28 PM, Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+&gt; wrote:
+&gt; &gt; I\'ve found that having edits on a node in one outline simultaneously
+&gt; &gt; reflected in another node in another outline works surprisingly well.
+&gt; &gt;
+&gt; &gt; I do a lot of to-do item project managing with Leo, with lists of todo
+&gt; &gt; items (managed with the todo plugin) in each projects outline.
+&gt; &gt;
+&gt; &gt; A script rapidly assembles a global list of todo items using
+&gt; &gt; the .../external/leosax.py parser to scan all the project files without
+&gt; &gt; leo having to fully load them.  The script builds a tree of todo items
+&gt; &gt; which uses the UNLs to make them into bookmarks which can jump to the
+&gt; &gt; corresponding node in the project\'s outline, opening it if necessary.
+&gt; &gt;
+&gt; &gt; Which works fine for general "what should I work on next" use, but is
+&gt; &gt; still clumsy if you want to edit a lot of todo items at once, adjusting
+&gt; &gt; due date or priority etc.  You have to double-click the item in the
+&gt; &gt; global view to jump to its source in its project\'s outline, edit it
+&gt; &gt; there, switch back to the main outline, etc.
+&gt; &gt;
+&gt; &gt; So now the script which generates the global view tags the items with a
+&gt; &gt; marker which, when seen by the todo plugin, causes it to apply todo
+&gt; &gt; item edits in the global view to the corresponding node in the
+&gt; &gt; project\'s file as well.  This means the first time you edit a todo item
+&gt; &gt; there may be a pause while that project\'s outline is loaded, but
+&gt; &gt; everything carries on as it should afterwards, and on-going todo item
+&gt; &gt; editing is quick once the outlines are loaded.
+&gt; &gt;
+&gt; &gt; I\'ll push the updated todo.py code which checks for a
+&gt; &gt; v.u[\'annotate\'][\'src_unl\'] marker to know if a todo item is a proxy for
+&gt; &gt; one in another file and propagate the edits, but unless you have a
+&gt; &gt; script which assembles todo items from diverse files and tags them as
+&gt; &gt; proxies it doesn\'t really do anything.
+&gt; &gt;
+&gt; &gt; Really I just wanted to highlight how this approach, edits on a proxy
+&gt; &gt; node causing the opening and editing of a node in another outline,
+&gt; &gt; really can work in a usable way - I\'m sure there are all sorts of
+&gt; &gt; possible applications.
+&gt; &gt;
+&gt; &gt; Cheers -Terry
+&gt; &gt;
+&gt; &gt; --
+&gt; &gt; You received this message because you are subscribed to the Google
+&gt; Groups "leo-editor" group.
+&gt; &gt; 
+&gt; &gt; To unsubscribe from this group, send email to
+&gt; leo-editor+unsubscribe@googlegroups.com.
+&gt; &gt; For more options, visit this group at
+&gt; http://groups.google.com/group/leo-editor?hl=en.
+&gt; &gt;
+&gt;
+&gt; --
+&gt; You received this message because you are subscribed to the Google Groups
+&gt; "leo-editor" group.
+&gt; 
+&gt; To unsubscribe from this group, send email to
+&gt; leo-editor+unsubscribe@googlegroups.com.
+&gt; For more options, visit this group at
+&gt; http://groups.google.com/group/leo-editor?hl=en.
+&gt;
+&gt;
+
+
+-- 
+-matt
+
+
+
+To unsubscribe from this group, send email to leo-editor+unsubscribe@googlegroups.com.
+For more options, visit this group at http://groups.google.com/group/leo-editor?hl=en.
+
+
+--f46d0447882d3a9afa04cfb07423
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+Kent, I echo your thoughts :)&lt;br&gt;&lt;br&gt;as I was reading Terry&amp;#39;s post I ke=
+pt thinking I&amp;#39;d like to watch him work sometime. A few times I&amp;#39;ve t=
+ried setting up a Todo system in Leo for myself, but I&amp;#39;ve thus far alwa=
+ys abandoned the project as it turned into more work than a simpe pad and p=
+en kept close at hand. (Albeit with drawbacks. There&amp;#39;s a pad at work, a=
+nother at home, a 3rd in my jacket sometimes, and content intermixed betwee=
+n them &amp;quot;on the wrong one&amp;quot;).&lt;br&gt;
+
+
+&lt;div class=3D"gmail_extra"&gt;&lt;br&gt;cheers,&lt;br&gt;&lt;br&gt;-matt&lt;br&gt;&lt;br&gt;&lt;div class=3D"gm=
+ail_quote"&gt;On Thu, Nov 29, 2012 at 12:19 PM, Kent Tenney &lt;span dir=3D"ltr"&gt;=
+&amp;lt;&lt;a href=3D"mailto:ktenney@gmail.com" target=3D"_blank"&gt;ktenney@gmail.co=
+m&lt;/a&gt;&amp;gt;&lt;/span&gt; wrote:&lt;br&gt;
+
+
+&lt;blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1p=
+x #ccc solid;padding-left:1ex"&gt;That flow would sure make a great webcast!&lt;b=
+r&gt;
+&lt;br&gt;
+(ie: I don&amp;#39;t get it, but I can tell it&amp;#39;s cool)&lt;br&gt;
+&lt;div&gt;&lt;div&gt;&lt;br&gt;
+On Thu, Nov 29, 2012 at 1:28 PM, Terry Brown &amp;lt;&lt;a href=3D"mailto:terry_n_=
+brown@yahoo.com" target=3D"_blank"&gt;terry_n_brown@yahoo.com&lt;/a&gt;&amp;gt; wrote:&lt;b=
+r&gt;
+&amp;gt; I&amp;#39;ve found that having edits on a node in one outline simultaneous=
+ly&lt;br&gt;
+&amp;gt; reflected in another node in another outline works surprisingly well.&lt;=
+br&gt;
+&amp;gt;&lt;br&gt;
+&amp;gt; I do a lot of to-do item project managing with Leo, with lists of todo=
+&lt;br&gt;
+&amp;gt; items (managed with the todo plugin) in each projects outline.&lt;br&gt;
+&amp;gt;&lt;br&gt;
+&amp;gt; A script rapidly assembles a global list of todo items using&lt;br&gt;
+&amp;gt; the .../external/leosax.py parser to scan all the project files withou=
+t&lt;br&gt;
+&amp;gt; leo having to fully load them. =A0The script builds a tree of todo ite=
+ms&lt;br&gt;
+&amp;gt; which uses the UNLs to make them into bookmarks which can jump to the&lt;=
+br&gt;
+&amp;gt; corresponding node in the project&amp;#39;s outline, opening it if necessa=
+ry.&lt;br&gt;
+&amp;gt;&lt;br&gt;
+&amp;gt; Which works fine for general &amp;quot;what should I work on next&amp;quot; us=
+e, but is&lt;br&gt;
+&amp;gt; still clumsy if you want to edit a lot of todo items at once, adjustin=
+g&lt;br&gt;
+&amp;gt; due date or priority etc. =A0You have to double-click the item in the&lt;=
+br&gt;
+&amp;gt; global view to jump to its source in its project&amp;#39;s outline, edit i=
+t&lt;br&gt;
+&amp;gt; there, switch back to the main outline, etc.&lt;br&gt;
+&amp;gt;&lt;br&gt;
+&amp;gt; So now the script which generates the global view tags the items with =
+a&lt;br&gt;
+&amp;gt; marker which, when seen by the todo plugin, causes it to apply todo&lt;br=
+&gt;
+&amp;gt; item edits in the global view to the corresponding node in the&lt;br&gt;
+&amp;gt; project&amp;#39;s file as well. =A0This means the first time you edit a to=
+do item&lt;br&gt;
+&amp;gt; there may be a pause while that project&amp;#39;s outline is loaded, but&lt;b=
+r&gt;
+&amp;gt; everything carries on as it should afterwards, and on-going todo item&lt;=
+br&gt;
+&amp;gt; editing is quick once the outlines are loaded.&lt;br&gt;
+&amp;gt;&lt;br&gt;
+&amp;gt; I&amp;#39;ll push the updated todo.py code which checks for a&lt;br&gt;
+&amp;gt; v.u[&amp;#39;annotate&amp;#39;][&amp;#39;src_unl&amp;#39;] marker to know if a todo it=
+em is a proxy for&lt;br&gt;
+&amp;gt; one in another file and propagate the edits, but unless you have a&lt;br&gt;
+&amp;gt; script which assembles todo items from diverse files and tags them as&lt;=
+br&gt;
+&amp;gt; proxies it doesn&amp;#39;t really do anything.&lt;br&gt;
+&amp;gt;&lt;br&gt;
+&amp;gt; Really I just wanted to highlight how this approach, edits on a proxy&lt;=
+br&gt;
+&amp;gt; node causing the opening and editing of a node in another outline,&lt;br&gt;
+&amp;gt; really can work in a usable way - I&amp;#39;m sure there are all sorts of&lt;=
+br&gt;
+&amp;gt; possible applications.&lt;br&gt;
+&amp;gt;&lt;br&gt;
+&amp;gt; Cheers -Terry&lt;br&gt;
+&amp;gt;&lt;br&gt;
+&amp;gt; --&lt;br&gt;
+&amp;gt; You received this message because you are subscribed to the Google Gro=
+ups &amp;quot;leo-editor&amp;quot; group.&lt;br&gt;
+&amp;gt; To post to this group, send email to &lt;a href=3D"mailto:leo-editor@goog=
+legroups.com" target=3D"_blank"&gt;leo-editor@googlegroups.com&lt;/a&gt;.&lt;br&gt;
+&amp;gt; To unsubscribe from this group, send email to &lt;a href=3D"mailto:leo-ed=
+itor%2Bunsubscribe@googlegroups.com" target=3D"_blank"&gt;leo-editor+unsubscri=
+be@googlegroups.com&lt;/a&gt;.&lt;br&gt;
+&amp;gt; For more options, visit this group at &lt;a href=3D"http://groups.google.=
+com/group/leo-editor?hl=3Den" target=3D"_blank"&gt;http://groups.google.com/gr=
+oup/leo-editor?hl=3Den&lt;/a&gt;.&lt;br&gt;
+&amp;gt;&lt;br&gt;
+&lt;br&gt;
+--&lt;br&gt;
+You received this message because you are subscribed to the Google Groups &amp;=
+quot;leo-editor&amp;quot; group.&lt;br&gt;
+To post to this group, send email to &lt;a href=3D"mailto:leo-editor@googlegro=
+ups.com" target=3D"_blank"&gt;leo-editor@googlegroups.com&lt;/a&gt;.&lt;br&gt;
+To unsubscribe from this group, send email to &lt;a href=3D"mailto:leo-editor%=
+2Bunsubscribe@googlegroups.com" target=3D"_blank"&gt;leo-editor+unsubscribe@go=
+oglegroups.com&lt;/a&gt;.&lt;br&gt;
+For more options, visit this group at &lt;a href=3D"http://groups.google.com/g=
+roup/leo-editor?hl=3Den" target=3D"_blank"&gt;http://groups.google.com/group/l=
+eo-editor?hl=3Den&lt;/a&gt;.&lt;br&gt;
+&lt;br&gt;
+&lt;/div&gt;&lt;/div&gt;&lt;/blockquote&gt;&lt;/div&gt;&lt;br&gt;&lt;br clear=3D"all"&gt;&lt;br&gt;-- &lt;br&gt;-matt&lt;br&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+-- &lt;br /&gt;
+You received this message because you are subscribed to the Google Groups "=
+leo-editor" group.&lt;br /&gt;
+&lt;br /&gt;
+To unsubscribe from this group, send email to leo-editor+unsubscribe@google=
+groups.com.&lt;br /&gt;
+
+For more options, visit this group at http://groups.google.com/group/leo-ed=
+itor?hl=3Den.&lt;br /&gt;
+
+
+
+--f46d0447882d3a9afa04cfb07423--</t>
+<t tx="ekr.20130806072439.18510">From: "F.S." &lt;speech.free@gmail.com&gt;
+
+------=_Part_259_5710838.1354220609176
+Content-Type: text/plain; charset=ISO-8859-1
+
+It appears that the F-35 program could have benefited from your approach:
+http://www.nytimes.com/2012/11/29/us/in-federal-budget-cutting-f-35-fighter-jet-is-at-risk.html?ref=us
+
+They are still pasting paper on a wall to manage the project. Imagine if 
+the project manager learned to use Leo.
+
+On Thursday, November 29, 2012 11:28:46 AM UTC-8, Terry wrote:
+&gt;
+&gt; I\'ve found that having edits on a node in one outline simultaneously 
+&gt; reflected in another node in another outline works surprisingly well. 
+&gt;
+&gt; I do a lot of to-do item project managing with Leo, with lists of todo 
+&gt; items (managed with the todo plugin) in each projects outline. 
+&gt;
+&gt; A script rapidly assembles a global list of todo items using 
+&gt; the .../external/leosax.py parser to scan all the project files without 
+&gt; leo having to fully load them.  The script builds a tree of todo items 
+&gt; which uses the UNLs to make them into bookmarks which can jump to the 
+&gt; corresponding node in the project\'s outline, opening it if necessary. 
+&gt;
+&gt; Which works fine for general "what should I work on next" use, but is 
+&gt; still clumsy if you want to edit a lot of todo items at once, adjusting 
+&gt; due date or priority etc.  You have to double-click the item in the 
+&gt; global view to jump to its source in its project\'s outline, edit it 
+&gt; there, switch back to the main outline, etc. 
+&gt;
+&gt; So now the script which generates the global view tags the items with a 
+&gt; marker which, when seen by the todo plugin, causes it to apply todo 
+&gt; item edits in the global view to the corresponding node in the 
+&gt; project\'s file as well.  This means the first time you edit a todo item 
+&gt; there may be a pause while that project\'s outline is loaded, but 
+&gt; everything carries on as it should afterwards, and on-going todo item 
+&gt; editing is quick once the outlines are loaded. 
+&gt;
+&gt; I\'ll push the updated todo.py code which checks for a 
+&gt; v.u[\'annotate\'][\'src_unl\'] marker to know if a todo item is a proxy for 
+&gt; one in another file and propagate the edits, but unless you have a 
+&gt; script which assembles todo items from diverse files and tags them as 
+&gt; proxies it doesn\'t really do anything. 
+&gt;
+&gt; Really I just wanted to highlight how this approach, edits on a proxy 
+&gt; node causing the opening and editing of a node in another outline, 
+&gt; really can work in a usable way - I\'m sure there are all sorts of 
+&gt; possible applications. 
+&gt;
+&gt; Cheers -Terry 
+&gt;
+
+
+To view this discussion on the web visit https://groups.google.com/d/msg/leo-editor/-/d7KkTsWVEgIJ.
+
+To unsubscribe from this group, send email to leo-editor+unsubscribe@googlegroups.com.
+For more options, visit this group at http://groups.google.com/group/leo-editor?hl=en.
+
+
+------=_Part_259_5710838.1354220609176
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+It appears that the F-35 program could have benefited from your approach:&lt;d=
+iv&gt;http://www.nytimes.com/2012/11/29/us/in-federal-budget-cutting-f-35-figh=
+ter-jet-is-at-risk.html?ref=3Dus&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;They are still pa=
+sting paper on a wall to manage the project. Imagine if the project manager=
+ learned to use Leo.&lt;br&gt;&lt;br&gt;On Thursday, November 29, 2012 11:28:46 AM UTC-=
+8, Terry wrote:&lt;blockquote class=3D"gmail_quote" style=3D"margin: 0;margin-=
+left: 0.8ex;border-left: 1px #ccc solid;padding-left: 1ex;"&gt;I\'ve found that=
+ having edits on a node in one outline simultaneously
+&lt;br&gt;reflected in another node in another outline works surprisingly well.
+&lt;br&gt;
+&lt;br&gt;I do a lot of to-do item project managing with Leo, with lists of todo
+&lt;br&gt;items (managed with the todo plugin) in each projects outline.
+&lt;br&gt;
+&lt;br&gt;A script rapidly assembles a global list of todo items using
+&lt;br&gt;the .../external/leosax.py parser to scan all the project files without
+&lt;br&gt;leo having to fully load them. &amp;nbsp;The script builds a tree of todo i=
+tems
+&lt;br&gt;which uses the UNLs to make them into bookmarks which can jump to the
+&lt;br&gt;corresponding node in the project\'s outline, opening it if necessary.
+&lt;br&gt;
+&lt;br&gt;Which works fine for general "what should I work on next" use, but is
+&lt;br&gt;still clumsy if you want to edit a lot of todo items at once, adjusting
+&lt;br&gt;due date or priority etc. &amp;nbsp;You have to double-click the item in th=
+e
+&lt;br&gt;global view to jump to its source in its project\'s outline, edit it
+&lt;br&gt;there, switch back to the main outline, etc.
+&lt;br&gt;
+&lt;br&gt;So now the script which generates the global view tags the items with a
+&lt;br&gt;marker which, when seen by the todo plugin, causes it to apply todo
+&lt;br&gt;item edits in the global view to the corresponding node in the
+&lt;br&gt;project\'s file as well. &amp;nbsp;This means the first time you edit a todo=
+ item
+&lt;br&gt;there may be a pause while that project\'s outline is loaded, but
+&lt;br&gt;everything carries on as it should afterwards, and on-going todo item
+&lt;br&gt;editing is quick once the outlines are loaded.
+&lt;br&gt;
+&lt;br&gt;I\'ll push the updated todo.py code which checks for a
+&lt;br&gt;v.u[\'annotate\'][\'src_unl\'] marker to know if a todo item is a proxy for
+&lt;br&gt;one in another file and propagate the edits, but unless you have a
+&lt;br&gt;script which assembles todo items from diverse files and tags them as
+&lt;br&gt;proxies it doesn\'t really do anything.
+&lt;br&gt;
+&lt;br&gt;Really I just wanted to highlight how this approach, edits on a proxy
+&lt;br&gt;node causing the opening and editing of a node in another outline,
+&lt;br&gt;really can work in a usable way - I\'m sure there are all sorts of
+&lt;br&gt;possible applications.
+&lt;br&gt;
+&lt;br&gt;Cheers -Terry
+&lt;br&gt;&lt;/blockquote&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+-- &lt;br /&gt;
+You received this message because you are subscribed to the Google Groups "=
+leo-editor" group.&lt;br /&gt;
+To view this discussion on the web visit &lt;a href=3D"https://groups.google.c=
+om/d/msg/leo-editor/-/d7KkTsWVEgIJ"&gt;https://groups.google.com/d/msg/leo-edi=
+tor/-/d7KkTsWVEgIJ&lt;/a&gt;.&lt;br /&gt;=20
+&lt;br /&gt;
+To unsubscribe from this group, send email to leo-editor+unsubscribe@google=
+groups.com.&lt;br /&gt;
+
+For more options, visit this group at http://groups.google.com/group/leo-ed=
+itor?hl=3Den.&lt;br /&gt;
+
+
+
+------=_Part_259_5710838.1354220609176--</t>
+<t tx="ekr.20130806072439.18511">From: Kent Tenney &lt;ktenney@gmail.com&gt;
+
+That flow would sure make a great webcast!
+
+(ie: I don\'t get it, but I can tell it\'s cool)
+
+On Thu, Nov 29, 2012 at 1:28 PM, Terry Brown &lt;terry_n_brown@yahoo.com&gt; wrote:
+&gt; I\'ve found that having edits on a node in one outline simultaneously
+&gt; reflected in another node in another outline works surprisingly well.
+&gt;
+&gt; I do a lot of to-do item project managing with Leo, with lists of todo
+&gt; items (managed with the todo plugin) in each projects outline.
+&gt;
+&gt; A script rapidly assembles a global list of todo items using
+&gt; the .../external/leosax.py parser to scan all the project files without
+&gt; leo having to fully load them.  The script builds a tree of todo items
+&gt; which uses the UNLs to make them into bookmarks which can jump to the
+&gt; corresponding node in the project\'s outline, opening it if necessary.
+&gt;
+&gt; Which works fine for general "what should I work on next" use, but is
+&gt; still clumsy if you want to edit a lot of todo items at once, adjusting
+&gt; due date or priority etc.  You have to double-click the item in the
+&gt; global view to jump to its source in its project\'s outline, edit it
+&gt; there, switch back to the main outline, etc.
+&gt;
+&gt; So now the script which generates the global view tags the items with a
+&gt; marker which, when seen by the todo plugin, causes it to apply todo
+&gt; item edits in the global view to the corresponding node in the
+&gt; project\'s file as well.  This means the first time you edit a todo item
+&gt; there may be a pause while that project\'s outline is loaded, but
+&gt; everything carries on as it should afterwards, and on-going todo item
+&gt; editing is quick once the outlines are loaded.
+&gt;
+&gt; I\'ll push the updated todo.py code which checks for a
+&gt; v.u[\'annotate\'][\'src_unl\'] marker to know if a todo item is a proxy for
+&gt; one in another file and propagate the edits, but unless you have a
+&gt; script which assembles todo items from diverse files and tags them as
+&gt; proxies it doesn\'t really do anything.
+&gt;
+&gt; Really I just wanted to highlight how this approach, edits on a proxy
+&gt; node causing the opening and editing of a node in another outline,
+&gt; really can work in a usable way - I\'m sure there are all sorts of
+&gt; possible applications.
+&gt;
+&gt; Cheers -Terry
+&gt;
+&gt; --
+&gt; You received this message because you are subscribed to the Google Groups "leo-editor" group.
+&gt; 
+&gt; To unsubscribe from this group, send email to leo-editor+unsubscribe@googlegroups.com.
+&gt; For more options, visit this group at http://groups.google.com/group/leo-editor?hl=en.
+&gt;
+
+
+
+To unsubscribe from this group, send email to leo-editor+unsubscribe@googlegroups.com.
+For more options, visit this group at http://groups.google.com/group/leo-editor?hl=en.</t>
+<t tx="ekr.20130806072439.18512">From: wgw &lt;wgwinder@gmail.com&gt;
+
+------=_Part_153_552152.1360113254750
+Content-Type: text/plain; charset=ISO-8859-1
+
+I would like to see a fuller outline view of Leo trees. So instead of 
+seeing one body only and the tree of headlines, I want to display all the 
+parts of the tree (all bodies and subheadings) as continuous text, much 
+like a word processor outline. 
+
+I can almost do that myself in the preview panel. Here is a  very sloppy 
+"preview-tree" script (good for a laugh for anyone who does much Leo 
+programming!). 
+
+result = ["\\n\\n&gt;"+p.h,"\\n"+p.b]
+for p2 in p.subtree():
+    result.append("\\n\\n&gt;&gt;"+p2.h + "\\n\\n" )
+    for i in p2.b.split(\'\\n\'):    
+        result.append("\\n|  " + i)
+s = \'\'.join(result)
+
+g.app.gui.runScrolledMessageDialog(c=c, msg = g.u(\'rst:\\n\') + s )
+
+
+This needs a total redesign, but it does give an idea of the results I want 
+to get: the whole tree (not necessarily in rst format).
+
+I think I could probably get this to work correctly, but the really tough 
+part, I think, is being able to click somewhere on the tree preview and go 
+to the pertinent node in the headline/body panels. 
+
+This looks like a feature that Word has, but that Leo doesn\'t, as far as I 
+can tell. Or am I missing something (besides the fact that such things can 
+be done in Leo almost magically!) ?
+
+Any suggestions for a full tree preview ? 
+
+Bill 
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+For more options, visit https://groups.google.com/groups/opt_out.
+
+
+
+------=_Part_153_552152.1360113254750
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+I would like to see a fuller outline view of Leo trees. So instead of seein=
+g one body only and the tree of headlines, I want to display all the parts =
+of the tree (all bodies and subheadings) as continuous text, much like a wo=
+rd processor outline.&amp;nbsp;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;I can almost do that myself =
+in the preview panel. Here is a &amp;nbsp;very sloppy "preview-tree" script (go=
+od for a laugh for anyone who does much Leo programming!).&amp;nbsp;&lt;div&gt;&lt;br&gt;&lt;/=
+div&gt;&lt;blockquote style=3D"margin: 0 0 0 40px; border: none; padding: 0px;"&gt;&lt;=
+div&gt;&lt;div&gt;result =3D ["\\n\\n&amp;gt;"+p.h,"\\n"+p.b]&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;for p2 i=
+n p.subtree():&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; result.append("\\n\\n&amp;gt;&amp;g=
+t;"+p2.h + "\\n\\n" )&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; for i in p2.b.split(=
+\'\\n\'): &amp;nbsp; &amp;nbsp;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; resul=
+t.append("\\n| &amp;nbsp;" + i)&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;s =3D \'\'.join(result)&lt;/div&gt;=
+&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;g.app.gui.runScrolledMessageDialo=
+g(c=3Dc, msg =3D g.u(\'rst:\\n\') + s )&lt;/div&gt;&lt;/div&gt;&lt;/blockquote&gt;&lt;div&gt;&lt;br&gt;&lt;/div=
+&gt;&lt;div&gt;This needs a total redesign, but it does give an idea of the results =
+I want to get: the whole tree (not necessarily in rst format).&lt;/div&gt;&lt;div&gt;&lt;b=
+r&gt;&lt;/div&gt;&lt;div&gt;I think I could probably get this to work correctly, but the r=
+eally tough part, I think, is being able to click somewhere on the tree pre=
+view and go to the pertinent node in the headline/body panels.&amp;nbsp;&lt;/div&gt;&lt;=
+div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;This looks like a feature that Word has, but that Leo do=
+esn\'t, as far as I can tell. Or am I missing something (besides the fact th=
+at such things can be done in Leo almost magically!) ?&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;=
+&lt;div&gt;Any suggestions for a full tree preview ?&amp;nbsp;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;d=
+iv&gt;Bill&amp;nbsp;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+-- &lt;br /&gt;
+You received this message because you are subscribed to the Google Groups &amp;=
+quot;leo-editor&amp;quot; group.&lt;br /&gt;
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to leo-editor+unsubscribe@googlegroups.com.&lt;br /&gt;
+&lt;br /&gt;
+Visit this group at &lt;a href=3D"http://groups.google.com/group/leo-editor?hl=
+=3Den"&gt;http://groups.google.com/group/leo-editor?hl=3Den&lt;/a&gt;.&lt;br /&gt;
+For more options, visit &lt;a href=3D"https://groups.google.com/groups/opt_out=
+"&gt;https://groups.google.com/groups/opt_out&lt;/a&gt;.&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+
+------=_Part_153_552152.1360113254750--</t>
+<t tx="ekr.20130806072439.18513">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+
+On Tue, 5 Feb 2013 22:43:30 -0600
+Terry Brown &lt;terry_n_brown@yahoo.com&gt; wrote:
+
+&gt; It wouldn\'t be hard to do something with HTML formatting and links to
+&gt; display the outline and jump to a node when you click on the display,
+&gt; I\'ll try and get to it.
+
+1) Paste the code below into a node, then hit the "run-script"
+button.
+
+2) Then select a node with some hierarchy, not too much.
+
+3) Then right click on the panel dividers between the tree / body / log
+panes, you should see a context menu with an "Open Window" sub-menu,
+which should contain an "Overview" item.  
+
+You should get a continuous view of the hierarchy with clickable
+headlines which take you to the node.
+
+You can select multiple nodes in step 2 above, with normal list Ctrl-
+or Shift- click operations.  Nodes are shown in the overview in the
+order selected.  This is how you\'d generate the overview for a whole
+outline - i.e. contract the whole outline, click the first top level
+node, shift click the last top level node, and then step 3.
+
+You can also embed the overview in a pane in the Leo window by select
+"Insert" rather than "Open window" in step 3, click the action button
+and select Overview.
+
+This was the low hanging fruit, based on code used in bookmarks.py.  A
+refresh button for the outline wouldn\'t be too hard, but right now
+you need to close the window / pane and open it again to refresh.
+
+Cheer -Terry
+
+--- cut here ---
+@language python
+
+from PyQt4 import QtGui, QtCore
+from xml.sax.saxutils import escape
+
+def add_html(html, nd):
+    """recursively add to an html list with links to nodes"""
+    
+    unl = nd.get_UNL()
+    html.append("&lt;div class=\'level\'&gt;"
+        "&lt;div&gt;&lt;a href=\'%s\' title=\'%s\'&gt;%s&lt;/a&gt;&lt;/div&gt;" %
+        (unl, unl, escape(nd.h)))
+    html.append("&lt;pre&gt;%s&lt;/pre&gt;"%escape(nd.b))
+    for child in nd.children():
+        add_html(html, child)
+    html.append("&lt;/div&gt;")
+
+def make_overview(c):
+    """build the overview widget"""
+
+    te = QtGui.QTextBrowser()
+    te.setReadOnly(True)
+    te.setOpenLinks(False)
+    
+    def anchorClicked(url, c=c):
+        url = str(url.toString())
+        g.handleUrl(url,c=c,p=c.p)
+    
+    te.anchorClicked.connect(anchorClicked)
+    
+    html = ["""&lt;html&gt;&lt;head&gt;&lt;style&gt;
+    .level .level {margin-left: 1.5em}
+    a {text-decoration: none; font-size: 120%}
+    &lt;/style&gt;&lt;/head&gt;&lt;body&gt;"""]
+    
+    for nd in c.getSelectedPositions():
+        add_html(html, nd)
+
+    html.append("&lt;/body&gt;&lt;/html&gt;") 
+    
+    html = \'\\n\'.join(html)
+    
+    te.setHtml(html)
+    
+    return te
+
+class OverviewPaneProvider:
+    def __init__(self, c):
+        self.c = c
+        # Careful: we may be unit testing.
+        if hasattr(c, \'free_layout\'):
+            splitter = c.free_layout.get_top_splitter()
+            if splitter:
+                splitter.register_provider(self)
+    def ns_provides(self):
+        return[(\'Overview\', \'_add_overview_pane\')]
+    def ns_provide(self, id_):
+        if id_ == \'_add_overview_pane\':
+            w = make_overview(c)
+            return w
+    def ns_title(self, id_):
+        if id_ == \'_add_overview_pane\':
+            return "Leo Outline Overview"
+    def ns_provider_id(self):
+        # used by register_provider() to unregister previously registered
+        # providers of the same service
+        return "outline overview window"
+
+OverviewPaneProvider(c)
+
+--- cut here ---
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+For more options, visit https://groups.google.com/groups/opt_out.</t>
+<t tx="ekr.20130806072439.18514">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
+
+--14dae934113d103af904d50fedf7
+Content-Type: text/plain; charset=ISO-8859-1
+
+There is a separate option when editing @file nodes
+
+
+On Wed, Feb 6, 2013 at 4:47 PM, Terry Brown &lt;terry_n_brown@yahoo.com&gt; wrote:
+
+&gt; On Tue, 5 Feb 2013 22:33:13 -0800
+&gt; Matt Wilkie &lt;maphew@gmail.com&gt; wrote:
+&gt;
+&gt; &gt; On Tue, Feb 5, 2013 at 5:14 PM, wgw &lt;wgwinder@gmail.com&gt; wrote:
+&gt; &gt;
+&gt; &gt; &gt; I would like to see a fuller outline view of Leo trees. So instead of
+&gt; &gt; &gt; seeing one body only and the tree of headlines, I want to display all
+&gt; the
+&gt; &gt; &gt; parts of the tree (all bodies and subheadings) as continuous text, much
+&gt; &gt; &gt; like a word processor outline.
+&gt; &gt;
+&gt; &gt; I use *"r-click &gt; Edit in ..."*  for this purpose. It\'s a poor man\'s
+&gt; &gt; workaround. Something integrated would be much nicer. Just thought I\'d
+&gt; &gt; mention it for anyone looking for something they might be able to use
+&gt; right
+&gt; &gt; away.
+&gt;
+&gt; When I try that it only edits the one node, none of its children.
+&gt; Which is what I thought it did.
+&gt;
+&gt; Cheers -Terry
+&gt;
+&gt; --
+&gt; You received this message because you are subscribed to the Google Groups
+&gt; "leo-editor" group.
+&gt; To unsubscribe from this group and stop receiving emails from it, send an
+&gt; email to leo-editor+unsubscribe@googlegroups.com.
+&gt; 
+&gt; Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+&gt; For more options, visit https://groups.google.com/groups/opt_out.
+&gt;
+&gt;
+&gt;
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+For more options, visit https://groups.google.com/groups/opt_out.
+
+
+
+--14dae934113d103af904d50fedf7
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+&lt;div dir=3D"ltr"&gt;There is a separate option when editing @file nodes&lt;/div&gt;&lt;=
+div class=3D"gmail_extra"&gt;&lt;br&gt;&lt;br&gt;&lt;div class=3D"gmail_quote"&gt;On Wed, Feb 6,=
+ 2013 at 4:47 PM, Terry Brown &lt;span dir=3D"ltr"&gt;&amp;lt;&lt;a href=3D"mailto:terry=
+_n_brown@yahoo.com" target=3D"_blank"&gt;terry_n_brown@yahoo.com&lt;/a&gt;&amp;gt;&lt;/span=
+&gt; wrote:&lt;br&gt;
+&lt;blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1p=
+x #ccc solid;padding-left:1ex"&gt;&lt;div class=3D"im"&gt;On Tue, 5 Feb 2013 22:33:1=
+3 -0800&lt;br&gt;
+Matt Wilkie &amp;lt;&lt;a href=3D"mailto:maphew@gmail.com"&gt;maphew@gmail.com&lt;/a&gt;&amp;gt=
+; wrote:&lt;br&gt;
+&lt;br&gt;
+&amp;gt; On Tue, Feb 5, 2013 at 5:14 PM, wgw &amp;lt;&lt;a href=3D"mailto:wgwinder@gma=
+il.com"&gt;wgwinder@gmail.com&lt;/a&gt;&amp;gt; wrote:&lt;br&gt;
+&amp;gt;&lt;br&gt;
+&amp;gt; &amp;gt; I would like to see a fuller outline view of Leo trees. So instea=
+d of&lt;br&gt;
+&amp;gt; &amp;gt; seeing one body only and the tree of headlines, I want to display=
+ all the&lt;br&gt;
+&amp;gt; &amp;gt; parts of the tree (all bodies and subheadings) as continuous text=
+, much&lt;br&gt;
+&amp;gt; &amp;gt; like a word processor outline.&lt;br&gt;
+&amp;gt;&lt;br&gt;
+&lt;/div&gt;&amp;gt; I use *&amp;quot;r-click &amp;gt; Edit in ...&amp;quot;* =A0for this purpose=
+. It&amp;#39;s a poor man&amp;#39;s&lt;br&gt;
+&lt;div class=3D"im"&gt;&amp;gt; workaround. Something integrated would be much nicer=
+. Just thought I&amp;#39;d&lt;br&gt;
+&amp;gt; mention it for anyone looking for something they might be able to use =
+right&lt;br&gt;
+&amp;gt; away.&lt;br&gt;
+&lt;br&gt;
+&lt;/div&gt;When I try that it only edits the one node, none of its children.&lt;br&gt;
+Which is what I thought it did.&lt;br&gt;
+&lt;br&gt;
+Cheers -Terry&lt;br&gt;
+&lt;div class=3D"HOEnZb"&gt;&lt;div class=3D"h5"&gt;&lt;br&gt;
+--&lt;br&gt;
+You received this message because you are subscribed to the Google Groups &amp;=
+quot;leo-editor&amp;quot; group.&lt;br&gt;
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to &lt;a href=3D"mailto:leo-editor%2Bunsubscribe@googlegroups.com"&gt;leo-ed=
+itor+unsubscribe@googlegroups.com&lt;/a&gt;.&lt;br&gt;
+To post to this group, send email to &lt;a href=3D"mailto:leo-editor@googlegro=
+ups.com"&gt;leo-editor@googlegroups.com&lt;/a&gt;.&lt;br&gt;
+Visit this group at &lt;a href=3D"http://groups.google.com/group/leo-editor?hl=
+=3Den" target=3D"_blank"&gt;http://groups.google.com/group/leo-editor?hl=3Den&lt;=
+/a&gt;.&lt;br&gt;
+For more options, visit &lt;a href=3D"https://groups.google.com/groups/opt_out=
+" target=3D"_blank"&gt;https://groups.google.com/groups/opt_out&lt;/a&gt;.&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;/div&gt;&lt;/div&gt;&lt;/blockquote&gt;&lt;/div&gt;&lt;br&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+-- &lt;br /&gt;
+You received this message because you are subscribed to the Google Groups &amp;=
+quot;leo-editor&amp;quot; group.&lt;br /&gt;
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to leo-editor+unsubscribe@googlegroups.com.&lt;br /&gt;
+&lt;br /&gt;
+Visit this group at &lt;a href=3D"http://groups.google.com/group/leo-editor?hl=
+=3Den"&gt;http://groups.google.com/group/leo-editor?hl=3Den&lt;/a&gt;.&lt;br /&gt;
+For more options, visit &lt;a href=3D"https://groups.google.com/groups/opt_out=
+"&gt;https://groups.google.com/groups/opt_out&lt;/a&gt;.&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+
+--14dae934113d103af904d50fedf7--</t>
+<t tx="ekr.20130806072439.18515">From: "william.winder@ubc.ca" &lt;wgwinder@gmail.com&gt;
+
+--f46d04478905cac12604d5073b60
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+Great! Thanks for looking into this. I think it would be a nice feature --
+it would make an overview of the tree one of the possible views.
+
+Thanks!
+
+Bill
+
+
+On Tue, Feb 5, 2013 at 8:43 PM, Terry Brown &lt;terry_n_brown@yahoo.com&gt; wrote=
+:
+
+&gt; On Tue, 5 Feb 2013 20:00:51 -0800 (PST)
+&gt; wgw &lt;wgwinder@gmail.com&gt; wrote:
+&gt;
+&gt; &gt; Thanks! That plugin does both more and less than I want: more, because =
+I
+&gt; &gt; get a full and nicely formatted window with editable text boxes; less,
+&gt; &gt; since it doesn\'t write any edited text back to the tree.
+&gt; &gt;
+&gt; &gt; My fumbling tinkering would go towards not editing in the preview
+&gt; &gt; window/pane at all, and just having a keystroke or click scroll the
+&gt; editing
+&gt; &gt; pane to the right node in Leo. But that would mean that the preview pan=
+el
+&gt; &gt; would have have to be properly indexed so that from the cursor position
+&gt; in
+&gt; &gt; the panel the plugin could find the proper node back in the Leo panel.
+&gt; &gt;  (Kludgy way: put the node id in the text!)
+&gt;
+&gt; Yes, I think nb-* is in some ways more of a tech. demonstration.
+&gt;
+&gt; It wouldn\'t be hard to do something with HTML formatting and links to
+&gt; display the outline and jump to a node when you click on the display,
+&gt; I\'ll try and get to it.
+&gt;
+&gt; Cheers -Terry
+&gt;
+&gt; &gt; Thanks for the suggestion.
+&gt; &gt;
+&gt; &gt; Bill
+&gt; &gt;
+&gt; &gt; Le mardi 5 f=E9vrier 2013 18:46:56 UTC-8, Terry a =E9crit :
+&gt; &gt; &gt;
+&gt; &gt; &gt; On Tue, 5 Feb 2013 17:14:14 -0800 (PST)
+&gt; &gt; &gt; wgw &lt;wgwi...@gmail.com &lt;javascript:&gt;&gt; wrote:
+&gt; &gt; &gt;
+&gt; &gt; &gt; &gt; I would like to see a fuller outline view of Leo trees. So instead =
+of
+&gt; &gt; &gt; &gt; seeing one body only and the tree of headlines, I want to display a=
+ll
+&gt; &gt; &gt; the
+&gt; &gt; &gt; &gt; parts of the tree (all bodies and subheadings) as continuous text,
+&gt; much
+&gt; &gt; &gt; &gt; like a word processor outline.
+&gt; &gt; &gt; &gt;
+&gt; &gt; &gt; &gt; I can almost do that myself in the preview panel. Here is a  very
+&gt; sloppy
+&gt; &gt; &gt; &gt; "preview-tree" script (good for a laugh for anyone who does much Le=
+o
+&gt; &gt; &gt; &gt; programming!).
+&gt; &gt; &gt; &gt;
+&gt; &gt; &gt; &gt; result =3D ["\\n\\n&gt;"+p.h,"\\n"+p.b]
+&gt; &gt; &gt; &gt; for p2 in p.subtree():
+&gt; &gt; &gt; &gt;     result.append("\\n\\n&gt;&gt;"+p2.h + "\\n\\n" )
+&gt; &gt; &gt; &gt;     for i in p2.b.split(\'\\n\'):
+&gt; &gt; &gt; &gt;         result.append("\\n|  " + i)
+&gt; &gt; &gt; &gt; s =3D \'\'.join(result)
+&gt; &gt; &gt; &gt;
+&gt; &gt; &gt; &gt; g.app.gui.runScrolledMessageDialog(c=3Dc, msg =3D g.u(\'rst:\\n\') + s=
+ )
+&gt; &gt; &gt; &gt;
+&gt; &gt; &gt; &gt;
+&gt; &gt; &gt; &gt; This needs a total redesign, but it does give an idea of the result=
+s
+&gt; I
+&gt; &gt; &gt; want
+&gt; &gt; &gt; &gt; to get: the whole tree (not necessarily in rst format).
+&gt; &gt; &gt; &gt;
+&gt; &gt; &gt; &gt; I think I could probably get this to work correctly, but the really
+&gt; &gt; &gt; tough
+&gt; &gt; &gt; &gt; part, I think, is being able to click somewhere on the tree preview
+&gt; and
+&gt; &gt; &gt; go
+&gt; &gt; &gt; &gt; to the pertinent node in the headline/body panels.
+&gt; &gt; &gt; &gt;
+&gt; &gt; &gt; &gt; This looks like a feature that Word has, but that Leo doesn\'t, as
+&gt; far as
+&gt; &gt; &gt; I
+&gt; &gt; &gt; &gt; can tell. Or am I missing something (besides the fact that such
+&gt; things
+&gt; &gt; &gt; can
+&gt; &gt; &gt; &gt; be done in Leo almost magically!) ?
+&gt; &gt; &gt; &gt;
+&gt; &gt; &gt; &gt; Any suggestions for a full tree preview ?
+&gt; &gt; &gt;
+&gt; &gt; &gt; I think this has been requested before and Ville did something possib=
+ly
+&gt; &gt; &gt; using QtQuick or something, a scrolley flicky thing :-)
+&gt; &gt; &gt;
+&gt; &gt; &gt; Ah yes,
+&gt; &gt; &gt;
+&gt; https://groups.google.com/forum/?fromgroups=3D#!topic/leo-editor/Zs-5jKjP=
+AB0
+&gt; &gt; &gt;
+&gt; &gt; &gt; ...and... I think I\'m going to have to kill me Leo session after doin=
+g
+&gt; &gt; &gt; nb-all on a large outline, so be warned - nb-subtree is probably
+&gt; &gt; &gt; smarter.
+&gt; &gt; &gt;
+&gt; &gt; &gt; Cheers -Terry
+&gt; &gt; &gt;
+&gt; &gt; &gt; &gt; Bill
+&gt; &gt; &gt; &gt;
+&gt; &gt; &gt;
+&gt; &gt;
+&gt;
+&gt; --
+&gt; You received this message because you are subscribed to the Google Groups
+&gt; "leo-editor" group.
+&gt; To unsubscribe from this group and stop receiving emails from it, send an
+&gt; email to leo-editor+unsubscribe@googlegroups.com.
+&gt; 
+&gt; Visit this group at http://groups.google.com/group/leo-editor?hl=3Den.
+&gt; For more options, visit https://groups.google.com/groups/opt_out.
+&gt;
+&gt;
+&gt;
+
+
+--=20
+W.Winder
+faculty.arts.ubc.ca/winder
+
+--=20
+You received this message because you are subscribed to the Google Groups "=
+leo-editor" group.
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=3Den.
+For more options, visit https://groups.google.com/groups/opt_out.
+
+
+
+--f46d04478905cac12604d5073b60
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+&lt;div dir=3D"ltr"&gt;Great! Thanks for looking into this. I think it would be a=
+ nice feature -- it would make an overview of the tree one of the possible =
+views.&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div style&gt;Thanks!&lt;/div&gt;&lt;div style&gt;&lt;br&gt;&lt;/div&gt;&lt;div styl=
+e&gt;
+
+Bill=A0&lt;/div&gt;&lt;/div&gt;&lt;div class=3D"gmail_extra"&gt;&lt;br&gt;&lt;br&gt;&lt;div class=3D"gmail_q=
+uote"&gt;On Tue, Feb 5, 2013 at 8:43 PM, Terry Brown &lt;span dir=3D"ltr"&gt;&amp;lt;&lt;a =
+href=3D"mailto:terry_n_brown@yahoo.com" target=3D"_blank"&gt;terry_n_brown@yah=
+oo.com&lt;/a&gt;&amp;gt;&lt;/span&gt; wrote:&lt;br&gt;
+
+&lt;blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1p=
+x #ccc solid;padding-left:1ex"&gt;&lt;div class=3D"im"&gt;On Tue, 5 Feb 2013 20:00:5=
+1 -0800 (PST)&lt;br&gt;
+wgw &amp;lt;&lt;a href=3D"mailto:wgwinder@gmail.com"&gt;wgwinder@gmail.com&lt;/a&gt;&amp;gt; wr=
+ote:&lt;br&gt;
+&lt;br&gt;
+&amp;gt; Thanks! That plugin does both more and less than I want: more, because=
+ I&lt;br&gt;
+&amp;gt; get a full and nicely formatted window with editable text boxes; less,=
+&lt;br&gt;
+&amp;gt; since it doesn&amp;#39;t write any edited text back to the tree.&lt;br&gt;
+&amp;gt;&lt;br&gt;
+&amp;gt; My fumbling tinkering would go towards not editing in the preview&lt;br&gt;
+&amp;gt; window/pane at all, and just having a keystroke or click scroll the ed=
+iting&lt;br&gt;
+&amp;gt; pane to the right node in Leo. But that would mean that the preview pa=
+nel&lt;br&gt;
+&amp;gt; would have have to be properly indexed so that from the cursor positio=
+n in&lt;br&gt;
+&amp;gt; the panel the plugin could find the proper node back in the Leo panel.=
+&lt;br&gt;
+&amp;gt; =A0(Kludgy way: put the node id in the text!)&lt;br&gt;
+&lt;br&gt;
+&lt;/div&gt;Yes, I think nb-* is in some ways more of a tech. demonstration.&lt;br&gt;
+&lt;br&gt;
+It wouldn&amp;#39;t be hard to do something with HTML formatting and links to&lt;b=
+r&gt;
+display the outline and jump to a node when you click on the display,&lt;br&gt;
+I&amp;#39;ll try and get to it.&lt;br&gt;
+&lt;br&gt;
+Cheers -Terry&lt;br&gt;
+&lt;div class=3D"im HOEnZb"&gt;&lt;br&gt;
+&amp;gt; Thanks for the suggestion.&lt;br&gt;
+&amp;gt;&lt;br&gt;
+&amp;gt; Bill&lt;br&gt;
+&amp;gt;&lt;br&gt;
+&amp;gt; Le mardi 5 f=E9vrier 2013 18:46:56 UTC-8, Terry a =E9crit :&lt;br&gt;
+&amp;gt; &amp;gt;&lt;br&gt;
+&amp;gt; &amp;gt; On Tue, 5 Feb 2013 17:14:14 -0800 (PST)&lt;br&gt;
+&lt;/div&gt;&lt;div class=3D"HOEnZb"&gt;&lt;div class=3D"h5"&gt;&amp;gt; &amp;gt; wgw &amp;lt;&lt;a href=3D"=
+mailto:wgwi...@gmail.com"&gt;wgwi...@gmail.com&lt;/a&gt; &amp;lt;javascript:&amp;gt;&amp;gt; wro=
+te:&lt;br&gt;
+&amp;gt; &amp;gt;&lt;br&gt;
+&amp;gt; &amp;gt; &amp;gt; I would like to see a fuller outline view of Leo trees. So i=
+nstead of&lt;br&gt;
+&amp;gt; &amp;gt; &amp;gt; seeing one body only and the tree of headlines, I want to di=
+splay all&lt;br&gt;
+&amp;gt; &amp;gt; the&lt;br&gt;
+&amp;gt; &amp;gt; &amp;gt; parts of the tree (all bodies and subheadings) as continuous=
+ text, much&lt;br&gt;
+&amp;gt; &amp;gt; &amp;gt; like a word processor outline.&lt;br&gt;
+&amp;gt; &amp;gt; &amp;gt;&lt;br&gt;
+&amp;gt; &amp;gt; &amp;gt; I can almost do that myself in the preview panel. Here is a =
+=A0very sloppy&lt;br&gt;
+&amp;gt; &amp;gt; &amp;gt; &amp;quot;preview-tree&amp;quot; script (good for a laugh for anyone=
+ who does much Leo&lt;br&gt;
+&amp;gt; &amp;gt; &amp;gt; programming!).&lt;br&gt;
+&amp;gt; &amp;gt; &amp;gt;&lt;br&gt;
+&amp;gt; &amp;gt; &amp;gt; result =3D [&amp;quot;\\n\\n&amp;gt;&amp;quot;+p.h,&amp;quot;\\n&amp;quot;+p.b]&lt;br&gt;
+&amp;gt; &amp;gt; &amp;gt; for p2 in p.subtree():&lt;br&gt;
+&amp;gt; &amp;gt; &amp;gt; =A0 =A0 result.append(&amp;quot;\\n\\n&amp;gt;&amp;gt;&amp;quot;+p2.h + &amp;quot;=
+\\n\\n&amp;quot; )&lt;br&gt;
+&amp;gt; &amp;gt; &amp;gt; =A0 =A0 for i in p2.b.split(&amp;#39;\\n&amp;#39;):&lt;br&gt;
+&amp;gt; &amp;gt; &amp;gt; =A0 =A0 =A0 =A0 result.append(&amp;quot;\\n| =A0&amp;quot; + i)&lt;br&gt;
+&amp;gt; &amp;gt; &amp;gt; s =3D &amp;#39;&amp;#39;.join(result)&lt;br&gt;
+&amp;gt; &amp;gt; &amp;gt;&lt;br&gt;
+&amp;gt; &amp;gt; &amp;gt; g.app.gui.runScrolledMessageDialog(c=3Dc, msg =3D g.u(&amp;#39;r=
+st:\\n&amp;#39;) + s )&lt;br&gt;
+&amp;gt; &amp;gt; &amp;gt;&lt;br&gt;
+&amp;gt; &amp;gt; &amp;gt;&lt;br&gt;
+&amp;gt; &amp;gt; &amp;gt; This needs a total redesign, but it does give an idea of the=
+ results I&lt;br&gt;
+&amp;gt; &amp;gt; want&lt;br&gt;
+&amp;gt; &amp;gt; &amp;gt; to get: the whole tree (not necessarily in rst format).&lt;br&gt;
+&amp;gt; &amp;gt; &amp;gt;&lt;br&gt;
+&amp;gt; &amp;gt; &amp;gt; I think I could probably get this to work correctly, but the=
+ really&lt;br&gt;
+&amp;gt; &amp;gt; tough&lt;br&gt;
+&amp;gt; &amp;gt; &amp;gt; part, I think, is being able to click somewhere on the tree =
+preview and&lt;br&gt;
+&amp;gt; &amp;gt; go&lt;br&gt;
+&amp;gt; &amp;gt; &amp;gt; to the pertinent node in the headline/body panels.&lt;br&gt;
+&amp;gt; &amp;gt; &amp;gt;&lt;br&gt;
+&amp;gt; &amp;gt; &amp;gt; This looks like a feature that Word has, but that Leo doesn&amp;=
+#39;t, as far as&lt;br&gt;
+&amp;gt; &amp;gt; I&lt;br&gt;
+&amp;gt; &amp;gt; &amp;gt; can tell. Or am I missing something (besides the fact that s=
+uch things&lt;br&gt;
+&amp;gt; &amp;gt; can&lt;br&gt;
+&amp;gt; &amp;gt; &amp;gt; be done in Leo almost magically!) ?&lt;br&gt;
+&amp;gt; &amp;gt; &amp;gt;&lt;br&gt;
+&amp;gt; &amp;gt; &amp;gt; Any suggestions for a full tree preview ?&lt;br&gt;
+&amp;gt; &amp;gt;&lt;br&gt;
+&amp;gt; &amp;gt; I think this has been requested before and Ville did something po=
+ssibly&lt;br&gt;
+&amp;gt; &amp;gt; using QtQuick or something, a scrolley flicky thing :-)&lt;br&gt;
+&amp;gt; &amp;gt;&lt;br&gt;
+&amp;gt; &amp;gt; Ah yes,&lt;br&gt;
+&amp;gt; &amp;gt; &lt;a href=3D"https://groups.google.com/forum/?fromgroups=3D#!topic/=
+leo-editor/Zs-5jKjPAB0" target=3D"_blank"&gt;https://groups.google.com/forum/?=
+fromgroups=3D#!topic/leo-editor/Zs-5jKjPAB0&lt;/a&gt;&lt;br&gt;
+&amp;gt; &amp;gt;&lt;br&gt;
+&amp;gt; &amp;gt; ...and... I think I&amp;#39;m going to have to kill me Leo session af=
+ter doing&lt;br&gt;
+&amp;gt; &amp;gt; nb-all on a large outline, so be warned - nb-subtree is probably&lt;=
+br&gt;
+&amp;gt; &amp;gt; smarter.&lt;br&gt;
+&amp;gt; &amp;gt;&lt;br&gt;
+&amp;gt; &amp;gt; Cheers -Terry&lt;br&gt;
+&amp;gt; &amp;gt;&lt;br&gt;
+&amp;gt; &amp;gt; &amp;gt; Bill&lt;br&gt;
+&amp;gt; &amp;gt; &amp;gt;&lt;br&gt;
+&amp;gt; &amp;gt;&lt;br&gt;
+&amp;gt;&lt;br&gt;
+&lt;br&gt;
+--&lt;br&gt;
+You received this message because you are subscribed to the Google Groups &amp;=
+quot;leo-editor&amp;quot; group.&lt;br&gt;
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to &lt;a href=3D"mailto:leo-editor%2Bunsubscribe@googlegroups.com"&gt;leo-ed=
+itor+unsubscribe@googlegroups.com&lt;/a&gt;.&lt;br&gt;
+To post to this group, send email to &lt;a href=3D"mailto:leo-editor@googlegro=
+ups.com"&gt;leo-editor@googlegroups.com&lt;/a&gt;.&lt;br&gt;
+Visit this group at &lt;a href=3D"http://groups.google.com/group/leo-editor?hl=
+=3Den" target=3D"_blank"&gt;http://groups.google.com/group/leo-editor?hl=3Den&lt;=
+/a&gt;.&lt;br&gt;
+For more options, visit &lt;a href=3D"https://groups.google.com/groups/opt_out=
+" target=3D"_blank"&gt;https://groups.google.com/groups/opt_out&lt;/a&gt;.&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;/div&gt;&lt;/div&gt;&lt;/blockquote&gt;&lt;/div&gt;&lt;br&gt;&lt;br clear=3D"all"&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;-- &lt;br&gt;=
+W.Winder&lt;br&gt;&lt;a href=3D"http://faculty.arts.ubc.ca/winder"&gt;faculty.arts.ubc.=
+ca/winder&lt;/a&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+-- &lt;br /&gt;
+You received this message because you are subscribed to the Google Groups &amp;=
+quot;leo-editor&amp;quot; group.&lt;br /&gt;
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to leo-editor+unsubscribe@googlegroups.com.&lt;br /&gt;
+&lt;br /&gt;
+Visit this group at &lt;a href=3D"http://groups.google.com/group/leo-editor?hl=
+=3Den"&gt;http://groups.google.com/group/leo-editor?hl=3Den&lt;/a&gt;.&lt;br /&gt;
+For more options, visit &lt;a href=3D"https://groups.google.com/groups/opt_out=
+"&gt;https://groups.google.com/groups/opt_out&lt;/a&gt;.&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+
+--f46d04478905cac12604d5073b60--</t>
+<t tx="ekr.20130806072439.18516">From: wgw &lt;wgwinder@gmail.com&gt;
+
+------=_Part_716_32159962.1360172982407
+Content-Type: text/plain; charset=ISO-8859-1
+
+Got it. Thanks! 
+
+(I do think that a rich vein of views could be derived from this code. For 
+instance, it could generate an overview of marked nodes, or nodes that 
+matched given search criteria, or n to m levels of the tree. That would 
+give a number of very flexible, on the fly views of the tree, which is what 
+clones do too. But this clones the views. Clones on steroids, in the sense 
+that the views can be generated algorithmically.)
+
+On Wednesday, February 6, 2013 9:25:05 AM UTC-8, Terry wrote:
+&gt;
+&gt; On Wed, 6 Feb 2013 09:01:23 -0800 (PST) 
+&gt; wgw &lt;wgwi...@gmail.com &lt;javascript:&gt;&gt; wrote: 
+&gt;
+&gt; &gt; One question: is there a  way to delete an inserted pane?  It  looks 
+&gt; useful 
+&gt; &gt; to have an inserted pane, but refreshing will require killing the pane 
+&gt; and 
+&gt; &gt; reinserting.... 
+&gt;
+&gt; Yes, although a bit putzy.  Right click on the panel divider adjacent 
+&gt; to the pane, it may be above or below or left or right of it.  The panes 
+&gt; either side of the divider will be highlighted blue and orange.  There 
+&gt; will be an option to "Delete 1 left" or "Delete 1 below" or similar, if 
+&gt; that seems to refer to the panel you want to delete, that\'s your option. 
+&gt;
+&gt; If the target panel seems to be joined with another (i.e. 2 not 1 
+&gt; above) try right clicking a different divider to start with. 
+&gt;
+&gt; Makes me think that Shift-Ctrl-Click should close the panel it\'s on 
+&gt; instead of all this futzing. 
+&gt;
+&gt; Cheers -Terry 
+&gt;
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+For more options, visit https://groups.google.com/groups/opt_out.
+
+
+
+------=_Part_716_32159962.1360172982407
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+Got it. Thanks!&amp;nbsp;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;(I do think that a rich vein of vi=
+ews could be derived from this code. For instance, it could generate an ove=
+rview of marked nodes, or nodes that matched given search criteria, or n to=
+ m levels of the tree. That would give a number of very flexible, on the fl=
+y views of the tree, which is what clones do too. But this clones the views=
+. Clones on steroids, in the sense that the views can be generated algorith=
+mically.)&lt;br&gt;&lt;br&gt;On Wednesday, February 6, 2013 9:25:05 AM UTC-8, Terry wro=
+te:&lt;blockquote class=3D"gmail_quote" style=3D"margin: 0;margin-left: 0.8ex;=
+border-left: 1px #ccc solid;padding-left: 1ex;"&gt;On Wed, 6 Feb 2013 09:01:23=
+ -0800 (PST)
+&lt;br&gt;wgw &amp;lt;&lt;a href=3D"javascript:" target=3D"_blank" gdf-obfuscated-mailto=
+=3D"tdb8gci1FhYJ"&gt;wgwi...@gmail.com&lt;/a&gt;&amp;gt; wrote:
+&lt;br&gt;
+&lt;br&gt;&amp;gt; One question: is there a &amp;nbsp;way to delete an inserted pane? &amp;nb=
+sp;It &amp;nbsp;looks useful=20
+&lt;br&gt;&amp;gt; to have an inserted pane, but refreshing will require killing the =
+pane and=20
+&lt;br&gt;&amp;gt; reinserting....
+&lt;br&gt;
+&lt;br&gt;Yes, although a bit putzy. &amp;nbsp;Right click on the panel divider adjac=
+ent
+&lt;br&gt;to the pane, it may be above or below or left or right of it. &amp;nbsp;The=
+ panes
+&lt;br&gt;either side of the divider will be highlighted blue and orange. &amp;nbsp;T=
+here
+&lt;br&gt;will be an option to "Delete 1 left" or "Delete 1 below" or similar, if
+&lt;br&gt;that seems to refer to the panel you want to delete, that\'s your option=
+.
+&lt;br&gt;
+&lt;br&gt;If the target panel seems to be joined with another (i.e. 2 not 1
+&lt;br&gt;above) try right clicking a different divider to start with.
+&lt;br&gt;
+&lt;br&gt;Makes me think that Shift-Ctrl-Click should close the panel it\'s on
+&lt;br&gt;instead of all this futzing.
+&lt;br&gt;
+&lt;br&gt;Cheers -Terry
+&lt;br&gt;&lt;/blockquote&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+-- &lt;br /&gt;
+You received this message because you are subscribed to the Google Groups &amp;=
+quot;leo-editor&amp;quot; group.&lt;br /&gt;
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to leo-editor+unsubscribe@googlegroups.com.&lt;br /&gt;
+&lt;br /&gt;
+Visit this group at &lt;a href=3D"http://groups.google.com/group/leo-editor?hl=
+=3Den"&gt;http://groups.google.com/group/leo-editor?hl=3Den&lt;/a&gt;.&lt;br /&gt;
+For more options, visit &lt;a href=3D"https://groups.google.com/groups/opt_out=
+"&gt;https://groups.google.com/groups/opt_out&lt;/a&gt;.&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+
+------=_Part_716_32159962.1360172982407--</t>
+<t tx="ekr.20130806072439.18517">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+
+On Tue, 5 Feb 2013 17:14:14 -0800 (PST)
+wgw &lt;wgwinder@gmail.com&gt; wrote:
+
+&gt; I would like to see a fuller outline view of Leo trees. So instead of 
+&gt; seeing one body only and the tree of headlines, I want to display all the 
+&gt; parts of the tree (all bodies and subheadings) as continuous text, much 
+&gt; like a word processor outline. 
+&gt; 
+&gt; I can almost do that myself in the preview panel. Here is a  very sloppy 
+&gt; "preview-tree" script (good for a laugh for anyone who does much Leo 
+&gt; programming!). 
+&gt; 
+&gt; result = ["\\n\\n&gt;"+p.h,"\\n"+p.b]
+&gt; for p2 in p.subtree():
+&gt;     result.append("\\n\\n&gt;&gt;"+p2.h + "\\n\\n" )
+&gt;     for i in p2.b.split(\'\\n\'):    
+&gt;         result.append("\\n|  " + i)
+&gt; s = \'\'.join(result)
+&gt; 
+&gt; g.app.gui.runScrolledMessageDialog(c=c, msg = g.u(\'rst:\\n\') + s )
+&gt; 
+&gt; 
+&gt; This needs a total redesign, but it does give an idea of the results I want 
+&gt; to get: the whole tree (not necessarily in rst format).
+&gt; 
+&gt; I think I could probably get this to work correctly, but the really tough 
+&gt; part, I think, is being able to click somewhere on the tree preview and go 
+&gt; to the pertinent node in the headline/body panels. 
+&gt; 
+&gt; This looks like a feature that Word has, but that Leo doesn\'t, as far as I 
+&gt; can tell. Or am I missing something (besides the fact that such things can 
+&gt; be done in Leo almost magically!) ?
+&gt; 
+&gt; Any suggestions for a full tree preview ? 
+
+I think this has been requested before and Ville did something possibly
+using QtQuick or something, a scrolley flicky thing :-)
+
+Ah yes,
+https://groups.google.com/forum/?fromgroups=#!topic/leo-editor/Zs-5jKjPAB0
+
+...and... I think I\'m going to have to kill me Leo session after doing
+nb-all on a large outline, so be warned - nb-subtree is probably
+smarter.
+
+Cheers -Terry
+
+&gt; Bill 
+&gt; 
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+For more options, visit https://groups.google.com/groups/opt_out.</t>
+<t tx="ekr.20130806072439.18518">From: wgw &lt;wgwinder@gmail.com&gt;
+
+------=_Part_281_10283940.1360256002248
+Content-Type: text/plain; charset=ISO-8859-1
+
+
+On Thursday, February 7, 2013 6:21:51 AM UTC-8, Terry wrote:
+&gt;
+&gt; On Wed, 6 Feb 2013 22:28:38 -0800 
+&gt; Matt Wilkie &lt;map...@gmail.com &lt;javascript:&gt;&gt; wrote: 
+&gt;
+&gt; &gt; neat! Thanks Terry. 
+&gt; &gt; 
+&gt; &gt; Are the links in the overview supposed to open up a browser window? The 
+&gt; &gt; alt-tip text gives an in-Leo hiearchy, e.g. 
+&gt; "B:\\code\\dropbox-code.leo#leo 
+&gt; &gt; stuff--&gt;Overview of selected nodes" but clicking goes to 
+&gt; &gt; http://www.google.ca/, and in Internet Explorer even though Firefox is 
+&gt; my 
+&gt; &gt; default browser. 
+&gt;
+&gt; No, that\'s not right, they\'re supposed to just select the node they 
+&gt; belong to.  I assume it was working for Bill the OP, and it works for 
+&gt; me. 
+&gt;
+&gt; Bill - which OS are you using?  I wonder if it\'s a unix/windows path 
+&gt; thing, I\'m using Ubuntu. 
+
+
+Me too -- ubuntu 12.04. Everything works great. Whenever I click a headline 
+link, the window hides and I go to the leo node, as expected. 
+
+My tooltip gives the leo hierarchy of the node (path/leo file -&gt; tree -&gt; 
+node).
+
+ 
+
+
+&gt; &gt; And, more generally, can these hover-over-pane-divider-then-right-click 
+&gt; &gt; actions be made available any other way? Like a drop down menu from a 
+&gt; &gt; button or alt-x command or something. 
+&gt;
+&gt; What, you mean instead of being completely hidden where no one will 
+&gt; ever find them?  :-)  Most of them (not the Open Window variants of 
+&gt; course) rely on the context provided by your selection of a particular 
+&gt; divider, insert-where, delete-which etc. 
+&gt;
+
+I wonder whether a rclick on the overview button might remember the window 
+id and close it.... (but I am way beyond my depth here...)
+ 
+
+&gt;
+&gt; Probably the most friendly would be a button which pops up an overlay 
+&gt; over the UI where you can select which pane to delete, or where to 
+&gt; insert, etc.  But that would be hard. 
+&gt;
+&gt; Cheers -Terry 
+&gt;
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+For more options, visit https://groups.google.com/groups/opt_out.
+
+
+
+------=_Part_281_10283940.1360256002248
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+&lt;br&gt;On Thursday, February 7, 2013 6:21:51 AM UTC-8, Terry wrote:&lt;blockquote=
+ class=3D"gmail_quote" style=3D"margin: 0;margin-left: 0.8ex;border-left: 1=
+px #ccc solid;padding-left: 1ex;"&gt;On Wed, 6 Feb 2013 22:28:38 -0800
+&lt;br&gt;Matt Wilkie &amp;lt;&lt;a href=3D"javascript:" target=3D"_blank" gdf-obfuscate=
+d-mailto=3D"GzjQItheAN4J"&gt;map...@gmail.com&lt;/a&gt;&amp;gt; wrote:
+&lt;br&gt;
+&lt;br&gt;&amp;gt; neat! Thanks Terry.
+&lt;br&gt;&amp;gt;=20
+&lt;br&gt;&amp;gt; Are the links in the overview supposed to open up a browser window=
+? The
+&lt;br&gt;&amp;gt; alt-tip text gives an in-Leo hiearchy, e.g. "B:\\code\\dropbox-code.=
+leo#leo
+&lt;br&gt;&amp;gt; stuff--&amp;gt;Overview of selected nodes" but clicking goes to
+&lt;br&gt;&amp;gt; &lt;a href=3D"http://www.google.ca/" target=3D"_blank"&gt;http://www.goo=
+gle.ca/&lt;/a&gt;, and in Internet Explorer even though Firefox is my
+&lt;br&gt;&amp;gt; default browser.
+&lt;br&gt;
+&lt;br&gt;No, that\'s not right, they\'re supposed to just select the node they
+&lt;br&gt;belong to. &amp;nbsp;I assume it was working for Bill the OP, and it works =
+for
+&lt;br&gt;me.
+&lt;br&gt;
+&lt;br&gt;Bill - which OS are you using? &amp;nbsp;I wonder if it\'s a unix/windows pa=
+th
+&lt;br&gt;thing, I\'m using Ubuntu. &lt;/blockquote&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Me too -- ubu=
+ntu 12.04. Everything works great. Whenever I click a headline link, the wi=
+ndow hides and I go to the leo node, as expected.&amp;nbsp;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div=
+&gt;&lt;div&gt;My tooltip gives the leo hierarchy of the node (path/leo file -&amp;gt; t=
+ree -&amp;gt; node).&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;blockquote class=3D"gmail_quote" styl=
+e=3D"margin: 0;margin-left: 0.8ex;border-left: 1px #ccc solid;padding-left:=
+ 1ex;"&gt;&lt;span style=3D"font-size: 13px;"&gt;&amp;nbsp;&lt;/span&gt;&lt;/blockquote&gt;&lt;blockquo=
+te class=3D"gmail_quote" style=3D"margin: 0;margin-left: 0.8ex;border-left:=
+ 1px #ccc solid;padding-left: 1ex;"&gt;
+&lt;br&gt;&amp;gt; And, more generally, can these hover-over-pane-divider-then-&lt;wbr&gt;r=
+ight-click
+&lt;br&gt;&amp;gt; actions be made available any other way? Like a drop down menu fro=
+m a
+&lt;br&gt;&amp;gt; button or alt-x command or something.
+&lt;br&gt;
+&lt;br&gt;What, you mean instead of being completely hidden where no one will
+&lt;br&gt;ever find them? &amp;nbsp;:-) &amp;nbsp;Most of them (not the Open Window varia=
+nts of
+&lt;br&gt;course) rely on the context provided by your selection of a particular
+&lt;br&gt;divider, insert-where, delete-which etc.
+&lt;br&gt;&lt;/blockquote&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;I wonder whether a rclick on the overv=
+iew button might remember the window id and close it.... (but I am way beyo=
+nd my depth here...)&lt;/div&gt;&lt;div&gt;&amp;nbsp;&lt;/div&gt;&lt;blockquote class=3D"gmail_quote=
+" style=3D"margin: 0;margin-left: 0.8ex;border-left: 1px #ccc solid;padding=
+-left: 1ex;"&gt;
+&lt;br&gt;Probably the most friendly would be a button which pops up an overlay
+&lt;br&gt;over the UI where you can select which pane to delete, or where to
+&lt;br&gt;insert, etc. &amp;nbsp;But that would be hard.
+&lt;br&gt;
+&lt;br&gt;Cheers -Terry
+&lt;br&gt;&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+-- &lt;br /&gt;
+You received this message because you are subscribed to the Google Groups &amp;=
+quot;leo-editor&amp;quot; group.&lt;br /&gt;
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to leo-editor+unsubscribe@googlegroups.com.&lt;br /&gt;
+&lt;br /&gt;
+Visit this group at &lt;a href=3D"http://groups.google.com/group/leo-editor?hl=
+=3Den"&gt;http://groups.google.com/group/leo-editor?hl=3Den&lt;/a&gt;.&lt;br /&gt;
+For more options, visit &lt;a href=3D"https://groups.google.com/groups/opt_out=
+"&gt;https://groups.google.com/groups/opt_out&lt;/a&gt;.&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+
+------=_Part_281_10283940.1360256002248--</t>
+<t tx="ekr.20130806072439.18519">From: Matt Wilkie &lt;maphew@gmail.com&gt;
+
+--f46d0444029a613ce104d5088100
+Content-Type: text/plain; charset=ISO-8859-1
+
+On Tue, Feb 5, 2013 at 5:14 PM, wgw &lt;wgwinder@gmail.com&gt; wrote:
+
+&gt; I would like to see a fuller outline view of Leo trees. So instead of
+&gt; seeing one body only and the tree of headlines, I want to display all the
+&gt; parts of the tree (all bodies and subheadings) as continuous text, much
+&gt; like a word processor outline.
+
+
+I use *"r-click &gt; Edit in ..."*  for this purpose. It\'s a poor man\'s
+workaround. Something integrated would be much nicer. Just thought I\'d
+mention it for anyone looking for something they might be able to use right
+away.
+
+-matt
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+For more options, visit https://groups.google.com/groups/opt_out.
+
+
+
+--f46d0444029a613ce104d5088100
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Feb 5, 2013 at 5:14 PM, wgw &lt;span dir=3D"ltr"&gt;&amp;lt;&lt;a href=3D"mailto=
+:wgwinder@gmail.com" target=3D"_blank"&gt;wgwinder@gmail.com&lt;/a&gt;&amp;gt;&lt;/span&gt; wr=
+ote:&lt;br&gt;&lt;div class=3D"gmail_quote"&gt;&lt;blockquote class=3D"gmail_quote" style=
+=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex"&gt;
+
+I would like to see a fuller outline view of Leo trees. So instead of seein=
+g one body only and the tree of headlines, I want to display all the parts =
+of the tree (all bodies and subheadings) as continuous text, much like a wo=
+rd processor outline.=A0&lt;/blockquote&gt;
+
+&lt;/div&gt;&lt;br&gt;I use &lt;i&gt;&amp;quot;r-click &amp;gt; Edit in ...&amp;quot;&lt;/i&gt;=A0 for this pur=
+pose. It&amp;#39;s a poor man&amp;#39;s workaround. Something integrated would be m=
+uch nicer. Just thought I&amp;#39;d mention it for anyone looking for something=
+ they might be able to use right away.&lt;br&gt;
+
+&lt;br&gt;-matt&lt;br&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+-- &lt;br /&gt;
+You received this message because you are subscribed to the Google Groups &amp;=
+quot;leo-editor&amp;quot; group.&lt;br /&gt;
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to leo-editor+unsubscribe@googlegroups.com.&lt;br /&gt;
+&lt;br /&gt;
+Visit this group at &lt;a href=3D"http://groups.google.com/group/leo-editor?hl=
+=3Den"&gt;http://groups.google.com/group/leo-editor?hl=3Den&lt;/a&gt;.&lt;br /&gt;
+For more options, visit &lt;a href=3D"https://groups.google.com/groups/opt_out=
+"&gt;https://groups.google.com/groups/opt_out&lt;/a&gt;.&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+
+--f46d0444029a613ce104d5088100--</t>
+<t tx="ekr.20130806072439.18520">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+
+On Thu, 7 Feb 2013 08:53:22 -0800 (PST)
+wgw &lt;wgwinder@gmail.com&gt; wrote:
+
+&gt; I wonder whether a rclick on the overview button might remember the window 
+&gt; id and close it.... (but I am way beyond my depth here...)
+
+So this got way more complicated than I thought real fast, but got done
+in the end anyway.
+
+ - rclick / mclick don\'t activate the anchorClicked event, only lclick
+ - ok, so use Ctrl-lclick to close, but
+ - anchorClicked doesn\'t know the keyboard modifiers like a regular
+   event, only the url
+ - so change the script (new version below) to track modifiers
+   separately
+ - but closing the overview window still leaves the top level
+   window with a placeholder in it, so I had to modify
+   nested_splitter, new version pushed to launchpad / available
+   in snap-shot tomorrow
+
+Cheers -Terry
+
+--- cut here ---
+@language python
+
+from PyQt4 import QtGui, QtCore
+from xml.sax.saxutils import escape
+
+def add_html(html, nd):
+    """recursively add to an html list with links to nodes"""
+    
+    unl = nd.get_UNL()
+    html.append("&lt;div class=\'level\'&gt;"
+        "&lt;div&gt;&lt;a href=\'%s\' title=\'%s\'&gt;%s&lt;/a&gt;&lt;/div&gt;" %
+        (unl, unl, escape(nd.h)))
+    html.append("&lt;pre&gt;%s&lt;/pre&gt;"%escape(nd.b))
+    for child in nd.children():
+        add_html(html, child)
+    html.append("&lt;/div&gt;")
+
+def make_overview(c):
+    """build the overview widget"""
+
+    te = QtGui.QTextBrowser()
+    te.setReadOnly(True)
+    te.setOpenLinks(False)
+    
+    def anchorClicked(url, c=c, te=te):
+        
+        url = str(url.toString())
+        g.handleUrl(url,c=c,p=c.p)
+        
+        if te.ctrl_click:
+            te.deleteLater()
+        
+    te.anchorClicked.connect(anchorClicked)
+    
+    def mousePressEvent(event, te=te, original=te.mousePressEvent):
+        te.ctrl_click = bool(event.modifiers() &amp; QtCore.Qt.ControlModifier)
+        original(event)
+    
+    te.mousePressEvent = mousePressEvent
+    
+    html = ["""&lt;html&gt;&lt;head&gt;&lt;style&gt;
+    .level .level {margin-left: 1.5em}
+    a {text-decoration: none; font-size: 120%}
+    &lt;/style&gt;&lt;/head&gt;&lt;body&gt;"""]
+    
+    for nd in c.getSelectedPositions():
+        add_html(html, nd)
+
+    html.append("&lt;/body&gt;&lt;/html&gt;") 
+    
+    html = \'\\n\'.join(html)
+    
+    te.setHtml(html)
+    
+    return te
+
+class OverviewPaneProvider:
+    def __init__(self, c):
+        self.c = c
+        # Careful: we may be unit testing.
+        if hasattr(c, \'free_layout\'):
+            splitter = c.free_layout.get_top_splitter()
+            if splitter:
+                splitter.register_provider(self)
+    def ns_provides(self):
+        return[(\'Overview\', \'_add_overview_pane\')]
+    def ns_provide(self, id_):
+        if id_ == \'_add_overview_pane\':
+            w = make_overview(c)
+            return w
+    def ns_title(self, id_):
+        if id_ == \'_add_overview_pane\':
+            return "Leo Outline Overview"
+    def ns_provider_id(self):
+        # used by register_provider() to unregister previously registered
+        # providers of the same service
+        return "outline overview window"
+
+OverviewPaneProvider(c)
+
+--- cut here ---
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+For more options, visit https://groups.google.com/groups/opt_out.</t>
+<t tx="ekr.20130806072439.18521">From: Matt Wilkie &lt;maphew@gmail.com&gt;
+
+--047d7b621a64dd83b804d51c8e3c
+Content-Type: text/plain; charset=ISO-8859-1
+
+neat! Thanks Terry.
+
+Are the links in the overview supposed to open up a browser window? The
+alt-tip text gives an in-Leo hiearchy, e.g. "B:\\code\\dropbox-code.leo#leo
+stuff--&gt;Overview of selected nodes" but clicking goes to
+http://www.google.ca/, and in Internet Explorer even though Firefox is my
+default browser.
+
+And, more generally, can these hover-over-pane-divider-then-right-click
+actions be made available any other way? Like a drop down menu from a
+button or alt-x command or something.
+
+cheers,
+
+-matt
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+For more options, visit https://groups.google.com/groups/opt_out.
+
+
+
+--047d7b621a64dd83b804d51c8e3c
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+neat! Thanks Terry.&lt;br&gt;&lt;br&gt;Are the links in the overview supposed to open u=
+p a browser window? The alt-tip text gives an in-Leo hiearchy, e.g. &amp;quot;B=
+:\\code\\dropbox-code.leo#leo stuff--&amp;gt;Overview of selected nodes&amp;quot; but=
+ clicking goes to &lt;a href=3D"http://www.google.ca/"&gt;http://www.google.ca/&lt;/=
+a&gt;, and in Internet Explorer even though Firefox is my default browser.&lt;br&gt;
+
+&lt;br&gt;And, more generally, can these hover-over-pane-divider-then-right-click=
+ actions be made available any other way? Like a drop down menu from a butt=
+on or alt-x command or something.&lt;br&gt;&lt;br&gt;cheers,&lt;br&gt;&lt;br&gt;-matt&lt;br&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+-- &lt;br /&gt;
+You received this message because you are subscribed to the Google Groups &amp;=
+quot;leo-editor&amp;quot; group.&lt;br /&gt;
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to leo-editor+unsubscribe@googlegroups.com.&lt;br /&gt;
+&lt;br /&gt;
+Visit this group at &lt;a href=3D"http://groups.google.com/group/leo-editor?hl=
+=3Den"&gt;http://groups.google.com/group/leo-editor?hl=3Den&lt;/a&gt;.&lt;br /&gt;
+For more options, visit &lt;a href=3D"https://groups.google.com/groups/opt_out=
+"&gt;https://groups.google.com/groups/opt_out&lt;/a&gt;.&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+
+--047d7b621a64dd83b804d51c8e3c--</t>
+<t tx="ekr.20130806072439.18522">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+
+On Wed, 6 Feb 2013 11:25:05 -0600
+Terry Brown &lt;terry_n_brown@yahoo.com&gt; wrote:
+
+&gt; Makes me think that Shift-Ctrl-Click should close the panel it\'s on
+&gt; instead of all this futzing.
+
+Turns out to be harder than I thought, so I\'ve settled for a minor
+re-ordering of the submenu items to make Remove easier to find.
+
+Cheers -Terry
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+For more options, visit https://groups.google.com/groups/opt_out.</t>
+<t tx="ekr.20130806072439.18523">From: wgw &lt;wgwinder@gmail.com&gt;
+
+------=_Part_1781_12150916.1360123251546
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+Thanks! That plugin does both more and less than I want: more, because I=20
+get a full and nicely formatted window with editable text boxes; less,=20
+since it doesn\'t write any edited text back to the tree.=20
+
+My fumbling tinkering would go towards not editing in the preview=20
+window/pane at all, and just having a keystroke or click scroll the editing=
+=20
+pane to the right node in Leo. But that would mean that the preview panel=
+=20
+would have have to be properly indexed so that from the cursor position in=
+=20
+the panel the plugin could find the proper node back in the Leo panel.=20
+ (Kludgy way: put the node id in the text!)
+=20
+Thanks for the suggestion.
+
+Bill=20
+
+Le mardi 5 f=E9vrier 2013 18:46:56 UTC-8, Terry a =E9crit :
+&gt;
+&gt; On Tue, 5 Feb 2013 17:14:14 -0800 (PST)=20
+&gt; wgw &lt;wgwi...@gmail.com &lt;javascript:&gt;&gt; wrote:=20
+&gt;
+&gt; &gt; I would like to see a fuller outline view of Leo trees. So instead of=
+=20
+&gt; &gt; seeing one body only and the tree of headlines, I want to display all=
+=20
+&gt; the=20
+&gt; &gt; parts of the tree (all bodies and subheadings) as continuous text, much=
+=20
+&gt; &gt; like a word processor outline.=20
+&gt; &gt;=20
+&gt; &gt; I can almost do that myself in the preview panel. Here is a  very slopp=
+y=20
+&gt; &gt; "preview-tree" script (good for a laugh for anyone who does much Leo=20
+&gt; &gt; programming!).=20
+&gt; &gt;=20
+&gt; &gt; result =3D ["\\n\\n&gt;"+p.h,"\\n"+p.b]=20
+&gt; &gt; for p2 in p.subtree():=20
+&gt; &gt;     result.append("\\n\\n&gt;&gt;"+p2.h + "\\n\\n" )=20
+&gt; &gt;     for i in p2.b.split(\'\\n\'):    =20
+&gt; &gt;         result.append("\\n|  " + i)=20
+&gt; &gt; s =3D \'\'.join(result)=20
+&gt; &gt;=20
+&gt; &gt; g.app.gui.runScrolledMessageDialog(c=3Dc, msg =3D g.u(\'rst:\\n\') + s )=
+=20
+&gt; &gt;=20
+&gt; &gt;=20
+&gt; &gt; This needs a total redesign, but it does give an idea of the results I=
+=20
+&gt; want=20
+&gt; &gt; to get: the whole tree (not necessarily in rst format).=20
+&gt; &gt;=20
+&gt; &gt; I think I could probably get this to work correctly, but the really=20
+&gt; tough=20
+&gt; &gt; part, I think, is being able to click somewhere on the tree preview and=
+=20
+&gt; go=20
+&gt; &gt; to the pertinent node in the headline/body panels.=20
+&gt; &gt;=20
+&gt; &gt; This looks like a feature that Word has, but that Leo doesn\'t, as far a=
+s=20
+&gt; I=20
+&gt; &gt; can tell. Or am I missing something (besides the fact that such things=
+=20
+&gt; can=20
+&gt; &gt; be done in Leo almost magically!) ?=20
+&gt; &gt;=20
+&gt; &gt; Any suggestions for a full tree preview ?=20
+&gt;
+&gt; I think this has been requested before and Ville did something possibly=
+=20
+&gt; using QtQuick or something, a scrolley flicky thing :-)=20
+&gt;
+&gt; Ah yes,=20
+&gt; https://groups.google.com/forum/?fromgroups=3D#!topic/leo-editor/Zs-5jKjP=
+AB0=20
+&gt;
+&gt; ...and... I think I\'m going to have to kill me Leo session after doing=20
+&gt; nb-all on a large outline, so be warned - nb-subtree is probably=20
+&gt; smarter.=20
+&gt;
+&gt; Cheers -Terry=20
+&gt;
+&gt; &gt; Bill=20
+&gt; &gt;=20
+&gt;
+
+--=20
+You received this message because you are subscribed to the Google Groups "=
+leo-editor" group.
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=3Den.
+For more options, visit https://groups.google.com/groups/opt_out.
+
+
+
+------=_Part_1781_12150916.1360123251546
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+Thanks! That plugin does both more and less than I want: more, because I ge=
+t a full and nicely formatted window with editable text boxes; less, since =
+it doesn\'t write any edited text back to the tree.&amp;nbsp;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div=
+&gt;My fumbling tinkering would go towards not editing in the preview window/p=
+ane at all, and just having a keystroke or click scroll the editing pane to=
+ the right node in Leo. But that would mean that the preview panel would ha=
+ve have to be properly indexed so that from the cursor position in the pane=
+l the plugin could find the proper node back in the Leo panel. &amp;nbsp;(Kludg=
+y way: put the node id in the text!)&lt;/div&gt;&lt;div&gt;&lt;span style=3D"font-size: 13=
+px;"&gt;&amp;nbsp;&lt;/span&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Thanks for the suggestion.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;=
+/div&gt;&lt;div&gt;Bill&amp;nbsp;&lt;/div&gt;&lt;div&gt;&lt;br&gt;Le mardi 5 f=E9vrier 2013 18:46:56 UTC-8=
+, Terry a =E9crit&amp;nbsp;:&lt;blockquote class=3D"gmail_quote" style=3D"margin: =
+0;margin-left: 0.8ex;border-left: 1px #ccc solid;padding-left: 1ex;"&gt;On Tue=
+, 5 Feb 2013 17:14:14 -0800 (PST)
+&lt;br&gt;wgw &amp;lt;&lt;a href=3D"javascript:" target=3D"_blank" gdf-obfuscated-mailto=
+=3D"r7mA7oaRx2cJ"&gt;wgwi...@gmail.com&lt;/a&gt;&amp;gt; wrote:
+&lt;br&gt;
+&lt;br&gt;&amp;gt; I would like to see a fuller outline view of Leo trees. So instead=
+ of=20
+&lt;br&gt;&amp;gt; seeing one body only and the tree of headlines, I want to display =
+all the=20
+&lt;br&gt;&amp;gt; parts of the tree (all bodies and subheadings) as continuous text,=
+ much=20
+&lt;br&gt;&amp;gt; like a word processor outline.=20
+&lt;br&gt;&amp;gt;=20
+&lt;br&gt;&amp;gt; I can almost do that myself in the preview panel. Here is a &amp;nbsp;=
+very sloppy=20
+&lt;br&gt;&amp;gt; "preview-tree" script (good for a laugh for anyone who does much L=
+eo=20
+&lt;br&gt;&amp;gt; programming!).=20
+&lt;br&gt;&amp;gt;=20
+&lt;br&gt;&amp;gt; result =3D ["\\n\\n&amp;gt;"+p.h,"\\n"+p.b]
+&lt;br&gt;&amp;gt; for p2 in p.subtree():
+&lt;br&gt;&amp;gt; &amp;nbsp; &amp;nbsp; result.append("\\n\\n&amp;gt;&amp;gt;"+p2.h + "\\n\\n" )
+&lt;br&gt;&amp;gt; &amp;nbsp; &amp;nbsp; for i in p2.b.split(\'\\n\'): &amp;nbsp; &amp;nbsp;
+&lt;br&gt;&amp;gt; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; result.append("\\n| &amp;nbsp;" + i)
+&lt;br&gt;&amp;gt; s =3D \'\'.join(result)
+&lt;br&gt;&amp;gt;=20
+&lt;br&gt;&amp;gt; g.app.gui.&lt;wbr&gt;runScrolledMessageDialog(c=3Dc, msg =3D g.u(\'rst:\\n=
+\') + s )
+&lt;br&gt;&amp;gt;=20
+&lt;br&gt;&amp;gt;=20
+&lt;br&gt;&amp;gt; This needs a total redesign, but it does give an idea of the resul=
+ts I want=20
+&lt;br&gt;&amp;gt; to get: the whole tree (not necessarily in rst format).
+&lt;br&gt;&amp;gt;=20
+&lt;br&gt;&amp;gt; I think I could probably get this to work correctly, but the reall=
+y tough=20
+&lt;br&gt;&amp;gt; part, I think, is being able to click somewhere on the tree previe=
+w and go=20
+&lt;br&gt;&amp;gt; to the pertinent node in the headline/body panels.=20
+&lt;br&gt;&amp;gt;=20
+&lt;br&gt;&amp;gt; This looks like a feature that Word has, but that Leo doesn\'t, as =
+far as I=20
+&lt;br&gt;&amp;gt; can tell. Or am I missing something (besides the fact that such th=
+ings can=20
+&lt;br&gt;&amp;gt; be done in Leo almost magically!) ?
+&lt;br&gt;&amp;gt;=20
+&lt;br&gt;&amp;gt; Any suggestions for a full tree preview ?=20
+&lt;br&gt;
+&lt;br&gt;I think this has been requested before and Ville did something possibly
+&lt;br&gt;using QtQuick or something, a scrolley flicky thing :-)
+&lt;br&gt;
+&lt;br&gt;Ah yes,
+&lt;br&gt;&lt;a href=3D"https://groups.google.com/forum/?fromgroups=3D#!topic/leo-ed=
+itor/Zs-5jKjPAB0" target=3D"_blank"&gt;https://groups.google.com/&lt;wbr&gt;forum/?f=
+romgroups=3D#!topic/leo-&lt;wbr&gt;editor/Zs-5jKjPAB0&lt;/a&gt;
+&lt;br&gt;
+&lt;br&gt;...and... I think I\'m going to have to kill me Leo session after doing
+&lt;br&gt;nb-all on a large outline, so be warned - nb-subtree is probably
+&lt;br&gt;smarter.
+&lt;br&gt;
+&lt;br&gt;Cheers -Terry
+&lt;br&gt;
+&lt;br&gt;&amp;gt; Bill=20
+&lt;br&gt;&amp;gt;=20
+&lt;br&gt;&lt;/blockquote&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+-- &lt;br /&gt;
+You received this message because you are subscribed to the Google Groups &amp;=
+quot;leo-editor&amp;quot; group.&lt;br /&gt;
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to leo-editor+unsubscribe@googlegroups.com.&lt;br /&gt;
+&lt;br /&gt;
+Visit this group at &lt;a href=3D"http://groups.google.com/group/leo-editor?hl=
+=3Den"&gt;http://groups.google.com/group/leo-editor?hl=3Den&lt;/a&gt;.&lt;br /&gt;
+For more options, visit &lt;a href=3D"https://groups.google.com/groups/opt_out=
+"&gt;https://groups.google.com/groups/opt_out&lt;/a&gt;.&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+
+------=_Part_1781_12150916.1360123251546--</t>
+<t tx="ekr.20130806072439.18524">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+
+On Wed, 6 Feb 2013 09:01:23 -0800 (PST)
+wgw &lt;wgwinder@gmail.com&gt; wrote:
+
+&gt; One question: is there a  way to delete an inserted pane?  It  looks useful 
+&gt; to have an inserted pane, but refreshing will require killing the pane and 
+&gt; reinserting....
+
+Yes, although a bit putzy.  Right click on the panel divider adjacent
+to the pane, it may be above or below or left or right of it.  The panes
+either side of the divider will be highlighted blue and orange.  There
+will be an option to "Delete 1 left" or "Delete 1 below" or similar, if
+that seems to refer to the panel you want to delete, that\'s your option.
+
+If the target panel seems to be joined with another (i.e. 2 not 1
+above) try right clicking a different divider to start with.
+
+Makes me think that Shift-Ctrl-Click should close the panel it\'s on
+instead of all this futzing.
+
+Cheers -Terry
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+For more options, visit https://groups.google.com/groups/opt_out.</t>
+<t tx="ekr.20130806072439.18525">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+
+On Thu, 7 Feb 2013 08:21:51 -0600
+Terry Brown &lt;terry_n_brown@yahoo.com&gt; wrote:
+
+&gt; On Wed, 6 Feb 2013 22:28:38 -0800
+&gt; Matt Wilkie &lt;maphew@gmail.com&gt; wrote:
+...
+&gt; &gt; And, more generally, can these hover-over-pane-divider-then-right-click
+&gt; &gt; actions be made available any other way? Like a drop down menu from a
+&gt; &gt; button or alt-x command or something.  
+&gt; 
+&gt; What, you mean instead of being completely hidden where no one will
+&gt; ever find them?  :-)  Most of them (not the Open Window variants of
+&gt; course)
+
+But it occurs to me that it might be the open window variants you want,
+specifically the code to make a button / command to open a window with
+a particular panel in it.  That would be this:
+
+if hasattr(c, \'free_layout\'):
+    splitter = c.free_layout.get_top_splitter()
+    if splitter:
+        splitter.open_window(action=\'_add_overview_pane\')
+
+Cheers -Terry
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+For more options, visit https://groups.google.com/groups/opt_out.</t>
+<t tx="ekr.20130806072439.18526">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+
+On Wed, 6 Feb 2013 22:28:38 -0800
+Matt Wilkie &lt;maphew@gmail.com&gt; wrote:
+
+&gt; neat! Thanks Terry.
+&gt; 
+&gt; Are the links in the overview supposed to open up a browser window? The
+&gt; alt-tip text gives an in-Leo hiearchy, e.g. "B:\\code\\dropbox-code.leo#leo
+&gt; stuff--&gt;Overview of selected nodes" but clicking goes to
+&gt; http://www.google.ca/, and in Internet Explorer even though Firefox is my
+&gt; default browser.
+
+No, that\'s not right, they\'re supposed to just select the node they
+belong to.  I assume it was working for Bill the OP, and it works for
+me.
+
+Bill - which OS are you using?  I wonder if it\'s a unix/windows path
+thing, I\'m using Ubuntu.
+
+&gt; And, more generally, can these hover-over-pane-divider-then-right-click
+&gt; actions be made available any other way? Like a drop down menu from a
+&gt; button or alt-x command or something.
+
+What, you mean instead of being completely hidden where no one will
+ever find them?  :-)  Most of them (not the Open Window variants of
+course) rely on the context provided by your selection of a particular
+divider, insert-where, delete-which etc.
+
+Probably the most friendly would be a button which pops up an overlay
+over the UI where you can select which pane to delete, or where to
+insert, etc.  But that would be hard.
+
+Cheers -Terry
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+For more options, visit https://groups.google.com/groups/opt_out.</t>
+<t tx="ekr.20130806072439.18527">From: wgw &lt;wgwinder@gmail.com&gt;
+
+------=_Part_198_11760886.1360170083672
+Content-Type: text/plain; charset=ISO-8859-1
+
+Excellent! This is really a great help for me. I\'m still experimenting, but 
+one thing I will find useful is that I can open several of these panes and 
+navigate through each of the "views". Plus (and this has been a longtime 
+wishlist item for those with fading sight), I can increase the text size 
+for reading big chunks of text. 
+
+(Another plus, and this is a big one, I can actually read your code well 
+enough that I start to have some inkling about how to do this kind of 
+addition to Leo. I could never begin to write it myself, but Leo makes it 
+accessible even for shambling hackers.)
+
+One question: is there a  way to delete an inserted pane?  It  looks useful 
+to have an inserted pane, but refreshing will require killing the pane and 
+reinserting.... 
+
+I\'m going to use this a lot -- many thanks!
+
+Bill
+
+On Wednesday, February 6, 2013 7:36:41 AM UTC-8, Terry wrote:
+&gt;
+&gt; On Tue, 5 Feb 2013 22:43:30 -0600 
+&gt; Terry Brown &lt;terry_...@yahoo.com &lt;javascript:&gt;&gt; wrote: 
+&gt;
+&gt; &gt; It wouldn\'t be hard to do something with HTML formatting and links to 
+&gt; &gt; display the outline and jump to a node when you click on the display, 
+&gt; &gt; I\'ll try and get to it. 
+&gt;
+&gt; 1) Paste the code below into a node, then hit the "run-script" 
+&gt; button. 
+&gt;
+&gt; 2) Then select a node with some hierarchy, not too much. 
+&gt;
+&gt; 3) Then right click on the panel dividers between the tree / body / log 
+&gt; panes, you should see a context menu with an "Open Window" sub-menu, 
+&gt; which should contain an "Overview" item.   
+&gt;
+&gt; You should get a continuous view of the hierarchy with clickable 
+&gt; headlines which take you to the node. 
+&gt;
+&gt; You can select multiple nodes in step 2 above, with normal list Ctrl- 
+&gt; or Shift- click operations.  Nodes are shown in the overview in the 
+&gt; order selected.  This is how you\'d generate the overview for a whole 
+&gt; outline - i.e. contract the whole outline, click the first top level 
+&gt; node, shift click the last top level node, and then step 3. 
+&gt;
+&gt; You can also embed the overview in a pane in the Leo window by select 
+&gt; "Insert" rather than "Open window" in step 3, click the action button 
+&gt; and select Overview. 
+&gt;
+&gt; This was the low hanging fruit, based on code used in bookmarks.py.  A 
+&gt; refresh button for the outline wouldn\'t be too hard, but right now 
+&gt; you need to close the window / pane and open it again to refresh. 
+&gt;
+&gt; Cheer -Terry 
+&gt;
+&gt; --- cut here --- 
+&gt; @language python 
+&gt;
+&gt; from PyQt4 import QtGui, QtCore 
+&gt; from xml.sax.saxutils import escape 
+&gt;
+&gt; def add_html(html, nd): 
+&gt;     """recursively add to an html list with links to nodes""" 
+&gt;     
+&gt;     unl = nd.get_UNL() 
+&gt;     html.append("&lt;div class=\'level\'&gt;" 
+&gt;         "&lt;div&gt;&lt;a href=\'%s\' title=\'%s\'&gt;%s&lt;/a&gt;&lt;/div&gt;" % 
+&gt;         (unl, unl, escape(nd.h))) 
+&gt;     html.append("&lt;pre&gt;%s&lt;/pre&gt;"%escape(nd.b)) 
+&gt;     for child in nd.children(): 
+&gt;         add_html(html, child) 
+&gt;     html.append("&lt;/div&gt;") 
+&gt;
+&gt; def make_overview(c): 
+&gt;     """build the overview widget""" 
+&gt;
+&gt;     te = QtGui.QTextBrowser() 
+&gt;     te.setReadOnly(True) 
+&gt;     te.setOpenLinks(False) 
+&gt;     
+&gt;     def anchorClicked(url, c=c): 
+&gt;         url = str(url.toString()) 
+&gt;         g.handleUrl(url,c=c,p=c.p) 
+&gt;     
+&gt;     te.anchorClicked.connect(anchorClicked) 
+&gt;     
+&gt;     html = ["""&lt;html&gt;&lt;head&gt;&lt;style&gt; 
+&gt;     .level .level {margin-left: 1.5em} 
+&gt;     a {text-decoration: none; font-size: 120%} 
+&gt;     &lt;/style&gt;&lt;/head&gt;&lt;body&gt;"""] 
+&gt;     
+&gt;     for nd in c.getSelectedPositions(): 
+&gt;         add_html(html, nd) 
+&gt;
+&gt;     html.append("&lt;/body&gt;&lt;/html&gt;") 
+&gt;     
+&gt;     html = \'\\n\'.join(html) 
+&gt;     
+&gt;     te.setHtml(html) 
+&gt;     
+&gt;     return te 
+&gt;
+&gt; class OverviewPaneProvider: 
+&gt;     def __init__(self, c): 
+&gt;         self.c = c 
+&gt;         # Careful: we may be unit testing. 
+&gt;         if hasattr(c, \'free_layout\'): 
+&gt;             splitter = c.free_layout.get_top_splitter() 
+&gt;             if splitter: 
+&gt;                 splitter.register_provider(self) 
+&gt;     def ns_provides(self): 
+&gt;         return[(\'Overview\', \'_add_overview_pane\')] 
+&gt;     def ns_provide(self, id_): 
+&gt;         if id_ == \'_add_overview_pane\': 
+&gt;             w = make_overview(c) 
+&gt;             return w 
+&gt;     def ns_title(self, id_): 
+&gt;         if id_ == \'_add_overview_pane\': 
+&gt;             return "Leo Outline Overview" 
+&gt;     def ns_provider_id(self): 
+&gt;         # used by register_provider() to unregister previously registered 
+&gt;         # providers of the same service 
+&gt;         return "outline overview window" 
+&gt;
+&gt; OverviewPaneProvider(c) 
+&gt;
+&gt; --- cut here --- 
+&gt;
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+For more options, visit https://groups.google.com/groups/opt_out.
+
+
+
+------=_Part_198_11760886.1360170083672
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+Excellent! This is really a great help for me. I\'m still experimenting, but=
+ one thing I will find useful is that I can open several of these panes and=
+ navigate through each of the "views". Plus (and this has been a longtime w=
+ishlist item for those with fading sight), I can increase the text size for=
+ reading big chunks of text.&amp;nbsp;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;(Another plus, and th=
+is is a big one, I can actually read your code well enough that I start to =
+have some inkling about how to do this kind of addition to Leo. I could nev=
+er begin to write it myself, but Leo makes it accessible even for shambling=
+ hackers.)&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;One question: is there a &amp;nbsp;way to d=
+elete an inserted&lt;span style=3D"font-size: 13px;"&gt;&amp;nbsp;pane? &amp;nbsp;It &amp;nbs=
+p;looks useful to have an inserted pane, but refreshing will require killin=
+g the pane and reinserting....&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;I\'m go=
+ing to use this a lot -- many thanks!&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Bill&lt;br&gt;&lt;br&gt;=
+On Wednesday, February 6, 2013 7:36:41 AM UTC-8, Terry wrote:&lt;blockquote cl=
+ass=3D"gmail_quote" style=3D"margin: 0;margin-left: 0.8ex;border-left: 1px =
+#ccc solid;padding-left: 1ex;"&gt;On Tue, 5 Feb 2013 22:43:30 -0600
+&lt;br&gt;Terry Brown &amp;lt;&lt;a href=3D"javascript:" target=3D"_blank" gdf-obfuscate=
+d-mailto=3D"RPoL56l-t1QJ"&gt;terry_...@yahoo.com&lt;/a&gt;&amp;gt; wrote:
+&lt;br&gt;
+&lt;br&gt;&amp;gt; It wouldn\'t be hard to do something with HTML formatting and links=
+ to
+&lt;br&gt;&amp;gt; display the outline and jump to a node when you click on the displ=
+ay,
+&lt;br&gt;&amp;gt; I\'ll try and get to it.
+&lt;br&gt;
+&lt;br&gt;1) Paste the code below into a node, then hit the "run-script"
+&lt;br&gt;button.
+&lt;br&gt;
+&lt;br&gt;2) Then select a node with some hierarchy, not too much.
+&lt;br&gt;
+&lt;br&gt;3) Then right click on the panel dividers between the tree / body / log
+&lt;br&gt;panes, you should see a context menu with an "Open Window" sub-menu,
+&lt;br&gt;which should contain an "Overview" item. &amp;nbsp;
+&lt;br&gt;
+&lt;br&gt;You should get a continuous view of the hierarchy with clickable
+&lt;br&gt;headlines which take you to the node.
+&lt;br&gt;
+&lt;br&gt;You can select multiple nodes in step 2 above, with normal list Ctrl-
+&lt;br&gt;or Shift- click operations. &amp;nbsp;Nodes are shown in the overview in th=
+e
+&lt;br&gt;order selected. &amp;nbsp;This is how you\'d generate the overview for a who=
+le
+&lt;br&gt;outline - i.e. contract the whole outline, click the first top level
+&lt;br&gt;node, shift click the last top level node, and then step 3.
+&lt;br&gt;
+&lt;br&gt;You can also embed the overview in a pane in the Leo window by select
+&lt;br&gt;"Insert" rather than "Open window" in step 3, click the action button
+&lt;br&gt;and select Overview.
+&lt;br&gt;
+&lt;br&gt;This was the low hanging fruit, based on code used in bookmarks.py. &amp;nb=
+sp;A
+&lt;br&gt;refresh button for the outline wouldn\'t be too hard, but right now
+&lt;br&gt;you need to close the window / pane and open it again to refresh.
+&lt;br&gt;
+&lt;br&gt;Cheer -Terry
+&lt;br&gt;
+&lt;br&gt;--- cut here ---
+&lt;br&gt;@language python
+&lt;br&gt;
+&lt;br&gt;from PyQt4 import QtGui, QtCore
+&lt;br&gt;from xml.sax.saxutils import escape
+&lt;br&gt;
+&lt;br&gt;def add_html(html, nd):
+&lt;br&gt;&amp;nbsp; &amp;nbsp; """recursively add to an html list with links to nodes"""
+&lt;br&gt;&amp;nbsp; &amp;nbsp;=20
+&lt;br&gt;&amp;nbsp; &amp;nbsp; unl =3D nd.get_UNL()
+&lt;br&gt;&amp;nbsp; &amp;nbsp; html.append("&amp;lt;div class=3D\'level\'&amp;gt;"
+&lt;br&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; "&amp;lt;div&amp;gt;&amp;lt;a href=3D\'%s\' title=3D\'%s\'&amp;=
+gt;%s&amp;lt;/a&amp;gt;&amp;lt;/div&amp;gt;" %
+&lt;br&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; (unl, unl, escape(nd.h)))
+&lt;br&gt;&amp;nbsp; &amp;nbsp; html.append("&amp;lt;pre&amp;gt;%s&amp;lt;/pre&amp;gt;"%&lt;wbr&gt;escape(nd.b)=
+)
+&lt;br&gt;&amp;nbsp; &amp;nbsp; for child in nd.children():
+&lt;br&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; add_html(html, child)
+&lt;br&gt;&amp;nbsp; &amp;nbsp; html.append("&amp;lt;/div&amp;gt;")
+&lt;br&gt;
+&lt;br&gt;def make_overview(c):
+&lt;br&gt;&amp;nbsp; &amp;nbsp; """build the overview widget"""
+&lt;br&gt;
+&lt;br&gt;&amp;nbsp; &amp;nbsp; te =3D QtGui.QTextBrowser()
+&lt;br&gt;&amp;nbsp; &amp;nbsp; te.setReadOnly(True)
+&lt;br&gt;&amp;nbsp; &amp;nbsp; te.setOpenLinks(False)
+&lt;br&gt;&amp;nbsp; &amp;nbsp;=20
+&lt;br&gt;&amp;nbsp; &amp;nbsp; def anchorClicked(url, c=3Dc):
+&lt;br&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; url =3D str(url.toString())
+&lt;br&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; g.handleUrl(url,c=3Dc,p=3Dc.p)
+&lt;br&gt;&amp;nbsp; &amp;nbsp;=20
+&lt;br&gt;&amp;nbsp; &amp;nbsp; te.anchorClicked.connect(&lt;wbr&gt;anchorClicked)
+&lt;br&gt;&amp;nbsp; &amp;nbsp;=20
+&lt;br&gt;&amp;nbsp; &amp;nbsp; html =3D ["""&amp;lt;html&amp;gt;&amp;lt;head&amp;gt;&amp;lt;style&amp;gt;
+&lt;br&gt;&amp;nbsp; &amp;nbsp; .level .level {margin-left: 1.5em}
+&lt;br&gt;&amp;nbsp; &amp;nbsp; a {text-decoration: none; font-size: 120%}
+&lt;br&gt;&amp;nbsp; &amp;nbsp; &amp;lt;/style&amp;gt;&amp;lt;/head&amp;gt;&amp;lt;body&amp;gt;"""]
+&lt;br&gt;&amp;nbsp; &amp;nbsp;=20
+&lt;br&gt;&amp;nbsp; &amp;nbsp; for nd in c.getSelectedPositions():
+&lt;br&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; add_html(html, nd)
+&lt;br&gt;
+&lt;br&gt;&amp;nbsp; &amp;nbsp; html.append("&amp;lt;/body&amp;gt;&amp;lt;/html&amp;gt;")=20
+&lt;br&gt;&amp;nbsp; &amp;nbsp;=20
+&lt;br&gt;&amp;nbsp; &amp;nbsp; html =3D \'\\n\'.join(html)
+&lt;br&gt;&amp;nbsp; &amp;nbsp;=20
+&lt;br&gt;&amp;nbsp; &amp;nbsp; te.setHtml(html)
+&lt;br&gt;&amp;nbsp; &amp;nbsp;=20
+&lt;br&gt;&amp;nbsp; &amp;nbsp; return te
+&lt;br&gt;
+&lt;br&gt;class OverviewPaneProvider:
+&lt;br&gt;&amp;nbsp; &amp;nbsp; def __init__(self, c):
+&lt;br&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; self.c =3D c
+&lt;br&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; # Careful: we may be unit testing.
+&lt;br&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; if hasattr(c, \'free_layout\'):
+&lt;br&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; splitter =3D c.free_layout.ge=
+t_top_&lt;wbr&gt;splitter()
+&lt;br&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; if splitter:
+&lt;br&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; splitter.regist=
+er_provider(&lt;wbr&gt;self)
+&lt;br&gt;&amp;nbsp; &amp;nbsp; def ns_provides(self):
+&lt;br&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; return[(\'Overview\', \'_add_overview_pane\')]
+&lt;br&gt;&amp;nbsp; &amp;nbsp; def ns_provide(self, id_):
+&lt;br&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; if id_ =3D=3D \'_add_overview_pane\':
+&lt;br&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; w =3D make_overview(c)
+&lt;br&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; return w
+&lt;br&gt;&amp;nbsp; &amp;nbsp; def ns_title(self, id_):
+&lt;br&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; if id_ =3D=3D \'_add_overview_pane\':
+&lt;br&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; return "Leo Outline Overview"
+&lt;br&gt;&amp;nbsp; &amp;nbsp; def ns_provider_id(self):
+&lt;br&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; # used by register_provider() to unregister=
+ previously registered
+&lt;br&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; # providers of the same service
+&lt;br&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; return "outline overview window"
+&lt;br&gt;
+&lt;br&gt;OverviewPaneProvider(c)
+&lt;br&gt;
+&lt;br&gt;--- cut here ---
+&lt;br&gt;&lt;/blockquote&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+-- &lt;br /&gt;
+You received this message because you are subscribed to the Google Groups &amp;=
+quot;leo-editor&amp;quot; group.&lt;br /&gt;
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to leo-editor+unsubscribe@googlegroups.com.&lt;br /&gt;
+&lt;br /&gt;
+Visit this group at &lt;a href=3D"http://groups.google.com/group/leo-editor?hl=
+=3Den"&gt;http://groups.google.com/group/leo-editor?hl=3Den&lt;/a&gt;.&lt;br /&gt;
+For more options, visit &lt;a href=3D"https://groups.google.com/groups/opt_out=
+"&gt;https://groups.google.com/groups/opt_out&lt;/a&gt;.&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+
+------=_Part_198_11760886.1360170083672--</t>
+<t tx="ekr.20130806072439.18528">From: wgw &lt;wgwinder@gmail.com&gt;
+
+------=_Part_65_6159566.1360277477776
+Content-Type: text/plain; charset=ISO-8859-1
+
+Thanks Terry for all this work. I will pull the new code tomorrow (if bzr 
+will agree without sending me to places I, and perhaps no man has ever been 
+before!). 
+
+This looks nifty -- I want it to go in automatically for all the leo files 
+I load. Very useful!
+
+Best,
+
+Bill 
+
+On Thursday, February 7, 2013 10:00:40 AM UTC-8, Terry wrote:
+&gt;
+&gt; On Thu, 7 Feb 2013 08:21:51 -0600 
+&gt; Terry Brown &lt;terry_...@yahoo.com &lt;javascript:&gt;&gt; wrote: 
+&gt;
+&gt; &gt; On Wed, 6 Feb 2013 22:28:38 -0800 
+&gt; &gt; Matt Wilkie &lt;map...@gmail.com &lt;javascript:&gt;&gt; wrote: 
+&gt; ... 
+&gt; &gt; &gt; And, more generally, can these 
+&gt; hover-over-pane-divider-then-right-click 
+&gt; &gt; &gt; actions be made available any other way? Like a drop down menu from a 
+&gt; &gt; &gt; button or alt-x command or something.   
+&gt; &gt; 
+&gt; &gt; What, you mean instead of being completely hidden where no one will 
+&gt; &gt; ever find them?  :-)  Most of them (not the Open Window variants of 
+&gt; &gt; course) 
+&gt;
+&gt; But it occurs to me that it might be the open window variants you want, 
+&gt; specifically the code to make a button / command to open a window with 
+&gt; a particular panel in it.  That would be this: 
+&gt;
+&gt; if hasattr(c, \'free_layout\'): 
+&gt;     splitter = c.free_layout.get_top_splitter() 
+&gt;     if splitter: 
+&gt;         splitter.open_window(action=\'_add_overview_pane\') 
+&gt;
+&gt; Cheers -Terry 
+&gt;
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+For more options, visit https://groups.google.com/groups/opt_out.
+
+
+
+------=_Part_65_6159566.1360277477776
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+Thanks Terry for all this work. I will pull the new code tomorrow (if bzr w=
+ill agree without sending me to places I, and perhaps no man has ever been =
+before!).&amp;nbsp;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;This looks nifty -- I want it to go in a=
+utomatically for all the leo files I load. Very useful!&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div=
+&gt;&lt;div&gt;Best,&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Bill&amp;nbsp;&lt;br&gt;&lt;br&gt;On Thursday, Februar=
+y 7, 2013 10:00:40 AM UTC-8, Terry wrote:&lt;blockquote class=3D"gmail_quote" =
+style=3D"margin: 0;margin-left: 0.8ex;border-left: 1px #ccc solid;padding-l=
+eft: 1ex;"&gt;On Thu, 7 Feb 2013 08:21:51 -0600
+&lt;br&gt;Terry Brown &amp;lt;&lt;a href=3D"javascript:" target=3D"_blank" gdf-obfuscate=
+d-mailto=3D"o7FnHaIWfDwJ"&gt;terry_...@yahoo.com&lt;/a&gt;&amp;gt; wrote:
+&lt;br&gt;
+&lt;br&gt;&amp;gt; On Wed, 6 Feb 2013 22:28:38 -0800
+&lt;br&gt;&amp;gt; Matt Wilkie &amp;lt;&lt;a href=3D"javascript:" target=3D"_blank" gdf-obfu=
+scated-mailto=3D"o7FnHaIWfDwJ"&gt;map...@gmail.com&lt;/a&gt;&amp;gt; wrote:
+&lt;br&gt;...
+&lt;br&gt;&amp;gt; &amp;gt; And, more generally, can these hover-over-pane-divider-then-&lt;=
+wbr&gt;right-click
+&lt;br&gt;&amp;gt; &amp;gt; actions be made available any other way? Like a drop down men=
+u from a
+&lt;br&gt;&amp;gt; &amp;gt; button or alt-x command or something. &amp;nbsp;
+&lt;br&gt;&amp;gt;=20
+&lt;br&gt;&amp;gt; What, you mean instead of being completely hidden where no one wil=
+l
+&lt;br&gt;&amp;gt; ever find them? &amp;nbsp;:-) &amp;nbsp;Most of them (not the Open Window =
+variants of
+&lt;br&gt;&amp;gt; course)
+&lt;br&gt;
+&lt;br&gt;But it occurs to me that it might be the open window variants you want,
+&lt;br&gt;specifically the code to make a button / command to open a window with
+&lt;br&gt;a particular panel in it. &amp;nbsp;That would be this:
+&lt;br&gt;
+&lt;br&gt;if hasattr(c, \'free_layout\'):
+&lt;br&gt;&amp;nbsp; &amp;nbsp; splitter =3D c.free_layout.get_top_&lt;wbr&gt;splitter()
+&lt;br&gt;&amp;nbsp; &amp;nbsp; if splitter:
+&lt;br&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; splitter.open_window(action=3D\'_&lt;wbr&gt;add_ov=
+erview_pane\')
+&lt;br&gt;
+&lt;br&gt;Cheers -Terry
+&lt;br&gt;&lt;/blockquote&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+-- &lt;br /&gt;
+You received this message because you are subscribed to the Google Groups &amp;=
+quot;leo-editor&amp;quot; group.&lt;br /&gt;
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to leo-editor+unsubscribe@googlegroups.com.&lt;br /&gt;
+&lt;br /&gt;
+Visit this group at &lt;a href=3D"http://groups.google.com/group/leo-editor?hl=
+=3Den"&gt;http://groups.google.com/group/leo-editor?hl=3Den&lt;/a&gt;.&lt;br /&gt;
+For more options, visit &lt;a href=3D"https://groups.google.com/groups/opt_out=
+"&gt;https://groups.google.com/groups/opt_out&lt;/a&gt;.&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+
+------=_Part_65_6159566.1360277477776--</t>
+<t tx="ekr.20130806072439.18529">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+
+On Tue, 5 Feb 2013 22:33:13 -0800
+Matt Wilkie &lt;maphew@gmail.com&gt; wrote:
+
+&gt; On Tue, Feb 5, 2013 at 5:14 PM, wgw &lt;wgwinder@gmail.com&gt; wrote:
+&gt; 
+&gt; &gt; I would like to see a fuller outline view of Leo trees. So instead of
+&gt; &gt; seeing one body only and the tree of headlines, I want to display all the
+&gt; &gt; parts of the tree (all bodies and subheadings) as continuous text, much
+&gt; &gt; like a word processor outline.
+&gt;  
+&gt; I use *"r-click &gt; Edit in ..."*  for this purpose. It\'s a poor man\'s
+&gt; workaround. Something integrated would be much nicer. Just thought I\'d
+&gt; mention it for anyone looking for something they might be able to use right
+&gt; away.
+
+When I try that it only edits the one node, none of its children.
+Which is what I thought it did.
+
+Cheers -Terry
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+For more options, visit https://groups.google.com/groups/opt_out.</t>
+<t tx="ekr.20130806072439.18530">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+
+On Tue, 5 Feb 2013 20:00:51 -0800 (PST)
+wgw &lt;wgwinder@gmail.com&gt; wrote:
+
+&gt; Thanks! That plugin does both more and less than I want: more, because I=
+=20
+&gt; get a full and nicely formatted window with editable text boxes; less,=20
+&gt; since it doesn\'t write any edited text back to the tree.=20
+&gt;=20
+&gt; My fumbling tinkering would go towards not editing in the preview=20
+&gt; window/pane at all, and just having a keystroke or click scroll the editi=
+ng=20
+&gt; pane to the right node in Leo. But that would mean that the preview panel=
+=20
+&gt; would have have to be properly indexed so that from the cursor position i=
+n=20
+&gt; the panel the plugin could find the proper node back in the Leo panel.=20
+&gt;  (Kludgy way: put the node id in the text!)
+
+Yes, I think nb-* is in some ways more of a tech. demonstration.
+
+It wouldn\'t be hard to do something with HTML formatting and links to
+display the outline and jump to a node when you click on the display,
+I\'ll try and get to it.
+
+Cheers -Terry
+
+&gt; Thanks for the suggestion.
+&gt;=20
+&gt; Bill=20
+&gt;=20
+&gt; Le mardi 5 f=E9vrier 2013 18:46:56 UTC-8, Terry a =E9crit :
+&gt; &gt;
+&gt; &gt; On Tue, 5 Feb 2013 17:14:14 -0800 (PST)=20
+&gt; &gt; wgw &lt;wgwi...@gmail.com &lt;javascript:&gt;&gt; wrote:=20
+&gt; &gt;
+&gt; &gt; &gt; I would like to see a fuller outline view of Leo trees. So instead of=
+=20
+&gt; &gt; &gt; seeing one body only and the tree of headlines, I want to display all=
+=20
+&gt; &gt; the=20
+&gt; &gt; &gt; parts of the tree (all bodies and subheadings) as continuous text, mu=
+ch=20
+&gt; &gt; &gt; like a word processor outline.=20
+&gt; &gt; &gt;=20
+&gt; &gt; &gt; I can almost do that myself in the preview panel. Here is a  very slo=
+ppy=20
+&gt; &gt; &gt; "preview-tree" script (good for a laugh for anyone who does much Leo=
+=20
+&gt; &gt; &gt; programming!).=20
+&gt; &gt; &gt;=20
+&gt; &gt; &gt; result =3D ["\\n\\n&gt;"+p.h,"\\n"+p.b]=20
+&gt; &gt; &gt; for p2 in p.subtree():=20
+&gt; &gt; &gt;     result.append("\\n\\n&gt;&gt;"+p2.h + "\\n\\n" )=20
+&gt; &gt; &gt;     for i in p2.b.split(\'\\n\'):    =20
+&gt; &gt; &gt;         result.append("\\n|  " + i)=20
+&gt; &gt; &gt; s =3D \'\'.join(result)=20
+&gt; &gt; &gt;=20
+&gt; &gt; &gt; g.app.gui.runScrolledMessageDialog(c=3Dc, msg =3D g.u(\'rst:\\n\') + s )=
+=20
+&gt; &gt; &gt;=20
+&gt; &gt; &gt;=20
+&gt; &gt; &gt; This needs a total redesign, but it does give an idea of the results =
+I=20
+&gt; &gt; want=20
+&gt; &gt; &gt; to get: the whole tree (not necessarily in rst format).=20
+&gt; &gt; &gt;=20
+&gt; &gt; &gt; I think I could probably get this to work correctly, but the really=
+=20
+&gt; &gt; tough=20
+&gt; &gt; &gt; part, I think, is being able to click somewhere on the tree preview a=
+nd=20
+&gt; &gt; go=20
+&gt; &gt; &gt; to the pertinent node in the headline/body panels.=20
+&gt; &gt; &gt;=20
+&gt; &gt; &gt; This looks like a feature that Word has, but that Leo doesn\'t, as far=
+ as=20
+&gt; &gt; I=20
+&gt; &gt; &gt; can tell. Or am I missing something (besides the fact that such thing=
+s=20
+&gt; &gt; can=20
+&gt; &gt; &gt; be done in Leo almost magically!) ?=20
+&gt; &gt; &gt;=20
+&gt; &gt; &gt; Any suggestions for a full tree preview ?=20
+&gt; &gt;
+&gt; &gt; I think this has been requested before and Ville did something possibly=
+=20
+&gt; &gt; using QtQuick or something, a scrolley flicky thing :-)=20
+&gt; &gt;
+&gt; &gt; Ah yes,=20
+&gt; &gt; https://groups.google.com/forum/?fromgroups=3D#!topic/leo-editor/Zs-5jK=
+jPAB0=20
+&gt; &gt;
+&gt; &gt; ...and... I think I\'m going to have to kill me Leo session after doing=
+=20
+&gt; &gt; nb-all on a large outline, so be warned - nb-subtree is probably=20
+&gt; &gt; smarter.=20
+&gt; &gt;
+&gt; &gt; Cheers -Terry=20
+&gt; &gt;
+&gt; &gt; &gt; Bill=20
+&gt; &gt; &gt;=20
+&gt; &gt;
+&gt;=20
+
+--=20
+You received this message because you are subscribed to the Google Groups "=
+leo-editor" group.
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=3Den.
+For more options, visit https://groups.google.com/groups/opt_out.
+</t>
+<t tx="ekr.20130806072439.18531">From: Jacob Peck &lt;gatesphere@gmail.com&gt;
+
+Hello,
+
+I\'m contemplating adding markdown rendering to viewrendered.  I use 
+github daily for personal projects, and both my blog and in-progress 
+website redesign use markdown for content.  I think having a preview 
+pane that can render markdown would be handy.
+
+Would anyone else be interested in this?  I was going to plug the 
+Markdown module (http://packages.python.org/Markdown/) into 
+viewrendered.  It shouldn\'t be too difficult, because viewrendered 
+already renders rst by converting it to html first, so this would just 
+be an additional update method and dictionary binding, I think.
+
+Anyways, if anyone else thinks this would be handy, I would be glad to 
+start hacking it together.  Plus, it\'d give me a bit of experience with 
+bzr and launchpad, neither of which I\'ve ever used before.
+
+Let me know if you\'re interested, or have any other suggestions.
+
+Thanks!
+--&gt;Jake
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+For more options, visit https://groups.google.com/groups/opt_out.</t>
+<t tx="ekr.20130806072439.18532">From: tfer &lt;tfetherston@aol.com&gt;
+
+------=_Part_117_12470807.1360564128586
+Content-Type: text/plain; charset=ISO-8859-1
+
+
+
+On Sunday, February 10, 2013 7:06:23 PM UTC-5, Jacob Peck wrote:
+&gt;
+&gt; On 2/10/2013 6:58 PM, tfer wrote: 
+&gt; &gt; I downloaded it to give a try, but to tell the truth the workflow 
+&gt; &gt; eludes me.  I think there used to be some stuff on using rst in the 
+&gt; &gt; user manual, but there does not seem to be anything there now, was it 
+&gt; &gt; lost when rst went from being a plugin to being part of core? 
+&gt; No idea, I\'m pretty new to Leo myself. 
+&gt;
+&gt; To use the markdown feature I added in my branch, I make an \'@file 
+&gt; myfile.md\' node with the contents: 
+&gt; @color 
+&gt; @language md 
+&gt; @tabwidth -2 
+&gt; @others 
+&gt;
+&gt; And then I make child @md nodes, containing the markdown that I desire.   
+&gt; The @md is a signifier to the viewrendered plugin to render that node as 
+&gt; markdown.  To get a live preview, I run the command "vr", and type 
+&gt; away... works fine here. 
+&gt;
+Ah, the @rst outline directive lets all of its subnodes be rendered as if 
+they contain rst markup text, no matter how they are named, (even imported 
+files, "@files"), without needing to be labeled @rst again.  Following your 
+tips I got this to work, but I noticed the following:
+
+1. With a document containing both md and rst, Leo with only the  rst 
+renderer will run render the @md nodes when the node is selected, (actually 
+any node with text other than pure directives).
+
+2. When the md capable version is loaded and alt-x vr is run, them @md 
+headlined nodes are rendered correctly, (mostly), but the rst renderer is 
+still active, and will work on any node with non-directive body text. 
+ 
+
+&gt; &gt; I manged to get Markdown installed, (pip failed, but easy_install 
+&gt; &gt; worked).  Trying to use listed alt-x commands does not seem to be 
+&gt; &gt; working for me, there is no tab completion for those commands, and if 
+&gt; &gt; I enter by typing cracking a return on the mini-buffer appears to do 
+&gt; &gt; nothing, not even clear it or change focus. 
+&gt; Python 2 or 3?  I tested on Python 2.6 and 2.7. 
+&gt;
+&gt; Also, I didn\'t add any commands, nor modify any.  I just modified the 
+&gt; viewrendered plugin that ships with the current version of Leo... if 
+&gt; those commands aren\'t working, you might want to do some debugging with 
+&gt; your setup. 
+&gt; &gt; additionally @md is not colorized. 
+&gt; The colorizer I hacked together just highlights comments.  I really 
+&gt; didn\'t know what to do as a keyword, operator, etc.  I\'ll probably hack 
+&gt; together a better version some day. 
+&gt; &gt; Tom 
+&gt; Thanks for giving it a shot!  I\'m sorry it didn\'t work for you. Perhaps 
+&gt; someone else has a better idea than me what\'s going on here? 
+&gt;
+&gt; --&gt;Jake 
+&gt;
+&gt;
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+For more options, visit https://groups.google.com/groups/opt_out.
+
+
+
+------=_Part_117_12470807.1360564128586
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+&lt;br&gt;&lt;br&gt;On Sunday, February 10, 2013 7:06:23 PM UTC-5, Jacob Peck wrote:&lt;bl=
+ockquote class=3D"gmail_quote" style=3D"margin: 0;margin-left: 0.8ex;border=
+-left: 1px #ccc solid;padding-left: 1ex;"&gt;On 2/10/2013 6:58 PM, tfer wrote:
+&lt;br&gt;&amp;gt; I downloaded it to give a try, but to tell the truth the workflow=
+=20
+&lt;br&gt;&amp;gt; eludes me. &amp;nbsp;I think there used to be some stuff on using rst =
+in the=20
+&lt;br&gt;&amp;gt; user manual, but there does not seem to be anything there now, was=
+ it=20
+&lt;br&gt;&amp;gt; lost when rst went from being a plugin to being part of core?
+&lt;br&gt;No idea, I\'m pretty new to Leo myself.
+&lt;br&gt;
+&lt;br&gt;To use the markdown feature I added in my branch, I make an \'@file=20
+&lt;br&gt;&lt;a href=3D"http://myfile.md" target=3D"_blank"&gt;myfile.md&lt;/a&gt;\' node with=
+ the contents:
+&lt;br&gt;@color
+&lt;br&gt;@language md
+&lt;br&gt;@tabwidth -2
+&lt;br&gt;@others
+&lt;br&gt;
+&lt;br&gt;And then I make child @md nodes, containing the markdown that I desire.=
+ &amp;nbsp;
+&lt;br&gt;The @md is a signifier to the viewrendered plugin to render that node a=
+s=20
+&lt;br&gt;markdown. &amp;nbsp;To get a live preview, I run the command "vr", and type=
+=20
+&lt;br&gt;away... works fine here.
+&lt;br&gt;&lt;/blockquote&gt;&lt;div&gt;Ah, the @rst outline directive lets all of its subnod=
+es be rendered as if they contain rst markup text, no matter how they are n=
+amed, (even imported files, "@files"), without needing to be labeled @rst a=
+gain. &amp;nbsp;Following your tips I got this to work, but I noticed the follo=
+wing:&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;1. With a document containing both md and rs=
+t, Leo with only the &amp;nbsp;rst renderer will run render the @md nodes when =
+the node is selected, (actually any node with text other than pure directiv=
+es).&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;2. When the md capable version is loaded and =
+alt-x vr is run, them @md headlined nodes are rendered correctly, (mostly),=
+ but the rst renderer is still active, and will work on any node with non-d=
+irective body text.&amp;nbsp;&lt;/div&gt;&lt;div&gt;&amp;nbsp;&lt;/div&gt;&lt;blockquote class=3D"gmail_=
+quote" style=3D"margin: 0;margin-left: 0.8ex;border-left: 1px #ccc solid;pa=
+dding-left: 1ex;"&gt;&amp;gt; I manged to get Markdown installed, (pip failed, but=
+ easy_install=20
+&lt;br&gt;&amp;gt; worked). &amp;nbsp;Trying to use listed alt-x commands does not seem t=
+o be=20
+&lt;br&gt;&amp;gt; working for me, there is no tab completion for those commands, and=
+ if=20
+&lt;br&gt;&amp;gt; I enter by typing cracking a return on the mini-buffer appears to =
+do=20
+&lt;br&gt;&amp;gt; nothing, not even clear it or change focus.
+&lt;br&gt;Python 2 or 3? &amp;nbsp;I tested on Python 2.6 and 2.7.
+&lt;br&gt;
+&lt;br&gt;Also, I didn\'t add any commands, nor modify any. &amp;nbsp;I just modified =
+the=20
+&lt;br&gt;viewrendered plugin that ships with the current version of Leo... if=20
+&lt;br&gt;those commands aren\'t working, you might want to do some debugging with=
+=20
+&lt;br&gt;your setup.
+&lt;br&gt;&amp;gt; additionally @md is not colorized.
+&lt;br&gt;The colorizer I hacked together just highlights comments. &amp;nbsp;I reall=
+y=20
+&lt;br&gt;didn\'t know what to do as a keyword, operator, etc. &amp;nbsp;I\'ll probably=
+ hack=20
+&lt;br&gt;together a better version some day.
+&lt;br&gt;&amp;gt; Tom
+&lt;br&gt;Thanks for giving it a shot! &amp;nbsp;I\'m sorry it didn\'t work for you. Pe=
+rhaps=20
+&lt;br&gt;someone else has a better idea than me what\'s going on here?
+&lt;br&gt;
+&lt;br&gt;--&amp;gt;Jake
+&lt;br&gt;
+&lt;br&gt;&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+-- &lt;br /&gt;
+You received this message because you are subscribed to the Google Groups &amp;=
+quot;leo-editor&amp;quot; group.&lt;br /&gt;
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to leo-editor+unsubscribe@googlegroups.com.&lt;br /&gt;
+&lt;br /&gt;
+Visit this group at &lt;a href=3D"http://groups.google.com/group/leo-editor?hl=
+=3Den"&gt;http://groups.google.com/group/leo-editor?hl=3Den&lt;/a&gt;.&lt;br /&gt;
+For more options, visit &lt;a href=3D"https://groups.google.com/groups/opt_out=
+"&gt;https://groups.google.com/groups/opt_out&lt;/a&gt;.&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+
+------=_Part_117_12470807.1360564128586--</t>
+<t tx="ekr.20130806072439.18533">From: Jacob Peck &lt;gatesphere@gmail.com&gt;
+
+On 2/11/2013 1:28 AM, tfer wrote:
+&gt; Ah, the @rst outline directive lets all of its subnodes be rendered as 
+&gt; if they contain rst markup text, no matter how they are named, (even 
+&gt; imported files, "@files"), without needing to be labeled @rst again. 
+&gt;  Following your tips I got this to work, but I noticed the following:
+&gt;
+&gt; 1. With a document containing both md and rst, Leo with only the  rst 
+&gt; renderer will run render the @md nodes when the node is selected, 
+&gt; (actually any node with text other than pure directives).
+This is because there\'s a guard to make sure the user has the \'markdown\' 
+module installed.  If, for example, you had \'markdown\' but not 
+\'docutils\' installed, you\'d be able to render the @md nodes!
+
+You can change this default of rst rendering by changing `@string 
+view-rendered-default-kind = rst` by replacing `rst` with `md`, `html`, 
+or I would imagine `plain` would work to not have a default renderer.  
+Put this setting in your myLeoSettings.leo file.
+&gt; 2. When the md capable version is loaded and alt-x vr is run, them @md 
+&gt; headlined nodes are rendered correctly, (mostly), but the rst renderer 
+&gt; is still active, and will work on any node with non-directive body text.
+Could you possibly provide an example where it doesn\'t render correctly?
+
+As mentioned above, the default renderer for all nodes is rst.
+
+Also, I\'m going to have to tweak this a bit.  There are some settings 
+that should be exposed via myLeoSettings.leo that currently arent.  I\'ll 
+be working on this.
+
+I just pushed a new rev (5606) to my branch that has a fancier 
+colorizer.  You might wish to check that out.
+
+Thanks!
+--&gt;Jake
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+For more options, visit https://groups.google.com/groups/opt_out.</t>
+<t tx="ekr.20130806072439.18534">From: Jacob Peck &lt;gatesphere@gmail.com&gt;
+
+On 2/7/2013 11:13 AM, Terry Brown wrote:
+&gt; Purely out of curiosity, can github use reStructuredText as well as 
+&gt; MD? Cheers -Terry 
+As far as I can tell, if you upload a README.rst instead of a README.md, 
+it\'ll work.
+
+(source: https://github.com/github/markup)
+
+--&gt;Jake
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+For more options, visit https://groups.google.com/groups/opt_out.</t>
+<t tx="ekr.20130806072439.18535">From: tfer &lt;tfetherston@aol.com&gt;
+
+------=_Part_51_33528898.1360600598380
+Content-Type: text/plain; charset=ISO-8859-1
+
+
+
+On Monday, February 11, 2013 9:58:17 AM UTC-5, Jacob Peck wrote:
+&gt;
+&gt; On 2/11/2013 1:28 AM, tfer wrote: 
+&gt; &gt; Ah, the @rst outline directive lets all of its subnodes be rendered as 
+&gt; &gt; if they contain rst markup text, no matter how they are named, (even 
+&gt; &gt; imported files, "@files"), without needing to be labeled @rst again. 
+&gt; &gt;  Following your tips I got this to work, but I noticed the following: 
+&gt; &gt; 
+&gt; &gt; 1. With a document containing both md and rst, Leo with only the  rst 
+&gt; &gt; renderer will run render the @md nodes when the node is selected, 
+&gt; &gt; (actually any node with text other than pure directives). 
+&gt; This is because there\'s a guard to make sure the user has the \'markdown\' 
+&gt; module installed.  If, for example, you had \'markdown\' but not 
+&gt; \'docutils\' installed, you\'d be able to render the @md nodes! 
+&gt;
+&gt; You can change this default of rst rendering by changing `@string 
+&gt; view-rendered-default-kind = rst` by replacing `rst` with `md`, `html`, 
+&gt; or I would imagine `plain` would work to not have a default renderer.   
+&gt; Put this setting in your myLeoSettings.leo file. 
+&gt;
+I\'ll try that.
+ 
+
+&gt; &gt; 2. When the md capable version is loaded and alt-x vr is run, them @md 
+&gt; &gt; headlined nodes are rendered correctly, (mostly), but the rst renderer 
+&gt; &gt; is still active, and will work on any node with non-directive body text. 
+&gt; Could you possibly provide an example where it doesn\'t render correctly? 
+&gt;
+What I did was to download the text of some markdown cheatsheets that were 
+written in markdown.  I look them up and shoot you some links later.
+
+I\'ve also run into some stuff that throws and error, (in the converter 
+stuff, not your stuff if I\'m recalling correctly).  Once that error is 
+thrown, you have to exit leo and restart in order to do any more 
+converting/viewing.
+
+&gt;
+&gt; As mentioned above, the default renderer for all nodes is rst. 
+&gt;
+&gt; Also, I\'m going to have to tweak this a bit.  There are some settings 
+&gt; that should be exposed via myLeoSettings.leo that currently arent.  I\'ll 
+&gt; be working on this. 
+&gt;
+&gt; I just pushed a new rev (5606) to my branch that has a fancier 
+&gt; colorizer.  You might wish to check that out. 
+&gt;
+I\'ll grab it.
+
+Not really having worked with any of the renderers before, I\'m not sure of 
+their full usage so I can\'t compare it to the built in rst stuff.  Working 
+with it so far it looks like once a "view-render-pane" is open any selected 
+node that has some non-directive text will be run through the rst2html 
+converter and sent to the vr-pane.  If the node has an @md starting its 
+headline the md2html converter is run and output is sent to the vr-pane. 
+ Any node without such text does not trigger either converter and the 
+vr-pane just displays the last successfully conertered node, (probably 
+should be blanked or something to indicate that the currently selected node 
+is not the one in the vr-pane).
+
+At the moment, all the markdown text I\'ve got is from files slurped off the 
+net and they are not strung out  in a subtree and then collected via 
+directive/sections into a document, but that is where I want to go with 
+this as the advantages of outlining to created your documents are numerous. 
+ In that case I\'m guessing that there is no current method of seeing the 
+document rendered as a whole, just the individual nodes?  I guess some of 
+the stuff in the current "pre-view subtree" discussion would be useful.
+
+Not a lot of time to look at this today, I\'m off to Detroit this afternoon, 
+I\'ll be able to play with this some more later this week.
+
+&gt;
+&gt; Thanks! 
+&gt; --&gt;Jake 
+&gt;
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+For more options, visit https://groups.google.com/groups/opt_out.
+
+
+
+------=_Part_51_33528898.1360600598380
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+&lt;br&gt;&lt;br&gt;On Monday, February 11, 2013 9:58:17 AM UTC-5, Jacob Peck wrote:&lt;bl=
+ockquote class=3D"gmail_quote" style=3D"margin: 0;margin-left: 0.8ex;border=
+-left: 1px #ccc solid;padding-left: 1ex;"&gt;On 2/11/2013 1:28 AM, tfer wrote:
+&lt;br&gt;&amp;gt; Ah, the @rst outline directive lets all of its subnodes be rendere=
+d as=20
+&lt;br&gt;&amp;gt; if they contain rst markup text, no matter how they are named, (ev=
+en=20
+&lt;br&gt;&amp;gt; imported files, "@files"), without needing to be labeled @rst agai=
+n.=20
+&lt;br&gt;&amp;gt; &amp;nbsp;Following your tips I got this to work, but I noticed the fo=
+llowing:
+&lt;br&gt;&amp;gt;
+&lt;br&gt;&amp;gt; 1. With a document containing both md and rst, Leo with only the &amp;=
+nbsp;rst=20
+&lt;br&gt;&amp;gt; renderer will run render the @md nodes when the node is selected,=
+=20
+&lt;br&gt;&amp;gt; (actually any node with text other than pure directives).
+&lt;br&gt;This is because there\'s a guard to make sure the user has the \'markdown=
+\'=20
+&lt;br&gt;module installed. &amp;nbsp;If, for example, you had \'markdown\' but not=20
+&lt;br&gt;\'docutils\' installed, you\'d be able to render the @md nodes!
+&lt;br&gt;
+&lt;br&gt;You can change this default of rst rendering by changing `@string=20
+&lt;br&gt;view-rendered-default-kind =3D rst` by replacing `rst` with `md`, `html=
+`,=20
+&lt;br&gt;or I would imagine `plain` would work to not have a default renderer. &amp;=
+nbsp;
+&lt;br&gt;Put this setting in your myLeoSettings.leo file.
+&lt;br&gt;&lt;/blockquote&gt;&lt;div&gt;I\'ll try that.&lt;/div&gt;&lt;div&gt;&amp;nbsp;&lt;/div&gt;&lt;blockquote clas=
+s=3D"gmail_quote" style=3D"margin: 0;margin-left: 0.8ex;border-left: 1px #c=
+cc solid;padding-left: 1ex;"&gt;&amp;gt; 2. When the md capable version is loaded =
+and alt-x vr is run, them @md=20
+&lt;br&gt;&amp;gt; headlined nodes are rendered correctly, (mostly), but the rst rend=
+erer=20
+&lt;br&gt;&amp;gt; is still active, and will work on any node with non-directive body=
+ text.
+&lt;br&gt;Could you possibly provide an example where it doesn\'t render correctly=
+?
+&lt;br&gt;&lt;/blockquote&gt;&lt;div&gt;What I did was to download the text of some markdown =
+cheatsheets that were written in markdown. &amp;nbsp;I look them up and shoot y=
+ou some links later.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;I\'ve also run into some stuff=
+ that throws and error, (in the converter stuff, not your stuff if I\'m reca=
+lling correctly). &amp;nbsp;Once that error is thrown, you have to exit leo and=
+ restart&amp;nbsp;in order&amp;nbsp;to do any more converting/viewing.&lt;/div&gt;&lt;blockq=
+uote class=3D"gmail_quote" style=3D"margin: 0;margin-left: 0.8ex;border-lef=
+t: 1px #ccc solid;padding-left: 1ex;"&gt;
+&lt;br&gt;As mentioned above, the default renderer for all nodes is rst.
+&lt;br&gt;
+&lt;br&gt;Also, I\'m going to have to tweak this a bit. &amp;nbsp;There are some setti=
+ngs=20
+&lt;br&gt;that should be exposed via myLeoSettings.leo that currently arent. &amp;nbs=
+p;I\'ll=20
+&lt;br&gt;be working on this.
+&lt;br&gt;
+&lt;br&gt;I just pushed a new rev (5606) to my branch that has a fancier=20
+&lt;br&gt;colorizer. &amp;nbsp;You might wish to check that out.
+&lt;br&gt;&lt;/blockquote&gt;&lt;div&gt;I\'ll grab it.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Not really hav=
+ing worked with any of the renderers before, I\'m not sure of their full usa=
+ge so I can\'t compare it to the built in rst stuff. &amp;nbsp;Working with it s=
+o far it looks like once a "view-render-pane" is open any selected node tha=
+t has some non-directive text will be run through the rst2html converter an=
+d sent to the vr-pane. &amp;nbsp;If the node has an @md starting its headline t=
+he md2html converter is run and output is sent to the vr-pane. &amp;nbsp;Any no=
+de without such text does not trigger either converter and the vr-pane just=
+ displays the last successfully conertered node, (probably should be blanke=
+d or something to indicate that the currently selected node is not the one =
+in the vr-pane).&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;At the moment, all the markdown t=
+ext I\'ve got is from files slurped off the net and they are not strung out =
+&amp;nbsp;in a subtree and then collected via directive/sections into a documen=
+t, but that is where I want to go with this as the advantages of outlining =
+to created your documents are numerous. &amp;nbsp;In that case I\'m guessing tha=
+t there is no current method of seeing the document rendered as a whole, ju=
+st the individual nodes? &amp;nbsp;I guess some of the stuff in the current "pr=
+e-view subtree" discussion would be useful.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Not a =
+lot of time to look at this today, I\'m off to Detroit this afternoon, I\'ll =
+be able to play with this&amp;nbsp;some more&amp;nbsp;later this week.&lt;/div&gt;&lt;blockq=
+uote class=3D"gmail_quote" style=3D"margin: 0;margin-left: 0.8ex;border-lef=
+t: 1px #ccc solid;padding-left: 1ex;"&gt;
+&lt;br&gt;Thanks!
+&lt;br&gt;--&amp;gt;Jake
+&lt;br&gt;&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+-- &lt;br /&gt;
+You received this message because you are subscribed to the Google Groups &amp;=
+quot;leo-editor&amp;quot; group.&lt;br /&gt;
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to leo-editor+unsubscribe@googlegroups.com.&lt;br /&gt;
+&lt;br /&gt;
+Visit this group at &lt;a href=3D"http://groups.google.com/group/leo-editor?hl=
+=3Den"&gt;http://groups.google.com/group/leo-editor?hl=3Den&lt;/a&gt;.&lt;br /&gt;
+For more options, visit &lt;a href=3D"https://groups.google.com/groups/opt_out=
+"&gt;https://groups.google.com/groups/opt_out&lt;/a&gt;.&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+
+------=_Part_51_33528898.1360600598380--</t>
+<t tx="ekr.20130806072439.18536">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+
+On Thu, 07 Feb 2013 10:55:42 -0500
+Jacob Peck &lt;gatesphere@gmail.com&gt; wrote:
+
+&gt; I\'m contemplating adding markdown rendering to viewrendered.  I use 
+&gt; github daily for personal projects
+
+Purely out of curiosity, can github use reStructuredText as well as MD?
+
+Cheers -Terry
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+For more options, visit https://groups.google.com/groups/opt_out.</t>
+<t tx="ekr.20130806072439.18537">From: gatesphere &lt;gatesphere@gmail.com&gt;
+
+On 2/10/2013 6:58 PM, tfer wrote:
+&gt; I downloaded it to give a try, but to tell the truth the workflow 
+&gt; eludes me.  I think there used to be some stuff on using rst in the 
+&gt; user manual, but there does not seem to be anything there now, was it 
+&gt; lost when rst went from being a plugin to being part of core?
+No idea, I\'m pretty new to Leo myself.
+
+To use the markdown feature I added in my branch, I make an \'@file 
+myfile.md\' node with the contents:
+@color
+@language md
+@tabwidth -2
+@others
+
+And then I make child @md nodes, containing the markdown that I desire.  
+The @md is a signifier to the viewrendered plugin to render that node as 
+markdown.  To get a live preview, I run the command "vr", and type 
+away... works fine here.
+&gt; I manged to get Markdown installed, (pip failed, but easy_install 
+&gt; worked).  Trying to use listed alt-x commands does not seem to be 
+&gt; working for me, there is no tab completion for those commands, and if 
+&gt; I enter by typing cracking a return on the mini-buffer appears to do 
+&gt; nothing, not even clear it or change focus.
+Python 2 or 3?  I tested on Python 2.6 and 2.7.
+
+Also, I didn\'t add any commands, nor modify any.  I just modified the 
+viewrendered plugin that ships with the current version of Leo... if 
+those commands aren\'t working, you might want to do some debugging with 
+your setup.
+&gt; additionally @md is not colorized.
+The colorizer I hacked together just highlights comments.  I really 
+didn\'t know what to do as a keyword, operator, etc.  I\'ll probably hack 
+together a better version some day.
+&gt; Tom
+Thanks for giving it a shot!  I\'m sorry it didn\'t work for you. Perhaps 
+someone else has a better idea than me what\'s going on here?
+
+--&gt;Jake
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+For more options, visit https://groups.google.com/groups/opt_out.</t>
+<t tx="ekr.20130806072439.18538">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
+
+--001a11c38d0e77f5fc04dbad8639
+Content-Type: text/plain; charset=ISO-8859-1
+
+On Thu, Feb 7, 2013 at 1:45 PM, Jacob Peck &lt;gatesphere@gmail.com&gt; wrote:
+
+&gt;  I\'ve coded it up.
+&gt;
+&gt; While I was at it, I added colorizer and comment support for .md files as
+&gt; best as I understood.
+&gt;
+&gt; If someone wants to examine my code for possible inclusion in trunk2, it\'s
+&gt; on launchpad:
+&gt;
+&gt; lp:~gatesphere/**leo-editor/**markdown_**support&lt;https://code.launchpad.net/%7Egatesphere/leo-editor/markdown_support&gt;
+&gt;
+&gt;
+Hi Jake.  What\'s the present status of this code?
+
+Edward
+
+--001a11c38d0e77f5fc04dbad8639
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+&lt;div dir=3D"ltr"&gt;On Thu, Feb 7, 2013 at 1:45 PM, Jacob Peck &lt;span dir=3D"lt=
+r"&gt;&amp;lt;&lt;a href=3D"mailto:gatesphere@gmail.com" target=3D"_blank"&gt;gatesphere=
+@gmail.com&lt;/a&gt;&amp;gt;&lt;/span&gt; wrote:&lt;br&gt;&lt;div class=3D"gmail_extra"&gt;&lt;div class=
+=3D"gmail_quote"&gt;
+&lt;blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1p=
+x #ccc solid;padding-left:1ex"&gt;
+ =20
+   =20
+ =20
+  &lt;div bgcolor=3D"#FFFFFF" text=3D"#000000"&gt;
+    I&amp;#39;ve coded it up.&lt;br&gt;
+    &lt;br&gt;
+    While I was at it, I added colorizer and comment support for .md
+    files as best as I understood.&lt;br&gt;
+    &lt;br&gt;
+    If someone wants to examine my code for possible inclusion in
+    trunk2, it&amp;#39;s on launchpad:&lt;br&gt;
+    &lt;br&gt;
+    &lt;a href=3D"https://code.launchpad.net/%7Egatesphere/leo-editor/markdown=
+_support" target=3D"_blank"&gt;lp:~gatesphere/&lt;u&gt;&lt;/u&gt;leo-editor/&lt;u&gt;&lt;/u&gt;markdow=
+n_&lt;u&gt;&lt;/u&gt;support&lt;/a&gt;&lt;br&gt;
+    &lt;br&gt;&lt;/div&gt;&lt;/blockquote&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Hi Jake.=A0 What&amp;#39;s the p=
+resent status of this code? &lt;br&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Edward&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/di=
+v&gt;
+
+--001a11c38d0e77f5fc04dbad8639--</t>
+<t tx="ekr.20130806072439.18539">From: tfer &lt;tfetherston@aol.com&gt;
+
+------=_Part_1575_9584356.1360540724303
+Content-Type: text/plain; charset=ISO-8859-1
+
+I downloaded it to give a try, but to tell the truth the workflow eludes 
+me.  I think there used to be some stuff on using rst in the user manual, 
+but there does not seem to be anything there now, was it lost when rst went 
+from being a plugin to being part of core?
+
+I manged to get Markdown installed, (pip failed, but easy_install worked). 
+ Trying to use listed alt-x commands does not seem to be working for me, 
+there is no tab completion for those commands, and if I enter by typing 
+cracking a return on the mini-buffer appears to do nothing, not even clear 
+it or change focus.
+
+additionally @md is not colorized.
+
+Tom
+
+On Thursday, February 7, 2013 2:45:01 PM UTC-5, Jacob Peck wrote:
+&gt;
+&gt;  I\'ve coded it up.
+&gt;
+&gt; While I was at it, I added colorizer and comment support for .md files as 
+&gt; best as I understood.
+&gt;
+&gt; If someone wants to examine my code for possible inclusion in trunk2, it\'s 
+&gt; on launchpad:
+&gt;
+&gt; lp:~gatesphere/leo-editor/markdown_support&lt;https://code.launchpad.net/%7Egatesphere/leo-editor/markdown_support&gt;
+&gt;
+&gt; Thanks!
+&gt; --&gt;Jake
+&gt;  
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+For more options, visit https://groups.google.com/groups/opt_out.
+
+
+
+------=_Part_1575_9584356.1360540724303
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+I downloaded it to give a try, but to tell the truth the workflow eludes me=
+. &amp;nbsp;I think there used to be some stuff on using rst in the user manual=
+, but there does not seem to be anything there now, was it lost when rst we=
+nt from being a plugin to being part of core?&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;I manged t=
+o get Markdown installed, (pip failed, but easy_install worked). &amp;nbsp;Tryi=
+ng to use listed alt-x commands does not seem to be working for me, there i=
+s no tab completion for those commands, and if I enter by typing cracking a=
+ return on the mini-buffer appears to do nothing, not even clear it or chan=
+ge focus.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;additionally @md is not colorized.&lt;/div&gt;=
+&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Tom&lt;br&gt;&lt;br&gt;On Thursday, February 7, 2013 2:45:01 PM UTC=
+-5, Jacob Peck wrote:&lt;blockquote class=3D"gmail_quote" style=3D"margin: 0;m=
+argin-left: 0.8ex;border-left: 1px #ccc solid;padding-left: 1ex;"&gt;
+ =20
+   =20
+ =20
+  &lt;div bgcolor=3D"#FFFFFF" text=3D"#000000"&gt;
+    I\'ve coded it up.&lt;br&gt;
+    &lt;br&gt;
+    While I was at it, I added colorizer and comment support for .md
+    files as best as I understood.&lt;br&gt;
+    &lt;br&gt;
+    If someone wants to examine my code for possible inclusion in
+    trunk2, it\'s on launchpad:&lt;br&gt;
+    &lt;br&gt;
+    &lt;a href=3D"https://code.launchpad.net/%7Egatesphere/leo-editor/markdown=
+_support" target=3D"_blank"&gt;lp:~gatesphere/leo-editor/&lt;wbr&gt;markdown_support=
+&lt;/a&gt;&lt;br&gt;
+    &lt;br&gt;
+    Thanks!&lt;br&gt;
+    --&amp;gt;Jake&lt;br&gt;
+  &lt;/div&gt;
+
+&lt;/blockquote&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+-- &lt;br /&gt;
+You received this message because you are subscribed to the Google Groups &amp;=
+quot;leo-editor&amp;quot; group.&lt;br /&gt;
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to leo-editor+unsubscribe@googlegroups.com.&lt;br /&gt;
+&lt;br /&gt;
+Visit this group at &lt;a href=3D"http://groups.google.com/group/leo-editor?hl=
+=3Den"&gt;http://groups.google.com/group/leo-editor?hl=3Den&lt;/a&gt;.&lt;br /&gt;
+For more options, visit &lt;a href=3D"https://groups.google.com/groups/opt_out=
+"&gt;https://groups.google.com/groups/opt_out&lt;/a&gt;.&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+
+------=_Part_1575_9584356.1360540724303--</t>
+<t tx="ekr.20130806072439.18540">From: Jacob Peck &lt;gatesphere@gmail.com&gt;
+
+This is a multi-part message in MIME format.
+--------------050006000207080103090109
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+
+I\'ve coded it up.
+
+While I was at it, I added colorizer and comment support for .md files 
+as best as I understood.
+
+If someone wants to examine my code for possible inclusion in trunk2, 
+it\'s on launchpad:
+
+lp:~gatesphere/leo-editor/markdown_support 
+&lt;https://code.launchpad.net/%7Egatesphere/leo-editor/markdown_support&gt;
+
+Thanks!
+--&gt;Jake
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+For more options, visit https://groups.google.com/groups/opt_out.
+
+
+
+--------------050006000207080103090109
+Content-Type: text/html; charset=ISO-8859-1
+
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;meta content="text/html; charset=ISO-8859-1"
+      http-equiv="Content-Type"&gt;
+  &lt;/head&gt;
+  &lt;body bgcolor="#FFFFFF" text="#000000"&gt;
+    I\'ve coded it up.&lt;br&gt;
+    &lt;br&gt;
+    While I was at it, I added colorizer and comment support for .md
+    files as best as I understood.&lt;br&gt;
+    &lt;br&gt;
+    If someone wants to examine my code for possible inclusion in
+    trunk2, it\'s on launchpad:&lt;br&gt;
+    &lt;br&gt;
+    &lt;a class="sprite branch"
+href="https://code.launchpad.net/%7Egatesphere/leo-editor/markdown_support"
+      style="background-image:
+      url(https://code.launchpad.net/+icing/rev16482/inline-sprites-1.png);
+      color: rgb(0, 51, 170); text-decoration: underline; padding: 0px
+      0px 6px 18px; line-height: 18px; font-family: Ubuntu, \'Bitstream
+      Vera Sans\', \'DejaVu Sans\', Tahoma, sans-serif; font-size: 12px;
+      font-style: normal; font-variant: normal; font-weight: normal;
+      letter-spacing: normal; orphans: auto; text-align: left;
+      text-indent: 0px; text-transform: none; white-space: normal;
+      widows: auto; word-spacing: 0px; -webkit-text-size-adjust: auto;
+      -webkit-text-stroke-width: 0px; background-color: rgb(255, 255,
+      255); background-position: 0px -2052px; background-repeat:
+      no-repeat no-repeat;"&gt;lp:~gatesphere/&lt;wbr&gt;leo-editor/&lt;wbr&gt;markdown_&lt;wbr&gt;support&lt;/a&gt;&lt;br&gt;
+    &lt;br&gt;
+    Thanks!&lt;br&gt;
+    --&amp;gt;Jake&lt;br&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+-- &lt;br /&gt;
+You received this message because you are subscribed to the Google Groups &amp;quot;leo-editor&amp;quot; group.&lt;br /&gt;
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.&lt;br /&gt;
+&lt;br /&gt;
+Visit this group at &lt;a href="http://groups.google.com/group/leo-editor?hl=en"&gt;http://groups.google.com/group/leo-editor?hl=en&lt;/a&gt;.&lt;br /&gt;
+For more options, visit &lt;a href="https://groups.google.com/groups/opt_out"&gt;https://groups.google.com/groups/opt_out&lt;/a&gt;.&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+
+--------------050006000207080103090109--</t>
+<t tx="ekr.20130806072439.18541">From: Alia K &lt;alia_khouri@yahoo.com&gt;
+
+Fernando Perez of IPython fame just announced recently that IPython
+trunk has the cell magic functionality that was discussed earlier
+[http://groups.google.com/group/leo-editor/browse_thread/thread/
+7d910a68072dda1/b14e84fc3cfddbf6?lnk=gst&amp;q=ipython#b14e84fc3cfddbf6].
+As this could work very nicely with leo as an ipython editor, I will
+include his text verbatim here:
+
+&lt;snip&gt;
+
+Hi folks,
+
+
+I\'m excited to report that we now have cell magics in IPython... PR
+1732 [1] has just been merged [2], which implements the design
+discussed in IPEP 1 [3]. This is probably one of the largest PRs we\'ve
+had so far, with over 100 commits, over 100 comments and a diff that\'s
+almost 11000 lines long (a lot of it moving code around, obviously
+it\'s not all new code).  But it brings two very important thigns:
+
+1) a refactor of the magic system to finally remove the old mixin
+class we\'d had since the very first days of IPython in 2001.  This is
+a cleanup I\'ve been wanting to do for over 10 years!  The new setup
+makes the magic system have  a very clean api, that is easy to use
+both for the implementation of core features and for users to create
+their own magics.
+
+2) the new concept of cell magics: these are magics that get not only
+the line they\'re on, but the entire cell body as well.  And while
+these are most naturally used in the notebook, as you would expect
+we\'ve built them at the core of IPython, so you can use them with all
+the clients (terminal, qt console, notebook).  For example, this is a
+Cython magic that Brian just prototyped out (we\'ll have a production
+version of it soon included).  Note that this was copied *from a
+regular text terminal*, not from the notebook:
+
+In [3]: from IPython.core.magic import register_line_cell_magic
+
+In [4]: @register_line_cell_magic
+   ...: def cython(line, cell):
+   ...:     """Compile and import a cell as a .pyx file."""
+   ...:     import sys
+   ...:     from importlib import import_module
+   ...:     module = line.strip()
+   ...:     fname = module + \'.pyx\'
+   ...:     with open(fname,\'w\') as f:
+   ...:         f.write(cell)
+   ...:     if \'pyximport\' not in sys.modules:
+   ...:         import pyximport
+   ...:         pyximport.install(reload_support=True)
+   ...:     globals()[module] = import_module(module)
+   ...:
+
+In [5]: %%cython bam
+   ...: def f(x):
+   ...:     return 2.0*x
+   ...:
+
+In [6]: bam.f(10)
+Out[6]: 20.0
+
+In a similar spirit, Jonathan Taylor recently created one to call R
+transparently in the notebook:
+
+https://github.com/jonathan-taylor/Rmagic
+
+This one hasn\'t been fully updated to the final API, but the core code
+is there and now it should be a trivial matter to update it.
+
+
+I want to thank everyone who pitched in with ideas during the
+discussion and review period, and I hope you\'ll all enjoy this and
+come up with great ways to use the system.  For now, you can see how
+the system works by playing with %%timeit and %%prun, the only two
+builtins that I extended to work also as cell magics.
+
+For more details, see the documentation where we\'ve added also a long
+new section with details and examples of how to create your own [4].
+
+Cheers,
+
+f
+
+[1] https://github.com/ipython/ipython/pull/1732
+[2] https://github.com/ipython/ipython/commit/61eb2ffeebb91a94fe9befe2c30e7839781ddc52
+[2] https://github.com/ipython/ipython/issues/1611
+[3] http://ipython.org/ipython-doc/dev/interactive/reference.html#magic-command-system
+
+&lt;/snip&gt;
+
+Exciting days indeed!
+
+AK
+
+
+
+To unsubscribe from this group, send email to leo-editor+unsubscribe@googlegroups.com.
+For more options, visit this group at http://groups.google.com/group/leo-editor?hl=en.</t>
+<t tx="ekr.20130806072439.18542">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+
+I assume all *nix shell users use the screen shell multiplexer, 
+and hopefully *nix shell users who use Leo know about the leoscreen
+plugin which passes text back and forth between Leo and the shell
+(provided you\'re running screen), which is very handy for build scripts
+and SQL hacking etc. etc.
+
+Anyway, if you\'re in that sliver on the Venn diagram :-) there\'s a new
+command leoscreen-jump-to-error which scans the output in the shell for
+the offending line in the last python traceback, handy if you\'re coding
+python in Leo and running/debugging in the shell.
+
+leoscreen-jump-to-error
+    Jump to the python error reported in the shell window, if the
+    file\'s loaded in the current Leo session. Just looks for a line:
+
+        File "somefile.py", line NNN, in xxx
+
+    and looks for a node starting with "@" and ending with "somefile.py",
+    then jumps to line NNN in that file.
+
+Cheers -Terry
+
+
+
+To unsubscribe from this group, send email to leo-editor+unsubscribe@googlegroups.com.
+For more options, visit this group at http://groups.google.com/group/leo-editor?hl=en.</t>
+<t tx="ekr.20130806072439.18543">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
+
+--90e6ba614ef27ad2aa04da5805d6
+Content-Type: text/plain; charset=ISO-8859-1
+
+I\'m doing some research now, that requires storing inputs in json, I use
+those inputs to calculate some outputs and store them in .json files.
+
+I added a few directives to valuespace.py plugin to bring native json data
+support.
+
+@vsi foo.json
+
+reads in file foo.json, and stores the parsed data structure to vs /
+ipython variable "foo"
+
+@vso bar.json
+
+serializes content of variable "bar" to json file.
+
+@vsi gets executed during pass 1 of vs-update, @vso gets executed in phase
+2.
+
+Body text gets assigned with json content in both cases.
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+For more options, visit https://groups.google.com/groups/opt_out.
+
+
+
+--90e6ba614ef27ad2aa04da5805d6
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+&lt;div dir=3D"ltr"&gt;I&amp;#39;m doing some research now, that requires storing inp=
+uts in json, I use those inputs to calculate some outputs and store them in=
+ .json files.&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div style&gt;I added a few directives to valuespa=
+ce.py plugin to bring native json data support.=A0&lt;/div&gt;
+&lt;div style&gt;&lt;br&gt;&lt;/div&gt;&lt;div style&gt;@vsi foo.json&lt;/div&gt;&lt;div style&gt;&lt;br&gt;&lt;/div&gt;&lt;di=
+v style&gt;reads in file foo.json, and stores the parsed data structure to vs =
+/ ipython variable &amp;quot;foo&amp;quot;&lt;/div&gt;&lt;div style&gt;&lt;br&gt;&lt;/div&gt;&lt;div style&gt;
+@vso bar.json&lt;/div&gt;&lt;div style&gt;&lt;br&gt;&lt;/div&gt;&lt;div style&gt;serializes content of va=
+riable &amp;quot;bar&amp;quot; to json file.&lt;/div&gt;&lt;div style&gt;&lt;br&gt;&lt;/div&gt;&lt;div style&gt;@=
+vsi gets executed during pass 1 of vs-update, @vso gets executed in phase 2=
+.&lt;/div&gt;
+&lt;div style&gt;&lt;br&gt;&lt;/div&gt;&lt;div style&gt;Body text gets assigned with json content i=
+n both cases.&lt;/div&gt;&lt;div style&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+-- &lt;br /&gt;
+You received this message because you are subscribed to the Google Groups &amp;=
+quot;leo-editor&amp;quot; group.&lt;br /&gt;
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to leo-editor+unsubscribe@googlegroups.com.&lt;br /&gt;
+&lt;br /&gt;
+Visit this group at &lt;a href=3D"http://groups.google.com/group/leo-editor?hl=
+=3Den"&gt;http://groups.google.com/group/leo-editor?hl=3Den&lt;/a&gt;.&lt;br /&gt;
+For more options, visit &lt;a href=3D"https://groups.google.com/groups/opt_out=
+"&gt;https://groups.google.com/groups/opt_out&lt;/a&gt;.&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+
+--90e6ba614ef27ad2aa04da5805d6--</t>
+<t tx="ekr.20130806072439.18544">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
+
+--047d7b417ed137447904da7cc07e
+Content-Type: text/plain; charset=ISO-8859-1
+
+On Mon, Apr 15, 2013 at 9:26 AM, Ville M. Vainio &lt;vivainio@gmail.com&gt; wrote:
+
+&gt; For now, the best way to study it is valuespage_example.py in contrib
+&gt; branch.
+&gt;
+&gt; I\'m being very succesful in using it + new ipython support as "ipython
+&gt; notebook" workalike.
+&gt;
+&gt; Ipython notebook is better for quick experiments, but I\'m doing long term
+&gt; (multi-week) research, where Leo + IPython + valuespace is doing a great
+&gt; job so far.
+&gt;
+
+That\'s great news.  Imo, this is a truly important path for Leo to take.
+Have you reported your experiences to the IPython people?
+
+Edward
+
+--047d7b417ed137447904da7cc07e
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+&lt;div dir=3D"ltr"&gt;&lt;br&gt;&lt;div class=3D"gmail_extra"&gt;On Mon, Apr 15, 2013 at 9:2=
+6 AM, Ville M. Vainio &lt;span dir=3D"ltr"&gt;&amp;lt;&lt;a href=3D"mailto:vivainio@gmai=
+l.com" target=3D"_blank"&gt;vivainio@gmail.com&lt;/a&gt;&amp;gt;&lt;/span&gt; wrote:&lt;br&gt;&lt;div c=
+lass=3D"gmail_quote"&gt;
+&lt;blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1p=
+x #ccc solid;padding-left:1ex"&gt;&lt;div dir=3D"ltr"&gt;For now, the best way to st=
+udy it is valuespage_example.py in contrib branch.&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;I&amp;#39=
+;m being very succesful in using it + new ipython support as &amp;quot;ipython =
+notebook&amp;quot; workalike.&lt;/div&gt;
+
+&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Ipython notebook is better for quick experiments, but I=
+&amp;#39;m doing long term (multi-week) research, where Leo + IPython + valuesp=
+ace is doing a great job so far.&lt;/div&gt;&lt;/div&gt;&lt;/blockquote&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;
+&lt;div&gt;That&amp;#39;s great news.=A0 Imo, this is a truly important path for Leo =
+to take.=A0 Have you reported your experiences to the IPython people?&lt;br&gt;&lt;b=
+r&gt;Edward&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+
+--047d7b417ed137447904da7cc07e--</t>
+<t tx="ekr.20130806072439.18545">From: Kent Tenney &lt;ktenney@gmail.com&gt;
+
+my mouth is watering ...
+
+I just hope the install / setup is as idiot-proof as possible,
+This happens to me too often:
+
+- I get the occasional hour to do some coding
+- I decide to try the latest-greatest Leo feature
+- I spend the hour futzing with settings
+
+Next time I get an hour to code, I use Gvim ...
+
+Not meaning to complain, just my story.
+
+Thanks,
+Kent
+
+On Tue, Apr 16, 2013 at 11:20 AM, Edward K. Ream &lt;edreamleo@gmail.com&gt; wrote:
+&gt;
+&gt; On Mon, Apr 15, 2013 at 9:26 AM, Ville M. Vainio &lt;vivainio@gmail.com&gt; wrote:
+&gt;&gt;
+&gt;&gt; For now, the best way to study it is valuespage_example.py in contrib
+&gt;&gt; branch.
+&gt;&gt;
+&gt;&gt; I\'m being very succesful in using it + new ipython support as "ipython
+&gt;&gt; notebook" workalike.
+&gt;&gt;
+&gt;&gt; Ipython notebook is better for quick experiments, but I\'m doing long term
+&gt;&gt; (multi-week) research, where Leo + IPython + valuespace is doing a great job
+&gt;&gt; so far.
+&gt;
+&gt;
+&gt; That\'s great news.  Imo, this is a truly important path for Leo to take.
+&gt; Have you reported your experiences to the IPython people?
+&gt;
+&gt; Edward
+&gt;
+&gt; --
+&gt; You received this message because you are subscribed to the Google Groups
+&gt; "leo-editor" group.
+&gt; To unsubscribe from this group and stop receiving emails from it, send an
+&gt; email to leo-editor+unsubscribe@googlegroups.com.
+&gt; 
+&gt; Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+&gt; For more options, visit https://groups.google.com/groups/opt_out.
+&gt;
+&gt;
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+For more options, visit https://groups.google.com/groups/opt_out.</t>
+<t tx="ekr.20130806072439.18546">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
+
+--047d7b6248c48216ec04da66dff5
+Content-Type: text/plain; charset=ISO-8859-1
+
+On Sun, Apr 14, 2013 at 3:31 PM, Ville M. Vainio &lt;vivainio@gmail.com&gt; wrote:
+
+&gt;
+&gt; I added a few directives to valuespace.py plugin to bring native json data
+&gt; support.
+&gt;
+
+Thanks for this work.  The valuespace plugin is one of the plugins for
+which I\'d like to create a screencast-style tutorial script.
+
+Edward
+
+--047d7b6248c48216ec04da66dff5
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+&lt;div dir=3D"ltr"&gt;On Sun, Apr 14, 2013 at 3:31 PM, Ville M. Vainio &lt;span dir=
+=3D"ltr"&gt;&amp;lt;&lt;a href=3D"mailto:vivainio@gmail.com" target=3D"_blank"&gt;vivain=
+io@gmail.com&lt;/a&gt;&amp;gt;&lt;/span&gt; wrote:&lt;br&gt;&lt;div class=3D"gmail_extra"&gt;&lt;div class=
+=3D"gmail_quote"&gt;
+&lt;blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1p=
+x #ccc solid;padding-left:1ex"&gt;&lt;div dir=3D"ltr"&gt;&lt;br&gt;&lt;div&gt;I added a few dire=
+ctives to valuespace.py plugin to bring native json data support.=A0&lt;/div&gt;&lt;=
+/div&gt;
+&lt;/blockquote&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Thanks for this work.=A0 The valuespace pl=
+ugin is one of the plugins for which I&amp;#39;d like to create a screencast-st=
+yle tutorial script. &lt;br&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Edward&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+
+--047d7b6248c48216ec04da66dff5--</t>
+<t tx="ekr.20130806072439.18547">From: Matt Wilkie &lt;maphew@gmail.com&gt;
+
+--047d7b343be018073604da7ef565
+Content-Type: text/plain; charset=ISO-8859-1
+
+&gt; Next time I get an hour to code, I use Gvim ...
+&gt; Not meaning to complain, just my story.
+
+mine too I\'m afraid.
+
+...but not just with Leo. It happens to me all over the place. There\'s just
+too damn many cool new things out there. If people would just stop being so
+damn creative for a year or two I might be able to catch up. a little. :-/
+
+-matt
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+For more options, visit https://groups.google.com/groups/opt_out.
+
+
+
+--047d7b343be018073604da7ef565
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+&lt;div dir=3D"ltr"&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;&amp;gt; Next time I get an hour to code, I use=
+ Gvim ...&lt;br&gt;&amp;gt; Not meaning to complain, just my story.&lt;br&gt;&lt;br&gt;&lt;/div&gt;mine=
+ too I&amp;#39;m afraid.&lt;br&gt;&lt;/div&gt;&lt;br&gt;...but not just with Leo. It happens to m=
+e all over the place. There&amp;#39;s just too damn many cool new things out th=
+ere. If people would just stop being so damn creative for a year or two I m=
+ight be able to catch up. a little. :-/ &lt;br&gt;
+
+&lt;/div&gt;&lt;br&gt;-matt&lt;br&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;&lt;div&gt;&lt;div class=3D"gmail_extra"&gt;&lt;br&gt;&lt;/div=
+&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+-- &lt;br /&gt;
+You received this message because you are subscribed to the Google Groups &amp;=
+quot;leo-editor&amp;quot; group.&lt;br /&gt;
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to leo-editor+unsubscribe@googlegroups.com.&lt;br /&gt;
+&lt;br /&gt;
+Visit this group at &lt;a href=3D"http://groups.google.com/group/leo-editor?hl=
+=3Den"&gt;http://groups.google.com/group/leo-editor?hl=3Den&lt;/a&gt;.&lt;br /&gt;
+For more options, visit &lt;a href=3D"https://groups.google.com/groups/opt_out=
+"&gt;https://groups.google.com/groups/opt_out&lt;/a&gt;.&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+
+--047d7b343be018073604da7ef565--</t>
+<t tx="ekr.20130806072439.18548">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
+
+--089e013d08d428758304da7f0e0f
+Content-Type: text/plain; charset=ISO-8859-1
+
+I haven\'t advertised it yet. Maybe a blog post about leo + ipython
+integration in general could be in order (that I could point to).
+
+
+On Tue, Apr 16, 2013 at 7:20 PM, Edward K. Ream &lt;edreamleo@gmail.com&gt; wrote:
+
+&gt;
+&gt; On Mon, Apr 15, 2013 at 9:26 AM, Ville M. Vainio &lt;vivainio@gmail.com&gt;wrote:
+&gt;
+&gt;&gt; For now, the best way to study it is valuespage_example.py in contrib
+&gt;&gt; branch.
+&gt;&gt;
+&gt;&gt; I\'m being very succesful in using it + new ipython support as "ipython
+&gt;&gt; notebook" workalike.
+&gt;&gt;
+&gt;&gt; Ipython notebook is better for quick experiments, but I\'m doing long term
+&gt;&gt; (multi-week) research, where Leo + IPython + valuespace is doing a great
+&gt;&gt; job so far.
+&gt;&gt;
+&gt;
+&gt; That\'s great news.  Imo, this is a truly important path for Leo to take.
+&gt; Have you reported your experiences to the IPython people?
+&gt;
+&gt; Edward
+&gt;
+&gt; --
+&gt; You received this message because you are subscribed to the Google Groups
+&gt; "leo-editor" group.
+&gt; To unsubscribe from this group and stop receiving emails from it, send an
+&gt; email to leo-editor+unsubscribe@googlegroups.com.
+&gt; 
+&gt; Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+&gt; For more options, visit https://groups.google.com/groups/opt_out.
+&gt;
+&gt;
+&gt;
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+For more options, visit https://groups.google.com/groups/opt_out.
+
+
+
+--089e013d08d428758304da7f0e0f
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+&lt;div dir=3D"ltr"&gt;I haven&amp;#39;t advertised it yet. Maybe a blog post about l=
+eo + ipython integration in general could be in order (that I could point t=
+o).&lt;/div&gt;&lt;div class=3D"gmail_extra"&gt;&lt;br&gt;&lt;br&gt;&lt;div class=3D"gmail_quote"&gt;On T=
+ue, Apr 16, 2013 at 7:20 PM, Edward K. Ream &lt;span dir=3D"ltr"&gt;&amp;lt;&lt;a href=
+=3D"mailto:edreamleo@gmail.com" target=3D"_blank"&gt;edreamleo@gmail.com&lt;/a&gt;&amp;g=
+t;&lt;/span&gt; wrote:&lt;br&gt;
+&lt;blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1p=
+x #ccc solid;padding-left:1ex"&gt;&lt;div dir=3D"ltr"&gt;&lt;br&gt;&lt;div class=3D"gmail_ext=
+ra"&gt;&lt;div class=3D"im"&gt;On Mon, Apr 15, 2013 at 9:26 AM, Ville M. Vainio &lt;spa=
+n dir=3D"ltr"&gt;&amp;lt;&lt;a href=3D"mailto:vivainio@gmail.com" target=3D"_blank"&gt;v=
+ivainio@gmail.com&lt;/a&gt;&amp;gt;&lt;/span&gt; wrote:&lt;br&gt;
+&lt;/div&gt;&lt;div class=3D"gmail_quote"&gt;&lt;div class=3D"im"&gt;
+&lt;blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1p=
+x #ccc solid;padding-left:1ex"&gt;&lt;div dir=3D"ltr"&gt;For now, the best way to st=
+udy it is valuespage_example.py in contrib branch.&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;I&amp;#39=
+;m being very succesful in using it + new ipython support as &amp;quot;ipython =
+notebook&amp;quot; workalike.&lt;/div&gt;
+
+
+&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Ipython notebook is better for quick experiments, but I=
+&amp;#39;m doing long term (multi-week) research, where Leo + IPython + valuesp=
+ace is doing a great job so far.&lt;/div&gt;&lt;/div&gt;&lt;/blockquote&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;
+
+&lt;/div&gt;&lt;div&gt;That&amp;#39;s great news.=A0 Imo, this is a truly important path fo=
+r Leo to take.=A0 Have you reported your experiences to the IPython people?=
+&lt;span class=3D"HOEnZb"&gt;&lt;font color=3D"#888888"&gt;&lt;br&gt;&lt;br&gt;Edward&lt;/font&gt;&lt;/span&gt;=
+&lt;/div&gt;
+&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=3D"HOEnZb"&gt;&lt;div class=3D"h5"&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+-- &lt;br&gt;
+You received this message because you are subscribed to the Google Groups &amp;=
+quot;leo-editor&amp;quot; group.&lt;br&gt;
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to &lt;a href=3D"mailto:leo-editor%2Bunsubscribe@googlegroups.com" target=
+=3D"_blank"&gt;leo-editor+unsubscribe@googlegroups.com&lt;/a&gt;.&lt;br&gt;
+To post to this group, send email to &lt;a href=3D"mailto:leo-editor@googlegro=
+ups.com" target=3D"_blank"&gt;leo-editor@googlegroups.com&lt;/a&gt;.&lt;br&gt;
+Visit this group at &lt;a href=3D"http://groups.google.com/group/leo-editor?hl=
+=3Den" target=3D"_blank"&gt;http://groups.google.com/group/leo-editor?hl=3Den&lt;=
+/a&gt;.&lt;br&gt;
+For more options, visit &lt;a href=3D"https://groups.google.com/groups/opt_out=
+" target=3D"_blank"&gt;https://groups.google.com/groups/opt_out&lt;/a&gt;.&lt;br&gt;
+=A0&lt;br&gt;
+=A0&lt;br&gt;
+&lt;/div&gt;&lt;/div&gt;&lt;/blockquote&gt;&lt;/div&gt;&lt;br&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+-- &lt;br /&gt;
+You received this message because you are subscribed to the Google Groups &amp;=
+quot;leo-editor&amp;quot; group.&lt;br /&gt;
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to leo-editor+unsubscribe@googlegroups.com.&lt;br /&gt;
+&lt;br /&gt;
+Visit this group at &lt;a href=3D"http://groups.google.com/group/leo-editor?hl=
+=3Den"&gt;http://groups.google.com/group/leo-editor?hl=3Den&lt;/a&gt;.&lt;br /&gt;
+For more options, visit &lt;a href=3D"https://groups.google.com/groups/opt_out=
+"&gt;https://groups.google.com/groups/opt_out&lt;/a&gt;.&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+
+--089e013d08d428758304da7f0e0f--</t>
+<t tx="ekr.20130806072439.18549">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
+
+--f46d0447f38251451d04da580c4e
+Content-Type: text/plain; charset=ISO-8859-1
+
+Some further notes:
+
+- yes, the .json extension is explicitly special cased in the code. The
+idea is that e.g. @vso foo.csv would serialize the contents of variable
+"foo" as csv, .yml would use yaml etc.
+
+- vsi and vso stand for value space input and value space output,
+respectively
+
+
+
+On Sun, Apr 14, 2013 at 11:31 PM, Ville M. Vainio &lt;vivainio@gmail.com&gt;wrote:
+
+&gt; I\'m doing some research now, that requires storing inputs in json, I use
+&gt; those inputs to calculate some outputs and store them in .json files.
+&gt;
+&gt; I added a few directives to valuespace.py plugin to bring native json data
+&gt; support.
+&gt;
+&gt; @vsi foo.json
+&gt;
+&gt; reads in file foo.json, and stores the parsed data structure to vs /
+&gt; ipython variable "foo"
+&gt;
+&gt; @vso bar.json
+&gt;
+&gt; serializes content of variable "bar" to json file.
+&gt;
+&gt; @vsi gets executed during pass 1 of vs-update, @vso gets executed in phase
+&gt; 2.
+&gt;
+&gt; Body text gets assigned with json content in both cases.
+&gt;
+&gt;
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+For more options, visit https://groups.google.com/groups/opt_out.
+
+
+
+--f46d0447f38251451d04da580c4e
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+&lt;div dir=3D"ltr"&gt;Some further notes:=A0&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;- yes, the .json=
+ extension is explicitly special cased in the code. The idea is that e.g. @=
+vso foo.csv would serialize the contents of variable &amp;quot;foo&amp;quot; as csv=
+, .yml would use yaml etc.&lt;/div&gt;
+&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div style&gt;- vsi and vso stand for value space input and val=
+ue space output, respectively&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=3D"gmail=
+_extra"&gt;&lt;br&gt;&lt;br&gt;&lt;div class=3D"gmail_quote"&gt;On Sun, Apr 14, 2013 at 11:31 PM=
+, Ville M. Vainio &lt;span dir=3D"ltr"&gt;&amp;lt;&lt;a href=3D"mailto:vivainio@gmail.co=
+m" target=3D"_blank"&gt;vivainio@gmail.com&lt;/a&gt;&amp;gt;&lt;/span&gt; wrote:&lt;br&gt;
+&lt;blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1p=
+x #ccc solid;padding-left:1ex"&gt;&lt;div dir=3D"ltr"&gt;I&amp;#39;m doing some research=
+ now, that requires storing inputs in json, I use those inputs to calculate=
+ some outputs and store them in .json files.&lt;div&gt;
+&lt;br&gt;&lt;/div&gt;&lt;div&gt;I added a few directives to valuespace.py plugin to bring na=
+tive json data support.=A0&lt;/div&gt;
+&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;@vsi foo.json&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;reads in file fo=
+o.json, and stores the parsed data structure to vs / ipython variable &amp;quot=
+;foo&amp;quot;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;
+@vso bar.json&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;serializes content of variable &amp;quot=
+;bar&amp;quot; to json file.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;@vsi gets executed during=
+ pass 1 of vs-update, @vso gets executed in phase 2.&lt;/div&gt;
+&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Body text gets assigned with json content in both cases=
+.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;/blockquote&gt;&lt;/div&gt;&lt;br&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+-- &lt;br /&gt;
+You received this message because you are subscribed to the Google Groups &amp;=
+quot;leo-editor&amp;quot; group.&lt;br /&gt;
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to leo-editor+unsubscribe@googlegroups.com.&lt;br /&gt;
+&lt;br /&gt;
+Visit this group at &lt;a href=3D"http://groups.google.com/group/leo-editor?hl=
+=3Den"&gt;http://groups.google.com/group/leo-editor?hl=3Den&lt;/a&gt;.&lt;br /&gt;
+For more options, visit &lt;a href=3D"https://groups.google.com/groups/opt_out=
+"&gt;https://groups.google.com/groups/opt_out&lt;/a&gt;.&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+
+--f46d0447f38251451d04da580c4e--</t>
+<t tx="ekr.20130806072439.18550">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
+
+--f46d04339d4090232204da670a3d
+Content-Type: text/plain; charset=ISO-8859-1
+
+For now, the best way to study it is valuespage_example.py in contrib
+branch.
+
+I\'m being very succesful in using it + new ipython support as "ipython
+notebook" workalike.
+
+Ipython notebook is better for quick experiments, but I\'m doing long term
+(multi-week) research, where Leo + IPython + valuespace is doing a great
+job so far.
+
+
+On Mon, Apr 15, 2013 at 5:14 PM, Edward K. Ream &lt;edreamleo@gmail.com&gt; wrote:
+
+&gt; On Sun, Apr 14, 2013 at 3:31 PM, Ville M. Vainio &lt;vivainio@gmail.com&gt;wrote:
+&gt;
+&gt;&gt;
+&gt;&gt; I added a few directives to valuespace.py plugin to bring native json
+&gt;&gt; data support.
+&gt;&gt;
+&gt;
+&gt; Thanks for this work.  The valuespace plugin is one of the plugins for
+&gt; which I\'d like to create a screencast-style tutorial script.
+&gt;
+&gt; Edward
+&gt;
+&gt; --
+&gt; You received this message because you are subscribed to the Google Groups
+&gt; "leo-editor" group.
+&gt; To unsubscribe from this group and stop receiving emails from it, send an
+&gt; email to leo-editor+unsubscribe@googlegroups.com.
+&gt; 
+&gt; Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+&gt; For more options, visit https://groups.google.com/groups/opt_out.
+&gt;
+&gt;
+&gt;
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+For more options, visit https://groups.google.com/groups/opt_out.
+
+
+
+--f46d04339d4090232204da670a3d
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+&lt;div dir=3D"ltr"&gt;For now, the best way to study it is valuespage_example.py=
+ in contrib branch.&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;I&amp;#39;m being very succesful in usin=
+g it + new ipython support as &amp;quot;ipython notebook&amp;quot; workalike.&lt;/div&gt;
+&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Ipython notebook is better for quick experiments, but I=
+&amp;#39;m doing long term (multi-week) research, where Leo + IPython + valuesp=
+ace is doing a great job so far.&lt;/div&gt;&lt;/div&gt;&lt;div class=3D"gmail_extra"&gt;&lt;br&gt;
+&lt;br&gt;&lt;div class=3D"gmail_quote"&gt;On Mon, Apr 15, 2013 at 5:14 PM, Edward K. R=
+eam &lt;span dir=3D"ltr"&gt;&amp;lt;&lt;a href=3D"mailto:edreamleo@gmail.com" target=3D"=
+_blank"&gt;edreamleo@gmail.com&lt;/a&gt;&amp;gt;&lt;/span&gt; wrote:&lt;br&gt;&lt;blockquote class=3D"g=
+mail_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-l=
+eft:1ex"&gt;
+&lt;div dir=3D"ltr"&gt;&lt;div class=3D"im"&gt;On Sun, Apr 14, 2013 at 3:31 PM, Ville M=
+. Vainio &lt;span dir=3D"ltr"&gt;&amp;lt;&lt;a href=3D"mailto:vivainio@gmail.com" target=
+=3D"_blank"&gt;vivainio@gmail.com&lt;/a&gt;&amp;gt;&lt;/span&gt; wrote:&lt;br&gt;&lt;/div&gt;&lt;div class=3D=
+"gmail_extra"&gt;
+&lt;div class=3D"gmail_quote"&gt;&lt;div class=3D"im"&gt;
+&lt;blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1p=
+x #ccc solid;padding-left:1ex"&gt;&lt;div dir=3D"ltr"&gt;&lt;br&gt;&lt;div&gt;I added a few dire=
+ctives to valuespace.py plugin to bring native json data support.=A0&lt;/div&gt;&lt;=
+/div&gt;
+
+&lt;/blockquote&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;Thanks for this work.=A0 The valuesp=
+ace plugin is one of the plugins for which I&amp;#39;d like to create a screenc=
+ast-style tutorial script. &lt;br&gt;&lt;span class=3D"HOEnZb"&gt;&lt;font color=3D"#88888=
+8"&gt;&lt;br&gt;
+&lt;/font&gt;&lt;/span&gt;&lt;/div&gt;&lt;span class=3D"HOEnZb"&gt;&lt;font color=3D"#888888"&gt;&lt;div&gt;Edw=
+ard&lt;/div&gt;&lt;/font&gt;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;span class=3D"HOEnZb"&gt;&lt;font color=
+=3D"#888888"&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+-- &lt;br&gt;
+You received this message because you are subscribed to the Google Groups &amp;=
+quot;leo-editor&amp;quot; group.&lt;br&gt;
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to &lt;a href=3D"mailto:leo-editor%2Bunsubscribe@googlegroups.com" target=
+=3D"_blank"&gt;leo-editor+unsubscribe@googlegroups.com&lt;/a&gt;.&lt;br&gt;
+To post to this group, send email to &lt;a href=3D"mailto:leo-editor@googlegro=
+ups.com" target=3D"_blank"&gt;leo-editor@googlegroups.com&lt;/a&gt;.&lt;br&gt;
+Visit this group at &lt;a href=3D"http://groups.google.com/group/leo-editor?hl=
+=3Den" target=3D"_blank"&gt;http://groups.google.com/group/leo-editor?hl=3Den&lt;=
+/a&gt;.&lt;br&gt;
+For more options, visit &lt;a href=3D"https://groups.google.com/groups/opt_out=
+" target=3D"_blank"&gt;https://groups.google.com/groups/opt_out&lt;/a&gt;.&lt;br&gt;
+=A0&lt;br&gt;
+=A0&lt;br&gt;
+&lt;/font&gt;&lt;/span&gt;&lt;/blockquote&gt;&lt;/div&gt;&lt;br&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+-- &lt;br /&gt;
+You received this message because you are subscribed to the Google Groups &amp;=
+quot;leo-editor&amp;quot; group.&lt;br /&gt;
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to leo-editor+unsubscribe@googlegroups.com.&lt;br /&gt;
+&lt;br /&gt;
+Visit this group at &lt;a href=3D"http://groups.google.com/group/leo-editor?hl=
+=3Den"&gt;http://groups.google.com/group/leo-editor?hl=3Den&lt;/a&gt;.&lt;br /&gt;
+For more options, visit &lt;a href=3D"https://groups.google.com/groups/opt_out=
+"&gt;https://groups.google.com/groups/opt_out&lt;/a&gt;.&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+
+--f46d04339d4090232204da670a3d--</t>
+<t tx="ekr.20130806072439.18551">From: Kent Tenney &lt;ktenney@gmail.com&gt;
+
+Might this work:
+
+a new top level menu: \'Extensions\'
+
+Entries in this menu would refer to scripts which did all
+the behind the scene work required to enable a feature,
+with a small tutorial to boot.
+
+It might even find myLeoSettings.leo, insert the required nodes
+and prompt for restarting the file, IE: mechanize what the user
+needs to do.
+
+Or some other scheme to minimize the extraneous cognitive load.*
+
+Thanks,
+Kent
+
+* see 2:20 of http://pyvideo.org/video/1744/teaching-with-the-ipython-notebook
+
+3 kinds of cognitive load:
+intrinsic
+extraneous
+germane
+
+On Tue, Apr 16, 2013 at 1:58 PM, Matt Wilkie &lt;maphew@gmail.com&gt; wrote:
+&gt;&gt; Next time I get an hour to code, I use Gvim ...
+&gt;&gt; Not meaning to complain, just my story.
+&gt;
+&gt; mine too I\'m afraid.
+&gt;
+&gt; ...but not just with Leo. It happens to me all over the place. There\'s just
+&gt; too damn many cool new things out there. If people would just stop being so
+&gt; damn creative for a year or two I might be able to catch up. a little. :-/
+&gt;
+&gt; -matt
+&gt;
+&gt; --
+&gt; You received this message because you are subscribed to the Google Groups
+&gt; "leo-editor" group.
+&gt; To unsubscribe from this group and stop receiving emails from it, send an
+&gt; email to leo-editor+unsubscribe@googlegroups.com.
+&gt; 
+&gt; Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+&gt; For more options, visit https://groups.google.com/groups/opt_out.
+&gt;
+&gt;
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en.
+For more options, visit https://groups.google.com/groups/opt_out.</t>
+<t tx="ekr.20130806072439.18552">From: HaveF &lt;iamaplayer@gmail.com&gt;
+
+--047d7b622520ccea1304d0f00744
+Content-Type: text/plain; charset=ISO-8859-1
+
+sometimes, I need to refresh files one by one under some parent node...
+
+so I just wonder, should add "refresh from disk" at parent node is a good
+idea?
+
+-- 
+--
+Sincerely,
+
+HaveF
+
+
+
+To unsubscribe from this group, send email to leo-editor+unsubscribe@googlegroups.com.
+For more options, visit this group at http://groups.google.com/group/leo-editor?hl=en.
+
+
+--047d7b622520ccea1304d0f00744
+Content-Type: text/html; charset=ISO-8859-1
+
+sometimes, I need to refresh files one by one under some parent node...&lt;br&gt;&lt;br&gt;so I just wonder, should add &amp;quot;refresh from disk&amp;quot; at parent node is a good idea?&lt;br clear="all"&gt;&lt;br&gt;-- &lt;br&gt;--&lt;br&gt;Sincerely,&lt;br&gt;&lt;br&gt;HaveF&lt;br&gt;
+
+
+&lt;p&gt;&lt;/p&gt;
+
+-- &lt;br /&gt;
+You received this message because you are subscribed to the Google Groups "leo-editor" group.&lt;br /&gt;
+&lt;br /&gt;
+To unsubscribe from this group, send email to leo-editor+unsubscribe@googlegroups.com.&lt;br /&gt;
+
+For more options, visit this group at http://groups.google.com/group/leo-editor?hl=en.&lt;br /&gt;
+
+
+
+--047d7b622520ccea1304d0f00744--</t>
+<t tx="ekr.20130806072439.18553">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
+
+--e89a8fb206a8c7f81304d0f9ba65
+Content-Type: text/plain; charset=ISO-8859-1
+
+Unless I\'m mistaken, "refresh from disk" currently refresh all files from
+disk, even if it only looks like it only applies to selected file.
+
+Double check to be sure.
+
+
+On Sun, Dec 16, 2012 at 5:40 AM, HaveF &lt;iamaplayer@gmail.com&gt; wrote:
+
+&gt; sometimes, I need to refresh files one by one under some parent node...
+&gt;
+&gt; so I just wonder, should add "refresh from disk" at parent node is a good
+&gt; idea?
+&gt;
+&gt; --
+&gt; --
+&gt; Sincerely,
+&gt;
+&gt; HaveF
+&gt;
+&gt; --
+&gt; You received this message because you are subscribed to the Google Groups
+&gt; "leo-editor" group.
+&gt; 
+&gt; To unsubscribe from this group, send email to
+&gt; leo-editor+unsubscribe@googlegroups.com.
+&gt; For more options, visit this group at
+&gt; http://groups.google.com/group/leo-editor?hl=en.
+&gt;
+
+
+
+To unsubscribe from this group, send email to leo-editor+unsubscribe@googlegroups.com.
+For more options, visit this group at http://groups.google.com/group/leo-editor?hl=en.
+
+
+--e89a8fb206a8c7f81304d0f9ba65
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+Unless I&amp;#39;m mistaken, &amp;quot;refresh from disk&amp;quot; currently refresh al=
+l files from disk, even if it only looks like it only applies to selected f=
+ile.&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Double check to be sure.&lt;/div&gt;&lt;div class=3D"gmail_e=
+xtra"&gt;
+&lt;br&gt;&lt;br&gt;&lt;div class=3D"gmail_quote"&gt;On Sun, Dec 16, 2012 at 5:40 AM, HaveF &lt;=
+span dir=3D"ltr"&gt;&amp;lt;&lt;a href=3D"mailto:iamaplayer@gmail.com" target=3D"_bla=
+nk"&gt;iamaplayer@gmail.com&lt;/a&gt;&amp;gt;&lt;/span&gt; wrote:&lt;br&gt;&lt;blockquote class=3D"gmai=
+l_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left=
+:1ex"&gt;
+sometimes, I need to refresh files one by one under some parent node...&lt;br&gt;=
+&lt;br&gt;so I just wonder, should add &amp;quot;refresh from disk&amp;quot; at parent no=
+de is a good idea?&lt;span class=3D"HOEnZb"&gt;&lt;font color=3D"#888888"&gt;&lt;br clear=
+=3D"all"&gt;
+&lt;br&gt;-- &lt;br&gt;--&lt;br&gt;Sincerely,&lt;br&gt;&lt;br&gt;HaveF&lt;br&gt;
+
+
+&lt;p&gt;&lt;/p&gt;
+
+-- &lt;br&gt;
+You received this message because you are subscribed to the Google Groups &amp;=
+quot;leo-editor&amp;quot; group.&lt;br&gt;
+To post to this group, send email to &lt;a href=3D"mailto:leo-editor@googlegro=
+ups.com" target=3D"_blank"&gt;leo-editor@googlegroups.com&lt;/a&gt;.&lt;br&gt;
+To unsubscribe from this group, send email to &lt;a href=3D"mailto:leo-editor%=
+2Bunsubscribe@googlegroups.com" target=3D"_blank"&gt;leo-editor+unsubscribe@go=
+oglegroups.com&lt;/a&gt;.&lt;br&gt;
+
+For more options, visit this group at &lt;a href=3D"http://groups.google.com/g=
+roup/leo-editor?hl=3Den" target=3D"_blank"&gt;http://groups.google.com/group/l=
+eo-editor?hl=3Den&lt;/a&gt;.&lt;br&gt;
+
+
+&lt;/font&gt;&lt;/span&gt;&lt;/blockquote&gt;&lt;/div&gt;&lt;br&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+-- &lt;br /&gt;
+You received this message because you are subscribed to the Google Groups "=
+leo-editor" group.&lt;br /&gt;
+&lt;br /&gt;
+To unsubscribe from this group, send email to leo-editor+unsubscribe@google=
+groups.com.&lt;br /&gt;
+
+For more options, visit this group at http://groups.google.com/group/leo-ed=
+itor?hl=3Den.&lt;br /&gt;
+
+
+
+--e89a8fb206a8c7f81304d0f9ba65--</t>
+<t tx="ekr.20130806072439.18554">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+
+On Sun, 16 Dec 2012 11:40:18 +0800
+HaveF &lt;iamaplayer@gmail.com&gt; wrote:
+
+&gt; sometimes, I need to refresh files one by one under some parent node...
+&gt; 
+&gt; so I just wonder, should add "refresh from disk" at parent node is a good
+&gt; idea?
+
+I\'ve just pushed a change so that "refresh from disk" is done for all
+selected nodes.  You can either
+
+ctrl-click each @&lt;file&gt; node you want refreshed, then "refresh from
+disk" to refresh all of them, or
+
+shift-click the first and last @&lt;file&gt; node you want refreshed, to
+select the entries in between, then "refresh from
+disk" to refresh all of them.
+
+(i.e. standard UI list multi item selection)
+
+But be aware of this bug:
+
+https://bugs.launchpad.net/leo-editor/+bug/1090950
+
+using refresh from disk immediately after cutting nodes from the
+outline has odd effects.
+
+Cheers -Terry
+
+
+
+To unsubscribe from this group, send email to leo-editor+unsubscribe@googlegroups.com.
+For more options, visit this group at http://groups.google.com/group/leo-editor?hl=en.</t>
+<t tx="ekr.20130806072439.18555">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+
+On Sun, 16 Dec 2012 17:15:05 +0200
+"Ville M. Vainio" &lt;vivainio@gmail.com&gt; wrote:
+
+&gt; Unless I\'m mistaken, "refresh from disk" currently refresh all files from
+&gt; disk, even if it only looks like it only applies to selected file.
+&gt; 
+&gt; Double check to be sure.
+
+I think it only does the selected node, I\'m sure it would have messed
+me up before if it did otherwise - I would expect only the selected
+node.
+
+contextmenu.py does
+
+    action = menu.addAction("Refresh from disk")
+
+    def refresh_rclick_cb():
+        if typ.startswith(\'@auto\'):
+            c.readAtAutoNodes()
+        elif typ ==\'@thin\' or typ == \'@file\':
+            c.readAtFileNodes()
+        elif typ ==\'@shadow\':
+            c.readAtShadowNodes()
+        else:
+            c.readAtFileNodes()
+
+however when you start tracing those c.*() methods they seem to operate
+on c.p (c.currentPosition()).
+
+Cheers -Terry
+
+&gt; On Sun, Dec 16, 2012 at 5:40 AM, HaveF &lt;iamaplayer@gmail.com&gt; wrote:
+&gt; 
+&gt; &gt; sometimes, I need to refresh files one by one under some parent node...
+&gt; &gt;
+&gt; &gt; so I just wonder, should add "refresh from disk" at parent node is a good
+&gt; &gt; idea?
+&gt; &gt;
+&gt; &gt; --
+&gt; &gt; --
+&gt; &gt; Sincerely,
+&gt; &gt;
+&gt; &gt; HaveF
+&gt; &gt;
+&gt; &gt; --
+&gt; &gt; You received this message because you are subscribed to the Google Groups
+&gt; &gt; "leo-editor" group.
+&gt; &gt; 
+&gt; &gt; To unsubscribe from this group, send email to
+&gt; &gt; leo-editor+unsubscribe@googlegroups.com.
+&gt; &gt; For more options, visit this group at
+&gt; &gt; http://groups.google.com/group/leo-editor?hl=en.
+&gt; &gt;
+&gt; 
+
+
+
+To unsubscribe from this group, send email to leo-editor+unsubscribe@googlegroups.com.
+For more options, visit this group at http://groups.google.com/group/leo-editor?hl=en.</t>
+<t tx="ekr.20130806072439.18556">From: HaveF &lt;iamaplayer@gmail.com&gt;
+
+--047d7b3a7ff80a7def04d103e999
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+=E5=9C=A8 2012-12-17 =E4=B8=8A=E5=8D=881:17=EF=BC=8C"Terry Brown" &lt;terry_n_=
+brown@yahoo.com&gt;=E5=86=99=E9=81=93=EF=BC=9A
+&gt;
+&gt; On Sun, 16 Dec 2012 11:40:18 +0800
+&gt; HaveF &lt;iamaplayer@gmail.com&gt; wrote:
+&gt;
+&gt; &gt; sometimes, I need to refresh files one by one under some parent node...
+&gt; &gt;
+&gt; &gt; so I just wonder, should add "refresh from disk" at parent node is a
+good
+&gt; &gt; idea?
+&gt;
+&gt; I\'ve just pushed a change so that "refresh from disk" is done for all
+&gt; selected nodes.  You can either
+&gt;
+&gt; ctrl-click each @&lt;file&gt; node you want refreshed, then "refresh from
+&gt; disk" to refresh all of them, or
+&gt;
+&gt; shift-click the first and last @&lt;file&gt; node you want refreshed, to
+&gt; select the entries in between, then "refresh from
+&gt; disk" to refresh all of them.
+hi, terry, thanks for your work!
+it is convenient when have this function:)
+
+&gt;
+&gt; (i.e. standard UI list multi item selection)
+&gt;
+&gt; But be aware of this bug:
+&gt;
+&gt; https://bugs.launchpad.net/leo-editor/+bug/1090950
+&gt;
+&gt; using refresh from disk immediately after cutting nodes from the
+&gt; outline has odd effects.
+&gt;
+&gt; Cheers -Terry
+&gt;
+&gt; --
+&gt; You received this message because you are subscribed to the Google Groups
+"leo-editor" group.
+&gt; 
+&gt; To unsubscribe from this group, send email to
+leo-editor+unsubscribe@googlegroups.com.
+&gt; For more options, visit this group at
+http://groups.google.com/group/leo-editor?hl=3Den.
+&gt;
+
+--=20
+You received this message because you are subscribed to the Google Groups "=
+leo-editor" group.
+
+To unsubscribe from this group, send email to leo-editor+unsubscribe@google=
+groups.com.
+For more options, visit this group at http://groups.google.com/group/leo-ed=
+itor?hl=3Den.
+
+
+--047d7b3a7ff80a7def04d103e999
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+&lt;p&gt;&lt;br&gt;
+=E5=9C=A8 2012-12-17 =E4=B8=8A=E5=8D=881:17=EF=BC=8C&amp;quot;Terry Brown&amp;quot;=
+ &amp;lt;&lt;a href=3D"mailto:terry_n_brown@yahoo.com"&gt;terry_n_brown@yahoo.com&lt;/a&gt;=
+&amp;gt;=E5=86=99=E9=81=93=EF=BC=9A&lt;br&gt;
+&amp;gt;&lt;br&gt;
+&amp;gt; On Sun, 16 Dec 2012 11:40:18 +0800&lt;br&gt;
+&amp;gt; HaveF &amp;lt;&lt;a href=3D"mailto:iamaplayer@gmail.com"&gt;iamaplayer@gmail.com=
+&lt;/a&gt;&amp;gt; wrote:&lt;br&gt;
+&amp;gt;&lt;br&gt;
+&amp;gt; &amp;gt; sometimes, I need to refresh files one by one under some parent n=
+ode...&lt;br&gt;
+&amp;gt; &amp;gt;&lt;br&gt;
+&amp;gt; &amp;gt; so I just wonder, should add &amp;quot;refresh from disk&amp;quot; at par=
+ent node is a good&lt;br&gt;
+&amp;gt; &amp;gt; idea?&lt;br&gt;
+&amp;gt;&lt;br&gt;
+&amp;gt; I&amp;#39;ve just pushed a change so that &amp;quot;refresh from disk&amp;quot; is=
+ done for all&lt;br&gt;
+&amp;gt; selected nodes. =C2=A0You can either&lt;br&gt;
+&amp;gt;&lt;br&gt;
+&amp;gt; ctrl-click each @&amp;lt;file&amp;gt; node you want refreshed, then &amp;quot;refr=
+esh from&lt;br&gt;
+&amp;gt; disk&amp;quot; to refresh all of them, or&lt;br&gt;
+&amp;gt;&lt;br&gt;
+&amp;gt; shift-click the first and last @&amp;lt;file&amp;gt; node you want refreshed, =
+to&lt;br&gt;
+&amp;gt; select the entries in between, then &amp;quot;refresh from&lt;br&gt;
+&amp;gt; disk&amp;quot; to refresh all of them.&lt;br&gt;
+hi, terry, thanks for your work!&lt;br&gt;
+it is convenient when have this function:)&lt;br&gt;
+ &lt;br&gt;
+&amp;gt;&lt;br&gt;
+&amp;gt; (i.e. standard UI list multi item selection)&lt;br&gt;
+&amp;gt;&lt;br&gt;
+&amp;gt; But be aware of this bug:&lt;br&gt;
+&amp;gt;&lt;br&gt;
+&amp;gt; &lt;a href=3D"https://bugs.launchpad.net/leo-editor/+bug/1090950"&gt;https:/=
+/bugs.launchpad.net/leo-editor/+bug/1090950&lt;/a&gt;&lt;br&gt;
+&amp;gt;&lt;br&gt;
+&amp;gt; using refresh from disk immediately after cutting nodes from the&lt;br&gt;
+&amp;gt; outline has odd effects.&lt;br&gt;
+&amp;gt;&lt;br&gt;
+&amp;gt; Cheers -Terry&lt;br&gt;
+&amp;gt;&lt;br&gt;
+&amp;gt; --&lt;br&gt;
+&amp;gt; You received this message because you are subscribed to the Google Gro=
+ups &amp;quot;leo-editor&amp;quot; group.&lt;br&gt;
+&amp;gt; To post to this group, send email to &lt;a href=3D"mailto:leo-editor@goog=
+legroups.com"&gt;leo-editor@googlegroups.com&lt;/a&gt;.&lt;br&gt;
+&amp;gt; To unsubscribe from this group, send email to &lt;a href=3D"mailto:leo-ed=
+itor%2Bunsubscribe@googlegroups.com"&gt;leo-editor+unsubscribe@googlegroups.co=
+m&lt;/a&gt;.&lt;br&gt;
+&amp;gt; For more options, visit this group at &lt;a href=3D"http://groups.google.=
+com/group/leo-editor?hl=3Den"&gt;http://groups.google.com/group/leo-editor?hl=
+=3Den&lt;/a&gt;.&lt;br&gt;
+&amp;gt;&lt;br&gt;
+&lt;/p&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+-- &lt;br /&gt;
+You received this message because you are subscribed to the Google Groups "=
+leo-editor" group.&lt;br /&gt;
+&lt;br /&gt;
+To unsubscribe from this group, send email to leo-editor+unsubscribe@google=
+groups.com.&lt;br /&gt;
+
+For more options, visit this group at http://groups.google.com/group/leo-ed=
+itor?hl=3Den.&lt;br /&gt;
+
+
+
+--047d7b3a7ff80a7def04d103e999--</t>
+<t tx="ekr.20130806072439.18557">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
+
+The new leoIPython.py module is now fully (?) integrated with Leo.
+IPython gets started when (and only when) the --ipython command-line
+switch is in effect.
+
+However, the push-to-ipython command does not work, and there are
+enough mysteries in the code that I really don\'t know how to proceed.
+
+Ville, it might be that just a few minutes of work on your part would
+get the project moving forward again.  I\'ll understand if you don\'t
+have the time, but in that case I\'ll start asking you a lot of
+questions ;-)
+
+It will be a good start if we could just get the push-to-ipython
+command working with the legacy IPython code.  That\'s likely to get us
+90% of the way to getting things working with the new-style api.
+
+Let me know if I can do anything to assist.
+
+Edward
+
+
+
+To unsubscribe from this group, send email to leo-editor+unsubscribe@googlegroups.com.
+For more options, visit this group at http://groups.google.com/group/leo-editor?hl=en.</t>
+<t tx="ekr.20130806072439.18558">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
+
+On Sun, Apr 15, 2012 at 2:26 AM, Ville M. Vainio &lt;vivainio@gmail.com&gt; wrote:
+
+&gt; Observation one: the new minibuffer completion stuff makes typing in
+&gt; the minibuffer very slow. It\'s as if it\'s not waiting for "tab" keys
+&gt; anymore, but completes on every keystroke.
+
+Odd.  I don\'t see the problem.  But I can see how there might be a
+problem, depending on your autocompletion setup.  It should be easy to
+fix.  I\'ll do so sometime today.
+
+Edward</t>
+<t tx="ekr.20130806072439.18559">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
+
+Observation two:
+
+push-to-ipython already works ;-).
+
+Try it out:
+
+Start with launchLeo.py --ipython
+alt-x start-ipython
+
+... go to some node with python statuements, e.g.
+
+=3D=3D=3D=3D
+a=3D1+1
+print a+12
+=3D=3D=3D=3D
+
+altx-x push-to-ipython
+
+Observe the output in console:
+
+                    &lt;4&gt; 2
+----------------------&gt; print(a+12)
+14
+
+
+On Sun, Apr 15, 2012 at 10:26 AM, Ville M. Vainio &lt;vivainio@gmail.com&gt; wrot=
+e:
+&gt; I\'m trying to do this on windows.
+&gt;
+&gt; Observation one: the new minibuffer completion stuff makes typing in
+&gt; the minibuffer very slow. It\'s as if it\'s not waiting for "tab" keys
+&gt; anymore, but completes on every keystroke.
+&gt;
+&gt; On Sat, Apr 14, 2012 at 5:44 PM, Edward K. Ream &lt;edreamleo@gmail.com&gt; wro=
+te:
+&gt;&gt; The new leoIPython.py module is now fully (?) integrated with Leo.
+&gt;&gt; IPython gets started when (and only when) the --ipython command-line
+&gt;&gt; switch is in effect.
+&gt;&gt;
+&gt;&gt; However, the push-to-ipython command does not work, and there are
+&gt;&gt; enough mysteries in the code that I really don\'t know how to proceed.
+&gt;&gt;
+&gt;&gt; Ville, it might be that just a few minutes of work on your part would
+&gt;&gt; get the project moving forward again. =A0I\'ll understand if you don\'t
+&gt;&gt; have the time, but in that case I\'ll start asking you a lot of
+&gt;&gt; questions ;-)
+&gt;&gt;
+&gt;&gt; It will be a good start if we could just get the push-to-ipython
+&gt;&gt; command working with the legacy IPython code. =A0That\'s likely to get us
+&gt;&gt; 90% of the way to getting things working with the new-style api.
+&gt;&gt;
+&gt;&gt; Let me know if I can do anything to assist.
+&gt;&gt;
+&gt;&gt; Edward
+&gt;&gt;
+&gt;&gt; --
+&gt;&gt; You received this message because you are subscribed to the Google Group=
+s "leo-editor" group.
+&gt;&gt; 
+&gt;&gt; To unsubscribe from this group, send email to leo-editor+unsubscribe@goo=
+glegroups.com.
+&gt;&gt; For more options, visit this group at http://groups.google.com/group/leo=
+-editor?hl=3Den.
+&gt;&gt;
+
+--=20
+You received this message because you are subscribed to the Google Groups "=
+leo-editor" group.
+
+To unsubscribe from this group, send email to leo-editor+unsubscribe@google=
+groups.com.
+For more options, visit this group at http://groups.google.com/group/leo-ed=
+itor?hl=3Den.</t>
+<t tx="ekr.20130806072439.18560">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
+
+"On Sat, Apr 14, 2012 at 10:19 AM, Ville M. Vainio &lt;vivainio@gmail.com&gt; wrote:
+&gt; Ok, let's sort the ipython story out by the end of next week, as I'm
+&gt; taking some time off work.
+
+Excellent.  Thanks very much.
+
+Edward
+"</t>
+<t tx="ekr.20130806072439.18561">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
+
+On Sun, Apr 15, 2012 at 2:34 AM, Ville M. Vainio &lt;vivainio@gmail.com&gt; wrote:
+&gt; Observation two:
+&gt;
+&gt; push-to-ipython already works ;-).
+
+Oh!  I didn\'t realize that the start-ipython command was needed in
+addition to the --ipython option.
+
+Could we have the push-to-ipython command switch g_c commander to the
+commander of the outline from which the push-to-ipython command was
+invoked?  That would be one less command to worry about.
+
+It looks like the only remaining task is to eliminate the ip.IP var
+when using the new api.  I assume that the way to do that is as
+suggested by the deprecated IPython.core.ipapi.get() method, which is
+just::
+
+    def get():
+        """Get the global InteractiveShell instance."""
+        from IPython.core.interactiveshell import InteractiveShell
+        return InteractiveShell.instance()
+
+I\'ll look into this later today...
+
+Edward</t>
+<t tx="ekr.20130806072439.18562">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
+
+I\'m trying to do this on windows.
+
+Observation one: the new minibuffer completion stuff makes typing in
+the minibuffer very slow. It\'s as if it\'s not waiting for "tab" keys
+anymore, but completes on every keystroke.
+
+On Sat, Apr 14, 2012 at 5:44 PM, Edward K. Ream &lt;edreamleo@gmail.com&gt; wrote=
+:
+&gt; The new leoIPython.py module is now fully (?) integrated with Leo.
+&gt; IPython gets started when (and only when) the --ipython command-line
+&gt; switch is in effect.
+&gt;
+&gt; However, the push-to-ipython command does not work, and there are
+&gt; enough mysteries in the code that I really don\'t know how to proceed.
+&gt;
+&gt; Ville, it might be that just a few minutes of work on your part would
+&gt; get the project moving forward again. =A0I\'ll understand if you don\'t
+&gt; have the time, but in that case I\'ll start asking you a lot of
+&gt; questions ;-)
+&gt;
+&gt; It will be a good start if we could just get the push-to-ipython
+&gt; command working with the legacy IPython code. =A0That\'s likely to get us
+&gt; 90% of the way to getting things working with the new-style api.
+&gt;
+&gt; Let me know if I can do anything to assist.
+&gt;
+&gt; Edward
+&gt;
+&gt; --
+&gt; You received this message because you are subscribed to the Google Groups=
+ "leo-editor" group.
+&gt; 
+&gt; To unsubscribe from this group, send email to leo-editor+unsubscribe@goog=
+legroups.com.
+&gt; For more options, visit this group at http://groups.google.com/group/leo-=
+editor?hl=3Den.
+&gt;
+
+--=20
+You received this message because you are subscribed to the Google Groups "=
+leo-editor" group.
+
+To unsubscribe from this group, send email to leo-editor+unsubscribe@google=
+groups.com.
+For more options, visit this group at http://groups.google.com/group/leo-ed=
+itor?hl=3Den.</t>
+<t tx="ekr.20130806072439.18563">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
+
+"On Mon, May 28, 2012 at 2:33 AM, Ville M. Vainio &lt;vivainio@gmail.com&gt; wrote:
+&gt; I found this problem - every time you press backspace, it updates the
+&gt; list of completions. When you have only one or zero characters, it's
+&gt; just slow to fetch the list of completions (as there is a lot of
+&gt; them). Pressing backspace should just delete the list if the line
+&gt; becomes empty, instead of showing all commands.
+
+Thanks for this suggestion.  I'll see what can be done.
+
+Edward
+"</t>
+<t tx="ekr.20130806072439.18564">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
+
+"On Sun, Apr 15, 2012 at 1:54 PM, Edward K. Ream &lt;edreamleo@gmail.com&gt; wrote=
+:
+
+&gt; Odd. =A0I don't see the problem. =A0But I can see how there might be a
+&gt; problem, depending on your autocompletion setup. =A0It should be easy to
+&gt; fix. =A0I'll do so sometime today.
+
+Does rev 5255 help?
+
+EKR
+"</t>
+<t tx="ekr.20130806072439.18565">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
+
+Ok, let\'s sort the ipython story out by the end of next week, as I\'m
+taking some time off work.
+
+On Sat, Apr 14, 2012 at 5:44 PM, Edward K. Ream &lt;edreamleo@gmail.com&gt; wrote=
+:
+&gt; The new leoIPython.py module is now fully (?) integrated with Leo.
+&gt; IPython gets started when (and only when) the --ipython command-line
+&gt; switch is in effect.
+&gt;
+&gt; However, the push-to-ipython command does not work, and there are
+&gt; enough mysteries in the code that I really don\'t know how to proceed.
+&gt;
+&gt; Ville, it might be that just a few minutes of work on your part would
+&gt; get the project moving forward again. =A0I\'ll understand if you don\'t
+&gt; have the time, but in that case I\'ll start asking you a lot of
+&gt; questions ;-)
+&gt;
+&gt; It will be a good start if we could just get the push-to-ipython
+&gt; command working with the legacy IPython code. =A0That\'s likely to get us
+&gt; 90% of the way to getting things working with the new-style api.
+&gt;
+&gt; Let me know if I can do anything to assist.
+&gt;
+&gt; Edward
+&gt;
+&gt; --
+&gt; You received this message because you are subscribed to the Google Groups=
+ "leo-editor" group.
+&gt; 
+&gt; To unsubscribe from this group, send email to leo-editor+unsubscribe@goog=
+legroups.com.
+&gt; For more options, visit this group at http://groups.google.com/group/leo-=
+editor?hl=3Den.
+&gt;
+
+--=20
+You received this message because you are subscribed to the Google Groups "=
+leo-editor" group.
+
+To unsubscribe from this group, send email to leo-editor+unsubscribe@google=
+groups.com.
+For more options, visit this group at http://groups.google.com/group/leo-ed=
+itor?hl=3Den.</t>
+<t tx="ekr.20130806072439.18566">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
+
+I found this problem - every time you press backspace, it updates the
+list of completions. When you have only one or zero characters, it\'s
+just slow to fetch the list of completions (as there is a lot of
+them). Pressing backspace should just delete the list if the line
+becomes empty, instead of showing all commands.
+
+On Sun, Apr 15, 2012 at 9:54 PM, Edward K. Ream &lt;edreamleo@gmail.com&gt; wrote=
+:
+&gt; On Sun, Apr 15, 2012 at 2:26 AM, Ville M. Vainio &lt;vivainio@gmail.com&gt; wro=
+te:
+&gt;
+&gt;&gt; Observation one: the new minibuffer completion stuff makes typing in
+&gt;&gt; the minibuffer very slow. It\'s as if it\'s not waiting for "tab" keys
+&gt;&gt; anymore, but completes on every keystroke.
+&gt;
+&gt; Odd. =A0I don\'t see the problem. =A0But I can see how there might be a
+&gt; problem, depending on your autocompletion setup. =A0It should be easy to
+&gt; fix. =A0I\'ll do so sometime today.
+&gt;
+&gt; Edward
+&gt;
+&gt; --
+&gt; You received this message because you are subscribed to the Google Groups=
+ "leo-editor" group.
+&gt; 
+&gt; To unsubscribe from this group, send email to leo-editor+unsubscribe@goog=
+legroups.com.
+&gt; For more options, visit this group at http://groups.google.com/group/leo-=
+editor?hl=3Den.
+&gt;
+
+--=20
+You received this message because you are subscribed to the Google Groups "=
+leo-editor" group.
+
+To unsubscribe from this group, send email to leo-editor+unsubscribe@google=
+groups.com.
+For more options, visit this group at http://groups.google.com/group/leo-ed=
+itor?hl=3Den.</t>
+<t tx="ekr.20130806072439.18567">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
+
+Hey, I went on to start a "leo mylyn" plugin to excercise using the
+childrenModified and contentModified signals.
+
+If you want to play with it, pull, enable leomylyn.py, modify stuff
+around the tree and do alt-x mylyn-scores.
+
+Of course as it is useless in this state, but becomes useful when it
+has a proper gui (maybe in Nav pane), where you would then have a list
+of "most interesting" nodes.
+
+In the future, this could be able to remember the scores through the
+sessions, degrade the old scores by time, etc. Also, a scoreset would
+be associated with a "project" (e.g."own research", "work project
+foo"), each of them having their own typical node working set.
+
+Mylyn was a nice boost back in the eclipse days, it could work for Leo
+too. My main motivation right now was to demonstare the signals with
+something that is much simpler than using them in qmlnotebook.
+
+
+
+To unsubscribe from this group, send email to leo-editor+unsubscribe@googlegroups.com.
+For more options, visit this group at http://groups.google.com/group/leo-editor?hl=en.</t>
+<t tx="ekr.20130806072439.18568">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
+
+On Thu, May 3, 2012 at 3:42 PM, Ville M. Vainio &lt;vivainio@gmail.com&gt; wrote:
+&gt; I went on to start a "leo mylyn" plugin to exercise using the childrenModified and contentModified signals.
+
+This could an extremely important plugin--project management is close
+to the heart of how I use clones.
+
+My guess is that the scoring function is a  (semi?) automatic  way of
+suggesting which nodes would naturally be part of a project.  This
+would (partly?) eliminate the need to create clones by hand.
+
+In this way of thinking, a project is simply a node whose children
+represent sub-parts of the project.  Often, those children are clones.
+ This suggest commands such as the following:
+
+    project-new:  create a node representing a project and make it the
+**present project**.
+    project-select: choose a node to be the present project.
+    project-add-node: add a clone of the present node to the present project.
+    project-add-recent: add (clones of) nodes with "high enough" score
+to the present project.
+    project-add-found: search for nodes and add clones of the found
+nodes to the present project.
+    project-add-marked: add clones of marked nodes to the present project.
+
+These are just ideas.
+
+Unlike in Eclipse/mylyn, Leo\'s node structure is available to all
+parts of the project.  For example, scripts could be applied to the
+(nodes of) a project in various ways.  In other words, the "project
+structure" is not hard-wired, as it is in mylyn, but can be extended
+in any way the user (or plugin writer) desires.
+
+Your comments please.
+
+Edward</t>
+<t tx="ekr.20130806072439.18804">From: Jacob Peck &lt;gatesphere@gmail.com&gt;
+
+I've added a new plugin to Leo, that adds printing support when using 
+the Qt GUI.  Available from rev 5779.
+
+Here's the docscring:
+
+'''Supports printing from the Qt GUI.
+
+Jacob M. Peck, 2013
+
+Commands
+========
+
+This plugin supports the following twelve commands:
+
+print-selected-node
+-------------------
+
+Opens up the print dialog to print the selected headline and node.
+
+print-preview-selected-node
+---------------------------
+
+Opens up the print preview dialog to preview the selected headline
+and node.
+
+print-selected-node-body
+------------------------
+
+Opens up the print dialog to print the selected node body.
+
+print-preview-selected-node-body
+--------------------------------
+
+Opens up the print preview dialog to preview the selected node body.
+
+print-expanded-node
+-------------------
+
+Opens up the print dialog to print the expanded contents of the
+selected node, with top-level headline.
+
+print-preview-expanded-node
+---------------------------
+
+Opens up the print preview dialog to preview the expanded contents
+of theselected node, with top-level headline.
+
+print-expanded-node-body
+------------------------
+
+Opens up the print dialog to print the expanded node body.
+
+print-preview-expanded-node-body
+--------------------------------
+
+Opens up the print preview dialog to preview the expanded node
+body.
+
+print-marked-nodes
+------------------
+
+Opens up the print dialog to print all marked nodes in the current
+outline, with headlines.
+
+print-preview-marked-nodes
+--------------------------
+
+Opens up the print preview dialog to preview all marked nodes in \\
+the current outline, with headlines.
+
+print-marked-node-bodies
+------------------------
+
+Opens up the print dialog to print the bodies of all marked nodes
+in the current outline.
+
+print-preview-marked-node-bodies
+--------------------------------
+
+Opens up the print preview dialog to preview the bodies of all
+marked nodes in the current outline.
+
+Settings
+========
+
+- ``@string printing-font-family = DejaVu Sans Mono``
+   The font family for printing.  A monospaced font is recommended.
+
+- ``@string printing-font-size = 12``
+   The font size for printing bodies, in px.  Due to limitations
+   of PyQt, the size of headlines cannot be changed.
+'''
+
+To use it, be sure to add `printing.py` to your @enabled-plugins.
+
+Future work may have more printing modes available, and I intend on 
+doing a blog post on the leoblog about creating custom printing modes in 
+scripts.
+
+This addresses bug 1132804: 
+https://bugs.launchpad.net/leo-editor/+bug/1132804
+
+</t>
+<t tx="ekr.20130806072439.18805">From: Jacob Peck &lt;gatesphere@gmail.com&gt;
+
+On 5/15/2013 9:04 AM, Kent Tenney wrote:
+&gt; It just works! Nice.
+&gt; Being able to preview is great, less paper wasted.
+&gt;
+&gt; I rely entirely on command completion as a memory aid, too
+&gt; bad the info listing commands also start with \'print\'. I would
+&gt; think that \'list-&lt;attribute&gt;\' would have nicely disambiguated the
+&gt; situation now we have print.
+&gt;
+&gt; Too late?
+&gt;
+I agree completely w/r/t \'list-&lt;attribute&gt;\', but it most likely is too 
+late.  Those are probably in use by some script somewhere.  :(
+
+Thanks for the comments, though!  To be fair, this whole thing was crazy 
+simple to throw together - Qt does *all* the heavy lifting. Just throw 
+together an HTML string, wrap it in a QTextDocument, and call print_, 
+and Bob\'s your uncle.  I can see why Leo uses PyQt now... it\'s awesome.
+</t>
+<t tx="ekr.20130806072439.18806">From: =?UTF-8?Q?Fidel_P=C3=A9rez?= &lt;fidelperez@gmail.com&gt;
+
+------=_Part_340_2876503.1368623529463
+Content-Type: text/plain; charset=ISO-8859-1
+
+Thank you for this plugin, very useful!
+
+On Wednesday, May 15, 2013 2:41:19 PM UTC+2, Jacob Peck wrote:
+&gt;
+&gt; Hello all, 
+&gt;
+&gt; I\'ve added a new plugin to Leo, that adds printing support when using 
+&gt; the Qt GUI.  Available from rev 5779. 
+&gt;
+&gt; Here\'s the docscring: 
+&gt;
+&gt; \'\'\'Supports printing from the Qt GUI. 
+&gt;
+&gt; Jacob M. Peck, 2013 
+&gt;
+&gt; Commands 
+&gt; ======== 
+&gt;
+&gt; This plugin supports the following twelve commands: 
+&gt;
+&gt; print-selected-node 
+&gt; ------------------- 
+&gt;
+&gt; Opens up the print dialog to print the selected headline and node. 
+&gt;
+&gt; print-preview-selected-node 
+&gt; --------------------------- 
+&gt;
+&gt; Opens up the print preview dialog to preview the selected headline 
+&gt; and node. 
+&gt;
+&gt; print-selected-node-body 
+&gt; ------------------------ 
+&gt;
+&gt; Opens up the print dialog to print the selected node body. 
+&gt;
+&gt; print-preview-selected-node-body 
+&gt; -------------------------------- 
+&gt;
+&gt; Opens up the print preview dialog to preview the selected node body. 
+&gt;
+&gt; print-expanded-node 
+&gt; ------------------- 
+&gt;
+&gt; Opens up the print dialog to print the expanded contents of the 
+&gt; selected node, with top-level headline. 
+&gt;
+&gt; print-preview-expanded-node 
+&gt; --------------------------- 
+&gt;
+&gt; Opens up the print preview dialog to preview the expanded contents 
+&gt; of theselected node, with top-level headline. 
+&gt;
+&gt; print-expanded-node-body 
+&gt; ------------------------ 
+&gt;
+&gt; Opens up the print dialog to print the expanded node body. 
+&gt;
+&gt; print-preview-expanded-node-body 
+&gt; -------------------------------- 
+&gt;
+&gt; Opens up the print preview dialog to preview the expanded node 
+&gt; body. 
+&gt;
+&gt; print-marked-nodes 
+&gt; ------------------ 
+&gt;
+&gt; Opens up the print dialog to print all marked nodes in the current 
+&gt; outline, with headlines. 
+&gt;
+&gt; print-preview-marked-nodes 
+&gt; -------------------------- 
+&gt;
+&gt; Opens up the print preview dialog to preview all marked nodes in \\ 
+&gt; the current outline, with headlines. 
+&gt;
+&gt; print-marked-node-bodies 
+&gt; ------------------------ 
+&gt;
+&gt; Opens up the print dialog to print the bodies of all marked nodes 
+&gt; in the current outline. 
+&gt;
+&gt; print-preview-marked-node-bodies 
+&gt; -------------------------------- 
+&gt;
+&gt; Opens up the print preview dialog to preview the bodies of all 
+&gt; marked nodes in the current outline. 
+&gt;
+&gt; Settings 
+&gt; ======== 
+&gt;
+&gt; - ``@string printing-font-family = DejaVu Sans Mono`` 
+&gt;    The font family for printing.  A monospaced font is recommended. 
+&gt;
+&gt; - ``@string printing-font-size = 12`` 
+&gt;    The font size for printing bodies, in px.  Due to limitations 
+&gt;    of PyQt, the size of headlines cannot be changed. 
+&gt; \'\'\' 
+&gt;
+&gt; To use it, be sure to add `printing.py` to your @enabled-plugins. 
+&gt;
+&gt; Future work may have more printing modes available, and I intend on 
+&gt; doing a blog post on the leoblog about creating custom printing modes in 
+&gt; scripts. 
+&gt;
+&gt; This addresses bug 1132804: 
+&gt; https://bugs.launchpad.net/leo-editor/+bug/1132804 
+&gt;
+&gt; --&gt;Jake 
+&gt;
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en-US.
+For more options, visit https://groups.google.com/groups/opt_out.
+
+
+
+------=_Part_340_2876503.1368623529463
+Content-Type: text/html; charset=ISO-8859-1
+
+Thank you for this plugin, very useful!&lt;br&gt;&lt;br&gt;On Wednesday, May 15, 2013 2:41:19 PM UTC+2, Jacob Peck wrote:&lt;blockquote class="gmail_quote" style="margin: 0;margin-left: 0.8ex;border-left: 1px #ccc solid;padding-left: 1ex;"&gt;Hello all,
+&lt;br&gt;
+&lt;br&gt;I\'ve added a new plugin to Leo, that adds printing support when using 
+&lt;br&gt;the Qt GUI. &amp;nbsp;Available from rev 5779.
+&lt;br&gt;
+&lt;br&gt;Here\'s the docscring:
+&lt;br&gt;
+&lt;br&gt;\'\'\'Supports printing from the Qt GUI.
+&lt;br&gt;
+&lt;br&gt;Jacob M. Peck, 2013
+&lt;br&gt;
+&lt;br&gt;Commands
+&lt;br&gt;========
+&lt;br&gt;
+&lt;br&gt;This plugin supports the following twelve commands:
+&lt;br&gt;
+&lt;br&gt;print-selected-node
+&lt;br&gt;-------------------
+&lt;br&gt;
+&lt;br&gt;Opens up the print dialog to print the selected headline and node.
+&lt;br&gt;
+&lt;br&gt;print-preview-selected-node
+&lt;br&gt;---------------------------
+&lt;br&gt;
+&lt;br&gt;Opens up the print preview dialog to preview the selected headline
+&lt;br&gt;and node.
+&lt;br&gt;
+&lt;br&gt;print-selected-node-body
+&lt;br&gt;------------------------
+&lt;br&gt;
+&lt;br&gt;Opens up the print dialog to print the selected node body.
+&lt;br&gt;
+&lt;br&gt;print-preview-selected-node-&lt;wbr&gt;body
+&lt;br&gt;------------------------------&lt;wbr&gt;--
+&lt;br&gt;
+&lt;br&gt;Opens up the print preview dialog to preview the selected node body.
+&lt;br&gt;
+&lt;br&gt;print-expanded-node
+&lt;br&gt;-------------------
+&lt;br&gt;
+&lt;br&gt;Opens up the print dialog to print the expanded contents of the
+&lt;br&gt;selected node, with top-level headline.
+&lt;br&gt;
+&lt;br&gt;print-preview-expanded-node
+&lt;br&gt;---------------------------
+&lt;br&gt;
+&lt;br&gt;Opens up the print preview dialog to preview the expanded contents
+&lt;br&gt;of theselected node, with top-level headline.
+&lt;br&gt;
+&lt;br&gt;print-expanded-node-body
+&lt;br&gt;------------------------
+&lt;br&gt;
+&lt;br&gt;Opens up the print dialog to print the expanded node body.
+&lt;br&gt;
+&lt;br&gt;print-preview-expanded-node-&lt;wbr&gt;body
+&lt;br&gt;------------------------------&lt;wbr&gt;--
+&lt;br&gt;
+&lt;br&gt;Opens up the print preview dialog to preview the expanded node
+&lt;br&gt;body.
+&lt;br&gt;
+&lt;br&gt;print-marked-nodes
+&lt;br&gt;------------------
+&lt;br&gt;
+&lt;br&gt;Opens up the print dialog to print all marked nodes in the current
+&lt;br&gt;outline, with headlines.
+&lt;br&gt;
+&lt;br&gt;print-preview-marked-nodes
+&lt;br&gt;--------------------------
+&lt;br&gt;
+&lt;br&gt;Opens up the print preview dialog to preview all marked nodes in \\
+&lt;br&gt;the current outline, with headlines.
+&lt;br&gt;
+&lt;br&gt;print-marked-node-bodies
+&lt;br&gt;------------------------
+&lt;br&gt;
+&lt;br&gt;Opens up the print dialog to print the bodies of all marked nodes
+&lt;br&gt;in the current outline.
+&lt;br&gt;
+&lt;br&gt;print-preview-marked-node-&lt;wbr&gt;bodies
+&lt;br&gt;------------------------------&lt;wbr&gt;--
+&lt;br&gt;
+&lt;br&gt;Opens up the print preview dialog to preview the bodies of all
+&lt;br&gt;marked nodes in the current outline.
+&lt;br&gt;
+&lt;br&gt;Settings
+&lt;br&gt;========
+&lt;br&gt;
+&lt;br&gt;- ``@string printing-font-family = DejaVu Sans Mono``
+&lt;br&gt;&amp;nbsp; &amp;nbsp;The font family for printing. &amp;nbsp;A monospaced font is recommended.
+&lt;br&gt;
+&lt;br&gt;- ``@string printing-font-size = 12``
+&lt;br&gt;&amp;nbsp; &amp;nbsp;The font size for printing bodies, in px. &amp;nbsp;Due to limitations
+&lt;br&gt;&amp;nbsp; &amp;nbsp;of PyQt, the size of headlines cannot be changed.
+&lt;br&gt;\'\'\'
+&lt;br&gt;
+&lt;br&gt;To use it, be sure to add `printing.py` to your @enabled-plugins.
+&lt;br&gt;
+&lt;br&gt;Future work may have more printing modes available, and I intend on 
+&lt;br&gt;doing a blog post on the leoblog about creating custom printing modes in 
+&lt;br&gt;scripts.
+&lt;br&gt;
+&lt;br&gt;This addresses bug 1132804: 
+&lt;br&gt;&lt;a href="https://bugs.launchpad.net/leo-editor/+bug/1132804" target="_blank"&gt;https://bugs.launchpad.net/&lt;wbr&gt;leo-editor/+bug/1132804&lt;/a&gt;
+&lt;br&gt;
+&lt;br&gt;--&amp;gt;Jake
+&lt;br&gt;&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+-- &lt;br /&gt;
+You received this message because you are subscribed to the Google Groups &amp;quot;leo-editor&amp;quot; group.&lt;br /&gt;
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.&lt;br /&gt;
+&lt;br /&gt;
+Visit this group at &lt;a href="http://groups.google.com/group/leo-editor?hl=en-US"&gt;http://groups.google.com/group/leo-editor?hl=en-US&lt;/a&gt;.&lt;br /&gt;
+For more options, visit &lt;a href="https://groups.google.com/groups/opt_out"&gt;https://groups.google.com/groups/opt_out&lt;/a&gt;.&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+
+------=_Part_340_2876503.1368623529463--</t>
+<t tx="ekr.20130806072439.18807">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
+
+--001a11c3659e39178e04dcc40c9d
+Content-Type: text/plain; charset=UTF-8
+
+On Wed, May 15, 2013 at 7:41 AM, Jacob Peck &lt;gatesphere@gmail.com&gt; wrote:
+
+&gt;
+&gt; I\'ve added a new plugin to Leo, that adds printing support when using the
+&gt; Qt GUI.  Available from rev 5779.
+&gt;
+
+Excellent work.  Many thanks for this contribution.
+
+Edward
+
+--001a11c3659e39178e04dcc40c9d
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+&lt;div dir=3D"ltr"&gt;On Wed, May 15, 2013 at 7:41 AM, Jacob Peck &lt;span dir=3D"l=
+tr"&gt;&amp;lt;&lt;a href=3D"mailto:gatesphere@gmail.com" target=3D"_blank"&gt;gatespher=
+e@gmail.com&lt;/a&gt;&amp;gt;&lt;/span&gt; wrote:&lt;br&gt;&lt;div class=3D"gmail_extra"&gt;&lt;div class=
+=3D"gmail_quote"&gt;
+&lt;blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1p=
+x #ccc solid;padding-left:1ex"&gt;
+&lt;br&gt;
+I&amp;#39;ve added a new plugin to Leo, that adds printing support when using t=
+he Qt GUI. =C2=A0Available from rev 5779.&lt;br&gt;&lt;/blockquote&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;d=
+iv&gt;Excellent work.=C2=A0 Many thanks for this contribution.&lt;br&gt;&lt;br&gt;Edward&lt;/=
+div&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/div&gt;
+
+--001a11c3659e39178e04dcc40c9d--</t>
+<t tx="ekr.20130806072439.18808">From: Kent Tenney &lt;ktenney@gmail.com&gt;
+
+It just works! Nice.
+Being able to preview is great, less paper wasted.
+
+I rely entirely on command completion as a memory aid, too
+bad the info listing commands also start with \'print\'. I would
+think that \'list-&lt;attribute&gt;\' would have nicely disambiguated the
+situation now we have print.
+
+Too late?
+
+
+
+On Wed, May 15, 2013 at 7:41 AM, Jacob Peck &lt;gatesphere@gmail.com&gt; wrote:
+&gt; Hello all,
+&gt;
+&gt; I\'ve added a new plugin to Leo, that adds printing support when using the Qt
+&gt; GUI.  Available from rev 5779.
+&gt;
+&gt; Here\'s the docscring:
+&gt;
+&gt; \'\'\'Supports printing from the Qt GUI.
+&gt;
+&gt; Jacob M. Peck, 2013
+&gt;
+&gt; Commands
+&gt; ========
+&gt;
+&gt; This plugin supports the following twelve commands:
+&gt;
+&gt; print-selected-node
+&gt; -------------------
+&gt;
+&gt; Opens up the print dialog to print the selected headline and node.
+&gt;
+&gt; print-preview-selected-node
+&gt; ---------------------------
+&gt;
+&gt; Opens up the print preview dialog to preview the selected headline
+&gt; and node.
+&gt;
+&gt; print-selected-node-body
+&gt; ------------------------
+&gt;
+&gt; Opens up the print dialog to print the selected node body.
+&gt;
+&gt; print-preview-selected-node-body
+&gt; --------------------------------
+&gt;
+&gt; Opens up the print preview dialog to preview the selected node body.
+&gt;
+&gt; print-expanded-node
+&gt; -------------------
+&gt;
+&gt; Opens up the print dialog to print the expanded contents of the
+&gt; selected node, with top-level headline.
+&gt;
+&gt; print-preview-expanded-node
+&gt; ---------------------------
+&gt;
+&gt; Opens up the print preview dialog to preview the expanded contents
+&gt; of theselected node, with top-level headline.
+&gt;
+&gt; print-expanded-node-body
+&gt; ------------------------
+&gt;
+&gt; Opens up the print dialog to print the expanded node body.
+&gt;
+&gt; print-preview-expanded-node-body
+&gt; --------------------------------
+&gt;
+&gt; Opens up the print preview dialog to preview the expanded node
+&gt; body.
+&gt;
+&gt; print-marked-nodes
+&gt; ------------------
+&gt;
+&gt; Opens up the print dialog to print all marked nodes in the current
+&gt; outline, with headlines.
+&gt;
+&gt; print-preview-marked-nodes
+&gt; --------------------------
+&gt;
+&gt; Opens up the print preview dialog to preview all marked nodes in \\
+&gt; the current outline, with headlines.
+&gt;
+&gt; print-marked-node-bodies
+&gt; ------------------------
+&gt;
+&gt; Opens up the print dialog to print the bodies of all marked nodes
+&gt; in the current outline.
+&gt;
+&gt; print-preview-marked-node-bodies
+&gt; --------------------------------
+&gt;
+&gt; Opens up the print preview dialog to preview the bodies of all
+&gt; marked nodes in the current outline.
+&gt;
+&gt; Settings
+&gt; ========
+&gt;
+&gt; - ``@string printing-font-family = DejaVu Sans Mono``
+&gt;   The font family for printing.  A monospaced font is recommended.
+&gt;
+&gt; - ``@string printing-font-size = 12``
+&gt;   The font size for printing bodies, in px.  Due to limitations
+&gt;   of PyQt, the size of headlines cannot be changed.
+&gt; \'\'\'
+&gt;
+&gt; To use it, be sure to add `printing.py` to your @enabled-plugins.
+&gt;
+&gt; Future work may have more printing modes available, and I intend on doing a
+&gt; blog post on the leoblog about creating custom printing modes in scripts.
+&gt;
+&gt; This addresses bug 1132804:
+&gt; https://bugs.launchpad.net/leo-editor/+bug/1132804
+&gt;
+&gt; --&gt;Jake
+&gt;
+&gt; --
+&gt; You received this message because you are subscribed to the Google Groups
+&gt; "leo-editor" group.
+&gt; To unsubscribe from this group and stop receiving emails from it, send an
+&gt; email to leo-editor+unsubscribe@googlegroups.com.
+&gt; 
+&gt; Visit this group at http://groups.google.com/group/leo-editor?hl=en-US.
+&gt; For more options, visit https://groups.google.com/groups/opt_out.
+&gt;
+&gt;
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en-US.
+For more options, visit https://groups.google.com/groups/opt_out.
+</t>
+<t tx="ekr.20130806072439.18889">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
+
+This one is not "exhaustive", but in the interest of time management, I
+decided to push it as is. I\'ll blog about more features later on.
+
+http://leo-editor.github.io/valuespace-intro.html
+
+Hope it already helps alleviate the mystery of what it\'s all about :)</t>
+<t tx="ekr.20130806072439.18890">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
+
+--001a11c2674c1dc3d604dc99267a
+Content-Type: text/plain; charset=UTF-8
+
+On Sat, May 11, 2013 at 9:58 PM, ne1uno &lt;eltronis@gmail.com&gt; wrote:
+
+&gt; http://groups.google.com/group/leo-editor/about
+&gt; still has the old home page
+&gt; webpages.charter.net
+&gt;
+
+Thanks for this.  At present, I don\'t see any way to change the old home
+page!  Anyone know how?
+
+Edward
+
+--001a11c2674c1dc3d604dc99267a
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+&lt;div dir=3D"ltr"&gt;On Sat, May 11, 2013 at 9:58 PM, ne1uno &lt;span dir=3D"ltr"&gt;=
+&amp;lt;&lt;a href=3D"mailto:eltronis@gmail.com" target=3D"_blank"&gt;eltronis@gmail.=
+com&lt;/a&gt;&amp;gt;&lt;/span&gt; wrote:&lt;br&gt;&lt;div class=3D"gmail_extra"&gt;&lt;div class=3D"gmail=
+_quote"&gt;&lt;blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border=
+-left:1px #ccc solid;padding-left:1ex"&gt;
+&lt;a href=3D"http://groups.google.com/group/leo-editor/about" target=3D"_blan=
+k"&gt;http://groups.google.com/group/leo-editor/about&lt;/a&gt;&lt;br&gt;
+still has the old home page&lt;br&gt;
+&lt;a href=3D"http://webpages.charter.net" target=3D"_blank"&gt;webpages.charter.=
+net&lt;/a&gt;&lt;br&gt;&lt;/blockquote&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Thanks for this.=C2=A0 At prese=
+nt, I don&amp;#39;t see any way to change the old home page!=C2=A0 Anyone know =
+how?&lt;br&gt;&lt;br&gt;
+Edward&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+
+--001a11c2674c1dc3d604dc99267a--</t>
+<t tx="ekr.20130806072439.18891">From: gatesphere &lt;gatesphere@gmail.com&gt;
+
+This is a multi-part message in MIME format.
+--------------070407080106060909030203
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+
+Looks really interesting, Ville!  Thanks for sharing, looking forward to 
+diving in.
+
+I\'m thinking of some uses for in a rulebook and a few blog posts I\'m 
+writing right now.  Being able to have my document be executable seems 
+awesome.
+
+--&gt;Jake
+&gt; On Tuesday, May 14, 2013 4:15:12 AM UTC+8, Ville M. Vainio wrote:
+&gt;
+&gt;     This one is not "exhaustive", but in the interest of time
+&gt;     management, I decided to push it as is. I\'ll blog about more
+&gt;     features later on.
+&gt;
+&gt;     http://leo-editor.github.io/valuespace-intro.html
+&gt;     &lt;http://leo-editor.github.io/valuespace-intro.html&gt;
+&gt;
+&gt;     Hope it already helps alleviate the mystery of what it\'s all about :)
+&gt;
+&gt; -- 
+&gt; You received this message because you are subscribed to the Google 
+&gt; Groups "leo-editor" group.
+&gt; To unsubscribe from this group and stop receiving emails from it, send 
+&gt; an email to leo-editor+unsubscribe@googlegroups.com.
+&gt; 
+&gt; Visit this group at http://groups.google.com/group/leo-editor?hl=en-US.
+&gt; For more options, visit https://groups.google.com/groups/opt_out.
+&gt;
+&gt;
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en-US.
+For more options, visit https://groups.google.com/groups/opt_out.
+
+
+
+--------------070407080106060909030203
+Content-Type: text/html; charset=ISO-8859-1
+
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;meta content="text/html; charset=ISO-8859-1"
+      http-equiv="Content-Type"&gt;
+  &lt;/head&gt;
+  &lt;body text="#000000" bgcolor="#FFFFFF"&gt;
+    Looks really interesting, Ville!&amp;nbsp; Thanks for sharing, looking
+    forward to diving in.&lt;br&gt;
+    &lt;br&gt;
+    I\'m thinking of some uses for in a rulebook and a few blog posts I\'m
+    writing right now.&amp;nbsp; Being able to have my document be executable
+    seems awesome.&lt;br&gt;
+    &lt;br&gt;
+    --&amp;gt;Jake&lt;br&gt;
+    &lt;blockquote
+      cite="mid:496ec8fb-4a2a-4ad9-90e2-121abc2743b6@googlegroups.com"
+      type="cite"&gt;
+      &lt;div&gt;
+        &lt;div&gt;On Tuesday, May 14, 2013 4:15:12 AM UTC+8, Ville M. Vainio
+          wrote:
+          &lt;blockquote class="gmail_quote" style="margin: 0;margin-left:
+            0.8ex;border-left: 1px #ccc solid;padding-left: 1ex;"&gt;This
+            one is not "exhaustive", but in the interest of time
+            management, I decided to push it as is. I\'ll blog about more
+            features later on.
+            &lt;div&gt;&lt;br&gt;
+            &lt;/div&gt;
+            &lt;div&gt;&lt;a moz-do-not-send="true"
+                href="http://leo-editor.github.io/valuespace-intro.html"
+                target="_blank"&gt;http://leo-editor.github.io/&lt;wbr&gt;valuespace-intro.html&lt;/a&gt;&lt;/div&gt;
+            &lt;div&gt;&lt;br&gt;
+            &lt;/div&gt;
+            &lt;div&gt;Hope it already helps alleviate the mystery of what
+              it\'s all about :)&lt;/div&gt;
+          &lt;/blockquote&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      -- &lt;br&gt;
+      You received this message because you are subscribed to the Google
+      Groups "leo-editor" group.&lt;br&gt;
+      To unsubscribe from this group and stop receiving emails from it,
+      send an email to &lt;a class="moz-txt-link-abbreviated" href="mailto:leo-editor+unsubscribe@googlegroups.com"&gt;leo-editor+unsubscribe@googlegroups.com&lt;/a&gt;.&lt;br&gt;
+      To post to this group, send email to &lt;a class="moz-txt-link-abbreviated" href="mailto:leo-editor@googlegroups.com"&gt;leo-editor@googlegroups.com&lt;/a&gt;.&lt;br&gt;
+      Visit this group at &lt;a moz-do-not-send="true"
+        href="http://groups.google.com/group/leo-editor?hl=en-US"&gt;http://groups.google.com/group/leo-editor?hl=en-US&lt;/a&gt;.&lt;br&gt;
+      For more options, visit &lt;a moz-do-not-send="true"
+        href="https://groups.google.com/groups/opt_out"&gt;https://groups.google.com/groups/opt_out&lt;/a&gt;.&lt;br&gt;
+      &amp;nbsp;&lt;br&gt;
+      &amp;nbsp;&lt;br&gt;
+    &lt;/blockquote&gt;
+    &lt;br&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+-- &lt;br /&gt;
+You received this message because you are subscribed to the Google Groups &amp;quot;leo-editor&amp;quot; group.&lt;br /&gt;
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.&lt;br /&gt;
+&lt;br /&gt;
+Visit this group at &lt;a href="http://groups.google.com/group/leo-editor?hl=en-US"&gt;http://groups.google.com/group/leo-editor?hl=en-US&lt;/a&gt;.&lt;br /&gt;
+For more options, visit &lt;a href="https://groups.google.com/groups/opt_out"&gt;https://groups.google.com/groups/opt_out&lt;/a&gt;.&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+
+--------------070407080106060909030203--</t>
+<t tx="ekr.20130806072439.18892">From: HaveF &lt;iamaplayer@gmail.com&gt;
+
+------=_Part_9_11281089.1368496772614
+Content-Type: text/plain; charset=ISO-8859-1
+
+Thanks!
+
+Although it beyond my current requirements, maybe, 
+I need to read valuespace_example.leo to find more typical usage.
+
+On Tuesday, May 14, 2013 4:15:12 AM UTC+8, Ville M. Vainio wrote:
+&gt;
+&gt; This one is not "exhaustive", but in the interest of time management, I 
+&gt; decided to push it as is. I\'ll blog about more features later on.
+&gt;
+&gt; http://leo-editor.github.io/valuespace-intro.html
+&gt;
+&gt; Hope it already helps alleviate the mystery of what it\'s all about :)
+&gt;
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en-US.
+For more options, visit https://groups.google.com/groups/opt_out.
+
+
+
+------=_Part_9_11281089.1368496772614
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+Thanks!&lt;div&gt;&lt;br&gt;&lt;div&gt;Although it beyond my current requirements, maybe,&amp;nbs=
+p;&lt;/div&gt;&lt;div&gt;I need to read valuespace_example.leo to find more typical usa=
+ge.&lt;/div&gt;&lt;div&gt;&lt;br&gt;On Tuesday, May 14, 2013 4:15:12 AM UTC+8, Ville M. Vaini=
+o wrote:&lt;blockquote class=3D"gmail_quote" style=3D"margin: 0;margin-left: 0=
+.8ex;border-left: 1px #ccc solid;padding-left: 1ex;"&gt;This one is not "exhau=
+stive", but in the interest of time management, I decided to push it as is.=
+ I\'ll blog about more features later on.&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;a href=3D"http=
+://leo-editor.github.io/valuespace-intro.html" target=3D"_blank"&gt;http://leo=
+-editor.github.io/&lt;wbr&gt;valuespace-intro.html&lt;/a&gt;&lt;/div&gt;
+
+&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Hope it already helps alleviate the mystery of what it\'=
+s all about :)&lt;/div&gt;
+&lt;/blockquote&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+-- &lt;br /&gt;
+You received this message because you are subscribed to the Google Groups &amp;=
+quot;leo-editor&amp;quot; group.&lt;br /&gt;
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to leo-editor+unsubscribe@googlegroups.com.&lt;br /&gt;
+&lt;br /&gt;
+Visit this group at &lt;a href=3D"http://groups.google.com/group/leo-editor?hl=
+=3Den-US"&gt;http://groups.google.com/group/leo-editor?hl=3Den-US&lt;/a&gt;.&lt;br /&gt;
+For more options, visit &lt;a href=3D"https://groups.google.com/groups/opt_out=
+"&gt;https://groups.google.com/groups/opt_out&lt;/a&gt;.&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+
+------=_Part_9_11281089.1368496772614--</t>
+<t tx="ekr.20130806072439.18893">From: Matt Wilkie &lt;maphew@gmail.com&gt;
+
+--001a11c26ed617905b04dc9facbf
+Content-Type: text/plain; charset=ISO-8859-1
+
+Thank you so much Ville.
+
+That looks awesomely powerful. And I have a use for the json slurper right
+now! I can\'t wait to try it out.
+
+-matt
+
+
+On Mon, May 13, 2013 at 1:15 PM, Ville M. Vainio &lt;vivainio@gmail.com&gt; wrote:
+
+&gt; This one is not "exhaustive", but in the interest of time management, I
+&gt; decided to push it as is. I\'ll blog about more features later on.
+&gt;
+&gt; http://leo-editor.github.io/valuespace-intro.html
+&gt;
+&gt; Hope it already helps alleviate the mystery of what it\'s all about :)
+&gt;
+&gt; --
+&gt; You received this message because you are subscribed to the Google Groups
+&gt; "leo-editor" group.
+&gt; To unsubscribe from this group and stop receiving emails from it, send an
+&gt; email to leo-editor+unsubscribe@googlegroups.com.
+&gt; 
+&gt; Visit this group at http://groups.google.com/group/leo-editor?hl=en-US.
+&gt; For more options, visit https://groups.google.com/groups/opt_out.
+&gt;
+&gt;
+&gt;
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en-US.
+For more options, visit https://groups.google.com/groups/opt_out.
+
+
+
+--001a11c26ed617905b04dc9facbf
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+Thank you so much Ville. &lt;br&gt;&lt;br&gt;That looks awesomely powerful. And I have =
+a use for the json slurper right now! I can&amp;#39;t wait to try it out.&lt;br&gt;&lt;b=
+r&gt;-matt&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;div class=3D"gmail_quote"&gt;On Mon, May 13, 2013 at 1:15 =
+PM, Ville M. Vainio &lt;span dir=3D"ltr"&gt;&amp;lt;&lt;a href=3D"mailto:vivainio@gmail.=
+com" target=3D"_blank"&gt;vivainio@gmail.com&lt;/a&gt;&amp;gt;&lt;/span&gt; wrote:&lt;br&gt;
+
+&lt;blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1p=
+x #ccc solid;padding-left:1ex"&gt;This one is not &amp;quot;exhaustive&amp;quot;, but =
+in the interest of time management, I decided to push it as is. I&amp;#39;ll bl=
+og about more features later on.&lt;div&gt;
+
+&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;a href=3D"http://leo-editor.github.io/valuespace-intro.html=
+" target=3D"_blank"&gt;http://leo-editor.github.io/valuespace-intro.html&lt;/a&gt;&lt;/=
+div&gt;
+
+&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Hope it already helps alleviate the mystery of what it&amp;=
+#39;s all about :)&lt;/div&gt;&lt;span class=3D"HOEnZb"&gt;&lt;font color=3D"#888888"&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+-- &lt;br&gt;
+You received this message because you are subscribed to the Google Groups &amp;=
+quot;leo-editor&amp;quot; group.&lt;br&gt;
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to &lt;a href=3D"mailto:leo-editor%2Bunsubscribe@googlegroups.com" target=
+=3D"_blank"&gt;leo-editor+unsubscribe@googlegroups.com&lt;/a&gt;.&lt;br&gt;
+To post to this group, send email to &lt;a href=3D"mailto:leo-editor@googlegro=
+ups.com" target=3D"_blank"&gt;leo-editor@googlegroups.com&lt;/a&gt;.&lt;br&gt;
+Visit this group at &lt;a href=3D"http://groups.google.com/group/leo-editor?hl=
+=3Den-US" target=3D"_blank"&gt;http://groups.google.com/group/leo-editor?hl=3D=
+en-US&lt;/a&gt;.&lt;br&gt;
+For more options, visit &lt;a href=3D"https://groups.google.com/groups/opt_out=
+" target=3D"_blank"&gt;https://groups.google.com/groups/opt_out&lt;/a&gt;.&lt;br&gt;
+=A0&lt;br&gt;
+=A0&lt;br&gt;
+&lt;/font&gt;&lt;/span&gt;&lt;/blockquote&gt;&lt;/div&gt;&lt;br&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+-- &lt;br /&gt;
+You received this message because you are subscribed to the Google Groups &amp;=
+quot;leo-editor&amp;quot; group.&lt;br /&gt;
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to leo-editor+unsubscribe@googlegroups.com.&lt;br /&gt;
+&lt;br /&gt;
+Visit this group at &lt;a href=3D"http://groups.google.com/group/leo-editor?hl=
+=3Den-US"&gt;http://groups.google.com/group/leo-editor?hl=3Den-US&lt;/a&gt;.&lt;br /&gt;
+For more options, visit &lt;a href=3D"https://groups.google.com/groups/opt_out=
+"&gt;https://groups.google.com/groups/opt_out&lt;/a&gt;.&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+
+--001a11c26ed617905b04dc9facbf--</t>
+<t tx="ekr.20130806072439.18894">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
+
+--001a11c24b284b73f004dcadddd6
+Content-Type: text/plain; charset=UTF-8
+
+On Mon, May 13, 2013 at 3:15 PM, Ville M. Vainio &lt;vivainio@gmail.com&gt; wrote:
+
+&gt; This one is not "exhaustive", but in the interest of time management, I
+&gt; decided to push it as is. I\'ll blog about more features later on.
+&gt;
+&gt; http://leo-editor.github.io/valuespace-intro.html
+&gt;
+
+Thanks Ville, I\'ll look at it in detail later today.
+
+Edward
+
+--001a11c24b284b73f004dcadddd6
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+&lt;div dir=3D"ltr"&gt;On Mon, May 13, 2013 at 3:15 PM, Ville M. Vainio &lt;span dir=
+=3D"ltr"&gt;&amp;lt;&lt;a href=3D"mailto:vivainio@gmail.com" target=3D"_blank"&gt;vivain=
+io@gmail.com&lt;/a&gt;&amp;gt;&lt;/span&gt; wrote:&lt;br&gt;&lt;div class=3D"gmail_extra"&gt;&lt;div class=
+=3D"gmail_quote"&gt;
+&lt;blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1p=
+x #ccc solid;padding-left:1ex"&gt;This one is not &amp;quot;exhaustive&amp;quot;, but =
+in the interest of time management, I decided to push it as is. I&amp;#39;ll bl=
+og about more features later on.&lt;div&gt;
+&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;a href=3D"http://leo-editor.github.io/valuespace-intro.html=
+" target=3D"_blank"&gt;http://leo-editor.github.io/valuespace-intro.html&lt;/a&gt;&lt;/=
+div&gt;&lt;/blockquote&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Thanks Ville, I&amp;#39;ll look at it in d=
+etail later today.&lt;br&gt;
+&lt;br&gt;Edward&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+
+--001a11c24b284b73f004dcadddd6--</t>
+<t tx="ekr.20130806072439.19486">As of rev 5650, Leo contains support for \@testsetup nodes. At present, they
+work only when running unit tests locally.
+
+In effect, @testsetup nodes provide common setup code for all following 
+@test and @suite nodes.  Such common setup code is the real reason for 
+having custom subclasses of unittest.TestCase.  This Leonine 
+solution is much than either:
+
+a) @testclass nodes (which I never use) or
+
+b) "injecting" common test code using::
+
+    exec(g.findTestScript(c,\'@common name-of-common-test-code\'))
+
+Leo's test-execution code prepends the body text of an @testsetup node to
+all following @test and @suite nodes. Multiple @testsetup nodes may appear
+in an outline. The range of an @testsetup node extends over all following
+@test and @suite nodes until the next @testsetup node is seen (in outline 
+order).
+</t>
+<t tx="ekr.20130806072439.19631"></t>
+<t tx="ekr.20130806072439.19654">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
+
+Some people seem to think that it is difficult to understand how Leo
+handles "clone wars":  differing values for a cloned nodes that appear
+in several external files.  That\'s not true.  The rule is::
+
+    **The last clone that Leo reads wins.**
+
+That is, for any cloned node C, Leo takes the value of C.h and C.b to
+be the values specified by the last copy that Leo reads.
+
+There is only one complication::
+
+    **Leo reads the entire outline before reading any external
+files.**
+
+Thus, if C appears in x.leo, y.py and z.py, Leo will choose the value
+for C in x.py or y.py, depending on which @&lt;file&gt; node appears later
+in the outline.
+
+Notes:
+
+1. Whenever Leo detects multiple values for C when opening an outline, Leo
+   creates a "Recovered nodes" tree. This tree contains all the various
+   values for C, nicely formatted so that it is easy to determine where the
+   differences are.
+
+2. I\'ve just refreshed my memory by looking at the code.  The relevant methods are:
+
+    fc.getLeoFile # Reads the outline, then calls at.readAll to read all external files.
+    at.indicateNodeChanged # Adds data to c.nodeConflictList
+    cacher.reportChangedClone # Adds data to c.nodeConflictList
+    fc.handleNodeConflicts # Creates "Recovered Nodes" node and its children.
+
+3. The present code is the simplest code that could possibly work. There is
+no way Leo is going to do AI in order to implement complex rules for which
+clones are "more important" than others. Thus, if you use cross-file
+clones, it is up to *you* to know these rules and handle any resulting
+conflicts. Imo, the "Recovered Nodes" feature is a big step forward for
+Leo, and makes it impossible to lose data unless you willfully refuse to
+examine the data.
+</t>
+<t tx="ekr.20130806072439.19655">From: Joon Ro &lt;joonpyro@gmail.com&gt;
+
+Thanks for the explanation. As a matter of fact, I was having hard time 
+understanding this. 
+
+I had my source file in a @shadow node, and then I had a backup of that 
+file as @file node, which had clones of the nodes of the source @shadow 
+file and some other codes that I stashed. 
+
+Whenever I changed the source code externally with leo closed, when I open 
+leo, it made recovered nodes. The problem was since @file was placed 
+"later" in the outline, leo kept putting the new changes I made to old, 
+instead of new.
+
+Now I understand how this works. but I think in multiple external file 
+cases, it would make more sense if leo checks the file modification time 
+when it makes decision which node is new, instead of just depending on the 
+order of files in the outline. In above case, it is natural for me to have 
+actual source nodes on the top of the outline and backup nodes on the 
+bottom. Please let me know what you think. 
+</t>
+<t tx="ekr.20130806072439.19664">@nocolor
+
+From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
+
+I continue to work feverishly on various aspects of static type checking.
+
+That work lead to a discovery that may benefit you.  It's one of the most 
+beautiful patterns I've ever created: it allows a program to simply and 
+naturally build up huge strings without using any string operations.  
+Generating an html file with minimal stress on the gc is an obvious 
+application.  You could also say that the pattern creates a Pythonic way of 
+using lisp-like algorithms, but more safely than in lisp.
+
+Full details at the stc documentation page::
+http://webpages.charter.net/edreamleo/stc/stc.html#a-beautiful-pattern-for-building-large-strings
+
+</t>
+<t tx="ekr.20130806072439.19665">@nocolor
+
+From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
+
+On Wednesday, January 2, 2013 10:02:40 AM UTC-6, Edward K. Ream wrote:
+
+ReportTraverser uses this pattern at rev 288.  It is a remarkable 
+simplification.
+ 
+
+&gt; The revised r.div method will be something like::
+&gt;
+&gt;     def div(self,aList):
+&gt;         compute old and new indents
+&gt;         return [
+&gt;             &lt;div&gt;, with old indent,
+&gt;             aList, with new indent,
+&gt;             &lt;/div&gt;, with old indent,
+&gt;         ]
+&gt;
+
+This doesn't work!  aList won't have the proper indentation.  In 
+particular, the following won't work::
+
+    [['  ',z] for z in aList],
+
+flatten_list will add the two spaces before the line, that is, before a 
+newline. Instead, a hack is needed:
+
+    return [
+        div,
+        join_list(aList,indent='  '),
+        '\\n&lt;/div&gt;'
+    ]
+
+The new 'indent' keyword tells flatten_list to add the given indentation 
+(two spaces, here), to strings that start with a newline.  The new code in 
+flatten_list is::
+
+        for i,item in enumerate(aList):
+            if leading:                  yield leading
+            for s in flatten_list(item):
+                if indent:
+                    if s.startswith('\\n'):
+                        yield '\\n'+indent+s[1:]
+                    else:
+                        yield s
+                else:
+                    yield s
+            if sep and i &lt; len(aList)-1: yield sep
+            if trailing:                 yield trailing
+
+The point is that the indentation must be "moved behind the newline".
+
+Edward
+
+</t>
+<t tx="ekr.20130806072439.19666">@nocolor
+
+From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
+
+On Wednesday, January 2, 2013 2:01:17 PM UTC-6, Ville M. Vainio wrote:
+&gt;
+&gt; This seems like a spiritual relative of "rope" data structure:
+&gt;
+&gt; http://en.wikipedia.org/wiki/Rope_(data_structure)
+&gt;
+&gt; http://www.sgi.com/tech/stl/Rope.html
+&gt;
+
+Thanks for these links.  Yes, there is a similarity.  However, the real 
+beauty of new pattern is the flatten_list method.  It's the combination of 
+the lists and flatten_list that gives the pattern real power.  We've just 
+seen how the 'indent' keyword hack allows sophisticated processing of the 
+lists.  I wouldn't expect more hacks to be needed, but I've been surprised 
+before ;-)
+
+Edward
+
+</t>
+<t tx="ekr.20130806072439.19667">@nocolor
+
+From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
+
+This seems like a spiritual relative of "rope" data structure:
+
+http://en.wikipedia.org/wiki/Rope_(data_structure)
+
+http://www.sgi.com/tech/stl/Rope.html
+
+
+On Wed, Jan 2, 2013 at 3:03 AM, Edward K. Ream &lt;edreamleo@gmail.com&gt; wrote:
+
+&gt; I continue to work feverishly on various aspects of static type checking.
+&gt;
+&gt; That work lead to a discovery that may benefit you.  It's one of the most
+&gt; beautiful patterns I've ever created: it allows a program to simply and
+&gt; naturally build up huge strings without using any string operations.
+&gt; Generating an html file with minimal stress on the gc is an obvious
+&gt; application.  You could also say that the pattern creates a Pythonic way of
+&gt; using lisp-like algorithms, but more safely than in lisp.
+&gt;
+&gt; Full details at the stc documentation page::
+&gt;
+&gt; http://webpages.charter.net/edreamleo/stc/stc.html#a-beautiful-pattern-for-building-large-strings
+&gt;
+</t>
+<t tx="ekr.20130806072439.19668">@nocolor
+
+From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+
+On Tue, 1 Jan 2013 17:03:05 -0800 (PST)
+"Edward K. Ream" &lt;edreamleo@gmail.com&gt; wrote:
+
+&gt; Generating an html file with minimal stress on the gc is an obvious 
+&gt; application.
+
+Nice.  An HTML specific approach which avoids things like the
+r.div_end() construct is the LXML element factory:
+http://lxml.de/tutorial.html#the-e-factory
+
+Cheers -Terry
+
+</t>
+<t tx="ekr.20130806072439.19669">@nocolor
+
+From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
+
+
+
+Yes, it's indeed an interesting pattern.
+
+It would seem more useful in faster languages than python though; in
+python, string operations (and gc) are faster in comparison to executing
+other code, whereas in fast, more static languages (C++, Java, Go) avoiding
+GC gives you great benefits (I saw 5x perf increase reported for some Go
+app when eliminating GC).
+
+</t>
+<t tx="ekr.20130806072439.19670">@nocolor
+
+From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
+
+On Thursday, January 3, 2013 3:28:52 AM UTC-6, Ville M. Vainio wrote:
+&gt;
+&gt; Yes, it's indeed an interesting pattern. 
+&gt;
+&gt; It would seem more useful in faster languages than python though; in 
+&gt; python, string operations (and gc) are faster in comparison to executing 
+&gt; other code, whereas in fast, more static languages (C++, Java, Go) avoiding 
+&gt; GC gives you great benefits (I saw 5x perf increase reported for some Go 
+&gt; app when eliminating GC).
+&gt;
+
+Thanks for these remarks.  I've enjoyed thinking about them.  A few 
+responses:
+
+1. This is a smallish pattern--it can't change the world, except insofar as 
+something beautiful changes the world.
+
+2. Otoh, the pattern changes the way I think about lisp and lisp-like 
+patterns.  That's not nothing. For the first time, it makes list-oriented  
+programming pattern completely safe.  It does this because it doesn't 
+matter what each component list contains, nor does it matter *at all* what 
+the shape of any part of the tree is.  This makes the pattern completely 
+flexible.
+
+3. The pattern can be generalized.  The pattern I described uses a tree of 
+component strings to describe a (large) resulting string.  But one can 
+easily imagine using lists to hold anything at all (of whatever tree shape) 
+and then use another version of flatten_list to compose results of other 
+types.  Alternatively, rather than composing a result, the analog of 
+flatten_list could process the tree of lists in other ways.  So the most 
+general version of the pattern is:
+
+A) The tree of lists can contain any data whatever, especially including 
+None,
+B) The "producers" (visitors) can create subtrees of whatever shape,
+C) The analog of flatten_list is free to do anything whatever with the 
+resulting tree.
+
+I suspect that these features are what appeal to lisp programmers ;-)
+
+4. I'm not sure whether the pattern is more useful in "faster" languages or 
+not.  True, anything that helps a feeble language like C++ will seem useful 
+:-)  But points 1-3 above have nothing to do with speed: they just make 
+programming simpler, more flexible, more powerful and more fun.
+
+Imo, gc issues are important both in Python and in C++.  For stc, the only 
+way to get reproducible timing statistics for tests was to do the following 
+before running the test::
+
+    for z in (0,1,2): gc.collect(z)
+
+The ReportTraverser class no longer contains *any* calls to string.join, so 
+one could imagine that all strings used in the code would be interned.  The 
+generated tree actually contains nothing but *references* to strings, and 
+if all strings are interned the references will not themselves cause any 
+new strings to be allocated.
+
+Naturally, gc issues are even more important in language like C++ without a 
+gc.  Lol.  The preceding paragraph is more important for C++ than in 
+Python.  So yes, in this sense I agree with you completely that the pattern 
+is more useful for "fast" languages than for Python.
+
+Thanks, Ville, for provoking all these pleasant thoughts :-)
+
+Edward
+
+</t>
+<t tx="ekr.20130806072439.19671">@nocolor
+
+From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
+
+
+
+On Tue, Jan 1, 2013 at 9:48 PM, Terry Brown &lt;terry_n_brown@yahoo.com&gt; wrote:
+
+&gt; On Tue, 1 Jan 2013 17:03:05 -0800 (PST)
+&gt; "Edward K. Ream" &lt;edreamleo@gmail.com&gt; wrote:
+&gt;
+&gt; &gt; Generating an html file with minimal stress on the gc is an obvious
+&gt; &gt; application.
+&gt;
+&gt; Nice.  An HTML specific approach which avoids things like the
+&gt; r.div_end() construct is the LXML element factory:
+&gt; http://lxml.de/tutorial.html#the-e-factory
+&gt;
+
+Beautiful.  With the list framework the revised r.div method would be
+something like::
+
+    def div(self,aList):
+        compute old and new indents
+        return [
+            &lt;div&gt;, with old indent,
+            aList, with new indent,
+            &lt;/div&gt;, with old indent,
+        ]
+
+An example of the pattern in use::
+
+    return [
+        ...
+        r.div([
+            contents of the div,
+        ]),
+        ...
+    ]
+
+Similarly for span, etc. Thanks for pointing this out.  This is too good to
+ignore.  I'll do it soon.
+
+Edward</t>
+<t tx="ekr.20130806072439.19785">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
+
+Ramblings relevant to Leo, by the PyQt lead developer:
+
+http://www.riverbankcomputing.co.uk/static/Docs/dip/architecture.html#the-realities-of-software-development
+
+esp "The Myth of Toolkit Independence"
+
+
+
+To unsubscribe from this group, send email to leo-editor+unsubscribe@googlegroups.com.
+For more options, visit this group at http://groups.google.com/group/leo-editor?hl=en.</t>
+<t tx="ekr.20130806072439.19786">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
+
+On Fri, Apr 27, 2012 at 1:49 PM, Ville M. Vainio &lt;vivainio@gmail.com&gt; wrote:
+&gt; Ramblings relevant to Leo, by the PyQt lead developer:...esp "The Myth of Toolkit Independence"
+
+Leo\'s core benefits greatly from toolkit independence, despite some
+(usually minor) extra complexity. Obviously, this has not constrained
+what plugins can do.
+
+This is pretty much a non-issue for Leo.  The reason is clear enough:
+the hundreds of commands defined in Leo\'s core are mostly
+straightforward renditions of emacs text commands.  There, the
+constraints of an abstraction layer do not pinch.  Furthermore, using
+common gui-level code is a good application of the DRY (Don\'t Repeat
+Yourself) principle, as recent bug fixes in the common code
+illustrate.
+
+The code for ensuring that the outline and body text are updated
+properly (and in synch!) is much more difficult, but the difficulties
+are fundamental: they have almost nothing to do with actual guis.
+
+In short, I think Leo\'s design uses the best of the gui-dependent and
+gui-independent approaches.
+
+Edward</t>
+<t tx="ekr.20130806072439.19787">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
+
+--047d7b417ed10845b104dba8f551
+Content-Type: text/plain; charset=ISO-8859-1
+
+On Sun, Dec 23, 2012 at 2:30 PM, Ville M. Vainio &lt;vivainio@gmail.com&gt; wrote:
+
+&gt; I am having some problems wrapping my head around how focus behaves
+&gt; throughout leo.
+&gt;
+&gt; IMO it would be a good idea to have only one place in Leo where focus is
+&gt; explicitly set. E.g. g.setFocus(widget). This implementetation would
+&gt; suffice:
+&gt;
+&gt; def setFocus(widget):
+&gt;   widget.setFocus()
+&gt;
+&gt; Reasoning: it would be handy to add debugging stuff here, to see why my
+&gt; focus stuff is failing in alt-x go-anywhere handling.
+&gt;
+&gt; (My guess is treeFocusHelper only understanding focus being either in tree
+&gt; or body, but no time to explore further now)
+&gt;
+
+In fact, there is only one such place: c.outerUpdate.  The various
+xWantsFocus methods simply set ivars, which c.outerUpdate uses to set the
+focus when a command completes.
+
+The various xWantsFocusNow methods call c.outerUpdate immediately.  Usually
+we don\'t want to do this, because it could cause screen flash, but
+sometimes the immediate update is essential.
+
+I\'ve marked this thread as a topic for implementers.  Such things will form
+the basis for documentation for my successors.
+
+Edward
+
+--047d7b417ed10845b104dba8f551
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+&lt;div dir=3D"ltr"&gt;On Sun, Dec 23, 2012 at 2:30 PM, Ville M. Vainio &lt;span dir=
+=3D"ltr"&gt;&amp;lt;&lt;a href=3D"mailto:vivainio@gmail.com" target=3D"_blank"&gt;vivain=
+io@gmail.com&lt;/a&gt;&amp;gt;&lt;/span&gt; wrote:&lt;br&gt;&lt;div class=3D"gmail_extra"&gt;&lt;div class=
+=3D"gmail_quote"&gt;
+&lt;blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1p=
+x #ccc solid;padding-left:1ex"&gt;&lt;div dir=3D"ltr"&gt;I am having some problems w=
+rapping my head around how focus behaves throughout leo.&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div=
+&gt;IMO it would be a good idea to have only one place in Leo where focus is e=
+xplicitly set. E.g. g.setFocus(widget). This implementetation would suffice=
+:&lt;/div&gt;
+
+&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;def setFocus(widget):&lt;/div&gt;&lt;div&gt;=A0 widget.setFocus()&lt;/=
+div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Reasoning: it would be handy to add debugging stuff=
+ here, to see why my focus stuff is failing in alt-x go-anywhere handling.&lt;=
+/div&gt;
+
+&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;(My guess is treeFocusHelper only understanding focus b=
+eing either in tree or body, but no time to explore further now)&lt;/div&gt;&lt;/div=
+&gt;&lt;/blockquote&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;In fact, there is only one such place: c.=
+outerUpdate.=A0 The various xWantsFocus methods simply set ivars, which c.o=
+uterUpdate uses to set the focus when a command completes.&lt;br&gt;
+&lt;br&gt;The various xWantsFocusNow methods call c.outerUpdate immediately.=A0 U=
+sually we don&amp;#39;t want to do this, because it could cause screen flash, b=
+ut sometimes the immediate update is essential.&lt;br&gt;&lt;br&gt;I&amp;#39;ve marked this=
+ thread as a topic for implementers.=A0 Such things will form the basis for=
+ documentation for my successors.&lt;br&gt;
+&lt;br&gt;Edward&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+
+--047d7b417ed10845b104dba8f551--</t>
+<t tx="ekr.20130806072439.19788">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
+
+--20cf303f69e843800e04d18af3ee
+Content-Type: text/plain; charset=ISO-8859-1
+
+I am having some problems wrapping my head around how focus behaves
+throughout leo.
+
+IMO it would be a good idea to have only one place in Leo where focus is
+explicitly set. E.g. g.setFocus(widget). This implementetation would
+suffice:
+
+def setFocus(widget):
+  widget.setFocus()
+
+Reasoning: it would be handy to add debugging stuff here, to see why my
+focus stuff is failing in alt-x go-anywhere handling.
+
+(My guess is treeFocusHelper only understanding focus being either in tree
+or body, but no time to explore further now)
+
+
+
+To unsubscribe from this group, send email to leo-editor+unsubscribe@googlegroups.com.
+For more options, visit this group at http://groups.google.com/group/leo-editor?hl=en.
+
+
+--20cf303f69e843800e04d18af3ee
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+&lt;div dir=3D"ltr"&gt;I am having some problems wrapping my head around how focu=
+s behaves throughout leo.&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div style&gt;IMO it would be a good i=
+dea to have only one place in Leo where focus is explicitly set. E.g. g.set=
+Focus(widget). This implementetation would suffice:&lt;/div&gt;
+&lt;div style&gt;&lt;br&gt;&lt;/div&gt;&lt;div style&gt;def setFocus(widget):&lt;/div&gt;&lt;div style&gt;=A0 w=
+idget.setFocus()&lt;/div&gt;&lt;div style&gt;&lt;br&gt;&lt;/div&gt;&lt;div style&gt;Reasoning: it would b=
+e handy to add debugging stuff here, to see why my focus stuff is failing i=
+n alt-x go-anywhere handling.&lt;/div&gt;
+&lt;div style&gt;&lt;br&gt;&lt;/div&gt;&lt;div style&gt;(My guess is treeFocusHelper only understan=
+ding focus being either in tree or body, but no time to explore further now=
+)&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+-- &lt;br /&gt;
+You received this message because you are subscribed to the Google Groups "=
+leo-editor" group.&lt;br /&gt;
+&lt;br /&gt;
+To unsubscribe from this group, send email to leo-editor+unsubscribe@google=
+groups.com.&lt;br /&gt;
+
+For more options, visit this group at http://groups.google.com/group/leo-ed=
+itor?hl=3Den.&lt;br /&gt;
+
+
+
+--20cf303f69e843800e04d18af3ee--</t>
+<t tx="ekr.20130806072439.19789">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
+
+------=_Part_837_11293605.1368186436259
+Content-Type: text/plain; charset=ISO-8859-1
+
+Recent improvements to my handling of email have helped considerably, but 
+have also revealed problems with gmail and project coordination in 
+general.  Kent has suggested I look into claws mail, but I\'d rather look 
+for other workarounds.
+
+You could say that the essence of the problem is that Leo doesn\'t do email 
+;-)  Email is good (not great) for collaboration, but it sucks as a data 
+organizer.  Gmail labels can only be applied to entire threads.  My 
+unsatisfactory workaround is to mark items that require further action as 
+"important" (mark with a star).  This is better than nothing, but only just.
+
+To organize tasks to be done *for myself*, I could copy starred items into 
+a personal .leo file.  I could then organize those tasks as usual with 
+Leo.  But none of this would easily be available to others.  Alas, sharing 
+quickly-changing .leo files is not easy.
+
+Matt and others have been referring to snippets of code in github, and 
+that\'s good, but we still have to manage those snippets, and the projects 
+related to those snippets.
+
+Project threads are an attempt to work around these difficulties.  They are 
+hardly a cure-all, but imo they are worth a try.  The idea is to devote 
+each PT to management-related tasks for a single (shared) project.  The 
+first PT will be about installation issues.  This thread will allow Matt 
+and I to coordinate our activities.  Anyone else is welcome to join, but a 
+PT is *not* the place to report new issues or bugs, even if they are 
+related to the subject of the PT.
+
+I hope the idea is clear.  If not, please ask question on *this* thread. 
+Your comments, please.
+
+Edward.
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en-US.
+For more options, visit https://groups.google.com/groups/opt_out.
+
+
+
+------=_Part_837_11293605.1368186436259
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+Recent improvements to my handling of email have helped considerably, but h=
+ave also revealed problems with gmail and project coordination in general.&amp;=
+nbsp; Kent has suggested I look into claws mail, but I\'d rather look for ot=
+her workarounds.&lt;br&gt;&lt;br&gt;You could say that the essence of the problem is th=
+at Leo doesn\'t do email ;-)&amp;nbsp; Email is good (not great) for collaborati=
+on, but it sucks as a data organizer.&amp;nbsp; Gmail labels can only be applie=
+d to entire threads.&amp;nbsp; My unsatisfactory workaround is to mark items th=
+at require further action as "important" (mark with a star).&amp;nbsp; This is =
+better than nothing, but only just.&lt;br&gt;&lt;br&gt;To organize tasks to be done *fo=
+r myself*, I could copy starred items into a personal .leo file.&amp;nbsp; I co=
+uld then organize those tasks as usual with Leo.&amp;nbsp; But none of this wou=
+ld easily be available to others.&amp;nbsp; Alas, sharing quickly-changing .leo=
+ files is not easy.&lt;br&gt;&lt;br&gt;Matt and others have been referring to snippets =
+of code in github, and that\'s good, but we still have to manage those snipp=
+ets, and the projects related to those snippets.&lt;br&gt;&lt;br&gt;Project threads are=
+ an attempt to work around these difficulties.&amp;nbsp; They are hardly a cure=
+-all, but imo they are worth a try.&amp;nbsp; The idea is to devote each PT to =
+management-related tasks for a single (shared) project.&amp;nbsp; The first PT =
+will be about installation issues.&amp;nbsp; This thread will allow Matt and I =
+to coordinate our activities.&amp;nbsp; Anyone else is welcome to join, but a P=
+T is *not* the place to report new issues or bugs, even if they are related=
+ to the subject of the PT.&lt;br&gt;&lt;br&gt;I hope the idea is clear.&amp;nbsp; If not, p=
+lease ask question on *this* thread. Your comments, please.&lt;br&gt;&lt;br&gt;Edward.&lt;=
+br&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+-- &lt;br /&gt;
+You received this message because you are subscribed to the Google Groups &amp;=
+quot;leo-editor&amp;quot; group.&lt;br /&gt;
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to leo-editor+unsubscribe@googlegroups.com.&lt;br /&gt;
+&lt;br /&gt;
+Visit this group at &lt;a href=3D"http://groups.google.com/group/leo-editor?hl=
+=3Den-US"&gt;http://groups.google.com/group/leo-editor?hl=3Den-US&lt;/a&gt;.&lt;br /&gt;
+For more options, visit &lt;a href=3D"https://groups.google.com/groups/opt_out=
+"&gt;https://groups.google.com/groups/opt_out&lt;/a&gt;.&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+
+------=_Part_837_11293605.1368186436259--</t>
+<t tx="ekr.20130806072439.19790">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
+
+--089e0122f80868cb1b04dce55d84
+Content-Type: text/plain; charset=ISO-8859-1
+
+Someone may be interested in investigating a free CI system for Leo:
+
+https://travis-ci.org/
+
+This could e.g. create debian packages for daily builds, run unit tests,
+check stuff with lint, try compiling with python3 so we (*cough*) wouldn\'t
+have accidental print statements in the source...
+
+
+To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
+
+Visit this group at http://groups.google.com/group/leo-editor?hl=en-US.
+For more options, visit https://groups.google.com/groups/opt_out.
+
+
+
+--089e0122f80868cb1b04dce55d84
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+&lt;div&gt;Someone may be interested in investigating a free CI system for Leo:&lt;/=
+div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;a href=3D"https://travis-ci.org/"&gt;https://travis-c=
+i.org/&lt;/a&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;This could e.g. create debian packages =
+for daily builds, run unit tests, check stuff with lint, try compiling with=
+ python3 so we (*cough*) wouldn&amp;#39;t have accidental print statements in t=
+he source...&lt;/div&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+-- &lt;br /&gt;
+You received this message because you are subscribed to the Google Groups &amp;=
+quot;leo-editor&amp;quot; group.&lt;br /&gt;
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to leo-editor+unsubscribe@googlegroups.com.&lt;br /&gt;
+&lt;br /&gt;
+Visit this group at &lt;a href=3D"http://groups.google.com/group/leo-editor?hl=
+=3Den-US"&gt;http://groups.google.com/group/leo-editor?hl=3Den-US&lt;/a&gt;.&lt;br /&gt;
+For more options, visit &lt;a href=3D"https://groups.google.com/groups/opt_out=
+"&gt;https://groups.google.com/groups/opt_out&lt;/a&gt;.&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+&amp;nbsp;&lt;br /&gt;
+
+--089e0122f80868cb1b04dce55d84--</t>
+<t tx="ekr.20130806072439.19791">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
+
+--14dae9cce074f39ccd04dce8d585
+Content-Type: text/plain; charset=UTF-8
+
+On Fri, May 17, 2013 at 2:59 AM, Ville M. Vainio &lt;vivainio@gmail.com&gt; wrote:
+
+&gt; Someone may be interested in investigating a free CI system for Leo:
+&gt;
+&gt; https://travis-ci.org/
+&gt;
+
+Thanks for the link.  Looks like we would need a github repo.
+
+Edward
+
+--14dae9cce074f39ccd04dce8d585
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+&lt;div dir=3D"ltr"&gt;On Fri, May 17, 2013 at 2:59 AM, Ville M. Vainio &lt;span dir=
+=3D"ltr"&gt;&amp;lt;&lt;a href=3D"mailto:vivainio@gmail.com" target=3D"_blank"&gt;vivain=
+io@gmail.com&lt;/a&gt;&amp;gt;&lt;/span&gt; wrote:&lt;br&gt;&lt;div class=3D"gmail_extra"&gt;&lt;div class=
+=3D"gmail_quote"&gt;
+&lt;blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1p=
+x #ccc solid;padding-left:1ex"&gt;&lt;div&gt;Someone may be interested in investigat=
+ing a free CI system for Leo:&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;a href=3D"https://t=
+ravis-ci.org/" target=3D"_blank"&gt;https://travis-ci.org/&lt;/a&gt;&lt;/div&gt;
+&lt;/blockquote&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Thanks for the link.=C2=A0 Looks like we w=
+ould need a github repo.&lt;br&gt;&lt;br&gt;Edward&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+
+--14dae9cce074f39ccd04dce8d585--</t>
+<t tx="ekr.20130806072439.19990">@language rest
+
+Leo 4.11 a1                                     August 16, 2013
+
+Leo 4.11 a1 is now available at: http://sourceforge.net/projects/leo/files/Leo/4.10%20final/
+
+Leo is a text editor, data organizer, project manager and much more.
+See http://leoeditor.com/intro.html
+
+Leo 4.11 contains over a year's work on Leo.
+
+The highlights of Leo 4.11:
+--------------------------
+
+
+
+Links:
+------
+Leo:      http://leoeditor.com
+Forum:    http://groups.google.com/group/leo-editor
+Download: http://sourceforge.net/projects/leo/files/
+Bzr:      http://code.launchpad.net/leo-editor/
+Quotes:   http://leoeditor.com/testimonials.html
+</t>
+<t tx="ekr.20130806072439.19991"></t>
+<t tx="ekr.20130806072439.19992"></t>
+<t tx="ekr.20130806072439.19993">https://bugs.launchpad.net/leo-editor/+bug/800157
+
+Fixed at rev 5077.</t>
+<t tx="ekr.20130806072439.19994">Changed at.readEndOthers and at.readEndRef so that they
+always set at.inCode = True
+</t>
+<t tx="ekr.20130806072439.19995">Created k.kill_one_shortcut, called from k.remove_conflicting_definitions.
+</t>
+<t tx="ekr.20130806072439.19996">The fix was to save/restore YScroll position in body.setSelectionAreas.
+
+Failure case 1:
+    - Search for something.
+    - Manually scroll the pane.
+    - Click scrolls the pane again.
+    
+Failure case 2:
+    - reformat-paragraph.
+</t>
+<t tx="ekr.20130806072439.19997"></t>
+<t tx="ekr.20130806072439.19998">https://bugs.launchpad.net/leo-editor/+bug/823267
+
+When tabs are closed with the close tab 'X' on the tab, focus
+should go to whichever tab becomes visible, but it does not,
+it goes to an arbitrary tab which may not be visible. If you
+then hit Alt-X expecting to cut the highlighted node in the
+visible tab, you cut a node you can not see in a different
+commander.
+
+What I did:
+    
+- Refactored part of g.app.closeLeoWindow into g.app.selectLeoWindow.
+- Added the new_c argument to g.app.closeLeoWindow and c.close.
+- Changed several event handlers in TabbedFrameFactor so that they
+  call g.app.selectLeoWindow as appropriate.</t>
+<t tx="ekr.20130806072439.19999">https://bugs.launchpad.net/leo-editor/+bug/875327
+</t>
+<t tx="ekr.20130806072439.20000">https://bugs.launchpad.net/leo-editor/+bug/917814
+</t>
+<t tx="ekr.20130806072439.20001">https://bugs.launchpad.net/leo-editor/+bug/875323
+</t>
+<t tx="ekr.20130806072439.20002">https://bugs.launchpad.net/leo-editor/+bug/831658
+</t>
+<t tx="ekr.20130806072439.20003"></t>
+<t tx="ekr.20130806072439.20004">The code that marks descendant @&lt;file&gt; nodes dirty now tests
+p2.isAnyAtFileNode().  The old code tested p2.isAtThinFileNode().
+</t>
+<t tx="ekr.20130806072439.20005">CAUTION: new double click handling code
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/dbd63b9b38911906
+
+The problem isn't single/double, but double click not stopping the
+event processing.  It has the correct form:
+
+if g.doHook('doubleClick1') is None:
+   do-normal-double-click-stuff
+g.doHook('doubleClick2')
+
+but I think some other route through the code, or additional processing
+of the event means that even thought the handler registered on
+doubleClick1 returns non-None, the node goes into headline edit mode,
+with focus.
+
+This is bad, because the doubleClick1 on an @url node attempts to
+select and raise a different commander (tab), so now you're looking at
+one commander but focus is in another, so what you type trashes the
+headline in the original commander.
+
+The timer shouldn't be needed - a 'doubleClick1' hook which returns
+non-None should stop the headline going into edit mode.  If you can
+make that be the case, all is well.
+</t>
+<t tx="ekr.20130806072439.20006"></t>
+<t tx="ekr.20130806072439.20007"></t>
+<t tx="ekr.20130806072439.20008">- leoCommands.__init__ now sets self.db = {}
+- initGlobalDB now returns {} instead of None if there is no cacher.
+</t>
+<t tx="ekr.20130806072439.20009">readOpenFile reads the private shadow file, detecting the encoding.
+</t>
+<t tx="ekr.20130806072439.20010"></t>
+<t tx="ekr.20130806072439.20011">Examples:
+    
+    @edit C:/leo.repo/ipython-0.12/IPython/frontend/qt/console/pygments_highlighter.py
+        # The filename comes from g.app.gui.runOpenFileDialog
+    
+    @file C:\leo.repo\ipython-0.12\IPython\frontend\qt\console\pygments_highlighter.py
+        # Created by import.
+        
+The problem was the call to g.os_path_normpath in importDerived files:
+it converts slashes to backslashes on windows (!!)
+</t>
+<t tx="ekr.20130806072439.20012">- Added getLanguageFromAncestorAtFileNode.
+
+- Revised code in at.scanAllDirectives &amp; leoQtColorizer.scanColorDirectives.
+</t>
+<t tx="ekr.20130806072439.20013">qtBody can use the leoBody code.
+</t>
+<t tx="ekr.20130806072439.20014">Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\plugins\quicksearch.py", line 187, in returnPressed
+    self.scon.doSearch(t)
+  File "c:\leo.repo\trunk\leo\plugins\quicksearch.py", line 289, in doSearch
+    self.addBodyMatches(bm)
+  File "c:\leo.repo\trunk\leo\plugins\quicksearch.py", line 257, in addBodyMatches
+    self.its[it] = (p, None)
+TypeError: unhashable type: 'QListWidgetItem'
+</t>
+<t tx="ekr.20130806072439.20015"></t>
+<t tx="ekr.20130806072439.20016">Fixed several encoding problems related to this thread: @shadow - @encoding windows-1250 - problem
+http://groups.google.com/group/leo-editor/browse_thread/thread/a4ba80559447218a/9a37a4ed6c44d452
+
+There were several real problems fixed.  The summary: @encoding directives were always required.
+
+In detail:
+
+1. at.initWriteIvars now checks for a Python # -*- coding: line.
+   If present, it must be the very first line.
+   If present, it will override any @encoding directives.
+
+2. g.getPythonEncodingFromString now can deal with either of the following lines:
+
+    @first # -*- coding: utf-8 -*-
+    # -*- coding: utf-8 -*-
+
+That is, g.getPythonEncodingFromString can strip the leading @first.
+
+3. g.readlineForceUnixNewline and x.propagate_changes now catch UnicodeDecodeError.
+   This is very important: previously decoding errors crashed Leo!.
+
+All unit tests pass with both Python 2.x and 3.x.
+
+</t>
+<t tx="ekr.20130806072439.20017">Added configure_hard_tab_width method.
+</t>
+<t tx="ekr.20130806072439.20018">https://bugs.launchpad.net/leo-editor/+bug/800311
+
+Having set undo to word granularity, I often change something, move to a
+different line and continue editing there. When I want to undo my last change,
+Leo also undoes the change in the other place, as word granularity currently
+only recognizes a new undo step when a new word is started, no matter if we
+moved to a completely different position first.
+
+The attached patch fixes the issue by remembering the previous cursor position.
+
+Something else about the undo code:
+
+- oldSel and newSel are never set to None in the constructor -&gt; it's quite hard
+  to know they are there without reading the whole code
+
+- It would be cool if there could be some more comments in that section; e.g. to
+  tell that oldSel and newSel from which old_row, old_col, new_row and new_col
+  actually mean: old = "the position right before doing the change" and new =
+  "the position right after doing the change" and that old != "the position
+  after the change before" (which I added as prevSel) - it took me ages to
+  discover this
+
+- There are duplicate "The new and old characters are not contiguous." checks.
+  Are they different/necessary?
+
+- The "We have just inserted a line." section is not only entered on a new line
+  (see other attached patch)
+</t>
+<t tx="ekr.20130806072439.20019">https://bugs.launchpad.net/leo-editor/+bug/800312
+</t>
+<t tx="ekr.20130806072439.20020">https://bugs.launchpad.net/leo-editor/+bug/880975
+
+Bug: The Meta+Ctrl section [of print-bindings] is always empty and this makes it
+misleading.
+
+Fix: the prefix list in k.printBindings must be sure that if two prefixes have a
+common leading part the longer prefix appears first in the lists.
+</t>
+<t tx="ekr.20130806072439.20021">https://bugs.launchpad.net/leo-editor/+bug/823601
+</t>
+<t tx="ekr.20130806072439.20022">g.importFromPath ('html','C:/leo.repo/trunk/leo/modes/html.py')
+returned the standard Python html module!
+
+</t>
+<t tx="ekr.20130806072439.20023">The fix was to use lowercase versions of docPart,leoKeyword,nameBrackets.
+</t>
+<t tx="ekr.20130806072439.20024">Worked around docutils problem in writeToDocutils.
+</t>
+<t tx="ekr.20130806072439.20025">not written: c:\recent\data3.html
+exception removing: 
+Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\core\leoAtFile.py", line 5280, in remove
+    os.remove(fileName)
+WindowsError: [Error 3] The system cannot find the path specified: ''
+</t>
+<t tx="ekr.20130806072439.20026">There were two bugs:
+    
+- baseScannerClass.skipWsToken must not skip newlines!
+- tokenize must add any remaining whitespace at the end of the loop.
+</t>
+<t tx="ekr.20130806072439.20027">The code didn't work for c == None.
+</t>
+<t tx="ekr.20130806072439.20028"></t>
+<t tx="ekr.20130806072439.20029">http://groups.google.com/group/leo-editor/browse_thread/thread/3c319daba37cd0ef
+
+- Created a separate html importer, a very simple subclass of the xml scanner
+  whose only difference is that it uses @data import_html_tags instead of @data
+  import_xml_tags.
+
+- The case of tags in @data import_html_tags and @data import_xml_tags no longer matters.
+
+- checkTrialWrite now writes a file *with* sentinels, to handle @others correctly.
+  It then removes the sentinels.
+  
+  This means that the import tests must use the correct @language directives.
+  
+- The import check now uses a token-based comparison.  
+</t>
+<t tx="ekr.20130806072439.20030">The fix was in g.pr:
+    
+Restored the call to sys.stdout.write(s2) (instead of print)
+
+sys.stdout.write(s2) writes no additional newline at the end of s2.
+
+Aha!  At last I know how to unit test g.pr, g.trace, etc.: redirect stdout!
+</t>
+<t tx="ekr.20130806072439.20031"> File "/usr/fetching/leo-editor/leo/core/leoImport.py", line 2074, in
+scanAndCompare
+   n1,n2,ok = self.compareTokens(tokens1,tokens2)
+ File "/usr/fetching/leo-editor/leo/core/leoImport.py", line 2094, in
+compareTokens
+   else:      kind1,val1 = 'eof','',n1
+ValueError: too many values to unpack
+</t>
+<t tx="ekr.20130806072439.20032">- Created stand-alone unit tests from @test import dataN.html.
+- All leoImport unit tests may now be run externally.
+    The Python unit tests were failing because of intermixed tabs and blanks.
+    This was fixed by putting @tabwidth -4 in all @test nodes for Python.
+- Made sure lines are printed when unit tests fail unexpectedly.
+- Added .js &amp; javascript entries to global data structures for javascript unit tests.
+- Completed xmlScanner.filterTokens.
+- Don't create declaration nodes for html.
+- Make sure html tags are as expected.
+- Ignore case of html/xml tags.
+
+Rev 4774.1.1:
+
+Fixed all known html-import problems in a clean way. Unit tests exists, but they
+use external files. They will be converted soon.
+
+Important changes:
+
+1. Added hasNestedClasses ivar in the baseScannerClass, True only for xml/html scanners.
+
+When True, scanHelper and skipDecls allocate a substring to be used for all further scanning.
+This is the *only* way to limit Leo's scanners properly.
+
+This was, in essence, the fix for duplicate code generation arising from unbalanced tags:
+skipToEndOfTag and skipToMatchingTag can't match outside the present tag because
+the 's' argument passed to those methods has already been truncated.
+
+This is a simple, elegant solution, and in essence the *only* proper solution.
+For example, it would not work to past an 'end' argument to skipToEndOfTag and skipToMatchingTag
+because the scanners inside those methods do not understand an 'end' argument.
+
+Thus, the simplest, most efficient solution is for scanHelper and skipDecls to truncate the
+string to be scanned. That way, the truncation happens at most once per "class".
+
+2. Added hasDecls in the baseScannerClass, False only for xml/html scanners.
+
+Various methods call skipDecls only if this ivar is True.
+
+Rev 4773:
+
+Fixed recent botch: both single and double quotes are allowed in html. 
+
+Rev 4772:
+
+Solved "between element" problem by extending classes up to the next class.
+data.html imports "correctly", but not perfectly due to tag mismatches in
+skipToMatchingTag.
+</t>
+<t tx="ekr.20130806072439.20033">http://groups.google.com/group/leo-editor/browse_thread/thread/421ebf4c3f2d5f59
+
+Adding/deleting body editor 3 times hard-crashed Python
+
+The changes were straightforward:
+    
+- set w.leo_label to None when calling unpackWidget.
+
+- Test for w.leo_label before using it.
+
+Added a minitest.  To test by hand, add the following @button nodes:
+    
+    @button add-ed
+    w = c.frame.body.addEditor()
+    
+    @button del-ed
+    w = c.frame.body.deleteEditor()
+    
+Click away in any order...</t>
+<t tx="ekr.20130806072439.20034">The new add-comments command adds the comment character at the leftmost column.
+
+The new delete-comments command will remove the comment characters inserted by
+either the old or new version of the add-comments command.
+</t>
+<t tx="ekr.20130806072439.20035">Example: ctrl-shift-home.
+
+The fix was to set self.widget = contents in leoQtLog.selectTab.
+</t>
+<t tx="ekr.20130806072439.20036">- Added disabled code to inject event filter in TabbedFrameFactory.createFrame.
+
+- Added cycle-tab-focus command.
+
+- cycle-all-focus command uses cycleTabFocus as a helper: this greatly simplifies the code.
+    
+- Added binding for "Find" tab in leoQtLog.createTab.
+
+- DynamicWindow.createFindTab injects leo_find_widget ivar for leoQtLog.createTab.
+
+- Added isLogWidget to leoQtLog and nullLog classes.  They are helpers for cycleAllFocus.
+
+- Revised leoQtLog.selectHelper: selecting a new tab does *not* change logCtrl (log.widget).
+
+- Added bindings to Find tab
+</t>
+<t tx="ekr.20130806072439.20037"></t>
+<t tx="ekr.20130806072439.20038">The safe default pane is the body pane.  It's also the simplest code.
+</t>
+<t tx="ekr.20130806072439.20039">The code must be careful that the log widget supports the HighLevelInterface.
+</t>
+<t tx="ekr.20130806072439.20040"></t>
+<t tx="ekr.20130806072439.20041">The bug was in k.handleDefaultChar.  No substantial change made to eventFilter.
+</t>
+<t tx="ekr.20130806072439.20042">What I did:
+    
+1. Fixed major bug in settingsTreeParser.visitNode.
+   It now does p.copy() to protect the callers traverals.
+   This could have significant impacts on people's settings.
+   
+2. Added g.app.unitTestDict for unit testing.
+
+3. Leo now extends the list of @buttons and @commands, rather than replacing them.
+   This is reasonable only because leoSettings.leo should never define *active*
+   buttons or commands.
+</t>
+<t tx="ekr.20130806072439.20043"></t>
+<t tx="ekr.20130806072439.20044">https://bugs.launchpad.net/leo-editor/+bug/804960
+
+When we clone a node inside an @shadow (containing @others) node and then
+refresh the @shadow node from file, the clone is unlinked and marked as changed.
+If we now save, close the .leo file and open it again, the nodes are linked
+again! (showing "cloned" symbol) User's thought: "How the heck can the file
+change _between save and re-open_ when I changed nothing?"
+
+I think what should be done about this is the check that Leo does when it opens
+the file again, and that check should be done immediately after the "refresh
+node from file" operation. Also, at this point, the "Recovered nodes" node
+should appear (if file and node have both changed), not only after the next .leo
+file close/reopen (as that happens quite infrequently, I guess, e.g. once a day
+for me). Otherwise, the user can easily lose data.
+</t>
+<t tx="ekr.20130806072439.20045">&gt;  File "/path/to/leo/core/leoImport.py", line 2070, in reportMismatch
+&gt;    line = repr(lines2[i])
+&gt; IndexError: list index out of range
+</t>
+<t tx="ekr.20130806072439.20046">The fix was to at.putBody.
+</t>
+<t tx="ekr.20130806072439.20047">http://groups.google.com/group/leo-editor/browse_thread/thread/daf581ace0de871e
+
+"has been modified outside of Leo. Overwrite this file?"
+
+Steps to reproduce:
+
+- Create a node "@edit ~/aaa.txt" assuming aaa.txt does not exist
+- Ctrl-S save outline, log reports creating ~/aaa.txt
+- Edit text in body
+- Ctrl-S save outline, pop-up pops-up erroneously.
+
+The problem was that replaceTargetFileIfDifferent should set root.v.at_read.
+Now it does.
+
+Note: both replaceFileWithString methods are part of the @shadow logic,
+so there is no need to set any at_read bit in those methods.
+</t>
+<t tx="ekr.20130806072439.20048">https://bugs.launchpad.net/leo-editor/+bug/889175
+
+I loaded an outline with @auto nodes pointing to an out of date path. So body
+texts were empty. I updated the paths in the node headlines and saved the file,
+expecting to be prompted for overwriting the existing files (now the paths were
+correct again), but they were over-written with the blank content without
+warning. Damn.
+
+Steps to reproduce in a simpler way below, but don't write the
+below of as contrived, because the above is the real problem.
+
+Create @auto /home/tbrown/text.txt
+
+enter text, save file
+
+Edit headline to @auto /home/tbrown/Desktop/text.txt
+
+enter text, save file
+
+Edit headline back to /home/tbrown/text.txt
+
+-----
+
+I now see this happens also if the path change is in a @path node ancestor of the @auto node.
+</t>
+<t tx="ekr.20130806072439.20049">DynamicWindow.setGeometry now does *not* change the window size when using the qttabs gui.
+
+Added a comment to this effect in leoSettings.leo.
+</t>
+<t tx="ekr.20130806072439.20050">https://bugs.launchpad.net/leo-editor/+bug/87933
+    
+- Fixed the Shift-Tab buglet by adding lower-case entries in app.tkNamesList
+    This matches what is done in k.settingsNameDict.
+- Created &lt;&lt; define global key dicts &gt;&gt; in leoApp.py.
+- Changed si.val to si.stroke.
+- Replaced g.bunch by GeneralSetting &amp; ShortcutInfo.
+- Replaced bunchList by aList.
+- Removed dynamic_menus "compile-time" constant.
+- onAboutToShow now recomputes the contents of menus whenever menus are invoked.
+- leo_update_shortcut now shows all shortcuts for a command.
+- Wrote and tested merge_settings_dict.
+</t>
+<t tx="ekr.20130806072439.20051">Bug 879331: Redefining a key binding breaks menu items with same binding
+
+https://bugs.launchpad.net/leo-editor/+bug/879331
+
+&gt; Now I understand.  If I override the shortcut associated with the menu
+&gt; item, in this case Alt-A, the menu breaks.
+
+This is a serious bug!  The menu item now executes the command bound
+to Alt-A!  Very bad.
+
+=========
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/762e832909c3c530/d99d48eed45d1061
+
+http://mail.google.com/mail/#inbox/1331909dd653f3c9
+
+Redefining a binding, say for Alt-a, in x.leo will cause the sort-siblings menu
+(bound to alt-a) to execute the command specified by the command bound to Alt-a!
+
+https://bugs.launchpad.net/leo-editor/+bug/815564
+
+This anomaly only occurs when all of the following conditions are true:
+
+1) There is a global command name X that is the "same" as the root name of the
+file containing a plugin Y. Here, "same" means equal after the command name is
+converted to lower case and all underlines in the root name are replaced by
+dashes.
+
+2) A shortcut (a.k.a. keystroke) is bound to command name X.
+
+When these conditions are true, then the Plugins dropdown menu shows the key
+binding next to the plugin name and left-clicking the plugin name executes the
+global command--and, there is no way to display the plugin's help.
+
+Plugin Help Rendering: Plugin help is rendered by the viewrendered plugin, not
+by the old scrolledmessage.py plugin.
+
+Leo-editor revision: 4433
+OS: Ubuntu 11.04 (natty)
+
+Startup log pane:
+Leo Log Window
+Leo 4.9 final, build 4411, June 21, 2011
+Python 2.7.1, qt version 4.7.2
+linux2
+</t>
+<t tx="ekr.20130806072439.20052">https://bugs.launchpad.net/leo-editor/+bug/815564
+
+===== Probably the same as bug 879331 =====
+
+This anomaly only occurs when all of the following conditions are true:
+
+1) There is a global command name X that is the "same" as the root name of the
+file containing a plugin Y. Here, "same" means equal after the command name is
+converted to lower case and all underlines in the root name are replaced by
+dashes.
+
+2) A shortcut (a.k.a. keystroke) is bound to command name X.
+
+When these conditions are true, then the Plugins dropdown menu shows the key
+binding next to the plugin name and left-clicking the plugin name executes the
+global command--and, there is no way to display the plugin's help.
+
+Plugin Help Rendering: Plugin help is rendered by the viewrendered plugin, not
+by the old scrolledmessage.py plugin.
+
+Leo-editor revision: 4433
+OS: Ubuntu 11.04 (natty)
+
+Startup log pane:
+Leo Log Window
+Leo 4.9 final, build 4411, June 21, 2011
+Python 2.7.1, qt version 4.7.2
+linux2
+</t>
+<t tx="ekr.20130806072439.20053">k.computeInversBinding() called by print-commands and for auto-completion.
+
+k.bindKey sets k.bindingsDict.
+
+k.bindKeyToDict sets k.masterBindingDict.
+</t>
+<t tx="ekr.20130806072439.20054">The new TM.findMarkForUnitTestNodes allows both
+TM.FindAllUnitTestsNodes and createOutline to be much simpler.
+</t>
+<t tx="ekr.20130806072439.20055"></t>
+<t tx="ekr.20130806072439.20056">Fixing this bug is important: it allows you to set a default
+page width in myLeoSettings.leo for use, for example, in the
+reformat-paragraph command.
+
+Without a proper default c.page_width setting, you would have
+to use @page_width instead, which is much less convenient.
+
+The fix was the following lines in c.initConfigSettings:
+    
+    c.page_width = getInt('page_width') or 132
+        # 2012/02/27: this appears to be a fix of an *ancient* bug.
+</t>
+<t tx="ekr.20130806072439.20057">The fix was easy: moveWithinLineHelper does *not* call
+leoMoveCursorHelper for the case spot == 'end-line'
+</t>
+<t tx="ekr.20130806072439.20058">The following tabs remain.  They are Leo-specific, not jEdit specific:
+blank, docpart, leokeyword, link, name, nameBrackets, tab, url.
+</t>
+<t tx="ekr.20130806072439.20059">End going to only physical line and not to the logical (wrapped) one)... 
+</t>
+<t tx="ekr.20130806072439.20060">http://groups.google.com/group/leo-editor/browse_thread/thread/c933b28c27d3b9a7
+
+Ref 4952 of the trunk fixes bug 87933:
+"Redefining a key binding breaks menu items with same binding"
+
+This was a difficult bug to fix--I rewrote significant parts of Leo's
+code that deals with settings for key binding.
+
+Besides fixing the bug, Leo computes accelerators in menu items
+dynamically when the user activates a menu.  The accelerator shows
+*all* keys bound to the command associated with the menu item.
+
+From the checkin log:
+
+A major reorganization of the configuration code that fixes bug 87933
+Redefining a key binding breaks menu items with same binding
+
+- Replaced g.bunches with ShortcutInfo objects...
+
+- Wrote and tested make_settings_dict and its helpers,
+  merge_settings_dicts, invert and uninvert.
+
+- Leo computes menu texts dynamically in onAboutToShow.
+
+- leo_update_shortcut now shows all shortcuts for a command.
+
+- leoMenu.define_enable_dict encapsulates data used to enable/disable
+  commands regardless of where those commands appear in Leo's menu. The old
+  code assumed that a fixed menu location for all commands that could be
+  enabled or disabled.</t>
+<t tx="ekr.20130806072439.20061">https://bugs.launchpad.net/leo-editor/+bug/930726
+
+Bug: If the node is not expanded already, then the position
+is left on the parent, not the first child.
+
+Function expandNodeAndGoToFirstChild() is referenced only
+once in LeoPyRef.leo. This reference is in table of public
+Leo commands.
+
+The node in which expandNodeAndGoToFirstChild() is defined
+also contains the definition of function
+expandNodeOrGoToFirstChild(). At present these two functions
+are equivalent. The comments including the header for the
+node imply that they should not be equivalent and that
+expandNodeAndGoToFirstChild() is not correctly implemented.
+</t>
+<t tx="ekr.20130806072439.20062">https://bugs.launchpad.net/leo-editor/+bug/869429
+Undo and Redo delete from context menu does not redo properly
+
+The fix was to deletenodes_rclick in contextmenu.py.
+The fallback position should be c.rootPosition()</t>
+<t tx="ekr.20130806072439.20063">https://bugs.launchpad.net/leo-editor/+bug/924123
+
+These syntax errors were minor in the sense that they had no
+effect on Leo's users, but they were a significant
+distribution issue because Linux packages are not to have
+such errors.
+
+I removed the following files. Apparently, they are used nowhere in Leo. 
+    
+    leo/core/leo_Debugger.py
+    leo/core/leo_FileList.py"
+    leo/core/leo_RemoteDebugger.py
+    leo/core/leo_Shell.py
+    leo/core/leo_run.py
+
+This files no longer exists:
+
+    leosax.py</t>
+<t tx="ekr.20130806072439.20064">https://bugs.launchpad.net/leo-editor/+bug/501636
+</t>
+<t tx="ekr.20130806072439.20065">https://bugs.launchpad.net/leo-editor/+bug/799695
+
+The fix was simply to call c.recolor_now(incremental=False)
+</t>
+<t tx="ekr.20130806072439.20066">https://bugs.launchpad.net/leo-editor/+bug/824087
+
+The fix was to bind Ctrl-F4 to close-window, instead of Alt-F4.
+
+I instantly like this new binding.
+</t>
+<t tx="ekr.20130806072439.20067">https://bugs.launchpad.net/leo-editor/+bug/923301
+</t>
+<t tx="ekr.20130806072439.20068"></t>
+<t tx="ekr.20130806072439.20069">@language rest
+
+Example: typing in this rest section recolors as *Python*.
+The correct coloring is restored when the entire text is recolored.
+
+In this case, a workaround, and a performance improvement, would be to put
+the ``@language python`` directive before the ``language rest``.
+
+@language python
+
+
+</t>
+<t tx="ekr.20130806072439.20070">- Added scanToCursor argument to c.scanAllDirectives in c.insert/removedComments.
+
+- Added scanToCursor argument to get_directives_dict_list in c.scanAllDirectives.
+
+- get_directives_dict_list sets scanToCursor only for the initial (root) node.
+
+- g.get_directives_dict scans to cursor for @language directives is scanToCursor is True.
+</t>
+<t tx="ekr.20130806072439.20071">https://bugs.launchpad.net/leo-editor/+bug/952365
+
+Improved error reporting and checking, but the file won't be created if
+createActualFile takes an IOError.
+</t>
+<t tx="ekr.20130806072439.20072">https://bugs.launchpad.net/leo-editor/+bug/951921
+</t>
+<t tx="ekr.20130806072439.20073">Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 553, in doCommand
+    val = command(event)
+  File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 2120, in flattenOutline
+    c.importCommands.flattenOutline(fileName)
+  File "c:\leo.repo\trunk\leo\core\leoImport.py", line 479, in flattenOutline
+    theFile.write(s)
+TypeError: must be str, not bytes
+</t>
+<t tx="ekr.20130806072439.20074">Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\core\leoPlugins.py", line 337, in callTagHandler
+    result = handler(tag,keywords)
+  File "c:\leo.repo\trunk\leo\plugins\viewrendered.py", line 560, in update
+    f(s,keywords)
+  File "c:\leo.repo\trunk\leo\plugins\viewrendered.py", line 655, in update_graphics_script
+    pc.gs = QtGui.QGraphicsScene(pc.splitter)
+AttributeError: 'ViewRenderedController' object has no attribute 'splitter'
+</t>
+<t tx="ekr.20130806072439.20075">Selecting body editor with clicks doesn't save/restore visual ivars.
+The solution would be to create a new onClick event handler...
+</t>
+<t tx="ekr.20130806072439.20076">In earlier version of Leo if one runs test externally with the selected
+position under @test node, that @test was executed with (run-marked-unit-tests-externally)
+
+The fix was to the "important special case" in TM.findAllUnitTestNodes.
+</t>
+<t tx="ekr.20130806072439.20077">http://groups.google.com/group/leo-editor/browse_thread/thread/bb063866875a81c3#
+
+The fix is simply to special-case file:/// on Windows in g.computeFileUrl.
+</t>
+<t tx="ekr.20130806072439.20078"></t>
+<t tx="ekr.20130806072439.20079">https://bugs.launchpad.net/leo-editor/+bug/844953
+
+1. Open two empty files with the LEO revision 4451/trunk using the qttabs GUI and save them both.
+2. Create a new node and write "Abc" in its head.
+3. Select "Copy Node" from the outline menu.
+4. Select "Paste Node As Clone" from the outline menu:
+   Node is not inserted as clone, but inserted as a copy in the second file/tab.
+
+Sometimes even a standard Copy-Paste action results in the node being inserted in the other file.
+
+EKR: This a unity menu problem, not a problem with the paste commands per se.
+
+http://qt-project.org/forums/viewthread/15366/
+
+</t>
+<t tx="ekr.20130806072439.20080"></t>
+<t tx="ekr.20130806072439.20081">http://groups.google.com/group/leo-editor/browse_thread/thread/808ba29fec64e590
+
+For almost 15 years Leo has been written using a limited set of classes.
+These were "big" classes, implementing major modules of Leo. There is
+nothing wrong with these classes, and they will remain unchanged, except
+insofar as they will be simplified by the classes I am about to discuss.
+
+Recently, I have become aware that Leo's code could be considerably
+simplified by adding "smallish" classes. Indeed, I now think the
+distinction between big and small classes is unhelpful. The most important
+part of the design of a class is simply whether a class implements an
+understandable concept.
+
+With this introduction, here is a short summary of Leo's new classes. Some
+have not been fully implemented. Getting them all to work is a big part of
+the rewrite of Leo's config, loading and key-handling code.
+
+</t>
+<t tx="ekr.20130806072439.20082">This class handles all the messy details of loading .leo files at startup.
+This class encapsulates almost all the code in runLeo.py, as well as some
+methods in leoGlobals.py that really belong somewhere else.
+
+Creating a class simplifies the code to a surprising degree: 5 or 6 ivars
+of the class represent command-line options. These ivars are always
+available: there is no need to pass them around as arguments.
+</t>
+<t tx="ekr.20130806072439.20083">The ModeController class represents a collection of modes. The ModeInfo
+class represents a single mode.
+
+Without these classes, the code in leoKeys.py is extremely hard to
+understand. In fact, the old code was a perfect example of the problems
+with procedural programming: client code was burdened with knowing way too
+many details about matters that it shouldn't have to know about.
+Furthermore, that data itself is hard to understand: it's too "raw". These
+classes provide "identity" for data. repr(aModeInfo) is surprisingly
+useful.</t>
+<t tx="ekr.20130806072439.20084">This class represents the global log.  It hides the details of the log
+from the g.app class and several other pieces of code.
+
+At present, the interface to this class is procedural.  That is, the
+present g.app methods that will be moved into this class have a
+procedural rather than descriptive nature.  I'm not sure how much this
+will change, but creating this class may create opportunities that
+were not apparently previously.
+
+</t>
+<t tx="ekr.20130806072439.20085">The KeyStroke class is a wrapper for plain strings. It's most important
+attribute is its *identity*. It announces that its contents is a
+canonicalized value, not a raw user settings string or any other kind of
+data associated with key handling.
+
+Similar remarks apply to ShortcutInfo objects. Their identity clarifies the
+code. The former code used g.bunches. In complex code such as leoKeys.py,
+such anonymous objects really obfuscate matters.
+
+</t>
+<t tx="ekr.20130806072439.20086">This class solves a problem that has been annoying me ever since I created
+leoEditCommands.py. The problem is this: without this class the classesList
+has to be defined at the end of the module, after all classes have been
+imported. Worse, several module-level methods were needed to manage the
+classesList.
+
+In the new scheme, each Commander creates an EditCommandsManager, and the
+code that previously had to call the module-level method
+leoEditCommands.x(c) now simply calls c.editCommandManager.x(). This is
+much cleaner and avoids several very ugly imports. Which brings me to...
+</t>
+<t tx="ekr.20130806072439.20087">Now, most modules import only leo.core.leoGlobals. This simplifies Leo's
+startup process considerably. This is something that I've wanted to do for
+a long time. To make this work, it is *essential* that leoGlobals.py import
+*no* other Leo modules.
+
+However, Leo's core still imports leo.core.leoNodes in order to create
+positions, vnodes, etc. It would be straightforward to eliminate these by
+creating g.app factory methods, but there is no urgent reason to do so.
+
+The ctor for the Commands class imports many modules. This is essential to
+break what would otherwise be circular dependencies among Python imports.
+We can extend this pattern by creating more classes, as was done with the
+EditCommandsManager class.
+</t>
+<t tx="ekr.20130806072439.20088">leoGlobals.py now contains a section called ``&lt;&lt; global switches &gt;&gt;``
+
+This contains global tracing switches. Experience shows that leoGlobals.py
+is the most convenient place for such switches. This section also contains
+switches that enable new code bases. Recent examples were::
+
+   new_load = False # True: .leo files are loaded at most once.
+   if new_load: print('***** new_load')
+
+   new_modes = False # True: use ModeController and ModeInfo classes.
+   if new_modes: print('***** new_modes')
+</t>
+<t tx="ekr.20130806072439.20089">http://groups.google.com/group/leo-editor/browse_thread/thread/5fdadfba113e12d9/fa329534654ecfec
+
+Leo now reports bzr version numbers and dates automatically.  Very important.
+</t>
+<t tx="ekr.20130806072439.20090"></t>
+<t tx="ekr.20130806072439.20091">Only the high-level interface (baseTextWidget) used the low-level interface.
+</t>
+<t tx="ekr.20130806072439.20092">Removed the following unused methods::
+    
+    bind                c.bind also removed.
+    configure
+    cget
+    event_generate      g.app.gui.event_generate does exist.
+    getWidth
+    indexIsVisible      Also removed for leoEditCommands: scrollHelper and measure.
+    mark_set
+    onChar              Fortunately, never used anywhere
+    pack                Used only in Tk code
+    scrollLines
+    set_width           Removed do-nothing calls in Leo's core.
+    tag_add             Removed do-nothing calls in qt colorizer.
+    tag_bind            Removed do-nothing calls in qt colorizer.
+    tag_delete          Removed do-nothing calls in qt colorizer.
+    tag_names
+    tag_ranges
+    tag_remove
+    update
+    update_idletasks
+    xyToPythonIndex
+    yview
+</t>
+<t tx="ekr.20130806072439.20093">leoQTextEditWidget overrides base toPythonIndex toPythonIndexRowCol.
+
+The versions that call g.toPythonIndex are much slower than
+leoQTextEditWidget.toPythonIndex.
+
+The following classes have a toPythonIndex method:
+
+leoQTextEditWidget (fast)
+
+HighLevelInterface: calls g.toPythonIndex.
+baseTextWidget: calls g.toPythonIndex.
+leoFind: calls g.toPytonIndex.
+leoQtBaseTextWidget: calls g.toPythonIndex.
+</t>
+<t tx="ekr.20130806072439.20094">This is an important addition to reliability.
+
+It ensures that body/log.widget and body.bodyCtrl/log.logCtrl are always in synch.
+</t>
+<t tx="ekr.20130806072439.20095">Added eventFilter in createFrame in SDI/TabbedFrameFactory classes
+</t>
+<t tx="ekr.20130806072439.20096"></t>
+<t tx="ekr.20130806072439.20097">All top-level code in leoTest.py now resides in the
+TestManager class.
+
+The c.testManager object eliminates the need for imports of
+leo.core.leoTest within unitTest.leo, an excellent
+simplification.
+
+Furthermore, there is no need to access the testUtils class:
+everything is in c.testManager.
+
+The TestManager class substantially clarifies *all* the code
+in leoTest.leo. This is surprisingly important because the
+testing code is hardly straightforward.
+</t>
+<t tx="ekr.20130806072439.20098">This is a major restructuring of Leo's code:
+    
+Initing settings files and local files is now as simple as possible.
+
+g.openWithFileName now simply calls lm.loadLocalFile.
+
+Commands.__init__ now calls c.finshCreate.
+
+g.app.newCommander now simply calls Commands.__init__,
+a *huge* collapse in complexity.
+
+===== Details
+
+The g.app.config class is now substantially simpler:
+complex methods have moved to the LoadManager.
+
+The new LoadManager class handles all aspects of Leo's
+complex startup process, including most importantly the very
+complex process by which Leo reads user settings.
+
+As a side effect, c.config.get is now *much* simpler than
+before: it search one, and *only* one dictionary to discover
+settings.
+
+Reading local files must be done *twice*. The first read
+discovers settings, the second read uses those settings to
+open the file. The first read always uses a null gui; the
+second read uses g.app.gui, whatever that happens to be.
+
+LM.openLocalFile embodies all aspects of the complex
+strategy necessary for opening a local file twice. The first
+read creates a PreviousSetting object, which is then passed
+to LM.openFileByName, which in turn passes the
+PreviousSetting object to the ctor for the Commander.
+Finally, the PreviousSetting object inits c.config.
+
+Because of the previousSettings object, the call to
+LM.openFileByName does *not* need to "synthesize" a link to
+c1 using c.hash. This stamps out bug 568452 at its source.
+
+The crucial point is the previous settings get passed along
+to the Commander ctor, *before* LM.openFileByName calls
+c.fileCommands.openLeoFile to create the outline.
+
+</t>
+<t tx="ekr.20130806072439.20099">- Moved findSettingsPosition to LocalConfigManager.
+
+- Moved printSettings to LocalConfigManager.
+</t>
+<t tx="ekr.20130806072439.20100"></t>
+<t tx="ekr.20130806072439.20101">It's important to use only one version of the code.
+</t>
+<t tx="ekr.20130806072439.20102">This important new method allows scripts to traverse an outline, deleting nodes
+during the traversal. The pattern is::
+
+    p = c.rootPosition()
+    while p:
+    if &lt;delete p?&gt;:
+        next = p.positionAfterDeletedTree()
+        p.doDelete()
+        p = next
+    else:
+        p.moveToThreadNext()
+        
+This method also allows scripts to *move* nodes during a traversal, **provided**
+that nodes are moved to a "safe" spot so that moving a node does not change the
+position of any other nodes.
+
+For example, the move-marked-nodes command first creates a **move node**, called
+'Clones of marked nodes'. All moved nodes become children of this node.
+**Inserting** these nodes as children of the "move node" does not change the
+positions of other nodes. **Deleting** these nodes *may* change the position of
+nodes, but the pattern above handles this complication cleanly.
+</t>
+<t tx="ekr.20130806072439.20103">This was Tk code, and so can not possibly be useful now.
+
+Also removed the settings specific to the Tk colorizer.
+</t>
+<t tx="ekr.20130806072439.20104">Rewrote the shellCommand, shellCommandOnRegion and executeSubprocess methods.
+</t>
+<t tx="ekr.20130806072439.20105">Unit tests can test this ivar.
+</t>
+<t tx="ekr.20130806072439.20106">An useful convenience method now that external unit tests can use config settings.
+</t>
+<t tx="ekr.20130806072439.20107"></t>
+<t tx="ekr.20130806072439.20108"></t>
+<t tx="ekr.20130806072439.20109">After so many years of confusion the problem is now apparent:
+the Windows console uses code page 437: which is just extended ascii.
+
+chcp 65001 is equivalent to utf-8, and it would be good to use,
+but at present bzr goes nuts and changes to another code page!
+
+So for the moment I'll have to live with what is, in effect, plain ascii.
+</t>
+<t tx="ekr.20130806072439.20110">On Ubuntu only, the auto complete popup is system-wide modal, it should only be modal over Leo windows.
+
+However, there does not seem to be any fix:
+http://groups.google.com/group/leo-editor/browse_thread/thread/171aaf79e0bea256
+
+All works well on Windows 7.  I do see the "system-wide" model
+behavior on Ubuntu.
+
+This appears to be a Ubuntu-specific bug.  Indeed, the popup is a
+QListWidget.  Such widgets have a setWindowModality method::
+
+    setWindowModality ( Qt::WindowModality windowModality )
+
+The valid modalities are at: http://doc.qt.nokia.com/4.7-snapshot/qt.html#WindowModality-enum
+
+NonModal: The window is not modal and does not block input to other
+windows.
+
+WindowModal: The window is modal to a single window hierarchy and
+blocks input to its parent window, all grandparent windows, and all
+siblings of its parent and grandparent windows.
+
+ApplicationModal: The window is modal to the application and blocks
+input to all windows.
+
+None of these would appear to be a system-wide modality, and
+furthermore, the default is supposed to be NonModal.
+
+Anyway, calling setWindowModality(QtCore.Qt.NonModal) does not seem to
+have much effect on Ubuntu, so I think I can safely say there is
+nothing more I can do. 
+</t>
+<t tx="ekr.20130806072439.20111"></t>
+<t tx="ekr.20130806072439.20112">Leo's core now supports opening URL's in several ways:
+
+1. By Control-Clicking the headline of a node containing a URL in its
+   headline or the *first* line of its body text.
+   
+2. The open-url command opens a URL in a nodes headline or the first
+   line of its body text.
+   
+3. By Control-Clicking any URL in the body text.
+
+Notes::
+
+- URL's may optionally start with ``@url``.  Leo removes this prefix
+  before trying to open the URL.
+
+- Names of existing files are considered valid URL's. In that case, Leo
+  prepends ``file://`` to the file name.
+  
+- Relative file names are resolved to c.openDirectory, the directory of the
+  .leo file.
+  
+- You may use the {{expression}} syntax in any ``file://`` URL, including
+  ``file://`` URL's created from file names.
+  
+- The bookmarks.py plugin supports all of the features listed above.</t>
+<t tx="ekr.20130806072439.20113">Wouldn't it be great if we all could remember what we, and others, have
+already done? Now there is an easy way to do so: just put your
+commonly-used scripts in global @command nodes. You do this by placing each
+@command node as a child of an @commands node in your @settings tree in
+myLeoSettings.leo.
+
+Leo's tab completion now shows you all @command nodes, all @button nodes
+and all the commands associated with those nodes.  To see the list of
+all your @command nodes, simply type::
+
+    &lt;Alt-X&gt;@c&lt;Tab&gt;
+    
+When I do that, I see::
+
+    @command-align-eq-signs
+    @command-c-to-python-clean-docs
+    @command-clean-all-blank-lines
+    @command-clean-body
+    @command-clean-diff
+    @command-clean-spellpyx
+    @command-cls
+    @command-count-pages
+    @command-create-@auto-nodes
+    @command-create-def-list
+    @command-flatten-script
+    @command-join-node-above
+    @command-join-node-below
+    @command-load-all-leo-files
+    @command-preview-node
+    @command-preview-tree
+    @command-print-cmd-docstrings
+    @command-promote-bodies
+    @command-remove-newlines
+    @command-split-defs
+    
+For each @command (and @button node) Leo creates the correspond commands
+without the leading "@command-", so you can use typing completion on the
+shorter command name. For example, when writing documentation, I often use
+the promote-bodies script. After the reminder above, I can execute the
+script with::
+
+    &lt;Alt-X&gt;prom&lt;Tab&gt;-&lt;Tab&gt;&lt;Return&gt;
+    
+Of course, to rexecute the command later, I can use repeat-complex-command
+(Ctrl-P).
+
+Summary
+=======
+
+If you put all your commonly-used scripts in @command nodes, you can use
+&lt;Alt-X&gt;@c&lt;Tab&gt; to remind yourself of their names. That is, Leo's typing
+completion eliminates the need for memory-intensive retrieval. I'm not
+likely ever to forget typing completion.
+
+This scheme takes full advantage of Leo's organization strengths and
+*concentrates* those strengths by putting all the to-be-organized material
+in one place. This allows for easy reorganization: changing command-name
+prefixes, for instance, would be straightforward.
+</t>
+<t tx="ekr.20130806072439.20114">Small improvements the unit testing framework created big results. They
+completely eliminate the overhead in running unit tests:
+
+    - The run-marked-unit-tests-externally (Alt-4) command runs all marked
+      @test nodes. To choose tests, just mark them.
+    - Alt-4 now saves the .leo file first.
+    - Almost all unit tests may now be run externally:
+        - External unit tests always read config settings.
+        - The nullGui now uses a fully capable string-based body widget.
+        - The nullGui now uses the regular undoer.
+    - Unit tests now always have the sources available.
+    - Disabled messages on external unit tests.
+    - The unit test commands always run a selected @test node.
+
+These improvements mean that almost all unit tests may be run externally.
+In turn, this creates a remarkable work flow::
+
+    Edit
+    Alt-4
+    Edit
+    Alt-4
+    ...
+
+The energy difference between weightless and heavy is astounding. Try the
+new way: you will surely like it.
+
+**Notes**:
+
+Experience shows that being able to run the desired unit tests *without*
+selecting any particular node makes an amazingly large difference. Being
+able to run all and only marked unit tests is a big step forward.
+
+If a marked node is neither an @test node nor an @suite node, all nodes in
+the tree are considered to be marked.
+</t>
+<t tx="ekr.20130806072439.20115">Support for the open-with command is now part of Leo's core.</t>
+<t tx="ekr.20130806072439.20116">Leo can act like a drop-in replacement for SciTe. Suppose you do::
+    
+    leo x.y
+    
+where y is not "leo". Leo now opens an unnamed .leo file consisting of
+@edit x.y. if x.y exists, the @edit node contains the entire file;
+otherwise the node is empty.
+
+When you save the .leo files or close the Leo window Leo saves x.y if it
+has been changed, but Leo does *not* prompt you to save the "temporary"
+.leo file.
+
+https://bugs.launchpad.net/leo-editor/+bug/381527</t>
+<t tx="ekr.20130806072439.20117">http://groups.google.com/group/leo-editor/browse_thread/thread/3666397da2a0d05f/758071d6d9516ab9
+
+The right-click context menu on the tabs in the tabbed window mode (the
+default) has a 'Detach' option, if there's more than one outline/tab, and a
+Re-attach all option, if there's a detached outline window out there.
+
+Now there's also 'Horizontal tile', and 'Vertical tile', which detach the
+tab and then tile its window with the window from which it was detached.
+
+This is very helpful for moving nodes between outlines, I was rearranging
+the windows by hand and setting one to 'always on top' with the window
+manager before. Note: there's a @setting to determine whether dragging
+nodes between outlines copies or moves them.
+
+Depending on your OS / window manager, tiling / placement may be somewhat
+off, and may work better with or without the window being maximized before
+tiling, you'll have to experiment.
+
+When you close an outline window created by detaching a tab the outline is
+just re-attached as a tab. This means it's now possible to reattach just
+one outline, rather than having to use the 'reattach all' option.
+</t>
+<t tx="ekr.20130806072439.20118">The leoInspect module provides answers to questions about Python source
+code. leoInspect is an elegant and easy-to-use front end for Python's AST
+(Abstract Syntax Tree) trees *and* a window into a richly connected set of
+semantic data built *from* AST trees.
+
+For details, see http://leoeditor.com/leoInspect.html</t>
+<t tx="ekr.20130806072439.20119">Leo's abbreviation code is now simpler and more general than before. The
+downside is that you will likely have to revise your abbreviations. I
+believe the extra work will be well worthwhile.
+
+Here are the changes:
+
+1. Abbreviations may consist of *any* sequence of characters, including
+whitespace or "special" characters. You may include whitespace characters
+in definitions using the '\t' and '\n' escapes. However, whitespace may
+only appear at the *end* of definitions.
+
+2. You must take care to disambiguate abbreviations if one is a prefix of
+   another.
+
+Here is an example of both points.  As always, you define
+abbreviations in the body of an @global-abbreviation node or
+@abbreviation node::
+
+    nc =@nocolor\n
+    nc\n=@nocolor\n
+    nc\t=@nocolor\n
+
+    ncn=@nocolor-node\n
+
+As you can see, the definitions uses whitespace at the end
+of the definition of "nc" to prevent it from being expanded
+when typing "ncn".
+
+3. The reason I call these abbreviations "instant" is that they can be
+triggered on *any* keystroke, not just the end of a "word".  This
+allows you to define::
+
+    teh=the
+
+Hurray!
+
+4. Two rules limit scans.  They are useful and shouldn't cause
+hardships.
+
+A.  The backspace and delete characters *never* trigger substitutions.
+
+B. The scan for definitions ends at the first newline
+character. Therefore, whitespace will have effect only at
+the *end* of a definition.
+
+**Important**: these rules can cause problems when *defining*
+abbreviations:  it's easy to trigger an unwanted definition.  The
+solution is to use rule 4B:
+
+I want to type::
+
+    ncn=@nocolor-node\n
+
+But I **cant** type this directly if nc is already defined!  The trick
+is to type::
+
+   nxcn=@nocolor-node\n
+
+and then delete the leading x with a backspace character.
+
+Of course, you could also turn abbrevions off while defining abbreviations...
+
+Instant abbreviations solve the problems with Brazilian
+keyboards. Just define::
+
+    ~a=ã
+    ~A=Ã
+    etc.
+
+This works regardless of keyboard, regardless of OS, etc.
+You might want to define::
+
+    ~\a=~a
+    ~\A=~A
+
+in the somewhat unlikely event that you want to type ~a rather than,
+say, ~+a.  Of course, you don't need these, provided you remember to
+type ~xa &lt;Right&gt;&lt;Delete&gt; :-)
+</t>
+<t tx="ekr.20130806072439.20120"></t>
+<t tx="ekr.20130806072439.20121">http://leoeditor.com
+
+- Added link to home page from the TOC.
+
+- Removed online-tutorial link.
+
+- Added search box to Leo's home page.
+
+- Added link to glossary from Leo's home page.
+
+- Added scaled screen shot to Leo's home page.
+
+- Brought screen shots up to date.
+</t>
+<t tx="ekr.20130806072439.20122">Code that wants to set a particular part of a widget's style sheet calls::
+
+   g.app.gui.update_style_sheet(w,key,value)
+
+where w is the widget whose stylesheet is to be changed, key is unique
+to the method (or group of methods), and value is the new version of
+the stylesheet **for the particular key** to be added.  Examples::
+
+   # In setEditorColors.
+   sheet = 'background-color: %s; color: %s' % (bg,fg)
+   g.app.gui.update_style_sheet(obj,'colors',sheet)
+
+   # In add_border.
+   sheet = "border: %spx solid %s" % (
+       c.focus_border_width,c.focus_border_color)
+   self.update_style_sheet(w,'border',sheet)
+
+   # In remove_border.
+   sheet = "border: %spx solid white" % (c.focus_border_width)
+   self.update_style_sheet(w,'border',sheet)
+
+So add_border and remove_border work together because they use the
+same 'border' key.
+
+g.app.gui.update_style_sheet is straightforward: it injects a Python
+dict called leo_stylesheet_dict into the widget, and computes the
+total stylesheet as follows::
+
+   # Step one: update the dict.
+   d = hasattr(w,'leo_styles_dict') and w.leo_styles_dict or {}
+   d[key] = value
+   w.leo_styles_dict = d
+
+   # Step two: update the stylesheet.
+   aList = [d.get(key) for key in list(d.keys())]
+   s = ';'.join(aList)
+   w.setStyleSheet(s)
+</t>
+<t tx="ekr.20130806072439.20123">http://groups.google.com/group/leo-editor/browse_thread/thread/b49d23010703aa61/32e1271d25ba2cfb
+</t>
+<t tx="ekr.20130806072439.20124">There is no longer any need for @@button, etc.: just put under an @ignore node.</t>
+<t tx="ekr.20130806072439.20125">The mod_scripting plugin so that the name of the command created by an @button
+nodes does not include any [&lt;tag&gt;] that immediately follows @button. Examples::
+
+    @button [ekr] x
+    @button [edit] y
+    @button [important] z
+
+These buttons create commands named x, y and z, and the name of the buttons are
+x, y and z.
+
+Note that the '[' must be the first non-blank after @button to be recognized and
+removed.
+
+The code is a straightforward addition to cleanButtonText in mod_scripting.py:
+it is unlikely to have any impact whatsoever to existing @button nodes.
+
+The intended use is for searches of the form @button [some tag].
+</t>
+<t tx="ekr.20130806072439.20126">The new code monkey-patches g.doHook to a do-nothing::
+    
+    if not self.loadPlugins:
+        def dummyDoHook(tag,*args,**keys):
+            pass
+        g.doHook = dummyDoHook
+</t>
+<t tx="ekr.20130806072439.20127">http://groups.google.com/group/leo-editor/browse_thread/thread/e2980a2b86af913e
+
+I see the following
+- when a file is opened
+  - one message listing the root node
+  - 7 repeats of the message for the current node
+
+- when the file is saved in a session with several tabs
+  - a message is generated for each current node in each tab
+
+- shifting focus from body to headline doesn't generate the message,
+  shifting focus with &lt;Ctrl-H&gt; does
+
+- switching from one tab to another doesn't generate the message 
+</t>
+<t tx="ekr.20130806072439.20128">The error message is now part of the failed assert.  Very helpful.
+</t>
+<t tx="ekr.20130806072439.20129">There no need to disable buttons and commands with \@@button or \@@command.
+</t>
+<t tx="ekr.20130806072439.20130">Changed doButtons and doCommands kind handlers.
+
+This allows us to put example nodes in leoSettings.leo.
+</t>
+<t tx="ekr.20130806072439.20131">This allows the following pattern to appear in Leo source files::
+
+    class myClass:
+        @others
+        
+    if g.app.testing:
+        myClass(c).test()
+        
+This is better than enabling the test with "if 1:" because c is not defined
+while importing the module, so the import will fail if I forget to change
+"if 1:" to "if 0" when saving the .leo file.
+</t>
+<t tx="ekr.20130806072439.20132">The single-line nodes should end in a newline. Otherwise the created node
+will add a newline, and the checkers will complain.
+
+The new class is xmlScanner and htmlScanner in leoImport.py.
+</t>
+<t tx="ekr.20130806072439.20133">The change was to DynamicWindow.createLogPane.
+</t>
+<t tx="ekr.20130806072439.20134">What I did:
+    
+1. Created c.init_error_dialogs &amp; c.raise_error_dialogs.
+
+These are called from the following methods:
+    
+c.importAnyFile
+c.open
+c.readAtAutoNodes
+c.readAtFileNodes
+at.readAll
+c.save
+c.saveAs
+c.saveTo
+fc.writeAtFileNodes
+fc.writeAtShadowNodes
+fc.writeDirtyAtFileNodes
+
+2. Disabled log messages in several of the above methods during unit testing.
+
+3. Disabled runOpenFileDialog and runSaveFileDialog during unit testing.
+</t>
+<t tx="ekr.20130806072439.20135"></t>
+<t tx="ekr.20130806072439.20136">https://bugs.launchpad.net/leo-editor/+bug/807561
+
+The isBinaryFile helper returns True if the file's extension is not known.
+This isn't great, but it's safe. The list of known text types includes:
+    
+1. '.css','.html','.leo','.txt'
+2. All extensions in g.app.extension_dict.keys().
+</t>
+<t tx="ekr.20130806072439.20137">Under control of @bool collapse_on_lt_arrow option, default *True*.
+</t>
+<t tx="ekr.20130806072439.20138">k.remove_conflicting_definitions always gives the warning, not just when tracing.
+
+The warning isn't the best, and it is usually duplicated, but it is much better than nothing.
+</t>
+<t tx="ekr.20130806072439.20139">Updating Sphinx and using new .js files did the trick.
+</t>
+<t tx="ekr.20130806072439.20140">Leo's home page now shows the latest postings on the leo-editor group.
+</t>
+<t tx="ekr.20130806072439.20141"></t>
+<t tx="ekr.20130806072439.20142"></t>
+<t tx="ekr.20130806072439.20143"></t>
+<t tx="ekr.20130806072439.20144">Added class CPrettyPrinter &amp; beatifyCCode
+</t>
+<t tx="ekr.20130806072439.20145">This command is a rewrapping of the first Python script I ever wrote. It
+takes much of the scut work away from the task of converting C code to
+Python code.</t>
+<t tx="ekr.20130806072439.20146">The clone-find-all command includes nodes only once: if a node's ancestor
+appears in the list, the node is not include again in the top-level list.
+The new clone-find-all-flattened command includes every found node in the
+top-level list of nodes. I find this less confusing.
+</t>
+<t tx="ekr.20130806072439.20147">http://groups.google.com/group/leo-editor/browse_thread/thread/4686ebad81bb1ea1
+</t>
+<t tx="ekr.20130806072439.20148">The new command names and default bindings are::
+
+    run-all-unit-tests-externally       = None
+    run-all-unit-tests-locally          = None
+    run-marked-unit-tests-externally    = Alt-4 # The new standard
+    run-marked-unit-tests-locally       = None
+    run-selected-unit-tests-externally  = Alt-5 # The new standard
+    run-selected-unit-tests-locally     = None
+</t>
+<t tx="ekr.20130806072439.20149"></t>
+<t tx="ekr.20130806072439.20150">add-comments preserves trailing whitespace.
+
+delete-comments now works whether or not blanks surround comments delims.
+</t>
+<t tx="ekr.20130806072439.20151">Leo creates @file nodes (not @thin nodes) when opening an external file.
+
+Changed g.openWrapperLeoFile to create @file instead of @edit when possible.
+
+Open now shows all files. This is a cue that *any* file may be opened:
+non-Leo files are opened in @edit nodes.</t>
+<t tx="ekr.20130806072439.20152"></t>
+<t tx="ekr.20130806072439.20153">- don't print 'all' in bindings.
+
+- pad bindings properly, as is done in print-commands/bindings.
+</t>
+<t tx="ekr.20130806072439.20154">- print-bindings: Alt/Ctrl+Key+N now printed with plain Alt/Ctrl keys and shown as Alt/Ctrl+N.
+
+- print-commands: Alt/Ctrl+Key+N now printed as Alt/Ctrl+N.
+
+- print-commands &amp; print-bindings do not print 'all'.</t>
+<t tx="ekr.20130806072439.20155">**Important**: This was all done in Leo 4.9, but not properly documented.
+
+Allow section references in rst3 command.
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/3cd5cb06d32264d
+
+- Added support for the following options:
+    - expand_noweb_references:  default False for compatibility.
+    - ignore_noweb definitions: default False for compatibility.
+
+- When expand_noweb_references is True, definitions (typically clones)
+  must be descendants of the referencing node (in the @rst tree)
+</t>
+<t tx="ekr.20130806072439.20156">Many editors allow you to jump over, select and delete words, especially
+those containing or surrounded by special characters, in a smarter way than
+just "going to the beginning of the word before" (back-word) or "going to
+the end of the next word" (forward-word).
+
+Patches add "-smart" equivalents of the jump, select and delete commands.
+Users wanting to use these commands can set in their myLeoSettings.leo::
+
+  back-word-smart                  = Ctrl-LtArrow
+  back-word-smart-extend-selection = Ctrl-Shift-LtArrow
+
+  forward-word-smart                  = Ctrl-RtArrow
+  forward-word-smart-extend-selection = Ctrl-Shift-RtArrow
+
+  delete-word-smart          = Ctrl-Delete
+  backward-delete-word-smart = Ctrl-BackSpace</t>
+<t tx="ekr.20130806072439.20157"></t>
+<t tx="ekr.20130806072439.20158">- Selecting any node using arrow keys shows the node in the outline immediately.
+
+- Clicking a node or hitting &lt;return&gt; puts focus in body pane.
+</t>
+<t tx="ekr.20130806072439.20159">http://groups.google.com/group/leo-editor/browse_thread/thread/f7eaf4dd4e84a535
+
+Screenshot here:
+
+https://plus.google.com/103097156557482112329/posts/6qSngscG38Y
+
+Instructions (with current trunk):
+
+- enable bigdash.py plugin
+- alt-x global-search
+- Enter "s somesearch" in the line editor and press enter
+- Browse the hits. Click on link to navigate to the node.
+
+Caveat:
+
+If the document is not in currently active tab, the navigation is
+done "in the background". Correct implementation would be to activate
+the tab in order to bring attention to it. 
+</t>
+<t tx="ekr.20130806072439.20160">The scrolledmessage plugin no longer exists. The runScrolledMessageDialog
+*does* still exist, but it now uses the viewrendered plugin.
+</t>
+<t tx="ekr.20130806072439.20161"></t>
+<t tx="ekr.20130806072439.20162"></t>
+<t tx="ekr.20130806072439.20163"></t>
+<t tx="ekr.20130806072439.20164"></t>
+<t tx="ekr.20130806072439.20165"></t>
+<t tx="ekr.20130806072439.20166">From Brian Theado
+
+The other day I stumbled across Ville's code in scripts.leo which displays the
+output of python's trace module in a leo outline. The output of the trace module
+is not very friendly and I didn't find the result very usable. I was inspired to
+write some code to translate the output so the tree of function calls is
+displayed via Leo headlines. Thanks to Ville for sharing that code. I never
+would have figure this out without that starting point.
+
+Just copy (Ctrl-Shift-V) the child outline into a leo outline and hit ctrl-b on
+the "call tree" node. The execution tree of the 'scroll-outline-up-line'
+minibuffer command will be displayed to stdout and also as a tree of leo
+headlines.
+</t>
+<t tx="ekr.20130806072439.20167">import trace
+
+@language python
+@others
+
+# http://docs.python.org/library/trace.html for documentation
+# on the trace module
+tracer = trace.Trace(countcallers=1)
+
+# Trace a minibuffer command.
+
+# Any function call will work. Leo's minibuffer commands are easily discoverable
+# via tab completion and the 'print-commands' command.
+
+#tracer.runfunc(c.executeMinibufferCommand, 'goto-prev-node')
+tracer.runfunc(c.executeMinibufferCommand, 'scroll-outline-up-line')
+
+top = p.insertAsLastChild().copy()
+top.h = 'trace session'
+displayCalltree(top, tracer.results().callers.keys())
+c.redraw()
+</t>
+<t tx="ekr.20130806072439.20168">def displayCalltree(p, callinfo):
+   '''
+   Converts the function call hierarchy in 'callinfo' into a tree of function
+   calls.  The function call tree is displayed to stdout as indented text
+   and is inserted as a tree of leo nodes rooted at the given position 'p'
+   '''
+   callers = [k[0] for k in callinfo]
+   callees = [k[1] for k in callinfo]
+
+   # The first set of children will be those that don't have any callers
+   # listed in callinfo
+   toplevels = list(set(callers) - set(callees))
+   positions = {}
+   path = []
+
+   # Depth-first traversal of the call hierarchy represented by 'callinfo'
+   # 'levels' is a stack which grows during descend and shrinks
+   # during ascend.  Each element of 'levels' is a list of unprocessed
+   # siblings of each other
+   levels = [toplevels]
+   while len(levels) &gt; 0:
+       while len(levels[-1]) &gt; 0:
+           # Process the first element in the 'deepest' (i.e. last) list of siblings
+           cur = levels[-1][0]
+           levels[-1] = levels[-1][1:]
+           indent = " " * 4 * (len(levels)-1)
+           if cur not in path:
+               if cur in positions.keys():
+                   # Function already seen, so make a clone
+                   clone = positions[cur].clone()
+                   clone.moveToLastChildOf(p)
+                   print (indent + "%s %s ..." % cur[1:])
+               else:
+                   # Haven't seen this function, so insert a new headline
+                   p = p.insertAsLastChild().copy()
+                   p.h = "%s %s" % cur[1:]
+                   print (indent + p.h)
+
+                   # Remember the position so it can be cloned if seen again
+                   positions[cur] = p
+
+                   # Find all callees of this function and descend
+                   levels.append([c[1] for c in callinfo if c[0] == cur])
+                   path.append(cur)
+           else:
+               r = p.insertAsLastChild().copy()
+               r.h = "(recursive call) %s %s" % (cur[1], cur[2])
+               print(indent + r.h + "...")
+
+       # Ascend back up one level
+       path = path[0:-1]
+       p = p.parent()
+       levels = levels[0:-1]
+</t>
+<t tx="ekr.20130806072439.20169"></t>
+<t tx="ekr.20130806072439.20170">- Generates only @auto, does not do an actual import.
+
+- Creates @path nodes so actual @auto nodes are short.
+</t>
+<t tx="ekr.20130806072439.20171">http://groups.google.com/group/leo-editor/browse_thread/thread/ba9eb63337467d42/a3f3750d0ce6e847
+
+&gt; Here's a one line @button node you can add to myLeoSettings.leo
+&gt;
+&gt; @button set-style
+&gt;    c.frame.top.leo_ui.setStyleSheet(p.b)
+
+Cool.  I've added this to my "pre-writing" pile of things to be
+included in the next set of docs.
+
+Important:  setStyleSheet *replaces* the previous stylesheet with the
+new stylesheet, so you had best set all the attributes of Leo's
+default stylesheet.
+
+As an alternative, if w is any Qt widget, w.setStyleSheet(p.b) will
+set the stylesheet for that widget only: the top-level stylesheet (the
+stylesheet for c.frame.top.leo_ui) remains unchanged.
+</t>
+<t tx="ekr.20130806072439.20172">http://groups.google.com/group/leo-editor/browse_thread/thread/b17d140b7ceb8fc9
+
+I've added web page bookmarking from your browser to Leo.
+
+Docs., appended to the mod_http plugin, where this functionality lives,
+are pasted below.
+
+Screen shot of the form which pops up when you click the Bookmark
+button in your browser attached.  The body text of the corresponding
+bookmark node created in Leo is:
+
+    Leo's Home Page
+        http://leoeditor.com
+
+        Tags: leo, python
+
+        Leo's Home Page
+
+        Collected: Sun 02 Oct 2011 02:52:51 PM CDT
+
+        Keep this under your pillow.
+
+If you had some text selected on the page in your browser that would
+also appear in the above, and repeatedly bookmarking the same page with
+different selections incrementally adds such quotes to the bookmark
+node.
+
+Here are the docs.:
+
+Can also be used for bookmarking directly from the browser to Leo.  To
+do this, add a bookmark to the browser with the following URL / Location:
+
+    javascript:w=window;if(w.content){w=w.content}; d=w.document; w.open('http://localhost:8130/_/add/bkmk/?&amp;name=' + escape(d.title) + '&amp;selection=' + escape(window.getSelection()) + '&amp;url=' + escape(w.location.href),%22_blank%22,%22toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=yes, copyhistory=no, width=800, height=300, status=no%22);void(0)
+
+and edit the port (8130 in the example above) to match the port you're using
+for mod_http.
+
+Bookmarks are created as the first node in the outline which has been opened longest.
+You can set the ``@string`` ``http_bookmark_unl`` to specify an alternative location,
+e.g.::
+
+    @string http_bookmark_unl = /home/tbrown/.bookmarks.leo#@bookmarks--&gt;Incoming
+
+to place them in the `Incoming` node in the `@bookmarks` node in the `.bookmarks.leo` outline.
+
+The headline is preceeded with '@url ' *unless* the ``bookmarks`` plugin is loaded.
+If the ``bookmarks`` plugin is loaded the bookmark will have to be moved to a ``@bookmarks`` tree to be useful.
+
+The browser may or may not be able to close the bookmark form window for you, depending on settings - set ``dom.allow_scripts_to_close_windows`` to true
+in ``about:config`` in Firefox. 
+</t>
+<t tx="ekr.20130806072439.20173">http://groups.google.com/group/leo-editor/browse_thread/thread/d21349c52dabd066
+
+Ever find that you have a whole lot of:
+
+.. sourcecode:: py
+
+  rec[f['analyte']] ... rec[f['sample_type']] ...
+
+expressions in your code, and now things have changed and you want them
+all to be:
+
+.. sourcecode:: py
+
+  row.Analyte ... row.Sample_Type ...
+
+basically if str variable s was::
+
+  rec[f['analyte']]
+
+then you want to perform:
+
+.. sourcecode:: py
+
+  s = "row."+s.split("'")[1].title()
+
+on each one.  In general it would be nice to be able to use a python
+expression when search and replace doesn't cut it.
+
+The button code below creates a button, ``fac``, which, when pressed,
+creates another button, with some name you choose, which, when pressed,
+executes some python code to fix the selected text in the body.
+
+You can define the code to be executed in two ways, either in its own
+node:
+
+ - insert a new node with a headline which describes the refactor
+ - enter code in the node which modifies the string variable ``s``,
+   which is initially set to the selected text in the body
+ - press the ``fac`` button, which creates a new button named
+   after this code node
+ - select each offending piece of text and press the button created
+   in the previous step to fix
+
+or
+
+ - type some code modifying ``s`` right in the body you're working on
+ - press the ``fac`` button, which creates a new button named "fix"
+ - select each offending piece of text and press the button created
+   in the previous step to fix
+
+Note:
+
+ - unlike regular button nodes, changing the code after the
+   button's created (first option above) doesn't change the code
+   executed by the button
+ - replacing selection text makes Leo reposition the insert point at
+   the top of the window, this is annoying but unrelated to this code
+
+Here's the button code:
+
+.. sourcecode:: py
+
+  @button fac
+    from leo.plugins.mod_scripting import scriptingController
+
+    sc = scriptingController(c)
+
+    if c.frame.body.hasSelection():
+        code = c.frame.body.getSelectedText()
+        heading = 'fix'
+    else:
+        code = p.b
+        heading = p.h
+
+    def transform(c=c, code=code):
+        s = c.frame.body.getSelectedText()
+        g.es(s)
+        exec code
+        g.es(s)
+        c.frame.body.deleteTextSelection()
+        i = c.frame.body.getInsertPoint()
+        c.frame.body.insert(i, s)
+        p.b = c.frame.body.getAllText()
+        c.frame.body.setInsertPoint(i)
+
+    b = sc.createIconButton(
+        heading,
+        command = transform,
+        shortcut = None,
+        statusLine = 'Make filter button',
+        bg = "LightBlue"
+    ) </t>
+<t tx="ekr.20130806072439.20174">@language python
+
+from leo.plugins.mod_scripting import scriptingController
+
+sc = scriptingController(c)
+
+if c.frame.body.hasSelection():
+    code = c.frame.body.getSelectedText()
+    heading = 'fix'
+else:
+    code,heading = p.b,p.h
+
+def transform(c=c,code=code):
+    w = c.frame.body
+    s = w.getSelectedText()
+    g.es(s)
+    exec(code)
+    g.es(s)
+    w.deleteTextSelection()
+    i = w.getInsertPoint()
+    w.insert(i,s)
+    p.b = w.getAllText()
+    w.setInsertPoint(i)
+
+sc.createIconButton(
+    heading,
+    command = transform,
+    shortcut = None,
+    statusLine = 'Make filter button',
+    bg = "LightBlue"
+)</t>
+<t tx="ekr.20130806072439.20175">Note: in rev 4990, the g.app.newCommander method (formerly called
+g.app.newLeoCommanderAndFrame) also returns a single value (a
+Commander) rather than the tuple (c,c.frame). 
+</t>
+<t tx="ekr.20130806072439.20176">- open-with hook has changed: it now uses a "d" arg.</t>
+<t tx="ekr.20130806072439.20177"></t>
+<t tx="ekr.20130806072439.20178">The default, True, is the legacy operation, which I recommend.
+
+</t>
+<t tx="ekr.20130806072439.20179"></t>
+<t tx="ekr.20130806072439.20180">Configurable and optional::
+
+    @color focus_border_color = red
+    @int focus_border_width = 1
+    @bool use_body_focus_border  = True
+    @bool use_focus_border = True</t>
+<t tx="ekr.20130806072439.20181"></t>
+<t tx="ekr.20130806072439.20182">Added show-decoration-selected: 1 to QTreeWidget stylesheet.
+
+This causes the entire headline row to be shown when select, a big improvement, imo.
+</t>
+<t tx="ekr.20130806072439.20183"></t>
+<t tx="ekr.20130806072439.20184"></t>
+<t tx="ekr.20130806072439.20185">The new command names and default bindings are::
+
+    run-all-unit-tests-externally       = None
+    run-all-unit-tests-locally          = None
+    run-marked-unit-tests-externally    = Alt-4 # The new standard
+    run-marked-unit-tests-locally       = None
+    run-selected-unit-tests-externally  = Alt-5 # The new standard
+    run-selected-unit-tests-locally     = None
+</t>
+<t tx="ekr.20130806072439.20186">http://groups.google.com/group/leo-editor/browse_thread/thread/dd5907529208ee98
+
+The body of @openwith nodes contains one or more lines of the following
+form::
+
+   tag: value
+
+The possible tags are::
+
+    kind: &lt;a string&gt;
+
+The value specifies the **opener logic**, that is, the method used to
+launch the external editor, one of 'subprocess.Popen', 'os.startfile',
+'os.spawnl', 'os.spawnv', 'exec'.
+
+    arg: &lt;a string&gt;
+
+There may be many such arg lines. Each line will be a string to be passed
+as an argument to the opener logic, in a format that is compatible with the
+specified opener logic.
+
+Quotes in &lt;a string&gt; will be *retained*, allowing the user to specify
+exactly the arguments to be passed to opener logic.
+
+..  custom: &lt;a string&gt;
+..  Here, &lt;a string&gt; *will* be eval'd, yielding an object to be used as
+..  the opener logic.
+</t>
+<t tx="ekr.20130806072439.20187">leoSettings.leo:
+
+table = (
+        # First, leoSettings.leo in the home directories.
+        join(g.app.homeDir,     settings_fn),
+        join(g.app.homeLeoDir,  settings_fn),
+
+        # Next, &lt;machine-name&gt;leoSettings.leo in the home directories.
+        # join(g.app.homeDir,     machine_fn),
+        # join(g.app.homeLeoDir,  machine_fn),
+
+        # Last, leoSettings.leo in leo/config directory.
+        join(g.app.globalConfigDir, settings_fn)
+    )
+
+myLeoSettings.leo:
+
+    table = (
+        # First, myLeoSettings.leo in the local directory
+        join(localDir,          settings_fn),
+
+        # Next, myLeoSettings.leo in the home directories.
+        join(g.app.homeDir,     settings_fn),
+        join(g.app.homeLeoDir,  settings_fn),
+    
+        # Next, &lt;machine-name&gt;myLeoSettings.leo in the home directories.
+        join(g.app.homeDir,     machine_fn),
+        join(g.app.homeLeoDir,  machine_fn),
+
+        # Last, leoSettings.leo in leo/config directory.
+        join(g.app.globalConfigDir, settings_fn),
+    )
+</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
