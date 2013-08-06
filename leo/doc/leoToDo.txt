@@ -186,6 +186,13 @@ have a "Find and Replace" dialog box similar to the one below:
 
 .. @+node:ekr.20130805080841.21380: *4* Fix javascript import bug
 https://groups.google.com/forum/#!topic/leo-editor/dmC8iIKlF7g
+.. @+node:ekr.20130805134749.12435: *4* Fix syntax coloring bug
+@language python
+
+def but_quotes_at_the_end_of_a_triple_quoted_string_are_still_tricky(self):
+    string = """Hello "world\""""
+    
+what
 .. @+node:ekr.20130806072439.20640: *3* Leo/Install (from mail: to be reviewed)
 @language rest
 .. @+node:ekr.20130806072439.20641: *4* [Merge] lp:~maphew/leo-editor/pypi-packaging into lp:leo-editor
