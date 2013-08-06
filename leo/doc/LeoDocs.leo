@@ -43,7 +43,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20101028112631.4959" descendentVnodeUnknownAttributes="7d7100550b302e312e302e302e302e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473732e"><vh>@file doc-startup.txt</vh></v>
+<v t="ekr.20101028112631.4959" descendentVnodeUnknownAttributes="7d7100550b302e312e302e302e302e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473732e"
+expanded="ekr.20050404094627,"><vh>@file doc-startup.txt</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
 <v t="ekr.20100805171546.4412"><vh>Files, including home page</vh>
@@ -408,6 +409,7 @@ expanded="edream.110203163054.63,"><vh>@file release_notes.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20130526065545.14924"><vh>To be documented (do not delete!!)</vh>
+<v t="ekr.20130806072439.20200"><vh>Videos</vh></v>
 <v t="ekr.20130803073926.17113"><vh>Features</vh>
 <v t="ekr.20130526065545.17594"><vh>@wrap now suppresses horizontal scrolling</vh>
 <v t="ekr.20130526065545.17593"><vh>Re: @wrap now suppresses horizontal scrolling</vh></v>
@@ -641,6 +643,11 @@ expanded="edream.110203163054.63,"><vh>@file release_notes.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20130803073926.17124"><vh>Doc bugs</vh>
+<v t="ekr.20130806072439.20195"><vh>"Leo's home page moving to leoeditor.com"</vh>
+<v t="ekr.20130806072439.20196"><vh>"Re: Leo's home page moving to leoeditor.com"</vh></v>
+<v t="ekr.20130806072439.20198"><vh>"Re: Leo's home page moving to leoeditor.com"</vh></v>
+<v t="ekr.20130806072439.20199"><vh>"Re: Leo's home page moving to leoeditor.com"</vh></v>
+</v>
 <v t="ekr.20130803125244.17080"><vh>* Document Windows associations</vh></v>
 <v t="ekr.20130805080841.17066"><vh>Update list of commands in the docs</vh></v>
 <v t="ekr.20130526065545.14931"><vh>Suggestion for docs: Find and replace, missing a step\</vh></v>
@@ -13365,6 +13372,78 @@ myLeoSettings.leo:
         # Last, leoSettings.leo in leo/config directory.
         join(g.app.globalConfigDir, settings_fn),
     )
+</t>
+<t tx="ekr.20130806072439.20195"></t>
+<t tx="ekr.20130806072439.20196">@nocolor
+
+From: lewis &lt;lewisneal@operamail.com&gt;
+
+
+
+
+These Help menu items need updating:
+    
+&gt;About Leo   (lists charter.net)
+&gt;Online Home Page  (the redirect http://leoeditor.com/front.html is not 
+found)
+&gt;Open Online Tutorial  (doesn't launch)
+&gt;Open Users Guide  (links to 
+http://webpages.charter.net/edreamleo/leo_toc.html)
+
+and leoSettings.leo#Candidates for settings in myLeoSettings.leo--&gt;Key 
+binding and operation--&gt;Keyboard shortcuts--&gt;@ignore Unused key 
+bindings--&gt;@keys Vim bindings--&gt;Vim User Documentation
+
+</t>
+<t tx="ekr.20130806072439.20198">@nocolor
+
+From: lewis &lt;lewisneal@operamail.com&gt;
+
+
+
+
+The Leo wikipedia entry http://en.wikipedia.org/wiki/Leo_(text_editor)
+should be updated with the new website url.
+
+Lewis
+</t>
+<t tx="ekr.20130806072439.20199">@nocolor
+
+From: Matt Wilkie &lt;maphew@gmail.com&gt;
+
+
+
+
+web bug: the search form at http://leoeditor.com/ tries to search 
+charter.net
+
+-matt
+
+
+
+On Tuesday, 26 March 2013 06:37:06 UTC-7, Edward K. Ream wrote:
+&gt;
+&gt; I have just cancelled my service with charter.net.  It's not clear how 
+&gt; long the charter.net site will be up.
+&gt;
+&gt; My brother will be hosting leoeditor.com for the foreseeable future.  As 
+&gt; you will see, the live feed from the leo-editor google group works just 
+&gt; fine.
+&gt;
+&gt; The only glitch at present is that leoeditor.com doesn't have the Leo 
+&gt; screenshot.  I'll be fixing that as soon as I get admin access myself.  
+&gt; Please let me know if there are any other problems.
+&gt;
+&gt; Edward
+&gt;
+</t>
+<t tx="ekr.20130806072439.20200">From: tfer &lt;tfetherston@aol.com&gt;
+
+Mines on youtube, it is from a presentation at PyOhio last year.
+  http://www.youtube.com/watch?v=JgJ89ekGj-s
+
+Ville's is also there:
+  http://www.youtube.com/watch?v=Zu6J-J0qFi0
 </t>
 <t tx="sps.20100708203040.19008">@language python
 import os
