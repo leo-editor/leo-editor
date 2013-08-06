@@ -680,5 +680,54 @@ class Tabula(QMainWindow):
         if self.c.cacher.db:
             self.c.cacher.db['tabulanotes'] = geoms
     #@-others
+#@+node:ville.20100703194946.5587: ** def mknote
+def mknote(c,p, parent=None):
+    """ Launch editable 'sticky note' for the node """
+
+    v = p.v
+    def focusin():
+        #print "focus in"
+        if v is c.p.v:
+            if v.b != nf.toPlainText():
+                # only when needed to avoid scroll jumping
+                nf.setPlainText(v.b)
+            nf.setWindowTitle(v.h)
+            nf.dirty = False
+
+    def focusout():
+        #print "focus out"
+        if not nf.dirty:
+            return
+        v.b = nf.toPlainText()
+        v.setDirty()
+        nf.dirty = False
+        p = c.p
+        if p.v is v:
+            c.selectPosition(c.p)
+
+
+    def closeevent():
+        pass
+        # print "closeevent"
+
+
+    nf = FocusingPlaintextEdit(focusin, focusout, closeevent, parent = parent)
+    nf.setWindowIcon(QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
+    nf.dirty = False
+    nf.resize(600, 300)
+    nf.setWindowTitle(p.h)
+    nf.setPlainText(p.b)
+    p.setDirty()
+
+    def textchanged_cb():
+        nf.dirty = True
+
+    nf.connect(nf,
+        SIGNAL("textChanged()"),textchanged_cb)
+
+    nf.show()
+
+    g.app.stickynotes[p.gnx] = nf
+    return nf
 #@-others
 #@-leo

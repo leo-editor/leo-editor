@@ -3,8 +3,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
+	<global_window_position top="127" left="550" height="861" width="1185"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -73,7 +73,8 @@
 </v>
 </v>
 <v t="ekr.20061008055616"><vh>Scripts</vh>
-<v t="ekr.20051110111150"><vh>@thin leoScripts.txt</vh></v>
+<v t="ekr.20051110111150"
+expanded="ekr.20041126132604,"><vh>@thin leoScripts.txt</vh></v>
 <v t="ekr.20110914030246.2405"><vh>@file gen_blender_docs.py</vh></v>
 <v t="maphew.20130612230051.2793"><vh>Windows</vh>
 <v t="maphew.20130613230258.2801"><vh>@file elevate.py</vh></v>
@@ -121,7 +122,7 @@
 <tnodes>
 <t tx="ekr.20061008055616"></t>
 <t tx="ekr.20070427110751"></t>
-<t tx="ekr.20070615131954"></t>
+<t tx="ekr.20070615131954" str_leo_pos="1,0,6,5"></t>
 <t tx="ekr.20111017085134.16069"></t>
 <t tx="ekr.20111017085134.16070"># **** Change these as needed ***
 import os, sys
