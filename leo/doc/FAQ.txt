@@ -782,13 +782,20 @@ No problem.  The following also works::
     <Ctrl-f>find-pattern<Ctrl-shift-r>replace-text<return>
 
 In other words, you can think of `<ctrl-f>` as meaning 'show the find dialog'.
-There is another trick you should know.
-After typing `<ctrl-f>` or `<shift-ctrl-r>` you can use `<alt-ctrl>` keys to set or clear find options.
-For example::
+
+**Important**: Once you have started a find (or find & replace), you can
+
+1. Repeat the find operation using F3 (find-next) or
+2. Replace the selection with the replace-text using Ctrl-= (replace) or
+3. Replace the selection and find again using Ctrl-- (replace-then-find).
+
+There is another trick you should know. After typing `<ctrl-f>` or
+`<shift-ctrl-r>` you can use `<alt-ctrl>` keys to set or clear find
+options. For example::
 
     <ctrl-f><alt-ctrl-w><find-pattern><return>
 
-That is, `<ctrl-f>`shows the find dialog,
+That is, `<ctrl-f>` shows the find dialog,
 `<alt-ctrl-w>` toggles the Whole Word checkbox and
 `<return>` starts the search.
 You can type the `<alt-ctrl>` keys anytime after `<ctrl-f>` (or `<shift-ctrl-r>`) and before `<return>`. 

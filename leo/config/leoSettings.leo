@@ -852,6 +852,8 @@
 <v t="ekr.20070925144534.82"><vh>@item *find-tab-&amp;open</vh></v>
 <v t="ekr.20070925144534.83"><vh>@item *find-tab-&amp;hide</vh></v>
 <v t="ekr.20070925144534.84"><vh>@item *search-&amp;with-present-options</vh></v>
+<v t="ekr.20130807090137.20911"><vh>@item *replace</vh></v>
+<v t="ekr.20130807090137.20912"><vh>@item *replace-then-find</vh></v>
 <v t="ekr.20070925144534.85"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.86"><vh>@item *find-&amp;next</vh></v>
 <v t="ekr.20070925144534.87"><vh>@item *find-&amp;prev</vh></v>
@@ -9772,6 +9774,8 @@ quotes) as the source, the contents of the clipboard from a previous cut or copy
 action will be used instead.</t>
 <t tx="ekr.20130705090546.10662">The maximum number of lines to color at once, when NEW_COLORER is True</t>
 <t tx="ekr.20130705090546.10663">The delay, in milliseconds, to wait before resuming recoloring, when NEW_COLORER is True.</t>
+<t tx="ekr.20130807090137.20911"></t>
+<t tx="ekr.20130807090137.20912"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>

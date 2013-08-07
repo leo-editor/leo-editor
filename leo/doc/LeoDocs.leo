@@ -53,8 +53,7 @@
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
 <v t="ekr.20101025080245.5800"><vh>@edit leo_toc.html</vh></v>
 <v t="ekr.20101112045055.5064"><vh>@file plugin_catalog.py</vh></v>
-<v t="ekr.20100808060203.4273"
-expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
+<v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 <v t="ekr.20101025080245.5801"><vh>@url modified toc</vh></v>
 <v t="ekr.20101026081737.5531"><vh>Links that replace those in actual built page</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
@@ -83,7 +82,8 @@ expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101025080245.5795"><vh>Basics</vh>
 <v t="ekr.20050831195331.1"><vh>FAQ</vh>
-<v t="ekr.20100805165051.7151"><vh>@file FAQ.txt</vh></v>
+<v t="ekr.20100805165051.7151"
+expanded="ekr.20050830115714.26,"><vh>@file FAQ.txt</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows page</vh>
 <v t="ekr.20100821182153.4344"><vh>@file screen-shots.txt</vh></v>
@@ -187,8 +187,7 @@ expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
 <v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028550b302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473550b302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473550b302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473550b302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177"
-expanded="edream.110203163054.117,ekr.20100118181428.8827,ekr.20100118181428.8813,ekr.20100118181428.7557,"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20100805165051.7177"><vh>@file release_notes.txt</vh></v>
 </v>
 <v t="ekr.20130806072439.19990"><vh>Leo 4.11 Release notes (TO DO)</vh>
 <v t="ekr.20130806072439.19991"><vh>Bugs</vh>
@@ -659,10 +658,19 @@ expanded="edream.110203163054.117,ekr.20100118181428.8827,ekr.20100118181428.881
 </v>
 </v>
 <v t="ekr.20130803073926.17124"><vh>Doc bugs</vh>
-<v t="ekr.20130806072439.20195"><vh>* Leo's home page moving to leoeditor.com</vh></v>
-<v t="ekr.20130803125244.17080"><vh>* Document Windows associations</vh></v>
+<v t="ekr.20130803125244.17080"><vh>* Document Windows associations</vh>
+<v t="ekr.20130807090137.19376"><vh>Associate .Leo files to open with Leo when double click, and some more noob confussion</vh>
+<v t="ekr.20130807090137.19377"><vh>Re: Associate .Leo files to open with Leo when double click, and some more noob confussion</vh></v>
+<v t="ekr.20130807090137.19378"><vh>Terry script</vh></v>
+<v t="ekr.20130807090137.19379"><vh>Re: Associate .Leo files to open with Leo when double click, and some more noob confussion</vh></v>
+</v>
+<v t="ekr.20130807090137.19380"><vh>Cannot open Leo files by double-click in Windows Explorer?</vh>
+<v t="ekr.20130807090137.19381"><vh>Re: Cannot open Leo files by double-click in Windows Explorer?</vh></v>
+<v t="ekr.20130807090137.19382"><vh>Re: Cannot open Leo files by double-click in Windows Explorer?</vh></v>
+<v t="ekr.20130807090137.19383"><vh>PortableFileAssociator</vh></v>
+</v>
+</v>
 <v t="ekr.20130805080841.17066"><vh>Update list of commands in the docs</vh></v>
-<v t="ekr.20130526065545.14931"><vh>Suggestion for docs: Find and replace, missing a step</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -1208,36 +1216,6 @@ required.
 Some import mistakes can *only* be found by running tests.  For
 complex programs like 2to3, the only truly safe way to check imports
 is by running the 2to3 test suite.
-</t>
-<t tx="ekr.20130526065545.14931">7/11/12
-Daniel Rairigh danielrairigh@gmail.com via googlegroups.com 
-	
-I have been working on learning it this week, and am building quite a list
-of questions, but am trying first to answer them from the documentation.
-
-Which leads me to my suggestion:
-
-I read the find and replace instructions here:
-http://webpages.charter.net/edreamleo/FAQ.html?highlight=replace#how-can-i-do-a-simple-find-and-replace
-
-And followed the &lt;Ctrl-shift-r&gt;find-pattern&lt;return&gt;replace-text&lt;return&gt;
-pattern. But was stumped for quite a while, because the FAQ missed the next
-two crucial steps: Ctrl+= &amp; F3
-
-I imagine it would help other newbies like me if those two steps were added
-to the FAQ.
-
-Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-	
-&gt; And followed the &lt;Ctrl-shift-r&gt;find-pattern&lt;return&gt;replace-text&lt;return&gt;
-&gt; pattern. But was stumped for quite a while, because the FAQ missed the next
-&gt; two crucial steps: Ctrl+= &amp; F3
-
-Ctrl+- combines the effect of Ctrl+= &amp; F3, so you typically only use
-Ctrl+= when you know your on the last entry of interest and don't want
-to just to the next.
-
-But you're right about the docs, something this basic should be clear.
 </t>
 <t tx="ekr.20130526065545.17427">@nocolor
 
@@ -13099,19 +13077,6 @@ myLeoSettings.leo:
         join(g.app.globalConfigDir, settings_fn),
     )
 </t>
-<t tx="ekr.20130806072439.20195">From: Matt Wilkie &lt;maphew@gmail.com&gt;
-
-Ask: web bug: the search form at http://leoeditor.com/ tries to search charter.net
-
-From: lewis &lt;lewisneal@operamail.com&gt;
-
-These Help menu items need updating: (fixed)
-    
-    About Leo   (lists charter.net)
-    Online Home Page  (the redirect http://leoeditor.com/front.html is not found)
-    Open Online Tutorial  (doesn't launch)
-    Open Users Guide  (links to http://webpages.charter.net/edreamleo/leo_toc.html)
-</t>
 <t tx="ekr.20130806072439.20200">From: tfer &lt;tfetherston@aol.com&gt;
 
 Mines on youtube, it is from a presentation at PyOhio last year.
@@ -13540,6 +13505,308 @@ In a Nutshell, The Leo Editor...
 - ending with its most recent commit 3 days ago
 
 and this is missing the earlier years, from 2001 to 2008, before moving to bazaar and Launchpad.
+</t>
+<t tx="ekr.20130807090137.19376">From: &lt;fidelperez@gmail.com&gt;
+
+Im having trouble also linking Leo files to Leo. I have tried this:
+  
+
+      Associate .leo filetype batch file:
+      ftype LeoFile=3DC:Python25pythonw.exe =93C:Python25Libsite-packagesleolaunchLeo.py=94 =93%1=94 assoc .leo=3DLeoFile
+
+Which I found here&lt;https://groups.google.com/forum/?fromgroups=3D#!searchin/leo-editor/associate/leo-editor/3Ry5o8gE16E/Ble8B8RCRUsJ&gt;,
+but leolaunchleo.py doesnt even exist anymore (the post is old).
+
+I guess others have had this idea but It would be great to include a small
+file within the Quickstart guide which would associate files automatically.
+(Or maybe asking for imput, which can be done through a Leo node and this
+way the user learns about its functionality).
+
+Also, I miss some more buttons or scripts in quick start guide, preferably
+before the "programming" section, so when a new user opens it, he has had
+the opportunity to do Ctrl+B on several scripts (for instance, showing in
+the log the name of all the nodes within the selected one, having some
+subnodes with numbers and doing math on them and showing the result on the
+log pane, and as much "silly" but visual functions as possible so the user,
+by going pressing ctrl+b on each, gets a bigger chance to understand what
+is Leo. In my oppinion some users will just stop in the quickguide if they
+are not presented with such a thing before going to docs.leo etc.
+  
+
+
+Another thing is the plugin activation, the description of the plugins is
+not as accessible as it should be (opinions here, focusing in new users,
+and as I always say, appreciating and fully grateful for Leo as is now),and
+a script for activating them easier, been a week using Leo and still cant
+quite activate, find the descriptions or use them freely... And if each
+plugin or script had an example of use that would be priceless, for
+instance, including them all in quickstart (both scripts, plugins branchs)
+and then the new user could just go through all clicking on the examples
+and just seeing Leo work and show its potential. I know some of those are
+done but as I said, after a week or so I still am very confused...
+  </t>
+<t tx="ekr.20130807090137.19377">From: Matt Wilkie &lt;maphew@gmail.com&gt;
+
+--047d7b6043c8d1f6bf04dc5376a1
+
+Content-Transfer-Encoding: quoted-printable
+
+&gt;
+&gt;    - Im having trouble also linking Leo files to Leo. I have tried this:
+&gt;
+&gt;
+&gt;       Associate .leo filetype batch file:
+&gt;&gt;           ftype LeoFile=3DC:Python25pythonw.exe =93C:Python25Libsite-
+&gt;&gt; packagesleolaunchLeo.py=94 =93%1=94 assoc .leo=3DLeoFile
+&gt;
+&gt;
+&gt; Which I found here&lt;https://groups.google.com/forum/?fromgroups=3D#!searchin/leo-editor/associate/leo-editor/3Ry5o8gE16E/Ble8B8RCRUsJ&gt;,
+&gt; but leolaunchleo.py doesnt even exist anymore (the post is old).
+&gt;
+
+Those instructions are sitll more or less relevant, but somehow all the
+slashes are missing. In any case, please try downloading
+"create-leobat.bat" batch file to the Leo directory and running from an
+admin-level command prompt:
+
+   create-leobat c:\\path\\to\\python27\\python.exe register
+
+--
+http://bazaar.launchpad.net/~maphew/leo-editor/pypi-packaging/view/head:/create-leobat.bat
+
+
+&gt;    - I guess others have had this idea but It would be great to include a
+&gt;    small file within the Quickstart guide which would associate files
+&gt;    automatically. (Or maybe asking for imput, which can be done through a Leo
+&gt;    node and this way the user learns about its functionality).
+&gt;
+&gt;
+I wrote a leo script that creates the file association, which I hope to
+include in the next release or on the Leo blog as a sample:
+https://groups.google.com/d/msg/leo-editor/ANPuhuEIU9c/GTcpLvVB_WoJ.
+
+To use it, copy everything between the triple curly braces {{{...}}}, but
+not including the braces, and paste into an Leo window, then press [Ctrl-B].
+
+It requires that Leo is started from an Admin level command shell (or that
+UAC is turned off).
+</t>
+<t tx="ekr.20130807090137.19378">&gt; Moreover, support for session tracking and restoring becomes an instant
+&gt; addition since just by oppening all the @path leo nodes under a "session"
+&gt; node we can restore our session!
+
+There was a thread about saving sessions some time ago.  Here's a
+script from that thread which adds a @script node to your outline which
+reloads the other outlines currently loaded when this outline is next
+loaded.
+
+tablist = g.findNodeAnywhere(c, '@script load tabs')
+if not tablist:
+    from leo.core.leoNodes import vnode
+    v = vnode(c)
+    v.h = '@script load tabs'
+    v._linkAsNthChild(c.hiddenRootNode,
+         len(c.hiddenRootNode.children))
+tablist = g.findNodeAnywhere(c, '@script load tabs')
+assert tablist
+import time
+b = ["# Generated %s\n"%time.strftime('%c')]
+for oc in g.app.commanders():
+    b.append("g.openWithFileName('%s', c)" % oc.fileName())
+b.append("c.frame.bringToFront()")
+b.append("c.setLog()")
+tablist.b = '\n'.join(b)
+</t>
+<t tx="ekr.20130807090137.19379">From: =?UTF-8?Q?Fidel_P=C3=A9rez?= &lt;fidelperez@gmail.com&gt;
+
+
+
+Content-Transfer-Encoding: quoted-printable
+
+
+  
+   - Also, quickstartguide should be open by default (instead of current
+   Leo workbook) at least until the user changes some config and prevents that
+   from happening. Is there any "load previous tabs" functionality? (IE open
+   the Leo files which where open when it was closed the last time)
+
+
+On Thursday, May 9, 2013 9:36:36 AM UTC+2, Fidel P=E9rez wrote:
+&gt;
+&gt; Hi:
+&gt;
+&gt;    - Im having trouble also linking Leo files to Leo. I have tried this:
+&gt;   
+&gt;
+&gt;       Associate .leo filetype batch file:
+&gt;&gt;           ftype LeoFile=3DC:Python25pythonw.exe =93C:Python25Libsite-
+&gt;&gt; packagesleolaunchLeo.py=94 =93%1=94 assoc .leo=3DLeoFile
+&gt;
+&gt;
+&gt; Which I found here&lt;https://groups.google.com/forum/?fromgroups=3D#!searchin/leo-editor/associate/leo-editor/3Ry5o8gE16E/Ble8B8RCRUsJ&gt;,
+&gt; but leolaunchleo.py doesnt even exist anymore (the post is old).
+&gt;
+&gt;
+&gt;    - I guess others have had this idea but It would be great to include a
+&gt;    small file within the Quickstart guide which would associate files
+&gt;    automatically. (Or maybe asking for imput, which can be done through a Leo
+&gt;    node and this way the user learns about its functionality).
+&gt;   
+&gt;
+&gt;
+&gt;    - Also, I miss some more buttons or scripts in quick start
+&gt;     guide, preferably before the "programming" section, so when a new
+&gt;    user opens it, he has had the opportunity to do Ctrl+B on several scripts
+&gt;    (for instance, showing in the log the name of all the nodes within the
+&gt;    selected one, having some subnodes with numbers and doing math on them and
+&gt;    showing the result on the log pane, and as much "silly" but visual
+&gt;    functions as possible so the user, by going pressing ctrl+b on each, gets a
+&gt;    bigger chance to understand what is Leo. In my oppinion some users will
+&gt;    just stop in the quickguide if they are not presented with such a thing
+&gt;    before going to docs.leo etc.
+&gt;   
+&gt;
+&gt;
+&gt;    - Another thing is the plugin activation, the description of the
+&gt;    plugins is not as accessible as it should be (opinions here, focusing
+&gt;    in new users, and as I always say, appreciating and fully grateful for Leo
+&gt;    as is now),and a script for activating them  easier, been a week using Leo
+&gt;    and still cant quite activate, find the descriptions or use them freely...
+&gt;    And if each plugin or script had an example of use that would be priceless,
+&gt;    for instance, including them all in quickstart (both scripts, plugins
+&gt;    branchs) and then the new user could just go through all clicking on the
+&gt;    examples and just seeing Leo work and show its potential. I know some of
+&gt;    those are done but as I said, after a week or so I still am very confused...
+&gt;   
+&gt;
+&gt; Thank you.
+&gt;
+</t>
+<t tx="ekr.20130807090137.19380">From: Nick_H &lt;nah@plextek.co.uk&gt;
+
+Wen I double-click on any Leo file on my desktop to launch Leo, it simply
+launches with the default workbook.leo file open. I can, of course, open
+any file via the File|Open dialog, but that's not so convenient. The file
+association contains the following command to execute for the Open
+operation::
+
+    "C:\\Tools\\Python32\\python.exe"
+    "C:\\Tools\\Leo-4.10-final\\launchLeo.py %*"
+
+Can you suggest what might be wrong?
+
+===== EKR
+
+The last set of double quotes looks wrong.  Try::
+
+    "C:\\Tools\\Python32\\python.exe" "C:\\Tools\\Leo-4.10-final\\launchLeo.py" %*
+
+In this case, none of the double quotes are needed, because the paths
+have no embedded blanks, so this also should work::
+
+    C:\\Tools\\Python32\\python.exe C:\\Tools\\Leo-4.10-final\\launchLeo.py %*
+
+===== From: Matt Wilkie &lt;maphew@gmail.com&gt;
+
+It's the trailing %*, use "%1" instead.
+
+Here is my setup...
+
+Set up file type association:
+
+    ftype LeoFile=C:\\Python27\\pythonw.exe C:\\apps\\leo\\launchLeo.py
+    assoc .leo=LeoFile
+
+And put this leo.bat in %PATH%:
+
+    @start /b "Leo" C:\\Python27\\python.exe C:\\apps\\leo\\launchLeo.py %*
+
+===== From: Eoin &lt;eoinmccarthy@fastmail.fm&gt;
+
+I got the association working on Windows 7 using:
+
+    ftype LeoFile=3D"C:\\Python322\\pythonw.exe" "C:\\Program Files (x86)\\Leo-4.9-final\\launchLeo.py" "%1"
+    assoc .leo=3DLeoFile
+    regsvr32 /i shell32.dll
+    
+===== From: Matt Wilkie &lt;maphew@gmail.com&gt;
+
+&gt;&gt;regsvr32 /i shell32.dll
+
+Just note that this command does a lot more than update file
+associations, and may undo some other customizations you've done
+(default program for camera preview, shortcut wizard behaviour, ...)
+http://www.pcworld.com/article/126116/windows_tips_fix_windows_glitches_by_reregistering_your_dlls.html
+
+===== From: HansBKK &lt;hansbkk@gmail.com&gt;
+
+Here's my launch batch. Note nothing's actually installed::
+
+    set HOME=E:\\aasync\\Data\\H_HOME
+    cd \\aasync\\PortableApps\\leo-editor
+    start "" "..\\CommonFiles\\Python27\\pythonw.exe" 
+    "..\\CommonFiles\\Python27\\Lib\\site-packages\\leo-editor4\\launchLeo.py" %*
+    exit
+    
+===== Nick
+
+Many thanks to all for these replies!
+This is my final "open" string in the Windows file associations::
+
+    "C:\\Tools\\Python32\\python.exe" "C:\\Tools\\Leo-4.10-final\\launchLeo.py" --gui=3Dqttabs "%1"
+    
+Note that the brackets are needed round the %1 to cater for file paths
+containing spaces.
+
+Matt, thanks for the extra details about using ftype and assoc. I hadn't
+realised those existed in Windows. For anyone else reading this, that is an
+alternative to working through the file associations GUI.
+</t>
+<t tx="ekr.20130807090137.19381">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
+
+"On Wed, Apr 18, 2012 at 12:20 AM, Matt Wilkie &lt;maphew@gmail.com&gt; wrote:
+
+&gt; the docs have the wrong version, It should match the above:
+&gt;http://leoeditor.com/installing.html#installing-leo-on-windows
+
+
+Good catch.  I think rather than updating this for every release, I'll
+try to generalize it a bit so people will understand what is intended.
+ The fix will probably be tricky: it's so hard to be clear and general
+at the same time.  Otoh, making instructions
+Python-and-Leo-version-depenedent is pretty hopeless.
+
+EKR
+"
+</t>
+<t tx="ekr.20130807090137.19382">From: Matt Wilkie &lt;maphew@gmail.com&gt;
+
+&gt; The file association contains the following command to execute for the
+&gt; Open operation:
+&gt; "C:\\Tools\\Python32\\python.exe" "C:\\Tools\\Leo-4.10-final\\launchLeo.py
+&gt; %*"
+
+it's the trailing %*, use "%1" instead.
+
+You want %*  in a batch file. It passes all command line arguments to
+the program being called.
+
+"%1" passes just the file being clicked on, quoted for spaces etc.
+When in a batch file %1 passes just the first command line parameter.
+
+It is logical to expect %* to work for click file association as well,
+but it doesn't. I don't know why.
+</t>
+<t tx="ekr.20130807090137.19383">From the thread: Cannot open Leo files by double-click in Windows Explorer?
+From: HansBKK &lt;hansbkk@gmail.com&gt;
+
+This is a bit OT, but: for those like me who work in "portable" mode, 
+there's a very cool tool called "PortableFileAssociator" that allows you to 
+create a set of windows file associations, icons etc and enable/disable the 
+whole profile at one time, without messing with the local system's registry.
+
+Also handy for those not in portable mode, but working on different windows 
+boxes and bored with having to tweak each one separately.
 </t>
 <t tx="sps.20100708203040.19008">@language python
 import os
