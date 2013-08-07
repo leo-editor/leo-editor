@@ -432,6 +432,7 @@ expanded="edream.110203163054.63,"><vh>@file release_notes.txt</vh></v>
 <v t="ekr.20130526065545.17504"><vh>Re: ANN: zoom-in/out commands</vh></v>
 <v t="ekr.20130526065545.17505"><vh>body text zooming pushed</vh></v>
 </v>
+<v t="ekr.20130806211959.17093"><vh>Dumping leo docs to excel</vh></v>
 <v t="ekr.20130526065545.14925"><vh>Full text searches</vh></v>
 <v t="ekr.20130526065545.17445"><vh>Major additions to abbreviations</vh>
 <v t="ekr.20130526065545.17442"><vh>Re: Major additions to abbreviations</vh></v>
@@ -449,7 +450,21 @@ expanded="edream.110203163054.63,"><vh>@file release_notes.txt</vh></v>
 <v t="ekr.20130526065545.17637"><vh>Re: persistent state with json as a leo abbreviation</vh></v>
 <v t="ekr.20130526065545.17638"><vh>Re: persistent state with json as a leo abbreviation</vh></v>
 </v>
+<v t="ekr.20130806211959.17078"><vh>QML notebook (in contrib branch)</vh>
+<v t="ekr.20130806211959.17079"><vh>Re: QML notebook - phase zero - toy ui ;-)</vh></v>
+<v t="ekr.20130806211959.17080"><vh>Re: QML notebook - phase zero - toy ui ;-)</vh></v>
+<v t="ekr.20130806211959.17081"><vh>Re: QML notebook - phase zero - toy ui ;-)</vh></v>
+<v t="ekr.20130806211959.17082"><vh>Re: QML notebook - phase zero - toy ui ;-)</vh></v>
+<v t="ekr.20130806211959.17083"><vh>RE: QML notebook - phase zero - toy ui ;-)</vh></v>
+<v t="ekr.20130806211959.17084"><vh>Re: QML notebook - phase zero - toy ui ;-)</vh></v>
+<v t="ekr.20130806211959.17085"><vh>Re: QML notebook - phase zero - toy ui ;-)</vh></v>
+<v t="ekr.20130806211959.17086"><vh>Re: QML notebook - phase zero - toy ui ;-)</vh></v>
+<v t="ekr.20130806211959.17087"><vh>Re: QML notebook - phase zero - toy ui ;-)</vh></v>
+</v>
 <v t="ekr.20130806175854.17068"><vh>Rev 5488: importing IPython .ipynb to Leo outlines</vh></v>
+<v t="ekr.20130806211959.17094"><vh>Script to export full contents</vh>
+<v t="ekr.20130806211959.17095"><vh>script</vh></v>
+</v>
 <v t="ekr.20130806072439.19631"><vh>sublime text &amp; other themes</vh>
 <v t="ekr.20130526065545.17514"><vh>New theme in leoSettings.leo: Sublime Text...</vh></v>
 <v t="ekr.20130526065545.17589"><vh>go-anywhere a'la sublime text: first light"</vh>
@@ -480,13 +495,13 @@ expanded="edream.110203163054.63,"><vh>@file release_notes.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20130404104418.5951"><vh>For Implementors</vh>
-<v t="ekr.20130806072439.19789"><vh>"About Project Threads (PT's)"</vh></v>
 <v t="ekr.20130806072439.19788"><vh>Centralizing focus handling (to make debugging easier)</vh>
 <v t="ekr.20130806072439.19787"><vh>Re: Centralizing focus handling (to make debugging easier)</vh></v>
 </v>
 <v t="ekr.20130806072439.19790"><vh>Free "continuous integration" for Leo</vh>
 <v t="ekr.20130806072439.19791"><vh>Re: Free "continuous integration" for Leo</vh></v>
 </v>
+<v t="ekr.20130806211959.16740"><vh>Notes to myself: fixing the key binding bug</vh></v>
 <v t="ekr.20130806072439.19785"><vh>Toolkit independent apis</vh>
 <v t="ekr.20130806072439.19786"><vh>Re: Toolkit independent apis</vh></v>
 </v>
@@ -11319,97 +11334,6 @@ itor?hl=3Den.&lt;br /&gt;
 
 
 --20cf303f69e843800e04d18af3ee--</t>
-<t tx="ekr.20130806072439.19789">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-------=_Part_837_11293605.1368186436259
-Content-Type: text/plain; charset=ISO-8859-1
-
-Recent improvements to my handling of email have helped considerably, but 
-have also revealed problems with gmail and project coordination in 
-general.  Kent has suggested I look into claws mail, but I\'d rather look 
-for other workarounds.
-
-You could say that the essence of the problem is that Leo doesn\'t do email 
-;-)  Email is good (not great) for collaboration, but it sucks as a data 
-organizer.  Gmail labels can only be applied to entire threads.  My 
-unsatisfactory workaround is to mark items that require further action as 
-"important" (mark with a star).  This is better than nothing, but only just.
-
-To organize tasks to be done *for myself*, I could copy starred items into 
-a personal .leo file.  I could then organize those tasks as usual with 
-Leo.  But none of this would easily be available to others.  Alas, sharing 
-quickly-changing .leo files is not easy.
-
-Matt and others have been referring to snippets of code in github, and 
-that\'s good, but we still have to manage those snippets, and the projects 
-related to those snippets.
-
-Project threads are an attempt to work around these difficulties.  They are 
-hardly a cure-all, but imo they are worth a try.  The idea is to devote 
-each PT to management-related tasks for a single (shared) project.  The 
-first PT will be about installation issues.  This thread will allow Matt 
-and I to coordinate our activities.  Anyone else is welcome to join, but a 
-PT is *not* the place to report new issues or bugs, even if they are 
-related to the subject of the PT.
-
-I hope the idea is clear.  If not, please ask question on *this* thread. 
-Your comments, please.
-
-Edward.
-
-
-To unsubscribe from this group and stop receiving emails from it, send an email to leo-editor+unsubscribe@googlegroups.com.
-
-Visit this group at http://groups.google.com/group/leo-editor?hl=en-US.
-For more options, visit https://groups.google.com/groups/opt_out.
-
-
-
-------=_Part_837_11293605.1368186436259
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-Recent improvements to my handling of email have helped considerably, but h=
-ave also revealed problems with gmail and project coordination in general.&amp;=
-nbsp; Kent has suggested I look into claws mail, but I\'d rather look for ot=
-her workarounds.&lt;br&gt;&lt;br&gt;You could say that the essence of the problem is th=
-at Leo doesn\'t do email ;-)&amp;nbsp; Email is good (not great) for collaborati=
-on, but it sucks as a data organizer.&amp;nbsp; Gmail labels can only be applie=
-d to entire threads.&amp;nbsp; My unsatisfactory workaround is to mark items th=
-at require further action as "important" (mark with a star).&amp;nbsp; This is =
-better than nothing, but only just.&lt;br&gt;&lt;br&gt;To organize tasks to be done *fo=
-r myself*, I could copy starred items into a personal .leo file.&amp;nbsp; I co=
-uld then organize those tasks as usual with Leo.&amp;nbsp; But none of this wou=
-ld easily be available to others.&amp;nbsp; Alas, sharing quickly-changing .leo=
- files is not easy.&lt;br&gt;&lt;br&gt;Matt and others have been referring to snippets =
-of code in github, and that\'s good, but we still have to manage those snipp=
-ets, and the projects related to those snippets.&lt;br&gt;&lt;br&gt;Project threads are=
- an attempt to work around these difficulties.&amp;nbsp; They are hardly a cure=
--all, but imo they are worth a try.&amp;nbsp; The idea is to devote each PT to =
-management-related tasks for a single (shared) project.&amp;nbsp; The first PT =
-will be about installation issues.&amp;nbsp; This thread will allow Matt and I =
-to coordinate our activities.&amp;nbsp; Anyone else is welcome to join, but a P=
-T is *not* the place to report new issues or bugs, even if they are related=
- to the subject of the PT.&lt;br&gt;&lt;br&gt;I hope the idea is clear.&amp;nbsp; If not, p=
-lease ask question on *this* thread. Your comments, please.&lt;br&gt;&lt;br&gt;Edward.&lt;=
-br&gt;
-
-&lt;p&gt;&lt;/p&gt;
-
--- &lt;br /&gt;
-You received this message because you are subscribed to the Google Groups &amp;=
-quot;leo-editor&amp;quot; group.&lt;br /&gt;
-To unsubscribe from this group and stop receiving emails from it, send an e=
-mail to leo-editor+unsubscribe@googlegroups.com.&lt;br /&gt;
-&lt;br /&gt;
-Visit this group at &lt;a href=3D"http://groups.google.com/group/leo-editor?hl=
-=3Den-US"&gt;http://groups.google.com/group/leo-editor?hl=3Den-US&lt;/a&gt;.&lt;br /&gt;
-For more options, visit &lt;a href=3D"https://groups.google.com/groups/opt_out=
-"&gt;https://groups.google.com/groups/opt_out&lt;/a&gt;.&lt;br /&gt;
-&amp;nbsp;&lt;br /&gt;
-&amp;nbsp;&lt;br /&gt;
-
-------=_Part_837_11293605.1368186436259--</t>
 <t tx="ekr.20130806072439.19790">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
 
 --089e0122f80868cb1b04dce55d84
@@ -13473,6 +13397,384 @@ ipython right now (interactivity, parallelism, networking and
 collaboration, interactive access to javascript libs like d3.js, etc.., 
 inline images, and movies, and cell magic, etc..). Since ipython is pretty 
 much pervasively used ... it could be a good thing for leo (-:
+</t>
+<t tx="ekr.20130806211959.16740">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
+
+As the title indicates, this thread will consist of what could be
+called an online engineering notebook.  Please feel free to ignore.
+
+Key bindings are one of the most difficult and complex parts of Leo.
+This can't be helped: Leo's goals for key bindings are ambitious.
+
+The present bug, https://bugs.launchpad.net/leo-editor/+bug/879331, is
+due to a significant design oversight.  Redefining a binding for a
+command x to key y affects not just command x but all other commands
+presently bound to y!
+
+Alas, the present binding tables are already complex.  I am almost at
+the limit of what I can hold in working memory as it is.  Adding
+significant additional complexity risks creating virtually impossible-
+to-understand code.
+
+There are two conflicting desires in play here:
+
+1. To make the minimum changes needed.  While reasonable in itself,
+this promises to increase overall complexity.
+
+2. To decrease overall complexity.  While reasonable in itself, this
+promises significant overall changes to the code.
+
+Combining these two desires yields a strategy of finding a minimal
+change that reduces overall complexity :-)  It's a big ask.
+</t>
+<t tx="ekr.20130806211959.17078">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
+
+Ok, I now created a toy UI demo for how "cell" based leo (like ipython
+notebook) could operate.
+
+It's probably the first stab at using QML to solve a problem in Leo.
+It doesnt' run from leo yet (it's not a plugin, more protoing needed
+before it's worthwhile to make it a plugin.
+
+When you add and delete text, the cells resize naturally.
+
+To try it, launch the launchqmlnb.py script that I pushed to bzr.
+
+bzr pull, and paste this into a node and press ctrl+b:
+
+https://gist.github.com/2517158
+
+Result is as attached. What it currently does is putting every node
+wrapper in a list of QObjects, and use that as the model in QML side
+(model is just a container that has the list of stuff to show in
+Repeater).
+
+So you can edit every node in a leo document in this "notebook".
+Future version will probably only allow editing a subtree.
+
+Note how headlines are "toned down" with small, grey font. Intention
+is that e.g. with ipython notebook, the headline will just be a
+running, uneditable sequence number basically.
+
+BTW, forgot to mention that I put the NodeWrapper stuff under
+leo.core. We can move it out eventually, but right now it seemed like
+a natural place for this kind of cross-plugin utility.
+
+And on related note: remember that with QML, sky is the limit as far
+as the styling goes :). So if you have wild ideas about adding
+customizable images, animated checkboxes, or other weird stuff next to
+the nodes, fire away.
+
+
+
+
+</t>
+<t tx="ekr.20130806211959.17079">From: Kent Tenney &lt;ktenney@gmail.com&gt;
+
+Interesting ...
+
+Am I correct: this is POC, edits in your serialized pane don't reflect
+in the Leo file?
+
+This is a hint of something I've long wanted, what I have called
+'slurped' vs 'chunked'
+Something I miss with Leo is the capability get an overview of a file,
+I find myself
+needing to 'open file with gvim' to grok at file level.
+
+The pane you are generating offers both at once, I can see the linear
+view of the file,
+retaining the 'chunk' metadata (node headlines)
+</t>
+<t tx="ekr.20130806211959.17080">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+
+On Fri, 27 Apr 2012 00:47:05 +0300
+"Ville M. Vainio" &lt;vivainio@gmail.com&gt; wrote:
+
+&gt; Ok, I now created a toy UI demo for how "cell" based leo (like ipython
+&gt; notebook) could operate.
+&gt; 
+&gt; It's probably the first stab at using QML to solve a problem in Leo.
+&gt; It doesnt' run from leo yet (it's not a plugin, more protoing needed
+&gt; before it's worthwhile to make it a plugin.
+&gt; 
+&gt; When you add and delete text, the cells resize naturally.
+&gt; 
+&gt; To try it, launch the launchqmlnb.py script that I pushed to bzr.
+
+Played with it.  I guess the next step would be demo of python handling
+events from the QML UI elements, and of python finding and manipulating
+the QML UI elements.
+
+I'm wondering about the advantages of this approach over the "regular"
+QWidget approach.  QML is perhaps a more terse and elegant language for
+defining a UI, and it has scripting of UI behavior in javascript.  And
+perhaps it has a more tablet friendly widget set?
+
+But I wonder what it lets you do that you can't do with the QWidget
+stack, given that mixing the two seems to mean that Leo is using two
+GUI systems - they may be very tightly integrated, but mind-space wise
+it's two complex systems instead of one.
+
+Which isn't a reason not to use QML, just wondering if it has
+advantages I'm missing.
+</t>
+<t tx="ekr.20130806211959.17081">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
+
+Some modifications done, attached is screenshot with tree level
+nesting as well. I moved the headistring to the left edge, since on
+the right edge the tree structure looked weird.
+
+</t>
+<t tx="ekr.20130806211959.17082">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
+
+This leo script is more polished version of the earlier work (ctrl+b
+script). It uses QStandardItemModel to host the entries in the
+notebook, so you can add / remove / modify items and the changes
+reflect in the notebook in real time.
+
+https://gist.github.com/2540690
+</t>
+<t tx="ekr.20130806211959.17083">From: Ville Vainio &lt;vivainio@gmail.com&gt;
+
+Qml version was the one I got done quickly, since it has better layout
+mechanism. If we come up with qwidget way, let's use that :). I tried
+to find one, but didn't
+
+Sent from my Windows Phone
+From: Terry Brown
+Sent: 4/27/2012 5:55 PM
+To: leo-editor@googlegroups.com
+Re: QML notebook - phase zero - toy ui ;-)
+On Fri, 27 Apr 2012 00:47:05 +0300
+"Ville M. Vainio" &lt;vivainio@gmail.com&gt; wrote:
+
+&gt; Ok, I now created a toy UI demo for how "cell" based leo (like ipython
+&gt; notebook) could operate.
+&gt;
+&gt; It's probably the first stab at using QML to solve a problem in Leo.
+&gt; It doesnt' run from leo yet (it's not a plugin, more protoing needed
+&gt; before it's worthwhile to make it a plugin.
+&gt;
+&gt; When you add and delete text, the cells resize naturally.
+&gt;
+&gt; To try it, launch the launchqmlnb.py script that I pushed to bzr.
+
+Played with it.  I guess the next step would be demo of python handling
+events from the QML UI elements, and of python finding and manipulating
+the QML UI elements.
+
+I'm wondering about the advantages of this approach over the "regular"
+QWidget approach.  QML is perhaps a more terse and elegant language for
+defining a UI, and it has scripting of UI behavior in javascript.  And
+perhaps it has a more tablet friendly widget set?
+
+But I wonder what it lets you do that you can't do with the QWidget
+stack, given that mixing the two seems to mean that Leo is using two
+GUI systems - they may be very tightly integrated, but mind-space wise
+it's two complex systems instead of one.
+
+Which isn't a reason not to use QML, just wondering if it has
+advantages I'm missing.
+</t>
+<t tx="ekr.20130806211959.17084">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
+
+Update: qmlnotebook.leo (ctrl+b script + test outline) is now at
+contrib branch. If you want to try it, open the .leo file, ensure you
+are running latest Leo from trunk, and press ctrl+b on the first node.
+</t>
+<t tx="ekr.20130806211959.17085">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+
+Here's a demo to run Ville's QML thing in a free_layout pane.
+Requires rev. 5284 so the .qml file in leo/plugins/qmlnb/ is available.
+
+Paste this into a node, run-script on the node, right click a splitter
+handle, Insert, click the Action button, select "Add QML shower".
+
+Note that you can flick the text boxes it shows up and down with the
+mouse, in a tablet / phone ui kind of way.
+
+---cut here---
+from PyQt4.QtCore import QUrl
+from PyQt4.QtDeclarative import QDeclarativeView
+class QMLShower:
+    def __init__(self, c):
+        self.c = c
+        c._qml_shower = self
+        self.w = None
+        c.free_layout.get_top_splitter().register_provider(self)
+    def ns_provider_id(self):  # allow for re-registering, mainly for dev.
+        return '__qml_shower'
+    def ns_provides(self):  # what we can provide
+        return [("Add QML shower", '__add_qml_shower')]
+    def ns_provide(self, id_):  # provide it
+        if id_ == '__add_qml_shower':
+            g.unregisterHandler('select2', self.update)
+            g.registerHandler('select2', self.update)
+            if not self.w:
+                self.w = self.make_widget()
+            return self.w
+    def make_widget(self):
+        view = QDeclarativeView()
+        path = g.os_path_join(g.computeLeoDir(), 'plugins', 'qmlnb', 'qml', 'leonbmain.qml')
+        view.setSource(QUrl(path))
+        view.setResizeMode(QDeclarativeView.SizeRootObjectToView)
+        # Display the user interface and allow the user to interact with it.
+        view.setGeometry(100, 100, 400, 240)
+        view.show()
+        # rootObject = view.rootObject()
+        return view   
+    def update(self, tag, kwords):
+        pass
+    def closed(self, event):
+        g.unregisterHandler('select2', self.update)
+
+QMLShower(c)
+---cut here---
+
+</t>
+<t tx="ekr.20130806211959.17086">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
+
+Yes, modifications are not saved yet. Also, modifications in normal body
+editors are not copied over to the notebook yet.  This is probably going to
+end up like tabula and stickynotes in this regard.
+
+Getting an overview of a file could be an interesting extra usecase, my
+main interest is still in using it for interactive programming/computation
+(like ipython notebook) .
+On Apr 28, 2012 4:22 PM, "Kent Tenney" &lt;ktenney@gmail.com&gt; wrote:
+</t>
+<t tx="ekr.20130806211959.17087">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
+
+Ok, this should serve as a basis for ipython nicely.
+
+However, a problem - it worked once, but now (after restarting leo,
+many times) I always get this traceback;
+
+Traceback (most recent call last):
+  File "/home/ville/b/leo-editor/leo/plugins/nested_splitter.py", line
+489, in cb
+    self.place_provided(id_, index)
+  File "/home/ville/b/leo-editor/leo/plugins/nested_splitter.py", line
+502, in place_provided
+    provided =3D self.get_provided(id_)
+  File "/home/ville/b/leo-editor/leo/plugins/nested_splitter.py", line
+960, in get_provided
+    provided =3D provider.ns_provide(id_)
+  File "/home/ville/.leo/scriptFile.py", line 18, in ns_provide
+    g.unregisterHandler('select2', self.update)
+  File "/home/ville/b/leo-editor/leo/core/leoGlobals.py", line 2529,
+in unregisterHandler
+    return pc.unregisterHandler(tags,fn)
+  File "/home/ville/b/leo-editor/leo/core/leoPlugins.py", line 730, in
+unregisterHandler
+    self.unregisterOneHandler(tags,fn)
+  File "/home/ville/b/leo-editor/leo/core/leoPlugins.py", line 735, in
+unregisterOneHandler
+    bunches =3D [bunch for bunch in bunches if bunch.fn !=3D fn]
+TypeError: 'NoneType' object is not iterable
+
+</t>
+<t tx="ekr.20130806211959.17093">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
+
+I created a proof of concept for dumping leo trees to excel.
+
+Demo outline is in collab branch,
+
+/Projects/excel_integration
+
+Screenshot attached.
+
+My usage is that I collect and organize findings (of technology studies) in
+leo, and then dump the report to excel, to be read and actioned upon by
+other ppl.
+
+I haven't yet polished this workflow in that there is a bunch of manual
+work in formatting the report...
+ 
+</t>
+<t tx="ekr.20130806211959.17094">From: Terry &lt;webtourist@gmail.com&gt;
+
+I need to present to people who don't have leo installation, in easily 
+readable format, the full content of a .leo file, not just the outline, but 
+all nodes and all contents.
+
+What do I need to do ?
+
+===== Terry
+
+You could run this script (below):
+
+It only exports selected nodes, so if you want to export everything,
+you have to select all the top level nodes, i.e. collapse all the nodes
+so only the top level is visible, click the first one, and shift-click
+the last one.
+
+It exports to plain text... although you might be able to use the
+template to describe HTML, not sure.
+
+&gt; Terry, how do i run it ?  I'm guessing it's not at the cmdline like "python 
+&gt; this_script.py" 
+
+Right.  Paste the content into a node, then click the script-button
+button to create a new button for running this script.  The button's
+name will be the node's name, what it is doesn't matter but 'export'
+would be an obvious choice.  Then select the node(s) you want exported
+- presumably not including the node containing the script :)
+
+Then it will ask for a file name and whether to include unexpanded
+nodes.\
+
+</t>
+<t tx="ekr.20130806211959.17095">@language python
+
+# template is everything between r""" and second """
+# placeholders are H heading B body C children
+# use \\n in B and C lines for conditional blank lines
+
+template = r"""H
+    B
+  * C"""
+
+lines=[]
+exp_only = g.app.gui.runAskYesNoCancelDialog(
+    c, 'Expanded nodes only?', 'Expanded nodes only?')
+if exp_only == 'no':
+    exp_only = False
+    
+def export_text(p, indent=''):
+    
+    spaces = ' '*(len(indent) - len(indent.lstrip(' ')))
+    
+    for line in template.split('\\n'):
+        
+        if 'H' in line:
+            lines.append(indent + line.replace('H', p.h))
+        elif 'B' in line and p.b.strip():
+            prefix = line[:line.find('B')].replace('\\\\n', '\\n')
+            for i in p.b.strip().split('\\n'):
+                lines.append(spaces + prefix + i)
+                prefix = line[:line.find('B')].replace('\\\\n', '')
+            if line.endswith('\\\\n'):
+                lines.append('')
+        elif 'C' in line and (not exp_only or p.isExpanded()):
+            prefix = line[:line.find('C')].replace('\\\\n', '\\n')
+            for child in p.children():
+                export_text(child, indent=spaces + prefix)
+            if line.endswith('\\\\n'):
+                lines.append('')
+        elif 'C' not in line and 'B' not in line:
+            lines.append(line)
+
+if exp_only != 'cancel':
+    for i in c.getSelectedPositions():
+        export_text(i)
+    
+    filename = g.app.gui.runSaveFileDialog('Save to file')
+    # filename = '/home/tbrown/del.txt'
+    
+    if filename is not None:
+        open(filename,'w').write('\\n'.join(lines))
 </t>
 <t tx="sps.20100708203040.19008">@language python
 import os
