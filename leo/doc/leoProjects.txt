@@ -3547,6 +3547,48 @@ response to previous bug reports, so it seems that best that can be done.
 https://bugs.launchpad.net/leo-editor/+bug/1184855
 
 The fix was to set the name of the .leo file to foobar.pyxxx.leo in LM.initWrapperLeoFile.
+#@+node:ekr.20130806072439.20746: *4* Fixed bug 1021849: typo in path for icon of desktop shortcut
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/1021849
+
+Rev 5789 fixes this bug, using some hints from the NSIS support forum.
+
+The fix was to CreateShortCut in the Desktop Shortcut section:
+  - remove single quotes.
+  - remove the "0" trailing arg.
+
+The installer passes all my tests on my Windows 7 machine, which is all the testing I have ever done.
+
+
+Here is the checkin log::
+
+QQQ
+Fixed the icon problem and improved and simplified the install/uninstall 
+process in several ways.
+
+1. Fixed https://bugs.launchpad.net/leo-editor/+bug/1021849
+
+The fix was to CreateShortCut in the Desktop Shortcut section:
+  - remove single quotes.
+  - remove the "0" trailing arg.
+
+2. Changed the make-leo button to simplify the uninstall manifest.
+
+Rather than computing the files to be deleted, the uninstall script now 
+just does RMDir /r "$INSTDIR\\leo".
+This *is* safe, and ensures that all files & directories get deleted, 
+including $INSTDIR itself.
+QQQ
+
+The only possible drawback to using the /r option is that it will delete 
+any files that the user has created in the leo directory.  Imo, there is no 
+perfect solution to this.  Warning prompts never do any good, and if we 
+retain files, for whatever reason, there will be bug reports saying that 
+Leo didn't properly uninstall itself.  This has already happened :-)
+
+I am happy to live with the present situation, unless somebody a) objects 
+loudly and b) shows how the problem can be solved cleanly.
 #@+node:ekr.20120519193038.9883: *3* Code
 #@+node:ekr.20110518103946.18179: *4* Added external/leosax.py to leoPyRef.leo
 http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893
