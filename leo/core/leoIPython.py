@@ -8,8 +8,7 @@
 Using this bridge, scripts running in Leo can affect IPython, and vice
 versa. In particular, scripts running in IPython can alter Leo outlines!
 
-For full details, see Leo Users Guide:
-http://webpages.charter.net/edreamleo/IPythonBridge.html
+For full details, see Leo Users Guide: http://leoeditor.com/IPythonBridge.html
 
 This module replaces both ipython.py and leo/external/ipy_leo.
 

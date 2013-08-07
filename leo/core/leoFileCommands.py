@@ -1717,7 +1717,7 @@ class baseFileCommands:
         self.putXMLLine()
 
         # Put "created by Leo" line.
-        self.put('<!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->')
+        self.put('<!-- Created by Leo (http://leoeditor.com/leo_toc.html) -->')
         self.put_nl()
 
         if c.config.stylesheet or c.frame.stylesheet:

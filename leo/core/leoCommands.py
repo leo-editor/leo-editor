@@ -6756,7 +6756,7 @@ class Commands (object):
             "Copyright 1999-2012 by Edward K. Ream\n" +
             "All Rights Reserved\n" +
             "Leo is distributed under the MIT License")
-        url = "http://webpages.charter.net/edreamleo/front.html"
+        url = "http://leoeditor.com/"
         email = "edreamleo@gmail.com"
 
         g.app.gui.runAboutLeoDialog(c,version,theCopyright,url,email)
@@ -6828,7 +6828,7 @@ class Commands (object):
 
         import webbrowser
 
-        url = "http://webpages.charter.net/edreamleo/front.html"
+        url = "http://leoeditor.com/"
         try:
             webbrowser.open_new(url)
         except:
@@ -6884,7 +6884,7 @@ class Commands (object):
 
         '''Open Leo's users guide in a web browser.'''
 
-        url = 'http://webpages.charter.net/edreamleo/leo_toc.html'
+        url = 'http://leoeditor.com/leo_toc.html'
         g.handleUrl(url)
     #@+node:ekr.20110402084740.14490: *4* Icon bar
     def goToNextHistory (self,event=None):

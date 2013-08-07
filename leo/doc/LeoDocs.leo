@@ -53,7 +53,8 @@
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
 <v t="ekr.20101025080245.5800"><vh>@edit leo_toc.html</vh></v>
 <v t="ekr.20101112045055.5064"><vh>@file plugin_catalog.py</vh></v>
-<v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
+<v t="ekr.20100808060203.4273"
+expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
 <v t="ekr.20101025080245.5801"><vh>@url modified toc</vh></v>
 <v t="ekr.20101026081737.5531"><vh>Links that replace those in actual built page</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
@@ -186,7 +187,8 @@
 <v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028550b302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473550b302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473550b302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473550b302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20100805165051.7177"
+expanded="edream.110203163054.117,ekr.20100118181428.8827,ekr.20100118181428.8813,ekr.20100118181428.7557,"><vh>@file release_notes.txt</vh></v>
 </v>
 <v t="ekr.20130806072439.19990"><vh>Leo 4.11 Release notes (TO DO)</vh>
 <v t="ekr.20130806072439.19991"><vh>Bugs</vh>
@@ -407,6 +409,7 @@
 </v>
 </v>
 <v t="ekr.20130526065545.14924"><vh>To be documented (do not delete!!)</vh>
+<v t="ekr.20130807090137.19364"><vh>Leo in a nutshell</vh></v>
 <v t="ekr.20130806072439.20200"><vh>Videos</vh></v>
 <v t="ekr.20130803073926.17113"><vh>Features</vh>
 <v t="ekr.20130526065545.17594"><vh>@wrap now suppresses horizontal scrolling</vh>
@@ -605,7 +608,6 @@
 <v t="ekr.20130526065545.17506"><vh>Quick valuespace.py update: it now support...</vh></v>
 <v t="ekr.20130803125244.17094"><vh>Document valuespace from Ville's blog</vh></v>
 <v t="ekr.20130806072439.18889"><vh>Blog post about valuespace up on leo-editor.github.io</vh>
-<v t="ekr.20130806072439.18890"><vh>Re: update about Leo google group</vh></v>
 <v t="ekr.20130806072439.18891"><vh>Re: Blog post about valuespace up on leo-editor.github.io</vh></v>
 <v t="ekr.20130806072439.18892"><vh>Re: Blog post about valuespace up on leo-editor.github.io</vh></v>
 <v t="ekr.20130806072439.18893"><vh>Re: Blog post about valuespace up on leo-editor.github.io</vh></v>
@@ -10320,42 +10322,6 @@ decided to push it as is. I\'ll blog about more features later on.
 http://leo-editor.github.io/valuespace-intro.html
 
 Hope it already helps alleviate the mystery of what it\'s all about :)</t>
-<t tx="ekr.20130806072439.18890">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
---001a11c2674c1dc3d604dc99267a
-Content-Type: text/plain; charset=UTF-8
-
-On Sat, May 11, 2013 at 9:58 PM, ne1uno &lt;eltronis@gmail.com&gt; wrote:
-
-&gt; http://groups.google.com/group/leo-editor/about
-&gt; still has the old home page
-&gt; webpages.charter.net
-&gt;
-
-Thanks for this.  At present, I don\'t see any way to change the old home
-page!  Anyone know how?
-
-Edward
-
---001a11c2674c1dc3d604dc99267a
-Content-Type: text/html; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-&lt;div dir=3D"ltr"&gt;On Sat, May 11, 2013 at 9:58 PM, ne1uno &lt;span dir=3D"ltr"&gt;=
-&amp;lt;&lt;a href=3D"mailto:eltronis@gmail.com" target=3D"_blank"&gt;eltronis@gmail.=
-com&lt;/a&gt;&amp;gt;&lt;/span&gt; wrote:&lt;br&gt;&lt;div class=3D"gmail_extra"&gt;&lt;div class=3D"gmail=
-_quote"&gt;&lt;blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border=
--left:1px #ccc solid;padding-left:1ex"&gt;
-&lt;a href=3D"http://groups.google.com/group/leo-editor/about" target=3D"_blan=
-k"&gt;http://groups.google.com/group/leo-editor/about&lt;/a&gt;&lt;br&gt;
-still has the old home page&lt;br&gt;
-&lt;a href=3D"http://webpages.charter.net" target=3D"_blank"&gt;webpages.charter.=
-net&lt;/a&gt;&lt;br&gt;&lt;/blockquote&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Thanks for this.=C2=A0 At prese=
-nt, I don&amp;#39;t see any way to change the old home page!=C2=A0 Anyone know =
-how?&lt;br&gt;&lt;br&gt;
-Edward&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
-
---001a11c2674c1dc3d604dc99267a--</t>
 <t tx="ekr.20130806072439.18891">From: gatesphere &lt;gatesphere@gmail.com&gt;
 
 This is a multi-part message in MIME format.
@@ -10856,23 +10822,6 @@ This seems like a spiritual relative of "rope" data structure:
 http://en.wikipedia.org/wiki/Rope_(data_structure)
 
 http://www.sgi.com/tech/stl/Rope.html
-
-
-On Wed, Jan 2, 2013 at 3:03 AM, Edward K. Ream &lt;edreamleo@gmail.com&gt; wrote:
-
-&gt; I continue to work feverishly on various aspects of static type checking.
-&gt;
-&gt; That work lead to a discovery that may benefit you.  It's one of the most
-&gt; beautiful patterns I've ever created: it allows a program to simply and
-&gt; naturally build up huge strings without using any string operations.
-&gt; Generating an html file with minimal stress on the gc is an obvious
-&gt; application.  You could also say that the pattern creates a Pythonic way of
-&gt; using lisp-like algorithms, but more safely than in lisp.
-&gt;
-&gt; Full details at the stc documentation page::
-&gt;
-&gt; http://webpages.charter.net/edreamleo/stc/stc.html#a-beautiful-pattern-for-building-large-strings
-&gt;
 </t>
 <t tx="ekr.20130806072439.19668">@nocolor
 
@@ -13152,17 +13101,13 @@ myLeoSettings.leo:
 </t>
 <t tx="ekr.20130806072439.20195">From: Matt Wilkie &lt;maphew@gmail.com&gt;
 
-web bug: the search form at http://leoeditor.com/ tries to search 
-charter.net
+Ask: web bug: the search form at http://leoeditor.com/ tries to search charter.net
 
 From: lewis &lt;lewisneal@operamail.com&gt;
 
-The Leo wikipedia entry http://en.wikipedia.org/wiki/Leo_(text_editor)
-should be updated with the new website url.
-
-These Help menu items need updating:
+These Help menu items need updating: (fixed)
     
-    about Leo   (lists charter.net)
+    About Leo   (lists charter.net)
     Online Home Page  (the redirect http://leoeditor.com/front.html is not found)
     Open Online Tutorial  (doesn't launch)
     Open Users Guide  (links to http://webpages.charter.net/edreamleo/leo_toc.html)
@@ -13580,6 +13525,21 @@ if exp_only != 'cancel':
     
     if filename is not None:
         open(filename,'w').write('\\n'.join(lines))
+</t>
+<t tx="ekr.20130807090137.19364">
+In a Nutshell, The Leo Editor...
+
+- has had 8,373 commits made by 35 contributors
+- representing 246,619 lines of codeis mostly written in Python
+- with an average number of source code comments
+- has a well established, mature codebase
+- maintained by a large development team
+- with decreasing Y-O-Y commits
+- took an estimated 64 years of effort (COCOMO model)
+- starting with its first commit in February, 2008
+- ending with its most recent commit 3 days ago
+
+and this is missing the earlier years, from 2001 to 2008, before moving to bazaar and Launchpad.
 </t>
 <t tx="sps.20100708203040.19008">@language python
 import os

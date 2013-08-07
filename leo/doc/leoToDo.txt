@@ -2647,7 +2647,8 @@ assoc:
     http://ss64.com/nt/assoc.html
 
 
-From http://webpages.charter.net/edreamleo/install.html#installing-leo-on-windows (and http://www.maphew.com/How_To/Installing_Leo_Editor_on_Windows.html)
+From http://leoeditor.com/installing.html#installing-leo-on-windows and 
+http://www.maphew.com/How_To/Installing_Leo_Editor_on_Windows.html
 .. @+node:ekr.20130503155210.24826: *4* Script: Add Windows handler for .leo files
 # https://groups.google.com/forum/?fromgroups=#!searchin/leo-editor/leo$20script/leo-editor/ANPuhuEIU9c/8lgid9MNKkAJ
 
@@ -3001,7 +3002,8 @@ From: "Edward K. Ream" <edreamleo@gmail.com>
 "On Wed, Apr 18, 2012 at 12:20 AM, Matt Wilkie <maphew@gmail.com> wrote:
 
 > the docs have the wrong version, It should match the above:
-> http://webpages.charter.net/edreamleo/install.html#installing-leo-on-windows
+>http://leoeditor.com/installing.html#installing-leo-on-windows
+
 
 Good catch.  I think rather than updating this for every release, I'll
 try to generalize it a bit so people will understand what is intended.
