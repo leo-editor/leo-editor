@@ -6,7 +6,7 @@
 markup. This plugin has been superseded by Leo's core rst3 command.
 
 This is a powerful plugin with many options.  The full documentation is at:
-http://webpages.charter.net/edreamleo/rstplugin3.html
+http://leoeditor.com//rstplugin3.html
 
 The rst3 plugin adds the Write Restructured Text command to Leo's Edit menu. This
 command searches the selected outline looking for **rst root nodes** whose
@@ -30,7 +30,7 @@ You can control the formatting of the HTML file by altering these .css files.
 rst3 options control most aspects of this plugin's operations. You can set
 options in @settings trees, in headlines and in body text. There are too many
 details to discuss here. For full details see:
-http://webpages.charter.net/edreamleo/rstplugin3.html
+http://leoeditor.com//rstplugin3.html
 
 '''
 #@-<< docstring >>

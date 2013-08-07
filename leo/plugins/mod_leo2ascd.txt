@@ -430,8 +430,8 @@ From there:
 
 Here are some web locations for the items I've referenced above:
 
-Leo::    
-    http://webpages.charter.net/edreamleo/front.html[]
+Leo::
+    http://leoeditor.com/
 Python::
     http://www.python.org[]
 Docbook::    
