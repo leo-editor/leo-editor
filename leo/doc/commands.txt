@@ -52,11 +52,12 @@ of all commands type::
 
     <Alt-X>print-commands<Return>
     
-**Extremely important**: Like Emacs, many of Leo's commands have long-winded names.
-It is **not**, repeat **not** necessary to type the entire name in the minibuffer!
-Instead, you can use **tab completion** to shortcut your typing.  For example,
-Suppose you want to execute the print-commands return. First, you type the first
-few characters of the command, and hit the <tab> key::
+**Extremely important**: Like Emacs, many of Leo's commands have
+long-winded names. It is **not** necessary to type the entire name in the
+minibuffer! Instead, you can use **tab completion** to shortcut your
+typing. For example, Suppose you want to execute the print-commands return.
+First, you type the first few characters of the command, and hit the <tab>
+key::
 
     <Alt-x>pri<Tab>
     
@@ -64,6 +65,7 @@ You will see the following list of completions in the log window::
 
     print-all-uas
     print-bindings
+    print-buttons
     print-cmd-docstrings
     print-commands
     print-focus
@@ -161,18 +163,16 @@ bindings shown::
 .. @+node:ekr.20060613062025.1: *4* Debugging commands
 These commands are for debugging Leo itself::
 
-    collect-garbage
     debug
-    disable-gc-trace
-    dump-all-objects
-    dump-new-objects
     dump-outline
-    enable-gc-trace
-    free-tree-widgets
+    gc-collect-garbage
+    gc-dump-all-objects
+    gc-dump-new-objects
+    gc-dump-objects-verbose
+    gc-print-summary
+    gc-trace-disable
+    gc-trace-enable
     print-focus
-    print-gc-summary
-    print-stats
-    verbose-dump-objects
 .. @+node:ekr.20060613062025.4: *4* Emacs commands
 The following commands work just like their Emacs counterparts.
 Use the help-for-command command for further details::
@@ -323,7 +323,7 @@ Use the help-for-command command for further details::
     Alt-Y       yank-pop
                 zap-to-character
 .. @+node:ekr.20060613062025.5: *4* Find commands
-Here is a list of all of Leo's find commands. The apropos-find-commands
+Here is a list of all of Leo's find commands. The help-for-find-commands
 command will print a detailed help message discussing these commands::
 
                     clone-find-all
@@ -448,15 +448,24 @@ The help-for-command command prompts for a command name
 (you can use typing completion to specify the command)
 and then prints a brief description of that command::
 
-        apropos-autocompletion
-        apropos-bindings
-        apropos-find-commands
-        help
-    F1  help-for-command
-        help-for-python
+    F1  help
+        help-for-abbreviations
+        help-for-autocompletion
+        help-for-bindings
+        help-for-command
+        help-for-debugging-commands
+        help-for-find-commands
+        help-for-minibuffer
+    F12 help-for-python
+        help-for-regular-expressions
         mode-help
         print-bindings
+        print-buttons
+        print-cmd-docstrings
         print-commands
+        print-focus
+        print-plugins-info
+        print-settings
 .. @+node:ekr.20060613062025.10: *4* Mode commands
 These commands put Leo into various kinds of modes.
 
@@ -470,12 +479,12 @@ These commands put Leo into various kinds of modes.
 
 - Other commands determine whether autocompletion or calltips are in effect.
 
-- When extend mode is effect, basic editing commands that move the cursor also
-  extend the selected text.
-  For example, in extend mode the back-char command works the same as the
-  back-char-extend-selection command.
+- When extend mode is effect, basic editing commands that move the cursor
+  also extend the selected text. For example, in extend mode the back-char
+  command works the same as the back-char-extend-selection command.
 
-Here is the full list of mode-related commands::
+Here is the a list of mode-related commands. There may be other
+enter-xxx-mode commands depending on \@mode nodes in your settings files::
 
                 auto-complete
     Ctrl-Space  auto-complete-force
@@ -483,18 +492,6 @@ Here is the full list of mode-related commands::
                 disable-calltips
                 enable-autocompleter
                 enable-calltips
-                enter-apropos-mode
-                enter-commands-mode
-                enter-edit-mode
-                enter-emacs-mode
-                enter-extract-mode
-                enter-file-mode
-                enter-gui-mode
-                enter-help-mode
-                enter-kill-mode
-                enter-modes-mode
-                enter-move-outline-mode
-                enter-outline-mode
                 enter-quick-command-mode
                 enter-toggle-find-mode
                 exit-named-mode

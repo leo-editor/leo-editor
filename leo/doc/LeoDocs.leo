@@ -82,8 +82,7 @@
 </v>
 <v t="ekr.20101025080245.5795"><vh>Basics</vh>
 <v t="ekr.20050831195331.1"><vh>FAQ</vh>
-<v t="ekr.20100805165051.7151"
-expanded="ekr.20050830115714.26,"><vh>@file FAQ.txt</vh></v>
+<v t="ekr.20100805165051.7151"><vh>@file FAQ.txt</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows page</vh>
 <v t="ekr.20100821182153.4344"><vh>@file screen-shots.txt</vh></v>
@@ -670,7 +669,6 @@ expanded="ekr.20050830115714.26,"><vh>@file FAQ.txt</vh></v>
 <v t="ekr.20130807090137.19383"><vh>PortableFileAssociator</vh></v>
 </v>
 </v>
-<v t="ekr.20130805080841.17066"><vh>Update list of commands in the docs</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -3684,53 +3682,6 @@ for p in root.self_and_subtree():
         '[%s]' % ', '.join(['(v:%s @ %s, %s)' % (v.h,id(v),i) for v,i in p.stack]),
     ))
 </t>
-<t tx="ekr.20130805080841.17066">https://groups.google.com/forum/#!topic/leo-editor/zLYKksm4btM
-
-It appears that there are a lot of commands listed on the commands web
-page that do not exist (any longer?) in leo.
-
-For example:
-
-collect-garbage
-disable-gc-trace
-dump-all-objects
-dump-new-objects
-enable-gc-trace
-free-tree-widgets
-verbose-dump-objects
-apropos-autocompletion
-apropos-bindings
-apropos-find-commands
-
-enable-autocompleter
-            enable-calltips
-            enter-apropos-mode
-            enter-commands-mode
-            enter-edit-mode
-            enter-emacs-mode
-            enter-extract-mode
-            enter-file-mode
-            enter-gui-mode
-            enter-help-mode
-            enter-kill-mode
-            enter-modes-mode
-            enter-move-outline-mode
-            enter-outline-mode
-            enter-toggle-find-mode
-
-Also these appear to exist in leo but they do not appear in commands.html:
-
-   help-for-abbreviations
-   help-for-autocompletion
-   help-for-bindings
-   help-for-debugging-commands
-   help-for-find-commands
-   help-for-minibuffer
-   help-for-regular-expressions
-
-I am particularly interested in the various enter-x-mode commands. Have
-these been moved to @mode nodes in leoSettings files? Where can I find
-them? </t>
 <t tx="ekr.20130806072439.18495">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
 
 --===============6499910529404615799==
