@@ -659,11 +659,8 @@ expanded="edream.110203163054.63,"><vh>@file release_notes.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20130803073926.17124"><vh>Doc bugs</vh>
-<v t="ekr.20130806072439.20195"><vh>"Leo's home page moving to leoeditor.com"</vh>
-<v t="ekr.20130806072439.20196"><vh>"Re: Leo's home page moving to leoeditor.com"</vh></v>
-<v t="ekr.20130806072439.20198"><vh>"Re: Leo's home page moving to leoeditor.com"</vh></v>
-<v t="ekr.20130806072439.20199"><vh>"Re: Leo's home page moving to leoeditor.com"</vh></v>
-</v>
+<v t="ekr.20130807090137.16311"><vh>Re: Cannot open Leo files by double-click in Windows Explorer?</vh></v>
+<v t="ekr.20130806072439.20195"><vh>* Leo's home page moving to leoeditor.com</vh></v>
 <v t="ekr.20130803125244.17080"><vh>* Document Windows associations</vh></v>
 <v t="ekr.20130805080841.17066"><vh>Update list of commands in the docs</vh></v>
 <v t="ekr.20130526065545.14931"><vh>Suggestion for docs: Find and replace, missing a step\</vh></v>
@@ -674,7 +671,6 @@ expanded="edream.110203163054.63,"><vh>@file release_notes.txt</vh></v>
 <v t="ekr.20130526065545.17559"><vh>Really @edit can expand nodes?</vh>
 <v t="ekr.20130526065545.17560"><vh>Re: Really @edit can expand nodes?</vh></v>
 </v>
-<v t="ekr.20130526065545.17610"><vh>Associate .Leo files to open with Leo when double click, and some more noob confussion</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -3176,53 +3172,6 @@ right place, but it should suffice.
 Edward
 
 </t>
-<t tx="ekr.20130526065545.17610">@nocolor
-
-From: Fidel_P &lt;fidelperez@gmail.com&gt;
-
-- Im having trouble also linking Leo files to Leo. I have tried this:
-  
-
-      Associate .leo filetype batch file:
-&gt;           ftype LeoFile=3DC:Python25pythonw.exe =93C:Python25Libsite-
-&gt; packagesleolaunchLeo.py=94 =93%1=94 assoc .leo=3DLeoFile
-
-Which I found here&lt;https://groups.google.com/forum/?fromgroups=3D#!searchin/leo-editor/associate/leo-editor/3Ry5o8gE16E/Ble8B8RCRUsJ&gt;,
-but leolaunchleo.py doesnt even exist anymore (the post is old).
-
-- I guess others have had this idea but It would be great to include a
-  small file within the Quickstart guide which would associate files
-  automatically. (Or maybe asking for imput, which can be done through a
-  Leo node and this way the user learns about its functionality).
-
-- Also, I miss some more buttons or scripts in quick start guide,
-  preferably before the "programming" section, so when a new user opens it,
-  he has had the opportunity to do Ctrl+B on several scripts (for instance,
-  showing in the log the name of all the nodes within the selected one,
-  having some subnodes with numbers and doing math on them and showing the
-  result on the log pane, and as much "silly" but visual functions as
-  possible so the user, by going pressing ctrl+b on each, gets a bigger
-  chance to understand what is Leo. In my oppinion some users will just
-  stop in the quickguide if they are not presented with such a thing before
-  going to docs.leo etc.
-
-- Another thing is the plugin activation, the description of the plugins is
-  not as accessible as it should be (opinions here, focusing in new users,
-  and as I always say, appreciating and fully grateful for Leo as is
-  now),and a script for activating them easier, been a week using Leo and
-  still cant quite activate, find the descriptions or use them freely...
-  And if each plugin or script had an example of use that would be
-  priceless, for instance, including them all in quickstart (both scripts,
-  plugins branchs) and then the new user could just go through all clicking
-  on the examples and just seeing Leo work and show its potential. I know
-  some of those are done but as I said, after a week or so I still am very
-  confused...
-
-- Also, quickstartguide should be open by default (instead of current Leo
-  workbook) at least until the user changes some config and prevents that
-  from happening. Is there any "load previous tabs" functionality? (IE open
-  the Leo files which where open when it was closed the last time)
-</t>
 <t tx="ekr.20130526065545.17620">@nocolor
 
 From: Jacob Peck &lt;gatesphere@gmail.com&gt;
@@ -3741,7 +3690,8 @@ if __name__ == '__main__':
 <t tx="ekr.20130803073926.17115"></t>
 <t tx="ekr.20130803073926.17122"></t>
 <t tx="ekr.20130803073926.17123"></t>
-<t tx="ekr.20130803073926.17124"></t>
+<t tx="ekr.20130803073926.17124">@language rest
+</t>
 <t tx="ekr.20130803125244.17080">Installing Leo on Windows
 
     Install Python from http://www.python.org/download/releases/
@@ -13298,69 +13248,22 @@ myLeoSettings.leo:
         join(g.app.globalConfigDir, settings_fn),
     )
 </t>
-<t tx="ekr.20130806072439.20195"></t>
-<t tx="ekr.20130806072439.20196">@nocolor
-
-From: lewis &lt;lewisneal@operamail.com&gt;
-
-
-
-
-These Help menu items need updating:
-    
-&gt;About Leo   (lists charter.net)
-&gt;Online Home Page  (the redirect http://leoeditor.com/front.html is not 
-found)
-&gt;Open Online Tutorial  (doesn't launch)
-&gt;Open Users Guide  (links to 
-http://webpages.charter.net/edreamleo/leo_toc.html)
-
-and leoSettings.leo#Candidates for settings in myLeoSettings.leo--&gt;Key 
-binding and operation--&gt;Keyboard shortcuts--&gt;@ignore Unused key 
-bindings--&gt;@keys Vim bindings--&gt;Vim User Documentation
-
-</t>
-<t tx="ekr.20130806072439.20198">@nocolor
-
-From: lewis &lt;lewisneal@operamail.com&gt;
-
-
-
-
-The Leo wikipedia entry http://en.wikipedia.org/wiki/Leo_(text_editor)
-should be updated with the new website url.
-
-Lewis
-</t>
-<t tx="ekr.20130806072439.20199">@nocolor
-
-From: Matt Wilkie &lt;maphew@gmail.com&gt;
-
-
-
+<t tx="ekr.20130806072439.20195">From: Matt Wilkie &lt;maphew@gmail.com&gt;
 
 web bug: the search form at http://leoeditor.com/ tries to search 
 charter.net
 
--matt
+From: lewis &lt;lewisneal@operamail.com&gt;
 
+The Leo wikipedia entry http://en.wikipedia.org/wiki/Leo_(text_editor)
+should be updated with the new website url.
 
-
-On Tuesday, 26 March 2013 06:37:06 UTC-7, Edward K. Ream wrote:
-&gt;
-&gt; I have just cancelled my service with charter.net.  It's not clear how 
-&gt; long the charter.net site will be up.
-&gt;
-&gt; My brother will be hosting leoeditor.com for the foreseeable future.  As 
-&gt; you will see, the live feed from the leo-editor google group works just 
-&gt; fine.
-&gt;
-&gt; The only glitch at present is that leoeditor.com doesn't have the Leo 
-&gt; screenshot.  I'll be fixing that as soon as I get admin access myself.  
-&gt; Please let me know if there are any other problems.
-&gt;
-&gt; Edward
-&gt;
+These Help menu items need updating:
+    
+    about Leo   (lists charter.net)
+    Online Home Page  (the redirect http://leoeditor.com/front.html is not found)
+    Open Online Tutorial  (doesn't launch)
+    Open Users Guide  (links to http://webpages.charter.net/edreamleo/leo_toc.html)
 </t>
 <t tx="ekr.20130806072439.20200">From: tfer &lt;tfetherston@aol.com&gt;
 
@@ -13775,6 +13678,13 @@ if exp_only != 'cancel':
     
     if filename is not None:
         open(filename,'w').write('\\n'.join(lines))
+</t>
+<t tx="ekr.20130807090137.16311">From: Matt Wilkie &lt;maphew@gmail.com&gt;
+
+Edward (or anyone else with access to bzr, I don't right now (and the last
+time it didn't work anyway ;-): the docs have the wrong version, It should
+match the above:
+http://webpages.charter.net/edreamleo/install.html#installing-leo-on-windows
 </t>
 <t tx="sps.20100708203040.19008">@language python
 import os

@@ -517,7 +517,7 @@
 </v>
 </v>
 <v t="ekr.20070224073109.1"></v>
-<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
+<v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
 <v t="ekr.20100904134301.11002"><vh>@data global-abbreviations</vh></v>
@@ -6432,7 +6432,7 @@ into your myLeoSettings.leo file under the "@settings" node.
 
 	Commands supported
 	| Documentation of the supported vi commands is provided in Chapter 22 of
-	| Leo's User Guide (http://webpages.charter.net/edreamleo/vimBindings.html).
+	| Leo's User Guide (http://leoeditor.com/vimBindings.html).
 
 	Commands not supported
 	| Most unsupported Vi commands are either due to a Leo architecture problem

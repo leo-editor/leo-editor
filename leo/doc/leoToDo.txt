@@ -1953,6 +1953,13 @@ vt = to_c.hiddenRootNode
 just to feed in the 2 nodes, Any quick idea how this can be done the best 
 way?
 .. @+node:ekr.20130806211959.17359: *4* User comments
+.. @+node:ekr.20130807090137.11464: *5* From Vili
+From: vili <viljem.tisnikar@gmail.com>
+
+Despite I am no programmer, I have been using Leo for some years now
+as my "Intelligent PIM" - I organize my (complex) life with Leo.
+
+Many thanks to Edward and others for the great application.
 .. @+node:ekr.20130806211959.17360: *5* Blog post about how Leo can improve organization of code bases
 @nocolor
 
@@ -2728,8 +2735,366 @@ def but_quotes_at_the_end_of_a_triple_quoted_string_are_still_tricky(self):
     string = """Hello "world\""""
     
 what
-.. @+node:ekr.20130806072439.20640: *3* Installation (review 21)
+.. @+node:ekr.20130806072439.20640: *3* Installation
 @language rest
+.. @+node:ekr.20130807090137.11465: *4* Help/bugs
+.. @+node:ekr.20130806072439.20647: *5* Associate .Leo files to open with Leo when double click, and some more noob confussion
+From: <fidelperez@gmail.com>
+
+Im having trouble also linking Leo files to Leo. I have tried this:
+  
+
+      Associate .leo filetype batch file:
+      ftype LeoFile=3DC:Python25pythonw.exe =93C:Python25Libsite-packagesleolaunchLeo.py=94 =93%1=94 assoc .leo=3DLeoFile
+
+Which I found here<https://groups.google.com/forum/?fromgroups=3D#!searchin/leo-editor/associate/leo-editor/3Ry5o8gE16E/Ble8B8RCRUsJ>,
+but leolaunchleo.py doesnt even exist anymore (the post is old).
+
+I guess others have had this idea but It would be great to include a small
+file within the Quickstart guide which would associate files automatically.
+(Or maybe asking for imput, which can be done through a Leo node and this
+way the user learns about its functionality).
+
+Also, I miss some more buttons or scripts in quick start guide, preferably
+before the "programming" section, so when a new user opens it, he has had
+the opportunity to do Ctrl+B on several scripts (for instance, showing in
+the log the name of all the nodes within the selected one, having some
+subnodes with numbers and doing math on them and showing the result on the
+log pane, and as much "silly" but visual functions as possible so the user,
+by going pressing ctrl+b on each, gets a bigger chance to understand what
+is Leo. In my oppinion some users will just stop in the quickguide if they
+are not presented with such a thing before going to docs.leo etc.
+  
+
+
+Another thing is the plugin activation, the description of the plugins is
+not as accessible as it should be (opinions here, focusing in new users,
+and as I always say, appreciating and fully grateful for Leo as is now),and
+a script for activating them easier, been a week using Leo and still cant
+quite activate, find the descriptions or use them freely... And if each
+plugin or script had an example of use that would be priceless, for
+instance, including them all in quickstart (both scripts, plugins branchs)
+and then the new user could just go through all clicking on the examples
+and just seeing Leo work and show its potential. I know some of those are
+done but as I said, after a week or so I still am very confused...
+  
+.. @+node:ekr.20130806072439.20648: *6* Re: Associate .Leo files to open with Leo when double click, and some more noob confussion
+From: Matt Wilkie <maphew@gmail.com>
+
+--047d7b6043c8d1f6bf04dc5376a1
+
+Content-Transfer-Encoding: quoted-printable
+
+>
+>    - Im having trouble also linking Leo files to Leo. I have tried this:
+>
+>
+>       Associate .leo filetype batch file:
+>>           ftype LeoFile=3DC:Python25pythonw.exe =93C:Python25Libsite-
+>> packagesleolaunchLeo.py=94 =93%1=94 assoc .leo=3DLeoFile
+>
+>
+> Which I found here<https://groups.google.com/forum/?fromgroups=3D#!searchin/leo-editor/associate/leo-editor/3Ry5o8gE16E/Ble8B8RCRUsJ>,
+> but leolaunchleo.py doesnt even exist anymore (the post is old).
+>
+
+Those instructions are sitll more or less relevant, but somehow all the
+slashes are missing. In any case, please try downloading
+"create-leobat.bat" batch file to the Leo directory and running from an
+admin-level command prompt:
+
+   create-leobat c:\\path\\to\\python27\\python.exe register
+
+--
+http://bazaar.launchpad.net/~maphew/leo-editor/pypi-packaging/view/head:/create-leobat.bat
+
+
+>    - I guess others have had this idea but It would be great to include a
+>    small file within the Quickstart guide which would associate files
+>    automatically. (Or maybe asking for imput, which can be done through a Leo
+>    node and this way the user learns about its functionality).
+>
+>
+I wrote a leo script that creates the file association, which I hope to
+include in the next release or on the Leo blog as a sample:
+https://groups.google.com/d/msg/leo-editor/ANPuhuEIU9c/GTcpLvVB_WoJ.
+
+To use it, copy everything between the triple curly braces {{{...}}}, but
+not including the braces, and paste into an Leo window, then press [Ctrl-B].
+
+It requires that Leo is started from an Admin level command shell (or that
+UAC is turned off).
+.. @+node:ekr.20130806072439.20649: *6* Terry script
+> Moreover, support for session tracking and restoring becomes an instant
+> addition since just by oppening all the @path leo nodes under a "session"
+> node we can restore our session!
+
+There was a thread about saving sessions some time ago.  Here's a
+script from that thread which adds a @script node to your outline which
+reloads the other outlines currently loaded when this outline is next
+loaded.
+
+tablist = g.findNodeAnywhere(c, '@script load tabs')
+if not tablist:
+    from leo.core.leoNodes import vnode
+    v = vnode(c)
+    v.h = '@script load tabs'
+    v._linkAsNthChild(c.hiddenRootNode,
+         len(c.hiddenRootNode.children))
+tablist = g.findNodeAnywhere(c, '@script load tabs')
+assert tablist
+import time
+b = ["# Generated %s\n"%time.strftime('%c')]
+for oc in g.app.commanders():
+    b.append("g.openWithFileName('%s', c)" % oc.fileName())
+b.append("c.frame.bringToFront()")
+b.append("c.setLog()")
+tablist.b = '\n'.join(b)
+.. @+node:ekr.20130806072439.20646: *6* Re: Associate .Leo files to open with Leo when double click, and some more noob confussion
+From: =?UTF-8?Q?Fidel_P=C3=A9rez?= <fidelperez@gmail.com>
+
+
+
+Content-Transfer-Encoding: quoted-printable
+
+
+  
+   - Also, quickstartguide should be open by default (instead of current
+   Leo workbook) at least until the user changes some config and prevents that
+   from happening. Is there any "load previous tabs" functionality? (IE open
+   the Leo files which where open when it was closed the last time)
+
+
+On Thursday, May 9, 2013 9:36:36 AM UTC+2, Fidel P=E9rez wrote:
+>
+> Hi:
+>
+>    - Im having trouble also linking Leo files to Leo. I have tried this:
+>   
+>
+>       Associate .leo filetype batch file:
+>>           ftype LeoFile=3DC:Python25pythonw.exe =93C:Python25Libsite-
+>> packagesleolaunchLeo.py=94 =93%1=94 assoc .leo=3DLeoFile
+>
+>
+> Which I found here<https://groups.google.com/forum/?fromgroups=3D#!searchin/leo-editor/associate/leo-editor/3Ry5o8gE16E/Ble8B8RCRUsJ>,
+> but leolaunchleo.py doesnt even exist anymore (the post is old).
+>
+>
+>    - I guess others have had this idea but It would be great to include a
+>    small file within the Quickstart guide which would associate files
+>    automatically. (Or maybe asking for imput, which can be done through a Leo
+>    node and this way the user learns about its functionality).
+>   
+>
+>
+>    - Also, I miss some more buttons or scripts in quick start
+>     guide, preferably before the "programming" section, so when a new
+>    user opens it, he has had the opportunity to do Ctrl+B on several scripts
+>    (for instance, showing in the log the name of all the nodes within the
+>    selected one, having some subnodes with numbers and doing math on them and
+>    showing the result on the log pane, and as much "silly" but visual
+>    functions as possible so the user, by going pressing ctrl+b on each, gets a
+>    bigger chance to understand what is Leo. In my oppinion some users will
+>    just stop in the quickguide if they are not presented with such a thing
+>    before going to docs.leo etc.
+>   
+>
+>
+>    - Another thing is the plugin activation, the description of the
+>    plugins is not as accessible as it should be (opinions here, focusing
+>    in new users, and as I always say, appreciating and fully grateful for Leo
+>    as is now),and a script for activating them  easier, been a week using Leo
+>    and still cant quite activate, find the descriptions or use them freely...
+>    And if each plugin or script had an example of use that would be priceless,
+>    for instance, including them all in quickstart (both scripts, plugins
+>    branchs) and then the new user could just go through all clicking on the
+>    examples and just seeing Leo work and show its potential. I know some of
+>    those are done but as I said, after a week or so I still am very confused...
+>   
+>
+> Thank you.
+>
+.. @+node:ekr.20130806072439.20651: *5* Cannot open Leo files by double-click in Windows Explorer?
+From: Nick_H <nah@plextek.co.uk>
+
+Wen I double-click on any Leo file on my desktop to launch Leo, it simply
+launches with the default workbook.leo file open. I can, of course, open
+any file via the File|Open dialog, but that's not so convenient. The file
+association contains the following command to execute for the Open
+operation::
+
+    "C:\\Tools\\Python32\\python.exe"
+    "C:\\Tools\\Leo-4.10-final\\launchLeo.py %*"
+
+Can you suggest what might be wrong?
+
+===== From: Matt Wilkie <maphew@gmail.com>
+
+It's the trailing %*, use "%1" instead.
+
+Here is my setup...
+
+Set up file type association:
+
+    ftype LeoFile=C:\\Python27\\pythonw.exe C:\\apps\\leo\\launchLeo.py
+    assoc .leo=LeoFile
+
+And put this leo.bat in %PATH%:
+
+    @start /b "Leo" C:\\Python27\\python.exe C:\\apps\\leo\\launchLeo.py %*
+
+===== From: Eoin <eoinmccarthy@fastmail.fm>
+
+I got the association working on Windows 7 using:
+
+    ftype LeoFile=3D"C:\\Python322\\pythonw.exe" "C:\\Program Files (x86)\\Leo-4.9-final\\launchLeo.py" "%1"
+    assoc .leo=3DLeoFile
+    regsvr32 /i shell32.dll
+    
+===== From: Matt Wilkie <maphew@gmail.com>
+
+>>regsvr32 /i shell32.dll
+
+Just note that this command does a lot more than update file
+associations, and may undo some other customizations you've done
+(default program for camera preview, shortcut wizard behaviour, ...)
+http://www.pcworld.com/article/126116/windows_tips_fix_windows_glitches_by_reregistering_your_dlls.html
+
+===== From: HansBKK <hansbkk@gmail.com>
+
+Here's my launch batch. Note nothing's actually installed::
+
+    set HOME=E:\\aasync\\Data\\H_HOME
+    cd \\aasync\\PortableApps\\leo-editor
+    start "" "..\\CommonFiles\\Python27\\pythonw.exe" 
+    "..\\CommonFiles\\Python27\\Lib\\site-packages\\leo-editor4\\launchLeo.py" %*
+    exit
+.. @+node:ekr.20130806072439.20652: *6* Re: Cannot open Leo files by double-click in Windows Explorer?
+From: "Edward K. Ream" <edreamleo@gmail.com>
+
+"On Wed, Apr 18, 2012 at 12:20 AM, Matt Wilkie <maphew@gmail.com> wrote:
+
+> the docs have the wrong version, It should match the above:
+> http://webpages.charter.net/edreamleo/install.html#installing-leo-on-windows
+
+Good catch.  I think rather than updating this for every release, I'll
+try to generalize it a bit so people will understand what is intended.
+ The fix will probably be tricky: it's so hard to be clear and general
+at the same time.  Otoh, making instructions
+Python-and-Leo-version-depenedent is pretty hopeless.
+
+EKR
+"
+.. @+node:ekr.20130806072439.20653: *6* Re: Cannot open Leo files by double-click in Windows Explorer?
+From: Matt Wilkie <maphew@gmail.com>
+
+> The file association contains the following command to execute for the
+> Open operation:
+> "C:\\Tools\\Python32\\python.exe" "C:\\Tools\\Leo-4.10-final\\launchLeo.py
+> %*"
+
+it's the trailing %*, use "%1" instead.
+
+You want %*  in a batch file. It passes all command line arguments to
+the program being called.
+
+"%1" passes just the file being clicked on, quoted for spaces etc.
+When in a batch file %1 passes just the first command line parameter.
+
+It is logical to expect %* to work for click file association as well,
+but it doesn't. I don't know why.
+.. @+node:ekr.20130806072439.20654: *6* Re: Cannot open Leo files by double-click in Windows Explorer?
+From: Matt Wilkie <maphew@gmail.com>
+
+> Set up file type association:
+>
+> C:\\> ftype LeoFile=3DC:\\Python27\\pythonw.exe C:\\apps\\leo\\launchLeo.py =E2=80=9C%1=E2=80=B3
+> C:\\> assoc .leo=3DLeoFile
+>
+And put this leo.bat in %PATH%:
+>
+> @start /b "Leo" C:\\Python27\\python.exe C:\\apps\\leo\\launchLeo.py %*
+>
+Edward (or anyone else with access to bzr, I don't right now (and the last
+time it didn't work anyway ;-): the docs have the wrong version, It should
+match the above:
+http://webpages.charter.net/edreamleo/install.html#installing-leo-on-windows
+
+
+-matt
+.. @+node:ekr.20130806072439.20655: *6* Re: Cannot open Leo files by double-click in Windows Explorer?
+From: Nick_H <nah@plextek.co.uk>
+
+Many thanks to all for these replies!
+This is my final "open" string in the Windows file associations:
+"C:\\Tools\\Python32\\python.exe" "C:\\Tools\\Leo-4.10-final\\launchLeo.py"
+--gui=3Dqttabs "%1"
+Note that the brackets are needed round the %1 to cater for file paths
+containing spaces.
+
+Matt, thanks for the extra details about using ftype and assoc. I hadn't
+realised those existed in Windows. For anyone else reading this, that is an
+alternative to working through the file associations GUI.
+.. @+node:ekr.20130806072439.20656: *6* Re: Cannot open Leo files by double-click in Windows Explorer?
+From: HansBKK <hansbkk@gmail.com>
+
+On Tuesday, April 17, 2012 1:43:34 AM UTC+7, Matt Wilkie wrote:
+>
+> > there's a very cool tool called "PortableFileAssociator" that allows you 
+> to
+> > create a set of windows file associations, icons etc and enable/disable
+>
+> neat, thanks for the tip.
+> oh, looks like it's problematic with portableapps.com suite 'cause of
+> high false-positive AV warnings... but maybe the same functionality
+> will be incorporated into the PA menu launcher. Cool.
+> http://portableapps.com/node/15583?page=4
+>
+
+Yes, many cool tools like this use autohotkey, or a certain compiler that 
+also gets used for some malware and triggers false positives for some of 
+the sloppier a/v packages.
+
+If you want to be safe, get a more balanced picture from one of these:
+http://www.virustotal.com/
+http://virusscan.jotti.org/en
+.. @+node:ekr.20130806072439.20657: *6* Re: Cannot open Leo files by double-click in Windows Explorer?
+.. @+node:ekr.20130806072439.20661: *6* EKR
+From: "Edward K. Ream" <edreamleo@gmail.com>
+
+On Fri, Apr 13, 2012 at 5:24 AM, Nick_H <nah@plextek.co.uk> wrote:
+
+> "C:\\Tools\\Python32\\python.exe" "C:\\Tools\\Leo-4.10-final\\launchLeo.py
+> %*"
+>
+> Can you suggest what might be wrong?
+
+The last set of double quotes looks wrong.  Try:
+
+"C:\\Tools\\Python32\\python.exe" "C:\\Tools\\Leo-4.10-final\\launchLeo.py" %*
+
+In this case, none of the double quotes are needed, because the paths
+have no embedded blanks, so this also should work:
+
+C:\\Tools\\Python32\\python.exe C:\\Tools\\Leo-4.10-final\\launchLeo.py %*
+
+Finally, unless you have a strong reason not to do so, I would suggest
+adding the --gui=qttabs option::
+
+C:\\Tools\\Python32\\python.exe C:\\Tools\\Leo-4.10-final\\launchLeo.py
+--gui=qttabs %*
+.. @+node:ekr.20130806072439.20663: *6* PortableFileAssociator
+From the thread: Cannot open Leo files by double-click in Windows Explorer?
+From: HansBKK <hansbkk@gmail.com>
+
+This is a bit OT, but: for those like me who work in "portable" mode, 
+there's a very cool tool called "PortableFileAssociator" that allows you to 
+create a set of windows file associations, icons etc and enable/disable the 
+whole profile at one time, without messing with the local system's registry.
+
+Also handy for those not in portable mode, but working on different windows 
+boxes and bored with having to tweak each one separately.
 .. @+node:ekr.20130806072439.20732: *4* ** Runnable Leo in one .zip file.
 From: Terry Brown <terry_n_brown@yahoo.com>
 
@@ -2771,28 +3136,14 @@ runLeo.bat could be added in the top level to actually launch it.
 
 Of course this is for Windows, so I think it's an improvement over
 asking people to install Python and PyQt first, but neither of those
-steps was that hard in Windows anyway.  I wonder if anything similar is
-possible for Mac.
+steps was that hard in Windows anyway.
 
-.. @+node:ekr.20130806072439.20734: *5* Re: Runnable Leo in one .zip file.
-From: Terry Brown <terry_n_brown@yahoo.com>
+===== EKR
 
-On Thu, 5 Jan 2012 08:21:49 -0800 (PST)
-HansBKK <hansbkk@gmail.com> wrote:
+Is this a technique that we could use for official Windows releases?
+If so, what exactly would we do?
 
-> And the normal Windows install just isn't that hard, really!
-
-I agree, I guess we're aiming at the users who move on when they see
-"to install Leo, first install Python and PyQt, then..."  The question
-again of whether they're going to want Leo when they have it or not.
-.. @+node:ekr.20130806072439.20735: *5* Re: Runnable Leo in one .zip file.
-From: Terry Brown <terry_n_brown@yahoo.com>
-
-On Thu, 5 Jan 2012 06:13:23 -0600
-"Edward K. Ream" <edreamleo@gmail.com> wrote:
-
-> Is this a technique that we could use for official Windows releases?
-> If so, what exactly would we do?
+===== Terry
 
 I guess, perhaps as an all-in-one option with a system integrated
 option for those who want to use system python/qt.  Don't know if it
@@ -2809,24 +3160,32 @@ Qt are installed in the folder the Leo version can just be copied in.
 
 It's not uncommon for FLOSS to be distributed this way, both Blender
 and Inkscape use this approach, particularly for recent builds.
+
+===== From: HansBKK <hansbkk@gmail.com>
+
+If something like this **is** done, it should IMO be packaged as an
+alternative to the normal installation procedure.
+
+You would definitely get marketing exposure by getting the specs from
+PortableApps.com and let them host it there as  "Portable Leo", tracking
+the "official" Portable Python (currently 2.7.2) as a dependency, obviously
+including QT etc as well. But it would need to be kept up to date. . .
+
+Most Windows users would be better served by following the normal
+installation procedure and ending up with a
+registry-and-environment-variables-complete install of Python et al which
+they can use for other things beyond Leo. Ending up with multiple instances
+of Python to maintain is likely to cause more problems.
+
+And the normal Windows install just isn't that hard, really! Improving the
+current instructions, by providing a step-by-step "cookbook" with direct
+links to the download packages etc might make it a **little** easier (IMO
+only for the clueless), but then of course that would be a doc that would
+need pretty frequent updates, which if I may be so bold doesn't seem to
+happen too quickly on the doc side.
 .. @+node:ekr.20130806072439.20736: *5* Re: Runnable Leo in one .zip file.
 From: Matt Wilkie <maphew@gmail.com>
 
-
-
-
-On Monday, 2 January 2012 09:04:11 UTC-8, Terry wrote:
->
-> Summary - it's easy to make a .zip file containing Leo and all it's
-> dependencies.
-
-
---- snip 8<---, see 
-https://groups.google.com/forum/#!msg/leo-editor/jnpkrQeo9Hk/Ds3QsUe1W-QJ
-
-So, the .zip file contains all Leo needs to run, and obviously
-> runLeo.bat could be added in the top level to actually launch it.
->
 Since this topical today, almost a year later, I thought I'd take a run at 
 repeating this using Portable Python (http://www.portablepython.com) as a 
 base. It didn't work, but I think it should. Maybe someone else knows why. 
@@ -2834,6 +3193,7 @@ base. It didn't work, but I think it should. Maybe someone else knows why.
 I ran the installer for 2.7.3 since 3.2 doesn't include PyQt4. At install 
 time I selected only the Python and PyQt4 packages. Then from a fresh 
 command shell:
+
 {{{
 path=c:\\windows;c:\\windows\\system32
 pushd x:\\portapy27\\App
@@ -2854,43 +3214,6 @@ Leo requires Qt to be installed.
 }}}
 
 oh well.
-.. @+node:ekr.20130806072439.20737: *5* Re: Runnable Leo in one .zip file.
-From: Largo84 <Largo84@gmail.com>
-
-I wish it were that easy. The problem is installing PyQt. I finally gave 
-up, it wasn't worth the hassle. The only way I can run Leo on my Mac is in 
-a Windows virtual environment.
-.. @+node:ekr.20130806072439.20738: *5* Re: Runnable Leo in one .zip file.
-From: HansBKK <hansbkk@gmail.com>
-
-If something like this **is** done, it should IMO be packaged as an
-alternative to the normal installation procedure.
-
-You would definitely get marketing exposure by getting the specs from
-PortableApps.com and let them host it there as  "Portable Leo", tracking
-the "official" Portable Python (currently 2.7.2) as a dependency, obviously=
-
-including QT etc as well. But it would need to be kept up to date. . .
-
-Most Windows users would be better served by following the normal
-installation procedure and ending up with a
-registry-and-environment-variables-complete install of Python et al which=
-
-they can use for other things beyond Leo. Ending up with multiple instances=
-
-of Python to maintain is likely to cause more problems.
-
-And the normal Windows install just isn't that hard, really! Improving the=
-
-current instructions, by providing a step-by-step "cookbook" with direct
-links to the download packages etc might make it a **little** easier (IMO=
-
-only for the clueless), but then of course that would be a doc that would=
-
-need pretty frequent updates, which if I may be so bold doesn't seem to
-happen too quickly on the doc side.
-
-(for which topic I'll start a new thread)
 .. @+node:ekr.20130806072439.20744: *5* Re: Runnable Leo in one .zip file.
 From: HansBKK <hansbkk@gmail.com>
 
@@ -2973,469 +3296,113 @@ to use a single location under PortableApps, but I prefer to keep them
 separate for testing purposes.
 
 I hope you (and others googling this later) find this useful.
-.. @+node:ekr.20130806072439.20647: *4* Associate .Leo files to open with Leo when double click, and some more noob confussion
-From: <fidelperez@gmail.com>
-
-
-   - Im having trouble also linking Leo files to Leo. I have tried this:
-  
-
-      Associate .leo filetype batch file:
->           ftype LeoFile=3DC:Python25pythonw.exe =93C:Python25Libsite-
-> packagesleolaunchLeo.py=94 =93%1=94 assoc .leo=3DLeoFile
-
-
-Which I found here<https://groups.google.com/forum/?fromgroups=3D#!searchin=
-/leo-editor/associate/leo-editor/3Ry5o8gE16E/Ble8B8RCRUsJ>,
-but leolaunchleo.py doesnt even exist anymore (the post is old).
-
-
-   - I guess others have had this idea but It would be great to include a=
-   small file within the Quickstart guide which would associate files
-   automatically. (Or maybe asking for imput, which can be done through a L=
-eo
-   node and this way the user learns about its functionality).
-  
-
-
-   - Also, I miss some more buttons or scripts in quick start
-    guide, preferably before the "programming" section, so when a new user=
-
-   opens it, he has had the opportunity to do Ctrl+B on several scripts (fo=
-r
-   instance, showing in the log the name of all the nodes within the select=
-ed
-   one, having some subnodes with numbers and doing math on them and showin=
-g
-   the result on the log pane, and as much "silly" but visual functions as=
-
-   possible so the user, by going pressing ctrl+b on each, gets a bigger
-   chance to understand what is Leo. In my oppinion some users will just st=
-op
-   in the quickguide if they are not presented with such a thing before goi=
-ng
-   to docs.leo etc.
-  
-
-
-   - Another thing is the plugin activation, the description of the plugins=
-
-   is not as accessible as it should be (opinions here, focusing in new
-   users, and as I always say, appreciating and fully grateful for Leo as i=
-s
-   now),and a script for activating them  easier, been a week using Leo and=
-
-   still cant quite activate, find the descriptions or use them freely... A=
-nd
-   if each plugin or script had an example of use that would be priceless, =
-for
-   instance, including them all in quickstart (both scripts, plugins branch=
-s)
-   and then the new user could just go through all clicking on the examples=
-
-   and just seeing Leo work and show its potential. I know some of those ar=
-e
-   done but as I said, after a week or so I still am very confused...
-  
-
-Thank you.
-
-.. @+node:ekr.20130806072439.20648: *5* Re: Associate .Leo files to open with Leo when double click, and some more noob confussion
+.. @+node:ekr.20130807090137.11457: *4* File associations
+.. @+node:ekr.20130806072439.20669: *5* Leo script to register .leo files with Windows
 From: Matt Wilkie <maphew@gmail.com>
 
---047d7b6043c8d1f6bf04dc5376a1
-
-Content-Transfer-Encoding: quoted-printable
-
->
->    - Im having trouble also linking Leo files to Leo. I have tried this:
->
->
->       Associate .leo filetype batch file:
->>           ftype LeoFile=3DC:Python25pythonw.exe =93C:Python25Libsite-
->> packagesleolaunchLeo.py=94 =93%1=94 assoc .leo=3DLeoFile
->
->
-> Which I found here<https://groups.google.com/forum/?fromgroups=3D#!search=
-in/leo-editor/associate/leo-editor/3Ry5o8gE16E/Ble8B8RCRUsJ>,
-> but leolaunchleo.py doesnt even exist anymore (the post is old).
->
-
-Those instructions are sitll more or less relevant, but somehow all the
-slashes are missing. In any case, please try downloading
-"create-leobat.bat" batch file to the Leo directory and running from an
-admin-level command prompt:
-
-   create-leobat c:\\path\\to\\python27\\python.exe register
-
---
-http://bazaar.launchpad.net/~maphew/leo-editor/pypi-packaging/view/head:/cr=
-eate-leobat.bat
+--089e0162830c15bf5304dc597379
 
 
->    - I guess others have had this idea but It would be great to include a
->    small file within the Quickstart guide which would associate files
->    automatically. (Or maybe asking for imput, which can be done through a=
- Leo
->    node and this way the user learns about its functionality).
->
->
-I wrote a leo script that creates the file association, which I hope to
-include in the next release or on the Leo blog as a sample:
-https://groups.google.com/d/msg/leo-editor/ANPuhuEIU9c/GTcpLvVB_WoJ.
+http://bazaar.launchpad.net/~maphew/leo-editor/pypi-packaging/view/head:/register-leo.leos
 
-To use it, copy everything between the triple curly braces {{{...}}}, but
-not including the braces, and paste into an Leo window, then press [Ctrl-B]=
-.
+QQQQ
+Tell Windows how to handle .leo files, enables double clicking on them to
+open.
 
-It requires that Leo is started from an Admin level command shell (or that
-UAC is turned off).
-.. @+node:ekr.20130806072439.20649: *5* Terry script
-> Moreover, support for session tracking and restoring becomes an instant
-> addition since just by oppening all the @path leo nodes under a "session"
-> node we can restore our session!
+To run: in Leo make this the active node and press [Ctrl-B] (execute-script)
 
-There was a thread about saving sessions some time ago.  Here's a
-script from that thread which adds a @script node to your outline which
-reloads the other outlines currently loaded when this outline is next
-loaded.
+Requires elevated User Account Control (UAC) privileges.
+QQQQ
 
-tablist = g.findNodeAnywhere(c, '@script load tabs')
-if not tablist:
-    from leo.core.leoNodes import vnode
-    v = vnode(c)
-    v.h = '@script load tabs'
-    v._linkAsNthChild(c.hiddenRootNode,
-         len(c.hiddenRootNode.children))
-tablist = g.findNodeAnywhere(c, '@script load tabs')
-assert tablist
-import time
-b = ["# Generated %s\n"%time.strftime('%c')]
-for oc in g.app.commanders():
-    b.append("g.openWithFileName('%s', c)" % oc.fileName())
-b.append("c.frame.bringToFront()")
-b.append("c.setLog()")
-tablist.b = '\n'.join(b)
-.. @+node:ekr.20130806072439.20646: *5* Re: Associate .Leo files to open with Leo when double click, and some more noob confussion
-From: =?UTF-8?Q?Fidel_P=C3=A9rez?= <fidelperez@gmail.com>
+It is only lightly tested (one machine), but it seems to work. If
+successful, it takes over the need for the assoc and ftype commands and
+batch files which have been bobbing about lately (mostly be myself
+admittedly).
 
-
-
-Content-Transfer-Encoding: quoted-printable
-
-
-  
-   - Also, quickstartguide should be open by default (instead of current
-   Leo workbook) at least until the user changes some config and prevents t=
-hat
-   from happening. Is there any "load previous tabs" functionality? (IE ope=
-n
-   the Leo files which where open when it was closed the last time)
-
-
-On Thursday, May 9, 2013 9:36:36 AM UTC+2, Fidel P=E9rez wrote:
->
-> Hi:
->
->    - Im having trouble also linking Leo files to Leo. I have tried this:
->   
->
->       Associate .leo filetype batch file:
->>           ftype LeoFile=3DC:Python25pythonw.exe =93C:Python25Libsite-
->> packagesleolaunchLeo.py=94 =93%1=94 assoc .leo=3DLeoFile
->
->
-> Which I found here<https://groups.google.com/forum/?fromgroups=3D#!search=
-in/leo-editor/associate/leo-editor/3Ry5o8gE16E/Ble8B8RCRUsJ>,
-> but leolaunchleo.py doesnt even exist anymore (the post is old).
->
->
->    - I guess others have had this idea but It would be great to include a=
-
->    small file within the Quickstart guide which would associate files
->    automatically. (Or maybe asking for imput, which can be done through a=
- Leo
->    node and this way the user learns about its functionality).
->   
->
->
->    - Also, I miss some more buttons or scripts in quick start
->     guide, preferably before the "programming" section, so when a new
->    user opens it, he has had the opportunity to do Ctrl+B on several scri=
-pts
->    (for instance, showing in the log the name of all the nodes within the=
-
->    selected one, having some subnodes with numbers and doing math on them=
- and
->    showing the result on the log pane, and as much "silly" but visual
->    functions as possible so the user, by going pressing ctrl+b on each, g=
-ets a
->    bigger chance to understand what is Leo. In my oppinion some users wil=
-l
->    just stop in the quickguide if they are not presented with such a thin=
-g
->    before going to docs.leo etc.
->   
->
->
->    - Another thing is the plugin activation, the description of the
->    plugins is not as accessible as it should be (opinions here, focusing=
-
->    in new users, and as I always say, appreciating and fully grateful for=
- Leo
->    as is now),and a script for activating them  easier, been a week using=
- Leo
->    and still cant quite activate, find the descriptions or use them freel=
-y...
->    And if each plugin or script had an example of use that would be price=
-less,
->    for instance, including them all in quickstart (both scripts, plugins=
-
->    branchs) and then the new user could just go through all clicking on t=
-he
->    examples and just seeing Leo work and show its potential. I know some =
-of
->    those are done but as I said, after a week or so I still am very confu=
-sed...
->   
->
-> Thank you.
->
-.. @+node:ekr.20130806072439.20651: *4* Cannot open Leo files by double-click in Windows Explorer?
-From: Nick_H <nah@plextek.co.uk>
-
-Sorry, this is probably a foolish question, but when I double-click on
-any Leo file on my desktop to launch Leo, it simply launches with the
-default workbook.leo file open.
-I can, of course, open any file via the File|Open dialog, but that's
-not so convenient.
-The file association contains the following command to execute for the
-Open operation:
-"C:\\Tools\\Python32\\python.exe" "C:\\Tools\\Leo-4.10-final\\launchLeo.py
-%*"
-
-Can you suggest what might be wrong?
-Thank you!
-.. @+node:ekr.20130806072439.20652: *5* Re: Cannot open Leo files by double-click in Windows Explorer?
+It's stored in an @file instead of .leo in order to make it easier to track
+in bazaar. Is there a naming convention for leo script files? I used .leos
+for "leo script", but it occurs to me that .leox might be better (leo
+executable) as it sidesteps the inadvertent pluralizing association.
+.. @+node:ekr.20130806072439.20670: *6* Re: Leo script to register .leo files with Windows
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
-"On Wed, Apr 18, 2012 at 12:20 AM, Matt Wilkie <maphew@gmail.com> wrote:
-
-> the docs have the wrong version, It should match the above:
-> http://webpages.charter.net/edreamleo/install.html#installing-leo-on-windows
-
-Good catch.  I think rather than updating this for every release, I'll
-try to generalize it a bit so people will understand what is intended.
- The fix will probably be tricky: it's so hard to be clear and general
-at the same time.  Otoh, making instructions
-Python-and-Leo-version-depenedent is pretty hopeless.
-
-EKR
-"
-.. @+node:ekr.20130806072439.20653: *5* Re: Cannot open Leo files by double-click in Windows Explorer?
-From: Matt Wilkie <maphew@gmail.com>
-
-> The file association contains the following command to execute for the
-> Open operation:
-> "C:\\Tools\\Python32\\python.exe" "C:\\Tools\\Leo-4.10-final\\launchLeo.py
-> %*"
-
-it's the trailing %*, use "%1" instead.
-
-You want %*  in a batch file. It passes all command line arguments to
-the program being called.
-
-"%1" passes just the file being clicked on, quoted for spaces etc.
-When in a batch file %1 passes just the first command line parameter.
-
-It is logical to expect %* to work for click file association as well,
-but it doesn't. I don't know why.
-.. @+node:ekr.20130806072439.20654: *5* Re: Cannot open Leo files by double-click in Windows Explorer?
-From: Matt Wilkie <maphew@gmail.com>
-
-> Set up file type association:
->
-> C:\\> ftype LeoFile=3DC:\\Python27\\pythonw.exe C:\\apps\\leo\\launchLeo.py =E2=
-=80=9C%1=E2=80=B3
-> C:\\> assoc .leo=3DLeoFile
->
-And put this leo.bat in %PATH%:
->
-> @start /b "Leo" C:\\Python27\\python.exe C:\\apps\\leo\\launchLeo.py %*
->
-Edward (or anyone else with access to bzr, I don't right now (and the last=
-
-time it didn't work anyway ;-): the docs have the wrong version, It should=
-
-match the above:
-http://webpages.charter.net/edreamleo/install.html#installing-leo-on-window=
-s
+--001a11c1a67459191904dc5b8b8c
 
 
--matt
-.. @+node:ekr.20130806072439.20655: *5* Re: Cannot open Leo files by double-click in Windows Explorer?
-From: Nick_H <nah@plextek.co.uk>
+On Fri, May 10, 2013 at 4:03 AM, Matt Wilkie <maphew@gmail.com> wrote:
 
-Many thanks to all for these replies!
-This is my final "open" string in the Windows file associations:
-"C:\\Tools\\Python32\\python.exe" "C:\\Tools\\Leo-4.10-final\\launchLeo.py"
---gui=3Dqttabs "%1"
-Note that the brackets are needed round the %1 to cater for file paths
-containing spaces.
-
-Matt, thanks for the extra details about using ftype and assoc. I hadn't
-realised those existed in Windows. For anyone else reading this, that is an=
-
-alternative to working through the file associations GUI.
-.. @+node:ekr.20130806072439.20656: *5* Re: Cannot open Leo files by double-click in Windows Explorer?
-From: HansBKK <hansbkk@gmail.com>
-
-On Tuesday, April 17, 2012 1:43:34 AM UTC+7, Matt Wilkie wrote:
->
-> > there's a very cool tool called "PortableFileAssociator" that allows you 
-> to
-> > create a set of windows file associations, icons etc and enable/disable
->
-> neat, thanks for the tip.
-> oh, looks like it's problematic with portableapps.com suite 'cause of
-> high false-positive AV warnings... but maybe the same functionality
-> will be incorporated into the PA menu launcher. Cool.
-> http://portableapps.com/node/15583?page=4
+It's stored in an @file instead of .leo in order to make it easier to track
+> in bazaar.
 >
 
-Yes, many cool tools like this use autohotkey, or a certain compiler that 
-also gets used for some malware and triggers false positives for some of 
-the sloppier a/v packages.
-
-If you want to be safe, get a more balanced picture from one of these:
-http://www.virustotal.com/
-http://virusscan.jotti.org/en
-.. @+node:ekr.20130806072439.20657: *5* Re: Cannot open Leo files by double-click in Windows Explorer?
-From: Matt Wilkie <maphew@gmail.com>
-
-> it's the trailing %*, use "%1" instead.
-
-Here is my setup...
-
-Set up file type association:
-
-C:\\> ftype LeoFile=3DC:\\Python27\\pythonw.exe C:\\apps\\leo\\launchLeo.py
-C:\\> assoc .leo=3DLeoFile
-
-And put this leo.bat in %PATH%:
-
-@start /b "Leo" C:\\Python27\\python.exe C:\\apps\\leo\\launchLeo.py %*
-.. @+node:ekr.20130806072439.20658: *5* Re: Cannot open Leo files by double-click in Windows Explorer?
-From: Matt Wilkie <maphew@gmail.com>
-
-> there's a very cool tool called "PortableFileAssociator" that allows you to
-> create a set of windows file associations, icons etc and enable/disable
-
-neat, thanks for the tip.
-oh, looks like it's problematic with portableapps.com suite 'cause of
-high false-positive AV warnings... but maybe the same functionality
-will be incorporated into the PA menu launcher. Cool.
-http://portableapps.com/node/15583?page=4
-.. @+node:ekr.20130806072439.20659: *5* Re: Cannot open Leo files by double-click in Windows Explorer?
-From: HansBKK <hansbkk@gmail.com>
-
-Here's my launch batch. Note nothing's actually installed
-
-set HOME=E:\\aasync\\Data\\H_HOME
-cd \\aasync\\PortableApps\\leo-editor
-start "" "..\\CommonFiles\\Python27\\pythonw.exe" 
-"..\\CommonFiles\\Python27\\Lib\\site-packages\\leo-editor4\\launchLeo.py" %*
-exit
-.. @+node:ekr.20130806072439.20660: *5* Re: Cannot open Leo files by double-click in Windows Explorer?
-From: Eoin <eoinmccarthy@fastmail.fm>
-
-I got the association working on Windows 7 using:
-
-    ftype LeoFile=3D"C:\\Python322\\pythonw.exe" "C:\\Program Files (x86)\\Leo-4.9-final\\launchLeo.py" "%1"
-    assoc .leo=3DLeoFile
-    regsvr32 /i shell32.dll
-.. @+node:ekr.20130806072439.20661: *5* Re: Cannot open Leo files by double-click in Windows Explorer?
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-On Fri, Apr 13, 2012 at 5:24 AM, Nick_H <nah@plextek.co.uk> wrote:
-
-> "C:\\Tools\\Python32\\python.exe" "C:\\Tools\\Leo-4.10-final\\launchLeo.py
-> %*"
->
-> Can you suggest what might be wrong?
-
-The last set of double quotes looks wrong.  Try:
-
-"C:\\Tools\\Python32\\python.exe" "C:\\Tools\\Leo-4.10-final\\launchLeo.py" %*
-
-In this case, none of the double quotes are needed, because the paths
-have no embedded blanks, so this also should work:
-
-C:\\Tools\\Python32\\python.exe C:\\Tools\\Leo-4.10-final\\launchLeo.py %*
-
-Finally, unless you have a strong reason not to do so, I would suggest
-adding the --gui=qttabs option::
-
-C:\\Tools\\Python32\\python.exe C:\\Tools\\Leo-4.10-final\\launchLeo.py
---gui=qttabs %*
+which .leo file?
 
 Edward
-.. @+node:ekr.20130806072439.20662: *5* Re: Cannot open Leo files by double-click in Windows Explorer?
+
+--001a11c1a67459191904dc5b8b8c
+
+
+<div dir="ltr">On Fri, May 10, 2013 at 4:03 AM, Matt Wilkie <span dir="ltr">&lt;<a href="mailto:maphew@gmail.com" target="_blank">maphew@gmail.com</a>&gt;</span> wrote:<br><br><div class="gmail_extra"><div class="gmail_quote">
+<blockquote class="gmail_quote" style="margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex"><div dir="ltr"><div>It&#39;s stored in an @file instead of .leo in order to make it easier to track in bazaar. </div></div>
+</blockquote><div><br></div><div>which .leo file?<br><br>Edward</div></div></div></div>
+
+--001a11c1a67459191904dc5b8b8c--
+.. @+node:ekr.20130806072439.20671: *5* Leo script to set .leo association (Windows)
 From: Matt Wilkie <maphew@gmail.com>
 
-I'm glad you got it working.
+--001a11c2794c12136404db8f6f8b
 
->>regsvr32 /i shell32.dll
 
-Just note that this command does a lot more than update file
-associations, and may undo some other customizations you've done
-(default program for camera preview, shortcut wizard behaviour, ...)
-Here are some things it does:
-http://www.pcworld.com/article/126116/windows_tips_fix_windows_glitches_by_reregistering_your_dlls.html
-.. @+node:ekr.20130806072439.20663: *5* Re: Cannot open Leo files by double-click in Windows Explorer?
-From: HansBKK <hansbkk@gmail.com>
+Here is a Leo script which attempts to tell Windows how to handle .leo
+files, enabling 2x-click "some-workbook.leo" to start. On win7+ it requires
+Leo be started with elevated admin privileges.
 
-This is a bit OT, but: for those like me who work in "portable" mode, 
-there's a very cool tool called "PortableFileAssociator" that allows you to 
-create a set of windows file associations, icons etc and enable/disable the 
-whole profile at one time, without messing with the local system's registry.
 
-Also handy for those not in portable mode, but working on different windows 
-boxes and bored with having to tweak each one separately.
-.. @+node:ekr.20130806072439.20664: *4* finding debian package
-From: Geoff Evans <gtevansai@nl.rogers.com>
+{{{
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
+<?xml-stylesheet ekr_test?>
+<leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
+<leo_header file_format="2"/>
+<vnodes>
+<v t="maphew.20130429234409.2286"><vh>assoc leo</vh></v>
+</vnodes>
+<tnodes>
+<t tx="maphew.20130429234409.2286">pyexe = g.sys.executable
+tmp = g.os.environ['TEMP']
 
-The Leo installation instructions for Ubuntu still say merely "find
-and install the debian package".
-Can someone tell me where to find it?  Several minutes searching on
-google has not got me anywhere.
-.. @+node:ekr.20130806072439.20665: *5* Re: finding debian package
+assoc_cmd = 'assoc .leo=Leo.File'
+ftype_cmd = 'ftype Leo.File="{0}" "%1" %*'.format(pyexe)
+
+#g.es(pyexe)
+#g.es(tmp)
+g.es(assoc_cmd)
+g.es(ftype_cmd)
+
+from subprocess import Popen
+Popen('start "Shell from Leo" cmd.exe /k %s &amp;&amp; %s' % (assoc_cmd,
+ftype_cmd),
+    cwd=tmp, shell=True)
+</t>
+</tnodes>
+</leo_file>
+}}}
+
+.. @+node:ekr.20130806072439.20672: *6* Re: Leo script to set .leo association (Windows)
 From: Matt Wilkie <maphew@gmail.com>
 
-Please try the instructions here and report if they are still relevant:
-https://groups.google.com/d/msg/leo-editor/9yqhWD90Vtg/yCR8O_FBvIwJ ?
-.. @+node:ekr.20130806072439.20666: *5* Re: finding debian package
-From: Geoff Evans <gtevansai@nl.rogers.com>
+whups, sent before ready!
 
-Excellent!  Thanks very much Matt (and Ville for creating it).
-There was one error message about a signature that could not be verified, 
-and a syntax error while compiling
-   /usr/lib/pymodules/python2.7/leo/external/edb.py
-but they haven't stopped leo from opening files from my previous computer.
-The new one is running precise, in case it matters.
+to use select and copy text between braces, {{{  }}}, into a Leo outline,
+select the new node and press Ctrl-B.
 
-Minor supplementary question:  What search strategy would have led me there 
-on my own?   I agree that "Leo now apt-gettable" is perfectly 
-understandable once I see it (and indeed I have a vague memory of having 
-seen it before), but I don't know how I would have arrived at it without 
-your help.
-.. @+node:ekr.20130806072439.20668: *4* Leo script to (almost) set .leo filetype icon
+adapted from
+http://stackoverflow.com/questions/8985925/how-to-control-what-version-of-python-is-run-when-double-clicking-a-file/
+
+-matt
+
+.. @+node:ekr.20130806072439.20668: *5* Leo script to (almost) set .leo filetype icon
 From: Matt Wilkie <maphew@gmail.com>
-
---089e016282b8b94cb204dc54300f
-
-
-Hi Folks,
 
 The leo script below _almost_ adds an icon to .leo files in Windows. I say
 almost in that on my system it runs without error, the associated registry
@@ -3492,487 +3459,65 @@ http://stackoverflow.com/questions/771689/how-can-i-set-an-icon-for-my-own-file-
 </tnodes>
 </leo_file>
 }}}
-.. @+node:ekr.20130806072439.20669: *4* Leo script to register .leo files with Windows
+.. @+node:ekr.20130807090137.11461: *4* Linux
+.. @+node:ekr.20130806072439.20730: *5* PyPi package: 4.11 test release: Matt
 From: Matt Wilkie <maphew@gmail.com>
 
---089e0162830c15bf5304dc597379
+I've just uploaded Leo-4.11-devel-build-5769 to the Python Package Index:
+https://pypi.python.org/pypi/leo
 
+(todo: fix the readme, which is for 4.10, the 4.11 version remains to be
+written)
 
-http://bazaar.launchpad.net/~maphew/leo-editor/pypi-packaging/view/head:/register-leo.leos
+It can be downloaded from there and installed manually or, better yet,
+installed with `pip install leo`.
 
-QQQQ
-Tell Windows how to handle .leo files, enables double clicking on them to
-open.
+Pre-requisites are:
 
-To run: in Leo make this the active node and press [Ctrl-B] (execute-script)
+1. Python
+2. PyQt
+3. Distribute / Setuptools
 
-Requires elevated User Account Control (UAC) privileges.
-QQQQ
+Improvements over previous pypi package:
 
-It is only lightly tested (one machine), but it seems to work. If
-successful, it takes over the need for the assoc and ftype commands and
-batch files which have been bobbing about lately (mostly be myself
-admittedly).
+ - Sports Leo splash screen while installing on Windows
 
-It's stored in an @file instead of .leo in order to make it easier to track
-in bazaar. Is there a naming convention for leo script files? I used .leos
-for "leo script", but it occurs to me that .leox might be better (leo
-executable) as it sidesteps the inadvertent pluralizing association.
-.. @+node:ekr.20130806072439.20670: *5* Re: Leo script to register .leo files with Windows
-From: "Edward K. Ream" <edreamleo@gmail.com>
+ - Installs "leo" and "leoc" wrappers to PYTHONHOME\\Scripts, so as long as
+this directory is in PATH you don't need to create your own launcher (this
+is the part that requires Distribute. I'm working an way to include this
+automatically, http://stackoverflow.com/questions/16702658). It is common
+for this to be set.
 
---001a11c1a67459191904dc5b8b8c
+- all the other changes in trunk over the last couple of weeks (
+http://bazaar.launchpad.net/~leo-editor-team/leo-editor/trunk3/changes)
+.. @+node:ekr.20130806072439.20664: *5* finding debian package
+From: Geoff Evans <gtevansai@nl.rogers.com>
 
+The Leo installation instructions for Ubuntu still say merely "find
+and install the debian package".
+Can someone tell me where to find it?  Several minutes searching on
+google has not got me anywhere.
 
-On Fri, May 10, 2013 at 4:03 AM, Matt Wilkie <maphew@gmail.com> wrote:
+===== From: Matt Wilkie <maphew@gmail.com>
 
-It's stored in an @file instead of .leo in order to make it easier to track
-> in bazaar.
->
+Please try the instructions here and report if they are still relevant:
+https://groups.google.com/d/msg/leo-editor/9yqhWD90Vtg/yCR8O_FBvIwJ ?
 
-which .leo file?
+===== From: Geoff Evans <gtevansai@nl.rogers.com>
 
-Edward
+Excellent! Thanks very much Matt (and Ville for creating it). There was one
+error message about a signature that could not be verified, and a syntax
+error while compiling /usr/lib/pymodules/python2.7/leo/external/edb.py but
+they haven't stopped leo from opening files from my previous computer. The
+new one is running precise, in case it matters.
 
---001a11c1a67459191904dc5b8b8c
+Minor supplementary question: What search strategy would have led me there
+on my own? I agree that "Leo now apt-gettable" is perfectly understandable
+once I see it (and indeed I have a vague memory of having seen it before),
+but I don't know how I would have arrived at it without your help.
 
-
-<div dir="ltr">On Fri, May 10, 2013 at 4:03 AM, Matt Wilkie <span dir="ltr">&lt;<a href="mailto:maphew@gmail.com" target="_blank">maphew@gmail.com</a>&gt;</span> wrote:<br><br><div class="gmail_extra"><div class="gmail_quote">
-<blockquote class="gmail_quote" style="margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex"><div dir="ltr"><div>It&#39;s stored in an @file instead of .leo in order to make it easier to track in bazaar. </div></div>
-</blockquote><div><br></div><div>which .leo file?<br><br>Edward</div></div></div></div>
-
---001a11c1a67459191904dc5b8b8c--
-.. @+node:ekr.20130806072439.20671: *4* Leo script to set .leo association (Windows)
+.. @+node:ekr.20130806072439.20683: *5* linux users: please test pip install
 From: Matt Wilkie <maphew@gmail.com>
-
---001a11c2794c12136404db8f6f8b
-
-
-Here is a Leo script which attempts to tell Windows how to handle .leo
-files, enabling 2x-click "some-workbook.leo" to start. On win7+ it requires
-Leo be started with elevated admin privileges.
-
-
-{{{
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
-<?xml-stylesheet ekr_test?>
-<leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
-<leo_header file_format="2"/>
-<vnodes>
-<v t="maphew.20130429234409.2286"><vh>assoc leo</vh></v>
-</vnodes>
-<tnodes>
-<t tx="maphew.20130429234409.2286">pyexe = g.sys.executable
-tmp = g.os.environ['TEMP']
-
-assoc_cmd = 'assoc .leo=Leo.File'
-ftype_cmd = 'ftype Leo.File="{0}" "%1" %*'.format(pyexe)
-
-#g.es(pyexe)
-#g.es(tmp)
-g.es(assoc_cmd)
-g.es(ftype_cmd)
-
-from subprocess import Popen
-Popen('start "Shell from Leo" cmd.exe /k %s &amp;&amp; %s' % (assoc_cmd,
-ftype_cmd),
-    cwd=tmp, shell=True)
-</t>
-</tnodes>
-</leo_file>
-}}}
-
-.. @+node:ekr.20130806072439.20672: *5* Re: Leo script to set .leo association (Windows)
-From: Matt Wilkie <maphew@gmail.com>
-
-whups, sent before ready!
-
-to use select and copy text between braces, {{{  }}}, into a Leo outline,
-select the new node and press Ctrl-B.
-
-adapted from
-http://stackoverflow.com/questions/8985925/how-to-control-what-version-of-python-is-run-when-double-clicking-a-file/
-
--matt
-
-.. @+node:ekr.20130806072439.20673: *4* Leo will supply docutils in leo/extensions (was: Traceback build 5695)
-@nocolor
-
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-
-
-
-I spent some time experimenting with html-formatted help commands.  I 
-quickly came to the conclusion that this was a bad idea: using <pre> will 
-not look good enough, and it is out of the question to hand-format docs 
-twice.
-
-Instead, Leo will load docutils from leo/extensions if an initial import of 
-docutils fails.  That way, newbies will see the best-possible help 
-commands, without having to explicitly install docutils. I'll soon be 
-upping new code with fallback imports using g.importExtension.
-
-There seems to be a problem with docutils on Windows with Python 3.x.  The 
-docutils docs say that 2to3 is run "on demand", but that doesn't appear to 
-be working.  Happily, it took just a few seconds to run 2to3 on the 
-docutils-0.10/build folder, and a few more seconds to copy that to my 
-Python 3.3 folder.  This is, iirc, the *first* time I have ever 
-successfully run docutils with Python 3.x.
-
-In short, distributing a fallback copy of docutils with Leo makes sense to 
-me.  It eliminates dual documentation, and should ensure that all Leo 
-newbies will see good-looking docs.  The downside is that the docutils 
-folder is about 2.7 meg.
-
-Your comments, please.
-
-Edward
-.. @+node:ekr.20130806072439.20674: *5* Re: Leo will supply docutils in leo/extensions (was: Traceback build 5695)
-@nocolor
-
-From: "Ville M. Vainio" <vivainio@gmail.com>
-
-I have no time to read through this thread now, but- why is this in
-"extensions" instead of "external"?
-.. @+node:ekr.20130806072439.20675: *5* Re: Leo will supply docutils in leo/extensions (was: Traceback build 5695)
-@nocolor
-
-From: Matt Wilkie <maphew@gmail.com>
-
---089e01634f6873bf1e04daa69566
-
-
-> Thanks for this.  I'm getting quite adept at installing docutils by hand,
-> but I don't understand your recipe, or how it could be wrapped.
->
-> It would be great you or someone else could automate the process of
-> installing dependencies.
->
-
-The take away is that there is a pure python method to install pip, which
-in turn can easily install Leo and docutils, meaning the two don't have to
-be bundled.
-
-There is still more work to do get PyQt + SIP install automated in a way
-that integrates nicely with Start Menu etc., but we have proof of concept
-that it is possible.
-
-At the very least we have a recipe that can easily build a complete ready
-to run all-in-one zip bundle for Windows. I'll work on this next, and then
-dig more into the pyqt+sip aspect.
-
--matt
-.. @+node:ekr.20130806072439.20676: *5* Re: Leo will supply docutils in leo/extensions (was: Traceback build 5695)
-@nocolor
-
-From: Terry Brown <terry_n_brown@yahoo.com>
-
-On Mon, 15 Apr 2013 12:08:26 -0700 (PDT)
-"Edward K. Ream" <edreamleo@gmail.com> wrote:
-
-> The downside is that the docutils 
-> folder is about 2.7 meg.
-> 
-> Your comments, please.
-
-There might be a way to distribute the folder as a .zip, but probably
-not worth it, seeing the whole distribution will be a .zip or some
-other compressed format most likely.
-
-This is probably the best solution - no double authoring and proper
-formatting everywhere.
-
-So... shall we put Qt in a folder ... :-)
-
-Cheers -Terry
-
-.. @+node:ekr.20130806072439.20677: *5* Re: Leo will supply docutils in leo/extensions (was: Traceback build 5695)
-@nocolor
-
-From: Matt Wilkie <maphew@gmail.com>
-
-
-
-
-
-
-On Monday, 15 April 2013 13:06:39 UTC-7, Matt Wilkie wrote:
->
-> _This doesn't help newbies and isn't directly useful to the topic at hand, 
-> but is grist for the mill in the larger long term "making Leo easier to 
-> install" project._
->
-
-Installing pip on Windows is easy enough, but involves silly monkey work 
-(install this pre-requiste, copy this text and paste it there, twiddling 
-X,Y,Z for your machine. etc.) It's easy to make small stupid mistakes that 
-make one have to repeat parts of the operation. So I automated installing 
-pip all in one go. Nothing but an available python interpreter is required 
-(and an internet connection).
-
-http://www.maphew.com/2013/install-pip-script/
-
-It's not smart, but it works, and that will do for me until someone builds 
-a better one. ;-)
-
--matt
-.. @+node:ekr.20130806072439.20678: *5* Re: Leo will supply docutils in leo/extensions (was: Traceback build 5695)
-@nocolor
-
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-
-
-
-On Monday, April 15, 2013 3:06:39 PM UTC-5, Matt Wilkie wrote:
->
->
-> Here is a recipe using the pip python installer, that adds docutils to 
-> python 3 in about 5 minutes. Ideally the same template/process would be 
-> extended for all of Leo, and wrapped up in a nice package.
->
-
-Thanks for this.  I'm getting quite adept at installing docutils by hand, 
-but I don't understand your recipe, or how it could be wrapped.
-
-It would be great you or someone else could automate the process of 
-installing dependencies.
-
-Edward
-.. @+node:ekr.20130806072439.20679: *5* Re: Leo will supply docutils in leo/extensions (was: Traceback build 5695)
-@nocolor
-
-From: Matt Wilkie <maphew@gmail.com>
-
---001a11c29c60ac77d704da6bcb3f
-
-
-_This doesn't help newbies and isn't directly useful to the topic at hand,
-but is grist for the mill in the larger long term "making Leo easier to
-install" project._
-
-Here is a recipe using the pip python installer, that adds docutils to
-python 3 in about 5 minutes. Ideally the same template/process would be
-extended for all of Leo, and wrapped up in a nice package.
-
-{{{
-pushd c:\\python32
-
-:: test for docutils
-python -c "import docutils; dir(docutils)"
-
-::Traceback (most recent call last):
-::  File "<string>", line 1, in <module>
-::ImportError: No module named docutils
-
-:: install python `distribute`
-curl http://python-distribute.org/distribute_setup.py | python
-
-:: install pip
-curl --insecure https://raw.github.com/pypa/pip/master/contrib/get-pip.py |
-python
-
-::install docutils
-.\\scripts\\pip.exe install docutils
-
-:: test that docutils is available
-python -c "import docutils; help(docutils)"
-
-::Help on package docutils:
-::
-::NAME
-::    docutils - This is the Docutils (Python Documentation Utilities)
-package.
-::
-::DESCRIPTION
-::    Package Structure
-::    =================
-::: ...snip...
-}}}
-
-Depends on win32 `curl.exe` being available,
-http://curl.haxx.se/dlwiz/?type=bin&os=Win32&flav=-&ver=-
-
-There are lots of scary looking warnings and messages emitted to the
-console, mostly about unicode and files looked for and not found. A couple
-of places I needed to tap [enter] (with no prompt saying that was
-necessary). At the "install docutils" stage there was a long pause with
-nothing apparent happening, perhaps 3 minutes.
-
-The command shell was a generic windows cmd.exe shell with no python
-variables set (e.g. PYTHONPATH, PYTHONHOME, etc.)
-
-Recipe adapted from
-http://trac.osgeo.org/osgeo4w/wiki/ExternalPythonPackages
-.. @+node:ekr.20130806072439.20680: *5* Re: Leo will supply docutils in leo/extensions (was: Traceback build 5695)
-@nocolor
-
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-
-
-
-On Monday, April 15, 2013 2:08:26 PM UTC-5, Edward K. Ream wrote:
-
-Leo will load docutils from leo/extensions if an initial import of docutils 
-> fails.
-
-
-This is turning into quite a project.  The present trunk code suffices to 
-print the F1 message, and other help messages, but the code fails *many* 
-unit tests.  This is not a proper long-term solution.  Instead, I must 
-begin the port afresh and use a more automated approach.
-
-My initial porting efforts were useful.  I've learned about docutils, its 
-unit tests, and also 2to3.  I've even written a prototype for an enhanced 
---fix=imports fixer that will add *both* python 2 and 3 imports.  This 
-could be a crucial part of creating a unified code base.
-
-Unicode handling is a vital part of docutils, as I discovered as I watched 
-many of docutils 1200+ unit tests failing :-)  Alas, a vital unicode 
-consistency check in docutils/utils/punctuation_chars.py fails on Windows.  
-I've just asked the docutils-dev group about this.  See: 
-http://news.gmane.org/gmane.text.docutils.devel
-
-Edward
-.. @+node:ekr.20130806072439.20681: *5* Re: Leo will supply docutils in leo/extensions (was: Traceback build 5695)
-@nocolor
-
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
---001a11c33f88b595fd04db9b4aa7
-
-
-On Thu, Apr 18, 2013 at 1:14 PM, Matt Wilkie <maphew@gmail.com> wrote:
-
-
-> The take away is that there is a pure python method to install pip, which
-> in turn can easily install Leo and docutils, meaning the two don't have to
-> be bundled.
->
-> There is still more work to do get PyQt + SIP install automated in a way
-> that integrates nicely with Start Menu etc., but we have proof of concept
-> that it is possible.
->
-> At the very least we have a recipe that can easily build a complete ready
-> to run all-in-one zip bundle for Windows. I'll work on this next, and then
-> dig more into the pyqt+sip aspect.
->
-
-Interesting.  I've filed this under Leo/Do Later, just to have some place
-to put it, but I'd like to encourage you to contribute a script, if you
-haven't already done so :-)
-
-Edward
-
---001a11c33f88b595fd04db9b4aa7
-
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr">On Thu, Apr 18, 2013 at 1:14 PM, Matt Wilkie <span dir=3D"=
-ltr">&lt;<a href=3D"mailto:maphew@gmail.com" target=3D"_blank">maphew@gmail=
-.com</a>&gt;</span> wrote:<div class=3D"gmail_extra"><div class=3D"gmail_qu=
-ote"><div>
-=A0</div><blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;borde=
-r-left:1px #ccc solid;padding-left:1ex"><div dir=3D"ltr"><div class=3D"gmai=
-l_extra"><div class=3D"gmail_quote">The take away is that there is a pure p=
-ython method to install pip, which in turn can easily install Leo and docut=
-ils, meaning the two don&#39;t have to be bundled. <br>
-
-
-
-<br></div><div class=3D"gmail_quote">There is still more work to do get PyQ=
-t + SIP install automated in a way that integrates nicely with Start Menu e=
-tc., but we have proof of concept that it is possible.<br><br></div><div cl=
-ass=3D"gmail_quote">
-
-
-
-At the very least we have a recipe that can easily build a complete ready t=
-o run all-in-one zip bundle for Windows. I&#39;ll work on this next, and th=
-en dig more into the pyqt+sip aspect.<span class=3D"HOEnZb"><font color=3D"=
-#888888"><br>
-</font></span></div></div></div></blockquote><div><br></div><div>Interestin=
-g.=A0 I&#39;ve filed this under Leo/Do Later, just to have some place to pu=
-t it, but I&#39;d like to encourage you to contribute a script, if you have=
-n&#39;t already done so :-)<br>
-<br>Edward</div></div></div></div>
-
---001a11c33f88b595fd04db9b4aa7--
-.. @+node:ekr.20130806072439.20682: *5* Re: Leo will supply docutils in leo/extensions (was: Traceback build 5695)
-@nocolor
-
-From: Matt Wilkie <maphew@gmail.com>
-
---047d7b343be07ab4c104da6bd000
-
-
-On Mon, Apr 15, 2013 at 1:06 PM, Matt Wilkie <maphew@gmail.com> wrote:
-
-> _This doesn't help newbies and isn't directly useful to the topic at hand,
-> but is grist for the mill in the larger long term "making Leo easier to
-> install" project._
->
-
-FYI, here are the current results for `pip install leo`
-
-{{{
-C:\\Python32>scripts\\pip install leo
-Exception in thread Thread-1:
-Traceback (most recent call last):
-  File "C:\\Python32\\lib\\threading.py", line 740, in _bootstrap_inner
-    self.run()
-  File "C:\\Python32\\lib\\threading.py", line 693, in run
-    self._target(*self._args, **self._kwargs)
-  File "C:\\Python32\\lib\\site-packages\\pip\\index.py", line 261, in
-_get_queued_page
-    page = self._get_page(location, req)
-  File "C:\\Python32\\lib\\site-packages\\pip\\index.py", line 353, in _get_page
-    return HTMLPage.get_page(link, req, cache=self.cache)
-  File "C:\\Python32\\lib\\site-packages\\pip\\index.py", line 483, in get_page
-    inst = cls(u(contents), real_url, headers)
-  File "C:\\Python32\\lib\\site-packages\\pip\\backwardcompat\\__init__.py", line
-51, in u
-    return s.decode('utf-8')
-UnicodeDecodeError: 'utf8' codec can't decode byte 0xd0 in position 12:
-invalid continuation byte
-
-Downloading/unpacking leo
-  Downloading leo-4.4.6-final.zip (7.3MB): 7.3MB downloaded
-  Running setup.py egg_info for package leo
-    Traceback (most recent call last):
-      File "<string>", line 16, in <module>
-      File "d:\\temp\\systmp\\pip-build-mhwilkie\\leo\\setup.py", line 4
-        print '='*30,'setup.py','='*30
-                ^
-    SyntaxError: invalid syntax
-    Complete output from command python setup.py egg_info:
-    Traceback (most recent call last):
-
-  File "<string>", line 16, in <module>
-
-  File "d:\\temp\\systmp\\pip-build-mhwilkie\\leo\\setup.py", line 4
-
-    print '='*30,'setup.py','='*30
-
-            ^
-
-SyntaxError: invalid syntax
-
-----------------------------------------
-Command python setup.py egg_info failed with error code 1 in
-d:\\temp\\systmp\\pip-build-mhwilkie\\leo
-Storing complete log in C:\\Users\\mhwilkie\\pip\\pip.log
-}}}
-.. @+node:ekr.20130806072439.20683: *4* linux users: please test pip install
-From: Matt Wilkie <maphew@gmail.com>
-
---089e01634f680d79b804daa6ad94
-
-
-Hello Folks,
 
 Can someone on linux please test whether
 
@@ -3982,19 +3527,8 @@ successfully installs a working Leo on their system?
 
 You can use `virtualenv` to create an isolated test environment
 http://www.virtualenv.org/en/latest/ if needed.
-.. @+node:ekr.20130806072439.20684: *5* Re: linux users: please test pip install
-From: Terry Brown <terry_n_brown@yahoo.com>
 
-On Thu, 18 Apr 2013 11:21:29 -0700
-Matt Wilkie <maphew@gmail.com> wrote:
-
-> Hello Folks,
-> 
-> Can someone on linux please test whether
-> 
->    pip install -i https://testpypi.python.org/pypi leo-editor
-> 
-> successfully installs a working Leo on their system?
+===== From: Terry Brown <terry_n_brown@yahoo.com>
 
 seemed to work for my in a fresh python 3.3 virtualenv
 
@@ -4015,43 +3549,23 @@ remember also:
 https://groups.google.com/forum/?fromgroups=#!searchin/leo-editor/Runnable$20Leo$20in$20one$20.zip$20file./leo-editor/jnpkrQeo9Hk/Ds3QsUe1W-QJ
 
 including HansBKK's good point.
-.. @+node:ekr.20130806072439.20686: *4* Mac OS Lion installation instructions need updating
-From: "kevin@ksvanhorn.com" <kvanhorn@ksvanhorn.com>
 
-The instructions for installing Leo on Mac OS X 10.7 Lion say to run
+===== Matt
 
-/usr/bin/ruby -e "$(curl -fsSL https://raw.github.com/gist/323731)"
+The take away is that there is a pure python method to install pip, which
+in turn can easily install Leo and docutils, meaning the two don't have to
+be bundled.
 
-Actually, that doesn't work. If you run the curl command by itself,
-you get a message that the script has moved to
+There is still more work to do get PyQt + SIP install automated in a way
+that integrates nicely with Start Menu etc., but we have proof of concept
+that it is possible.
 
-https://github.com/mxcl/homebrew/blob/master/Library/Contributions/install_homebrew.rb
+At the very least we have a recipe that can easily build a complete ready
+to run all-in-one zip bundle for Windows. I'll work on this next, and then
+dig more into the pyqt+sip aspect.
 
-That actually gives you a web page instead of the script itself. I
-ended up doing a copy and paste from the script shown on that page
-into a newly created file, then running the script.
-.. @+node:ekr.20130806072439.20687: *5* Re: Mac OS Lion installation instructions need updating
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-On Fri, Apr 6, 2012 at 12:51 AM, kevin@ksvanhorn.com
-<kvanhorn@ksvanhorn.com> wrote:
-> The instructions for installing Leo on Mac OS X 10.7 Lion say to run
->
-> /usr/bin/ruby -e "$(curl -fsSL https://raw.github.com/gist/323731)"
->
-> Actually, that doesn't work. If you run the curl command by itself,
-> you get a message that the script has moved to
->
-> https://github.com/mxcl/homebrew/blob/master/Library/Contributions/install_homebrew.rb
->
-> That actually gives you a web page instead of the script itself. I
-> ended up doing a copy and paste from the script shown on that page
-> into a newly created file, then running the script.
-
-Thanks for this detailed report.  I'll look into it soon.
-
-Edward
-.. @+node:ekr.20130806072439.20688: *4* Macintosh installation
+.. @+node:ekr.20130807090137.11459: *4* MacOS
+.. @+node:ekr.20130806072439.20688: *5* Macintosh installation
 From: "JohnKStevenson@gmail.com" <john.k.stevenson@gmail.com>
 
 Here is the question I posed and then sent to a user rather than the
@@ -4098,7 +3612,7 @@ It seems that most "Leo People" are using Windoze or Linux, but Mac
 people need good outlining too. (Bring in the CLONES!)
 
 David Humphrey responded, thanks David, but still no joy.
-.. @+node:ekr.20130806072439.20689: *5* Re: Macintosh installation
+.. @+node:ekr.20130806072439.20689: *6* Re: Macintosh installation
 From: David Humphrey <david@dlkeh.net>
 
 John,
@@ -4122,7 +3636,7 @@ clues, they might be enough to help move forward.
 I find this same lack of support with other apps, e.g, Wikidpad, but,
 let's face it: There are a lot more Windows and Linux boxes running
 these non-commercial apps than OS X boxes.
-.. @+node:ekr.20130806072439.20690: *5* Re: Macintosh installation
+.. @+node:ekr.20130806072439.20690: *6* Re: Macintosh installation
 From: Ludwig Schwardt <ludwig.schwardt@gmail.com>
 
 --4fa8f601_7f01579b_93
@@ -4132,24 +3646,15 @@ Content-Disposition: inline
 
 Hi John, 
 
-I wrote the original instructions for using Homebrew to install Leo on the =
-Mac. Unfortunately those instructions are a bit outdated by now. From your =
-description I only see one problem: the PYTHONPATH you added to .bash_profi=
-le has changed to
+I wrote the original instructions for using Homebrew to install Leo on the Mac. Unfortunately those instructions are a bit outdated by now. From your description I only see one problem: the PYTHONPATH you added to .bash_profile has changed to
 
 export PYTHONPATH=3D/usr/local/lib/python2.6/site-packages:$PYTHONPATH
 
-This is mentioned by brew after you install sip - reinstall sip to verify t=
-he correct incantation for you (I assume you are using Python 2.6 - change =
-to python2.7 if necessary).
+This is mentioned by brew after you install sip - reinstall sip to verify the correct incantation for you (I assume you are using Python 2.6 - change to python2.7 if necessary).
 
-To answer some of your questions: pyqt depends on qt and sip, therefore ins=
-talling the pyqt package will automatically install the rest. I've installe=
-d them separately in the instructions below to pick up the correct PYTHONPA=
-TH setting.
+To answer some of your questions: pyqt depends on qt and sip, therefore installing the pyqt package will automatically install the rest. I've installed them separately in the instructions below to pick up the correct PYTHONPATH setting.
 
-Here is a summary of what I did today on a reasonably clean Lion system to =
-get Leo working (maybe Ed can put this on the web site):
+Here is a summary of what I did today on a reasonably clean Lion system to get Leo working (maybe Ed can put this on the web site):
 
 - Read the Homebrew installation instructions at
   https://github.com/mxcl/homebrew/wiki/Installation
@@ -4184,8 +3689,7 @@ get Leo working (maybe Ed can put this on the web site):
 the following command in the Terminal::
 
 
-  /usr/bin/ruby -e "$(/usr/bin/curl -fsSL https://raw.github.com/mxcl/homeb=
-rew/master/Library/Contributions/install_homebrew.rb)"
+  /usr/bin/ruby -e "$(/usr/bin/curl -fsSL https://raw.github.com/mxcl/homebrew/master/Library/Contributions/install_homebrew.rb)"
 
 - Run "brew doctor" and check any further suggestions to improve
 your system.
@@ -4218,13 +3722,11 @@ your system.
   directory.
 
 
-It would really be great to get a Leo formula going for Homebrew=85 As ment=
-ioned before, the main question is just where to place all the Leo files in=
- the /usr/local hierarchy.
+It would really be great to get a Leo formula going for Homebrew=85 As mentioned before, the main question is just where to place all the Leo files in the /usr/local hierarchy.
 
 Regards,
 Ludwig
-.. @+node:ekr.20130806072439.20691: *4* Macintosh Snow leopard installation
+.. @+node:ekr.20130806072439.20691: *5* Macintosh Snow leopard installation
 From: "JohnKStevenson@gmail.com" <john.k.stevenson@gmail.com>
 
 Many thanks to Ludwig Schwardt, he identified the missing element of
@@ -4236,11 +3738,105 @@ The directory structure and placement should be the same as Linux?
 
 I have not used Leo for a number of years, so this is a good reunion,
 thanks all.
-.. @+node:ekr.20130806072439.20707: *4* Portable Leo from scratch on Windows
-From: Matt Wilkie <maphew@gmail.com>
+.. @+node:ekr.20130806072439.20686: *5* Mac OS Lion installation instructions need updating
+From: "kevin@ksvanhorn.com" <kvanhorn@ksvanhorn.com>
 
---001a11c29c60626ff804da92ec5a
+The instructions for installing Leo on Mac OS X 10.7 Lion say to run
 
+/usr/bin/ruby -e "$(curl -fsSL https://raw.github.com/gist/323731)"
+
+Actually, that doesn't work. If you run the curl command by itself,
+you get a message that the script has moved to
+
+https://github.com/mxcl/homebrew/blob/master/Library/Contributions/install_homebrew.rb
+
+That actually gives you a web page instead of the script itself. I
+ended up doing a copy and paste from the script shown on that page
+into a newly created file, then running the script.
+.. @+node:ekr.20130806072439.20687: *6* Re: Mac OS Lion installation instructions need updating
+From: "Edward K. Ream" <edreamleo@gmail.com>
+
+On Fri, Apr 6, 2012 at 12:51 AM, kevin@ksvanhorn.com
+<kvanhorn@ksvanhorn.com> wrote:
+> The instructions for installing Leo on Mac OS X 10.7 Lion say to run
+>
+> /usr/bin/ruby -e "$(curl -fsSL https://raw.github.com/gist/323731)"
+>
+> Actually, that doesn't work. If you run the curl command by itself,
+> you get a message that the script has moved to
+>
+> https://github.com/mxcl/homebrew/blob/master/Library/Contributions/install_homebrew.rb
+>
+> That actually gives you a web page instead of the script itself. I
+> ended up doing a copy and paste from the script shown on that page
+> into a newly created file, then running the script.
+
+Thanks for this detailed report.  I'll look into it soon.
+
+Edward
+.. @+node:ekr.20130806072439.20650: *5* Wishlist: brew install leo
+From: Winn Dixie <incredible0n3@gmail.com>
+
+Would be stellar to have a brew install leo (for Mac OSX 10.7.X) with
+possible built in options to install vim bindings.
+.. @+node:ekr.20130807090137.11462: *4* Windows
+.. @+node:ekr.20130806072439.20677: *5* Installing pip on windows
+On Monday, 15 April 2013 13:06:39 UTC-7, Matt Wilkie wrote:
+
+Installing pip on Windows is easy enough, but involves silly monkey work
+(install this pre-requiste, copy this text and paste it there, twiddling
+X,Y,Z for your machine. etc.) It's easy to make small stupid mistakes that
+make one have to repeat parts of the operation. So I automated installing
+pip all in one go. Nothing but an available python interpreter is required
+(and an internet connection).
+
+http://www.maphew.com/2013/install-pip-script/
+.. @+node:ekr.20130806072439.20707: *5* Portable Leo from scratch on Windows
+@language rest
+
+Edward, Ville, please pay attention to this message even if just nodding at
+the others passing by.
+
+>pip install -i https://testpypi.python.org/pypi leo-editor
+
+I built and uploaded to this package to the pypi testing server. Other than
+the fact it seems to work in so far as it installs without spewing errors
+I've no idea if it was done properly. Or even if it was appropriate for me
+to build a leo package. This is the first pypi package I've built.
+
+The package page: https://testpypi.python.org/pypi/leo-editor/4.10-final
+
+I'll upload the changed `setup.py` and the build recipe I used for your
+inspection after I re-learn how to create a branch and issue a pull/merge
+request in bazaar.
+
+
+===== Matt
+
+https://code.launchpad.net/~maphew/leo-editor/pypi-packaging/+merge/159561
+
+Description of the Change
+
+Updated `setup.py` for Leo-4.10-final, added "Classifiers" as made sense to
+me. The resultant source build package was uploaded to the testing Python
+Package Index server, from which `pip install leo-editor` is successful.
+
+A windows binary distribution build does not appear to be necessary.
+
+Known limitations: __py-cache__ files are included, but shouldn't be.
+
+===== Matt
+
+The created .zip file:
+
+Here is the result of that recipe, with some very small hand edits,
+packaged up in an all-in-one ready to go portable Leo zipfile (52mb).
+Simply unpack somewhere and run Leo.bat.
+
+https://googledrive.com/host/0BxjYoJ7VMm5VbE11NHM3Q3RIRVk/
+.. @+node:ekr.20130807090137.11463: *6* script
+@language python
+@ Matt Wilkie <maphew@gmail.com>
 
 Here is a recipe for installing Leo from scratch on Windows (Win7 tested).
 The only prerequisites are command line `wget` in PATH and an internet
@@ -4248,9 +3844,19 @@ connection.
 
 About 50mb of files are downloaded and 200mb consumed when done.
 
-Open a command prompt and run:
+Run this script from a console.
 
-{{{
+After this the directory "X:\\testing\\root" can be renamed and/or moved
+anywhere.
+
+To run leo in future sessions, simply call "x:\\path\\to\\root\\osgeo4w.bat
+python apps\\Python27\\Scripts\\leo", either as a batch file or windows
+shortcut.
+
+**Important**: this is just a proof of concept. It is not ready for prime
+time. Feedback welcome.
+@c
+
 mkdir X:\\testing
 pushd X:\\testing
 
@@ -4271,110 +3877,8 @@ python install-pip.py GO
 pip install -i https://testpypi.python.org/pypi leo-editor
 
 python apps\\Python27\\Scripts\\leo
-}}}
-
-After this the directory "X:\\testing\\root" can be renamed and/or moved
-anywhere.
-
-To run leo in future sessions, simply call "x:\\path\\to\\root\\osgeo4w.bat
-python apps\\Python27\\Scripts\\leo", either as a batch file or windows
-shortcut.
-
-IMPORTANT NOTE - this is just a proof of concept. It pulls together a
-couple of my different projects, and is very satisfying in that regard
-(yay! they work!), but is not ready for prime time. Feedback welcome.
-
-Explanations will follow in later messages. I just had to share this
-important milestone immediately. :-)
-.. @+node:ekr.20130806072439.20708: *5* Re: Portable Leo from scratch on Windows
+.. @+node:ekr.20130806072439.20712: *6* Re: Portable Leo from scratch on Windows
 From: Matt Wilkie <maphew@gmail.com>
-
---089e01634f68727a1a04daa45147
-
-
-ok, here it is, not much really:
-https://code.launchpad.net/~maphew/leo-editor/pypi-packaging/+merge/159561
-.. @+node:ekr.20130806072439.20709: *5* Re: Portable Leo from scratch on Windows
-From: HaveF <iamaplayer@gmail.com>
-
-When execute Leo.bat on winxp, it says,
-"The system cannot execute the specified program"
-
-Just  add some echo to OSGeo4W.bat, the problem seems at this line:
-
-    for %%f in ("%OSGEO4W_ROOT%\\etc\\ini\\*.bat") do call "%%f"
-
-By quick search this error message, I found
-http://nirlevy.blogspot.com/2008/03/system-cannot-execute-specified-program.html
-does some dll files are only used for win7?
-.. @+node:ekr.20130806072439.20710: *5* Re: Portable Leo from scratch on Windows
-From: Matt Wilkie <maphew@gmail.com>
-
---047d7b621c9cf2826004da95efa8
-
-
->> Explanations will follow in later messages. I just had to share this
-important milestone immediately. :-)
-
->SET OSGEO4W_ROOT=%~dp0\\root
->apt setup
->apt update
->apt install pyqt4 sip
-
-Use the `apt` command line package management tool from Osgeo4w [1] to
-install python and all the other requirements that can't be installed with
-`pip` or `easy_install`, meaning PyQt and SIP.
-
-The resultant dir structure follows a cygwin model, which in turn follows
-linux:
-
-...\\apps\\Python27 - python libraries, site-packages, etc. This is
-PYTHONHOME.
-
-..\\bin - exe's and dll's, including python.exe, qt*.dll, etc.
-
-There are also `etc, include, lib, var` which can all be discarded, unless
-you intend to use apt again or other programs from the osgeo4w ecosystem).
-`var` in particular you might want to clean out, it is the local cache for
-apt downloaded packages.
-
-[1] http://trac.osgeo.org/osgeo4w/ Open Source Geographic Information
-Systems for Windows
-
-...more to come.
-
--matt
-.. @+node:ekr.20130806072439.20711: *5* Re: Portable Leo from scratch on Windows
-From: HaveF <iamaplayer@gmail.com>
-
---001a11c2a85aa8942504daac30b4
-
-
-On Fri, Apr 19, 2013 at 4:04 AM, Matt Wilkie <maphew@gmail.com> wrote:
-
-> > Here is a recipe for installing Leo from scratch on Windows (Win7
-> tested).
->
-> ...and the results of that recipe, with some very small hand edits,
-> packaged up in an all-in-one ready to go portable Leo zipfile (52mb).
-> Simply unpack somewhere and run Leo.bat.
->
-> https://googledrive.com/host/0BxjYoJ7VMm5VbE11NHM3Q3RIRVk/
->
-> I'm interested in how well it does or doesn't work on different flavours
-> of Windows.
->
-
-That's great. I'll test it on my virtualbox winxp later.
-Btw, I strongly suggest add this recipe and this link to leo's doc.
-
-There are so much of recipes(like pearls) bury under googlegroups instead
-of doc for permanent saving.
-.. @+node:ekr.20130806072439.20712: *5* Re: Portable Leo from scratch on Windows
-From: Matt Wilkie <maphew@gmail.com>
-
---089e016344c8013f4604da96e385
-
 
 >call root\\osgeo4w.bat
 
@@ -4403,194 +3907,31 @@ Install Leo (more background for this one in next message).
 > python apps\\Python27\\Scripts\\leo
 
 All done, let's run Leo! :)
-.. @+node:ekr.20130806072439.20713: *5* Re: Portable Leo from scratch on Windows
-From: "Ville M. Vainio" <vivainio@gmail.com>
-
-Yep, it was quite uncontoversial, merged it in.
-.. @+node:ekr.20130806072439.20714: *5* Re: Portable Leo from scratch on Windows
-From: "Ville M. Vainio" <vivainio@gmail.com>
-
-Ok, looking forward to reviewing it. Making leo installable with pip
-certainly sounds attractive.
-.. @+node:ekr.20130806072439.20715: *5* Re: Portable Leo from scratch on Windows
+.. @+node:ekr.20130806072439.20722: *5* apt on windows
 From: Matt Wilkie <maphew@gmail.com>
 
---089e016344c8ab079404da9bb19c
+Use the `apt` command line package management tool from Osgeo4w
+http://trac.osgeo.org/osgeo4w/ to install python and all the other
+requirements that can't be installed with `pip` or `easy_install`, meaning
+PyQt and SIP.
+
+The resultant dir structure follows a cygwin model, which in turn follows
+linux:
+
+    \\apps\\Python27 - python libraries, site-packages, etc. This is PYTHONHOME.
+    \\bin - exe's and dll's, including python.exe, qt*.dll, etc.
+
+There are also `etc, include, lib, var` which can all be discarded, unless
+you intend to use apt again or other programs from the osgeo4w ecosystem).
+`var` in particular you might want to clean out, it is the local cache for
+apt downloaded packages.
 
 
-Edward, Ville, please pay attention to this message even if just nodding at
-the others passing by.
-
->pip install -i https://testpypi.python.org/pypi leo-editor
->
-
-I built and uploaded to this package to the pypi testing server. Other than
-the fact it seems to work in so far as it installs without spewing errors
-I've no idea if it was done properly. Or even if it was appropriate for me
-to build a leo package. This is the first pypi package I've built.
-
-The package page: https://testpypi.python.org/pypi/leo-editor/4.10-final
-
-I'll upload the changed `setup.py` and the build recipe I used for your
-inspection after I re-learn how to create a branch and issue a pull/merge
-request in bazaar.
-.. @+node:ekr.20130806072439.20716: *5* Re: Portable Leo from scratch on Windows
-From: Matt Wilkie <maphew@gmail.com>
-
---047d7b621c9ce6bc2604daaf7a98
-
-
-> "The system cannot execute the specified program"
-
-ugh. I think maybe the previous link you referred to is correct, and there
-are either some .dll's missing or incompatible, which in turn means this
-isn't really a great leap forward after all. :(
-
-Thanks for testing and the follow up.
-
-> Btw, why you all use three {{{ or }}} to quote the code?
-
-Triple curly bracket {{{...}}}  is used by MoinMoin wiki to mark verbatim
-<http://moinmo.in/HelpOnMoinWikiSyntax#Verbatim_Display>blocks. You might
-also run into tilde, ~~~, or backtick, ```, used to fence code in other
-markup parsers, like
-markdown-extra<http://michelf.ca/projects/php-markdown/extra/#fenced-code-blocks>.
-I don't have any particular reason for using moinmoin syntax, other than I
-got used to it first. ;-)
-.. @+node:ekr.20130806072439.20717: *5* Re: Portable Leo from scratch on Windows
-From: HaveF <iamaplayer@gmail.com>
-
---089e013d15d864c26d04dab01a61
-
-
-On Fri, Apr 19, 2013 at 12:51 PM, Matt Wilkie <maphew@gmail.com> wrote:
-
-> > "The system cannot execute the specified program"
->
-> ugh. I think maybe the previous link you referred to is correct, and there
-> are either some .dll's missing or incompatible, which in turn means this
-> isn't really a great leap forward after all. :(
->
-> Thanks for testing and the follow up.
->
-> > Btw, why you all use three {{{ or }}} to quote the code?
->
-> Triple curly bracket {{{...}}}  is used by MoinMoin wiki to mark verbatim
-> <http://moinmo.in/HelpOnMoinWikiSyntax#Verbatim_Display>blocks. You might
-> also run into tilde, ~~~, or backtick, ```, used to fence code in other
-> markup parsers, like markdown-extra<http://michelf.ca/projects/php-markdown/extra/#fenced-code-blocks>.
-> I don't have any particular reason for using moinmoin syntax, other than I
-> got used to it first. ;-)
->
-got it.
-
-Or you can use leo-way(or Edward-way) here ;-)
-
-QQQ
-    balabala
-QQQ
-.. @+node:ekr.20130806072439.20718: *5* Re: Portable Leo from scratch on Windows
-From: Matt Wilkie <maphew@gmail.com>
-
---001a11c29c6002eedd04daa81edd
-
-
-> Here is a recipe for installing Leo from scratch on Windows (Win7 tested).
-
-...and the results of that recipe, with some very small hand edits,
-packaged up in an all-in-one ready to go portable Leo zipfile (52mb).
-Simply unpack somewhere and run Leo.bat.
-
-https://googledrive.com/host/0BxjYoJ7VMm5VbE11NHM3Q3RIRVk/
-
-I'm interested in how well it does or doesn't work on different flavours of
-Windows.
-.. @+node:ekr.20130806072439.20719: *5* Re: Portable Leo from scratch on Windows
-From: Matt Wilkie <maphew@gmail.com>
-
---047d7b604a56ea034e04daae2602
-
-
-Does this leo.bat work better?
-
-{{{
-setlocal
-set PYTHONHOME=%~dp0\\root\\apps\\Python27
-set PATH=%~dp0\\root\\bin
-%~dp0\\root\\bin\\python.exe %PYTHONHOME%\\Scripts\\leo
-endlocal
-pause
-}}}
-
-If not please send me the results of what it prints to the console window.
-.. @+node:ekr.20130806072439.20720: *5* Re: Portable Leo from scratch on Windows
-From: HaveF <iamaplayer@gmail.com>
-
---001a11c2a85a6240b504daae6b26
-
-
-On Fri, Apr 19, 2013 at 11:16 AM, Matt Wilkie <maphew@gmail.com> wrote:
-
-> Does this leo.bat work better?
->
-> {{{
-> setlocal
-> set PYTHONHOME=%~dp0\\root\\apps\\Python27
-> set PATH=%~dp0\\root\\bin
-> %~dp0\\root\\bin\\python.exe %PYTHONHOME%\\Scripts\\leo
-> endlocal
-> pause
-> }}}
->
-> If not please send me the results of what it prints to the console window.
->
-it still can't.
-same msg. "The system cannot execute the specified program"
-
-log msg:
-
-C:\\Leo-editor-portable>setlocal
-
-C:\\Leo-editor-portable>set
-PYTHONHOME=C:\\Leo-editor-portable\\\\root\\apps\\Python27
-
-
-C:\\Leo-editor-portable>set PATH=C:\\Leo-editor-portable\\\\root\\bin
-
-C:\\Leo-editor-portable>C:\\Leo-editor-portable\\\\root\\bin\\python.exe
-C:\\Leo-editor
--portable\\\\root\\apps\\Python27\\Scripts\\leo
-"The system cannot execute the specified program"
-
-C:\\Leo-editor-portable>endlocal
-
-
-Btw, why you all use three {{{ or }}} to quote the code?
-It is standard or something?
-.. @+node:ekr.20130806072439.20721: *5* Re: Portable Leo from scratch on Windows
-From: Matt Wilkie <maphew@gmail.com>
-
---001a11c29c60dfd63504da9c45ba
-
-
-> The package page: https://testpypi.python.org/pypi/leo-editor/4.10-final
->
-
-It appears that since I was the first one to use the testing server for
-'leo-editor' I've become the owner. If you send me your usernames I'll make
-you the owner(s) instead of me. (Usernames do not appeared to be shared
-across regular and testing pypi servers, so you may need to register again.)
-.. @+node:ekr.20130806072439.20722: *5* Re: Portable Leo from scratch on Windows
-From: Matt Wilkie <maphew@gmail.com>
-
---089e016818f016dc5204da95c245
-
-
-> Whoa, apt on windows, cool.
+===== Whoa, apt on windows, cool.
 
 Thanks! It's been the gravity well powering my plunge into python. It's a
 testament to python's power that it enables someone like me, with no
-programming background, to build something that does real work. :)
+programming background, to build something that does real work.
 
 The original genius is Jan Nieuwenhuizen, who wrote `cyg-apt` in python but
 made lots of calls to bash and tools like tar and curl. All I've done is
@@ -4599,265 +3940,7 @@ point where it now has zero dependencies on cygwin (though it does still
 use the cygwin package and mirror structure).
 
 More history and details at http://trac.osgeo.org/osgeo4w/wiki/pkg-apt
-.. @+node:ekr.20130806072439.20723: *4* Problem saving changes/new .leo files on Windows
-From: vili <viljem.tisnikar@gmail.com>
-
-Hi everybody,
-
-Despite I am no programmer, I have been using Leo for some years now
-as my "Intelligent PIM" - I organize my (complex) life with Leo.
-
-Many thanks to Edward and others for the great application.
-
-Installing (a new version) of Leo was allways a bit of challenge for
-me. As a non-programmer I use Windows, I like automatic installers,
-and I don=B4t quite understand what binaries and other stuff is.
-
-Today I wanted to upgrade from 4.9 to Leo-4.10-final, which is the
-latest exe on SourceForge but I figured out that
-
-Leo-4.10-final does not save any changes made to the file and it doesn
-=B4t save also any new files!
-
-I tried also with "a nightly snapshot from Leo=92s snapshots page" - the
-same story. I reinstalled python and qt, but still the same problem. I
-installed back the 4.9 version from SourceForge and that worked fine
-again.
-
-Some data from log:
-Leo 4.10 final, build 5020, 2012-02-26 13:18:08 -0600
-Python 3.2.3, qt version 4.8.0
-Windows 6, 1, 7601, 2, Service Pack 1
-
-Its kind of weird for me that no one reported this problem earlier.
-
-BR, Vili
-
-.. @+node:ekr.20130806072439.20724: *5* Re: Problem saving changes/new .leo files on Windows
-From: Viljem Tisnikar <viljem.tisnikar@gmail.com>
-
---e89a8f6471b19cba0704c1ab9d57
-
-Content-Transfer-Encoding: quoted-printable
-
-> Have you tried creating a new .leo file from scratch and saving it?
-
-Yes, I have. It does not save.
-
-> And does the log window have any warnings or error messages?
-
-No, in log window nothing happens when I pres "ctrl-s". And of course the
-star near the name of the file does not disappear.
-.. @+node:ekr.20130806072439.20725: *5* Re: Problem saving changes/new .leo files on Windows
-From: HansBKK <hansbkk@gmail.com>
-
-On Tuesday, June 5, 2012 4:30:57 AM UTC+7, vili wrote:
-
-> this workaround of yours works for me also! It is not comfortable at all, 
-> but it works!
->
- 
- Relevant past thread<https://groups.google.com/d/msg/leo-editor/jnpkrQeo9Hk/P2AdCQVnG2oJ>, 
-also search this group for "batch".
-.. @+node:ekr.20130806072439.20726: *5* Re: Problem saving changes/new .leo files on Windows
-From: Eoin <eoinmccarthy@fastmail.fm>
-
-
-
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-I also experienced this issue today after upgrading from Leo 4.8-final to=
-
-Leo 4.10-final.
-
-The workaround still does the job.
-
-Eoin
-
-On Saturday, 2 June 2012 17:50:37 UTC+1, vili wrote:
->
-> Hi everybody,
->
-> Despite I am no programmer, I have been using Leo for some years now
-> as my "Intelligent PIM" - I organize my (complex) life with Leo.
->
-> Many thanks to Edward and others for the great application.
->
-> Installing (a new version) of Leo was allways a bit of challenge for
-> me. As a non-programmer I use Windows, I like automatic installers,
-> and I don=B4t quite understand what binaries and other stuff is.
->
-> Today I wanted to upgrade from 4.9 to Leo-4.10-final, which is the
-> latest exe on SourceForge but I figured out that
->
-> Leo-4.10-final does not save any changes made to the file and it doesn
-> =B4t save also any new files!
->
-> I tried also with "a nightly snapshot from Leo=92s snapshots page" - the=
-
-> same story. I reinstalled python and qt, but still the same problem. I
-> installed back the 4.9 version from SourceForge and that worked fine
-> again.
->
-> Some data from log:
-> Leo 4.10 final, build 5020, 2012-02-26 13:18:08 -0600
-> Python 3.2.3, qt version 4.8.0
-> Windows 6, 1, 7601, 2, Service Pack 1
->
-> Its kind of weird for me that no one reported this problem earlier.
->
-> BR, Vili
->
-.. @+node:ekr.20130806072439.20727: *5* Re: Problem saving changes/new .leo files on Windows
-From: Raj <dsrajesh@gmail.com>
-
-I faced the same problem as well and my configuration is exactly
-identical to yours.
-Workaround I did was start the leo from command line
-C:\\Python32\\python.exe "C:\\Python32\\Lib\\site-packages\\Leo-4.10-final
-\\launchLeo.py"
-Default is to start the pythonW.exe, which does not work for some
-reason still trying to identify why it is behaving this way.
-Now I am able to save like before.
-
-Also newly added Alt+x Global-search(whoosh), was not able to do fts
-add/init. however it does search the currently opened one.
-
-/Raj
-
-On Jun 4, 12:55=A0pm, Matt Wilkie <map...@gmail.com> wrote:
-> > Leo-4.10-final does not save any changes made to the file and it doesn
-> > =B4t save also any new files!
-> ...
-> > Its kind of weird for me that no one reported this problem earlier.
->
-> To my knowledge this is the first report of this kind of issue. I
-> can't think of any explanation for this other than file permissions
-> (but I don't understand very much about how Leo works either; my
-> programming skills are very minimal).
->
-> Have you tried creating a new .leo file from scratch and saving it?
-> And does the log window have any warnings or error messages? I'm
-> wondering if maybe there is something in particular about your data
-> files it is getting confused about.
->
-> cheers,
->
-> --
-> -matt
-
-.. @+node:ekr.20130806072439.20728: *5* Re: Problem saving changes/new .leo files on Windows
-From: Viljem Tisnikar <viljem.tisnikar@gmail.com>
-
---f46d0447f32ce9112604c1ac3f16
-
-Content-Transfer-Encoding: quoted-printable
-
-Hi Raj,
-
->Workaround I did was start the leo from command line
-C:\\Python32\\python.exe "C:\\Python32\\Lib\\site-packages\\Leo-4.10-final
-\\launchLeo.py"
-
-this workaround of yours works for me also! It is not comfortable at all,
-but it works!
-
->Default is to start the pythonW.exe, which does not work for some
-reason still trying to identify why it is behaving this way.
-
-Good luck with figuring out what the problem is.
-.. @+node:ekr.20130806072439.20729: *5* Re: Problem saving changes/new .leo files on Windows
-From: Matt Wilkie <maphew@gmail.com>
-
-> Leo-4.10-final does not save any changes made to the file and it doesn
-> =B4t save also any new files!
-...
-> Its kind of weird for me that no one reported this problem earlier.
-
-To my knowledge this is the first report of this kind of issue. I
-can't think of any explanation for this other than file permissions
-(but I don't understand very much about how Leo works either; my
-programming skills are very minimal).
-
-Have you tried creating a new .leo file from scratch and saving it?
-And does the log window have any warnings or error messages? I'm
-wondering if maybe there is something in particular about your data
-files it is getting confused about.
-.. @+node:ekr.20130806072439.20730: *4* PyPi package: 4.11 test release
-From: Matt Wilkie <maphew@gmail.com>
-
---001a11c26ed64e753204dd570b8b
-
-
-Hi Folks,
-
-I've just uploaded Leo-4.11-devel-build-5769 to the Python Package Index:
-https://pypi.python.org/pypi/leo
-
-(todo: fix the readme, which is for 4.10, the 4.11 version remains to be
-written)
-
-It can be downloaded from there and installed manually or, better yet,
-installed with `pip install leo`.
-
-Pre-requisites are:
-
-1. Python
-2. PyQt
-3. Distribute / Setuptools
-
-Improvements over previous pypi package:
-
- - Sports Leo splash screen while installing on Windows
-
- - Installs "leo" and "leoc" wrappers to PYTHONHOME\\Scripts, so as long as
-this directory is in PATH you don't need to create your own launcher (this
-is the part that requires Distribute. I'm working an way to include this
-automatically, http://stackoverflow.com/questions/16702658). It is common
-for this to be set.
-
-- all the other changes in trunk over the last couple of weeks (
-http://bazaar.launchpad.net/~leo-editor-team/leo-editor/trunk3/changes)
-.. @+node:ekr.20130806072439.20731: *5* Re: PyPi package: 4.11 test release
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
---089e010d8312fc582104dd5f7a0a
-
-
-On Wed, May 22, 2013 at 6:36 PM, Matt Wilkie <maphew@gmail.com> wrote:
-
-> Hi Folks,
->
-> I've just uploaded Leo-4.11-devel-build-5769 to the Python Package Index:
-> https://pypi.python.org/pypi/leo
->
-
-Interesting.  This looks like a completely different installer than the
-NSIS installer.  How did you create the installer?
-
-Edward
-
---089e010d8312fc582104dd5f7a0a
-
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr">On Wed, May 22, 2013 at 6:36 PM, Matt Wilkie <span dir=3D"=
-ltr">&lt;<a href=3D"mailto:maphew@gmail.com" target=3D"_blank">maphew@gmail=
-.com</a>&gt;</span> wrote:<br><div class=3D"gmail_extra"><div class=3D"gmai=
-l_quote">
-<blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1p=
-x #ccc solid;padding-left:1ex">Hi Folks,<br><br>I&#39;ve just uploaded Leo-=
-4.11-devel-build-5769 to the Python Package Index:<br><a href=3D"https://py=
-pi.python.org/pypi/leo" target=3D"_blank">https://pypi.python.org/pypi/leo<=
-/a><br>
-</blockquote><div><br></div><div>Interesting.=C2=A0 This looks like a compl=
-etely different installer than the NSIS installer.=C2=A0 How did you create=
- the installer?<br><br>Edward</div></div></div></div>
-
---089e010d8312fc582104dd5f7a0a--
-.. @+node:ekr.20130806072439.20643: *4* Tip about install leo with EPD
+.. @+node:ekr.20130806072439.20643: *5* Tip about install leo with EPD
 From: HaveF <iamaplayer@gmail.com>
 
 I used python xy before. After I finish install python xy, the leo is ready
@@ -4886,11 +3969,136 @@ D:\\lib\\leo\\leo-editor-snapshot\\launchLeo.py %*
 ===== From: HaveF <iamaplayer@gmail.com>
 
 the tip is for install Canopy just for yourself (per-user install)
-.. @+node:ekr.20130806072439.20650: *4* Wishlist: brew install leo
-From: Winn Dixie <incredible0n3@gmail.com>
+.. @+node:ekr.20130806072439.20723: *5* Problem saving changed/new .leo files on Windows
+EKR: This appears to be some weird key-related problem with Leo 4.10.
 
-Would be stellar to have a brew install leo (for Mac OSX 10.7.X) with
-possible built in options to install vim bindings.
+===== From: vili <viljem.tisnikar@gmail.com>
+
+Installing (a new version) of Leo was allways a bit of challenge for
+me. As a non-programmer I use Windows, I like automatic installers,
+and I don't quite understand what binaries and other stuff is.
+
+Today I wanted to upgrade from 4.9 to Leo-4.10-final, which is the
+latest exe on SourceForge but I figured out that
+
+Leo-4.10-final does not save any changes made to the file and it doesn't save also any new files!
+
+I tried also with "a nightly snapshot from Leo's snapshots page" - the
+same story. I reinstalled python and qt, but still the same problem. I
+installed back the 4.9 version from SourceForge and that worked fine
+again.
+
+Some data from log:
+Leo 4.10 final, build 5020, 2012-02-26 13:18:08 -0600
+Python 3.2.3, qt version 4.8.0
+Windows 6, 1, 7601, 2, Service Pack 1
+
+Its kind of weird for me that no one reported this problem earlier.
+
+
+===== From: Raj <dsrajesh@gmail.com>
+
+I faced the same problem as well and my configuration is exactly
+identical to yours.
+
+Workaround I did was start the leo from command line::
+
+C:\\Python32\\python.exe "C:\\Python32\\Lib\\site-packages\\Leo-4.10-final\\launchLeo.py"
+
+Default is to start the pythonW.exe, which does not work for some reason
+still trying to identify why it is behaving this way. Now I am able to save
+like before.
+
+===== From: Viljem Tisnikar <viljem.tisnikar@gmail.com>
+
+This workaround of yours works for me also! It is not comfortable at all,
+but it works!
+
+===== From: Eoin <eoinmccarthy@fastmail.fm>
+
+I also experienced this issue today after upgrading from Leo 4.8-final to
+Leo 4.10-final.
+
+The workaround still does the job.
+
+===== From: Matt Wilkie <maphew@gmail.com>
+
+To my knowledge this is the first report of this kind of issue. I
+can't think of any explanation for this other than file permissions
+(but I don't understand very much about how Leo works either; my
+programming skills are very minimal).
+
+Have you tried creating a new .leo file from scratch and saving it?
+
+===== From: Viljem Tisnikar <viljem.tisnikar@gmail.com>
+
+Yes, I have. It does not save.
+
+===== Matt
+
+And does the log window have any warnings or error messages?
+
+===== From: Viljem Tisnikar <viljem.tisnikar@gmail.com>
+
+No, in log window nothing happens when I pres "ctrl-s". And of course the
+star near the name of the file does not disappear.
+
+.. @+node:ekr.20130806072439.20679: *4* Script: Add docutils to python3 
+@language python
+
+@ Matt Wilkie <maphew@gmail.com>
+
+Here is a recipe using the pip python installer, that adds docutils to
+python 3 in about 5 minutes. Ideally the same template/process would be
+extended for all of Leo, and wrapped up in a nice package.
+
+Depends on win32 `curl.exe` being available,
+http://curl.haxx.se/dlwiz/?type=bin&os=Win32&flav=-&ver=-
+
+There are lots of scary looking warnings and messages emitted to the
+console, mostly about unicode and files looked for and not found. A couple
+of places I needed to tap [enter] (with no prompt saying that was
+necessary). At the "install docutils" stage there was a long pause with
+nothing apparent happening, perhaps 3 minutes.
+
+The command shell was a generic windows cmd.exe shell with no python
+variables set (e.g. PYTHONPATH, PYTHONHOME, etc.)
+
+Recipe adapted from http://trac.osgeo.org/osgeo4w/wiki/ExternalPythonPackages
+@c
+
+pushd c:\\python32
+
+:: test for docutils
+python -c "import docutils; dir(docutils)"
+
+::Traceback (most recent call last):
+::  File "<string>", line 1, in <module>
+::ImportError: No module named docutils
+
+:: install python `distribute`
+curl http://python-distribute.org/distribute_setup.py | python
+
+:: install pip
+curl --insecure https://raw.github.com/pypa/pip/master/contrib/get-pip.py |
+python
+
+::install docutils
+.\\scripts\\pip.exe install docutils
+
+:: test that docutils is available
+python -c "import docutils; help(docutils)"
+
+::Help on package docutils:
+::
+::NAME
+::    docutils - This is the Docutils (Python Documentation Utilities)
+package.
+::
+::DESCRIPTION
+::    Package Structure
+::    =================
+::: ...snip...
 .. @+node:ekr.20130803125244.17100: ** Docs: Next
 .. @+node:ekr.20130803125244.17101: *3* * Gallery of screenshots
 .. @+node:ekr.20130408095053.10307: *3* * Guide for the next leaders
