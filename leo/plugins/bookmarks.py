@@ -306,9 +306,8 @@ class BookMarkDisplay:
             
         for nd in self.v.children:
             if nd.b.strip() == url.strip():
-                p0 = self.c.vnode2position(self.v)
                 p1 = self.c.vnode2position(nd)
-                p0.deletePositionsInList([p1])
+                self.c.deletePositionsInList([p1])
                 self.c.redraw()
                 break
         
