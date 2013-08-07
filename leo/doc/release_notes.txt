@@ -510,9 +510,6 @@ This plugin uses Leo and docutils to mix program code and reST documentation.
 
 The Python docutils package must be installed.http://docutils.sourceforge.net
 
-If SilverCity is installed (http://silvercity.sourceforge.net) the plugin
-produces HTML output that is syntax colored.
-
 The basic approach is that any Leo node that contains program code that needs
 documentation (in an ideal world it would be every node) has an associated child
 node whose headline is simply '@rst', that contains reST-style documentation.
@@ -2170,8 +2167,7 @@ the higher-level nodes in the outline correspond to higher-level sections in the
 output. Creating rST headings automatically relieves you from one of the most
 tedious chores in creating rST markup.
 
-To use this plugin effectively, Python's docutils module must be installed. The
-rst3 plugin will use the SilverCity syntax coloring package if it installed.
+To use this plugin effectively, Python's docutils module must be installed.
 
 This plugin sends .htm, .html or .tex files to the docutils module for further
 processing. Docutils generates HTML files or LaTeX files depending on the file's
@@ -2359,8 +2355,7 @@ the higher-level nodes in the outline correspond to higher-level sections in the
 output. Creating rST headings automatically relieves you from one of the most
 tedious chores in creating rST markup.
 
-To use this plugin effectively, Python's docutils module must be installed. The
-rst3 plugin will use the SilverCity syntax coloring package if it installed.
+To use this plugin effectively, Python's docutils module must be installed.
 
 This plugin sends .htm, .html or .tex files to the docutils module for further
 processing. Docutils generates HTML files or LaTeX files depending on the file's
@@ -6195,33 +6190,6 @@ http://sourceforge.net/forum/message.php?msg_id=3671350
 
 Change aString.lstrip and aString.rstrip to the aString.replace.
 @color
-#@+node:ekr.20060414071350.39: *6* Fixed crash in string.startswith and string.endswith
-leoID = ekr (in c:\Documents and Settings\Ed)
-reading settings in C:\prog\leoCVS\leo\config\leoSettings.leo
-reading settings in C:\prog\leoCVS\leo\src\LeoPy.leo
-rst3 plugin: SilverCity not loaded
-AttributeError Exception in Tk callback
-  Function: <function bindKeyCallback at 0x016F2E70> (type: <type 'function'>)
-  Args: (<Tkinter.Event instance at 0x03510288>,)
-  Event type: KeyPress (type num: 2)
-Traceback (innermost last):
-  File "C:\prog\leoCVS\leo\extensions\Pmw\Pmw_1_2\lib\PmwBase.py", line 1752, in __call__
-    return apply(self.func, args)
-  File "C:\prog\leoCVS\leo\src\leoKeys.py", line 2002, in bindKeyCallback
-    return k.masterKeyHandler(event,stroke=stroke)
-  File "C:\prog\leoCVS\leo\src\leoKeys.py", line 2928, in masterKeyHandler
-    val = self.masterKeyHandlerHelper(event,stroke)
-  File "C:\prog\leoCVS\leo\src\leoKeys.py", line 2992, in masterKeyHandlerHelper
-    val = k.callStateFunction(event) # Calls end-command.
-  File "C:\prog\leoCVS\leo\src\leoKeys.py", line 2219, in callStateFunction
-    val = k.state.handler(event)
-  File "C:\prog\leoCVS\leo\src\leoKeys.py", line 348, in autoCompleterStateHandler
-    self.insertNormalChar(ch,keysym)
-  File "C:\prog\leoCVS\leo\src\leoKeys.py", line 856, in insertNormalChar
-    self.calltip(obj)
-  File "C:\prog\leoCVS\leo\src\leoKeys.py", line 455, in calltip
-    obj = getattr(string,obj.__name__)
-AttributeError: 'module' object has no attribute 'startswith'
 #@+node:ekr.20060414071350.47: *6* Fixed Crash after undoing clearRecentFiles command
 exception executing command
 Traceback (most recent call last):

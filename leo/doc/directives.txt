@@ -67,7 +67,7 @@ The following table summarizes the various ways of creating external files.
 +---------+------------+------------------+-----------------+
 | @auto   | no         | yes              | no              |
 +---------+------------+------------------+-----------------+
-| @edit   | no         | yes: note 3      | no              |
+| @edit   | no         | no               | no              |
 +---------+------------+------------------+-----------------+
 | @nosent | no         | yes              | yes             |
 +---------+------------+------------------+-----------------+
@@ -82,9 +82,6 @@ The following table summarizes the various ways of creating external files.
 and a **private** file with sentinels.
 
 **Note 2**: \@file and \@thin nodes are synonyms.
-
-**Note 3**: Outline structure created in \@edit nodes is not saved in the
-external file.
 
 Within @path and @<file> paths, {{exp}} gets evaluated with the following
 symbols known: c, g, p, os and sys.  For example::
@@ -212,9 +209,8 @@ The \@edit directive imports an external file into a single node.
 When reading \@edit nodes, Leo reads the entire file into the \@edit node. Lines
 that look like sentinels will be read just as they are.
 
-When writing \@edit nodes, Leo writes expands section references, \@all and
-\@others just as with \@file trees. However, Leo writes no sentinels, so the
-structure created by sections references, \@all and \@others is not preserved.
+When writing \@edit nodes, \@edit nodes must not have children and section
+references and @others are not allowed.
 .. @+node:ekr.20100806170836.4403: *4* \@file <path> (aka @thin)
 .. index::
     pair: @file; Reference

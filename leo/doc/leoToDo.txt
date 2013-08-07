@@ -2600,7 +2600,7 @@ to track the information just in the way I like it, but to also operate
 with it avoiding repetitive tasks for me.
 
 Thanks for your software, Im really excited to have found it.
-.. @+node:ekr.20130510070942.10606: *3* Bugs (4.11)
+.. @+node:ekr.20130510070942.10606: *3* Bugs (before 4.11b1)
 .. @+node:ekr.20130503155210.24821: *4* Update installation docs
 @language rest
 
@@ -2929,6 +2929,17 @@ operation::
 
 Can you suggest what might be wrong?
 
+===== EKR
+
+The last set of double quotes looks wrong.  Try::
+
+    "C:\\Tools\\Python32\\python.exe" "C:\\Tools\\Leo-4.10-final\\launchLeo.py" %*
+
+In this case, none of the double quotes are needed, because the paths
+have no embedded blanks, so this also should work::
+
+    C:\\Tools\\Python32\\python.exe C:\\Tools\\Leo-4.10-final\\launchLeo.py %*
+
 ===== From: Matt Wilkie <maphew@gmail.com>
 
 It's the trailing %*, use "%1" instead.
@@ -2970,6 +2981,20 @@ Here's my launch batch. Note nothing's actually installed::
     start "" "..\\CommonFiles\\Python27\\pythonw.exe" 
     "..\\CommonFiles\\Python27\\Lib\\site-packages\\leo-editor4\\launchLeo.py" %*
     exit
+    
+===== Nick
+
+Many thanks to all for these replies!
+This is my final "open" string in the Windows file associations::
+
+    "C:\\Tools\\Python32\\python.exe" "C:\\Tools\\Leo-4.10-final\\launchLeo.py" --gui=3Dqttabs "%1"
+    
+Note that the brackets are needed round the %1 to cater for file paths
+containing spaces.
+
+Matt, thanks for the extra details about using ftype and assoc. I hadn't
+realised those existed in Windows. For anyone else reading this, that is an
+alternative to working through the file associations GUI.
 .. @+node:ekr.20130806072439.20652: *6* Re: Cannot open Leo files by double-click in Windows Explorer?
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
@@ -3004,86 +3029,6 @@ When in a batch file %1 passes just the first command line parameter.
 
 It is logical to expect %* to work for click file association as well,
 but it doesn't. I don't know why.
-.. @+node:ekr.20130806072439.20654: *6* Re: Cannot open Leo files by double-click in Windows Explorer?
-From: Matt Wilkie <maphew@gmail.com>
-
-> Set up file type association:
->
-> C:\\> ftype LeoFile=3DC:\\Python27\\pythonw.exe C:\\apps\\leo\\launchLeo.py =E2=80=9C%1=E2=80=B3
-> C:\\> assoc .leo=3DLeoFile
->
-And put this leo.bat in %PATH%:
->
-> @start /b "Leo" C:\\Python27\\python.exe C:\\apps\\leo\\launchLeo.py %*
->
-Edward (or anyone else with access to bzr, I don't right now (and the last
-time it didn't work anyway ;-): the docs have the wrong version, It should
-match the above:
-http://webpages.charter.net/edreamleo/install.html#installing-leo-on-windows
-
-
--matt
-.. @+node:ekr.20130806072439.20655: *6* Re: Cannot open Leo files by double-click in Windows Explorer?
-From: Nick_H <nah@plextek.co.uk>
-
-Many thanks to all for these replies!
-This is my final "open" string in the Windows file associations:
-"C:\\Tools\\Python32\\python.exe" "C:\\Tools\\Leo-4.10-final\\launchLeo.py"
---gui=3Dqttabs "%1"
-Note that the brackets are needed round the %1 to cater for file paths
-containing spaces.
-
-Matt, thanks for the extra details about using ftype and assoc. I hadn't
-realised those existed in Windows. For anyone else reading this, that is an
-alternative to working through the file associations GUI.
-.. @+node:ekr.20130806072439.20656: *6* Re: Cannot open Leo files by double-click in Windows Explorer?
-From: HansBKK <hansbkk@gmail.com>
-
-On Tuesday, April 17, 2012 1:43:34 AM UTC+7, Matt Wilkie wrote:
->
-> > there's a very cool tool called "PortableFileAssociator" that allows you 
-> to
-> > create a set of windows file associations, icons etc and enable/disable
->
-> neat, thanks for the tip.
-> oh, looks like it's problematic with portableapps.com suite 'cause of
-> high false-positive AV warnings... but maybe the same functionality
-> will be incorporated into the PA menu launcher. Cool.
-> http://portableapps.com/node/15583?page=4
->
-
-Yes, many cool tools like this use autohotkey, or a certain compiler that 
-also gets used for some malware and triggers false positives for some of 
-the sloppier a/v packages.
-
-If you want to be safe, get a more balanced picture from one of these:
-http://www.virustotal.com/
-http://virusscan.jotti.org/en
-.. @+node:ekr.20130806072439.20657: *6* Re: Cannot open Leo files by double-click in Windows Explorer?
-.. @+node:ekr.20130806072439.20661: *6* EKR
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-On Fri, Apr 13, 2012 at 5:24 AM, Nick_H <nah@plextek.co.uk> wrote:
-
-> "C:\\Tools\\Python32\\python.exe" "C:\\Tools\\Leo-4.10-final\\launchLeo.py
-> %*"
->
-> Can you suggest what might be wrong?
-
-The last set of double quotes looks wrong.  Try:
-
-"C:\\Tools\\Python32\\python.exe" "C:\\Tools\\Leo-4.10-final\\launchLeo.py" %*
-
-In this case, none of the double quotes are needed, because the paths
-have no embedded blanks, so this also should work:
-
-C:\\Tools\\Python32\\python.exe C:\\Tools\\Leo-4.10-final\\launchLeo.py %*
-
-Finally, unless you have a strong reason not to do so, I would suggest
-adding the --gui=qttabs option::
-
-C:\\Tools\\Python32\\python.exe C:\\Tools\\Leo-4.10-final\\launchLeo.py
---gui=qttabs %*
 .. @+node:ekr.20130806072439.20663: *6* PortableFileAssociator
 From the thread: Cannot open Leo files by double-click in Windows Explorer?
 From: HansBKK <hansbkk@gmail.com>

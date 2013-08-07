@@ -43,8 +43,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20101028112631.4959" descendentVnodeUnknownAttributes="7d7100550b302e312e302e302e302e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473732e"
-expanded="ekr.20050404094627,"><vh>@file doc-startup.txt</vh></v>
+<v t="ekr.20101028112631.4959" descendentVnodeUnknownAttributes="7d7100550b302e312e302e302e302e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473732e"><vh>@file doc-startup.txt</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
 <v t="ekr.20100805171546.4412"><vh>Files, including home page</vh>
@@ -187,8 +186,7 @@ expanded="ekr.20050404094627,"><vh>@file doc-startup.txt</vh></v>
 <v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028550b302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473550b302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473550b302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473550b302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177"
-expanded="edream.110203163054.63,"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20100805165051.7177"><vh>@file release_notes.txt</vh></v>
 </v>
 <v t="ekr.20130806072439.19990"><vh>Leo 4.11 Release notes (TO DO)</vh>
 <v t="ekr.20130806072439.19991"><vh>Bugs</vh>
@@ -659,18 +657,10 @@ expanded="edream.110203163054.63,"><vh>@file release_notes.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20130803073926.17124"><vh>Doc bugs</vh>
-<v t="ekr.20130807090137.16311"><vh>Re: Cannot open Leo files by double-click in Windows Explorer?</vh></v>
 <v t="ekr.20130806072439.20195"><vh>* Leo's home page moving to leoeditor.com</vh></v>
 <v t="ekr.20130803125244.17080"><vh>* Document Windows associations</vh></v>
 <v t="ekr.20130805080841.17066"><vh>Update list of commands in the docs</vh></v>
-<v t="ekr.20130526065545.14931"><vh>Suggestion for docs: Find and replace, missing a step\</vh></v>
-<v t="ekr.20130526065545.17607"><vh>Outdated info in "rst3"</vh>
-<v t="ekr.20130526065545.17606"><vh>Re: Outdated info in "rst3"</vh></v>
-<v t="ekr.20130526065545.17608"><vh>Re: Outdated info in "rst3"</vh></v>
-</v>
-<v t="ekr.20130526065545.17559"><vh>Really @edit can expand nodes?</vh>
-<v t="ekr.20130526065545.17560"><vh>Re: Really @edit can expand nodes?</vh></v>
-</v>
+<v t="ekr.20130526065545.14931"><vh>Suggestion for docs: Find and replace, missing a step</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -2782,43 +2772,6 @@ c.bringToFront()
 c.redraw()
 
 </t>
-<t tx="ekr.20130526065545.17559">@nocolor
-
-From: Chema Cortes &lt;pych3m4@gmail.com&gt;
-
-I was testing the @edit directive. I understand how it works and check
-that Leo does not allow adding new child nodes to an @edit node. Then,
-why does the documentation says that can expand sections, @other y
-@all on writing? Is that possible?
-
-Reference:
-http://webpages.charter.net/edreamleo/directives.html#edit-path
-</t>
-<t tx="ekr.20130526065545.17560">@nocolor
-
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-On Thu, Jul 5, 2012 at 6:21 PM, Chema Cortes &lt;pych3m4@gmail.com&gt; wrote:
-
-&gt; I was testing the @edit directive. I understand how it works and check
-&gt; that Leo does not allow adding new child nodes to an @edit node. Then,
-&gt; why does the documentation says that can expand sections, @other y
-&gt; @all on writing? Is that possible?
-&gt;
-&gt; Reference:
-&gt; http://webpages.charter.net/edreamleo/directives.html#edit-path
-&gt;
-
-The new reference is: http://leoeditor.com/directives.html#edit-path
-
-It appears that the docs are in error.  I get the following error when
-trying to save an @edit file with children:
-
-    @edit nodes must not have children
-    To save your work, convert @edit to @auto or @thin.
-
-I'll make a to-do item to fix this documentation bug.
-</t>
 <t tx="ekr.20130526065545.17575">@nocolor
 
 From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
@@ -3119,57 +3072,6 @@ and then do Alt-4 (run-selected-unit-tests-locally).
 **Note**: Some tests will likely fail on machines other than EKR's.
 You only need to be concerned about unit tests that start failing after you 
 make your changes.
-
-</t>
-<t tx="ekr.20130526065545.17606">@nocolor
-
-From: =?UTF-8?Q?Fidel_P=C3=A9rez?= &lt;fidelperez@gmail.com&gt;
-
-Well I realized that is not neccesary since the only thing I have to do is
-rename a node into @auto-rst, but the existence of rst3 in the scripts.leo
-file confused me big time.
-
-On Tuesday, May 7, 2013 7:16:08 PM UTC+2, Fidel P=E9rez wrote:
-&gt;
-&gt; Just reporting outdated information in the node "rst3" in the file
-&gt; "leoPluginsRef.leo":
-&gt;
-&gt; Im studying how to activate rst3 plugin, in this node ("rst3") it says to
-&gt; go to www.silvercity.sourceforge.net and download the release for my
-&gt; python, but silvercity has python 2.4 as latest, and that project was last
-&gt; edited in 2006.
-&gt;
-&gt;
-
-</t>
-<t tx="ekr.20130526065545.17607">@nocolor
-
-From: &lt;fidelperez@gmail.com&gt;
-
-Just reporting outdated information in the node "rst3" in the file 
-"leoPluginsRef.leo":
-
-Im studying how to activate rst3 plugin, in this node ("rst3") it says to 
-go to www.silvercity.sourceforge.net and download the release for my 
-python, but silvercity has python 2.4 as latest, and that project was last 
-edited in 2006.
-</t>
-<t tx="ekr.20130526065545.17608">@nocolor
-
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-
-On Tue, May 7, 2013 at 2:27 PM, Fidel P=C3=A9rez &lt;fidelperez@gmail.com&gt; wrote:
-
-&gt; Well I realized that is not neccesary since the only thing I have to do is
-&gt; rename a node into @auto-rst, but the existence of rst3 in the scripts.leo
-&gt; file confused me big time.
-
-
-I've put this on the list of things to document properly.  Not exactly the
-right place, but it should suffice.
-
-Edward
 
 </t>
 <t tx="ekr.20130526065545.17620">@nocolor
@@ -13678,13 +13580,6 @@ if exp_only != 'cancel':
     
     if filename is not None:
         open(filename,'w').write('\\n'.join(lines))
-</t>
-<t tx="ekr.20130807090137.16311">From: Matt Wilkie &lt;maphew@gmail.com&gt;
-
-Edward (or anyone else with access to bzr, I don't right now (and the last
-time it didn't work anyway ;-): the docs have the wrong version, It should
-match the above:
-http://webpages.charter.net/edreamleo/install.html#installing-leo-on-windows
 </t>
 <t tx="sps.20100708203040.19008">@language python
 import os
