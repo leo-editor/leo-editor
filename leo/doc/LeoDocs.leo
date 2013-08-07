@@ -449,6 +449,7 @@ expanded="edream.110203163054.63,"><vh>@file release_notes.txt</vh></v>
 <v t="ekr.20130526065545.17637"><vh>Re: persistent state with json as a leo abbreviation</vh></v>
 <v t="ekr.20130526065545.17638"><vh>Re: persistent state with json as a leo abbreviation</vh></v>
 </v>
+<v t="ekr.20130806175854.17068"><vh>Rev 5488: importing IPython .ipynb to Leo outlines</vh></v>
 <v t="ekr.20130806072439.19631"><vh>sublime text &amp; other themes</vh>
 <v t="ekr.20130526065545.17514"><vh>New theme in leoSettings.leo: Sublime Text...</vh></v>
 <v t="ekr.20130526065545.17589"><vh>go-anywhere a'la sublime text: first light"</vh>
@@ -13444,6 +13445,34 @@ Mines on youtube, it is from a presentation at PyOhio last year.
 
 Ville's is also there:
   http://www.youtube.com/watch?v=Zu6J-J0qFi0
+</t>
+<t tx="ekr.20130806175854.17068">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
+
+Rev 5488 contains a prototype for importing IPython notebook (.ipynb) files 
+into Leo.  In theory, this would allow two-way interchanges between Leo 
+outlines and the outlines in IPython notebooks.
+
+At present, the prototype simply converts a string containing the contents 
+of a .ipynb file to a Leo outline.  A few details remain, but it shows that 
+such conversion is straightforward.  Otoh, this is just a first step: we 
+would like the Leo outline to support most of the features of IPython 
+notebooks, including embedded images, etc.
+
+===== From: Alia K &lt;alia_khouri@yahoo.com&gt;
+
+May a suggest a radical thought exercise that only occurred to me after 
+seeing what can be achieved in terms of in-browser editing with 
+http://codemirror.net/: 
+
+Why not create an ipython notebook "plugin" version of leo which would only 
+provide core leo functionality: outlines, literate programming, and clones, 
+but would not be burdened by having to support legacy leo plugins. 
+
+You could leverage all the mad goodness and momentum that is happening with 
+ipython right now (interactivity, parallelism, networking and 
+collaboration, interactive access to javascript libs like d3.js, etc.., 
+inline images, and movies, and cell magic, etc..). Since ipython is pretty 
+much pervasively used ... it could be a good thing for leo (-:
 </t>
 <t tx="sps.20100708203040.19008">@language python
 import os
