@@ -1,6 +1,2379 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20100120072650.6089: * @file ../doc/leoProjects.txt
 #@+all
+#@+node:ekr.20130807203905.16727: **  porting docutils
+# This project has failed.
+#@+node:ekr.20130807203905.16728: *3* notes re 2to3 fixers
+A fixes:
+--fix=except
+--fix=raise 
+--fix=print
+--fix=callable # no changes.
+--fix=dict # changes suggested, but they don't look like they are needed.
+--fix=exec # no changes.
+--fix=execfile # no changes.
+--fix=filter # one change, but this should be needed.
+--fix=funcattrs # no changes.
+--fix=has_key # changes suggested, but this code is weird.  Not sure it is wise to do this.
+--fix=idioms # optional.  Not made yet.
+--fix=input # no changes.
+--fix=intern # no changes.
+--fix=isinstance # no changes.
+--fix=itertool_imports # no changes.
+--fix=itertoos # no changes.
+--fix=long # no changes.
+--fix=map # one change suggested, suppressed by adding from future_builtins import map.
+--fix=metaclass # no changes.
+--fix=methodattrs # no changes.
+--fix=ne # no changes.
+--fix=numliterals # no changes.
+--fix=paren # no changes.
+--fix=raw_input # no changes.
+--fix=reduce # no changes.
+--fix=renames # two files changed automatically.
+--fix=repr # no changes.
+--fix=set_literal # no changes.
+--fix=standard_error # no such fixer!
+--fix=sys_exc # no changes.
+--fix=throw # no changes.
+--fix=tuple_params # no changes.
+--fix=xrange ### Several changes.  Can be done automatically.
+--fix=xreadlines # no changes.
+
+B fixes:
+--fix=basestring
+    OK: docutils\nodes.py
+    docutils\utils\math\math2html.py
+--fix=buffer # no changes.
+--fix=getcwdu # *** applied change by hand.
+--fix=imports2 # no changes.
+--fix=imports # see below
+    These must be modified:
+        docutils\writers\docutils_xml.py
+        docutils\writers\odf_odt\__init__.py
+--fix=next # Changes suggested.  Not sure what to do about them.
+--fix=nonzero # changed nodes.py by hand.
+--fix=types ### Two changes needed.
+--fix=unicode # This removes U from U'string', and is probably not necessary (because the files compile correctly)
+--fix=urrlib ### Several changes needed.
+#@+node:ekr.20130807203905.16729: *3* New 2to3 fixers
+# The python-modernize package makes these unnecessary.
+#@+node:ekr.20130807203905.16730: *4* @@nosent C:\Python27\Lib\lib2to3\fixes\fix_unified_unicode.py
+"""Fixer that changes u"..." into u("...") and ur("...") into u(r"...").
+
+"""
+
+@language python
+@tabwidth -4
+
+import re
+from .. import fixer_base
+
+_literal_re = re.compile(ur"[uU][rR]?[\'\"]")
+
+class FixUnifiedUnicode(fixer_base.BaseFix):
+    
+    BM_compatible = True
+    PATTERN = "STRING"
+
+    def transform(self, node, results):
+        if _literal_re.match(node.value):
+            node.value = "u(%s)" % node.value[1:]
+            node.changed()
+#@+node:ekr.20130807203905.16731: *4* @@nosent C:\Python27\Lib\lib2to3\fixes\fix_unified_imports.py
+"""
+Fix incompatible imports and module references so the work with Python 2 and 3.
+"""
+
+# Authors: Collin Winter, Nick Edds, Edward K. Ream.
+
+@language python
+@tabwidth -4
+
+<< imports >>
+<< define mapping >>
+
+@others
+#@+node:ekr.20130807203905.16732: *5* << imports >>
+
+# Local imports
+from .. import fixer_base
+from ..fixer_util import Name,Newline,Node,Leaf,String,attr_chain,find_binding
+
+# EKR imports
+from ..pgen2 import token
+
+import pprint
+pp = pprint.PrettyPrinter(indent=4)
+
+import leo.core.leoGlobals as g
+#@+node:ekr.20130807203905.16733: *5* << define mapping >>
+MAPPING = {
+    'StringIO':  'io',
+    'cStringIO': 'io',
+    'cPickle': 'pickle',
+    '__builtin__' : 'builtins',
+    'copy_reg': 'copyreg',
+    'Queue': 'queue',
+    'SocketServer': 'socketserver',
+    'ConfigParser': 'configparser',
+    'repr': 'reprlib',
+    'FileDialog': 'tkinter.filedialog',
+    'tkFileDialog': 'tkinter.filedialog',
+    'SimpleDialog': 'tkinter.simpledialog',
+    'tkSimpleDialog': 'tkinter.simpledialog',
+    'tkColorChooser': 'tkinter.colorchooser',
+    'tkCommonDialog': 'tkinter.commondialog',
+    'Dialog': 'tkinter.dialog',
+    'Tkdnd': 'tkinter.dnd',
+    'tkFont': 'tkinter.font',
+    'tkMessageBox': 'tkinter.messagebox',
+    'ScrolledText': 'tkinter.scrolledtext',
+    'Tkconstants': 'tkinter.constants',
+    'Tix': 'tkinter.tix',
+    'ttk': 'tkinter.ttk',
+    'Tkinter': 'tkinter',
+    'markupbase': '_markupbase',
+    '_winreg': 'winreg',
+    'thread': '_thread',
+    'dummy_thread': '_dummy_thread',
+    # anydbm and whichdb are handled by fix_imports2
+    'dbhash': 'dbm.bsd',
+    'dumbdbm': 'dbm.dumb',
+    'dbm': 'dbm.ndbm',
+    'gdbm': 'dbm.gnu',
+    'xmlrpclib': 'xmlrpc.client',
+    'DocXMLRPCServer': 'xmlrpc.server',
+    'SimpleXMLRPCServer': 'xmlrpc.server',
+    'httplib': 'http.client',
+    'htmlentitydefs' : 'html.entities',
+    'HTMLParser' : 'html.parser',
+    'Cookie': 'http.cookies',
+    'cookielib': 'http.cookiejar',
+    'BaseHTTPServer': 'http.server',
+    'SimpleHTTPServer': 'http.server',
+    'CGIHTTPServer': 'http.server',
+    #'test.test_support': 'test.support',
+    'commands': 'subprocess',
+    'UserString' : 'collections',
+    'UserList' : 'collections',
+    'urlparse' : 'urllib.parse',
+    'robotparser' : 'urllib.robotparser',
+}
+#@+node:ekr.20130807203905.16734: *5* alternates
+def alternates(members):
+    return "(" + "|".join(map(repr, members)) + ")"
+
+#@+node:ekr.20130807203905.16735: *5* build_pattern
+def build_pattern(mapping=MAPPING):
+    mod_list = ' | '.join(["module_name='%s'" % key for key in mapping])
+    bare_names = alternates(mapping.keys())
+    yield """name_import=import_name< 'import' ((%s) |
+               multiple_imports=dotted_as_names< any* (%s) any* >) >
+          """ % (mod_list, mod_list)
+    yield """import_from< 'from' (%s) 'import' ['(']
+              ( any | import_as_name< any 'as' any > |
+                import_as_names< any* >)  [')'] >
+          """ % mod_list
+    yield """import_name< 'import' (dotted_as_name< (%s) 'as' any > |
+               multiple_imports=dotted_as_names<
+                 any* dotted_as_name< (%s) 'as' any > any* >) >
+          """ % (mod_list, mod_list)
+
+    # Find usages of module members in code e.g. thread.foo(bar)
+    yield "power< bare_with_attr=(%s) trailer<'.' any > any* >" % bare_names
+
+#@+node:ekr.20130807203905.16736: *5* class FixUnifiedImports
+class FixUnifiedImports(fixer_base.BaseFix):
+
+    BM_compatible = True
+    keep_line_order = True
+    # This is overridden in fix_imports2.
+    mapping = MAPPING
+
+    # We want to run this fixer late, so fix_import doesn't try to make stdlib
+    # renames into relative imports.
+    run_order = 6
+
+    @others
+#@+node:ekr.20130807203905.16737: *6* build_pattern
+def build_pattern(self):
+    return "|".join(build_pattern(self.mapping))
+
+#@+node:ekr.20130807203905.16738: *6* compile_pattern
+def compile_pattern(self):
+    # We override this, so MAPPING can be pragmatically altered and the
+    # changes will be reflected in PATTERN.
+    self.PATTERN = self.build_pattern()
+    super(FixUnifiedImports, self).compile_pattern()
+
+#@+node:ekr.20130807203905.16739: *6* dump
+def dump(self,aDict):
+    if not aDict: return '<None>'
+    result = []
+    for key in aDict:
+        result.append('')
+        val = aDict.get(key)
+        result.append('%s: %s' % (key,pp.pformat(val)))
+    return '\n'.join(result)
+
+#@+node:ekr.20130807203905.16740: *6* match
+# Don't match the node if it's within another match.
+
+def match(self, node):
+    match = super(FixUnifiedImports, self).match
+    results = match(node)
+    if results:
+        # Module usage could be in the trailer of an attribute lookup, so we
+        # might have nested matches when "bare_with_attr" is present.
+        if (
+            "bare_with_attr" not in results and 
+            any(match(obj) for obj in attr_chain(node, "parent"))
+        ):
+            return False
+        return results
+    return False
+
+#@+node:ekr.20130807203905.16741: *6* start_tree
+def start_tree(self, tree, filename):
+    super(FixUnifiedImports, self).start_tree(tree, filename)
+    self.replace = {}
+    
+#@+node:ekr.20130807203905.16742: *6* transform (fix_unified_imports)
+@
+mod_list = ' | '.join(["module_name='%s'" % key for key in mapping])
+
+bare_names = alternates(mapping.keys())
+    
+"""name_import=import_name<
+    'import' ((%s) |
+    multiple_imports=dotted_as_names< any* (%s) any* >)
+>
+""" % (mod_list, mod_list)
+          
+"""import_from<
+    'from' (%s) 'import' ['('] ( any |
+    import_as_name< any 'as' any > |
+    import_as_names< any* >)  [')']
+>
+""" % mod_list
+
+"""import_name<
+    'import' (dotted_as_name< (%s) 'as' any > |
+    multiple_imports=dotted_as_names< any* dotted_as_name< (%s) 'as' any > any* >)
+>
+""" % (mod_list, mod_list)
+@c
+
+
+def transform(self, node, results):
+    trace = False
+    if 0:
+        # print('\ntransform: node:\n%s' % node)
+        print('\ntransform: results: %s\n' % self.dump(results))
+    # g.trace(sorted(results.keys()))
+    import_mod = results.get("module_name")
+    name_import = results.get('name_import')
+    # print('transform',import_mod,sorted(results.keys()))
+    if import_mod:
+        mod_name = import_mod.value
+        new_name = unicode(self.mapping[mod_name])
+        if 0: #original
+            import_mod.replace(Name(new_name, prefix=import_mod.prefix))
+        else:
+            prefix = node.prefix # was import_mod.prefix
+            clone = node.clone()
+            clone2 = node.clone()
+            node2 = self.find_name(clone2,mod_name)
+            node2.replace(Name(new_name,prefix=import_mod.prefix))
+            indent = Name('    ',prefix=prefix) # A hack.
+            node.replace([ # was node.replace.
+                String('if sys.version_info < (3,):',prefix=prefix),
+                Newline(),indent,
+                clone,
+                Newline(),
+                Name('else:',prefix=prefix),
+                Newline(),indent,
+                clone2,
+                Newline(),
+            ])
+            
+        if 1: # old code.
+            if "name_import" in results:
+                # If it's not a "from x import x, y" or "import x as y" import,
+                # marked its usage to be replaced.
+                g.trace('******',mod_name,new_name)
+                self.replace[mod_name] = new_name
+            if "multiple_imports" in results:
+                # This is a nasty hack to fix multiple imports on a line (e.g.,
+                # "import StringIO, urlparse"). The problem is that I can't
+                # figure out an easy way to make a pattern recognize the keys of
+                # MAPPING randomly sprinkled in an import statement.
+                results = self.match(node)
+                if results:
+                    self.transform(node, results)
+    elif 1:
+        # Replace usage of the module.
+        bare_name = results["bare_with_attr"][0]
+        new_name = self.replace.get(bare_name.value)
+        old = results.get('node').clone()
+        if trace: g.trace('==== old',old)
+        if new_name:
+            if trace: g.trace('===== replace',bare_name,bare_name.value,new_name)
+            if 0:
+                bare_name.replace(Name(new_name, prefix=bare_name.prefix))
+            else:
+                bare_name.replace([
+                    old,
+                    String(' if sys.version_info < (3,) else '),
+                    Name(new_name),
+                ])
+#@+node:ekr.20130807203905.16743: *6* find_name (EKR)
+def find_name(self,root,name):
+    '''Find a Name subnode of root defining name'''
+    
+    # print('find_name',name,root)
+    for node in root.post_order():
+        # print('find_name',node)
+        if node.type == 1 and node.value == name:
+            # print('find_name: found',node)
+            return node
+    return None
+#@+node:ekr.20130807203905.16744: *4* trace
+transform: node:
+    Node(import_from, [
+        Leaf(1, u'from'),
+        Leaf(1, u'StringIO'),
+        Leaf(1, u'import'),
+        Node(import_as_name, [
+            Leaf(1, u'StringIO'),
+            Leaf(1, u'as'),
+            Leaf(1, u'BytesIO')
+        ])
+    ])
+
+transform: results: {
+    'module_name': Leaf(1, u'StringIO'),
+    'node': Node(import_from, [
+        Leaf(1, u'from'),
+        Leaf(1, u'StringIO'),
+        Leaf(1, u'import'),
+        Node(import_as_name, [
+            Leaf(1,u'StringIO'),
+            Leaf(1, u'as'),
+            Leaf(1, u'BytesIO')
+        ])
+    ])
+}
+
+transform: node:
+    Node(import_name, [
+        Leaf(1, u'import'),
+        Leaf(1, u'__builtin__')
+    ])
+
+transform: results: {
+    'module_name': Leaf(1, u'__builtin__'),
+    'name_import': Node(import_name, [Leaf(1, u'import'), Leaf(1, u'__builtin__')]),
+    'node': Node(import_name, [
+        Leaf(1, u'import'),
+        Leaf(1, u'__builtin__')
+    ])
+}
+
+transform: node:
+    Node(power, [
+        Leaf(1, u'__builtin__'),
+        Node(trailer, [
+            Leaf(23, u'.'), Leaf(1, u'__import__')
+        ]),
+        Node(trailer, [
+            Leaf(7, u'('), Node(arglist, [
+                Leaf(1, u'name'),
+                Leaf(12, u','),
+                Leaf(1, u'globals'),
+                Leaf(12, u','),
+                Leaf(1, u'locals'), Leaf(12, u','),
+                Leaf(1, u'fromlist')
+            ]),
+            Leaf(8, u')')
+        ])
+    ])
+
+transform: results: {
+    'bare_with_attr': [Leaf(1, u'__builtin__')],
+    'node': Node(power, [
+        Leaf(1, u'__builtin__'),
+        Node(trailer, [
+            Leaf(23, u'.'),
+            Leaf(1, u'__import__')
+        ]),
+        Node(trailer, [
+            Leaf(7, u'('),
+            Node(arglist, [
+                Leaf(1, u'name'),
+                Leaf(12, u','),
+                Leaf(1, u'globals'),
+                Leaf(12, u','),
+                Leaf(1, u'locals'),
+                Leaf(12, u','),
+                Leaf(1, u'fromlist')
+            ]), 
+            Leaf(8, u')')
+        ])
+    ])
+}
+
+RefactoringTool: Refactored docutils\_compat.py
+--- docutils\_compat.py (original)
++++ docutils\_compat.py (refactored)
+@@ -20,7 +20,7 @@
+ if sys.version_info < (3,0):
+     b = bytes = str
+     u_prefix = 'u'
+-    from StringIO import StringIO as BytesIO
++    from io import StringIO as BytesIO
+ else:
+     import builtins
+     bytes = builtins.bytes
+@@ -37,7 +37,7 @@
+     BytesIO = __import__('io').BytesIO
+
+ if sys.version_info < (2,5):
+-    import __builtin__
++    import builtins
+
+     def __import__(name, globals={}, locals={}, fromlist=[], level=-1):
+         """Compatibility definition for Python 2.4.
+@@ -45,4 +45,4 @@
+         Silently ignore the `level` argument missing in Python < 2.5.
+         """
+         # we need the level arg because the default changed in Python 3.3
+-        return __builtin__.__import__(name, globals, locals, fromlist)
++        return builtins.__import__(name, globals, locals, fromlist)
+
+transform: node:
+    Node(import_name, [
+        Leaf(1, u'import'),
+        Node(dotted_as_name, [
+            Leaf(1, u'ConfigParser'),
+            Leaf(1, u'as'),
+            Leaf(1, u'CP')
+        ])
+    )]
+
+transform: results: {
+    'module_name': Leaf(1, u'ConfigParser'),
+    'node': Node(import_name, [
+        Leaf(1, u'import'),
+        Node(dotted_as_name, [
+            Leaf(1, u'ConfigParser'),
+            Leaf(1, u'as'),
+            Leaf(1, u'CP')
+        ])
+    ])
+}
+
+RefactoringTool: Refactored docutils\frontend.py
+--- docutils\frontend.py        (original)
++++ docutils\frontend.py        (refactored)
+@@ -35,7 +35,7 @@
+ import warnings
+ ### 2to3.
+ if sys.version_info < (3,0):
+-    import ConfigParser as CP
++    import configparser as CP
+ else:
+     import configparser as CP
+ import codecs
+
+transform: node:
+    Node(import_from, [
+        Leaf(1, u'from'),
+        Leaf(1, u'StringIO'),
+        Leaf(1, u'import'),
+        Leaf(1, u'StringIO')
+    ])
+
+transform: results: {
+    'module_name': Leaf(1, u'StringIO'),
+    'node': Node(import_from, [
+        Leaf(1, u'from'),
+        Leaf(1, u'StringIO'),
+        Leaf(1, u'import'),
+        Leaf(1, u'StringIO')
+    ])
+}
+
+RefactoringTool: Refactored docutils\writers\docutils_xml.py
+--- docutils\writers\docutils_xml.py    (original)
++++ docutils\writers\docutils_xml.py    (refactored)
+@@ -25,7 +25,7 @@
+     xml.__path__.reverse() # If both are available, prefer stdlib over PyXML
+
+ import xml.sax.saxutils
+-from StringIO import StringIO
++from io import StringIO
+
+ import docutils
+ from docutils import frontend, writers, nodes
+
+transform: node:
+    Node(import_name, [
+        Leaf(1, u'import'),
+        Leaf(1, u'StringIO')
+    ])
+
+transform: results: {
+    'module_name': Leaf(1, u'StringIO'),
+    'name_import': Node(import_name, [
+        Leaf(1, u'import'),
+        Leaf(1, u'StringIO')
+    ]),
+    'node': Node(import_name, [
+        Leaf(1, u'import'),
+        Leaf(1, u'StringIO')
+    ])
+}
+
+transform: node:
+    Node(power, [
+        Leaf(1, u'StringIO'),
+        Node(trailer, [
+            Leaf(23, u'.'),
+            Leaf(1, u'StringIO')
+        ]), 
+        Node(trailer, [
+            Leaf(7, u'('),
+            Leaf(8, u')')
+        ])
+    ])
+
+transform: results: {
+    'bare_with_attr': [Leaf(1, u'StringIO')],
+    'node': Node(power, [
+        Leaf(1, u'StringIO'),
+        Node(trailer, [
+            Leaf(23, u'.'),
+            Leaf(1, u'StringIO')
+        ]),
+        Node(trailer, [
+            Leaf(7, u'('),
+            Leaf(8, u')')
+        ])
+    ])
+}
+
+transform: node:
+    Node(import_from, [
+        Leaf(1, u'from'),
+        Leaf(1, u'ConfigParser'),
+        Leaf(1, u'import'),
+        Leaf(1, u'ConfigParser')
+    ])
+
+transform: results: {
+    'module_name': Leaf(1, u'ConfigParser'),
+    'node': Node(import_from, [
+        Leaf(1, u'from'),
+        Leaf(1, u'ConfigParser'),
+        Leaf(1, u'import'),
+        Leaf(1, u'ConfigParser')
+    ])
+}
+
+RefactoringTool: Refactored docutils\writers\odf_odt\__init__.py
+--- docutils\writers\odf_odt\__init__.py        (original)
++++ docutils\writers\odf_odt\__init__.py        (refactored)
+@@ -22,7 +22,7 @@
+ from xml.dom import minidom
+ import time
+ import re
+-import StringIO
++import io
+ import copy
+ import urllib2
+ import docutils
+@@ -306,7 +306,7 @@
+     return tag
+
+ def ToString(et):
+-    outstream = StringIO.StringIO()
++    outstream = io.StringIO()
+     if sys.version_info >= (3, 2):
+         et.write(outstream, encoding="unicode")
+     else:
+@@ -795,7 +795,7 @@
+         self.language = languages.get_language(lcode, document.reporter)
+         self.format_map = { }
+         if self.settings.odf_config_file:
+-            from ConfigParser import ConfigParser
++            from configparser import ConfigParser
+
+             parser = ConfigParser()
+             parser.read(self.settings.odf_config_file)
+#@+node:ekr.20130807203905.16745: *3* Scripts
+#@+node:ekr.20130807203905.16746: *4* Script: write constants to log pane
+# -*- coding: utf8 -*-
+
+# Define the constants for the define_xxx functions in the new punctuations_chars.py.
+import unicodedata
+s =  ur"\.\,\;\!\?"
+assert not g.isPython3
+d = {}
+for uc in s:
+    assert isinstance(uc,(str,unicode)),type(uc)
+    comment = unicodedata.name(uc,'Unknown') if isinstance(uc,unicode) else 'ascii'
+    d[ord(uc)] = comment
+for i in sorted(d.keys()):
+    g.es('%5s, # %s' % (i,d.get(i)))
+#@+node:ekr.20130807203905.16747: *4* Script: check syntax of all docutils files
+# The following files fail on Python 3 because of Python 2.x syntax for unicode characters:
+# (now passes) utils/punctuation_chars.py, 
+# utils/math/latex2mathml.py,
+# writers/manpage.py,
+# writers/latex2e/__init__.py
+
+g.cls()
+import os
+path = g.os_path_finalize_join(g.app.loadDir,'..','extensions','docutils')
+if g.isPython3:
+    exclude = ('punctuation2.py',)
+else:
+    exclude = ('punctuation3.py',)
+for root, dirs, files in os.walk(path):
+    for fn in files:
+        if fn.endswith('.py'):
+            fn = g.os_path_join(root,fn)
+            if not g.shortFileName(fn) in exclude:
+                s,e = g.readFileIntoString(fn)
+                c.testManager.checkFileSyntax(fn,s,reraise=False,suppress=False)
+print('all files in leo/extensions/docutils pass')
+#@+node:ekr.20130807203905.16748: *4* Script: restore newlines
+# From Python/tools/scripts/crlf.py
+"Replace CRLF with LF in docutils files."
+
+g.cls()
+write = True
+import os
+def fix(filename):
+    if os.path.isdir(filename):
+        # print filename, "Directory!"
+        return
+    data = open(filename,"rb").read()
+    if '\0' in data:
+        print('binary: %s' % filename)
+        return
+    newdata = data.replace("\r\n","\n")
+    if newdata != data:
+        print('changed: %s' % g.shortFileName(filename,2))
+        if write:
+            f = open(filename,"wb")
+            f.write(newdata)
+            f.close()
+
+path = g.os_path_finalize_join(g.app.loadDir,'..','extensions','docutils')
+for root, dirs, files in os.walk(path):
+    for fn in files:
+        if fn.endswith('.py'):
+            fn = g.os_path_join(root,fn)
+            fix(fn)
+print('done')
+#@+node:ekr.20130807203905.16749: *4* Script: create ords arrays
+# -*- coding: utf8 -*-
+import sys
+import unicodedata
+
+@others
+
+openers_original = ur"""\"\'\(\<\[\{༺༼᚛⁅⁽₍〈❨❪❬❮❰❲❴⟅⟦⟨⟪⟬⟮⦃⦅⦇⦉⦋⦍⦏⦑⦓⦕⦗⧘⧚⧼⸢⸤⸦⸨〈《「『【〔〖〘〚〝〝﴾︗︵︷︹︻︽︿﹁﹃﹇﹙﹛﹝（［｛｟｢«‘“‹⸂⸄⸉⸌⸜⸠‚„»’”›⸃⸅⸊⸍⸝⸡‛‟"""
+openers_ords = [ord(ch) for ch in openers_original if unicodedata.name(ch,'Unknown') != 'Unknown']
+openers = ''.join([unichr(n) for n in openers_ords])
+assert openers_original == openers
+
+closers_original = ur"""\"\'\)\>\]\}༻༽᚜⁆⁾₎〉❩❫❭❯❱❳❵⟆⟧⟩⟫⟭⟯⦄⦆⦈⦊⦌⦎⦐⦒⦔⦖⦘⧙⧛⧽⸣⸥⸧⸩〉》」』】〕〗〙〛〞〟﴿︘︶︸︺︼︾﹀﹂﹄﹈﹚﹜﹞）］｝｠｣»’”›⸃⸅⸊⸍⸝⸡‛‟«‘“‹⸂⸄⸉⸌⸜⸠‚„"""
+closers_ords = [ord(ch) for ch in closers_original if unicodedata.name(ch,'Unknown') != 'Unknown']
+closers = ''.join([unichr(n) for n in closers_ords])
+assert closers_original == closers
+
+delimiters_original = u"\\-\\/\\:֊־᐀᠆‐‑‒–—―⸗⸚〜〰゠︱︲﹘﹣－¡·¿;·՚՛՜՝՞՟։׀׃׆׳״؉؊،؍؛؞؟٪٫٬٭۔܀܁܂܃܄܅܆܇܈܉܊܋܌܍߷߸߹࠰࠱࠲࠳࠴࠵࠶࠷࠸࠹࠺࠻࠼࠽࠾।॥॰෴๏๚๛༄༅༆༇༈༉༊་༌།༎༏༐༑༒྅࿐࿑࿒࿓࿔၊။၌၍၎၏჻፡።፣፤፥፦፧፨᙭᙮᛫᛬᛭᜵᜶។៕៖៘៙៚᠀᠁᠂᠃᠄᠅᠇᠈᠉᠊᥄᥅᧞᧟᨞᨟᪠᪡᪢᪣᪤᪥᪦᪨᪩᪪᪫᪬᪭᭚᭛᭜᭝᭞᭟᭠᰻᰼᰽᰾᰿᱾᱿᳓‖‗†‡•‣․‥…‧‰‱′″‴‵‶‷‸※‼‽‾⁁⁂⁃⁇⁈⁉⁊⁋⁌⁍⁎⁏⁐⁑⁓⁕⁖⁗⁘⁙⁚⁛⁜⁝⁞⳹⳺⳻⳼⳾⳿⸀⸁⸆⸇⸈⸋⸎⸏⸐⸑⸒⸓⸔⸕⸖⸘⸙⸛⸞⸟⸪⸫⸬⸭⸮⸰⸱、。〃〽・꓾꓿꘍꘎꘏꙳꙾꛲꛳꛴꛵꛶꛷꡴꡵꡶꡷꣎꣏꣸꣹꣺꤮꤯꥟꧁꧂꧃꧄꧅꧆꧇꧈꧉꧊꧋꧌꧍꧞꧟꩜꩝꩞꩟꫞꫟꯫︐︑︒︓︔︕︖︙︰﹅﹆﹉﹊﹋﹌﹐﹑﹒﹔﹕﹖﹗﹟﹠﹡﹨﹪﹫！＂＃％＆＇＊，．／：；？＠＼｡､･"
+delimiter_ords = [ord(ch) for ch in delimiters_original if unicodedata.name(ch,'Unknown') != 'Unknown']
+delimiters = ''.join([unichr(n) for n in delimiter_ords])
+
+quote_pairs_original = {
+    u'\xbb':   u'\xbb',         # Swedish
+    u'\u2018': u'\u201a',       # Greek
+    u'\u2019': u'\u2019',       # Swedish
+    u'\u201a': u'\u2018\u2019', # German, Polish
+    u'\u201c': u'\u201e',       # German
+    u'\u201e': u'\u201c\u201d',
+    u'\u201d': u'\u201d',       # Swedish
+    u'\u203a': u'\u203a',       # Swedish
+}
+
+# Compute the quote pairs array.
+d = quote_pairs_original
+d2 = {}
+for ch in d.keys():
+    val = d.get(ch)
+    n = ord(ch)
+    d2[n] = [ord(z) for z in val]
+for n in sorted(d2.keys()):
+    g.es('0x%x: [%s],' % (n,','.join(['0x%x' % (z) for z in d2.get(n)])))
+
+
+# No need to compute 
+
+assert compare(openers_original,openers)
+assert compare(closers_original,closers)
+assert compare(delimiters_original,delimiters)
+
+if 0: # Create the ords array.
+    for n in closers_ords:
+        ch = unichr(n)
+        g.es('%s, # %s' % (n,unicodedata.name(ch,'Unknown')))
+    
+print('done')
+#@+node:ekr.20130807203905.16750: *5* compare and helper
+def unknown(ch):
+    return unicodedata.name(ch,'Unknown') == 'Unknown'
+
+def compare(s1,s2):
+    i1,i2,n1,n2 = 0,0,len(s1),len(s2)
+    while True:
+        while i1 < n1 and unknown(s1[i1]):
+            i1 += 1
+        # while i2 < n2 and unknown(s2[i2]):
+            # i2 += 1
+        if i1 < n1 and i2 < n2 and s1[i1] == s2[i2]:
+            i1 += 1 ; i2 += 1
+        else:
+            return i1 == n1 and i2 == n2
+#@+node:ekr.20130807203905.16751: *4* Script: test quote_pairs
+quote_pairs_original = {
+    u'\xbb':   u'\xbb', # Swedish
+    u'\u2018': u'\u201a', # Greek
+    u'\u2019': u'\u2019', # Swedish
+    u'\u201a': u'\u2018\u2019', # German, Polish
+    u'\u201c': u'\u201e', # German
+    u'\u201e': u'\u201c\u201d',
+    u'\u201d': u'\u201d', # Swedish
+    u'\u203a': u'\u203a', # Swedish
+}
+          
+quote_pairs_ord_d = {
+    0xbb:   [0xbb],
+    0x2018: [0x201a],
+    0x2019: [0x2019],
+    0x201a: [0x2018,0x2019],
+    0x201c: [0x201e],
+    0x201d: [0x201d],
+    0x201e: [0x201c,0x201d],
+    0x203a: [0x203a],
+}
+
+quote_pairs = {}
+d = quote_pairs_ord_d
+for n in d.keys():
+    ch = unichr(n)
+    quote_pairs [ch] = ''.join([unichr(n2) for n2 in d.get(n)])
+d = quote_pairs
+for ch in sorted(d.keys()):
+    g.es('0x%x: %s' % (ord(ch),['0x%s' % (ord(z)) for z in d.get(ch)]))
+    
+assert quote_pairs == quote_pairs_original
+g.es('pass!')
+#@+node:ekr.20130807203905.16752: *3* Tests
+#@+node:ekr.20130807203905.16753: *4* @@test special chars script & helpers
+# -*- coding: utf8 -*-
+
+from __future__ import print_function
+
+g.cls()
+
+import re
+import sys
+import unicodedata
+
+openers = ur"""\"\'\(\<\[\{༺༼᚛⁅⁽₍〈❨❪❬❮❰❲❴⟅⟦⟨⟪⟬⟮⦃⦅⦇⦉⦋⦍⦏⦑⦓⦕⦗⧘⧚⧼⸢⸤⸦⸨〈《「『【〔〖〘〚〝〝﴾︗︵︷︹︻︽︿﹁﹃﹇﹙﹛﹝（［｛｟｢«‘“‹⸂⸄⸉⸌⸜⸠‚„»’”›⸃⸅⸊⸍⸝⸡‛‟"""
+closers = ur"""\"\'\)\>\]\}༻༽᚜⁆⁾₎〉❩❫❭❯❱❳❵⟆⟧⟩⟫⟭⟯⦄⦆⦈⦊⦌⦎⦐⦒⦔⦖⦘⧙⧛⧽⸣⸥⸧⸩〉》」』】〕〗〙〛〞〟﴿︘︶︸︺︼︾﹀﹂﹄﹈﹚﹜﹞）］｝｠｣»’”›⸃⸅⸊⸍⸝⸡‛‟«‘“‹⸂⸄⸉⸌⸜⸠‚„"""
+delimiters = ur"\-\/\:֊־᐀᠆‐‑‒–—―⸗⸚〜〰゠︱︲﹘﹣－¡·¿;·՚՛՜՝՞՟։׀׃׆׳״؉؊،؍؛؞؟٪٫٬٭۔܀܁܂܃܄܅܆܇܈܉܊܋܌܍߷߸߹࠰࠱࠲࠳࠴࠵࠶࠷࠸࠹࠺࠻࠼࠽࠾।॥॰෴๏๚๛༄༅༆༇༈༉༊་༌།༎༏༐༑༒྅࿐࿑࿒࿓࿔၊။၌၍၎၏჻፡።፣፤፥፦፧፨᙭᙮᛫᛬᛭᜵᜶។៕៖៘៙៚᠀᠁᠂᠃᠄᠅᠇᠈᠉᠊᥄᥅᧞᧟᨞᨟᪠᪡᪢᪣᪤᪥᪦᪨᪩᪪᪫᪬᪭᭚᭛᭜᭝᭞᭟᭠᰻᰼᰽᰾᰿᱾᱿᳓‖‗†‡•‣․‥…‧‰‱′″‴‵‶‷‸※‼‽‾⁁⁂⁃⁇⁈⁉⁊⁋⁌⁍⁎⁏⁐⁑⁓⁕⁖⁗⁘⁙⁚⁛⁜⁝⁞⳹⳺⳻⳼⳾⳿⸀⸁⸆⸇⸈⸋⸎⸏⸐⸑⸒⸓⸔⸕⸖⸘⸙⸛⸞⸟⸪⸫⸬⸭⸮⸰⸱、。〃〽・꓾꓿꘍꘎꘏꙳꙾꛲꛳꛴꛵꛶꛷꡴꡵꡶꡷꣎꣏꣸꣹꣺꤮꤯꥟꧁꧂꧃꧄꧅꧆꧇꧈꧉꧊꧋꧌꧍꧞꧟꩜꩝꩞꩟꫞꫟꯫︐︑︒︓︔︕︖︙︰﹅﹆﹉﹊﹋﹌﹐﹑﹒﹔﹕﹖﹗﹟﹠﹡﹨﹪﹫！＂＃％＆＇＊，．／：；？＠＼｡､･𐄀𐄁𐎟𐏐𐡗𐤟𐤿𐩐𐩑𐩒𐩓𐩔𐩕𐩖𐩗𐩘𐩿𐬹𐬺𐬻𐬼𐬽𐬾𐬿𑂻𑂼𑂾𑂿𑃀𑃁𒑰𒑱𒑲𒑳"
+closing_delimiters = ur"\.\,\;\!\?"
+
+unicode_punctuation_categories = {
+    # 'Pc': 'Connector', # not used in Docutils inline markup recognition
+    'Pd': 'Dash',
+    'Ps': 'Open',
+    'Pe': 'Close',
+    'Pi': 'Initial quote', # may behave like Ps or Pe depending on usage
+    'Pf': 'Final quote', # may behave like Ps or Pe depending on usage
+    'Po': 'Other'
+    }
+"""Unicode character categories for punctuation"""
+
+@others
+
+test()
+#@+node:ekr.20130807203905.16754: *5* punctuation_samples
+def punctuation_samples():
+
+    """Docutils punctuation category sample strings.
+
+    Return list of sample strings for the categories "Open", "Close",
+    "Delimiters" and "Closing-Delimiters" used in the `inline markup
+    recognition rules`_.
+    """
+
+    # Lists with characters in Unicode punctuation character categories
+    cp_min = 160 # ASCII chars have special rules for backwards compatibility
+    ucharlists = unicode_charlists(unicode_punctuation_categories, cp_min)
+
+    # match opening/closing characters
+    # --------------------------------
+    # Rearange the lists to ensure matching characters at the same
+    # index position.
+
+    # low quotation marks are also used as closers (e.g. in Greek)
+    # move them to category Pi:
+    ucharlists['Ps'].remove(u'‚') # 201A  SINGLE LOW-9 QUOTATION MARK
+    ucharlists['Ps'].remove(u'„') # 201E  DOUBLE LOW-9 QUOTATION MARK
+    ucharlists['Pi'] += [u'‚', u'„']
+
+    ucharlists['Pi'].remove(u'‛') # 201B  SINGLE HIGH-REVERSED-9 QUOTATION MARK
+    ucharlists['Pi'].remove(u'‟') # 201F  DOUBLE HIGH-REVERSED-9 QUOTATION MARK
+    ucharlists['Pf'] += [u'‛', u'‟']
+
+    # 301F  LOW DOUBLE PRIME QUOTATION MARK misses the opening pendant:
+    ucharlists['Ps'].insert(ucharlists['Pe'].index(u'\u301f'), u'\u301d')
+
+    # print u''.join(ucharlists['Ps']).encode('utf8')
+    # print u''.join(ucharlists['Pe']).encode('utf8')
+    # print u''.join(ucharlists['Pi']).encode('utf8')
+    # print u''.join(ucharlists['Pf']).encode('utf8')
+
+    # The Docutils character categories
+    # ---------------------------------
+    #
+    # The categorization of ASCII chars is non-standard to reduce both
+    # false positives and need for escaping. (see `inline markup recognition
+    # rules`_)
+
+    # matching, allowed before markup
+    openers = [re.escape('"\'(<[{')]
+    for cat in ('Ps', 'Pi', 'Pf'):
+        openers.extend(ucharlists[cat])
+
+    # matching, allowed after markup
+    closers = [re.escape('"\')>]}')]
+    for cat in ('Pe', 'Pf', 'Pi'):
+        closers.extend(ucharlists[cat])
+
+    # non-matching, allowed on both sides
+    delimiters = [re.escape('-/:')]
+    for cat in ('Pd', 'Po'):
+        delimiters.extend(ucharlists[cat])
+
+    # non-matching, after markup
+    closing_delimiters = [re.escape('.,;!?')]
+
+    # # Test open/close matching:
+    # for i in range(min(len(openers),len(closers))):
+    #     print '%4d    %s    %s' % (i, openers[i].encode('utf8'),
+    #                                closers[i].encode('utf8'))
+    # dump(delimiters)
+    
+    return [u''.join(chars)
+            for chars in (openers, closers, delimiters, closing_delimiters)]
+#@+node:ekr.20130807203905.16755: *5* unicode_charlists
+def unicode_charlists(categories, cp_min=0, cp_max=None):
+    """Return dictionary of Unicode character lists.
+
+    For each of the `catagories`, an item contains a list with all Unicode
+    characters with `cp_min` <= code-point <= `cp_max` that belong to the
+    category. (The default values check every code-point supported by Python.)
+    """
+    # Determine highest code point with one of the given categories
+    # (may shorten the search time considerably if there are many
+    # categories with not too high characters):
+    if cp_max is None:
+        cp_max = max(x for x in xrange(sys.maxunicode + 1)
+                     if unicodedata.category(unichr(x)) in categories)
+        # print cp_max # => 74867 for unicode_punctuation_categories
+    charlists = {}
+    for cat in categories:
+        charlists[cat] = [unichr(x) for x in xrange(cp_min, cp_max+1)
+                          if unicodedata.category(unichr(x)) == cat]
+    return charlists
+#@+node:ekr.20130807203905.16756: *5* compare
+def compare(s1,s2):
+    
+    print(len(s1),len(s2))
+    d1,d2 = {},{}
+    for uc in s1:
+        assert isinstance(uc,(str,unicode)),type(uc)
+        n = ord(uc)
+        d1[n] = uc
+    for uc in s2:
+        assert isinstance(uc,(str,unicode)),type(uc)
+        n = ord(uc)
+        d2[n] = uc
+    nset = set()
+    for n in d1.keys():
+        nset.add(n)
+    for n in d2.keys():
+        nset.add(n)
+    matches = 0
+    for n in sorted(nset):
+        uc1 = d1.get(n)
+        uc2 = d2.get(n)
+        if uc1 is None and uc2 is None:
+            print('%5s hu??' % (n))
+        elif uc1 is None:
+            print('%5s' % (n),'missing1',uc2,unicodedata.name(uc2,'Unknown'))
+        elif uc2 is None:
+            pass # print('%5s' % (n),'missing2',uc1,unicodedata.name(uc1,'Unknown'))
+        elif uc1 == uc2:
+            # print('%5s' % (n),'match',uc1,unicodedata.name(uc1,'Unknown'))
+            # print('%s, # %s' % (n,unicodedata.name(uc1,'Unknown').lower()))
+            matches += 1
+        else:
+            print('%5s' % (n),uc1,unicodedata.name(uc1,'Unknown'),uc2,unicodedata.name(uc2,'Unknown'))
+    print('matches: %s' % matches)
+#@+node:ekr.20130807203905.16757: *5* dump
+def dump(s):
+    for uc in s:
+        assert isinstance(uc,(str,unicode)),type(uc)
+        if isinstance(uc,unicode):
+            print('%5s' % (ord(uc)),uc,unicodedata.name(uc,'Unknown'))
+#@+node:ekr.20130807203905.16758: *5* test
+# The if __name__ == '__main__' part of puntuation_chars.py
+
+def test():
+    
+    # (re) create and compare the samples:
+    (o, c, d, cd) = punctuation_samples()
+    if o != openers:
+        print('- openers = ur"""%s"""' % openers.encode('utf8'))
+        print('+ openers = ur"""%s"""' % o.encode('utf8'))
+    if c != closers:
+        print('- closers = ur"""%s"""' % closers.encode('utf8'))
+        print('+ closers = ur"""%s"""' % c.encode('utf8'))
+    if d != delimiters:
+        print('- delimiters = ur"%s"' % delimiters.encode('utf8'))
+        # dump(delimiters)
+        print('+ delimiters = ur"%s"' % d.encode('utf8'))
+        # dump(d)
+        compare(delimiters,d)
+    if cd != closing_delimiters:
+        print('- closing_delimiters = ur"%s"' % closing_delimiters.encode('utf8'))
+        print('+ closing_delimiters = ur"%s"' % cd.encode('utf8'))
+#@+node:ekr.20130807203905.16759: *4* consistency check (was in punctuation chars
+import sys, re
+import unicodedata
+
+# Unicode punctuation character categories
+# ----------------------------------------
+
+unicode_punctuation_categories = {
+    # 'Pc': 'Connector', # not used in Docutils inline markup recognition
+    'Pd': 'Dash',
+    'Ps': 'Open',
+    'Pe': 'Close',
+    'Pi': 'Initial quote', # may behave like Ps or Pe depending on usage
+    'Pf': 'Final quote', # may behave like Ps or Pe depending on usage
+    'Po': 'Other'
+    }
+"""Unicode character categories for punctuation"""
+
+
+# generate character pattern strings
+# ==================================
+
+def unicode_charlists(categories, cp_min=0, cp_max=None):
+    """Return dictionary of Unicode character lists.
+
+    For each of the `catagories`, an item contains a list with all Unicode
+    characters with `cp_min` <= code-point <= `cp_max` that belong to the
+    category. (The default values check every code-point supported by Python.)
+    """
+    # Determine highest code point with one of the given categories
+    # (may shorten the search time considerably if there are many
+    # categories with not too high characters):
+    if cp_max is None:
+        cp_max = max(x for x in xrange(sys.maxunicode + 1)
+                     if unicodedata.category(unichr(x)) in categories)
+        # print cp_max # => 74867 for unicode_punctuation_categories
+    charlists = {}
+    for cat in categories:
+        charlists[cat] = [unichr(x) for x in xrange(cp_min, cp_max+1)
+                          if unicodedata.category(unichr(x)) == cat]
+    return charlists
+
+
+# Character categories in Docutils
+# --------------------------------
+
+def punctuation_samples():
+
+    """Docutils punctuation category sample strings.
+
+    Return list of sample strings for the categories "Open", "Close",
+    "Delimiters" and "Closing-Delimiters" used in the `inline markup
+    recognition rules`_.
+    """
+
+    # Lists with characters in Unicode punctuation character categories
+    cp_min = 160 # ASCII chars have special rules for backwards compatibility
+    ucharlists = unicode_charlists(unicode_punctuation_categories, cp_min)
+
+    # match opening/closing characters
+    # --------------------------------
+    # Rearange the lists to ensure matching characters at the same
+    # index position.
+
+    # low quotation marks are also used as closers (e.g. in Greek)
+    # move them to category Pi:
+    ucharlists['Ps'].remove(u'‚') # 201A  SINGLE LOW-9 QUOTATION MARK
+    ucharlists['Ps'].remove(u'„') # 201E  DOUBLE LOW-9 QUOTATION MARK
+    ucharlists['Pi'] += [u'‚', u'„']
+
+    ucharlists['Pi'].remove(u'‛') # 201B  SINGLE HIGH-REVERSED-9 QUOTATION MARK
+    ucharlists['Pi'].remove(u'‟') # 201F  DOUBLE HIGH-REVERSED-9 QUOTATION MARK
+    ucharlists['Pf'] += [u'‛', u'‟']
+
+    # 301F  LOW DOUBLE PRIME QUOTATION MARK misses the opening pendant:
+    ucharlists['Ps'].insert(ucharlists['Pe'].index(u'\u301f'), u'\u301d')
+
+    # print u''.join(ucharlists['Ps']).encode('utf8')
+    # print u''.join(ucharlists['Pe']).encode('utf8')
+    # print u''.join(ucharlists['Pi']).encode('utf8')
+    # print u''.join(ucharlists['Pf']).encode('utf8')
+
+    # The Docutils character categories
+    # ---------------------------------
+    #
+    # The categorization of ASCII chars is non-standard to reduce both
+    # false positives and need for escaping. (see `inline markup recognition
+    # rules`_)
+
+    # matching, allowed before markup
+    openers = [re.escape('"\'(<[{')]
+    for cat in ('Ps', 'Pi', 'Pf'):
+        openers.extend(ucharlists[cat])
+
+    # matching, allowed after markup
+    closers = [re.escape('"\')>]}')]
+    for cat in ('Pe', 'Pf', 'Pi'):
+        closers.extend(ucharlists[cat])
+
+    # non-matching, allowed on both sides
+    delimiters = [re.escape('-/:')]
+    for cat in ('Pd', 'Po'):
+        delimiters.extend(ucharlists[cat])
+
+    # non-matching, after markup
+    closing_delimiters = [re.escape('.,;!?')]
+
+    # # Test open/close matching:
+    # for i in range(min(len(openers),len(closers))):
+    #     print '%4d    %s    %s' % (i, openers[i].encode('utf8'),
+    #                                closers[i].encode('utf8'))
+
+    return [u''.join(chars)
+            for chars in (openers, closers, delimiters, closing_delimiters)]
+
+
+# Matching open/close quotes
+# --------------------------
+
+# Rule (5) requires determination of matching open/close pairs. However,
+# the pairing of open/close quotes is ambigue due to  different typographic
+# conventions in different languages.
+
+quote_pairs = {u'\xbb': u'\xbb', # Swedish
+               u'\u2018': u'\u201a', # Greek
+               u'\u2019': u'\u2019', # Swedish
+               u'\u201a': u'\u2018\u2019', # German, Polish
+               u'\u201c': u'\u201e', # German
+               u'\u201e': u'\u201c\u201d',
+               u'\u201d': u'\u201d', # Swedish
+               u'\u203a': u'\u203a', # Swedish
+              }
+
+def match_chars(c1, c2):
+    try:
+        i = openers.index(c1)
+    except ValueError:  # c1 not in openers
+        return False
+    return c2 == closers[i] or c2 in quote_pairs.get(c1, '')
+
+
+
+
+# print results
+# =============
+
+if __name__ == '__main__':
+
+    # (re) create and compare the samples:
+    (o, c, d, cd) = punctuation_samples()
+    if o != openers:
+        print '- openers = ur"""%s"""' % openers.encode('utf8')
+        print '+ openers = ur"""%s"""' % o.encode('utf8')
+    if c != closers:
+        print '- closers = ur"""%s"""' % closers.encode('utf8')
+        print '+ closers = ur"""%s"""' % c.encode('utf8')
+    if d != delimiters:
+        print '- delimiters = ur"%s"' % delimiters.encode('utf8')
+        print '+ delimiters = ur"%s"' % d.encode('utf8')
+    if cd != closing_delimiters:
+        print '- closing_delimiters = ur"%s"' % closing_delimiters.encode('utf8')
+        print '+ closing_delimiters = ur"%s"' % cd.encode('utf8')
+
+    # # test prints
+    # print 'openers = ', repr(openers)
+    # print 'closers = ', repr(closers)
+    # print 'delimiters = ', repr(delimiters)
+    # print 'closing_delimiters = ', repr(closing_delimiters)
+
+    # ucharlists = unicode_charlists(unicode_punctuation_categories)
+    # for cat, chars in ucharlists.items():
+    #     # print cat, chars
+    #     # compact output (visible with a comprehensive font):
+    #     print (u":%s: %s" % (cat, u''.join(chars))).encode('utf8')
+#@+node:ekr.20130807203905.16760: *4* docutils test imports
+docutils = g.importExtension('docutils',pluginName='leoRst.py',verbose=True)
+print(docutils)
+from docutils import parsers
+print(parsers)
+from docutils.parsers import rst
+print(rst)
+import docutils.parsers.rst
+print(docutils.parsers.rst)
+from docutils.parsers.rst import directives
+#@+node:ekr.20130807203905.16761: *4* six.u tests
+# -*- coding: utf8 -*-
+g.cls()
+import leo.extensions.six as six
+# import imp
+# imp.reload(six)
+# u = six.u
+<< tex2unichar dicts >>
+result = []
+i = 0
+for d in (
+    mathaccent,
+    mathalpha,
+    mathbin,
+    mathclose,
+    mathfence,
+    mathop,
+    mathopen,
+    mathord,
+    mathover,
+    mathradical,
+    mathrel,
+    mathunder,
+    space,
+):
+    for key in d:
+        ch = d.get(key)
+        result.append(ch)
+        six.u(ch)
+    i += 1
+g.es('\n'.join(result))
+print('done')
+#@+node:ekr.20130807203905.16762: *5* << tex2unichar dicts >>
+# -*- coding: utf8 -*-
+
+# LaTeX math to Unicode symbols translation dictionaries.
+# Generated with ``write_tex2unichar.py`` from the data in
+# http://milde.users.sourceforge.net/LUCR/Math/
+
+# Includes commands from: wasysym, stmaryrd, mathdots, mathabx, esint, bbold, amsxtra, amsmath, amssymb, standard LaTeX
+
+mathaccent = {
+    'acute': u('\u0301'), # xÌ COMBINING ACUTE ACCENT
+    'bar': u('\u0304'), # xÌ„ COMBINING MACRON
+    'breve': u('\u0306'), # xÌ† COMBINING BREVE
+    'check': u('\u030c'), # xÌŒ COMBINING CARON
+    'ddddot': u('\u20dc'), # xâƒœ COMBINING FOUR DOTS ABOVE
+    'dddot': u('\u20db'), # xâƒ› COMBINING THREE DOTS ABOVE
+    'ddot': u('\u0308'), # xÌˆ COMBINING DIAERESIS
+    'dot': u('\u0307'), # xÌ‡ COMBINING DOT ABOVE
+    'grave': u('\u0300'), # xÌ€ COMBINING GRAVE ACCENT
+    'hat': u('\u0302'), # xÌ‚ COMBINING CIRCUMFLEX ACCENT
+    'mathring': u('\u030a'), # xÌŠ COMBINING RING ABOVE
+    'not': u('\u0338'), # xÌ¸ COMBINING LONG SOLIDUS OVERLAY
+    'overleftarrow': u('\u20d6'), # xâƒ– COMBINING LEFT ARROW ABOVE
+    'overleftrightarrow': u('\u20e1'), # xâƒ¡ COMBINING LEFT RIGHT ARROW ABOVE
+    'overline': u('\u0305'), # xÌ… COMBINING OVERLINE
+    'overrightarrow': u('\u20d7'), # xâƒ— COMBINING RIGHT ARROW ABOVE
+    'tilde': u('\u0303'), # xÌƒ COMBINING TILDE
+    'underbar': u('\u0331'), # xÌ± COMBINING MACRON BELOW
+    'underleftarrow': u('\u20ee'), # xâƒ® COMBINING LEFT ARROW BELOW
+    'underline': u('\u0332'), # xÌ² COMBINING LOW LINE
+    'underrightarrow': u('\u20ef'), # xâƒ¯ COMBINING RIGHT ARROW BELOW
+    'vec': u('\u20d7'), # xâƒ— COMBINING RIGHT ARROW ABOVE
+    'widehat': u('\u0302'), # xÌ‚ COMBINING CIRCUMFLEX ACCENT
+    'widetilde': u('\u0303'), # xÌƒ COMBINING TILDE
+    }
+mathalpha = {
+    'Bbbk': u('\U0001d55c'), # ð•œ MATHEMATICAL DOUBLE-STRUCK SMALL K
+    'Delta': u('\u0394'), # Î” GREEK CAPITAL LETTER DELTA
+    'Gamma': u('\u0393'), # Î“ GREEK CAPITAL LETTER GAMMA
+    'Im': u('\u2111'), # â„‘ BLACK-LETTER CAPITAL I
+    'Lambda': u('\u039b'), # Î› GREEK CAPITAL LETTER LAMDA
+    'Omega': u('\u03a9'), # Î© GREEK CAPITAL LETTER OMEGA
+    'Phi': u('\u03a6'), # Î¦ GREEK CAPITAL LETTER PHI
+    'Pi': u('\u03a0'), # Î  GREEK CAPITAL LETTER PI
+    'Psi': u('\u03a8'), # Î¨ GREEK CAPITAL LETTER PSI
+    'Re': u('\u211c'), # â„œ BLACK-LETTER CAPITAL R
+    'Sigma': u('\u03a3'), # Î£ GREEK CAPITAL LETTER SIGMA
+    'Theta': u('\u0398'), # Î˜ GREEK CAPITAL LETTER THETA
+    'Upsilon': u('\u03a5'), # Î¥ GREEK CAPITAL LETTER UPSILON
+    'Xi': u('\u039e'), # Îž GREEK CAPITAL LETTER XI
+    'aleph': u('\u2135'), # â„µ ALEF SYMBOL
+    'alpha': u('\u03b1'), # Î± GREEK SMALL LETTER ALPHA
+    'beta': u('\u03b2'), # Î² GREEK SMALL LETTER BETA
+    'beth': u('\u2136'), # â„¶ BET SYMBOL
+    'chi': u('\u03c7'), # Ï‡ GREEK SMALL LETTER CHI
+    'daleth': u('\u2138'), # â„¸ DALET SYMBOL
+    'delta': u('\u03b4'), # Î´ GREEK SMALL LETTER DELTA
+    'digamma': u('\u03dc'), # Ïœ GREEK LETTER DIGAMMA
+    'ell': u('\u2113'), # â„“ SCRIPT SMALL L
+    'epsilon': u('\u03f5'), # Ïµ GREEK LUNATE EPSILON SYMBOL
+    'eta': u('\u03b7'), # Î· GREEK SMALL LETTER ETA
+    'eth': u('\xf0'), # Ã° LATIN SMALL LETTER ETH
+    'gamma': u('\u03b3'), # Î³ GREEK SMALL LETTER GAMMA
+    'gimel': u('\u2137'), # â„· GIMEL SYMBOL
+    'hbar': u('\u210f'), # â„ PLANCK CONSTANT OVER TWO PI
+    'hslash': u('\u210f'), # â„ PLANCK CONSTANT OVER TWO PI
+    'imath': u('\u0131'), # Ä± LATIN SMALL LETTER DOTLESS I
+    'iota': u('\u03b9'), # Î¹ GREEK SMALL LETTER IOTA
+    'jmath': u('\u0237'), # È· LATIN SMALL LETTER DOTLESS J
+    'kappa': u('\u03ba'), # Îº GREEK SMALL LETTER KAPPA
+    'lambda': u('\u03bb'), # Î» GREEK SMALL LETTER LAMDA
+    'mu': u('\u03bc'), # Î¼ GREEK SMALL LETTER MU
+    'nu': u('\u03bd'), # Î½ GREEK SMALL LETTER NU
+    'omega': u('\u03c9'), # Ï‰ GREEK SMALL LETTER OMEGA
+    'phi': u('\u03d5'), # Ï• GREEK PHI SYMBOL
+    'pi': u('\u03c0'), # Ï€ GREEK SMALL LETTER PI
+    'psi': u('\u03c8'), # Ïˆ GREEK SMALL LETTER PSI
+    'rho': u('\u03c1'), # Ï GREEK SMALL LETTER RHO
+    'sigma': u('\u03c3'), # Ïƒ GREEK SMALL LETTER SIGMA
+    'tau': u('\u03c4'), # Ï„ GREEK SMALL LETTER TAU
+    'theta': u('\u03b8'), # Î¸ GREEK SMALL LETTER THETA
+    'upsilon': u('\u03c5'), # Ï… GREEK SMALL LETTER UPSILON
+    'varDelta': u('\U0001d6e5'), # ð›¥ MATHEMATICAL ITALIC CAPITAL DELTA
+    'varGamma': u('\U0001d6e4'), # ð›¤ MATHEMATICAL ITALIC CAPITAL GAMMA
+    'varLambda': u('\U0001d6ec'), # ð›¬ MATHEMATICAL ITALIC CAPITAL LAMDA
+    'varOmega': u('\U0001d6fa'), # ð›º MATHEMATICAL ITALIC CAPITAL OMEGA
+    'varPhi': u('\U0001d6f7'), # ð›· MATHEMATICAL ITALIC CAPITAL PHI
+    'varPi': u('\U0001d6f1'), # ð›± MATHEMATICAL ITALIC CAPITAL PI
+    'varPsi': u('\U0001d6f9'), # ð›¹ MATHEMATICAL ITALIC CAPITAL PSI
+    'varSigma': u('\U0001d6f4'), # ð›´ MATHEMATICAL ITALIC CAPITAL SIGMA
+    'varTheta': u('\U0001d6e9'), # ð›© MATHEMATICAL ITALIC CAPITAL THETA
+    'varUpsilon': u('\U0001d6f6'), # ð›¶ MATHEMATICAL ITALIC CAPITAL UPSILON
+    'varXi': u('\U0001d6ef'), # ð›¯ MATHEMATICAL ITALIC CAPITAL XI
+    'varepsilon': u('\u03b5'), # Îµ GREEK SMALL LETTER EPSILON
+    'varkappa': u('\U0001d718'), # ðœ˜ MATHEMATICAL ITALIC KAPPA SYMBOL
+    'varphi': u('\u03c6'), # Ï† GREEK SMALL LETTER PHI
+    'varpi': u('\u03d6'), # Ï– GREEK PI SYMBOL
+    'varrho': u('\u03f1'), # Ï± GREEK RHO SYMBOL
+    'varsigma': u('\u03c2'), # Ï‚ GREEK SMALL LETTER FINAL SIGMA
+    'vartheta': u('\u03d1'), # Ï‘ GREEK THETA SYMBOL
+    'wp': u('\u2118'), # â„˜ SCRIPT CAPITAL P
+    'xi': u('\u03be'), # Î¾ GREEK SMALL LETTER XI
+    'zeta': u('\u03b6'), # Î¶ GREEK SMALL LETTER ZETA
+    }
+mathbin = {
+    'Cap': u('\u22d2'), # â‹’ DOUBLE INTERSECTION
+    'Circle': u('\u25cb'), # â—‹ WHITE CIRCLE
+    'Cup': u('\u22d3'), # â‹“ DOUBLE UNION
+    'LHD': u('\u25c0'), # â—€ BLACK LEFT-POINTING TRIANGLE
+    'RHD': u('\u25b6'), # â–¶ BLACK RIGHT-POINTING TRIANGLE
+    'amalg': u('\u2a3f'), # â¨¿ AMALGAMATION OR COPRODUCT
+    'ast': u('\u2217'), # âˆ— ASTERISK OPERATOR
+    'barwedge': u('\u22bc'), # âŠ¼ NAND
+    'bigtriangledown': u('\u25bd'), # â–½ WHITE DOWN-POINTING TRIANGLE
+    'bigtriangleup': u('\u25b3'), # â–³ WHITE UP-POINTING TRIANGLE
+    'bindnasrepma': u('\u214b'), # â…‹ TURNED AMPERSAND
+    'blacklozenge': u('\u29eb'), # â§« BLACK LOZENGE
+    'blacktriangledown': u('\u25be'), # â–¾ BLACK DOWN-POINTING SMALL TRIANGLE
+    'blacktriangleleft': u('\u25c2'), # â—‚ BLACK LEFT-POINTING SMALL TRIANGLE
+    'blacktriangleright': u('\u25b8'), # â–¸ BLACK RIGHT-POINTING SMALL TRIANGLE
+    'blacktriangleup': u('\u25b4'), # â–´ BLACK UP-POINTING SMALL TRIANGLE
+    'boxast': u('\u29c6'), # â§† SQUARED ASTERISK
+    'boxbar': u('\u25eb'), # â—« WHITE SQUARE WITH VERTICAL BISECTING LINE
+    'boxbox': u('\u29c8'), # â§ˆ SQUARED SQUARE
+    'boxbslash': u('\u29c5'), # â§… SQUARED FALLING DIAGONAL SLASH
+    'boxcircle': u('\u29c7'), # â§‡ SQUARED SMALL CIRCLE
+    'boxdot': u('\u22a1'), # âŠ¡ SQUARED DOT OPERATOR
+    'boxminus': u('\u229f'), # âŠŸ SQUARED MINUS
+    'boxplus': u('\u229e'), # âŠž SQUARED PLUS
+    'boxslash': u('\u29c4'), # â§„ SQUARED RISING DIAGONAL SLASH
+    'boxtimes': u('\u22a0'), # âŠ  SQUARED TIMES
+    'bullet': u('\u2219'), # âˆ™ BULLET OPERATOR
+    'cap': u('\u2229'), # âˆ© INTERSECTION
+    'cdot': u('\u22c5'), # â‹… DOT OPERATOR
+    'circ': u('\u2218'), # âˆ˜ RING OPERATOR
+    'circledast': u('\u229b'), # âŠ› CIRCLED ASTERISK OPERATOR
+    'circledcirc': u('\u229a'), # âŠš CIRCLED RING OPERATOR
+    'circleddash': u('\u229d'), # âŠ CIRCLED DASH
+    'cup': u('\u222a'), # âˆª UNION
+    'curlyvee': u('\u22ce'), # â‹Ž CURLY LOGICAL OR
+    'curlywedge': u('\u22cf'), # â‹ CURLY LOGICAL AND
+    'dagger': u('\u2020'), # â€  DAGGER
+    'ddagger': u('\u2021'), # â€¡ DOUBLE DAGGER
+    'diamond': u('\u22c4'), # â‹„ DIAMOND OPERATOR
+    'div': u('\xf7'), # Ã· DIVISION SIGN
+    'divideontimes': u('\u22c7'), # â‹‡ DIVISION TIMES
+    'dotplus': u('\u2214'), # âˆ” DOT PLUS
+    'doublebarwedge': u('\u2a5e'), # â©ž LOGICAL AND WITH DOUBLE OVERBAR
+    'intercal': u('\u22ba'), # âŠº INTERCALATE
+    'interleave': u('\u2af4'), # â«´ TRIPLE VERTICAL BAR BINARY RELATION
+    'land': u('\u2227'), # âˆ§ LOGICAL AND
+    'leftthreetimes': u('\u22cb'), # â‹‹ LEFT SEMIDIRECT PRODUCT
+    'lhd': u('\u25c1'), # â— WHITE LEFT-POINTING TRIANGLE
+    'lor': u('\u2228'), # âˆ¨ LOGICAL OR
+    'ltimes': u('\u22c9'), # â‹‰ LEFT NORMAL FACTOR SEMIDIRECT PRODUCT
+    'mp': u('\u2213'), # âˆ“ MINUS-OR-PLUS SIGN
+    'odot': u('\u2299'), # âŠ™ CIRCLED DOT OPERATOR
+    'ominus': u('\u2296'), # âŠ– CIRCLED MINUS
+    'oplus': u('\u2295'), # âŠ• CIRCLED PLUS
+    'oslash': u('\u2298'), # âŠ˜ CIRCLED DIVISION SLASH
+    'otimes': u('\u2297'), # âŠ— CIRCLED TIMES
+    'pm': u('\xb1'), # Â± PLUS-MINUS SIGN
+    'rhd': u('\u25b7'), # â–· WHITE RIGHT-POINTING TRIANGLE
+    'rightthreetimes': u('\u22cc'), # â‹Œ RIGHT SEMIDIRECT PRODUCT
+    'rtimes': u('\u22ca'), # â‹Š RIGHT NORMAL FACTOR SEMIDIRECT PRODUCT
+    'setminus': u('\u29f5'), # â§µ REVERSE SOLIDUS OPERATOR
+    'slash': u('\u2215'), # âˆ• DIVISION SLASH
+    'smallsetminus': u('\u2216'), # âˆ– SET MINUS
+    'smalltriangledown': u('\u25bf'), # â–¿ WHITE DOWN-POINTING SMALL TRIANGLE
+    'smalltriangleleft': u('\u25c3'), # â—ƒ WHITE LEFT-POINTING SMALL TRIANGLE
+    'smalltriangleright': u('\u25b9'), # â–¹ WHITE RIGHT-POINTING SMALL TRIANGLE
+    'smalltriangleup': u('\u25b5'), # â–µ WHITE UP-POINTING SMALL TRIANGLE
+    'sqcap': u('\u2293'), # âŠ“ SQUARE CAP
+    'sqcup': u('\u2294'), # âŠ” SQUARE CUP
+    'sslash': u('\u2afd'), # â«½ DOUBLE SOLIDUS OPERATOR
+    'star': u('\u22c6'), # â‹† STAR OPERATOR
+    'talloblong': u('\u2afe'), # â«¾ WHITE VERTICAL BAR
+    'times': u('\xd7'), # Ã— MULTIPLICATION SIGN
+    'triangle': u('\u25b3'), # â–³ WHITE UP-POINTING TRIANGLE
+    'triangledown': u('\u25bf'), # â–¿ WHITE DOWN-POINTING SMALL TRIANGLE
+    'triangleleft': u('\u25c3'), # â—ƒ WHITE LEFT-POINTING SMALL TRIANGLE
+    'triangleright': u('\u25b9'), # â–¹ WHITE RIGHT-POINTING SMALL TRIANGLE
+    'uplus': u('\u228e'), # âŠŽ MULTISET UNION
+    'vartriangle': u('\u25b3'), # â–³ WHITE UP-POINTING TRIANGLE
+    'vee': u('\u2228'), # âˆ¨ LOGICAL OR
+    'veebar': u('\u22bb'), # âŠ» XOR
+    'wedge': u('\u2227'), # âˆ§ LOGICAL AND
+    'wr': u('\u2240'), # â‰€ WREATH PRODUCT
+    }
+mathclose = {
+    'Rbag': u('\u27c6'), # âŸ† RIGHT S-SHAPED BAG DELIMITER
+    'lrcorner': u('\u231f'), # âŒŸ BOTTOM RIGHT CORNER
+    'rangle': u('\u27e9'), # âŸ© MATHEMATICAL RIGHT ANGLE BRACKET
+    'rbag': u('\u27c6'), # âŸ† RIGHT S-SHAPED BAG DELIMITER
+    'rbrace': u('}'), # } RIGHT CURLY BRACKET
+    'rbrack': u(']'), # ] RIGHT SQUARE BRACKET
+    'rceil': u('\u2309'), # âŒ‰ RIGHT CEILING
+    'rfloor': u('\u230b'), # âŒ‹ RIGHT FLOOR
+    'rgroup': u('\u27ef'), # âŸ¯ MATHEMATICAL RIGHT FLATTENED PARENTHESIS
+    'rrbracket': u('\u27e7'), # âŸ§ MATHEMATICAL RIGHT WHITE SQUARE BRACKET
+    'rrparenthesis': u('\u2988'), # â¦ˆ Z NOTATION RIGHT IMAGE BRACKET
+    'urcorner': u('\u231d'), # âŒ TOP RIGHT CORNER
+    '}': u('}'), # } RIGHT CURLY BRACKET
+    }
+mathfence = {
+    'Vert': u('\u2016'), # â€– DOUBLE VERTICAL LINE
+    'vert': u('|'), # | VERTICAL LINE
+    '|': u('\u2016'), # â€– DOUBLE VERTICAL LINE
+    }
+mathop = {
+    'Join': u('\u2a1d'), # â¨ JOIN
+    'bigcap': u('\u22c2'), # â‹‚ N-ARY INTERSECTION
+    'bigcup': u('\u22c3'), # â‹ƒ N-ARY UNION
+    'biginterleave': u('\u2afc'), # â«¼ LARGE TRIPLE VERTICAL BAR OPERATOR
+    'bigodot': u('\u2a00'), # â¨€ N-ARY CIRCLED DOT OPERATOR
+    'bigoplus': u('\u2a01'), # â¨ N-ARY CIRCLED PLUS OPERATOR
+    'bigotimes': u('\u2a02'), # â¨‚ N-ARY CIRCLED TIMES OPERATOR
+    'bigsqcup': u('\u2a06'), # â¨† N-ARY SQUARE UNION OPERATOR
+    'biguplus': u('\u2a04'), # â¨„ N-ARY UNION OPERATOR WITH PLUS
+    'bigvee': u('\u22c1'), # â‹ N-ARY LOGICAL OR
+    'bigwedge': u('\u22c0'), # â‹€ N-ARY LOGICAL AND
+    'coprod': u('\u2210'), # âˆ N-ARY COPRODUCT
+    'fatsemi': u('\u2a1f'), # â¨Ÿ Z NOTATION SCHEMA COMPOSITION
+    'fint': u('\u2a0f'), # â¨ INTEGRAL AVERAGE WITH SLASH
+    'iiiint': u('\u2a0c'), # â¨Œ QUADRUPLE INTEGRAL OPERATOR
+    'iiint': u('\u222d'), # âˆ­ TRIPLE INTEGRAL
+    'iint': u('\u222c'), # âˆ¬ DOUBLE INTEGRAL
+    'int': u('\u222b'), # âˆ« INTEGRAL
+    'oiint': u('\u222f'), # âˆ¯ SURFACE INTEGRAL
+    'oint': u('\u222e'), # âˆ® CONTOUR INTEGRAL
+    'ointctrclockwise': u('\u2233'), # âˆ³ ANTICLOCKWISE CONTOUR INTEGRAL
+    'prod': u('\u220f'), # âˆ N-ARY PRODUCT
+    'sqint': u('\u2a16'), # â¨– QUATERNION INTEGRAL OPERATOR
+    'sum': u('\u2211'), # âˆ‘ N-ARY SUMMATION
+    'varointclockwise': u('\u2232'), # âˆ² CLOCKWISE CONTOUR INTEGRAL
+    }
+mathopen = {
+    'Lbag': u('\u27c5'), # âŸ… LEFT S-SHAPED BAG DELIMITER
+    'langle': u('\u27e8'), # âŸ¨ MATHEMATICAL LEFT ANGLE BRACKET
+    'lbag': u('\u27c5'), # âŸ… LEFT S-SHAPED BAG DELIMITER
+    'lbrace': u('{'), # { LEFT CURLY BRACKET
+    'lbrack': u('['), # [ LEFT SQUARE BRACKET
+    'lceil': u('\u2308'), # âŒˆ LEFT CEILING
+    'lfloor': u('\u230a'), # âŒŠ LEFT FLOOR
+    'lgroup': u('\u27ee'), # âŸ® MATHEMATICAL LEFT FLATTENED PARENTHESIS
+    'llbracket': u('\u27e6'), # âŸ¦ MATHEMATICAL LEFT WHITE SQUARE BRACKET
+    'llcorner': u('\u231e'), # âŒž BOTTOM LEFT CORNER
+    'llparenthesis': u('\u2987'), # â¦‡ Z NOTATION LEFT IMAGE BRACKET
+    'ulcorner': u('\u231c'), # âŒœ TOP LEFT CORNER
+    '{': u('{'), # { LEFT CURLY BRACKET
+    }
+mathord = {
+    '#': u('#'), # # NUMBER SIGN
+    '$': u('$'), # $ DOLLAR SIGN
+    '%': u('%'), # % PERCENT SIGN
+    '&': u('&'), # & AMPERSAND
+    'AC': u('\u223f'), # âˆ¿ SINE WAVE
+    'APLcomment': u('\u235d'), # â APL FUNCTIONAL SYMBOL UP SHOE JOT
+    'APLdownarrowbox': u('\u2357'), # â— APL FUNCTIONAL SYMBOL QUAD DOWNWARDS ARROW
+    'APLinput': u('\u235e'), # âž APL FUNCTIONAL SYMBOL QUOTE QUAD
+    'APLinv': u('\u2339'), # âŒ¹ APL FUNCTIONAL SYMBOL QUAD DIVIDE
+    'APLleftarrowbox': u('\u2347'), # â‡ APL FUNCTIONAL SYMBOL QUAD LEFTWARDS ARROW
+    'APLlog': u('\u235f'), # âŸ APL FUNCTIONAL SYMBOL CIRCLE STAR
+    'APLrightarrowbox': u('\u2348'), # âˆ APL FUNCTIONAL SYMBOL QUAD RIGHTWARDS ARROW
+    'APLuparrowbox': u('\u2350'), # â APL FUNCTIONAL SYMBOL QUAD UPWARDS ARROW
+    'Aries': u('\u2648'), # â™ˆ ARIES
+    'CIRCLE': u('\u25cf'), # â— BLACK CIRCLE
+    'CheckedBox': u('\u2611'), # â˜‘ BALLOT BOX WITH CHECK
+    'Diamond': u('\u25c7'), # â—‡ WHITE DIAMOND
+    'Finv': u('\u2132'), # â„² TURNED CAPITAL F
+    'Game': u('\u2141'), # â… TURNED SANS-SERIF CAPITAL G
+    'Gemini': u('\u264a'), # â™Š GEMINI
+    'Jupiter': u('\u2643'), # â™ƒ JUPITER
+    'LEFTCIRCLE': u('\u25d6'), # â—– LEFT HALF BLACK CIRCLE
+    'LEFTcircle': u('\u25d0'), # â— CIRCLE WITH LEFT HALF BLACK
+    'Leo': u('\u264c'), # â™Œ LEO
+    'Libra': u('\u264e'), # â™Ž LIBRA
+    'Mars': u('\u2642'), # â™‚ MALE SIGN
+    'Mercury': u('\u263f'), # â˜¿ MERCURY
+    'Neptune': u('\u2646'), # â™† NEPTUNE
+    'Pluto': u('\u2647'), # â™‡ PLUTO
+    'RIGHTCIRCLE': u('\u25d7'), # â—— RIGHT HALF BLACK CIRCLE
+    'RIGHTcircle': u('\u25d1'), # â—‘ CIRCLE WITH RIGHT HALF BLACK
+    'Saturn': u('\u2644'), # â™„ SATURN
+    'Scorpio': u('\u264f'), # â™ SCORPIUS
+    'Square': u('\u2610'), # â˜ BALLOT BOX
+    'Sun': u('\u2609'), # â˜‰ SUN
+    'Taurus': u('\u2649'), # â™‰ TAURUS
+    'Uranus': u('\u2645'), # â™… URANUS
+    'Venus': u('\u2640'), # â™€ FEMALE SIGN
+    'XBox': u('\u2612'), # â˜’ BALLOT BOX WITH X
+    'Yup': u('\u2144'), # â…„ TURNED SANS-SERIF CAPITAL Y
+    '_': u('_'), # _ LOW LINE
+    'angle': u('\u2220'), # âˆ  ANGLE
+    'aquarius': u('\u2652'), # â™’ AQUARIUS
+    'aries': u('\u2648'), # â™ˆ ARIES
+    'ast': u('*'), # * ASTERISK
+    'backepsilon': u('\u03f6'), # Ï¶ GREEK REVERSED LUNATE EPSILON SYMBOL
+    'backprime': u('\u2035'), # â€µ REVERSED PRIME
+    'backslash': unicode('\\'), # \ REVERSE SOLIDUS  #### Changed. was u'\'
+    'because': u('\u2235'), # âˆµ BECAUSE
+    'bigstar': u('\u2605'), # â˜… BLACK STAR
+    'binampersand': u('&'), # & AMPERSAND
+    'blacklozenge': u('\u2b27'), # â¬§ BLACK MEDIUM LOZENGE
+    'blacksmiley': u('\u263b'), # â˜» BLACK SMILING FACE
+    'blacksquare': u('\u25fc'), # â—¼ BLACK MEDIUM SQUARE
+    'bot': u('\u22a5'), # âŠ¥ UP TACK
+    'boy': u('\u2642'), # â™‚ MALE SIGN
+    'cancer': u('\u264b'), # â™‹ CANCER
+    'capricornus': u('\u2651'), # â™‘ CAPRICORN
+    'cdots': u('\u22ef'), # â‹¯ MIDLINE HORIZONTAL ELLIPSIS
+    'cent': u('\xa2'), # Â¢ CENT SIGN
+    'centerdot': u('\u2b1d'), # â¬ BLACK VERY SMALL SQUARE
+    'checkmark': u('\u2713'), # âœ“ CHECK MARK
+    'circlearrowleft': u('\u21ba'), # â†º ANTICLOCKWISE OPEN CIRCLE ARROW
+    'circlearrowright': u('\u21bb'), # â†» CLOCKWISE OPEN CIRCLE ARROW
+    'circledR': u('\xae'), # Â® REGISTERED SIGN
+    'circledcirc': u('\u25ce'), # â—Ž BULLSEYE
+    'clubsuit': u('\u2663'), # â™£ BLACK CLUB SUIT
+    'complement': u('\u2201'), # âˆ COMPLEMENT
+    'dasharrow': u('\u21e2'), # â‡¢ RIGHTWARDS DASHED ARROW
+    'dashleftarrow': u('\u21e0'), # â‡  LEFTWARDS DASHED ARROW
+    'dashrightarrow': u('\u21e2'), # â‡¢ RIGHTWARDS DASHED ARROW
+    'diameter': u('\u2300'), # âŒ€ DIAMETER SIGN
+    'diamondsuit': u('\u2662'), # â™¢ WHITE DIAMOND SUIT
+    'earth': u('\u2641'), # â™ EARTH
+    'exists': u('\u2203'), # âˆƒ THERE EXISTS
+    'female': u('\u2640'), # â™€ FEMALE SIGN
+    'flat': u('\u266d'), # â™­ MUSIC FLAT SIGN
+    'forall': u('\u2200'), # âˆ€ FOR ALL
+    'fourth': u('\u2057'), # â— QUADRUPLE PRIME
+    'frownie': u('\u2639'), # â˜¹ WHITE FROWNING FACE
+    'gemini': u('\u264a'), # â™Š GEMINI
+    'girl': u('\u2640'), # â™€ FEMALE SIGN
+    'heartsuit': u('\u2661'), # â™¡ WHITE HEART SUIT
+    'infty': u('\u221e'), # âˆž INFINITY
+    'invneg': u('\u2310'), # âŒ REVERSED NOT SIGN
+    'jupiter': u('\u2643'), # â™ƒ JUPITER
+    'ldots': u('\u2026'), # â€¦ HORIZONTAL ELLIPSIS
+    'leftmoon': u('\u263e'), # â˜¾ LAST QUARTER MOON
+    'leftturn': u('\u21ba'), # â†º ANTICLOCKWISE OPEN CIRCLE ARROW
+    'leo': u('\u264c'), # â™Œ LEO
+    'libra': u('\u264e'), # â™Ž LIBRA
+    'lnot': u('\xac'), # Â¬ NOT SIGN
+    'lozenge': u('\u25ca'), # â—Š LOZENGE
+    'male': u('\u2642'), # â™‚ MALE SIGN
+    'maltese': u('\u2720'), # âœ  MALTESE CROSS
+    'mathdollar': u('$'), # $ DOLLAR SIGN
+    'measuredangle': u('\u2221'), # âˆ¡ MEASURED ANGLE
+    'mercury': u('\u263f'), # â˜¿ MERCURY
+    'mho': u('\u2127'), # â„§ INVERTED OHM SIGN
+    'nabla': u('\u2207'), # âˆ‡ NABLA
+    'natural': u('\u266e'), # â™® MUSIC NATURAL SIGN
+    'neg': u('\xac'), # Â¬ NOT SIGN
+    'neptune': u('\u2646'), # â™† NEPTUNE
+    'nexists': u('\u2204'), # âˆ„ THERE DOES NOT EXIST
+    'notbackslash': u('\u2340'), # â€ APL FUNCTIONAL SYMBOL BACKSLASH BAR
+    'partial': u('\u2202'), # âˆ‚ PARTIAL DIFFERENTIAL
+    'pisces': u('\u2653'), # â™“ PISCES
+    'pluto': u('\u2647'), # â™‡ PLUTO
+    'pounds': u('\xa3'), # Â£ POUND SIGN
+    'prime': u('\u2032'), # â€² PRIME
+    'quarternote': u('\u2669'), # â™© QUARTER NOTE
+    'rightmoon': u('\u263d'), # â˜½ FIRST QUARTER MOON
+    'rightturn': u('\u21bb'), # â†» CLOCKWISE OPEN CIRCLE ARROW
+    'sagittarius': u('\u2650'), # â™ SAGITTARIUS
+    'saturn': u('\u2644'), # â™„ SATURN
+    'scorpio': u('\u264f'), # â™ SCORPIUS
+    'second': u('\u2033'), # â€³ DOUBLE PRIME
+    'sharp': u('\u266f'), # â™¯ MUSIC SHARP SIGN
+    'sim': u('~'), # ~ TILDE
+    'slash': u('/'), # / SOLIDUS
+    'smiley': u('\u263a'), # â˜º WHITE SMILING FACE
+    'spadesuit': u('\u2660'), # â™  BLACK SPADE SUIT
+    'spddot': u('\xa8'), # Â¨ DIAERESIS
+    'sphat': u('^'), # ^ CIRCUMFLEX ACCENT
+    'sphericalangle': u('\u2222'), # âˆ¢ SPHERICAL ANGLE
+    'sptilde': u('~'), # ~ TILDE
+    'square': u('\u25fb'), # â—» WHITE MEDIUM SQUARE
+    'sun': u('\u263c'), # â˜¼ WHITE SUN WITH RAYS
+    'taurus': u('\u2649'), # â™‰ TAURUS
+    'therefore': u('\u2234'), # âˆ´ THEREFORE
+    'third': u('\u2034'), # â€´ TRIPLE PRIME
+    'top': u('\u22a4'), # âŠ¤ DOWN TACK
+    'triangleleft': u('\u25c5'), # â—… WHITE LEFT-POINTING POINTER
+    'triangleright': u('\u25bb'), # â–» WHITE RIGHT-POINTING POINTER
+    'twonotes': u('\u266b'), # â™« BEAMED EIGHTH NOTES
+    'uranus': u('\u2645'), # â™… URANUS
+    'varEarth': u('\u2641'), # â™ EARTH
+    'varnothing': u('\u2205'), # âˆ… EMPTY SET
+    'virgo': u('\u264d'), # â™ VIRGO
+    'wasylozenge': u('\u2311'), # âŒ‘ SQUARE LOZENGE
+    'wasytherefore': u('\u2234'), # âˆ´ THEREFORE
+    'yen': u('\xa5'), # Â¥ YEN SIGN
+    }
+mathover = {
+    'overbrace': u('\u23de'), # âž TOP CURLY BRACKET
+    'wideparen': u('\u23dc'), # âœ TOP PARENTHESIS
+    }
+mathradical = {
+    'sqrt': u('\u221a'), # âˆš SQUARE ROOT
+    'sqrt[3]': u('\u221b'), # âˆ› CUBE ROOT
+    'sqrt[4]': u('\u221c'), # âˆœ FOURTH ROOT
+    }
+mathrel = {
+    'Bumpeq': u('\u224e'), # â‰Ž GEOMETRICALLY EQUIVALENT TO
+    'Doteq': u('\u2251'), # â‰‘ GEOMETRICALLY EQUAL TO
+    'Downarrow': u('\u21d3'), # â‡“ DOWNWARDS DOUBLE ARROW
+    'Leftarrow': u('\u21d0'), # â‡ LEFTWARDS DOUBLE ARROW
+    'Leftrightarrow': u('\u21d4'), # â‡” LEFT RIGHT DOUBLE ARROW
+    'Lleftarrow': u('\u21da'), # â‡š LEFTWARDS TRIPLE ARROW
+    'Longleftarrow': u('\u27f8'), # âŸ¸ LONG LEFTWARDS DOUBLE ARROW
+    'Longleftrightarrow': u('\u27fa'), # âŸº LONG LEFT RIGHT DOUBLE ARROW
+    'Longmapsfrom': u('\u27fd'), # âŸ½ LONG LEFTWARDS DOUBLE ARROW FROM BAR
+    'Longmapsto': u('\u27fe'), # âŸ¾ LONG RIGHTWARDS DOUBLE ARROW FROM BAR
+    'Longrightarrow': u('\u27f9'), # âŸ¹ LONG RIGHTWARDS DOUBLE ARROW
+    'Lsh': u('\u21b0'), # â†° UPWARDS ARROW WITH TIP LEFTWARDS
+    'Mapsfrom': u('\u2906'), # â¤† LEFTWARDS DOUBLE ARROW FROM BAR
+    'Mapsto': u('\u2907'), # â¤‡ RIGHTWARDS DOUBLE ARROW FROM BAR
+    'Rightarrow': u('\u21d2'), # â‡’ RIGHTWARDS DOUBLE ARROW
+    'Rrightarrow': u('\u21db'), # â‡› RIGHTWARDS TRIPLE ARROW
+    'Rsh': u('\u21b1'), # â†± UPWARDS ARROW WITH TIP RIGHTWARDS
+    'Subset': u('\u22d0'), # â‹ DOUBLE SUBSET
+    'Supset': u('\u22d1'), # â‹‘ DOUBLE SUPERSET
+    'Uparrow': u('\u21d1'), # â‡‘ UPWARDS DOUBLE ARROW
+    'Updownarrow': u('\u21d5'), # â‡• UP DOWN DOUBLE ARROW
+    'VDash': u('\u22ab'), # âŠ« DOUBLE VERTICAL BAR DOUBLE RIGHT TURNSTILE
+    'Vdash': u('\u22a9'), # âŠ© FORCES
+    'Vvdash': u('\u22aa'), # âŠª TRIPLE VERTICAL BAR RIGHT TURNSTILE
+    'apprge': u('\u2273'), # â‰³ GREATER-THAN OR EQUIVALENT TO
+    'apprle': u('\u2272'), # â‰² LESS-THAN OR EQUIVALENT TO
+    'approx': u('\u2248'), # â‰ˆ ALMOST EQUAL TO
+    'approxeq': u('\u224a'), # â‰Š ALMOST EQUAL OR EQUAL TO
+    'asymp': u('\u224d'), # â‰ EQUIVALENT TO
+    'backsim': u('\u223d'), # âˆ½ REVERSED TILDE
+    'backsimeq': u('\u22cd'), # â‹ REVERSED TILDE EQUALS
+    'barin': u('\u22f6'), # â‹¶ ELEMENT OF WITH OVERBAR
+    'barleftharpoon': u('\u296b'), # â¥« LEFTWARDS HARPOON WITH BARB DOWN BELOW LONG DASH
+    'barrightharpoon': u('\u296d'), # â¥­ RIGHTWARDS HARPOON WITH BARB DOWN BELOW LONG DASH
+    'between': u('\u226c'), # â‰¬ BETWEEN
+    'bowtie': u('\u22c8'), # â‹ˆ BOWTIE
+    'bumpeq': u('\u224f'), # â‰ DIFFERENCE BETWEEN
+    'circeq': u('\u2257'), # â‰— RING EQUAL TO
+    'coloneq': u('\u2254'), # â‰” COLON EQUALS
+    'cong': u('\u2245'), # â‰… APPROXIMATELY EQUAL TO
+    'corresponds': u('\u2259'), # â‰™ ESTIMATES
+    'curlyeqprec': u('\u22de'), # â‹ž EQUAL TO OR PRECEDES
+    'curlyeqsucc': u('\u22df'), # â‹Ÿ EQUAL TO OR SUCCEEDS
+    'curvearrowleft': u('\u21b6'), # â†¶ ANTICLOCKWISE TOP SEMICIRCLE ARROW
+    'curvearrowright': u('\u21b7'), # â†· CLOCKWISE TOP SEMICIRCLE ARROW
+    'dashv': u('\u22a3'), # âŠ£ LEFT TACK
+    'ddots': u('\u22f1'), # â‹± DOWN RIGHT DIAGONAL ELLIPSIS
+    'dlsh': u('\u21b2'), # â†² DOWNWARDS ARROW WITH TIP LEFTWARDS
+    'doteq': u('\u2250'), # â‰ APPROACHES THE LIMIT
+    'doteqdot': u('\u2251'), # â‰‘ GEOMETRICALLY EQUAL TO
+    'downarrow': u('\u2193'), # â†“ DOWNWARDS ARROW
+    'downdownarrows': u('\u21ca'), # â‡Š DOWNWARDS PAIRED ARROWS
+    'downdownharpoons': u('\u2965'), # â¥¥ DOWNWARDS HARPOON WITH BARB LEFT BESIDE DOWNWARDS HARPOON WITH BARB RIGHT
+    'downharpoonleft': u('\u21c3'), # â‡ƒ DOWNWARDS HARPOON WITH BARB LEFTWARDS
+    'downharpoonright': u('\u21c2'), # â‡‚ DOWNWARDS HARPOON WITH BARB RIGHTWARDS
+    'downuparrows': u('\u21f5'), # â‡µ DOWNWARDS ARROW LEFTWARDS OF UPWARDS ARROW
+    'downupharpoons': u('\u296f'), # â¥¯ DOWNWARDS HARPOON WITH BARB LEFT BESIDE UPWARDS HARPOON WITH BARB RIGHT
+    'drsh': u('\u21b3'), # â†³ DOWNWARDS ARROW WITH TIP RIGHTWARDS
+    'eqcirc': u('\u2256'), # â‰– RING IN EQUAL TO
+    'eqcolon': u('\u2255'), # â‰• EQUALS COLON
+    'eqsim': u('\u2242'), # â‰‚ MINUS TILDE
+    'eqslantgtr': u('\u2a96'), # âª– SLANTED EQUAL TO OR GREATER-THAN
+    'eqslantless': u('\u2a95'), # âª• SLANTED EQUAL TO OR LESS-THAN
+    'equiv': u('\u2261'), # â‰¡ IDENTICAL TO
+    'fallingdotseq': u('\u2252'), # â‰’ APPROXIMATELY EQUAL TO OR THE IMAGE OF
+    'frown': u('\u2322'), # âŒ¢ FROWN
+    'ge': u('\u2265'), # â‰¥ GREATER-THAN OR EQUAL TO
+    'geq': u('\u2265'), # â‰¥ GREATER-THAN OR EQUAL TO
+    'geqq': u('\u2267'), # â‰§ GREATER-THAN OVER EQUAL TO
+    'geqslant': u('\u2a7e'), # â©¾ GREATER-THAN OR SLANTED EQUAL TO
+    'gets': u('\u2190'), # â† LEFTWARDS ARROW
+    'gg': u('\u226b'), # â‰« MUCH GREATER-THAN
+    'ggcurly': u('\u2abc'), # âª¼ DOUBLE SUCCEEDS
+    'ggg': u('\u22d9'), # â‹™ VERY MUCH GREATER-THAN
+    'gnapprox': u('\u2a8a'), # âªŠ GREATER-THAN AND NOT APPROXIMATE
+    'gneq': u('\u2a88'), # âªˆ GREATER-THAN AND SINGLE-LINE NOT EQUAL TO
+    'gneqq': u('\u2269'), # â‰© GREATER-THAN BUT NOT EQUAL TO
+    'gnsim': u('\u22e7'), # â‹§ GREATER-THAN BUT NOT EQUIVALENT TO
+    'gtrapprox': u('\u2a86'), # âª† GREATER-THAN OR APPROXIMATE
+    'gtrdot': u('\u22d7'), # â‹— GREATER-THAN WITH DOT
+    'gtreqless': u('\u22db'), # â‹› GREATER-THAN EQUAL TO OR LESS-THAN
+    'gtreqqless': u('\u2a8c'), # âªŒ GREATER-THAN ABOVE DOUBLE-LINE EQUAL ABOVE LESS-THAN
+    'gtrless': u('\u2277'), # â‰· GREATER-THAN OR LESS-THAN
+    'gtrsim': u('\u2273'), # â‰³ GREATER-THAN OR EQUIVALENT TO
+    'hash': u('\u22d5'), # â‹• EQUAL AND PARALLEL TO
+    'hookleftarrow': u('\u21a9'), # â†© LEFTWARDS ARROW WITH HOOK
+    'hookrightarrow': u('\u21aa'), # â†ª RIGHTWARDS ARROW WITH HOOK
+    'iddots': u('\u22f0'), # â‹° UP RIGHT DIAGONAL ELLIPSIS
+    'impliedby': u('\u27f8'), # âŸ¸ LONG LEFTWARDS DOUBLE ARROW
+    'implies': u('\u27f9'), # âŸ¹ LONG RIGHTWARDS DOUBLE ARROW
+    'in': u('\u2208'), # âˆˆ ELEMENT OF
+    'le': u('\u2264'), # â‰¤ LESS-THAN OR EQUAL TO
+    'leftarrow': u('\u2190'), # â† LEFTWARDS ARROW
+    'leftarrowtail': u('\u21a2'), # â†¢ LEFTWARDS ARROW WITH TAIL
+    'leftarrowtriangle': u('\u21fd'), # â‡½ LEFTWARDS OPEN-HEADED ARROW
+    'leftbarharpoon': u('\u296a'), # â¥ª LEFTWARDS HARPOON WITH BARB UP ABOVE LONG DASH
+    'leftharpoondown': u('\u21bd'), # â†½ LEFTWARDS HARPOON WITH BARB DOWNWARDS
+    'leftharpoonup': u('\u21bc'), # â†¼ LEFTWARDS HARPOON WITH BARB UPWARDS
+    'leftleftarrows': u('\u21c7'), # â‡‡ LEFTWARDS PAIRED ARROWS
+    'leftleftharpoons': u('\u2962'), # â¥¢ LEFTWARDS HARPOON WITH BARB UP ABOVE LEFTWARDS HARPOON WITH BARB DOWN
+    'leftrightarrow': u('\u2194'), # â†” LEFT RIGHT ARROW
+    'leftrightarrows': u('\u21c6'), # â‡† LEFTWARDS ARROW OVER RIGHTWARDS ARROW
+    'leftrightarrowtriangle': u('\u21ff'), # â‡¿ LEFT RIGHT OPEN-HEADED ARROW
+    'leftrightharpoon': u('\u294a'), # â¥Š LEFT BARB UP RIGHT BARB DOWN HARPOON
+    'leftrightharpoons': u('\u21cb'), # â‡‹ LEFTWARDS HARPOON OVER RIGHTWARDS HARPOON
+    'leftrightsquigarrow': u('\u21ad'), # â†­ LEFT RIGHT WAVE ARROW
+    'leftslice': u('\u2aa6'), # âª¦ LESS-THAN CLOSED BY CURVE
+    'leftsquigarrow': u('\u21dc'), # â‡œ LEFTWARDS SQUIGGLE ARROW
+    'leq': u('\u2264'), # â‰¤ LESS-THAN OR EQUAL TO
+    'leqq': u('\u2266'), # â‰¦ LESS-THAN OVER EQUAL TO
+    'leqslant': u('\u2a7d'), # â©½ LESS-THAN OR SLANTED EQUAL TO
+    'lessapprox': u('\u2a85'), # âª… LESS-THAN OR APPROXIMATE
+    'lessdot': u('\u22d6'), # â‹– LESS-THAN WITH DOT
+    'lesseqgtr': u('\u22da'), # â‹š LESS-THAN EQUAL TO OR GREATER-THAN
+    'lesseqqgtr': u('\u2a8b'), # âª‹ LESS-THAN ABOVE DOUBLE-LINE EQUAL ABOVE GREATER-THAN
+    'lessgtr': u('\u2276'), # â‰¶ LESS-THAN OR GREATER-THAN
+    'lesssim': u('\u2272'), # â‰² LESS-THAN OR EQUIVALENT TO
+    'lightning': u('\u21af'), # â†¯ DOWNWARDS ZIGZAG ARROW
+    'll': u('\u226a'), # â‰ª MUCH LESS-THAN
+    'llcurly': u('\u2abb'), # âª» DOUBLE PRECEDES
+    'lll': u('\u22d8'), # â‹˜ VERY MUCH LESS-THAN
+    'lnapprox': u('\u2a89'), # âª‰ LESS-THAN AND NOT APPROXIMATE
+    'lneq': u('\u2a87'), # âª‡ LESS-THAN AND SINGLE-LINE NOT EQUAL TO
+    'lneqq': u('\u2268'), # â‰¨ LESS-THAN BUT NOT EQUAL TO
+    'lnsim': u('\u22e6'), # â‹¦ LESS-THAN BUT NOT EQUIVALENT TO
+    'longleftarrow': u('\u27f5'), # âŸµ LONG LEFTWARDS ARROW
+    'longleftrightarrow': u('\u27f7'), # âŸ· LONG LEFT RIGHT ARROW
+    'longmapsfrom': u('\u27fb'), # âŸ» LONG LEFTWARDS ARROW FROM BAR
+    'longmapsto': u('\u27fc'), # âŸ¼ LONG RIGHTWARDS ARROW FROM BAR
+    'longrightarrow': u('\u27f6'), # âŸ¶ LONG RIGHTWARDS ARROW
+    'looparrowleft': u('\u21ab'), # â†« LEFTWARDS ARROW WITH LOOP
+    'looparrowright': u('\u21ac'), # â†¬ RIGHTWARDS ARROW WITH LOOP
+    'mapsfrom': u('\u21a4'), # â†¤ LEFTWARDS ARROW FROM BAR
+    'mapsto': u('\u21a6'), # â†¦ RIGHTWARDS ARROW FROM BAR
+    'mid': u('\u2223'), # âˆ£ DIVIDES
+    'models': u('\u22a7'), # âŠ§ MODELS
+    'multimap': u('\u22b8'), # âŠ¸ MULTIMAP
+    'nLeftarrow': u('\u21cd'), # â‡ LEFTWARDS DOUBLE ARROW WITH STROKE
+    'nLeftrightarrow': u('\u21ce'), # â‡Ž LEFT RIGHT DOUBLE ARROW WITH STROKE
+    'nRightarrow': u('\u21cf'), # â‡ RIGHTWARDS DOUBLE ARROW WITH STROKE
+    'nVDash': u('\u22af'), # âŠ¯ NEGATED DOUBLE VERTICAL BAR DOUBLE RIGHT TURNSTILE
+    'nVdash': u('\u22ae'), # âŠ® DOES NOT FORCE
+    'ncong': u('\u2247'), # â‰‡ NEITHER APPROXIMATELY NOR ACTUALLY EQUAL TO
+    'ne': u('\u2260'), # â‰  NOT EQUAL TO
+    'nearrow': u('\u2197'), # â†— NORTH EAST ARROW
+    'neq': u('\u2260'), # â‰  NOT EQUAL TO
+    'ngeq': u('\u2271'), # â‰± NEITHER GREATER-THAN NOR EQUAL TO
+    'ngtr': u('\u226f'), # â‰¯ NOT GREATER-THAN
+    'ni': u('\u220b'), # âˆ‹ CONTAINS AS MEMBER
+    'nleftarrow': u('\u219a'), # â†š LEFTWARDS ARROW WITH STROKE
+    'nleftrightarrow': u('\u21ae'), # â†® LEFT RIGHT ARROW WITH STROKE
+    'nleq': u('\u2270'), # â‰° NEITHER LESS-THAN NOR EQUAL TO
+    'nless': u('\u226e'), # â‰® NOT LESS-THAN
+    'nmid': u('\u2224'), # âˆ¤ DOES NOT DIVIDE
+    'notasymp': u('\u226d'), # â‰­ NOT EQUIVALENT TO
+    'notin': u('\u2209'), # âˆ‰ NOT AN ELEMENT OF
+    'notowner': u('\u220c'), # âˆŒ DOES NOT CONTAIN AS MEMBER
+    'notslash': u('\u233f'), # âŒ¿ APL FUNCTIONAL SYMBOL SLASH BAR
+    'nparallel': u('\u2226'), # âˆ¦ NOT PARALLEL TO
+    'nprec': u('\u2280'), # âŠ€ DOES NOT PRECEDE
+    'npreceq': u('\u22e0'), # â‹  DOES NOT PRECEDE OR EQUAL
+    'nrightarrow': u('\u219b'), # â†› RIGHTWARDS ARROW WITH STROKE
+    'nsim': u('\u2241'), # â‰ NOT TILDE
+    'nsubseteq': u('\u2288'), # âŠˆ NEITHER A SUBSET OF NOR EQUAL TO
+    'nsucc': u('\u2281'), # âŠ DOES NOT SUCCEED
+    'nsucceq': u('\u22e1'), # â‹¡ DOES NOT SUCCEED OR EQUAL
+    'nsupseteq': u('\u2289'), # âŠ‰ NEITHER A SUPERSET OF NOR EQUAL TO
+    'ntriangleleft': u('\u22ea'), # â‹ª NOT NORMAL SUBGROUP OF
+    'ntrianglelefteq': u('\u22ec'), # â‹¬ NOT NORMAL SUBGROUP OF OR EQUAL TO
+    'ntriangleright': u('\u22eb'), # â‹« DOES NOT CONTAIN AS NORMAL SUBGROUP
+    'ntrianglerighteq': u('\u22ed'), # â‹­ DOES NOT CONTAIN AS NORMAL SUBGROUP OR EQUAL
+    'nvDash': u('\u22ad'), # âŠ­ NOT TRUE
+    'nvdash': u('\u22ac'), # âŠ¬ DOES NOT PROVE
+    'nwarrow': u('\u2196'), # â†– NORTH WEST ARROW
+    'owns': u('\u220b'), # âˆ‹ CONTAINS AS MEMBER
+    'parallel': u('\u2225'), # âˆ¥ PARALLEL TO
+    'perp': u('\u27c2'), # âŸ‚ PERPENDICULAR
+    'pitchfork': u('\u22d4'), # â‹” PITCHFORK
+    'prec': u('\u227a'), # â‰º PRECEDES
+    'precapprox': u('\u2ab7'), # âª· PRECEDES ABOVE ALMOST EQUAL TO
+    'preccurlyeq': u('\u227c'), # â‰¼ PRECEDES OR EQUAL TO
+    'preceq': u('\u2aaf'), # âª¯ PRECEDES ABOVE SINGLE-LINE EQUALS SIGN
+    'precnapprox': u('\u2ab9'), # âª¹ PRECEDES ABOVE NOT ALMOST EQUAL TO
+    'precnsim': u('\u22e8'), # â‹¨ PRECEDES BUT NOT EQUIVALENT TO
+    'precsim': u('\u227e'), # â‰¾ PRECEDES OR EQUIVALENT TO
+    'propto': u('\u221d'), # âˆ PROPORTIONAL TO
+    'restriction': u('\u21be'), # â†¾ UPWARDS HARPOON WITH BARB RIGHTWARDS
+    'rightarrow': u('\u2192'), # â†’ RIGHTWARDS ARROW
+    'rightarrowtail': u('\u21a3'), # â†£ RIGHTWARDS ARROW WITH TAIL
+    'rightarrowtriangle': u('\u21fe'), # â‡¾ RIGHTWARDS OPEN-HEADED ARROW
+    'rightbarharpoon': u('\u296c'), # â¥¬ RIGHTWARDS HARPOON WITH BARB UP ABOVE LONG DASH
+    'rightharpoondown': u('\u21c1'), # â‡ RIGHTWARDS HARPOON WITH BARB DOWNWARDS
+    'rightharpoonup': u('\u21c0'), # â‡€ RIGHTWARDS HARPOON WITH BARB UPWARDS
+    'rightleftarrows': u('\u21c4'), # â‡„ RIGHTWARDS ARROW OVER LEFTWARDS ARROW
+    'rightleftharpoon': u('\u294b'), # â¥‹ LEFT BARB DOWN RIGHT BARB UP HARPOON
+    'rightleftharpoons': u('\u21cc'), # â‡Œ RIGHTWARDS HARPOON OVER LEFTWARDS HARPOON
+    'rightrightarrows': u('\u21c9'), # â‡‰ RIGHTWARDS PAIRED ARROWS
+    'rightrightharpoons': u('\u2964'), # â¥¤ RIGHTWARDS HARPOON WITH BARB UP ABOVE RIGHTWARDS HARPOON WITH BARB DOWN
+    'rightslice': u('\u2aa7'), # âª§ GREATER-THAN CLOSED BY CURVE
+    'rightsquigarrow': u('\u21dd'), # â‡ RIGHTWARDS SQUIGGLE ARROW
+    'risingdotseq': u('\u2253'), # â‰“ IMAGE OF OR APPROXIMATELY EQUAL TO
+    'searrow': u('\u2198'), # â†˜ SOUTH EAST ARROW
+    'sim': u('\u223c'), # âˆ¼ TILDE OPERATOR
+    'simeq': u('\u2243'), # â‰ƒ ASYMPTOTICALLY EQUAL TO
+    'smallfrown': u('\u2322'), # âŒ¢ FROWN
+    'smallsmile': u('\u2323'), # âŒ£ SMILE
+    'smile': u('\u2323'), # âŒ£ SMILE
+    'sqsubset': u('\u228f'), # âŠ SQUARE IMAGE OF
+    'sqsubseteq': u('\u2291'), # âŠ‘ SQUARE IMAGE OF OR EQUAL TO
+    'sqsupset': u('\u2290'), # âŠ SQUARE ORIGINAL OF
+    'sqsupseteq': u('\u2292'), # âŠ’ SQUARE ORIGINAL OF OR EQUAL TO
+    'subset': u('\u2282'), # âŠ‚ SUBSET OF
+    'subseteq': u('\u2286'), # âŠ† SUBSET OF OR EQUAL TO
+    'subseteqq': u('\u2ac5'), # â«… SUBSET OF ABOVE EQUALS SIGN
+    'subsetneq': u('\u228a'), # âŠŠ SUBSET OF WITH NOT EQUAL TO
+    'subsetneqq': u('\u2acb'), # â«‹ SUBSET OF ABOVE NOT EQUAL TO
+    'succ': u('\u227b'), # â‰» SUCCEEDS
+    'succapprox': u('\u2ab8'), # âª¸ SUCCEEDS ABOVE ALMOST EQUAL TO
+    'succcurlyeq': u('\u227d'), # â‰½ SUCCEEDS OR EQUAL TO
+    'succeq': u('\u2ab0'), # âª° SUCCEEDS ABOVE SINGLE-LINE EQUALS SIGN
+    'succnapprox': u('\u2aba'), # âªº SUCCEEDS ABOVE NOT ALMOST EQUAL TO
+    'succnsim': u('\u22e9'), # â‹© SUCCEEDS BUT NOT EQUIVALENT TO
+    'succsim': u('\u227f'), # â‰¿ SUCCEEDS OR EQUIVALENT TO
+    'supset': u('\u2283'), # âŠƒ SUPERSET OF
+    'supseteq': u('\u2287'), # âŠ‡ SUPERSET OF OR EQUAL TO
+    'supseteqq': u('\u2ac6'), # â«† SUPERSET OF ABOVE EQUALS SIGN
+    'supsetneq': u('\u228b'), # âŠ‹ SUPERSET OF WITH NOT EQUAL TO
+    'supsetneqq': u('\u2acc'), # â«Œ SUPERSET OF ABOVE NOT EQUAL TO
+    'swarrow': u('\u2199'), # â†™ SOUTH WEST ARROW
+    'to': u('\u2192'), # â†’ RIGHTWARDS ARROW
+    'trianglelefteq': u('\u22b4'), # âŠ´ NORMAL SUBGROUP OF OR EQUAL TO
+    'triangleq': u('\u225c'), # â‰œ DELTA EQUAL TO
+    'trianglerighteq': u('\u22b5'), # âŠµ CONTAINS AS NORMAL SUBGROUP OR EQUAL TO
+    'twoheadleftarrow': u('\u219e'), # â†ž LEFTWARDS TWO HEADED ARROW
+    'twoheadrightarrow': u('\u21a0'), # â†  RIGHTWARDS TWO HEADED ARROW
+    'uparrow': u('\u2191'), # â†‘ UPWARDS ARROW
+    'updownarrow': u('\u2195'), # â†• UP DOWN ARROW
+    'updownarrows': u('\u21c5'), # â‡… UPWARDS ARROW LEFTWARDS OF DOWNWARDS ARROW
+    'updownharpoons': u('\u296e'), # â¥® UPWARDS HARPOON WITH BARB LEFT BESIDE DOWNWARDS HARPOON WITH BARB RIGHT
+    'upharpoonleft': u('\u21bf'), # â†¿ UPWARDS HARPOON WITH BARB LEFTWARDS
+    'upharpoonright': u('\u21be'), # â†¾ UPWARDS HARPOON WITH BARB RIGHTWARDS
+    'upuparrows': u('\u21c8'), # â‡ˆ UPWARDS PAIRED ARROWS
+    'upupharpoons': u('\u2963'), # â¥£ UPWARDS HARPOON WITH BARB LEFT BESIDE UPWARDS HARPOON WITH BARB RIGHT
+    'vDash': u('\u22a8'), # âŠ¨ TRUE
+    'varpropto': u('\u221d'), # âˆ PROPORTIONAL TO
+    'vartriangleleft': u('\u22b2'), # âŠ² NORMAL SUBGROUP OF
+    'vartriangleright': u('\u22b3'), # âŠ³ CONTAINS AS NORMAL SUBGROUP
+    'vdash': u('\u22a2'), # âŠ¢ RIGHT TACK
+    'vdots': u('\u22ee'), # â‹® VERTICAL ELLIPSIS
+    }
+mathunder = {
+    'underbrace': u('\u23df'), # âŸ BOTTOM CURLY BRACKET
+    }
+space = {
+    ':': u('\u205f'), # âŸ MEDIUM MATHEMATICAL SPACE
+    'medspace': u('\u205f'), # âŸ MEDIUM MATHEMATICAL SPACE
+    'quad': u('\u2001'), # â€ EM QUAD
+    }
+#@+node:ekr.20130807203905.16763: *4* u test
+@first # -*- coding: utf8 -*-
+
+import sys
+
+g.cls()
+
+def u(s):
+    try:
+        val = None
+        if sys.version_info < (3,):
+            val = s if isinstance(s,unicode) else unicode(s,"unicode_escape")
+        else:
+            val = s if isinstance(s,str) else str(s,"unicode_escape")
+    except UnicodeDecodeError:
+        ### There seems to be a bug: '\\uxxx' is not handled properly.
+        if 1:
+            g.trace('UnicodeDecodeError',repr(s),'isunicode',isinstance(s,unicode))
+        else:
+            try:
+                val = unicode(s,'ascii')
+            except UnicodeDecodeError:
+                g.trace('UnicodeDecodeError',repr(s))
+    return val
+        
+@others
+
+for ch in aList:
+    # print(ch)
+    assert not isinstance(ch,unicode),repr(ch)
+    ch2 = u(ch)
+    # print(repr(ch))
+    # assert unicode(ch,"unicode_escape") == ch2,repr(ch)
+print('pass')
+#@+node:ekr.20130807203905.16764: *5* from latex2e/__init__py
+if 0:
+    aList_with_u = (
+    u('"'),
+    u(r'\dq{}'),
+    u(r'{\char`\"}'),
+    u(r'\#'),
+    u(r'\$'),
+    u(r'\%'),
+    u(r'\&'),
+    u(r'\textasciitilde{}'),
+    u(r'\_'),
+    u(r'\textasciicircum{}'),
+    u(r'\textbackslash{}'),
+    u(r'\{'),
+    u(r'\}'),
+    u(r'{[}'),
+    u(r'{]}'),
+    u(r'\-'),                           # SOFT HYPHEN
+    u(r'~'),                            # NO-BREAK SPACE
+    u(r'\leavevmode\nobreak\vadjust{}~'),
+    u(r'\,'),                           # PUNCTUATION SPACEâ€ˆâ€ˆâ€ˆ
+    u(r'\hbox{-}'),                     # NON-BREAKING HYPHEN
+    u(r'\,'),                           # NARROW NO-BREAK SPACE
+    u(r'$\Leftrightarrow$'),
+    u(r'$\spadesuit$'),
+    u(r'$\clubsuit$'),
+    u(r'\guillemotleft'),   # LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
+    u(r'\guillemotright'),  # RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
+    u(r'\textcompwordmark'), # ZERO WIDTH NON-JOINER
+    u(r'\textendash{}'),
+    u(r'\textemdash{}'),
+    u(r'\textquoteleft{}'),
+    u(r'\textquoteright{}'),
+    u(r'\quotesinglbase{}'),    # SINGLE LOW-9 QUOTATION MARK
+    u(r'\textquotedblleft{}'),
+    u(r'\textquotedblright{}'),
+    u(r'\quotedblbase{}'),      # DOUBLE LOW-9 QUOTATION MARK
+    u(r'\textperthousand{}'),   # PER MILLE SIGN
+    u(r'\textpertenthousand{}'), # PER TEN THOUSAND SIGN
+    u(r'\guilsinglleft{}'),
+    u(r'\guilsinglright{}'),
+    u(r'\textvisiblespace{}'),  # OPEN BOX
+    u(r'\dag{}'),
+    u(r'\ddag{}'),
+    u(r'\dots{}'),
+    u(r'\texttrademark{}'),
+    u(r'\textcent{}'),          # Â¢ CENT SIGN
+    u(r'\textcurrency{}'),      # Â¤ CURRENCY SYMBOL
+    u(r'\textyen{}'),           # Â¥ YEN SIGN
+    u(r'\textbrokenbar{}'),     # Â¦ BROKEN BAR
+    u(r'\textsection{}'),       # Â§ SECTION SIGN
+    u(r'\textasciidieresis{}'), # Â¨ DIAERESIS
+    u(r'\textcopyright{}'),     # Â© COPYRIGHT SIGN
+    u(r'\textordfeminine{}'),   # Âª FEMININE ORDINAL INDICATOR
+    u(r'\textlnot{}'),          # Â¬ NOT SIGN
+    u(r'\textregistered{}'),    # Â® REGISTERED SIGN
+    u(r'\textasciimacron{}'),   # Â¯ MACRON
+    u(r'\textdegree{}'),        # Â° DEGREE SIGN
+    u(r'\textpm{}'),            # Â± PLUS-MINUS SIGN
+    u(r'\texttwosuperior{}'),   # Â² SUPERSCRIPT TWO
+    u(r'\textthreesuperior{}'), # Â³ SUPERSCRIPT THREE
+    u(r'\textasciiacute{}'),    # Â´ ACUTE ACCENT
+    u(r'\textmu{}'),            # Âµ MICRO SIGN
+    u(r'\textparagraph{}'),     # Â¶ PILCROW SIGN # not equal to \textpilcrow
+    u(r'\textonesuperior{}'),   # Â¹ SUPERSCRIPT ONE
+    u(r'\textordmasculine{}'),  # Âº MASCULINE ORDINAL INDICATOR
+    u(r'\textonequarter{}'),    # 1/4 FRACTION
+    u(r'\textonehalf{}'),       # 1/2 FRACTION
+    u(r'\textthreequarters{}'), # 3/4 FRACTION
+    u(r'\texttimes{}'),         # Ã— MULTIPLICATION SIGN
+    u(r'\textdiv{}'),           # Ã· DIVISION SIGN
+    u(r'\textflorin{}'),        # LATIN SMALL LETTER F WITH HOOK
+    u(r'\textasciiacute{}'),    # MODIFIER LETTER PRIME
+    u(r'\textacutedbl{}'),      # MODIFIER LETTER DOUBLE PRIME
+    u(r'\textbardbl{}'),        # DOUBLE VERTICAL LINE
+    u(r'\textbullet{}'),        # BULLET
+    u(r'\textasciiacute{}'),    # PRIME
+    u(r'\textacutedbl{}'),      # DOUBLE PRIME
+    u(r'\textasciigrave{}'),    # REVERSED PRIME
+    u(r'\textgravedbl{}'),      # REVERSED DOUBLE PRIME
+    u(r'\textreferencemark{}'), # REFERENCE MARK
+    u(r'\textinterrobang{}'),   # INTERROBANG
+    u(r'\textfractionsolidus{}'), # FRACTION SLASH
+    u(r'\textlquill{}'),        # LEFT SQUARE BRACKET WITH QUILL
+    u(r'\textrquill{}'),        # RIGHT SQUARE BRACKET WITH QUILL
+    u(r'\textdiscount{}'),      # COMMERCIAL MINUS SIGN
+    u(r'\textcolonmonetary{}'), # COLON SIGN
+    u(r'\textfrenchfranc{}'),   # FRENCH FRANC SIGN
+    u(r'\textlira{}'),          # LIRA SIGN
+    u(r'\textnaira{}'),         # NAIRA SIGN
+    u(r'\textwon{}'),           # WON SIGN
+    u(r'\textdong{}'),          # DONG SIGN
+    u(r'\texteuro{}'),          # EURO SIGN
+    u(r'\textpeso{}'),          # PESO SIGN
+    u(r'\textguarani{}'),       # GUARANI SIGN
+    u(r'\textcelsius{}'),       # DEGREE CELSIUS
+    u(r'\textnumero{}'),        # NUMERO SIGN
+    u(r'\textcircledP{}'),      # SOUND RECORDING COYRIGHT
+    u(r'\textrecipe{}'),        # PRESCRIPTION TAKE
+    u(r'\textservicemark{}'),   # SERVICE MARK
+    u(r'\texttrademark{}'),     # TRADE MARK SIGN
+    u(r'\textohm{}'),           # OHM SIGN
+    u(r'\textmho{}'),           # INVERTED OHM SIGN
+    u(r'\textestimated{}'),     # ESTIMATED SYMBOL
+    u(r'\textleftarrow{}'),     # LEFTWARDS ARROW
+    u(r'\textuparrow{}'),       # UPWARDS ARROW
+    u(r'\textrightarrow{}'),    # RIGHTWARDS ARROW
+    u(r'\textdownarrow{}'),     # DOWNWARDS ARROW
+    u(r'\textminus{}'),         # MINUS SIGN
+    u(r'\textasteriskcentered{}'), # ASTERISK OPERATOR
+    u(r'\textsurd{}'),          # SQUARE ROOT
+    u(r'\textblank{}'),         # BLANK SYMBOL
+    u(r'\textopenbullet{}'),    # WHITE BULLET
+    u(r'\textbigcircle{}'),     # LARGE CIRCLE
+    u(r'\textmusicalnote{}'),   # EIGHTH NOTE
+    u(r'\textmarried{}'),       # MARRIAGE SYMBOL
+    u(r'\textdivorced{}'),      # DIVORCE SYMBOL
+    u(r'\textlangle{}'),        # MATHEMATICAL LEFT ANGLE BRACKET
+    u(r'\textrangle{}'),        # MATHEMATICAL RIGHT ANGLE BRACKET
+    u(r'\ding{170}'),     # black heartsuit
+    u(r'\ding{169}'),     # black diamondsuit
+    u(r'\ding{51}'),      # check mark
+    u(r'\ding{55}'),      # check mark
+    u("Cannot embed stylesheet '%s':\n  %s."),
+    # Causes problems.     
+    u('\\underline{~}'), 
+    u(r'\reflectbox{/}'),
+    u(r'\textbar{}'),
+    u(r'\textless{}'),
+    u(r'\textgreater{}'),
+    u(r'~'),
+    u('$%s$'),                        
+    u(r'\#'),
+    u(r'\%'),
+    u(r'\\'),       
+    u('â€”'),
+)
+
+# wrapper = u('\n').join(['%%',
+     # r'\begin{%s}' % math_env,
+     # '%s',
+     # r'\end{%s}' % math_env])
+
+unicode_aList = (
+    u'"',
+    ur'\dq{}',
+    ur'{\char`\"}',
+    ur'\#',
+    ur'\$',
+    ur'\%',
+    ur'\&',
+    ur'\textasciitilde{}',
+    ur'\_',
+    ur'\textasciicircum{}',
+    ur'\textbackslash{}',
+    ur'\{',
+    ur'\}',
+    ur'{[}',
+    ur'{]}',
+    ur'\-',
+    ur'~',
+    ur'\leavevmode\nobreak\vadjust{}~',
+    ur'\,',
+    ur'\hbox{-}',
+    ur'\,',
+    ur'$\Leftrightarrow$',
+    ur'$\spadesuit$',
+    ur'$\clubsuit$',
+    ur'\guillemotleft',
+    ur'\guillemotright',
+    ur'\textcompwordmark',
+    ur'\textendash{}',
+    ur'\textemdash{}',
+    ur'\textquoteleft{}',
+    ur'\textquoteright{}',
+    ur'\quotesinglbase{}',
+    ur'\textquotedblleft{}',
+    ur'\textquotedblright{}',
+    ur'\quotedblbase{}',
+    ur'\textperthousand{}',
+    ur'\textpertenthousand{}',
+    ur'\guilsinglleft{}',
+    ur'\guilsinglright{}',
+    ur'\textvisiblespace{}',
+    ur'\dag{}',
+    ur'\ddag{}',
+    ur'\dots{}',
+    ur'\texttrademark{}',
+    ur'\textcent{}',
+    ur'\textcurrency{}',
+    ur'\textyen{}',
+    ur'\textbrokenbar{}',
+    ur'\textsection{}',
+    ur'\textasciidieresis{}',
+    ur'\textcopyright{}',
+    ur'\textordfeminine{}',
+    ur'\textlnot{}',
+    ur'\textregistered{}',
+    ur'\textasciimacron{}',
+    ur'\textdegree{}',
+    ur'\textpm{}',
+    ur'\texttwosuperior{}',
+    ur'\textthreesuperior{}',
+    ur'\textasciiacute{}',
+    ur'\textmu{}',
+    ur'\textparagraph{}',
+    ur'\textonesuperior{}',
+    ur'\textordmasculine{}',
+    ur'\textonequarter{}',
+    ur'\textonehalf{}',
+    ur'\textthreequarters{}',
+    ur'\texttimes{}',
+    ur'\textdiv{}',
+    ur'\textflorin{}',
+    ur'\textasciiacute{}',
+    ur'\textacutedbl{}',
+    ur'\textbardbl{}',
+    ur'\textbullet{}',
+    ur'\textasciiacute{}',
+    ur'\textacutedbl{}',
+    ur'\textasciigrave{}',
+    ur'\textgravedbl{}',
+    ur'\textreferencemark{}',
+    ur'\textinterrobang{}',
+    ur'\textfractionsolidus{}',
+    ur'\textlquill{}',
+    ur'\textrquill{}',
+    ur'\textdiscount{}',
+    ur'\textcolonmonetary{}',
+    ur'\textfrenchfranc{}',
+    ur'\textlira{}',
+    ur'\textnaira{}',
+    ur'\textwon{}',
+    ur'\textdong{}',
+    ur'\texteuro{}',
+    ur'\textpeso{}',
+    ur'\textguarani{}',
+    ur'\textcelsius{}',
+    ur'\textnumero{}',
+    ur'\textcircledP{}',
+    ur'\textrecipe{}',
+    ur'\textservicemark{}',
+    ur'\texttrademark{}',
+    ur'\textohm{}',
+    ur'\textmho{}',
+    ur'\textestimated{}',
+    ur'\textleftarrow{}',
+    ur'\textuparrow{}',
+    ur'\textrightarrow{}',
+    ur'\textdownarrow{}',
+    ur'\textminus{}',
+    ur'\textasteriskcentered{}',
+    ur'\textsurd{}',
+    ur'\textblank{}',
+    ur'\textopenbullet{}',
+    ur'\textbigcircle{}',
+    ur'\textmusicalnote{}',
+    ur'\textmarried{}',
+    ur'\textdivorced{}',
+    ur'\textlangle{}',
+    ur'\textrangle{}',
+    ur'\ding{170}',
+    ur'\ding{169}',
+    ur'\ding{51}',
+    ur'\ding{55}',
+    u"Cannot embed stylesheet '%s':\n  %s.",
+    u'\\underline{~}', # Can not use ur('\uxxxx) because that is a unicode escapse!!
+    ur'\reflectbox{/}',
+    ur'\textbar{}',
+    ur'\textless{}',
+    ur'\textgreater{}',
+    ur'~',
+    u'$%s$',
+    # ur'\'
+    ur'\%',
+    ur'\\',
+    u'â€”',
+)
+
+aList = (
+    '"',
+    r'\dq{}',
+    r'{\char`\"}',
+    r'\#',
+    r'\$',
+    r'\%',
+    r'\&',
+    r'\textasciitilde{}',
+    r'\_',
+    r'\textasciicircum{}',
+    r'\textbackslash{}',
+    r'\{',
+    r'\}',
+    r'{[}',
+    r'{]}',
+    r'\-',
+    r'~',
+    r'\leavevmode\nobreak\vadjust{}~',
+    r'\,',
+    r'\hbox{-}',
+    r'\,',
+    r'$\Leftrightarrow$',
+    r'$\spadesuit$',
+    r'$\clubsuit$',
+    r'\guillemotleft',
+    r'\guillemotright',
+    r'\textcompwordmark',
+    r'\textendash{}',
+    r'\textemdash{}',
+    r'\textquoteleft{}',
+    r'\textquoteright{}',
+    r'\quotesinglbase{}',
+    r'\textquotedblleft{}',
+    r'\textquotedblright{}',
+    r'\quotedblbase{}',
+    r'\textperthousand{}',
+    r'\textpertenthousand{}',
+    r'\guilsinglleft{}',
+    r'\guilsinglright{}',
+    r'\textvisiblespace{}',
+    r'\dag{}',
+    r'\ddag{}',
+    r'\dots{}',
+    r'\texttrademark{}',
+    r'\textcent{}',
+    r'\textcurrency{}',
+    r'\textyen{}',
+    r'\textbrokenbar{}',
+    r'\textsection{}',
+    r'\textasciidieresis{}',
+    r'\textcopyright{}',
+    r'\textordfeminine{}',
+    r'\textlnot{}',
+    r'\textregistered{}',
+    r'\textasciimacron{}',
+    r'\textdegree{}',
+    r'\textpm{}',
+    r'\texttwosuperior{}',
+    r'\textthreesuperior{}',
+    r'\textasciiacute{}',
+    r'\textmu{}',
+    r'\textparagraph{}',
+    r'\textonesuperior{}',
+    r'\textordmasculine{}',
+    r'\textonequarter{}',
+    r'\textonehalf{}',
+    r'\textthreequarters{}',
+    r'\texttimes{}',
+    r'\textdiv{}',
+    r'\textflorin{}',
+    r'\textasciiacute{}',
+    r'\textacutedbl{}',
+    r'\textbardbl{}',
+    r'\textbullet{}',
+    r'\textasciiacute{}',
+    r'\textacutedbl{}',
+    r'\textasciigrave{}',
+    r'\textgravedbl{}',
+    r'\textreferencemark{}',
+    r'\textinterrobang{}',
+    r'\textfractionsolidus{}',
+    r'\textlquill{}',
+    r'\textrquill{}',
+    r'\textdiscount{}',
+    r'\textcolonmonetary{}',
+    r'\textfrenchfranc{}',
+    r'\textlira{}',
+    r'\textnaira{}',
+    r'\textwon{}',
+    r'\textdong{}',
+    r'\texteuro{}',
+    r'\textpeso{}',
+    r'\textguarani{}',
+    r'\textcelsius{}',
+    r'\textnumero{}',
+    r'\textcircledP{}',
+    r'\textrecipe{}',
+    r'\textservicemark{}',
+    r'\texttrademark{}',
+    r'\textohm{}',
+    r'\textmho{}',
+    r'\textestimated{}',
+    r'\textleftarrow{}',
+    r'\textuparrow{}',
+    r'\textrightarrow{}',
+    r'\textdownarrow{}',
+    r'\textminus{}',
+    r'\textasteriskcentered{}',
+    r'\textsurd{}',
+    r'\textblank{}',
+    r'\textopenbullet{}',
+    r'\textbigcircle{}',
+    r'\textmusicalnote{}',
+    r'\textmarried{}',
+    r'\textdivorced{}',
+    r'\textlangle{}',
+    r'\textrangle{}',
+    r'\ding{170}',
+    r'\ding{169}',
+    r'\ding{51}',
+    r'\ding{55}',
+    "Cannot embed stylesheet '%s':\n  %s.",
+    '\\' + 'underline{~}', # Can not use ur('\uxxxx) because that is a unicode escapse!!
+    r'\reflectbox{/}',
+    r'\textbar{}',
+    r'\textless{}',
+    r'\textgreater{}',
+    r'~',
+    '$%s$',
+    # r'\'
+    r'\%',
+    r'\\',
+    # u'â€”',
+)
+
+# wrapper = u('\n').join(['%%',
+     # r'\begin{%s}' % math_env,
+     # '%s',
+     # r'\end{%s}' % math_env])
+
+#@+node:ekr.20130807203905.16765: *3* Files with u and ur constants
+ur constants:
+    
+writers\manpage.py
+writers\latex2e\__init__.py
+utils\math\latex2matchml.py
+
+u constants:
+
+core.py
+frontend.py
+io.py
+nodes.py
+statemachine.py
+__init__.py
+languages\ca.py
+languages\cs.py
+languages\eo.py
+languages\es.py
+languages\fi.py
+languages\fr.py
+languages\gl.py
+languages\he.py
+languages\ja.py
+languages\lt.py
+languages\pl.py
+languages\pt_br.py
+languages\ru.py
+languages\sk.py
+languages\sv.py
+languages\zh_cn.py
+languages\zh_tw.py
+parsers\rst\states.py
+parsers\rst\directives\body.py
+parsers\rst\directives\misc.py
+parsers\rst\directives\tables.py
+parsers\rst\directives\__init__.py
+parsers\rst\languages\af.py
+parsers\rst\languages\ca.py
+parsers\rst\languages\cs.py
+parsers\rst\languages\de.py
+parsers\rst\languages\eo.py
+parsers\rst\languages\es.py
+parsers\rst\languages\fi.py
+parsers\rst\languages\fr.py
+parsers\rst\languages\gl.py
+parsers\rst\languages\he.py
+parsers\rst\languages\it.py
+parsers\rst\languages\ja.py
+parsers\rst\languages\lt.py
+parsers\rst\languages\nl.py
+parsers\rst\languages\pl.py
+parsers\rst\languages\pt_br.py
+parsers\rst\languages\ru.py
+parsers\rst\languages\sk.py
+parsers\rst\languages\sv.py
+parsers\rst\languages\zh_cn.py
+parsers\rst\languages\zh_tw.py
+transforms\parts.py
+transforms\references.py
+utils\error_reporting.py
+utils\punctuation_chars.py
+utils\smartquotes.py
+utils\__init__.py
+utils\math\latex2mathml.py
+utils\math\math2html.py
+utils\math\tex2unichar.py
+utils\math\unichar2tex.py
+writers\manpage.py
+writers\html4css1\__init__.py
+writers\latex2e\__init__.py
+writers\odf_odt\__init__.py
+writers\xetex\__init__.py
 #@+node:ekr.20130807203905.16589: ** 4.11 a1 part 2
 #@-all
 
