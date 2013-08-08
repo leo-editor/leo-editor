@@ -190,7 +190,7 @@
 <v t="ekr.20100805165051.7177"><vh>@file release_notes.txt</vh></v>
 </v>
 <v t="ekr.20130807203905.16526"><vh>* For the FAQ: create a bzr repository before importing it into Leo</vh></v>
-<v t="ekr.20130806072439.19990"><vh>Leo 4.11 a1 Release notes (TO DO)</vh>
+<v t="ekr.20130806072439.19990"><vh>Leo 4.11 a1 Release notes</vh>
 <v t="ekr.20130807203905.16780"><vh>Bugs</vh>
 <v t="ekr.20130807203905.16687"><vh>Bugs: minor</vh>
 <v t="ekr.20130807203905.16476"><vh>Clear previous focus-border after alt-tab</vh></v>
@@ -243,6 +243,7 @@
 </v>
 </v>
 <v t="ekr.20130807203905.16521"><vh>Code</vh>
+<v t="ekr.20130807203905.16819"><vh>* Added c.deletePositionsInList</vh></v>
 <v t="ekr.20130807203905.16532"><vh>Added c2 keyword arg to c.bringToFront</vh></v>
 <v t="ekr.20130807203905.16533"><vh>Added default button to dialog methods</vh></v>
 <v t="ekr.20130807203905.16522"><vh>Added external/leosax.py to leoPyRef.leo</vh></v>
@@ -310,6 +311,30 @@
 <v t="ekr.20130807203905.16555"><vh>Change focus-border color depending on input state</vh>
 <v t="ekr.20130807203905.16556"><vh>What I did</vh></v>
 <v t="ekr.20130807203905.16553"><vh>body border</vh></v>
+</v>
+<v t="ekr.20130806072439.19631"><vh>sublime text &amp; other themes</vh>
+<v t="ekr.20130526065545.17514"><vh>New theme in leoSettings.leo: Sublime Text...</vh></v>
+<v t="ekr.20130526065545.17589"><vh>go-anywhere a'la sublime text: first light"</vh>
+<v t="ekr.20130526065545.17590"><vh>"Subject: Re: go-anywhere a'la sublime text: first light"</vh></v>
+<v t="ekr.20130526065545.17592"><vh>"Subject: Re: go-anywhere a'la sublime text: first light"</vh></v>
+</v>
+<v t="ekr.20130526065545.17515"><vh>ANN: Sublime Text 2 like dark theme</vh></v>
+<v t="ekr.20130526065545.17459"><vh>ANN: dark theme pushed to trunk</vh>
+<v t="ekr.20130526065545.17451"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
+<v t="ekr.20130526065545.17452"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
+<v t="ekr.20130526065545.17453"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
+<v t="ekr.20130526065545.17454"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
+<v t="ekr.20130526065545.17455"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
+<v t="ekr.20130526065545.17456"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
+<v t="ekr.20130526065545.17457"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
+<v t="ekr.20130526065545.17458"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
+<v t="ekr.20130526065545.17460"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
+<v t="ekr.20130526065545.17461"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
+<v t="ekr.20130526065545.17462"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
+<v t="ekr.20130526065545.17463"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
+<v t="ekr.20130526065545.17464"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
+<v t="ekr.20130526065545.17465"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
+</v>
 </v>
 <v t="ekr.20130807203905.16255"><vh>Use ctrl-click to open url's</vh></v>
 </v>
@@ -480,34 +505,10 @@
 </v>
 </v>
 <v t="ekr.20130807203905.16608"><vh>Settings &amp; options</vh>
-<v t="ekr.20130807203905.16529"><vh>@color minibuffer-foreground-color setting</vh></v>
+<v t="ekr.20130807203905.16529"><vh>Added @color minibuffer-foreground-color setting</vh></v>
 <v t="ekr.20130807203905.16530"><vh>Added --no-plugins option</vh></v>
 <v t="ekr.20130807203905.16531"><vh>Added @color log_warning_color and g.getActualColor</vh></v>
 <v t="ekr.20130807203905.16563"><vh>Fully support :: convention in @mode nodes</vh></v>
-<v t="ekr.20130806072439.19631"><vh>sublime text &amp; other themes</vh>
-<v t="ekr.20130526065545.17514"><vh>New theme in leoSettings.leo: Sublime Text...</vh></v>
-<v t="ekr.20130526065545.17589"><vh>go-anywhere a'la sublime text: first light"</vh>
-<v t="ekr.20130526065545.17590"><vh>"Subject: Re: go-anywhere a'la sublime text: first light"</vh></v>
-<v t="ekr.20130526065545.17592"><vh>"Subject: Re: go-anywhere a'la sublime text: first light"</vh></v>
-</v>
-<v t="ekr.20130526065545.17515"><vh>ANN: Sublime Text 2 like dark theme</vh></v>
-<v t="ekr.20130526065545.17459"><vh>ANN: dark theme pushed to trunk</vh>
-<v t="ekr.20130526065545.17451"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
-<v t="ekr.20130526065545.17452"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
-<v t="ekr.20130526065545.17453"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
-<v t="ekr.20130526065545.17454"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
-<v t="ekr.20130526065545.17455"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
-<v t="ekr.20130526065545.17456"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
-<v t="ekr.20130526065545.17457"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
-<v t="ekr.20130526065545.17458"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
-<v t="ekr.20130526065545.17460"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
-<v t="ekr.20130526065545.17461"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
-<v t="ekr.20130526065545.17462"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
-<v t="ekr.20130526065545.17463"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
-<v t="ekr.20130526065545.17464"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
-<v t="ekr.20130526065545.17465"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
-</v>
-</v>
 </v>
 <v t="ekr.20130807203905.16270"><vh>Web site improvements</vh></v>
 </v>
@@ -1230,9 +1231,7 @@ Edward
 <t tx="ekr.20130526065545.17445">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
 
 Abbreviations can now include computed values and place holders which you
-can step through, filling in a template. Edward, these changes involve some
-core code, although I think they're quite benign, but pls. see change notes
-at the bottom of this email.
+can step through, filling in a template.
 
 Here's a quick screencast of the template expansions:
 http://www.greygreen.org/tmp/leoabbrev.ogv
@@ -4219,7 +4218,17 @@ Leo 4.11 contains over a year's work on Leo.
 The highlights of Leo 4.11:
 --------------------------
 
-
+- Important improvements to abbreviations.
+- Clones are now valid anywhere in @file nodes.
+- Leo now warns if a .leo file is open elsewhere.
+- Added support for sessions.
+- The pane with focus is highlighted with a colored border.
+- Added support for the closure and TypeScript languages.
+- Added importers for .ipynb, .otl and vimoutliner files.
+- Important new and improved plugins.
+- Dozens of new scripts.
+- Dozens of improved commands.
+- Dozens of bug fixes and code-level improvements.
 
 Links:
 ------
@@ -6184,6 +6193,7 @@ The fixes:
 
 Hitting Ctrl-H can still cause a small unwanted scroll, but the insert point remains visible.
 </t>
+<t tx="ekr.20130807203905.16819"></t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
