@@ -15,18 +15,13 @@
 .. @+node:ekr.20130412022445.12389: ** Next actions
 @language rest
 .. @+node:ekr.20130803073926.12442: ** Waiting
-* Waiting for answer reubuntu splashscreen
+* Waiting for answer re ubuntu splashscreen
     http://qt-project.org/forums/viewthread/30837/
     createSplashScreen
     
 * Waiting for answer to solarized question:
     http://qt-project.org/forums/viewthread/30838/
     https://groups.google.com/forum/#!topic/leo-editor/W1_LVrQxdwQ
-
-* Waiting for confirmation that the doc bugs are fixed:
-
-    From: Matt Wilkie
-    The search form at http://leoeditor.com/ tries to search charter.net
 .. @+node:ekr.20130503155210.24812: ** To do: 4.11
 .. @+node:ekr.20130806211959.17306: *3* Items from mail: what to do about these?
 @language rest
@@ -2915,9 +2910,6 @@ I hope you (and others googling this later) find this useful.
 .. @+node:ekr.20130806072439.20669: *5* Leo script to register .leo files with Windows
 From: Matt Wilkie <maphew@gmail.com>
 
---089e0162830c15bf5304dc597379
-
-
 http://bazaar.launchpad.net/~maphew/leo-editor/pypi-packaging/view/head:/register-leo.leos
 
 QQQQ
@@ -2964,9 +2956,6 @@ Edward
 --001a11c1a67459191904dc5b8b8c--
 .. @+node:ekr.20130806072439.20671: *5* Leo script to set .leo association (Windows)
 From: Matt Wilkie <maphew@gmail.com>
-
---001a11c2794c12136404db8f6f8b
-
 
 Here is a Leo script which attempts to tell Windows how to handle .leo
 files, enabling 2x-click "some-workbook.leo" to start. On win7+ it requires
@@ -3714,6 +3703,55 @@ package.
 ::    Package Structure
 ::    =================
 ::: ...snip...
+.. @+node:ekr.20130807203905.16594: *4* Wishlist for newbies (Fidel)
+@language rest
+
+From the thread: "Associate .Leo files to open with Leo when double click"
+
+From: <fidelperez@gmail.com>
+
+I guess others have had this idea but It would be great to include a small
+file within the Quickstart guide which would associate files automatically.
+(Or maybe asking for imput, which can be done through a Leo node and this
+way the user learns about its functionality).
+
+Also, I miss some more buttons or scripts in quick start guide, preferably
+before the "programming" section, so when a new user opens it, he has had
+the opportunity to do Ctrl+B on several scripts (for instance, showing in
+the log the name of all the nodes within the selected one, having some
+subnodes with numbers and doing math on them and showing the result on the
+log pane, and as much "silly" but visual functions as possible so the user,
+by going pressing ctrl+b on each, gets a bigger chance to understand what
+is Leo. In my oppinion some users will just stop in the quickguide if they
+are not presented with such a thing before going to docs.leo etc.
+
+Another thing is the plugin activation, the description of the plugins is
+not as accessible as it should be (opinions here, focusing in new users,
+and as I always say, appreciating and fully grateful for Leo as is now),and
+a script for activating them easier, been a week using Leo and still cant
+quite activate, find the descriptions or use them freely... And if each
+plugin or script had an example of use that would be priceless, for
+instance, including them all in quickstart (both scripts, plugins branchs)
+and then the new user could just go through all clicking on the examples
+and just seeing Leo work and show its potential. I know some of those are
+done but as I said, after a week or so I still am very confused...
+
+Also, quickstartguide should be open by default (instead of current
+Leo workbook) at least until the user changes some config and prevents that
+from happening. Is there any "load previous tabs" functionality? (IE open
+the Leo files which where open when it was closed the last time)
+  
+.. @+node:ekr.20130807203905.16596: *4* PortableFileAssociator
+From the thread: Cannot open Leo files by double-click in Windows Explorer?
+From: HansBKK <hansbkk@gmail.com>
+
+This is a bit OT, but: for those like me who work in "portable" mode, 
+there's a very cool tool called "PortableFileAssociator" that allows you to 
+create a set of windows file associations, icons etc and enable/disable the 
+whole profile at one time, without messing with the local system's registry.
+
+Also handy for those not in portable mode, but working on different windows 
+boxes and bored with having to tweak each one separately.
 .. @+node:ekr.20130803125244.17100: ** Docs: Next
 .. @+node:ekr.20130803125244.17101: *3* * Gallery of screenshots
 .. @+node:ekr.20130408095053.10307: *3* * Guide for the next leaders

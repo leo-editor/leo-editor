@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
+<!-- Created by Leo (http://leoeditor.com/leo_toc.html) -->
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
@@ -53,7 +53,9 @@
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
 <v t="ekr.20101025080245.5800"><vh>@edit leo_toc.html</vh></v>
 <v t="ekr.20101112045055.5064"><vh>@file plugin_catalog.py</vh></v>
-<v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
+<v t="ekr.20100808060203.4273"
+expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
+<v t="ekr.20130807203905.16606"><vh>@edit html/leoLinks.html</vh></v>
 <v t="ekr.20101025080245.5801"><vh>@url modified toc</vh></v>
 <v t="ekr.20101026081737.5531"><vh>Links that replace those in actual built page</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
@@ -88,7 +90,8 @@
 <v t="ekr.20100821182153.4344"><vh>@file screen-shots.txt</vh></v>
 </v>
 <v t="ekr.20100731112744.7267"><vh>Installing Leo</vh>
-<v t="ekr.20100805165051.7152" descendentVnodeUnknownAttributes="7d71005507302e302e342e3171017d710258120000007273745f687474705f61747472696275746571035d71042858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d333722206e616d653d22687474702d6e6f64652d6d61726b65722d3337223e710558040000003c2f613e71065d71072858260000003c64697620636c6173733d2273656374696f6e222069643d22672d726566696e64616c6c223e710858060000003c2f6469763e71095d710a28584f0000003c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d666f722d66696e64696e672d616e642d6368616e67696e672d746578742d66726f6d2d73637269707473223e710b58060000003c2f6469763e710c5d710d28583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710e58060000003c2f6469763e710f5d71102858060000003c626f64793e711158070000003c2f626f64793e71125d71132858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711458070000003c2f68746d6c3e71154e656565656558070000003c2f6469763e0a711658070000003c2f6469763e0a711758350000003c64697620636c6173733d2273656374696f6e222069643d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e0a7118586c0000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313922206e616d653d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e52756e6e696e67204c656f20696e206261746368206d6f64653c2f613e3c2f68313e0a71196573732e"><vh>@file installing.txt</vh></v>
+<v t="ekr.20100805165051.7152" descendentVnodeUnknownAttributes="7d71005507302e302e332e3171017d710258120000007273745f687474705f61747472696275746571035d71042858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d333722206e616d653d22687474702d6e6f64652d6d61726b65722d3337223e710558040000003c2f613e71065d71072858260000003c64697620636c6173733d2273656374696f6e222069643d22672d726566696e64616c6c223e710858060000003c2f6469763e71095d710a28584f0000003c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d666f722d66696e64696e672d616e642d6368616e67696e672d746578742d66726f6d2d73637269707473223e710b58060000003c2f6469763e710c5d710d28583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710e58060000003c2f6469763e710f5d71102858060000003c626f64793e711158070000003c2f626f64793e71125d71132858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711458070000003c2f68746d6c3e71154e656565656558070000003c2f6469763e0a711658070000003c2f6469763e0a711758350000003c64697620636c6173733d2273656374696f6e222069643d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e0a7118586c0000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313922206e616d653d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e52756e6e696e67204c656f20696e206261746368206d6f64653c2f613e3c2f68313e0a71196573732e"
+expanded="ekr.20130807203905.16603,"><vh>@file installing.txt</vh></v>
 </v>
 <v t="ekr.20091130111843.6787"><vh>The Leo Tutorial</vh>
 <v t="ekr.20100805165051.7146"><vh>@file intro.txt</vh></v>
@@ -186,7 +189,8 @@
 <v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028550b302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473550b302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473550b302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473550b302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20100805165051.7177"
+expanded="edream.110203163054.63,ekr.20120229094652.14053,ekr.20120229094652.15162,ekr.20120229094652.15163,"><vh>@file release_notes.txt</vh></v>
 </v>
 <v t="ekr.20130806072439.19990"><vh>Leo 4.11 Release notes (TO DO)</vh>
 <v t="ekr.20130806072439.19991"><vh>Bugs</vh>
@@ -407,8 +411,244 @@
 </v>
 </v>
 <v t="ekr.20130526065545.14924"><vh>To be documented (do not delete!!)</vh>
-<v t="ekr.20130807090137.19364"><vh>Leo in a nutshell</vh></v>
-<v t="ekr.20130806072439.20200"><vh>Videos</vh></v>
+<v t="ekr.20130807203905.16605"><vh> Reference: Windows associations (To be deleted)</vh>
+<v t="ekr.20130807203905.16599"><vh>Previous instructions</vh></v>
+<v t="ekr.20130807090137.19377"><vh>create-leobat.bat</vh></v>
+<v t="ekr.20130807203905.16598"><vh>Other ideas for setting file associations</vh></v>
+</v>
+<v t="ekr.20130807203905.16434"><vh>4.11 a1</vh>
+<v t="ekr.20130807203905.16435"><vh> porting docutils</vh>
+<v t="ekr.20130807203905.16436"><vh>notes re 2to3 fixers</vh></v>
+<v t="ekr.20130807203905.16437"><vh>New 2to3 fixers</vh>
+<v t="ekr.20130807203905.16438"><vh>@@nosent C:\Python27\Lib\lib2to3\fixes\fix_unified_unicode.py</vh></v>
+<v t="ekr.20130807203905.16439"><vh>@@nosent C:\Python27\Lib\lib2to3\fixes\fix_unified_imports.py</vh>
+<v t="ekr.20130807203905.16440"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20130807203905.16441"><vh>&lt;&lt; define mapping &gt;&gt;</vh></v>
+<v t="ekr.20130807203905.16442"><vh>alternates</vh></v>
+<v t="ekr.20130807203905.16443"><vh>build_pattern</vh></v>
+<v t="ekr.20130807203905.16444"><vh>class FixUnifiedImports</vh>
+<v t="ekr.20130807203905.16445"><vh>build_pattern</vh></v>
+<v t="ekr.20130807203905.16446"><vh>compile_pattern</vh></v>
+<v t="ekr.20130807203905.16447"><vh>dump</vh></v>
+<v t="ekr.20130807203905.16448"><vh>match</vh></v>
+<v t="ekr.20130807203905.16449"><vh>start_tree</vh></v>
+<v t="ekr.20130807203905.16450"><vh>transform (fix_unified_imports)</vh></v>
+<v t="ekr.20130807203905.16451"><vh>find_name (EKR)</vh></v>
+</v>
+</v>
+<v t="ekr.20130807203905.16452"><vh>trace</vh></v>
+</v>
+<v t="ekr.20130807203905.16453"><vh>Scripts</vh>
+<v t="ekr.20130807203905.16454"><vh>Script: write constants to log pane</vh></v>
+<v t="ekr.20130807203905.16455"><vh>Script: check syntax of all docutils files</vh></v>
+<v t="ekr.20130807203905.16456"><vh>Script: restore newlines</vh></v>
+<v t="ekr.20130807203905.16457"><vh>Script: create ords arrays</vh>
+<v t="ekr.20130807203905.16458"><vh>compare and helper</vh></v>
+</v>
+<v t="ekr.20130807203905.16459"><vh>Script: test quote_pairs</vh></v>
+</v>
+<v t="ekr.20130807203905.16460"><vh>Tests</vh>
+<v t="ekr.20130807203905.16461"><vh>@@test special chars script &amp; helpers</vh>
+<v t="ekr.20130807203905.16462"><vh>punctuation_samples</vh></v>
+<v t="ekr.20130807203905.16463"><vh>unicode_charlists</vh></v>
+<v t="ekr.20130807203905.16464"><vh>compare</vh></v>
+<v t="ekr.20130807203905.16465"><vh>dump</vh></v>
+<v t="ekr.20130807203905.16466"><vh>test</vh></v>
+</v>
+<v t="ekr.20130807203905.16467"><vh>consistency check (was in punctuation chars</vh></v>
+<v t="ekr.20130807203905.16468"><vh>docutils test imports</vh></v>
+<v t="ekr.20130807203905.16469"><vh>six.u tests</vh>
+<v t="ekr.20130807203905.16470"><vh>&lt;&lt; tex2unichar dicts &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20130807203905.16471"><vh>u test</vh>
+<v t="ekr.20130807203905.16472"><vh>from latex2e/__init__py</vh></v>
+</v>
+</v>
+<v t="ekr.20130807203905.16473"><vh>Files with u and ur constants</vh></v>
+</v>
+<v t="ekr.20130807203905.16474"><vh>Bugs</vh>
+<v t="ekr.20130807203905.16475"><vh>Changes in rev 4163 caused the bug</vh></v>
+<v t="ekr.20130807203905.16476"><vh>Clear previous focus-border after alt-tab</vh></v>
+<v t="ekr.20130807203905.16477"><vh>Created a dummy tab when only one tab would otherwise be opened</vh></v>
+<v t="ekr.20130807203905.16478"><vh>Don't horizontally scroll body pane if word wrapping</vh></v>
+<v t="ekr.20130807203905.16479"><vh>Execute selected script now works again</vh></v>
+<v t="ekr.20130807203905.16480"><vh>Fixed activateMenu</vh></v>
+<v t="ekr.20130807203905.16481"><vh>Fixed bug 1194209: Inconsistent Window Titles</vh></v>
+<v t="ekr.20130807203905.16482"><vh>Fixed bug 711158: Warn if same .leo file open in another Leo instance</vh></v>
+<v t="ekr.20130807203905.16483"><vh>Fixed bug 879338: Global tables in leoApp.py should describe all languages known to the colorizer</vh>
+<v t="ekr.20130807203905.16484"><vh>Notes</vh></v>
+<v t="ekr.20130807203905.16485"><vh>Removed unused files from leo/modes directory</vh></v>
+<v t="ekr.20130807203905.16486"><vh>Scripts</vh>
+<v t="ekr.20130807203905.16487"><vh>Script: get all comments from modes (slow)</vh>
+<v t="ekr.20130807203905.16488"><vh>get_paths</vh></v>
+<v t="ekr.20130807203905.16489"><vh>import_module</vh></v>
+</v>
+<v t="ekr.20130807203905.16490"><vh>Script to create global data structures from in modes/*.py files</vh></v>
+</v>
+</v>
+<v t="ekr.20130807203905.16491"><vh>Fixed bug 971171: re .leoRecentFiles</vh></v>
+<v t="ekr.20130807203905.16492"><vh>Fixed bug 981849: incorrect body content shown</vh></v>
+<v t="ekr.20130807203905.16493"><vh>Fixed bug 998090: save file as doesn't remove entry from open file list</vh></v>
+<v t="ekr.20130807203905.16494"><vh>Fixed bug: elected node was not always restored properly</vh></v>
+<v t="ekr.20130807203905.16495"><vh>Fixed bugs 971166 &amp; 979142 re copy/paste</vh></v>
+<v t="ekr.20130807203905.16496"><vh>Fixed crash after viewrendered-hide</vh></v>
+<v t="ekr.20130807203905.16497"><vh>Fixed crasher in active_path.py</vh></v>
+<v t="ekr.20130807203905.16498"><vh>Fixed crasher in leoBridge</vh>
+<v t="ekr.20130807203905.16499"><vh>report</vh></v>
+</v>
+<v t="ekr.20130807203905.16500"><vh>fixed crasher involving g.importFromPath</vh></v>
+<v t="ekr.20130807203905.16501"><vh>Fixed import problems discovered by importing 2to3</vh>
+<v t="ekr.20130807203905.16502"><vh> Notes: do not delete</vh></v>
+</v>
+<v t="ekr.20130807203905.16503"><vh>Fixed leoBridge problems</vh></v>
+<v t="ekr.20130807203905.16504"><vh>Fixed missing search text bug</vh></v>
+<v t="ekr.20130807203905.16505"><vh>Fixed problems with scrolling when saving</vh></v>
+<v t="ekr.20130807203905.16506"><vh>Fixed scrolling problem with scrollwheel</vh></v>
+<v t="ekr.20130807203905.16507"><vh>Fixed several problems with c-to-py command</vh></v>
+<v t="ekr.20130807203905.16508"><vh>Fixed special cases of auto-completion of commands</vh></v>
+<v t="ekr.20130807203905.16509"><vh>Fixed undo problems in headlines</vh></v>
+<v t="ekr.20130807203905.16510"><vh>Increased the width of find/change text</vh></v>
+<v t="ekr.20130807203905.16511"><vh>Minimize scrolling during paste-text</vh></v>
+<v t="ekr.20130807203905.16512"><vh>Restore focus on window activation</vh></v>
+<v t="ekr.20130807203905.16513"><vh>Rewrote and tested at.deleteUnvisitedNodes</vh></v>
+<v t="ekr.20130807203905.16514"><vh>Rewrote and tested p.deletePositionsInList</vh></v>
+<v t="ekr.20130807203905.16515"><vh>Running unit tests no longer change the selected tab</vh></v>
+<v t="ekr.20130807203905.16516"><vh>The @auto read code now catches failed asserts in import code.</vh></v>
+<v t="ekr.20130807203905.16517"><vh>Wont Fix bug 903640: Import of Python files containing the strings "&lt;&lt;" and "&gt;&gt;" does not work</vh></v>
+<v t="ekr.20130807203905.16518"><vh>Added ubuntu only menu kludge</vh></v>
+<v t="ekr.20130807203905.16519"><vh>Fixed bug 1184855: data loss with command line 'leo somefile.ext'</vh></v>
+<v t="ekr.20130807203905.16520"><vh>Fixed bug 1021849: typo in path for icon of desktop shortcut</vh></v>
+</v>
+<v t="ekr.20130807203905.16521"><vh>Code</vh>
+<v t="ekr.20130807203905.16522"><vh>Added external/leosax.py to leoPyRef.leo</vh></v>
+<v t="ekr.20130807203905.16523"><vh>Added local pylint suppressions</vh></v>
+<v t="ekr.20130807203905.16524"><vh>g.pdb now does qtGui stuff</vh></v>
+</v>
+<v t="ekr.20130807203905.16525"><vh>Docs</vh>
+<v t="ekr.20130807203905.16526"><vh>For the FAQ: create a bzr repository before importing it into Leo</vh></v>
+<v t="ekr.20130807203905.16527"><vh>Documented all keyword args to the leoBridge.controller ctor</vh></v>
+</v>
+<v t="ekr.20130807203905.16528"><vh>Features</vh>
+<v t="ekr.20130807203905.16529"><vh>@color minibuffer-foreground-color setting</vh></v>
+<v t="ekr.20130807203905.16530"><vh>Added --no-plugins option</vh></v>
+<v t="ekr.20130807203905.16531"><vh>Added @color log_warning_color and g.getActualColor</vh></v>
+<v t="ekr.20130807203905.16532"><vh>Added c2 keyword arg to c.bringToFront</vh></v>
+<v t="ekr.20130807203905.16533"><vh>Added default button to dialog methods</vh></v>
+<v t="ekr.20130807203905.16534"><vh>Added docstrings for all commands</vh></v>
+<v t="ekr.20130807203905.16535"><vh>Added leo/extensions/sh.py</vh></v>
+<v t="ekr.20130807203905.16536"><vh>Added support for @testclass</vh>
+<v t="ekr.20130807203905.16542"><vh>makeTestClass</vh></v>
+<v t="ekr.20130807203905.16538"><vh>TM.doTests &amp; helpers (local tests)</vh>
+<v t="ekr.20130807203905.16539"><vh>get_suite_script</vh></v>
+<v t="ekr.20130807203905.16540"><vh>get_test_class_script</vh></v>
+<v t="ekr.20130807203905.16541"><vh>makeTestCase</vh></v>
+<v t="ekr.20130807203905.16542"></v>
+<v t="ekr.20130807203905.16543"><vh>makeTestSuite</vh></v>
+</v>
+</v>
+<v t="ekr.20130807203905.16544"><vh>Added support for @testsetup</vh></v>
+<v t="ekr.20130807203905.16545"><vh>Added support for clojure syntax coloring</vh></v>
+<v t="ekr.20130807203905.16546"><vh>Added vr-expand/contract commands</vh></v>
+<v t="ekr.20130807203905.16547"><vh>All @button nodes now show call tips</vh></v>
+<v t="ekr.20130807203905.16548"><vh>All viewrended commands now start with vr</vh></v>
+<v t="ekr.20130807203905.16549"><vh>Allow cloned siblings</vh></v>
+<v t="ekr.20130807203905.16550"><vh>Allow clones anywhere in @file nodes</vh></v>
+<v t="ekr.20130807203905.16551"><vh>Allow periods before section names in headlines</vh></v>
+<v t="ekr.20130807203905.16552"><vh>baseNativeTree.onHeadChanged now truncates headlines</vh></v>
+<v t="ekr.20130807203905.16553"><vh>body border</vh></v>
+<v t="ekr.20130807203905.16554"><vh>Cached syntax coloring</vh></v>
+<v t="ekr.20130807203905.16555"><vh>Change focus-border color depending on input state</vh>
+<v t="ekr.20130807203905.16556"><vh>What I did</vh></v>
+</v>
+<v t="ekr.20130807203905.16557"><vh>Completed apropos-regular-expressions command</vh></v>
+<v t="ekr.20130807203905.16558"><vh>Completed the new support for sessions</vh></v>
+<v t="ekr.20130807203905.16559"><vh>created parse-body command</vh></v>
+<v t="ekr.20130807203905.16560"><vh>Created print-buttons command</vh></v>
+<v t="ekr.20130807203905.16561"><vh>Fixed bug 994985: Wishlist: normalize-whitespace</vh></v>
+<v t="ekr.20130807203905.16562"><vh>Fixed dabbrev commands</vh></v>
+<v t="ekr.20130807203905.16563"><vh>Fully support :: convention in @mode nodes</vh></v>
+<v t="ekr.20130807203905.16564"><vh>Help commands now use &lt;pre&gt; formatting if docutils is not available</vh></v>
+<v t="ekr.20130807203905.16565"><vh>help-for-command executes apropos commands</vh></v>
+<v t="ekr.20130807203905.16566"><vh>help-for-python now uses vr window</vh></v>
+<v t="ekr.20130807203905.16567"><vh>Improved g.trace</vh></v>
+<v t="ekr.20130807203905.16568"><vh>Improved incremental search commands</vh></v>
+<v t="ekr.20130807203905.16569"><vh>Integrated free_layout into Leo's core</vh></v>
+<v t="ekr.20130807203905.16570"><vh>investigated epydoc</vh>
+<v t="ekr.20130807203905.16571"><vh>Fixed epydoc crash</vh></v>
+</v>
+<v t="ekr.20130807203905.16572"><vh>IPython now works with all versions of IPython</vh>
+<v t="ekr.20130807203905.16573"><vh> Notes</vh></v>
+<v t="ekr.20130807203905.16574"><vh> What I did</vh></v>
+<v t="ekr.20130807203905.16575"><vh>@url ipython api</vh></v>
+<v t="ekr.20130807203905.16576"><vh>@url ipython-dev archive</vh></v>
+<v t="ekr.20130807203905.16577"><vh>@url ipython.core.interactiveshell</vh></v>
+</v>
+<v t="ekr.20130807203905.16578"><vh>Leo for portableapps?</vh></v>
+<v t="ekr.20130807203905.16579"><vh>Made sure tab completion only happens on explicit tab</vh></v>
+<v t="ekr.20130807203905.16580"><vh>SherlockTracer now shows returned values</vh></v>
+<v t="ekr.20130807203905.16581"><vh>Show all commands after &lt;alt-x&gt;&lt;tab&gt;</vh></v>
+<v t="ekr.20130807203905.16582"><vh>Sorted statistics in profile_leo</vh></v>
+<v t="ekr.20130807203905.16583"><vh>Support TypeScript</vh></v>
+<v t="ekr.20130807203905.16584"><vh>Supported ctrl-clicks in vr panes</vh></v>
+<v t="ekr.20130807203905.16585"><vh>Supported vimoutliner imports and @auto-otl</vh></v>
+</v>
+<v t="ekr.20130807203905.16586"><vh>Scripts</vh>
+<v t="ekr.20130807203905.16587"><vh>Added jinja2 templating script to scripts.leo</vh></v>
+<v t="ekr.20130807203905.16588"><vh>Added cleanup-imported-nodes script to scripts.leo</vh></v>
+</v>
+</v>
+<v t="ekr.20130807203905.16240"><vh>4.11 part 1</vh>
+<v t="ekr.20130807203905.16241"><vh>b1</vh>
+<v t="ekr.20130807203905.16242"><vh>Added import-org-mode script</vh>
+<v t="ekr.20130807203905.16243"><vh>import-org-mode (command, not used)</vh>
+<v t="ekr.20130807203905.16244"><vh>ctor</vh></v>
+<v t="ekr.20130807203905.16245"><vh>go</vh></v>
+<v t="ekr.20130807203905.16246"><vh>scan</vh></v>
+<v t="ekr.20130807203905.16247"><vh>test</vh></v>
+</v>
+<v t="ekr.20130807203905.16248"><vh>@@button import-org-mode</vh>
+<v t="ekr.20130807203905.16249"><vh>scan</vh></v>
+</v>
+<v t="ekr.20130807203905.16250"><vh>test-import-org-mode</vh></v>
+</v>
+<v t="ekr.20130807203905.16251"><vh>Code for displaying a function call hierarchy in Leo</vh>
+<v t="ekr.20130807203905.16252"><vh>call tree</vh>
+<v t="ekr.20130807203905.16253"><vh>displayCalltree</vh></v>
+<v t="ekr.20130807203905.16254"><vh>trace session</vh></v>
+</v>
+</v>
+<v t="ekr.20130807203905.16255"><vh>Use ctrl-click to open url's</vh></v>
+</v>
+<v t="ekr.20130807203905.16256"><vh>final</vh>
+<v t="ekr.20130807203905.16257"><vh>Bugs</vh>
+<v t="ekr.20130807203905.16258"><vh>Fixed crasher in flattenOutline</vh></v>
+<v t="ekr.20130807203905.16259"><vh>Fix viewrendered crash</vh></v>
+<v t="ekr.20130807203905.16260"><vh>Fixed(mostly)scrolling problem with multiple editors</vh></v>
+<v t="ekr.20130807203905.16261"><vh>Ensure selected @test node is run</vh></v>
+<v t="ekr.20130807203905.16262"><vh>Made sure the new load code loads plugins at most once</vh></v>
+<v t="ekr.20130807203905.16263"><vh>fixed problem with file:/// url's on Windows</vh></v>
+<v t="ekr.20130807203905.16264"><vh>fixed get_fn in viewrendered plugin</vh></v>
+<v t="ekr.20130807203905.16265"><vh>Restored special case for run-selected-unit-tests</vh></v>
+<v t="ekr.20130807203905.16266"><vh>Fixed failing unit tests in distro</vh></v>
+</v>
+<v t="ekr.20130807203905.16267"><vh>Features</vh>
+<v t="ekr.20130807203905.16268"><vh>Alt-Home &amp; Alt-End collapse all possible nodes</vh></v>
+<v t="ekr.20130807203905.16269"><vh>Added g.restore_selection_range</vh></v>
+</v>
+<v t="ekr.20130807203905.16270"><vh>Home page</vh>
+<v t="ekr.20130807203905.16271"><vh>Added link to home page from the TOC</vh></v>
+<v t="ekr.20130807203905.16272"><vh>Removed online-tutorial link</vh></v>
+<v t="ekr.20130807203905.16273"><vh>Added search box to Leo's home page</vh></v>
+<v t="ekr.20130807203905.16274"><vh>Added link to glossary from Leo's home page</vh></v>
+<v t="ekr.20130807203905.16275"><vh>Added screen shot to Leo's home page</vh></v>
+<v t="ekr.20130807203905.16276"><vh>Brought screen shots up to date</vh></v>
+<v t="ekr.20130807203905.16277"><vh>Scaled the screenshot on home page</vh></v>
+</v>
+<v t="ekr.20130807203905.16278"><vh>Investigated problem with desktop shortcut</vh>
+<v t="ekr.20130807203905.16279"><vh>EKR response</vh></v>
+</v>
+</v>
+</v>
 <v t="ekr.20130803073926.17113"><vh>Features</vh>
 <v t="ekr.20130526065545.17594"><vh>@wrap now suppresses horizontal scrolling</vh>
 <v t="ekr.20130526065545.17593"><vh>Re: @wrap now suppresses horizontal scrolling</vh></v>
@@ -505,19 +745,7 @@
 <v t="ekr.20130806072439.19786"><vh>Re: Toolkit independent apis</vh></v>
 </v>
 </v>
-<v t="ekr.20130803073926.17115"><vh>Scripts</vh>
-<v t="ekr.20130526065545.14929"><vh>Rev 5378: cleanup-imported-nodes script in scripts.leo &amp; an Aha</vh></v>
-<v t="ekr.20130526065545.14930"><vh>Revised recursive import script</vh></v>
-<v t="ekr.20130526065545.17546"><vh>Tool for diffing Leo files</vh>
-<v t="ekr.20130526065545.17545"><vh>Re: Tool for diffing Leo files</vh></v>
-</v>
-<v t="ekr.20130526065545.17487"><vh>Indexing files for full text search</vh>
-<v t="ekr.20130526065545.17488"><vh>Re: Indexing files for full text search</vh></v>
-<v t="ekr.20130526065545.17489"><vh>Re: Idea/needed: system command queue</vh></v>
-<v t="ekr.20130526065545.17490"><vh>Re: Idea/needed: system command queue</vh></v>
-</v>
-<v t="ekr.20130803125244.17095"><vh>position script (put in scripting chapter?)</vh></v>
-</v>
+<v t="ekr.20130807090137.19364"><vh>Leo in a nutshell</vh></v>
 <v t="ekr.20130803073926.17114"><vh>Plugins</vh>
 <v t="ekr.20130806072439.18495"><vh>ANN: in body python calculations commands</vh>
 <v t="ekr.20130806072439.18496"><vh>Re: ANN: in body python calculations commands</vh></v>
@@ -627,6 +855,20 @@
 </v>
 </v>
 </v>
+<v t="ekr.20130803073926.17115"><vh>Scripts</vh>
+<v t="ekr.20130526065545.14929"><vh>Rev 5378: cleanup-imported-nodes script in scripts.leo &amp; an Aha</vh></v>
+<v t="ekr.20130526065545.14930"><vh>Revised recursive import script</vh></v>
+<v t="ekr.20130526065545.17546"><vh>Tool for diffing Leo files</vh>
+<v t="ekr.20130526065545.17545"><vh>Re: Tool for diffing Leo files</vh></v>
+</v>
+<v t="ekr.20130526065545.17487"><vh>Indexing files for full text search</vh>
+<v t="ekr.20130526065545.17488"><vh>Re: Indexing files for full text search</vh></v>
+<v t="ekr.20130526065545.17489"><vh>Re: Idea/needed: system command queue</vh></v>
+<v t="ekr.20130526065545.17490"><vh>Re: Idea/needed: system command queue</vh></v>
+</v>
+<v t="ekr.20130803125244.17095"><vh>position script (put in scripting chapter?)</vh></v>
+<v t="ekr.20130807090137.19378"><vh>Terry script</vh></v>
+</v>
 <v t="ekr.20130803073926.17122"><vh>Tutorials &amp; how-to</vh>
 <v t="ekr.20130806072439.19664"><vh>A beautiful pattern for composing large strings</vh>
 <v t="ekr.20130806072439.19665"><vh>Re: A beautiful pattern for composing large strings</vh></v>
@@ -656,20 +898,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20130803073926.17124"><vh>Doc bugs</vh>
-<v t="ekr.20130803125244.17080"><vh>* Document Windows associations</vh>
-<v t="ekr.20130807090137.19376"><vh>Associate .Leo files to open with Leo when double click, and some more noob confussion</vh>
-<v t="ekr.20130807090137.19377"><vh>Re: Associate .Leo files to open with Leo when double click, and some more noob confussion</vh></v>
-<v t="ekr.20130807090137.19378"><vh>Terry script</vh></v>
-<v t="ekr.20130807090137.19379"><vh>Re: Associate .Leo files to open with Leo when double click, and some more noob confussion</vh></v>
-</v>
-<v t="ekr.20130807090137.19380"><vh>Cannot open Leo files by double-click in Windows Explorer?</vh>
-<v t="ekr.20130807090137.19381"><vh>Re: Cannot open Leo files by double-click in Windows Explorer?</vh></v>
-<v t="ekr.20130807090137.19382"><vh>Re: Cannot open Leo files by double-click in Windows Explorer?</vh></v>
-<v t="ekr.20130807090137.19383"><vh>PortableFileAssociator</vh></v>
-</v>
-</v>
-</v>
+<v t="ekr.20130807203905.16606"></v>
+<v t="ekr.20130806072439.20200"><vh>Leo Videos Put these on Leo's home page</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -3570,46 +3800,6 @@ if __name__ == '__main__':
 <t tx="ekr.20130803073926.17115"></t>
 <t tx="ekr.20130803073926.17122"></t>
 <t tx="ekr.20130803073926.17123"></t>
-<t tx="ekr.20130803073926.17124">@language rest
-</t>
-<t tx="ekr.20130803125244.17080">Installing Leo on Windows
-
-    Install Python from http://www.python.org/download/releases/
-
-    Install either Tk or Qt, as described above.
-
-    Install Leo. Get Leo’s .zip file from http://sourceforge.net/projects/leo/ You can unpack the .zip file anywhere, including Python’s site-packages folder, for example, C:\Python26\Lib\site-packages
-
-    [optional] Generate/update a junction link from unpacked leo folder to ...\site-packages\leo:
-
-    cd C:\Python26\Lib\site-packages\
-    junction leo leo-4-6-2-final
-
-    Create windows shortcut (edit paths as necessary):
-
-    Target   =  C:\Python26\pythonw.exe "C:\Python26\Lib\site-packages\leo\launchLeo.py"
-    Start in =  D:\code
-
-    Associate .leo filetype batch file:
-
-    ftype LeoFile=C:\Python26\pythonw.exe "C:\Python26\Lib\site-packages\leo\launchLeo.py" "%*"
-    assoc .leo=LeoFile
-
-    [optional] Put this leo.bat in %PATH%:
-
-    @C:\Python26\python.exe "C:\Python26\Lib\site-packages\leo\launchLeo.py" %*
-
-For more information see:
-
-Junction links:
-    http://technet.microsoft.com/en-gb/sysinternals/bb896768.aspx,
-    http://groups.google.com/group/leo-editor/msg/30116f9193241dc4
-ftype:
-    http://ss64.com/nt/ftype.html
-assoc:
-    http://ss64.com/nt/assoc.html
-
-</t>
 <t tx="ekr.20130803125244.17092">@language rest
 
 A **position** object represents a specific node in a Leo outline.
@@ -13028,12 +13218,12 @@ myLeoSettings.leo:
         join(g.app.globalConfigDir, settings_fn),
     )
 </t>
-<t tx="ekr.20130806072439.20200">From: tfer &lt;tfetherston@aol.com&gt;
+<t tx="ekr.20130806072439.20200">@language rest
 
-Mines on youtube, it is from a presentation at PyOhio last year.
+Tom Fetherston's youtube video, from a presentation at PyOhio in 2012.
   http://www.youtube.com/watch?v=JgJ89ekGj-s
 
-Ville's is also there:
+Ville's youtub video:
   http://www.youtube.com/watch?v=Zu6J-J0qFi0
 </t>
 <t tx="ekr.20130806175854.17068">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
@@ -13457,81 +13647,16 @@ In a Nutshell, The Leo Editor...
 
 and this is missing the earlier years, from 2001 to 2008, before moving to bazaar and Launchpad.
 </t>
-<t tx="ekr.20130807090137.19376">From: &lt;fidelperez@gmail.com&gt;
+<t tx="ekr.20130807090137.19377">From: Associate .Leo files to open with Leo when double click, and some more noob confussion
+From: Matt Wilkie &lt;maphew@gmail.com&gt;
 
-Im having trouble also linking Leo files to Leo. I have tried this:
-  
-
-      Associate .leo filetype batch file:
-      ftype LeoFile=3DC:Python25pythonw.exe =93C:Python25Libsite-packagesleolaunchLeo.py=94 =93%1=94 assoc .leo=3DLeoFile
-
-Which I found here&lt;https://groups.google.com/forum/?fromgroups=3D#!searchin/leo-editor/associate/leo-editor/3Ry5o8gE16E/Ble8B8RCRUsJ&gt;,
-but leolaunchleo.py doesnt even exist anymore (the post is old).
-
-I guess others have had this idea but It would be great to include a small
-file within the Quickstart guide which would associate files automatically.
-(Or maybe asking for imput, which can be done through a Leo node and this
-way the user learns about its functionality).
-
-Also, I miss some more buttons or scripts in quick start guide, preferably
-before the "programming" section, so when a new user opens it, he has had
-the opportunity to do Ctrl+B on several scripts (for instance, showing in
-the log the name of all the nodes within the selected one, having some
-subnodes with numbers and doing math on them and showing the result on the
-log pane, and as much "silly" but visual functions as possible so the user,
-by going pressing ctrl+b on each, gets a bigger chance to understand what
-is Leo. In my oppinion some users will just stop in the quickguide if they
-are not presented with such a thing before going to docs.leo etc.
-  
-
-
-Another thing is the plugin activation, the description of the plugins is
-not as accessible as it should be (opinions here, focusing in new users,
-and as I always say, appreciating and fully grateful for Leo as is now),and
-a script for activating them easier, been a week using Leo and still cant
-quite activate, find the descriptions or use them freely... And if each
-plugin or script had an example of use that would be priceless, for
-instance, including them all in quickstart (both scripts, plugins branchs)
-and then the new user could just go through all clicking on the examples
-and just seeing Leo work and show its potential. I know some of those are
-done but as I said, after a week or so I still am very confused...
-  </t>
-<t tx="ekr.20130807090137.19377">From: Matt Wilkie &lt;maphew@gmail.com&gt;
-
---047d7b6043c8d1f6bf04dc5376a1
-
-Content-Transfer-Encoding: quoted-printable
-
-&gt;
-&gt;    - Im having trouble also linking Leo files to Leo. I have tried this:
-&gt;
-&gt;
-&gt;       Associate .leo filetype batch file:
-&gt;&gt;           ftype LeoFile=3DC:Python25pythonw.exe =93C:Python25Libsite-
-&gt;&gt; packagesleolaunchLeo.py=94 =93%1=94 assoc .leo=3DLeoFile
-&gt;
-&gt;
-&gt; Which I found here&lt;https://groups.google.com/forum/?fromgroups=3D#!searchin/leo-editor/associate/leo-editor/3Ry5o8gE16E/Ble8B8RCRUsJ&gt;,
-&gt; but leolaunchleo.py doesnt even exist anymore (the post is old).
-&gt;
-
-Those instructions are sitll more or less relevant, but somehow all the
-slashes are missing. In any case, please try downloading
-"create-leobat.bat" batch file to the Leo directory and running from an
-admin-level command prompt:
+In any case, please try downloading "create-leobat.bat" batch file to the
+Leo directory and running from an admin-level command prompt:
 
    create-leobat c:\\path\\to\\python27\\python.exe register
 
---
 http://bazaar.launchpad.net/~maphew/leo-editor/pypi-packaging/view/head:/create-leobat.bat
 
-
-&gt;    - I guess others have had this idea but It would be great to include a
-&gt;    small file within the Quickstart guide which would associate files
-&gt;    automatically. (Or maybe asking for imput, which can be done through a Leo
-&gt;    node and this way the user learns about its functionality).
-&gt;
-&gt;
 I wrote a leo script that creates the file association, which I hope to
 include in the next release or on the Leo blog as a sample:
 https://groups.google.com/d/msg/leo-editor/ANPuhuEIU9c/GTcpLvVB_WoJ.
@@ -13539,8 +13664,7 @@ https://groups.google.com/d/msg/leo-editor/ANPuhuEIU9c/GTcpLvVB_WoJ.
 To use it, copy everything between the triple curly braces {{{...}}}, but
 not including the braces, and paste into an Leo window, then press [Ctrl-B].
 
-It requires that Leo is started from an Admin level command shell (or that
-UAC is turned off).
+It requires that Leo is started from an Admin level command shell (or that UAC is turned off).
 </t>
 <t tx="ekr.20130807090137.19378">&gt; Moreover, support for session tracking and restoring becomes an instant
 &gt; addition since just by oppening all the @path leo nodes under a "session"
@@ -13568,115 +13692,4179 @@ b.append("c.frame.bringToFront()")
 b.append("c.setLog()")
 tablist.b = '\n'.join(b)
 </t>
-<t tx="ekr.20130807090137.19379">From: =?UTF-8?Q?Fidel_P=C3=A9rez?= &lt;fidelperez@gmail.com&gt;
+<t tx="ekr.20130807203905.16240"></t>
+<t tx="ekr.20130807203905.16241"></t>
+<t tx="ekr.20130807203905.16242"></t>
+<t tx="ekr.20130807203905.16243">class ImportOrgMode:
+    @others
 
+def importOrgMode (self,event):
+    c = self.c
+    self.ImportOrgMode(c).go(c.p)
+    c.bodyWantsFocus()
 
-
-Content-Transfer-Encoding: quoted-printable
-
-
-  
-   - Also, quickstartguide should be open by default (instead of current
-   Leo workbook) at least until the user changes some config and prevents that
-   from happening. Is there any "load previous tabs" functionality? (IE open
-   the Leo files which where open when it was closed the last time)
-
-
-On Thursday, May 9, 2013 9:36:36 AM UTC+2, Fidel P=E9rez wrote:
-&gt;
-&gt; Hi:
-&gt;
-&gt;    - Im having trouble also linking Leo files to Leo. I have tried this:
-&gt;   
-&gt;
-&gt;       Associate .leo filetype batch file:
-&gt;&gt;           ftype LeoFile=3DC:Python25pythonw.exe =93C:Python25Libsite-
-&gt;&gt; packagesleolaunchLeo.py=94 =93%1=94 assoc .leo=3DLeoFile
-&gt;
-&gt;
-&gt; Which I found here&lt;https://groups.google.com/forum/?fromgroups=3D#!searchin/leo-editor/associate/leo-editor/3Ry5o8gE16E/Ble8B8RCRUsJ&gt;,
-&gt; but leolaunchleo.py doesnt even exist anymore (the post is old).
-&gt;
-&gt;
-&gt;    - I guess others have had this idea but It would be great to include a
-&gt;    small file within the Quickstart guide which would associate files
-&gt;    automatically. (Or maybe asking for imput, which can be done through a Leo
-&gt;    node and this way the user learns about its functionality).
-&gt;   
-&gt;
-&gt;
-&gt;    - Also, I miss some more buttons or scripts in quick start
-&gt;     guide, preferably before the "programming" section, so when a new
-&gt;    user opens it, he has had the opportunity to do Ctrl+B on several scripts
-&gt;    (for instance, showing in the log the name of all the nodes within the
-&gt;    selected one, having some subnodes with numbers and doing math on them and
-&gt;    showing the result on the log pane, and as much "silly" but visual
-&gt;    functions as possible so the user, by going pressing ctrl+b on each, gets a
-&gt;    bigger chance to understand what is Leo. In my oppinion some users will
-&gt;    just stop in the quickguide if they are not presented with such a thing
-&gt;    before going to docs.leo etc.
-&gt;   
-&gt;
-&gt;
-&gt;    - Another thing is the plugin activation, the description of the
-&gt;    plugins is not as accessible as it should be (opinions here, focusing
-&gt;    in new users, and as I always say, appreciating and fully grateful for Leo
-&gt;    as is now),and a script for activating them  easier, been a week using Leo
-&gt;    and still cant quite activate, find the descriptions or use them freely...
-&gt;    And if each plugin or script had an example of use that would be priceless,
-&gt;    for instance, including them all in quickstart (both scripts, plugins
-&gt;    branchs) and then the new user could just go through all clicking on the
-&gt;    examples and just seeing Leo work and show its potential. I know some of
-&gt;    those are done but as I said, after a week or so I still am very confused...
-&gt;   
-&gt;
-&gt; Thank you.
-&gt;
+if False and g.app.inScript:
+    print('='*40)
+    ImportOrgMode(c).test()
+    print('done')
 </t>
-<t tx="ekr.20130807090137.19380">From: Nick_H &lt;nah@plextek.co.uk&gt;
+<t tx="ekr.20130807203905.16244">def __init__ (self,c):
+    
+    self.c = c
+</t>
+<t tx="ekr.20130807203905.16245">def go (self,p):
+    
+    '''Prompt for a file and pass the contents to scan().'''
+</t>
+<t tx="ekr.20130807203905.16246">def scan (self,fn,p,s):
 
-Wen I double-click on any Leo file on my desktop to launch Leo, it simply
-launches with the default workbook.leo file open. I can, of course, open
-any file via the File|Open dialog, but that's not so convenient. The file
-association contains the following command to execute for the Open
-operation::
+    self.c = c
+    root = p.insertAsLastChild()
+    root.h = fn
+    level,stack = 0,[root]
+    body = ['@others\n']
+    
+    for s in g.splitLines(s):
+        g.trace(repr(s))
+        if s.startswith('*'):
+            i,level = 0,0
+            while s[i] == '*':
+                i += 1
+                level += 1
+            if level &gt; len(stack):
+                g.trace('bad level',repr(s))
+                last = None
+            elif level == len(stack):
+                last = stack[-1]
+                last.b = ''.join(body)
+            else:
+                last = stack[-1]
+                last.b = ''.join(body)
+                stack = stack[:level]
+            parent = stack[-1]
+            p = parent.insertAsLastChild()
+            p.h = s.strip()
+            stack.append(p)
+            body = []
+        else:
+            body.append(s)
+            
+    # Finish any trailing lines.
+    if body:
+        parent = stack[-1]
+        parent.b = ''.join(body)
+        
+    root.contract()
+    c.redraw(root)
+</t>
+<t tx="ekr.20130807203905.16247">def test (self):
+    
+    s = '''
+* A1
+    a1.1
+    a1.2
+** B11
+** B12
+b12.1
+*** C121
+c121.1
+    c121.2
+c121.3
+* A2
+a2.1
+** B21
+*** C211
+c211.1
+*** C212
+** B22
+    b22.1
+b22.1
+* A3
+* A4
+a4.1
+* A5
+** B51
+*** C511
+**** D5111
+***** E51111
+** B52
+*** C521
+c521.1
+'''
 
-    "C:\\Tools\\Python32\\python.exe"
-    "C:\\Tools\\Leo-4.10-final\\launchLeo.py %*"
+    tag = 'test-import-org-mode'
+    p = g.findNodeAnywhere(c,tag)
+    s = g.adjustTripleString(s,-4)
+    if p:
+        try:
+            self.scan('test-file',p,s)
+        except Exception:
+            c.redraw(p)
+    else:
+        print('not found: %s' % tag)
+</t>
+<t tx="ekr.20130807203905.16248">'''Import each file in the files list after the presently selected node.'''
 
-Can you suggest what might be wrong?
 
-===== EKR
+files = (
+    r'c:\Users\edreamleo\test\import-org-mode.txt',
+    r'c:\Users\edreamleo\test\import-org-mode.txt',
+)
 
-The last set of double quotes looks wrong.  Try::
+@others
 
-    "C:\\Tools\\Python32\\python.exe" "C:\\Tools\\Leo-4.10-final\\launchLeo.py" %*
+for fn in files:
+    try:
+        root = c.p.copy()
+        f = open(fn)
+        s = f.read()
+        scan(c,fn,s)
+        c.selectPosition(root)
+    except IOError:
+        print('can not open %s' % fn)
+</t>
+<t tx="ekr.20130807203905.16249">def scan (c,fn,s):
 
-In this case, none of the double quotes are needed, because the paths
-have no embedded blanks, so this also should work::
+    last = root = c.p.insertAsLastChild()
+    last.h = g.shortFileName(fn)
+    level,stack = 0,[root]
+    body = ['@others\n']
+    
+    for s in g.splitLines(s):
+        if s.startswith('*'):
+            i,level = 0,0
+            while s[i] == '*':
+                i += 1 ; level += 1
+            if level &gt; len(stack):
+                g.trace('bad level',repr(s))
+            elif level == len(stack):
+                last.b = ''.join(body)
+            else:
+                last.b = ''.join(body)
+                stack = stack[:level]
+            parent = stack[-1]
+            last = parent.insertAsLastChild()
+            last.h = s.strip()
+            stack.append(last)
+            body = []
+        else:
+            body.append(s)
+            
+    # Finish any trailing lines.
+    if body:
+        last.b = ''.join(body)
+        
+    root.contract()
+    c.redraw(root)
+</t>
+<t tx="ekr.20130807203905.16250"></t>
+<t tx="ekr.20130807203905.16251">From Brian Theado
 
-    C:\\Tools\\Python32\\python.exe C:\\Tools\\Leo-4.10-final\\launchLeo.py %*
+The other day I stumbled across Ville's code in scripts.leo which displays the
+output of python's trace module in a leo outline. The output of the trace module
+is not very friendly and I didn't find the result very usable. I was inspired to
+write some code to translate the output so the tree of function calls is
+displayed via Leo headlines. Thanks to Ville for sharing that code. I never
+would have figure this out without that starting point.
 
-===== From: Matt Wilkie &lt;maphew@gmail.com&gt;
+Just copy (Ctrl-Shift-V) the child outline into a leo outline and hit ctrl-b on
+the "call tree" node. The execution tree of the 'scroll-outline-up-line'
+minibuffer command will be displayed to stdout and also as a tree of leo
+headlines.
+</t>
+<t tx="ekr.20130807203905.16252">import trace
 
-It's the trailing %*, use "%1" instead.
+@language python
+@others
 
-Here is my setup...
+# http://docs.python.org/library/trace.html for documentation
+# on the trace module
+tracer = trace.Trace(countcallers=1)
 
-Set up file type association:
+# Trace a minibuffer command.
 
-    ftype LeoFile=C:\\Python27\\pythonw.exe C:\\apps\\leo\\launchLeo.py
-    assoc .leo=LeoFile
+# Any function call will work. Leo's minibuffer commands are easily discoverable
+# via tab completion and the 'print-commands' command.
 
-And put this leo.bat in %PATH%:
+#tracer.runfunc(c.executeMinibufferCommand, 'goto-prev-node')
+tracer.runfunc(c.executeMinibufferCommand, 'scroll-outline-up-line')
 
-    @start /b "Leo" C:\\Python27\\python.exe C:\\apps\\leo\\launchLeo.py %*
+top = p.insertAsLastChild().copy()
+top.h = 'trace session'
+displayCalltree(top, tracer.results().callers.keys())
+c.redraw()
+</t>
+<t tx="ekr.20130807203905.16253">def displayCalltree(p, callinfo):
+   '''
+   Converts the function call hierarchy in 'callinfo' into a tree of function
+   calls.  The function call tree is displayed to stdout as indented text
+   and is inserted as a tree of leo nodes rooted at the given position 'p'
+   '''
+   callers = [k[0] for k in callinfo]
+   callees = [k[1] for k in callinfo]
 
-===== From: Eoin &lt;eoinmccarthy@fastmail.fm&gt;
+   # The first set of children will be those that don't have any callers
+   # listed in callinfo
+   toplevels = list(set(callers) - set(callees))
+   positions = {}
+   path = []
+
+   # Depth-first traversal of the call hierarchy represented by 'callinfo'
+   # 'levels' is a stack which grows during descend and shrinks
+   # during ascend.  Each element of 'levels' is a list of unprocessed
+   # siblings of each other
+   levels = [toplevels]
+   while len(levels) &gt; 0:
+       while len(levels[-1]) &gt; 0:
+           # Process the first element in the 'deepest' (i.e. last) list of siblings
+           cur = levels[-1][0]
+           levels[-1] = levels[-1][1:]
+           indent = " " * 4 * (len(levels)-1)
+           if cur not in path:
+               if cur in positions.keys():
+                   # Function already seen, so make a clone
+                   clone = positions[cur].clone()
+                   clone.moveToLastChildOf(p)
+                   print (indent + "%s %s ..." % cur[1:])
+               else:
+                   # Haven't seen this function, so insert a new headline
+                   p = p.insertAsLastChild().copy()
+                   p.h = "%s %s" % cur[1:]
+                   print (indent + p.h)
+
+                   # Remember the position so it can be cloned if seen again
+                   positions[cur] = p
+
+                   # Find all callees of this function and descend
+                   levels.append([c[1] for c in callinfo if c[0] == cur])
+                   path.append(cur)
+           else:
+               r = p.insertAsLastChild().copy()
+               r.h = "(recursive call) %s %s" % (cur[1], cur[2])
+               print(indent + r.h + "...")
+
+       # Ascend back up one level
+       path = path[0:-1]
+       p = p.parent()
+       levels = levels[0:-1]
+</t>
+<t tx="ekr.20130807203905.16254"></t>
+<t tx="ekr.20130807203905.16255">- (Done) Added the following commands:
+    
+    - ctrl-click-icon
+    - ctrl-click-at-cursor
+    - open-url
+    - open-url-under-cursor
+    
+- (Done) Double-click *only* edits headline.
+- (Done) Only look at first line of the body in @url nodes.
+- (Done) Ctrl-click in body allows spaces in url's.
+
+</t>
+<t tx="ekr.20130807203905.16256"></t>
+<t tx="ekr.20130807203905.16257"></t>
+<t tx="ekr.20130807203905.16258">Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 553, in doCommand
+    val = command(event)
+  File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 2120, in flattenOutline
+    c.importCommands.flattenOutline(fileName)
+  File "c:\leo.repo\trunk\leo\core\leoImport.py", line 479, in flattenOutline
+    theFile.write(s)
+TypeError: must be str, not bytes
+</t>
+<t tx="ekr.20130807203905.16259">Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\core\leoPlugins.py", line 337, in callTagHandler
+    result = handler(tag,keywords)
+  File "c:\leo.repo\trunk\leo\plugins\viewrendered.py", line 560, in update
+    f(s,keywords)
+  File "c:\leo.repo\trunk\leo\plugins\viewrendered.py", line 655, in update_graphics_script
+    pc.gs = QtGui.QGraphicsScene(pc.splitter)
+AttributeError: 'ViewRenderedController' object has no attribute 'splitter'
+</t>
+<t tx="ekr.20130807203905.16260">@language python
+@language rest
+
+Selecting body editor with clicks doesn't save/restore visual ivars.
+The solution would be to create a new onClick event handler...
+
+- Removed insert=None,new_p=None args from all versions of setAllText.
+  These are entirely misguided, and may have contributed to scrolling problems.
+  
+  setAllText now *only* sets text, nothing else!
+
+- All calls to leoMoveCursorHelper are follwed by code that updates
+  v.insertSpot, v.selectionStart and v.selectionLength.
+  
+- v.restoreCursorAndScroll now *carefully* restores selection
+  based on v.insertSpot, v.selectionStart and v.selectionLength.
+  It also restores the scrollbar using v.scrollBarSpot.
+  
+- &lt; &lt; unselect the old node &gt; &gt; (selectHelper) now *only*
+  sets v.scrollBarSpot.
+  
+</t>
+<t tx="ekr.20130807203905.16261">In earlier version of Leo if one runs test externally with the selected
+position under @test node, that @test was executed with (run-marked-unit-tests-externally)
+
+The fix was to the "important special case" in TM.findAllUnitTestNodes.
+</t>
+<t tx="ekr.20130807203905.16262">@language python
+@language rest
+
+new load code, double init. for free layout
+http://groups.google.com/group/leo-editor/browse_thread/thread/dd16ac6dc1832eb2
+
+bookmarks.py was the culprit. The code in onCreate must test to see if c.free_layout already exists.
+</t>
+<t tx="ekr.20130807203905.16263">@language rest
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/bb063866875a81c3#
+
+In my installation, now on the latest revision ( r5195) I'm still
+experiencing an issue with the '@url command' using 'File-URL' in a Windows
+environement.
+
+I'm able to create the Leo User documentation locally. - However, when I
+try to read the documentation using the 'File-URL'
+
+file:///D:/Branches/leo-editor/leo/doc/html/_build/html/leo_toc.html
+
+I get the following message in the Leo-Log.
+
+&lt;log&gt;
+
+File 'D:\D:\Branches\leo-editor\leo\doc\html\_build\html\leo_toc.html' does not exist
+
+&lt;/log&gt;
+
+However if I enter this URL directly into FF it is found and displayed properly.
+
+EKR: Obviously, the 'D:\D:\' is the problem.
+
+The fix is simply to special-case file:/// on Windows in g.computeFileUrl.
+</t>
+<t tx="ekr.20130807203905.16264">@language rest
+groups.google.com/group/leo-editor/browse_thread/thread/bb063866875a81c3/6162e6108b09428e
+
+The new code is much like g.computeFileUrl.
+</t>
+<t tx="ekr.20130807203905.16265">@language rest
+
+Added code to findAllUnitTestNodes to look up the tree for @test &amp; @suite nodes
+if none have been found so far.  Only for the run-unit-tests-externally/locally.
+</t>
+<t tx="ekr.20130807203905.16266">@nocolor-node
+
+The @test at.readOneAtShadowNode retains @shadow links node
+give fail1: test not set up properly.
+The outline is then corrupted, causing other unit tests to fail.
+The partial solution is not to call the undo command in the finally clause.
+</t>
+<t tx="ekr.20130807203905.16267"></t>
+<t tx="ekr.20130807203905.16268"></t>
+<t tx="ekr.20130807203905.16269">@nocolor-node
+
+If off, only the insert point is restored.
+
+It's kinda pointless to make this a user option.
+</t>
+<t tx="ekr.20130807203905.16270"></t>
+<t tx="ekr.20130807203905.16271"></t>
+<t tx="ekr.20130807203905.16272">http://groups.google.com/group/leo-editor/browse_thread/thread/2157d8bfc0f381f1
+
+es, choosing Help--&gt;"Open Online Tutorial" tries to go to a page on
+3dTree.com the site for which is no longer held.
+
+Should the Quick Intro be brought back instead? 
+</t>
+<t tx="ekr.20130807203905.16273">&lt;div id="searchbox" style=""&gt;
+&lt;h3&gt;Quick search&lt;/h3&gt;
+
+&lt;form class="search" method="get" action="search.html"&gt;
+
+&lt;p class="searchtip" style="font-size: 90%"&gt; Enter search terms or a module, class or function name. &lt;/p&gt;
+&lt;/div&gt;
+</t>
+<t tx="ekr.20130807203905.16274"></t>
+<t tx="ekr.20130807203905.16275"></t>
+<t tx="ekr.20130807203905.16276"></t>
+<t tx="ekr.20130807203905.16277">http://groups.google.com/group/leo-editor/browse_thread/thread/ea3c29888d8ac92b
+
+&gt; - Added a full-sized screenshot at the bottom of the page.
+&gt;  I'm not sure whether this is a good idea.  What do you think?
+
+Scaled the screen-shot using:
+
+http://stackoverflow.com/questions/3029422/image-auto-resize-to-fit-div-container
+</t>
+<t tx="ekr.20130807203905.16278">@language rest
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/a03661d8c1eec0c6
+
+I'm experimenting with the latest version (WinXP). This is really odd. If I
+launch Leo using the desktop shortcut, I'm not able to open *any* valid
+.leo file except  LeoSettings.leo. This is the shortcut:
+C:\Python32\pythonw.exe "C:\Program Files\Leo-4.10-b1\launchLeo.py"
+
+However, if I launch using my Windows batch file, I'm able to open all
+files as expected. The code is:
+C:\Python32\python "C:\Program Files\Leo-4.10-b1\launchLeo.py" %*
+
+Anyone else experiencing this? Any possible explanation?
+
+EKR: Are you doing this in a console window? 
+
+No, that's why I used the batch file so I can launch w/ a console. When I
+do, it works fine. 
+
+I just installed on another box w/ Python 2.6.2 That works fine. The other
+box has Python 3.2, not sure why that matters, but it might be a clue.
+</t>
+<t tx="ekr.20130807203905.16279">@language rest
+
+There are two differences between the two ways of launching.
+
+1. pythonw.exe vs python.exe
+
+2. The former has no "%*" argument.  It's possible that you have no
+workbook.leo file in your home directory, which might cause a failure,
+iirc.
+
+I suggest first changing pythonw to python.  This will open a console,
+but probably too briefly to read.  To fix this, add a -i argument,
+which will drop python into interactive mode, which has the side
+effect of leaving the console open.  This should tell you why exactly
+nothing happens.
+
+I suspect that adding the "%*" argument will fix the problem,
+regardless of whether you use pythonw or python.
+
+If not, please feel free to ask more questions.
+</t>
+<t tx="ekr.20130807203905.16434"></t>
+<t tx="ekr.20130807203905.16435"># This project has failed.
+</t>
+<t tx="ekr.20130807203905.16436">A fixes:
+--fix=except
+--fix=raise 
+--fix=print
+--fix=callable # no changes.
+--fix=dict # changes suggested, but they don't look like they are needed.
+--fix=exec # no changes.
+--fix=execfile # no changes.
+--fix=filter # one change, but this should be needed.
+--fix=funcattrs # no changes.
+--fix=has_key # changes suggested, but this code is weird.  Not sure it is wise to do this.
+--fix=idioms # optional.  Not made yet.
+--fix=input # no changes.
+--fix=intern # no changes.
+--fix=isinstance # no changes.
+--fix=itertool_imports # no changes.
+--fix=itertoos # no changes.
+--fix=long # no changes.
+--fix=map # one change suggested, suppressed by adding from future_builtins import map.
+--fix=metaclass # no changes.
+--fix=methodattrs # no changes.
+--fix=ne # no changes.
+--fix=numliterals # no changes.
+--fix=paren # no changes.
+--fix=raw_input # no changes.
+--fix=reduce # no changes.
+--fix=renames # two files changed automatically.
+--fix=repr # no changes.
+--fix=set_literal # no changes.
+--fix=standard_error # no such fixer!
+--fix=sys_exc # no changes.
+--fix=throw # no changes.
+--fix=tuple_params # no changes.
+--fix=xrange ### Several changes.  Can be done automatically.
+--fix=xreadlines # no changes.
+
+B fixes:
+--fix=basestring
+    OK: docutils\nodes.py
+    docutils\utils\math\math2html.py
+--fix=buffer # no changes.
+--fix=getcwdu # *** applied change by hand.
+--fix=imports2 # no changes.
+--fix=imports # see below
+    These must be modified:
+        docutils\writers\docutils_xml.py
+        docutils\writers\odf_odt\__init__.py
+--fix=next # Changes suggested.  Not sure what to do about them.
+--fix=nonzero # changed nodes.py by hand.
+--fix=types ### Two changes needed.
+--fix=unicode # This removes U from U'string', and is probably not necessary (because the files compile correctly)
+--fix=urrlib ### Several changes needed.
+</t>
+<t tx="ekr.20130807203905.16437"># The python-modernize package makes these unnecessary.
+</t>
+<t tx="ekr.20130807203905.16438">"""Fixer that changes u"..." into u("...") and ur("...") into u(r"...").
+
+"""
+
+@language python
+@tabwidth -4
+
+import re
+from .. import fixer_base
+
+_literal_re = re.compile(ur"[uU][rR]?[\'\"]")
+
+class FixUnifiedUnicode(fixer_base.BaseFix):
+    
+    BM_compatible = True
+    PATTERN = "STRING"
+
+    def transform(self, node, results):
+        if _literal_re.match(node.value):
+            node.value = "u(%s)" % node.value[1:]
+            node.changed()
+</t>
+<t tx="ekr.20130807203905.16439">"""
+Fix incompatible imports and module references so the work with Python 2 and 3.
+"""
+
+# Authors: Collin Winter, Nick Edds, Edward K. Ream.
+
+@language python
+@tabwidth -4
+
+&lt;&lt; imports &gt;&gt;
+&lt;&lt; define mapping &gt;&gt;
+
+@others
+</t>
+<t tx="ekr.20130807203905.16440">
+# Local imports
+from .. import fixer_base
+from ..fixer_util import Name,Newline,Node,Leaf,String,attr_chain,find_binding
+
+# EKR imports
+from ..pgen2 import token
+
+import pprint
+pp = pprint.PrettyPrinter(indent=4)
+
+import leo.core.leoGlobals as g
+</t>
+<t tx="ekr.20130807203905.16441">MAPPING = {
+    'StringIO':  'io',
+    'cStringIO': 'io',
+    'cPickle': 'pickle',
+    '__builtin__' : 'builtins',
+    'copy_reg': 'copyreg',
+    'Queue': 'queue',
+    'SocketServer': 'socketserver',
+    'ConfigParser': 'configparser',
+    'repr': 'reprlib',
+    'FileDialog': 'tkinter.filedialog',
+    'tkFileDialog': 'tkinter.filedialog',
+    'SimpleDialog': 'tkinter.simpledialog',
+    'tkSimpleDialog': 'tkinter.simpledialog',
+    'tkColorChooser': 'tkinter.colorchooser',
+    'tkCommonDialog': 'tkinter.commondialog',
+    'Dialog': 'tkinter.dialog',
+    'Tkdnd': 'tkinter.dnd',
+    'tkFont': 'tkinter.font',
+    'tkMessageBox': 'tkinter.messagebox',
+    'ScrolledText': 'tkinter.scrolledtext',
+    'Tkconstants': 'tkinter.constants',
+    'Tix': 'tkinter.tix',
+    'ttk': 'tkinter.ttk',
+    'Tkinter': 'tkinter',
+    'markupbase': '_markupbase',
+    '_winreg': 'winreg',
+    'thread': '_thread',
+    'dummy_thread': '_dummy_thread',
+    # anydbm and whichdb are handled by fix_imports2
+    'dbhash': 'dbm.bsd',
+    'dumbdbm': 'dbm.dumb',
+    'dbm': 'dbm.ndbm',
+    'gdbm': 'dbm.gnu',
+    'xmlrpclib': 'xmlrpc.client',
+    'DocXMLRPCServer': 'xmlrpc.server',
+    'SimpleXMLRPCServer': 'xmlrpc.server',
+    'httplib': 'http.client',
+    'htmlentitydefs' : 'html.entities',
+    'HTMLParser' : 'html.parser',
+    'Cookie': 'http.cookies',
+    'cookielib': 'http.cookiejar',
+    'BaseHTTPServer': 'http.server',
+    'SimpleHTTPServer': 'http.server',
+    'CGIHTTPServer': 'http.server',
+    #'test.test_support': 'test.support',
+    'commands': 'subprocess',
+    'UserString' : 'collections',
+    'UserList' : 'collections',
+    'urlparse' : 'urllib.parse',
+    'robotparser' : 'urllib.robotparser',
+}
+</t>
+<t tx="ekr.20130807203905.16442">def alternates(members):
+    return "(" + "|".join(map(repr, members)) + ")"
+
+</t>
+<t tx="ekr.20130807203905.16443">def build_pattern(mapping=MAPPING):
+    mod_list = ' | '.join(["module_name='%s'" % key for key in mapping])
+    bare_names = alternates(mapping.keys())
+    yield """name_import=import_name&lt; 'import' ((%s) |
+               multiple_imports=dotted_as_names&lt; any* (%s) any* &gt;) &gt;
+          """ % (mod_list, mod_list)
+    yield """import_from&lt; 'from' (%s) 'import' ['(']
+              ( any | import_as_name&lt; any 'as' any &gt; |
+                import_as_names&lt; any* &gt;)  [')'] &gt;
+          """ % mod_list
+    yield """import_name&lt; 'import' (dotted_as_name&lt; (%s) 'as' any &gt; |
+               multiple_imports=dotted_as_names&lt;
+                 any* dotted_as_name&lt; (%s) 'as' any &gt; any* &gt;) &gt;
+          """ % (mod_list, mod_list)
+
+    # Find usages of module members in code e.g. thread.foo(bar)
+    yield "power&lt; bare_with_attr=(%s) trailer&lt;'.' any &gt; any* &gt;" % bare_names
+
+</t>
+<t tx="ekr.20130807203905.16444">class FixUnifiedImports(fixer_base.BaseFix):
+
+    BM_compatible = True
+    keep_line_order = True
+    # This is overridden in fix_imports2.
+    mapping = MAPPING
+
+    # We want to run this fixer late, so fix_import doesn't try to make stdlib
+    # renames into relative imports.
+    run_order = 6
+
+    @others
+</t>
+<t tx="ekr.20130807203905.16445">def build_pattern(self):
+    return "|".join(build_pattern(self.mapping))
+
+</t>
+<t tx="ekr.20130807203905.16446">def compile_pattern(self):
+    # We override this, so MAPPING can be pragmatically altered and the
+    # changes will be reflected in PATTERN.
+    self.PATTERN = self.build_pattern()
+    super(FixUnifiedImports, self).compile_pattern()
+
+</t>
+<t tx="ekr.20130807203905.16447">def dump(self,aDict):
+    if not aDict: return '&lt;None&gt;'
+    result = []
+    for key in aDict:
+        result.append('')
+        val = aDict.get(key)
+        result.append('%s: %s' % (key,pp.pformat(val)))
+    return '\n'.join(result)
+
+</t>
+<t tx="ekr.20130807203905.16448"># Don't match the node if it's within another match.
+
+def match(self, node):
+    match = super(FixUnifiedImports, self).match
+    results = match(node)
+    if results:
+        # Module usage could be in the trailer of an attribute lookup, so we
+        # might have nested matches when "bare_with_attr" is present.
+        if (
+            "bare_with_attr" not in results and 
+            any(match(obj) for obj in attr_chain(node, "parent"))
+        ):
+            return False
+        return results
+    return False
+
+</t>
+<t tx="ekr.20130807203905.16449">def start_tree(self, tree, filename):
+    super(FixUnifiedImports, self).start_tree(tree, filename)
+    self.replace = {}
+    
+</t>
+<t tx="ekr.20130807203905.16450">@
+mod_list = ' | '.join(["module_name='%s'" % key for key in mapping])
+
+bare_names = alternates(mapping.keys())
+    
+"""name_import=import_name&lt;
+    'import' ((%s) |
+    multiple_imports=dotted_as_names&lt; any* (%s) any* &gt;)
+&gt;
+""" % (mod_list, mod_list)
+          
+"""import_from&lt;
+    'from' (%s) 'import' ['('] ( any |
+    import_as_name&lt; any 'as' any &gt; |
+    import_as_names&lt; any* &gt;)  [')']
+&gt;
+""" % mod_list
+
+"""import_name&lt;
+    'import' (dotted_as_name&lt; (%s) 'as' any &gt; |
+    multiple_imports=dotted_as_names&lt; any* dotted_as_name&lt; (%s) 'as' any &gt; any* &gt;)
+&gt;
+""" % (mod_list, mod_list)
+@c
+
+
+def transform(self, node, results):
+    trace = False
+    if 0:
+        # print('\ntransform: node:\n%s' % node)
+        print('\ntransform: results: %s\n' % self.dump(results))
+    # g.trace(sorted(results.keys()))
+    import_mod = results.get("module_name")
+    name_import = results.get('name_import')
+    # print('transform',import_mod,sorted(results.keys()))
+    if import_mod:
+        mod_name = import_mod.value
+        new_name = unicode(self.mapping[mod_name])
+        if 0: #original
+            import_mod.replace(Name(new_name, prefix=import_mod.prefix))
+        else:
+            prefix = node.prefix # was import_mod.prefix
+            clone = node.clone()
+            clone2 = node.clone()
+            node2 = self.find_name(clone2,mod_name)
+            node2.replace(Name(new_name,prefix=import_mod.prefix))
+            indent = Name('    ',prefix=prefix) # A hack.
+            node.replace([ # was node.replace.
+                String('if sys.version_info &lt; (3,):',prefix=prefix),
+                Newline(),indent,
+                clone,
+                Newline(),
+                Name('else:',prefix=prefix),
+                Newline(),indent,
+                clone2,
+                Newline(),
+            ])
+            
+        if 1: # old code.
+            if "name_import" in results:
+                # If it's not a "from x import x, y" or "import x as y" import,
+                # marked its usage to be replaced.
+                g.trace('******',mod_name,new_name)
+                self.replace[mod_name] = new_name
+            if "multiple_imports" in results:
+                # This is a nasty hack to fix multiple imports on a line (e.g.,
+                # "import StringIO, urlparse"). The problem is that I can't
+                # figure out an easy way to make a pattern recognize the keys of
+                # MAPPING randomly sprinkled in an import statement.
+                results = self.match(node)
+                if results:
+                    self.transform(node, results)
+    elif 1:
+        # Replace usage of the module.
+        bare_name = results["bare_with_attr"][0]
+        new_name = self.replace.get(bare_name.value)
+        old = results.get('node').clone()
+        if trace: g.trace('==== old',old)
+        if new_name:
+            if trace: g.trace('===== replace',bare_name,bare_name.value,new_name)
+            if 0:
+                bare_name.replace(Name(new_name, prefix=bare_name.prefix))
+            else:
+                bare_name.replace([
+                    old,
+                    String(' if sys.version_info &lt; (3,) else '),
+                    Name(new_name),
+                ])
+</t>
+<t tx="ekr.20130807203905.16451">def find_name(self,root,name):
+    '''Find a Name subnode of root defining name'''
+    
+    # print('find_name',name,root)
+    for node in root.post_order():
+        # print('find_name',node)
+        if node.type == 1 and node.value == name:
+            # print('find_name: found',node)
+            return node
+    return None
+</t>
+<t tx="ekr.20130807203905.16452">transform: node:
+    Node(import_from, [
+        Leaf(1, u'from'),
+        Leaf(1, u'StringIO'),
+        Leaf(1, u'import'),
+        Node(import_as_name, [
+            Leaf(1, u'StringIO'),
+            Leaf(1, u'as'),
+            Leaf(1, u'BytesIO')
+        ])
+    ])
+
+transform: results: {
+    'module_name': Leaf(1, u'StringIO'),
+    'node': Node(import_from, [
+        Leaf(1, u'from'),
+        Leaf(1, u'StringIO'),
+        Leaf(1, u'import'),
+        Node(import_as_name, [
+            Leaf(1,u'StringIO'),
+            Leaf(1, u'as'),
+            Leaf(1, u'BytesIO')
+        ])
+    ])
+}
+
+transform: node:
+    Node(import_name, [
+        Leaf(1, u'import'),
+        Leaf(1, u'__builtin__')
+    ])
+
+transform: results: {
+    'module_name': Leaf(1, u'__builtin__'),
+    'name_import': Node(import_name, [Leaf(1, u'import'), Leaf(1, u'__builtin__')]),
+    'node': Node(import_name, [
+        Leaf(1, u'import'),
+        Leaf(1, u'__builtin__')
+    ])
+}
+
+transform: node:
+    Node(power, [
+        Leaf(1, u'__builtin__'),
+        Node(trailer, [
+            Leaf(23, u'.'), Leaf(1, u'__import__')
+        ]),
+        Node(trailer, [
+            Leaf(7, u'('), Node(arglist, [
+                Leaf(1, u'name'),
+                Leaf(12, u','),
+                Leaf(1, u'globals'),
+                Leaf(12, u','),
+                Leaf(1, u'locals'), Leaf(12, u','),
+                Leaf(1, u'fromlist')
+            ]),
+            Leaf(8, u')')
+        ])
+    ])
+
+transform: results: {
+    'bare_with_attr': [Leaf(1, u'__builtin__')],
+    'node': Node(power, [
+        Leaf(1, u'__builtin__'),
+        Node(trailer, [
+            Leaf(23, u'.'),
+            Leaf(1, u'__import__')
+        ]),
+        Node(trailer, [
+            Leaf(7, u'('),
+            Node(arglist, [
+                Leaf(1, u'name'),
+                Leaf(12, u','),
+                Leaf(1, u'globals'),
+                Leaf(12, u','),
+                Leaf(1, u'locals'),
+                Leaf(12, u','),
+                Leaf(1, u'fromlist')
+            ]), 
+            Leaf(8, u')')
+        ])
+    ])
+}
+
+RefactoringTool: Refactored docutils\_compat.py
+--- docutils\_compat.py (original)
++++ docutils\_compat.py (refactored)
+@@ -20,7 +20,7 @@
+ if sys.version_info &lt; (3,0):
+     b = bytes = str
+     u_prefix = 'u'
+-    from StringIO import StringIO as BytesIO
++    from io import StringIO as BytesIO
+ else:
+     import builtins
+     bytes = builtins.bytes
+@@ -37,7 +37,7 @@
+     BytesIO = __import__('io').BytesIO
+
+ if sys.version_info &lt; (2,5):
+-    import __builtin__
++    import builtins
+
+     def __import__(name, globals={}, locals={}, fromlist=[], level=-1):
+         """Compatibility definition for Python 2.4.
+@@ -45,4 +45,4 @@
+         Silently ignore the `level` argument missing in Python &lt; 2.5.
+         """
+         # we need the level arg because the default changed in Python 3.3
+-        return __builtin__.__import__(name, globals, locals, fromlist)
++        return builtins.__import__(name, globals, locals, fromlist)
+
+transform: node:
+    Node(import_name, [
+        Leaf(1, u'import'),
+        Node(dotted_as_name, [
+            Leaf(1, u'ConfigParser'),
+            Leaf(1, u'as'),
+            Leaf(1, u'CP')
+        ])
+    )]
+
+transform: results: {
+    'module_name': Leaf(1, u'ConfigParser'),
+    'node': Node(import_name, [
+        Leaf(1, u'import'),
+        Node(dotted_as_name, [
+            Leaf(1, u'ConfigParser'),
+            Leaf(1, u'as'),
+            Leaf(1, u'CP')
+        ])
+    ])
+}
+
+RefactoringTool: Refactored docutils\frontend.py
+--- docutils\frontend.py        (original)
++++ docutils\frontend.py        (refactored)
+@@ -35,7 +35,7 @@
+ import warnings
+ ### 2to3.
+ if sys.version_info &lt; (3,0):
+-    import ConfigParser as CP
++    import configparser as CP
+ else:
+     import configparser as CP
+ import codecs
+
+transform: node:
+    Node(import_from, [
+        Leaf(1, u'from'),
+        Leaf(1, u'StringIO'),
+        Leaf(1, u'import'),
+        Leaf(1, u'StringIO')
+    ])
+
+transform: results: {
+    'module_name': Leaf(1, u'StringIO'),
+    'node': Node(import_from, [
+        Leaf(1, u'from'),
+        Leaf(1, u'StringIO'),
+        Leaf(1, u'import'),
+        Leaf(1, u'StringIO')
+    ])
+}
+
+RefactoringTool: Refactored docutils\writers\docutils_xml.py
+--- docutils\writers\docutils_xml.py    (original)
++++ docutils\writers\docutils_xml.py    (refactored)
+@@ -25,7 +25,7 @@
+     xml.__path__.reverse() # If both are available, prefer stdlib over PyXML
+
+ import xml.sax.saxutils
+-from StringIO import StringIO
++from io import StringIO
+
+ import docutils
+ from docutils import frontend, writers, nodes
+
+transform: node:
+    Node(import_name, [
+        Leaf(1, u'import'),
+        Leaf(1, u'StringIO')
+    ])
+
+transform: results: {
+    'module_name': Leaf(1, u'StringIO'),
+    'name_import': Node(import_name, [
+        Leaf(1, u'import'),
+        Leaf(1, u'StringIO')
+    ]),
+    'node': Node(import_name, [
+        Leaf(1, u'import'),
+        Leaf(1, u'StringIO')
+    ])
+}
+
+transform: node:
+    Node(power, [
+        Leaf(1, u'StringIO'),
+        Node(trailer, [
+            Leaf(23, u'.'),
+            Leaf(1, u'StringIO')
+        ]), 
+        Node(trailer, [
+            Leaf(7, u'('),
+            Leaf(8, u')')
+        ])
+    ])
+
+transform: results: {
+    'bare_with_attr': [Leaf(1, u'StringIO')],
+    'node': Node(power, [
+        Leaf(1, u'StringIO'),
+        Node(trailer, [
+            Leaf(23, u'.'),
+            Leaf(1, u'StringIO')
+        ]),
+        Node(trailer, [
+            Leaf(7, u'('),
+            Leaf(8, u')')
+        ])
+    ])
+}
+
+transform: node:
+    Node(import_from, [
+        Leaf(1, u'from'),
+        Leaf(1, u'ConfigParser'),
+        Leaf(1, u'import'),
+        Leaf(1, u'ConfigParser')
+    ])
+
+transform: results: {
+    'module_name': Leaf(1, u'ConfigParser'),
+    'node': Node(import_from, [
+        Leaf(1, u'from'),
+        Leaf(1, u'ConfigParser'),
+        Leaf(1, u'import'),
+        Leaf(1, u'ConfigParser')
+    ])
+}
+
+RefactoringTool: Refactored docutils\writers\odf_odt\__init__.py
+--- docutils\writers\odf_odt\__init__.py        (original)
++++ docutils\writers\odf_odt\__init__.py        (refactored)
+@@ -22,7 +22,7 @@
+ from xml.dom import minidom
+ import time
+ import re
+-import StringIO
++import io
+ import copy
+ import urllib2
+ import docutils
+@@ -306,7 +306,7 @@
+     return tag
+
+ def ToString(et):
+-    outstream = StringIO.StringIO()
++    outstream = io.StringIO()
+     if sys.version_info &gt;= (3, 2):
+         et.write(outstream, encoding="unicode")
+     else:
+@@ -795,7 +795,7 @@
+         self.language = languages.get_language(lcode, document.reporter)
+         self.format_map = { }
+         if self.settings.odf_config_file:
+-            from ConfigParser import ConfigParser
++            from configparser import ConfigParser
+
+             parser = ConfigParser()
+             parser.read(self.settings.odf_config_file)
+</t>
+<t tx="ekr.20130807203905.16453"></t>
+<t tx="ekr.20130807203905.16454"># -*- coding: utf8 -*-
+
+# Define the constants for the define_xxx functions in the new punctuations_chars.py.
+import unicodedata
+s =  ur"\.\,\;\!\?"
+assert not g.isPython3
+d = {}
+for uc in s:
+    assert isinstance(uc,(str,unicode)),type(uc)
+    comment = unicodedata.name(uc,'Unknown') if isinstance(uc,unicode) else 'ascii'
+    d[ord(uc)] = comment
+for i in sorted(d.keys()):
+    g.es('%5s, # %s' % (i,d.get(i)))
+</t>
+<t tx="ekr.20130807203905.16455"># The following files fail on Python 3 because of Python 2.x syntax for unicode characters:
+# (now passes) utils/punctuation_chars.py, 
+# utils/math/latex2mathml.py,
+# writers/manpage.py,
+# writers/latex2e/__init__.py
+
+g.cls()
+import os
+path = g.os_path_finalize_join(g.app.loadDir,'..','extensions','docutils')
+if g.isPython3:
+    exclude = ('punctuation2.py',)
+else:
+    exclude = ('punctuation3.py',)
+for root, dirs, files in os.walk(path):
+    for fn in files:
+        if fn.endswith('.py'):
+            fn = g.os_path_join(root,fn)
+            if not g.shortFileName(fn) in exclude:
+                s,e = g.readFileIntoString(fn)
+                c.testManager.checkFileSyntax(fn,s,reraise=False,suppress=False)
+print('all files in leo/extensions/docutils pass')
+</t>
+<t tx="ekr.20130807203905.16456"># From Python/tools/scripts/crlf.py
+"Replace CRLF with LF in docutils files."
+
+g.cls()
+write = True
+import os
+def fix(filename):
+    if os.path.isdir(filename):
+        # print filename, "Directory!"
+        return
+    data = open(filename,"rb").read()
+    if '\0' in data:
+        print('binary: %s' % filename)
+        return
+    newdata = data.replace("\r\n","\n")
+    if newdata != data:
+        print('changed: %s' % g.shortFileName(filename,2))
+        if write:
+            f = open(filename,"wb")
+            f.write(newdata)
+            f.close()
+
+path = g.os_path_finalize_join(g.app.loadDir,'..','extensions','docutils')
+for root, dirs, files in os.walk(path):
+    for fn in files:
+        if fn.endswith('.py'):
+            fn = g.os_path_join(root,fn)
+            fix(fn)
+print('done')
+</t>
+<t tx="ekr.20130807203905.16457"># -*- coding: utf8 -*-
+import sys
+import unicodedata
+
+@others
+
+openers_original = ur"""\"\'\(\&lt;\[\{༺༼᚛⁅⁽₍〈❨❪❬❮❰❲❴⟅⟦⟨⟪⟬⟮⦃⦅⦇⦉⦋⦍⦏⦑⦓⦕⦗⧘⧚⧼⸢⸤⸦⸨〈《「『【〔〖〘〚〝〝﴾︗︵︷︹︻︽︿﹁﹃﹇﹙﹛﹝（［｛｟｢«‘“‹⸂⸄⸉⸌⸜⸠‚„»’”›⸃⸅⸊⸍⸝⸡‛‟"""
+openers_ords = [ord(ch) for ch in openers_original if unicodedata.name(ch,'Unknown') != 'Unknown']
+openers = ''.join([unichr(n) for n in openers_ords])
+assert openers_original == openers
+
+closers_original = ur"""\"\'\)\&gt;\]\}༻༽᚜⁆⁾₎〉❩❫❭❯❱❳❵⟆⟧⟩⟫⟭⟯⦄⦆⦈⦊⦌⦎⦐⦒⦔⦖⦘⧙⧛⧽⸣⸥⸧⸩〉》」』】〕〗〙〛〞〟﴿︘︶︸︺︼︾﹀﹂﹄﹈﹚﹜﹞）］｝｠｣»’”›⸃⸅⸊⸍⸝⸡‛‟«‘“‹⸂⸄⸉⸌⸜⸠‚„"""
+closers_ords = [ord(ch) for ch in closers_original if unicodedata.name(ch,'Unknown') != 'Unknown']
+closers = ''.join([unichr(n) for n in closers_ords])
+assert closers_original == closers
+
+delimiters_original = u"\\-\\/\\:֊־᐀᠆‐‑‒–—―⸗⸚〜〰゠︱︲﹘﹣－¡·¿;·՚՛՜՝՞՟։׀׃׆׳״؉؊،؍؛؞؟٪٫٬٭۔܀܁܂܃܄܅܆܇܈܉܊܋܌܍߷߸߹࠰࠱࠲࠳࠴࠵࠶࠷࠸࠹࠺࠻࠼࠽࠾।॥॰෴๏๚๛༄༅༆༇༈༉༊་༌།༎༏༐༑༒྅࿐࿑࿒࿓࿔၊။၌၍၎၏჻፡።፣፤፥፦፧፨᙭᙮᛫᛬᛭᜵᜶។៕៖៘៙៚᠀᠁᠂᠃᠄᠅᠇᠈᠉᠊᥄᥅᧞᧟᨞᨟᪠᪡᪢᪣᪤᪥᪦᪨᪩᪪᪫᪬᪭᭚᭛᭜᭝᭞᭟᭠᰻᰼᰽᰾᰿᱾᱿᳓‖‗†‡•‣․‥…‧‰‱′″‴‵‶‷‸※‼‽‾⁁⁂⁃⁇⁈⁉⁊⁋⁌⁍⁎⁏⁐⁑⁓⁕⁖⁗⁘⁙⁚⁛⁜⁝⁞⳹⳺⳻⳼⳾⳿⸀⸁⸆⸇⸈⸋⸎⸏⸐⸑⸒⸓⸔⸕⸖⸘⸙⸛⸞⸟⸪⸫⸬⸭⸮⸰⸱、。〃〽・꓾꓿꘍꘎꘏꙳꙾꛲꛳꛴꛵꛶꛷꡴꡵꡶꡷꣎꣏꣸꣹꣺꤮꤯꥟꧁꧂꧃꧄꧅꧆꧇꧈꧉꧊꧋꧌꧍꧞꧟꩜꩝꩞꩟꫞꫟꯫︐︑︒︓︔︕︖︙︰﹅﹆﹉﹊﹋﹌﹐﹑﹒﹔﹕﹖﹗﹟﹠﹡﹨﹪﹫！＂＃％＆＇＊，．／：；？＠＼｡､･"
+delimiter_ords = [ord(ch) for ch in delimiters_original if unicodedata.name(ch,'Unknown') != 'Unknown']
+delimiters = ''.join([unichr(n) for n in delimiter_ords])
+
+quote_pairs_original = {
+    u'\xbb':   u'\xbb',         # Swedish
+    u'\u2018': u'\u201a',       # Greek
+    u'\u2019': u'\u2019',       # Swedish
+    u'\u201a': u'\u2018\u2019', # German, Polish
+    u'\u201c': u'\u201e',       # German
+    u'\u201e': u'\u201c\u201d',
+    u'\u201d': u'\u201d',       # Swedish
+    u'\u203a': u'\u203a',       # Swedish
+}
+
+# Compute the quote pairs array.
+d = quote_pairs_original
+d2 = {}
+for ch in d.keys():
+    val = d.get(ch)
+    n = ord(ch)
+    d2[n] = [ord(z) for z in val]
+for n in sorted(d2.keys()):
+    g.es('0x%x: [%s],' % (n,','.join(['0x%x' % (z) for z in d2.get(n)])))
+
+
+# No need to compute 
+
+assert compare(openers_original,openers)
+assert compare(closers_original,closers)
+assert compare(delimiters_original,delimiters)
+
+if 0: # Create the ords array.
+    for n in closers_ords:
+        ch = unichr(n)
+        g.es('%s, # %s' % (n,unicodedata.name(ch,'Unknown')))
+    
+print('done')
+</t>
+<t tx="ekr.20130807203905.16458">def unknown(ch):
+    return unicodedata.name(ch,'Unknown') == 'Unknown'
+
+def compare(s1,s2):
+    i1,i2,n1,n2 = 0,0,len(s1),len(s2)
+    while True:
+        while i1 &lt; n1 and unknown(s1[i1]):
+            i1 += 1
+        # while i2 &lt; n2 and unknown(s2[i2]):
+            # i2 += 1
+        if i1 &lt; n1 and i2 &lt; n2 and s1[i1] == s2[i2]:
+            i1 += 1 ; i2 += 1
+        else:
+            return i1 == n1 and i2 == n2
+</t>
+<t tx="ekr.20130807203905.16459">quote_pairs_original = {
+    u'\xbb':   u'\xbb', # Swedish
+    u'\u2018': u'\u201a', # Greek
+    u'\u2019': u'\u2019', # Swedish
+    u'\u201a': u'\u2018\u2019', # German, Polish
+    u'\u201c': u'\u201e', # German
+    u'\u201e': u'\u201c\u201d',
+    u'\u201d': u'\u201d', # Swedish
+    u'\u203a': u'\u203a', # Swedish
+}
+          
+quote_pairs_ord_d = {
+    0xbb:   [0xbb],
+    0x2018: [0x201a],
+    0x2019: [0x2019],
+    0x201a: [0x2018,0x2019],
+    0x201c: [0x201e],
+    0x201d: [0x201d],
+    0x201e: [0x201c,0x201d],
+    0x203a: [0x203a],
+}
+
+quote_pairs = {}
+d = quote_pairs_ord_d
+for n in d.keys():
+    ch = unichr(n)
+    quote_pairs [ch] = ''.join([unichr(n2) for n2 in d.get(n)])
+d = quote_pairs
+for ch in sorted(d.keys()):
+    g.es('0x%x: %s' % (ord(ch),['0x%s' % (ord(z)) for z in d.get(ch)]))
+    
+assert quote_pairs == quote_pairs_original
+g.es('pass!')
+</t>
+<t tx="ekr.20130807203905.16460"></t>
+<t tx="ekr.20130807203905.16461"># -*- coding: utf8 -*-
+
+from __future__ import print_function
+
+g.cls()
+
+import re
+import sys
+import unicodedata
+
+openers = ur"""\"\'\(\&lt;\[\{༺༼᚛⁅⁽₍〈❨❪❬❮❰❲❴⟅⟦⟨⟪⟬⟮⦃⦅⦇⦉⦋⦍⦏⦑⦓⦕⦗⧘⧚⧼⸢⸤⸦⸨〈《「『【〔〖〘〚〝〝﴾︗︵︷︹︻︽︿﹁﹃﹇﹙﹛﹝（［｛｟｢«‘“‹⸂⸄⸉⸌⸜⸠‚„»’”›⸃⸅⸊⸍⸝⸡‛‟"""
+closers = ur"""\"\'\)\&gt;\]\}༻༽᚜⁆⁾₎〉❩❫❭❯❱❳❵⟆⟧⟩⟫⟭⟯⦄⦆⦈⦊⦌⦎⦐⦒⦔⦖⦘⧙⧛⧽⸣⸥⸧⸩〉》」』】〕〗〙〛〞〟﴿︘︶︸︺︼︾﹀﹂﹄﹈﹚﹜﹞）］｝｠｣»’”›⸃⸅⸊⸍⸝⸡‛‟«‘“‹⸂⸄⸉⸌⸜⸠‚„"""
+delimiters = ur"\-\/\:֊־᐀᠆‐‑‒–—―⸗⸚〜〰゠︱︲﹘﹣－¡·¿;·՚՛՜՝՞՟։׀׃׆׳״؉؊،؍؛؞؟٪٫٬٭۔܀܁܂܃܄܅܆܇܈܉܊܋܌܍߷߸߹࠰࠱࠲࠳࠴࠵࠶࠷࠸࠹࠺࠻࠼࠽࠾।॥॰෴๏๚๛༄༅༆༇༈༉༊་༌།༎༏༐༑༒྅࿐࿑࿒࿓࿔၊။၌၍၎၏჻፡።፣፤፥፦፧፨᙭᙮᛫᛬᛭᜵᜶។៕៖៘៙៚᠀᠁᠂᠃᠄᠅᠇᠈᠉᠊᥄᥅᧞᧟᨞᨟᪠᪡᪢᪣᪤᪥᪦᪨᪩᪪᪫᪬᪭᭚᭛᭜᭝᭞᭟᭠᰻᰼᰽᰾᰿᱾᱿᳓‖‗†‡•‣․‥…‧‰‱′″‴‵‶‷‸※‼‽‾⁁⁂⁃⁇⁈⁉⁊⁋⁌⁍⁎⁏⁐⁑⁓⁕⁖⁗⁘⁙⁚⁛⁜⁝⁞⳹⳺⳻⳼⳾⳿⸀⸁⸆⸇⸈⸋⸎⸏⸐⸑⸒⸓⸔⸕⸖⸘⸙⸛⸞⸟⸪⸫⸬⸭⸮⸰⸱、。〃〽・꓾꓿꘍꘎꘏꙳꙾꛲꛳꛴꛵꛶꛷꡴꡵꡶꡷꣎꣏꣸꣹꣺꤮꤯꥟꧁꧂꧃꧄꧅꧆꧇꧈꧉꧊꧋꧌꧍꧞꧟꩜꩝꩞꩟꫞꫟꯫︐︑︒︓︔︕︖︙︰﹅﹆﹉﹊﹋﹌﹐﹑﹒﹔﹕﹖﹗﹟﹠﹡﹨﹪﹫！＂＃％＆＇＊，．／：；？＠＼｡､･𐄀𐄁𐎟𐏐𐡗𐤟𐤿𐩐𐩑𐩒𐩓𐩔𐩕𐩖𐩗𐩘𐩿𐬹𐬺𐬻𐬼𐬽𐬾𐬿𑂻𑂼𑂾𑂿𑃀𑃁𒑰𒑱𒑲𒑳"
+closing_delimiters = ur"\.\,\;\!\?"
+
+unicode_punctuation_categories = {
+    # 'Pc': 'Connector', # not used in Docutils inline markup recognition
+    'Pd': 'Dash',
+    'Ps': 'Open',
+    'Pe': 'Close',
+    'Pi': 'Initial quote', # may behave like Ps or Pe depending on usage
+    'Pf': 'Final quote', # may behave like Ps or Pe depending on usage
+    'Po': 'Other'
+    }
+"""Unicode character categories for punctuation"""
+
+@others
+
+test()
+</t>
+<t tx="ekr.20130807203905.16462">def punctuation_samples():
+
+    """Docutils punctuation category sample strings.
+
+    Return list of sample strings for the categories "Open", "Close",
+    "Delimiters" and "Closing-Delimiters" used in the `inline markup
+    recognition rules`_.
+    """
+
+    # Lists with characters in Unicode punctuation character categories
+    cp_min = 160 # ASCII chars have special rules for backwards compatibility
+    ucharlists = unicode_charlists(unicode_punctuation_categories, cp_min)
+
+    # match opening/closing characters
+    # --------------------------------
+    # Rearange the lists to ensure matching characters at the same
+    # index position.
+
+    # low quotation marks are also used as closers (e.g. in Greek)
+    # move them to category Pi:
+    ucharlists['Ps'].remove(u'‚') # 201A  SINGLE LOW-9 QUOTATION MARK
+    ucharlists['Ps'].remove(u'„') # 201E  DOUBLE LOW-9 QUOTATION MARK
+    ucharlists['Pi'] += [u'‚', u'„']
+
+    ucharlists['Pi'].remove(u'‛') # 201B  SINGLE HIGH-REVERSED-9 QUOTATION MARK
+    ucharlists['Pi'].remove(u'‟') # 201F  DOUBLE HIGH-REVERSED-9 QUOTATION MARK
+    ucharlists['Pf'] += [u'‛', u'‟']
+
+    # 301F  LOW DOUBLE PRIME QUOTATION MARK misses the opening pendant:
+    ucharlists['Ps'].insert(ucharlists['Pe'].index(u'\u301f'), u'\u301d')
+
+    # print u''.join(ucharlists['Ps']).encode('utf8')
+    # print u''.join(ucharlists['Pe']).encode('utf8')
+    # print u''.join(ucharlists['Pi']).encode('utf8')
+    # print u''.join(ucharlists['Pf']).encode('utf8')
+
+    # The Docutils character categories
+    # ---------------------------------
+    #
+    # The categorization of ASCII chars is non-standard to reduce both
+    # false positives and need for escaping. (see `inline markup recognition
+    # rules`_)
+
+    # matching, allowed before markup
+    openers = [re.escape('"\'(&lt;[{')]
+    for cat in ('Ps', 'Pi', 'Pf'):
+        openers.extend(ucharlists[cat])
+
+    # matching, allowed after markup
+    closers = [re.escape('"\')&gt;]}')]
+    for cat in ('Pe', 'Pf', 'Pi'):
+        closers.extend(ucharlists[cat])
+
+    # non-matching, allowed on both sides
+    delimiters = [re.escape('-/:')]
+    for cat in ('Pd', 'Po'):
+        delimiters.extend(ucharlists[cat])
+
+    # non-matching, after markup
+    closing_delimiters = [re.escape('.,;!?')]
+
+    # # Test open/close matching:
+    # for i in range(min(len(openers),len(closers))):
+    #     print '%4d    %s    %s' % (i, openers[i].encode('utf8'),
+    #                                closers[i].encode('utf8'))
+    # dump(delimiters)
+    
+    return [u''.join(chars)
+            for chars in (openers, closers, delimiters, closing_delimiters)]
+</t>
+<t tx="ekr.20130807203905.16463">def unicode_charlists(categories, cp_min=0, cp_max=None):
+    """Return dictionary of Unicode character lists.
+
+    For each of the `catagories`, an item contains a list with all Unicode
+    characters with `cp_min` &lt;= code-point &lt;= `cp_max` that belong to the
+    category. (The default values check every code-point supported by Python.)
+    """
+    # Determine highest code point with one of the given categories
+    # (may shorten the search time considerably if there are many
+    # categories with not too high characters):
+    if cp_max is None:
+        cp_max = max(x for x in xrange(sys.maxunicode + 1)
+                     if unicodedata.category(unichr(x)) in categories)
+        # print cp_max # =&gt; 74867 for unicode_punctuation_categories
+    charlists = {}
+    for cat in categories:
+        charlists[cat] = [unichr(x) for x in xrange(cp_min, cp_max+1)
+                          if unicodedata.category(unichr(x)) == cat]
+    return charlists
+</t>
+<t tx="ekr.20130807203905.16464">def compare(s1,s2):
+    
+    print(len(s1),len(s2))
+    d1,d2 = {},{}
+    for uc in s1:
+        assert isinstance(uc,(str,unicode)),type(uc)
+        n = ord(uc)
+        d1[n] = uc
+    for uc in s2:
+        assert isinstance(uc,(str,unicode)),type(uc)
+        n = ord(uc)
+        d2[n] = uc
+    nset = set()
+    for n in d1.keys():
+        nset.add(n)
+    for n in d2.keys():
+        nset.add(n)
+    matches = 0
+    for n in sorted(nset):
+        uc1 = d1.get(n)
+        uc2 = d2.get(n)
+        if uc1 is None and uc2 is None:
+            print('%5s hu??' % (n))
+        elif uc1 is None:
+            print('%5s' % (n),'missing1',uc2,unicodedata.name(uc2,'Unknown'))
+        elif uc2 is None:
+            pass # print('%5s' % (n),'missing2',uc1,unicodedata.name(uc1,'Unknown'))
+        elif uc1 == uc2:
+            # print('%5s' % (n),'match',uc1,unicodedata.name(uc1,'Unknown'))
+            # print('%s, # %s' % (n,unicodedata.name(uc1,'Unknown').lower()))
+            matches += 1
+        else:
+            print('%5s' % (n),uc1,unicodedata.name(uc1,'Unknown'),uc2,unicodedata.name(uc2,'Unknown'))
+    print('matches: %s' % matches)
+</t>
+<t tx="ekr.20130807203905.16465">def dump(s):
+    for uc in s:
+        assert isinstance(uc,(str,unicode)),type(uc)
+        if isinstance(uc,unicode):
+            print('%5s' % (ord(uc)),uc,unicodedata.name(uc,'Unknown'))
+</t>
+<t tx="ekr.20130807203905.16466"># The if __name__ == '__main__' part of puntuation_chars.py
+
+def test():
+    
+    # (re) create and compare the samples:
+    (o, c, d, cd) = punctuation_samples()
+    if o != openers:
+        print('- openers = ur"""%s"""' % openers.encode('utf8'))
+        print('+ openers = ur"""%s"""' % o.encode('utf8'))
+    if c != closers:
+        print('- closers = ur"""%s"""' % closers.encode('utf8'))
+        print('+ closers = ur"""%s"""' % c.encode('utf8'))
+    if d != delimiters:
+        print('- delimiters = ur"%s"' % delimiters.encode('utf8'))
+        # dump(delimiters)
+        print('+ delimiters = ur"%s"' % d.encode('utf8'))
+        # dump(d)
+        compare(delimiters,d)
+    if cd != closing_delimiters:
+        print('- closing_delimiters = ur"%s"' % closing_delimiters.encode('utf8'))
+        print('+ closing_delimiters = ur"%s"' % cd.encode('utf8'))
+</t>
+<t tx="ekr.20130807203905.16467">import sys, re
+import unicodedata
+
+# Unicode punctuation character categories
+# ----------------------------------------
+
+unicode_punctuation_categories = {
+    # 'Pc': 'Connector', # not used in Docutils inline markup recognition
+    'Pd': 'Dash',
+    'Ps': 'Open',
+    'Pe': 'Close',
+    'Pi': 'Initial quote', # may behave like Ps or Pe depending on usage
+    'Pf': 'Final quote', # may behave like Ps or Pe depending on usage
+    'Po': 'Other'
+    }
+"""Unicode character categories for punctuation"""
+
+
+# generate character pattern strings
+# ==================================
+
+def unicode_charlists(categories, cp_min=0, cp_max=None):
+    """Return dictionary of Unicode character lists.
+
+    For each of the `catagories`, an item contains a list with all Unicode
+    characters with `cp_min` &lt;= code-point &lt;= `cp_max` that belong to the
+    category. (The default values check every code-point supported by Python.)
+    """
+    # Determine highest code point with one of the given categories
+    # (may shorten the search time considerably if there are many
+    # categories with not too high characters):
+    if cp_max is None:
+        cp_max = max(x for x in xrange(sys.maxunicode + 1)
+                     if unicodedata.category(unichr(x)) in categories)
+        # print cp_max # =&gt; 74867 for unicode_punctuation_categories
+    charlists = {}
+    for cat in categories:
+        charlists[cat] = [unichr(x) for x in xrange(cp_min, cp_max+1)
+                          if unicodedata.category(unichr(x)) == cat]
+    return charlists
+
+
+# Character categories in Docutils
+# --------------------------------
+
+def punctuation_samples():
+
+    """Docutils punctuation category sample strings.
+
+    Return list of sample strings for the categories "Open", "Close",
+    "Delimiters" and "Closing-Delimiters" used in the `inline markup
+    recognition rules`_.
+    """
+
+    # Lists with characters in Unicode punctuation character categories
+    cp_min = 160 # ASCII chars have special rules for backwards compatibility
+    ucharlists = unicode_charlists(unicode_punctuation_categories, cp_min)
+
+    # match opening/closing characters
+    # --------------------------------
+    # Rearange the lists to ensure matching characters at the same
+    # index position.
+
+    # low quotation marks are also used as closers (e.g. in Greek)
+    # move them to category Pi:
+    ucharlists['Ps'].remove(u'‚') # 201A  SINGLE LOW-9 QUOTATION MARK
+    ucharlists['Ps'].remove(u'„') # 201E  DOUBLE LOW-9 QUOTATION MARK
+    ucharlists['Pi'] += [u'‚', u'„']
+
+    ucharlists['Pi'].remove(u'‛') # 201B  SINGLE HIGH-REVERSED-9 QUOTATION MARK
+    ucharlists['Pi'].remove(u'‟') # 201F  DOUBLE HIGH-REVERSED-9 QUOTATION MARK
+    ucharlists['Pf'] += [u'‛', u'‟']
+
+    # 301F  LOW DOUBLE PRIME QUOTATION MARK misses the opening pendant:
+    ucharlists['Ps'].insert(ucharlists['Pe'].index(u'\u301f'), u'\u301d')
+
+    # print u''.join(ucharlists['Ps']).encode('utf8')
+    # print u''.join(ucharlists['Pe']).encode('utf8')
+    # print u''.join(ucharlists['Pi']).encode('utf8')
+    # print u''.join(ucharlists['Pf']).encode('utf8')
+
+    # The Docutils character categories
+    # ---------------------------------
+    #
+    # The categorization of ASCII chars is non-standard to reduce both
+    # false positives and need for escaping. (see `inline markup recognition
+    # rules`_)
+
+    # matching, allowed before markup
+    openers = [re.escape('"\'(&lt;[{')]
+    for cat in ('Ps', 'Pi', 'Pf'):
+        openers.extend(ucharlists[cat])
+
+    # matching, allowed after markup
+    closers = [re.escape('"\')&gt;]}')]
+    for cat in ('Pe', 'Pf', 'Pi'):
+        closers.extend(ucharlists[cat])
+
+    # non-matching, allowed on both sides
+    delimiters = [re.escape('-/:')]
+    for cat in ('Pd', 'Po'):
+        delimiters.extend(ucharlists[cat])
+
+    # non-matching, after markup
+    closing_delimiters = [re.escape('.,;!?')]
+
+    # # Test open/close matching:
+    # for i in range(min(len(openers),len(closers))):
+    #     print '%4d    %s    %s' % (i, openers[i].encode('utf8'),
+    #                                closers[i].encode('utf8'))
+
+    return [u''.join(chars)
+            for chars in (openers, closers, delimiters, closing_delimiters)]
+
+
+# Matching open/close quotes
+# --------------------------
+
+# Rule (5) requires determination of matching open/close pairs. However,
+# the pairing of open/close quotes is ambigue due to  different typographic
+# conventions in different languages.
+
+quote_pairs = {u'\xbb': u'\xbb', # Swedish
+               u'\u2018': u'\u201a', # Greek
+               u'\u2019': u'\u2019', # Swedish
+               u'\u201a': u'\u2018\u2019', # German, Polish
+               u'\u201c': u'\u201e', # German
+               u'\u201e': u'\u201c\u201d',
+               u'\u201d': u'\u201d', # Swedish
+               u'\u203a': u'\u203a', # Swedish
+              }
+
+def match_chars(c1, c2):
+    try:
+        i = openers.index(c1)
+    except ValueError:  # c1 not in openers
+        return False
+    return c2 == closers[i] or c2 in quote_pairs.get(c1, '')
+
+
+
+
+# print results
+# =============
+
+if __name__ == '__main__':
+
+    # (re) create and compare the samples:
+    (o, c, d, cd) = punctuation_samples()
+    if o != openers:
+        print '- openers = ur"""%s"""' % openers.encode('utf8')
+        print '+ openers = ur"""%s"""' % o.encode('utf8')
+    if c != closers:
+        print '- closers = ur"""%s"""' % closers.encode('utf8')
+        print '+ closers = ur"""%s"""' % c.encode('utf8')
+    if d != delimiters:
+        print '- delimiters = ur"%s"' % delimiters.encode('utf8')
+        print '+ delimiters = ur"%s"' % d.encode('utf8')
+    if cd != closing_delimiters:
+        print '- closing_delimiters = ur"%s"' % closing_delimiters.encode('utf8')
+        print '+ closing_delimiters = ur"%s"' % cd.encode('utf8')
+
+    # # test prints
+    # print 'openers = ', repr(openers)
+    # print 'closers = ', repr(closers)
+    # print 'delimiters = ', repr(delimiters)
+    # print 'closing_delimiters = ', repr(closing_delimiters)
+
+    # ucharlists = unicode_charlists(unicode_punctuation_categories)
+    # for cat, chars in ucharlists.items():
+    #     # print cat, chars
+    #     # compact output (visible with a comprehensive font):
+    #     print (u":%s: %s" % (cat, u''.join(chars))).encode('utf8')
+</t>
+<t tx="ekr.20130807203905.16468">docutils = g.importExtension('docutils',pluginName='leoRst.py',verbose=True)
+print(docutils)
+from docutils import parsers
+print(parsers)
+from docutils.parsers import rst
+print(rst)
+import docutils.parsers.rst
+print(docutils.parsers.rst)
+from docutils.parsers.rst import directives
+</t>
+<t tx="ekr.20130807203905.16469"># -*- coding: utf8 -*-
+g.cls()
+import leo.extensions.six as six
+# import imp
+# imp.reload(six)
+# u = six.u
+&lt;&lt; tex2unichar dicts &gt;&gt;
+result = []
+i = 0
+for d in (
+    mathaccent,
+    mathalpha,
+    mathbin,
+    mathclose,
+    mathfence,
+    mathop,
+    mathopen,
+    mathord,
+    mathover,
+    mathradical,
+    mathrel,
+    mathunder,
+    space,
+):
+    for key in d:
+        ch = d.get(key)
+        result.append(ch)
+        six.u(ch)
+    i += 1
+g.es('\n'.join(result))
+print('done')
+</t>
+<t tx="ekr.20130807203905.16470"># -*- coding: utf8 -*-
+
+# LaTeX math to Unicode symbols translation dictionaries.
+# Generated with ``write_tex2unichar.py`` from the data in
+# http://milde.users.sourceforge.net/LUCR/Math/
+
+# Includes commands from: wasysym, stmaryrd, mathdots, mathabx, esint, bbold, amsxtra, amsmath, amssymb, standard LaTeX
+
+mathaccent = {
+    'acute': u('\u0301'), # xÌ COMBINING ACUTE ACCENT
+    'bar': u('\u0304'), # xÌ„ COMBINING MACRON
+    'breve': u('\u0306'), # xÌ† COMBINING BREVE
+    'check': u('\u030c'), # xÌŒ COMBINING CARON
+    'ddddot': u('\u20dc'), # xâƒœ COMBINING FOUR DOTS ABOVE
+    'dddot': u('\u20db'), # xâƒ› COMBINING THREE DOTS ABOVE
+    'ddot': u('\u0308'), # xÌˆ COMBINING DIAERESIS
+    'dot': u('\u0307'), # xÌ‡ COMBINING DOT ABOVE
+    'grave': u('\u0300'), # xÌ€ COMBINING GRAVE ACCENT
+    'hat': u('\u0302'), # xÌ‚ COMBINING CIRCUMFLEX ACCENT
+    'mathring': u('\u030a'), # xÌŠ COMBINING RING ABOVE
+    'not': u('\u0338'), # xÌ¸ COMBINING LONG SOLIDUS OVERLAY
+    'overleftarrow': u('\u20d6'), # xâƒ– COMBINING LEFT ARROW ABOVE
+    'overleftrightarrow': u('\u20e1'), # xâƒ¡ COMBINING LEFT RIGHT ARROW ABOVE
+    'overline': u('\u0305'), # xÌ… COMBINING OVERLINE
+    'overrightarrow': u('\u20d7'), # xâƒ— COMBINING RIGHT ARROW ABOVE
+    'tilde': u('\u0303'), # xÌƒ COMBINING TILDE
+    'underbar': u('\u0331'), # xÌ± COMBINING MACRON BELOW
+    'underleftarrow': u('\u20ee'), # xâƒ® COMBINING LEFT ARROW BELOW
+    'underline': u('\u0332'), # xÌ² COMBINING LOW LINE
+    'underrightarrow': u('\u20ef'), # xâƒ¯ COMBINING RIGHT ARROW BELOW
+    'vec': u('\u20d7'), # xâƒ— COMBINING RIGHT ARROW ABOVE
+    'widehat': u('\u0302'), # xÌ‚ COMBINING CIRCUMFLEX ACCENT
+    'widetilde': u('\u0303'), # xÌƒ COMBINING TILDE
+    }
+mathalpha = {
+    'Bbbk': u('\U0001d55c'), # ð•œ MATHEMATICAL DOUBLE-STRUCK SMALL K
+    'Delta': u('\u0394'), # Î” GREEK CAPITAL LETTER DELTA
+    'Gamma': u('\u0393'), # Î“ GREEK CAPITAL LETTER GAMMA
+    'Im': u('\u2111'), # â„‘ BLACK-LETTER CAPITAL I
+    'Lambda': u('\u039b'), # Î› GREEK CAPITAL LETTER LAMDA
+    'Omega': u('\u03a9'), # Î© GREEK CAPITAL LETTER OMEGA
+    'Phi': u('\u03a6'), # Î¦ GREEK CAPITAL LETTER PHI
+    'Pi': u('\u03a0'), # Î  GREEK CAPITAL LETTER PI
+    'Psi': u('\u03a8'), # Î¨ GREEK CAPITAL LETTER PSI
+    'Re': u('\u211c'), # â„œ BLACK-LETTER CAPITAL R
+    'Sigma': u('\u03a3'), # Î£ GREEK CAPITAL LETTER SIGMA
+    'Theta': u('\u0398'), # Î˜ GREEK CAPITAL LETTER THETA
+    'Upsilon': u('\u03a5'), # Î¥ GREEK CAPITAL LETTER UPSILON
+    'Xi': u('\u039e'), # Îž GREEK CAPITAL LETTER XI
+    'aleph': u('\u2135'), # â„µ ALEF SYMBOL
+    'alpha': u('\u03b1'), # Î± GREEK SMALL LETTER ALPHA
+    'beta': u('\u03b2'), # Î² GREEK SMALL LETTER BETA
+    'beth': u('\u2136'), # â„¶ BET SYMBOL
+    'chi': u('\u03c7'), # Ï‡ GREEK SMALL LETTER CHI
+    'daleth': u('\u2138'), # â„¸ DALET SYMBOL
+    'delta': u('\u03b4'), # Î´ GREEK SMALL LETTER DELTA
+    'digamma': u('\u03dc'), # Ïœ GREEK LETTER DIGAMMA
+    'ell': u('\u2113'), # â„“ SCRIPT SMALL L
+    'epsilon': u('\u03f5'), # Ïµ GREEK LUNATE EPSILON SYMBOL
+    'eta': u('\u03b7'), # Î· GREEK SMALL LETTER ETA
+    'eth': u('\xf0'), # Ã° LATIN SMALL LETTER ETH
+    'gamma': u('\u03b3'), # Î³ GREEK SMALL LETTER GAMMA
+    'gimel': u('\u2137'), # â„· GIMEL SYMBOL
+    'hbar': u('\u210f'), # â„ PLANCK CONSTANT OVER TWO PI
+    'hslash': u('\u210f'), # â„ PLANCK CONSTANT OVER TWO PI
+    'imath': u('\u0131'), # Ä± LATIN SMALL LETTER DOTLESS I
+    'iota': u('\u03b9'), # Î¹ GREEK SMALL LETTER IOTA
+    'jmath': u('\u0237'), # È· LATIN SMALL LETTER DOTLESS J
+    'kappa': u('\u03ba'), # Îº GREEK SMALL LETTER KAPPA
+    'lambda': u('\u03bb'), # Î» GREEK SMALL LETTER LAMDA
+    'mu': u('\u03bc'), # Î¼ GREEK SMALL LETTER MU
+    'nu': u('\u03bd'), # Î½ GREEK SMALL LETTER NU
+    'omega': u('\u03c9'), # Ï‰ GREEK SMALL LETTER OMEGA
+    'phi': u('\u03d5'), # Ï• GREEK PHI SYMBOL
+    'pi': u('\u03c0'), # Ï€ GREEK SMALL LETTER PI
+    'psi': u('\u03c8'), # Ïˆ GREEK SMALL LETTER PSI
+    'rho': u('\u03c1'), # Ï GREEK SMALL LETTER RHO
+    'sigma': u('\u03c3'), # Ïƒ GREEK SMALL LETTER SIGMA
+    'tau': u('\u03c4'), # Ï„ GREEK SMALL LETTER TAU
+    'theta': u('\u03b8'), # Î¸ GREEK SMALL LETTER THETA
+    'upsilon': u('\u03c5'), # Ï… GREEK SMALL LETTER UPSILON
+    'varDelta': u('\U0001d6e5'), # ð›¥ MATHEMATICAL ITALIC CAPITAL DELTA
+    'varGamma': u('\U0001d6e4'), # ð›¤ MATHEMATICAL ITALIC CAPITAL GAMMA
+    'varLambda': u('\U0001d6ec'), # ð›¬ MATHEMATICAL ITALIC CAPITAL LAMDA
+    'varOmega': u('\U0001d6fa'), # ð›º MATHEMATICAL ITALIC CAPITAL OMEGA
+    'varPhi': u('\U0001d6f7'), # ð›· MATHEMATICAL ITALIC CAPITAL PHI
+    'varPi': u('\U0001d6f1'), # ð›± MATHEMATICAL ITALIC CAPITAL PI
+    'varPsi': u('\U0001d6f9'), # ð›¹ MATHEMATICAL ITALIC CAPITAL PSI
+    'varSigma': u('\U0001d6f4'), # ð›´ MATHEMATICAL ITALIC CAPITAL SIGMA
+    'varTheta': u('\U0001d6e9'), # ð›© MATHEMATICAL ITALIC CAPITAL THETA
+    'varUpsilon': u('\U0001d6f6'), # ð›¶ MATHEMATICAL ITALIC CAPITAL UPSILON
+    'varXi': u('\U0001d6ef'), # ð›¯ MATHEMATICAL ITALIC CAPITAL XI
+    'varepsilon': u('\u03b5'), # Îµ GREEK SMALL LETTER EPSILON
+    'varkappa': u('\U0001d718'), # ðœ˜ MATHEMATICAL ITALIC KAPPA SYMBOL
+    'varphi': u('\u03c6'), # Ï† GREEK SMALL LETTER PHI
+    'varpi': u('\u03d6'), # Ï– GREEK PI SYMBOL
+    'varrho': u('\u03f1'), # Ï± GREEK RHO SYMBOL
+    'varsigma': u('\u03c2'), # Ï‚ GREEK SMALL LETTER FINAL SIGMA
+    'vartheta': u('\u03d1'), # Ï‘ GREEK THETA SYMBOL
+    'wp': u('\u2118'), # â„˜ SCRIPT CAPITAL P
+    'xi': u('\u03be'), # Î¾ GREEK SMALL LETTER XI
+    'zeta': u('\u03b6'), # Î¶ GREEK SMALL LETTER ZETA
+    }
+mathbin = {
+    'Cap': u('\u22d2'), # â‹’ DOUBLE INTERSECTION
+    'Circle': u('\u25cb'), # â—‹ WHITE CIRCLE
+    'Cup': u('\u22d3'), # â‹“ DOUBLE UNION
+    'LHD': u('\u25c0'), # â—€ BLACK LEFT-POINTING TRIANGLE
+    'RHD': u('\u25b6'), # â–¶ BLACK RIGHT-POINTING TRIANGLE
+    'amalg': u('\u2a3f'), # â¨¿ AMALGAMATION OR COPRODUCT
+    'ast': u('\u2217'), # âˆ— ASTERISK OPERATOR
+    'barwedge': u('\u22bc'), # âŠ¼ NAND
+    'bigtriangledown': u('\u25bd'), # â–½ WHITE DOWN-POINTING TRIANGLE
+    'bigtriangleup': u('\u25b3'), # â–³ WHITE UP-POINTING TRIANGLE
+    'bindnasrepma': u('\u214b'), # â…‹ TURNED AMPERSAND
+    'blacklozenge': u('\u29eb'), # â§« BLACK LOZENGE
+    'blacktriangledown': u('\u25be'), # â–¾ BLACK DOWN-POINTING SMALL TRIANGLE
+    'blacktriangleleft': u('\u25c2'), # â—‚ BLACK LEFT-POINTING SMALL TRIANGLE
+    'blacktriangleright': u('\u25b8'), # â–¸ BLACK RIGHT-POINTING SMALL TRIANGLE
+    'blacktriangleup': u('\u25b4'), # â–´ BLACK UP-POINTING SMALL TRIANGLE
+    'boxast': u('\u29c6'), # â§† SQUARED ASTERISK
+    'boxbar': u('\u25eb'), # â—« WHITE SQUARE WITH VERTICAL BISECTING LINE
+    'boxbox': u('\u29c8'), # â§ˆ SQUARED SQUARE
+    'boxbslash': u('\u29c5'), # â§… SQUARED FALLING DIAGONAL SLASH
+    'boxcircle': u('\u29c7'), # â§‡ SQUARED SMALL CIRCLE
+    'boxdot': u('\u22a1'), # âŠ¡ SQUARED DOT OPERATOR
+    'boxminus': u('\u229f'), # âŠŸ SQUARED MINUS
+    'boxplus': u('\u229e'), # âŠž SQUARED PLUS
+    'boxslash': u('\u29c4'), # â§„ SQUARED RISING DIAGONAL SLASH
+    'boxtimes': u('\u22a0'), # âŠ  SQUARED TIMES
+    'bullet': u('\u2219'), # âˆ™ BULLET OPERATOR
+    'cap': u('\u2229'), # âˆ© INTERSECTION
+    'cdot': u('\u22c5'), # â‹… DOT OPERATOR
+    'circ': u('\u2218'), # âˆ˜ RING OPERATOR
+    'circledast': u('\u229b'), # âŠ› CIRCLED ASTERISK OPERATOR
+    'circledcirc': u('\u229a'), # âŠš CIRCLED RING OPERATOR
+    'circleddash': u('\u229d'), # âŠ CIRCLED DASH
+    'cup': u('\u222a'), # âˆª UNION
+    'curlyvee': u('\u22ce'), # â‹Ž CURLY LOGICAL OR
+    'curlywedge': u('\u22cf'), # â‹ CURLY LOGICAL AND
+    'dagger': u('\u2020'), # â€  DAGGER
+    'ddagger': u('\u2021'), # â€¡ DOUBLE DAGGER
+    'diamond': u('\u22c4'), # â‹„ DIAMOND OPERATOR
+    'div': u('\xf7'), # Ã· DIVISION SIGN
+    'divideontimes': u('\u22c7'), # â‹‡ DIVISION TIMES
+    'dotplus': u('\u2214'), # âˆ” DOT PLUS
+    'doublebarwedge': u('\u2a5e'), # â©ž LOGICAL AND WITH DOUBLE OVERBAR
+    'intercal': u('\u22ba'), # âŠº INTERCALATE
+    'interleave': u('\u2af4'), # â«´ TRIPLE VERTICAL BAR BINARY RELATION
+    'land': u('\u2227'), # âˆ§ LOGICAL AND
+    'leftthreetimes': u('\u22cb'), # â‹‹ LEFT SEMIDIRECT PRODUCT
+    'lhd': u('\u25c1'), # â— WHITE LEFT-POINTING TRIANGLE
+    'lor': u('\u2228'), # âˆ¨ LOGICAL OR
+    'ltimes': u('\u22c9'), # â‹‰ LEFT NORMAL FACTOR SEMIDIRECT PRODUCT
+    'mp': u('\u2213'), # âˆ“ MINUS-OR-PLUS SIGN
+    'odot': u('\u2299'), # âŠ™ CIRCLED DOT OPERATOR
+    'ominus': u('\u2296'), # âŠ– CIRCLED MINUS
+    'oplus': u('\u2295'), # âŠ• CIRCLED PLUS
+    'oslash': u('\u2298'), # âŠ˜ CIRCLED DIVISION SLASH
+    'otimes': u('\u2297'), # âŠ— CIRCLED TIMES
+    'pm': u('\xb1'), # Â± PLUS-MINUS SIGN
+    'rhd': u('\u25b7'), # â–· WHITE RIGHT-POINTING TRIANGLE
+    'rightthreetimes': u('\u22cc'), # â‹Œ RIGHT SEMIDIRECT PRODUCT
+    'rtimes': u('\u22ca'), # â‹Š RIGHT NORMAL FACTOR SEMIDIRECT PRODUCT
+    'setminus': u('\u29f5'), # â§µ REVERSE SOLIDUS OPERATOR
+    'slash': u('\u2215'), # âˆ• DIVISION SLASH
+    'smallsetminus': u('\u2216'), # âˆ– SET MINUS
+    'smalltriangledown': u('\u25bf'), # â–¿ WHITE DOWN-POINTING SMALL TRIANGLE
+    'smalltriangleleft': u('\u25c3'), # â—ƒ WHITE LEFT-POINTING SMALL TRIANGLE
+    'smalltriangleright': u('\u25b9'), # â–¹ WHITE RIGHT-POINTING SMALL TRIANGLE
+    'smalltriangleup': u('\u25b5'), # â–µ WHITE UP-POINTING SMALL TRIANGLE
+    'sqcap': u('\u2293'), # âŠ“ SQUARE CAP
+    'sqcup': u('\u2294'), # âŠ” SQUARE CUP
+    'sslash': u('\u2afd'), # â«½ DOUBLE SOLIDUS OPERATOR
+    'star': u('\u22c6'), # â‹† STAR OPERATOR
+    'talloblong': u('\u2afe'), # â«¾ WHITE VERTICAL BAR
+    'times': u('\xd7'), # Ã— MULTIPLICATION SIGN
+    'triangle': u('\u25b3'), # â–³ WHITE UP-POINTING TRIANGLE
+    'triangledown': u('\u25bf'), # â–¿ WHITE DOWN-POINTING SMALL TRIANGLE
+    'triangleleft': u('\u25c3'), # â—ƒ WHITE LEFT-POINTING SMALL TRIANGLE
+    'triangleright': u('\u25b9'), # â–¹ WHITE RIGHT-POINTING SMALL TRIANGLE
+    'uplus': u('\u228e'), # âŠŽ MULTISET UNION
+    'vartriangle': u('\u25b3'), # â–³ WHITE UP-POINTING TRIANGLE
+    'vee': u('\u2228'), # âˆ¨ LOGICAL OR
+    'veebar': u('\u22bb'), # âŠ» XOR
+    'wedge': u('\u2227'), # âˆ§ LOGICAL AND
+    'wr': u('\u2240'), # â‰€ WREATH PRODUCT
+    }
+mathclose = {
+    'Rbag': u('\u27c6'), # âŸ† RIGHT S-SHAPED BAG DELIMITER
+    'lrcorner': u('\u231f'), # âŒŸ BOTTOM RIGHT CORNER
+    'rangle': u('\u27e9'), # âŸ© MATHEMATICAL RIGHT ANGLE BRACKET
+    'rbag': u('\u27c6'), # âŸ† RIGHT S-SHAPED BAG DELIMITER
+    'rbrace': u('}'), # } RIGHT CURLY BRACKET
+    'rbrack': u(']'), # ] RIGHT SQUARE BRACKET
+    'rceil': u('\u2309'), # âŒ‰ RIGHT CEILING
+    'rfloor': u('\u230b'), # âŒ‹ RIGHT FLOOR
+    'rgroup': u('\u27ef'), # âŸ¯ MATHEMATICAL RIGHT FLATTENED PARENTHESIS
+    'rrbracket': u('\u27e7'), # âŸ§ MATHEMATICAL RIGHT WHITE SQUARE BRACKET
+    'rrparenthesis': u('\u2988'), # â¦ˆ Z NOTATION RIGHT IMAGE BRACKET
+    'urcorner': u('\u231d'), # âŒ TOP RIGHT CORNER
+    '}': u('}'), # } RIGHT CURLY BRACKET
+    }
+mathfence = {
+    'Vert': u('\u2016'), # â€– DOUBLE VERTICAL LINE
+    'vert': u('|'), # | VERTICAL LINE
+    '|': u('\u2016'), # â€– DOUBLE VERTICAL LINE
+    }
+mathop = {
+    'Join': u('\u2a1d'), # â¨ JOIN
+    'bigcap': u('\u22c2'), # â‹‚ N-ARY INTERSECTION
+    'bigcup': u('\u22c3'), # â‹ƒ N-ARY UNION
+    'biginterleave': u('\u2afc'), # â«¼ LARGE TRIPLE VERTICAL BAR OPERATOR
+    'bigodot': u('\u2a00'), # â¨€ N-ARY CIRCLED DOT OPERATOR
+    'bigoplus': u('\u2a01'), # â¨ N-ARY CIRCLED PLUS OPERATOR
+    'bigotimes': u('\u2a02'), # â¨‚ N-ARY CIRCLED TIMES OPERATOR
+    'bigsqcup': u('\u2a06'), # â¨† N-ARY SQUARE UNION OPERATOR
+    'biguplus': u('\u2a04'), # â¨„ N-ARY UNION OPERATOR WITH PLUS
+    'bigvee': u('\u22c1'), # â‹ N-ARY LOGICAL OR
+    'bigwedge': u('\u22c0'), # â‹€ N-ARY LOGICAL AND
+    'coprod': u('\u2210'), # âˆ N-ARY COPRODUCT
+    'fatsemi': u('\u2a1f'), # â¨Ÿ Z NOTATION SCHEMA COMPOSITION
+    'fint': u('\u2a0f'), # â¨ INTEGRAL AVERAGE WITH SLASH
+    'iiiint': u('\u2a0c'), # â¨Œ QUADRUPLE INTEGRAL OPERATOR
+    'iiint': u('\u222d'), # âˆ­ TRIPLE INTEGRAL
+    'iint': u('\u222c'), # âˆ¬ DOUBLE INTEGRAL
+    'int': u('\u222b'), # âˆ« INTEGRAL
+    'oiint': u('\u222f'), # âˆ¯ SURFACE INTEGRAL
+    'oint': u('\u222e'), # âˆ® CONTOUR INTEGRAL
+    'ointctrclockwise': u('\u2233'), # âˆ³ ANTICLOCKWISE CONTOUR INTEGRAL
+    'prod': u('\u220f'), # âˆ N-ARY PRODUCT
+    'sqint': u('\u2a16'), # â¨– QUATERNION INTEGRAL OPERATOR
+    'sum': u('\u2211'), # âˆ‘ N-ARY SUMMATION
+    'varointclockwise': u('\u2232'), # âˆ² CLOCKWISE CONTOUR INTEGRAL
+    }
+mathopen = {
+    'Lbag': u('\u27c5'), # âŸ… LEFT S-SHAPED BAG DELIMITER
+    'langle': u('\u27e8'), # âŸ¨ MATHEMATICAL LEFT ANGLE BRACKET
+    'lbag': u('\u27c5'), # âŸ… LEFT S-SHAPED BAG DELIMITER
+    'lbrace': u('{'), # { LEFT CURLY BRACKET
+    'lbrack': u('['), # [ LEFT SQUARE BRACKET
+    'lceil': u('\u2308'), # âŒˆ LEFT CEILING
+    'lfloor': u('\u230a'), # âŒŠ LEFT FLOOR
+    'lgroup': u('\u27ee'), # âŸ® MATHEMATICAL LEFT FLATTENED PARENTHESIS
+    'llbracket': u('\u27e6'), # âŸ¦ MATHEMATICAL LEFT WHITE SQUARE BRACKET
+    'llcorner': u('\u231e'), # âŒž BOTTOM LEFT CORNER
+    'llparenthesis': u('\u2987'), # â¦‡ Z NOTATION LEFT IMAGE BRACKET
+    'ulcorner': u('\u231c'), # âŒœ TOP LEFT CORNER
+    '{': u('{'), # { LEFT CURLY BRACKET
+    }
+mathord = {
+    '#': u('#'), # # NUMBER SIGN
+    '$': u('$'), # $ DOLLAR SIGN
+    '%': u('%'), # % PERCENT SIGN
+    '&amp;': u('&amp;'), # &amp; AMPERSAND
+    'AC': u('\u223f'), # âˆ¿ SINE WAVE
+    'APLcomment': u('\u235d'), # â APL FUNCTIONAL SYMBOL UP SHOE JOT
+    'APLdownarrowbox': u('\u2357'), # â— APL FUNCTIONAL SYMBOL QUAD DOWNWARDS ARROW
+    'APLinput': u('\u235e'), # âž APL FUNCTIONAL SYMBOL QUOTE QUAD
+    'APLinv': u('\u2339'), # âŒ¹ APL FUNCTIONAL SYMBOL QUAD DIVIDE
+    'APLleftarrowbox': u('\u2347'), # â‡ APL FUNCTIONAL SYMBOL QUAD LEFTWARDS ARROW
+    'APLlog': u('\u235f'), # âŸ APL FUNCTIONAL SYMBOL CIRCLE STAR
+    'APLrightarrowbox': u('\u2348'), # âˆ APL FUNCTIONAL SYMBOL QUAD RIGHTWARDS ARROW
+    'APLuparrowbox': u('\u2350'), # â APL FUNCTIONAL SYMBOL QUAD UPWARDS ARROW
+    'Aries': u('\u2648'), # â™ˆ ARIES
+    'CIRCLE': u('\u25cf'), # â— BLACK CIRCLE
+    'CheckedBox': u('\u2611'), # â˜‘ BALLOT BOX WITH CHECK
+    'Diamond': u('\u25c7'), # â—‡ WHITE DIAMOND
+    'Finv': u('\u2132'), # â„² TURNED CAPITAL F
+    'Game': u('\u2141'), # â… TURNED SANS-SERIF CAPITAL G
+    'Gemini': u('\u264a'), # â™Š GEMINI
+    'Jupiter': u('\u2643'), # â™ƒ JUPITER
+    'LEFTCIRCLE': u('\u25d6'), # â—– LEFT HALF BLACK CIRCLE
+    'LEFTcircle': u('\u25d0'), # â— CIRCLE WITH LEFT HALF BLACK
+    'Leo': u('\u264c'), # â™Œ LEO
+    'Libra': u('\u264e'), # â™Ž LIBRA
+    'Mars': u('\u2642'), # â™‚ MALE SIGN
+    'Mercury': u('\u263f'), # â˜¿ MERCURY
+    'Neptune': u('\u2646'), # â™† NEPTUNE
+    'Pluto': u('\u2647'), # â™‡ PLUTO
+    'RIGHTCIRCLE': u('\u25d7'), # â—— RIGHT HALF BLACK CIRCLE
+    'RIGHTcircle': u('\u25d1'), # â—‘ CIRCLE WITH RIGHT HALF BLACK
+    'Saturn': u('\u2644'), # â™„ SATURN
+    'Scorpio': u('\u264f'), # â™ SCORPIUS
+    'Square': u('\u2610'), # â˜ BALLOT BOX
+    'Sun': u('\u2609'), # â˜‰ SUN
+    'Taurus': u('\u2649'), # â™‰ TAURUS
+    'Uranus': u('\u2645'), # â™… URANUS
+    'Venus': u('\u2640'), # â™€ FEMALE SIGN
+    'XBox': u('\u2612'), # â˜’ BALLOT BOX WITH X
+    'Yup': u('\u2144'), # â…„ TURNED SANS-SERIF CAPITAL Y
+    '_': u('_'), # _ LOW LINE
+    'angle': u('\u2220'), # âˆ  ANGLE
+    'aquarius': u('\u2652'), # â™’ AQUARIUS
+    'aries': u('\u2648'), # â™ˆ ARIES
+    'ast': u('*'), # * ASTERISK
+    'backepsilon': u('\u03f6'), # Ï¶ GREEK REVERSED LUNATE EPSILON SYMBOL
+    'backprime': u('\u2035'), # â€µ REVERSED PRIME
+    'backslash': unicode('\\'), # \ REVERSE SOLIDUS  #### Changed. was u'\'
+    'because': u('\u2235'), # âˆµ BECAUSE
+    'bigstar': u('\u2605'), # â˜… BLACK STAR
+    'binampersand': u('&amp;'), # &amp; AMPERSAND
+    'blacklozenge': u('\u2b27'), # â¬§ BLACK MEDIUM LOZENGE
+    'blacksmiley': u('\u263b'), # â˜» BLACK SMILING FACE
+    'blacksquare': u('\u25fc'), # â—¼ BLACK MEDIUM SQUARE
+    'bot': u('\u22a5'), # âŠ¥ UP TACK
+    'boy': u('\u2642'), # â™‚ MALE SIGN
+    'cancer': u('\u264b'), # â™‹ CANCER
+    'capricornus': u('\u2651'), # â™‘ CAPRICORN
+    'cdots': u('\u22ef'), # â‹¯ MIDLINE HORIZONTAL ELLIPSIS
+    'cent': u('\xa2'), # Â¢ CENT SIGN
+    'centerdot': u('\u2b1d'), # â¬ BLACK VERY SMALL SQUARE
+    'checkmark': u('\u2713'), # âœ“ CHECK MARK
+    'circlearrowleft': u('\u21ba'), # â†º ANTICLOCKWISE OPEN CIRCLE ARROW
+    'circlearrowright': u('\u21bb'), # â†» CLOCKWISE OPEN CIRCLE ARROW
+    'circledR': u('\xae'), # Â® REGISTERED SIGN
+    'circledcirc': u('\u25ce'), # â—Ž BULLSEYE
+    'clubsuit': u('\u2663'), # â™£ BLACK CLUB SUIT
+    'complement': u('\u2201'), # âˆ COMPLEMENT
+    'dasharrow': u('\u21e2'), # â‡¢ RIGHTWARDS DASHED ARROW
+    'dashleftarrow': u('\u21e0'), # â‡  LEFTWARDS DASHED ARROW
+    'dashrightarrow': u('\u21e2'), # â‡¢ RIGHTWARDS DASHED ARROW
+    'diameter': u('\u2300'), # âŒ€ DIAMETER SIGN
+    'diamondsuit': u('\u2662'), # â™¢ WHITE DIAMOND SUIT
+    'earth': u('\u2641'), # â™ EARTH
+    'exists': u('\u2203'), # âˆƒ THERE EXISTS
+    'female': u('\u2640'), # â™€ FEMALE SIGN
+    'flat': u('\u266d'), # â™­ MUSIC FLAT SIGN
+    'forall': u('\u2200'), # âˆ€ FOR ALL
+    'fourth': u('\u2057'), # â— QUADRUPLE PRIME
+    'frownie': u('\u2639'), # â˜¹ WHITE FROWNING FACE
+    'gemini': u('\u264a'), # â™Š GEMINI
+    'girl': u('\u2640'), # â™€ FEMALE SIGN
+    'heartsuit': u('\u2661'), # â™¡ WHITE HEART SUIT
+    'infty': u('\u221e'), # âˆž INFINITY
+    'invneg': u('\u2310'), # âŒ REVERSED NOT SIGN
+    'jupiter': u('\u2643'), # â™ƒ JUPITER
+    'ldots': u('\u2026'), # â€¦ HORIZONTAL ELLIPSIS
+    'leftmoon': u('\u263e'), # â˜¾ LAST QUARTER MOON
+    'leftturn': u('\u21ba'), # â†º ANTICLOCKWISE OPEN CIRCLE ARROW
+    'leo': u('\u264c'), # â™Œ LEO
+    'libra': u('\u264e'), # â™Ž LIBRA
+    'lnot': u('\xac'), # Â¬ NOT SIGN
+    'lozenge': u('\u25ca'), # â—Š LOZENGE
+    'male': u('\u2642'), # â™‚ MALE SIGN
+    'maltese': u('\u2720'), # âœ  MALTESE CROSS
+    'mathdollar': u('$'), # $ DOLLAR SIGN
+    'measuredangle': u('\u2221'), # âˆ¡ MEASURED ANGLE
+    'mercury': u('\u263f'), # â˜¿ MERCURY
+    'mho': u('\u2127'), # â„§ INVERTED OHM SIGN
+    'nabla': u('\u2207'), # âˆ‡ NABLA
+    'natural': u('\u266e'), # â™® MUSIC NATURAL SIGN
+    'neg': u('\xac'), # Â¬ NOT SIGN
+    'neptune': u('\u2646'), # â™† NEPTUNE
+    'nexists': u('\u2204'), # âˆ„ THERE DOES NOT EXIST
+    'notbackslash': u('\u2340'), # â€ APL FUNCTIONAL SYMBOL BACKSLASH BAR
+    'partial': u('\u2202'), # âˆ‚ PARTIAL DIFFERENTIAL
+    'pisces': u('\u2653'), # â™“ PISCES
+    'pluto': u('\u2647'), # â™‡ PLUTO
+    'pounds': u('\xa3'), # Â£ POUND SIGN
+    'prime': u('\u2032'), # â€² PRIME
+    'quarternote': u('\u2669'), # â™© QUARTER NOTE
+    'rightmoon': u('\u263d'), # â˜½ FIRST QUARTER MOON
+    'rightturn': u('\u21bb'), # â†» CLOCKWISE OPEN CIRCLE ARROW
+    'sagittarius': u('\u2650'), # â™ SAGITTARIUS
+    'saturn': u('\u2644'), # â™„ SATURN
+    'scorpio': u('\u264f'), # â™ SCORPIUS
+    'second': u('\u2033'), # â€³ DOUBLE PRIME
+    'sharp': u('\u266f'), # â™¯ MUSIC SHARP SIGN
+    'sim': u('~'), # ~ TILDE
+    'slash': u('/'), # / SOLIDUS
+    'smiley': u('\u263a'), # â˜º WHITE SMILING FACE
+    'spadesuit': u('\u2660'), # â™  BLACK SPADE SUIT
+    'spddot': u('\xa8'), # Â¨ DIAERESIS
+    'sphat': u('^'), # ^ CIRCUMFLEX ACCENT
+    'sphericalangle': u('\u2222'), # âˆ¢ SPHERICAL ANGLE
+    'sptilde': u('~'), # ~ TILDE
+    'square': u('\u25fb'), # â—» WHITE MEDIUM SQUARE
+    'sun': u('\u263c'), # â˜¼ WHITE SUN WITH RAYS
+    'taurus': u('\u2649'), # â™‰ TAURUS
+    'therefore': u('\u2234'), # âˆ´ THEREFORE
+    'third': u('\u2034'), # â€´ TRIPLE PRIME
+    'top': u('\u22a4'), # âŠ¤ DOWN TACK
+    'triangleleft': u('\u25c5'), # â—… WHITE LEFT-POINTING POINTER
+    'triangleright': u('\u25bb'), # â–» WHITE RIGHT-POINTING POINTER
+    'twonotes': u('\u266b'), # â™« BEAMED EIGHTH NOTES
+    'uranus': u('\u2645'), # â™… URANUS
+    'varEarth': u('\u2641'), # â™ EARTH
+    'varnothing': u('\u2205'), # âˆ… EMPTY SET
+    'virgo': u('\u264d'), # â™ VIRGO
+    'wasylozenge': u('\u2311'), # âŒ‘ SQUARE LOZENGE
+    'wasytherefore': u('\u2234'), # âˆ´ THEREFORE
+    'yen': u('\xa5'), # Â¥ YEN SIGN
+    }
+mathover = {
+    'overbrace': u('\u23de'), # âž TOP CURLY BRACKET
+    'wideparen': u('\u23dc'), # âœ TOP PARENTHESIS
+    }
+mathradical = {
+    'sqrt': u('\u221a'), # âˆš SQUARE ROOT
+    'sqrt[3]': u('\u221b'), # âˆ› CUBE ROOT
+    'sqrt[4]': u('\u221c'), # âˆœ FOURTH ROOT
+    }
+mathrel = {
+    'Bumpeq': u('\u224e'), # â‰Ž GEOMETRICALLY EQUIVALENT TO
+    'Doteq': u('\u2251'), # â‰‘ GEOMETRICALLY EQUAL TO
+    'Downarrow': u('\u21d3'), # â‡“ DOWNWARDS DOUBLE ARROW
+    'Leftarrow': u('\u21d0'), # â‡ LEFTWARDS DOUBLE ARROW
+    'Leftrightarrow': u('\u21d4'), # â‡” LEFT RIGHT DOUBLE ARROW
+    'Lleftarrow': u('\u21da'), # â‡š LEFTWARDS TRIPLE ARROW
+    'Longleftarrow': u('\u27f8'), # âŸ¸ LONG LEFTWARDS DOUBLE ARROW
+    'Longleftrightarrow': u('\u27fa'), # âŸº LONG LEFT RIGHT DOUBLE ARROW
+    'Longmapsfrom': u('\u27fd'), # âŸ½ LONG LEFTWARDS DOUBLE ARROW FROM BAR
+    'Longmapsto': u('\u27fe'), # âŸ¾ LONG RIGHTWARDS DOUBLE ARROW FROM BAR
+    'Longrightarrow': u('\u27f9'), # âŸ¹ LONG RIGHTWARDS DOUBLE ARROW
+    'Lsh': u('\u21b0'), # â†° UPWARDS ARROW WITH TIP LEFTWARDS
+    'Mapsfrom': u('\u2906'), # â¤† LEFTWARDS DOUBLE ARROW FROM BAR
+    'Mapsto': u('\u2907'), # â¤‡ RIGHTWARDS DOUBLE ARROW FROM BAR
+    'Rightarrow': u('\u21d2'), # â‡’ RIGHTWARDS DOUBLE ARROW
+    'Rrightarrow': u('\u21db'), # â‡› RIGHTWARDS TRIPLE ARROW
+    'Rsh': u('\u21b1'), # â†± UPWARDS ARROW WITH TIP RIGHTWARDS
+    'Subset': u('\u22d0'), # â‹ DOUBLE SUBSET
+    'Supset': u('\u22d1'), # â‹‘ DOUBLE SUPERSET
+    'Uparrow': u('\u21d1'), # â‡‘ UPWARDS DOUBLE ARROW
+    'Updownarrow': u('\u21d5'), # â‡• UP DOWN DOUBLE ARROW
+    'VDash': u('\u22ab'), # âŠ« DOUBLE VERTICAL BAR DOUBLE RIGHT TURNSTILE
+    'Vdash': u('\u22a9'), # âŠ© FORCES
+    'Vvdash': u('\u22aa'), # âŠª TRIPLE VERTICAL BAR RIGHT TURNSTILE
+    'apprge': u('\u2273'), # â‰³ GREATER-THAN OR EQUIVALENT TO
+    'apprle': u('\u2272'), # â‰² LESS-THAN OR EQUIVALENT TO
+    'approx': u('\u2248'), # â‰ˆ ALMOST EQUAL TO
+    'approxeq': u('\u224a'), # â‰Š ALMOST EQUAL OR EQUAL TO
+    'asymp': u('\u224d'), # â‰ EQUIVALENT TO
+    'backsim': u('\u223d'), # âˆ½ REVERSED TILDE
+    'backsimeq': u('\u22cd'), # â‹ REVERSED TILDE EQUALS
+    'barin': u('\u22f6'), # â‹¶ ELEMENT OF WITH OVERBAR
+    'barleftharpoon': u('\u296b'), # â¥« LEFTWARDS HARPOON WITH BARB DOWN BELOW LONG DASH
+    'barrightharpoon': u('\u296d'), # â¥­ RIGHTWARDS HARPOON WITH BARB DOWN BELOW LONG DASH
+    'between': u('\u226c'), # â‰¬ BETWEEN
+    'bowtie': u('\u22c8'), # â‹ˆ BOWTIE
+    'bumpeq': u('\u224f'), # â‰ DIFFERENCE BETWEEN
+    'circeq': u('\u2257'), # â‰— RING EQUAL TO
+    'coloneq': u('\u2254'), # â‰” COLON EQUALS
+    'cong': u('\u2245'), # â‰… APPROXIMATELY EQUAL TO
+    'corresponds': u('\u2259'), # â‰™ ESTIMATES
+    'curlyeqprec': u('\u22de'), # â‹ž EQUAL TO OR PRECEDES
+    'curlyeqsucc': u('\u22df'), # â‹Ÿ EQUAL TO OR SUCCEEDS
+    'curvearrowleft': u('\u21b6'), # â†¶ ANTICLOCKWISE TOP SEMICIRCLE ARROW
+    'curvearrowright': u('\u21b7'), # â†· CLOCKWISE TOP SEMICIRCLE ARROW
+    'dashv': u('\u22a3'), # âŠ£ LEFT TACK
+    'ddots': u('\u22f1'), # â‹± DOWN RIGHT DIAGONAL ELLIPSIS
+    'dlsh': u('\u21b2'), # â†² DOWNWARDS ARROW WITH TIP LEFTWARDS
+    'doteq': u('\u2250'), # â‰ APPROACHES THE LIMIT
+    'doteqdot': u('\u2251'), # â‰‘ GEOMETRICALLY EQUAL TO
+    'downarrow': u('\u2193'), # â†“ DOWNWARDS ARROW
+    'downdownarrows': u('\u21ca'), # â‡Š DOWNWARDS PAIRED ARROWS
+    'downdownharpoons': u('\u2965'), # â¥¥ DOWNWARDS HARPOON WITH BARB LEFT BESIDE DOWNWARDS HARPOON WITH BARB RIGHT
+    'downharpoonleft': u('\u21c3'), # â‡ƒ DOWNWARDS HARPOON WITH BARB LEFTWARDS
+    'downharpoonright': u('\u21c2'), # â‡‚ DOWNWARDS HARPOON WITH BARB RIGHTWARDS
+    'downuparrows': u('\u21f5'), # â‡µ DOWNWARDS ARROW LEFTWARDS OF UPWARDS ARROW
+    'downupharpoons': u('\u296f'), # â¥¯ DOWNWARDS HARPOON WITH BARB LEFT BESIDE UPWARDS HARPOON WITH BARB RIGHT
+    'drsh': u('\u21b3'), # â†³ DOWNWARDS ARROW WITH TIP RIGHTWARDS
+    'eqcirc': u('\u2256'), # â‰– RING IN EQUAL TO
+    'eqcolon': u('\u2255'), # â‰• EQUALS COLON
+    'eqsim': u('\u2242'), # â‰‚ MINUS TILDE
+    'eqslantgtr': u('\u2a96'), # âª– SLANTED EQUAL TO OR GREATER-THAN
+    'eqslantless': u('\u2a95'), # âª• SLANTED EQUAL TO OR LESS-THAN
+    'equiv': u('\u2261'), # â‰¡ IDENTICAL TO
+    'fallingdotseq': u('\u2252'), # â‰’ APPROXIMATELY EQUAL TO OR THE IMAGE OF
+    'frown': u('\u2322'), # âŒ¢ FROWN
+    'ge': u('\u2265'), # â‰¥ GREATER-THAN OR EQUAL TO
+    'geq': u('\u2265'), # â‰¥ GREATER-THAN OR EQUAL TO
+    'geqq': u('\u2267'), # â‰§ GREATER-THAN OVER EQUAL TO
+    'geqslant': u('\u2a7e'), # â©¾ GREATER-THAN OR SLANTED EQUAL TO
+    'gets': u('\u2190'), # â† LEFTWARDS ARROW
+    'gg': u('\u226b'), # â‰« MUCH GREATER-THAN
+    'ggcurly': u('\u2abc'), # âª¼ DOUBLE SUCCEEDS
+    'ggg': u('\u22d9'), # â‹™ VERY MUCH GREATER-THAN
+    'gnapprox': u('\u2a8a'), # âªŠ GREATER-THAN AND NOT APPROXIMATE
+    'gneq': u('\u2a88'), # âªˆ GREATER-THAN AND SINGLE-LINE NOT EQUAL TO
+    'gneqq': u('\u2269'), # â‰© GREATER-THAN BUT NOT EQUAL TO
+    'gnsim': u('\u22e7'), # â‹§ GREATER-THAN BUT NOT EQUIVALENT TO
+    'gtrapprox': u('\u2a86'), # âª† GREATER-THAN OR APPROXIMATE
+    'gtrdot': u('\u22d7'), # â‹— GREATER-THAN WITH DOT
+    'gtreqless': u('\u22db'), # â‹› GREATER-THAN EQUAL TO OR LESS-THAN
+    'gtreqqless': u('\u2a8c'), # âªŒ GREATER-THAN ABOVE DOUBLE-LINE EQUAL ABOVE LESS-THAN
+    'gtrless': u('\u2277'), # â‰· GREATER-THAN OR LESS-THAN
+    'gtrsim': u('\u2273'), # â‰³ GREATER-THAN OR EQUIVALENT TO
+    'hash': u('\u22d5'), # â‹• EQUAL AND PARALLEL TO
+    'hookleftarrow': u('\u21a9'), # â†© LEFTWARDS ARROW WITH HOOK
+    'hookrightarrow': u('\u21aa'), # â†ª RIGHTWARDS ARROW WITH HOOK
+    'iddots': u('\u22f0'), # â‹° UP RIGHT DIAGONAL ELLIPSIS
+    'impliedby': u('\u27f8'), # âŸ¸ LONG LEFTWARDS DOUBLE ARROW
+    'implies': u('\u27f9'), # âŸ¹ LONG RIGHTWARDS DOUBLE ARROW
+    'in': u('\u2208'), # âˆˆ ELEMENT OF
+    'le': u('\u2264'), # â‰¤ LESS-THAN OR EQUAL TO
+    'leftarrow': u('\u2190'), # â† LEFTWARDS ARROW
+    'leftarrowtail': u('\u21a2'), # â†¢ LEFTWARDS ARROW WITH TAIL
+    'leftarrowtriangle': u('\u21fd'), # â‡½ LEFTWARDS OPEN-HEADED ARROW
+    'leftbarharpoon': u('\u296a'), # â¥ª LEFTWARDS HARPOON WITH BARB UP ABOVE LONG DASH
+    'leftharpoondown': u('\u21bd'), # â†½ LEFTWARDS HARPOON WITH BARB DOWNWARDS
+    'leftharpoonup': u('\u21bc'), # â†¼ LEFTWARDS HARPOON WITH BARB UPWARDS
+    'leftleftarrows': u('\u21c7'), # â‡‡ LEFTWARDS PAIRED ARROWS
+    'leftleftharpoons': u('\u2962'), # â¥¢ LEFTWARDS HARPOON WITH BARB UP ABOVE LEFTWARDS HARPOON WITH BARB DOWN
+    'leftrightarrow': u('\u2194'), # â†” LEFT RIGHT ARROW
+    'leftrightarrows': u('\u21c6'), # â‡† LEFTWARDS ARROW OVER RIGHTWARDS ARROW
+    'leftrightarrowtriangle': u('\u21ff'), # â‡¿ LEFT RIGHT OPEN-HEADED ARROW
+    'leftrightharpoon': u('\u294a'), # â¥Š LEFT BARB UP RIGHT BARB DOWN HARPOON
+    'leftrightharpoons': u('\u21cb'), # â‡‹ LEFTWARDS HARPOON OVER RIGHTWARDS HARPOON
+    'leftrightsquigarrow': u('\u21ad'), # â†­ LEFT RIGHT WAVE ARROW
+    'leftslice': u('\u2aa6'), # âª¦ LESS-THAN CLOSED BY CURVE
+    'leftsquigarrow': u('\u21dc'), # â‡œ LEFTWARDS SQUIGGLE ARROW
+    'leq': u('\u2264'), # â‰¤ LESS-THAN OR EQUAL TO
+    'leqq': u('\u2266'), # â‰¦ LESS-THAN OVER EQUAL TO
+    'leqslant': u('\u2a7d'), # â©½ LESS-THAN OR SLANTED EQUAL TO
+    'lessapprox': u('\u2a85'), # âª… LESS-THAN OR APPROXIMATE
+    'lessdot': u('\u22d6'), # â‹– LESS-THAN WITH DOT
+    'lesseqgtr': u('\u22da'), # â‹š LESS-THAN EQUAL TO OR GREATER-THAN
+    'lesseqqgtr': u('\u2a8b'), # âª‹ LESS-THAN ABOVE DOUBLE-LINE EQUAL ABOVE GREATER-THAN
+    'lessgtr': u('\u2276'), # â‰¶ LESS-THAN OR GREATER-THAN
+    'lesssim': u('\u2272'), # â‰² LESS-THAN OR EQUIVALENT TO
+    'lightning': u('\u21af'), # â†¯ DOWNWARDS ZIGZAG ARROW
+    'll': u('\u226a'), # â‰ª MUCH LESS-THAN
+    'llcurly': u('\u2abb'), # âª» DOUBLE PRECEDES
+    'lll': u('\u22d8'), # â‹˜ VERY MUCH LESS-THAN
+    'lnapprox': u('\u2a89'), # âª‰ LESS-THAN AND NOT APPROXIMATE
+    'lneq': u('\u2a87'), # âª‡ LESS-THAN AND SINGLE-LINE NOT EQUAL TO
+    'lneqq': u('\u2268'), # â‰¨ LESS-THAN BUT NOT EQUAL TO
+    'lnsim': u('\u22e6'), # â‹¦ LESS-THAN BUT NOT EQUIVALENT TO
+    'longleftarrow': u('\u27f5'), # âŸµ LONG LEFTWARDS ARROW
+    'longleftrightarrow': u('\u27f7'), # âŸ· LONG LEFT RIGHT ARROW
+    'longmapsfrom': u('\u27fb'), # âŸ» LONG LEFTWARDS ARROW FROM BAR
+    'longmapsto': u('\u27fc'), # âŸ¼ LONG RIGHTWARDS ARROW FROM BAR
+    'longrightarrow': u('\u27f6'), # âŸ¶ LONG RIGHTWARDS ARROW
+    'looparrowleft': u('\u21ab'), # â†« LEFTWARDS ARROW WITH LOOP
+    'looparrowright': u('\u21ac'), # â†¬ RIGHTWARDS ARROW WITH LOOP
+    'mapsfrom': u('\u21a4'), # â†¤ LEFTWARDS ARROW FROM BAR
+    'mapsto': u('\u21a6'), # â†¦ RIGHTWARDS ARROW FROM BAR
+    'mid': u('\u2223'), # âˆ£ DIVIDES
+    'models': u('\u22a7'), # âŠ§ MODELS
+    'multimap': u('\u22b8'), # âŠ¸ MULTIMAP
+    'nLeftarrow': u('\u21cd'), # â‡ LEFTWARDS DOUBLE ARROW WITH STROKE
+    'nLeftrightarrow': u('\u21ce'), # â‡Ž LEFT RIGHT DOUBLE ARROW WITH STROKE
+    'nRightarrow': u('\u21cf'), # â‡ RIGHTWARDS DOUBLE ARROW WITH STROKE
+    'nVDash': u('\u22af'), # âŠ¯ NEGATED DOUBLE VERTICAL BAR DOUBLE RIGHT TURNSTILE
+    'nVdash': u('\u22ae'), # âŠ® DOES NOT FORCE
+    'ncong': u('\u2247'), # â‰‡ NEITHER APPROXIMATELY NOR ACTUALLY EQUAL TO
+    'ne': u('\u2260'), # â‰  NOT EQUAL TO
+    'nearrow': u('\u2197'), # â†— NORTH EAST ARROW
+    'neq': u('\u2260'), # â‰  NOT EQUAL TO
+    'ngeq': u('\u2271'), # â‰± NEITHER GREATER-THAN NOR EQUAL TO
+    'ngtr': u('\u226f'), # â‰¯ NOT GREATER-THAN
+    'ni': u('\u220b'), # âˆ‹ CONTAINS AS MEMBER
+    'nleftarrow': u('\u219a'), # â†š LEFTWARDS ARROW WITH STROKE
+    'nleftrightarrow': u('\u21ae'), # â†® LEFT RIGHT ARROW WITH STROKE
+    'nleq': u('\u2270'), # â‰° NEITHER LESS-THAN NOR EQUAL TO
+    'nless': u('\u226e'), # â‰® NOT LESS-THAN
+    'nmid': u('\u2224'), # âˆ¤ DOES NOT DIVIDE
+    'notasymp': u('\u226d'), # â‰­ NOT EQUIVALENT TO
+    'notin': u('\u2209'), # âˆ‰ NOT AN ELEMENT OF
+    'notowner': u('\u220c'), # âˆŒ DOES NOT CONTAIN AS MEMBER
+    'notslash': u('\u233f'), # âŒ¿ APL FUNCTIONAL SYMBOL SLASH BAR
+    'nparallel': u('\u2226'), # âˆ¦ NOT PARALLEL TO
+    'nprec': u('\u2280'), # âŠ€ DOES NOT PRECEDE
+    'npreceq': u('\u22e0'), # â‹  DOES NOT PRECEDE OR EQUAL
+    'nrightarrow': u('\u219b'), # â†› RIGHTWARDS ARROW WITH STROKE
+    'nsim': u('\u2241'), # â‰ NOT TILDE
+    'nsubseteq': u('\u2288'), # âŠˆ NEITHER A SUBSET OF NOR EQUAL TO
+    'nsucc': u('\u2281'), # âŠ DOES NOT SUCCEED
+    'nsucceq': u('\u22e1'), # â‹¡ DOES NOT SUCCEED OR EQUAL
+    'nsupseteq': u('\u2289'), # âŠ‰ NEITHER A SUPERSET OF NOR EQUAL TO
+    'ntriangleleft': u('\u22ea'), # â‹ª NOT NORMAL SUBGROUP OF
+    'ntrianglelefteq': u('\u22ec'), # â‹¬ NOT NORMAL SUBGROUP OF OR EQUAL TO
+    'ntriangleright': u('\u22eb'), # â‹« DOES NOT CONTAIN AS NORMAL SUBGROUP
+    'ntrianglerighteq': u('\u22ed'), # â‹­ DOES NOT CONTAIN AS NORMAL SUBGROUP OR EQUAL
+    'nvDash': u('\u22ad'), # âŠ­ NOT TRUE
+    'nvdash': u('\u22ac'), # âŠ¬ DOES NOT PROVE
+    'nwarrow': u('\u2196'), # â†– NORTH WEST ARROW
+    'owns': u('\u220b'), # âˆ‹ CONTAINS AS MEMBER
+    'parallel': u('\u2225'), # âˆ¥ PARALLEL TO
+    'perp': u('\u27c2'), # âŸ‚ PERPENDICULAR
+    'pitchfork': u('\u22d4'), # â‹” PITCHFORK
+    'prec': u('\u227a'), # â‰º PRECEDES
+    'precapprox': u('\u2ab7'), # âª· PRECEDES ABOVE ALMOST EQUAL TO
+    'preccurlyeq': u('\u227c'), # â‰¼ PRECEDES OR EQUAL TO
+    'preceq': u('\u2aaf'), # âª¯ PRECEDES ABOVE SINGLE-LINE EQUALS SIGN
+    'precnapprox': u('\u2ab9'), # âª¹ PRECEDES ABOVE NOT ALMOST EQUAL TO
+    'precnsim': u('\u22e8'), # â‹¨ PRECEDES BUT NOT EQUIVALENT TO
+    'precsim': u('\u227e'), # â‰¾ PRECEDES OR EQUIVALENT TO
+    'propto': u('\u221d'), # âˆ PROPORTIONAL TO
+    'restriction': u('\u21be'), # â†¾ UPWARDS HARPOON WITH BARB RIGHTWARDS
+    'rightarrow': u('\u2192'), # â†’ RIGHTWARDS ARROW
+    'rightarrowtail': u('\u21a3'), # â†£ RIGHTWARDS ARROW WITH TAIL
+    'rightarrowtriangle': u('\u21fe'), # â‡¾ RIGHTWARDS OPEN-HEADED ARROW
+    'rightbarharpoon': u('\u296c'), # â¥¬ RIGHTWARDS HARPOON WITH BARB UP ABOVE LONG DASH
+    'rightharpoondown': u('\u21c1'), # â‡ RIGHTWARDS HARPOON WITH BARB DOWNWARDS
+    'rightharpoonup': u('\u21c0'), # â‡€ RIGHTWARDS HARPOON WITH BARB UPWARDS
+    'rightleftarrows': u('\u21c4'), # â‡„ RIGHTWARDS ARROW OVER LEFTWARDS ARROW
+    'rightleftharpoon': u('\u294b'), # â¥‹ LEFT BARB DOWN RIGHT BARB UP HARPOON
+    'rightleftharpoons': u('\u21cc'), # â‡Œ RIGHTWARDS HARPOON OVER LEFTWARDS HARPOON
+    'rightrightarrows': u('\u21c9'), # â‡‰ RIGHTWARDS PAIRED ARROWS
+    'rightrightharpoons': u('\u2964'), # â¥¤ RIGHTWARDS HARPOON WITH BARB UP ABOVE RIGHTWARDS HARPOON WITH BARB DOWN
+    'rightslice': u('\u2aa7'), # âª§ GREATER-THAN CLOSED BY CURVE
+    'rightsquigarrow': u('\u21dd'), # â‡ RIGHTWARDS SQUIGGLE ARROW
+    'risingdotseq': u('\u2253'), # â‰“ IMAGE OF OR APPROXIMATELY EQUAL TO
+    'searrow': u('\u2198'), # â†˜ SOUTH EAST ARROW
+    'sim': u('\u223c'), # âˆ¼ TILDE OPERATOR
+    'simeq': u('\u2243'), # â‰ƒ ASYMPTOTICALLY EQUAL TO
+    'smallfrown': u('\u2322'), # âŒ¢ FROWN
+    'smallsmile': u('\u2323'), # âŒ£ SMILE
+    'smile': u('\u2323'), # âŒ£ SMILE
+    'sqsubset': u('\u228f'), # âŠ SQUARE IMAGE OF
+    'sqsubseteq': u('\u2291'), # âŠ‘ SQUARE IMAGE OF OR EQUAL TO
+    'sqsupset': u('\u2290'), # âŠ SQUARE ORIGINAL OF
+    'sqsupseteq': u('\u2292'), # âŠ’ SQUARE ORIGINAL OF OR EQUAL TO
+    'subset': u('\u2282'), # âŠ‚ SUBSET OF
+    'subseteq': u('\u2286'), # âŠ† SUBSET OF OR EQUAL TO
+    'subseteqq': u('\u2ac5'), # â«… SUBSET OF ABOVE EQUALS SIGN
+    'subsetneq': u('\u228a'), # âŠŠ SUBSET OF WITH NOT EQUAL TO
+    'subsetneqq': u('\u2acb'), # â«‹ SUBSET OF ABOVE NOT EQUAL TO
+    'succ': u('\u227b'), # â‰» SUCCEEDS
+    'succapprox': u('\u2ab8'), # âª¸ SUCCEEDS ABOVE ALMOST EQUAL TO
+    'succcurlyeq': u('\u227d'), # â‰½ SUCCEEDS OR EQUAL TO
+    'succeq': u('\u2ab0'), # âª° SUCCEEDS ABOVE SINGLE-LINE EQUALS SIGN
+    'succnapprox': u('\u2aba'), # âªº SUCCEEDS ABOVE NOT ALMOST EQUAL TO
+    'succnsim': u('\u22e9'), # â‹© SUCCEEDS BUT NOT EQUIVALENT TO
+    'succsim': u('\u227f'), # â‰¿ SUCCEEDS OR EQUIVALENT TO
+    'supset': u('\u2283'), # âŠƒ SUPERSET OF
+    'supseteq': u('\u2287'), # âŠ‡ SUPERSET OF OR EQUAL TO
+    'supseteqq': u('\u2ac6'), # â«† SUPERSET OF ABOVE EQUALS SIGN
+    'supsetneq': u('\u228b'), # âŠ‹ SUPERSET OF WITH NOT EQUAL TO
+    'supsetneqq': u('\u2acc'), # â«Œ SUPERSET OF ABOVE NOT EQUAL TO
+    'swarrow': u('\u2199'), # â†™ SOUTH WEST ARROW
+    'to': u('\u2192'), # â†’ RIGHTWARDS ARROW
+    'trianglelefteq': u('\u22b4'), # âŠ´ NORMAL SUBGROUP OF OR EQUAL TO
+    'triangleq': u('\u225c'), # â‰œ DELTA EQUAL TO
+    'trianglerighteq': u('\u22b5'), # âŠµ CONTAINS AS NORMAL SUBGROUP OR EQUAL TO
+    'twoheadleftarrow': u('\u219e'), # â†ž LEFTWARDS TWO HEADED ARROW
+    'twoheadrightarrow': u('\u21a0'), # â†  RIGHTWARDS TWO HEADED ARROW
+    'uparrow': u('\u2191'), # â†‘ UPWARDS ARROW
+    'updownarrow': u('\u2195'), # â†• UP DOWN ARROW
+    'updownarrows': u('\u21c5'), # â‡… UPWARDS ARROW LEFTWARDS OF DOWNWARDS ARROW
+    'updownharpoons': u('\u296e'), # â¥® UPWARDS HARPOON WITH BARB LEFT BESIDE DOWNWARDS HARPOON WITH BARB RIGHT
+    'upharpoonleft': u('\u21bf'), # â†¿ UPWARDS HARPOON WITH BARB LEFTWARDS
+    'upharpoonright': u('\u21be'), # â†¾ UPWARDS HARPOON WITH BARB RIGHTWARDS
+    'upuparrows': u('\u21c8'), # â‡ˆ UPWARDS PAIRED ARROWS
+    'upupharpoons': u('\u2963'), # â¥£ UPWARDS HARPOON WITH BARB LEFT BESIDE UPWARDS HARPOON WITH BARB RIGHT
+    'vDash': u('\u22a8'), # âŠ¨ TRUE
+    'varpropto': u('\u221d'), # âˆ PROPORTIONAL TO
+    'vartriangleleft': u('\u22b2'), # âŠ² NORMAL SUBGROUP OF
+    'vartriangleright': u('\u22b3'), # âŠ³ CONTAINS AS NORMAL SUBGROUP
+    'vdash': u('\u22a2'), # âŠ¢ RIGHT TACK
+    'vdots': u('\u22ee'), # â‹® VERTICAL ELLIPSIS
+    }
+mathunder = {
+    'underbrace': u('\u23df'), # âŸ BOTTOM CURLY BRACKET
+    }
+space = {
+    ':': u('\u205f'), # âŸ MEDIUM MATHEMATICAL SPACE
+    'medspace': u('\u205f'), # âŸ MEDIUM MATHEMATICAL SPACE
+    'quad': u('\u2001'), # â€ EM QUAD
+    }
+</t>
+<t tx="ekr.20130807203905.16471">@first # -*- coding: utf8 -*-
+
+import sys
+
+g.cls()
+
+def u(s):
+    try:
+        val = None
+        if sys.version_info &lt; (3,):
+            val = s if isinstance(s,unicode) else unicode(s,"unicode_escape")
+        else:
+            val = s if isinstance(s,str) else str(s,"unicode_escape")
+    except UnicodeDecodeError:
+        ### There seems to be a bug: '\\uxxx' is not handled properly.
+        if 1:
+            g.trace('UnicodeDecodeError',repr(s),'isunicode',isinstance(s,unicode))
+        else:
+            try:
+                val = unicode(s,'ascii')
+            except UnicodeDecodeError:
+                g.trace('UnicodeDecodeError',repr(s))
+    return val
+        
+@others
+
+for ch in aList:
+    # print(ch)
+    assert not isinstance(ch,unicode),repr(ch)
+    ch2 = u(ch)
+    # print(repr(ch))
+    # assert unicode(ch,"unicode_escape") == ch2,repr(ch)
+print('pass')
+</t>
+<t tx="ekr.20130807203905.16472">if 0:
+    aList_with_u = (
+    u('"'),
+    u(r'\dq{}'),
+    u(r'{\char`\"}'),
+    u(r'\#'),
+    u(r'\$'),
+    u(r'\%'),
+    u(r'\&amp;'),
+    u(r'\textasciitilde{}'),
+    u(r'\_'),
+    u(r'\textasciicircum{}'),
+    u(r'\textbackslash{}'),
+    u(r'\{'),
+    u(r'\}'),
+    u(r'{[}'),
+    u(r'{]}'),
+    u(r'\-'),                           # SOFT HYPHEN
+    u(r'~'),                            # NO-BREAK SPACE
+    u(r'\leavevmode\nobreak\vadjust{}~'),
+    u(r'\,'),                           # PUNCTUATION SPACEâ€ˆâ€ˆâ€ˆ
+    u(r'\hbox{-}'),                     # NON-BREAKING HYPHEN
+    u(r'\,'),                           # NARROW NO-BREAK SPACE
+    u(r'$\Leftrightarrow$'),
+    u(r'$\spadesuit$'),
+    u(r'$\clubsuit$'),
+    u(r'\guillemotleft'),   # LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
+    u(r'\guillemotright'),  # RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
+    u(r'\textcompwordmark'), # ZERO WIDTH NON-JOINER
+    u(r'\textendash{}'),
+    u(r'\textemdash{}'),
+    u(r'\textquoteleft{}'),
+    u(r'\textquoteright{}'),
+    u(r'\quotesinglbase{}'),    # SINGLE LOW-9 QUOTATION MARK
+    u(r'\textquotedblleft{}'),
+    u(r'\textquotedblright{}'),
+    u(r'\quotedblbase{}'),      # DOUBLE LOW-9 QUOTATION MARK
+    u(r'\textperthousand{}'),   # PER MILLE SIGN
+    u(r'\textpertenthousand{}'), # PER TEN THOUSAND SIGN
+    u(r'\guilsinglleft{}'),
+    u(r'\guilsinglright{}'),
+    u(r'\textvisiblespace{}'),  # OPEN BOX
+    u(r'\dag{}'),
+    u(r'\ddag{}'),
+    u(r'\dots{}'),
+    u(r'\texttrademark{}'),
+    u(r'\textcent{}'),          # Â¢ CENT SIGN
+    u(r'\textcurrency{}'),      # Â¤ CURRENCY SYMBOL
+    u(r'\textyen{}'),           # Â¥ YEN SIGN
+    u(r'\textbrokenbar{}'),     # Â¦ BROKEN BAR
+    u(r'\textsection{}'),       # Â§ SECTION SIGN
+    u(r'\textasciidieresis{}'), # Â¨ DIAERESIS
+    u(r'\textcopyright{}'),     # Â© COPYRIGHT SIGN
+    u(r'\textordfeminine{}'),   # Âª FEMININE ORDINAL INDICATOR
+    u(r'\textlnot{}'),          # Â¬ NOT SIGN
+    u(r'\textregistered{}'),    # Â® REGISTERED SIGN
+    u(r'\textasciimacron{}'),   # Â¯ MACRON
+    u(r'\textdegree{}'),        # Â° DEGREE SIGN
+    u(r'\textpm{}'),            # Â± PLUS-MINUS SIGN
+    u(r'\texttwosuperior{}'),   # Â² SUPERSCRIPT TWO
+    u(r'\textthreesuperior{}'), # Â³ SUPERSCRIPT THREE
+    u(r'\textasciiacute{}'),    # Â´ ACUTE ACCENT
+    u(r'\textmu{}'),            # Âµ MICRO SIGN
+    u(r'\textparagraph{}'),     # Â¶ PILCROW SIGN # not equal to \textpilcrow
+    u(r'\textonesuperior{}'),   # Â¹ SUPERSCRIPT ONE
+    u(r'\textordmasculine{}'),  # Âº MASCULINE ORDINAL INDICATOR
+    u(r'\textonequarter{}'),    # 1/4 FRACTION
+    u(r'\textonehalf{}'),       # 1/2 FRACTION
+    u(r'\textthreequarters{}'), # 3/4 FRACTION
+    u(r'\texttimes{}'),         # Ã— MULTIPLICATION SIGN
+    u(r'\textdiv{}'),           # Ã· DIVISION SIGN
+    u(r'\textflorin{}'),        # LATIN SMALL LETTER F WITH HOOK
+    u(r'\textasciiacute{}'),    # MODIFIER LETTER PRIME
+    u(r'\textacutedbl{}'),      # MODIFIER LETTER DOUBLE PRIME
+    u(r'\textbardbl{}'),        # DOUBLE VERTICAL LINE
+    u(r'\textbullet{}'),        # BULLET
+    u(r'\textasciiacute{}'),    # PRIME
+    u(r'\textacutedbl{}'),      # DOUBLE PRIME
+    u(r'\textasciigrave{}'),    # REVERSED PRIME
+    u(r'\textgravedbl{}'),      # REVERSED DOUBLE PRIME
+    u(r'\textreferencemark{}'), # REFERENCE MARK
+    u(r'\textinterrobang{}'),   # INTERROBANG
+    u(r'\textfractionsolidus{}'), # FRACTION SLASH
+    u(r'\textlquill{}'),        # LEFT SQUARE BRACKET WITH QUILL
+    u(r'\textrquill{}'),        # RIGHT SQUARE BRACKET WITH QUILL
+    u(r'\textdiscount{}'),      # COMMERCIAL MINUS SIGN
+    u(r'\textcolonmonetary{}'), # COLON SIGN
+    u(r'\textfrenchfranc{}'),   # FRENCH FRANC SIGN
+    u(r'\textlira{}'),          # LIRA SIGN
+    u(r'\textnaira{}'),         # NAIRA SIGN
+    u(r'\textwon{}'),           # WON SIGN
+    u(r'\textdong{}'),          # DONG SIGN
+    u(r'\texteuro{}'),          # EURO SIGN
+    u(r'\textpeso{}'),          # PESO SIGN
+    u(r'\textguarani{}'),       # GUARANI SIGN
+    u(r'\textcelsius{}'),       # DEGREE CELSIUS
+    u(r'\textnumero{}'),        # NUMERO SIGN
+    u(r'\textcircledP{}'),      # SOUND RECORDING COYRIGHT
+    u(r'\textrecipe{}'),        # PRESCRIPTION TAKE
+    u(r'\textservicemark{}'),   # SERVICE MARK
+    u(r'\texttrademark{}'),     # TRADE MARK SIGN
+    u(r'\textohm{}'),           # OHM SIGN
+    u(r'\textmho{}'),           # INVERTED OHM SIGN
+    u(r'\textestimated{}'),     # ESTIMATED SYMBOL
+    u(r'\textleftarrow{}'),     # LEFTWARDS ARROW
+    u(r'\textuparrow{}'),       # UPWARDS ARROW
+    u(r'\textrightarrow{}'),    # RIGHTWARDS ARROW
+    u(r'\textdownarrow{}'),     # DOWNWARDS ARROW
+    u(r'\textminus{}'),         # MINUS SIGN
+    u(r'\textasteriskcentered{}'), # ASTERISK OPERATOR
+    u(r'\textsurd{}'),          # SQUARE ROOT
+    u(r'\textblank{}'),         # BLANK SYMBOL
+    u(r'\textopenbullet{}'),    # WHITE BULLET
+    u(r'\textbigcircle{}'),     # LARGE CIRCLE
+    u(r'\textmusicalnote{}'),   # EIGHTH NOTE
+    u(r'\textmarried{}'),       # MARRIAGE SYMBOL
+    u(r'\textdivorced{}'),      # DIVORCE SYMBOL
+    u(r'\textlangle{}'),        # MATHEMATICAL LEFT ANGLE BRACKET
+    u(r'\textrangle{}'),        # MATHEMATICAL RIGHT ANGLE BRACKET
+    u(r'\ding{170}'),     # black heartsuit
+    u(r'\ding{169}'),     # black diamondsuit
+    u(r'\ding{51}'),      # check mark
+    u(r'\ding{55}'),      # check mark
+    u("Cannot embed stylesheet '%s':\n  %s."),
+    # Causes problems.     
+    u('\\underline{~}'), 
+    u(r'\reflectbox{/}'),
+    u(r'\textbar{}'),
+    u(r'\textless{}'),
+    u(r'\textgreater{}'),
+    u(r'~'),
+    u('$%s$'),                        
+    u(r'\#'),
+    u(r'\%'),
+    u(r'\\'),       
+    u('â€”'),
+)
+
+# wrapper = u('\n').join(['%%',
+     # r'\begin{%s}' % math_env,
+     # '%s',
+     # r'\end{%s}' % math_env])
+
+unicode_aList = (
+    u'"',
+    ur'\dq{}',
+    ur'{\char`\"}',
+    ur'\#',
+    ur'\$',
+    ur'\%',
+    ur'\&amp;',
+    ur'\textasciitilde{}',
+    ur'\_',
+    ur'\textasciicircum{}',
+    ur'\textbackslash{}',
+    ur'\{',
+    ur'\}',
+    ur'{[}',
+    ur'{]}',
+    ur'\-',
+    ur'~',
+    ur'\leavevmode\nobreak\vadjust{}~',
+    ur'\,',
+    ur'\hbox{-}',
+    ur'\,',
+    ur'$\Leftrightarrow$',
+    ur'$\spadesuit$',
+    ur'$\clubsuit$',
+    ur'\guillemotleft',
+    ur'\guillemotright',
+    ur'\textcompwordmark',
+    ur'\textendash{}',
+    ur'\textemdash{}',
+    ur'\textquoteleft{}',
+    ur'\textquoteright{}',
+    ur'\quotesinglbase{}',
+    ur'\textquotedblleft{}',
+    ur'\textquotedblright{}',
+    ur'\quotedblbase{}',
+    ur'\textperthousand{}',
+    ur'\textpertenthousand{}',
+    ur'\guilsinglleft{}',
+    ur'\guilsinglright{}',
+    ur'\textvisiblespace{}',
+    ur'\dag{}',
+    ur'\ddag{}',
+    ur'\dots{}',
+    ur'\texttrademark{}',
+    ur'\textcent{}',
+    ur'\textcurrency{}',
+    ur'\textyen{}',
+    ur'\textbrokenbar{}',
+    ur'\textsection{}',
+    ur'\textasciidieresis{}',
+    ur'\textcopyright{}',
+    ur'\textordfeminine{}',
+    ur'\textlnot{}',
+    ur'\textregistered{}',
+    ur'\textasciimacron{}',
+    ur'\textdegree{}',
+    ur'\textpm{}',
+    ur'\texttwosuperior{}',
+    ur'\textthreesuperior{}',
+    ur'\textasciiacute{}',
+    ur'\textmu{}',
+    ur'\textparagraph{}',
+    ur'\textonesuperior{}',
+    ur'\textordmasculine{}',
+    ur'\textonequarter{}',
+    ur'\textonehalf{}',
+    ur'\textthreequarters{}',
+    ur'\texttimes{}',
+    ur'\textdiv{}',
+    ur'\textflorin{}',
+    ur'\textasciiacute{}',
+    ur'\textacutedbl{}',
+    ur'\textbardbl{}',
+    ur'\textbullet{}',
+    ur'\textasciiacute{}',
+    ur'\textacutedbl{}',
+    ur'\textasciigrave{}',
+    ur'\textgravedbl{}',
+    ur'\textreferencemark{}',
+    ur'\textinterrobang{}',
+    ur'\textfractionsolidus{}',
+    ur'\textlquill{}',
+    ur'\textrquill{}',
+    ur'\textdiscount{}',
+    ur'\textcolonmonetary{}',
+    ur'\textfrenchfranc{}',
+    ur'\textlira{}',
+    ur'\textnaira{}',
+    ur'\textwon{}',
+    ur'\textdong{}',
+    ur'\texteuro{}',
+    ur'\textpeso{}',
+    ur'\textguarani{}',
+    ur'\textcelsius{}',
+    ur'\textnumero{}',
+    ur'\textcircledP{}',
+    ur'\textrecipe{}',
+    ur'\textservicemark{}',
+    ur'\texttrademark{}',
+    ur'\textohm{}',
+    ur'\textmho{}',
+    ur'\textestimated{}',
+    ur'\textleftarrow{}',
+    ur'\textuparrow{}',
+    ur'\textrightarrow{}',
+    ur'\textdownarrow{}',
+    ur'\textminus{}',
+    ur'\textasteriskcentered{}',
+    ur'\textsurd{}',
+    ur'\textblank{}',
+    ur'\textopenbullet{}',
+    ur'\textbigcircle{}',
+    ur'\textmusicalnote{}',
+    ur'\textmarried{}',
+    ur'\textdivorced{}',
+    ur'\textlangle{}',
+    ur'\textrangle{}',
+    ur'\ding{170}',
+    ur'\ding{169}',
+    ur'\ding{51}',
+    ur'\ding{55}',
+    u"Cannot embed stylesheet '%s':\n  %s.",
+    u'\\underline{~}', # Can not use ur('\uxxxx) because that is a unicode escapse!!
+    ur'\reflectbox{/}',
+    ur'\textbar{}',
+    ur'\textless{}',
+    ur'\textgreater{}',
+    ur'~',
+    u'$%s$',
+    # ur'\'
+    ur'\%',
+    ur'\\',
+    u'â€”',
+)
+
+aList = (
+    '"',
+    r'\dq{}',
+    r'{\char`\"}',
+    r'\#',
+    r'\$',
+    r'\%',
+    r'\&amp;',
+    r'\textasciitilde{}',
+    r'\_',
+    r'\textasciicircum{}',
+    r'\textbackslash{}',
+    r'\{',
+    r'\}',
+    r'{[}',
+    r'{]}',
+    r'\-',
+    r'~',
+    r'\leavevmode\nobreak\vadjust{}~',
+    r'\,',
+    r'\hbox{-}',
+    r'\,',
+    r'$\Leftrightarrow$',
+    r'$\spadesuit$',
+    r'$\clubsuit$',
+    r'\guillemotleft',
+    r'\guillemotright',
+    r'\textcompwordmark',
+    r'\textendash{}',
+    r'\textemdash{}',
+    r'\textquoteleft{}',
+    r'\textquoteright{}',
+    r'\quotesinglbase{}',
+    r'\textquotedblleft{}',
+    r'\textquotedblright{}',
+    r'\quotedblbase{}',
+    r'\textperthousand{}',
+    r'\textpertenthousand{}',
+    r'\guilsinglleft{}',
+    r'\guilsinglright{}',
+    r'\textvisiblespace{}',
+    r'\dag{}',
+    r'\ddag{}',
+    r'\dots{}',
+    r'\texttrademark{}',
+    r'\textcent{}',
+    r'\textcurrency{}',
+    r'\textyen{}',
+    r'\textbrokenbar{}',
+    r'\textsection{}',
+    r'\textasciidieresis{}',
+    r'\textcopyright{}',
+    r'\textordfeminine{}',
+    r'\textlnot{}',
+    r'\textregistered{}',
+    r'\textasciimacron{}',
+    r'\textdegree{}',
+    r'\textpm{}',
+    r'\texttwosuperior{}',
+    r'\textthreesuperior{}',
+    r'\textasciiacute{}',
+    r'\textmu{}',
+    r'\textparagraph{}',
+    r'\textonesuperior{}',
+    r'\textordmasculine{}',
+    r'\textonequarter{}',
+    r'\textonehalf{}',
+    r'\textthreequarters{}',
+    r'\texttimes{}',
+    r'\textdiv{}',
+    r'\textflorin{}',
+    r'\textasciiacute{}',
+    r'\textacutedbl{}',
+    r'\textbardbl{}',
+    r'\textbullet{}',
+    r'\textasciiacute{}',
+    r'\textacutedbl{}',
+    r'\textasciigrave{}',
+    r'\textgravedbl{}',
+    r'\textreferencemark{}',
+    r'\textinterrobang{}',
+    r'\textfractionsolidus{}',
+    r'\textlquill{}',
+    r'\textrquill{}',
+    r'\textdiscount{}',
+    r'\textcolonmonetary{}',
+    r'\textfrenchfranc{}',
+    r'\textlira{}',
+    r'\textnaira{}',
+    r'\textwon{}',
+    r'\textdong{}',
+    r'\texteuro{}',
+    r'\textpeso{}',
+    r'\textguarani{}',
+    r'\textcelsius{}',
+    r'\textnumero{}',
+    r'\textcircledP{}',
+    r'\textrecipe{}',
+    r'\textservicemark{}',
+    r'\texttrademark{}',
+    r'\textohm{}',
+    r'\textmho{}',
+    r'\textestimated{}',
+    r'\textleftarrow{}',
+    r'\textuparrow{}',
+    r'\textrightarrow{}',
+    r'\textdownarrow{}',
+    r'\textminus{}',
+    r'\textasteriskcentered{}',
+    r'\textsurd{}',
+    r'\textblank{}',
+    r'\textopenbullet{}',
+    r'\textbigcircle{}',
+    r'\textmusicalnote{}',
+    r'\textmarried{}',
+    r'\textdivorced{}',
+    r'\textlangle{}',
+    r'\textrangle{}',
+    r'\ding{170}',
+    r'\ding{169}',
+    r'\ding{51}',
+    r'\ding{55}',
+    "Cannot embed stylesheet '%s':\n  %s.",
+    '\\' + 'underline{~}', # Can not use ur('\uxxxx) because that is a unicode escapse!!
+    r'\reflectbox{/}',
+    r'\textbar{}',
+    r'\textless{}',
+    r'\textgreater{}',
+    r'~',
+    '$%s$',
+    # r'\'
+    r'\%',
+    r'\\',
+    # u'â€”',
+)
+
+# wrapper = u('\n').join(['%%',
+     # r'\begin{%s}' % math_env,
+     # '%s',
+     # r'\end{%s}' % math_env])
+
+</t>
+<t tx="ekr.20130807203905.16473">ur constants:
+    
+writers\manpage.py
+writers\latex2e\__init__.py
+utils\math\latex2matchml.py
+
+u constants:
+
+core.py
+frontend.py
+io.py
+nodes.py
+statemachine.py
+__init__.py
+languages\ca.py
+languages\cs.py
+languages\eo.py
+languages\es.py
+languages\fi.py
+languages\fr.py
+languages\gl.py
+languages\he.py
+languages\ja.py
+languages\lt.py
+languages\pl.py
+languages\pt_br.py
+languages\ru.py
+languages\sk.py
+languages\sv.py
+languages\zh_cn.py
+languages\zh_tw.py
+parsers\rst\states.py
+parsers\rst\directives\body.py
+parsers\rst\directives\misc.py
+parsers\rst\directives\tables.py
+parsers\rst\directives\__init__.py
+parsers\rst\languages\af.py
+parsers\rst\languages\ca.py
+parsers\rst\languages\cs.py
+parsers\rst\languages\de.py
+parsers\rst\languages\eo.py
+parsers\rst\languages\es.py
+parsers\rst\languages\fi.py
+parsers\rst\languages\fr.py
+parsers\rst\languages\gl.py
+parsers\rst\languages\he.py
+parsers\rst\languages\it.py
+parsers\rst\languages\ja.py
+parsers\rst\languages\lt.py
+parsers\rst\languages\nl.py
+parsers\rst\languages\pl.py
+parsers\rst\languages\pt_br.py
+parsers\rst\languages\ru.py
+parsers\rst\languages\sk.py
+parsers\rst\languages\sv.py
+parsers\rst\languages\zh_cn.py
+parsers\rst\languages\zh_tw.py
+transforms\parts.py
+transforms\references.py
+utils\error_reporting.py
+utils\punctuation_chars.py
+utils\smartquotes.py
+utils\__init__.py
+utils\math\latex2mathml.py
+utils\math\math2html.py
+utils\math\tex2unichar.py
+utils\math\unichar2tex.py
+writers\manpage.py
+writers\html4css1\__init__.py
+writers\latex2e\__init__.py
+writers\odf_odt\__init__.py
+writers\xetex\__init__.py
+</t>
+<t tx="ekr.20130807203905.16474"></t>
+<t tx="ekr.20130807203905.16475">@nocolor-node
+
+The problem is the call to w.setStyleSheet in g.app.gui.update_style_sheet.
+Apparently, this causes a layout-request event that spoils the scroll position.
+
+The fixes:
+    
+1. update_style_sheet does nothing if the new stylesheet is the same as the old.
+
+2. Added lockout to mouseReleaseEvent. update_style_sheet does nothing if
+   the lockout is set.
+   
+3. mouseReleaseEvent sets c.p.v.insertPoint if appropriate.
+
+Hitting Ctrl-H can still cause a small unwanted scroll, but the insert point remains visible.
+</t>
+<t tx="ekr.20130807203905.16476">@nocolor-node
+
+This was a recent problem.  Normally setInputState should *not* set the border.
+
+Added code to eventFilter to call remove_border on focus out.
+
+set-xxx-state commands call setInputState with set_border = True.
+</t>
+<t tx="ekr.20130807203905.16477">This was a horrible kludge in LM.doPostPluginsInit
+</t>
+<t tx="ekr.20130807203905.16478">The fix was in qtBody.setWrap.
+</t>
+<t tx="ekr.20130807203905.16479"># The change was to g.getScript.
+</t>
+<t tx="ekr.20130807203905.16480">@nocolor-node
+The trick is to find the wrapper first: it is *also* a QMenu.
+We can then call menuBar.setActiveAction on its action!!
+</t>
+<t tx="ekr.20130807203905.16481">@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/1194209
+
+save-as doesn't update the window title.  Changing tabs does.
+
+The main fixes were to qtFrame.get/setTitle. When using tabs, the
+LeoTabbedTopLevel widget is the top-level window, *not* the DynamicWindow
+(a QMainWindow).
+
+Another fix was setting c.frame.title in saveAs to::
+    
+    c.computeWindowTitle(c.mFileName)
+    
+This ensures that all all window titles have the same format.
+
+I chose to do the bare minimum fix, confined to g.computeWindowTitle::
+
+    if os.sep in '/\\':
+        title = title.replace('/',os.sep).replace('\\',os.sep)
+
+I didn't have the nerve to put similar code in, say, g.os_path_join. The
+Python docs for os.path.join state, "In all cases, join(head, tail) returns
+a path to the same location as path (but the strings may differ)."
+
+</t>
+<t tx="ekr.20130807203905.16482">@language python
+@language rest
+
+Warn if same .leo file open in another Leo instance
+https://bugs.launchpad.net/leo-editor/+bug/711158
+
+
+What I did:
+
+- The PickleShareDB object is created even if caching (of files) is disabled.
+  This allows us to used g.app.db even when --no-cache is in effect.
+  
+- Added the three methods in app.Detecting already-open files.
+</t>
+<t tx="ekr.20130807203905.16483">@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/879338
+
+Having the colorizer colorize a language properly gives the false illusion
+that Leo "understands" the language.
+
+Supporting the language in the global tables in leoApp.py makes the
+illusion a reality.
+</t>
+<t tx="ekr.20130807203905.16484">@language rest
+
+Rev 5334 is a first draft of a fix of bug 879338:
+Global tables in leoApp.py should describe all languages known to the colorizer
+https://bugs.launchpad.net/leo-editor/+bug/879338
+
+The essence of the bug fix is that Leo's language-description tables should
+contain entries for all .py files in the leo/modes folder. These files
+control the colorizer. If Leo's colorizer knows about a language, then Leo
+should know as much as possible about the language.
+
+In concept, this is a fairly straightforward process, but there were *many*
+details to handle. If you aren't a Leo developer, you might want to stop
+reading now...
+
+===== Tables
+
+Fixing this bug required non-trivial changes to the following tables::
+
+    g.app.language_delims_dict
+    # Keys are languages, values are 1,2 or 3-tuples of delims.
+
+    g.app.language_extension_dict
+    # Keys are language names, values are extensions.
+
+    g.app.self.extension_dict
+    # Keys are extensions, values are language names
+
+I used scripts to generate new entries for these tables, but these scripts
+can not possibly deal with the all the complications...
+
+Leo uses these tables as follows:
+
+1.  To generate the comment delimiters in sentinels for each language.
+
+Happily, getting the comment delimiters correct was probably the easiest
+part, so Leo should continue to write sentinels properly for
+previously-know languages. However, I had to take care to preserve the REM,
+CWEB, forth and perlpod hacks, so that comment delims would include the
+necessary spaces.
+
+2. To associate file extensions with importers.
+
+Knowing about new file extensions doesn't actually allow Leo to import any
+new languages. For all languages without an official importer Leo will
+simply copy the entire text of the file into a single node, as it always
+has.
+
+3. To colorize code.
+
+Leo's colorizer mostly doesn't use these tables: to colorize language x,
+the colorizer looks for the file leo/modes/x.py. Thus, these changes
+probably do not affect the colorizer at all.
+
+===== Special cases
+
+I did a lot of googling in order to determine the proper file extensions to
+use for various language. In the process, I learned that *almost* all
+languages described in the leo/modes folder are real, interesting and
+useful languages.
+
+However, there at least 5 categories of special cases that affect the
+tables:
+
+1. Languages that are really just colorizer modes:
+
+These include embperl, pseudoplain and phpsection. We need entries in
+leo/modes for these, but they aren't real languages and thus they should
+not appear in the language-description tables.
+
+2. Things that might be colorized but aren't real languages.
+
+Afaik, the following are not real languages, and Leo would never have to
+generate files in these languages: cvs_commit,dsssl,relax_ng_compatc and svn_commit.
+
+Notes:
+
+- relax_ng_compact is an xml schema.
+
+- The rtf colorizer is *not* a colorizer for binary .rtf file format, is a
+  colorizer for .rtf sources. It probably won't do too much harm to retain
+  the colorizer data for these languages, but I wouldn't mind eliminating
+  them either.
+
+3.  Unknown languages.
+
+A few languages seem not really to exist: freemarker, hex, jcl, progress, props.
+
+4. Languages without real comment delimiters.
+
+Patch annotations are *not* real comment delimiters, so Leo could not
+generate patch (.fix or .patch) files from an outline. Happily, there is no
+need to do so.
+
+5. Conflicting file extensions.
+
+There are two separate kinds of problems:
+
+A. Leo contains colorizers for several assembly languages. Typically,
+assembly languages have .asm or .a file extensions. However, a particular
+extension can only be associated with a single language name. Thus, Leo has
+no way of knowing what language to associate with .asm or .a files. So I
+just punted and didn't make any association at all.
+
+B. Both the rebol and r languages use the .r file extension. One of Leo's
+users previously created an entry for rebol, so that's the language that
+takes precedence.
+</t>
+<t tx="ekr.20130807203905.16485">@language rest
+
+Remove all .xml files in the leo/modes directory.
+
+Imo, this should have been done long ago, for at least the following
+reasons:
+
+- These files are part of the jEdit project.
+- They are used only by the jedit2py script in scripts.leo.
+- The colorizer doesn't use them.
+- Bug fixes to the colorizer are made to the .py files, not to the .xml files.
+- We can always get updated versions of the .xml files from the jEdit
+  project in the unlikely event that we ever need them again.
+
+2. Remove the following .py files from the leo/modes directory:
+cvs_commit.py, dsssl.py, freemarker.py, hex.py, jcl.py, progress.py,
+props.py and svn_commit.py.
+
+Notes:
+
+- embperl.py, phpsection.py and pseudoplain.py will *not* be removed;
+they are internal colorizer states.
+
+- relax_ng_compact.py will be removed if it is not used by any other
+colorizer.
+
+- patch.py and rtf.py colorizers will be retained, even though Leo can
+never generate such files. 
+</t>
+<t tx="ekr.20130807203905.16486"></t>
+<t tx="ekr.20130807203905.16487">@language python
+
+'''Slow script.'''
+
+import glob
+import imp
+
+@others
+
+if 0: # The other script is much faster.
+    
+    keys = ("lineComment","commentStart","commentEnd",)
+    d = {}
+        # Keys are language names.
+        # Values are a list of comment delims, in keys order.
+    
+    paths,modes_path = get_paths()
+    for path in paths:
+        module_name = g.shortFileName(path)[:-3]
+        module = import_module(module_name,modes_path)
+        aList = []
+        for key in keys:
+            val = module.properties.get(key)
+            if val: aList.append(val)
+        d[module_name] = aList
+    
+    print('-'* 20)
+    print('language_delims_dict')
+    for key in sorted(d):
+        print('%16s: "%s"' % ('"%s"' % (key),' '.join(d.get(key))))
+</t>
+<t tx="ekr.20130807203905.16488">def get_paths():
+    
+    modes_path = g.os_path_finalize_join(g.app.loadDir,'..','modes')
+    pattern = g.os_path_finalize_join(modes_path,'*.py')
+    paths = glob.glob(pattern)
+    paths = [z for z in paths if not z.endswith('__init__.py')]
+    return paths,modes_path
+</t>
+<t tx="ekr.20130807203905.16489">def import_module(module_name,modes_path):
+    
+    data = imp.find_module(module_name,[modes_path])
+        # This can open the file.
+    theFile,pathname,description = data
+    module = imp.load_module(module_name,theFile,pathname,description)
+    return module
+</t>
+<t tx="ekr.20130807203905.16490">@language python
+
+'''Script to create global data structures from modes/*.py files.'''
+
+import glob
+import imp
+
+g.cls()
+
+theDir = g.os_path_finalize_join(g.app.loadDir,'..','modes','*.py')
+aList = glob.glob(theDir)
+
+theDir = g.os_path_finalize_join(g.app.loadDir,'..','modes')
+
+# print('-'*40)
+known_keys = list(g.app.language_delims_dict.keys())
+new_languages = {}
+
+for z in aList:
+    name = g.os_path_basename(z)
+    name2 = name[:-3]
+    if name2 in known_keys or name2.startswith('__'):
+        if 0: print('ignore: %s' % (name2))
+    else:
+        try:
+            theFile, pathname, description = imp.find_module(name2,[theDir])
+            m = imp.load_module(name2, theFile, pathname, description)
+            if hasattr(m,'properties'):
+                # new_languages.append(name2)
+                new_languages[name2] = m
+            else:
+                print('no properties: %s %s' % (name2,m))
+        except Exception:
+            g.es_exception()
+            
+print('%s new languages\n' % (len(list(new_languages.keys()))))
+    
+for key in sorted(new_languages.keys()):
+    m = new_languages.get(key)
+    aList2 = [m.properties.get(z)
+        for z in ('lineComment','commentStart','commentEnd')
+            if m.properties.get(z)]
+    print('%-20s : "%s",' % (
+        '"%s"' % (key),
+        ' '.join(aList2)))
+    # computed[name2] = ' '.join(aList2)
+       
+if 0:
+    mismatches = 0
+    print()
+    for z in known_keys:
+        val = g.app.language_delims_dict.get(z)
+        val2 = computed.get(z)
+        if not val:
+            print('no val',z)
+        elif not val2:
+            print('no val2',z)
+        elif val != val2:
+            mismatches += 1
+            print('mismatch for %s. expected %s got %s' % (z,repr(val),repr(val2)))
+            print(repr(val))
+            print(repr(val2))
+    print('%s mismatches' % mismatches)
+</t>
+<t tx="ekr.20130807203905.16491">@language python
+@language rest
+
+If If $(HOME)/.leo/.leoRecentFiles.txt does not exist,
+the only recent file ever is the current file
+https://bugs.launchpad.net/leo-editor/+bug/971171
+
+The fix: rf.writeRecentFilesFile creates $(HOME)/.leo/.leoRecentFiles.txt if it does not exist.
+</t>
+<t tx="ekr.20130807203905.16492">@language python
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/981849
+
+The original fix was misguided. It attempted to use more careful code in
+setSelectionRangeHelper &amp; lengthHelper.
+    
+The new fix avoids messing with the viewport in both setEditorColors methods:
+
+leo-editor thread: opening new top level windows
+http://groups.google.com/group/leo-editor/browse_thread/thread/8f5f6c72d8716b33
+
+The key is to use a descriptor in LeoQTextBrowser stylesheets.  Example::
+
+'LeoQTextBrowser { &lt;&lt; the actual stylesheet &gt;&gt; }
+
+See http://stackoverflow.com/questions/9554435/qtextedit-background-color-change-also-the-color-of-scrollbar
+
+
+    
+</t>
+<t tx="ekr.20130807203905.16493">@nocolor-node
+
+https://bugs.launchpad.net/leo-editor/+bug/998090
+save file as doesn't remove entry from open file list
+
+Save file as leaves the file's previous path in g.app.db.openFiles, so
+that next time the original file's opened you get a "already open"
+message.
+</t>
+<t tx="ekr.20130807203905.16494">@nocolor-node
+
+The bug was in chapter.findPositionInChapter.
+</t>
+<t tx="ekr.20130807203905.16495">@language python
+@language rest
+
+These bugs are really the same bug
+
+Node body contents displayed is unpredictably incorrect
+https://bugs.launchpad.net/leo-editor/+bug/979142
+
+Prints to tabs in the Log Pane are UTF-8 encoded
+https://bugs.launchpad.net/leo-editor/+bug/971166
+
+The fix was:
+
+1. Use the "slow" code in leoQTextEditWidget.get.
+2. Use w.get/setAllText in leoFrame.pasteText.
+</t>
+<t tx="ekr.20130807203905.16496"></t>
+<t tx="ekr.20130807203905.16497"></t>
+<t tx="ekr.20130807203905.16498">@nocolor-node
+
+The crash happens only when the new readSettings argument to leoBridge.bridgeController is False.
+In that case, the global dicts were not inited properly.
+
+What I did:
+    
+- Created lm.createDefaultSettingsDicts, called by lm.readGlobalSettingsFiles.
+- leoBridge.initLeo calls lm.createDefaultSettingsDicts to set the global dicts.
+</t>
+<t tx="ekr.20130807203905.16499">@nocolor-node
+
+Bug description:
+  --- Begin Python script to run from a console ------
+  import leo.core.leoBridge as b
+  bridge = b.controller(gui='nullGui',verbose=False,loadPlugins=False,readSettings=False)
+  c = bridge.openLeoFile(r'c:\users\edreamleo\test\minimal.leo')
+  --- End Python Script -----
+
+  The above script and minimal.leo are attached to this bug report.  Put
+  them in the same directory, open a console, set the current working
+  directory to the directory containing the script, and run the script.
+  You will see the this exception on the console:
+
+  2012-11-16 11:28:51 /home/ldi/tmp
+  $ python readSettingsFalse.py
+  Traceback (most recent call last):
+    File "readSettingsFalse.py", line 5, in &lt;module&gt;
+      cmdrUnl = bridge.openLeoFile('minimal.leo')
+    File "/home/ldi/bzr/LeoLatest/leo/core/leoBridge.py", line 330, in openLeoFile
+      c = self.createFrame(fileName)
+    File "/home/ldi/bzr/LeoLatest/leo/core/leoBridge.py", line 367, in createFrame
+      c = g.openWithFileName(fileName)
+    File "/home/ldi/bzr/LeoLatest/leo/core/leoGlobals.py", line 1875, in openWithFileName
+      return g.app.loadManager.loadLocalFile(fileName,gui,old_c)
+    File "/home/ldi/bzr/LeoLatest/leo/core/leoApp.py", line 2539, in loadLocalFile
+      previousSettings = lm.getPreviousSettings(fn)
+    File "/home/ldi/bzr/LeoLatest/leo/core/leoApp.py", line 1668, in getPreviousSettings
+      lm.globalSettingsDict,lm.globalShortcutsDict,localFlag=True)
+    File "/home/ldi/bzr/LeoLatest/leo/core/leoApp.py", line 1626, in computeLocalSettings
+      settings_d = settings_d.copy()
+  AttributeError: 'NoneType' object has no attribute 'copy'
+  2012-11-16 11:28:55 /home/ldi/tmp
+  $
+  ---------
+  I confirmed this bug on Leo-Editor revisions 5501 and 5505.
+</t>
+<t tx="ekr.20130807203905.16500">@nocolor-node
+
+Note: happens only with Python 3.3.0.
+
+Here is a minor traceback when opening quickstart.leo
+
+Leo 4.11 devel, build 5468, 2012-09-30 13:02:59
+Python 3.3.0, qt version 4.8.3
+Windows 6, 1, 7601, 2, Service Pack 1
+reading: C:\Python33\Lib\site-packages\leo-editor\leo\doc\quickstart.leo
+unexpected exception in g.importFromPath(rest)
+Traceback (most recent call last):
+  File "C:\Python33\Lib\site-packages\leo-editor\leo\core\leoGlobals.py", line 5689, in importFromPath
+    data = imp.find_module(moduleName,[path]) # This can open the file.
+  File "C:\Python33\lib\imp.py", line 203, in find_module
+    package_directory = os.path.join(entry, name)
+  File "C:\Python33\lib\ntpath.py", line 171, in join
+    if b[:1] in seps:
+TypeError: Type str doesn't support the buffer API
+Can not import rest
+</t>
+<t tx="ekr.20130807203905.16501">@language rest
+
+** Not all import problems can be fixed automatically! **
+
+- Added perfectImportFlag. (There was already an importing flag).
+
+- Fixed bug in Fixed underindent convention:
+
+    undentBy adds a period; parseUnderindentTag removes the period.
+    
+- @file read code must *regenerate* the \\- convention.
+
+    This is done by readNormalLine.
+    
+    - Fixed an unrelated bug in g.computeWidth.  All unit tests pass.
+
+    - Created g.computeLeadingWhitespaceWidth.
+    
+- some docstrings are not imported properly in py2_test_grammar.py
+
+    The must be fixed by hand, using @raw and @end_raw.
+
+- escapeFalseSectionReferences now is a do-nothing:
+    
+    It never generates @verbatim sentinels during import.
+</t>
+<t tx="ekr.20130807203905.16502">@language rest
+
+Rev 5378: cleanup-imported-nodes script in scripts.leo &amp; an Aha
+http://groups.google.com/group/leo-editor/browse_thread/thread/77b9df4f4ed6dba0
+
+&gt; The third (and I think last) import fail involves not generating
+&gt; @verbatim sentinels when importing files.
+
+Fixed in the trunk at rev 5386.
+
+This is (to me) a really interesting dark corner of Leo's import code.
+
+By searching for @verbatim, I discovered a method called
+escapeFalseSectionReferences.  This method inserts an @verbatim
+"directive" before lines that look like section references.
+
+This is wrong for multiple reasons.  It confuses the importer, there
+is no such thing as an @verbatim directive, and worst, it fails to
+solve the essential problem, which is that before the imported file is
+saved, the **user** must fix the problem!
+
+For example, when importing a line like::
+
+  a = x &lt;&lt; y &gt;&gt; z
+
+The user, and *only* the user, should change this to something like::
+
+   a = x &lt;&lt; y \
+   &gt;&gt; z # EKR
+
+I suppose each importer could figure out a language-specific
+workaround, but imo this isn't particularly important, for reasons
+which will become clearer below.
+
+So now escapeFalseSectionReferences is a do-nothing.
+
+With this explanation, perhaps the checkin log will make sense::
+
+QQQQQ
+Fixed another import fail in an "interesting" way: the import code no
+longer inserts @verbatim. This means a later write of the imported
+will fail. This is correct!
+
+Indeed, the failed write is the only way to alert the user that the
+code must be revised by hand.
+
+Note that another import fail, involving a leading '@' on a line in a
+docstring, must also be fixed by hand. In lib2to3/pgen/grammar.py the
+*only* possible fix is to enclose the entire docstring at the end of
+the file by @raw and @end_raw.
+
+All unit tests pass, but no new tests have been added so far.
+QQQQQ
+
+The other import fail mentioned in the checkin log is a truly
+fascinating case, one that no amount of AI could possibly discover the
+correct fix.
+
+At the very end of lib2to3/pgen/grammar.py the following code
+(shortened a bit) appears at the top level::
+
+   opmap_raw = """
+   ( LPAR
+   ) RPAR
+   [snip]
+   @ AT
+   [snip]
+   == EQEQUAL
+   != NOTEQUAL
+   """
+   opmap = {}
+   for line in opmap_raw.splitlines():
+       if line:
+           op, name = line.split()
+           opmap[op] = getattr(token, name)
+
+There are several things to notice about this code:
+
+1. It contains a line starting with '@'.  Sooner or later, this is
+going to cause problems for either Leo's import code or Leo's write
+code.
+
+2. It's overly clever, but it's overly clever for a reason: it's
+testing tokenizing logic.
+
+3. The code at the end of the file assumes that all lines of the
+docstring are 2-tuples.
+
+For these reasons, the one and *only* possible way to make Leo write
+this code correctly is to enclose the *entire* docstring in @raw and
+@end_raw directives.  Like this::
+
+   @raw
+   opmap_raw = """
+   ( LPAR
+   ) RPAR
+   [snip]
+   @ AT
+   [snip]
+   == EQEQUAL
+   != NOTEQUAL
+   """
+  @end_raw
+
+In particular, surrounding the line "@ AT" with @raw/@end_raw
+directives will cause 2to3 to fail on startup:  the Leo sentinel lines
+will not be 2-tuples!
+
+===== Important Conclusions
+
+All this picky detail illustrates a crucial fact.  No matter how good
+Leo's importers are, (and they are now quite good), there will
+*always* be cases where thoughtful human intervention will be
+required.
+
+Furthermore, the simplest thing that could possibly work is for the
+importers to allow some constructions that are guaranteed to cause
+problems later, when the user attempts to write the file.  We hope
+that Leo will complain about certain constructions, but Leo may not be
+able to complain about all constructions.
+
+Thus, some import mistakes can *only* be found by running tests.  For
+complex programs like 2to3, the only truly safe way to check imports
+is by running the 2to3 test suite.
+</t>
+<t tx="ekr.20130807203905.16503"></t>
+<t tx="ekr.20130807203905.16504">@nocolor-node
+
+The fix was to always call c.selectPosition in leoFind.showSuccess.
+This ensures that leoTree.setBodyTextAfterSelect always does w.setAllText,
+which is essential to init the syntax colorer properly.
+
+The happy side effect of this change is that a lot of duplicate selection
+code in showSuccess disappears.
+
+Also converted two section references in leoTree.selectHelper to selectNewNode.
+</t>
+<t tx="ekr.20130807203905.16505">@nocolor-node
+
+LeoQTextBrowser.onSliderChanged must set v.scrollBarSpot only if "self" is actually the body pane.
+
+Othewise scrolling the log pane will scroll the body pane!
+</t>
+<t tx="ekr.20130807203905.16506">@nocolor-node
+
+The maintain_scroll option is *evil*.
+</t>
+<t tx="ekr.20130807203905.16507">@nocolor-node
+
+An assert failed during scanning in mungeAllFunctions.
+
+Added defensive code to mungeAllFunctions, dedentBlocks and
+replaceComments. The new code simply increments a pointer if a "progress"
+assert would fail. (The progress assert still exists, as a double-check.)
+
+Fixed bug: the call to u.afterChangeGroup in the go() method is called only once.
+
+Suppress warning messages given by CPrettyPrinter.indent.
+</t>
+<t tx="ekr.20130807203905.16508">@nocolor-node
+
+If the user has not typed anything in the minibuffer, &lt;alt-x&gt;&lt;tab&gt; returns *all* completions.
+
+Otherwise, if there are no completions, the "Completions" tab is empty, *not* all completions.
+
+This behavior is much more intuitive than the old behavior.
+
+The fix was a new special case in k.computeCompletionList.
+</t>
+<t tx="ekr.20130807203905.16509"># The fix was simply to call c.endEdiing in undo and redo *before* getting the undo params.
+# This allows c.endEditing to properly set the undo stack.
+</t>
+<t tx="ekr.20130807203905.16510">@language rest
+
+dw.createFindTab now creates a third column with a minimum width.
+The find/change text widgets span the second and third columns.
+</t>
+<t tx="ekr.20130807203905.16511"></t>
+<t tx="ekr.20130807203905.16512"># Changed: onActivateEvent (qtGui), onDeactivateEvent (qtGui)
+</t>
+<t tx="ekr.20130807203905.16513"></t>
+<t tx="ekr.20130807203905.16514">A shock: p.deletePositionsInList must be rethought and rewritten
+https://groups.google.com/forum/#!topic/leo-editor/IWMWhUlkos0
+</t>
+<t tx="ekr.20130807203905.16515">@nocolor-node
+
+
+The fix was to set new_c=self.c in the call to c.close in createFileFromOutline.
+</t>
+<t tx="ekr.20130807203905.16516">@nocolor-node
+
+If an assert fails, the entire file is read into a single node.
+</t>
+<t tx="ekr.20130807203905.16517">@nocolor-node
+
+See: https://bugs.launchpad.net/leo-editor/+bug/903640
+Import of Python files containing the strings "&lt;&lt;" and "&gt;&gt;" does not work
+
+At present @auto can import .py files containing self.cprint("&lt;&lt;" + ret +
+"&gt;&gt;\n")
+
+Furthermore, it's possible to write such files properly after changing
+them.
+
+Thus, this bug seems to have been completely fixed, as far as @auto goes.
+
+However, *importing* the file with Leo's import-file command does fail (an
+@ignore is inserted). This is expected: unlike @auto, the import command
+creates an @file node, so the "perfect import" check will complain that the
+section called &lt;&lt; ret &gt;&gt; is undefined.
+
+I am going to close this item. I see no real need to support other section
+delimiters in external files. If there ever becomes a real need to do so, a
+separate wishlist item will be appropriate.
+</t>
+<t tx="ekr.20130807203905.16518">@nocolor-node
+
+Rev 5840 adds support for hack that is active only on Ubuntu systems.
+
+When Leo starts up, it creates a commander (tab) called "loading..." before
+loading all tabs. This ensures that the first "real" .leo file loaded (into
+a tab) will have a menu area. This tab exists only until the first real
+.leo file is loaded.
+
+Yes, this is a pretty horrible hack, but it seems necessary on Ubuntu
+Unity. Presumably this is a Qt or Unity problem, but there has been
+response to previous bug reports, so it seems that best that can be done.
+
+</t>
+<t tx="ekr.20130807203905.16519">https://bugs.launchpad.net/leo-editor/+bug/1184855
+
+The fix was to set the name of the .leo file to foobar.pyxxx.leo in LM.initWrapperLeoFile.
+</t>
+<t tx="ekr.20130807203905.16520">@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/1021849
+
+Rev 5789 fixes this bug, using some hints from the NSIS support forum.
+
+The fix was to CreateShortCut in the Desktop Shortcut section:
+  - remove single quotes.
+  - remove the "0" trailing arg.
+
+The installer passes all my tests on my Windows 7 machine, which is all the testing I have ever done.
+
+
+Here is the checkin log::
+
+QQQ
+Fixed the icon problem and improved and simplified the install/uninstall 
+process in several ways.
+
+1. Fixed https://bugs.launchpad.net/leo-editor/+bug/1021849
+
+The fix was to CreateShortCut in the Desktop Shortcut section:
+  - remove single quotes.
+  - remove the "0" trailing arg.
+
+2. Changed the make-leo button to simplify the uninstall manifest.
+
+Rather than computing the files to be deleted, the uninstall script now 
+just does RMDir /r "$INSTDIR\\leo".
+This *is* safe, and ensures that all files &amp; directories get deleted, 
+including $INSTDIR itself.
+QQQ
+
+The only possible drawback to using the /r option is that it will delete 
+any files that the user has created in the leo directory.  Imo, there is no 
+perfect solution to this.  Warning prompts never do any good, and if we 
+retain files, for whatever reason, there will be bug reports saying that 
+Leo didn't properly uninstall itself.  This has already happened :-)
+
+I am happy to live with the present situation, unless somebody a) objects 
+loudly and b) shows how the problem can be solved cleanly.
+</t>
+<t tx="ekr.20130807203905.16521"></t>
+<t tx="ekr.20130807203905.16522">http://groups.google.com/group/leo-editor/browse_thread/thread/93f2cc88ebbf9893
+</t>
+<t tx="ekr.20130807203905.16523">The format of such local suppressions is::
+
+    # pylint: disable=&lt;message-number&gt;
+</t>
+<t tx="ekr.20130807203905.16524"></t>
+<t tx="ekr.20130807203905.16525"></t>
+<t tx="ekr.20130807203905.16526">@language rest
+
+When I study a program, I like to import it into Leo.  I have several
+scripts that do this:  some create @auto nodes; others create @file
+nodes.
+
+Either way, the import process has the potential to change many
+files.  Usually, I just change @auto and @file to @@auto or @@file, so
+that any changes I make while studying the code won't affect the
+originals.
+
+But this "safety first" approach means that I can't actually use Leo
+to insert tracing statements (or for any other changes.)  A few days
+ago, I found a way to import "live" code into Leo safely:
+
+   Create a bzr repository for the code before importing it
+
+The Aha is to create the repository *wherever the code is*, including,
+say, python/Lib/site-packages.
+
+- bzr qdiff ensures that import hasn't significantly altered the code,
+- bzr revert undoes any unwise or unwanted changes.
+
+This is exactly what I need:  I can make changes to important tools
+*safely* within Leo.
+</t>
+<t tx="ekr.20130807203905.16527"></t>
+<t tx="ekr.20130807203905.16528"></t>
+<t tx="ekr.20130807203905.16529"></t>
+<t tx="ekr.20130807203905.16530"></t>
+<t tx="ekr.20130807203905.16531">@nocolor-node
+
+g.es now "redirects" colors using the following settings:
+
+    'black':    @color log_text_foreground_color
+    'blue':     @color log_warning_color
+    'red':      @color log_error_color
+</t>
+<t tx="ekr.20130807203905.16532"></t>
+<t tx="ekr.20130807203905.16533"></t>
+<t tx="ekr.20130807203905.16534">@nocolor-node
+
+Help-for command translate !&lt;command-name&gt;! in the docstring to the binding for command-name.
+</t>
+<t tx="ekr.20130807203905.16535">@nocolor-node
+
+Extensions is a convenient place: code can use g.importExtension to import it.
+</t>
+<t tx="ekr.20130807203905.16536">@nocolor-node
+@
+
+@testclass nodes should set either the suite or testclass vars.
+
+@suite nodes should set the suite var.
+</t>
+<t tx="ekr.20130807203905.16538">def doTests(self,all=None,marked=None,verbosity=1):
+
+    '''Run any kind of local unit test.
+
+    Important: this is also called from dynamicUnitTest.leo
+    to run external tests "locally" from dynamicUnitTest.leo
+    '''
+
+    trace = False
+    c,tm = self.c,self
+
+    # 2013/02/25: clear the screen before running multiple unit tests locally.
+    if all or marked: g.cls()
+    p1 = c.p.copy() # 2011/10/31: always restore the selected position.
+
+    # This seems a bit risky when run in unitTest.leo.
+    if not c.fileName().endswith('unitTest.leo'):
+        if c.isChanged():
+            c.save() # Eliminate the need for ctrl-s.
+
+    if trace: g.trace('marked',marked,'c',c)
+    try:
+        g.unitTesting = g.app.unitTesting = True
+        g.app.runningAllUnitTests = all and not marked # Bug fix: 2012/12/20
+        g.app.unitTestDict["fail"] = False
+        g.app.unitTestDict['c'] = c
+        g.app.unitTestDict['g'] = g
+        g.app.unitTestDict['p'] = c.p.copy()
+
+        # c.undoer.clearUndoState() # New in 4.3.1.
+        changed = c.isChanged()
+        suite = unittest.makeSuite(unittest.TestCase)
+        aList = tm.findAllUnitTestNodes(all,marked)
+        setup_script = None
+        found = False
+        for p in aList:
+            if tm.isTestSetupNode(p):
+                setup_script = p.b
+                test = None
+            elif tm.isTestNode(p):
+                if trace: g.trace('adding',p.h)
+                test = tm.makeTestCase(p,setup_script)
+            elif tm.isSuiteNode(p): # @suite
+                if trace: g.trace('adding',p.h)
+                test = tm.makeTestSuite(p,setup_script)
+            elif tm.isTestClassNode(p):
+                if trace: g.trace('adding',p.h)
+                test = tm.makeTestClass(p) # A suite of tests.
+            else:
+                test = None
+            if test:
+                suite.addTest(test)
+                found = True
+        # Verbosity: 1: print just dots.
+        if not found:
+            # 2011/10/30: run the body of p as a unit test.
+            if trace: g.trace('no found: running raw body')
+            test = tm.makeTestCase(c.p,setup_script)
+            if test:
+                suite.addTest(test)
+                found = True
+        if found:
+            res = unittest.TextTestRunner(verbosity=verbosity).run(suite)
+            # put info to db as well
+            if g.enableDB:
+                key = 'unittest/cur/fail'
+                archive = [(t.p.gnx,trace2) for (t,trace2) in res.errors]
+                c.cacher.db[key] = archive
+        else:
+            g.error('no %s@test or @suite nodes in %s outline' % (
+                g.choose(marked,'marked ',''),
+                g.choose(all,'entire','selected')))
+    finally:
+        c.setChanged(changed) # Restore changed state.
+        if g.app.unitTestDict.get('restoreSelectedNode',True):
+            c.contractAllHeadlines()
+            c.redraw(p1)
+        else:
+            c.recolor() # Needed when coloring is disabled in unit tests.
+        g.unitTesting = g.app.unitTesting = False
+</t>
+<t tx="ekr.20130807203905.16539">def get_suite_script(self):
+
+    s = '''
+
+try:
+    g.app.scriptDict['suite'] = suite
+except NameError:
+    pass
+
+'''
+    return g.adjustTripleString(s, self.c.tab_width)
+</t>
+<t tx="ekr.20130807203905.16540">def get_test_class_script(self):
+
+    s = '''
+
+try:
+    g.app.scriptDict['testclass'] = testclass
+except NameError:
+    pass
+
+'''
+    return g.adjustTripleString(s,self.c.tab_width)
+</t>
+<t tx="ekr.20130807203905.16541">def makeTestCase (self,p,setup_script):
+
+    c = self.c
+    p = p.copy()
+
+    if p.b.strip():
+        return GeneralTestCase(c,p,setup_script)
+    else:
+        return None
+</t>
+<t tx="ekr.20130807203905.16542">def makeTestClass (self,p):
+
+    """Create a subclass of unittest.TestCase"""
+
+    c,tm = self.c,self
+    fname = 'makeTestClass'
+    p = p.copy()
+    script = g.getScript(c,p).strip()
+    if not script:
+        print("nothing in %s" % p.h)
+        return None
+    try:
+        script = script + tm.get_test_class_script()
+        script = script + tm.get_suite_script()
+        d = {'c':c,'g':g,'p':p,'unittest':unittest}
+        if c.write_script_file:
+            scriptFile = c.writeScriptFile(script)
+            if g.isPython3:
+                exec(compile(script,scriptFile,'exec'),d)
+            else:
+                execfile(scriptFile,d)
+        else:
+            exec(script + '\n',d)
+        testclass = g.app.scriptDict.get('testclass')
+        suite = g.app.scriptDict.get('suite')
+        if suite and testclass:
+            print("\n%s: both 'suite' and 'testclass defined in %s" % (
+                fname,p.h)) 
+        elif testclass:
+            suite = unittest.TestLoader().loadTestsFromTestCase(testclass)
+            return suite
+        elif suite:
+            return suite
+        else:
+            print("\n%s: neither 'suite' nor 'testclass' defined in %s" % (
+                fname,p.h))
+            return None
+    except Exception:
+        print('\n%s: exception creating test class in %s' % (fname,p.h))
+        g.es_print_exception()
+        return None
+</t>
+<t tx="ekr.20130807203905.16543"># This code executes the script in an @suite node.
+# This code assumes that the script sets the 'suite' var to the test suite.
+
+def makeTestSuite (self,p,setup_script):
+
+    """Create a suite of test cases by executing the script in an @suite node."""
+
+    c,tm = self.c,self
+    fname = 'makeTestSuite'
+    p = p.copy()
+    script = g.getScript(c,p).strip()
+    if not script:
+        print("no script in %s" % p.h)
+        return None
+    if setup_script:
+        script = setup_script + script
+    try:
+        script = script + tm.get_suite_script()
+        d = {'c':c,'g':g,'p':p}
+        if c.write_script_file:
+            scriptFile = c.writeScriptFile(script)
+            if g.isPython3:
+                exec(compile(script,scriptFile,'exec'),d)
+            else:
+                execfile(scriptFile,d)
+        else:
+            exec(script + '\n',d)
+        suite = g.app.scriptDict.get("suite")
+        if not suite:
+            print("\n%s: %s script did not set suite var" % (fname,p.h))
+        return suite
+    except Exception:
+        print('\n%s: exception creating test cases for %s' % (fname,p.h))
+        g.es_print_exception()
+        return None
+</t>
+<t tx="ekr.20130807203905.16544">@language rest
+
+This is a major step forward.  It is a much cleaner solution than exec(g.findTestScript)
+</t>
+<t tx="ekr.20130807203905.16545"></t>
+<t tx="ekr.20130807203905.16546"></t>
+<t tx="ekr.20130807203905.16547">@language rest
+
+These are generated from the @button node's docstring, if it exists.
+</t>
+<t tx="ekr.20130807203905.16548"></t>
+<t tx="ekr.20130807203905.16549">@language rest
+
+A major change in Leo's read/write code.  The first "live" rev was 5584.
+At present, controlled by the allow_cloned_sibs switch in leoAtFile.py.
+
+Fixes the following bugs:
+
+clones sometimes not saved
+https://bugs.launchpad.net/leo-editor/+bug/882243
+
+When all clones of a node are in an @file subtree, they disappear on exit
+https://bugs.launchpad.net/leo-editor/+bug/1084661
+</t>
+<t tx="ekr.20130807203905.16550">@language rest
+
+Reposted from http://groups.google.com/group/leo-editor/browse_thread/thread/67a28984616d09c9
+About bug 882243: clones sometimes not saved
+
+What I did:
+
+- Added allow_cloned_sibs switch at the start of leoAtFile.py.
+  All new code enabled by this switch.
+
+- Refactored at.createNewThinNode:
+    - Renamed createThinChild4 to old_createThinChild4.
+    - Added new_createThinChild4.
+    - Added createV5ThinNode.
+    
+The key invariant in createV5ThinNode:
+    On exit from at.changeLevel, top of at.thinNodeStack is the parent.
+</t>
+<t tx="ekr.20130807203905.16551">@nocolor-node
+
+Skip '.' before section names in v.matchHeadline.
+
+2013/08/01: bug fix: allow leading periods in at.isSectionName.
+</t>
+<t tx="ekr.20130807203905.16552">@nocolor-node
+
+The new code works like leoTree.onHeadChanged.
+
+The code can be called twice, so it is a bit tricky
+to only issue warnings once.
+</t>
+<t tx="ekr.20130807203905.16553">- (done) deprecate/reorganize *dynamic* body text background colors.
+    - (done) set body pane color only once. (Now done only via stylesheet).
+    - (done) use border colors to indicate state.
+</t>
+<t tx="ekr.20130807203905.16554"></t>
+<t tx="ekr.20130807203905.16555">@nocolor-node
+
+Leo now supports two new setting, with the indicated default::
+
+    @color focus_border_command_state_color = blue
+    @color focus_border_overwrite_state_color = green
+
+This works in conjunction with the existing border-color setting::
+
+    @color focus_border_color = red
+
+So by default, the color border is red when in insert state, and blue
+if in command state.
+
+This allows the focus border to change color depending on whether we
+are in input or command mode.  This is a workaround for the (extreme)
+difficulty of changing cursors depending on mode.
+
+When used to distinguish insert from command modes, I recommend
+changing the existing setting::
+
+    @int focus_border_width = 1
+
+to::
+
+    @int focus_border_width = 2
+
+This makes the focus border much more visible, and makes the color
+changes obvious.
+
+I tested this code without changing bindings using the set-command-
+state command.
+
+As before, if you don't want any such colored borders, just do::
+
+    @bool use_focus_border = False 
+</t>
+<t tx="ekr.20130807203905.16556">Changed set-xxx-state &amp; setInputState.
+
+Changed qtGui.add_border and remove_border.
+</t>
+<t tx="ekr.20130807203905.16557"></t>
+<t tx="ekr.20130807203905.16558">@nocolor-node
+
+(Done) Changed es so it always queues messages when g.app.log is None.
+(Done) complete the command-line args: --session-save and --session-restore.
+(Done) Write session info in leoTabbedTopLevel.closeEvent and g.app.onQuit.
+
+Rev 5324 finishes some session-related work. The existing
+session commands are unchanged, but Leo now fully supports
+two new command-line arguments::
+
+    --session-restore     restore previously saved session tabs at startup
+    --session-save        save session tabs on exit
+
+If you use both arguments, everything is automatic: Leo
+saves the tabs when you quit Leo, and restores tabs when you
+start Leo. Note that you can still specify file names on the
+command line in addition to whatever files --session-restore
+will open for you.
+
+If you use only --session-restore, it is up to you to save
+sessions "by hand" with one of the session commands, for
+instance, session-snapshot-save.
+</t>
+<t tx="ekr.20130807203905.16559">@nocolor-node
+
+Useful for re-parsing text that was not originally parsed properly.
+</t>
+<t tx="ekr.20130807203905.16560">@nocolor-node
+
+Created print-buttons command, showing source of all @command and @button nodes.
+
+Changed ParserBaseClass.doButtons/doCommands so they return
+lists of (p.copy(),script) rather than (p.h,script)
+
+Added g.app.config.atLocalButtonsList &amp; g.app.config.atLocalCommandsList
+for use by print-buttons command.
+</t>
+<t tx="ekr.20130807203905.16561">@nocolor-node
+
+https://bugs.launchpad.net/bugs/994985
+Wishlist: normalize-whitespace
+
+When using @auto, the logic often complains about "abnormal" whitespace and
+refuses to write/read node normally.
+
+What I did:
+    
+1. The clean-lines command (and thus the clean-all-lines command)
+   now remove trailing whitespace while preserving newlines.
+   
+2. reportMismatch suggests using the clean-all-lines command.
+   Note: a good unit test for reportMismatch already exists.
+   
+3. Added a unit test for clean-lines.
+</t>
+<t tx="ekr.20130807203905.16562">@nocolor-node
+
+The commands now work, and Alt-slash and Alt-Ctrl-slash are bound as in Emacs.
+</t>
+<t tx="ekr.20130807203905.16563">@nocolor-node
+
+If the @mode headline contains ::, everything following
+the :: is the mode prompt. For example::
+    
+    @mode abc :: xyz
+    
+Creates the enter-abc-mode command, but the prompt for the command is xyz.
+
+ParserBaseClass.createModeCommand creates this convention.
+Changed k.modeHelpHelper.
+</t>
+<t tx="ekr.20130807203905.16564"></t>
+<t tx="ekr.20130807203905.16565">Instead of just printing their docstrings.
+</t>
+<t tx="ekr.20130807203905.16566"></t>
+<t tx="ekr.20130807203905.16567">@language rest
+
+A few changes that should have been done long ago:
+
+- Added support for 'before' keyword.  Prints something before the function name.
+- Use g.shortFileName(__file__) instead of "&lt;module&gt;"
+</t>
+<t tx="ekr.20130807203905.16568">@nocolor-node
+
+- Documented that return ends the search.
+- Documented that deleting the entire search pattern aborts the search.
+- Removed annoying status messages printed to log.
+
+- (Can't do) If text is already highlighted, Alt-S or Alt-R should use that text.
+
+</t>
+<t tx="ekr.20130807203905.16569"></t>
+<t tx="ekr.20130807203905.16570">@language rest
+
+http://sourceforge.net/forum/message.php?msg_id=4319363
+
+http://epydoc.sourceforge.net/epydoc.html
+By: ktenney
+
+epydoc doesn't seem active.  It produces interesting web sites,
+but a find-def function in Leo itself would be more useful.
+
+</t>
+<t tx="ekr.20130807203905.16571">The easy solution, as revealed on StackOverflow is to edit the offending
+line to catch the error:
+
+# markup/restructuredtext.py, line 307
+&lt;   m = self._SUMMARY_RE.match(child.data)
+---
+&gt;   try:
+&gt;      m = self._SUMMARY_RE.match(child.data)
+&gt;   except AttributeError:
+&gt;      m = None
+
+</t>
+<t tx="ekr.20130807203905.16572">@nocolor-node
+
+Changed:
+
+- init (qtGui.py top level) (qtPdb)
+- runMainLoop (qtGui)
+- start_new_api
+</t>
+<t tx="ekr.20130807203905.16573">@language rest
+
+Investigate how IPython hijacks event loops
+http://groups.google.com/group/leo-editor/browse_thread/thread/e1dc6439bf8b17f9
+
+pyos_inputhook is relevant
+
+IPython lib.inputhook
+http://ipython.org/ipython-doc/stable/api/generated/IPython.lib.inputhook.html
+
+
+* IPython seems to require Python 2.x.
+* I can run IPython from either C:\prog\ipython-0.12 or from python\lib\site-packages
+
+From C:\prog\ipython-0.12\IPython\scripts
+
+#!/usr/bin/env python
+"""Terminal-based IPython entry point.
+"""
+
+from IPython.frontend.terminal.ipapp import launch_new_instance
+
+launch_new_instance()
+
+Here is ipapi.get::
+
+@language python
+
+    def get():
+        """Get the global InteractiveShell instance."""
+        from IPython.core.interactiveshell import InteractiveShell
+        return InteractiveShell.instance()
+</t>
+<t tx="ekr.20130807203905.16574">@language rest
+
+- Import logic looks for legacy IPython first (0.11 and prev),
+  then looks for new-style IPython (0.12 and above).
+
+- Created GlobalIPythonManager class, assigned to leoIPython.gipm and g.app.gipm.
+
+- Added self.c ivar to LeoNode class.  This is the same as p.v.context.
+</t>
+<t tx="ekr.20130807203905.16575">http://ipython.org/ipython-doc/rel-0.12/api/index.html
+</t>
+<t tx="ekr.20130807203905.16576">http://mail.scipy.org/pipermail/ipython-dev/
+</t>
+<t tx="ekr.20130807203905.16577">http://ipython.org/ipython-doc/rel-0.12/api/generated/IPython.core.interactiveshell.html
+</t>
+<t tx="ekr.20130807203905.16578"></t>
+<t tx="ekr.20130807203905.16579">@language python
+
+# Don't show full completion list when the minibuffer becomes empty.
+</t>
+<t tx="ekr.20130807203905.16580"></t>
+<t tx="ekr.20130807203905.16581">@nocolor-node
+
+A simple change to k.computeCompletionList was all that was needed.
+
+</t>
+<t tx="ekr.20130807203905.16582"></t>
+<t tx="ekr.20130807203905.16583"># Added TypeScriptScanner class and related code.
+</t>
+<t tx="ekr.20130807203905.16584"></t>
+<t tx="ekr.20130807203905.16585">@nocolor-node
+
+Created vimoutlinerScanner.
+
+Created at.writeAtAutoOtlFile.
+</t>
+<t tx="ekr.20130807203905.16586"></t>
+<t tx="ekr.20130807203905.16587">Should Leo support a standard template tool?
+http://groups.google.com/group/leo-editor/browse_thread/thread/dd629473f4b3c4fc
+
+Added a jinja2 templating example.  See:
+    
+file://../scripts/scripts.leo#Scripts--&gt;@thin%20leoScripts.txt--&gt;Important--&gt;Prototype%20of%20jinja%20@command%20nodes
+</t>
+<t tx="ekr.20130807203905.16588">@nocolor-node
+
+The script itself is in scripts.leo: cleanup-imported-nodes
+
+- Put docstring in root node.
+- Use section reference for declarations.
+- Remove leading and trailing blank lines from all nodes, leaving only a trailing newline.
+- If a new contains nothing but comments, merge it with the next node.
+- If a node contains nothing but a property, merge it with the previous node.
+
+The holy grail would be to do all this in the Python importer, but a post-processing script suffices.
+
+Workflow:
+    
+1. bzr checkin of all *unchanged* file.
+2. Import all files and save.
+3. bzr commit all changed files.
+4. Run cleanup script.
+5. bzr qdiff then shows all cleanups.
+6. bzr commit if all goes well.
+</t>
+<t tx="ekr.20130807203905.16598">===== From: Eoin &lt;eoinmccarthy@fastmail.fm&gt;
 
 I got the association working on Windows 7 using:
 
-    ftype LeoFile=3D"C:\\Python322\\pythonw.exe" "C:\\Program Files (x86)\\Leo-4.9-final\\launchLeo.py" "%1"
+    ftype LeoFile="C:\\Python322\\pythonw.exe" "C:\\Program Files (x86)\\Leo-4.9-final\\launchLeo.py" "%1"
     assoc .leo=3DLeoFile
     regsvr32 /i shell32.dll
     
@@ -13697,68 +17885,45 @@ Here's my launch batch. Note nothing's actually installed::
     cd \\aasync\\PortableApps\\leo-editor
     start "" "..\\CommonFiles\\Python27\\pythonw.exe" 
     "..\\CommonFiles\\Python27\\Lib\\site-packages\\leo-editor4\\launchLeo.py" %*
-    exit
-    
-===== Nick
+    exit</t>
+<t tx="ekr.20130807203905.16599">Installing Leo on Windows
 
-Many thanks to all for these replies!
-This is my final "open" string in the Windows file associations::
+    Install Python from http://www.python.org/download/releases/
 
-    "C:\\Tools\\Python32\\python.exe" "C:\\Tools\\Leo-4.10-final\\launchLeo.py" --gui=3Dqttabs "%1"
-    
-Note that the brackets are needed round the %1 to cater for file paths
-containing spaces.
+    Install either Qt, as described above.
 
-Matt, thanks for the extra details about using ftype and assoc. I hadn't
-realised those existed in Windows. For anyone else reading this, that is an
-alternative to working through the file associations GUI.
+    Install Leo. Get Leo’s .zip file from http://sourceforge.net/projects/leo/ You can unpack the .zip file anywhere, including Python’s site-packages folder, for example, C:\Python26\Lib\site-packages
+
+    [optional] Generate/update a junction link from unpacked leo folder to ...\site-packages\leo:
+
+    cd C:\Python26\Lib\site-packages\
+    junction leo leo-4-6-2-final
+
+    Create windows shortcut (edit paths as necessary):
+
+    Target   =  C:\Python26\pythonw.exe "C:\Python26\Lib\site-packages\leo\launchLeo.py"
+    Start in =  D:\code
+
+    Associate .leo filetype batch file:
+
+    ftype LeoFile=C:\Python26\pythonw.exe "C:\Python26\Lib\site-packages\leo\launchLeo.py" "%*"
+    assoc .leo=LeoFile
+
+    [optional] Put this leo.bat in %PATH%:
+
+    @C:\Python26\python.exe "C:\Python26\Lib\site-packages\leo\launchLeo.py" %*
+
+For more information see:
+
+Junction links:
+    http://technet.microsoft.com/en-gb/sysinternals/bb896768.aspx,
+    http://groups.google.com/group/leo-editor/msg/30116f9193241dc4
+ftype:
+    http://ss64.com/nt/ftype.html
+assoc:
+    http://ss64.com/nt/assoc.html
 </t>
-<t tx="ekr.20130807090137.19381">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-"On Wed, Apr 18, 2012 at 12:20 AM, Matt Wilkie &lt;maphew@gmail.com&gt; wrote:
-
-&gt; the docs have the wrong version, It should match the above:
-&gt;http://leoeditor.com/installing.html#installing-leo-on-windows
-
-
-Good catch.  I think rather than updating this for every release, I'll
-try to generalize it a bit so people will understand what is intended.
- The fix will probably be tricky: it's so hard to be clear and general
-at the same time.  Otoh, making instructions
-Python-and-Leo-version-depenedent is pretty hopeless.
-
-EKR
-"
-</t>
-<t tx="ekr.20130807090137.19382">From: Matt Wilkie &lt;maphew@gmail.com&gt;
-
-&gt; The file association contains the following command to execute for the
-&gt; Open operation:
-&gt; "C:\\Tools\\Python32\\python.exe" "C:\\Tools\\Leo-4.10-final\\launchLeo.py
-&gt; %*"
-
-it's the trailing %*, use "%1" instead.
-
-You want %*  in a batch file. It passes all command line arguments to
-the program being called.
-
-"%1" passes just the file being clicked on, quoted for spaces etc.
-When in a batch file %1 passes just the first command line parameter.
-
-It is logical to expect %* to work for click file association as well,
-but it doesn't. I don't know why.
-</t>
-<t tx="ekr.20130807090137.19383">From the thread: Cannot open Leo files by double-click in Windows Explorer?
-From: HansBKK &lt;hansbkk@gmail.com&gt;
-
-This is a bit OT, but: for those like me who work in "portable" mode, 
-there's a very cool tool called "PortableFileAssociator" that allows you to 
-create a set of windows file associations, icons etc and enable/disable the 
-whole profile at one time, without messing with the local system's registry.
-
-Also handy for those not in portable mode, but working on different windows 
-boxes and bored with having to tweak each one separately.
-</t>
+<t tx="ekr.20130807203905.16605"></t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]

@@ -40,35 +40,28 @@ please ask for help on `Leo's help forum`_.
 
 .. _`run Leo`:              `Running Leo`_
 .. _`Leo's download page`:  http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
-.. _`Pmw`:                  http://pmw.sourceforge.net/
 .. _`PyEnchant`:            https://sourceforge.net/projects/pyenchant/
 .. _`Python`:               http://www.python.org
-.. @+node:ekr.20101125062332.5090: *3* Required and optional packages
-Leo requires `Python`_. Leo will work on any platform that supports Python 2.6 or
-above, including Python 3.0 and above. 
+.. _`PyQt`:                 http://www.riverbankcomputing.com/software/pyqt/intro
+.. @+node:ekr.20101125062332.5090: *3* Installing packages
+Leo requires the following packages `Python`_ and `PyQt_`.
+The `PyEnchant`_ package is optional. 
 
-Leo also requires either the Qt widget set.
+**Python**: Leo will work on any platform that supports Python 2.6 or
+above, including Python 3.0 and above. To install Python, see
+http://python.org.
 
-To enable spell checking, you must install the `PyEnchant`_ package.
+**PyQt**: PyQt provides Leo's widgets. To install PyQt, get the binary
+package from: http://www.riverbankcomputing.co.uk/software/pyqt/download
+The PyQt version must match your installed Python version. Remember that
+Leo requires Python 2.6 or later, or Python 3.0 or later. Now run the
+binary PyQt installer.
 
-The following sections describe how to install Python, Qt and PyEnchant.
-.. @+node:ekr.20100817101952.4313: *3* Installing other packages
-.. @+node:ekr.20100731112744.7270: *4* Installing Python
-.. _`this page`: http://python.org
+**PyEnchant**: You must install the PyEnchant package if you want to use
+Leo's Spell tab. Download and install the PyEnchant package from
+http://pythonhosted.org/pyenchant/download.html There is an executable
+installer for Windows users.
 
-To install Python, see `this page`_.
-.. @+node:ekr.20100731112744.7271: *4* Installing Qt
-To install Qt, get the binary package of PyQt from: 
-http://www.riverbankcomputing.co.uk/software/pyqt/download
-
-The version of PyQt that you download must match your installed Python version.
-Remember that Leo requires Python 2.6 or later, or Python 3.0 or later. Now run
-the binary PyQt installer.
-.. @+node:ekr.20100731112744.7281: *4* Installing PyEnchant
-You must install the PyEnchant package if you want to use Leo's Spell tab.
-Download and install the PyEnchant package from
-http://pythonhosted.org/pyenchant/download.html
-There is an executable installer for Windows users.
 .. @+node:ekr.20100817101952.4303: *3* Installing Leo itself
 .. links
 
@@ -106,23 +99,76 @@ To summarize, you may get Leo in three ways:
    Installing bzr is non-trivial, but once set up this is the easiest way
    to get the latest version of Leo's code.
 .. @+node:ekr.20100731112744.7276: *4* Installing Leo on Windows
-1. Install Python from http://www.python.org/download/releases/
+Install Python and Qt, as described above (`Installing Packages`_).
 
-2. Install Qt, as described above.
+Now you have a choice.  You can use Leo's binary (single-click) installer
+or download Leo's sources directly.
+.. @+node:ekr.20130807203905.16602: *5* Using the single-click installer
+Leo has a binary installer for Windows, available at
+http://sourceforge.net/projects/leo/files/Leo/ The binary installer
+installs Leo and sets Windows file associations. Now see `Running Leo`_ for
+how to run Leo after installing it.
+.. @+node:ekr.20130807203905.16603: *5* Installing from sources
+You may download Leo's sources in one of three ways, as described at:
+http://leoeditor.com/download.html If the sources are zipped, unpack them
+into a temp folder. You may place the sources anywhere you like, including
+Python's \*site-packages* folder, for example,
+C:\\Python26\\Lib\\site-packages.
 
-3. Download and install Leo.
-   Download the latest version of Leo (a .zip file) from `Leo's download page`_.
-   You can unpack the .zip file anywhere, including Python's *site-packages* folder,
-   for example, C:\\Python26\\Lib\\site-packages
+Next, you will find it convenient to create Windows files associations for
+.leo files, as described in the next section.
+.. @+node:ekr.20130807203905.16597: *6* Creating Windows file associations
+*Important*: Leo's binary Windows installer sets file associations
+automatically, so this section is needed only if you are installing Leo
+from a .zip file or other sources.
+
+There are two ways of associating .leo files with Leo. The first uses the
+Windows control panel, the second, the Windows console.
+
+**Method 1: Using the Windows Control Panel**
+
+
+The goal is that you want to associate .leo files with the following command::
+
+    "<path to python>\python.exe" "<path to launchLeo.py>\launchLeo.py" --gui=qttabs "%1"
+    
+or::
+
+    myLaunchLeo.bat
+    
+where myLaunchLeo.bat contains the command above.
+    
+Before Windows 7, you do this with using the Folder Options control panel.
+In Windows 7, you do this with the Default Programs control panel.
+
+*Note*: "%1" passes just the file being clicked on, quoted for spaces etc.
+The quotation marks are needed to handle file paths containing spaces.
+
+*Warning:* In a batch file, %1 passes just the first command line parameter.
+It is logical to expect %* to work for file associations just as in batch
+files. Alas, it does not.
+
+**Method 2: Using the Windows Console**
+
+Open a Windows console, then type::
+
+    ftype LeoFile="<path to python>\pythonw.exe" "<path to launchLeo.py>\launchLeo.py"
+    assoc .leo=LeoFile
+
+And put this leo.bat in %PATH%::
+
+    @start /b "Leo" "<path to python>\python.exe" "<path to launchLeo.py>\launchLeo.py" %*
+    
+You may omit the /b option if you want to create a separate console window for Leo.
 .. @+node:ekr.20100731112744.7274: *4* Installing Leo on Linux
 If you are using Debian/Ubuntu, find and install the debian package. This
 provides the best integration with your desktop (file associations, icons, launcher
 item). Failing that, follow the instructions below.
 
-Download the latest version of Leo (a .zip file) from `Leo's download page`_.
-
-Unzip the downloaded .zip file into the **unpacked folder** in your home directory.
-The unpacked folder will be called something like leo-4-5.
+You may download Leo's sources in one of three ways, as described at:
+http://leoeditor.com/download.html If the sources are zipped, unzip them
+into the **unpacked folder** in your home directory. The unpacked folder
+will be called something like leo-4-11.
 
 You now have two choices:
 
@@ -140,7 +186,7 @@ You can, instead, add the following link::
 
     sudo ln -s /usr/local/lib/leo/ /usr/local/lib/python2.6/site-packages/
 
-Now you are ready to `run Leo`_.
+That's it!  See `Running Leo`_ for how to run Leo after installing it.
 .. @+node:ekr.20100731112744.7275: *4* @rst-ignore Installing Leo on MacOS X
 **Important**: Installing Leo on MacOS is difficult and not recommended.
 Furthermore, Leo does not work as well on MacOS as on other platforms.
@@ -265,14 +311,21 @@ the process even further, to simply "brew install leo". I started on this,
 but wasn't sure where to put the various Leo files in the system hierarchy.
 The Debian package can give some clues here, but I haven't looked at it
 yet.
-.. @+node:ekr.20100817101952.4306: *4* Installing Leo with bzr
+.. @+node:ekr.20100817101952.4306: *4* Contributing to Leo with bzr
+.. _bzr: http://bazaar-vcs.org
+
+**Important**: This section tells how to set up bzr_ so that you can grab
+the latest bzr sources using ``bzr pull``. However, you can get a nightly
+snapshot of Leo's bzr repository (without installing bzr) from
+http://www.greygreen.org/leo/
+
 Many users will want to track the development version of Leo, in order to stay
 on top of the latest features and bug fixes. Running the development version is
 quite safe and easy, and it's also a requirement if you want to contribute to
 Leo.
 
-1. First, you need to get Bazaar (bzr) from http://bazaar-vcs.org. For windows
-   users we recommend the standalone installer - the python installer may have
+1. First, you need to get bzr_ (Bazaar) from http://bazaar-vcs.org. For windows
+   users we recommend the standalone installer; the python installer may have
    problems pushing to Launchpad. Plain bzr installer only contains the command
    line version, so you might want to augment that with a friendly GUI - qbzr is
    recommended as it's the easiest one to install. It provides command like
@@ -324,21 +377,23 @@ Another way to run Leo is as follows::
 Here are some tips that may make running Leo easier:
 
 **Linux**
-    The following shell script will allow you to open foo.leo files by typing leo foo::
+    
+The following shell script will allow you to open foo.leo files by typing leo foo::
 
-        #!/bin/sh 
-        python <leopath>launchLeo.py $1
+    #!/bin/sh 
+    python <leopath>launchLeo.py $1
 
-    where <leopath> is the path to the directory containing the leo directory. 
+where <leopath> is the path to the directory containing the leo directory. 
 
 **Windows**
-    You can associate Leo with .leo files using a batch file. Put the
-    following .bat file in c:\\Windows::
 
-        <path-to-python>/python <path-to-leo>/launchLeo.py %*
+You can associate Leo with .leo files using a batch file. Put the
+following .bat file in c:\\Windows::
 
-    Here <path-to-leo> is the path to the directory *containing* the leo directory,
-    that is, the directory containing launchLeo.py.
+    <path-to-python>/python <path-to-leo>/launchLeo.py %*
+
+Here <path-to-leo> is the path to the directory *containing* the leo directory,
+that is, the directory containing launchLeo.py.
 .. @+node:ekr.20101126080134.5085: *4* Running Leo the first time
 The first time you start Leo, a dialog will ask you for a unique identifier. If
 you are using a source code control system such as bzr, use your bzr login name.
