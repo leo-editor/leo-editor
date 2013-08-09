@@ -8,7 +8,7 @@
 
 1. Newbies can install Leo without problems.
 2. Newbies can learn Leo's main features easily.
-3. *Good* documentation exists for all importatant plugins and features.
+3. *Good* documentation exists for all important plugins and features.
 4. Future project leaders (FPL's) know how to change Leo like I do.
     - Secondary: FPL's have the same general knowledge about Leo that I do.
 5. Fix important bugs.

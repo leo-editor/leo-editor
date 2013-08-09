@@ -33,7 +33,8 @@ Leo can be installed on MacOS, but the process is difficult and not recommended.
 please ask for help on `Leo's help forum`_.
 
 .. contents::
-    :depth: 3
+
+..    :depth: 4
 
 .. @+node:ekr.20100731112744.7269: *3* @rst-no-head links
 .. Links used in this document...
