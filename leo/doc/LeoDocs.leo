@@ -181,6 +181,7 @@ expanded="ekr.20100731112744.7268,ekr.20100817101952.4303,ekr.20100731112744.727
 <v t="ekr.20111127144911.5546"><vh>@file download.txt</vh></v>
 </v>
 </v>
+<v t="ekr.20100731112744.7267"></v>
 <v t="ekr.20090717084250.10702"><vh>Other docs</vh>
 <v t="ekr.20100805165051.7176"><vh>@file other_docs.txt</vh></v>
 </v>
@@ -188,9 +189,9 @@ expanded="ekr.20100731112744.7268,ekr.20100817101952.4303,ekr.20100731112744.727
 <v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028550b302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473550b302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473550b302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473550b302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20100805165051.7177"
+expanded="ekr.20130806211959.17078,"><vh>@file release_notes.txt</vh></v>
 </v>
-<v t="ekr.20130807203905.16526"><vh>* For the FAQ: create a bzr repository before importing it into Leo</vh></v>
 <v t="ekr.20130806072439.19990"><vh>Leo 4.11 a1 Release notes</vh>
 <v t="ekr.20130807203905.16780"><vh>Bugs</vh>
 <v t="ekr.20130807203905.16687"><vh>Bugs: minor</vh>
@@ -213,9 +214,7 @@ expanded="ekr.20100731112744.7268,ekr.20100817101952.4303,ekr.20100731112744.727
 <v t="ekr.20130807203905.16500"><vh>fixed crasher involving g.importFromPath</vh></v>
 <v t="ekr.20130807203905.16266"><vh>Fixed failing unit tests in distro</vh></v>
 <v t="ekr.20130807203905.16264"><vh>fixed get_fn in viewrendered plugin</vh></v>
-<v t="ekr.20130807203905.16501"><vh>Fixed import problems discovered by importing 2to3</vh>
-<v t="ekr.20130807203905.16502"><vh> Notes: do not delete</vh></v>
-</v>
+<v t="ekr.20130807203905.16501"><vh>Fixed import problems discovered by importing 2to3</vh></v>
 <v t="ekr.20130807203905.16504"><vh>Fixed missing search text bug</vh></v>
 <v t="ekr.20130807203905.16263"><vh>fixed problem with file:/// url's on Windows</vh></v>
 <v t="ekr.20130807203905.16505"><vh>Fixed problems with scrolling when saving</vh></v>
@@ -245,9 +244,11 @@ expanded="ekr.20100731112744.7268,ekr.20100817101952.4303,ekr.20100731112744.727
 </v>
 <v t="ekr.20130807203905.16521"><vh>Code</vh>
 <v t="ekr.20130807203905.16819"><vh>* Added c.deletePositionsInList</vh></v>
+<v t="ekr.20130526065545.14928"><vh>* LeoReader, as web app</vh></v>
 <v t="ekr.20130807203905.16532"><vh>Added c2 keyword arg to c.bringToFront</vh></v>
 <v t="ekr.20130807203905.16533"><vh>Added default button to dialog methods</vh></v>
 <v t="ekr.20130807203905.16522"><vh>Added external/leosax.py to leoPyRef.leo</vh></v>
+<v t="ekr.20130808211520.17431"><vh>Added g.getActualColor</vh></v>
 <v t="ekr.20130807203905.16269"><vh>Added g.restore_selection_range</vh></v>
 <v t="ekr.20130807203905.16535"><vh>Added leo/extensions/sh.py</vh></v>
 <v t="ekr.20130807203905.16523"><vh>Added local pylint suppressions</vh></v>
@@ -258,7 +259,7 @@ expanded="ekr.20100731112744.7268,ekr.20100817101952.4303,ekr.20100731112744.727
 <v t="ekr.20130807203905.16485"><vh>Removed unused files from leo/modes directory</vh></v>
 <v t="ekr.20130807203905.16580"><vh>SherlockTracer now shows returned values</vh></v>
 </v>
-<v t="ekr.20130807203905.16686"><vh>Collaboration branch</vh>
+<v t="ekr.20130807203905.16686"><vh>Collaboration branch (To do)</vh>
 <v t="ekr.20130806211959.17093"><vh>Dumping leo docs to excel</vh></v>
 <v t="ekr.20130806211959.17078"><vh>QML notebook</vh>
 <v t="ekr.20130806211959.17079"><vh>Re: QML notebook - phase zero - toy ui ;-)</vh></v>
@@ -291,21 +292,9 @@ expanded="ekr.20100731112744.7268,ekr.20100817101952.4303,ekr.20100731112744.727
 <v t="ekr.20130807203905.16560"><vh>print-buttons command</vh></v>
 <v t="ekr.20130807203905.16581"><vh>Show all commands after &lt;alt-x&gt;&lt;tab&gt;</vh></v>
 <v t="ekr.20130807203905.16546"><vh>vr-expand/contract commands</vh></v>
-<v t="ekr.20130526065545.17495"><vh>zoom-in/out commands</vh>
-<v t="ekr.20130526065545.17494"><vh>Re: ANN: zoom-in/out commands</vh></v>
-<v t="ekr.20130526065545.17496"><vh>Re: ANN: zoom-in/out commands</vh></v>
-<v t="ekr.20130526065545.17497"><vh>Re: ANN: zoom-in/out commands</vh></v>
-<v t="ekr.20130526065545.17498"><vh>Re: ANN: zoom-in/out commands</vh></v>
-<v t="ekr.20130526065545.17499"><vh>Re: ANN: zoom-in/out commands</vh></v>
-<v t="ekr.20130526065545.17500"><vh>Re: ANN: zoom-in/out commands</vh></v>
-<v t="ekr.20130526065545.17501"><vh>Re: ANN: zoom-in/out commands</vh></v>
-<v t="ekr.20130526065545.17502"><vh>Re: ANN: zoom-in/out commands</vh></v>
-<v t="ekr.20130526065545.17503"><vh>Re: ANN: zoom-in/out commands</vh></v>
-<v t="ekr.20130526065545.17504"><vh>Re: ANN: zoom-in/out commands</vh></v>
-<v t="ekr.20130526065545.17505"><vh>body text zooming pushed</vh></v>
+<v t="ekr.20130526065545.17495"><vh>zoom-in/out commands</vh></v>
 </v>
-</v>
-<v t="ekr.20130807203905.16778"><vh>Gui improvements</vh>
+<v t="ekr.20130807203905.16778"><vh>Gui improvements (To do)</vh>
 <v t="ekr.20130526065545.17594"><vh>@wrap now suppresses horizontal scrolling</vh></v>
 <v t="ekr.20130807203905.16547"><vh>All @button nodes now show call tips</vh></v>
 <v t="ekr.20130807203905.16552"><vh>baseNativeTree.onHeadChanged now truncates headlines</vh></v>
@@ -341,59 +330,25 @@ expanded="ekr.20100731112744.7268,ekr.20100817101952.4303,ekr.20100731112744.727
 </v>
 <v t="ekr.20130807203905.16610"><vh>New features</vh>
 <v t="ekr.20130806072439.19486"><vh>About @testsetup</vh></v>
-<v t="ekr.20130807203905.16536"><vh>Added support for @testclass</vh>
-<v t="ekr.20130807203905.16542"><vh>makeTestClass</vh></v>
-<v t="ekr.20130807203905.16538"><vh>TM.doTests &amp; helpers (local tests)</vh>
-<v t="ekr.20130807203905.16539"><vh>get_suite_script</vh></v>
-<v t="ekr.20130807203905.16540"><vh>get_test_class_script</vh></v>
-<v t="ekr.20130807203905.16541"><vh>makeTestCase</vh></v>
-<v t="ekr.20130807203905.16542"></v>
-<v t="ekr.20130807203905.16543"><vh>makeTestSuite</vh></v>
-</v>
-</v>
+<v t="ekr.20130807203905.16536"><vh>Added support for @testclass</vh></v>
+<v t="ekr.20130807203905.16558"><vh>Added support for sessions</vh></v>
 <v t="ekr.20130807203905.16549"><vh>Allow cloned siblings</vh></v>
 <v t="ekr.20130807203905.16550"><vh>Allow clones anywhere in @file nodes</vh></v>
-<v t="ekr.20130526065545.17445"><vh>Major additions to abbreviations</vh>
-<v t="ekr.20130526065545.17442"><vh>Re: Major additions to abbreviations</vh></v>
-<v t="ekr.20130526065545.17443"><vh>Re: Major additions to abbreviations</vh></v>
-<v t="ekr.20130526065545.17446"><vh>Re: Major additions to abbreviations</vh></v>
-</v>
+<v t="ekr.20130526065545.17445"><vh>Major additions to abbreviations</vh></v>
 <v t="ekr.20130807203905.16482"><vh>Warn if same .leo file open in another Leo instance</vh></v>
-<v t="ekr.20130807203905.16558"><vh>Completed the new support for sessions</vh></v>
 </v>
 <v t="ekr.20130807203905.16779"><vh>New languages and importers</vh>
-<v t="ekr.20130526065545.14927"><vh>Added importer .otl files</vh>
-<v t="ekr.20130526065545.14928"><vh>NEW: LeoReader, as web app</vh></v>
-</v>
+<v t="ekr.20130526065545.14927"><vh>Added importer .otl files</vh></v>
 <v t="ekr.20130806175854.17068"><vh>Added importer for .ipynb importer</vh></v>
 <v t="ekr.20130807203905.16583"><vh>Added importer for TypeScript files</vh></v>
 <v t="ekr.20130807203905.16585"><vh>Added importer for vimoutliner imports and @auto-otl</vh></v>
 <v t="ekr.20130807203905.16545"><vh>Added support for clojure syntax coloring</vh></v>
 </v>
-<v t="ekr.20130803073926.17114"><vh>Plugins</vh>
-<v t="ekr.20130806072439.18495"><vh>ANN: in body python calculations commands</vh>
-<v t="ekr.20130806072439.18496"><vh>Re: ANN: in body python calculations commands</vh></v>
-<v t="ekr.20130806072439.18497"><vh>Re: ANN: in body python calculations commands</vh></v>
-<v t="ekr.20130806072439.18498"><vh>Re: ANN: in body python calculations commands</vh></v>
-</v>
+<v t="ekr.20130803073926.17114"><vh>Plugins (To do)</vh>
 <v t="ekr.20130526065545.14926"><vh>bookmarks.py</vh>
 <v t="ekr.20130806072439.18499"><vh>ANN: more fluid bookmark pane control</vh></v>
 </v>
-<v t="ekr.20130806072439.18508"><vh>Cross-outline node editing</vh>
-<v t="ekr.20130806072439.18509"><vh>Re: Cross-outline node editing</vh></v>
-<v t="ekr.20130806072439.18510"><vh>Re: Cross-outline node editing</vh></v>
-<v t="ekr.20130806072439.18511"><vh>Re: Cross-outline node editing</vh></v>
-</v>
-<v t="ekr.20130806072439.18531"><vh>Gauging interest: markdown processing addition to viewrendered?</vh>
-<v t="ekr.20130806072439.18532"><vh>Re: Gauging interest: markdown processing addition to viewrendered?</vh></v>
-<v t="ekr.20130806072439.18533"><vh>Re: Gauging interest: markdown processing addition to viewrendered?</vh></v>
-<v t="ekr.20130806072439.18534"><vh>Re: Gauging interest: markdown processing addition to viewrendered?</vh></v>
-<v t="ekr.20130806072439.18535"><vh>Re: Gauging interest: markdown processing addition to viewrendered?</vh></v>
-<v t="ekr.20130806072439.18536"><vh>Re: Gauging interest: markdown processing addition to viewrendered?</vh></v>
-<v t="ekr.20130806072439.18537"><vh>Re: Gauging interest: markdown processing addition to viewrendered?</vh></v>
-<v t="ekr.20130806072439.18539"><vh>Re: Gauging interest: markdown processing addition to viewrendered?</vh></v>
-<v t="ekr.20130806072439.18540"><vh>Re: Gauging interest: markdown processing addition to viewrendered?</vh></v>
-</v>
+<v t="ekr.20130808211520.17433"><vh>ipython plugin</vh>
 <v t="ekr.20130806072439.18541"><vh>Ipython now has cell magic</vh></v>
 <v t="ekr.20130807203905.16572"><vh>IPython plugin now works with all versions of IPython</vh>
 <v t="ekr.20130807203905.16573"><vh> Notes</vh></v>
@@ -401,6 +356,20 @@ expanded="ekr.20100731112744.7268,ekr.20100817101952.4303,ekr.20100731112744.727
 <v t="ekr.20130807203905.16575"><vh>@url ipython api</vh></v>
 <v t="ekr.20130807203905.16576"><vh>@url ipython-dev archive</vh></v>
 <v t="ekr.20130807203905.16577"><vh>@url ipython.core.interactiveshell</vh></v>
+</v>
+<v t="ekr.20130806072439.18557"><vh>Ville, please help make leoIPython.py work with legacy IPython</vh>
+<v t="ekr.20130806072439.18558"><vh>Re: Ville, please help make leoIPython.py work with legacy IPython</vh></v>
+<v t="ekr.20130806072439.18559"><vh>Re: Ville, please help make leoIPython.py work with legacy IPython</vh></v>
+<v t="ekr.20130806072439.18560"><vh>Re: Ville, please help make leoIPython.py work with legacy IPython</vh></v>
+<v t="ekr.20130806072439.18561"><vh>Re: Ville, please help make leoIPython.py work with legacy IPython</vh></v>
+<v t="ekr.20130806072439.18562"><vh>Re: Ville, please help make leoIPython.py work with legacy IPython</vh></v>
+<v t="ekr.20130806072439.18563"><vh>Re: Ville, please help make leoIPython.py work with legacy IPython</vh></v>
+<v t="ekr.20130806072439.18564"><vh>Re: Ville, please help make leoIPython.py work with legacy IPython</vh></v>
+<v t="ekr.20130806072439.18566"><vh>Re: Ville, please help make leoIPython.py work with legacy IPython</vh></v>
+<v t="ekr.20130806072439.18567"><vh>"Mylyn" with the new hooks</vh>
+<v t="ekr.20130806072439.18568"><vh>Re: "Mylyn" with the new hooks</vh></v>
+</v>
+</v>
 </v>
 <v t="ekr.20130806072439.18542"><vh>new jump to error command for leoscreen</vh></v>
 <v t="ekr.20130526065545.17620"><vh>printing.py</vh>
@@ -434,7 +403,18 @@ expanded="ekr.20100731112744.7268,ekr.20100817101952.4303,ekr.20100731112744.727
 <v t="ekr.20130806072439.18554"><vh>Re: should add "refresh from disk" at parent node is a good idea?</vh></v>
 <v t="ekr.20130806072439.18555"><vh>Re: should add "refresh from disk" at parent node is a good idea?</vh></v>
 </v>
-<v t="ekr.20130807203905.16584"><vh>Supported ctrl-clicks in vr panes</vh></v>
+<v t="ekr.20130807203905.16584"><vh>viewrendered plugin</vh>
+<v t="ekr.20130806072439.18531"><vh>Gauging interest: markdown processing addition to viewrendered?</vh>
+<v t="ekr.20130806072439.18532"><vh>Re: Gauging interest: markdown processing addition to viewrendered?</vh></v>
+<v t="ekr.20130806072439.18533"><vh>Re: Gauging interest: markdown processing addition to viewrendered?</vh></v>
+<v t="ekr.20130806072439.18534"><vh>Re: Gauging interest: markdown processing addition to viewrendered?</vh></v>
+<v t="ekr.20130806072439.18535"><vh>Re: Gauging interest: markdown processing addition to viewrendered?</vh></v>
+<v t="ekr.20130806072439.18536"><vh>Re: Gauging interest: markdown processing addition to viewrendered?</vh></v>
+<v t="ekr.20130806072439.18537"><vh>Re: Gauging interest: markdown processing addition to viewrendered?</vh></v>
+<v t="ekr.20130806072439.18539"><vh>Re: Gauging interest: markdown processing addition to viewrendered?</vh></v>
+<v t="ekr.20130806072439.18540"><vh>Re: Gauging interest: markdown processing addition to viewrendered?</vh></v>
+</v>
+</v>
 <v t="ekr.20130808211520.15900"><vh>timestamp plugin</vh></v>
 <v t="ekr.20130803073926.17123"><vh>valuespace plugin</vh>
 <v t="ekr.20130526065545.17506"><vh>Quick valuespace.py update: it now support...</vh></v>
@@ -442,22 +422,14 @@ expanded="ekr.20100731112744.7268,ekr.20100817101952.4303,ekr.20100731112744.727
 <v t="ekr.20130806072439.18889"><vh>Blog post about valuespace up on leo-editor.github.io</vh>
 <v t="ekr.20130806072439.18891"><vh>Re: Blog post about valuespace up on leo-editor.github.io</vh></v>
 </v>
-</v>
-<v t="ekr.20130806072439.18557"><vh>Ville, please help make leoIPython.py work with legacy IPython</vh>
-<v t="ekr.20130806072439.18558"><vh>Re: Ville, please help make leoIPython.py work with legacy IPython</vh></v>
-<v t="ekr.20130806072439.18559"><vh>Re: Ville, please help make leoIPython.py work with legacy IPython</vh></v>
-<v t="ekr.20130806072439.18560"><vh>Re: Ville, please help make leoIPython.py work with legacy IPython</vh></v>
-<v t="ekr.20130806072439.18561"><vh>Re: Ville, please help make leoIPython.py work with legacy IPython</vh></v>
-<v t="ekr.20130806072439.18562"><vh>Re: Ville, please help make leoIPython.py work with legacy IPython</vh></v>
-<v t="ekr.20130806072439.18563"><vh>Re: Ville, please help make leoIPython.py work with legacy IPython</vh></v>
-<v t="ekr.20130806072439.18564"><vh>Re: Ville, please help make leoIPython.py work with legacy IPython</vh></v>
-<v t="ekr.20130806072439.18566"><vh>Re: Ville, please help make leoIPython.py work with legacy IPython</vh></v>
-<v t="ekr.20130806072439.18567"><vh>"Mylyn" with the new hooks</vh>
-<v t="ekr.20130806072439.18568"><vh>Re: "Mylyn" with the new hooks</vh></v>
+<v t="ekr.20130806072439.18495"><vh>ANN: in body python calculations commands</vh>
+<v t="ekr.20130806072439.18496"><vh>Re: ANN: in body python calculations commands</vh></v>
+<v t="ekr.20130806072439.18497"><vh>Re: ANN: in body python calculations commands</vh></v>
+<v t="ekr.20130806072439.18498"><vh>Re: ANN: in body python calculations commands</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20130803073926.17115"><vh>Scripts</vh>
+<v t="ekr.20130803073926.17115"><vh>Scripts (To do)</vh>
 <v t="ekr.20130807203905.16588"><vh>Added cleanup-imported-nodes script to scripts.leo</vh></v>
 <v t="ekr.20130807203905.16242"><vh>Added import-org-mode script</vh>
 <v t="ekr.20130807203905.16243"><vh>import-org-mode (command, not used)</vh>
@@ -477,6 +449,11 @@ expanded="ekr.20100731112744.7268,ekr.20100817101952.4303,ekr.20100731112744.727
 <v t="ekr.20130807203905.16253"><vh>displayCalltree</vh></v>
 <v t="ekr.20130807203905.16254"><vh>trace session</vh></v>
 </v>
+</v>
+<v t="ekr.20130806072439.18508"><vh>Cross-outline node editing</vh>
+<v t="ekr.20130806072439.18509"><vh>Re: Cross-outline node editing</vh></v>
+<v t="ekr.20130806072439.18510"><vh>Re: Cross-outline node editing</vh></v>
+<v t="ekr.20130806072439.18511"><vh>Re: Cross-outline node editing</vh></v>
 </v>
 <v t="ekr.20130526065545.17487"><vh>Indexing files for full text search</vh>
 <v t="ekr.20130526065545.17488"><vh>Re: Indexing files for full text search</vh></v>
@@ -506,16 +483,10 @@ expanded="ekr.20100731112744.7268,ekr.20100817101952.4303,ekr.20100731112744.727
 <v t="ekr.20130526065545.17545"><vh>Re: Tool for diffing Leo files</vh></v>
 </v>
 </v>
-<v t="ekr.20130807203905.16608"><vh>Settings &amp; options</vh>
-<v t="ekr.20130807203905.16529"><vh>Added @color minibuffer-foreground-color setting</vh></v>
-<v t="ekr.20130807203905.16530"><vh>Added --no-plugins option</vh></v>
-<v t="ekr.20130807203905.16531"><vh>Added @color log_warning_color and g.getActualColor</vh></v>
-<v t="ekr.20130807203905.16563"><vh>Fully support :: convention in @mode nodes</vh></v>
-</v>
+<v t="ekr.20130807203905.16608"><vh>Settings &amp; options</vh></v>
 <v t="ekr.20130807203905.16270"><vh>Web site improvements</vh></v>
 </v>
-<v t="ekr.20100731112744.7267"></v>
-<v t="ekr.20130808211520.15902"><vh>Matt's suggestions</vh></v>
+<v t="ekr.20130807203905.16526"><vh>* For the FAQ: create a bzr repository before importing it into Leo</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -914,27 +885,6 @@ https://github.com/vivainio/LeoReader/blob/master/leoaccess.coffee
 
 https://github.com/vivainio/LeoReader/blob/master/main.html
 
-
-On Sat, May 12, 2012 at 12:01 PM, Ville M. Vainio &lt;vivainio@gmail.com&gt; wrote:
-&gt; I want to do some technology evaluation, so I will start doing a Leo
-&gt; file reader for mobile devices using:
-&gt;
-&gt; - jQuery mobile
-&gt; - CoffeeScript
-&gt;
-&gt; This can be deployed on web or locally. Interesting use cases are
-&gt; browsing Leo notes you composed elsewhere on your tablet, and
-&gt; publishing leo docs on the web (e.g. we could host fully browseable
-&gt; leo source outline on Leo website)
-&gt;
-&gt; I will notify the mailing list on the progress; it may be slow since I
-&gt; don't have much contiguous time slots for hobby projects at the
-&gt; moment. If someone wants to hop along, all the better; I'll probably
-&gt; start the project at github once I have something that runs on a
-&gt; desktop browser properly.
-
-btw, noted that it doesn't work with IE (didn't test it at the time, it's easyfix TBD later).
-
 Works ok in Firefox and Chrome.</t>
 <t tx="ekr.20130526065545.14929">Edward K. Ream &lt;edreamleo@gmail.com&gt;
 
@@ -1164,74 +1114,6 @@ On Wednesday, April 24, 2013 8:41:02 PM UTC-4, lewis wrote:
 &gt;
 
 </t>
-<t tx="ekr.20130526065545.17442">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-On Tue, 28 Aug 2012 08:48:54 -0500
-"Edward K. Ream" &lt;edreamleo@gmail.com&gt; wrote:
-
-&gt; 2. The same exec statement appears to allow the execution of arbitrary
-&gt; Python code.  I'm not sure how comfortable I am with that.  Any
-&gt; comments?
-
-That's why enabling requires @bool scripting-at-script-nodes = True as
-well as the abbreviation specific stuff.  The risk seems equivalent to
-the scripting-at-script-nodes = True risk.
-
-&gt; &gt; Here's a quick screencast of the template expansions:  
-&gt; 
-&gt; I loved this screencast.  Could you tell us the tool chain that you
-&gt; used to produce it?
-
-I used (gtk-)recordmydesktop.  I used the non-gui version,
-recordmydesktop, with the window ID, after hitting some snag I can't
-remember with the gui version, gtk-recordmydesktop.  But I couldn't
-work out avconv parameters to convert the ogv format to something more
-common, and although vimeo seemed to understand it well enough to
-upload the video and present the first frame, it wasn't viewable
-there.  recordmydesktop "just worked", which was nice.
-
-I'll look at the Python 3 issues.
-
-Cheers -Terry
-
-</t>
-<t tx="ekr.20130526065545.17443">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-"On Wed, Aug 22, 2012 at 8:52 PM, Terry Brown &lt;terry_n_brown@yahoo.com&gt; wrote:
-&gt; Abbreviations can, in the branch
-&gt; http://bazaar.launchpad.net/~terry-n-brown/+junk/leo_test
-&gt; include computed values and place holders which you can step through,
-&gt; filling in a template.  Edward, these changes involve some core code,
-&gt; although I think they're quite benign, but pls. see change notes at
-&gt; the bottom of this email.
-
-This is great work, Terry.  Many thanks for it.
-
-Just installed the leo_test branch and have taken a careful look at
-the log.  Here are my comments.
-
-1. The exec statement in abbrevClass.finishCreate should be rewritten
-for Python3.  Please make sure the code passes all unit tests when
-unitTest.leo is run with Python3.
-
-2. The same exec statement appears to allow the execution of arbitrary
-Python code.  I'm not sure how comfortable I am with that.  Any
-comments?
-
-Aside from that, all looks well.  Feel free to merge with the trunk
-after ensuring that the code works with Python 3.
-
-&gt; Here's a quick screencast of the template expansions:
-
-I loved this screencast.  Could you tell us the tool chain that you
-used to produce it?
-
-&gt; Here are the draft docs. for abbreviations:
-
-Good work.  I see that you merged them into LeoDocs.leo, which I like.
-
-Edward
-"</t>
 <t tx="ekr.20130526065545.17445">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
 
 Abbreviations can now include computed values and place holders which you
@@ -1338,38 +1220,16 @@ abbreviation nodes # in myLeoSettings.leo
     `|&gt;`. See @string abbreviations-place-start.
 
 
-Edward - to look at the changes in theory you could go to
+===== EKR
 
-http://bazaar.launchpad.net/~terry-n-brown/+junk/leo_test/revision/5430?compare_revid=5424
+The same exec statement appears to allow the execution of arbitrary
+Python code.
 
-but in practice I think the lack of context there makes that useless,
-an you might want to just pull
-http://bazaar.launchpad.net/~terry-n-brown/+junk/leo_test and look at
-it with `bzr qlog`.
+===== Terry
 
-Some of the code is in masterCommand, which is why I wanted you to look
-at it, but it's guarded by if c.abbrev_subst_start:, so it won't do
-anything unless enabled.
-</t>
-<t tx="ekr.20130526065545.17446">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-On Tue, 28 Aug 2012 08:48:54 -0500
-"Edward K. Ream" &lt;edreamleo@gmail.com&gt; wrote:
-
-&gt; 1. The exec statement in abbrevClass.finishCreate should be rewritten
-&gt; for Python3.  Please make sure the code passes all unit tests when
-&gt; unitTest.leo is run with Python3.
-
-Done, added g.do_exec for this.
-
-So the new abbreviations with template expansion and evaluated
-expressions are on the trunk, view the screencast
-http://www.greygreen.org/tmp/leoabbrev.ogv
-with `vlc` or some such to see them in action.
-
-Cheers -Terry
-
-</t>
+That's why enabling requires @bool scripting-at-script-nodes = True as
+well as the abbreviation specific stuff.  The risk seems equivalent to
+the scripting-at-script-nodes = True risk.</t>
 <t tx="ekr.20130526065545.17451">@nocolor
 
 From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
@@ -1884,25 +1744,6 @@ Cheers -Terry
 &gt; 
 
 </t>
-<t tx="ekr.20130526065545.17494">@nocolor
-
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-
-
-On Thu, Apr 11, 2013 at 8:13 AM, Kent Tenney &lt;ktenney@gmail.com&gt; wrote:
-
-
-&gt; Is anyone depending on
-&gt; alt-ctrl-a = toggle-find-wrap-around-option ?
-&gt;
-
-Absolutely.  I use the Alt-Ctrl bindings in the Find Tab all the time.  I
-don't often use Alt-Ctrl-A, but I wouldn't want to eliminate it.
-
-Edward
-
-</t>
 <t tx="ekr.20130526065545.17495">@nocolor
 
 From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
@@ -1925,281 +1766,15 @@ and replace the literal "18px" with "@font-size-body" in the node
 
 @settings--&gt;solarized_dark theme settings--&gt;stylesheet &amp; source--&gt;Non-color styles (fonts etc.)--&gt;body editor
 
-Cheers -Terry
-
-</t>
-<t tx="ekr.20130526065545.17496">@nocolor
-
-From: Jacob Peck &lt;gatesphere@gmail.com&gt;
-
-May I humbly suggest Ctrl-+ and Ctrl--, like so many other editors and 
-web browsers?  Unless those already have default keybindings that I'm 
-unaware of.
-
-Also, does this work with the default theme?
-
---&gt;Jake
-
-On 4/11/2013 12:46 AM, Terry Brown wrote:
-&gt; I just pushed two new commands, zoom-in and zoom-out, which increase
-&gt; or decrease the body text font size by one point size.  They probably
-&gt; deserve default bindings, but to what?  I have them on Ctrl-; and Ctrl-'
-&gt;
-&gt; They leverage the new theme "engine" by manipulating a constant
-&gt; "@font-size-body".  I've set it up in the default theme, anyone using
-&gt; the new dark theme will need to add
-&gt;
-&gt;     @font-size-body = 18px
-&gt;
-&gt; in the config node for that theme,
-&gt;
-&gt; @settings--&gt;solarized_dark theme settings--&gt;stylesheet &amp; source--&gt;config
-&gt;
-&gt; and replace the literal "18px" with "@font-size-body" in the node
-&gt;
-&gt; @settings--&gt;solarized_dark theme settings--&gt;stylesheet &amp; source--&gt;Non-color styles (fonts etc.)--&gt;body editor
-&gt;
-&gt; Cheers -Terry
-&gt;
-
-</t>
-<t tx="ekr.20130526065545.17497">@nocolor
-
-From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
-
-+1. We should do a massive cleanup of keybindings to free up binding space.
-
-On Fri, Apr 12, 2013 at 12:52 AM, Kent Tenney &lt;ktenney@gmail.com&gt; wrote:
-
-&gt; Would you consider moving some bindings from config/leoSettings.leo to
-&gt; your myLeoSettings.leo?
-&gt;
-&gt; It would free up some bindings for folks, and it's one way to survey how
-&gt; many others are using them :-]
-</t>
-<t tx="ekr.20130526065545.17498">@nocolor
-
-From: Kent Tenney &lt;ktenney@gmail.com&gt;
-
-Would you consider moving some bindings from config/leoSettings.leo to
-your myLeoSettings.leo?
-
-It would free up some bindings for folks, and it's one way to survey how many
-others are using them :-]
-
-On Thu, Apr 11, 2013 at 1:14 PM, Edward K. Ream &lt;edreamleo@gmail.com&gt; wrote:
-&gt; On Thu, Apr 11, 2013 at 8:13 AM, Kent Tenney &lt;ktenney@gmail.com&gt; wrote:
-&gt;
-&gt;&gt;
-&gt;&gt; Is anyone depending on
-&gt;&gt; alt-ctrl-a = toggle-find-wrap-around-option ?
-&gt;
-&gt;
-&gt; Absolutely.  I use the Alt-Ctrl bindings in the Find Tab all the time.  I
-&gt; don't often use Alt-Ctrl-A, but I wouldn't want to eliminate it.
-
-</t>
-<t tx="ekr.20130526065545.17499">@nocolor
-
-From: Matt Wilkie &lt;maphew@gmail.com&gt;
-
-
-
-My vote is for Ctrl-plus/minus, and to Ctrl-scroll-wheel, because these are
-consistent across a great many other programs.
-
-It's unfortunate Ctrl-- is already used for for "replace and continue
-search", but like others I didn't know about it so haven't become
-habituated to it. Who experience pain if this was changed?
-
--matt
-
-</t>
-<t tx="ekr.20130526065545.17500">@nocolor
-
-From: Kent Tenney &lt;ktenney@gmail.com&gt;
-
-On Thu, Apr 11, 2013 at 7:28 AM, Jacob Peck &lt;gatesphere@gmail.com&gt; wrote:
-&gt; May I humbly suggest Ctrl-+ and Ctrl--, like so many other editors and web
-&gt; browsers?  Unless those already have default keybindings
-
-I can't find the thread, but I thought we once discussed reducing the number
-of bindings defined by default.
-
-running &lt;alt-x&gt; print-bindings makes it clear why it's a challenge to identify
-unused bindings.
-
-Maybe each binding has users, but I would expect that most don't.
-
-Is anyone depending on
-alt-ctrl-a = toggle-find-wrap-around-option ?
-
-The fewer bindings out of the box, the easier it is for folks extending Leo.
-
-I think a painless way to simplify Leo would be to have a more concise
-set of default bindings.
-
-Thanks,
-Kent
-
-</t>
-<t tx="ekr.20130526065545.17501">@nocolor
-
-From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
-
-Can we bind them to ctrl+scroll wheel?
-
-
-On Thu, Apr 11, 2013 at 7:46 AM, Terry Brown &lt;terry_n_brown@yahoo.com&gt;wrote:
-
-&gt; I just pushed two new commands, zoom-in and zoom-out, which increase
-&gt; or decrease the body text font size by one point size.  They probably
-&gt; deserve default bindings, but to what?  I have them on Ctrl-; and Ctrl-'
-&gt;
-&gt; They leverage the new theme "engine" by manipulating a constant
-&gt; "@font-size-body".  I've set it up in the default theme, anyone using
-&gt; the new dark theme will need to add
-&gt;
-&gt;    @font-size-body = 18px
-&gt;
-&gt; in the config node for that theme,
-&gt;
-&gt; @settings--&gt;solarized_dark theme settings--&gt;stylesheet &amp; source--&gt;config
-&gt;
-&gt; and replace the literal "18px" with "@font-size-body" in the node
-&gt;
-&gt; @settings--&gt;solarized_dark theme settings--&gt;stylesheet &amp;
-&gt; source--&gt;Non-color styles (fonts etc.)--&gt;body editor
-
-</t>
-<t tx="ekr.20130526065545.17502">@nocolor
-
-From: Jacob Peck &lt;gatesphere@gmail.com&gt;
-
-On 4/11/2013 8:33 AM, Terry Brown wrote:
-&gt; Ctrl-- is replace...
-Well then.  Shows how much I use that feature... :p
-&gt; Yes, out of the box only with the default theme, you need to make the
-&gt; minor edits I described below to get it working in the dark theme.
-&gt;
-&gt; Cheers -Terry
-&gt;
-Good to know.  I've been looking for a feature like this for a while.  
-Thanks!
---&gt;Jake
-
-</t>
-<t tx="ekr.20130526065545.17503">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-On Thu, 11 Apr 2013 08:28:59 -0400
-Jacob Peck &lt;gatesphere@gmail.com&gt; wrote:
-
-&gt; May I humbly suggest Ctrl-+ and Ctrl--, like so many other editors and 
-&gt; web browsers?  Unless those already have default keybindings that I'm 
-&gt; unaware of.
-
-Ctrl-- is replace...
-
-&gt; Also, does this work with the default theme?
-
-Yes, out of the box only with the default theme, you need to make the
-minor edits I described below to get it working in the dark theme.
-
-Cheers -Terry
-
-&gt; --&gt;Jake
-&gt; 
-&gt; On 4/11/2013 12:46 AM, Terry Brown wrote:
-&gt; &gt; I just pushed two new commands, zoom-in and zoom-out, which increase
-&gt; &gt; or decrease the body text font size by one point size.  They probably
-&gt; &gt; deserve default bindings, but to what?  I have them on Ctrl-; and Ctrl-'
-&gt; &gt;
-&gt; &gt; They leverage the new theme "engine" by manipulating a constant
-&gt; &gt; "@font-size-body".  I've set it up in the default theme, anyone using
-&gt; &gt; the new dark theme will need to add
-&gt; &gt;
-&gt; &gt;     @font-size-body = 18px
-&gt; &gt;
-&gt; &gt; in the config node for that theme,
-&gt; &gt;
-&gt; &gt; @settings--&gt;solarized_dark theme settings--&gt;stylesheet &amp; source--&gt;config
-&gt; &gt;
-&gt; &gt; and replace the literal "18px" with "@font-size-body" in the node
-&gt; &gt;
-&gt; &gt; @settings--&gt;solarized_dark theme settings--&gt;stylesheet &amp; source--&gt;Non-color styles (fonts etc.)--&gt;body editor
-&gt; &gt;
-&gt; &gt; Cheers -Terry
-&gt; &gt;
-&gt; 
-
-</t>
-<t tx="ekr.20130526065545.17504">@nocolor
-
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-
-
-On Fri, Apr 12, 2013 at 1:47 AM, Ville M. Vainio &lt;vivainio@gmail.com&gt; wrote:
-
-&gt; +1. We should do a massive cleanup of keybindings to free up binding space.
-&gt;
-
-This can always be done in myLeoSettings.leo, but I share your concern.
-
-I have the lurking feeling that it would be possible to do some lightweight
-modes that define temporary bindings.  This is theoretically possible now
-with @mode, but I doubt anyone uses it.  I sure don't.
-
-This could be an important addition to Leo, but for now I've filed it under
-Leo/Later :-)
-
-Edward
-</t>
-<t tx="ekr.20130526065545.17505">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-really, this time.
-
 commit log:
 
   zoom-in / zoom-out commands
-  
   ctrl-mouse wheel scrolling for same
   
   replace old focused pane border highlight with pure stylesheet
   version
   
   rename solarized_dark theme leo_dark_0
-
-Edward, and anyone else using
-
-  @bool use_focus_border = True
-
-this no longer does anything...
-
-now you need to edit
-
-  @data qt-gui-plugin-style-sheet
-
-and change
-
-  @focused-border-style = none
-
-to
-
-  @focused-border-style = solid
-
-for the default theme, if you're using the dark theme, now known as
-leo_dark_0, same deal but after editing as above remember to select
-and run the 'stylesheet &amp; source' node of that theme.
-
-Cheers -Terry
-
-  
-
 </t>
 <t tx="ekr.20130526065545.17506">@nocolor
 
@@ -4210,14 +3785,13 @@ order).
 <t tx="ekr.20130806072439.19631"></t>
 <t tx="ekr.20130806072439.19990">@language rest
 
-Leo 4.11 a1                                     August 16, 2013
+Leo 4.11 a1                                     August 10, 2013
 
-Leo 4.11 a1 is now available at: http://sourceforge.net/projects/leo/files/Leo/4.10%20final/
+Leo 4.11 a1 is now available at: http://sourceforge.net/projects/leo/files/Leo/
+Leo 4.11 contains over a year's work on Leo.
 
 Leo is a text editor, data organizer, project manager and much more.
 See http://leoeditor.com/intro.html
-
-Leo 4.11 contains over a year's work on Leo.
 
 The highlights of Leo 4.11:
 --------------------------
@@ -5427,8 +5001,10 @@ Can not import rest
 - escapeFalseSectionReferences now is a do-nothing:
     
     It never generates @verbatim sentinels during import.
-</t>
-<t tx="ekr.20130807203905.16502">Rev 5378: cleanup-imported-nodes script in scripts.leo &amp; an Aha
+    
+===== Notes
+
+Rev 5378: cleanup-imported-nodes script in scripts.leo &amp; an Aha
 http://groups.google.com/group/leo-editor/browse_thread/thread/77b9df4f4ed6dba0
 
 &gt; The third (and I think last) import fail involves not generating
@@ -5711,14 +5287,6 @@ say, python/Lib/site-packages.
 This is exactly what I need:  I can make changes to important tools
 *safely* within Leo.
 </t>
-<t tx="ekr.20130807203905.16529"></t>
-<t tx="ekr.20130807203905.16530"></t>
-<t tx="ekr.20130807203905.16531">g.es now "redirects" colors using the following settings:
-
-    'black':    @color log_text_foreground_color
-    'blue':     @color log_warning_color
-    'red':      @color log_error_color
-</t>
 <t tx="ekr.20130807203905.16532"></t>
 <t tx="ekr.20130807203905.16533"></t>
 <t tx="ekr.20130807203905.16534">Help-for command translate !&lt;command-name&gt;! in the docstring to the binding for command-name.
@@ -5729,199 +5297,6 @@ Alas, sh.py can not be used in Leo's core.</t>
 <t tx="ekr.20130807203905.16536">\@testclass nodes should set either the suite or testclass vars.
 
 \@suite nodes should set the suite var.
-</t>
-<t tx="ekr.20130807203905.16538">def doTests(self,all=None,marked=None,verbosity=1):
-
-    '''Run any kind of local unit test.
-
-    Important: this is also called from dynamicUnitTest.leo
-    to run external tests "locally" from dynamicUnitTest.leo
-    '''
-
-    trace = False
-    c,tm = self.c,self
-
-    # 2013/02/25: clear the screen before running multiple unit tests locally.
-    if all or marked: g.cls()
-    p1 = c.p.copy() # 2011/10/31: always restore the selected position.
-
-    # This seems a bit risky when run in unitTest.leo.
-    if not c.fileName().endswith('unitTest.leo'):
-        if c.isChanged():
-            c.save() # Eliminate the need for ctrl-s.
-
-    if trace: g.trace('marked',marked,'c',c)
-    try:
-        g.unitTesting = g.app.unitTesting = True
-        g.app.runningAllUnitTests = all and not marked # Bug fix: 2012/12/20
-        g.app.unitTestDict["fail"] = False
-        g.app.unitTestDict['c'] = c
-        g.app.unitTestDict['g'] = g
-        g.app.unitTestDict['p'] = c.p.copy()
-
-        # c.undoer.clearUndoState() # New in 4.3.1.
-        changed = c.isChanged()
-        suite = unittest.makeSuite(unittest.TestCase)
-        aList = tm.findAllUnitTestNodes(all,marked)
-        setup_script = None
-        found = False
-        for p in aList:
-            if tm.isTestSetupNode(p):
-                setup_script = p.b
-                test = None
-            elif tm.isTestNode(p):
-                if trace: g.trace('adding',p.h)
-                test = tm.makeTestCase(p,setup_script)
-            elif tm.isSuiteNode(p): # @suite
-                if trace: g.trace('adding',p.h)
-                test = tm.makeTestSuite(p,setup_script)
-            elif tm.isTestClassNode(p):
-                if trace: g.trace('adding',p.h)
-                test = tm.makeTestClass(p) # A suite of tests.
-            else:
-                test = None
-            if test:
-                suite.addTest(test)
-                found = True
-        # Verbosity: 1: print just dots.
-        if not found:
-            # 2011/10/30: run the body of p as a unit test.
-            if trace: g.trace('no found: running raw body')
-            test = tm.makeTestCase(c.p,setup_script)
-            if test:
-                suite.addTest(test)
-                found = True
-        if found:
-            res = unittest.TextTestRunner(verbosity=verbosity).run(suite)
-            # put info to db as well
-            if g.enableDB:
-                key = 'unittest/cur/fail'
-                archive = [(t.p.gnx,trace2) for (t,trace2) in res.errors]
-                c.cacher.db[key] = archive
-        else:
-            g.error('no %s@test or @suite nodes in %s outline' % (
-                g.choose(marked,'marked ',''),
-                g.choose(all,'entire','selected')))
-    finally:
-        c.setChanged(changed) # Restore changed state.
-        if g.app.unitTestDict.get('restoreSelectedNode',True):
-            c.contractAllHeadlines()
-            c.redraw(p1)
-        else:
-            c.recolor() # Needed when coloring is disabled in unit tests.
-        g.unitTesting = g.app.unitTesting = False
-</t>
-<t tx="ekr.20130807203905.16539">def get_suite_script(self):
-
-    s = '''
-
-try:
-    g.app.scriptDict['suite'] = suite
-except NameError:
-    pass
-
-'''
-    return g.adjustTripleString(s, self.c.tab_width)
-</t>
-<t tx="ekr.20130807203905.16540">def get_test_class_script(self):
-
-    s = '''
-
-try:
-    g.app.scriptDict['testclass'] = testclass
-except NameError:
-    pass
-
-'''
-    return g.adjustTripleString(s,self.c.tab_width)
-</t>
-<t tx="ekr.20130807203905.16541">def makeTestCase (self,p,setup_script):
-
-    c = self.c
-    p = p.copy()
-
-    if p.b.strip():
-        return GeneralTestCase(c,p,setup_script)
-    else:
-        return None
-</t>
-<t tx="ekr.20130807203905.16542">def makeTestClass (self,p):
-
-    """Create a subclass of unittest.TestCase"""
-
-    c,tm = self.c,self
-    fname = 'makeTestClass'
-    p = p.copy()
-    script = g.getScript(c,p).strip()
-    if not script:
-        print("nothing in %s" % p.h)
-        return None
-    try:
-        script = script + tm.get_test_class_script()
-        script = script + tm.get_suite_script()
-        d = {'c':c,'g':g,'p':p,'unittest':unittest}
-        if c.write_script_file:
-            scriptFile = c.writeScriptFile(script)
-            if g.isPython3:
-                exec(compile(script,scriptFile,'exec'),d)
-            else:
-                execfile(scriptFile,d)
-        else:
-            exec(script + '\n',d)
-        testclass = g.app.scriptDict.get('testclass')
-        suite = g.app.scriptDict.get('suite')
-        if suite and testclass:
-            print("\n%s: both 'suite' and 'testclass defined in %s" % (
-                fname,p.h)) 
-        elif testclass:
-            suite = unittest.TestLoader().loadTestsFromTestCase(testclass)
-            return suite
-        elif suite:
-            return suite
-        else:
-            print("\n%s: neither 'suite' nor 'testclass' defined in %s" % (
-                fname,p.h))
-            return None
-    except Exception:
-        print('\n%s: exception creating test class in %s' % (fname,p.h))
-        g.es_print_exception()
-        return None
-</t>
-<t tx="ekr.20130807203905.16543"># This code executes the script in an @suite node.
-# This code assumes that the script sets the 'suite' var to the test suite.
-
-def makeTestSuite (self,p,setup_script):
-
-    """Create a suite of test cases by executing the script in an @suite node."""
-
-    c,tm = self.c,self
-    fname = 'makeTestSuite'
-    p = p.copy()
-    script = g.getScript(c,p).strip()
-    if not script:
-        print("no script in %s" % p.h)
-        return None
-    if setup_script:
-        script = setup_script + script
-    try:
-        script = script + tm.get_suite_script()
-        d = {'c':c,'g':g,'p':p}
-        if c.write_script_file:
-            scriptFile = c.writeScriptFile(script)
-            if g.isPython3:
-                exec(compile(script,scriptFile,'exec'),d)
-            else:
-                execfile(scriptFile,d)
-        else:
-            exec(script + '\n',d)
-        suite = g.app.scriptDict.get("suite")
-        if not suite:
-            print("\n%s: %s script did not set suite var" % (fname,p.h))
-        return suite
-    except Exception:
-        print('\n%s: exception creating test cases for %s' % (fname,p.h))
-        g.es_print_exception()
-        return None
 </t>
 <t tx="ekr.20130807203905.16545"></t>
 <t tx="ekr.20130807203905.16546"></t>
@@ -6058,16 +5433,6 @@ What I did:
 </t>
 <t tx="ekr.20130807203905.16562">The commands now work, and Alt-slash and Alt-Ctrl-slash are bound as in Emacs.
 </t>
-<t tx="ekr.20130807203905.16563">If the @mode headline contains ::, everything following
-the :: is the mode prompt. For example::
-    
-    @mode abc :: xyz
-    
-Creates the enter-abc-mode command, but the prompt for the command is xyz.
-
-ParserBaseClass.createModeCommand creates this convention.
-Changed k.modeHelpHelper.
-</t>
 <t tx="ekr.20130807203905.16564"></t>
 <t tx="ekr.20130807203905.16565">Instead of just printing their docstrings.
 </t>
@@ -6141,7 +5506,7 @@ Here is ipapi.get::
 </t>
 <t tx="ekr.20130807203905.16583">Added TypeScriptScanner class and related code.
 </t>
-<t tx="ekr.20130807203905.16584"></t>
+<t tx="ekr.20130807203905.16584">Supported ctrl-clicks in vr panes</t>
 <t tx="ekr.20130807203905.16585">Created vimoutlinerScanner.
 
 Created at.writeAtAutoOtlFile.
@@ -6172,7 +5537,10 @@ Workflow:
 5. bzr qdiff then shows all cleanups.
 6. bzr commit if all goes well.
 </t>
-<t tx="ekr.20130807203905.16608"></t>
+<t tx="ekr.20130807203905.16608">- Added @color minibuffer-foreground-color setting.
+- Added @color log_warning_color setting.
+- Fully supported :: convention in @mode nodes.
+- Added --no-plugins command-line option.</t>
 <t tx="ekr.20130807203905.16610"></t>
 <t tx="ekr.20130807203905.16611"></t>
 <t tx="ekr.20130807203905.16686"></t>
@@ -6203,32 +5571,8 @@ Hitting Ctrl-H can still cause a small unwanted scroll, but the insert point rem
 - str_mtime: time node was last modified
 - str_atime: time node contents were last viewed
 </t>
-<t tx="ekr.20130808211520.15902">@nocolor-node
-​​
-On Thu, Aug 8, 2013 at 12:14 PM, Matt Wilkie &lt;maphew@gmail.com&gt; wrote:
-
-** These command need to have admin privileges, so "Open an elevated
-Windows console (command prompt), then type:"
-
-And the `ftype` example is missing trailing `"%1"` or `"%1" %*`
-
-As for the second syntax, that is the association the Python installer
-(2.7) creates. I don't know what the extra `%*` does. In any case, both of
-them enable double-clicking on a .leo file in Windows Explorer. Without
-them Leo starts but doesn't open the selected .leo file.
-
-So complete line:
-
-ftype LeoFile="&lt;path to python&gt;\pythonw.exe" "&lt;path to launchLeo.py&gt;\launchLeo.py" "%1" %*
-
-​Thanks for this detailed explanation.  It's helpful.​
-
-** Strike any mention of creating a batch files here. They aren't needed
-for *association*. The extra info here could be folded into "Running Leo &gt;
-Windows" section.
-
-​Will do. Thanks.
-</t>
+<t tx="ekr.20130808211520.17431"></t>
+<t tx="ekr.20130808211520.17433"></t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]

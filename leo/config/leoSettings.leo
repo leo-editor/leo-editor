@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
+<!-- Created by Leo (http://leoeditor.com/leo_toc.html) -->
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
@@ -226,12 +226,12 @@
 </v>
 </v>
 <v t="ekr.20111023095357.16693"><vh>Focus border settings</vh>
-<v t="ekr.20111023095357.16694"><vh>@bool use_focus_border = True</vh></v>
-<v t="ekr.20111103073536.16580"><vh>@bool use_body_focus_border = True</vh></v>
-<v t="ekr.20111023095357.16695"><vh>@int focus_border_width = 1</vh></v>
-<v t="ekr.20111023095357.16696"><vh>@color focus_border_color = blue</vh></v>
-<v t="ekr.20120519193555.11830"><vh>@color focus_border_command_state_color = red</vh></v>
-<v t="ekr.20120520053551.11241"><vh>@color focus_border_overwrite_state_color = green</vh></v>
+<v t="ekr.20111023095357.16694"><vh>@@bool use_focus_border = True</vh></v>
+<v t="ekr.20111103073536.16580"><vh>@@bool use_body_focus_border = True</vh></v>
+<v t="ekr.20111023095357.16695"><vh>@@int focus_border_width = 1</vh></v>
+<v t="ekr.20111023095357.16696"><vh>@@color focus_border_color = blue</vh></v>
+<v t="ekr.20120519193555.11830"><vh>@@color focus_border_command_state_color = red</vh></v>
+<v t="ekr.20120520053551.11241"><vh>@@color focus_border_overwrite_state_color = green</vh></v>
 </v>
 <v t="ekr.20110611092035.16490"><vh>Windows</vh>
 <v t="ekr.20100507153425.8304"><vh>@string qt-toolbar-location=top</vh></v>
@@ -9544,7 +9544,24 @@ Light comments  base1 comments
 <t tx="ekr.20111022084527.16869"></t>
 <t tx="ekr.20111022084527.16870"></t>
 <t tx="ekr.20111022084527.16871"></t>
-<t tx="ekr.20111023095357.16693"></t>
+<t tx="ekr.20111023095357.16693">These setting no longer do anything...
+Instead, please edit::
+
+  @data qt-gui-plugin-style-sheet
+
+and change::
+
+  @focused-border-style = none
+
+to::
+
+  @focused-border-style = solid
+
+for the default theme.
+
+If you're using the dark theme, now known as leo_dark_0, same deal but
+after editing as above remember to select and run the 'stylesheet &amp; source'
+node of that theme.</t>
 <t tx="ekr.20111023095357.16694"></t>
 <t tx="ekr.20111023095357.16695"></t>
 <t tx="ekr.20111023095357.16696"></t>

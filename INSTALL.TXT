@@ -1,11 +1,25 @@
+@language rest
 System requirements
 -------------------
 
-Leo requires Python 2.6 or above (including Python 3.x) and PyQt.
+Leo requires the `Python`_ and `PyQt_` package.
+The `PyEnchant`_ package is optional. 
 
-- Download Python from http://python.org/
-    
-- Download PyQt from http://www.riverbankcomputing.co.uk/news
+**Python**: Leo will work on any platform that supports Python 2.6 or
+above, including Python 3.0 and above. To install Python, see
+http://python.org.
+
+**PyQt**: PyQt provides Leo's widgets. To install PyQt, get the binary
+package from: http://www.riverbankcomputing.co.uk/software/pyqt/download
+The PyQt version must match your installed Python version. Remember that
+Leo requires Python 2.6 or later, or Python 3.0 or later. Now run the
+binary PyQt installer.
+
+**PyEnchant**: You must install the PyEnchant package if you want to use
+Leo's Spell tab. Download and install the PyEnchant package from
+http://pythonhosted.org/pyenchant/download.html There is an executable
+installer for Windows users.
+
 
 Leo's HOME directory
 --------------------
@@ -20,40 +34,50 @@ There are various fallback directories if there is no home directory.
 Installing Leo on Linux
 -----------------------
 
-Download the latest version of Leo (a .zip file) from `Leo's download page`_.
+You may download Leo's sources in one of three ways, as described at:
+http://leoeditor.com/download.html If the sources are zipped, unzip them
+into the **unpacked folder** in your home directory. The unpacked folder
+will be called something like leo-4-11.
 
-Unzip the downloaded .zip file into the **unpacked folder** in your home directory.
-The unpacked folder will be called something like leo-4-5.
+You now have two choices:
 
-You can run Leo from your home directory.
-You can add  ~/leo-4.10 to your path, or you can create an alias that executes::
+1. You can run Leo from your home directory.
+   Just add  ~/leo-4-11 to your path.
 
-    python ~/leo-4-10/launchLeo.py
+2. You can install leo into /usr/local/lib and /usr/local/bin by running
+   Leo's install script as follows::
+
+    cd ~/leo-4-11-a1 # Change version as appropriate.
+    chmod u+x install
+    sudo ./install
+
+The install script will instruct you to add /usr/local/bin to your path.
+You can, instead, add the following link::
+
+    sudo ln -s /usr/local/lib/leo/ /usr/local/lib/python2.6/site-packages/
 
 Installing Leo on Windows
 --------------------------
 
-There are now two ways to install Leo on Windows:
-    
-1. Use the single-click executable installer, named something like
-   LeoSetup-4.10-final.exe
+Install Python and Qt, as described above.
 
-2. Leo is distributed as a .zip file.
-   To install Leo from the .zip file:
+Now you have a choice.  You can use Leo's binary (single-click) installer
+or download Leo's sources directly.
 
-    1. Download the latest version of Leo (a .zip file) from:    
-       http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
+1. Using the single-click installer
 
-    2. Unzip the .zip file and place the unpacked leo folder in 
-       the 'Program Files' folder or any convenient location.
+Leo has a binary installer for Windows, available at
+http://sourceforge.net/projects/leo/files/Leo/ The binary installer
+installs Leo and sets Windows file associations.
 
-    After you have installed Leo, you should add the location of your leo/core folder to your python path.
-    One way to do this is adding something like the following to python/Lib/sitecustomize.py:
+2. Installing from sources
 
-        import sys
-        sys.path.append(r'<path-to-leo>leo\core')
+You may download Leo's sources in one of three ways, as described at:
+http://leoeditor.com/download.html If the sources are zipped, unpack them
+into a temp folder. You may place the sources anywhere you like, including
+Python's *site-packages* folder, for example,
+C:\Python26\Lib\site-packages.
 
-    Another way is to append <path-to-leo> to the Windows PYTHONPATH environment variable.
 
 Running Leo
 -----------
@@ -69,24 +93,69 @@ Another way to run Leo is as follows::
     cd <path-to-launchLeo.py>
     python launchLeo.py
 
-Here are some tips that may make running Leo easier:
+Creating File Associations
+--------------------------
 
 **Linux**
-    The following shell script will allow you to open foo.leo files by typing leo foo::
 
-        #!/bin/sh 
-        python <leopath>launchLeo.py $1
+The following shell script will allow you to open foo.leo files by typing leo foo::
 
-    where <leopath> is the path to the directory *containing* the leo directory. 
+    #!/bin/sh 
+    python <leopath>launchLeo.py $1
+
+where <leopath> is the path to the directory *containing* the leo directory. 
 
 **Windows**
-    You can associate Leo with .leo files using a batch file. Put the
-    following .bat file in c:\\Windows::
 
-        <path-to-python>/python <path-to-leo>/launchLeo.py %*
+*Important*: Leo's binary Windows installer sets file associations
+automatically, so this section is needed only if you are installing Leo
+from a .zip file or other sources.
 
-    Here <path-to-leo> is the path to the directory *containing* the leo directory,
-    that is, the directory containing launchLeo.py.
+There are two ways of associating .leo files with Leo. The first uses the
+Windows control panel, the second, the Windows console.
+
+**Method 1: Using the Windows Control Panel**
+
+The goal is that you want to associate .leo files with the following command::
+
+    "<path to python>\python.exe" "<path to launchLeo.py>\launchLeo.py" "%1"
+    
+Before Windows 7, you do this with using the Folder Options control panel.
+In Windows 7, you do this with the Default Programs control panel.
+
+*Note*: "%1" passes just the file being clicked on, quoted for spaces etc.
+The quotation marks are needed to handle file paths containing spaces.
+
+*Warning:* In a batch file, %1 passes just the first command line parameter.
+It is logical to expect %* to work for file associations just as in batch
+files. Alas, it does not.
+
+**Method 2: Using the Windows Console**
+
+Open a Windows console with administrator privileges, then type::
+
+    ftype LeoFile="<path to python>\pythonw.exe" "<path to launchLeo.py>\launchLeo.py" "%1" %*
+    assoc .leo=LeoFile
+
+And put this leo.bat in %PATH%::
+
+    @start /b "Leo" "<path to python>\python.exe" "<path to launchLeo.py>\launchLeo.py" %*
+    
+You may omit the /b option if you want to create a separate console window for Leo.
+
+Adding Leo to Your Path
+-----------------------
+
+After you have installed Leo, you should add the location of your leo/core folder to your python path.
+One way to do this is adding something like the following to python/Lib/sitecustomize.py:
+
+    import sys
+    sys.path.append(r'<path-to-leo>leo\core')
+
+Another way is to append <path-to-leo> to the Windows PYTHONPATH environment variable.
+
+Running Leo for the first time
+------------------------------
 
 The first time you start Leo, a dialog will ask you for a unique identifier. If
 you are using cvs, use your cvs login name. Otherwise your initials will do. Leo

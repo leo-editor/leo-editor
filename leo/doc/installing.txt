@@ -45,7 +45,7 @@ please ask for help on `Leo's help forum`_.
 .. _`Python`:               http://www.python.org
 .. _`PyQt`:                 http://www.riverbankcomputing.com/software/pyqt/intro
 .. @+node:ekr.20101125062332.5090: *3* Installing packages
-Leo requires the following packages `Python`_ and `PyQt_`.
+Leo requires the `Python`_ and `PyQt_` package.
 The `PyEnchant`_ package is optional. 
 
 **Python**: Leo will work on any platform that supports Python 2.6 or
