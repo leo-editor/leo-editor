@@ -128,16 +128,9 @@ Windows control panel, the second, the Windows console.
 
 **Method 1: Using the Windows Control Panel**
 
-
 The goal is that you want to associate .leo files with the following command::
 
-    "<path to python>\python.exe" "<path to launchLeo.py>\launchLeo.py" --gui=qttabs "%1"
-    
-or::
-
-    myLaunchLeo.bat
-    
-where myLaunchLeo.bat contains the command above.
+    "<path to python>\python.exe" "<path to launchLeo.py>\launchLeo.py" "%1"
     
 Before Windows 7, you do this with using the Folder Options control panel.
 In Windows 7, you do this with the Default Programs control panel.
@@ -153,7 +146,7 @@ files. Alas, it does not.
 
 Open a Windows console, then type::
 
-    ftype LeoFile="<path to python>\pythonw.exe" "<path to launchLeo.py>\launchLeo.py"
+    ftype LeoFile="<path to python>\pythonw.exe" "<path to launchLeo.py>\launchLeo.py" "%1" %*
     assoc .leo=LeoFile
 
 And put this leo.bat in %PATH%::
