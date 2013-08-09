@@ -25,6 +25,7 @@
     http://qt-project.org/forums/viewthread/30838/
     https://groups.google.com/forum/#!topic/leo-editor/W1_LVrQxdwQ
 .. @+node:ekr.20130503155210.24812: ** To do: 4.11
+.. @+node:ekr.20130808211520.15901: *3* * encourage e-postcards from users
 .. @+node:ekr.20130806211959.17306: *3* Items from mail: what to do about these?
 @language rest
 .. @+node:ekr.20130806211959.17307: *4* Help (Some might be good to document)

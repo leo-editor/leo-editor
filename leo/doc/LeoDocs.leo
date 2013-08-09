@@ -89,8 +89,7 @@
 <v t="ekr.20100821182153.4344"><vh>@file screen-shots.txt</vh></v>
 </v>
 <v t="ekr.20100731112744.7267"><vh>Installing Leo</vh>
-<v t="ekr.20100805165051.7152" descendentVnodeUnknownAttributes="7d71005507302e302e332e3171017d710258120000007273745f687474705f61747472696275746571035d71042858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d333722206e616d653d22687474702d6e6f64652d6d61726b65722d3337223e710558040000003c2f613e71065d71072858260000003c64697620636c6173733d2273656374696f6e222069643d22672d726566696e64616c6c223e710858060000003c2f6469763e71095d710a28584f0000003c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d666f722d66696e64696e672d616e642d6368616e67696e672d746578742d66726f6d2d73637269707473223e710b58060000003c2f6469763e710c5d710d28583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710e58060000003c2f6469763e710f5d71102858060000003c626f64793e711158070000003c2f626f64793e71125d71132858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711458070000003c2f68746d6c3e71154e656565656558070000003c2f6469763e0a711658070000003c2f6469763e0a711758350000003c64697620636c6173733d2273656374696f6e222069643d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e0a7118586c0000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313922206e616d653d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e52756e6e696e67204c656f20696e206261746368206d6f64653c2f613e3c2f68313e0a71196573732e"
-expanded="ekr.20100731112744.7268,ekr.20100817101952.4303,ekr.20100731112744.7276,ekr.20130807203905.16603,"><vh>@file installing.txt</vh></v>
+<v t="ekr.20100805165051.7152" descendentVnodeUnknownAttributes="7d71005507302e302e332e3171017d710258120000007273745f687474705f61747472696275746571035d71042858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d333722206e616d653d22687474702d6e6f64652d6d61726b65722d3337223e710558040000003c2f613e71065d71072858260000003c64697620636c6173733d2273656374696f6e222069643d22672d726566696e64616c6c223e710858060000003c2f6469763e71095d710a28584f0000003c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d666f722d66696e64696e672d616e642d6368616e67696e672d746578742d66726f6d2d73637269707473223e710b58060000003c2f6469763e710c5d710d28583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710e58060000003c2f6469763e710f5d71102858060000003c626f64793e711158070000003c2f626f64793e71125d71132858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711458070000003c2f68746d6c3e71154e656565656558070000003c2f6469763e0a711658070000003c2f6469763e0a711758350000003c64697620636c6173733d2273656374696f6e222069643d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e0a7118586c0000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313922206e616d653d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e52756e6e696e67204c656f20696e206261746368206d6f64653c2f613e3c2f68313e0a71196573732e"><vh>@file installing.txt</vh></v>
 </v>
 <v t="ekr.20091130111843.6787"><vh>The Leo Tutorial</vh>
 <v t="ekr.20100805165051.7146"><vh>@file intro.txt</vh></v>
@@ -189,8 +188,7 @@ expanded="ekr.20100731112744.7268,ekr.20100817101952.4303,ekr.20100731112744.727
 <v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028550b302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473550b302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473550b302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473550b302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177"
-expanded="ekr.20130806211959.17078,"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20100805165051.7177"><vh>@file release_notes.txt</vh></v>
 </v>
 <v t="ekr.20130806072439.19990"><vh>Leo 4.11 a1 Release notes</vh>
 <v t="ekr.20130807203905.16780"><vh>Bugs</vh>
@@ -755,7 +753,8 @@ are bad search terms anyway, but it's helpful to get as close to the
 full list of outlines containing hits as possible.
 
 Also most of my changes apply only to the "f target" find command, not
-the simpler "s target" search command.</t>
+the simpler "s target" search command.
+</t>
 <t tx="ekr.20130526065545.14926">10/2/11
 
 Can also be used for bookmarking directly from the browser to Leo.  To
@@ -778,7 +777,8 @@ The headline is preceeded with '@url ' *unless* the ``bookmarks`` plugin is load
 If the ``bookmarks`` plugin is loaded the bookmark will have to be moved to a ``@bookmarks`` tree to be useful.
 
 The browser may or may not be able to close the bookmark form window for you, depending on settings - set ``dom.allow_scripts_to_close_windows`` to true
-in ``about:config`` in Firefox.</t>
+in ``about:config`` in Firefox.
+</t>
 <t tx="ekr.20130526065545.14927">As of rev 5309 of the trunk, Leo now supports @auto-otl, along with
 imports of .otl files.
 
@@ -866,7 +866,8 @@ any combination of headline and body lines should now be valid,
 regardless of indentation level.  If necessary, the parser will insert
 intermediate nodes so as to allow lines that are indented more than
 one more than the previous node. This is the most general scheme that
-I can imagine.</t>
+I can imagine.
+</t>
 <t tx="ekr.20130526065545.14928">From Ville:
 
 .... aaaaand we are live :).
@@ -885,7 +886,8 @@ https://github.com/vivainio/LeoReader/blob/master/leoaccess.coffee
 
 https://github.com/vivainio/LeoReader/blob/master/main.html
 
-Works ok in Firefox and Chrome.</t>
+Works ok in Firefox and Chrome.
+</t>
 <t tx="ekr.20130526065545.14929">Edward K. Ream &lt;edreamleo@gmail.com&gt;
 
 A new script, now in scripts.leo, cleans up imported @file nodes as follows:
@@ -1229,7 +1231,8 @@ Python code.
 
 That's why enabling requires @bool scripting-at-script-nodes = True as
 well as the abbreviation specific stuff.  The risk seems equivalent to
-the scripting-at-script-nodes = True risk.</t>
+the scripting-at-script-nodes = True risk.
+</t>
 <t tx="ekr.20130526065545.17451">@nocolor
 
 From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
@@ -3443,7 +3446,8 @@ Odd.  I don't see the problem.  But I can see how there might be a
 problem, depending on your autocompletion setup.  It should be easy to
 fix.  I'll do so sometime today.
 
-Edward</t>
+Edward
+</t>
 <t tx="ekr.20130806072439.18559">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
 
 Observation two:
@@ -3479,7 +3483,8 @@ Observe the output in console:
 Excellent.  Thanks very much.
 
 Edward
-"</t>
+"
+</t>
 <t tx="ekr.20130806072439.18561">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
 
 On Sun, Apr 15, 2012 at 2:34 AM, Ville M. Vainio &lt;vivainio@gmail.com&gt; wrote:
@@ -3506,7 +3511,8 @@ just::
 
 I'll look into this later today...
 
-Edward</t>
+Edward
+</t>
 <t tx="ekr.20130806072439.18562">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
 
 I'm trying to do this on windows.
@@ -3527,7 +3533,8 @@ anymore, but completes on every keystroke.
 Thanks for this suggestion.  I'll see what can be done.
 
 Edward
-"</t>
+"
+</t>
 <t tx="ekr.20130806072439.18564">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
 
 "On Sun, Apr 15, 2012 at 1:54 PM, Edward K. Ream &lt;edreamleo@gmail.com&gt; wrote=
@@ -3540,7 +3547,8 @@ Edward
 Does rev 5255 help?
 
 EKR
-"</t>
+"
+</t>
 <t tx="ekr.20130806072439.18566">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
 
 I found this problem - every time you press backspace, it updates the
@@ -3606,7 +3614,8 @@ in any way the user (or plugin writer) desires.
 
 Your comments please.
 
-Edward</t>
+Edward
+</t>
 <t tx="ekr.20130806072439.18804">From: Jacob Peck &lt;gatesphere@gmail.com&gt;
 
 I've added a new plugin to Leo, that adds printing support when using 
@@ -3752,7 +3761,8 @@ decided to push it as is. I'll blog about more features later on.
 
 http://leo-editor.github.io/valuespace-intro.html
 
-Hope it already helps alleviate the mystery of what it's all about :)</t>
+Hope it already helps alleviate the mystery of what it's all about :)
+</t>
 <t tx="ekr.20130806072439.18891">From: gatesphere &lt;gatesphere@gmail.com&gt;
 
 Looks really interesting, Ville!  Thanks for sharing, looking forward to 
@@ -4568,7 +4578,8 @@ It's kinda pointless to make this a user option.
 - Added search box.
 - Added link to glossary from Leo's home page.
 - Added scaled screen shot to Leo's home page.
-- Brought screen shots up to date.</t>
+- Brought screen shots up to date.
+</t>
 <t tx="ekr.20130807203905.16476">This was a recent problem.  Normally setInputState should *not* set the border.
 
 Added code to eventFilter to call remove_border on focus out.
@@ -5293,7 +5304,8 @@ This is exactly what I need:  I can make changes to important tools
 </t>
 <t tx="ekr.20130807203905.16535">Extensions is a convenient place: code can use g.importExtension to import it.
 
-Alas, sh.py can not be used in Leo's core.</t>
+Alas, sh.py can not be used in Leo's core.
+</t>
 <t tx="ekr.20130807203905.16536">\@testclass nodes should set either the suite or testclass vars.
 
 \@suite nodes should set the suite var.
@@ -5506,7 +5518,8 @@ Here is ipapi.get::
 </t>
 <t tx="ekr.20130807203905.16583">Added TypeScriptScanner class and related code.
 </t>
-<t tx="ekr.20130807203905.16584">Supported ctrl-clicks in vr panes</t>
+<t tx="ekr.20130807203905.16584">Supported ctrl-clicks in vr panes
+</t>
 <t tx="ekr.20130807203905.16585">Created vimoutlinerScanner.
 
 Created at.writeAtAutoOtlFile.
@@ -5540,7 +5553,8 @@ Workflow:
 <t tx="ekr.20130807203905.16608">- Added @color minibuffer-foreground-color setting.
 - Added @color log_warning_color setting.
 - Fully supported :: convention in @mode nodes.
-- Added --no-plugins command-line option.</t>
+- Added --no-plugins command-line option.
+</t>
 <t tx="ekr.20130807203905.16610"></t>
 <t tx="ekr.20130807203905.16611"></t>
 <t tx="ekr.20130807203905.16686"></t>
