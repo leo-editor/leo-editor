@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
+<!-- Created by Leo (http://leoeditor.com/leo_toc.html) -->
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
@@ -69,19 +69,15 @@
 <v t="ville.20090815203828.5235"><vh>@file spydershell.py</vh></v>
 <v t="ekr.20100103093121.5329"><vh>@file stickynotes.py</vh></v>
 <v t="tbrown.20090119215428.2"><vh>@file todo.py</vh></v>
-<v t="tbrown.20100318101414.5990"
-expanded="ekr.20110320120020.14491,ekr.20110320120020.14490,ekr.20110317024548.14375,ekr.20101112195628.5426,"><vh>@file viewrendered.py</vh></v>
+<v t="tbrown.20100318101414.5990"><vh>@file viewrendered.py</vh></v>
 <v t="tbrown.20090206153748.1"><vh>@file graphcanvas.py</vh></v>
-<v t="ville.20110403115003.10348"
-expanded="ekr.20110408065137.14221,"><vh>@file valuespace.py</vh></v>
+<v t="ville.20110403115003.10348"><vh>@file valuespace.py</vh></v>
 <v t="peckj.20130514093558.4062"><vh>@file printing.py</vh></v>
 <v t="tbrown.20130420091241.44181"><vh>@file screen_capture.py</vh></v>
 </v>
 <v t="ekr.20100103093121.5365"><vh>Auto completion</vh>
-<v t="ekr.20091118065749.5261"
-expanded="ekr.20110307092028.14155,"><vh>@file ctagscompleter.py</vh></v>
-<v t="ville.20091204224145.5355"
-expanded="ekr.20110309051057.14267,"><vh>@file codewisecompleter.py</vh></v>
+<v t="ekr.20091118065749.5261"><vh>@file ctagscompleter.py</vh></v>
+<v t="ville.20091204224145.5355"><vh>@file codewisecompleter.py</vh></v>
 </v>
 <v t="edream.110203113231.667"><vh>Commands &amp; directives</vh>
 <v t="edream.110203113231.741"><vh>@file add_directives.py</vh></v>
@@ -122,18 +118,15 @@ expanded="ekr.20110309051057.14267,"><vh>@file codewisecompleter.py</vh></v>
 <v t="EKR.20040517080202.3"><vh>@file examples/french_fm.py</vh></v>
 </v>
 <v t="ekr.20101110150056.9457"><vh>Experimental</vh>
-<v t="ekr.20101110092851.5742"
-expanded="ekr.20060904132527.9,"><vh>@file leoOPML.py</vh></v>
+<v t="ekr.20101110092851.5742"><vh>@file leoOPML.py</vh></v>
 <v t="ekr.20040205071616"><vh>@file mnplugins.py</vh></v>
 <v t="ekr.20101110094759.5843"><vh>@file mod_speedups.py</vh></v>
-<v t="ekr.20040910070811.1"
-expanded="ekr.20060108160737.1,"><vh>@file run_nodes.py</vh></v>
+<v t="ekr.20040910070811.1"><vh>@file run_nodes.py</vh></v>
 <v t="ekr.20100103093121.5339"><vh>@file stickynotes_plus.py</vh></v>
 <v t="ajones.20070122160142"><vh>@file textnode.py</vh></v>
 <v t="ekr.20040331071919"><vh>Leo to AsciiDoc</vh>
 <v t="ekr.20101110093449.5822"><vh>@file mod_leo2ascd.py</vh></v>
-<v t="ekr.20101110150056.9445"
-expanded="ekr.20040331071919.1,ekr.20040331071919.30,"><vh>@file mod_leo2ascd.txt</vh></v>
+<v t="ekr.20101110150056.9445"><vh>@file mod_leo2ascd.txt</vh></v>
 </v>
 </v>
 <v t="EKR.20040517075715"><vh>External programs</vh>
@@ -162,14 +155,15 @@ expanded="ekr.20040331071919.1,ekr.20040331071919.30,"><vh>@file mod_leo2ascd.tx
 <v t="ekr.20110110105526.5463"><vh>@file ftp.py</vh></v>
 <v t="tbrown.20091214233510.5347"><vh>@file geotag.py</vh></v>
 <v t="tbrown.20100228141752.5691"><vh>@file leocursor.py</vh></v>
+<v t="ville.20120503224623.3574"><vh>@file leomylyn.py</vh></v>
 <v t="dan.20090217132953.1"><vh>@file mime.py</vh></v>
 <v t="mork.20041018204908.1"><vh>@file multifile.py</vh></v>
 <v t="ekr.20040331151007"><vh>@file niceNosent.py</vh></v>
 <v t="edream.110203113231.876"><vh>@file read_only_nodes.py</vh></v>
 <v t="ekr.20040828103325"><vh>@file startfile.py</vh></v>
+<v t="ekr.20130808211520.15893"><vh>@file timestamp.py</vh></v>
 <v t="tbrown.20110428144124.29061"><vh>@file xml_edit.py</vh></v>
 <v t="mork.20041010095009"><vh>@file xsltWithNodes.py</vh></v>
-<v t="ville.20120503224623.3574"><vh>@file leomylyn.py</vh></v>
 </v>
 <v t="ekr.20081121105001.2080"><vh>Gui plugins</vh></v>
 <v t="ekr.20041001210557"><vh>Scripting</vh>
@@ -185,10 +179,8 @@ expanded="ekr.20040331071919.1,ekr.20040331071919.30,"><vh>@file mod_leo2ascd.tx
 <v t="EKR.20040517080250.1"><vh>@file mod_http.py</vh></v>
 </v>
 <v t="ekr.20101004082701.5674"><vh>Slideshows, screencasts &amp; screenshots</vh>
-<v t="ekr.20120913110135.10579"
-expanded="ekr.20120913110135.10608,ekr.20120913110135.10607,ekr.20120916193057.10605,"><vh>@file screencast.py</vh></v>
-<v t="ekr.20101121031443.5330"
-expanded="ekr.20100914090933.5771,"><vh>@file screenshots.py</vh></v>
+<v t="ekr.20120913110135.10579"><vh>@file screencast.py</vh></v>
+<v t="ekr.20101121031443.5330"><vh>@file screenshots.py</vh></v>
 <v t="ekr.20060831165821"><vh>@file slideshow.py</vh></v>
 </v>
 <v t="ekr.20071113084440"><vh>Testing</vh>

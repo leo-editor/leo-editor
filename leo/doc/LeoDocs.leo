@@ -434,7 +434,8 @@
 <v t="ekr.20130806072439.18555"><vh>Re: should add "refresh from disk" at parent node is a good idea?</vh></v>
 </v>
 <v t="ekr.20130807203905.16584"><vh>Supported ctrl-clicks in vr panes</vh></v>
-<v t="ekr.20130803073926.17123"><vh>valuespace.py</vh>
+<v t="ekr.20130808211520.15900"><vh>timestamp plugin</vh></v>
+<v t="ekr.20130803073926.17123"><vh>valuespace plugin</vh>
 <v t="ekr.20130526065545.17506"><vh>Quick valuespace.py update: it now support...</vh></v>
 <v t="ekr.20130803125244.17094"><vh>Document valuespace from Ville's blog</vh></v>
 <v t="ekr.20130806072439.18889"><vh>Blog post about valuespace up on leo-editor.github.io</vh>
@@ -6194,6 +6195,11 @@ The fixes:
 Hitting Ctrl-H can still cause a small unwanted scroll, but the insert point remains visible.
 </t>
 <t tx="ekr.20130807203905.16819"></t>
+<t tx="ekr.20130808211520.15900">If this plugin is enabled, the following node attributes will be managed:
+- str_ctime: creation time
+- str_mtime: time node was last modified
+- str_atime: time node contents were last viewed
+</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
