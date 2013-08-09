@@ -4221,9 +4221,9 @@ The highlights of Leo 4.11:
 - Important improvements to abbreviations.
 - Clones are now valid anywhere in @file nodes.
 - Leo now warns if a .leo file is open elsewhere.
-- Added support for sessions.
+- Added support for themes and sessions.
 - The pane with focus is highlighted with a colored border.
-- Added support for the closure and TypeScript languages.
+- Added support for the closure and markdown and TypeScript languages.
 - Added importers for .ipynb, .otl and vimoutliner files.
 - Important new and improved plugins.
 - Dozens of new scripts.
