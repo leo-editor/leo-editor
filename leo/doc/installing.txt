@@ -144,7 +144,7 @@ files. Alas, it does not.
 
 **Method 2: Using the Windows Console**
 
-Open a Windows console, then type::
+Open a Windows console with administrator privileges, then type::
 
     ftype LeoFile="<path to python>\pythonw.exe" "<path to launchLeo.py>\launchLeo.py" "%1" %*
     assoc .leo=LeoFile
