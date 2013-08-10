@@ -713,7 +713,7 @@ class LeoPluginsController:
     def unregisterOneHandler (self,tag,fn):
 
         bunches = self.handlers.get(tag)
-        bunches = [bunch for bunch in bunches if bunch.fn != fn]
+        bunches = [bunch for bunch in bunches if bunch and bunch.fn != fn]
         self.handlers[tag] = bunches
     #@-others
 #@-others
