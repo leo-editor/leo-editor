@@ -72,11 +72,11 @@
 <v t="ekr.20111017085134.16114"><vh>@@button outlineToClipboard</vh></v>
 </v>
 </v>
-<v t="ekr.20061008055616" a="E"><vh>Scripts</vh>
+<v t="ekr.20061008055616"><vh>Scripts</vh>
 <v t="ekr.20051110111150"
 expanded="ekr.20041126132604,"><vh>@thin leoScripts.txt</vh></v>
 <v t="ekr.20110914030246.2405"><vh>@file gen_blender_docs.py</vh></v>
-<v t="maphew.20130612230051.2793" a="E"><vh>Windows</vh>
+<v t="maphew.20130612230051.2793"><vh>Windows</vh>
 <v t="maphew.20130809155103.2862"><vh>@auto create-leobat.bat</vh></v>
 <v t="maphew.20130809155103.2863"><vh>@file build-leo.bat</vh></v>
 <v t="maphew.20130613230258.2801"><vh>@file elevate.py</vh></v>
@@ -97,6 +97,53 @@ expanded="ekr.20041126132604,"><vh>@thin leoScripts.txt</vh></v>
 <v t="ekr.20121220111212.13267"><vh>write_file</vh></v>
 </v>
 </v>
+<v t="ekr.20130810093044.16933"><vh>Recently contributed scripts</vh>
+<v t="ekr.20130810093044.16934"><vh>By Terry Brown</vh>
+<v t="ekr.20130810093044.16935"><vh>add @script node</vh></v>
+<v t="ekr.20130810093044.16936"><vh>Cross-outline node editing</vh>
+<v t="ekr.20130810093044.16937"><vh>Re: Cross-outline node editing</vh></v>
+<v t="ekr.20130810093044.16938"><vh>Re: Cross-outline node editing</vh></v>
+<v t="ekr.20130810093044.16939"><vh>Re: Cross-outline node editing</vh></v>
+</v>
+<v t="ekr.20130810093044.16940"><vh>export full contents</vh>
+<v t="ekr.20130810093044.16941"><vh>script</vh></v>
+</v>
+<v t="ekr.20130810093044.16942"><vh>Indexing files for full text search</vh>
+<v t="ekr.20130810093044.16943"><vh>Re: Idea/needed: system command queue</vh></v>
+<v t="ekr.20130810093044.16944"><vh>Re: Idea/needed: system command queue</vh></v>
+</v>
+<v t="ekr.20130810093044.16945"><vh>persistent state with json as a leo abbreviation</vh>
+<v t="ekr.20130810093044.16946"><vh>Re: persistent state with json as a leo abbreviation</vh></v>
+<v t="ekr.20130810093044.16947"><vh>Re: persistent state with json as a leo abbreviation</vh></v>
+<v t="ekr.20130810093044.16948"><vh>Re: persistent state with json as a leo abbreviation</vh></v>
+</v>
+<v t="ekr.20130810093044.16949"><vh>Tool for diffing Leo files</vh>
+<v t="ekr.20130810093044.16950"><vh>Re: Tool for diffing Leo files</vh></v>
+</v>
+</v>
+<v t="ekr.20130810093044.16951"><vh>By EKR</vh>
+<v t="ekr.20130810093044.16952"><vh>cleanup-imported-nodes</vh>
+<v t="ekr.20130810093044.16953"><vh>Rev 5378: cleanup-imported-nodes script in scripts.leo &amp; an Aha</vh></v>
+</v>
+<v t="ekr.20130810093044.16954"><vh>Create global data structures from in modes/*.py files</vh></v>
+<v t="ekr.20130810093044.16955"><vh>get all comments from modes (slow)</vh>
+<v t="ekr.20130810093044.16956"><vh>get_paths</vh></v>
+<v t="ekr.20130810093044.16957"><vh>import_module</vh></v>
+</v>
+<v t="ekr.20130810093044.16958"><vh>import-org-mode</vh>
+<v t="ekr.20130810093044.16959"><vh>import-org-mode (command, not used)</vh>
+<v t="ekr.20130810093044.16960"><vh>ctor</vh></v>
+<v t="ekr.20130810093044.16961"><vh>go</vh></v>
+<v t="ekr.20130810093044.16962"><vh>scan</vh></v>
+<v t="ekr.20130810093044.16963"><vh>test</vh></v>
+</v>
+<v t="ekr.20130810093044.16964"><vh>@@button import-org-mode</vh>
+<v t="ekr.20130810093044.16965"><vh>scan</vh></v>
+</v>
+<v t="ekr.20130810093044.16966"><vh>test-import-org-mode</vh></v>
+</v>
+<v t="ekr.20130810093044.16967"><vh>jinja2 templating script</vh></v>
+<v t="ekr.20130810093044.16968"><vh>recursive import script (revised)</vh></v>
 <v t="ekr.20121013084734.16370"><vh>Recursive import script (with cleanups)</vh>
 <v t="ekr.20121013084734.16371"><vh>class ImportController</vh>
 <v t="ekr.20121013084734.16372"><vh>Pass 1: import_dir</vh></v>
@@ -118,6 +165,16 @@ expanded="ekr.20041126132604,"><vh>@thin leoScripts.txt</vh></v>
 <v t="ekr.20121013084734.16387"><vh>remove_empty_nodes</vh></v>
 </v>
 <v t="ekr.20121013084734.16388"><vh>run</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20130810093044.16969"><vh>By Brian Theado</vh>
+<v t="ekr.20130810093044.16970"><vh>Display function call hierarchy in Leo</vh>
+<v t="ekr.20130810093044.16971"><vh>call tree</vh>
+<v t="ekr.20130810093044.16972"><vh>displayCalltree</vh></v>
+<v t="ekr.20130810093044.16973"><vh>trace session</vh></v>
+</v>
+</v>
 </v>
 </v>
 </vnodes>
@@ -1465,6 +1522,1043 @@ test_template = g.adjustTripleString(test_template,c.tab_width)
         f.write(self.test_template % (self.clean(p.h),self.get_body(p)))
     f.close()
 </t>
+<t tx="ekr.20130810093044.16933"></t>
+<t tx="ekr.20130810093044.16934"></t>
+<t tx="ekr.20130810093044.16935">&gt; Moreover, support for session tracking and restoring becomes an instant
+&gt; addition since just by oppening all the @path leo nodes under a "session"
+&gt; node we can restore our session!
+
+There was a thread about saving sessions some time ago.  Here's a
+script from that thread which adds a @script node to your outline which
+reloads the other outlines currently loaded when this outline is next
+loaded.
+
+tablist = g.findNodeAnywhere(c, '@script load tabs')
+if not tablist:
+    from leo.core.leoNodes import vnode
+    v = vnode(c)
+    v.h = '@script load tabs'
+    v._linkAsNthChild(c.hiddenRootNode,
+         len(c.hiddenRootNode.children))
+tablist = g.findNodeAnywhere(c, '@script load tabs')
+assert tablist
+import time
+b = ["# Generated %s\n"%time.strftime('%c')]
+for oc in g.app.commanders():
+    b.append("g.openWithFileName('%s', c)" % oc.fileName())
+b.append("c.frame.bringToFront()")
+b.append("c.setLog()")
+tablist.b = '\n'.join(b)
+</t>
+<t tx="ekr.20130810093044.16936">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+
+I've found that having edits on a node in one outline simultaneously
+reflected in another node in another outline works surprisingly well.
+
+I do a lot of to-do item project managing with Leo, with lists of todo
+items (managed with the todo plugin) in each projects outline.
+
+A script rapidly assembles a global list of todo items using
+the .../external/leosax.py parser to scan all the project files without
+leo having to fully load them.  The script builds a tree of todo items
+which uses the UNLs to make them into bookmarks which can jump to the
+corresponding node in the project's outline, opening it if necessary.
+
+Which works fine for general "what should I work on next" use, but is
+still clumsy if you want to edit a lot of todo items at once, adjusting
+due date or priority etc.  You have to double-click the item in the
+global view to jump to its source in its project's outline, edit it
+there, switch back to the main outline, etc.
+
+So now the script which generates the global view tags the items with a
+marker which, when seen by the todo plugin, causes it to apply todo
+item edits in the global view to the corresponding node in the
+project's file as well.  This means the first time you edit a todo item
+there may be a pause while that project's outline is loaded, but
+everything carries on as it should afterwards, and on-going todo item
+editing is quick once the outlines are loaded.
+
+I'll push the updated todo.py code which checks for a
+v.u['annotate']['src_unl'] marker to know if a todo item is a proxy for
+one in another file and propagate the edits, but unless you have a
+script which assembles todo items from diverse files and tags them as
+proxies it doesn't really do anything.
+
+Really I just wanted to highlight how this approach, edits on a proxy
+node causing the opening and editing of a node in another outline,
+really can work in a usable way - I'm sure there are all sorts of
+possible applications.
+</t>
+<t tx="ekr.20130810093044.16937">From: Matt Wilkie &lt;maphew@gmail.com&gt;
+
+Kent, I echo your thoughts :)
+
+as I was reading Terry's post I kept thinking I'd like to watch him work
+sometime. A few times I've tried setting up a Todo system in Leo for
+myself, but I've thus far always abandoned the project as it turned into
+more work than a simpe pad and pen kept close at hand. (Albeit with
+drawbacks. There's a pad at work, another at home, a 3rd in my jacket
+sometimes, and content intermixed between them "on the wrong one").
+</t>
+<t tx="ekr.20130810093044.16938">From: "F.S." &lt;speech.free@gmail.com&gt;
+
+It appears that the F-35 program could have benefited from your approach:
+http://www.nytimes.com/2012/11/29/us/in-federal-budget-cutting-f-35-fighter-jet-is-at-risk.html?ref=us
+
+They are still pasting paper on a wall to manage the project. Imagine if 
+the project manager learned to use Leo.
+</t>
+<t tx="ekr.20130810093044.16939">From: Kent Tenney &lt;ktenney@gmail.com&gt;
+
+That flow would sure make a great webcast!
+</t>
+<t tx="ekr.20130810093044.16940">From: Terry &lt;webtourist@gmail.com&gt;
+
+I need to present to people who don't have leo installation, in easily 
+readable format, the full content of a .leo file, not just the outline, but 
+all nodes and all contents.
+
+What do I need to do ?
+
+===== Terry
+
+You could run this script (below):
+
+It only exports selected nodes, so if you want to export everything,
+you have to select all the top level nodes, i.e. collapse all the nodes
+so only the top level is visible, click the first one, and shift-click
+the last one.
+
+It exports to plain text... although you might be able to use the
+template to describe HTML, not sure.
+
+&gt; Terry, how do i run it ?  I'm guessing it's not at the cmdline like "python 
+&gt; this_script.py" 
+
+Right.  Paste the content into a node, then click the script-button
+button to create a new button for running this script.  The button's
+name will be the node's name, what it is doesn't matter but 'export'
+would be an obvious choice.  Then select the node(s) you want exported
+- presumably not including the node containing the script :)
+
+Then it will ask for a file name and whether to include unexpanded
+nodes.\
+
+</t>
+<t tx="ekr.20130810093044.16941">@language python
+
+# template is everything between r""" and second """
+# placeholders are H heading B body C children
+# use \\n in B and C lines for conditional blank lines
+
+template = r"""H
+    B
+  * C"""
+
+lines=[]
+exp_only = g.app.gui.runAskYesNoCancelDialog(
+    c, 'Expanded nodes only?', 'Expanded nodes only?')
+if exp_only == 'no':
+    exp_only = False
+    
+def export_text(p, indent=''):
+    
+    spaces = ' '*(len(indent) - len(indent.lstrip(' ')))
+    
+    for line in template.split('\\n'):
+        
+        if 'H' in line:
+            lines.append(indent + line.replace('H', p.h))
+        elif 'B' in line and p.b.strip():
+            prefix = line[:line.find('B')].replace('\\\\n', '\\n')
+            for i in p.b.strip().split('\\n'):
+                lines.append(spaces + prefix + i)
+                prefix = line[:line.find('B')].replace('\\\\n', '')
+            if line.endswith('\\\\n'):
+                lines.append('')
+        elif 'C' in line and (not exp_only or p.isExpanded()):
+            prefix = line[:line.find('C')].replace('\\\\n', '\\n')
+            for child in p.children():
+                export_text(child, indent=spaces + prefix)
+            if line.endswith('\\\\n'):
+                lines.append('')
+        elif 'C' not in line and 'B' not in line:
+            lines.append(line)
+
+if exp_only != 'cancel':
+    for i in c.getSelectedPositions():
+        export_text(i)
+    
+    filename = g.app.gui.runSaveFileDialog('Save to file')
+    # filename = '/home/tbrown/del.txt'
+    
+    if filename is not None:
+        open(filename,'w').write('\\n'.join(lines))
+</t>
+<t tx="ekr.20130810093044.16942">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+
+Just pushed leo/external/leoftsindex.py:
+
+Stand alone GUI free index builder for Leo's full text search system::
+
+  python leoftsindex.py &lt;file1&gt; &lt;file2&gt; &lt;file3&gt;...
+
+If &lt;file&gt; does not contain '#' it's assumed to be a .leo file
+to index, and is indexed.
+
+If &lt;file&gt; does contain '#' it's assumed to be a .leo file
+containing a list of .leo files to index, with the list in
+the node indicated by the UNL after the #, e.g.::
+
+   path/to/myfile.leo#Lists--&gt;List of outlines
+
+In the latter case, if the node identified by the UNL has children,
+the list of files to scan is built from the first line of the body
+of each child node of the identified node (works well with bookmarks.py).
+If the node identified by the UNL does not have children, the
+node's body is assumed to be a simple text listing of paths to .leo files).
+
+.. note::
+    
+    It may be necessary to quote the "file" on the command line,
+    as the '#' may be interpreted as a comment delimiter::
+        
+        python leoftsindex.py "workbook.leo#Links"
+
+</t>
+<t tx="ekr.20130810093044.16943">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
+
+Now I have basic functionality pushed to trunk.
+
+If you want to "spawn" (posibbly several) system commands to background,
+use g.procs.add(), like this ctrl+b script:
+
+def L(*args):
+    g.es("callback", args)
+
+g.procs.add(['sleep', '4'], "que1")
+g.procs.add(['sleep', '3'], "que1", L)
+g.procs.add(['sleep', '2'], "que1")
+g.procs.add(['sleep', '2'], "que2")
+
+Note how que2 completes first. Idea is that commands in same queue depend
+on each other, and thus need to run in sequential order.
+
+This should make waiting for long lasting operations easier as the whole
+Leo won't freeze until they are over (but you can still use the stdout /
+stderr output from these calls, thanks to the optional callback)
+
+API may change once I start using it (soon).
+
+
+
+On Wed, Apr 17, 2013 at 2:48 PM, Ville M. Vainio &lt;vivainio@gmail.com&gt; wrote:
+
+&gt; Often, I find myself wanting to execute system commands in serial fashion
+&gt; (first in, first out), capture their output, and allow browsing it, BUT not
+&gt; blocking Leo or ipython terminal.
+&gt;
+&gt; I'd like to show stderr and stdout in g.es, or separate log page, and
+&gt; provide callback after task has been completed.
+&gt;
+&gt; Unless anyone has something like this already, I plan to create it "later"
+&gt; with QProcess.
+&gt;
+
+</t>
+<t tx="ekr.20130810093044.16944">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+
+On Wed, 17 Apr 2013 14:48:59 +0300
+"Ville M. Vainio" &lt;vivainio@gmail.com&gt; wrote:
+
+&gt; Often, I find myself wanting to execute system commands in serial fashion
+&gt; (first in, first out), capture their output, and allow browsing it, BUT not
+&gt; blocking Leo or ipython terminal.
+&gt; 
+&gt; I'd like to show stderr and stdout in g.es, or separate log page, and
+&gt; provide callback after task has been completed.
+
+There's the leoscreen stuff for integration with the GNU `screen`
+terminal switcher / manager.  Push lines from the body to the terminal,
+pull lines back the other way.  But more for interactive interaction
+with terminal programs than batch oriented work.  Leo doesn't block.
+
+Cheers -Terry
+
+&gt; Unless anyone has something like this already, I plan to create it "later"
+&gt; with QProcess.
+&gt; 
+
+</t>
+<t tx="ekr.20130810093044.16945">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+
+I've added an abbreviation to my myLeoSettings.leo abbreviations:
+https://gist.github.com/tbnorth/5530059
+
+It's the abbreviation "persist;;" and when you type that you get:
+
+---cut here---
+import json
+
+json_state_file = "cache_info_file.json"
+if not os.path.exists(json_state_file):
+    json.dump({'cache_items':{}}, open(json_state_file, 'w'))
+cache_info = json.load(open(json_state_file))
+
+def main():
+
+    # do stuff with cache_info...
+
+if __name__ == '__main__':
+
+    try:
+        main()
+    except:
+        json.dump(cache_info, open(json_state_file, 'w'))
+---cut here---
+
+with appropriate interaction to customize all the parts which, in the
+above example, include "cache_", i.e. the filename and the variable
+name.
+
+The point is it seems silly to create a module and hence a dependency
+for what is barely 4 lines of actual code, but those 4 lines give you
+very handy robust persistence, so something like an editor abbreviation
+is the obvious way to make the available - nothing Leo specific here,
+except that only serious editors have abbreviation like that ;-).
+</t>
+<t tx="ekr.20130810093044.16946">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
+
+On Thu, May 23, 2013 at 2:41 PM, Terry Brown &lt;terry_n_brown@yahoo.com&gt;wrote:
+
+&gt; I've added [an abbreviation] "persist;;"
+
+[snip]
+
+How do you use the code inserted by the abbreviation?  I suspect I'm not
+the only one who doesn't understand what you are trying to do...
+</t>
+<t tx="ekr.20130810093044.16947">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+
+p.s. the 'except:' in the code below should have been 'finally:', fixed
+on the gist now.
+
+On Thu, 23 May 2013 14:41:31 -0500
+Terry Brown &lt;terry_n_brown@yahoo.com&gt; wrote:
+
+&gt; I've added an abbreviation to my myLeoSettings.leo abbreviations:
+&gt; https://gist.github.com/tbnorth/5530059
+&gt; 
+&gt; It's the abbreviation "persist;;" and when you type that you get:
+&gt; 
+&gt; ---cut here---
+&gt; import json
+&gt; 
+&gt; json_state_file = "cache_info_file.json"
+&gt; if not os.path.exists(json_state_file):
+&gt;     json.dump({'cache_items':{}}, open(json_state_file, 'w'))
+&gt; cache_info = json.load(open(json_state_file))
+&gt; 
+&gt; def main():
+&gt; 
+&gt;     # do stuff with cache_info...
+&gt; 
+&gt; if __name__ == '__main__':
+&gt; 
+&gt;     try:
+&gt;         main()
+&gt;     except:
+&gt;         json.dump(cache_info, open(json_state_file, 'w'))
+&gt; ---cut here---
+&gt; 
+&gt; with appropriate interaction to customize all the parts which, in the
+&gt; above example, include "cache_", i.e. the filename and the variable
+&gt; name.
+&gt; 
+&gt; The point is it seems silly to create a module and hence a dependency
+&gt; for what is barely 4 lines of actual code, but those 4 lines give you
+&gt; very handy robust persistence, so something like an editor abbreviation
+&gt; is the obvious way to make the available - nothing Leo specific here,
+&gt; except that only serious editors have abbreviation like that ;-).
+&gt; 
+&gt; Cheers -Terry
+&gt; 
+
+</t>
+<t tx="ekr.20130810093044.16948">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+
+On Fri, 24 May 2013 16:35:59 -0500
+"Edward K. Ream" &lt;edreamleo@gmail.com&gt; wrote:
+
+&gt; On Thu, May 23, 2013 at 2:41 PM, Terry Brown &lt;terry_n_brown@yahoo.com&gt;wrote:
+&gt; 
+&gt; &gt; I've added [an abbreviation] "persist;;"
+&gt; 
+&gt; 
+&gt; [snip]
+&gt; 
+&gt; How do you use the code inserted by the abbreviation?  I suspect I'm not
+
+The corrected version is below for reference - I had `except` instead
+of `finally` in the first version, so you data was only saved if
+something went wrong :-)
+
+It's just a framework for providing a dictionary the contents of which
+persist between runs of the program.  I've used it for code that's
+making lots of small url requests against a server, to cache the
+results so that during development the crash / debug / re-run cycle is
+faster because each piece of data is requested only once, ever, not once
+every run.  More recently I was using it to store key value pairs of
+filenames and a comment on the issue in the file, knowing that
+completing the analysis of the issues in the files would take more than
+one run of the program which was identifying the issues.
+
+So in the example below, the content of the cache_info dictionary is
+persistent, whatever main() does with it is seen next time the
+program's run.  Nothing Leo specific except that it's really just an
+import statement plus 5 lines of code and doesn't seem worth its own
+file, but is more than you want to re-type all the time either, so
+ideal for an abbreviation in your favorite editor.
+
+I've added a couple of comments in the version below.
+
+Cheers -Terry
+
+---cut here---
+import json
+
+# name for persistent data store
+json_state_file = "cache_info_file.json"   
+if not os.path.exists(json_state_file):
+    # create persistent data store if it doesn't exist
+    json.dump({'cache_items':{}}, open(json_state_file, 'w'))
+# load persistent data
+cache_info = json.load(open(json_state_file))
+
+def main():
+
+    # do stuff with cache_info...
+
+if __name__ == '__main__':
+
+    try:
+        main()
+    finally:
+        # save altered persistent data
+        json.dump(cache_info, open(json_state_file, 'w'), indent=4)
+---cut here---
+
+&gt; the only one who doesn't understand what you are trying to do...
+&gt; 
+&gt; Edward
+&gt; 
+
+</t>
+<t tx="ekr.20130810093044.16949">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+
+The script below is a tool for diffing two Leo files. The attached
+screenshot illustrates the output for two different revisions of
+LeoPyRef.leo.
+
+``- nodename``
+    indicates a node which disappeared
+``+ nodename``
+    a node which is new,
+``!v nodename`` followed by ``!^ nodename``
+    a node with an unchanged heading but changed content, the first
+    linking to the old version, the second linking to the new version
+
+If you have the bookmarks.py plugin active, you can double click nodes
+to jump to the original(s).
+
+
+
+from leo.core.leoNodes import vnode
+if not hasattr(vnode, 'insertAsLastChild'):
+    # add insertAsLastChild method to vnodes
+    def ialc(self):
+        vnode(self.context)._linkAsNthChild(self, len(self.children))
+        return self.children[-1]
+    vnode.insertAsLastChild = ialc
+
+from_filename = g.app.gui.runOpenFileDialog('From (old) file', [('Leo', '*.leo')])
+to_filename = g.app.gui.runOpenFileDialog('To (new) file', [('Leo', '*.leo')])
+
+# from_filename = "/mnt/shuttle/bkup/usr1/2012-07-13/home/tbrown/.leo/.todo.leo"
+# to_filename = "/mnt/shuttle/bkup/usr1/2012-07-15/home/tbrown/.leo/.todo.leo"
+
+from_c = g.openWithFileName(from_filename, c)
+to_c = g.openWithFileName(to_filename, c)
+
+vf = from_c.hiddenRootNode
+vt = to_c.hiddenRootNode
+
+assert from_c != c
+assert to_c != c
+assert from_c != to_c
+
+nd = c.rootPosition().insertAfter()
+nd.copy().back().moveAfter(nd)
+nd.h = 'diff @bookmarks'
+
+def text_match(a, b):
+    return (a.h == b.h, 
+            a.h == b.h and a.b == b.b)
+def gnx_match(a, b):
+    return (a.h == b.h and a.gnx == b.gnx, 
+            a.h == b.h and a.b == b.b and a.gnx == b.gnx)
+
+def diff_trees(vf, vt, path):
+
+    fonly = []  # nodes only in from tree
+    tonly = []  # nodes only in to tree
+    diffs = []  # nodes which occur in both but have different descendants
+
+    # count number of times each headline occurs as a child of
+    # each node being compared
+    count_f = {}
+    for cf in vf.children:
+        count_f[cf.h] = count_f.get(cf.h, 0) + 1
+    count_t = {}
+    for ct in vt.children:
+        count_t[ct.h] = count_t.get(ct.h, 0) + 1
+
+    for cf in vf.children:
+        
+        for ct in vt.children:
+            
+            if count_f[cf.h] == 1 and count_t[ct.h] == 1:
+                equal = text_match
+            else:
+                equal = gnx_match
+            
+            head_eq, body_eq = equal(cf, ct)
+            
+            if body_eq:
+                diffs.append(diff_trees(cf, ct, path+[vf.h]))
+                
+                break
+            elif head_eq:
+                d = diff_trees(cf, ct, path+[vf.h])
+                if d:
+                    d.h = '!v '+d.h
+                else:
+                    d = vnode(nd.v.context)
+                    d.h = '!v '+cf.h
+                d.b = "file://%s/#%s\\n\\n%s" % (
+                    from_filename, 
+                    '--&gt;'.join((path+[vf.h]+[cf.h])[1:]),
+                    cf.b
+                )
+                diffs.append(d)
+                d = vnode(nd.v.context)
+                d.h = '!^ '+cf.h
+                d.b = "file://%s/#%s\\n\\n%s" % (
+                    to_filename, 
+                    '--&gt;'.join((path+[vt.h]+[ct.h])[1:]),
+                    ct.b
+                )
+                diffs.append(d)
+                break
+        else:
+            fonly.append(cf)
+            
+    for ct in vt.children:
+        
+        for cf in vf.children:
+            
+            if count_f[cf.h] == 1 and count_t[ct.h] == 1:
+                equal = text_match
+            else:
+                equal = gnx_match
+            
+            head_eq, body_eq = equal(cf, ct)
+            if head_eq or body_eq:
+                # no need to recurse matches again
+                break
+
+        else:
+            tonly.append(ct)
+
+    if not any(diffs) and not fonly and not tonly:
+        return None
+        
+    vd = vnode(nd.v.context)
+    vd.h = vf.h
+    for d in diffs:
+        if d:
+            vd.children.append(d)
+    for f in fonly:
+        n = vd.insertAsLastChild()
+        n.h = '- '+f.h
+        n.b = "file://%s/#%s" % (from_filename, '--&gt;'.join((path+[vf.h]+[f.h])[1:]))
+    for t in tonly:
+        n = vd.insertAsLastChild()
+        n.h = '+ '+t.h
+        n.b = "file://%s/#%s" % (to_filename, '--&gt;'.join((path+[vf.h]+[t.h])[1:]))
+        
+    return vd
+
+v = diff_trees(vf, vt, [])
+if v:
+    nd.v.children.extend(v.children)  # snip off &lt;hidden root node&gt;
+
+c.bringToFront()
+c.redraw()
+
+</t>
+<t tx="ekr.20130810093044.16950">From: resi147 &lt;scalet@yebu.de&gt;
+
+I tried this one and it seems to be very useful. What I would also like to 
+have is a similar (or the same) script,
+that does the same on two different nodes of a leo file. I admit, the 
+changes should be minimal to be done by
+myself, but as I'm not familiar with the internal leo api, I wanted to ask 
+for how to best do this changes.
+
+Probably somewhere here
+"""
+...
+vf = from_c.hiddenRootNode 
+vt = to_c.hiddenRootNode
+...
+"""
+just to feed in the 2 nodes, Any quick idea how this can be done the best 
+way?
+
+Cheers,
+Karl.
+
+</t>
+<t tx="ekr.20130810093044.16951"></t>
+<t tx="ekr.20130810093044.16952">The script itself is in scripts.leo: cleanup-imported-nodes
+
+- Put docstring in root node.
+- Use section reference for declarations.
+- Remove leading and trailing blank lines from all nodes, leaving only a trailing newline.
+- If a new contains nothing but comments, merge it with the next node.
+- If a node contains nothing but a property, merge it with the previous node.
+
+The holy grail would be to do all this in the Python importer, but a post-processing script suffices.
+
+Workflow:
+    
+1. bzr checkin of all *unchanged* file.
+2. Import all files and save.
+3. bzr commit all changed files.
+4. Run cleanup script.
+5. bzr qdiff then shows all cleanups.
+6. bzr commit if all goes well.
+</t>
+<t tx="ekr.20130810093044.16953">Edward K. Ream &lt;edreamleo@gmail.com&gt;
+
+A new script, now in scripts.leo, cleans up imported @file nodes as follows:
+
+- Moves a shebang line from the first child to the root.
+- Moves a leading docstring in the first child to the root.
+- Uses a section reference for declarations.
+- Removes leading and trailing blank lines from all nodes.
+- Merges a node containing nothing but comments with the next node.
+- Merges a node containing no class or def lines with the previous node.
+
+The Aha: dealing with trees *after* they have been created is much
+easier than creating the tree in the first place.
+
+It would be impossible to conceive of this script in any other environment.
+Leo's node structure drastically simplifies the patterns to be discovered.
+</t>
+<t tx="ekr.20130810093044.16954">@language python
+
+'''Script to create global data structures from modes/*.py files.'''
+
+import glob
+import imp
+
+g.cls()
+
+theDir = g.os_path_finalize_join(g.app.loadDir,'..','modes','*.py')
+aList = glob.glob(theDir)
+
+theDir = g.os_path_finalize_join(g.app.loadDir,'..','modes')
+
+# print('-'*40)
+known_keys = list(g.app.language_delims_dict.keys())
+new_languages = {}
+
+for z in aList:
+    name = g.os_path_basename(z)
+    name2 = name[:-3]
+    if name2 in known_keys or name2.startswith('__'):
+        if 0: print('ignore: %s' % (name2))
+    else:
+        try:
+            theFile, pathname, description = imp.find_module(name2,[theDir])
+            m = imp.load_module(name2, theFile, pathname, description)
+            if hasattr(m,'properties'):
+                # new_languages.append(name2)
+                new_languages[name2] = m
+            else:
+                print('no properties: %s %s' % (name2,m))
+        except Exception:
+            g.es_exception()
+            
+print('%s new languages\n' % (len(list(new_languages.keys()))))
+    
+for key in sorted(new_languages.keys()):
+    m = new_languages.get(key)
+    aList2 = [m.properties.get(z)
+        for z in ('lineComment','commentStart','commentEnd')
+            if m.properties.get(z)]
+    print('%-20s : "%s",' % (
+        '"%s"' % (key),
+        ' '.join(aList2)))
+    # computed[name2] = ' '.join(aList2)
+       
+if 0:
+    mismatches = 0
+    print()
+    for z in known_keys:
+        val = g.app.language_delims_dict.get(z)
+        val2 = computed.get(z)
+        if not val:
+            print('no val',z)
+        elif not val2:
+            print('no val2',z)
+        elif val != val2:
+            mismatches += 1
+            print('mismatch for %s. expected %s got %s' % (z,repr(val),repr(val2)))
+            print(repr(val))
+            print(repr(val2))
+    print('%s mismatches' % mismatches)
+</t>
+<t tx="ekr.20130810093044.16955">@language python
+
+'''Slow script.'''
+
+import glob
+import imp
+
+@others
+
+if 0: # The other script is much faster.
+    
+    keys = ("lineComment","commentStart","commentEnd",)
+    d = {}
+        # Keys are language names.
+        # Values are a list of comment delims, in keys order.
+    
+    paths,modes_path = get_paths()
+    for path in paths:
+        module_name = g.shortFileName(path)[:-3]
+        module = import_module(module_name,modes_path)
+        aList = []
+        for key in keys:
+            val = module.properties.get(key)
+            if val: aList.append(val)
+        d[module_name] = aList
+    
+    print('-'* 20)
+    print('language_delims_dict')
+    for key in sorted(d):
+        print('%16s: "%s"' % ('"%s"' % (key),' '.join(d.get(key))))
+</t>
+<t tx="ekr.20130810093044.16956">def get_paths():
+    
+    modes_path = g.os_path_finalize_join(g.app.loadDir,'..','modes')
+    pattern = g.os_path_finalize_join(modes_path,'*.py')
+    paths = glob.glob(pattern)
+    paths = [z for z in paths if not z.endswith('__init__.py')]
+    return paths,modes_path
+</t>
+<t tx="ekr.20130810093044.16957">def import_module(module_name,modes_path):
+    
+    data = imp.find_module(module_name,[modes_path])
+        # This can open the file.
+    theFile,pathname,description = data
+    module = imp.load_module(module_name,theFile,pathname,description)
+    return module
+</t>
+<t tx="ekr.20130810093044.16958"></t>
+<t tx="ekr.20130810093044.16959">class ImportOrgMode:
+    @others
+
+def importOrgMode (self,event):
+    c = self.c
+    self.ImportOrgMode(c).go(c.p)
+    c.bodyWantsFocus()
+
+if False and g.app.inScript:
+    print('='*40)
+    ImportOrgMode(c).test()
+    print('done')
+</t>
+<t tx="ekr.20130810093044.16960">def __init__ (self,c):
+    
+    self.c = c
+</t>
+<t tx="ekr.20130810093044.16961">def go (self,p):
+    
+    '''Prompt for a file and pass the contents to scan().'''
+</t>
+<t tx="ekr.20130810093044.16962">def scan (self,fn,p,s):
+
+    self.c = c
+    root = p.insertAsLastChild()
+    root.h = fn
+    level,stack = 0,[root]
+    body = ['@others\n']
+    
+    for s in g.splitLines(s):
+        g.trace(repr(s))
+        if s.startswith('*'):
+            i,level = 0,0
+            while s[i] == '*':
+                i += 1
+                level += 1
+            if level &gt; len(stack):
+                g.trace('bad level',repr(s))
+                last = None
+            elif level == len(stack):
+                last = stack[-1]
+                last.b = ''.join(body)
+            else:
+                last = stack[-1]
+                last.b = ''.join(body)
+                stack = stack[:level]
+            parent = stack[-1]
+            p = parent.insertAsLastChild()
+            p.h = s.strip()
+            stack.append(p)
+            body = []
+        else:
+            body.append(s)
+            
+    # Finish any trailing lines.
+    if body:
+        parent = stack[-1]
+        parent.b = ''.join(body)
+        
+    root.contract()
+    c.redraw(root)
+</t>
+<t tx="ekr.20130810093044.16963">def test (self):
+    
+    s = '''
+* A1
+    a1.1
+    a1.2
+** B11
+** B12
+b12.1
+*** C121
+c121.1
+    c121.2
+c121.3
+* A2
+a2.1
+** B21
+*** C211
+c211.1
+*** C212
+** B22
+    b22.1
+b22.1
+* A3
+* A4
+a4.1
+* A5
+** B51
+*** C511
+**** D5111
+***** E51111
+** B52
+*** C521
+c521.1
+'''
+
+    tag = 'test-import-org-mode'
+    p = g.findNodeAnywhere(c,tag)
+    s = g.adjustTripleString(s,-4)
+    if p:
+        try:
+            self.scan('test-file',p,s)
+        except Exception:
+            c.redraw(p)
+    else:
+        print('not found: %s' % tag)
+</t>
+<t tx="ekr.20130810093044.16964">'''Import each file in the files list after the presently selected node.'''
+
+
+files = (
+    r'c:\Users\edreamleo\test\import-org-mode.txt',
+    r'c:\Users\edreamleo\test\import-org-mode.txt',
+)
+
+@others
+
+for fn in files:
+    try:
+        root = c.p.copy()
+        f = open(fn)
+        s = f.read()
+        scan(c,fn,s)
+        c.selectPosition(root)
+    except IOError:
+        print('can not open %s' % fn)
+</t>
+<t tx="ekr.20130810093044.16965">def scan (c,fn,s):
+
+    last = root = c.p.insertAsLastChild()
+    last.h = g.shortFileName(fn)
+    level,stack = 0,[root]
+    body = ['@others\n']
+    
+    for s in g.splitLines(s):
+        if s.startswith('*'):
+            i,level = 0,0
+            while s[i] == '*':
+                i += 1 ; level += 1
+            if level &gt; len(stack):
+                g.trace('bad level',repr(s))
+            elif level == len(stack):
+                last.b = ''.join(body)
+            else:
+                last.b = ''.join(body)
+                stack = stack[:level]
+            parent = stack[-1]
+            last = parent.insertAsLastChild()
+            last.h = s.strip()
+            stack.append(last)
+            body = []
+        else:
+            body.append(s)
+            
+    # Finish any trailing lines.
+    if body:
+        last.b = ''.join(body)
+        
+    root.contract()
+    c.redraw(root)
+</t>
+<t tx="ekr.20130810093044.16966"></t>
+<t tx="ekr.20130810093044.16967">Should Leo support a standard template tool?
+http://groups.google.com/group/leo-editor/browse_thread/thread/dd629473f4b3c4fc
+
+Added a jinja2 templating example.  See:
+    
+file://../scripts/scripts.leo#Scripts--&gt;@thin%20leoScripts.txt--&gt;Important--&gt;Prototype%20of%20jinja%20@command%20nodes
+</t>
+<t tx="ekr.20130810093044.16968">6/2/12
+
+The recursive import script now contains a suite of post-processing fixes:
+
+- Replacing backslashes with forward slashes in headlines.
+- Removing empty nodes.
+- Adding @path directives that reduce the needed path specifiers in descendant nodes.
+- Adding @file to nodes or replacing @file with @@file.
+
+
+No matter how good Leo's importers are, (and they are now quite good),
+there will *always* be cases where thoughtful human intervention will be
+required.
+
+Some import mistakes can *only* be found by running tests.  For
+complex programs like 2to3, the only truly safe way to check imports
+is by running the 2to3 test suite.
+</t>
+<t tx="ekr.20130810093044.16969"></t>
+<t tx="ekr.20130810093044.16970">From Brian Theado
+
+The other day I stumbled across Ville's code in scripts.leo which displays the
+output of python's trace module in a leo outline. The output of the trace module
+is not very friendly and I didn't find the result very usable. I was inspired to
+write some code to translate the output so the tree of function calls is
+displayed via Leo headlines. Thanks to Ville for sharing that code. I never
+would have figure this out without that starting point.
+
+Just copy (Ctrl-Shift-V) the child outline into a leo outline and hit ctrl-b on
+the "call tree" node. The execution tree of the 'scroll-outline-up-line'
+minibuffer command will be displayed to stdout and also as a tree of leo
+headlines.
+</t>
+<t tx="ekr.20130810093044.16971">import trace
+
+@language python
+@others
+
+# http://docs.python.org/library/trace.html for documentation
+# on the trace module
+tracer = trace.Trace(countcallers=1)
+
+# Trace a minibuffer command.
+
+# Any function call will work. Leo's minibuffer commands are easily discoverable
+# via tab completion and the 'print-commands' command.
+
+#tracer.runfunc(c.executeMinibufferCommand, 'goto-prev-node')
+tracer.runfunc(c.executeMinibufferCommand, 'scroll-outline-up-line')
+
+top = p.insertAsLastChild().copy()
+top.h = 'trace session'
+displayCalltree(top, tracer.results().callers.keys())
+c.redraw()
+</t>
+<t tx="ekr.20130810093044.16972">def displayCalltree(p, callinfo):
+   '''
+   Converts the function call hierarchy in 'callinfo' into a tree of function
+   calls.  The function call tree is displayed to stdout as indented text
+   and is inserted as a tree of leo nodes rooted at the given position 'p'
+   '''
+   callers = [k[0] for k in callinfo]
+   callees = [k[1] for k in callinfo]
+
+   # The first set of children will be those that don't have any callers
+   # listed in callinfo
+   toplevels = list(set(callers) - set(callees))
+   positions = {}
+   path = []
+
+   # Depth-first traversal of the call hierarchy represented by 'callinfo'
+   # 'levels' is a stack which grows during descend and shrinks
+   # during ascend.  Each element of 'levels' is a list of unprocessed
+   # siblings of each other
+   levels = [toplevels]
+   while len(levels) &gt; 0:
+       while len(levels[-1]) &gt; 0:
+           # Process the first element in the 'deepest' (i.e. last) list of siblings
+           cur = levels[-1][0]
+           levels[-1] = levels[-1][1:]
+           indent = " " * 4 * (len(levels)-1)
+           if cur not in path:
+               if cur in positions.keys():
+                   # Function already seen, so make a clone
+                   clone = positions[cur].clone()
+                   clone.moveToLastChildOf(p)
+                   print (indent + "%s %s ..." % cur[1:])
+               else:
+                   # Haven't seen this function, so insert a new headline
+                   p = p.insertAsLastChild().copy()
+                   p.h = "%s %s" % cur[1:]
+                   print (indent + p.h)
+
+                   # Remember the position so it can be cloned if seen again
+                   positions[cur] = p
+
+                   # Find all callees of this function and descend
+                   levels.append([c[1] for c in callinfo if c[0] == cur])
+                   path.append(cur)
+           else:
+               r = p.insertAsLastChild().copy()
+               r.h = "(recursive call) %s %s" % (cur[1], cur[2])
+               print(indent + r.h + "...")
+
+       # Ascend back up one level
+       path = path[0:-1]
+       p = p.parent()
+       levels = levels[0:-1]
+</t>
+<t tx="ekr.20130810093044.16973"></t>
 <t tx="maphew.20130612230051.2793">Scripts only of interest when on Microsoft Windows platform.</t>
 </tnodes>
 </leo_file>

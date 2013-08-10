@@ -189,9 +189,10 @@
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
 <v t="ekr.20100805165051.7177"
-expanded="ekr.20130806072439.19990,ekr.20130807203905.16778,"><vh>@file release_notes.txt</vh></v>
+expanded="ekr.20130806072439.19990,ekr.20130803073926.17123,"><vh>@file release_notes.txt</vh></v>
 </v>
 <v t="ekr.20130807203905.16526"><vh>* For the FAQ: create a bzr repository before importing it into Leo</vh></v>
+<v t="ekr.20130803125244.17095"><vh>* position script (put in scripting chapter?)</vh></v>
 <v t="ekr.20130806072439.19990"><vh>Leo 4.11 a1 Release notes</vh>
 <v t="ekr.20130807203905.16780"><vh>Bugs</vh>
 <v t="ekr.20130807203905.16687"><vh>Bugs: minor</vh>
@@ -260,7 +261,7 @@ expanded="ekr.20130806072439.19990,ekr.20130807203905.16778,"><vh>@file release_
 <v t="ekr.20130807203905.16485"><vh>Removed unused files from leo/modes directory</vh></v>
 <v t="ekr.20130807203905.16580"><vh>SherlockTracer now shows returned values</vh></v>
 </v>
-<v t="ekr.20130807203905.16686"><vh>contrib branch</vh>
+<v t="ekr.20130807203905.16686"><vh>Contrib branch</vh>
 <v t="ekr.20130806211959.17093"><vh>Dumping leo docs to excel</vh></v>
 <v t="ekr.20130806211959.17078"><vh>QML notebook</vh></v>
 <v t="ekr.20130526065545.17576"><vh>Templates with macro expansions</vh></v>
@@ -279,6 +280,7 @@ expanded="ekr.20130806072439.19990,ekr.20130807203905.16778,"><vh>@file release_
 <v t="ekr.20130807203905.16566"><vh>help-for-python now uses vr window</vh></v>
 <v t="ekr.20130807203905.16557"><vh>help-for-regular-expressions command</vh></v>
 <v t="ekr.20130807203905.16568"><vh>Improved incremental search commands</vh></v>
+<v t="ekr.20130806072439.18542"><vh>leoscreen-jump-to-error command</vh></v>
 <v t="ekr.20130807203905.16561"><vh>normalize-whitespace</vh></v>
 <v t="ekr.20130807203905.16559"><vh>parse-body command</vh></v>
 <v t="ekr.20130807203905.16560"><vh>print-buttons command</vh></v>
@@ -337,16 +339,8 @@ expanded="ekr.20130806072439.19990,ekr.20130807203905.16778,"><vh>@file release_
 </v>
 </v>
 </v>
-<v t="ekr.20130806072439.18542"><vh>new jump to error command for leoscreen</vh></v>
 <v t="ekr.20130526065545.17620"><vh>printing.py</vh>
-<v t="ekr.20130806072439.18804"><vh>[ANN] New plugin - printing.py</vh>
-<v t="ekr.20130806072439.18805"><vh>Re: [ANN] New plugin - printing.py</vh></v>
-<v t="ekr.20130806072439.18808"><vh>Re: [ANN] New plugin - printing.py</vh></v>
-<v t="ekr.20130526065545.17621"><vh>Re: [ANN] New plugin - printing.py</vh></v>
-<v t="ekr.20130526065545.17622"><vh>Re: [ANN] New plugin - printing.py</vh></v>
-<v t="ekr.20130526065545.17623"><vh>Re: [ANN] New plugin - printing.py</vh></v>
-<v t="ekr.20130526065545.17624"><vh>Re: [ANN] New plugin - printing.py</vh></v>
-</v>
+<v t="ekr.20130806072439.18804"><vh>[ANN] New plugin - printing.py</vh></v>
 </v>
 <v t="ekr.20130806072439.18543"><vh>Read / write json files added to valuespace.py plugin</vh>
 <v t="ekr.20130806072439.18545"><vh>Re: Read / write json files added to valuespace.py plugin</vh></v>
@@ -357,7 +351,6 @@ expanded="ekr.20130806072439.19990,ekr.20130807203905.16778,"><vh>@file release_
 </v>
 <v t="ekr.20130526065545.17435"><vh>screen_capture.py</vh>
 <v t="ekr.20130526065545.17429"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
-<v t="ekr.20130526065545.17430"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
 <v t="ekr.20130526065545.17431"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
 <v t="ekr.20130526065545.17432"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
 <v t="ekr.20130526065545.17433"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
@@ -369,18 +362,7 @@ expanded="ekr.20130806072439.19990,ekr.20130807203905.16778,"><vh>@file release_
 <v t="ekr.20130806072439.18554"><vh>Re: should add "refresh from disk" at parent node is a good idea?</vh></v>
 <v t="ekr.20130806072439.18555"><vh>Re: should add "refresh from disk" at parent node is a good idea?</vh></v>
 </v>
-<v t="ekr.20130807203905.16584"><vh>viewrendered plugin</vh>
-<v t="ekr.20130806072439.18531"><vh>Gauging interest: markdown processing addition to viewrendered?</vh>
-<v t="ekr.20130806072439.18532"><vh>Re: Gauging interest: markdown processing addition to viewrendered?</vh></v>
-<v t="ekr.20130806072439.18533"><vh>Re: Gauging interest: markdown processing addition to viewrendered?</vh></v>
-<v t="ekr.20130806072439.18534"><vh>Re: Gauging interest: markdown processing addition to viewrendered?</vh></v>
-<v t="ekr.20130806072439.18535"><vh>Re: Gauging interest: markdown processing addition to viewrendered?</vh></v>
-<v t="ekr.20130806072439.18536"><vh>Re: Gauging interest: markdown processing addition to viewrendered?</vh></v>
-<v t="ekr.20130806072439.18537"><vh>Re: Gauging interest: markdown processing addition to viewrendered?</vh></v>
-<v t="ekr.20130806072439.18539"><vh>Re: Gauging interest: markdown processing addition to viewrendered?</vh></v>
-<v t="ekr.20130806072439.18540"><vh>Re: Gauging interest: markdown processing addition to viewrendered?</vh></v>
-</v>
-</v>
+<v t="ekr.20130807203905.16584"><vh>viewrendered plugin</vh></v>
 <v t="ekr.20130808211520.15900"><vh>timestamp plugin</vh></v>
 <v t="ekr.20130803073926.17123"><vh>valuespace plugin</vh>
 <v t="ekr.20130526065545.17506"><vh>Quick valuespace.py update: it now support...</vh></v>
@@ -395,63 +377,11 @@ expanded="ekr.20130806072439.19990,ekr.20130807203905.16778,"><vh>@file release_
 </v>
 </v>
 </v>
-<v t="ekr.20130803073926.17115"><vh>Scripts (To do)</vh>
-<v t="ekr.20130807203905.16588"><vh>Added cleanup-imported-nodes script to scripts.leo</vh></v>
-<v t="ekr.20130807203905.16242"><vh>Added import-org-mode script</vh>
-<v t="ekr.20130807203905.16243"><vh>import-org-mode (command, not used)</vh>
-<v t="ekr.20130807203905.16244"><vh>ctor</vh></v>
-<v t="ekr.20130807203905.16245"><vh>go</vh></v>
-<v t="ekr.20130807203905.16246"><vh>scan</vh></v>
-<v t="ekr.20130807203905.16247"><vh>test</vh></v>
-</v>
-<v t="ekr.20130807203905.16248"><vh>@@button import-org-mode</vh>
-<v t="ekr.20130807203905.16249"><vh>scan</vh></v>
-</v>
-<v t="ekr.20130807203905.16250"><vh>test-import-org-mode</vh></v>
-</v>
-<v t="ekr.20130807203905.16587"><vh>Added jinja2 templating script to scripts.leo</vh></v>
-<v t="ekr.20130807203905.16251"><vh>Code for displaying a function call hierarchy in Leo</vh>
-<v t="ekr.20130807203905.16252"><vh>call tree</vh>
-<v t="ekr.20130807203905.16253"><vh>displayCalltree</vh></v>
-<v t="ekr.20130807203905.16254"><vh>trace session</vh></v>
-</v>
-</v>
-<v t="ekr.20130806072439.18508"><vh>Cross-outline node editing</vh>
-<v t="ekr.20130806072439.18509"><vh>Re: Cross-outline node editing</vh></v>
-<v t="ekr.20130806072439.18510"><vh>Re: Cross-outline node editing</vh></v>
-<v t="ekr.20130806072439.18511"><vh>Re: Cross-outline node editing</vh></v>
-</v>
-<v t="ekr.20130526065545.17487"><vh>Indexing files for full text search</vh>
-<v t="ekr.20130526065545.17488"><vh>Re: Indexing files for full text search</vh></v>
-<v t="ekr.20130526065545.17489"><vh>Re: Idea/needed: system command queue</vh></v>
-<v t="ekr.20130526065545.17490"><vh>Re: Idea/needed: system command queue</vh></v>
-</v>
-<v t="ekr.20130526065545.17634"><vh>persistent state with json as a leo abbreviation</vh>
-<v t="ekr.20130526065545.17633"><vh>Re: persistent state with json as a leo abbreviation</vh></v>
-<v t="ekr.20130526065545.17635"><vh>Re: persistent state with json as a leo abbreviation</vh></v>
-<v t="ekr.20130526065545.17636"><vh>Re: persistent state with json as a leo abbreviation</vh></v>
-<v t="ekr.20130526065545.17637"><vh>Re: persistent state with json as a leo abbreviation</vh></v>
-<v t="ekr.20130526065545.17638"><vh>Re: persistent state with json as a leo abbreviation</vh></v>
-</v>
-<v t="ekr.20130803125244.17095"><vh>position script (put in scripting chapter?)</vh></v>
-<v t="ekr.20130526065545.14929"><vh>Rev 5378: cleanup-imported-nodes script in scripts.leo &amp; an Aha</vh></v>
-<v t="ekr.20130526065545.14930"><vh>Revised recursive import script</vh></v>
-<v t="ekr.20130807203905.16490"><vh>Script to create global data structures from in modes/*.py files</vh></v>
-<v t="ekr.20130806211959.17094"><vh>Script to export full contents</vh>
-<v t="ekr.20130806211959.17095"><vh>script</vh></v>
-</v>
-<v t="ekr.20130807203905.16487"><vh>Script: get all comments from modes (slow)</vh>
-<v t="ekr.20130807203905.16488"><vh>get_paths</vh></v>
-<v t="ekr.20130807203905.16489"><vh>import_module</vh></v>
-</v>
-<v t="ekr.20130807090137.19378"><vh>Terry script</vh></v>
-<v t="ekr.20130526065545.17546"><vh>Tool for diffing Leo files</vh>
-<v t="ekr.20130526065545.17545"><vh>Re: Tool for diffing Leo files</vh></v>
-</v>
-</v>
+<v t="ekr.20130803073926.17115"><vh>Scripts</vh></v>
 <v t="ekr.20130807203905.16608"><vh>Settings &amp; options</vh></v>
 <v t="ekr.20130807203905.16270"><vh>Web site improvements</vh></v>
 </v>
+<v t="ekr.20130803073926.17114"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -855,44 +785,7 @@ https://github.com/vivainio/LeoReader/blob/master/main.html
 
 Works ok in Firefox and Chrome.
 </t>
-<t tx="ekr.20130526065545.14929">Edward K. Ream &lt;edreamleo@gmail.com&gt;
-
-A new script, now in scripts.leo, cleans up imported @file nodes as follows:
-
-- Moves a shebang line from the first child to the root.
-- Moves a leading docstring in the first child to the root.
-- Uses a section reference for declarations.
-- Removes leading and trailing blank lines from all nodes.
-- Merges a node containing nothing but comments with the next node.
-- Merges a node containing no class or def lines with the previous node.
-
-The Aha: dealing with trees *after* they have been created is much
-easier than creating the tree in the first place.
-
-It would be impossible to conceive of this script in any other environment.
-Leo's node structure drastically simplifies the patterns to be discovered.
-</t>
-<t tx="ekr.20130526065545.14930">6/2/12
-
-The recursive import script now contains a suite of post-processing fixes:
-
-- Replacing backslashes with forward slashes in headlines.
-- Removing empty nodes.
-- Adding @path directives that reduce the needed path specifiers in descendant nodes.
-- Adding @file to nodes or replacing @file with @@file.
-
-
-No matter how good Leo's importers are, (and they are now quite good),
-there will *always* be cases where thoughtful human intervention will be
-required.
-
-Some import mistakes can *only* be found by running tests.  For
-complex programs like 2to3, the only truly safe way to check imports
-is by running the 2to3 test suite.
-</t>
-<t tx="ekr.20130526065545.17429">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+<t tx="ekr.20130526065545.17429">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
 
 On Tue, 23 Apr 2013 05:08:47 -0700 (PDT)
 lewis &lt;lewisneal@operamail.com&gt; wrote:
@@ -931,17 +824,7 @@ Cheers -Terry
 &gt; 
 
 </t>
-<t tx="ekr.20130526065545.17430">@nocolor
-
-From: lewis &lt;lewisneal@operamail.com&gt;
-
-Thanks it's working nicely :)
-I use console (sourceforge.net/projects/console ) to open leo. I run 
-launchleo.py from the leo directory so I'm not sure if python.exe or pythonw.exe are used.
-</t>
-<t tx="ekr.20130526065545.17431">@nocolor
-
-From: Matt Wilkie &lt;maphew@gmail.com&gt;
+<t tx="ekr.20130526065545.17431">From: Matt Wilkie &lt;maphew@gmail.com&gt;
 
 if you start Leo (or any .py file) by double-clicking on it it's likely
 `pythonw.exe` is being used. You can find out for sure with `assoc` and
@@ -964,9 +847,7 @@ LeoFile=b:\\bin\\leo.bat "%1"
 more info: http://ss64.com/nt/ftype.html
 
 </t>
-<t tx="ekr.20130526065545.17432">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+<t tx="ekr.20130526065545.17432">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
 
 On Sun, 21 Apr 2013 08:59:51 +0800
 HaveF &lt;iamaplayer@gmail.com&gt; wrote:
@@ -992,9 +873,7 @@ Settings
 ``@string screen-capture-save-path``
   Save screen shots here instead of ~/.leo/screen_captures
 </t>
-<t tx="ekr.20130526065545.17433">@nocolor
-
-From: lewis &lt;lewisneal@operamail.com&gt;
+<t tx="ekr.20130526065545.17433">From: lewis &lt;lewisneal@operamail.com&gt;
 
 I just enabled the plugin and tried 'screen-capture-now'. 
 It creates the folder C:\\Users\\lewis\\.leo\\screen_captures but there is no 
@@ -1017,9 +896,7 @@ Regards
 Lewis
 
 </t>
-<t tx="ekr.20130526065545.17434">@nocolor
-
-From: HaveF &lt;iamaplayer@gmail.com&gt;
+<t tx="ekr.20130526065545.17434">From: HaveF &lt;iamaplayer@gmail.com&gt;
 
 It seems a great plugin! It is useful for people who write posts about leo.
 
@@ -1027,20 +904,16 @@ It seems a great plugin! It is useful for people who write posts about leo.
 be updated ;-)
 2. btw, can this plugin set a different path to save captured image?
 </t>
-<t tx="ekr.20130526065545.17435">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+<t tx="ekr.20130526065545.17435">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
 
 See http://leo-editor.github.io/screen_capture.html
 
-... "screen_capture_now captures an image immediately,
+screen_capture_now captures an image immediately,
 screen_capture_5sec waits five seconds, so you can position the
 pointer, open menus etc. The only feedback is in the console, as
-messages in the log would be distracting in the captured image."...
+messages in the log would be distracting in the captured image.
 </t>
-<t tx="ekr.20130526065545.17436">@nocolor
-
-From: tfer &lt;tfetherston@aol.com&gt;
+<t tx="ekr.20130526065545.17436">From: tfer &lt;tfetherston@aol.com&gt;
 
 That's how I run Leo, (console is great for windows).  Unless you 
 specifically call pythonw.exe it should use python.exe located through your 
@@ -1278,128 +1151,6 @@ But it would be nice to move all the color and numeric constants out of the
 stylesheet and into the config node as I've described above, just a find
 and replace operation.
 </t>
-<t tx="ekr.20130526065545.17487">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-Just pushed leo/external/leoftsindex.py:
-
-Stand alone GUI free index builder for Leo's full text search system::
-
-  python leoftsindex.py &lt;file1&gt; &lt;file2&gt; &lt;file3&gt;...
-
-If &lt;file&gt; does not contain '#' it's assumed to be a .leo file
-to index, and is indexed.
-
-If &lt;file&gt; does contain '#' it's assumed to be a .leo file
-containing a list of .leo files to index, with the list in
-the node indicated by the UNL after the #, e.g.::
-
-   path/to/myfile.leo#Lists--&gt;List of outlines
-
-In the latter case, if the node identified by the UNL has children,
-the list of files to scan is built from the first line of the body
-of each child node of the identified node (works well with bookmarks.py).
-If the node identified by the UNL does not have children, the
-node's body is assumed to be a simple text listing of paths to .leo files).
-
-.. note::
-    
-    It may be necessary to quote the "file" on the command line,
-    as the '#' may be interpreted as a comment delimiter::
-        
-        python leoftsindex.py "workbook.leo#Links"
-
-</t>
-<t tx="ekr.20130526065545.17488">@nocolor
-
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-
-
-On Mon, Apr 16, 2012 at 5:13 PM, Terry Brown &lt;terry_n_brown@yahoo.com&gt;wrote:
-
-&gt; Just pushed leo/external/leoftsindex.py:
-&gt;
-&gt; Stand alone GUI free index builder for Leo's full text search system::
-&gt;
-&gt;   python leoftsindex.py &lt;file1&gt; &lt;file2&gt; &lt;file3&gt;...
-&gt;
-
-Should this be in the blog?  I've filed this under Leo/To Document.
-
-Edward
-</t>
-<t tx="ekr.20130526065545.17489">@nocolor
-
-From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
-
-
-
-Now I have basic functionality pushed to trunk.
-
-If you want to "spawn" (posibbly several) system commands to background,
-use g.procs.add(), like this ctrl+b script:
-
-def L(*args):
-    g.es("callback", args)
-
-g.procs.add(['sleep', '4'], "que1")
-g.procs.add(['sleep', '3'], "que1", L)
-g.procs.add(['sleep', '2'], "que1")
-g.procs.add(['sleep', '2'], "que2")
-
-Note how que2 completes first. Idea is that commands in same queue depend
-on each other, and thus need to run in sequential order.
-
-This should make waiting for long lasting operations easier as the whole
-Leo won't freeze until they are over (but you can still use the stdout /
-stderr output from these calls, thanks to the optional callback)
-
-API may change once I start using it (soon).
-
-
-
-On Wed, Apr 17, 2013 at 2:48 PM, Ville M. Vainio &lt;vivainio@gmail.com&gt; wrote:
-
-&gt; Often, I find myself wanting to execute system commands in serial fashion
-&gt; (first in, first out), capture their output, and allow browsing it, BUT not
-&gt; blocking Leo or ipython terminal.
-&gt;
-&gt; I'd like to show stderr and stdout in g.es, or separate log page, and
-&gt; provide callback after task has been completed.
-&gt;
-&gt; Unless anyone has something like this already, I plan to create it "later"
-&gt; with QProcess.
-&gt;
-
-</t>
-<t tx="ekr.20130526065545.17490">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-On Wed, 17 Apr 2013 14:48:59 +0300
-"Ville M. Vainio" &lt;vivainio@gmail.com&gt; wrote:
-
-&gt; Often, I find myself wanting to execute system commands in serial fashion
-&gt; (first in, first out), capture their output, and allow browsing it, BUT not
-&gt; blocking Leo or ipython terminal.
-&gt; 
-&gt; I'd like to show stderr and stdout in g.es, or separate log page, and
-&gt; provide callback after task has been completed.
-
-There's the leoscreen stuff for integration with the GNU `screen`
-terminal switcher / manager.  Push lines from the body to the terminal,
-pull lines back the other way.  But more for interactive interaction
-with terminal programs than batch oriented work.  Leo doesn't block.
-
-Cheers -Terry
-
-&gt; Unless anyone has something like this already, I plan to create it "later"
-&gt; with QProcess.
-&gt; 
-
-</t>
 <t tx="ekr.20130526065545.17495">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
 
 I just pushed two new commands, zoom-in and zoom-out, which increase
@@ -1430,205 +1181,16 @@ commit log:
   
   rename solarized_dark theme leo_dark_0
 </t>
-<t tx="ekr.20130526065545.17506">@nocolor
-
-From: "Ville Vainio (Google+)" &lt;noreply-7dc29aba@plus.google.com&gt;
+<t tx="ekr.20130526065545.17506">From: "Ville Vainio (Google+)" &lt;noreply-7dc29aba@plus.google.com&gt;
 
 Ville Vainio shared a post with Leo Editor.
 
 View:
 https://plus.google.com/_/notifications/emlink?emr=02870587547267324596&amp;emid=CIDgu4qX0bYCFapzTAod51wAAA&amp;path=%2F103097156557482112329%2Fposts%2F1GjKYTUSTMA&amp;dt=1366183753416&amp;ub=63
-
-You're receiving this email because you are subscribed to Leo Editor on  
-Google+.
-
-Leo Editor
-https://plus.google.com/_/notifications/emlink?emr=02870587547267324596&amp;emid=CIDgu4qX0bYCFapzTAod51wAAA&amp;path=%2Fcommunities%2F104562683923003520885&amp;dt=1366183753416&amp;ub=63
 </t>
 <t tx="ekr.20130526065545.17515">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
 
-Link to G+: https://plus.google.com/103097156557482112329/posts/6D9GPRCdXVh
-
-</t>
-<t tx="ekr.20130526065545.17545">@nocolor
-
-From: resi147 &lt;scalet@yebu.de&gt;
-
-I tried this one and it seems to be very useful. What I would also like to 
-have is a similar (or the same) script,
-that does the same on two different nodes of a leo file. I admit, the 
-changes should be minimal to be done by
-myself, but as I'm not familiar with the internal leo api, I wanted to ask 
-for how to best do this changes.
-
-Probably somewhere here
-"""
-...
-vf = from_c.hiddenRootNode 
-vt = to_c.hiddenRootNode
-...
-"""
-just to feed in the 2 nodes, Any quick idea how this can be done the best 
-way?
-
-Cheers,
-Karl.
-
-</t>
-<t tx="ekr.20130526065545.17546">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-The script below is a tool for diffing two Leo files. The attached
-screenshot illustrates the output for two different revisions of
-LeoPyRef.leo.
-
-``- nodename``
-    indicates a node which disappeared
-``+ nodename``
-    a node which is new,
-``!v nodename`` followed by ``!^ nodename``
-    a node with an unchanged heading but changed content, the first
-    linking to the old version, the second linking to the new version
-
-If you have the bookmarks.py plugin active, you can double click nodes
-to jump to the original(s).
-
-
-
-from leo.core.leoNodes import vnode
-if not hasattr(vnode, 'insertAsLastChild'):
-    # add insertAsLastChild method to vnodes
-    def ialc(self):
-        vnode(self.context)._linkAsNthChild(self, len(self.children))
-        return self.children[-1]
-    vnode.insertAsLastChild = ialc
-
-from_filename = g.app.gui.runOpenFileDialog('From (old) file', [('Leo', '*.leo')])
-to_filename = g.app.gui.runOpenFileDialog('To (new) file', [('Leo', '*.leo')])
-
-# from_filename = "/mnt/shuttle/bkup/usr1/2012-07-13/home/tbrown/.leo/.todo.leo"
-# to_filename = "/mnt/shuttle/bkup/usr1/2012-07-15/home/tbrown/.leo/.todo.leo"
-
-from_c = g.openWithFileName(from_filename, c)
-to_c = g.openWithFileName(to_filename, c)
-
-vf = from_c.hiddenRootNode
-vt = to_c.hiddenRootNode
-
-assert from_c != c
-assert to_c != c
-assert from_c != to_c
-
-nd = c.rootPosition().insertAfter()
-nd.copy().back().moveAfter(nd)
-nd.h = 'diff @bookmarks'
-
-def text_match(a, b):
-    return (a.h == b.h, 
-            a.h == b.h and a.b == b.b)
-def gnx_match(a, b):
-    return (a.h == b.h and a.gnx == b.gnx, 
-            a.h == b.h and a.b == b.b and a.gnx == b.gnx)
-
-def diff_trees(vf, vt, path):
-
-    fonly = []  # nodes only in from tree
-    tonly = []  # nodes only in to tree
-    diffs = []  # nodes which occur in both but have different descendants
-
-    # count number of times each headline occurs as a child of
-    # each node being compared
-    count_f = {}
-    for cf in vf.children:
-        count_f[cf.h] = count_f.get(cf.h, 0) + 1
-    count_t = {}
-    for ct in vt.children:
-        count_t[ct.h] = count_t.get(ct.h, 0) + 1
-
-    for cf in vf.children:
-        
-        for ct in vt.children:
-            
-            if count_f[cf.h] == 1 and count_t[ct.h] == 1:
-                equal = text_match
-            else:
-                equal = gnx_match
-            
-            head_eq, body_eq = equal(cf, ct)
-            
-            if body_eq:
-                diffs.append(diff_trees(cf, ct, path+[vf.h]))
-                
-                break
-            elif head_eq:
-                d = diff_trees(cf, ct, path+[vf.h])
-                if d:
-                    d.h = '!v '+d.h
-                else:
-                    d = vnode(nd.v.context)
-                    d.h = '!v '+cf.h
-                d.b = "file://%s/#%s\\n\\n%s" % (
-                    from_filename, 
-                    '--&gt;'.join((path+[vf.h]+[cf.h])[1:]),
-                    cf.b
-                )
-                diffs.append(d)
-                d = vnode(nd.v.context)
-                d.h = '!^ '+cf.h
-                d.b = "file://%s/#%s\\n\\n%s" % (
-                    to_filename, 
-                    '--&gt;'.join((path+[vt.h]+[ct.h])[1:]),
-                    ct.b
-                )
-                diffs.append(d)
-                break
-        else:
-            fonly.append(cf)
-            
-    for ct in vt.children:
-        
-        for cf in vf.children:
-            
-            if count_f[cf.h] == 1 and count_t[ct.h] == 1:
-                equal = text_match
-            else:
-                equal = gnx_match
-            
-            head_eq, body_eq = equal(cf, ct)
-            if head_eq or body_eq:
-                # no need to recurse matches again
-                break
-
-        else:
-            tonly.append(ct)
-
-    if not any(diffs) and not fonly and not tonly:
-        return None
-        
-    vd = vnode(nd.v.context)
-    vd.h = vf.h
-    for d in diffs:
-        if d:
-            vd.children.append(d)
-    for f in fonly:
-        n = vd.insertAsLastChild()
-        n.h = '- '+f.h
-        n.b = "file://%s/#%s" % (from_filename, '--&gt;'.join((path+[vf.h]+[f.h])[1:]))
-    for t in tonly:
-        n = vd.insertAsLastChild()
-        n.h = '+ '+t.h
-        n.b = "file://%s/#%s" % (to_filename, '--&gt;'.join((path+[vf.h]+[t.h])[1:]))
-        
-    return vd
-
-v = diff_trees(vf, vt, [])
-if v:
-    nd.v.children.extend(v.children)  # snip off &lt;hidden root node&gt;
-
-c.bringToFront()
-c.redraw()
-
+https://plus.google.com/103097156557482112329/posts/6D9GPRCdXVh
 </t>
 <t tx="ekr.20130526065545.17576">From: Jacob Peck &lt;gatesphere@gmail.com&gt;
 
@@ -1749,9 +1311,7 @@ URL on the page (i.e. longer than the screen width), this is not wrapped
 is no horizontal scrollbar either)
 
 </t>
-<t tx="ekr.20130526065545.17620">@nocolor
-
-From: Jacob Peck &lt;gatesphere@gmail.com&gt;
+<t tx="ekr.20130526065545.17620">From: Jacob Peck &lt;gatesphere@gmail.com&gt;
 
 I've added a new plugin to Leo, that adds printing support when using 
 the Qt GUI.  Available from rev 5779.
@@ -1856,414 +1416,32 @@ https://bugs.launchpad.net/leo-editor/+bug/1132804
 --&gt;Jake
 
 </t>
-<t tx="ekr.20130526065545.17621">@nocolor
-
-From: Jacob Peck &lt;gatesphere@gmail.com&gt;
-
-On 5/15/2013 9:04 AM, Kent Tenney wrote:
-&gt; It just works! Nice.
-&gt; Being able to preview is great, less paper wasted.
-&gt;
-&gt; I rely entirely on command completion as a memory aid, too
-&gt; bad the info listing commands also start with 'print'. I would
-&gt; think that 'list-&lt;attribute&gt;' would have nicely disambiguated the
-&gt; situation now we have print.
-&gt;
-&gt; Too late?
-&gt;
-I agree completely w/r/t 'list-&lt;attribute&gt;', but it most likely is too 
-late.  Those are probably in use by some script somewhere.  :(
-
-Thanks for the comments, though!  To be fair, this whole thing was crazy 
-simple to throw together - Qt does *all* the heavy lifting. Just throw 
-together an HTML string, wrap it in a QTextDocument, and call print_, 
-and Bob's your uncle.  I can see why Leo uses PyQt now... it's awesome.
---&gt;Jake
-
+<t tx="ekr.20130803073926.17114">@language rest
 </t>
-<t tx="ekr.20130526065545.17622">@nocolor
+<t tx="ekr.20130803073926.17115">The following scripts have been added to scripts.leo:
 
-From: =?UTF-8?Q?Fidel_P=C3=A9rez?= &lt;fidelperez@gmail.com&gt;
+By Terry Brown::
 
+    Cross-outline node editing
+    Indexing files for full text search
+    Tool for diffing Leo files
+    add @script node
+    export full contents
+    persistent state with json as a leo abbreviation
+    
+By Edward K. Ream::
 
-Thank you for this plugin, very useful!
+    cleanup-imported-nodes
+    Create global data structures from in modes/*.py files
+    get all comments from modes (slow)
+    import-org-mode
+    jinja2 templating script
+    recursive import script (revised)
+    
+By Brian Theado::
 
-On Wednesday, May 15, 2013 2:41:19 PM UTC+2, Jacob Peck wrote:
-&gt;
-&gt; Hello all, 
-&gt;
-&gt; I've added a new plugin to Leo, that adds printing support when using 
-&gt; the Qt GUI.  Available from rev 5779. 
-&gt;
-&gt; Here's the docscring: 
-&gt;
-&gt; '''Supports printing from the Qt GUI. 
-&gt;
-&gt; Jacob M. Peck, 2013 
-&gt;
-&gt; Commands 
-&gt; ======== 
-&gt;
-&gt; This plugin supports the following twelve commands: 
-&gt;
-&gt; print-selected-node 
-&gt; ------------------- 
-&gt;
-&gt; Opens up the print dialog to print the selected headline and node. 
-&gt;
-&gt; print-preview-selected-node 
-&gt; --------------------------- 
-&gt;
-&gt; Opens up the print preview dialog to preview the selected headline 
-&gt; and node. 
-&gt;
-&gt; print-selected-node-body 
-&gt; ------------------------ 
-&gt;
-&gt; Opens up the print dialog to print the selected node body. 
-&gt;
-&gt; print-preview-selected-node-body 
-&gt; -------------------------------- 
-&gt;
-&gt; Opens up the print preview dialog to preview the selected node body. 
-&gt;
-&gt; print-expanded-node 
-&gt; ------------------- 
-&gt;
-&gt; Opens up the print dialog to print the expanded contents of the 
-&gt; selected node, with top-level headline. 
-&gt;
-&gt; print-preview-expanded-node 
-&gt; --------------------------- 
-&gt;
-&gt; Opens up the print preview dialog to preview the expanded contents 
-&gt; of theselected node, with top-level headline. 
-&gt;
-&gt; print-expanded-node-body 
-&gt; ------------------------ 
-&gt;
-&gt; Opens up the print dialog to print the expanded node body. 
-&gt;
-&gt; print-preview-expanded-node-body 
-&gt; -------------------------------- 
-&gt;
-&gt; Opens up the print preview dialog to preview the expanded node 
-&gt; body. 
-&gt;
-&gt; print-marked-nodes 
-&gt; ------------------ 
-&gt;
-&gt; Opens up the print dialog to print all marked nodes in the current 
-&gt; outline, with headlines. 
-&gt;
-&gt; print-preview-marked-nodes 
-&gt; -------------------------- 
-&gt;
-&gt; Opens up the print preview dialog to preview all marked nodes in \\ 
-&gt; the current outline, with headlines. 
-&gt;
-&gt; print-marked-node-bodies 
-&gt; ------------------------ 
-&gt;
-&gt; Opens up the print dialog to print the bodies of all marked nodes 
-&gt; in the current outline. 
-&gt;
-&gt; print-preview-marked-node-bodies 
-&gt; -------------------------------- 
-&gt;
-&gt; Opens up the print preview dialog to preview the bodies of all 
-&gt; marked nodes in the current outline. 
-&gt;
-&gt; Settings 
-&gt; ======== 
-&gt;
-&gt; - ``@string printing-font-family = DejaVu Sans Mono`` 
-&gt;    The font family for printing.  A monospaced font is recommended. 
-&gt;
-&gt; - ``@string printing-font-size = 12`` 
-&gt;    The font size for printing bodies, in px.  Due to limitations 
-&gt;    of PyQt, the size of headlines cannot be changed. 
-&gt; ''' 
-&gt;
-&gt; To use it, be sure to add `printing.py` to your @enabled-plugins. 
-&gt;
-&gt; Future work may have more printing modes available, and I intend on 
-&gt; doing a blog post on the leoblog about creating custom printing modes in 
-&gt; scripts. 
-&gt;
-&gt; This addresses bug 1132804: 
-&gt; https://bugs.launchpad.net/leo-editor/+bug/1132804 
-&gt;
-&gt; --&gt;Jake 
-&gt;
-
+    Display function call hierarchy in Leo
 </t>
-<t tx="ekr.20130526065545.17623">@nocolor
-
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-
-
-On Wed, May 15, 2013 at 7:41 AM, Jacob Peck &lt;gatesphere@gmail.com&gt; wrote:
-
-&gt;
-&gt; I've added a new plugin to Leo, that adds printing support when using the
-&gt; Qt GUI.  Available from rev 5779.
-&gt;
-
-Excellent work.  Many thanks for this contribution.
-</t>
-<t tx="ekr.20130526065545.17624">@nocolor
-
-From: Kent Tenney &lt;ktenney@gmail.com&gt;
-
-It just works! Nice.
-Being able to preview is great, less paper wasted.
-
-I rely entirely on command completion as a memory aid, too
-bad the info listing commands also start with 'print'. I would
-think that 'list-&lt;attribute&gt;' would have nicely disambiguated the
-situation now we have print.
-
-Too late?
-
-</t>
-<t tx="ekr.20130526065545.17633">@nocolor
-
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-
-
-On Thu, May 23, 2013 at 2:41 PM, Terry Brown &lt;terry_n_brown@yahoo.com&gt;wrote:
-
-&gt; I've added [an abbreviation] "persist;;"
-
-
-[snip]
-
-How do you use the code inserted by the abbreviation?  I suspect I'm not
-the only one who doesn't understand what you are trying to do...
-</t>
-<t tx="ekr.20130526065545.17634">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-I've added an abbreviation to my myLeoSettings.leo abbreviations:
-https://gist.github.com/tbnorth/5530059
-
-It's the abbreviation "persist;;" and when you type that you get:
-
----cut here---
-import json
-
-json_state_file = "cache_info_file.json"
-if not os.path.exists(json_state_file):
-    json.dump({'cache_items':{}}, open(json_state_file, 'w'))
-cache_info = json.load(open(json_state_file))
-
-def main():
-
-    # do stuff with cache_info...
-
-if __name__ == '__main__':
-
-    try:
-        main()
-    except:
-        json.dump(cache_info, open(json_state_file, 'w'))
----cut here---
-
-with appropriate interaction to customize all the parts which, in the
-above example, include "cache_", i.e. the filename and the variable
-name.
-
-The point is it seems silly to create a module and hence a dependency
-for what is barely 4 lines of actual code, but those 4 lines give you
-very handy robust persistence, so something like an editor abbreviation
-is the obvious way to make the available - nothing Leo specific here,
-except that only serious editors have abbreviation like that ;-).
-</t>
-<t tx="ekr.20130526065545.17635">@nocolor
-
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-
-
-On Fri, May 24, 2013 at 8:29 PM, Terry Brown &lt;terry_n_brown@yahoo.com&gt;wrote:
-
-&gt; On Fri, 24 May 2013 16:35:59 -0500
-&gt; "Edward K. Ream" &lt;edreamleo@gmail.com&gt; wrote:
-&gt;
-
-
-&gt; &gt; How do you use the code inserted by the abbreviation?  I suspect I'm not
-&gt;
-&gt;  It's just a framework for providing a dictionary the contents of which
-&gt; persist between runs of the program.  I've used it for code that's
-&gt; making lots of small url requests against a server, to cache the
-&gt; results so that during development the crash / debug / re-run cycle is
-&gt; faster because each piece of data is requested only once, ever, not once
-&gt; every run.  More recently I was using it to store key value pairs of
-&gt; filenames and a comment on the issue in the file, knowing that
-&gt; completing the analysis of the issues in the files would take more than
-&gt; one run of the program which was identifying the issues.
-&gt;
-&gt; So in the example below, the content of the cache_info dictionary is
-&gt; persistent, whatever main() does with it is seen next time the
-&gt; program's run.  Nothing Leo specific except that it's really just an
-&gt; import statement plus 5 lines of code and doesn't seem worth its own
-&gt; file, but is more than you want to re-type all the time either, so
-&gt; ideal for an abbreviation in your favorite editor.
-&gt;
-
-Thanks for the explanation.
-</t>
-<t tx="ekr.20130526065545.17636">@nocolor
-
-From: Jacob Peck &lt;gatesphere@gmail.com&gt;
-
-This is a multi-part message in MIME format.
-
-
-On 5/24/2013 5:35 PM, Edward K. Ream wrote:
-&gt; On Thu, May 23, 2013 at 2:41 PM, Terry Brown &lt;terry_n_brown@yahoo.com 
-&gt; &lt;mailto:terry_n_brown@yahoo.com&gt;&gt; wrote:
-&gt;
-&gt;     I've added [an abbreviation] "persist;;"
-&gt;
-&gt;
-&gt; [snip]
-&gt;
-&gt; How do you use the code inserted by the abbreviation?  I suspect I'm 
-&gt; not the only one who doesn't understand what you are trying to do...
-&gt;
-&gt; Edward
-&gt;
-Seconded.
-
-</t>
-<t tx="ekr.20130526065545.17637">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-p.s. the 'except:' in the code below should have been 'finally:', fixed
-on the gist now.
-
-On Thu, 23 May 2013 14:41:31 -0500
-Terry Brown &lt;terry_n_brown@yahoo.com&gt; wrote:
-
-&gt; I've added an abbreviation to my myLeoSettings.leo abbreviations:
-&gt; https://gist.github.com/tbnorth/5530059
-&gt; 
-&gt; It's the abbreviation "persist;;" and when you type that you get:
-&gt; 
-&gt; ---cut here---
-&gt; import json
-&gt; 
-&gt; json_state_file = "cache_info_file.json"
-&gt; if not os.path.exists(json_state_file):
-&gt;     json.dump({'cache_items':{}}, open(json_state_file, 'w'))
-&gt; cache_info = json.load(open(json_state_file))
-&gt; 
-&gt; def main():
-&gt; 
-&gt;     # do stuff with cache_info...
-&gt; 
-&gt; if __name__ == '__main__':
-&gt; 
-&gt;     try:
-&gt;         main()
-&gt;     except:
-&gt;         json.dump(cache_info, open(json_state_file, 'w'))
-&gt; ---cut here---
-&gt; 
-&gt; with appropriate interaction to customize all the parts which, in the
-&gt; above example, include "cache_", i.e. the filename and the variable
-&gt; name.
-&gt; 
-&gt; The point is it seems silly to create a module and hence a dependency
-&gt; for what is barely 4 lines of actual code, but those 4 lines give you
-&gt; very handy robust persistence, so something like an editor abbreviation
-&gt; is the obvious way to make the available - nothing Leo specific here,
-&gt; except that only serious editors have abbreviation like that ;-).
-&gt; 
-&gt; Cheers -Terry
-&gt; 
-
-</t>
-<t tx="ekr.20130526065545.17638">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-On Fri, 24 May 2013 16:35:59 -0500
-"Edward K. Ream" &lt;edreamleo@gmail.com&gt; wrote:
-
-&gt; On Thu, May 23, 2013 at 2:41 PM, Terry Brown &lt;terry_n_brown@yahoo.com&gt;wrote:
-&gt; 
-&gt; &gt; I've added [an abbreviation] "persist;;"
-&gt; 
-&gt; 
-&gt; [snip]
-&gt; 
-&gt; How do you use the code inserted by the abbreviation?  I suspect I'm not
-
-The corrected version is below for reference - I had `except` instead
-of `finally` in the first version, so you data was only saved if
-something went wrong :-)
-
-It's just a framework for providing a dictionary the contents of which
-persist between runs of the program.  I've used it for code that's
-making lots of small url requests against a server, to cache the
-results so that during development the crash / debug / re-run cycle is
-faster because each piece of data is requested only once, ever, not once
-every run.  More recently I was using it to store key value pairs of
-filenames and a comment on the issue in the file, knowing that
-completing the analysis of the issues in the files would take more than
-one run of the program which was identifying the issues.
-
-So in the example below, the content of the cache_info dictionary is
-persistent, whatever main() does with it is seen next time the
-program's run.  Nothing Leo specific except that it's really just an
-import statement plus 5 lines of code and doesn't seem worth its own
-file, but is more than you want to re-type all the time either, so
-ideal for an abbreviation in your favorite editor.
-
-I've added a couple of comments in the version below.
-
-Cheers -Terry
-
----cut here---
-import json
-
-# name for persistent data store
-json_state_file = "cache_info_file.json"   
-if not os.path.exists(json_state_file):
-    # create persistent data store if it doesn't exist
-    json.dump({'cache_items':{}}, open(json_state_file, 'w'))
-# load persistent data
-cache_info = json.load(open(json_state_file))
-
-def main():
-
-    # do stuff with cache_info...
-
-if __name__ == '__main__':
-
-    try:
-        main()
-    finally:
-        # save altered persistent data
-        json.dump(cache_info, open(json_state_file, 'w'), indent=4)
----cut here---
-
-&gt; the only one who doesn't understand what you are trying to do...
-&gt; 
-&gt; Edward
-&gt; 
-
-</t>
-<t tx="ekr.20130803073926.17114"></t>
-<t tx="ekr.20130803073926.17115"></t>
 <t tx="ekr.20130803073926.17123"></t>
 <t tx="ekr.20130803125244.17094">http://leo-editor.github.io/valuespace-intro.html
 </t>
@@ -2405,318 +1583,6 @@ The free_layout Action button context menu will also allow you to add one of
 these bookmark panes, and they will be saved and loaded again if the layout is
 saved and loaded.
 </t>
-<t tx="ekr.20130806072439.18508">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-I've found that having edits on a node in one outline simultaneously
-reflected in another node in another outline works surprisingly well.
-
-I do a lot of to-do item project managing with Leo, with lists of todo
-items (managed with the todo plugin) in each projects outline.
-
-A script rapidly assembles a global list of todo items using
-the .../external/leosax.py parser to scan all the project files without
-leo having to fully load them.  The script builds a tree of todo items
-which uses the UNLs to make them into bookmarks which can jump to the
-corresponding node in the project's outline, opening it if necessary.
-
-Which works fine for general "what should I work on next" use, but is
-still clumsy if you want to edit a lot of todo items at once, adjusting
-due date or priority etc.  You have to double-click the item in the
-global view to jump to its source in its project's outline, edit it
-there, switch back to the main outline, etc.
-
-So now the script which generates the global view tags the items with a
-marker which, when seen by the todo plugin, causes it to apply todo
-item edits in the global view to the corresponding node in the
-project's file as well.  This means the first time you edit a todo item
-there may be a pause while that project's outline is loaded, but
-everything carries on as it should afterwards, and on-going todo item
-editing is quick once the outlines are loaded.
-
-I'll push the updated todo.py code which checks for a
-v.u['annotate']['src_unl'] marker to know if a todo item is a proxy for
-one in another file and propagate the edits, but unless you have a
-script which assembles todo items from diverse files and tags them as
-proxies it doesn't really do anything.
-
-Really I just wanted to highlight how this approach, edits on a proxy
-node causing the opening and editing of a node in another outline,
-really can work in a usable way - I'm sure there are all sorts of
-possible applications.
-</t>
-<t tx="ekr.20130806072439.18509">From: Matt Wilkie &lt;maphew@gmail.com&gt;
-
-Kent, I echo your thoughts :)
-
-as I was reading Terry's post I kept thinking I'd like to watch him work
-sometime. A few times I've tried setting up a Todo system in Leo for
-myself, but I've thus far always abandoned the project as it turned into
-more work than a simpe pad and pen kept close at hand. (Albeit with
-drawbacks. There's a pad at work, another at home, a 3rd in my jacket
-sometimes, and content intermixed between them "on the wrong one").
-</t>
-<t tx="ekr.20130806072439.18510">From: "F.S." &lt;speech.free@gmail.com&gt;
-
-It appears that the F-35 program could have benefited from your approach:
-http://www.nytimes.com/2012/11/29/us/in-federal-budget-cutting-f-35-fighter-jet-is-at-risk.html?ref=us
-
-They are still pasting paper on a wall to manage the project. Imagine if 
-the project manager learned to use Leo.
-</t>
-<t tx="ekr.20130806072439.18511">From: Kent Tenney &lt;ktenney@gmail.com&gt;
-
-That flow would sure make a great webcast!
-</t>
-<t tx="ekr.20130806072439.18531">From: Jacob Peck &lt;gatesphere@gmail.com&gt;
-
-Hello,
-
-I'm contemplating adding markdown rendering to viewrendered.  I use 
-github daily for personal projects, and both my blog and in-progress 
-website redesign use markdown for content.  I think having a preview 
-pane that can render markdown would be handy.
-
-Would anyone else be interested in this?  I was going to plug the 
-Markdown module (http://packages.python.org/Markdown/) into 
-viewrendered.  It shouldn't be too difficult, because viewrendered 
-already renders rst by converting it to html first, so this would just 
-be an additional update method and dictionary binding, I think.
-
-Anyways, if anyone else thinks this would be handy, I would be glad to 
-start hacking it together.  Plus, it'd give me a bit of experience with 
-bzr and launchpad, neither of which I've ever used before.
-
-Let me know if you're interested, or have any other suggestions.
-</t>
-<t tx="ekr.20130806072439.18532">From: tfer &lt;tfetherston@aol.com&gt;
-
-On Sunday, February 10, 2013 7:06:23 PM UTC-5, Jacob Peck wrote:
-&gt;
-&gt; On 2/10/2013 6:58 PM, tfer wrote: 
-&gt; &gt; I downloaded it to give a try, but to tell the truth the workflow 
-&gt; &gt; eludes me.  I think there used to be some stuff on using rst in the 
-&gt; &gt; user manual, but there does not seem to be anything there now, was it 
-&gt; &gt; lost when rst went from being a plugin to being part of core? 
-&gt; No idea, I'm pretty new to Leo myself. 
-&gt;
-&gt; To use the markdown feature I added in my branch, I make an '@file 
-&gt; myfile.md' node with the contents: 
-&gt; @color 
-&gt; @language md 
-&gt; @tabwidth -2 
-&gt; @others 
-&gt;
-&gt; And then I make child @md nodes, containing the markdown that I desire.   
-&gt; The @md is a signifier to the viewrendered plugin to render that node as 
-&gt; markdown.  To get a live preview, I run the command "vr", and type 
-&gt; away... works fine here. 
-&gt;
-Ah, the @rst outline directive lets all of its subnodes be rendered as if 
-they contain rst markup text, no matter how they are named, (even imported 
-files, "@files"), without needing to be labeled @rst again.  Following your 
-tips I got this to work, but I noticed the following:
-
-1. With a document containing both md and rst, Leo with only the  rst 
-renderer will run render the @md nodes when the node is selected, (actually 
-any node with text other than pure directives).
-
-2. When the md capable version is loaded and alt-x vr is run, them @md 
-headlined nodes are rendered correctly, (mostly), but the rst renderer is 
-still active, and will work on any node with non-directive body text. 
- 
-</t>
-<t tx="ekr.20130806072439.18533">From: Jacob Peck &lt;gatesphere@gmail.com&gt;
-
-On 2/11/2013 1:28 AM, tfer wrote:
-&gt; Ah, the @rst outline directive lets all of its subnodes be rendered as 
-&gt; if they contain rst markup text, no matter how they are named, (even 
-&gt; imported files, "@files"), without needing to be labeled @rst again. 
-&gt;  Following your tips I got this to work, but I noticed the following:
-&gt;
-&gt; 1. With a document containing both md and rst, Leo with only the  rst 
-&gt; renderer will run render the @md nodes when the node is selected, 
-&gt; (actually any node with text other than pure directives).
-This is because there's a guard to make sure the user has the 'markdown' 
-module installed.  If, for example, you had 'markdown' but not 
-'docutils' installed, you'd be able to render the @md nodes!
-
-You can change this default of rst rendering by changing `@string 
-view-rendered-default-kind = rst` by replacing `rst` with `md`, `html`, 
-or I would imagine `plain` would work to not have a default renderer.  
-Put this setting in your myLeoSettings.leo file.
-&gt; 2. When the md capable version is loaded and alt-x vr is run, them @md 
-&gt; headlined nodes are rendered correctly, (mostly), but the rst renderer 
-&gt; is still active, and will work on any node with non-directive body text.
-Could you possibly provide an example where it doesn't render correctly?
-
-As mentioned above, the default renderer for all nodes is rst.
-
-Also, I'm going to have to tweak this a bit.  There are some settings 
-that should be exposed via myLeoSettings.leo that currently arent.  I'll 
-be working on this.
-
-I just pushed a new rev (5606) to my branch that has a fancier 
-colorizer.  You might wish to check that out.
-</t>
-<t tx="ekr.20130806072439.18534">From: Jacob Peck &lt;gatesphere@gmail.com&gt;
-
-On 2/7/2013 11:13 AM, Terry Brown wrote:
-&gt; Purely out of curiosity, can github use reStructuredText as well as 
-&gt; MD? Cheers -Terry 
-As far as I can tell, if you upload a README.rst instead of a README.md, 
-it'll work.
-
-(source: https://github.com/github/markup)
-</t>
-<t tx="ekr.20130806072439.18535">From: tfer &lt;tfetherston@aol.com&gt;
-
-On Monday, February 11, 2013 9:58:17 AM UTC-5, Jacob Peck wrote:
-&gt;
-&gt; On 2/11/2013 1:28 AM, tfer wrote: 
-&gt; &gt; Ah, the @rst outline directive lets all of its subnodes be rendered as 
-&gt; &gt; if they contain rst markup text, no matter how they are named, (even 
-&gt; &gt; imported files, "@files"), without needing to be labeled @rst again. 
-&gt; &gt;  Following your tips I got this to work, but I noticed the following: 
-&gt; &gt; 
-&gt; &gt; 1. With a document containing both md and rst, Leo with only the  rst 
-&gt; &gt; renderer will run render the @md nodes when the node is selected, 
-&gt; &gt; (actually any node with text other than pure directives). 
-&gt; This is because there's a guard to make sure the user has the 'markdown' 
-&gt; module installed.  If, for example, you had 'markdown' but not 
-&gt; 'docutils' installed, you'd be able to render the @md nodes! 
-&gt;
-&gt; You can change this default of rst rendering by changing `@string 
-&gt; view-rendered-default-kind = rst` by replacing `rst` with `md`, `html`, 
-&gt; or I would imagine `plain` would work to not have a default renderer.   
-&gt; Put this setting in your myLeoSettings.leo file. 
-&gt;
-I'll try that.
- 
-
-&gt; &gt; 2. When the md capable version is loaded and alt-x vr is run, them @md 
-&gt; &gt; headlined nodes are rendered correctly, (mostly), but the rst renderer 
-&gt; &gt; is still active, and will work on any node with non-directive body text. 
-&gt; Could you possibly provide an example where it doesn't render correctly? 
-&gt;
-What I did was to download the text of some markdown cheatsheets that were 
-written in markdown.  I look them up and shoot you some links later.
-
-I've also run into some stuff that throws and error, (in the converter 
-stuff, not your stuff if I'm recalling correctly).  Once that error is 
-thrown, you have to exit leo and restart in order to do any more 
-converting/viewing.
-
-&gt;
-&gt; As mentioned above, the default renderer for all nodes is rst. 
-&gt;
-&gt; Also, I'm going to have to tweak this a bit.  There are some settings 
-&gt; that should be exposed via myLeoSettings.leo that currently arent.  I'll 
-&gt; be working on this. 
-&gt;
-&gt; I just pushed a new rev (5606) to my branch that has a fancier 
-&gt; colorizer.  You might wish to check that out. 
-&gt;
-I'll grab it.
-
-Not really having worked with any of the renderers before, I'm not sure of 
-their full usage so I can't compare it to the built in rst stuff.  Working 
-with it so far it looks like once a "view-render-pane" is open any selected 
-node that has some non-directive text will be run through the rst2html 
-converter and sent to the vr-pane.  If the node has an @md starting its 
-headline the md2html converter is run and output is sent to the vr-pane. 
- Any node without such text does not trigger either converter and the 
-vr-pane just displays the last successfully conertered node, (probably 
-should be blanked or something to indicate that the currently selected node 
-is not the one in the vr-pane).
-
-At the moment, all the markdown text I've got is from files slurped off the 
-net and they are not strung out  in a subtree and then collected via 
-directive/sections into a document, but that is where I want to go with 
-this as the advantages of outlining to created your documents are numerous. 
- In that case I'm guessing that there is no current method of seeing the 
-document rendered as a whole, just the individual nodes?  I guess some of 
-the stuff in the current "pre-view subtree" discussion would be useful.
-
-Not a lot of time to look at this today, I'm off to Detroit this afternoon, 
-I'll be able to play with this some more later this week.
-</t>
-<t tx="ekr.20130806072439.18536">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-On Thu, 07 Feb 2013 10:55:42 -0500
-Jacob Peck &lt;gatesphere@gmail.com&gt; wrote:
-
-&gt; I'm contemplating adding markdown rendering to viewrendered.  I use 
-&gt; github daily for personal projects
-
-Purely out of curiosity, can github use reStructuredText as well as MD?
-</t>
-<t tx="ekr.20130806072439.18537">From: gatesphere &lt;gatesphere@gmail.com&gt;
-
-On 2/10/2013 6:58 PM, tfer wrote:
-&gt; I downloaded it to give a try, but to tell the truth the workflow 
-&gt; eludes me.  I think there used to be some stuff on using rst in the 
-&gt; user manual, but there does not seem to be anything there now, was it 
-&gt; lost when rst went from being a plugin to being part of core?
-No idea, I'm pretty new to Leo myself.
-
-To use the markdown feature I added in my branch, I make an '@file 
-myfile.md' node with the contents:
-@color
-@language md
-@tabwidth -2
-@others
-
-And then I make child @md nodes, containing the markdown that I desire.  
-The @md is a signifier to the viewrendered plugin to render that node as 
-markdown.  To get a live preview, I run the command "vr", and type 
-away... works fine here.
-&gt; I manged to get Markdown installed, (pip failed, but easy_install 
-&gt; worked).  Trying to use listed alt-x commands does not seem to be 
-&gt; working for me, there is no tab completion for those commands, and if 
-&gt; I enter by typing cracking a return on the mini-buffer appears to do 
-&gt; nothing, not even clear it or change focus.
-Python 2 or 3?  I tested on Python 2.6 and 2.7.
-
-Also, I didn't add any commands, nor modify any.  I just modified the 
-viewrendered plugin that ships with the current version of Leo... if 
-those commands aren't working, you might want to do some debugging with 
-your setup.
-&gt; additionally @md is not colorized.
-The colorizer I hacked together just highlights comments.  I really 
-didn't know what to do as a keyword, operator, etc.  I'll probably hack 
-together a better version some day.
-&gt; Tom
-Thanks for giving it a shot!  I'm sorry it didn't work for you. Perhaps 
-someone else has a better idea than me what's going on here?
-</t>
-<t tx="ekr.20130806072439.18539">From: tfer &lt;tfetherston@aol.com&gt;
-
-I downloaded it to give a try, but to tell the truth the workflow eludes 
-me.  I think there used to be some stuff on using rst in the user manual, 
-but there does not seem to be anything there now, was it lost when rst went 
-from being a plugin to being part of core?
-
-I manged to get Markdown installed, (pip failed, but easy_install worked). 
- Trying to use listed alt-x commands does not seem to be working for me, 
-there is no tab completion for those commands, and if I enter by typing 
-cracking a return on the mini-buffer appears to do nothing, not even clear 
-it or change focus.
-
-additionally @md is not colorized.
-</t>
-<t tx="ekr.20130806072439.18540">From: Jacob Peck &lt;gatesphere@gmail.com&gt;
-
-I've coded it up.
-
-While I was at it, I added colorizer and comment support for .md files 
-as best as I understood.
-
-If someone wants to examine my code for possible inclusion in trunk2, 
-it's on launchpad:
-
-lp:~gatesphere/leo-editor/markdown_support 
-&lt;https://code.launchpad.net/%7Egatesphere/leo-editor/markdown_support&gt;
-</t>
 <t tx="ekr.20130806072439.18541">From: Alia K &lt;alia_khouri@yahoo.com&gt;
 
 Fernando Perez of IPython fame just announced recently that IPython
@@ -2812,16 +1678,16 @@ Exciting days indeed!
 </t>
 <t tx="ekr.20130806072439.18542">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
 
-I assume all *nix shell users use the screen shell multiplexer, 
-and hopefully *nix shell users who use Leo know about the leoscreen
-plugin which passes text back and forth between Leo and the shell
-(provided you're running screen), which is very handy for build scripts
-and SQL hacking etc. etc.
+I assume all *nix shell users use the screen shell multiplexer, and
+hopefully *nix shell users who use Leo know about the leoscreen plugin
+which passes text back and forth between Leo and the shell (provided you're
+running screen), which is very handy for build scripts and SQL hacking etc.
+etc.
 
 Anyway, if you're in that sliver on the Venn diagram :-) there's a new
-command leoscreen-jump-to-error which scans the output in the shell for
-the offending line in the last python traceback, handy if you're coding
-python in Leo and running/debugging in the shell.
+command leoscreen-jump-to-error which scans the output in the shell for the
+offending line in the last python traceback, handy if you're coding python
+in Leo and running/debugging in the shell.
 
 leoscreen-jump-to-error
     Jump to the python error reported in the shell window, if the
@@ -3306,39 +2172,6 @@ This addresses bug 1132804:
 https://bugs.launchpad.net/leo-editor/+bug/1132804
 
 </t>
-<t tx="ekr.20130806072439.18805">From: Jacob Peck &lt;gatesphere@gmail.com&gt;
-
-On 5/15/2013 9:04 AM, Kent Tenney wrote:
-&gt; It just works! Nice.
-&gt; Being able to preview is great, less paper wasted.
-&gt;
-&gt; I rely entirely on command completion as a memory aid, too
-&gt; bad the info listing commands also start with 'print'. I would
-&gt; think that 'list-&lt;attribute&gt;' would have nicely disambiguated the
-&gt; situation now we have print.
-&gt;
-&gt; Too late?
-&gt;
-I agree completely w/r/t 'list-&lt;attribute&gt;', but it most likely is too 
-late.  Those are probably in use by some script somewhere.  :(
-
-Thanks for the comments, though!  To be fair, this whole thing was crazy 
-simple to throw together - Qt does *all* the heavy lifting. Just throw 
-together an HTML string, wrap it in a QTextDocument, and call print_, 
-and Bob's your uncle.  I can see why Leo uses PyQt now... it's awesome.
-</t>
-<t tx="ekr.20130806072439.18808">From: Kent Tenney &lt;ktenney@gmail.com&gt;
-
-It just works! Nice.
-Being able to preview is great, less paper wasted.
-
-I rely entirely on command completion as a memory aid, too
-bad the info listing commands also start with 'print'. I would
-think that 'list-&lt;attribute&gt;' would have nicely disambiguated the
-situation now we have print.
-
-Too late?
-</t>
 <t tx="ekr.20130806072439.18889">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
 
 This one is not "exhaustive", but in the interest of time management, I
@@ -3388,16 +2221,17 @@ Leo is a text editor, data organizer, project manager and much more.
 See http://leoeditor.com/intro.html
 
 The highlights of Leo 4.11:
---------------------------
+---------------------------
 
-- Important improvements to abbreviations.
+- Greatly improved abbreviations.
 - Clones are now valid anywhere in @file nodes.
 - Leo now warns if a .leo file is open elsewhere.
-- Added support for themes and sessions.
-- The pane with focus is highlighted with a colored border.
-- Added support for the closure and markdown and TypeScript languages.
+- Added support for sessions
+- Added colorizing themes.
+- A colored border highlights the pane with focus.
+- Added support for the closure, markdown and TypeScript languages.
 - Added importers for .ipynb, .otl and vimoutliner files.
-- Important new and improved plugins.
+- Many new and improved plugins.
 - Dozens of new scripts.
 - Dozens of improved commands.
 - Dozens of bug fixes and code-level improvements.
@@ -3588,370 +2422,6 @@ I haven't yet polished this workflow in that there is a bunch of manual
 work in formatting the report...
  
 </t>
-<t tx="ekr.20130806211959.17094">From: Terry &lt;webtourist@gmail.com&gt;
-
-I need to present to people who don't have leo installation, in easily 
-readable format, the full content of a .leo file, not just the outline, but 
-all nodes and all contents.
-
-What do I need to do ?
-
-===== Terry
-
-You could run this script (below):
-
-It only exports selected nodes, so if you want to export everything,
-you have to select all the top level nodes, i.e. collapse all the nodes
-so only the top level is visible, click the first one, and shift-click
-the last one.
-
-It exports to plain text... although you might be able to use the
-template to describe HTML, not sure.
-
-&gt; Terry, how do i run it ?  I'm guessing it's not at the cmdline like "python 
-&gt; this_script.py" 
-
-Right.  Paste the content into a node, then click the script-button
-button to create a new button for running this script.  The button's
-name will be the node's name, what it is doesn't matter but 'export'
-would be an obvious choice.  Then select the node(s) you want exported
-- presumably not including the node containing the script :)
-
-Then it will ask for a file name and whether to include unexpanded
-nodes.\
-
-</t>
-<t tx="ekr.20130806211959.17095">@language python
-
-# template is everything between r""" and second """
-# placeholders are H heading B body C children
-# use \\n in B and C lines for conditional blank lines
-
-template = r"""H
-    B
-  * C"""
-
-lines=[]
-exp_only = g.app.gui.runAskYesNoCancelDialog(
-    c, 'Expanded nodes only?', 'Expanded nodes only?')
-if exp_only == 'no':
-    exp_only = False
-    
-def export_text(p, indent=''):
-    
-    spaces = ' '*(len(indent) - len(indent.lstrip(' ')))
-    
-    for line in template.split('\\n'):
-        
-        if 'H' in line:
-            lines.append(indent + line.replace('H', p.h))
-        elif 'B' in line and p.b.strip():
-            prefix = line[:line.find('B')].replace('\\\\n', '\\n')
-            for i in p.b.strip().split('\\n'):
-                lines.append(spaces + prefix + i)
-                prefix = line[:line.find('B')].replace('\\\\n', '')
-            if line.endswith('\\\\n'):
-                lines.append('')
-        elif 'C' in line and (not exp_only or p.isExpanded()):
-            prefix = line[:line.find('C')].replace('\\\\n', '\\n')
-            for child in p.children():
-                export_text(child, indent=spaces + prefix)
-            if line.endswith('\\\\n'):
-                lines.append('')
-        elif 'C' not in line and 'B' not in line:
-            lines.append(line)
-
-if exp_only != 'cancel':
-    for i in c.getSelectedPositions():
-        export_text(i)
-    
-    filename = g.app.gui.runSaveFileDialog('Save to file')
-    # filename = '/home/tbrown/del.txt'
-    
-    if filename is not None:
-        open(filename,'w').write('\\n'.join(lines))
-</t>
-<t tx="ekr.20130807090137.19378">&gt; Moreover, support for session tracking and restoring becomes an instant
-&gt; addition since just by oppening all the @path leo nodes under a "session"
-&gt; node we can restore our session!
-
-There was a thread about saving sessions some time ago.  Here's a
-script from that thread which adds a @script node to your outline which
-reloads the other outlines currently loaded when this outline is next
-loaded.
-
-tablist = g.findNodeAnywhere(c, '@script load tabs')
-if not tablist:
-    from leo.core.leoNodes import vnode
-    v = vnode(c)
-    v.h = '@script load tabs'
-    v._linkAsNthChild(c.hiddenRootNode,
-         len(c.hiddenRootNode.children))
-tablist = g.findNodeAnywhere(c, '@script load tabs')
-assert tablist
-import time
-b = ["# Generated %s\n"%time.strftime('%c')]
-for oc in g.app.commanders():
-    b.append("g.openWithFileName('%s', c)" % oc.fileName())
-b.append("c.frame.bringToFront()")
-b.append("c.setLog()")
-tablist.b = '\n'.join(b)
-</t>
-<t tx="ekr.20130807203905.16242"></t>
-<t tx="ekr.20130807203905.16243">class ImportOrgMode:
-    @others
-
-def importOrgMode (self,event):
-    c = self.c
-    self.ImportOrgMode(c).go(c.p)
-    c.bodyWantsFocus()
-
-if False and g.app.inScript:
-    print('='*40)
-    ImportOrgMode(c).test()
-    print('done')
-</t>
-<t tx="ekr.20130807203905.16244">def __init__ (self,c):
-    
-    self.c = c
-</t>
-<t tx="ekr.20130807203905.16245">def go (self,p):
-    
-    '''Prompt for a file and pass the contents to scan().'''
-</t>
-<t tx="ekr.20130807203905.16246">def scan (self,fn,p,s):
-
-    self.c = c
-    root = p.insertAsLastChild()
-    root.h = fn
-    level,stack = 0,[root]
-    body = ['@others\n']
-    
-    for s in g.splitLines(s):
-        g.trace(repr(s))
-        if s.startswith('*'):
-            i,level = 0,0
-            while s[i] == '*':
-                i += 1
-                level += 1
-            if level &gt; len(stack):
-                g.trace('bad level',repr(s))
-                last = None
-            elif level == len(stack):
-                last = stack[-1]
-                last.b = ''.join(body)
-            else:
-                last = stack[-1]
-                last.b = ''.join(body)
-                stack = stack[:level]
-            parent = stack[-1]
-            p = parent.insertAsLastChild()
-            p.h = s.strip()
-            stack.append(p)
-            body = []
-        else:
-            body.append(s)
-            
-    # Finish any trailing lines.
-    if body:
-        parent = stack[-1]
-        parent.b = ''.join(body)
-        
-    root.contract()
-    c.redraw(root)
-</t>
-<t tx="ekr.20130807203905.16247">def test (self):
-    
-    s = '''
-* A1
-    a1.1
-    a1.2
-** B11
-** B12
-b12.1
-*** C121
-c121.1
-    c121.2
-c121.3
-* A2
-a2.1
-** B21
-*** C211
-c211.1
-*** C212
-** B22
-    b22.1
-b22.1
-* A3
-* A4
-a4.1
-* A5
-** B51
-*** C511
-**** D5111
-***** E51111
-** B52
-*** C521
-c521.1
-'''
-
-    tag = 'test-import-org-mode'
-    p = g.findNodeAnywhere(c,tag)
-    s = g.adjustTripleString(s,-4)
-    if p:
-        try:
-            self.scan('test-file',p,s)
-        except Exception:
-            c.redraw(p)
-    else:
-        print('not found: %s' % tag)
-</t>
-<t tx="ekr.20130807203905.16248">'''Import each file in the files list after the presently selected node.'''
-
-
-files = (
-    r'c:\Users\edreamleo\test\import-org-mode.txt',
-    r'c:\Users\edreamleo\test\import-org-mode.txt',
-)
-
-@others
-
-for fn in files:
-    try:
-        root = c.p.copy()
-        f = open(fn)
-        s = f.read()
-        scan(c,fn,s)
-        c.selectPosition(root)
-    except IOError:
-        print('can not open %s' % fn)
-</t>
-<t tx="ekr.20130807203905.16249">def scan (c,fn,s):
-
-    last = root = c.p.insertAsLastChild()
-    last.h = g.shortFileName(fn)
-    level,stack = 0,[root]
-    body = ['@others\n']
-    
-    for s in g.splitLines(s):
-        if s.startswith('*'):
-            i,level = 0,0
-            while s[i] == '*':
-                i += 1 ; level += 1
-            if level &gt; len(stack):
-                g.trace('bad level',repr(s))
-            elif level == len(stack):
-                last.b = ''.join(body)
-            else:
-                last.b = ''.join(body)
-                stack = stack[:level]
-            parent = stack[-1]
-            last = parent.insertAsLastChild()
-            last.h = s.strip()
-            stack.append(last)
-            body = []
-        else:
-            body.append(s)
-            
-    # Finish any trailing lines.
-    if body:
-        last.b = ''.join(body)
-        
-    root.contract()
-    c.redraw(root)
-</t>
-<t tx="ekr.20130807203905.16250"></t>
-<t tx="ekr.20130807203905.16251">From Brian Theado
-
-The other day I stumbled across Ville's code in scripts.leo which displays the
-output of python's trace module in a leo outline. The output of the trace module
-is not very friendly and I didn't find the result very usable. I was inspired to
-write some code to translate the output so the tree of function calls is
-displayed via Leo headlines. Thanks to Ville for sharing that code. I never
-would have figure this out without that starting point.
-
-Just copy (Ctrl-Shift-V) the child outline into a leo outline and hit ctrl-b on
-the "call tree" node. The execution tree of the 'scroll-outline-up-line'
-minibuffer command will be displayed to stdout and also as a tree of leo
-headlines.
-</t>
-<t tx="ekr.20130807203905.16252">import trace
-
-@language python
-@others
-
-# http://docs.python.org/library/trace.html for documentation
-# on the trace module
-tracer = trace.Trace(countcallers=1)
-
-# Trace a minibuffer command.
-
-# Any function call will work. Leo's minibuffer commands are easily discoverable
-# via tab completion and the 'print-commands' command.
-
-#tracer.runfunc(c.executeMinibufferCommand, 'goto-prev-node')
-tracer.runfunc(c.executeMinibufferCommand, 'scroll-outline-up-line')
-
-top = p.insertAsLastChild().copy()
-top.h = 'trace session'
-displayCalltree(top, tracer.results().callers.keys())
-c.redraw()
-</t>
-<t tx="ekr.20130807203905.16253">def displayCalltree(p, callinfo):
-   '''
-   Converts the function call hierarchy in 'callinfo' into a tree of function
-   calls.  The function call tree is displayed to stdout as indented text
-   and is inserted as a tree of leo nodes rooted at the given position 'p'
-   '''
-   callers = [k[0] for k in callinfo]
-   callees = [k[1] for k in callinfo]
-
-   # The first set of children will be those that don't have any callers
-   # listed in callinfo
-   toplevels = list(set(callers) - set(callees))
-   positions = {}
-   path = []
-
-   # Depth-first traversal of the call hierarchy represented by 'callinfo'
-   # 'levels' is a stack which grows during descend and shrinks
-   # during ascend.  Each element of 'levels' is a list of unprocessed
-   # siblings of each other
-   levels = [toplevels]
-   while len(levels) &gt; 0:
-       while len(levels[-1]) &gt; 0:
-           # Process the first element in the 'deepest' (i.e. last) list of siblings
-           cur = levels[-1][0]
-           levels[-1] = levels[-1][1:]
-           indent = " " * 4 * (len(levels)-1)
-           if cur not in path:
-               if cur in positions.keys():
-                   # Function already seen, so make a clone
-                   clone = positions[cur].clone()
-                   clone.moveToLastChildOf(p)
-                   print (indent + "%s %s ..." % cur[1:])
-               else:
-                   # Haven't seen this function, so insert a new headline
-                   p = p.insertAsLastChild().copy()
-                   p.h = "%s %s" % cur[1:]
-                   print (indent + p.h)
-
-                   # Remember the position so it can be cloned if seen again
-                   positions[cur] = p
-
-                   # Find all callees of this function and descend
-                   levels.append([c[1] for c in callinfo if c[0] == cur])
-                   path.append(cur)
-           else:
-               r = p.insertAsLastChild().copy()
-               r.h = "(recursive call) %s %s" % (cur[1], cur[2])
-               print(indent + r.h + "...")
-
-       # Ascend back up one level
-       path = path[0:-1]
-       p = p.parent()
-       levels = levels[0:-1]
-</t>
-<t tx="ekr.20130807203905.16254"></t>
 <t tx="ekr.20130807203905.16255">- Added the following commands:
     
     - ctrl-click-icon
@@ -4041,7 +2511,9 @@ The partial solution is not to call the undo command in the finally clause.
 
 It's kinda pointless to make this a user option.
 </t>
-<t tx="ekr.20130807203905.16270">- Added link to home page from the TOC.
+<t tx="ekr.20130807203905.16270">The new home page is http://leoeditor.com/
+
+- Added link to home page from the TOC.
 - Removed online-tutorial link.
 - Added search box.
 - Added link to glossary from Leo's home page.
@@ -4234,117 +2706,6 @@ colorizer.
 
 - patch.py and rtf.py colorizers will be retained, even though Leo can
 never generate such files. 
-</t>
-<t tx="ekr.20130807203905.16487">@language python
-
-'''Slow script.'''
-
-import glob
-import imp
-
-@others
-
-if 0: # The other script is much faster.
-    
-    keys = ("lineComment","commentStart","commentEnd",)
-    d = {}
-        # Keys are language names.
-        # Values are a list of comment delims, in keys order.
-    
-    paths,modes_path = get_paths()
-    for path in paths:
-        module_name = g.shortFileName(path)[:-3]
-        module = import_module(module_name,modes_path)
-        aList = []
-        for key in keys:
-            val = module.properties.get(key)
-            if val: aList.append(val)
-        d[module_name] = aList
-    
-    print('-'* 20)
-    print('language_delims_dict')
-    for key in sorted(d):
-        print('%16s: "%s"' % ('"%s"' % (key),' '.join(d.get(key))))
-</t>
-<t tx="ekr.20130807203905.16488">def get_paths():
-    
-    modes_path = g.os_path_finalize_join(g.app.loadDir,'..','modes')
-    pattern = g.os_path_finalize_join(modes_path,'*.py')
-    paths = glob.glob(pattern)
-    paths = [z for z in paths if not z.endswith('__init__.py')]
-    return paths,modes_path
-</t>
-<t tx="ekr.20130807203905.16489">def import_module(module_name,modes_path):
-    
-    data = imp.find_module(module_name,[modes_path])
-        # This can open the file.
-    theFile,pathname,description = data
-    module = imp.load_module(module_name,theFile,pathname,description)
-    return module
-</t>
-<t tx="ekr.20130807203905.16490">@language python
-
-'''Script to create global data structures from modes/*.py files.'''
-
-import glob
-import imp
-
-g.cls()
-
-theDir = g.os_path_finalize_join(g.app.loadDir,'..','modes','*.py')
-aList = glob.glob(theDir)
-
-theDir = g.os_path_finalize_join(g.app.loadDir,'..','modes')
-
-# print('-'*40)
-known_keys = list(g.app.language_delims_dict.keys())
-new_languages = {}
-
-for z in aList:
-    name = g.os_path_basename(z)
-    name2 = name[:-3]
-    if name2 in known_keys or name2.startswith('__'):
-        if 0: print('ignore: %s' % (name2))
-    else:
-        try:
-            theFile, pathname, description = imp.find_module(name2,[theDir])
-            m = imp.load_module(name2, theFile, pathname, description)
-            if hasattr(m,'properties'):
-                # new_languages.append(name2)
-                new_languages[name2] = m
-            else:
-                print('no properties: %s %s' % (name2,m))
-        except Exception:
-            g.es_exception()
-            
-print('%s new languages\n' % (len(list(new_languages.keys()))))
-    
-for key in sorted(new_languages.keys()):
-    m = new_languages.get(key)
-    aList2 = [m.properties.get(z)
-        for z in ('lineComment','commentStart','commentEnd')
-            if m.properties.get(z)]
-    print('%-20s : "%s",' % (
-        '"%s"' % (key),
-        ' '.join(aList2)))
-    # computed[name2] = ' '.join(aList2)
-       
-if 0:
-    mismatches = 0
-    print()
-    for z in known_keys:
-        val = g.app.language_delims_dict.get(z)
-        val2 = computed.get(z)
-        if not val:
-            print('no val',z)
-        elif not val2:
-            print('no val2',z)
-        elif val != val2:
-            mismatches += 1
-            print('mismatch for %s. expected %s got %s' % (z,repr(val),repr(val2)))
-            print(repr(val))
-            print(repr(val2))
-    print('%s mismatches' % mismatches)
 </t>
 <t tx="ekr.20130807203905.16491">https://bugs.launchpad.net/leo-editor/+bug/971171
 
@@ -4962,37 +3323,13 @@ Here is ipapi.get::
 </t>
 <t tx="ekr.20130807203905.16583">Added TypeScriptScanner class and related code.
 </t>
-<t tx="ekr.20130807203905.16584">Supported ctrl-clicks in vr panes
+<t tx="ekr.20130807203905.16584">Supported ctrl-clicks in viewrendered panes.
+
+Jacob Peck added support for markdown http://packages.python.org/Markdown/ markup in viewrendered panes.
 </t>
 <t tx="ekr.20130807203905.16585">Created vimoutlinerScanner.
 
 Created at.writeAtAutoOtlFile.
-</t>
-<t tx="ekr.20130807203905.16587">Should Leo support a standard template tool?
-http://groups.google.com/group/leo-editor/browse_thread/thread/dd629473f4b3c4fc
-
-Added a jinja2 templating example.  See:
-    
-file://../scripts/scripts.leo#Scripts--&gt;@thin%20leoScripts.txt--&gt;Important--&gt;Prototype%20of%20jinja%20@command%20nodes
-</t>
-<t tx="ekr.20130807203905.16588">The script itself is in scripts.leo: cleanup-imported-nodes
-
-- Put docstring in root node.
-- Use section reference for declarations.
-- Remove leading and trailing blank lines from all nodes, leaving only a trailing newline.
-- If a new contains nothing but comments, merge it with the next node.
-- If a node contains nothing but a property, merge it with the previous node.
-
-The holy grail would be to do all this in the Python importer, but a post-processing script suffices.
-
-Workflow:
-    
-1. bzr checkin of all *unchanged* file.
-2. Import all files and save.
-3. bzr commit all changed files.
-4. Run cleanup script.
-5. bzr qdiff then shows all cleanups.
-6. bzr commit if all goes well.
 </t>
 <t tx="ekr.20130807203905.16608">- Added @color minibuffer-foreground-color setting.
 - Added @color log_warning_color setting.
@@ -5001,7 +3338,8 @@ Workflow:
 </t>
 <t tx="ekr.20130807203905.16610"></t>
 <t tx="ekr.20130807203905.16611"></t>
-<t tx="ekr.20130807203905.16686"></t>
+<t tx="ekr.20130807203905.16686">You can get this branch here: https://code.launchpad.net/~leo-editor-team/leo-editor/contrib
+</t>
 <t tx="ekr.20130807203905.16687"></t>
 <t tx="ekr.20130807203905.16766"></t>
 <t tx="ekr.20130807203905.16778"></t>
