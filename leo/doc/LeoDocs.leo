@@ -188,8 +188,10 @@
 <v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028550b302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473550b302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473550b302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473550b302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20100805165051.7177"
+expanded="ekr.20130806072439.19990,ekr.20130807203905.16778,"><vh>@file release_notes.txt</vh></v>
 </v>
+<v t="ekr.20130807203905.16526"><vh>* For the FAQ: create a bzr repository before importing it into Leo</vh></v>
 <v t="ekr.20130806072439.19990"><vh>Leo 4.11 a1 Release notes</vh>
 <v t="ekr.20130807203905.16780"><vh>Bugs</vh>
 <v t="ekr.20130807203905.16687"><vh>Bugs: minor</vh>
@@ -250,6 +252,7 @@
 <v t="ekr.20130807203905.16269"><vh>Added g.restore_selection_range</vh></v>
 <v t="ekr.20130807203905.16535"><vh>Added leo/extensions/sh.py</vh></v>
 <v t="ekr.20130807203905.16523"><vh>Added local pylint suppressions</vh></v>
+<v t="ekr.20130807203905.16552"><vh>baseNativeTree.onHeadChanged now truncates headlines</vh></v>
 <v t="ekr.20130807203905.16554"><vh>Cached syntax coloring</vh></v>
 <v t="ekr.20130807203905.16524"><vh>g.pdb now does qtGui stuff</vh></v>
 <v t="ekr.20130807203905.16567"><vh>Improved g.trace</vh></v>
@@ -257,19 +260,9 @@
 <v t="ekr.20130807203905.16485"><vh>Removed unused files from leo/modes directory</vh></v>
 <v t="ekr.20130807203905.16580"><vh>SherlockTracer now shows returned values</vh></v>
 </v>
-<v t="ekr.20130807203905.16686"><vh>Collaboration branch (To do)</vh>
+<v t="ekr.20130807203905.16686"><vh>contrib branch</vh>
 <v t="ekr.20130806211959.17093"><vh>Dumping leo docs to excel</vh></v>
-<v t="ekr.20130806211959.17078"><vh>QML notebook</vh>
-<v t="ekr.20130806211959.17079"><vh>Re: QML notebook - phase zero - toy ui ;-)</vh></v>
-<v t="ekr.20130806211959.17080"><vh>Re: QML notebook - phase zero - toy ui ;-)</vh></v>
-<v t="ekr.20130806211959.17081"><vh>Re: QML notebook - phase zero - toy ui ;-)</vh></v>
-<v t="ekr.20130806211959.17082"><vh>Re: QML notebook - phase zero - toy ui ;-)</vh></v>
-<v t="ekr.20130806211959.17083"><vh>RE: QML notebook - phase zero - toy ui ;-)</vh></v>
-<v t="ekr.20130806211959.17084"><vh>Re: QML notebook - phase zero - toy ui ;-)</vh></v>
-<v t="ekr.20130806211959.17085"><vh>Re: QML notebook - phase zero - toy ui ;-)</vh></v>
-<v t="ekr.20130806211959.17086"><vh>Re: QML notebook - phase zero - toy ui ;-)</vh></v>
-<v t="ekr.20130806211959.17087"><vh>Re: QML notebook - phase zero - toy ui ;-)</vh></v>
-</v>
+<v t="ekr.20130806211959.17078"><vh>QML notebook</vh></v>
 <v t="ekr.20130526065545.17576"><vh>Templates with macro expansions</vh></v>
 <v t="ekr.20130526065545.14925"><vh>Full text searches</vh></v>
 </v>
@@ -280,6 +273,7 @@
 <v t="ekr.20130807203905.16268"><vh>Alt-Home &amp; Alt-End collapse all possible nodes</vh></v>
 <v t="ekr.20130807203905.16261"><vh>Ensure selected @test node is run</vh></v>
 <v t="ekr.20130807203905.16562"><vh>Fixed dabbrev commands</vh></v>
+<v t="ekr.20130526065545.17589"><vh>go-anywhere command (quicksearch plugin)</vh></v>
 <v t="ekr.20130807203905.16564"><vh>Help commands now use &lt;pre&gt; formatting if docutils is not available</vh></v>
 <v t="ekr.20130807203905.16565"><vh>help-for-command executes apropos commands</vh></v>
 <v t="ekr.20130807203905.16566"><vh>help-for-python now uses vr window</vh></v>
@@ -292,38 +286,12 @@
 <v t="ekr.20130807203905.16546"><vh>vr-expand/contract commands</vh></v>
 <v t="ekr.20130526065545.17495"><vh>zoom-in/out commands</vh></v>
 </v>
-<v t="ekr.20130807203905.16778"><vh>Gui improvements (To do)</vh>
+<v t="ekr.20130807203905.16778"><vh>Gui improvements</vh>
 <v t="ekr.20130526065545.17594"><vh>@wrap now suppresses horizontal scrolling</vh></v>
 <v t="ekr.20130807203905.16547"><vh>All @button nodes now show call tips</vh></v>
-<v t="ekr.20130807203905.16552"><vh>baseNativeTree.onHeadChanged now truncates headlines</vh></v>
-<v t="ekr.20130807203905.16555"><vh>Change focus-border color depending on input state</vh>
-<v t="ekr.20130807203905.16556"><vh>What I did</vh></v>
-<v t="ekr.20130807203905.16553"><vh>body border</vh></v>
-</v>
-<v t="ekr.20130806072439.19631"><vh>sublime text &amp; other themes</vh>
-<v t="ekr.20130526065545.17514"><vh>New theme in leoSettings.leo: Sublime Text...</vh></v>
-<v t="ekr.20130526065545.17589"><vh>go-anywhere a'la sublime text: first light"</vh>
-<v t="ekr.20130526065545.17590"><vh>"Subject: Re: go-anywhere a'la sublime text: first light"</vh></v>
-<v t="ekr.20130526065545.17592"><vh>"Subject: Re: go-anywhere a'la sublime text: first light"</vh></v>
-</v>
-<v t="ekr.20130526065545.17515"><vh>ANN: Sublime Text 2 like dark theme</vh></v>
-<v t="ekr.20130526065545.17459"><vh>ANN: dark theme pushed to trunk</vh>
-<v t="ekr.20130526065545.17451"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
-<v t="ekr.20130526065545.17452"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
-<v t="ekr.20130526065545.17453"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
-<v t="ekr.20130526065545.17454"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
-<v t="ekr.20130526065545.17455"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
-<v t="ekr.20130526065545.17456"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
-<v t="ekr.20130526065545.17457"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
-<v t="ekr.20130526065545.17458"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
-<v t="ekr.20130526065545.17460"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
-<v t="ekr.20130526065545.17461"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
-<v t="ekr.20130526065545.17462"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
-<v t="ekr.20130526065545.17463"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
-<v t="ekr.20130526065545.17464"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
-<v t="ekr.20130526065545.17465"><vh>Re: ANN: dark theme pushed to trunk</vh></v>
-</v>
-</v>
+<v t="ekr.20130807203905.16555"><vh>Change focus-border color depending on input state</vh></v>
+<v t="ekr.20130526065545.17459"><vh>Dark colorizing theme</vh></v>
+<v t="ekr.20130526065545.17515"><vh>Sublime Text 2 (A dark colorizing theme)</vh></v>
 <v t="ekr.20130807203905.16255"><vh>Use ctrl-click to open url's</vh></v>
 </v>
 <v t="ekr.20130807203905.16610"><vh>New features</vh>
@@ -484,7 +452,6 @@
 <v t="ekr.20130807203905.16608"><vh>Settings &amp; options</vh></v>
 <v t="ekr.20130807203905.16270"><vh>Web site improvements</vh></v>
 </v>
-<v t="ekr.20130807203905.16526"><vh>* For the FAQ: create a bzr repository before importing it into Leo</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -1233,397 +1200,83 @@ That's why enabling requires @bool scripting-at-script-nodes = True as
 well as the abbreviation specific stuff.  The risk seems equivalent to
 the scripting-at-script-nodes = True risk.
 </t>
-<t tx="ekr.20130526065545.17451">@nocolor
+<t tx="ekr.20130526065545.17459">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
 
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
+I just pushed the solarized dark theme to trunk. There were some changes to
+core code, but nothing too major, and I've been using it for some time.
 
+In leoSettings.leo there's a new top-level node called 'Themes', which
+contains a single theme node at the moment, you can copy that to you
+myLeoSettings.leo file under @settings. Read the README node of the theme
+node for more instructions.
 
+The theme is far from perfect - it's relatively easy to get it looking ok
+if you're already running a dark desktop theme, which is what I'm doing,
+but much harder if you want Leo dark in a light desktop theme, as you need
+to theme everything.
 
-On Wed, Mar 27, 2013 at 8:06 PM, Terry Brown &lt;terry_n_brown@yahoo.com&gt;wrote:
+ - See the README. If you're already running a dark theme there's a `base`
+   node which can be switched to `@ignore base` to take more advantage of
+   your desktop theme.
 
-&gt; I just pushed the solarized dark theme to trunk.
+ - The new theme system includes a stylesheet authoring tool with macro
+   substitutions :-) you no longer edit @data qt-gui-plugin-style-sheet
+   directly but edit a more comfortable Leo tree version and then
+   run-script on the appropriate node to "compile" to @data
+   qt-gui-plugin-style-sheet
+   
+**Note**: The docs in the theme node do mention moving other @data
+qt-gui-plugin-style-sheet and @color nodes out of the way, but I've added a
+couple of notes about putting it at the bottom of the @setting list to
+ensure it overrides other settings. The problem is when the default theme's
+@data qt-gui-plugin-style-sheet node comes after the dark theme's.
 
+===== Ville.
 
-Spectacular.  It looks like you've completed the coding part of the
-sprint.  Well done!
+If you prefer the bigger contrast that e.g. Sublime Text 2 has, try this
+"config": https://gist.github.com/vivainio/5261207
 
-Edward
-</t>
-<t tx="ekr.20130526065545.17452">@nocolor
-
-From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
-
-BTW, I'm slightly bothered by the fact that color variable names have
-"solarized" in them. You are supposed to create new themes by changing
-their values in the "config" node, after which the theme is not "solarized"
-any more.
-
-how about "@leotheme-c-0" (for color 0) etc.
-</t>
-<t tx="ekr.20130526065545.17453">@nocolor
-
-From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
-
-Thanks! Leo feels like a new program now :).
-</t>
-<t tx="ekr.20130526065545.17454">@nocolor
-
-From: lewis &lt;lewisneal@operamail.com&gt;
-
-Re: "toggle between the custom and default leosettings"
-
-This only occurs when the leo session in which I edited the
-myLeoSettings file remains in session - I can then cause the toggle to
-occur. Once you leave the the leo session, it always loads 
-myLeoSettings.leo as expected. 
-
-It took me quite some time to reproduce; when I finally realised how I 
-managed to toggle themes
-in leo I thought it would be a nice feature to have :)
-
-Regards
-Lewis
-
-
-On Sunday, April 14, 2013 6:35:31 PM UTC+10, lewis wrote:
-&gt;
-&gt;
-&gt; A question for Edward - Clicking the menu Help&gt;Open leoSettings.leo and 
-&gt; Help&gt;Open myLeoSettings.leo operates as an immediate toggle between the  
-&gt; custom and default leosettings.
-&gt; Is that toggle intended? I would have expected that leo should behave 
-&gt; according to the users preferred settings in their myLeoSettings.leo file.
-&gt;
-&gt; Regards
-&gt; Lewis
-&gt;
-
-</t>
-<t tx="ekr.20130526065545.17455">@nocolor
-
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-
-
-On Sun, Apr 14, 2013 at 3:35 AM, lewis &lt;lewisneal@operamail.com&gt; wrote:
-
-&gt;
-&gt; A question for Edward - Clicking the menu Help&gt;Open leoSettings.leo and
-&gt; Help&gt;Open myLeoSettings.leo operates as an immediate toggle between the
-&gt; custom and default leosettings.
-&gt;
-
-
-&gt; Is that toggle intended? I would have expected that leo should behave
-&gt; according to the users preferred settings in their myLeoSettings.leo file.
-&gt;
-
-Thanks for asking a question, rather than immediately filing a bug report
-:-)
-
-The general idea is that opening either of the two settings files must be
-handled as something of a special case.  Furthermore, certain settings
-(like enabled plugins) are inherently "cumulative": the add to what is
-already in effect, rather than override what is in effect.
-
-Settings probably work as one would naively expect when you open a clean
-copy of Leo, but there may be some glitches when you open additional
-files.  If there is specific behavior that you find dubious, please
-describe exactly what it is.  We can discuss it, and you can then file a
-bug report if you like.
-
-Edward
-
-</t>
-<t tx="ekr.20130526065545.17456">@nocolor
+===== Terry
 
 From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
 
-On Thu, 28 Mar 2013 22:08:19 +0200
-"Ville M. Vainio" &lt;vivainio@gmail.com&gt; wrote:
+Along these lines someone wanted a dark body only, you can get that by just
+adding @ignore to all the color related nodes other than body, or moving
+all of them under an @ignore node.
 
-&gt; BTW, I'm slightly bothered by the fact that color variable names have
-&gt; "solarized" in them. You are supposed to create new themes by changing
-&gt; their values in the "config" node, after which the theme is not "solarized"
-&gt; any more.
-&gt; 
-&gt; how about "@leotheme-c-0" (for color 0) etc.
+===== Ville 
 
-The variable replacement runs up to ten levels deep, after which it
-bails assuming you've created a loop :-)
+I'm slightly bothered by the fact that color variable names have
+"solarized" in them. You are supposed to create new themes by changing
+their values in the "config" node, after which the theme is not "solarized"
+any more. How about "@leotheme-c-0" (for color 0) etc.
 
-So there's nothing wrong with 
+===== Terry
+
+The variable replacement runs up to ten levels deep, after which it bails
+assuming you've created a loop :-)
+
+So there's nothing wrong with::
 
   @solarized-yellow = #abcdef
 
-the issue is that `@solarized-yellow` is used in the guts of the
-stylesheet definition.  Instead, ideally, but I didn't get to it, in
-the config node you'd have
+The issue is that `@solarized-yellow` is used in the guts of the stylesheet
+definition. Instead, ideally, but I didn't get to it, in the config node
+you'd have::
 
   @solarized-yellow = #abcdef
   ...
   @highlight-hot = @solarized-yellow
 
-and then use `@highlight-hot` in the guts of the
-stylesheet definition.
-
-Note - you can't create new themes simply by editing the config
-node, it's not possible to create enough constants for every style
-element that can be addressed by a stylesheet.
-
-But it would be nice to move all the color and numeric constants out of
-the stylesheet and into the config node as I've described above, just a
-find and replace operation.
-
-</t>
-<t tx="ekr.20130526065545.17457">@nocolor
-
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-
-
-On Thu, Mar 28, 2013 at 7:51 AM, Terry Brown &lt;terry_n_brown@yahoo.com&gt;wrote:
-
-
-&gt; Maybe the theme shouldn't be called 'solarized', although the color
-&gt; definitions in the config node may as well retain their names.
-
-
-I agree.  Otoh, I am willing to look into creating a true solarized
-configuration.  It should look great, and it would allow Leo to appear on
-the solarized web page.
-</t>
-<t tx="ekr.20130526065545.17458">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-On Wed, 27 Mar 2013 20:06:57 -0500
-Terry Brown &lt;terry_n_brown@yahoo.com&gt; wrote:
-
-&gt;  - see the README - if you're already running a dark theme there's a
-&gt;    `base` node which can be switched to `@ignore base` to take more
-&gt;    advantage of your desktop theme.
-
-p.s. along these lines someone wanted a dark body only, you can get
-that by just adding @ignore to all the color related nodes other than
-body, or moving all of them under an @ignore node.
-
-Cheers -Terry
-
-</t>
-<t tx="ekr.20130526065545.17459">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-I just pushed the solarized dark theme to trunk.  There were some
-changes to core code, but nothing too major, and I've been using it for
-some time.
-
-In leoSettings.leo there's a new top-level node called 'Themes', which
-contains a single theme node at the moment, you can copy that to you
-myLeoSettings.leo file under @settings.  Read the README node of the
-theme node for more instructions.
-
-The theme is far from perfect - it's relatively easy to get it looking
-ok if you're already running a dark desktop theme, which is what I'm
-doing, but much harder if you want Leo dark in a light desktop theme,
-as you need to theme everything.
-
- - see the README - if you're already running a dark theme there's a
-   `base` node which can be switched to `@ignore base` to take more
-   advantage of your desktop theme.
-
- - note that the new theme system includes a stylesheet authoring 
-   tool with macro substitutions :-) you no longer edit
-   @data qt-gui-plugin-style-sheet directly but edit a more comfortable
-   Leo tree version and then run-script on the appropriate node to
-   "compile" to @data qt-gui-plugin-style-sheet
-
-Cheers -Terry
-
-</t>
-<t tx="ekr.20130526065545.17460">@nocolor
-
-From: lewis &lt;lewisneal@operamail.com&gt;
-
-
-Hi Terry,
-
-Many thanks for your work on the dark theme.
-I noticed that the behaviour of the theme is affected by it's up/down 
-position in the @settings tree:
-If before 'Plugins' it is pale (but boxes are dark), after 'Plugins' it's 
-dark all over as intended.
-It may be helpful to document the behaviour.
-
-A question for Edward - Clicking the menu Help&gt;Open leoSettings.leo and 
-Help&gt;Open myLeoSettings.leo operates as an immediate toggle between the  
-custom and default leosettings.
-Is that toggle intended? I would have expected that leo should behave 
-according to the users preferred settings in their myLeoSettings.leo file.
-
-Regards
-Lewis
-
-</t>
-<t tx="ekr.20130526065545.17461">@nocolor
-
-From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
-
-BTW, if you prefer the bigger contrast that e.g. Sublime Text 2 has, try
-this "config":
-
-https://gist.github.com/vivainio/5261207
-</t>
-<t tx="ekr.20130526065545.17462">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-On Sun, 14 Apr 2013 01:35:31 -0700 (PDT)
-lewis &lt;lewisneal@operamail.com&gt; wrote:
-
-&gt; I noticed that the behaviour of the theme is affected by it's up/down 
-&gt; position in the @settings tree:
-&gt; If before 'Plugins' it is pale (but boxes are dark), after 'Plugins' it's 
-&gt; dark all over as intended.
-
-Thanks - the docs. in the theme node do mention moving other @data
-qt-gui-plugin-style-sheet and @color nodes out of the way, but I've
-added a couple of notes about putting it at the bottom of the @setting
-list to ensure it overrides other settings.  The problem is when the 
-default theme's @data qt-gui-plugin-style-sheet node comes after
-the dark theme's.
-
-Cheers -Terry
-
-</t>
-<t tx="ekr.20130526065545.17463">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-On Thu, 28 Mar 2013 05:33:45 -0500
-"Edward K. Ream" &lt;edreamleo@gmail.com&gt; wrote:
-
-&gt; On Wed, Mar 27, 2013 at 8:35 PM, Edward K. Ream &lt;edreamleo@gmail.com&gt; wrote:
-&gt; 
-&gt; &gt; It appears that the border around the body pane has disappeared.
-&gt; 
-&gt; Haha.  There is an interesting tie-in here.
-&gt; 
-&gt; At present, highlighted text doesn't have the correct colors.  To truly be
-&gt; called a solarized scheme, the foreground color of all text must *not*
-&gt; change when text is highlighted.  This is the insight and unifying
-
-Maybe the theme shouldn't be called 'solarized', although the color
-definitions in the config node may as well retain their names.  I
-wasn't really paying attention to the rules for the solarized system,
-just using it's palette.  It could be renamed 'leo_dark_zero' or
-something.
-
-It did also reveal a code execution pathway anomaly.  When headline
-editing is initiated by keyboard (Insert, Ctrl-H) the font-styling on
-the edit widget is different than when it's initiated by double
-clicking.
-
-Cheers -Terry
-
-&gt; principle of the solarized scheme.  Presumably, this is possible with
-&gt; Terry's code.
-&gt; 
-&gt; The tie in is this:  the border colors *should* also be two of the
-&gt; solarized foreground colors: this would make them maximally contrasting
-&gt; with either the usual dark background or the light background used when
-&gt; text is selected.
-&gt; 
-&gt; Using a true solarized scheme means:
-&gt; 
-&gt; a) using the designated solarized background colors: dark by default and
-&gt; light for selected text and
-&gt; 
-&gt; b) using the designated foreground colors for syntax-colored text.
-&gt; 
-&gt; Imo, this would significantly improve the appearance, and it would honor
-&gt; Ethan Schoonover's wishes.  When this happens, I'm sure Ethan will put a
-&gt; screen shot of Leo's main window on his web site.
-&gt; 
-&gt; I won't be able to get around to this today, but I'd like to do it asap.
-&gt; Feel free to beat me to the punch ;-)
-&gt; 
-&gt; Edward
-&gt; 
-
-</t>
-<t tx="ekr.20130526065545.17464">@nocolor
-
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-
-
-On Wed, Mar 27, 2013 at 8:35 PM, Edward K. Ream &lt;edreamleo@gmail.com&gt; wrote:
-
-&gt; It appears that the border around the body pane has disappeared.
-
-Haha.  There is an interesting tie-in here.
-
-At present, highlighted text doesn't have the correct colors.  To truly be
-called a solarized scheme, the foreground color of all text must *not*
-change when text is highlighted.  This is the insight and unifying
-principle of the solarized scheme.  Presumably, this is possible with
-Terry's code.
-
-The tie in is this:  the border colors *should* also be two of the
-solarized foreground colors: this would make them maximally contrasting
-with either the usual dark background or the light background used when
-text is selected.
-
-Using a true solarized scheme means:
-
-a) using the designated solarized background colors: dark by default and
-light for selected text and
-
-b) using the designated foreground colors for syntax-colored text.
-
-Imo, this would significantly improve the appearance, and it would honor
-Ethan Schoonover's wishes.  When this happens, I'm sure Ethan will put a
-screen shot of Leo's main window on his web site.
-
-I won't be able to get around to this today, but I'd like to do it asap.
-Feel free to beat me to the punch ;-)
-</t>
-<t tx="ekr.20130526065545.17465">@nocolor
-
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-
-
-
-On Wednesday, March 27, 2013 8:06:57 PM UTC-5, Terry wrote:
-&gt;
-&gt;
-&gt; The theme is far from perfect - it's relatively easy to get it looking 
-&gt; ok if you're already running a dark desktop theme, which is what I'm 
-&gt; doing, but much harder if you want Leo dark in a light desktop theme, 
-&gt; as you need to theme everything. 
-&gt;
-
-There is one glitch that I see.  It appears that the border around the body 
-pane has disappeared.  I think the border is always important, and the 
-proper border color will likely change in the solarized version.  But 
-perhaps this is an artifact of my settings--I really haven't investigated 
-properly yet. 
-
-&gt;
-&gt;  - note that the new theme system includes a stylesheet authoring 
-&gt;    tool with macro substitutions :-) you no longer edit 
-&gt;    @data qt-gui-plugin-style-sheet directly but edit a more comfortable 
-&gt;    Leo tree version and then run-script on the appropriate node to 
-&gt;    "compile" to @data qt-gui-plugin-style-sheet 
-&gt;
-
-Very cool.  Many thanks for all this work.
-
-Edward
-
+and then use `@highlight-hot` in the guts of the stylesheet definition.
+
+**Note**: you can't create new themes simply by editing the config node,
+it's not possible to create enough constants for every style element that
+can be addressed by a stylesheet.
+
+But it would be nice to move all the color and numeric constants out of the
+stylesheet and into the config node as I've described above, just a find
+and replace operation.
 </t>
 <t tx="ekr.20130526065545.17487">@nocolor
 
@@ -1747,9 +1400,7 @@ Cheers -Terry
 &gt; 
 
 </t>
-<t tx="ekr.20130526065545.17495">@nocolor
-
-From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+<t tx="ekr.20130526065545.17495">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
 
 I just pushed two new commands, zoom-in and zoom-out, which increase
 or decrease the body text font size by one point size.  They probably
@@ -1794,22 +1445,7 @@ Google+.
 Leo Editor
 https://plus.google.com/_/notifications/emlink?emr=02870587547267324596&amp;emid=CIDgu4qX0bYCFapzTAod51wAAA&amp;path=%2Fcommunities%2F104562683923003520885&amp;dt=1366183753416&amp;ub=63
 </t>
-<t tx="ekr.20130526065545.17514">@nocolor
-
-From: "Ville Vainio (Google+)" &lt;noreply-7dc29aba@plus.google.com&gt;
-
-
-
-Ville Vainio shared a post with Leo Editor.
-
-View:
-https://plus.google.com/_/notifications/emlink?emr=02870587547267324596&amp;emid=CNiN2Nzuz7YCFWR8TAodWDAAAA&amp;path=%2F103097156557482112329%2Fposts%2F6D9GPRCdXVh&amp;dt=1366138560104&amp;ub=63
-</t>
-<t tx="ekr.20130526065545.17515">@nocolor
-
-From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
-
-
+<t tx="ekr.20130526065545.17515">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
 
 Link to G+: https://plus.google.com/103097156557482112329/posts/6D9GPRCdXVh
 
@@ -2085,68 +1721,17 @@ might do a leo-editor blog post about it.
 --&gt;Jake
 
 </t>
-<t tx="ekr.20130526065545.17589">@nocolor
-
-From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
-
-Trunk now has alt-x go-anywhere command handy
-
-It's in quicksearch.py, and works "sort of" like Nav bar. Also Nav bar now
-does live search on headline (you have to press enter to force search of
-bodies as well)
+<t tx="ekr.20130526065545.17589">The quicksearch plugin now supports the go-anywhere command. It works "sort
+of" like Nav bar. Also Nav bar now does live search on headline (you have
+to press enter to force search of bodies as well)
 
 Once the hits are shows, you can navigate them by pressing up/down while
 focus is still in line editor &amp; you can keep on typing (sort of like
-sublime text)
+sublime text).
 
-Screenshot is attached, yes, positioning etc still looks like crap :)
-
-</t>
-<t tx="ekr.20130526065545.17590">@nocolor
-
-From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
-
-
-
-BTW, this has a very clever hack (even if I say so myself) - spaces in
-search string are replaced with * wild card.
-
-So if you search for, say "file txt", it will search for "file*txt",
-matching e.g. @file readme.txt
-
-
-On Tue, Nov 20, 2012 at 11:43 PM, Ville M. Vainio &lt;vivainio@gmail.com&gt;wrote:
-
-&gt; Trunk now has alt-x go-anywhere command handy
-&gt;
-&gt; It's in quicksearch.py, and works "sort of" like Nav bar. Also Nav bar now
-&gt; does live search on headline (you have to press enter to force search of
-&gt; bodies as well)
-&gt;
-&gt; Once the hits are shows, you can navigate them by pressing up/down while
-&gt; focus is still in line editor &amp; you can keep on typing (sort of like
-&gt; sublime text)
-&gt;
-&gt; Screenshot is attached, yes, positioning etc still looks like crap :)
-&gt;
-
-</t>
-<t tx="ekr.20130526065545.17592">@nocolor
-
-From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-
-
-On Tue, Nov 20, 2012 at 3:43 PM, Ville M. Vainio &lt;vivainio@gmail.com&gt; wrote:
-
-&gt; Trunk now has alt-x go-anywhere command handy
-
-
-Ah.  This answers the question I just asked.  I'll put this on the list of
-things to document.
-
-Edward
-
+This has a very clever hack (even if I say so myself)--spaces in search
+string are replaced with * wild card. So if you search for, say "file txt",
+it will search for "file*txt", matching e.g. @file readme.txt
 </t>
 <t tx="ekr.20130526065545.17594">This is a significant improvement, and makes Leo suitable for authoring
 text. It should have been done ages ago. Please let me know immediately if
@@ -3792,7 +3377,6 @@ in an outline. The range of an @testsetup node extends over all following
 @test and @suite nodes until the next @testsetup node is seen (in outline 
 order).
 </t>
-<t tx="ekr.20130806072439.19631"></t>
 <t tx="ekr.20130806072439.19990">@language rest
 
 Leo 4.11 a1                                     August 10, 2013
@@ -3859,167 +3443,94 @@ much pervasively used ... it could be a good thing for leo (-:
 Ok, I now created a toy UI demo for how "cell" based leo (like ipython
 notebook) could operate.
 
-It's probably the first stab at using QML to solve a problem in Leo.
-It doesnt' run from leo yet (it's not a plugin, more protoing needed
-before it's worthwhile to make it a plugin.
+qmlnotebook.leo (ctrl+b script + test outline) is now at contrib branch. If
+you want to try it, open the .leo file, ensure you are running latest Leo
+from trunk, and press ctrl+b on the first node.
+
+It's probably the first stab at using QML to solve a problem in Leo. It
+doesnt' run from leo yet (it's not a plugin, more protoing needed before
+it's worthwhile to make it a plugin.
 
 When you add and delete text, the cells resize naturally.
 
-To try it, launch the launchqmlnb.py script that I pushed to bzr.
+What it currently does is putting every node wrapper in a list of QObjects,
+and use that as the model in QML side (model is just a container that has
+the list of stuff to show in Repeater).
 
-bzr pull, and paste this into a node and press ctrl+b:
+So you can edit every node in a leo document in this "notebook". Future
+version will probably only allow editing a subtree.
 
-https://gist.github.com/2517158
+Note how headlines are "toned down" with small, grey font. Intention is
+that e.g. with ipython notebook, the headline will just be a running,
+uneditable sequence number basically.
 
-Result is as attached. What it currently does is putting every node
-wrapper in a list of QObjects, and use that as the model in QML side
-(model is just a container that has the list of stuff to show in
-Repeater).
+BTW, forgot to mention that I put the NodeWrapper stuff under leo.core. We
+can move it out eventually, but right now it seemed like a natural place
+for this kind of cross-plugin utility.
 
-So you can edit every node in a leo document in this "notebook".
-Future version will probably only allow editing a subtree.
+And on related note: remember that with QML, sky is the limit as far as the
+styling goes :). So if you have wild ideas about adding customizable
+images, animated checkboxes, or other weird stuff next to the nodes, fire
+away.
 
-Note how headlines are "toned down" with small, grey font. Intention
-is that e.g. with ipython notebook, the headline will just be a
-running, uneditable sequence number basically.
-
-BTW, forgot to mention that I put the NodeWrapper stuff under
-leo.core. We can move it out eventually, but right now it seemed like
-a natural place for this kind of cross-plugin utility.
-
-And on related note: remember that with QML, sky is the limit as far
-as the styling goes :). So if you have wild ideas about adding
-customizable images, animated checkboxes, or other weird stuff next to
-the nodes, fire away.
-
-
-
-
-</t>
-<t tx="ekr.20130806211959.17079">From: Kent Tenney &lt;ktenney@gmail.com&gt;
+===== Kent Tenney
 
 Interesting ...
 
-Am I correct: this is POC, edits in your serialized pane don't reflect
-in the Leo file?
+Am I correct: this is POC, edits in your serialized pane don't reflect in
+the Leo file?
 
-This is a hint of something I've long wanted, what I have called
-'slurped' vs 'chunked'
-Something I miss with Leo is the capability get an overview of a file,
-I find myself
-needing to 'open file with gvim' to grok at file level.
+===== Ville
 
-The pane you are generating offers both at once, I can see the linear
-view of the file,
-retaining the 'chunk' metadata (node headlines)
-</t>
-<t tx="ekr.20130806211959.17080">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+Yes, modifications are not saved yet. Also, modifications in normal body
+editors are not copied over to the notebook yet.  This is probably going to
+end up like tabula and stickynotes in this regard.
 
-On Fri, 27 Apr 2012 00:47:05 +0300
-"Ville M. Vainio" &lt;vivainio@gmail.com&gt; wrote:
+===== Kent
 
-&gt; Ok, I now created a toy UI demo for how "cell" based leo (like ipython
-&gt; notebook) could operate.
-&gt; 
-&gt; It's probably the first stab at using QML to solve a problem in Leo.
-&gt; It doesnt' run from leo yet (it's not a plugin, more protoing needed
-&gt; before it's worthwhile to make it a plugin.
-&gt; 
-&gt; When you add and delete text, the cells resize naturally.
-&gt; 
-&gt; To try it, launch the launchqmlnb.py script that I pushed to bzr.
+This is a hint of something I've long wanted, what I have called 'slurped'
+vs 'chunked' Something I miss with Leo is the capability get an overview of
+a file, I find myself needing to 'open file with gvim' to grok at file
+level.
 
-Played with it.  I guess the next step would be demo of python handling
-events from the QML UI elements, and of python finding and manipulating
-the QML UI elements.
+The pane you are generating offers both at once, I can see the linear view
+of the file, retaining the 'chunk' metadata (node headlines).
+
+===== Ville
+
+Getting an overview of a file could be an interesting extra usecase, my
+main interest is still in using it for interactive programming/computation
+(like ipython notebook) .
+
+===== Terry Brown
+
+Played with it. I guess the next step would be demo of python handling
+events from the QML UI elements, and of python finding and manipulating the
+QML UI elements.
 
 I'm wondering about the advantages of this approach over the "regular"
-QWidget approach.  QML is perhaps a more terse and elegant language for
-defining a UI, and it has scripting of UI behavior in javascript.  And
+QWidget approach. QML is perhaps a more terse and elegant language for
+defining a UI, and it has scripting of UI behavior in javascript. And
 perhaps it has a more tablet friendly widget set?
 
-But I wonder what it lets you do that you can't do with the QWidget
-stack, given that mixing the two seems to mean that Leo is using two
-GUI systems - they may be very tightly integrated, but mind-space wise
-it's two complex systems instead of one.
+But I wonder what it lets you do that you can't do with the QWidget stack,
+given that mixing the two seems to mean that Leo is using two GUI systems -
+they may be very tightly integrated, but mind-space wise it's two complex
+systems instead of one.
 
-Which isn't a reason not to use QML, just wondering if it has
-advantages I'm missing.
-</t>
-<t tx="ekr.20130806211959.17081">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
+Which isn't a reason not to use QML, just wondering if it has advantages
+I'm missing.
 
-Some modifications done, attached is screenshot with tree level
-nesting as well. I moved the headistring to the left edge, since on
-the right edge the tree structure looked weird.
+===== Terry
 
-</t>
-<t tx="ekr.20130806211959.17082">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
-
-This leo script is more polished version of the earlier work (ctrl+b
-script). It uses QStandardItemModel to host the entries in the
-notebook, so you can add / remove / modify items and the changes
-reflect in the notebook in real time.
-
-https://gist.github.com/2540690
-</t>
-<t tx="ekr.20130806211959.17083">From: Ville Vainio &lt;vivainio@gmail.com&gt;
-
-Qml version was the one I got done quickly, since it has better layout
-mechanism. If we come up with qwidget way, let's use that :). I tried
-to find one, but didn't
-
-Sent from my Windows Phone
-From: Terry Brown
-Sent: 4/27/2012 5:55 PM
-To: leo-editor@googlegroups.com
-Re: QML notebook - phase zero - toy ui ;-)
-On Fri, 27 Apr 2012 00:47:05 +0300
-"Ville M. Vainio" &lt;vivainio@gmail.com&gt; wrote:
-
-&gt; Ok, I now created a toy UI demo for how "cell" based leo (like ipython
-&gt; notebook) could operate.
-&gt;
-&gt; It's probably the first stab at using QML to solve a problem in Leo.
-&gt; It doesnt' run from leo yet (it's not a plugin, more protoing needed
-&gt; before it's worthwhile to make it a plugin.
-&gt;
-&gt; When you add and delete text, the cells resize naturally.
-&gt;
-&gt; To try it, launch the launchqmlnb.py script that I pushed to bzr.
-
-Played with it.  I guess the next step would be demo of python handling
-events from the QML UI elements, and of python finding and manipulating
-the QML UI elements.
-
-I'm wondering about the advantages of this approach over the "regular"
-QWidget approach.  QML is perhaps a more terse and elegant language for
-defining a UI, and it has scripting of UI behavior in javascript.  And
-perhaps it has a more tablet friendly widget set?
-
-But I wonder what it lets you do that you can't do with the QWidget
-stack, given that mixing the two seems to mean that Leo is using two
-GUI systems - they may be very tightly integrated, but mind-space wise
-it's two complex systems instead of one.
-
-Which isn't a reason not to use QML, just wondering if it has
-advantages I'm missing.
-</t>
-<t tx="ekr.20130806211959.17084">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
-
-Update: qmlnotebook.leo (ctrl+b script + test outline) is now at
-contrib branch. If you want to try it, open the .leo file, ensure you
-are running latest Leo from trunk, and press ctrl+b on the first node.
-</t>
-<t tx="ekr.20130806211959.17085">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-Here's a demo to run Ville's QML thing in a free_layout pane.
-Requires rev. 5284 so the .qml file in leo/plugins/qmlnb/ is available.
+Here's a demo to run Ville's QML thing in a free_layout pane. Requires rev.
+5284 so the .qml file in leo/plugins/qmlnb/ is available.
 
 Paste this into a node, run-script on the node, right click a splitter
 handle, Insert, click the Action button, select "Add QML shower".
 
-Note that you can flick the text boxes it shows up and down with the
-mouse, in a tablet / phone ui kind of way.
+Note that you can flick the text boxes it shows up and down with the mouse,
+in a tablet / phone ui kind of way.
 
 ---cut here---
 from PyQt4.QtCore import QUrl
@@ -4058,49 +3569,6 @@ class QMLShower:
 
 QMLShower(c)
 ---cut here---
-
-</t>
-<t tx="ekr.20130806211959.17086">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
-
-Yes, modifications are not saved yet. Also, modifications in normal body
-editors are not copied over to the notebook yet.  This is probably going to
-end up like tabula and stickynotes in this regard.
-
-Getting an overview of a file could be an interesting extra usecase, my
-main interest is still in using it for interactive programming/computation
-(like ipython notebook) .
-On Apr 28, 2012 4:22 PM, "Kent Tenney" &lt;ktenney@gmail.com&gt; wrote:
-</t>
-<t tx="ekr.20130806211959.17087">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
-
-Ok, this should serve as a basis for ipython nicely.
-
-However, a problem - it worked once, but now (after restarting leo,
-many times) I always get this traceback;
-
-Traceback (most recent call last):
-  File "/home/ville/b/leo-editor/leo/plugins/nested_splitter.py", line
-489, in cb
-    self.place_provided(id_, index)
-  File "/home/ville/b/leo-editor/leo/plugins/nested_splitter.py", line
-502, in place_provided
-    provided =3D self.get_provided(id_)
-  File "/home/ville/b/leo-editor/leo/plugins/nested_splitter.py", line
-960, in get_provided
-    provided =3D provider.ns_provide(id_)
-  File "/home/ville/.leo/scriptFile.py", line 18, in ns_provide
-    g.unregisterHandler('select2', self.update)
-  File "/home/ville/b/leo-editor/leo/core/leoGlobals.py", line 2529,
-in unregisterHandler
-    return pc.unregisterHandler(tags,fn)
-  File "/home/ville/b/leo-editor/leo/core/leoPlugins.py", line 730, in
-unregisterHandler
-    self.unregisterOneHandler(tags,fn)
-  File "/home/ville/b/leo-editor/leo/core/leoPlugins.py", line 735, in
-unregisterOneHandler
-    bunches =3D [bunch for bunch in bunches if bunch.fn !=3D fn]
-TypeError: 'NoneType' object is not iterable
-
 </t>
 <t tx="ekr.20130806211959.17093">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
 
@@ -5351,49 +4819,25 @@ The key invariant in createV5ThinNode:
 The code can be called twice, so it is a bit tricky
 to only issue warnings once.
 </t>
-<t tx="ekr.20130807203905.16553">- (done) deprecate/reorganize *dynamic* body text background colors.
-    - (done) set body pane color only once. (Now done only via stylesheet).
-    - (done) use border colors to indicate state.
-</t>
 <t tx="ekr.20130807203905.16554"></t>
-<t tx="ekr.20130807203905.16555">Leo now supports two new setting, with the indicated default::
+<t tx="ekr.20130807203905.16555">Leo now supports having border colors that show which pane has focus.
 
-    @color focus_border_command_state_color = blue
-    @color focus_border_overwrite_state_color = green
+To enable such borders, modify (in your myLeoSettings.leo)::
 
-This works in conjunction with the existing border-color setting::
+    @data qt-gui-plugin-style-sheet
 
-    @color focus_border_color = red
+Change::
 
-So by default, the color border is red when in insert state, and blue
-if in command state.
-
-This allows the focus border to change color depending on whether we
-are in input or command mode.  This is a workaround for the (extreme)
-difficulty of changing cursors depending on mode.
-
-When used to distinguish insert from command modes, I recommend
-changing the existing setting::
-
-    @int focus_border_width = 1
+  @focused-border-style = none
 
 to::
 
-    @int focus_border_width = 2
+  @focused-border-style = solid
 
-This makes the focus border much more visible, and makes the color
-changes obvious.
+**Important**: The following settings are no longer used::
 
-I tested this code without changing bindings using the set-command-
-state command.
-
-As before, if you don't want any such colored borders, just do::
-
+    @int focus_border_width = 1
     @bool use_focus_border = False 
-</t>
-<t tx="ekr.20130807203905.16556">Changed set-xxx-state &amp; setInputState.
-
-Changed qtGui.add_border and remove_border.
 </t>
 <t tx="ekr.20130807203905.16557"></t>
 <t tx="ekr.20130807203905.16558">- Changed es so it always queues messages when g.app.log is None.
