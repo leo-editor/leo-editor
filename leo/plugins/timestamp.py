@@ -6,6 +6,8 @@
     - str_atime: time node contents were last viewed
 '''
 
+# By Kent Tenney
+
 import time
 import leo.core.leoGlobals as g
 

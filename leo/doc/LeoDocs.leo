@@ -189,7 +189,7 @@
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
 <v t="ekr.20100805165051.7177"
-expanded="edream.110203163054.63,ekr.20130806072439.19990,ekr.20130807203905.16686,"><vh>@file release_notes.txt</vh></v>
+expanded="ekr.20130803073926.17114,"><vh>@file release_notes.txt</vh></v>
 </v>
 <v t="ekr.20130807203905.16526"><vh>* For the FAQ: create a bzr repository before importing it into Leo</vh></v>
 <v t="ekr.20130803125244.17095"><vh>* position script (put in scripting chapter?)</vh></v>
@@ -3269,7 +3269,9 @@ The fixes:
 Hitting Ctrl-H can still cause a small unwanted scroll, but the insert point remains visible.
 </t>
 <t tx="ekr.20130807203905.16819"></t>
-<t tx="ekr.20130808211520.15900">The timestamp plugin manages the following node attributes:
+<t tx="ekr.20130808211520.15900">By Kent Tenney
+
+The timestamp plugin manages the following node attributes:
 
 - str_ctime: creation time
 - str_mtime: time node was last modified

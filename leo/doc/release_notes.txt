@@ -20960,6 +20960,8 @@ easy, which bodes well for future work.
 Edward
 
 #@+node:ekr.20130808211520.15900: *5* timestamp plugin
+By Kent Tenney
+
 The timestamp plugin manages the following node attributes:
 
 - str_ctime: creation time
