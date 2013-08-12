@@ -4,8 +4,6 @@
 
 .. @+all
 .. @+node:ekr.20130501035328.10475: ** Desired outcomes for Leo
-@nocolor-node
-
 1. Newbies can install Leo without problems.
 2. Newbies can learn Leo's main features easily.
 3. *Good* documentation exists for all important plugins and features.
@@ -117,7 +115,288 @@ def but_quotes_at_the_end_of_a_triple_quoted_string_are_still_tricky(self):
     string = """Hello "world\""""
     
 what
-.. @+node:ekr.20130812034101.12575: *4* Installation
+.. @+node:ekr.20130806072439.20723: *5* Problem saving changed/new .leo files on Windows
+EKR: This appears to be some weird key-related problem with Leo 4.10.
+
+===== From: vili <viljem.tisnikar@gmail.com>
+
+Installing (a new version) of Leo was allways a bit of challenge for
+me. As a non-programmer I use Windows, I like automatic installers,
+and I don't quite understand what binaries and other stuff is.
+
+Today I wanted to upgrade from 4.9 to Leo-4.10-final, which is the
+latest exe on SourceForge but I figured out that
+
+Leo-4.10-final does not save any changes made to the file and it doesn't save also any new files!
+
+I tried also with "a nightly snapshot from Leo's snapshots page" - the
+same story. I reinstalled python and qt, but still the same problem. I
+installed back the 4.9 version from SourceForge and that worked fine
+again.
+
+Some data from log:
+Leo 4.10 final, build 5020, 2012-02-26 13:18:08 -0600
+Python 3.2.3, qt version 4.8.0
+Windows 6, 1, 7601, 2, Service Pack 1
+
+Its kind of weird for me that no one reported this problem earlier.
+
+
+===== From: Raj <dsrajesh@gmail.com>
+
+I faced the same problem as well and my configuration is exactly
+identical to yours.
+
+Workaround I did was start the leo from command line::
+
+C:\\Python32\\python.exe "C:\\Python32\\Lib\\site-packages\\Leo-4.10-final\\launchLeo.py"
+
+Default is to start the pythonW.exe, which does not work for some reason
+still trying to identify why it is behaving this way. Now I am able to save
+like before.
+
+===== From: Viljem Tisnikar <viljem.tisnikar@gmail.com>
+
+This workaround of yours works for me also! It is not comfortable at all,
+but it works!
+
+===== From: Eoin <eoinmccarthy@fastmail.fm>
+
+I also experienced this issue today after upgrading from Leo 4.8-final to
+Leo 4.10-final.
+
+The workaround still does the job.
+
+===== From: Matt Wilkie <maphew@gmail.com>
+
+To my knowledge this is the first report of this kind of issue. I
+can't think of any explanation for this other than file permissions
+(but I don't understand very much about how Leo works either; my
+programming skills are very minimal).
+
+Have you tried creating a new .leo file from scratch and saving it?
+
+===== From: Viljem Tisnikar <viljem.tisnikar@gmail.com>
+
+Yes, I have. It does not save.
+
+===== Matt
+
+And does the log window have any warnings or error messages?
+
+===== From: Viljem Tisnikar <viljem.tisnikar@gmail.com>
+
+No, in log window nothing happens when I pres "ctrl-s". And of course the
+star near the name of the file does not disappear.
+
+.. @+node:ekr.20130812034101.12580: *4* Install
+@language rest
+.. @+node:ekr.20130806072439.20650: *5* Wishlist: brew install leo
+From: Winn Dixie <incredible0n3@gmail.com>
+
+Would be stellar to have a brew install leo (for Mac OSX 10.7.X) with
+possible built in options to install vim bindings.
+.. @+node:ekr.20130806072439.20732: *5* Runnable Leo in one .zip file.
+From: Terry Brown <terry_n_brown@yahoo.com>
+
+Summary - it's easy to make a .zip file containing Leo and all it's
+dependencies.
+
+Inspired by Matt's recipe, using VirtualBox throw away 1GB Windows XP
+32 bit machines, I tried the following.
+
+Install Python (installer from python.org) 2.7.2 to 
+
+  C:\Docouments and Settings\someuser\Desktop\leo\python27
+
+Install PyQt (installer from Riverbank) 4.9 into the same folder (it
+goes there by default)
+
+Unzip http://www.greygreen.org/leo/leo-editor-latest.zip into
+
+  C:\Docouments and Settings\someuser\Desktop\leo\leo-editor-latest
+
+Make leo.zip from C:\Docouments and Settings\someuser\Desktop\leo
+
+Delete the virtual machine, purging any registry entries etc. created
+by the two installers.
+
+On a fresh machine, searched the registry for 'python' just to be sure,
+found nothing.
+
+Unzip the .zip file, then
+
+  cd C:\Docouments and Settings\someuser\Desktop\leo
+  python27\python.exe leo-editor-latest\launchLeo.py
+
+And Leo opens a blank outline, after asking for an ID, as it's supposed
+to.  Didn't test it beyond that.
+
+So, the .zip file contains all Leo needs to run, and obviously
+runLeo.bat could be added in the top level to actually launch it.
+
+Of course this is for Windows, so I think it's an improvement over
+asking people to install Python and PyQt first, but neither of those
+steps was that hard in Windows anyway.
+
+===== EKR
+
+Is this a technique that we could use for official Windows releases?
+If so, what exactly would we do?
+
+===== Terry
+
+I guess, perhaps as an all-in-one option with a system integrated
+option for those who want to use system python/qt.  Don't know if it
+violates and licensing on Python / Qt, everything's being distributed
+unaltered, so I wouldn't think so.
+
+So basically you'd give people a large .zip file and tell them to
+extract it to a folder and run the batchfile at the top level.  If they
+can't do that, they might not be ready for Leo :-)  I guess you could
+make it a self-extracting .zip, for that matter.
+
+Also, the daily snapshot could be made this way, seeing once Python and
+Qt are installed in the folder the Leo version can just be copied in.
+
+It's not uncommon for FLOSS to be distributed this way, both Blender
+and Inkscape use this approach, particularly for recent builds.
+
+===== From: HansBKK <hansbkk@gmail.com>
+
+If something like this **is** done, it should IMO be packaged as an
+alternative to the normal installation procedure.
+
+You would definitely get marketing exposure by getting the specs from
+PortableApps.com and let them host it there as  "Portable Leo", tracking
+the "official" Portable Python (currently 2.7.2) as a dependency, obviously
+including QT etc as well. But it would need to be kept up to date. . .
+
+Most Windows users would be better served by following the normal
+installation procedure and ending up with a
+registry-and-environment-variables-complete install of Python et al which
+they can use for other things beyond Leo. Ending up with multiple instances
+of Python to maintain is likely to cause more problems.
+
+And the normal Windows install just isn't that hard, really! Improving the
+current instructions, by providing a step-by-step "cookbook" with direct
+links to the download packages etc might make it a **little** easier (IMO
+only for the clueless), but then of course that would be a doc that would
+need pretty frequent updates, which if I may be so bold doesn't seem to
+happen too quickly on the doc side.
+.. @+node:ekr.20130806072439.20736: *6* Re: Runnable Leo in one .zip file.
+From: Matt Wilkie <maphew@gmail.com>
+
+Since this topical today, almost a year later, I thought I'd take a run at 
+repeating this using Portable Python (http://www.portablepython.com) as a 
+base. It didn't work, but I think it should. Maybe someone else knows why. 
+
+I ran the installer for 2.7.3 since 3.2 doesn't include PyQt4. At install 
+time I selected only the Python and PyQt4 packages. Then from a fresh 
+command shell:
+
+{{{
+path=c:\windows;c:\windows\system32
+pushd x:\portapy27\App
+path=%cd%;%cd%\Scripts;%cd%\Lib\site-packages\PyQt4;%path%
+set pythonhome=%cd%
+set pythonpath=%cd%\Lib
+
+popd
+
+python --version
+Python 2.7.3
+
+python -c "import PyQt4"
+:: no error returned, we're good.
+
+python c:\apps\leo-editor-latest\launchLeo.py
+Leo requires Qt to be installed.
+}}}
+
+oh well.
+.. @+node:ekr.20130806072439.20744: *6* Re: Runnable Leo in one .zip file.
+From: HansBKK <hansbkk@gmail.com>
+
+> PortableApps version would be FANTASTIC!!
+
+A couple of versions have been posted here already, including Terry's very
+simple sequence in the first message of this thread. Of course, we're only
+talking about Windows, but note that it works equally well either syncing
+with whatever tool (I favor Unison over SSH) or carrying around on an
+arbitrary-path'd external device, including flash drives (but they can be
+slow).
+
+Here's my more robust (hence more complex) version, xx indicating your 
+python version (mine is 27):
+
+Use the normal .MSI, setup.exe etc processes to Install a clean "canonical" 
+version of your "python dev stack" to say C:\PythonXX, reboot if needed, 
+test thoroughly. Note any new environment variables pointing to your new 
+binary locations.
+
+Now create a corresponding PythonXX folder in your "PortableApps" location 
+(I put it under "CommonFiles" along with GTK and Java) and copy everything 
+from your installed location to the portable one.
+
+You can then use the project-provided tools on the "master" computer to 
+keep your binaries updated, and they will see any local Registry entries 
+and the environment variables they created and operate normally wrt your 
+installed location (e.g. C:\PythonXX).
+
+If you have a local folder sync tool (I use Unison and WinMerge) you can 
+add to/remove from/configure your Python environment from either location, 
+otherwise just keep your installed location as the "master" and just copy 
+the whole stack over each time you do so.
+
+The whole PortableApps tree can then be sync'd/copied to any other 
+desktop(s) you like, either over the wire or via an external device, and 
+the latter can be carried for use in say an Internet cafe or client-site 
+situation.
+
+====================
+
+For use on those other computers, for running in portable mode, I use a
+"portable start menu" (PStart) which allows for its own "autolaunch" batch
+files, where I set some global environment variables to be used by
+app-specific launch batch files, including :
+
+%Path% (I add my batch folder and a general utility/tools folder)
+%HOME% (usually "E:\aasync\Data\H_HOME"
+and a custom one called %h_pa%, which points to the root of my PortableApps 
+parent (usually "D:\aasync\PortableApps")
+
+Then for each environment that requires its own custom settings, I create a 
+launch batch file that builds on that base. In the case of Python apps, 
+here's an example that opens a CMD console window:
+
+@ECHO OFF
+set 
+PATH=%PATH%;%h_pa%\CommonFiles\Python27;%h_pa%\CommonFiles\Python27\Lib\site-packages\PyQt4;%h_pa%\CommonFiles\Python27\Lib\idlelib;%h_pa%\CommonFiles\Python27\Scripts;
+set PROMPT=$p_python$g
+E:
+cd \aasync
+CMD.exe
+
+I'm not sure which if any of the environment stuff Leo requires, but I 
+figure it might as well have the same environment as my Python CLI, since 
+I'll be testing shell integration, including iPython. In my leo-win.bat, 
+the last three lines above are replaced with:
+
+D:
+cd \aasync\PortableApps\leo-editor
+start "" "..\CommonFiles\Python27\pythonw.exe" 
+"..\CommonFiles\Python27\Lib\site-packages\leo-editor4\launchLeo.py" %*
+
+====================
+
+Note this is more than the minimum you need to just run Leo - you could of 
+course simplify it; for example, only set the environment variables Leo 
+requires, or you could just set the master computer' installation routines 
+to use a single location under PortableApps, but I prefer to keep them 
+separate for testing purposes.
+
+I hope you (and others googling this later) find this useful.
 .. @+node:ekr.20130807203905.16594: *5* Wishlist for newbies (Fidel)
 @language rest
 
@@ -168,21 +447,22 @@ time, without messing with the local system's registry.
 Also handy for those not in portable mode, but working on different windows
 boxes and bored with having to tweak each one separately.
 .. @+node:ekr.20130807203905.16649: *4* Doc To do
+@language rest
 .. @+node:ekr.20130807203905.16650: *5* Leo in a nutshell
+https://groups.google.com/forum/#!topic/leo-editor/lgHE4OJSLzw
 
 In a Nutshell, The Leo Editor...
 
-- has had 8,373 commits made by 35 contributors
-- representing 246,619 lines of codeis mostly written in Python
-- with an average number of source code comments
+- has had 15,508 commits made by 47 contributors
+  representing 1,064,650 lines of code
+- is mostly written in Python
+  with an average number of source code comments
 - has a well established, mature codebase
-- maintained by a large development team
-- with decreasing Y-O-Y commits
-- took an estimated 64 years of effort (COCOMO model)
-- starting with its first commit in February, 2008
-- ending with its most recent commit 3 days ago
-
-and this is missing the earlier years, from 2001 to 2008, before moving to bazaar and Launchpad.
+  maintained by a large development team
+  with decreasing Y-O-Y commits
+- took an estimated 292 years of effort (COCOMO model)
+  starting with its first commit in February, 2002
+  ending with its most recent commit 2 days ago 
 .. @+node:ekr.20130807203905.16655: *5* Tutorials & how-to
 .. @+node:ekr.20130807203905.16656: *6* A beautiful pattern for composing large strings
 From: "Edward K. Ream" <edreamleo@gmail.com>
@@ -505,8 +785,6 @@ Leo's c.all_nodes() iterator will deliver 9 positions:
   The parent of position 6: B is Root. The childIndex of 6: B is 2.
 
 .. @+node:ekr.20130807203905.16668: *6* Draft: unit-testing tutorial
-@nocolor
-
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
 The following is a first draft of a unit-testing tutorial.  It will form 
@@ -718,346 +996,8 @@ are fundamental: they have almost nothing to do with actual guis.
 In short, I think Leo's design uses the best of the gui-dependent and
 gui-independent approaches.
 .. @+node:ekr.20130806211959.17307: *4* Help (Some might be good to document)
-.. @+node:ekr.20130806211959.17308: *5* Automated playback (done??)
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-The more I think about it, the more I think Leo needs an automated playback 
-capability.  I had some initial thoughts in the thread, "PyOhio Leo Video 
-up on youtube", 
-https://groups.google.com/forum/?fromgroups=#!topic/leo-editor/nmBweM3wI3o.
-
-There as several immediate applications for automated playback:
-
-1. As a helper for those preparing demos of Leo.  It eliminates the need to 
-think, talk and type at the same time ;-)  The hope is that the narrator 
-would be more comfortable and relaxed during the recording, but perhaps 
-that is wishful thinking.
-
-2. As an automated, scripted, demo of what Leo can do.  You could even 
-imagine the quickstart.leo would "create itself" when it was opened.  You 
-would simply need to start the demo when the file was opened!
-
-As I was thinking about playback, I considered how the playback would draw 
-attention to various parts of the screen.  In other words, we need 
-something akin to the big red arrows in the Leo slideshows. One easy way to 
-do this would be with a DialogWithImage call, that would pop up a dialog 
-showing, say, a magnified image of a dirty icon box.  Depending on options, 
-the dialog might go away after a few seconds, or remain until the use hits 
-any key.
-
-The main question is, how easy will it be to create and edit playbacks?  
-I'm not sure.  Any such playback capability would essentially be a 
-(detailed!) script.  We can imagine a script that is essentially Python:  
-Something like:
-
-goto_sibling_node(<<node name>>)
-dialog(<<dialog name>>,<< when dismissed>>)
-edit_headline
-type_individual_letters('This is the headline',<<delay between letters>>)
-type_text('This is the headline')
-insert_sibling_node()
-insert_child_node()
-select_find_tab()
-etc! etc!
-
-Leo already has most of the capability go generate this as we use Leo:  
-it's the so-called "lossage" history in k.masterKeyHandler.  I'm thinking 
-that there is no urgent need to capture the mouse: we might as well 
-demonstrate mouseless Leo!
-
-Actually, we might forgo capturing actions altogether, and just write the 
-script directly.  We'll have to see whether that makes sense.
-
-Your comments, please, Amigos.
-
-Edward
-
-.. @+node:ekr.20130806211959.17309: *6* Re: Automated playback
-@nocolor
-
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-
-On Wednesday, September 12, 2012 3:12:52 PM UTC-5, Edward K. Ream wrote:
->
-> The more I think about it, the more I think Leo needs an automated 
-> playback capability. 
->
-... 
-
-> The main question is, how easy will it be to create and edit playbacks? 
-
-
-Rev 5432 provides some answers.  test.leo contains the node, "Prototype of 
-screencast script".  It took many hours of happy experimentation to get the 
-script to work, but the results are worth all the futzing.  Here is the 
-first script::
-
-    s = p.b # This script.
-    c = c.new()
-    p = c.p
-    p.h = ''
-    n1,n2 = 0.01,0.2 # Small difference are important.
-    head_keys('This is headline text',n1,n2)
-    body_keys('This is some body text.\\n',0.0,0.0) # n1,n2)
-    body_keys('Some more body text.\\n',0.0,0.0)
-    body_keys(s,0.0,0.0)
-
-The head_keys and body_keys (not shown) simulate typing, with a range of 
-typing speed indicated by the n1 and n2 params.  The result is really fun 
-to watch.  As you will see, there is a wait method that waits a variable 
-number of seconds.  This will be useful in other contexts.
-
-This is the most fun I've had in quite awhile. It's becoming clear that 
-being able to generate screencasts from scripts will be an excellent tool 
-for those trying to explain Leo.  Imo, creating screencasts from such 
-scripts will be *much* simpler than making slideshows.
-
-I've got lots of ideas for improvements to screencasts.  I should have 
-something pretty cool to show in a week or so...
-
-Edward
-
-P.S.  The head_keys and body_keys methods cost me a *lot* of work.  It's 
-tricky to show the typing immediately without flash.  These are the first 
-of several planned helper methods for use in screencasts::
-
-     def head_keys(s,n1=0.04,n2=0.1):
-        import leo.core.leoGui as leoGui
-        p = c.p
-        tree = c.frame.tree
-        c.editHeadline()
-        w = tree.edit_widget(p)
-        for ch in s:
-            p.h = p.h + ch
-            tree.repaint() # *not* tree.update.
-            wait(n1,n2)
-            event = leoGui.leoKeyEvent(c,ch,ch,w,x=0,y=0,x_root=0,y_root=0)
-            c.k.masterKeyHandler(event)
-        c.frame.tree.repaint()
-        c.redraw()
-
-    def body_keys(s,n1=0.04,n2=0.1):
-        c.bodyWantsFocusNow()
-        p = c.p
-        w = c.frame.body.bodyCtrl.widget
-        for ch in s:
-            p.b = p.b + ch
-            w.repaint()
-            wait(n1,n2)
-        c.redraw()
-
-EKR
-
-.. @+node:ekr.20130806211959.17310: *6* Re: Automated playback
-@nocolor
-
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-
-
-
-On Friday, September 14, 2012 8:54:42 AM UTC-5, Edward K. Ream wrote:
->
->
-> Rev  5434 packages this into the new screencast plugin.  Yesterdays work, 
-> in screencast.py and the node "@command screencast @key=Alt-9" in test.leo 
-> taught me several things.  In the notes below, m is an instance of 
-> ScreenCastController.  m stands for "movie" :-)
->
-
-Screencasts promise to be easy to be *much* easier to create than 
-slideshows, while also being more interesting, informative and flashy.  It 
-is *so* much easier to write a screencast script than it is to lay out a 
-slide, take a screenshot, and then manage resulting slide.
-
-In particular, there are few continuity problems with screencasts.  
-Continuity is a *huge* problem with slideshows!  If I change one slide, I 
-am likely to want to change all following slides.  Which means I have to 
-retake all the slides, and file the new versions in the proper places.  In 
-contrast, any changes to screencasts naturally propagate forward.  There 
-might be an effect on following screencasts scenes, but this will happen 
-rarely with a reasonable scene design, and any problems should be easy to 
-fix.
-
-With screencasts, the *movie* script is also the *python* script!  There is 
-no "translation" from one to the other.  Furthermore, all the work to 
-produce a screencast is done (naturally!) within Leo.  No need to create 
-and manage external data.  This is another huge advantage and it make 
-producing screencasts much faster than producing slideshows.
-
-Screencasts are likely to be the long-awaited tools that will allow me to 
-show Leo in action so that other will finally be able to understand it 
-easily.  This is an exciting prospect!
-
-Edward
-
-.. @+node:ekr.20130806211959.17311: *6* Re: Automated playback
-@nocolor
-
-From: HaveF <iamaplayer@gmail.com>
-
-
-
-On Fri, Sep 14, 2012 at 9:54 PM, Edward K. Ream <edreamleo@gmail.com> wrote:
-
-> On Wednesday, September 12, 2012 10:57:35 PM UTC-5, Edward K. Ream wrote:
->
->     test.leo contains the node, "Prototype of screencast script".  It took
-> many hours of happy experimentation to get the script to work, but the
-> results are worth all the futzing.
->
-> Rev  5434 packages this into the new screencast plugin.  Yesterdays work,
-> in screencast.py and the node "@command screencast @key=Alt-9" in test.leo
-> taught me several things.  In the notes below, m is an instance of
-> ScreenCastController.  m stands for "movie" :-)
->
-> 1. It's probably best to not to open a new Leo window for screencasts.
-> This avoid problems with w.repaint occurring in a another repaint
-> operation, thereby freezing Leo.  This is not a major constraint: we
-> typically will want to have screencasts operate on the local .leo file.
->
-> 2. I spent a lot of time trying to adjust the delay between
-> "transitions".  The arguments to m.wait specify the range of waiting
-> allowed.  The plugin multiplies these nominal factors by a **speed
-> factor**, initially 1.0.  m.set_speed sets this factor. To double the
-> presentation speed, set the factor to 0.5.
->
-
-This seems strange. In my intuition, if you want to double the speed, the
-factor should be 2.0. (use new_factor = 1.0/old_factor instead?)
-
-.. @+node:ekr.20130806211959.17312: *6* Re: Automated playback
-@nocolor
-
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-
-On Friday, September 14, 2012 9:31:33 AM UTC-5, HaveF wrote:
->
->
-> 2. I spent a lot of time trying to adjust the delay between 
->> "transitions".  The arguments to m.wait specify the range of waiting 
->> allowed.  The plugin multiplies these nominal factors by a **speed 
->> factor**, initially 1.0.  m.set_speed sets this factor. To double the 
->> presentation speed, set the factor to 0.5.
->>
->
-> This seems strange. In my intuition, if you want to double the speed, the 
-> factor should be 2.0. (use new_factor = 1.0/old_factor instead?)
->
-
-But then how do you set the wait to zero? :-)
-
-Anyway, it's a minor point: now that manual play is coming the speed factor 
-will not be important.
-
-EKR
-
-.. @+node:ekr.20130806211959.17313: *6* Re: Automated playback
-@nocolor
-
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-
-On Wednesday, September 12, 2012 10:57:35 PM UTC-5, Edward K. Ream wrote:
-
-    test.leo contains the node, "Prototype of screencast script".  It took 
-many hours of happy experimentation to get the script to work, but the 
-results are worth all the futzing. 
-
-Rev  5434 packages this into the new screencast plugin.  Yesterdays work, 
-in screencast.py and the node "@command screencast @key=Alt-9" in test.leo 
-taught me several things.  In the notes below, m is an instance of 
-ScreenCastController.  m stands for "movie" :-)
-
-1. It's probably best to not to open a new Leo window for screencasts.  
-This avoid problems with w.repaint occurring in a another repaint 
-operation, thereby freezing Leo.  This is not a major constraint: we 
-typically will want to have screencasts operate on the local .leo file.
-
-2. I spent a lot of time trying to adjust the delay between "transitions".  
-The arguments to m.wait specify the range of waiting allowed.  The plugin 
-multiplies these nominal factors by a **speed factor**, initially 1.0.  
-m.set_speed sets this factor. To double the presentation speed, set the 
-factor to 0.5.
-
-The m.log call writes a message to the log pane, with calls to m.wait(1) 
-before and after inserting the text.  Both waits are important.  The 
-"opening" wait allows the user to see the effect of the previous operation; 
-the "closing" wait allows the user to read the new comment in the log pane 
-before the next operation happens.
-
-3. The futzing with speed and waits convinces me that specifying waits "by 
-hand" isn't good enough.  Pre-specified waits will be useful only for an 
-**unattended mode** that just plays the screencast from start to finish.  
-But for most presentations we want the presenter to switch from one 
-**scene** of the movie to the next by hitting the RightArrow key.  The 
-LeftArrow key will go back to the previous scene. Thus, in **attended 
-mode**, most calls to m.wait will have no effect.  (An exception will be 
-the calls to m.wait in the code the simulates a person typing in headline 
-or body text.  Thus calls should always have effect, so we will have a 
-"force" arg to m.wait.)
-
-It will be relatively straightforward to do the first draft of attended 
-mode.  At the programming level, it will work like any minibuffer command 
-that prompts for user input.  That is, the plugin will create a so-called 
-state handler for the slideshow.
-
-At the design level,  the main idea is to treat every node under the main 
-@screencast node as a scene.  This natural division allows the screencast 
-to organize the material using all of Leo's organizational capabilities.
-
-The state handler will, when seeing the RightArrow key, "play" the next 
-scene merely by moving to the next node and then executing the script in 
-it's body text.  This script could contain *any* Leo script, but most often 
-it will call ScreenCastController methods.   Moving to the previous scene 
-can be done by Leo's undo command, automatically managed by the 
-ScreenCastController.  This will be a bit tricky, but not hugely so.
-
-4. Putting comments in the log pane is ok for a prototype, but it's pretty 
-lame.  Instead, I'd like to use some kind of popup that can be associated 
-with individual items on the screen and located with precision relative to 
-those items. The popup should be able to contain both text and graphics. 
-Does anyone have a suggestion for what Qt widget to use?
-
-Your comments please, Amigos.
-
-Edward
-
-.. @+node:ekr.20130806211959.17314: *6* Re: Automated playback
-@nocolor
-
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-
-
-On Friday, September 14, 2012 8:54:42 AM UTC-5, Edward K. Ream wrote:
-
-> It will be relatively straightforward to do the first draft of attended 
-mode. 
-
-Indeed it was.  Rev  5435 contains the new code in screencast.py and new 
-test code in test.leo.  To run the test, just do Alt-9, then hit the right 
-arrow key until done.  Escape or Ctrl-g will abort the screencast.  All 
-other keys get ignored.
-
-**Warning**: the present screen cast insert a node in a somewhat random 
-location.
-
-The code that looks for the next node assumes that if it has a script if 
-p.b.strip() is True.  Before making this check, it should strip off python 
-comment lines so the speaker can add comments.
-
-There is still lots of work to be done, but already we have a fun sandbox 
-to play in.  As you will see, all the code in ScreenCastController is dead 
-easy, which bodes well for future work.
-
-Edward
-
+@language rest
 .. @+node:ekr.20130806211959.17315: *5* Background Images in body pane?
-@nocolor
-
 From: tfer <tfetherston@aol.com>
 
 I was wondering if the Qt widget used for body text has a provision for 
@@ -1068,8 +1008,6 @@ visually represent various categories of methods, e.g. initors, setters,
 getters, etc.  Maybe ones that hint at the uses of a particular design 
 pattern.  Maybe us a uA to control setting?
 .. @+node:ekr.20130806211959.17316: *6* Re: Background Images in body pane?
-@nocolor
-
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
 On Fri, Jul 13, 2012 at 3:57 PM, tfer <tfetherston@aol.com> wrote:
@@ -1084,8 +1022,6 @@ a subclass of QTextEdit.  QTextBrowser also inherits from QFrame and
 QWidget, so there *might* be a way to have a background image "leak"
 through the text.
 .. @+node:ekr.20130806211959.17317: *6* Re: Background Images in body pane?
-@nocolor
-
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 --MP_/NJ5QIult88.7_K/HpvnV2eA
@@ -1122,11 +1058,7 @@ QTextEdit#richTextEdit[leo_gnx='tbrown.20130430222443.19340'] {
 Cheers -Terry
 
 .. @+node:ekr.20130806211959.17318: *6* Re: Background Images in body pane?
-@nocolor
-
 From: "Edward K. Ream" <edreamleo@gmail.com>
-
-
 
 On Wed, May 1, 2013 at 8:42 AM, Terry Brown <terry_n_brown@yahoo.com> wrote:
 
@@ -1388,8 +1320,6 @@ context menu.
 
 Instead of "w = QtGui.QSlider()", you want "w = myMatplotWidget()"
 .. @+node:ekr.20130806211959.17325: *5* How to call functions from LeoPyRef.Leo
-@nocolor
-
 From: <fidelperez@gmail.com>
 
 I am going through something similar Matt Wilkie went through in this
@@ -1413,9 +1343,7 @@ I will prepare some more interesting utils (import mindmap, etc) then
 release them together with manuals oriented to noob users.
 
 .. @+node:ekr.20130806211959.17326: *6* Re: How to call functions from LeoPyRef.Leo
-@nocolor
-
-From: =?UTF-8?Q?Fidel_P=C3=A9rez?= <fidelperez@gmail.com>
+From: <fidelperez@gmail.com>
 
 Sounds great!
 So, in the search results, will I be able to know how to call that function?
@@ -1460,8 +1388,6 @@ On Monday, May 20, 2013 3:47:35 PM UTC+2, Terry wrote:
 >
 
 .. @+node:ekr.20130806211959.17327: *6* Re: How to call functions from LeoPyRef.Leo
-@nocolor
-
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
 On Mon, May 20, 2013 at 8:47 AM, Terry Brown <terry_n_brown@yahoo.com>wrote:
@@ -1525,10 +1451,7 @@ As shown, the LeoQTextBrowser class is a real (subclass of) QTextBrowser.
 HTH.  I've made a note to discuss official ivars in more detail in the
 scripting chapter.
 .. @+node:ekr.20130806211959.17328: *6* Re: How to call functions from LeoPyRef.Leo
-@nocolor
-
-From: =?UTF-8?Q?Fidel_P=C3=A9rez?= <fidelperez@gmail.com>
-Content-Transfer-Encoding: quoted-printable
+From: <fidelperez@gmail.com>
 
 Ok, in order to print icons, the code is this:
 
@@ -1566,8 +1489,6 @@ On Sunday, May 19, 2013 12:43:50 PM UTC+2, Fidel P=E9rez wrote:
 >
 
 .. @+node:ekr.20130806211959.17329: *6* Re: How to call functions from LeoPyRef.Leo
-@nocolor
-
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 On Mon, 20 May 2013 04:00:59 -0700 (PDT) <fidelperez@gmail.com> wrote:
@@ -1601,8 +1522,6 @@ and it recursively searches for it.
 Cheers -Terry
 
 .. @+node:ekr.20130806211959.17330: *6* Re: How to call functions from LeoPyRef.Leo
-@nocolor
-
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 On Mon, 20 May 2013 08:47:35 -0500
@@ -1653,45 +1572,12 @@ http://pastebin.com/GAc15jRL
 
 Is this recipe the right way to do it or is there a better way?
 .. @+node:ekr.20130806211959.17332: *6* Re: How to make body text insertion at cursor permanent?
-@nocolor
-
 From: SegundoBob <bhossley@ieee.org>
 
 I'm sorry no one has suggested a better way to make the changes
 permanent.  How does Leo-Editor notice that typing has inserted a few
 more characters?  Couldn't the same mechanism be used here?
-
-On 04/17/2013 12:29 PM, Terry Brown wrote:> I think that's the way,
-see also:
->
-> https://groups.google.com/forum/?fromgroups=#!searchin/leo-editor/insert$20text$20will$20disappear$20after$20insert$20children$20node$20and$20redraw/leo-editor/0haTWrUlNVg/lFU1JkMHrosJ
->
-Thanks.  I vaguely remembered this thread, but I couldn't find it.
-
-> Depending on your use you might want to
->
->     oldins = w.getInsertPoint()
->
->     ...
->
->     w.setInsertPoint(oldins+len(inserted_text))
-
-http://pastebin.com/GAc15jRL  uses both w.getInsertPoint() and
-w.setInsertPoint()
-
->
-> to get the cursor where you want it afterwards, lots of variations how
-> the new position might be calculated.
->
-> Other possibly useful methods:
->
->     i,j = w.getSelectionRange(sort=True)
->     s = w.getSelectedText()
-
-Yes, these are very useful.
 .. @+node:ekr.20130806211959.17333: *6* Re: How to make body text insertion at cursor permanent?
-@nocolor
-
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 On Wed, 17 Apr 2013 12:09:52 -0700 (PDT)
@@ -1731,11 +1617,7 @@ Other possibly useful methods:
 
     i,j = w.getSelectionRange(sort=True)
     s = w.getSelectedText()  
-
-Cheers -Terry
 .. @+node:ekr.20130806211959.17334: *6* Re: How to make body text insertion at cursor permanent?
-@nocolor
-
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 On Wed, 17 Apr 2013 16:53:10 -0700 (PDT)
@@ -1817,8 +1699,6 @@ Cheers -Terry
 > Yes, these are very useful.
 > 
 .. @+node:ekr.20130806211959.17335: *6* Re: the workflow of write leo scripts?
-@nocolor
-
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 On Fri, 12 Apr 2013 10:09:40 +0800
@@ -1834,12 +1714,7 @@ the API could be improved, or, seeing the existing API make sense for
 what it is, we could have additional "easy text manipulation" API.
 So long since I used Emacs I can't really remember its model, and if it
 would apply here.
-
-Cheers -Terry
-
 .. @+node:ekr.20130806211959.17336: *5* How to use leo to make mathematical notes?
-@nocolor
-
 From: <lzyerste@gmail.com>
 
 If I want to use leo to make mathematical notes, how can I type in some
@@ -2209,8 +2084,6 @@ On Friday, May 3, 2013 7:48:27 PM UTC-3, Jo=E3o Alexandre Toledo wrote:
 >
 > Jo=E3o
 .. @+node:ekr.20130806211959.17346: *5* Terry, how do you create the buttons with dropdown menus?
-@nocolor
-
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
 I have a note that it was an @rclick node handled by the context_menu.py 
@@ -2227,40 +2100,8 @@ Something I've found useful is adding a @click node like:
 
 that separates my entries from the ever present
 'Remove Button' and 'Goto Script' entries
-
-.. @+node:ekr.20130806211959.17348: *6* Re: Terry, how do you create the buttons with dropdown menus?
-@nocolor
-
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-
-On Thu, Apr 11, 2013 at 8:38 PM, Terry Brown <terry_n_brown@yahoo.com>wrote:
-
-> On Thu, 11 Apr 2013 20:15:33 -0500
-> "Edward K. Ream" <edreamleo@gmail.com> wrote:
->
-> > On Thu, Apr 11, 2013 at 8:10 PM, Edward K. Ream <edreamleo@gmail.com>
-> wrote:
-> >
-> > I prefer a bigger triangle:  =E2=96=BC U=3D25BC: Black Down-Pointing Triangle.
-> >
-> > One more thing.  It's reasonable to have the top-level button just be a
-> > placeholder for subsidiary @rclick nodes.  To do that without getting a
-> > warning when clicking the top-level button, set its script to "empty
-> > string".
->
-> I think you mean set its script to a docstring describing the
-> functions it groups together for the tooltip hover text :-)
->
-
-Right.
-
-EKR
 .. @+node:ekr.20130806211959.17349: *6* Re: Terry, how do you create the buttons with dropdown menus?
-@nocolor
-
 From: "Edward K. Ream" <edreamleo@gmail.com>
-
 
 On Thu, Apr 11, 2013 at 8:10 PM, Edward K. Ream <edreamleo@gmail.com> wrote:
 
@@ -2270,11 +2111,7 @@ One more thing.  It's reasonable to have the top-level button just be a
 placeholder for subsidiary @rclick nodes.  To do that without getting a
 warning when clicking the top-level button, set its script to "empty
 string".
-
-EKR
 .. @+node:ekr.20130806211959.17350: *6* Re: Terry, how do you create the buttons with dropdown menus?
-@nocolor
-
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 On Thu, 11 Apr 2013 00:56:51 -0700 (PDT)
@@ -2291,11 +2128,7 @@ ideal implementation.  OTOH it hasn't broken for 1-2 years.
 Cheers -Terry
 
 .. @+node:ekr.20130806211959.17351: *6* Re: Terry, how do you create the buttons with dropdown menus?
-@nocolor
-
 From: "Edward K. Ream" <edreamleo@gmail.com>
-
-
 
 On Thu, Apr 11, 2013 at 2:56 AM, Edward K. Ream <edreamleo@gmail.com> wrote:
 
@@ -2305,11 +2138,7 @@ right-clicking the created top-level button work pretty much as expected.
 But I remember that on your machine there was some indicator (a triangle?)
 in the top-level button indicating that it had structure.  Is that the
 case?  If so, how did you create such buttons?
-
-Edward
 .. @+node:ekr.20130806211959.17352: *6* Re: Terry, how do you create the buttons with dropdown menus?
-@nocolor
-
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 On Thu, 11 Apr 2013 13:50:25 -0500
@@ -2326,12 +2155,7 @@ On Thu, 11 Apr 2013 13:50:25 -0500
 
 @settings
    @string mod_scripting_subtext =3D =E2=96=BE
-
-Cheers -Terry
-
 .. @+node:ekr.20130806211959.17353: *6* Re: Terry, how do you create the buttons with dropdown menus?
-@nocolor
-
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 On Thu, 11 Apr 2013 20:15:33 -0500
@@ -2348,27 +2172,7 @@ On Thu, 11 Apr 2013 20:15:33 -0500
 
 I think you mean set its script to a docstring describing the
 functions it groups together for the tooltip hover text :-)
-
-Cheers -Terry
-
-.. @+node:ekr.20130806211959.17354: *6* Re: Terry, how do you create the buttons with dropdown menus?
-@nocolor
-
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-On Thu, Apr 11, 2013 at 2:24 PM, Terry Brown <terry_n_brown@yahoo.com>wrote:
-
-
->    @string mod_scripting_subtext =3D =E2=96=BE
->
-
-Thanks!  I prefer a bigger triangle:  =E2=96=BC U=3D25BC: Black Down-Pointing
-Triangle.
-
-EKR
 .. @+node:ekr.20130806211959.17355: *6* Re: Terry, how do you create the buttons with dropdown menus?
-@nocolor
-
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
 On Thu, Apr 11, 2013 at 7:29 AM, Terry Brown <terry_n_brown@yahoo.com>wrote:
@@ -2392,8 +2196,6 @@ qtIconBarClass.setCommandForButton.
 I'll add documentation for this, in leoSettings.leo and also in the
 customizing Leo chapter.
 .. @+node:ekr.20130806211959.17356: *5* the workflow of write leo scripts?
-@nocolor
-
 From: HaveF <iamaplayer@gmail.com>
 
 I have read the scripting chapter of leo-editor, and already make my daily
@@ -2618,8 +2420,6 @@ as my "Intelligent PIM" - I organize my (complex) life with Leo.
 
 Many thanks to Edward and others for the great application.
 .. @+node:ekr.20130806211959.17360: *5* Blog post about how Leo can improve organization of code bases
-@nocolor
-
 From: Rickard Lindberg <ricli85@gmail.com>
 
 I wrote a blog post about how Leo can be used to improve the organization 
@@ -2627,137 +2427,57 @@ of our code bases.
 
 If you are interested, you can read it over here: 
 http://reflectionsonprogramming.com/2013/02/related-things-are-not-kept-together/
-.. @+node:ekr.20130806211959.17361: *6* Re: Blog post about how Leo can improve organization of code bases
-@nocolor
 
-From: Randy Kramer <rhkramer@gmail.com>
-
-Rickard,
+===== From: Randy Kramer <rhkramer@gmail.com>
 
 Very interesting--I'm happy to see someone thinking about how to make 
 understanding code bases easier.  (I'm a rather old wannabee programmer, so 
 I'm not sure it will ever be of much use to me, nor that I can offer cogent 
 comments.)
 
-I will add some comments or questions anyway: ;-)
+Are you familiar with the concept of literate programming as espoused by
+Donald Knuth and others?
 
-   * Are you familiar with the concept of literate programming as espoused by 
-Donald Knuth and others?  If so, did that influence you at all, and, if so 
-how?  (Not that I think literate programming is the way forward, although I 
-like the concept and have experimented with it--I once wrote a rather large 
-Visual Basic (I know, what can I say, I was stuck in the Microsoft world at 
-the time) program using a literate programming approach.  I got it working to 
-a degree, but eventually had to devote more time to other things so never got 
-it fully up to spec.
-
-   * Darn, I know I had another comment, but I won't remember it until 
-sometime after I hit "send" ;-)
-
-The main purpose of my email is to encourage you--anything that can improve 
-the understanding of a code base is a good thing--thanks for your efforts!
-
-Randy Kramer
-
-
-
-
-
-On Sunday 24 February 2013 6:12:16 am Rickard Lindberg wrote:
-> I wrote a blog post about how Leo can be used to improve the organization
-> of our code bases.
->
-> If you are interested, you can read it over here:
-> http://reflectionsonprogramming.com/2013/02/related-things-are-not-kept-tog
->ether/
->
-> /Rickard
-
-
-.. @+node:ekr.20130806211959.17362: *6* Re: Blog post about how Leo can improve organization of code bases
-@nocolor
-
-From: Rickard Lindberg <ricli85@gmail.com>
-
-On Sun, Feb 24, 2013 at 9:07 PM, Randy Kramer <rhkramer@gmail.com> wrote:
-> Rickard,
->
-> Very interesting--I'm happy to see someone thinking about how to make
-> understanding code bases easier.  (I'm a rather old wannabee programmer, so
-> I'm not sure it will ever be of much use to me, nor that I can offer cogent
-> comments.)
-
-Thank you. Glad you find it interesting.
-
->    * Are you familiar with the concept of literate programming as espoused by
-> Donald Knuth and others?
+===== Rickard
 
 Yes. I've read about literate programming and also tried it. I found that it
 didn't work so well for me for the following reasons (At least that's what I
 remember. It was many years since I tried.):
 
-* Focus on text first instead of code made it harder for me to produce working
-  code. I sometimes learn how to do something by trying it out and then
-  refactor the solution.
+* Focus on text first instead of code made it harder for me to produce
+  working code. I sometimes learn how to do something by trying it out and
+  then refactor the solution.
 
 * Unless you read the PDF (or whatever the final output is) you loose the
-  structure. At least I did. It was just one big file with all kinds of things
-  mixed together. An outline structure solves this problem.
+  structure. At least I did. It was just one big file with all kinds of
+  things mixed together. An outline structure solves this problem.
 
-> If so, did that influence you at all, and, if so
-> how?  (Not that I think literate programming is the way forward, although I
-> like the concept and have experimented with it--I once wrote a rather large
-> Visual Basic (I know, what can I say, I was stuck in the Microsoft world at
-> the time) program using a literate programming approach.  I got it working to
-> a degree, but eventually had to devote more time to other things so never got
-> it fully up to spec.
+===== Randy
 
-It influenced me mostly in that I started to think about how to best present
-programs so that humans can understand them. I'm not sure literate programming
-like Knuth uses it is the best way (in particular, I think the programs are
-harder to modify), but I also think that a folder with just source code is not
-so good either.
+If so, did that influence you at all, and, if so how? (Not that I think
+literate programming is the way forward, although I like the concept and
+have experimented with it--I once wrote a rather large Visual Basic (I
+know, what can I say, I was stuck in the Microsoft world at the time)
+program using a literate programming approach. I got it working to a
+degree, but eventually had to devote more time to other things so never got
+it fully up to spec.
 
-> The main purpose of my email is to encourage you--anything that can improve
-> the understanding of a code base is a good thing--thanks for your efforts!
+===== Rickard
 
-Thanks for the encouragements.
-
-/Rickard
-
+It influenced me mostly in that I started to think about how to best
+present programs so that humans can understand them. I'm not sure literate
+programming like Knuth uses it is the best way (in particular, I think the
+programs are harder to modify), but I also think that a folder with just
+source code is not so good either.
 .. @+node:ekr.20130806211959.17363: *6* Re: Blog post about how Leo can improve organization of code bases
-@nocolor
-
 From: Matt Wilkie <maphew@gmail.com>
-
-
 
 Nice article Rickard, I think it captures the background problem well.
 
 I'm not sure the images communicate clones effectively -- but don't really
 have an alternative suggestion that would be an improvement. It's just
 really hard to appreciate how well they work without experiencing them!
-
-cheers,
-
--matt
-
-
-On Sun, Feb 24, 2013 at 3:12 AM, Rickard Lindberg <ricli85@gmail.com> wrote:
-
-> I wrote a blog post about how Leo can be used to improve the organization
-> of our code bases.
->
-> If you are interested, you can read it over here:
-> http://reflectionsonprogramming.com/2013/02/related-things-are-not-kept-together/
->
-> /Rickard
->
->
->
-
 .. @+node:ekr.20130806211959.17364: *6* Re: Blog post about how Leo can improve organization of code bases
-@nocolor
-
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 On Sun, 24 Feb 2013 03:12:16 -0800 (PST)
@@ -2775,9 +2495,6 @@ html template, css, java-script, url-dispatch, tests, model definitions.
 In fact I've just made some updates to the bookmarks display plugin
 which make using it effectively smoother, for a mouse user, anyway, to
 help with this.  Will push them soon.
-
-Cheers -Terry
-
 .. @+node:ekr.20130806211959.17365: *5* Leo as PIM and authoring tool
 Josef <joe_da@gmx.net>
 7/30/12
@@ -3044,8 +2761,6 @@ if __name__ == '__main__':
 ---cut here---
 
 .. @+node:ekr.20130806211959.17370: *5* why Leo
-@nocolor
-
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 Because I have two nodes which were originally identical but are now
@@ -3072,19 +2787,7 @@ takes to write an email about it - well, that's "why Leo".
 handling SQL and an XML dialect I use a lot, it's a great way to manage
 little snippet functions)
 .. @+node:ekr.20130806211959.17371: *6* Fw: why Leo
-@nocolor
-
 From: Terry Brown <terry_n_brown@yahoo.com>
-
-
-
-Begin forwarded message:
-
-Date: Fri, 1 Feb 2013 13:08:30 -0600
-From: Terry Brown <terry_n_brown@yahoo.com>
-To: leo-editor@googlegroups.com
-Subject: why Leo
-
 
 Because I have two nodes which were originally identical but are now
 different and I want to see the differences.
@@ -3111,74 +2814,8 @@ handling SQL and an XML dialect I use a lot, it's a great way to manage
 little snippet functions)
 
 Cheers -Terry
-.. @+node:ekr.20130806211959.17372: *7* Re: Fw: why Leo
-@nocolor
-
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-
-
-On Sun, Apr 7, 2013 at 11:21 AM, Terry Brown <terry_n_brown@yahoo.com>wrote:
-
->
->
-> Begin forwarded message:
->
-> Date: Fri, 1 Feb 2013 13:08:30 -0600
-> From: Terry Brown <terry_n_brown@yahoo.com>
-> To: leo-editor@googlegroups.com
-> Subject: why Leo
->
->
-> Because I have two nodes which were originally identical but are now
-> different and I want to see the differences.
->
-> My outline loads a @file called ~/.leo/t/gen which contains a @button
-> with several @rclick children for commonly used tasks.  So I add a new
-> one, @rclick diff
->
->   selected = c.getSelectedPositions()
->   open('/tmp/a_diff', 'w').write(selected[0].b)
->   open('/tmp/b_diff', 'w').write(selected[1].b)
->   import os
->   os.system("xxdiff /tmp/a_diff /tmp/b_diff &")
->
-> which is horrible for a number of reasons but also took only moments
-> to write.  And now, not only does this Leo session have a visual node
-> diff capability, but also every future session which loads ~/.leo/t/gen.
->
-> When you can go from wanting to having a feature in less time than it
-> takes to write an email about it - well, that's "why Leo".
->
-> (I also have @file ~/.leo/sql and @file ~/.leo/dml for commands for
-> handling SQL and an XML dialect I use a lot, it's a great way to manage
-> little snippet functions)
->
-> Cheers -Terry
->
-
-My present thinking is that such tidbits will be lost unless they get put
-in an official place.
-
-I have a Leo/To be documented mail folder, and this message is going there
-:-)  However, I think this subject would make a good Leo blog entry.
-
-Edward
-
-.. @+node:ekr.20130806211959.17373: *7* Re: why Leo
-@nocolor
-
-From: Haroldo Stenger <haroldo.stenger@gmail.com>
-
-I'm slowly trying to grok leo. I love meld, it's simply the best text
-comparison I've ever seen. I wonder if a greater bit of integration between
-meld and leo is possible, and in which ways. Undoubtedly calling it as an
-external process is better than anything.
 .. @+node:ekr.20130806211959.17374: *7* Re: why Leo
-@nocolor
-
 From: wgw <wgwinder@gmail.com>
-
 
 Useful!
 
@@ -3259,792 +2896,6 @@ with it avoiding repetitive tasks for me.
 Thanks for your software, Im really excited to have found it.
 .. @+node:ekr.20130812034101.12576: *3* To do: 4.11 a1
 @language rest
-.. @+node:ekr.20130806072439.20640: *4* Installation
-@language rest
-.. @+node:ekr.20130807090137.11461: *5* Linux
-.. @+node:ekr.20130806072439.20730: *6* PyPi package: 4.11 test release: Matt
-From: Matt Wilkie <maphew@gmail.com>
-
-I've just uploaded Leo-4.11-devel-build-5769 to the Python Package Index:
-https://pypi.python.org/pypi/leo
-
-(todo: fix the readme, which is for 4.10, the 4.11 version remains to be
-written)
-
-It can be downloaded from there and installed manually or, better yet,
-installed with `pip install leo`.
-
-Pre-requisites are:
-
-1. Python
-2. PyQt
-3. Distribute / Setuptools
-
-Improvements over previous pypi package:
-
- - Sports Leo splash screen while installing on Windows
-
- - Installs "leo" and "leoc" wrappers to PYTHONHOME\\Scripts, so as long as
-this directory is in PATH you don't need to create your own launcher (this
-is the part that requires Distribute. I'm working an way to include this
-automatically, http://stackoverflow.com/questions/16702658). It is common
-for this to be set.
-
-- all the other changes in trunk over the last couple of weeks (
-http://bazaar.launchpad.net/~leo-editor-team/leo-editor/trunk3/changes)
-.. @+node:ekr.20130806072439.20664: *6* finding debian package
-From: Geoff Evans <gtevansai@nl.rogers.com>
-
-The Leo installation instructions for Ubuntu still say merely "find and
-install the debian package". Can someone tell me where to find it? Several
-minutes searching on google has not got me anywhere.
-
-===== From: Matt Wilkie <maphew@gmail.com>
-
-Please try the instructions here and report if they are still relevant:
-https://groups.google.com/d/msg/leo-editor/9yqhWD90Vtg/yCR8O_FBvIwJ ?
-
-===== From: Geoff Evans <gtevansai@nl.rogers.com>
-
-Excellent! Thanks very much Matt (and Ville for creating it). There was one
-error message about a signature that could not be verified, and a syntax
-error while compiling /usr/lib/pymodules/python2.7/leo/external/edb.py but
-they haven't stopped leo from opening files from my previous computer. The
-new one is running precise, in case it matters.
-
-Minor supplementary question: What search strategy would have led me there
-on my own? I agree that "Leo now apt-gettable" is perfectly understandable
-once I see it (and indeed I have a vague memory of having seen it before),
-but I don't know how I would have arrived at it without your help.
-
-.. @+node:ekr.20130806072439.20683: *6* linux users: please test pip install
-From: Matt Wilkie <maphew@gmail.com>
-
-Can someone on linux please test whether
-
-   pip install -i https://testpypi.python.org/pypi leo-editor
-
-successfully installs a working Leo on their system?
-
-You can use `virtualenv` to create an isolated test environment
-http://www.virtualenv.org/en/latest/ if needed.
-
-===== From: Terry Brown <terry_n_brown@yahoo.com>
-
-seemed to work for my in a fresh python 3.3 virtualenv
-
-i.e.
-import leo
-leo.run()
-ImportError: No module named 'PyQt4'
-
-so in the shell
-
-cp -rv /usr/lib/python3/dist-packages/PyQt4 p3/lib/python3.3/site-packages/
-cp -rv /usr/lib/python3/dist-packages/sip* p3/lib/python3.3/site-packages/
-
-and then the above worked.
-
-remember also:
-
-https://groups.google.com/forum/?fromgroups=#!searchin/leo-editor/Runnable$20Leo$20in$20one$20.zip$20file./leo-editor/jnpkrQeo9Hk/Ds3QsUe1W-QJ
-
-including HansBKK's good point.
-
-===== Matt
-
-The take away is that there is a pure python method to install pip, which
-in turn can easily install Leo and docutils, meaning the two don't have to
-be bundled.
-
-There is still more work to do get PyQt + SIP install automated in a way
-that integrates nicely with Start Menu etc., but we have proof of concept
-that it is possible.
-
-At the very least we have a recipe that can easily build a complete ready
-to run all-in-one zip bundle for Windows. I'll work on this next, and then
-dig more into the pyqt+sip aspect.
-
-.. @+node:ekr.20130807090137.11459: *5* MacOS
-.. @+node:ekr.20130806072439.20688: *6* Macintosh installation
-From: "JohnKStevenson@gmail.com" <john.k.stevenson@gmail.com>
-
-Here is the question I posed and then sent to a user rather than the
-qroup:
-
-The instructions at Ed Ream's site, say to use brew to load pyqt and
-sip, actually they don't say to load sip.
-
-Why would the order be important? Are they not individual packages?
-
-After failing to get it to run following the instructions,
-I loaded QT from Troll Tech and it still failed.
-
-My system:
- Xcode 3.2.6
- Python 2.6.1 is installed.
- gcc 4.2.1  is installed.
- QT installed under Developer/Tools and Developer/Applications
--- Clean /usr/local
--- chown -R me:admin /usr/local
--- Install homebrew
-
----  /usr/bin/ruby -e "$(curl -fsSL https://raw.github.com/gist/323731)"
-
-Brew 0.9 is installed.
----       brew update
-
--- Install PyQT
---- brew install pyqt
-pyqt-4.9.1 installed
----  brew install sip
-sip-4.13.2 installed
---  Added to path, (.bash_profile)
- --- export $PYTHONPATH=/usr/local/lib/python:$PYTHONPATH
-
--- unzipped leo-4.10 somewhere
--- ran the script element "python launchLeo.py --gui=qt $1" result:
-"no such option --qt"
-
-I really wish there were a simple script or brew thing to load this
-tool.
-
-It seems that most "Leo People" are using Windoze or Linux, but Mac
-people need good outlining too. (Bring in the CLONES!)
-
-David Humphrey responded, thanks David, but still no joy.
-.. @+node:ekr.20130806072439.20689: *7* Re: Macintosh installation
-From: David Humphrey <david@dlkeh.net>
-
-John,
-
-I'm definitely not a Qt specialist (or Leo specialist either), but I
-wonder if your PyQt installation is working correctly.  Try importing
-PyQt4 as Leo does and see if any error messages appear.  Here's how it
-looked on my machine:
-
-Deviant:~ dlh$ python
-Python 2.7.2 (v2.7.2:8527427914a2, Jun 11 2011, 15:22:34)
-[GCC 4.2.1 (Apple Inc. build 5666) (dot 3)] on darwin
-Type "help", "copyright", "credits" or "license" for more information.
->>> import PyQt4.QtCore
->>> import PyQt4.QtGUI
->>>
-
-i.e., clean imports, no complaints.  While this will only provide
-clues, they might be enough to help move forward.
-
-I find this same lack of support with other apps, e.g, Wikidpad, but,
-let's face it: There are a lot more Windows and Linux boxes running
-these non-commercial apps than OS X boxes.
-.. @+node:ekr.20130806072439.20690: *7* Re: Macintosh installation
-From: Ludwig Schwardt <ludwig.schwardt@gmail.com>
-
---4fa8f601_7f01579b_93
-
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-
-Hi John, 
-
-I wrote the original instructions for using Homebrew to install Leo on the Mac. Unfortunately those instructions are a bit outdated by now. From your description I only see one problem: the PYTHONPATH you added to .bash_profile has changed to
-
-export PYTHONPATH=3D/usr/local/lib/python2.6/site-packages:$PYTHONPATH
-
-This is mentioned by brew after you install sip - reinstall sip to verify the correct incantation for you (I assume you are using Python 2.6 - change to python2.7 if necessary).
-
-To answer some of your questions: pyqt depends on qt and sip, therefore installing the pyqt package will automatically install the rest. I've installed them separately in the instructions below to pick up the correct PYTHONPATH setting.
-
-Here is a summary of what I did today on a reasonably clean Lion system to get Leo working (maybe Ed can put this on the web site):
-
-- Read the Homebrew installation instructions at
-  https://github.com/mxcl/homebrew/wiki/Installation
-
-- Make sure you have Xcode installed (test it by confirming
-  that "gcc" runs in the Terminal). You can either get the full
-  Xcode beast or the lean-and-mean Command-Line Tools
-  for Xcode, as suggested in the Homebrew installation
-  instructions.
-
-
-- In preparation for Homebrew, the best option in my opinion is
-  to delete /usr/local via::
-
-  sudo rm -rf /usr/local
-
-  and install any software in it via Homebrew instead. If this step
-  fills you with dread and you do not want to lose your beloved
-  third-party software, the second-best option is to make sure you
-  have write permission for the directory via::
-
-  sudo chown -R <your user name>:admin /usr/local
-
-  If you don't know your username, run "whoami". :-) This is
-  useful because homebrew actually discourages you from
-  installing third-party software as the superuser (the usual Mac
-  apps in /Applications are also installed as the normal user,
-  for that matter).
-
-
-- Install Homebrew (http://mxcl.github.com/homebrew/) by running
-the following command in the Terminal::
-
-
-  /usr/bin/ruby -e "$(/usr/bin/curl -fsSL https://raw.github.com/mxcl/homebrew/master/Library/Contributions/install_homebrew.rb)"
-
-- Run "brew doctor" and check any further suggestions to improve
-your system.
-
-
-- Run "brew update" to get the latest formulas
-
-- Install sip and note the caveat::
-
-  brew install sip
-
-  This warns you to add the local python directory to your PYTHONPATH.
-  Make a note of what this is (especially if you are not on Lion!).
-
-- Add the following lines to your ~/.bash_profile
-  (or ~/.profile on Leopard) - this is the default for LION::
-
-  export PATH=3D/usr/local/bin:$PATH
-  # This is for SIP (and PyQT) as suggested by Homebrew
-  export PYTHONPATH=3D/usr/local/lib/python2.7/site-packages:$PYTHONPATH
-
-- Install PyQT::
-
-  brew install pyqt
- 
-
-- Open a new Terminal tab / window so that the above settings
-  take effect, and install Leo. I downloaded the Leo-4.9-final-a.zip,
-  unzipped it, and ran "python launchLeo.py" inside the Leo
-  directory.
-
-
-It would really be great to get a Leo formula going for Homebrew=85 As mentioned before, the main question is just where to place all the Leo files in the /usr/local hierarchy.
-
-Regards,
-Ludwig
-.. @+node:ekr.20130806072439.20691: *6* Macintosh Snow leopard installation
-From: "JohnKStevenson@gmail.com" <john.k.stevenson@gmail.com>
-
-Many thanks to Ludwig Schwardt, he identified the missing element of
-the $PYTHONPATH, for Snow Leopard it is "export PYTHONPATH=/usr/local/
-lib/python2.6/site-packages" . Since I had an incorrect pythonpath, I
-just set it. Once set, leo works.
-It would be nice to have a script to install Leo.
-The directory structure and placement should be the same as Linux?
-
-I have not used Leo for a number of years, so this is a good reunion,
-thanks all.
-.. @+node:ekr.20130806072439.20686: *6* Mac OS Lion installation instructions need updating
-From: "kevin@ksvanhorn.com" <kvanhorn@ksvanhorn.com>
-
-The instructions for installing Leo on Mac OS X 10.7 Lion say to run
-
-/usr/bin/ruby -e "$(curl -fsSL https://raw.github.com/gist/323731)"
-
-Actually, that doesn't work. If you run the curl command by itself,
-you get a message that the script has moved to
-
-https://github.com/mxcl/homebrew/blob/master/Library/Contributions/install_homebrew.rb
-
-That actually gives you a web page instead of the script itself. I
-ended up doing a copy and paste from the script shown on that page
-into a newly created file, then running the script.
-.. @+node:ekr.20130806072439.20687: *7* Re: Mac OS Lion installation instructions need updating
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-On Fri, Apr 6, 2012 at 12:51 AM, kevin@ksvanhorn.com
-<kvanhorn@ksvanhorn.com> wrote:
-> The instructions for installing Leo on Mac OS X 10.7 Lion say to run
->
-> /usr/bin/ruby -e "$(curl -fsSL https://raw.github.com/gist/323731)"
->
-> Actually, that doesn't work. If you run the curl command by itself,
-> you get a message that the script has moved to
->
-> https://github.com/mxcl/homebrew/blob/master/Library/Contributions/install_homebrew.rb
->
-> That actually gives you a web page instead of the script itself. I
-> ended up doing a copy and paste from the script shown on that page
-> into a newly created file, then running the script.
-
-Thanks for this detailed report.  I'll look into it soon.
-
-Edward
-.. @+node:ekr.20130806072439.20650: *6* Wishlist: brew install leo
-From: Winn Dixie <incredible0n3@gmail.com>
-
-Would be stellar to have a brew install leo (for Mac OSX 10.7.X) with
-possible built in options to install vim bindings.
-.. @+node:ekr.20130807090137.11462: *5* Windows
-.. @+node:ekr.20130806072439.20677: *6* Installing pip on windows
-On Monday, 15 April 2013 13:06:39 UTC-7, Matt Wilkie wrote:
-
-Installing pip on Windows is easy enough, but involves silly monkey work
-(install this pre-requiste, copy this text and paste it there, twiddling
-X,Y,Z for your machine. etc.) It's easy to make small stupid mistakes that
-make one have to repeat parts of the operation. So I automated installing
-pip all in one go. Nothing but an available python interpreter is required
-(and an internet connection).
-
-http://www.maphew.com/2013/install-pip-script/
-.. @+node:ekr.20130806072439.20707: *6* Portable Leo from scratch on Windows
-@language rest
-
-Edward, Ville, please pay attention to this message even if just nodding at
-the others passing by.
-
->pip install -i https://testpypi.python.org/pypi leo-editor
-
-I built and uploaded to this package to the pypi testing server. Other than
-the fact it seems to work in so far as it installs without spewing errors
-I've no idea if it was done properly. Or even if it was appropriate for me
-to build a leo package. This is the first pypi package I've built.
-
-The package page: https://testpypi.python.org/pypi/leo-editor/4.10-final
-
-I'll upload the changed `setup.py` and the build recipe I used for your
-inspection after I re-learn how to create a branch and issue a pull/merge
-request in bazaar.
-
-
-===== Matt
-
-https://code.launchpad.net/~maphew/leo-editor/pypi-packaging/+merge/159561
-
-Description of the Change
-
-Updated `setup.py` for Leo-4.10-final, added "Classifiers" as made sense to
-me. The resultant source build package was uploaded to the testing Python
-Package Index server, from which `pip install leo-editor` is successful.
-
-A windows binary distribution build does not appear to be necessary.
-
-Known limitations: __py-cache__ files are included, but shouldn't be.
-
-===== Matt
-
-The created .zip file:
-
-Here is the result of that recipe, with some very small hand edits,
-packaged up in an all-in-one ready to go portable Leo zipfile (52mb).
-Simply unpack somewhere and run Leo.bat.
-
-https://googledrive.com/host/0BxjYoJ7VMm5VbE11NHM3Q3RIRVk/
-.. @+node:ekr.20130807090137.11463: *7* script
-@language python
-@ Matt Wilkie <maphew@gmail.com>
-
-Here is a recipe for installing Leo from scratch on Windows (Win7 tested).
-The only prerequisites are command line `wget` in PATH and an internet
-connection.
-
-About 50mb of files are downloaded and 200mb consumed when done.
-
-Run this script from a console.
-
-After this the directory "X:\\testing\\root" can be renamed and/or moved
-anywhere.
-
-To run leo in future sessions, simply call "x:\\path\\to\\root\\osgeo4w.bat
-python apps\\Python27\\Scripts\\leo", either as a batch file or windows
-shortcut.
-
-**Important**: this is just a proof of concept. It is not ready for prime
-time. Feedback welcome.
-@c
-
-mkdir X:\\testing
-pushd X:\\testing
-
-wget -O apt.exe --no-clobber
-http://download.osgeo.org/osgeo4w/release/apt/apt-r1193M.exe
-SET OSGEO4W_ROOT=%~dp0\\root
-apt setup
-apt update
-apt install pyqt4 sip
-
-call root\\osgeo4w.bat
-
-wget --no-check-certificate
-http://gist.github.com/maphew/5393935/raw/install-pip.py
-python install-pip.py GO
-python install-pip.py GO
-
-pip install -i https://testpypi.python.org/pypi leo-editor
-
-python apps\\Python27\\Scripts\\leo
-.. @+node:ekr.20130806072439.20712: *7* Re: Portable Leo from scratch on Windows
-From: Matt Wilkie <maphew@gmail.com>
-
->call root\\osgeo4w.bat
-
-Adds ...\\bin (for python) and ...\\apps\\python27\\scripts (for pip) to PATH,
-and sets PYTHONHOME.
-
->wget --no-check-certificate
-http://gist.github.com/maphew/5393935/raw/install-pip.py
->python install-pip.py GO
->python install-pip.py GO
-
-Download and install `distribute` and `pip`, the python tools which enable
-automated downloading and installing of programs and modules from the
-Python Package Index. `install-pip.py` is of my own devising. All it does
-is reduce the dependency on curl or wget by one step, using native urlib
-(py3) or urllib2 (py2) instead.
-
-   http://pythonhosted.org/distribute/
-   http://www.pip-installer.org/en/latest/
-   https://pypi.python.org/pypi
-
->pip install -i https://testpypi.python.org/pypi leo-editor
-
-Install Leo (more background for this one in next message).
-
-> python apps\\Python27\\Scripts\\leo
-
-All done, let's run Leo! :)
-.. @+node:ekr.20130806072439.20722: *6* apt on windows
-From: Matt Wilkie <maphew@gmail.com>
-
-Use the `apt` command line package management tool from Osgeo4w
-http://trac.osgeo.org/osgeo4w/ to install python and all the other
-requirements that can't be installed with `pip` or `easy_install`, meaning
-PyQt and SIP.
-
-The resultant dir structure follows a cygwin model, which in turn follows
-linux:
-
-    \\apps\\Python27 - python libraries, site-packages, etc. This is PYTHONHOME.
-    \\bin - exe's and dll's, including python.exe, qt*.dll, etc.
-
-There are also `etc, include, lib, var` which can all be discarded, unless
-you intend to use apt again or other programs from the osgeo4w ecosystem).
-`var` in particular you might want to clean out, it is the local cache for
-apt downloaded packages.
-
-
-===== Whoa, apt on windows, cool.
-
-Thanks! It's been the gravity well powering my plunge into python. It's a
-testament to python's power that it enables someone like me, with no
-programming background, to build something that does real work.
-
-The original genius is Jan Nieuwenhuizen, who wrote `cyg-apt` in python but
-made lots of calls to bash and tools like tar and curl. All I've done is
-take each function and convert them as best I could to pure python, to the
-point where it now has zero dependencies on cygwin (though it does still
-use the cygwin package and mirror structure).
-
-More history and details at http://trac.osgeo.org/osgeo4w/wiki/pkg-apt
-.. @+node:ekr.20130806072439.20643: *6* Tip about install leo with EPD
-From: HaveF <iamaplayer@gmail.com>
-
-I used python xy before. After I finish install python xy, the leo is ready
-to use.
-
-Today I try EPD(https://www.enthought.com/downloads/), and install pyqt4 at
-its package manager.
-
-After that, I try to start Leo, it failed, but I success at last.
-
-the batch file should be:
-
-C:\\Users\\HaveF\\AppData\\Local\\Enthought\\Canopy\\User\\Scripts\\python.exe
-D:\\lib\\leo\\leo-editor-snapshot\\launchLeo.py %*
-
-not:
-
-C:\\Users\\HaveF\\AppData\\Local\\Enthought\\Canopy\\App\\python.exe
-D:\\lib\\leo\\leo-editor-snapshot\\launchLeo.py %*
-
-or:
-
-C:\\Users\\HaveF\\AppData\\Local\\Enthought\\Canopy\\System\\Scripts\\python.exe
-D:\\lib\\leo\\leo-editor-snapshot\\launchLeo.py %*
-
-===== From: HaveF <iamaplayer@gmail.com>
-
-the tip is for install Canopy just for yourself (per-user install)
-.. @+node:ekr.20130806072439.20723: *6* Problem saving changed/new .leo files on Windows
-EKR: This appears to be some weird key-related problem with Leo 4.10.
-
-===== From: vili <viljem.tisnikar@gmail.com>
-
-Installing (a new version) of Leo was allways a bit of challenge for
-me. As a non-programmer I use Windows, I like automatic installers,
-and I don't quite understand what binaries and other stuff is.
-
-Today I wanted to upgrade from 4.9 to Leo-4.10-final, which is the
-latest exe on SourceForge but I figured out that
-
-Leo-4.10-final does not save any changes made to the file and it doesn't save also any new files!
-
-I tried also with "a nightly snapshot from Leo's snapshots page" - the
-same story. I reinstalled python and qt, but still the same problem. I
-installed back the 4.9 version from SourceForge and that worked fine
-again.
-
-Some data from log:
-Leo 4.10 final, build 5020, 2012-02-26 13:18:08 -0600
-Python 3.2.3, qt version 4.8.0
-Windows 6, 1, 7601, 2, Service Pack 1
-
-Its kind of weird for me that no one reported this problem earlier.
-
-
-===== From: Raj <dsrajesh@gmail.com>
-
-I faced the same problem as well and my configuration is exactly
-identical to yours.
-
-Workaround I did was start the leo from command line::
-
-C:\\Python32\\python.exe "C:\\Python32\\Lib\\site-packages\\Leo-4.10-final\\launchLeo.py"
-
-Default is to start the pythonW.exe, which does not work for some reason
-still trying to identify why it is behaving this way. Now I am able to save
-like before.
-
-===== From: Viljem Tisnikar <viljem.tisnikar@gmail.com>
-
-This workaround of yours works for me also! It is not comfortable at all,
-but it works!
-
-===== From: Eoin <eoinmccarthy@fastmail.fm>
-
-I also experienced this issue today after upgrading from Leo 4.8-final to
-Leo 4.10-final.
-
-The workaround still does the job.
-
-===== From: Matt Wilkie <maphew@gmail.com>
-
-To my knowledge this is the first report of this kind of issue. I
-can't think of any explanation for this other than file permissions
-(but I don't understand very much about how Leo works either; my
-programming skills are very minimal).
-
-Have you tried creating a new .leo file from scratch and saving it?
-
-===== From: Viljem Tisnikar <viljem.tisnikar@gmail.com>
-
-Yes, I have. It does not save.
-
-===== Matt
-
-And does the log window have any warnings or error messages?
-
-===== From: Viljem Tisnikar <viljem.tisnikar@gmail.com>
-
-No, in log window nothing happens when I pres "ctrl-s". And of course the
-star near the name of the file does not disappear.
-
-.. @+node:ekr.20130806072439.20732: *5* ** Runnable Leo in one .zip file.
-From: Terry Brown <terry_n_brown@yahoo.com>
-
-Summary - it's easy to make a .zip file containing Leo and all it's
-dependencies.
-
-Inspired by Matt's recipe, using VirtualBox throw away 1GB Windows XP
-32 bit machines, I tried the following.
-
-Install Python (installer from python.org) 2.7.2 to 
-
-  C:\\Docouments and Settings\\someuser\\Desktop\\leo\\python27
-
-Install PyQt (installer from Riverbank) 4.9 into the same folder (it
-goes there by default)
-
-Unzip http://www.greygreen.org/leo/leo-editor-latest.zip into
-
-  C:\\Docouments and Settings\\someuser\\Desktop\\leo\\leo-editor-latest
-
-Make leo.zip from C:\\Docouments and Settings\\someuser\\Desktop\\leo
-
-Delete the virtual machine, purging any registry entries etc. created
-by the two installers.
-
-On a fresh machine, searched the registry for 'python' just to be sure,
-found nothing.
-
-Unzip the .zip file, then
-
-  cd C:\\Docouments and Settings\\someuser\\Desktop\\leo
-  python27\\python.exe leo-editor-latest\\launchLeo.py
-
-And Leo opens a blank outline, after asking for an ID, as it's supposed
-to.  Didn't test it beyond that.
-
-So, the .zip file contains all Leo needs to run, and obviously
-runLeo.bat could be added in the top level to actually launch it.
-
-Of course this is for Windows, so I think it's an improvement over
-asking people to install Python and PyQt first, but neither of those
-steps was that hard in Windows anyway.
-
-===== EKR
-
-Is this a technique that we could use for official Windows releases?
-If so, what exactly would we do?
-
-===== Terry
-
-I guess, perhaps as an all-in-one option with a system integrated
-option for those who want to use system python/qt.  Don't know if it
-violates and licensing on Python / Qt, everything's being distributed
-unaltered, so I wouldn't think so.
-
-So basically you'd give people a large .zip file and tell them to
-extract it to a folder and run the batchfile at the top level.  If they
-can't do that, they might not be ready for Leo :-)  I guess you could
-make it a self-extracting .zip, for that matter.
-
-Also, the daily snapshot could be made this way, seeing once Python and
-Qt are installed in the folder the Leo version can just be copied in.
-
-It's not uncommon for FLOSS to be distributed this way, both Blender
-and Inkscape use this approach, particularly for recent builds.
-
-===== From: HansBKK <hansbkk@gmail.com>
-
-If something like this **is** done, it should IMO be packaged as an
-alternative to the normal installation procedure.
-
-You would definitely get marketing exposure by getting the specs from
-PortableApps.com and let them host it there as  "Portable Leo", tracking
-the "official" Portable Python (currently 2.7.2) as a dependency, obviously
-including QT etc as well. But it would need to be kept up to date. . .
-
-Most Windows users would be better served by following the normal
-installation procedure and ending up with a
-registry-and-environment-variables-complete install of Python et al which
-they can use for other things beyond Leo. Ending up with multiple instances
-of Python to maintain is likely to cause more problems.
-
-And the normal Windows install just isn't that hard, really! Improving the
-current instructions, by providing a step-by-step "cookbook" with direct
-links to the download packages etc might make it a **little** easier (IMO
-only for the clueless), but then of course that would be a doc that would
-need pretty frequent updates, which if I may be so bold doesn't seem to
-happen too quickly on the doc side.
-.. @+node:ekr.20130806072439.20736: *6* Re: Runnable Leo in one .zip file.
-From: Matt Wilkie <maphew@gmail.com>
-
-Since this topical today, almost a year later, I thought I'd take a run at 
-repeating this using Portable Python (http://www.portablepython.com) as a 
-base. It didn't work, but I think it should. Maybe someone else knows why. 
-
-I ran the installer for 2.7.3 since 3.2 doesn't include PyQt4. At install 
-time I selected only the Python and PyQt4 packages. Then from a fresh 
-command shell:
-
-{{{
-path=c:\\windows;c:\\windows\\system32
-pushd x:\\portapy27\\App
-path=%cd%;%cd%\\Scripts;%cd%\\Lib\\site-packages\\PyQt4;%path%
-set pythonhome=%cd%
-set pythonpath=%cd%\\Lib
-
-popd
-
-python --version
-Python 2.7.3
-
-python -c "import PyQt4"
-:: no error returned, we're good.
-
-python c:\\apps\\leo-editor-latest\\launchLeo.py
-Leo requires Qt to be installed.
-}}}
-
-oh well.
-.. @+node:ekr.20130806072439.20744: *6* Re: Runnable Leo in one .zip file.
-From: HansBKK <hansbkk@gmail.com>
-
-> PortableApps version would be FANTASTIC!!
-
-A couple of versions have been posted here already, including Terry's very
-simple sequence in the first message of this thread. Of course, we're only
-talking about Windows, but note that it works equally well either syncing
-with whatever tool (I favor Unison over SSH) or carrying around on an
-arbitrary-path'd external device, including flash drives (but they can be
-slow).
-
-Here's my more robust (hence more complex) version, xx indicating your 
-python version (mine is 27):
-
-Use the normal .MSI, setup.exe etc processes to Install a clean "canonical" 
-version of your "python dev stack" to say C:\\PythonXX, reboot if needed, 
-test thoroughly. Note any new environment variables pointing to your new 
-binary locations.
-
-Now create a corresponding PythonXX folder in your "PortableApps" location 
-(I put it under "CommonFiles" along with GTK and Java) and copy everything 
-from your installed location to the portable one.
-
-You can then use the project-provided tools on the "master" computer to 
-keep your binaries updated, and they will see any local Registry entries 
-and the environment variables they created and operate normally wrt your 
-installed location (e.g. C:\\PythonXX).
-
-If you have a local folder sync tool (I use Unison and WinMerge) you can 
-add to/remove from/configure your Python environment from either location, 
-otherwise just keep your installed location as the "master" and just copy 
-the whole stack over each time you do so.
-
-The whole PortableApps tree can then be sync'd/copied to any other 
-desktop(s) you like, either over the wire or via an external device, and 
-the latter can be carried for use in say an Internet cafe or client-site 
-situation.
-
-====================
-
-For use on those other computers, for running in portable mode, I use a
-"portable start menu" (PStart) which allows for its own "autolaunch" batch
-files, where I set some global environment variables to be used by
-app-specific launch batch files, including :
-
-%Path% (I add my batch folder and a general utility/tools folder)
-%HOME% (usually "E:\\aasync\\Data\\H_HOME"
-and a custom one called %h_pa%, which points to the root of my PortableApps 
-parent (usually "D:\\aasync\\PortableApps")
-
-Then for each environment that requires its own custom settings, I create a 
-launch batch file that builds on that base. In the case of Python apps, 
-here's an example that opens a CMD console window:
-
-@ECHO OFF
-set 
-PATH=%PATH%;%h_pa%\\CommonFiles\\Python27;%h_pa%\\CommonFiles\\Python27\\Lib\\site-packages\\PyQt4;%h_pa%\\CommonFiles\\Python27\\Lib\\idlelib;%h_pa%\\CommonFiles\\Python27\\Scripts;
-set PROMPT=$p_python$g
-E:
-cd \\aasync
-CMD.exe
-
-I'm not sure which if any of the environment stuff Leo requires, but I 
-figure it might as well have the same environment as my Python CLI, since 
-I'll be testing shell integration, including iPython. In my leo-win.bat, 
-the last three lines above are replaced with:
-
-D:
-cd \\aasync\\PortableApps\\leo-editor
-start "" "..\\CommonFiles\\Python27\\pythonw.exe" 
-"..\\CommonFiles\\Python27\\Lib\\site-packages\\leo-editor4\\launchLeo.py" %*
-
-====================
-
-Note this is more than the minimum you need to just run Leo - you could of 
-course simplify it; for example, only set the environment variables Leo 
-requires, or you could just set the master computer' installation routines 
-to use a single location under PortableApps, but I prefer to keep them 
-separate for testing purposes.
-
-I hope you (and others googling this later) find this useful.
 .. @+node:ekr.20130807203905.16800: *4* Full tree preview
 From: wgw <wgwinder@gmail.com>
 
@@ -4215,7 +3066,7 @@ Which is what I thought it did.
 From: Matt Wilkie <maphew@gmail.com>
 
 Are the links in the overview supposed to open up a browser window? The
-alt-tip text gives an in-Leo hiearchy, e.g. "B:\\code\\dropbox-code.leo#leo
+alt-tip text gives an in-Leo hiearchy, e.g. "B:\code\dropbox-code.leo#leo
 stuff-->Overview of selected nodes" but clicking goes to
 http://www.google.ca/, and in Internet Explorer even though Firefox is my
 default browser.
@@ -4268,6 +3119,216 @@ accessible even for shambling hackers.)
 One question: is there a  way to delete an inserted pane?  It  looks useful 
 to have an inserted pane, but refreshing will require killing the pane and 
 reinserting.... 
+.. @+node:ekr.20130807090137.11459: *4* Update MacOS install docs
+.. @+node:ekr.20130806072439.20688: *5* Macintosh installation
+From: "JohnKStevenson@gmail.com" <john.k.stevenson@gmail.com>
+
+Here is the question I posed and then sent to a user rather than the
+qroup:
+
+The instructions at Ed Ream's site, say to use brew to load pyqt and
+sip, actually they don't say to load sip.
+
+Why would the order be important? Are they not individual packages?
+
+After failing to get it to run following the instructions,
+I loaded QT from Troll Tech and it still failed.
+
+My system:
+ Xcode 3.2.6
+ Python 2.6.1 is installed.
+ gcc 4.2.1  is installed.
+ QT installed under Developer/Tools and Developer/Applications
+-- Clean /usr/local
+-- chown -R me:admin /usr/local
+-- Install homebrew
+
+---  /usr/bin/ruby -e "$(curl -fsSL https://raw.github.com/gist/323731)"
+
+Brew 0.9 is installed.
+---       brew update
+
+-- Install PyQT
+--- brew install pyqt
+pyqt-4.9.1 installed
+---  brew install sip
+sip-4.13.2 installed
+--  Added to path, (.bash_profile)
+ --- export $PYTHONPATH=/usr/local/lib/python:$PYTHONPATH
+
+-- unzipped leo-4.10 somewhere
+-- ran the script element "python launchLeo.py --gui=qt $1" result:
+"no such option --qt"
+
+I really wish there were a simple script or brew thing to load this
+tool.
+
+It seems that most "Leo People" are using Windoze or Linux, but Mac
+people need good outlining too. (Bring in the CLONES!)
+
+David Humphrey responded, thanks David, but still no joy.
+.. @+node:ekr.20130806072439.20689: *6* Re: Macintosh installation
+From: David Humphrey <david@dlkeh.net>
+
+John,
+
+I'm definitely not a Qt specialist (or Leo specialist either), but I
+wonder if your PyQt installation is working correctly.  Try importing
+PyQt4 as Leo does and see if any error messages appear.  Here's how it
+looked on my machine:
+
+Deviant:~ dlh$ python
+Python 2.7.2 (v2.7.2:8527427914a2, Jun 11 2011, 15:22:34)
+[GCC 4.2.1 (Apple Inc. build 5666) (dot 3)] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import PyQt4.QtCore
+>>> import PyQt4.QtGUI
+>>>
+
+i.e., clean imports, no complaints.  While this will only provide
+clues, they might be enough to help move forward.
+
+I find this same lack of support with other apps, e.g, Wikidpad, but,
+let's face it: There are a lot more Windows and Linux boxes running
+these non-commercial apps than OS X boxes.
+.. @+node:ekr.20130806072439.20690: *6* Re: Macintosh installation
+From: Ludwig Schwardt <ludwig.schwardt@gmail.com>
+
+--4fa8f601_7f01579b_93
+
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+
+Hi John, 
+
+I wrote the original instructions for using Homebrew to install Leo on the Mac. Unfortunately those instructions are a bit outdated by now. From your description I only see one problem: the PYTHONPATH you added to .bash_profile has changed to
+
+export PYTHONPATH=3D/usr/local/lib/python2.6/site-packages:$PYTHONPATH
+
+This is mentioned by brew after you install sip - reinstall sip to verify the correct incantation for you (I assume you are using Python 2.6 - change to python2.7 if necessary).
+
+To answer some of your questions: pyqt depends on qt and sip, therefore installing the pyqt package will automatically install the rest. I've installed them separately in the instructions below to pick up the correct PYTHONPATH setting.
+
+Here is a summary of what I did today on a reasonably clean Lion system to get Leo working (maybe Ed can put this on the web site):
+
+- Read the Homebrew installation instructions at
+  https://github.com/mxcl/homebrew/wiki/Installation
+
+- Make sure you have Xcode installed (test it by confirming
+  that "gcc" runs in the Terminal). You can either get the full
+  Xcode beast or the lean-and-mean Command-Line Tools
+  for Xcode, as suggested in the Homebrew installation
+  instructions.
+
+
+- In preparation for Homebrew, the best option in my opinion is
+  to delete /usr/local via::
+
+  sudo rm -rf /usr/local
+
+  and install any software in it via Homebrew instead. If this step
+  fills you with dread and you do not want to lose your beloved
+  third-party software, the second-best option is to make sure you
+  have write permission for the directory via::
+
+  sudo chown -R <your user name>:admin /usr/local
+
+  If you don't know your username, run "whoami". :-) This is
+  useful because homebrew actually discourages you from
+  installing third-party software as the superuser (the usual Mac
+  apps in /Applications are also installed as the normal user,
+  for that matter).
+
+
+- Install Homebrew (http://mxcl.github.com/homebrew/) by running
+the following command in the Terminal::
+
+
+  /usr/bin/ruby -e "$(/usr/bin/curl -fsSL https://raw.github.com/mxcl/homebrew/master/Library/Contributions/install_homebrew.rb)"
+
+- Run "brew doctor" and check any further suggestions to improve
+your system.
+
+
+- Run "brew update" to get the latest formulas
+
+- Install sip and note the caveat::
+
+  brew install sip
+
+  This warns you to add the local python directory to your PYTHONPATH.
+  Make a note of what this is (especially if you are not on Lion!).
+
+- Add the following lines to your ~/.bash_profile
+  (or ~/.profile on Leopard) - this is the default for LION::
+
+  export PATH=3D/usr/local/bin:$PATH
+  # This is for SIP (and PyQT) as suggested by Homebrew
+  export PYTHONPATH=3D/usr/local/lib/python2.7/site-packages:$PYTHONPATH
+
+- Install PyQT::
+
+  brew install pyqt
+ 
+
+- Open a new Terminal tab / window so that the above settings
+  take effect, and install Leo. I downloaded the Leo-4.9-final-a.zip,
+  unzipped it, and ran "python launchLeo.py" inside the Leo
+  directory.
+
+
+It would really be great to get a Leo formula going for Homebrew=85 As mentioned before, the main question is just where to place all the Leo files in the /usr/local hierarchy.
+
+Regards,
+Ludwig
+.. @+node:ekr.20130806072439.20691: *5* Macintosh Snow leopard installation
+From: "JohnKStevenson@gmail.com" <john.k.stevenson@gmail.com>
+
+Many thanks to Ludwig Schwardt, he identified the missing element of
+the $PYTHONPATH, for Snow Leopard it is "export PYTHONPATH=/usr/local/
+lib/python2.6/site-packages" . Since I had an incorrect pythonpath, I
+just set it. Once set, leo works.
+It would be nice to have a script to install Leo.
+The directory structure and placement should be the same as Linux?
+
+I have not used Leo for a number of years, so this is a good reunion,
+thanks all.
+.. @+node:ekr.20130806072439.20686: *5* Mac OS Lion installation instructions need updating
+From: "kevin@ksvanhorn.com" <kvanhorn@ksvanhorn.com>
+
+The instructions for installing Leo on Mac OS X 10.7 Lion say to run
+
+/usr/bin/ruby -e "$(curl -fsSL https://raw.github.com/gist/323731)"
+
+Actually, that doesn't work. If you run the curl command by itself,
+you get a message that the script has moved to
+
+https://github.com/mxcl/homebrew/blob/master/Library/Contributions/install_homebrew.rb
+
+That actually gives you a web page instead of the script itself. I
+ended up doing a copy and paste from the script shown on that page
+into a newly created file, then running the script.
+.. @+node:ekr.20130806072439.20687: *6* Re: Mac OS Lion installation instructions need updating
+From: "Edward K. Ream" <edreamleo@gmail.com>
+
+On Fri, Apr 6, 2012 at 12:51 AM, kevin@ksvanhorn.com
+<kvanhorn@ksvanhorn.com> wrote:
+> The instructions for installing Leo on Mac OS X 10.7 Lion say to run
+>
+> /usr/bin/ruby -e "$(curl -fsSL https://raw.github.com/gist/323731)"
+>
+> Actually, that doesn't work. If you run the curl command by itself,
+> you get a message that the script has moved to
+>
+> https://github.com/mxcl/homebrew/blob/master/Library/Contributions/install_homebrew.rb
+>
+> That actually gives you a web page instead of the script itself. I
+> ended up doing a copy and paste from the script shown on that page
+> into a newly created file, then running the script.
+
+Thanks for this detailed report.  I'll look into it soon.
+
+Edward
 .. @+node:ekr.20130803125244.17100: ** Docs: Next
 .. @+node:ekr.20130803125244.17101: *3* * Gallery of screenshots
 .. @+node:ekr.20130408095053.10307: *3* * Guide for the next leaders
@@ -4301,6 +3362,13 @@ Topics:
     
 - Look at key-handling afresh, with an eye towards more vim-like operation on a "temporary" basis.
 
+.. @+node:ekr.20130806211959.17373: *3* wishlist: meld integration
+From: Haroldo Stenger <haroldo.stenger@gmail.com>
+
+I'm slowly trying to grok leo. I love meld, it's simply the best text
+comparison I've ever seen. I wonder if a greater bit of integration between
+meld and leo is possible, and in which ways. Undoubtedly calling it as an
+external process is better than anything.
 .. @+node:ekr.20130803125244.17098: *3* Easy
 .. @+node:ekr.20130508084413.10631: *4* add g.etrace
 .. @+node:ekr.20130508084413.10634: *4* quickmove-jump-to adds button

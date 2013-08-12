@@ -19021,26 +19021,6 @@ The solution would be to create a new onClick event handler...
   sets v.scrollBarSpot.
 #@+node:ekr.20130807203905.16521: *4* Code
 #@+node:ekr.20130807203905.16819: *5* * Added c.deletePositionsInList
-#@+node:ekr.20130526065545.14928: *5* * LeoReader, as web app
-From Ville:
-
-.... aaaaand we are live :).
-
-Test it out at:
-
-http://koti.kapsi.fi/vivainio/t/LeoReader/main.html
-
-Sources here:
-
-https://github.com/vivainio/LeoReader
-
-Pretty much all the relevant stuff is in these files:
-
-https://github.com/vivainio/LeoReader/blob/master/leoaccess.coffee
-
-https://github.com/vivainio/LeoReader/blob/master/main.html
-
-Works ok in Firefox and Chrome.
 #@+node:ekr.20130807203905.16532: *5* Added c2 keyword arg to c.bringToFront
 #@+node:ekr.20130807203905.16533: *5* Added default button to dialog methods
 #@+node:ekr.20130807203905.16522: *5* Added external/leosax.py to leoPyRef.leo
@@ -19119,6 +19099,42 @@ other ppl.
 I haven't yet polished this workflow in that there is a bunch of manual
 work in formatting the report...
  
+#@+node:ekr.20130526065545.14925: *5* Full text searches
+Apart from the full text search indexing script I just added, I've made
+a bunch of basically cosmetic changes to Ville's multi outline full text
+search tool.  There's a new @setting, @int fts_max_hits, which controls
+the max hits returned, instead of the hardwired default of 30.
+
+With any sensible value for fts_max_hits, searches for terms which
+generate many hits in many outlines won't return the full list of
+outlines containing hits, because the search stops when fts_max_hits is
+reached.  I set fts_max_hits to a non-sensible 1200 to get around this,
+it seems to work fine.  Obviously terms which generate that many hits
+are bad search terms anyway, but it's helpful to get as close to the
+full list of outlines containing hits as possible.
+
+Also most of my changes apply only to the "f target" find command, not
+the simpler "s target" search command.
+#@+node:ekr.20130526065545.14928: *5* LeoReader: Leo as web app
+From Ville:
+
+.... aaaaand we are live :).
+
+Test it out at:
+
+http://koti.kapsi.fi/vivainio/t/LeoReader/main.html
+
+Sources here:
+
+https://github.com/vivainio/LeoReader
+
+Pretty much all the relevant stuff is in these files:
+
+https://github.com/vivainio/LeoReader/blob/master/leoaccess.coffee
+
+https://github.com/vivainio/LeoReader/blob/master/main.html
+
+Works ok in Firefox and Chrome.
 #@+node:ekr.20130806211959.17078: *5* QML notebook
 From: "Ville M. Vainio" <vivainio@gmail.com>
 
@@ -19342,22 +19358,6 @@ might do a leo-editor blog post about it.
 
 -->Jake
 
-#@+node:ekr.20130526065545.14925: *5* Full text searches
-Apart from the full text search indexing script I just added, I've made
-a bunch of basically cosmetic changes to Ville's multi outline full text
-search tool.  There's a new @setting, @int fts_max_hits, which controls
-the max hits returned, instead of the hardwired default of 30.
-
-With any sensible value for fts_max_hits, searches for terms which
-generate many hits in many outlines won't return the full list of
-outlines containing hits, because the search stops when fts_max_hits is
-reached.  I set fts_max_hits to a non-sensible 1200 to get around this,
-it seems to work fine.  Obviously terms which generate that many hits
-are bad search terms anyway, but it's helpful to get as close to the
-full list of outlines containing hits as possible.
-
-Also most of my changes apply only to the "f target" find command, not
-the simpler "s target" search command.
 #@+node:ekr.20130807203905.16611: *4* Commands: new and improved
 #@+node:ekr.20130807203905.16534: *5* Added docstrings for all commands
 Help-for command translate !<command-name>! in the docstring to the binding for command-name.
@@ -19951,7 +19951,7 @@ Created vimoutlinerScanner.
 
 Created at.writeAtAutoOtlFile.
 #@+node:ekr.20130807203905.16545: *5* Added support for clojure syntax coloring
-#@+node:ekr.20130803073926.17114: *4* Plugins (To do 4 & update plugins chapter)
+#@+node:ekr.20130803073926.17114: *4* Plugins (To do 5 & update plugins chapter)
 @language rest
 #@+node:ekr.20130526065545.14926: *5* bookmarks.py
 By Terry Brown
@@ -20712,10 +20712,253 @@ On Wednesday, April 24, 2013 8:41:02 PM UTC-4, lewis wrote:
 >>
 >
 
-#@+node:ekr.20130807203905.16584: *5* viewrendered plugin
-Supported ctrl-clicks in viewrendered panes.
+#@+node:ekr.20130812034101.16917: *5* screencast.py
+From: "Edward K. Ream" <edreamleo@gmail.com>
 
-Jacob Peck added support for markdown http://packages.python.org/Markdown/ markup in viewrendered panes.
+The more I think about it, the more I think Leo needs an automated playback 
+capability.  I had some initial thoughts in the thread, "PyOhio Leo Video 
+up on youtube", 
+https://groups.google.com/forum/?fromgroups=#!topic/leo-editor/nmBweM3wI3o.
+
+There as several immediate applications for automated playback:
+
+1. As a helper for those preparing demos of Leo.  It eliminates the need to 
+think, talk and type at the same time ;-)  The hope is that the narrator 
+would be more comfortable and relaxed during the recording, but perhaps 
+that is wishful thinking.
+
+2. As an automated, scripted, demo of what Leo can do.  You could even 
+imagine the quickstart.leo would "create itself" when it was opened.  You 
+would simply need to start the demo when the file was opened!
+
+As I was thinking about playback, I considered how the playback would draw 
+attention to various parts of the screen.  In other words, we need 
+something akin to the big red arrows in the Leo slideshows. One easy way to 
+do this would be with a DialogWithImage call, that would pop up a dialog 
+showing, say, a magnified image of a dirty icon box.  Depending on options, 
+the dialog might go away after a few seconds, or remain until the use hits 
+any key.
+
+The main question is, how easy will it be to create and edit playbacks?  
+I'm not sure.  Any such playback capability would essentially be a 
+(detailed!) script.  We can imagine a script that is essentially Python:  
+Something like:
+
+goto_sibling_node(<<node name>>)
+dialog(<<dialog name>>,<< when dismissed>>)
+edit_headline
+type_individual_letters('This is the headline',<<delay between letters>>)
+type_text('This is the headline')
+insert_sibling_node()
+insert_child_node()
+select_find_tab()
+etc! etc!
+
+Leo already has most of the capability go generate this as we use Leo:  
+it's the so-called "lossage" history in k.masterKeyHandler.  I'm thinking 
+that there is no urgent need to capture the mouse: we might as well 
+demonstrate mouseless Leo!
+
+Actually, we might forgo capturing actions altogether, and just write the 
+script directly.  We'll have to see whether that makes sense.
+
+Your comments, please, Amigos.
+
+Edward
+
+#@+node:ekr.20130812034101.16918: *6* Re: Automated playback
+From: "Edward K. Ream" <edreamleo@gmail.com>
+
+On Wednesday, September 12, 2012 3:12:52 PM UTC-5, Edward K. Ream wrote:
+>
+> The more I think about it, the more I think Leo needs an automated 
+> playback capability. 
+>
+... 
+
+> The main question is, how easy will it be to create and edit playbacks? 
+
+
+Rev 5432 provides some answers.  test.leo contains the node, "Prototype of 
+screencast script".  It took many hours of happy experimentation to get the 
+script to work, but the results are worth all the futzing.  Here is the 
+first script::
+
+    s = p.b # This script.
+    c = c.new()
+    p = c.p
+    p.h = ''
+    n1,n2 = 0.01,0.2 # Small difference are important.
+    head_keys('This is headline text',n1,n2)
+    body_keys('This is some body text.\\n',0.0,0.0) # n1,n2)
+    body_keys('Some more body text.\\n',0.0,0.0)
+    body_keys(s,0.0,0.0)
+
+The head_keys and body_keys (not shown) simulate typing, with a range of 
+typing speed indicated by the n1 and n2 params.  The result is really fun 
+to watch.  As you will see, there is a wait method that waits a variable 
+number of seconds.  This will be useful in other contexts.
+
+This is the most fun I've had in quite awhile. It's becoming clear that 
+being able to generate screencasts from scripts will be an excellent tool 
+for those trying to explain Leo.  Imo, creating screencasts from such 
+scripts will be *much* simpler than making slideshows.
+
+I've got lots of ideas for improvements to screencasts.  I should have 
+something pretty cool to show in a week or so...
+
+Edward
+
+P.S.  The head_keys and body_keys methods cost me a *lot* of work.  It's 
+tricky to show the typing immediately without flash.  These are the first 
+of several planned helper methods for use in screencasts::
+
+     def head_keys(s,n1=0.04,n2=0.1):
+        import leo.core.leoGui as leoGui
+        p = c.p
+        tree = c.frame.tree
+        c.editHeadline()
+        w = tree.edit_widget(p)
+        for ch in s:
+            p.h = p.h + ch
+            tree.repaint() # *not* tree.update.
+            wait(n1,n2)
+            event = leoGui.leoKeyEvent(c,ch,ch,w,x=0,y=0,x_root=0,y_root=0)
+            c.k.masterKeyHandler(event)
+        c.frame.tree.repaint()
+        c.redraw()
+
+    def body_keys(s,n1=0.04,n2=0.1):
+        c.bodyWantsFocusNow()
+        p = c.p
+        w = c.frame.body.bodyCtrl.widget
+        for ch in s:
+            p.b = p.b + ch
+            w.repaint()
+            wait(n1,n2)
+        c.redraw()
+
+EKR
+
+#@+node:ekr.20130812034101.16919: *6* Re: Automated playback
+From: "Edward K. Ream" <edreamleo@gmail.com>
+
+On Friday, September 14, 2012 8:54:42 AM UTC-5, Edward K. Ream wrote:
+>
+>
+> Rev  5434 packages this into the new screencast plugin.  Yesterdays work, 
+> in screencast.py and the node "@command screencast @key=Alt-9" in test.leo 
+> taught me several things.  In the notes below, m is an instance of 
+> ScreenCastController.  m stands for "movie" :-)
+>
+
+Screencasts promise to be easy to be *much* easier to create than 
+slideshows, while also being more interesting, informative and flashy.  It 
+is *so* much easier to write a screencast script than it is to lay out a 
+slide, take a screenshot, and then manage resulting slide.
+
+In particular, there are few continuity problems with screencasts.  
+Continuity is a *huge* problem with slideshows!  If I change one slide, I 
+am likely to want to change all following slides.  Which means I have to 
+retake all the slides, and file the new versions in the proper places.  In 
+contrast, any changes to screencasts naturally propagate forward.  There 
+might be an effect on following screencasts scenes, but this will happen 
+rarely with a reasonable scene design, and any problems should be easy to 
+fix.
+
+With screencasts, the *movie* script is also the *python* script!  There is 
+no "translation" from one to the other.  Furthermore, all the work to 
+produce a screencast is done (naturally!) within Leo.  No need to create 
+and manage external data.  This is another huge advantage and it make 
+producing screencasts much faster than producing slideshows.
+
+Screencasts are likely to be the long-awaited tools that will allow me to 
+show Leo in action so that other will finally be able to understand it 
+easily.  This is an exciting prospect!
+#@+node:ekr.20130812034101.16920: *6* Re: Automated playback
+From: "Edward K. Ream" <edreamleo@gmail.com>
+
+On Wednesday, September 12, 2012 10:57:35 PM UTC-5, Edward K. Ream wrote:
+
+    test.leo contains the node, "Prototype of screencast script".  It took 
+many hours of happy experimentation to get the script to work, but the 
+results are worth all the futzing. 
+
+Rev  5434 packages this into the new screencast plugin.  Yesterdays work, 
+in screencast.py and the node "@command screencast @key=Alt-9" in test.leo 
+taught me several things.  In the notes below, m is an instance of 
+ScreenCastController.  m stands for "movie" :-)
+
+1. It's probably best to not to open a new Leo window for screencasts.  
+This avoid problems with w.repaint occurring in a another repaint 
+operation, thereby freezing Leo.  This is not a major constraint: we 
+typically will want to have screencasts operate on the local .leo file.
+
+2. I spent a lot of time trying to adjust the delay between "transitions".  
+The arguments to m.wait specify the range of waiting allowed.  The plugin 
+multiplies these nominal factors by a **speed factor**, initially 1.0.  
+m.set_speed sets this factor. To double the presentation speed, set the 
+factor to 0.5.
+
+The m.log call writes a message to the log pane, with calls to m.wait(1) 
+before and after inserting the text.  Both waits are important.  The 
+"opening" wait allows the user to see the effect of the previous operation; 
+the "closing" wait allows the user to read the new comment in the log pane 
+before the next operation happens.
+
+3. The futzing with speed and waits convinces me that specifying waits "by 
+hand" isn't good enough.  Pre-specified waits will be useful only for an 
+**unattended mode** that just plays the screencast from start to finish.  
+But for most presentations we want the presenter to switch from one 
+**scene** of the movie to the next by hitting the RightArrow key.  The 
+LeftArrow key will go back to the previous scene. Thus, in **attended 
+mode**, most calls to m.wait will have no effect.  (An exception will be 
+the calls to m.wait in the code the simulates a person typing in headline 
+or body text.  Thus calls should always have effect, so we will have a 
+"force" arg to m.wait.)
+
+It will be relatively straightforward to do the first draft of attended 
+mode.  At the programming level, it will work like any minibuffer command 
+that prompts for user input.  That is, the plugin will create a so-called 
+state handler for the slideshow.
+
+At the design level,  the main idea is to treat every node under the main 
+@screencast node as a scene.  This natural division allows the screencast 
+to organize the material using all of Leo's organizational capabilities.
+
+The state handler will, when seeing the RightArrow key, "play" the next 
+scene merely by moving to the next node and then executing the script in 
+it's body text.  This script could contain *any* Leo script, but most often 
+it will call ScreenCastController methods.   Moving to the previous scene 
+can be done by Leo's undo command, automatically managed by the 
+ScreenCastController.  This will be a bit tricky, but not hugely so.
+
+4. Putting comments in the log pane is ok for a prototype, but it's pretty 
+lame.  Instead, I'd like to use some kind of popup that can be associated 
+with individual items on the screen and located with precision relative to 
+those items. The popup should be able to contain both text and graphics. 
+Does anyone have a suggestion for what Qt widget to use?
+#@+node:ekr.20130812034101.16921: *6* Re: Automated playback
+From: "Edward K. Ream" <edreamleo@gmail.com>
+
+Rev 5435 contains the new code in screencast.py and new test code in
+test.leo. To run the test, just do Alt-9, then hit the right arrow key
+until done. Escape or Ctrl-g will abort the screencast. All other keys get
+ignored.
+
+**Warning**: the present screen cast insert a node in a somewhat random 
+location.
+
+The code that looks for the next node assumes that if it has a script if 
+p.b.strip() is True.  Before making this check, it should strip off python 
+comment lines so the speaker can add comments.
+
+There is still lots of work to be done, but already we have a fun sandbox 
+to play in.  As you will see, all the code in ScreenCastController is dead 
+easy, which bodes well for future work.
+
+Edward
+
 #@+node:ekr.20130808211520.15900: *5* timestamp plugin
 The timestamp plugin manages the following node attributes:
 
@@ -20917,6 +21160,10 @@ intrinsic
 extraneous
 germane
 
+#@+node:ekr.20130807203905.16584: *5* viewrendered plugin
+Supported ctrl-clicks in viewrendered panes.
+
+Jacob Peck added support for markdown http://packages.python.org/Markdown/ markup in viewrendered panes.
 #@+node:ekr.20130803073926.17115: *4* Scripts
 The following scripts have been added to scripts.leo:
 
