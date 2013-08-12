@@ -19446,6 +19446,24 @@ lists of (p.copy(),script) rather than (p.h,script)
 
 Added g.app.config.atLocalButtonsList & g.app.config.atLocalCommandsList
 for use by print-buttons command.
+#@+node:ekr.20130806072439.18554: *5* Refresh from disk menu command now refreshes all selected nodes
+"refresh from disk" is now done for all selected nodes. You can either
+
+ctrl-click each @<file> node you want refreshed, then "refresh from
+disk" to refresh all of them, or
+
+shift-click the first and last @<file> node you want refreshed, to
+select the entries in between, then "refresh from
+disk" to refresh all of them.
+
+(i.e. standard UI list multi item selection)
+
+But be aware of this bug:
+
+https://bugs.launchpad.net/leo-editor/+bug/1090950
+
+using refresh from disk immediately after cutting nodes from the
+outline has odd effects.
 #@+node:ekr.20130807203905.16581: *5* Show all commands after <alt-x><tab>
 A simple change to k.computeCompletionList was all that was needed.
 
@@ -19933,10 +19951,20 @@ Created vimoutlinerScanner.
 
 Created at.writeAtAutoOtlFile.
 #@+node:ekr.20130807203905.16545: *5* Added support for clojure syntax coloring
-#@+node:ekr.20130803073926.17114: *4* Plugins (To do)
+#@+node:ekr.20130803073926.17114: *4* Plugins (To do 4 & update plugins chapter)
 @language rest
 #@+node:ekr.20130526065545.14926: *5* bookmarks.py
-10/2/11
+By Terry Brown
+
+The bookmarks.py plugin provides a pane with colored links to nodes.
+Bookmarks can now be added and removed with mouse clicks, making navigation
+back and forward between related nodes quick and easy.
+
+The free_layout Action button context menu will also allow you to add one
+of these bookmark panes, and they will be saved and loaded again if the
+layout is saved and loaded.
+
+=====
 
 Can also be used for bookmarking directly from the browser to Leo.  To
 do this, add a bookmark to the browser with the following URL / Location:
@@ -19959,53 +19987,6 @@ If the ``bookmarks`` plugin is loaded the bookmark will have to be moved to a ``
 
 The browser may or may not be able to close the bookmark form window for you, depending on settings - set ``dom.allow_scripts_to_close_windows`` to true
 in ``about:config`` in Firefox.
-#@+node:ekr.20130806072439.18499: *6* ANN: more fluid bookmark pane control
-From: Terry Brown <terry_n_brown@yahoo.com>
-
-Here's the updated docs. for the bookmarks.py plugin - it provides a
-pane with colored links to nodes, they can now be added and removed
-with mouse clicks, making navigation back and forward between related
-nodes quick and easy.
-
-bookmarks.py
-------------
-
-Open bookmarks in a list, and show bookmarks in a pane.
-
-Adds the ``bookmarks-open-bookmark`` command which opens the bookmark in the
-selected node **if** the node has an ancestor which contains ``@bookmarks``
-in its heading.  Useful for binding to double-click.
-
-Also ``bookmarks-open-node``, like ``bookmarks-open-bookmark`` but without
-the ancestor requirement.
-
-*Note:* bookmarks treats file urls missing the ``file://`` part as urls,
-which deviates from Leo's behavior elsewhere.  It also recognizes local UNLs
-like ``#ToDo-->Critical`` as urls.
-
-The ``bookmarks-show`` command will add a tab or pane (if free_layout is enabled)
-showing the bookmarks **in the current subtree** with unique colors. You can
-very quickly jump around between nodes in a file using this. 
-
-Nodes can be added and removed from the display with the following mouse actions:
-    
-**left-click on node**
-    Jump to that node.
-**left-click on background**
-    Add a bookmark at the position clicked, unless already present,
-    in which case the existing link is highlighted.
-**control-left-click on node**
-    Remove node.
-**alt-left-click on node**
-    Edit clicked node in bookmark list, to change link text.
-**alt-left-click on background**
-    Edit bookmark list.
-    
-The ``quickMove.py`` plugin also provides actions for adding nodes to a bookmark list.
-
-The free_layout Action button context menu will also allow you to add one of
-these bookmark panes, and they will be saved and loaded again if the layout is
-saved and loaded.
 #@+node:ekr.20130808211520.17433: *5* ipython plugin
 #@+node:ekr.20130806072439.18541: *6* Ipython now has cell magic
 From: Alia K <alia_khouri@yahoo.com>
@@ -20560,99 +20541,6 @@ scripts.
 This addresses bug 1132804: 
 https://bugs.launchpad.net/leo-editor/+bug/1132804
 
-#@+node:ekr.20130806072439.18543: *5* Read / write json files added to valuespace.py plugin
-From: "Ville M. Vainio" <vivainio@gmail.com>
-
-I'm doing some research now, that requires storing inputs in json, I use
-those inputs to calculate some outputs and store them in .json files.
-
-I added a few directives to valuespace.py plugin to bring native json data
-support.
-
-@vsi foo.json
-
-reads in file foo.json, and stores the parsed data structure to vs /
-ipython variable "foo"
-
-@vso bar.json
-
-serializes content of variable "bar" to json file.
-
-@vsi gets executed during pass 1 of vs-update, @vso gets executed in phase
-2.
-
-Body text gets assigned with json content in both cases.
-
-#@+node:ekr.20130806072439.18545: *6* Re: Read / write json files added to valuespace.py plugin
-From: Kent Tenney <ktenney@gmail.com>
-
-my mouth is watering ...
-
-I just hope the install / setup is as idiot-proof as possible,
-This happens to me too often:
-
-- I get the occasional hour to do some coding
-- I decide to try the latest-greatest Leo feature
-- I spend the hour futzing with settings
-
-Next time I get an hour to code, I use Gvim ...
-
-Not meaning to complain, just my story.
-#@+node:ekr.20130806072439.18548: *6* Re: Read / write json files added to valuespace.py plugin
-From: "Ville M. Vainio" <vivainio@gmail.com>
-
-I haven't advertised it yet. Maybe a blog post about leo + ipython
-integration in general could be in order (that I could point to).
-#@+node:ekr.20130806072439.18549: *6* Re: Read / write json files added to valuespace.py plugin
-From: "Ville M. Vainio" <vivainio@gmail.com>
-
-Some further notes:
-
-- yes, the .json extension is explicitly special cased in the code. The
-idea is that e.g. @vso foo.csv would serialize the contents of variable
-"foo" as csv, .yml would use yaml etc.
-
-- vsi and vso stand for value space input and value space output,
-respectively
-#@+node:ekr.20130806072439.18550: *6* Re: Read / write json files added to valuespace.py plugin
-From: "Ville M. Vainio" <vivainio@gmail.com>
-
-For now, the best way to study it is valuespage_example.py in contrib
-branch.
-
-I'm being very succesful in using it + new ipython support as "ipython
-notebook" workalike.
-
-Ipython notebook is better for quick experiments, but I'm doing long term
-(multi-week) research, where Leo + IPython + valuespace is doing a great
-job so far.
-#@+node:ekr.20130806072439.18551: *6* Re: Read / write json files added to valuespace.py plugin
-From: Kent Tenney <ktenney@gmail.com>
-
-Might this work:
-
-a new top level menu: 'Extensions'
-
-Entries in this menu would refer to scripts which did all
-the behind the scene work required to enable a feature,
-with a small tutorial to boot.
-
-It might even find myLeoSettings.leo, insert the required nodes
-and prompt for restarting the file, IE: mechanize what the user
-needs to do.
-
-Or some other scheme to minimize the extraneous cognitive load.*
-
-Thanks,
-Kent
-
-* see 2:20 of http://pyvideo.org/video/1744/teaching-with-the-ipython-notebook
-
-3 kinds of cognitive load:
-intrinsic
-extraneous
-germane
-
 #@+node:ekr.20130526065545.17435: *5* screen_capture.py
 From: Terry Brown <terry_n_brown@yahoo.com>
 
@@ -20824,86 +20712,13 @@ On Wednesday, April 24, 2013 8:41:02 PM UTC-4, lewis wrote:
 >>
 >
 
-#@+node:ekr.20130806072439.18552: *5* should add "refresh from disk" at parent node is a good idea?
-From: HaveF <iamaplayer@gmail.com>
-
-sometimes, I need to refresh files one by one under some parent node...
-
-so I just wonder, should add "refresh from disk" at parent node is a good
-idea?
-#@+node:ekr.20130806072439.18553: *6* Re: should add "refresh from disk" at parent node is a good idea?
-From: "Ville M. Vainio" <vivainio@gmail.com>
-
-Unless I'm mistaken, "refresh from disk" currently refresh all files from
-disk, even if it only looks like it only applies to selected file.
-
-Double check to be sure.
-#@+node:ekr.20130806072439.18554: *6* Re: should add "refresh from disk" at parent node is a good idea?
-From: Terry Brown <terry_n_brown@yahoo.com>
-
-On Sun, 16 Dec 2012 11:40:18 +0800
-HaveF <iamaplayer@gmail.com> wrote:
-
-> sometimes, I need to refresh files one by one under some parent node...
-> 
-> so I just wonder, should add "refresh from disk" at parent node is a good
-> idea?
-
-I've just pushed a change so that "refresh from disk" is done for all
-selected nodes.  You can either
-
-ctrl-click each @<file> node you want refreshed, then "refresh from
-disk" to refresh all of them, or
-
-shift-click the first and last @<file> node you want refreshed, to
-select the entries in between, then "refresh from
-disk" to refresh all of them.
-
-(i.e. standard UI list multi item selection)
-
-But be aware of this bug:
-
-https://bugs.launchpad.net/leo-editor/+bug/1090950
-
-using refresh from disk immediately after cutting nodes from the
-outline has odd effects.
-#@+node:ekr.20130806072439.18555: *6* Re: should add "refresh from disk" at parent node is a good idea?
-From: Terry Brown <terry_n_brown@yahoo.com>
-
-On Sun, 16 Dec 2012 17:15:05 +0200
-"Ville M. Vainio" <vivainio@gmail.com> wrote:
-
-> Unless I'm mistaken, "refresh from disk" currently refresh all files from
-> disk, even if it only looks like it only applies to selected file.
-> 
-> Double check to be sure.
-
-I think it only does the selected node, I'm sure it would have messed
-me up before if it did otherwise - I would expect only the selected
-node.
-
-contextmenu.py does
-
-    action = menu.addAction("Refresh from disk")
-
-    def refresh_rclick_cb():
-        if typ.startswith('@auto'):
-            c.readAtAutoNodes()
-        elif typ =='@thin' or typ == '@file':
-            c.readAtFileNodes()
-        elif typ =='@shadow':
-            c.readAtShadowNodes()
-        else:
-            c.readAtFileNodes()
-
-however when you start tracing those c.*() methods they seem to operate
-on c.p (c.currentPosition()).
 #@+node:ekr.20130807203905.16584: *5* viewrendered plugin
 Supported ctrl-clicks in viewrendered panes.
 
 Jacob Peck added support for markdown http://packages.python.org/Markdown/ markup in viewrendered panes.
 #@+node:ekr.20130808211520.15900: *5* timestamp plugin
-If this plugin is enabled, the following node attributes will be managed:
+The timestamp plugin manages the following node attributes:
+
 - str_ctime: creation time
 - str_mtime: time node was last modified
 - str_atime: time node contents were last viewed
@@ -21009,26 +20824,119 @@ On Thu, 28 Feb 2013 21:28:39 +0200
 
 Thanks, nice timing, I had just noticed but was dealing with another
 email first :-)
+#@+node:ekr.20130806072439.18543: *6* Read / write json files added to valuespace.py plugin
+From: "Ville M. Vainio" <vivainio@gmail.com>
+
+I'm doing some research now, that requires storing inputs in json, I use
+those inputs to calculate some outputs and store them in .json files.
+
+I added a few directives to valuespace.py plugin to bring native json data
+support.
+
+@vsi foo.json
+
+reads in file foo.json, and stores the parsed data structure to vs /
+ipython variable "foo"
+
+@vso bar.json
+
+serializes content of variable "bar" to json file.
+
+@vsi gets executed during pass 1 of vs-update, @vso gets executed in phase
+2.
+
+Body text gets assigned with json content in both cases.
+
+#@+node:ekr.20130806072439.18545: *7* Re: Read / write json files added to valuespace.py plugin
+From: Kent Tenney <ktenney@gmail.com>
+
+my mouth is watering ...
+
+I just hope the install / setup is as idiot-proof as possible,
+This happens to me too often:
+
+- I get the occasional hour to do some coding
+- I decide to try the latest-greatest Leo feature
+- I spend the hour futzing with settings
+
+Next time I get an hour to code, I use Gvim ...
+
+Not meaning to complain, just my story.
+#@+node:ekr.20130806072439.18548: *7* Re: Read / write json files added to valuespace.py plugin
+From: "Ville M. Vainio" <vivainio@gmail.com>
+
+I haven't advertised it yet. Maybe a blog post about leo + ipython
+integration in general could be in order (that I could point to).
+#@+node:ekr.20130806072439.18549: *7* Re: Read / write json files added to valuespace.py plugin
+From: "Ville M. Vainio" <vivainio@gmail.com>
+
+Some further notes:
+
+- yes, the .json extension is explicitly special cased in the code. The
+idea is that e.g. @vso foo.csv would serialize the contents of variable
+"foo" as csv, .yml would use yaml etc.
+
+- vsi and vso stand for value space input and value space output,
+respectively
+#@+node:ekr.20130806072439.18550: *7* Re: Read / write json files added to valuespace.py plugin
+From: "Ville M. Vainio" <vivainio@gmail.com>
+
+For now, the best way to study it is valuespage_example.py in contrib
+branch.
+
+I'm being very succesful in using it + new ipython support as "ipython
+notebook" workalike.
+
+Ipython notebook is better for quick experiments, but I'm doing long term
+(multi-week) research, where Leo + IPython + valuespace is doing a great
+job so far.
+#@+node:ekr.20130806072439.18551: *7* Re: Read / write json files added to valuespace.py plugin
+From: Kent Tenney <ktenney@gmail.com>
+
+Might this work:
+
+a new top level menu: 'Extensions'
+
+Entries in this menu would refer to scripts which did all
+the behind the scene work required to enable a feature,
+with a small tutorial to boot.
+
+It might even find myLeoSettings.leo, insert the required nodes
+and prompt for restarting the file, IE: mechanize what the user
+needs to do.
+
+Or some other scheme to minimize the extraneous cognitive load.*
+
+Thanks,
+Kent
+
+* see 2:20 of http://pyvideo.org/video/1744/teaching-with-the-ipython-notebook
+
+3 kinds of cognitive load:
+intrinsic
+extraneous
+germane
+
 #@+node:ekr.20130803073926.17115: *4* Scripts
 The following scripts have been added to scripts.leo:
 
 By Terry Brown::
 
+    Add @script node
     Cross-outline node editing
+    Export full contents
     Indexing files for full text search
+    Persistent state with json as a leo abbreviation
     Tool for diffing Leo files
-    add @script node
-    export full contents
-    persistent state with json as a leo abbreviation
     
 By Edward K. Ream::
 
-    cleanup-imported-nodes
+    Cleanup imported nodes
     Create global data structures from in modes/*.py files
-    get all comments from modes (slow)
-    import-org-mode
-    jinja2 templating script
-    recursive import script (revised)
+    Get all comments from modes (slow)
+    Import org mode
+    jinja2 templating
+    Recursive import script (with cleanups)
     
 By Brian Theado::
 

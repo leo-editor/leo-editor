@@ -189,7 +189,7 @@
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
 <v t="ekr.20100805165051.7177"
-expanded="ekr.20130806072439.19990,ekr.20130803073926.17123,"><vh>@file release_notes.txt</vh></v>
+expanded="ekr.20130803073926.17114,ekr.20130803073926.17123,"><vh>@file release_notes.txt</vh></v>
 </v>
 <v t="ekr.20130807203905.16526"><vh>* For the FAQ: create a bzr repository before importing it into Leo</vh></v>
 <v t="ekr.20130803125244.17095"><vh>* position script (put in scripting chapter?)</vh></v>
@@ -284,6 +284,7 @@ expanded="ekr.20130806072439.19990,ekr.20130803073926.17123,"><vh>@file release_
 <v t="ekr.20130807203905.16561"><vh>normalize-whitespace</vh></v>
 <v t="ekr.20130807203905.16559"><vh>parse-body command</vh></v>
 <v t="ekr.20130807203905.16560"><vh>print-buttons command</vh></v>
+<v t="ekr.20130806072439.18554"><vh>Refresh from disk menu command now refreshes all selected nodes</vh></v>
 <v t="ekr.20130807203905.16581"><vh>Show all commands after &lt;alt-x&gt;&lt;tab&gt;</vh></v>
 <v t="ekr.20130807203905.16546"><vh>vr-expand/contract commands</vh></v>
 <v t="ekr.20130526065545.17495"><vh>zoom-in/out commands</vh></v>
@@ -312,10 +313,8 @@ expanded="ekr.20130806072439.19990,ekr.20130803073926.17123,"><vh>@file release_
 <v t="ekr.20130807203905.16585"><vh>Added importer for vimoutliner imports and @auto-otl</vh></v>
 <v t="ekr.20130807203905.16545"><vh>Added support for clojure syntax coloring</vh></v>
 </v>
-<v t="ekr.20130803073926.17114"><vh>Plugins (To do)</vh>
-<v t="ekr.20130526065545.14926"><vh>bookmarks.py</vh>
-<v t="ekr.20130806072439.18499"><vh>ANN: more fluid bookmark pane control</vh></v>
-</v>
+<v t="ekr.20130803073926.17114"><vh>Plugins (To do 4 &amp; update plugins chapter)</vh>
+<v t="ekr.20130526065545.14926"><vh>bookmarks.py</vh></v>
 <v t="ekr.20130808211520.17433"><vh>ipython plugin</vh>
 <v t="ekr.20130806072439.18541"><vh>Ipython now has cell magic</vh></v>
 <v t="ekr.20130807203905.16572"><vh>IPython plugin now works with all versions of IPython</vh>
@@ -342,13 +341,6 @@ expanded="ekr.20130806072439.19990,ekr.20130803073926.17123,"><vh>@file release_
 <v t="ekr.20130526065545.17620"><vh>printing.py</vh>
 <v t="ekr.20130806072439.18804"><vh>[ANN] New plugin - printing.py</vh></v>
 </v>
-<v t="ekr.20130806072439.18543"><vh>Read / write json files added to valuespace.py plugin</vh>
-<v t="ekr.20130806072439.18545"><vh>Re: Read / write json files added to valuespace.py plugin</vh></v>
-<v t="ekr.20130806072439.18548"><vh>Re: Read / write json files added to valuespace.py plugin</vh></v>
-<v t="ekr.20130806072439.18549"><vh>Re: Read / write json files added to valuespace.py plugin</vh></v>
-<v t="ekr.20130806072439.18550"><vh>Re: Read / write json files added to valuespace.py plugin</vh></v>
-<v t="ekr.20130806072439.18551"><vh>Re: Read / write json files added to valuespace.py plugin</vh></v>
-</v>
 <v t="ekr.20130526065545.17435"><vh>screen_capture.py</vh>
 <v t="ekr.20130526065545.17429"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
 <v t="ekr.20130526065545.17431"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
@@ -356,11 +348,6 @@ expanded="ekr.20130806072439.19990,ekr.20130803073926.17123,"><vh>@file release_
 <v t="ekr.20130526065545.17433"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
 <v t="ekr.20130526065545.17434"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
 <v t="ekr.20130526065545.17436"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
-</v>
-<v t="ekr.20130806072439.18552"><vh>should add "refresh from disk" at parent node is a good idea?</vh>
-<v t="ekr.20130806072439.18553"><vh>Re: should add "refresh from disk" at parent node is a good idea?</vh></v>
-<v t="ekr.20130806072439.18554"><vh>Re: should add "refresh from disk" at parent node is a good idea?</vh></v>
-<v t="ekr.20130806072439.18555"><vh>Re: should add "refresh from disk" at parent node is a good idea?</vh></v>
 </v>
 <v t="ekr.20130807203905.16584"><vh>viewrendered plugin</vh></v>
 <v t="ekr.20130808211520.15900"><vh>timestamp plugin</vh></v>
@@ -374,6 +361,13 @@ expanded="ekr.20130806072439.19990,ekr.20130803073926.17123,"><vh>@file release_
 <v t="ekr.20130806072439.18496"><vh>Re: ANN: in body python calculations commands</vh></v>
 <v t="ekr.20130806072439.18497"><vh>Re: ANN: in body python calculations commands</vh></v>
 <v t="ekr.20130806072439.18498"><vh>Re: ANN: in body python calculations commands</vh></v>
+</v>
+<v t="ekr.20130806072439.18543"><vh>Read / write json files added to valuespace.py plugin</vh>
+<v t="ekr.20130806072439.18545"><vh>Re: Read / write json files added to valuespace.py plugin</vh></v>
+<v t="ekr.20130806072439.18548"><vh>Re: Read / write json files added to valuespace.py plugin</vh></v>
+<v t="ekr.20130806072439.18549"><vh>Re: Read / write json files added to valuespace.py plugin</vh></v>
+<v t="ekr.20130806072439.18550"><vh>Re: Read / write json files added to valuespace.py plugin</vh></v>
+<v t="ekr.20130806072439.18551"><vh>Re: Read / write json files added to valuespace.py plugin</vh></v>
 </v>
 </v>
 </v>
@@ -652,7 +646,17 @@ full list of outlines containing hits as possible.
 Also most of my changes apply only to the "f target" find command, not
 the simpler "s target" search command.
 </t>
-<t tx="ekr.20130526065545.14926">10/2/11
+<t tx="ekr.20130526065545.14926">By Terry Brown
+
+The bookmarks.py plugin provides a pane with colored links to nodes.
+Bookmarks can now be added and removed with mouse clicks, making navigation
+back and forward between related nodes quick and easy.
+
+The free_layout Action button context menu will also allow you to add one
+of these bookmark panes, and they will be saved and loaded again if the
+layout is saved and loaded.
+
+=====
 
 Can also be used for bookmarking directly from the browser to Leo.  To
 do this, add a bookmark to the browser with the following URL / Location:
@@ -1422,21 +1426,21 @@ https://bugs.launchpad.net/leo-editor/+bug/1132804
 
 By Terry Brown::
 
+    Add @script node
     Cross-outline node editing
+    Export full contents
     Indexing files for full text search
+    Persistent state with json as a leo abbreviation
     Tool for diffing Leo files
-    add @script node
-    export full contents
-    persistent state with json as a leo abbreviation
     
 By Edward K. Ream::
 
-    cleanup-imported-nodes
+    Cleanup imported nodes
     Create global data structures from in modes/*.py files
-    get all comments from modes (slow)
-    import-org-mode
-    jinja2 templating script
-    recursive import script (revised)
+    Get all comments from modes (slow)
+    Import org mode
+    jinja2 templating
+    Recursive import script (with cleanups)
     
 By Brian Theado::
 
@@ -1535,53 +1539,6 @@ On Thu, 28 Feb 2013 21:28:39 +0200
 
 Thanks, nice timing, I had just noticed but was dealing with another
 email first :-)
-</t>
-<t tx="ekr.20130806072439.18499">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-Here's the updated docs. for the bookmarks.py plugin - it provides a
-pane with colored links to nodes, they can now be added and removed
-with mouse clicks, making navigation back and forward between related
-nodes quick and easy.
-
-bookmarks.py
-------------
-
-Open bookmarks in a list, and show bookmarks in a pane.
-
-Adds the ``bookmarks-open-bookmark`` command which opens the bookmark in the
-selected node **if** the node has an ancestor which contains ``@bookmarks``
-in its heading.  Useful for binding to double-click.
-
-Also ``bookmarks-open-node``, like ``bookmarks-open-bookmark`` but without
-the ancestor requirement.
-
-*Note:* bookmarks treats file urls missing the ``file://`` part as urls,
-which deviates from Leo's behavior elsewhere.  It also recognizes local UNLs
-like ``#ToDo--&gt;Critical`` as urls.
-
-The ``bookmarks-show`` command will add a tab or pane (if free_layout is enabled)
-showing the bookmarks **in the current subtree** with unique colors. You can
-very quickly jump around between nodes in a file using this. 
-
-Nodes can be added and removed from the display with the following mouse actions:
-    
-**left-click on node**
-    Jump to that node.
-**left-click on background**
-    Add a bookmark at the position clicked, unless already present,
-    in which case the existing link is highlighted.
-**control-left-click on node**
-    Remove node.
-**alt-left-click on node**
-    Edit clicked node in bookmark list, to change link text.
-**alt-left-click on background**
-    Edit bookmark list.
-    
-The ``quickMove.py`` plugin also provides actions for adding nodes to a bookmark list.
-
-The free_layout Action button context menu will also allow you to add one of
-these bookmark panes, and they will be saved and loaded again if the layout is
-saved and loaded.
 </t>
 <t tx="ekr.20130806072439.18541">From: Alia K &lt;alia_khouri@yahoo.com&gt;
 
@@ -1791,32 +1748,7 @@ extraneous
 germane
 
 </t>
-<t tx="ekr.20130806072439.18552">From: HaveF &lt;iamaplayer@gmail.com&gt;
-
-sometimes, I need to refresh files one by one under some parent node...
-
-so I just wonder, should add "refresh from disk" at parent node is a good
-idea?
-</t>
-<t tx="ekr.20130806072439.18553">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
-
-Unless I'm mistaken, "refresh from disk" currently refresh all files from
-disk, even if it only looks like it only applies to selected file.
-
-Double check to be sure.
-</t>
-<t tx="ekr.20130806072439.18554">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-On Sun, 16 Dec 2012 11:40:18 +0800
-HaveF &lt;iamaplayer@gmail.com&gt; wrote:
-
-&gt; sometimes, I need to refresh files one by one under some parent node...
-&gt; 
-&gt; so I just wonder, should add "refresh from disk" at parent node is a good
-&gt; idea?
-
-I've just pushed a change so that "refresh from disk" is done for all
-selected nodes.  You can either
+<t tx="ekr.20130806072439.18554">"refresh from disk" is now done for all selected nodes. You can either
 
 ctrl-click each @&lt;file&gt; node you want refreshed, then "refresh from
 disk" to refresh all of them, or
@@ -1833,37 +1765,6 @@ https://bugs.launchpad.net/leo-editor/+bug/1090950
 
 using refresh from disk immediately after cutting nodes from the
 outline has odd effects.
-</t>
-<t tx="ekr.20130806072439.18555">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-On Sun, 16 Dec 2012 17:15:05 +0200
-"Ville M. Vainio" &lt;vivainio@gmail.com&gt; wrote:
-
-&gt; Unless I'm mistaken, "refresh from disk" currently refresh all files from
-&gt; disk, even if it only looks like it only applies to selected file.
-&gt; 
-&gt; Double check to be sure.
-
-I think it only does the selected node, I'm sure it would have messed
-me up before if it did otherwise - I would expect only the selected
-node.
-
-contextmenu.py does
-
-    action = menu.addAction("Refresh from disk")
-
-    def refresh_rclick_cb():
-        if typ.startswith('@auto'):
-            c.readAtAutoNodes()
-        elif typ =='@thin' or typ == '@file':
-            c.readAtFileNodes()
-        elif typ =='@shadow':
-            c.readAtShadowNodes()
-        else:
-            c.readAtFileNodes()
-
-however when you start tracing those c.*() methods they seem to operate
-on c.p (c.currentPosition()).
 </t>
 <t tx="ekr.20130806072439.18557">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
 
@@ -3362,7 +3263,8 @@ The fixes:
 Hitting Ctrl-H can still cause a small unwanted scroll, but the insert point remains visible.
 </t>
 <t tx="ekr.20130807203905.16819"></t>
-<t tx="ekr.20130808211520.15900">If this plugin is enabled, the following node attributes will be managed:
+<t tx="ekr.20130808211520.15900">The timestamp plugin manages the following node attributes:
+
 - str_ctime: creation time
 - str_mtime: time node was last modified
 - str_atime: time node contents were last viewed
