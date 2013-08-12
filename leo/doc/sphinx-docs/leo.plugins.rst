@@ -876,6 +876,14 @@ plugins Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`timestamp` Module
+------------------------
+
+.. automodule:: leo.plugins.timestamp
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`tkGui` Module
 -------------------
 
