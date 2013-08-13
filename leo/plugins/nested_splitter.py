@@ -887,22 +887,31 @@ class NestedSplitter(QtGui.QSplitter):
 
     #@+node:ekr.20110605121601.17982: *3* replace_widget & replace_widget_at_index
     def replace_widget(self, old, new):
-
+        "Swap the provided widgets in place"""
+        
+        sizes = self.sizes()
+        
+        new.setParent(None)
         self.insertWidget(self.indexOf(old), new)
-        old.setParent(None)
+        self.close_or_keep(old)
+        new.show()
 
-        self.equalize_sizes()
-
+        self.setSizes(sizes)
+        
     def replace_widget_at_index(self,index,new):
+        """Replace the widget at index with w."""
 
-        '''Replace the widget at index with w.'''
+        sizes = self.sizes()
 
         old = self.widget(index)
+        
         if old != new:
+            new.setParent(None)
             self.insertWidget(index,new)
-            old.setParent(None)
-
-        self.equalize_sizes()
+            self.close_or_keep(old)
+            new.show()
+        
+            self.setSizes(sizes)
     #@+node:ekr.20110605121601.17983: *3* rotate
     def rotate(self, descending=False):
 
