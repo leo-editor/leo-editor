@@ -170,9 +170,9 @@ saves the .leo file.
 .. @+node:peckj.20130813123907.6841: *3* Documenting plugins
 Documenting new plugins is important for users to be able understand and use the features they add.  To that effect, there are a few documentation steps that should not be overlooked.
 
-- Document the plugin thouroughly in the plugin's docstring.  This allows the documentation to be accessed from the Plugins menu.
+- Document the plugin thoroughly in the plugin's docstring.  This allows the documentation to be accessed from the Plugins menu.
 - Document any new commands with a proper docstring.  This allows the minibuffer command `help-for-command` to provide help for the command.
-- In `leo/doc/sphinx-docs/sphinxDocs.leo`, to the node `@file leo.plugins.rst`, add the following snippet (preferrably in alphebetical order), with the name of the plugin modified to the name of your plugin (here `ipython`).  This allows the API docs to be automatically updated. ::
+- In `leo/doc/sphinx-docs/sphinxDocs.leo`, to the node `@file leo.plugins.rst`, add the following snippet (preferably in alphabetical order), with the name of the plugin modified to the name of your plugin (here `ipython`).  This allows the API docs to be automatically updated. ::
 
     :mod:`ipython` Module
     ---------------------
