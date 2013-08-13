@@ -196,6 +196,7 @@
 <v t="danr7.20060902215215.1"><vh>@file leo_to_html.py</vh></v>
 <v t="danr7.20060902083957"><vh>@file leo_to_rtf.py</vh></v>
 <v t="ville.20110409151021.5699"><vh>@file jinjarender.py</vh></v>
+<v t="tbrown.20130813134319.11942"><vh>@file richtext.py</vh></v>
 <v t="ekr.20050817132814"><vh>rst3</vh>
 <v t="ekr.20090704103932.5160"><vh>@file leo_pdf.py</vh></v>
 <v t="ekr.20050805162550"><vh>@file rst3.py</vh></v>

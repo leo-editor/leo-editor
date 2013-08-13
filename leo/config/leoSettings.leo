@@ -1469,6 +1469,10 @@
 <v t="leohag.20081204085551.13"><vh>@string qt-ui-file-name = qt_main.ui</vh></v>
 </v>
 </v>
+<v t="tbrown.20130813134319.7223"><vh>richtext plugin</vh>
+<v t="tbrown.20130813134319.7224"><vh>@bool richtext_cke_autosave = False</vh></v>
+<v t="tbrown.20130813181208.23979"><vh>@data richtext_cke_config</vh></v>
+</v>
 <v t="ekr.20071213060239"><vh>rst3 plugin</vh>
 <v t="ekr.20071213060239.1"><vh>rst3 http options</vh>
 <v t="ekr.20071213061454"><vh>@bool rst3_clear_http_attributes = False</vh></v>
@@ -10975,6 +10979,34 @@ QLineEdit#status2 {
     border-style: solid;
 }
 
+</t>
+<t tx="tbrown.20130813134319.7223"></t>
+<t tx="tbrown.20130813134319.7224">Set this to True for rich text edits to be saved automatically.
+
+BE CAREFUL - plain-text nodes will be converted to rich text
+without confirmation if you edit them in rich text mode when
+this is True.</t>
+<t tx="tbrown.20130813181208.23979"># This node's non-"#" content should be valid java-script.  This is
+# a toolbar configuration for CKEditor 4.2.
+# 
+# To enable all CKE features, clear this setting, i.e. remove
+# everything below these "#" lines in your myLeoSettings.leo
+
+{toolbar: [ 
+   	{ name: 'document', groups: [ 'mode', 'document', 'doctools' ], items: [ 'Source' ] },
+	{ name: 'clipboard', groups: [ 'clipboard', 'undo' ], items: [ 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ] },
+	{ name: 'editing', groups: [ 'find', 'selection', 'spellchecker' ], items: [ 'Scayt' ] },
+	{ name: 'styles', items: [ 'Styles', 'Format' ] },
+	{ name: 'tools', items: [ 'Maximize' ] },
+	{ name: 'others', items: [ '-' ] },
+	{ name: 'about', items: [ 'About' ] },
+	'/',
+	{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ], items: [ 'Bold', 'Italic', 'Underline', 'Strike', '-', 'RemoveFormat', "TextColor", "BGColor" ] },
+     { name: 'justification', items: ["JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock" ] },
+	{ name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align' ], items: [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote' ] },
+	{ name: 'links', items: [ 'Link', 'Unlink', 'Anchor' ] },
+	{ name: 'insert', items: [ 'Image', 'Table', 'HorizontalRule', 'SpecialChar' ] }
+]}
 </t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 # cm-external-editor = Alt-v</t>

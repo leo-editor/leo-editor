@@ -1,0 +1,27 @@
+<html>
+<head>
+<link rel="stylesheet" href="ckeditor/samples/sample.css">
+<script src="ckeditor/ckeditor.js"></script>
+<script>
+function register() {
+    var editor = CKEDITOR.replace("cke_text"[CONFIG]);
+    editor.on("instanceReady", save_initial);
+}
+function save_initial(evt) {
+    var editor = CKEDITOR.instances["cke_text"];
+    var ele = document.getElementById('initial');
+    ele.innerHTML = escape(editor.getData());
+    editor.execCommand('maximize');
+}
+function save_final() {
+    var ele = document.getElementById('final');
+    ele.innerHTML = escape(CKEDITOR.instances["cke_text"].getData());
+}
+</script>
+</head>
+<body onload="register();">
+<textarea style='width: 100%; height: 100%;' name="cke_text" id="cke_text">[CONTENT]</textarea>
+<div id='initial' style='display: none;'>[empty]</div>
+<div id='final' style='display: none;'>[empty]</div>
+</body>
+</html>
