@@ -20344,7 +20344,7 @@ Here's the docscring:
 Jacob M. Peck, 2013
 
 Commands
-=======
+========
 This plugin supports the following twelve commands:
 
 print-selected-node
@@ -20416,13 +20416,14 @@ Opens up the print preview dialog to preview the bodies of all
 marked nodes in the current outline.
 
 Settings
-=======
+========
 - ``@string printing-font-family = DejaVu Sans Mono``
    The font family for printing.  A monospaced font is recommended.
 
 - ``@string printing-font-size = 12``
    The font size for printing bodies, in px.  Due to limitations
    of PyQt, the size of headlines cannot be changed.
+   
 '''
 
 To use it, be sure to add `printing.py` to your @enabled-plugins.
