@@ -59,17 +59,16 @@ class CKEEditor(QtGui.QWidget):
             'plugins', 'cke_template.html',
         )
         self.template = open(template_path).read()
-        path = "file://" + g.os_path_join(
+        path = g.os_path_join(
             g.computeLeoDir(), 'external', 'ckeditor'
         )
-        self.template = self.template.replace('[CKEDITOR]', path)
+        self.template = self.template.replace(
+            '[CKEDITOR]', QtCore.QUrl.fromLocalFile(path).toString())
         
         # load config
         self.config = self.c.config.getData("richtext_cke_config")
         if self.config:
             self.config = '\n'.join(self.config).strip()
-
-
 
         # make widget containing QWebView    
         self.setLayout(QtGui.QVBoxLayout())
@@ -99,8 +98,10 @@ class CKEEditor(QtGui.QWidget):
             content = p.b
             self.was_rich = True
         else:
-            content = "<pre>%s</pre>" % p.b
             self.was_rich = p.b.strip() == ''
+            # put anything except whitespace in a <pre/>
+            content = "<pre>%s</pre>" % p.b if not self.was_rich else ''
+            
         data = data.replace('[CONTENT]', content)
 
         # replace textarea with CKEditor, with or without config.
@@ -120,7 +121,7 @@ class CKEEditor(QtGui.QWidget):
             if g.os_path_isdir(nodepath):  # append if it's a directory
                 path = nodepath
 
-        self.webview.setHtml(data, QtCore.QUrl("file://"+path+"/"))
+        self.webview.setHtml(data, QtCore.QUrl.fromLocalFile(path+"/"))
     #@+node:tbrown.20130813134319.7228: *3* unselect_node
     def unselect_node(self, tag, kwargs):
         
