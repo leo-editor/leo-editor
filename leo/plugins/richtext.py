@@ -31,6 +31,10 @@ Plugins -> richtext menu):
 Unless autosaving is enabled, you must confirm saving of edits
 each time you edit a node with the rich text editor.
 
+``@rich`` in the headline or first few lines (1000 characters) of a node or its
+ancestors will automatically open the rich text editor. ``@norich`` cancels this
+action.  Manually opened editors are not affected.
+
 ``richtext.py`` uses these ``@settings``:
     
   @bool richtext_cke_autosave = False
@@ -82,6 +86,7 @@ def init():
         return False
 
     g.registerHandler('after-create-leo-frame',onCreate)
+    g.registerHandler('select3', at_rich_check)
     g.plugin_signon(__name__)
     return True
 #@+node:tbrown.20130813134319.5691: ** class CKEEditor
@@ -94,6 +99,9 @@ class CKEEditor(QtGui.QWidget):
         
         del kwargs['c']
         QtGui.QWidget.__init__(self, *args, **kwargs)
+        
+        # were we opened by an @rich node?  Calling code will set
+        self.at_rich = False
         
         # read autosave preference
         if not hasattr(self.c, '_ckeeditor_autosave'):
@@ -255,31 +263,58 @@ def onCreate (tag,key):
     c = key.get('c')
 
     CKEPaneProvider(c)
+#@+node:tbrown.20130814090427.22458: ** at_rich_check
+def at_rich_check(tag, key):
+
+    p = key.get('new_p')
+
+    do = 'close'
+    for nd in p.self_and_parents():
+        if '@norich' in nd.h or '@norich' in nd.b[:1000]:
+            do = 'close'
+            break
+        if '@rich' in nd.h or '@rich' in nd.b[:1000]:
+            do = 'open'
+            break
+    
+    if do == 'close':
+        cmd_CloseEditor(key, at_rich=True)
+    elif do == 'open':
+        cmd_OpenEditor(key, at_rich=True)
 #@+node:tbrown.20130813134319.5692: ** @g.command('cke-text-open')
 @g.command('cke-text-open')
-def cmd_OpenEditor(kwargs):
+def cmd_OpenEditor(kwargs, at_rich=False):
     c = kwargs['c'] if isinstance(kwargs, dict) else kwargs
     splitter = c.free_layout.get_top_splitter()
     rte = splitter.find_child(CKEEditor, '')
     if rte:
-        g.es("CKE Editor appears to be open already")
+        if not at_rich:
+            g.es("CKE Editor appears to be open already")
         return
     body = splitter.find_child(QtGui.QWidget, 'bodyFrame')
     w = CKEEditor(c=c)
+    w.at_rich = at_rich
     splitter = body.parent()
     splitter.replace_widget(body, w)
 #@+node:tbrown.20130813134319.5693: ** @g.command('cke-text-close')
 @g.command('cke-text-close')
-def cmd_CloseEditor(kwargs):
+def cmd_CloseEditor(kwargs, at_rich=False):
     c = kwargs['c'] if isinstance(kwargs, dict) else kwargs
     splitter = c.free_layout.get_top_splitter()
     rte = splitter.find_child(CKEEditor, '')
+    
     if not rte:
-        g.es("No editor open")
-    else:
-        body = splitter.get_provided('_leo_pane:bodyFrame')
-        splitter = rte.parent()
-        splitter.replace_widget(rte, body)
+        if not at_rich:
+            g.es("No editor open")
+        return
+    
+    if at_rich and not rte.at_rich:
+        # don't close manually opened editor
+        return
+        
+    body = splitter.get_provided('_leo_pane:bodyFrame')
+    splitter = rte.parent()
+    splitter.replace_widget(rte, body)
 #@+node:tbrown.20130813134319.7233: ** @g.command('cke-text-switch')
 @g.command('cke-text-switch')
 def cmd_SwitchEditor(kwargs):
