@@ -3,8 +3,57 @@
 #@@language python
 #@@tabwidth -4
 #@+<< docstring >>
-#@+node:tbrown.20130813134319.14333: ** << docstring >> (todo.py)
-"""Rich text editing"""
+#@+node:tbrown.20130813134319.14333: ** << docstring >> (richtext.py)
+"""
+richtext.py - Rich text editing
+===============================
+
+This plugin allows you to use CKEditor__ to edit rich text
+in Leo.  Text is stored as HTML in Leo nodes.
+
+__ http://ckeditor.com/
+
+``richtext.py`` provides these ``Alt-X`` commands (also available from
+Plugins -> richtext menu):
+    
+  cke-text-close
+    Close the rich text editor, unhide the regular editor.
+  cke-text-open
+    Open the rich text editor, hide the regular editor.
+  cke-text-switch
+    Switch between regular and rich text editor.
+  cke-text-toggle-autosave
+    Toggle autosaving of changes when you leave a node.
+    Be careful not to convert plain text (e.g. source code) to rich
+    text unintentionally.  As long as you make no edits, the original
+    text will not be changed.
+
+Unless autosaving is enabled, you must confirm saving of edits
+each time you edit a node with the rich text editor.
+
+``richtext.py`` uses these ``@settings``:
+    
+  @bool richtext_cke_autosave = False
+    Set this to True for rich text edits to be saved automatically.
+    
+    *BE CAREFUL* - plain-text nodes will be converted to rich text
+    without confirmation if you edit them in rich text mode when
+    this is True.
+    
+  @data richtext_cke_config Configuration info. for CKEditor, see
+    http://docs.ckeditor.com/#!/guide/dev_configuration the content of this node
+    is the javascript object passed to ``CKEDITOR.replace()`` as it's second
+    argument. The version supplied in LeoSettings.leo sets up a sensible
+    toolbar. To enable *all* CKEditor toolbar features copy this setting to
+    myLeoSettings.leo and remove the default content, i.e. make this node blank,
+    then CKEditor will generate a toolbar with all available features.
+    
+To make a button to toggle the editor on and off, use::
+    
+    @button rich
+      c.k.simulateCommand('cke-text-switch')
+
+"""
 #@-<< docstring >>
 #@+<< imports >>
 #@+node:tbrown.20130813134319.14335: ** << imports >>
