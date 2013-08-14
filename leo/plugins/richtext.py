@@ -59,17 +59,17 @@ class CKEEditor(QtGui.QWidget):
             'plugins', 'cke_template.html',
         )
         self.template = open(template_path).read()
+        path = "file://" + g.os_path_join(
+            g.computeLeoDir(), 'external', 'ckeditor'
+        )
+        self.template = self.template.replace('[CKEDITOR]', path)
         
         # load config
         self.config = self.c.config.getData("richtext_cke_config")
         if self.config:
             self.config = '\n'.join(self.config).strip()
 
-        # precompute path containing ckeditor folder
-        self.leo_external_path = "file://" + g.os_path_join(
-            g.computeLeoDir(),
-            'external'
-        ) + "/"
+
 
         # make widget containing QWebView    
         self.setLayout(QtGui.QVBoxLayout())
@@ -108,7 +108,19 @@ class CKEEditor(QtGui.QWidget):
             data = data.replace('[CONFIG]', ', '+self.config)
         else:
             data = data.replace('[CONFIG]', '')
-        self.webview.setHtml(data, QtCore.QUrl(self.leo_external_path))
+
+        # try and make the path for URL evaluation relative to the node's path
+        aList = g.get_directives_dict_list(p)
+        path = c.scanAtPathDirectives(aList)
+        if p.h.startswith('@'):  # see if it's a @<file> node of some sort
+            nodepath = p.h.split(None, 1)[-1]
+            nodepath = g.os_path_join(path, nodepath)
+            if not g.os_path_isdir(nodepath):  # remove filename
+                nodepath = g.os_path_dirname(nodepath)
+            if g.os_path_isdir(nodepath):  # append if it's a directory
+                path = nodepath
+
+        self.webview.setHtml(data, QtCore.QUrl("file://"+path+"/"))
     #@+node:tbrown.20130813134319.7228: *3* unselect_node
     def unselect_node(self, tag, kwargs):
         
