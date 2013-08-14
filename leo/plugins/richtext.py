@@ -152,6 +152,11 @@ class CKEEditor(QtGui.QWidget):
             return
 
         p = kwargs['new_p']
+        
+        self.v = p.v  # to ensure unselect_node is working on the right node
+        # currently (20130814) insert doesn't trigger unselect/select, but
+        # even if it did, this would be safest
+        
         data = self.template
         if p.b.startswith('<'):  # already rich text, probably
             content = p.b
@@ -223,7 +228,7 @@ class CKEEditor(QtGui.QWidget):
                     text
                 )
             if ans == 'yes':
-                kwargs['old_p'].b = new_text
+                c.vnode2position(self.v).b = new_text
                 c.redraw()  # but node has content marker still doesn't appear?
             elif ans == 'cancel':
                 return 'STOP'
