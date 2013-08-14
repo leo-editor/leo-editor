@@ -100,8 +100,10 @@ class CKEEditor(QtGui.QWidget):
         del kwargs['c']
         QtGui.QWidget.__init__(self, *args, **kwargs)
         
-        # were we opened by an @rich node?  Calling code will set
+        # were we opened by an @ rich node? Calling code will set
         self.at_rich = False
+        # are we being closed by leaving an @ rich node? Calling code will set
+        self.at_rich_close = False
         
         # read autosave preference
         if not hasattr(self.c, '_ckeeditor_autosave'):
@@ -229,7 +231,7 @@ class CKEEditor(QtGui.QWidget):
                 pass  # discard edits
     #@+node:tbrown.20130813134319.7229: *3* close
     def close(self):
-        if self.c:
+        if self.c and not self.at_rich_close:
             # save changes?
             self.unselect_node('', {'c': self.c, 'old_p': self.c.p})
         self.c = None
@@ -314,6 +316,7 @@ def cmd_CloseEditor(kwargs, at_rich=False):
         
     body = splitter.get_provided('_leo_pane:bodyFrame')
     splitter = rte.parent()
+    rte.at_rich_close = True
     splitter.replace_widget(rte, body)
 #@+node:tbrown.20130813134319.7233: ** @g.command('cke-text-switch')
 @g.command('cke-text-switch')
