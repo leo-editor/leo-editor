@@ -12,7 +12,7 @@ Jacob M. Peck, 2013
 Commands
 ========
 
-This plugin supports the following twelve commands:
+This plugin supports the following commands:
     
 print-selected-node
 -------------------
@@ -82,6 +82,18 @@ print-preview-marked-node-bodies
 Opens up the print preview dialog to preview the bodies of all 
 marked nodes in the current outline.
 
+print-selected-node-body-html
+-----------------------------
+
+Opens up the print dialog to print the body of the selected node
+as a rendered HTML (i.e., rich text) document.
+
+print-preview-selected-node-body-html
+-------------------------------------
+
+Opens up the print preview dialog to preview the body of the selected
+node as a rendered HTML (i.e., rich text) document.
+
 Settings
 ========
 
@@ -99,6 +111,7 @@ Settings
 #@+at
 # 
 # version 0.1 (2013-05-14) - initial release
+# version 0.2 (2013-08-14) - added print-html-node (rich text) commands
 # 
 #@@c
 #@-<< version history >>
@@ -174,7 +187,10 @@ class printingController:
         c.k.registerCommand('print-marked-nodes',shortcut=None,func=self.print_marked_nodes)
         c.k.registerCommand('print-preview-marked-nodes',
                             shortcut=None,func=self.print_preview_marked_nodes)
-        
+        ## selected node html
+        c.k.registerCommand('print-selected-node-body-html',shortcut=None,func=self.print_selected_node_body_html)
+        c.k.registerCommand('print-preview-selected-node-body-html',
+                            shortcut=None,func=self.print_preview_selected_node_body_html)
     #@+node:peckj.20130513115943.22457: *3* helpers
     #@+node:peckj.20130513115943.22458: *4* construct stylesheet
     def construct_stylesheet(self):
@@ -192,6 +208,12 @@ class printingController:
         else:
             contents = "<pre>%s<pre>" % text
         doc.setHtml(contents)
+        return doc
+    #@+node:peckj.20130814150446.4883: *4* construct html document
+    def construct_html_document(self, text):
+        doc = QtGui.QTextDocument()
+        doc.setDefaultStyleSheet(self.stylesheet)
+        doc.setHtml(text)
         return doc
     #@+node:peckj.20130514082859.5603: *4* construct complex document
     def construct_complex_document(self, nodes, heads=False):
@@ -224,6 +246,19 @@ class printingController:
             useSelectedText=False,
             useSentinels=False)
     #@+node:peckj.20130513115943.22666: *3* selected node
+    #@+node:peckj.20130814150446.4884: *4* html
+    #@+node:peckj.20130814145125.4886: *5* print_selected_node_body_html
+    def print_selected_node_body_html (self,event=None):
+        ''' prints the selected node body as html (rich text)'''
+        
+        doc = self.construct_html_document(self.c.p.b)
+        self.print_doc(doc)
+    #@+node:peckj.20130814145125.4884: *5* print_preview_selected_node_body_html
+    def print_preview_selected_node_body_html (self,event=None):
+        ''' print previews the selected node body as html (rich text)'''
+        
+        doc = self.construct_html_document(self.c.p.b)
+        self.print_preview_doc(doc)
     #@+node:peckj.20130513193024.6336: *4* print_selected_node_body
     def print_selected_node_body (self,event=None):
         ''' prints the selected node body'''
