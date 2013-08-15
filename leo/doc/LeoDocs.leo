@@ -194,11 +194,10 @@ expanded="ekr.20060527105617,"><vh>@file debuggers.txt</vh></v>
 <v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028550b302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473550b302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473550b302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473550b302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d7100285509302e302e312e302e3071017d710255097374725f6174696d657103550c313337363431323837322e30710473550b302e302e332e312e312e3371057d71066803550c313337363431323838392e307107735507302e312e302e3771087d71096803550c313337363431323238302e30710a735509302e312e302e372e32710b7d710c6803550c313337363431323238382e30710d73550b302e302e332e302e322e33710e7d710f6803550c313337363431323838382e30711073752e"
-expanded="edream.110203163054.117,ekr.20050210102150.1,ekr.20040216151748,ekr.20060206111600,ekr.20050917092557,ekr.20050917092557.2,ekr.20050913131848,ekr.20050906104931.1,ekr.20130803073926.17114,"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d7100285509302e302e312e302e3071017d710255097374725f6174696d657103550c313337363431323837322e30710473550b302e302e332e312e312e3371057d71066803550c313337363431323838392e307107735507302e312e302e3771087d71096803550c313337363431323238302e30710a73550b302e312e302e372e302e31710b7d710c6803550c313337363431323238382e30710d73550b302e302e332e302e322e33710e7d710f6803550c313337363431323838382e30711073752e"
+expanded="edream.110203163054.117,ekr.20050210102150.1,ekr.20040216151748,ekr.20060206111600,ekr.20050917092557,ekr.20050917092557.2,ekr.20050913131848,ekr.20050906104931.1,"><vh>@file release_notes.txt</vh></v>
 </v>
 <v t="ekr.20130807203905.16526"><vh>* For the FAQ: create a bzr repository before importing it into Leo</vh></v>
-<v t="ekr.20130803125244.17095"><vh>* position script (put in scripting chapter?)</vh></v>
 <v t="ekr.20130806072439.19990"><vh>Leo 4.11 a1 Release notes</vh>
 <v t="ekr.20130807203905.16780"><vh>Bugs</vh>
 <v t="ekr.20130807203905.16687"><vh>Bugs: minor</vh>
@@ -319,75 +318,27 @@ expanded="edream.110203163054.117,ekr.20050210102150.1,ekr.20040216151748,ekr.20
 <v t="ekr.20130807203905.16585"><vh>Added importer for vimoutliner imports and @auto-otl</vh></v>
 <v t="ekr.20130807203905.16545"><vh>Added support for clojure syntax coloring</vh></v>
 </v>
-<v t="ekr.20130803073926.17114"><vh>Plugins (To do 5 &amp; update plugins chapter)</vh>
+<v t="ekr.20130803073926.17114"><vh>Plugins</vh>
+<v t="ekr.20130814140750.17194"><vh>New plugins (update plugins chapter)</vh>
+<v t="ekr.20130806072439.18567"><vh>leomylyn.py</vh></v>
+<v t="ekr.20130526065545.17620"><vh>printing.py</vh></v>
+<v t="ekr.20130526065545.17435"><vh>screen_capture.py</vh></v>
+<v t="ekr.20130812034101.16917"><vh>screencast.py</vh></v>
+<v t="ekr.20130808211520.15900"><vh>timestamp.py</vh></v>
+</v>
+<v t="ekr.20130814140750.17195"><vh>Improved plugins</vh>
 <v t="ekr.20130526065545.14926"><vh>bookmarks.py</vh></v>
-<v t="ekr.20130808211520.17433"><vh>ipython plugin</vh>
-<v t="ekr.20130806072439.18541"><vh>Ipython now has cell magic</vh></v>
-<v t="ekr.20130807203905.16572"><vh>IPython plugin now works with all versions of IPython</vh>
-<v t="ekr.20130807203905.16573"><vh> Notes</vh></v>
-<v t="ekr.20130807203905.16574"><vh> What I did</vh></v>
-<v t="ekr.20130807203905.16575"><vh>@url ipython api</vh></v>
-<v t="ekr.20130807203905.16576"><vh>@url ipython-dev archive</vh></v>
-<v t="ekr.20130807203905.16577"><vh>@url ipython.core.interactiveshell</vh></v>
+<v t="ekr.20130807203905.16572"><vh>ipython.py</vh></v>
+<v t="ekr.20130803073926.17123"><vh>valuespace.py</vh></v>
+<v t="ekr.20130807203905.16584"><vh>viewrendered.py</vh></v>
 </v>
-<v t="ekr.20130806072439.18557"><vh>Ville, please help make leoIPython.py work with legacy IPython</vh>
-<v t="ekr.20130806072439.18558"><vh>Re: Ville, please help make leoIPython.py work with legacy IPython</vh></v>
-<v t="ekr.20130806072439.18559"><vh>Re: Ville, please help make leoIPython.py work with legacy IPython</vh></v>
-<v t="ekr.20130806072439.18560"><vh>Re: Ville, please help make leoIPython.py work with legacy IPython</vh></v>
-<v t="ekr.20130806072439.18561"><vh>Re: Ville, please help make leoIPython.py work with legacy IPython</vh></v>
-<v t="ekr.20130806072439.18562"><vh>Re: Ville, please help make leoIPython.py work with legacy IPython</vh></v>
-<v t="ekr.20130806072439.18563"><vh>Re: Ville, please help make leoIPython.py work with legacy IPython</vh></v>
-<v t="ekr.20130806072439.18564"><vh>Re: Ville, please help make leoIPython.py work with legacy IPython</vh></v>
-<v t="ekr.20130806072439.18566"><vh>Re: Ville, please help make leoIPython.py work with legacy IPython</vh></v>
-<v t="ekr.20130806072439.18567"><vh>"Mylyn" with the new hooks</vh>
-<v t="ekr.20130806072439.18568"><vh>Re: "Mylyn" with the new hooks</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20130526065545.17620"><vh>printing.py</vh>
-<v t="ekr.20130806072439.18804"><vh>[ANN] New plugin - printing.py</vh></v>
-</v>
-<v t="ekr.20130526065545.17435"><vh>screen_capture.py</vh>
-<v t="ekr.20130526065545.17429"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
-<v t="ekr.20130526065545.17431"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
-<v t="ekr.20130526065545.17432"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
-<v t="ekr.20130526065545.17433"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
-<v t="ekr.20130526065545.17434"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
-<v t="ekr.20130526065545.17436"><vh>Re: ANN: screen_capture plugin pushed</vh></v>
-</v>
-<v t="ekr.20130812034101.16917"><vh>screencast.py</vh>
-<v t="ekr.20130812034101.16918"><vh>Re: Automated playback</vh></v>
-<v t="ekr.20130812034101.16919"><vh>Re: Automated playback</vh></v>
-<v t="ekr.20130812034101.16920"><vh>Re: Automated playback</vh></v>
-<v t="ekr.20130812034101.16921"><vh>Re: Automated playback</vh></v>
-</v>
-<v t="ekr.20130808211520.15900"><vh>timestamp plugin</vh></v>
-<v t="ekr.20130803073926.17123"><vh>valuespace plugin</vh>
-<v t="ekr.20130526065545.17506"><vh>Quick valuespace.py update: it now support...</vh></v>
-<v t="ekr.20130803125244.17094"><vh>Document valuespace from Ville's blog</vh></v>
-<v t="ekr.20130806072439.18889"><vh>Blog post about valuespace up on leo-editor.github.io</vh>
-<v t="ekr.20130806072439.18891"><vh>Re: Blog post about valuespace up on leo-editor.github.io</vh></v>
-</v>
-<v t="ekr.20130806072439.18495"><vh>ANN: in body python calculations commands</vh>
-<v t="ekr.20130806072439.18496"><vh>Re: ANN: in body python calculations commands</vh></v>
-<v t="ekr.20130806072439.18497"><vh>Re: ANN: in body python calculations commands</vh></v>
-<v t="ekr.20130806072439.18498"><vh>Re: ANN: in body python calculations commands</vh></v>
-</v>
-<v t="ekr.20130806072439.18543"><vh>Read / write json files added to valuespace.py plugin</vh>
-<v t="ekr.20130806072439.18545"><vh>Re: Read / write json files added to valuespace.py plugin</vh></v>
-<v t="ekr.20130806072439.18548"><vh>Re: Read / write json files added to valuespace.py plugin</vh></v>
-<v t="ekr.20130806072439.18549"><vh>Re: Read / write json files added to valuespace.py plugin</vh></v>
-<v t="ekr.20130806072439.18550"><vh>Re: Read / write json files added to valuespace.py plugin</vh></v>
-<v t="ekr.20130806072439.18551"><vh>Re: Read / write json files added to valuespace.py plugin</vh></v>
-</v>
-</v>
-<v t="ekr.20130807203905.16584"><vh>viewrendered plugin</vh></v>
 </v>
 <v t="ekr.20130803073926.17115"><vh>Scripts</vh></v>
 <v t="ekr.20130807203905.16608"><vh>Settings &amp; options</vh></v>
 <v t="ekr.20130807203905.16270"><vh>Web site improvements</vh></v>
 </v>
 <v t="ekr.20130803073926.17114"></v>
+<v t="ekr.20130814140750.17194"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -801,125 +752,6 @@ https://github.com/vivainio/LeoReader/blob/master/main.html
 
 Works ok in Firefox and Chrome.
 </t>
-<t tx="ekr.20130526065545.17429">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-On Tue, 23 Apr 2013 05:08:47 -0700 (PDT)
-lewis &lt;lewisneal@operamail.com&gt; wrote:
-
-&gt; Hi Terry,
-&gt; 
-&gt; I just enabled the plugin and tried 'screen-capture-now'. 
-&gt; It creates the folder C:\\Users\\lewis\\.leo\\screen_captures but there is no 
-&gt; png file written in the folder.
-&gt; I may have missed something? :)
-
-Thanks for the report, I just pushed the fix, you can't have ':' in a
-Windows file name.
-
-As for the feedback appearing in the log rather than the console, do
-you have a console open?  It may depend on whether you start Leo
-with ...\\python.exe or ...\\pythonw.exe.  I use the former, a console
-opens, and the filename appears there.
-
-Cheers -Terry
-
-&gt; Here is the log:
-&gt; Leo Log Window
-&gt; Leo 4.11 devel, build 5737, 2013-04-23 21:51:45
-&gt; Python 3.3.1, qt version 4.8.4
-&gt; Windows 6, 1, 7601, 2, Service Pack 1Screenshot: 
-&gt; C:\\Users\\lewis\\.leo\\screen_captures\\2013-04-23T21:55:53.png
-&gt; 
-&gt; At the leo blog http://leo-editor.github.io/screen_capture.html it says 
-&gt; "The only feedback is in the console, as messages in the log would be 
-&gt; distracting in the captured image."
-&gt; All my feedback is in the log and none in the console.
-&gt; 
-&gt; Regards
-&gt; Lewis
-&gt; 
-
-</t>
-<t tx="ekr.20130526065545.17431">From: Matt Wilkie &lt;maphew@gmail.com&gt;
-
-if you start Leo (or any .py file) by double-clicking on it it's likely
-`pythonw.exe` is being used. You can find out for sure with `assoc` and
-`ftype` from a command shell:
-
-{{{
-C:\\&gt;assoc .py
-.py=Python.File
-
-C:\\&gt;ftype Python.File
-Python.File="E:\\Python27\\ArcGIS10.1\\pythonw.exe" "%1" %*
-
-C:\\&gt;assoc .leo
-.leo=LeoFile
-
-C:\\&gt;ftype LeoFile
-LeoFile=b:\\bin\\leo.bat "%1"
-}}}
-
-more info: http://ss64.com/nt/ftype.html
-
-</t>
-<t tx="ekr.20130526065545.17432">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-On Sun, 21 Apr 2013 08:59:51 +0800
-HaveF &lt;iamaplayer@gmail.com&gt; wrote:
-
-&gt; hi, Terry,
-&gt; 
-&gt; It seems a great plugin! It is useful for people who write posts about leo.
-&gt; 
-&gt; 1. the link to leo-editor web page in http://www.greygreen.org/leo/ should
-&gt; be updated ;-)
-
-Thanks - Matt has pointed that out too - hard part was searching
-through three machines with two accounts on each to find where that
-snapshot is actually generated :-)
-
-&gt; 2. btw, can this plugin set a different path to save captured image?
-
-I just pushed
-
-Settings
---------
-
-``@string screen-capture-save-path``
-  Save screen shots here instead of ~/.leo/screen_captures
-</t>
-<t tx="ekr.20130526065545.17433">From: lewis &lt;lewisneal@operamail.com&gt;
-
-I just enabled the plugin and tried 'screen-capture-now'. 
-It creates the folder C:\\Users\\lewis\\.leo\\screen_captures but there is no 
-png file written in the folder.
-I may have missed something? :)
-
-Here is the log:
-Leo Log Window
-Leo 4.11 devel, build 5737, 2013-04-23 21:51:45
-Python 3.3.1, qt version 4.8.4
-Windows 6, 1, 7601, 2, Service Pack 1Screenshot: 
-C:\\Users\\lewis\\.leo\\screen_captures\\2013-04-23T21:55:53.png
-
-At the leo blog http://leo-editor.github.io/screen_capture.html it says 
-"The only feedback is in the console, as messages in the log would be 
-distracting in the captured image."
-All my feedback is in the log and none in the console.
-
-Regards
-Lewis
-
-</t>
-<t tx="ekr.20130526065545.17434">From: HaveF &lt;iamaplayer@gmail.com&gt;
-
-It seems a great plugin! It is useful for people who write posts about leo.
-
-1. the link to leo-editor web page in http://www.greygreen.org/leo/ should
-be updated ;-)
-2. btw, can this plugin set a different path to save captured image?
-</t>
 <t tx="ekr.20130526065545.17435">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
 
 See http://leo-editor.github.io/screen_capture.html
@@ -928,49 +760,6 @@ screen_capture_now captures an image immediately,
 screen_capture_5sec waits five seconds, so you can position the
 pointer, open menus etc. The only feedback is in the console, as
 messages in the log would be distracting in the captured image.
-</t>
-<t tx="ekr.20130526065545.17436">From: tfer &lt;tfetherston@aol.com&gt;
-
-That's how I run Leo, (console is great for windows).  Unless you 
-specifically call pythonw.exe it should use python.exe located through your 
-"Path" system enbironment variable.  Here is what I use in the shell 
-setting for a console "leo" tab:
-    cmd.exe /k C:\\entPY27\\python.exe 
-"C:\\VC\\Bzr\\leo-editor\\trunk\\launchLeo.py"
-the cmd.exe /k portion creates a dos window that the rest of the command 
-line is run in, (the dos window is hidden offscreen and console uses its 
-magic to present it inside of its buffer.  This now serves as stdio, (and 
-stderr) and catches messages written by leo.
-
-Adjust your shell command to where python and leo lives on your machine, 
-(found in Edit-&gt;Setting-&gt;Tabs).
-
-Tom
-
-On Wednesday, April 24, 2013 8:41:02 PM UTC-4, lewis wrote:
-&gt;
-&gt; Terry,
-&gt;
-&gt; Thanks it's working nicely :)
-&gt; I use console (sourceforge.net/projects/console ) to open leo. I run 
-&gt; launchleo.py from the leo directory so I'm not sure if  \\python.exe or 
-&gt; \\pythonw.exe are used.
-&gt;
-&gt; Regards
-&gt; Lewis
-&gt;
-&gt; On Tuesday, April 23, 2013 11:24:00 PM UTC+10, Terry wrote:
-&gt;&gt;
-&gt;&gt;
-&gt;&gt; As for the feedback appearing in the log rather than the console, do 
-&gt;&gt; you have a console open?  It may depend on whether you start Leo 
-&gt;&gt; with ...\\python.exe or ...\\pythonw.exe.  I use the former, a console 
-&gt;&gt; opens, and the filename appears there. 
-&gt;&gt;
-&gt;&gt; Cheers -Terry 
-&gt;&gt;
-&gt;
-
 </t>
 <t tx="ekr.20130526065545.17445">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
 
@@ -1197,13 +986,6 @@ commit log:
   
   rename solarized_dark theme leo_dark_0
 </t>
-<t tx="ekr.20130526065545.17506">From: "Ville Vainio (Google+)" &lt;noreply-7dc29aba@plus.google.com&gt;
-
-Ville Vainio shared a post with Leo Editor.
-
-View:
-https://plus.google.com/_/notifications/emlink?emr=02870587547267324596&amp;emid=CIDgu4qX0bYCFapzTAod51wAAA&amp;path=%2F103097156557482112329%2Fposts%2F1GjKYTUSTMA&amp;dt=1366183753416&amp;ub=63
-</t>
 <t tx="ekr.20130526065545.17515">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
 
 https://plus.google.com/103097156557482112329/posts/6D9GPRCdXVh
@@ -1327,10 +1109,8 @@ URL on the page (i.e. longer than the screen width), this is not wrapped
 is no horizontal scrollbar either)
 
 </t>
-<t tx="ekr.20130526065545.17620" str_atime="1376412288.0">From: Jacob Peck &lt;gatesphere@gmail.com&gt;
-
-I've added a new plugin to Leo, that adds printing support when using 
-the Qt GUI.  Available from rev 5779.
+<t tx="ekr.20130526065545.17620" str_atime="1376412288.0">The printing.py plugin fixes this bug:
+https://bugs.launchpad.net/leo-editor/+bug/1132804
 
 Here's the docscring:
 
@@ -1419,20 +1199,7 @@ Settings
    The font size for printing bodies, in px.  Due to limitations
    of PyQt, the size of headlines cannot be changed.
    
-'''
-
-To use it, be sure to add `printing.py` to your @enabled-plugins.
-
-Future work may have more printing modes available, and I intend on 
-doing a blog post on the leoblog about creating custom printing modes in 
-scripts.
-
-This addresses bug 1132804: 
-https://bugs.launchpad.net/leo-editor/+bug/1132804
-
---&gt;Jake
-
-</t>
+'''</t>
 <t tx="ekr.20130803073926.17114" str_atime="1376412280.0">@language rest
 </t>
 <t tx="ekr.20130803073926.17115">The following scripts have been added to scripts.leo:
@@ -1459,27 +1226,57 @@ By Brian Theado::
 
     Display function call hierarchy in Leo
 </t>
-<t tx="ekr.20130803073926.17123"></t>
-<t tx="ekr.20130803125244.17094">http://leo-editor.github.io/valuespace-intro.html
-</t>
-<t tx="ekr.20130803125244.17095">g.cls()
-# root = g.findNodeAnywhere(c,'root')
-root = c.rootPosition()
-assert root
-line = 0
-for p in root.self_and_subtree():
-    line += 1
-    print('%s: %4s @ %d p._childIndex: %d p.stack: %s' % (
-        line,
-        p.cleanHeadString(),
-        id(p.v),
-        p._childIndex,
-        # p.level(),p.key(),
-        # p.stack,
-        '[%s]' % ', '.join(['(v:%s @ %s, %s)' % (v.h,id(v),i) for v,i in p.stack]),
-    ))
-</t>
-<t tx="ekr.20130806072439.18495">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
+<t tx="ekr.20130803073926.17123">**Important** Ville M. Vainio has made many nifty additions to this plugin.
+
+Here is a summary: http://leo-editor.github.io/valuespace-intro.html
+
+Some details:
+
+1. valuespace now support yaml in named anchors (i.e. "@a foo.yaml" now parses
+parent as yaml and assigns the result to variable "foo"). It also has a
+dependency on pyyaml now.
+
+2. I'm doing some research now, that requires storing inputs in json, I use
+   those inputs to calculate some outputs and store them in .json files. I
+   added a few directives to valuespace.py plugin to bring native json data
+   support.
+
+@vsi foo.json
+
+reads in file foo.json, and stores the parsed data structure to vs /
+ipython variable "foo"
+
+@vso bar.json
+
+serializes content of variable "bar" to json file.
+
+@vsi gets executed during pass 1 of vs-update, @vso gets executed in phase
+2.
+
+Body text gets assigned with json content in both cases.
+
+Some further notes:
+
+- yes, the .json extension is explicitly special cased in the code. The
+idea is that e.g. @vso foo.csv would serialize the contents of variable
+"foo" as csv, .yml would use yaml etc.
+
+- vsi and vso stand for value space input and value space output,
+respectively
+
+For now, the best way to study it is valuespage_example.py in contrib
+branch.
+
+I'm being very succesful in using it + new ipython support as "ipython
+notebook" workalike.
+
+Ipython notebook is better for quick experiments, but I'm doing long term
+(multi-week) research, where Leo + IPython + valuespace is doing a great
+job so far.
+
+===== Terry Brown
+
+From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
 
 I've added ``vs-eval``, ``vs-last``, and ``vs-last-pretty`` commands to
 the ``valuespace.py`` plug-in.  Update docs below.
@@ -1529,122 +1326,7 @@ Insert the last result from ``vs-eval``.  Formatted by
 ``pprint.pformat()``,  so ``"1\\n2\\n3\\n4"`` will appear as
 '``"1\\n2\\n3\\n4"``', see all ``vs-last``.
 
-</t>
-<t tx="ekr.20130806072439.18496">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
 
-Tried it out.
-
-vs-last didn't work (returned None every time), vs-last-pretty did. I
-pushed a fix to bzr.
-</t>
-<t tx="ekr.20130806072439.18497">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
-
-No, I think they make sense in valuespace plugin since you can use them to
-execute stuff in the vs namespace.
-</t>
-<t tx="ekr.20130806072439.18498">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
-
-On Thu, 28 Feb 2013 21:28:39 +0200
-"Ville M. Vainio" &lt;vivainio@gmail.com&gt; wrote:
-
-&gt; vs-last didn't work (returned None every time), vs-last-pretty did. I
-&gt; pushed a fix to bzr.
-
-Thanks, nice timing, I had just noticed but was dealing with another
-email first :-)
-</t>
-<t tx="ekr.20130806072439.18541">From: Alia K &lt;alia_khouri@yahoo.com&gt;
-
-Fernando Perez of IPython fame just announced recently that IPython
-trunk has the cell magic functionality that was discussed earlier
-[http://groups.google.com/group/leo-editor/browse_thread/thread/
-7d910a68072dda1/b14e84fc3cfddbf6?lnk=gst&amp;q=ipython#b14e84fc3cfddbf6].
-As this could work very nicely with leo as an ipython editor, I will
-include his text verbatim here:
-
-&lt;snip&gt;
-
-Hi folks,
-
-
-I'm excited to report that we now have cell magics in IPython... PR
-1732 [1] has just been merged [2], which implements the design
-discussed in IPEP 1 [3]. This is probably one of the largest PRs we've
-had so far, with over 100 commits, over 100 comments and a diff that's
-almost 11000 lines long (a lot of it moving code around, obviously
-it's not all new code).  But it brings two very important thigns:
-
-1) a refactor of the magic system to finally remove the old mixin
-class we'd had since the very first days of IPython in 2001.  This is
-a cleanup I've been wanting to do for over 10 years!  The new setup
-makes the magic system have  a very clean api, that is easy to use
-both for the implementation of core features and for users to create
-their own magics.
-
-2) the new concept of cell magics: these are magics that get not only
-the line they're on, but the entire cell body as well.  And while
-these are most naturally used in the notebook, as you would expect
-we've built them at the core of IPython, so you can use them with all
-the clients (terminal, qt console, notebook).  For example, this is a
-Cython magic that Brian just prototyped out (we'll have a production
-version of it soon included).  Note that this was copied *from a
-regular text terminal*, not from the notebook:
-
-In [3]: from IPython.core.magic import register_line_cell_magic
-
-In [4]: @register_line_cell_magic
-   ...: def cython(line, cell):
-   ...:     """Compile and import a cell as a .pyx file."""
-   ...:     import sys
-   ...:     from importlib import import_module
-   ...:     module = line.strip()
-   ...:     fname = module + '.pyx'
-   ...:     with open(fname,'w') as f:
-   ...:         f.write(cell)
-   ...:     if 'pyximport' not in sys.modules:
-   ...:         import pyximport
-   ...:         pyximport.install(reload_support=True)
-   ...:     globals()[module] = import_module(module)
-   ...:
-
-In [5]: %%cython bam
-   ...: def f(x):
-   ...:     return 2.0*x
-   ...:
-
-In [6]: bam.f(10)
-Out[6]: 20.0
-
-In a similar spirit, Jonathan Taylor recently created one to call R
-transparently in the notebook:
-
-https://github.com/jonathan-taylor/Rmagic
-
-This one hasn't been fully updated to the final API, but the core code
-is there and now it should be a trivial matter to update it.
-
-
-I want to thank everyone who pitched in with ideas during the
-discussion and review period, and I hope you'll all enjoy this and
-come up with great ways to use the system.  For now, you can see how
-the system works by playing with %%timeit and %%prun, the only two
-builtins that I extended to work also as cell magics.
-
-For more details, see the documentation where we've added also a long
-new section with details and examples of how to create your own [4].
-
-Cheers,
-
-f
-
-[1] https://github.com/ipython/ipython/pull/1732
-[2] https://github.com/ipython/ipython/commit/61eb2ffeebb91a94fe9befe2c30e7839781ddc52
-[2] https://github.com/ipython/ipython/issues/1611
-[3] http://ipython.org/ipython-doc/dev/interactive/reference.html#magic-command-system
-
-&lt;/snip&gt;
-
-Exciting days indeed!
 </t>
 <t tx="ekr.20130806072439.18542">From: Terry Brown &lt;terry_n_brown@yahoo.com&gt;
 
@@ -1668,99 +1350,6 @@ leoscreen-jump-to-error
     and looks for a node starting with "@" and ending with "somefile.py",
     then jumps to line NNN in that file.
 </t>
-<t tx="ekr.20130806072439.18543">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
-
-I'm doing some research now, that requires storing inputs in json, I use
-those inputs to calculate some outputs and store them in .json files.
-
-I added a few directives to valuespace.py plugin to bring native json data
-support.
-
-@vsi foo.json
-
-reads in file foo.json, and stores the parsed data structure to vs /
-ipython variable "foo"
-
-@vso bar.json
-
-serializes content of variable "bar" to json file.
-
-@vsi gets executed during pass 1 of vs-update, @vso gets executed in phase
-2.
-
-Body text gets assigned with json content in both cases.
-
-</t>
-<t tx="ekr.20130806072439.18545">From: Kent Tenney &lt;ktenney@gmail.com&gt;
-
-my mouth is watering ...
-
-I just hope the install / setup is as idiot-proof as possible,
-This happens to me too often:
-
-- I get the occasional hour to do some coding
-- I decide to try the latest-greatest Leo feature
-- I spend the hour futzing with settings
-
-Next time I get an hour to code, I use Gvim ...
-
-Not meaning to complain, just my story.
-</t>
-<t tx="ekr.20130806072439.18548">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
-
-I haven't advertised it yet. Maybe a blog post about leo + ipython
-integration in general could be in order (that I could point to).
-</t>
-<t tx="ekr.20130806072439.18549">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
-
-Some further notes:
-
-- yes, the .json extension is explicitly special cased in the code. The
-idea is that e.g. @vso foo.csv would serialize the contents of variable
-"foo" as csv, .yml would use yaml etc.
-
-- vsi and vso stand for value space input and value space output,
-respectively
-</t>
-<t tx="ekr.20130806072439.18550">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
-
-For now, the best way to study it is valuespage_example.py in contrib
-branch.
-
-I'm being very succesful in using it + new ipython support as "ipython
-notebook" workalike.
-
-Ipython notebook is better for quick experiments, but I'm doing long term
-(multi-week) research, where Leo + IPython + valuespace is doing a great
-job so far.
-</t>
-<t tx="ekr.20130806072439.18551">From: Kent Tenney &lt;ktenney@gmail.com&gt;
-
-Might this work:
-
-a new top level menu: 'Extensions'
-
-Entries in this menu would refer to scripts which did all
-the behind the scene work required to enable a feature,
-with a small tutorial to boot.
-
-It might even find myLeoSettings.leo, insert the required nodes
-and prompt for restarting the file, IE: mechanize what the user
-needs to do.
-
-Or some other scheme to minimize the extraneous cognitive load.*
-
-Thanks,
-Kent
-
-* see 2:20 of http://pyvideo.org/video/1744/teaching-with-the-ipython-notebook
-
-3 kinds of cognitive load:
-intrinsic
-extraneous
-germane
-
-</t>
 <t tx="ekr.20130806072439.18554">"refresh from disk" is now done for all selected nodes. You can either
 
 ctrl-click each @&lt;file&gt; node you want refreshed, then "refresh from
@@ -1779,152 +1368,9 @@ https://bugs.launchpad.net/leo-editor/+bug/1090950
 using refresh from disk immediately after cutting nodes from the
 outline has odd effects.
 </t>
-<t tx="ekr.20130806072439.18557">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
+<t tx="ekr.20130806072439.18567">From: Ville M. Vainio
 
-The new leoIPython.py module is now fully (?) integrated with Leo.
-IPython gets started when (and only when) the --ipython command-line
-switch is in effect.
-
-However, the push-to-ipython command does not work, and there are
-enough mysteries in the code that I really don't know how to proceed.
-
-Ville, it might be that just a few minutes of work on your part would
-get the project moving forward again.  I'll understand if you don't
-have the time, but in that case I'll start asking you a lot of
-questions ;-)
-
-It will be a good start if we could just get the push-to-ipython
-command working with the legacy IPython code.  That's likely to get us
-90% of the way to getting things working with the new-style api.
-
-Let me know if I can do anything to assist.
-</t>
-<t tx="ekr.20130806072439.18558">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-On Sun, Apr 15, 2012 at 2:26 AM, Ville M. Vainio &lt;vivainio@gmail.com&gt; wrote:
-
-&gt; Observation one: the new minibuffer completion stuff makes typing in
-&gt; the minibuffer very slow. It's as if it's not waiting for "tab" keys
-&gt; anymore, but completes on every keystroke.
-
-Odd.  I don't see the problem.  But I can see how there might be a
-problem, depending on your autocompletion setup.  It should be easy to
-fix.  I'll do so sometime today.
-
-Edward
-</t>
-<t tx="ekr.20130806072439.18559">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
-
-Observation two:
-
-push-to-ipython already works ;-).
-
-Try it out:
-
-Start with launchLeo.py --ipython
-alt-x start-ipython
-
-... go to some node with python statuements, e.g.
-
-=3D=3D=3D=3D
-a=3D1+1
-print a+12
-=3D=3D=3D=3D
-
-altx-x push-to-ipython
-
-Observe the output in console:
-
-                    &lt;4&gt; 2
-----------------------&gt; print(a+12)
-14
-</t>
-<t tx="ekr.20130806072439.18560">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-"On Sat, Apr 14, 2012 at 10:19 AM, Ville M. Vainio &lt;vivainio@gmail.com&gt; wrote:
-&gt; Ok, let's sort the ipython story out by the end of next week, as I'm
-&gt; taking some time off work.
-
-Excellent.  Thanks very much.
-
-Edward
-"
-</t>
-<t tx="ekr.20130806072439.18561">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-On Sun, Apr 15, 2012 at 2:34 AM, Ville M. Vainio &lt;vivainio@gmail.com&gt; wrote:
-&gt; Observation two:
-&gt;
-&gt; push-to-ipython already works ;-).
-
-Oh!  I didn't realize that the start-ipython command was needed in
-addition to the --ipython option.
-
-Could we have the push-to-ipython command switch g_c commander to the
-commander of the outline from which the push-to-ipython command was
-invoked?  That would be one less command to worry about.
-
-It looks like the only remaining task is to eliminate the ip.IP var
-when using the new api.  I assume that the way to do that is as
-suggested by the deprecated IPython.core.ipapi.get() method, which is
-just::
-
-    def get():
-        """Get the global InteractiveShell instance."""
-        from IPython.core.interactiveshell import InteractiveShell
-        return InteractiveShell.instance()
-
-I'll look into this later today...
-
-Edward
-</t>
-<t tx="ekr.20130806072439.18562">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
-
-I'm trying to do this on windows.
-
-Observation one: the new minibuffer completion stuff makes typing in
-the minibuffer very slow. It's as if it's not waiting for "tab" keys
-anymore, but completes on every keystroke.
-</t>
-<t tx="ekr.20130806072439.18563">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-"On Mon, May 28, 2012 at 2:33 AM, Ville M. Vainio &lt;vivainio@gmail.com&gt; wrote:
-&gt; I found this problem - every time you press backspace, it updates the
-&gt; list of completions. When you have only one or zero characters, it's
-&gt; just slow to fetch the list of completions (as there is a lot of
-&gt; them). Pressing backspace should just delete the list if the line
-&gt; becomes empty, instead of showing all commands.
-
-Thanks for this suggestion.  I'll see what can be done.
-
-Edward
-"
-</t>
-<t tx="ekr.20130806072439.18564">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-"On Sun, Apr 15, 2012 at 1:54 PM, Edward K. Ream &lt;edreamleo@gmail.com&gt; wrote=
-:
-
-&gt; Odd. =A0I don't see the problem. =A0But I can see how there might be a
-&gt; problem, depending on your autocompletion setup. =A0It should be easy to
-&gt; fix. =A0I'll do so sometime today.
-
-Does rev 5255 help?
-
-EKR
-"
-</t>
-<t tx="ekr.20130806072439.18566">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
-
-I found this problem - every time you press backspace, it updates the
-list of completions. When you have only one or zero characters, it's
-just slow to fetch the list of completions (as there is a lot of
-them). Pressing backspace should just delete the list if the line
-becomes empty, instead of showing all commands.
-</t>
-<t tx="ekr.20130806072439.18567">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
-
-Hey, I went on to start a "leo mylyn" plugin to excercise using the
+I went on to start a "leo mylyn" plugin to excercise using the
 childrenModified and contentModified signals.
 
 If you want to play with it, pull, enable leomylyn.py, modify stuff
@@ -1942,167 +1388,32 @@ foo"), each of them having their own typical node working set.
 Mylyn was a nice boost back in the eclipse days, it could work for Leo
 too. My main motivation right now was to demonstare the signals with
 something that is much simpler than using them in qmlnotebook.
-</t>
-<t tx="ekr.20130806072439.18568">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
 
-On Thu, May 3, 2012 at 3:42 PM, Ville M. Vainio &lt;vivainio@gmail.com&gt; wrote:
-&gt; I went on to start a "leo mylyn" plugin to exercise using the childrenModified and contentModified signals.
+===== EKR
 
-This could an extremely important plugin--project management is close
-to the heart of how I use clones.
+See: http://en.wikipedia.org/wiki/Mylyn
 
-My guess is that the scoring function is a  (semi?) automatic  way of
-suggesting which nodes would naturally be part of a project.  This
-would (partly?) eliminate the need to create clones by hand.
+
+My guess is that the scoring function is a (semi?) automatic way of
+suggesting which nodes would naturally be part of a project. This would
+(partly?) eliminate the need to create clones by hand.
 
 In this way of thinking, a project is simply a node whose children
-represent sub-parts of the project.  Often, those children are clones.
- This suggest commands such as the following:
+represent sub-parts of the project. Often, those children are clones. This
+suggest commands such as the following:
 
-    project-new:  create a node representing a project and make it the
-**present project**.
-    project-select: choose a node to be the present project.
-    project-add-node: add a clone of the present node to the present project.
-    project-add-recent: add (clones of) nodes with "high enough" score
-to the present project.
-    project-add-found: search for nodes and add clones of the found
-nodes to the present project.
-    project-add-marked: add clones of marked nodes to the present project.
+project-new:  create a node representing a project and make it the **present project**.
+project-select: choose a node to be the present project.
+project-add-node: add a clone of the present node to the present project.
+project-add-recent: add (clones of) nodes with "high enough" score to the present project.
+project-add-found: search for nodes and add clones of the found nodes to the present project.
+project-add-marked: add clones of marked nodes to the present project.
 
-These are just ideas.
-
-Unlike in Eclipse/mylyn, Leo's node structure is available to all
-parts of the project.  For example, scripts could be applied to the
-(nodes of) a project in various ways.  In other words, the "project
-structure" is not hard-wired, as it is in mylyn, but can be extended
-in any way the user (or plugin writer) desires.
-
-Your comments please.
-
-Edward
-</t>
-<t tx="ekr.20130806072439.18804">From: Jacob Peck &lt;gatesphere@gmail.com&gt;
-
-I've added a new plugin to Leo, that adds printing support when using 
-the Qt GUI.  Available from rev 5779.
-
-Here's the docscring:
-
-'''Supports printing from the Qt GUI.
-
-Jacob M. Peck, 2013
-
-Commands
-========
-
-This plugin supports the following twelve commands:
-
-print-selected-node
--------------------
-
-Opens up the print dialog to print the selected headline and node.
-
-print-preview-selected-node
----------------------------
-
-Opens up the print preview dialog to preview the selected headline
-and node.
-
-print-selected-node-body
-------------------------
-
-Opens up the print dialog to print the selected node body.
-
-print-preview-selected-node-body
---------------------------------
-
-Opens up the print preview dialog to preview the selected node body.
-
-print-expanded-node
--------------------
-
-Opens up the print dialog to print the expanded contents of the
-selected node, with top-level headline.
-
-print-preview-expanded-node
----------------------------
-
-Opens up the print preview dialog to preview the expanded contents
-of theselected node, with top-level headline.
-
-print-expanded-node-body
-------------------------
-
-Opens up the print dialog to print the expanded node body.
-
-print-preview-expanded-node-body
---------------------------------
-
-Opens up the print preview dialog to preview the expanded node
-body.
-
-print-marked-nodes
-------------------
-
-Opens up the print dialog to print all marked nodes in the current
-outline, with headlines.
-
-print-preview-marked-nodes
---------------------------
-
-Opens up the print preview dialog to preview all marked nodes in \\
-the current outline, with headlines.
-
-print-marked-node-bodies
-------------------------
-
-Opens up the print dialog to print the bodies of all marked nodes
-in the current outline.
-
-print-preview-marked-node-bodies
---------------------------------
-
-Opens up the print preview dialog to preview the bodies of all
-marked nodes in the current outline.
-
-Settings
-========
-
-- ``@string printing-font-family = DejaVu Sans Mono``
-   The font family for printing.  A monospaced font is recommended.
-
-- ``@string printing-font-size = 12``
-   The font size for printing bodies, in px.  Due to limitations
-   of PyQt, the size of headlines cannot be changed.
-'''
-
-To use it, be sure to add `printing.py` to your @enabled-plugins.
-
-Future work may have more printing modes available, and I intend on 
-doing a blog post on the leoblog about creating custom printing modes in 
-scripts.
-
-This addresses bug 1132804: 
-https://bugs.launchpad.net/leo-editor/+bug/1132804
-
-</t>
-<t tx="ekr.20130806072439.18889">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
-
-This one is not "exhaustive", but in the interest of time management, I
-decided to push it as is. I'll blog about more features later on.
-
-http://leo-editor.github.io/valuespace-intro.html
-
-Hope it already helps alleviate the mystery of what it's all about :)
-</t>
-<t tx="ekr.20130806072439.18891">From: gatesphere &lt;gatesphere@gmail.com&gt;
-
-Looks really interesting, Ville!  Thanks for sharing, looking forward to 
-diving in.
-
-I'm thinking of some uses for in a rulebook and a few blog posts I'm 
-writing right now.  Being able to have my document be executable seems 
-awesome.
+Unlike in Eclipse/mylyn, Leo's node structure is available to all parts of
+the project. For example, scripts could be applied to the (nodes of) a
+project in various ways. In other words, the "project structure" is not
+hard-wired, as it is in mylyn, but can be extended in any way the user (or
+plugin writer) desires.
 </t>
 <t tx="ekr.20130806072439.19486">As of rev 5650, Leo contains support for \@testsetup nodes. At present, they
 work only when running unit tests locally.
@@ -3181,53 +2492,19 @@ What I did:
 
 </t>
 <t tx="ekr.20130807203905.16569"></t>
-<t tx="ekr.20130807203905.16572">Changed:
-- init (qtGui.py top level) (qtPdb)
-- runMainLoop (qtGui)
-- start_new_api
-</t>
-<t tx="ekr.20130807203905.16573">Investigate how IPython hijacks event loops
-http://groups.google.com/group/leo-editor/browse_thread/thread/e1dc6439bf8b17f9
+<t tx="ekr.20130807203905.16572">IPython plugin now works with all versions of IPython.
 
-pyos_inputhook is relevant
-
-IPython lib.inputhook
-http://ipython.org/ipython-doc/stable/api/generated/IPython.lib.inputhook.html
-
-* IPython seems to require Python 2.x.
-* I can run IPython from either C:\prog\ipython-0.12 or from python\lib\site-packages
-
-From C:\prog\ipython-0.12\IPython\scripts
-
-#!/usr/bin/env python
-"""Terminal-based IPython entry point.
-"""
-
-from IPython.frontend.terminal.ipapp import launch_new_instance
-
-launch_new_instance()
-
-Here is ipapi.get::
-
-@language python
-
-    def get():
-        """Get the global InteractiveShell instance."""
-        from IPython.core.interactiveshell import InteractiveShell
-        return InteractiveShell.instance()
-</t>
-<t tx="ekr.20130807203905.16574">- Import logic looks for legacy IPython first (0.11 and prev),
+- Import logic looks for legacy IPython first (0.11 and prev),
   then looks for new-style IPython (0.12 and above).
 
 - Created GlobalIPythonManager class, assigned to leoIPython.gipm and g.app.gipm.
 
 - Added self.c ivar to LeoNode class.  This is the same as p.v.context.
-</t>
-<t tx="ekr.20130807203905.16575">http://ipython.org/ipython-doc/rel-0.12/api/index.html
-</t>
-<t tx="ekr.20130807203905.16576">http://mail.scipy.org/pipermail/ipython-dev/
-</t>
-<t tx="ekr.20130807203905.16577">http://ipython.org/ipython-doc/rel-0.12/api/generated/IPython.core.interactiveshell.html
+
+- Changed:
+    - init (qtGui.py top level) (qtPdb)
+    - runMainLoop (qtGui)
+    - start_new_api
 </t>
 <t tx="ekr.20130807203905.16579">Don't show full completion list when the minibuffer becomes empty.
 </t>
@@ -3285,147 +2562,7 @@ The timestamp plugin manages the following node attributes:
 - str_atime: time node contents were last viewed
 </t>
 <t tx="ekr.20130808211520.17431"></t>
-<t tx="ekr.20130808211520.17433"></t>
-<t tx="ekr.20130812034101.16917">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-The more I think about it, the more I think Leo needs an automated playback 
-capability.  I had some initial thoughts in the thread, "PyOhio Leo Video 
-up on youtube", 
-https://groups.google.com/forum/?fromgroups=#!topic/leo-editor/nmBweM3wI3o.
-
-There as several immediate applications for automated playback:
-
-1. As a helper for those preparing demos of Leo.  It eliminates the need to 
-think, talk and type at the same time ;-)  The hope is that the narrator 
-would be more comfortable and relaxed during the recording, but perhaps 
-that is wishful thinking.
-
-2. As an automated, scripted, demo of what Leo can do.  You could even 
-imagine the quickstart.leo would "create itself" when it was opened.  You 
-would simply need to start the demo when the file was opened!
-
-As I was thinking about playback, I considered how the playback would draw 
-attention to various parts of the screen.  In other words, we need 
-something akin to the big red arrows in the Leo slideshows. One easy way to 
-do this would be with a DialogWithImage call, that would pop up a dialog 
-showing, say, a magnified image of a dirty icon box.  Depending on options, 
-the dialog might go away after a few seconds, or remain until the use hits 
-any key.
-
-The main question is, how easy will it be to create and edit playbacks?  
-I'm not sure.  Any such playback capability would essentially be a 
-(detailed!) script.  We can imagine a script that is essentially Python:  
-Something like:
-
-goto_sibling_node(&lt;&lt;node name&gt;&gt;)
-dialog(&lt;&lt;dialog name&gt;&gt;,&lt;&lt; when dismissed&gt;&gt;)
-edit_headline
-type_individual_letters('This is the headline',&lt;&lt;delay between letters&gt;&gt;)
-type_text('This is the headline')
-insert_sibling_node()
-insert_child_node()
-select_find_tab()
-etc! etc!
-
-Leo already has most of the capability go generate this as we use Leo:  
-it's the so-called "lossage" history in k.masterKeyHandler.  I'm thinking 
-that there is no urgent need to capture the mouse: we might as well 
-demonstrate mouseless Leo!
-
-Actually, we might forgo capturing actions altogether, and just write the 
-script directly.  We'll have to see whether that makes sense.
-
-Your comments, please, Amigos.
-
-Edward
-
-</t>
-<t tx="ekr.20130812034101.16918">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-On Wednesday, September 12, 2012 3:12:52 PM UTC-5, Edward K. Ream wrote:
-&gt;
-&gt; The more I think about it, the more I think Leo needs an automated 
-&gt; playback capability. 
-&gt;
-... 
-
-&gt; The main question is, how easy will it be to create and edit playbacks? 
-
-
-Rev 5432 provides some answers.  test.leo contains the node, "Prototype of 
-screencast script".  It took many hours of happy experimentation to get the 
-script to work, but the results are worth all the futzing.  Here is the 
-first script::
-
-    s = p.b # This script.
-    c = c.new()
-    p = c.p
-    p.h = ''
-    n1,n2 = 0.01,0.2 # Small difference are important.
-    head_keys('This is headline text',n1,n2)
-    body_keys('This is some body text.\\n',0.0,0.0) # n1,n2)
-    body_keys('Some more body text.\\n',0.0,0.0)
-    body_keys(s,0.0,0.0)
-
-The head_keys and body_keys (not shown) simulate typing, with a range of 
-typing speed indicated by the n1 and n2 params.  The result is really fun 
-to watch.  As you will see, there is a wait method that waits a variable 
-number of seconds.  This will be useful in other contexts.
-
-This is the most fun I've had in quite awhile. It's becoming clear that 
-being able to generate screencasts from scripts will be an excellent tool 
-for those trying to explain Leo.  Imo, creating screencasts from such 
-scripts will be *much* simpler than making slideshows.
-
-I've got lots of ideas for improvements to screencasts.  I should have 
-something pretty cool to show in a week or so...
-
-Edward
-
-P.S.  The head_keys and body_keys methods cost me a *lot* of work.  It's 
-tricky to show the typing immediately without flash.  These are the first 
-of several planned helper methods for use in screencasts::
-
-     def head_keys(s,n1=0.04,n2=0.1):
-        import leo.core.leoGui as leoGui
-        p = c.p
-        tree = c.frame.tree
-        c.editHeadline()
-        w = tree.edit_widget(p)
-        for ch in s:
-            p.h = p.h + ch
-            tree.repaint() # *not* tree.update.
-            wait(n1,n2)
-            event = leoGui.leoKeyEvent(c,ch,ch,w,x=0,y=0,x_root=0,y_root=0)
-            c.k.masterKeyHandler(event)
-        c.frame.tree.repaint()
-        c.redraw()
-
-    def body_keys(s,n1=0.04,n2=0.1):
-        c.bodyWantsFocusNow()
-        p = c.p
-        w = c.frame.body.bodyCtrl.widget
-        for ch in s:
-            p.b = p.b + ch
-            w.repaint()
-            wait(n1,n2)
-        c.redraw()
-
-EKR
-
-</t>
-<t tx="ekr.20130812034101.16919">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-On Friday, September 14, 2012 8:54:42 AM UTC-5, Edward K. Ream wrote:
-&gt;
-&gt;
-&gt; Rev  5434 packages this into the new screencast plugin.  Yesterdays work, 
-&gt; in screencast.py and the node "@command screencast @key=Alt-9" in test.leo 
-&gt; taught me several things.  In the notes below, m is an instance of 
-&gt; ScreenCastController.  m stands for "movie" :-)
-&gt;
-
-Screencasts promise to be easy to be *much* easier to create than 
+<t tx="ekr.20130812034101.16917">Screencasts promise to be easy to be *much* easier to create than 
 slideshows, while also being more interesting, informative and flashy.  It 
 is *so* much easier to write a screencast script than it is to lay out a 
 slide, take a screenshot, and then manage resulting slide.
@@ -3445,94 +2582,10 @@ produce a screencast is done (naturally!) within Leo.  No need to create
 and manage external data.  This is another huge advantage and it make 
 producing screencasts much faster than producing slideshows.
 
-Screencasts are likely to be the long-awaited tools that will allow me to 
-show Leo in action so that other will finally be able to understand it 
-easily.  This is an exciting prospect!
-</t>
-<t tx="ekr.20130812034101.16920">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-On Wednesday, September 12, 2012 10:57:35 PM UTC-5, Edward K. Ream wrote:
-
-    test.leo contains the node, "Prototype of screencast script".  It took 
-many hours of happy experimentation to get the script to work, but the 
-results are worth all the futzing. 
-
-Rev  5434 packages this into the new screencast plugin.  Yesterdays work, 
-in screencast.py and the node "@command screencast @key=Alt-9" in test.leo 
-taught me several things.  In the notes below, m is an instance of 
-ScreenCastController.  m stands for "movie" :-)
-
-1. It's probably best to not to open a new Leo window for screencasts.  
-This avoid problems with w.repaint occurring in a another repaint 
-operation, thereby freezing Leo.  This is not a major constraint: we 
-typically will want to have screencasts operate on the local .leo file.
-
-2. I spent a lot of time trying to adjust the delay between "transitions".  
-The arguments to m.wait specify the range of waiting allowed.  The plugin 
-multiplies these nominal factors by a **speed factor**, initially 1.0.  
-m.set_speed sets this factor. To double the presentation speed, set the 
-factor to 0.5.
-
-The m.log call writes a message to the log pane, with calls to m.wait(1) 
-before and after inserting the text.  Both waits are important.  The 
-"opening" wait allows the user to see the effect of the previous operation; 
-the "closing" wait allows the user to read the new comment in the log pane 
-before the next operation happens.
-
-3. The futzing with speed and waits convinces me that specifying waits "by 
-hand" isn't good enough.  Pre-specified waits will be useful only for an 
-**unattended mode** that just plays the screencast from start to finish.  
-But for most presentations we want the presenter to switch from one 
-**scene** of the movie to the next by hitting the RightArrow key.  The 
-LeftArrow key will go back to the previous scene. Thus, in **attended 
-mode**, most calls to m.wait will have no effect.  (An exception will be 
-the calls to m.wait in the code the simulates a person typing in headline 
-or body text.  Thus calls should always have effect, so we will have a 
-"force" arg to m.wait.)
-
-It will be relatively straightforward to do the first draft of attended 
-mode.  At the programming level, it will work like any minibuffer command 
-that prompts for user input.  That is, the plugin will create a so-called 
-state handler for the slideshow.
-
-At the design level,  the main idea is to treat every node under the main 
-@screencast node as a scene.  This natural division allows the screencast 
-to organize the material using all of Leo's organizational capabilities.
-
-The state handler will, when seeing the RightArrow key, "play" the next 
-scene merely by moving to the next node and then executing the script in 
-it's body text.  This script could contain *any* Leo script, but most often 
-it will call ScreenCastController methods.   Moving to the previous scene 
-can be done by Leo's undo command, automatically managed by the 
-ScreenCastController.  This will be a bit tricky, but not hugely so.
-
-4. Putting comments in the log pane is ok for a prototype, but it's pretty 
-lame.  Instead, I'd like to use some kind of popup that can be associated 
-with individual items on the screen and located with precision relative to 
-those items. The popup should be able to contain both text and graphics. 
-Does anyone have a suggestion for what Qt widget to use?
-</t>
-<t tx="ekr.20130812034101.16921">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
-Rev 5435 contains the new code in screencast.py and new test code in
-test.leo. To run the test, just do Alt-9, then hit the right arrow key
-until done. Escape or Ctrl-g will abort the screencast. All other keys get
-ignored.
-
-**Warning**: the present screen cast insert a node in a somewhat random 
-location.
-
-The code that looks for the next node assumes that if it has a script if 
-p.b.strip() is True.  Before making this check, it should strip off python 
-comment lines so the speaker can add comments.
-
-There is still lots of work to be done, but already we have a fun sandbox 
-to play in.  As you will see, all the code in ScreenCastController is dead 
-easy, which bodes well for future work.
-
-Edward
-
-</t>
+Screencasts may be the long-awaited tools that will allow me to show Leo in
+action so that other will finally be able to understand it easily.</t>
+<t tx="ekr.20130814140750.17194"></t>
+<t tx="ekr.20130814140750.17195"></t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
