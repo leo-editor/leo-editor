@@ -19953,9 +19953,11 @@ Created at.writeAtAutoOtlFile.
 #@+node:ekr.20130807203905.16545: *5* Added support for clojure syntax coloring
 #@+node:ekr.20130803073926.17114: *4* Plugins
 @language rest
-#@+node:ekr.20130814140750.17194: *5* New plugins (update plugins chapter)
+#@+node:ekr.20130814140750.17194: *5* New plugins
+Added printing.py.
 #@+node:ekr.20130806072439.18567: *6* leomylyn.py
 From: Ville M. Vainio
+See: http://en.wikipedia.org/wiki/Mylyn
 
 I went on to start a "leo mylyn" plugin to excercise using the
 childrenModified and contentModified signals.
@@ -19975,32 +19977,6 @@ foo"), each of them having their own typical node working set.
 Mylyn was a nice boost back in the eclipse days, it could work for Leo
 too. My main motivation right now was to demonstare the signals with
 something that is much simpler than using them in qmlnotebook.
-
-===== EKR
-
-See: http://en.wikipedia.org/wiki/Mylyn
-
-
-My guess is that the scoring function is a (semi?) automatic way of
-suggesting which nodes would naturally be part of a project. This would
-(partly?) eliminate the need to create clones by hand.
-
-In this way of thinking, a project is simply a node whose children
-represent sub-parts of the project. Often, those children are clones. This
-suggest commands such as the following:
-
-project-new:  create a node representing a project and make it the **present project**.
-project-select: choose a node to be the present project.
-project-add-node: add a clone of the present node to the present project.
-project-add-recent: add (clones of) nodes with "high enough" score to the present project.
-project-add-found: search for nodes and add clones of the found nodes to the present project.
-project-add-marked: add clones of marked nodes to the present project.
-
-Unlike in Eclipse/mylyn, Leo's node structure is available to all parts of
-the project. For example, scripts could be applied to the (nodes of) a
-project in various ways. In other words, the "project structure" is not
-hard-wired, as it is in mylyn, but can be extended in any way the user (or
-plugin writer) desires.
 #@+node:ekr.20130526065545.17620: *6* printing.py
 The printing.py plugin fixes this bug:
 https://bugs.launchpad.net/leo-editor/+bug/1132804
@@ -20094,15 +20070,17 @@ Settings
    
 '''
 #@+node:ekr.20130526065545.17435: *6* screen_capture.py
-From: Terry Brown <terry_n_brown@yahoo.com>
+By Terry Brown.
 
 See http://leo-editor.github.io/screen_capture.html
 
-screen_capture_now captures an image immediately,
-screen_capture_5sec waits five seconds, so you can position the
-pointer, open menus etc. The only feedback is in the console, as
-messages in the log would be distracting in the captured image.
+screen_capture_now captures an image immediately, screen_capture_5sec waits
+five seconds, so you can position the pointer, open menus etc. The only
+feedback is in the console, as messages in the log would be distracting in
+the captured image.
 #@+node:ekr.20130812034101.16917: *6* screencast.py
+By Edward K. Ream
+
 Screencasts promise to be easy to be *much* easier to create than 
 slideshows, while also being more interesting, informative and flashy.  It 
 is *so* much easier to write a screencast script than it is to lay out a 
@@ -20198,28 +20176,26 @@ dependency on pyyaml now.
    added a few directives to valuespace.py plugin to bring native json data
    support.
 
-@vsi foo.json
+**@vsi foo.json**
 
 reads in file foo.json, and stores the parsed data structure to vs /
 ipython variable "foo"
 
-@vso bar.json
+**@vso bar.json**
 
-serializes content of variable "bar" to json file.
-
-@vsi gets executed during pass 1 of vs-update, @vso gets executed in phase
-2.
+serializes content of variable "bar" to json file. \@vsi gets executed
+during pass 1 of vs-update, \@vso gets executed in phase 2.
 
 Body text gets assigned with json content in both cases.
 
 Some further notes:
 
-- yes, the .json extension is explicitly special cased in the code. The
-idea is that e.g. @vso foo.csv would serialize the contents of variable
-"foo" as csv, .yml would use yaml etc.
+- Yes, the .json extension is explicitly special cased in the code. The
+  idea is that e.g. @vso foo.csv would serialize the contents of variable
+  "foo" as csv, .yml would use yaml etc.
 
 - vsi and vso stand for value space input and value space output,
-respectively
+  respectively
 
 For now, the best way to study it is valuespage_example.py in contrib
 branch.
@@ -20233,15 +20209,14 @@ job so far.
 
 ===== Terry Brown
 
-From: Terry Brown <terry_n_brown@yahoo.com>
-
 I've added ``vs-eval``, ``vs-last``, and ``vs-last-pretty`` commands to
 the ``valuespace.py`` plug-in.  Update docs below.
 
-Ville - if you don't want them in there, let me know and I'll move them
-- I put them in there to avoid creating yet another plug-in, they're
-sort of a light weight local calculation tool, vs. ``valuespace.py``'s
-outline wide calcs.
+===== Ville
+
+If you don't want them in there, let me know and I'll move them. I put them
+in there to avoid creating yet another plug-in, they're sort of a light
+weight local calculation tool, vs. ``valuespace.py``'s outline wide calcs.
 
 valuespace.py
 =============
@@ -20282,12 +20257,12 @@ vs-last-pretty
 Insert the last result from ``vs-eval``.  Formatted by
 ``pprint.pformat()``,  so ``"1\\n2\\n3\\n4"`` will appear as
 '``"1\\n2\\n3\\n4"``', see all ``vs-last``.
-
-
 #@+node:ekr.20130807203905.16584: *6* viewrendered.py
 Supported ctrl-clicks in viewrendered panes.
 
-Jacob Peck added support for markdown http://packages.python.org/Markdown/ markup in viewrendered panes.
+Jacob Peck added support for markdown
+http://packages.python.org/Markdown/
+markup in viewrendered panes.
 #@+node:ekr.20130803073926.17115: *4* Scripts
 The following scripts have been added to scripts.leo:
 

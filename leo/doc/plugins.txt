@@ -18,6 +18,10 @@
 
 .. @+all
 .. @+node:ekr.20050912125144.1: ** @rst html\plugins.html
+.. _`Writing Plugins`:  writingPlugins.html
+.. _`Creating script buttons`:  scripting.html#creating-script-buttons
+
+
 #######
 Plugins
 #######
@@ -33,6 +37,7 @@ instantly hooked.
 
 .. contents::
     :depth: 5
+    
 
 .. @+node:ekr.20050912125735: *3* @rst-no-head links
 .. External links...
@@ -44,8 +49,8 @@ instantly hooked.
 .. Relative links...
 .. _`Specifying settings`:      customizing.html#specifying-settings
 .. _`Customizing Leo`:          customizing.html
-.. _`Writing Plugins`:          writingPlugins.html
-.. _`Creating script buttons`:  scripting.html#creating-script-buttons
+.. .. _`Writing Plugins`:          writingPlugins.html
+.. .. _`Creating script buttons`:  scripting.html#creating-script-buttons
 .. @+node:ekr.20070814104719: *3* Enabling plugins
 You enable or disable plugins using @enabled-plugins nodes in leoSettings files
 (leoSettings.leo, myLeoSettings.leo or the .leo file being loaded). See
@@ -331,6 +336,157 @@ xsltWithNodes.py
 zenity_file_dialogs.py
    Replaces Leo's file dialogs on Linux with external
    calls to the zenity gtk dialog package.
+.. @+node:ekr.20130815102041.15619: *3* Recently added plugins
+.. @+node:ekr.20130815102041.15628: *4* leomylyn.py
+By Ville M. Vainio
+See: http://en.wikipedia.org/wiki/Mylyn
+
+I went on to start a "leo mylyn" plugin to excercise using the
+childrenModified and contentModified signals.
+
+If you want to play with it, enable leomylyn.py, modify stuff around the
+tree and do alt-x mylyn-scores.
+
+Of course as it is useless in this state, but becomes useful when it has a
+proper gui (maybe in Nav pane), where you would then have a list of "most
+interesting" nodes.
+
+In the future, this could be able to remember the scores through the
+sessions, degrade the old scores by time, etc. Also, a scoreset would be
+associated with a "project" (e.g."own research", "work project foo"), each
+of them having their own typical node working set.
+
+Mylyn was a nice boost back in the eclipse days, it could work for Leo too.
+My main motivation right now was to demonstare the signals with something
+that is much simpler than using them in qmlnotebook.
+
+.. @+node:ekr.20130815102041.15618: *4* printing.py
+This plugin supports printing using the Qt GUI.
+Written by Jacob M. Peck.
+
+Commands
+========
+This plugin supports the following commands:
+
+print-selected-node
+-------------------
+
+Opens up the print dialog to print the selected headline and node.
+
+print-preview-selected-node
+---------------------------
+
+Opens up the print preview dialog to preview the selected headline
+and node.
+
+print-selected-node-body
+------------------------
+
+Opens up the print dialog to print the selected node body.
+
+print-preview-selected-node-body
+--------------------------------
+
+Opens up the print preview dialog to preview the selected node body.
+
+print-expanded-node
+-------------------
+
+Opens up the print dialog to print the expanded contents of the
+selected node, with top-level headline.
+
+print-preview-expanded-node
+---------------------------
+
+Opens up the print preview dialog to preview the expanded contents
+of theselected node, with top-level headline.
+
+print-expanded-node-body
+------------------------
+
+Opens up the print dialog to print the expanded node body.
+
+print-preview-expanded-node-body
+--------------------------------
+
+Opens up the print preview dialog to preview the expanded node
+body.
+
+print-marked-nodes
+------------------
+
+Opens up the print dialog to print all marked nodes in the current
+outline, with headlines.
+
+print-preview-marked-nodes
+--------------------------
+
+Opens up the print preview dialog to preview all marked nodes in \\
+the current outline, with headlines.
+
+print-marked-node-bodies
+------------------------
+
+Opens up the print dialog to print the bodies of all marked nodes
+in the current outline.
+
+print-preview-marked-node-bodies
+--------------------------------
+
+Opens up the print preview dialog to preview the bodies of all
+marked nodes in the current outline.
+
+Settings
+========
+- ``@string printing-font-family = DejaVu Sans Mono``
+   The font family for printing.  A monospaced font is recommended.
+
+- ``@string printing-font-size = 12``
+   The font size for printing bodies, in px.  Due to limitations
+   of PyQt, the size of headlines cannot be changed.
+   
+.. @+node:ekr.20130815102041.15630: *4* screen_capture.py
+By Terry Brown.
+
+See http://leo-editor.github.io/screen_capture.html
+
+screen_capture_now captures an image immediately, screen_capture_5sec waits
+five seconds, so you can position the pointer, open menus etc. The only
+feedback is in the console, as messages in the log would be distracting in
+the captured image.
+.. @+node:ekr.20130815102041.15631: *4* screencast.py
+By Edward K. Ream
+
+Screencasts promise to be easy to be *much* easier to create than 
+slideshows, while also being more interesting, informative and flashy.  It 
+is *so* much easier to write a screencast script than it is to lay out a 
+slide, take a screenshot, and then manage resulting slide.
+
+In particular, there are few continuity problems with screencasts.  
+Continuity is a *huge* problem with slideshows!  If I change one slide, I 
+am likely to want to change all following slides.  Which means I have to 
+retake all the slides, and file the new versions in the proper places.  In 
+contrast, any changes to screencasts naturally propagate forward.  There 
+might be an effect on following screencasts scenes, but this will happen 
+rarely with a reasonable scene design, and any problems should be easy to 
+fix.
+
+With screencasts, the *movie* script is also the *python* script!  There is 
+no "translation" from one to the other.  Furthermore, all the work to 
+produce a screencast is done (naturally!) within Leo.  No need to create 
+and manage external data.  This is another huge advantage and it make 
+producing screencasts much faster than producing slideshows.
+
+Screencasts may be the long-awaited tools that will allow me to show Leo in
+action so that other will finally be able to understand it easily.
+.. @+node:ekr.20130815102041.15632: *4* timestamp.py
+By Kent Tenney
+
+The timestamp plugin manages the following node attributes:
+
+- str_ctime: creation time
+- str_mtime: time node was last modified
+- str_atime: time node contents were last viewed
 .. @+node:ekr.20101113063552.9528: *3* Gui-independent plugins
 .. @+node:ekr.20101113063552.9412: *4* Commands & directives
 .. @+node:ekr.20101113063552.9413: *5* add_directives.py

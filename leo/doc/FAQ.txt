@@ -728,45 +728,56 @@ These settings are as follows, with the defaults as shown::
     \@color unselected_body_bg_color = #ffffef</vh></v>
     \@color unselected_body_fg_color = black</vh></v>
 .. @+node:ekr.20050830115714.118: *3* Tips and techniques
-.. @+node:ekr.20080527063511.1: *4* What is an easy way to profile code?
-I had a need to figure out why a part of some python code I had written
-was taking too long.
+.. @+node:ekr.20050830115714.113: *4* How can I create a template .leo file?
+**Question**:
+It would be nice if Leo could open empty files. I tend to be "document oriented"
+rather than "application oriented" in my thinking and prefer "create empty file
+at location -> open it with program" to "start program -> create new file ->
+save it at location".
 
-I pulled the code into LEO and the relevant part of the outline looked
-something like this::
+**Answer** by Paul Paterson:
+If you are on Windows 98/2000/XP then the procedure is as follows...
 
-    + Main module
-    -- Generate cryptographic key
-    -- Hashing algorithm
+1. Start Leo
+2. Click New
+3. Click Save as...
+4. Save the file as "c:\\windows\\shellnew\\leofile.leo" (or c:\\winnt for 2000/XP)
+5. Open regedit "start...run...regedit"
+6. Open HKEY_CLASSES_ROOT and find the ".leo" extension type
+7. Go New ... Key from the context menu 
+8. Call the new key ShellNew 
+9. Select the new key, right-click, choose New...String Value from the context menu
+10. Call it FileName 
+11. Double-click on the string, and modify it to be the filename of the leofile.leo file you created,
+    including the extension
+12. Exit the registry editor and restart Windows Explorer (you may need to reboot on Windows 98)
 
-etc. So I cloned just the segment I wanted to profile and pulled it under a new
-section::
+Now you should have a New:Leo File option in Explorer. This creates a duplicate
+of the file you saved. This can be useful because you could make a template Leo
+file containing some standard nodes_ that you always have and then save this.
+.. @+node:ekr.20050830115714.120: *4* How can I display graphics in Leo?
+One way is to link directly to the media file from a Leo node_ (with @url) and
+write a script button to wrap all URL-nodes under the current node_ in a single
+HTML page. Then, you can view your media in two ways:
 
-    + Main module
-    -- [clone] Generate cryptographic key
-    -- Hashing algorithm
+-   Individually. You can directly click on the @url link to display the media
+    in the browser (assuming you have your MIME/filetype associations set up
+    correctly for your browser).
 
-    + Profiling Experiment
-    -- [clone] Generate cryptographic key
+-   In a group. You can click on a script button (you have to code this yourself,
+    very simple) which should collect all @url nodes_ under the current node_
+    and dynamically generate a HTML page displaying either links to or embedded
+    versions of the media (using the HTML trick described above to invoke the
+    browser). This way, you can create collections of @url nodes under a
+    single node_ (like a bookmark folder), and press a single button to view the
+    @url collection as a single entity in the browser (with all browser
+    capabilities like displaying the media).
 
-And in the body of the "Profiling experiment", I used this code::
-
-    code_under_here = """
-    @others
-    """
-
-    from timeit import Timer
-    t = Timer("print my_key_generator()", code_under_here)
-    print t.timeit(number = 10)
-
-And then I hit Control-B to execute the Profiling Experiment body. This
-let me make adjustments to the code in the clone body and keep hitting
-Control-B to execute the code with the timeit module to see immediately
-if what I had done was making a difference.
-
-The great thing about this was that I just used the LEO @others construct
-to create a wrapper around the code and did not need to litter my code
-with debug or profiling statements.  -- Kayvan
+You could probably generalize this idea of "collect all @url nodes under current
+node_ and display as HTML in browser" into a general-purpose plugin. However,
+the plugin would have to be somewhat smart in mapping a link to its corresponding
+HTML code (e.g. an image link gets mapped to an <img> HTML tag, a link to a
+Flash file gets mapped to an <embed> tag, etc).
 .. @+node:ekr.20070622185234: *4* How can I do a simple find and replace?
 The 'official' way to start a replace command is::
 
@@ -800,40 +811,6 @@ That is, `<ctrl-f>` shows the find dialog,
 `<return>` starts the search.
 You can type the `<alt-ctrl>` keys anytime after `<ctrl-f>` (or `<shift-ctrl-r>`) and before `<return>`. 
 You can also type multiple `<alt-ctrl-keys>` to toggle multiple checkboxes.
-.. @+node:ekr.20050830120857: *4* How can I use Leo to develop Leo itself?
-The trick is to create a workflow that separates editing from testing. Putting
-test code in LeoPy.leo would waste a lot of time. To run tests you would
-have to exit Leo and reload LeoPy.leo. A much quicker way is to put all test
-code in a test.leo file. So to change and test code, do the following:
-
-1. Save LeoPy.leo but do **not** exit Leo. 
-
-2. Quit the copy of Leo running test.leo, then reload test.leo.
-
-3. Run test scripts from test.leo.
-
-That's all. Python will recompile any changed .py files in the new copy of Leo.
-**Note**: I create a batch file called t.bat that runs test.leo, so to the
-"edit-reload-test" cycle is just:
-
-1. Control-S (in LeoPy.leo: saves the .leo file)
-2. t         (in a console window: runs test.leo, compiling all changed .py files as a side effect)
-3. Control-E (in test.leo: runs the test script)
-
-The benefits of the new workflow:
-
-- test.leo loads  _much_ more quickly than LeoPy.leo does.
-  This new approach can increase the speed of the edit-reload-test cycle by more than a factor of 10.
-  Hitting Control-S, t, Control-E takes about 5 seconds.
-
-- LeoPy.leo runs with the *old* code,
-  so it is much easier to fix syntax errors or exceptions in the *new* code:
-  just fix the problem and save LeoPy.leo *without* closing LeoPy.leo,
-  then restart test.leo.
-  You run your tests on the new code, but you edit the new code with the old, stable code.
-
-- test.leo is the perfect place to develop test.
-  I can create and organize those tests and when I am done, ''test.leo'' is a log of my work.
 .. @+node:ekr.20050830115714.74: *4* How can I import many files at once?
 The Import Files dialog allows you to select multiple files provided you are running Python 2.3 or above.
 There is also an importFiles script in LeoPy.leo.  You can use that script as follows::
@@ -843,70 +820,48 @@ There is also an importFiles script in LeoPy.leo.  You can use that script as fo
 
 This will import all .py files from aDirectory, which should be a full path to a particular directory.
 You could use ".c" to import all .c files, etc.
-.. @+node:ekr.20050830115714.119: *4* How can I use two copies of Leo to advantage?
-By Rich Ries.
-I often rework C code that's already been "Leo-ized"--the first pass was quick
-and dirty to get it going. When I do subsequent passes, I wind up with subnodes
-that are out of order with the sequence found in the main node_. It's not a big
-deal, but I like 'em ordered. With just one editor pane, clicking on the node_ to
-move would switch focus to that node_. I'd then need to re-focus on the main
-node_. A minor nuisance, but it does slow you down.
+.. @+node:ekr.20120229094652.15099: *4* How can I make commonly-used scripts widely accessible?
+Put @command nodes as children of an @commands node in myLeoSettings.leo.
+This makes the the @command nodes available to all opened .leo files.
 
-My solution is to open a second editor with its focus on the main node_. Switch
-to the other editor, and, referring to the first editor pane, move the nodes as
-you like. The second editor's pane will change focus to the node_ you're moving,
-but the first editor will stay focused on the main node_. It's a lot easier to
-do than to describe!
-.. @+node:ekr.20050830115714.120: *4* How can I display graphics in Leo?
-One way is to link directly to the media file from a Leo node_ (with @url) and
-write a script button to wrap all URL-nodes under the current node_ in a single
-HTML page. Then, you can view your media in two ways:
+Using @command rather than @button means that there is never any need to
+disable scripts. There is no need for @button. To see the list of your
+\@command nodes, type::
 
--   Individually. You can directly click on the @url link to display the media
-    in the browser (assuming you have your MIME/filetype associations set up
-    correctly for your browser).
+    <alt-x>@c<tab>
+    
+Similarly to see the list of your \@command nodes, type::
 
--   In a group. You can click on a script button (you have to code this yourself,
-    very simple) which should collect all @url nodes_ under the current node_
-    and dynamically generate a HTML page displaying either links to or embedded
-    versions of the media (using the HTML trick described above to invoke the
-    browser). This way, you can create collections of @url nodes under a
-    single node_ (like a bookmark folder), and press a single button to view the
-    @url collection as a single entity in the browser (with all browser
-    capabilities like displaying the media).
+    <alt-x>@b<tab>
+.. @+node:ekr.20120229094652.15124: *4* How can I restore focus without using the mouse
+It sometimes happens that the focus gets left in a Leo
+widget that doesn't support Leo's key bindings. You would
+think that you would have to use the mouse to click in, say,
+the body pane so that you can use Leo's key bindings again.
 
-You could probably generalize this idea of "collect all @url nodes under current
-node_ and display as HTML in browser" into a general-purpose plugin. However,
-the plugin would have to be somewhat smart in mapping a link to its corresponding
-HTML code (e.g. an image link gets mapped to an <img> HTML tag, a link to a
-Flash file gets mapped to an <embed> tag, etc).
-.. @+node:ekr.20050830115714.113: *4* How can I create a template .leo file?
-**Question**:
-It would be nice if Leo could open empty files. I tend to be "document oriented"
-rather than "application oriented" in my thinking and prefer "create empty file
-at location -> open it with program" to "start program -> create new file ->
-save it at location".
+But you don't have to do that.  Instead, use Alt-tab once to change
+away from Leo, and then use Alt-tab again to change back to Leo.  When
+you do this, Leo puts focus in the body pane and you are all set.
+.. @+node:ekr.20060822111759: *4* How can I reuse @button nodes in multiple files?
+By Rich Ries
 
-**Answer** by Paul Paterson:
-If you are on Windows 98/2000/XP then the procedure is as follows...
+There is no direct way to make script buttons available in multiple Leo files.
+Sure, you could copy and paste the @button nodes, but there is a slightly
+easier way using the "New Buttons" plugin.
 
-1. Start Leo
-2. Click New
-3. Click Save as...
-4. Save the file as "c:\\windows\\shellnew\\leofile.leo" (or c:\\winnt for 2000/XP)
-5. Open regedit "start...run...regedit"
-6. Open HKEY_CLASSES_ROOT and find the ".leo" extension type
-7. Go New ... Key from the context menu 
-8. Call the new key ShellNew 
-9. Select the new key, right-click, choose New...String Value from the context menu
-10. Call it FileName 
-11. Double-click on the string, and modify it to be the filename of the leofile.leo file you created,
-    including the extension
-12. Exit the registry editor and restart Windows Explorer (you may need to reboot on Windows 98)
+1) Create and test and debug your desired Script Button.
 
-Now you should have a New:Leo File option in Explorer. This creates a duplicate
-of the file you saved. This can be useful because you could make a template Leo
-file containing some standard nodes_ that you always have and then save this.
+2) With the Script Button node selected, run Plugins --> New buttons --> Make Template From
+
+Open a new Leo file.
+
+3) Assuming you have only the one New Button Template defined, left-click the
+   New button, and a new node will be added to your outline. (Otherwise, you'll
+   need to select the Template you want.)
+
+4) Press [Script Button] to create the new script button.
+
+It's easier to *do* this than to *explain* it!
 .. @+node:ekr.20050830115714.116: *4* How can I show Leo files with Excel?
 From: http://sourceforge.net/forum/message.php?msg_id=3240374
 Using Leo's File-Export-Flatten Outline commands creates a MORE style outline which places
@@ -950,48 +905,6 @@ this in the leo body::
 
 In Excel you would see 4500 below those two numbers. This is completely
 independent of where the block of three cells exists on the sheet.
-.. @+node:ekr.20060822111759: *4* How can I reuse @button nodes in multiple files?
-By Rich Ries
-
-There is no direct way to make script buttons available in multiple Leo files.
-Sure, you could copy and paste the @button nodes, but there is a slightly
-easier way using the "New Buttons" plugin.
-
-1) Create and test and debug your desired Script Button.
-
-2) With the Script Button node selected, run Plugins --> New buttons --> Make Template From
-
-Open a new Leo file.
-
-3) Assuming you have only the one New Button Template defined, left-click the
-   New button, and a new node will be added to your outline. (Otherwise, you'll
-   need to select the Template you want.)
-
-4) Press [Script Button] to create the new script button.
-
-It's easier to *do* this than to *explain* it!
-.. @+node:ekr.20120229094652.15124: *4* How can I restore focus without using the mouse
-It sometimes happens that the focus gets left in a Leo
-widget that doesn't support Leo's key bindings. You would
-think that you would have to use the mouse to click in, say,
-the body pane so that you can use Leo's key bindings again.
-
-But you don't have to do that.  Instead, use Alt-tab once to change
-away from Leo, and then use Alt-tab again to change back to Leo.  When
-you do this, Leo puts focus in the body pane and you are all set.
-.. @+node:ekr.20120229094652.15099: *4* How can I make commonly-used scripts widely accessible?
-Put @command nodes as children of an @commands node in myLeoSettings.leo.
-This makes the the @command nodes available to all opened .leo files.
-
-Using @command rather than @button means that there is never any need to
-disable scripts. There is no need for @button. To see the list of your
-\@command nodes, type::
-
-    <alt-x>@c<tab>
-    
-Similarly to see the list of your \@command nodes, type::
-
-    <alt-x>@b<tab>
 .. @+node:ekr.20120229094652.15148: *4* How can I use BibTeX citations from Leo?
 .. _`this posting about BibTeX citations`: http://groups.google.com/group/leo-editor/browse_thread/thread/d36d76174dcd6786/9c2a298049f4f01c
 
@@ -1013,6 +926,116 @@ Use the docutils `raw-data`_ syntax. Examples::
       \bibliography{myBibliography}
       
 For more details, see `this posting about BibTeX citations`_.
+.. @+node:ekr.20130807203905.16526: *4* How can I use bzr to check Leo's importers?
+@language rest
+
+When I study a program, I like to import it into Leo. I have several
+scripts that do this: some create @auto nodes; others create @file nodes.
+Whatever the method used, the import process has the potential to change
+many files. Usually, I just change @auto and @file to @@auto or @@file, so
+that any changes I make while studying the code won't affect the originals.
+
+But this "safety first" approach means that I can't actually use Leo to
+insert tracing statements (or for any other changes.) Happily, there is a
+way to import "live" code into Leo safely::
+
+   Create a bzr repository for the code before importing it
+
+The Aha is to create the repository *wherever the code is*, including,
+say, python/Lib/site-packages.
+
+- bzr qdiff ensures that import hasn't significantly altered the code,
+- bzr revert undoes any unwise or unwanted changes.
+
+This is exactly what I need:  I can make changes to important tools
+*safely* within Leo.
+.. @+node:ekr.20050830120857: *4* How can I use Leo to develop Leo itself?
+The trick is to create a workflow that separates editing from testing. Putting
+test code in LeoPy.leo would waste a lot of time. To run tests you would
+have to exit Leo and reload LeoPy.leo. A much quicker way is to put all test
+code in a test.leo file. So to change and test code, do the following:
+
+1. Save LeoPy.leo but do **not** exit Leo. 
+
+2. Quit the copy of Leo running test.leo, then reload test.leo.
+
+3. Run test scripts from test.leo.
+
+That's all. Python will recompile any changed .py files in the new copy of Leo.
+**Note**: I create a batch file called t.bat that runs test.leo, so to the
+"edit-reload-test" cycle is just:
+
+1. Control-S (in LeoPy.leo: saves the .leo file)
+2. t         (in a console window: runs test.leo, compiling all changed .py files as a side effect)
+3. Control-E (in test.leo: runs the test script)
+
+The benefits of the new workflow:
+
+- test.leo loads  _much_ more quickly than LeoPy.leo does.
+  This new approach can increase the speed of the edit-reload-test cycle by more than a factor of 10.
+  Hitting Control-S, t, Control-E takes about 5 seconds.
+
+- LeoPy.leo runs with the *old* code,
+  so it is much easier to fix syntax errors or exceptions in the *new* code:
+  just fix the problem and save LeoPy.leo *without* closing LeoPy.leo,
+  then restart test.leo.
+  You run your tests on the new code, but you edit the new code with the old, stable code.
+
+- test.leo is the perfect place to develop test.
+  I can create and organize those tests and when I am done, ''test.leo'' is a log of my work.
+.. @+node:ekr.20050830115714.119: *4* How can I use two copies of Leo to advantage?
+By Rich Ries.
+I often rework C code that's already been "Leo-ized"--the first pass was quick
+and dirty to get it going. When I do subsequent passes, I wind up with subnodes
+that are out of order with the sequence found in the main node_. It's not a big
+deal, but I like 'em ordered. With just one editor pane, clicking on the node_ to
+move would switch focus to that node_. I'd then need to re-focus on the main
+node_. A minor nuisance, but it does slow you down.
+
+My solution is to open a second editor with its focus on the main node_. Switch
+to the other editor, and, referring to the first editor pane, move the nodes as
+you like. The second editor's pane will change focus to the node_ you're moving,
+but the first editor will stay focused on the main node_. It's a lot easier to
+do than to describe!
+.. @+node:ekr.20080527063511.1: *4* What is an easy way to profile code?
+I had a need to figure out why a part of some python code I had written
+was taking too long.
+
+I pulled the code into LEO and the relevant part of the outline looked
+something like this::
+
+    + Main module
+    -- Generate cryptographic key
+    -- Hashing algorithm
+
+etc. So I cloned just the segment I wanted to profile and pulled it under a new
+section::
+
+    + Main module
+    -- [clone] Generate cryptographic key
+    -- Hashing algorithm
+
+    + Profiling Experiment
+    -- [clone] Generate cryptographic key
+
+And in the body of the "Profiling experiment", I used this code::
+
+    code_under_here = """
+    @others
+    """
+
+    from timeit import Timer
+    t = Timer("print my_key_generator()", code_under_here)
+    print t.timeit(number = 10)
+
+And then I hit Control-B to execute the Profiling Experiment body. This
+let me make adjustments to the code in the clone body and keep hitting
+Control-B to execute the code with the timeit module to see immediately
+if what I had done was making a difference.
+
+The great thing about this was that I just used the LEO @others construct
+to create a wrapper around the code and did not need to litter my code
+with debug or profiling statements.  -- Kayvan
 .. @+node:ekr.20050830115714.76: *3* Trouble shooting
 .. @+node:ekr.20090130144433.1: *4* How do I get help?
 All questions are welcome at http://groups.google.com/group/leo-editor
