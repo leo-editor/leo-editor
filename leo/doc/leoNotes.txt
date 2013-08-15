@@ -1250,6 +1250,131 @@ D:\lib\leo\leo-editor-snapshot\launchLeo.py %*
 ===== From: HaveF <iamaplayer@gmail.com>
 
 the tip is for install Canopy just for yourself (per-user install)
+.. @+node:ekr.20130814140750.17191: ** IPython notes
+.. @+node:ekr.20130814140750.17192: *3* Ipython now has cell magic
+From: Alia K <alia_khouri@yahoo.com>
+
+Fernando Perez of IPython fame just announced recently that IPython
+trunk has the cell magic functionality that was discussed earlier
+[http://groups.google.com/group/leo-editor/browse_thread/thread/
+7d910a68072dda1/b14e84fc3cfddbf6?lnk=gst&q=ipython#b14e84fc3cfddbf6].
+As this could work very nicely with leo as an ipython editor, I will
+include his text verbatim here:
+
+===== Fernando
+
+I'm excited to report that we now have cell magics in IPython... PR
+1732 [1] has just been merged [2], which implements the design
+discussed in IPEP 1 [3]. This is probably one of the largest PRs we've
+had so far, with over 100 commits, over 100 comments and a diff that's
+almost 11000 lines long (a lot of it moving code around, obviously
+it's not all new code).  But it brings two very important thigns:
+
+1) a refactor of the magic system to finally remove the old mixin
+class we'd had since the very first days of IPython in 2001.  This is
+a cleanup I've been wanting to do for over 10 years!  The new setup
+makes the magic system have  a very clean api, that is easy to use
+both for the implementation of core features and for users to create
+their own magics.
+
+2) the new concept of cell magics: these are magics that get not only
+the line they're on, but the entire cell body as well.  And while
+these are most naturally used in the notebook, as you would expect
+we've built them at the core of IPython, so you can use them with all
+the clients (terminal, qt console, notebook).  For example, this is a
+Cython magic that Brian just prototyped out (we'll have a production
+version of it soon included).  Note that this was copied *from a
+regular text terminal*, not from the notebook:
+
+In [3]: from IPython.core.magic import register_line_cell_magic
+
+In [4]: @register_line_cell_magic
+   ...: def cython(line, cell):
+   ...:     """Compile and import a cell as a .pyx file."""
+   ...:     import sys
+   ...:     from importlib import import_module
+   ...:     module = line.strip()
+   ...:     fname = module + '.pyx'
+   ...:     with open(fname,'w') as f:
+   ...:         f.write(cell)
+   ...:     if 'pyximport' not in sys.modules:
+   ...:         import pyximport
+   ...:         pyximport.install(reload_support=True)
+   ...:     globals()[module] = import_module(module)
+   ...:
+
+In [5]: %%cython bam
+   ...: def f(x):
+   ...:     return 2.0*x
+   ...:
+
+In [6]: bam.f(10)
+Out[6]: 20.0
+
+In a similar spirit, Jonathan Taylor recently created one to call R
+transparently in the notebook:
+
+https://github.com/jonathan-taylor/Rmagic
+
+This one hasn't been fully updated to the final API, but the core code
+is there and now it should be a trivial matter to update it.
+
+
+I want to thank everyone who pitched in with ideas during the
+discussion and review period, and I hope you'll all enjoy this and
+come up with great ways to use the system.  For now, you can see how
+the system works by playing with %%timeit and %%prun, the only two
+builtins that I extended to work also as cell magics.
+
+For more details, see the documentation where we've added also a long
+new section with details and examples of how to create your own [4].
+
+Cheers,
+
+f
+
+[1] https://github.com/ipython/ipython/pull/1732
+[2] https://github.com/ipython/ipython/commit/61eb2ffeebb91a94fe9befe2c30e7839781ddc52
+[2] https://github.com/ipython/ipython/issues/1611
+[3] http://ipython.org/ipython-doc/dev/interactive/reference.html#magic-command-system
+
+.. @+node:ekr.20130814140750.17193: *3* IPython code notes
+Investigate how IPython hijacks event loops
+http://groups.google.com/group/leo-editor/browse_thread/thread/e1dc6439bf8b17f9
+
+pyos_inputhook is relevant
+
+IPython lib.inputhook
+http://ipython.org/ipython-doc/stable/api/generated/IPython.lib.inputhook.html
+
+* IPython seems to require Python 2.x.
+* I can run IPython from either C:\prog\ipython-0.12 or from python\lib\site-packages
+
+From C:\prog\ipython-0.12\IPython\scripts
+
+#!/usr/bin/env python
+"""Terminal-based IPython entry point.
+"""
+
+from IPython.frontend.terminal.ipapp import launch_new_instance
+
+launch_new_instance()
+
+Here is ipapi.get::
+
+@language python
+
+    def get():
+        """Get the global InteractiveShell instance."""
+        from IPython.core.interactiveshell import InteractiveShell
+        return InteractiveShell.instance()
+        
+See also:
+    
+http://ipython.org/ipython-doc/rel-0.12/api/index.html
+http://ipython.org/ipython-doc/rel-0.12/api/generated/IPython.core.interactiveshell.html
+
+
 .. @+node:ekr.20091218120633.6300: ** Other notes
 .. @+node:ekr.20090601083544.6066: *3* Cool plugins & Leo code
 These are plugins/projects that I'd like to investigate further.
