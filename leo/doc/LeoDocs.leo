@@ -53,7 +53,8 @@
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
 <v t="ekr.20101025080245.5800"><vh>@edit leo_toc.html</vh></v>
 <v t="ekr.20101112045055.5064" descendentVnodeUnknownAttributes="7d7100285503302e3171017d710255097374725f6174696d657103550c313337363431323739362e3071047355013071057d71066803550c313337363431323932332e307107735503302e3071087d71096803550c313337363431323932372e30710a73752e"><vh>@file plugin_catalog.py</vh></v>
-<v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
+<v t="ekr.20100808060203.4273"
+expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
 <v t="ekr.20130807203905.16606"><vh>@edit html/leoLinks.html</vh></v>
 <v t="ekr.20101025080245.5801"><vh>@url modified toc</vh></v>
 <v t="ekr.20101026081737.5531"><vh>Links that replace those in actual built page</vh></v>
@@ -131,7 +132,10 @@
 <v t="ekr.20120315101404.14224"><vh>The leoInspect Module</vh>
 <v t="ekr.20120315101404.14225"><vh>@file leoInspect.txt</vh></v>
 </v>
-<v t="tbrown.20120821215353.22854"><vh>Abbreviations / templates</vh></v>
+<v t="tbrown.20120821215353.22854"><vh>Abbreviations and templates</vh>
+<v t="ekr.20130816100419.15609"
+expanded="ekr.20130816100419.17150,"><vh>@file abbreviations.txt</vh></v>
+</v>
 </v>
 <v t="ekr.20101025080245.5798"><vh>Leo and Other Programs</vh>
 <v t="ekr.20061025065357"><vh>Leo and Emacs</vh>
@@ -188,7 +192,8 @@
 <v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028550b302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473550b302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473550b302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473550b302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d7100285509302e302e312e302e3071017d710255097374725f6174696d657103550c313337363431323837322e30710473550b302e302e332e312e312e3371057d71066803550c313337363431323838392e307107735507302e312e302e3771087d71096803550c313337363431323238302e30710a73550b302e312e302e372e302e31710b7d710c6803550c313337363431323238382e30710d73550b302e302e332e302e322e33710e7d710f6803550c313337363431323838382e30711073752e"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d7100285509302e302e312e302e3071017d710255097374725f6174696d657103550c313337363431323837322e30710473550b302e302e332e312e312e3371057d71066803550c313337363431323838392e307107735507302e312e302e3771087d71096803550c313337363431323238302e30710a73550b302e312e302e372e302e31710b7d710c6803550c313337363431323238382e30710d73550b302e302e332e302e322e33710e7d710f6803550c313337363431323838382e30711073752e"
+expanded="edream.110203163054.117,ekr.20080311060457.214,ekr.20060822140418,ekr.20060620094645,ekr.20060620094645.34,ekr.20110531155858.19246,ekr.20110531155858.19830,edream.110203163054.63,ekr.20130807203905.16780,ekr.20130807203905.16687,"><vh>@file release_notes.txt</vh></v>
 </v>
 <v t="ekr.20130806072439.19990"><vh>Leo 4.11 a1 Release notes</vh>
 <v t="ekr.20130807203905.16780"><vh>Bugs</vh>
@@ -2549,96 +2554,7 @@ os.system('../../fixup.pl &lt; Leodocumentation.tex &gt; LeoDoc.tex')
 os.system('make LeoDoc.pdf')
 </t>
 <t tx="sps.20100708213227.44914"></t>
-<t tx="tbrown.20120821215353.22854">Abbreviations are very versatile. You can type ``def;;``, and Leo will
-prompt you for a function name, detect whether the function needs a
-``self`` parameter, ask for a list of parameters, and expand you input
-(just ``"some_function"`` and ``"one, two, three=4"`` to something like::
-    
-    def some_function(one, two, three=4):
-        """some_function - Return &lt;|return|&gt;
-    
-        :Parameters:
-        - `one`: &lt;|describe one|&gt;
-        - `two`: &lt;|describe two|&gt;
-        - `three`: &lt;|describe three|&gt;
-        """
-    
-        &lt;|code|&gt;
-
-The first placeholder, ``&lt;|return|&gt;`` will be selected, so you can
-begin typing in the right place. Hitting ``,,`` will select the next
-place holder, and so on.
-
-Here's a list of `@settings` which relate to abbreviations.
-
-@bool enable-abbreviations = False
-    True: enable abbreviations
-    False disable abbreviations
-    
-    Typically you would enable abbreviations in myLeoSettings.leo or in individual
-    .leo files.
-@data global-abbreviations &amp; @data abbreviations
-    # Comments lines (lines starting with '#') are ignored.
-    # Non-comment lines should have the form::
-    #
-    #    name=definition
-    
-    # Definitions in @data abbreviation nodes override definitions in @data
-    # global-abbreviation nodes. Typically you would define @data abbreviation nodes
-    # in myLeoSettings.leo
-@string abbreviations-subst-start = None
-    If this @string is set to something other than None, *and*
-    @bool scripting-at-script-nodes = True, then substitutions
-    will be made when abbreviations are inserted.  For example
-    set abbreviations-subst-start to ``{|{`` and
-    abbreviations-subst-end to ``}|}`` and an abbreviation
-    like::
-    
-        date;;={|{import time;x=time.asctime()}|}
-    
-    will expand to something like "Mon Aug 20 22:00:40 2012"
-    
-    See also abbreviations-subst-env.
-@string abbreviations-subst-end = }|}
-    See abbreviations-subst-start.  This setting,
-    abbreviations-subst-end, has no effect if
-    abbreviations-subst-start is not set.
-@data abbreviations-subst-env
-    If abbreviations-subst-start is set (see that 
-    @setting), the code in this node will be executed, once
-    only, when the outline is loaded, in an environment which
-    will be used for execution of substitutions in
-    abbreviations.  For example, if this node contains
-    ``import time``, then an abbreviation like::
-    
-        date;;={|{import time;x=time.asctime()}|}
-    
-    can be written more simply as::
-    
-        date;;={|{x=time.asctime()}|}
-    
-    The environment will contain `c` and `g`, a dict called `_values`
-    (see ask() and get() in @data abbreviations-subst-env), and
-    `_abr`, the abbreviation being expanded.
-    
-    Start lines with `\:` to preserve indentation.
-@@data abbreviations examples
-    See the node for examples of advanced abbreviations with
-    substitutions.
-@string abbreviations-place-start = &lt;|
-    Start of a placeholder for template expansions.  E.g.
-    the `&lt;|` in::
-    
-        w;;=while &lt;|condition|&gt;:
-        \:    &lt;|code|&gt;
-    
-    This would expand with the `&lt;|condition|&gt;` selected, and `,,`,
-    if that's an abbreviation linked to next_place(), see 
-    @@data abbreviations examples, would select `&lt;|code|&gt;`.
-@string abbreviations-place-end = \|&gt;
-    The end of a placeholder for template expansions, e.g.
-    `|&gt;`. See @string abbreviations-place-start.
-</t>
+<t tx="tbrown.20120821215353.22854"></t>
 <t tx="ville.20090705224948.5734">import os
 pos = c.find_h("Users Guide")[0]
 c.selectPosition(pos)

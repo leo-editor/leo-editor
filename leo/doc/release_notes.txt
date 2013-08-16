@@ -6371,7 +6371,7 @@ Traceback (innermost last):
   File "c:\prog\tigris-cvs\leo\src\leoKeys.py", line 2327, in callAltXFunction
     func(event)
   File "C:\prog\tigris-cvs\leo\src\leoCommands.py", line 2801, in showFindPanel
-    c.frame.findPanel.bringToFront()
+    c.frame.findPanel{|{ingToFront()
   File "C:\prog\tigris-cvs\leo\src\leoTkinterFind.py", line 469, in bringToFront
     self.top.withdraw() # Helps bring the window to the front.
   File "c:\python24\lib\lib-tk\Tkinter.py", line 1562, in wm_withdraw

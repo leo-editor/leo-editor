@@ -36,7 +36,8 @@ Contents:
    unitTesting
    debuggers
    atShadow
-   leoInspect
+   design
+   abbreviations
    
    emacs
    IPythonBridge
@@ -45,7 +46,6 @@ Contents:
    zodb
    
    directives
-   design
    history
    theory
    whitepapers
