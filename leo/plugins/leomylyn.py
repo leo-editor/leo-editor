@@ -4,9 +4,10 @@
 
 #@+<< docstring >>
 #@+node:ville.20120503224623.3575: ** << docstring >>
-''' "Mylyn" like experience for Leo
+''' Provides an experience like Mylyn:http://en.wikipedia.org/wiki/Mylyn for Leo.
 
-It "scores" the nodes based on how interesting they probably are for you, allowing you to focus on your "working set".
+It "scores" the nodes based on how interesting they probably are for you,
+allowing you to focus on your "working set".
 
 Scoring is based on how much you edit the nodes.
 

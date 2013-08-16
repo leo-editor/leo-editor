@@ -19020,7 +19020,120 @@ The solution would be to create a new onClick event handler...
 - < < unselect the old node > > (selectHelper) now *only*
   sets v.scrollBarSpot.
 #@+node:ekr.20130807203905.16521: *4* Code
-#@+node:ekr.20130807203905.16819: *5* * Added c.deletePositionsInList
+#@+node:ekr.20130807203905.16819: *5* Added c.deletePositionsInList
+https://groups.google.com/forum/#!topic/leo-editor/IWMWhUlkos0
+
+There has been much discussion recently about deleting lists of positions.
+I now see that all previous strategies are fatally flawed. This is quite
+shocking.
+
+Here is the Aha: the positions passed to p.deletePositionsInList only
+*specify* the desired changes; the only way to *make* those changes is to
+operate on vnodes!
+
+The new view of the problem is relatively straightforward. Consider this
+very simple outline, containing no clones::
+
+    + ROOT
+      - A
+      - B
+
+The fundamental problem is simple. If we delete node A, the index of node B
+in ROOT.children will change. This problem has (almost) nothing to do with
+clones or positions.
+
+To make this concrete, let's look at the *vnodes* that represent this tree.
+It is the vnodes, and *not* the positions, that represent all of Leo's
+data. Let ROOT, A and B be the vnodes corresponding to the nodes ROOT, A
+and B. ROOT.children will look like this at first::
+
+    ROOT.children = [A,B]
+
+That is, the children array contains references (links) to both A and B.
+After deleting A, we will have::
+
+    ROOT.children = [B]
+
+As you can see, the reference to B is at index 1 of ROOT.children before
+deleting A, and at index 0 of ROOT.children after deleting A. Thus, *any*
+position referring to B will become invalid after deleting A.
+
+Several people, including myself, have proposed an unsound solution--just
+delete positions in reverse order, so that B will be deleted before A. This
+idea has appeal, but it truly *is* unsound. Here is an outline that at last
+explodes the notion that there is *any* correct order for deleting
+positions. All A' nodes are clones of each other::
+
+    + ROOT
+      + A'
+        - B # at position p1
+      + A'
+        - B # at position p2
+
+**Important**: B is *not* a clone. Also note that there is only *one* node
+called A and *one* node called B. The children arrays will look like::
+
+    ROOT.children = [A,A]
+    A.children = [B]
+    B.children = []
+
+It surely must be reasonable to pass either *or both* positions p1 and p2
+to p.deletePositionsInList. But after deleting the B corresponding to p1,
+the children arrays will look like:
+
+    ROOT.children = [A,A]
+    A.children = []
+    B.children = [] # B is no longer referenced anywhere!
+
+So if p.deletePositionsInList attempts to delete position p2 (from A), B
+will no longer appear in A.children!
+
+There are many other cases that we could discuss, but the conclusion in all
+cases is that we must use the positions passed to p.deletePositionsInList
+only as *hints* about what to do.
+
+Happily, there is a simple strategy that sidesteps all the difficulties:
+
+Step 1. Verify, *before* making any changes to the outline, that all the
+positions passed to p.deletePositionsInList *initially* make sense.
+
+Step 2. Treat each position as a "request" to delete *some* vnode from the
+children array in the *position's* parent vnode.
+
+This is just a bit subtle. Let me explain it in detail.
+
+First, recall that vnodes do not have unique parent vnodes. Because of
+clones, a vnode may may have *many* parents. Happily, every position *does*
+specify a unique parent (vnode) at that position.
+
+Second, as shown above, there is no way to order positions such that all
+later positions remain valid. As the example above shows, deleting (the
+vnode corresponding to) a position P may cause *all* later positions
+referring to P.v to refer to *already deleted* vnodes.
+
+In other words, we simply *must* ignore the child indices in positions.
+Given a position P, P.parent is well defined. So Step 2 above will simply
+delete the *first* element in P.parent.children containing P.v.
+
+As we have seen, there may not even *be* any such element of
+P.parent.children: a previous delete may have already deleted the last item
+of P.parent.children equal to P.v. That should *not* be considered an
+error--Step 1 has ensured that all positions *originally* did make sense.
+
+Summary
+
+Positions passed to p.deletePositionsInList specify *vnodes* to be deleted
+from specific parents, but they do *not* specify at what index in the
+parent.children array (if any!) those vnodes are to be found. The algorithm
+will delete the *first* item in the children array that references the
+vnode to be deleted.
+
+This will almost always be good enough. In the unlikely event that more
+control is desired, p.deletePositionsInList can not possibly be used.
+
+The new emphasis on vnodes at last puts the problem an a completely solid
+foundation. Moreover, the new algorithm should be considerably faster than
+the old: there is no need to sort positions.
 #@+node:ekr.20130807203905.16532: *5* Added c2 keyword arg to c.bringToFront
 #@+node:ekr.20130807203905.16533: *5* Added default button to dialog methods
 #@+node:ekr.20130807203905.16522: *5* Added external/leosax.py to leoPyRef.leo
@@ -19082,7 +19195,7 @@ never generate such files.
 #@+node:ekr.20130807203905.16686: *4* Contrib branch
 You can get this branch here: https://code.launchpad.net/~leo-editor-team/leo-editor/contrib
 #@+node:ekr.20130806211959.17093: *5* Dumping leo docs to excel
-From: "Ville M. Vainio" <vivainio@gmail.com>
+By Ville M. Vainio.
 
 I created a proof of concept for dumping leo trees to excel.
 
@@ -19118,7 +19231,7 @@ the simpler "s target" search command.
 #@+node:ekr.20130526065545.14928: *5* LeoReader: Leo as web app
 From Ville:
 
-.... aaaaand we are live :).
+aaaaand we are live :).
 
 Test it out at:
 
@@ -19136,7 +19249,7 @@ https://github.com/vivainio/LeoReader/blob/master/main.html
 
 Works ok in Firefox and Chrome.
 #@+node:ekr.20130806211959.17078: *5* QML notebook
-From: "Ville M. Vainio" <vivainio@gmail.com>
+By Ville M. Vainio
 
 Ok, I now created a toy UI demo for how "cell" based leo (like ipython
 notebook) could operate.
@@ -19268,7 +19381,7 @@ class QMLShower:
 QMLShower(c)
 ---cut here---
 #@+node:ekr.20130526065545.17576: *5* Templates with macro expansions
-From: Jacob Peck <gatesphere@gmail.com>
+From: Jacob Peck
 
 One of the ways I use Leo is as an information management/database for when
 I'm running tabletop RPGs. Such games involve a fair amount of similarly
@@ -19355,9 +19468,6 @@ So... two questions:
 
 Also, hope someone else finds this useful.  Once it's cleaned up, I 
 might do a leo-editor blog post about it.
-
--->Jake
-
 #@+node:ekr.20130807203905.16611: *4* Commands: new and improved
 #@+node:ekr.20130807203905.16534: *5* Added docstrings for all commands
 Help-for command translate !<command-name>! in the docstring to the binding for command-name.
@@ -19369,7 +19479,8 @@ Skip '.' before section names in v.matchHeadline.
 #@+node:ekr.20130807203905.16268: *5* Alt-Home & Alt-End collapse all possible nodes
 #@+node:ekr.20130807203905.16261: *5* Ensure selected @test node is run
 In earlier version of Leo if one runs test externally with the selected
-position under @test node, that @test was executed with (run-marked-unit-tests-externally)
+position under @test node, that @test was executed with
+(run-marked-unit-tests-externally)
 
 The fix was to the "important special case" in TM.findAllUnitTestNodes.
 #@+node:ekr.20130807203905.16562: *5* Fixed dabbrev commands
@@ -19399,7 +19510,7 @@ Instead of just printing their docstrings.
 - (Can't do) If text is already highlighted, Alt-S or Alt-R should use that text.
 
 #@+node:ekr.20130806072439.18542: *5* leoscreen-jump-to-error command
-From: Terry Brown <terry_n_brown@yahoo.com>
+By Terry Brown
 
 I assume all *nix shell users use the screen shell multiplexer, and
 hopefully *nix shell users who use Leo know about the leoscreen plugin
@@ -19459,7 +19570,6 @@ disk" to refresh all of them.
 (i.e. standard UI list multi item selection)
 
 But be aware of this bug:
-
 https://bugs.launchpad.net/leo-editor/+bug/1090950
 
 using refresh from disk immediately after cutting nodes from the
@@ -19507,7 +19617,7 @@ this new behavior causes problems for you.
 There is one glitch.  If you add @wrap, the directive won't be in effect 
 until you leave the node and revisit it.
 
-From: redla <radim.halir@gmail.com>
+===== redla
 
 There is one problem which is caused by this change: I have @wrap active
 and see my "plain" text wrapped properly. But if there is any "long enough"
@@ -19537,7 +19647,7 @@ to::
     @int focus_border_width = 1
     @bool use_focus_border = False 
 #@+node:ekr.20130526065545.17459: *5* Dark colorizing theme
-From: Terry Brown <terry_n_brown@yahoo.com>
+by Terry Brown
 
 I just pushed the solarized dark theme to trunk. There were some changes to
 core code, but nothing too major, and I've been using it for some time.
@@ -19615,7 +19725,7 @@ But it would be nice to move all the color and numeric constants out of the
 stylesheet and into the config node as I've described above, just a find
 and replace operation.
 #@+node:ekr.20130526065545.17515: *5* Sublime Text 2 (A dark colorizing theme)
-From: "Ville M. Vainio" <vivainio@gmail.com>
+By Ville M. Vainio
 
 https://plus.google.com/103097156557482112329/posts/6D9GPRCdXVh
 #@+node:ekr.20130807203905.16255: *5* Use ctrl-click to open url's
@@ -19631,13 +19741,13 @@ https://plus.google.com/103097156557482112329/posts/6D9GPRCdXVh
 - Ctrl-click in body allows spaces in url's.
 #@+node:ekr.20130807203905.16610: *4* New features
 #@+node:ekr.20130806072439.19486: *5* About @testsetup
-As of rev 5650, Leo contains support for \@testsetup nodes. At present, they
-work only when running unit tests locally.
+Leo now contains support for \@testsetup nodes. At present, they work only
+when running unit tests locally.
 
-In effect, @testsetup nodes provide common setup code for all following 
-@test and @suite nodes.  Such common setup code is the real reason for 
-having custom subclasses of unittest.TestCase.  This Leonine 
-solution is much than either:
+In effect, \@testsetup nodes provide common setup code for all following
+\@test and \@suite nodes. Such common setup code is the real reason for
+having custom subclasses of unittest.TestCase. This Leonine solution is
+much than either:
 
 a) @testclass nodes (which I never use) or
 
@@ -19645,11 +19755,12 @@ b) "injecting" common test code using::
 
     exec(g.findTestScript(c,\'@common name-of-common-test-code\'))
 
-Leo's test-execution code prepends the body text of an @testsetup node to
-all following @test and @suite nodes. Multiple @testsetup nodes may appear
+Leo's test-execution code prepends the body text of an \@testsetup node to
+all following @test and @suite nodes. Multiple \@testsetup nodes may appear
 in an outline. The range of an @testsetup node extends over all following
-@test and @suite nodes until the next @testsetup node is seen (in outline 
-order).
+\@test and \@suite nodes until the next \@testsetup node is seen (in
+outline order).
+
 #@+node:ekr.20130807203905.16536: *5* Added support for @testclass
 \@testclass nodes should set either the suite or testclass vars.
 
@@ -19828,8 +19939,7 @@ https://bugs.launchpad.net/leo-editor/+bug/711158
 - Added the three methods in app.Detecting already-open files.
 #@+node:ekr.20130807203905.16779: *4* New languages and importers
 #@+node:ekr.20130526065545.14927: *5* Added importer .otl files
-As of rev 5309 of the trunk, Leo now supports @auto-otl, along with
-imports of .otl files.
+Leo now supports @auto-otl, along with imports of .otl files.
 
 **Warning**: the new code is simply a prototype.  Play with these
 features *only* on files you can afford to be corrupted.
@@ -19917,8 +20027,6 @@ intermediate nodes so as to allow lines that are indented more than
 one more than the previous node. This is the most general scheme that
 I can imagine.
 #@+node:ekr.20130806175854.17068: *5* Added importer for .ipynb importer
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
 Rev 5488 contains a prototype for importing IPython notebook (.ipynb) files 
 into Leo.  In theory, this would allow two-way interchanges between Leo 
 outlines and the outlines in IPython notebooks.
@@ -19929,7 +20037,7 @@ such conversion is straightforward.  Otoh, this is just a first step: we
 would like the Leo outline to support most of the features of IPython 
 notebooks, including embedded images, etc.
 
-===== From: Alia K <alia_khouri@yahoo.com>
+===== From: Alia K
 
 May a suggest a radical thought exercise that only occurred to me after 
 seeing what can be achieved in terms of in-browser editing with 
@@ -20271,6 +20379,7 @@ By Terry Brown::
     Add @script node
     Cross-outline node editing
     Export full contents
+    Full tree view (See the discussion in the child)
     Indexing files for full text search
     Persistent state with json as a leo abbreviation
     Tool for diffing Leo files
@@ -20287,6 +20396,121 @@ By Edward K. Ream::
 By Brian Theado::
 
     Display function call hierarchy in Leo
+#@+node:ekr.20130816100419.23049: *5* Full tree preview
+From: wgw <wgwinder@gmail.com>
+
+I would like to see a fuller outline view of Leo trees. So instead of 
+seeing one body only and the tree of headlines, I want to display all the 
+parts of the tree (all bodies and subheadings) as continuous text, much 
+like a word processor outline. 
+
+===== From: Terry Brown <terry_n_brown@yahoo.com>
+
+Ville did something possibly similar:
+https://groups.google.com/forum/?fromgroups=#!topic/leo-editor/Zs-5jKjPAB0
+
+===== From: wgw <wgwinder@gmail.com>
+
+Thanks! That plugin does both more and less than I want: more, because I
+get a full and nicely formatted window with editable text boxes; less,
+since it doesn't write any edited text back to the tree.
+
+My fumbling tinkering would go towards not editing in the preview
+window/pane at all, and just having a keystroke or click scroll the editing=
+
+pane to the right node in Leo. But that would mean that the preview panel=
+
+would have have to be properly indexed so that from the cursor position in=
+
+the panel the plugin could find the proper node back in the Leo panel.
+ (Kludgy way: put the node id in the text!)
+
+Thanks for the suggestion.
+
+===== wgw
+
+Is there a  way to delete an inserted pane?
+
+===== Terry
+
+Yes, although a bit putzy.  Right click on the panel divider adjacent
+to the pane, it may be above or below or left or right of it.  The panes
+either side of the divider will be highlighted blue and orange.  There
+will be an option to "Delete 1 left" or "Delete 1 below" or similar, if
+that seems to refer to the panel you want to delete, that's your option.
+
+If the target panel seems to be joined with another (i.e. 2 not 1
+above) try right clicking a different divider to start with.
+
+===== Matt Wilkie
+
+I use *"r-click > Edit in ..."* for this purpose. It's a poor man's
+workaround. Something integrated would be much nicer. Just thought I'd
+mention it for anyone looking for something they might be able to use right
+away.
+
+===== Terry
+
+When I try that it only edits the one node, none of its children.
+Which is what I thought it did.
+
+===== Matt Wilkie
+
+Are the links in the overview supposed to open up a browser window? The
+alt-tip text gives an in-Leo hiearchy, e.g. "B:\code\dropbox-code.leo#leo
+stuff-->Overview of selected nodes" but clicking goes to
+http://www.google.ca/, and in Internet Explorer even though Firefox is my
+default browser.
+
+===== Terry
+
+No, that's not right, they're supposed to just select the node they
+belong to.
+
+===== Matt
+
+And, more generally, can these hover-over-pane-divider-then-right-click
+actions be made available any other way? Like a drop down menu from a
+button or alt-x command or something.
+
+===== Terry
+
+What, you mean instead of being completely hidden where no one will
+ever find them?  :-)  Most of them (not the Open Window variants of
+course) rely on the context provided by your selection of a particular
+divider, insert-where, delete-which etc.
+
+Probably the most friendly would be a button which pops up an overlay
+over the UI where you can select which pane to delete, or where to
+insert, etc.  But that would be hard.
+
+But it occurs to me that it might be the open window variants you want,
+specifically the code to make a button / command to open a window with
+a particular panel in it.  That would be this:
+
+if hasattr(c, 'free_layout'):
+    splitter = c.free_layout.get_top_splitter()
+    if splitter:
+        splitter.open_window(action='_add_overview_pane')
+
+===== wgw
+
+Excellent! This is really a great help for me. I'm still experimenting, but 
+one thing I will find useful is that I can open several of these panes and 
+navigate through each of the "views". Plus (and this has been a longtime 
+wishlist item for those with fading sight), I can increase the text size 
+for reading big chunks of text. 
+
+(Another plus, and this is a big one, I can actually read your code well 
+enough that I start to have some inkling about how to do this kind of 
+addition to Leo. I could never begin to write it myself, but Leo makes it 
+accessible even for shambling hackers.)
+
+One question: is there a  way to delete an inserted pane?  It  looks useful 
+to have an inserted pane, but refreshing will require killing the pane and 
+reinserting.... 
+
+
 #@+node:ekr.20130807203905.16608: *4* Settings & options
 - Added @color minibuffer-foreground-color setting.
 - Added @color log_warning_color setting.

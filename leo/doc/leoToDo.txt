@@ -10,11 +10,33 @@
 4. Future project leaders (FPL's) know how to change Leo like I do.
     - Secondary: FPL's have the same general knowledge about Leo that I do.
 5. Fix important bugs.
-.. @+node:ekr.20130412022445.12389: ** Next actions
-@language rest
-.. @+node:ekr.20130803073926.12442: ** Waiting
-* Waiting for review of installation instructions
+.. @+node:ekr.20130803125244.17100: ** Docs: Next
+.. @+node:ekr.20130803125244.17101: *3* * Gallery of screenshots
+.. @+node:ekr.20130408095053.10307: *3* * Guide for the next leaders
+# Use bookmarks?
+.. @+node:ekr.20130503155210.24814: *3* * Tutorials/Screencasts
+@nocolor-node
 
+Rewrite in screencast-script style:
+- Docstrings for the most important plugins.
+- All help-for-<topic> text.
+- Leo's tutorials.
+
+** Screencast style for plugins docstrings.
+* Screencast style for help messages.
+* Screencast style for tutorials.
+* Create YouTube channel for Leo screencasts.
+
+Topics:
+- Minibuffer: alt-x, tab-completion.
+- @button.
+- @rclick
+- Find/Change (done)
+- execute-script.
+- bookmarks.py.
+
+.. @+node:ekr.20130803125244.17099: *3* * Every command should have a **complete** docstring.
+.. @+node:ekr.20130803073926.12442: ** Waiting
 - Waiting for answer re ubuntu splashscreen
     http://qt-project.org/forums/viewthread/30837/
     createSplashScreen
@@ -22,100 +44,16 @@
 - Waiting for answer to solarized question:
     http://qt-project.org/forums/viewthread/30838/
     https://groups.google.com/forum/#!topic/leo-editor/W1_LVrQxdwQ
-.. @+node:ekr.20130503155210.24812: ** To do: 4.11
-@language rest
-.. @+node:ekr.20130812034101.12574: *3* After 4.11 a1
-@language rest
-.. @+node:ekr.20130808211520.15901: *4* * encourage e-postcards from users
-.. @+node:ekr.20130510070942.10606: *4* Bugs (before 4.11b1)
-.. @+node:ekr.20130503155210.24826: *5* Script: Add Windows handler for .leo files
-# https://groups.google.com/forum/?fromgroups=#!searchin/leo-editor/leo$20script/leo-editor/ANPuhuEIU9c/8lgid9MNKkAJ
-
-@language python
-@tabwidth -4
-
-'''Tell Windows how to handle .leo files, enables double clicking on them to open.
-
-To run: in Leo make this the active node and press [Ctrl-B] (execute-script)
-
-It opens a command shell and uses `assoc` and `ftype` commands to inform Windows
-where python.exe and the Leo launch script is. It's the equivalent of:
-
-    assoc .leo=Leo.File
-    ftype Leo.File="B:\Python27\pythonw.exe" "B:\apps\leo-editor\launchLeo.py" "%1" %*   
-       
-Requires elevated User Account Control (UAC) priviliges.
-See http://superuser.com/questions/88491/force-cmd-exe-to-run-as-admin/
-'''
-
-pyexe = g.sys.executable
-leo = g.os_path_finalize_join(g.computeLeoDir(), '../launchLeo.py')
-
-tmp = g.os.environ['TEMP']
-
-assoc_cmd = 'assoc .leo=Leo.File'
-ftype_cmd = 'ftype Leo.File="{0}" "{1}" "%1" %*'.format(pyexe, leo)
-
-g.es(leo)
-g.es(pyexe)
-
-g.es(tmp)
-g.es(assoc_cmd)
-g.es(ftype_cmd)
-
-from subprocess import Popen
-Popen('start "Shell from Leo" cmd.exe /k "{0} && {1}" '.format(assoc_cmd, ftype_cmd),
-
-    cwd=tmp, shell=True)
-.. @+node:ekr.20130503155210.24827: *5* Console script: Install Leo from scratch on Windows
-@language batch
-
-mkdir X:\testing
-pushd X:\testing
-
-wget -O apt.exe --no-clobber http://download.osgeo.org/osgeo4w/release/apt/apt-r1193M.exe
-SET OSGEO4W_ROOT=%~dp0\root
-apt setup
-apt update
-apt install pyqt4 sip
-
-call root\osgeo4w.bat
-
-wget --no-check-certificate http://gist.github.com/maphew/5393935/raw/install-pip.py
-python install-pip.py GO
-python install-pip.py GO
-
-pip install -i https://testpypi.python.org/pypi leo-editor
-
-python apps\Python27\Scripts\leo
-.. @+node:ekr.20130530110446.12450: *5* Fix syntax coloring bug involving multiple body editors
-.. @+node:ekr.20130502102046.10578: *5* Crash deleting body editor
-# Trying to delete a second body editor.
-
-Traceback (most recent call last):
-  File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 560, in doCommand
-    val = command(event)
-  File "c:\leo.repo\trunk\leo\plugins\qtGui.py", line 2980, in deleteEditor
-    name = w.leo_name
-AttributeError: 'LeoQTextBrowser' object has no attribute 'leo_name'
-.. @+node:ekr.20130510070942.10611: *5* Can undo headline put focus in headline?
-This would fix a reported bug.
-.. @+node:ekr.20130508084413.10645: *5* Better find/replace dialog
+.. @+node:ekr.20130816100419.23050: ** 4.11 a2
+.. @+node:ekr.20130508084413.10645: *3* Better find/replace dialog
 For newbies (and for power users too, for that matter), it may be helpful to
 have a "Find and Replace" dialog box similar to the one below:
 
 .. image: c:/prog/findReplace.jpg
 
-.. @+node:ekr.20130805080841.21380: *5* Fix javascript import bug
-https://groups.google.com/forum/#!topic/leo-editor/dmC8iIKlF7g
-.. @+node:ekr.20130805134749.12435: *5* Fix syntax coloring bug
-@language python
-
-def but_quotes_at_the_end_of_a_triple_quoted_string_are_still_tricky(self):
-    string = """Hello "world\""""
-    
-what
-.. @+node:ekr.20130806072439.20723: *5* Problem saving changed/new .leo files on Windows
+.. @+node:ekr.20130510070942.10611: *3* Can undo headline put focus in headline?
+This would fix a reported bug.
+.. @+node:ekr.20130806072439.20723: *3* Problem saving changed/new .leo files on Windows
 EKR: This appears to be some weird key-related problem with Leo 4.10.
 
 ===== From: vili <viljem.tisnikar@gmail.com>
@@ -189,815 +127,9 @@ And does the log window have any warnings or error messages?
 No, in log window nothing happens when I pres "ctrl-s". And of course the
 star near the name of the file does not disappear.
 
-.. @+node:ekr.20130812034101.12580: *4* Install
+.. @+node:ekr.20130806211959.17307: *3* Help (Some might be good to document)
 @language rest
-.. @+node:ekr.20130806072439.20650: *5* Wishlist: brew install leo
-From: Winn Dixie <incredible0n3@gmail.com>
-
-Would be stellar to have a brew install leo (for Mac OSX 10.7.X) with
-possible built in options to install vim bindings.
-.. @+node:ekr.20130806072439.20732: *5* Runnable Leo in one .zip file.
-From: Terry Brown <terry_n_brown@yahoo.com>
-
-Summary - it's easy to make a .zip file containing Leo and all it's
-dependencies.
-
-Inspired by Matt's recipe, using VirtualBox throw away 1GB Windows XP
-32 bit machines, I tried the following.
-
-Install Python (installer from python.org) 2.7.2 to 
-
-  C:\Docouments and Settings\someuser\Desktop\leo\python27
-
-Install PyQt (installer from Riverbank) 4.9 into the same folder (it
-goes there by default)
-
-Unzip http://www.greygreen.org/leo/leo-editor-latest.zip into
-
-  C:\Docouments and Settings\someuser\Desktop\leo\leo-editor-latest
-
-Make leo.zip from C:\Docouments and Settings\someuser\Desktop\leo
-
-Delete the virtual machine, purging any registry entries etc. created
-by the two installers.
-
-On a fresh machine, searched the registry for 'python' just to be sure,
-found nothing.
-
-Unzip the .zip file, then
-
-  cd C:\Docouments and Settings\someuser\Desktop\leo
-  python27\python.exe leo-editor-latest\launchLeo.py
-
-And Leo opens a blank outline, after asking for an ID, as it's supposed
-to.  Didn't test it beyond that.
-
-So, the .zip file contains all Leo needs to run, and obviously
-runLeo.bat could be added in the top level to actually launch it.
-
-Of course this is for Windows, so I think it's an improvement over
-asking people to install Python and PyQt first, but neither of those
-steps was that hard in Windows anyway.
-
-===== EKR
-
-Is this a technique that we could use for official Windows releases?
-If so, what exactly would we do?
-
-===== Terry
-
-I guess, perhaps as an all-in-one option with a system integrated
-option for those who want to use system python/qt.  Don't know if it
-violates and licensing on Python / Qt, everything's being distributed
-unaltered, so I wouldn't think so.
-
-So basically you'd give people a large .zip file and tell them to
-extract it to a folder and run the batchfile at the top level.  If they
-can't do that, they might not be ready for Leo :-)  I guess you could
-make it a self-extracting .zip, for that matter.
-
-Also, the daily snapshot could be made this way, seeing once Python and
-Qt are installed in the folder the Leo version can just be copied in.
-
-It's not uncommon for FLOSS to be distributed this way, both Blender
-and Inkscape use this approach, particularly for recent builds.
-
-===== From: HansBKK <hansbkk@gmail.com>
-
-If something like this **is** done, it should IMO be packaged as an
-alternative to the normal installation procedure.
-
-You would definitely get marketing exposure by getting the specs from
-PortableApps.com and let them host it there as  "Portable Leo", tracking
-the "official" Portable Python (currently 2.7.2) as a dependency, obviously
-including QT etc as well. But it would need to be kept up to date. . .
-
-Most Windows users would be better served by following the normal
-installation procedure and ending up with a
-registry-and-environment-variables-complete install of Python et al which
-they can use for other things beyond Leo. Ending up with multiple instances
-of Python to maintain is likely to cause more problems.
-
-And the normal Windows install just isn't that hard, really! Improving the
-current instructions, by providing a step-by-step "cookbook" with direct
-links to the download packages etc might make it a **little** easier (IMO
-only for the clueless), but then of course that would be a doc that would
-need pretty frequent updates, which if I may be so bold doesn't seem to
-happen too quickly on the doc side.
-.. @+node:ekr.20130806072439.20736: *6* Re: Runnable Leo in one .zip file.
-From: Matt Wilkie <maphew@gmail.com>
-
-Since this topical today, almost a year later, I thought I'd take a run at 
-repeating this using Portable Python (http://www.portablepython.com) as a 
-base. It didn't work, but I think it should. Maybe someone else knows why. 
-
-I ran the installer for 2.7.3 since 3.2 doesn't include PyQt4. At install 
-time I selected only the Python and PyQt4 packages. Then from a fresh 
-command shell:
-
-{{{
-path=c:\windows;c:\windows\system32
-pushd x:\portapy27\App
-path=%cd%;%cd%\Scripts;%cd%\Lib\site-packages\PyQt4;%path%
-set pythonhome=%cd%
-set pythonpath=%cd%\Lib
-
-popd
-
-python --version
-Python 2.7.3
-
-python -c "import PyQt4"
-:: no error returned, we're good.
-
-python c:\apps\leo-editor-latest\launchLeo.py
-Leo requires Qt to be installed.
-}}}
-
-oh well.
-.. @+node:ekr.20130806072439.20744: *6* Re: Runnable Leo in one .zip file.
-From: HansBKK <hansbkk@gmail.com>
-
-> PortableApps version would be FANTASTIC!!
-
-A couple of versions have been posted here already, including Terry's very
-simple sequence in the first message of this thread. Of course, we're only
-talking about Windows, but note that it works equally well either syncing
-with whatever tool (I favor Unison over SSH) or carrying around on an
-arbitrary-path'd external device, including flash drives (but they can be
-slow).
-
-Here's my more robust (hence more complex) version, xx indicating your 
-python version (mine is 27):
-
-Use the normal .MSI, setup.exe etc processes to Install a clean "canonical" 
-version of your "python dev stack" to say C:\PythonXX, reboot if needed, 
-test thoroughly. Note any new environment variables pointing to your new 
-binary locations.
-
-Now create a corresponding PythonXX folder in your "PortableApps" location 
-(I put it under "CommonFiles" along with GTK and Java) and copy everything 
-from your installed location to the portable one.
-
-You can then use the project-provided tools on the "master" computer to 
-keep your binaries updated, and they will see any local Registry entries 
-and the environment variables they created and operate normally wrt your 
-installed location (e.g. C:\PythonXX).
-
-If you have a local folder sync tool (I use Unison and WinMerge) you can 
-add to/remove from/configure your Python environment from either location, 
-otherwise just keep your installed location as the "master" and just copy 
-the whole stack over each time you do so.
-
-The whole PortableApps tree can then be sync'd/copied to any other 
-desktop(s) you like, either over the wire or via an external device, and 
-the latter can be carried for use in say an Internet cafe or client-site 
-situation.
-
-====================
-
-For use on those other computers, for running in portable mode, I use a
-"portable start menu" (PStart) which allows for its own "autolaunch" batch
-files, where I set some global environment variables to be used by
-app-specific launch batch files, including :
-
-%Path% (I add my batch folder and a general utility/tools folder)
-%HOME% (usually "E:\aasync\Data\H_HOME"
-and a custom one called %h_pa%, which points to the root of my PortableApps 
-parent (usually "D:\aasync\PortableApps")
-
-Then for each environment that requires its own custom settings, I create a 
-launch batch file that builds on that base. In the case of Python apps, 
-here's an example that opens a CMD console window:
-
-@ECHO OFF
-set 
-PATH=%PATH%;%h_pa%\CommonFiles\Python27;%h_pa%\CommonFiles\Python27\Lib\site-packages\PyQt4;%h_pa%\CommonFiles\Python27\Lib\idlelib;%h_pa%\CommonFiles\Python27\Scripts;
-set PROMPT=$p_python$g
-E:
-cd \aasync
-CMD.exe
-
-I'm not sure which if any of the environment stuff Leo requires, but I 
-figure it might as well have the same environment as my Python CLI, since 
-I'll be testing shell integration, including iPython. In my leo-win.bat, 
-the last three lines above are replaced with:
-
-D:
-cd \aasync\PortableApps\leo-editor
-start "" "..\CommonFiles\Python27\pythonw.exe" 
-"..\CommonFiles\Python27\Lib\site-packages\leo-editor4\launchLeo.py" %*
-
-====================
-
-Note this is more than the minimum you need to just run Leo - you could of 
-course simplify it; for example, only set the environment variables Leo 
-requires, or you could just set the master computer' installation routines 
-to use a single location under PortableApps, but I prefer to keep them 
-separate for testing purposes.
-
-I hope you (and others googling this later) find this useful.
-.. @+node:ekr.20130807203905.16594: *5* Wishlist for newbies (Fidel)
-@language rest
-
-From the thread: "Associate .Leo files to open with Leo when double click"
-
-From: <fidelperez@gmail.com>
-
-I guess others have had this idea but It would be great to include a small
-file within the Quickstart guide which would associate files automatically.
-(Or maybe asking for imput, which can be done through a Leo node and this
-way the user learns about its functionality).
-
-Also, I miss some more buttons or scripts in quick start guide, preferably
-before the "programming" section, so when a new user opens it, he has had
-the opportunity to do Ctrl+B on several scripts (for instance, showing in
-the log the name of all the nodes within the selected one, having some
-subnodes with numbers and doing math on them and showing the result on the
-log pane, and as much "silly" but visual functions as possible so the user,
-by going pressing ctrl+b on each, gets a bigger chance to understand what
-is Leo. In my oppinion some users will just stop in the quickguide if they
-are not presented with such a thing before going to docs.leo etc.
-
-Another thing is the plugin activation, the description of the plugins is
-not as accessible as it should be (opinions here, focusing in new users,
-and as I always say, appreciating and fully grateful for Leo as is now),and
-a script for activating them easier, been a week using Leo and still cant
-quite activate, find the descriptions or use them freely... And if each
-plugin or script had an example of use that would be priceless, for
-instance, including them all in quickstart (both scripts, plugins branchs)
-and then the new user could just go through all clicking on the examples
-and just seeing Leo work and show its potential. I know some of those are
-done but as I said, after a week or so I still am very confused...
-
-Also, quickstartguide should be open by default (instead of current
-Leo workbook) at least until the user changes some config and prevents that
-from happening. Is there any "load previous tabs" functionality? (IE open
-the Leo files which where open when it was closed the last time)
-  
-.. @+node:ekr.20130807203905.16596: *5* PortableFileAssociator
-From the thread: Cannot open Leo files by double-click in Windows Explorer?
-From: HansBKK <hansbkk@gmail.com>
-
-For those like me who work in "portable" mode, there's a very cool tool
-called "PortableFileAssociator" that allows you to create a set of windows
-file associations, icons etc and enable/disable the whole profile at one
-time, without messing with the local system's registry.
-
-Also handy for those not in portable mode, but working on different windows
-boxes and bored with having to tweak each one separately.
-.. @+node:ekr.20130807203905.16649: *4* Doc To do
-@language rest
-.. @+node:ekr.20130807203905.16650: *5* Leo in a nutshell
-https://groups.google.com/forum/#!topic/leo-editor/lgHE4OJSLzw
-
-In a Nutshell, The Leo Editor...
-
-- has had 15,508 commits made by 47 contributors
-  representing 1,064,650 lines of code
-- is mostly written in Python
-  with an average number of source code comments
-- has a well established, mature codebase
-  maintained by a large development team
-  with decreasing Y-O-Y commits
-- took an estimated 292 years of effort (COCOMO model)
-  starting with its first commit in February, 2002
-  ending with its most recent commit 2 days ago 
-.. @+node:ekr.20130807203905.16655: *5* Tutorials & how-to
-.. @+node:ekr.20130807203905.16656: *6* A beautiful pattern for composing large strings
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-I continue to work feverishly on various aspects of static type checking.
-
-That work lead to a discovery that may benefit you.  It's one of the most 
-beautiful patterns I've ever created: it allows a program to simply and 
-naturally build up huge strings without using any string operations.  
-Generating an html file with minimal stress on the gc is an obvious 
-application.  You could also say that the pattern creates a Pythonic way of 
-using lisp-like algorithms, but more safely than in lisp.
-
-Full details at the stc documentation page::
-http://webpages.charter.net/edreamleo/stc/stc.html#a-beautiful-pattern-for-building-large-strings
-
-.. @+node:ekr.20130807203905.16657: *7* Re: A beautiful pattern for composing large strings
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-On Wednesday, January 2, 2013 10:02:40 AM UTC-6, Edward K. Ream wrote:
-
-ReportTraverser uses this pattern at rev 288.  It is a remarkable 
-simplification.
- 
-
-> The revised r.div method will be something like::
->
->     def div(self,aList):
->         compute old and new indents
->         return [
->             <div>, with old indent,
->             aList, with new indent,
->             </div>, with old indent,
->         ]
->
-
-This doesn't work!  aList won't have the proper indentation.  In 
-particular, the following won't work::
-
-    [['  ',z] for z in aList],
-
-flatten_list will add the two spaces before the line, that is, before a 
-newline. Instead, a hack is needed:
-
-    return [
-        div,
-        join_list(aList,indent='  '),
-        '\\n</div>'
-    ]
-
-The new 'indent' keyword tells flatten_list to add the given indentation 
-(two spaces, here), to strings that start with a newline.  The new code in 
-flatten_list is::
-
-        for i,item in enumerate(aList):
-            if leading:                  yield leading
-            for s in flatten_list(item):
-                if indent:
-                    if s.startswith('\\n'):
-                        yield '\\n'+indent+s[1:]
-                    else:
-                        yield s
-                else:
-                    yield s
-            if sep and i < len(aList)-1: yield sep
-            if trailing:                 yield trailing
-
-The point is that the indentation must be "moved behind the newline".
-
-Edward
-
-.. @+node:ekr.20130807203905.16659: *7* Re: A beautiful pattern for composing large strings
-From: "Ville M. Vainio" <vivainio@gmail.com>
-
-This seems like a spiritual relative of "rope" data structure:
-
-http://en.wikipedia.org/wiki/Rope_(data_structure)
-
-http://www.sgi.com/tech/stl/Rope.html
-
-===== EKR
-
-Yes, there is a similarity. However, the real beauty of new pattern is the
-flatten_list method. It's the combination of the lists and flatten_list
-that gives the pattern real power. We've just seen how the 'indent' keyword
-hack allows sophisticated processing of the lists. I wouldn't expect more
-hacks to be needed, but I've been surprised before ;-)
-.. @+node:ekr.20130807203905.16660: *7* Re: A beautiful pattern for composing large strings
-On Tue, 1 Jan 2013 17:03:05 -0800 (PST)
-"Edward K. Ream" <edreamleo@gmail.com> wrote:
-
-> Generating an html file with minimal stress on the gc is an obvious 
-> application.
-
-Nice.  An HTML specific approach which avoids things like the
-r.div_end() construct is the LXML element factory:
-http://lxml.de/tutorial.html#the-e-factory
-
-Cheers -Terry
-
-.. @+node:ekr.20130807203905.16662: *7* Re: A beautiful pattern for composing large strings
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-On Thursday, January 3, 2013 3:28:52 AM UTC-6, Ville M. Vainio wrote:
->
-> Yes, it's indeed an interesting pattern. 
->
-> It would seem more useful in faster languages than python though; in 
-> python, string operations (and gc) are faster in comparison to executing 
-> other code, whereas in fast, more static languages (C++, Java, Go) avoiding 
-> GC gives you great benefits (I saw 5x perf increase reported for some Go 
-> app when eliminating GC).
->
-
-Thanks for these remarks.  I've enjoyed thinking about them.  A few 
-responses:
-
-1. This is a smallish pattern--it can't change the world, except insofar as 
-something beautiful changes the world.
-
-2. Otoh, the pattern changes the way I think about lisp and lisp-like 
-patterns.  That's not nothing. For the first time, it makes list-oriented  
-programming pattern completely safe.  It does this because it doesn't 
-matter what each component list contains, nor does it matter *at all* what 
-the shape of any part of the tree is.  This makes the pattern completely 
-flexible.
-
-3. The pattern can be generalized.  The pattern I described uses a tree of 
-component strings to describe a (large) resulting string.  But one can 
-easily imagine using lists to hold anything at all (of whatever tree shape) 
-and then use another version of flatten_list to compose results of other 
-types.  Alternatively, rather than composing a result, the analog of 
-flatten_list could process the tree of lists in other ways.  So the most 
-general version of the pattern is:
-
-A) The tree of lists can contain any data whatever, especially including 
-None,
-B) The "producers" (visitors) can create subtrees of whatever shape,
-C) The analog of flatten_list is free to do anything whatever with the 
-resulting tree.
-
-I suspect that these features are what appeal to lisp programmers ;-)
-
-4. I'm not sure whether the pattern is more useful in "faster" languages or 
-not.  True, anything that helps a feeble language like C++ will seem useful 
-:-)  But points 1-3 above have nothing to do with speed: they just make 
-programming simpler, more flexible, more powerful and more fun.
-
-Imo, gc issues are important both in Python and in C++.  For stc, the only 
-way to get reproducible timing statistics for tests was to do the following 
-before running the test::
-
-    for z in (0,1,2): gc.collect(z)
-
-The ReportTraverser class no longer contains *any* calls to string.join, so 
-one could imagine that all strings used in the code would be interned.  The 
-generated tree actually contains nothing but *references* to strings, and 
-if all strings are interned the references will not themselves cause any 
-new strings to be allocated.
-
-Naturally, gc issues are even more important in language like C++ without a 
-gc.  Lol.  The preceding paragraph is more important for C++ than in 
-Python.  So yes, in this sense I agree with you completely that the pattern 
-is more useful for "fast" languages than for Python.
-
-Thanks, Ville, for provoking all these pleasant thoughts :-)
-.. @+node:ekr.20130807203905.16663: *7* Re: A beautiful pattern for composing large strings
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-On Tue, Jan 1, 2013 at 9:48 PM, Terry Brown <terry_n_brown@yahoo.com> wrote:
-
-> On Tue, 1 Jan 2013 17:03:05 -0800 (PST)
-> "Edward K. Ream" <edreamleo@gmail.com> wrote:
->
-> > Generating an html file with minimal stress on the gc is an obvious
-> > application.
->
-> Nice.  An HTML specific approach which avoids things like the
-> r.div_end() construct is the LXML element factory:
-> http://lxml.de/tutorial.html#the-e-factory
->
-
-Beautiful.  With the list framework the revised r.div method would be
-something like::
-
-    def div(self,aList):
-        compute old and new indents
-        return [
-            <div>, with old indent,
-            aList, with new indent,
-            </div>, with old indent,
-        ]
-
-An example of the pattern in use::
-
-    return [
-        ...
-        r.div([
-            contents of the div,
-        ]),
-        ...
-    ]
-
-Similarly for span, etc. Thanks for pointing this out.  This is too good to
-ignore.  I'll do it soon.
-.. @+node:ekr.20130807203905.16664: *6* All about clone conflicts
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-Some people seem to think that it is difficult to understand how Leo
-handles "clone wars":  differing values for a cloned nodes that appear
-in several external files.  That's not true.  The rule is::
-
-    **The last clone that Leo reads wins.**
-
-That is, for any cloned node C, Leo takes the value of C.h and C.b to
-be the values specified by the last copy that Leo reads.
-
-There is only one complication::
-
-    **Leo reads the entire outline before reading any external
-files.**
-
-Thus, if C appears in x.leo, y.py and z.py, Leo will choose the value
-for C in x.py or y.py, depending on which @<file> node appears later
-in the outline.
-
-Notes:
-
-1. Whenever Leo detects multiple values for C when opening an outline, Leo
-   creates a "Recovered nodes" tree. This tree contains all the various
-   values for C, nicely formatted so that it is easy to determine where the
-   differences are.
-
-2. I've just refreshed my memory by looking at the code.  The relevant methods are:
-
-    fc.getLeoFile # Reads the outline, then calls at.readAll to read all external files.
-    at.indicateNodeChanged # Adds data to c.nodeConflictList
-    cacher.reportChangedClone # Adds data to c.nodeConflictList
-    fc.handleNodeConflicts # Creates "Recovered Nodes" node and its children.
-
-3. The present code is the simplest code that could possibly work. There is
-no way Leo is going to do AI in order to implement complex rules for which
-clones are "more important" than others. Thus, if you use cross-file
-clones, it is up to *you* to know these rules and handle any resulting
-conflicts. Imo, the "Recovered Nodes" feature is a big step forward for
-Leo, and makes it impossible to lose data unless you willfully refuse to
-examine the data.
-.. @+node:ekr.20130807203905.16665: *7* Re: All about clone conflicts
-From: Joon Ro <joonpyro@gmail.com>
-
-Thanks for the explanation. As a matter of fact, I was having hard time 
-understanding this. 
-
-I had my source file in a @shadow node, and then I had a backup of that 
-file as @file node, which had clones of the nodes of the source @shadow 
-file and some other codes that I stashed. 
-
-Whenever I changed the source code externally with leo closed, when I open 
-leo, it made recovered nodes. The problem was since @file was placed 
-"later" in the outline, leo kept putting the new changes I made to old, 
-instead of new.
-
-Now I understand how this works. but I think in multiple external file 
-cases, it would make more sense if leo checks the file modification time 
-when it makes decision which node is new, instead of just depending on the 
-order of files in the outline. In above case, it is natural for me to have 
-actual source nodes on the top of the outline and backup nodes on the 
-bottom. Please let me know what you think. 
-.. @+node:ekr.20130807203905.16666: *6* Draft: Position tutorial
-@language rest
-
-A **position** object represents a specific node in a Leo outline.
-
-Equivalently, a position represents the state of a Leo generator, that is,
-a specific node during a traversal of a Leo outline.
-
-Because of clones, a node may appear arbitrarily many times in an outline,
-so a node may appear at arbitrarily many positions in the outline.
-
-For any position p, **p.v** is the vnode at position p.
-
-A node's vnode never changes, regardless of where the node appears in the
-outline, and regardless of whether the node is cloned or not.
-
-**Positions become invalid when the outline changes.**
-
-You may save and and use positions *provided* the outline remains unchanged.
-
-Leo's generators deliver positions, one after each other, using a *single*
-(ever-changing) position. As a result, scripts must use p.copy() to create
-lists of positions. For example::
-
-    aList = [p.copy() for p in c.rootPosition().subtree()]
-.. @+node:ekr.20130807203905.16667: *7* other info
-Consider this example, where nodes with the same names are clones of each other::
-
-+ Root
-    + A
-        - B
-    + A
-        - B
-    - B
-
-Leo's c.all_nodes() iterator will deliver 9 positions:
-
-    1: Root
-    2: A
-    3: B
-    4: A
-    5: B
-    6: B
-
-*All* positions returned by a traversal are distinct.  Some examples:
-
-- Position 2: A is different from position 4: A
-  The former is the first child of root; the latter is the second child of root.
-  
-- The parent of position 3: B is A at childIndex 0 of Root.
-  The parent of position 5: B is A at childIndex 1 of Root.
-  The parent of position 6: B is Root. The childIndex of 6: B is 2.
-
-.. @+node:ekr.20130807203905.16668: *6* Draft: unit-testing tutorial
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-The following is a first draft of a unit-testing tutorial.  It will form 
-the basis of a new help-for-unit-testing command, and may also become the 
-introduction to Leo unit-testing chapter.
-
-All comments are welcome.  Please let me know if anything is unclear.
-
------
-
-Leo makes it easy to create and run unit tests from individual outline 
-nodes or trees.
-
-A node whose headline starts with @tests defines a unit test.
-
-The body text of the @test node contains a **self-contained** unit test.
-
-For example, this creates a complete unit test::
-
-    @test fails  (headline)
-    assert False (body text)
-
-To run this test, select the @test node and do:
-<alt-x>run-selected-unit-tests-locally.
-Leo will create and run the unit test automatically.
-
-To see all of Leo's unit testing commands, do:
-<alt-x>run<tab>
-
-Leo pre-defines 'c', 'g' and 'p' in unit tests just as in scripts.
-
-For more details about unit testing, see: 
-http://leoeditor.com/unitTesting.html
-
-**Notes for Leo developers**
-
-leo/test/unitTest.leo contains all of Leo's own unit tests.
-
-Running all tests is not necessary.  Just select::
-
-    Active Unit Tests
-
-and then do Alt-4 (run-selected-unit-tests-locally).
-
-**Note**: Some tests will likely fail on machines other than EKR's.
-You only need to be concerned about unit tests that start failing after you 
-make your changes.
-
-.. @+node:ekr.20130807203905.16669: *6* Tutorial scripts (To be written)
-.. @+node:ekr.20130807203905.16670: *7* What makes Leo special: shorter
-@wrap
-@language rest
-
-.. |br| raw:: html
-
-   <br />
-   
-**Leo completely integrates scripting and outlines.** |br|
-Leo outlines are true Python objects, not just text.
-
-\1. **Headlines naturally define types**, such as:
-
-**@file** trees create external files. |br|
-**@test** nodes and trees create unit tests. |br|
-**@button** nodes create **script buttons**. |br|
-**@command** nodes create user-defined commands. |br|
-**@html** trees create web pages. |br|
-**@settings** trees contain Leo settings.
-
-\2. **Any node may contain a Leo script**:
-
-A simple outline-aware markup language creates scripts |br|
-and external files from outline nodes and trees.
-
-\3. **Leo scripts have *easy* access to all outline data**:
-
-All Leo scripts execute with these **predefined symbols**: |br|
-**c** gives access to all outline data and all of Leo's code. |br|
-**p** is the presently selected node in the script. |br|
-**p.h** is the headline text; **p.b** is the body text. |br|
-**g** is a module containing utility functions & classes.
-
-\4. **All parts of Leo are scriptable**, including: |br|
-
-.. In short, all outline data are completely scriptable.
-.. @+node:ekr.20130807203905.16671: *7* What makes Leo special
-@language rest
-
-Leo looks like relatively ordinary outline editor,
-but it has unique scripting and data-organizing abilities.
-
-Scripting
----------
-
-- Any node in the outline may contain a Leo script.
-- Leo can *compose* scripts from a node and its descendants.
-- Leo scripts can *easily* access all the data in any outline.
-
-Leo scripts can do things that can't be *imagined* in other editors.
-
-Data-organizing
----------------
-
-- Cloned nodes may appear many times in the same outline.
-- Clones create views of data that persist indefinitely.
-  Any set of nodes may appear in arbitrirly many views of the data.
-- Headlines naturally describe the data contained in nodes.
-
-
-Script nodes
-------------
-
-There are many ways to combine these capabilities.
-.. @+node:ekr.20130807203905.16672: *7* Scripting
-.. @+node:ekr.20130807203905.16673: *7* External files
-.. @+node:ekr.20130807203905.16674: *7* The screenshots plugin
-.. @+node:ekr.20130807203905.16675: *7* The contextmenu plugin
-@language rest
-
-Adds configurable right-click menu items to nodes.
-.. @+node:ekr.20130807203905.16676: *7* The bookmarks plugin
-.. @+node:ekr.20130807203905.16677: *7* The todo plugin
-.. @+node:ekr.20130807203905.16818: *7* The valuespace plugin (promised!)
-.. @+node:ekr.20130807203905.16678: *5* For Implementors
-@language rest
-
-- Don't read code: use g.trace and g.pdb instead.
-- Where the bodies are hidden.
-    - self.w in leoEditCommands.py
-- Complex code that *can't* be simplified.
-- The top 20 methods.  You must understand these *in general*.
-    - k.masterKeyHandler.
-    - qt.eventFilter.
-    - 
-    
-    
-** Add mandatory _kind fields to all g.Bunches.
-.. @+node:ekr.20130807203905.16679: *6* Centralizing focus handling (to make debugging easier)
-From: "Ville M. Vainio" <vivainio@gmail.com>
-
-I am having some problems wrapping my head around how focus behaves
-throughout leo.
-
-IMO it would be a good idea to have only one place in Leo where focus is
-explicitly set. E.g. g.setFocus(widget). This implementetation would
-suffice:
-
-def setFocus(widget):
-  widget.setFocus()
-
-Reasoning: it would be handy to add debugging stuff here, to see why my
-focus stuff is failing in alt-x go-anywhere handling.
-
-(My guess is treeFocusHelper only understanding focus being either in tree
-or body, but no time to explore further now)
-
-===== EKR
-
-In fact, there is only one such place: c.outerUpdate.  The various
-xWantsFocus methods simply set ivars, which c.outerUpdate uses to set the
-focus when a command completes.
-
-The various xWantsFocusNow methods call c.outerUpdate immediately.  Usually
-we don't want to do this, because it could cause screen flash, but
-sometimes the immediate update is essential.
-
-I've marked this thread as a topic for implementers.  Such things will form
-the basis for documentation for my successors.
-.. @+node:ekr.20130807203905.16681: *6* Free "continuous integration" for Leo
-From: "Ville M. Vainio" <vivainio@gmail.com>
-
---089e0122f80868cb1b04dce55d84
-Content-Type: text/plain; charset=ISO-8859-1
-
-Someone may be interested in investigating a free CI system for Leo:
-
-https://travis-ci.org/
-
-This could e.g. create debian packages for daily builds, run unit tests,
-check stuff with lint, try compiling with python3 so we (*cough*) wouldn't
-have accidental print statements in the source...
-.. @+node:ekr.20130807203905.16684: *6* Toolkit independent apis
-From: "Ville M. Vainio" <vivainio@gmail.com>
-
-Ramblings relevant to Leo, by the PyQt lead developer:
-
-http://www.riverbankcomputing.co.uk/static/Docs/dip/architecture.html#the-realities-of-software-development
-
-esp "The Myth of Toolkit Independence"
-
-===== EKR
-
-Leo's core benefits greatly from toolkit independence, despite some
-(usually minor) extra complexity. Obviously, this has not constrained
-what plugins can do.
-
-This is pretty much a non-issue for Leo.  The reason is clear enough:
-the hundreds of commands defined in Leo's core are mostly
-straightforward renditions of emacs text commands.  There, the
-constraints of an abstraction layer do not pinch.  Furthermore, using
-common gui-level code is a good application of the DRY (Don't Repeat
-Yourself) principle, as recent bug fixes in the common code
-illustrate.
-
-The code for ensuring that the outline and body text are updated
-properly (and in synch!) is much more difficult, but the difficulties
-are fundamental: they have almost nothing to do with actual guis.
-
-In short, I think Leo's design uses the best of the gui-dependent and
-gui-independent approaches.
-.. @+node:ekr.20130806211959.17307: *4* Help (Some might be good to document)
-@language rest
-.. @+node:ekr.20130806211959.17315: *5* Background Images in body pane?
+.. @+node:ekr.20130806211959.17315: *4* Background Images in body pane?
 From: tfer <tfetherston@aol.com>
 
 I was wondering if the Qt widget used for body text has a provision for 
@@ -1007,7 +139,7 @@ I'm thinking that it might be interesting to have some wallpapers/tiles to
 visually represent various categories of methods, e.g. initors, setters, 
 getters, etc.  Maybe ones that hint at the uses of a particular design 
 pattern.  Maybe us a uA to control setting?
-.. @+node:ekr.20130806211959.17316: *6* Re: Background Images in body pane?
+.. @+node:ekr.20130806211959.17316: *5* Re: Background Images in body pane?
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
 On Fri, Jul 13, 2012 at 3:57 PM, tfer <tfetherston@aol.com> wrote:
@@ -1021,7 +153,7 @@ http://qt-project.org/doc/qt-4.8/qtextbrowser.html
 a subclass of QTextEdit.  QTextBrowser also inherits from QFrame and
 QWidget, so there *might* be a way to have a background image "leak"
 through the text.
-.. @+node:ekr.20130806211959.17317: *6* Re: Background Images in body pane?
+.. @+node:ekr.20130806211959.17317: *5* Re: Background Images in body pane?
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 --MP_/NJ5QIult88.7_K/HpvnV2eA
@@ -1057,7 +189,7 @@ QTextEdit#richTextEdit[leo_gnx='tbrown.20130430222443.19340'] {
 
 Cheers -Terry
 
-.. @+node:ekr.20130806211959.17318: *6* Re: Background Images in body pane?
+.. @+node:ekr.20130806211959.17318: *5* Re: Background Images in body pane?
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
 On Wed, May 1, 2013 at 8:42 AM, Terry Brown <terry_n_brown@yahoo.com> wrote:
@@ -1083,7 +215,7 @@ pane :-)
 
 I'll add this to the Leo/To Document list.  Not sure yet how that list is
 going to get translated into action.  Still reading Getting Things Done :-)
-.. @+node:ekr.20130806211959.17319: *5* Best way to synchronize/update myLeoSettings.leo and leoSettings.leo ?
+.. @+node:ekr.20130806211959.17319: *4* Best way to synchronize/update myLeoSettings.leo and leoSettings.leo ?
 From: wgw <wgwinder@gmail.com>
 
 For the moment, I use Meld to compare/update myLeoSettings.leo file. That 
@@ -1132,7 +264,7 @@ to this Google Group is under no further obligation to somehow be
 compatible with *any* other submission rules.  Somehow, it's up to me, or
 the other core developers, to find a simple, reliable way of "indexing" the
 submissions.  Right now I have no solutions.
-.. @+node:ekr.20130806211959.17320: *5* Create Pane For matplotlib chart
+.. @+node:ekr.20130806211959.17320: *4* Create Pane For matplotlib chart
 From: felix74 <hjuucy@googlemail.com>
 
 I'm trying to create a interactive chart in a embedded in a new leo pane 
@@ -1149,7 +281,7 @@ instead of columns. As such I have data in nodes and can create new data
 nodes by applying python functions to data in existing nodes. The thing 
 missing is the visualization within a leo pane (I can easily launch a chart 
 in it's own window) .
-.. @+node:ekr.20130806211959.17321: *6* Re: Create Pane For matplotlib chart
+.. @+node:ekr.20130806211959.17321: *5* Re: Create Pane For matplotlib chart
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 On Tue, 18 Sep 2012 05:59:59 -0700 (PDT)
@@ -1217,7 +349,7 @@ Above again :-)
 The value returned by ns_provider_id should be unique for the provider
 class, but constant.  So it can just return "matplotlib provider ver 1"
 or something.
-.. @+node:ekr.20130806211959.17323: *6* Re: Create Pane For matplotlib chart
+.. @+node:ekr.20130806211959.17323: *5* Re: Create Pane For matplotlib chart
 From: felix74 <hjuucy@googlemail.com>
 
 
@@ -1273,7 +405,7 @@ Matplot when pressing the Action button. How do I stop this from happening?
 I have alrewady tried returning a unique integer in * ns_provider_id *but 
 that did not work.*
  
-.. @+node:ekr.20130806211959.17324: *6* Re: Create Pane For matplotlib chart
+.. @+node:ekr.20130806211959.17324: *5* Re: Create Pane For matplotlib chart
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 On Sun, 16 Sep 2012 22:23:18 -0700 (PDT)
@@ -1319,7 +451,7 @@ button 'Action' appears.  Click it, and select "Add matplot" from the
 context menu.
 
 Instead of "w = QtGui.QSlider()", you want "w = myMatplotWidget()"
-.. @+node:ekr.20130806211959.17325: *5* How to call functions from LeoPyRef.Leo
+.. @+node:ekr.20130806211959.17325: *4* How to call functions from LeoPyRef.Leo
 From: <fidelperez@gmail.com>
 
 I am going through something similar Matt Wilkie went through in this
@@ -1342,7 +474,7 @@ chrome/mozilla which will also import the icons of the links! x)
 I will prepare some more interesting utils (import mindmap, etc) then 
 release them together with manuals oriented to noob users.
 
-.. @+node:ekr.20130806211959.17326: *6* Re: How to call functions from LeoPyRef.Leo
+.. @+node:ekr.20130806211959.17326: *5* Re: How to call functions from LeoPyRef.Leo
 From: <fidelperez@gmail.com>
 
 Sounds great!
@@ -1387,7 +519,7 @@ On Monday, May 20, 2013 3:47:35 PM UTC+2, Terry wrote:
 > Cheers -Terry
 >
 
-.. @+node:ekr.20130806211959.17327: *6* Re: How to call functions from LeoPyRef.Leo
+.. @+node:ekr.20130806211959.17327: *5* Re: How to call functions from LeoPyRef.Leo
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
 On Mon, May 20, 2013 at 8:47 AM, Terry Brown <terry_n_brown@yahoo.com>wrote:
@@ -1450,7 +582,7 @@ As shown, the LeoQTextBrowser class is a real (subclass of) QTextBrowser.
 
 HTH.  I've made a note to discuss official ivars in more detail in the
 scripting chapter.
-.. @+node:ekr.20130806211959.17328: *6* Re: How to call functions from LeoPyRef.Leo
+.. @+node:ekr.20130806211959.17328: *5* Re: How to call functions from LeoPyRef.Leo
 From: <fidelperez@gmail.com>
 
 Ok, in order to print icons, the code is this:
@@ -1488,7 +620,7 @@ On Sunday, May 19, 2013 12:43:50 PM UTC+2, Fidel P=E9rez wrote:
 > release them together with manuals oriented to noob users.
 >
 
-.. @+node:ekr.20130806211959.17329: *6* Re: How to call functions from LeoPyRef.Leo
+.. @+node:ekr.20130806211959.17329: *5* Re: How to call functions from LeoPyRef.Leo
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 On Mon, 20 May 2013 04:00:59 -0700 (PDT) <fidelperez@gmail.com> wrote:
@@ -1521,7 +653,7 @@ and it recursively searches for it.
 
 Cheers -Terry
 
-.. @+node:ekr.20130806211959.17330: *6* Re: How to call functions from LeoPyRef.Leo
+.. @+node:ekr.20130806211959.17330: *5* Re: How to call functions from LeoPyRef.Leo
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 On Mon, 20 May 2013 08:47:35 -0500
@@ -1554,7 +686,7 @@ work.  So the tool I've written may be the best approach to mapping
 Leo's runtime structure. Another thing it could do, try and map 'major'
 classes, or at least classes from leo.core.* - i.e. ignore the built in
 types.
-.. @+node:ekr.20130806211959.17331: *5* How to make body text insertion at cursor permanent?
+.. @+node:ekr.20130806211959.17331: *4* How to make body text insertion at cursor permanent?
 From: SegundoBob <bhossley@ieee.org>
 
 This thread gives a recipe for inserting text into the body of a node
@@ -1571,13 +703,13 @@ The following recipe fixes this problem:
 http://pastebin.com/GAc15jRL
 
 Is this recipe the right way to do it or is there a better way?
-.. @+node:ekr.20130806211959.17332: *6* Re: How to make body text insertion at cursor permanent?
+.. @+node:ekr.20130806211959.17332: *5* Re: How to make body text insertion at cursor permanent?
 From: SegundoBob <bhossley@ieee.org>
 
 I'm sorry no one has suggested a better way to make the changes
 permanent.  How does Leo-Editor notice that typing has inserted a few
 more characters?  Couldn't the same mechanism be used here?
-.. @+node:ekr.20130806211959.17333: *6* Re: How to make body text insertion at cursor permanent?
+.. @+node:ekr.20130806211959.17333: *5* Re: How to make body text insertion at cursor permanent?
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 On Wed, 17 Apr 2013 12:09:52 -0700 (PDT)
@@ -1617,7 +749,7 @@ Other possibly useful methods:
 
     i,j = w.getSelectionRange(sort=True)
     s = w.getSelectedText()  
-.. @+node:ekr.20130806211959.17334: *6* Re: How to make body text insertion at cursor permanent?
+.. @+node:ekr.20130806211959.17334: *5* Re: How to make body text insertion at cursor permanent?
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 On Wed, 17 Apr 2013 16:53:10 -0700 (PDT)
@@ -1698,7 +830,7 @@ Cheers -Terry
 > 
 > Yes, these are very useful.
 > 
-.. @+node:ekr.20130806211959.17335: *6* Re: the workflow of write leo scripts?
+.. @+node:ekr.20130806211959.17335: *5* Re: the workflow of write leo scripts?
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 On Fri, 12 Apr 2013 10:09:40 +0800
@@ -1714,7 +846,7 @@ the API could be improved, or, seeing the existing API make sense for
 what it is, we could have additional "easy text manipulation" API.
 So long since I used Emacs I can't really remember its model, and if it
 would apply here.
-.. @+node:ekr.20130806211959.17336: *5* How to use leo to make mathematical notes?
+.. @+node:ekr.20130806211959.17336: *4* How to use leo to make mathematical notes?
 From: <lzyerste@gmail.com>
 
 If I want to use leo to make mathematical notes, how can I type in some
@@ -1763,7 +895,7 @@ http://ipython.org/
 I'm using it for all my math related writing and I think that point the
 future of interactive writing in Python. I dream of a body pane on leo
 with the features of the pyton qt console.
-.. @+node:ekr.20130806211959.17337: *5* Indexing files for full text search
+.. @+node:ekr.20130806211959.17337: *4* Indexing files for full text search
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 Just pushed leo/external/leoftsindex.py:
@@ -1793,7 +925,7 @@ note::
     as the '#' may be interpreted as a comment delimiter::
         
         python leoftsindex.py "workbook.leo#Links"
-.. @+node:ekr.20130806211959.17339: *5* Parameterized template nodes
+.. @+node:ekr.20130806211959.17339: *4* Parameterized template nodes
 From: =?UTF-8?Q?Jo=C3=A3o_Alexandre_Toledo?= <jalexandretoledo@gmail.com>
 
 As I use Leo to write PL/SQL code, I need to write similar text several
@@ -1823,7 +955,7 @@ Another alternative would be creating some kind of directive @something,
 but I have no idea of how to do that.
 
 Any ideas?
-.. @+node:ekr.20130806211959.17340: *6* Re: Parameterized template nodes
+.. @+node:ekr.20130806211959.17340: *5* Re: Parameterized template nodes
 From: =?UTF-8?Q?Fidel_P=C3=A9rez?= <fidelperez@gmail.com>
 
 
@@ -1855,7 +987,7 @@ On Saturday, May 4, 2013 12:48:27 AM UTC+2, Jo=E3o Alexandre Toledo wrote:
 > Thank you.
 >
 > Jo=E3o
-.. @+node:ekr.20130806211959.17341: *6* Re: Parameterized template nodes
+.. @+node:ekr.20130806211959.17341: *5* Re: Parameterized template nodes
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 On Sun, 5 May 2013 16:35:59 -0700 (PDT)
@@ -1911,7 +1043,7 @@ More like generating a website from data etc.
 
 Cheers -Terry
 
-.. @+node:ekr.20130806211959.17342: *6* Re: Parameterized template nodes
+.. @+node:ekr.20130806211959.17342: *5* Re: Parameterized template nodes
 From: =?UTF-8?Q?Jo=C3=A3o_Alexandre_Toledo?= <jalexandretoledo@gmail.com>
 
 Hi,
@@ -1922,7 +1054,7 @@ Thank you.
 
 Jo=E3o
 
-.. @+node:ekr.20130806211959.17343: *6* Re: Parameterized template nodes
+.. @+node:ekr.20130806211959.17343: *5* Re: Parameterized template nodes
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
 --001a11c27f4813f73804dbad029f
@@ -1957,7 +1089,7 @@ Content-Transfer-Encoding: quoted-printable
 <br></div><div>Does that do what you want?<br><br></div><div>Edward<br></div></div></div></div>
 
 --001a11c27f4813f73804dbad029f--
-.. @+node:ekr.20130806211959.17344: *6* Re: Parameterized template nodes
+.. @+node:ekr.20130806211959.17344: *5* Re: Parameterized template nodes
 From: =?UTF-8?Q?Fidel_P=C3=A9rez?= <fidelperez@gmail.com>
 
 
@@ -2028,7 +1160,7 @@ On Monday, May 6, 2013 5:13:42 AM UTC+2, Terry wrote:
 >
 > Cheers -Terry
 >
-.. @+node:ekr.20130806211959.17345: *6* Re: Parameterized template nodes
+.. @+node:ekr.20130806211959.17345: *5* Re: Parameterized template nodes
 From: =?UTF-8?Q?Jo=C3=A3o_Alexandre_Toledo?= <jalexandretoledo@gmail.com>
 
 
@@ -2083,13 +1215,13 @@ On Friday, May 3, 2013 7:48:27 PM UTC-3, Jo=E3o Alexandre Toledo wrote:
 > Thank you.
 >
 > Jo=E3o
-.. @+node:ekr.20130806211959.17346: *5* Terry, how do you create the buttons with dropdown menus?
+.. @+node:ekr.20130806211959.17346: *4* Terry, how do you create the buttons with dropdown menus?
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
 I have a note that it was an @rclick node handled by the context_menu.py 
 plugin, but I am not able to see code or documentation anywhere.  This 
 seems *well* hidden :-)
-.. @+node:ekr.20130806211959.17347: *6* Re: Terry, how do you create the buttons with dropdown menus?
+.. @+node:ekr.20130806211959.17347: *5* Re: Terry, how do you create the buttons with dropdown menus?
 From: Kent Tenney <ktenney@gmail.com>
 
 I don't have any visual indication of the existence of @rclick nodes,
@@ -2100,7 +1232,7 @@ Something I've found useful is adding a @click node like:
 
 that separates my entries from the ever present
 'Remove Button' and 'Goto Script' entries
-.. @+node:ekr.20130806211959.17349: *6* Re: Terry, how do you create the buttons with dropdown menus?
+.. @+node:ekr.20130806211959.17349: *5* Re: Terry, how do you create the buttons with dropdown menus?
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
 On Thu, Apr 11, 2013 at 8:10 PM, Edward K. Ream <edreamleo@gmail.com> wrote:
@@ -2111,7 +1243,7 @@ One more thing.  It's reasonable to have the top-level button just be a
 placeholder for subsidiary @rclick nodes.  To do that without getting a
 warning when clicking the top-level button, set its script to "empty
 string".
-.. @+node:ekr.20130806211959.17350: *6* Re: Terry, how do you create the buttons with dropdown menus?
+.. @+node:ekr.20130806211959.17350: *5* Re: Terry, how do you create the buttons with dropdown menus?
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 On Thu, 11 Apr 2013 00:56:51 -0700 (PDT)
@@ -2127,7 +1259,7 @@ ideal implementation.  OTOH it hasn't broken for 1-2 years.
 
 Cheers -Terry
 
-.. @+node:ekr.20130806211959.17351: *6* Re: Terry, how do you create the buttons with dropdown menus?
+.. @+node:ekr.20130806211959.17351: *5* Re: Terry, how do you create the buttons with dropdown menus?
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
 On Thu, Apr 11, 2013 at 2:56 AM, Edward K. Ream <edreamleo@gmail.com> wrote:
@@ -2138,7 +1270,7 @@ right-clicking the created top-level button work pretty much as expected.
 But I remember that on your machine there was some indicator (a triangle?)
 in the top-level button indicating that it had structure.  Is that the
 case?  If so, how did you create such buttons?
-.. @+node:ekr.20130806211959.17352: *6* Re: Terry, how do you create the buttons with dropdown menus?
+.. @+node:ekr.20130806211959.17352: *5* Re: Terry, how do you create the buttons with dropdown menus?
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 On Thu, 11 Apr 2013 13:50:25 -0500
@@ -2155,7 +1287,7 @@ On Thu, 11 Apr 2013 13:50:25 -0500
 
 @settings
    @string mod_scripting_subtext =3D =E2=96=BE
-.. @+node:ekr.20130806211959.17353: *6* Re: Terry, how do you create the buttons with dropdown menus?
+.. @+node:ekr.20130806211959.17353: *5* Re: Terry, how do you create the buttons with dropdown menus?
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 On Thu, 11 Apr 2013 20:15:33 -0500
@@ -2172,7 +1304,7 @@ On Thu, 11 Apr 2013 20:15:33 -0500
 
 I think you mean set its script to a docstring describing the
 functions it groups together for the tooltip hover text :-)
-.. @+node:ekr.20130806211959.17355: *6* Re: Terry, how do you create the buttons with dropdown menus?
+.. @+node:ekr.20130806211959.17355: *5* Re: Terry, how do you create the buttons with dropdown menus?
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
 On Thu, Apr 11, 2013 at 7:29 AM, Terry Brown <terry_n_brown@yahoo.com>wrote:
@@ -2195,7 +1327,7 @@ qtIconBarClass.setCommandForButton.
 
 I'll add documentation for this, in leoSettings.leo and also in the
 customizing Leo chapter.
-.. @+node:ekr.20130806211959.17356: *5* the workflow of write leo scripts?
+.. @+node:ekr.20130806211959.17356: *4* the workflow of write leo scripts?
 From: HaveF <iamaplayer@gmail.com>
 
 I have read the scripting chapter of leo-editor, and already make my daily
@@ -2235,7 +1367,7 @@ seems to help
 find more example code.
 
 Any suggestion to improve this workflow?
-.. @+node:ekr.20130806211959.17357: *5* Tool for diffing Leo files
+.. @+node:ekr.20130806211959.17357: *4* Tool for diffing Leo files
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 The script below is a tool for diffing two Leo files. The attached
@@ -2387,7 +1519,7 @@ if v:
 
 c.bringToFront()
 c.redraw()
-.. @+node:ekr.20130806211959.17358: *6* Re: Tool for diffing Leo files
+.. @+node:ekr.20130806211959.17358: *5* Re: Tool for diffing Leo files
 From: resi147 <scalet@yebu.de>
 
 
@@ -2411,15 +1543,647 @@ vt = to_c.hiddenRootNode
 """
 just to feed in the 2 nodes, Any quick idea how this can be done the best 
 way?
-.. @+node:ekr.20130806211959.17359: *4* User comments
-.. @+node:ekr.20130807090137.11464: *5* From Vili
+.. @+node:ekr.20130808211520.15901: *3* * encourage e-postcards from users
+.. @+node:ekr.20130503155210.24827: *3* Console script: Install Leo from scratch on Windows
+@language batch
+
+mkdir X:\testing
+pushd X:\testing
+
+wget -O apt.exe --no-clobber http://download.osgeo.org/osgeo4w/release/apt/apt-r1193M.exe
+SET OSGEO4W_ROOT=%~dp0\root
+apt setup
+apt update
+apt install pyqt4 sip
+
+call root\osgeo4w.bat
+
+wget --no-check-certificate http://gist.github.com/maphew/5393935/raw/install-pip.py
+python install-pip.py GO
+python install-pip.py GO
+
+pip install -i https://testpypi.python.org/pypi leo-editor
+
+python apps\Python27\Scripts\leo
+.. @+node:ekr.20130812034101.12574: ** 4.11 b1
+@language rest
+.. @+node:ekr.20130510070942.10606: *3* Bugs (4.11b1)
+.. @+node:ekr.20130503155210.24826: *4* Script: Add Windows handler for .leo files
+# https://groups.google.com/forum/?fromgroups=#!searchin/leo-editor/leo$20script/leo-editor/ANPuhuEIU9c/8lgid9MNKkAJ
+
+@language python
+@tabwidth -4
+
+'''Tell Windows how to handle .leo files, enables double clicking on them to open.
+
+To run: in Leo make this the active node and press [Ctrl-B] (execute-script)
+
+It opens a command shell and uses `assoc` and `ftype` commands to inform Windows
+where python.exe and the Leo launch script is. It's the equivalent of:
+
+    assoc .leo=Leo.File
+    ftype Leo.File="B:\Python27\pythonw.exe" "B:\apps\leo-editor\launchLeo.py" "%1" %*   
+       
+Requires elevated User Account Control (UAC) priviliges.
+See http://superuser.com/questions/88491/force-cmd-exe-to-run-as-admin/
+'''
+
+pyexe = g.sys.executable
+leo = g.os_path_finalize_join(g.computeLeoDir(), '../launchLeo.py')
+
+tmp = g.os.environ['TEMP']
+
+assoc_cmd = 'assoc .leo=Leo.File'
+ftype_cmd = 'ftype Leo.File="{0}" "{1}" "%1" %*'.format(pyexe, leo)
+
+g.es(leo)
+g.es(pyexe)
+
+g.es(tmp)
+g.es(assoc_cmd)
+g.es(ftype_cmd)
+
+from subprocess import Popen
+Popen('start "Shell from Leo" cmd.exe /k "{0} && {1}" '.format(assoc_cmd, ftype_cmd),
+
+    cwd=tmp, shell=True)
+.. @+node:ekr.20130530110446.12450: *4* Fix syntax coloring bug involving multiple body editors
+.. @+node:ekr.20130502102046.10578: *4* Crash deleting body editor
+# Trying to delete a second body editor.
+
+Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 560, in doCommand
+    val = command(event)
+  File "c:\leo.repo\trunk\leo\plugins\qtGui.py", line 2980, in deleteEditor
+    name = w.leo_name
+AttributeError: 'LeoQTextBrowser' object has no attribute 'leo_name'
+.. @+node:ekr.20130805080841.21380: *4* Fix javascript import bug
+https://groups.google.com/forum/#!topic/leo-editor/dmC8iIKlF7g
+.. @+node:ekr.20130805134749.12435: *4* Fix syntax coloring bug
+@language python
+
+def but_quotes_at_the_end_of_a_triple_quoted_string_are_still_tricky(self):
+    string = """Hello "world\""""
+    
+what
+.. @+node:ekr.20130807203905.16649: *3* Doc
+@language rest
+.. @+node:ekr.20130807203905.16650: *4* Leo in a nutshell
+https://groups.google.com/forum/#!topic/leo-editor/lgHE4OJSLzw
+
+In a Nutshell, The Leo Editor...
+
+- has had 15,508 commits made by 47 contributors
+  representing 1,064,650 lines of code
+- is mostly written in Python
+  with an average number of source code comments
+- has a well established, mature codebase
+  maintained by a large development team
+  with decreasing Y-O-Y commits
+- took an estimated 292 years of effort (COCOMO model)
+  starting with its first commit in February, 2002
+  ending with its most recent commit 2 days ago 
+.. @+node:ekr.20130807203905.16655: *4* Tutorials & how-to
+.. @+node:ekr.20130807203905.16656: *5* A beautiful pattern for composing large strings
+From: "Edward K. Ream" <edreamleo@gmail.com>
+
+I continue to work feverishly on various aspects of static type checking.
+
+That work lead to a discovery that may benefit you.  It's one of the most 
+beautiful patterns I've ever created: it allows a program to simply and 
+naturally build up huge strings without using any string operations.  
+Generating an html file with minimal stress on the gc is an obvious 
+application.  You could also say that the pattern creates a Pythonic way of 
+using lisp-like algorithms, but more safely than in lisp.
+
+Full details at the stc documentation page::
+http://webpages.charter.net/edreamleo/stc/stc.html#a-beautiful-pattern-for-building-large-strings
+
+.. @+node:ekr.20130807203905.16657: *6* Re: A beautiful pattern for composing large strings
+From: "Edward K. Ream" <edreamleo@gmail.com>
+
+On Wednesday, January 2, 2013 10:02:40 AM UTC-6, Edward K. Ream wrote:
+
+ReportTraverser uses this pattern at rev 288.  It is a remarkable 
+simplification.
+ 
+
+> The revised r.div method will be something like::
+>
+>     def div(self,aList):
+>         compute old and new indents
+>         return [
+>             <div>, with old indent,
+>             aList, with new indent,
+>             </div>, with old indent,
+>         ]
+>
+
+This doesn't work!  aList won't have the proper indentation.  In 
+particular, the following won't work::
+
+    [['  ',z] for z in aList],
+
+flatten_list will add the two spaces before the line, that is, before a 
+newline. Instead, a hack is needed:
+
+    return [
+        div,
+        join_list(aList,indent='  '),
+        '\\n</div>'
+    ]
+
+The new 'indent' keyword tells flatten_list to add the given indentation 
+(two spaces, here), to strings that start with a newline.  The new code in 
+flatten_list is::
+
+        for i,item in enumerate(aList):
+            if leading:                  yield leading
+            for s in flatten_list(item):
+                if indent:
+                    if s.startswith('\\n'):
+                        yield '\\n'+indent+s[1:]
+                    else:
+                        yield s
+                else:
+                    yield s
+            if sep and i < len(aList)-1: yield sep
+            if trailing:                 yield trailing
+
+The point is that the indentation must be "moved behind the newline".
+
+Edward
+
+.. @+node:ekr.20130807203905.16659: *6* Re: A beautiful pattern for composing large strings
+From: "Ville M. Vainio" <vivainio@gmail.com>
+
+This seems like a spiritual relative of "rope" data structure:
+
+http://en.wikipedia.org/wiki/Rope_(data_structure)
+
+http://www.sgi.com/tech/stl/Rope.html
+
+===== EKR
+
+Yes, there is a similarity. However, the real beauty of new pattern is the
+flatten_list method. It's the combination of the lists and flatten_list
+that gives the pattern real power. We've just seen how the 'indent' keyword
+hack allows sophisticated processing of the lists. I wouldn't expect more
+hacks to be needed, but I've been surprised before ;-)
+.. @+node:ekr.20130807203905.16660: *6* Re: A beautiful pattern for composing large strings
+On Tue, 1 Jan 2013 17:03:05 -0800 (PST)
+"Edward K. Ream" <edreamleo@gmail.com> wrote:
+
+> Generating an html file with minimal stress on the gc is an obvious 
+> application.
+
+Nice.  An HTML specific approach which avoids things like the
+r.div_end() construct is the LXML element factory:
+http://lxml.de/tutorial.html#the-e-factory
+
+Cheers -Terry
+
+.. @+node:ekr.20130807203905.16662: *6* Re: A beautiful pattern for composing large strings
+From: "Edward K. Ream" <edreamleo@gmail.com>
+
+On Thursday, January 3, 2013 3:28:52 AM UTC-6, Ville M. Vainio wrote:
+>
+> Yes, it's indeed an interesting pattern. 
+>
+> It would seem more useful in faster languages than python though; in 
+> python, string operations (and gc) are faster in comparison to executing 
+> other code, whereas in fast, more static languages (C++, Java, Go) avoiding 
+> GC gives you great benefits (I saw 5x perf increase reported for some Go 
+> app when eliminating GC).
+>
+
+Thanks for these remarks.  I've enjoyed thinking about them.  A few 
+responses:
+
+1. This is a smallish pattern--it can't change the world, except insofar as 
+something beautiful changes the world.
+
+2. Otoh, the pattern changes the way I think about lisp and lisp-like 
+patterns.  That's not nothing. For the first time, it makes list-oriented  
+programming pattern completely safe.  It does this because it doesn't 
+matter what each component list contains, nor does it matter *at all* what 
+the shape of any part of the tree is.  This makes the pattern completely 
+flexible.
+
+3. The pattern can be generalized.  The pattern I described uses a tree of 
+component strings to describe a (large) resulting string.  But one can 
+easily imagine using lists to hold anything at all (of whatever tree shape) 
+and then use another version of flatten_list to compose results of other 
+types.  Alternatively, rather than composing a result, the analog of 
+flatten_list could process the tree of lists in other ways.  So the most 
+general version of the pattern is:
+
+A) The tree of lists can contain any data whatever, especially including 
+None,
+B) The "producers" (visitors) can create subtrees of whatever shape,
+C) The analog of flatten_list is free to do anything whatever with the 
+resulting tree.
+
+I suspect that these features are what appeal to lisp programmers ;-)
+
+4. I'm not sure whether the pattern is more useful in "faster" languages or 
+not.  True, anything that helps a feeble language like C++ will seem useful 
+:-)  But points 1-3 above have nothing to do with speed: they just make 
+programming simpler, more flexible, more powerful and more fun.
+
+Imo, gc issues are important both in Python and in C++.  For stc, the only 
+way to get reproducible timing statistics for tests was to do the following 
+before running the test::
+
+    for z in (0,1,2): gc.collect(z)
+
+The ReportTraverser class no longer contains *any* calls to string.join, so 
+one could imagine that all strings used in the code would be interned.  The 
+generated tree actually contains nothing but *references* to strings, and 
+if all strings are interned the references will not themselves cause any 
+new strings to be allocated.
+
+Naturally, gc issues are even more important in language like C++ without a 
+gc.  Lol.  The preceding paragraph is more important for C++ than in 
+Python.  So yes, in this sense I agree with you completely that the pattern 
+is more useful for "fast" languages than for Python.
+
+Thanks, Ville, for provoking all these pleasant thoughts :-)
+.. @+node:ekr.20130807203905.16663: *6* Re: A beautiful pattern for composing large strings
+From: "Edward K. Ream" <edreamleo@gmail.com>
+
+On Tue, Jan 1, 2013 at 9:48 PM, Terry Brown <terry_n_brown@yahoo.com> wrote:
+
+> On Tue, 1 Jan 2013 17:03:05 -0800 (PST)
+> "Edward K. Ream" <edreamleo@gmail.com> wrote:
+>
+> > Generating an html file with minimal stress on the gc is an obvious
+> > application.
+>
+> Nice.  An HTML specific approach which avoids things like the
+> r.div_end() construct is the LXML element factory:
+> http://lxml.de/tutorial.html#the-e-factory
+>
+
+Beautiful.  With the list framework the revised r.div method would be
+something like::
+
+    def div(self,aList):
+        compute old and new indents
+        return [
+            <div>, with old indent,
+            aList, with new indent,
+            </div>, with old indent,
+        ]
+
+An example of the pattern in use::
+
+    return [
+        ...
+        r.div([
+            contents of the div,
+        ]),
+        ...
+    ]
+
+Similarly for span, etc. Thanks for pointing this out.  This is too good to
+ignore.  I'll do it soon.
+.. @+node:ekr.20130807203905.16664: *5* All about clone conflicts
+From: "Edward K. Ream" <edreamleo@gmail.com>
+
+Some people seem to think that it is difficult to understand how Leo
+handles "clone wars":  differing values for a cloned nodes that appear
+in several external files.  That's not true.  The rule is::
+
+    **The last clone that Leo reads wins.**
+
+That is, for any cloned node C, Leo takes the value of C.h and C.b to
+be the values specified by the last copy that Leo reads.
+
+There is only one complication::
+
+    **Leo reads the entire outline before reading any external
+files.**
+
+Thus, if C appears in x.leo, y.py and z.py, Leo will choose the value
+for C in x.py or y.py, depending on which @<file> node appears later
+in the outline.
+
+Notes:
+
+1. Whenever Leo detects multiple values for C when opening an outline, Leo
+   creates a "Recovered nodes" tree. This tree contains all the various
+   values for C, nicely formatted so that it is easy to determine where the
+   differences are.
+
+2. I've just refreshed my memory by looking at the code.  The relevant methods are:
+
+    fc.getLeoFile # Reads the outline, then calls at.readAll to read all external files.
+    at.indicateNodeChanged # Adds data to c.nodeConflictList
+    cacher.reportChangedClone # Adds data to c.nodeConflictList
+    fc.handleNodeConflicts # Creates "Recovered Nodes" node and its children.
+
+3. The present code is the simplest code that could possibly work. There is
+no way Leo is going to do AI in order to implement complex rules for which
+clones are "more important" than others. Thus, if you use cross-file
+clones, it is up to *you* to know these rules and handle any resulting
+conflicts. Imo, the "Recovered Nodes" feature is a big step forward for
+Leo, and makes it impossible to lose data unless you willfully refuse to
+examine the data.
+.. @+node:ekr.20130807203905.16665: *6* Re: All about clone conflicts
+From: Joon Ro <joonpyro@gmail.com>
+
+Thanks for the explanation. As a matter of fact, I was having hard time 
+understanding this. 
+
+I had my source file in a @shadow node, and then I had a backup of that 
+file as @file node, which had clones of the nodes of the source @shadow 
+file and some other codes that I stashed. 
+
+Whenever I changed the source code externally with leo closed, when I open 
+leo, it made recovered nodes. The problem was since @file was placed 
+"later" in the outline, leo kept putting the new changes I made to old, 
+instead of new.
+
+Now I understand how this works. but I think in multiple external file 
+cases, it would make more sense if leo checks the file modification time 
+when it makes decision which node is new, instead of just depending on the 
+order of files in the outline. In above case, it is natural for me to have 
+actual source nodes on the top of the outline and backup nodes on the 
+bottom. Please let me know what you think. 
+.. @+node:ekr.20130807203905.16666: *5* Draft: Position tutorial
+@language rest
+
+A **position** object represents a specific node in a Leo outline.
+
+Equivalently, a position represents the state of a Leo generator, that is,
+a specific node during a traversal of a Leo outline.
+
+Because of clones, a node may appear arbitrarily many times in an outline,
+so a node may appear at arbitrarily many positions in the outline.
+
+For any position p, **p.v** is the vnode at position p.
+
+A node's vnode never changes, regardless of where the node appears in the
+outline, and regardless of whether the node is cloned or not.
+
+**Positions become invalid when the outline changes.**
+
+You may save and and use positions *provided* the outline remains unchanged.
+
+Leo's generators deliver positions, one after each other, using a *single*
+(ever-changing) position. As a result, scripts must use p.copy() to create
+lists of positions. For example::
+
+    aList = [p.copy() for p in c.rootPosition().subtree()]
+.. @+node:ekr.20130807203905.16667: *6* other info
+Consider this example, where nodes with the same names are clones of each other::
+
++ Root
+    + A
+        - B
+    + A
+        - B
+    - B
+
+Leo's c.all_nodes() iterator will deliver 9 positions:
+
+    1: Root
+    2: A
+    3: B
+    4: A
+    5: B
+    6: B
+
+*All* positions returned by a traversal are distinct.  Some examples:
+
+- Position 2: A is different from position 4: A
+  The former is the first child of root; the latter is the second child of root.
+  
+- The parent of position 3: B is A at childIndex 0 of Root.
+  The parent of position 5: B is A at childIndex 1 of Root.
+  The parent of position 6: B is Root. The childIndex of 6: B is 2.
+
+.. @+node:ekr.20130807203905.16668: *5* Draft: unit-testing tutorial
+From: "Edward K. Ream" <edreamleo@gmail.com>
+
+The following is a first draft of a unit-testing tutorial.  It will form 
+the basis of a new help-for-unit-testing command, and may also become the 
+introduction to Leo unit-testing chapter.
+
+All comments are welcome.  Please let me know if anything is unclear.
+
+-----
+
+Leo makes it easy to create and run unit tests from individual outline 
+nodes or trees.
+
+A node whose headline starts with @tests defines a unit test.
+
+The body text of the @test node contains a **self-contained** unit test.
+
+For example, this creates a complete unit test::
+
+    @test fails  (headline)
+    assert False (body text)
+
+To run this test, select the @test node and do:
+<alt-x>run-selected-unit-tests-locally.
+Leo will create and run the unit test automatically.
+
+To see all of Leo's unit testing commands, do:
+<alt-x>run<tab>
+
+Leo pre-defines 'c', 'g' and 'p' in unit tests just as in scripts.
+
+For more details about unit testing, see: 
+http://leoeditor.com/unitTesting.html
+
+**Notes for Leo developers**
+
+leo/test/unitTest.leo contains all of Leo's own unit tests.
+
+Running all tests is not necessary.  Just select::
+
+    Active Unit Tests
+
+and then do Alt-4 (run-selected-unit-tests-locally).
+
+**Note**: Some tests will likely fail on machines other than EKR's.
+You only need to be concerned about unit tests that start failing after you 
+make your changes.
+
+.. @+node:ekr.20130807203905.16669: *5* Tutorial scripts (To be written)
+.. @+node:ekr.20130807203905.16670: *6* What makes Leo special: shorter
+@wrap
+@language rest
+
+.. |br| raw:: html
+
+   <br />
+   
+**Leo completely integrates scripting and outlines.** |br|
+Leo outlines are true Python objects, not just text.
+
+\1. **Headlines naturally define types**, such as:
+
+**@file** trees create external files. |br|
+**@test** nodes and trees create unit tests. |br|
+**@button** nodes create **script buttons**. |br|
+**@command** nodes create user-defined commands. |br|
+**@html** trees create web pages. |br|
+**@settings** trees contain Leo settings.
+
+\2. **Any node may contain a Leo script**:
+
+A simple outline-aware markup language creates scripts |br|
+and external files from outline nodes and trees.
+
+\3. **Leo scripts have *easy* access to all outline data**:
+
+All Leo scripts execute with these **predefined symbols**: |br|
+**c** gives access to all outline data and all of Leo's code. |br|
+**p** is the presently selected node in the script. |br|
+**p.h** is the headline text; **p.b** is the body text. |br|
+**g** is a module containing utility functions & classes.
+
+\4. **All parts of Leo are scriptable**, including: |br|
+
+.. In short, all outline data are completely scriptable.
+.. @+node:ekr.20130807203905.16671: *6* What makes Leo special
+@language rest
+
+Leo looks like relatively ordinary outline editor,
+but it has unique scripting and data-organizing abilities.
+
+Scripting
+---------
+
+- Any node in the outline may contain a Leo script.
+- Leo can *compose* scripts from a node and its descendants.
+- Leo scripts can *easily* access all the data in any outline.
+
+Leo scripts can do things that can't be *imagined* in other editors.
+
+Data-organizing
+---------------
+
+- Cloned nodes may appear many times in the same outline.
+- Clones create views of data that persist indefinitely.
+  Any set of nodes may appear in arbitrirly many views of the data.
+- Headlines naturally describe the data contained in nodes.
+
+
+Script nodes
+------------
+
+There are many ways to combine these capabilities.
+.. @+node:ekr.20130807203905.16672: *6* Scripting
+.. @+node:ekr.20130807203905.16673: *6* External files
+.. @+node:ekr.20130807203905.16674: *6* The screenshots plugin
+.. @+node:ekr.20130807203905.16675: *6* The contextmenu plugin
+@language rest
+
+Adds configurable right-click menu items to nodes.
+.. @+node:ekr.20130807203905.16676: *6* The bookmarks plugin
+.. @+node:ekr.20130807203905.16677: *6* The todo plugin
+.. @+node:ekr.20130807203905.16818: *6* The valuespace plugin (promised!)
+.. @+node:ekr.20130807203905.16678: *4* For Implementors
+@language rest
+
+- Don't read code: use g.trace and g.pdb instead.
+- Where the bodies are hidden.
+    - self.w in leoEditCommands.py
+- Complex code that *can't* be simplified.
+- The top 20 methods.  You must understand these *in general*.
+    - k.masterKeyHandler.
+    - qt.eventFilter.
+    - 
+    
+    
+** Add mandatory _kind fields to all g.Bunches.
+.. @+node:ekr.20130807203905.16679: *5* Centralizing focus handling (to make debugging easier)
+From: "Ville M. Vainio" <vivainio@gmail.com>
+
+I am having some problems wrapping my head around how focus behaves
+throughout leo.
+
+IMO it would be a good idea to have only one place in Leo where focus is
+explicitly set. E.g. g.setFocus(widget). This implementetation would
+suffice:
+
+def setFocus(widget):
+  widget.setFocus()
+
+Reasoning: it would be handy to add debugging stuff here, to see why my
+focus stuff is failing in alt-x go-anywhere handling.
+
+(My guess is treeFocusHelper only understanding focus being either in tree
+or body, but no time to explore further now)
+
+===== EKR
+
+In fact, there is only one such place: c.outerUpdate.  The various
+xWantsFocus methods simply set ivars, which c.outerUpdate uses to set the
+focus when a command completes.
+
+The various xWantsFocusNow methods call c.outerUpdate immediately.  Usually
+we don't want to do this, because it could cause screen flash, but
+sometimes the immediate update is essential.
+
+I've marked this thread as a topic for implementers.  Such things will form
+the basis for documentation for my successors.
+.. @+node:ekr.20130807203905.16681: *5* Free "continuous integration" for Leo
+From: "Ville M. Vainio" <vivainio@gmail.com>
+
+--089e0122f80868cb1b04dce55d84
+Content-Type: text/plain; charset=ISO-8859-1
+
+Someone may be interested in investigating a free CI system for Leo:
+
+https://travis-ci.org/
+
+This could e.g. create debian packages for daily builds, run unit tests,
+check stuff with lint, try compiling with python3 so we (*cough*) wouldn't
+have accidental print statements in the source...
+.. @+node:ekr.20130807203905.16684: *5* Toolkit independent apis
+From: "Ville M. Vainio" <vivainio@gmail.com>
+
+Ramblings relevant to Leo, by the PyQt lead developer:
+
+http://www.riverbankcomputing.co.uk/static/Docs/dip/architecture.html#the-realities-of-software-development
+
+esp "The Myth of Toolkit Independence"
+
+===== EKR
+
+Leo's core benefits greatly from toolkit independence, despite some
+(usually minor) extra complexity. Obviously, this has not constrained
+what plugins can do.
+
+This is pretty much a non-issue for Leo.  The reason is clear enough:
+the hundreds of commands defined in Leo's core are mostly
+straightforward renditions of emacs text commands.  There, the
+constraints of an abstraction layer do not pinch.  Furthermore, using
+common gui-level code is a good application of the DRY (Don't Repeat
+Yourself) principle, as recent bug fixes in the common code
+illustrate.
+
+The code for ensuring that the outline and body text are updated
+properly (and in synch!) is much more difficult, but the difficulties
+are fundamental: they have almost nothing to do with actual guis.
+
+In short, I think Leo's design uses the best of the gui-dependent and
+gui-independent approaches.
+.. @+node:ekr.20130806211959.17359: *3* User comments
+.. @+node:ekr.20130807090137.11464: *4* From Vili
 From: vili <viljem.tisnikar@gmail.com>
 
 Despite I am no programmer, I have been using Leo for some years now
 as my "Intelligent PIM" - I organize my (complex) life with Leo.
 
 Many thanks to Edward and others for the great application.
-.. @+node:ekr.20130806211959.17360: *5* Blog post about how Leo can improve organization of code bases
+.. @+node:ekr.20130806211959.17360: *4* Blog post about how Leo can improve organization of code bases
 From: Rickard Lindberg <ricli85@gmail.com>
 
 I wrote a blog post about how Leo can be used to improve the organization 
@@ -2469,7 +2233,7 @@ present programs so that humans can understand them. I'm not sure literate
 programming like Knuth uses it is the best way (in particular, I think the
 programs are harder to modify), but I also think that a folder with just
 source code is not so good either.
-.. @+node:ekr.20130806211959.17363: *6* Re: Blog post about how Leo can improve organization of code bases
+.. @+node:ekr.20130806211959.17363: *5* Re: Blog post about how Leo can improve organization of code bases
 From: Matt Wilkie <maphew@gmail.com>
 
 Nice article Rickard, I think it captures the background problem well.
@@ -2477,7 +2241,7 @@ Nice article Rickard, I think it captures the background problem well.
 I'm not sure the images communicate clones effectively -- but don't really
 have an alternative suggestion that would be an improvement. It's just
 really hard to appreciate how well they work without experiencing them!
-.. @+node:ekr.20130806211959.17364: *6* Re: Blog post about how Leo can improve organization of code bases
+.. @+node:ekr.20130806211959.17364: *5* Re: Blog post about how Leo can improve organization of code bases
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 On Sun, 24 Feb 2013 03:12:16 -0800 (PST)
@@ -2495,7 +2259,7 @@ html template, css, java-script, url-dispatch, tests, model definitions.
 In fact I've just made some updates to the bookmarks display plugin
 which make using it effectively smoother, for a mouse user, anyway, to
 help with this.  Will push them soon.
-.. @+node:ekr.20130806211959.17365: *5* Leo as PIM and authoring tool
+.. @+node:ekr.20130806211959.17365: *4* Leo as PIM and authoring tool
 Josef <joe_da@gmx.net>
 7/30/12
 		
@@ -2668,7 +2432,7 @@ Leo to whatever the tool needs (using @setting). Ideally, one would even
 have a choice between opening the new page in a different or in the same
 PDF viewer instance as the last page, but few viewers support that (Okular
 does - but I don't know any cross-platform solution).
-.. @+node:ekr.20130806211959.17366: *5* persistent state with json as a leo abbreviation
+.. @+node:ekr.20130806211959.17366: *4* persistent state with json as a leo abbreviation
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 I've added an abbreviation to my myLeoSettings.leo abbreviations:
@@ -2705,7 +2469,7 @@ for what is barely 4 lines of actual code, but those 4 lines give you
 very handy robust persistence, so something like an editor abbreviation
 is the obvious way to make the available - nothing Leo specific here,
 except that only serious editors have abbreviation like that ;-).
-.. @+node:ekr.20130806211959.17369: *6* Re: persistent state with json as a leo abbreviation
+.. @+node:ekr.20130806211959.17369: *5* Re: persistent state with json as a leo abbreviation
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 
@@ -2760,7 +2524,7 @@ if __name__ == '__main__':
         json.dump(cache_info, open(json_state_file, 'w'), indent=4)
 ---cut here---
 
-.. @+node:ekr.20130806211959.17370: *5* why Leo
+.. @+node:ekr.20130806211959.17370: *4* why Leo
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 Because I have two nodes which were originally identical but are now
@@ -2786,7 +2550,7 @@ takes to write an email about it - well, that's "why Leo".
 (I also have @file ~/.leo/sql and @file ~/.leo/dml for commands for
 handling SQL and an XML dialect I use a lot, it's a great way to manage
 little snippet functions)
-.. @+node:ekr.20130806211959.17371: *6* Fw: why Leo
+.. @+node:ekr.20130806211959.17371: *5* Fw: why Leo
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 Because I have two nodes which were originally identical but are now
@@ -2814,7 +2578,7 @@ handling SQL and an XML dialect I use a lot, it's a great way to manage
 little snippet functions)
 
 Cheers -Terry
-.. @+node:ekr.20130806211959.17374: *7* Re: why Leo
+.. @+node:ekr.20130806211959.17374: *6* Re: why Leo
 From: wgw <wgwinder@gmail.com>
 
 Useful!
@@ -2875,7 +2639,7 @@ Le vendredi 1 f=E9vrier 2013 11:08:30 UTC-8, Terry a =E9crit :
 > Cheers -Terry
 >
 
-.. @+node:ekr.20130806211959.17375: *5* Fidel's first post
+.. @+node:ekr.20130806211959.17375: *4* Fidel's first post
 From: <fidelperez@gmail.com>
 
 This is my first post on this group, as I discovered your software only 
@@ -2894,468 +2658,7 @@ to track the information just in the way I like it, but to also operate
 with it avoiding repetitive tasks for me.
 
 Thanks for your software, Im really excited to have found it.
-.. @+node:ekr.20130812034101.12576: *3* To do: 4.11 a1
-@language rest
-.. @+node:ekr.20130807203905.16800: *4* Full tree preview
-From: wgw <wgwinder@gmail.com>
-
-I would like to see a fuller outline view of Leo trees. So instead of 
-seeing one body only and the tree of headlines, I want to display all the 
-parts of the tree (all bodies and subheadings) as continuous text, much 
-like a word processor outline. 
-
-===== From: Terry Brown <terry_n_brown@yahoo.com>
-
-Ville did something possibly similar:
-https://groups.google.com/forum/?fromgroups=#!topic/leo-editor/Zs-5jKjPAB0
-
-===== From: wgw <wgwinder@gmail.com>
-
-Thanks! That plugin does both more and less than I want: more, because I
-get a full and nicely formatted window with editable text boxes; less,
-since it doesn't write any edited text back to the tree.
-
-My fumbling tinkering would go towards not editing in the preview
-window/pane at all, and just having a keystroke or click scroll the editing=
-
-pane to the right node in Leo. But that would mean that the preview panel=
-
-would have have to be properly indexed so that from the cursor position in=
-
-the panel the plugin could find the proper node back in the Leo panel.
- (Kludgy way: put the node id in the text!)
-
-Thanks for the suggestion.
-
-===== wgw
-
-Is there a  way to delete an inserted pane?
-
-===== Terry
-
-Yes, although a bit putzy.  Right click on the panel divider adjacent
-to the pane, it may be above or below or left or right of it.  The panes
-either side of the divider will be highlighted blue and orange.  There
-will be an option to "Delete 1 left" or "Delete 1 below" or similar, if
-that seems to refer to the panel you want to delete, that's your option.
-
-If the target panel seems to be joined with another (i.e. 2 not 1
-above) try right clicking a different divider to start with.
-.. @+node:ekr.20130812034101.12579: *5* Terry script
-@language python
-
-from PyQt4 import QtGui, QtCore
-from xml.sax.saxutils import escape
-
-def add_html(html, nd):
-    """recursively add to an html list with links to nodes"""
-    
-    unl = nd.get_UNL()
-    html.append("<div class='level'>"
-        "<div><a href='%s' title='%s'>%s</a></div>" %
-        (unl, unl, escape(nd.h)))
-    html.append("<pre>%s</pre>"%escape(nd.b))
-    for child in nd.children():
-        add_html(html, child)
-    html.append("</div>")
-
-def make_overview(c):
-    """build the overview widget"""
-
-    te = QtGui.QTextBrowser()
-    te.setReadOnly(True)
-    te.setOpenLinks(False)
-    
-    def anchorClicked(url, c=c, te=te):
-        
-        url = str(url.toString())
-        g.handleUrl(url,c=c,p=c.p)
-        
-        if te.ctrl_click:
-            te.deleteLater()
-        
-    te.anchorClicked.connect(anchorClicked)
-    
-    def mousePressEvent(event, te=te, original=te.mousePressEvent):
-        te.ctrl_click = bool(event.modifiers() & QtCore.Qt.ControlModifier)
-        original(event)
-    
-    te.mousePressEvent = mousePressEvent
-    
-    html = ["""<html><head><style>
-    .level .level {margin-left: 1.5em}
-    a {text-decoration: none; font-size: 120%}
-    </style></head><body>"""]
-    
-    for nd in c.getSelectedPositions():
-        add_html(html, nd)
-
-    html.append("</body></html>") 
-    
-    html = '\\n'.join(html)
-    
-    te.setHtml(html)
-    
-    return te
-
-class OverviewPaneProvider:
-    def __init__(self, c):
-        self.c = c
-        # Careful: we may be unit testing.
-        if hasattr(c, 'free_layout'):
-            splitter = c.free_layout.get_top_splitter()
-            if splitter:
-                splitter.register_provider(self)
-    def ns_provides(self):
-        return[('Overview', '_add_overview_pane')]
-    def ns_provide(self, id_):
-        if id_ == '_add_overview_pane':
-            w = make_overview(c)
-            return w
-    def ns_title(self, id_):
-        if id_ == '_add_overview_pane':
-            return "Leo Outline Overview"
-    def ns_provider_id(self):
-        # used by register_provider() to unregister previously registered
-        # providers of the same service
-        return "outline overview window"
-
-OverviewPaneProvider(c)
-.. @+node:ekr.20130812034101.12578: *6* << docstring >>
-''' The script sets up Leo to display all the parts of the tree (all bodies
-and subheadings) as continuous text, much like a word processor outline.
-
-1) Paste the code below into a node, then hit the "run-script" button.
-
-2) Then select a node with some hierarchy, not too much.
-
-3) Then right click on the panel dividers between the tree / body / log
-   panes, you should see a context menu with an "Open Window" sub-menu,
-   which should contain an "Overview" item.
-
-You should get a continuous view of the hierarchy with clickable
-headlines which take you to the node.
-
-You can select multiple nodes in step 2 above, with normal list Ctrl-
-or Shift- click operations.  Nodes are shown in the overview in the
-order selected.  This is how you'd generate the overview for a whole
-outline - i.e. contract the whole outline, click the first top level
-node, shift click the last top level node, and then step 3.
-
-You can also embed the overview in a pane in the Leo window by select
-"Insert" rather than "Open window" in step 3, click the action button
-and select Overview.
-
-This was the low hanging fruit, based on code used in bookmarks.py.  A
-refresh button for the outline wouldn't be too hard, but right now
-you need to close the window / pane and open it again to refresh.
-'''
-.. @+node:ekr.20130807203905.16806: *5* Re: Full tree preview: wishlist item? ... or am I missing something?
-From: Matt Wilkie <maphew@gmail.com>
-
-I use *"r-click > Edit in ..."* for this purpose. It's a poor man's
-workaround. Something integrated would be much nicer. Just thought I'd
-mention it for anyone looking for something they might be able to use right
-away.
-
-===== Terry
-
-When I try that it only edits the one node, none of its children.
-Which is what I thought it did.
-.. @+node:ekr.20130807203905.16808: *5* Re: Full tree preview: wishlist item? ... or am I missing something?
-From: Matt Wilkie <maphew@gmail.com>
-
-Are the links in the overview supposed to open up a browser window? The
-alt-tip text gives an in-Leo hiearchy, e.g. "B:\code\dropbox-code.leo#leo
-stuff-->Overview of selected nodes" but clicking goes to
-http://www.google.ca/, and in Internet Explorer even though Firefox is my
-default browser.
-
-===== Terry
-
-No, that's not right, they're supposed to just select the node they
-belong to.
-
-===== Matt
-
-And, more generally, can these hover-over-pane-divider-then-right-click
-actions be made available any other way? Like a drop down menu from a
-button or alt-x command or something.
-
-===== Terry
-
-What, you mean instead of being completely hidden where no one will
-ever find them?  :-)  Most of them (not the Open Window variants of
-course) rely on the context provided by your selection of a particular
-divider, insert-where, delete-which etc.
-
-Probably the most friendly would be a button which pops up an overlay
-over the UI where you can select which pane to delete, or where to
-insert, etc.  But that would be hard.
-
-But it occurs to me that it might be the open window variants you want,
-specifically the code to make a button / command to open a window with
-a particular panel in it.  That would be this:
-
-if hasattr(c, 'free_layout'):
-    splitter = c.free_layout.get_top_splitter()
-    if splitter:
-        splitter.open_window(action='_add_overview_pane')
-
-.. @+node:ekr.20130807203905.16814: *5* Re: Full tree preview: wishlist item? ... or am I missing something?
-From: wgw <wgwinder@gmail.com>
-
-Excellent! This is really a great help for me. I'm still experimenting, but 
-one thing I will find useful is that I can open several of these panes and 
-navigate through each of the "views". Plus (and this has been a longtime 
-wishlist item for those with fading sight), I can increase the text size 
-for reading big chunks of text. 
-
-(Another plus, and this is a big one, I can actually read your code well 
-enough that I start to have some inkling about how to do this kind of 
-addition to Leo. I could never begin to write it myself, but Leo makes it 
-accessible even for shambling hackers.)
-
-One question: is there a  way to delete an inserted pane?  It  looks useful 
-to have an inserted pane, but refreshing will require killing the pane and 
-reinserting.... 
-.. @+node:ekr.20130807090137.11459: *4* Update MacOS install docs
-.. @+node:ekr.20130806072439.20688: *5* Macintosh installation
-From: "JohnKStevenson@gmail.com" <john.k.stevenson@gmail.com>
-
-Here is the question I posed and then sent to a user rather than the
-qroup:
-
-The instructions at Ed Ream's site, say to use brew to load pyqt and
-sip, actually they don't say to load sip.
-
-Why would the order be important? Are they not individual packages?
-
-After failing to get it to run following the instructions,
-I loaded QT from Troll Tech and it still failed.
-
-My system:
- Xcode 3.2.6
- Python 2.6.1 is installed.
- gcc 4.2.1  is installed.
- QT installed under Developer/Tools and Developer/Applications
--- Clean /usr/local
--- chown -R me:admin /usr/local
--- Install homebrew
-
----  /usr/bin/ruby -e "$(curl -fsSL https://raw.github.com/gist/323731)"
-
-Brew 0.9 is installed.
----       brew update
-
--- Install PyQT
---- brew install pyqt
-pyqt-4.9.1 installed
----  brew install sip
-sip-4.13.2 installed
---  Added to path, (.bash_profile)
- --- export $PYTHONPATH=/usr/local/lib/python:$PYTHONPATH
-
--- unzipped leo-4.10 somewhere
--- ran the script element "python launchLeo.py --gui=qt $1" result:
-"no such option --qt"
-
-I really wish there were a simple script or brew thing to load this
-tool.
-
-It seems that most "Leo People" are using Windoze or Linux, but Mac
-people need good outlining too. (Bring in the CLONES!)
-
-David Humphrey responded, thanks David, but still no joy.
-.. @+node:ekr.20130806072439.20689: *6* Re: Macintosh installation
-From: David Humphrey <david@dlkeh.net>
-
-John,
-
-I'm definitely not a Qt specialist (or Leo specialist either), but I
-wonder if your PyQt installation is working correctly.  Try importing
-PyQt4 as Leo does and see if any error messages appear.  Here's how it
-looked on my machine:
-
-Deviant:~ dlh$ python
-Python 2.7.2 (v2.7.2:8527427914a2, Jun 11 2011, 15:22:34)
-[GCC 4.2.1 (Apple Inc. build 5666) (dot 3)] on darwin
-Type "help", "copyright", "credits" or "license" for more information.
->>> import PyQt4.QtCore
->>> import PyQt4.QtGUI
->>>
-
-i.e., clean imports, no complaints.  While this will only provide
-clues, they might be enough to help move forward.
-
-I find this same lack of support with other apps, e.g, Wikidpad, but,
-let's face it: There are a lot more Windows and Linux boxes running
-these non-commercial apps than OS X boxes.
-.. @+node:ekr.20130806072439.20690: *6* Re: Macintosh installation
-From: Ludwig Schwardt <ludwig.schwardt@gmail.com>
-
---4fa8f601_7f01579b_93
-
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-
-Hi John, 
-
-I wrote the original instructions for using Homebrew to install Leo on the Mac. Unfortunately those instructions are a bit outdated by now. From your description I only see one problem: the PYTHONPATH you added to .bash_profile has changed to
-
-export PYTHONPATH=3D/usr/local/lib/python2.6/site-packages:$PYTHONPATH
-
-This is mentioned by brew after you install sip - reinstall sip to verify the correct incantation for you (I assume you are using Python 2.6 - change to python2.7 if necessary).
-
-To answer some of your questions: pyqt depends on qt and sip, therefore installing the pyqt package will automatically install the rest. I've installed them separately in the instructions below to pick up the correct PYTHONPATH setting.
-
-Here is a summary of what I did today on a reasonably clean Lion system to get Leo working (maybe Ed can put this on the web site):
-
-- Read the Homebrew installation instructions at
-  https://github.com/mxcl/homebrew/wiki/Installation
-
-- Make sure you have Xcode installed (test it by confirming
-  that "gcc" runs in the Terminal). You can either get the full
-  Xcode beast or the lean-and-mean Command-Line Tools
-  for Xcode, as suggested in the Homebrew installation
-  instructions.
-
-
-- In preparation for Homebrew, the best option in my opinion is
-  to delete /usr/local via::
-
-  sudo rm -rf /usr/local
-
-  and install any software in it via Homebrew instead. If this step
-  fills you with dread and you do not want to lose your beloved
-  third-party software, the second-best option is to make sure you
-  have write permission for the directory via::
-
-  sudo chown -R <your user name>:admin /usr/local
-
-  If you don't know your username, run "whoami". :-) This is
-  useful because homebrew actually discourages you from
-  installing third-party software as the superuser (the usual Mac
-  apps in /Applications are also installed as the normal user,
-  for that matter).
-
-
-- Install Homebrew (http://mxcl.github.com/homebrew/) by running
-the following command in the Terminal::
-
-
-  /usr/bin/ruby -e "$(/usr/bin/curl -fsSL https://raw.github.com/mxcl/homebrew/master/Library/Contributions/install_homebrew.rb)"
-
-- Run "brew doctor" and check any further suggestions to improve
-your system.
-
-
-- Run "brew update" to get the latest formulas
-
-- Install sip and note the caveat::
-
-  brew install sip
-
-  This warns you to add the local python directory to your PYTHONPATH.
-  Make a note of what this is (especially if you are not on Lion!).
-
-- Add the following lines to your ~/.bash_profile
-  (or ~/.profile on Leopard) - this is the default for LION::
-
-  export PATH=3D/usr/local/bin:$PATH
-  # This is for SIP (and PyQT) as suggested by Homebrew
-  export PYTHONPATH=3D/usr/local/lib/python2.7/site-packages:$PYTHONPATH
-
-- Install PyQT::
-
-  brew install pyqt
- 
-
-- Open a new Terminal tab / window so that the above settings
-  take effect, and install Leo. I downloaded the Leo-4.9-final-a.zip,
-  unzipped it, and ran "python launchLeo.py" inside the Leo
-  directory.
-
-
-It would really be great to get a Leo formula going for Homebrew=85 As mentioned before, the main question is just where to place all the Leo files in the /usr/local hierarchy.
-
-Regards,
-Ludwig
-.. @+node:ekr.20130806072439.20691: *5* Macintosh Snow leopard installation
-From: "JohnKStevenson@gmail.com" <john.k.stevenson@gmail.com>
-
-Many thanks to Ludwig Schwardt, he identified the missing element of
-the $PYTHONPATH, for Snow Leopard it is "export PYTHONPATH=/usr/local/
-lib/python2.6/site-packages" . Since I had an incorrect pythonpath, I
-just set it. Once set, leo works.
-It would be nice to have a script to install Leo.
-The directory structure and placement should be the same as Linux?
-
-I have not used Leo for a number of years, so this is a good reunion,
-thanks all.
-.. @+node:ekr.20130806072439.20686: *5* Mac OS Lion installation instructions need updating
-From: "kevin@ksvanhorn.com" <kvanhorn@ksvanhorn.com>
-
-The instructions for installing Leo on Mac OS X 10.7 Lion say to run
-
-/usr/bin/ruby -e "$(curl -fsSL https://raw.github.com/gist/323731)"
-
-Actually, that doesn't work. If you run the curl command by itself,
-you get a message that the script has moved to
-
-https://github.com/mxcl/homebrew/blob/master/Library/Contributions/install_homebrew.rb
-
-That actually gives you a web page instead of the script itself. I
-ended up doing a copy and paste from the script shown on that page
-into a newly created file, then running the script.
-.. @+node:ekr.20130806072439.20687: *6* Re: Mac OS Lion installation instructions need updating
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-On Fri, Apr 6, 2012 at 12:51 AM, kevin@ksvanhorn.com
-<kvanhorn@ksvanhorn.com> wrote:
-> The instructions for installing Leo on Mac OS X 10.7 Lion say to run
->
-> /usr/bin/ruby -e "$(curl -fsSL https://raw.github.com/gist/323731)"
->
-> Actually, that doesn't work. If you run the curl command by itself,
-> you get a message that the script has moved to
->
-> https://github.com/mxcl/homebrew/blob/master/Library/Contributions/install_homebrew.rb
->
-> That actually gives you a web page instead of the script itself. I
-> ended up doing a copy and paste from the script shown on that page
-> into a newly created file, then running the script.
-
-Thanks for this detailed report.  I'll look into it soon.
-
-Edward
-.. @+node:ekr.20130803125244.17100: ** Docs: Next
-.. @+node:ekr.20130803125244.17101: *3* * Gallery of screenshots
-.. @+node:ekr.20130408095053.10307: *3* * Guide for the next leaders
-# Use bookmarks?
-.. @+node:ekr.20130503155210.24814: *3* * Tutorials/Screencasts
-@nocolor-node
-
-Rewrite in screencast-script style:
-- Docstrings for the most important plugins.
-- All help-for-<topic> text.
-- Leo's tutorials.
-
-** Screencast style for plugins docstrings.
-* Screencast style for help messages.
-* Screencast style for tutorials.
-* Create YouTube channel for Leo screencasts.
-
-Topics:
-- Minibuffer: alt-x, tab-completion.
-- @button.
-- @rclick
-- Find/Change (done)
-- execute-script.
-- bookmarks.py.
-
-.. @+node:ekr.20130803125244.17099: *3* * Every command should have a **complete** docstring.
-.. @+node:ekr.20110921094450.6956: ** To do: 4.12
+.. @+node:ekr.20110921094450.6956: ** 4.12
 @language rest
 
 - Revisit some of the worst parts of Leo's code, especially undo and headline editing.
@@ -3369,6 +2672,263 @@ I'm slowly trying to grok leo. I love meld, it's simply the best text
 comparison I've ever seen. I wonder if a greater bit of integration between
 meld and leo is possible, and in which ways. Undoubtedly calling it as an
 external process is better than anything.
+.. @+node:ekr.20130812034101.12580: *3* Installation wishlist
+@language rest
+.. @+node:ekr.20130806072439.20650: *4* Wishlist: brew install leo
+From: Winn Dixie <incredible0n3@gmail.com>
+
+Would be stellar to have a brew install leo (for Mac OSX 10.7.X) with
+possible built in options to install vim bindings.
+.. @+node:ekr.20130806072439.20732: *4* Runnable Leo in one .zip file.
+From: Terry Brown <terry_n_brown@yahoo.com>
+
+Summary - it's easy to make a .zip file containing Leo and all it's
+dependencies.
+
+Inspired by Matt's recipe, using VirtualBox throw away 1GB Windows XP
+32 bit machines, I tried the following.
+
+Install Python (installer from python.org) 2.7.2 to 
+
+  C:\Docouments and Settings\someuser\Desktop\leo\python27
+
+Install PyQt (installer from Riverbank) 4.9 into the same folder (it
+goes there by default)
+
+Unzip http://www.greygreen.org/leo/leo-editor-latest.zip into
+
+  C:\Docouments and Settings\someuser\Desktop\leo\leo-editor-latest
+
+Make leo.zip from C:\Docouments and Settings\someuser\Desktop\leo
+
+Delete the virtual machine, purging any registry entries etc. created
+by the two installers.
+
+On a fresh machine, searched the registry for 'python' just to be sure,
+found nothing.
+
+Unzip the .zip file, then
+
+  cd C:\Docouments and Settings\someuser\Desktop\leo
+  python27\python.exe leo-editor-latest\launchLeo.py
+
+And Leo opens a blank outline, after asking for an ID, as it's supposed
+to.  Didn't test it beyond that.
+
+So, the .zip file contains all Leo needs to run, and obviously
+runLeo.bat could be added in the top level to actually launch it.
+
+Of course this is for Windows, so I think it's an improvement over
+asking people to install Python and PyQt first, but neither of those
+steps was that hard in Windows anyway.
+
+===== EKR
+
+Is this a technique that we could use for official Windows releases?
+If so, what exactly would we do?
+
+===== Terry
+
+I guess, perhaps as an all-in-one option with a system integrated
+option for those who want to use system python/qt.  Don't know if it
+violates and licensing on Python / Qt, everything's being distributed
+unaltered, so I wouldn't think so.
+
+So basically you'd give people a large .zip file and tell them to
+extract it to a folder and run the batchfile at the top level.  If they
+can't do that, they might not be ready for Leo :-)  I guess you could
+make it a self-extracting .zip, for that matter.
+
+Also, the daily snapshot could be made this way, seeing once Python and
+Qt are installed in the folder the Leo version can just be copied in.
+
+It's not uncommon for FLOSS to be distributed this way, both Blender
+and Inkscape use this approach, particularly for recent builds.
+
+===== From: HansBKK <hansbkk@gmail.com>
+
+If something like this **is** done, it should IMO be packaged as an
+alternative to the normal installation procedure.
+
+You would definitely get marketing exposure by getting the specs from
+PortableApps.com and let them host it there as  "Portable Leo", tracking
+the "official" Portable Python (currently 2.7.2) as a dependency, obviously
+including QT etc as well. But it would need to be kept up to date. . .
+
+Most Windows users would be better served by following the normal
+installation procedure and ending up with a
+registry-and-environment-variables-complete install of Python et al which
+they can use for other things beyond Leo. Ending up with multiple instances
+of Python to maintain is likely to cause more problems.
+
+And the normal Windows install just isn't that hard, really! Improving the
+current instructions, by providing a step-by-step "cookbook" with direct
+links to the download packages etc might make it a **little** easier (IMO
+only for the clueless), but then of course that would be a doc that would
+need pretty frequent updates, which if I may be so bold doesn't seem to
+happen too quickly on the doc side.
+.. @+node:ekr.20130806072439.20736: *5* Re: Runnable Leo in one .zip file.
+From: Matt Wilkie <maphew@gmail.com>
+
+Since this topical today, almost a year later, I thought I'd take a run at 
+repeating this using Portable Python (http://www.portablepython.com) as a 
+base. It didn't work, but I think it should. Maybe someone else knows why. 
+
+I ran the installer for 2.7.3 since 3.2 doesn't include PyQt4. At install 
+time I selected only the Python and PyQt4 packages. Then from a fresh 
+command shell:
+
+{{{
+path=c:\windows;c:\windows\system32
+pushd x:\portapy27\App
+path=%cd%;%cd%\Scripts;%cd%\Lib\site-packages\PyQt4;%path%
+set pythonhome=%cd%
+set pythonpath=%cd%\Lib
+
+popd
+
+python --version
+Python 2.7.3
+
+python -c "import PyQt4"
+:: no error returned, we're good.
+
+python c:\apps\leo-editor-latest\launchLeo.py
+Leo requires Qt to be installed.
+}}}
+
+oh well.
+.. @+node:ekr.20130806072439.20744: *5* Re: Runnable Leo in one .zip file.
+From: HansBKK <hansbkk@gmail.com>
+
+> PortableApps version would be FANTASTIC!!
+
+A couple of versions have been posted here already, including Terry's very
+simple sequence in the first message of this thread. Of course, we're only
+talking about Windows, but note that it works equally well either syncing
+with whatever tool (I favor Unison over SSH) or carrying around on an
+arbitrary-path'd external device, including flash drives (but they can be
+slow).
+
+Here's my more robust (hence more complex) version, xx indicating your 
+python version (mine is 27):
+
+Use the normal .MSI, setup.exe etc processes to Install a clean "canonical" 
+version of your "python dev stack" to say C:\PythonXX, reboot if needed, 
+test thoroughly. Note any new environment variables pointing to your new 
+binary locations.
+
+Now create a corresponding PythonXX folder in your "PortableApps" location 
+(I put it under "CommonFiles" along with GTK and Java) and copy everything 
+from your installed location to the portable one.
+
+You can then use the project-provided tools on the "master" computer to 
+keep your binaries updated, and they will see any local Registry entries 
+and the environment variables they created and operate normally wrt your 
+installed location (e.g. C:\PythonXX).
+
+If you have a local folder sync tool (I use Unison and WinMerge) you can 
+add to/remove from/configure your Python environment from either location, 
+otherwise just keep your installed location as the "master" and just copy 
+the whole stack over each time you do so.
+
+The whole PortableApps tree can then be sync'd/copied to any other 
+desktop(s) you like, either over the wire or via an external device, and 
+the latter can be carried for use in say an Internet cafe or client-site 
+situation.
+
+====================
+
+For use on those other computers, for running in portable mode, I use a
+"portable start menu" (PStart) which allows for its own "autolaunch" batch
+files, where I set some global environment variables to be used by
+app-specific launch batch files, including :
+
+%Path% (I add my batch folder and a general utility/tools folder)
+%HOME% (usually "E:\aasync\Data\H_HOME"
+and a custom one called %h_pa%, which points to the root of my PortableApps 
+parent (usually "D:\aasync\PortableApps")
+
+Then for each environment that requires its own custom settings, I create a 
+launch batch file that builds on that base. In the case of Python apps, 
+here's an example that opens a CMD console window:
+
+@ECHO OFF
+set 
+PATH=%PATH%;%h_pa%\CommonFiles\Python27;%h_pa%\CommonFiles\Python27\Lib\site-packages\PyQt4;%h_pa%\CommonFiles\Python27\Lib\idlelib;%h_pa%\CommonFiles\Python27\Scripts;
+set PROMPT=$p_python$g
+E:
+cd \aasync
+CMD.exe
+
+I'm not sure which if any of the environment stuff Leo requires, but I 
+figure it might as well have the same environment as my Python CLI, since 
+I'll be testing shell integration, including iPython. In my leo-win.bat, 
+the last three lines above are replaced with:
+
+D:
+cd \aasync\PortableApps\leo-editor
+start "" "..\CommonFiles\Python27\pythonw.exe" 
+"..\CommonFiles\Python27\Lib\site-packages\leo-editor4\launchLeo.py" %*
+
+====================
+
+Note this is more than the minimum you need to just run Leo - you could of 
+course simplify it; for example, only set the environment variables Leo 
+requires, or you could just set the master computer' installation routines 
+to use a single location under PortableApps, but I prefer to keep them 
+separate for testing purposes.
+
+I hope you (and others googling this later) find this useful.
+.. @+node:ekr.20130807203905.16594: *4* Wishlist for newbies (Fidel)
+@language rest
+
+From the thread: "Associate .Leo files to open with Leo when double click"
+
+From: <fidelperez@gmail.com>
+
+I guess others have had this idea but It would be great to include a small
+file within the Quickstart guide which would associate files automatically.
+(Or maybe asking for imput, which can be done through a Leo node and this
+way the user learns about its functionality).
+
+Also, I miss some more buttons or scripts in quick start guide, preferably
+before the "programming" section, so when a new user opens it, he has had
+the opportunity to do Ctrl+B on several scripts (for instance, showing in
+the log the name of all the nodes within the selected one, having some
+subnodes with numbers and doing math on them and showing the result on the
+log pane, and as much "silly" but visual functions as possible so the user,
+by going pressing ctrl+b on each, gets a bigger chance to understand what
+is Leo. In my oppinion some users will just stop in the quickguide if they
+are not presented with such a thing before going to docs.leo etc.
+
+Another thing is the plugin activation, the description of the plugins is
+not as accessible as it should be (opinions here, focusing in new users,
+and as I always say, appreciating and fully grateful for Leo as is now),and
+a script for activating them easier, been a week using Leo and still cant
+quite activate, find the descriptions or use them freely... And if each
+plugin or script had an example of use that would be priceless, for
+instance, including them all in quickstart (both scripts, plugins branchs)
+and then the new user could just go through all clicking on the examples
+and just seeing Leo work and show its potential. I know some of those are
+done but as I said, after a week or so I still am very confused...
+
+Also, quickstartguide should be open by default (instead of current
+Leo workbook) at least until the user changes some config and prevents that
+from happening. Is there any "load previous tabs" functionality? (IE open
+the Leo files which where open when it was closed the last time)
+  
+.. @+node:ekr.20130807203905.16596: *4* PortableFileAssociator
+From the thread: Cannot open Leo files by double-click in Windows Explorer?
+From: HansBKK <hansbkk@gmail.com>
+
+For those like me who work in "portable" mode, there's a very cool tool
+called "PortableFileAssociator" that allows you to create a set of windows
+file associations, icons etc and enable/disable the whole profile at one
+time, without messing with the local system's registry.
+
+Also handy for those not in portable mode, but working on different windows
+boxes and bored with having to tweak each one separately.
 .. @+node:ekr.20130803125244.17098: *3* Easy
 .. @+node:ekr.20130508084413.10631: *4* add g.etrace
 .. @+node:ekr.20130508084413.10634: *4* quickmove-jump-to adds button

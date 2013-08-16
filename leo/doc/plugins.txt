@@ -68,272 +68,287 @@ Notes:
 
 - g.app.gui.getEnabledPlugins contains the last processed @enabled-plugins node.
 .. @+node:ekr.20101113063552.9398: *3* Summary
-active_path.py
+.. |br| raw:: html
+
+   <br />
+
+active_path.py |br|
    Synchronizes @path nodes with folders.
 
-add_directives.py
+add_directives.py |br|
    Allows users to define new @directives.
 
-at_folder.py
+at_folder.py |br|
    Synchronizes @folder nodes with folders.
 
-at_produce.py
+at_produce.py |br|
    Executes commands in nodes whose body text starts with @produce.
 
-at_view.py
+at_view.py |br|
    Adds support for \@clip, \@view and \@strip nodes.
 
-attrib_edit.py
+attrib_edit.py |br|
    Edits user attributes in a Qt frame.
 
-backlink.py
+backlink.py |br|
    Allows arbitrary links between nodes.
 
-
-bibtex.py
+bibtex.py |br|
    Manages BibTeX files with Leo.
 
-bzr_qcommands.py
+bzr_qcommands.py |br|
    Adds a context menu to each node containing all the commands in the bzr Qt
    interface. Bzr is invoked based on the path of the current node.
 
-chapter_hoist.py
+chapter_hoist.py |br|
    Creates hoist buttons.
 
-colorize_headlines.py
+colorize_headlines.py |br|
    Manipulates appearance of individual tree widget items.
 
-contextmenu.py
+contextmenu.py |br|
    Defines various useful actions for context menus (Qt only).
 
-datenodes.py
+datenodes.py |br|
    Allows users to insert headlines containing dates.
 
-debugger_pudb.py
+debugger_pudb.py |br|
    Makes g.pdb() enter the Pudb debugger instead of pdb.
 
-detect_urls.py
+detect_urls.py |br|
    Colorizes URLs everywhere in a node's body on node selection or saving. Double
    click on any URL launches it in the default browser.
 
-dtest.py
+dtest.py |br|
    Sends code to the doctest module and reports the result.
 
-dump_globals.py
+dump_globals.py |br|
    Dumps Python globals at startup.
 
-EditAttributes.py
+EditAttributes.py |br|
    Lets the user associate text with a specific node.
 
-empty_leo_file.py
+empty_leo_file.py |br|
    Allows Leo to open any empty file as a minimal .leo file.
 
-enable_gc.py
+enable_gc.py |br|
    Enables debugging and tracing for Python's garbage collector.
 
-expfolder.py
+expfolder.py |br|
    Adds @expfolder nodes that represent folders in the file system.
 
-FileActions.py
+FileActions.py |br|
    Defines actions taken when double-clicking on @<file> nodes and supports
    @file-ref nodes.
 
-geotag.py
+geotag.py |br|
    Tags nodes with latitude and longitude.
 
-graphcanvas.py
+graphcanvas.py |br|
    Adds a graph layout for nodes in a tab.
    Requires Qt and the backlink.py plugin.
 
-import_cisco_config.py
+import_cisco_config.py |br|
    Allows the user to import Cisco configuration files.
 
-initinclass.py
+initinclass.py |br|
    Modifies the Python @auto importer so that the importer
    puts the __init__ method (ctor) into the body of the class node.
 
-interact.py
+interact.py |br|
    Adds buttons so Leo can interact with command line environments.
 
-ipython.py
+ipython.py |br|
    Creates a two-way communication (bridge) between Leo
    scripts and IPython running in the console from which Leo was launched.
 
-leo_interface.py
+leo_interface.py |br|
    Allows the user to browse XML documents in Leo.
 
-leo_pdf.py
+leo_pdf.py |br|
    This NOT a Leo plugin: this is a docutils writer for .pdf files.
 
-leo_to_html.py
+leo_to_html.py |br|
    Converts a leo outline to an html web page.**.
 
-leo_to_rtf.py
+leo_to_rtf.py |br|
    Outputs a Leo outline as a numbered list to an RTF file. The RTF file can be
    loaded into Microsoft Word and formatted as a proper outline.
 
-leocursor.py
+leocursor.py |br|
    Creates a LeoCursor object that can walk around a Leo outline and decode
    attributes from nodes.
+   
+leomylyn.py |br|
+    Provides a "Mylyn" like experience for Leo.
 
-leoremote.py
+leoremote.py |br|
    Remote control for Leo.
 
-leoscreen.py
+leoscreen.py |br|
    Allows interaction with shell apps via screen.
 
-lineNumbers.py
+lineNumbers.py |br|
    Adds #line directives in perl and perlpod programs.
 
-macros.py
+macros.py |br|
    Creates new nodes containing parameterized section references.
 
-maximizeNewWindows.py
+maximizeNewWindows.py |br|
    Maximizes all new windows.
 
-mime.py
+mime.py |br|
    Opens files with their default platform program.
 
-mod_autosave.py
+mod_autosave.py |br|
    Autosaves the Leo outline every so often.
 
-mod_framesize.py
+mod_framesize.py |br|
    Sets a hard coded frame size.
 
-mod_http.py
+mod_http.py |br|
    A minimal http plugin for LEO, based on AsyncHttpServer.py.
 
-mod_read_dir_outline.py
+mod_read_dir_outline.py |br|
    Allows Leo to read a complete directory tree into a Leo outline. Converts
    directories into headlines and puts the list of file names into bodies.
 
-mod_scripting.py
+mod_scripting.py |br|
    Creates script buttons and @button, @command, @plugin and @script
    nodes.
 
-mod_tempfname.py
+mod_tempfname.py |br|
    Replaces c.openWithTempFilePath to create alternate temporary
    directory paths.
 
-mod_timestamp.py
+mod_timestamp.py |br|
    Timestamps all save operations to show when they occur.
 
-multifile.py
+multifile.py |br|
    Allows Leo to write a file to multiple locations.
 
-nav_qt.py
+nav_qt.py |br|
    Adds "Back" and "Forward" buttons (Qt only).
 
-niceNosent.py
+niceNosent.py |br|
    Ensures that all descendants of @file-nosent nodes end
    with exactly one newline, replaces all tabs with spaces, and
    adds a newline before class and functions in the derived file.
 
-nodeActions.py
+nodeActions.py |br|
    Allows the definition of double-click actions.
 
-open_shell.py
+open_shell.py |br|
    Creates an 'Extensions' menu containing two commands:
    Open Console Window and Open Explorer.
 
-outline_export.py
+outline_export.py |br|
    Modifies the way exported outlines are written.
 
-paste_as_headlines.py
+paste_as_headlines.py |br|
    Creates new headlines from clipboard text.
 
-plugins_menu.py
+plugins_menu.py |br|
    Creates a Plugins menu and adds all actives plugins to it.
 
-pretty_print.py
+pretty_print.py |br|
    Customizes pretty printing.
+   
+printing.py |br|
+    Supports printing for the Qt gui.
 
-projectwizard.py
+projectwizard.py |br|
    Creates a wizard that creates @auto nodes.
 
-quickMove.py
+quickMove.py |br|
    Creates buttons to move nodes quickly to other nodes.
 
-quicksearch.py
+quicksearch.py |br|
    Adds a fast-to-use search widget, like the "Find in files" feature of many editors.
 
-quit_leo.py
+quit_leo.py |br|
    Shows how to force Leo to quit.
 
-read_only_nodes.py
+read_only_nodes.py |br|
    Creates and updates @read-only nodes.
 
-redirect_to_log.py
+redirect_to_log.py |br|
    Sends all output to the log pane.
 
-run_nodes.py
+run_nodes.py |br|
    Runs a program and interface Leos through its input/output/error streams.
+   
+screen_capture.py |br|
+    Supports taking screen shots. See http://leo-editor.github.io/screen_capture.html
 
-screenshots.py
+screenshots.py |br|
    Creates stand-alone slideshows containing screenshots.
 
-script_io_to_body.py
+script_io_to_body.py |br|
    Sends output from the Execute Script command to the end of the body pane.
 
-scripts_menu.py
+scripts_menu.py |br|
    Creates a Scripts menu for LeoPy.leo.
 
-scrolledmessage.py
+scrolledmessage.py |br|
    Provides a Scrolled Message Dialog service for Qt.
 
-setHomeDirectory.py
+setHomeDirectory.py |br|
    Sets g.app.homeDir to a hard-coded path.
 
-slideshow.py
+slideshow.py |br|
    Support slideshows in Leo outlines.
 
-spydershell.py
+spydershell.py |br|
    Launches the spyder environment with access to Leo instance.
    See http://packages.python.org/spyder/.
 
-startfile.py
+startfile.py |br|
    Launches (starts) a file given by a headline when double-clicking the icon.
 
-stickynotes.py
+stickynotes.py |br|
    Adds simple "sticky notes" feature (popout editors) for Qt gui.
+   
+timestamp.y
+    Manages attributes containing node creation/modification/viewed times.
 
-todo.py
+todo.py |br|
    Provides to-do list and simple task management for leo (Qt only).
 
-tomboy_import.py
+tomboy_import.py |br|
    Allows imports of notes created in Tomboy / gnote.
 
-trace_gc_plugin.py
+trace_gc_plugin.py |br|
    Traces changes to Leo's objects at idle time.
 
-trace_keys.py
+trace_keys.py |br|
    Traces keystrokes in the outline and body panes.
 
-trace_tags.py
+trace_tags.py |br|
    Traces most common hooks, but not key, drag or idle hooks.
 
-viewrendered.py
+viewrendered.py |br|
    Creates a window for *live* rendering of rst, html, etc.
    This plugin uses docutils, http://docutils.sourceforge.net/,
    to do the rendering, so installing docutils is recommended.
 
-vim.py
+vim.py |br|
    Enables two-way communication with VIM.
 
-word_count.py
+word_count.py |br|
    Counts characters, words, lines, and paragraphs in the body pane.
 
-word_export.py
+word_export.py |br|
    Adds the Plugins\:Word Export\:Export menu item to format and export
    the selected outline to a Word document, starting Word if necessary.
 
-xemacs.py
+xemacs.py |br|
    Allows you to edit nodes in emacs/xemacs.
 
-xsltWithNodes.py
+xsltWithNodes.py |br|
    Adds the Outline:XSLT menu containing XSLT-related commands.
 
-zenity_file_dialogs.py
+zenity_file_dialogs.py |br|
    Replaces Leo's file dialogs on Linux with external
    calls to the zenity gtk dialog package.
 .. @+node:ekr.20130815102041.15619: *3* Recently added plugins
@@ -363,88 +378,6 @@ that is much simpler than using them in qmlnotebook.
 .. @+node:ekr.20130815102041.15618: *4* printing.py
 This plugin supports printing using the Qt GUI.
 Written by Jacob M. Peck.
-
-Commands
-========
-This plugin supports the following commands:
-
-print-selected-node
--------------------
-
-Opens up the print dialog to print the selected headline and node.
-
-print-preview-selected-node
----------------------------
-
-Opens up the print preview dialog to preview the selected headline
-and node.
-
-print-selected-node-body
-------------------------
-
-Opens up the print dialog to print the selected node body.
-
-print-preview-selected-node-body
---------------------------------
-
-Opens up the print preview dialog to preview the selected node body.
-
-print-expanded-node
--------------------
-
-Opens up the print dialog to print the expanded contents of the
-selected node, with top-level headline.
-
-print-preview-expanded-node
----------------------------
-
-Opens up the print preview dialog to preview the expanded contents
-of theselected node, with top-level headline.
-
-print-expanded-node-body
-------------------------
-
-Opens up the print dialog to print the expanded node body.
-
-print-preview-expanded-node-body
---------------------------------
-
-Opens up the print preview dialog to preview the expanded node
-body.
-
-print-marked-nodes
-------------------
-
-Opens up the print dialog to print all marked nodes in the current
-outline, with headlines.
-
-print-preview-marked-nodes
---------------------------
-
-Opens up the print preview dialog to preview all marked nodes in \\
-the current outline, with headlines.
-
-print-marked-node-bodies
-------------------------
-
-Opens up the print dialog to print the bodies of all marked nodes
-in the current outline.
-
-print-preview-marked-node-bodies
---------------------------------
-
-Opens up the print preview dialog to preview the bodies of all
-marked nodes in the current outline.
-
-Settings
-========
-- ``@string printing-font-family = DejaVu Sans Mono``
-   The font family for printing.  A monospaced font is recommended.
-
-- ``@string printing-font-size = 12``
-   The font size for printing bodies, in px.  Due to limitations
-   of PyQt, the size of headlines cannot be changed.
-   
 .. @+node:ekr.20130815102041.15630: *4* screen_capture.py
 By Terry Brown.
 

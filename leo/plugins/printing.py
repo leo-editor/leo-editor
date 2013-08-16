@@ -5,7 +5,7 @@
 
 #@+<< docstring >>
 #@+node:peckj.20130513115943.16252: ** << docstring >>
-'''Supports printing from the Qt GUI.
+'''Supports printing for the Qt GUI.
 
 By Jacob M. Peck.
 

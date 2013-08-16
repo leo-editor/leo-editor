@@ -232,11 +232,10 @@ Here is how to install Leo on MacOS 10.5 (Leopard):
 .. @+node:ekr.20120229094652.15098: *4* Installing Leo on MacOs 10.7 Lion
 .. .. http://groups.google.com/group/leo-editor/browse_thread/thread/92ae059cc5213ad3
 
-**Important**: Installing Leo on MacOS is, ah, challenging.
-Furthermore, Leo does not work as well on MacOS as on other platforms.
+**Important**: Installing Leo on MacOS is challenging. Furthermore, Leo
+does not work as well on MacOS as on other platforms.
 
-Many thanks to Ludwig Schwardt for the following
-installation instructions.
+Many thanks to Ludwig Schwardt for the following installation instructions.
 
 I recently received a new MacBook Pro and did a fresh upgrade to Mac OS
 10.7 (Lion). I then used the opportunity to test out installation
@@ -257,54 +256,66 @@ wondered what it looked like in Qt. All the horror stories of PyQT on Mac
 discouraged me from trying this before, so I was keen to see if Homebrew
 helps. Here is my installation write-up:
 
-- Make sure you have Xcode installed (test it by confirming that "gcc" runs
-  in the Terminal)
+- Read the Homebrew installation instructions at
+  https://github.com/mxcl/homebrew/wiki/Installation
 
-- In preparation for homebrew, the best option in my opinion is to delete
-  /usr/local via::
+- Make sure you have Xcode installed (test it by confirming that "gcc" runs
+  in the Terminal). You can either get the full Xcode beast or the
+  lean-and-mean Command-Line Tools for Xcode, as suggested in the Homebrew
+  installation instructions.
+
+- In preparation for Homebrew, the best option in my opinion is
+  to delete /usr/local via::
 
     sudo rm -rf /usr/local
 
-  and install any software in it via homebrew instead. If this step fills
-  you with dread and you do not want to lose your beloved third-party
-  software, the second-best option is to make sure you have write
-  permission for the directory via::
+  and install any software in it via Homebrew instead. If this step
+  fills you with dread and you do not want to lose your beloved
+  third-party software, the second-best option is to make sure you
+  have write permission for the directory via::
 
     sudo chown -R <your user name>:admin /usr/local
 
-  If you don't know your username, run "whoami". :-) This is useful because
-  homebrew actually discourages you from installing third-party software as
-  the superuser (the usual Mac apps in /Applications are also installed as
-  the normal user, for that matter).
+  If you don't know your username, run "whoami". :-) This is
+  useful because homebrew actually discourages you from
+  installing third-party software as the superuser (the usual Mac
+  apps in /Applications are also installed as the normal user,
+  for that matter).
 
 - Install Homebrew (http://mxcl.github.com/homebrew/) by running the
   following command in the Terminal::
 
-    /usr/bin/ruby -e "$(curl -fsSL https://raw.github.com/gist/323731)"
+    /usr/bin/ruby -e "$(/usr/bin/curl -fsSL https://raw.github.com/mxcl/homebrew/master/Library/Contributions/install_homebrew.rb)"
+    
+- Run "brew doctor" and check any further suggestions to improve your system.
 
 - Run "brew update" to get the latest formulas
 
-- Now install PyQT (yes, that's it!)::
+- Install sip and note the caveat::
 
-     brew install pyqt
+    brew install sip
 
-- Run "brew doctor" and check any further suggestions to improve your system.
+  This warns you to add the local python directory to your PYTHONPATH.
+  Make a note of what this is (especially if you are not on Lion!).
 
-- Add the following lines to your ~/.bash_profile (or ~/.profile on Leopard)::
+- Add the following lines to your ~/.bash_profile
+  (or ~/.profile on Leopard). This is the default for LION::
 
       export PATH=/usr/local/bin:$PATH
       # This is for SIP (and PyQT) as suggested by Homebrew
-      export PYTHONPATH=/usr/local/lib/python:$PYTHONPATH
+      export PYTHONPATH=/usr/local/lib/python2.7/site-packages:$PYTHONPATH
 
+- Install PyQT::
+
+    brew install pyqt
+ 
 - Open a new Terminal tab / window so that the above settings take effect,
-  and install Leo. I downloaded the Leo-4.10-final-a.zip, unzipped it, and
+  and install Leo. I downloaded the Leo-4.9-final-a.zip, unzipped it, and
   ran "python launchLeo.py" inside the Leo directory.
 
-We should consider adding a Homebrew formula for Leo. This will simplify
-the process even further, to simply "brew install leo". I started on this,
-but wasn't sure where to put the various Leo files in the system hierarchy.
-The Debian package can give some clues here, but I haven't looked at it
-yet.
+It would really be great to get a Leo formula going for Homebrew. As
+mentioned before, the main question is just where to place all the Leo
+files in the /usr/local hierarchy.
 .. @+node:ekr.20100817101952.4306: *4* Contributing to Leo with bzr
 .. _bzr: http://bazaar-vcs.org
 

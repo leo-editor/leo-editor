@@ -107,6 +107,9 @@
 <v t="ekr.20130810093044.16940"><vh>export full contents</vh>
 <v t="ekr.20130810093044.16941"><vh>script</vh></v>
 </v>
+<v t="ekr.20130816100419.23046"><vh>Full tree preview script</vh>
+<v t="ekr.20130816100419.23047"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
+</v>
 <v t="ekr.20130810093044.16942"><vh>Indexing files for full text search</vh>
 <v t="ekr.20130810093044.16943"><vh>Re: Idea/needed: system command queue</vh></v>
 <v t="ekr.20130810093044.16944"><vh>Re: Idea/needed: system command queue</vh></v>
@@ -2780,6 +2783,119 @@ http://stackoverflow.com/questions/771689/how-can-i-set-an-icon-for-my-own-file-
 &lt;/tnodes&gt;
 &lt;/leo_file&gt;
 }}}
+</t>
+<t tx="ekr.20130816100419.23046">@language python
+
+&lt;&lt; docstring &gt;&gt;
+
+from PyQt4 import QtGui, QtCore
+from xml.sax.saxutils import escape
+
+def add_html(html, nd):
+    """recursively add to an html list with links to nodes"""
+    
+    unl = nd.get_UNL()
+    html.append("&lt;div class='level'&gt;"
+        "&lt;div&gt;&lt;a href='%s' title='%s'&gt;%s&lt;/a&gt;&lt;/div&gt;" %
+        (unl, unl, escape(nd.h)))
+    html.append("&lt;pre&gt;%s&lt;/pre&gt;"%escape(nd.b))
+    for child in nd.children():
+        add_html(html, child)
+    html.append("&lt;/div&gt;")
+
+def make_overview(c):
+    """build the overview widget"""
+
+    te = QtGui.QTextBrowser()
+    te.setReadOnly(True)
+    te.setOpenLinks(False)
+    
+    def anchorClicked(url, c=c, te=te):
+        
+        url = str(url.toString())
+        g.handleUrl(url,c=c,p=c.p)
+        
+        if te.ctrl_click:
+            te.deleteLater()
+        
+    te.anchorClicked.connect(anchorClicked)
+    
+    def mousePressEvent(event, te=te, original=te.mousePressEvent):
+        te.ctrl_click = bool(event.modifiers() &amp; QtCore.Qt.ControlModifier)
+        original(event)
+    
+    te.mousePressEvent = mousePressEvent
+    
+    html = ["""&lt;html&gt;&lt;head&gt;&lt;style&gt;
+    .level .level {margin-left: 1.5em}
+    a {text-decoration: none; font-size: 120%}
+    &lt;/style&gt;&lt;/head&gt;&lt;body&gt;"""]
+    
+    for nd in c.getSelectedPositions():
+        add_html(html, nd)
+
+    html.append("&lt;/body&gt;&lt;/html&gt;") 
+    
+    html = '\\n'.join(html)
+    
+    te.setHtml(html)
+    
+    return te
+
+class OverviewPaneProvider:
+    def __init__(self, c):
+        self.c = c
+        # Careful: we may be unit testing.
+        if hasattr(c, 'free_layout'):
+            splitter = c.free_layout.get_top_splitter()
+            if splitter:
+                splitter.register_provider(self)
+    def ns_provides(self):
+        return[('Overview', '_add_overview_pane')]
+    def ns_provide(self, id_):
+        if id_ == '_add_overview_pane':
+            w = make_overview(c)
+            return w
+    def ns_title(self, id_):
+        if id_ == '_add_overview_pane':
+            return "Leo Outline Overview"
+    def ns_provider_id(self):
+        # used by register_provider() to unregister previously registered
+        # providers of the same service
+        return "outline overview window"
+
+OverviewPaneProvider(c)
+</t>
+<t tx="ekr.20130816100419.23047">''' The script sets up Leo to display all the parts of the tree (all bodies
+and subheadings) as continuous text, much like a word processor outline.
+
+By Terry Brown
+
+1) Paste the code below into a node, then hit the "run-script" button.
+
+2) Then select a node with some hierarchy, not too much.
+
+3) Then right click on the panel dividers between the tree / body / log
+   panes, you should see a context menu with an "Open Window" sub-menu,
+   which should contain an "Overview" item.
+
+You should get a continuous view of the hierarchy with clickable
+headlines which take you to the node.
+
+You can select multiple nodes in step 2 above, with normal list Ctrl-
+or Shift- click operations.  Nodes are shown in the overview in the
+order selected.  This is how you'd generate the overview for a whole
+outline - i.e. contract the whole outline, click the first top level
+node, shift click the last top level node, and then step 3.
+
+You can also embed the overview in a pane in the Leo window by select
+"Insert" rather than "Open window" in step 3, click the action button
+and select Overview.
+
+This was the low hanging fruit, based on code used in bookmarks.py.  A
+refresh button for the outline wouldn't be too hard, but right now
+you need to close the window / pane and open it again to refresh.
+'''
 </t>
 <t tx="maphew.20130612230051.2793">Scripts only of interest when on Microsoft Windows platform.</t>
 </tnodes>

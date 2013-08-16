@@ -439,10 +439,10 @@ Release notes and web documentation:
     - Regenerate all .html files.
     - Copy files to web.  Include the home page, but *not* the toc.
 LeoPy.leo:
-    - (Done) Update version numbers.
-    - (Done) Update the build number.
+    - Update version numbers.
+    - Update the build number.
 LeoDocs.leo:
-    - (Done) Update version numbers in html/conf.py
+    - Update version numbers in html/conf.py
     - Remove top-level clones.
     - Select the readme node.
 LeoPlugins.leo:
