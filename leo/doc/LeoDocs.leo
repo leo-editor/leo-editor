@@ -1399,7 +1399,7 @@ outline order).
 </t>
 <t tx="ekr.20130806072439.19990">@language rest
 
-Leo 4.11 a1                                     August 10, 2013
+Leo 4.11 a1                                     August 18, 2013
 
 Leo 4.11 a1 is now available at: http://sourceforge.net/projects/leo/files/Leo/
 Leo 4.11 contains over a year's work on Leo.
