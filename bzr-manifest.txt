@@ -1071,6 +1071,7 @@ leo/doc/
 leo/doc/FAQ.txt
 leo/doc/IpythonBridge.txt
 leo/doc/LeoDocs.leo
+leo/doc/abbreviations.txt
 leo/doc/appendices.txt
 leo/doc/atShadow.txt
 leo/doc/coloring.txt

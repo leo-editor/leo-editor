@@ -80,6 +80,7 @@ SetOutPath $INSTDIR\leo\doc
 File "C:\leo.repo\trunk\leo\doc\FAQ.txt"
 File "C:\leo.repo\trunk\leo\doc\IpythonBridge.txt"
 File "C:\leo.repo\trunk\leo\doc\LeoDocs.leo"
+File "C:\leo.repo\trunk\leo\doc\abbreviations.txt"
 File "C:\leo.repo\trunk\leo\doc\appendices.txt"
 File "C:\leo.repo\trunk\leo\doc\atShadow.txt"
 File "C:\leo.repo\trunk\leo\doc\coloring.txt"
