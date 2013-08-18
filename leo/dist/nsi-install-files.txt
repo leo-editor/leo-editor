@@ -8,8 +8,6 @@ File "MANIFEST.in"
 File "Makefile"
 File "PKG-INFO.TXT"
 File "README.TXT"
-File "build-leo.bat"
-File "create-leobat.bat"
 File "launchLeo.py"
 File "leo-install.py"
 File "leo.nsi"
@@ -188,6 +186,7 @@ File "C:\leo.repo\trunk\leo\extensions\sh.py"
 File "C:\leo.repo\trunk\leo\extensions\testExtension.py"
 
 SetOutPath $INSTDIR\leo\external
+File "C:\leo.repo\trunk\leo\external\README.ckeditor.txt"
 File "C:\leo.repo\trunk\leo\external\__init__.py"
 File "C:\leo.repo\trunk\leo\external\codewise.py"
 File "C:\leo.repo\trunk\leo\external\edb.py"
@@ -197,6 +196,452 @@ File "C:\leo.repo\trunk\leo\external\leoftsindex.py"
 File "C:\leo.repo\trunk\leo\external\leosax.py"
 File "C:\leo.repo\trunk\leo\external\lproto.py"
 File "C:\leo.repo\trunk\leo\external\stringlist.py"
+
+SetOutPath $INSTDIR\leo\external\ckeditor
+File "C:\leo.repo\trunk\leo\external\ckeditor\CHANGES.md"
+File "C:\leo.repo\trunk\leo\external\ckeditor\LICENSE.md"
+File "C:\leo.repo\trunk\leo\external\ckeditor\README.md"
+File "C:\leo.repo\trunk\leo\external\ckeditor\build-config.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\ckeditor.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\config.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\contents.css"
+File "C:\leo.repo\trunk\leo\external\ckeditor\styles.js"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\adapters
+File "C:\leo.repo\trunk\leo\external\ckeditor\adapters\jquery.js"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\lang
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\af.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\ar.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\bg.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\bn.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\bs.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\ca.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\cs.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\cy.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\da.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\de.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\el.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\en-au.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\en-ca.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\en-gb.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\en.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\eo.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\es.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\et.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\eu.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\fa.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\fi.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\fo.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\fr-ca.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\fr.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\gl.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\gu.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\he.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\hi.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\hr.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\hu.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\id.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\is.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\it.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\ja.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\ka.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\km.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\ko.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\ku.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\lt.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\lv.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\mk.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\mn.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\ms.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\nb.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\nl.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\no.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\pl.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\pt-br.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\pt.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\ro.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\ru.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\si.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\sk.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\sl.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\sq.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\sr-latn.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\sr.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\sv.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\th.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\tr.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\ug.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\uk.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\vi.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\zh-cn.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\lang\zh.js"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\plugins
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\icons.png"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\icons_hidpi.png"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\plugins\a11yhelp\dialogs
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\a11yhelp.js"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\_translationstatus.txt"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\ar.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\bg.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\ca.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\cs.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\cy.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\da.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\de.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\el.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\en.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\eo.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\es.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\et.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\fa.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\fi.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\fr-ca.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\fr.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\gl.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\gu.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\he.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\hi.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\hr.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\hu.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\id.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\it.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\ja.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\km.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\ku.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\lt.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\lv.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\mk.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\mn.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\nb.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\nl.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\no.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\pl.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\pt-br.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\pt.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\ro.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\ru.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\si.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\sk.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\sl.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\sq.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\sr-latn.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\sr.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\sv.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\th.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\tr.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\ug.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\uk.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\vi.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\a11yhelp\dialogs\lang\zh-cn.js"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\plugins\about\dialogs
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\about\dialogs\about.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\about\dialogs\logo_ckeditor.png"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\plugins\about\dialogs\hidpi
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\about\dialogs\hidpi\logo_ckeditor.png"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\plugins\clipboard\dialogs
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\clipboard\dialogs\paste.js"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\plugins\colordialog\dialogs
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\colordialog\dialogs\colordialog.js"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\plugins\dialog
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\dialog\dialogDefinition.js"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\plugins\div\dialogs
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\div\dialogs\div.js"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\plugins\fakeobjects\images
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\fakeobjects\images\spacer.gif"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\plugins\find\dialogs
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\find\dialogs\find.js"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\plugins\flash\dialogs
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\flash\dialogs\flash.js"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\plugins\flash\images
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\flash\images\placeholder.png"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\plugins\forms\dialogs
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\forms\dialogs\button.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\forms\dialogs\checkbox.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\forms\dialogs\form.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\forms\dialogs\hiddenfield.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\forms\dialogs\radio.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\forms\dialogs\select.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\forms\dialogs\textarea.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\forms\dialogs\textfield.js"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\plugins\forms\images
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\forms\images\hiddenfield.gif"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\plugins\iframe\dialogs
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\iframe\dialogs\iframe.js"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\plugins\iframe\images
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\iframe\images\placeholder.png"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\plugins\image\dialogs
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\image\dialogs\image.js"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\plugins\image\images
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\image\images\noimage.png"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\plugins\link\dialogs
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\link\dialogs\anchor.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\link\dialogs\link.js"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\plugins\link\images
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\link\images\anchor.png"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\plugins\link\images\hidpi
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\link\images\hidpi\anchor.png"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\plugins\liststyle\dialogs
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\liststyle\dialogs\liststyle.js"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\plugins\magicline\images
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\magicline\images\icon.png"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\plugins\magicline\images\hidpi
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\magicline\images\hidpi\icon.png"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\plugins\pagebreak\images
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\pagebreak\images\pagebreak.gif"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\plugins\pastefromword\filter
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\pastefromword\filter\default.js"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\plugins\preview
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\preview\preview.html"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\plugins\scayt
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\scayt\LICENSE.md"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\scayt\README.md"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\plugins\scayt\dialogs
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\scayt\dialogs\options.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\scayt\dialogs\toolbar.css"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\plugins\showblocks\images
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\showblocks\images\block_address.png"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\showblocks\images\block_blockquote.png"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\showblocks\images\block_div.png"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\showblocks\images\block_h1.png"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\showblocks\images\block_h2.png"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\showblocks\images\block_h3.png"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\showblocks\images\block_h4.png"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\showblocks\images\block_h5.png"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\showblocks\images\block_h6.png"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\showblocks\images\block_p.png"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\showblocks\images\block_pre.png"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\plugins\smiley\dialogs
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\smiley\dialogs\smiley.js"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\plugins\smiley\images
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\smiley\images\angel_smile.gif"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\smiley\images\angry_smile.gif"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\smiley\images\broken_heart.gif"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\smiley\images\confused_smile.gif"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\smiley\images\cry_smile.gif"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\smiley\images\devil_smile.gif"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\smiley\images\embaressed_smile.gif"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\smiley\images\embarrassed_smile.gif"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\smiley\images\envelope.gif"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\smiley\images\heart.gif"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\smiley\images\kiss.gif"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\smiley\images\lightbulb.gif"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\smiley\images\omg_smile.gif"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\smiley\images\regular_smile.gif"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\smiley\images\sad_smile.gif"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\smiley\images\shades_smile.gif"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\smiley\images\teeth_smile.gif"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\smiley\images\thumbs_down.gif"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\smiley\images\thumbs_up.gif"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\smiley\images\tongue_smile.gif"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\smiley\images\tounge_smile.gif"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\smiley\images\whatchutalkingabout_smile.gif"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\smiley\images\wink_smile.gif"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\plugins\specialchar\dialogs
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\specialchar.js"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\plugins\specialchar\dialogs\lang
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\_translationstatus.txt"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\ar.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\bg.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\ca.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\cs.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\cy.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\de.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\el.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\en.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\eo.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\es.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\et.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\fa.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\fi.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\fr-ca.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\fr.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\gl.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\he.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\hr.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\hu.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\id.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\it.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\ja.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\ku.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\lv.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\nb.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\nl.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\no.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\pl.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\pt-br.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\pt.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\ru.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\si.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\sk.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\sl.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\sq.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\sv.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\th.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\tr.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\ug.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\uk.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\vi.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\specialchar\dialogs\lang\zh-cn.js"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\plugins\table\dialogs
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\table\dialogs\table.js"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\plugins\tabletools\dialogs
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\tabletools\dialogs\tableCell.js"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\plugins\templates\dialogs
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\templates\dialogs\templates.css"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\templates\dialogs\templates.js"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\plugins\templates\templates
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\templates\templates\default.js"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\plugins\templates\templates\images
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\templates\templates\images\template1.gif"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\templates\templates\images\template2.gif"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\templates\templates\images\template3.gif"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\plugins\wsc
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\wsc\LICENSE.md"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\wsc\README.md"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\plugins\wsc\dialogs
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\wsc\dialogs\ciframe.html"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\wsc\dialogs\tmp.html"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\wsc\dialogs\tmpFrameset.html"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\wsc\dialogs\wsc.css"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\wsc\dialogs\wsc.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\plugins\wsc\dialogs\wsc_ie.js"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\samples
+File "C:\leo.repo\trunk\leo\external\ckeditor\samples\ajax.html"
+File "C:\leo.repo\trunk\leo\external\ckeditor\samples\api.html"
+File "C:\leo.repo\trunk\leo\external\ckeditor\samples\appendto.html"
+File "C:\leo.repo\trunk\leo\external\ckeditor\samples\datafiltering.html"
+File "C:\leo.repo\trunk\leo\external\ckeditor\samples\divreplace.html"
+File "C:\leo.repo\trunk\leo\external\ckeditor\samples\index.html"
+File "C:\leo.repo\trunk\leo\external\ckeditor\samples\inlineall.html"
+File "C:\leo.repo\trunk\leo\external\ckeditor\samples\inlinebycode.html"
+File "C:\leo.repo\trunk\leo\external\ckeditor\samples\inlinetextarea.html"
+File "C:\leo.repo\trunk\leo\external\ckeditor\samples\jquery.html"
+File "C:\leo.repo\trunk\leo\external\ckeditor\samples\readonly.html"
+File "C:\leo.repo\trunk\leo\external\ckeditor\samples\replacebyclass.html"
+File "C:\leo.repo\trunk\leo\external\ckeditor\samples\replacebycode.html"
+File "C:\leo.repo\trunk\leo\external\ckeditor\samples\sample.css"
+File "C:\leo.repo\trunk\leo\external\ckeditor\samples\sample.js"
+File "C:\leo.repo\trunk\leo\external\ckeditor\samples\sample_posteddata.php"
+File "C:\leo.repo\trunk\leo\external\ckeditor\samples\tabindex.html"
+File "C:\leo.repo\trunk\leo\external\ckeditor\samples\uicolor.html"
+File "C:\leo.repo\trunk\leo\external\ckeditor\samples\uilanguages.html"
+File "C:\leo.repo\trunk\leo\external\ckeditor\samples\xhtmlstyle.html"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\samples\assets
+File "C:\leo.repo\trunk\leo\external\ckeditor\samples\assets\posteddata.php"
+File "C:\leo.repo\trunk\leo\external\ckeditor\samples\assets\sample.css"
+File "C:\leo.repo\trunk\leo\external\ckeditor\samples\assets\sample.jpg"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\samples\assets\inlineall
+File "C:\leo.repo\trunk\leo\external\ckeditor\samples\assets\inlineall\logo.png"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\samples\assets\outputxhtml
+File "C:\leo.repo\trunk\leo\external\ckeditor\samples\assets\outputxhtml\outputxhtml.css"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\samples\assets\uilanguages
+File "C:\leo.repo\trunk\leo\external\ckeditor\samples\assets\uilanguages\languages.js"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\samples\plugins\dialog
+File "C:\leo.repo\trunk\leo\external\ckeditor\samples\plugins\dialog\dialog.html"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\samples\plugins\dialog\assets
+File "C:\leo.repo\trunk\leo\external\ckeditor\samples\plugins\dialog\assets\my_dialog.js"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\samples\plugins\enterkey
+File "C:\leo.repo\trunk\leo\external\ckeditor\samples\plugins\enterkey\enterkey.html"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\samples\plugins\htmlwriter
+File "C:\leo.repo\trunk\leo\external\ckeditor\samples\plugins\htmlwriter\outputforflash.html"
+File "C:\leo.repo\trunk\leo\external\ckeditor\samples\plugins\htmlwriter\outputhtml.html"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\samples\plugins\htmlwriter\assets\outputforflash
+File "C:\leo.repo\trunk\leo\external\ckeditor\samples\plugins\htmlwriter\assets\outputforflash\outputforflash.fla"
+File "C:\leo.repo\trunk\leo\external\ckeditor\samples\plugins\htmlwriter\assets\outputforflash\outputforflash.swf"
+File "C:\leo.repo\trunk\leo\external\ckeditor\samples\plugins\htmlwriter\assets\outputforflash\swfobject.js"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\samples\plugins\magicline
+File "C:\leo.repo\trunk\leo\external\ckeditor\samples\plugins\magicline\magicline.html"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\samples\plugins\toolbar
+File "C:\leo.repo\trunk\leo\external\ckeditor\samples\plugins\toolbar\toolbar.html"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\samples\plugins\wysiwygarea
+File "C:\leo.repo\trunk\leo\external\ckeditor\samples\plugins\wysiwygarea\fullpage.html"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\skins\moono
+File "C:\leo.repo\trunk\leo\external\ckeditor\skins\moono\dialog.css"
+File "C:\leo.repo\trunk\leo\external\ckeditor\skins\moono\dialog_ie.css"
+File "C:\leo.repo\trunk\leo\external\ckeditor\skins\moono\dialog_ie7.css"
+File "C:\leo.repo\trunk\leo\external\ckeditor\skins\moono\dialog_ie8.css"
+File "C:\leo.repo\trunk\leo\external\ckeditor\skins\moono\dialog_iequirks.css"
+File "C:\leo.repo\trunk\leo\external\ckeditor\skins\moono\dialog_opera.css"
+File "C:\leo.repo\trunk\leo\external\ckeditor\skins\moono\editor.css"
+File "C:\leo.repo\trunk\leo\external\ckeditor\skins\moono\editor_gecko.css"
+File "C:\leo.repo\trunk\leo\external\ckeditor\skins\moono\editor_ie.css"
+File "C:\leo.repo\trunk\leo\external\ckeditor\skins\moono\editor_ie7.css"
+File "C:\leo.repo\trunk\leo\external\ckeditor\skins\moono\editor_ie8.css"
+File "C:\leo.repo\trunk\leo\external\ckeditor\skins\moono\editor_iequirks.css"
+File "C:\leo.repo\trunk\leo\external\ckeditor\skins\moono\icons.png"
+File "C:\leo.repo\trunk\leo\external\ckeditor\skins\moono\icons_hidpi.png"
+File "C:\leo.repo\trunk\leo\external\ckeditor\skins\moono\readme.md"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\skins\moono\images
+File "C:\leo.repo\trunk\leo\external\ckeditor\skins\moono\images\arrow.png"
+File "C:\leo.repo\trunk\leo\external\ckeditor\skins\moono\images\close.png"
+File "C:\leo.repo\trunk\leo\external\ckeditor\skins\moono\images\lock-open.png"
+File "C:\leo.repo\trunk\leo\external\ckeditor\skins\moono\images\lock.png"
+File "C:\leo.repo\trunk\leo\external\ckeditor\skins\moono\images\refresh.png"
+
+SetOutPath $INSTDIR\leo\external\ckeditor\skins\moono\images\hidpi
+File "C:\leo.repo\trunk\leo\external\ckeditor\skins\moono\images\hidpi\close.png"
+File "C:\leo.repo\trunk\leo\external\ckeditor\skins\moono\images\hidpi\lock-open.png"
+File "C:\leo.repo\trunk\leo\external\ckeditor\skins\moono\images\hidpi\lock.png"
+File "C:\leo.repo\trunk\leo\external\ckeditor\skins\moono\images\hidpi\refresh.png"
 
 SetOutPath $INSTDIR\leo\external\concurrent
 File "C:\leo.repo\trunk\leo\external\concurrent\__init__.py"
@@ -1392,6 +1837,7 @@ File "C:\leo.repo\trunk\leo\plugins\bigdash.py"
 File "C:\leo.repo\trunk\leo\plugins\bookmarks.py"
 File "C:\leo.repo\trunk\leo\plugins\bzr_qcommands.py"
 File "C:\leo.repo\trunk\leo\plugins\chapter_hoist.py"
+File "C:\leo.repo\trunk\leo\plugins\cke_template.html"
 File "C:\leo.repo\trunk\leo\plugins\codewisecompleter.py"
 File "C:\leo.repo\trunk\leo\plugins\colorize_headlines.py"
 File "C:\leo.repo\trunk\leo\plugins\contextmenu.py"
@@ -1483,6 +1929,7 @@ File "C:\leo.repo\trunk\leo\plugins\quicksearch.py"
 File "C:\leo.repo\trunk\leo\plugins\quit_leo.py"
 File "C:\leo.repo\trunk\leo\plugins\read_only_nodes.py"
 File "C:\leo.repo\trunk\leo\plugins\redirect_to_log.py"
+File "C:\leo.repo\trunk\leo\plugins\richtext.py"
 File "C:\leo.repo\trunk\leo\plugins\rst3.py"
 File "C:\leo.repo\trunk\leo\plugins\runGtkDialogs.py.txt"
 File "C:\leo.repo\trunk\leo\plugins\run_nodes.py"
@@ -1579,7 +2026,9 @@ File "C:\leo.repo\trunk\leo\plugins\test\syntax_error_plugin.py"
 
 SetOutPath $INSTDIR\leo\scripts
 File "C:\leo.repo\trunk\leo\scripts\LinixInstall.py"
+File "C:\leo.repo\trunk\leo\scripts\build-leo.bat"
 File "C:\leo.repo\trunk\leo\scripts\convert_to_shadow.py"
+File "C:\leo.repo\trunk\leo\scripts\create-leobat.bat"
 File "C:\leo.repo\trunk\leo\scripts\elevate.py"
 File "C:\leo.repo\trunk\leo\scripts\gen_blender_docs.py"
 File "C:\leo.repo\trunk\leo\scripts\leo"
