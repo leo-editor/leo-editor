@@ -873,28 +873,28 @@ def deleteTempFiles (self,lines):
     for command,shell in commands:
         print('command: %s' % command)
         proc = subprocess.Popen(command,shell=shell) # ,stderr=subprocess.PIPE)
-        proc.communicate()  # Wait for the process terminate.
+        proc.communicate()  # Wait for the process to terminate.
 </t>
 <t tx="ekr.20101105103524.1493">def make_zip(self):
 
     for z in (zipFile,zipFile2):
         if exists(z): self.unlink(z)
 
+    # Weird: system('cd x') doesn't seem to work here.
+    os.chdir(rootDir)
+    # g.trace(os.path.abspath('.'))
     commands = (
-        r'cd %s' % (rootDir),
         # This commit ensures the proper files are included in the distribution.
         # r'bzr commit -m "commit doc files during make"',
         r'bzr status',
         r'bzr export "%s"' % (zipFile),
-        r'bzr export --root="%s" "%s"' % (bzrRoot,zipFile2),
+        # r'bzr export --root="%s" "%s"' % (bzrRoot,zipFile2),
         # r'dir %s' % (rootDir),
     )
-
     for z in commands:
         print ('command: %s' % z)
         os.system(z)
-
-    # Removed the temporary zip file.
+    # Remove the temporary zip file.
     if exists(zipFile2):
         self.unlink(zipFile2)
 </t>
