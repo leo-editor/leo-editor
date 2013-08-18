@@ -15,7 +15,7 @@ The highlights of Leo 4.11:
 - Added support for sessions
 - Added colorizing themes.
 - A colored border highlights the pane with focus.
-- Added support for the closure, markdown and TypeScript languages.
+- Added support for the clojure, markdown and TypeScript languages.
 - Added importers for .ipynb, .otl and vimoutliner files.
 - Many new and improved plugins.
 - Dozens of new scripts.
