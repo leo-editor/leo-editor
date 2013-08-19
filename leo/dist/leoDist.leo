@@ -47,8 +47,8 @@
 <v t="EKR.20040519090846.9"><vh>@asis ../../README.TXT</vh></v>
 </v>
 <v t="ekr.20100202061222.1494"><vh>Distribution checklist</vh></v>
-<v t="ekr.20101025095431.1517"><vh>Installer/Distribution to do</vh>
-<v t="ekr.20101025095431.1518"><vh>Bug 514656 Uninstall operation does not work as expected</vh>
+<v t="ekr.20101025095431.1517"><vh>Installer/Distribution bugs &amp; to-do</vh>
+<v t="ekr.20101025095431.1518"><vh>Fixed Bug 514656 Uninstall operation does not work as expected</vh>
 <v t="ekr.20090901092556.1576"><vh>genUninstallData &amp; helpers</vh>
 <v t="ekr.20090901121423.1568"><vh>getDeleteDirectories</vh></v>
 <v t="ekr.20090901121423.1569"><vh>getDeleteFiles</vh></v>
@@ -423,7 +423,7 @@ import time</t>
     print('command: unlink: %s' % fn)
     os.remove(fn)
 </t>
-<t tx="ekr.20100202061222.1494">@nocolor-node
+<t tx="ekr.20100202061222.1494">@language rest
 
 Clean files and create a *trial* manifest.
     (The make-leo button runs make-leo-manifest automatically.)
@@ -499,21 +499,10 @@ Announcements
 - Register Leo at http://www.python.org/pypi?:action=submit_form
 - Twitter
 - My blog</t>
-<t tx="ekr.20101025095431.1517"></t>
-<t tx="ekr.20101025095431.1518">@nocolor-node
+<t tx="ekr.20101025095431.1517">@language rest</t>
+<t tx="ekr.20101025095431.1518">
 
-On Sun, Oct 17, 2010 at 12:04 PM, David Szent-Györgyi
-&lt;514656@bugs.launchpad.net&gt; wrote:
-
-Perhaps changing the current working directory away from the installation
-directory before applying the NSIS RMDir command to the installation directory
-would work.
-
-If not, use the /REBOOTOK option of the RmDir command to force
-deletion of the installation folder on the next reboot.
-
-Both these techniques are described at
-http://nsis.sourceforge.net/Docs/Chapter4.html#4.9.1.8
+https://bugs.launchpad.net/leo-editor/+bug/514656
 </t>
 <t tx="ekr.20101026142031.1516">@nocolor-node
 
