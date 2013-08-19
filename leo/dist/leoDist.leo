@@ -554,7 +554,7 @@ version = '4.11-a1' ##version
 
 LeoMaker().run()
 # LeoMaker().copy_ref_files()
-g.es_print('@button make-leo done')
+g.es_print('done') # '@button make-leo done')
 </t>
 <t tx="ekr.20101027070126.1643">class LeoMaker:
 
@@ -886,7 +886,7 @@ def deleteTempFiles (self,lines):
     commands = (
         # This commit ensures the proper files are included in the distribution.
         # r'bzr commit -m "commit doc files during make"',
-        r'bzr status',
+        # r'bzr status',
         r'bzr export "%s"' % (zipFile),
         # r'bzr export --root="%s" "%s"' % (bzrRoot,zipFile2),
         # r'dir %s' % (rootDir),

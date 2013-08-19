@@ -7,7 +7,6 @@
 
 ;@+<< prolog >>
 ;@+node:ekr.20101027115225.1495: ** << prolog >>
- 
 ; Globals.
 Var PythonDirectory
     ; Directory containing Pythonw.exe
@@ -146,14 +145,18 @@ SectionEnd
 Section "${name} Desktop Shortcut" SEC03
   ; This sets the "Start in folder" box!!!"
   SetOutPath "$INSTDIR\leo"
-  CreateShortCut "$DESKTOP\${name}.lnk" "${PythonExecutable}" "$INSTDIR\launchLeo.py""$INSTDIR\${app_icon}"
+  ;;; This is **tricky**.  We need single quotes to handle paths containing spaces.
+  ;;; Add single quotes around PythonExecutable and launchLeo.py args, but *not* the app_icon arg.
+  CreateShortCut "$DESKTOP\${name}.lnk" '"${PythonExecutable}"' '"$INSTDIR\launchLeo.py"' "$INSTDIR\${app_icon}"
 SectionEnd
 ;@+node:ekr.20101027115225.1500: ** Section Start Menu
 
 Section "${name} Start Menu" SEC04
   CreateDirectory "$SMPROGRAMS\${name}"
-  CreateShortCut "$SMPROGRAMS\${name}\${name}.lnk" "${PythonExecutable}" "$INSTDIR\launchLeo.py" "$INSTDIR\${app_icon}"
-  CreateShortCut "$SMPROGRAMS\${name}\Uninstall.lnk" "$INSTDIR\uninst.exe"
+  ;;; This is **tricky**.  We need single quotes to handle paths containing spaces.
+  ;;; Add single quotes around PythonExecutable and launchLeo.py args, but *not* the app_icon arg.
+  CreateShortCut "$SMPROGRAMS\${name}\${name}.lnk" '"${PythonExecutable}"' '"$INSTDIR\launchLeo.py"' "$INSTDIR\${app_icon}"
+  CreateShortCut "$SMPROGRAMS\${name}\Uninstall.lnk" '"$INSTDIR\uninst.exe"'
 SectionEnd
 ;@+node:ekr.20101027115225.1501: ** Section -Post
 
@@ -169,6 +172,7 @@ SectionEnd
 ;@+node:ekr.20101027115225.1503: ** Section Uninstall
 
 Section Uninstall
+
     DeleteRegKey HKLM "${leo_hklm}"
     DeleteRegKey HKCR "${ext}"
     DeleteRegKey HKCR "${name}File"
@@ -178,10 +182,12 @@ Section Uninstall
     ; Remove links.
     Delete "$SMPROGRAMS\${name}\Uninstall.lnk"
     Delete "$SMPROGRAMS\${name}.lnk"
-    RMDir  "$SMPROGRAMS\${name}-${version}"
+    ; RMDir  "$SMPROGRAMS\${name}-${version}"
+    RMDir  "$SMPROGRAMS\${name}"
     Delete "$DESKTOP\${name}.lnk"
     DeleteRegKey HKLM "${uninst_key}" 
     SetAutoClose false
+
 SectionEnd ; end Uninstall section
 ;@-others
 ;@-leo
