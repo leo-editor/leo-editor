@@ -11,6 +11,7 @@
 # Leo 4.9   final: June 21, 2011.
 # Leo 4.10  final: March 29, 2012.
 # Leo 4.11 a1: August 18, 2013
+# Leo 4.11 a2: August 19, 2013
 
 #@@language python
 #@@tabwidth -4
@@ -27,8 +28,8 @@ except ImportError:
     bzr_version = None
 #@-<< imports >>
 
-static_version = 5914
-static_date = "2013-08-18"
+static_version = 5922
+static_date = "2013-08-19"
 version = "4.11a1"
 
 theDir = os.path.dirname(__file__)

@@ -192,7 +192,7 @@
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
 <v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d7100285509302e302e312e302e3071017d710255097374725f6174696d657103550c313337363431323837322e30710473550b302e302e332e312e312e3371057d71066803550c313337363431323838392e307107735507302e312e302e3771087d71096803550c313337363431323238302e30710a73550b302e312e302e372e302e31710b7d710c6803550c313337363431323238382e30710d73550b302e302e332e302e322e33710e7d710f6803550c313337363431323838382e30711073752e"><vh>@file release_notes.txt</vh></v>
 </v>
-<v t="ekr.20130806072439.19990"><vh>Leo 4.11 a1 Release notes</vh>
+<v t="ekr.20130806072439.19990"><vh>Leo 4.11 a2 Release notes</vh>
 <v t="ekr.20130807203905.16780"><vh>Bugs</vh>
 <v t="ekr.20130807203905.16687"><vh>Bugs: minor</vh>
 <v t="ekr.20130807203905.16476"><vh>Clear previous focus-border after alt-tab</vh></v>
@@ -1399,9 +1399,9 @@ outline order).
 </t>
 <t tx="ekr.20130806072439.19990">@language rest
 
-Leo 4.11 a1                                     August 18, 2013
+Leo 4.11 a2                                     August 19, 2013
 
-Leo 4.11 a1 is now available at: http://sourceforge.net/projects/leo/files/Leo/
+Leo 4.11 a2 is now available at: http://sourceforge.net/projects/leo/files/Leo/
 Leo 4.11 contains over a year's work on Leo.
 
 Leo is a text editor, data organizer, project manager and much more.

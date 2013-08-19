@@ -1,6 +1,6 @@
-Leo 4.11 a1                                     August 10, 2013
+Leo 4.11 a2                                     August 19, 2013
 
-Leo 4.11 a1 is now available at: http://sourceforge.net/projects/leo/files/Leo/
+Leo 4.11 a2 is now available at: http://sourceforge.net/projects/leo/files/Leo/
 Leo 4.11 contains over a year's work on Leo.
 
 Leo is a text editor, data organizer, project manager and much more.

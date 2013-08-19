@@ -47,7 +47,7 @@ You now have two choices:
 2. You can install leo into /usr/local/lib and /usr/local/bin by running
    Leo's install script as follows::
 
-    cd ~/leo-4-11-a1 # Change version as appropriate.
+    cd ~/leo-4-11-a2 # Change version as appropriate.
     chmod u+x install
     sudo ./install
 

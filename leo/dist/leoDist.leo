@@ -18,7 +18,7 @@
 <v t="ekr.20101115090518.1494"><vh>Leo 4.8 final</vh></v>
 <v t="ekr.20110603112852.1505"><vh>Leo 4.9 final</vh></v>
 <v t="ekr.20120328150744.1791"><vh>Leo 4.10 final</vh></v>
-<v t="ekr.20130818115031.6263"><vh>Leo 4.11 a1</vh></v>
+<v t="ekr.20130818115031.6263"><vh>Leo 4.11 a2</vh></v>
 <v t="EKR.20040519091259.2"><vh>Quotes of the month</vh>
 <v t="ekr.20080901114425.2"><vh>Sept 2008</vh></v>
 <v t="ekr.20070425092712"><vh>April 2007</vh></v>
@@ -31,7 +31,6 @@
 <v t="EKR.20040519091259.4"><vh>October 2003</vh></v>
 </v>
 </v>
-<v t="ekr.20100202061222.1494"><vh>Distribution checklist</vh></v>
 <v t="EKR.20040519090846"><vh>Distribution files</vh>
 <v t="ekr.20130809141000.1990"><vh>@asis ../../INSTALL.TXT</vh>
 <v t="ekr.20130809141000.1991"><vh>System requirements</vh></v>
@@ -47,6 +46,7 @@
 <v t="EKR.20040519090846.8"><vh>@asis ../../PKG-INFO.TXT</vh></v>
 <v t="EKR.20040519090846.9"><vh>@asis ../../README.TXT</vh></v>
 </v>
+<v t="ekr.20100202061222.1494"><vh>Distribution checklist</vh></v>
 <v t="ekr.20101025095431.1517"><vh>Installer/Distribution to do</vh>
 <v t="ekr.20101025095431.1518"><vh>Bug 514656 Uninstall operation does not work as expected</vh>
 <v t="ekr.20090901092556.1576"><vh>genUninstallData &amp; helpers</vh>
@@ -98,7 +98,7 @@
 
 1. Search for ##version
 
-2. Search for this suffix: -a1.
+2. Search for this suffix: -a2.
 
 3. Search for copyright
 
@@ -146,9 +146,9 @@ Description:
     Leo requires Python 2.6 or above.  Leo works with Python 3.x.
 Platform: Windows, Linux, MacOS.
 </t>
-<t tx="EKR.20040519090846.9">Leo 4.11 a1                                     August 10, 2013
+<t tx="EKR.20040519090846.9">Leo 4.11 a2                                     August 19, 2013
 
-Leo 4.11 a1 is now available at: http://sourceforge.net/projects/leo/files/Leo/
+Leo 4.11 a2 is now available at: http://sourceforge.net/projects/leo/files/Leo/
 Leo 4.11 contains over a year's work on Leo.
 
 Leo is a text editor, data organizer, project manager and much more.
@@ -427,7 +427,7 @@ import time</t>
 
 Clean files and create a *trial* manifest.
     (The make-leo button runs make-leo-manifest automatically.)
-    - Delete any unknow files reported by bzr status.
+    - Delete any unknown files reported by bzr status.
     - Run make-leo-manifest (a .bat file).
 Pre-testing:
     - Run all unit tests.
@@ -546,7 +546,7 @@ HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonPath
         leo.zip.
 '''
 
-version = '4.11-a1' ##version
+version = '4.11-a2' ##version
 &lt;&lt; includes &gt;&gt;
 &lt;&lt; define global paths and file names &gt;&gt;
 
@@ -1165,7 +1165,7 @@ You now have two choices:
 2. You can install leo into /usr/local/lib and /usr/local/bin by running
    Leo's install script as follows::
 
-    cd ~/leo-4-11-a1 # Change version as appropriate.
+    cd ~/leo-4-11-a2 # Change version as appropriate.
     chmod u+x install
     sudo ./install
 
@@ -1287,9 +1287,9 @@ stores this identifier in the file ``.leoID.txt``. Leo attempts to create
 finally in Leo's core directory. You can change this identifier at any time by
 editing ``.leoID.txt``.
 </t>
-<t tx="ekr.20130818115031.6263">Leo 4.11 a1                                     August 18, 2013
+<t tx="ekr.20130818115031.6263">Leo 4.11 a2                                     August 19, 2013
 
-Leo 4.11 a1 is now available at: http://sourceforge.net/projects/leo/files/Leo/
+Leo 4.11 a2 is now available at: http://sourceforge.net/projects/leo/files/Leo/
 Leo 4.11 contains over a year's work on Leo.
 
 Leo is a text editor, data organizer, project manager and much more.
