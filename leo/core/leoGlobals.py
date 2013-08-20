@@ -948,7 +948,32 @@ class SherlockTracer:
     '''A stand-alone tracer class with many of Sherlock's features.
 
     This class should work in any environment in which it is possible
-    to import os and sys.'''
+    to import os and sys.
+    
+    The arguments in the pattern lists determine which functions get traced or which stats get printed.  Each pattern starts with "+", "-", "+:" or "-:", followed by a regular expression.
+
+    "+x"  Enables tracing (or stats) for all functions/methods whose name
+          matches the regular expression x.
+    "-x"  Disables tracing for functions/methods.
+    "+:x" Enables tracing for all functions in the **file** whose name matches x.
+    "-:x" Disables tracing for an entire file.
+    
+    Enabling and disabling depends on the order of arguments in the pattern
+    list. Consider the arguments for the Rope trace::
+    
+    patterns=['+.*','+:.*',
+        '-:.*\\lib\\.*','+:.*rope.*','-:.*leoGlobals.py',
+        '-:.*worder.py','-:.*prefs.py','-:.*resources.py',])
+    
+    This enables tracing for everything, then disables tracing for all
+    library modules, except for all rope modules. Finally, it disables the
+    tracing for Rope's worder, prefs and resources modules. Btw, this is
+    one of the best uses for regular expressions that I know of.
+    
+    Being able to zero in on the code of interest can be a big help in
+    studying other people's code. This is a non-invasive method: no tracing
+    code needs to be inserted anywhere.
+    '''
 
     #@+others
     #@+node:ekr.20121128031949.12602: *4* __init__
@@ -1203,7 +1228,7 @@ class Tracer:
 
     #@+others
     #@+node:ekr.20080531075119.2: *4*  __init__ (Tracer)
-    def __init__(self):
+    def __init__(self,limit=0,trace=False,verbose=False):
 
         self.callDict = {}
             # Keys are function names.
@@ -1214,10 +1239,10 @@ class Tracer:
 
         self.count = 0
         self.inited = False
-        self.limit = 2 # 0: no limit, otherwise, limit trace to n entries deep.
+        self.limit = limit # 0: no limit, otherwise, limit trace to n entries deep.
         self.stack = []
-        self.trace = False
-        self.verbose = False # True: print returns as well as calls.
+        self.trace = trace
+        self.verbose = verbose # True: print returns as well as calls.
     #@+node:ekr.20080531075119.3: *4* computeName
     def computeName (self,frame):
 
@@ -1320,10 +1345,10 @@ class Tracer:
         self.calledDict[name] = 1 + self.calledDict.get(name,0)
     #@-others
 
-def startTracer():
+def startTracer(limit=0,trace=False,verbose=False):
 
     import sys
-    t = g.Tracer()
+    t = g.Tracer(limit=limit,trace=trace,verbose=verbose)
     sys.settrace(t.tracer)
     return t
 #@+node:ekr.20031218072017.3108: *3* Dumps
