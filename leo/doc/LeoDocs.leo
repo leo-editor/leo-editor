@@ -333,6 +333,8 @@
 <v t="ekr.20130807203905.16608"><vh>Settings &amp; options</vh></v>
 <v t="ekr.20130807203905.16270"><vh>Web site improvements</vh></v>
 </v>
+<v t="ekr.20130821062332.15512"><vh>** Encourage emails from users (e-card)</vh></v>
+<v t="ekr.20130821062332.15513"><vh>Leo's command-line options</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -2760,6 +2762,30 @@ to have an inserted pane, but refreshing will require killing the pane and
 reinserting.... 
 
 
+</t>
+<t tx="ekr.20130821062332.15512"></t>
+<t tx="ekr.20130821062332.15513">Options:
+  -h, --help            show this help message and exit
+  --fullscreen          start fullscreen (Qt only)
+  --ipython             enable ipython support
+  --gui=GUI             gui to use (qt/qttabs)
+  --maximized           start maximized (Qt only)
+  --minimized           start minimized
+  --no-cache            disable reading of cached files
+  --no-plugins          disable all plugins
+  --no-splash           disable the splash screen
+  --screen-shot=SCREENSHOT_FN
+                        take a screen shot and then exit
+  --script=SCRIPT       execute a script and then exit
+  --script-window=SCRIPT_WINDOW
+                        open a window for scripts
+  --select=SELECT       headline or gnx of node to select
+  --session-restore     restore previously saved session tabs at startup
+  --session-save        save session tabs on exit
+  --silent              disable all log messages
+  --version             print version number and exit
+  --window-size=WINDOW_SIZE
+                        initial window size in height x width format
 </t>
 <t tx="sps.20100708203040.19008">@language python
 import os

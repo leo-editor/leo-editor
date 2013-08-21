@@ -46,8 +46,7 @@ Topics:
     https://groups.google.com/forum/#!topic/leo-editor/W1_LVrQxdwQ
 .. @+node:ekr.20130816100419.23050: ** to do 4.11
 .. @+node:ekr.20130821062332.11234: *3* First
-.. @+node:ekr.20130821062332.11237: *4* ** Make sure sourceforge download button is correct
-.. @+node:ekr.20130808211520.15901: *4* * encourage e-postcards from users
+.. @+node:ekr.20130821062332.15516: *4* Add shorter command-line options
 .. @+node:ekr.20130821062332.11233: *4* Add guts of recursive import script to Leo's core
 .. @+node:ekr.20130821062332.11235: *4* Fix "holding files open?" bug
 .. @+node:ekr.20130821062332.11236: *4* Add yes-to-all button to file exists dialog

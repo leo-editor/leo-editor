@@ -2080,40 +2080,39 @@ class LoadManager:
         # Note: this automatically implements the --help option.
         parser = optparse.OptionParser()
         add = parser.add_option
-
-        add('--fullscreen',   action="store_true",
+        add('--fullscreen', action="store_true",
             help = 'start fullscreen (Qt only)')
         add('--ipython',      action="store_true",dest="use_ipython",
             help = 'enable ipython support')
         add('--gui',
             help = 'gui to use (qt/qttabs)')
-        add('--maximized',    action="store_true",
+        add('--maximized', action="store_true",
             help = 'start maximized (Qt only)')
-        add('--minimized',    action="store_true",
+        add('--minimized', action="store_true",
             help = 'start minimized')
-        add('--no-cache',     action="store_true", dest='no_cache',
+        add('--no-cache', action="store_true", dest='no_cache',
             help = 'disable reading of cached files')
-        add('--no-plugins',   action="store_true", dest='no_plugins',
+        add('--no-plugins', action="store_true", dest='no_plugins',
             help = 'disable all plugins')
-        add('--no-splash',    action="store_true", dest='no_splash_screen',
+        add('--no-splash', action="store_true", dest='no_splash_screen',
             help = 'disable the splash screen')
-        add('--screen-shot',  dest='screenshot_fn',
+        add('--screen-shot', dest='screenshot_fn',
             help = 'take a screen shot and then exit')
-        add('--script',       dest="script",
+        add('--script', dest="script",
             help = 'execute a script and then exit')
         add('--script-window',dest="script_window",
             help = 'open a window for scripts')
-        add('--select',       dest='select',
+        add('--select', dest='select',
             help='headline or gnx of node to select')
-        add('--session-restore',action="store_true",dest='session_restore',
+        add('--session-restore', action="store_true", dest='session_restore',
             help = 'restore previously saved session tabs at startup')
-        add('--session-save',action="store_true",dest='session_save',
+        add('--session-save', action="store_true", dest='session_save',
             help = 'save session tabs on exit')
-        add('--silent',       action="store_true", dest="silent",
+        add('--silent', action="store_true", dest="silent",
             help = 'disable all log messages')
-        add('--version',      action="store_true", dest="version",
+        add('-v', '--version', action="store_true", dest="version",
             help='print version number and exit')
-        add('--window-size',  dest='window_size',
+        add('--window-size', dest='window_size',
             help='initial window size in height x width format')
 
         # Parse the options, and remove them from sys.argv.
