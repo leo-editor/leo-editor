@@ -2356,7 +2356,8 @@ class Commands (object):
             log = c.frame.log
             g.app.log = log
             if script.strip():
-                sys.path.insert(0,c.frame.openDirectory)
+                # print('***executeScript***',c.frame.openDirectory)
+                sys.path.insert(0,g.toEncodedString(c.frame.openDirectory))
                 script += '\n' # Make sure we end the script properly.
                 try:
                     # We *always* execute the script with p = c.p.
@@ -6748,17 +6749,16 @@ class Commands (object):
         '''Bring up an About Leo Dialog.'''
 
         c = self
-
+        import datetime
         # Don't use triple-quoted strings or continued strings here.
         # Doing so would add unwanted leading tabs.
         version = g.app.signon + '\n\n'
         theCopyright = (
-            "Copyright 1999-2012 by Edward K. Ream\n" +
+            "Copyright 1999-%s by Edward K. Ream\n" +
             "All Rights Reserved\n" +
-            "Leo is distributed under the MIT License")
+            "Leo is distributed under the MIT License") % datetime.date.today().year
         url = "http://leoeditor.com/"
         email = "edreamleo@gmail.com"
-
         g.app.gui.runAboutLeoDialog(c,version,theCopyright,url,email)
     #@+node:ekr.20031218072017.2943: *5* openLeoSettings and openMyLeoSettings
     def openLeoSettings (self,event=None):
