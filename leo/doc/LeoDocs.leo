@@ -54,8 +54,7 @@
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
 <v t="ekr.20101025080245.5800"><vh>@edit leo_toc.html</vh></v>
 <v t="ekr.20101112045055.5064" descendentVnodeUnknownAttributes="7d7100285503302e3171017d710255097374725f6174696d657103550c313337363431323739362e3071047355013071057d71066803550c313337363431323932332e307107735503302e3071087d71096803550c313337363431323932372e30710a73752e"><vh>@file plugin_catalog.py</vh></v>
-<v t="ekr.20100808060203.4273"
-expanded="ekr.20100808060203.4286,"><vh>@file html/index.html</vh></v>
+<v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 <v t="ekr.20130807203905.16606"><vh>@edit html/leoLinks.html</vh></v>
 <v t="ekr.20101025080245.5801"><vh>@url modified toc</vh></v>
 <v t="ekr.20101026081737.5531"><vh>Links that replace those in actual built page</vh></v>
@@ -334,7 +333,6 @@ expanded="ekr.20100808060203.4286,"><vh>@file html/index.html</vh></v>
 <v t="ekr.20130807203905.16608"><vh>Settings &amp; options</vh></v>
 <v t="ekr.20130807203905.16270"><vh>Web site improvements</vh></v>
 </v>
-<v t="ekr.20130821062332.15512"><vh>** Encourage emails from users (e-card)</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -2763,7 +2761,6 @@ reinserting....
 
 
 </t>
-<t tx="ekr.20130821062332.15512"></t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
