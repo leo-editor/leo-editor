@@ -449,28 +449,41 @@ Leo uses os.expanduser('~') to determine the HOME directory if no HOME environme
 
 Leo puts several files in your HOME/.leo directory:
 .leoID.txt, .leoRecentFiles.txt, and myLeoSettings.leo.
-.. @+node:ekr.20130821062332.15513: *4* Leo's command-line options
-Options:
-  -h, --help            show this help message and exit
-  --fullscreen          start fullscreen (Qt only)
-  --ipython             enable ipython support
-  --gui=GUI             gui to use (qt/qttabs)
-  --maximized           start maximized (Qt only)
-  --minimized           start minimized
-  --no-cache            disable reading of cached files
-  --no-plugins          disable all plugins
-  --no-splash           disable the splash screen
-  --screen-shot=SCREENSHOT_FN
-                        take a screen shot and then exit
-  --script=SCRIPT       execute a script and then exit
-  --script-window=SCRIPT_WINDOW
-                        open a window for scripts
-  --select=SELECT       headline or gnx of node to select
-  --session-restore     restore previously saved session tabs at startup
-  --session-save        save session tabs on exit
-  --silent              disable all log messages
-  --version             print version number and exit
-  --window-size=WINDOW_SIZE
-                        initial window size in height x width format
+.. @+node:ekr.20130821062332.15513: *3* Leo's command-line options
+Leo supports the following command-line options. As usual, you can see the
+list by typing the following in a console window::
+
+    leo -h
+
+or::
+
+    leo --help
+
+You will get something like the following::
+
+    Usage: launchLeo.py [options]
+    
+    Options:
+      -h, --help            show this help message and exit
+      --fullscreen          start fullscreen (Qt only)
+      --ipython             enable ipython support
+      --gui=GUI             gui to use (qt/qttabs)
+      --maximized           start maximized (Qt only)
+      --minimized           start minimized
+      --no-cache            disable reading of cached files
+      --no-plugins          disable all plugins
+      --no-splash           disable the splash screen
+      --screen-shot=SCREENSHOT_FN
+                            take a screen shot and then exit
+      --script=SCRIPT       execute a script and then exit
+      --script-window=SCRIPT_WINDOW
+                            open a window for scripts
+      --select=SELECT       headline or gnx of node to select
+      --session-restore     restore previously saved session tabs at startup
+      --session-save        save session tabs on exit
+      --silent              disable all log messages
+      -v, --version         print version number and exit
+      --window-size=WINDOW_SIZE
+                            initial window size in height x width format
 .. @-all
 .. @-leo
