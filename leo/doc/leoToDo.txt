@@ -44,16 +44,144 @@ Topics:
 - Waiting for answer to solarized question:
     http://qt-project.org/forums/viewthread/30838/
     https://groups.google.com/forum/#!topic/leo-editor/W1_LVrQxdwQ
-.. @+node:ekr.20130816100419.23050: ** 4.11 a2
-.. @+node:ekr.20130508084413.10645: *3* Better find/replace dialog
+.. @+node:ekr.20130816100419.23050: ** to do 4.11
+.. @+node:ekr.20130821062332.11234: *3* First
+.. @+node:ekr.20130821062332.11237: *4* ** Make sure sourceforge download button is correct
+.. @+node:ekr.20130808211520.15901: *4* * encourage e-postcards from users
+.. @+node:ekr.20130821062332.11233: *4* Add guts of recursive import script to Leo's core
+.. @+node:ekr.20130821062332.11235: *4* Fix "holding files open?" bug
+.. @+node:ekr.20130821062332.11236: *4* Add yes-to-all button to file exists dialog
+.. @+node:ekr.20130807203905.16649: *3* Doc
+@language rest
+.. @+node:ekr.20130807203905.16650: *4* Leo in a nutshell
+https://groups.google.com/forum/#!topic/leo-editor/lgHE4OJSLzw
+
+In a Nutshell, The Leo Editor...
+
+- has had 15,508 commits made by 47 contributors
+  representing 1,064,650 lines of code
+- is mostly written in Python
+  with an average number of source code comments
+- has a well established, mature codebase
+  maintained by a large development team
+  with decreasing Y-O-Y commits
+- took an estimated 292 years of effort (COCOMO model)
+  starting with its first commit in February, 2002
+  ending with its most recent commit 2 days ago 
+.. @+node:ekr.20130807203905.16678: *4* For Implementors
+@language rest
+
+- Don't read code: use g.trace and g.pdb instead.
+- Where the bodies are hidden.
+    - self.w in leoEditCommands.py
+- Complex code that *can't* be simplified.
+- The top 20 methods.  You must understand these *in general*.
+    - k.masterKeyHandler.
+    - qt.eventFilter.
+    - 
+    
+    
+** Add mandatory _kind fields to all g.Bunches.
+.. @+node:ekr.20130807203905.16679: *5* Centralizing focus handling (to make debugging easier)
+From: "Ville M. Vainio" <vivainio@gmail.com>
+
+I am having some problems wrapping my head around how focus behaves
+throughout leo.
+
+IMO it would be a good idea to have only one place in Leo where focus is
+explicitly set. E.g. g.setFocus(widget). This implementetation would
+suffice:
+
+def setFocus(widget):
+  widget.setFocus()
+
+Reasoning: it would be handy to add debugging stuff here, to see why my
+focus stuff is failing in alt-x go-anywhere handling.
+
+(My guess is treeFocusHelper only understanding focus being either in tree
+or body, but no time to explore further now)
+
+===== EKR
+
+In fact, there is only one such place: c.outerUpdate.  The various
+xWantsFocus methods simply set ivars, which c.outerUpdate uses to set the
+focus when a command completes.
+
+The various xWantsFocusNow methods call c.outerUpdate immediately.  Usually
+we don't want to do this, because it could cause screen flash, but
+sometimes the immediate update is essential.
+
+I've marked this thread as a topic for implementers.  Such things will form
+the basis for documentation for my successors.
+.. @+node:ekr.20130807203905.16681: *5* Free "continuous integration" for Leo
+From: "Ville M. Vainio" <vivainio@gmail.com>
+
+--089e0122f80868cb1b04dce55d84
+Content-Type: text/plain; charset=ISO-8859-1
+
+Someone may be interested in investigating a free CI system for Leo:
+
+https://travis-ci.org/
+
+This could e.g. create debian packages for daily builds, run unit tests,
+check stuff with lint, try compiling with python3 so we (*cough*) wouldn't
+have accidental print statements in the source...
+.. @+node:ekr.20130807203905.16684: *5* Toolkit independent apis
+From: "Ville M. Vainio" <vivainio@gmail.com>
+
+Ramblings relevant to Leo, by the PyQt lead developer:
+
+http://www.riverbankcomputing.co.uk/static/Docs/dip/architecture.html#the-realities-of-software-development
+
+esp "The Myth of Toolkit Independence"
+
+===== EKR
+
+Leo's core benefits greatly from toolkit independence, despite some
+(usually minor) extra complexity. Obviously, this has not constrained
+what plugins can do.
+
+This is pretty much a non-issue for Leo.  The reason is clear enough:
+the hundreds of commands defined in Leo's core are mostly
+straightforward renditions of emacs text commands.  There, the
+constraints of an abstraction layer do not pinch.  Furthermore, using
+common gui-level code is a good application of the DRY (Don't Repeat
+Yourself) principle, as recent bug fixes in the common code
+illustrate.
+
+The code for ensuring that the outline and body text are updated
+properly (and in synch!) is much more difficult, but the difficulties
+are fundamental: they have almost nothing to do with actual guis.
+
+In short, I think Leo's design uses the best of the gui-dependent and
+gui-independent approaches.
+.. @+node:ekr.20130510070942.10606: *3* Bugs
+.. @+node:ekr.20130508084413.10645: *4* Better find/replace dialog
 For newbies (and for power users too, for that matter), it may be helpful to
 have a "Find and Replace" dialog box similar to the one below:
 
 .. image: c:/prog/findReplace.jpg
 
-.. @+node:ekr.20130510070942.10611: *3* Can undo headline put focus in headline?
-This would fix a reported bug.
-.. @+node:ekr.20130806072439.20723: *3* Problem saving changed/new .leo files on Windows
+.. @+node:ekr.20130530110446.12450: *4* Fix syntax coloring bug involving multiple body editors
+.. @+node:ekr.20130502102046.10578: *4* Crash deleting body editor
+# Trying to delete a second body editor.
+
+Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 560, in doCommand
+    val = command(event)
+  File "c:\leo.repo\trunk\leo\plugins\qtGui.py", line 2980, in deleteEditor
+    name = w.leo_name
+AttributeError: 'LeoQTextBrowser' object has no attribute 'leo_name'
+.. @+node:ekr.20130805080841.21380: *4* Fix javascript import bug
+https://groups.google.com/forum/#!topic/leo-editor/dmC8iIKlF7g
+.. @+node:ekr.20130805134749.12435: *4* Fix syntax coloring bug
+@language python
+
+def but_quotes_at_the_end_of_a_triple_quoted_string_are_still_tricky(self):
+    string = """Hello "world\""""
+    
+what
+.. @+node:ekr.20130806072439.20723: *4* Problem saving changed/new .leo files on Windows
 EKR: This appears to be some weird key-related problem with Leo 4.10.
 
 ===== From: vili <viljem.tisnikar@gmail.com>
@@ -127,7 +255,9 @@ And does the log window have any warnings or error messages?
 No, in log window nothing happens when I pres "ctrl-s". And of course the
 star near the name of the file does not disappear.
 
-.. @+node:ekr.20130806211959.17307: *3* Help (Some might be good to document)
+.. @+node:ekr.20130510070942.10611: *4* Can undo headline put focus in headline?
+This would fix a reported bug.
+.. @+node:ekr.20130806211959.17307: *3* Help (For FAQ?)
 @language rest
 .. @+node:ekr.20130806211959.17315: *4* Background Images in body pane?
 From: tfer <tfetherston@aol.com>
@@ -926,7 +1056,7 @@ note::
         
         python leoftsindex.py "workbook.leo#Links"
 .. @+node:ekr.20130806211959.17339: *4* Parameterized template nodes
-From: =?UTF-8?Q?Jo=C3=A3o_Alexandre_Toledo?= <jalexandretoledo@gmail.com>
+From: Alexandre_Toledo <jalexandretoledo@gmail.com>
 
 As I use Leo to write PL/SQL code, I need to write similar text several
 times, changing only small parts of it. It would be great if I could create
@@ -1368,7 +1498,7 @@ find more example code.
 
 Any suggestion to improve this workflow?
 .. @+node:ekr.20130806211959.17357: *4* Tool for diffing Leo files
-From: Terry Brown <terry_n_brown@yahoo.com>
+From: Terry Brown
 
 The script below is a tool for diffing two Leo files. The attached
 screenshot illustrates the output for two different revisions of
@@ -1543,31 +1673,7 @@ vt = to_c.hiddenRootNode
 """
 just to feed in the 2 nodes, Any quick idea how this can be done the best 
 way?
-.. @+node:ekr.20130808211520.15901: *3* * encourage e-postcards from users
-.. @+node:ekr.20130503155210.24827: *3* Console script: Install Leo from scratch on Windows
-@language batch
-
-mkdir X:\testing
-pushd X:\testing
-
-wget -O apt.exe --no-clobber http://download.osgeo.org/osgeo4w/release/apt/apt-r1193M.exe
-SET OSGEO4W_ROOT=%~dp0\root
-apt setup
-apt update
-apt install pyqt4 sip
-
-call root\osgeo4w.bat
-
-wget --no-check-certificate http://gist.github.com/maphew/5393935/raw/install-pip.py
-python install-pip.py GO
-python install-pip.py GO
-
-pip install -i https://testpypi.python.org/pypi leo-editor
-
-python apps\Python27\Scripts\leo
-.. @+node:ekr.20130812034101.12574: ** 4.11 b1
-@language rest
-.. @+node:ekr.20130510070942.10606: *3* Bugs (4.11b1)
+.. @+node:ekr.20130821062332.11232: *3* Scripts
 .. @+node:ekr.20130503155210.24826: *4* Script: Add Windows handler for .leo files
 # https://groups.google.com/forum/?fromgroups=#!searchin/leo-editor/leo$20script/leo-editor/ANPuhuEIU9c/8lgid9MNKkAJ
 
@@ -1607,44 +1713,29 @@ from subprocess import Popen
 Popen('start "Shell from Leo" cmd.exe /k "{0} && {1}" '.format(assoc_cmd, ftype_cmd),
 
     cwd=tmp, shell=True)
-.. @+node:ekr.20130530110446.12450: *4* Fix syntax coloring bug involving multiple body editors
-.. @+node:ekr.20130502102046.10578: *4* Crash deleting body editor
-# Trying to delete a second body editor.
+.. @+node:ekr.20130503155210.24827: *4* Console script: Install Leo from scratch on Windows
+@language batch
 
-Traceback (most recent call last):
-  File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 560, in doCommand
-    val = command(event)
-  File "c:\leo.repo\trunk\leo\plugins\qtGui.py", line 2980, in deleteEditor
-    name = w.leo_name
-AttributeError: 'LeoQTextBrowser' object has no attribute 'leo_name'
-.. @+node:ekr.20130805080841.21380: *4* Fix javascript import bug
-https://groups.google.com/forum/#!topic/leo-editor/dmC8iIKlF7g
-.. @+node:ekr.20130805134749.12435: *4* Fix syntax coloring bug
-@language python
+mkdir X:\testing
+pushd X:\testing
 
-def but_quotes_at_the_end_of_a_triple_quoted_string_are_still_tricky(self):
-    string = """Hello "world\""""
-    
-what
-.. @+node:ekr.20130807203905.16649: *3* Doc
-@language rest
-.. @+node:ekr.20130807203905.16650: *4* Leo in a nutshell
-https://groups.google.com/forum/#!topic/leo-editor/lgHE4OJSLzw
+wget -O apt.exe --no-clobber http://download.osgeo.org/osgeo4w/release/apt/apt-r1193M.exe
+SET OSGEO4W_ROOT=%~dp0\root
+apt setup
+apt update
+apt install pyqt4 sip
 
-In a Nutshell, The Leo Editor...
+call root\osgeo4w.bat
 
-- has had 15,508 commits made by 47 contributors
-  representing 1,064,650 lines of code
-- is mostly written in Python
-  with an average number of source code comments
-- has a well established, mature codebase
-  maintained by a large development team
-  with decreasing Y-O-Y commits
-- took an estimated 292 years of effort (COCOMO model)
-  starting with its first commit in February, 2002
-  ending with its most recent commit 2 days ago 
-.. @+node:ekr.20130807203905.16655: *4* Tutorials & how-to
-.. @+node:ekr.20130807203905.16656: *5* A beautiful pattern for composing large strings
+wget --no-check-certificate http://gist.github.com/maphew/5393935/raw/install-pip.py
+python install-pip.py GO
+python install-pip.py GO
+
+pip install -i https://testpypi.python.org/pypi leo-editor
+
+python apps\Python27\Scripts\leo
+.. @+node:ekr.20130807203905.16655: *3* Tutorials & how-to
+.. @+node:ekr.20130807203905.16656: *4* A beautiful pattern for composing large strings
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
 I continue to work feverishly on various aspects of static type checking.
@@ -1659,7 +1750,7 @@ using lisp-like algorithms, but more safely than in lisp.
 Full details at the stc documentation page::
 http://webpages.charter.net/edreamleo/stc/stc.html#a-beautiful-pattern-for-building-large-strings
 
-.. @+node:ekr.20130807203905.16657: *6* Re: A beautiful pattern for composing large strings
+.. @+node:ekr.20130807203905.16657: *5* Re: A beautiful pattern for composing large strings
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
 On Wednesday, January 2, 2013 10:02:40 AM UTC-6, Edward K. Ream wrote:
@@ -1714,7 +1805,7 @@ The point is that the indentation must be "moved behind the newline".
 
 Edward
 
-.. @+node:ekr.20130807203905.16659: *6* Re: A beautiful pattern for composing large strings
+.. @+node:ekr.20130807203905.16659: *5* Re: A beautiful pattern for composing large strings
 From: "Ville M. Vainio" <vivainio@gmail.com>
 
 This seems like a spiritual relative of "rope" data structure:
@@ -1730,7 +1821,7 @@ flatten_list method. It's the combination of the lists and flatten_list
 that gives the pattern real power. We've just seen how the 'indent' keyword
 hack allows sophisticated processing of the lists. I wouldn't expect more
 hacks to be needed, but I've been surprised before ;-)
-.. @+node:ekr.20130807203905.16660: *6* Re: A beautiful pattern for composing large strings
+.. @+node:ekr.20130807203905.16660: *5* Re: A beautiful pattern for composing large strings
 On Tue, 1 Jan 2013 17:03:05 -0800 (PST)
 "Edward K. Ream" <edreamleo@gmail.com> wrote:
 
@@ -1743,7 +1834,7 @@ http://lxml.de/tutorial.html#the-e-factory
 
 Cheers -Terry
 
-.. @+node:ekr.20130807203905.16662: *6* Re: A beautiful pattern for composing large strings
+.. @+node:ekr.20130807203905.16662: *5* Re: A beautiful pattern for composing large strings
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
 On Thursday, January 3, 2013 3:28:52 AM UTC-6, Ville M. Vainio wrote:
@@ -1809,7 +1900,7 @@ Python.  So yes, in this sense I agree with you completely that the pattern
 is more useful for "fast" languages than for Python.
 
 Thanks, Ville, for provoking all these pleasant thoughts :-)
-.. @+node:ekr.20130807203905.16663: *6* Re: A beautiful pattern for composing large strings
+.. @+node:ekr.20130807203905.16663: *5* Re: A beautiful pattern for composing large strings
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
 On Tue, Jan 1, 2013 at 9:48 PM, Terry Brown <terry_n_brown@yahoo.com> wrote:
@@ -1848,7 +1939,7 @@ An example of the pattern in use::
 
 Similarly for span, etc. Thanks for pointing this out.  This is too good to
 ignore.  I'll do it soon.
-.. @+node:ekr.20130807203905.16664: *5* All about clone conflicts
+.. @+node:ekr.20130807203905.16664: *4* All about clone conflicts
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
 Some people seem to think that it is difficult to understand how Leo
@@ -1890,7 +1981,7 @@ clones, it is up to *you* to know these rules and handle any resulting
 conflicts. Imo, the "Recovered Nodes" feature is a big step forward for
 Leo, and makes it impossible to lose data unless you willfully refuse to
 examine the data.
-.. @+node:ekr.20130807203905.16665: *6* Re: All about clone conflicts
+.. @+node:ekr.20130807203905.16665: *5* Re: All about clone conflicts
 From: Joon Ro <joonpyro@gmail.com>
 
 Thanks for the explanation. As a matter of fact, I was having hard time 
@@ -1911,7 +2002,7 @@ when it makes decision which node is new, instead of just depending on the
 order of files in the outline. In above case, it is natural for me to have 
 actual source nodes on the top of the outline and backup nodes on the 
 bottom. Please let me know what you think. 
-.. @+node:ekr.20130807203905.16666: *5* Draft: Position tutorial
+.. @+node:ekr.20130807203905.16666: *4* Draft: Position tutorial
 @language rest
 
 A **position** object represents a specific node in a Leo outline.
@@ -1936,7 +2027,7 @@ Leo's generators deliver positions, one after each other, using a *single*
 lists of positions. For example::
 
     aList = [p.copy() for p in c.rootPosition().subtree()]
-.. @+node:ekr.20130807203905.16667: *6* other info
+.. @+node:ekr.20130807203905.16667: *5* other info
 Consider this example, where nodes with the same names are clones of each other::
 
 + Root
@@ -1964,7 +2055,7 @@ Leo's c.all_nodes() iterator will deliver 9 positions:
   The parent of position 5: B is A at childIndex 1 of Root.
   The parent of position 6: B is Root. The childIndex of 6: B is 2.
 
-.. @+node:ekr.20130807203905.16668: *5* Draft: unit-testing tutorial
+.. @+node:ekr.20130807203905.16668: *4* Draft: unit-testing tutorial
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
 The following is a first draft of a unit-testing tutorial.  It will form 
@@ -2013,8 +2104,8 @@ and then do Alt-4 (run-selected-unit-tests-locally).
 You only need to be concerned about unit tests that start failing after you 
 make your changes.
 
-.. @+node:ekr.20130807203905.16669: *5* Tutorial scripts (To be written)
-.. @+node:ekr.20130807203905.16670: *6* What makes Leo special: shorter
+.. @+node:ekr.20130807203905.16669: *4* Tutorial scripts (To be written)
+.. @+node:ekr.20130807203905.16670: *5* What makes Leo special: shorter
 @wrap
 @language rest
 
@@ -2050,7 +2141,7 @@ All Leo scripts execute with these **predefined symbols**: |br|
 \4. **All parts of Leo are scriptable**, including: |br|
 
 .. In short, all outline data are completely scriptable.
-.. @+node:ekr.20130807203905.16671: *6* What makes Leo special
+.. @+node:ekr.20130807203905.16671: *5* What makes Leo special
 @language rest
 
 Leo looks like relatively ordinary outline editor,
@@ -2078,103 +2169,16 @@ Script nodes
 ------------
 
 There are many ways to combine these capabilities.
-.. @+node:ekr.20130807203905.16672: *6* Scripting
-.. @+node:ekr.20130807203905.16673: *6* External files
-.. @+node:ekr.20130807203905.16674: *6* The screenshots plugin
-.. @+node:ekr.20130807203905.16675: *6* The contextmenu plugin
+.. @+node:ekr.20130807203905.16672: *5* Scripting
+.. @+node:ekr.20130807203905.16673: *5* External files
+.. @+node:ekr.20130807203905.16674: *5* The screenshots plugin
+.. @+node:ekr.20130807203905.16675: *5* The contextmenu plugin
 @language rest
 
 Adds configurable right-click menu items to nodes.
-.. @+node:ekr.20130807203905.16676: *6* The bookmarks plugin
-.. @+node:ekr.20130807203905.16677: *6* The todo plugin
-.. @+node:ekr.20130807203905.16818: *6* The valuespace plugin (promised!)
-.. @+node:ekr.20130807203905.16678: *4* For Implementors
-@language rest
-
-- Don't read code: use g.trace and g.pdb instead.
-- Where the bodies are hidden.
-    - self.w in leoEditCommands.py
-- Complex code that *can't* be simplified.
-- The top 20 methods.  You must understand these *in general*.
-    - k.masterKeyHandler.
-    - qt.eventFilter.
-    - 
-    
-    
-** Add mandatory _kind fields to all g.Bunches.
-.. @+node:ekr.20130807203905.16679: *5* Centralizing focus handling (to make debugging easier)
-From: "Ville M. Vainio" <vivainio@gmail.com>
-
-I am having some problems wrapping my head around how focus behaves
-throughout leo.
-
-IMO it would be a good idea to have only one place in Leo where focus is
-explicitly set. E.g. g.setFocus(widget). This implementetation would
-suffice:
-
-def setFocus(widget):
-  widget.setFocus()
-
-Reasoning: it would be handy to add debugging stuff here, to see why my
-focus stuff is failing in alt-x go-anywhere handling.
-
-(My guess is treeFocusHelper only understanding focus being either in tree
-or body, but no time to explore further now)
-
-===== EKR
-
-In fact, there is only one such place: c.outerUpdate.  The various
-xWantsFocus methods simply set ivars, which c.outerUpdate uses to set the
-focus when a command completes.
-
-The various xWantsFocusNow methods call c.outerUpdate immediately.  Usually
-we don't want to do this, because it could cause screen flash, but
-sometimes the immediate update is essential.
-
-I've marked this thread as a topic for implementers.  Such things will form
-the basis for documentation for my successors.
-.. @+node:ekr.20130807203905.16681: *5* Free "continuous integration" for Leo
-From: "Ville M. Vainio" <vivainio@gmail.com>
-
---089e0122f80868cb1b04dce55d84
-Content-Type: text/plain; charset=ISO-8859-1
-
-Someone may be interested in investigating a free CI system for Leo:
-
-https://travis-ci.org/
-
-This could e.g. create debian packages for daily builds, run unit tests,
-check stuff with lint, try compiling with python3 so we (*cough*) wouldn't
-have accidental print statements in the source...
-.. @+node:ekr.20130807203905.16684: *5* Toolkit independent apis
-From: "Ville M. Vainio" <vivainio@gmail.com>
-
-Ramblings relevant to Leo, by the PyQt lead developer:
-
-http://www.riverbankcomputing.co.uk/static/Docs/dip/architecture.html#the-realities-of-software-development
-
-esp "The Myth of Toolkit Independence"
-
-===== EKR
-
-Leo's core benefits greatly from toolkit independence, despite some
-(usually minor) extra complexity. Obviously, this has not constrained
-what plugins can do.
-
-This is pretty much a non-issue for Leo.  The reason is clear enough:
-the hundreds of commands defined in Leo's core are mostly
-straightforward renditions of emacs text commands.  There, the
-constraints of an abstraction layer do not pinch.  Furthermore, using
-common gui-level code is a good application of the DRY (Don't Repeat
-Yourself) principle, as recent bug fixes in the common code
-illustrate.
-
-The code for ensuring that the outline and body text are updated
-properly (and in synch!) is much more difficult, but the difficulties
-are fundamental: they have almost nothing to do with actual guis.
-
-In short, I think Leo's design uses the best of the gui-dependent and
-gui-independent approaches.
+.. @+node:ekr.20130807203905.16676: *5* The bookmarks plugin
+.. @+node:ekr.20130807203905.16677: *5* The todo plugin
+.. @+node:ekr.20130807203905.16818: *5* The valuespace plugin (promised!)
 .. @+node:ekr.20130806211959.17359: *3* User comments
 .. @+node:ekr.20130807090137.11464: *4* From Vili
 From: vili <viljem.tisnikar@gmail.com>
