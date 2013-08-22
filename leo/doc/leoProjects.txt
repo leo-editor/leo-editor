@@ -1,7 +1,27 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20100120072650.6089: * @file ../doc/leoProjects.txt
 #@+all
-#@+node:ekr.20130807203905.16589: ** 4.11 a1
+#@+node:ekr.20130807203905.16589: ** 4.11 b1
+#@+node:ekr.20130821062332.11235: *3* Fixed bug 1208942: Leo holding directory/file handles after file close?
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/1208942
+Leo holding directory/file handles after file close?
+
+Open Leo
+2. Create a new directory "test"
+3. Create a new Leo file, save as "test/test.leo"
+4. Create @file node in test.leo, save file.
+5. Close test.leo, but keep Leo open (with another .leo open in a different tab)
+6. Attempt to delete "test" directory <<-- FAILS, "open in another application"
+7. Close Leo completely
+8. Delete "test" directory <<-- Succeeds, now that Leo's closed
+
+Actually, only just opening a .leo file without any @file nodes was enough to keep a file open.
+
+The fix was to close theFile in fc.getLeoFile.
+
+@language python
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

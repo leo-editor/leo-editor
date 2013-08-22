@@ -728,14 +728,12 @@ class baseFileCommands:
 
     def getLeoFile (self,theFile,fileName,readAtFileNodesFlag=True,silent=False):
 
-        # g.trace('*****',fileName)
         fc,c = self,self.c
         c.setChanged(False) # May be set when reading @file nodes.
         fc.warnOnReadOnlyFiles(fileName)
         fc.checking = False
         fc.mFileName = c.mFileName
         fc.initReadIvars()
-
         try:
             c.loading = True # disable c.changed
             ok = True if silent else g.app.checkForOpenFile(c,fileName)
@@ -748,23 +746,22 @@ class baseFileCommands:
             else:
                 fc.mFileName = c.mFileName = None
                     # Bug fix. Clear the fileName so forgetOpenFile doesn't remove it.
-
             if ok:
                 fc.resolveTnodeLists()
                     # Do this before reading external files.
                 c.setFileTimeStamp(fileName)
-
                 if readAtFileNodesFlag:
                     # Redraw before reading the @file nodes so the screen isn't blank.
                     # This is important for big files like LeoPy.leo.
                     c.redraw()
                     fc.readExternalFiles(fileName)
-
                 if c.config.getBool('check_outline_after_read'):
                     c.checkOutline(event=None,verbose=True,unittest=False,full=True)
         finally:
             c.loading = False # reenable c.changed
-
+            theFile.close()
+                # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1208942
+                # Leo holding directory/file handles after file close?
         if c.changed:
             fc.propegateDirtyNodes()
         c.setChanged(c.changed) # Refresh the changed marker.
