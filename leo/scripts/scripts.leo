@@ -3,8 +3,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
+	<global_window_position top="31" left="473" height="1041" width="1248"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -96,7 +96,7 @@
 <v t="ekr.20121220111212.13267"><vh>write_file</vh></v>
 </v>
 </v>
-<v t="ekr.20130810093044.16933"><vh>Recently contributed scripts</vh>
+<v t="ekr.20130810093044.16933"><vh>Recently contributed/modified scripts</vh>
 <v t="ekr.20130810093044.16934"><vh>By Terry Brown</vh>
 <v t="ekr.20130810093044.16935"><vh>add @script node</vh></v>
 <v t="ekr.20130810093044.16936"><vh>Cross-outline node editing</vh>
@@ -142,6 +142,7 @@
 <v t="ekr.20130810093044.16966"><vh>test-import-org-mode</vh></v>
 </v>
 <v t="ekr.20130810093044.16967"><vh>jinja2 templating script</vh></v>
+<v t="ekr.20121013084734.16370"><vh>Recursive import using c.recursiveImport</vh></v>
 </v>
 <v t="ekr.20130810093044.16969"><vh>By Brian Theado</vh>
 <v t="ekr.20130810093044.16970"><vh>Display function call hierarchy in Leo</vh>
@@ -166,7 +167,7 @@
 <tnodes>
 <t tx="ekr.20061008055616"></t>
 <t tx="ekr.20070427110751"></t>
-<t tx="ekr.20070615131954"></t>
+<t tx="ekr.20070615131954" str_leo_pos="3,1,4"></t>
 <t tx="ekr.20111017085134.16069"></t>
 <t tx="ekr.20111017085134.16070"># **** Change these as needed ***
 import os, sys
@@ -909,6 +910,17 @@ result = '\n'.join(result) + '\n'
 w = c.frame.body.bodyCtrl
 w.clipboard_clear()
 w.clipboard_append(result)</t>
+<t tx="ekr.20121013084734.16370">'''Recursively import all python files in a directory and clean the result.'''
+
+# Latest change: use c.recursiveImport.
+
+c.recursiveImport(
+    dir_ = r'C:\prog\pyflakes-0.6.0\pyflakes',
+    one_file = False,
+    safe_at_file = False,
+    theTypes = None, # Same as ['.py']
+    use_at_edit = False)
+</t>
 <t tx="ekr.20121220111212.13257">'''
 &lt;&lt; about this script &gt;&gt;
 '''

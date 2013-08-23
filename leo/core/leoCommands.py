@@ -1181,7 +1181,7 @@ class Commands (object):
         - Replace backslashes with forward slashes in headlines.
         - Remove empty nodes.
         - Add @path directives that reduce the needed path specifiers in descendant nodes.
-        - Add @file to nodes or replacing @file with @@file.
+        - Add @file to nodes or replace @file with @@file.
         '''
         #@-<< docstring >>
         c = self
