@@ -138,6 +138,12 @@ class atFile:
         self.fileCommands = c.fileCommands
         self.errors = 0 # Make sure at.error() works even when not inited.
 
+        # **Only** at.writeAll manages these flags.
+        # promptForDangerousWrite sets cancelFlag and yesToAll only if canCancelFlag is True.
+        self.canCancelFlag = False
+        self.cancelFlag = False
+        self.yesToAll = False
+
         # User options.
         self.checkPythonCodeOnWrite = c.config.getBool(
             'check-python-code-on-write',default=True)
@@ -3047,7 +3053,8 @@ class atFile:
                     g.es("not written:",eventualFileName)
                     #@+<< set dirty and orphan bits >>
                     #@+node:ekr.20041005105605.146: *5* << set dirty and orphan bits >>
-                    # Setting the orphan and dirty flags tells Leo to write the tree..
+                    # Setting the orphan and dirty flags tells Leo to write the tree.
+                    # However, the dirty bits get cleared if we are called from the save command.
                     root.setOrphan()
                     root.setDirty()
                     # Delete the temp file.
@@ -3079,7 +3086,8 @@ class atFile:
                 if at.errors > 0 or root.isOrphan():
                     #@+<< set dirty and orphan bits >>
                     #@+node:ekr.20041005105605.146: *5* << set dirty and orphan bits >>
-                    # Setting the orphan and dirty flags tells Leo to write the tree..
+                    # Setting the orphan and dirty flags tells Leo to write the tree.
+                    # However, the dirty bits get cleared if we are called from the save command.
                     root.setOrphan()
                     root.setDirty()
                     # Delete the temp file.
@@ -3116,7 +3124,11 @@ class atFile:
         if trace: scanAtPathDirectivesCount = c.scanAtPathDirectivesCount
         writtenFiles = [] # Files that might be written again.
         force = writeAtFileNodesFlag
-
+        # This is the *only* place where these are set.
+        # promptForDangerousWrite sets cancelFlag only if canCancelFlag is True.
+        at.canCancelFlag = True
+        at.cancelFlag = False
+        at.yesToAll = False
         if writeAtFileNodesFlag:
             # The Write @<file> Nodes command.
             # Write all nodes in the selected tree.
@@ -3126,7 +3138,6 @@ class atFile:
             # Write dirty nodes in the entire outline.
             p =  c.rootPosition()
             after = c.nullPosition()
-
         at.clearAllOrphanBits(p)
         while p and p != after:
             if p.isAtIgnoreNode() and not p.isAtAsisFileNode():
@@ -3139,7 +3150,10 @@ class atFile:
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
-
+        # Make *sure* these flags are cleared for other commands.
+        at.canCancelFlag = False
+        at.cancelFlag = False
+        at.yesToAll = False
         #@+<< say the command is finished >>
         #@+node:ekr.20041005105605.150: *5* << say the command is finished >>
         if not g.unitTesting:
@@ -3153,7 +3167,6 @@ class atFile:
         #@-<< say the command is finished >>
         if trace: g.trace('%s calls to c.scanAtPathDirectives()' % (
             c.scanAtPathDirectivesCount-scanAtPathDirectivesCount))
-
     #@+node:ekr.20041005105605.148: *5* at.clearAllOrphanBits
     def clearAllOrphanBits (self,p):
 
@@ -3183,18 +3196,25 @@ class atFile:
             pathChanged = oldPath and oldPath != newPath
             # 2010/01/27: suppress this message during save-as and save-to commands.
             if pathChanged and not c.ignoreChangedPaths:
-                at.setPathUa(p,newPath) # Remember that we have changed paths.
-                g.warning('path changed for',p.h)
-                if trace: g.trace('p %s\noldPath %s\nnewPath %s' % (
-                    p.h,repr(oldPath),repr(newPath)))
-
+                # g.warning('path changed for',p.h)
+                # if trace: g.trace('p %s\noldPath %s\nnewPath %s' % (
+                    # p.h,repr(oldPath),repr(newPath)))
+                ok = self.promptForDangerousWrite(
+                    fileName=None,
+                    kind=None,
+                    message='%s\n%s' % (
+                        g.tr('path changed for %s' % (p.h)),
+                        g.tr('write this file anyway?')))
+                if ok:
+                    at.setPathUa(p,newPath) # Remember that we have changed paths.
+                else:
+                    return
         if (p.v.isDirty() or
             # p.v.isOrphan() or # 2011/06/17.
             pathChanged or
             writeAtFileNodesFlag or
             p.v in writtenFiles
         ):
-
             # Tricky: @ignore not recognised in @asis nodes.
             if p.isAtAsisFileNode():
                 at.asisWrite(p,toString=toString)
@@ -3299,8 +3319,6 @@ class atFile:
             toString=toString)
 
         ok = at.openFileForWriting (root,fileName=fileName,toString=toString)
-
-
         if ok:
             isAtAutoOtl = root.isAtAutoOtlNode() # For traces.
             isAtAutoRst = root.isAtAutoRstNode() # For traces.
@@ -5462,25 +5480,34 @@ class atFile:
         else:
             return 0,s
     #@+node:ekr.20090712050729.6017: *3* at.promptForDangerousWrite
-    def promptForDangerousWrite (self,fileName,kind):
+    def promptForDangerousWrite(self,fileName,kind,message=None):
 
-        c = self.c
-
+        at = self ; c = at.c
         if g.app.unitTesting:
             val = g.app.unitTestDict.get('promptForDangerousWrite')
             return val in (None,True)
-
-        # g.trace(timeStamp, timeStamp2)
-        message = '%s %s\n%s\n%s' % (
-            kind, fileName,
-            g.tr('already exists.'),
-            g.tr('Overwrite this file?'))
-
-        ok = g.app.gui.runAskYesNoCancelDialog(c,
-            title = 'Overwrite existing file?',
-            message = message)
-
-        return ok == 'yes'
+        if at.cancelFlag:
+            assert at.canCancelFlag
+            return False
+        if at.yesToAll:
+            assert at.canCancelFlag
+            return True
+        if message is None:
+            message = '%s %s\n%s\n%s' % (
+                kind, fileName,
+                g.tr('already exists.'),
+                g.tr('Overwrite this file?'))
+        result = g.app.gui.runAskYesNoCancelDialog(c,
+                title = 'Overwrite existing file?',
+                yesToAllMessage="Yes To &All",
+                message = message)
+        if at.canCancelFlag:
+            # We are in the writeAll logic so these flags can be set.
+            if result == 'cancel':
+                at.cancelFlag = True
+            elif result == 'yes-to-all':
+                at.yesToAll = True
+        return result in ('yes','yes-to-all')
     #@+node:ekr.20120112084820.10001: *3* at.rememberReadPath
     def rememberReadPath(self,fn,p):
 

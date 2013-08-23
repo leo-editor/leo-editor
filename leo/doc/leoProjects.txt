@@ -24,6 +24,21 @@ The fix was to close theFile in fc.getLeoFile.
 @language python
 #@+node:ekr.20130821062332.11233: *3* Added c.recursiveImport and ic.recursiveImportController
 This will reduce duplicate scripts.
+#@+node:ekr.20130821062332.11236: *3* Added yes-to-all button when prompting for dangerous writes
+@language rest
+
+For example, when warning about existing files.
+
+What I did:
+    
+1. Added yesToAllMessage keyword arg to all runAskYesNoCancelDialog methods.
+
+2. **only** at.writeAll manages at.canCancelFlag, at.cancelFlag and at.yesToAll.
+
+3. Path changed logic in at.writeAllHelper now calls at.promptForDangerousWrite.
+
+4. at.promptForDangerousWrite sets cancelFlag and yesToAll *only* if canCancelFlag is True.
+   This ensures that these flags are not changed outside the code managed by at.writeAll.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

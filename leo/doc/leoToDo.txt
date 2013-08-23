@@ -48,7 +48,6 @@ Topics:
 .. @+node:ekr.20130821062332.11234: *3* First
 @language rest
 .. @+node:ekr.20130822053854.11321: *4* ** colorizing info is not being cleared properly when changing nodes.
-.. @+node:ekr.20130821062332.11236: *4* Add yes-to-all button to file exists dialog
 .. @+node:ekr.20130807203905.16649: *3* Doc
 @language rest
 .. @+node:ekr.20130807203905.16650: *4* Leo in a nutshell
@@ -4056,10 +4055,8 @@ a bit of time, I am not very familiar with python.
 ===== EKR
 
 Leo doesn't understand .jsp.  @shadow should refuse to work for unknown languages.
-.. @+node:ekr.20120318124102.9739: *5* Focus border doesn't work with Python 2.x!
 .. @+node:ekr.20111018104244.15920: *5* Fix bug: Use QLocalSocket in LProtoClient.connect
 http://groups.google.com/group/leo-editor/browse_thread/thread/fe9cddc0e7ac8199
-.. @+node:ekr.20110530063322.18333: *5* Fix bug: scala not colored properly
 .. @+node:ekr.20110620065017.14900: *4* Can't/Won't fix
 .. @+node:ekr.20111011062533.15693: *5* Make headline widgets scrollable, if possible
 # It doesn't seem easy.

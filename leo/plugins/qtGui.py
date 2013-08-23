@@ -7772,21 +7772,24 @@ class leoQtGui(leoGui.leoGui):
     #@+node:ekr.20110605121601.18497: *5* runAskYesNoCancelDialog
     def runAskYesNoCancelDialog(self,c,title,
         message=None,
-        yesMessage="&Yes",noMessage="&No",defaultButton="Yes"
+        yesMessage="&Yes",
+        noMessage="&No",
+        yesToAllMessage=None,
+        defaultButton="Yes"
     ):
 
         """Create and run an askYesNo dialog."""
 
-        if g.unitTesting: return None
-
+        if g.unitTesting:
+            return None
         b = QtGui.QMessageBox
-
         d = b(c.frame.top)
         if message: d.setText(message)
         d.setIcon(b.Warning)
         d.setWindowTitle(title)
-        yes    = d.addButton(yesMessage,b.YesRole)
-        no     = d.addButton(noMessage,b.NoRole)
+        yes      = d.addButton(yesMessage,b.YesRole)
+        no       = d.addButton(noMessage,b.NoRole)
+        yesToAll = d.addButton(yesToAllMessage,b.YesRole) if yesToAllMessage else None
         cancel = d.addButton(b.Cancel)
         if   defaultButton == "Yes": d.setDefaultButton(yes)
         elif defaultButton == "No": d.setDefaultButton(no)
@@ -7794,10 +7797,10 @@ class leoQtGui(leoGui.leoGui):
         c.in_qt_dialog = True
         val = d.exec_()
         c.in_qt_dialog = False
-
         if   val == 0: val = 'yes'
         elif val == 1: val = 'no'
-        else:          val = 'cancel'
+        elif yesToAll and val == 2: val = 'yes-to-all'
+        else: val = 'cancel'
         return val
     #@+node:ekr.20110605121601.18498: *5* runAskYesNoDialog
     def runAskYesNoDialog(self,c,title,message=None):
