@@ -22,6 +22,8 @@ Actually, only just opening a .leo file without any @file nodes was enough to ke
 The fix was to close theFile in fc.getLeoFile.
 
 @language python
+#@+node:ekr.20130821062332.11233: *3* Added c.recursiveImport and ic.recursiveImportController
+This will reduce duplicate scripts.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

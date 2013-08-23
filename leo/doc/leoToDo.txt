@@ -48,7 +48,6 @@ Topics:
 .. @+node:ekr.20130821062332.11234: *3* First
 @language rest
 .. @+node:ekr.20130822053854.11321: *4* ** colorizing info is not being cleared properly when changing nodes.
-.. @+node:ekr.20130821062332.11233: *4* Add guts of recursive import script to Leo's core
 .. @+node:ekr.20130821062332.11236: *4* Add yes-to-all button to file exists dialog
 .. @+node:ekr.20130807203905.16649: *3* Doc
 @language rest

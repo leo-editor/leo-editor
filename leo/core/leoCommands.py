@@ -1156,6 +1156,49 @@ class Commands (object):
                 vr.close_rendering_pane(event={'c':c})
         else:
             g.es(s)
+    #@+node:ekr.20130823083943.12559: *3* c.recursiveImport
+    def recursiveImport(self,dir_,
+        one_file=False,
+        safe_at_file=True,
+        theTypes=None,
+        use_at_edit=False,
+    ):
+        #@+<< docstring >>
+        #@+node:ekr.20130823083943.12614: *4* << docstring >>
+        '''
+        Recursively import all python files in a directory and clean the result
+        with the following suite of post-processing fixes:
+
+        - Replace backslashes with forward slashes in headlines.
+        - Remove empty nodes.
+        - Adde @path directives that reduce the needed path specifiers in descendant nodes.
+        - Add @file to nodes or replacing @file with @@file.
+
+        No matter how good Leo's importers are, (and they are now quite good),
+        there will *always* be cases where thoughtful human intervention will be
+        required.
+
+        Some import mistakes can *only* be found by running tests.  For
+        complex programs like 2to3, the only truly safe way to check imports
+        is by running the 2to3 test suite.
+
+        '''
+        #@-<< docstring >>
+        c = self
+        if g.os_path_exists(dir_):
+            # Import all files in dir_ after c.p.
+            try:
+                import leo.core.leoImport as leoImport
+                cc = leoImport.recursiveImportController(c,
+                    one_file = one_file,
+                    safe_at_file = safe_at_file,
+                    theTypes = ['.py'] if theTypes is None else theTypes,
+                    use_at_edit=use_at_edit)
+                cc.run(dir_)
+            finally:
+                c.redraw()
+        else:
+            g.es_print('Does not exist: %s' % (dir_))
     #@+node:bobjack.20080509080123.2: *3* c.universalCallback
     def universalCallback(self, function):
 
