@@ -1166,22 +1166,22 @@ class Commands (object):
         #@+<< docstring >>
         #@+node:ekr.20130823083943.12614: *4* << docstring >>
         '''
-        Recursively import all python files in a directory and clean the result
-        with the following suite of post-processing fixes:
+        Recursively import all python files in a directory and clean the results.
+
+        Parameters::
+            dir_            The root directory or file to import
+            one_file        True: import only the file given by dir_.
+            safe_at_file    True: produce @@file nodes instead of @file nodes.
+            theTypes        A list of file extensions to import.
+                            None is equivalen to ['.py']
+            use_at_edit     True: create @edit nodes instead of @file nodes.
+            
+        This method cleans imported files as follows:
 
         - Replace backslashes with forward slashes in headlines.
         - Remove empty nodes.
-        - Adde @path directives that reduce the needed path specifiers in descendant nodes.
+        - Add @path directives that reduce the needed path specifiers in descendant nodes.
         - Add @file to nodes or replacing @file with @@file.
-
-        No matter how good Leo's importers are, (and they are now quite good),
-        there will *always* be cases where thoughtful human intervention will be
-        required.
-
-        Some import mistakes can *only* be found by running tests.  For
-        complex programs like 2to3, the only truly safe way to check imports
-        is by running the 2to3 test suite.
-
         '''
         #@-<< docstring >>
         c = self
