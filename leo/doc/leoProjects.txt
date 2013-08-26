@@ -2,6 +2,7 @@
 #@+node:ekr.20100120072650.6089: * @file ../doc/leoProjects.txt
 #@+all
 #@+node:ekr.20130807203905.16589: ** 4.11 b1
+@language rest
 #@+node:ekr.20130821062332.11235: *3* Fixed bug 1208942: Leo holding directory/file handles after file close?
 @language rest
 
@@ -39,6 +40,9 @@ What I did:
 
 4. at.promptForDangerousWrite sets cancelFlag and yesToAll *only* if canCancelFlag is True.
    This ensures that these flags are not changed outside the code managed by at.writeAll.
+#@+node:ekr.20130510070942.10611: *3* Fixed bug 1162307: Undoing a headline change does not change focus to the headline
+Undoing a headline change does not change focus to the headline
+https://bugs.launchpad.net/leo-editor/+bug/1162307
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

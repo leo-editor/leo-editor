@@ -10,62 +10,70 @@
 4. Future project leaders (FPL's) know how to change Leo like I do.
     - Secondary: FPL's have the same general knowledge about Leo that I do.
 5. Fix important bugs.
-.. @+node:ekr.20130803125244.17100: ** Docs: Next
-.. @+node:ekr.20130803125244.17101: *3* * Gallery of screenshots
-.. @+node:ekr.20130408095053.10307: *3* * Guide for the next leaders
-# Use bookmarks?
-.. @+node:ekr.20130503155210.24814: *3* * Tutorials/Screencasts
-@nocolor-node
+.. @+node:ekr.20130821062332.11232: ** Scripts
+.. @+node:ekr.20130503155210.24826: *3* Script: Add Windows handler for .leo files
+# https://groups.google.com/forum/?fromgroups=#!searchin/leo-editor/leo$20script/leo-editor/ANPuhuEIU9c/8lgid9MNKkAJ
 
-Rewrite in screencast-script style:
-- Docstrings for the most important plugins.
-- All help-for-<topic> text.
-- Leo's tutorials.
+@language python
+@tabwidth -4
 
-** Screencast style for plugins docstrings.
-* Screencast style for help messages.
-* Screencast style for tutorials.
-* Create YouTube channel for Leo screencasts.
+'''Tell Windows how to handle .leo files, enables double clicking on them to open.
 
-Topics:
-- Minibuffer: alt-x, tab-completion.
-- @button.
-- @rclick
-- Find/Change (done)
-- execute-script.
-- bookmarks.py.
+To run: in Leo make this the active node and press [Ctrl-B] (execute-script)
 
+It opens a command shell and uses `assoc` and `ftype` commands to inform Windows
+where python.exe and the Leo launch script is. It's the equivalent of:
+
+    assoc .leo=Leo.File
+    ftype Leo.File="B:\Python27\pythonw.exe" "B:\apps\leo-editor\launchLeo.py" "%1" %*   
+       
+Requires elevated User Account Control (UAC) priviliges.
+See http://superuser.com/questions/88491/force-cmd-exe-to-run-as-admin/
+'''
+
+pyexe = g.sys.executable
+leo = g.os_path_finalize_join(g.computeLeoDir(), '../launchLeo.py')
+
+tmp = g.os.environ['TEMP']
+
+assoc_cmd = 'assoc .leo=Leo.File'
+ftype_cmd = 'ftype Leo.File="{0}" "{1}" "%1" %*'.format(pyexe, leo)
+
+g.es(leo)
+g.es(pyexe)
+
+g.es(tmp)
+g.es(assoc_cmd)
+g.es(ftype_cmd)
+
+from subprocess import Popen
+Popen('start "Shell from Leo" cmd.exe /k "{0} && {1}" '.format(assoc_cmd, ftype_cmd),
+
+    cwd=tmp, shell=True)
+.. @+node:ekr.20130503155210.24827: *3* Console script: Install Leo from scratch on Windows
+@language batch
+
+mkdir X:\testing
+pushd X:\testing
+
+wget -O apt.exe --no-clobber http://download.osgeo.org/osgeo4w/release/apt/apt-r1193M.exe
+SET OSGEO4W_ROOT=%~dp0\root
+apt setup
+apt update
+apt install pyqt4 sip
+
+call root\osgeo4w.bat
+
+wget --no-check-certificate http://gist.github.com/maphew/5393935/raw/install-pip.py
+python install-pip.py GO
+python install-pip.py GO
+
+pip install -i https://testpypi.python.org/pypi leo-editor
+
+python apps\Python27\Scripts\leo
+.. @+node:ekr.20130803125244.17100: ** Docs
 .. @+node:ekr.20130803125244.17099: *3* * Every command should have a **complete** docstring.
-.. @+node:ekr.20130803073926.12442: ** Waiting
-- Waiting for answer re ubuntu splashscreen
-    http://qt-project.org/forums/viewthread/30837/
-    createSplashScreen
-    
-- Waiting for answer to solarized question:
-    http://qt-project.org/forums/viewthread/30838/
-    https://groups.google.com/forum/#!topic/leo-editor/W1_LVrQxdwQ
-.. @+node:ekr.20130816100419.23050: ** to do 4.11
-.. @+node:ekr.20130821062332.11234: *3* First
-@language rest
-.. @+node:ekr.20130822053854.11321: *4* ** colorizing info is not being cleared properly when changing nodes.
-.. @+node:ekr.20130807203905.16649: *3* Doc
-@language rest
-.. @+node:ekr.20130807203905.16650: *4* Leo in a nutshell
-https://groups.google.com/forum/#!topic/leo-editor/lgHE4OJSLzw
-
-In a Nutshell, The Leo Editor...
-
-- has had 15,508 commits made by 47 contributors
-  representing 1,064,650 lines of code
-- is mostly written in Python
-  with an average number of source code comments
-- has a well established, mature codebase
-  maintained by a large development team
-  with decreasing Y-O-Y commits
-- took an estimated 292 years of effort (COCOMO model)
-  starting with its first commit in February, 2002
-  ending with its most recent commit 2 days ago 
-.. @+node:ekr.20130807203905.16678: *4* For Implementors
+.. @+node:ekr.20130807203905.16678: *3* For Implementors
 @language rest
 
 - Don't read code: use g.trace and g.pdb instead.
@@ -79,7 +87,7 @@ In a Nutshell, The Leo Editor...
     
     
 ** Add mandatory _kind fields to all g.Bunches.
-.. @+node:ekr.20130807203905.16679: *5* Centralizing focus handling (to make debugging easier)
+.. @+node:ekr.20130807203905.16679: *4* Centralizing focus handling (to make debugging easier)
 From: "Ville M. Vainio" <vivainio@gmail.com>
 
 I am having some problems wrapping my head around how focus behaves
@@ -110,7 +118,7 @@ sometimes the immediate update is essential.
 
 I've marked this thread as a topic for implementers.  Such things will form
 the basis for documentation for my successors.
-.. @+node:ekr.20130807203905.16681: *5* Free "continuous integration" for Leo
+.. @+node:ekr.20130807203905.16681: *4* Free "continuous integration" for Leo
 From: "Ville M. Vainio" <vivainio@gmail.com>
 
 --089e0122f80868cb1b04dce55d84
@@ -123,7 +131,7 @@ https://travis-ci.org/
 This could e.g. create debian packages for daily builds, run unit tests,
 check stuff with lint, try compiling with python3 so we (*cough*) wouldn't
 have accidental print statements in the source...
-.. @+node:ekr.20130807203905.16684: *5* Toolkit independent apis
+.. @+node:ekr.20130807203905.16684: *4* Toolkit independent apis
 From: "Ville M. Vainio" <vivainio@gmail.com>
 
 Ramblings relevant to Leo, by the PyQt lead developer:
@@ -152,108 +160,7 @@ are fundamental: they have almost nothing to do with actual guis.
 
 In short, I think Leo's design uses the best of the gui-dependent and
 gui-independent approaches.
-.. @+node:ekr.20130510070942.10606: *3* Bugs
-.. @+node:ekr.20130508084413.10645: *4* Better find/replace dialog
-For newbies (and for power users too, for that matter), it may be helpful to
-have a "Find and Replace" dialog box similar to the one below:
-
-.. image: c:/prog/findReplace.jpg
-
-.. @+node:ekr.20130530110446.12450: *4* Fix syntax coloring bug involving multiple body editors
-.. @+node:ekr.20130502102046.10578: *4* Crash deleting body editor
-# Trying to delete a second body editor.
-
-Traceback (most recent call last):
-  File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 560, in doCommand
-    val = command(event)
-  File "c:\leo.repo\trunk\leo\plugins\qtGui.py", line 2980, in deleteEditor
-    name = w.leo_name
-AttributeError: 'LeoQTextBrowser' object has no attribute 'leo_name'
-.. @+node:ekr.20130805080841.21380: *4* Fix javascript import bug
-https://groups.google.com/forum/#!topic/leo-editor/dmC8iIKlF7g
-.. @+node:ekr.20130805134749.12435: *4* Fix syntax coloring bug
-@language python
-
-def but_quotes_at_the_end_of_a_triple_quoted_string_are_still_tricky(self):
-    string = """Hello "world\""""
-    
-what
-.. @+node:ekr.20130806072439.20723: *4* Problem saving changed/new .leo files on Windows
-EKR: This appears to be some weird key-related problem with Leo 4.10.
-
-===== From: vili <viljem.tisnikar@gmail.com>
-
-Installing (a new version) of Leo was allways a bit of challenge for
-me. As a non-programmer I use Windows, I like automatic installers,
-and I don't quite understand what binaries and other stuff is.
-
-Today I wanted to upgrade from 4.9 to Leo-4.10-final, which is the
-latest exe on SourceForge but I figured out that
-
-Leo-4.10-final does not save any changes made to the file and it doesn't save also any new files!
-
-I tried also with "a nightly snapshot from Leo's snapshots page" - the
-same story. I reinstalled python and qt, but still the same problem. I
-installed back the 4.9 version from SourceForge and that worked fine
-again.
-
-Some data from log:
-Leo 4.10 final, build 5020, 2012-02-26 13:18:08 -0600
-Python 3.2.3, qt version 4.8.0
-Windows 6, 1, 7601, 2, Service Pack 1
-
-Its kind of weird for me that no one reported this problem earlier.
-
-
-===== From: Raj <dsrajesh@gmail.com>
-
-I faced the same problem as well and my configuration is exactly
-identical to yours.
-
-Workaround I did was start the leo from command line::
-
-C:\\Python32\\python.exe "C:\\Python32\\Lib\\site-packages\\Leo-4.10-final\\launchLeo.py"
-
-Default is to start the pythonW.exe, which does not work for some reason
-still trying to identify why it is behaving this way. Now I am able to save
-like before.
-
-===== From: Viljem Tisnikar <viljem.tisnikar@gmail.com>
-
-This workaround of yours works for me also! It is not comfortable at all,
-but it works!
-
-===== From: Eoin <eoinmccarthy@fastmail.fm>
-
-I also experienced this issue today after upgrading from Leo 4.8-final to
-Leo 4.10-final.
-
-The workaround still does the job.
-
-===== From: Matt Wilkie <maphew@gmail.com>
-
-To my knowledge this is the first report of this kind of issue. I
-can't think of any explanation for this other than file permissions
-(but I don't understand very much about how Leo works either; my
-programming skills are very minimal).
-
-Have you tried creating a new .leo file from scratch and saving it?
-
-===== From: Viljem Tisnikar <viljem.tisnikar@gmail.com>
-
-Yes, I have. It does not save.
-
-===== Matt
-
-And does the log window have any warnings or error messages?
-
-===== From: Viljem Tisnikar <viljem.tisnikar@gmail.com>
-
-No, in log window nothing happens when I pres "ctrl-s". And of course the
-star near the name of the file does not disappear.
-
-.. @+node:ekr.20130510070942.10611: *4* Can undo headline put focus in headline?
-This would fix a reported bug.
+.. @+node:ekr.20130803125244.17101: *3* Gallery of screenshots
 .. @+node:ekr.20130806211959.17307: *3* Help (For FAQ?)
 @language rest
 .. @+node:ekr.20130806211959.17315: *4* Background Images in body pane?
@@ -1670,512 +1577,21 @@ vt = to_c.hiddenRootNode
 """
 just to feed in the 2 nodes, Any quick idea how this can be done the best 
 way?
-.. @+node:ekr.20130821062332.11232: *3* Scripts
-.. @+node:ekr.20130503155210.24826: *4* Script: Add Windows handler for .leo files
-# https://groups.google.com/forum/?fromgroups=#!searchin/leo-editor/leo$20script/leo-editor/ANPuhuEIU9c/8lgid9MNKkAJ
-
-@language python
-@tabwidth -4
-
-'''Tell Windows how to handle .leo files, enables double clicking on them to open.
-
-To run: in Leo make this the active node and press [Ctrl-B] (execute-script)
-
-It opens a command shell and uses `assoc` and `ftype` commands to inform Windows
-where python.exe and the Leo launch script is. It's the equivalent of:
-
-    assoc .leo=Leo.File
-    ftype Leo.File="B:\Python27\pythonw.exe" "B:\apps\leo-editor\launchLeo.py" "%1" %*   
-       
-Requires elevated User Account Control (UAC) priviliges.
-See http://superuser.com/questions/88491/force-cmd-exe-to-run-as-admin/
-'''
-
-pyexe = g.sys.executable
-leo = g.os_path_finalize_join(g.computeLeoDir(), '../launchLeo.py')
-
-tmp = g.os.environ['TEMP']
-
-assoc_cmd = 'assoc .leo=Leo.File'
-ftype_cmd = 'ftype Leo.File="{0}" "{1}" "%1" %*'.format(pyexe, leo)
-
-g.es(leo)
-g.es(pyexe)
-
-g.es(tmp)
-g.es(assoc_cmd)
-g.es(ftype_cmd)
-
-from subprocess import Popen
-Popen('start "Shell from Leo" cmd.exe /k "{0} && {1}" '.format(assoc_cmd, ftype_cmd),
-
-    cwd=tmp, shell=True)
-.. @+node:ekr.20130503155210.24827: *4* Console script: Install Leo from scratch on Windows
-@language batch
-
-mkdir X:\testing
-pushd X:\testing
-
-wget -O apt.exe --no-clobber http://download.osgeo.org/osgeo4w/release/apt/apt-r1193M.exe
-SET OSGEO4W_ROOT=%~dp0\root
-apt setup
-apt update
-apt install pyqt4 sip
-
-call root\osgeo4w.bat
-
-wget --no-check-certificate http://gist.github.com/maphew/5393935/raw/install-pip.py
-python install-pip.py GO
-python install-pip.py GO
-
-pip install -i https://testpypi.python.org/pypi leo-editor
-
-python apps\Python27\Scripts\leo
-.. @+node:ekr.20130807203905.16655: *3* Tutorials & how-to
-.. @+node:ekr.20130807203905.16656: *4* A beautiful pattern for composing large strings
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-I continue to work feverishly on various aspects of static type checking.
-
-That work lead to a discovery that may benefit you.  It's one of the most 
-beautiful patterns I've ever created: it allows a program to simply and 
-naturally build up huge strings without using any string operations.  
-Generating an html file with minimal stress on the gc is an obvious 
-application.  You could also say that the pattern creates a Pythonic way of 
-using lisp-like algorithms, but more safely than in lisp.
-
-Full details at the stc documentation page::
-http://webpages.charter.net/edreamleo/stc/stc.html#a-beautiful-pattern-for-building-large-strings
-
-.. @+node:ekr.20130807203905.16657: *5* Re: A beautiful pattern for composing large strings
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-On Wednesday, January 2, 2013 10:02:40 AM UTC-6, Edward K. Ream wrote:
-
-ReportTraverser uses this pattern at rev 288.  It is a remarkable 
-simplification.
- 
-
-> The revised r.div method will be something like::
->
->     def div(self,aList):
->         compute old and new indents
->         return [
->             <div>, with old indent,
->             aList, with new indent,
->             </div>, with old indent,
->         ]
->
-
-This doesn't work!  aList won't have the proper indentation.  In 
-particular, the following won't work::
-
-    [['  ',z] for z in aList],
-
-flatten_list will add the two spaces before the line, that is, before a 
-newline. Instead, a hack is needed:
-
-    return [
-        div,
-        join_list(aList,indent='  '),
-        '\\n</div>'
-    ]
-
-The new 'indent' keyword tells flatten_list to add the given indentation 
-(two spaces, here), to strings that start with a newline.  The new code in 
-flatten_list is::
-
-        for i,item in enumerate(aList):
-            if leading:                  yield leading
-            for s in flatten_list(item):
-                if indent:
-                    if s.startswith('\\n'):
-                        yield '\\n'+indent+s[1:]
-                    else:
-                        yield s
-                else:
-                    yield s
-            if sep and i < len(aList)-1: yield sep
-            if trailing:                 yield trailing
-
-The point is that the indentation must be "moved behind the newline".
-
-Edward
-
-.. @+node:ekr.20130807203905.16659: *5* Re: A beautiful pattern for composing large strings
-From: "Ville M. Vainio" <vivainio@gmail.com>
-
-This seems like a spiritual relative of "rope" data structure:
-
-http://en.wikipedia.org/wiki/Rope_(data_structure)
-
-http://www.sgi.com/tech/stl/Rope.html
-
-===== EKR
-
-Yes, there is a similarity. However, the real beauty of new pattern is the
-flatten_list method. It's the combination of the lists and flatten_list
-that gives the pattern real power. We've just seen how the 'indent' keyword
-hack allows sophisticated processing of the lists. I wouldn't expect more
-hacks to be needed, but I've been surprised before ;-)
-.. @+node:ekr.20130807203905.16660: *5* Re: A beautiful pattern for composing large strings
-On Tue, 1 Jan 2013 17:03:05 -0800 (PST)
-"Edward K. Ream" <edreamleo@gmail.com> wrote:
-
-> Generating an html file with minimal stress on the gc is an obvious 
-> application.
-
-Nice.  An HTML specific approach which avoids things like the
-r.div_end() construct is the LXML element factory:
-http://lxml.de/tutorial.html#the-e-factory
-
-Cheers -Terry
-
-.. @+node:ekr.20130807203905.16662: *5* Re: A beautiful pattern for composing large strings
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-On Thursday, January 3, 2013 3:28:52 AM UTC-6, Ville M. Vainio wrote:
->
-> Yes, it's indeed an interesting pattern. 
->
-> It would seem more useful in faster languages than python though; in 
-> python, string operations (and gc) are faster in comparison to executing 
-> other code, whereas in fast, more static languages (C++, Java, Go) avoiding 
-> GC gives you great benefits (I saw 5x perf increase reported for some Go 
-> app when eliminating GC).
->
-
-Thanks for these remarks.  I've enjoyed thinking about them.  A few 
-responses:
-
-1. This is a smallish pattern--it can't change the world, except insofar as 
-something beautiful changes the world.
-
-2. Otoh, the pattern changes the way I think about lisp and lisp-like 
-patterns.  That's not nothing. For the first time, it makes list-oriented  
-programming pattern completely safe.  It does this because it doesn't 
-matter what each component list contains, nor does it matter *at all* what 
-the shape of any part of the tree is.  This makes the pattern completely 
-flexible.
-
-3. The pattern can be generalized.  The pattern I described uses a tree of 
-component strings to describe a (large) resulting string.  But one can 
-easily imagine using lists to hold anything at all (of whatever tree shape) 
-and then use another version of flatten_list to compose results of other 
-types.  Alternatively, rather than composing a result, the analog of 
-flatten_list could process the tree of lists in other ways.  So the most 
-general version of the pattern is:
-
-A) The tree of lists can contain any data whatever, especially including 
-None,
-B) The "producers" (visitors) can create subtrees of whatever shape,
-C) The analog of flatten_list is free to do anything whatever with the 
-resulting tree.
-
-I suspect that these features are what appeal to lisp programmers ;-)
-
-4. I'm not sure whether the pattern is more useful in "faster" languages or 
-not.  True, anything that helps a feeble language like C++ will seem useful 
-:-)  But points 1-3 above have nothing to do with speed: they just make 
-programming simpler, more flexible, more powerful and more fun.
-
-Imo, gc issues are important both in Python and in C++.  For stc, the only 
-way to get reproducible timing statistics for tests was to do the following 
-before running the test::
-
-    for z in (0,1,2): gc.collect(z)
-
-The ReportTraverser class no longer contains *any* calls to string.join, so 
-one could imagine that all strings used in the code would be interned.  The 
-generated tree actually contains nothing but *references* to strings, and 
-if all strings are interned the references will not themselves cause any 
-new strings to be allocated.
-
-Naturally, gc issues are even more important in language like C++ without a 
-gc.  Lol.  The preceding paragraph is more important for C++ than in 
-Python.  So yes, in this sense I agree with you completely that the pattern 
-is more useful for "fast" languages than for Python.
-
-Thanks, Ville, for provoking all these pleasant thoughts :-)
-.. @+node:ekr.20130807203905.16663: *5* Re: A beautiful pattern for composing large strings
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-On Tue, Jan 1, 2013 at 9:48 PM, Terry Brown <terry_n_brown@yahoo.com> wrote:
-
-> On Tue, 1 Jan 2013 17:03:05 -0800 (PST)
-> "Edward K. Ream" <edreamleo@gmail.com> wrote:
->
-> > Generating an html file with minimal stress on the gc is an obvious
-> > application.
->
-> Nice.  An HTML specific approach which avoids things like the
-> r.div_end() construct is the LXML element factory:
-> http://lxml.de/tutorial.html#the-e-factory
->
-
-Beautiful.  With the list framework the revised r.div method would be
-something like::
-
-    def div(self,aList):
-        compute old and new indents
-        return [
-            <div>, with old indent,
-            aList, with new indent,
-            </div>, with old indent,
-        ]
-
-An example of the pattern in use::
-
-    return [
-        ...
-        r.div([
-            contents of the div,
-        ]),
-        ...
-    ]
-
-Similarly for span, etc. Thanks for pointing this out.  This is too good to
-ignore.  I'll do it soon.
-.. @+node:ekr.20130807203905.16664: *4* All about clone conflicts
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-Some people seem to think that it is difficult to understand how Leo
-handles "clone wars":  differing values for a cloned nodes that appear
-in several external files.  That's not true.  The rule is::
-
-    **The last clone that Leo reads wins.**
-
-That is, for any cloned node C, Leo takes the value of C.h and C.b to
-be the values specified by the last copy that Leo reads.
-
-There is only one complication::
-
-    **Leo reads the entire outline before reading any external
-files.**
-
-Thus, if C appears in x.leo, y.py and z.py, Leo will choose the value
-for C in x.py or y.py, depending on which @<file> node appears later
-in the outline.
-
-Notes:
-
-1. Whenever Leo detects multiple values for C when opening an outline, Leo
-   creates a "Recovered nodes" tree. This tree contains all the various
-   values for C, nicely formatted so that it is easy to determine where the
-   differences are.
-
-2. I've just refreshed my memory by looking at the code.  The relevant methods are:
-
-    fc.getLeoFile # Reads the outline, then calls at.readAll to read all external files.
-    at.indicateNodeChanged # Adds data to c.nodeConflictList
-    cacher.reportChangedClone # Adds data to c.nodeConflictList
-    fc.handleNodeConflicts # Creates "Recovered Nodes" node and its children.
-
-3. The present code is the simplest code that could possibly work. There is
-no way Leo is going to do AI in order to implement complex rules for which
-clones are "more important" than others. Thus, if you use cross-file
-clones, it is up to *you* to know these rules and handle any resulting
-conflicts. Imo, the "Recovered Nodes" feature is a big step forward for
-Leo, and makes it impossible to lose data unless you willfully refuse to
-examine the data.
-.. @+node:ekr.20130807203905.16665: *5* Re: All about clone conflicts
-From: Joon Ro <joonpyro@gmail.com>
-
-Thanks for the explanation. As a matter of fact, I was having hard time 
-understanding this. 
-
-I had my source file in a @shadow node, and then I had a backup of that 
-file as @file node, which had clones of the nodes of the source @shadow 
-file and some other codes that I stashed. 
-
-Whenever I changed the source code externally with leo closed, when I open 
-leo, it made recovered nodes. The problem was since @file was placed 
-"later" in the outline, leo kept putting the new changes I made to old, 
-instead of new.
-
-Now I understand how this works. but I think in multiple external file 
-cases, it would make more sense if leo checks the file modification time 
-when it makes decision which node is new, instead of just depending on the 
-order of files in the outline. In above case, it is natural for me to have 
-actual source nodes on the top of the outline and backup nodes on the 
-bottom. Please let me know what you think. 
-.. @+node:ekr.20130807203905.16666: *4* Draft: Position tutorial
-@language rest
-
-A **position** object represents a specific node in a Leo outline.
-
-Equivalently, a position represents the state of a Leo generator, that is,
-a specific node during a traversal of a Leo outline.
-
-Because of clones, a node may appear arbitrarily many times in an outline,
-so a node may appear at arbitrarily many positions in the outline.
-
-For any position p, **p.v** is the vnode at position p.
-
-A node's vnode never changes, regardless of where the node appears in the
-outline, and regardless of whether the node is cloned or not.
-
-**Positions become invalid when the outline changes.**
-
-You may save and and use positions *provided* the outline remains unchanged.
-
-Leo's generators deliver positions, one after each other, using a *single*
-(ever-changing) position. As a result, scripts must use p.copy() to create
-lists of positions. For example::
-
-    aList = [p.copy() for p in c.rootPosition().subtree()]
-.. @+node:ekr.20130807203905.16667: *5* other info
-Consider this example, where nodes with the same names are clones of each other::
-
-+ Root
-    + A
-        - B
-    + A
-        - B
-    - B
-
-Leo's c.all_nodes() iterator will deliver 9 positions:
-
-    1: Root
-    2: A
-    3: B
-    4: A
-    5: B
-    6: B
-
-*All* positions returned by a traversal are distinct.  Some examples:
-
-- Position 2: A is different from position 4: A
-  The former is the first child of root; the latter is the second child of root.
-  
-- The parent of position 3: B is A at childIndex 0 of Root.
-  The parent of position 5: B is A at childIndex 1 of Root.
-  The parent of position 6: B is Root. The childIndex of 6: B is 2.
-
-.. @+node:ekr.20130807203905.16668: *4* Draft: unit-testing tutorial
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-The following is a first draft of a unit-testing tutorial.  It will form 
-the basis of a new help-for-unit-testing command, and may also become the 
-introduction to Leo unit-testing chapter.
-
-All comments are welcome.  Please let me know if anything is unclear.
-
------
-
-Leo makes it easy to create and run unit tests from individual outline 
-nodes or trees.
-
-A node whose headline starts with @tests defines a unit test.
-
-The body text of the @test node contains a **self-contained** unit test.
-
-For example, this creates a complete unit test::
-
-    @test fails  (headline)
-    assert False (body text)
-
-To run this test, select the @test node and do:
-<alt-x>run-selected-unit-tests-locally.
-Leo will create and run the unit test automatically.
-
-To see all of Leo's unit testing commands, do:
-<alt-x>run<tab>
-
-Leo pre-defines 'c', 'g' and 'p' in unit tests just as in scripts.
-
-For more details about unit testing, see: 
-http://leoeditor.com/unitTesting.html
-
-**Notes for Leo developers**
-
-leo/test/unitTest.leo contains all of Leo's own unit tests.
-
-Running all tests is not necessary.  Just select::
-
-    Active Unit Tests
-
-and then do Alt-4 (run-selected-unit-tests-locally).
-
-**Note**: Some tests will likely fail on machines other than EKR's.
-You only need to be concerned about unit tests that start failing after you 
-make your changes.
-
-.. @+node:ekr.20130807203905.16669: *4* Tutorial scripts (To be written)
-.. @+node:ekr.20130807203905.16670: *5* What makes Leo special: shorter
-@wrap
-@language rest
-
-.. |br| raw:: html
-
-   <br />
-   
-**Leo completely integrates scripting and outlines.** |br|
-Leo outlines are true Python objects, not just text.
-
-\1. **Headlines naturally define types**, such as:
-
-**@file** trees create external files. |br|
-**@test** nodes and trees create unit tests. |br|
-**@button** nodes create **script buttons**. |br|
-**@command** nodes create user-defined commands. |br|
-**@html** trees create web pages. |br|
-**@settings** trees contain Leo settings.
-
-\2. **Any node may contain a Leo script**:
-
-A simple outline-aware markup language creates scripts |br|
-and external files from outline nodes and trees.
-
-\3. **Leo scripts have *easy* access to all outline data**:
-
-All Leo scripts execute with these **predefined symbols**: |br|
-**c** gives access to all outline data and all of Leo's code. |br|
-**p** is the presently selected node in the script. |br|
-**p.h** is the headline text; **p.b** is the body text. |br|
-**g** is a module containing utility functions & classes.
-
-\4. **All parts of Leo are scriptable**, including: |br|
-
-.. In short, all outline data are completely scriptable.
-.. @+node:ekr.20130807203905.16671: *5* What makes Leo special
-@language rest
-
-Leo looks like relatively ordinary outline editor,
-but it has unique scripting and data-organizing abilities.
-
-Scripting
----------
-
-- Any node in the outline may contain a Leo script.
-- Leo can *compose* scripts from a node and its descendants.
-- Leo scripts can *easily* access all the data in any outline.
-
-Leo scripts can do things that can't be *imagined* in other editors.
-
-Data-organizing
----------------
-
-- Cloned nodes may appear many times in the same outline.
-- Clones create views of data that persist indefinitely.
-  Any set of nodes may appear in arbitrirly many views of the data.
-- Headlines naturally describe the data contained in nodes.
-
-
-Script nodes
-------------
-
-There are many ways to combine these capabilities.
-.. @+node:ekr.20130807203905.16672: *5* Scripting
-.. @+node:ekr.20130807203905.16673: *5* External files
-.. @+node:ekr.20130807203905.16674: *5* The screenshots plugin
-.. @+node:ekr.20130807203905.16675: *5* The contextmenu plugin
-@language rest
-
-Adds configurable right-click menu items to nodes.
-.. @+node:ekr.20130807203905.16676: *5* The bookmarks plugin
-.. @+node:ekr.20130807203905.16677: *5* The todo plugin
-.. @+node:ekr.20130807203905.16818: *5* The valuespace plugin (promised!)
+.. @+node:ekr.20130807203905.16650: *3* Leo in a nutshell
+https://groups.google.com/forum/#!topic/leo-editor/lgHE4OJSLzw
+
+In a Nutshell, The Leo Editor...
+
+- has had 15,508 commits made by 47 contributors
+  representing 1,064,650 lines of code
+- is mostly written in Python
+  with an average number of source code comments
+- has a well established, mature codebase
+  maintained by a large development team
+  with decreasing Y-O-Y commits
+- took an estimated 292 years of effort (COCOMO model)
+  starting with its first commit in February, 2002
+  ending with its most recent commit 2 days ago 
 .. @+node:ekr.20130806211959.17359: *3* User comments
 .. @+node:ekr.20130807090137.11464: *4* From Vili
 From: vili <viljem.tisnikar@gmail.com>
@@ -2659,6 +2075,507 @@ to track the information just in the way I like it, but to also operate
 with it avoiding repetitive tasks for me.
 
 Thanks for your software, Im really excited to have found it.
+.. @+node:ekr.20130503155210.24814: ** Tutorials/Screencasts
+@nocolor-node
+
+Rewrite in screencast-script style:
+- Docstrings for the most important plugins.
+- All help-for-<topic> text.
+- Leo's tutorials.
+
+** Screencast style for plugins docstrings.
+* Screencast style for help messages.
+* Screencast style for tutorials.
+* Create YouTube channel for Leo screencasts.
+
+Topics:
+- Minibuffer: alt-x, tab-completion.
+- @button.
+- @rclick
+- Find/Change (done)
+- execute-script.
+- bookmarks.py.
+
+.. @+node:ekr.20130807203905.16656: *3* A beautiful pattern for composing large strings
+From: "Edward K. Ream" <edreamleo@gmail.com>
+
+I continue to work feverishly on various aspects of static type checking.
+
+That work lead to a discovery that may benefit you.  It's one of the most 
+beautiful patterns I've ever created: it allows a program to simply and 
+naturally build up huge strings without using any string operations.  
+Generating an html file with minimal stress on the gc is an obvious 
+application.  You could also say that the pattern creates a Pythonic way of 
+using lisp-like algorithms, but more safely than in lisp.
+
+Full details at the stc documentation page::
+http://webpages.charter.net/edreamleo/stc/stc.html#a-beautiful-pattern-for-building-large-strings
+
+.. @+node:ekr.20130807203905.16657: *4* Re: A beautiful pattern for composing large strings
+From: "Edward K. Ream" <edreamleo@gmail.com>
+
+On Wednesday, January 2, 2013 10:02:40 AM UTC-6, Edward K. Ream wrote:
+
+ReportTraverser uses this pattern at rev 288.  It is a remarkable 
+simplification.
+ 
+
+> The revised r.div method will be something like::
+>
+>     def div(self,aList):
+>         compute old and new indents
+>         return [
+>             <div>, with old indent,
+>             aList, with new indent,
+>             </div>, with old indent,
+>         ]
+>
+
+This doesn't work!  aList won't have the proper indentation.  In 
+particular, the following won't work::
+
+    [['  ',z] for z in aList],
+
+flatten_list will add the two spaces before the line, that is, before a 
+newline. Instead, a hack is needed:
+
+    return [
+        div,
+        join_list(aList,indent='  '),
+        '\\n</div>'
+    ]
+
+The new 'indent' keyword tells flatten_list to add the given indentation 
+(two spaces, here), to strings that start with a newline.  The new code in 
+flatten_list is::
+
+        for i,item in enumerate(aList):
+            if leading:                  yield leading
+            for s in flatten_list(item):
+                if indent:
+                    if s.startswith('\\n'):
+                        yield '\\n'+indent+s[1:]
+                    else:
+                        yield s
+                else:
+                    yield s
+            if sep and i < len(aList)-1: yield sep
+            if trailing:                 yield trailing
+
+The point is that the indentation must be "moved behind the newline".
+
+Edward
+
+.. @+node:ekr.20130807203905.16659: *4* Re: A beautiful pattern for composing large strings
+From: "Ville M. Vainio" <vivainio@gmail.com>
+
+This seems like a spiritual relative of "rope" data structure:
+
+http://en.wikipedia.org/wiki/Rope_(data_structure)
+
+http://www.sgi.com/tech/stl/Rope.html
+
+===== EKR
+
+Yes, there is a similarity. However, the real beauty of new pattern is the
+flatten_list method. It's the combination of the lists and flatten_list
+that gives the pattern real power. We've just seen how the 'indent' keyword
+hack allows sophisticated processing of the lists. I wouldn't expect more
+hacks to be needed, but I've been surprised before ;-)
+.. @+node:ekr.20130807203905.16660: *4* Re: A beautiful pattern for composing large strings
+On Tue, 1 Jan 2013 17:03:05 -0800 (PST)
+"Edward K. Ream" <edreamleo@gmail.com> wrote:
+
+> Generating an html file with minimal stress on the gc is an obvious 
+> application.
+
+Nice.  An HTML specific approach which avoids things like the
+r.div_end() construct is the LXML element factory:
+http://lxml.de/tutorial.html#the-e-factory
+
+Cheers -Terry
+
+.. @+node:ekr.20130807203905.16662: *4* Re: A beautiful pattern for composing large strings
+From: "Edward K. Ream" <edreamleo@gmail.com>
+
+On Thursday, January 3, 2013 3:28:52 AM UTC-6, Ville M. Vainio wrote:
+>
+> Yes, it's indeed an interesting pattern. 
+>
+> It would seem more useful in faster languages than python though; in 
+> python, string operations (and gc) are faster in comparison to executing 
+> other code, whereas in fast, more static languages (C++, Java, Go) avoiding 
+> GC gives you great benefits (I saw 5x perf increase reported for some Go 
+> app when eliminating GC).
+>
+
+Thanks for these remarks.  I've enjoyed thinking about them.  A few 
+responses:
+
+1. This is a smallish pattern--it can't change the world, except insofar as 
+something beautiful changes the world.
+
+2. Otoh, the pattern changes the way I think about lisp and lisp-like 
+patterns.  That's not nothing. For the first time, it makes list-oriented  
+programming pattern completely safe.  It does this because it doesn't 
+matter what each component list contains, nor does it matter *at all* what 
+the shape of any part of the tree is.  This makes the pattern completely 
+flexible.
+
+3. The pattern can be generalized.  The pattern I described uses a tree of 
+component strings to describe a (large) resulting string.  But one can 
+easily imagine using lists to hold anything at all (of whatever tree shape) 
+and then use another version of flatten_list to compose results of other 
+types.  Alternatively, rather than composing a result, the analog of 
+flatten_list could process the tree of lists in other ways.  So the most 
+general version of the pattern is:
+
+A) The tree of lists can contain any data whatever, especially including 
+None,
+B) The "producers" (visitors) can create subtrees of whatever shape,
+C) The analog of flatten_list is free to do anything whatever with the 
+resulting tree.
+
+I suspect that these features are what appeal to lisp programmers ;-)
+
+4. I'm not sure whether the pattern is more useful in "faster" languages or 
+not.  True, anything that helps a feeble language like C++ will seem useful 
+:-)  But points 1-3 above have nothing to do with speed: they just make 
+programming simpler, more flexible, more powerful and more fun.
+
+Imo, gc issues are important both in Python and in C++.  For stc, the only 
+way to get reproducible timing statistics for tests was to do the following 
+before running the test::
+
+    for z in (0,1,2): gc.collect(z)
+
+The ReportTraverser class no longer contains *any* calls to string.join, so 
+one could imagine that all strings used in the code would be interned.  The 
+generated tree actually contains nothing but *references* to strings, and 
+if all strings are interned the references will not themselves cause any 
+new strings to be allocated.
+
+Naturally, gc issues are even more important in language like C++ without a 
+gc.  Lol.  The preceding paragraph is more important for C++ than in 
+Python.  So yes, in this sense I agree with you completely that the pattern 
+is more useful for "fast" languages than for Python.
+
+Thanks, Ville, for provoking all these pleasant thoughts :-)
+.. @+node:ekr.20130807203905.16663: *4* Re: A beautiful pattern for composing large strings
+From: "Edward K. Ream" <edreamleo@gmail.com>
+
+On Tue, Jan 1, 2013 at 9:48 PM, Terry Brown <terry_n_brown@yahoo.com> wrote:
+
+> On Tue, 1 Jan 2013 17:03:05 -0800 (PST)
+> "Edward K. Ream" <edreamleo@gmail.com> wrote:
+>
+> > Generating an html file with minimal stress on the gc is an obvious
+> > application.
+>
+> Nice.  An HTML specific approach which avoids things like the
+> r.div_end() construct is the LXML element factory:
+> http://lxml.de/tutorial.html#the-e-factory
+>
+
+Beautiful.  With the list framework the revised r.div method would be
+something like::
+
+    def div(self,aList):
+        compute old and new indents
+        return [
+            <div>, with old indent,
+            aList, with new indent,
+            </div>, with old indent,
+        ]
+
+An example of the pattern in use::
+
+    return [
+        ...
+        r.div([
+            contents of the div,
+        ]),
+        ...
+    ]
+
+Similarly for span, etc. Thanks for pointing this out.  This is too good to
+ignore.  I'll do it soon.
+.. @+node:ekr.20130807203905.16664: *3* All about clone conflicts
+From: "Edward K. Ream" <edreamleo@gmail.com>
+
+Some people seem to think that it is difficult to understand how Leo
+handles "clone wars":  differing values for a cloned nodes that appear
+in several external files.  That's not true.  The rule is::
+
+    **The last clone that Leo reads wins.**
+
+That is, for any cloned node C, Leo takes the value of C.h and C.b to
+be the values specified by the last copy that Leo reads.
+
+There is only one complication::
+
+    **Leo reads the entire outline before reading any external
+files.**
+
+Thus, if C appears in x.leo, y.py and z.py, Leo will choose the value
+for C in x.py or y.py, depending on which @<file> node appears later
+in the outline.
+
+Notes:
+
+1. Whenever Leo detects multiple values for C when opening an outline, Leo
+   creates a "Recovered nodes" tree. This tree contains all the various
+   values for C, nicely formatted so that it is easy to determine where the
+   differences are.
+
+2. I've just refreshed my memory by looking at the code.  The relevant methods are:
+
+    fc.getLeoFile # Reads the outline, then calls at.readAll to read all external files.
+    at.indicateNodeChanged # Adds data to c.nodeConflictList
+    cacher.reportChangedClone # Adds data to c.nodeConflictList
+    fc.handleNodeConflicts # Creates "Recovered Nodes" node and its children.
+
+3. The present code is the simplest code that could possibly work. There is
+no way Leo is going to do AI in order to implement complex rules for which
+clones are "more important" than others. Thus, if you use cross-file
+clones, it is up to *you* to know these rules and handle any resulting
+conflicts. Imo, the "Recovered Nodes" feature is a big step forward for
+Leo, and makes it impossible to lose data unless you willfully refuse to
+examine the data.
+.. @+node:ekr.20130807203905.16665: *4* Re: All about clone conflicts
+From: Joon Ro <joonpyro@gmail.com>
+
+Thanks for the explanation. As a matter of fact, I was having hard time 
+understanding this. 
+
+I had my source file in a @shadow node, and then I had a backup of that 
+file as @file node, which had clones of the nodes of the source @shadow 
+file and some other codes that I stashed. 
+
+Whenever I changed the source code externally with leo closed, when I open 
+leo, it made recovered nodes. The problem was since @file was placed 
+"later" in the outline, leo kept putting the new changes I made to old, 
+instead of new.
+
+Now I understand how this works. but I think in multiple external file 
+cases, it would make more sense if leo checks the file modification time 
+when it makes decision which node is new, instead of just depending on the 
+order of files in the outline. In above case, it is natural for me to have 
+actual source nodes on the top of the outline and backup nodes on the 
+bottom. Please let me know what you think. 
+.. @+node:ekr.20130807203905.16666: *3* Draft: Position tutorial
+@language rest
+
+A **position** object represents a specific node in a Leo outline.
+
+Equivalently, a position represents the state of a Leo generator, that is,
+a specific node during a traversal of a Leo outline.
+
+Because of clones, a node may appear arbitrarily many times in an outline,
+so a node may appear at arbitrarily many positions in the outline.
+
+For any position p, **p.v** is the vnode at position p.
+
+A node's vnode never changes, regardless of where the node appears in the
+outline, and regardless of whether the node is cloned or not.
+
+**Positions become invalid when the outline changes.**
+
+You may save and and use positions *provided* the outline remains unchanged.
+
+Leo's generators deliver positions, one after each other, using a *single*
+(ever-changing) position. As a result, scripts must use p.copy() to create
+lists of positions. For example::
+
+    aList = [p.copy() for p in c.rootPosition().subtree()]
+.. @+node:ekr.20130807203905.16667: *4* other info
+Consider this example, where nodes with the same names are clones of each other::
+
++ Root
+    + A
+        - B
+    + A
+        - B
+    - B
+
+Leo's c.all_nodes() iterator will deliver 9 positions:
+
+    1: Root
+    2: A
+    3: B
+    4: A
+    5: B
+    6: B
+
+*All* positions returned by a traversal are distinct.  Some examples:
+
+- Position 2: A is different from position 4: A
+  The former is the first child of root; the latter is the second child of root.
+  
+- The parent of position 3: B is A at childIndex 0 of Root.
+  The parent of position 5: B is A at childIndex 1 of Root.
+  The parent of position 6: B is Root. The childIndex of 6: B is 2.
+
+.. @+node:ekr.20130807203905.16668: *3* Draft: unit-testing tutorial
+From: "Edward K. Ream" <edreamleo@gmail.com>
+
+The following is a first draft of a unit-testing tutorial.  It will form 
+the basis of a new help-for-unit-testing command, and may also become the 
+introduction to Leo unit-testing chapter.
+
+All comments are welcome.  Please let me know if anything is unclear.
+
+-----
+
+Leo makes it easy to create and run unit tests from individual outline 
+nodes or trees.
+
+A node whose headline starts with @tests defines a unit test.
+
+The body text of the @test node contains a **self-contained** unit test.
+
+For example, this creates a complete unit test::
+
+    @test fails  (headline)
+    assert False (body text)
+
+To run this test, select the @test node and do:
+<alt-x>run-selected-unit-tests-locally.
+Leo will create and run the unit test automatically.
+
+To see all of Leo's unit testing commands, do:
+<alt-x>run<tab>
+
+Leo pre-defines 'c', 'g' and 'p' in unit tests just as in scripts.
+
+For more details about unit testing, see: 
+http://leoeditor.com/unitTesting.html
+
+**Notes for Leo developers**
+
+leo/test/unitTest.leo contains all of Leo's own unit tests.
+
+Running all tests is not necessary.  Just select::
+
+    Active Unit Tests
+
+and then do Alt-4 (run-selected-unit-tests-locally).
+
+**Note**: Some tests will likely fail on machines other than EKR's.
+You only need to be concerned about unit tests that start failing after you 
+make your changes.
+
+.. @+node:ekr.20130807203905.16669: *3* Tutorial scripts (To be written)
+.. @+node:ekr.20130807203905.16670: *4* What makes Leo special: shorter
+@wrap
+@language rest
+
+.. |br| raw:: html
+
+   <br />
+   
+**Leo completely integrates scripting and outlines.** |br|
+Leo outlines are true Python objects, not just text.
+
+\1. **Headlines naturally define types**, such as:
+
+**@file** trees create external files. |br|
+**@test** nodes and trees create unit tests. |br|
+**@button** nodes create **script buttons**. |br|
+**@command** nodes create user-defined commands. |br|
+**@html** trees create web pages. |br|
+**@settings** trees contain Leo settings.
+
+\2. **Any node may contain a Leo script**:
+
+A simple outline-aware markup language creates scripts |br|
+and external files from outline nodes and trees.
+
+\3. **Leo scripts have *easy* access to all outline data**:
+
+All Leo scripts execute with these **predefined symbols**: |br|
+**c** gives access to all outline data and all of Leo's code. |br|
+**p** is the presently selected node in the script. |br|
+**p.h** is the headline text; **p.b** is the body text. |br|
+**g** is a module containing utility functions & classes.
+
+\4. **All parts of Leo are scriptable**, including: |br|
+
+.. In short, all outline data are completely scriptable.
+.. @+node:ekr.20130807203905.16671: *4* What makes Leo special
+@language rest
+
+Leo looks like relatively ordinary outline editor,
+but it has unique scripting and data-organizing abilities.
+
+Scripting
+---------
+
+- Any node in the outline may contain a Leo script.
+- Leo can *compose* scripts from a node and its descendants.
+- Leo scripts can *easily* access all the data in any outline.
+
+Leo scripts can do things that can't be *imagined* in other editors.
+
+Data-organizing
+---------------
+
+- Cloned nodes may appear many times in the same outline.
+- Clones create views of data that persist indefinitely.
+  Any set of nodes may appear in arbitrirly many views of the data.
+- Headlines naturally describe the data contained in nodes.
+
+
+Script nodes
+------------
+
+There are many ways to combine these capabilities.
+.. @+node:ekr.20130807203905.16672: *4* Scripting
+.. @+node:ekr.20130807203905.16673: *4* External files
+.. @+node:ekr.20130807203905.16674: *4* The screenshots plugin
+.. @+node:ekr.20130807203905.16675: *4* The contextmenu plugin
+@language rest
+
+Adds configurable right-click menu items to nodes.
+.. @+node:ekr.20130807203905.16676: *4* The bookmarks plugin
+.. @+node:ekr.20130807203905.16677: *4* The todo plugin
+.. @+node:ekr.20130807203905.16818: *4* The valuespace plugin (promised!)
+.. @+node:ekr.20130803073926.12442: ** Waiting
+- Waiting for answer re ubuntu splashscreen
+    http://qt-project.org/forums/viewthread/30837/
+    createSplashScreen
+    
+- Waiting for answer to solarized question:
+    http://qt-project.org/forums/viewthread/30838/
+    https://groups.google.com/forum/#!topic/leo-editor/W1_LVrQxdwQ
+.. @+node:ekr.20130816100419.23050: ** to do 4.11
+.. @+node:ekr.20130510070942.10606: *3* Bugs 4.11
+* Also: review Leo bugs.
+.. @+node:ekr.20130508084413.10645: *4* Better find/replace dialog
+For newbies (and for power users too, for that matter), it may be helpful to
+have a "Find and Replace" dialog box similar to the one below:
+
+.. image: c:/prog/findReplace.jpg
+
+.. @+node:ekr.20130530110446.12450: *4* Fix syntax coloring bug involving multiple body editors
+.. @+node:ekr.20130502102046.10578: *4* Crash deleting body editor
+# Trying to delete a second body editor.
+
+Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 560, in doCommand
+    val = command(event)
+  File "c:\leo.repo\trunk\leo\plugins\qtGui.py", line 2980, in deleteEditor
+    name = w.leo_name
+AttributeError: 'LeoQTextBrowser' object has no attribute 'leo_name'
+.. @+node:ekr.20130805080841.21380: *4* Fix javascript import bug
+https://groups.google.com/forum/#!topic/leo-editor/dmC8iIKlF7g
+.. @+node:ekr.20130805134749.12435: *4* Fix syntax coloring bug
+@language python
+
+def but_quotes_at_the_end_of_a_triple_quoted_string_are_still_tricky(self):
+    string = """Hello "world\""""
+    
+what
 .. @+node:ekr.20110921094450.6956: ** 4.12
 @language rest
 

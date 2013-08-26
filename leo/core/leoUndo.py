@@ -100,6 +100,7 @@ class undoer:
         self.deleteMarkedNodesData = None
         self.dirtyVnodeList = None
         self.followingSibs = None
+        self.inHead = None
         self.kind = None
         self.newBack = None
         self.newBody = None
@@ -292,7 +293,6 @@ class undoer:
         # bunch is not a dict, so bunch.keys() is required.
         for key in list(bunch.keys()): 
             val = bunch.get(key)
-            # g.trace(key,val)
             setattr(u,key,val)
             if key not in u.optionalIvars:
                 u.optionalIvars.append(key)
@@ -559,7 +559,7 @@ class undoer:
 
         # g.trace(u.undoMenuLabel,u.redoMenuLabel)
     #@+node:ekr.20050315134017.2: *5* afterChangeNodeContents
-    def afterChangeNodeContents (self,p,command,bunch,dirtyVnodeList=[]):
+    def afterChangeNodeContents (self,p,command,bunch,dirtyVnodeList=[],inHead=False):
 
         '''Create an undo node using d created by beforeChangeNode.'''
 
@@ -571,9 +571,8 @@ class undoer:
         bunch.undoType = command
         bunch.undoHelper = u.undoNodeContents
         bunch.redoHelper = u.redoNodeContents
-
         bunch.dirtyVnodeList = dirtyVnodeList
-
+        bunch.inHead = inHead # 2013/08/26
         bunch.newBody = p.b
         bunch.newChanged = u.c.isChanged()
         bunch.newDirty = p.isDirty()
@@ -581,7 +580,6 @@ class undoer:
         bunch.newMarked = p.isMarked()
         bunch.newSel = w.getSelectionRange()
         bunch.newYScroll = w.getYScrollPosition()
-
         u.pushBead(bunch)
     #@+node:ekr.20050315134017.3: *5* afterChangeTree
     def afterChangeTree (self,p,command,bunch):
@@ -1464,7 +1462,6 @@ class undoer:
 
         u.redoing = True 
         u.groupCount = 0
-        ### c.endEditing()
         if u.redoHelper:
             u.redoHelper()
         else:
@@ -1485,9 +1482,13 @@ class undoer:
         ins = w.getInsertPoint()
         c.redraw()
         c.recolor()
-        c.bodyWantsFocus()
-        w.setSelectionRange(i,j,insert=ins)
-        w.seeInsertPoint()
+        if u.inHead: # 2013/08/26.
+            c.editHeadline()
+            u.inHead = False
+        else:
+            c.bodyWantsFocus()
+            w.setSelectionRange(i,j,insert=ins)
+            w.seeInsertPoint()
         u.redoing = False
         u.bead += 1
         u.setUndoTypes()
@@ -1692,28 +1693,21 @@ class undoer:
     def redoNodeContents (self):
 
         u = self ; c = u.c ; w = c.frame.body.bodyCtrl
-
         # Restore the body.
         u.p.setBodyString(u.newBody)
         w.setAllText(u.newBody)
         c.frame.body.recolor(u.p,incremental=False)
-
         # Restore the headline.
         u.p.initHeadString(u.newHead)
-
         # This is required so.  Otherwise redraw will revert the change!
         c.frame.tree.setHeadline(u.p,u.newHead) # New in 4.4b2.
-
         # g.trace('newHead',u.newHead,'revert',c.frame.tree.revertHeadline)
-
         if u.groupCount == 0 and u.newSel:
             i,j = u.newSel
             w.setSelectionRange(i,j)
         if u.groupCount == 0 and u.newYScroll is not None:
             w.setYScrollPosition(u.newYScroll)
-
         u.updateMarks('new')
-
         for v in u.dirtyVnodeList:
             v.setDirty()
     #@+node:ekr.20111005152227.15564: *4* redoMoveMarkedNodes
@@ -1833,7 +1827,6 @@ class undoer:
 
         u.undoing = True
         u.groupCount = 0
-        ### c.endEditing()
         if u.undoHelper:
             u.undoHelper()
         else:
@@ -1854,9 +1847,13 @@ class undoer:
         ins = w.getInsertPoint()
         c.redraw()
         c.recolor()
-        c.bodyWantsFocus()
-        w.setSelectionRange(i,j,insert=ins)
-        w.seeInsertPoint()
+        if u.inHead:
+            c.editHeadline()
+            u.inHead = False
+        else:
+            c.bodyWantsFocus()
+            w.setSelectionRange(i,j,insert=ins)
+            w.seeInsertPoint()
         u.undoing = False
         u.bead -= 1
         u.setUndoTypes()
@@ -2090,22 +2087,16 @@ class undoer:
         u.p.b = u.oldBody
         w.setAllText(u.oldBody)
         c.frame.body.recolor(u.p,incremental=False)
-
         if trace: g.trace(repr(u.oldHead))
-
         u.p.h = u.oldHead
-
         # This is required.  Otherwise c.redraw will revert the change!
         c.frame.tree.setHeadline(u.p,u.oldHead)
-
         if u.groupCount == 0 and u.oldSel:
             i,j = u.oldSel
             w.setSelectionRange(i,j)
         if u.groupCount == 0 and u.oldYScroll is not None:
             w.setYScrollPosition(u.oldYScroll)
-
         u.updateMarks('old')
-
         for v in u.dirtyVnodeList:
             v.setDirty() # Bug fix: Leo 4.4.6.
     #@+node:ekr.20111005152227.15563: *4* undoMoveMarkedNodes

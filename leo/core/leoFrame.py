@@ -1802,7 +1802,7 @@ class leoTree:
     def setEditPosition(self,p):
         self._editPosition = p
     #@+node:ekr.20040803072955.90: *4* head key handlers (leoTree)
-    #@+node:ekr.20040803072955.91: *5* onHeadChanged (leoTree)
+    #@+node:ekr.20040803072955.91: *5* onHeadChanged (leoTree Not used: see nativeTree)
     # Tricky code: do not change without careful thought and testing.
     # Important: This code *is* used.  See also, nativeTree.onHeadChanged.
 
@@ -1869,7 +1869,7 @@ class leoTree:
             c.frame.body.recolor(p,incremental=True)
             dirtyVnodeList = p.setDirty()
             u.afterChangeNodeContents(p,undoType,undoData,
-                dirtyVnodeList=dirtyVnodeList)
+                dirtyVnodeList=dirtyVnodeList,inHead=True)
         if changed:
             c.redraw_after_head_changed()
             c.treeEditFocusHelper()

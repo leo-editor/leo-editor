@@ -885,12 +885,10 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         trace = False and not g.unitTesting
         verbose = True
-
         c = self.c ; u = c.undoer
         if not p:
             if trace: g.trace('** no p')
             return
-
         item = self.getCurrentItem()
         if not item:
             if trace and verbose: g.trace('** no item')
@@ -900,12 +898,9 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         if not e:
             if trace and verbose: g.trace('(nativeTree) ** not editing')
             return
-
         s = g.u(e.text())
-
         if g.doHook("headkey1",c=c,p=c.p,v=c.p,s=s):
             return
-
         self.closeEditorHelper(e,item)
         oldHead = p.h
         changed = s != oldHead
@@ -940,22 +935,17 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             c.frame.body.recolor(p,incremental=True)
             dirtyVnodeList = p.setDirty()
             u.afterChangeNodeContents(p,undoType,undoData,
-                dirtyVnodeList=dirtyVnodeList)
-
+                dirtyVnodeList=dirtyVnodeList,inHead=True) # 2013/08/26.
         g.doHook("headkey2",c=c,p=c.p,v=c.p,s=s)
-
         # This is a crucial shortcut.
         if g.unitTesting: return
-
         if changed:
             self.redraw_after_head_changed()
-
         if 0: # Don't do this: it interferes with clicks, and is not needed.
             if self.stayInTree:
                 c.treeWantsFocus()
             else:
                 c.bodyWantsFocus()
-
         p.v.contentModified()
         c.outerUpdate()
     #@+node:ekr.20110605121601.17913: *3* setItemForCurrentPosition (nativeTree)
