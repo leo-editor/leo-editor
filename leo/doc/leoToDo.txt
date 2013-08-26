@@ -2551,12 +2551,6 @@ Adds configurable right-click menu items to nodes.
 .. @+node:ekr.20130816100419.23050: ** to do 4.11
 .. @+node:ekr.20130510070942.10606: *3* Bugs 4.11
 * Also: review Leo bugs.
-.. @+node:ekr.20130508084413.10645: *4* Better find/replace dialog
-For newbies (and for power users too, for that matter), it may be helpful to
-have a "Find and Replace" dialog box similar to the one below:
-
-.. image: c:/prog/findReplace.jpg
-
 .. @+node:ekr.20130530110446.12450: *4* Fix syntax coloring bug involving multiple body editors
 .. @+node:ekr.20130502102046.10578: *4* Crash deleting body editor
 # Trying to delete a second body editor.
@@ -2569,13 +2563,6 @@ Traceback (most recent call last):
 AttributeError: 'LeoQTextBrowser' object has no attribute 'leo_name'
 .. @+node:ekr.20130805080841.21380: *4* Fix javascript import bug
 https://groups.google.com/forum/#!topic/leo-editor/dmC8iIKlF7g
-.. @+node:ekr.20130805134749.12435: *4* Fix syntax coloring bug
-@language python
-
-def but_quotes_at_the_end_of_a_triple_quoted_string_are_still_tricky(self):
-    string = """Hello "world\""""
-    
-what
 .. @+node:ekr.20110921094450.6956: ** 4.12
 @language rest
 

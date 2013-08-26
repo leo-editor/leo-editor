@@ -278,6 +278,7 @@ python_main_keywords_dict = {
 	"unicode": "keyword2",
 	"vars": "keyword2",
 	"while": "keyword1",
+	"with": "keyword1", # Fix bug 1174532: Python mode file missing 'with' keyword 
 	"xrange": "keyword2",
 	"yield": "keyword1",
 	"zip": "keyword2",
