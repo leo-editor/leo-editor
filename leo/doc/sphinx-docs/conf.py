@@ -72,6 +72,9 @@ import sys, os
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.abspath('../../..')) # leo
+sys.path.insert(0, os.path.abspath('../../../leo')) # leo again
+sys.path.insert(0, os.path.abspath('../../../leo/core')) # leo.core
+sys.path.insert(0, os.path.abspath('../../../leo/plugins')) # leo.plugins
 sys.path.insert(0, os.path.abspath('../../../leo/external')) # leo.external.concurrent
 
 # -- General configuration -----------------------------------------------------
@@ -344,20 +347,30 @@ MOCK_MODULES = [
   'reportlab',
   'reportlab.platypus',
   'platypus',
+  'para',
+  'reportlab.platypus.para',
   ## IPython
   'ipapi',
   'IPython.ipapi',
   ## whoosh
   'whoosh',
-  ## leoGlobals, for some reason
-  'leoGlobals',
+  'whoosh.index',
+  'index',
+  ## outdated Leo modules?
+  #'leoGlobals',
+  #'leoPlugins',
+  #'leoGtkGui',
   ## pexpect
   'pexpect',
   ## System
   'System',
   ## java
+  'java',
+  'java.awt',
+  'awt',
   'javax',
   'javax.swing',
+  'swing',
   ## yaml
   'yaml'
 ]
