@@ -333,7 +333,35 @@ class Mock(object):
         else:
             return Mock()
 
-MOCK_MODULES = ['PyQt4', 'QtCore', 'QtGui', 'reportlab.platypus', 'ipapi']
+MOCK_MODULES = [
+  ## PyQt4
+  'PyQt4', 
+  'QtCore',
+  'PyQt4.QtCore', 
+  'QtGui', 
+  'PyQt4.QtGui',
+  ## reportlab
+  'reportlab',
+  'reportlab.platypus',
+  'platypus',
+  ## IPython
+  'ipapi',
+  'IPython.ipapi',
+  ## whoosh
+  'whoosh',
+  ## leoGlobals, for some reason
+  'leoGlobals',
+  ## pexpect
+  'pexpect',
+  ## System
+  'System',
+  ## java
+  'javax',
+  'javax.swing',
+  ## yaml
+  'yaml'
+]
+
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = Mock()
 #@-others
