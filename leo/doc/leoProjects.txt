@@ -43,6 +43,20 @@ What I did:
 #@+node:ekr.20130510070942.10611: *3* Fixed bug 1162307: Undoing a headline change does not change focus to the headline
 Undoing a headline change does not change focus to the headline
 https://bugs.launchpad.net/leo-editor/+bug/1162307
+#@+node:ekr.20130805134749.12435: *3* Fixed bug 1182695: the tricky string that leo can not handle 
+@language python
+
+the tricky string that leo can not handle 
+https://bugs.launchpad.net/leo-editor/+bug/1182695
+
+def but_quotes_at_the_end_of_a_triple_quoted_string_are_still_tricky(self):
+    string = """Hello "world\""""
+    
+what
+
+"\"" b # Escape works.
+
+The fix was to the escape-handling code in match_span.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

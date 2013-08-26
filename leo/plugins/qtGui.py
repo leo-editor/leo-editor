@@ -11144,8 +11144,8 @@ class jEditColorizer:
                 while j-k >=0 and s[j-k] == esc:
                     escapes += 1 ; k += 1
                 if (escapes % 2) == 1:
-                    # Continue searching past the escaped pattern string.
-                    i = j + len(pattern) # Bug fix: 7/25/07.
+                    assert s[j-1] == esc
+                    i += 1 # 2013/08/26: just advance past the *one* escaped character.
                     # g.trace('escapes',escapes,repr(s[i:]))
                 else:
                     return j
