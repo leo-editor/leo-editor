@@ -349,6 +349,10 @@ MOCK_MODULES = [
   'platypus',
   'para',
   'reportlab.platypus.para',
+  'reportlab.lib',
+  'lib',
+  'reportlab.lib.styles',
+  'styles',
   ## IPython
   'ipapi',
   'IPython.ipapi',
@@ -356,10 +360,12 @@ MOCK_MODULES = [
   'whoosh',
   'whoosh.index',
   'index',
+  'whoosh.fields',
+  'fields',
   ## outdated Leo modules?
   #'leoGlobals',
   #'leoPlugins',
-  #'leoGtkGui',
+  'leoGtkGui',
   ## pexpect
   'pexpect',
   ## System
@@ -368,6 +374,8 @@ MOCK_MODULES = [
   'java',
   'java.awt',
   'awt',
+  'java.lang',
+  'lang',
   'javax',
   'javax.swing',
   'swing',
