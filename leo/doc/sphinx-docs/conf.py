@@ -339,29 +339,30 @@ class Mock(object):
 MOCK_MODULES = [
   ## PyQt4
   'PyQt4', 
-  'QtCore',
+  #'QtCore',
   'PyQt4.QtCore', 
-  'QtGui', 
+  #'QtGui', 
   'PyQt4.QtGui',
   ## reportlab
   'reportlab',
   'reportlab.platypus',
-  'platypus',
-  'para',
+  #'platypus',
+  #'para',
   'reportlab.platypus.para',
   'reportlab.lib',
-  'lib',
+  #'lib',
+  'reportlab.lib.enums',
   'reportlab.lib.styles',
-  'styles',
+  #'styles',
   ## IPython
   'ipapi',
   'IPython.ipapi',
   ## whoosh
   'whoosh',
   'whoosh.index',
-  'index',
+  #'index',
   'whoosh.fields',
-  'fields',
+  #'fields',
   ## outdated Leo modules?
   #'leoGlobals',
   #'leoPlugins',
@@ -373,18 +374,29 @@ MOCK_MODULES = [
   ## java
   'java',
   'java.awt',
-  'awt',
+  #'awt',
   'java.lang',
-  'lang',
+  #'lang',
   'javax',
   'javax.swing',
-  'swing',
+  #'swing',
   ## yaml
   'yaml'
 ]
 
+MOCK_ATTRIBUTES = [
+  ## PyQt4
+  ('PyQt4.QtGui', ['QWidget', 'QTextBlockUserData']),
+  ('PyQt4.QtCore', ['QThread'])
+]
+
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = Mock()
+
+for mod in MOCK_ATTRIBUTES:
+    for attr in mod[1]:
+        sys.modules[mod[0]].__setattr__(attr, Mock())
+
 #@-others
 
 #@-leo
