@@ -325,6 +325,9 @@ class Mock(object):
     def __call__(self, *args, **kwargs):
         return Mock()
 
+    def setattr(self, name, value):
+        self.__dict__[name] = value
+
     @classmethod
     def __getattr__(cls, name):
         if name in ('__file__', '__path__'):
@@ -338,34 +341,24 @@ class Mock(object):
 
 MOCK_MODULES = [
   ## PyQt4
-  'PyQt4', 
-  #'QtCore',
-  'PyQt4.QtCore', 
-  #'QtGui', 
+  'PyQt4',
+  'PyQt4.QtCore',  
   'PyQt4.QtGui',
   ## reportlab
   'reportlab',
   'reportlab.platypus',
-  #'platypus',
-  #'para',
   'reportlab.platypus.para',
   'reportlab.lib',
-  #'lib',
   'reportlab.lib.enums',
   'reportlab.lib.styles',
-  #'styles',
   ## IPython
-  'ipapi',
   'IPython.ipapi',
   ## whoosh
   'whoosh',
   'whoosh.index',
-  #'index',
   'whoosh.fields',
   #'fields',
   ## outdated Leo modules?
-  #'leoGlobals',
-  #'leoPlugins',
   'leoGtkGui',
   ## pexpect
   'pexpect',
@@ -374,12 +367,9 @@ MOCK_MODULES = [
   ## java
   'java',
   'java.awt',
-  #'awt',
   'java.lang',
-  #'lang',
   'javax',
   'javax.swing',
-  #'swing',
   ## yaml
   'yaml'
 ]
@@ -395,7 +385,7 @@ for mod_name in MOCK_MODULES:
 
 for mod in MOCK_ATTRIBUTES:
     for attr in mod[1]:
-        sys.modules[mod[0]].__setattr__(attr, Mock())
+        sys.modules[mod[0]].setattr(attr, Mock())
 
 #@-others
 
