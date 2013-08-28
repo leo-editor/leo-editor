@@ -5,7 +5,7 @@
 
 '''qt gui plugin.'''
 
-PYTHON_COLORER = True
+PYTHON_COLORER = False
 
 #@@language python
 #@@tabwidth -4
@@ -9485,7 +9485,7 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
         self.c = c
         self.w = w # w is a LeoQTextBrowser.
 
-        print('leoQtSyntaxHighlighter.__init__',w,self.setDocument)
+        # print('leoQtSyntaxHighlighter.__init__',w,self.setDocument)
 
         # Not all versions of Qt have the crucial currentBlock method.
         self.hasCurrentBlock = hasattr(self,'currentBlock')
