@@ -2550,7 +2550,12 @@ Adds configurable right-click menu items to nodes.
     https://groups.google.com/forum/#!topic/leo-editor/W1_LVrQxdwQ
 .. @+node:ekr.20130816100419.23050: ** to do 4.11
 .. @+node:ekr.20130510070942.10606: *3* Bugs 4.11
-* Also: review Leo bugs.
+@language rest
+
+2  High-priority bugs.
+32 Medium-priority bugs.
+9  Low-priority bugs.
+42 Wish-list bugs.
 .. @+node:ekr.20130530110446.12450: *4* Fix syntax coloring bug involving multiple body editors
 .. @+node:ekr.20130502102046.10578: *4* Crash deleting body editor
 # Trying to delete a second body editor.
