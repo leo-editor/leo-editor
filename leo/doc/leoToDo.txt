@@ -2556,6 +2556,46 @@ Adds configurable right-click menu items to nodes.
 32 Medium-priority bugs.
 9  Low-priority bugs.
 42 Wish-list bugs.
+.. @+node:ekr.20130828132608.11230: *4* High priority
+.. @+node:ekr.20130828132608.11231: *5* scroll problem in the body pane
+https://bugs.launchpad.net/leo-editor/+bug/1022140
+.. @+node:ekr.20130828132608.11232: *5* underlying C/C++ object has been deleted
+https://bugs.launchpad.net/leo-editor/+bug/1041906
+.. @+node:ekr.20130828132608.11233: *4* Medium priority
+Not a complete list.  These are the bugs I will likely fix first.
+.. @+node:ekr.20130828132608.11234: *5* Context menu settings lost if save as used
+https://bugs.launchpad.net/leo-editor/+bug/869098
+.. @+node:ekr.20130828132608.11235: *5* Global tables in leoApp.py should describe all languages known to the colorizer
+https://bugs.launchpad.net/leo-editor/+bug/879338
+.. @+node:ekr.20130828132608.11236: *5* bound method ViewRenderedController.update
+https://bugs.launchpad.net/leo-editor/+bug/914221
+.. @+node:ekr.20130828132608.11237: *5* problem with .leoRecentFiles.txt
+If $(HOME)/.leo/.leoRecentFiles.txt does not exist, the only recent file ever is the current file
+https://bugs.launchpad.net/leo-editor/+bug/971171
+.. @+node:ekr.20130828132608.11238: *5* p.copyTreeFromSelfTo, chould deepcopy p.v.u 
+https://bugs.launchpad.net/leo-editor/+bug/1019794
+.. @+node:ekr.20130828132608.11239: *5* create relative urls when dragging binary files to Leo
+https://bugs.launchpad.net/leo-editor/+bug/1028986
+.. @+node:ekr.20130828132608.11240: *5* character encoding changes when dragging outline between leo files
+https://bugs.launchpad.net/leo-editor/+bug/1046195
+.. @+node:ekr.20130828132608.11241: *5* quickstart.leo 'auto nodes' example is not working
+https://bugs.launchpad.net/leo-editor/+bug/1046728
+.. @+node:ekr.20130828132608.11242: *5* certain .leo file causes "IndexError: list index out of range"
+https://bugs.launchpad.net/leo-editor/+bug/1074812
+.. @+node:ekr.20130828132608.11243: *5* goto-global-line cmd bug 
+https://bugs.launchpad.net/leo-editor/+bug/1182864
+.. @+node:ekr.20130828132608.11244: *5* (un)select hooks not fired when node selection changed by find command 
+https://bugs.launchpad.net/leo-editor/+bug/1183855
+.. @+node:ekr.20130828132608.11245: *5* importing binary files puts binary content in body editor
+https://bugs.launchpad.net/leo-editor/+bug/1185409
+.. @+node:ekr.20130828132608.11246: *5* ScriptFile.py not generating correctly (ignores text after @others)
+https://bugs.launchpad.net/leo-editor/+bug/1190778
+.. @+node:ekr.20130828132608.11247: *5* [Solution] Script buttons cant "go to script" after outline changes
+https://bugs.launchpad.net/leo-editor/+bug/1193819
+.. @+node:ekr.20130828132608.11248: *5* Focus change on tree pane after saving current Leo file 
+https://bugs.launchpad.net/leo-editor/+bug/1193820
+.. @+node:ekr.20130828132608.11249: *5* Insert doesn't fire unselect / select events
+https://bugs.launchpad.net/leo-editor/+bug/1212332
 .. @+node:ekr.20130530110446.12450: *4* Fix syntax coloring bug involving multiple body editors
 .. @+node:ekr.20130502102046.10578: *4* Crash deleting body editor
 # Trying to delete a second body editor.
@@ -2566,8 +2606,10 @@ Traceback (most recent call last):
   File "c:\leo.repo\trunk\leo\plugins\qtGui.py", line 2980, in deleteEditor
     name = w.leo_name
 AttributeError: 'LeoQTextBrowser' object has no attribute 'leo_name'
-.. @+node:ekr.20130805080841.21380: *4* Fix javascript import bug
+.. @+node:ekr.20130805080841.21380: *4* Fix javascript import bug (waiting for test file)
 https://groups.google.com/forum/#!topic/leo-editor/dmC8iIKlF7g
+
+Waiting for HaveF to send the problematic file.
 .. @+node:ekr.20110921094450.6956: ** 4.12
 @language rest
 
