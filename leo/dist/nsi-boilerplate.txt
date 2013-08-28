@@ -176,7 +176,7 @@ Section Uninstall
     DeleteRegKey HKLM "${leo_hklm}"
     DeleteRegKey HKCR "${ext}"
     DeleteRegKey HKCR "${name}File"
-    ; Savely removes all files and directories, including $INSTDIR.
+    ; Safely removes all files and directories, including $INSTDIR.
     ; The make-leo button creates nsi-uninstall-files.txt.
     !include nsi-uninstall-files.txt
     ; Remove links.
