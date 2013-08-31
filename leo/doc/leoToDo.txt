@@ -2562,7 +2562,23 @@ Traceback (most recent call last):
     name = w.leo_name
 AttributeError: 'LeoQTextBrowser' object has no attribute 'leo_name'
 .. @+node:ekr.20130805080841.21380: *4* Fix javascript import bug
+@language javascript
+
 https://groups.google.com/forum/#!topic/leo-editor/dmC8iIKlF7g
+
+
+var express = require('express');
+ 
+var app = express.createServer(express.logger());
+ 
+app.get('/', function(request, response) {
+response.send('Hello World!');
+});
+ 
+var port = process.env.PORT || 5000;
+app.listen(port, function() {
+console.log("Listening on " + port);
+});
 .. @+node:ekr.20110921094450.6956: ** 4.12
 @language rest
 
