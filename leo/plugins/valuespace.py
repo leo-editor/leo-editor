@@ -187,7 +187,10 @@ import types, sys
 import textwrap
 import json
 from io import BytesIO
-import yaml
+try:
+    import yaml
+except ImportError:
+    yaml = None
 #@-<< imports >>
 
 controllers = {}
@@ -623,17 +626,19 @@ class ValueSpaceController:
         
     def let_body(self,var,val):
         if var.endswith(".yaml"):
-            #print "set to yaml", `val`
-            sio = BytesIO(val)
-            try:
-                d = yaml.load(sio)
-            except:
-                
-                g.es_exception()
-                g.es("yaml error for: " + var)
-                return
-            parts = os.path.splitext(var)        
-            self.let(parts[0], d)
+            if yaml:
+                #print "set to yaml", `val`
+                sio = BytesIO(val)
+                try:
+                    d = yaml.load(sio)
+                except:
+                    g.es_exception()
+                    g.es("yaml error for: " + var)
+                    return
+                parts = os.path.splitext(var)        
+                self.let(parts[0], d)
+            else:
+                g.es("did not import yaml")
             return        
         
         if val.startswith('@cl '):
@@ -641,7 +646,6 @@ class ValueSpaceController:
             return
             
         self.let(var,val)
-        
         
     #@+node:ekr.20110407174428.5780: *5* parse_body & helpers
     def parse_body(self,p):

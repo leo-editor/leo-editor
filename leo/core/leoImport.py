@@ -1764,9 +1764,13 @@ class baseScannerClass (scanUtility):
         self.atAuto = atAuto
         self.c = c = ic.c
 
-        self.atAutoWarnsAboutLeadingWhitespace = c.config.getBool('at_auto_warns_about_leading_whitespace')
-        self.atAutoSeparateNonDefNodes = c.config.getBool('at_auto_separate_non_def_nodes',default=False)
-        self.classId = None # The identifier containing the class tag: 'class', 'interface', 'namespace', etc.
+        self.atAutoWarnsAboutLeadingWhitespace = c.config.getBool(
+            'at_auto_warns_about_leading_whitespace')
+        self.atAutoSeparateNonDefNodes = c.config.getBool(
+            'at_auto_separate_non_def_nodes',default=False)
+        self.classId = None
+            # The identifier containing the class tag:
+            # 'class', 'interface', 'namespace', etc.
         self.codeEnd = None
             # The character after the last character of the class, method or function.
             # An error will be given if this is not a newline.
@@ -1789,12 +1793,15 @@ class baseScannerClass (scanUtility):
         self.methodName = ic.methodName # x, as in < < x methods > > =
         self.methodsSeen = False
         self.mismatchWarningGiven = False
-        self.output_newline = ic.output_newline # = c.config.getBool('output_newline')
+        self.output_newline = ic.output_newline
+            # = c.config.getBool('output_newline')
         self.output_indent = 0 # The minimum indentation presently in effect.
         self.root = None # The top-level node of the generated tree.
         self.rootLine = ic.rootLine # '' or @root + self.fileName
         self.sigEnd = None # The index of the end of the signature.
-        self.sigId = None # The identifier contained in the signature, i.e., the function or method name.
+        self.sigId = None
+            # The identifier contained in the signature,
+            # that is, the function or method name.
         self.sigStart = None
             # The start of the line containing the signature.
             # An error will be given if something other than whitespace precedes the signature.
@@ -2386,8 +2393,8 @@ class baseScannerClass (scanUtility):
         if g.unitTesting:
             g.app.unitTestDict['fail'] = g.callers()
         else:
-            g.warning('inserting @ignore')
-            if parent.isAnyAtFileNode() :
+            if parent.isAnyAtFileNode() and not parent.isAtAutoNode():
+                g.warning('inserting @ignore')
                 c.import_error_nodes.append(parent.h)
 
     #@+node:ekr.20070707113832.1: *4* putClass & helpers
@@ -2887,22 +2894,18 @@ class baseScannerClass (scanUtility):
         trace = False
         start = i
         i = self.skipBlock(s,i,delim1=None,delim2=None)
-
         if self.sigFailTokens:
             i = self.skipWs(s,i)
             for z in self.sigFailTokens:
                 if g.match(s,i,z):
                     if trace: g.trace('failtoken',z)
                     return start,False
-
         if i > start:
             i = self.skipNewline(s,i,kind)
-
         if trace:
             # g.trace(g.callers())
             # g.trace('returns...\n',g.listToString(g.splitLines(s[start:i])))
             g.trace('returns:\n\n%s\n\n' % s[start:i])
-
         return i,True
     #@+node:ekr.20070711104014: *5* skipComment & helper
     def skipComment (self,s,i):
@@ -3006,7 +3009,7 @@ class baseScannerClass (scanUtility):
     def skipId (self,s,i):
 
         return g.skip_id(s,i,chars=self.extraIdChars)
-    #@+node:ekr.20070730134936: *5* skipNewline
+    #@+node:ekr.20070730134936: *5* skipNewline (baseScannerClass)
     def skipNewline(self,s,i,kind):
 
         '''Skip whitespace and comments up to a newline, then skip the newline.
@@ -3027,8 +3030,6 @@ class baseScannerClass (scanUtility):
             self.error(
                 '%s %s does not end in a newline; one will be added\n%s' % (
                     kind,self.sigId,g.get_line(s,i)))
-            # g.trace(g.callers())
-
         return i
     #@+node:ekr.20070712081451: *5* skipParens
     def skipParens (self,s,i):
@@ -4077,7 +4078,6 @@ class JavaScriptScanner (baseScannerClass):
                 # The language is used to set comment delims.
             alternate_language = alternate_language)
                 # The language used in the @language directive.
-
         # Set the parser delims.
         self.blockCommentDelim1 = '/*'
         self.blockCommentDelim2 = '*/'
@@ -4085,6 +4085,7 @@ class JavaScriptScanner (baseScannerClass):
         self.blockDelim2 = '}'
         self.hasClasses = False
         self.hasFunctions = True
+        # self.ignoreBlankLines = True
         self.lineCommentDelim = '//'
         self.lineCommentDelim2 = None
         self.outerBlockDelim1 = None # For now, ignore outer blocks.
@@ -4131,6 +4132,25 @@ class JavaScriptScanner (baseScannerClass):
                     return i + 1
                 else:
                     i += 1
+            return i
+    #@+node:ekr.20130830084323.10544: *4* skipNewline (JavaScriptScanner)
+    def skipNewline(self,s,i,kind):
+
+        '''Skip whitespace and comments up to a newline, then skip the newline.
+        
+        Unlike the base class, we do *not* issue an error if no newline is found.'''
+
+        while i < len(s):
+            i = self.skipWs(s,i)
+            if self.startsComment(s,i):
+                i = self.skipComment(s,i)
+            else: break
+        if i >= len(s):
+            return len(s)
+        elif g.match(s,i,'\n'):
+            return i+1
+        else:
+            g.trace(s[i:],g.callers())
             return i
     #@-others
 #@+node:ekr.20070711104241.3: *3* class pascalScanner
