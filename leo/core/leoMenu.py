@@ -1439,7 +1439,7 @@ class leoMenu:
                 return c.doCommand(command,label)
 
             return legacyMenuCallback
-    #@+node:ekr.20031218072017.3805: *4* deleteMenu
+    #@+node:ekr.20031218072017.3805: *4* deleteMenu (leoMenu)
     def deleteMenu (self,menuName):
 
         try:
@@ -1488,7 +1488,7 @@ class leoMenu:
         except:
             g.es("exception in","setRealMenuNamesFromTable")
             g.es_exception()
-    #@+node:ekr.20031218072017.3807: *4* getMenu, setMenu, destroyMenu
+    #@+node:ekr.20031218072017.3807: *4* getMenu, setMenu, destroyMenu (leoMenu)
     def getMenu (self,menuName):
 
         cmn = self.canonicalizeMenuName(menuName)

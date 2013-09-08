@@ -5484,8 +5484,9 @@ class leoQtMenu (leoMenu.leoMenu):
 
         """Wrapper for the Tkinter destroy menu method."""
 
-        # if menu:
-            # return menu.destroy()
+        # Fixed bug https://bugs.launchpad.net/leo-editor/+bug/1193870
+        if menu:
+            menu.menuBar.removeAction(menu.menuAction())
     #@+node:ekr.20110605121601.18350: *6* index (leoQtMenu)
     def index (self,label):
 
