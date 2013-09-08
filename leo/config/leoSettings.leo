@@ -1799,6 +1799,7 @@
 </v>
 </v>
 <v t="ekr.20060603215208"></v>
+<v t="ekr.20081216090156.5"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -6042,7 +6043,9 @@ This allows you to increase the font size.</t>
 <t tx="ekr.20081023060109.13">Argument to QSciScintilla.zoomIn method.
 This allows you to increase the font size.</t>
 <t tx="ekr.20081023060109.14"></t>
-<t tx="ekr.20081216090156.5"></t>
+<t tx="ekr.20081216090156.5">The escape string that Leo inserts to represent underindented lines.
+
+This escape is followed by a cound of spaces to *remove* from written lines.</t>
 <t tx="ekr.20090202191501.10"></t>
 <t tx="ekr.20090202191501.11"># Not used yet.</t>
 <t tx="ekr.20090203131919.1">'''Check all commands mentioned in the @menus tree
