@@ -104,6 +104,12 @@ Here is a test script::
     else:
         m.createNewMenu(name)
     
+#@+node:ekr.20130908104426.11245: *3* Fixed bug 1019794: p.copyTreeFromSelfTo, chould deepcopy p.v.u
+https://bugs.launchpad.net/leo-editor/+bug/1019794
+
+Added the following to copyTreeFromSelfTo:
+
+    p2.v.u = copy.deepcopy(p.v.u)
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

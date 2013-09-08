@@ -15,6 +15,7 @@ import leo.core.leoGlobals as g
     # try: from psyco.classes import *
     # except ImportError: pass
 
+import copy
 import time
 import re
 import itertools
@@ -1120,7 +1121,8 @@ class position (object):
         p = self
         p2.v._headString = p.h
         p2.v._bodyString = p.b
-
+        # 2013/09/08: Fix bug 1019794: p.copyTreeFromSelfTo, should deepcopy p.v.u.
+        p2.v.u = copy.deepcopy(p.v.u)
         # 2009/10/02: no need to copy arg to iter
         for child in p.children():
             child2 = p2.insertAsLastChild()

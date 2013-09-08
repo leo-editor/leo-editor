@@ -43,42 +43,14 @@ https://bugs.launchpad.net/leo-editor/+bug/1022140
 https://bugs.launchpad.net/leo-editor/+bug/1041906
 .. @+node:ekr.20130908104426.11235: *3* Bug-tracker: Medium priority
 https://bugs.launchpad.net/leo-editor/+bug/nnn
-.. @+node:ekr.20130908104426.11272: *4* code & events
-.. @+node:ekr.20130908104426.11245: *5* 1019794 p.copyTreeFromSelfTo, chould deepcopy p.v.u
-.. @+node:ekr.20130908104426.11261: *5* 1183855 (un)select hooks not fired when node selection changed by find command
-.. @+node:ekr.20130908104426.11268: *5* 1212332 Insert doesn't fire unselect / select events
-.. @+node:ekr.20130908104426.11240: *5* 879338 Global tables in leoApp.py should describe all languages known 
-.. @+node:ekr.20130908104426.11242: *5* 914221 bound method ViewRenderedController.update
-.. @+node:ekr.20130908104426.11244: *5* 971171 If $(HOME)/.leo/.leoRecentFiles.txt does not exist, the only recent file ever is the current file
-.. @+node:ekr.20130908104426.11274: *4* commands
-.. @+node:ekr.20130908104426.11251: *5* 1099035 Leo yank and kill behaviour not quite the same as emacs
-.. @+node:ekr.20130908104426.11260: *5* 1182864 goto-global-line cmd bug
-.. @+node:ekr.20130908104426.11263: *5* 1190778 ScriptFile.py not generating correctly (ignores text after @others)
-.. @+node:ekr.20130908104426.11266: *5* 1193820 Focus change on tree pane after saving current Leo file 
-.. @+node:ekr.20130908104426.11265: *5* 1193819 [Solution] Script buttons cant "go to script" after outline changes
-.. @+node:ekr.20111222113610.10244: *5* 613153 unable to describe root directory on thumb drive
-A very complex bug
-
-See https://bugs.launchpad.net/leo-editor/+bug/613153
-.. @+node:ekr.20130908104426.11273: *4* doc bugs
-.. @+node:ekr.20130908104426.11248: *5* 1046728 quickstart.leo 'auto nodes' example is not working
-.. @+node:ekr.20130908104426.11253: *5* 1159302 Correcting and improving the "Open with" documentation
-.. @+node:ekr.20130908104426.11255: *5* 1168689 outdated documentation about ipython
-.. @+node:ekr.20130908104426.11258: *5* 1180186 debian install not documented well enough
-.. @+node:ekr.20130908104426.11278: *4* install & bzr
-.. @+node:ekr.20130908104426.11243: *5* 969391 setup.py confuses newbies
-.. @+node:ekr.20130908104426.11256: *5* 1175013 leo/plugins/spellpyx.txt is both source controlled and customized
-.. @+node:ekr.20130908104426.11271: *4* files & import
-.. @+node:ekr.20130908104426.11246: *5* 1028986 create relative urls when dragging binary files to Leo
-.. @+node:ekr.20130908104426.11247: *5* 1046195 character encoding changes when dragging outline between leo files
-.. @+node:ekr.20130908104426.11249: *5* 1074812 certain .leo file causes "IndexError: list index out of range"
-.. @+node:ekr.20130908104426.11250: *5* 1090950 refresh from disk - cut node ressurection
-.. @+node:ekr.20130908104426.11252: *5* 1132821 Leo replaces a soft link with a real file
-.. @+node:ekr.20130908104426.11254: *5* 1160660 File-Compare-Leo-Files creates "other file" clones
-.. @+node:ekr.20130908104426.11257: *5* 1178249 url: file relative path does not work same way
-.. @+node:ekr.20130908104426.11262: *5* 1185409 importing binary files puts binary content in body editor
-.. @+node:ekr.20130908104426.11264: *5* 1208659 leo parsed the wrong line number of html file
-.. @+node:ekr.20111026091322.16498: *5* 869098 Context menu settings lost if save as used
+.. @+node:ekr.20130908104426.17089: *4*  first
+.. @+node:ekr.20130908104426.17090: *5* easiest
+.. @+node:ekr.20130908104426.11242: *6*  914221 bound method ViewRenderedController.update
+.. @+node:ekr.20130908104426.11261: *6* 1183855 (un)select hooks not fired when node selection changed by find command
+.. @+node:ekr.20130908104426.11263: *6* 1190778 ScriptFile.py not generating correctly (ignores text after @others)
+.. @+node:ekr.20130908104426.11268: *6* 1212332 Insert doesn't fire unselect / select events
+.. @+node:ekr.20130908104426.17091: *5* all others
+.. @+node:ekr.20111026091322.16498: *6*  869098 Context menu settings lost if save as used
 See https://bugs.launchpad.net/leo-editor/+bug/869098
 
 Hard?
@@ -95,8 +67,36 @@ I have a Leo file with settings for context menu:
 then these settings are lost if I save the leo file to a new name using
 File - Save as
 If I reload the leo file, they do return
-.. @+node:ekr.20130908104426.11277: *4* settings
-.. @+node:ekr.20130908104426.11241: *5* 910228 option to not convert line endings
+.. @+node:ekr.20130908104426.11240: *6*  879338 Global tables in leoApp.py should describe all languages known 
+.. @+node:ekr.20130908104426.11244: *6*  971171 If $(HOME)/.leo/.leoRecentFiles.txt does not exist, the only recent file ever is the current file
+.. @+node:ekr.20130908104426.11246: *6* 1028986 create relative urls when dragging binary files to Leo
+.. @+node:ekr.20130908104426.11247: *6* 1046195 character encoding changes when dragging outline between leo files
+.. @+node:ekr.20130908104426.11250: *6* 1090950 refresh from disk - cut node ressurection
+.. @+node:ekr.20130908104426.11262: *6* 1185409 importing binary files puts binary content in body editor
+.. @+node:ekr.20130908104426.11265: *6* 1193819 [Solution] Script buttons cant "go to script" after outline changes
+.. @+node:ekr.20130908104426.11266: *6* 1193820 Focus change on tree pane after saving current Leo file 
+.. @+node:ekr.20130908104426.11274: *4* commands
+.. @+node:ekr.20130908104426.11251: *5* 1099035 Leo yank and kill behaviour not quite the same as emacs
+.. @+node:ekr.20130908104426.11254: *5* 1160660 File-Compare-Leo-Files creates "other file" clones
+.. @+node:ekr.20130908104426.11260: *5* 1182864 goto-global-line cmd bug
+.. @+node:ekr.20130908104426.11264: *5* 1208659 leo parsed the wrong line number of html file
+.. @+node:ekr.20111222113610.10244: *5* 613153 unable to describe root directory on thumb drive
+A very complex bug
+
+See https://bugs.launchpad.net/leo-editor/+bug/613153
+.. @+node:ekr.20130908104426.11273: *4* doc bugs
+.. @+node:ekr.20130908104426.11248: *5* 1046728 quickstart.leo 'auto nodes' example is not working
+.. @+node:ekr.20130908104426.11253: *5* 1159302 Correcting and improving the "Open with" documentation
+.. @+node:ekr.20130908104426.11255: *5* 1168689 outdated documentation about ipython
+.. @+node:ekr.20130908104426.11258: *5* 1180186 debian install not documented well enough
+.. @+node:ekr.20130908104426.11278: *4* install & bzr
+.. @+node:ekr.20130908104426.11243: *5* 969391 setup.py confuses newbies
+.. @+node:ekr.20130908104426.11256: *5* 1175013 leo/plugins/spellpyx.txt is both source controlled and customized
+.. @+node:ekr.20130908104426.11271: *4* files
+.. @+node:ekr.20130908104426.11249: *5* 1074812 certain .leo file causes "IndexError: list index out of range"
+.. @+node:ekr.20130908104426.11252: *5* 1132821 Leo replaces a soft link with a real file
+.. @+node:ekr.20130908104426.11257: *5* 1178249 url: file relative path does not work same way
+.. @+node:ekr.20130908104426.11241: *5* 910228 option to not convert line endings (Hard)
 .. @+node:ekr.20130908104426.11276: *4* plugins
 .. @+node:ekr.20130908104426.11239: *5* 869385 Chapters make the nav_qt.py plugin useless
 .. @+node:ekr.20130908104426.11269: *3* Bug-tracker: wish-list
