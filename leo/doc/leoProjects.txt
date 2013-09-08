@@ -43,7 +43,7 @@ What I did:
 #@+node:ekr.20130510070942.10611: *3* Fixed bug 1162307: Undoing a headline change does not change focus to the headline
 Undoing a headline change does not change focus to the headline
 https://bugs.launchpad.net/leo-editor/+bug/1162307
-#@+node:ekr.20130805134749.12435: *3* Fixed bug 1182695: the tricky string that leo can not handle 
+#@+node:ekr.20130805134749.12435: *3* Fixed bug 1182695: the tricky string that leo can not handle
 @language python
 
 the tricky string that leo can not handle 
@@ -57,6 +57,53 @@ what
 "\"" b # Escape works.
 
 The fix was to the escape-handling code in match_span.
+#@+node:ekr.20130908104426.11259: *3* Investigated bug 1182694: not display unique in leo and other editor
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/1182694
+
+A string-formatting bug.
+
+https://groups.google.com/forum/?fromgroups#!topic/leo-editor/uy_7dP1uY8w
+
+https://leo-editor.googlegroups.com/attach/4b330006a649027d/SC-2013_5_21_14_12_31.png?view=1&part=5
+
+https://leo-editor.googlegroups.com/attach/4b330006a649027d/SC-2013_5_21_14_12_19.png?view=1&part=4
+
+This is a consequence of an underindented comment.  Like this::
+
+        def test(self):
+            string = "abc,\n\
+    xyz"
+
+http://leoeditor.com/directives.html#index-7
+
+An underindented line is a line of body text that is indented less then the
+starting line of the class, method or function in which it appears. Leo
+outlines can not represent such lines exactly: every line in an external
+file will have at least the indentation of any unindented line of the
+corresponding node in the outline. Leo will issue a warning (not an error)
+for underindented Python comment lines. Such lines can not change the
+meaning of Python programs.
+#@+node:ekr.20130908104426.11267: *3* Fixed bug 1193870 Delete Menu doesn't work in Qt
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/1193870
+
+The fix was to leoQtMenu.destroy.  Previously, it did nothing.
+
+Here is a test script::
+
+@language python
+
+    m = c.frame.menu
+    name = 'Programming'
+    menu = m.getMenu(name)
+    if menu:
+        m.deleteMenu(name)
+    else:
+        m.createNewMenu(name)
+    
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

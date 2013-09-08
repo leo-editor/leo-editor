@@ -400,6 +400,35 @@ El 01/05/09 15:12, Ville M. Vainio escribió:
 - make latex
 - cd _build/latex
 - make all-pdf
+.. @+node:ekr.20130807203905.16683: ** ENB: fixing the key binding bug
+From: "Edward K. Ream" <edreamleo@gmail.com>
+
+As the title indicates, this thread will consist of what could be
+called an online engineering notebook.  Please feel free to ignore.
+
+Key bindings are one of the most difficult and complex parts of Leo.
+This can't be helped: Leo's goals for key bindings are ambitious.
+
+The present bug, https://bugs.launchpad.net/leo-editor/+bug/879331, is
+due to a significant design oversight.  Redefining a binding for a
+command x to key y affects not just command x but all other commands
+presently bound to y!
+
+Alas, the present binding tables are already complex.  I am almost at
+the limit of what I can hold in working memory as it is.  Adding
+significant additional complexity risks creating virtually impossible-
+to-understand code.
+
+There are two conflicting desires in play here:
+
+1. To make the minimum changes needed.  While reasonable in itself,
+this promises to increase overall complexity.
+
+2. To decrease overall complexity.  While reasonable in itself, this
+promises significant overall changes to the code.
+
+Combining these two desires yields a strategy of finding a minimal
+change that reduces overall complexity :-)  It's a big ask.
 .. @+node:ekr.20130502104323.10581: ** github notes
 Used for Leo's blog.
 
