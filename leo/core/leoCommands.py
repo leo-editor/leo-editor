@@ -1533,7 +1533,7 @@ class Commands (object):
         The arg and openType args come from the data arg to c.openWith.
         '''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         testing = testing or g.unitTesting
 
         def join(s1,s2):
