@@ -44,11 +44,68 @@ https://bugs.launchpad.net/leo-editor/+bug/1041906
 .. @+node:ekr.20130908104426.11235: *3* Bug-tracker: Medium priority
 https://bugs.launchpad.net/leo-editor/+bug/nnn
 .. @+node:ekr.20130908104426.17089: *4*  first
-.. @+node:ekr.20130908104426.17090: *5* easiest
-.. @+node:ekr.20130908104426.11242: *6*  914221 bound method ViewRenderedController.update
-.. @+node:ekr.20130908104426.11261: *6* 1183855 (un)select hooks not fired when node selection changed by find command
-.. @+node:ekr.20130908104426.11263: *6* 1190778 ScriptFile.py not generating correctly (ignores text after @others)
-.. @+node:ekr.20130908104426.11268: *6* 1212332 Insert doesn't fire unselect / select events
+@language rest
+.. @+node:ekr.20130908104426.11263: *5* 1190778 ScriptFile.py not generating correctly (ignores text after @others)
+https://bugs.launchpad.net/leo-editor/+bug/1190778
+
+First reported here, and confirmed by Jacob:
+https://groups.google.com/forum/?fromgroups=#!topic/leo-editor/jiBKrv-UnZY
+
+It happens as follows:
+
+I have two nodes, the parent node, whose body is:
+
+@others
+speak('this is a test')
+#Original_Function_XX_00 Read (MyVariable) out loud using TTS_XX_00_TTS_XX_00_Functions_XX_00_Python 2.7_XX_00_Programming Languages
+#Original_Variable_XX_0 'this is a test'
+
+And the child node, whose body is:
+
+import pyttsx
+def speak( text ):
+    if text != "":
+        engine = pyttsx.init()
+        v=engine.getProperty('voices')
+        engine.setProperty('voice', v[3].id)
+        engine.say( text )
+        engine.runAndWait()
+    else:
+        g.es("There is no text to read!")
+
+The Leo-generated ScriptFile.py for execution is as follows:
+
+#@+leo-ver=5
+#@+node:Read ('this is a test') out loud using TTS
+#@+others
+#@+node:Import and definition
+import pyttsx
+def speak( text ):
+    if text != "":
+        engine = pyttsx.init()
+        v=engine.getProperty('voices')
+        engine.setProperty('voice', v[3].id)
+        engine.say( text )
+        engine.runAndWait()
+    else:
+        g.es("There is no text to read!")
+#@-others
+#@-leo
+
+For some reason, it does not use the contains of the parent node.
+If I use simpler code, it works, for instance, the following code will work as expected:
+
+parent body:
+@others
+g.es('work')
+Child body:
+g.es('this should')
+
+Jacob also tested it, and said:
+
+"It appears to be the quotes in the headline of the parent node. When I removed them, the file generated properly"
+.. @+node:ekr.20130908104426.15553: *5* * Document Leo's underindented-line convention
+And add a description of the setting @string underindent-escape-string.
 .. @+node:ekr.20130908104426.17091: *5* all others
 .. @+node:ekr.20111026091322.16498: *6*  869098 Context menu settings lost if save as used
 See https://bugs.launchpad.net/leo-editor/+bug/869098
@@ -89,14 +146,19 @@ See https://bugs.launchpad.net/leo-editor/+bug/613153
 .. @+node:ekr.20130908104426.11253: *5* 1159302 Correcting and improving the "Open with" documentation
 .. @+node:ekr.20130908104426.11255: *5* 1168689 outdated documentation about ipython
 .. @+node:ekr.20130908104426.11258: *5* 1180186 debian install not documented well enough
-.. @+node:ekr.20130908104426.11278: *4* install & bzr
-.. @+node:ekr.20130908104426.11243: *5* 969391 setup.py confuses newbies
-.. @+node:ekr.20130908104426.11256: *5* 1175013 leo/plugins/spellpyx.txt is both source controlled and customized
 .. @+node:ekr.20130908104426.11271: *4* files
 .. @+node:ekr.20130908104426.11249: *5* 1074812 certain .leo file causes "IndexError: list index out of range"
 .. @+node:ekr.20130908104426.11252: *5* 1132821 Leo replaces a soft link with a real file
 .. @+node:ekr.20130908104426.11257: *5* 1178249 url: file relative path does not work same way
 .. @+node:ekr.20130908104426.11241: *5* 910228 option to not convert line endings (Hard)
+.. @+node:ekr.20130908104426.17092: *4* hard, not very important
+.. @+node:ekr.20130908104426.11242: *5*  914221 bound method ViewRenderedController.updated (Hard)
+https://bugs.launchpad.net/leo-editor/+bug/914221
+
+Summary of a *long* discussion: this may be a docutils issue, and does not seem easy to fix.
+.. @+node:ekr.20130908104426.11278: *4* install & bzr
+.. @+node:ekr.20130908104426.11243: *5* 969391 setup.py confuses newbies
+.. @+node:ekr.20130908104426.11256: *5* 1175013 leo/plugins/spellpyx.txt is both source controlled and customized
 .. @+node:ekr.20130908104426.11276: *4* plugins
 .. @+node:ekr.20130908104426.11239: *5* 869385 Chapters make the nav_qt.py plugin useless
 .. @+node:ekr.20130908104426.11269: *3* Bug-tracker: wish-list

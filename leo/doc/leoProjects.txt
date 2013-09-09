@@ -1,7 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20100120072650.6089: * @file ../doc/leoProjects.txt
 #@+all
-#@+node:ekr.20130807203905.16589: ** 4.11 b1
+#@+node:ekr.20130807203905.16589: ** 4.11 b1 projects
 @language rest
 #@+node:ekr.20130821062332.11235: *3* Fixed bug 1208942: Leo holding directory/file handles after file close?
 @language rest
@@ -110,6 +110,19 @@ https://bugs.launchpad.net/leo-editor/+bug/1019794
 Added the following to copyTreeFromSelfTo:
 
     p2.v.u = copy.deepcopy(p.v.u)
+#@+node:ekr.20130909063103.11556: *3* Fixed bugs 1183855 & 1212332 involving missing select hooks
+1183855 (un)select hooks not fired when node selection changed by find command
+https://bugs.launchpad.net/leo-editor/+bug/1183855
+
+1212332 Insert doesn't fire unselect / select events
+https://bugs.launchpad.net/leo-editor/+bug/1212332
+
+
+Select and unselect hooks were not being called when a command (including
+the find command) left focus in the headline.
+
+The fix was to c.redraw(!) It now calls c.frame.tree.select before calling
+c.frame.tree.redraw.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

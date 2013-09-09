@@ -4344,11 +4344,8 @@ class Commands (object):
 
         c = self ; u = c.undoer
         current = c.p
-
         if not current: return
-
         c.endEditing()
-
         undoData = c.undoer.beforeInsertNode(current)
         # Make sure the new node is visible when hoisting.
         if (as_child or
@@ -4367,7 +4364,6 @@ class Commands (object):
         c.setChanged(True)
         u.afterInsertNode(p,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
         c.redrawAndEdit(p,selectAll=True)
-
         return p
     #@+node:ekr.20071005173203.1: *7* c.insertChild
     def insertChild (self,event=None):
@@ -7193,20 +7189,19 @@ class Commands (object):
     def redraw (self,p=None,setFocus=False):
         '''Redraw the screen immediately.'''
 
-        trace = False
+        trace = False and not g.unitTesting
         c = self
         if not p: p = c.p or c.rootPosition()
-
         c.expandAllAncestors(p)
-
+        if p:
+            # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1183855
+            # This looks redundant, but it is probably the only safe fix.
+            c.frame.tree.select(p)
         # 2012/03/10: tree.redraw will change the position if p is a hoisted @chapter node.
         p2 = c.frame.tree.redraw(p)
-
-        # Be careful.  nullTree.redraw return None.
+        # Be careful.  nullTree.redraw returns None.
         c.selectPosition(p2 or p)
-
         if trace: g.trace('setFocus',setFocus,p2 or p)
-
         if setFocus: c.treeFocusHelper()
 
     # Compatibility with old scripts
@@ -8216,23 +8211,20 @@ class Commands (object):
         '''Redraw the screen and start editing the headline at position p.'''
 
         c = self ; k = c.k
-
-        c.redraw(p)
-
+        c.redraw(p) # This *must* be done now.
         if p:
             # This should request focus.
             c.frame.tree.editLabel(p,selectAll=selectAll,selection=selection)
-
             if k and not keepMinibuffer:
                 # Setting the input state has no effect on focus.
                 if selectAll:
                     k.setInputState('insert')
                 else:
                     k.setDefaultInputState()
-
                 # This *does* affect focus.
                 k.showStateAndMode()
-
+        else:
+            g.trace('** no p')
         # Update the focus immediately.
         if not keepMinibuffer:
             c.outerUpdate()

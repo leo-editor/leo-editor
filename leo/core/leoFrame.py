@@ -2044,14 +2044,12 @@ class leoTree:
         Never redraws outline, but may change coloring of individual headlines.
         The scroll argument is used by the gui to suppress scrolling while dragging.'''
 
-        if g.app.killed or self.tree_select_lockout: return None
-
+        if g.app.killed or self.tree_select_lockout:
+            return None
         traceTime = False and not g.unitTesting
-
         if traceTime:
             import time
             t1 = time.time()
-
         try:
             c = self.c ; old_p = c.p
             val = 'break'
@@ -2061,10 +2059,8 @@ class leoTree:
         finally:
             self.tree_select_lockout = False
             c.frame.tree.afterSelectHint(p,old_p)
-
         if traceTime:
             g.trace('%2.3f sec' % (time.time()-t1))
-
         return val  # Don't put a return in a finally clause.
     #@+node:ekr.20070423101911: *4* selectHelper (leoTree) (changed 4.10)
     # Do **not** try to "optimize" this by returning if p==c.p.

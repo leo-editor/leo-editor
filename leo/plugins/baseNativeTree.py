@@ -837,21 +837,17 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         if self.busy():
             if trace: g.trace('busy')
             return
-
         c = self.c
         c.outerUpdate()
             # Do any scheduled redraw.
             # This won't do anything in the new redraw scheme.
-
         item = self.position2item(p)
         if item:
             e,wrapper = self.editLabelHelper(item,selectAll,selection)
         else:
             e,wrapper = None,None # 2011/06/07: define wrapper here too.
             self.error('no item for %s' % p)
-
         if trace: g.trace('p: %s e: %s' % (p and p.h,e))
-
         if e:
             # A nice hack: just set the focus request.
             c.requestedFocusWidget = e
