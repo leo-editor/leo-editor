@@ -1,4 +1,4 @@
-
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20041005105605.1: * @file leoAtFile.py
 #@@first
@@ -217,9 +217,9 @@ class atFile:
         atShadow=False,
     ):
         at = self
-
         at.initCommonIvars()
-
+        at.bom_encoding = None
+            # The encoding implied by any BOM (set by g.stripBOM)
         at.cloneSibCount = 0
             # n > 1: Make sure n cloned sibs exists at next @+node sentinel
         at.correctedLines = 0
@@ -485,7 +485,17 @@ class atFile:
                 fn = shadow_fn
             try:
                 # Open the file in binary mode to allow 0x1a in bodies & headlines.
-                at.inputFile = open(fn,'rb')
+                at.inputFile = f = open(fn,'rb')
+                try:
+                    # Get the encoding from the BOM, then reset the read.
+                    # Be careful: not all files support seek.
+                    f.seek(0)
+                    s = f.readline()
+                    at.bom_encoding,junk = g.stripBOM(s)
+                    f.seek(0)
+                except Exception:
+                    at.bom_encoding = None
+                if trace: g.trace(at.bom_encoding,fn)
                 at.warnOnReadOnlyFile(fn)
             except IOError:
                 at.error("can not open: '@file %s'" % (fn))
@@ -2572,14 +2582,16 @@ class atFile:
         self.root.setOrphan()
 
     #@+node:ekr.20041005105605.128: *4* at.readLine
-    def readLine (self,theFile,fileName=None):
+    def readLine (self,theFile,fileName=None,trace=False):
 
         """Reads one line from file using the present encoding"""
 
         at = self
-        s = g.readlineForceUnixNewline(theFile,fileName=fileName) # calls theFile.readline
-        # g.trace(repr(s),g.callers(4))
-        u = g.toUnicode(s,at.encoding)
+        trace2 = False and not g.unitTesting
+        s = g.readlineForceUnixNewline(theFile,fileName=fileName)
+            # calls theFile.readline
+        u = g.toUnicode(s,at.bom_encoding or at.encoding)
+        if trace and trace2: g.trace(at.bom_encoding,repr(s.replace('\x00','')))
         return u
     #@+node:ekr.20041005105605.129: *4* at.scanHeader
     def scanHeader(self,theFile,fileName):
@@ -2613,13 +2625,11 @@ class atFile:
         # at-first lines are written "verbatim", so nothing more needs to be done!
         #@@c
 
-        s = at.readLine(theFile,fileName)
+        s = at.readLine(theFile,fileName,trace=True)
         if trace: g.trace(fileName,'first line',repr(s))
-        while len(s) > 0:
-            j = s.find(tag)
-            if j != -1: break
+        while s and s.find(tag) == -1:
             firstLines.append(s) # Queue the line
-            s = at.readLine(theFile,fileName)
+            s = at.readLine(theFile,fileName,trace=True)
 
         n = len(s)
         valid = n > 0
@@ -2849,7 +2859,6 @@ class atFile:
                 if g.match(s,0,"@@"):
                     s = s[2:]
                     if s and len(s) > 0:
-                        # at.outputFile is a fileLikeObject.
                         s = g.toEncodedString(s,at.encoding,reportErrors=True)
                         at.outputFile.write(s)
                 #@-<< Write p's headline if it starts with @@ >>
@@ -3271,10 +3280,9 @@ class atFile:
         File indices *must* have already been assigned.'''
 
         at = self ; c = at.c ; root = p.copy()
-
         fileName = p.atAutoNodeName()
-        if not fileName and not toString: return False
-
+        if not fileName and not toString:
+            return False
         at.default_directory = g.setDefaultDirectory(c,p,importing=True)
         fileName = c.os_path_finalize_join(at.default_directory,fileName)
         if not toString and at.shouldPromptForDangerousWrite(fileName,root):
@@ -3283,33 +3291,29 @@ class atFile:
             if not ok:
                 g.es("not written:",fileName)
                 return
-
         # Fix bug 889175: Remember the full fileName.
         at.rememberReadPath(fileName,root)
-
         # This code is similar to code in at.write.
         c.endEditing() # Capture the current headline.
         at.targetFileName = g.choose(toString,"<string-file>",fileName)
-
         at.initWriteIvars(root,at.targetFileName,
             atAuto=True,
             nosentinels=True,thinFile=False,scriptWrite=False,
             toString=toString)
-
         ok = at.openFileForWriting (root,fileName=fileName,toString=toString)
         if ok:
             isAtAutoOtl = root.isAtAutoOtlNode() # For traces.
             isAtAutoRst = root.isAtAutoRstNode() # For traces.
             if isAtAutoRst:
-                ok2 = c.rstCommands.writeAtAutoFile(root,fileName,self.outputFile)
+                ok2 = c.rstCommands.writeAtAutoFile(root,fileName,at.outputFile)
                 if not ok2: at.errors += 1
             elif isAtAutoOtl:
-                ok2 = at.writeAtAutoOtlFile(root) #,fileName,self.outputFile)
+                ok2 = at.writeAtAutoOtlFile(root)
                 if not ok2: at.errors += 1
             else:
                 at.writeOpenFile(root,nosentinels=True,toString=toString)
-            at.closeWriteFile() # Sets stringOutput if toString is True.
-            # g.trace('at.errors',at.errors)
+            at.closeWriteFile()
+                # Sets stringOutput if toString is True.
             if at.errors == 0:
                 # g.trace('toString',toString,'force',force,'isAtAutoRst',isAtAutoRst)
                 at.replaceTargetFileIfDifferent(root,ignoreBlankLines=isAtAutoRst)
@@ -3318,12 +3322,10 @@ class atFile:
                 g.es("not written:",fileName)
                 root.setDirty() # New in Leo 4.4.8.
                 root.setOrphan() # 2010/10/22.
-
         elif not toString:
             root.setDirty() # Make _sure_ we try to rewrite this file.
             root.setOrphan() # 2010/10/22.
             g.es("not written:",fileName)
-
         return ok
     #@+node:ekr.20080711093251.3: *4* at.writeAtShadowNodes & writeDirtyAtShadowNodes & helpers
     def writeAtShadowNodes (self,event=None):
@@ -3633,16 +3635,13 @@ class atFile:
 
         """Do all writes except asis writes."""
 
-        # g.trace(self.encoding,'nosentinels',nosentinels,root.h,self.outputFile)
-
         at = self
         s = g.choose(fromString,fromString,root.v.b)
         root.clearAllVisitedInTree()
         at.putAtFirstLines(s)
-        at.putOpenLeoSentinel("@+leo-ver=%s" % (
-            g.choose(at.writeVersion5,5,4)))
+        at.putOpenLeoSentinel("@+leo-ver=%s" % (5 if at.writeVersion5 else 4))
+            # g.choose(at.writeVersion5,5,4)))
                 # Use version 4 for @shadow, verion 5 otherwise.
-
         at.putInitialComment()
         at.putOpenNodeSentinel(root)
         at.putBody(root,fromString=fromString)
@@ -4623,19 +4622,12 @@ class atFile:
     def closeStringFile (self,theFile):
 
         at = self
-
         if theFile:
             theFile.flush()
             s = at.stringOutput = theFile.get()
             theFile.close()
             at.outputFile = None
-
-            # at.outputFileName = u''
-            if g.isPython3:
-                at.outputFileName = ''
-            else:
-                at.outputFileName = unicode('')
-
+            at.outputFileName = '' if g.isPython3 else unicode('')
             at.shortFileName = ''
             at.targetFileName = None
             return s
@@ -4663,7 +4655,6 @@ class atFile:
 
         """Compare two text files."""
         at = self
-
         # We can't use 'U' mode because of encoding issues (Python 2.x only).
         s1,e = g.readFileIntoString(path1,mode='rb',raw=True)
         if s1 is None:
@@ -4674,17 +4665,14 @@ class atFile:
             g.internalError('empty compare file: %s' % path2)
             return False
         equal = s1 == s2
-
         # 2010/03/29: Make sure both strings are unicode.
         # This is requred to handle binary files in Python 3.x.
         s1 = g.toUnicode(s1,encoding=at.encoding)
         s2 = g.toUnicode(s2,encoding=at.encoding)
-
         if ignoreBlankLines and not equal:
             s1 = g.removeBlankLines(s1)
             s2 = g.removeBlankLines(s2)
             equal = s1 == s2
-
         if ignoreLineEndings and not equal:
             # Wrong: equivalent to ignoreBlankLines!
                 # s1 = s1.replace('\n','').replace('\r','')
@@ -4851,15 +4839,13 @@ class atFile:
         at = self
         tag = self.underindentEscapeString
         f = at.outputFile
-
         if s and f:
             try:
                 if s.startswith(tag):
                     junk,s = self.parseUnderindentTag(s)
-                # at.outputFile is a fileLikeObject.
                 # Bug fix: this must be done last.
                 s = g.toEncodedString(s,at.encoding,reportErrors=True)
-                if trace: g.trace(at.encoding,f,repr(s)) # ,g.callers(5))
+                if trace: g.trace(at.encoding,f,repr(s))
                 f.write(s)
             except Exception:
                 at.exception("exception writing:" + s)
@@ -5091,12 +5077,13 @@ class atFile:
         '''Replace the file with s if s is different from theFile's contents.
 
         Return True if theFile was changed.
+        
+        This is used only by the @shadow logic.
         '''
 
         trace = False and not g.unitTesting
         at = self
         exists = g.os_path_exists(fn)
-
         if exists: # Read the file.  Return if it is the same.
             s2,e = g.readFileIntoString(fn)
             if s is None:
@@ -5104,14 +5091,12 @@ class atFile:
             if s == s2:
                 if not g.unitTesting: g.es('unchanged:',fn)
                 return False
-
         # Issue warning if directory does not exist.
         theDir = g.os_path_dirname(fn)
         if theDir and not g.os_path_exists(theDir):
             if not g.unitTesting:
                 g.error('not written: %s directory not found' % fn)
             return False
-
         # Replace
         try:
             f = open(fn,'wb')
@@ -5144,89 +5129,83 @@ class atFile:
         '''
 
         trace = False and not g.unitTesting
-        c = self.c ; at = c.atFileCommands
-
-        assert(self.outputFile is None)
-
-        if self.toString:
+        at = self ; c = at.c
+        ### c = self.c ; at = c.atFileCommands
+        assert(at.outputFile is None)
+        if at.toString:
             # Do *not* change the actual file or set any dirty flag.
-            self.fileChangedFlag = False
+            at.fileChangedFlag = False
             return False
-
         if root:
             # The default: may be changed later.
             root.clearOrphan()
             root.clearDirty()
-
         if trace: g.trace(
             'ignoreBlankLines',ignoreBlankLines,
-            'target exists',g.os_path_exists(self.targetFileName),
-            self.outputFileName,self.targetFileName)
-
-        if g.os_path_exists(self.targetFileName):
-            if self.compareFiles(
-                self.outputFileName,
-                self.targetFileName,
-                ignoreLineEndings=not self.explicitLineEnding,
+            'target exists',g.os_path_exists(at.targetFileName),
+            at.outputFileName,at.targetFileName)
+        if g.os_path_exists(at.targetFileName):
+            if at.compareFiles(
+                at.outputFileName,
+                at.targetFileName,
+                ignoreLineEndings=not at.explicitLineEnding,
                 ignoreBlankLines=ignoreBlankLines):
                 # Files are identical.
-                ok = self.remove(self.outputFileName)
+                ok = at.remove(at.outputFileName)
                 if trace: g.trace('files are identical')
                 if ok:
-                    g.es('unchanged:',self.shortFileName)
+                    g.es('unchanged:',at.shortFileName)
                 else:
-                    g.error('error writing',self.shortFileName)
-                    g.es('not written:',self.shortFileName)
+                    g.error('error writing',at.shortFileName)
+                    g.es('not written:',at.shortFileName)
                     if root:
                         root.setDirty() # New in 4.4.8.
                         root.setOrphan() # 2010/10/22.
-                self.fileChangedFlag = False
+                at.fileChangedFlag = False
                 return False
             else:
                 # A mismatch.
-                self.checkPythonCode(root)
+                at.checkPythonCode(root)
                 #@+<< report if the files differ only in line endings >>
                 #@+node:ekr.20041019090322: *5* << report if the files differ only in line endings >>
                 if (
-                    self.explicitLineEnding and
-                    self.compareFiles(
-                        self.outputFileName,
-                        self.targetFileName,
-                        ignoreLineEndings=True)):
-
-                    g.warning("correcting line endings in:",self.targetFileName)
+                    at.explicitLineEnding and
+                    at.compareFiles(
+                        at.outputFileName,
+                        at.targetFileName,
+                        ignoreLineEndings=True)
+                ):
+                    g.warning("correcting line endings in:",at.targetFileName)
                 #@-<< report if the files differ only in line endings >>
-                mode = self.stat(self.targetFileName)
-                ok = self.rename(self.outputFileName,self.targetFileName,mode)
+                mode = at.stat(at.targetFileName)
+                ok = at.rename(at.outputFileName,at.targetFileName,mode)
                 if ok:
-                    c.setFileTimeStamp(self.targetFileName)
-                    g.es('wrote:',self.shortFileName)
+                    c.setFileTimeStamp(at.targetFileName)
+                    g.es('wrote:',at.shortFileName)
                 else:
-                    g.error('error writing',self.shortFileName)
-                    g.es('not written:',self.shortFileName)
+                    g.error('error writing',at.shortFileName)
+                    g.es('not written:',at.shortFileName)
                     if root:
                         root.setDirty() # New in 4.4.8.
                         root.setOrphan() # 2010/10/22.
-
-                self.fileChangedFlag = ok
+                at.fileChangedFlag = ok
                 return ok
         else:
             # Rename the output file.
-            ok = self.rename(self.outputFileName,self.targetFileName)
+            ok = at.rename(at.outputFileName,at.targetFileName)
             if ok:
-                c.setFileTimeStamp(self.targetFileName)
-                g.es('created:',self.targetFileName)
+                c.setFileTimeStamp(at.targetFileName)
+                g.es('created:',at.targetFileName)
                 if root:
                     # Fix bug 889175: Remember the full fileName.
-                    at.rememberReadPath(self.targetFileName,root)
+                    at.rememberReadPath(at.targetFileName,root)
             else:
-                # self.rename gives the error.
+                # at.rename gives the error.
                 if root:
                     root.setDirty() # New in 4.4.8.
                     root.setOrphan() # 2010/10/22.
-
             # No original file to change. Return value tested by a unit test.
-            self.fileChangedFlag = False 
+            at.fileChangedFlag = False 
             return False
     #@+node:ekr.20041005105605.216: *4* at.warnAboutOrpanAndIgnoredNodes
     # Called from writeOpenFile.

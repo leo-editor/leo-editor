@@ -2181,7 +2181,6 @@ def readFileIntoString (fn,
     except Exception:
         g.error('readFileIntoString: unexpected exception reading %s' % (fn))
         g.es_exception()
-
     return None,None
 #@+node:ekr.20031218072017.3120: *3* g.readlineForceUnixNewline
 #@+at Stephen P. Schaefer 9/7/2002
