@@ -10,27 +10,16 @@
 #@@tabwidth -4
 #@@pagewidth 60
 
+allow_cloned_sibs = True # True: allow cloned siblings in @file nodes.
+
 #@+<< imports >>
 #@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile)
 import leo.core.leoGlobals as g
-
-# if g.app and g.app.use_psyco:
-    # # print("enabled psyco classes",__file__)
-    # try: from psyco.classes import *
-    # except ImportError: pass
-
 import leo.core.leoNodes as leoNodes
-
 import os
 import sys
 import time
-
 #@-<< imports >>
-
-allow_cloned_sibs = True # True: allow cloned siblings in @file nodes.
-
-# if allow_cloned_sibs:
-    # print('** allow_cloned_sibs: True')
 
 class atFile:
 
@@ -465,7 +454,6 @@ class atFile:
 
         trace = False and not g.app.unitTesting
         at = self
-
         if fromString:
             if at.atShadow:
                 return at.error(
@@ -475,8 +463,8 @@ class atFile:
         else:
             fn = at.fullPath(self.root)
                 # Returns full path, including file name.
-            at.setPathUa(self.root,fn) # Remember the full path to this node.
-
+            at.setPathUa(self.root,fn)
+                # Remember the full path to this node.
             if at.atShadow:
                 x = at.c.shadowController
                 # readOneAtShadowNode should already have checked these.
@@ -495,7 +483,6 @@ class atFile:
                     g.trace('reading: shadow_fn:',shadow_fn)
                 x.updatePublicAndPrivateFiles(self.root,fn,shadow_fn)
                 fn = shadow_fn
-
             try:
                 # Open the file in binary mode to allow 0x1a in bodies & headlines.
                 at.inputFile = open(fn,'rb')
@@ -504,7 +491,6 @@ class atFile:
                 at.error("can not open: '@file %s'" % (fn))
                 at.inputFile = None
                 fn = None
-
         return fn
     #@+node:ekr.20041005105605.21: *4* at.read & helpers
     def read(self,root,importFileName=None,
@@ -537,7 +523,6 @@ class atFile:
         if at.errors:
             if trace: g.trace('Init error')
             return False
-
         fileName = at.openFileForReading(fromString=fromString)
             # For @shadow files, calls x.updatePublicAndPrivateFiles.
         if fileName and at.inputFile:
@@ -984,18 +969,15 @@ class atFile:
 
         trace = False and not g.unitTesting
         at = self
-
         firstLines,read_new,thinFile = at.scanHeader(theFile,fileName)
             # Important: this sets at.encoding, used by at.readLine.
         at.thinFile = thinFile
             # 2010/01/22: use *only* the header to set self.thinFile.
-
         if deleteNodes and at.shouldDeleteChildren(root,thinFile):
             # Fix bug 889175: Remember the full fileName.
             at.rememberReadPath(fileName,root)
             while root.hasChildren():
                 root.firstChild().doDelete()
-
         if read_new:
             lastLines = at.scanText4(theFile,fileName,root)
         else:
@@ -1008,11 +990,9 @@ class atFile:
                 at.error('can not read 3.x derived file',fileName)
                 # g.es('you may upgrade these file using Leo 4.0 through 4.4.x')
                 g.es("Please use Leo's import command to read the file")
-                g.trace('root',root and root.h,fileName)
-
+                # g.trace('root',root and root.h,fileName)
         if root:
             root.v.setVisited() # Disable warning about set nodes.
-
         #@+<< handle first and last lines >>
         #@+node:ekr.20041005105605.28: *5* << handle first and last lines >> (at.readOpenFile)
         # The code below only deals with the root node!
@@ -1044,9 +1024,7 @@ class atFile:
         # *Always* put the temp body text into at.v.tempBodyString.
         v.tempBodyString = s
         #@-<< handle first and last lines >>
-
         if trace: g.trace(at.encoding,fileName) # root.v.tempBodyString)
-
         return thinFile
     #@+node:ekr.20100122130101.6175: *5* at.shouldDeleteChildren
     def shouldDeleteChildren (self,root,thinFile):

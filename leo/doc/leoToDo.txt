@@ -7018,27 +7018,6 @@ From: "Edward K. Ream" <edreamleo@gmail.com>
 
 It surely is a bug.  I might have made a private note to myself about this,
 but just in case I'll mark this email as a bug deserving quick attention.
-.. @+node:ekr.20130806072439.20475: *5* * Garbled text with BOM-marked files
-From: Chema Cortes <pych3m4@gmail.com>
-
-I have some external files encoded with utf8 and utf16-le with BOM marks.
-Leo ignores these marks, and these files become garbled. I cannot fix this
-problem with @enconding directives.
-
-Reading the code, I can see the problem when leo opens files as
-binary, followed by a unicode encoding. Why not use, instead, the
-'codecs.open' for this job, more friendly with BOM-marks?
-
-Testing with system:
-Leo 4.11 devel, build 5418, 2012-07-09 09:10:17
-Python 2.7.3, qt version 4.8.0
-Windows 5, 1, 2600, 2, Service Pack 3
-
-===== EKR
-
-My apologies for the delay in responding.  Please file a bug report at
-https://bugs.launchpad.net/leo-editor.  I've marked this bug for relatively
-quick action.
 .. @+node:ekr.20110621085435.6531: *5* * Improve the find panel and find menu
 Recently, perhaps it was today, there was a remark made about Leo's
 Find panel being confusing for newbies.  I have some sympathy for the

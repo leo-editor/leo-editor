@@ -11289,6 +11289,23 @@ for s,table in ((s1,table1),(s2,table2)):
     for i,result in table:
         j = g.skip_to_start_of_line(s,i)
         assert j == result, 'i: %d, expected %d, got %d' % (i,result,j)
+#@+node:ekr.20130910062920.4149: *4* @test g.stripBOM
+import codecs
+
+table = (
+    ('utf-8',  codecs.BOM_UTF8),
+    ('utf-16', codecs.BOM_UTF16_BE),
+    ('utf-16', codecs.BOM_UTF16_LE),
+    ('utf-32', codecs.BOM_UTF32_BE),
+    ('utf-32', codecs.BOM_UTF32_LE),
+)
+for e,bom in table:
+    s1 = 'this is a test'
+    s = bom + 'this is a test'
+    # print('%6s bom: %18r s: %s' % (e,bom,repr(s)))
+    e2,s2 = g.stripBOM(s)
+    assert e2 == e,'%s,%s' % (e,e2)
+    assert s2 == s1,repr(s2)
 #@+node:ekr.20100131180007.5427: *4* @test g.stripPathCruft
 table =  (
     (None,None), # Retain empty paths for warnings.

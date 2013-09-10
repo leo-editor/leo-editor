@@ -77,6 +77,8 @@ if 0:
 # Don't import this here: it messes up Leo's startup code.
 # import leo.core.leoTest as leoTest
 
+import codecs
+
 try:
     import gc
 except ImportError:
@@ -2157,16 +2159,17 @@ def readFileIntoString (fn,
         f = open(fn,mode)
         s = f.read()
         f.close()
-        if raw:
-            return s,None
-        else:
-            # Python's encoding comments override everything else.
-            if s:
-                junk,ext = g.os_path_splitext(fn)
-                if ext == '.py':
-                    e = g.getPythonEncodingFromString(s)
-            s = g.toUnicode(s,encoding=e or encoding)
+        if raw or not s:
             return s,e
+        # New in Leo 4.11: check for unicode BOM first.
+        e,s = g.stripBOM(s)
+        if not e:
+            # Python's encoding comments override everything else.
+            junk,ext = g.os_path_splitext(fn)
+            if ext == '.py':
+                e = g.getPythonEncodingFromString(s)
+        s = g.toUnicode(s,encoding=e or encoding)
+        return s,e
     except IOError:
         # Translate 'can not open' and kind, but not fn.
         # g.trace(g.callers(5))
@@ -4434,7 +4437,6 @@ def getPythonEncodingFromString(s):
     encoding = None
     tag,tag2 = '# -*- coding:','-*-'
     n1,n2 = len(tag),len(tag2)
-
     if s:
         # For Python 3.x we must convert to unicode before calling startswith.
         # The encoding doesn't matter: we only look at the first line, and if
@@ -4453,7 +4455,6 @@ def getPythonEncodingFromString(s):
                 # g.trace(e,g.isValidEncoding(e),g.callers())
                 if e and g.isValidEncoding(e):
                     encoding = e
-
     return encoding
 #@+node:ekr.20080816125725.2: *3* g.isBytes, isCallable, isChar, isString & isUnicode
 # The syntax of these functions must be valid on Python2K and Python3K.
@@ -4569,6 +4570,32 @@ def reportBadChars (s,encoding):
                     encoding.encode('ascii','replace'))
                 if not g.unitTesting:
                     g.error(s2)
+#@+node:ekr.20130910044521.11304: *3* g.stripBOM
+def stripBOM(s):
+    
+    '''
+    If there is a BOM, return (e,s2) where e is the encoding
+    implied by the BOM and s2 is the s stripped of the BOM.
+    
+    If there is no BOM, return (None,s)
+    
+    s must be the contents of a file (a string) read in binary mode.
+    '''
+
+    table = (
+        # Important: test longer bom's first.
+        (4, 'utf-32', codecs.BOM_UTF32_BE),
+        (4, 'utf-32', codecs.BOM_UTF32_LE),
+        (3, 'utf-8',  codecs.BOM_UTF8),
+        (2, 'utf-16', codecs.BOM_UTF16_BE),
+        (2, 'utf-16', codecs.BOM_UTF16_LE),
+    )
+    if s:
+        for n,e,bom in table:
+            assert len(bom) == n
+            if bom == s[:len(bom)]:
+                return e,s[len(bom):]
+    return None,s
 #@+node:ekr.20050208093800: *3* g.toEncodedString
 def toEncodedString (s,encoding='utf-8',reportErrors=False):
 
