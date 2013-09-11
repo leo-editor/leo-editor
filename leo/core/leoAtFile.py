@@ -318,6 +318,7 @@ class atFile:
         # at.outputFileName:    set below.
         # at.output_newline:    set by scanAllDirectives() below.
         # at.page_width:        set by scanAllDirectives() below.
+        at.outputContents = None
         at.perfectImportFlag = perfectImportFlag
         at.sentinels = not nosentinels
         at.shortFileName = ""   # For messages.
@@ -358,8 +359,6 @@ class atFile:
             at.outputFileName = "<string-file>"
         else:
             # at.outputNewline set in initCommonIvars.
-            if new_write:
-                at.outputContents = None
             at.outputFile = None
             at.stringOutput = None
             at.outputFileName = g.u('')
