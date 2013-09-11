@@ -4523,8 +4523,9 @@ def isWordChar1 (ch):
 #@+node:ekr.20031218072017.1501: *3* g.reportBadChars
 def reportBadChars (s,encoding):
 
+    trace = False and not g.unitTesting
+    errors = 0
     if g.isPython3:
-        errors = 0
         if g.isUnicode(s):
             for ch in s:
                 try: ch.encode(encoding,"strict")
@@ -4547,7 +4548,6 @@ def reportBadChars (s,encoding):
                 if not g.unitTesting:
                     g.error(s2)
     else:
-        errors = 0
         if g.isUnicode(s):
             for ch in s:
                 try: ch.encode(encoding,"strict")
@@ -4569,6 +4569,8 @@ def reportBadChars (s,encoding):
                     encoding.encode('ascii','replace'))
                 if not g.unitTesting:
                     g.error(s2)
+    if trace and not errors:
+        g.es_exception()
 #@+node:ekr.20130910044521.11304: *3* g.stripBOM
 def stripBOM(s):
     
