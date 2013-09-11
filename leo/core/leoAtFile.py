@@ -11,6 +11,7 @@
 #@@pagewidth 60
 
 allow_cloned_sibs = True # True: allow cloned siblings in @file nodes.
+new_write = True # True: new write code: convert to unicode only once.
 
 #@+<< imports >>
 #@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile)
@@ -348,7 +349,6 @@ class atFile:
             if encoding:
                 at.encoding = encoding
                 # g.trace('scanned encoding',encoding)
-
         if toString:
             at.outputFile = g.fileLikeObject()
             if g.app.unitTesting:
@@ -357,8 +357,10 @@ class atFile:
             at.stringOutput = ""
             at.outputFileName = "<string-file>"
         else:
-            at.outputFile = None # The temporary output file.
             # at.outputNewline set in initCommonIvars.
+            if new_write:
+                at.outputContents = None
+            at.outputFile = None
             at.stringOutput = None
             at.outputFileName = g.u('')
 
@@ -492,6 +494,7 @@ class atFile:
                     f.seek(0)
                     s = f.readline()
                     at.bom_encoding,junk = g.stripBOM(s)
+                    # g.trace(at.bom_encoding)
                     f.seek(0)
                 except Exception:
                     at.bom_encoding = None
@@ -2590,8 +2593,9 @@ class atFile:
         trace2 = False and not g.unitTesting
         s = g.readlineForceUnixNewline(theFile,fileName=fileName)
             # calls theFile.readline
-        u = g.toUnicode(s,at.bom_encoding or at.encoding)
-        if trace and trace2: g.trace(at.bom_encoding,repr(s.replace('\x00','')))
+        if trace and trace2: g.trace(repr(s))
+        e = at.bom_encoding or at.encoding
+        u = g.toUnicode(s,e)
         return u
     #@+node:ekr.20041005105605.129: *4* at.scanHeader
     def scanHeader(self,theFile,fileName):
@@ -2855,11 +2859,13 @@ class atFile:
                 #@+<< Write p's headline if it starts with @@ >>
                 #@+node:ekr.20041005105605.155: *5* << Write p's headline if it starts with @@ >>
                 s = p.h
-
                 if g.match(s,0,"@@"):
                     s = s[2:]
                     if s and len(s) > 0:
-                        s = g.toEncodedString(s,at.encoding,reportErrors=True)
+                        if new_write:
+                            pass
+                        else:
+                            s = g.toEncodedString(s,at.encoding,reportErrors=True)
                         at.outputFile.write(s)
                 #@-<< Write p's headline if it starts with @@ >>
                 #@+<< Write p's body >>
@@ -2883,19 +2889,17 @@ class atFile:
         trace = False and not g.unitTesting
         at = self
         at.outputFile = None
-
         if toString:
             at.shortFileName = g.shortFileName(fileName)
             at.outputFileName = "<string: %s>" % at.shortFileName
             at.outputFile = g.fileLikeObject()
         else:
             ok = at.openFileForWritingHelper(fileName)
-
             # New in Leo 4.4.8: set dirty bit if there are errors.
-            if not ok: at.outputFile = None
-
-        if trace: g.trace('root',repr(root and root.h),'outputFile',repr(at.outputFile))
-
+            if not ok:
+                at.outputFile = None
+        if trace:
+            g.trace('root',repr(root and root.h),'outputFile',repr(at.outputFile))
         # New in 4.3 b2: root may be none when writing from a string.
         if root:
             if at.outputFile:
@@ -2903,7 +2907,6 @@ class atFile:
             else:
                 root.setOrphan()
                 root.setDirty()
-
         return at.outputFile is not None
     #@+node:ekr.20041005105605.143: *5* at.openFileForWritingHelper & helper
     def openFileForWritingHelper (self,fileName):
@@ -2937,7 +2940,10 @@ class atFile:
                 pass # os.access() may not exist on all platforms.
 
         try:
-            at.outputFileName = at.targetFileName + ".tmp"
+            if new_write:
+                at.outputFileName = None
+            else:
+                at.outputFileName = at.targetFileName + ".tmp"
             kind,at.outputFile = self.openForWrite(at.outputFileName,'wb')
             if not at.outputFile:
                 kind = g.choose(kind=='check',
@@ -2956,26 +2962,37 @@ class atFile:
 
         trace = False and not g.unitTesting
         at = self ; c = at.c ; x = c.shadowController
-
         try:
             # 2011/10/11: in "quick edit/save" mode the .leo file may not have a name.
             if c.fileName():
                 shadow_filename = x.shadowPathName(filename)
                 self.writing_to_shadow_directory = os.path.exists(shadow_filename)
-                open_file_name       = g.choose(self.writing_to_shadow_directory,shadow_filename,filename)
-                self.shadow_filename = g.choose(self.writing_to_shadow_directory,shadow_filename,None)
+                open_file_name = g.choose(
+                    self.writing_to_shadow_directory,shadow_filename,filename)
+                self.shadow_filename = g.choose(
+                    self.writing_to_shadow_directory,shadow_filename,None)
             else:
                 self.writing_to_shadow_directory = False
                 open_file_name = filename
-
             if self.writing_to_shadow_directory:
                 if trace: g.trace(filename,shadow_filename)
                 x.message('writing %s' % shadow_filename)
-                return 'shadow',open(open_file_name,wb)
+                if new_write:
+                    f = g.fileLikeObject()
+                else:
+                    f = open(open_file_name,wb)
+                return 'shadow',f
             else:
                 ok = c.checkFileTimeStamp(at.targetFileName)
-                return 'check',ok and open(open_file_name,wb)
-
+                if ok:
+                    if new_write:
+                        f = g.fileLikeObject()
+                    else:
+                        f = open(open_file_name,wb)
+                else:
+                    f = None
+                # return 'check',ok and open(open_file_name,wb)
+                return 'check',f
         except IOError:
             if not g.app.unitTesting:
                 g.error('openForWrite: exception opening file: %s' % (open_file_name))
@@ -2996,7 +3013,6 @@ class atFile:
         trace = False and not g.unitTesting
         at = self ; c = at.c
         c.endEditing() # Capture the current headline.
-
         #@+<< set at.targetFileName >>
         #@+node:ekr.20041005105605.145: *5* << set at.targetFileName >>
         if toString:
@@ -3018,17 +3034,14 @@ class atFile:
             scriptWrite = scriptWrite,
             toString = toString,
         )
-
         # "look ahead" computation of eventual fileName.
         eventualFileName = c.os_path_finalize_join(
             at.default_directory,at.targetFileName)
-
         if trace:
             g.trace('default_dir',
                 g.os_path_exists(at.default_directory),
                 at.default_directory)
             g.trace('eventual_fn',eventualFileName)
-
         if not scriptWrite and not toString:
             if at.shouldPromptForDangerousWrite(eventualFileName,root):
                 # Prompt if writing a new @file or @thin node would
@@ -3052,17 +3065,16 @@ class atFile:
                     #@afterref
  # 2010/10/21.
                     return
-
         if not at.openFileForWriting(root,at.targetFileName,toString):
             # openFileForWriting calls root.setDirty() if there are errors.
             if trace: g.trace('open failed',eventualFileName)
             return
-
         try:
             at.writeOpenFile(root,nosentinels=nosentinels,toString=toString)
             assert root==at.root,'write'
             if toString:
-                at.closeWriteFile() # sets self.stringOutput
+                at.closeWriteFile()
+                    # sets at.stringOutput and at.outputContents
                 # Major bug: failure to clear this wipes out headlines!
                 # Minor bug: sometimes this causes slight problems...
                 if hasattr(self.root.v,'tnodeList'):
@@ -3088,7 +3100,6 @@ class atFile:
                     at.rememberReadPath(eventualFileName,root)
                     at.replaceTargetFileIfDifferent(root)
                         # Sets/clears dirty and orphan bits.
-
         except Exception:
             if hasattr(self.root.v,'tnodeList'):
                 delattr(self.root.v,'tnodeList')
@@ -3387,24 +3398,19 @@ class atFile:
         trace = False and not g.unitTesting
         at = self ; c = at.c ; x = c.shadowController
         root = p.copy() 
-
         fn = p.atShadowFileNodeName()
         if trace: g.trace(p.h,fn)
         if not fn:
             g.error('can not happen: not an @shadow node',p.h)
             return False
-
         # A hack to support unknown extensions.
         self.adjustTargetLanguage(fn) # May set c.target_language.
-
         fn = at.fullPath(p)
         at.default_directory = g.os_path_dirname(fn)
-
         # Bug fix 2010/01/18: Make sure we can compute the shadow directory.
         private_fn = x.shadowPathName(fn)
         if not private_fn:
             return False
-
         if not toString and at.shouldPromptForDangerousWrite(fn,root):
             # Prompt if writing a new @shadow node would overwrite the existing public file.
             ok = self.promptForDangerousWrite(fn,kind='@shadow')
@@ -3414,9 +3420,7 @@ class atFile:
             else:
                 g.es("not written:",fn)
                 return
-
         c.endEditing() # Capture the current headline.
-
         at.initWriteIvars(root,targetFileName=None, # Not used.
             atShadow=True,
             nosentinels=None, # set below.  Affects only error messages (sometimes).
@@ -3425,16 +3429,12 @@ class atFile:
             toString=False, # True: create a fileLikeObject.  This is done below.
             forcePythonSentinels=True) # A hack to suppress an error message.
                 # The actual sentinels will be set below.
-
-        # g.trace('encoding',repr(at.encoding))
-
         # Bug fix: Leo 4.5.1: use x.markerFromFileName to force the delim to match
         #                     what is used in x.propegate changes.
         marker = x.markerFromFileName(fn)
         at.startSentinelComment,at.endSentinelComment=marker.getDelims()
-
-        if g.app.unitTesting: ivars_dict = g.getIvarsDict(at)
-
+        if g.app.unitTesting:
+            ivars_dict = g.getIvarsDict(at)
         # Write the public and private files to public_s and private_s strings.
         data = []
         for sentinels in (False,True):
@@ -3446,23 +3446,18 @@ class atFile:
                 # nosentinels only affects error messages, and then only if atAuto is True.
             s = at.closeStringFile(theFile)
             data.append(s)
-
         # Set these new ivars for unit tests.
         at.public_s, at.private_s = data
-
         if g.app.unitTesting:
-            exceptions = ('public_s','private_s','sentinels','stringOutput')
+            exceptions = ('public_s','private_s','sentinels','stringOutput','outputContents')
             assert g.checkUnchangedIvars(at,ivars_dict,exceptions),'writeOneAtShadowNode'
-
         if at.errors == 0 and not toString:
             # Write the public and private files.
             if trace: g.trace('writing',fn)
             x.makeShadowDirectory(fn) # makeShadowDirectory takes a *public* file name.
             at.replaceFileWithString(private_fn,at.private_s)
             at.replaceFileWithString(fn,at.public_s)
-
         self.checkPythonCode(root,s=at.private_s,targetFn=fn)
-
         if at.errors == 0:
             root.clearOrphan()
             root.clearDirty()
@@ -3470,7 +3465,6 @@ class atFile:
             g.error("not written:",at.outputFileName)
             root.setDirty() # New in Leo 4.4.8.
             root.setOrphan() # 2010/10/22.
-
         return at.errors == 0
     #@+node:ekr.20080819075811.13: *6* adjustTargetLanguage
     def adjustTargetLanguage (self,fn):
@@ -3576,7 +3570,6 @@ class atFile:
         root = p.copy()
         c.endEditing()
         c.init_error_dialogs()
-
         fn = p.atEditNodeName()
         if not fn and not toString: return False
 
@@ -3584,7 +3577,6 @@ class atFile:
             g.error('@edit nodes must not have children')
             g.es('To save your work, convert @edit to @auto or @thin')
             return False
-
         at.default_directory = g.setDefaultDirectory(c,p,importing=True)
         fn = c.os_path_finalize_join(at.default_directory,fn)
         if not force and at.shouldPromptForDangerousWrite(fn,root):
@@ -3596,22 +3588,18 @@ class atFile:
             else:
                 g.es("not written:",fn)
                 return False
-
         at.targetFileName = fn
         at.initWriteIvars(root,at.targetFileName,
             atAuto=True, atEdit=True,
             nosentinels=True,thinFile=False,
             scriptWrite=False,toString=toString)
-
         # Compute the file's contents.
         # Unlike the @nosent file logic it does not add a final newline.
         contents = ''.join([s for s in g.splitLines(p.b)
             if at.directiveKind4(s,0) == at.noDirective])
-
         if toString:
             at.stringOutput = contents
             return True
-
         ok = at.openFileForWriting(root,fileName=fn,toString=False)
         if ok:
             self.os(contents)
@@ -3622,9 +3610,7 @@ class atFile:
             g.es("not written:",at.targetFileName) # 2010/10/22
             root.setDirty()
             root.setOrphan() # 2010/10/22
-
         c.raise_error_dialogs(kind='write')
-
         return ok
     #@+node:ekr.20041005105605.157: *4* at.writeOpenFile
     # New in 4.3: must be inited before calling this method.
@@ -4521,19 +4507,19 @@ class atFile:
 
         at = self
 
-        if not targetFn: targetFn = at.targetFileName
-
+        if not targetFn:
+            targetFn = at.targetFileName
         if targetFn and targetFn.endswith('.py') and at.checkPythonCodeOnWrite:
-
             if not s:
-                s,e = g.readFileIntoString(at.outputFileName)
-                if s is None: return
-
+                if new_write:
+                    s = at.outputContents
+                else:
+                    s,e = g.readFileIntoString(at.outputFileName)
+                if not s: return
             # It's too slow to check each node separately.
             ok = at.checkPythonSyntax(root,s)
-
             # Syntax checking catches most indentation problems.
-            if False and ok: at.tabNannyNode(root,s)
+            # if ok: at.tabNannyNode(root,s)
     #@+node:ekr.20090514111518.5663: *5* checkPythonSyntax (leoAtFile)
     def checkPythonSyntax (self,p,body,supress=False):
 
@@ -4625,6 +4611,8 @@ class atFile:
         if theFile:
             theFile.flush()
             s = at.stringOutput = theFile.get()
+            if new_write:
+                at.outputContents = s
             theFile.close()
             at.outputFile = None
             at.outputFileName = '' if g.isPython3 else unicode('')
@@ -4639,10 +4627,11 @@ class atFile:
     def closeWriteFile (self):
 
         at = self
-
         if at.outputFile:
             # g.trace('**closing',at.outputFileName,at.outputFile)
             at.outputFile.flush()
+            if new_write:
+                at.outputContents = at.outputFile.get()
             if at.toString:
                 at.stringOutput = at.outputFile.get()
             at.outputFile.close()
@@ -4654,9 +4643,15 @@ class atFile:
     def compareFiles (self,path1,path2,ignoreLineEndings,ignoreBlankLines=False):
 
         """Compare two text files."""
+        trace = False and not g.unitTesting
         at = self
         # We can't use 'U' mode because of encoding issues (Python 2.x only).
-        s1,e = g.readFileIntoString(path1,mode='rb',raw=True)
+        if new_write:
+            s1 = at.outputContents
+            e = self.encoding
+            assert g.isUnicode(s1),(type(s1),s1)
+        else:
+            s1,e = g.readFileIntoString(path1,mode='rb',raw=True)
         if s1 is None:
             g.internalError('empty compare file: %s' % path1)
             return False
@@ -4664,11 +4659,15 @@ class atFile:
         if s2 is None:
             g.internalError('empty compare file: %s' % path2)
             return False
-        equal = s1 == s2
+        if trace: g.trace('s1',type(s1),'s2',type(s2),path2)
         # 2010/03/29: Make sure both strings are unicode.
         # This is requred to handle binary files in Python 3.x.
-        s1 = g.toUnicode(s1,encoding=at.encoding)
+        if new_write:
+            assert g.isUnicode(s1)
+        else:
+            s1 = g.toUnicode(s1,encoding=at.encoding)
         s2 = g.toUnicode(s2,encoding=at.encoding)
+        equal = s1 == s2
         if ignoreBlankLines and not equal:
             s1 = g.removeBlankLines(s1)
             s2 = g.removeBlankLines(s2)
@@ -4680,7 +4679,7 @@ class atFile:
             s1 = s1.replace('\r','')
             s2 = s2.replace('\r','')
             equal = s1 == s2
-        # g.trace('equal',equal,'ignoreLineEndings',ignoreLineEndings,'encoding',at.encoding)
+        if trace: g.trace('equal',equal)
         return equal
     #@+node:ekr.20041005105605.198: *4* directiveKind4 (write logic)
     def directiveKind4(self,s,i):
@@ -4797,12 +4796,10 @@ class atFile:
     def openStringFile (self,fn,encoding='utf-8'):
 
         at = self
-
         at.shortFileName = g.shortFileName(fn)
         at.outputFileName = "<string: %s>" % at.shortFileName
         at.outputFile = g.fileLikeObject(encoding=encoding)
         at.targetFileName = "<string-file>"
-
         return at.outputFile
     #@+node:ekr.20041005105605.201: *4* os and allies
     # Note:  self.outputFile may be either a fileLikeObject or a real file.
@@ -4819,8 +4816,11 @@ class atFile:
     def onl(self):
 
         """Write a newline to the output stream."""
-
-        self.os(self.output_newline)
+        
+        if new_write:
+            self.os('\n')
+        else:
+            self.os(self.output_newline)
 
     def onl_sent(self):
 
@@ -4839,12 +4839,20 @@ class atFile:
         at = self
         tag = self.underindentEscapeString
         f = at.outputFile
+        if new_write:
+            assert isinstance(f,g.fileLikeObject),f
         if s and f:
             try:
                 if s.startswith(tag):
                     junk,s = self.parseUnderindentTag(s)
                 # Bug fix: this must be done last.
-                s = g.toEncodedString(s,at.encoding,reportErrors=True)
+                if new_write:
+                    # Convert everything to unicode.
+                    # We expect plain text coming only from sentinels.
+                    if not g.isUnicode(s):
+                        s = g.toUnicode(s,'ascii')
+                else:
+                    s = g.toEncodedString(s,at.encoding,reportErrors=True)
                 if trace: g.trace(at.encoding,f,repr(s))
                 f.write(s)
             except Exception:
@@ -5042,16 +5050,12 @@ class atFile:
 
         Remove extra blanks if the line starts with the underindentEscapeString"""
 
-        # g.trace(repr(s))
         tag = self.underindentEscapeString
-
         if s.startswith(tag):
             n2,s2 = self.parseUnderindentTag(s)
             if n2 >= n: return
             elif n > 0: n -= n2
             else:       n += n2
-
-        ### if n != 0:
         if n > 0:
             w = self.tab_width
             if w > 1:
@@ -5130,8 +5134,10 @@ class atFile:
 
         trace = False and not g.unitTesting
         at = self ; c = at.c
-        ### c = self.c ; at = c.atFileCommands
-        assert(at.outputFile is None)
+        if new_write:
+            pass
+        else:
+            assert at.outputFile is None
         if at.toString:
             # Do *not* change the actual file or set any dirty flag.
             at.fileChangedFlag = False
@@ -5149,12 +5155,17 @@ class atFile:
                 at.outputFileName,
                 at.targetFileName,
                 ignoreLineEndings=not at.explicitLineEnding,
-                ignoreBlankLines=ignoreBlankLines):
+                ignoreBlankLines=ignoreBlankLines
+            ):
                 # Files are identical.
-                ok = at.remove(at.outputFileName)
+                if new_write:
+                    ok = True
+                else:
+                    ok = at.remove(at.outputFileName)
                 if trace: g.trace('files are identical')
                 if ok:
-                    g.es('unchanged:',at.shortFileName)
+                    if not g.unitTesting:
+                        g.es('unchanged:',at.shortFileName)
                 else:
                     g.error('error writing',at.shortFileName)
                     g.es('not written:',at.shortFileName)
@@ -5178,10 +5189,15 @@ class atFile:
                     g.warning("correcting line endings in:",at.targetFileName)
                 #@-<< report if the files differ only in line endings >>
                 mode = at.stat(at.targetFileName)
-                ok = at.rename(at.outputFileName,at.targetFileName,mode)
+                if new_write:
+                    s = at.outputContents
+                    ok = at.create(at.targetFileName,s)
+                else:
+                    ok = at.rename(at.outputFileName,at.targetFileName,mode)
                 if ok:
                     c.setFileTimeStamp(at.targetFileName)
-                    g.es('wrote:',at.shortFileName)
+                    if not g.unitTesting:
+                        g.es('wrote:',at.shortFileName)
                 else:
                     g.error('error writing',at.shortFileName)
                     g.es('not written:',at.shortFileName)
@@ -5191,11 +5207,16 @@ class atFile:
                 at.fileChangedFlag = ok
                 return ok
         else:
-            # Rename the output file.
-            ok = at.rename(at.outputFileName,at.targetFileName)
+            if new_write:
+                s = at.outputContents
+                ok = self.create(at.targetFileName,s)
+            else:
+                # Rename the output file.
+                ok = at.rename(at.outputFileName,at.targetFileName)
             if ok:
                 c.setFileTimeStamp(at.targetFileName)
-                g.es('created:',at.targetFileName)
+                if not g.unitTesting:
+                    g.es('created:',at.targetFileName)
                 if root:
                     # Fix bug 889175: Remember the full fileName.
                     at.rememberReadPath(at.targetFileName,root)
@@ -5253,19 +5274,17 @@ class atFile:
         at.root.setDirty()
         at.root.setOrphan()
     #@+node:ekr.20041005105605.218: *4* writeException
-    def writeException (self,root=None): # changed 11.
+    def writeException (self,root=None):
 
-        g.error("exception writing:",self.targetFileName)
+        at = self
+        g.error("exception writing:",at.targetFileName)
         g.es_exception()
-
-        if self.outputFile:
-            self.outputFile.flush()
-            self.outputFile.close()
-            self.outputFile = None
-
-        if self.outputFileName:
-            self.remove(self.outputFileName)
-
+        if at.outputFile:
+            at.outputFile.flush()
+            at.outputFile.close()
+            at.outputFile = None
+        if at.outputFileName:
+            at.remove(at.outputFileName)
         if root:
             # Make sure we try to rewrite this file.
             root.setOrphan()
@@ -5303,6 +5322,29 @@ class atFile:
 
         # Do _not_ call self.error here.
         return g.utils_chmod(fileName,mode)
+    #@+node:ekr.20130910100653.11323: *4* create (Leo 4.11)
+    def create(self,fn,s):
+        
+        '''Create a file whose contents are s.'''
+        
+        at = self
+        assert new_write
+        assert g.isUnicode(s),(type(s),repr(s))
+        try:
+            e = at.encoding
+            # g.trace(repr(at.output_newline))
+            f = open(fn,'wb') # Must be 'wb' to preserve line endings.
+            if at.output_newline != '\n':
+                s = s.replace('\r','').replace('\n',at.output_newline)
+            s = g.toEncodedString(s,e)
+            f.write(s)
+            f.close()
+        except Exception:
+            f = None
+            g.es_exception()
+            g.error('error writing',fn)
+            g.es('not written:',fn)
+        return bool(f)
     #@+node:ekr.20050104131929.1: *4* atFile.rename
     #@+<< about os.rename >>
     #@+node:ekr.20050104131929.2: *5* << about os.rename >>
@@ -5354,7 +5396,6 @@ class atFile:
         if not fileName:
             g.trace('No file name',g.callers())
             return False
-
         try:
             os.remove(fileName)
             return True

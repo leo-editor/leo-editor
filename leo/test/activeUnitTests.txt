@@ -1098,9 +1098,9 @@ else:
 if g.isPython3:
     table = (
         ('aĂbĂ',    'ascii'),
-        ('炰',               'ascii'),
-        ('aĂbĂ',            'utf-8'),
-        ('炰',               'utf-8'),
+        ('炰',       'ascii'),
+        ('aĂbĂ',    'utf-8'),
+        ('炰',       'utf-8'),
     ) 
 else:
     table = (
@@ -1542,19 +1542,14 @@ assert s2 == 'line 2.\n',repr(s2)
 at = c.atFileCommands
 
 # at.toString is set by the execute-script command.
-
+# at.outputFile = f = g.fileLikeObject() # Re-allocate for the test.
 f = at.openStringFile('abc')
-
-assert f.__class__.__name__ == 'fileLikeObject'
-
+assert isinstance(f,g.fileLikeObject)
 s = 'abc'
 f.write(s)
 s2 = at.closeStringFile(f)
-
-assert s == s2
-
+assert s == s2,s2
 # assert at.toString
-
 #@+node:ekr.20090529115704.4563: *4* @test at.openForWrite: not a shadow file
 at = c.atFileCommands
 x = c.shadowController
@@ -1597,19 +1592,15 @@ s = child.b
 try:
     fn = 'unittest/read_test.py'
     child.setHeadString('@shadow %s' % fn)
-    # shadow_fn = x.shadowPathName(fn)
     at.writeOneAtShadowNode(child,toString=False,force=True)
     at.readOneAtShadowNode(fn,child)
 finally:
     child.setHeadString('@@shadow %s' % fn)
     c.setChanged(changed)
-    # c.redraw_now()
 #@+node:ekr.20090529115704.4565: *5* @@shadow unittest/read_test.py
 @language python
 @tabwidth -4
 @others
-# body of @shadow test node
-# The last line.
 #@+node:ekr.20111210175541.3957: *4* @test at.readOneAtShadowNode retains @shadow links clones
 # Important: the child of this node must be a clone of
 # the corresponding node in @shadow unittest/at-shadow-unlink-clones.py
@@ -1701,114 +1692,136 @@ finally:
         os.unlink(path)
 #@+node:ekr.20050105094311: *4* @test at.replaceTargetFileIfDifferent (different)
 import os
-
+import leo.core.leoAtFile as leoAtFile
+new_write = leoAtFile.new_write
 at = c.atFileCommands
 exists = g.os_path_exists
-
-at.outputFileName = g.os_path_join(g.app.testDir,'xyzzy1')
+if new_write:
+    at.outputFileName = None
+else:
+    at.outputFileName = g.os_path_join(g.app.testDir,'xyzzy1')
 at.targetFileName = g.os_path_join(g.app.testDir,'xyzzy2')
-
-# Create both paths (different contents)
-for p in (at.outputFileName,at.targetFileName):
-    if exists(p):
-        os.remove(p)
-    assert not exists(p)
-    f = open(p,'w')
-    s = 'test %s' % p
-    # print(repr(p),repr(s))
-    f.write(s)
+try:
+    # Create both paths (different contents)
+    if new_write:
+        table = (at.targetFileName,)
+        at.outputContents = contents = g.toUnicode('test contents')
+    else:
+        table = (at.outputFileName,at.targetFileName)
+        contents = 'test %s' % at.outputFileName
+    for fn in table:
+        if fn and exists(fn):
+            os.remove(fn)
+        assert not exists(fn)
+        f = open(fn,'w')
+        s = 'test %s' % fn
+        f.write(s)
+        f.close()
+        assert exists(fn),fn
+    at.toString = False # Set by execute script stuff.
+    at.shortFileName = at.targetFileName
+    val = at.replaceTargetFileIfDifferent(at.root)
+    assert val
+    if 0:
+        print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
+        print('%s exists %s' % (at.targetFileName,exists(at.targetFileName)))
+    assert not exists(at.outputFileName), 'oops, output file exists'
+    assert exists(at.targetFileName), 'oops, target file does not exist'
+    f = open(at.targetFileName)
+    s = f.read()
     f.close()
-    assert exists(p) # , '%s does not exist' % repr(p)
-
-at.toString = False # Set by execute script stuff.
-at.shortFileName = at.targetFileName
-root = at.root
-assert at.replaceTargetFileIfDifferent(root), 'replaceTargetFileIfDifferent returns False'
-if 0:
-    print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
-    print('%s exists %s' % (at.targetFileName,exists(at.targetFileName)))
-assert not exists(at.outputFileName), 'oops, output file exists'
-assert exists(at.targetFileName), 'oops, target file does not exist'
-f = open(at.targetFileName)
-s = f.read()
-f.close()
-# print('Contents of %s: %s' % (at.targetFileName,s))
-assert s == 'test %s' % at.outputFileName, 'unexpected contents of target file'
-os.remove(at.targetFileName)
+    assert s == contents,s
+finally:
+    if 1:
+        for fn in (at.outputFileName,at.targetFileName):
+            if fn and exists(fn):
+                os.remove(fn)
 #@+node:ekr.20050105095743: *4* @test at.replaceTargetFileIfDifferent (identical)
 import os
-
+import leo.core.leoAtFile as leoAtFile
+new_write = leoAtFile.new_write
 at = c.atFileCommands
 exists = g.os_path_exists
-
-at.outputFileName = g.os_path_join(g.app.testDir,'xyzzy1')
+if new_write:
+    at.outputFileName = None
+else:
+    at.outputFileName = g.os_path_join(g.app.testDir,'xyzzy1')
 at.targetFileName = g.os_path_join(g.app.testDir,'xyzzy2')
-
 # Create both paths (identical contents)
-for p in (at.outputFileName,at.targetFileName):
-    if exists(p):
-        os.remove(p)
-    assert not exists(p)
-    f = open(p,'w')
-    s = 'test %s' % at.outputFileName
-    # print(repr(p),repr(s))
-    f.write(s)
+contents = g.toUnicode('test contents')
+try:
+    if new_write:
+        table = (at.targetFileName,)
+        at.outputContents = contents
+    else:
+        table = (at.outputFileName,at.targetFileName)
+    for fn in table:
+        if fn and exists(fn):
+            os.remove(fn)
+        assert not exists(fn)
+        f = open(fn,'w')
+        f.write(contents)
+        f.close()
+        assert exists(fn)
+    at.toString = False # Set by execute script stuff.
+    at.shortFileName = at.targetFileName
+    assert not at.replaceTargetFileIfDifferent(at.root)
+    if 0:
+        print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
+        print('%s exists %s' % (at.targetFileName,exists(at.targetFileName)))
+    assert not exists(at.outputFileName)
+    assert exists(at.targetFileName)
+    f = open(at.targetFileName)
+    s = f.read()
     f.close()
-    assert exists(p)
-
-at.toString = False # Set by execute script stuff.
-at.shortFileName = at.targetFileName
-root = at.root
-assert not at.replaceTargetFileIfDifferent(root), 'replaceTargetFileIfDifferent returns True'
-if 0:
-    print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
-    print('%s exists %s' % (at.targetFileName,exists(at.targetFileName)))
-assert not exists(at.outputFileName), 'oops, output file exists'
-assert exists(at.targetFileName), 'oops, target file does not exist'
-f = open(at.targetFileName)
-s = f.read()
-f.close()
-# print('Contents of %s: %s' % (at.targetFileName,s))
-assert s == 'test %s' % at.outputFileName, 'unexpected contents of target file'
-os.remove(at.targetFileName)
+    assert s == contents,contents
+finally:
+    if 1:
+        for fn in (at.outputFileName,at.targetFileName):
+            if fn and exists(fn):
+                os.remove(fn)
 #@+node:ekr.20050105100227: *4* @test at.replaceTargetFileIfDifferent (no target file)
 import os
-
+import leo.core.leoAtFile as leoAtFile
+new_write = leoAtFile.new_write
 at = c.atFileCommands
 exists = g.os_path_exists
-
-at.outputFileName = g.os_path_join(g.app.testDir,'xyzzy1')
-at.targetFileName = g.os_path_join(g.app.testDir,'xyzzy2')
-
-# Remove both files, then create only the output file
-for p in (at.outputFileName,at.targetFileName):
-    if exists(p):
-        os.remove(p)
-
-for p in (at.outputFileName,):
-    assert not exists(p)
-    f = open(p,'w')
-    s = 'test %s' % at.outputFileName
-    # print(repr(p),repr(s))
-    f.write(s)
+at.outputFileName = g.os_path_join(g.app.testDir,'xyzzy1.txt')
+at.targetFileName = g.os_path_join(g.app.testDir,'xyzzy2.txt')
+# Remove both files.
+for fn in (at.outputFileName,at.targetFileName):
+    if fn and exists(fn):
+        os.remove(fn)
+try:
+    # Create the output file or contents.
+    if new_write:
+        at.outputContents = contents = g.toUnicode('test output')
+    else:
+        fn = at.outputFileName
+        assert not exists(fn),fn
+        f = open(fn,'w')
+        contents = 'test %s' % fn
+        f.write(contents)
+        f.close()
+        assert exists(fn)
+    at.toString = False # Set by execute script stuff.
+    at.shortFileName = at.targetFileName
+    val = at.replaceTargetFileIfDifferent(at.root)
+    assert not val
+    if 0:
+        print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
+        print('%s exists %s' % (at.targetFileName,exists(at.targetFileName)))
+    assert not exists(at.outputFileName),at.outputFileName
+    assert exists(at.targetFileName),at.targetFileName
+    f = open(at.targetFileName)
+    s = f.read()
     f.close()
-    assert exists(p)
-
-at.toString = False # Set by execute script stuff.
-at.shortFileName = at.targetFileName
-root = at.root
-assert not at.replaceTargetFileIfDifferent(root), 'replaceTargetFileIfDifferent returns True'
-if 0:
-    print('%s exists %s' % (at.outputFileName,exists(at.outputFileName)))
-    print('%s exists %s' % (at.targetFileName,exists(at.targetFileName)))
-assert not exists(at.outputFileName), 'oops, output file exists'
-assert exists(at.targetFileName), 'oops, target file does not exist'
-f = open(at.targetFileName)
-s = f.read()
-f.close()
-# print('Contents of %s: %s' % (at.targetFileName,s))
-assert s == 'test %s' % at.outputFileName, 'unexpected contents of target file'
-os.remove(at.targetFileName)
+    assert s == contents,'%s len(%s)' % (fn,len(s))
+finally:
+    if 1:
+        for fn in (at.outputFileName,at.targetFileName):
+            if fn and exists(fn):
+                os.remove(fn)
 #@+node:ekr.20060602195313: *4* @test at.write using @comment
 at = c.atFileCommands
 child = p.firstChild()
@@ -11142,8 +11155,6 @@ end = g.os_path_normpath(r'leo/test')
 
 assert s.endswith(end),repr(s)
 #@+node:ekr.20080917151620.23: *5* @thin ../test/unittest/at-path-test1.py
-@language python
-# unittest/at-path-test1.py 
 #@+node:ekr.20080917151620.27: *4* @test g.scanAtPathDirectives @path ../test @path unittest @thin at-path-test3.py
 greatGrandChild = p.firstChild().firstChild().firstChild()
 aList = g.get_directives_dict_list(greatGrandChild)
@@ -11154,8 +11165,6 @@ assert s.endswith(end),repr(s)
 #@+node:ekr.20080917151620.28: *5* @path ../test
 #@+node:ekr.20080917151620.29: *6* @path unittest
 #@+node:ekr.20080917151620.30: *7* @thin at-path-test3.py
-@language python
-# unittest/at-path-test3.py 
 #@+node:ekr.20080917151620.24: *4* @test g.scanAtPathDirectives @path ../test/unittest @thin at-path-test2.py
 grandChild = p.firstChild().firstChild()
 aList = g.get_directives_dict_list(grandChild)
@@ -11165,8 +11174,6 @@ end = g.os_path_normpath(r'leo/test/unittest')
 assert s.endswith(end),repr(s)
 #@+node:ekr.20080917151620.25: *5* @path ../test/unittest
 #@+node:ekr.20080917151620.26: *6* @thin at-path-test2.py
-@language python
-# unittest/at-path-test2.py
 #@+node:ekr.20080917151620.31: *4* @test g.scanAtTabwidthDirectives +6
 @tabwidth 6
 
@@ -11292,20 +11299,23 @@ for s,table in ((s1,table1),(s2,table2)):
 #@+node:ekr.20130910062920.4149: *4* @test g.stripBOM
 import codecs
 
-table = (
-    ('utf-8',  codecs.BOM_UTF8),
-    ('utf-16', codecs.BOM_UTF16_BE),
-    ('utf-16', codecs.BOM_UTF16_LE),
-    ('utf-32', codecs.BOM_UTF32_BE),
-    ('utf-32', codecs.BOM_UTF32_LE),
-)
-for e,bom in table:
-    s1 = 'this is a test'
-    s = bom + 'this is a test'
-    # print('%6s bom: %18r s: %s' % (e,bom,repr(s)))
-    e2,s2 = g.stripBOM(s)
-    assert e2 == e,'%s,%s' % (e,e2)
-    assert s2 == s1,repr(s2)
+# The hack of computing s below is not valid in Python 3.
+if not g.isPython3:
+
+    table = (
+        ('utf-8',  codecs.BOM_UTF8),
+        ('utf-16', codecs.BOM_UTF16_BE),
+        ('utf-16', codecs.BOM_UTF16_LE),
+        ('utf-32', codecs.BOM_UTF32_BE),
+        ('utf-32', codecs.BOM_UTF32_LE),
+    )
+    for e,bom in table:
+        s1 = 'this is a test'
+        s = bom + 'this is a test'
+        # print('%6s bom: %18r s: %s' % (e,bom,repr(s)))
+        e2,s2 = g.stripBOM(s)
+        assert e2 == e,'%s,%s' % (e,e2)
+        assert s2 == s1,repr(s2)
 #@+node:ekr.20100131180007.5427: *4* @test g.stripPathCruft
 table =  (
     (None,None), # Retain empty paths for warnings.
