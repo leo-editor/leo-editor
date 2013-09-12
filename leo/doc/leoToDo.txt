@@ -6917,97 +6917,6 @@ https://bugs.launchpad.net/leo-editor/+bug/nnn
 .. @+node:ekr.20130909073003.11525: *4* first: medium priority
 @language rest
 .. @+node:ekr.20130910100653.11325: *5* * Investigate simplifying selection/drawing logic
-.. @+node:ekr.20130806072439.20482: *5* * (test yes-to-all) importing a medium sized java project ~ 400 files
-From: Todd Greenwood-Geer <t.greenwoodgeer@gmail.com>
-
-I typically use Intellij IDEA when writing java or scala code. I'm 
-currently wrapping up a project with about 400 java files and a handful of 
-html/bash/python. As a test, I tried importing this project into leo, as 
-follows:
-
-(see  http://comments.gmane.org/gmane.comp.python.leo.general/20173)
-
-1. open leo, use the default workbook project or create a new one
-2. copy the 'recursive auto create' script from scripts.leo to  my leo 
-project
-3. edit it to reflect what i'm doing: here's mine below:
-
-#outline
-scripts/@path [some path, say '/home/user/projects']/@path [this project 
-'foo']
-
-#node
- 
-import os
-
-
-@others
-
-
-types = ('.py', '.java', '.scala', '.sh', '.build', '.gradle', '.html', 
-'.js')
-
-theDir = r'.'
-
-
-if g.os_path_exists(theDir):
-
-importFiles(theDir,types,recursive=True)
-
-g.es("done",color="blue")
-
-else:
-
-g.es("directory does not exist: " + theDir)
-
-
-4. ok, so this imports my project...note that on a six core machine, this 
-takes 10 minutes or so.
-
-At this point, I have a few questions:
-
-Q: How could I have referenced the @Path from within the script? I opted 
-for the cheap and easy route by simply using '.', and hey, it worked! Is 
-that idiomatic?
-
-Q: The real issue I'm having is that when I press Ctrl-S to save, I am 
-asked if I want to modify the file...um, for each file. The only way out of 
-this is to kill the process. What am I doing wrong? And, this, btw - seems 
-at least partly like a bug.
-
-Q: Supposing that I can successfully import a project, how do I make it a 
-shadow project?
-
-Suggestions:
-
-1. I first started looking into leo a year or so ago. I thought it was 
-amazing, but then dropped it b/c other projects took precedence. 
-Personally, I think the 'killer' feature is the ability to embed diagrams 
-and notes within the context of code. I'm sure it's possible to open an 
-external editor based on the file type...but typically, one is going to 
-edit a diagram and that product will spit out it's custom file format. At 
-some point you'll use the diagram editor to spit out an image file that 
-something like leo could display. It would be so cool if that sort of 
-integration could be made smoother. Either do all the editing within leo 
-(probably not possible) or have leo invoke the target editor and somehow 
-display the image as appropriate.
-
-2. I'm a developer, and I happen to really enjoy programming in python. 
-However, even for me, the documentation is a bit daunting. This tool does 
-so much, it's a bit overwhelming. In the back of my head, I hear, 'screw 
-this, let's get some work done in VIM, iPython, IDEA, etc.". One thing I 
-keep wondering is whether I really need to have clone nodes in the type of 
-coding I do... I only ever define a function once. However, the ability to 
-force my focus onto just a single function is really nice... really 
-isolates things.
-
-3. On the flip side, it took me just a few minutes to add my own key 
-bindings to switch between tabs. And the view-rendered for rest, markdown, 
-html, etc. is really killer. I'm going to play around with this and 
-erlang/rebar/cowboy and see how it fits that programming model. All I can 
-ask for are more tutorials that just show you doing your normal work 
-routine, and more videos with the same sort of focus.
-
 .. @+node:ekr.20110621085435.6531: *5* * Improve the find panel and find menu
 Recently, perhaps it was today, there was a remark made about Leo's
 Find panel being confusing for newbies.  I have some sympathy for the
@@ -7021,21 +6930,29 @@ tab only--not a way of actually initiating or continuing searches.
 Perhaps using QLabel widgets instead of (disabled) QTextEdit widgets
 for the find/change patterns would help a bit.
 .. @+node:ekr.20130908104426.11263: *5* 1190778 ScriptFile.py not generating correctly (ignores text after @others)
+.. @+node:ekr.20130912143658.11289: *6* report
+@language rest
+
 https://bugs.launchpad.net/leo-editor/+bug/1190778
 
 First reported here, and confirmed by Jacob:
 https://groups.google.com/forum/?fromgroups=#!topic/leo-editor/jiBKrv-UnZY
 
-It happens as follows:
+It happens as follows: I have two nodes, the parent node, whose body is:
 
-I have two nodes, the parent node, whose body is:
+@language python
 
 @others
 speak('this is a test')
-#Original_Function_XX_00 Read (MyVariable) out loud using TTS_XX_00_TTS_XX_00_Functions_XX_00_Python 2.7_XX_00_Programming Languages
+#Original_Function_XX_00 Read (MyVariable) out loud using 
+# TTS_XX_00_TTS_XX_00_Functions_XX_00_Python 2.7_XX_00_Programming Languages
 #Original_Variable_XX_0 'this is a test'
 
+@language rest
+
 And the child node, whose body is:
+
+@language python
 
 import pyttsx
 def speak( text ):
@@ -7047,8 +6964,12 @@ def speak( text ):
         engine.runAndWait()
     else:
         g.es("There is no text to read!")
+        
+@language rest
 
 The Leo-generated ScriptFile.py for execution is as follows:
+
+@language python
 
 #@+leo-ver=5
 #@+node:Read ('this is a test') out loud using TTS
@@ -7067,18 +6988,271 @@ def speak( text ):
 #@-others
 #@-leo
 
-For some reason, it does not use the contains of the parent node.
-If I use simpler code, it works, for instance, the following code will work as expected:
+@language rest
+
+For some reason, it does not use the contents of the parent node. If I use
+simpler code, it works, for instance, the following code will work as
+expected:
 
 parent body:
+
+@language python
+
 @others
 g.es('work')
 Child body:
 g.es('this should')
 
-Jacob also tested it, and said:
+@language rest
 
-"It appears to be the quotes in the headline of the parent node. When I removed them, the file generated properly"
+Jacob also tested it, and said: It appears to be the quotes in the headline
+of the parent node. When I removed them, the file generated properly
+.. @+node:ekr.20070115135502: *6* c.writeScriptFile
+def writeScriptFile (self,script):
+
+    trace = True and not g.unitTesting
+    # Get the path to the file.
+    c = self
+    path = c.config.getString('script_file_path')
+    if path:
+        isAbsPath = os.path.isabs(path)
+        driveSpec, path = os.path.splitdrive(path)
+        parts = path.split('/')
+        # xxx bad idea, loadDir is often read only!
+        path = g.app.loadDir
+        if isAbsPath:
+            # make the first element absolute
+            parts[0] = driveSpec + os.sep + parts[0]
+        allParts = [path] + parts
+        path = c.os_path_finalize_join(*allParts)
+    else:
+        path = c.os_path_finalize_join(
+            g.app.homeLeoDir,'scriptFile.py')
+    if trace: g.trace(path)                
+    # Write the file.
+    try:
+        if g.isPython3:
+            # Use the default encoding.
+            f = open(path,encoding='utf-8',mode='w')
+        else:
+            f = open(path,'w')
+        s = script
+        if not g.isPython3: # 2010/08/27
+            s = g.toEncodedString(s,reportErrors=True)
+        f.write(s)
+        f.close()
+    except Exception:
+        g.es_exception()
+        g.es("Failed to write script to %s" % path)
+        # g.es("Check your configuration of script_file_path, currently %s" %
+            # c.config.getString('script_file_path'))
+        path = None
+    return path
+.. @+node:ekr.20031218072017.2140: *6* c.executeScript & helpers
+def executeScript(self,event=None,args=None,p=None,script=None,
+    useSelectedText=True,define_g=True,define_name='__main__',silent=False,
+    namespace=None,raiseFlag=False):
+
+    """This executes body text as a Python script.
+
+    We execute the selected text, or the entire body text if no text is selected."""
+
+    c = self ; script1 = script
+
+    if not script:
+        script = g.getScript(c,p or c.p,useSelectedText=useSelectedText)
+
+    script_p = p or c.p # Only for error reporting below.
+
+    self.redirectScriptOutput()
+    try:
+        oldLog = g.app.log # 2011/01/19
+        log = c.frame.log
+        g.app.log = log
+        if script.strip():
+            # print('***executeScript***',c.frame.openDirectory)
+            sys.path.insert(0,g.toEncodedString(c.frame.openDirectory))
+            script += '\n' # Make sure we end the script properly.
+            try:
+                # We *always* execute the script with p = c.p.
+                c.executeScriptHelper(args,define_g,define_name,namespace,script)
+            except Exception:
+                if raiseFlag:
+                    raise
+                else:
+                    g.handleScriptException(c,script_p,script,script1)
+            finally:
+                del sys.path[0]
+        else:
+            tabName = log and hasattr(log,'tabName') and log.tabName or 'Log'
+            g.warning("no script selected",tabName=tabName)
+
+    finally:
+        g.app.log = oldLog # 2011/01/19
+        self.unredirectScriptOutput()
+.. @+node:ekr.20120923063251.10651: *7* c.executeScriptHelper
+def executeScriptHelper (self,args,define_g,define_name,namespace,script):
+
+    c = self
+    p = c.p.copy() # *Always* use c.p and pass c.p to script.
+    c.setCurrentDirectoryFromContext(p)
+    d = g.choose(define_g,{'c':c,'g':g,'p':p},{})
+    if define_name: d['__name__'] = define_name
+    d['script_args'] = args or []
+    if namespace: d.update(namespace)
+
+    # A kludge: reset c.inCommand here to handle the case where we *never* return.
+    # (This can happen when there are multiple event loops.)
+    # This does not prevent zombie windows if the script puts up a dialog...
+    try:
+        c.inCommand = False
+        g.inScript = g.app.inScript = True
+            # g.inScript is a synonym for g.app.inScript.
+        if c.write_script_file:
+            scriptFile = self.writeScriptFile(script)
+            if g.isPython3:
+                exec(compile(script,scriptFile,'exec'),d)
+            else:
+                execfile(scriptFile,d)
+        else:
+            exec(script,d)
+    finally:
+        g.inScript = g.app.inScript = False
+.. @+node:ekr.20031218072017.2143: *7* c.redirectScriptOutput
+def redirectScriptOutput (self):
+
+    c = self
+
+    # g.trace('original')
+
+    if c.config.redirect_execute_script_output_to_log_pane:
+
+        g.redirectStdout() # Redirect stdout
+        g.redirectStderr() # Redirect stderr
+.. @+node:ekr.20110522121957.18230: *7* c.setCurrentDirectoryFromContext
+def setCurrentDirectoryFromContext(self,p):
+
+    trace = False and not g.unitTesting
+    c = self
+
+    aList = g.get_directives_dict_list(p)
+    path = c.scanAtPathDirectives(aList)
+
+    curDir = g.os_path_abspath(os.getcwd())
+
+    # g.trace(p.h,'\npath  ',path,'\ncurDir',curDir)
+
+    if path and path != curDir:
+        if trace: g.trace('calling os.chdir(%s)' % (path))
+        try:
+            os.chdir(path)
+        except Exception:
+            pass
+.. @+node:EKR.20040627100424: *7* c.unredirectScriptOutput
+def unredirectScriptOutput (self):
+
+    c = self
+
+    # g.trace('original')
+
+    if c.exists and c.config.redirect_execute_script_output_to_log_pane:
+
+        g.restoreStderr()
+        g.restoreStdout()
+.. @+node:EKR.20040614071102.1: *6* g.getScript
+def getScript (c,p,useSelectedText=True,forcePythonSentinels=True,useSentinels=True):
+
+    '''Return the expansion of the selected text of node p.
+    Return the expansion of all of node p's body text if
+    p is not the current node or if there is no text selection.'''
+
+    # New in Leo 4.6 b2: use a pristine atFile handler
+    # so there can be no conflict with c.atFileCommands.
+    import leo.core.leoAtFile as leoAtFile
+    at = leoAtFile.atFile(c)
+    w = c.frame.body.bodyCtrl
+    p1 = p and p.copy()
+    if not p: p = c.p
+    try:
+        if g.app.inBridge:
+            s = p.b
+        elif w and p == c.p and useSelectedText and w.hasSelection():
+            s = w.getSelectedText()
+        else:
+            s = p.b
+        # Remove extra leading whitespace so the user may execute indented code.
+        s = g.removeExtraLws(s,c.tab_width)
+        if s.strip():
+            g.app.scriptDict["script1"]=s
+            # Important: converts unicode to utf-8 encoded strings.
+            script = at.writeFromString(p.copy(),s,
+                forcePythonSentinels=forcePythonSentinels,
+                useSentinels=useSentinels)
+            script = script.replace("\r\n","\n") # Use brute force.
+            # Important, the script is an **encoded string**, not a unicode string.
+            g.app.scriptDict["script2"]=script
+        else: script = ''
+    except Exception:
+        g.es_print("unexpected exception in g.getScript")
+        g.es_exception()
+        script = ''
+    return script
+.. @+node:ekr.20050506084734: *6* at.writeFromString
+# This is at.write specialized for scripting.
+
+def writeFromString(self,root,s,forcePythonSentinels=True,useSentinels=True):
+
+    """Write a 4.x derived file from a string.
+
+    This is used by the scripting logic."""
+
+    at = self ; c = at.c
+    c.endEditing()
+        # Capture the current headline, but don't change the focus!
+    at.initWriteIvars(root,"<string-file>",
+        nosentinels=not useSentinels,thinFile=False,scriptWrite=True,toString=True,
+        forcePythonSentinels=forcePythonSentinels)
+    try:
+        ok = at.openFileForWriting(root,at.targetFileName,toString=True)
+        if g.app.unitTesting: assert ok,'writeFromString' # string writes never fail.
+        # Simulate writing the entire file so error recovery works.
+        at.writeOpenFile(root,nosentinels=not useSentinels,toString=True,fromString=s)
+        at.closeWriteFile()
+        # Major bug: failure to clear this wipes out headlines!
+        # Minor bug: sometimes this causes slight problems...
+        if root:
+            if hasattr(self.root.v,'tnodeList'):
+                delattr(self.root.v,'tnodeList')
+            root.v._p_changed = True
+    except Exception:
+        at.exception("exception preprocessing script")
+    return at.stringOutput
+.. @+node:ekr.20041005105605.157: *6* at.writeOpenFile
+# New in 4.3: must be inited before calling this method.
+# New in 4.3 b2: support for writing from a string.
+
+def writeOpenFile(self,root,
+    nosentinels=False,toString=False,fromString=''):
+
+    """Do all writes except asis writes."""
+
+    at = self
+    s = g.choose(fromString,fromString,root.v.b)
+    root.clearAllVisitedInTree()
+    at.putAtFirstLines(s)
+    at.putOpenLeoSentinel("@+leo-ver=%s" % (5 if at.writeVersion5 else 4))
+        # g.choose(at.writeVersion5,5,4)))
+            # Use version 4 for @shadow, verion 5 otherwise.
+    at.putInitialComment()
+    at.putOpenNodeSentinel(root)
+    at.putBody(root,fromString=fromString)
+    at.putCloseNodeSentinel(root)
+    # The -leo sentinel is required to handle @last.
+    at.putSentinel("@-leo")
+    root.setVisited()
+    at.putAtLastLines(s)
+    if not toString:
+        at.warnAboutOrphandAndIgnoredNodes()
 .. @+node:ekr.20130909073003.11524: *4* next: medium priority
 .. @+node:ekr.20130806072439.20473: *5*   file URLs seem to be broken on Mac OS 10.7 Lion
 From: "kevin@ksvanhorn.com" <kvanhorn@ksvanhorn.com>

@@ -28,9 +28,12 @@ This will reduce duplicate scripts.
 #@+node:ekr.20130821062332.11236: *3* Added yes-to-all button when prompting for dangerous writes
 @language rest
 
+importing a medium sized java project ~ 400 files
+https://groups.google.com/forum/#!searchin/leo-editor/importing$20a$20medium$20sized$20java$20project/leo-editor/PiuFXtAHG0s/o6vwu19PsMEJ
+
 For example, when warning about existing files.
 
-What I did:
+Fixed at rev 5935. What I did:
     
 1. Added yesToAllMessage keyword arg to all runAskYesNoCancelDialog methods.
 
