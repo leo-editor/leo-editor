@@ -2440,58 +2440,66 @@ class DynamicWindow(QtGui.QMainWindow):
         grid = self.createGrid(parent,'findGrid',margin=10,spacing=10)
         grid.setColumnStretch(0,100)
         grid.setColumnStretch(1,100)
-        grid.setColumnMinimumWidth(2,150)
-
+        grid.setColumnStretch(2,10)
+        grid.setColumnMinimumWidth(1,75)
+        grid.setColumnMinimumWidth(2,175)
+        grid.setColumnMinimumWidth(3,50)
+        # Aliases for column numbers
+        col_0,col_1,col_2 = 0,1,2
+        span_1,span_2,span_3 = 1,2,3
         # Row 0: heading.
+        heading_row = 0
         lab1 = self.createLabel(parent,'findHeading','Find/Change Settings...')
-        grid.addWidget(lab1,0,0,1,2,QtCore.Qt.AlignHCenter)
-
-        # Rows 1, 2: the find/change boxes, now disabled.
+        grid.addWidget(lab1,heading_row,col_0,span_1,span_2,QtCore.Qt.AlignLeft) # AlignHCenter
+        # Rows 1,2: the find/change boxes, now disabled.
+        find_row = 1
+        change_row = 2
         findPattern = self.createLineEdit(parent,'findPattern',disabled=True)
         findChange  = self.createLineEdit(parent,'findChange',disabled=True)
         lab2 = self.createLabel(parent,'findLabel','Find:')
         lab3 = self.createLabel(parent,'changeLabel','Change:')
-        grid.addWidget(lab2,1,0)
-        grid.addWidget(lab3,2,0)
-        grid.addWidget(findPattern,1,1,1,2)
-        grid.addWidget(findChange,2,1,1,2)
-
+        grid.addWidget(lab2,find_row,col_0)
+        grid.addWidget(lab3,change_row,col_0)
+        grid.addWidget(findPattern,find_row,col_1,span_1,span_2)
+        grid.addWidget(findChange,change_row,col_1,span_1,span_2)
         # Check boxes and radio buttons.
         # Radio buttons are mutually exclusive because they have the same parent.
         def mungeName(name):
             # The value returned here is significant: it creates an ivar.
             return 'checkBox%s' % label.replace(' ','').replace('&','')
-
         # Rows 3 through 8...
+        base_row = 3
         table = (
-            ('box', 'Whole &Word',      2,0),
-            ('rb',  '&Entire Outline',  2,1),
-            ('box', '&Ignore Case',     3,0),
-            ('rb',  '&Suboutline Only', 3,1),
-            ('box', 'Wrap &Around',     4,0),
-            ('rb',  '&Node Only',       4,1),
-            # ('box', '&Reverse',       5,0),
-            ('box', 'Search &Headline', 5,1),
-            ('box', 'Rege&xp',          5,0), # was 6,0
-            ('box', 'Search &Body',     6,1),
-            ('box', 'Mark &Finds',      6,0), # was 7,0
-            ('box', 'Mark &Changes',    7,0)) # was 7,1
+            ('box', 'Whole &Word',      0,0),
+            ('rb',  '&Entire Outline',  0,1),
+            ('box', '&Ignore Case',     1,0),
+            ('rb',  '&Suboutline Only', 1,1),
+            ('box', 'Wrap &Around',     2,0),
+            ('rb',  '&Node Only',       2,1),
+            ('box', 'Search &Headline', 3,1),
+            ('box', 'Rege&xp',          3,0),
+            ('box', 'Search &Body',     4,1),
+            ('box', 'Mark &Finds',      4,0),
+            ('box', 'Mark &Changes',    5,0))
             # a,b,c,e,f,h,i,n,rs,w
-
         for kind,label,row,col in table:
             name = mungeName(label)
             func = g.choose(kind=='box',
                 self.createCheckBox,self.createRadioButton)
             w = func(parent,name,label)
-            grid.addWidget(w,row+1,col)
+            grid.addWidget(w,row+base_row,col)
             setattr(self,name,w)
-
-        # Row 9: Widgets that take all additional vertical space.
+        # Row 9: help row.
+        help_row = 9
+        w = self.createLabel(parent,'findHelp','For help: <alt-x>help-for-find-commands<return>')
+        grid.addWidget(w,help_row,col_0,span_1,span_3)
+        # Row 10: Widgets that take all additional vertical space.
         w = QtGui.QWidget()
-        grid.addWidget(w,9,0)
-        grid.addWidget(w,9,1)
-        grid.setRowStretch(9,100)
-
+        space_row = 10
+        grid.addWidget(w,space_row,col_0)
+        grid.addWidget(w,space_row,col_1)
+        grid.addWidget(w,space_row,col_2)
+        grid.setRowStretch(space_row,100)
         # Official ivars (in addition to setattr ivars).
         self.leo_find_widget = tab_widget # 2011/11/21: a scrollArea.
         self.findPattern = findPattern
@@ -3587,7 +3595,6 @@ class leoQtFindTab (leoFind.findTab):
         '''Init the widgets of the 'Find' tab.'''
 
         # g.trace('leoQtFindTab.init')
-
         self.createIvars()
         self.initIvars()
         self.initTextWidgets()

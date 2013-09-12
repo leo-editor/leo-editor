@@ -244,6 +244,10 @@ reasonable fashion. In particular:
 https://bugs.launchpad.net/leo-editor/+bug/1193819
 
 Changed mod_scripting.py and setCommandForButton in qtGui.py.
+#@+node:ekr.20110621085435.6531: *3* Added help text to the find panel
+Changed DynamicWindow.createFindTab.
+
+Added a help line at the bottom.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
