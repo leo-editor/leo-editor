@@ -219,6 +219,24 @@ When new_read is True:
   with a single call to g.toUnicode.
 - at.getLine uses ivars to retrieve the next line.
   (the theFile and fileName arguments to at.getLine are not used).
+  
+I am quite happy with the new code. It is considerably
+simpler than the old, and handles unicode in a much more
+reasonable fashion. In particular:
+
+1. at.readFileToUnicode at last handles the problem of
+   discovering encodings properly, without reading files
+   twice. It uses a trial encoding (ascii) in order order to
+   scan @+leo headers. This is an unexpected simple
+   fundamental method. at.readFileToUnicode converts the
+   entire file unicode.
+
+2. When new_read is True, at.readLines now is very simple
+   because the conversion to unicode has already happened.
+
+3. When new_write is True, the conversion of newlines and
+   the conversion to an encoded string each happens exactly
+   once, in at.create. This is an important simplification.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

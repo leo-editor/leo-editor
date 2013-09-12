@@ -7008,17 +7008,6 @@ erlang/rebar/cowboy and see how it fits that programming model. All I can
 ask for are more tutorials that just show you doing your normal work 
 routine, and more videos with the same sort of focus.
 
-.. @+node:ekr.20130806072439.20483: *6* Re: importing a medium sized java project ~ 400 files
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-> Q: The real issue I'm having is that when I press Ctrl-S to save, I am
-> asked if I want to modify the file...um, for each file. The only way out of
-> this is to kill the process. What am I doing wrong? And, this, btw - seems
-> at least partly like a bug.
->
-
-It surely is a bug.  I might have made a private note to myself about this,
-but just in case I'll mark this email as a bug deserving quick attention.
 .. @+node:ekr.20110621085435.6531: *5* * Improve the find panel and find menu
 Recently, perhaps it was today, there was a remark made about Leo's
 Find panel being confusing for newbies.  I have some sympathy for the
@@ -7091,6 +7080,13 @@ Jacob also tested it, and said:
 
 "It appears to be the quotes in the headline of the parent node. When I removed them, the file generated properly"
 .. @+node:ekr.20130908104426.11265: *5* 1193819 [Solution] Script buttons cant "go to script" after outline changes
+https://bugs.launchpad.net/leo-editor/+bug/1193819
+
+Right now, right clicking on a script button, then choosing "go to script"
+wont work if the outline has changed. But if the button linked the node gnx
+instead of the node position, they would still work.
+
+Leo will have to search for a node with a given gnx, but that's a small cost.
 .. @+node:ekr.20130909073003.11524: *4* next: medium priority
 .. @+node:ekr.20130806072439.20473: *5*   file URLs seem to be broken on Mac OS 10.7 Lion
 From: "kevin@ksvanhorn.com" <kvanhorn@ksvanhorn.com>
