@@ -4272,14 +4272,11 @@ def getScript (c,p,useSelectedText=True,forcePythonSentinels=True,useSentinels=T
 
     # New in Leo 4.6 b2: use a pristine atFile handler
     # so there can be no conflict with c.atFileCommands.
-    # at = c.atFileCommands
     import leo.core.leoAtFile as leoAtFile
     at = leoAtFile.atFile(c)
-
     w = c.frame.body.bodyCtrl
     p1 = p and p.copy()
-    if not p:
-        p = c.p
+    if not p: p = c.p
     try:
         if g.app.inBridge:
             s = p.b
@@ -4287,15 +4284,6 @@ def getScript (c,p,useSelectedText=True,forcePythonSentinels=True,useSentinels=T
             s = w.getSelectedText()
         else:
             s = p.b
-        # elif p1:
-            # s = p.b # Bug fix: Leo 8.8.4.
-        # elif p == c.p:
-            # if useSelectedText and w.hasSelection():
-                # s = w.getSelectedText()
-            # else:
-                # s = w.getAllText()
-        # else:
-            # s = p.b
         # Remove extra leading whitespace so the user may execute indented code.
         s = g.removeExtraLws(s,c.tab_width)
         if s.strip():
@@ -4312,8 +4300,6 @@ def getScript (c,p,useSelectedText=True,forcePythonSentinels=True,useSentinels=T
         g.es_print("unexpected exception in g.getScript")
         g.es_exception()
         script = ''
-
-    # g.trace(type(script),repr(script))
     return script
 #@+node:ekr.20060624085200: *3* g.handleScriptException
 def handleScriptException (c,p,script,script1):

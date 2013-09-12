@@ -3605,12 +3605,11 @@ class atFile:
         This is used by the scripting logic."""
 
         at = self ; c = at.c
-        c.endEditing() # Capture the current headline, but don't change the focus!
-
+        c.endEditing()
+            # Capture the current headline, but don't change the focus!
         at.initWriteIvars(root,"<string-file>",
             nosentinels=not useSentinels,thinFile=False,scriptWrite=True,toString=True,
             forcePythonSentinels=forcePythonSentinels)
-
         try:
             ok = at.openFileForWriting(root,at.targetFileName,toString=True)
             if g.app.unitTesting: assert ok,'writeFromString' # string writes never fail.
@@ -3625,7 +3624,6 @@ class atFile:
                 root.v._p_changed = True
         except Exception:
             at.exception("exception preprocessing script")
-
         return at.stringOutput
     #@+node:ekr.20041005105605.151: *4* at.writeMissing
     def writeMissing(self,p,toString=False):

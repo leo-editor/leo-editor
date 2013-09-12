@@ -2534,7 +2534,7 @@ class Commands (object):
     #@+node:ekr.20070115135502: *6* c.writeScriptFile
     def writeScriptFile (self,script):
 
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         # Get the path to the file.
         c = self
         path = c.config.getString('script_file_path')
@@ -2552,9 +2552,7 @@ class Commands (object):
         else:
             path = c.os_path_finalize_join(
                 g.app.homeLeoDir,'scriptFile.py')
-
         if trace: g.trace(path)                
-
         # Write the file.
         try:
             if g.isPython3:
@@ -2573,7 +2571,6 @@ class Commands (object):
             # g.es("Check your configuration of script_file_path, currently %s" %
                 # c.config.getString('script_file_path'))
             path = None
-
         return path
     #@+node:ekr.20100216141722.5620: *6* class goToLineNumber and helpers (commands)
     class goToLineNumber:
