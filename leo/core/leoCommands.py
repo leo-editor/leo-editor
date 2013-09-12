@@ -1269,7 +1269,6 @@ class Commands (object):
         '''Import one or more files.'''
 
         c = self ; ic = c.importCommands
-
         types = [
             ("All files","*"),
             ("C/C++ files","*.c"),
@@ -1280,42 +1279,31 @@ class Commands (object):
             ("Lua files", "*.lua"),
             ("Pascal files","*.pas"),
             ("Python files","*.py") ]
-
         names = g.app.gui.runOpenFileDialog(
             title="Import File",
             filetypes=types,
             defaultextension=".py",
             multiple=True)
         c.bringToFront()
-
         if names:
             g.chdir(names[0])
         else:
             names = []
-
         if not names:
             if g.unitTesting:
                 # a kludge for unit testing.
                 c.init_error_dialogs()
                 c.raise_error_dialogs(kind='read')
             return
-
-
-
         # New in Leo 4.9: choose the type of import based on the extension.
-
         c.init_error_dialogs()
-
         derived = [z for z in names if c.looksLikeDerivedFile(z)]
         others = [ z for z in names if not z in derived]
-
         if derived:
             ic.importDerivedFiles(parent=c.p,paths=derived)
-
         for fn in others:
             junk,ext = g.os_path_splitext(fn)
             if ext.startswith('.'): ext = ext[1:]
-
             if ext in ('cw','cweb'):
                 ic.importWebCommand([fn],"cweb")
             elif ext in ('nw','noweb'):
@@ -1324,10 +1312,8 @@ class Commands (object):
                 ic.importFlattenedOutline([fn])
             else:
                 ic.importFilesCommand([fn],"@file")
-
             # No longer supported.
             # c.importCommands.importFilesCommand (names,"@root")
-
         c.raise_error_dialogs(kind='read')
 
     # Compatibility

@@ -12,6 +12,9 @@
 
 allow_cloned_sibs = True # True: allow cloned siblings in @file nodes.
 new_write = True # True: new write code: convert to unicode only once.
+new_read = True # True: read the entire file at once, and set at.read_lines.
+use_stringio = False # True: use cstringio instead of g.fileLikeObject. 
+    # or base g.fileLikeObject on cstringio.
 
 #@+<< imports >>
 #@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile)
@@ -255,6 +258,9 @@ class atFile:
         at.out = None
         at.outStack = []
         at.perfectImportRoot = perfectImportRoot
+        if new_read:
+            at.read_i = 0
+            at.read_lines = []
         at.readVersion = ''
             # New in Leo 4.8: "4" or "5" for new-style thin files.
         at.readVersion5 = False
@@ -368,6 +374,14 @@ class atFile:
             if hasattr(at.root.v,'tnodeList'):
                 delattr(at.root.v,'tnodeList')
             at.root.v._p_changed = True
+    #@+node:ekr.20130911110233.11286: *3* at.initReadLine
+    def initReadLine(self,s):
+        
+        '''Init the ivars so that at.readLine will read all of s.'''
+        
+        at = self
+        at.read_i = 0
+        at.read_lines = g.splitLines(s)
     #@+node:ekr.20041005105605.17: ** at.Reading
     #@+<< about new sentinels >>
     #@+node:ekr.20100619222623.5918: *3* << about new sentinels >>
@@ -462,9 +476,9 @@ class atFile:
             at.inputFile = g.fileLikeObject(fromString=fromString)
             fn = None
         else:
-            fn = at.fullPath(self.root)
+            fn = at.fullPath(at.root)
                 # Returns full path, including file name.
-            at.setPathUa(self.root,fn)
+            at.setPathUa(at.root,fn)
                 # Remember the full path to this node.
             if at.atShadow:
                 x = at.c.shadowController
@@ -482,21 +496,29 @@ class atFile:
                 if trace:
                     g.trace('         fn:       ',fn)
                     g.trace('reading: shadow_fn:',shadow_fn)
-                x.updatePublicAndPrivateFiles(self.root,fn,shadow_fn)
+                x.updatePublicAndPrivateFiles(at.root,fn,shadow_fn)
                 fn = shadow_fn
             try:
                 # Open the file in binary mode to allow 0x1a in bodies & headlines.
                 at.inputFile = f = open(fn,'rb')
-                try:
-                    # Get the encoding from the BOM, then reset the read.
-                    # Be careful: not all files support seek.
-                    f.seek(0)
-                    s = f.readline()
-                    at.bom_encoding,junk = g.stripBOM(s)
-                    # g.trace(at.bom_encoding)
-                    f.seek(0)
-                except Exception:
-                    at.bom_encoding = None
+                if new_read:
+                    s = f.read()
+                    at.bom_encoding,s = g.stripBOM(s)
+                    e = at.bom_encoding or at.encoding
+                    s = g.toUnicode(s,e)
+                    s = s.replace('\r\n','\n')
+                    at.read_lines = g.splitLines(s)
+                else:
+                    try:
+                        # Get the encoding from the BOM, then reset the read.
+                        # Be careful: not all files support seek.
+                        f.seek(0)
+                        s = f.readline()
+                        at.bom_encoding,junk = g.stripBOM(s)
+                        # g.trace(at.bom_encoding)
+                        f.seek(0)
+                    except Exception:
+                        at.bom_encoding = None
                 if trace: g.trace(at.bom_encoding,fn)
                 at.warnOnReadOnlyFile(fn)
             except IOError:
@@ -1146,6 +1168,68 @@ class atFile:
         # Don't check the headline.  It simply causes problems.
         v.setVisited() # Supress warning/deletion of unvisited nodes.
         return v
+    #@+node:ekr.20130911110233.11284: *4* at.readFileToUnicode & helpers
+    def readFileToUnicode(self,fn):
+        
+        '''Read the file into a unicode string s and return same.
+        
+        Set at.encoding and init at.readLines if all went well.
+        
+        Return None on failure.
+        '''
+        
+        assert new_read # This is part of the read logic.
+        at = self
+        s = at.openFileHelper(fn)
+        if s is not None:
+            e,s = g.stripBOM(s)
+            if e:
+                # The BOM determines the encoding unambiguously.
+                s = g.toUnicode(s,encoding=e)
+            else:
+                # Get the encoding from the header, or the default encoding.
+                e = at.getEncodingFromHeader(fn,s)
+                s = g.toUnicode(s,encoding=e)
+            at.encoding = e
+            at.initReadLine(s)
+        return s
+    #@+node:ekr.20130911110233.11285: *5* at.openFileHelper
+    def openFileHelper(self,fn):
+        
+        at = self
+        s = None
+        try:
+            f = open(fn,'rb')
+            s = f.read()
+            f.close()
+        except IOError:
+            at.error('can not open %s' % (fn))
+        except Exception:
+            at.error('Exception reading %s' % (fn))
+            g.es_exception()
+        return s
+    #@+node:ekr.20130911110233.11287: *5* at.getEncodingFromHeader
+    def getEncodingFromHeader(self,fn,s):
+        
+        ''' Return the encoding given in the @+leo sentinel, if the sentinel is
+        present, or the default external encoding otherwise.
+        
+        '''
+        
+        at = self
+        if at.errors:
+            g.trace('can not happen: at.errors > 0')
+            e = at.encoding
+        else:
+            at.initReadLine(s)
+            default_encoding = at.encoding
+            assert default_encoding
+            at.encoding = None
+            # Execute scanHeader merely to set at.encoding.
+            at.scanHeader(None,fn,giveErrors=False)
+            e = at.encoding or default_encoding
+        assert e
+        return e
     #@+node:ekr.20041005105605.74: *4* at.scanText4 & allies
     def scanText4 (self,theFile,fileName,p,verbose=False):
 
@@ -2584,20 +2668,32 @@ class atFile:
         self.root.setOrphan()
 
     #@+node:ekr.20041005105605.128: *4* at.readLine
-    def readLine (self,theFile,fileName=None,trace=False):
+    def readLine (self,theFile,fileName=None): # theFile & fileName not used when new_read is True.
 
-        """Reads one line from file using the present encoding"""
+        """Reads one line from file using the present encoding.
+        
+        When new_read is true, this method returns at.read_lines[at.read_i++].
+        """
 
+        trace = False and not g.unitTesting
         at = self
-        trace2 = False and not g.unitTesting
-        s = g.readlineForceUnixNewline(theFile,fileName=fileName)
-            # calls theFile.readline
-        if trace and trace2: g.trace(repr(s))
-        e = at.bom_encoding or at.encoding
-        u = g.toUnicode(s,e)
-        return u
+        if new_read:
+            if at.read_i < len(at.read_lines):
+                s = at.read_lines[at.read_i]
+                at.read_i += 1
+                if trace: g.trace(at.read_i-1,repr(s))
+                return s
+            else:
+                return '' # Not an error.
+        else:
+            s = g.readlineForceUnixNewline(theFile,fileName=fileName)
+                # calls theFile.readline
+            if trace: g.trace(repr(s))
+            e = at.bom_encoding or at.encoding
+            s = g.toUnicode(s,e)
+            return s
     #@+node:ekr.20041005105605.129: *4* at.scanHeader
-    def scanHeader(self,theFile,fileName):
+    def scanHeader(self,theFile,fileName,giveErrors=True):
 
         """Scan the @+leo sentinel.
 
@@ -2628,11 +2724,11 @@ class atFile:
         # at-first lines are written "verbatim", so nothing more needs to be done!
         #@@c
 
-        s = at.readLine(theFile,fileName,trace=True)
+        s = at.readLine(theFile,fileName)
         if trace: g.trace(fileName,'first line',repr(s))
         while s and s.find(tag) == -1:
             firstLines.append(s) # Queue the line
-            s = at.readLine(theFile,fileName,trace=True)
+            s = at.readLine(theFile,fileName)
 
         n = len(s)
         valid = n > 0
@@ -2643,27 +2739,36 @@ class atFile:
             at.startSentinelComment = start
             at.endSentinelComment = end
             # g.trace('start',repr(start),'end',repr(end))
-        else:
+        elif giveErrors:
             at.error("No @+leo sentinel in: %s" % fileName)
+            g.trace(g.callers())
         # g.trace("start,end",repr(at.startSentinelComment),repr(at.endSentinelComment))
         # g.trace(fileName,firstLines)
         return firstLines,new_df,isThinDerivedFile
     #@+node:ekr.20050103163224: *4* at.scanHeaderForThin (used by import code)
-    # Note: Import code uses this.
+    def scanHeaderForThin (self,fileName):
 
-    def scanHeaderForThin (self,theFile,fileName):
-
-        '''Scan the header of a derived file and return True if it is a thin file.
-
-        N.B. We are not interested in @first lines, so any encoding will do.'''
+        '''Return true if the derived file is a thin file.
+        
+        This is a kludgy method used only by the import code.'''
 
         at = self
-
-        # The encoding doesn't matter.  No error messages are given.
-        at.encoding = at.c.config.default_derived_file_encoding
-
-        junk,junk,isThin = at.scanHeader(theFile,fileName)
-
+        if new_read:
+            # old_encoding,old_lines,old_i = at.encoding,at.read_lines,at.read_i
+            s = at.readFileToUnicode(fileName)
+                # inits at.readLine.
+            junk,junk,isThin = at.scanHeader(None,None)
+                # scanHeader uses at.readline instead of its args.
+            # at.encoding,at.read_lines,at_read_i = old_encoding,old_lines,old_i
+        else:
+            # The encoding doesn't matter.  No error messages are given.
+            at.encoding = at.c.config.default_derived_file_encoding
+            try:
+                theFile = open(fileName,'rb')
+                junk,junk,isThin = at.scanHeader(theFile,fileName)
+                theFile.close()
+            except IOError:
+                isThin = False
         return isThin
     #@+node:ekr.20041005105605.131: *4* at.skipIndent
     # Skip past whitespace equivalent to width spaces.
@@ -5429,11 +5534,10 @@ class atFile:
         if fn:
             path = g.os_path_finalize_join(path,fn)
         else:
-            g.trace('can not happen: not an @<file> node:',g.callers(4))
+            g.trace('can not happen: not an @<file> node',g.callers())
             for p2 in p.self_and_parents():
-                g.trace(p2.h)
+                g.trace('  %s' % p2.h)
             path = ''
-
         # g.trace(p.h,repr(path))
         return path
     #@+node:ekr.20090530055015.6023: *3* at.get/setPathUa

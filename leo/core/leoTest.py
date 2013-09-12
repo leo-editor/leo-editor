@@ -479,7 +479,7 @@ class importExportTestCase(unittest.TestCase):
         trace = False
         c = self.c ; temp_p = self.temp_p
         d = self.dialog
-
+        assert(d)
         temp_p.setBodyString('')
 
         # Create a node under temp_p.
@@ -488,7 +488,8 @@ class importExportTestCase(unittest.TestCase):
         c.setHeadString(child,"import/export test: " + self.p.h)
         c.selectPosition(child)
 
-        assert(d)
+        # Get the dialog name and the fileName from the dialog node.
+        # This is used below to set up the dialog dict for nullGui.simulateDialog.
         s = d.bodyString()
         lines = s.split('\n')
         name = lines[0]
@@ -501,15 +502,15 @@ class importExportTestCase(unittest.TestCase):
             fileName = fileName.replace('\\',sep)
         except AttributeError:
             fileName = g.os_path_normpath(fileName)
-
         self.fileName = fileName = g.os_path_finalize_join(g.app.loadDir,"..",fileName)
         if trace: g.trace('(importExportTestCase',fileName)
-
+        
+        # Set the dict for unitTestGui, a subclass of nullGui.
+        # nullGui.simulateDialog uses this dict to return values for dialogs.
         if self.doImport:
             theDict = {name: [fileName]}
         else:
             theDict = {name: fileName}
-
         self.oldGui = g.app.gui
         self.gui = leoGui.unitTestGui(theDict,trace=False)
     #@+node:ekr.20051104075904.85: *3* shortDescription
@@ -1032,7 +1033,6 @@ class TestManager:
 
         # Create the suite and add all test cases.
         suite = unittest.makeSuite(unittest.TestCase)
-
         for p in parent.children():
             if p != temp:
                 # 2009/10/02: avoid copy arg to iter
@@ -1041,7 +1041,6 @@ class TestManager:
                 assert(dialog)
                 test = importExportTestCase(c,p2,dialog,temp,doImport)
                 suite.addTest(test)
-
         return suite
     #@+node:ekr.20051104075904.44: *4* TM.runAtFileTest
     def runAtFileTest(self,p):

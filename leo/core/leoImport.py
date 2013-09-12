@@ -947,7 +947,7 @@ class leoImportCommands (scanUtility):
     #@+node:ekr.20031218072017.1810: *4* importDerivedFiles
     def importDerivedFiles (self,parent=None,paths=None,command='Import'):
         # Not a command.  It must *not* have an event arg.
-        # command is None when this is called to import a file from the command lline.
+        # command is None when this is called to import a file from the command line.
         c = self.c ; u = c.undoer ; at = c.atFileCommands
         current = c.p or c.rootPosition()
         self.tab_width = self.getTabWidth()
@@ -964,12 +964,8 @@ class leoImportCommands (scanUtility):
 
             # fileName = g.os_path_normpath(fileName)
 
-            try:
-                theFile = open(fileName,'rb')
-                isThin = at.scanHeaderForThin(theFile,fileName)
-                theFile.close()
-            except IOError:
-                isThin = False
+            # scanHeaderForThin now does all the work.
+            isThin = at.scanHeaderForThin(fileName)
             #@-<< set isThin if fileName is a thin derived file >>
             if command: undoData = u.beforeInsertNode(parent)
             p = parent.insertAfter()

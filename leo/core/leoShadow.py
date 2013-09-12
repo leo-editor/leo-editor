@@ -517,57 +517,66 @@ class shadowController:
                 marker              = marker)
             #@-<< do final correctness check>>
         return result
-    #@+node:ekr.20080708094444.36: *4* x.propagate_changes
+    #@+node:ekr.20080708094444.36: *4* x.propagate_changes (calls scanHeader)
     def propagate_changes(self, old_public_file, old_private_file):
 
         '''Propagate the changes from the public file (without_sentinels)
         to the private file (with_sentinels)'''
 
-        trace = False and not g.unitTesting
-        verbose = False
+        trace = False and not g.unitTesting ; verbose = False
+        import leo.core.leoAtFile as leoAtFile
+        new_read = leoAtFile.new_read
         x = self ; at = self.c.atFileCommands
         at.errors = 0
-
-        # A massive klude: read the file private file just to read the encoding.
-        f = open(old_private_file,'rb')
-            # 2011/10/21: read in 'rb' mode.
-        at.scanHeader(f,old_private_file) # sets at.encoding
-        if trace and verbose: g.trace('*** header scanned: encoding:',at.encoding)
-        f.close()
-
-        self.encoding = at.encoding
-        if trace and verbose: g.trace(self.encoding)
-
-        if g.isPython3:
-            try:
-                old_public_lines  = open(old_public_file,encoding=self.encoding).readlines()
-            except UnicodeDecodeError:
-                at.error('UnicodeDecodeError reading %s', old_public_file)
-                return None
-            try:
-                old_private_lines = open(old_private_file,encoding=self.encoding).readlines()
-            except UnicodeDecodeError:
-                at.error('UnicodeDecodeError reading %s', old_private_file)
-                return None
+        if new_read:
+            pass
         else:
-            try:
-                old_public_lines  = open(old_public_file).readlines()
-            except UnicodeDecodeError:
-                at.error('UnicodeDecodeError reading %s', old_public_file)
-                return None
-            try:
-                old_private_lines = open(old_private_file).readlines()
-            except UnicodeDecodeError:
-                at.error('UnicodeDecodeError reading %s', old_private_file)
-                return None
-
-            # 2011/09/09: convert each line to unicode.
-            def cvt(s):
-                return g.choose(g.isUnicode(s),s,g.toUnicode(s,self.encoding))
-
-            old_public_lines  = [cvt(s) for s in old_public_lines]
-            old_private_lines = [cvt(s) for s in old_private_lines]
-
+            # A massive klude: read the file private file just to read the encoding.
+            f = open(old_private_file,'rb')
+                # 2011/10/21: read in 'rb' mode.
+            at.scanHeader(f,old_private_file) # sets at.encoding
+            f.close()
+        if trace: g.trace('*** header scanned: encoding:',at.encoding)
+        self.encoding = at.encoding
+        if new_read:
+            s = at.readFileToUnicode(old_private_file)
+                # Sets at.encoding and inits at.readLines.
+            old_private_lines = g.splitLines(s)
+            s = at.readFileToUnicode(old_public_file)
+            if at.encoding != self.encoding:
+                g.trace('can not happen: encoding mismatch: %s %s' % (
+                    at.encoding,self.encoding))
+                at.encoding = self.encoding
+            old_public_lines = g.splitLines(s)
+        else:
+            if g.isPython3:
+                try:
+                    old_public_lines  = open(old_public_file,encoding=self.encoding).readlines()
+                except UnicodeDecodeError:
+                    at.error('UnicodeDecodeError reading %s', old_public_file)
+                    return None
+                try:
+                    old_private_lines = open(old_private_file,encoding=self.encoding).readlines()
+                except UnicodeDecodeError:
+                    at.error('UnicodeDecodeError reading %s', old_private_file)
+                    return None
+            else:
+                try:
+                    old_public_lines  = open(old_public_file).readlines()
+                except UnicodeDecodeError:
+                    at.error('UnicodeDecodeError reading %s', old_public_file)
+                    return None
+                try:
+                    old_private_lines = open(old_private_file).readlines()
+                except UnicodeDecodeError:
+                    at.error('UnicodeDecodeError reading %s', old_private_file)
+                    return None
+                # 2011/09/09: convert each line to unicode.
+                def cvt(s):
+                    # return g.choose(g.isUnicode(s),s,g.toUnicode(s,self.encoding))
+                    return s if g.isUnicode(s) else g.toUnicode(s,self.encoding)
+                old_public_lines  = [cvt(s) for s in old_public_lines]
+                old_private_lines = [cvt(s) for s in old_private_lines]
         if 0:
             g.trace('\nprivate lines...%s' % old_private_file)
             for s in old_private_lines:
@@ -575,9 +584,7 @@ class shadowController:
             g.trace('\npublic lines...%s' % old_public_file)
             for s in old_public_lines:
                 g.trace(type(s),g.isUnicode(s),repr(s))
-
         marker = x.markerFromFileLines(old_private_lines,old_private_file)
-
         if trace and verbose:
             g.trace(
                 'marker',marker,
@@ -587,24 +594,19 @@ class shadowController:
                 '\nprivate_file',old_private_file,
                 '\nprivate lines...\n%s\n' %(
                     g.listToString(old_private_lines,toRepr=True)))
-
         new_private_lines = x.propagate_changed_lines(
             old_public_lines,old_private_lines,marker)
-
         # Important bug fix: Never create the private file here!
         fn = old_private_file
         exists = g.os_path_exists(fn)
         different = new_private_lines != old_private_lines
         copy = exists and different
-
         if trace: g.trace('\nexists',exists,fn,'different',different,'errors',x.errors,at.errors)
-
         # 2010/01/07: check at.errors also.
         if copy and x.errors == 0 and at.errors == 0:
             s = ''.join(new_private_lines)
             ok = x.replaceFileWithString(fn,s)
             if trace: g.trace('ok',ok,'writing private file',fn,g.callers())
-
         return copy
     #@+node:ekr.20080708094444.34: *4* x.strip_sentinels_with_map
     def strip_sentinels_with_map (self, lines, marker):
