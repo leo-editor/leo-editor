@@ -4313,7 +4313,7 @@ class leoQtFrame (leoFrame.leoFrame):
                     else:
                         def cb(event=None, ctrl=command.controller, p=rclick, 
                                c=command.c, b=command.b, t=rclick.h[8:]):
-                            ctrl.executeScriptFromButton(p,b,t)
+                            ctrl.executeScriptFromButton(b,t,p.gnx)
                             if c.exists:
                                 c.outerUpdate()
                         rc.connect(rc, QtCore.SIGNAL("triggered()"), cb)
