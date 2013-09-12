@@ -379,6 +379,7 @@ class atFile:
         
         '''Init the ivars so that at.readLine will read all of s.'''
         
+        assert new_read # This is part of the new_read logic.
         at = self
         at.read_i = 0
         at.read_lines = g.splitLines(s)
@@ -1178,7 +1179,7 @@ class atFile:
         Return None on failure.
         '''
         
-        assert new_read # This is part of the read logic.
+        assert new_read # This is part of the new read logic.
         at = self
         s = at.openFileHelper(fn)
         if s is not None:
@@ -1188,6 +1189,8 @@ class atFile:
                 s = g.toUnicode(s,encoding=e)
             else:
                 # Get the encoding from the header, or the default encoding.
+                if g.isPython3: # Must convert s to unicode first.
+                    s = g.toUnicode(s,'ascii',reportErrors=False)
                 e = at.getEncodingFromHeader(fn,s)
                 s = g.toUnicode(s,encoding=e)
             at.encoding = e
@@ -2667,12 +2670,15 @@ class atFile:
             # 2010/10/22: the dirty bit gets cleared later, though.
         self.root.setOrphan()
 
-    #@+node:ekr.20041005105605.128: *4* at.readLine
-    def readLine (self,theFile,fileName=None): # theFile & fileName not used when new_read is True.
+    #@+node:ekr.20041005105605.128: *4* at.readLine (unused args when new_read is True)
+    # theFile & fileName not used when new_read is True.
+        
+    def readLine (self,theFile,fileName=None):
 
         """Reads one line from file using the present encoding.
         
-        When new_read is true, this method returns at.read_lines[at.read_i++].
+        When new_read is true, this method returns at.read_lines[at.read_i++],
+        that is, the theFile and fileName arguments are not used.
         """
 
         trace = False and not g.unitTesting
@@ -5440,6 +5446,7 @@ class atFile:
             f = open(fn,'wb') # Must be 'wb' to preserve line endings.
             if at.output_newline != '\n':
                 s = s.replace('\r','').replace('\n',at.output_newline)
+            # This is the *only* call to g.toEncodedString in the new_write logic.
             s = g.toEncodedString(s,e)
             f.write(s)
             f.close()

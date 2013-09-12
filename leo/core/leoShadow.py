@@ -529,7 +529,7 @@ class shadowController:
         x = self ; at = self.c.atFileCommands
         at.errors = 0
         if new_read:
-            pass
+            pass # Everything handled below.
         else:
             # A massive klude: read the file private file just to read the encoding.
             f = open(old_private_file,'rb')
