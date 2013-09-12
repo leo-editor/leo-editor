@@ -1906,6 +1906,15 @@ finally:
 #@+node:ekr.20090529115704.4568: *5* @@shadow unittest/test_1.py
 # body of @shadow test node
 # The last line.
+#@+node:ekr.20130912092638.4151: *4* @test utf-16 encoding
+h = '@file ../test/utf-16-test.txt'
+p = g.findNodeAnywhere(c,h)
+s = 'Test of utf-16.'
+assert p,'not found: @file ../test/utf-16-test.txt'
+# It's hard to test the utf-16 text directly.
+assert p.b
+assert p.b.find(s) > -1
+assert len(p.b)==66,len(p.b)
 #@+node:ekr.20100131180007.5462: *4* @test verbatim sentinel
 # Here is something that should generate a verbtim sentinel::
 
