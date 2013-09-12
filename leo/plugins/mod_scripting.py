@@ -227,7 +227,6 @@ class scriptingController:
         
         def match(p,s):
             return g.match_word(p.h,0,s)
-
         c = self.c
         if self.scanned: return # Not really needed, but can't hurt.
         self.scanned = True
@@ -241,10 +240,7 @@ class scriptingController:
         # Next, create common buttons and commands.
         self.createCommonButtons()
         self.createCommonCommands()
-        
         # Last, scan for user-defined nodes.
-        
-            
         # 2011/10/20: honor @ignore here.
         # for p in c.all_positions():
         p = c.rootPosition()
@@ -261,7 +257,6 @@ class scriptingController:
                 elif self.atScriptNodes and match(p,'@script'):
                     self.handleAtScriptNode(p)
                 p.moveToThreadNext()
-
     #@+node:ekr.20080312071248.1: *4* createCommonButtons & helper
     def createCommonButtons (self):
 
@@ -614,70 +609,55 @@ class scriptingController:
         '''Create a button from an @button node.
 
         - Calls createIconButton to do all standard button creation tasks.
-        - Binds button presses to a callback that executes the script in node p.
+        - Binds button presses to a callback that executes the script in the node
+          whose gnx is p.gnx.
         '''
-        
-        # trace = True and not g.unitTesting
-        c = self.c ; k = c.k
-        
-        buttonText = self.cleanButtonText(h,minimal=True)
 
+        c = self.c ; k = c.k
+        buttonText = self.cleanButtonText(h,minimal=True)
         # We must define the callback *after* defining b,
         # so set both command and shortcut to None here.
-        b = self.createIconButton(text=h,command=None,statusLine=statusLine,
-                                  kind=kind)
-        if not b: return None
-
+        b = self.createIconButton(text=h,command=None,statusLine=statusLine,kind=kind)
+        if not b:
+            return None
         # Now that b is defined we can define the callback.
         # Yes, executeScriptFromButton *does* use b (to delete b if requested by the script).
+        #@+<< define class atButtonCallback >>
+        #@+node:ekr.20130912061655.11287: *5* << define class atButtonCallback >>
         # 20100518 - TNB replace callback function with callable class instance
         #   so qt gui can add 'Goto Script' command to context menu for button
         class atButtonCallback(object):
-            def __init__(self,controller,p,b,c,buttonText):
+            
+            def __init__(self,controller,b,c,buttonText,gnx):
                 self.controller = controller
-                self.p = p.copy()
                 self.b = b
                 self.c = c
                 self.buttonText = buttonText
+                self.gnx = gnx
 
             def __call__(self, event=None):
-                self.controller.executeScriptFromButton(self.p,self.b,self.buttonText)
-                if self.c.exists: self.c.outerUpdate()
-                
+                self.controller.executeScriptFromButton(self.b,self.buttonText,self.gnx)
+                if self.c.exists:
+                    self.c.outerUpdate()
+
             # 2011/10/17: Add support for docstrings.
             def docstring(self):
-                return g.getDocString(self.p.b)
-
-        cb = atButtonCallback(controller=self,
-            p=p.copy(),b=b,c=c,buttonText=buttonText)
-
+                p = self.controller.find_gnx(self.gnx)
+                return g.getDocString(self.p.b) if p else ''
+        #@-<< define class atButtonCallback >>
+        cb = atButtonCallback(controller=self,b=b,c=c,buttonText=buttonText,gnx=p.gnx)
         self.iconBar.setCommandForButton(b,cb)
-
         # At last we can define the command and use the shortcut.
         self.registerTwoCommands(h,func=cb,pane='button',tag='local @button')
-
         return b
-    #@+node:ekr.20060328125248.28: *5* executeScriptFromButton (mod_scripting)
-    def executeScriptFromButton (self,p,b,buttonText):
+    #@+node:ekr.20060522104419.1: *4* createBalloon (gui-dependent)
+    def createBalloon (self,w,label):
 
-        '''Called from callbacks to execute the script in node p.'''
+        'Create a balloon for a widget.'
 
-        c = self.c
-
-        if c.disableCommandsMessage:
-            g.blue(c.disableCommandsMessage)
-        else:
-            g.app.scriptDict = {}
-            h = p.h
-            args = self.getArgs(h)
-            c.executeScript(args=args,p=p,silent=True)
-            # Remove the button if the script asks to be removed.
-            if g.app.scriptDict.get('removeMe'):
-                g.es("Removing '%s' button at its request" % buttonText)
-                self.deleteButton(b)
-
-        if 0: # Do *not* set focus here: the script may have changed the focus.
-            c.frame.bodyWantsFocus()
+        if g.app.gui.guiName().startswith('qt'):
+            # w is a leoIconBarButton.
+            w.button.setToolTip(label)
     #@+node:ekr.20060328125248.17: *4* createIconButton
     def createIconButton (self,text,command,statusLine,bg=None,kind=None):
 
@@ -690,16 +670,13 @@ class scriptingController:
         - Binds a right-click in the button to a callback that deletes the button.'''
 
         c = self.c ; k = c.k
-
         # Create the button and add it to the buttons dict.
         commandName = self.cleanButtonText(text)
-
         # Truncate only the text of the button, not the command name.
         truncatedText = self.truncateButtonText(commandName)
         if not truncatedText.strip():
             g.error('%s ignored: no cleaned text' % (text.strip() or ''))
             return None
-
         # Command may be None.
         b = self.iconBar.add(text=truncatedText,command=command,kind=kind)
         if not b:
@@ -717,36 +694,22 @@ class scriptingController:
                 except Exception:
                     # g.es_exception()
                     pass # Might not be a valid color.
-
         self.buttonsDict[b] = truncatedText
-
         if statusLine:
             self.createBalloon(b,statusLine)
-
         # Register the command name if it exists.
         if command:
             self.registerTwoCommands(text,func=command,
                 pane='button',tag='icon button')
-
         # Define the callback used to delete the button.
         def deleteButtonCallback(event=None,self=self,b=b):
             self.deleteButton(b, event=event)
-
         # Register the delete-x-button command.
         deleteCommandName= 'delete-%s-button' % commandName
         k.registerCommand(deleteCommandName,shortcut=None,
             func=deleteButtonCallback,pane='button',verbose=False)
             # Reporting this command is way too annoying.
-
         return b
-    #@+node:ekr.20060522104419.1: *4* createBalloon (gui-dependent)
-    def createBalloon (self,w,label):
-
-        'Create a balloon for a widget.'
-
-        if g.app.gui.guiName().startswith('qt'):
-            # w is a leoIconBarButton.
-            w.button.setToolTip(label)
     #@+node:ekr.20060328125248.26: *4* deleteButton
     def deleteButton(self,button,**kw):
 
@@ -759,6 +722,35 @@ class scriptingController:
             del self.buttonsDict[w]
             self.iconBar.deleteButton(w)
             self.c.bodyWantsFocus()
+    #@+node:ekr.20060328125248.28: *4* executeScriptFromButton (mod_scripting)
+    def executeScriptFromButton (self,b,buttonText,gnx):
+
+        '''Called from callbacks to execute the script in node p whose gnx is given.'''
+
+        c = self.c
+        if c.disableCommandsMessage:
+            g.blue(c.disableCommandsMessage)
+        else:
+            g.app.scriptDict = {}
+            p = self.find_gnx(gnx)
+            if p:
+                args = self.getArgs(p.h)
+                c.executeScript(args=args,p=p,silent=True)
+                # Remove the button if the script asks to be removed.
+                if g.app.scriptDict.get('removeMe'):
+                    g.es("Removing '%s' button at its request" % buttonText)
+                    self.deleteButton(b)
+        # Do *not* set focus here: the script may have changed the focus.
+        # c.frame.bodyWantsFocus()
+    #@+node:ekr.20130912061655.11294: *4* find_gnx
+    def find_gnx(self,gnx):
+        
+        '''Fix bug 1193819: Find the node with the given gnx.'''
+
+        for p in self.c.all_positions():
+            if p.gnx == gnx:
+                return p
+        return None
     #@+node:ekr.20080813064908.4: *4* getArgs
     def getArgs (self,h):
 

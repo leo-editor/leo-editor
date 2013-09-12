@@ -4262,37 +4262,43 @@ class leoQtFrame (leoFrame.leoFrame):
         #@+node:ekr.20110605121601.18271: *5* qtIconBarClass.setCommandForButton (@rclick nodes)
         def setCommandForButton(self,button,command):
 
+            # EKR 2013/09/12: fix bug 1193819: Script buttons cant "go to script" after outline changes.
+            # The command object now has a gnx ivar instead of a p ivar.
+            # The code below uses command.controller.find_gnx to determine the proper position.
             if command:
                 # button is a leoIconBarButton.
                 QtCore.QObject.connect(button.button,
                     QtCore.SIGNAL("clicked()"),command)
-
-                if not hasattr(command, 'p'):
-                    # can get here from @buttons in the current outline, in which
-                    # case p exists, or from @buttons in @settings elsewhere, in
-                    # which case it doesn't
+                # can get here from @buttons in the current outline, in which
+                # case p exists, or from @buttons in @settings elsewhere, in
+                # which case it doesn't
+                if not hasattr(command,'gnx'):
                     return
-
+                command_p = command.controller.find_gnx(command.gnx)
+                if not command_p:
+                    return
                 # 20100518 - TNB command is instance of callable class with
-                #   a c and p attribute, so we can add a context menu item...
+                #   c and gnx attributes, so we can add a context menu item...
                 def goto_command(command = command):
-                    command.c.selectPosition(command.p)
-                    command.c.redraw()
+                    c = command.c
+                    p = command.controller.find_gnx(command.gnx)
+                    if p:
+                        c.selectPosition(p)
+                        c.redraw()
                 b = button.button
-                docstring = g.getDocString(command.p.b)
+                docstring = g.getDocString(command_p.b)
                 if docstring:
                     b.setToolTip(docstring)
                 b.goto_script = gts = QtGui.QAction('Goto Script', b)
                 b.addAction(gts)
                 gts.connect(gts, QtCore.SIGNAL("triggered()"), goto_command)
-
                 # 20100519 - TNB also, scan @button's following sibs and childs
                 #   for @rclick nodes
                 rclicks = []
-                if '@others' not in command.p.b:
-                    rclicks.extend([i.copy() for i in command.p.children()
+                if '@others' not in command_p.b:
+                    rclicks.extend([i.copy() for i in command_p.children()
                       if i.h.startswith('@rclick ')])
-                for i in command.p.following_siblings():
+                for i in command_p.following_siblings():
                     if i.h.startswith('@rclick '):
                         rclicks.append(i.copy())
                     else:
@@ -4300,10 +4306,8 @@ class leoQtFrame (leoFrame.leoFrame):
                 if rclicks:
                     b.setText(g.u(b.text())+(command.c.config.getString('mod_scripting_subtext') or ''))
                 for rclick in rclicks:
-                    
                     headline = rclick.h[8:]
                     rc = QtGui.QAction(headline.strip(),b)
-                    
                     if '---' in headline and headline.strip().strip('-') == '':
                         rc.setSeparator(True)
                     else:
@@ -4313,7 +4317,6 @@ class leoQtFrame (leoFrame.leoFrame):
                             if c.exists:
                                 c.outerUpdate()
                         rc.connect(rc, QtCore.SIGNAL("triggered()"), cb)
-                        
                     # This code has no effect.
                     # docstring = g.getDocString(rclick.b).strip()
                     # if docstring:
