@@ -239,6 +239,8 @@ reasonable fashion. In particular:
    once, in at.create. This is an important simplification.
 #@+node:ekr.20130908104426.11265: *3* Fixed bug 1193819: Script buttons cant "go to script" after outline changes
 https://bugs.launchpad.net/leo-editor/+bug/1193819
+
+Changed mod_scripting.py and setCommandForButton in qtGui.py.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
