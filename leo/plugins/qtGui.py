@@ -6945,23 +6945,17 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
     def tile(self, index, orientation='V'):
         """detach tab and tile with parent window"""
         w = self.widget(index)
-
         window = w.window()
-
         # window.showMaximized()
         # this doesn't happen until we've returned to main even loop
         # user needs to do it before using this function
-
         fg = window.frameGeometry()
-        g = window.geometry()
-        x, y, fw, fh = fg.x(), fg.y(), fg.width(), fg.height()
-        ww, wh = g.width(), g.height()
-
+        geom = window.geometry()
+        x,y,fw,fh = fg.x(),fg.y(),fg.width(),fg.height()
+        ww, wh = geom.width(), geom.height()
         w = self.detach(index)
-
         if window.isMaximized():
             window.showNormal()
-
         if orientation == 'V':
             # follow MS Windows convention for which way is horizontal/vertical
             window.resize(ww/2, wh)
