@@ -5707,7 +5707,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
 
     #@+others
     #@+node:ekr.20111022222228.16980: *4* Event handlers (LeoQTreeWidget)
-    #@+node:ekr.20110605121601.18364: *5* dragEnter
+    #@+node:ekr.20110605121601.18364: *5* dragEnterEvent
     def dragEnterEvent(self,ev):
 
         '''Export c.p's tree as a Leo mime-data.'''
@@ -5792,7 +5792,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
 
         '''Paste the mime data after (or as the first child of) p.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self.c
         u = c.undoer
         undoType = 'Drag Outline'
@@ -6142,8 +6142,8 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         '''Parse md.text() into (fn,s)'''
 
         fn = ''
-        s = g.u(md.text())
-
+        # Fix bug 1046195: character encoding changes when dragging outline between leo files
+        s = g.toUnicode(md.text(),'utf-8')
         if s:
             i = s.find(',')
             if i == -1:
@@ -6151,7 +6151,6 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
             else:
                 fn = s[:i]
                 s = s[i+1:]
-
         return fn,s
     #@+node:ekr.20110605121601.18384: *5* setText & fileName
     def fileName (self):
