@@ -769,7 +769,7 @@
 <v t="ekr.20070925144534.1"><vh>@menu &amp;File</vh>
 <v t="ekr.20070925144534.2"><vh>@item *&amp;new</vh></v>
 <v t="ekr.20070925144534.3"><vh>@item open-outline</vh></v>
-<v t="ekr.20070925144534.4"><vh>@menu Open &amp;With...</vh></v>
+<v t="ekr.20070925144534.4"><vh>@menu Open &amp;With</vh></v>
 <v t="ekr.20070927173324"><vh>@menu Recent &amp;Files</vh></v>
 <v t="ekr.20070925144534.5"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.6"><vh>@item close-window</vh></v>
@@ -780,7 +780,7 @@
 <v t="ekr.20070925144534.11"><vh>@item save-file-to</vh></v>
 <v t="ekr.20070925144534.12"><vh>@item revert</vh></v>
 <v t="ekr.20070927051742"><vh>@item -</vh></v>
-<v t="ekr.20070925144534.13"><vh>@menu &amp;Read/Write...</vh>
+<v t="ekr.20070925144534.13"><vh>@menu &amp;Read/Write</vh>
 <v t="ekr.20071001120755"><vh>@item *check-derived-file</vh></v>
 <v t="ekr.20071001120755.1"><vh>@item *check-leo-file</vh></v>
 <v t="ekr.20071001121059"><vh>@item *file-compare-leo-files</vh></v>
@@ -803,7 +803,7 @@
 <v t="ekr.20070925144534.23"><vh>@item write-missing-at-file-nodes</vh></v>
 </v>
 <v t="ekr.20110530124245.18246"><vh>@item import-file</vh></v>
-<v t="ekr.20070925144534.40"><vh>@menu &amp;Export...</vh>
+<v t="ekr.20070925144534.40"><vh>@menu &amp;Export</vh>
 <v t="ekr.20070925144534.41"><vh>@item *export-&amp;headlines</vh></v>
 <v t="ekr.20070925144534.44"><vh>@item flatten-outline</vh></v>
 <v t="ekr.20070925144534.42"><vh>@item *outline-to-&amp;cweb</vh></v>
@@ -824,7 +824,7 @@
 <v t="ekr.20070925144534.55"><vh>@item backward-delete-char</vh></v>
 <v t="ekr.20070925144534.56"><vh>@item select-all</vh></v>
 <v t="ekr.20070925144534.57"><vh>@item -</vh></v>
-<v t="ekr.20070925144534.58"><vh>@menu Edit &amp;Body...</vh>
+<v t="ekr.20070925144534.58"><vh>@menu Edit &amp;Body</vh>
 <v t="ekr.20070925144534.60"><vh>@item *extract-&amp;names</vh></v>
 <v t="ekr.20070925144534.61"><vh>@item *&amp;extract</vh></v>
 <v t="ekr.20070925144534.62"><vh>@item -</vh></v>
@@ -841,14 +841,14 @@
 <v t="ekr.20070925144534.73"><vh>@item *&amp;add-comments</vh></v>
 <v t="ekr.20070925144534.74"><vh>@item *&amp;delete-comments</vh></v>
 </v>
-<v t="ekr.20070925144534.75"><vh>@menu Edit &amp;Headline...</vh>
+<v t="ekr.20070925144534.75"><vh>@menu Edit &amp;Headline</vh>
 <v t="ekr.20070925144534.76"><vh>@item *edit-&amp;headline</vh></v>
 <v t="ekr.20070925144534.77"><vh>@item *&amp;end-edit-headline</vh></v>
 <v t="ekr.20070925144534.78"><vh>@item *&amp;abort-edit-headline</vh></v>
 <v t="ekr.20070925144534.79"><vh>@item *insert-headline-&amp;time</vh></v>
 <v t="ekr.20070925144534.80"><vh>@item *toggle-&amp;angle-brackets</vh></v>
 </v>
-<v t="ekr.20070925144534.81"><vh>@menu &amp;Find...</vh>
+<v t="ekr.20070925144534.81"><vh>@menu &amp;Find</vh>
 <v t="ekr.20070925144534.82"><vh>@item *find-tab-&amp;open</vh></v>
 <v t="ekr.20070925144534.83"><vh>@item *find-tab-&amp;hide</vh></v>
 <v t="ekr.20070925144534.84"><vh>@item *search-&amp;with-present-options</vh></v>
@@ -896,14 +896,14 @@
 <v t="ekr.20070925144534.121"><vh>@item *&amp;hoist</vh></v>
 <v t="ekr.20070925144534.122"><vh>@item de-hoist</vh></v>
 <v t="ekr.20070925144534.123"><vh>@item -</vh></v>
-<v t="ekr.20070925144534.124"><vh>@menu Chec&amp;k...</vh>
+<v t="ekr.20070925144534.124"><vh>@menu Chec&amp;k</vh>
 <v t="ekr.20070925144534.125"><vh>@item *check-&amp;outline</vh></v>
 <v t="ekr.20070925144534.126"><vh>@item *&amp;dump-outline</vh></v>
 <v t="ekr.20070925144534.127"><vh>@@item -</vh></v>
 <v t="ekr.20070925144534.128"><vh>@@item *check-&amp;all-python-code</vh></v>
 <v t="ekr.20070925144534.129"><vh>@@item *&amp;check-python-code</vh></v>
 </v>
-<v t="ekr.20070925144534.130"><vh>@menu E&amp;xpand/Contract...</vh>
+<v t="ekr.20070925144534.130"><vh>@menu E&amp;xpand/Contract</vh>
 <v t="ekr.20080819075811.5"><vh>Accel: a,c,d,e,n,o,p,l,r,t,x</vh></v>
 <v t="ekr.20070925144534.131"><vh>@item *&amp;contract-all</vh></v>
 <v t="ekr.20080819075811.6"><vh>@item *contract-all-o&amp;ther-nodes</vh></v>
@@ -928,7 +928,7 @@
 <v t="ekr.20070925144534.150"><vh>@item *expand-&amp;all</vh></v>
 <v t="ekr.20070925144534.151"><vh>@item *expand-n&amp;ode</vh></v>
 </v>
-<v t="ekr.20070925144534.152"><vh>@menu &amp;Move...</vh>
+<v t="ekr.20070925144534.152"><vh>@menu &amp;Move</vh>
 <v t="ekr.20070925144534.153"><vh>@item move-outline-down</vh></v>
 <v t="ekr.20070925144534.154"><vh>@item move-outline-left</vh></v>
 <v t="ekr.20070925144534.155"><vh>@item move-outline-right</vh></v>
@@ -937,14 +937,14 @@
 <v t="ekr.20070925144534.158"><vh>@item *&amp;promote</vh></v>
 <v t="ekr.20070925144534.159"><vh>@item *&amp;demote</vh></v>
 </v>
-<v t="ekr.20070925144534.160"><vh>@menu M&amp;ark...</vh>
+<v t="ekr.20070925144534.160"><vh>@menu M&amp;ark</vh>
 <v t="ekr.20090905151712.8546"><vh>@item *clone-marked-nodes</vh></v>
 <v t="ekr.20070925144534.161"><vh>@item *&amp;mark</vh></v>
 <v t="ekr.20070925144534.162"><vh>@item *mark-&amp;subheads</vh></v>
 <v t="ekr.20070925144534.163"><vh>@item *mark-changed-&amp;items</vh></v>
 <v t="ekr.20070925144534.166"><vh>@item *&amp;unmark-all</vh></v>
 </v>
-<v t="ekr.20070925144534.167"><vh>@menu &amp;Go To...</vh>
+<v t="ekr.20070925144534.167"><vh>@menu &amp;Go To</vh>
 <v t="ekr.20071213190345"><vh>@item find-next-clone</vh></v>
 <v t="ekr.20070925144534.168"><vh>@item goto-first-node</vh></v>
 <v t="ekr.20070925144534.169"><vh>@item goto-first-visible-node</vh></v>
@@ -974,7 +974,7 @@
 <v t="ekr.20090203134354.2"><vh>@@item xyzzy</vh></v>
 </v>
 <v t="ekr.20070925144534.191"><vh>@menu &amp;Cmds</vh>
-<v t="ekr.20070925144534.192"><vh>@menu &amp;Abbrev...</vh>
+<v t="ekr.20070925144534.192"><vh>@menu &amp;Abbrev</vh>
 <v t="ekr.20070925144534.193"><vh>@item &amp;toggle-abbrev-mode</vh></v>
 <v t="ekr.20070925144534.194"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.195"><vh>@item abbrev-&amp;list</vh></v>
@@ -985,12 +985,12 @@
 <v t="ekr.20070925144534.200"><vh>@item abbrev-&amp;inverse-add-global</vh></v>
 <v t="ekr.20070925144534.201"><vh>@item abbrev-&amp;kill-all</vh></v>
 </v>
-<v t="ekr.20070925144534.204"><vh>@menu &amp;Body Editors...</vh>
+<v t="ekr.20070925144534.204"><vh>@menu &amp;Body Editors</vh>
 <v t="ekr.20070925144534.205"><vh>@item &amp;add-editor</vh></v>
 <v t="ekr.20070925144534.206"><vh>@item &amp;cycle-editor-focus</vh></v>
 <v t="ekr.20070925144534.207"><vh>@item &amp;delete-editor</vh></v>
 </v>
-<v t="ekr.20070925144534.208"><vh>@menu Buffers...</vh>
+<v t="ekr.20070925144534.208"><vh>@menu Buffers</vh>
 <v t="ekr.20070925144534.209"><vh>@item buffer-&amp;append-to</vh></v>
 <v t="ekr.20070925144534.210"><vh>@item buffer-&amp;kill</vh></v>
 <v t="ekr.20070925144534.213"><vh>@item buffer-&amp;prepend-to</vh></v>
@@ -999,7 +999,7 @@
 <v t="ekr.20070925144534.211"><vh>@item &amp;buffers-list</vh></v>
 <v t="ekr.20070925144534.212"><vh>@item buffers-&amp;list-alphabetically</vh></v>
 </v>
-<v t="ekr.20070925144534.216"><vh>@menu &amp;Chapters...</vh>
+<v t="ekr.20070925144534.216"><vh>@menu &amp;Chapters</vh>
 <v t="ekr.20070925144534.217"><vh>@item chapter-&amp;clone-node-to</vh></v>
 <v t="ekr.20070925144534.218"><vh>@item chapter-c&amp;opy-node-to</vh></v>
 <v t="ekr.20070925144534.219"><vh>@item chapter-c&amp;reate</vh></v>
@@ -1007,8 +1007,8 @@
 <v t="ekr.20070925144534.221"><vh>@item chapter-&amp;remove</vh></v>
 <v t="ekr.20070925144534.222"><vh>@item chapter-&amp;select</vh></v>
 </v>
-<v t="ekr.20070925144534.223"><vh>@menu Cursor/Selection...</vh>
-<v t="ekr.20070925144534.224"><vh>@menu Cursor &amp;Back...</vh>
+<v t="ekr.20070925144534.223"><vh>@menu Cursor/Selection</vh>
+<v t="ekr.20070925144534.224"><vh>@menu Cursor &amp;Back</vh>
 <v t="ekr.20070925144534.225"><vh>@item back-&amp;char</vh></v>
 <v t="ekr.20070925144534.226"><vh>@item back-&amp;paragraph</vh></v>
 <v t="ekr.20070925144534.227"><vh>@item back-&amp;sentence</vh></v>
@@ -1019,7 +1019,7 @@
 <v t="ekr.20070925144534.232"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.233"><vh>@item pre&amp;vious-line</vh></v>
 </v>
-<v t="ekr.20070925144534.234"><vh>@menu Cursor Back &amp;Extend Selection...</vh>
+<v t="ekr.20070925144534.234"><vh>@menu Cursor Back &amp;Extend Selection</vh>
 <v t="ekr.20070925144534.235"><vh>@item back-&amp;char-extend-selection</vh></v>
 <v t="ekr.20070925144534.236"><vh>@item back-&amp;paragraph-extend-selection</vh></v>
 <v t="ekr.20070925144534.237"><vh>@item back-&amp;sentence-extend-selection</vh></v>
@@ -1030,13 +1030,13 @@
 <v t="ekr.20070925144534.242"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.243"><vh>@item pre&amp;vious-line-extend-selection</vh></v>
 </v>
-<v t="ekr.20070925144534.244"><vh>@menu Cursor Back Extend &amp;to...</vh>
+<v t="ekr.20070925144534.244"><vh>@menu Cursor Back Extend &amp;to</vh>
 <v t="ekr.20070925144534.245"><vh>@item extend-to-&amp;line</vh></v>
 <v t="ekr.20070925144534.246"><vh>@item extend-to-&amp;paragraph</vh></v>
 <v t="ekr.20070925144534.247"><vh>@item extend-to-&amp;sentence</vh></v>
 <v t="ekr.20070925144534.248"><vh>@item extend-to-&amp;word</vh></v>
 </v>
-<v t="ekr.20070925144534.249"><vh>@menu Cursor &amp;Forward...</vh>
+<v t="ekr.20070925144534.249"><vh>@menu Cursor &amp;Forward</vh>
 <v t="ekr.20070925144534.250"><vh>@item end-of-&amp;buffer</vh></v>
 <v t="ekr.20070925144534.251"><vh>@item end-of-&amp;line</vh></v>
 <v t="ekr.20070925144534.252"><vh>@item -</vh></v>
@@ -1048,7 +1048,7 @@
 <v t="ekr.20070925144534.258"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.259"><vh>@item &amp;next-line</vh></v>
 </v>
-<v t="ekr.20070925144534.260"><vh>@menu Cursor Forward E&amp;xtend Selection...</vh>
+<v t="ekr.20070925144534.260"><vh>@menu Cursor Forward E&amp;xtend Selection</vh>
 <v t="ekr.20070925144534.261"><vh>@item end-of-&amp;buffer-extend-selection</vh></v>
 <v t="ekr.20070925144534.262"><vh>@item end-of-&amp;line-extend-selection</vh></v>
 <v t="ekr.20070925144534.263"><vh>@item -</vh></v>
@@ -1061,7 +1061,7 @@
 <v t="ekr.20070925144534.270"><vh>@item &amp;next-line-extend-selection</vh></v>
 </v>
 </v>
-<v t="ekr.20110607054506.16794"><vh>@menu &amp;Debugging...</vh>
+<v t="ekr.20110607054506.16794"><vh>@menu &amp;Debugging</vh>
 <v t="ekr.20110607054506.16795"><vh>@item &amp;debug</vh></v>
 <v t="ekr.20110607054506.16796"><vh>@item &amp;pdb</vh></v>
 <v t="ekr.20110607054506.16797"><vh>@item -</vh></v>
@@ -1073,7 +1073,7 @@
 <v t="ekr.20110607054506.16803"><vh>@item gc-&amp;trace-disable</vh></v>
 <v t="ekr.20110607054506.16804"><vh>@item gc-&amp;trace-enable</vh></v>
 </v>
-<v t="ekr.20110607054506.16805"><vh>@menu &amp;Files and Directories...</vh>
+<v t="ekr.20110607054506.16805"><vh>@menu &amp;Files and Directories</vh>
 <v t="ekr.20110607054506.16806"><vh>@item directory-&amp;make</vh></v>
 <v t="ekr.20110607054506.16807"><vh>@item directory-&amp;remove</vh></v>
 <v t="ekr.20110607054506.16808"><vh>@item -</vh></v>
@@ -1084,14 +1084,14 @@
 <v t="ekr.20110607054506.16813"><vh>@item file-&amp;open-by-name</vh></v>
 <v t="ekr.20110607054506.16814"><vh>@item file-&amp;save</vh></v>
 </v>
-<v t="ekr.20070925144534.271"><vh>@menu &amp;Focus...</vh>
+<v t="ekr.20070925144534.271"><vh>@menu &amp;Focus</vh>
 <v t="ekr.20070925144534.272"><vh>@item &amp;cycle-all-focus</vh></v>
 <v t="ekr.20070925144534.273"><vh>@item focus-to-&amp;body</vh></v>
 <v t="ekr.20070925144534.274"><vh>@item focus-to-&amp;log</vh></v>
 <v t="ekr.20070925144534.275"><vh>@item focus-to-&amp;minibuffer</vh></v>
 <v t="ekr.20070925144534.276"><vh>@item focus-to-&amp;tree</vh></v>
 </v>
-<v t="ekr.20110607054506.16815"><vh>@menu &amp;Help commands...</vh>
+<v t="ekr.20110607054506.16815"><vh>@menu &amp;Help commands</vh>
 <v t="ekr.20130412173637.11774"><vh>@item help</vh></v>
 <v t="ekr.20110607054506.16816"><vh>@item help-for-abbreviations</vh></v>
 <v t="ekr.20110607054506.16817"><vh>@item help-for-autocompletion</vh></v>
@@ -1106,14 +1106,14 @@
 <v t="ekr.20110607054506.16828"><vh>@item print-plugins-info</vh></v>
 <v t="ekr.20110607054506.16825"><vh>@item print-settings</vh></v>
 </v>
-<v t="ekr.20071114081712"><vh>@menu &amp;Icons...</vh>
+<v t="ekr.20071114081712"><vh>@menu &amp;Icons</vh>
 <v t="ekr.20071114084709"><vh>@item delete-&amp;first-icon</vh></v>
 <v t="ekr.20071114084709.1"><vh>@item delete-&amp;last-icon</vh></v>
 <v t="ekr.20071114081712.3"><vh>@item delete-&amp;node-icons</vh></v>
 <v t="ekr.20071114081712.4"><vh>@item -</vh></v>
 <v t="ekr.20071114081712.5"><vh>@item &amp;insert-icon</vh></v>
 </v>
-<v t="ekr.20070925144534.277"><vh>@menu &amp;Macros...</vh>
+<v t="ekr.20070925144534.277"><vh>@menu &amp;Macros</vh>
 <v t="ekr.20070925144534.284"><vh>@item macro-start-&amp;recording</vh></v>
 <v t="ekr.20110607054506.16830"><vh>@item macro-&amp;end-recording</vh></v>
 <v t="ekr.20070925144534.282"><vh>@item macro-&amp;name-last</vh></v>
@@ -1125,7 +1125,7 @@
 <v t="ekr.20070925144534.281"><vh>@item macro-&amp;print-all</vh></v>
 <v t="ekr.20070925144534.283"><vh>@item macro-&amp;save-all</vh></v>
 </v>
-<v t="ekr.20070925144534.286"><vh>@menu Minibuffer...</vh>
+<v t="ekr.20070925144534.286"><vh>@menu Minibuffer</vh>
 <v t="ekr.20070925144534.287"><vh>@item &amp;full-command</vh></v>
 <v t="ekr.20070925144534.288"><vh>@item keyboard-&amp;quit</vh></v>
 <v t="ekr.20070925144534.289"><vh>@item &amp;repeat-complex-command</vh></v>
@@ -1133,12 +1133,12 @@
 <v t="ekr.20070925144534.294"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.295"><vh>@item &amp;help-for-minibuffer</vh></v>
 </v>
-<v t="ekr.20070925144534.296"><vh>@menu &amp;Pickers...</vh>
+<v t="ekr.20070925144534.296"><vh>@menu &amp;Pickers</vh>
 <v t="ekr.20070925144534.297"><vh>@item show-&amp;colors</vh></v>
 <v t="ekr.20070925144534.298"><vh>@item show-find-&amp;options</vh></v>
 <v t="ekr.20070925144534.299"><vh>@item show-&amp;fonts</vh></v>
 </v>
-<v t="ekr.20070925144534.300"><vh>@menu &amp;Rectangles...</vh>
+<v t="ekr.20070925144534.300"><vh>@menu &amp;Rectangles</vh>
 <v t="ekr.20070925144534.301"><vh>@item rectangle-&amp;clear</vh></v>
 <v t="ekr.20070925144534.302"><vh>@item rectangle-&amp;close</vh></v>
 <v t="ekr.20070925144534.303"><vh>@item rectangle-&amp;delete</vh></v>
@@ -1147,7 +1147,7 @@
 <v t="ekr.20070925144534.306"><vh>@item rectangle-&amp;string</vh></v>
 <v t="ekr.20070925144534.307"><vh>@item rectangle-&amp;yank</vh></v>
 </v>
-<v t="ekr.20070925144534.308"><vh>@menu Registers...</vh>
+<v t="ekr.20070925144534.308"><vh>@menu Registers</vh>
 <v t="ekr.20070925144534.309"><vh>@item register-&amp;append-to</vh></v>
 <v t="ekr.20070925144534.310"><vh>@item register-&amp;copy-to</vh></v>
 <v t="ekr.20110607054506.16833"><vh>@item register-copy-&amp;rectangle-to</vh></v>
@@ -1158,11 +1158,11 @@
 <v t="ekr.20070925144534.316"><vh>@item register-&amp;prepend-to</vh></v>
 <v t="ekr.20070925144534.317"><vh>@item register-&amp;view</vh></v>
 </v>
-<v t="ekr.20110406082808.18152"><vh>@menu Rst commands...</vh>
+<v t="ekr.20110406082808.18152"><vh>@menu Rst commands</vh>
 <v t="ekr.20110406082808.18154"><vh>@item &amp;code-to-rst</vh></v>
 <v t="ekr.20110406082808.18153"><vh>@item &amp;rst3</vh></v>
 </v>
-<v t="ekr.20070925144534.318"><vh>@menu Run Script/Tests...</vh>
+<v t="ekr.20070925144534.318"><vh>@menu Run Script/Tests</vh>
 <v t="ekr.20070925144534.319"><vh>@item &amp;execute-script</vh></v>
 <v t="ekr.20110607054506.16837"><vh>@item -</vh></v>
 <v t="ekr.20110607054506.16834"><vh>@item run-&amp;all-unit-tests-locally</vh></v>
@@ -1173,7 +1173,7 @@
 <v t="ekr.20111031083623.13744"><vh>@item run-&amp;marked-unit-tests-externally</vh></v>
 <v t="ekr.20070925144534.320"><vh>@item run-&amp;selected-unit-tests-externally</vh></v>
 </v>
-<v t="ekr.20070925144534.321"><vh>@menu &amp;Scrolling...</vh>
+<v t="ekr.20070925144534.321"><vh>@menu &amp;Scrolling</vh>
 <v t="ekr.20070925144534.322"><vh>@item scroll-outline-down-&amp;line</vh></v>
 <v t="ekr.20070925144534.323"><vh>@item scroll-outline-down-&amp;page</vh></v>
 <v t="ekr.20070925144534.324"><vh>@item scroll-outline-le&amp;ft</vh></v>
@@ -1188,18 +1188,18 @@
 <v t="ekr.20090531084727.10896"><vh>@item scroll-up-line</vh></v>
 <v t="ekr.20070925144534.330"><vh>@item scroll-&amp;up-page</vh></v>
 </v>
-<v t="ekr.20111010200020.15684"><vh>@menu Shell...</vh>
+<v t="ekr.20111010200020.15684"><vh>@menu Shell</vh>
 <v t="ekr.20111010200020.15685"><vh>@item shell-command</vh></v>
 <v t="ekr.20111010200020.15686"><vh>@item shell-command-on-region</vh></v>
 </v>
-<v t="ekr.20070925144534.334"><vh>@menu Spell C&amp;heck...</vh>
+<v t="ekr.20070925144534.334"><vh>@menu Spell C&amp;heck</vh>
 <v t="ekr.20070925144534.335"><vh>@item &amp;open-spell-tab</vh></v>
 <v t="ekr.20070925144534.336"><vh>@item spell-&amp;change</vh></v>
 <v t="ekr.20070925144534.337"><vh>@item spell-change-&amp;then-find</vh></v>
 <v t="ekr.20070925144534.338"><vh>@item spell-&amp;find</vh></v>
 <v t="ekr.20070925144534.339"><vh>@item spell-&amp;ignore</vh></v>
 </v>
-<v t="ekr.20070925144534.340"><vh>@menu &amp;Text Commands...</vh>
+<v t="ekr.20070925144534.340"><vh>@menu &amp;Text Commands</vh>
 <v t="ekr.20070925144534.341"><vh>@item &amp;beautify</vh></v>
 <v t="ekr.20070925144534.342"><vh>@item beautify-&amp;all</vh></v>
 <v t="ekr.20070925144534.343"><vh>@item -</vh></v>
@@ -1222,7 +1222,7 @@
 <v t="ekr.20070925144534.360"><vh>@item sort-&amp;fields</vh></v>
 <v t="ekr.20070925144534.361"><vh>@item &amp;sort-lines</vh></v>
 </v>
-<v t="ekr.20070925144534.362"><vh>@menu Toggle Settings...</vh>
+<v t="ekr.20070925144534.362"><vh>@menu Toggle Settings</vh>
 <v t="ekr.20070925144534.363"><vh>@item toggle-a&amp;utocompleter</vh></v>
 <v t="ekr.20070925144534.364"><vh>@item toggle-call&amp;tips</vh></v>
 <v t="ekr.20070925144534.365"><vh>@item toggle-&amp;extend-mode</vh></v>
@@ -1800,6 +1800,7 @@
 </v>
 <v t="ekr.20060603215208"></v>
 <v t="ekr.20081216090156.5"></v>
+<v t="ekr.20070925144552"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -4899,7 +4900,7 @@ propagate-key-event = Alt-W
 <t tx="ekr.20070925144534.297"></t>
 <t tx="ekr.20070925144534.298"></t>
 <t tx="ekr.20070925144534.299"></t>
-<t tx="ekr.20070925144534.3">&amp;Open...</t>
+<t tx="ekr.20070925144534.3">&amp;Open</t>
 <t tx="ekr.20070925144534.300"></t>
 <t tx="ekr.20070925144534.301"></t>
 <t tx="ekr.20070925144534.302"></t>
@@ -5004,7 +5005,7 @@ propagate-key-event = Alt-W
 <t tx="ekr.20070925144534.404"></t>
 <t tx="ekr.20070925144534.405"></t>
 <t tx="ekr.20070925144534.406"></t>
-<t tx="ekr.20070925144534.407">&amp;About Leo...</t>
+<t tx="ekr.20070925144534.407">&amp;About Leo</t>
 <t tx="ekr.20070925144534.408">Online &amp;Home Page</t>
 <t tx="ekr.20070925144534.409">The online tutorial no longer exists.</t>
 <t tx="ekr.20070925144534.41"></t>
