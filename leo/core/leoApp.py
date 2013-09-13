@@ -110,7 +110,7 @@ class LeoApp:
             self.commandName = None         # The name of the command being executed.
             self.commandInterruptFlag=False # True: command within a command.
 
-        self.dragging = False           # True: dragging.
+        # self.dragging = False           # True: dragging.
         self.inBridge = False           # True: running from leoBridge module.
         self.inScript = False           # True: executing a script.
         self.initing  = True            # True: we are initiing the app.

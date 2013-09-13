@@ -6914,7 +6914,6 @@ has arbitrary attributes like the `active` I just made up above.
 https://bugs.launchpad.net/leo-editor/+bug/nnn
 .. @+node:ekr.20130909073003.11525: *4* first: medium priority
 @language rest
-.. @+node:ekr.20130908104426.11247: *5* 1046195 character encoding changes when dragging outline between leo files
 .. @+node:ekr.20130908104426.11246: *5* 1028986 create relative urls when dragging binary files to Leo
 https://bugs.launchpad.net/leo-editor/+bug/1028986
 

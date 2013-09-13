@@ -102,7 +102,6 @@ import leo.core.leoGlobals as g
 
 docutils = g.importExtension('docutils',pluginName='leoImport.py')
 import os
-import mimetypes # To discover binary files.
 import string
 if g.isPython3:
     import io

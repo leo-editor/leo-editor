@@ -54,7 +54,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         # Widget independent status ivars...
         self.contracting = False
-        self.dragging = False
+        # self.dragging = False
         self.expanding = False
         self.prev_v = None
         self.redrawing = False

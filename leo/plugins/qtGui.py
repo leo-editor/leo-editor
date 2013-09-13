@@ -5719,16 +5719,16 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
             return
         md = ev.mimeData()
         if not md:
-            g.trace('No mimeData!') ; return
+            g.trace('No mimeData!')
+            return
         c.endEditing()
-        if g.app.dragging:
-            if trace or self.trace: g.trace('** already dragging')
-        else:
-            g.app.dragging = True
-            g.app.drag_source = c, c.p
-            if self.trace: g.trace('set g.app.dragging')
-            self.setText(md)
-            if self.trace: self.dump(ev,c.p,'enter')
+        # if g.app.dragging:
+            # if trace or self.trace: g.trace('** already dragging')
+        # g.app.dragging = True
+        g.app.drag_source = c, c.p
+        # if self.trace: g.trace('set g.app.dragging')
+        self.setText(md)
+        if self.trace: self.dump(ev,c.p,'enter')
         # Always accept the drag, even if we are already dragging.
         ev.accept()
     #@+node:ekr.20110605121601.18365: *5* dropEvent & helpers
@@ -5738,8 +5738,8 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         if not ev: return
         c = self.c ; tree = c.frame.tree
         # Always clear the dragging flag, no matter what happens.
-        g.app.dragging = False
-        if self.trace: g.trace('clear g.app.dragging')
+        # g.app.dragging = False
+        # if self.trace: g.trace('clear g.app.dragging')
         # Set p to the target of the drop.
         item = self.itemAt(ev.pos())
         if not item: return
@@ -5792,6 +5792,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
 
         '''Paste the mime data after (or as the first child of) p.'''
 
+        trace = True and not g.unitTesting
         c = self.c
         u = c.undoer
         undoType = 'Drag Outline'
@@ -5800,7 +5801,10 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         c.selectPosition(p)
         pasted = c.fileCommands.getLeoOutlineFromClipboard(
             s,reassignIndices=True)
-        if not pasted: return
+        if not pasted:
+            if trace: g.trace('not pasted!')
+            return
+        if trace: g.trace('pasting...')
         if c.config.getBool('inter_outline_drag_moves'):
             src_c, src_p = g.app.drag_source
             if src_p.hasVisNext(src_c):
@@ -5881,10 +5885,9 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         c = self.c ; u = c.undoer ; undoType = 'Drag Urls'
         md = ev.mimeData()
         urls = md.urls()
-        if not urls: return
-
+        if not urls:
+            return
         c.undoer.beforeChangeGroup(c.p,undoType)
-
         changed = False
         for z in urls:
             url = QtCore.QUrl(z)
@@ -5894,7 +5897,6 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
             elif scheme in ('http',): # 'ftp','mailto',
                 changed |= self.doHttpUrl(p,url)
             # else: g.trace(url.scheme(),url)
-
         if changed:
             c.setChanged(True)
             u.afterChangeGroup(c.p,undoType,reportFlag=False,dirtyVnodeList=[])
