@@ -102,6 +102,7 @@ import leo.core.leoGlobals as g
 
 docutils = g.importExtension('docutils',pluginName='leoImport.py')
 import os
+import mimetypes # To discover binary files.
 import string
 if g.isPython3:
     import io
@@ -843,15 +844,21 @@ class leoImportCommands (scanUtility):
     #@+node:ekr.20031218072017.3209: *3* Import (leoImport)
     #@+node:ekr.20031218072017.3210: *4* ic.createOutline
     def createOutline (self,fileName,parent,
-        atAuto=False,atShadow=False,s=None,ext=None):
+        atAuto=False,atShadow=False,s=None,ext=None
+    ):
 
         c = self.c ; u = c.undoer
         w = c.frame.body
         at = c.atFileCommands
-
         self.default_directory = g.setDefaultDirectory(c,parent,importing=False)
         fileName = c.os_path_finalize_join(self.default_directory,fileName)
         fileName = fileName.replace('\\','/') # 2011/11/25
+        # Fix bug 1185409 importing binary files puts binary content in body editor.
+        if g.is_binary_external_file(fileName):
+            # Create an @url node.
+            p = parent.insertAsLastChild()
+            p.h = '@url file://%s' % fileName
+            return
         junk,self.fileName = g.os_path_split(fileName)
         self.methodName,self.fileType = g.os_path_splitext(self.fileName)
         self.setEncoding(p=parent,atAuto=atAuto)
@@ -864,12 +871,10 @@ class leoImportCommands (scanUtility):
             s,e = g.readFileIntoString(fileName,encoding=self.encoding,kind=kind)
             if s is None: return None
             if e: self.encoding = e
-
         if ext == '.otl':
             self.treeType = '@auto-otl'
             # atAuto = True
             # kind = '@auto-otl'
-
         # Create the top-level headline.
         if atAuto:
             p = parent.copy()
@@ -877,7 +882,6 @@ class leoImportCommands (scanUtility):
         else:
             undoData = u.beforeInsertNode(parent)
             p = parent.insertAsLastChild()
-
             if self.treeType == "@file":
                 p.initHeadString("@file " + fileName)
             elif self.treeType == "@auto-otl":
@@ -888,19 +892,16 @@ class leoImportCommands (scanUtility):
             else:
                 p.initHeadString(fileName)
             u.afterInsertNode(p,'Import',undoData)
-
         if self.treeType == '@root': # 2010/09/29.
             self.rootLine = "@root-code "+self.fileName+'\n'
         else:
             self.rootLine = ''
-
         if p.isAtAutoRstNode(): # @auto-rst is independent of file extension.
             func = self.scanRstText
         elif p.isAtAutoOtlNode():
             func = self.scanVimoutlinterText
         else:
             func = self.importDispatchDict.get(ext)
-
         if func and not c.config.getBool('suppress_import_parsing',default=False):
             s = s.replace('\r','')
             func(s,p,atAuto=atAuto)
@@ -908,12 +909,10 @@ class leoImportCommands (scanUtility):
             # Just copy the file to the parent node.
             s = s.replace('\r','')
             self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
-
         if atAuto:
             # Fix bug 488894: unsettling dialog when saving Leo file
             # Fix bug 889175: Remember the full fileName.
             at.rememberReadPath(fileName,p)
-
         p.contract()
         w.setInsertPoint(0)
         w.seeInsertPoint()

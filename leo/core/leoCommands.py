@@ -2534,7 +2534,7 @@ class Commands (object):
     #@+node:ekr.20070115135502: *6* c.writeScriptFile
     def writeScriptFile (self,script):
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         # Get the path to the file.
         c = self
         path = c.config.getString('script_file_path')

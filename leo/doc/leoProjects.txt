@@ -252,6 +252,11 @@ Added a help line at the bottom.
 c-x e in emacs.
 Use Alt-Ctrl-M
 #@+node:ekr.20130908104426.11263: *3* Apparently already fixed: 1190778 ScriptFile.py not generating correctly (ignores text after @others)
+#@+node:ekr.20130908104426.11262: *3* Fixed bug 1185409: importing binary files puts binary content in body editor
+https://bugs.launchpad.net/leo-editor/+bug/1185409
+
+Added g.is_binary_external_file and is_binary_string.
+Modified ic.createOutline to create @url file:// node.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

@@ -2002,13 +2002,34 @@ def guessExternalEditor(c=None):
 Please set LEO_EDITOR or EDITOR environment variable,
 or do g.app.db['LEO_EDITOR'] = "gvim"''')
         return None
-#@+node:ekr.20100329071036.5744: *3* g.is_binary_file
+#@+node:ekr.20100329071036.5744: *3* g.is_binary_file/external_file/string
 def is_binary_file (f):
-
     if g.isPython3:
         return f and isinstance(f,io.BufferedIOBase)
     else:
         g.internalError('g.is_binary_file called from Python 2.x code')
+        
+def is_binary_external_file(fileName):
+    try:
+        f = open(fileName,'rb')
+        s = f.read(1024) # bytes, in Python 3.
+        f.close()
+        return g.is_binary_string(s)
+    except IOError:
+        return False
+    except Exception:
+        g.es_exception()
+        return False
+
+def is_binary_string(s):
+    # http://stackoverflow.com/questions/898669
+    # aList is a list of all non-binary characters.
+    aList = [7,8,9,10,12,13,27] + list(range(0x20,0x100))
+    if g.isPython3:
+        aList = bytes(aList)
+    else:
+        aList = ''.join([chr(z) for z in aList])
+    return bool(s.translate(None,aList))
 #@+node:EKR.20040504154039: *3* g.is_sentinel
 def is_sentinel (line,delims):
 
