@@ -1800,7 +1800,6 @@
 </v>
 <v t="ekr.20060603215208"></v>
 <v t="ekr.20081216090156.5"></v>
-<v t="ekr.20070925144552"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -2693,9 +2692,6 @@ abbrev-add-global                   = None
 add-space-to-lines                  = None
 add-tab-to-lines                    = None
 advertised-undo                     = None
-apropos-autocompletion              = None
-apropos-bindings                    = None
-apropos-find-commands               = None
 auto-complete                       = None
 auto-complete-force                 = None
 back-char                           = None
@@ -3212,6 +3208,7 @@ group-operations-mark-target        = None
 group-operations-operate-on-marked  = None
 group-operations-transfer           = None
 toggle-input-state                  = None
+help                                = None
 help-for-minibuffer                 = None
 help-for-command                    = None
 hide-body-pane                      = None
@@ -3319,13 +3316,12 @@ print-bindings                      = None
 print-commands                      = None
 print-focus                         = None
 promote                             = None
-propagate-key-event                 = None
+# propagate-key-event                 = None
 # query-replace                       = None
 # query-replace-regex                 = None
 quick-command                       = None
 re-search-backward                  = None
 re-search-forward                   = None
-
 read-at-file-nodes                  = None
 read-outline-only                   = None
 rectangle-clear                     = None
@@ -3423,6 +3419,8 @@ spell-ignore                        = None
 split-line                          = None
 start-ipython                       = None
 suspend                             = None
+tab-cycle-next                      = None
+tab-cycle-previous                  = None
 tabify                              = None
 tangle                              = None
 tangle-all                          = None
@@ -4294,8 +4292,9 @@ debug                       = None
 execute-script              = Ctrl+B
 redo                        = Shift-Ctrl-Z
 
-dabbrev-completion                  = Alt-Ctrl-slash
-dabbrev-expands                     = Alt-slash
+dabbrev-completion  = Alt-Ctrl-slash
+dabbrev-expands     = Alt-slash
+macro-call-last     = Alt-Ctrl-M
 
 run-all-unit-tests-externally       = None
 run-all-unit-tests-locally          = None
@@ -4680,13 +4679,13 @@ False: Leo leaves body text alone when writing @nosent trees.</t>
 <t tx="ekr.20070531103454"></t>
 <t tx="ekr.20070604075218">True:  Chapter tabs appear in the outline pane.
 False: Chapter tabs do not appear.</t>
-<t tx="ekr.20070613133747">propagate-key-event = Alt-C
-propagate-key-event = Alt-E
-propagate-key-event = Alt-F
-propagate-key-event = Alt-H
-propagate-key-event = Alt-P
-propagate-key-event = Alt-O
-propagate-key-event = Alt-W
+<t tx="ekr.20070613133747">#propagate-key-event = Alt-C
+#propagate-key-event = Alt-E
+#propagate-key-event = Alt-F
+#propagate-key-event = Alt-H
+#propagate-key-event = Alt-P
+#propagate-key-event = Alt-O
+#propagate-key-event = Alt-W
 </t>
 <t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
 <t tx="ekr.20070622214401"></t>

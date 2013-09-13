@@ -6914,8 +6914,51 @@ Qt styles are different from CSS in that CSS has a single attribute,
 has arbitrary attributes like the `active` I just made up above.
 .. @+node:ekr.20130908104426.11235: *3* Bug-tracker: Medium priority
 https://bugs.launchpad.net/leo-editor/+bug/nnn
-.. @+node:ekr.20130908104426.11263: *4* ?? 1190778 ScriptFile.py not generating correctly (ignores text after @others)
-.. @+node:ekr.20130912143658.11289: *5* report
+.. @+node:ekr.20130909073003.11525: *4* first: medium priority
+@language rest
+.. @+node:ekr.20130908104426.11247: *5* 1046195 character encoding changes when dragging outline between leo files
+.. @+node:ekr.20130908104426.11246: *5* 1028986 create relative urls when dragging binary files to Leo
+https://bugs.launchpad.net/leo-editor/+bug/1028986
+
+I would prefer if the @url created when a binary file (PDF) is dragged into
+Leo would be a *relative* one, e.g. if I drag a file foo.pdf, which sits in
+the same directory as the Leo file into Leo, then I would expect to end up
+with a headline like::
+
+    @url foo.pdf, and not as it is now: @url file:///home/.../foo.pdf.
+
+I would even expect this to be @url ../foo.pdf if the PDF sits in the
+parent directory or @url ../sibling/foo.pdf if it sits in the sibling
+directory etc. Python (os.path) has facilities to build relative paths, so
+most of the logic for this is already there.
+
+The advantage of a relative path is: I can then move the whole directory
+tree including Leo file and referenced files and the links still work, and
+I can share both Leo and referenced files via SVN or similar, since my
+co-workers are likely to have different absolute paths then I.
+
+In some cases an absolute path is needed, though - so I would suggest to
+create one by ctrl-dragging or alt-dragging or so.
+.. @+node:ekr.20130908104426.11262: *5* 1185409 importing binary files puts binary content in body editor
+.. @+node:ekr.20111026091322.16498: *5*  869098 Context menu settings lost if save as used
+See https://bugs.launchpad.net/leo-editor/+bug/869098
+
+Hard?
+
+I have a Leo file with settings for context menu:
+    
+@settings
+   @data contextmenu_commands
+       edit-headline Edit headline
+          copy-node Copy Node
+          cut-node Cut Node
+          paste-node Paste Node
+
+then these settings are lost if I save the leo file to a new name using
+File - Save as
+If I reload the leo file, they do return
+.. @+node:ekr.20130908104426.11263: *5* ?? 1190778 ScriptFile.py not generating correctly (ignores text after @others)
+.. @+node:ekr.20130912143658.11289: *6* report
 @language rest
 
 https://bugs.launchpad.net/leo-editor/+bug/1190778
@@ -6992,7 +7035,21 @@ g.es('this should')
 
 Jacob also tested it, and said: It appears to be the quotes in the headline
 of the parent node. When I removed them, the file generated properly
-.. @+node:ekr.20070115135502: *5* c.writeScriptFile
+.. @+node:ekr.20130912183552.13459: *6* clarification
+==== EKR
+
+What quotes are you talking about?
+
+===== Jacob
+
+It's hidden in the sentinels:
+
+#@+node:Read ('this is a test') out loud using TTS
+
+Remove the quotes and the script saves correctly. Leave them in and it
+doesn't. Well, using the old save code, at least. No idea with your current
+work.
+.. @+node:ekr.20070115135502: *6* c.writeScriptFile
 def writeScriptFile (self,script):
 
     trace = True and not g.unitTesting
@@ -7033,7 +7090,7 @@ def writeScriptFile (self,script):
             # c.config.getString('script_file_path'))
         path = None
     return path
-.. @+node:ekr.20031218072017.2140: *5* c.executeScript & helpers
+.. @+node:ekr.20031218072017.2140: *6* c.executeScript & helpers
 def executeScript(self,event=None,args=None,p=None,script=None,
     useSelectedText=True,define_g=True,define_name='__main__',silent=False,
     namespace=None,raiseFlag=False):
@@ -7075,7 +7132,7 @@ def executeScript(self,event=None,args=None,p=None,script=None,
     finally:
         g.app.log = oldLog # 2011/01/19
         self.unredirectScriptOutput()
-.. @+node:ekr.20120923063251.10651: *6* c.executeScriptHelper
+.. @+node:ekr.20120923063251.10651: *7* c.executeScriptHelper
 def executeScriptHelper (self,args,define_g,define_name,namespace,script):
 
     c = self
@@ -7103,7 +7160,7 @@ def executeScriptHelper (self,args,define_g,define_name,namespace,script):
             exec(script,d)
     finally:
         g.inScript = g.app.inScript = False
-.. @+node:ekr.20031218072017.2143: *6* c.redirectScriptOutput
+.. @+node:ekr.20031218072017.2143: *7* c.redirectScriptOutput
 def redirectScriptOutput (self):
 
     c = self
@@ -7114,7 +7171,7 @@ def redirectScriptOutput (self):
 
         g.redirectStdout() # Redirect stdout
         g.redirectStderr() # Redirect stderr
-.. @+node:ekr.20110522121957.18230: *6* c.setCurrentDirectoryFromContext
+.. @+node:ekr.20110522121957.18230: *7* c.setCurrentDirectoryFromContext
 def setCurrentDirectoryFromContext(self,p):
 
     trace = False and not g.unitTesting
@@ -7133,7 +7190,7 @@ def setCurrentDirectoryFromContext(self,p):
             os.chdir(path)
         except Exception:
             pass
-.. @+node:EKR.20040627100424: *6* c.unredirectScriptOutput
+.. @+node:EKR.20040627100424: *7* c.unredirectScriptOutput
 def unredirectScriptOutput (self):
 
     c = self
@@ -7144,7 +7201,7 @@ def unredirectScriptOutput (self):
 
         g.restoreStderr()
         g.restoreStdout()
-.. @+node:EKR.20040614071102.1: *5* g.getScript
+.. @+node:EKR.20040614071102.1: *6* g.getScript
 def getScript (c,p,useSelectedText=True,forcePythonSentinels=True,useSentinels=True):
 
     '''Return the expansion of the selected text of node p.
@@ -7182,7 +7239,7 @@ def getScript (c,p,useSelectedText=True,forcePythonSentinels=True,useSentinels=T
         g.es_exception()
         script = ''
     return script
-.. @+node:ekr.20050506084734: *5* at.writeFromString
+.. @+node:ekr.20050506084734: *6* at.writeFromString
 # This is at.write specialized for scripting.
 
 def writeFromString(self,root,s,forcePythonSentinels=True,useSentinels=True):
@@ -7212,7 +7269,7 @@ def writeFromString(self,root,s,forcePythonSentinels=True,useSentinels=True):
     except Exception:
         at.exception("exception preprocessing script")
     return at.stringOutput
-.. @+node:ekr.20041005105605.157: *5* at.writeOpenFile
+.. @+node:ekr.20041005105605.157: *6* at.writeOpenFile
 # New in 4.3: must be inited before calling this method.
 # New in 4.3 b2: support for writing from a string.
 
@@ -7238,50 +7295,6 @@ def writeOpenFile(self,root,
     at.putAtLastLines(s)
     if not toString:
         at.warnAboutOrphandAndIgnoredNodes()
-.. @+node:ekr.20130909073003.11525: *4* first: medium priority
-@language rest
-.. @+node:ekr.20111008073427.15595: *5* Must have a shortcut for macro-call-last
-.. @+node:ekr.20130908104426.11247: *5* 1046195 character encoding changes when dragging outline between leo files
-.. @+node:ekr.20130908104426.11246: *5* 1028986 create relative urls when dragging binary files to Leo
-https://bugs.launchpad.net/leo-editor/+bug/1028986
-
-I would prefer if the @url created when a binary file (PDF) is dragged into
-Leo would be a *relative* one, e.g. if I drag a file foo.pdf, which sits in
-the same directory as the Leo file into Leo, then I would expect to end up
-with a headline like::
-
-    @url foo.pdf, and not as it is now: @url file:///home/.../foo.pdf.
-
-I would even expect this to be @url ../foo.pdf if the PDF sits in the
-parent directory or @url ../sibling/foo.pdf if it sits in the sibling
-directory etc. Python (os.path) has facilities to build relative paths, so
-most of the logic for this is already there.
-
-The advantage of a relative path is: I can then move the whole directory
-tree including Leo file and referenced files and the links still work, and
-I can share both Leo and referenced files via SVN or similar, since my
-co-workers are likely to have different absolute paths then I.
-
-In some cases an absolute path is needed, though - so I would suggest to
-create one by ctrl-dragging or alt-dragging or so.
-.. @+node:ekr.20130908104426.11262: *5* 1185409 importing binary files puts binary content in body editor
-.. @+node:ekr.20111026091322.16498: *5*  869098 Context menu settings lost if save as used
-See https://bugs.launchpad.net/leo-editor/+bug/869098
-
-Hard?
-
-I have a Leo file with settings for context menu:
-    
-@settings
-   @data contextmenu_commands
-       edit-headline Edit headline
-          copy-node Copy Node
-          cut-node Cut Node
-          paste-node Paste Node
-
-then these settings are lost if I save the leo file to a new name using
-File - Save as
-If I reload the leo file, they do return
 .. @+node:ekr.20130912152335.11932: *4* others: medium priority
 .. @+node:ekr.20130908104426.11274: *5* commands
 .. @+node:ekr.20130908104426.11251: *6* 1099035 Leo yank and kill behaviour not quite the same as emacs

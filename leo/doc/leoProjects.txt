@@ -248,6 +248,9 @@ Changed mod_scripting.py and setCommandForButton in qtGui.py.
 Changed DynamicWindow.createFindTab.
 
 Added a help line at the bottom.
+#@+node:ekr.20111008073427.15595: *3* Bind Alt-Ctrl-M for macro-call-last
+c-x e in emacs.
+Use Alt-Ctrl-M
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
