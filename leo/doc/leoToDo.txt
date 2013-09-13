@@ -6916,7 +6916,46 @@ has arbitrary attributes like the `active` I just made up above.
 https://bugs.launchpad.net/leo-editor/+bug/nnn
 .. @+node:ekr.20130909073003.11525: *4* first: medium priority
 @language rest
-.. @+node:ekr.20130908104426.11247: *5* 1046195 character encoding changes when dragging outline between leo files
+.. @+node:ekr.20130908104426.11262: *5* 1185409 importing binary files puts binary content in body editor
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/1185409
+
+This behaviour has been observed in this setup::
+
+    Leo 4.11 devel, build 5762, 2013-05-03 10:23:16
+    Python 3.3.1, qt version 4.8.4
+    linux
+
+Whenever I use the "Import files" from the pop-up menu and I import some
+binary file (say, an audio WAV file), the content of the file is set as the
+body of the node. If the size of the file is large (e.g. several meg of
+audio data), this freezes Leo when clicking on the node. I believe that the
+"Import files" command should only import a link to the binary file in the
+form of a @url node. Note: this only happens with the "Import files"
+command from the popup menu.
+
+To reproduce the behaviour do the following:
+
+1) Change the header of a node to an at_path where you know there is a
+  binary file, e.g. change the header of a node to:
+
+    "@path /home/user/folder_with_binary_file_inside/"
+
+2) right click on the node and choose "Import files" from the popup menu. The dialog opens the specified folder
+3) Select the binary file and click "Open" to accept the choice and close the dialog
+4) a child at_auto node is created with the name of the file in the header and the binary content in the body
+5) if the file is large (e.g. a large wav file), leo will freeze when you click on the node
+
+Workarounds:
+
+1. Don't the "Import files" from the pop up menu to create links to binary
+   files, but instead, just manually create an @url node with the path and
+   name to the binary file. This is not handy if you happen to have a bunch
+   of files to import.
+
+2. Open a file browser (say nautilus) and drag the desired files onto Leo's
+   outline. @url nodes are correctly created for each file if you do this.
 .. @+node:ekr.20130908104426.11246: *5* 1028986 create relative urls when dragging binary files to Leo
 https://bugs.launchpad.net/leo-editor/+bug/1028986
 
@@ -6939,7 +6978,7 @@ co-workers are likely to have different absolute paths then I.
 
 In some cases an absolute path is needed, though - so I would suggest to
 create one by ctrl-dragging or alt-dragging or so.
-.. @+node:ekr.20130908104426.11262: *5* 1185409 importing binary files puts binary content in body editor
+.. @+node:ekr.20130908104426.11247: *5* 1046195 character encoding changes when dragging outline between leo files
 .. @+node:ekr.20111026091322.16498: *5*  869098 Context menu settings lost if save as used
 See https://bugs.launchpad.net/leo-editor/+bug/869098
 
