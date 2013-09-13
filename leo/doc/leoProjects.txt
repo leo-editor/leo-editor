@@ -251,6 +251,7 @@ Added a help line at the bottom.
 #@+node:ekr.20111008073427.15595: *3* Bind Alt-Ctrl-M for macro-call-last
 c-x e in emacs.
 Use Alt-Ctrl-M
+#@+node:ekr.20130908104426.11263: *3* Apparently already fixed: 1190778 ScriptFile.py not generating correctly (ignores text after @others)
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
