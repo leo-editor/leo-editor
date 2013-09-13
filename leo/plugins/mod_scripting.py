@@ -643,7 +643,7 @@ class scriptingController:
             # 2011/10/17: Add support for docstrings.
             def docstring(self):
                 p = self.controller.find_gnx(self.gnx)
-                return g.getDocString(self.p.b) if p else ''
+                return g.getDocString(p.b) if p else ''
         #@-<< define class atButtonCallback >>
         cb = atButtonCallback(controller=self,b=b,c=c,buttonText=buttonText,gnx=p.gnx)
         self.iconBar.setCommandForButton(b,cb)
