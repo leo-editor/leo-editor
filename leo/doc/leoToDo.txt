@@ -6641,9 +6641,24 @@ https://bugs.launchpad.net/leo-editor/+bug/nnn
 @language rest
 
 There are 23 medium priority bugs open at present.
-.. @+node:ekr.20130908104426.11257: *5* 1178249 url: file relative path does not work same way
 .. @+node:ekr.20130908104426.11256: *5* 1175013 leo/plugins/spellpyx.txt is both source controlled and customized
+https://bugs.launchpad.net/leo-editor/+bug/1175013
+
+A file that is both source controlled and customized by the user is
+inconvenient for both novices and experts.
+.. @+node:ekr.20130914114615.11287: *5* Fix reformat-paragraph bug.
+Often the cursor is positioned one character from the end.
+
+Example:
+
+A file that is both source controlled and customized by the user is inconvenient for both novices and experts.
 .. @+node:ekr.20130908104426.11239: *5* 869385 Chapters make the nav_qt.py plugin useless
+https://bugs.launchpad.net/leo-editor/+bug/869385
+
+In general, the Nav pane and the "prev" and "next" buttons can't position
+from one chapter to another. The Nav pane search can find string occurences
+in other chapters, but it can't position to them.
+
 .. @+node:ekr.20130908104426.11273: *5* **doc bugs
 .. @+node:ekr.20130908104426.11248: *6* 1046728 quickstart.leo 'auto nodes' example is not working
 .. @+node:ekr.20130908104426.11253: *6* 1159302 Correcting and improving the "Open with" documentation

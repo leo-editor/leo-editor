@@ -279,6 +279,33 @@ os.path.realpath follows symbolic links.
 The only safe place for the fix is in at.replaceTargetFileIfDifferent.
 
 @language python
+#@+node:ekr.20130908104426.11257: *3* Investigated bug 1178249: url: file relative path does not work same way
+@language rest
+
+I am going to mark this report as invalid. Please reopen if necessary.
+
+There were recent changes to the @url handling::
+- rev 5171 Refactored URL handling, and revised bookmarks plugin to use the new code.
+- rev 5208 Fixed g.computeFileUrl so that it converts (Windows only) file:/// to file://
+
+However, file url's seem to be working as expected.
+
+Note that @url file:filename.leo is *not* a valid url, it should be @url file://filename.leo.
+
+Any of the following work in a headline::
+
+    < a relative path >
+    file://< a relative path >
+    @url < a relative path >
+    @url file://< a relative path>
+
+In particular, note this code in g.computeFileUrl::
+
+    path = g.os_path_finalize_join(c.openDirectory,base,path)
+
+
+
+
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

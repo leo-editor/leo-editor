@@ -4725,13 +4725,10 @@ def computeFileUrl(fn,c=None,p=None):
     '''Compute finalized url for filename fn.
     This involves adding url escapes and evaluating Leo expressions.'''
 
-
     # Module 'urllib' has no 'parse' member.
     unquote = urllib.parse.unquote if isPython3 else urllib.unquote # pylint: disable=E1101
-
     # First, replace special characters (especially %20, by their equivalent).
     url = unquote(fn)
-
     # Finalize the path *before* parsing the url.
     i = url.find('~')
     if i > -1:
@@ -4759,7 +4756,6 @@ def computeFileUrl(fn,c=None,p=None):
         else:
             path = g.os_path_finalize(path)
         url = '%s%s' % (tag,path)
-
     return url
 #@+node:ekr.20120311151914.9917: *3* g.getUrlFromNode
 def getUrlFromNode(p):
@@ -4770,19 +4766,17 @@ def getUrlFromNode(p):
     2. Otherwise, look *only* at the first line of the body.
     '''
 
+    trace = True and not g.unitTesting
     if not p: return None
     c = p.v.context
     assert c
-
     table = [p.h,g.splitLines(p.b)[0] if p.b else '']
     table = [s[4:] if g.match_word(s,0,'@url') else s for s in table]
     table = [s.strip() for s in table if s.strip()]
-
     # First, check for url's with an explicit scheme.
     for s in table:
         if g.isValidUrl(s):
             return s
-
     # Next check for existing file and add a file:// scheme.
     for s in table:
         tag = 'file://'
@@ -4795,12 +4789,10 @@ def getUrlFromNode(p):
                 # Return the *original* url, with a file:// scheme.
                 # g.handleUrl will call computeFileUrl again.
                 return 'file://'+s
-
     # Finally, check for local url's.
     for s in table:
         if s.startswith("#"):
             return s
-
     return None
 #@+node:tbrown.20090219095555.63: *3* g.handleUrl
 #@+at Most browsers should handle the following urls:
@@ -4813,22 +4805,17 @@ def handleUrl(url,c=None,p=None):
 
     # E1101: Module 'urllib' has no 'parse' member
     unquote = urllib.parse.unquote if isPython3 else urllib.unquote # pylint: disable=E1101
-
-    trace = False and not g.unitTesting ; verbose = False
+    trace = True and not g.unitTesting ; verbose = False
     if c and not p:
         p = c.p
-
     if url.startswith('@url'):
         url = url[4:].lstrip()
-
     try:
         tag = 'file://'
         if url.startswith(tag) and not url.startswith(tag+'#'):
             # Finalize the path *before* parsing the url.
             url = g.computeFileUrl(url,c=c,p=p)
-
         parsed   = urlparse.urlparse(url)
-
         # pylint: disable=E1103
         # E1103: Instance of 'ParseResult' has no 'fragment' member
         # E1103: Instance of 'ParseResult' has no 'netloc' member
@@ -4838,16 +4825,13 @@ def handleUrl(url,c=None,p=None):
         netloc   = parsed.netloc
         path     = parsed.path
         scheme   = parsed.scheme
-
         if netloc:
             leo_path = os.path.join(netloc, path)
             # "readme.txt" gets parsed into .netloc...
         else:
             leo_path = path
-
         if leo_path.endswith('\\'): leo_path = leo_path[:-1]
         if leo_path.endswith('/'):  leo_path = leo_path[:-1]
-
         if trace and verbose:
             print()
             g.trace('url          ',url)
@@ -4856,9 +4840,7 @@ def handleUrl(url,c=None,p=None):
             g.trace('parsed.netloc',netloc)
             g.trace('parsed.path  ',path)
             g.trace('parsed.scheme',scheme)
-
         if c and scheme in ('', 'file'):
-
             if not leo_path:
                 if '-->' in path:
                     g.recursiveUNLSearch(unquote(path).split("-->"), c)
@@ -4866,7 +4848,6 @@ def handleUrl(url,c=None,p=None):
                 if not path and fragment:
                     g.recursiveUNLSearch(unquote(fragment).split("-->"), c)
                     return
-
             # .leo file
             if leo_path.lower().endswith('.leo') and os.path.exists(leo_path):
                 # Immediately end editing, so that typing in the new window works properly.
@@ -4882,9 +4863,7 @@ def handleUrl(url,c=None,p=None):
                     if c2:
                         c2.bringToFront()
                         return
-
         # isHtml = leo_path.endswith('.html') or leo_path.endswith('.htm')
-
         # Use g.os_startfile for *all* files.
         if scheme in ('', 'file'):
             if g.os_path_exists(leo_path):
@@ -4903,7 +4882,6 @@ def handleUrl(url,c=None,p=None):
                 # Mozilla throws a weird exception, then opens the file!
                 try: webbrowser.open(url)
                 except: pass
-
     except:
         g.es("exception opening",leo_path)
         g.es_exception()
@@ -4917,7 +4895,6 @@ def isValidUrl(url):
         'mailto','mms','news','nntp','prospero','rsync','rtsp','rtspu',
         'sftp','shttp','sip','sips','snews','svn','svn+ssh','telnet','wais',
     )
-
     if url.startswith('#-->'):
         # All Leo UNL's.
         return True
@@ -4934,15 +4911,13 @@ def isValidUrl(url):
 #@+node:ekr.20120315062642.9744: *3* g.openUrl
 def openUrl(p):
 
-    if not p:
-        return
-
-    url = g.getUrlFromNode(p)
-    if url:
-        c = p.v.context
-        if not g.doHook("@url1",c=c,p=p,v=p,url=url):
-            g.handleUrl(url,c=c,p=p)
-        g.doHook("@url2",c=c,p=p,v=p)
+    if p:
+        url = g.getUrlFromNode(p)
+        if url:
+            c = p.v.context
+            if not g.doHook("@url1",c=c,p=p,v=p,url=url):
+                g.handleUrl(url,c=c,p=p)
+            g.doHook("@url2",c=c,p=p,v=p)
 #@+node:ekr.20110605121601.18135: *3* g.openUrlOnClick (open-url-under-cursor)
 def openUrlOnClick(event):
     '''Open the URL under the cursor.  Return it for unit testing.'''
