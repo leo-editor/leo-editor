@@ -1293,9 +1293,10 @@ class atFile:
                 '\n',message)
             g.trace(g.callers(5))
             raise
-            # if g.unitTesting:
-            #    raise
-
+        except Exception:
+            # Work around bug https://bugs.launchpad.net/leo-editor/+bug/1074812
+            # Crashes in the scanning logic may arise from corrupted external files.
+            at.error('The input file appears to be corrupted.')
         if at.errors == 0 and not at.done:
             #@+<< report unexpected end of text >>
             #@+node:ekr.20041005105605.76: *5* << report unexpected end of text >>
@@ -1305,7 +1306,6 @@ class atFile:
                 "Unexpected end of file. Expecting %s sentinel" %
                 at.sentinelName(at.endSentinelStack[-1]))
             #@-<< report unexpected end of text >>
-
         return at.lastLines
     #@+node:ekr.20041005105605.77: *5* at.readNormalLine & appendToDocPart
     def readNormalLine (self,s,i=0): # i not used.
@@ -1467,7 +1467,6 @@ class atFile:
         assert newLevel >= 1
         # The invariant: top of at.thinNodeStack after changeLevel is the parent.
         at.changeLevel(oldLevel,newLevel-1)
-
         if allow_cloned_sibs:
             parent = at.thinNodeStack[-1]
             n = at.thinChildIndexStack[-1]
@@ -1487,7 +1486,6 @@ class atFile:
         else:
             v = at.old_createThinChild4(gnx,headline)
             at.thinNodeStack.append(v)
-
         # Common exit code. 
         # Terminate a previous clone if it exists.
         # Do not use the full terminateNode logic!
@@ -2325,12 +2323,10 @@ class atFile:
         The key invariant: on exit, the top of at.thinNodeStack is the new parent node.'''
 
         at = self
-
         # Crucial: we must be using new-style sentinels.
         assert at.readVersion5,'at.readVersion5'
         assert at.thinFile,'at.thinFile'
         assert not at.importing,'not at.importing'
-
         if newLevel > oldLevel:
             assert newLevel == oldLevel + 1,'newLevel == oldLevel + 1'
         else:
