@@ -2100,286 +2100,6 @@ viewrendered - file not found
 https://groups.google.com/forum/#!topic/leo-editor/kotyIs6_G3w
 
 This would be part of a redesign of Leo's path operations.
-.. @+node:ekr.20031218072017.2145: *6* os.path wrappers (leoGlobals.py)
-@ Note: all these methods return Unicode strings. It is up to the user to
-convert to an encoded string as needed, say when opening a file.
-.. @+node:ekr.20031218072017.2146: *7* g.os_path_abspath
-def os_path_abspath(path):
-
-    """Convert a path to an absolute path."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    path = os.path.abspath(path)
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return path
-.. @+node:ekr.20031218072017.2147: *7* g.os_path_basename
-def os_path_basename(path):
-
-    """Return the second half of the pair returned by split(path)."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    path = os.path.basename(path)
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return path
-.. @+node:ekr.20031218072017.2148: *7* g.os_path_dirname
-def os_path_dirname(path):
-
-    """Return the first half of the pair returned by split(path)."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    path = os.path.dirname(path)
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return path
-.. @+node:ekr.20031218072017.2149: *7* g.os_path_exists
-def os_path_exists(path):
-
-    """Return True if path exists."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return os.path.exists(path)
-.. @+node:ekr.20080922124033.6: *7* g.os_path_expandExpression
-def os_path_expandExpression (s,**keys):
-
-    '''Expand {{anExpression}} in c's context.'''
-
-    trace = False
-    c = keys.get('c')
-    if not c:
-        g.trace('can not happen: no c',g.callers())
-        return s
-    if not s:
-        if trace: g.trace('no s')
-        return ''
-    i = s.find('{{')
-    j = s.find('}}')
-    if -1 < i < j:
-        exp = s[i+2:j].strip()
-        if exp:
-            try:
-                p = c.p
-                d = {'c':c,'g':g,'p':p,'os':os,'sys':sys,}
-                val = eval(exp,d)
-                s = s[:i] + str(val) + s[j+2:]
-                if trace: g.trace('returns',s)
-            except Exception:
-                g.trace(g.callers())
-                g.es_exception(full=True, c=c)
-    return s
-.. @+node:ekr.20080921060401.13: *7* g.os_path_expanduser
-def os_path_expanduser(path):
-
-    """wrap os.path.expanduser"""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    result = os.path.normpath(os.path.expanduser(path))
-
-    return result
-.. @+node:ekr.20080921060401.14: *7* g.os_path_finalize & os_path_finalize_join
-def os_path_finalize (path,**keys):
-
-    '''
-    Expand '~', then return os.path.normpath, os.path.abspath of the path.
-
-    There is no corresponding os.path method'''
-
-    c = keys.get('c')
-
-    if c: path = g.os_path_expandExpression(path,**keys)
-
-    path = g.os_path_expanduser(path)
-    path = os.path.abspath(path)
-    path = os.path.normpath(path)
-    # calling os.path.realpath here would cause problems in some situations.
-    return path
-
-def os_path_finalize_join (*args,**keys):
-
-    '''Do os.path.join(*args), then finalize the result.'''
-
-    c = keys.get('c')
-
-    if c:
-        args = [g.os_path_expandExpression(z,**keys)
-            for z in args if z]
-
-    return os.path.normpath(os.path.abspath(
-        g.os_path_join(*args,**keys))) # Handles expanduser
-.. @+node:ekr.20031218072017.2150: *7* g.os_path_getmtime
-def os_path_getmtime(path):
-
-    """Return the modification time of path."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return os.path.getmtime(path)
-.. @+node:ekr.20080729142651.2: *7* g.os_path_getsize
-def os_path_getsize (path):
-
-    '''Return the size of path.'''
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return os.path.getsize(path)
-.. @+node:ekr.20031218072017.2151: *7* g.os_path_isabs
-def os_path_isabs(path):
-
-    """Return True if path is an absolute path."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return os.path.isabs(path)
-.. @+node:ekr.20031218072017.2152: *7* g.os_path_isdir
-def os_path_isdir(path):
-
-    """Return True if the path is a directory."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return os.path.isdir(path)
-.. @+node:ekr.20031218072017.2153: *7* g.os_path_isfile
-def os_path_isfile(path):
-
-    """Return True if path is a file."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return os.path.isfile(path)
-.. @+node:ekr.20031218072017.2154: *7* g.os_path_join
-def os_path_join(*args,**keys):
-
-    trace = False and not g.unitTesting
-    c = keys.get('c')
-
-    uargs = [g.toUnicodeFileEncoding(arg) for arg in args]
-
-    if trace: g.trace('1',uargs)
-
-    # Note:  This is exactly the same convention as used by getBaseDirectory.
-    if uargs and uargs[0] == '!!':
-        uargs[0] = g.app.loadDir
-    elif uargs and uargs[0] == '.':
-        c = keys.get('c')
-        if c and c.openDirectory:
-            uargs[0] = c.openDirectory
-            # g.trace(c.openDirectory)
-
-    uargs = [g.os_path_expanduser(z) for z in uargs if z]
-
-    if trace: g.trace('2',uargs)
-
-    path = os.path.join(*uargs)
-
-    if trace: g.trace('3',path)
-
-    # May not be needed on some Pythons.
-    path = g.toUnicodeFileEncoding(path)
-    return path
-.. @+node:ekr.20031218072017.2156: *7* g.os_path_normcase
-def os_path_normcase(path):
-
-    """Normalize the path's case."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    path = os.path.normcase(path)
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return path
-.. @+node:ekr.20031218072017.2157: *7* g.os_path_normpath
-def os_path_normpath(path):
-
-    """Normalize the path."""
-
-    path = g.toUnicodeFileEncoding(path)
-
-    path = os.path.normpath(path)
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return path
-.. @+node:ekr.20080605064555.2: *7* g.os_path_realpath
-def os_path_realpath(path):
-
-    path = g.toUnicodeFileEncoding(path)
-
-    path = os.path.realpath(path)
-
-    path = g.toUnicodeFileEncoding(path)
-
-    return path
-.. @+node:ekr.20031218072017.2158: *7* g.os_path_split
-def os_path_split(path):
-
-    path = g.toUnicodeFileEncoding(path)
-
-    head,tail = os.path.split(path)
-
-    head = g.toUnicodeFileEncoding(head)
-    tail = g.toUnicodeFileEncoding(tail)
-
-    return head,tail
-.. @+node:ekr.20031218072017.2159: *7* g.os_path_splitext
-def os_path_splitext(path):
-
-    path = g.toUnicodeFileEncoding(path)
-
-    head,tail = os.path.splitext(path)
-
-    head = g.toUnicodeFileEncoding(head)
-    tail = g.toUnicodeFileEncoding(tail)
-
-    return head,tail
-.. @+node:ekr.20090829140232.6036: *7* g.os_startfile
-def os_startfile(fname):
-
-    if g.unitTesting:
-        g.app.unitTestDict['os_startfile']=fname
-        return
-
-    if fname.find('"') > -1:
-        quoted_fname = "'%s'" % fname
-    else:
-        quoted_fname = '"%s"' % fname
-
-    if sys.platform.startswith('win'):
-        os.startfile(quoted_fname)
-            # Exists only on Windows.
-    elif sys.platform == 'darwin':
-        # From Marc-Antoine Parent.
-        try:
-            subprocess.call(['open', quoted_fname])
-        except OSError:
-            pass # There may be a spurious "Interrupted system call"
-        except ImportError:
-            os.system('open %s' % (quoted_fname))
-    else:
-        # os.system('xdg-open "%s"' % (fname))
-        try:
-            val = subprocess.call('xdg-open %s' % (quoted_fname),shell=True)
-            if val < 0:
-                g.es_print('xdg-open %s failed' % (fname))
-        except Exception:
-            g.es_print('error opening %s' % fname)
-            g.es_exception()
-.. @+node:ekr.20031218072017.2160: *7* g.toUnicodeFileEncoding
-def toUnicodeFileEncoding(path):
-
-    if path: path = path.replace('\\', os.sep)
-
-    # Yes, this is correct.  All os_path_x functions return Unicode strings.
-    return g.toUnicode(path)
 .. @+node:ekr.20130503061707.10515: *6* @@test path computations
 fj = g.os_path_finalize_join
 f  = g.os_path_finalize
@@ -6914,56 +6634,24 @@ has arbitrary attributes like the `active` I just made up above.
 https://bugs.launchpad.net/leo-editor/+bug/nnn
 .. @+node:ekr.20130909073003.11525: *4* first: medium priority
 @language rest
-.. @+node:ekr.20130908104426.11246: *5* 1028986 create relative urls when dragging binary files to Leo
-https://bugs.launchpad.net/leo-editor/+bug/1028986
-
-I would prefer if the @url created when a binary file (PDF) is dragged into
-Leo would be a *relative* one, e.g. if I drag a file foo.pdf, which sits in
-the same directory as the Leo file into Leo, then I would expect to end up
-with a headline like::
-
-    @url foo.pdf, and not as it is now: @url file:///home/.../foo.pdf.
-
-I would even expect this to be @url ../foo.pdf if the PDF sits in the
-parent directory or @url ../sibling/foo.pdf if it sits in the sibling
-directory etc. Python (os.path) has facilities to build relative paths, so
-most of the logic for this is already there.
-
-The advantage of a relative path is: I can then move the whole directory
-tree including Leo file and referenced files and the links still work, and
-I can share both Leo and referenced files via SVN or similar, since my
-co-workers are likely to have different absolute paths then I.
-
-In some cases an absolute path is needed, though - so I would suggest to
-create one by ctrl-dragging or alt-dragging or so.
-.. @+node:ekr.20111026091322.16498: *5*  869098 Context menu settings lost if save as used
-See https://bugs.launchpad.net/leo-editor/+bug/869098
-
-Hard?
-
-I have a Leo file with settings for context menu:
-    
-@settings
-   @data contextmenu_commands
-       edit-headline Edit headline
-          copy-node Copy Node
-          cut-node Cut Node
-          paste-node Paste Node
-
-then these settings are lost if I save the leo file to a new name using
-File - Save as
-If I reload the leo file, they do return
+.. @+node:ekr.20130908104426.11252: *5* 1132821 Leo replaces a soft link with a real file
+.. @+node:ekr.20130908104426.11249: *5* 1074812 certain .leo file causes "IndexError: list index out of range"
+.. @+node:ekr.20130908104426.11257: *5* 1178249 url: file relative path does not work same way
+.. @+node:ekr.20130908104426.11256: *5* 1175013 leo/plugins/spellpyx.txt is both source controlled and customized
+.. @+node:ekr.20130908104426.11239: *5* 869385 Chapters make the nav_qt.py plugin useless
+.. @+node:ekr.20130908104426.11273: *5* **doc bugs
+.. @+node:ekr.20130908104426.11248: *6* 1046728 quickstart.leo 'auto nodes' example is not working
+.. @+node:ekr.20130908104426.11253: *6* 1159302 Correcting and improving the "Open with" documentation
+.. @+node:ekr.20130908104426.11255: *6* 1168689 outdated documentation about ipython
+.. @+node:ekr.20130908104426.11258: *6* 1180186 debian install not documented well enough
 .. @+node:ekr.20130912152335.11932: *4* others: medium priority
-.. @+node:ekr.20130908104426.11274: *5* commands
-.. @+node:ekr.20130908104426.11251: *6* 1099035 Leo yank and kill behaviour not quite the same as emacs
-.. @+node:ekr.20130908104426.11254: *6* 1160660 File-Compare-Leo-Files creates "other file" clones
-.. @+node:ekr.20130908104426.11260: *6* 1182864 goto-global-line cmd bug
-.. @+node:ekr.20130908104426.11264: *6* 1208659 leo parsed the wrong line number of html file
-.. @+node:ekr.20111222113610.10244: *6* 613153 unable to describe root directory on thumb drive
-A very complex bug
-
-See https://bugs.launchpad.net/leo-editor/+bug/613153
-.. @+node:ekr.20130806072439.20384: *6* autocompletion(s)
+.. @+node:ekr.20130914045628.11287: *5* less important
+.. @+node:ekr.20130908104426.11274: *6* commands
+.. @+node:ekr.20130908104426.11251: *7* 1099035 Leo yank and kill behaviour not quite the same as emacs
+.. @+node:ekr.20130908104426.11254: *7* 1160660 File-Compare-Leo-Files creates "other file" clones
+.. @+node:ekr.20130908104426.11260: *7* 1182864 goto-global-line cmd bug
+.. @+node:ekr.20130908104426.11264: *7* 1208659 leo parsed the wrong line number of html file
+.. @+node:ekr.20130806072439.20384: *7* autocompletion(s)
 @language rest
 
 From: Haroldo Stenger <haroldo.stenger@gmail.com>
@@ -7037,7 +6725,7 @@ Is period bound to auto-complete?  Use the print-bindings command to see.
 I've seen that traceback too, but autocomplete *everything* didn't seem
 like a critical use case :-)
 
-.. @+node:ekr.20130806072439.20488: *6* Issue 1 with build 5752 (docutils & rst3)
+.. @+node:ekr.20130806072439.20488: *7* Issue 1 with build 5752 (docutils & rst3)
 From: Viktor Ransmayr <viktor.ransmayr@gmail.com>
 
 now that you've 'cancelled' the 'leo/extensions/docutils' experiment I 
@@ -7075,7 +6763,7 @@ AttributeError: 'module' object has no attribute 'core'
 
 Based on your current understanding: Should the '@rst' command with a 
 properly installed 'docutils' package work in a Python 3 environment?
-.. @+node:ekr.20130806072439.20489: *7* Re: Issue 1 with build 5752
+.. @+node:ekr.20130806072439.20489: *8* Re: Issue 1 with build 5752
 From: Viktor Ransmayr <viktor.ransmayr@gmail.com>
 
 Am Montag, 29. April 2013 11:46:05 UTC+2 schrieb Edward K. Ream:
@@ -7127,7 +6815,7 @@ Anyhow, thanks a lot for your feedback!
 With kind regards,
 
 Viktor
-.. @+node:ekr.20130806072439.20490: *7* Re: Issue 1 with build 5752
+.. @+node:ekr.20130806072439.20490: *8* Re: Issue 1 with build 5752
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
 On Mon, Apr 29, 2013 at 8:45 AM, lewis <lewisneal@operamail.com> wrote:
@@ -7202,7 +6890,7 @@ no need for a separate 2to3 step, but for me there *is* a need to do python=
 <br>Edward</div></div></div></div>
 
 --047d7b86cbf48cef5f04db80747d--
-.. @+node:ekr.20130806072439.20491: *7* Re: Issue 1 with build 5752
+.. @+node:ekr.20130806072439.20491: *8* Re: Issue 1 with build 5752
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
 On Sat, Apr 27, 2013 at 5:16 AM, Viktor Ransmayr
@@ -7272,7 +6960,7 @@ t help message.<br><br>HTH.<br><br></div><div>Edward</div></div></div></div=
 >
 
 --001a11c1a1d6e008c404db7cc0d5--
-.. @+node:ekr.20130806072439.20492: *7* Re: Issue 1 with build 5752
+.. @+node:ekr.20130806072439.20492: *8* Re: Issue 1 with build 5752
 From: lewis <lewisneal@operamail.com>
 
 It may be useful to try the installation method suggested at 
@@ -7318,7 +7006,7 @@ On Monday, April 29, 2013 7:46:05 PM UTC+10, Edward K. Ream wrote:
 > Note that you may have to set up a bat file to be able to execute 2to3 
 > easily.
 >
-.. @+node:ekr.20130806072439.20494: *7* Re: Issue 1 with build 5752
+.. @+node:ekr.20130806072439.20494: *8* Re: Issue 1 with build 5752
 From: Viktor Ransmayr <viktor.ransmayr@gmail.com>
 
 Am Montag, 29. April 2013 21:13:20 UTC+2 schrieb Viktor Ransmayr:
@@ -7426,7 +7114,7 @@ Hope this helps you finding the root cause of this issue.
 With kind regards,
 
 Viktor
-.. @+node:ekr.20130806072439.20484: *7* Re: Issue 1 with build 5752
+.. @+node:ekr.20130806072439.20484: *8* Re: Issue 1 with build 5752
 From: lewis <lewisneal@operamail.com>
 
 It may be useful to try the installation method suggested at 
@@ -7443,16 +7131,379 @@ So first I unpack the archive
 
 When installing docutils I've never had to use 'python3 setup.py build' or '2to3 build'.
 I'm interested to know if this works for you on the next docutils snapshot.
-.. @+node:ekr.20130908104426.11273: *5* doc bugs
-.. @+node:ekr.20130908104426.11248: *6* 1046728 quickstart.leo 'auto nodes' example is not working
-.. @+node:ekr.20130908104426.11253: *6* 1159302 Correcting and improving the "Open with" documentation
-.. @+node:ekr.20130908104426.11255: *6* 1168689 outdated documentation about ipython
-.. @+node:ekr.20130908104426.11258: *6* 1180186 debian install not documented well enough
+.. @+node:ekr.20130912152335.11933: *6* later?
+.. @+node:ekr.20130806072439.20473: *7*   file URLs seem to be broken on Mac OS 10.7 Lion
+From: "kevin@ksvanhorn.com" <kvanhorn@ksvanhorn.com>
+
+I can put an http URL in a header and command-left-click it, and it
+shows up correctly. Or I can put @url in the header and the http URL
+as the first line in the body, and command-left-click takes me to the
+page. But no matter what I try, I cannot get file URLs to work. What
+seems to happen is this:
+
+If I give a path to a nonexistent file, I get an error message in the
+log window.
+
+If I give a valid path to an existing file, I get an error message *in
+the terminal window* from which I launched lion, of the form
+
+ 'The file /path/to/my/home/dir/.leo/"/absolute/path/to/the/file" does
+not exist'
+
+or
+
+ 'The file /path/to/leo/config/"/absolute/path/to/the/file" does not
+exist'
+
+That is, it takes the correct file path and prepends the path to the
+system config dir or my personal .leo dir to it. I have tried this
+both giving absolute paths and giving relative paths from either
+my .leo dir or the system leo config dir; in every case, if I don't
+get an error in the log window, then I get an error in the terminal
+window of the form described above. It appears that one part of the
+code is correctly creating the appropriate absolute path, and then
+passing it to another part of the code that wants to interpret this
+absolute path as a path relative to the location of a *.leo file.
+
+-----
+
+From: "kevin@ksvanhorn.com" <kvanhorn@ksvanhorn.com>
+
+I think I know the cause of the problem with file URLs on Mac OS 10.7
+Lion. In leoGlobals.py, in the method os_startfile(fname), we have
+
+    elif sys.platform == 'darwin':
+        # From Marc-Antoine Parent.
+        try:
+            subprocess.call(['open', quoted_fname])
+        except OSError:
+            pass # There may be a spurious "Interrupted system call"
+        except ImportError:
+            os.system('open %s' % (quoted_fname))
+
+The problem is that the quoted file path is being passed to
+subprocess.call, instead of the raw file path. I verified this by
+experimenting with subprocess.call() in a Python interactive mode
+window -- it doesn't want the path to be quoted. I also modified the
+os_startfile method to use the unquoted pathname, and verified that
+this fixed the problem.
+
+=====
+
+Thanks for this report and fix.  I'll look into it immediately.
+
+
+.. @+node:ekr.20130908104426.11240: *7*  879338 Global tables in leoApp.py should describe all languages known 
+.. @+node:ekr.20130908104426.11244: *7*  971171 If $(HOME)/.leo/.leoRecentFiles.txt does not exist, the only recent file ever is the current file
+.. @+node:ekr.20130908104426.11250: *7* 1090950 refresh from disk - cut node ressurection
+.. @+node:ekr.20130908104426.11266: *7* 1193820 Focus change on tree pane after saving current Leo file 
+.. @+node:ekr.20130805080841.21380: *7* 1222947 Javascript importer doesn't handle common idiom
+@language javascript
+
+https://groups.google.com/forum/#!topic/leo-editor/dmC8iIKlF7g
+
+Bug 
+https://bugs.launchpad.net/leo-editor/+bug/1222947
+
+Here is the test file::
+
+
+    var express = require('express');
+     
+    var app = express.createServer(express.logger());
+     
+    app.get('/', function(request, response) {
+    response.send('Hello World!');
+    });
+     
+    var port = process.env.PORT || 5000;
+    app.listen(port, function() {
+    console.log("Listening on " + port);
+    });
+.. @+node:ekr.20120415174008.10059: *7* Cancelling save of dirty untitled commander doesn't work
+Only happens with --ipython.
+.. @+node:ekr.20130806072439.20477: *7* I can't make Leo-Editor start in a full-screen window under openSUSU 12.1
+From: SegundoBob <bhossley@ieee.org>
+
+I much prefer to almost always use Leo-editor in a full-screen window.   
+When I run Ubuntu 11.10 with either the Fluxbox or the Gnome Classic 
+sessions, when I re-open an outline that was last closed when its window 
+was full-screen, Leo-Editor comes up in a full-screen window.  When I run 
+openSUSE 12.1 with either the XFCE or IceWM sessions, Leo-Editor never 
+comes up in a full-screen widow.  In all my tests I used exactly the same 
+Leo-Editor for all operating systems and session managers.
+
+Other applications can be made to come up in full-screen windows under 
+openSUSE 12.1.  For example, Thunderbird and Thunar will come up in 
+full-screen windows.
+
+I have seen this problem with all of the following revisions of 
+Leo-Editor:  5051, 5089, 5093, 5106, 5113, 5115, 5121, 5123, 5128, 5130, 
+5138, 5141, 5143, 5147, 5148, 5161, 5166, 5200, 5220, 5248, and 5252.  I 
+believe all my tests used Python 2.7.2, qt version 4.7.4.
+
+Does anyone have any ideas about solving this problem?
+.. @+node:ekr.20130806072439.20478: *8* "Re: I can't make Leo-Editor start in a full-screen window under openSUSU 12.1"
+@nocolor
+
+From: technatica <technatica@gmail.com>
+
+1. Start Leo.
+2. Ctrl-S
+3. Close Leo.
+4. Open Leo with window size saved.
+
+On Apr 14, 9:43=A0am, SegundoBob <bhoss...@ieee.org> wrote:
+> I much prefer to almost always use Leo-editor in a full-screen window.
+> When I run Ubuntu 11.10 with either the Fluxbox or the Gnome Classic
+> sessions, when I re-open an outline that was last closed when its window
+> was full-screen, Leo-Editor comes up in a full-screen window. =A0When I r=
+un
+> openSUSE 12.1 with either the XFCE or IceWM sessions, Leo-Editor never
+> comes up in a full-screen widow. =A0In all my tests I used exactly the sa=
+me
+> Leo-Editor for all operating systems and session managers.
+>
+> Other applications can be made to come up in full-screen windows under
+> openSUSE 12.1. =A0For example, Thunderbird and Thunar will come up in
+> full-screen windows.
+>
+> I have seen this problem with all of the following revisions of
+> Leo-Editor: =A05051, 5089, 5093, 5106, 5113, 5115, 5121, 5123, 5128, 5130=
+,
+> 5138, 5141, 5143, 5147, 5148, 5161, 5166, 5200, 5220, 5248, and 5252. =A0=
+I
+> believe all my tests used Python 2.7.2, qt version 4.7.4.
+>
+> Does anyone have any ideas about solving this problem?
+
+.. @+node:ekr.20130806072439.20479: *8* "Re: I can't make Leo-Editor start in a full-screen window under openSUSU 12.1"
+@nocolor
+
+From: "Edward K. Ream" <edreamleo@gmail.com>
+
+--047d7b62201042c3c804dba80ccb
+
+
+On Sat, Apr 28, 2012 at 11:24 AM, SegundoBob <bhossley@ieee.org> wrote:
+
+> Thanks for the suggestion.  But doing a save does not help with my
+> problem.  I was already aware that some parameters are only remembered when
+> a save is done--and this is a minor annoyance.  Wouldn't it be better, more
+> consistent, and more useable, if every exit saved all the parameters that
+> initialization restores?
+>
+> The symptoms of my problem are that window sizes of less than full-window
+> are remembered and restored, but when Leo-Editor is in full-screen at exit,
+> then it is restarted in partial-screen mode with an arbitrary unused band
+> at the top of the screen.
+
+
+Have you filed an official bug for this?  If not, please do.
+
+Edward
+
+--047d7b62201042c3c804dba80ccb
+
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">On Sat, Apr 28, 2012 at 11:24 AM, SegundoBob <span dir=3D"=
+ltr">&lt;<a href=3D"mailto:bhossley@ieee.org" target=3D"_blank">bhossley@ie=
+ee.org</a>&gt;</span> wrote:<br><div class=3D"gmail_extra"><div class=3D"gm=
+ail_quote">
+<blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1p=
+x #ccc solid;padding-left:1ex">Thanks for the suggestion.=A0 But doing a sa=
+ve does not help with my problem.=A0 I was already aware that some paramete=
+rs are only remembered when a save is done--and this is a minor annoyance.=
+=A0 Wouldn&#39;t it be better, more consistent, and more useable, if every =
+exit saved all the parameters that initialization restores?<br>
+<br>The symptoms of my problem are that window sizes of less than full-wind=
+ow are remembered and restored, but when Leo-Editor is in full-screen at ex=
+it, then it is restarted in partial-screen mode with an arbitrary unused ba=
+nd at the top of the screen.</blockquote>
+<div><br></div><div>Have you filed an official bug for this?=A0 If not, ple=
+ase do.<br><br>Edward</div></div></div></div>
+
+--047d7b62201042c3c804dba80ccb--
+.. @+node:ekr.20130806072439.20480: *8* "Re: I can't make Leo-Editor start in a full-screen window under openSUSU 12.1"
+@nocolor
+
+From: technatica <technatica@gmail.com>
+
+I have the exact same behaviour with Leo 4.10 final, build 5286,
+2012-04-27 23:02:15.
+
+It refuses to remember its window settings.
+
+Arch Linux, 64bit, installed from bzr.
+
+On Apr 14, 9:43=A0am, SegundoBob <bhoss...@ieee.org> wrote:
+> I much prefer to almost always use Leo-editor in a full-screen window.
+> When I run Ubuntu 11.10 with either the Fluxbox or the Gnome Classic
+> sessions, when I re-open an outline that was last closed when its window
+> was full-screen, Leo-Editor comes up in a full-screen window. =A0When I r=
+un
+> openSUSE 12.1 with either the XFCE or IceWM sessions, Leo-Editor never
+> comes up in a full-screen widow. =A0In all my tests I used exactly the sa=
+me
+> Leo-Editor for all operating systems and session managers.
+>
+> Other applications can be made to come up in full-screen windows under
+> openSUSE 12.1. =A0For example, Thunderbird and Thunar will come up in
+> full-screen windows.
+>
+> I have seen this problem with all of the following revisions of
+> Leo-Editor: =A05051, 5089, 5093, 5106, 5113, 5115, 5121, 5123, 5128, 5130=
+,
+> 5138, 5141, 5143, 5147, 5148, 5161, 5166, 5200, 5220, 5248, and 5252. =A0=
+I
+> believe all my tests used Python 2.7.2, qt version 4.7.4.
+>
+> Does anyone have any ideas about solving this problem?
+
+.. @+node:ekr.20130806072439.20481: *8* "Re: I can't make Leo-Editor start in a full-screen window under openSUSU 12.1"
+@nocolor
+
+From: SegundoBob <bhossley@ieee.org>
+
+
+
+
+Thanks for the suggestion.  But doing a save does not help with my 
+problem.  I was already aware that some parameters are only remembered when 
+a save is done--and this is a minor annoyance.  Wouldn't it be better, more 
+consistent, and more useable, if every exit saved all the parameters that 
+initialization restores?
+
+The symptoms of my problem are that window sizes of less than full-window 
+are remembered and restored, but when Leo-Editor is in full-screen at exit, 
+then it is restarted in partial-screen mode with an arbitrary unused band 
+at the top of the screen.
+.. @+node:ekr.20130806072439.20485: *7* Importing java file using @auto. How do I adjust Leo to ignore whitespace and indentation irregularities?
+From: Eoin <eoinmccarthy@fastmail.fm>
+
+I'm using @auto to import java files into my Leo project. I'm then cloning 
+various methods as sub-nodes of new feature nodes. 
+It's helping keep my development focussed - and is useful to look back and 
+see what parts of the codebase I've worked on for each feature. 
+
+However, the whitespace in the Java files isn't completely regular. In 
+particular, debug logging is always placed in column 1 - regardless of the 
+surrounding indentation. 
+Other people are also working on these files, so I'd rather not mess with 
+the established convention. 
+
+As things stand, when Leo imports a file its outputting a bunch of error 
+messages:
+* error: underindented line. Extra leading whitespace will be added
+* warning: intermixed blanks and tabs
+
+The creation of the auto node goes fine - though the final result has an 
+@ignore directive in its root node. 
+When working, I just take the @ignore away and clone the methods I want to 
+work on. 
+The problem is when I close the Leo file and re-open it later on, the same 
+errors occur during the building of the auto node and the previous cloned 
+information is lost. 
+To restart work on a feature, I need to reclone the appropriate nodes. Not 
+a showstopper, but not ideal. 
+
+I tried adjusting the info in the JavaScanner class in the core 
+leoImport.py file as follows:
+
+        self.blockCommentDelim1 = '/*'
+        self.blockCommentDelim2 = '*/'
+        self.blockDelim1 = '{'
+        self.blockDelim2 = '}'
+        self.lineCommentDelim = '//'
+        self.lineCommentDelim2 = None
+        self.outerBlockDelim1 = '{'
+        self.outerBlockDelim2 = '}'
+        self.classTags = ['class','interface']
+        self.functionTags = []
+        self.sigFailTokens = [';','='] # Just like c.
+        self.strict=False
+
+I deleted the pyc file and restarted Leo. A new pyc file appears, so the 
+compiled to bytecode seems to be ok.
+
+I was hoping the the setting of self.strict = False would allow the parsing 
+to ignore the whitespace and indentation issues. 
+I'm still getting the same errors though. 
+
+Any help appreciated. I'm using Leo 4.10-final. 
+
+===== EKR
+
+There is no easy way to do this at present, but it's probably reasonable to
+disable errors (and not add @ignore) for underindented comments for
+non-strict languages.
+
+Please file a wishlist bug for this.  Thanks.
+
+
+.. @+node:ekr.20130806072439.20487: *7* json import problem
+From: "Ville Vainio.
+
+https://plus.google.com/_/notifications/emlink?emr=02870587547267324596&emid=CJCDv9Ppo7QCFcQbTAodl2MAAA&path=%2F103097156557482112329%2Fposts%2FTL3HQegbK3T&dt=1355829277202&ub=63
+
+Interesting anomaly - if I had @auto metadata.json with contents like this::
+
+    {
+        'name' : "Test app 1"
+    }
+
+The last } was missing from the generated file. Changing to @edit made it work.
+.. @+node:ekr.20130806072439.20517: *7* Problem Creating a new outline using leoBridge
+From: SegundoBob <bhossley@ieee.org>
+
+I'm trying to create a new Leo-Editor outline file using leoBridge and I'm 
+stuck with this error:
+
+$ python .temp.py
+Traceback (most recent call last):
+  File ".temp.py", line 17, in <module>
+    ptrDay = ptrRoot.insertAsLastChild()
+  File "/home/ldi/bzr/LeoLatest/leo/core/leoNodes.py", line 1212, in 
+insertAsLastChild
+    n = p.numberOfChildren()
+  File "/home/ldi/bzr/LeoLatest/leo/core/leoNodes.py", line 488, in 
+numberOfChildren
+    return len(p.v.children)
+AttributeError: 'NoneType' object has no attribute 'children'
+
+Here is my program .temp.py:
+
+ pathLeo = '/home/ldi/tmp/debug/rfd1207.leo'
+
+
+import sys
+
+sys.path.append("/home/ldi/bzr/LeoLatest/") 
+
+import leo.core.leoBridge as leoBridge
+
+
+bridge = leoBridge.controller(gui='nullGui',verbose=False)
+
+cmdr = bridge.openLeoFile(pathLeo)
+
+ptrRoot = cmdr.rootPosition()
+
+ptrDay = ptrRoot.insertAsLastChild()
+-------- end program ------------------
+
+I seem to have an outline and it seems to have a root position, but this 
+root position does not have a "vnode".
+
+Versions:
+Leo Log Window
+Leo 4.11 devel, build 5416, 2012-07-01 15:27:23
+Python 2.7.2, qt version 4.7.4
+linux2  --- This is openSUSE 12.1
+
+
 .. @+node:ekr.20130908104426.11271: *5* files
-.. @+node:ekr.20130908104426.11249: *6* 1074812 certain .leo file causes "IndexError: list index out of range"
-.. @+node:ekr.20130908104426.11252: *6* 1132821 Leo replaces a soft link with a real file
-.. @+node:ekr.20130908104426.11257: *6* 1178249 url: file relative path does not work same way
-.. @+node:ekr.20130908104426.11241: *6* 910228 option to not convert line endings (Hard)
 .. @+node:ekr.20130806072439.20380: *6* auto-rst error? need more robust?
 From: HaveF <iamaplayer@gmail.com>
 
@@ -7610,13 +7661,34 @@ https://docs.google.com/file/d/0BxPh23fSSqZnMS1uaGVEajlxSk0/edit?usp=sharing
 All files are here:
 https://docs.google.com/file/d/0BxPh23fSSqZnWFdQVTJFdjhKN0k/edit?usp=sharing
 .. @+node:ekr.20130908104426.17092: *5* hard, not very important
-.. @+node:ekr.20130908104426.11242: *6*  914221 bound method ViewRenderedController.updated (Hard)
+.. @+node:ekr.20111026091322.16498: *6* 869098 Context menu settings lost if save as used
+See https://bugs.launchpad.net/leo-editor/+bug/869098
+
+Hard?
+
+I have a Leo file with settings for context menu:
+    
+@settings
+   @data contextmenu_commands
+       edit-headline Edit headline
+          copy-node Copy Node
+          cut-node Cut Node
+          paste-node Paste Node
+
+then these settings are lost if I save the leo file to a new name using
+File - Save as
+If I reload the leo file, they do return
+.. @+node:ekr.20130908104426.11241: *6* 910228 option to not convert line endings (Hard)
+.. @+node:ekr.20130908104426.11242: *6* 914221 bound method ViewRenderedController.updated (Hard)
 https://bugs.launchpad.net/leo-editor/+bug/914221
 
 Summary of a *long* discussion: this may be a docutils issue, and does not seem easy to fix.
+.. @+node:ekr.20111222113610.10244: *6* 613153 unable to describe root directory on thumb drive
+A very complex bug
+
+See https://bugs.launchpad.net/leo-editor/+bug/613153
 .. @+node:ekr.20130908104426.11278: *5* install & bzr
 .. @+node:ekr.20130908104426.11243: *6* 969391 setup.py confuses newbies
-.. @+node:ekr.20130908104426.11256: *6* 1175013 leo/plugins/spellpyx.txt is both source controlled and customized
 .. @+node:ekr.20130806072439.20495: *6* Leo 4.10 deb for Ubuntu Precise available
 From: "Ville M. Vainio" <vivainio@gmail.com>
 
@@ -7686,380 +7758,6 @@ Error: Couldn't open personal wordlist
 
 not a valid dictionary file /usr/share/pyshared/leo/plugins/spellpyx.txt
 wrote recent file: /home/ville/.leo/.leoRecentFiles.txt
-
-.. @+node:ekr.20130908104426.11276: *5* plugins
-.. @+node:ekr.20130908104426.11239: *6* 869385 Chapters make the nav_qt.py plugin useless
-.. @+node:ekr.20130912152335.11933: *5* later?
-.. @+node:ekr.20130806072439.20473: *6*   file URLs seem to be broken on Mac OS 10.7 Lion
-From: "kevin@ksvanhorn.com" <kvanhorn@ksvanhorn.com>
-
-I can put an http URL in a header and command-left-click it, and it
-shows up correctly. Or I can put @url in the header and the http URL
-as the first line in the body, and command-left-click takes me to the
-page. But no matter what I try, I cannot get file URLs to work. What
-seems to happen is this:
-
-If I give a path to a nonexistent file, I get an error message in the
-log window.
-
-If I give a valid path to an existing file, I get an error message *in
-the terminal window* from which I launched lion, of the form
-
- 'The file /path/to/my/home/dir/.leo/"/absolute/path/to/the/file" does
-not exist'
-
-or
-
- 'The file /path/to/leo/config/"/absolute/path/to/the/file" does not
-exist'
-
-That is, it takes the correct file path and prepends the path to the
-system config dir or my personal .leo dir to it. I have tried this
-both giving absolute paths and giving relative paths from either
-my .leo dir or the system leo config dir; in every case, if I don't
-get an error in the log window, then I get an error in the terminal
-window of the form described above. It appears that one part of the
-code is correctly creating the appropriate absolute path, and then
-passing it to another part of the code that wants to interpret this
-absolute path as a path relative to the location of a *.leo file.
-
------
-
-From: "kevin@ksvanhorn.com" <kvanhorn@ksvanhorn.com>
-
-I think I know the cause of the problem with file URLs on Mac OS 10.7
-Lion. In leoGlobals.py, in the method os_startfile(fname), we have
-
-    elif sys.platform == 'darwin':
-        # From Marc-Antoine Parent.
-        try:
-            subprocess.call(['open', quoted_fname])
-        except OSError:
-            pass # There may be a spurious "Interrupted system call"
-        except ImportError:
-            os.system('open %s' % (quoted_fname))
-
-The problem is that the quoted file path is being passed to
-subprocess.call, instead of the raw file path. I verified this by
-experimenting with subprocess.call() in a Python interactive mode
-window -- it doesn't want the path to be quoted. I also modified the
-os_startfile method to use the unquoted pathname, and verified that
-this fixed the problem.
-
-=====
-
-Thanks for this report and fix.  I'll look into it immediately.
-
-
-.. @+node:ekr.20130908104426.11240: *6*  879338 Global tables in leoApp.py should describe all languages known 
-.. @+node:ekr.20130908104426.11244: *6*  971171 If $(HOME)/.leo/.leoRecentFiles.txt does not exist, the only recent file ever is the current file
-.. @+node:ekr.20130908104426.11250: *6* 1090950 refresh from disk - cut node ressurection
-.. @+node:ekr.20130908104426.11266: *6* 1193820 Focus change on tree pane after saving current Leo file 
-.. @+node:ekr.20130805080841.21380: *6* 1222947 Javascript importer doesn't handle common idiom
-@language javascript
-
-https://groups.google.com/forum/#!topic/leo-editor/dmC8iIKlF7g
-
-Bug 
-https://bugs.launchpad.net/leo-editor/+bug/1222947
-
-Here is the test file::
-
-
-    var express = require('express');
-     
-    var app = express.createServer(express.logger());
-     
-    app.get('/', function(request, response) {
-    response.send('Hello World!');
-    });
-     
-    var port = process.env.PORT || 5000;
-    app.listen(port, function() {
-    console.log("Listening on " + port);
-    });
-.. @+node:ekr.20120415174008.10059: *6* Cancelling save of dirty untitled commander doesn't work
-Only happens with --ipython.
-.. @+node:ekr.20130806072439.20477: *6* I can't make Leo-Editor start in a full-screen window under openSUSU 12.1
-From: SegundoBob <bhossley@ieee.org>
-
-I much prefer to almost always use Leo-editor in a full-screen window.   
-When I run Ubuntu 11.10 with either the Fluxbox or the Gnome Classic 
-sessions, when I re-open an outline that was last closed when its window 
-was full-screen, Leo-Editor comes up in a full-screen window.  When I run 
-openSUSE 12.1 with either the XFCE or IceWM sessions, Leo-Editor never 
-comes up in a full-screen widow.  In all my tests I used exactly the same 
-Leo-Editor for all operating systems and session managers.
-
-Other applications can be made to come up in full-screen windows under 
-openSUSE 12.1.  For example, Thunderbird and Thunar will come up in 
-full-screen windows.
-
-I have seen this problem with all of the following revisions of 
-Leo-Editor:  5051, 5089, 5093, 5106, 5113, 5115, 5121, 5123, 5128, 5130, 
-5138, 5141, 5143, 5147, 5148, 5161, 5166, 5200, 5220, 5248, and 5252.  I 
-believe all my tests used Python 2.7.2, qt version 4.7.4.
-
-Does anyone have any ideas about solving this problem?
-.. @+node:ekr.20130806072439.20478: *7* "Re: I can't make Leo-Editor start in a full-screen window under openSUSU 12.1"
-@nocolor
-
-From: technatica <technatica@gmail.com>
-
-1. Start Leo.
-2. Ctrl-S
-3. Close Leo.
-4. Open Leo with window size saved.
-
-On Apr 14, 9:43=A0am, SegundoBob <bhoss...@ieee.org> wrote:
-> I much prefer to almost always use Leo-editor in a full-screen window.
-> When I run Ubuntu 11.10 with either the Fluxbox or the Gnome Classic
-> sessions, when I re-open an outline that was last closed when its window
-> was full-screen, Leo-Editor comes up in a full-screen window. =A0When I r=
-un
-> openSUSE 12.1 with either the XFCE or IceWM sessions, Leo-Editor never
-> comes up in a full-screen widow. =A0In all my tests I used exactly the sa=
-me
-> Leo-Editor for all operating systems and session managers.
->
-> Other applications can be made to come up in full-screen windows under
-> openSUSE 12.1. =A0For example, Thunderbird and Thunar will come up in
-> full-screen windows.
->
-> I have seen this problem with all of the following revisions of
-> Leo-Editor: =A05051, 5089, 5093, 5106, 5113, 5115, 5121, 5123, 5128, 5130=
-,
-> 5138, 5141, 5143, 5147, 5148, 5161, 5166, 5200, 5220, 5248, and 5252. =A0=
-I
-> believe all my tests used Python 2.7.2, qt version 4.7.4.
->
-> Does anyone have any ideas about solving this problem?
-
-.. @+node:ekr.20130806072439.20479: *7* "Re: I can't make Leo-Editor start in a full-screen window under openSUSU 12.1"
-@nocolor
-
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
---047d7b62201042c3c804dba80ccb
-
-
-On Sat, Apr 28, 2012 at 11:24 AM, SegundoBob <bhossley@ieee.org> wrote:
-
-> Thanks for the suggestion.  But doing a save does not help with my
-> problem.  I was already aware that some parameters are only remembered when
-> a save is done--and this is a minor annoyance.  Wouldn't it be better, more
-> consistent, and more useable, if every exit saved all the parameters that
-> initialization restores?
->
-> The symptoms of my problem are that window sizes of less than full-window
-> are remembered and restored, but when Leo-Editor is in full-screen at exit,
-> then it is restarted in partial-screen mode with an arbitrary unused band
-> at the top of the screen.
-
-
-Have you filed an official bug for this?  If not, please do.
-
-Edward
-
---047d7b62201042c3c804dba80ccb
-
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr">On Sat, Apr 28, 2012 at 11:24 AM, SegundoBob <span dir=3D"=
-ltr">&lt;<a href=3D"mailto:bhossley@ieee.org" target=3D"_blank">bhossley@ie=
-ee.org</a>&gt;</span> wrote:<br><div class=3D"gmail_extra"><div class=3D"gm=
-ail_quote">
-<blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1p=
-x #ccc solid;padding-left:1ex">Thanks for the suggestion.=A0 But doing a sa=
-ve does not help with my problem.=A0 I was already aware that some paramete=
-rs are only remembered when a save is done--and this is a minor annoyance.=
-=A0 Wouldn&#39;t it be better, more consistent, and more useable, if every =
-exit saved all the parameters that initialization restores?<br>
-<br>The symptoms of my problem are that window sizes of less than full-wind=
-ow are remembered and restored, but when Leo-Editor is in full-screen at ex=
-it, then it is restarted in partial-screen mode with an arbitrary unused ba=
-nd at the top of the screen.</blockquote>
-<div><br></div><div>Have you filed an official bug for this?=A0 If not, ple=
-ase do.<br><br>Edward</div></div></div></div>
-
---047d7b62201042c3c804dba80ccb--
-.. @+node:ekr.20130806072439.20480: *7* "Re: I can't make Leo-Editor start in a full-screen window under openSUSU 12.1"
-@nocolor
-
-From: technatica <technatica@gmail.com>
-
-I have the exact same behaviour with Leo 4.10 final, build 5286,
-2012-04-27 23:02:15.
-
-It refuses to remember its window settings.
-
-Arch Linux, 64bit, installed from bzr.
-
-On Apr 14, 9:43=A0am, SegundoBob <bhoss...@ieee.org> wrote:
-> I much prefer to almost always use Leo-editor in a full-screen window.
-> When I run Ubuntu 11.10 with either the Fluxbox or the Gnome Classic
-> sessions, when I re-open an outline that was last closed when its window
-> was full-screen, Leo-Editor comes up in a full-screen window. =A0When I r=
-un
-> openSUSE 12.1 with either the XFCE or IceWM sessions, Leo-Editor never
-> comes up in a full-screen widow. =A0In all my tests I used exactly the sa=
-me
-> Leo-Editor for all operating systems and session managers.
->
-> Other applications can be made to come up in full-screen windows under
-> openSUSE 12.1. =A0For example, Thunderbird and Thunar will come up in
-> full-screen windows.
->
-> I have seen this problem with all of the following revisions of
-> Leo-Editor: =A05051, 5089, 5093, 5106, 5113, 5115, 5121, 5123, 5128, 5130=
-,
-> 5138, 5141, 5143, 5147, 5148, 5161, 5166, 5200, 5220, 5248, and 5252. =A0=
-I
-> believe all my tests used Python 2.7.2, qt version 4.7.4.
->
-> Does anyone have any ideas about solving this problem?
-
-.. @+node:ekr.20130806072439.20481: *7* "Re: I can't make Leo-Editor start in a full-screen window under openSUSU 12.1"
-@nocolor
-
-From: SegundoBob <bhossley@ieee.org>
-
-
-
-
-Thanks for the suggestion.  But doing a save does not help with my 
-problem.  I was already aware that some parameters are only remembered when 
-a save is done--and this is a minor annoyance.  Wouldn't it be better, more 
-consistent, and more useable, if every exit saved all the parameters that 
-initialization restores?
-
-The symptoms of my problem are that window sizes of less than full-window 
-are remembered and restored, but when Leo-Editor is in full-screen at exit, 
-then it is restarted in partial-screen mode with an arbitrary unused band 
-at the top of the screen.
-.. @+node:ekr.20130806072439.20485: *6* Importing java file using @auto. How do I adjust Leo to ignore whitespace and indentation irregularities?
-From: Eoin <eoinmccarthy@fastmail.fm>
-
-I'm using @auto to import java files into my Leo project. I'm then cloning 
-various methods as sub-nodes of new feature nodes. 
-It's helping keep my development focussed - and is useful to look back and 
-see what parts of the codebase I've worked on for each feature. 
-
-However, the whitespace in the Java files isn't completely regular. In 
-particular, debug logging is always placed in column 1 - regardless of the 
-surrounding indentation. 
-Other people are also working on these files, so I'd rather not mess with 
-the established convention. 
-
-As things stand, when Leo imports a file its outputting a bunch of error 
-messages:
-* error: underindented line. Extra leading whitespace will be added
-* warning: intermixed blanks and tabs
-
-The creation of the auto node goes fine - though the final result has an 
-@ignore directive in its root node. 
-When working, I just take the @ignore away and clone the methods I want to 
-work on. 
-The problem is when I close the Leo file and re-open it later on, the same 
-errors occur during the building of the auto node and the previous cloned 
-information is lost. 
-To restart work on a feature, I need to reclone the appropriate nodes. Not 
-a showstopper, but not ideal. 
-
-I tried adjusting the info in the JavaScanner class in the core 
-leoImport.py file as follows:
-
-        self.blockCommentDelim1 = '/*'
-        self.blockCommentDelim2 = '*/'
-        self.blockDelim1 = '{'
-        self.blockDelim2 = '}'
-        self.lineCommentDelim = '//'
-        self.lineCommentDelim2 = None
-        self.outerBlockDelim1 = '{'
-        self.outerBlockDelim2 = '}'
-        self.classTags = ['class','interface']
-        self.functionTags = []
-        self.sigFailTokens = [';','='] # Just like c.
-        self.strict=False
-
-I deleted the pyc file and restarted Leo. A new pyc file appears, so the 
-compiled to bytecode seems to be ok.
-
-I was hoping the the setting of self.strict = False would allow the parsing 
-to ignore the whitespace and indentation issues. 
-I'm still getting the same errors though. 
-
-Any help appreciated. I'm using Leo 4.10-final. 
-
-===== EKR
-
-There is no easy way to do this at present, but it's probably reasonable to
-disable errors (and not add @ignore) for underindented comments for
-non-strict languages.
-
-Please file a wishlist bug for this.  Thanks.
-
-
-.. @+node:ekr.20130806072439.20487: *6* json import problem
-From: "Ville Vainio.
-
-https://plus.google.com/_/notifications/emlink?emr=02870587547267324596&emid=CJCDv9Ppo7QCFcQbTAodl2MAAA&path=%2F103097156557482112329%2Fposts%2FTL3HQegbK3T&dt=1355829277202&ub=63
-
-Interesting anomaly - if I had @auto metadata.json with contents like this::
-
-    {
-        'name' : "Test app 1"
-    }
-
-The last } was missing from the generated file. Changing to @edit made it work.
-.. @+node:ekr.20130806072439.20517: *6* Problem Creating a new outline using leoBridge
-From: SegundoBob <bhossley@ieee.org>
-
-I'm trying to create a new Leo-Editor outline file using leoBridge and I'm 
-stuck with this error:
-
-$ python .temp.py
-Traceback (most recent call last):
-  File ".temp.py", line 17, in <module>
-    ptrDay = ptrRoot.insertAsLastChild()
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoNodes.py", line 1212, in 
-insertAsLastChild
-    n = p.numberOfChildren()
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoNodes.py", line 488, in 
-numberOfChildren
-    return len(p.v.children)
-AttributeError: 'NoneType' object has no attribute 'children'
-
-Here is my program .temp.py:
-
- pathLeo = '/home/ldi/tmp/debug/rfd1207.leo'
-
-
-import sys
-
-sys.path.append("/home/ldi/bzr/LeoLatest/") 
-
-import leo.core.leoBridge as leoBridge
-
-
-bridge = leoBridge.controller(gui='nullGui',verbose=False)
-
-cmdr = bridge.openLeoFile(pathLeo)
-
-ptrRoot = cmdr.rootPosition()
-
-ptrDay = ptrRoot.insertAsLastChild()
--------- end program ------------------
-
-I seem to have an outline and it seems to have a root position, but this 
-root position does not have a "vnode".
-
-Versions:
-Leo Log Window
-Leo 4.11 devel, build 5416, 2012-07-01 15:27:23
-Python 2.7.2, qt version 4.7.4
-linux2  --- This is openSUSE 12.1
-
 
 .. @+node:ekr.20130908104426.11269: *3* Bug-tracker: wish-list
 .. @+node:ekr.20111125072438.10204: *4* 882243: (Wishlist) Clones sometimes not saved: change how @others works

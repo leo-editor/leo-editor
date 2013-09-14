@@ -257,6 +257,22 @@ https://bugs.launchpad.net/leo-editor/+bug/1185409
 
 Added g.is_binary_external_file and is_binary_string.
 Modified ic.createOutline to create @url file:// node.
+#@+node:ekr.20130908104426.11247: *3* Fixed bug 1046195: character encoding changes when dragging outline between leo files
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/1046195
+
+If I drag part of an outline from one leo file to another and the source
+outline contain special characters (ä, ö, ü, ß, ...), then they are
+misrepresented in the target file.
+
+The fix was to use g.toUnicode rather than g.u in parseText.
+
+@language python
+#@+node:ekr.20130908104426.11246: *3* Fixed bug 1028986: create relative urls when dragging binary files to Leo
+https://bugs.launchpad.net/leo-editor/+bug/1028986
+
+The fix was to createUrlForBinaryFile.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

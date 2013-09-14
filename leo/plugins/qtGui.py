@@ -5929,19 +5929,15 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
 
         '''Insert s in an @file, @auto or @edit node after p.'''
 
-        c = self.c ; u = c.undoer ; undoType = 'Drag File'
-
+        c = self.c
+        u,undoType = c.undoer,'Drag File'
         undoData = u.beforeInsertNode(p,pasteAsClone=False,copiedBunchList=[])
-
         if p.hasChildren() and p.isExpanded():
             p2 = p.insertAsNthChild(0)
         else:
             p2 = p.insertAfter()
-
         self.createAtFileNode(fn,p2,s)
-
         u.afterInsertNode(p2,undoType,undoData)
-
         c.selectPosition(p2)
     #@+node:ekr.20110605121601.18372: *9* createAtFileNode & helpers
     def createAtFileNode (self,fn,p,s):
@@ -6019,7 +6015,16 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
     #@+node:ekr.20120309075544.9882: *10* createUrlForBinaryFile
     def createUrlForBinaryFile(self,fn,p):
 
-        p.h = '@url file://%s' % fn
+        # Fix bug 1028986: create relative urls when dragging binary files to Leo.
+        c = self.c
+        base_fn = g.os_path_normcase(g.os_path_abspath(c.mFileName))
+        abs_fn  = g.os_path_normcase(g.os_path_abspath(fn))
+        prefix = os.path.commonprefix([abs_fn,base_fn])
+        if prefix and len(prefix) > 3: # Don't just strip off c:\.
+            p.h = abs_fn[len(prefix):].strip()
+        else:
+            p.h = '@url file://%s' % fn
+        
     #@+node:ekr.20110605121601.18377: *10* isAutoFile
     def isAutoFile (self,fn):
 
@@ -6081,21 +6086,17 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
     #@+node:ekr.20110605121601.18379: *8* doPathUrlHelper
     def doPathUrlHelper (self,fn,p):
 
-        '''Insert s in an @file, @auto or @edit node after p.'''
-
-        c = self.c ; u = c.undoer ; undoType = 'Drag File'
-
+        '''Insert fn as an @path node after p.'''
+        
+        c = self.c
+        u,undoType = c.undoer,'Drag Directory'
         undoData = u.beforeInsertNode(p,pasteAsClone=False,copiedBunchList=[])
-
         if p.hasChildren() and p.isExpanded():
             p2 = p.insertAsNthChild(0)
         else:
             p2 = p.insertAfter()
-
         p2.h = '@path ' + fn
-
         u.afterInsertNode(p2,undoType,undoData)
-
         c.selectPosition(p2)
     #@+node:ekr.20110605121601.18380: *7* doHttpUrl
     def doHttpUrl (self,p,url):
