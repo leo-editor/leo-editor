@@ -7138,7 +7138,7 @@ weather through better planning, education, and awareness.
 No community is storm proof,
 but
 StormReady can help communities save lives. Does StormReady make a difference?
-#@+node:ekr.20071007124202.3: *6* after sel=18.18,18.18
+#@+node:ekr.20071007124202.3: *6* after sel=18.19,18.19
 Americans live in the most severe weather-prone country on Earth. Each year,
 Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
@@ -9437,7 +9437,7 @@ the "lead" paragraph.
 
 This paragraph ends the test.  It is the "final"
 paragraph.
-#@+node:ekr.20110118082508.3835: *7* after sel=14.18,14.18
+#@+node:ekr.20110118082508.3835: *7* after sel=14.19,14.19
 This paragraph leads of this test. It is
 the "lead" paragraph.
 

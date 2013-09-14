@@ -3718,20 +3718,15 @@ class Commands (object):
         Paragraph is bound by start of body, end of body and blank lines. Paragraph is
         selected by position of current insertion cursor.
 
-    """
+        """
 
         c = self ; body = c.frame.body ; w = body.bodyCtrl
-
-        # g.trace(c.page_width)
-
         if g.app.batchMode:
             c.notValidInBatchMode("xxx")
             return
-
         if body.hasSelection():
             i,j = w.getSelectionRange()
             w.setInsertPoint(i)
-
         oldSel,oldYview,original,pageWidth,tabWidth = c.rp_get_args()
         head,lines,tail = c.findBoundParagraph()
         if lines:
@@ -3844,12 +3839,14 @@ class Commands (object):
 
         c = self ; body = c.frame.body ; w = body.bodyCtrl
         s = w.getAllText()
-
         # This destroys recoloring.
         junk, ins = body.setSelectionAreas(head,result,tail)
-
+        
         changed = original != head + result + tail
         if changed:
+            # 2013/09/14: fix an annoying glitch when there is no
+            # newline following the reformatted paragraph.
+            if not tail and ins < len(s): ins += 1
             # 2010/11/16: stay in the paragraph.
             body.onBodyChanged(undoType,oldSel=oldSel,oldYview=oldYview)
         else:
@@ -3862,13 +3859,11 @@ class Commands (object):
                 if line.isspace():
                     ins = j+1
                 else:
-                    ins = i ; break
-
+                    ins = i
+                    break
             # setSelectionAreas has destroyed the coloring.
             c.recolor()
-
         w.setSelectionRange(ins,ins,insert=ins)
-
         # 2011/10/26: Calling see does more harm than good.
             # w.see(ins)
     #@+node:ekr.20101118113953.5843: *7* rp_wrap_all_lines

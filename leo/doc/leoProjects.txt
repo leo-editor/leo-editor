@@ -280,7 +280,7 @@ The only safe place for the fix is in at.replaceTargetFileIfDifferent.
 
 @language python
 #@+node:ekr.20130908104426.11257: *3* Investigated bug 1178249: url: file relative path does not work same way
-@language rest
+https://bugs.launchpad.net/leo-editor/+bug/1178249
 
 I am going to mark this report as invalid. Please reopen if necessary.
 
@@ -302,9 +302,6 @@ Any of the following work in a headline::
 In particular, note this code in g.computeFileUrl::
 
     path = g.os_path_finalize_join(c.openDirectory,base,path)
-
-
-
 
 #@-all
 
