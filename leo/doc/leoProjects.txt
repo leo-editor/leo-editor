@@ -273,6 +273,14 @@ The fix was to use g.toUnicode rather than g.u in parseText.
 https://bugs.launchpad.net/leo-editor/+bug/1028986
 
 The fix was to createUrlForBinaryFile.
+#@+node:ekr.20130908104426.11249: *3* Fixed bug 1074812: certain .leo file causes "IndexError: list index out of range"
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/1074812
+
+The problem are the marks created by a svn conflict. Leo can not recover
+from this kind of error in such a way as to recover data. The workaround is
+to report a corrupted file in at.scanText4.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

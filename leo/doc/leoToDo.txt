@@ -4,6 +4,11 @@
 
 .. @+all
 .. @+node:ekr.20130908104426.11231: ** ** Compatibility mode
+.. @+node:ekr.20130914103322.11285: ** * Reorganize leoAtFile.py
+@language rest
+
+Each read/write operation should create a *separate* reader or writer object.
+This prevents any possibility of pollution of ivars.
 .. @+node:ekr.20130501035328.10475: ** * Desired outcomes for Leo
 1. Newbies can install Leo without problems.
 2. Newbies can learn Leo's main features easily.
@@ -6635,7 +6640,7 @@ https://bugs.launchpad.net/leo-editor/+bug/nnn
 .. @+node:ekr.20130909073003.11525: *4* first: medium priority
 @language rest
 
-There are 25 medium priority bugs open at present.
+There are 24 medium priority bugs open at present.
 .. @+node:ekr.20130908104426.11252: *5* 1132821 Leo replaces a soft link with a real file
 https://bugs.launchpad.net/leo-editor/+bug/1132821
 
