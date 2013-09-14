@@ -6640,14 +6640,7 @@ https://bugs.launchpad.net/leo-editor/+bug/nnn
 .. @+node:ekr.20130909073003.11525: *4* first: medium priority
 @language rest
 
-There are 24 medium priority bugs open at present.
-.. @+node:ekr.20130908104426.11252: *5* 1132821 Leo replaces a soft link with a real file
-https://bugs.launchpad.net/leo-editor/+bug/1132821
-
-When opening a file with @auto via a soft link (on Linux) Leo reads in the
-file correctly, but after modifying the content leo replaces the link with
-an actual file, which means the original file, is not modified and you end
-up with two different versions on disk.
+There are 23 medium priority bugs open at present.
 .. @+node:ekr.20130908104426.11257: *5* 1178249 url: file relative path does not work same way
 .. @+node:ekr.20130908104426.11256: *5* 1175013 leo/plugins/spellpyx.txt is both source controlled and customized
 .. @+node:ekr.20130908104426.11239: *5* 869385 Chapters make the nav_qt.py plugin useless

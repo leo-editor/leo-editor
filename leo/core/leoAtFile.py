@@ -3020,10 +3020,10 @@ class atFile:
         '''Open the file and return True if all went well.'''
 
         at = self ; c = at.c
-
         try:
             at.shortFileName = g.shortFileName(fileName)
-            at.targetFileName = c.os_path_finalize_join(at.default_directory,fileName)
+            at.targetFileName = c.os_path_finalize_join(
+                at.default_directory,fileName)
             path = g.os_path_dirname(at.targetFileName)
             if not path or not g.os_path_exists(path):
                 if path:
@@ -3036,7 +3036,6 @@ class atFile:
             at.exception("exception creating path: %s" % repr(path))
             g.es_exception()
             return False
-
         if g.os_path_exists(at.targetFileName):
             try:
                 if not os.access(at.targetFileName,os.W_OK):
@@ -3044,7 +3043,6 @@ class atFile:
                     return False
             except AttributeError:
                 pass # os.access() may not exist on all platforms.
-
         try:
             if new_write:
                 at.outputFileName = None
@@ -3059,7 +3057,6 @@ class atFile:
         except Exception:
             at.exception("exception creating:" + at.outputFileName)
             return False
-
         return True
     #@+node:bwmulder.20050101094804: *6* at.openForWrite
     def openForWrite (self, filename, wb='wb'):
@@ -3295,8 +3292,8 @@ class atFile:
         if p.isAtIgnoreNode() and not p.isAtAsisFileNode():
             pathChanged = False
         else:
-            oldPath = at.getPathUa(p).lower()
-            newPath = at.fullPath(p).lower()
+            oldPath = g.os_path_normcase(at.getPathUa(p))
+            newPath = g.os_path_normcase(at.fullPath(p))
             pathChanged = oldPath and oldPath != newPath
             # 2010/01/27: suppress this message during save-as and save-to commands.
             if pathChanged and not c.ignoreChangedPaths:
@@ -5250,6 +5247,11 @@ class atFile:
             # The default: may be changed later.
             root.clearOrphan()
             root.clearDirty()
+        # Fix bug 1132821: Leo replaces a soft link with a real file.
+        if at.outputFileName:
+            at.outputFileName = g.os_path_realpath(at.outputFileName)
+        if at.targetFileName:
+            at.targetFileName = g.os_path_realpath(at.targetFileName)
         if trace: g.trace(
             'ignoreBlankLines',ignoreBlankLines,
             'target exists',g.os_path_exists(at.targetFileName),

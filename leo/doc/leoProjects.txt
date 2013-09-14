@@ -4,8 +4,6 @@
 #@+node:ekr.20130807203905.16589: ** 4.11 b1 projects
 @language rest
 #@+node:ekr.20130821062332.11235: *3* Fixed bug 1208942: Leo holding directory/file handles after file close?
-@language rest
-
 https://bugs.launchpad.net/leo-editor/+bug/1208942
 Leo holding directory/file handles after file close?
 
@@ -21,13 +19,9 @@ Open Leo
 Actually, only just opening a .leo file without any @file nodes was enough to keep a file open.
 
 The fix was to close theFile in fc.getLeoFile.
-
-@language python
 #@+node:ekr.20130821062332.11233: *3* Added c.recursiveImport and ic.recursiveImportController
 This will reduce duplicate scripts.
 #@+node:ekr.20130821062332.11236: *3* Added yes-to-all button when prompting for dangerous writes
-@language rest
-
 importing a medium sized java project ~ 400 files
 https://groups.google.com/forum/#!searchin/leo-editor/importing$20a$20medium$20sized$20java$20project/leo-editor/PiuFXtAHG0s/o6vwu19PsMEJ
 
@@ -47,10 +41,13 @@ Fixed at rev 5935. What I did:
 Undoing a headline change does not change focus to the headline
 https://bugs.launchpad.net/leo-editor/+bug/1162307
 #@+node:ekr.20130805134749.12435: *3* Fixed bug 1182695: the tricky string that leo can not handle
-@language python
+@language rest
 
 the tricky string that leo can not handle 
 https://bugs.launchpad.net/leo-editor/+bug/1182695
+
+@language python
+
 
 def but_quotes_at_the_end_of_a_triple_quoted_string_are_still_tricky(self):
     string = """Hello "world\""""
@@ -59,10 +56,10 @@ what
 
 "\"" b # Escape works.
 
-The fix was to the escape-handling code in match_span.
-#@+node:ekr.20130908104426.11259: *3* Investigated bug 1182694: not display unique in leo and other editor
 @language rest
 
+The fix was to the escape-handling code in match_span.
+#@+node:ekr.20130908104426.11259: *3* Investigated bug 1182694: not display unique in leo and other editor
 https://bugs.launchpad.net/leo-editor/+bug/1182694
 
 A string-formatting bug.
@@ -127,18 +124,12 @@ the find command) left focus in the headline.
 The fix was to c.redraw(!) It now calls c.frame.tree.select before calling
 c.frame.tree.redraw.
 #@+node:ekr.20130806072439.20475: *3* Fixed bug 1223383: Garbled text with BOM-marked files
-@language rest
-
 This bug was fixed by the new_read (and new_write) logic
 first committed at Rev. 5960.
 
 To do when removing new_read switch:
 - Remove unused theFile & fileName args from at.readLine.
-
-@language python
 #@+node:ekr.20130911061510.11285: *4*  report
-@language rest
-
 https://bugs.launchpad.net/leo-editor/+bug/1223383
 
 https://groups.google.com/forum/#!searchin/leo-editor/garbled$20text/leo-editor/tq1HdMFuyVg/fbpK2M6K1tIJ
@@ -204,8 +195,6 @@ Python 2.7.3, qt version 4.8.0
 Windows 5, 1, 2600, 2, Service Pack 3
 
 #@+node:ekr.20130911110233.11283: *4*  what I did
-@language rest
-
 Added new_write master switch in leoAtFile.py.
 When new_write is True:
 - Leo no longer writes a temporary output file.
@@ -258,8 +247,6 @@ https://bugs.launchpad.net/leo-editor/+bug/1185409
 Added g.is_binary_external_file and is_binary_string.
 Modified ic.createOutline to create @url file:// node.
 #@+node:ekr.20130908104426.11247: *3* Fixed bug 1046195: character encoding changes when dragging outline between leo files
-@language rest
-
 https://bugs.launchpad.net/leo-editor/+bug/1046195
 
 If I drag part of an outline from one leo file to another and the source
@@ -267,20 +254,31 @@ outline contain special characters (ä, ö, ü, ß, ...), then they are
 misrepresented in the target file.
 
 The fix was to use g.toUnicode rather than g.u in parseText.
-
-@language python
 #@+node:ekr.20130908104426.11246: *3* Fixed bug 1028986: create relative urls when dragging binary files to Leo
 https://bugs.launchpad.net/leo-editor/+bug/1028986
 
 The fix was to createUrlForBinaryFile.
 #@+node:ekr.20130908104426.11249: *3* Fixed bug 1074812: certain .leo file causes "IndexError: list index out of range"
-@language rest
-
 https://bugs.launchpad.net/leo-editor/+bug/1074812
 
 The problem are the marks created by a svn conflict. Leo can not recover
 from this kind of error in such a way as to recover data. The workaround is
 to report a corrupted file in at.scanText4.
+#@+node:ekr.20130908104426.11252: *3* Fixed bug 1132821: Leo replaces a soft link with a real file
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/1132821
+
+When opening a file with @auto via a soft link (on Linux) Leo reads in the
+file correctly, but after modifying the content leo replaces the link with
+an actual file, which means the original file, is not modified and you end
+up with two different versions on disk.
+
+os.path.realpath follows symbolic links.
+
+The only safe place for the fix is in at.replaceTargetFileIfDifferent.
+
+@language python
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

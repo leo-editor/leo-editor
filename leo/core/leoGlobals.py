@@ -3456,13 +3456,15 @@ def os_path_normpath(path):
     return path
 #@+node:ekr.20080605064555.2: *3* g.os_path_realpath
 def os_path_realpath(path):
+    
+    '''Return the canonical path of the specified filename, eliminating any
+    symbolic links encountered in the path (if they are supported by the
+    operating system).
+    '''
 
     path = g.toUnicodeFileEncoding(path)
-
     path = os.path.realpath(path)
-
     path = g.toUnicodeFileEncoding(path)
-
     return path
 #@+node:ekr.20031218072017.2158: *3* g.os_path_split
 def os_path_split(path):

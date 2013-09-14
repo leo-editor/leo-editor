@@ -895,17 +895,13 @@ class Commands (object):
     def os_path_finalize (self,path,**keys):
 
         c = self
-
         keys['c'] = c
-
         return g.os_path_finalize(path,**keys)
 
     def os_path_finalize_join (self,*args,**keys):
 
         c = self
-
         keys['c'] = c
-
         return g.os_path_finalize_join(*args,**keys)
     #@+node:ekr.20081006100835.1: *4* c.getNodePath & c.getNodeFileName
     # Not used in Leo's core.
