@@ -6810,44 +6810,45 @@ class leoQtTreeTab:
         self.w = None # The QComboBox
 
         self.createControl()
-    #@+node:ekr.20110605121601.18441: *5* tt.createControl
+    #@+node:ekr.20110605121601.18441: *5* tt.createControl (defines class LeoQComboBox)
     def createControl (self):
+        
+        class LeoQComboBox(QtGui.QComboBox):
+            '''Create a subclass in order to handle focusInEvents.'''
+            def __init__(self,cc):
+                self.leo_cc = cc
+                QtGui.QComboBox.__init__(self) # Init the base class.
+            def focusInEvent(self,event):
+                names = self.leo_cc.setAllChapterNames()
+                self.clear()
+                w.insertItems(0,names)
+                QtGui.QComboBox.focusInEvent(self,event) # Call the base class
 
         tt = self
         frame = QtGui.QLabel('Chapters: ')
         tt.iconBar.addWidget(frame)
-        tt.w = w = QtGui.QComboBox()
+        tt.w = w = LeoQComboBox(tt.cc) ## QtGui.QComboBox()
         tt.setNames()
         tt.iconBar.addWidget(w)
-
         def onIndexChanged(s,tt=tt):
-            if not s: return
-            s = g.u(s)
-            # g.trace(s)
-            tt.selectTab(s)
-
-        w.connect(w,
-            QtCore.SIGNAL("currentIndexChanged(QString)"),
-                onIndexChanged)
+            if s:
+                s = g.u(s)
+                tt.selectTab(s)
+        w.connect(w,QtCore.SIGNAL("currentIndexChanged(QString)"),
+            onIndexChanged)
     #@+node:ekr.20110605121601.18442: *4* Tabs...
     #@+node:ekr.20110605121601.18443: *5* tt.createTab
     def createTab (self,tabName,select=True):
 
-        # g.trace(tabName,g.callers(4))
-
         tt = self
-
         # Avoid a glitch during initing.
-        if tabName == 'main': return
-
-        if tabName not in tt.tabNames:
+        if tabName != 'main' and tabName not in tt.tabNames:
             tt.tabNames.append(tabName)
             tt.setNames()
     #@+node:ekr.20110605121601.18444: *5* tt.destroyTab
     def destroyTab (self,tabName):
 
         tt = self
-
         if tabName in tt.tabNames:
             tt.tabNames.remove(tabName)
             tt.setNames()
@@ -6855,12 +6856,9 @@ class leoQtTreeTab:
     def selectTab (self,tabName):
 
         tt,c = self,self.c
-
-        if tabName not in self.tabNames:
-            tt.createTab(tabName)
-
-        # g.trace('lockout',tt.lockout,tabName,g.callers())
-
+        exists = tabName in self.tabNames
+        if not exists:
+            tt.createTab(tabName) # Calls tt.setNames()
         if not tt.lockout:
             tt.cc.selectChapterByName(tabName)
             c.redraw()
@@ -6868,8 +6866,7 @@ class leoQtTreeTab:
     #@+node:ekr.20110605121601.18446: *5* tt.setTabLabel
     def setTabLabel (self,tabName):
 
-        tt = self ; w = tt.w
-        # g.trace(tabName)
+        tt,w = self,self.w
         i = w.findText (tabName)
         if i > -1:
             w.setCurrentIndex(i)
@@ -6878,9 +6875,10 @@ class leoQtTreeTab:
 
         '''Recreate the list of items.'''
 
-        tt = self ; w = tt.w
+        tt,w = self,self.w
         names = tt.tabNames[:]
-        if 'main' in names: names.remove('main')
+        if 'main' in names:
+            names.remove('main')
         names.sort()
         names.insert(0,'main')
         w.clear()

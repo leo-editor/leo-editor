@@ -303,6 +303,46 @@ In particular, note this code in g.computeFileUrl::
 
     path = g.os_path_finalize_join(c.openDirectory,base,path)
 
+#@+node:ekr.20130914114615.11287: *3* Fixed annoying reformat-paragraph bug
+@language rest
+
+The cursor was positioned one character from the end when there was no
+newline at the end of the paragraph.  
+
+The fix was to adjust ins in rp_reformat as follows::
+
+    if not tail and ins < len(s): ins += 1
+
+Example::
+
+A file that is both source controlled and customized by the user is inconvenient for both novices and experts.
+#@+node:ekr.20130915052002.11285: *3* Fixed bug 1224586: Reorganizing @chapter nodes breaks chapter menu
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/1224586
+
+Reorganizing @chapter nodes under an outline's @chapters node breaks the
+Chapter dropdown navigation box until the outline is reloaded.
+
+Summary:
+
+- Recompute drop-down list every time it is activated.
+- Eliminated chapter.hoist ivar.
+- Recompute chapter data every time a chapter is selected.
+
+Details:
+    
+- Eliminate chapter.root ivar.
+- recompute root of @chapter node every time it is needed
+  using chapter.findChapterNode(chapter.name).
+- Eliminated chapter.hoistStack.
+  Append one entry to c.hoistStack when selection a non-main chapter.
+  Pop one entry when unselecting a non-main chapter.
+- Created LeoQComboBox in tt.createControl in order to be able to sublass focusInEvent.
+- Created cc.setAllChapterNames, called from LeoQComboBox.focusInEvent.
+- Added "create" keyword argument to selectChapterByName.
+  This avoid a compile-time choice: it is True except when the user
+  types the name from the minibuffer. 
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

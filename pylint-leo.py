@@ -107,16 +107,16 @@ def getPluginsList():
             # Dangerous: PyQt4.phonon has no x member.
         'xemacs.py',
     )
-#@+node:ekr.20120225032124.17089: ** getRecentCoreList
+#@+node:ekr.20120225032124.17089: ** getRecentCoreList (pylint-leo.py)
 def getRecentCoreList():
 
     return (
         # 'runLeo',
         # 'leoApp',
-        'leoAtFile',
+        # 'leoAtFile',
         # 'leoBridge',
         # 'leoCache',
-        # 'leoChapters',
+        'leoChapters',
         # 'leoCommands',
         # 'leoConfig',
         # 'leoEditCommands',
@@ -334,7 +334,6 @@ def scanOptions():
 
 g_option_fn = None
 scope = scanOptions()
-
 coreList            = getCoreList()
 externalList        = ('ipy_leo','lproto',)
 guiPluginsList      = getGuiPluginsList()
@@ -343,7 +342,6 @@ pluginsList         = getPluginsList()
 recentCoreList      = getRecentCoreList()
 recentPluginsList   = getRecentPluginsList()
 tkPass              = getTkPass()
-
 if scope == 'all':
     tables_table = (
         (coreList,'core'),

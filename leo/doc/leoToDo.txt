@@ -7774,6 +7774,7 @@ not a valid dictionary file /usr/share/pyshared/leo/plugins/spellpyx.txt
 wrote recent file: /home/ville/.leo/.leoRecentFiles.txt
 
 .. @+node:ekr.20130908104426.11269: *3* Bug-tracker: wish-list
+There are 42 wishlist items.  Some appear to be duplicates, or closely related.
 .. @+node:ekr.20111125072438.10204: *4* 882243: (Wishlist) Clones sometimes not saved: change how @others works
 See https://bugs.launchpad.net/leo-editor/+bug/882243
 
