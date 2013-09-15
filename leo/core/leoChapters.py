@@ -607,7 +607,6 @@ class chapterController:
     def inChapter (self):
 
         cc = self
-
         theChapter = cc.getSelectedChapter()
         return theChapter and theChapter.name != 'main'
     #@+node:ekr.20070318124004: *4* cc.getChapter
@@ -643,52 +642,53 @@ class chapterController:
             for p in chaptersNode.self_and_subtree():
                 g.pr('.'*p.level(),p.v)
     #@+node:ekr.20070615075643: *4* cc.selectChapterForPosition
-    def selectChapterForPosition (self,p):
+    def selectChapterForPosition (self,p,chapter=None):
 
         '''
         Select a chapter containing position p.
+        New in Leo 4.11: prefer the given chapter if possible.
         Do nothing if p if p does not exist or is in the presently selected chapter.
 
         Note: this code calls c.redraw() if the chapter changes.
         '''
 
         trace = False and not g.unitTesting
-        cc = self ; c = cc.c
-
+        c,cc = self.c,self
+        selChapter = cc.getSelectedChapter()
+        if trace: g.trace('***',p.h,
+            chapter.name if chapter else None,
+            selChapter.name if selChapter else None)
         if not p:
             if trace: g.trace('no p')
             return
-
         if not c.positionExists(p):
             if trace: g.trace('does not exist',p.h) 
             return
-
-        theChapter = cc.getSelectedChapter()
+        # New in Leo 4.11: prefer the given chapter if possible.
+        theChapter = chapter or selChapter
         if not theChapter:
             return
-
-        if trace: g.trace('selected:',theChapter.name,'node',p.h)
-
         # First, try the presently selected chapter.
         firstName = theChapter.name
         if firstName == 'main':
             if trace: g.trace('no search: main chapter:',p.h)
             return
-
         if theChapter.positionIsInChapter(p):
             if trace: g.trace('position found in chapter:',theChapter.name,p.h)
+            cc.selectChapterByName(theChapter.name) ### New.
             return
-
         for name in cc.chaptersDict:
             if name not in (firstName,'main'):
                 theChapter = cc.chaptersDict.get(name)
                 if theChapter.positionIsInChapter(p):
                     if trace: g.trace('select:',theChapter.name)
                     cc.selectChapterByName(name)
-                    return
+                    break
         else:
             if trace: g.trace('select main')
             cc.selectChapterByName('main')
+        # Fix bug 869385: Chapters make the nav_qt.py plugin useless
+        c.redraw_now()
     #@+node:ekr.20130915052002.11289: *4* cc.setAllChapterNames (New in Leo 4.11)
     def setAllChapterNames(self):
         

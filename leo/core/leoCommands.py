@@ -6899,34 +6899,16 @@ class Commands (object):
 
         url = 'http://leoeditor.com/leo_toc.html'
         g.handleUrl(url)
-    #@+node:ekr.20110402084740.14490: *4* Icon bar
+    #@+node:ekr.20110402084740.14490: *4* goToNext/PrevHistory
     def goToNextHistory (self,event=None):
-
         '''Go to the next node in the history list.'''
-
         c = self
-        p = c.nodeHistory.goNext()
-            # Returns None if the position does not exist.
-        if not p: return
-        c.nodeHistory.skipBeadUpdate = True
-        try:
-            c.selectPosition(p)
-        finally:
-            c.nodeHistory.skipBeadUpdate = False
+        c.nodeHistory.goNext()
 
     def goToPrevHistory (self,event=None):
-
         '''Go to the previous node in the history list.'''
-
         c = self
-        p = c.nodeHistory.goPrev()
-            # Returns None if the position does not exist.
-        if not p: return
-        c.nodeHistory.skipBeadUpdate = True
-        try:
-            c.selectPosition(p)
-        finally:
-            c.nodeHistory.skipBeadUpdate = False
+        c.nodeHistory.goPrev()
     #@+node:ekr.20031218072017.2945: *3* Dragging (commands)
     #@+node:ekr.20031218072017.2353: *4* c.dragAfter
     def dragAfter(self,p,after):
@@ -8229,13 +8211,11 @@ class Commands (object):
 
         trace = False and not g.unitTesting
         c = self ; cc = c.chapterController
-
         if cc:
             cc.selectChapterForPosition(p)
                 # Important: selectChapterForPosition calls c.redraw
                 # if the chapter changes.
             if trace: g.trace(p and p.h)
-
         # 2012/03/08: De-hoist as necessary to make p visible.
         redraw_flag = False
         if c.hoistStack:
@@ -8247,17 +8227,13 @@ class Commands (object):
                     bunch = c.hoistStack.pop()
                     redraw_flag = True
                     if trace: g.trace('unhoist',bunch.p.h)
-
         if trace and not c.positionExists(p):
             g.trace('** does not exist: %s' % (p and p.h))
-
         c.frame.tree.select(p)
-
         # New in Leo 4.4.2.
         c.setCurrentPosition(p)
             # Do *not* test whether the position exists!
             # We may be in the midst of an undo.
-
         if redraw_flag and enableRedrawFlag:
             c.redraw()
 
@@ -8429,136 +8405,70 @@ class nodeHistory:
 
         self.c = c
         self.beadList = []
-            # list of (position,chapter) tuples for
-            # nav_buttons and nodenavigator plugins.
+            # a list of (position,chapter) tuples.
         self.beadPointer = -1
         self.skipBeadUpdate = False
-        self.trace = False
-    #@+node:ekr.20070615131604.3: *3* canGoToNext/Prev
-    def canGoToNextVisited (self):
-
-        if self.trace:
-            g.trace(
-                self.beadPointer + 1 < len(self.beadList),
-                self.beadPointer,len(self.beadList))
-
-        return self.beadPointer + 1 < len(self.beadList)
-
-    def canGoToPrevVisited (self):
-
-        if self.trace:
-            g.trace(self.beadPointer > 0,
-                self.beadPointer,len(self.beadList))
-
-        return self.beadPointer > 0
-    #@+node:ekr.20070615132939: *3* clear
-    def clear (self):
-
-        self.beadList = []
-        self.beadPointer = -1
-    #@+node:ekr.20070615134813: *3* goNext/Prev
+    #@+node:ekr.20070615134813: *3* goNext (nodeHistory)
     def goNext (self):
-
-        '''Return the next visited node, or None.'''
-
-        trace = (False or self.trace) and not g.unitTesting
-
-        c = self.c
-        while self.beadPointer + 1 < len(self.beadList):
+        '''Select the next node, if possible.'''
+        if self.beadPointer + 1 < len(self.beadList):
             self.beadPointer += 1
             p,chapter = self.beadList[self.beadPointer]
-            if c.positionExists(p):
-                if trace: g.trace(p and p.h)
-                break
-            else:
-                if trace: g.trace('does not exist',p and p.h)
-        else:
-            return None
-
-        self.selectChapter(chapter)
-        return p
-
+            # g.trace(self.beadPointer,p.h)
+            self.select(p,chapter)
+    #@+node:ekr.20130915111638.11288: *3* goPrev (nodeHistory)
     def goPrev (self):
-
-        '''Return the previous visited node, or None.'''
-
-        trace = (False or self.trace) and not g.unitTesting
-        c = self.c
-        while self.beadPointer > 0:
+        '''Select the previously visited node, if possible.'''
+        if self.beadPointer > 0:
             self.beadPointer -= 1
             p,chapter = self.beadList[self.beadPointer]
-            if c.positionExists(p):
-                if trace: g.trace(p and p.h)
-                break
-            else:
-                if trace: g.trace('does not exist',p and p.h)
+            # g.trace(self.beadPointer,p.h)
+            self.select(p,chapter)
+    #@+node:ekr.20130915111638.11294: *3* select (nodeHistory)
+    def select (self,p,chapter):
+        '''
+        if p.v exists anywhere, select p in chapter p if possible.
+        Otherwise, remove p from self.beadList.
+        '''
+        trace = False and not g.unitTesting
+        c,cc = self.c,self.c.chapterController
+        if trace: g.trace(c.positionExists(p),p and p.h)
+        if c.positionExists(p):
+            self.skipBeadUpdate = True
+            try:
+                oldChapter = cc.getSelectedChapter()
+                if oldChapter != chapter:
+                    cc.selectChapterForPosition(p,chapter=chapter)
+                c.selectPosition(p) # Calls cc.selectChapterForPosition
+            finally:
+                self.skipBeadUpdate = False
         else:
-            return None
-
-        self.selectChapter(chapter)
-        return p
-    #@+node:ekr.20070615132939.1: *3* remove
-    def remove (self,p):
-
-        '''Remove an item from the nav_buttons list.'''
-
-        c = self.c
-        target = self.beadPointer > -1 and self.beadList[self.beadPointer]
-
-        self.beadList = [z for z in self.beadList
-                            if z[0] != p and c.positionExists(z[0])]
-
-        try:
-            self.beadPointer = self.beadList.index(target)
-        except ValueError:
-            self.beadPointer = max(0,self.beadPointer-1)
-
-        if self.trace:
-            g.trace('bead list',p.h)
-            g.pr([z[0].h for z in self.beadList])
-    #@+node:ekr.20070615140032: *3* selectChapter
-    def selectChapter (self,chapter):
-
-        c = self.c ; cc = c.chapterController
-
-        if cc and chapter and chapter != cc.getSelectedChapter():
-            cc.selectChapterByName(chapter.name)
-    #@+node:ville.20090724234020.14676: *3* update (leoCommands)
+            self.beadList = [p2 for p2 in self.beadList if p2.v != p.v]
+            self.beadPointer -= 1
+    #@+node:ville.20090724234020.14676: *3* update (nodeHistory)
     def update (self,p):
-
-        trace = (False or self.trace) and not g.unitTesting
-
-        c = self.c
-        if self.skipBeadUpdate:
+        '''Update the beadList.  Called from c.frame.tree.selectHelper.'''
+        trace = False and not g.unitTesting
+        c,cc = self.c,self.c.chapterController
+        if not p or self.skipBeadUpdate:
+            # We have been called from self.doNext or self.doPrev.
+            # Do *not* update the bead list here!
             return
-
-        p = p.copy()
-        if self.beadList and self.beadList[-1][0] == p:
-            # do not re-append the same node
+        # A hack: don't add @chapter nodes.
+        # These are selected during the transitions to a new chapter.
+        if p.h.startswith('@chapter '):
             return
-
-        if trace: g.trace(p and p.h)
-
-        cc = c.chapterController
-        theChapter = cc and cc.getSelectedChapter()
-        data = (p,theChapter)
-
-        if 0: # This makes no sense.
-            if self.beadPointer < len(self.beadList) - 1:
-                # if we came to new node, truncate bead list
-                self.beadList = self.beadList[0:self.beadPointer]
-                if True or trace: g.trace('truncating')
-
+        # Leo 4.12: cut back the beadList.
+        if self.beadPointer < 0:
+            self.beadList = []
+        else:
+            self.beadList[:self.beadPointer]
+        # Leo 4.11: remove any duplicates of p.
+        self.beadList = [data for data in self.beadList if data[0].v != p.v]
+        data = p.copy(),cc.getSelectedChapter()
         self.beadList.append(data)
         self.beadPointer = len(self.beadList) - 1
-
-        if trace:    
-            # g.trace('bead list',p.h)
-            g.trace([z[0].h for z in self.beadList])
-    #@+node:ekr.20070615140655: *3* visitedPositions
-    def visitedPositions (self):
-
-        return [p.copy() for p,chapter in self.beadList]
+        if trace: g.trace(len(self.beadList),self.beadPointer,p and p.h,g.callers())
     #@-others
 #@-others
 #@-leo

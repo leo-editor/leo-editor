@@ -6855,12 +6855,12 @@ class leoQtTreeTab:
     #@+node:ekr.20110605121601.18445: *5* tt.selectTab
     def selectTab (self,tabName):
 
-        tt,c = self,self.c
+        tt,c,cc = self,self.c,self.cc
         exists = tabName in self.tabNames
         if not exists:
             tt.createTab(tabName) # Calls tt.setNames()
         if not tt.lockout:
-            tt.cc.selectChapterByName(tabName)
+            cc.selectChapterByName(tabName)
             c.redraw()
             c.outerUpdate()
     #@+node:ekr.20110605121601.18446: *5* tt.setTabLabel

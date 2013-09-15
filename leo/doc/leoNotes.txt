@@ -8238,6 +8238,118 @@ else:
         return unicode(s)
     def ue(s,encoding):
         return unicode(s,encoding)
+.. @+node:ekr.20130915111638.11289: *3* Not used from nodeHistory
+.. @+node:ekr.20130915111638.11296: *4* Icon bar (old leoCommands)
+def goToNextHistory (self,event=None):
+
+    '''Go to the next node in the history list.'''
+
+    c = self
+    p = c.nodeHistory.goNext()
+        # Returns None if the position does not exist.
+    if p:
+        g.trace(p.h)
+        c.nodeHistory.skipBeadUpdate = True
+        try:
+            c.selectPosition(p) # Calls cc.selectChapterForPosition
+        finally:
+            c.nodeHistory.skipBeadUpdate = False
+
+def goToPrevHistory (self,event=None):
+
+    '''Go to the previous node in the history list.'''
+
+    c = self
+    p = c.nodeHistory.goPrev()
+        # Returns None if the position does not exist.
+    if p:
+        g.trace(p.h)
+        c.nodeHistory.skipBeadUpdate = True
+        try:
+            c.selectPosition(p) # Calls cc.selectChapterForPosition
+        finally:
+            c.nodeHistory.skipBeadUpdate = False
+.. @+node:ekr.20070615131604.3: *4* canGoToNext/Prev
+def canGoToNextVisited (self):
+
+    return self.beadPointer + 1 < len(self.beadList)
+
+def canGoToPrevVisited (self):
+
+    return self.beadPointer > 0
+.. @+node:ekr.20070615132939: *4* clear (nodeHistory, not used)
+# def clear (self):
+
+    # self.beadList = []
+    # self.beadPointer = -1
+.. @+node:ekr.20130915111638.11291: *4* goNext (nodeHistory, old)
+def goNext (self):
+
+    '''Return the next visited node, or None.'''
+
+    trace = False and not g.unitTesting
+    c = self.c
+    while self.beadPointer + 1 < len(self.beadList):
+        self.beadPointer += 1
+        p,chapter = self.beadList[self.beadPointer]
+        if c.positionExists(p):
+            if trace: g.trace(p and p.h)
+            break
+        else:
+            if trace: g.trace('does not exist',p and p.h)
+    else:
+        return None
+    self.selectChapter(chapter)
+    return p
+
+.. @+node:ekr.20130915111638.11293: *4* goPrev (nodeHistory, old)
+def goPrev (self):
+
+    '''Return the previous visited node, or None.'''
+
+    trace = False and not g.unitTesting
+    c = self.c
+    while self.beadPointer > 0:
+        self.beadPointer -= 1
+        p,chapter = self.beadList[self.beadPointer]
+        if c.positionExists(p):
+            if trace: g.trace(p and p.h)
+            break
+        else:
+            if trace: g.trace('does not exist',p and p.h)
+    else:
+        return None
+    self.selectChapter(chapter)
+    return p
+.. @+node:ekr.20070615132939.1: *4* remove (nodeHistory, not used)
+# def remove (self,p):
+
+    # '''Remove an item from the nav_buttons list.'''
+
+    # c = self.c
+    # target = self.beadPointer > -1 and self.beadList[self.beadPointer]
+
+    # self.beadList = [z for z in self.beadList
+                        # if z[0] != p and c.positionExists(z[0])]
+
+    # try:
+        # self.beadPointer = self.beadList.index(target)
+    # except ValueError:
+        # self.beadPointer = max(0,self.beadPointer-1)
+
+    # if self.trace:
+        # g.trace('bead list',p.h)
+        # g.pr([z[0].h for z in self.beadList])
+.. @+node:ekr.20070615140032: *4* selectChapter (nodeHistory)
+def selectChapter (self,chapter):
+
+    c,cc = self.c,self.c.chapterController
+    if cc and chapter and chapter != cc.getSelectedChapter():
+        cc.selectChapterByName(chapter.name)
+.. @+node:ekr.20070615140655: *4* visitedPositions
+def visitedPositions (self):
+
+    return [p.copy() for p,chapter in self.beadList]
 .. @+node:ekr.20120319174225.9743: ** Unused documentation (from LeoDocs.leo)
 .. @+node:ekr.20120319174225.9766: *3* Using Outlines
 .. @+node:ekr.20120319174225.9767: *4* @@@file outlines.txt

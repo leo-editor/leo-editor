@@ -6646,13 +6646,6 @@ https://bugs.launchpad.net/leo-editor/+bug/1175013
 
 A file that is both source controlled and customized by the user is
 inconvenient for both novices and experts.
-.. @+node:ekr.20130908104426.11239: *5* 869385 Chapters make the nav_qt.py plugin useless
-https://bugs.launchpad.net/leo-editor/+bug/869385
-
-In general, the Nav pane and the "prev" and "next" buttons can't position
-from one chapter to another. The Nav pane search can find string occurences
-in other chapters, but it can't position to them.
-
 .. @+node:ekr.20130908104426.11273: *5* **doc bugs
 .. @+node:ekr.20130908104426.11248: *6* 1046728 quickstart.leo 'auto nodes' example is not working
 .. @+node:ekr.20130908104426.11253: *6* 1159302 Correcting and improving the "Open with" documentation
