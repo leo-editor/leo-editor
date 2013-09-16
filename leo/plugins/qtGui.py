@@ -6832,8 +6832,12 @@ class leoQtTreeTab:
         tt.iconBar.addWidget(w)
         def onIndexChanged(s,tt=tt):
             if s:
-                s = g.u(s)
-                tt.selectTab(s)
+                tt.cc.selectChapterLockout = True
+                try:
+                    s = g.u(s)
+                    tt.selectTab(s)
+                finally:
+                    tt.cc.selectChapterLockout = False
         w.connect(w,QtCore.SIGNAL("currentIndexChanged(QString)"),
             onIndexChanged)
     #@+node:ekr.20110605121601.18442: *4* Tabs...

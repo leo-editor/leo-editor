@@ -8458,16 +8458,13 @@ class nodeHistory:
         # These are selected during the transitions to a new chapter.
         if p.h.startswith('@chapter '):
             return
-        # Leo 4.12: cut back the beadList.
-        if self.beadPointer < 0:
-            self.beadList = []
-        else:
-            self.beadList[:self.beadPointer]
         # Leo 4.11: remove any duplicates of p.
         self.beadList = [data for data in self.beadList if data[0].v != p.v]
         data = p.copy(),cc.getSelectedChapter()
         self.beadList.append(data)
-        self.beadPointer = len(self.beadList) - 1
+        # Leo 4.11: always set beadPointer to the end.
+        # This works because self.doNext and self.doPrev do not change the beadList.
+        self.beadPointer = len(self.beadList)-1
         if trace: g.trace(len(self.beadList),self.beadPointer,p and p.h,g.callers())
     #@-others
 #@-others

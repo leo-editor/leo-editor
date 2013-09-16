@@ -147,7 +147,7 @@ def getRecentPluginsList ():
         # 'codewisecompleter',
         # 'mod_scripting',
         # 'nested_splitter',
-        # 'qtGui',
+        'qtGui',
         # 'plugins_menu',
         # 'screencast',
         # 'viewrendered',

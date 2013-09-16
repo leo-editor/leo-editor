@@ -27,6 +27,8 @@ class chapterController:
             # Important: chapter names never change,
             # even if their @chapter node changes.
         self.selectedChapter = None
+        self.selectChapterLockout = False
+            # True: cc.selectChapterForPosition does nothing.
         self.tt = None # May be set in finishCreate.
         self.use_tabs = c.config.getBool('use_chapter_tabs')
     #@+node:ekr.20070325104904: *4* cc.finishCreate
@@ -654,10 +656,14 @@ class chapterController:
 
         trace = False and not g.unitTesting
         c,cc = self.c,self
+        # New in Leo 4.11
+        if cc.selectChapterLockout:
+            return
         selChapter = cc.getSelectedChapter()
         if trace: g.trace('***',p.h,
             chapter.name if chapter else None,
-            selChapter.name if selChapter else None)
+            selChapter.name if selChapter else None,
+            g.callers())
         if not p:
             if trace: g.trace('no p')
             return
