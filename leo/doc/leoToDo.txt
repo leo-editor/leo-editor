@@ -6640,7 +6640,7 @@ https://bugs.launchpad.net/leo-editor/+bug/nnn
 .. @+node:ekr.20130909073003.11525: *4* first: medium priority
 @language rest
 
-There are 23 medium priority bugs open at present.
+There are 18 medium priority bugs open at present.
 .. @+node:ekr.20130908104426.11273: *5* **doc bugs
 .. @+node:ekr.20130908104426.11248: *6* 1046728 quickstart.leo 'auto nodes' example is not working
 .. @+node:ekr.20130908104426.11253: *6* 1159302 Correcting and improving the "Open with" documentation

@@ -4805,7 +4805,7 @@ def handleUrl(url,c=None,p=None):
 
     # E1101: Module 'urllib' has no 'parse' member
     unquote = urllib.parse.unquote if isPython3 else urllib.unquote # pylint: disable=E1101
-    trace = True and not g.unitTesting ; verbose = False
+    trace = False and not g.unitTesting ; verbose = False
     if c and not p:
         p = c.p
     if url.startswith('@url'):
