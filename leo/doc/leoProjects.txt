@@ -343,6 +343,22 @@ Details:
 - Added "create" keyword argument to selectChapterByName.
   This avoid a compile-time choice: it is True except when the user
   types the name from the minibuffer. 
+#@+node:ekr.20130908104426.11239: *3* Fixed bug 869385: Chapters make the nav_qt.py plugin useless
+https://bugs.launchpad.net/leo-editor/+bug/869385
+
+The Nav pane and the "prev" and "next" buttons can't position
+from one chapter to another.
+
+
+What I did:
+    
+- c.goToNext/PrevHistory now just call nodeHistory.goNext/Prev.
+  This encapsulates complications properly.
+- Added "chapter" keyword arg to cc.selectChapterForPosition.
+  When present, this forces a match in the given chapter if possible.
+- Rewrote the select and update methods in class nodeHistory.
+  Most importantly, update removes duplicates.
+  A kludge: update ignores @chapter nodes, which are "selected" behind the scenes.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
