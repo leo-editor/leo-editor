@@ -6815,19 +6815,17 @@ class leoQtTreeTab:
         
         class LeoQComboBox(QtGui.QComboBox):
             '''Create a subclass in order to handle focusInEvents.'''
-            def __init__(self,cc):
-                self.leo_cc = cc
+            def __init__(self,tt):
+                self.leo_tt = tt
                 QtGui.QComboBox.__init__(self) # Init the base class.
             def focusInEvent(self,event):
-                names = self.leo_cc.setAllChapterNames()
-                self.clear()
-                w.insertItems(0,names)
+                self.leo_tt.setNames()
                 QtGui.QComboBox.focusInEvent(self,event) # Call the base class
 
         tt = self
         frame = QtGui.QLabel('Chapters: ')
         tt.iconBar.addWidget(frame)
-        tt.w = w = LeoQComboBox(tt.cc) ## QtGui.QComboBox()
+        tt.w = w = LeoQComboBox(tt)
         tt.setNames()
         tt.iconBar.addWidget(w)
         def onIndexChanged(s,tt=tt):
@@ -6880,11 +6878,7 @@ class leoQtTreeTab:
         '''Recreate the list of items.'''
 
         tt,w = self,self.w
-        names = tt.tabNames[:]
-        if 'main' in names:
-            names.remove('main')
-        names.sort()
-        names.insert(0,'main')
+        names = self.cc.setAllChapterNames()
         w.clear()
         w.insertItems(0,names)
     #@-others

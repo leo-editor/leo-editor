@@ -375,6 +375,10 @@ What I did:
 Rev 5992: eliminate redraw flash when selecting the Chapters: combo box.
 
 @language python
+#@+node:ekr.20130908104426.11248: *3* Fixed bug 1046728: quickstart.leo 'auto nodes' example is not working
+https://bugs.launchpad.net/leo-editor/+bug/1046728
+
+The @auto example now works.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

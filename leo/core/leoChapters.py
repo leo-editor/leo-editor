@@ -698,15 +698,20 @@ class chapterController:
     #@+node:ekr.20130915052002.11289: *4* cc.setAllChapterNames (New in Leo 4.11)
     def setAllChapterNames(self):
         
-        cc,result = self,['main',]
+        cc,result = self,[]
+        sel_name = cc.selectedChapter and cc.selectedChapter.name or 'main'
         root = cc.findChaptersNode()
         if root:
             tag = '@chapter '
             for p in root.subtree():
                 if p.h.startswith(tag):
                     name = p.h[len(tag):].strip()
-                    if name and name != 'main':
+                    if name and name != sel_name:
                         result.append(name)
+        if 'main' not in result and sel_name != 'main':
+            result.append('main')
+        result.sort()
+        result.insert(0,sel_name)
         return result
     #@+node:ekr.20071028091719: *4* cc.findChapterNameForPosition
     def findChapterNameForPosition (self,p):
@@ -961,6 +966,9 @@ class chapter:
             if trace and verbose: g.trace('*** no p')
             return None
         root = self.findRootNode()
+        if not root:
+            if trace: g.trace('no root for ',self.name)
+            return None
         if c.positionExists(p1,root=root.copy()):
             if trace and verbose: g.trace('found existing',p1.h)
             return p1

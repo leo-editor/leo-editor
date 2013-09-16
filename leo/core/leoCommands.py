@@ -7157,7 +7157,7 @@ class Commands (object):
         p2 = c.frame.tree.redraw(p)
         # Be careful.  nullTree.redraw returns None.
         c.selectPosition(p2 or p)
-        if trace: g.trace('setFocus',setFocus,p2 or p)
+        if trace: g.trace('setFocus',setFocus,p2 and p2.h or p and p.h)
         if setFocus: c.treeFocusHelper()
 
     # Compatibility with old scripts
