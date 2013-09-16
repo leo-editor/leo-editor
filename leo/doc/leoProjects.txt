@@ -372,6 +372,8 @@ What I did:
 - leo\plugins\spellpyx.txt is no longer part of the distribution.
 - EnchantClass.__init__ creates an empty leo/plugins/spellpyx.txt if necessary.
 
+Rev 5992: eliminate redraw flash when selecting the Chapters: combo box.
+
 @language python
 #@-all
 
