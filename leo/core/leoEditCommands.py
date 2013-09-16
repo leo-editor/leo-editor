@@ -11080,8 +11080,6 @@ class EnchantClass:
             if s != s2:
                 g.es_print('cleaning',fn)
                 f = open(fn,mode='wb')
-                lines = sorted(g.splitLines(lines))
-                s2 = b''.join(lines)
                 f.write(s2)
                 f.close()
     #@+node:ekr.20130915181927.11293: *4* create

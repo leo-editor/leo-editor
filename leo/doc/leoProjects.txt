@@ -359,6 +359,20 @@ What I did:
 - Rewrote the select and update methods in class nodeHistory.
   Most importantly, update removes duplicates.
   A kludge: update ignores @chapter nodes, which are "selected" behind the scenes.
+#@+node:ekr.20130908104426.11256: *3* Fixed bug 1175013: leo/plugins/spellpyx.txt is both source controlled and customized
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/1175013
+
+A file that is both source controlled and customized by the user is
+inconvenient for both novices and experts.
+
+What I did:
+    
+- leo\plugins\spellpyx.txt is no longer part of the distribution.
+- EnchantClass.__init__ creates an empty leo/plugins/spellpyx.txt if necessary.
+
+@language python
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
