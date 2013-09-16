@@ -379,6 +379,8 @@ Rev 5992: eliminate redraw flash when selecting the Chapters: combo box.
 https://bugs.launchpad.net/leo-editor/+bug/1046728
 
 The @auto example now works.
+#@+node:ekr.20130908104426.11253: *3* Fixed docs re bug 1159302: Correcting and improving the "Open with" documentation
+https://bugs.launchpad.net/leo-editor/+bug/1159302
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

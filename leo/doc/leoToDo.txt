@@ -6641,8 +6641,7 @@ https://bugs.launchpad.net/leo-editor/+bug/nnn
 @language rest
 
 There are 18 medium priority bugs open at present.
-.. @+node:ekr.20130908104426.11273: *5* **doc bugs
-.. @+node:ekr.20130908104426.11255: *6* 1168689 outdated documentation about ipython
+.. @+node:ekr.20130908104426.11255: *5* 1168689 outdated documentation about ipython
 https://bugs.launchpad.net/leo-editor/+bug/1168689
 
 the doc of ipython and leo should be updated(or just link it to this
@@ -6651,7 +6650,7 @@ post?)...or it will misleads people
 At present, it use "python launchLeo.py --ipython" instead of plugin
 
 https://groups.google.com/forum/?fromgroups#!topic/leo-editor/n5IVGe6fh2k
-.. @+node:ekr.20130908104426.11258: *6* 1180186 debian install not documented well enough
+.. @+node:ekr.20130908104426.11258: *5* 1180186 debian install not documented well enough
 https://bugs.launchpad.net/leo-editor/+bug/1180186
 
 Installing Leo in debian and other apt-get enabled linux distros is not
@@ -6679,7 +6678,6 @@ And run `leo` from command prompt.
 A recent user reports this install method still works, albeit with a
 warning,
 https://groups.google.com/d/topic/leo-editor-users/y6ZwJR3accs/discussion
-.. @+node:ekr.20130916105324.11293: *5* Is the bug to not change line endings erroneous?
 .. @+node:ekr.20130912152335.11932: *4* others: medium priority
 .. @+node:ekr.20130914045628.11287: *5* less important
 .. @+node:ekr.20130908104426.11274: *6* commands
@@ -7167,6 +7165,105 @@ So first I unpack the archive
 
 When installing docutils I've never had to use 'python3 setup.py build' or '2to3 build'.
 I'm interested to know if this works for you on the next docutils snapshot.
+.. @+node:ekr.20130916105324.19892: *6* import
+.. @+node:ekr.20130805080841.21380: *7* 1222947 Javascript importer doesn't handle common idiom
+@language javascript
+
+https://groups.google.com/forum/#!topic/leo-editor/dmC8iIKlF7g
+
+Bug 
+https://bugs.launchpad.net/leo-editor/+bug/1222947
+
+Here is the test file::
+
+
+    var express = require('express');
+     
+    var app = express.createServer(express.logger());
+     
+    app.get('/', function(request, response) {
+    response.send('Hello World!');
+    });
+     
+    var port = process.env.PORT || 5000;
+    app.listen(port, function() {
+    console.log("Listening on " + port);
+    });
+.. @+node:ekr.20130806072439.20485: *7* Importing java file using @auto. How do I adjust Leo to ignore whitespace and indentation irregularities?
+From: Eoin <eoinmccarthy@fastmail.fm>
+
+I'm using @auto to import java files into my Leo project. I'm then cloning 
+various methods as sub-nodes of new feature nodes. 
+It's helping keep my development focussed - and is useful to look back and 
+see what parts of the codebase I've worked on for each feature. 
+
+However, the whitespace in the Java files isn't completely regular. In 
+particular, debug logging is always placed in column 1 - regardless of the 
+surrounding indentation. 
+Other people are also working on these files, so I'd rather not mess with 
+the established convention. 
+
+As things stand, when Leo imports a file its outputting a bunch of error 
+messages:
+* error: underindented line. Extra leading whitespace will be added
+* warning: intermixed blanks and tabs
+
+The creation of the auto node goes fine - though the final result has an 
+@ignore directive in its root node. 
+When working, I just take the @ignore away and clone the methods I want to 
+work on. 
+The problem is when I close the Leo file and re-open it later on, the same 
+errors occur during the building of the auto node and the previous cloned 
+information is lost. 
+To restart work on a feature, I need to reclone the appropriate nodes. Not 
+a showstopper, but not ideal. 
+
+I tried adjusting the info in the JavaScanner class in the core 
+leoImport.py file as follows:
+
+        self.blockCommentDelim1 = '/*'
+        self.blockCommentDelim2 = '*/'
+        self.blockDelim1 = '{'
+        self.blockDelim2 = '}'
+        self.lineCommentDelim = '//'
+        self.lineCommentDelim2 = None
+        self.outerBlockDelim1 = '{'
+        self.outerBlockDelim2 = '}'
+        self.classTags = ['class','interface']
+        self.functionTags = []
+        self.sigFailTokens = [';','='] # Just like c.
+        self.strict=False
+
+I deleted the pyc file and restarted Leo. A new pyc file appears, so the 
+compiled to bytecode seems to be ok.
+
+I was hoping the the setting of self.strict = False would allow the parsing 
+to ignore the whitespace and indentation issues. 
+I'm still getting the same errors though. 
+
+Any help appreciated. I'm using Leo 4.10-final. 
+
+===== EKR
+
+There is no easy way to do this at present, but it's probably reasonable to
+disable errors (and not add @ignore) for underindented comments for
+non-strict languages.
+
+Please file a wishlist bug for this.  Thanks.
+
+
+.. @+node:ekr.20130806072439.20487: *7* json import problem
+From: "Ville Vainio.
+
+https://plus.google.com/_/notifications/emlink?emr=02870587547267324596&emid=CJCDv9Ppo7QCFcQbTAodl2MAAA&path=%2F103097156557482112329%2Fposts%2FTL3HQegbK3T&dt=1355829277202&ub=63
+
+Interesting anomaly - if I had @auto metadata.json with contents like this::
+
+    {
+        'name' : "Test app 1"
+    }
+
+The last } was missing from the generated file. Changing to @edit made it work.
 .. @+node:ekr.20130912152335.11933: *6* later?
 .. @+node:ekr.20130806072439.20473: *7*   file URLs seem to be broken on Mac OS 10.7 Lion
 From: "kevin@ksvanhorn.com" <kvanhorn@ksvanhorn.com>
@@ -7233,29 +7330,6 @@ Thanks for this report and fix.  I'll look into it immediately.
 .. @+node:ekr.20130908104426.11244: *7*  971171 If $(HOME)/.leo/.leoRecentFiles.txt does not exist, the only recent file ever is the current file
 .. @+node:ekr.20130908104426.11250: *7* 1090950 refresh from disk - cut node ressurection
 .. @+node:ekr.20130908104426.11266: *7* 1193820 Focus change on tree pane after saving current Leo file 
-.. @+node:ekr.20130805080841.21380: *7* 1222947 Javascript importer doesn't handle common idiom
-@language javascript
-
-https://groups.google.com/forum/#!topic/leo-editor/dmC8iIKlF7g
-
-Bug 
-https://bugs.launchpad.net/leo-editor/+bug/1222947
-
-Here is the test file::
-
-
-    var express = require('express');
-     
-    var app = express.createServer(express.logger());
-     
-    app.get('/', function(request, response) {
-    response.send('Hello World!');
-    });
-     
-    var port = process.env.PORT || 5000;
-    app.listen(port, function() {
-    console.log("Listening on " + port);
-    });
 .. @+node:ekr.20120415174008.10059: *7* Cancelling save of dirty untitled commander doesn't work
 Only happens with --ipython.
 .. @+node:ekr.20130806072439.20477: *7* I can't make Leo-Editor start in a full-screen window under openSUSU 12.1
@@ -7415,81 +7489,6 @@ The symptoms of my problem are that window sizes of less than full-window
 are remembered and restored, but when Leo-Editor is in full-screen at exit, 
 then it is restarted in partial-screen mode with an arbitrary unused band 
 at the top of the screen.
-.. @+node:ekr.20130806072439.20485: *7* Importing java file using @auto. How do I adjust Leo to ignore whitespace and indentation irregularities?
-From: Eoin <eoinmccarthy@fastmail.fm>
-
-I'm using @auto to import java files into my Leo project. I'm then cloning 
-various methods as sub-nodes of new feature nodes. 
-It's helping keep my development focussed - and is useful to look back and 
-see what parts of the codebase I've worked on for each feature. 
-
-However, the whitespace in the Java files isn't completely regular. In 
-particular, debug logging is always placed in column 1 - regardless of the 
-surrounding indentation. 
-Other people are also working on these files, so I'd rather not mess with 
-the established convention. 
-
-As things stand, when Leo imports a file its outputting a bunch of error 
-messages:
-* error: underindented line. Extra leading whitespace will be added
-* warning: intermixed blanks and tabs
-
-The creation of the auto node goes fine - though the final result has an 
-@ignore directive in its root node. 
-When working, I just take the @ignore away and clone the methods I want to 
-work on. 
-The problem is when I close the Leo file and re-open it later on, the same 
-errors occur during the building of the auto node and the previous cloned 
-information is lost. 
-To restart work on a feature, I need to reclone the appropriate nodes. Not 
-a showstopper, but not ideal. 
-
-I tried adjusting the info in the JavaScanner class in the core 
-leoImport.py file as follows:
-
-        self.blockCommentDelim1 = '/*'
-        self.blockCommentDelim2 = '*/'
-        self.blockDelim1 = '{'
-        self.blockDelim2 = '}'
-        self.lineCommentDelim = '//'
-        self.lineCommentDelim2 = None
-        self.outerBlockDelim1 = '{'
-        self.outerBlockDelim2 = '}'
-        self.classTags = ['class','interface']
-        self.functionTags = []
-        self.sigFailTokens = [';','='] # Just like c.
-        self.strict=False
-
-I deleted the pyc file and restarted Leo. A new pyc file appears, so the 
-compiled to bytecode seems to be ok.
-
-I was hoping the the setting of self.strict = False would allow the parsing 
-to ignore the whitespace and indentation issues. 
-I'm still getting the same errors though. 
-
-Any help appreciated. I'm using Leo 4.10-final. 
-
-===== EKR
-
-There is no easy way to do this at present, but it's probably reasonable to
-disable errors (and not add @ignore) for underindented comments for
-non-strict languages.
-
-Please file a wishlist bug for this.  Thanks.
-
-
-.. @+node:ekr.20130806072439.20487: *7* json import problem
-From: "Ville Vainio.
-
-https://plus.google.com/_/notifications/emlink?emr=02870587547267324596&emid=CJCDv9Ppo7QCFcQbTAodl2MAAA&path=%2F103097156557482112329%2Fposts%2FTL3HQegbK3T&dt=1355829277202&ub=63
-
-Interesting anomaly - if I had @auto metadata.json with contents like this::
-
-    {
-        'name' : "Test app 1"
-    }
-
-The last } was missing from the generated file. Changing to @edit made it work.
 .. @+node:ekr.20130806072439.20517: *7* Problem Creating a new outline using leoBridge
 From: SegundoBob <bhossley@ieee.org>
 
@@ -7714,7 +7713,6 @@ I have a Leo file with settings for context menu:
 then these settings are lost if I save the leo file to a new name using
 File - Save as
 If I reload the leo file, they do return
-.. @+node:ekr.20130908104426.11241: *6* 910228 option to not convert line endings (Hard)
 .. @+node:ekr.20130908104426.11242: *6* 914221 bound method ViewRenderedController.updated (Hard)
 https://bugs.launchpad.net/leo-editor/+bug/914221
 
