@@ -1799,7 +1799,6 @@
 </v>
 </v>
 <v t="ekr.20060603215208"></v>
-<v t="ekr.20081216090156.5"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -1810,16 +1809,27 @@ If False: Don't save the Leo file or any derived files when the external editor 
 If False: The current node remains selected when a file, associated with a different node, is saved by the external editor.</t>
 <t tx="TL.20080702085131.4">Only supported with the mod_tempfname.py plugin.
 
-if True: The Open-With plugin will store temporary files utilizing cleaner file names (no unique number is appended to the node's headline text).  Unique temporary directory paths are used to insure unique files are created by creating temporary directories reflecting each node's ancestor nodes in the Leo outline.
-Note: Do not have multiple sibling nodes (nodes having the same parent node) in Leo with the same headline text.  There will be a conflict if both are opened in an external editor at the same time. 
+True: The plugin will store temporary files utilizing cleaner
+file names (no unique number is appended to the node's headline text).
+Unique temporary directory paths are used to insure unique files are
+created by creating temporary directories reflecting each node's ancestor
+nodes in the Leo outline. Note: Do not have multiple sibling nodes (nodes
+having the same parent node) in Leo with the same headline text. There will
+be a conflict if both are opened in an external editor at the same time.
 
-if False: The Open-With plugin will store temporary files with an appended unique number to insure unique temporary filenames.
+False: The plugin will store temporary files with an appended
+unique number to insure unique temporary filenames.
 </t>
 <t tx="TL.20080702085131.5">Only supported with the mod_tempfname.py plugin.
 
-If True: The Open-With plugin will use the file extension of the node's derived file for the extension of the temporary file passed to the external editor.  This can be useful for external editors that are providing text highlighting or other file type specific capabilities.
+True: The open-with command will use the file extension of the node's
+derived file for the extension of the temporary file passed to the external
+editor. This can be useful for external editors that are providing text
+highlighting or other file type specific capabilities.
 
-If False or no derived file exists for that node: The Open-With plugin will use the file extension of the node's default language (set by the @language command) or '.txt' if none exists.</t>
+False or no derived file exists for that node: The open-with command will
+use the file extension of the node's default language (set by the @language
+command) or '.txt' if none exists.</t>
 <t tx="TL.20090225102340.33"></t>
 <t tx="TL.20090225102340.34">If set to True then if a match occurs on an @file type node the nodeActions plugin will save the clicked @file type node (and any other @file type nodes) to disk, if modified, before running the script.
 </t>
@@ -4669,9 +4679,7 @@ the temp file. Notes:
 - If the .leo file being loaded contains @openwith nodes, the File:Open With
 menu contains only the items created by those nodes. Similarly, @openwith nodes
 in myLeoSettings.leo override entries in leoSettings.leo.
-
-- If no @openwith nodes are found anywhere the openWith plugin uses hard-coded
-tables in the plugin itself.</t>
+</t>
 <t tx="ekr.20070417071249">True: show info as plugins are loaded.</t>
 <t tx="ekr.20070419103554">True:  Leo ensures that non-empty body text ends in a newline in @nosent trees.
 False: Leo leaves body text alone when writing @nosent trees.</t>

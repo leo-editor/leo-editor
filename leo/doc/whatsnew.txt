@@ -1697,7 +1697,7 @@ The highlights of Leo 4.4.3:
 - The new leoBridge module allows full access to all of Leo's capabilities
   from programs running outside of Leo.
 - Better support for the winpdb debugger.
-- Added support for @enabled-plugins and @open-with nodes in settings files.
+- Added support for @enabled-plugins and @openwith nodes in settings files.
 - Removed all gui-dependent code from Leo's core.
 - The__wx_gui plugin is now functional.
 .. @+node:ekr.20060928172457: *4* Leo 4.4.2

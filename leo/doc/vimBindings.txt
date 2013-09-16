@@ -437,12 +437,13 @@ Notable missing body pane commands::
     '<command>  Go to line of last edit, jump, ...
     `<command>  Go to character of last edit, jump, ...
 .. @+node:TL.20080804095315.9: *3* Avoiding changes to 'tag' files
-If you use the open-with plugin to open node text in Vim and your Vim's "tag"
-file refers to external files then there is a risk that a external file that is
-initially displayed via the "tag" command" in Vim is accidentally edited and
-saved from the external Vim editor while your Leo session still contains the
-external file's original text that may later recreate the original external file
-during a Leo save operation (overwriting the changes saved from the Vim editor).
+If you use the open-with command to open a node text in Vim and your
+Vim's "tag" file refers to external files then there is a risk that a
+external file that is initially displayed via the "tag" command" in
+Vim is accidentally edited and saved from the external Vim editor
+while your Leo session still contains the external file's original
+text that may later recreate the original external file during a Leo
+save operation (overwriting the changes saved from the Vim editor).
 
 To prevent this problem, modifications to external files can be avoided by using
 Vim's "modeline" feature to disable editing of external files.

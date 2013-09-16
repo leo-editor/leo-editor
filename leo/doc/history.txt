@@ -209,7 +209,7 @@ This series of releases featured **hundreds** of improvements.  The highlights w
 
 - Added the leoBridge module. See `Embedding Leo with the leoBridge Module`_.
 
-- Added support for @enabled-plugins and @open-with nodes in settings files.
+- Added support for @enabled-plugins and @openwith (formerly @open-with) nodes in settings files.
 
 - Added support for ZODB. See `Using ZODB with Leo`_.
 

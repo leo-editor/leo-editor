@@ -704,7 +704,7 @@ Event name (tag argument)     Stop?    When called                         Keys 
 
 14. New in Leo 4.10: the d argument to the open-with event handlers is a python
     dictionary whose keys are all the tags specified by the user in the body of the
-    @open-with node.
+    @openwith node.
 .. @+node:ekr.20071021102946: *4* Enabling idle time event handlers
 Two methods in leoGlobals.py allow scripts and plugins to enable and disable 'idle' events.
 **g.enableIdleTimeHook(idleTimeDelay=100)** enables the "idle" hook.
