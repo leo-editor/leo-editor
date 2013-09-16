@@ -10854,7 +10854,6 @@ class spellTabHandler (leoFind.leoFind):
         """Ctor for the Leo Spelling dialog."""
 
         leoFind.leoFind.__init__(self,c) # Call the base ctor.
-
         self.c = c
         self.body = c.frame.body
         self.currentWord = None
@@ -10862,7 +10861,6 @@ class spellTabHandler (leoFind.leoFind):
         self.workCtrl = g.app.gui.plainTextWidget(c.frame.top)
             # A text widget for scanning.
             # Must have a parent frame even though it is not packed.
-
         if enchant:
             self.spellController = EnchantClass(c)
             # self.controller = self.spellController 
@@ -11059,41 +11057,46 @@ class EnchantClass:
 
         self.c = c
         language = g.toUnicode(c.config.getString('enchant_language'))
-
         # Set the base language
         if language and not enchant.dict_exists(language):
             g.warning('Invalid language code for Enchant',repr(language))
             g.es_print('Using "en_US" instead')
             language = 'en_US'
-
         # Compute fn, the full path to the local dictionary.
         fn = g.os_path_finalize(
             c.config.getString('enchant_local_dictionary') or
             os.path.join(g.app.loadDir,"..","plugins",'spellpyx.txt'))
-
-        if fn and g.os_path_exists(fn):
-            # Merge the local and global dictionaries.
-            try:
-                self.clean_dict(fn)
-                self.d = enchant.DictWithPWL(language,fn)
-            except Exception:
-                g.es_exception()
-                g.error('not a valid dictionary file',fn)
-                self.d = enchant.Dict(language) 
-        else:
-            self.d = enchant.Dict(language) 
+        self.open_dict(fn,language)
     #@+node:ekr.20130116142831.10185: *4* clean_dict
     def clean_dict (self,fn):
-
-        f = open(fn,mode='rb')
-        s = f.read()
-        f.close()
-        s2 = s.replace(b'\r',b'')
-        if s != s2:
-            g.es_print('cleaning',fn)
-            f = open(fn,mode='wb')
-            f.write(s2)
+        
+        if g.os_path_exists(fn):
+            f = open(fn,mode='rb')
+            s = f.read()
             f.close()
+            # Blanks lines cause troubles.
+            s2 = s.replace(b'\r',b'').replace(b'\n\n',b'\n')
+            if s2.startswith(b'\n'): s2 = s2[1:]
+            if s != s2:
+                g.es_print('cleaning',fn)
+                f = open(fn,mode='wb')
+                lines = sorted(g.splitLines(lines))
+                s2 = b''.join(lines)
+                f.write(s2)
+                f.close()
+    #@+node:ekr.20130915181927.11293: *4* create
+    def create (self,fn):
+        
+        '''Create the given file with empty contents.'''
+        try:
+            f = open(fn,mode='wb')
+            f.close()
+            g.note('created: %s' % (fn))
+        except IOError:
+            g.error('can not create: %s' % (fn))
+        except Exception:
+            g.error('unexpected error creating: %s' % (fn))
+            g.es_exception()
     #@+node:ekr.20100904095239.5927: *4* add
     def add (self,word):
 
@@ -11104,6 +11107,26 @@ class EnchantClass:
     def ignore (self,word):
 
         self.d.add_to_session(word)
+    #@+node:ekr.20130915181927.11294: *4* open_dict
+    def open_dict(self,fn,language):
+        
+        '''Open or create the dict with the given fn.'''
+        
+        if not g.os_path_exists(fn):
+            # Fix bug 1175013: leo/plugins/spellpyx.txt is both source controlled and customized.
+            self.create(fn)
+        if g.os_path_exists(fn):
+            # Merge the local and global dictionaries.
+            try:
+                self.clean_dict(fn)
+                self.d = enchant.DictWithPWL(language,fn)
+            except Exception:
+                g.es_exception()
+                g.error('not a valid dictionary file',fn)
+                self.d = enchant.Dict(language)
+        else:
+            # A fallback.  Unlikely to happen.
+            self.d = enchant.Dict(language)
     #@+node:ekr.20100904095239.5920: *4* processWord
     def processWord(self, word):
 
