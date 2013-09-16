@@ -6642,10 +6642,272 @@ https://bugs.launchpad.net/leo-editor/+bug/nnn
 
 There are 18 medium priority bugs open at present.
 .. @+node:ekr.20130908104426.11273: *5* **doc bugs
-.. @+node:ekr.20130908104426.11248: *6* 1046728 quickstart.leo 'auto nodes' example is not working
 .. @+node:ekr.20130908104426.11253: *6* 1159302 Correcting and improving the "Open with" documentation
+https://bugs.launchpad.net/leo-editor/+bug/1159302
+
+Annoyance:
+
+Why is the directive @openwith and the command open-with?
+
+I think it would be better for them to be @openwith and openwith or
+@open-with and open-with.
+
+But I think there should NOT be an open-with command. For me, the open-with command (That is, Alt-x, open-with, CR) always fails:
+
+unexpected exception in c.openWith
+Traceback (most recent call last):
+  File "/home/ldi/bzr/LeoLatest/leo/core/leoCommands.py", line 1413, in openWith
+    ext = d.get('ext')
+AttributeError: 'NoneType' object has no attribute 'get'
+-------
+
+http://webpages.charter.net/edreamleo/plugins.html#xemacs-py
+
+Existing:
+Allows you to edit nodes in emacs/xemacs.
+
+Important: the open_with plugin must be enabled for this plugin to work properly.
+
+Depending on your preference, selecting or double-clicking a node will pass the body text of that node to emacs. You may edit the node in the emacs buffer and changes will appear in Leo.
+-----
+
+Correction:
+
+The existing documentation says you need open_with.py -- but this plugin no longer exists.
+
+The xemacs.py does exist. It may work for some people, but it does not work for me because I use emacs--not xemacs, not gnuclient, not emacsclient.
+
+I think plugin xemacs.py should be dropped in favor of the more flexible @openwith facility.
+
+Suggested new documentation:
+
+Plugin xemacs.py has been dropped in favor of the more flexible @openwith facility. See leoSettings.leo for the @openwith documentation.
+
+Plugin xemacs.py allowed a node body to be edited with xemacs. The @openwith facility allows a node body to be edited with the text editor of your choice.
+--------
+
+http://webpages.charter.net/edreamleo/scripting.html
+
+Existing:
+
+14. New in Leo 4.10: the d argument to the open-with event handlers is a python dictionary whose keys are all the tags specified by the user in the body of the @open-with node.
+
+Correction:
+
+"@open-with" should be "@openwith".
+------
+
+http://webpages.charter.net/edreamleo/what-is-new.html#leo-4-9
+
+Existing:
+
+New format for @openwith settings nodes. See leoSettings.leo for details.
+-----
+Suggested Improvement:
+
+This pointer to leoSettings.leo is crucial. A new user should be able to find it in the current documentation--or the documentation in leoSettings.leo should be repeated in the current documentation. Such crucial documentation should not be exclusively in release notes and leoSettings.leo.
+-----
+
+http://webpages.charter.net/edreamleo/commands.html#communicating-with-external-editors
+
+Communicating with external editors
+
+The open-with command allows you to communicate with external editor. When you select this command Leo creates a temporary file and invokes an external program. Leo periodically checks whether this temporary file has changed; Leo changes the corresponding node in the outline if so. You must create the entries using an @openwith in myLeoSettings.leo. See the documentation in leoSettings.leo.
+--------
+
+Improvements:
+
+"Communicating with external editors" is a sub-section of Section "File Commands." This is misleading. So far as I know, the open-with command deals with only the current node---not the current file. Internally, open-with creates a temporary file for the external editor to edit, but that is an internal implementation detail. So far as the user is concerned, the facility is a "node edit" not a "file edit."
+----
+
+http://webpages.charter.net/edreamleo/vimBindings.html#avoiding-changes-to-tag-files
+
+Existing:
+
+If you use the open-with plugin to open node text in Vim ....
+---
+
+Correction:
+
+The @openwith ("Open With" menu) facility has been put in the core. It is not a plugin.
+----
+webpages.charter.net/edreamleo/history.html#leo-4-4-x-improvements
+
+Existing:
+
+Added support for @enabled-plugins and @open-with nodes in settings files.
+------
+
+Suggested Improvement:
+
+Added support for @enabled-plugins and @open-with (With 4.9 @open-with became @openwith) nodes in settings files.
+-------
+
+Existing in leoSettings.leo in the node with headline "\@openwith name = shortcut":
+
+@openwith nodes in @settings trees create menu items. The openWith
+plugin must be active for these settings to have any effect.
+
+The headline of an @openwith node has the form::
+
+    @openwith name = shortcut
+
+name is name of the menu item. shortcut specifies the shortcut used to invoke
+the menu item. shortcut may be None.
+
+The body text @openwith nodes should contain a single line contain a tuple of the form::
+
+    command,arg,ext
+
+For example::
+
+    'subprocess.Popen',['pythonw','C:/Python24/Lib/idlelib/idle.pyw'],'.py'
+
+When the user selects this menu item Leo executes command(arg+path) where path
+is the full path to the temp file. The ext argument specifies the extension of
+the temp file. Notes:
+
+- command is a string. Valid values are::
+
+  'subprocess.Popen'
+  'os.system'
+  'os.startfile'
+  'os.spawnl'
+  'os.spawnv'
+  'exec'
+
+- arg is either a single string or a list of strings.
+
+- ext is a string or None. If None, Leo computes a file extension base on what
+  @language directive is in effect.
+
+- If the .leo file being loaded contains @openwith nodes, the File:Open With
+menu contains only the items created by those nodes. Similarly, @openwith nodes
+in myLeoSettings.leo override entries in leoSettings.leo.
+
+- If no @openwith nodes are found anywhere the openWith plugin uses hard-coded
+tables in the plugin itself.
+-----
+Correction:
+There are several mentions of "the openWith plugin." There is no longer any "open with" plugin. The facility is in the core.
+
+Correction:
+    Existing:
+====
+The body text @openwith nodes should contain a single line contain a tuple of the form::
+
+    command,arg,ext
+
+For example::
+
+    'subprocess.Popen',['pythonw','C:/Python24/Lib/idlelib/idle.pyw'],'.py'
+====
+    Replace the above with the replacement I recommend for the body of the "Open With menu" node body. See below.
+
+------
+Existing in leoSettings.leo in the node with headline "Open With menu":
+
+The body of @openwith nodes contains one or more lines of the following
+form::
+
+   tag: value
+
+The possible tags are be::
+
+    kind: <a string>
+
+The value specifies the **opener logic**, that is, the method used to
+launch the external editor, one of 'subprocess.Popen', 'os.startfile',
+'os.spawnl', 'os.spawnv', 'exec'.
+
+    arg: <a string>
+
+There may be many such arg lines. Each line will be a string to be passed
+as an argument to the opener logic.
+
+Quotes in <a string> will be *retained*, allowing the user to specify
+exactly the arguments to be passed to opener logic.
+------
+
+Correction:
+
+The string values should NOT be enclosed in quotations.
+
+Suggested new body:
+
+The body of @openwith nodes contains one or more lines of the following
+form::
+
+   tag: value
+
+The possible tags are be::
+
+    kind: value
+
+The value specifies the **opener logic**, that is, the method used to
+launch the external editor, one of:
+    subprocess.Popen
+    os.startfile
+    os.spawnl
+    os.spawnv
+    exec
+
+    arg: value
+
+There may be many such arg lines. Each value is passed as an argument to the opener logic.
+----------
+I use Xubuntu 12.04 (precise)
+Kernel 3.2.0-39-generic
+
+Leo Log Window
+Leo 4.11 devel, build 5603, 2013-02-19 10:48:39
+Python 2.7.3, qt version 4.8.1
+linux2
+setting leoID from os.getenv('USER'): 'bob05'
+load dir: /home/ldi/bzr/LeoLatest/leo/core
+global config dir: /home/ldi/bzr/LeoLatest/leo/config
+home dir: /home/bob05
+reading settings in /home/ldi/bzr/LeoLatest/leo/config/leoSettings.leo
+reading settings in /home/bob05/.leo/myLeoSettings.leo
+reading settings in /home/ldi/tmp/t1.leo
+reading: /home/ldi/tmp/t1.leo
 .. @+node:ekr.20130908104426.11255: *6* 1168689 outdated documentation about ipython
+https://bugs.launchpad.net/leo-editor/+bug/1168689
+
+the doc of ipython and leo should be updated(or just link it to this
+post?)...or it will misleads people
+
+At present, it use "python launchLeo.py --ipython" instead of plugin
+
+https://groups.google.com/forum/?fromgroups#!topic/leo-editor/n5IVGe6fh2k
 .. @+node:ekr.20130908104426.11258: *6* 1180186 debian install not documented well enough
+https://bugs.launchpad.net/leo-editor/+bug/1180186
+
+Installing Leo in debian and other apt-get enabled linux distros is not
+documented well enough, stating merely ""find and install the debian
+package".
+
+The best instructions seem to from 3 years ago, in mailing list
+announcement by Ville:
+https://groups.google.com/forum/#!msg/leo-editor/9yqhWD90Vtg/yCR8O_FBvIwJ
+
+{{{
+Add these files to `/etc/apt/sources.list`:
+
+    deb http://ppa.launchpad.net/villemvainio/ppa/ubuntu jaunty main
+    deb-src http://ppa.launchpad.net/villemvainio/ppa/ubuntu jaunty main
+
+Then, run
+
+    sudo apt-get update
+    sudo apt-get install leo
+
+And run `leo` from command prompt.
+}}}
+
+A recent user reports this install method still works, albeit with a
+warning,
+https://groups.google.com/d/topic/leo-editor-users/y6ZwJR3accs/discussion
 .. @+node:ekr.20130912152335.11932: *4* others: medium priority
 .. @+node:ekr.20130914045628.11287: *5* less important
 .. @+node:ekr.20130908104426.11274: *6* commands

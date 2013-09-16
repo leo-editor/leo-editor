@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
+<!-- Created by Leo (http://leoeditor.com/leo_toc.html) -->
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
@@ -40,13 +40,12 @@
 <v t="ville.20090627211608.10129"><vh>Auto nodes</vh>
 <v t="ville.20090630145410.1517"><vh>@path ~</vh>
 <v t="ville.20090630145410.1509"><vh>@@auto myfile_auto.py</vh>
-<v t="ville.20090630145410.1510"><vh>imports &amp; setup routines</vh>
-<v t="ville.20090630145410.1512"><vh>imports</vh></v>
-<v t="ville.20090630145410.1511"><vh>init1, init2</vh></v>
-</v>
-<v t="ville.20090630145410.1513"><vh>class Foo</vh>
-<v t="ville.20090630145410.1515"><vh>spam</vh></v>
-<v t="ville.20090630145410.1516"><vh>eggs</vh></v>
+<v t="ekr.20130916065121.11556"><vh>myfile_auto declarations</vh></v>
+<v t="ekr.20130916065121.11557"><vh>init1</vh></v>
+<v t="ekr.20130916065121.11558"><vh>init2</vh></v>
+<v t="ekr.20130916065121.11559"><vh>class Foo</vh>
+<v t="ekr.20130916065121.11560"><vh>spam</vh></v>
+<v t="ekr.20130916065121.11561"><vh>eggs</vh></v>
 </v>
 </v>
 </v>
@@ -121,25 +120,49 @@ Valid values: any nonzero positive integer.</t>
 of 60 for wrapping paragraphs.
 
 Created the startup node and its descendants.</t>
+<t tx="ekr.20130916065121.11556">import os
+import sys
+
+</t>
+<t tx="ekr.20130916065121.11557">def init1():
+    print("init1")
+
+</t>
+<t tx="ekr.20130916065121.11558">def init2():
+    print("init2")
+</t>
+<t tx="ekr.20130916065121.11559">class Foo:
+    """ Some sort of useful class """
+    @others
+</t>
+<t tx="ekr.20130916065121.11560">def spam(self):
+    pass
+
+</t>
+<t tx="ekr.20130916065121.11561">def eggs(self):
+    pass
+
+
+</t>
 <t tx="ville.20090627211608.10116">Remove the first @ from @thin in the subtree below and save
-(ctrl+s) to create an "external" file which is directly
-usable outside leo - try opening the resulting myfile.py in
-a normal text editor (e.g. from right-click menu on the @thin node) 
-to see what it looks like.
+(ctrl+s) to create an **external file** which is directly
+usable outside leo. Try opening the resulting myfile.py in a
+normal text editor (e.g. from right-click menu on the @thin
+node) to see what it looks like.
 
 Note the @others directive, and the the lines that look like
 
 #@-node:ville.20090627211608.10122:class Foo
 
-These are called "sentinels", and they are needed to
-preserve the tree structure in the external files. They
-allow your tree structure to survive, even when someone else
-edits the source (or you edit it yourself in an external
-editor).</t>
+These are called **sentinels**. They are needed to preserve
+the tree structure in the external files. They allow your
+tree structure to survive, even when someone else edits the
+source (or you edit it yourself in an external editor).
+</t>
 <t tx="ville.20090627211608.10117">@language python
 @others
 </t>
-<t tx="ville.20090627211608.10118">"External file" means a file that resides on your file
+<t tx="ville.20090627211608.10118">An **External file*** is a file that resides on your file
 system. If you are programming, these are the files you
 eventually want to create to get something useful out of
 Leo, for example, your C++ or Python source code files.</t>
@@ -195,7 +218,8 @@ therefore, it merely scratches the surface of what Leo can
 do. You can begin leveraging Leo for mindmapping-like tasks
 by just reading the node "Tree manipulation basics", and
 moving on to other topics after acquiring some basic
-familiarity. </t>
+familiarity.
+</t>
 <t tx="ville.20090627211608.5783"></t>
 <t tx="ville.20090627211608.5784">You can use Leo as fairly typical outliner. Play around with
 some of the commands from the Outline menu:
@@ -240,33 +264,12 @@ to the body pane.
 
 See Leo's documentation for more detailed discussion.</t>
 <t tx="ville.20090630145410.1509">@language python
+@tabwidth -4
 @others
-</t>
-<t tx="ville.20090630145410.1510"></t>
-<t tx="ville.20090630145410.1511">def init1():
-    print("init1")
-
-def init2():
-    print("init2")</t>
-<t tx="ville.20090630145410.1512">import os
-import sys
-
-</t>
-<t tx="ville.20090630145410.1513">class Foo:
-    """ Some sort of useful class """
-    @others
-
-
 </t>
 <t tx="ville.20090630145410.1514">""" Some sort of useful class """
 
 </t>
-<t tx="ville.20090630145410.1515">def spam(self):
-    pass
-
-</t>
-<t tx="ville.20090630145410.1516">def eggs(self):
-    pass</t>
 <t tx="ville.20090630145410.1517"></t>
 <t tx="ville.20090630234425.12394"></t>
 <t tx="ville.20090630234425.12395">If you are just starting, you should create your own myLeoSettings.leo in ~/.leo. We'll do that next.
@@ -298,7 +301,7 @@ of @thin and @auto - namely, it publishes a file without sentinels, but
 still allows the tree structure to survive, even if the external file
 is edited outside Leo.
 
-The cost is complexity - @shadow relies on a "shadow file" that remembers
+The cost is complexity; @shadow relies on a "shadow file" that remembers
 the structure, and a sophisticated diff/patch algorithm that merges
 the changes from the external file to the tree structure.
 
