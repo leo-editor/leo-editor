@@ -517,7 +517,7 @@
 </v>
 </v>
 <v t="ekr.20070224073109.1"></v>
-<v t="ekr.20041119034357.1"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
 <v t="ekr.20100904134301.11002"><vh>@data global-abbreviations</vh></v>
@@ -1610,6 +1610,7 @@
 <v t="ekr.20041119034357.65"><vh>@int initial_window_width = 800</vh></v>
 </v>
 <v t="ekr.20041213105954.2"><vh>Splitter options</vh>
+<v t="tbrown.20130916082438.55678"><vh>@string status_line_split_sizes = 1 2</vh></v>
 <v t="ekr.20041119034357.68"><vh>@string split_bar_relief = groove</vh></v>
 <v t="ekr.20041119034357.69"><vh>@int split_bar_width = 6</vh></v>
 </v>
@@ -11019,6 +11020,19 @@ this is True.</t>
 	{ name: 'insert', items: [ 'Image', 'Table', 'HorizontalRule', 'SpecialChar' ] }
 ]}
 </t>
+<t tx="tbrown.20130916082438.55678">Sizes for the status bar splitter. The status bar shows "line: 1, col:
+35, fcol: 35" on the left and the path to the current node on the right.
+
+The default value "1 2" gives one third for the line number etc., and 2
+thirds for node path.  You may find "1 4" or "1 5" makes it easier to see
+all the relevant components of the node path without having to move the
+splitter.
+
+The string must be only two integers, separated by spaces and or commas.
+
+Dev. note: this setting is new (201309) and can't be replaced by the
+stylesheet, the other settings in this group should probably be handled
+by the stylesheet and could be considered for removal.</t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 # cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,

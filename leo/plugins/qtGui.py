@@ -2625,7 +2625,7 @@ class DynamicWindow(QtGui.QMainWindow):
             w = self.leo_ui
             if g.app.qt_use_tabs:
                 w = g.app.gui.frameFactory.masterFrame
-            w.setStyleSheet(sheet or self.default_sheet())
+            a = w.setStyleSheet(sheet or self.default_sheet())
         else:
             if trace: g.trace('no style sheet')
     #@+node:ekr.20110605121601.18176: *5* defaultStyleSheet
@@ -4041,6 +4041,16 @@ class leoQtFrame (leoFrame.leoFrame):
             w2.setObjectName('status2')
             splitter = QtGui.QSplitter()
             self.statusBar.addWidget(splitter, True)
+            
+            sizes = c.config.getString('status_line_split_sizes') or '1 2'
+            sizes = [int(i) for i in sizes.replace(',', ' ').split()]
+            for n, i in enumerate(sizes):
+                w = [w1, w2][n]
+                policy = w.sizePolicy()
+                policy.setHorizontalStretch(i)
+                policy.setHorizontalPolicy(policy.Minimum)
+                w.setSizePolicy(policy)
+
             splitter.addWidget(w1)
             splitter.addWidget(w2)
 
