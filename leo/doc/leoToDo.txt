@@ -6639,82 +6639,8 @@ has arbitrary attributes like the `active` I just made up above.
 @language rest
 
 https://bugs.launchpad.net/leo-editor/+bug/nnn
-.. @+node:ekr.20130916105324.19893: *4* to-do first (6)
-
-    @language rest
-
-These can be turned into bug-tracker items if need be.
-.. @+node:ekr.20130806072439.20384: *5* doc bugs: autocompletion(s)
+.. @+node:ekr.20130916105324.19893: *4* to-do for 4.11b1
 @language rest
-
-From: Haroldo Stenger <haroldo.stenger@gmail.com>
-
-The first inconsistency I've found between what the docs say, and the real
-keystrokes needed to get @language python autocompletion is:
-
-* the docs say that if you type a dot, autocompletion activates opening the
-objects correlated to the object that precedes the dot; if no object
-precedes the dot, you get a list of available modules.
-
-* if in a node which has no text in its head, I type @language python, then
-if I type g. nothing appears; however if I type ctrl space (which it
-ocurred to me based in pgadmin3's keystrokes to autocomplete, just trial
-and error on my part, since tab did not do nothing special), then I get a
-list of autocompletions. That's fine.
-
-* I'd make the autocompletion window taller, since where there are dozens
-of options, browsing a 7-line window gets hard. I plan to hack it myself.
-
-* if in an empty line I type a dot, nothing appears.  If I type ctrl space,
-I get this exception:
-
-exception executing command
-Traceback (most recent call last):
-  File "/usr/lib/python2.7/site-packages/leo/core/leoCommands.py", line
-560, in doCommand
-    val = command(event)
-  File "/usr/lib/python2.7/site-packages/leo/core/leoKeys.py", line 165, in
-autoCompleteForce
-    return self.autoComplete(event,force=True)
-  File "/usr/lib/python2.7/site-packages/leo/core/leoKeys.py", line 157, in
-autoComplete
-    self.start(event)
-  File "/usr/lib/python2.7/site-packages/leo/core/leoKeys.py", line 992, in
-start
-    self.init_qcompleter(event)
-  File "/usr/lib/python2.7/site-packages/leo/core/leoKeys.py", line 837, in
-init_qcompleter
-    self.exit()
-  File "/usr/lib/python2.7/site-packages/leo/core/leoKeys.py", line 251, in
-exit
-    self.qw.end_completer()
-  File "/usr/lib/python2.7/site-packages/leo/plugins/qtGui.py", line 350,
-in end_completer
-    self.leo_qc.end_completer()
-  File "/usr/lib/python2.7/site-packages/leo/plugins/qtGui.py", line 157,
-in end_completer
-    self.deleteLater()
-RuntimeError: wrapped C/C++ object of type LeoQListWidget has been deleted
-
-
-any hint is welcome
-
-===== EKR
-
-> * if in a node which has no text in its head, I type @language python,
-> then if I type g. nothing appears;
-
-It works for me when using the auto-completer *tab*.  Are you using the tab
-or the QCompleter popup window?  From the traceback, I guess you are using
-the QCompleter...
-
-Is period bound to auto-complete?  Use the print-bindings command to see.
-
-===== Terry Brown <terry_n_brown@yahoo.com>
-
-I've seen that traceback too, but autocomplete *everything* didn't seem
-like a critical use case :-)
-
 .. @+node:ekr.20130806072439.20495: *5* spell crash (easy fix)
 From: "Ville M. Vainio" <vivainio@gmail.com>
 Leo 4.10 deb for Ubuntu Precise available
@@ -7164,7 +7090,101 @@ def processWord(self, word):
         return None
     else:
         return d.suggest(word)
-.. @+node:ekr.20130908104426.11255: *5* 1168689 outdated documentation about ipython
+.. @+node:ekr.20130908104426.11274: *5* commands (4)
+.. @+node:ekr.20130908104426.11251: *6* 1099035 Leo yank and kill behaviour not quite the same as emacs
+.. @+node:ekr.20130908104426.11254: *6* 1160660 File-Compare-Leo-Files creates "other file" clones
+.. @+node:ekr.20130908104426.11260: *6* 1182864 goto-global-line cmd bug
+.. @+node:ekr.20130908104426.11264: *6* 1208659 leo parsed the wrong line number of html file
+.. @+node:ekr.20130917083243.11295: *5* doc (5)
+.. @+node:ekr.20130917083243.11294: *6* Leo in a nutshell: put on home page
+@language rest
+
+Leo is a *completely organizable*, *programmable* outlining program. Leo
+outlines may contain *any* kind of data, including computer programs.
+
+*Completely organizable*: outline nodes may appear *arbitrarily many times*
+in the same outline. That is, nodes act like either file folders or plain
+data (or both!) Any node may be "filed" in arbitrarily many folders.
+
+*Programmable*: Leo scripts (Python scripts in Leo outlines) have *easy*
+access to all Leo outlines, and *easy* access to all of Leo's own source
+code. Conversely, Leo outlines naturally organize even the largest computer
+programs.
+
+The *Leo Aha* is the moment when someone realizes how well Leo outlines and
+Leo scripts work together.
+.. @+node:ekr.20130806072439.20384: *6* doc bugs: autocompletion(s)
+@language rest
+
+From: Haroldo Stenger <haroldo.stenger@gmail.com>
+
+The first inconsistency I've found between what the docs say, and the real
+keystrokes needed to get @language python autocompletion is:
+
+* the docs say that if you type a dot, autocompletion activates opening the
+objects correlated to the object that precedes the dot; if no object
+precedes the dot, you get a list of available modules.
+
+* if in a node which has no text in its head, I type @language python, then
+if I type g. nothing appears; however if I type ctrl space (which it
+ocurred to me based in pgadmin3's keystrokes to autocomplete, just trial
+and error on my part, since tab did not do nothing special), then I get a
+list of autocompletions. That's fine.
+
+* I'd make the autocompletion window taller, since where there are dozens
+of options, browsing a 7-line window gets hard. I plan to hack it myself.
+
+* if in an empty line I type a dot, nothing appears.  If I type ctrl space,
+I get this exception:
+
+exception executing command
+Traceback (most recent call last):
+  File "/usr/lib/python2.7/site-packages/leo/core/leoCommands.py", line
+560, in doCommand
+    val = command(event)
+  File "/usr/lib/python2.7/site-packages/leo/core/leoKeys.py", line 165, in
+autoCompleteForce
+    return self.autoComplete(event,force=True)
+  File "/usr/lib/python2.7/site-packages/leo/core/leoKeys.py", line 157, in
+autoComplete
+    self.start(event)
+  File "/usr/lib/python2.7/site-packages/leo/core/leoKeys.py", line 992, in
+start
+    self.init_qcompleter(event)
+  File "/usr/lib/python2.7/site-packages/leo/core/leoKeys.py", line 837, in
+init_qcompleter
+    self.exit()
+  File "/usr/lib/python2.7/site-packages/leo/core/leoKeys.py", line 251, in
+exit
+    self.qw.end_completer()
+  File "/usr/lib/python2.7/site-packages/leo/plugins/qtGui.py", line 350,
+in end_completer
+    self.leo_qc.end_completer()
+  File "/usr/lib/python2.7/site-packages/leo/plugins/qtGui.py", line 157,
+in end_completer
+    self.deleteLater()
+RuntimeError: wrapped C/C++ object of type LeoQListWidget has been deleted
+
+
+any hint is welcome
+
+===== EKR
+
+> * if in a node which has no text in its head, I type @language python,
+> then if I type g. nothing appears;
+
+It works for me when using the auto-completer *tab*.  Are you using the tab
+or the QCompleter popup window?  From the traceback, I guess you are using
+the QCompleter...
+
+Is period bound to auto-complete?  Use the print-bindings command to see.
+
+===== Terry Brown <terry_n_brown@yahoo.com>
+
+I've seen that traceback too, but autocomplete *everything* didn't seem
+like a critical use case :-)
+
+.. @+node:ekr.20130908104426.11255: *6* 1168689 outdated documentation about ipython
 https://bugs.launchpad.net/leo-editor/+bug/1168689
 
 the doc of ipython and leo should be updated(or just link it to this
@@ -7173,7 +7193,7 @@ post?)...or it will misleads people
 At present, it use "python launchLeo.py --ipython" instead of plugin
 
 https://groups.google.com/forum/?fromgroups#!topic/leo-editor/n5IVGe6fh2k
-.. @+node:ekr.20130908104426.11258: *5* 1180186 debian install not documented well enough
+.. @+node:ekr.20130908104426.11258: *6* 1180186 debian install not documented well enough
 https://bugs.launchpad.net/leo-editor/+bug/1180186
 
 Installing Leo in debian and other apt-get enabled linux distros is not
@@ -7201,7 +7221,7 @@ And run `leo` from command prompt.
 A recent user reports this install method still works, albeit with a
 warning,
 https://groups.google.com/d/topic/leo-editor-users/y6ZwJR3accs/discussion
-.. @+node:ekr.20130908104426.11243: *5* 969391 setup.py confuses newbies
+.. @+node:ekr.20130908104426.11243: *6* 969391 setup.py confuses newbies
 https://bugs.launchpad.net/leo-editor/+bug/969391
 
 setup.py is necessary for creating Ubuntu packages, but it is *not*
@@ -7233,11 +7253,6 @@ The old sentinels don't have an explicit notion of nesting level; the new
 sentinels do, so it would seem that the way to fix this problem is to use
 new sentinels. However, this would be a major change to the inner workings
 of the @shadow logic.
-.. @+node:ekr.20130908104426.11274: *4* commands (4)
-.. @+node:ekr.20130908104426.11251: *5* 1099035 Leo yank and kill behaviour not quite the same as emacs
-.. @+node:ekr.20130908104426.11254: *5* 1160660 File-Compare-Leo-Files creates "other file" clones
-.. @+node:ekr.20130908104426.11260: *5* 1182864 goto-global-line cmd bug
-.. @+node:ekr.20130908104426.11264: *5* 1208659 leo parsed the wrong line number of html file
 .. @+node:ekr.20130912152335.11932: *4* others: medium priority (hard/later)
 .. @+node:ekr.20130908104426.17092: *5* hard, not very important
 .. @+node:ekr.20130806072439.20380: *6*  auto-rst error? need more robust?
