@@ -117,13 +117,14 @@ class scanUtility:
 
     #@+others
     #@+node:sps.20081111154528.5: *3* escapeFalseSectionReferences
-    ### Probably a bad idea.  Keep the apparent section references.
-    ### The perfect-import write code no longer attempts to expand references
-    ### when the perfectImportFlag is set.
-
     def escapeFalseSectionReferences(self,s):
+        
+        '''Probably a bad idea.  Keep the apparent section references.
+        The perfect-import write code no longer attempts to expand references
+        when the perfectImportFlag is set.
+        '''
 
-        return s #####
+        return s 
 
         # result = []
         # for line in g.splitLines(s):
@@ -1532,10 +1533,8 @@ class leoImportCommands (scanUtility):
             # if language: body += '@language %s\n' % language
 
         assert self.rootLine == ''
-
         body = '@language ini\n\n'
-
-        self.setBodyString(p,body + self.escapeFalseSectionReferences(s))
+        self.setBodyString(p,body+s)
         if atAuto:
             p.clearDirty()
             if not changed:
@@ -1590,14 +1589,12 @@ class leoImportCommands (scanUtility):
         else:
             language = self.languageForExtension(ext)
             if language: body += '@language %s\n' % language
-
-        self.setBodyString(p,body + self.rootLine + self.escapeFalseSectionReferences(s))
+        self.setBodyString(p,body+self.rootLine+s)
         if atAuto:
             for p in p.self_and_subtree():
                 p.clearDirty()
             if not changed:
                 c.setChanged(False)
-
         g.app.unitTestDict = {'result':True}
     #@+node:ekr.20080811174246.1: *5* languageForExtension
     def languageForExtension (self,ext):
