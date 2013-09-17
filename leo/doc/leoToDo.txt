@@ -6639,85 +6639,11 @@ has arbitrary attributes like the `active` I just made up above.
 @language rest
 
 https://bugs.launchpad.net/leo-editor/+bug/nnn
-.. @+node:ekr.20130916105324.19893: *4* to-do first (8)
-@language rest
+.. @+node:ekr.20130916105324.19893: *4* to-do first (6)
+
+    @language rest
 
 These can be turned into bug-tracker items if need be.
-.. @+node:ekr.20130806072439.20487: *5* json import problem
-@language rest
-
-From: "Ville Vainio.
-https://plus.google.com/_/notifications/emlink?emr=02870587547267324596&emid=CJCDv9Ppo7QCFcQbTAodl2MAAA&path=%2F103097156557482112329%2Fposts%2FTL3HQegbK3T&dt=1355829277202&ub=63
-
-If I had @auto metadata.json with contents like this::
-
-    {
-        'name' : "Test app 1"
-    }
-
-The last } was missing from the generated file. Changing to @edit made it work.
-
-===== EKR: The problem is in the write logic, not the import logic::
-    
-    putCodeLine Can not happen: completely empty line
-
-@language python
-.. @+node:ekr.20130916105324.19895: *5* [with fix] 1226358 File URL's are broken on MacOS
-https://bugs.launchpad.net/leo-editor/+bug/1226358
-
-First reported at URLs seem to be broken on Mac OS 10.7 Lion
-https://groups.google.com/forum/#!searchin/leo-editor/URLs$20seem$20to$20be$20broken/leo-editor/vM8qn66aNi0/4oTIu_UIDUwJ
-
-I think I know the cause of the problem with file URLs on Mac OS 10.7
-Lion. In leoGlobals.py, in the method os_startfile(fname), we have
-
-    elif sys.platform == 'darwin':
-        # From Marc-Antoine Parent.
-        try:
-            subprocess.call(['open', quoted_fname])
-        except OSError:
-            pass # There may be a spurious "Interrupted system call"
-        except ImportError:
-            os.system('open %s' % (quoted_fname))
-
-The problem is that the quoted file path is being passed to
-subprocess.call, instead of the raw file path. I verified this by
-experimenting with subprocess.call() in a Python interactive mode
-window -- it doesn't want the path to be quoted. I also modified the
-os_startfile method to use the unquoted pathname, and verified that
-this fixed the problem.
-.. @+node:ekr.20090829140232.6036: *6* g.os_startfile
-def os_startfile(fname):
-
-    if g.unitTesting:
-        g.app.unitTestDict['os_startfile']=fname
-        return
-
-    if fname.find('"') > -1:
-        quoted_fname = "'%s'" % fname
-    else:
-        quoted_fname = '"%s"' % fname
-
-    if sys.platform.startswith('win'):
-        os.startfile(quoted_fname)
-            # Exists only on Windows.
-    elif sys.platform == 'darwin':
-        # From Marc-Antoine Parent.
-        try:
-            subprocess.call(['open', quoted_fname])
-        except OSError:
-            pass # There may be a spurious "Interrupted system call"
-        except ImportError:
-            os.system('open %s' % (quoted_fname))
-    else:
-        # os.system('xdg-open "%s"' % (fname))
-        try:
-            val = subprocess.call('xdg-open %s' % (quoted_fname),shell=True)
-            if val < 0:
-                g.es_print('xdg-open %s failed' % (fname))
-        except Exception:
-            g.es_print('error opening %s' % fname)
-            g.es_exception()
 .. @+node:ekr.20130806072439.20384: *5* doc bugs: autocompletion(s)
 @language rest
 

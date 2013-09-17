@@ -3506,7 +3506,9 @@ def os_startfile(fname):
     elif sys.platform == 'darwin':
         # From Marc-Antoine Parent.
         try:
-            subprocess.call(['open', quoted_fname])
+            # Fix bug 1226358: File URL's are broken on MacOS:
+            # use fname, not quoted_fname, as the argument to subprocess.call.
+            subprocess.call(['open',fname])
         except OSError:
             pass # There may be a spurious "Interrupted system call"
         except ImportError:
