@@ -381,6 +381,48 @@ https://bugs.launchpad.net/leo-editor/+bug/1046728
 The @auto example now works.
 #@+node:ekr.20130908104426.11253: *3* Fixed docs re bug 1159302: Correcting and improving the "Open with" documentation
 https://bugs.launchpad.net/leo-editor/+bug/1159302
+#@+node:ekr.20130806072439.20487: *3* Fixed bug in at.putCodeLine
+https://plus.google.com/_/notifications/emlink?emr=02870587547267324596&emid=CJCDv9Ppo7QCFcQbTAodl2MAAA&path=%2F103097156557482112329%2Fposts%2FTL3HQegbK3T&dt=1355829277202&ub=63
+
+@auto did not write the following .json file properly(!)::
+
+    {
+        'name' : "Test app 1"
+    }
+
+The last } was missing from the generated file.
+
+The fix was to at.putCodeLine(!!).  It is amazing that this bug could exist.
+#@+node:ekr.20130916105324.19895: *3* Fixed bug 1226358 File URL's are broken on MacOS
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/1226358
+
+First reported at URLs seem to be broken on Mac OS 10.7 Lion
+https://groups.google.com/forum/#!searchin/leo-editor/URLs$20seem$20to$20be$20broken/leo-editor/vM8qn66aNi0/4oTIu_UIDUwJ
+
+I think I know the cause of the problem with file URLs on Mac OS 10.7
+Lion. In leoGlobals.py, in g.os_startfile(fname), we have::
+
+@language python
+
+    elif sys.platform == 'darwin':
+        # From Marc-Antoine Parent.
+        try:
+            subprocess.call(['open', quoted_fname])
+        except OSError:
+            pass # There may be a spurious "Interrupted system call"
+        except ImportError:
+            os.system('open %s' % (quoted_fname))
+            
+@language rest
+
+The problem is that the quoted file path is being passed to
+subprocess.call, instead of the raw file path. I verified this by
+experimenting with subprocess.call() in a Python interactive mode
+window -- it doesn't want the path to be quoted. I also modified the
+os_startfile method to use the unquoted pathname, and verified that
+this fixed the problem.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

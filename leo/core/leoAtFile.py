@@ -4124,22 +4124,17 @@ class atFile:
 
         trace = False and not g.unitTesting
         at = self
-
         # Put @verbatim sentinel if required.
         k = g.skip_ws(s,i)
         if g.match(s,k,self.startSentinelComment + '@'):
             self.putSentinel('@verbatim')
-
         j = g.skip_line(s,i)
         line = s[i:j]
-
-        if trace: g.trace(self.atShadow,repr(line))
-
+        if trace: g.trace(repr(line))
         # Don't put any whitespace in otherwise blank lines.
         if len(line) > 1: # Preserve *anything* the user puts on the line!!!
             if not at.raw:
                 at.putIndent(at.indent,line)
-
             if line[-1:]=='\n':
                 # g.trace(repr(line))
                 at.os(line[:-1])
@@ -4148,6 +4143,8 @@ class atFile:
                 at.os(line)
         elif line and line[-1] == '\n':
             at.onl()
+        elif line:
+            at.os(line) # Bug fix: 2013/09/16
         else:
             g.trace('Can not happen: completely empty line')
 
