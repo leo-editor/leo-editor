@@ -423,6 +423,73 @@ experimenting with subprocess.call() in a Python interactive mode
 window -- it doesn't want the path to be quoted. I also modified the
 os_startfile method to use the unquoted pathname, and verified that
 this fixed the problem.
+#@+node:ekr.20130806072439.20495: *3* spell crash (already fixed)
+From: "Ville M. Vainio" <vivainio@gmail.com>
+Leo 4.10 deb for Ubuntu Precise available
+
+The open_dict now protects agains crashes with try/except.
+It's not clear when this new code happened.
+
+When launched from command line, it causes this error that should
+probably be hidden with try-except:
+
+/home/ville/.leo/workbook.leo
+Traceback (most recent call last):
+
+  File "/usr/lib/pymodules/python2.7/leo/core/leoEditCommands.py",
+line 10372, in __init__
+    self.d = enchant.DictWithPWL(language,fn)
+
+  File "/usr/lib/python2.7/dist-packages/enchant/__init__.py", line
+735, in __init__
+    self.pwl = self._broker.request_pwl_dict(pwl)
+
+  File "/usr/lib/python2.7/dist-packages/enchant/__init__.py", line
+280, in request_pwl_dict
+    self._raise_error(eStr % (pwl,))
+
+  File "/usr/lib/python2.7/dist-packages/enchant/__init__.py", line
+219, in _raise_error
+    raise eclass(err)
+
+Error: Couldn't open personal wordlist
+'/usr/share/pyshared/leo/plugins/spellpyx.txt'
+
+not a valid dictionary file /usr/share/pyshared/leo/plugins/spellpyx.txt
+wrote recent file: /home/ville/.leo/.leoRecentFiles.txt
+ville@ville-tp:~$ leo
+
+** isPython3: False
+Leo 4.10 final, build 5020, 2012-02-26 13:18:08 -0600
+Python 2.7.3, qt version 4.8.1
+linux2
+reading settings in /usr/share/pyshared/leo/config/leoSettings.leo
+Using default leo file name:
+/home/ville/.leo/workbook.leo
+Traceback (most recent call last):
+
+  File "/usr/lib/pymodules/python2.7/leo/core/leoEditCommands.py",
+line 10372, in __init__
+    self.d = enchant.DictWithPWL(language,fn)
+
+  File "/usr/lib/python2.7/dist-packages/enchant/__init__.py", line
+735, in __init__
+    self.pwl = self._broker.request_pwl_dict(pwl)
+
+  File "/usr/lib/python2.7/dist-packages/enchant/__init__.py", line
+280, in request_pwl_dict
+    self._raise_error(eStr % (pwl,))
+
+  File "/usr/lib/python2.7/dist-packages/enchant/__init__.py", line
+219, in _raise_error
+    raise eclass(err)
+
+Error: Couldn't open personal wordlist
+'/usr/share/pyshared/leo/plugins/spellpyx.txt'
+
+not a valid dictionary file /usr/share/pyshared/leo/plugins/spellpyx.txt
+wrote recent file: /home/ville/.leo/.leoRecentFiles.txt
+
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

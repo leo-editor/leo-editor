@@ -6641,460 +6641,222 @@ has arbitrary attributes like the `active` I just made up above.
 https://bugs.launchpad.net/leo-editor/+bug/nnn
 .. @+node:ekr.20130916105324.19893: *4* to-do for 4.11b1
 @language rest
-.. @+node:ekr.20130806072439.20495: *5* spell crash (easy fix)
-From: "Ville M. Vainio" <vivainio@gmail.com>
-Leo 4.10 deb for Ubuntu Precise available
-
-When launched from command line, it causes this error that should
-probably be hidden with try-except:
-
-/home/ville/.leo/workbook.leo
-Traceback (most recent call last):
-
-  File "/usr/lib/pymodules/python2.7/leo/core/leoEditCommands.py",
-line 10372, in __init__
-    self.d = enchant.DictWithPWL(language,fn)
-
-  File "/usr/lib/python2.7/dist-packages/enchant/__init__.py", line
-735, in __init__
-    self.pwl = self._broker.request_pwl_dict(pwl)
-
-  File "/usr/lib/python2.7/dist-packages/enchant/__init__.py", line
-280, in request_pwl_dict
-    self._raise_error(eStr % (pwl,))
-
-  File "/usr/lib/python2.7/dist-packages/enchant/__init__.py", line
-219, in _raise_error
-    raise eclass(err)
-
-Error: Couldn't open personal wordlist
-'/usr/share/pyshared/leo/plugins/spellpyx.txt'
-
-not a valid dictionary file /usr/share/pyshared/leo/plugins/spellpyx.txt
-wrote recent file: /home/ville/.leo/.leoRecentFiles.txt
-ville@ville-tp:~$ leo
-
-** isPython3: False
-Leo 4.10 final, build 5020, 2012-02-26 13:18:08 -0600
-Python 2.7.3, qt version 4.8.1
-linux2
-reading settings in /usr/share/pyshared/leo/config/leoSettings.leo
-Using default leo file name:
-/home/ville/.leo/workbook.leo
-Traceback (most recent call last):
-
-  File "/usr/lib/pymodules/python2.7/leo/core/leoEditCommands.py",
-line 10372, in __init__
-    self.d = enchant.DictWithPWL(language,fn)
-
-  File "/usr/lib/python2.7/dist-packages/enchant/__init__.py", line
-735, in __init__
-    self.pwl = self._broker.request_pwl_dict(pwl)
-
-  File "/usr/lib/python2.7/dist-packages/enchant/__init__.py", line
-280, in request_pwl_dict
-    self._raise_error(eStr % (pwl,))
-
-  File "/usr/lib/python2.7/dist-packages/enchant/__init__.py", line
-219, in _raise_error
-    raise eclass(err)
-
-Error: Couldn't open personal wordlist
-'/usr/share/pyshared/leo/plugins/spellpyx.txt'
-
-not a valid dictionary file /usr/share/pyshared/leo/plugins/spellpyx.txt
-wrote recent file: /home/ville/.leo/.leoRecentFiles.txt
-
-.. @+node:ekr.20051025071455: *6* Spell classes
-@others
-.. @+node:ekr.20051025071455.1: *7* class spellCommandsClass
-class spellCommandsClass (baseEditCommandsClass):
-
-    '''Commands to support the Spell Tab.'''
-
-    @others
-.. @+node:ekr.20051025080056: *8* ctor (spellCommandsClass)
-def __init__ (self,c):
-
-    baseEditCommandsClass.__init__(self,c) # init the base class.
-
-    self.handler = None
-
-    # All the work happens when we first open the frame.
-.. @+node:ekr.20051025080420: *8* getPublicCommands (searchCommandsClass)
-def getPublicCommands (self):
-
-    return {
-        'open-spell-tab':           self.openSpellTab,
-        'spell-find':               self.find,
-        'spell-change':             self.change,
-        'spell-change-then-find':   self.changeThenFind,
-        'spell-ignore':             self.ignore,
-        'hide-spell-tab':           self.hide,
-    }
-.. @+node:ekr.20051025080633: *8* openSpellTab
-def openSpellTab (self,event=None):
-
-    '''Open the Spell Checker tab in the log pane.'''
-
-    c = self.c ; log = c.frame.log ; tabName = 'Spell'
-
-    if log.frameDict.get(tabName):
-        log.selectTab(tabName)
-    else:
-        log.selectTab(tabName)
-        self.handler = spellTabHandler(c,tabName)
-
-    # Bug fix: 2013/05/22.
-    if not self.handler.loaded:
-        log.deleteTab(tabName,force=True)
-.. @+node:ekr.20051025080420.1: *8* commands...(spellCommandsClass)
-# Just open the Spell tab if it has never been opened.
-# For minibuffer commands, we must also force the Spell tab to be visible.
-# self.handler is a spellTabHandler object (inited by openSpellTab)
-
-def find (self,event=None):
-    '''Simulate pressing the 'Find' button in the Spell tab.'''
-    if self.handler:
-        self.openSpellTab()
-        self.handler.find()
-    else:
-        self.openSpellTab()
-
-def change(self,event=None):
-    '''Simulate pressing the 'Change' button in the Spell tab.'''
-    if self.handler:
-        self.openSpellTab()
-        self.handler.change()
-    else:
-        self.openSpellTab()
-
-def changeThenFind (self,event=None):
-    '''Simulate pressing the 'Change, Find' button in the Spell tab.'''
-    if self.handler:
-        self.openSpellTab()
-        # A workaround for a pylint warning:
-        # self.handler.changeThenFind()
-        f = getattr(self.handler,'changeThenFind')
-        f()
-    else:
-        self.openSpellTab()
-
-def hide (self,event=None):
-    '''Hide the Spell tab.'''
-    if self.handler:
-        self.c.frame.log.selectTab('Log')
-        self.c.bodyWantsFocus()
-
-def ignore (self,event=None):
-    '''Simulate pressing the 'Ignore' button in the Spell tab.'''
-    if self.handler:
-        self.openSpellTab()
-        self.handler.ignore()
-    else:
-        self.openSpellTab()
-.. @+node:ekr.20051025071455.18: *7* class spellTabHandler (leoFind.leoFind)
-class spellTabHandler (leoFind.leoFind):
-
-    """A class to create and manage Leo's Spell Check dialog."""
-
-    @others
-.. @+node:ekr.20051025071455.19: *8* Birth & death
-.. @+node:ekr.20051025071455.20: *9* spellTabHandler.__init__
-def __init__(self,c,tabName):
-
-    """Ctor for the Leo Spelling dialog."""
-
-    leoFind.leoFind.__init__(self,c) # Call the base ctor.
-    self.c = c
-    self.body = c.frame.body
-    self.currentWord = None
-    self.outerScrolledFrame = None
-    self.workCtrl = g.app.gui.plainTextWidget(c.frame.top)
-        # A text widget for scanning.
-        # Must have a parent frame even though it is not packed.
-    if enchant:
-        self.spellController = EnchantClass(c)
-        # self.controller = self.spellController 
-        self.tab = g.app.gui.createSpellTab(c,self,tabName)
-        self.loaded = True
-    else:
-        self.spellController = None
-        self.tab = None
-        self.loaded = False
-.. @+node:ekr.20051025071455.36: *8* Commands
-.. @+node:ekr.20051025071455.37: *9* add (spellTab)
-def add(self,event=None):
-    """Add the selected suggestion to the dictionary."""
-    
-    # Bug fix: 2013/05/22.
-    if self.loaded:
-        w = self.currentWord
-        if w:
-            self.spellController.add(w)
-            # self.dictionary[w] = 0
-            self.tab.onFindButton()
-.. @+node:ekr.20051025071455.38: *9* change (spellTab)
-def change(self,event=None):
-    """Make the selected change to the text"""
-    
-    # Bug fix: 2013/05/22.
-    if not self.loaded:
-        return
-
-    c = self.c ; body = self.body ; w = body.bodyCtrl
-
-    selection = self.tab.getSuggestion()
-    if selection:
-        # Use getattr to keep pylint happy.
-        if hasattr(self.tab,'change_i') and getattr(self.tab,'change_i') is not None:
-            start = getattr(self.tab,'change_i')
-            end   = getattr(self.tab,'change_j')
-            oldSel = start,end
-            # g.trace('using',start,end)
-        else:
-            start,end = oldSel = w.getSelectionRange()
-        if start is not None:
-            if start > end: start,end = end,start
-            w.delete(start,end)
-            w.insert(start,selection)
-            w.setSelectionRange(start,start+len(selection))
-            c.frame.body.onBodyChanged("Change",oldSel=oldSel)
-            c.invalidateFocus()
-            c.bodyWantsFocus()
-            return True
-
-    # The focus must never leave the body pane.
-    c.invalidateFocus()
-    c.bodyWantsFocus()
-    return False
-.. @+node:ekr.20051025071455.40: *9* find & helpers
-def find (self,event=None):
-    """Find the next unknown word."""
-    
-    # Bug fix: 2013/05/22.
-    if not self.loaded:
-        return
-
-    c = self.c ; body = c.frame.body ; w = body.bodyCtrl
-
-    # Reload the work pane from the present node.
-    s = w.getAllText().rstrip()
-    self.workCtrl.delete(0,"end")
-    self.workCtrl.insert("end",s)
-
-    # Reset the insertion point of the work widget.
-    ins = w.getInsertPoint()
-    self.workCtrl.setInsertPoint(ins)
-
-    alts, word = self.findNextMisspelledWord()
-    self.currentWord = word # Need to remember this for 'add' and 'ignore'
-
-    if alts:
-        # Save the selection range.
-        ins = w.getInsertPoint()
-        i,j = w.getSelectionRange()
-        self.tab.fillbox(alts,word)
-        c.invalidateFocus()
-        c.bodyWantsFocus()
-        # Restore the selection range.
-        w.setSelectionRange(i,j,insert=ins)
-        w.see(ins)
-    else:
-        g.es("no more misspellings")
-        self.tab.fillbox([])
-        c.invalidateFocus()
-        c.bodyWantsFocus()
-.. @+node:ekr.20051025071455.45: *10* findNextMisspelledWord
-def findNextMisspelledWord(self):
-    """Find the next unknown word."""
-
-    trace = False and not g.unitTesting
-    c = self.c ; p = c.p
-    w = c.frame.body.bodyCtrl
-    sc = self.spellController
-    alts = None ; word = None
-    try:
-        while 1:
-            i,j,p,word = self.findNextWord(p)
-            # g.trace(i,j,p and p.h or '<no p>')
-            if not p or not word:
-                alts = None
-                break
-            alts = sc.processWord(word)
-            if trace: g.trace('alts',alts and len(alts) or 0,i,j,word,p and p.h or 'None')
-            if alts:
-                redraw = not p.isVisible(c)
-                # New in Leo 4.4.8: show only the 'sparse' tree when redrawing.
-                if c.sparse_spell and not c.p.isAncestorOf(p):
-                    for p2 in c.p.self_and_parents():
-                        p2.contract()
-                        redraw = True
-                for p2 in p.parents():
-                    if not p2.isExpanded():
-                        p2.expand()
-                        redraw = True
-                if redraw:
-                    c.redraw(p)
-                else:
-                    c.selectPosition(p)
-                w.setSelectionRange(i,j,insert=j)
-                break
-    except Exception:
-        g.es_exception()
-    return alts, word
-.. @+node:ekr.20051025071455.47: *10* findNextWord (spellTab)
-def findNextWord(self,p):
-    """Scan for the next word, leaving the result in the work widget"""
-
-    trace = False and not g.unitTesting
-    c = self.c ; p = p.copy()
-    while 1:
-        s = self.workCtrl.getAllText()
-        i = self.workCtrl.getInsertPoint()
-        while i < len(s) and not g.isWordChar1(s[i]):
-            i += 1
-        # g.trace('p',p and p.h,'i',i,'len(s)',len(s))
-        if i < len(s):
-            # A non-empty word has been found.
-            j = i
-            while j < len(s) and g.isWordChar(s[j]):
-                j += 1
-            word = s[i:j]
-            # This trace verifies that all words have been checked.
-            # g.trace(repr(word))
-            for w in (self.workCtrl,c.frame.body.bodyCtrl):
-                c.widgetWantsFocusNow(w)
-                w.setSelectionRange(i,j,insert=j)
-            if trace: g.trace(i,j,word,p.h)
-            return i,j,p,word
-        else:
-            # End of the body text.
-            p.moveToThreadNext()
-            if not p: break
-            self.workCtrl.delete(0,'end')
-            self.workCtrl.insert(0,p.b)
-            for w in (self.workCtrl,c.frame.body.bodyCtrl):
-                c.widgetWantsFocusNow(w)
-                w.setSelectionRange(0,0,insert=0)
-            if trace: g.trace(0,0,'-->',p.h)
-
-    return None,None,None,None
-.. @+node:ekr.20051025121408: *9* hide
-def hide (self,event=None):
-
-    self.c.frame.log.selectTab('Log')
-.. @+node:ekr.20051025071455.41: *9* ignore
-def ignore(self,event=None):
-
-    """Ignore the incorrect word for the duration of this spell check session."""
-    
-    # Bug fix: 2013/05/22.
-    if self.loaded:
-        w = self.currentWord
-        if w:
-            self.spellController.ignore(w)
-            self.tab.onFindButton()
-.. @+node:ekr.20100904095239.5914: *7* class EnchantClass
-class EnchantClass:
-
-    """A wrapper class for PyEnchant spell checker"""
-
-    @others
-.. @+node:ekr.20100904095239.5916: *8*  __init__ (EnchantClass)
-def __init__ (self,c):
-
-    """Ctor for the EnchantClass class."""
-
-    self.c = c
-    language = g.toUnicode(c.config.getString('enchant_language'))
-    # Set the base language
-    if language and not enchant.dict_exists(language):
-        g.warning('Invalid language code for Enchant',repr(language))
-        g.es_print('Using "en_US" instead')
-        language = 'en_US'
-    # Compute fn, the full path to the local dictionary.
-    fn = g.os_path_finalize(
-        c.config.getString('enchant_local_dictionary') or
-        os.path.join(g.app.loadDir,"..","plugins",'spellpyx.txt'))
-    self.open_dict(fn,language)
-.. @+node:ekr.20130116142831.10185: *8* clean_dict
-def clean_dict (self,fn):
-    
-    if g.os_path_exists(fn):
-        f = open(fn,mode='rb')
-        s = f.read()
-        f.close()
-        # Blanks lines cause troubles.
-        s2 = s.replace(b'\r',b'').replace(b'\n\n',b'\n')
-        if s2.startswith(b'\n'): s2 = s2[1:]
-        if s != s2:
-            g.es_print('cleaning',fn)
-            f = open(fn,mode='wb')
-            f.write(s2)
-            f.close()
-.. @+node:ekr.20130915181927.11293: *8* create
-def create (self,fn):
-    
-    '''Create the given file with empty contents.'''
-    try:
-        f = open(fn,mode='wb')
-        f.close()
-        g.note('created: %s' % (fn))
-    except IOError:
-        g.error('can not create: %s' % (fn))
-    except Exception:
-        g.error('unexpected error creating: %s' % (fn))
-        g.es_exception()
-.. @+node:ekr.20100904095239.5927: *8* add
-def add (self,word):
-
-    '''Add a word to the user dictionary.'''
-
-    self.d.add(word)
-.. @+node:ekr.20100904095239.5928: *8* ignore
-def ignore (self,word):
-
-    self.d.add_to_session(word)
-.. @+node:ekr.20130915181927.11294: *8* open_dict
-def open_dict(self,fn,language):
-    
-    '''Open or create the dict with the given fn.'''
-    
-    if not g.os_path_exists(fn):
-        # Fix bug 1175013: leo/plugins/spellpyx.txt is both source controlled and customized.
-        self.create(fn)
-    if g.os_path_exists(fn):
-        # Merge the local and global dictionaries.
-        try:
-            self.clean_dict(fn)
-            self.d = enchant.DictWithPWL(language,fn)
-        except Exception:
-            g.es_exception()
-            g.error('not a valid dictionary file',fn)
-            self.d = enchant.Dict(language)
-    else:
-        # A fallback.  Unlikely to happen.
-        self.d = enchant.Dict(language)
-.. @+node:ekr.20100904095239.5920: *8* processWord
-def processWord(self, word):
-
-    """Check the word. Return None if the word is properly spelled.
-    Otherwise, return a list of alternatives."""
-
-    d = self.d 
-
-    if not d:
-        return None
-    elif d.check(word):
-        return None
-    else:
-        return d.suggest(word)
 .. @+node:ekr.20130908104426.11274: *5* commands (4)
 .. @+node:ekr.20130908104426.11251: *6* 1099035 Leo yank and kill behaviour not quite the same as emacs
+https://bugs.launchpad.net/leo-editor/+bug/1099035
+
+kill in leo (ctrl-k, kill-line) removes the whole line, but kill in emacs
+removes from the cursor to the end of the line.
+
+yank in leo (yank) results in the yanked text highlighted, rather than
+putting the cursor at the end of the yanked text as in emacs; particularly
+vexing as typing immediately after yanking just replaces the text you just
+yanked!
 .. @+node:ekr.20130908104426.11254: *6* 1160660 File-Compare-Leo-Files creates "other file" clones
+https://bugs.launchpad.net/leo-editor/+bug/1160660
+
+Test procedure:
+
+1) Start a console.
+
+2) Let leomy be your script for starting Leo-Editor.
+Suppose there is no file named "d1.leo" in the current working directory.
+Execute command line: "leomy d1.leo"
+This creates file d1.leo containing one node with headline "d1.leo".
+Ctrl-S -- Write d1.leo
+Alt-F4 -- Exit Leo-Editor
+
+3) Suppose there is no file named "d2.leo" in the current working directory.
+Execute command line: "leomy d2.leo"
+This creates file d2.leo containing one node with headline "d2.leo".
+
+4) Alt-c, f, c -- This pops up a file selection menu allowing you to pick the "other" Leo-Editor file to be compared to the current Leo-Editor file (d2.leo).
+Pick file d1.leo.
+This causes the comparison to be done.
+This creates a subtree rooted by a node with headline "Compare .leo Files".
+
+Note the messages output to the terminal:
+
+ inserted (only in /home/ldi/tmp/d1.leo)
+('bob05', '20130326174836', '1409') d1.leo
+
+ deleted (only in /home/ldi/tmp/d2.leo)
+('bob05', '20130326174847', '1409') d2.leo
+
+ changed
+
+-----
+I believe released code should not to print such non-error messages on the terminal.
+---------
+
+5) Alt-o, x, a -- Expand all nodes
+
+Note that node "Compare .leo Files-->inserted-->d1.leo" is marked as a clone.
+This indicates a serious problem because the clone of this node is in the "other" .leo file. This is a "cross-file" clone link that as far as I know is not allowed.
+
+Now try either step 6a) or 6b). They generate slightly different errors.
+
+6a) Now try to select node "Compare .leo Files-->inserted-->d1.leo" by left-clicking it.
+Note that the node is NOT selected--But note the errors on the terminal.
+
+6b) Press Alt-downArrow 4 times. Note no errors have been reported.
+Press Alt-downArrow a 5th time.
+Note the errors displayed in the log pane and the the terminal.
+---------
+6a errors shown only in the terminal:
+
+Traceback (most recent call last):
+  File "/home/ldi/bzr/LeoLatest/leo/plugins/baseNativeTree.py", line 664, in onTreeSelect
+    self.select(p)
+  File "/home/ldi/bzr/LeoLatest/leo/core/leoFrame.py", line 2046, in select
+    val = self.selectHelper(p,scroll=scroll)
+  File "/home/ldi/bzr/LeoLatest/leo/core/leoFrame.py", line 2070, in selectHelper
+    assert p.v.context == c
+AssertionError
+------
+
+6b errors on terminal:
+exception executing command
+Traceback (most recent call last):
+
+  File "/home/ldi/bzr/LeoLatest/leo/core/leoCommands.py", line 560, in doCommand
+    val = command(event)
+
+  File "/home/ldi/bzr/LeoLatest/leo/core/leoCommands.py", line 6657, in selectVisNext
+    c.treeSelectHelper(p)
+
+  File "/home/ldi/bzr/LeoLatest/leo/core/leoCommands.py", line 6691, in treeSelectHelper
+    c.selectPosition(p)
+
+  File "/home/ldi/bzr/LeoLatest/leo/core/leoCommands.py", line 8230, in selectPosition
+    c.frame.tree.select(p)
+
+  File "/home/ldi/bzr/LeoLatest/leo/core/leoFrame.py", line 2046, in select
+    val = self.selectHelper(p,scroll=scroll)
+
+  File "/home/ldi/bzr/LeoLatest/leo/core/leoFrame.py", line 2070, in selectHelper
+    assert p.v.context == c
+
+AssertionError
+-------
+6b) errors in red in log pane:
+
+exception executing command
+Traceback (most recent call last):
+  File "/home/ldi/bzr/LeoLatest/leo/core/leoCommands.py", line 560, in doCommand
+    val = command(event)
+  File "/home/ldi/bzr/LeoLatest/leo/core/leoCommands.py", line 6657, in selectVisNext
+    c.treeSelectHelper(p)
+  File "/home/ldi/bzr/LeoLatest/leo/core/leoCommands.py", line 6691, in treeSelectHelper
+    c.selectPosition(p)
+  File "/home/ldi/bzr/LeoLatest/leo/core/leoCommands.py", line 8230, in selectPosition
+    c.frame.tree.select(p)
+  File "/home/ldi/bzr/LeoLatest/leo/core/leoFrame.py", line 2046, in select
+    val = self.selectHelper(p,scroll=scroll)
+  File "/home/ldi/bzr/LeoLatest/leo/core/leoFrame.py", line 2070, in selectHelper
+    assert p.v.context == c
+AssertionError
+
+--------
+
+I use Xubuntu 12.04 (precise)
+Kernel 3.2.0-39-generic
+
+Leo Log Window
+Leo 4.11 devel, build 5639, 2013-03-24 11:01:23
+Python 2.7.3, qt version 4.8.1
+linux2
+setting leoID from os.getenv('USER'): 'bob05'
+load dir: /home/ldi/bzr/LeoLatest/leo/core
+global config dir: /home/ldi/bzr/LeoLatest/leo/config
+home dir: /home/bob05
+reading settings in /home/ldi/bzr/LeoLatest/leo/config/leoSettings.leo
+reading settings in /home/bob05/.leo/myLeoSettings.leo
 .. @+node:ekr.20130908104426.11260: *6* 1182864 goto-global-line cmd bug
+https://bugs.launchpad.net/leo-editor/+bug/1182864
+
+https://groups.google.com/forum/?fromgroups#!topic/leo-editor/ZvuopZjiUhE
+
+goto-global-line can't handle decorators.
+
+At last, I made a minimal file and find a bug which related to
+goto-global-line.
+
+Step:
+
+1. @auto test_line.py
+2. alt-g, 12
+intend to go to the line:
+    "@property"
+but it goes to the line
+    "def name(self):"
+    
+test_line.py::
+
+    #!/usr/bin/env python
+    # -*- coding: utf-8 -*-
+    
+    from runner.koan import *
+    
+    
+    class AboutClasses(Koan):
+        class Dog4(object):
+            def __init__(self):
+                self._name = None
+    
+            @property
+            def name(self):
+                return self._name
+    
+            @name.setter
+            def name(self, a_name):
+                self._name = a_name
 .. @+node:ekr.20130908104426.11264: *6* 1208659 leo parsed the wrong line number of html file
+https://bugs.launchpad.net/leo-editor/+bug/1208659
+
+https://groups.google.com/forum/#!topic/leo-editor/ey2J1qBKBnY
+
+When I use @auto to import this html,
+https://spark-public.s3.amazonaws.com/startup/code/bitstarter-hw4.html
+
+leo complains,
+
+reading: @auto bitstarter-hw4.html
+Error: @auto did not import @auto bitstarter-hw4.html perfectly
+The clean-all-lines command may help fix whitespace problems
+first mismatched line: 254 (original) = 254 (imported)
+Original file...
+
+ 252 u'<a class="accordion-toggle" data-toggle="collapse"\n'
+ 253 u'data-parent="#accordion2" href="#collapseTwo">\n'
+ 254 u"What's a Frequently Asked Question?\n"
+ 255 u'</a>\n'
+ 256 u'</div>\n'
+
+Imported file...
+
+ 252 u'<a class="accordion-toggle" data-toggle="collapse"\n'
+ 253 u'data-parent="#accordion2" href="#collapseOne">\n'
+ 254 u'What does FAQ stand for?\n'
+ 255 u'</a>\n'
+ 256 u'</div>\n'
+inserting @ignore
+errors inhibited read @auto R:\bitstarter-hw4.html
+reading entire file into @auto node.
+reading: @edit bitstarter-hw4.html
+finished
+
+Very strange, it seems leo parsed the wrong line, in the html file,
+line 267:
+    What's a Frequently Asked Question?
+line 254:
+    What does FAQ stand for?
+but leo said they are in same line...
+
+leo version:
+Leo 4.11 devel, build 5849, 2013-08-04 02:54:05 -0500
+Python 2.7.3, qt version 4.8.4
+Windows 6, 1, 7601, 2, Service Pack 1
 .. @+node:ekr.20130917083243.11295: *5* doc (5)
 .. @+node:ekr.20130917083243.11294: *6* Leo in a nutshell: put on home page
 @language rest
@@ -7235,8 +6997,14 @@ I need to research it. The change won't be free, as the debian tooling
 (python-support) expects it to be called setup.py. I need to find a
 workaround, but can't do it right now.
 QQQ
+.. @+node:ekr.20130917093253.11300: *5* unit tests for utf-16 @asis, @nosent, @shadow files
 .. @+node:ekr.20130916105324.19894: *5* 1226353 @shadow does not retain outline structure properly
 https://bugs.launchpad.net/leo-editor/+bug/1226353
+
+The most important problem is compatibility.  As I have just verified,
+@shadow will work even if the private file does not exist,
+but all outline structure will be lost.  Therefore, it may be best
+not to try to read old (ver-4thin) files at all.
 
 @shadow does not reload the following simple file correctly!
 
