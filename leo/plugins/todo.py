@@ -351,6 +351,10 @@ class todoController:
         self.recentIcons = []
         #X self.smiley = None
         self.redrawLevels = 0
+        
+        self.iconDir = g.os_path_abspath(
+            g.os_path_normpath(
+                g.os_path_join(g.app.loadDir,"..","Icons")))
 
         #@+<< set / read default values >>
         #@+node:tbrown.20090119215428.12: *4* << set / read default values >>
@@ -452,12 +456,6 @@ class todoController:
                 fn = 'prg%03d.png' % prog
             else:
                 fn = self.priorities[pri]["icon"]
-
-            #X iconDir = g.os_path_abspath(
-            #X   g.os_path_normpath(
-            #X     g.os_path_join(g.app.loadDir,"..","Icons")))
-
-            #X    fn = g.os_path_join(iconDir,'cleo',fn)
             
             # use getImageImage because it's theme aware
             fn = g.os_path_join('cleo', fn)
@@ -502,27 +500,27 @@ class todoController:
         allIcons = com.getIconList(p)
         icons = [i for i in allIcons if 'cleoIcon' not in i]
 
+        if self.icon_order == 'pri-first':
+            iterations = ['priority', 'progress', 'duedate']
+        else:
+            iterations = ['progress', 'priority', 'duedate']
+
         if clear:
             iterations = []
-        else:
-            iterations = [True, False]
 
         for which in iterations:
 
-            if which == (self.icon_order == 'pri-first'):
+            if which == 'priority':
                 pri = self.getat(p.v, 'priority')
                 if pri: pri = int(pri)
                 if pri in self.priorities:
-                    iconDir = g.os_path_abspath(
-                      g.os_path_normpath(
-                        g.os_path_join(g.app.loadDir,"..","Icons")))
-                    com.appendImageDictToList(icons, iconDir,
+                    com.appendImageDictToList(icons, self.iconDir,
                         g.os_path_join('cleo',self.priorities[pri]['icon']),
                         2, on='vnode', cleoIcon='1', where=self.icon_location)
                         # Icon location defaults to 'beforeIcon' unless cleo_icon_location global defined.
                         # Example: @strings[beforeIcon,beforeHeadline] cleo_icon_location = beforeHeadline
-                    com.setIconList(p, icons)
-            else:
+                    #X com.setIconList(p, icons)
+            elif which == 'progress':
 
                 prog = self.getat(p.v, 'progress')
                 if prog is not '':
@@ -530,14 +528,21 @@ class todoController:
                     use = prog//10*10
                     use = 'prg%03d.png' % use
 
-                    iconDir = g.os_path_abspath(
-                      g.os_path_normpath(
-                        g.os_path_join(g.app.loadDir,"..","Icons")))
-
-                    com.appendImageDictToList(icons, iconDir,
+                    com.appendImageDictToList(icons, self.iconDir,
                         g.os_path_join('cleo',use),
                         2, on='vnode', cleoIcon='1', where=self.prog_location)
-                    com.setIconList(p, icons)
+                    #X com.setIconList(p, icons)
+                    
+            elif which == 'duedate':
+                
+                duedate = self.getat(p.v, 'duedate')
+                duetime = self.getat(p.v, 'duetime')
+                if duedate or duetime:
+                    
+                    com.appendImageDictToList(icons, self.iconDir,
+                        g.os_path_join('Tango', '16x16', 'apps', 'date.png'),
+                        2, on='vnode', cleoIcon='1', where=self.prog_location)
+                    #X com.setIconList(p, icons)
 
         if len(allIcons) != len(icons):  # something to add / remove
             com.setIconList(p, icons)
@@ -867,6 +872,7 @@ class todoController:
             self.setat(v, 'duedate', val.toPyDate())
 
         self.updateUI()  # if change was made to date with offset selector
+        self.loadIcons(p)
     #@+node:tbrown.20110213091328.16235: *4* set_due_time
     def set_due_time(self,p=None, val=None, mode='adjust'):
         "mode: `adjust` for change in time, `check` for checkbox toggle"
@@ -882,6 +888,7 @@ class todoController:
         else:
             self.ui.UI.dueTimeToggle.setCheckState(Qt.Checked)
             self.setat(v, 'duetime', val.toPyTime())
+        self.loadIcons(p)
     #@+node:tbrown.20121204084515.60965: *4* set_due_date_offset
     def set_due_date_offset(self):
         """set_due_date_offset - update date by selected offset
@@ -908,6 +915,8 @@ class todoController:
             mult = -1
         
         self.set_due_date(val=date.addDays(mult*int(offset.strip('<>'))))
+        p = self.c.currentPosition()
+        self.loadIcons(p)
     #@+node:tbrown.20090119215428.40: *3* ToDo icon related...
     #@+node:tbrown.20090119215428.41: *4* childrenTodo
     @redrawer
