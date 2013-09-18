@@ -492,6 +492,23 @@ including the newline.
 - Added new kill-to-end-of-line command, that works like kill in emacs.
 - Added new unit tests for same, and a new test for kill-line.
 
+#@+node:ekr.20130908104426.11264: *3* Fixed bug 1208659 leo parsed the wrong line number of html file
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/1208659
+
+The compare failure was the result of using baseScannerClass.startsString.
+This is wrong: single quotes do *not* start strings in xml or html.
+
+Added better traces when the comparison fails.
+
+Another change: if the @auto import fails, the file is imported as usual
+(with an @ignore node). That is, no @edit node is created. This disables a
+dubious feature.
+
+Alas, reportMismatch can't possibly detect tokenizing errors: reportMismatch
+only has the imported lists of *lines* for the error report, not the
+tokens.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

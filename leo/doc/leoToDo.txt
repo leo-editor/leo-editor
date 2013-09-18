@@ -6641,10 +6641,7 @@ has arbitrary attributes like the `active` I just made up above.
 https://bugs.launchpad.net/leo-editor/+bug/nnn
 .. @+node:ekr.20130916105324.19893: *4* to-do for 4.11b1
 @language rest
-.. @+node:ekr.20130918062408.17091: *5* does cycle-all-focus work with the Spell Tab enabled?
-At present, the unit test is disabled.
-.. @+node:ekr.20130908104426.11274: *5* commands (3)
-.. @+node:ekr.20130908104426.11254: *6* 1160660 File-Compare-Leo-Files creates "other file" clones
+.. @+node:ekr.20130908104426.11254: *5* 1160660 File-Compare-Leo-Files creates "other file" clones
 https://bugs.launchpad.net/leo-editor/+bug/1160660
 
 Test procedure:
@@ -6764,7 +6761,7 @@ global config dir: /home/ldi/bzr/LeoLatest/leo/config
 home dir: /home/bob05
 reading settings in /home/ldi/bzr/LeoLatest/leo/config/leoSettings.leo
 reading settings in /home/bob05/.leo/myLeoSettings.leo
-.. @+node:ekr.20130908104426.11260: *6* 1182864 goto-global-line cmd bug
+.. @+node:ekr.20130908104426.11260: *5* 1182864 goto-global-line cmd bug
 https://bugs.launchpad.net/leo-editor/+bug/1182864
 
 https://groups.google.com/forum/?fromgroups#!topic/leo-editor/ZvuopZjiUhE
@@ -6803,6 +6800,8 @@ test_line.py::
             @name.setter
             def name(self, a_name):
                 self._name = a_name
+.. @+node:ekr.20130918062408.17091: *5* does cycle-all-focus work with the Spell Tab enabled?
+At present, the unit test is disabled.
 .. @+node:ekr.20130917093253.11300: *5* unit tests for utf-16 @asis, @nosent, @shadow files
 .. @+node:ekr.20130917083243.11295: *5* doc (5)
 .. @+node:ekr.20130917083243.11294: *6* Leo in a nutshell: put on home page
