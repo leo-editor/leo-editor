@@ -2053,6 +2053,7 @@ class baseScannerClass (scanUtility):
     #@+node:ekr.20070911110507: *4* reportMismatch
     def reportMismatch (self,lines1,lines2,bad_i1,bad_i2):
 
+        # g.trace('**',bad_i1,bad_i2,g.callers())
         trace = False # This causes traces for *non-failing* unit tests.
         kind = g.choose(self.atAuto,'@auto','import command')
         n1,n2 = len(lines1),len(lines2)
@@ -2062,24 +2063,19 @@ class baseScannerClass (scanUtility):
         s3 = 'first mismatched line: %s (original) = %s (imported)' % (
             bad_i1,bad_i2)
         s = s1 + s2 + s3
-
         if trace: g.trace(s)
         else:     self.error(s)
-
         aList = []
         aList.append('Original file...\n')
         for i in range(max(0,bad_i1-2),min(bad_i1+3,n1)):
             line = repr(lines1[i])
             aList.append('%4d %s' % (i,line))
-
         aList.append('\nImported file...\n')
         for i in range(max(0,bad_i2-2),min(bad_i2+3,n2)):
             line = repr(lines2[i])
             aList.append('%4d %s' % (i,line))
-
         if trace or not g.unitTesting:
             g.blue('\n'.join(aList))
-
         return False
     #@+node:ekr.20111101052702.16721: *4* scanAndCompare & helpers (calls tokenize)
     def scanAndCompare (self,s1,s2):
@@ -2105,8 +2101,8 @@ class baseScannerClass (scanUtility):
     #@+node:ekr.20111101092301.16729: *5* compareTokens
     def compareTokens(self,tokens1,tokens2):
 
-        trace = False and not g.unitTesting
-        verbose = True
+        trace = True and not g.unitTesting
+        verbose = False
         i,n1,n2 = 0,len(tokens1),len(tokens2)
         fail_n1,fail_n2 = -1,-1
         while i < max(n1,n2):
@@ -2125,13 +2121,15 @@ class baseScannerClass (scanUtility):
             else:      kind2,val2,tok_n2 = 'eof','',n2
             if fail_n1 == -1 and fail_n2 == -1 and (kind1 != kind2 or val1 != val2):
                 if trace: g.trace('fail at lines: %s,%s' % (tok_n1,tok_n2))
-                fail_n1,fail_n2 = tok_n1,tok_n1
+                fail_n1,fail_n2 = tok_n1,tok_n2 # Bug fix: 2013/09/08.
+                if trace:
+                    print('------ Failure ----- i: %s n1: %s n2: %s' % (i,n1,n2))
+                    print('tok_n1: %s tok_n2: %s' % (tok_n1,tok_n2))
+                    print('kind1: %s kind2: %s\nval1: %s\nval2: %s' % (
+                        kind1,kind2,repr(val1),repr(val2)))
                 if trace and verbose:
                     n3 = 0
                     i += 1
-                    print('------ Failure ----- i: %s n1: %s n2: %s' % (i,n1,n2))
-                    print('kind1: %s kind2: %s\nval1: %s\nval2: %s' % (
-                        kind1,kind2,repr(val1),repr(val2)))
                     while n3 < 10 and i < max(n1,n2):
                         for n,tokens in ((n1,tokens1),(n2,tokens2),):
                             if i < n: kind,val,junk_n = tokens[i]
@@ -2142,7 +2140,7 @@ class baseScannerClass (scanUtility):
                 break
             i += 1
         if fail_n1 > -1 or fail_n2 > -1:
-            if trace: g.trace('fail',n1,n2)
+            if trace: g.trace('fail',fail_n1,fail_n2)
             return fail_n1,fail_n2
         elif n1 == n2:
             if trace: g.trace('equal')
@@ -5464,7 +5462,7 @@ class xmlScanner (baseScannerClass):
         return i < len(s) and self.isWordChar1(s[i])
     #@+node:ekr.20130918062408.17090: *5* startsString (xmlScanner)
     def startsString(self,s,i):
-        
+            
         '''Single quotes do *not* start strings in xml or html.'''
         
         # Fix bug 1208659: leo parsed the wrong line number of html file.
