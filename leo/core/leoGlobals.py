@@ -3827,7 +3827,7 @@ def skip_python_string(s,i,verbose=True):
         return len(s)
     else:
         return g.skip_string(s,i)
-#@+node:ekr.20031218072017.2369: *4* skip_string
+#@+node:ekr.20031218072017.2369: *4* skip_string (leoGlobals)
 def skip_string(s,i,verbose=True):
 
     '''Scan forward to the end of a string.

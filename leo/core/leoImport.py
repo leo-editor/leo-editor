@@ -1837,7 +1837,7 @@ class baseScannerClass (scanUtility):
             # For example, ';' and '=' in C.
         self.strict = False # True if leading whitespace is very significant.
         self.warnAboutUnderindentedLines = True
-    #@+node:ekr.20070808115837: *3* Checking
+    #@+node:ekr.20070808115837: *3* Checking (baseScannerClass)
     #@+node:ekr.20070703122141.102: *4* check
     def check (self,unused_s,unused_parent):
 
@@ -1867,15 +1867,14 @@ class baseScannerClass (scanUtility):
             g.error('line:',repr(line))
 
         return ok
-    #@+node:ekr.20070703122141.104: *4* checkTrialWrite
+    #@+node:ekr.20070703122141.104: *4* checkTrialWrite (calls scanAndCompare)
     def checkTrialWrite (self,s1=None,s2=None):
 
         '''Return True if a trial write produces the original file.'''
 
         # s1 and s2 are for unit testing.
         trace = False
-        c = self.c ; at = c.atFileCommands
-
+        c,at=self.c,self.c.atFileCommands
         if s1 is None and s2 is None:
             if self.isRst:
                 outputFile = StringIO()
@@ -1895,7 +1894,6 @@ class baseScannerClass (scanUtility):
                     toString=True,
                 )
                 s1,s2 = self.file_s, at.stringOutput
-
                 # Now remove sentinels from s2.
                 line_delim = self.lineCommentDelim or self.lineCommentDelim2 or ''
                 start_delim = self.blockCommentDelim1 or self.blockCommentDelim2 or ''
@@ -1903,18 +1901,14 @@ class baseScannerClass (scanUtility):
                 assert line_delim or start_delim
                 s2 = self.importCommands.removeSentinelLines(s2,
                     line_delim,start_delim,unused_end_delim=None)
-
         s1 = g.toUnicode(s1,self.encoding)
         s2 = g.toUnicode(s2,self.encoding)
-
         # Make sure we have a trailing newline in both strings.
         s1 = s1.replace('\r','')
         s2 = s2.replace('\r','')
         if not s1.endswith('\n'): s1 = s1 + '\n'
         if not s2.endswith('\n'): s2 = s2 + '\n'
-
         if s1 == s2: return True
-
         if self.ignoreBlankLines or self.ignoreLeadingWs:
             lines1 = g.splitLines(s1)
             lines2 = g.splitLines(s2)
@@ -1922,11 +1916,9 @@ class baseScannerClass (scanUtility):
             lines2 = self.adjustTestLines(lines2)
             s1 = ''.join(lines1)
             s2 = ''.join(lines2)
-
         if 1: # Token-based comparison.
             bad_i1,bad_i2,ok = self.scanAndCompare(s1,s2)
             if ok: return ok
-
         else: # Line-based comparison: can not possibly work for html.
             n1,n2 = len(lines1), len(lines2)
             ok = True ; bad_i1,bad_i2 = 0,0
@@ -1935,21 +1927,18 @@ class baseScannerClass (scanUtility):
                 if not ok:
                     bad_1i,bad_i2 = i,i
                     break
-
         # Unit tests do not generate errors unless the mismatch line does not match.
         if g.app.unitTesting:
             d = g.app.unitTestDict
             ok = d.get('expectedMismatchLine') == bad_i1
                 # was d.get('actualMismatchLine')
             if not ok: d['fail'] = g.callers()
-
         if trace or not ok:
             lines1 = g.splitLines(s1)
             lines2 = g.splitLines(s2)
             self.reportMismatch(lines1,lines2,bad_i1,bad_i2)
-
         return ok
-    #@+node:ekr.20070730093735: *4* compareHelper & helpers
+    #@+node:ekr.20070730093735: *4* compareHelper & helpers (not used when tokenizing)
     def compareHelper (self,lines1,lines2,i,strict):
 
         '''Compare lines1[i] and lines2[i].
@@ -1967,7 +1956,6 @@ class baseScannerClass (scanUtility):
         expectedMismatch = g.app.unitTesting and d.get('expectedMismatchLine')
         enableWarning = not self.mismatchWarningGiven and self.atAutoWarnsAboutLeadingWhitespace
         messageKind = None
-
         if i >= len(lines1):
             if i != expectedMismatch or not g.unitTesting:
                 pr('extra lines')
@@ -1975,7 +1963,6 @@ class baseScannerClass (scanUtility):
                     pr(repr(line))
             d ['actualMismatchLine'] = i
             return False
-
         if i >= len(lines2):
             if i != expectedMismatch or not g.unitTesting:
                 g.es_print('missing lines')
@@ -1983,9 +1970,7 @@ class baseScannerClass (scanUtility):
                     g.es_print('',repr(line))
             d ['actualMismatchLine'] = i
             return False
-
         line1,line2 = lines1[i],lines2[i]
-
         if line1 == line2:
             return True # An exact match.
         elif not line1.strip() and not line2.strip():
@@ -2000,7 +1985,6 @@ class baseScannerClass (scanUtility):
         else:
             s1,s2 = line1.lstrip(),line2.lstrip()
             messageKind = g.choose(s1==s2,'warning','error')
-
         if g.unitTesting:
             d ['actualMismatchLine'] = i+1
             ok = i+1 == expectedMismatch
@@ -2022,7 +2006,7 @@ class baseScannerClass (scanUtility):
                 self.warning('mismatch in leading whitespace')
                 pr_mismatch(i,line1,line2)
             return messageKind in ('comment','warning') # Only errors are invalid.
-    #@+node:ekr.20091227115606.6468: *5* adjustTestLines
+    #@+node:ekr.20091227115606.6468: *5* adjustTestLines (baseScannerClass)
     def adjustTestLines(self,lines):
 
         '''Ignore newlines.
@@ -2097,7 +2081,7 @@ class baseScannerClass (scanUtility):
             g.blue('\n'.join(aList))
 
         return False
-    #@+node:ekr.20111101052702.16721: *4* scanAndCompare & helpers
+    #@+node:ekr.20111101052702.16721: *4* scanAndCompare & helpers (calls tokenize)
     def scanAndCompare (self,s1,s2):
 
         '''Tokenize both s1 and s2, then perform a token-based comparison.
@@ -2110,10 +2094,8 @@ class baseScannerClass (scanUtility):
 
         tokens1 = self.tokenize(s1)
         tokens2 = self.tokenize(s2)
-
         tokens1 = self.filterTokens(tokens1)
         tokens2 = self.filterTokens(tokens2)
-
         if self.stripTokens(tokens1) == self.stripTokens(tokens2):
             # g.trace('stripped tokens are equal')
             return -1,-1,True
@@ -2123,7 +2105,7 @@ class baseScannerClass (scanUtility):
     #@+node:ekr.20111101092301.16729: *5* compareTokens
     def compareTokens(self,tokens1,tokens2):
 
-        trace = False # and not g.unitTesting
+        trace = False and not g.unitTesting
         verbose = True
         i,n1,n2 = 0,len(tokens1),len(tokens2)
         fail_n1,fail_n2 = -1,-1
@@ -2133,23 +2115,23 @@ class baseScannerClass (scanUtility):
                     if i < n: kind,val,line_number = tokens[i]
                     else:     kind,val,line_number = 'eof','',''
                     try:
-                        print('%3s %3s %7s' % (i,line_number,kind),repr(val))
+                        print('%3s %3s %7s' % (i,line_number,kind),repr(val)[:40])
                     except UnicodeEncodeError:
                         print('%3s %3s %7s' % (i,line_number,kind),'unicode error!')
                         # print(val)
-
             if i < n1: kind1,val1,tok_n1 = tokens1[i]
             else:      kind1,val1,tok_n1 = 'eof','',n1
-
             if i < n2: kind2,val2,tok_n2 = tokens2[i]
             else:      kind2,val2,tok_n2 = 'eof','',n2
-
             if fail_n1 == -1 and fail_n2 == -1 and (kind1 != kind2 or val1 != val2):
                 if trace: g.trace('fail at lines: %s,%s' % (tok_n1,tok_n2))
                 fail_n1,fail_n2 = tok_n1,tok_n1
                 if trace and verbose:
                     n3 = 0
                     i += 1
+                    print('------ Failure ----- i: %s n1: %s n2: %s' % (i,n1,n2))
+                    print('kind1: %s kind2: %s\nval1: %s\nval2: %s' % (
+                        kind1,kind2,repr(val1),repr(val2)))
                     while n3 < 10 and i < max(n1,n2):
                         for n,tokens in ((n1,tokens1),(n2,tokens2),):
                             if i < n: kind,val,junk_n = tokens[i]
@@ -2159,7 +2141,6 @@ class baseScannerClass (scanUtility):
                         i += 1
                 break
             i += 1
-
         if fail_n1 > -1 or fail_n2 > -1:
             if trace: g.trace('fail',n1,n2)
             return fail_n1,fail_n2
@@ -3028,7 +3009,7 @@ class baseScannerClass (scanUtility):
         '''Skip a parenthisized list, that might contain strings or comments.'''
 
         return self.skipBlock(s,i,delim1='(',delim2=')')
-    #@+node:ekr.20070707073627.2: *5* skipString
+    #@+node:ekr.20070707073627.2: *5* skipString (baseScannerClass)
     def skipString (self,s,i):
 
         # Returns len(s) on unterminated string.
@@ -3242,7 +3223,6 @@ class baseScannerClass (scanUtility):
     #@+node:ekr.20111103073536.16583: *3* Tokenizing (baseScannerClass)
     #@+node:ekr.20111103073536.16586: *4* skip...Token (baseScannerClass)
     def skipCommentToken (self,s,i):
-
         j = self.skipComment(s,i)
         return j,s[i:j]
 
@@ -3251,15 +3231,12 @@ class baseScannerClass (scanUtility):
         return j,s[i:j]
 
     def skipNewlineToken (self,s,i):
-
         return i+1,'\n'
 
     def skipOtherToken (self,s,i):
-
         return i+1,s[i]
 
     def skipStringToken(self,s,i):
-
         j = self.skipString(s,i)
         return j,s[i:j]
 
@@ -3269,7 +3246,7 @@ class baseScannerClass (scanUtility):
             i += 1
         return i,s[j:i]
 
-    #@+node:ekr.20111030155153.16703: *4* tokenize
+    #@+node:ekr.20111030155153.16703: *4* tokenize (baseScannerClass)
     def tokenize (self,s):
 
         '''Tokenize string s and return a list of tokens (kind,value,line_number)
@@ -3301,16 +3278,12 @@ class baseScannerClass (scanUtility):
             else:
                 kind = 'other'
                 i,val = self.skipOtherToken(s,i)
-
             assert progress < i and j == progress
             if val:
                 result.append((kind,val,line_number),)
             # Use the raw token, s[j:i] to count newlines, not the munged val.
             line_number += s[j:i].count('\n')
             # g.trace('%3s %7s %s' % (line_number,kind,repr(val[:20])))
-
-        # g.trace(result)
-
         return result
     #@+node:ekr.20070707072749: *3* run (baseScannerClass)
     def run (self,s,parent):
@@ -5124,18 +5097,14 @@ class xmlScanner (baseScannerClass):
     #@+node:ekr.20111108111156.9922: *5* adjustTestLines (xmlScanner)
     def adjustTestLines(self,lines):
 
-        # This is a desparation measure to attempt reasonable comparisons.
+        '''A desparation measure to attempt reasonable comparisons.'''
 
         # self.ignoreBlankLines:
         lines = [z for z in lines if z.strip()]
-
         # if self.ignoreLeadingWs:
         lines = [z.lstrip() for z in lines]
-
         lines = [z.replace('@others','') for z in lines]
-
         # lines = [z.replace('>\n','>').replace('\n<','<') for z in lines]
-
         return lines
     #@+node:ekr.20111108111156.9935: *5* filterTokens (xmlScanner)
     def filterTokens (self,tokens):
@@ -5150,16 +5119,11 @@ class xmlScanner (baseScannerClass):
         '''
 
         trace = False
-
         if trace: g.trace(tokens)
-
         if 1: # Permissive code.
-
             return [(kind,val,line_number) for (kind,val,line_number) in tokens
                 if kind not in ('nl','ws')]
-
         else: # Accurate code.
-
             # Pass 1. Insert newlines before and after elements.
             i,n,result = 0,len(tokens),[]
             while i < n:
@@ -5172,11 +5136,9 @@ class xmlScanner (baseScannerClass):
                 if i + 1 < n: kind2,val2,n2 = tokens[i+1]
                 if i + 2 < n: kind3,val3,n3 = tokens[i+2]
                 if i + 3 < n: kind4,val4,n4 = tokens[i+3]
-
                 # Always insert the present token.
                 result.append((kind1,val1,n1),)
                 i += 1
-
                 if (
                     kind1 == 'other' and val1 == '>' and
                     kind2 != 'nl'
@@ -5195,9 +5157,7 @@ class xmlScanner (baseScannerClass):
                     result.append(('nl','\n',n1),)
                 else:
                     pass
-
                 assert progress == i-1
-
             # Pass 2: collapse newlines and whitespace separately.
             tokens = result
             i,n,result = 0,len(tokens),[]
@@ -5215,9 +5175,7 @@ class xmlScanner (baseScannerClass):
                 else:
                     result.append((kind1,val1,n1),)
                     i += 1
-
                 assert progress < i
-
             return result
     #@+node:ekr.20111103073536.16601: *5* isSpace (xmlScanner) (Use the base class now)
     # def isSpace(self,s,i):
@@ -5236,33 +5194,10 @@ class xmlScanner (baseScannerClass):
         return j,'\n'.join(lines)
 
     # skipIdToken: no change.
-
     # skipNewlineToken: no change.
-
-        # def skipNewlineToken(self,s,i):
-
-            # assert g.match(s,i,'\n')
-            # if i > 0 and s[i-1] == '>':
-                # # Ignore newlines after an element.
-                # return i+1,''
-            # elif i+1 < len(s) and s[i+1] == '<':
-                # # ignore newlines before an element.
-                # return i+1,''
-            # else:
-                # return i+1,'\n'
-
     # skipOtherToken: no change.
-
     # skipStringToken: no change.
-
     # skipWsToken: no change.
-
-        # def skipWsToken(self,s,i):
-            # '''Return a single blank for all runs of whitespace, *including* newlines.'''
-            # j = i
-            # while i < len(s) and s[i].isspace():
-                # i += 1
-            # return i,' '
 
     #@+node:ekr.20091230062012.6238: *5* skipId (override base class) & helper
     #@+at  For characters valid in names see:
@@ -5527,6 +5462,15 @@ class xmlScanner (baseScannerClass):
 
         # Fix bug 501636: Leo's import code should support non-ascii xml tags.
         return i < len(s) and self.isWordChar1(s[i])
+    #@+node:ekr.20130918062408.17090: *5* startsString (xmlScanner)
+    def startsString(self,s,i):
+        
+        '''Single quotes do *not* start strings in xml or html.'''
+        
+        # Fix bug 1208659: leo parsed the wrong line number of html file.
+        # Note: the compare failure was caused by using baseScannerClass.startsString.
+        # The line number problem is a separate issue.
+        return g.match(s,i,'"')
     #@-others
 #@-<< class xmlScanner (baseScannerClass) >>
 

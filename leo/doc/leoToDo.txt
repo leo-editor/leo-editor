@@ -6641,7 +6641,8 @@ has arbitrary attributes like the `active` I just made up above.
 https://bugs.launchpad.net/leo-editor/+bug/nnn
 .. @+node:ekr.20130916105324.19893: *4* to-do for 4.11b1
 @language rest
-.. @+node:ekr.20130917093253.11300: *5* unit tests for utf-16 @asis, @nosent, @shadow files
+.. @+node:ekr.20130918062408.17091: *5* does cycle-all-focus work with the Spell Tab enabled?
+At present, the unit test is disabled.
 .. @+node:ekr.20130908104426.11274: *5* commands (3)
 .. @+node:ekr.20130908104426.11254: *6* 1160660 File-Compare-Leo-Files creates "other file" clones
 https://bugs.launchpad.net/leo-editor/+bug/1160660
@@ -6802,52 +6803,7 @@ test_line.py::
             @name.setter
             def name(self, a_name):
                 self._name = a_name
-.. @+node:ekr.20130908104426.11264: *6* 1208659 leo parsed the wrong line number of html file
-https://bugs.launchpad.net/leo-editor/+bug/1208659
-
-https://groups.google.com/forum/#!topic/leo-editor/ey2J1qBKBnY
-
-When I use @auto to import this html,
-https://spark-public.s3.amazonaws.com/startup/code/bitstarter-hw4.html
-
-leo complains,
-
-reading: @auto bitstarter-hw4.html
-Error: @auto did not import @auto bitstarter-hw4.html perfectly
-The clean-all-lines command may help fix whitespace problems
-first mismatched line: 254 (original) = 254 (imported)
-Original file...
-
- 252 u'<a class="accordion-toggle" data-toggle="collapse"\n'
- 253 u'data-parent="#accordion2" href="#collapseTwo">\n'
- 254 u"What's a Frequently Asked Question?\n"
- 255 u'</a>\n'
- 256 u'</div>\n'
-
-Imported file...
-
- 252 u'<a class="accordion-toggle" data-toggle="collapse"\n'
- 253 u'data-parent="#accordion2" href="#collapseOne">\n'
- 254 u'What does FAQ stand for?\n'
- 255 u'</a>\n'
- 256 u'</div>\n'
-inserting @ignore
-errors inhibited read @auto R:\bitstarter-hw4.html
-reading entire file into @auto node.
-reading: @edit bitstarter-hw4.html
-finished
-
-Very strange, it seems leo parsed the wrong line, in the html file,
-line 267:
-    What's a Frequently Asked Question?
-line 254:
-    What does FAQ stand for?
-but leo said they are in same line...
-
-leo version:
-Leo 4.11 devel, build 5849, 2013-08-04 02:54:05 -0500
-Python 2.7.3, qt version 4.8.4
-Windows 6, 1, 7601, 2, Service Pack 1
+.. @+node:ekr.20130917093253.11300: *5* unit tests for utf-16 @asis, @nosent, @shadow files
 .. @+node:ekr.20130917083243.11295: *5* doc (5)
 .. @+node:ekr.20130917083243.11294: *6* Leo in a nutshell: put on home page
 @language rest

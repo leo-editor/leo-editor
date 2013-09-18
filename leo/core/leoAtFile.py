@@ -855,51 +855,41 @@ class atFile:
     #@+node:ekr.20070909100252: *4* at.readOneAtAutoNode
     def readOneAtAutoNode (self,fileName,p):
 
-        at = self ; c = at.c ; ic = c.importCommands
-
+        at,c,ic = self,self.c,self.c.importCommands
         oldChanged = c.isChanged()
-
         at.default_directory = g.setDefaultDirectory(c,p,importing=True)
         fileName = c.os_path_finalize_join(at.default_directory,fileName)
-
         if not g.os_path_exists(fileName):
             g.error('not found: @auto %s' % (fileName))
             return
-
-        # 2010/7/28: Remember that we have seen the @auto node.
+        # Remember that we have seen the @auto node.
         # Fix bug 889175: Remember the full fileName.
         at.rememberReadPath(fileName,p)
-
         s,ok,fileKey = c.cacher.readFile(fileName,p)
         if ok:
             g.doHook('after-auto',c=c,p=p)
                 # call after-auto callbacks
                 # 2011/09/30: added call to g.doHook here.
             return
-
         if not g.unitTesting:
             g.es("reading:",p.h)
-
         try:
             # 2012/04/09: catch failed asserts in the import code.
             ic.createOutline(fileName,parent=p.copy(),atAuto=True)
         except AssertionError:
             ic.errors += 1
-
         if ic.errors:
             # Read the entire file into the node.
             g.error('errors inhibited read @auto %s' % (fileName))
-            g.es_print('reading entire file into @auto node.')
-            at.readOneAtEditNode(fileName,p)
-
+            if 0:
+                g.es_print('reading entire file into @auto node.')
+                at.readOneAtEditNode(fileName,p)
         if ic.errors or not g.os_path_exists(fileName):
             p.clearDirty()
             c.setChanged(oldChanged)
         else:
             c.cacher.writeFile(p,fileKey)
             g.doHook('after-auto',c=c,p=p)
-                # call after-auto callbacks
-                # 2011/09/30: add 'c' keyword arg.
     #@+node:ekr.20090225080846.3: *4* at.readOneAtEditNode
     def readOneAtEditNode (self,fn,p):
 
