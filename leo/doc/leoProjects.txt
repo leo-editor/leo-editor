@@ -483,10 +483,14 @@ wrote recent file: /home/ville/.leo/.leoRecentFiles.txt
 
 https://bugs.launchpad.net/leo-editor/+bug/1099035
 
+The new command is supposed to work just like the emacs
+kill-line command. That is, it kill from the insert point to
+the end of the line. If there are no non-blank characters to
+the right of the insert point, it kills everything up to and
+including the newline.
+
 - Added new kill-to-end-of-line command, that works like kill in emacs.
 - Added new unit tests for same, and a new test for kill-line.
-
-
 
 #@-all
 

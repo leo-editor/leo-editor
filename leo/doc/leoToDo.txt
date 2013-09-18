@@ -6641,6 +6641,8 @@ has arbitrary attributes like the `active` I just made up above.
 https://bugs.launchpad.net/leo-editor/+bug/nnn
 .. @+node:ekr.20130916105324.19893: *4* to-do for 4.11b1
 @language rest
+.. @+node:ekr.20130918042415.11299: *5* Add to the elevator talk
+Outlines can represent external files.  This makes Leo a project manager.
 .. @+node:ekr.20130908104426.11274: *5* commands (3)
 .. @+node:ekr.20130908104426.11254: *6* 1160660 File-Compare-Leo-Files creates "other file" clones
 https://bugs.launchpad.net/leo-editor/+bug/1160660
@@ -6990,6 +6992,21 @@ QQQ
 .. @+node:ekr.20130917093253.11300: *5* unit tests for utf-16 @asis, @nosent, @shadow files
 .. @+node:ekr.20130916105324.19894: *5* 1226353 @shadow does not retain outline structure properly
 https://bugs.launchpad.net/leo-editor/+bug/1226353
+
+===== HaveF
+
+Thanks for the internal explanation of this bug. I don't remember what the
+first time find this bug, but now I always use @others explicitly in every
+nodes who have children.
+
+===== EKR
+
+I hadn't realized that just adding @others was a workaround.
+
+I am going to demote this bug to low priority, with an explanation of the
+workaround both in the bug report and in the documentation for @shadow.
+
+===== EKR
 
 The most important problem is compatibility.  As I have just verified,
 @shadow will work even if the private file does not exist,

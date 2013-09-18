@@ -517,7 +517,7 @@
 </v>
 </v>
 <v t="ekr.20070224073109.1"></v>
-<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
+<v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
 <v t="ekr.20100904134301.11002"><vh>@data global-abbreviations</vh></v>
@@ -2960,6 +2960,7 @@ isearch-forward-regexp              = Alt-Ctrl-s
 keep-lines                          = None
 keyboard-quit                       = Ctrl-g
 kill-line                           = Ctrl-k
+kill-to-end-of-line                 = None
 kill-paragraph                      = None
 kill-region                         = Ctrl-w
 kill-region-save                    = Alt-w
@@ -3259,6 +3260,7 @@ isearch-with-present-options        = None
 keep-lines                          = None
 keyboard-quit                       = None
 kill-line                           = None
+kill-to-end-of-line                 = None
 kill-paragraph                      = None
 kill-region                         = None
 kill-region-save                    = None
@@ -3858,6 +3860,7 @@ forward-word
 forward-word-extend-selection
 insert-newline
 kill-line
+kill-to-end-of-line
 kill-paragraph
 kill-region
 kill-region-save
@@ -4280,6 +4283,7 @@ delete-comments                     = Ctrl-parenright
 delete-word                         = Ctrl-Delete
 delete-spaces                       = None
 kill-line                           = Ctrl-k
+kill-to-end-of-line                 = None
 newline-and-indent                  = Ctrl-j # same as tab.
 newline-and-indent                  = Tab
 paste-text                          = Ctrl-v
