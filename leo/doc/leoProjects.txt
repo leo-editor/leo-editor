@@ -509,6 +509,12 @@ dubious feature.
 Alas, reportMismatch can't possibly detect tokenizing errors: reportMismatch
 only has the imported lists of *lines* for the error report, not the
 tokens.
+#@+node:ekr.20130908104426.11260: *3* Fixed bug 1182864: goto-global-line cmd bug
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/1182864
+
+The fix was to countLinesHelper.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

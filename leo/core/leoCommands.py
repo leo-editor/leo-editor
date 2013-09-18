@@ -2625,7 +2625,6 @@ class Commands (object):
 
             trace = False and not g.unitTesting
             # c = self.c
-
             # Start the recursion.
             n = max(0,n-1)# Convert to zero based internally.
             if trace: g.trace('%s %s (zero-based) %s' % ('*' * 20,n,root.h))
@@ -2640,13 +2639,11 @@ class Commands (object):
             Return (p,i,n,effective_lines,found)
             found: True if the line was found.
             if found::
-
                 p:              The found node.
                 i:              The offset of the line within the node.
                 effective_lines:-1 (not used)
 
             if not found::
-
                 p:              The original node.
                 i:              -1 (not used)
                 effective_lines:The number of lines in this node and all descendant nodes.
@@ -2690,7 +2687,19 @@ class Commands (object):
                         else:
                             pass # silently ignore erroneous @others.
                     else:
-                        pass # A regular directive: don't change n or i here.
+                        s = line.strip()
+                        k = g.skip_id(s,1)
+                        word = s[1:k]
+                        if word and word in g.globalDirectiveList:
+                            pass # A regular directive: don't change n or i here.
+                        else:
+                            # Fix bug 1182864: goto-global-line cmd bug.
+                            # Do count everything (like decorators) that is not a Leo directive.
+                            if effective_lines == n:
+                                if trace: g.trace('Found! n: %s i: %s %s' % (n,i,lines[i]))
+                                return p,i,-1,True # effective_lines doesn't matter.
+                            else:
+                                effective_lines += 1
                 else:
                     # Bug fix 2011/01/21: use effective_lines, not i, in this comparison.
                     # The line is now known to be effective.
@@ -2702,7 +2711,6 @@ class Commands (object):
                 # This is the one and only place we update i in this loop.
                 i += 1
                 assert i > progress
-
             if trace:
                 g.trace('Not found. n: %s effective_lines: %s %s' % (
                     n,effective_lines,p.h))

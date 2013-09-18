@@ -4383,31 +4383,36 @@ class pythonScanner (baseScannerClass):
         self.strict = True
     #@+node:ekr.20071201073102.1: *4* adjustDefStart (pythonScanner)
     def adjustDefStart (self,s,i):
-
         '''A hook to allow the Python importer to adjust the 
-        start of a class or function to include decorators.'''
-
-        if i == 0 or s[i-1] != '\n':
+        start of a class or function to include decorators.
+        '''
+        # Invariant: i does not change.
+        # Invariant: start is the present return value.  
+        try:
+            assert s[i] != '\n'
+            start = j = g.find_line_start(s,i) if i > 0 else 0
+            # g.trace('entry',j,i,repr(s[j:i+10]))
+            assert j == 0 or s[j-1] == '\n'
+            while j > 0:
+                progress = j
+                j1 = j = g.find_line_start(s,j-2)
+                # g.trace('line',repr(s[j:progress]))
+                j = g.skip_ws(s,j)
+                if not g.match(s,j,'@'):
+                    break
+                k = g.skip_id(s,j+1)
+                word = s[j:k]
+                # Leo directives halt the scan.
+                if word and word in g.globalDirectiveList:
+                    break
+                # A decorator.
+                start = j = j1
+                assert j < progress
+            # g.trace('**returns %s, %s' % (repr(s[start:i]),repr(s[i:i+20])))
+            return start
+        except AssertionError:
+            g.es_exception()
             return i
-
-        while i > 0:
-            progress = i
-
-            start = j = g.find_line_start(s,i-2)
-            j = g.skip_ws(s,j)
-            if not g.match(s,j,'@'):
-                return i
-
-            j += 1
-            k = g.skip_id(s,j)
-            word = s[j:k]
-
-            if word and word not in g.globalDirectiveList:
-                # g.trace(repr(word),repr(s[start:i]))
-                i = start
-                assert i < progress
-            else:
-                return i
     #@+node:ekr.20070707113839: *4* extendSignature
     def extendSignature(self,s,i):
 

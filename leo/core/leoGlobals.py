@@ -3887,14 +3887,17 @@ def escaped(s,i):
     return (count%2) == 1
 #@+node:ekr.20031218072017.3175: *4* find_line_start
 def find_line_start(s,i):
+    
+    '''Return the index in s of the start of the line containing s[i].'''
 
     if i < 0:
         return 0 # New in Leo 4.4.5: add this defensive code.
 
     # bug fix: 11/2/02: change i to i+1 in rfind
     i = s.rfind('\n',0,i+1) # Finds the highest index in the range.
-    if i == -1: return 0
-    else: return i + 1
+    return 0 if i == -1 else i + 1
+    # if i == -1: return 0
+    # else: return i + 1
 #@+node:ekr.20031218072017.3176: *4* find_on_line
 def find_on_line(s,i,pattern):
 
