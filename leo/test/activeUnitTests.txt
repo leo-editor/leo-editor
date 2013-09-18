@@ -6956,17 +6956,6 @@ g.app.unitTestDict['restoreSelectedNode']=False
 #@+node:ekr.20120212130242.3948: *7* a
 #@+node:ekr.20120212130242.3949: *8* b
 #@+node:ekr.20070131175538.1: *4*  Commands F-L
-#@+node:ekr.20061128090441: *5* @@test kill-line end-2
-c.testManager.runEditCommandTest(p)
-#@+node:ekr.20061128090441.1: *6* work
-line 1
-line 2
-#@+node:ekr.20061128090441.3: *6* before sel=3.0,3.0
-line 1
-line 2
-#@+node:ekr.20061128090441.2: *6* after sel=2.6,2.6
-line 1
-line 2
 #@+node:ekr.20061101121602.218: *5* @test fill-paragraph
 @pagewidth 80
     # Required for external unit test.
@@ -7585,52 +7574,168 @@ line 1
         line b
 line c
 last line
-#@+node:ekr.20061128090338: *5* @test kill-line end-1
+#@+node:ekr.20130918043621.4172: *5* kill-line tests
+#@+node:ekr.20130918051958.4176: *6* @test kill-line end-body-text
+# First, we must remove the trailing newline from the 'after' line.
+h = 'after sel=3.6,3.6'
+p2 = g.findNodeInTree(c,p,h)
+assert p2,h
+s = p2.b
+if s.endswith('\n'):
+    p2.b = p2.b[:-1]
 c.testManager.runEditCommandTest(p)
-#@+node:ekr.20061128090338.1: *6* work
-line 1
-line 2
-
-#@+node:ekr.20061128090338.2: *6* before sel=3.5,3.5
+#@+node:ekr.20130918051958.4177: *7* work
 line 1
 line 2
 line 3
-#@+node:ekr.20061128090338.3: *6* after sel=3.0,3.0
+#@+node:ekr.20130918051958.4178: *7* before sel=4.1,4.1
+line 1
+line 2
+line 3
+#@+node:ekr.20130918051958.4179: *7* after sel=3.6,3.6
+line 1
+line 2
+line 3
+#@+node:ekr.20061128090338: *6* @test kill-line end-line-text
+c.testManager.runEditCommandTest(p)
+#@+node:ekr.20061128090338.1: *7* work
 line 1
 line 2
 
-#@+node:ekr.20061128090021: *5* @test kill-line middle-1
+#@+node:ekr.20061128090338.2: *7* before sel=3.5,3.5
+line 1
+line 2
+line 3
+#@+node:ekr.20061128090338.3: *7* after sel=3.0,3.0
+line 1
+line 2
+
+#@+node:ekr.20061128090021: *6* @test kill-line start-line
 c.testManager.runEditCommandTest(p)
-#@+node:ekr.20061128090021.1: *6* work
+#@+node:ekr.20061128090021.1: *7* work
 line 1
 line 2
 
 line 4
-#@+node:ekr.20061128090021.2: *6* before sel=3.0,3.0
+#@+node:ekr.20061128090021.2: *7* before sel=3.0,3.0
 line 1
 line 2
 line 3
 line 4
-#@+node:ekr.20061128090021.3: *6* after sel=3.0,3.0
+#@+node:ekr.20061128090021.3: *7* after sel=3.0,3.0
 line 1
 line 2
 
 line 4
-#@+node:ekr.20061128090147: *5* @test kill-line middle-2
+#@+node:ekr.20061128090147: *6* @test kill-line start-blank-line
 c.testManager.runEditCommandTest(p)
-#@+node:ekr.20061128090147.1: *6* work
+#@+node:ekr.20061128090147.1: *7* work
 line 1
 line 2
 line 4
-#@+node:ekr.20061128090147.2: *6* before sel=3.0,3.0
+#@+node:ekr.20061128090147.2: *7* before sel=3.0,3.0
 line 1
 line 2
 
 line 4
-#@+node:ekr.20061128090147.3: *6* after sel=3.0,3.0
+#@+node:ekr.20061128090147.3: *7* after sel=3.0,3.0
 line 1
 line 2
 line 4
+#@+node:ekr.20130918043621.4190: *5* kill-to-end-of-line tests
+#@+node:ekr.20130918043621.4195: *6* @test kill-to-end-of-line end-body-text
+# First, we must remove the trailing newline from the 'after' line.
+h = 'after sel=3.6,3.6'
+p2 = g.findNodeInTree(c,p,h)
+assert p2,h
+s = p2.b
+if s.endswith('\n'):
+    p2.b = p2.b[:-1]
+c.testManager.runEditCommandTest(p)
+#@+node:ekr.20130918043621.4196: *7* work
+line 1
+line 2
+line 3
+#@+node:ekr.20130918043621.4197: *7* before sel=4.1,4.1
+line 1
+line 2
+line 3
+#@+node:ekr.20130918043621.4198: *7* after sel=3.6,3.6
+line 1
+line 2
+line 3
+#@+node:ekr.20130918050446.4202: *6* @test kill-to-end-of-line end-line
+c.testManager.runEditCommandTest(p)
+#@+node:ekr.20130918050446.4203: *7* work
+line 1
+line 2line 3
+#@+node:ekr.20130918050446.4204: *7* before sel=2.6,2.6
+line 1
+line 2
+line 3
+#@+node:ekr.20130918050446.4205: *7* after sel=2.6,2.6
+line 1
+line 2line 3
+#@+node:ekr.20130918052416.4180: *6* @test kill-to-end-of-line after last visible char
+c.testManager.runEditCommandTest(p)
+#@+node:ekr.20130918052416.4181: *7* work
+line 1
+line 2line 3
+#@+node:ekr.20130918052416.4182: *7* before sel=3.6,3.6
+line 1
+# The next line contains two trailing blanks.
+line 3  
+line 4
+#@+node:ekr.20130918052416.4183: *7* after sel=3.6,3.6
+line 1
+# The next line contains two trailing blanks.
+line 3line 4
+#@+node:ekr.20130918043621.4199: *6* @test kill-to-end-of-line start-line
+c.testManager.runEditCommandTest(p)
+#@+node:ekr.20130918043621.4200: *7* work
+line 1
+line 2
+
+line 4
+#@+node:ekr.20130918043621.4201: *7* before sel=3.0,3.0
+line 1
+line 2
+line 3
+line 4
+#@+node:ekr.20130918043621.4202: *7* after sel=3.0,3.0
+line 1
+line 2
+
+line 4
+#@+node:ekr.20130918050446.4210: *6* @test kill-to-end-of-line start-blank-line
+c.testManager.runEditCommandTest(p)
+#@+node:ekr.20130918050446.4211: *7* work
+line 1
+line 2
+line 4
+#@+node:ekr.20130918050446.4212: *7* before sel=3.0,3.0
+line 1
+line 2
+
+line 4
+#@+node:ekr.20130918050446.4213: *7* after sel=3.0,3.0
+line 1
+line 2
+line 4
+#@+node:ekr.20130918043621.4203: *6* @test kill-to-end-of-line middle-line
+c.testManager.runEditCommandTest(p)
+#@+node:ekr.20130918043621.4204: *7* work
+line 1
+li
+line 3
+#@+node:ekr.20130918043621.4205: *7* before sel=2.2,2.2
+line 1
+line 2
+line 3
+#@+node:ekr.20130918043621.4206: *7* after sel=2.2,2.2
+line 1
+li
+line 3
 #@+node:ekr.20061101121602.282: *5* @test kill-paragraph
 c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.283: *6* work

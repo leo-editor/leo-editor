@@ -6641,17 +6641,7 @@ has arbitrary attributes like the `active` I just made up above.
 https://bugs.launchpad.net/leo-editor/+bug/nnn
 .. @+node:ekr.20130916105324.19893: *4* to-do for 4.11b1
 @language rest
-.. @+node:ekr.20130908104426.11274: *5* commands (4)
-.. @+node:ekr.20130908104426.11251: *6* 1099035 Leo yank and kill behaviour not quite the same as emacs
-https://bugs.launchpad.net/leo-editor/+bug/1099035
-
-kill in leo (ctrl-k, kill-line) removes the whole line, but kill in emacs
-removes from the cursor to the end of the line.
-
-yank in leo (yank) results in the yanked text highlighted, rather than
-putting the cursor at the end of the yanked text as in emacs; particularly
-vexing as typing immediately after yanking just replaces the text you just
-yanked!
+.. @+node:ekr.20130908104426.11274: *5* commands (3)
 .. @+node:ekr.20130908104426.11254: *6* 1160660 File-Compare-Leo-Files creates "other file" clones
 https://bugs.launchpad.net/leo-editor/+bug/1160660
 

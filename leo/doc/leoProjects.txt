@@ -51,8 +51,8 @@ https://bugs.launchpad.net/leo-editor/+bug/1182695
 
 def but_quotes_at_the_end_of_a_triple_quoted_string_are_still_tricky(self):
     string = """Hello "world\""""
-    
-what
+
+afterwards
 
 "\"" b # Escape works.
 
@@ -265,8 +265,6 @@ The problem are the marks created by a svn conflict. Leo can not recover
 from this kind of error in such a way as to recover data. The workaround is
 to report a corrupted file in at.scanText4.
 #@+node:ekr.20130908104426.11252: *3* Fixed bug 1132821: Leo replaces a soft link with a real file
-@language rest
-
 https://bugs.launchpad.net/leo-editor/+bug/1132821
 
 When opening a file with @auto via a soft link (on Linux) Leo reads in the
@@ -277,8 +275,6 @@ up with two different versions on disk.
 os.path.realpath follows symbolic links.
 
 The only safe place for the fix is in at.replaceTargetFileIfDifferent.
-
-@language python
 #@+node:ekr.20130908104426.11257: *3* Investigated bug 1178249: url: file relative path does not work same way
 https://bugs.launchpad.net/leo-editor/+bug/1178249
 
@@ -304,8 +300,6 @@ In particular, note this code in g.computeFileUrl::
     path = g.os_path_finalize_join(c.openDirectory,base,path)
 
 #@+node:ekr.20130914114615.11287: *3* Fixed annoying reformat-paragraph bug
-@language rest
-
 The cursor was positioned one character from the end when there was no
 newline at the end of the paragraph.  
 
@@ -317,8 +311,6 @@ Example::
 
 A file that is both source controlled and customized by the user is inconvenient for both novices and experts.
 #@+node:ekr.20130915052002.11285: *3* Fixed bug 1224586: Reorganizing @chapter nodes breaks chapter menu
-@language rest
-
 https://bugs.launchpad.net/leo-editor/+bug/1224586
 
 Reorganizing @chapter nodes under an outline's @chapters node breaks the
@@ -360,8 +352,6 @@ What I did:
   Most importantly, update removes duplicates.
   A kludge: update ignores @chapter nodes, which are "selected" behind the scenes.
 #@+node:ekr.20130908104426.11256: *3* Fixed bug 1175013: leo/plugins/spellpyx.txt is both source controlled and customized
-@language rest
-
 https://bugs.launchpad.net/leo-editor/+bug/1175013
 
 A file that is both source controlled and customized by the user is
@@ -373,8 +363,6 @@ What I did:
 - EnchantClass.__init__ creates an empty leo/plugins/spellpyx.txt if necessary.
 
 Rev 5992: eliminate redraw flash when selecting the Chapters: combo box.
-
-@language python
 #@+node:ekr.20130908104426.11248: *3* Fixed bug 1046728: quickstart.leo 'auto nodes' example is not working
 https://bugs.launchpad.net/leo-editor/+bug/1046728
 
@@ -489,6 +477,16 @@ Error: Couldn't open personal wordlist
 
 not a valid dictionary file /usr/share/pyshared/leo/plugins/spellpyx.txt
 wrote recent file: /home/ville/.leo/.leoRecentFiles.txt
+
+#@+node:ekr.20130908104426.11251: *3* Fixed bug 1099035: Leo yank and kill behaviour not quite the same as emacs
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/1099035
+
+- Added new kill-to-end-of-line command, that works like kill in emacs.
+- Added new unit tests for same, and a new test for kill-line.
+
+
 
 #@-all
 

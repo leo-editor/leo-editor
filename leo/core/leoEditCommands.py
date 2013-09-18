@@ -8268,6 +8268,7 @@ class killBufferCommandsClass (baseEditCommandsClass):
             'backward-kill-word':       self.backwardKillWord,
             'clear-kill-ring':          self.clearKillRing,
             'kill-line':                self.killLine,
+            'kill-to-end-of-line':      self.killToEndOfLine,
             'kill-word':                self.killWord,
             'kill-sentence':            self.killSentence,
             'kill-region':              self.killRegion,
@@ -8406,6 +8407,7 @@ class killBufferCommandsClass (baseEditCommandsClass):
         w = self.editWidget(event)
         if not w: return
         s = w.get(frm,to)
+        # g.trace(repr(s))
         if undoType: self.beginCommand(undoType=undoType)
         self.addToKillBuffer(s)
         g.app.gui.replaceClipboardWith(s)
@@ -8414,6 +8416,28 @@ class killBufferCommandsClass (baseEditCommandsClass):
         if undoType:
             self.c.frame.body.forceFullRecolor()
             self.endCommand(changed=True,setLabel=True)
+    #@+node:ekr.20130918042415.11297: *3* killToEndOfLine (New in Leo 4.11)
+    def killToEndOfLine (self,event):
+        '''Kill from the cursor to end of the line.'''
+        w = self.editWidget(event)
+        if not w: return
+        s = w.getAllText()
+        ins = w.getInsertPoint()
+        i,j = g.getLine(s,ins)
+        # g.trace(ins,j,repr(s[i:j]))
+        if ins >= len(s) and g.match(s,j-1,'\n'):
+            # Kill the trailing newline of the body text.
+            i = max(0,len(s)-1)
+            j = len(s)
+        elif ins + 1 < j and s[ins:j-1].strip() and g.match(s,j-1,'\n'):
+            # Kill the line, but not the newline.
+            i,j = ins,j-1
+        elif g.match(s,j-1,'\n'):
+            i = ins # Kill the newline in the present line.
+        else:
+            i = j
+        if i < j:
+            self.kill(event,i,j,undoType='kill-line')
     #@+node:ekr.20071003183657: *3* KillLine
     def killLine (self,event):
         '''Kill the line containing the cursor.'''
@@ -8422,14 +8446,15 @@ class killBufferCommandsClass (baseEditCommandsClass):
         s = w.getAllText()
         ins = w.getInsertPoint()
         i,j = g.getLine(s,ins)
-        # g.trace(i,j,ins,len(s),repr(s[i:j]))
-        if ins >= len(s) and g.match(s,j-1,'\n'): # Kill the trailing newline.
+        if ins >= len(s) and g.match(s,j-1,'\n'):
+            # Kill the trailing newline of the body text.
             i = max(0,len(s)-1)
             j = len(s)
-        elif j > i+1 and g.match(s,j-1,'\n'): # Kill the line, but not the newline.
+        elif j > i+1 and g.match(s,j-1,'\n'):
+            # Kill the line, but not the newline.
             j -= 1
-        else: # Kill the newline.
-            pass
+        else:
+            pass # Kill the newline in the present line.
         self.kill(event,i,j,undoType='kill-line')
     #@+node:ekr.20050920084036.182: *3* killRegion & killRegionSave & helper
     def killRegion (self,event):
@@ -8535,7 +8560,9 @@ class killBufferCommandsClass (baseEditCommandsClass):
                     w.delete(i2,k)
                     i = i2
             w.insert(i,s)
-            w.setSelectionRange(i,i+len(s),insert=i+len(s))
+            # Fix bug 1099035: Leo yank and kill behaviour not quite the same as emacs.
+            # w.setSelectionRange(i,i+len(s),insert=i+len(s))
+            w.setInsertPoint(i+len(s))
             self.lastYankP = current.copy()
             c.frame.body.forceFullRecolor()
         finally:
