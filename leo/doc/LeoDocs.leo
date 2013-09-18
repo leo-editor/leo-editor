@@ -127,7 +127,8 @@
 <v t="ekr.20100805165051.7166"><vh>@file debuggers.txt</vh></v>
 </v>
 <v t="ekr.20080730212711.14"><vh>Using @shadow</vh>
-<v t="ekr.20100805165051.7173"><vh>@file atShadow.txt</vh></v>
+<v t="ekr.20100805165051.7173"
+expanded="ekr.20080730212711.15,"><vh>@file atShadow.txt</vh></v>
 </v>
 <v t="ekr.20120315101404.14224"><vh>The leoInspect Module</vh>
 <v t="ekr.20120315101404.14225"><vh>@file leoInspect.txt</vh></v>

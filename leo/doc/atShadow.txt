@@ -71,7 +71,8 @@ That's *almost* all there is to it.  The following sections discuss important de
 - How @shadow works.
 - Why the update algorithm is sound.
 .. @+node:ekr.20080730212711.42: *3* Creating @shadow trees
-The first step in creating an @shadow tree is to create a node whose headline is @shadow *<filename>*.
+The first step in creating an @shadow tree is to create a node whose
+headline is @shadow *<filename>*.
 
 Thus, you can create an @shadow node and save your outline, regardless of
 whether the original file exists. The next time Leo reads the @shadow node, Leo
@@ -89,7 +90,12 @@ Thus, Leo will import code into each @shadow node at most once. After the first
 import, updates are made using the update algorithm.
 
 **Note**: just as for @auto, Leo will never read (import) or write an @shadow
-tree if the @shadow node is under the influence of an @ignore directive.
+tree if the @shadow node is under the influence of an \@ignore directive.
+
+**Important**: At present, Leo puts all nodes included by @others at the
+same outline level. This could fairly be called a bug. See:
+https://bugs.launchpad.net/leo-editor/+bug/1226353 The workaround is to
+place an @others directive at the end of any node with children.
 .. @+node:ekr.20080730212711.40: *3* What the update algorithm does
 Suppose our @shadow tree is @shadow a.py. When Leo writes this tree it creates a
 public file, a.py, and a private file, .leo_shadow/xa.p (or just xa.p for
