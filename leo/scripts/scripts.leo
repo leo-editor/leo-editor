@@ -83,19 +83,6 @@
 <v t="maphew.20130611235500.2665"><vh>@file unregister-leo.leox</vh></v>
 </v>
 </v>
-<v t="ekr.20121220111212.13257"><vh>@button write-unit-tests</vh>
-<v t="ekr.20121220111212.13258"><vh>&lt;&lt; about this script &gt;&gt;</vh></v>
-<v t="ekr.20121220111212.13259"><vh>class TestWriter</vh>
-<v t="ekr.20121220111212.13260"><vh>&lt;&lt; define file_template &gt;&gt;</vh></v>
-<v t="ekr.20121220111212.13261"><vh>&lt;&lt; define test_template &gt;&gt;</vh></v>
-<v t="ekr.20121220111212.13262"><vh> ctor</vh></v>
-<v t="ekr.20121220111212.13263"><vh>clean</vh></v>
-<v t="ekr.20121220111212.13264"><vh>get_body</vh></v>
-<v t="ekr.20121220111212.13265"><vh>run</vh></v>
-<v t="ekr.20121220111212.13266"><vh>test</vh></v>
-<v t="ekr.20121220111212.13267"><vh>write_file</vh></v>
-</v>
-</v>
 <v t="ekr.20130810093044.16933"><vh>Recently contributed/modified scripts</vh>
 <v t="ekr.20130810093044.16934"><vh>By Terry Brown</vh>
 <v t="ekr.20130810093044.16935"><vh>add @script node</vh></v>
@@ -124,6 +111,19 @@
 </v>
 </v>
 <v t="ekr.20130810093044.16951"><vh>By EKR</vh>
+<v t="ekr.20121220111212.13257"><vh>@button write-unit-tests</vh>
+<v t="ekr.20121220111212.13258"><vh>&lt;&lt; about this script &gt;&gt;</vh></v>
+<v t="ekr.20121220111212.13259"><vh>class TestWriter</vh>
+<v t="ekr.20121220111212.13260"><vh>&lt;&lt; define file_template &gt;&gt;</vh></v>
+<v t="ekr.20121220111212.13261"><vh>&lt;&lt; define test_template &gt;&gt;</vh></v>
+<v t="ekr.20121220111212.13262"><vh> ctor</vh></v>
+<v t="ekr.20121220111212.13263"><vh>clean</vh></v>
+<v t="ekr.20121220111212.13264"><vh>get_body</vh></v>
+<v t="ekr.20121220111212.13265"><vh>run</vh></v>
+<v t="ekr.20121220111212.13266"><vh>test</vh></v>
+<v t="ekr.20121220111212.13267"><vh>write_file</vh></v>
+</v>
+</v>
 <v t="ekr.20130810093044.16954"><vh>Create global data structures from in modes/*.py files</vh></v>
 <v t="ekr.20130810093044.16955"><vh>get all comments from modes (slow)</vh>
 <v t="ekr.20130810093044.16956"><vh>get_paths</vh></v>
@@ -143,12 +143,12 @@
 </v>
 <v t="ekr.20130810093044.16967"><vh>jinja2 templating script</vh></v>
 <v t="ekr.20121013084734.16370"><vh>Recursive import using c.recursiveImport</vh></v>
-<v t="ekr.20130919114339.12497"><vh>@@button replace g.choose</vh>
-<v t="ekr.20130919114339.12498"><vh>run</vh></v>
-<v t="ekr.20130919114339.12499"><vh>find</vh></v>
-<v t="ekr.20130919114339.12500"><vh>get_arg</vh></v>
-<v t="ekr.20130919114339.12501"><vh>munge</vh></v>
-<v t="ekr.20130919114339.12502"><vh>replace</vh></v>
+<v t="ekr.20130919120947.12497"><vh>@button replace g.choose</vh>
+<v t="ekr.20130919120947.12498"><vh>run</vh></v>
+<v t="ekr.20130919120947.12499"><vh>find</vh></v>
+<v t="ekr.20130919120947.12500"><vh>get_arg</vh></v>
+<v t="ekr.20130919120947.12501"><vh>munge</vh></v>
+<v t="ekr.20130919120947.12502"><vh>replace</vh></v>
 </v>
 </v>
 <v t="ekr.20130810093044.16969"><vh>By Brian Theado</vh>
@@ -2381,7 +2381,7 @@ refresh button for the outline wouldn't be too hard, but right now
 you need to close the window / pane and open it again to refresh.
 '''
 </t>
-<t tx="ekr.20130919114339.12497">'''Replace "g.choose(test,a,b)" by "a if test else b".'''
+<t tx="ekr.20130919120947.12497">'''Replace "g.choose(test,a,b)" by "a if test else b".'''
 
 class Controller:
     @others
@@ -2393,7 +2393,7 @@ if 0: # Testing convenience...
     assert(p)
 Controller().run(c,p,replace=False)
 </t>
-<t tx="ekr.20130919114339.12498">def run(self,c,p,replace):
+<t tx="ekr.20130919120947.12498">def run(self,c,p,replace):
     
     changed,n,found,p1 = 0,0,0,p.copy()
     dirtyVnodeList,tag,u = [],'replace g.choose',c.undoer
@@ -2421,7 +2421,7 @@ Controller().run(c,p,replace=False)
         u.beads.pop() # Back out of the undo.
     print('scanned %s nodes found %s changed: %s' % (n,found,changed))
 </t>
-<t tx="ekr.20130919114339.12499">def find(self,s,i):
+<t tx="ekr.20130919120947.12499">def find(self,s,i):
     
     while i &lt; len(s):
         progress = i
@@ -2429,7 +2429,7 @@ Controller().run(c,p,replace=False)
         if ch in '"\'':
             i = g.skip_python_string(s,i,verbose=False)
         elif ch == '#':
-            i = g.skip_line(s,i)
+            i = g.skip_line(s,i) # This eats the comment!
         elif ch == '(':
             i = g.skip_matching_python_delims(s,i,'(',')')
             if i &gt; -1: assert s[i] == ')'
@@ -2448,7 +2448,7 @@ Controller().run(c,p,replace=False)
         assert progress &lt; i,(i,s,ch)
     return -1,-1
 </t>
-<t tx="ekr.20130919114339.12500">def get_arg(self,s,i):
+<t tx="ekr.20130919120947.12500">def get_arg(self,s,i):
     
     '''return j such that s[i:j] is the argument.'''
     
@@ -2473,7 +2473,7 @@ Controller().run(c,p,replace=False)
             else:
                 i += 1
         elif ch == '#':
-            assert False # Can't have comments.
+            i = g.skip_line(s,i) # This eats the comment.
         elif ch == '(':
             j = g.skip_matching_python_delims(s,i,'(',')')
             assert s[j] == ')',s[j:j+10]
@@ -2487,7 +2487,7 @@ Controller().run(c,p,replace=False)
     s = ''.join(result)
     return s,i
 </t>
-<t tx="ekr.20130919114339.12501">def munge(self,s):
+<t tx="ekr.20130919120947.12501">def munge(self,s):
     
     g.trace('1:',s)
     for tag in ('choose','g.choose'):
@@ -2505,7 +2505,7 @@ Controller().run(c,p,replace=False)
     result = '%s if %s else %s' % (arg2,arg1,arg3)
     g.trace('2:',result)
     return result</t>
-<t tx="ekr.20130919114339.12502">def replace(self,s,i,j):
+<t tx="ekr.20130919120947.12502">def replace(self,s,i,j):
     
     '''Replace s[i:j] containing a g.trace, with the corresponding ternaty operator.'''
 
