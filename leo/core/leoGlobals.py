@@ -3826,7 +3826,8 @@ def skip_python_string(s,i,verbose=True):
             g.scanError("Run on triple quoted string: " + s[j:i])
         return len(s)
     else:
-        return g.skip_string(s,i)
+        # 2013/09/08: honor the verbose argument.
+        return g.skip_string(s,i,verbose=verbose)
 #@+node:ekr.20031218072017.2369: *4* skip_string (leoGlobals)
 def skip_string(s,i,verbose=True):
 

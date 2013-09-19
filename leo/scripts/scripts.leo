@@ -3,8 +3,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
-	<global_window_position top="31" left="473" height="1041" width="1248"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -143,6 +143,13 @@
 </v>
 <v t="ekr.20130810093044.16967"><vh>jinja2 templating script</vh></v>
 <v t="ekr.20121013084734.16370"><vh>Recursive import using c.recursiveImport</vh></v>
+<v t="ekr.20130919114339.12497"><vh>@@button replace g.choose</vh>
+<v t="ekr.20130919114339.12498"><vh>run</vh></v>
+<v t="ekr.20130919114339.12499"><vh>find</vh></v>
+<v t="ekr.20130919114339.12500"><vh>get_arg</vh></v>
+<v t="ekr.20130919114339.12501"><vh>munge</vh></v>
+<v t="ekr.20130919114339.12502"><vh>replace</vh></v>
+</v>
 </v>
 <v t="ekr.20130810093044.16969"><vh>By Brian Theado</vh>
 <v t="ekr.20130810093044.16970"><vh>Display function call hierarchy in Leo</vh>
@@ -167,7 +174,7 @@
 <tnodes>
 <t tx="ekr.20061008055616"></t>
 <t tx="ekr.20070427110751"></t>
-<t tx="ekr.20070615131954" str_leo_pos="3,1,4"></t>
+<t tx="ekr.20070615131954"></t>
 <t tx="ekr.20111017085134.16069"></t>
 <t tx="ekr.20111017085134.16070"># **** Change these as needed ***
 import os, sys
@@ -2373,6 +2380,143 @@ This was the low hanging fruit, based on code used in bookmarks.py.  A
 refresh button for the outline wouldn't be too hard, but right now
 you need to close the window / pane and open it again to refresh.
 '''
+</t>
+<t tx="ekr.20130919114339.12497">'''Replace "g.choose(test,a,b)" by "a if test else b".'''
+
+class Controller:
+    @others
+
+if 0: # Testing convenience...
+    g.cls()
+    c.save()
+    p = g.findNodeAnywhere(c,'Code')
+    assert(p)
+Controller().run(c,p,replace=False)
+</t>
+<t tx="ekr.20130919114339.12498">def run(self,c,p,replace):
+    
+    changed,n,found,p1 = 0,0,0,p.copy()
+    dirtyVnodeList,tag,u = [],'replace g.choose',c.undoer
+    u.beforeChangeGroup(p1,tag)
+    for p in p.self_and_subtree():
+        s,i = p.b,0
+        n += 1
+        while i &lt; len(s):
+            progress = i
+            i,j = self.find(s,i)
+            if i == -1: break
+            found += 1
+            s,i = self.replace(s,i,j)
+            assert progress &lt; i
+        if replace and p.b != s:
+            changed += 1 
+            b = c.undoer.beforeChangeNodeContents(p)
+            dirtyVnodeList2 = p.setDirty()
+            dirtyVnodeList.extend(dirtyVnodeList2)
+            p.b = s
+            c.undoer.afterChangeNodeContents(p,tag,b)
+    if changed:
+        u.afterChangeGroup(p1,tag,dirtyVnodeList=dirtyVnodeList)
+    else:
+        u.beads.pop() # Back out of the undo.
+    print('scanned %s nodes found %s changed: %s' % (n,found,changed))
+</t>
+<t tx="ekr.20130919114339.12499">def find(self,s,i):
+    
+    while i &lt; len(s):
+        progress = i
+        ch = s[i]
+        if ch in '"\'':
+            i = g.skip_python_string(s,i,verbose=False)
+        elif ch == '#':
+            i = g.skip_line(s,i)
+        elif ch == '(':
+            i = g.skip_matching_python_delims(s,i,'(',')')
+            if i &gt; -1: assert s[i] == ')'
+        else:
+            for tag in ('g.choose(','choose('):
+                if s[i:].startswith(tag):
+                    i1 = i
+                    i += len(tag)-1
+                    i = g.skip_matching_python_delims(s,i,'(',')')
+                    if i &gt; -1:
+                        assert s[i] == ')',repr(s[i:i+20])
+                        return i1,i+1
+            else:
+                i += 1
+        if i == -1: i = progress + 1
+        assert progress &lt; i,(i,s,ch)
+    return -1,-1
+</t>
+<t tx="ekr.20130919114339.12500">def get_arg(self,s,i):
+    
+    '''return j such that s[i:j] is the argument.'''
+    
+    assert s[i] in '(,',repr(s[i:i+10])
+    i += 1
+    result = []
+    while i &lt; len(s):
+        progress = i
+        ch = s[i]
+        if ch in ',)':
+            break
+        if ch in ' \t\n':
+            # Don't put leading ws, and don't duplicate ws.
+            if len(result) &gt; 0 and result[-1] != ' ':
+                result.append(' ')
+            i += 1
+        elif ch in '"\'':
+            j = g.skip_python_string(s,i,verbose=False)
+            if j &gt; -1:
+                result.append(s[i:j])
+                i = j
+            else:
+                i += 1
+        elif ch == '#':
+            assert False # Can't have comments.
+        elif ch == '(':
+            j = g.skip_matching_python_delims(s,i,'(',')')
+            assert s[j] == ')',s[j:j+10]
+            result.append(s[i:j+1])
+            i = j+1
+        else:
+            result.append(ch)
+            i += 1
+        assert progress &lt; i
+    assert s[i] in ',)'
+    s = ''.join(result)
+    return s,i
+</t>
+<t tx="ekr.20130919114339.12501">def munge(self,s):
+    
+    g.trace('1:',s)
+    for tag in ('choose','g.choose'):
+        if s.startswith(tag):
+            i = len(tag)
+            break
+    else: assert False
+    assert s[i] == '('
+    args = []
+    for n in (0,1,2):
+        arg,i = self.get_arg(s,i)
+        assert arg
+        args.append(arg)
+    arg1,arg2,arg3 = args
+    result = '%s if %s else %s' % (arg2,arg1,arg3)
+    g.trace('2:',result)
+    return result</t>
+<t tx="ekr.20130919114339.12502">def replace(self,s,i,j):
+    
+    '''Replace s[i:j] containing a g.trace, with the corresponding ternaty operator.'''
+
+    s1 = s[i:j]
+    s2 = self.munge(s1)
+    if s1 == s2:
+        return s,j
+    else:
+        s3 = s[:i] + s2 + s[j:]
+        j = i + len(s2)
+        return s3,j
 </t>
 <t tx="maphew.20130612230051.2793">Scripts only of interest when on Microsoft Windows platform.</t>
 </tnodes>
