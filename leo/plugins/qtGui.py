@@ -2382,7 +2382,7 @@ class DynamicWindow(QtGui.QMainWindow):
         self.setName(w,name)
         return w
     #@+node:ekr.20110605121601.18165: *5* log tabs (DynamicWindow)
-    #@+node:ekr.20110605121601.18167: *6* createSpellTab
+    #@+node:ekr.20110605121601.18167: *6* createSpellTab (DynamicWindow)
     def createSpellTab (self,parent):
 
         # MainWindow = self
@@ -2431,6 +2431,7 @@ class DynamicWindow(QtGui.QMainWindow):
         # Official ivars.
         self.spellFrame = spellFrame
         self.spellGrid = grid
+        self.leo_spell_widget = parent # 2013/09/20: To allow bindings to be set.
         self.leo_spell_listBox = listBox # Must exist
         self.leo_spell_label = lab # Must exist (!!)
     #@+node:ekr.20110605121601.18166: *6* createFindTab (DynamicWindow)
@@ -5199,12 +5200,12 @@ class leoQtLog (leoFrame.leoLog):
             if tabName == 'Log':
                 self.widget = contents # widget is an alias for logCtrl.
                 widget.setObjectName('log-widget')
-            if True: # 2011/05/28.
-                # Set binding on all text widgets.
-                theFilter = leoQtEventFilter(c,w=self,tag='log')
-                self.eventFilters.append(theFilter) # Needed!
-                widget.installEventFilter(theFilter)
-            if True and tabName == 'Log':
+            # Set binding on all log pane widgets.
+            theFilter = leoQtEventFilter(c,w=self,tag='log')
+            self.eventFilters.append(theFilter) # Needed!
+            widget.installEventFilter(theFilter)
+            # A bad hack.  Set the standard bindings in the Find and Spell tabs here.
+            if tabName == 'Log':
                 assert c.frame.top.__class__.__name__ == 'DynamicWindow'
                 find_widget = c.frame.top.leo_find_widget
                 # 2011/11/21: A hack: add an event filter.
@@ -5213,6 +5214,12 @@ class leoQtLog (leoFrame.leoLog):
                 if trace: g.trace('** Adding event filter for Find',find_widget)
                 # 2011/11/21: A hack: make the find_widget an official log widget.
                 self.contentsDict['Find']=find_widget
+                # 2013/09/20:
+                if hasattr(c.frame.top,'leo_spell_widget'):
+                    spell_widget = c.frame.top.leo_spell_widget
+                    if trace: g.trace('** Adding event filter for Spell',find_widget)
+                    spell_widget.leo_event_filter = leoQtEventFilter(c,w=widget,tag='spell-widget')
+                    spell_widget.installEventFilter(spell_widget.leo_event_filter)
             self.contentsDict[tabName] = widget
             self.tabWidget.addTab(widget,tabName)
         else:
@@ -5241,7 +5248,8 @@ class leoQtLog (leoFrame.leoLog):
             i = 0
         tabName = w.tabText(i)
         self.selectTab(tabName,createText=False)
-        if trace: g.trace(i,tabName)
+        if trace: g.trace('(leoQtLog)',i,w,w.count(),w.currentIndex(),g.u(tabName))
+        return i
     #@+node:ekr.20110605121601.18328: *5* deleteTab
     def deleteTab (self,tabName,force=False):
 
@@ -6185,27 +6193,20 @@ class leoQtSpellTab:
     #@+node:ekr.20110605121601.18386: *4* leoQtSpellTab.__init__
     def __init__ (self,c,handler,tabName):
 
+        # g.trace('(leoQtSpellTab)')
         self.c = c
         self.handler = handler
-
         # hack:
         handler.workCtrl = leoFrame.stringTextWidget(c, 'spell-workctrl')
-
         self.tabName = tabName
-
         ui = c.frame.top.leo_ui
-
         # self.createFrame()
-
         if not hasattr(ui, 'leo_spell_label'):
             self.handler.loaded = False
             return
-
         self.wordLabel = ui.leo_spell_label
         self.listBox = ui.leo_spell_listBox
-
         #self.createBindings()
-
         self.fillbox([])
     #@+node:ekr.20110605121601.18387: *4* createBindings (leoQtSpellTab)
     def createBindings (self):
@@ -8628,8 +8629,8 @@ class leoQtEventFilter(QtCore.QObject):
     def eventFilter(self, obj, event):
 
         trace = (False or g.trace_masterKeyHandler) and not g.unitTesting
-        verbose = True
-        traceEvent = True # True: call self.traceEvent.
+        verbose = False
+        traceEvent = False # True: call self.traceEvent.
         traceKey = (True or g.trace_masterKeyHandler)
         c = self.c ; k = c.k
         eventType = event.type()

@@ -1781,9 +1781,6 @@ class keyHandlerClass:
     def completeAllBindingsForWidget (self,w):
 
         k = self
-
-        # g.trace('w',w,'Alt+Key-4' in d)
-
         for stroke in k.bindingsDict:
             assert g.isStroke(stroke),repr(stroke)
             k.makeMasterGuiBinding(stroke,w=w)
@@ -1855,9 +1852,7 @@ class keyHandlerClass:
     def makeAllBindings (self):
 
         k = self ; c = k.c
-
         # g.trace(c.shortFileName())
-
         k.bindingsDict = {}
         if g.new_modes:
             k.modeController.addModeCommands()
@@ -1928,8 +1923,8 @@ class keyHandlerClass:
         '''Make a master gui binding for stroke in pane w, or in all the standard widgets.'''
 
         k = self ; c = k.c ; f = c.frame
-
         if w:
+            g.trace(w,g.callers())
             widgets = [w]
         else:
             # New in Leo 4.5: we *must* make the binding in the binding widget.
