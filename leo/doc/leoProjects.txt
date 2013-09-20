@@ -511,6 +511,15 @@ tokens.
 https://bugs.launchpad.net/leo-editor/+bug/1182864
 
 The fix was to countLinesHelper.
+#@+node:ekr.20130918062408.17091: *3* cycle-all-focus now works with the Spell Tab enabled
+@language rest
+
+The problem was that no standard bindings were created for the spell tab.
+This is done in leoQtLog.createTab.  Yes, it's a terrible hack.
+
+Changed cycleAllFocus,leoQtLog.createTab and DynamicWindow.createSpellTab.
+
+@language python
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

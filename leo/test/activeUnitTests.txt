@@ -6443,39 +6443,26 @@ line 1
         line b
 line c
 last line
-#@+node:ekr.20111120124051.3994: *5* @@test cycle-all-focus
+#@+node:ekr.20111120124051.3994: *5* @test cycle-all-focus
 '''Test that cycle-all-focus cycles through all tabs.'''
 
 if g.app.isExternalUnitTest:
     # print('external test')
     pass
 else:
-    # This will fail if the Spell Tab is visible.
     log = c.frame.log
     c.bodyWantsFocusNow()
-    tabs = log.orderedTabNames()
-    last_widget = c.frame.body
-    for tab in tabs:
-        # A small hack: fudge up the widget to pass to the command.
-        event = g.bunch(widget=last_widget)
+    w_name = g.app.gui.widget_name
+    w = c.frame.body
+    seen = []
+    while w:
+        event = g.bunch(widget=w)
         c.editCommands.cycleAllFocus(event=event)
-        assert log.tabName == tab,'expected %s, got %s' % (
-            tab,log.tabName)
-        last_widget = log.contentsDict.get(tab)
-        # print('pass',tab,last_widget)
-    # Test transfer into tree widget.
-    event = g.bunch(widget=last_widget)
-    c.editCommands.cycleAllFocus(event=event)
-    last_widget = w = g.app.gui.get_focus()
-    name = w.__class__.__name__
-    assert name == 'LeoQTreeWidget',name
-    # Test transfer into body widget.
-    event = g.bunch(widget=last_widget)
-    c.editCommands.cycleAllFocus(event=event)
-    w = g.app.gui.get_focus()
-    w_name = g.app.gui.widget_name(w)
-    assert w_name == 'richTextEdit',w_name
-
+        w = g.app.gui.get_focus()
+        if w in seen: break
+        seen.append(w)
+        # print(id(w),w_name(w))
+    assert len(seen) >=3
 #@+node:ekr.20111121164644.3928: *5* @test cycle-tab-focus
 '''Test that cycle-all-focus cycles through all tabs.'''
 

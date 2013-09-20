@@ -1638,7 +1638,7 @@ class leoLog (HighLevelInterface):
             if i == len(values): i = 0
             tabName = list(d.keys())[i]
             self.selectTab(tabName)
-            return 
+            return i
     #@+node:ekr.20070302094848.5: *4* deleteTab
     def deleteTab (self,tabName,force=False):
 

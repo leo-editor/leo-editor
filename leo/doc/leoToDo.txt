@@ -5,86 +5,10 @@
 .. @+all
 .. @+node:ekr.20130916105324.19893: ** To-do for 4.11
 @language rest
-
-3-5 days work, at present rate.
+.. @+node:ekr.20130920095617.11313: *3* Get rid of unused binding code!
+It's *sooo* confusing.
 .. @+node:ekr.20130918133723.11281: *3* bugs
 .. @+node:ekr.20130917093253.11300: *4* unit tests for utf-16 @asis, @nosent, @shadow files
-.. @+node:ekr.20130806072439.20430: *4* dabbrev (was: Does dabbrev work?)
-From: "F.S." <speech.free@gmail.com>
-
-The answer seems to be no based on the exchange here:
-https://groups.google.com/forum/?fromgroups=#!searchin/leo-editor/dabbrev/leo-editor/3A4JOHqhJSU/W1DjTvooNCkJ
-
-===== EKR
-
-Rev 5472 makes dabbrev-completion and dabbrev-expands work as I
-expect.  These are totally cool commands!  I welcome any suggestions
-for improvement.  It looks like Leo should have default bindings for
-these in leoSettings.leo.
-
-===== "F.S." <speech.free@gmail.com>
-
-Very cool! Default bindings a la Emacs -- as suggested in the source code 
-nodes! -- would be great. I've copied them out of the (@ignored) emacs key 
-bindings and put them in myLeoSettings.
-
-===== EKR
-
-Done at rev 5474.
-
-I am considering a small change to dynamic-expands.  Presently, this
-is equivalent to dynamic-completion if there is only one completion
-available: the single completion is inserted directly.
-
-But I think it is better always to put up the completion list even if
-it contains only one item.  That way  <backspace><tab> may show more
-completions.
-
-What do you think?
-
-===== From: "F.S." <speech.free@gmail.com>
-
-In Emacs M-/ (dabbrev-expand) just expands to the first choice. You then
-cycle through the choices by repeating M-/. If you go too far you can cycle
-back with C-/. C-M-/ (dabbrev-completion) expands to the longest common
-prefix.
-
-With 5473 I seem to already get the behavior you are talking about: that on
-M-/ I get a completion list. I agree that getting a list is nice, esp if
-<backspace><tab> show more choices (in 5473 they don't seem to).
-
-I think there are a few use cases here:
-1) I know exactly what I want but I just don't want to type it again (I may 
-be lazy or I don't want to create a typo) so give it to me with as few key 
-strokes as possible
-2) I am not quite sure so let me see the choices
-3) None of the choices is what I need so let me go back and show me some 
-more choices
-
-Maybe a combination of behavior is the best. With M-/ and C-/ one just 
-cycles through the choices (auto inserted), which takes care of 1). 
-With C-M-/ (dabbrev-completion) one gets the longest prefix auto inserted 
-and a list of choices. Now it would be truly great that if we can easily 
-just <backspace><tab> to see potentially more choices. But how do you 
-interface with both? For 2) one desires to type just one more letter so as 
-to make a choice in the choice list. For 3) we need to go back but may need 
-backspace quite a bit to get back to before where we started (the only 
-place where we can get new choices) -- can that be achieved with a single 
-backspace instead?
-
-For example suppose I have abcdefg and abwxyz. I type abc, C-M-/ and 
-abcdefg is the sole completion. I may not want it but it would be nice to 
-not have to backspace all the way to b to see the other choice. In other 
-word if I backspace at all it is understood that I want to go before where 
-I started (before where the auto insertion takes place). That would be neat!
-
-===== EKR
-
-I agree that backspace could be improved.  I'm not sure exactly what would 
-be best.  I'll investigate.
-
-.. @+node:ekr.20130918062408.17091: *4* does cycle-all-focus work with the Spell Tab enabled?
-At present, the unit test is disabled.
 .. @+node:ekr.20130912152335.11933: *4* next/later
 .. @+node:ekr.20130908104426.11240: *5*  879338 Global tables in leoApp.py should describe all languages known 
 https://bugs.launchpad.net/leo-editor/+bug/879338
@@ -3348,14 +3272,10 @@ These getters are non-trivial to do, but a reasonable design is in place.
     The code attempts to import leo.core.leoGlobals.
     If that fails, it uses an internal LeoGlobals class.
 .. @+node:ekr.20111128103520.10245: *5* Finish leoInspect.token_range
-@language python
-
 Traverse the tree, setting N.end_lineno and N.end_col_offset.
 
 See the notes below.
 .. @+node:ekr.20111129084537.10357: *6* Notes
-@language rest
-
 > All this means that it would likely be too expensive (or just too
 > ugly) to compute the data needed for token_range in the base
 > AstTraverser class.  Such computations will be performed by traversing
@@ -5725,6 +5645,55 @@ The claim that Leo supports solarized has been withdrawn.
 .. @+node:ekr.20120322073519.10405: *5* Added support for solarized colors
 http://ethanschoonover.com/solarized
 
+.. @+node:ekr.20130806072439.20430: *4* minor dabbrev improvements
+was: Does dabbrev work?
+From: "F.S." <speech.free@gmail.com>
+
+The answer seems to be based on the exchange here:
+https://groups.google.com/forum/?fromgroups=#!searchin/leo-editor/dabbrev/leo-editor/3A4JOHqhJSU/W1DjTvooNCkJ
+
+Summary: Alt-/ always shows a completion list. Backspace works as expected:
+showing more and more items.  Nothing needs to be done.
+
+**Possible minor improvements**
+
+In Emacs M-/ (dabbrev-expand) just expands to the first choice. You then
+cycle through the choices by repeating M-/. If you go too far you can cycle
+back with C-/. C-M-/ (dabbrev-completion) expands to the longest common
+prefix.
+
+With 5473: I seem to already get the behavior you are talking about: that on
+M-/ I get a completion list. I agree that getting a list is nice, esp if
+<backspace><tab> show more choices. (It does).
+
+
+I think there are a few use cases here:
+1) I know exactly what I want but I just don't want to type it again (I may 
+be lazy or I don't want to create a typo) so give it to me with as few key 
+strokes as possible
+2) I am not quite sure so let me see the choices
+3) None of the choices is what I need so let me go back and show me some 
+more choices
+
+Maybe a combination of behavior is the best. With M-/ and C-/ one just 
+cycles through the choices (auto inserted), which takes care of 1). 
+With C-M-/ (dabbrev-completion) one gets the longest prefix auto inserted 
+and a list of choices. Now it would be truly great that if we can easily 
+just <backspace><tab> to see potentially more choices. But how do you 
+interface with both? For 2) one desires to type just one more letter so as 
+to make a choice in the choice list. For 3) we need to go back but may need 
+backspace quite a bit to get back to before where we started (the only 
+place where we can get new choices) -- can that be achieved with a single 
+backspace instead?
+
+For example suppose I have abcdefg and abwxyz. I type abc, C-M-/ and 
+abcdefg is the sole completion. I may not want it but it would be nice to 
+not have to backspace all the way to b to see the other choice. In other 
+word if I backspace at all it is understood that I want to go before where 
+I started (before where the auto insertion takes place). That would be neat!
+
+
+@language python
 .. @+node:ekr.20111019104425.15861: *3* Scripts to write
 .. @+node:ekr.20110917104720.9418: *4* convert-names-to-pep8
 This requires real type inference!
@@ -7173,12 +7142,12 @@ def createTab (self,tabName,createText=True,widget=None,wrap='none'):
         if tabName == 'Log':
             self.widget = contents # widget is an alias for logCtrl.
             widget.setObjectName('log-widget')
-        if True: # 2011/05/28.
-            # Set binding on all text widgets.
-            theFilter = leoQtEventFilter(c,w=self,tag='log')
-            self.eventFilters.append(theFilter) # Needed!
-            widget.installEventFilter(theFilter)
-        if True and tabName == 'Log':
+        # Set binding on all log pane widgets.
+        theFilter = leoQtEventFilter(c,w=self,tag='log')
+        self.eventFilters.append(theFilter) # Needed!
+        widget.installEventFilter(theFilter)
+        # A bad hack.  Set the standard bindings in the Find and Spell tabs here.
+        if tabName == 'Log':
             assert c.frame.top.__class__.__name__ == 'DynamicWindow'
             find_widget = c.frame.top.leo_find_widget
             # 2011/11/21: A hack: add an event filter.
@@ -7187,6 +7156,12 @@ def createTab (self,tabName,createText=True,widget=None,wrap='none'):
             if trace: g.trace('** Adding event filter for Find',find_widget)
             # 2011/11/21: A hack: make the find_widget an official log widget.
             self.contentsDict['Find']=find_widget
+            # 2013/09/20:
+            if hasattr(c.frame.top,'leo_spell_widget'):
+                spell_widget = c.frame.top.leo_spell_widget
+                if trace: g.trace('** Adding event filter for Spell',find_widget)
+                spell_widget.leo_event_filter = leoQtEventFilter(c,w=widget,tag='spell-widget')
+                spell_widget.installEventFilter(spell_widget.leo_event_filter)
         self.contentsDict[tabName] = widget
         self.tabWidget.addTab(widget,tabName)
     else:

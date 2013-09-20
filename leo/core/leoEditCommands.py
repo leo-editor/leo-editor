@@ -546,8 +546,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
         Insert the common prefix of all dynamic abbrev's matching the present word.
         This corresponds to C-M-/ in Emacs.'''
 
-        c = self.c
-        p = c.p
+        c,p,u = self.c,self.c.p,self.c.u
         w = self.editWidget(event)
         if not w: return
         s = w.getAllText()
@@ -3516,17 +3515,17 @@ class editCommandsClass (baseEditCommandsClass):
         all body editors and all tabs in the log pane.'''
 
         trace = False and not g.unitTesting
-        c = self.c ; k = c.k
+        c,k = self.c,self.c.k
         w = event and event.widget # Does **not** require a text widget.
-
         pane = None # The widget that will get the new focus.
         log = c.frame.log
         w_name = g.app.gui.widget_name
-
         if trace: g.trace('**before',w_name(w),'isLog',log.isLogWidget(w))
-
         # w may not be the present body widget, so test its name, not its id.
-        if w_name(w).startswith('body'):
+        if w_name(w).find('tree') > -1 or w_name(w).startswith('head'):
+             pane = c.frame.body.bodyCtrl
+        elif w_name(w).startswith('body'):
+            # Cycle through the *body* editor if there are several.
             n = c.frame.body.numberOfEditors
             if n > 1:
                 self.editWidgetCount += 1
@@ -3543,23 +3542,15 @@ class editCommandsClass (baseEditCommandsClass):
                 self.editWidgetCount = 0
                 c.frame.log.selectTab('Log')
                 pane = c.frame.log.logCtrl
-
         elif log.isLogWidget(w):
+            # A log widget.  Cycle until we come back to 'Log'.
             log.cycleTabFocus()
-            if log.tabName == 'Log':
-                pane = c.frame.tree.canvas
-            else:
-                if trace:
-                    pane = log.logCtrl
-                    g.trace('**after cycleTabFocus',w_name(pane),pane)
-                return
-
+            pane = c.frame.tree.canvas if log.tabName == 'Log' else None
         else:
             # A safe default: go to the body.
+            if trace: g.trace('* default to body')
             pane = c.frame.body.bodyCtrl
-
         if trace: g.trace('**after',w_name(pane),pane)
-
         if pane:
             k.newMinibufferWidget = pane
             c.widgetWantsFocusNow(pane)
