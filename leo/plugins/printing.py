@@ -104,6 +104,16 @@ Settings
   The font size for printing bodies, in px.  Due to limitations
   of PyQt, the size of headlines cannot be changed.
 
+Custom Printing
+===============
+
+Most custom jobs can be accomplished with the richtext.py plugin and the 
+print-preview-selected-node-body-html command.
+
+There is a blog post at http://leo-editor.github.io/custom_printing.html that explains 
+how to print custom documents with the printing.py plugin in a programmatic
+fashion, using scripts to define your document.
+
 '''
 #@-<< docstring >>
 #@+<< version history >>
