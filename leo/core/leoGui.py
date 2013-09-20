@@ -212,10 +212,6 @@ class leoGui:
         """Create Compare panel."""
         self.oops()
 
-    def createFindPanel(self,c):
-        """Create a hidden Find panel."""
-        self.oops()
-
     def createFindTab (self,c,parentFrame):
         """Create a find tab in the indicated frame."""
         self.oops()
@@ -439,10 +435,6 @@ class nullGui(leoGui):
     #@+node:ekr.20070301172456: *3* app.gui panels (nullGui)
     def createComparePanel(self,c):
         """Create Compare panel."""
-        self.oops()
-
-    def createFindPanel(self,c):
-        """Create a hidden Find panel."""
         self.oops()
 
     def createFindTab (self,c,parentFrame):

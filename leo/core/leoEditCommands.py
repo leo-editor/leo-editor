@@ -3523,7 +3523,7 @@ class editCommandsClass (baseEditCommandsClass):
         if trace: g.trace('**before',w_name(w),'isLog',log.isLogWidget(w))
         # w may not be the present body widget, so test its name, not its id.
         if w_name(w).find('tree') > -1 or w_name(w).startswith('head'):
-             pane = c.frame.body.bodyCtrl
+            pane = c.frame.body.bodyCtrl
         elif w_name(w).startswith('body'):
             # Cycle through the *body* editor if there are several.
             n = c.frame.body.numberOfEditors
@@ -8724,7 +8724,7 @@ class leoCommandsClass (baseEditCommandsClass):
             'move-outline-up':              c.moveOutlineUp,
             'new':                          c.new,
             # 'open-compare-window':          c.openCompareWindow,
-            'open-find-dialog':             c.showFindPanel, # Deprecated.
+            ### 'open-find-dialog':             c.showFindPanel, # Deprecated.
             'open-leoDocs-leo':             c.leoDocumentation,
             'open-leoPlugins-leo':          c.openLeoPlugins,
             'open-leoSettings-leo':         c.openLeoSettings,

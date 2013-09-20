@@ -3561,10 +3561,6 @@ class leoQtFindTab (leoFind.findTab):
                 # Init the base class.
                 # Calls initGui, createFrame and init(c), in that order.
 
-    # Define these to suppress oops messages.
-    def createFindTab (self,c,parentFrame): pass
-    def createFrame (self,parentFrame): pass
-
     #@+others
     #@+node:ekr.20110605121601.18226: *4*  Birth: called from leoFind ctor
     # leoFind.__init__ calls initGui, createFrame and init, in that order.
@@ -4074,13 +4070,13 @@ class leoQtFrame (leoFrame.leoFrame):
             self.put('')
             self.update()
             c.frame.top.setStyleSheets()
-        #@+node:ekr.20110605121601.18259: *5*  do-nothings
+        #@+node:ekr.20110605121601.18259: *5*  do-nothings (qtFrame) (REMOVE??)
         def disable (self,background=None): pass
         def enable(self,background="white"):pass
         def getFrame (self):                return None
         def isEnabled(self):                return True
         def onActivate (self,event=None):   pass
-        def setBindings (self):             pass
+
         #@+node:ekr.20110605121601.18260: *5* clear, get & put/1
         def clear (self):
             self.put('')
@@ -6207,10 +6203,6 @@ class leoQtSpellTab:
         self.listBox = ui.leo_spell_listBox
         #self.createBindings()
         self.fillbox([])
-    #@+node:ekr.20110605121601.18388: *4* createFrame (leoQtSpellTab)
-    def createFrame (self):
-        pass
-
     #@+node:ekr.20110605121601.18389: *4* Event handlers
     #@+node:ekr.20110605121601.18390: *5* onAddButton
     def onAddButton(self):

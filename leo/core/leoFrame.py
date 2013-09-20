@@ -1768,9 +1768,6 @@ class leoTree:
         self.canvas = None
         self.trace_select = None
     #@+node:ekr.20031218072017.3706: *3*  Must be defined in subclasses
-    # Bidings.
-    def setBindings (self):                         self.oops()
-
     # Fonts.
     def getFont(self):                              self.oops()
     def setFont(self,font=None,fontName=None):      self.oops()
@@ -2650,12 +2647,6 @@ class nullTree (leoTree):
     #@+node:ekr.20070228163350: *4* Colors & fonts (nullTree)
     def getFont(self):
         return self.font
-
-    # def setColorFromConfig (self):
-        # pass
-
-    def setBindings (self):
-        pass
 
     def setFont(self,font=None,fontName=None):
         self.font,self.fontName = font,fontName

@@ -13411,7 +13411,6 @@ mustBeDefinedInSubclasses = (
     'center_dialog',
     'color',
     #'createComparePanel',          # optional
-    #'createFindPanel',             # optional
     'createFindTab',
     # 'createKeyHandlerClass',
     'createLeoFrame',

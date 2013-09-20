@@ -8350,6 +8350,81 @@ def selectChapter (self,chapter):
 def visitedPositions (self):
 
     return [p.copy() for p,chapter in self.beadList]
+.. @+node:ekr.20031218072017.2887: *3* Find submenu (frame methods) (leoCommands.py)
+if 0:
+    @others
+.. @+node:ekr.20051013084200: *4* dismissFindPanel
+def dismissFindPanel (self,event=None):
+
+    c = self
+
+    if c.frame.findPanel:
+        c.frame.findPanel.dismiss()
+.. @+node:ekr.20031218072017.2888: *4* showFindPanel
+def showFindPanel (self,event=None):
+
+    '''Open Leo's legacy Find dialog.'''
+
+    c = self
+
+    if not c.frame.findPanel:
+        c.frame.findPanel = g.app.gui.createFindPanel(c)
+
+    if c.frame.findPanel:
+        c.frame.findPanel.bringToFront()
+    else:
+        g.warning('the',g.app.gui.guiName(),
+            'gui does not support a stand-alone find dialog')
+.. @+node:ekr.20031218072017.2889: *4* findNext
+def findNext (self,event=None):
+
+    c = self
+
+    if not c.frame.findPanel:
+        c.frame.findPanel = g.app.gui.createFindPanel(c)
+
+    c.frame.findPanel.findNextCommand(c)
+.. @+node:ekr.20031218072017.2890: *4* findPrevious
+def findPrevious (self,event=None):
+
+    c = self
+
+    if not c.frame.findPanel:
+        c.frame.findPanel = g.app.gui.createFindPanel(c)
+
+    c.frame.findPanel.findPreviousCommand(c)
+.. @+node:ekr.20031218072017.2891: *4* replace
+def replace (self,event=None):
+
+    c = self
+
+    if not c.frame.findPanel:
+        c.frame.findPanel = g.app.gui.createFindPanel(c)
+
+    c.frame.findPanel.changeCommand(c)
+.. @+node:ekr.20031218072017.2892: *4* replaceThenFind
+def replaceThenFind (self,event=None):
+
+    c = self
+
+    if not c.frame.findPanel:
+        c.frame.findPanel = g.app.gui.createFindPanel(c)
+
+    c.frame.findPanel.changeThenFindCommand(c)
+.. @+node:ekr.20051013083241: *4* replaceAll
+def replaceAll (self,event=None):
+
+    c = self
+
+    if not c.frame.findPanel:
+        c.frame.findPanel = g.app.gui.createFindPanel(c)
+
+    c.frame.findPanel.changeAllCommand(c)
+.. @+node:ekr.20110605121601.18388: *3* createFrame (leoQtSpellTab)
+# def createFrame (self):
+    # pass
+    # g.trace('***(leoQtSpellTab)',g.callers())
+
 .. @+node:ekr.20120319174225.9743: ** Unused documentation (from LeoDocs.leo)
 .. @+node:ekr.20120319174225.9766: *3* Using Outlines
 .. @+node:ekr.20120319174225.9767: *4* @@@file outlines.txt

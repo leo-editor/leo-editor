@@ -1412,23 +1412,17 @@ class findTab (leoFind):
     def __init__(self,c,parentFrame):
 
         # g.trace('findTab',c)
-
         # Init the base class...
         leoFind.__init__(self,c,title='Find Tab')
-
         self.c = c
         self.parentFrame = parentFrame
         self.frame = self.outerFrame = self.top = None
-
         self.optionsOnly = c.config.getBool('show_only_find_tab_options')
-
         # These are created later.
         self.find_ctrl = None
         self.change_ctrl = None 
         self.outerScrolledFrame = None
-
         self.initGui()
-        self.createFrame(parentFrame)
         self.init(c) # New in 4.3: init only once.
     #@+node:ekr.20060221074900: *3* Callbacks
     #@+node:ekr.20060221074900.1: *4* findButtonCallback

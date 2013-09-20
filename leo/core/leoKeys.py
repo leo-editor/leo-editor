@@ -1880,8 +1880,6 @@ class keyHandlerClass:
         k.initAbbrev()
         c.frame.body.createBindings()
         c.frame.log.setTabBindings('Log')
-        if c.frame.statusLine: c.frame.statusLine.setBindings()
-        c.frame.tree.setBindings()
         c.frame.setMinibufferBindings()
         k.completeAllBindings()
         k.checkBindings()
@@ -1948,10 +1946,7 @@ class keyHandlerClass:
             bindingWidget = f.tree and hasattr(f.tree,'bindingWidget') and f.tree.bindingWidget or None
             bodyCtrl = f.body and hasattr(f.body,'bodyCtrl') and f.body.bodyCtrl or None
             canvas = f.tree and hasattr(f.tree,'canvas') and f.tree.canvas   or None
-            if 0: # Canvas and bindingWidget bindings are now set in tree.setBindings.
-                widgets = (c.miniBufferWidget,bodyCtrl)
-            else:
-                widgets = (c.miniBufferWidget,bodyCtrl,canvas,bindingWidget)
+            widgets = (c.miniBufferWidget,bodyCtrl,canvas,bindingWidget)
 
         # This is the only real key callback.
         def masterBindKeyCallback (event,k=k,stroke=stroke):
@@ -2620,7 +2615,6 @@ class keyHandlerClass:
                 if 0:
                     d = k.masterBindingsDict.get('button',{})
                     g.print_dict(d)
-            c.frame.tree.setBindings()
         elif trace and verbose and not g.app.silentMode:
             g.blue('','@command: %s' % (commandName))
 

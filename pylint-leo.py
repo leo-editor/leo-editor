@@ -117,13 +117,13 @@ def getRecentCoreList():
         # 'leoBridge',
         # 'leoCache',
         # 'leoChapters',
-        # 'leoCommands',
+        'leoCommands',
         # 'leoConfig',
-        # 'leoEditCommands',
+        'leoEditCommands',
         'leoFind',
-        # 'leoFrame',
+        'leoFrame',
         # 'leoGlobals',
-        # 'leoGui',
+        'leoGui',
         # 'leoImport',
         # 'leoIPython',
         'leoKeys',
@@ -142,7 +142,7 @@ def getRecentCoreList():
 def getRecentPluginsList ():
 
     return (
-        # 'baseNativeTree',
+        'baseNativeTree',
         # 'contextmenu',
         # 'codewisecompleter',
         # 'mod_scripting',
