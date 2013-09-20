@@ -20,6 +20,23 @@ import string
 import sys
 import time
 #@-<< imports >>
+#@+<< Key bindings, an overview >>
+#@+node:ekr.20130920121326.11281: ** << Key bindings, an overview >>
+#@@nocolor-node
+#@+at
+# 
+# The big picture:
+# 
+# 1. Code in this file and in leoConfig.py converts user key settings to
+#    various Python dictionaries defined in this file.
+#    
+# 2. All Qt widgets that support any key bindings should attach an
+#    instance of leoQtEventFilter to the widget.
+#    leoQtEventFilter.eventFilter calls k.masterKeyhandler for every
+#    keystroke. In turn, k.masterKeyHandler uses the dictionries defined
+#    in this file to execute commands.
+#    
+#@-<< Key bindings, an overview >>
 #@+<< about 'internal' bindings >>
 #@+node:ekr.20061031131434.2: ** << about 'internal' bindings >>
 #@@nocolor

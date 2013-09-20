@@ -3559,16 +3559,15 @@ class leoQtFindTab (leoFind.findTab):
         def __init__ (self,c,parentFrame):
             leoFind.findTab.__init__(self,c,parentFrame)
                 # Init the base class.
-                # Calls initGui, createFrame, createBindings & init(c), in that order.
+                # Calls initGui, createFrame and init(c), in that order.
 
     # Define these to suppress oops messages.
-    def createBindings (self): pass
     def createFindTab (self,c,parentFrame): pass
     def createFrame (self,parentFrame): pass
 
     #@+others
     #@+node:ekr.20110605121601.18226: *4*  Birth: called from leoFind ctor
-    # leoFind.__init__ calls initGui, createFrame, createBindings & init, in that order.
+    # leoFind.__init__ calls initGui, createFrame and init, in that order.
     #@+node:ekr.20110605121601.18227: *5* initGui
     def initGui (self):
 
@@ -6208,9 +6207,6 @@ class leoQtSpellTab:
         self.listBox = ui.leo_spell_listBox
         #self.createBindings()
         self.fillbox([])
-    #@+node:ekr.20110605121601.18387: *4* createBindings (leoQtSpellTab)
-    def createBindings (self):
-        pass
     #@+node:ekr.20110605121601.18388: *4* createFrame (leoQtSpellTab)
     def createFrame (self):
         pass

@@ -1429,7 +1429,6 @@ class findTab (leoFind):
 
         self.initGui()
         self.createFrame(parentFrame)
-        self.createBindings()
         self.init(c) # New in 4.3: init only once.
     #@+node:ekr.20060221074900: *3* Callbacks
     #@+node:ekr.20060221074900.1: *4* findButtonCallback
@@ -1503,9 +1502,7 @@ class findTab (leoFind):
         self.reverse = not self.reverse
         self.findNext()
         self.reverse = not self.reverse
-    #@+node:ekr.20061212092124: *3* Defined in subclasses
-    def createBindings (self):
-        self.oops()
+    #@+node:ekr.20061212092124: *3* Defined in subclasses (findTab)
 
     def createFrame (self,parent):
         self.oops()

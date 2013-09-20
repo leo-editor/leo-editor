@@ -5,8 +5,6 @@
 .. @+all
 .. @+node:ekr.20130916105324.19893: ** To-do for 4.11
 @language rest
-.. @+node:ekr.20130920095617.11313: *3* Get rid of unused binding code!
-It's *sooo* confusing.
 .. @+node:ekr.20130918133723.11281: *3* bugs
 .. @+node:ekr.20130917093253.11300: *4* unit tests for utf-16 @asis, @nosent, @shadow files
 .. @+node:ekr.20130912152335.11933: *4* next/later
