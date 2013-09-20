@@ -15,7 +15,7 @@ Plugins may define their own gui classes by setting g.app.gui."""
 #@@pagewidth 70
 
 #@+<< imports >>
-#@+node:ekr.20120219194520.10466: ** << imports >> (qtGui.py)
+#@+node:ekr.20120219194520.10466: ** << imports >> (leoGui.py)
 import leo.core.leoGlobals as g
 import leo.core.leoFind as leoFind # for nullFindTab.
 import leo.core.leoFrame as leoFrame # for nullGui and stringTextWidget.
@@ -124,31 +124,8 @@ class leoGui:
         c.outerUpdate()
     #@+node:ekr.20061109212618: *3* Must be defined in subclasses
     #@+node:ekr.20031218072017.3723: *4* app.gui create & destroy
-    #@+node:ekr.20031218072017.3724: *5* createRootWindow
-    def createRootWindow(self):
-
-        """Create the hidden root window for the gui.
-
-        Nothing needs to be done if the root window need not exist."""
-
-        self.oops()
-    #@+node:ekr.20031218072017.3725: *5* destroySelf
+    #@+node:ekr.20031218072017.3725: *5* destroySelf (leoGui)
     def destroySelf (self):
-
-        self.oops()
-    #@+node:ekr.20031218072017.3727: *5* killGui
-    def killGui(self,exitFlag=True):
-
-        """Destroy the gui.
-
-        The entire Leo application should terminate if exitFlag is True."""
-
-        self.oops()
-    #@+node:ekr.20031218072017.3728: *5* recreateRootWindow
-    def recreateRootWindow(self):
-
-        """Create the hidden root window of the gui
-        after a previous gui has terminated with killGui(False)."""
 
         self.oops()
     #@+node:ekr.20031218072017.3729: *5* runMainLoop
@@ -406,8 +383,6 @@ class nullGui(leoGui):
     def alert (self,message):
         pass
     def attachLeoIcon (self,w):
-        pass
-    def createRootWindow(self):
         pass
     def destroySelf (self):
         pass

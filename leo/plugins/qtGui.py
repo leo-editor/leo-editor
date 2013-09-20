@@ -917,7 +917,7 @@ class leoQLineEditWidget (leoQtBaseTextWidget):
 
         # 2011/05/26: was hasSelection.
         return self.widget.hasSelectedText()
-    #@+node:ekr.20110605121601.18067: *5* see & seeInsertPoint
+    #@+node:ekr.20110605121601.18067: *5* see & seeInsertPoint (QLineEdit)
     def see(self,i):
         pass
 
@@ -1734,7 +1734,7 @@ class leoQtHeadlineWidget (leoQtBaseTextWidget):
             return self.widget.hasSelectedText()
         else:
             return False
-    #@+node:ekr.20110605121601.18124: *5* see & seeInsertPoint
+    #@+node:ekr.20110605121601.18124: *5* see & seeInsertPoint (leoQtHeadlineWidget)
     def see(self,i):
         pass
 
@@ -7473,7 +7473,7 @@ class leoQtGui(leoGui.leoGui):
             self.runWithIpythonKernel()
         else:                            
             sys.exit(self.qtApp.exec_())
-    #@+node:ekr.20110605121601.18484: *5* destroySelf
+    #@+node:ekr.20110605121601.18484: *5* destroySelf (qtGui)
     def destroySelf (self):
         QtCore.pyqtRemoveInputHook()
         self.qtApp.exit()
@@ -7933,24 +7933,12 @@ class leoQtGui(leoGui.leoGui):
         d.exec_()
         c.in_qt_dialog = False
         #@-<< emergency fallback >>
-    #@+node:ekr.20110605121601.18486: *4* Do nothings
+    #@+node:ekr.20110605121601.18486: *4* Do nothings (qtGui)
     def color (self,color):
         return None
 
-    def createRootWindow(self):
-        pass
-
-    def killGui(self,exitFlag=True):
-        """Destroy a gui and terminate Leo if exitFlag is True."""
-
     def killPopupMenu(self):
         pass
-
-    def recreateRootWindow(self):
-        """Create the hidden root window of a gui
-        after a previous gui has terminated with killGui(False)."""
-
-
     #@+node:ekr.20110607182447.16456: *4* Event handlers (qtGui)
     #@+node:ekr.20110605121601.18480: *5* onActivateEvent (qtGui)
     # Called from eventFilter
@@ -9234,14 +9222,8 @@ class leoQtColorizer:
             if self.c.currentPosition() == p:
                 self.highlighter.rehighlight(p)
     #@+node:ekr.20110605121601.18555: *4* minor entry points
-    def interrupt(self):
-        pass
-
     def isSameColorState (self):
         return True # Disable some logic in leoTree.select.
-
-    def kill (self):
-        pass
     #@+node:ekr.20110605121601.18556: *4* scanColorDirectives (leoQtColorizer) & helper
     def scanColorDirectives(self,p):
 

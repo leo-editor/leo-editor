@@ -892,7 +892,6 @@ class leoBody (HighLevelInterface):
         p.v.insertSpot = body.getInsertPoint()
         #@+<< recolor the body >>
         #@+node:ekr.20051026083733.6: *5* << recolor the body >>
-        body.colorizer.interrupt()
         c.frame.scanForTabWidth(p)
         body.recolor(p,incremental=not self.forceFullRecolorFlag)
         self.forceFullRecolorFlag = False
@@ -2338,8 +2337,6 @@ class nullColorizer:
 
     def enable(self): pass
 
-    def interrupt(self): pass
-
     def isSameColorState (self): return True
         # Disable some logic in leoTree.select.
 
@@ -2391,7 +2388,7 @@ class nullFrame (leoFrame):
         self.h = 500
         self.x = 40
         self.y = 40
-    #@+node:ekr.20041120073824: *3* destroySelf
+    #@+node:ekr.20041120073824: *3* destroySelf (nullFrame)
     def destroySelf (self):
 
         pass

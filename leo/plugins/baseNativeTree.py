@@ -1155,11 +1155,11 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         relating to editing a headline.'''
 
         self.oops()
-    #@+node:ekr.20110605121601.17939: *3* Scroll bars
+    #@+node:ekr.20110605121601.17939: *3* Scroll bars (nativeTree)
+    # Do-nothings, for use by null classes.
+
     def getScroll (self):
-
         '''Return the hPos,vPos for the tree's scrollbars.'''
-
         return 0,0
 
     def setHScroll (self,hPos):
