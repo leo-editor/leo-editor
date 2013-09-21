@@ -269,8 +269,7 @@
 </v>
 </v>
 <v t="ekr.20110611092035.16465"><vh>Key binding and operation</vh>
-<v t="ekr.20060215102141"><vh>@bool ignore_unbound_non_ascii_keys = False</vh></v>
-<v t="ekr.20060215104345"><vh>@bool swap_mac_keys = False</vh></v>
+<v t="ekr.20120205022040.15411"><vh>@bool swap_mac_keys = False</vh></v>
 <v t="ekr.20051007200824"><vh>Keyboard shortcuts</vh>
 <v t="ekr.20051101160257"><vh>About keyboard shortcuts</vh>
 <v t="ekr.20051007200824.1"><vh>About shortcut specifiers</vh></v>
@@ -754,7 +753,7 @@
 <v t="ekr.20060122105527.3"><vh>Keyboard and minibuffer options</vh>
 <v t="ekr.20120205022040.15410"><vh>@bool enable_alt_ctrl_bindings = True</vh></v>
 <v t="ekr.20060122105527.8"><vh>@bool showHelpWhenEnteringModes = False</vh></v>
-<v t="ekr.20120205022040.15411"><vh>@bool swap_mac_keys = False</vh></v>
+<v t="ekr.20120205022040.15411"></v>
 <v t="ekr.20060627065953"><vh>@bool trace_bind_key_exceptions = True</vh></v>
 <v t="ekr.20060926161207.1"><vh>@bool warn_about_redefined_shortcuts = True</vh></v>
 <v t="ekr.20060926161207.2"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
@@ -3799,10 +3798,6 @@ Important: the Find Tab always exists regardless of this setting.</t>
 # There used to be a warning about this slowing Leo, but I seen now problem with it at present.</t>
 <t tx="ekr.20060212103826"># True (recommended): print a message when Leo calls gc.collect explicitly.</t>
 <t tx="ekr.20060215054710"></t>
-<t tx="ekr.20060215102141">True (Legacy):          ignore unbound non-ascii keys, like Ä.
-False: (Recommended):   allow unicode characters in Leo's text.</t>
-<t tx="ekr.20060215104345">True (legacy):      Translate control-only keys to command keys on the Mac.
-False (recommended):  No translation.</t>
 <t tx="ekr.20060216091239">True: trace all changes to the minibuffer</t>
 <t tx="ekr.20060216130607">True: trace all changes to the status line.</t>
 <t tx="ekr.20060216135834">True:  enable autocompletion initially.
