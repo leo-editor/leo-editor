@@ -5,13 +5,13 @@
 .. @+all
 .. @+node:ekr.20130916105324.19893: ** To-do for 4.11
 @language rest
-.. @+node:ekr.20130918133723.11281: *3* bugs
-.. @+node:ekr.20130917093253.11300: *4* unit tests for utf-16 @asis, @nosent, @shadow files
-.. @+node:ekr.20130912152335.11933: *4* next/later
-.. @+node:ekr.20130908104426.11240: *5*  879338 Global tables in leoApp.py should describe all languages known 
+.. @+node:ekr.20130912152335.11933: *3* bugs: first
+.. @+node:ekr.20130920055521.11283: *4* 1226816 Command line "leo xxx.leo" creates file xxx.leo.leo
+https://bugs.launchpad.net/leo-editor/+bug/1226816
+.. @+node:ekr.20130908104426.11240: *4*  879338 Global tables in leoApp.py should describe all languages known 
 https://bugs.launchpad.net/leo-editor/+bug/879338
-.. @+node:ekr.20130908104426.11250: *5* 1090950 refresh from disk - cut node ressurection
-.. @+node:ekr.20130908104426.11254: *5* 1160660 File-Compare-Leo-Files creates "other file" clones
+.. @+node:ekr.20130908104426.11250: *4* 1090950 refresh from disk - cut node ressurection
+.. @+node:ekr.20130908104426.11254: *4* 1160660 File-Compare-Leo-Files creates "other file" clones
 https://bugs.launchpad.net/leo-editor/+bug/1160660
 
 Test procedure:
@@ -131,13 +131,12 @@ global config dir: /home/ldi/bzr/LeoLatest/leo/config
 home dir: /home/bob05
 reading settings in /home/ldi/bzr/LeoLatest/leo/config/leoSettings.leo
 reading settings in /home/bob05/.leo/myLeoSettings.leo
-.. @+node:ekr.20130908104426.11244: *5* 971171 If $(HOME)/.leo/.leoRecentFiles.txt does not exist, the only recent file ever is the current file
+.. @+node:ekr.20130908104426.11244: *4* 971171 If $(HOME)/.leo/.leoRecentFiles.txt does not exist, the only recent file ever is the current file
 https://bugs.launchpad.net/leo-editor/+bug/971171
-.. @+node:ekr.20130920055521.11282: *5* 1228099 Cancelling save of dirty untitled commander doesn't work with --ipython
+.. @+node:ekr.20130920055521.11282: *4* 1228099 Cancelling save of dirty untitled commander doesn't work with --ipython
 https://bugs.launchpad.net/leo-editor/+bug/1228099
-.. @+node:ekr.20130920055521.11283: *5* 1226816 Command line "leo xxx.leo" creates file xxx.leo.leo
-https://bugs.launchpad.net/leo-editor/+bug/1226816
-.. @+node:ekr.20130806072439.20477: *5* I can't make Leo-Editor start in a full-screen window under openSUSU 12.1
+.. @+node:ekr.20130921043420.11269: *3* Help (2)
+.. @+node:ekr.20130806072439.20477: *4* I can't make Leo-Editor start in a full-screen window under openSUSU 12.1
 From: SegundoBob <bhossley@ieee.org>
 
 I much prefer to almost always use Leo-editor in a full-screen window.   
@@ -158,7 +157,7 @@ Leo-Editor:  5051, 5089, 5093, 5106, 5113, 5115, 5121, 5123, 5128, 5130,
 believe all my tests used Python 2.7.2, qt version 4.7.4.
 
 Does anyone have any ideas about solving this problem?
-.. @+node:ekr.20130806072439.20478: *6* "Re: I can't make Leo-Editor start in a full-screen window under openSUSU 12.1"
+.. @+node:ekr.20130806072439.20478: *5* "Re: I can't make Leo-Editor start in a full-screen window under openSUSU 12.1"
 @nocolor
 
 From: technatica <technatica@gmail.com>
@@ -192,7 +191,7 @@ I
 >
 > Does anyone have any ideas about solving this problem?
 
-.. @+node:ekr.20130806072439.20479: *6* "Re: I can't make Leo-Editor start in a full-screen window under openSUSU 12.1"
+.. @+node:ekr.20130806072439.20479: *5* "Re: I can't make Leo-Editor start in a full-screen window under openSUSU 12.1"
 @nocolor
 
 From: "Edward K. Ream" <edreamleo@gmail.com>
@@ -240,7 +239,7 @@ nd at the top of the screen.</blockquote>
 ase do.<br><br>Edward</div></div></div></div>
 
 --047d7b62201042c3c804dba80ccb--
-.. @+node:ekr.20130806072439.20480: *6* "Re: I can't make Leo-Editor start in a full-screen window under openSUSU 12.1"
+.. @+node:ekr.20130806072439.20480: *5* "Re: I can't make Leo-Editor start in a full-screen window under openSUSU 12.1"
 @nocolor
 
 From: technatica <technatica@gmail.com>
@@ -276,7 +275,7 @@ I
 >
 > Does anyone have any ideas about solving this problem?
 
-.. @+node:ekr.20130806072439.20481: *6* "Re: I can't make Leo-Editor start in a full-screen window under openSUSU 12.1"
+.. @+node:ekr.20130806072439.20481: *5* "Re: I can't make Leo-Editor start in a full-screen window under openSUSU 12.1"
 @nocolor
 
 From: SegundoBob <bhossley@ieee.org>
@@ -294,7 +293,7 @@ The symptoms of my problem are that window sizes of less than full-window
 are remembered and restored, but when Leo-Editor is in full-screen at exit, 
 then it is restarted in partial-screen mode with an arbitrary unused band 
 at the top of the screen.
-.. @+node:ekr.20130806072439.20517: *5* Problem Creating a new outline using leoBridge
+.. @+node:ekr.20130806072439.20517: *4* Problem Creating a new outline using leoBridge
 From: SegundoBob <bhossley@ieee.org>
 
 I'm trying to create a new Leo-Editor outline file using leoBridge and I'm 
@@ -343,212 +342,6 @@ Python 2.7.2, qt version 4.7.4
 linux2  --- This is openSUSE 12.1
 
 
-.. @+node:ekr.20130908104426.11232: *4* Bug-tracker: High priority
-https://bugs.launchpad.net/leo-editor/+bug/nnn
-.. @+node:ekr.20130530110446.12450: *5* Fix syntax coloring bug involving multiple body editors
-.. @+node:ekr.20130502102046.10578: *5* Crash deleting body editor
-# Trying to delete a second body editor.
-
-Traceback (most recent call last):
-  File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 560, in doCommand
-    val = command(event)
-  File "c:\leo.repo\trunk\leo\plugins\qtGui.py", line 2980, in deleteEditor
-    name = w.leo_name
-AttributeError: 'LeoQTextBrowser' object has no attribute 'leo_name'
-.. @+node:ekr.20130908104426.11233: *5* 1022140 scroll problem in the body pane
-https://bugs.launchpad.net/leo-editor/+bug/1022140
-.. @+node:ekr.20130908104426.11234: *5* 1041906 underlying C/C++ object has been deleted
-https://bugs.launchpad.net/leo-editor/+bug/1041906
-
-I did the following: Ctrl-F, entered "Dream:". F3 several times. Deleted characters "Dream: " from a body. Changed the header from Diary to Dream.
-F3
-
-Leo Log Window
-Leo 4.11 devel, build 5424, 2012-08-21 16:03:45
-Python 2.7.2, qt version 4.7.4
-linux2
-setting leoID from os.getenv('USER'): 'bob02'
-load dir: /home/ldi/bzr/LeoLatest/leo/core
-global config dir: /home/ldi/bzr/LeoLatest/leo/config
-home dir: /home/bob02
-reading settings in /home/ldi/bzr/LeoLatest/leo/config/leoSettings.leo
-reading settings in /home/bob02/.leo/myLeoSettings.leo
-reading settings in /media/datw1/BobH Archive/RFD/2011/rfd1110.leo
-reading: /media/datw1/BobH Archive/RFD/2011/rfd1110.leo
-
-exception executing command
-Traceback (most recent call last):
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoCommands.py", line 559, in doCommand
-    val = command(event)
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoEditCommands.py", line 9803, in findTabFindNext
-    self.findTabHandler.findNextCommand()
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoFind.py", line 1492, in findNextCommand
-    self.findNext()
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoFind.py", line 702, in findNext
-    self.showSuccess(pos,newpos)
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoFind.py", line 1330, in showSuccess
-    c.endEditing() # 2011/06/10: A major bug fix.
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoCommands.py", line 8197, in endEditing
-    c.frame.tree.endEditLabel()
-  File "/home/ldi/bzr/LeoLatest/leo/plugins/baseNativeTree.py", line 862, in endEditLabel
-    self.onHeadChanged(p)
-  File "/home/ldi/bzr/LeoLatest/leo/plugins/baseNativeTree.py", line 893, in onHeadChanged
-    self.closeEditorHelper(e,item)
-  File "/home/ldi/bzr/LeoLatest/leo/plugins/qtGui.py", line 6570, in closeEditorHelper
-    w.setCurrentItem(item)
-RuntimeError: underlying C/C++ object has been deleted
---------------- End log pane ----------------
-
-As you can see my Leo-Editor version is 5424.
-openSUSE 12.1
-Kernel Linux 3.1.10-1.16-desktop
-XFCE desktop environment
-.. @+node:ekr.20130806072439.20497: *5* ***Leo does not display all content of a node ...
-From: Viktor Ransmayr <viktor.ransmayr@gmail.com>
-
-even at the latest revision (rev. 5500) Leo does not display all content of 
-larger nodes
-- Larger nodes approximately defined as >= 150 lines ...
-
-That is searching for example for a 'TO-DO' item just return this 
-particular line w/o the
-context  around. - Going up - or - down does not refresh the screen & 
-content ...
-
-I thought I could provide you with an outline, where this problem 
-consistently shows up.
-- However, whenever I trim the personal outline I'm using the problem 
-disappears.
-
-This problem is really annoying - and - I would gladly provide more input, 
-but so far I
-fail. - Any suggestion?
-
-With kind regards,
-
-Viktor
-
-PS: For completeness here's the log from Leo's startup:
-
-<log>
-
-Leo Log Window
-Leo 4.11 devel, build 5500, 2012-10-19 18:35:23
-Python 3.2.2, qt version 4.8.0
-Windows 6, 1, 7601, 2, Service Pack 1
-leoID=VR20100603 (in D:\\Users\\Viktor Ransmayr\\.leo)
-load dir: D:\\Branches\\leo-editor\\leo\\core
-global config dir: D:\\Branches\\leo-editor\\leo\\config
-home dir: D:\\Users\\Viktor Ransmayr
-reading settings in D:\\Branches\\leo-editor\\leo\\config\\leoSettings.leo
-reading settings in D:\\Users\\Viktor Ransmayr\\.leo\\myLeoSettings.leo
-reading settings in D:\\Users\\Viktor Ransmayr\\Documents\\Leo-BR-r5500.leo
-reading: D:\\Users\\Viktor Ransmayr\\Documents\\Leo-BR-r5500.leo
-
-</log>
-.. @+node:ekr.20130806072439.20498: *6* Re: Leo does not display all content of a node ...
-From: Terry Brown <terry_n_brown@yahoo.com>
-
-I can confirm that this type of bug is still present in 5500 also.
-
-Yesterday I was noticing this:
-
- - editing a node (A)
- - create new node by accidentally hitting insert
- - delete new node immediately while still in headline edit mode using
-   cut-node 
- - node A is displayed incorrectly, a line is missing, selecting the
-   body restores the missing line
-
-vs. the above but selecting the body of the inserted node, then
-deleting it, in which case A is displayed correctly without selecting
-its body.
-
-Today (the outline's changed) it's not doing that, but I still
-notice the difference between inserting and immediately deleting a node
-(scroll position in A restored incorrectly), vs. inserting a node,
-selecting its body, and then deleting it (scroll position in A restored
-correctly).
-
-So, there's some execution path difference between A being selected
-after an inserted node is deleted immediately (still in headline edit
-mode) vs. after selection of its body.
-
-Not a very helpful report, but maybe the difference between deletion of
-the node immediately and after selecting its body guides you to a
-particular piece of code.
-.. @+node:ekr.20130806072439.20499: *6* Re: Leo does not display all content of a node ...
-From: resi147 <scalet@yebu.de>
-
-I also have the same problem, using the official 4.10 final.
-I.e. a couple of lines are missing in the node (the linecounter
-increments and decrements but the cursor does not move).
-
-Not sure what report could be useful.
-I also feel like it occurs on larger body nodes.
-.. @+node:ekr.20130806072439.20501: *6* Re: Leo does not display all content of a node ...
-From: lewis <lewisneal@operamail.com>
-
-Same issue for me has been occurring on a large node. Interestingly, I can
-only reproduce the display error when 'Leo Log Window' is at bottom left
-position which is my ''initial_split_orientation' setting (horizontal: body
-pane to the right). I can use Window>Toggle Split Direction to correct the
-initial display error.
-
-For me, the display error always becomes evident at line 95. My line
-numbers 95,96 are visible then skips to 118. Lines 97 thru 117 are not
-displayed. It appears to be graphics performance time lag; if I return to
-the file after having switched to another leo tab the previously invisible
-lines are visible.
-
-Leo Log Window
-Leo 4.11 devel, build 5647, 2013-04-02 08:03:37
-Python 3.3.1, qt version 4.8.4
-Windows 6, 1, 7601, 2, Service Pack 1
-.. @+node:ekr.20130806072439.20531: *5* *** (response to Leo does not display...) Styling in Leo
-From: Terry Brown <terry_n_brown@yahoo.com>
-
-(This is a response to the invisible line glitch, but not directly
-related, so a new thread)
-
-Rember this:
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/ee869a0a70f2d765
-
-Some time ago I was working on styling Leo from a single top level
-stylesheet using a mechanism similar to CSS classes, so instead of:
-    
-    # widget is active
-    w.setStyle("QTextEdit { color: red; font-weight: bold; }")
-    
-    ...
-    
-    # widget is inactive
-    w.setStyle("QTextEdit { color: black; font-weight: normal; }")
-    
-you'd have
-
-    # widget is active
-    w.setAttribute('active', True)
-    
-    ...
-    
-    # widget is inactive
-    w.setAttribute('active', False)
-
-and in the single global style sheet
-
-    QTextEdit[active="true"] { color: red; font-weight: bold; }
-    QTextEdit[active="false"] { color: red; font-weight: bold; }
-
-This isn't a perfect example because if active == focused then you
-could probably just use the pseudo-state :focus and let Qt do all the
-work, and also Leo would .setStyle() a string defined in @settings, not
-something hard coded.
-
-Qt styles are different from CSS in that CSS has a single attribute,
-`class`, which can contain a space separated list of tags, whereas Qt
-has arbitrary attributes like the `active` I just made up above.
 .. @+node:ekr.20130917083243.11295: *3* doc (6)
 .. @+node:ekr.20130908104426.15553: *4* * Document Leo's underindented-line convention
 And add a description of the setting @string underindent-escape-string.
@@ -717,6 +510,13 @@ programs.
 The *Leo Aha* is the moment when someone realizes how well Leo outlines and
 Leo scripts work together.
 .. @+node:ekr.20130920055521.11280: *4* Create Leo cheat sheet
+.. @+node:ekr.20130921043420.21172: *3* tests (2)
+.. @+node:ekr.20130921043420.11270: *4* improve unit tests of class relationships
+@language rest
+
+- Use @testsetup to create smaller tests.
+- Make sure leoBody follows HighLevelInterface?
+.. @+node:ekr.20130917093253.11300: *4* unit tests for utf-16 @asis, @nosent, @shadow files
 .. @+node:ekr.20130909111702.13058: *3* Allow paypal donations to Leo
 .. @+node:ekr.20130919120947.12504: ** 5.0
 .. @+node:ekr.20130919120947.12505: *3* Compatibility mode
@@ -5929,7 +5729,9 @@ has arbitrary attributes like the `active` I just made up above.
 
 https://bugs.launchpad.net/leo-editor/+bug/nnn
 .. @+node:ekr.20130912152335.11932: *4* others: medium priority (hard/later)
-.. @+node:ekr.20130912152335.11933: *5* next/later
+.. @+node:ekr.20130912152335.11933: *5* bugs: first
+.. @+node:ekr.20130920055521.11283: *6* 1226816 Command line "leo xxx.leo" creates file xxx.leo.leo
+https://bugs.launchpad.net/leo-editor/+bug/1226816
 .. @+node:ekr.20130908104426.11240: *6*  879338 Global tables in leoApp.py should describe all languages known 
 https://bugs.launchpad.net/leo-editor/+bug/879338
 .. @+node:ekr.20130908104426.11250: *6* 1090950 refresh from disk - cut node ressurection
@@ -6057,214 +5859,6 @@ reading settings in /home/bob05/.leo/myLeoSettings.leo
 https://bugs.launchpad.net/leo-editor/+bug/971171
 .. @+node:ekr.20130920055521.11282: *6* 1228099 Cancelling save of dirty untitled commander doesn't work with --ipython
 https://bugs.launchpad.net/leo-editor/+bug/1228099
-.. @+node:ekr.20130920055521.11283: *6* 1226816 Command line "leo xxx.leo" creates file xxx.leo.leo
-https://bugs.launchpad.net/leo-editor/+bug/1226816
-.. @+node:ekr.20130806072439.20477: *6* I can't make Leo-Editor start in a full-screen window under openSUSU 12.1
-From: SegundoBob <bhossley@ieee.org>
-
-I much prefer to almost always use Leo-editor in a full-screen window.   
-When I run Ubuntu 11.10 with either the Fluxbox or the Gnome Classic 
-sessions, when I re-open an outline that was last closed when its window 
-was full-screen, Leo-Editor comes up in a full-screen window.  When I run 
-openSUSE 12.1 with either the XFCE or IceWM sessions, Leo-Editor never 
-comes up in a full-screen widow.  In all my tests I used exactly the same 
-Leo-Editor for all operating systems and session managers.
-
-Other applications can be made to come up in full-screen windows under 
-openSUSE 12.1.  For example, Thunderbird and Thunar will come up in 
-full-screen windows.
-
-I have seen this problem with all of the following revisions of 
-Leo-Editor:  5051, 5089, 5093, 5106, 5113, 5115, 5121, 5123, 5128, 5130, 
-5138, 5141, 5143, 5147, 5148, 5161, 5166, 5200, 5220, 5248, and 5252.  I 
-believe all my tests used Python 2.7.2, qt version 4.7.4.
-
-Does anyone have any ideas about solving this problem?
-.. @+node:ekr.20130806072439.20478: *7* "Re: I can't make Leo-Editor start in a full-screen window under openSUSU 12.1"
-@nocolor
-
-From: technatica <technatica@gmail.com>
-
-1. Start Leo.
-2. Ctrl-S
-3. Close Leo.
-4. Open Leo with window size saved.
-
-On Apr 14, 9:43=A0am, SegundoBob <bhoss...@ieee.org> wrote:
-> I much prefer to almost always use Leo-editor in a full-screen window.
-> When I run Ubuntu 11.10 with either the Fluxbox or the Gnome Classic
-> sessions, when I re-open an outline that was last closed when its window
-> was full-screen, Leo-Editor comes up in a full-screen window. =A0When I r=
-un
-> openSUSE 12.1 with either the XFCE or IceWM sessions, Leo-Editor never
-> comes up in a full-screen widow. =A0In all my tests I used exactly the sa=
-me
-> Leo-Editor for all operating systems and session managers.
->
-> Other applications can be made to come up in full-screen windows under
-> openSUSE 12.1. =A0For example, Thunderbird and Thunar will come up in
-> full-screen windows.
->
-> I have seen this problem with all of the following revisions of
-> Leo-Editor: =A05051, 5089, 5093, 5106, 5113, 5115, 5121, 5123, 5128, 5130=
-,
-> 5138, 5141, 5143, 5147, 5148, 5161, 5166, 5200, 5220, 5248, and 5252. =A0=
-I
-> believe all my tests used Python 2.7.2, qt version 4.7.4.
->
-> Does anyone have any ideas about solving this problem?
-
-.. @+node:ekr.20130806072439.20479: *7* "Re: I can't make Leo-Editor start in a full-screen window under openSUSU 12.1"
-@nocolor
-
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
---047d7b62201042c3c804dba80ccb
-
-
-On Sat, Apr 28, 2012 at 11:24 AM, SegundoBob <bhossley@ieee.org> wrote:
-
-> Thanks for the suggestion.  But doing a save does not help with my
-> problem.  I was already aware that some parameters are only remembered when
-> a save is done--and this is a minor annoyance.  Wouldn't it be better, more
-> consistent, and more useable, if every exit saved all the parameters that
-> initialization restores?
->
-> The symptoms of my problem are that window sizes of less than full-window
-> are remembered and restored, but when Leo-Editor is in full-screen at exit,
-> then it is restarted in partial-screen mode with an arbitrary unused band
-> at the top of the screen.
-
-
-Have you filed an official bug for this?  If not, please do.
-
-Edward
-
---047d7b62201042c3c804dba80ccb
-
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr">On Sat, Apr 28, 2012 at 11:24 AM, SegundoBob <span dir=3D"=
-ltr">&lt;<a href=3D"mailto:bhossley@ieee.org" target=3D"_blank">bhossley@ie=
-ee.org</a>&gt;</span> wrote:<br><div class=3D"gmail_extra"><div class=3D"gm=
-ail_quote">
-<blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1p=
-x #ccc solid;padding-left:1ex">Thanks for the suggestion.=A0 But doing a sa=
-ve does not help with my problem.=A0 I was already aware that some paramete=
-rs are only remembered when a save is done--and this is a minor annoyance.=
-=A0 Wouldn&#39;t it be better, more consistent, and more useable, if every =
-exit saved all the parameters that initialization restores?<br>
-<br>The symptoms of my problem are that window sizes of less than full-wind=
-ow are remembered and restored, but when Leo-Editor is in full-screen at ex=
-it, then it is restarted in partial-screen mode with an arbitrary unused ba=
-nd at the top of the screen.</blockquote>
-<div><br></div><div>Have you filed an official bug for this?=A0 If not, ple=
-ase do.<br><br>Edward</div></div></div></div>
-
---047d7b62201042c3c804dba80ccb--
-.. @+node:ekr.20130806072439.20480: *7* "Re: I can't make Leo-Editor start in a full-screen window under openSUSU 12.1"
-@nocolor
-
-From: technatica <technatica@gmail.com>
-
-I have the exact same behaviour with Leo 4.10 final, build 5286,
-2012-04-27 23:02:15.
-
-It refuses to remember its window settings.
-
-Arch Linux, 64bit, installed from bzr.
-
-On Apr 14, 9:43=A0am, SegundoBob <bhoss...@ieee.org> wrote:
-> I much prefer to almost always use Leo-editor in a full-screen window.
-> When I run Ubuntu 11.10 with either the Fluxbox or the Gnome Classic
-> sessions, when I re-open an outline that was last closed when its window
-> was full-screen, Leo-Editor comes up in a full-screen window. =A0When I r=
-un
-> openSUSE 12.1 with either the XFCE or IceWM sessions, Leo-Editor never
-> comes up in a full-screen widow. =A0In all my tests I used exactly the sa=
-me
-> Leo-Editor for all operating systems and session managers.
->
-> Other applications can be made to come up in full-screen windows under
-> openSUSE 12.1. =A0For example, Thunderbird and Thunar will come up in
-> full-screen windows.
->
-> I have seen this problem with all of the following revisions of
-> Leo-Editor: =A05051, 5089, 5093, 5106, 5113, 5115, 5121, 5123, 5128, 5130=
-,
-> 5138, 5141, 5143, 5147, 5148, 5161, 5166, 5200, 5220, 5248, and 5252. =A0=
-I
-> believe all my tests used Python 2.7.2, qt version 4.7.4.
->
-> Does anyone have any ideas about solving this problem?
-
-.. @+node:ekr.20130806072439.20481: *7* "Re: I can't make Leo-Editor start in a full-screen window under openSUSU 12.1"
-@nocolor
-
-From: SegundoBob <bhossley@ieee.org>
-
-
-
-
-Thanks for the suggestion.  But doing a save does not help with my 
-problem.  I was already aware that some parameters are only remembered when 
-a save is done--and this is a minor annoyance.  Wouldn't it be better, more 
-consistent, and more useable, if every exit saved all the parameters that 
-initialization restores?
-
-The symptoms of my problem are that window sizes of less than full-window 
-are remembered and restored, but when Leo-Editor is in full-screen at exit, 
-then it is restarted in partial-screen mode with an arbitrary unused band 
-at the top of the screen.
-.. @+node:ekr.20130806072439.20517: *6* Problem Creating a new outline using leoBridge
-From: SegundoBob <bhossley@ieee.org>
-
-I'm trying to create a new Leo-Editor outline file using leoBridge and I'm 
-stuck with this error:
-
-$ python .temp.py
-Traceback (most recent call last):
-  File ".temp.py", line 17, in <module>
-    ptrDay = ptrRoot.insertAsLastChild()
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoNodes.py", line 1212, in 
-insertAsLastChild
-    n = p.numberOfChildren()
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoNodes.py", line 488, in 
-numberOfChildren
-    return len(p.v.children)
-AttributeError: 'NoneType' object has no attribute 'children'
-
-Here is my program .temp.py:
-
- pathLeo = '/home/ldi/tmp/debug/rfd1207.leo'
-
-
-import sys
-
-sys.path.append("/home/ldi/bzr/LeoLatest/") 
-
-import leo.core.leoBridge as leoBridge
-
-
-bridge = leoBridge.controller(gui='nullGui',verbose=False)
-
-cmdr = bridge.openLeoFile(pathLeo)
-
-ptrRoot = cmdr.rootPosition()
-
-ptrDay = ptrRoot.insertAsLastChild()
--------- end program ------------------
-
-I seem to have an outline and it seems to have a root position, but this 
-root position does not have a "vnode".
-
-Versions:
-Leo Log Window
-Leo 4.11 devel, build 5416, 2012-07-01 15:27:23
-Python 2.7.2, qt version 4.7.4
-linux2  --- This is openSUSE 12.1
-
-
 .. @+node:ekr.20130908104426.17092: *5* hard, not very important
 .. @+node:ekr.20111222113610.10244: *6*  613153 unable to describe root directory on thumb drive
 A very complex bug
@@ -7141,16 +6735,22 @@ def createTab (self,tabName,createText=True,widget=None,wrap='none'):
             self.widget = contents # widget is an alias for logCtrl.
             widget.setObjectName('log-widget')
         # Set binding on all log pane widgets.
-        theFilter = leoQtEventFilter(c,w=self,tag='log')
-        self.eventFilters.append(theFilter) # Needed!
-        widget.installEventFilter(theFilter)
+        if newFilter:
+            g.app.gui.setFilter(c,widget,self,tag='log')
+        else:
+            theFilter = leoQtEventFilter(c,w=self,tag='log')
+            self.eventFilters.append(theFilter) # Needed!
+            widget.installEventFilter(theFilter)
         # A bad hack.  Set the standard bindings in the Find and Spell tabs here.
         if tabName == 'Log':
             assert c.frame.top.__class__.__name__ == 'DynamicWindow'
             find_widget = c.frame.top.leo_find_widget
             # 2011/11/21: A hack: add an event filter.
-            find_widget.leo_event_filter = leoQtEventFilter(c,w=widget,tag='find-widget')
-            find_widget.installEventFilter(find_widget.leo_event_filter)
+            if newFilter:
+                g.app.gui.setFilter(c,find_widget,widget,'find-widget')
+            else:
+                find_widget.leo_event_filter = leoQtEventFilter(c,w=widget,tag='find-widget')
+                find_widget.installEventFilter(find_widget.leo_event_filter)
             if trace: g.trace('** Adding event filter for Find',find_widget)
             # 2011/11/21: A hack: make the find_widget an official log widget.
             self.contentsDict['Find']=find_widget
@@ -7158,8 +6758,11 @@ def createTab (self,tabName,createText=True,widget=None,wrap='none'):
             if hasattr(c.frame.top,'leo_spell_widget'):
                 spell_widget = c.frame.top.leo_spell_widget
                 if trace: g.trace('** Adding event filter for Spell',find_widget)
-                spell_widget.leo_event_filter = leoQtEventFilter(c,w=widget,tag='spell-widget')
-                spell_widget.installEventFilter(spell_widget.leo_event_filter)
+                if newFilter:
+                    g.app.gui.setFilter(c,spell_widget,widget,'spell-widget')
+                else:
+                    spell_widget.leo_event_filter = leoQtEventFilter(c,w=widget,tag='spell-widget')
+                    spell_widget.installEventFilter(spell_widget.leo_event_filter)
         self.contentsDict[tabName] = widget
         self.tabWidget.addTab(widget,tabName)
     else:
@@ -7168,7 +6771,9 @@ def createTab (self,tabName,createText=True,widget=None,wrap='none'):
         widget.leo_log_wrapper = contents
             # The leo_log_wrapper is the widget itself.
         if trace: g.trace('** using',tabName,widget)
-        if 1: # Now seems to work.
+        if newFilter:
+            g.app.gui.setFilter(c,widget,contents,'tabWidget')
+        else:
             theFilter = leoQtEventFilter(c,w=contents,tag='tabWidget')
             self.eventFilters.append(theFilter) # Needed!
             widget.installEventFilter(theFilter)

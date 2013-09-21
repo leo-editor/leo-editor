@@ -723,7 +723,6 @@ if g.app.gui.guiName() == 'tkinter':
         #'treeBar', # leo_treeBar is now injected into frame.canvas.
     )
 else: ivars = ()
-
 for ivar in ivars:
     assert hasattr(f,ivar), 'missing frame ivar: %s' % ivar
     val = getattr(f,ivar)

@@ -17,6 +17,7 @@ __qh = None # For quick headlines.
 
 # A switch telling whether to use qt_main.ui and qt_main.py.
 useUI = False # True: use qt_main.ui. False: use DynamicWindow.createMainWindow.
+newFilter = True # True use qtGui.setFilter.
 
 #@+<< imports >>
 #@+node:ekr.20110605121601.18003: **  << imports >> (qtGui.py)
@@ -499,8 +500,11 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         if name in ('body','rendering-pane-wrapper') or name.startswith('head'):
             # g.trace('hooking up qt events',name)
             # Hook up qt events.
-            self.ev_filter = leoQtEventFilter(c,w=self,tag=name)
-            self.widget.installEventFilter(self.ev_filter)
+            if newFilter:
+                g.app.gui.setFilter(c,self.widget,self,tag=name)
+            else:
+                self.ev_filter = leoQtEventFilter(c,w=self,tag=name)
+                self.widget.installEventFilter(self.ev_filter)
 
         if name == 'body':
             self.widget.connect(self.widget,
@@ -1803,9 +1807,11 @@ class leoQtMinibuffer (leoQLineEditWidget):
 
         # Init the base class.
         leoQLineEditWidget.__init__(self,widget=w,name='minibuffer',c=c)
-
-        self.ev_filter = leoQtEventFilter(c,w=self,tag='minibuffer')
-        w.installEventFilter(self.ev_filter)
+        if newFilter:
+            g.app.gui.setFilter(c,w,self,tag='minibuffer')
+        else:
+            self.ev_filter = leoQtEventFilter(c,w=self,tag='minibuffer')
+            w.installEventFilter(self.ev_filter)
 
         # Monkey-patch the event handlers
         #@+<< define mouseReleaseEvent >>
@@ -5149,16 +5155,22 @@ class leoQtLog (leoFrame.leoLog):
                 self.widget = contents # widget is an alias for logCtrl.
                 widget.setObjectName('log-widget')
             # Set binding on all log pane widgets.
-            theFilter = leoQtEventFilter(c,w=self,tag='log')
-            self.eventFilters.append(theFilter) # Needed!
-            widget.installEventFilter(theFilter)
+            if newFilter:
+                g.app.gui.setFilter(c,widget,self,tag='log')
+            else:
+                theFilter = leoQtEventFilter(c,w=self,tag='log')
+                self.eventFilters.append(theFilter) # Needed!
+                widget.installEventFilter(theFilter)
             # A bad hack.  Set the standard bindings in the Find and Spell tabs here.
             if tabName == 'Log':
                 assert c.frame.top.__class__.__name__ == 'DynamicWindow'
                 find_widget = c.frame.top.leo_find_widget
                 # 2011/11/21: A hack: add an event filter.
-                find_widget.leo_event_filter = leoQtEventFilter(c,w=widget,tag='find-widget')
-                find_widget.installEventFilter(find_widget.leo_event_filter)
+                if newFilter:
+                    g.app.gui.setFilter(c,find_widget,widget,'find-widget')
+                else:
+                    find_widget.leo_event_filter = leoQtEventFilter(c,w=widget,tag='find-widget')
+                    find_widget.installEventFilter(find_widget.leo_event_filter)
                 if trace: g.trace('** Adding event filter for Find',find_widget)
                 # 2011/11/21: A hack: make the find_widget an official log widget.
                 self.contentsDict['Find']=find_widget
@@ -5166,8 +5178,11 @@ class leoQtLog (leoFrame.leoLog):
                 if hasattr(c.frame.top,'leo_spell_widget'):
                     spell_widget = c.frame.top.leo_spell_widget
                     if trace: g.trace('** Adding event filter for Spell',find_widget)
-                    spell_widget.leo_event_filter = leoQtEventFilter(c,w=widget,tag='spell-widget')
-                    spell_widget.installEventFilter(spell_widget.leo_event_filter)
+                    if newFilter:
+                        g.app.gui.setFilter(c,spell_widget,widget,'spell-widget')
+                    else:
+                        spell_widget.leo_event_filter = leoQtEventFilter(c,w=widget,tag='spell-widget')
+                        spell_widget.installEventFilter(spell_widget.leo_event_filter)
             self.contentsDict[tabName] = widget
             self.tabWidget.addTab(widget,tabName)
         else:
@@ -5176,7 +5191,9 @@ class leoQtLog (leoFrame.leoLog):
             widget.leo_log_wrapper = contents
                 # The leo_log_wrapper is the widget itself.
             if trace: g.trace('** using',tabName,widget)
-            if 1: # Now seems to work.
+            if newFilter:
+                g.app.gui.setFilter(c,widget,contents,'tabWidget')
+            else:
                 theFilter = leoQtEventFilter(c,w=contents,tag='tabWidget')
                 self.eventFilters.append(theFilter) # Needed!
                 widget.installEventFilter(theFilter)
@@ -6340,8 +6357,11 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
                 "customContextMenuRequested(QPoint)"),
             self.onContextMenu)
 
-        self.ev_filter = leoQtEventFilter(c,w=self,tag='tree')
-        tw.installEventFilter(self.ev_filter)
+        if newFilter:
+            g.app.gui.setFilter(c,tw,self,tag='tree')
+        else:
+            self.ev_filter = leoQtEventFilter(c,w=self,tag='tree')
+            tw.installEventFilter(self.ev_filter)
         # 2010/01/24: Do not set this here.
         # The read logic sets c.changed to indicate nodes have changed.
         # c.setChanged(False)
@@ -7101,11 +7121,12 @@ class SDIFrameFactory:
         dw.construct()
         g.app.gui.attachLeoIcon(dw)
         dw.setWindowTitle(leoFrame.title)
-        if 1:
+        if newFilter:
+            g.app.gui.setFilter(c,dw,dw,tag='sdi-frame')
+        else:
             # g.trace('(SDIFrameFactory)',g.callers())
             dw.ev_filter = leoQtEventFilter(c,w=dw,tag='sdi-frame')
             dw.installEventFilter(dw.ev_filter)
-
         if g.app.start_minimized:
             dw.showMinimized()
         elif g.app.start_maximized:
@@ -7147,9 +7168,11 @@ class TabbedFrameFactory:
         if tip: tabw.setTabToolTip(idx, tip)
         dw.construct(master=tabw)
         tabw.setCurrentIndex(idx)
-        if 1:
+        if newFilter:
+            g.app.gui.setFilter(c,dw,dw,tag='tabbed-frame')
+        else:
             # g.trace('(TabbedFrameFactor) adding bindings')
-            dw.ev_filter = leoQtEventFilter(c,w=dw,tag='sdi-frame')
+            dw.ev_filter = leoQtEventFilter(c,w=dw,tag='tabbed-frame')
             dw.installEventFilter(dw.ev_filter)
         # Work around the problem with missing dirty indicator
         # by always showing the tab.
@@ -7339,6 +7362,7 @@ class leoQtGui(leoGui.leoGui):
         # g.trace('(qtGui)',g.callers())
         self.qtApp = QtGui.QApplication(sys.argv)
         self.bodyTextWidget  = leoQtBaseTextWidget
+        self.filters = []
         self.iconimages = {}
         self.plainTextWidget = leoQtBaseTextWidget
         self.mGuiName = 'qt'
@@ -8439,6 +8463,19 @@ class leoQtGui(leoGui.leoGui):
             self._oldEmit(self, *args)
 
         QtCore.QObject.emit = new_emit
+    #@+node:ekr.20130921043420.21175: *4* setFilter (qtGui)
+    if newFilter:
+
+        def setFilter(self,c,obj,w,tag):
+            
+            '''Create an event filter in obj.
+            w is a wrapper object.'''
+            assert isinstance(obj,QtGui.QWidget),obj
+            gui = self
+            theFilter = leoQtEventFilter(c,w=w,tag=tag)
+            gui.filters.append(theFilter)
+                # Retain a reference to the filter!
+            obj.installEventFilter(theFilter)
     #@-others
 #@+node:ekr.20110605121601.18533: ** Non-essential
 #@+node:ekr.20110605121601.18534: *3* quickheadlines

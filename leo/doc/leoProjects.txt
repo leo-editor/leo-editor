@@ -574,6 +574,10 @@ Rev 6019:
     setDisabledHeadlineColors,setEditHeadlineColors,setUnselectedHeadlineColors,
     setFont,getFont.
     
+#@+node:ekr.20130921043420.21177: *3* simplified creation of event filters in qtGui.py
+Added qtGui.setFilter and used it to simplify the code.
+
+The new code is only enabled if the newFilter is set at the start of qtGui.pyi
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
