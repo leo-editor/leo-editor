@@ -519,7 +519,6 @@ class todoController:
                         2, on='vnode', cleoIcon='1', where=self.icon_location)
                         # Icon location defaults to 'beforeIcon' unless cleo_icon_location global defined.
                         # Example: @strings[beforeIcon,beforeHeadline] cleo_icon_location = beforeHeadline
-                    #X com.setIconList(p, icons)
             elif which == 'progress':
 
                 prog = self.getat(p.v, 'progress')
@@ -531,7 +530,6 @@ class todoController:
                     com.appendImageDictToList(icons, self.iconDir,
                         g.os_path_join('cleo',use),
                         2, on='vnode', cleoIcon='1', where=self.prog_location)
-                    #X com.setIconList(p, icons)
                     
             elif which == 'duedate':
                 
@@ -542,10 +540,9 @@ class todoController:
                     com.appendImageDictToList(icons, self.iconDir,
                         g.os_path_join('Tango', '16x16', 'apps', 'date.png'),
                         2, on='vnode', cleoIcon='1', where=self.prog_location)
-                    #X com.setIconList(p, icons)
 
-        if len(allIcons) != len(icons):  # something to add / remove
-            com.setIconList(p, icons)
+        com.setIconList(p, icons)
+
 
     #@+node:tbrown.20090119215428.17: *3* close
     def close(self, tag, key):
