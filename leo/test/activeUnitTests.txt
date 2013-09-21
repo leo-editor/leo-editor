@@ -20609,7 +20609,7 @@ print('\nEnd of plugins unit tests')
 #@+node:ekr.20090306091634.1: ** @test print redraw count
 tree = c.frame.tree
 if hasattr(tree,'redrawCount'):
-    print('tree.redrawCount:',tree.redrawCount)
+    print('%s: %s' % (p.h,tree.redrawCount))
 #@+node:ekr.20081111150402.11: ** @test zz restore the screen
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.

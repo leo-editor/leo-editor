@@ -2167,7 +2167,7 @@ class leoTree:
         s = p.v.b # Guaranteed to be unicode.
         old_s = w.getAllText()
 
-        if p and p == old_p and c.frame.body.colorizer.isSameColorState() and s == old_s:
+        if p and p == old_p and s == old_s:
             if trace: g.trace('*pass',p.h,old_p.h)
         else:
             # w.setAllText destroys all color tags, so do a full recolor.
@@ -2337,9 +2337,6 @@ class nullColorizer:
 
     def enable(self): pass
 
-    def isSameColorState (self): return True
-        # Disable some logic in leoTree.select.
-
     def scanColorDirectives(self,p): pass
 
     def setFontFromConfig (self):
@@ -2500,8 +2497,6 @@ class nullIconBarClass:
         g.app.iconImageRefs = []
     def deleteButton (self,w):
         pass
-    def getFrame (self):
-        return None
     def getNewFrame (self):
         return None
     def hide(self):
@@ -2605,8 +2600,6 @@ class nullStatusLineClass:
     def clear (self):                   self.textWidget.delete(0,'end')
     def get (self):                     return self.textWidget.getAllText()
     def isEnabled(self):                return self.enabled
-    def getFrame (self):                return None
-    def onActivate (self,event=None):   pass 
     def put(self,s,color=None):         self.textWidget.insert('end',s)
     def setFocus (self):                pass
     def update(self):                   pass

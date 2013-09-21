@@ -3,7 +3,7 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.48" body_secondary_ratio="0.66">
+<globals body_outline_ratio="0.48" body_secondary_ratio="0.56">
 	<global_window_position top="30" left="341" height="1001" width="1227"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -149,17 +149,7 @@
 <v t="ekr.20101220161557.6014"><vh>@file inactiveTests.txt</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e382e3671017d71025808000000616e6e6f7461746571037d7104735508302e372e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e372e31342e3671097d710a5808000000616e6e6f74617465710b7d710c735508302e372e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
-</v>
-<v t="ekr.20100131171342.5472"><vh>Check base classes &amp; ivars</vh>
-<v t="ekr.20111118125141.3879"><vh>@test bodyCtrl property</vh></v>
-<v t="ekr.20120227152633.3934"><vh>@test c.config.initIvar sets *commander* ivars</vh></v>
-<v t="ekr.20120227143454.3932"><vh>@test k.settings ivars match settings</vh></v>
-<v t="ekr.20111118183928.3881"><vh>@test logCtrl property</vh></v>
-<v t="ekr.20100131171342.5479"><vh>@test official commander ivars</vh></v>
-<v t="ekr.20100131171342.5480"><vh>@test official frame ivars</vh></v>
-<v t="ekr.20100131171342.5481"><vh>@test official g.app directories</vh></v>
-<v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
+<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e372e31302e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e372e31362e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e372e31342e3671097d710a5808000000616e6e6f74617465710b7d710c735805000000302e382e36710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -690,7 +680,6 @@ for p in c.all_unique_positions():
 
 s = "%d nodes" % count
 print s ; g.es(s)</t>
-<t tx="ekr.20100131171342.5472"></t>
 <t tx="ekr.20100131171342.5473"></t>
 <t tx="ekr.20100131171342.5474">if g.app.gui.guiName() == 'tkinter':
 
@@ -844,110 +833,6 @@ for tag,aList in table:
         d2 = inspect.getargspec(func2)
         assert d1==d2,'\n%s\n\nd1 %s\n\nd2 %s' % (z,d1,d2)
 </t>
-<t tx="ekr.20100131171342.5479">f = c.frame
-assert(f.c==c)
-assert(c.frame==f)
-
-ivars = (
-    # Subcommanders...
-    'atFileCommands','fileCommands','importCommands','tangleCommands','undoer',
-    # Positions...
-    '_currentPosition','_topPosition',
-    # '_rootPosition'
-    # Data structures...
-    'hoistStack',
-        # 'recentFiles',
-    # Args...
-    'output_doc_flag','page_width','tab_width',
-    # 'tangle_directory',
-    'tangle_errors','tangle_batch_flag','target_language',
-    'untangle_batch_flag','use_header_flag',
-    # Others...
-    'mFileName',
-)
-
-for ivar in ivars:
-    assert hasattr(c,ivar), 'missing commander ivar: %s' % ivar
-    val = getattr(c,ivar)
-    assert val is not None,'null commander ivar: %s'% ivar
-</t>
-<t tx="ekr.20100131171342.5480">f = c.frame
-assert(f.c==c)
-assert(c.frame==f)
-
-if g.app.gui.guiName() == 'tkinter':
-    ivars = (
-        'bar1','bar2',
-        'body',
-        #'bodyBar','bodyXBar', # 2007: 10/31: There are now injected in c.frame.body.bodyCtrl.
-        #'bodyCtrl', # 2007/10/27: this ivar is evil and has been removed.
-        'canvas',
-        'f1','f2',
-        'iconBar','iconFrame',
-        'log','outerFrame',
-        'statusLine','statusFrame','statusLabel','statusText',
-        'title','top','tree',
-        #'treeBar', # leo_treeBar is now injected into frame.canvas.
-    )
-else: ivars = ()
-
-for ivar in ivars:
-    assert hasattr(f,ivar), 'missing frame ivar: %s' % ivar
-    val = getattr(f,ivar)
-    assert val is not None,'null frame ivar: %s'% ivar
-
-# These do not have to be initied.
-for ivar in ('findPanel',):
-    assert hasattr(f,ivar), 'missing frame ivar: %s' % ivar
-</t>
-<t tx="ekr.20100131171342.5481">ivars = ('extensionsDir','globalConfigDir','loadDir','testDir')
-
-for ivar in ivars:
-    assert hasattr(g.app,ivar), 'missing g.app directory: %s' % ivar
-    val = getattr(g.app,ivar)
-    assert val is not None, 'null g.app directory: %s'% ivar
-    assert g.os_path_exists(g.os_path_abspath(val)), 'non-existent g.app directory: %s' % ivar
-
-assert hasattr(g.app,'homeDir') # May well be None.
-</t>
-<t tx="ekr.20100131171342.5482">
-ivars = (
-    # Global managers.
-    'config','loadManager','pluginsController','recentFilesManager',
-    # These are non-official and might be removed...
-    'batchMode',
-    # 'debug',
-    'debugSwitch','disableSave',
-    'gui','hasOpenWithMenu','hookError',
-    'hookFunction',
-    'idle_imported','idleTimeDelay','idleTimeHook',
-    'initing','killed',
-    'leoID','log','logIsLocked','logWaiting',
-    'nodeIndices','numberOfUntitledWindows',
-    'quitting','realMenuNameDict','searchDict','scriptDict',
-    # trace_ switches are now defined in leoGlobals.py.
-    'unitTestDict','unitTesting','use_psyco','windowList',
-)
-
-if g.app.isExternalUnitTest:
-    mayBeNone = ('hookFunction','log')
-else:
-    mayBeNone = ('hookFunction',)
-
-for ivar in ivars:
-    assert hasattr(g.app,ivar), 'missing app ivar: %s' % ivar
-    if ivar not in mayBeNone:
-        val = getattr(g.app,ivar)
-        assert val is not None, 'null app ivar: %s'% ivar
-
-# These do not have to be initied.
-for ivar in (
-    'commandName',
-    'openWithFiles','openWithFileNum','openWithTable',
-    # 'root',
-):
-    assert hasattr(g.app,ivar), 'missing app ivar: %s' % ivar
-</t>
 <t tx="ekr.20101009105124.6195">True (recommended):
     Write "E" attribute bits in &lt;v&gt; elements.
     Leo outlines will record the expansion state of all nodes.
@@ -994,29 +879,6 @@ run-marked-unit-tests-locally = Alt-5
 run-all-unit-tests-locally = Alt-6
 </t>
 <t tx="ekr.20111115080347.3872"></t>
-<t tx="ekr.20111118125141.3879"># Test that changing c.frame.body.bodyCtrl also changes c.frame.body.widget.
-body = c.frame.body
-old_w = body.widget
-assert old_w is not None
-try:
-    body.bodyCtrl = None
-    assert body.widget is None
-finally:
-    body.widget = old_w
-    
-assert hasattr(c.frame.body,'bodyCtrl')
-assert hasattr(c.frame.log,'logCtrl')
-</t>
-<t tx="ekr.20111118183928.3881"># Test that changing c.frame.log.logCtrl also changes c.frame.log.widget.
-log = c.frame.log
-old_w = log.widget
-assert old_w is not None
-try:
-    log.logCtrl = None
-    assert log.widget is None
-finally:
-    log.widget = old_w
-</t>
 <t tx="ekr.20111123042627.6654"># Leo loads plugins in the order they appear here.
 
 # **Important**: to change these defaults, put
@@ -1199,51 +1061,6 @@ try:
 finally:
     setup()</t>
 <t tx="ekr.20111211094936.3970"></t>
-<t tx="ekr.20120227143454.3932">k = c.k
-getBool  = c.config.getBool
-getColor = c.config.getColor
-
-bg = getColor('body_text_background_color') or 'white'
-fg = getColor('body_text_foreground_color') or 'black'
-
-table = (
-    ('command_mode_bg_color',           getColor('command_mode_bg_color') or bg),
-    ('command_mode_fg_color',           getColor('command_mode_fg_color') or fg),
-    ('enable_alt_ctrl_bindings',        getBool('enable_alt_ctrl_bindings')),
-    ('enable_autocompleter',            getBool('enable_autocompleter_initially')),
-    ('enable_calltips',                 getBool('enable_calltips_initially')),
-    ('ignore_caps_lock',                getBool('ignore_caps_lock')),
-    ('ignore_unbound_non_ascii_keys',   getBool('ignore_unbound_non_ascii_keys')),
-    ('insert_mode_bg_color',            getColor('insert_mode_bg_color') or bg),
-    ('insert_mode_fg_color',            getColor('insert_mode_fg_color') or fg),
-    ('minibuffer_background_color',     getColor('minibuffer_background_color') or 'lightblue'),
-    ('minibuffer_error_color',          getColor('minibuffer_error_color') or 'red'),
-    ('minibuffer_warning_color',        getColor('minibuffer_warning_color') or 'lightgrey'),
-    ('overwrite_mode_bg_color',         getColor('overwrite_mode_bg_color') or bg),
-    ('overwrite_mode_fg_color',         getColor('overwrite_mode_fg_color') or fg),
-    ('swap_mac_keys',                   getBool('swap_mac_keys')),
-    ('unselected_body_bg_color',        getColor('unselected_body_bg_color') or bg),
-    ('unselected_body_fg_color',        getColor('unselected_body_fg_color') or bg),
-    ('warn_about_redefined_shortcuts',  getBool('warn_about_redefined_shortcuts')),
-)
-
-for ivar,setting in table:
-    assert hasattr(k,ivar),ivar
-    val = getattr(k,ivar)
-    assert val == setting,'%s k.%s setting: %s' % (
-        ivar,ivar,val)
-</t>
-<t tx="ekr.20120227152633.3934"># for key in sorted(list(g.app.config.ivarsDict.keys())):
-    
-for ivar,setting_type,default in g.app.config.ivarsData:
-    
-    assert hasattr(c,ivar),ivar
-    assert hasattr(c.config,ivar),ivar
-    val = getattr(c.config,ivar)
-    val2 = c.config.get(ivar,setting_type)
-    assert val == val2,"%s %s" % (val,val2)
-    # print(ivar,val)
-</t>
 <t tx="ekr.20120229082711.3934">@language python
 @tabwidth -4
 

@@ -217,13 +217,6 @@ class leoGui:
     def getTextFromClipboard (self):
 
         self.oops()
-    #@+node:ekr.20061031132712.1: *5* color
-    # g.es calls gui.color to do the translation,
-    # so most code in Leo's core can simply use Tk color names.
-
-    def color (self,color):
-        '''Return the gui-specific color corresponding to the Tk color name.'''
-        return color # Do not call oops: this method is essential for the config classes.
     #@+node:ekr.20031218072017.3735: *5* Dialog utils
     def attachLeoIcon (self,window):
         """Attach the Leo icon to a window."""
@@ -293,9 +286,6 @@ class leoGui:
         pass
     #@+node:ekr.20101028131948.5861: *4* killPopupMenu & postPopupMenu
     # These definitions keeps pylint happy.
-
-    def killPopupMenu(self):
-        pass
 
     def postPopupMenu(self,*args,**keys):
         pass
@@ -453,7 +443,7 @@ class nullGui(leoGui):
     def runAskYesNoCancelDialog(self,c,title,
         message=None,yesMessage="Yes",noMessage="No",yesToAllMessage=None,defaultButton="Yes"):
         return self.simulateDialog("yesNoCancelDialog","cancel")
-    #@+node:ekr.20100521090440.5893: *3* onActivate/DeactivateEvent (nullGui)
+    #@+node:ekr.20100521090440.5893: *3* onActivateEvent/onDeactivateEvent (nullGui)
     def onActivateEvent (self,*args,**keys):
         pass
 

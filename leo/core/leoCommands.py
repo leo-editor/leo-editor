@@ -436,7 +436,7 @@ class Commands (object):
         if w:
             if trace and verbose:
                 g.trace(self.idle_focus_count,w)
-        elif g.app.gui.active: # Set by gui.onActivate/onDeactivate.
+        elif g.app.gui.active:
             if trace:
                 g.trace('%s no focus -> body' % (self.idle_focus_count))
             if active:

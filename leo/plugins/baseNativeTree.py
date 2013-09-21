@@ -83,11 +83,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         return name
     #@+node:ekr.20110605121601.17867: *3* Called from Leo's core (nativeTree)
     def initAfterLoad (self):
-        ''' official way of doing late initialization.'''
-        pass
-
-    def setCanvasBindings (self,canvas):
-        '''Create master tree bindings.'''
+        '''The official way of doing late initialization.'''
         pass
     #@+node:ekr.20110605121601.17868: ** Debugging & tracing
     def error (self,s):

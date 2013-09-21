@@ -684,10 +684,6 @@ class backlinkController(object):
     #@+node:ekr.20090616105756.3964: *3* showMenu
     def showMenu(self,tag,k):
 
-        # deprecated
-
-        g.app.gui.killPopupMenu()
-
         if k['c'] != self.c: return  # not our problem
 
         p = k['p']

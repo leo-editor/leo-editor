@@ -4070,13 +4070,6 @@ class leoQtFrame (leoFrame.leoFrame):
             self.put('')
             self.update()
             c.frame.top.setStyleSheets()
-        #@+node:ekr.20110605121601.18259: *5*  do-nothings (qtFrame) (REMOVE??)
-        def disable (self,background=None): pass
-        def enable(self,background="white"):pass
-        def getFrame (self):                return None
-        def isEnabled(self):                return True
-        def onActivate (self,event=None):   pass
-
         #@+node:ekr.20110605121601.18260: *5* clear, get & put/1
         def clear (self):
             self.put('')
@@ -4151,7 +4144,6 @@ class leoQtFrame (leoFrame.leoFrame):
             # g.app.iconWidgetCount = 0
         #@+node:ekr.20110605121601.18264: *5*  do-nothings
         def addRow(self,height=None):   pass
-        def getFrame (self):            return None
         def getNewFrame (self):         return None
         #@+node:ekr.20110605121601.18265: *5* add (qtIconBarClass)
         def add(self,*args,**keys):
@@ -5715,6 +5707,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
 
     __str__ = __repr__
 
+    # This is called during drags.
     def dragMoveEvent(self,ev):
         pass
 
@@ -7176,8 +7169,8 @@ class SDIFrameFactory:
         return dw
 
     def deleteFrame(self, wdg):
+        # Do not delete.  Called from destroySelf.
         pass
-
     #@-others
 #@+node:ekr.20110605121601.18464: *3* class TabbedFrameFactory
 class TabbedFrameFactory:
@@ -7933,12 +7926,6 @@ class leoQtGui(leoGui.leoGui):
         d.exec_()
         c.in_qt_dialog = False
         #@-<< emergency fallback >>
-    #@+node:ekr.20110605121601.18486: *4* Do nothings (qtGui)
-    def color (self,color):
-        return None
-
-    def killPopupMenu(self):
-        pass
     #@+node:ekr.20110607182447.16456: *4* Event handlers (qtGui)
     #@+node:ekr.20110605121601.18480: *5* onActivateEvent (qtGui)
     # Called from eventFilter
@@ -9221,9 +9208,6 @@ class leoQtColorizer:
             # Do a full recolor, but only if we aren't changing nodes.
             if self.c.currentPosition() == p:
                 self.highlighter.rehighlight(p)
-    #@+node:ekr.20110605121601.18555: *4* minor entry points
-    def isSameColorState (self):
-        return True # Disable some logic in leoTree.select.
     #@+node:ekr.20110605121601.18556: *4* scanColorDirectives (leoQtColorizer) & helper
     def scanColorDirectives(self,p):
 

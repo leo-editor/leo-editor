@@ -1408,10 +1408,10 @@ class findTab (leoFind):
     '''An adapter class that implements Leo's Find tab.'''
 
     #@+others
-    #@+node:ekr.20051020120306.11: *3* __init__ & initGui
+    #@+node:ekr.20051020120306.11: *3* __init__ & initGui (findTab)
     def __init__(self,c,parentFrame):
 
-        # g.trace('findTab',c)
+        # g.trace('***findTab',c)
         # Init the base class...
         leoFind.__init__(self,c,title='Find Tab')
         self.c = c
@@ -1497,7 +1497,6 @@ class findTab (leoFind):
         self.findNext()
         self.reverse = not self.reverse
     #@+node:ekr.20061212092124: *3* Defined in subclasses (findTab)
-
     def createFrame (self,parent):
         self.oops()
 
@@ -1508,7 +1507,7 @@ class findTab (leoFind):
         self.oops()
 
     def initGui (self):
-        pass # Optional method.
+        pass # Does not need to be defined in subclasses.
 
     def setOption (self,ivar,val):
         self.oops()
