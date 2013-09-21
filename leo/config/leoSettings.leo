@@ -1598,7 +1598,6 @@
 <v t="ekr.20041119034357.56"><vh>Options for new windows</vh>
 <v t="ekr.20071024145953"><vh>@bool big_outline_pane = False</vh></v>
 <v t="ekr.20060930085332"><vh>@bool outline_pane_has_initial_focus = False</vh></v>
-<v t="ekr.20041119034357.59"><vh>@strings[vertical,horizontal] initial_splitter_orientation = vertical</vh></v>
 <v t="ekr.20041119034357.57"><vh>@ratio initial_horizontal_ratio = 0.4</vh></v>
 <v t="ekr.20041119034357.58"><vh>@ratio initial_horizontal_secondary_ratio = 0.8</vh></v>
 <v t="ekr.20041119034357.60"><vh>@ratio initial_vertical_ratio = 0.5</vh></v>
@@ -1844,7 +1843,8 @@ The following integer values are supported:
 4 = Code debugging messages
 </t>
 <t tx="edward.20081129091117.12">horizontal: body pane to the right
-vertical: body pane on the botton</t>
+vertical: body pane on the botton
+</t>
 <t tx="ekr.20041119034357.1">@language rest
 
 The @settings tree contains all active settings.
@@ -1954,49 +1954,6 @@ Valid values: 0.0 to 1.0.
 
 **Important**: Leo does not save this ratio when saving a .leo file, so Leo
 always uses this ratio when opening a file that is being split horizontally.</t>
-<t tx="ekr.20041119034357.59">Defines the primary splitter orientation.
-
-The primary panes are the body pane and the secondary pane.
-The secondary pane contains the outline and log panes.
-
-vertical: body pane below outline and log panes.
-horizontal: body pane to right of outline and log panes.
-
-The so-called 'primary' ratio is the ratio between the body pane and the pane
-containing the other two panes. The so-called secondary ratio is the ratio
-between sizes of the log pane and the outline pane.
-
-The thing to keep in mind is that Leo saves *only* the primary ratio in .leo
-files. Leo does not save the so-called 'secondary' ratio in .leo files, because
-doing so would change Leo's file format.
-
-Because Leo **does** save the primary ratio in .leo files, Leo will open a file
-with the same primary ratio that you had when you last saved the file.
-
-Because Leo does **not** save the secondary ratio in the .leo file Leo
-determines the relative sizes of the log and outline panes from settings in
-leoSettings.leo. One of the two settings is used:
-
-- initial_horizontal_secondary_ratio or
-
-- initial_vertical_secondary_ratio
-
-Which one is used depends on the initial_splitter_orientation setting.
-
-**Important** If you change these settings you must restart Leo for them to take effect.
-
-Here are some further notes adapted from comments from Paul Paterson:
-
-Leo also doesn't save the split direction. This can be confusing, because if you
-save a horizontal split file but your default split is vertical, then when you
-reload and correct the split Leo has forgotten the ratio!  To restate:
-
-- if you change the split direction (window .. toggle split) Leo resets the
-split ratios.
-
-- if you save a Leo file with a split other than the default (in settings) Leo
-won't remember that.
-</t>
 <t tx="ekr.20041119034357.60">The ratio of tree pane size to body pane size when splitting primary panes vertically.
 
 Valid values: 0.0 to 1.0.
