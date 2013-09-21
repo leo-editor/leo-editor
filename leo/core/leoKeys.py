@@ -1936,7 +1936,6 @@ class keyHandlerClass:
 
         k = self ; c = k.c ; f = c.frame
         if w:
-            g.trace(w,g.callers())
             widgets = [w]
         else:
             # New in Leo 4.5: we *must* make the binding in the binding widget.
