@@ -1156,7 +1156,7 @@ class GlobalConfigManager:
         ("initial_window_width","int",800),
         ("initial_window_left","int",10),
         ("initial_window_top","int",10),
-        ("initial_splitter_orientation","string","vertical"),
+        ("initial_split_orientation","string","vertical"), # was initial_splitter_orientation.
         ("initial_vertical_ratio","ratio",0.5),
         ("initial_horizontal_ratio","ratio",0.3),
         ("initial_horizontal_secondary_ratio","ratio",0.5),

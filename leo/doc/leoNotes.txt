@@ -8886,6 +8886,49 @@ print('done')
 .. @+node:ekr.20111003130143.15533: ** Unused settings (from leoSettings.leo)
 @ignore
 .. @+node:ekr.20111003130143.15534: *3* @bool trace_masterClickHandler = False
+.. @+node:ekr.20130921065447.13069: *3* @strings[vertical,horizontal] initial_splitter_orientation = vertical
+Defines the primary splitter orientation.
+
+The primary panes are the body pane and the secondary pane.
+The secondary pane contains the outline and log panes.
+
+vertical: body pane below outline and log panes.
+horizontal: body pane to right of outline and log panes.
+
+The so-called 'primary' ratio is the ratio between the body pane and the pane
+containing the other two panes. The so-called secondary ratio is the ratio
+between sizes of the log pane and the outline pane.
+
+The thing to keep in mind is that Leo saves *only* the primary ratio in .leo
+files. Leo does not save the so-called 'secondary' ratio in .leo files, because
+doing so would change Leo's file format.
+
+Because Leo **does** save the primary ratio in .leo files, Leo will open a file
+with the same primary ratio that you had when you last saved the file.
+
+Because Leo does **not** save the secondary ratio in the .leo file Leo
+determines the relative sizes of the log and outline panes from settings in
+leoSettings.leo. One of the two settings is used:
+
+- initial_horizontal_secondary_ratio or
+
+- initial_vertical_secondary_ratio
+
+Which one is used depends on the initial_splitter_orientation setting.
+
+**Important** If you change these settings you must restart Leo for them to take effect.
+
+Here are some further notes adapted from comments from Paul Paterson:
+
+Leo also doesn't save the split direction. This can be confusing, because if you
+save a horizontal split file but your default split is vertical, then when you
+reload and correct the split Leo has forgotten the ratio!  To restate:
+
+- if you change the split direction (window .. toggle split) Leo resets the
+split ratios.
+
+- if you save a Leo file with a split other than the default (in settings) Leo
+won't remember that.
 .. @+node:ekr.20111003130143.15535: *3* Unused Options for jEdit colorizer
 .. @+node:ekr.20111003130143.15536: *4* @int colorizer_interrupt_count2 = 5000
 The number of times the colorizer's main loop in colorOneChunk executes before actually colorizing text.

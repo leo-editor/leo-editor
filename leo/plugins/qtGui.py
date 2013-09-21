@@ -8469,7 +8469,7 @@ class leoQtGui(leoGui.leoGui):
         def setFilter(self,c,obj,w,tag):
             
             '''Create an event filter in obj.
-            w is a wrapper object.'''
+            w is a wrapper object, not necessarily a QWidget.'''
             assert isinstance(obj,QtGui.QWidget),obj
             gui = self
             theFilter = leoQtEventFilter(c,w=w,tag=tag)
