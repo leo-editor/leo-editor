@@ -520,6 +520,60 @@ This is done in leoQtLog.createTab.  Yes, it's a terrible hack.
 Changed cycleAllFocus,leoQtLog.createTab and DynamicWindow.createSpellTab.
 
 @language python
+#@+node:ekr.20130920095617.11313: *3* Removed unused binding & gui code
+@nocolor-node
+
+Found empty methods using: ^[ ]*def.*$(\n[ ]*)*pass
+    
+Remove all calls to unused methods in qtGui.
+    
+Rev 6016:
+- Removed all definitions and calls to createBindings.
+  All definitions were empty.
+  
+Rev 6017:
+- Removed all definitions and calls of createFindPanel.
+  All definitions were empty.
+- Removed call to createFrame in findTab ctor in leoFind.py.
+  The gui code creates the frame.
+- Removed all calls to createRootWindow and recreateRootWindow
+- Removed do-nothing leoQtFindTab.createFindTab and leoQtFindTab.createFrame.
+- Removed all definitions and calls of setBindings.
+  All definitions were empty.
+  
+Rev 6017:
+- Removed all definitions of killGui, createRootWindow and recreateRootWindow.
+  All definitions were empty and they were never called.
+- Removed all definitions of interrupt.  All were do-nothings.
+  Removed a single call to .interrupt in 
+- Removed do-nothing def of colorizer.kill.  Never called.
+
+Rev 6018:
+- Removed do-nothing def of setCanvasBindings.  Never called.
+- Removed LeoQTreeWidget.dragEvent.  Never called.
+- Removed all definitions of isSameColorState.  It always returned True.
+  Removed the single usage of isSameColorState.
+- Removed all definitions of killPopupMenu.
+  Removed the only call to killPopupMenu in backlink.py.
+- Removed all definitions of gui.color.  Never called.
+- Removed qtFrame.enable, qtFrame.disable and qtFrame.isEnabled. Never called.
+- Removed all calls to getFrame.  They were never called and they always returned None.
+- Removed all calls to onActivate.  They were never called and did nothing.
+
+Rev 6019:
+* Removed leoQtLog do:nothings, and any calls in Leo's core.
+    No calls: configureBorder,configureFont,getFontConfig.
+    Commented out calls to setColorFromConfig and setFontFromConfig.
+- Removed leoQtLog: saveAllState, restoreAllState, SetWidgetFontFromConfig, forceLogUpdate.
+- Removed HighLevelInterface: onActivateLog, disable, enable.
+- Removed *all* defs of setFocus.  They are never called!
+- Removed all defs of setTabBindings and one call.  All defs were do-nothings.
+- Ditto for setMinibufferBindings and createBindings.  All defs were do-notings.
+* Removed tree methods: headWidth,widthInPixels,
+    setEditLabelState,setUnselectedLabelState,
+    setDisabledHeadlineColors,setEditHeadlineColors,setUnselectedHeadlineColors,
+    setFont,getFont.
+    
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

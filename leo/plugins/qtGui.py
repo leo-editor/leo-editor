@@ -604,11 +604,11 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
 
     findFocus = getFocus
 
-    def hasFocus (self):
+    # def hasFocus (self):
 
-        val = self.widget == g.app.gui.get_focus(self.c)
-        # g.trace('leoQtBody returns',val,self.widget,g.callers(4))
-        return val
+        # val = self.widget == g.app.gui.get_focus(self.c)
+        # # g.trace('leoQtBody returns',val,self.widget,g.callers(4))
+        # return val
 
     def setFocus (self):
 
@@ -989,26 +989,8 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         widget.setUndoRedoEnabled(False)
 
         self.setConfig()
-        self.setFontFromConfig()
-        self.setColorFromConfig()
-    #@+node:ekr.20110605121601.18074: *5* setFontFromConfig
-    def setFontFromConfig (self,w=None):
-
-        '''Set the font in the widget w (a body editor).'''
-
-        c = self.c
-        if not w: w = self.widget
-
-        font = c.config.getFontFromParams(
-            "body_text_font_family", "body_text_font_size",
-            "body_text_font_slant",  "body_text_font_weight",
-            c.config.defaultBodyFontSize)
-
-        self.fontRef = font # ESSENTIAL: retain a link to font.
-    #@+node:ekr.20110605121601.18075: *5* setColorFromConfig
-    def setColorFromConfig (self,w=None):
-
-        '''Set the font in the widget w (a body editor).'''
+        # self.setFontFromConfig()
+        # self.setColorFromConfig()
     #@+node:ekr.20110605121601.18076: *5* setConfig
     def setConfig (self):
 
@@ -2774,11 +2756,6 @@ class leoQtBody (leoFrame.leoBody):
         option,qt = QtGui.QTextOption,QtCore.Qt
         w.setHorizontalScrollBarPolicy(qt.ScrollBarAlwaysOff if wrap else qt.ScrollBarAsNeeded)
         w.setWordWrapMode(option.WordWrap if wrap else option.NoWrap)
-    #@+node:ekr.20110605121601.18184: *6* createBindings (qtBody)
-    def createBindings (self,w=None):
-
-        '''(qtBody) Create gui-dependent bindings.
-        These are *not* made in nullBody instances.'''
     #@+node:ekr.20110605121601.18185: *6* get_name
     def getName (self):
 
@@ -2857,17 +2834,17 @@ class leoQtBody (leoFrame.leoBody):
     set_focus = setFocus
     toGuiIndex = toPythonIndex
     #@+node:ekr.20110605121601.18192: *4* hasFocus (qtBody)
-    def hasFocus(self):
+    # def hasFocus(self):
 
-        '''Return True if the body has focus.'''
+        # '''Return True if the body has focus.'''
 
-        # Always returning True is good enough for leoMenu.updateEditMenu.
-        return True
+        # # Always returning True is good enough for leoMenu.updateEditMenu.
+        # return True
 
-        # Doesn't work: the focus is already in the menu!
-        # w = g.app.gui.get_focus()
-        # g.trace(w,self.widget.widget)
-        # return w == self.widget.widget
+        # # Doesn't work: the focus is already in the menu!
+        # # w = g.app.gui.get_focus()
+        # # g.trace(w,self.widget.widget)
+        # # return w == self.widget.widget
     #@+node:ekr.20110605121601.18193: *4* Editors (qtBody)
     #@+node:ekr.20110605121601.18194: *5* entries
     #@+node:ekr.20110605121601.18195: *6* addEditor & helper (qtBody)
@@ -2934,7 +2911,7 @@ class leoQtBody (leoFrame.leoBody):
         self.updateInjectedIvars(w,p)
         wrapper.setAllText(p.b)
         wrapper.see(0)
-        self.createBindings(w=wrapper)
+        # self.createBindings(w=wrapper)
         c.k.completeAllBindingsForWidget(wrapper)
         self.recolorWidget(p,wrapper)
         return f,wrapper
@@ -4142,9 +4119,14 @@ class leoQtFrame (leoFrame.leoFrame):
             self.buttonColor = c.config.getString('qt-button-color')
 
             # g.app.iconWidgetCount = 0
-        #@+node:ekr.20110605121601.18264: *5*  do-nothings
-        def addRow(self,height=None):   pass
-        def getNewFrame (self):         return None
+        #@+node:ekr.20110605121601.18264: *5*  do-nothings (qtIconBarClass)
+        # These *are* called from Leo's core.
+
+        def addRow(self,height=None):
+            pass # To do.
+            
+        def getNewFrame (self): 
+            return None # To do
         #@+node:ekr.20110605121601.18265: *5* add (qtIconBarClass)
         def add(self,*args,**keys):
 
@@ -4332,13 +4314,6 @@ class leoQtFrame (leoFrame.leoFrame):
                     rc.setSeparator(True)
                     b.insertAction(b.actions()[-2],rc)
         #@-others
-    #@+node:ekr.20110605121601.18272: *4* Minibuffer methods (Qt)
-    #@+node:ekr.20110605121601.18273: *5* f.setMinibufferBindings
-    def setMinibufferBindings (self):
-
-        '''Create bindings for the minibuffer..'''
-
-        pass
     #@+node:ekr.20110605121601.18274: *4* Configuration (qtFrame)
     #@+node:ekr.20110605121601.18275: *5* configureBar (qtFrame)
     def configureBar (self,bar,verticalFlag):
@@ -4399,15 +4374,15 @@ class leoQtFrame (leoFrame.leoFrame):
 
         frame = self ; c = frame.c
 
-        frame.tree.setFontFromConfig()
+        # frame.tree.setFontFromConfig()
         frame.configureBarsFromConfig()
 
-        frame.body.setFontFromConfig()
-        frame.body.setColorFromConfig()
+        # frame.body.setFontFromConfig()
+        # frame.body.setColorFromConfig()
 
         frame.setTabWidth(c.tab_width)
-        frame.log.setFontFromConfig()
-        frame.log.setColorFromConfig()
+        # frame.log.setFontFromConfig()
+        # frame.log.setColorFromConfig()
 
         c.redraw()
     #@+node:ekr.20110605121601.18278: *5* setInitialWindowGeometry (qtFrame)
@@ -4430,6 +4405,7 @@ class leoQtFrame (leoFrame.leoFrame):
     def setTabWidth (self, w):
 
         # A do-nothing because tab width is set automatically.
+        # It *is* called from Leo's core.
         pass
 
     #@+node:ekr.20110605121601.18280: *5* setWrap (qtFrame)
@@ -5012,8 +4988,8 @@ class leoQtLog (leoFrame.leoLog):
             theFilter = leoQtEventFilter(c,w=tw,tag='tabWidget')
             tw.installEventFilter(theFilter)
 
-        self.setFontFromConfig()
-        self.setColorFromConfig()
+        # self.setFontFromConfig()
+        # self.setColorFromConfig()
     #@+node:ekr.20110605121601.18315: *5* leoQtLog.finishCreate
     def finishCreate (self):
 
@@ -5052,21 +5028,6 @@ class leoQtLog (leoFrame.leoLog):
     #@+node:ekr.20110605121601.18316: *5* leoQtLog.getName
     def getName (self):
         return 'log' # Required for proper pane bindings.
-    #@+node:ekr.20110605121601.18317: *4* Do nothings (leoQtLog)
-    #@+node:ekr.20110605121601.18318: *5* Config (leoQtLog)
-    # These will probably be replaced by style sheets.
-
-    def configureBorder(self,border):               pass
-    def configureFont(self,font):                   pass
-    def getFontConfig (self):                       pass
-    def setColorFromConfig (self):                  pass
-    def SetWidgetFontFromConfig (self,logCtrl=None): pass
-    def saveAllState (self):                        pass
-    def restoreAllState (self,d):                   pass
-    #@+node:ekr.20110605121601.18319: *5* Focus & update (leoQtLog)
-    def onActivateLog (self,event=None):    pass
-    def hasFocus (self):                    return None
-    def forceLogUpdate (self,s):            pass
     #@+node:ekr.20120304214900.9940: *4* Event handler (leoQtLog)
     def onCurrentChanged(self,idx):
 
@@ -5355,18 +5316,6 @@ class leoQtLog (leoFrame.leoLog):
         )
         for key,val in table:
             if val: g.es(key,val,tabName='Fonts')
-    #@+node:ekr.20110605121601.18336: *5* createBindings (fontPicker)
-    def createBindings (self):
-
-        pass
-    #@+node:ekr.20110605121601.18337: *5* getFont
-    def getFont(self,family=None,size=12,slant='roman',weight='normal'):
-
-        return g.app.config.defaultFont
-    #@+node:ekr.20110605121601.18338: *5* setFont
-    def setFont(self,familyBox,sizeEntry,slantBox,weightBox,label):
-
-        pass
     #@+node:ekr.20110605121601.18339: *5* hideFontTab
     def hideFontTab (self,event=None):
 
@@ -6194,7 +6143,6 @@ class leoQtSpellTab:
             return
         self.wordLabel = ui.leo_spell_label
         self.listBox = ui.leo_spell_listBox
-        #self.createBindings()
         self.fillbox([])
     #@+node:ekr.20110605121601.18389: *4* Event handlers
     #@+node:ekr.20110605121601.18390: *5* onAddButton
@@ -10397,7 +10345,7 @@ class jEditColorizer:
         valid = string.ascii_letters + string.digits + '_'
 
         return ''.join([g.choose(ch in valid,ch.lower(),'_') for ch in s])
-    #@+node:ekr.20110605121601.18588: *5* setFontFromConfig
+    #@+node:ekr.20110605121601.18588: *5* setFontFromConfig (jeditColorizer)
     def setFontFromConfig (self):
 
         c = self.c

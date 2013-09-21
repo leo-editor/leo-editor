@@ -1878,9 +1878,6 @@ class keyHandlerClass:
         k.makeBindingsFromCommandsDict()
         k.initSpecialIvars()
         k.initAbbrev()
-        c.frame.body.createBindings()
-        c.frame.log.setTabBindings('Log')
-        c.frame.setMinibufferBindings()
         k.completeAllBindings()
         k.checkBindings()
     #@+node:ekr.20061031131434.102: *4* k.makeBindingsFromCommandsDict & helper

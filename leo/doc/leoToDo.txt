@@ -13065,6 +13065,16 @@ def __init__ (self,c):
         'toPythonIndexRowCol',
         # 'toGuiIndex', # A synonym.
     )
+.. @+node:ekr.20070302101344: *6* Must be defined in the base class (HighLevelInterface)
+
+def disable (self):
+
+    self.enabled = False
+
+def enable (self,enabled=True):
+
+    self.enabled = enabled
+
 .. @+node:ekr.20111114102224.9935: *6* mutable methods (HighLevelInterface)
 .. @+node:ekr.20111114102224.9946: *7* flashCharacter
 def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):

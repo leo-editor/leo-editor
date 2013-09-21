@@ -102,22 +102,6 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         else:
             return '' 
     #@+node:ekr.20110605121601.17869: ** Config... (nativeTree)
-    #@+node:ekr.20110605121601.17870: *3* do-nothin config methods
-    # These can be over-ridden if desired,
-    # but they do not have to be over-ridden.
-
-    def headWidth(self,p=None,s=''):            return 0
-    def widthInPixels(self,s):                  return 0
-
-    def setEditLabelState (self,p,selectAll=False): pass # not called.
-
-    def setSelectedLabelState (self,p):         pass
-    def setUnselectedLabelState (self,p):       pass
-    def setDisabledHeadlineColors (self,p):     pass
-    def setEditHeadlineColors (self,p):         pass
-    def setUnselectedHeadlineColors (self,p):   pass
-
-    setNormalLabelState = setEditLabelState # For compatibility.
     #@+node:ekr.20110605121601.17871: *3* setConfigIvars
     def setConfigIvars (self):
 
@@ -1210,9 +1194,9 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
     findFocus = getFocus
 
-    def hasFocus (self):
+    # def hasFocus (self):
 
-        return g.app.gui.get_focus(self.c)
+        # return g.app.gui.get_focus(self.c)
 
     def setFocus (self):
 

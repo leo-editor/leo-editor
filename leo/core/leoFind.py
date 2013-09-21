@@ -1529,7 +1529,7 @@ class nullFindTab (findTab):
 
             findTab.__init__(self,c,parentFrame)
             # Init the base class.
-                # Calls initGui, createFrame, createBindings & init(c), in that order.
+                # Calls initGui, createFrame and init(c), in that order.
     #@+node:ekr.20070302090616.3: *4* initGui (nullFindTab)
     # Called from findTab.ctor.
 
@@ -1631,9 +1631,6 @@ class nullFindTab (findTab):
                 # w = self.widgetsDict.get(ivar)
                 # if w: w.set(True)
         #@-<< set checkboxes from ivars >>
-    #@+node:ekr.20070302090616.15: *4* createBindings (nullFindTab)
-    def createBindings (self):
-        pass
     #@+node:ekr.20070302090616.9: *4* createFrame (nullFindTab)
     def createFrame (self,parentFrame):
 

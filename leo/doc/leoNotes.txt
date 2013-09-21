@@ -8425,6 +8425,63 @@ def replaceAll (self,event=None):
     # pass
     # g.trace('***(leoQtSpellTab)',g.callers())
 
+.. @+node:ekr.20130920173602.11352: *3* From nullColorizer
+# def setFontFromConfig (self):
+    # pass
+    # self.bold_font = None
+    # self.italic_font = None
+    # self.bolditalic_font = None
+    # self.color_tags_list = []
+    # self.image_references = []
+.. @+node:ekr.20130920173602.11357: *3* setColorFromConfig (leoQTextEditWidget)
+# def setColorFromConfig (self,w=None):
+
+    # '''Set the font in the widget w (a body editor).'''
+.. @+node:ekr.20130920173602.11355: *3* setFontFromConfig (leoQTextEditWidget)
+# def setFontFromConfig (self,w=None):
+
+    # '''Set the font in the widget w (a body editor).'''
+
+    # c = self.c
+    # if not w: w = self.widget
+    # # g.trace(g.callers())
+
+    # font = c.config.getFontFromParams(
+        # "body_text_font_family", "body_text_font_size",
+        # "body_text_font_slant",  "body_text_font_weight",
+        # c.config.defaultBodyFontSize)
+
+    # self.fontRef = font # ESSENTIAL: retain a link to font.
+.. @+node:ekr.20130920173602.11358: *3* from HighLevelInterface
+# def onActivateLog (self,event=None):
+
+    # self.c.setLog()
+.. @+node:ekr.20110605121601.17870: *3* do-nothin config methods (nativeTree)
+# These can be over-ridden if desired,
+# but they do not have to be over-ridden.
+
+# def headWidth(self,p=None,s=''):            return 0 # To do: make this functional
+# def widthInPixels(self,s):                  return 0
+
+# def setEditLabelState (self,p,selectAll=False): pass # not called.
+# def setSelectedLabelState (self,p):         pass
+# def setUnselectedLabelState (self,p):       pass
+# def setDisabledHeadlineColors (self,p):     pass
+# def setEditHeadlineColors (self,p):         pass
+# def setUnselectedHeadlineColors (self,p):   pass
+# setNormalLabelState = setEditLabelState # For compatibility.
+.. @+node:ekr.20070228163350: *3* Colors & fonts (nullTree)
+# def getFont(self):
+    # return self.font
+
+# def setFont(self,font=None,fontName=None):
+    # self.font,self.fontName = font,fontName
+.. @+node:ekr.20110605121601.18337: *3* getFont & setFont (leoQtFont)
+# def getFont(self,family=None,size=12,slant='roman',weight='normal'):
+    # return g.app.config.defaultFont
+
+# def setFont(self,familyBox,sizeEntry,slantBox,weightBox,label):
+    # pass
 .. @+node:ekr.20120319174225.9743: ** Unused documentation (from LeoDocs.leo)
 .. @+node:ekr.20120319174225.9766: *3* Using Outlines
 .. @+node:ekr.20120319174225.9767: *4* @@@file outlines.txt

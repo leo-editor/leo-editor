@@ -8132,12 +8132,9 @@ class Commands (object):
         trace = False and not g.unitTesting
         c = self
         p = c.p
-        
         if p:
             if trace: g.trace('(c)',p.h)
             c.frame.tree.endEditLabel()
-            c.frame.tree.setSelectedLabelState(p)
-
         # The following code would be wrong; c.endEditing is a utility method.
         # k = c.k
         # if k:

@@ -134,6 +134,16 @@ class HighLevelInterface(object):
             'toPythonIndexRowCol',
             # 'toGuiIndex', # A synonym.
         )
+    #@+node:ekr.20070302101344: *3* Must be defined in the base class (HighLevelInterface)
+
+    def disable (self):
+
+        self.enabled = False
+
+    def enable (self,enabled=True):
+
+        self.enabled = enabled
+
     #@+node:ekr.20111114102224.9935: *3* mutable methods (HighLevelInterface)
     #@+node:ekr.20111114102224.9946: *4* flashCharacter
     def flashCharacter(self,i,bg='white',fg='red',flashes=3,delay=75):
@@ -503,11 +513,8 @@ class leoBody (HighLevelInterface):
 
     #@+node:ekr.20061109173122: *3* leoBody: must be defined in subclasses
     # Birth, death & config
-    def createBindings (self,w=None):               self.oops()
     def createControl (self,parentFrame,p):         self.oops()
     def createTextWidget (self,parentFrame,p,name): self.oops() ; return None
-    def setColorFromConfig (self,w=None):           self.oops()
-    def setFontFromConfig (self,w=None):            self.oops()
 
     # Editor
     def createEditorFrame (self,w):             self.oops() ; return None
@@ -572,9 +579,9 @@ class leoBody (HighLevelInterface):
         w.insert('end',p.b)
         w.see(0)
 
-        self.setFontFromConfig(w=w)
-        self.setColorFromConfig(w=w)
-        self.createBindings(w=w)
+        # self.setFontFromConfig(w=w)
+        # self.setColorFromConfig(w=w)
+        # self.createBindings(w=w)
         c.k.completeAllBindingsForWidget(w)
 
         self.recolorWidget(p,w)
@@ -1581,30 +1588,12 @@ class leoLog (HighLevelInterface):
         self.logNumber = 0 # To create unique name fields for text widgets.
         self.newTabCount = 0 # Number of new tabs created.
         self.textDict = {}  # Keys are page names. Values are logCtrl's (text widgets).
-    #@+node:ekr.20070302101344: *3* Must be defined in the base class
-    def onActivateLog (self,event=None):
-
-        self.c.setLog()
-
-    def disable (self):
-
-        self.enabled = False
-
-    def enable (self,enabled=True):
-
-        self.enabled = enabled
-
     #@+node:ekr.20070302101023: *3* May be overridden (HighLevelInterface)
-    # def configure (self,*args,**keys):              pass
-    def configureBorder(self,border):               pass
     def createControl (self,parentFrame):           pass
     def createCanvas (self,tabName):                pass
     def createTextWidget (self,parentFrame):        return None
     def finishCreate (self):                        pass
     def initAfterLoad (self):                       pass
-    def setColorFromConfig (self):                  pass
-    def setFontFromConfig (self):                   pass
-    def setTabBindings  (self,tabName):             pass
     #@+node:ekr.20070302094848.1: *4* clearTab
     def clearTab (self,tabName,wrap='none'):
 
@@ -1766,26 +1755,16 @@ class leoTree:
         # Define these here to keep pylint happy.
         self.canvas = None
         self.trace_select = None
-    #@+node:ekr.20031218072017.3706: *3*  Must be defined in subclasses
-    # Fonts.
-    def getFont(self):                              self.oops()
-    def setFont(self,font=None,fontName=None):      self.oops()
-    def setFontFromConfig (self):                   self.oops()
-
+    #@+node:ekr.20031218072017.3706: *3*  Must be defined in subclasses (leoTree)
     # Drawing & scrolling.
     def drawIcon(self,p):                                       self.oops()
     def redraw(self,p=None,scroll=True,forceDraw=False):        self.oops()
     def redraw_now(self,p=None,scroll=True,forceDraw=False):    self.oops()
-    def scrollTo(self,p):                           self.oops()
+    def scrollTo(self,p):                                       self.oops()
     idle_scrollTo = scrollTo # For compatibility.
-
     # Headlines.
-    def editLabel(self,v,selectAll=False,selection=None): self.oops()
-    def edit_widget (self,p):                       self.oops() ; return None
-    def headWidth(self,p=None,s=''):                self.oops() ; return 0
-    def setEditLabelState(self,v,selectAll=False):  self.oops()
-    def setSelectedLabelState(self,p):              self.oops()
-    def setUnselectedLabelState(self,p):            self.oops()
+    def editLabel(self,v,selectAll=False,selection=None):       self.oops()
+    def edit_widget (self,p):                                   self.oops()
     #@+node:ekr.20061109165848: *3* Must be defined in base class
     #@+node:ekr.20031218072017.3716: *4* Getters/Setters (tree)
     def getEditTextDict(self,v):
@@ -1810,18 +1789,15 @@ class leoTree:
         trace = False and not g.unitTesting
         c = self.c ; u = c.undoer
         w = self.edit_widget(p)
-
         if c.suppressHeadChanged:
             if trace: g.trace('c.suppressHeadChanged')
             return
         if not w:
             if trace: g.trace('****** no w for p: %s',repr(p))
             return
-
         ch = '\n' # New in 4.4: we only report the final keystroke.
         if g.doHook("headkey1",c=c,p=p,v=p,ch=ch):
             return # The hook claims to have handled the event.
-
         if s is None: s = w.getAllText()
         if trace:
             g.trace('*** leoTree',g.callers(5))
@@ -1869,9 +1845,6 @@ class leoTree:
         if changed:
             c.redraw_after_head_changed()
             c.treeEditFocusHelper()
-        else:
-            c.frame.tree.setSelectedLabelState(p)
-
         g.doHook("headkey2",c=c,p=p,v=p,ch=ch)
     #@+node:ekr.20040803072955.88: *5* onHeadlineKey
     def onHeadlineKey (self,event):
@@ -2089,8 +2062,6 @@ class leoTree:
             #@+node:ekr.20120325072403.7771: *5* << unselect the old node >> (selectHelper)
             if old_p != p:
                 self.endEditLabel() # sets editPosition = None
-                self.setUnselectedLabelState(old_p)
-
                 colorizer = c.frame.body.colorizer
                 if (
                     colorizer
@@ -2116,9 +2087,8 @@ class leoTree:
         c.setCurrentPosition(p)
         #@+<< set the current node >>
         #@+node:ekr.20040803072955.133: *5* << set the current node >> (selectHelper)
-        self.setSelectedLabelState(p)
-
-        c.frame.scanForTabWidth(p) #GS I believe this should also get into the select1 hook
+        c.frame.scanForTabWidth(p)
+            #GS I believe this should also get into the select1 hook
 
         # Was in ctor.
         use_chapters = c.config.getBool('use_chapters')
@@ -2291,11 +2261,8 @@ class nullBody (leoBody):
 
         return i
     #@+node:ekr.20031218072017.2197: *3* nullBody: leoBody interface
-    # Birth, death & config
-    def createBindings (self,w=None):           pass
+    # Birth, death...
     def createControl (self,parentFrame,p):     pass
-    def setColorFromConfig (self,w=None):       pass
-    def setFontFromConfig (self,w=None):        pass
     # Editors...
     def addEditor (self,event=None):            pass
     def assignPositionToEditor (self,p):        pass
@@ -2311,7 +2278,7 @@ class nullBody (leoBody):
     def forceFullRecolor (self):                pass
     def scheduleIdleTimeRoutine (self,function,*args,**keys): pass
     # Low-level gui...
-    def hasFocus (self):                        pass
+    # def hasFocus (self):                        pass
     def setFocus (self):                        pass
     #@-others
 #@+node:ekr.20031218072017.2218: ** class nullColorizer
@@ -2338,13 +2305,6 @@ class nullColorizer:
     def enable(self): pass
 
     def scanColorDirectives(self,p): pass
-
-    def setFontFromConfig (self):
-        self.bold_font = None
-        self.italic_font = None
-        self.bolditalic_font = None
-        self.color_tags_list = []
-        self.image_references = []
 
     def updateSyntaxColorer (self,p): pass
 
@@ -2397,7 +2357,7 @@ class nullFrame (leoFrame):
     #@+node:ekr.20061109123828: *4* Config...
     def resizePanesToRatio (self,ratio,secondary_ratio):    pass
     def setInitialWindowGeometry (self):                    pass
-    def setMinibufferBindings(self):                        pass
+
     #@+node:ekr.20041130065718.1: *5* setTopGeometry
     def setTopGeometry (self,w,h,x,y,adjustSize=True):
 
@@ -2558,7 +2518,7 @@ class nullLog (leoLog):
     def putnl (self,tabName='Log'):
         if self.enabled:
             g.pr('')
-    #@+node:ekr.20060124085830: *3* tabs
+    #@+node:ekr.20060124085830: *3* tabs (nullLog)
     def clearTab        (self,tabName,wrap='none'):             pass
     def createCanvas    (self,tabName):                         pass
     def createTab (self,tabName,createText=True,widget=None,wrap='none'):   pass
@@ -2568,7 +2528,7 @@ class nullLog (leoLog):
     def raiseTab        (self,tabName):                         pass
     def renameTab (self,oldName,newName):                       pass
     def selectTab (self,tabName,createText=True,widget=None,wrap='none'):   pass
-    def setTabBindings  (self,tabName):                         pass
+
     #@-others
 #@+node:ekr.20070302171509: ** class nullStatusLineClass
 class nullStatusLineClass:
@@ -2634,15 +2594,6 @@ class nullTree (leoTree):
             g.pr('w',w,'v.h:',key.headString,'s:',repr(w.s))
 
     #@+node:ekr.20031218072017.2236: *3* Overrides
-    #@+node:ekr.20070228163350: *4* Colors & fonts (nullTree)
-    def getFont(self):
-        return self.font
-
-    def setFont(self,font=None,fontName=None):
-        self.font,self.fontName = font,fontName
-
-    def setFontFromConfig (self):
-        pass
     #@+node:ekr.20070228163350.1: *4* Drawing & scrolling (nullTree)
     def drawIcon(self,p):
         pass
@@ -2661,7 +2612,7 @@ class nullTree (leoTree):
 
     def scrollTo(self,p):
         pass
-    #@+node:ekr.20070228163350.2: *4* Headlines (nullTree)
+    #@+node:ekr.20070228163350.2: *4* edit_widget (nullTree)
     def edit_widget (self,p):
         d = self.editWidgetsDict
         if not p.v:
@@ -2672,20 +2623,7 @@ class nullTree (leoTree):
                 c=self.c,
                 name='head-%d' % (1 + len(list(d.keys()))))
             w.setAllText(p.h)
-        # g.trace('w',w,'p',p.h)
         return w
-
-    def headWidth(self,p=None,s=''):
-        return len(s)
-
-    def setEditLabelState(self,v,selectAll=False):
-        pass
-
-    def setSelectedLabelState(self,p):
-        pass
-
-    def setUnselectedLabelState(self,p):
-        pass
     #@+node:ekr.20070228164730: *5* editLabel (nullTree)
     def editLabel (self,p,selectAll=False,selection=None):
 
