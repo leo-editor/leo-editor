@@ -41,7 +41,7 @@ def init ():
 def colorize_headlines_visitor(c,p, item):
     """ Changes @thin, @auto, @shadow to bold """
     t = p.h.split(None, 1)
-    if t and t[0] in ['@thin', '@auto', '@shadow']:
+    if t and t[0] in ['@file','@thin', '@auto', '@shadow']:
         f = item.font(0)
         f.setBold(True)
         item.setFont(0,f)

@@ -525,7 +525,7 @@ Changed cycleAllFocus,leoQtLog.createTab and DynamicWindow.createSpellTab.
 
 Found empty methods using: ^[ ]*def.*$(\n[ ]*)*pass
     
-Remove all calls to unused methods in qtGui.
+Removed all calls to unused methods in qtGui.
     
 Rev 6016:
 - Removed all definitions and calls to createBindings.

@@ -150,6 +150,7 @@
 <v t="ekr.20130919120947.12501"><vh>munge</vh></v>
 <v t="ekr.20130919120947.12502"><vh>replace</vh></v>
 </v>
+<v t="ekr.20130920214241.12461"><vh>script to search for all changed methods</vh></v>
 </v>
 <v t="ekr.20130810093044.16969"><vh>By Brian Theado</vh>
 <v t="ekr.20130810093044.16970"><vh>Display function call hierarchy in Leo</vh>
@@ -2518,6 +2519,47 @@ Controller().run(c,p,replace=False)
         j = i + len(s2)
         return s3,j
 </t>
+<t tx="ekr.20130920214241.12461"># The list of all changed methods in the grand reorg at revs 6016-6020
+aList = [
+'color','configureBorder','configureFont',
+'createBindings','createFindPanel','createFindTab','createFrame',
+'createRootWindow',
+'disable','enable','forceLogUpdate'
+'getFont','getFontConfig','getFrame',
+'headWidth','interrupt','isEnabled','isSameColorState',
+'kill','killGui','killPopupMenu',
+'onActivate','onActivateLog',
+'recreateRootWindow','restoreAllState',
+'saveAllState','setBindings','setCanvasBindings','setColorFromConfig',
+'setDisabledHeadlineColors','setEditHeadlineColors','setEditLabelState',
+'setFocus','setFont','setFontFromConfig',
+'setMinibufferBindings','setTabBindings',
+'setUnselectedHeadlineColors','setUnselectedLabelState',
+'setWidgetFontFromConfig',
+'widthInPixels',
+]
+g.cls()
+seen = set()
+p = g.findNodeAnywhere(c,'Plugins')
+for p in p.subtree():
+    for name in aList[:]:
+        i = 0
+        s = p.b
+        while i &lt; len(s):
+            progress = i
+            i = p.b.find('.'+name,i)
+            if i == -1: break
+            if g.match_word(s,i,'.'+name):
+                print('%s %s' % (name,p.h))
+                seen.add(name)
+                aList.remove(name)
+                break
+            else:
+                i += 1
+            assert progress &lt; i,(i,progress)
+for z in sorted(seen):
+    print(z)
+print('**done')</t>
 <t tx="maphew.20130612230051.2793">Scripts only of interest when on Microsoft Windows platform.</t>
 </tnodes>
 </leo_file>
