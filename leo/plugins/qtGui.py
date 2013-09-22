@@ -8465,17 +8465,33 @@ class leoQtGui(leoGui.leoGui):
         QtCore.QObject.emit = new_emit
     #@+node:ekr.20130921043420.21175: *4* setFilter (qtGui)
     if newFilter:
+        
+        # ??? What do these types have in common???
+
+        # w's type is in (DynamicWindow,,leoQtMinibuffer,leoQtLog,leoQtTree,
+        # leoQTextEditWidget,LeoQTextBrowser,LeoQuickSearchWidget,cleoQtUI)
 
         def setFilter(self,c,obj,w,tag):
             
             '''Create an event filter in obj.
             w is a wrapper object, not necessarily a QWidget.'''
+            if 0:
+                g.trace(isinstance(w,QtGui.QWidget),
+                    hasattr(w,'getName') and w.getName() or None,
+                    w.__class__.__name__)
+            if 0:
+                g.trace('obj: %4s %20s w: %5s %s' % (
+                    isinstance(obj,QtGui.QWidget),obj.__class__.__name__,
+                    isinstance(w,QtGui.QWidget),w.__class__.__name__))
             assert isinstance(obj,QtGui.QWidget),obj
             gui = self
             theFilter = leoQtEventFilter(c,w=w,tag=tag)
             gui.filters.append(theFilter)
                 # Retain a reference to the filter!
             obj.installEventFilter(theFilter)
+
+
+
     #@-others
 #@+node:ekr.20110605121601.18533: ** Non-essential
 #@+node:ekr.20110605121601.18534: *3* quickheadlines
