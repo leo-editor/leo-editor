@@ -25,17 +25,58 @@ import time
 #@@nocolor-node
 #@+at
 # 
-# The big picture:
+# The big pictures of key bindings:
+#     
+# 1. Code in leoKeys.py and in leoConfig.py converts user key settings to
+#    various Python **binding dictionaries** defined in leoKeys.py.
+#    
+# 2. An instance of leoQtEventFilter should be attached to all visible panes
+#    in Leo's main window. g.app.gui.setFilter does this.
+#    
+# 3. leoQtEventFilter.eventFilter calls k.masterKeyhandler for every
+#    keystroke. eventFilter passes only just the event argument to
+#    k.masterKeyHandler. The event arg gives both the widget in which the
+#    event occurs and the keystroke.
+#    
+# 4. k.masterKeyHandler and its helpers use the event argumentand the binding
+#    dictionaries to execute the Leo command (if any) associated with the
+#    incoming keystroke.
+#    
+# Important details:
 # 
-# 1. Code in this file and in leoConfig.py converts user key settings to
-#    various Python dictionaries defined in this file.
+# 1. g.app.gui.setFilter allows various traces and assertions to be made
+#    uniformly. The obj argument to setFilter is a QWidget object; the w
+#    argument to setFilter can be either the same as obj, or a Leo wrapper
+#    class the supports the HighLevelInterface protocol. **Important**: the
+#    types of obj and w are not actually all that important, as discussed
+#    next.
 #    
-# 2. All Qt widgets that support any key bindings should attach an
-#    instance of leoQtEventFilter to the widget.
-#    leoQtEventFilter.eventFilter calls k.masterKeyhandler for every
-#    keystroke. In turn, k.masterKeyHandler uses the dictionries defined
-#    in this file to execute commands.
+# 2. The logic in k.masterKeyHandler and its helpers is long and involved:
+# 
+# A. k.getPaneBinding associates a command with the incoming keystroke based
+#    on a) the widget's name and b) whether the widget is a text widget
+#    (which depends on the type of the widget).
 #    
+#    To do this, k.getPaneBinding uses a **binding priority table**. This
+#    table is defined within k.getPaneBinding itself. The table indicates
+#    which of several possible bindings should have priority. For instance,
+#    if the widget is a text widget, a user binding for a 'text' widget takes
+#    priority over a default key binding. Similarly, if the widget is Leo's
+#    tree widget, a 'tree' binding has top priority. There are many other
+#    details encapuslated in the table. The exactly details of the binding
+#    priority table are open to debate, but in practice the resulting
+#    bindings are as expeced.
+#    
+# B. If k.getPaneBinding finds a command associated with the incoming
+#    keystroke, k.masterKeyHandler calls k.masterCommand to execute the
+#    command. k.masterCommand handles many complex. See the source code for
+#    details.
+#    
+# C. If k.getPaneBinding fails to bind the incoming keystroke to a command,
+#    k.masterKeyHandler calls k.handlUnboundKeys to handle the keystroke.
+#    Depending on the widget, and settings, and the keystroke,
+#    k.handleUnboundKeys may do nothing, or it may call k.masterCommand to
+#    insert a plain key into the widget.
 #@-<< Key bindings, an overview >>
 #@+<< about 'internal' bindings >>
 #@+node:ekr.20061031131434.2: ** << about 'internal' bindings >>
@@ -2664,7 +2705,9 @@ class keyHandlerClass:
     def masterCommand (self,commandName=None,event=None,func=None,stroke=None):
 
         '''This is the central dispatching method.
-        All commands and keystrokes pass through here.'''
+        All commands and keystrokes pass through here.
+        This returns None, but may set k.funcReturn.
+        '''
 
         k = self ; c = k.c
         trace = (False or g.trace_masterCommand) and not g.unitTesting
@@ -2675,7 +2718,6 @@ class keyHandlerClass:
         c.startRedrawCount = c.frame.tree.redrawCount
         k.stroke = stroke # Set this global for general use.
         char = ch = event and event.char or ''
-
         # 2011/10/28: compute func if not given.
         if commandName and not func:
             func = c.commandsDict.get(commandName)
@@ -2700,12 +2742,10 @@ class keyHandlerClass:
                 stroke,repr(ch),func and func.__name__))
         if inserted:
             k.setLossage(ch,stroke)
-
         # We *must not* interfere with the global state in the macro class.
         if c.macroCommands.recordingMacro:
             c.macroCommands.startRecordingMacro(event)
             # 2011/06/06: Show the key, if possible.
-
         if k.abortAllModesKey and stroke == k.abortAllModesKey: # 'Control-g'
             k.keyboardQuit()
             k.endCommand(commandName)
@@ -2722,7 +2762,6 @@ class keyHandlerClass:
         if k.abbrevOn:
             expanded = c.abbrevCommands.expandAbbrev(event,stroke)
             if expanded: return
-
         if func: # Func is an argument.
             if commandName.startswith('specialCallback'):
                 # The callback function will call c.doCommand
@@ -2757,8 +2796,8 @@ class keyHandlerClass:
         trace = False and not g.unitTesting
         verbose = False
         if trace and verbose:
-            g.trace('widget_name',name,'stroke',stroke,'enable alt-ctrl',self.enable_alt_ctrl_bindings)
-
+            g.trace('widget_name',name,'stroke',stroke,
+            'enable alt-ctrl',self.enable_alt_ctrl_bindings)
         if (stroke and
             not stroke.startswith('Alt+Ctrl') and
             # not k.enable_alt_ctrl_bindings and # Old code: this isn't an alt-ctrl key!
@@ -2791,7 +2830,7 @@ class keyHandlerClass:
                     w.logCtrl.insert(i,s)
             elif trace: g.trace('Not a HighLevelInterface object',w)
         else:
-            pass # Let the widget handle the event.
+            pass # Ignore the event
     #@+node:ekr.20061031131434.146: *4* k.masterKeyHandler & helpers
     master_key_count = 0
 
@@ -3086,7 +3125,7 @@ class keyHandlerClass:
                         if si.commandName == 'auto-complete':
                             return True
         return False
-    #@+node:ekr.20080510095819.1: *5* k.handleUnboundKeys
+    #@+node:ekr.20080510095819.1: *5* k.handleUnboundKeys (always returns None)
     def handleUnboundKeys (self,event,char,stroke):
 
         trace = False and not g.unitTesting
@@ -3095,49 +3134,49 @@ class keyHandlerClass:
         modesTuple = ('insert','overwrite')
         # g.trace('self.enable_alt_ctrl_bindings',self.enable_alt_ctrl_bindings)
         assert g.isStroke(stroke)
-
         if trace and verbose: g.trace('ch: %s, stroke %s' % (
             repr(event and event.char),repr(stroke)))
         # g.trace('stroke',repr(stroke),'isFKey',k.isFKey(stroke))
-
         if k.unboundKeyAction == 'command':
             # Ignore all unbound characters in command mode.
             w = g.app.gui.get_focus(c)
             if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
                 c.onCanvasKey(event)
             if trace: g.trace('ignoring unbound character in command mode',stroke)
-            return None
+            return
         elif stroke.isFKey():
             if trace: g.trace('ignoring F-key',stroke)
-            return None
+            return
         elif stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
             # insert/overwrite normal character.  <Return> is *not* a normal character.
             if trace: g.trace('plain key in insert mode',repr(stroke))
-            return k.masterCommand(event=event,stroke=stroke)
+            k.masterCommand(event=event,stroke=stroke)
+            return
         elif (not self.enable_alt_ctrl_bindings and
             (stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1)
         ):
             # 2011/02/11: Always ignore unbound Alt/Ctrl keys.
             if trace: g.trace('ignoring unbound Alt/Ctrl key',
                 repr(char),repr(stroke))
-            return None
+            return
         elif k.ignore_unbound_non_ascii_keys and (
             len(char) > 1 or
             char not in string.printable # 2011/06/10: risky test?
         ):
             if trace: g.trace('ignoring unbound non-ascii key',
                 repr(char),repr(stroke))
-            return None
+            return
         elif (
             stroke and stroke.find('Escape') != -1 or
             stroke and stroke.find('Insert') != -1
         ):
             # Never insert escape or insert characters.
             if trace: g.trace('ignore Escape/Ignore',stroke)
-            return None
+            return
         else:
             if trace: g.trace('no func',repr(char),repr(stroke))
-            return k.masterCommand(event=event,stroke=stroke)
+            k.masterCommand(event=event,stroke=stroke)
+            return
     #@+node:ekr.20061031170011.3: *3* k.Minibuffer
     # These may be overridden, but this code is now gui-independent.
     #@+node:ekr.20061031131434.135: *4* k.minibufferWantsFocus

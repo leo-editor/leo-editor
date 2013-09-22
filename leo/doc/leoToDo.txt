@@ -5,6 +5,12 @@
 .. @+all
 .. @+node:ekr.20130916105324.19893: ** To-do for 4.11
 @language rest
+.. @+node:ekr.20130921103229.11539: *3* Post: the real challenge: overcoming resistence to change
+@language rest
+
+Programmers have a lot invested in their tools.
+
+Leo must offer something *much* better.
 .. @+node:ekr.20130912152335.11933: *3* bugs: first
 .. @+node:ekr.20130920055521.11283: *4* 1226816 Command line "leo xxx.leo" creates file xxx.leo.leo
 https://bugs.launchpad.net/leo-editor/+bug/1226816
@@ -342,7 +348,8 @@ Python 2.7.2, qt version 4.7.4
 linux2  --- This is openSUSE 12.1
 
 
-.. @+node:ekr.20130917083243.11295: *3* doc (6)
+.. @+node:ekr.20130917083243.11295: *3* doc (7)
+.. @+node:ekr.20130922051214.11569: *4* document all remaining k.Binding methods
 .. @+node:ekr.20130908104426.15553: *4* * Document Leo's underindented-line convention
 And add a description of the setting @string underindent-escape-string.
 .. @+node:ekr.20130806072439.20384: *4* doc bugs: autocompletion(s)
