@@ -1193,7 +1193,7 @@ class position (object):
         return p2
     #@+node:ekr.20130923111858.11572: *4* p.insertBefore (new in Leo 4.11)
     def insertBefore(self):
-        '''Inserts a new position after self.
+        '''Inserts a new position before self.
 
         Returns the newly created position.
         
