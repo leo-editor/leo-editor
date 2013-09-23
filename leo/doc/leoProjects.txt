@@ -578,6 +578,8 @@ Rev 6019:
 Added qtGui.setFilter and used it to simplify the code.
 
 The new code is only enabled if the newFilter is set at the start of qtGui.pyi
+#@+node:ekr.20130923081359.11558: *3* created insert-node-before command
+Added c.insertHeadlineBefore and unit tests for same.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
