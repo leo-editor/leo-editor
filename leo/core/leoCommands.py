@@ -4279,6 +4279,36 @@ class Commands (object):
         u.afterInsertNode(p,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
         c.redrawAndEdit(p,selectAll=True)
         return p
+    #@+node:ekr.20130922133218.11540: *7* c.insertHeadlineBefore (new in Leo 4.11)
+    def insertHeadlineBefore (self,event=None):
+
+        '''Insert a node after the presently selected node.'''
+
+        c,current,u = self,self.p,self.undoer
+        op_name = 'Insert Node Before'
+        if not current: return
+        # Can not insert before the base of a hoist.
+        if c.hoistStack and current == c.hoistStack[-1].p:
+            g.warning('can not insert a node before the base of a hoist')
+            return
+        c.endEditing()
+        undoData = u.beforeInsertNode(current)
+        parent = current.parent()
+        if current.hasBack():
+            back = current.getBack()
+            p = back.insertAfter()
+        elif parent:
+            p = parent.insertAsNthChild(0)
+        else:
+            p = current.insertAfter()
+            p.moveToRoot(oldRoot=current)
+        g.doHook('create-node',c=c,p=p)
+        p.setDirty(setDescendentsDirty=False)
+        dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+        c.setChanged(True)
+        u.afterInsertNode(p,op_name,undoData,dirtyVnodeList=dirtyVnodeList)
+        c.redrawAndEdit(p,selectAll=True)
+        return p
     #@+node:ekr.20071005173203.1: *7* c.insertChild
     def insertChild (self,event=None):
 

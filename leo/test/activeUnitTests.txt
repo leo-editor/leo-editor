@@ -9750,13 +9750,20 @@ if selectAll:
     assert i == 0 and j == len(s),'oops1: i: %d, j: %d' % (i,j)
 else:
     assert i == len(s) and j == len(s),'oops2: i: %d, j: %d' % (i,j)
-#@+node:ekr.20051120110335: *5* @test inserting a new node can be undone and redone
+#@+node:ekr.20051120110335: *5* @test insert-node can be undone and redone
 u = c.undoer
 assert u
 c.insertHeadline()
 assert u.undoMenuLabel == 'Undo Insert Node',repr(u.undoMenuLabel)
 c.undoer.undo()
 assert u.redoMenuLabel == 'Redo Insert Node',repr(u.undoMenuLabel)
+#@+node:ekr.20130923090601.4178: *5* @test insert-node-before node can be undone and redone
+u = c.undoer
+assert u
+c.insertHeadlineBefore()
+assert u.undoMenuLabel == 'Undo Insert Node Before',repr(u.undoMenuLabel)
+c.undoer.undo()
+assert u.redoMenuLabel == 'Redo Insert Node Before',repr(u.undoMenuLabel)
 #@+node:ekr.20051125155134: *5* @test inserting a new node draws the screen exactly once
 n = c.frame.tree.redrawCount
 # print('before')

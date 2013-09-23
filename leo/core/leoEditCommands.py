@@ -8711,6 +8711,7 @@ class leoCommandsClass (baseEditCommandsClass):
             'insert-child':                 c.insertChild,
             'insert-headline-time':         f.insertHeadlineTime,
             'insert-node':                  c.insertHeadline,
+            'insert-node-before':            c.insertHeadlineBefore,
             'mark':                         c.markHeadline,
             'mark-changed-items':           c.markChangedHeadlines,
             # 'mark-changed-roots':           c.markChangedRoots,

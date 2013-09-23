@@ -38,9 +38,9 @@ import time
 #    k.masterKeyHandler. The event arg gives both the widget in which the
 #    event occurs and the keystroke.
 #    
-# 4. k.masterKeyHandler and its helpers use the event argumentand the binding
-#    dictionaries to execute the Leo command (if any) associated with the
-#    incoming keystroke.
+# 4. k.masterKeyHandler and its helpers use the event argument and the
+#    binding dictionaries to execute the Leo command (if any) associated with
+#    the incoming keystroke.
 #    
 # Important details:
 # 
@@ -63,7 +63,7 @@ import time
 #    if the widget is a text widget, a user binding for a 'text' widget takes
 #    priority over a default key binding. Similarly, if the widget is Leo's
 #    tree widget, a 'tree' binding has top priority. There are many other
-#    details encapuslated in the table. The exactly details of the binding
+#    details encapsulated in the table. The exactly details of the binding
 #    priority table are open to debate, but in practice the resulting
 #    bindings are as expeced.
 #    
@@ -73,7 +73,7 @@ import time
 #    details.
 #    
 # C. If k.getPaneBinding fails to bind the incoming keystroke to a command,
-#    k.masterKeyHandler calls k.handlUnboundKeys to handle the keystroke.
+#    k.masterKeyHandler calls k.handleUnboundKeys to handle the keystroke.
 #    Depending on the widget, and settings, and the keystroke,
 #    k.handleUnboundKeys may do nothing, or it may call k.masterCommand to
 #    insert a plain key into the widget.
