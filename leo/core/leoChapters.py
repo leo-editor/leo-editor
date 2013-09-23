@@ -852,7 +852,6 @@ class chapter:
 
         self.c = c 
         self.cc = cc = chapterController
-        ### self.hoistStack = []
         self.name = name
         self.selectLockout = False # True: in chapter.select logic.
         # State variables: saved/restored when the chapter is unselected/selected.
@@ -861,7 +860,6 @@ class chapter:
         else:
             self.p = None # Set later.
             root = self.findRootNode()
-            ### self.hoistStack.append(g.Bunch(p=root and root.copy(),expanded=True))
         if cc.tt:
             # g.trace('(chapter) calling cc.tt.createTab(%s)' % (name))
             cc.tt.createTab(name)
@@ -942,7 +940,6 @@ class chapter:
         chaptersNode = cc.findChaptersNode()
         if name == 'main' and chaptersNode:
             chaptersNode.contract()
-        ### c.hoistStack = self.hoistStack[:]
         if name != 'main':
             c.hoistStack.append(g.Bunch(p=root and root.copy(),expanded=True))
         c.selectPosition(p)
@@ -1021,7 +1018,6 @@ class chapter:
 
         trace = False and not g.unitTesting
         c = self.c
-        ### self.hoistStack = c.hoistStack[:]
         if self.name != 'main':
             try:
                 c.hoistStack.pop()
@@ -1030,27 +1026,5 @@ class chapter:
         self.p = c.p
         if trace: g.trace('*** %s, p: %s' % (self.name,self.p.h))
     #@-others
-#@+node:ekr.20130915052002.11287: ** chapter.toLeoHoistStack (not used new in Leo 4.11)
-def toLeoHoistStack(self):
-    
-    '''Return the c.hoistStack corresponding to self.hoistStack.
-    
-    c.hoistStack has entries of the form (p,bool)
-    self.hoistStack has entries of the form (name,bool)
-    
-    Clear c.hoistStack if any @chapter node has been deleted.
-    '''
-    
-    cc,result = self,[]
-    for bunch in self.hoistStack:
-        name,expanded = bunch
-        p = cc.findChapterNode(name)
-        if p:
-            result.append(g.bunch(p.copy(),expanded))
-        else:
-            g.error('deleted @chapter %s' % (name))
-            result = []
-            break
-    return result
 #@-others
 #@-leo
