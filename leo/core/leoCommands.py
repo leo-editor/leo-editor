@@ -4282,7 +4282,7 @@ class Commands (object):
     #@+node:ekr.20130922133218.11540: *7* c.insertHeadlineBefore (new in Leo 4.11)
     def insertHeadlineBefore (self,event=None):
 
-        '''Insert a node after the presently selected node.'''
+        '''Insert a node before the presently selected node.'''
 
         c,current,u = self,self.p,self.undoer
         op_name = 'Insert Node Before'
@@ -4293,15 +4293,7 @@ class Commands (object):
             return
         c.endEditing()
         undoData = u.beforeInsertNode(current)
-        parent = current.parent()
-        if current.hasBack():
-            back = current.getBack()
-            p = back.insertAfter()
-        elif parent:
-            p = parent.insertAsNthChild(0)
-        else:
-            p = current.insertAfter()
-            p.moveToRoot(oldRoot=current)
+        p = current.insertBefore()
         g.doHook('create-node',c=c,p=p)
         p.setDirty(setDescendentsDirty=False)
         dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()

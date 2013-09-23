@@ -1191,6 +1191,24 @@ class position (object):
         p2._linkAsNthChild(p,n)
 
         return p2
+    #@+node:ekr.20130923111858.11572: *4* p.insertBefore (new in Leo 4.11)
+    def insertBefore(self):
+        '''Inserts a new position after self.
+
+        Returns the newly created position.
+        
+        '''
+        p = self
+        parent = p.parent()
+        if p.hasBack():
+            back = p.getBack()
+            p = back.insertAfter()
+        elif parent:
+            p = parent.insertAsNthChild(0)
+        else:
+            p = p.insertAfter()
+            p.moveToRoot(oldRoot=p)
+        return p
     #@+node:ekr.20040310062332.1: *4* p.invalidOutline
     def invalidOutline (self, message):
 
