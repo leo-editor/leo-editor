@@ -98,7 +98,8 @@
 <v t="ekr.20100808120531.4283"><vh>@file nutshell.txt</vh></v>
 </v>
 <v t="EKR.20040524104904.99"><vh>Using Leo</vh>
-<v t="ekr.20100805165051.7155"><vh>@file commands.txt</vh></v>
+<v t="ekr.20100805165051.7155"
+expanded="ekr.20060420094611,"><vh>@file commands.txt</vh></v>
 </v>
 <v t="EKR.20040524104904.211"><vh>Customizing Leo</vh>
 <v t="ekr.20100805165051.7158" descendentVnodeUnknownAttributes="7d71005509302e302e312e362e3371017d710255097374725f6174696d657103550c313337363431323835332e30710473732e"><vh>@file customizing.txt</vh></v>

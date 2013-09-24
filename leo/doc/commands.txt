@@ -689,12 +689,12 @@ You can enable autocompletion in two ways:
 
 2. By using the toggle-autocompleter (Alt-1) command.
 .. @+node:ekr.20120229094652.15106: *4* Using the QCompleter
-When the ``@bool use_qcompleter`` setting is False, Leo shows all completions in a
-popup window, regardless of how many completions there are. To **accept** a
-completion, use the up and down arrows to select a completion, then type the
-return key. To **cancel** completion, type the escape key. As an important
-shortcut, if the popup window contains only one entry, you may accept a
-completion by simply typing the return key.
+When the ``@bool use_qcompleter`` setting is False, Leo shows all
+completions in a popup window, regardless of how many completions there
+are. To **accept** a completion, use the up and down arrows to select a
+completion, then type the return key. To **cancel** completion, type the
+escape key. As an important shortcut, if the popup window contains only one
+entry, you may accept a completion by simply typing the return key.
 .. @+node:ekr.20120229094652.15107: *4* Using the Log pane completer
 When the ``@bool use_qcompleter`` setting is True, Leo shows completions in in
 Leo's log pane. When there are more than 20 completions, Leo shows only the

@@ -585,6 +585,8 @@ Added c.insertHeadlineBefore and unit tests for same.
 
 Typed tab while autocompleting:  The fix was adding a better guard in tab_callback.
 
+#@+node:ekr.20130924043646.17346: *3* gui.setFilter now sets w.ev_filter
+This ivar is used by the autocompletion code.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

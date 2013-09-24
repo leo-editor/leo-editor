@@ -307,6 +307,7 @@ class AutoCompleterClass:
         if self.use_qcompleter:
             if self.qw:
                 self.qw.end_completer()
+                self.qw = None # Bug fix: 2013/09/24.
         else:
             for name in (self.tabName,'Modules','Info'):
                 c.frame.log.deleteTab(name)
