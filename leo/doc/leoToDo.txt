@@ -6,26 +6,6 @@
 .. @+node:ekr.20130916105324.19893: ** To-do for 4.11
 @language rest
 .. @+node:ekr.20130917083243.11295: *3* doc (4)
-.. @+node:ekr.20130917083243.11294: *4* Leo in a nutshell: put on home page
-@language rest
-
-**add** Leo works with emacs, vim, ipython.
-
-Leo is a *completely organizable*, *programmable* outlining program. Leo
-outlines may contain *any* kind of data, including computer programs and
-files on your file system.
-
-*Completely organizable*: outline nodes may appear *arbitrarily many times*
-in the same outline. That is, nodes act like either file folders or plain
-data (or both!) Any node may be "filed" in arbitrarily many folders.
-
-*Programmable*: Leo scripts (Python scripts in Leo outlines) have *easy*
-access to all Leo outlines, and *easy* access to all of Leo's own source
-code. Conversely, Leo outlines naturally organize even the largest computer
-programs.
-
-The *Leo Aha* is the moment when someone realizes how well Leo outlines and
-Leo scripts work together.
 .. @+node:ekr.20130908104426.11243: *4*  969391 setup.py confuses newbies
 https://bugs.launchpad.net/leo-editor/+bug/969391
 
