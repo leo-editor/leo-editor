@@ -5,9 +5,7 @@
 .. @+all
 .. @+node:ekr.20130916105324.19893: ** To-do for 4.11
 @language rest
-.. @+node:ekr.20130917083243.11295: *3* doc (7)
-.. @+node:ekr.20130908104426.15553: *4* * Document Leo's underindented-line convention
-And add a description of the setting @string underindent-escape-string.
+.. @+node:ekr.20130917083243.11295: *3* doc (5)
 .. @+node:ekr.20130806072439.20384: *4* doc bugs: autocompletion(s)
 @language rest
 
@@ -79,6 +77,40 @@ Is period bound to auto-complete?  Use the print-bindings command to see.
 I've seen that traceback too, but autocomplete *everything* didn't seem
 like a critical use case :-)
 
+.. @+node:ekr.20130917083243.11294: *4* Leo in a nutshell: put on home page
+@language rest
+
+**add** Leo works with emacs, vim, ipython.
+
+Leo is a *completely organizable*, *programmable* outlining program. Leo
+outlines may contain *any* kind of data, including computer programs and
+files on your file system.
+
+*Completely organizable*: outline nodes may appear *arbitrarily many times*
+in the same outline. That is, nodes act like either file folders or plain
+data (or both!) Any node may be "filed" in arbitrarily many folders.
+
+*Programmable*: Leo scripts (Python scripts in Leo outlines) have *easy*
+access to all Leo outlines, and *easy* access to all of Leo's own source
+code. Conversely, Leo outlines naturally organize even the largest computer
+programs.
+
+The *Leo Aha* is the moment when someone realizes how well Leo outlines and
+Leo scripts work together.
+.. @+node:ekr.20130908104426.11243: *4*  969391 setup.py confuses newbies
+https://bugs.launchpad.net/leo-editor/+bug/969391
+
+setup.py is necessary for creating Ubuntu packages, but it is *not*
+necessary for installation. This confuses newbies a lot.
+
+I'd like to move, rename or otherwise hide this file, but Ville says that's
+not trivial to do:
+
+QQQ
+I need to research it. The change won't be free, as the debian tooling
+(python-support) expects it to be called setup.py. I need to find a
+workaround, but can't do it right now.
+QQQ
 .. @+node:ekr.20130908104426.11255: *4* 1168689 outdated documentation about ipython
 https://bugs.launchpad.net/leo-editor/+bug/1168689
 
@@ -116,40 +148,6 @@ And run `leo` from command prompt.
 A recent user reports this install method still works, albeit with a
 warning,
 https://groups.google.com/d/topic/leo-editor-users/y6ZwJR3accs/discussion
-.. @+node:ekr.20130908104426.11243: *4* 969391 setup.py confuses newbies
-https://bugs.launchpad.net/leo-editor/+bug/969391
-
-setup.py is necessary for creating Ubuntu packages, but it is *not*
-necessary for installation. This confuses newbies a lot.
-
-I'd like to move, rename or otherwise hide this file, but Ville says that's
-not trivial to do:
-
-QQQ
-I need to research it. The change won't be free, as the debian tooling
-(python-support) expects it to be called setup.py. I need to find a
-workaround, but can't do it right now.
-QQQ
-.. @+node:ekr.20130917083243.11294: *4* Leo in a nutshell: put on home page
-@language rest
-
-**add** Leo works with emacs, vim, ipython.
-
-Leo is a *completely organizable*, *programmable* outlining program. Leo
-outlines may contain *any* kind of data, including computer programs and
-files on your file system.
-
-*Completely organizable*: outline nodes may appear *arbitrarily many times*
-in the same outline. That is, nodes act like either file folders or plain
-data (or both!) Any node may be "filed" in arbitrarily many folders.
-
-*Programmable*: Leo scripts (Python scripts in Leo outlines) have *easy*
-access to all Leo outlines, and *easy* access to all of Leo's own source
-code. Conversely, Leo outlines naturally organize even the largest computer
-programs.
-
-The *Leo Aha* is the moment when someone realizes how well Leo outlines and
-Leo scripts work together.
 .. @+node:ekr.20130912152335.11933: *3* bugs: first (6)
 .. @+node:ekr.20130920055521.11283: *4* 1226816 Command line "leo xxx.leo" creates file xxx.leo.leo
 https://bugs.launchpad.net/leo-editor/+bug/1226816

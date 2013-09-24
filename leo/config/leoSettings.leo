@@ -6010,7 +6010,17 @@ This allows you to increase the font size.</t>
 <t tx="ekr.20081023060109.14"></t>
 <t tx="ekr.20081216090156.5">The escape string that Leo inserts to represent underindented lines.
 
-This escape is followed by a cound of spaces to *remove* from written lines.</t>
+If a line starts with \\-N, Leo will write the line with N fewer spaces
+than expected.
+
+An **underindented line** is a line of body text that is indented less then
+the starting line of the class, method or function in which it appears. Leo
+outlines can not represent such lines exactly: every line in an external
+file will have at least the indentation of any unindented line of the
+corresponding node in the outline. Leo will issue a warning (not an error)
+for underindented Python comment lines. Such lines can not change the
+meaning of Python programs.
+</t>
 <t tx="ekr.20090202191501.10"></t>
 <t tx="ekr.20090202191501.11"># Not used yet.</t>
 <t tx="ekr.20090203131919.1">'''Check all commands mentioned in the @menus tree
