@@ -238,8 +238,8 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
                 'completion',repr(completion))
             w = c.k.autoCompleter.w
             i = j = w.getInsertPoint()
-            text = w.getAllText()
-            while (i and text[i] != '.'):
+            s = w.getAllText()
+            while (0 <= i < len(s) and s[i] != '.'):
                 i -= 1
             i += 1
             if j > i:
@@ -7362,7 +7362,6 @@ class leoQtGui(leoGui.leoGui):
         # g.trace('(qtGui)',g.callers())
         self.qtApp = QtGui.QApplication(sys.argv)
         self.bodyTextWidget  = leoQtBaseTextWidget
-        self.filters = []
         self.iconimages = {}
         self.plainTextWidget = leoQtBaseTextWidget
         self.mGuiName = 'qt'
@@ -8486,9 +8485,9 @@ class leoQtGui(leoGui.leoGui):
             assert isinstance(obj,QtGui.QWidget),obj
             gui = self
             theFilter = leoQtEventFilter(c,w=w,tag=tag)
-            gui.filters.append(theFilter)
-                # Retain a reference to the filter!
             obj.installEventFilter(theFilter)
+            w.ev_filter = theFilter
+                # Set the official ivar in w.
 
 
 

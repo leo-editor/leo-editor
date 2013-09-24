@@ -580,6 +580,11 @@ Added qtGui.setFilter and used it to simplify the code.
 The new code is only enabled if the newFilter is set at the start of qtGui.pyi
 #@+node:ekr.20130923081359.11558: *3* created insert-node-before command & p.insertBefore
 Added c.insertHeadlineBefore and unit tests for same.
+#@+node:ekr.20130924043646.17347: *3* Fixed autocompletion crasher
+@language rest
+
+Typed tab while autocompleting:  The fix was adding a better guard in tab_callback.
+
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

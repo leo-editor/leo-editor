@@ -5,78 +5,7 @@
 .. @+all
 .. @+node:ekr.20130916105324.19893: ** To-do for 4.11
 @language rest
-.. @+node:ekr.20130917083243.11295: *3* doc (5)
-.. @+node:ekr.20130806072439.20384: *4* doc bugs: autocompletion(s)
-@language rest
-
-From: Haroldo Stenger <haroldo.stenger@gmail.com>
-
-The first inconsistency I've found between what the docs say, and the real
-keystrokes needed to get @language python autocompletion is:
-
-* the docs say that if you type a dot, autocompletion activates opening the
-objects correlated to the object that precedes the dot; if no object
-precedes the dot, you get a list of available modules.
-
-* if in a node which has no text in its head, I type @language python, then
-if I type g. nothing appears; however if I type ctrl space (which it
-ocurred to me based in pgadmin3's keystrokes to autocomplete, just trial
-and error on my part, since tab did not do nothing special), then I get a
-list of autocompletions. That's fine.
-
-* I'd make the autocompletion window taller, since where there are dozens
-of options, browsing a 7-line window gets hard. I plan to hack it myself.
-
-* if in an empty line I type a dot, nothing appears.  If I type ctrl space,
-I get this exception:
-
-exception executing command
-Traceback (most recent call last):
-  File "/usr/lib/python2.7/site-packages/leo/core/leoCommands.py", line
-560, in doCommand
-    val = command(event)
-  File "/usr/lib/python2.7/site-packages/leo/core/leoKeys.py", line 165, in
-autoCompleteForce
-    return self.autoComplete(event,force=True)
-  File "/usr/lib/python2.7/site-packages/leo/core/leoKeys.py", line 157, in
-autoComplete
-    self.start(event)
-  File "/usr/lib/python2.7/site-packages/leo/core/leoKeys.py", line 992, in
-start
-    self.init_qcompleter(event)
-  File "/usr/lib/python2.7/site-packages/leo/core/leoKeys.py", line 837, in
-init_qcompleter
-    self.exit()
-  File "/usr/lib/python2.7/site-packages/leo/core/leoKeys.py", line 251, in
-exit
-    self.qw.end_completer()
-  File "/usr/lib/python2.7/site-packages/leo/plugins/qtGui.py", line 350,
-in end_completer
-    self.leo_qc.end_completer()
-  File "/usr/lib/python2.7/site-packages/leo/plugins/qtGui.py", line 157,
-in end_completer
-    self.deleteLater()
-RuntimeError: wrapped C/C++ object of type LeoQListWidget has been deleted
-
-
-any hint is welcome
-
-===== EKR
-
-> * if in a node which has no text in its head, I type @language python,
-> then if I type g. nothing appears;
-
-It works for me when using the auto-completer *tab*.  Are you using the tab
-or the QCompleter popup window?  From the traceback, I guess you are using
-the QCompleter...
-
-Is period bound to auto-complete?  Use the print-bindings command to see.
-
-===== Terry Brown <terry_n_brown@yahoo.com>
-
-I've seen that traceback too, but autocomplete *everything* didn't seem
-like a critical use case :-)
-
+.. @+node:ekr.20130917083243.11295: *3* doc (4)
 .. @+node:ekr.20130917083243.11294: *4* Leo in a nutshell: put on home page
 @language rest
 
@@ -148,7 +77,7 @@ And run `leo` from command prompt.
 A recent user reports this install method still works, albeit with a
 warning,
 https://groups.google.com/d/topic/leo-editor-users/y6ZwJR3accs/discussion
-.. @+node:ekr.20130912152335.11933: *3* bugs: first (6)
+.. @+node:ekr.20130912152335.11933: *3* bugs: first (7)
 .. @+node:ekr.20130920055521.11283: *4* 1226816 Command line "leo xxx.leo" creates file xxx.leo.leo
 https://bugs.launchpad.net/leo-editor/+bug/1226816
 .. @+node:ekr.20130908104426.11240: *4*  879338 Global tables in leoApp.py should describe all languages known 
@@ -278,6 +207,48 @@ reading settings in /home/bob05/.leo/myLeoSettings.leo
 https://bugs.launchpad.net/leo-editor/+bug/971171
 .. @+node:ekr.20130920055521.11282: *4* 1228099 Cancelling save of dirty untitled commander doesn't work with --ipython
 https://bugs.launchpad.net/leo-editor/+bug/1228099
+.. @+node:ekr.20130924043646.11542: *4* crash in autocompleter
+@language rest
+
+From: Haroldo Stenger <haroldo.stenger@gmail.com>
+
+if in an empty line I type a dot, nothing appears.  If I type ctrl space,
+I get this exception:
+
+exception executing command
+Traceback (most recent call last):
+  File "/usr/lib/python2.7/site-packages/leo/core/leoCommands.py", line
+560, in doCommand
+    val = command(event)
+  File "/usr/lib/python2.7/site-packages/leo/core/leoKeys.py", line 165, in
+autoCompleteForce
+    return self.autoComplete(event,force=True)
+  File "/usr/lib/python2.7/site-packages/leo/core/leoKeys.py", line 157, in
+autoComplete
+    self.start(event)
+  File "/usr/lib/python2.7/site-packages/leo/core/leoKeys.py", line 992, in
+start
+    self.init_qcompleter(event)
+  File "/usr/lib/python2.7/site-packages/leo/core/leoKeys.py", line 837, in
+init_qcompleter
+    self.exit()
+  File "/usr/lib/python2.7/site-packages/leo/core/leoKeys.py", line 251, in
+exit
+    self.qw.end_completer()
+  File "/usr/lib/python2.7/site-packages/leo/plugins/qtGui.py", line 350,
+in end_completer
+    self.leo_qc.end_completer()
+  File "/usr/lib/python2.7/site-packages/leo/plugins/qtGui.py", line 157,
+in end_completer
+    self.deleteLater()
+RuntimeError: wrapped C/C++ object of type LeoQListWidget has been deleted
+
+===== Terry Brown <terry_n_brown@yahoo.com>
+
+I've seen that traceback too, but autocomplete *everything* didn't seem
+like a critical use case :-)
+
+
 .. @+node:ekr.20130921043420.11269: *3* Help (3)
 .. @+node:ekr.20130806072439.20477: *4* I can't make Leo-Editor start in a full-screen window under openSUSU 12.1
 From: SegundoBob <bhossley@ieee.org>
@@ -5705,7 +5676,7 @@ has arbitrary attributes like the `active` I just made up above.
 
 https://bugs.launchpad.net/leo-editor/+bug/nnn
 .. @+node:ekr.20130912152335.11932: *4* others: medium priority (hard/later)
-.. @+node:ekr.20130912152335.11933: *5* bugs: first (6)
+.. @+node:ekr.20130912152335.11933: *5* bugs: first (7)
 .. @+node:ekr.20130920055521.11283: *6* 1226816 Command line "leo xxx.leo" creates file xxx.leo.leo
 https://bugs.launchpad.net/leo-editor/+bug/1226816
 .. @+node:ekr.20130908104426.11240: *6*  879338 Global tables in leoApp.py should describe all languages known 
@@ -5835,6 +5806,48 @@ reading settings in /home/bob05/.leo/myLeoSettings.leo
 https://bugs.launchpad.net/leo-editor/+bug/971171
 .. @+node:ekr.20130920055521.11282: *6* 1228099 Cancelling save of dirty untitled commander doesn't work with --ipython
 https://bugs.launchpad.net/leo-editor/+bug/1228099
+.. @+node:ekr.20130924043646.11542: *6* crash in autocompleter
+@language rest
+
+From: Haroldo Stenger <haroldo.stenger@gmail.com>
+
+if in an empty line I type a dot, nothing appears.  If I type ctrl space,
+I get this exception:
+
+exception executing command
+Traceback (most recent call last):
+  File "/usr/lib/python2.7/site-packages/leo/core/leoCommands.py", line
+560, in doCommand
+    val = command(event)
+  File "/usr/lib/python2.7/site-packages/leo/core/leoKeys.py", line 165, in
+autoCompleteForce
+    return self.autoComplete(event,force=True)
+  File "/usr/lib/python2.7/site-packages/leo/core/leoKeys.py", line 157, in
+autoComplete
+    self.start(event)
+  File "/usr/lib/python2.7/site-packages/leo/core/leoKeys.py", line 992, in
+start
+    self.init_qcompleter(event)
+  File "/usr/lib/python2.7/site-packages/leo/core/leoKeys.py", line 837, in
+init_qcompleter
+    self.exit()
+  File "/usr/lib/python2.7/site-packages/leo/core/leoKeys.py", line 251, in
+exit
+    self.qw.end_completer()
+  File "/usr/lib/python2.7/site-packages/leo/plugins/qtGui.py", line 350,
+in end_completer
+    self.leo_qc.end_completer()
+  File "/usr/lib/python2.7/site-packages/leo/plugins/qtGui.py", line 157,
+in end_completer
+    self.deleteLater()
+RuntimeError: wrapped C/C++ object of type LeoQListWidget has been deleted
+
+===== Terry Brown <terry_n_brown@yahoo.com>
+
+I've seen that traceback too, but autocomplete *everything* didn't seem
+like a critical use case :-)
+
+
 .. @+node:ekr.20130908104426.17092: *5* hard, not very important
 .. @+node:ekr.20111222113610.10244: *6*  613153 unable to describe root directory on thumb drive
 A very complex bug
