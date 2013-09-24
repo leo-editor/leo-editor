@@ -25,9 +25,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.51885164"
-     inkscape:cx="427.90298"
-     inkscape:cy="314.84659"
+     inkscape:zoom="0.59690228"
+     inkscape:cx="329.76788"
+     inkscape:cy="308.07312"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -2971,7 +2971,7 @@
          style="fill:url(#radialGradient2479);fill-opacity:1;fill-rule:evenodd;stroke:none" />
     </g>
     <g
-       transform="matrix(0.88717157,0,0,0.88717155,-47.438755,-115.84289)"
+       transform="matrix(0.88717157,0,0,0.88717155,-47.259473,12.336388)"
        id="g1237"
        inkscape:export-xdpi="10.923555"
        inkscape:export-ydpi="10.923555">
@@ -3099,7 +3099,7 @@
     </g>
     <g
        id="g1247"
-       transform="matrix(0.8947379,0,0,0.8947379,-44.98455,70.011021)"
+       transform="matrix(0.8947379,0,0,0.8947379,-44.805268,198.1903)"
        inkscape:export-xdpi="11.140065"
        inkscape:export-ydpi="11.140065">
       <rect
@@ -3129,7 +3129,7 @@
            y="939.32416">31</tspan></text>
     </g>
     <g
-       transform="matrix(0.8947379,0,0,0.89473787,-44.98455,262.01105)"
+       transform="matrix(0.8947379,0,0,0.89473787,-44.805268,390.19033)"
        id="g1257"
        inkscape:export-xdpi="11.140065"
        inkscape:export-ydpi="11.140065">
@@ -3159,5 +3159,20 @@
            id="tspan1265"
            sodipodi:role="line">31</tspan></text>
     </g>
+    <path
+       id="path1221"
+       style="color:#000000;color-interpolation:sRGB;color-interpolation-filters:linearRGB;fill:none;stroke:#dc0000;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;clip-rule:nonzero"
+       d="m -384,684 256,640 m 0,-640 -256,640 m 0,-640 255.99994,0 0,640 L -384,1324 Z" />
+    <text
+       xml:space="preserve"
+       style="font-size:22.5px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:center;text-decoration:none;line-height:125%;letter-spacing:0;word-spacing:0;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:middle;baseline-shift:baseline;color:#000000;color-interpolation:sRGB;color-interpolation-filters:linearRGB;fill:#0e232e;stroke:none;stroke-width:5;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;clip-rule:nonzero;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;font-family:Comic Sans MS;-inkscape-font-specification:'Comic Sans MS, Normal'"
+       x="-255.45239"
+       y="1381.6169"
+       id="text1224"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan1226"
+         x="-255.45239"
+         y="1381.6169">Better .png icons in tree</tspan></text>
   </g>
 </svg>
