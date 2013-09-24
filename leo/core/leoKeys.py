@@ -1837,6 +1837,8 @@ class keyHandlerClass:
             k.makeMasterGuiBinding(stroke,w=w)
     #@+node:ekr.20061031131434.96: *4* k.completeAllBindingsForWidget
     def completeAllBindingsForWidget (self,w):
+        
+        '''Make all a master gui binding for widget w.'''
 
         k = self
         for stroke in k.bindingsDict:
@@ -1844,6 +1846,8 @@ class keyHandlerClass:
             k.makeMasterGuiBinding(stroke,w=w)
     #@+node:ekr.20070218130238: *4* k.dumpMasterBindingsDict
     def dumpMasterBindingsDict (self):
+        
+        '''Dump k.masterBindingsDict.'''
 
         k = self ; d = k.masterBindingsDict
 
@@ -1856,7 +1860,7 @@ class keyHandlerClass:
                 si = d2.get(key2)
                 assert g.isShortcutInfo(si),si
                 g.pr('%20s %s' % (key2,si.commandName))
-    #@+node:ekr.20061031131434.99: *4* k.initAbbrev
+    #@+node:ekr.20061031131434.99: *4* k.initAbbrev & helper
     def initAbbrev (self):
 
         k = self ; c = k.c ; d = c.config.getAbbrevDict()
@@ -1868,8 +1872,12 @@ class keyHandlerClass:
                 else:
                     self.initOneAbbrev(commandName,key)
 
+    #@+node:ekr.20130924035029.12741: *5* k.initOneAbbrev
     def initOneAbbrev (self,commandName,key):
-        k = self ; c = k.c
+        
+        '''Enter key as an abbreviation for commandName in c.commandsDict.'''
+
+        c,k = self.c,self
         if c.commandsDict.get(key):
             g.trace('ignoring duplicate abbrev: %s',key)
         else:
@@ -1908,9 +1916,10 @@ class keyHandlerClass:
                 g.trace('no setting for %s' % commandName)
     #@+node:ekr.20061031131434.98: *4* k.makeAllBindings
     def makeAllBindings (self):
+        
+        '''Make all key bindings in all of Leo's panes.'''
 
         k = self ; c = k.c
-        # g.trace(c.shortFileName())
         k.bindingsDict = {}
         if g.new_modes:
             k.modeController.addModeCommands()
@@ -1984,11 +1993,6 @@ class keyHandlerClass:
             bodyCtrl = f.body and hasattr(f.body,'bodyCtrl') and f.body.bodyCtrl or None
             canvas = f.tree and hasattr(f.tree,'canvas') and f.tree.canvas   or None
             widgets = (c.miniBufferWidget,bodyCtrl,canvas,bindingWidget)
-
-        # This is the only real key callback.
-        def masterBindKeyCallback (event,k=k,stroke=stroke):
-            # g.trace(stroke,event.w)
-            return k.masterKeyHandler(event) # ,stroke=stroke)
 
         for w in widgets:
             if not w: continue
