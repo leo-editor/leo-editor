@@ -508,6 +508,8 @@ class todoController:
         if clear:
             iterations = []
 
+        today = datetime.date.today()
+
         for which in iterations:
 
             if which == 'priority':
@@ -535,10 +537,18 @@ class todoController:
                 
                 duedate = self.getat(p.v, 'duedate')
                 duetime = self.getat(p.v, 'duetime')
+                
                 if duedate or duetime:
                     
+                    if duedate < today:
+                        icon = "date_past.png"
+                    elif duedate == today:
+                        icon = "date_today.png"
+                    else:
+                        icon = "date_future.png"
+                    
                     com.appendImageDictToList(icons, self.iconDir,
-                        g.os_path_join('Tango', '16x16', 'apps', 'date.png'),
+                        g.os_path_join('cleo', icon),
                         2, on='vnode', cleoIcon='1', where=self.prog_location)
 
         com.setIconList(p, icons)

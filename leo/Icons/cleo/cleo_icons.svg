@@ -14,7 +14,7 @@
    height="1260"
    id="svg2"
    sodipodi:version="0.32"
-   inkscape:version="0.48+devel r12081 custom"
+   inkscape:version="0.48+devel r12275 custom"
    sodipodi:docname="cleo_icons.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
    version="1.0">
@@ -25,33 +25,36 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.45100686"
-     inkscape:cx="652.10612"
-     inkscape:cy="664.70977"
+     inkscape:zoom="0.51885164"
+     inkscape:cx="427.90298"
+     inkscape:cy="314.84659"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:window-width="1680"
-     inkscape:window-height="1001"
+     inkscape:window-height="1004"
      inkscape:window-x="1680"
      inkscape:window-y="0"
      width="765px"
      height="1260px"
-     inkscape:snap-global="false"
-     inkscape:window-maximized="1">
+     inkscape:snap-global="true"
+     inkscape:window-maximized="1"
+     inkscape:snap-grids="true"
+     inkscape:snap-bbox="true"
+     inkscape:bbox-nodes="true">
     <inkscape:grid
        id="GridFromPre046Settings"
        type="xygrid"
        originx="0px"
        originy="0in"
-       spacingx="1in"
-       spacingy="1in"
+       spacingx="64px"
+       spacingy="64px"
        color="#0000ff"
        empcolor="#0000ff"
        opacity="0.2"
        empopacity="0.4"
        empspacing="5"
-       units="in"
+       units="px"
        visible="true"
        enabled="true" />
   </sodipodi:namedview>
@@ -1070,7 +1073,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -1082,7 +1085,7 @@
        style="color:#000000;color-interpolation:sRGB;color-interpolation-filters:linearRGB;fill:#073642;fill-opacity:1;fill-rule:nonzero;stroke:#cd320e;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;clip-rule:nonzero"
        id="rect2495"
        width="995.55023"
-       height="929.03241"
+       height="1789.4014"
        x="481.14566"
        y="-50.401348" />
     <g
@@ -2966,6 +2969,195 @@
          id="path2373"
          d="M 97.689106,94.823521 C 107.09411,70.80928 129.03518,65.584462 143.39518,68.621256 c 20.32517,5.351753 25.8526,17.608448 30.34263,26.661026 1.43087,2.884857 -25.61136,9.656358 -34.9892,-0.614619 C 129.37076,84.39669 101.85184,119.13314 98.702177,123.0316 95.212184,114.51486 94.405945,102.16235 97.689106,94.823521 Z"
          style="fill:url(#radialGradient2479);fill-opacity:1;fill-rule:evenodd;stroke:none" />
+    </g>
+    <g
+       transform="matrix(0.88717157,0,0,0.88717155,-47.438755,-115.84289)"
+       id="g1237"
+       inkscape:export-xdpi="10.923555"
+       inkscape:export-ydpi="10.923555">
+      <rect
+         y="837.914"
+         x="-295.77716"
+         height="30.466536"
+         width="123.21235"
+         id="rect1239"
+         style="color:#000000;color-interpolation:sRGB;color-interpolation-filters:linearRGB;fill:#0084c8;stroke:none;stroke-width:12;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;clip-rule:nonzero;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto" />
+      <rect
+         y="835.98669"
+         x="-300.66397"
+         height="131.05865"
+         width="131.05865"
+         id="rect1241"
+         style="color:#000000;color-interpolation:sRGB;color-interpolation-filters:linearRGB;fill:none;stroke:#9eabb0;stroke-width:13.52613163;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;clip-rule:nonzero;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto" />
+      <text
+         xml:space="preserve"
+         style="font-size:72px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+         x="-235.08191"
+         y="939.32416"
+         id="text1243"
+         sodipodi:linespacing="100%"><tspan
+           sodipodi:role="line"
+           id="tspan1245"
+           x="-235.08191"
+           y="939.32416">31</tspan></text>
+    </g>
+    <g
+       transform="matrix(0.88775673,0,0,0.88775676,912.74236,-52.326945)"
+       id="g1267"
+       inkscape:export-filename="/mnt/usr1/usr1/home/tbrown/Package/leo/bzr/leo.repo/trunk/leo/themes/leo_dark_0/Icons/cleo/date_future.png"
+       inkscape:export-xdpi="11.219479"
+       inkscape:export-ydpi="11.219479">
+      <rect
+         y="837.914"
+         x="-295.77716"
+         height="30.466536"
+         width="123.21235"
+         id="rect1269"
+         style="color:#000000;color-interpolation:sRGB;color-interpolation-filters:linearRGB;fill:#005c94;stroke:none;stroke-width:12;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;clip-rule:nonzero;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto" />
+      <rect
+         y="835.98669"
+         x="-300.66397"
+         height="131.05865"
+         width="131.05865"
+         id="rect1271"
+         style="color:#000000;color-interpolation:sRGB;color-interpolation-filters:linearRGB;fill:none;stroke:#364e59;stroke-width:13.51721668;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;clip-rule:nonzero;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto" />
+      <text
+         xml:space="preserve"
+         style="font-size:72px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;fill:#9eabb0;fill-opacity:1;stroke:none;font-family:Sans"
+         x="-235.08191"
+         y="939.32416"
+         id="text1273"
+         sodipodi:linespacing="100%"><tspan
+           sodipodi:role="line"
+           id="tspan1275"
+           x="-235.08191"
+           y="939.32416">31</tspan></text>
+    </g>
+    <g
+       transform="matrix(0.88775673,0,0,0.88775674,912.74236,139.67308)"
+       id="g1277"
+       inkscape:export-filename="/mnt/usr1/usr1/home/tbrown/Package/leo/bzr/leo.repo/trunk/leo/themes/leo_dark_0/Icons/cleo/date_today.png"
+       inkscape:export-xdpi="11.219479"
+       inkscape:export-ydpi="11.219479">
+      <rect
+         y="837.914"
+         x="-295.77716"
+         height="30.466536"
+         width="123.21235"
+         id="rect1279"
+         style="color:#000000;color-interpolation:sRGB;color-interpolation-filters:linearRGB;fill:#005c94;stroke:none;stroke-width:12;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;clip-rule:nonzero;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto" />
+      <rect
+         y="835.98669"
+         x="-300.66397"
+         height="131.05865"
+         width="131.05865"
+         id="rect1281"
+         style="color:#000000;color-interpolation:sRGB;color-interpolation-filters:linearRGB;fill:none;stroke:#364e59;stroke-width:13.51721668;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;clip-rule:nonzero;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto" />
+      <text
+         xml:space="preserve"
+         style="font-size:72px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;fill:#ff6600;fill-opacity:1;stroke:none;font-family:Sans"
+         x="-235.08191"
+         y="939.32416"
+         id="text1283"
+         sodipodi:linespacing="100%"><tspan
+           sodipodi:role="line"
+           id="tspan1285"
+           x="-235.08191"
+           y="939.32416">31</tspan></text>
+    </g>
+    <g
+       id="g1217"
+       transform="matrix(0.88717614,0,0,0.88715827,912.65034,332.25581)"
+       inkscape:export-filename="/mnt/usr1/usr1/home/tbrown/Package/leo/bzr/leo.repo/trunk/leo/themes/leo_dark_0/Icons/cleo/date_past.png"
+       inkscape:export-xdpi="11.226126"
+       inkscape:export-ydpi="11.226126">
+      <rect
+         style="color:#000000;color-interpolation:sRGB;color-interpolation-filters:linearRGB;fill:#005c94;stroke:none;stroke-width:12;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;clip-rule:nonzero;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto"
+         id="rect1219"
+         width="123.21235"
+         height="30.466536"
+         x="-295.77716"
+         y="837.914" />
+      <rect
+         style="color:#000000;color-interpolation:sRGB;color-interpolation-filters:linearRGB;fill:none;stroke:#364e59;stroke-width:13.52619839;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;clip-rule:nonzero;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto"
+         id="rect1221"
+         width="131.05865"
+         height="131.05865"
+         x="-300.66397"
+         y="835.98669" />
+      <text
+         sodipodi:linespacing="100%"
+         id="text1223"
+         y="939.32416"
+         x="-235.08191"
+         style="font-size:72px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;fill:#ff0505;fill-opacity:1;stroke:none;font-family:Sans"
+         xml:space="preserve"><tspan
+           y="939.32416"
+           x="-235.08191"
+           id="tspan1225"
+           sodipodi:role="line">31</tspan></text>
+    </g>
+    <g
+       id="g1247"
+       transform="matrix(0.8947379,0,0,0.8947379,-44.98455,70.011021)"
+       inkscape:export-xdpi="11.140065"
+       inkscape:export-ydpi="11.140065">
+      <rect
+         y="837.914"
+         x="-295.77716"
+         height="30.466536"
+         width="123.21235"
+         id="rect1249"
+         style="color:#000000;color-interpolation:sRGB;color-interpolation-filters:linearRGB;fill:#0084c8;stroke:none;stroke-width:12;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;clip-rule:nonzero;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto" />
+      <rect
+         y="835.98669"
+         x="-300.66397"
+         height="131.05865"
+         width="131.05865"
+         id="rect1251"
+         style="color:#000000;color-interpolation:sRGB;color-interpolation-filters:linearRGB;fill:none;stroke:#9eabb0;stroke-width:13.41174889;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;clip-rule:nonzero;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto" />
+      <text
+         xml:space="preserve"
+         style="font-size:72px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;fill:#ff6600;fill-opacity:1;stroke:none;font-family:Sans"
+         x="-235.08191"
+         y="939.32416"
+         id="text1253"
+         sodipodi:linespacing="100%"><tspan
+           sodipodi:role="line"
+           id="tspan1255"
+           x="-235.08191"
+           y="939.32416">31</tspan></text>
+    </g>
+    <g
+       transform="matrix(0.8947379,0,0,0.89473787,-44.98455,262.01105)"
+       id="g1257"
+       inkscape:export-xdpi="11.140065"
+       inkscape:export-ydpi="11.140065">
+      <rect
+         style="color:#000000;color-interpolation:sRGB;color-interpolation-filters:linearRGB;fill:#0084c8;stroke:none;stroke-width:12;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;clip-rule:nonzero;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto"
+         id="rect1259"
+         width="123.21235"
+         height="30.466536"
+         x="-295.77716"
+         y="837.914" />
+      <rect
+         style="color:#000000;color-interpolation:sRGB;color-interpolation-filters:linearRGB;fill:none;stroke:#9eabb0;stroke-width:13.41174889;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;clip-rule:nonzero;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto"
+         id="rect1261"
+         width="131.05865"
+         height="131.05865"
+         x="-300.66397"
+         y="835.98669" />
+      <text
+         sodipodi:linespacing="100%"
+         id="text1263"
+         y="939.32416"
+         x="-235.08191"
+         style="font-size:72px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;fill:#dc0000;fill-opacity:1;stroke:none;font-family:Sans"
+         xml:space="preserve"><tspan
+           y="939.32416"
+           x="-235.08191"
+           id="tspan1265"
+           sodipodi:role="line">31</tspan></text>
     </g>
   </g>
 </svg>
