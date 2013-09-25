@@ -72,10 +72,8 @@ class Commands (object):
         tag = 'Commands.__init__ %s' % (g.shortFileName(fileName))
         if trace and g.trace_startup: print('\n%s %s' % (tag,g.callers()))
         c = self
-
         if trace and not g.trace_startup:
             t1 = time.clock()
-
         # Official ivars.
         self._currentPosition = self.nullPosition()
         self._topPosition     = self.nullPosition()

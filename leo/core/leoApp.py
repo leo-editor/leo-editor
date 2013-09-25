@@ -917,13 +917,13 @@ class LeoApp:
             self.destroyWindow(w)
 
         self.finishQuit()
-    #@+node:ekr.20031218072017.2188: *3* app.newCommander & helper
+    #@+node:ekr.20031218072017.2188: *3* app.newCommander
     def newCommander(self,fileName,relativeFileName=None,gui=None,previousSettings=None):
 
         """Create a commander and its view frame for the Leo main window."""
 
         trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: print('g.app.newCommander: %s' % repr(fileName))
+        if trace: print('g.app.newCommander: %s %s' % (repr(fileName),repr(relativeFileName)))
 
         # Create the commander and its subcommanders.
         # This takes about 3/4 sec when called by the leoBridge module.
@@ -1883,28 +1883,23 @@ class LoadManager:
     #@+node:ekr.20120219154958.10452: *3* LM.load
     def load (self,fileName=None,pymacs=None):
 
+        '''Load the indicated file'''
         lm = self
-
         # Phase 1: before loading plugins.
         # Scan options, set directories and read settings.
         if not lm.isValidPython(): return
-
         lm.doPrePluginsInit(fileName,pymacs)
             # sets lm.options and lm.files
-
         if lm.options.get('version'):
             print(g.app.signon)
             return
         if not g.app.gui:
             return
-
         # Phase 2: load plugins: the gui has already been set.
         g.doHook("start1")
         if g.app.killed: return
-
         # Phase 3: after loading plugins. Create one or more frames.
         ok = lm.doPostPluginsInit()
-
         if ok:
             g.es('') # Clears horizontal scrolling in the log pane.
             g.app.gui.runMainLoop()
@@ -2678,7 +2673,8 @@ class LoadManager:
                 p.setBodyString(s)
                 c.selectPosition(p)
         # Fix critical bug 1184855: data loss with command line 'leo somefile.ext'
-        c.mFileName = '%s.leo' % (fn)
+        # 2013/09/25: Fix smallish bug 1226816 Command line "leo xxx.leo" creates file xxx.leo.leo.
+        c.mFileName = fn if fn.endswith('.leo') else '%s.leo' % (fn)
         c.frame.title = c.computeWindowTitle(c.mFileName)
         c.frame.setTitle(c.frame.title)
         # chapterController.finishCreate must be called after the first real redraw
