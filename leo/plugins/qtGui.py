@@ -7382,10 +7382,20 @@ class leoQtGui(leoGui.leoGui):
             self.frameFactory = TabbedFrameFactory()
         else:
             self.frameFactory = SDIFrameFactory()
-    #@+node:ekr.20110605121601.18483: *5* runMainLoop (qtGui)
+    #@+node:ekr.20110605121601.18483: *5* runMainLoop & runWithIpythonKernel (qtGui)
     def runWithIpythonKernel(self):
-        # import internal_ipkernel as ipk
-        import leo.plugins.internal_ipkernel as ipk        
+
+        try:
+            # This try/except does not work.
+            # Apparently ipython calls sys.exit on failure.
+            import leo.plugins.internal_ipkernel as ipk
+        except Exception:
+            print('can not import leo.plugins.internal_ipkernel')
+            g.app.ipk = None
+            g.app.ipm = None
+            g_ipm = None
+            g.es_exception()
+            return
         g.app.ipk = ipk.InternalIPKernel()
         g.app.ipk.init_ipkernel('qt')
         ns = g.app.ipk.namespace
@@ -7405,12 +7415,9 @@ class leoQtGui(leoGui.leoGui):
             c = ns['c'] = event['c']
             self.execInNamespace(c, c.p, g.app.ipk.namespace)
 
-
         # blocks forever here, equivalent of 
         # QApplication.exec_()
         g.app.ipk.ipkernel.start()
-
-
 
     def execInNamespace(self, c, p, ns):
         """" Needed because c.executeScript doesn't handle ns properly """
@@ -7420,13 +7427,11 @@ class leoQtGui(leoGui.leoGui):
         except:
             g.es_exception()
 
-
     def runMainLoop(self):
 
         '''Start the Qt main loop.'''
 
         g.app.gui.dismiss_splash_screen()
-
         if self.script:
             log = g.app.log
             if log:

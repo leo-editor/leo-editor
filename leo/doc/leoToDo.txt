@@ -181,8 +181,6 @@ global config dir: /home/ldi/bzr/LeoLatest/leo/config
 home dir: /home/bob05
 reading settings in /home/ldi/bzr/LeoLatest/leo/config/leoSettings.leo
 reading settings in /home/bob05/.leo/myLeoSettings.leo
-.. @+node:ekr.20130920055521.11282: *4* 1228099 Cancelling save of dirty untitled commander doesn't work with --ipython
-https://bugs.launchpad.net/leo-editor/+bug/1228099
 .. @+node:ekr.20130921043420.11269: *3* Help (3)
 .. @+node:ekr.20130806072439.20477: *4* I can't make Leo-Editor start in a full-screen window under openSUSU 12.1
 From: SegundoBob <bhossley@ieee.org>
@@ -5734,8 +5732,6 @@ global config dir: /home/ldi/bzr/LeoLatest/leo/config
 home dir: /home/bob05
 reading settings in /home/ldi/bzr/LeoLatest/leo/config/leoSettings.leo
 reading settings in /home/bob05/.leo/myLeoSettings.leo
-.. @+node:ekr.20130920055521.11282: *6* 1228099 Cancelling save of dirty untitled commander doesn't work with --ipython
-https://bugs.launchpad.net/leo-editor/+bug/1228099
 .. @+node:ekr.20130908104426.17092: *5* hard, not very important
 .. @+node:ekr.20111222113610.10244: *6*  613153 unable to describe root directory on thumb drive
 A very complex bug

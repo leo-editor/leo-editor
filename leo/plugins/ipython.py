@@ -17,6 +17,8 @@ http://leoeditor.com//IPythonBridge.html
 '''
 #@-<< docstring >>
 
+# **Important**: this plugin has been replaced by leoIPython.py.
+
 __version__ = '0.9'
 #@+<< version history >>
 #@+node:ekr.20080201143145.2: ** << version history >>
@@ -98,6 +100,8 @@ gIP = None
 #@+node:ekr.20080201144219: ** Module-level functions
 #@+node:ekr.20080201143145.4: *3* init
 def init ():
+    
+    print('**Important**: Use Leo\'s --ipython option instead of the ipython.py plugin.')
 
     if not import_ok: return False
 

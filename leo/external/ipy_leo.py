@@ -4,6 +4,8 @@
 
 """
 
+# **Important**: this module has been replaced by leoIPython.py.
+
 #@@language python
 #@@tabwidth -4
 

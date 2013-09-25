@@ -641,6 +641,16 @@ The fix was to nodeHistory.select at rev 6042
 https://bugs.launchpad.net/leo-editor/+bug/1226816
 
 The fix was to LM.initWrapperLeoFile.
+#@+node:ekr.20130908104426.11244: *3* Investigated bug 971171: re .leo/.leoRecentFiles.txt
+If $(HOME)/.leo/.leoRecentFiles.txt does not exist, the only recent file ever is the current file
+
+https://bugs.launchpad.net/leo-editor/+bug/971171
+
+It works for me.  I did make minor changes to rf.writeRecentFileFileHelper.
+#@+node:ekr.20130920055521.11282: *3* Investigated bug: 1228099 Cancelling save of dirty untitled commander doesn't work with --ipython
+https://bugs.launchpad.net/leo-editor/+bug/1228099
+
+It seems to work, but the bug report is incomplete.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
