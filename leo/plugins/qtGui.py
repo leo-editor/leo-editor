@@ -2603,7 +2603,10 @@ class DynamicWindow(QtGui.QMainWindow):
 
         sheet = c.config.getData('qt-gui-plugin-style-sheet')
         if sheet:
-            sheet = '\n'.join(sheet)
+            if '\n' in sheet[0]:
+                sheet = ''.join(sheet)
+            else:
+                sheet = '\n'.join(sheet)
             
             # store *before* expanding, so later expansions get new zoom
             c.active_stylesheet = sheet
