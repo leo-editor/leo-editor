@@ -233,7 +233,7 @@ class Commands (object):
         # print('c.initOptionsIvars')
 
         self.fixed = False
-        self.fixedWindowPosition = False
+        self.fixedWindowPosition = []
         self.focus_border_color = 'white'
         self.focus_border_width = 1 # pixels
         self.outlineHasInitialFocus = False
@@ -471,7 +471,7 @@ class Commands (object):
             # 2011/11/09: An excellent, subliminal, improvement.
         c.contractVisitedNodes      = getBool('contractVisitedNodes')
         c.fixed                     = getBool('fixedWindow',default=False)
-        c.fixedWindowPosition       = getData('fixedWindowPosition')
+        c.fixedWindowPositionData   = getData('fixedWindowPosition')
         c.focus_border_color        = getColor('focus_border_color') or 'red'
         c.focus_border_command_state_color = getColor(
             'focus_border_command_state_color') or 'blue'
@@ -505,9 +505,10 @@ class Commands (object):
 
         # g.trace(c.fixed,c.fixedWindowPosition)
 
-        if c.fixedWindowPosition:
+        if c.fixedWindowPositionData:
             try:
-                w,h,l,t = self.fixedWindowPosition
+                aList = [z.strip() for z in c.fixedWindowPositionData if z.strip()]
+                w,h,l,t = aList
                 c.fixedWindowPosition = int(w),int(h),int(l),int(t)
             except Exception:
                 g.error('bad @data fixedWindowPosition',

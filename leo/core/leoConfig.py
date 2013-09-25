@@ -241,10 +241,8 @@ class ParserBaseClass:
     #@+node:ekr.20071214140900: *4* doData
     def doData (self,p,kind,name,val):
 
-        s = p.b
-        lines = g.splitLines(s)
-        data = [z.strip() for z in lines if z.strip() and not z.startswith('#')]
-
+        # New in Leo 4.11: do not strip lines.
+        data = [z for z in g.splitLines(p.b) if not z.startswith('#')]
         self.set(p,kind,name,data)
     #@+node:ekr.20041120094940.3: *4* doDirectory & doPath
     def doDirectory (self,p,kind,name,val):

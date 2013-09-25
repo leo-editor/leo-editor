@@ -519,6 +519,7 @@
 <v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
+<v t="ekr.20130924110246.13745"><vh>@bool scripting-abbreviations = False</vh></v>
 <v t="ekr.20100904134301.11002"><vh>@data global-abbreviations</vh></v>
 <v t="ekr.20100904134301.11004"><vh>@data abbreviations</vh></v>
 <v t="tbrown.20120820202856.25328"><vh>@string abbreviations-subst-start = None</vh></v>
@@ -1798,6 +1799,7 @@
 </v>
 </v>
 <v t="ekr.20060603215208"></v>
+<v t="ekr.20100904134301.11000"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -9775,6 +9777,10 @@ action will be used instead.</t>
 <t tx="ekr.20130705090546.10663">The delay, in milliseconds, to wait before resuming recoloring, when NEW_COLORER is True.</t>
 <t tx="ekr.20130807090137.20911"></t>
 <t tx="ekr.20130807090137.20912"></t>
+<t tx="ekr.20130924110246.13745">Scripting abbreviations will be enabled if:
+    
+1. @bool enable-abbreviations = True
+2. *either* this setting or @bool scripting-at-script-nodes = True</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>
@@ -9882,13 +9888,24 @@ See also abbreviations-subst-env.
 <t tx="tbrown.20120820202856.25329">See abbreviations-subst-start.  This setting,
 abbreviations-subst-end, has no effect if
 abbreviations-subst-start is not set.</t>
-<t tx="tbrown.20120820202856.25330">"""
-If abbreviations-subst-start is set (see that 
-@setting), the code in this node will be executed, once
-only, when the outline is loaded, in an environment which
-will be used for execution of substitutions in
-abbreviations.  For example, if this node contains
-`import time`, then an abbreviation like::
+<t tx="tbrown.20120820202856.25330"># Modified by EKR 2013/09/25: revised docstring and improved get_user().
+
+"""
+
+**Important**: scripting abbreviations are in effect only if the following
+settings are in effect::
+    
+    @bool enable-abbreviations = True
+    @bool abbreviations-subst-start = True
+    
+and one (or both) of the following are in effect::
+    
+    @bool scripting-at-script-nodes = True
+    @bool scripting-abbreviations = True
+
+This node defines the environment in which substitution scripts are
+evaluated. For example, if this node contains `import time`, then an
+abbreviation like::
 
     date;;={|{import time;x=time.asctime()}|}
 
@@ -9896,11 +9913,12 @@ can be written more simply as::
 
     date;;={|{x=time.asctime()}|}
 
-The environment will contain `c` and `g`, a
-dict called `_values` (see ask() and get() below),
-and `_abr`, the abbreviation being expanded.
+The environment will contain the following pre-defined values:
 
-Start lines with `\:` to preserve indentation.
+- `c` and `g`, as usual.
+- `values`: a dict. see ask() and get() below.
+- `_abr`, the abbreviation being expanded.
+
 """
 
 # helpful imports
@@ -9909,132 +9927,136 @@ import sys
 import time
 import datetime
 
-# the remainder of the functions here are helpers
-# for the class, def etc. template abbreviations in
-# @@data abbreviations-examples, see that node to
-# enable.
+# Helpers for the class, def etc. template abbreviations in @data abbreviations-examples.
 
 try:
-\:    import pwd  # for full name of user in templates
-\:except:
-\:    pwd = None
+    import pwd  # for full name of user in templates
+except:
+    pwd = None
 
 def ask(s, default=""):
-\:    """Ask, always, for a value for template field 's'"""
-\:    x = g.app.gui.runAskOkCancelStringDialog(c, s, s, default=default)
-\:    _values[s] = x
-\:    return x
+    """Ask, always, for a value for template field 's'"""
+    x = g.app.gui.runAskOkCancelStringDialog(c, s, s, default=default)
+    _values[s] = x
+    return x
 
 def get(s, default=""):
-\:    """Ask for template field 's' only if not already known"""
-\:    if s in _values:
-\:        return _values[s]
-\:    else:
-\:        return ask(s, default=default)
+    """Ask for template field 's' only if not already known"""
+    if s in _values:
+        return _values[s]
+    else:
+        return ask(s, default=default)
+  
+# EKR: don't crash if os.environ['LOGNAME'] does not exist.
+try:
+    _user_name = os.environ['LOGNAME']
+    if pwd:
+        _user_name = pwd.getpwnam(name).pw_gecos.rstrip(',')
+except KeyError:
+    _user_name = None
 
 def user_name():
-\:    """get user's full name if available"""
-\:    if pwd:
-\:        return pwd.getpwnam(os.environ['LOGNAME']).pw_gecos.rstrip(',')
-\:    else:
-\:        os.environ['LOGNAME']
+    """get user's full name if available"""
+    global _user_name
+    if not _user_name:
+        _user_name = ask('LOGNAME','LOGNAME')
+    return _user_name
 
 def file_name():
-\:    """dafault name of this file if implied by headline"""
-\:    if c.p.h.endswith(".py"):
-\:        return g.os_path_split(c.p.h)[-1]
-\:    return ".py"
+    """dafault name of this file if implied by headline"""
+    if c.p.h.endswith(".py"):
+        return g.os_path_split(c.p.h)[-1]
+    return ".py"
 
 def in_class():  # return "self, " if in a class definition
-\:    """return "self" if in a class definition (from headline)"""
-\:    for nd in c.p.self_and_parents_iter():
-\:        if nd.h.startswith('class'):
-\:            return "self, "
-\:    return ""
+    """return "self" if in a class definition (from headline)"""
+    for nd in c.p.self_and_parents_iter():
+        if nd.h.startswith('class'):
+            return "self, "
+    return ""
 
 def param_doc(k=None):
-\:    """make an epydoc / rst style parameter documentation block"""
-\:    if not k:
-\:        k = "Params, comma sep."
-\:        indent = '    '
-\:    else:  # assume in an __init__ def'n
-\:        indent = '        '
-\:    if k in _values and _values[k]:
-\:        return "\n\n%s:Parameters:\n%s" % (indent, '\n'.join(
-\:            ["%s- `%s`: &lt;|describe %s|&gt;" % (
-\:                indent, i.split('=',1)[0].strip(), i.split('=',1)[0].strip()
-\:             ) for i in _values[k].split(',')]))
-\:    return ""
+    """make an epydoc / rst style parameter documentation block"""
+    if not k:
+        k = "Params, comma sep."
+        indent = '    '
+    else:  # assume in an __init__ def'n
+        indent = '        '
+    if k in _values and _values[k]:
+        return "\n\n%s:Parameters:\n%s" % (indent, '\n'.join(
+            ["%s- `%s`: &lt;|describe %s|&gt;" % (
+                indent, i.split('=',1)[0].strip(), i.split('=',1)[0].strip()
+             ) for i in _values[k].split(',')]))
+    return ""
 
 def long_word():
-\:    """example of an abbreviation substitution which inspects
-\:    the current content of the body text, see `;;;` example
-\:    in @@data abbreviations-examples
-\:    """
-\:    words = c.p.b.split()
-\:    w = c.frame.body.bodyCtrl
-\:    i = w.getInsertPoint() - len(_abr)
-\:    b = c.p.b
-\:    s = []
-\:    while i and b[i].isalpha():
-\:        s[0:0] = b[i]
-\:        i -= 1
-\:    s = ''.join(s)
-\:    for i in words:
-\:        if i.startswith(s) and i != s:
-\:            return i[len(s):]
-\:    
-\:    return ''
+    """example of an abbreviation substitution which inspects
+    the current content of the body text, see `;;;` example
+    in @@data abbreviations-examples
+    """
+    words = c.p.b.split()
+    w = c.frame.body.bodyCtrl
+    i = w.getInsertPoint() - len(_abr)
+    b = c.p.b
+    s = []
+    while i and b[i].isalpha():
+        s[0:0] = b[i]
+        i -= 1
+    s = ''.join(s)
+    for i in words:
+        if i.startswith(s) and i != s:
+            return i[len(s):]
+    return ''
 
 def close_xml():
-\:    """simple, but usually right, code to close open XML tags"""
-\:    w = c.frame.body.bodyCtrl
-\:    i = w.getInsertPoint() - len(_abr)
-\:    b = c.p.b
-\:    skips = 1
-\:    while i and skips:
-\:        s = []
-\:        while i and b[i] != '&gt;':
-\:            i -= 1
-\:        i -= 1
-\:        while i and (b[i] != '&lt;' or (s and b[i] == '&lt;' and s[0] == '/')):
-\:            s[0:0] = b[i]
-\:            i -= 1
-\:            if s and s[0] == '&lt;' and len(s) &gt; 1 and s[1] == '/':
-\:                skips += 1  # a closed tag indicates search one more tag
-\:        skips -= 1
-\:    s = ''.join([i if i.isalpha() else ' ' for i in s])
-\:    if s.strip():
-\:        return "&lt;/%s&gt;" % (s.split(None, 1)[0])
-\:    else:
-\:        return "&lt;/"
+    """simple, but usually right, code to close open XML tags"""
+    w = c.frame.body.bodyCtrl
+    i = w.getInsertPoint() - len(_abr)
+    b = c.p.b
+    skips = 1
+    while i and skips:
+        s = []
+        while i and b[i] != '&gt;':
+            i -= 1
+        i -= 1
+        while i and (b[i] != '&lt;' or (s and b[i] == '&lt;' and s[0] == '/')):
+            s[0:0] = b[i]
+            i -= 1
+            if s and s[0] == '&lt;' and len(s) &gt; 1 and s[1] == '/':
+                skips += 1  # a closed tag indicates search one more tag
+        skips -= 1
+    s = ''.join([i if i.isalpha() else ' ' for i in s])
+    if s.strip():
+        return "&lt;/%s&gt;" % (s.split(None, 1)[0])
+    else:
+        return "&lt;/"
 
 def django_tag():
-\:    """expand {block content} to 
-\:       {% block content %}\n{% end_block content %} with proper
-\:       indentation (for Django web templates)"""
-\:    from PyQt4 import QtCore
-\:    w = c.frame.body.bodyCtrl
-\:    i = w.getInsertPoint() - len(_abr)
-\:    b = c.p.b
-\:    s = []
-\:    while i and b[i] != '{':
-\:        s[0:0] = b[i]
-\:        i -= 1
-\:    start = i
-\:    s = ''.join(s)
-\:    indent = 0
-\:    while i and b[i] != '\n':
-\:        indent += 1
-\:        i -= 1
-\:    if indent:
-\:        indent -= 1
-\:    def later(c=c, indent=indent, b=b, s=s, _abr=_abr):
-\:        c.p.b = "%s{%% %s %%}\n    %s\n%s{%% end%s %%}%s" % (
-\:            b[:start], s, ' '*indent, ' '*indent, s, b[start+len(s)+len(_abr):]
-\:        )
-\:    QtCore.QTimer.singleShot(0, later)
-  </t>
+    """expand {block content} to 
+       {% block content %}\n{% end_block content %} with proper
+       indentation (for Django web templates)"""
+    from PyQt4 import QtCore
+    w = c.frame.body.bodyCtrl
+    i = w.getInsertPoint() - len(_abr)
+    b = c.p.b
+    s = []
+    while i and b[i] != '{':
+        s[0:0] = b[i]
+        i -= 1
+    start = i
+    s = ''.join(s)
+    indent = 0
+    while i and b[i] != '\n':
+        indent += 1
+        i -= 1
+    if indent:
+        indent -= 1
+    def later(c=c, indent=indent, b=b, s=s, _abr=_abr):
+        c.p.b = "%s{%% %s %%}\n    %s\n%s{%% end%s %%}%s" % (
+            b[:start], s, ' '*indent, ' '*indent, s, b[start+len(s)+len(_abr):]
+        )
+    QtCore.QTimer.singleShot(0, later)
+</t>
 <t tx="tbrown.20120820202856.25331"># Examples of abbreviations with substitutions, see
 # abbreviations-subst-start and
 # abbreviations-subst-env.   Use `\:` to extend

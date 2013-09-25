@@ -325,71 +325,97 @@ class abbrevCommandsClass (baseEditCommandsClass):
         self.globalDynamicAbbrevs = c.config.getBool('globalDynamicAbbrevs')
         self.store ={'rlist':[], 'stext':''} # For dynamic expansion.
         self.w = None
-    #@+node:ekr.20100901080826.6004: *4* finishCreate (abbrevClass)
+    #@+node:ekr.20100901080826.6004: *4* finishCreate (abbrevClass) & helpers
     def finishCreate(self):
-
+        
+        c,k = self.c,self.c.k
         baseEditCommandsClass.finishCreate(self)
+        self.init_settings()
+        self.init_abbrev()
+        self.init_env()
+        if (not g.app.initing and not g.unitTesting and
+            not g.app.batchMode and not c.gui.isNullGui
+        ):
+            g.red('Abbreviations %s' % ('on' if c.k.abbrevOn else 'off'))
+    #@+node:ekr.20130924110246.13738: *5* init_abbrev
+    def init_abbrev(self):
+        
+        '''Init the user abbreviations from @data global-abbreviations
+        and @data abbreviations nodes.
+        '''
 
-        c = self.c ; k = c.k
+        c = self.c
         table = (
             ('global-abbreviations','global'),
             ('abbreviations','local'),
         )
         for source,tag in table:
-            aList = c.config.getData(source)
-            if aList:
-                # append continued lines
-                idx = len(aList) - 1
-                while idx != 0:
-                    if aList[idx].startswith('\:'):
-                        # append to previous line
-                        aList[idx-1] = "%s\n%s" % (aList[idx-1], aList[idx][2:])
-                        del aList[idx]
-                    idx -= 1
-
-                for s in aList:
-                    self.addAbbrevHelper(s,tag)
-
-        if 0: # Quickly becomes annoying.
-            if self.abbrevs:
-                self.listAbbrevs()
-
-        k.abbrevOn = c.config.getBool('enable-abbreviations',default=False)
-        # here for speed in masterCommand.
-        # EKR: always init these.
-        c.abbrev_subst_start = c.config.getString('abbreviations-subst-start')
-        c.abbrev_subst_end = c.config.getString('abbreviations-subst-end')
-        c.abbrev_place_start = c.config.getString('abbreviations-place-start')
-        c.abbrev_place_end = c.config.getString('abbreviations-place-end')
-        c.abbrev_subst_env = {
-            'c': c,
-            'g': g,
-            '_values': {},
-        }
-        if (c.config.getString('abbreviations-subst-start') and
-            c.config.getBool('scripting-at-script-nodes')):
-            if c.config.getData('abbreviations-subst-env'):
-                aList = c.config.getData('abbreviations-subst-env')
-                idx = len(aList) - 1
-                while idx != 0: # append continued lines
-                    if aList[idx].startswith('\:'):
-                        # append to previous line
-                        aList[idx-1] = "%s\n%s" % (aList[idx-1], aList[idx][2:])
-                        del aList[idx]
-                    idx -= 1
-
-                exec('\n'.join(aList), c.abbrev_subst_env, c.abbrev_subst_env)
+            aList = c.config.getData(source) or []
+            abbrev,result = [],[]
+            for s in aList:
+                if s.startswith('\\:'):
+                    # Continue the previous abbreviation.
+                    abbrev.append(s[2:])
+                else:
+                    # End the previous abbreviation.
+                    if abbrev:
+                        result.append(''.join(abbrev))
+                        abbrev = []
+                    # Start the new abbreviation.
+                    if s.strip():
+                        abbrev.append(s)
+            # End any remaining abbreviation.
+            if abbrev:
+                result.append(''.join(abbrev))
+            for s in result:
+                self.addAbbrevHelper(s,tag)
+    #@+node:ekr.20130924110246.13748: *5* init_env
+    def init_env(self):
+        
+        '''Init c.abbrev_subst_env by executing the contents of the
+        @data abbreviations-subst-env node.'''
+        
+        c = self.c
+        if c.abbrev_place_start and self.enabled:
+            aList = self.subst_env
+            result = []
+            for z in aList:
+                # Compatibility with original design.
+                if z.startswith('\\:'):
+                    result.append(z[2:])
+                else:
+                    result.append(z)
+            result = ''.join(result)
+            try:
+                exec(result,c.abbrev_subst_env,c.abbrev_subst_env)
+            except Exception:
+                g.es('Error exec\'ing @data abbreviations-subst-env')
+                g.es_exception()
         else:
             c.abbrev_subst_start = False
-            if c.config.getString('abbreviations-subst-start'):
-                g.es("Note: @abbreviations-subst-start found, but no substitutions "
-                     "without @scripting-at-script-nodes = True")
-
-        if (k.abbrevOn and not g.app.initing and
-            not g.unitTesting and not g.app.batchMode and
-            not c.gui.isNullGui
-        ):
-            g.red('Abbreviations are on')
+            # if c.config.getString('abbreviations-subst-start'):
+                # g.es("Note: @abbreviations-subst-start found, but no substitutions "
+                     # "without @scripting-at-script-nodes = True")
+    #@+node:ekr.20130924110246.13749: *5* init_settings
+    def init_settings(self):
+        
+        c = self.c
+        c.k.abbrevOn = c.config.getBool('enable-abbreviations',default=False)
+        # Init these here for k.masterCommand.
+        c.abbrev_place_end = c.config.getString('abbreviations-place-end')
+        c.abbrev_place_start = c.config.getString('abbreviations-place-start')
+        c.abbrev_subst_end = c.config.getString('abbreviations-subst-end')
+        c.abbrev_subst_env = {'c': c,'g': g,'_values': {},}
+            # The environment for all substitutions.
+            # May be augmented in init_env.
+        c.abbrev_subst_start = c.config.getString('abbreviations-subst-start')
+        # Local settings.
+        self.enabled = (
+            c.config.getBool('scripting-at-script-nodes') or
+            c.config.getBool('scripting-abbreviations'))
+        self.subst_env = c.config.getData('abbreviations-subst-env')
+        
+        
     #@+node:ekr.20050920084036.15: *4* getPublicCommands & getStateCommands
     def getPublicCommands (self):
 
