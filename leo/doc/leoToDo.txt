@@ -181,8 +181,6 @@ global config dir: /home/ldi/bzr/LeoLatest/leo/config
 home dir: /home/bob05
 reading settings in /home/ldi/bzr/LeoLatest/leo/config/leoSettings.leo
 reading settings in /home/bob05/.leo/myLeoSettings.leo
-.. @+node:ekr.20130908104426.11244: *4* 971171 If $(HOME)/.leo/.leoRecentFiles.txt does not exist, the only recent file ever is the current file
-https://bugs.launchpad.net/leo-editor/+bug/971171
 .. @+node:ekr.20130920055521.11282: *4* 1228099 Cancelling save of dirty untitled commander doesn't work with --ipython
 https://bugs.launchpad.net/leo-editor/+bug/1228099
 .. @+node:ekr.20130921043420.11269: *3* Help (3)
@@ -5736,8 +5734,6 @@ global config dir: /home/ldi/bzr/LeoLatest/leo/config
 home dir: /home/bob05
 reading settings in /home/ldi/bzr/LeoLatest/leo/config/leoSettings.leo
 reading settings in /home/bob05/.leo/myLeoSettings.leo
-.. @+node:ekr.20130908104426.11244: *6* 971171 If $(HOME)/.leo/.leoRecentFiles.txt does not exist, the only recent file ever is the current file
-https://bugs.launchpad.net/leo-editor/+bug/971171
 .. @+node:ekr.20130920055521.11282: *6* 1228099 Cancelling save of dirty untitled commander doesn't work with --ipython
 https://bugs.launchpad.net/leo-editor/+bug/1228099
 .. @+node:ekr.20130908104426.17092: *5* hard, not very important

@@ -3178,22 +3178,22 @@ class RecentFilesManager:
                 rf.createRecentFilesMenuItems(frame.c)
     #@+node:ekr.20050424114937.2: *3* rf.writeRecentFilesFile & helper
     def writeRecentFilesFile (self,c,force=False):
+        '''
+        Write the appropriate .leoRecentFiles.txt file.
 
-        '''Write the appropriate .leoRecentFiles.txt file.
-
-        Write a message if force is True, or if it hasn't been written yet.'''
+        Write a message if force is True, or if it hasn't been written yet.
+        
+        '''
 
         tag = '.leoRecentFiles.txt'
         rf = self
         if g.app.unitTesting:
             return
-
         localFileName = c.fileName()
         if localFileName:
             localPath,junk = g.os_path_split(localFileName)
         else:
             localPath = None
-
         written = False
         seen = []
         for path in (localPath,g.app.globalConfigDir,g.app.homeLeoDir):
@@ -3219,26 +3219,24 @@ class RecentFilesManager:
                 if not g.os_path_exists(fileName):
                     g.red('creating: %s' % (fileName))
                 rf.writeRecentFilesFileHelper(fileName)
-
-
     #@+node:ekr.20050424131051: *4* rf.writeRecentFilesFileHelper
     def writeRecentFilesFileHelper (self,fileName):
 
-        # g.trace(g.toUnicode(fileName))
-
         # Don't update the file if it begins with read-only.
+        trace = False and not g.unitTesting
         rf = self
         theFile = None
         try:
             theFile = open(fileName)
             lines = theFile.readlines()
             if lines and rf.sanitize(lines[0])=='readonly':
-                # g.trace('read-only: %s' %fileName)
+                if trace: g.trace('read-only: %s' %fileName)
                 return False
         except IOError:
             # The user may have erased a file.  Not an error.
+            pass
+        finally:
             if theFile: theFile.close()
-
         theFile = None
         try:
             if g.isPython3:
@@ -3252,24 +3250,20 @@ class RecentFilesManager:
             if not g.isPython3:
                 s = g.toEncodedString(s,reportErrors=True)
             theFile.write(s)
-
         except IOError:
-            if 1: # The user may have erased a file.  Not an error.
-                g.error('error writing',fileName)
-                g.es_exception()
-                return False
-
+            # The user may have erased a file.  Not an error.
+            g.error('error writing',fileName)
+            g.es_exception()
+            theFile = None
         except Exception:
             g.error('unexpected exception writing',fileName)
             g.es_exception()
+            theFile = None
             if g.unitTesting: raise
-            return False
-
-        if theFile:
-            theFile.close()
-            return True
-        else:
-            return False
+        finally:
+            if theFile:
+                theFile.close()
+        return bool(theFile)
     #@-others
 #@-others
 #@-leo
