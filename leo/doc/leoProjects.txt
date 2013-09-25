@@ -594,6 +594,47 @@ For example:
     
 alp;;=@language python
 p;;=<p>
+#@+node:ekr.20130925065712.11566: *3* Improved abbreviations
+@language rest
+
+Made the following changes:
+
+1. The \: convention is deprecated in @data abbreviations-subst-env nodes.
+   The \: will be stripped from such nodes, but will appear in neither the
+   \@data abbreviations-subst-env node nor the @data abbreviations examples
+   node in leoSettings.leo.
+
+2. Refactored the code in abbrevClass.finishCreate into three parts, mostly
+   so each may have its own docstring.
+
+3. Added try/finally protection in the exec statement, so that errors in
+   \@data abbreviations-subst-env do not cause problems during startup.
+
+4. Added a new setting: @bool scripting-abbreviations, default False.
+   Scripting abbreviations will be enabled if *either* of the following is
+   True::
+
+        @bool scripting-abbreviations
+        @bool scripting-at-script-nodes
+    
+    This is a safety feature: it allows scripting abbreviations to be
+    enabled *without* enabling the (very dangerous in general)
+    scripting-at-script-nodes setting.
+
+5. finishCreate always reports either::
+
+        Abbreviations on
+        Abbreviations off
+
+    in the normal operating environment (not unit testing, not null gui,
+    not batch mode, etc.) As a result, there is less need to issue the
+    following message::
+
+        Note: @abbreviations-subst-start found, but no substitutions without @scripting-at-script-nodes = True"
+
+6. Changed @data abbreviations-subst-env node to handle missing os.environ['LOGNAME'].
+
+7. To make this work, the doData parser in leoConfig.py no longer strips lines.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
