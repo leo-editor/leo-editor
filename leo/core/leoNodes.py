@@ -1109,7 +1109,8 @@ class position (object):
         p2._linkAfter(p) # This should "just work"
         return p2
     #@+node:ekr.20040303175026.9: *4* p.copyTreeAfter, copyTreeTo
-    # These used by unit tests and by the group_operations plugin.
+    # These used by unit tests, by the group_operations plugin,
+    # and by the files-compare-leo-files command.
 
     def copyTreeAfter(self):
         p = self

@@ -6933,6 +6933,7 @@ class editFileCommandsClass (baseEditCommandsClass):
 
         '''Compare two .leo files.'''
 
+        trace = False and not g.unitTesting
         c = c1 = self.c ; w = c.frame.body.bodyCtrl
 
         # Prompt for the file to be compared with the present outline.
@@ -6949,42 +6950,40 @@ class editFileCommandsClass (baseEditCommandsClass):
         d1 = self.createFileDict(c1)
         d2 = self.createFileDict(c2)  
         inserted, deleted, changed = self.computeChangeDicts(d1,d2)
-        self.dumpCompareNodes(fileName,c1.mFileName,inserted,deleted,changed)
+        if trace: self.dumpCompareNodes(fileName,c1.mFileName,inserted,deleted,changed)
 
         # Create clones of all inserted, deleted and changed dicts.
-        self.createAllCompareClones(inserted,deleted,changed)
+        self.createAllCompareClones(c1,c2,inserted,deleted,changed)
         c2.frame.destroySelf()
         g.app.gui.set_focus(c,w)
-
-
     #@+node:ekr.20070921072608: *4* computeChangeDicts
     def computeChangeDicts (self,d1,d2):
 
-        '''Compute inserted, deleted, changed dictionaries.'''
+        '''Compute inserted, deleted, changed dictionaries.
+        
+        New in Leo 4.11: show the nodes in the *invisible* file, d2, if possible.'''
 
         inserted = {}
         for key in d2:
             if not d1.get(key):
                 inserted[key] = d2.get(key)
-
         deleted = {}
         for key in d1:
             if not d2.get(key):
                 deleted[key] = d1.get(key)
-
         changed = {}
         for key in d1:
             if d2.get(key):
                 p1 = d1.get(key)
                 p2 = d2.get(key)
                 if p1.h != p2.h or p1.b != p2.b:
-                    changed[key] = p1
-
+                    changed[key] = p2 # Show the node in the *other* file.
         return inserted, deleted, changed
     #@+node:ekr.20070921072910: *4* createAllCompareClones & helper
-    def createAllCompareClones(self,inserted,deleted,changed):
+    def createAllCompareClones(self,c1,c2,inserted,deleted,changed):
 
         c = self.c # Always use the visible commander
+        assert c == c1
         # Create parent node at the start of the outline.
         u = c.undoer ; undoType = 'Compare .leo Files'
         u.beforeChangeGroup(c.p,undoType)
@@ -6993,7 +6992,9 @@ class editFileCommandsClass (baseEditCommandsClass):
         parent.setHeadString(undoType)
         u.afterInsertNode(parent,undoType,undoData,dirtyVnodeList=[])
         for d,kind in (
-            (deleted,'deleted'),(inserted,'inserted'),(changed,'changed')
+            (deleted,'not in %s' % c2.shortFileName()),
+            (inserted,'not in %s' % c1.shortFileName()),
+            (changed,'changed: as in %s' % c2.shortFileName()),
         ):
             self.createCompareClones(d,kind,parent)
         c.selectPosition(parent)
@@ -7003,12 +7004,20 @@ class editFileCommandsClass (baseEditCommandsClass):
     def createCompareClones (self,d,kind,parent):
 
         if d:
+            c = self.c # Use the visible commander.
             parent = parent.insertAsLastChild()
             parent.setHeadString(kind)
             for key in d:
                 p = d.get(key)
-                clone = p.clone()
-                clone.moveToLastChildOf(parent)
+                if p.v.context == c:
+                    clone = p.clone()
+                    clone.moveToLastChildOf(parent)
+                else:
+                    # Fix bug 1160660: File-Compare-Leo-Files creates "other file" clones.
+                    copy = p.copyTreeAfter()
+                    copy.moveToLastChildOf(parent)
+                    for p2 in copy.self_and_subtree():
+                        p2.v.context = c
     #@+node:ekr.20070921070101: *4* createHiddenCommander (editFileCommandsClass)
     def createHiddenCommander(self,fn):
 

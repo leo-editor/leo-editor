@@ -1902,16 +1902,12 @@ class leoTree:
 
         '''End editing of a headline and update p.h.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self.c ; k = c.k ; p = c.p
-
         if trace: g.trace('leoTree',p and p.h,g.callers(4))
-
         self.setEditPosition(None) # That is, self._editPosition = None
-
         # Important: this will redraw if necessary.
         self.onHeadChanged(p)
-
         if 0: # Can't call setDefaultUnboundKeyAction here: it might put us in ignore mode!
             k.setDefaultInputState()
             k.showStateAndMode()

@@ -61,126 +61,6 @@ https://groups.google.com/d/topic/leo-editor-users/y6ZwJR3accs/discussion
 .. @+node:ekr.20130908104426.11240: *4*  879338 Global tables in leoApp.py should describe all languages known 
 https://bugs.launchpad.net/leo-editor/+bug/879338
 .. @+node:ekr.20130908104426.11250: *4* 1090950 refresh from disk - cut node ressurection
-.. @+node:ekr.20130908104426.11254: *4* 1160660 File-Compare-Leo-Files creates "other file" clones
-https://bugs.launchpad.net/leo-editor/+bug/1160660
-
-Test procedure:
-
-1) Start a console.
-
-2) Let leomy be your script for starting Leo-Editor.
-Suppose there is no file named "d1.leo" in the current working directory.
-Execute command line: "leomy d1.leo"
-This creates file d1.leo containing one node with headline "d1.leo".
-Ctrl-S -- Write d1.leo
-Alt-F4 -- Exit Leo-Editor
-
-3) Suppose there is no file named "d2.leo" in the current working directory.
-Execute command line: "leomy d2.leo"
-This creates file d2.leo containing one node with headline "d2.leo".
-
-4) Alt-c, f, c -- This pops up a file selection menu allowing you to pick the "other" Leo-Editor file to be compared to the current Leo-Editor file (d2.leo).
-Pick file d1.leo.
-This causes the comparison to be done.
-This creates a subtree rooted by a node with headline "Compare .leo Files".
-
-Note the messages output to the terminal:
-
- inserted (only in /home/ldi/tmp/d1.leo)
-('bob05', '20130326174836', '1409') d1.leo
-
- deleted (only in /home/ldi/tmp/d2.leo)
-('bob05', '20130326174847', '1409') d2.leo
-
- changed
-
------
-I believe released code should not to print such non-error messages on the terminal.
----------
-
-5) Alt-o, x, a -- Expand all nodes
-
-Note that node "Compare .leo Files-->inserted-->d1.leo" is marked as a clone.
-This indicates a serious problem because the clone of this node is in the "other" .leo file. This is a "cross-file" clone link that as far as I know is not allowed.
-
-Now try either step 6a) or 6b). They generate slightly different errors.
-
-6a) Now try to select node "Compare .leo Files-->inserted-->d1.leo" by left-clicking it.
-Note that the node is NOT selected--But note the errors on the terminal.
-
-6b) Press Alt-downArrow 4 times. Note no errors have been reported.
-Press Alt-downArrow a 5th time.
-Note the errors displayed in the log pane and the the terminal.
----------
-6a errors shown only in the terminal:
-
-Traceback (most recent call last):
-  File "/home/ldi/bzr/LeoLatest/leo/plugins/baseNativeTree.py", line 664, in onTreeSelect
-    self.select(p)
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoFrame.py", line 2046, in select
-    val = self.selectHelper(p,scroll=scroll)
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoFrame.py", line 2070, in selectHelper
-    assert p.v.context == c
-AssertionError
-------
-
-6b errors on terminal:
-exception executing command
-Traceback (most recent call last):
-
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoCommands.py", line 560, in doCommand
-    val = command(event)
-
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoCommands.py", line 6657, in selectVisNext
-    c.treeSelectHelper(p)
-
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoCommands.py", line 6691, in treeSelectHelper
-    c.selectPosition(p)
-
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoCommands.py", line 8230, in selectPosition
-    c.frame.tree.select(p)
-
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoFrame.py", line 2046, in select
-    val = self.selectHelper(p,scroll=scroll)
-
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoFrame.py", line 2070, in selectHelper
-    assert p.v.context == c
-
-AssertionError
--------
-6b) errors in red in log pane:
-
-exception executing command
-Traceback (most recent call last):
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoCommands.py", line 560, in doCommand
-    val = command(event)
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoCommands.py", line 6657, in selectVisNext
-    c.treeSelectHelper(p)
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoCommands.py", line 6691, in treeSelectHelper
-    c.selectPosition(p)
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoCommands.py", line 8230, in selectPosition
-    c.frame.tree.select(p)
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoFrame.py", line 2046, in select
-    val = self.selectHelper(p,scroll=scroll)
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoFrame.py", line 2070, in selectHelper
-    assert p.v.context == c
-AssertionError
-
---------
-
-I use Xubuntu 12.04 (precise)
-Kernel 3.2.0-39-generic
-
-Leo Log Window
-Leo 4.11 devel, build 5639, 2013-03-24 11:01:23
-Python 2.7.3, qt version 4.8.1
-linux2
-setting leoID from os.getenv('USER'): 'bob05'
-load dir: /home/ldi/bzr/LeoLatest/leo/core
-global config dir: /home/ldi/bzr/LeoLatest/leo/config
-home dir: /home/bob05
-reading settings in /home/ldi/bzr/LeoLatest/leo/config/leoSettings.leo
-reading settings in /home/bob05/.leo/myLeoSettings.leo
 .. @+node:ekr.20130921043420.11269: *3* Help (3)
 .. @+node:ekr.20130806072439.20477: *4* I can't make Leo-Editor start in a full-screen window under openSUSU 12.1
 From: SegundoBob <bhossley@ieee.org>
@@ -5612,126 +5492,6 @@ https://bugs.launchpad.net/leo-editor/+bug/nnn
 .. @+node:ekr.20130908104426.11240: *6*  879338 Global tables in leoApp.py should describe all languages known 
 https://bugs.launchpad.net/leo-editor/+bug/879338
 .. @+node:ekr.20130908104426.11250: *6* 1090950 refresh from disk - cut node ressurection
-.. @+node:ekr.20130908104426.11254: *6* 1160660 File-Compare-Leo-Files creates "other file" clones
-https://bugs.launchpad.net/leo-editor/+bug/1160660
-
-Test procedure:
-
-1) Start a console.
-
-2) Let leomy be your script for starting Leo-Editor.
-Suppose there is no file named "d1.leo" in the current working directory.
-Execute command line: "leomy d1.leo"
-This creates file d1.leo containing one node with headline "d1.leo".
-Ctrl-S -- Write d1.leo
-Alt-F4 -- Exit Leo-Editor
-
-3) Suppose there is no file named "d2.leo" in the current working directory.
-Execute command line: "leomy d2.leo"
-This creates file d2.leo containing one node with headline "d2.leo".
-
-4) Alt-c, f, c -- This pops up a file selection menu allowing you to pick the "other" Leo-Editor file to be compared to the current Leo-Editor file (d2.leo).
-Pick file d1.leo.
-This causes the comparison to be done.
-This creates a subtree rooted by a node with headline "Compare .leo Files".
-
-Note the messages output to the terminal:
-
- inserted (only in /home/ldi/tmp/d1.leo)
-('bob05', '20130326174836', '1409') d1.leo
-
- deleted (only in /home/ldi/tmp/d2.leo)
-('bob05', '20130326174847', '1409') d2.leo
-
- changed
-
------
-I believe released code should not to print such non-error messages on the terminal.
----------
-
-5) Alt-o, x, a -- Expand all nodes
-
-Note that node "Compare .leo Files-->inserted-->d1.leo" is marked as a clone.
-This indicates a serious problem because the clone of this node is in the "other" .leo file. This is a "cross-file" clone link that as far as I know is not allowed.
-
-Now try either step 6a) or 6b). They generate slightly different errors.
-
-6a) Now try to select node "Compare .leo Files-->inserted-->d1.leo" by left-clicking it.
-Note that the node is NOT selected--But note the errors on the terminal.
-
-6b) Press Alt-downArrow 4 times. Note no errors have been reported.
-Press Alt-downArrow a 5th time.
-Note the errors displayed in the log pane and the the terminal.
----------
-6a errors shown only in the terminal:
-
-Traceback (most recent call last):
-  File "/home/ldi/bzr/LeoLatest/leo/plugins/baseNativeTree.py", line 664, in onTreeSelect
-    self.select(p)
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoFrame.py", line 2046, in select
-    val = self.selectHelper(p,scroll=scroll)
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoFrame.py", line 2070, in selectHelper
-    assert p.v.context == c
-AssertionError
-------
-
-6b errors on terminal:
-exception executing command
-Traceback (most recent call last):
-
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoCommands.py", line 560, in doCommand
-    val = command(event)
-
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoCommands.py", line 6657, in selectVisNext
-    c.treeSelectHelper(p)
-
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoCommands.py", line 6691, in treeSelectHelper
-    c.selectPosition(p)
-
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoCommands.py", line 8230, in selectPosition
-    c.frame.tree.select(p)
-
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoFrame.py", line 2046, in select
-    val = self.selectHelper(p,scroll=scroll)
-
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoFrame.py", line 2070, in selectHelper
-    assert p.v.context == c
-
-AssertionError
--------
-6b) errors in red in log pane:
-
-exception executing command
-Traceback (most recent call last):
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoCommands.py", line 560, in doCommand
-    val = command(event)
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoCommands.py", line 6657, in selectVisNext
-    c.treeSelectHelper(p)
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoCommands.py", line 6691, in treeSelectHelper
-    c.selectPosition(p)
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoCommands.py", line 8230, in selectPosition
-    c.frame.tree.select(p)
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoFrame.py", line 2046, in select
-    val = self.selectHelper(p,scroll=scroll)
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoFrame.py", line 2070, in selectHelper
-    assert p.v.context == c
-AssertionError
-
---------
-
-I use Xubuntu 12.04 (precise)
-Kernel 3.2.0-39-generic
-
-Leo Log Window
-Leo 4.11 devel, build 5639, 2013-03-24 11:01:23
-Python 2.7.3, qt version 4.8.1
-linux2
-setting leoID from os.getenv('USER'): 'bob05'
-load dir: /home/ldi/bzr/LeoLatest/leo/core
-global config dir: /home/ldi/bzr/LeoLatest/leo/config
-home dir: /home/bob05
-reading settings in /home/ldi/bzr/LeoLatest/leo/config/leoSettings.leo
-reading settings in /home/bob05/.leo/myLeoSettings.leo
 .. @+node:ekr.20130908104426.17092: *5* hard, not very important
 .. @+node:ekr.20111222113610.10244: *6*  613153 unable to describe root directory on thumb drive
 A very complex bug
@@ -6567,6 +6327,17 @@ The old sentinels don't have an explicit notion of nesting level; the new
 sentinels do, so it would seem that the way to fix this problem is to use
 new sentinels. However, this would be a major change to the inner workings
 of the @shadow logic.
+.. @+node:ekr.20130920055521.11282: *4* 1228099 Cancelling save of dirty untitled commander doesn't work with --ipython
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/1228099
+
+The Ipython bridge doesn't seem to be working.
+
+The examples in the IPython chapter seem to be out of date.
+http://leoeditor.com/IPythonBridge.html
+
+Requires that IPython work with Leo using the --ipython option.
 .. @+node:ekr.20120523092521.9907: *3* Minor bugs
 .. @+node:ekr.20111125072438.10214: *4* Fix bug: Another @shadow bug (test4.leo) (maybe)
 email:

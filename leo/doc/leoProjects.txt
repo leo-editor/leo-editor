@@ -647,10 +647,12 @@ If $(HOME)/.leo/.leoRecentFiles.txt does not exist, the only recent file ever is
 https://bugs.launchpad.net/leo-editor/+bug/971171
 
 It works for me.  I did make minor changes to rf.writeRecentFileFileHelper.
-#@+node:ekr.20130920055521.11282: *3* Investigated bug: 1228099 Cancelling save of dirty untitled commander doesn't work with --ipython
-https://bugs.launchpad.net/leo-editor/+bug/1228099
+#@+node:ekr.20130908104426.11254: *3* Fixed bug 1160660: File-Compare-Leo-Files creates "other file" clones
+https://bugs.launchpad.net/leo-editor/+bug/1160660
 
-It seems to work, but the bug report is incomplete.
+The primary fix was to createCompareClones.
+
+The created nodes are also a bit clearer about what the changes are.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
