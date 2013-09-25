@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20041117062700: * @file leoConfig.py
+#@+node:ekr.20130925160837.11429: * @file leoConfig.py
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
@@ -1890,11 +1890,15 @@ class LocalConfigManager:
 
         return self.get(setting,"color")
     #@+node:ekr.20120215072959.12527: *5* c.config.getData
-    def getData (self,setting):
+    def getData (self,setting,strip_data=True):
 
         '''Return a list of non-comment strings in the body text of @data setting.'''
 
-        return self.get(setting,"data")
+        data =  self.get(setting,"data")
+        # New in Leo 4.11: parser.doData strips only comments now.
+        if data and strip_data:
+            data = [z.strip() for z in data if z.strip()]
+        return data
     #@+node:ekr.20120215072959.12528: *5* c.config.getDirectory
     def getDirectory (self,setting):
 

@@ -57,10 +57,41 @@ And run `leo` from command prompt.
 A recent user reports this install method still works, albeit with a
 warning,
 https://groups.google.com/d/topic/leo-editor-users/y6ZwJR3accs/discussion
-.. @+node:ekr.20130912152335.11933: *3* bugs: first
+.. @+node:ekr.20130912152335.11933: *3* bugs: first (2)
 .. @+node:ekr.20130908104426.11240: *4*  879338 Global tables in leoApp.py should describe all languages known 
 https://bugs.launchpad.net/leo-editor/+bug/879338
 .. @+node:ekr.20130908104426.11250: *4* 1090950 refresh from disk - cut node ressurection
+https://bugs.launchpad.net/leo-editor/+bug/1090950
+
+Kind of a weird one.
+
+With
+
+head
+        *body
+
+notation, make this outline:
+
+@file ~/del.txt
+        *node top\n@others
+    node 1
+        * one
+    node 2
+        * two
+    node 3
+        * three
+
+save it
+
+select node 1 and demote, moving making nodes 2 and 3 children of node 1
+
+cut node 1
+
+rclick-refresh from disk the @file node
+
+attack of the return of the clones of the resurrected nodes, the nodes are
+restored at their on disk position, and at the positions they were in prior
+to the cut (demoted positions), with the dupes being clones of each other.
 .. @+node:ekr.20130921043420.11269: *3* Help (3)
 .. @+node:ekr.20130806072439.20477: *4* I can't make Leo-Editor start in a full-screen window under openSUSU 12.1
 From: SegundoBob <bhossley@ieee.org>
@@ -5488,10 +5519,41 @@ has arbitrary attributes like the `active` I just made up above.
 
 https://bugs.launchpad.net/leo-editor/+bug/nnn
 .. @+node:ekr.20130912152335.11932: *4* others: medium priority (hard/later)
-.. @+node:ekr.20130912152335.11933: *5* bugs: first
+.. @+node:ekr.20130912152335.11933: *5* bugs: first (2)
 .. @+node:ekr.20130908104426.11240: *6*  879338 Global tables in leoApp.py should describe all languages known 
 https://bugs.launchpad.net/leo-editor/+bug/879338
 .. @+node:ekr.20130908104426.11250: *6* 1090950 refresh from disk - cut node ressurection
+https://bugs.launchpad.net/leo-editor/+bug/1090950
+
+Kind of a weird one.
+
+With
+
+head
+        *body
+
+notation, make this outline:
+
+@file ~/del.txt
+        *node top\n@others
+    node 1
+        * one
+    node 2
+        * two
+    node 3
+        * three
+
+save it
+
+select node 1 and demote, moving making nodes 2 and 3 children of node 1
+
+cut node 1
+
+rclick-refresh from disk the @file node
+
+attack of the return of the clones of the resurrected nodes, the nodes are
+restored at their on disk position, and at the positions they were in prior
+to the cut (demoted positions), with the dupes being clones of each other.
 .. @+node:ekr.20130908104426.17092: *5* hard, not very important
 .. @+node:ekr.20111222113610.10244: *6*  613153 unable to describe root directory on thumb drive
 A very complex bug

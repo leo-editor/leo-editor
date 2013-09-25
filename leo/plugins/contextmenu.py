@@ -351,24 +351,17 @@ def configuredcommands_rclick(c,p, menu):
     """ Provide "edit in EDITOR" context menu item """
 
     config = c.config.getData('contextmenu_commands')
-
     if not config:
         return
-
     cmds = [el.split(None,1) for el in config]
     for cmd, desc in cmds:
         desc = desc.strip()
-
         action = menu.addAction(desc)
         #action.setToolTip(cmd)
         def configcmd_rclick_cb(cm = cmd):
             c.k.simulateCommand(cm)
-
-        action.connect(action, QtCore.SIGNAL("triggered()"), configcmd_rclick_cb)
-
-
-
-
+        action.connect(action,
+            QtCore.SIGNAL("triggered()"), configcmd_rclick_cb)
 #@+node:ville.20090630210947.10189: ** install_handlers
 def install_handlers():
     """ Install all the wanted handlers (menu creators) """

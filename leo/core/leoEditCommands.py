@@ -350,7 +350,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
             ('abbreviations','local'),
         )
         for source,tag in table:
-            aList = c.config.getData(source) or []
+            aList = c.config.getData(source,strip_data=False) or []
             abbrev,result = [],[]
             for s in aList:
                 if s.startswith('\\:'):
@@ -413,7 +413,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
         self.enabled = (
             c.config.getBool('scripting-at-script-nodes') or
             c.config.getBool('scripting-abbreviations'))
-        self.subst_env = c.config.getData('abbreviations-subst-env')
+        self.subst_env = c.config.getData('abbreviations-subst-env',strip_data=False)
         
         
     #@+node:ekr.20050920084036.15: *4* getPublicCommands & getStateCommands
