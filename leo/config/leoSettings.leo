@@ -9950,8 +9950,8 @@ def get(s, default=""):
 # EKR: don't crash if os.environ['LOGNAME'] does not exist.
 try:
     _user_name = os.environ['LOGNAME']
-    if pwd:
-        _user_name = pwd.getpwnam(name).pw_gecos.rstrip(',')
+    if pwd and _user_name
+        _user_name = pwd.getpwnam(_user_name).pw_gecos.rstrip(',')
 except KeyError:
     _user_name = None
 
