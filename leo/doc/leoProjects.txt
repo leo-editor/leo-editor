@@ -587,6 +587,13 @@ Typed tab while autocompleting:  The fix was adding a better guard in tab_callba
 
 #@+node:ekr.20130924043646.17346: *3* gui.setFilter now sets w.ev_filter
 This ivar is used by the autocompletion code.
+#@+node:ekr.20130924061223.18017: *3* Fixed bug: replace longest possible abbreviation
+The fix was in expandAbbrev.
+
+For example:
+    
+alp;;=@language python
+p;;=<p>
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
