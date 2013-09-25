@@ -5,7 +5,7 @@
 .. @+all
 .. @+node:ekr.20130916105324.19893: ** To-do for 4.11
 @language rest
-.. @+node:ekr.20130917083243.11295: *3* doc (5)
+.. @+node:ekr.20130917083243.11295: *3* doc (4)
 .. @+node:ekr.20130908104426.11243: *4*  969391 setup.py confuses newbies
 https://bugs.launchpad.net/leo-editor/+bug/969391
 
@@ -57,135 +57,6 @@ And run `leo` from command prompt.
 A recent user reports this install method still works, albeit with a
 warning,
 https://groups.google.com/d/topic/leo-editor-users/y6ZwJR3accs/discussion
-.. @+node:ekr.20130924061223.16460: *4* Document major additions to abbreviations
-@language rest
-
-From: Terry Brown <terry_n_brown@yahoo.com>
-
-Abbreviations can now include computed values and place holders which you
-can step through, filling in a template.
-
-Here's a quick screencast of the template expansions:
-http://www.greygreen.org/tmp/leoabbrev.ogv
-
-
-Abbreviations are very versatile. You can type ``def;;``, and Leo will
-prompt you for a function name, detect whether the function needs a
-``self`` parameter, ask for a list of parameters, and expand your input
-(just ``"some_function"`` and ``"one, two, three=4"`` to something
-like:: 
-
-    def some_function(one, two, three=4):
-        """some_function - Return <|return|>
-    
-        :Parameters:
-        - `one`: <|describe one|>
-        - `two`: <|describe two|>
-        - `three`: <|describe three|>
-
-        Created: Wed Aug 22 10:32:54 CDT 2012
-        """
-    
-        <|code|>
-
-The first placeholder, ``<|return|>`` will be selected, so you can
-begin typing in the right place. Hitting ``,,`` will select the next
-place holder, and so on.
-
-They can also close XML tags, enter balanced indented markup for
-various languages, etc.
-
-Here's a list of `@settings` which relate to abbreviations.
-
-@bool enable-abbreviations = False
-    True: enable abbreviations
-    False disable abbreviations
-    
-    Typically you would enable abbreviations in myLeoSettings.leo or in
-individual .leo files.
-
-@data global-abbreviations & @data abbreviations
-    # Comments lines (lines starting with '#') are ignored.
-    # Non-comment lines should have the form::
-    #
-    #    name=definition
-    
-    # Definitions in @data abbreviation nodes override definitions in
-    
-@data # global-abbreviation nodes. Typically you would define @data
-abbreviation nodes # in myLeoSettings.leo
-
-@string abbreviations-subst-start = None
-    If this @string is set to something other than None, *and*
-    @bool scripting-at-script-nodes = True, then substitutions
-    will be made when abbreviations are inserted.  For example
-    set abbreviations-subst-start to ``{|{`` and
-    abbreviations-subst-end to ``}|}`` and an abbreviation
-    like::
-    
-        date;;={|{import time;x=time.asctime()}|}
-    
-    will expand to something like "Mon Aug 20 22:00:40 2012"
-    
-    See also abbreviations-subst-env.
-    
-@string abbreviations-subst-end = }|}
-
-    See abbreviations-subst-start.  This setting,
-    abbreviations-subst-end, has no effect if
-    abbreviations-subst-start is not set.
-    
-@data abbreviations-subst-env
-
-    If abbreviations-subst-start is set (see that setting),
-    the code in this node will be executed, once
-    only, when the outline is loaded, in an environment which
-    will be used for execution of substitutions in
-    abbreviations.  For example, if this node contains
-    ``import time``, then an abbreviation like::
-    
-        date;;={|{import time;x=time.asctime()}|}
-    
-    can be written more simply as::
-    
-        date;;={|{x=time.asctime()}|}
-    
-    The environment will contain `c` and `g`, a dict called `_values`
-    (see ask() and get() in @data abbreviations-subst-env), and
-    `_abr`, the abbreviation being expanded.
-    
-    Start lines with `\\:` to preserve indentation.
-    
-@@data abbreviations examples
-
-    See the node for examples of advanced abbreviations with
-    substitutions.
-
-@string abbreviations-place-start = <|
-    Start of a placeholder for template expansions.  E.g.
-    the `<|` in::
-    
-        w;;=while <|condition|>:
-        \\:    <|code|>
-    
-    This would expand with the `<|condition|>` selected, and `,,`,
-    if that's an abbreviation linked to next_place(), see 
-    @@data abbreviations examples, would select `<|code|>`.
-@string abbreviations-place-end = \\|>
-    The end of a placeholder for template expansions, e.g.
-    `|>`. See @string abbreviations-place-start.
-
-
-===== EKR
-
-The same exec statement appears to allow the execution of arbitrary
-Python code.
-
-===== Terry
-
-That's why enabling requires @bool scripting-at-script-nodes = True as
-well as the abbreviation specific stuff.  The risk seems equivalent to
-the scripting-at-script-nodes = True risk.
 .. @+node:ekr.20130912152335.11933: *3* bugs: first (7)
 .. @+node:ekr.20130920055521.11283: *4* 1226816 Command line "leo xxx.leo" creates file xxx.leo.leo
 https://bugs.launchpad.net/leo-editor/+bug/1226816

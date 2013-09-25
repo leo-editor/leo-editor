@@ -8403,8 +8403,8 @@ class nodeHistory:
             finally:
                 self.skipBeadUpdate = False
         else:
-            self.beadList = [p2 for p2 in self.beadList if p2.v != p.v]
-            self.beadPointer -= 1
+            self.beadList = [data for data in self.beadList if data[0].v != p.v]
+            self.beadPointer = len(self.beadList)-1
     #@+node:ville.20090724234020.14676: *3* update (nodeHistory)
     def update (self,p):
         '''Update the beadList.  Called from c.frame.tree.selectHelper.'''
