@@ -635,6 +635,8 @@ Made the following changes:
 6. Changed @data abbreviations-subst-env node to handle missing os.environ['LOGNAME'].
 
 7. To make this work, the doData parser in leoConfig.py no longer strips lines.
+#@+node:ekr.20130925072610.16809: *3* Fixed new history crasher
+The fix was to nodeHistory.select at rev 6042
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

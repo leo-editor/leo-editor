@@ -192,7 +192,8 @@ expanded="ekr.20080730212711.15,"><vh>@file atShadow.txt</vh></v>
 <v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028550b302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473550b302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473550b302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473550b302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d7100285509302e302e312e302e3071017d710255097374725f6174696d657103550c313337363431323837322e30710473550b302e302e332e312e312e3371057d71066803550c313337363431323838392e307107735507302e312e302e3771087d71096803550c313337363431323238302e30710a73550b302e312e302e372e302e31710b7d710c6803550c313337363431323238382e30710d73550b302e302e332e302e322e33710e7d710f6803550c313337363431323838382e30711073752e"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d7100285509302e302e312e302e3071017d710255097374725f6174696d657103550c313337363431323837322e30710473550b302e302e332e312e312e3371057d71066803550c313337363431323838392e307107735507302e312e302e3771087d71096803550c313337363431323238302e30710a73550b302e312e302e372e302e31710b7d710c6803550c313337363431323238382e30710d73550b302e302e332e302e322e33710e7d710f6803550c313337363431323838382e30711073752e"
+expanded="ekr.20130806072439.19990,ekr.20130807203905.16610,"><vh>@file release_notes.txt</vh></v>
 </v>
 <v t="ekr.20130806072439.19990"><vh>Leo 4.11 a2 Release notes</vh>
 <v t="ekr.20130807203905.16780"><vh>Bugs</vh>
@@ -305,6 +306,7 @@ expanded="ekr.20080730212711.15,"><vh>@file atShadow.txt</vh></v>
 <v t="ekr.20130807203905.16549"><vh>Allow cloned siblings</vh></v>
 <v t="ekr.20130807203905.16550"><vh>Allow clones anywhere in @file nodes</vh></v>
 <v t="ekr.20130526065545.17445"><vh>Major additions to abbreviations</vh></v>
+<v t="ekr.20130925072610.22619"><vh>Major improvements made to abbreviations</vh></v>
 <v t="ekr.20130807203905.16482"><vh>Warn if same .leo file open in another Leo instance</vh></v>
 </v>
 <v t="ekr.20130807203905.16779"><vh>New languages and importers</vh>
@@ -2763,6 +2765,40 @@ reinserting....
 
 
 </t>
+<t tx="ekr.20130925072610.22619">@language rest
+
+Leo's abbreviations have been significantly improved by added scripted
+abbreviations and templates. This is the work of Terry Brown,
+&lt;terry_n_brown@yahoo.com&gt; The highlights::
+
+Terry describes the new features in a screencast:
+http://www.greygreen.org/tmp/leoabbrev.ogv
+
+1. The @data abbreviations-subst-env node contains a script defining the
+   environment in which all abbreviations execute. This allows helper
+   functions to be deined. Very handly.
+   
+2. Scripts may span multiple lines. Line starting with "\:" (2 characters)
+   continue a script. This allows abbreviations to define multi-line
+   templates.  Helpers defined in @data abbreviations-subst-env can
+   fill in templates with *calculated* (not predefined) data.
+   
+3. Templates may contain placeholders that the user can fill in.  By default,
+   the double comma binding selects the next placeholder.
+
+4. Added a new setting: @bool scripting-abbreviations, default False.
+   Scripting abbreviations will be enabled if *either* of the following is
+   True::
+
+        @bool scripting-abbreviations
+        @bool scripting-at-script-nodes
+    
+    This is a safety feature: it allows scripting abbreviations to be
+    enabled *without* enabling the (very dangerous in general)
+    scripting-at-script-nodes setting.
+
+5. Added a new example node: @@data abbreviations examples.  This contains
+   several extremely useful scripts.</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]

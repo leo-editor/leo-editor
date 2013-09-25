@@ -19930,6 +19930,41 @@ Python code.
 That's why enabling requires @bool scripting-at-script-nodes = True as
 well as the abbreviation specific stuff.  The risk seems equivalent to
 the scripting-at-script-nodes = True risk.
+#@+node:ekr.20130925072610.22619: *5* Major improvements made to abbreviations
+@language rest
+
+Leo's abbreviations have been significantly improved by added scripted
+abbreviations and templates. This is the work of Terry Brown,
+<terry_n_brown@yahoo.com> The highlights::
+
+Terry describes the new features in a screencast:
+http://www.greygreen.org/tmp/leoabbrev.ogv
+
+1. The @data abbreviations-subst-env node contains a script defining the
+   environment in which all abbreviations execute. This allows helper
+   functions to be deined. Very handly.
+   
+2. Scripts may span multiple lines. Line starting with "\:" (2 characters)
+   continue a script. This allows abbreviations to define multi-line
+   templates.  Helpers defined in @data abbreviations-subst-env can
+   fill in templates with *calculated* (not predefined) data.
+   
+3. Templates may contain placeholders that the user can fill in.  By default,
+   the double comma binding selects the next placeholder.
+
+4. Added a new setting: @bool scripting-abbreviations, default False.
+   Scripting abbreviations will be enabled if *either* of the following is
+   True::
+
+        @bool scripting-abbreviations
+        @bool scripting-at-script-nodes
+    
+    This is a safety feature: it allows scripting abbreviations to be
+    enabled *without* enabling the (very dangerous in general)
+    scripting-at-script-nodes setting.
+
+5. Added a new example node: @@data abbreviations examples.  This contains
+   several extremely useful scripts.
 #@+node:ekr.20130807203905.16482: *5* Warn if same .leo file open in another Leo instance
 https://bugs.launchpad.net/leo-editor/+bug/711158
 
