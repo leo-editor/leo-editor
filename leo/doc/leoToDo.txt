@@ -5,7 +5,7 @@
 .. @+all
 .. @+node:ekr.20130916105324.19893: ** To-do for 4.11
 @language rest
-.. @+node:ekr.20130917083243.11295: *3* doc (4)
+.. @+node:ekr.20130917083243.11295: *3* docs (3)
 .. @+node:ekr.20130908104426.11243: *4*  969391 setup.py confuses newbies
 https://bugs.launchpad.net/leo-editor/+bug/969391
 
@@ -57,9 +57,7 @@ And run `leo` from command prompt.
 A recent user reports this install method still works, albeit with a
 warning,
 https://groups.google.com/d/topic/leo-editor-users/y6ZwJR3accs/discussion
-.. @+node:ekr.20130912152335.11933: *3* bugs: first (7)
-.. @+node:ekr.20130920055521.11283: *4* 1226816 Command line "leo xxx.leo" creates file xxx.leo.leo
-https://bugs.launchpad.net/leo-editor/+bug/1226816
+.. @+node:ekr.20130912152335.11933: *3* bugs: first
 .. @+node:ekr.20130908104426.11240: *4*  879338 Global tables in leoApp.py should describe all languages known 
 https://bugs.launchpad.net/leo-editor/+bug/879338
 .. @+node:ekr.20130908104426.11250: *4* 1090950 refresh from disk - cut node ressurection
@@ -187,48 +185,6 @@ reading settings in /home/bob05/.leo/myLeoSettings.leo
 https://bugs.launchpad.net/leo-editor/+bug/971171
 .. @+node:ekr.20130920055521.11282: *4* 1228099 Cancelling save of dirty untitled commander doesn't work with --ipython
 https://bugs.launchpad.net/leo-editor/+bug/1228099
-.. @+node:ekr.20130924043646.11542: *4* crash in autocompleter
-@language rest
-
-From: Haroldo Stenger <haroldo.stenger@gmail.com>
-
-if in an empty line I type a dot, nothing appears.  If I type ctrl space,
-I get this exception:
-
-exception executing command
-Traceback (most recent call last):
-  File "/usr/lib/python2.7/site-packages/leo/core/leoCommands.py", line
-560, in doCommand
-    val = command(event)
-  File "/usr/lib/python2.7/site-packages/leo/core/leoKeys.py", line 165, in
-autoCompleteForce
-    return self.autoComplete(event,force=True)
-  File "/usr/lib/python2.7/site-packages/leo/core/leoKeys.py", line 157, in
-autoComplete
-    self.start(event)
-  File "/usr/lib/python2.7/site-packages/leo/core/leoKeys.py", line 992, in
-start
-    self.init_qcompleter(event)
-  File "/usr/lib/python2.7/site-packages/leo/core/leoKeys.py", line 837, in
-init_qcompleter
-    self.exit()
-  File "/usr/lib/python2.7/site-packages/leo/core/leoKeys.py", line 251, in
-exit
-    self.qw.end_completer()
-  File "/usr/lib/python2.7/site-packages/leo/plugins/qtGui.py", line 350,
-in end_completer
-    self.leo_qc.end_completer()
-  File "/usr/lib/python2.7/site-packages/leo/plugins/qtGui.py", line 157,
-in end_completer
-    self.deleteLater()
-RuntimeError: wrapped C/C++ object of type LeoQListWidget has been deleted
-
-===== Terry Brown <terry_n_brown@yahoo.com>
-
-I've seen that traceback too, but autocomplete *everything* didn't seem
-like a critical use case :-)
-
-
 .. @+node:ekr.20130921043420.11269: *3* Help (3)
 .. @+node:ekr.20130806072439.20477: *4* I can't make Leo-Editor start in a full-screen window under openSUSU 12.1
 From: SegundoBob <bhossley@ieee.org>
@@ -5656,9 +5612,7 @@ has arbitrary attributes like the `active` I just made up above.
 
 https://bugs.launchpad.net/leo-editor/+bug/nnn
 .. @+node:ekr.20130912152335.11932: *4* others: medium priority (hard/later)
-.. @+node:ekr.20130912152335.11933: *5* bugs: first (7)
-.. @+node:ekr.20130920055521.11283: *6* 1226816 Command line "leo xxx.leo" creates file xxx.leo.leo
-https://bugs.launchpad.net/leo-editor/+bug/1226816
+.. @+node:ekr.20130912152335.11933: *5* bugs: first
 .. @+node:ekr.20130908104426.11240: *6*  879338 Global tables in leoApp.py should describe all languages known 
 https://bugs.launchpad.net/leo-editor/+bug/879338
 .. @+node:ekr.20130908104426.11250: *6* 1090950 refresh from disk - cut node ressurection
@@ -5786,48 +5740,6 @@ reading settings in /home/bob05/.leo/myLeoSettings.leo
 https://bugs.launchpad.net/leo-editor/+bug/971171
 .. @+node:ekr.20130920055521.11282: *6* 1228099 Cancelling save of dirty untitled commander doesn't work with --ipython
 https://bugs.launchpad.net/leo-editor/+bug/1228099
-.. @+node:ekr.20130924043646.11542: *6* crash in autocompleter
-@language rest
-
-From: Haroldo Stenger <haroldo.stenger@gmail.com>
-
-if in an empty line I type a dot, nothing appears.  If I type ctrl space,
-I get this exception:
-
-exception executing command
-Traceback (most recent call last):
-  File "/usr/lib/python2.7/site-packages/leo/core/leoCommands.py", line
-560, in doCommand
-    val = command(event)
-  File "/usr/lib/python2.7/site-packages/leo/core/leoKeys.py", line 165, in
-autoCompleteForce
-    return self.autoComplete(event,force=True)
-  File "/usr/lib/python2.7/site-packages/leo/core/leoKeys.py", line 157, in
-autoComplete
-    self.start(event)
-  File "/usr/lib/python2.7/site-packages/leo/core/leoKeys.py", line 992, in
-start
-    self.init_qcompleter(event)
-  File "/usr/lib/python2.7/site-packages/leo/core/leoKeys.py", line 837, in
-init_qcompleter
-    self.exit()
-  File "/usr/lib/python2.7/site-packages/leo/core/leoKeys.py", line 251, in
-exit
-    self.qw.end_completer()
-  File "/usr/lib/python2.7/site-packages/leo/plugins/qtGui.py", line 350,
-in end_completer
-    self.leo_qc.end_completer()
-  File "/usr/lib/python2.7/site-packages/leo/plugins/qtGui.py", line 157,
-in end_completer
-    self.deleteLater()
-RuntimeError: wrapped C/C++ object of type LeoQListWidget has been deleted
-
-===== Terry Brown <terry_n_brown@yahoo.com>
-
-I've seen that traceback too, but autocomplete *everything* didn't seem
-like a critical use case :-)
-
-
 .. @+node:ekr.20130908104426.17092: *5* hard, not very important
 .. @+node:ekr.20111222113610.10244: *6*  613153 unable to describe root directory on thumb drive
 A very complex bug

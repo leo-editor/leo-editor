@@ -637,6 +637,10 @@ Made the following changes:
 7. To make this work, the doData parser in leoConfig.py no longer strips lines.
 #@+node:ekr.20130925072610.16809: *3* Fixed new history crasher
 The fix was to nodeHistory.select at rev 6042
+#@+node:ekr.20130920055521.11283: *3* Fixed bug: 1226816 Command line "leo xxx.leo" creates file xxx.leo.leo
+https://bugs.launchpad.net/leo-editor/+bug/1226816
+
+The fix was to LM.initWrapperLeoFile.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
