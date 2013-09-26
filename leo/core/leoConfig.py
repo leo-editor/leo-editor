@@ -1194,7 +1194,6 @@ class GlobalConfigManager:
         ("output_newline","string","nl"),
         ("page_width","int","132"),
         ("read_only","bool",True),
-            # Make sure we don't alter an illegal leoConfig.txt file!
         ("redirect_execute_script_output_to_log_pane","bool",False),
         ("relative_path_base_directory","string","!"),
         ("remove_sentinels_extension","string",".txt"),

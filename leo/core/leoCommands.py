@@ -3688,7 +3688,7 @@ class Commands (object):
         c = self
         default_format =  "%m/%d/%Y %H:%M:%S" # E.g., 1/30/2003 8:31:55
 
-        # Try to get the format string from leoConfig.txt.
+        # Try to get the format string from settings.
         if body:
             format = c.config.getString("body_time_format_string")
             gmt    = c.config.getBool("body_gmt_time")

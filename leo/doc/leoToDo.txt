@@ -45,6 +45,8 @@ And run `leo` from command prompt.
 A recent user reports this install method still works, albeit with a
 warning,
 https://groups.google.com/d/topic/leo-editor-users/y6ZwJR3accs/discussion
+.. @+node:ekr.20130926053913.11565: *4* Highlight abbreviations and auto-completion
+Their own chapter, or prominent new sections.
 .. @+node:ekr.20130926053913.11573: *3* for b2/final (7)
 .. @+node:ekr.20130806072439.20477: *4* Fix full-screen bug
 I can't make Leo-Editor start in a full-screen window under openSUSU 12.1
@@ -228,34 +230,1516 @@ QQQ
 - Use @testsetup to create smaller tests.
 - Make sure leoBody follows HighLevelInterface?
 .. @+node:ekr.20130917093253.11300: *4* unit tests for utf-16 @asis, @nosent, @shadow files
-.. @+node:ekr.20130919120947.12504: ** 5.0
-.. @+node:ekr.20130919120947.12505: *3* Compatibility mode
-Leo already works fairly well with vim, emacs and ipython. However, I think
-Leo's file format could be friendlier to emacs's org-mode outlines.
+.. @+node:ekr.20120226183512.10195: ** Bugs
+@language rest
+.. @+node:ekr.20130908104426.11232: *3* Bug-tracker: High priority
+https://bugs.launchpad.net/leo-editor/+bug/nnn
+.. @+node:ekr.20130530110446.12450: *4* Fix syntax coloring bug involving multiple body editors
+.. @+node:ekr.20130502102046.10578: *4* Crash deleting body editor
+# Trying to delete a second body editor.
 
-I call this project "compatibility mode".
+Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 560, in doCommand
+    val = command(event)
+  File "c:\leo.repo\trunk\leo\plugins\qtGui.py", line 2980, in deleteEditor
+    name = w.leo_name
+AttributeError: 'LeoQTextBrowser' object has no attribute 'leo_name'
+.. @+node:ekr.20130908104426.11233: *4* 1022140 scroll problem in the body pane
+https://bugs.launchpad.net/leo-editor/+bug/1022140
+.. @+node:ekr.20130908104426.11234: *4* 1041906 underlying C/C++ object has been deleted
+https://bugs.launchpad.net/leo-editor/+bug/1041906
 
-As always, the big question is "what to do about clones?" org-mode uses
-sentinels similar to Leo's latest file format, but org-mode knows nothing
-of gnx's and clones.
+I did the following: Ctrl-F, entered "Dream:". F3 several times. Deleted characters "Dream: " from a body. Changed the header from Diary to Dream.
+F3
 
-When writing, Leo would simply ignore gnx's. All nodes, clone or not, would
-get written in the org-mode format.
+Leo Log Window
+Leo 4.11 devel, build 5424, 2012-08-21 16:03:45
+Python 2.7.2, qt version 4.7.4
+linux2
+setting leoID from os.getenv('USER'): 'bob02'
+load dir: /home/ldi/bzr/LeoLatest/leo/core
+global config dir: /home/ldi/bzr/LeoLatest/leo/config
+home dir: /home/bob02
+reading settings in /home/ldi/bzr/LeoLatest/leo/config/leoSettings.leo
+reading settings in /home/bob02/.leo/myLeoSettings.leo
+reading settings in /media/datw1/BobH Archive/RFD/2011/rfd1110.leo
+reading: /media/datw1/BobH Archive/RFD/2011/rfd1110.leo
 
-As always, there are more choices when reading. One could choose that all
-nodes with the same headline and body text would become clones of each
-other. Or one could say that clones are never created.
+exception executing command
+Traceback (most recent call last):
+  File "/home/ldi/bzr/LeoLatest/leo/core/leoCommands.py", line 559, in doCommand
+    val = command(event)
+  File "/home/ldi/bzr/LeoLatest/leo/core/leoEditCommands.py", line 9803, in findTabFindNext
+    self.findTabHandler.findNextCommand()
+  File "/home/ldi/bzr/LeoLatest/leo/core/leoFind.py", line 1492, in findNextCommand
+    self.findNext()
+  File "/home/ldi/bzr/LeoLatest/leo/core/leoFind.py", line 702, in findNext
+    self.showSuccess(pos,newpos)
+  File "/home/ldi/bzr/LeoLatest/leo/core/leoFind.py", line 1330, in showSuccess
+    c.endEditing() # 2011/06/10: A major bug fix.
+  File "/home/ldi/bzr/LeoLatest/leo/core/leoCommands.py", line 8197, in endEditing
+    c.frame.tree.endEditLabel()
+  File "/home/ldi/bzr/LeoLatest/leo/plugins/baseNativeTree.py", line 862, in endEditLabel
+    self.onHeadChanged(p)
+  File "/home/ldi/bzr/LeoLatest/leo/plugins/baseNativeTree.py", line 893, in onHeadChanged
+    self.closeEditorHelper(e,item)
+  File "/home/ldi/bzr/LeoLatest/leo/plugins/qtGui.py", line 6570, in closeEditorHelper
+    w.setCurrentItem(item)
+RuntimeError: underlying C/C++ object has been deleted
+--------------- End log pane ----------------
 
-As I write this, I see that org mode could (optionally) put @gnx directives
-in the org-mode file, and use same to recreate clones. Of course, this
-would pollute the body of the org-mode file, but then one could say that
-any other Leo directives could be called form of pollution.
+As you can see my Leo-Editor version is 5424.
+openSUSE 12.1
+Kernel Linux 3.1.10-1.16-desktop
+XFCE desktop environment
+.. @+node:ekr.20130806072439.20497: *4* ***Leo does not display all content of a node ...
+From: Viktor Ransmayr <viktor.ransmayr@gmail.com>
 
-Anyway, the details about clones aren't the main idea. It would be an
-important bridge to emacs if (optionally) Leo could write and read standard
-org-mode files. Similar remarks probably apply to vim-outline mode.
+even at the latest revision (rev. 5500) Leo does not display all content of 
+larger nodes
+- Larger nodes approximately defined as >= 150 lines ...
 
-Org mode won't be part of Leo 4.11, but it might be part of Leo 5.0.
+That is searching for example for a 'TO-DO' item just return this 
+particular line w/o the
+context  around. - Going up - or - down does not refresh the screen & 
+content ...
+
+I thought I could provide you with an outline, where this problem 
+consistently shows up.
+- However, whenever I trim the personal outline I'm using the problem 
+disappears.
+
+This problem is really annoying - and - I would gladly provide more input, 
+but so far I
+fail. - Any suggestion?
+
+With kind regards,
+
+Viktor
+
+PS: For completeness here's the log from Leo's startup:
+
+<log>
+
+Leo Log Window
+Leo 4.11 devel, build 5500, 2012-10-19 18:35:23
+Python 3.2.2, qt version 4.8.0
+Windows 6, 1, 7601, 2, Service Pack 1
+leoID=VR20100603 (in D:\\Users\\Viktor Ransmayr\\.leo)
+load dir: D:\\Branches\\leo-editor\\leo\\core
+global config dir: D:\\Branches\\leo-editor\\leo\\config
+home dir: D:\\Users\\Viktor Ransmayr
+reading settings in D:\\Branches\\leo-editor\\leo\\config\\leoSettings.leo
+reading settings in D:\\Users\\Viktor Ransmayr\\.leo\\myLeoSettings.leo
+reading settings in D:\\Users\\Viktor Ransmayr\\Documents\\Leo-BR-r5500.leo
+reading: D:\\Users\\Viktor Ransmayr\\Documents\\Leo-BR-r5500.leo
+
+</log>
+.. @+node:ekr.20130806072439.20498: *5* Re: Leo does not display all content of a node ...
+From: Terry Brown <terry_n_brown@yahoo.com>
+
+I can confirm that this type of bug is still present in 5500 also.
+
+Yesterday I was noticing this:
+
+ - editing a node (A)
+ - create new node by accidentally hitting insert
+ - delete new node immediately while still in headline edit mode using
+   cut-node 
+ - node A is displayed incorrectly, a line is missing, selecting the
+   body restores the missing line
+
+vs. the above but selecting the body of the inserted node, then
+deleting it, in which case A is displayed correctly without selecting
+its body.
+
+Today (the outline's changed) it's not doing that, but I still
+notice the difference between inserting and immediately deleting a node
+(scroll position in A restored incorrectly), vs. inserting a node,
+selecting its body, and then deleting it (scroll position in A restored
+correctly).
+
+So, there's some execution path difference between A being selected
+after an inserted node is deleted immediately (still in headline edit
+mode) vs. after selection of its body.
+
+Not a very helpful report, but maybe the difference between deletion of
+the node immediately and after selecting its body guides you to a
+particular piece of code.
+.. @+node:ekr.20130806072439.20499: *5* Re: Leo does not display all content of a node ...
+From: resi147 <scalet@yebu.de>
+
+I also have the same problem, using the official 4.10 final.
+I.e. a couple of lines are missing in the node (the linecounter
+increments and decrements but the cursor does not move).
+
+Not sure what report could be useful.
+I also feel like it occurs on larger body nodes.
+.. @+node:ekr.20130806072439.20501: *5* Re: Leo does not display all content of a node ...
+From: lewis <lewisneal@operamail.com>
+
+Same issue for me has been occurring on a large node. Interestingly, I can
+only reproduce the display error when 'Leo Log Window' is at bottom left
+position which is my ''initial_split_orientation' setting (horizontal: body
+pane to the right). I can use Window>Toggle Split Direction to correct the
+initial display error.
+
+For me, the display error always becomes evident at line 95. My line
+numbers 95,96 are visible then skips to 118. Lines 97 thru 117 are not
+displayed. It appears to be graphics performance time lag; if I return to
+the file after having switched to another leo tab the previously invisible
+lines are visible.
+
+Leo Log Window
+Leo 4.11 devel, build 5647, 2013-04-02 08:03:37
+Python 3.3.1, qt version 4.8.4
+Windows 6, 1, 7601, 2, Service Pack 1
+.. @+node:ekr.20130806072439.20531: *4* *** (response to Leo does not display...) Styling in Leo
+From: Terry Brown <terry_n_brown@yahoo.com>
+
+(This is a response to the invisible line glitch, but not directly
+related, so a new thread)
+
+Rember this:
+
+http://groups.google.com/group/leo-editor/browse_thread/thread/ee869a0a70f2d765
+
+Some time ago I was working on styling Leo from a single top level
+stylesheet using a mechanism similar to CSS classes, so instead of:
+    
+    # widget is active
+    w.setStyle("QTextEdit { color: red; font-weight: bold; }")
+    
+    ...
+    
+    # widget is inactive
+    w.setStyle("QTextEdit { color: black; font-weight: normal; }")
+    
+you'd have
+
+    # widget is active
+    w.setAttribute('active', True)
+    
+    ...
+    
+    # widget is inactive
+    w.setAttribute('active', False)
+
+and in the single global style sheet
+
+    QTextEdit[active="true"] { color: red; font-weight: bold; }
+    QTextEdit[active="false"] { color: red; font-weight: bold; }
+
+This isn't a perfect example because if active == focused then you
+could probably just use the pseudo-state :focus and let Qt do all the
+work, and also Leo would .setStyle() a string defined in @settings, not
+something hard coded.
+
+Qt styles are different from CSS in that CSS has a single attribute,
+`class`, which can contain a space separated list of tags, whereas Qt
+has arbitrary attributes like the `active` I just made up above.
+.. @+node:ekr.20130908104426.11235: *3* Bug-tracker: Medium priority
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/nnn
+.. @+node:ekr.20130926053913.11562: *4* Hard (3)
+.. @+node:ekr.20130908104426.11242: *5*  914221 bound method ViewRenderedController.updated (Hard)
+https://bugs.launchpad.net/leo-editor/+bug/914221
+
+Summary of a *long* discussion: this may be a docutils issue, and does not seem easy to fix.
+.. @+node:ekr.20130805080841.21380: *5* 1222947 Javascript importer doesn't handle common idiom (Hard)
+@language javascript
+
+https://groups.google.com/forum/#!topic/leo-editor/dmC8iIKlF7g
+
+Bug 
+https://bugs.launchpad.net/leo-editor/+bug/1222947
+
+Here is the test file::
+
+
+    var express = require('express');
+     
+    var app = express.createServer(express.logger());
+     
+    app.get('/', function(request, response) {
+    response.send('Hello World!');
+    });
+     
+    var port = process.env.PORT || 5000;
+    app.listen(port, function() {
+    console.log("Listening on " + port);
+    });
+.. @+node:ekr.20130916105324.19894: *5* 1226353 @shadow does not retain outline structure properly (hard)
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/1226353
+
+===== EKR
+
+The most important problem is compatibility.  As I have just verified,
+@shadow will work even if the private file does not exist,
+but all outline structure will be lost.  Therefore, it may be best
+not to try to read old (ver-4thin) files at all.
+
+@shadow does not reload the following simple file correctly!
+
++ @shadow
+   @others
+  + child 1
+    child 1.1
+
+shadow files (the private files containing the sentinels) use the *old*
+(#@+leo-ver=4-thin) sentinels, rather than the new (#@+leo-ver=5-thin)
+sentinels.
+
+The old sentinels don't have an explicit notion of nesting level; the new
+sentinels do, so it would seem that the way to fix this problem is to use
+new sentinels. However, this would be a major change to the inner workings
+of the @shadow logic.
+.. @+node:ekr.20130926053913.11563: *4* Minor (8)
+.. @+node:ekr.20111222113610.10244: *5*  613153 unable to describe root directory on thumb drive
+A very complex bug
+
+See https://bugs.launchpad.net/leo-editor/+bug/613153
+.. @+node:ekr.20111026091322.16498: *5*  869098 Context menu settings lost if save as used
+See https://bugs.launchpad.net/leo-editor/+bug/869098
+
+Hard?
+
+I have a Leo file with settings for context menu:
+    
+@settings
+   @data contextmenu_commands
+       edit-headline Edit headline
+          copy-node Copy Node
+          cut-node Cut Node
+          paste-node Paste Node
+
+then these settings are lost if I save the leo file to a new name using
+File - Save as
+If I reload the leo file, they do return
+.. @+node:ekr.20130908104426.11266: *5* 1193820 Focus change on tree pane after saving current Leo file
+.. @+node:ekr.20130920055521.11282: *5* 1228099 Cancelling save of dirty untitled commander doesn't work with --ipython
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/1228099
+
+The Ipython bridge doesn't seem to be working.
+
+The examples in the IPython chapter seem to be out of date.
+http://leoeditor.com/IPythonBridge.html
+
+Requires that IPython work with Leo using the --ipython option.
+.. @+node:ekr.20111014074810.15652: *5* Fix bug: viewrendered should work better when docutils does not exist
+.. @+node:ekr.20130806072439.20380: *5* auto-rst error? need more robust?
+From: HaveF <iamaplayer@gmail.com>
+
+When I use auto-rst import rst file, sometimes, the author write extra
+characters which aren't harm, but the leo says it is a error...like this
+one:
+
+reading: @auto-rst README
+
+Error: @auto did not import @auto-rst README perfectly
+The clean-all-lines command may help fix whitespace problems
+first mismatched line: 20 (original) = 20 (imported)
+
+Original file...
+
+  18 u'how the learning experiment went.\\n'
+  19 u'Step 1: Create the dataset\\n'
+  20 u'----------------------------\\n'
+  21 u'From this directory, run\\n'
+  22 u'python make_dataset.py\\n'
+
+Imported file...
+
+  18 u'how the learning experiment went.\\n'
+  19 u'Step 1: Create the dataset\\n'
+  20 u'--------------------------\\n'
+  21 u'From this directory, run\\n'
+  22 u'python make_dataset.py\\n'
+
+inserting @ignore
+
+errors inhibited read @auto
+D:\\OpenCourses\\ufldl\\ref\\pylearn2\\pylearn2\\scripts\\tutorials\\grbm_smd\\README
+
+reading entire file into @auto node.
+
+reading: @edit README
+
+finished
+
+The problem is the line 20 has two extra '-', when I remove it manually,
+the import works.
+
+Do you have a better idea to do this than do it manually?
+
+===== From: Terry Brown <terry_n_brown@yahoo.com>
+
+On Sat, 18 May 2013 16:50:12 +0800
+HaveF <iamaplayer@gmail.com> wrote:
+
+> Original file...
+> 
+>   18 u'how the learning experiment went.\\n'
+>   19 u'Step 1: Create the dataset\\n'
+>   20 u'----------------------------\\n'
+>   21 u'From this directory, run\\n'
+>   22 u'python make_dataset.py\\n'
+
+At first I thought that the rst was invalid, but the docs. say
+  The underline/overline must be at 
+  least as long as the title text. 
+http://docutils.sourceforge.net/docs/user/rst/quickref.html#section-structure
+so I guess it's not.  But leo has nowhere to store the length of the
+underlining.  Also, this is related to the issue where Leo changes the
+underline characters used, e.g. = -> - and * -> # etc.
+
+I think the easiest solution is going to be to do the import and just
+remove the @ignore afterwards, checking that there are no changes that
+matter.  Perhaps the wording of the @ignore message could make it
+clearer that the import may not have failed, but just needs checking.
+
+===== HaveF <iamaplayer@gmail.com>
+
+
+But in fact, the @auto-rst load this rst file like @auto, no @ignore node 
+at all.
+
+My import procedure is like this:
+1. make a node name:
+@auto-rst models.txt
+2. right click it, and select "refresh from disk"
+
+
+And I just find another problem...
+If the rst file like this:
+
+MLP
+===
+
+It also occurs error:
+
+reading: @auto-rst models.txt
+
+Error: @auto did not import @auto-rst models.txt perfectly
+The clean-all-lines command may help fix whitespace problems
+first mismatched line: 10 (original) = 10 (imported)
+
+Original file...
+
+   8 u'    :members:\\n'
+   9 u'MLP\\n'
+  10 u'===\\n'
+  11 u'.. automodule:: pylearn2.models.mlp\\n'
+  12 u'    :members:\\n'
+
+Imported file...
+
+   8 u'    :members:\\n'
+   9 u'MLP\\n'
+  10 u'====\\n'
+  11 u'.. automodule:: pylearn2.models.mlp\\n'
+  12 u'    :members:\\n'
+
+inserting @ignore
+
+errors inhibited read @auto D:\\OpenCourses\\ufldl\\ref\\pylearn2\\doc\\library\\models.txt
+
+reading entire file into @auto node.
+
+reading: @edit models.txt
+
+finished
+
+It says I need a extra "="...
+
+I have attached this file, for someone has interest to reproduce the error.
+
+.. @+node:ekr.20120401144849.10037: *5* Fix installer problem
+@language rest
+
+Leo 4.10 final released
+http://groups.google.com/group/leo-editor/browse_thread/thread/6f475b4c0c2d204a
+
+EKR: One of these might work better.
+
+; RequestExecutionLevel highest
+; RequestExecutionLevel admin
+
+From Viktor
+
+> I tried to install Leo 4.10 final from Sourceforge via
+"LeoSetup-4.10-final.exe". Since I have a bazaar-based Leo environment up
+and running I tried to install this into a completely new separate user
+account.
+
+> After trying several variations it looks like that the "LeoSetup Script"
+requires a Python installation which is available to all users and not just
+to this one new separate account.
+
+I assume by LeoSetup Script you mean LeoSetup-4.10-final.exe.
+
+If you mean setup.py, you shouldn't use it.
+
+> If this is done intentionally, what is the rationale for it.
+
+It wasn't done intentionally. There may be an nsi option to get around this
+problem, but I'm not sure about it. I'll look at this soon.
+.. @+node:ekr.20130806072439.20485: *5* Whitespace when importing java file using @auto
+Importing java file using @auto. How do I adjust Leo to ignore whitespace and indentation irregularities?
+From: Eoin <eoinmccarthy@fastmail.fm>
+
+I'm using @auto to import java files into my Leo project. I'm then cloning 
+various methods as sub-nodes of new feature nodes. 
+It's helping keep my development focussed - and is useful to look back and 
+see what parts of the codebase I've worked on for each feature. 
+
+However, the whitespace in the Java files isn't completely regular. In 
+particular, debug logging is always placed in column 1 - regardless of the 
+surrounding indentation. 
+Other people are also working on these files, so I'd rather not mess with 
+the established convention. 
+
+As things stand, when Leo imports a file its outputting a bunch of error 
+messages:
+* error: underindented line. Extra leading whitespace will be added
+* warning: intermixed blanks and tabs
+
+The creation of the auto node goes fine - though the final result has an 
+@ignore directive in its root node. 
+When working, I just take the @ignore away and clone the methods I want to 
+work on. 
+The problem is when I close the Leo file and re-open it later on, the same 
+errors occur during the building of the auto node and the previous cloned 
+information is lost. 
+To restart work on a feature, I need to reclone the appropriate nodes. Not 
+a showstopper, but not ideal. 
+
+I tried adjusting the info in the JavaScanner class in the core 
+leoImport.py file as follows:
+
+        self.blockCommentDelim1 = '/*'
+        self.blockCommentDelim2 = '*/'
+        self.blockDelim1 = '{'
+        self.blockDelim2 = '}'
+        self.lineCommentDelim = '//'
+        self.lineCommentDelim2 = None
+        self.outerBlockDelim1 = '{'
+        self.outerBlockDelim2 = '}'
+        self.classTags = ['class','interface']
+        self.functionTags = []
+        self.sigFailTokens = [';','='] # Just like c.
+        self.strict=False
+
+I deleted the pyc file and restarted Leo. A new pyc file appears, so the 
+compiled to bytecode seems to be ok.
+
+I was hoping the the setting of self.strict = False would allow the parsing 
+to ignore the whitespace and indentation issues. 
+I'm still getting the same errors though. 
+
+Any help appreciated. I'm using Leo 4.10-final. 
+
+===== EKR
+
+There is no easy way to do this at present, but it's probably reasonable to
+disable errors (and not add @ignore) for underindented comments for
+non-strict languages.
+
+Please file a wishlist bug for this.  Thanks.
+.. @+node:ekr.20130908104426.11269: *3* Bug-tracker: wish-list
+There are 42 wishlist items.  Some appear to be duplicates, or closely related.
+.. @+node:ekr.20111125072438.10204: *4* 882243: (Wishlist) Clones sometimes not saved: change how @others works
+See https://bugs.launchpad.net/leo-editor/+bug/882243
+
+In Leo, I made this file:
+
+@file test.txt
+@others
+.....test1
+     test: these are clones
+.....test2
+     @others
+
+      what is going on...?
+..........test1 <--- this is cloned
+          test: these are clones
+
+The output file does not have the cloned node:
+
+#@+leo-ver=5-thin
+#@+node:bill.20111025150533.3528: * @thin test.txt
+#@+others
+#@+node:bill.20111025150533.3527: ** test1
+test: these are clones
+#@+node:bill.20111025150533.3529: ** test2
+#@+others
+#@-others
+
+what is going on...?
+#@-others
+#@-leo
+
+I don't think it is a conflict with @others; it is just that some files do not retain the clones that are displayed.
+
+Here is the copied node:
+
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
+<?xml-stylesheet ekr_test?>
+<leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
+<leo_header file_format="2"/>
+<vnodes>
+<v t="bill.20111025150533.3528" a="E"><vh>@thin test.txt</vh>
+<v t="bill.20111025150533.3527"><vh>test1</vh></v>
+<v t="bill.20111025150533.3529" a="E"><vh>test2</vh>
+<v t="bill.20111025150533.3527"></v>
+</v>
+</v>
+</vnodes>
+<tnodes>
+<t tx="bill.20111025150533.3527">test: these are clones
+</t>
+<t tx="bill.20111025150533.3528">@others
+</t>
+<t tx="bill.20111025150533.3529">@others
+
+what is going on...?</t>
+</tnodes>
+</leo_file>
+
+Here is the copied leo file:
+
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
+<?xml-stylesheet ekr_test?>
+<leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
+<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+ <global_window_position top="50" left="50" height="500" width="700"/>
+ <global_log_window_position top="0" left="0" height="0" width="0"/>
+</globals>
+<preferences/>
+<find_panel_settings/>
+<vnodes>
+<v t="bill.20111025150533.3528" a="E"
+expanded="bill.20111025150533.3529,"><vh>@thin test.txt</vh></v>
+</vnodes>
+<tnodes>
+</tnodes>
+</leo_file>
+.. @+node:ekr.20111216105907.10218: *5* My response: this is a wishlist item
+Reposted from http://groups.google.com/group/leo-editor/browse_thread/thread/67a28984616d09c9
+About bug 882243: clones sometimes not saved
+
+I'd like to discuss this bug here, because I would like us all to be aware of the situation, and possible changes.
+
+The surprise
+=========
+
+To paraphrase the original bug report, suppose we have the following @file tree:
+
++ @file test.txt
+@others
+  + node 1 (cloned)
+    node 1 text.
+  + node 2
+     @others
+    + node 1 (cloned)
+       node 1 text.
+
+As usual, lines preceded by "+" denote headlines: all other lines are body text.
+
+The surprise is that the cloned node1 node is written to the external file only once (as a child of the root node) and hence does not appear as a (cloned) child of the node2 node when Leo next loads the @file tree.
+
+History
+=====
+
+I would like to call this a wishlist item because the
+present code quite intentionally writes *any* node
+(including cloned nodes) only once. That is, the write code
+sets a bit when writing a node, and @others ignores any
+nodes with that bit set.
+
+You could call this a bug in the @others write logic, but at
+one time it was done explicitly and on purpose.
+
+I don't remember why this was so, but I do remember it *was*
+so. It may have been an artifact of Leo's old representation
+of clones that used both vnodes and tnodes. tnodes no longer
+exist in the one-node world that we have been living in for
+several years, and it may well be time to revisit the
+original design, but I would rather not do that just now
+because there are several "real" bugs that need attention
+asap.
+
+Workaround
+=========
+
+Because this is an issue involving @others, you might assume
+that a workaround involving sections would be possible. You
+would be correct. The following file works as expected::
+
++ @file test.txt
+<< node 1 >>
+<< node 2 >>
+  + << node 1>> (cloned)
+     node 1 text.
+  + << node 2 >>
+     << node 1 >>
+    + << node 1 >>(cloned)
+       node 1 text.
+.. @+node:ekr.20130806072439.20374: *4* aha moment when using leo script with @url, and feature request ;-)
+From: HaveF <iamaplayer@gmail.com>
+
+1. Aha Sometimes, I just wonder, I write a script (say, @button button-1)
+in leo-file-A.leo, and reuse it by copy(ctrl+shift+c) the button to
+leo-file-B.leo.
+
+When I'm working on leo-file-B.leo, I may have ideas to improve the
+@button button-1, but at that time(working on leo-file-B.leo), I may
+forget where the original place of @button button-1 is. Even I store
+the original scripts in the default workbook.leo is a tedious work to
+deal with(open it, locate where the original script is, update it...)
+
+But! After I add the @url at the first line of @button button-1, I can
+decide if the improvements what I made on leo-file-B.leo's @button button-1
+should or shouldn't be merged to the original and upstream @button
+button-1(in leo-file-A.leo) easily by just a click.
+
+And if I work on leo-file-C.leo, I want to use the same script, but I just
+only remember I use the script in the leo-file-B.leo instead of original
+place. With @url I can easily jump to original place, and copy it to
+leo-file-C.leo.
+
+Using @url in the leo script, I can make the scripts consistency and
+diversity at same time.
+
+Great! But, Wait, wait!
+
+2. Feature request.  At this time, you can use this idea by comment the @url
+line after jump. If @url isn't comment, the leo-editor will say...
+SyntaxError: invalid syntax at the @url line.
+
+Maybe it is a good idea to omit the @url line in the script when executing
+script?
+
+===== EKR
+
+Yes.  I think this is a good idea.  A similar idea occurred to me when
+looking at @rclick nodes.  At present, the context_menu plugin contains an
+ugly hack:  it allows an @rclick node to *follow* an @button node.  This is
+needed at present when the @button node contains @others: the @rclick node
+can't be part of the script "pulled in" by @others.
+
+It would be much more elegant to ignore @rclick nodes when computing the
+script.  This would require a change to the @others logic, but I think it
+is worthwhile.
+
+===== Terry Brown <terry_n_brown@yahoo.com>
+
+I do this kind of thing by keeping buttons in @files...
+
+@file ~/.leo/gen  # general utility buttons
+@file ~/.leo/dml  # tools for editing an XML dialect I use
+@file ~/.leo/sql  # tools for editing SQL / interacting with server
+
+so changes made in one outline are automatically propagated to other
+outlines next time they're reloaded.  You just reference the files
+in each outline where you want those buttons.
+
+> 2. Feature request
+> At this time, you can use this idea by comment the @url line
+> after jump. If @url isn't comment, the leo-editor will say...
+> SyntaxError: invalid syntax
+> at the @url line.
+> 
+> Maybe it is a good idea to omit the @url line in the script when executing
+> script?
+
+This probably would make sense, already the scripting machinery is
+ignoring things like @nocolor or @language cobol or @nowrap etc.
+
+Maybe you could file a wish-list bug item for tracking.
+.. @+node:ekr.20130806072439.20377: *4* An unexpected phenomenon(Using @url node) in @shadow
+From: HaveF <iamaplayer@gmail.com>
+
+When I use @url node in @shadow file, the node
+should not be in public file, right?
+.. @+node:ekr.20130806072439.20369: *4* @paragraph(s)
+From: <offray@riseup.net>
+
+I have been using txt2tags + Nested Editor to produce structured docs in 
+a light markup and exporting them to HTML and LaTeX > pdf. The fine 
+tunning on the pdf output is done by editing the LaTeX source in Leo. I 
+like the aesthetic of the source code and the outputs and I have 
+contacted the Nested author in order to get some cross-pollination 
+between it and Leo [1].
+
+[1] 
+https://groups.google.com/group/nestededitor/browse_thread/thread/7068e3cd229d4614 
+
+Now I think that is time to start hacking Leo for a better support of my 
+work flow and the first thing I would like to have is a "@paragraph" 
+directive that works the same as @rst-no-head but can be used in any 
+part of a (sub)tree, even if is not @rst (sub)tree. This would come 
+handy in chunking and reassembling LaTeX docs without marking up the 
+parts with "<<chunk>>" tags.
+
+===== EKR
+
+Interesting idea. Please file a wishlist bug at https://bugs.launchpad.net/leo-editor.
+
+===== offray As I have say repeatedly I'm an "end user" 
+of Leo and I have browse the doc about developing in Leo in [2] and I 
+plan to follow it as a tutorial, but any pointer to a more detailed 
+section to pay attention or to the Leo trees to start hacking is welcomed
+
+[2] http://webpages.charter.net/edreamleo/scripting.html
+
+.. @+node:ekr.20130806072439.20523: *4* RST3 Tables with Nodes as Rows
+From: Craig Johnson <craig@hivemind.net>
+
+I'm trying to use rst tables by using the table markup in the body text, 
+with one node per table row.  However it seems that the nodes are being 
+preceded with a line-feed even-though @rst-no-head is in effect.
+ 
+Can anybody help with preventing that line-feed, it breaks the rst table 
+formatting.
+
+===== EKR
+
+Hmm.  My guess is that a new @rst directive would be needed.  The
+workaround would seem to be to put the entire table in a single node, but
+presumably you have your reasons for not wanting to do that.
+
+Feel free to file a wish-list bug.
+
+===== Craig Johnson <craig@hivemind.net>
+ 
+I've been creating rst tables using rst markup directly in the body text.  
+For field lists.  As the same field apears in multiple programs, I would 
+like to use Leo's cloning to reproduce a table row in several locations in 
+the tree.  The issue that prevents me from doing this, is that an 
+@rst-no-head headline seems to generate a line-feed preceeding the body 
+text in the derived file which breaks the table parse.
+ 
+Maybe a example:
+The Leo tree:
+ 
++Program1
+  +Parameters
+       =================== ========
+       Field Name          Format
+       =================== ========
+    +@rst-no-head Field1
+        prmField1          Integer
+ 
+Results in the following markup
+Program1
+^^^^^^^^^
+Parameters
+~~~~~~~~~
+=================== ========
+Field Name          Format
+=================== ========
+
+prmField1           Integer
+That blank line in the markup before the node body text breaks the table.
+ 
+===== wgw <wgwinder@gmail.com>
+
+
+No fix (sorry), but can confirm the problem -- it should go in the bug
+list. (I looked at the rst code, and fainted)
+
+I note that your format wouldn't work without closing the table off:
+
+
+Field Name                       Format
+ add                                    add
+
+But you are right: @rst-no-head doesn't work properly.
+
+Looks like you can only post process the rst intermediate file and=20
+eliminate that extra line.
+.. @+node:ekr.20130806072439.20387: *4* wishlist: Autosaving when external file saved
+From: "Ville M. Vainio" <vivainio@gmail.com>
+
+Just an idea:
+
+After discovering sublime edit, I have started using external editor mode
+more (rclick -> Edit in...). Annoyance there is that once you save in
+external editor, you still have to go to leo and save there, or your
+changes will be lost if you close leo without saving.
+
+This can lead to loss of data if you don't routinely agree to save changes
+when closing Leo. I often don't do this, as I save all the time when I
+type, and don't want to save accidental changes I might have done to the
+leo document; I don't usually have time to review changes when closing a
+document.
+
+Maybe .leo could automatically save the tree if and only if the externally
+edited node is the only dirty one.
+
+===== EKR
+
+I agree there is a problem, but I don't believe hacking Leo's save logic is
+a good idea, for several reasons:
+
+1. There might be several dirty nodes, and you could still lose data
+(strictly following your suggestion) in that case.
+
+2. The write logic for external files is complex, mainly due to file
+caching.  I tolerate that complexity because caching is such a big win.
+But it would not be easy to do @file AI to discover the special case you
+mention.
+
+3. Imo, the proper place to handle this problem is in the vim and xemacs
+plugins.  These plugins are responsible for the interaction with Leo.
+
+Would it work for you if the xemacs and vim plugins automatically saved an
+external file whenever the plugin caused a node in that file to become
+dirty?  This would likely solve the problem you mention, although I
+wouldn't be my life on it.
+
+Your comments, please.
+
+===== Matt Wilkie <maphew@gmail.com>
+
+I've been bit by this several times too.
+
+It's lead to me relying on pyscripter (my usual external editor these days,
+has more useful to me command completion than leo) more and more, when I
+otherwise might just nip out, do a few things and come back.
+
+===== EKR
+
+One thing that must be done in any case is to provide alt-x commands for
+all context-menu entries.  There is something wrong with having to use the
+mouse at all...
+
+===== Terry Brown <terry_n_brown@yahoo.com>
+
+Coincidentally I added the alt-X command 'context-menu-open' a week or
+so ago, letting you open the context menu with a keyboard binding so
+you can then navigate the menu with the cursor keys.
+
+This is because not all menu entries can have alt-X commands,
+specifically the quickMove plugins commands for moving nodes to
+pre-defined destinations in other outlines, this is basically a list
+selection operation, but being on a sub-sub-menu it's a pain with the
+mouse, and easier with the cursor keys.
+
+This is part of my method for handling todo items for different
+projects, they are imported from email to one outline, and then I file
+them to the relevant project outline's todo node.  Which creates a
+management problem I just found a surprisingly viable solution for I'll
+mention in another post.
+
+===== From: "Ville M. Vainio" <vivainio@gmail.com>
+
+I wouldn't change the save logic, I'd just execute "save" for the full .leo
+document when
+
+- Node has changed in external editor.
+- The node that changed is the only dirty node in the whole leo document.
+
+I don't use xemacs/vim plugin, but rather "edit in" in right click menu
+(contextmenu.py plugin IIRC).
+
+I agree that this is not an elegant proposal, in that it involves a
+potentially surprising (if useful) special case.
+
+I have to think this a bit more. Perhaps some kind of extra warning in the
+UI for this scenario would do the trick as well.
+
+.. @+node:ekr.20130806072439.20394: *5* Re: Autosaving when external file saved
+From: "Edward K. Ream" <edreamleo@gmail.com>
+
+On Thu, Nov 29, 2012 at 6:30 AM, Ville M. Vainio wrote:
+
+> I wouldn't change the save logic, I'd just execute "save" for the full 
+>> .leo document when 
+>>
+>> - Node has changed in external editor.
+>> - The node that changed is the only dirty node in the whole leo document.
+>>
+>> I don't use xemacs/vim plugin, but rather "edit in" in right click menu 
+>> (contextmenu.py plugin IIRC).
+>>
+>
+> Ok.  In that case the contextmenu plugin should handle this. 
+>
+
+I believe that c.openWith should be able to deal with this problem.  
+c.openWith creates a temporary external file and updates a node when the 
+user changes that file.  This logic is independent of the editor being 
+used; it works, for example, with Scite, my default external editor.
+
+Clearly, c.openWith (or rather, one of its helpers) is able to update the 
+node and to mark it dirty.  So at the time the node is marked dirty 
+c.openWith has an opportunity to automatically save the file containing the 
+vnode.  c.openWith can issue a colored message to the log pane, but that 
+should be the only "warning" necessary.
+
+My present plan is to write a helper, say c.write_vnode, that will discover 
+the external file (if any) containing the vnode, and immediately write that 
+external file *without* a prompt.  If there is no external file, 
+c.write_vnode could just do an ordinary save of the .leo file and all dirty 
+external files.  Alternatively, c.write_vnode could write only the .leo 
+file (the write-outline-only command) *without* clearing the c.changed bit.
+
+I believe c.write_vnode will solve this problem fairly completely.  What do 
+you think, Amigos?
+
+Edward
+.. @+node:ekr.20130806072439.20395: *5* Re: Autosaving when external file saved
+From: "Edward K. Ream" <edreamleo@gmail.com>
+
+On Thu, Nov 29, 2012 at 9:17 AM, Edward K. Ream <edreamleo@gmail.com> wrote:
+
+>
+> Clearly, c.openWith (or rather, one of its helpers) is able to update the
+> node and to mark it dirty.
+>
+
+The "helper" is the idle-time hook,  editnode_on_idle, in contextmenu.py.
+You could call this good news, because our experiments with auto-saving can
+be confined to the contextmenu plugin.  If our experiments end happily we
+can use the same techniques in the vim and xemacs plugins.
+
+I'll wait awhile for your comments before going ahead with the proposed
+changes.
+.. @+node:ekr.20130806072439.20396: *5* Re: Autosaving when external file saved
+From: "Edward K. Ream" <edreamleo@gmail.com>
+
+On Tue, Dec 11, 2012 at 5:55 AM, Ville M. Vainio <vivainio@gmail.com> wrote:
+
+> """
+> My present plan is to write a helper, say c.write_vnode, that will
+> discover the external file (if any) containing the vnode, and immediately
+> write that external file *without* a prompt.  If there is no external file,
+> c.write_vnode could just do an ordinary save of the .leo file and all dirty
+> external files.
+> """
+>
+> Maybe a relatively safe solution is to do this:
+>
+> 1) My present plan is to write a helper, say c.write_vnode, that will
+> discover the external file (if any) containing the vnode, and immediately
+> write that external file *without* a prompt.
+>
+> But not do this:
+>
+> 2) If there is no external file, c.write_vnode could just do an ordinary
+> save of the .leo file and all dirty external files.
+>
+> This way, if you "want to be safe", you will create an external @file for
+> the content.
+>
+> For situation 2), some kind of loud warning is in order, not sure of what
+> kind though. Red g.es?
+>
+
+Thanks for this suggestion.  I have a great distrust of all operations
+containing "if" statements in their explanation.  Somehow, we need a
+simpler approach, but I don't know what it is.
+
+.. @+node:ekr.20130806072439.20397: *5* Re: Autosaving when external file saved
+From: "Edward K. Ream" <edreamleo@gmail.com>
+
+On Thu, Nov 29, 2012 at 6:30 AM, Ville M. Vainio <vivainio@gmail.com> wrote:
+
+> I wouldn't change the save logic, I'd just execute "save" for the full
+> .leo document when
+>
+> - Node has changed in external editor.
+> - The node that changed is the only dirty node in the whole leo document.
+>
+> I don't use xemacs/vim plugin, but rather "edit in" in right click menu
+> (contextmenu.py plugin IIRC).
+>
+
+Ok.  In that case the contextmenu plugin should handle this.
+
+>
+> I agree that this is not an elegant proposal, in that it involves a
+> potentially surprising (if useful) special case.
+>
+> I have to think this a bit more. Perhaps some kind of extra warning in the
+> UI for this scenario would do the trick as well.
+>
+
+I agree that if the code is going to do something like this it should issue
+a clear warning that something has happened.  Otoh, such "clear warnings"
+tend to get ignored :-)  Indeed, the problem is that you are *already*
+ignoring such a clear warning!  Adding another warning is not likely to be
+a big help...
+
+Edward
+.. @+node:ekr.20130806211959.17373: *4* wishlist: meld integration
+From: Haroldo Stenger <haroldo.stenger@gmail.com>
+
+I'm slowly trying to grok leo. I love meld, it's simply the best text
+comparison I've ever seen. I wonder if a greater bit of integration between
+meld and leo is possible, and in which ways. Undoubtedly calling it as an
+external process is better than anything.
+.. @+node:ekr.20120523092521.9907: *3* Minor bugs
+.. @+node:ekr.20111125072438.10214: *4* Fix bug: Another @shadow bug (test4.leo) (maybe)
+email:
+http://mail.google.com/mail/#label/Leo%2FBugs/133ac31add8b2c6c
+
+see attachment, shadow file won't get written correctly, and it won't reread
+correctly too. Using leo-editor-snapshot- 201111090253.
+
+Hopefully I will be able to look on some bugs myself, but don't know when. Needs
+a bit of time, I am not very familiar with python.
+
+===== EKR
+
+Leo doesn't understand .jsp.  @shadow should refuse to work for unknown languages.
+.. @+node:ekr.20111123095018.13632: *4* Fix bug: expand Find tab as needed for bigger fonts
+.. @+node:ekr.20110605121601.18326: *5* createTab (leoQtLog)
+def createTab (self,tabName,createText=True,widget=None,wrap='none'):
+    """
+    Create a new tab in tab widget
+    if widget is None, Create a QTextBrowser,
+    suitable for log functionality.
+    """
+    trace = False and not g.unitTesting
+    c = self.c
+    if trace: g.trace(tabName,widget and g.app.gui.widget_name(widget) or '<no widget>')
+    if widget is None:
+        widget = LeoQTextBrowser(parent=None,c=c,wrapper=self)
+            # widget is subclass of QTextBrowser.
+        contents = leoQTextEditWidget(widget=widget,name='log',c=c)
+            # contents a wrapper.
+        widget.leo_log_wrapper = contents
+            # Inject an ivar into the QTextBrowser that points to the wrapper.
+        if trace: g.trace('** creating',tabName,'self.widget',contents,'wrapper',widget)
+        option = QtGui.QTextOption
+        widget.setWordWrapMode(option.WordWrap if self.wrap else option.NoWrap)
+        widget.setReadOnly(False) # Allow edits.
+        self.logDict[tabName] = widget
+        if tabName == 'Log':
+            self.widget = contents # widget is an alias for logCtrl.
+            widget.setObjectName('log-widget')
+        # Set binding on all log pane widgets.
+        if newFilter:
+            g.app.gui.setFilter(c,widget,self,tag='log')
+        else:
+            theFilter = leoQtEventFilter(c,w=self,tag='log')
+            self.eventFilters.append(theFilter) # Needed!
+            widget.installEventFilter(theFilter)
+        # A bad hack.  Set the standard bindings in the Find and Spell tabs here.
+        if tabName == 'Log':
+            assert c.frame.top.__class__.__name__ == 'DynamicWindow'
+            find_widget = c.frame.top.leo_find_widget
+            # 2011/11/21: A hack: add an event filter.
+            if newFilter:
+                g.app.gui.setFilter(c,find_widget,widget,'find-widget')
+            else:
+                find_widget.leo_event_filter = leoQtEventFilter(c,w=widget,tag='find-widget')
+                find_widget.installEventFilter(find_widget.leo_event_filter)
+            if trace: g.trace('** Adding event filter for Find',find_widget)
+            # 2011/11/21: A hack: make the find_widget an official log widget.
+            self.contentsDict['Find']=find_widget
+            # 2013/09/20:
+            if hasattr(c.frame.top,'leo_spell_widget'):
+                spell_widget = c.frame.top.leo_spell_widget
+                if trace: g.trace('** Adding event filter for Spell',find_widget)
+                if newFilter:
+                    g.app.gui.setFilter(c,spell_widget,widget,'spell-widget')
+                else:
+                    spell_widget.leo_event_filter = leoQtEventFilter(c,w=widget,tag='spell-widget')
+                    spell_widget.installEventFilter(spell_widget.leo_event_filter)
+        self.contentsDict[tabName] = widget
+        self.tabWidget.addTab(widget,tabName)
+    else:
+        contents = widget
+            # Unlike text widgets, contents is the actual widget.
+        widget.leo_log_wrapper = contents
+            # The leo_log_wrapper is the widget itself.
+        if trace: g.trace('** using',tabName,widget)
+        if newFilter:
+            g.app.gui.setFilter(c,widget,contents,'tabWidget')
+        else:
+            theFilter = leoQtEventFilter(c,w=contents,tag='tabWidget')
+            self.eventFilters.append(theFilter) # Needed!
+            widget.installEventFilter(theFilter)
+        self.contentsDict[tabName] = contents
+        self.tabWidget.addTab(contents,tabName)
+    return contents
+.. @+node:ekr.20110605121601.18166: *5* createFindTab (DynamicWindow)
+def createFindTab (self,parent,tab_widget):
+
+    c,dw = self.leo_c,self
+    grid = self.createGrid(parent,'findGrid',margin=10,spacing=10)
+    grid.setColumnStretch(0,100)
+    grid.setColumnStretch(1,100)
+    grid.setColumnStretch(2,10)
+    grid.setColumnMinimumWidth(1,75)
+    grid.setColumnMinimumWidth(2,175)
+    grid.setColumnMinimumWidth(3,50)
+    # Aliases for column numbers
+    col_0,col_1,col_2 = 0,1,2
+    span_1,span_2,span_3 = 1,2,3
+    # Row 0: heading.
+    heading_row = 0
+    lab1 = self.createLabel(parent,'findHeading','Find/Change Settings...')
+    grid.addWidget(lab1,heading_row,col_0,span_1,span_2,QtCore.Qt.AlignLeft) # AlignHCenter
+    # Rows 1,2: the find/change boxes, now disabled.
+    find_row = 1
+    change_row = 2
+    findPattern = self.createLineEdit(parent,'findPattern',disabled=True)
+    findChange  = self.createLineEdit(parent,'findChange',disabled=True)
+    lab2 = self.createLabel(parent,'findLabel','Find:')
+    lab3 = self.createLabel(parent,'changeLabel','Change:')
+    grid.addWidget(lab2,find_row,col_0)
+    grid.addWidget(lab3,change_row,col_0)
+    grid.addWidget(findPattern,find_row,col_1,span_1,span_2)
+    grid.addWidget(findChange,change_row,col_1,span_1,span_2)
+    # Check boxes and radio buttons.
+    # Radio buttons are mutually exclusive because they have the same parent.
+    def mungeName(name):
+        # The value returned here is significant: it creates an ivar.
+        return 'checkBox%s' % label.replace(' ','').replace('&','')
+    # Rows 3 through 8...
+    base_row = 3
+    table = (
+        ('box', 'Whole &Word',      0,0),
+        ('rb',  '&Entire Outline',  0,1),
+        ('box', '&Ignore Case',     1,0),
+        ('rb',  '&Suboutline Only', 1,1),
+        ('box', 'Wrap &Around',     2,0),
+        ('rb',  '&Node Only',       2,1),
+        ('box', 'Search &Headline', 3,1),
+        ('box', 'Rege&xp',          3,0),
+        ('box', 'Search &Body',     4,1),
+        ('box', 'Mark &Finds',      4,0),
+        ('box', 'Mark &Changes',    5,0))
+        # a,b,c,e,f,h,i,n,rs,w
+    for kind,label,row,col in table:
+        name = mungeName(label)
+        func = g.choose(kind=='box',
+            self.createCheckBox,self.createRadioButton)
+        w = func(parent,name,label)
+        grid.addWidget(w,row+base_row,col)
+        setattr(self,name,w)
+    # Row 9: help row.
+    help_row = 9
+    w = self.createLabel(parent,'findHelp','For help: <alt-x>help-for-find-commands<return>')
+    grid.addWidget(w,help_row,col_0,span_1,span_3)
+    # Row 10: Widgets that take all additional vertical space.
+    w = QtGui.QWidget()
+    space_row = 10
+    grid.addWidget(w,space_row,col_0)
+    grid.addWidget(w,space_row,col_1)
+    grid.addWidget(w,space_row,col_2)
+    grid.setRowStretch(space_row,100)
+    # Official ivars (in addition to setattr ivars).
+    self.leo_find_widget = tab_widget # 2011/11/21: a scrollArea.
+    self.findPattern = findPattern
+    self.findChange = findChange
+    # self.findLab = lab2
+    # self.changeLab = lab3
+.. @+node:ekr.20110605121601.18156: *5* createGrid (DynamicWindow)
+def createGrid (self,parent,name,margin=0,spacing=0):
+
+    w = QtGui.QGridLayout(parent)
+    w.setMargin(margin)
+    w.setSpacing(spacing)
+    self.setName(w,name)
+    return w
+.. @+node:ekr.20110605121601.18145: *5* createLogPane
+def createLogPane (self,parent):
+
+    # Create widgets.
+    logFrame = self.createFrame(parent,'logFrame',
+        vPolicy = QtGui.QSizePolicy.Minimum)
+    innerFrame = self.createFrame(logFrame,'logInnerFrame',
+        hPolicy=QtGui.QSizePolicy.Preferred,
+        vPolicy=QtGui.QSizePolicy.Expanding)
+    tabWidget = self.createTabWidget(innerFrame,'logTabWidget')
+
+    # Pack.
+    innerGrid = self.createGrid(innerFrame,'logInnerGrid')
+    innerGrid.addWidget(tabWidget, 0, 0, 1, 1)
+    outerGrid = self.createGrid(logFrame,'logGrid')
+    outerGrid.addWidget(innerFrame, 0, 0, 1, 1)
+
+    # 2011/10/01: Embed the Find tab in a QScrollArea.
+    findScrollArea = QtGui.QScrollArea()
+    findScrollArea.setObjectName('findScrollArea')
+    findTab = QtGui.QWidget()
+    findTab.setObjectName('findTab')
+    tabWidget.addTab(findScrollArea,'Find')
+    self.createFindTab(findTab,findScrollArea)
+    findScrollArea.setWidget(findTab)
+
+    spellTab = QtGui.QWidget()
+    spellTab.setObjectName('spellTab')
+    tabWidget.addTab(spellTab,'Spell')
+    self.createSpellTab(spellTab)
+
+    tabWidget.setCurrentIndex(1)
+
+    # Official ivars
+    self.tabWidget = tabWidget # Used by leoQtLog.
+.. @+node:ekr.20111010162047.15678: *4* Fix bug: Imports to @file should put @first/@last directives in root node
+Especially:
+    - Shebang line.
+    - Python encoding line.
+    
+- @auto correctly works for all Python files.
+.. @+node:ekr.20111221102703.10289: *5* @@@nosent ../test/at-auto-at-first-test.py
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+def spam():
+    pass
+    
+# This is the last line.
+.. @+node:ekr.20120219152142.34262: *4* Fix bug: Revert moves the reverted tab to the right
+.. @+node:ekr.20111125072438.10217: *4* Fix bug: shell interprets characters in at-mime headings
+http://groups.google.com/group/leo-editor/browse_thread/thread/07efd66847ac4a64
+
+on linux, parenthesis or angled brackets in @mime headings prevent the file from
+being opened, probably because they are interpreted specially by the shell, e.g.
+they need to be escaped. Such characters should be escaped before passing the
+filename to the shell.
+
+.. @+node:ekr.20120327163022.9744: *4* Fix bug: The @auto script *must* put @first nodes in root node
+Also the import commands.
+
+Especially:
+    - Shebang line.
+    - Python encoding line.
+.. @+node:ekr.20111018104244.15920: *4* Fix bug: Use QLocalSocket in LProtoClient.connect
+http://groups.google.com/group/leo-editor/browse_thread/thread/fe9cddc0e7ac8199
+.. @+node:ekr.20120313134250.9852: *4* Fix nav_qt bugs
+See: https://bugs.launchpad.net/leo-editor/+bug/820019
+Shift-Ctrl-F (quicksearch) Sometimes leaves focus in body
+
+
+See: https://bugs.launchpad.net/leo-editor/+bug/869385
+Chapters make the nav_qt.py plugin useless.
+.. @+node:ekr.20111026091322.16495: *4* Fix quickmove bug
+See: https://bugs.launchpad.net/leo-editor/+bug/875463
+Enabling quickmove.py sends to error messages to console on every outline open 
+.. @+node:ekr.20111114085925.9932: *4* Why does the unittest/output folder contain empty files?
+.. @+node:ekr.20031218072017.1462: *5* ic.exportHeadlines
+def exportHeadlines (self,fileName):
+
+    c = self.c ; p = c.p
+    nl = g.u(self.output_newline)
+
+    if not p: return
+    self.setEncoding()
+    firstLevel = p.level()
+
+    try:
+        theFile = open(fileName,'w')
+    except IOError:
+        g.warning("can not open",fileName)
+        c.testManager.fail()
+        return
+    for p in p.self_and_subtree():
+        head = p.moreHead(firstLevel,useVerticalBar=True)
+        s = head + nl
+        if not g.isPython3: # 2010/08/27
+            s = g.toEncodedString(s,encoding=self.encoding,reportErrors=True)
+        theFile.write(s)
+    theFile.close()
+.. @+node:ekr.20051104075904.78: *5* TM.makeImportExportSuite
+def makeImportExportSuite(self,parentHeadline,doImport):
+
+    """Create an Import/Export test for every descendant of testParentHeadline.."""
+
+    tm = self
+    c = self.c
+    parent = tm.findNodeAnywhere(parentHeadline)
+    assert parent,'node not found: %s' % (parentHeadline)
+    temp = tm.findNodeInTree(parent,"tempNode")
+    assert temp,'node not found: tempNode'
+
+    # Create the suite and add all test cases.
+    suite = unittest.makeSuite(unittest.TestCase)
+    for p in parent.children():
+        if p != temp:
+            # 2009/10/02: avoid copy arg to iter
+            p2 = p.copy()
+            dialog = tm.findNodeInTree(p2,"dialog")
+            assert(dialog)
+            test = importExportTestCase(c,p2,dialog,temp,doImport)
+            suite.addTest(test)
+    return suite
+.. @+node:ekr.20051104075904.79: *5* class importExportTestCase
+class importExportTestCase(unittest.TestCase):
+
+    """Data-driven unit tests for Leo's edit body commands."""
+
+    @others
+.. @+node:ekr.20051104075904.80: *6* __init__ (importExportTestCase)
+def __init__ (self,c,p,dialog,temp_p,doImport):
+
+    # Init the base class.
+    unittest.TestCase.__init__(self)
+
+    self.c = c
+    self.dialog = dialog
+    self.p = p.copy()
+    self.temp_p = temp_p.copy()
+
+    self.gui = None
+    self.oldGui = None
+    self.wasChanged = c.changed
+    self.fileName = ""
+    self.doImport = doImport
+
+    self.old_p = c.p
+.. @+node:ekr.20051104075904.81: *6*  fail (importExportTestCase)
+def fail (self,msg=None):
+
+    """Mark a unit test as having failed."""
+
+    import leo.core.leoGlobals as g
+
+    g.app.unitTestDict["fail"] = g.callers()
+.. @+node:ekr.20051104075904.82: *6* importExport
+def importExport (self):
+
+    c = self.c ; p = self.p
+
+    g.app.unitTestDict = {'c':c,'g':g,'p':p and p.copy()}
+
+    commandName = p.h
+    command = getattr(c,commandName) # Will fail if command does not exist.
+    command(event=None)
+
+    failedMethod = g.app.unitTestDict.get("fail")
+    self.failIf(failedMethod,failedMethod)
+.. @+node:ekr.20051104075904.83: *6* runTest
+def runTest(self):
+
+    # """Import Export Test Case"""
+
+    self.importExport()
+.. @+node:ekr.20051104075904.84: *6* setUp
+def setUp(self):
+
+    trace = False
+    c = self.c ; temp_p = self.temp_p
+    d = self.dialog
+    assert(d)
+    temp_p.setBodyString('')
+
+    # Create a node under temp_p.
+    child = temp_p.insertAsLastChild()
+    assert(child)
+    c.setHeadString(child,"import/export test: " + self.p.h)
+    c.selectPosition(child)
+
+    # Get the dialog name and the fileName from the dialog node.
+    # This is used below to set up the dialog dict for nullGui.simulateDialog.
+    s = d.bodyString()
+    lines = s.split('\n')
+    name = lines[0]
+    fileName = lines[1]
+
+    # Replace '\\' by os.path.sep in fileName
+    try:
+        # os.path.sep does not exist in Python 2.2.x.
+        sep = os.path.sep
+        fileName = fileName.replace('\\',sep)
+    except AttributeError:
+        fileName = g.os_path_normpath(fileName)
+    self.fileName = fileName = g.os_path_finalize_join(g.app.loadDir,"..",fileName)
+    if trace: g.trace('(importExportTestCase',fileName)
+    
+    # Set the dict for unitTestGui, a subclass of nullGui.
+    # nullGui.simulateDialog uses this dict to return values for dialogs.
+    if self.doImport:
+        theDict = {name: [fileName]}
+    else:
+        theDict = {name: fileName}
+    self.oldGui = g.app.gui
+    self.gui = leoGui.unitTestGui(theDict,trace=False)
+.. @+node:ekr.20051104075904.85: *6* shortDescription
+def shortDescription (self):
+
+    try:
+        return "ImportExportTestCase: %s %s" % (self.p.h,self.fileName)
+    except Exception:
+        return "ImportExportTestCase"
+.. @+node:ekr.20051104075904.86: *6* tearDown
+def tearDown (self):
+
+    c = self.c ; temp_p = self.temp_p
+
+    if self.gui:
+        self.gui.destroySelf()
+        self.gui = None
+
+    temp_p.setBodyString("")
+    temp_p.clearDirty()
+
+    if not self.wasChanged:
+        c.setChanged (False)
+
+    if 1: # Delete all children of temp node.
+        while temp_p.firstChild():
+            temp_p.firstChild().doDelete()
+
+    g.app.gui = self.oldGui
+    c.selectPosition(self.old_p)
+.. @+node:ekr.20031218072017.2850: *5* c.exportHeadlines
+def exportHeadlines (self,event=None):
+
+    '''Export all headlines to an external file.'''
+
+    c = self
+
+    filetypes = [("Text files", "*.txt"),("All files", "*")]
+
+    fileName = g.app.gui.runSaveFileDialog(
+        initialfile="headlines.txt",
+        title="Export Headlines",
+        filetypes=filetypes,
+        defaultextension=".txt")
+    c.bringToFront()
+
+    if fileName and len(fileName) > 0:
+        g.setGlobalOpenDir(fileName)
+        g.chdir(fileName)
+        c.importCommands.exportHeadlines(fileName)
+.. @+node:ekr.20130806072439.20371: *4* @wrap now suppresses horizontal scrolling
+From: "Edward K. Ream" <edreamleo@gmail.com>
+
+The title pretty much says it all.  This is a significant improvement, and 
+makes Leo suitable for authoring text.  It should have been done ages ago. 
+Please let me know immediately if this new behavior causes problems for you.
+
+There is one glitch.  If you add @wrap, the directive won't be in effect 
+until you leave the node and revisit it.
+
+===== redla <radim.halir@gmail.com>
+
+There is one problem which is (IMHO) caused by this change: I have @wrap 
+active and see my "plain" text wrapped properly. But if there is any "long 
+enough" URL on the page (i.e. longer than the screen width), this is not 
+wrapped (as there is no space in the string) nor I can see the end of it 
+(as there is no horizontal scrollbar either) ;-(
+
+===== EKR
+
+The workaround is to disable @wrap in order to see the url, but this is
+clumsy.
 .. @+node:ekr.20110921094450.6956: ** 4.12
 @language rest
 
@@ -5226,1516 +6710,34 @@ plugins.  A prototype of this script exists somewhere.  Making it an
 @command node will make it much more visible. 
 
 Terry wrote plugin_catalog.py.  It is in LeoDocs.leo
-.. @+node:ekr.20120226183512.10195: ** Bugs
-@language rest
-.. @+node:ekr.20130908104426.11232: *3* Bug-tracker: High priority
-https://bugs.launchpad.net/leo-editor/+bug/nnn
-.. @+node:ekr.20130530110446.12450: *4* Fix syntax coloring bug involving multiple body editors
-.. @+node:ekr.20130502102046.10578: *4* Crash deleting body editor
-# Trying to delete a second body editor.
+.. @+node:ekr.20130919120947.12504: ** 5.0
+.. @+node:ekr.20130919120947.12505: *3* Compatibility mode
+Leo already works fairly well with vim, emacs and ipython. However, I think
+Leo's file format could be friendlier to emacs's org-mode outlines.
 
-Traceback (most recent call last):
-  File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 560, in doCommand
-    val = command(event)
-  File "c:\leo.repo\trunk\leo\plugins\qtGui.py", line 2980, in deleteEditor
-    name = w.leo_name
-AttributeError: 'LeoQTextBrowser' object has no attribute 'leo_name'
-.. @+node:ekr.20130908104426.11233: *4* 1022140 scroll problem in the body pane
-https://bugs.launchpad.net/leo-editor/+bug/1022140
-.. @+node:ekr.20130908104426.11234: *4* 1041906 underlying C/C++ object has been deleted
-https://bugs.launchpad.net/leo-editor/+bug/1041906
+I call this project "compatibility mode".
 
-I did the following: Ctrl-F, entered "Dream:". F3 several times. Deleted characters "Dream: " from a body. Changed the header from Diary to Dream.
-F3
+As always, the big question is "what to do about clones?" org-mode uses
+sentinels similar to Leo's latest file format, but org-mode knows nothing
+of gnx's and clones.
 
-Leo Log Window
-Leo 4.11 devel, build 5424, 2012-08-21 16:03:45
-Python 2.7.2, qt version 4.7.4
-linux2
-setting leoID from os.getenv('USER'): 'bob02'
-load dir: /home/ldi/bzr/LeoLatest/leo/core
-global config dir: /home/ldi/bzr/LeoLatest/leo/config
-home dir: /home/bob02
-reading settings in /home/ldi/bzr/LeoLatest/leo/config/leoSettings.leo
-reading settings in /home/bob02/.leo/myLeoSettings.leo
-reading settings in /media/datw1/BobH Archive/RFD/2011/rfd1110.leo
-reading: /media/datw1/BobH Archive/RFD/2011/rfd1110.leo
+When writing, Leo would simply ignore gnx's. All nodes, clone or not, would
+get written in the org-mode format.
 
-exception executing command
-Traceback (most recent call last):
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoCommands.py", line 559, in doCommand
-    val = command(event)
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoEditCommands.py", line 9803, in findTabFindNext
-    self.findTabHandler.findNextCommand()
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoFind.py", line 1492, in findNextCommand
-    self.findNext()
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoFind.py", line 702, in findNext
-    self.showSuccess(pos,newpos)
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoFind.py", line 1330, in showSuccess
-    c.endEditing() # 2011/06/10: A major bug fix.
-  File "/home/ldi/bzr/LeoLatest/leo/core/leoCommands.py", line 8197, in endEditing
-    c.frame.tree.endEditLabel()
-  File "/home/ldi/bzr/LeoLatest/leo/plugins/baseNativeTree.py", line 862, in endEditLabel
-    self.onHeadChanged(p)
-  File "/home/ldi/bzr/LeoLatest/leo/plugins/baseNativeTree.py", line 893, in onHeadChanged
-    self.closeEditorHelper(e,item)
-  File "/home/ldi/bzr/LeoLatest/leo/plugins/qtGui.py", line 6570, in closeEditorHelper
-    w.setCurrentItem(item)
-RuntimeError: underlying C/C++ object has been deleted
---------------- End log pane ----------------
+As always, there are more choices when reading. One could choose that all
+nodes with the same headline and body text would become clones of each
+other. Or one could say that clones are never created.
 
-As you can see my Leo-Editor version is 5424.
-openSUSE 12.1
-Kernel Linux 3.1.10-1.16-desktop
-XFCE desktop environment
-.. @+node:ekr.20130806072439.20497: *4* ***Leo does not display all content of a node ...
-From: Viktor Ransmayr <viktor.ransmayr@gmail.com>
+As I write this, I see that org mode could (optionally) put @gnx directives
+in the org-mode file, and use same to recreate clones. Of course, this
+would pollute the body of the org-mode file, but then one could say that
+any other Leo directives could be called form of pollution.
 
-even at the latest revision (rev. 5500) Leo does not display all content of 
-larger nodes
-- Larger nodes approximately defined as >= 150 lines ...
+Anyway, the details about clones aren't the main idea. It would be an
+important bridge to emacs if (optionally) Leo could write and read standard
+org-mode files. Similar remarks probably apply to vim-outline mode.
 
-That is searching for example for a 'TO-DO' item just return this 
-particular line w/o the
-context  around. - Going up - or - down does not refresh the screen & 
-content ...
-
-I thought I could provide you with an outline, where this problem 
-consistently shows up.
-- However, whenever I trim the personal outline I'm using the problem 
-disappears.
-
-This problem is really annoying - and - I would gladly provide more input, 
-but so far I
-fail. - Any suggestion?
-
-With kind regards,
-
-Viktor
-
-PS: For completeness here's the log from Leo's startup:
-
-<log>
-
-Leo Log Window
-Leo 4.11 devel, build 5500, 2012-10-19 18:35:23
-Python 3.2.2, qt version 4.8.0
-Windows 6, 1, 7601, 2, Service Pack 1
-leoID=VR20100603 (in D:\\Users\\Viktor Ransmayr\\.leo)
-load dir: D:\\Branches\\leo-editor\\leo\\core
-global config dir: D:\\Branches\\leo-editor\\leo\\config
-home dir: D:\\Users\\Viktor Ransmayr
-reading settings in D:\\Branches\\leo-editor\\leo\\config\\leoSettings.leo
-reading settings in D:\\Users\\Viktor Ransmayr\\.leo\\myLeoSettings.leo
-reading settings in D:\\Users\\Viktor Ransmayr\\Documents\\Leo-BR-r5500.leo
-reading: D:\\Users\\Viktor Ransmayr\\Documents\\Leo-BR-r5500.leo
-
-</log>
-.. @+node:ekr.20130806072439.20498: *5* Re: Leo does not display all content of a node ...
-From: Terry Brown <terry_n_brown@yahoo.com>
-
-I can confirm that this type of bug is still present in 5500 also.
-
-Yesterday I was noticing this:
-
- - editing a node (A)
- - create new node by accidentally hitting insert
- - delete new node immediately while still in headline edit mode using
-   cut-node 
- - node A is displayed incorrectly, a line is missing, selecting the
-   body restores the missing line
-
-vs. the above but selecting the body of the inserted node, then
-deleting it, in which case A is displayed correctly without selecting
-its body.
-
-Today (the outline's changed) it's not doing that, but I still
-notice the difference between inserting and immediately deleting a node
-(scroll position in A restored incorrectly), vs. inserting a node,
-selecting its body, and then deleting it (scroll position in A restored
-correctly).
-
-So, there's some execution path difference between A being selected
-after an inserted node is deleted immediately (still in headline edit
-mode) vs. after selection of its body.
-
-Not a very helpful report, but maybe the difference between deletion of
-the node immediately and after selecting its body guides you to a
-particular piece of code.
-.. @+node:ekr.20130806072439.20499: *5* Re: Leo does not display all content of a node ...
-From: resi147 <scalet@yebu.de>
-
-I also have the same problem, using the official 4.10 final.
-I.e. a couple of lines are missing in the node (the linecounter
-increments and decrements but the cursor does not move).
-
-Not sure what report could be useful.
-I also feel like it occurs on larger body nodes.
-.. @+node:ekr.20130806072439.20501: *5* Re: Leo does not display all content of a node ...
-From: lewis <lewisneal@operamail.com>
-
-Same issue for me has been occurring on a large node. Interestingly, I can
-only reproduce the display error when 'Leo Log Window' is at bottom left
-position which is my ''initial_split_orientation' setting (horizontal: body
-pane to the right). I can use Window>Toggle Split Direction to correct the
-initial display error.
-
-For me, the display error always becomes evident at line 95. My line
-numbers 95,96 are visible then skips to 118. Lines 97 thru 117 are not
-displayed. It appears to be graphics performance time lag; if I return to
-the file after having switched to another leo tab the previously invisible
-lines are visible.
-
-Leo Log Window
-Leo 4.11 devel, build 5647, 2013-04-02 08:03:37
-Python 3.3.1, qt version 4.8.4
-Windows 6, 1, 7601, 2, Service Pack 1
-.. @+node:ekr.20130806072439.20531: *4* *** (response to Leo does not display...) Styling in Leo
-From: Terry Brown <terry_n_brown@yahoo.com>
-
-(This is a response to the invisible line glitch, but not directly
-related, so a new thread)
-
-Rember this:
-
-http://groups.google.com/group/leo-editor/browse_thread/thread/ee869a0a70f2d765
-
-Some time ago I was working on styling Leo from a single top level
-stylesheet using a mechanism similar to CSS classes, so instead of:
-    
-    # widget is active
-    w.setStyle("QTextEdit { color: red; font-weight: bold; }")
-    
-    ...
-    
-    # widget is inactive
-    w.setStyle("QTextEdit { color: black; font-weight: normal; }")
-    
-you'd have
-
-    # widget is active
-    w.setAttribute('active', True)
-    
-    ...
-    
-    # widget is inactive
-    w.setAttribute('active', False)
-
-and in the single global style sheet
-
-    QTextEdit[active="true"] { color: red; font-weight: bold; }
-    QTextEdit[active="false"] { color: red; font-weight: bold; }
-
-This isn't a perfect example because if active == focused then you
-could probably just use the pseudo-state :focus and let Qt do all the
-work, and also Leo would .setStyle() a string defined in @settings, not
-something hard coded.
-
-Qt styles are different from CSS in that CSS has a single attribute,
-`class`, which can contain a space separated list of tags, whereas Qt
-has arbitrary attributes like the `active` I just made up above.
-.. @+node:ekr.20130908104426.11235: *3* Bug-tracker: Medium priority
-@language rest
-
-https://bugs.launchpad.net/leo-editor/+bug/nnn
-.. @+node:ekr.20130926053913.11562: *4* Hard (3)
-.. @+node:ekr.20130908104426.11242: *5*  914221 bound method ViewRenderedController.updated (Hard)
-https://bugs.launchpad.net/leo-editor/+bug/914221
-
-Summary of a *long* discussion: this may be a docutils issue, and does not seem easy to fix.
-.. @+node:ekr.20130805080841.21380: *5* 1222947 Javascript importer doesn't handle common idiom (Hard)
-@language javascript
-
-https://groups.google.com/forum/#!topic/leo-editor/dmC8iIKlF7g
-
-Bug 
-https://bugs.launchpad.net/leo-editor/+bug/1222947
-
-Here is the test file::
-
-
-    var express = require('express');
-     
-    var app = express.createServer(express.logger());
-     
-    app.get('/', function(request, response) {
-    response.send('Hello World!');
-    });
-     
-    var port = process.env.PORT || 5000;
-    app.listen(port, function() {
-    console.log("Listening on " + port);
-    });
-.. @+node:ekr.20130916105324.19894: *5* 1226353 @shadow does not retain outline structure properly (hard)
-@language rest
-
-https://bugs.launchpad.net/leo-editor/+bug/1226353
-
-===== EKR
-
-The most important problem is compatibility.  As I have just verified,
-@shadow will work even if the private file does not exist,
-but all outline structure will be lost.  Therefore, it may be best
-not to try to read old (ver-4thin) files at all.
-
-@shadow does not reload the following simple file correctly!
-
-+ @shadow
-   @others
-  + child 1
-    child 1.1
-
-shadow files (the private files containing the sentinels) use the *old*
-(#@+leo-ver=4-thin) sentinels, rather than the new (#@+leo-ver=5-thin)
-sentinels.
-
-The old sentinels don't have an explicit notion of nesting level; the new
-sentinels do, so it would seem that the way to fix this problem is to use
-new sentinels. However, this would be a major change to the inner workings
-of the @shadow logic.
-.. @+node:ekr.20130926053913.11563: *4* Minor (8)
-.. @+node:ekr.20111222113610.10244: *5*  613153 unable to describe root directory on thumb drive
-A very complex bug
-
-See https://bugs.launchpad.net/leo-editor/+bug/613153
-.. @+node:ekr.20111026091322.16498: *5*  869098 Context menu settings lost if save as used
-See https://bugs.launchpad.net/leo-editor/+bug/869098
-
-Hard?
-
-I have a Leo file with settings for context menu:
-    
-@settings
-   @data contextmenu_commands
-       edit-headline Edit headline
-          copy-node Copy Node
-          cut-node Cut Node
-          paste-node Paste Node
-
-then these settings are lost if I save the leo file to a new name using
-File - Save as
-If I reload the leo file, they do return
-.. @+node:ekr.20130908104426.11266: *5* 1193820 Focus change on tree pane after saving current Leo file 
-.. @+node:ekr.20130920055521.11282: *5* 1228099 Cancelling save of dirty untitled commander doesn't work with --ipython
-@language rest
-
-https://bugs.launchpad.net/leo-editor/+bug/1228099
-
-The Ipython bridge doesn't seem to be working.
-
-The examples in the IPython chapter seem to be out of date.
-http://leoeditor.com/IPythonBridge.html
-
-Requires that IPython work with Leo using the --ipython option.
-.. @+node:ekr.20111014074810.15652: *5* Fix bug: viewrendered should work better when docutils does not exist
-.. @+node:ekr.20130806072439.20380: *5* auto-rst error? need more robust?
-From: HaveF <iamaplayer@gmail.com>
-
-When I use auto-rst import rst file, sometimes, the author write extra
-characters which aren't harm, but the leo says it is a error...like this
-one:
-
-reading: @auto-rst README
-
-Error: @auto did not import @auto-rst README perfectly
-The clean-all-lines command may help fix whitespace problems
-first mismatched line: 20 (original) = 20 (imported)
-
-Original file...
-
-  18 u'how the learning experiment went.\\n'
-  19 u'Step 1: Create the dataset\\n'
-  20 u'----------------------------\\n'
-  21 u'From this directory, run\\n'
-  22 u'python make_dataset.py\\n'
-
-Imported file...
-
-  18 u'how the learning experiment went.\\n'
-  19 u'Step 1: Create the dataset\\n'
-  20 u'--------------------------\\n'
-  21 u'From this directory, run\\n'
-  22 u'python make_dataset.py\\n'
-
-inserting @ignore
-
-errors inhibited read @auto
-D:\\OpenCourses\\ufldl\\ref\\pylearn2\\pylearn2\\scripts\\tutorials\\grbm_smd\\README
-
-reading entire file into @auto node.
-
-reading: @edit README
-
-finished
-
-The problem is the line 20 has two extra '-', when I remove it manually,
-the import works.
-
-Do you have a better idea to do this than do it manually?
-
-===== From: Terry Brown <terry_n_brown@yahoo.com>
-
-On Sat, 18 May 2013 16:50:12 +0800
-HaveF <iamaplayer@gmail.com> wrote:
-
-> Original file...
-> 
->   18 u'how the learning experiment went.\\n'
->   19 u'Step 1: Create the dataset\\n'
->   20 u'----------------------------\\n'
->   21 u'From this directory, run\\n'
->   22 u'python make_dataset.py\\n'
-
-At first I thought that the rst was invalid, but the docs. say
-  The underline/overline must be at 
-  least as long as the title text. 
-http://docutils.sourceforge.net/docs/user/rst/quickref.html#section-structure
-so I guess it's not.  But leo has nowhere to store the length of the
-underlining.  Also, this is related to the issue where Leo changes the
-underline characters used, e.g. = -> - and * -> # etc.
-
-I think the easiest solution is going to be to do the import and just
-remove the @ignore afterwards, checking that there are no changes that
-matter.  Perhaps the wording of the @ignore message could make it
-clearer that the import may not have failed, but just needs checking.
-
-===== HaveF <iamaplayer@gmail.com>
-
-
-But in fact, the @auto-rst load this rst file like @auto, no @ignore node 
-at all.
-
-My import procedure is like this:
-1. make a node name:
-@auto-rst models.txt
-2. right click it, and select "refresh from disk"
-
-
-And I just find another problem...
-If the rst file like this:
-
-MLP
-===
-
-It also occurs error:
-
-reading: @auto-rst models.txt
-
-Error: @auto did not import @auto-rst models.txt perfectly
-The clean-all-lines command may help fix whitespace problems
-first mismatched line: 10 (original) = 10 (imported)
-
-Original file...
-
-   8 u'    :members:\\n'
-   9 u'MLP\\n'
-  10 u'===\\n'
-  11 u'.. automodule:: pylearn2.models.mlp\\n'
-  12 u'    :members:\\n'
-
-Imported file...
-
-   8 u'    :members:\\n'
-   9 u'MLP\\n'
-  10 u'====\\n'
-  11 u'.. automodule:: pylearn2.models.mlp\\n'
-  12 u'    :members:\\n'
-
-inserting @ignore
-
-errors inhibited read @auto D:\\OpenCourses\\ufldl\\ref\\pylearn2\\doc\\library\\models.txt
-
-reading entire file into @auto node.
-
-reading: @edit models.txt
-
-finished
-
-It says I need a extra "="...
-
-I have attached this file, for someone has interest to reproduce the error.
-
-.. @+node:ekr.20120401144849.10037: *5* Fix installer problem
-@language rest
-
-Leo 4.10 final released
-http://groups.google.com/group/leo-editor/browse_thread/thread/6f475b4c0c2d204a
-
-EKR: One of these might work better.
-
-; RequestExecutionLevel highest
-; RequestExecutionLevel admin
-
-From Viktor
-
-> I tried to install Leo 4.10 final from Sourceforge via
-"LeoSetup-4.10-final.exe". Since I have a bazaar-based Leo environment up
-and running I tried to install this into a completely new separate user
-account.
-
-> After trying several variations it looks like that the "LeoSetup Script"
-requires a Python installation which is available to all users and not just
-to this one new separate account.
-
-I assume by LeoSetup Script you mean LeoSetup-4.10-final.exe.
-
-If you mean setup.py, you shouldn't use it.
-
-> If this is done intentionally, what is the rationale for it.
-
-It wasn't done intentionally. There may be an nsi option to get around this
-problem, but I'm not sure about it. I'll look at this soon.
-.. @+node:ekr.20130806072439.20485: *5* Whitespace when importing java file using @auto
-Importing java file using @auto. How do I adjust Leo to ignore whitespace and indentation irregularities?
-From: Eoin <eoinmccarthy@fastmail.fm>
-
-I'm using @auto to import java files into my Leo project. I'm then cloning 
-various methods as sub-nodes of new feature nodes. 
-It's helping keep my development focussed - and is useful to look back and 
-see what parts of the codebase I've worked on for each feature. 
-
-However, the whitespace in the Java files isn't completely regular. In 
-particular, debug logging is always placed in column 1 - regardless of the 
-surrounding indentation. 
-Other people are also working on these files, so I'd rather not mess with 
-the established convention. 
-
-As things stand, when Leo imports a file its outputting a bunch of error 
-messages:
-* error: underindented line. Extra leading whitespace will be added
-* warning: intermixed blanks and tabs
-
-The creation of the auto node goes fine - though the final result has an 
-@ignore directive in its root node. 
-When working, I just take the @ignore away and clone the methods I want to 
-work on. 
-The problem is when I close the Leo file and re-open it later on, the same 
-errors occur during the building of the auto node and the previous cloned 
-information is lost. 
-To restart work on a feature, I need to reclone the appropriate nodes. Not 
-a showstopper, but not ideal. 
-
-I tried adjusting the info in the JavaScanner class in the core 
-leoImport.py file as follows:
-
-        self.blockCommentDelim1 = '/*'
-        self.blockCommentDelim2 = '*/'
-        self.blockDelim1 = '{'
-        self.blockDelim2 = '}'
-        self.lineCommentDelim = '//'
-        self.lineCommentDelim2 = None
-        self.outerBlockDelim1 = '{'
-        self.outerBlockDelim2 = '}'
-        self.classTags = ['class','interface']
-        self.functionTags = []
-        self.sigFailTokens = [';','='] # Just like c.
-        self.strict=False
-
-I deleted the pyc file and restarted Leo. A new pyc file appears, so the 
-compiled to bytecode seems to be ok.
-
-I was hoping the the setting of self.strict = False would allow the parsing 
-to ignore the whitespace and indentation issues. 
-I'm still getting the same errors though. 
-
-Any help appreciated. I'm using Leo 4.10-final. 
-
-===== EKR
-
-There is no easy way to do this at present, but it's probably reasonable to
-disable errors (and not add @ignore) for underindented comments for
-non-strict languages.
-
-Please file a wishlist bug for this.  Thanks.
-.. @+node:ekr.20130908104426.11269: *3* Bug-tracker: wish-list
-There are 42 wishlist items.  Some appear to be duplicates, or closely related.
-.. @+node:ekr.20111125072438.10204: *4* 882243: (Wishlist) Clones sometimes not saved: change how @others works
-See https://bugs.launchpad.net/leo-editor/+bug/882243
-
-In Leo, I made this file:
-
-@file test.txt
-@others
-.....test1
-     test: these are clones
-.....test2
-     @others
-
-      what is going on...?
-..........test1 <--- this is cloned
-          test: these are clones
-
-The output file does not have the cloned node:
-
-#@+leo-ver=5-thin
-#@+node:bill.20111025150533.3528: * @thin test.txt
-#@+others
-#@+node:bill.20111025150533.3527: ** test1
-test: these are clones
-#@+node:bill.20111025150533.3529: ** test2
-#@+others
-#@-others
-
-what is going on...?
-#@-others
-#@-leo
-
-I don't think it is a conflict with @others; it is just that some files do not retain the clones that are displayed.
-
-Here is the copied node:
-
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
-<?xml-stylesheet ekr_test?>
-<leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
-<leo_header file_format="2"/>
-<vnodes>
-<v t="bill.20111025150533.3528" a="E"><vh>@thin test.txt</vh>
-<v t="bill.20111025150533.3527"><vh>test1</vh></v>
-<v t="bill.20111025150533.3529" a="E"><vh>test2</vh>
-<v t="bill.20111025150533.3527"></v>
-</v>
-</v>
-</vnodes>
-<tnodes>
-<t tx="bill.20111025150533.3527">test: these are clones
-</t>
-<t tx="bill.20111025150533.3528">@others
-</t>
-<t tx="bill.20111025150533.3529">@others
-
-what is going on...?</t>
-</tnodes>
-</leo_file>
-
-Here is the copied leo file:
-
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
-<?xml-stylesheet ekr_test?>
-<leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
-<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
- <global_window_position top="50" left="50" height="500" width="700"/>
- <global_log_window_position top="0" left="0" height="0" width="0"/>
-</globals>
-<preferences/>
-<find_panel_settings/>
-<vnodes>
-<v t="bill.20111025150533.3528" a="E"
-expanded="bill.20111025150533.3529,"><vh>@thin test.txt</vh></v>
-</vnodes>
-<tnodes>
-</tnodes>
-</leo_file>
-.. @+node:ekr.20111216105907.10218: *5* My response: this is a wishlist item
-Reposted from http://groups.google.com/group/leo-editor/browse_thread/thread/67a28984616d09c9
-About bug 882243: clones sometimes not saved
-
-I'd like to discuss this bug here, because I would like us all to be aware of the situation, and possible changes.
-
-The surprise
-=========
-
-To paraphrase the original bug report, suppose we have the following @file tree:
-
-+ @file test.txt
-@others
-  + node 1 (cloned)
-    node 1 text.
-  + node 2
-     @others
-    + node 1 (cloned)
-       node 1 text.
-
-As usual, lines preceded by "+" denote headlines: all other lines are body text.
-
-The surprise is that the cloned node1 node is written to the external file only once (as a child of the root node) and hence does not appear as a (cloned) child of the node2 node when Leo next loads the @file tree.
-
-History
-=====
-
-I would like to call this a wishlist item because the
-present code quite intentionally writes *any* node
-(including cloned nodes) only once. That is, the write code
-sets a bit when writing a node, and @others ignores any
-nodes with that bit set.
-
-You could call this a bug in the @others write logic, but at
-one time it was done explicitly and on purpose.
-
-I don't remember why this was so, but I do remember it *was*
-so. It may have been an artifact of Leo's old representation
-of clones that used both vnodes and tnodes. tnodes no longer
-exist in the one-node world that we have been living in for
-several years, and it may well be time to revisit the
-original design, but I would rather not do that just now
-because there are several "real" bugs that need attention
-asap.
-
-Workaround
-=========
-
-Because this is an issue involving @others, you might assume
-that a workaround involving sections would be possible. You
-would be correct. The following file works as expected::
-
-+ @file test.txt
-<< node 1 >>
-<< node 2 >>
-  + << node 1>> (cloned)
-     node 1 text.
-  + << node 2 >>
-     << node 1 >>
-    + << node 1 >>(cloned)
-       node 1 text.
-.. @+node:ekr.20130806072439.20374: *4* aha moment when using leo script with @url, and feature request ;-)
-From: HaveF <iamaplayer@gmail.com>
-
-1. Aha Sometimes, I just wonder, I write a script (say, @button button-1)
-in leo-file-A.leo, and reuse it by copy(ctrl+shift+c) the button to
-leo-file-B.leo.
-
-When I'm working on leo-file-B.leo, I may have ideas to improve the
-@button button-1, but at that time(working on leo-file-B.leo), I may
-forget where the original place of @button button-1 is. Even I store
-the original scripts in the default workbook.leo is a tedious work to
-deal with(open it, locate where the original script is, update it...)
-
-But! After I add the @url at the first line of @button button-1, I can
-decide if the improvements what I made on leo-file-B.leo's @button button-1
-should or shouldn't be merged to the original and upstream @button
-button-1(in leo-file-A.leo) easily by just a click.
-
-And if I work on leo-file-C.leo, I want to use the same script, but I just
-only remember I use the script in the leo-file-B.leo instead of original
-place. With @url I can easily jump to original place, and copy it to
-leo-file-C.leo.
-
-Using @url in the leo script, I can make the scripts consistency and
-diversity at same time.
-
-Great! But, Wait, wait!
-
-2. Feature request.  At this time, you can use this idea by comment the @url
-line after jump. If @url isn't comment, the leo-editor will say...
-SyntaxError: invalid syntax at the @url line.
-
-Maybe it is a good idea to omit the @url line in the script when executing
-script?
-
-===== EKR
-
-Yes.  I think this is a good idea.  A similar idea occurred to me when
-looking at @rclick nodes.  At present, the context_menu plugin contains an
-ugly hack:  it allows an @rclick node to *follow* an @button node.  This is
-needed at present when the @button node contains @others: the @rclick node
-can't be part of the script "pulled in" by @others.
-
-It would be much more elegant to ignore @rclick nodes when computing the
-script.  This would require a change to the @others logic, but I think it
-is worthwhile.
-
-===== Terry Brown <terry_n_brown@yahoo.com>
-
-I do this kind of thing by keeping buttons in @files...
-
-@file ~/.leo/gen  # general utility buttons
-@file ~/.leo/dml  # tools for editing an XML dialect I use
-@file ~/.leo/sql  # tools for editing SQL / interacting with server
-
-so changes made in one outline are automatically propagated to other
-outlines next time they're reloaded.  You just reference the files
-in each outline where you want those buttons.
-
-> 2. Feature request
-> At this time, you can use this idea by comment the @url line
-> after jump. If @url isn't comment, the leo-editor will say...
-> SyntaxError: invalid syntax
-> at the @url line.
-> 
-> Maybe it is a good idea to omit the @url line in the script when executing
-> script?
-
-This probably would make sense, already the scripting machinery is
-ignoring things like @nocolor or @language cobol or @nowrap etc.
-
-Maybe you could file a wish-list bug item for tracking.
-.. @+node:ekr.20130806072439.20377: *4* An unexpected phenomenon(Using @url node) in @shadow
-From: HaveF <iamaplayer@gmail.com>
-
-When I use @url node in @shadow file, the node
-should not be in public file, right?
-.. @+node:ekr.20130806072439.20369: *4* @paragraph(s)
-From: <offray@riseup.net>
-
-I have been using txt2tags + Nested Editor to produce structured docs in 
-a light markup and exporting them to HTML and LaTeX > pdf. The fine 
-tunning on the pdf output is done by editing the LaTeX source in Leo. I 
-like the aesthetic of the source code and the outputs and I have 
-contacted the Nested author in order to get some cross-pollination 
-between it and Leo [1].
-
-[1] 
-https://groups.google.com/group/nestededitor/browse_thread/thread/7068e3cd229d4614 
-
-Now I think that is time to start hacking Leo for a better support of my 
-work flow and the first thing I would like to have is a "@paragraph" 
-directive that works the same as @rst-no-head but can be used in any 
-part of a (sub)tree, even if is not @rst (sub)tree. This would come 
-handy in chunking and reassembling LaTeX docs without marking up the 
-parts with "<<chunk>>" tags.
-
-===== EKR
-
-Interesting idea. Please file a wishlist bug at https://bugs.launchpad.net/leo-editor.
-
-===== offray As I have say repeatedly I'm an "end user" 
-of Leo and I have browse the doc about developing in Leo in [2] and I 
-plan to follow it as a tutorial, but any pointer to a more detailed 
-section to pay attention or to the Leo trees to start hacking is welcomed
-
-[2] http://webpages.charter.net/edreamleo/scripting.html
-
-.. @+node:ekr.20130806072439.20523: *4* RST3 Tables with Nodes as Rows
-From: Craig Johnson <craig@hivemind.net>
-
-I'm trying to use rst tables by using the table markup in the body text, 
-with one node per table row.  However it seems that the nodes are being 
-preceded with a line-feed even-though @rst-no-head is in effect.
- 
-Can anybody help with preventing that line-feed, it breaks the rst table 
-formatting.
-
-===== EKR
-
-Hmm.  My guess is that a new @rst directive would be needed.  The
-workaround would seem to be to put the entire table in a single node, but
-presumably you have your reasons for not wanting to do that.
-
-Feel free to file a wish-list bug.
-
-===== Craig Johnson <craig@hivemind.net>
- 
-I've been creating rst tables using rst markup directly in the body text.  
-For field lists.  As the same field apears in multiple programs, I would 
-like to use Leo's cloning to reproduce a table row in several locations in 
-the tree.  The issue that prevents me from doing this, is that an 
-@rst-no-head headline seems to generate a line-feed preceeding the body 
-text in the derived file which breaks the table parse.
- 
-Maybe a example:
-The Leo tree:
- 
-+Program1
-  +Parameters
-       =================== ========
-       Field Name          Format
-       =================== ========
-    +@rst-no-head Field1
-        prmField1          Integer
- 
-Results in the following markup
-Program1
-^^^^^^^^^
-Parameters
-~~~~~~~~~
-=================== ========
-Field Name          Format
-=================== ========
-
-prmField1           Integer
-That blank line in the markup before the node body text breaks the table.
- 
-===== wgw <wgwinder@gmail.com>
-
-
-No fix (sorry), but can confirm the problem -- it should go in the bug
-list. (I looked at the rst code, and fainted)
-
-I note that your format wouldn't work without closing the table off:
-
-
-Field Name                       Format
- add                                    add
-
-But you are right: @rst-no-head doesn't work properly.
-
-Looks like you can only post process the rst intermediate file and=20
-eliminate that extra line.
-.. @+node:ekr.20130806072439.20387: *4* wishlist: Autosaving when external file saved
-From: "Ville M. Vainio" <vivainio@gmail.com>
-
-Just an idea:
-
-After discovering sublime edit, I have started using external editor mode
-more (rclick -> Edit in...). Annoyance there is that once you save in
-external editor, you still have to go to leo and save there, or your
-changes will be lost if you close leo without saving.
-
-This can lead to loss of data if you don't routinely agree to save changes
-when closing Leo. I often don't do this, as I save all the time when I
-type, and don't want to save accidental changes I might have done to the
-leo document; I don't usually have time to review changes when closing a
-document.
-
-Maybe .leo could automatically save the tree if and only if the externally
-edited node is the only dirty one.
-
-===== EKR
-
-I agree there is a problem, but I don't believe hacking Leo's save logic is
-a good idea, for several reasons:
-
-1. There might be several dirty nodes, and you could still lose data
-(strictly following your suggestion) in that case.
-
-2. The write logic for external files is complex, mainly due to file
-caching.  I tolerate that complexity because caching is such a big win.
-But it would not be easy to do @file AI to discover the special case you
-mention.
-
-3. Imo, the proper place to handle this problem is in the vim and xemacs
-plugins.  These plugins are responsible for the interaction with Leo.
-
-Would it work for you if the xemacs and vim plugins automatically saved an
-external file whenever the plugin caused a node in that file to become
-dirty?  This would likely solve the problem you mention, although I
-wouldn't be my life on it.
-
-Your comments, please.
-
-===== Matt Wilkie <maphew@gmail.com>
-
-I've been bit by this several times too.
-
-It's lead to me relying on pyscripter (my usual external editor these days,
-has more useful to me command completion than leo) more and more, when I
-otherwise might just nip out, do a few things and come back.
-
-===== EKR
-
-One thing that must be done in any case is to provide alt-x commands for
-all context-menu entries.  There is something wrong with having to use the
-mouse at all...
-
-===== Terry Brown <terry_n_brown@yahoo.com>
-
-Coincidentally I added the alt-X command 'context-menu-open' a week or
-so ago, letting you open the context menu with a keyboard binding so
-you can then navigate the menu with the cursor keys.
-
-This is because not all menu entries can have alt-X commands,
-specifically the quickMove plugins commands for moving nodes to
-pre-defined destinations in other outlines, this is basically a list
-selection operation, but being on a sub-sub-menu it's a pain with the
-mouse, and easier with the cursor keys.
-
-This is part of my method for handling todo items for different
-projects, they are imported from email to one outline, and then I file
-them to the relevant project outline's todo node.  Which creates a
-management problem I just found a surprisingly viable solution for I'll
-mention in another post.
-
-===== From: "Ville M. Vainio" <vivainio@gmail.com>
-
-I wouldn't change the save logic, I'd just execute "save" for the full .leo
-document when
-
-- Node has changed in external editor.
-- The node that changed is the only dirty node in the whole leo document.
-
-I don't use xemacs/vim plugin, but rather "edit in" in right click menu
-(contextmenu.py plugin IIRC).
-
-I agree that this is not an elegant proposal, in that it involves a
-potentially surprising (if useful) special case.
-
-I have to think this a bit more. Perhaps some kind of extra warning in the
-UI for this scenario would do the trick as well.
-
-.. @+node:ekr.20130806072439.20394: *5* Re: Autosaving when external file saved
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-On Thu, Nov 29, 2012 at 6:30 AM, Ville M. Vainio wrote:
-
-> I wouldn't change the save logic, I'd just execute "save" for the full 
->> .leo document when 
->>
->> - Node has changed in external editor.
->> - The node that changed is the only dirty node in the whole leo document.
->>
->> I don't use xemacs/vim plugin, but rather "edit in" in right click menu 
->> (contextmenu.py plugin IIRC).
->>
->
-> Ok.  In that case the contextmenu plugin should handle this. 
->
-
-I believe that c.openWith should be able to deal with this problem.  
-c.openWith creates a temporary external file and updates a node when the 
-user changes that file.  This logic is independent of the editor being 
-used; it works, for example, with Scite, my default external editor.
-
-Clearly, c.openWith (or rather, one of its helpers) is able to update the 
-node and to mark it dirty.  So at the time the node is marked dirty 
-c.openWith has an opportunity to automatically save the file containing the 
-vnode.  c.openWith can issue a colored message to the log pane, but that 
-should be the only "warning" necessary.
-
-My present plan is to write a helper, say c.write_vnode, that will discover 
-the external file (if any) containing the vnode, and immediately write that 
-external file *without* a prompt.  If there is no external file, 
-c.write_vnode could just do an ordinary save of the .leo file and all dirty 
-external files.  Alternatively, c.write_vnode could write only the .leo 
-file (the write-outline-only command) *without* clearing the c.changed bit.
-
-I believe c.write_vnode will solve this problem fairly completely.  What do 
-you think, Amigos?
-
-Edward
-.. @+node:ekr.20130806072439.20395: *5* Re: Autosaving when external file saved
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-On Thu, Nov 29, 2012 at 9:17 AM, Edward K. Ream <edreamleo@gmail.com> wrote:
-
->
-> Clearly, c.openWith (or rather, one of its helpers) is able to update the
-> node and to mark it dirty.
->
-
-The "helper" is the idle-time hook,  editnode_on_idle, in contextmenu.py.
-You could call this good news, because our experiments with auto-saving can
-be confined to the contextmenu plugin.  If our experiments end happily we
-can use the same techniques in the vim and xemacs plugins.
-
-I'll wait awhile for your comments before going ahead with the proposed
-changes.
-.. @+node:ekr.20130806072439.20396: *5* Re: Autosaving when external file saved
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-On Tue, Dec 11, 2012 at 5:55 AM, Ville M. Vainio <vivainio@gmail.com> wrote:
-
-> """
-> My present plan is to write a helper, say c.write_vnode, that will
-> discover the external file (if any) containing the vnode, and immediately
-> write that external file *without* a prompt.  If there is no external file,
-> c.write_vnode could just do an ordinary save of the .leo file and all dirty
-> external files.
-> """
->
-> Maybe a relatively safe solution is to do this:
->
-> 1) My present plan is to write a helper, say c.write_vnode, that will
-> discover the external file (if any) containing the vnode, and immediately
-> write that external file *without* a prompt.
->
-> But not do this:
->
-> 2) If there is no external file, c.write_vnode could just do an ordinary
-> save of the .leo file and all dirty external files.
->
-> This way, if you "want to be safe", you will create an external @file for
-> the content.
->
-> For situation 2), some kind of loud warning is in order, not sure of what
-> kind though. Red g.es?
->
-
-Thanks for this suggestion.  I have a great distrust of all operations
-containing "if" statements in their explanation.  Somehow, we need a
-simpler approach, but I don't know what it is.
-
-.. @+node:ekr.20130806072439.20397: *5* Re: Autosaving when external file saved
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-On Thu, Nov 29, 2012 at 6:30 AM, Ville M. Vainio <vivainio@gmail.com> wrote:
-
-> I wouldn't change the save logic, I'd just execute "save" for the full
-> .leo document when
->
-> - Node has changed in external editor.
-> - The node that changed is the only dirty node in the whole leo document.
->
-> I don't use xemacs/vim plugin, but rather "edit in" in right click menu
-> (contextmenu.py plugin IIRC).
->
-
-Ok.  In that case the contextmenu plugin should handle this.
-
->
-> I agree that this is not an elegant proposal, in that it involves a
-> potentially surprising (if useful) special case.
->
-> I have to think this a bit more. Perhaps some kind of extra warning in the
-> UI for this scenario would do the trick as well.
->
-
-I agree that if the code is going to do something like this it should issue
-a clear warning that something has happened.  Otoh, such "clear warnings"
-tend to get ignored :-)  Indeed, the problem is that you are *already*
-ignoring such a clear warning!  Adding another warning is not likely to be
-a big help...
-
-Edward
-.. @+node:ekr.20130806211959.17373: *4* wishlist: meld integration
-From: Haroldo Stenger <haroldo.stenger@gmail.com>
-
-I'm slowly trying to grok leo. I love meld, it's simply the best text
-comparison I've ever seen. I wonder if a greater bit of integration between
-meld and leo is possible, and in which ways. Undoubtedly calling it as an
-external process is better than anything.
-.. @+node:ekr.20120523092521.9907: *3* Minor bugs
-.. @+node:ekr.20111125072438.10214: *4* Fix bug: Another @shadow bug (test4.leo) (maybe)
-email:
-http://mail.google.com/mail/#label/Leo%2FBugs/133ac31add8b2c6c
-
-see attachment, shadow file won't get written correctly, and it won't reread
-correctly too. Using leo-editor-snapshot- 201111090253.
-
-Hopefully I will be able to look on some bugs myself, but don't know when. Needs
-a bit of time, I am not very familiar with python.
-
-===== EKR
-
-Leo doesn't understand .jsp.  @shadow should refuse to work for unknown languages.
-.. @+node:ekr.20111123095018.13632: *4* Fix bug: expand Find tab as needed for bigger fonts
-.. @+node:ekr.20110605121601.18326: *5* createTab (leoQtLog)
-def createTab (self,tabName,createText=True,widget=None,wrap='none'):
-    """
-    Create a new tab in tab widget
-    if widget is None, Create a QTextBrowser,
-    suitable for log functionality.
-    """
-    trace = False and not g.unitTesting
-    c = self.c
-    if trace: g.trace(tabName,widget and g.app.gui.widget_name(widget) or '<no widget>')
-    if widget is None:
-        widget = LeoQTextBrowser(parent=None,c=c,wrapper=self)
-            # widget is subclass of QTextBrowser.
-        contents = leoQTextEditWidget(widget=widget,name='log',c=c)
-            # contents a wrapper.
-        widget.leo_log_wrapper = contents
-            # Inject an ivar into the QTextBrowser that points to the wrapper.
-        if trace: g.trace('** creating',tabName,'self.widget',contents,'wrapper',widget)
-        option = QtGui.QTextOption
-        widget.setWordWrapMode(option.WordWrap if self.wrap else option.NoWrap)
-        widget.setReadOnly(False) # Allow edits.
-        self.logDict[tabName] = widget
-        if tabName == 'Log':
-            self.widget = contents # widget is an alias for logCtrl.
-            widget.setObjectName('log-widget')
-        # Set binding on all log pane widgets.
-        if newFilter:
-            g.app.gui.setFilter(c,widget,self,tag='log')
-        else:
-            theFilter = leoQtEventFilter(c,w=self,tag='log')
-            self.eventFilters.append(theFilter) # Needed!
-            widget.installEventFilter(theFilter)
-        # A bad hack.  Set the standard bindings in the Find and Spell tabs here.
-        if tabName == 'Log':
-            assert c.frame.top.__class__.__name__ == 'DynamicWindow'
-            find_widget = c.frame.top.leo_find_widget
-            # 2011/11/21: A hack: add an event filter.
-            if newFilter:
-                g.app.gui.setFilter(c,find_widget,widget,'find-widget')
-            else:
-                find_widget.leo_event_filter = leoQtEventFilter(c,w=widget,tag='find-widget')
-                find_widget.installEventFilter(find_widget.leo_event_filter)
-            if trace: g.trace('** Adding event filter for Find',find_widget)
-            # 2011/11/21: A hack: make the find_widget an official log widget.
-            self.contentsDict['Find']=find_widget
-            # 2013/09/20:
-            if hasattr(c.frame.top,'leo_spell_widget'):
-                spell_widget = c.frame.top.leo_spell_widget
-                if trace: g.trace('** Adding event filter for Spell',find_widget)
-                if newFilter:
-                    g.app.gui.setFilter(c,spell_widget,widget,'spell-widget')
-                else:
-                    spell_widget.leo_event_filter = leoQtEventFilter(c,w=widget,tag='spell-widget')
-                    spell_widget.installEventFilter(spell_widget.leo_event_filter)
-        self.contentsDict[tabName] = widget
-        self.tabWidget.addTab(widget,tabName)
-    else:
-        contents = widget
-            # Unlike text widgets, contents is the actual widget.
-        widget.leo_log_wrapper = contents
-            # The leo_log_wrapper is the widget itself.
-        if trace: g.trace('** using',tabName,widget)
-        if newFilter:
-            g.app.gui.setFilter(c,widget,contents,'tabWidget')
-        else:
-            theFilter = leoQtEventFilter(c,w=contents,tag='tabWidget')
-            self.eventFilters.append(theFilter) # Needed!
-            widget.installEventFilter(theFilter)
-        self.contentsDict[tabName] = contents
-        self.tabWidget.addTab(contents,tabName)
-    return contents
-.. @+node:ekr.20110605121601.18166: *5* createFindTab (DynamicWindow)
-def createFindTab (self,parent,tab_widget):
-
-    c,dw = self.leo_c,self
-    grid = self.createGrid(parent,'findGrid',margin=10,spacing=10)
-    grid.setColumnStretch(0,100)
-    grid.setColumnStretch(1,100)
-    grid.setColumnStretch(2,10)
-    grid.setColumnMinimumWidth(1,75)
-    grid.setColumnMinimumWidth(2,175)
-    grid.setColumnMinimumWidth(3,50)
-    # Aliases for column numbers
-    col_0,col_1,col_2 = 0,1,2
-    span_1,span_2,span_3 = 1,2,3
-    # Row 0: heading.
-    heading_row = 0
-    lab1 = self.createLabel(parent,'findHeading','Find/Change Settings...')
-    grid.addWidget(lab1,heading_row,col_0,span_1,span_2,QtCore.Qt.AlignLeft) # AlignHCenter
-    # Rows 1,2: the find/change boxes, now disabled.
-    find_row = 1
-    change_row = 2
-    findPattern = self.createLineEdit(parent,'findPattern',disabled=True)
-    findChange  = self.createLineEdit(parent,'findChange',disabled=True)
-    lab2 = self.createLabel(parent,'findLabel','Find:')
-    lab3 = self.createLabel(parent,'changeLabel','Change:')
-    grid.addWidget(lab2,find_row,col_0)
-    grid.addWidget(lab3,change_row,col_0)
-    grid.addWidget(findPattern,find_row,col_1,span_1,span_2)
-    grid.addWidget(findChange,change_row,col_1,span_1,span_2)
-    # Check boxes and radio buttons.
-    # Radio buttons are mutually exclusive because they have the same parent.
-    def mungeName(name):
-        # The value returned here is significant: it creates an ivar.
-        return 'checkBox%s' % label.replace(' ','').replace('&','')
-    # Rows 3 through 8...
-    base_row = 3
-    table = (
-        ('box', 'Whole &Word',      0,0),
-        ('rb',  '&Entire Outline',  0,1),
-        ('box', '&Ignore Case',     1,0),
-        ('rb',  '&Suboutline Only', 1,1),
-        ('box', 'Wrap &Around',     2,0),
-        ('rb',  '&Node Only',       2,1),
-        ('box', 'Search &Headline', 3,1),
-        ('box', 'Rege&xp',          3,0),
-        ('box', 'Search &Body',     4,1),
-        ('box', 'Mark &Finds',      4,0),
-        ('box', 'Mark &Changes',    5,0))
-        # a,b,c,e,f,h,i,n,rs,w
-    for kind,label,row,col in table:
-        name = mungeName(label)
-        func = g.choose(kind=='box',
-            self.createCheckBox,self.createRadioButton)
-        w = func(parent,name,label)
-        grid.addWidget(w,row+base_row,col)
-        setattr(self,name,w)
-    # Row 9: help row.
-    help_row = 9
-    w = self.createLabel(parent,'findHelp','For help: <alt-x>help-for-find-commands<return>')
-    grid.addWidget(w,help_row,col_0,span_1,span_3)
-    # Row 10: Widgets that take all additional vertical space.
-    w = QtGui.QWidget()
-    space_row = 10
-    grid.addWidget(w,space_row,col_0)
-    grid.addWidget(w,space_row,col_1)
-    grid.addWidget(w,space_row,col_2)
-    grid.setRowStretch(space_row,100)
-    # Official ivars (in addition to setattr ivars).
-    self.leo_find_widget = tab_widget # 2011/11/21: a scrollArea.
-    self.findPattern = findPattern
-    self.findChange = findChange
-    # self.findLab = lab2
-    # self.changeLab = lab3
-.. @+node:ekr.20110605121601.18156: *5* createGrid (DynamicWindow)
-def createGrid (self,parent,name,margin=0,spacing=0):
-
-    w = QtGui.QGridLayout(parent)
-    w.setMargin(margin)
-    w.setSpacing(spacing)
-    self.setName(w,name)
-    return w
-.. @+node:ekr.20110605121601.18145: *5* createLogPane
-def createLogPane (self,parent):
-
-    # Create widgets.
-    logFrame = self.createFrame(parent,'logFrame',
-        vPolicy = QtGui.QSizePolicy.Minimum)
-    innerFrame = self.createFrame(logFrame,'logInnerFrame',
-        hPolicy=QtGui.QSizePolicy.Preferred,
-        vPolicy=QtGui.QSizePolicy.Expanding)
-    tabWidget = self.createTabWidget(innerFrame,'logTabWidget')
-
-    # Pack.
-    innerGrid = self.createGrid(innerFrame,'logInnerGrid')
-    innerGrid.addWidget(tabWidget, 0, 0, 1, 1)
-    outerGrid = self.createGrid(logFrame,'logGrid')
-    outerGrid.addWidget(innerFrame, 0, 0, 1, 1)
-
-    # 2011/10/01: Embed the Find tab in a QScrollArea.
-    findScrollArea = QtGui.QScrollArea()
-    findScrollArea.setObjectName('findScrollArea')
-    findTab = QtGui.QWidget()
-    findTab.setObjectName('findTab')
-    tabWidget.addTab(findScrollArea,'Find')
-    self.createFindTab(findTab,findScrollArea)
-    findScrollArea.setWidget(findTab)
-
-    spellTab = QtGui.QWidget()
-    spellTab.setObjectName('spellTab')
-    tabWidget.addTab(spellTab,'Spell')
-    self.createSpellTab(spellTab)
-
-    tabWidget.setCurrentIndex(1)
-
-    # Official ivars
-    self.tabWidget = tabWidget # Used by leoQtLog.
-.. @+node:ekr.20111010162047.15678: *4* Fix bug: Imports to @file should put @first/@last directives in root node
-Especially:
-    - Shebang line.
-    - Python encoding line.
-    
-- @auto correctly works for all Python files.
-.. @+node:ekr.20111221102703.10289: *5* @@@nosent ../test/at-auto-at-first-test.py
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-def spam():
-    pass
-    
-# This is the last line.
-.. @+node:ekr.20120219152142.34262: *4* Fix bug: Revert moves the reverted tab to the right
-.. @+node:ekr.20111125072438.10217: *4* Fix bug: shell interprets characters in at-mime headings
-http://groups.google.com/group/leo-editor/browse_thread/thread/07efd66847ac4a64
-
-on linux, parenthesis or angled brackets in @mime headings prevent the file from
-being opened, probably because they are interpreted specially by the shell, e.g.
-they need to be escaped. Such characters should be escaped before passing the
-filename to the shell.
-
-.. @+node:ekr.20120327163022.9744: *4* Fix bug: The @auto script *must* put @first nodes in root node
-Also the import commands.
-
-Especially:
-    - Shebang line.
-    - Python encoding line.
-.. @+node:ekr.20111018104244.15920: *4* Fix bug: Use QLocalSocket in LProtoClient.connect
-http://groups.google.com/group/leo-editor/browse_thread/thread/fe9cddc0e7ac8199
-.. @+node:ekr.20120313134250.9852: *4* Fix nav_qt bugs
-See: https://bugs.launchpad.net/leo-editor/+bug/820019
-Shift-Ctrl-F (quicksearch) Sometimes leaves focus in body
-
-
-See: https://bugs.launchpad.net/leo-editor/+bug/869385
-Chapters make the nav_qt.py plugin useless.
-.. @+node:ekr.20111026091322.16495: *4* Fix quickmove bug
-See: https://bugs.launchpad.net/leo-editor/+bug/875463
-Enabling quickmove.py sends to error messages to console on every outline open 
-.. @+node:ekr.20111114085925.9932: *4* Why does the unittest/output folder contain empty files?
-.. @+node:ekr.20031218072017.1462: *5* ic.exportHeadlines
-def exportHeadlines (self,fileName):
-
-    c = self.c ; p = c.p
-    nl = g.u(self.output_newline)
-
-    if not p: return
-    self.setEncoding()
-    firstLevel = p.level()
-
-    try:
-        theFile = open(fileName,'w')
-    except IOError:
-        g.warning("can not open",fileName)
-        c.testManager.fail()
-        return
-    for p in p.self_and_subtree():
-        head = p.moreHead(firstLevel,useVerticalBar=True)
-        s = head + nl
-        if not g.isPython3: # 2010/08/27
-            s = g.toEncodedString(s,encoding=self.encoding,reportErrors=True)
-        theFile.write(s)
-    theFile.close()
-.. @+node:ekr.20051104075904.78: *5* TM.makeImportExportSuite
-def makeImportExportSuite(self,parentHeadline,doImport):
-
-    """Create an Import/Export test for every descendant of testParentHeadline.."""
-
-    tm = self
-    c = self.c
-    parent = tm.findNodeAnywhere(parentHeadline)
-    assert parent,'node not found: %s' % (parentHeadline)
-    temp = tm.findNodeInTree(parent,"tempNode")
-    assert temp,'node not found: tempNode'
-
-    # Create the suite and add all test cases.
-    suite = unittest.makeSuite(unittest.TestCase)
-    for p in parent.children():
-        if p != temp:
-            # 2009/10/02: avoid copy arg to iter
-            p2 = p.copy()
-            dialog = tm.findNodeInTree(p2,"dialog")
-            assert(dialog)
-            test = importExportTestCase(c,p2,dialog,temp,doImport)
-            suite.addTest(test)
-    return suite
-.. @+node:ekr.20051104075904.79: *5* class importExportTestCase
-class importExportTestCase(unittest.TestCase):
-
-    """Data-driven unit tests for Leo's edit body commands."""
-
-    @others
-.. @+node:ekr.20051104075904.80: *6* __init__ (importExportTestCase)
-def __init__ (self,c,p,dialog,temp_p,doImport):
-
-    # Init the base class.
-    unittest.TestCase.__init__(self)
-
-    self.c = c
-    self.dialog = dialog
-    self.p = p.copy()
-    self.temp_p = temp_p.copy()
-
-    self.gui = None
-    self.oldGui = None
-    self.wasChanged = c.changed
-    self.fileName = ""
-    self.doImport = doImport
-
-    self.old_p = c.p
-.. @+node:ekr.20051104075904.81: *6*  fail (importExportTestCase)
-def fail (self,msg=None):
-
-    """Mark a unit test as having failed."""
-
-    import leo.core.leoGlobals as g
-
-    g.app.unitTestDict["fail"] = g.callers()
-.. @+node:ekr.20051104075904.82: *6* importExport
-def importExport (self):
-
-    c = self.c ; p = self.p
-
-    g.app.unitTestDict = {'c':c,'g':g,'p':p and p.copy()}
-
-    commandName = p.h
-    command = getattr(c,commandName) # Will fail if command does not exist.
-    command(event=None)
-
-    failedMethod = g.app.unitTestDict.get("fail")
-    self.failIf(failedMethod,failedMethod)
-.. @+node:ekr.20051104075904.83: *6* runTest
-def runTest(self):
-
-    # """Import Export Test Case"""
-
-    self.importExport()
-.. @+node:ekr.20051104075904.84: *6* setUp
-def setUp(self):
-
-    trace = False
-    c = self.c ; temp_p = self.temp_p
-    d = self.dialog
-    assert(d)
-    temp_p.setBodyString('')
-
-    # Create a node under temp_p.
-    child = temp_p.insertAsLastChild()
-    assert(child)
-    c.setHeadString(child,"import/export test: " + self.p.h)
-    c.selectPosition(child)
-
-    # Get the dialog name and the fileName from the dialog node.
-    # This is used below to set up the dialog dict for nullGui.simulateDialog.
-    s = d.bodyString()
-    lines = s.split('\n')
-    name = lines[0]
-    fileName = lines[1]
-
-    # Replace '\\' by os.path.sep in fileName
-    try:
-        # os.path.sep does not exist in Python 2.2.x.
-        sep = os.path.sep
-        fileName = fileName.replace('\\',sep)
-    except AttributeError:
-        fileName = g.os_path_normpath(fileName)
-    self.fileName = fileName = g.os_path_finalize_join(g.app.loadDir,"..",fileName)
-    if trace: g.trace('(importExportTestCase',fileName)
-    
-    # Set the dict for unitTestGui, a subclass of nullGui.
-    # nullGui.simulateDialog uses this dict to return values for dialogs.
-    if self.doImport:
-        theDict = {name: [fileName]}
-    else:
-        theDict = {name: fileName}
-    self.oldGui = g.app.gui
-    self.gui = leoGui.unitTestGui(theDict,trace=False)
-.. @+node:ekr.20051104075904.85: *6* shortDescription
-def shortDescription (self):
-
-    try:
-        return "ImportExportTestCase: %s %s" % (self.p.h,self.fileName)
-    except Exception:
-        return "ImportExportTestCase"
-.. @+node:ekr.20051104075904.86: *6* tearDown
-def tearDown (self):
-
-    c = self.c ; temp_p = self.temp_p
-
-    if self.gui:
-        self.gui.destroySelf()
-        self.gui = None
-
-    temp_p.setBodyString("")
-    temp_p.clearDirty()
-
-    if not self.wasChanged:
-        c.setChanged (False)
-
-    if 1: # Delete all children of temp node.
-        while temp_p.firstChild():
-            temp_p.firstChild().doDelete()
-
-    g.app.gui = self.oldGui
-    c.selectPosition(self.old_p)
-.. @+node:ekr.20031218072017.2850: *5* c.exportHeadlines
-def exportHeadlines (self,event=None):
-
-    '''Export all headlines to an external file.'''
-
-    c = self
-
-    filetypes = [("Text files", "*.txt"),("All files", "*")]
-
-    fileName = g.app.gui.runSaveFileDialog(
-        initialfile="headlines.txt",
-        title="Export Headlines",
-        filetypes=filetypes,
-        defaultextension=".txt")
-    c.bringToFront()
-
-    if fileName and len(fileName) > 0:
-        g.setGlobalOpenDir(fileName)
-        g.chdir(fileName)
-        c.importCommands.exportHeadlines(fileName)
-.. @+node:ekr.20130806072439.20371: *4* @wrap now suppresses horizontal scrolling
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-The title pretty much says it all.  This is a significant improvement, and 
-makes Leo suitable for authoring text.  It should have been done ages ago. 
-Please let me know immediately if this new behavior causes problems for you.
-
-There is one glitch.  If you add @wrap, the directive won't be in effect 
-until you leave the node and revisit it.
-
-===== redla <radim.halir@gmail.com>
-
-There is one problem which is (IMHO) caused by this change: I have @wrap 
-active and see my "plain" text wrapped properly. But if there is any "long 
-enough" URL on the page (i.e. longer than the screen width), this is not 
-wrapped (as there is no space in the string) nor I can see the end of it 
-(as there is no horizontal scrollbar either) ;-(
-
-===== EKR
-
-The workaround is to disable @wrap in order to see the url, but this is
-clumsy.
+Org mode won't be part of Leo 4.11, but it might be part of Leo 5.0.
 .. @+node:ekr.20040123102724: ** Can't or won't do
 @language rest
 .. @+node:ekr.20130919120947.12506: *3* ** Why Leo won't be a web app
