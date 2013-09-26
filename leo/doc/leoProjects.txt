@@ -656,7 +656,7 @@ The primary fix was to createCompareClones.
 
 The created nodes are also a bit clearer about what the changes are.
 #@+node:ekr.20130925161000.11559: *3* added strip_data argument to config.getData
-#@+node:ekr.20130908104426.11240: *3* Fixed bug 879338: Global tables in leoApp.py should describe all languages known 
+#@+node:ekr.20130908104426.11240: *3* Fixed bug 879338: Global tables in leoApp.py should describe all languages known
 @language rest
 
 # https://bugs.launchpad.net/leo-editor/+bug/879338
@@ -716,6 +716,15 @@ for key in keys:
     vim
     vimoutline
     xslt
+#@+node:ekr.20130908104426.11250: *3* Can't fix (yet) bug 1090950: refresh from disk - cut node ressurection
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/1090950
+
+A shock: fixing bug 1090950 re resurrected nodes may define Leo 5.0
+https://groups.google.com/forum/#!topic/leo-editor/nIl3ud7Tbig
+
+
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

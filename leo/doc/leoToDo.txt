@@ -57,39 +57,6 @@ And run `leo` from command prompt.
 A recent user reports this install method still works, albeit with a
 warning,
 https://groups.google.com/d/topic/leo-editor-users/y6ZwJR3accs/discussion
-.. @+node:ekr.20130912152335.11933: *3* bugs: first
-.. @+node:ekr.20130908104426.11250: *4* 1090950 refresh from disk - cut node ressurection
-https://bugs.launchpad.net/leo-editor/+bug/1090950
-
-Kind of a weird one.
-
-With
-
-head
-        *body
-
-notation, make this outline:
-
-@file ~/del.txt
-        *node top\n@others
-    node 1
-        * one
-    node 2
-        * two
-    node 3
-        * three
-
-save it
-
-select node 1 and demote, moving making nodes 2 and 3 children of node 1
-
-cut node 1
-
-rclick-refresh from disk the @file node
-
-attack of the return of the clones of the resurrected nodes, the nodes are
-restored at their on disk position, and at the positions they were in prior
-to the cut (demoted positions), with the dupes being clones of each other.
 .. @+node:ekr.20130921043420.11269: *3* Help (3)
 .. @+node:ekr.20130806072439.20477: *4* I can't make Leo-Editor start in a full-screen window under openSUSU 12.1
 From: SegundoBob <bhossley@ieee.org>
@@ -5516,68 +5483,12 @@ has arbitrary attributes like the `active` I just made up above.
 @language rest
 
 https://bugs.launchpad.net/leo-editor/+bug/nnn
-.. @+node:ekr.20130912152335.11932: *4* others: medium priority (hard/later)
-.. @+node:ekr.20130912152335.11933: *5* bugs: first
-.. @+node:ekr.20130908104426.11250: *6* 1090950 refresh from disk - cut node ressurection
-https://bugs.launchpad.net/leo-editor/+bug/1090950
-
-Kind of a weird one.
-
-With
-
-head
-        *body
-
-notation, make this outline:
-
-@file ~/del.txt
-        *node top\n@others
-    node 1
-        * one
-    node 2
-        * two
-    node 3
-        * three
-
-save it
-
-select node 1 and demote, moving making nodes 2 and 3 children of node 1
-
-cut node 1
-
-rclick-refresh from disk the @file node
-
-attack of the return of the clones of the resurrected nodes, the nodes are
-restored at their on disk position, and at the positions they were in prior
-to the cut (demoted positions), with the dupes being clones of each other.
-.. @+node:ekr.20130908104426.17092: *5* hard, not very important
-.. @+node:ekr.20111222113610.10244: *6*  613153 unable to describe root directory on thumb drive
-A very complex bug
-
-See https://bugs.launchpad.net/leo-editor/+bug/613153
-.. @+node:ekr.20111026091322.16498: *6*  869098 Context menu settings lost if save as used
-See https://bugs.launchpad.net/leo-editor/+bug/869098
-
-Hard?
-
-I have a Leo file with settings for context menu:
-    
-@settings
-   @data contextmenu_commands
-       edit-headline Edit headline
-          copy-node Copy Node
-          cut-node Cut Node
-          paste-node Paste Node
-
-then these settings are lost if I save the leo file to a new name using
-File - Save as
-If I reload the leo file, they do return
-.. @+node:ekr.20130908104426.11242: *6*  914221 bound method ViewRenderedController.updated (Hard)
+.. @+node:ekr.20130926053913.11562: *4* Hard (3)
+.. @+node:ekr.20130908104426.11242: *5*  914221 bound method ViewRenderedController.updated (Hard)
 https://bugs.launchpad.net/leo-editor/+bug/914221
 
 Summary of a *long* discussion: this may be a docutils issue, and does not seem easy to fix.
-.. @+node:ekr.20130908104426.11266: *6* 1193820 Focus change on tree pane after saving current Leo file 
-.. @+node:ekr.20130805080841.21380: *6* 1222947 Javascript importer doesn't handle common idiom
+.. @+node:ekr.20130805080841.21380: *5* 1222947 Javascript importer doesn't handle common idiom (Hard)
 @language javascript
 
 https://groups.google.com/forum/#!topic/leo-editor/dmC8iIKlF7g
@@ -5600,7 +5511,69 @@ Here is the test file::
     app.listen(port, function() {
     console.log("Listening on " + port);
     });
-.. @+node:ekr.20130806072439.20380: *6* auto-rst error? need more robust?
+.. @+node:ekr.20130916105324.19894: *5* 1226353 @shadow does not retain outline structure properly (hard)
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/1226353
+
+===== EKR
+
+The most important problem is compatibility.  As I have just verified,
+@shadow will work even if the private file does not exist,
+but all outline structure will be lost.  Therefore, it may be best
+not to try to read old (ver-4thin) files at all.
+
+@shadow does not reload the following simple file correctly!
+
++ @shadow
+   @others
+  + child 1
+    child 1.1
+
+shadow files (the private files containing the sentinels) use the *old*
+(#@+leo-ver=4-thin) sentinels, rather than the new (#@+leo-ver=5-thin)
+sentinels.
+
+The old sentinels don't have an explicit notion of nesting level; the new
+sentinels do, so it would seem that the way to fix this problem is to use
+new sentinels. However, this would be a major change to the inner workings
+of the @shadow logic.
+.. @+node:ekr.20130926053913.11563: *4* Minor (8)
+.. @+node:ekr.20111222113610.10244: *5*  613153 unable to describe root directory on thumb drive
+A very complex bug
+
+See https://bugs.launchpad.net/leo-editor/+bug/613153
+.. @+node:ekr.20111026091322.16498: *5*  869098 Context menu settings lost if save as used
+See https://bugs.launchpad.net/leo-editor/+bug/869098
+
+Hard?
+
+I have a Leo file with settings for context menu:
+    
+@settings
+   @data contextmenu_commands
+       edit-headline Edit headline
+          copy-node Copy Node
+          cut-node Cut Node
+          paste-node Paste Node
+
+then these settings are lost if I save the leo file to a new name using
+File - Save as
+If I reload the leo file, they do return
+.. @+node:ekr.20130908104426.11266: *5* 1193820 Focus change on tree pane after saving current Leo file 
+.. @+node:ekr.20130920055521.11282: *5* 1228099 Cancelling save of dirty untitled commander doesn't work with --ipython
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/1228099
+
+The Ipython bridge doesn't seem to be working.
+
+The examples in the IPython chapter seem to be out of date.
+http://leoeditor.com/IPythonBridge.html
+
+Requires that IPython work with Leo using the --ipython option.
+.. @+node:ekr.20111014074810.15652: *5* Fix bug: viewrendered should work better when docutils does not exist
+.. @+node:ekr.20130806072439.20380: *5* auto-rst error? need more robust?
 From: HaveF <iamaplayer@gmail.com>
 
 When I use auto-rst import rst file, sometimes, the author write extra
@@ -5727,7 +5700,38 @@ It says I need a extra "="...
 
 I have attached this file, for someone has interest to reproduce the error.
 
-.. @+node:ekr.20130806072439.20485: *6* Importing java file using @auto. How do I adjust Leo to ignore whitespace and indentation irregularities?
+.. @+node:ekr.20120401144849.10037: *5* Fix installer problem
+@language rest
+
+Leo 4.10 final released
+http://groups.google.com/group/leo-editor/browse_thread/thread/6f475b4c0c2d204a
+
+EKR: One of these might work better.
+
+; RequestExecutionLevel highest
+; RequestExecutionLevel admin
+
+From Viktor
+
+> I tried to install Leo 4.10 final from Sourceforge via
+"LeoSetup-4.10-final.exe". Since I have a bazaar-based Leo environment up
+and running I tried to install this into a completely new separate user
+account.
+
+> After trying several variations it looks like that the "LeoSetup Script"
+requires a Python installation which is available to all users and not just
+to this one new separate account.
+
+I assume by LeoSetup Script you mean LeoSetup-4.10-final.exe.
+
+If you mean setup.py, you shouldn't use it.
+
+> If this is done intentionally, what is the rationale for it.
+
+It wasn't done intentionally. There may be an nsi option to get around this
+problem, but I'm not sure about it. I'll look at this soon.
+.. @+node:ekr.20130806072439.20485: *5* Whitespace when importing java file using @auto
+Importing java file using @auto. How do I adjust Leo to ignore whitespace and indentation irregularities?
 From: Eoin <eoinmccarthy@fastmail.fm>
 
 I'm using @auto to import java files into my Leo project. I'm then cloning 
@@ -6326,76 +6330,6 @@ I'm slowly trying to grok leo. I love meld, it's simply the best text
 comparison I've ever seen. I wonder if a greater bit of integration between
 meld and leo is possible, and in which ways. Undoubtedly calling it as an
 external process is better than anything.
-.. @+node:ekr.20120523092521.9905: *3* Hard bugs
-.. @+node:ekr.20111014074810.15652: *4* Fix bug: viewrendered should work better when docutils does not exist
-.. @+node:ekr.20120401144849.10037: *4* Fix installer problem
-@language rest
-
-Leo 4.10 final released
-http://groups.google.com/group/leo-editor/browse_thread/thread/6f475b4c0c2d204a
-
-EKR: One of these might work better.
-
-; RequestExecutionLevel highest
-; RequestExecutionLevel admin
-
-From Viktor
-
-> I tried to install Leo 4.10 final from Sourceforge via
-"LeoSetup-4.10-final.exe". Since I have a bazaar-based Leo environment up
-and running I tried to install this into a completely new separate user
-account.
-
-> After trying several variations it looks like that the "LeoSetup Script"
-requires a Python installation which is available to all users and not just
-to this one new separate account.
-
-I assume by LeoSetup Script you mean LeoSetup-4.10-final.exe.
-
-If you mean setup.py, you shouldn't use it.
-
-> If this is done intentionally, what is the rationale for it.
-
-It wasn't done intentionally. There may be an nsi option to get around this
-problem, but I'm not sure about it. I'll look at this soon.
-.. @+node:ekr.20130916105324.19894: *4* 1226353 @shadow does not retain outline structure properly
-@language rest
-
-https://bugs.launchpad.net/leo-editor/+bug/1226353
-
-===== EKR
-
-The most important problem is compatibility.  As I have just verified,
-@shadow will work even if the private file does not exist,
-but all outline structure will be lost.  Therefore, it may be best
-not to try to read old (ver-4thin) files at all.
-
-@shadow does not reload the following simple file correctly!
-
-+ @shadow
-   @others
-  + child 1
-    child 1.1
-
-shadow files (the private files containing the sentinels) use the *old*
-(#@+leo-ver=4-thin) sentinels, rather than the new (#@+leo-ver=5-thin)
-sentinels.
-
-The old sentinels don't have an explicit notion of nesting level; the new
-sentinels do, so it would seem that the way to fix this problem is to use
-new sentinels. However, this would be a major change to the inner workings
-of the @shadow logic.
-.. @+node:ekr.20130920055521.11282: *4* 1228099 Cancelling save of dirty untitled commander doesn't work with --ipython
-@language rest
-
-https://bugs.launchpad.net/leo-editor/+bug/1228099
-
-The Ipython bridge doesn't seem to be working.
-
-The examples in the IPython chapter seem to be out of date.
-http://leoeditor.com/IPythonBridge.html
-
-Requires that IPython work with Leo using the --ipython option.
 .. @+node:ekr.20120523092521.9907: *3* Minor bugs
 .. @+node:ekr.20111125072438.10214: *4* Fix bug: Another @shadow bug (test4.leo) (maybe)
 email:
