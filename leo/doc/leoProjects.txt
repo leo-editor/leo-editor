@@ -656,6 +656,66 @@ The primary fix was to createCompareClones.
 
 The created nodes are also a bit clearer about what the changes are.
 #@+node:ekr.20130925161000.11559: *3* added strip_data argument to config.getData
+#@+node:ekr.20130908104426.11240: *3* Fixed bug 879338: Global tables in leoApp.py should describe all languages known 
+@language rest
+
+# https://bugs.launchpad.net/leo-editor/+bug/879338
+
+Only the clojure language needed entries in the tables.
+
+The following script finds all language keys lacking a mode file::
+
+@language python
+
+    import glob
+    files = glob.glob(g.os_path_finalize_join(g.app.loadDir,'..','modes','*.py'))
+    files = [g.shortFileName(z)[:-3] for z in files]
+    print('\n'.join(sorted(files)))
+    keys = sorted(g.app.language_delims_dict.keys())
+    for fn in files:
+        if fn not in keys:
+            print(fn)
+            
+The result is::
+        
+    clojure
+    embperl     # A helper mode
+    patch       # No comment lines
+    phpsection  # A helper mode.
+    pseudoplain # No coment lines.
+    rtf         # Annotations not exactly a comment.
+    
+#@+node:ekr.20130925192131.13116: *4* Extra keys
+import glob
+files = glob.glob(g.os_path_finalize_join(
+    g.app.loadDir,'..','modes','*.py'))
+files = [g.shortFileName(z)[:-3] for z in files]
+print('\n'.join(sorted(files)))
+keys = sorted(g.app.language_delims_dict.keys())
+g.cls()
+for key in keys:
+    if key not in files:
+        print(key)
+
+    ada
+    autohotkey
+    config
+    cpp
+    cweb
+    elisp
+    javaserverpage
+    kshell
+    noweb
+    perlpod
+    rapidq
+    rst
+    tcltk
+    typescript
+    unknown
+    unknown_language
+    vim
+    vimoutline
+    xslt
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
