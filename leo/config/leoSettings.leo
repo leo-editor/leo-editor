@@ -783,7 +783,7 @@
 <v t="ekr.20070925144534.13"><vh>@menu &amp;Read/Write</vh>
 <v t="ekr.20071001120755"><vh>@item *check-derived-file</vh></v>
 <v t="ekr.20071001120755.1"><vh>@item *check-leo-file</vh></v>
-<v t="ekr.20071001121059"><vh>@item *file-compare-leo-files</vh></v>
+<v t="ekr.20071001121059"><vh>@item file-compare-leo-files</vh></v>
 <v t="ekr.20071001120755.2"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.14"><vh>@item *read-outline-only</vh></v>
 <v t="ekr.20071001120755.3"><vh>@item *read-file-into-node</vh></v>
@@ -803,13 +803,13 @@
 <v t="ekr.20070925144534.23"><vh>@item write-missing-at-file-nodes</vh></v>
 </v>
 <v t="ekr.20110530124245.18246"><vh>@item import-file</vh></v>
-<v t="ekr.20070925144534.40"><vh>@menu &amp;Export</vh>
-<v t="ekr.20070925144534.41"><vh>@item *export-&amp;headlines</vh></v>
+<v t="ekr.20070925144534.40"><vh>@menu &amp;Export...</vh>
+<v t="ekr.20070925144534.41"><vh>@item export-headlines</vh></v>
 <v t="ekr.20070925144534.44"><vh>@item flatten-outline</vh></v>
-<v t="ekr.20070925144534.42"><vh>@item *outline-to-&amp;cweb</vh></v>
-<v t="ekr.20070925144534.43"><vh>@item *outline-to-&amp;noweb</vh></v>
-<v t="ekr.20070925144534.45"><vh>@item *&amp;remove-sentinels</vh></v>
-<v t="ekr.20070925144534.46"><vh>@item *&amp;weave</vh></v>
+<v t="ekr.20070925144534.42"><vh>@item outline-to-cweb</vh></v>
+<v t="ekr.20070925144534.43"><vh>@item outline-to-noweb</vh></v>
+<v t="ekr.20070925144534.45"><vh>@item remove-sentinels</vh></v>
+<v t="ekr.20070925144534.46"><vh>@item weave</vh></v>
 </v>
 <v t="ekr.20070927051856"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.47"><vh>@item exit-leo</vh></v>
@@ -4660,7 +4660,7 @@ False: Chapter tabs do not appear.</t>
 <t tx="ekr.20070803082435">True: import commands (including @auto nodes) do full checks.</t>
 <t tx="ekr.20070925144534"></t>
 <t tx="ekr.20070925144534.1"></t>
-<t tx="ekr.20070925144534.10">Save As &amp;Zipped</t>
+<t tx="ekr.20070925144534.10">Save As &amp;Zipped...</t>
 <t tx="ekr.20070925144534.100"></t>
 <t tx="ekr.20070925144534.101"></t>
 <t tx="ekr.20070925144534.102"></t>
@@ -4671,7 +4671,7 @@ False: Chapter tabs do not appear.</t>
 <t tx="ekr.20070925144534.107">Show In&amp;visibles</t>
 <t tx="ekr.20070925144534.108">Setti&amp;ngs</t>
 <t tx="ekr.20070925144534.109"></t>
-<t tx="ekr.20070925144534.11">Save &amp;To</t>
+<t tx="ekr.20070925144534.11">Save &amp;To...</t>
 <t tx="ekr.20070925144534.110"></t>
 <t tx="ekr.20070925144534.111"></t>
 <t tx="ekr.20070925144534.112"></t>
@@ -4974,7 +4974,7 @@ False: Chapter tabs do not appear.</t>
 <t tx="ekr.20070925144534.407">&amp;About Leo</t>
 <t tx="ekr.20070925144534.408">Online &amp;Home Page</t>
 <t tx="ekr.20070925144534.409">The online tutorial no longer exists.</t>
-<t tx="ekr.20070925144534.41"></t>
+<t tx="ekr.20070925144534.41">Export &amp;Outline...</t>
 <t tx="ekr.20070925144534.410"></t>
 <t tx="ekr.20070925144534.411"></t>
 <t tx="ekr.20070925144534.412">Open Leo&amp;Docs.leo</t>
@@ -4985,7 +4985,7 @@ False: Chapter tabs do not appear.</t>
 <t tx="ekr.20070925144534.417"></t>
 <t tx="ekr.20070925144534.418"></t>
 <t tx="ekr.20070925144534.419"></t>
-<t tx="ekr.20070925144534.42"></t>
+<t tx="ekr.20070925144534.42">Outline To &amp;CWEB...</t>
 <t tx="ekr.20070925144534.421"></t>
 <t tx="ekr.20070925144534.422"></t>
 <t tx="ekr.20070925144534.423"></t>
@@ -4993,10 +4993,10 @@ False: Chapter tabs do not appear.</t>
 <t tx="ekr.20070925144534.425"></t>
 <t tx="ekr.20070925144534.426"></t>
 <t tx="ekr.20070925144534.427"></t>
-<t tx="ekr.20070925144534.43"></t>
-<t tx="ekr.20070925144534.44">&amp;Flatten Selected Outline</t>
-<t tx="ekr.20070925144534.45"></t>
-<t tx="ekr.20070925144534.46"></t>
+<t tx="ekr.20070925144534.43">Outline To &amp;Noweb...</t>
+<t tx="ekr.20070925144534.44">&amp;Flatten Selected Outline...</t>
+<t tx="ekr.20070925144534.45">&amp;Remove Sentinels...</t>
+<t tx="ekr.20070925144534.46">&amp;Weave...</t>
 <t tx="ekr.20070925144534.47">E&amp;xit</t>
 <t tx="ekr.20070925144534.48"></t>
 <t tx="ekr.20070925144534.49">Can't Undo</t>
@@ -5021,7 +5021,7 @@ False: Chapter tabs do not appear.</t>
 <t tx="ekr.20070925144534.67"></t>
 <t tx="ekr.20070925144534.68"></t>
 <t tx="ekr.20070925144534.69"></t>
-<t tx="ekr.20070925144534.7">&amp;Save</t>
+<t tx="ekr.20070925144534.7">&amp;Save...</t>
 <t tx="ekr.20070925144534.70"></t>
 <t tx="ekr.20070925144534.71"></t>
 <t tx="ekr.20070925144534.72"></t>
@@ -5032,7 +5032,7 @@ False: Chapter tabs do not appear.</t>
 <t tx="ekr.20070925144534.77"></t>
 <t tx="ekr.20070925144534.78"></t>
 <t tx="ekr.20070925144534.79"></t>
-<t tx="ekr.20070925144534.8">Save &amp;As</t>
+<t tx="ekr.20070925144534.8">Save &amp;As...</t>
 <t tx="ekr.20070925144534.80"></t>
 <t tx="ekr.20070925144534.81"></t>
 <t tx="ekr.20070925144534.82"></t>
@@ -5043,7 +5043,7 @@ False: Chapter tabs do not appear.</t>
 <t tx="ekr.20070925144534.87"></t>
 <t tx="ekr.20070925144534.88"></t>
 <t tx="ekr.20070925144534.89"></t>
-<t tx="ekr.20070925144534.9">Save As &amp;Unzipped</t>
+<t tx="ekr.20070925144534.9">Save As &amp;Unzipped...</t>
 <t tx="ekr.20070925144534.90"></t>
 <t tx="ekr.20070925144534.91"></t>
 <t tx="ekr.20070925144534.92"></t>
@@ -5095,7 +5095,7 @@ Leo's init code populates this menu as a special case.</t>
 <t tx="ekr.20071001120755.2"></t>
 <t tx="ekr.20071001120755.3"></t>
 <t tx="ekr.20071001120755.4"></t>
-<t tx="ekr.20071001121059"></t>
+<t tx="ekr.20071001121059">&amp;Compare Leo Files...</t>
 <t tx="ekr.20071001123216"></t>
 <t tx="ekr.20071004121248"></t>
 <t tx="ekr.20071004121248.1"></t>
@@ -6189,7 +6189,7 @@ do-nothing = Shift-F10
 do-nothing = Shift-F11
 do-nothing = Shift-F12
 </t>
-<t tx="ekr.20110530124245.18246">&amp;Import File</t>
+<t tx="ekr.20110530124245.18246">&amp;Import File...</t>
 <t tx="ekr.20110601103939.19339">True: A *single* click in an already selected node begins editing of the headline.</t>
 <t tx="ekr.20110607054506.16793"></t>
 <t tx="ekr.20110607054506.16794"></t>
