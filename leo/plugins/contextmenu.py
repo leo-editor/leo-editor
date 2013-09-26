@@ -176,37 +176,61 @@ def refresh_rclick(c,p, menu):
     split = h.split(None,1)
     if len(split) < 2:
         return
-
     fname = p.anyAtFileNodeName()
-
-    #g.trace("at file node",fname)
     if not fname:
         return
-
     typ = split[0]        
-
     action = menu.addAction("Refresh from disk")
 
     def refresh_rclick_cb():
         
-        vnodes = [i.v for i in c.getSelectedPositions()]
-        
-        for v in vnodes:
-            
-            c.selectPosition(c.vnode2position(v))
-            
-            if typ.startswith('@auto'):
-                c.readAtAutoNodes()
-            elif typ =='@thin' or typ == '@file':
-                c.readAtFileNodes()
-            elif typ =='@shadow':
-                c.readAtShadowNodes()
+        # Try to fix bug 1090950 refresh from disk: cut node ressurection.
+        if 0: # This doesn't work--seems safer than previous code.
+            def delete_children(p):
+                # c.fileCommands.gnxDict = {}
+                    # Essential to fix the bug, but breaks clone links!
+                while p.hasChildren():
+                    child = p.firstChild()
+                    child.doDelete()
+            at = c.atFileCommands
+            p = c.p
+            fn = p.anyAtFileNodeName()
+            if not fn: return
+            i = g.skip_id(p.h,0,chars='@')
+            word=p.h[0:i]
+            if word == '@auto':
+                delete_children(p)
+                at.readOneAtAutoNode(fn,p)
+            elif word in ('@thin','@file'):
+                delete_children(p)
+                at.read(p,force=True)
+            elif word == '@shadow ':
+                delete_children(p)
+                at.read(p,force=True,atShadow=True)
+            elif word == '@edit':
+                delete_children(p)
+                at.readOneAtEditNode(fn,p)
             else:
-                c.readAtFileNodes()
-    
-            # UNSUPPORTED            
-            #if typ =='@edit':
-            #    c.readAtEditNodes()
+                g.trace('unknown:',word)
+            c.redraw()
+        else:
+            # Old code.
+            vnodes = [i.v for i in c.getSelectedPositions()]
+            for v in vnodes:
+                p = c.vnode2position(v)
+                assert(c.positionExists(p))
+                c.selectPosition(p)
+                if typ.startswith('@auto'):
+                    c.readAtAutoNodes()
+                elif typ =='@thin' or typ == '@file':
+                    c.readAtFileNodes()
+                elif typ =='@shadow':
+                    c.readAtShadowNodes()
+                else:
+                    c.readAtFileNodes()
+                # UNSUPPORTED            
+                #if typ =='@edit':
+                #    c.readAtEditNodes()
 
     action.connect(action, QtCore.SIGNAL("triggered()"), refresh_rclick_cb)
 #@+node:ville.20090701110830.10215: ** editnode_rclick
