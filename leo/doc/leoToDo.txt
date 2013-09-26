@@ -57,9 +57,7 @@ And run `leo` from command prompt.
 A recent user reports this install method still works, albeit with a
 warning,
 https://groups.google.com/d/topic/leo-editor-users/y6ZwJR3accs/discussion
-.. @+node:ekr.20130912152335.11933: *3* bugs: first (2)
-.. @+node:ekr.20130908104426.11240: *4*  879338 Global tables in leoApp.py should describe all languages known 
-https://bugs.launchpad.net/leo-editor/+bug/879338
+.. @+node:ekr.20130912152335.11933: *3* bugs: first
 .. @+node:ekr.20130908104426.11250: *4* 1090950 refresh from disk - cut node ressurection
 https://bugs.launchpad.net/leo-editor/+bug/1090950
 
@@ -5519,9 +5517,7 @@ has arbitrary attributes like the `active` I just made up above.
 
 https://bugs.launchpad.net/leo-editor/+bug/nnn
 .. @+node:ekr.20130912152335.11932: *4* others: medium priority (hard/later)
-.. @+node:ekr.20130912152335.11933: *5* bugs: first (2)
-.. @+node:ekr.20130908104426.11240: *6*  879338 Global tables in leoApp.py should describe all languages known 
-https://bugs.launchpad.net/leo-editor/+bug/879338
+.. @+node:ekr.20130912152335.11933: *5* bugs: first
 .. @+node:ekr.20130908104426.11250: *6* 1090950 refresh from disk - cut node ressurection
 https://bugs.launchpad.net/leo-editor/+bug/1090950
 

@@ -217,6 +217,7 @@ class LeoApp:
             "bibtex"             : "%",
             "c"                  : "// /* */", # C, C++ or objective C.
             "chill"              : "/* */",
+            "clojure"            : ";", # 2013/09/25: Fix bug 879338.
             "cobol"              : "*",
             "coldfusion"         : "<!-- -->",
             "config"             : "#", # Leo 4.5.1
@@ -386,6 +387,7 @@ class LeoApp:
             "bibtex"        : "bib",
             "c"             : "c",
             "chill"         : "ch",  # Only one extension is valid: .c186, .c286
+            "clojure"       : "clj", # 2013/09/25: Fix bug 879338.
             "cobol"         : "cbl", # Only one extension is valid: .cob
             "coldfusion"    : "cfm",
             "config"        : "cfg",
@@ -536,6 +538,7 @@ class LeoApp:
             "cbl":      "cobol", # Only one extension is valid: .cob
             "cfg":      "config",
             "cfm":      "coldfusion",
+            "clj":      "clojure", # 2013/09/25: Fix bug 879338.
             "ch":       "chill", # Other extensions, .c186,.c286
             "conf":     "apacheconf",
             "cpp":      "cpp",

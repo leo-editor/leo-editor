@@ -655,6 +655,7 @@ https://bugs.launchpad.net/leo-editor/+bug/1160660
 The primary fix was to createCompareClones.
 
 The created nodes are also a bit clearer about what the changes are.
+#@+node:ekr.20130925161000.11559: *3* added strip_data argument to config.getData
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
