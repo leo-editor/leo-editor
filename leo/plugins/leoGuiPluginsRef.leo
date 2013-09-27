@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
+<!-- Created by Leo (http://leoeditor.com/leo_toc.html) -->
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
@@ -33,10 +33,10 @@
 </v>
 <v t="ekr.20081121105001.1110"><vh>Other guis</vh>
 <v t="ekr.20081121105001.12"><vh>@file cursesGui.py</vh></v>
-<v t="ekr.20081121105001.80"><vh>@file ironPythonGui.py</vh></v>
-<v t="ekr.20081121105001.595"><vh>@file swing_gui.py</vh></v>
-<v t="ekr.20081121110412.2"><vh>@file tkGui.py</vh></v>
-<v t="ekr.20090126093408.1"><vh>@file wxGui.py</vh></v>
+<v t="ekr.20081121105001.80"><vh>@file ./obsolete/ironPythonGui.py</vh></v>
+<v t="ekr.20081121105001.595"><vh>@file ./obsolete/swing_gui.py</vh></v>
+<v t="ekr.20081121110412.2"><vh>@file ./obsolete/tkGui.py</vh></v>
+<v t="ekr.20090126093408.1"><vh>@file ./obsolete/wxGui.py</vh></v>
 </v>
 </vnodes>
 <tnodes>

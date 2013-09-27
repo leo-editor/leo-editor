@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:ekr.20090126093408.1: * @file wxGui.py
+#@+node:ekr.20090126093408.1: * @file ./obsolete/wxGui.py
 #@@first
 
 '''A plugin to use wxWidgets as Leo's gui.
