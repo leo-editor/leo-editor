@@ -379,6 +379,8 @@ class bridgeController:
         # Create a new frame. Unlike leo.run, this is not a startup window.
         c = g.app.newCommander(fileName)
         frame = c.frame
+        frame.createFirstTreeNode() # 2013/09/27: bug fix.
+        assert c.rootPosition()
         frame.setInitialWindowGeometry()
         frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
         # Call the 'new' hook for compatibility with plugins.

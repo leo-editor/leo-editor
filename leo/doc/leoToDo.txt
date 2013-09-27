@@ -43,15 +43,91 @@ Their own chapter, or prominent new sections.
 
 https://bugs.launchpad.net/leo-editor/+bug/1168689
 
-At present, it use "python launchLeo.py --ipython" instead of plugin
+You must use "python launchLeo.py --ipython" instead of the ipython.py plugin
+
+The old ipython.py plugin is deprecated: it exists in leo/plugins/obsolete.
 
 The docs of ipython and leo should be updated
 
 https://groups.google.com/forum/?fromgroups#!topic/leo-editor/n5IVGe6fh2k
+.. @+node:ekr.20130927121653.11394: *5* Are g.app.ipm and g_ipm used???
+.. @+node:ekr.20130927121653.11393: *5* code
+@language python
+
+.. @+node:ekr.20110605121601.18483: *6* runMainLoop & runWithIpythonKernel (qtGui)
+def runWithIpythonKernel(self):
+
+    try:
+        # This try/except does not work.
+        # Apparently ipython calls sys.exit on failure.
+        import leo.plugins.internal_ipkernel as ipk
+    except Exception:
+        print('can not import leo.plugins.internal_ipkernel')
+        g.app.ipk = None
+        g.app.ipm = None
+        g_ipm = None
+        g.es_exception()
+        return
+    g.app.ipk = ipk = ipk.InternalIPKernel()
+    if not ipk:
+        print('can not init leo.plugins.internal_ipkernel')
+        return
+    ipk.init_ipkernel('qt')
+    ns = ipk.namespace
+    ns['g'] = g
+    # launch the first shell, 'c' is not defined there
+    ipk.new_qt_console()
+
+    @g.command("ipython-new")
+    def qtshell_f(event):            
+        """ Launch new ipython shell window, associated with the same ipython kernel """
+        g.app.ipk.new_qt_console()
+        ns['c'] = event['c']
+
+    @g.command("ipython-exec")
+    def ipython_exec_f(event):
+        """ Execute script in current node in ipython namespace """
+        c = ns['c'] = event['c']
+        self.execInNamespace(c, c.p, g.app.ipk.namespace)
+
+    # blocks forever here, equivalent of 
+    # QApplication.exec_()
+    ipk.ipkernel.start()
+
+def execInNamespace(self, c, p, ns):
+    """" Needed because c.executeScript doesn't handle ns properly """
+    script = g.getScript(c,p)
+    try:
+        exec(script, ns)
+    except:
+        g.es_exception()
+
+def runMainLoop(self):
+
+    '''Start the Qt main loop.'''
+
+    g.app.gui.dismiss_splash_screen()
+    if self.script:
+        log = g.app.log
+        if log:
+            g.pr('Start of batch script...\n')
+            log.c.executeScript(script=self.script)
+            g.pr('End of batch script')
+        else:
+            g.pr('no log, no commander for executeScript in qtGui.runMainLoop')
+    elif g.app.useIpython and g.app.ipm:
+        # g.app.ipm exists only if IPython was imported properly.
+        self.runWithIpythonKernel()
+    else:
+        # This can be alarming when using Python's -i option.                           
+        sys.exit(self.qtApp.exec_())
 .. @+node:ekr.20130927053257.12950: *5* post 1
 Leo finally caught up with modern IPython ;-).
 
-I added support for the client/server ipython architecture, where Leo process runs an ipython "kernel", and terminal sessions can connect to it from other processes. So you can launch a new xterminal, and connect an ipython ui session (qt or terminal based).
+I added support for the client/server ipython architecture, where Leo
+process runs an ipython "kernel", and terminal sessions can connect to it
+from other processes. So you can launch a new xterminal, and connect an
+ipython ui session (qt or terminal based).
 
 Branch is here:
 
@@ -61,11 +137,16 @@ Launch leo by "python launchLeo.py --ipython"
 
 You should see a terminal being launched.
 
-You can do alt-x ipython-new to launch new terminals (connected to the same kernel)
+You can do alt-x ipython-new to launch new terminals (connected to the same
+kernel)
 
-You need to install some dependencies to get this working. Try "sudo pip install ipython matplotlib" at least. This may fail if you don't have c compiler set up correctly; I leave it to others to repeat this and compose better instructions.
+You need to install some dependencies to get this working. Try "sudo pip
+install ipython matplotlib" at least. This may fail if you don't have c
+compiler set up correctly; I leave it to others to repeat this and compose
+better instructions.
 
-Screenshot attached. "c" is available because I launched the session with alt-x ipython-new
+Screenshot attached. "c" is available because I launched the session with
+alt-x ipython-new
 .. @+node:ekr.20130927053257.12951: *5* post 2
 ===== EKR
 
@@ -107,9 +188,40 @@ Basically, it provides a "workbook" like way to get data from Leo document
 to the namespace, and do calculations based on that data. Having this data
 be accessible to the ipython instance makes it convenient to interact and
 poke around with the same data.
-.. @+node:ekr.20130927053257.12953: *5* post 4
-It means, if I want to use ipython, just use "python launchLeo.py --ipython",
-and don't uncomment ipython.py in @enabled-plugins.
+.. @+node:ekr.20130927102948.11391: *5* EKR post re new code
+alr
+
+Bug 1168689 "outdated documentation about ipython" is misnamed. I have
+been tweaking Leo's IPython-related code as described below. I still hope
+to release b1 tomorrow, but I'll delay another day if there are problems.
+
+Recent revs have updated Leo's code relating to IPython as follows:
+
+- The old ipython.py plugin has demoted to leo/plugins/obsolete.
+
+- internal_ipkernel.py (the code called when the user gives the --ipython
+  option) now can import the IPKernelApp class regardless of which version
+  (0.x or 1.x) of IPython is in effect.
+
+The --ipython option works on Ubuntu; it *might* work on Windows, but I'm
+having installation problems.
+
+Questions:
+
+1. Is anyone using IPython with Leo successfully on Windows?
+
+2. I don't see any way to access Leo's data from IPython? In particular,
+   internal_ipkernel.py injects no _leo object into the IPython namespace.
+   Is this intentional?
+.. @+node:ekr.20130927121653.11392: *5* ** EKR post 2: how to use the new code
+'c' is available because I launched the session with alt-x ipython-new​"
+
+The --python option injects "g" into the namespace right away.
+
+g.app.ipk is an instance of the InternalIPKernel class defined in
+internal_ipkernel.py.
+
+g.app.ipk.namespace is the IPython namespace(!)
 .. @+node:ekr.20130927053257.12954: *5* Windows installation
 https://github.com/zeromq/pyzmq/downloads
 
