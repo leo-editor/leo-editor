@@ -3,7 +3,7 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.62" body_secondary_ratio="0.68">
+<globals body_outline_ratio="0.33" body_secondary_ratio="0.68">
 	<global_window_position top="30" left="341" height="1001" width="1227"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -885,13 +885,11 @@ run-all-unit-tests-locally = Alt-6
 # an @enabled-plugins node in myLeoSettings.leo.
 
 # Highly-recommended plugins:
-
 plugins_menu.py
 free_layout.py # needs to be early
 viewrendered.py
 
 # Recommended plugins:
-
 contextmenu.py
 # leo_to_html.py
 mod_scripting.py
@@ -899,126 +897,6 @@ mod_scripting.py
 # quicksearch.py
 # stickynotes.py
 # todo.py
-
-
-# Alphabetical list of all Leo plugins.
-
-# active_path.py
-# add_directives.py
-# at_folder.py
-# at_produce.py
-# at_view.py
-# attrib_edit.py
-# backlink.py
-# baseNativeTree.py
-# bibtex.py
-# bookmarks.py
-# bzr_qcommands.py
-# chapter_hoist.py
-# codewisecompleter.py
-# colorize_headlines.py
-# contextmenu.py
-# ctagscompleter.py
-# cursesGui.py
-# datenodes.py
-# debugger_pudb.py
-# detect_urls.py
-# dragdropgoodies.py
-# dtest.py
-# dump_globals.py
-# empty_leo_file.py
-# enable_gc.py
-# expfolder.py
-# FileActions.py
-# free_layout.py
-# ftp.py
-# geotag.py
-# gitarchive.py
-# graphcanvas.py
-# gtkDialogs.py
-# gtkGui.py
-# import_cisco_config.py
-# initinclass.py
-# interact.py
-# ipython.py
-# ironPythonGui.py
-# jinjarender.py
-# leoOPML.py
-# leo_interface.py
-# leo_pdf.py
-# leo_to_html.py
-# leo_to_rtf.py
-# leocursor.py
-# leofeeds.py
-# leomail.py
-# leoremote.py
-# leoscreen.py
-# lineNumbers.py
-# macros.py
-# maximizeNewWindows.py
-# mime.py
-# mnplugins.py
-# mod_autosave.py
-# mod_framesize.py
-# mod_http.py
-# mod_leo2ascd.py
-# mod_read_dir_outline.py
-# mod_scripting.py
-# mod_speedups.py
-# mod_tempfname.py
-# mod_timestamp.py
-# multifile.py
-# nav_qt.py
-# nested_splitter.py
-# niceNosent.py
-# nodeActions.py
-# open_shell.py
-# outline_export.py
-# paste_as_headlines.py
-# pluginsTest.py
-# plugins_menu.py
-# pretty_print.py
-# projectwizard.py
-# qtGui.py
-# qt_main.py
-# qt_quicksearch.py
-# qtframecommands.py
-# quickMove.py
-# quicksearch.py
-# quit_leo.py
-# read_only_nodes.py
-# redirect_to_log.py
-# rst3.py
-# run_nodes.py
-# screenshots.py
-# script_io_to_body.py
-# scripts_menu.py
-# setHomeDirectory.py
-# slideshow.py
-# spydershell.py
-# startfile.py
-# stickynotes.py
-# stickynotes_plus.py
-# swing_gui.py
-# systray.py
-# testRegisterCommand.py
-# textnode.py
-# tkGui.py
-# todo.py
-# tomboy_import.py
-# trace_gc_plugin.py
-# trace_keys.py
-# trace_tags.py
-# valuespace.py
-# viewrendered.py
-# vim.py
-# word_count.py
-# word_export.py
-# wxGui.py
-# xemacs.py
-# xml_edit.py
-# xsltWithNodes.py
-# zenity_file_dialogs.py
 </t>
 <t tx="ekr.20111124094121.3941"># These exist for a unit test.</t>
 <t tx="ekr.20111124094121.3942"></t>

@@ -933,7 +933,9 @@ import os
 
 # The files in leoGuiPlugins.leo.
 guiPluginsList = (
-    'cursesGui','ironPythonGui','swing_gui','tkGui','wxGui',
+    'cursesGui',
+    # These are now in leo/plugins/obsolete.
+    # 'ironPythonGui','swing_gui','tkGui','wxGui',
 )
 
 passList = (
@@ -967,7 +969,8 @@ core_files = (
     'leoPlugins','leoShadow','leoTangle','leoUndo',
 )
 external_files = (
-    'ipy_leo','lproto',
+    'lproto',
+    # 'ipy_leo', now in leo/external/obsolete.
 )
 
 recent = (
