@@ -31,6 +31,7 @@ def getCoreList():
             # E1103: Instance of 'ParseResult' has no 'xxx' member,
         'leoGui',
         'leoImport',
+        'leoIPython',
         'leoKeys',
         'leoMenu',
             # W0108: Lambda may not be necessary (it is).
@@ -126,7 +127,7 @@ def getRecentCoreList():
         # 'leoGlobals',
         # 'leoGui',
         # 'leoImport',
-        # 'leoIPython',
+        'leoIPython',
         # 'leoKeys',
         # 'leoMenu',
         # 'leoNodes',
