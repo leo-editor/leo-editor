@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20100120092047.6087: * @file ../external/ipy_leo.py
+#@+node:ekr.20100120092047.6087: * @file ../external/obsolete/ipy_leo.py
 """ ILeo - Leo plugin for IPython
 
 """

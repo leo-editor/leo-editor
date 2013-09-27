@@ -4481,7 +4481,6 @@ printing.py
 # import_cisco_config.py
 # initinclass.py
 # interact.py
-# ipython.py
 # jinjarender.py
 # leo_interface.py
 # leo_pdf.py

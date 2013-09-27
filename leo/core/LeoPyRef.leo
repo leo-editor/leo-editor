@@ -30,18 +30,6 @@
 marks="ekr.20130806211959.17355,"><vh>@file ../doc/leoToDo.txt</vh></v>
 </v>
 <v t="ekr.20031218072017.2406"><vh>Code</vh>
-<v t="ekr.20090802181029.5988"><vh>Version</vh>
-<v t="ekr.20090717092906.12765"><vh>@file leoVersion.py</vh></v>
-<v t="ekr.20111124095033.10203"><vh>@edit bzr_version.py</vh></v>
-</v>
-<v t="ekr.20090802181029.5989"><vh>Startup &amp; external files</vh>
-<v t="ekr.20110310091639.14254"><vh>@file ../external/codewise.py</vh></v>
-<v t="ekr.20100120092047.6087"><vh>@file ../external/ipy_leo.py</vh></v>
-<v t="ville.20091010232339.6117"><vh>@file ../external/lproto.py</vh></v>
-<v t="ekr.20120519121124.9919"><vh>@file ../external/leosax.py</vh></v>
-<v t="ekr.20130805134749.12436"><vh>@file ../external/edb.py</vh></v>
-<v t="ekr.20031218072017.2605"><vh>@file runLeo.py </vh></v>
-</v>
 <v t="ekr.20031218072017.2604"><vh>Core classes</vh>
 <v t="ekr.20031218072017.2608"><vh>@file leoApp.py</vh></v>
 <v t="ekr.20041005105605.1"><vh>@file leoAtFile.py</vh></v>
@@ -50,7 +38,7 @@ marks="ekr.20130806211959.17355,"><vh>@file ../doc/leoToDo.txt</vh></v>
 <v t="ekr.20070317085508.1"><vh>@file leoChapters.py</vh></v>
 <v t="ekr.20031218072017.2794"><vh>@file leoColor.py</vh></v>
 <v t="ekr.20031218072017.2810"><vh>@file leoCommands.py</vh></v>
-<v t="ekr.20041117062700"><vh>@file leoConfig.py</vh></v>
+<v t="ekr.20130925160837.11429"><vh>@file leoConfig.py</vh></v>
 <v t="ekr.20050710142719"><vh>@file leoEditCommands.py</vh></v>
 <v t="ekr.20031218072017.3018"><vh>@file leoFileCommands.py</vh></v>
 <v t="ekr.20031218072017.3093" descendentVnodeUnknownAttributes="7d71005506302e31352e3071017d71025808000000616e6e6f7461746571037d710473732e"><vh>@file leoGlobals.py</vh></v>
@@ -90,11 +78,22 @@ marks="ekr.20130806211959.17355,"><vh>@file ../doc/leoToDo.txt</vh></v>
 <v t="ekr.20110605121601.18709"><vh>@auto ../plugins/qt_quicksearch.ui</vh></v>
 </v>
 </v>
+<v t="ekr.20090802181029.5989"><vh>Startup &amp; external files</vh>
+<v t="ekr.20110310091639.14254"><vh>@file ../external/codewise.py</vh></v>
+<v t="ville.20091010232339.6117"><vh>@file ../external/lproto.py</vh></v>
+<v t="ekr.20120519121124.9919"><vh>@file ../external/leosax.py</vh></v>
+<v t="ekr.20130805134749.12436"><vh>@file ../external/edb.py</vh></v>
+<v t="ekr.20031218072017.2605"><vh>@file runLeo.py </vh></v>
+</v>
 <v t="ekr.20080730161153.8"><vh>Testing</vh>
 <v t="ekr.20100221142603.5638"><vh>@file ../../pylint-leo.py</vh></v>
 <v t="ekr.20080730161153.2"><vh>@file leoBridgeTest.py</vh></v>
 <v t="ekr.20080730161153.5"><vh>@file leoDynamicTest.py</vh></v>
 <v t="ekr.20051104075904" descendentVnodeUnknownAttributes="7d710055013071017d71025808000000616e6e6f746174657103285808000000616e6e6f7461746571047d710574710673732e"><vh>@file leoTest.py</vh></v>
+</v>
+<v t="ekr.20090802181029.5988"><vh>Version</vh>
+<v t="ekr.20090717092906.12765"><vh>@file leoVersion.py</vh></v>
+<v t="ekr.20111124095033.10203"><vh>@edit bzr_version.py</vh></v>
 </v>
 </v>
 </vnodes>
