@@ -88,6 +88,7 @@ def getPluginsList():
     return (
         'baseNativeTree',
         'bookmarks',
+        'internal_ipkernel.py',
         # 'mod_http',
         'mod_scripting',
             # E0611:489:scriptingController.runDebugScriptCommand:
@@ -117,9 +118,9 @@ def getRecentCoreList():
         # 'leoBridge',
         # 'leoCache',
         # 'leoChapters',
-        'leoCommands',
-        'leoConfig',
-        'leoEditCommands',
+        # 'leoCommands',
+        # 'leoConfig',
+        # 'leoEditCommands',
         # 'leoFind',
         # 'leoFrame',
         # 'leoGlobals',
@@ -142,12 +143,13 @@ def getRecentCoreList():
 def getRecentPluginsList ():
 
     return (
-        'baseNativeTree',
+        # 'baseNativeTree',
         # 'contextmenu',
         # 'codewisecompleter',
+        'internal_ipkernel.py',
         # 'mod_scripting',
         # 'nested_splitter',
-        'qtGui',
+        # 'qtGui',
         # 'plugins_menu',
         # 'screencast',
         # 'viewrendered',
@@ -335,7 +337,7 @@ def scanOptions():
 g_option_fn = None
 scope = scanOptions()
 coreList            = getCoreList()
-externalList        = ('ipy_leo','lproto',)
+externalList        = ('lproto',) # 'ipy_leo',
 guiPluginsList      = getGuiPluginsList()
 passList            = getPassList()
 pluginsList         = getPluginsList()

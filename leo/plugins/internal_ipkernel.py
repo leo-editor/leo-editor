@@ -7,7 +7,6 @@
 
 #@+<< imports >>
 #@+node:ekr.20130408094309.8746: ** << imports >>
-import subprocess
 import sys
 
 import_trace = False
@@ -50,10 +49,10 @@ def pylab_kernel(gui):
                 '--pylab=%s' % gui,
                 #'--log-level=10'
             ])
+            if trace: print('%s: kernel: %s' % (tag,kernel))
         except Exception:
             if trace: print('%s: kernel.initialize failed!' % tag)
             raise
-            if trace: print('%s: kernel: %s' % (tag,kernel))
     else:
         print('%s IPKernelApp.instance failed' % (tag))
     return kernel
