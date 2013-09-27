@@ -9,15 +9,26 @@
 #@+node:ekr.20130408094309.8746: ** << imports >>
 import subprocess
 import sys
+
+import_trace = False
 try:
     from IPython.lib.kernel import connect_qtconsole
+    if import_trace: print('ok: IPython.lib.kernel import connect_qtconsole')
 except ImportError:
+    connect_qtconsole = None
     print('internal_ipkernel.py: can not import connect_qtconsole')
 try:
-    # from IPython.zmq.ipkernel import IPKernelApp
-    from IPython.kernel.zmq.kernelapp import IPKernelApp
+    # First, try the IPython 0.x import.
+    from IPython.zmq.ipkernel import IPKernelApp
+    if import_trace: print('ok: from IPython.zmq.ipkernel import IPKernelApp')
 except ImportError:
-    print('internal_ipkernel.py: can not import IPKernelApp')
+    # Next, try the IPython 1.x import.
+    try:
+        from IPython.kernel.zmq.kernelapp import IPKernelApp
+        if import_trace: print('ok: from IPython.zmq.ipkernel import IPKernelApp')
+    except ImportError:
+        IPKernelApp = None
+        print('internal_ipkernel.py: can not import IPKernelApp')
 #@-<< imports >>
 #@+others
 #@+node:ekr.20130408094309.8748: ** init
