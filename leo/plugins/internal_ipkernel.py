@@ -38,7 +38,7 @@ def init():
 def pylab_kernel(gui):
     """Launch and return an IPython kernel with pylab support for the desired gui
     """
-    trace = True
+    trace = False
     tag = 'internal_ipkernel.py'
     kernel = IPKernelApp.instance()
     if kernel:
@@ -51,7 +51,7 @@ def pylab_kernel(gui):
             ])
             if trace: print('%s: kernel: %s' % (tag,kernel))
         except Exception:
-            if trace: print('%s: kernel.initialize failed!' % tag)
+            print('%s: kernel.initialize failed!' % tag)
             raise
     else:
         print('%s IPKernelApp.instance failed' % (tag))
