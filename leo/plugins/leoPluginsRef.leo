@@ -59,7 +59,8 @@
 </v>
 </v>
 <v t="ekr.20101110150056.9453"><vh> Qt only plugins</vh>
-<v t="tbrown.20091029123555.5319" descendentVnodeUnknownAttributes="7d71005503302e3571017d710258040000007465737471037d710458050000005f6564697471057d7106580400000074686973710758120000006f6b20686f77206120626f757420746869737108737373732e"><vh>@file attrib_edit.py</vh></v>
+<v t="tbrown.20091029123555.5319" descendentVnodeUnknownAttributes="7d71005503302e3571017d710258040000007465737471037d710458050000005f6564697471057d7106580400000074686973710758120000006f6b20686f77206120626f757420746869737108737373732e"
+expanded="tbrown.20091009210724.10979,"><vh>@file attrib_edit.py</vh></v>
 <v t="ville.20090310191936.10"><vh>@file colorize_headlines.py</vh></v>
 <v t="ekr.20090701111504.5294"><vh>@file contextmenu.py</vh></v>
 <v t="ville.20090518182905.5419"><vh>@file nav_qt.py</vh></v>
@@ -68,7 +69,8 @@
 <v t="ville.20090314215508.4"><vh>@file quicksearch.py</vh></v>
 <v t="ville.20090815203828.5235"><vh>@file spydershell.py</vh></v>
 <v t="ekr.20100103093121.5329"><vh>@file stickynotes.py</vh></v>
-<v t="tbrown.20090119215428.2"><vh>@file todo.py</vh></v>
+<v t="tbrown.20090119215428.2"
+expanded="tbrown.20090119215428.8,"><vh>@file todo.py</vh></v>
 <v t="tbrown.20100318101414.5990"><vh>@file viewrendered.py</vh></v>
 <v t="tbrown.20090206153748.1"><vh>@file graphcanvas.py</vh></v>
 <v t="ville.20110403115003.10348"><vh>@file valuespace.py</vh></v>
@@ -131,7 +133,8 @@
 </v>
 <v t="EKR.20040517075715"><vh>External programs</vh>
 <v t="ekr.20110125103904.12504"><vh>@file gitarchive.py</vh></v>
-<v t="ekr.20080201143145"><vh>@file ipython.py</vh></v>
+<v t="ekr.20130927071752.11380"
+expanded="ekr.20130408094309.8750,"><vh>@file internal_ipkernel.py</vh></v>
 <v t="EKR.20040517075715.1"><vh>@file mod_tempfname.py</vh></v>
 <v t="EKR.20040517080049.4"><vh>@file open_shell.py</vh></v>
 <v t="ville.20090503124249.1"><vh>@file tomboy_import.py</vh></v>
@@ -166,6 +169,10 @@
 <v t="mork.20041010095009"><vh>@file xsltWithNodes.py</vh></v>
 </v>
 <v t="ekr.20081121105001.2080"><vh>Gui plugins</vh></v>
+<v t="ekr.20130927050813.13031"><vh>Obsolete</vh>
+<v t="ekr.20080201143145"
+expanded="ekr.20080201144219,"><vh>@file ./obsolete/ipython.py</vh></v>
+</v>
 <v t="ekr.20041001210557"><vh>Scripting</vh>
 <v t="tbrown.20100226095909.12777"><vh>@file leoscreen.py</vh></v>
 <v t="ekr.20060328125248"><vh>@file mod_scripting.py</vh></v>
@@ -219,7 +226,8 @@
 <v t="EKR.20040517080555.2"><vh>@file plugins_menu.py</vh></v>
 <v t="edream.110203113231.924"><vh>@file redirect_to_log.py</vh></v>
 <v t="EKR.20040517080555.36"><vh>@file scripts_menu.py</vh></v>
-<v t="tbrown.20090119215428.2"></v>
+<v t="tbrown.20090119215428.2"
+expanded="tbrown.20090119215428.8,"></v>
 <v t="ekr.20101110095202.5882"><vh>@file zenity_file_dialogs.py</vh></v>
 </v>
 </v>
@@ -541,6 +549,7 @@ else:
 <t tx="ekr.20101110150056.9457"></t>
 <t tx="ekr.20120309073937.9878"></t>
 <t tx="ekr.20121126102050.10134"></t>
+<t tx="ekr.20130927050813.13031"></t>
 <t tx="rogererens.20041130095659">@ It is possible to link to nodes within the same file.  However clones might be better.
 </t>
 </tnodes>
