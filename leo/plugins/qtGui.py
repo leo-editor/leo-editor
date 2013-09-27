@@ -7396,12 +7396,15 @@ class leoQtGui(leoGui.leoGui):
             g_ipm = None
             g.es_exception()
             return
-        g.app.ipk = ipk.InternalIPKernel()
-        g.app.ipk.init_ipkernel('qt')
-        ns = g.app.ipk.namespace
+        g.app.ipk = ipk = ipk.InternalIPKernel()
+        if not ipk:
+            print('can not init leo.plugins.internal_ipkernel')
+            return
+        ipk.init_ipkernel('qt')
+        ns = ipk.namespace
         ns['g'] = g
         # launch the first shell, 'c' is not defined there
-        g.app.ipk.new_qt_console()
+        ipk.new_qt_console()
 
         @g.command("ipython-new")
         def qtshell_f(event):            
@@ -7417,7 +7420,7 @@ class leoQtGui(leoGui.leoGui):
 
         # blocks forever here, equivalent of 
         # QApplication.exec_()
-        g.app.ipk.ipkernel.start()
+        ipk.ipkernel.start()
 
     def execInNamespace(self, c, p, ns):
         """" Needed because c.executeScript doesn't handle ns properly """

@@ -8,15 +8,6 @@
 @language rest
 .. @+node:ekr.20130926053913.11572: *3* for b1 (3)
 @language rest
-.. @+node:ekr.20130908104426.11255: *4* 1168689 outdated documentation about ipython
-https://bugs.launchpad.net/leo-editor/+bug/1168689
-
-the doc of ipython and leo should be updated(or just link it to this
-post?)...or it will misleads people
-
-At present, it use "python launchLeo.py --ipython" instead of plugin
-
-https://groups.google.com/forum/?fromgroups#!topic/leo-editor/n5IVGe6fh2k
 .. @+node:ekr.20130908104426.11258: *4* 1180186 debian install not documented well enough
 https://bugs.launchpad.net/leo-editor/+bug/1180186
 
@@ -47,6 +38,82 @@ warning,
 https://groups.google.com/d/topic/leo-editor-users/y6ZwJR3accs/discussion
 .. @+node:ekr.20130926053913.11565: *4* Highlight abbreviations and auto-completion
 Their own chapter, or prominent new sections.
+.. @+node:ekr.20130908104426.11255: *4* 1168689 outdated documentation about ipython
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/1168689
+
+At present, it use "python launchLeo.py --ipython" instead of plugin
+
+The docs of ipython and leo should be updated
+
+https://groups.google.com/forum/?fromgroups#!topic/leo-editor/n5IVGe6fh2k
+.. @+node:ekr.20130927053257.12950: *5* post 1
+Leo finally caught up with modern IPython ;-).
+
+I added support for the client/server ipython architecture, where Leo process runs an ipython "kernel", and terminal sessions can connect to it from other processes. So you can launch a new xterminal, and connect an ipython ui session (qt or terminal based).
+
+Branch is here:
+
+https://code.launchpad.net/~villemvainio/leo-editor/ipkerneldemo
+
+Launch leo by "python launchLeo.py --ipython"
+
+You should see a terminal being launched.
+
+You can do alt-x ipython-new to launch new terminals (connected to the same kernel)
+
+You need to install some dependencies to get this working. Try "sudo pip install ipython matplotlib" at least. This may fail if you don't have c compiler set up correctly; I leave it to others to repeat this and compose better instructions.
+
+Screenshot attached. "c" is available because I launched the session with alt-x ipython-new
+.. @+node:ekr.20130927053257.12951: *5* post 2
+===== EKR
+
+But the old push-to-ipython command crashes. Is there a way to pass scripts
+from Leo to ipython?
+
+===== Ville
+
+At least push-to-ipython can evaluate scripts in ipython namespace (you can
+see where that namespace dict is from my code).
+
+Now that we know it works on windows as well, do you want me to merge the
+code with leo trunk?
+
+Also, enthought python distribution has PyQt too? Maybe it could be a good
+recommendation for Windows users to use that when installing Leo on blank
+machine...
+
+Just in the way of clarification - push-to-ipython doesn't currently do
+that, but a future incarnation can.
+.. @+node:ekr.20130927053257.12952: *5* post 3
+Added a new command: alt-x ipython-exec
+
+This executes the currently selected node/script in ipython kernels
+namespace
+
+This is a replacement for the old push-to-ipython command.
+
+-----
+
+valuespace.py is now adapted to use ipython namespace at all times, if it's
+enabled (with --ipython command line switch).
+
+It's hard to briefly explain what valuespace plugin does and how it relates
+to ipython, but if you are curious check out Contrib branch
+Projects/valuespace.
+
+Basically, it provides a "workbook" like way to get data from Leo document
+to the namespace, and do calculations based on that data. Having this data
+be accessible to the ipython instance makes it convenient to interact and
+poke around with the same data.
+.. @+node:ekr.20130927053257.12953: *5* post 4
+It means, if I want to use ipython, just use "python launchLeo.py --ipython",
+and don't uncomment ipython.py in @enabled-plugins.
+.. @+node:ekr.20130927053257.12954: *5* Windows installation
+https://github.com/zeromq/pyzmq/downloads
+
+pyzmq-2.2.0.win32-py2.7.msi
 .. @+node:ekr.20130926053913.11573: *3* for b2/final (7)
 .. @+node:ekr.20130806072439.20477: *4* Fix full-screen bug
 I can't make Leo-Editor start in a full-screen window under openSUSU 12.1
