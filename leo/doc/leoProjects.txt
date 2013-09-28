@@ -2,6 +2,59 @@
 #@+node:ekr.20100120072650.6089: * @file ../doc/leoProjects.txt
 #@+all
 #@+node:ekr.20130926125247.11505: ** b2/final projects
+#@+node:ekr.20130928060535.11401: *3* Fixed problems with c.save commands in the leoBridge
+@language rest
+
+To emphasize what is said below in the checkin log, there is a systemic
+problem with the leoBridge module: it uses a nullGui in which all dialogs
+are do-nothings. This will affect all commands, such as c.save, etc., that
+may (or may not) ask the user for input.
+
+The workaround I used for c.save, c.saveAs and c.saveTo was to add a
+"fileName" keyword arg, so that code using a commander returned by
+leoBridge can just demand that a certain fileName be used. This is as far
+as I am willing to go for the 4.11 release.
+
+The following test, call it leo-bridge-test.py, passes::
+
+@language python
+
+# Do *not* execute this from inside Leo!
+if __name__ == '__main__':
+    import os
+    import sys
+    sys.path.insert(0,'c:/leo.repo/trunk/leo')
+    import leo.core.leoBridge as leoBridge
+    print(leoBridge)
+    cc = leoBridge.controller(gui='nullGui',verbose=False)
+    g = cc.globals()
+    print(g)
+    path = 'c:/Users/edreamleo/does-not-exist.leo'
+    assert not os.path.exists(path),path
+    assert not g.os_path_exists(path),path
+    c = cc.openLeoFile(path)
+    root = c.rootPosition()
+    assert root
+    root.h = 'root'
+    p = root.insertAsLastChild()
+    p.h = 'A'
+    assert p and p.h
+    if 0:
+        for p in c.all_positions():
+            print(p.h)
+    path = 'c:/Test/leo-bridge-test.leo'
+    c.save(fileName=path)
+    assert os.path.exists(path),path
+    assert g.os_path_exists(path),path
+    os.remove(path)
+    assert not os.path.exists(path),path
+    assert not g.os_path_exists(path),path
+    c.saveAs(fileName=path)
+    assert os.path.exists(path),path
+    assert g.os_path_exists(path),path
+    c.saveTo(fileName=path)
+    assert os.path.exists(path),path
+    assert g.os_path_exists(path),path
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
