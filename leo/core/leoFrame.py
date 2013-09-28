@@ -1120,7 +1120,7 @@ class leoFrame:
         self.startupWindow=False # True if initially opened window
         self.stylesheet = None # The contents of <?xml-stylesheet...?> line.
         self.tab_width = 0 # The tab width in effect in this pane.
-    #@+node:ekr.20051009045404: *4* createFirstTreeNode
+    #@+node:ekr.20051009045404: *4* frame.createFirstTreeNode
     def createFirstTreeNode (self):
 
         f = self ; c = f.c

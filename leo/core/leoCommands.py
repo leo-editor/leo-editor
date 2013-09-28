@@ -1745,7 +1745,7 @@ class Commands (object):
             g.es_exception()
             return None
     #@+node:ekr.20031218072017.2834: *6* c.save
-    def save (self,event=None):
+    def save (self,event=None,fileName=None):
 
         '''Save a Leo outline to a file.'''
 
@@ -1766,7 +1766,12 @@ class Commands (object):
             g.es("save commands disabled",color="purple")
             return
         c.init_error_dialogs()
+        # 2013/09/28: use the fileName keyword argument if given.
+        # This supports the leoBridge.
         # Make sure we never pass None to the ctor.
+        if fileName:
+            c.frame.title = g.computeWindowTitle(fileName)
+            c.mFileName = fileName
         if not c.mFileName:
             c.frame.title = ""
             c.mFileName = ""
@@ -1824,13 +1829,12 @@ class Commands (object):
             c = f.c
             if c.isChanged():
                 c.save()
-
         # Restore the present tab.
         c = self
         dw = c.frame.top # A DynamicWindow
         dw.select(c)
     #@+node:ekr.20031218072017.2835: *6* c.saveAs
-    def saveAs (self,event=None):
+    def saveAs (self,event=None,fileName=None):
 
         '''Save a Leo outline to a file with a new filename.'''
 
@@ -1843,14 +1847,19 @@ class Commands (object):
             g.es("save commands disabled",color="purple")
             return
         c.init_error_dialogs()
+        # 2013/09/28: add fileName keyword arg for leoBridge scripts.
+        if fileName:
+            c.frame.title = g.computeWindowTitle(fileName)
+            c.mFileName = fileName
         # Make sure we never pass None to the ctor.
         if not c.mFileName:
             c.frame.title = ""
-        fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
-            initialfile = c.mFileName,
-            title="Save As",
-            filetypes=[("Leo files", "*.leo")],
-            defaultextension=".leo")
+        if not fileName:
+            fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+                initialfile = c.mFileName,
+                title="Save As",
+                filetypes=[("Leo files", "*.leo")],
+                defaultextension=".leo")
         c.bringToFront()
         if fileName:
             # Fix bug 998090: save file as doesn't remove entry from open file list.
@@ -1870,7 +1879,6 @@ class Commands (object):
             c.fileCommands.saveAs(c.mFileName)
             g.app.recentFilesManager.updateRecentFiles(c.mFileName)
             g.chdir(c.mFileName)
-
         # Done in fileCommands.saveAs.
         # c.redraw_after_icons_changed()
         c.raise_error_dialogs(kind='write')
@@ -1881,7 +1889,7 @@ class Commands (object):
         else:
             c.treeWantsFocus()
     #@+node:ekr.20031218072017.2836: *6* c.saveTo
-    def saveTo (self,event=None):
+    def saveTo (self,event=None,fileName=None):
 
         '''Save a Leo outline to a file, leaving the file associated with the Leo outline unchanged.'''
 
@@ -1889,24 +1897,27 @@ class Commands (object):
         # Do this now: w may go away.
         w = g.app.gui.get_focus(c)
         inBody = g.app.gui.widget_name(w).startswith('body')
-        if inBody: p.saveCursorAndScroll()
-
+        if inBody:
+            p.saveCursorAndScroll()
         if g.app.disableSave:
             g.es("save commands disabled",color="purple")
             return
-
         c.init_error_dialogs()
-
+        # 2013/09/28: add fileName keyword arg for leoBridge scripts.
+        if fileName:
+            c.frame.title = g.computeWindowTitle(fileName)
+            c.mFileName = fileName
         # Make sure we never pass None to the ctor.
         if not c.mFileName:
             c.frame.title = ""
-
-        # set local fileName, _not_ c.mFileName
-        fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
-            initialfile = c.mFileName,
-            title="Save To",
-            filetypes=[("Leo files", "*.leo")],
-            defaultextension=".leo")
+        # 2013/09/28: add fileName keyword arg for leoBridge scripts.
+        if not fileName:
+            # set local fileName, _not_ c.mFileName
+            fileName = ''.join(c.k.givenArgs) or g.app.gui.runSaveFileDialog(
+                initialfile = c.mFileName,
+                title="Save To",
+                filetypes=[("Leo files", "*.leo")],
+                defaultextension=".leo")
         c.bringToFront()
         if fileName:
             fileName = g.ensure_extension(fileName, ".leo")
