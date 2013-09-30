@@ -2,6 +2,8 @@
 #@+node:ekr.20100120072650.6089: * @file ../doc/leoProjects.txt
 #@+all
 #@+node:ekr.20130926125247.11505: ** b2/final projects
+@language rest
+
 #@+node:ekr.20130928060535.11401: *3* Fixed problems with c.save commands in the leoBridge
 @language rest
 
@@ -55,6 +57,8 @@ if __name__ == '__main__':
     c.saveTo(fileName=path)
     assert os.path.exists(path),path
     assert g.os_path_exists(path),path
+#@+node:ekr.20130930062914.15958: *3* Added c.user_dict and g.user_dict
+There are non-persistent Python dicts, for free use by plugins and scripts.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

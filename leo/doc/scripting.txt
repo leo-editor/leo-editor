@@ -1205,5 +1205,10 @@ execute-script. If you want something even more permanent, you can do
 something like::
 
     g.app.my_script_w = w
+.. @+node:ekr.20130930062914.15969: *4* c.user_dict and g.user_dict
+The leoGlobals module g defines a Python dictionary called g.user_dict.
+Similarly, each commander c defines a Python dictionary, c.user_dict. These
+dictionaries do not persist when Leo exits. They are for use of scripts and
+plugins.
 .. @-all
 .. @-leo

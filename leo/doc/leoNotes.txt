@@ -7340,1643 +7340,6 @@ The color of the double angle brackets in << name >>
 .. @+node:ekr.20111024091133.16670: *4* @@@color string_color = #00aa00
 The color of strings and their delimiters.
 
-.. @+node:ekr.20031218072017.434: ** Unused code
-@ignore
-@language python
-@color
-.. @+node:ekr.20050920084036.207: *3* queryReplaceCommandsClass (limited to single node)
-class queryReplaceCommandsClass (baseEditCommandsClass):
-
-    '''A class to handle query replace commands.'''
-
-    @others
-.. @+node:ekr.20050920084036.208: *4*  ctor & init (queryReplaceCommandsClass)
-def __init__ (self,c):
-
-    baseEditCommandsClass.__init__(self,c) # init the base class.
-    self.regexp = False # True: do query-replace-regexp.  Set in stateHandler.
-
-def init (self):
-
-    self.qQ = None
-    self.qR = None
-    self.replaced = 0 # The number of replacements.
-.. @+node:ekr.20050920084036.209: *4*  getPublicCommands
-def getPublicCommands (self):
-
-    return {
-        'query-replace':        self.queryReplace,
-        'query-replace-regex':  self.queryReplaceRegex,
-    }
-.. @+node:ekr.20050920084036.210: *4* Entry points
-def queryReplace (self,event):
-
-    '''Interactively find and replace text.
-    This is not recommended: Leo's other find and change commands are more capable.'''
-    self.regexp = False
-    self.stateHandler(event)
-
-def queryReplaceRegex (self,event):
-    '''Interactively find and replace text using regular expressions.
-    This is not recommended: Leo's other find and change commands are more capable.'''
-    self.regexp = True
-    self.stateHandler(event)
-.. @+node:ekr.20051005151838: *4* Helpers
-.. @+node:ekr.20050920084036.212: *5* doOneReplace
-def doOneReplace (self,event):
-
-    w = self.editWidget(event)
-    if not w: return
-
-    i = w.tag_ranges('qR')
-    w.delete(i[0],i[1])
-    ins = w.getInsertPoint()
-    w.insert(ins,self.qR)
-    self.replaced += 1
-.. @+node:ekr.20050920084036.219: *5* findNextMatch (query-replace)
-def findNextMatch (self,event):
-
-    '''Find the next match and select it.
-    Return True if a match was found.
-    Otherwise, call quitSearch and return False.'''
-
-    k = self.k
-    w = self.editWidget(event)
-    if not w: return
-
-    if g.app.gui.guiName() != 'tkinter':
-        return g.es('command not ready yet',color='blue')
-
-    w.tag_delete('qR')
-    if self.regexp:
-        << handle regexp >>
-    else:
-        << handle plain search >>
-.. @+node:ekr.20051005155611: *6* << handle regexp >>
-try:
-    regex = re.compile(self.qQ)
-except Exception:
-    self.quitSearch(event,'Illegal regular expression')
-    return False
-
-i = w.getInsertPoint()
-txt = w.get(i,'end')
-match = regex.search(txt)
-
-if match:
-    start = match.start()
-    end = match.end()
-    length = end - start
-    i = w.getInsertPoint()
-    w.setInsertPoint(i+start)
-    w.tag_add('qR','insert','insert +%sc' % length)
-    w.tag_config('qR',background='lightblue')
-    i = w.getInsertPoint()
-    txt = w.get(i,i+length)
-    return True
-else:
-    self.quitSearch(event)
-    return False
-.. @+node:ekr.20051005160923: *6* << handle plain search >> (tag_add & tag_config) LATER
-i = w.search(self.qQ,'insert',stopindex='end')
-
-if i:
-    w.setInsertPoint(i)
-    w.tag_add('qR','insert','insert +%sc' % len(self.qQ))
-    w.tag_config('qR',background='lightblue')
-    return True
-else:
-    self.quitSearch(event)
-    return False
-.. @+node:ekr.20050920084036.211: *5* getUserResponse
-def getUserResponse (self,event):
-
-    w = self.editWidget(event)
-    char = event and event.char or ''
-    
-    if not w or not char return
-
-    if char in ('Y','y'):
-        self.doOneReplace(event)
-        if not self.findNextMatch(event):
-            self.quitSearch(event)
-    elif char in ('Q','q','\n','Return'):
-        self.quitSearch(event)
-    elif char == '!':
-        while self.findNextMatch(event):
-            self.doOneReplace(event)
-    elif char in ('N','n','Delete'):
-        # Skip over the present match.
-        i = w.getInsertPoint()
-        w.setInsertPoint(i + len(self.qQ))
-        if not self.findNextMatch(event):
-            self.quitSearch(event)
-
-    w.seeInsertPoint()
-.. @+node:ekr.20050920084036.220: *5* quitSearch
-def quitSearch (self,event,message=None):
-
-    k = self.k
-    w = self.editWidget(event)
-    if not w: return
-
-    w.tag_delete('qR')
-    k.clearState()
-    if message is None:
-        message = 'Replaced %d occurences' % self.replaced
-    k.setLabelGrey(message)
-.. @+node:ekr.20050920084036.215: *5* stateHandler
-def stateHandler (self,event):
-
-    k = self.k ; state = k.getState('query-replace')
-
-    prompt = g.choose(self.regexp,'Query replace regexp','Query replace')
-
-    if state == 0: # Get the first arg.
-        self.init()
-        k.setLabelBlue(prompt + ': ',protect=True)
-        k.getArg(event,'query-replace',1,self.stateHandler)
-    elif state == 1: # Get the second arg.
-        self.qQ = k.arg
-        if len(k.arg) > 0:
-            prompt = '%s %s with: ' % (prompt,k.arg)
-            k.setLabelBlue(prompt)
-            k.getArg(event,'query-replace',2,self.stateHandler)
-        else:
-            k.resetLabel()
-            k.clearState()
-    elif state == 2: # Set the prompt and find the first match.
-        self.qR = k.arg # Null replacement arg is ok.
-        k.setLabelBlue('Query replacing %s with %s\n' % (self.qQ,self.qR) +
-            'y: replace, (n or Delete): skip, !: replace all, (q or Return): quit',
-            protect=True)
-        k.setState('query-replace',3,self.stateHandler)
-        self.findNextMatch(event)
-    elif state == 3:
-        self.getUserResponse(event)
-.. @+node:ekr.20101031172539.5880: *3* Existing autocompleter: do not delete
-.. @+node:ekr.20061031131434.43: *4* completeSelf (not used yet)
-def completeSelf (self):
-
-    g.trace(g.callers(4))
-
-    # This scan will be fast if an instant object already exists.
-    className,obj,p,s = self.classScanner.scan()
-    # g.trace(className,obj,p,s and len(s))
-
-    # First, look up the className.
-    if not obj and className:
-        obj = self.allClassesDict.get(className)
-        # if obj: g.trace('found in allClassesDict: %s = %s' % (className,obj))
-
-    # Second, create the object from class definition.
-    if not obj and s:
-        theClass = self.computeClassObjectFromString(className,s)
-        if theClass:
-            obj = self.createProxyObjectFromClass(className,theClass)
-            if obj:
-                self.selfObjectsDict [className] = obj
-                # This prevents future rescanning, even if the node moves.
-                self.selfVnodesDict [p.v] = obj
-    if obj:
-        self.selfClassName = className
-        self.push(self.theObject)
-        self.theObject = obj
-        self.membersList = self.getMembersList(obj=obj)
-    else:
-        # No further action possible or desirable.
-        self.selfClassName = None
-        self.theObject = None
-        self.clear()
-        self.membersList = []
-.. @+node:ekr.20061031131434.60: *4* class forgivingParserClass (not used)
-class forgivingParserClass:
-
-    '''A class to create a valid class instances from
-    a class definition that may contain syntax errors.'''
-
-    @others
-.. @+node:ekr.20061031131434.61: *5* ctor (forgivingParserClass)
-def __init__ (self,c):
-
-    self.c = c
-    self.excludedTnodesList = []
-    self.old_putBody = None # Set in parse for communication with newPutBody.
-.. @+node:ekr.20061031131434.62: *5* parse
-def parse (self,p):
-
-    '''The top-level parser method.
-
-    It patches c.atFileCommands.putBody, calls the forgiving parser and finally
-    restores c.atFileCommands.putBody.'''
-
-    c = self.c
-
-    # Create an ivar for communication with newPutBody.
-    self.old_putBody = c.atFileCommands.putBody
-
-    # Override atFile.putBody.
-    c.atFileCommands.putBody = self.newPutBody
-
-    try:
-        s = None
-        s = self.forgivingParser(p)
-    finally:
-        c.atFileCommands.putBody = self.old_putBody
-
-    return s # Don't put a return in a finally clause.
-
-
-.. @+node:ekr.20061031131434.63: *5* forgivingParser (leoKeys)
-def forgivingParser (self,p,suppress=False):
-
-    c = self.c ; root = p.copy()
-    self.excludedTnodesList = []
-    s = g.getScript(c,root,useSelectedText=False)
-    while s:
-        try:
-            if not g.isPython3:
-                s = g.toEncodedString(s)
-            compile(s+'\n','<string>','exec')
-            break
-        except SyntaxError:
-            fileName, n = g.getLastTracebackFileAndLineNumber()
-            p = self.computeErrorNode(c,root,n,lines=g.splitLines(s))
-            if not p or p == root:
-                if not suppress:
-                    g.es_print('syntax error in class node: can not continue')
-                s = None ; break
-            else:
-                # g.es_print('syntax error: deleting',p.h)
-                self.excludedTnodesList.append(p.v)
-                s = g.getScript(c,root,useSelectedText=False)
-        except Exception:
-            g.trace('unexpected exception')
-            g.es_exception()
-            break
-    return s or ''
-.. @+node:ekr.20061031131434.64: *5* computeErrorNode (leoKeys)
-def computeErrorNode (self,c,root,n,lines):
-
-    '''The from c.goToLineNumber that applies to scripts.
-    Unlike c.gotoLineNumberOpen, this function returns a position.'''
-
-    if n == 1 or n >= len(lines):
-        return root
-
-    # vnodeName, junk, junk, junk, junk = c.convertLineToVnodeNameIndexLine(
-        # lines, n, root, scriptFind = True)
-
-    goto = goToLineNumber(c)
-    vnodeName,junk,junk,junk = goto.findVnode(
-        root,lines,n,ignoreSentinels)
-
-    if vnodeName:
-        for p in root.self_and_subtree():
-            if p.matchHeadline(vnodeName):
-                return p
-
-    return None
-.. @+node:ekr.20061031131434.65: *5* newPutBody
-def newPutBody (self,p,oneNodeOnly=False,fromString=''):
-
-    if p.v in self.excludedTnodesList:
-        pass
-        # g.trace('ignoring',p.h)
-    else:
-        self.old_putBody(p,oneNodeOnly,fromString)
-.. @+node:ekr.20061031131434.66: *4* class classScannerClass (not used)
-# Called by completeSelf, which is not used.
-
-class classScannerClass:
-
-    '''A class to find class definitions in a node or its parents.'''
-
-    @others
-.. @+node:ekr.20061031131434.67: *5* ctor (classScannerClass)
-def __init__ (self,c):
-
-    self.c = c
-
-    # Ignore @root for now:
-    # self.start_in_doc = c.config.getBool('at_root_bodies_start_in_doc_mode')
-
-    self.start_in_doc = False
-.. @+node:ekr.20061031131434.68: *5* scan
-def scan (self):
-
-    c = self.c
-
-    className,obj,p = self.findParentClass(c.p)
-    # g.trace(className,obj,p)
-
-    if p and not obj:
-        parser = c.k.autoCompleter.forgivingParser
-        s = parser.parse(p)
-    else:
-        s = None
-
-    return className,obj,p,s
-.. @+node:ekr.20061031131434.69: *5* findParentClass
-def findParentClass (self,root):
-
-    autoCompleter = self.c.k.autoCompleter
-
-    # First, see if any parent has already been scanned.
-    for p in root.self_and_parents():
-        obj = autoCompleter.selfVnodesDict.get(p.v)
-        if obj:
-            # g.trace('found',obj,'in',p.h)
-            return None,obj,p
-
-    # Next, do a much slower scan.
-    # g.trace('slow scanning...')
-    for p in root.self_and_parents():
-        className = self.findClass(p)
-        if className:
-            # g.trace('found',className,'in',p.h)
-            return className,None,p
-
-    return None,None,None
-.. @+node:ekr.20061031131434.70: *5* findClass & helpers
-def findClass (self,p):
-
-    lines = g.splitLines(p.b)
-    inDoc = self.start_in_doc
-    # g.trace(p.h)
-    for s in lines:
-        if inDoc:
-            if self.endsDoc(s):
-                inDoc = False
-        else:
-            if self.startsDoc(s):
-                inDoc = True
-            else:
-                # Not a perfect scan: a triple-string could start with 'class',
-                # but perfection is not important.
-                className = self.startsClass(s)
-                if className: return className
-    else:
-        return None
-.. @+node:ekr.20061031131434.71: *6* endsDoc
-def endsDoc (self,s):
-
-    return s.startswith('@c')
-.. @+node:ekr.20061031131434.72: *6* startsClass
-def startsClass (self,s):
-
-    if s.startswith('class'):
-        i = 5
-        i = g.skip_ws(s,i)
-        j = g.skip_id(s,i)
-        word = s[i:j]
-        # g.trace(word)
-        return word
-    else:
-        return None
-.. @+node:ekr.20061031131434.73: *6* startsDoc
-def startsDoc (self,s):
-
-    for s2 in ('@doc','@ ','@\n', '@r', '@\t'):
-        if s.startswith(s2):
-            return True
-    else:
-        return False
-.. @+node:ekr.20061031131434.57: *4* Proxy classes and objects
-.. @+node:ekr.20061031131434.58: *5* createProxyObjectFromClass
-def createProxyObjectFromClass (self,className,theClass):
-
-    '''Create a dummy instance object by instantiating theClass with a dummy ctor.'''
-
-    if 0: # Calling the real ctor is way too dangerous.
-        # Set args to the list of required arguments.
-        args = inspect.getargs(theClass.__init__.im_func.func_code)
-        args = args[0] ; n = len(args)-1
-        args = [None for z in range(n)]
-
-    def dummyCtor (self):
-        pass
-
-    try:
-        obj = None
-        old_init = hasattr(theClass,'__init__') and theClass.__init__
-        theClass.__init__ = dummyCtor
-        obj = theClass()
-    finally:
-        if old_init:
-            theClass.__init__ = old_init
-        else:
-            delattr(theClass,'__init__')
-
-    g.trace(type(theClass),obj)
-
-    # Verify that it has all the proper attributes.
-    # g.trace(g.listToString(dir(obj)))
-    return obj
-.. @+node:ekr.20061031131434.59: *5* createClassObjectFromString
-def computeClassObjectFromString (self,className,s):
-
-    try:
-        # Add the the class definition to the present environment.
-        exec(s) # Security violation!
-
-        # Get the newly created object from the locals dict.
-        theClass = locals().get(className)
-        return theClass
-
-    except Exception:
-        if 1: # Could be a weird kind of user error.
-            g.es_print('unexpected exception in',computeProxyObject)
-            g.es_exception()
-        return None
-.. @+node:ekr.20080924032842.3: *4* getExternalCompletions
-def getExternalCompletions (self,s,p=None,language='python'):
-
-    '''Return the completions possible at the end of string 's'.
-       Return (theObject,completions):
-    - theObject is None unless the last character is 's' is a period.
-    - completions is the list of valid completions.'''
-
-    c = self.c ; k = c.k
-    if not p: p = c.p
-
-    # Use a separate widget containing just s.
-    self.widget = w = leoFrame.stringTextWidget(c,'compute-completions-widget')
-    w.setAllText(s)
-
-    # Scan back for the first period.
-    i = len(s)-1
-    # while i > 0 and s[i] != '.':
-    while i > 0 and g.isWordChar(s[i]):
-        i -= 1
-    if s[i] == '.': i += 1
-    prefix = s[i:].strip()
-
-    # Remember the prefix, but put the insert before the period.
-    w.setSelectionRange(i, len(s)-1, insert=i)
-
-    # Init the ivars...
-    self.language = p and g.scanForAtLanguage(c,p) or language
-    self.tabName = ''
-    old_enable = c.k.enable_autocompleter
-
-    # Get the completions.
-    try:
-        c.k.enable_autocompleter = True
-        self.useTabs = False
-        self.start(prefix=prefix)
-    finally:
-        c.k.enable_autocompleter = old_enable
-        self.useTabs = True
-
-    theObject,tabList = self.theObject,self.tabList
-    self.exit() # Not called from the autocompleter itself.
-    return theObject,tabList
-.. @+node:ekr.20110916215321.8056: *3* Unused (C_to_python)
-# These caused lots of pylint errors.
-if 0:
-    @others
-.. @+node:ekr.20110917104720.6871: *4* Drivers & helpers
-.. @+node:ekr.20110916215321.7989: *5* convertLeo1to2 & helper
-def convertLeo1to2 (self):
-
-    for p in self.p.self_and_subtree():
-        g.es("converting:",p.h)
-        s=convertStringLeo1to2(p.b)
-        p.b = s
-
-    g.es("done")
-.. @+node:ekr.20110916215321.7990: *6* convertStringLeo1to2
-def convertStringLeo1to2 (self,s):
-    
-    aList = [z for z in s]
-    outputList = []
-    i = 0
-    while i < len(aList):
-        j = skipCodePart(aList,i)
-        if j > i:
-            code = aList[i:j]
-            convertCodeList1to2(code)
-            i = j
-            #print "-----code:", listToString(code)
-            for item in code:
-                outputList.append(item)
-        j = skipDocPart(aList,i)
-        if j > i:
-            doc = aList[i:j]
-            convertDocList(doc) # same as in c2py
-            #print "-----doc:", listToString(doc)
-            i = j
-            for item in doc:
-                outputList.append(item)
-
-    result = listToString(outputList)
-    global printFlag
-    if printFlag: print("-----:\n", result)
-    return result
-.. @+node:ekr.20110916215321.7994: *5* convertLeoTree
-def convertLeoTree (self):
-
-    for p2 in self.p.self_and_subtree():
-        print("converting:",v.h)
-        s = convertCStringToPython(p2.b,leoFlag=True)
-        p2.b = s
-
-    g.es('done')
-.. @+node:ekr.20110916215321.7995: *5* convertCFileToPython
-def convertCFileToPython(fn):
-
-    f=open(fn, 'r')
-    if not f: return
-    s = f.read()
-    f.close()
-
-    f=open(fn + ".py", 'w')
-    if not f: return
-    s = convertCStringToPython(s,leoFlag=False)
-    f.write(s)
-    f.close()
-.. @+node:ekr.20110916215321.7991: *5* convertCodeList1to2
-@ We do _not_ replace @root by @file or insert @others as needed.
-Inserting @others can be done easily enough by hand,
-and may take more global knowledge than we can reasonably expect to have.
-@c
-
-def convertCodeList1to2 (self,aList):
-
-    if 0: # There isn't much reason to do this.
-        removeAtRoot(aList)
-
-    self.safeReplace(aList,"@code","@c")
-    self.replaceSectionDefs(aList)
-    self.removeLeadingAtCode(aList)
-.. @+node:ekr.20110916215321.7996: *5* convertCStringToPython
-def convertCStringToPython (self,s,leoFlag):
-
-    # print "convertCStringToPython:start\n", s
-    firstPart = True
-    aList = [z for z in s]
-
-    if not leoFlag:
-        self.convertCodeList(aList,firstPart,dontDoLeoTranslations)
-        return ''.join(aList)
-
-    outputList = []
-    i = 0
-    while i < len(aList):
-        j = skipCodePart(aList,i)
-        if j > i:
-            code = aList [i: j]
-            convertCodeList(code,firstPart,doLeoTranslations)
-            i = j
-            #print "-----code:", ''.join(code)
-            for item in code:
-                outputList.append(item)
-        firstPart = False # don't remove @c from here on.
-        j = skipDocPart(aList,i)
-        if j > i:
-            doc = aList [i: j]
-            convertDocList(doc)
-            #print "-----doc:", ''.join(doc)
-            i = j
-            for item in doc:
-                outputList.append(item)
-
-    result = ''.join(outputList)
-    global printFlag
-    if printFlag: print("-----:\n",result)
-    return result
-.. @+node:ekr.20110917104720.6876: *5* get_default_user_types
-def get_default_user_types (self):
-    
-    '''Return default user types.'''
-    
-    self.class_list = [
-        # "vnode", "tnode", "Commands",
-        # "wxString", "wxTreeCtrl", "wxTextCtrl", "wxSplitterWindow",
-    ]
-
-    self.ivars_dict = {
-        # "atFile": [
-            # "mCommands", "mErrors", "mStructureErrors",
-            # "mTargetFileName", "mOutputFileName", "mOutputStream",
-            # "mStartSentinelComment", "mEndSentinelComment", "mRoot",
-        # ],
-        # "vnode": [
-            # "mCommands", "mJoinList", "mIconVal", "mTreeID", "mT", "mStatusBits",
-        # ],
-        # "tnode": [
-            # "mBodyString", "mBodyRTF", "mJoinHead", "mStatusBits", "mFileIndex",
-            # "mSelectionStart", "mSelectionLength", "mCloneIndex",
-        # ],
-        # "LeoFrame": [
-            # "mNextFrame", "mPrevFrame", "mCommands",
-        # ],
-        # "Commands": [
-            # # public
-            # "mCurrentVnode", "mLeoFrame", "mInhibitOnTreeChanged", "mMaxTnodeIndex",
-            # "mTreeCtrl", "mBodyCtrl", "mFirstWindowAndNeverSaved",
-            # #private
-            # "mTabWidth", "mChanged", "mOutlineExpansionLevel", "mUsingClipboard",
-            # "mFileName", "mMemoryInputStream", "mMemoryOutputStream", "mFileInputStream",
-            # "mInputFile", "mFileOutputStream", "mFileSize", "mTopVnode", "mTagList",
-            # "mMaxVnodeTag",
-            # "mUndoType", "mUndoVnode", "mUndoParent", "mUndoBack", "mUndoN",
-            # "mUndoDVnodes", "mUndoLastChild", "mUndoablyDeletedVnode",
-        # ],
-    }
-.. @+node:ekr.20110919211949.6921: *4* Multi-character code
-# This is all fairly horrible code...
-
-# None of it has been tested...
-.. @+node:ekr.20110919211949.6922: *5* match
-def match (self,s,i,pat):
-    
-    '''Return True if s[i:] matches the pat string.
-    
-    We can't use g.match because s is usually a list.
-    '''
-    
-    assert pat
-    
-    aList,i,n = [],0,0
-    while n < len(pat) and i < len(s):
-        token = s[i]
-        n += len(token)
-        aList.append(token)
-    
-    return pat.startswith(''.join(aList))
-.. @+node:ekr.20110919211949.6923: *5* match_word
-def match_word (self,s,i,pat):
-    
-    '''Return True if s[i:] word matches the pat string.'''
-    
-    aList,i,n = [],0,0
-    while i < len(s) and n < len(pat):
-        token = s[i]
-        i += 1
-        n += len(token)
-        aList.append(token)
-    if n == len(pat):
-        return pat == ''.join(aList)
-    elif n > len(pat):
-        s2 = ''.join(aList)
-        if pat.startswith(s2):
-            ch = s2[len(pat)]
-            return not ch.isalnum() and not ch == '_'
-        else:
-            return False
-    else: # n < len(pat)
-        assert i == len(s)
-        return False
-.. @+node:ekr.20110917104720.6873: *4* Scanning
-.. @+node:ekr.20110916215321.8002: *5* convertLeadingBlanks
-def convertLeadingBlanks(self,aList):
-
-    w = self.tab_width
-    if w < 2: return
-
-    i = 0
-    while i < len(aList):
-        n = 0
-        while i < len(aList) and aList[i] == ' ':
-            n += 1 ; i += 1
-            if n == w:
-                aList[i-w:i] = ['\t']
-                i = i - w + 1
-                n = 0
-        i = self.skip_past_line(aList, i)
-.. @+node:ekr.20110916215321.7998: *5* convertDocList
-def convertDocList (self,docList):
-
-    # print "convertDocList:", docList
-    if self.match_word(docList,0,"@doc"):
-        i = self.skip_ws(docList,4)
-        if self.match(docList,i,"\n"):
-            i += 1
-        docList [0: i] = [z for z in ("@ ")]
-.. @+node:ekr.20110916215321.8000: *5* skipCodePart
-def skipCodePart (self,aList,i):
-
-    # print "skipCodePart", i
-    if self.match_word(aList,i,"@doc") or self.match_word(aList,i,"@"):
-        return i
-    while i < len(aList):
-        if self.match(aList,i,"//"):
-            i = skipPastLine(aList,i)
-        elif self.match(aList,i,"/*"):
-            i = skipCBlockComment(aList,i)
-        elif self.match(aList,i,'"') or self.match(aList,i,"'"):
-            i = skipString(aList,i)
-        elif self.match(aList,i,"\n"):
-            i += 1
-            if self.match_word(aList,i,"@doc") or self.match_word(aList,i,"@"):
-                break
-        else: i += 1
-    return i
-.. @+node:ekr.20110916215321.7999: *5* skipDocPart
-def skipDocPart (self,aList,i):
-
-    # print "skipDocPart", i
-    while i < len(aList):
-        if self.match_word(aList,i,"@code") or self.match_word(aList,i,"@c"):
-            break
-        elif isSectionDef(aList,i):
-            break
-        else: i = skipPastLine(aList,i)
-    return i
-.. @+node:ekr.20110917104720.6872: *4* Utils
-.. @+node:ekr.20110916215321.8018: *5* findInCode
-def findInCode (self,aList,i,findString):
-
-    while i < len(aList):
-        if self.is_string_or_comment(aList,i):
-            i = self.skip_string_or_comment(aList,i)
-        elif self.match(aList,i,findString):
-            return i
-        else:
-            i += 1
-
-    return -1
-.. @+node:ekr.20110916215321.8019: *5* findInList
-def findInList (self,aList,i,findString):
-
-    while i < len(aList):
-        if self.match(aList,i,findString):
-            return i
-        else:
-            i += 1
-
-    return-1
-.. @+node:ekr.20110916215321.7986: *4* speedTest
-def speedTest (self,passes):
-
-    import time
-    fn = r"c:\prog\LeoPy\LeoPy.leo"
-    f=open(fn)
-    if not f:
-        print("not found: ",fn)
-        return
-    s=f.read()
-    f.close()
-    print("file:", fn, " size:", len(s), " passes:", passes)
-    print("speedTest start")
-    time1 = time.clock()
-    p = passes
-    while p > 0:
-        n = len(s) ; i = 0 ; lines = 0
-        while -1 < i < n:
-            if s[i] == '\n':
-                lines += 1 ; i += 1
-            else:
-                i = s.find('\n',i) # _much_ faster than list-based-find.
-            continue
-            # match is about 9 times slower than simple test.
-            if s[i]=='\n': # match(s,i,'\n'): # 
-                i += 1
-            else:
-                i += 1
-        p -= 1
-    time2 = time.clock()
-    print("lines:", lines)
-    print("speedTest done:")
-    print("elapsed time:", time2-time1)
-    print("time/pass:", (time2-time1)/passes)
-.. @+node:ekr.20110916215321.7981: *4* test
-def test(self):
-    
-    << define test data >>
-    
-    self.print_flag = True
-    for s in testData:
-        self.convertCStringToPython(s,leoFlag=True)
-.. @+node:ekr.20110917104720.6875: *5* << define test data >>
-testData = [
-"\n@doc\n\
-This is a doc part: format, whilest, {};->.\n\
-<<\
-section def>>=\n\
-LeoFrame::LeoFrame(vnode *v, char *s, int i)\n\
-{\n\
-    // test ; {} /* */.\n\
-    #if 0 //comment\n\
-        if(gLeoFrameList)gLeoFrameList -> mPrevFrame = this ;\n\
-        else\n\
-            this -> mNextFrame = gLeoFrameList ;\n\
-    #else\n\
-        \n\
-        vnode *v = new vnode(a,b);\n\
-        Commands *commander = (Commands) NULL ; // after cast\n\
-        this -> mPrevFrame = NULL ;\n\
-    #endif\n\
-    if (a==b)\n\
-        a = 2;\n\
-    else if (a ==c)\n\
-        a = 3;\n\
-    else return; \n\
-    /* Block comment test:\n\
-        if(2):while(1): end.*/\n\
-    for(int i = 1; i < limit; ++i){\n\
-        mVisible = FALSE ;\n\
-        mOnTop = TRUE ;\n\
-    }\n\
-    // trailing ws.	 \n\
-    mCommands = new Commands(this, mTreeCtrl, mTextCtrl) ;\n\
-    gActiveFrame = this ;\n\
-}\n\
-    ", "<<" +
-"vnode methods >>=\n\
-\n\
-void vnode::OnCopyNode(wxCommandEvent& WXUNUSED(event))\n\
-{\n\
-    mCommands -> copyOutline();\n\
-}\n\
-\n@doc\n\
-another doc part if, then, else, -> \n<<" +
-"vnode methods >>=\n\
-void vnode::OnPasteNode(wxCommandEvent& WXUNUSED(event))\n\
-{\n\
-    mCommands -> pasteOutline();\n\
-}\n" ]
-.. @+node:ekr.20110916215321.8023: *4* removeAllCComments (Not used)
-def removeAllCComments (self,aList,delim):
-
-    i = 0
-    while i < len(aList):
-        progress = i
-        if self.match(aList,i,"'") or self.match(aList,i,'"'):
-            i = self.skip_string(aList,i)
-        elif self.match(aList,i,"//"):
-            j = self.skip_to_end_of_line(aList,i)
-            print("deleting single line comment:", ''.join(aList[i:j]))
-            del aList[i:j]
-        elif self.match(aList,i,"/*"):
-            j = self.skip_c_block_comment(aList,i)
-            print("deleting block comment:", ''.join(aList[i:j]))
-            del aList[i:j]
-        else:
-            i += 1
-        assert i > progress
-.. @+node:ekr.20110916215321.8024: *4* removeAllCSentinels
-def removeAllCSentinels (self,aList,delim):
-
-    i = 0
-    while i < len(aList):
-        if self.match(aList,i,"'") or self.match(aList,i,'"'):
-            # string starts a line.
-            i = self.skip_string(aList,i)
-            i = self.skip_past_line(aList,i)
-        elif self.match(aList,i,"/*"):
-            # block comment starts a line
-            i = self.skip_c_block_comment(aList,i)
-            i = self.skip_past_line(line,i)
-        elif self.match(aList,i,"//@"):
-            j = self.skip_past_line(aList,i)
-            print("deleting sentinel:", ''.join(aList[i:j]))
-            del aList[i:j]
-        else:
-            i = self.skip_past_line(aList,i)
-.. @+node:ekr.20110916215321.8025: *4* removeAllPythonComments
-def removeAllPythonComments (self,aList,delim):
-
-    i = 0
-    while i < len(aList):
-        if self.match(aList,i,"'") or self.match(aList,i,'"'):
-            i = self.skip_string(aList,i)
-        elif self.match(aList,i,"#"):
-            j = self.skip_past_line(aList,i)
-            print("deleting comment:", ''.join(aList[i:j]))
-            del aList[i:j]
-        else:
-            i += 1
-.. @+node:ekr.20110916215321.8026: *4* removeAllPythonSentinels
-def removeAllPythonSentinels (self,aList,delim):
-
-    i = 0
-    while i < len(aList):
-        if self.match(aList,i,"'") or self.match(aList,i,'"'):
-            # string starts a line.
-            i = self.skip_string(aList,i)
-            i = self.skip_past_line(aList,i)
-        elif self.match(aList,i,"#@"):
-            j = self.skip_past_line(aList,i)
-            print("deleting sentinel:", ''.join(aList[i:j]))
-            del aList[i:j]
-        else:
-            i = self.skip_past_line(aList,i)
-.. @+node:ekr.20110916215321.8027: *4* removeAtRoot
-def removeAtRoot (self,aList):
-
-    i = self.skip_ws(aList, 0)
-    if self.match_word(aList,i,"@root"):
-        j = self.skip_past_line(aList,i)
-        del aList[i:j]
-
-    while i < len(aList):
-        if self.is_string_or_comment(aList,i):
-            i = self.skip_string_or_comment(aList,i)
-        elif self.match(aList,i,"\n"):
-            i = self.skip_ws(aList, i+1)
-            if self.match_word (aList,i,"@root"):
-                j = self.skip_past_line(aList,i)
-                del aList[i:j]
-        else: i += 1
-.. @+node:ekr.20110916215321.8031: *4* removeLeadingAtCode
-def removeLeadingAtCode (self,aList):
-
-    i = self.skip_ws_and_nl(aList,0)
-    if self.match_word(aList,i,"@code"):
-        i = self.skip_ws_and_nl(aList,5)
-        del aList[0:i]
-    elif self.match_word(aList,i,"@c"):
-        i = self.skip_ws_and_nl(aList,2)
-        del aList[0:i]
-.. @+node:ekr.20120519114248.9884: *3* Unused vimoutlineScanner
-.. @+node:ekr.20120517124200.10026: *4* skipDecls (vimoutlinerScanner)
-def skipDecls (self,s,i,end,inClass):
-
-    '''Skip everything until the start of the next headline.'''
-    
-    assert False
-    
-    return 0 #
-
-    assert end == len(s)
-
-    while i < end:
-        progress = i
-        if self.isBodyLine(s,i):
-            putRef = True
-            i = start = g.skip_line(s,i)
-        else: break
-        assert progress < i,'i: %d, ch: %s' % (i,repr(s[i]))
-
-    return i
-.. @+node:ekr.20120517155536.10117: *4* isBodyLine
-def isBodyLine(self,s,i):
-    
-    while i < len(s) and s[i] == '\t':
-        i += 1
-        
-    return i+1 < len(s) and s[i] == ':' and s[i+1] == ' '
-.. @+node:ekr.20120515183732.9993: *3* << define g object >> (leoInspect)
-if 0: # Debugging. Make sure this is not a problem.
-
-    class LeoGlobals:
-
-        @others
-    
-    g = LeoGlobals()
-.. @+node:ekr.20120515183732.10013: *4* Most common functions (leoInspect)...
-.. @+node:ekr.20120515183732.10014: *5* LG.callers & _callerName (leoInspect)
-def callers (self,n=4,count=0,excludeCaller=True,files=False):
-
-    '''Return a list containing the callers of the function that called g.callerList.
-
-    If the excludeCaller keyword is True (the default), g.callers is not on the list.
-
-    If the files keyword argument is True, filenames are included in the list.
-    '''
-
-    # sys._getframe throws ValueError in both cpython and jython if there are less than i entries.
-    # The jython stack often has less than 8 entries,
-    # so we must be careful to call g._callerName with smaller values of i first.
-    result = []
-    i = g.choose(excludeCaller,3,2)
-    while 1:
-        s = g._callerName(i,files=files)
-        if s:
-            result.append(s)
-        if not s or len(result) >= n: break
-        i += 1
-
-    result.reverse()
-    if count > 0: result = result[:count]
-    sep = g.choose(files,'\n',',')
-    return sep.join(result)
-.. @+node:ekr.20120515183732.10015: *6* _callerName
-def _callerName (n=1,files=False):
-
-    try: # get the function name from the call stack.
-        f1 = sys._getframe(n) # The stack frame, n levels up.
-        code1 = f1.f_code # The code object
-        name = code1.co_name
-        if name == '__init__':
-            name = '__init__(%s,line %s)' % (
-                g.shortFileName(code1.co_filename),code1.co_firstlineno)
-        if files:
-            return '%s:%s' % (g.shortFileName(code1.co_filename),name)
-        else:
-            return name # The code name
-    except ValueError:
-        return '' # The stack is not deep enough.
-    except Exception:
-        g.es_exception()
-        return '' # "<no caller name>"
-.. @+node:ekr.20120515183732.10017: *5* LG.doKeywordArgs (leoInspect)
-def doKeywordArgs(self,keys,d=None):
-
-    '''Return a result dict that is a copy of the keys dict
-    with missing items replaced by defaults in d dict.'''
-
-    if d is None: d = {}
-
-    result = {}
-    for key,default_val in d.items():
-        isBool = default_val in (True,False)
-        val = keys.get(key)
-        if isBool and val in (True,'True','true'):
-            result[key] = True
-        elif isBool and val in (False,'False','false'):
-            result[key] = False
-        elif val is None:
-            result[key] = default_val
-        else:
-            result[key] = val
-
-    return result 
-.. @+node:ekr.20120515183732.10018: *5* LG.pdb (leoInspect)
-def pdb (self,message=''):
-
-    """Fall into pdb."""
-
-    import pdb # Required: we have just defined pdb as a method!
-
-    if message:
-        print(message)
-    pdb.set_trace()
-.. @+node:ekr.20120515183732.10019: *5* LG.pr (leoInspect)
-# see: http://www.diveintopython.org/xml_processing/unicode.html
-
-pr_warning_given = False
-
-def pr(self,*args,**keys): # (leoInspect!)
-
-    '''Print all non-keyword args, and put them to the log pane.
-    The first, third, fifth, etc. arg translated by g.translateString.
-    Supports color, comma, newline, spaces and tabName keyword arguments.
-    '''
-
-    # Compute the effective args.
-    d = {'commas':False,'newline':True,'spaces':True}
-    d = g.doKeywordArgs(keys,d)
-    newline = d.get('newline')
-    if hasattr(sys.stdout,'encoding') and sys.stdout.encoding:
-        # sys.stdout is a TextIOWrapper with a particular encoding.
-        encoding = sys.stdout.encoding
-    else:
-        encoding = 'utf-8'
-
-    # Important:  Python's print statement *can* handle unicode.
-    # However, the following must appear in Python\Lib\sitecustomize.py:
-    #    sys.setdefaultencoding('utf-8')
-    s = g.translateArgs(args,d) # Translates everything to unicode.
-    if newline:
-        s = s + '\n'
-
-    if isPython3:
-        if encoding.lower() in ('utf-8','utf-16'):
-            s2 = s # There can be no problem.
-        else:
-            # 2010/10/21: Carefully convert s to the encoding.
-            s3 = g.toEncodedString(s,encoding=encoding,reportErrors=False)
-            s2 = g.toUnicode(s3,encoding=encoding,reportErrors=False)
-    else:
-        s2 = g.toEncodedString(s,encoding,reportErrors=False)
-
-    if 1: # Good for production: queues 'reading settings' until after signon.
-        if app.logInited:
-            sys.stdout.write(s2)
-        else:
-            app.printWaiting.append(s2)
-    else:
-        # Good for debugging: prints messages immediately.
-        print(s2)
-.. @+node:ekr.20120515183732.10020: *5* LG.trace (leoInspect)
-# Convert all args to strings.
-
-def trace (self,*args,**keys):
-
-    # Compute the effective args.
-    d = {'align':0,'newline':True}
-    d = g.doKeywordArgs(keys,d)
-    newline = d.get('newline')
-    align = d.get('align')
-    if align is None: align = 0
-
-    # Compute the caller name.
-    try: # get the function name from the call stack.
-        f1 = sys._getframe(1) # The stack frame, one level up.
-        code1 = f1.f_code # The code object
-        name = code1.co_name # The code name
-    except Exception:
-        name = ''
-    if name == "?":
-        name = "<unknown>"
-
-    # Pad the caller name.
-    if align != 0 and len(name) < abs(align):
-        pad = ' ' * (abs(align) - len(name))
-        if align > 0: name = name + pad
-        else:         name = pad + name
-
-    # Munge *args into s.
-    # print ('g.trace:args...')
-    # for z in args: print (g.isString(z),repr(z))
-    result = [name]
-    for arg in args:
-        if g.isString(arg):
-            pass
-        elif g.isBytes(arg):
-            arg = g.toUnicode(arg)
-        else:
-            arg = repr(arg)
-        if result:
-            result.append(" " + arg)
-        else:
-            result.append(arg)
-    s = ''.join(result)
-
-    # 'print s,' is not valid syntax in Python 3.x.
-    g.pr(s,newline=newline)
-.. @+node:ekr.20120515183732.10021: *5* LG.translateArgs (leoInspect)
-def translateArgs(self,args,d):
-
-    '''Return the concatenation of all args, with odd args translated.'''
-
-    if not hasattr(g,'consoleEncoding'):
-        e = sys.getdefaultencoding()
-        g.consoleEncoding = isValidEncoding(e) and e or 'utf-8'
-        # print 'translateArgs',g.consoleEncoding
-
-    result = [] ; n = 0 ; spaces = d.get('spaces')
-    for arg in args:
-        n += 1
-
-        # print('g.translateArgs: arg',arg,type(arg),g.isString(arg),'will trans',(n%2)==1)
-
-        # First, convert to unicode.
-        if type(arg) == type('a'):
-            arg = g.toUnicode(arg,g.consoleEncoding)
-
-        # Just do this for the stand-alone version.
-        if not g.isString(arg):
-            arg = repr(arg)
-
-        if arg:
-            if result and spaces: result.append(' ')
-            result.append(arg)
-
-    return ''.join(result)
-.. @+node:ekr.20120515183732.10033: *4* LG.match_word (leoInspect)
-def match_word(self,s,i,pattern):
-
-    if pattern == None: return False
-    j = len(pattern)
-    if j == 0: return False
-    if s.find(pattern,i,i+j) != i:
-        return False
-    if i+j >= len(s):
-        return True
-    ch = s[i+j]
-    return not g.isWordChar(ch)
-.. @+node:ekr.20120515183732.10029: *4* LG.Path functions (leoInspect)...
-def os_path_exists (self,fileName):
-    
-    return os.path.exists(fileName)
-    
-def os_path_finalize_join (self,*args,**keys):
-
-    return os.path.normpath(os.path.abspath(
-        os.path.join(*args,**keys)))
-        
-def os_path_join(self,*args,**keys):
-    return os.path.join(*args)
-
-
-def shortFileName (self,fileName):
-
-    return os.path.basename(fileName)
-.. @+node:ekr.20120515183732.10022: *4* LG.Unicode utils (leoInspect)...
-.. @+node:ekr.20120515183732.10023: *5* LG.isBytes, isCallable, isChar, isString & isUnicode (leoInspect)
-# The syntax of these functions must be valid on Python2K and Python3K.
-
-def isBytes(self,s):
-    '''Return True if s is Python3k bytes type.'''
-    if isPython3:
-        # Generates a pylint warning, but that can't be helped.
-        return type(s) == type(bytes('a','utf-8'))
-    else:
-        return False
-
-def isCallable(self,obj):
-    if isPython3:
-        return hasattr(obj, '__call__')
-    else:
-        return callable(obj)
-
-def isChar(self,s):
-    '''Return True if s is a Python2K character type.'''
-    if isPython3:
-        return False
-    else:
-        return type(s) == types.StringType
-
-def isString(self,s):
-    '''Return True if s is any string, but not bytes.'''
-    if isPython3:
-        return type(s) == type('a')
-    else:
-        return type(s) in types.StringTypes
-
-def isUnicode(self,s):
-    '''Return True if s is a unicode string.'''
-    if isPython3:
-        return type(s) == type('a')
-    else:
-        return type(s) == types.UnicodeType
-.. @+node:ekr.20120515183732.10024: *5* LG.isValidEncoding (leoInspect)
-def isValidEncoding (self,encoding):
-
-    if not encoding:
-        return False
-
-    if sys.platform == 'cli':
-        return True
-
-    import codecs
-
-    try:
-        codecs.lookup(encoding)
-        return True
-    except LookupError: # Windows.
-        return False
-    except AttributeError: # Linux.
-        return False
-.. @+node:ekr.20120515183732.10025: *5* LG.reportBadChars (leoInspect)
-def reportBadChars (self,s,encoding):
-
-    if isPython3:
-        errors = 0
-        if g.isUnicode(s):
-            for ch in s:
-                try: ch.encode(encoding,"strict")
-                except UnicodeEncodeError:
-                    errors += 1
-            if errors:
-                s2 = "%d errors converting %s to %s" % (
-                    errors, s.encode(encoding,'replace'),
-                    encoding.encode('ascii','replace'))
-                print(s2)
-        elif g.isChar(s):
-            for ch in s:
-                # try: unicode(ch,encoding,"strict")
-                # 2012/04/20: use str instead of str.
-                try: str(ch)
-                except Exception: errors += 1
-            if errors:
-                s2 = "%d errors converting %s (%s encoding) to unicode" % (
-                    errors,str(encoding),
-                    # unicode(s,encoding,'replace'),
-                    encoding.encode('ascii','replace'))
-                if not g.unitTesting:
-                    print(s2)
-    else:
-        errors = 0
-        if g.isUnicode(s):
-            for ch in s:
-                try: ch.encode(encoding,"strict")
-                except UnicodeEncodeError:
-                    errors += 1
-            if errors:
-                print("%d errors converting %s to %s" % (
-                    errors, s.encode(encoding,'replace'),
-                    encoding.encode('ascii','replace')))
-        elif g.isChar(s):
-            for ch in s:
-                try: unicode(ch,encoding,"strict")
-                except Exception: errors += 1
-            if errors:
-                print("%d errors converting %s (%s encoding) to unicode" % (
-                    errors, unicode(s,encoding,'replace'),
-                    encoding.encode('ascii','replace')))
-.. @+node:ekr.20120515183732.10026: *5* LG.toEncodedString (leoInspect)
-def toEncodedString (self,s,encoding='utf-8',reportErrors=False):
-
-    if encoding is None:
-        encoding = 'utf-8'
-
-    if g.isUnicode(s):
-        try:
-            s = s.encode(encoding,"strict")
-        except UnicodeError:
-            if reportErrors: g.reportBadChars(s,encoding)
-            s = s.encode(encoding,"replace")
-    return s
-.. @+node:ekr.20120515183732.10027: *5* LG.toUnicode (leoInspect)
-def toUnicode (self,s,encoding='utf-8',reportErrors=False):
-
-    # The encoding is usually 'utf-8'
-    # but is may be different while importing or reading files.
-    if encoding is None:
-        encoding = 'utf-8'
-
-    if isPython3:
-        f,mustConvert = str,g.isBytes
-    else:
-        f = unicode
-        def mustConvert (s):
-            return type(s) != types.UnicodeType
-
-    if not s:
-        s = g.u('')
-    elif mustConvert(s):
-        try:
-            s = f(s,encoding,'strict')
-        except (UnicodeError,Exception):
-            s = f(s,encoding,'replace')
-            if reportErrors: g.reportBadChars(s,encoding)
-    else:
-        pass
-
-    return s
-.. @+node:ekr.20120515183732.10028: *5* LG.u & ue (leoInspect)
-if isPython3: # g.not defined yet.
-    def u(s):
-        return s
-    def ue(s,encoding):
-        return str(s,encoding)
-else:
-    def u(s):
-        return unicode(s)
-    def ue(s,encoding):
-        return unicode(s,encoding)
-.. @+node:ekr.20130915111638.11289: *3* Not used from nodeHistory
-.. @+node:ekr.20130915111638.11296: *4* Icon bar (old leoCommands)
-def goToNextHistory (self,event=None):
-
-    '''Go to the next node in the history list.'''
-
-    c = self
-    p = c.nodeHistory.goNext()
-        # Returns None if the position does not exist.
-    if p:
-        g.trace(p.h)
-        c.nodeHistory.skipBeadUpdate = True
-        try:
-            c.selectPosition(p) # Calls cc.selectChapterForPosition
-        finally:
-            c.nodeHistory.skipBeadUpdate = False
-
-def goToPrevHistory (self,event=None):
-
-    '''Go to the previous node in the history list.'''
-
-    c = self
-    p = c.nodeHistory.goPrev()
-        # Returns None if the position does not exist.
-    if p:
-        g.trace(p.h)
-        c.nodeHistory.skipBeadUpdate = True
-        try:
-            c.selectPosition(p) # Calls cc.selectChapterForPosition
-        finally:
-            c.nodeHistory.skipBeadUpdate = False
-.. @+node:ekr.20070615131604.3: *4* canGoToNext/Prev
-def canGoToNextVisited (self):
-
-    return self.beadPointer + 1 < len(self.beadList)
-
-def canGoToPrevVisited (self):
-
-    return self.beadPointer > 0
-.. @+node:ekr.20070615132939: *4* clear (nodeHistory, not used)
-# def clear (self):
-
-    # self.beadList = []
-    # self.beadPointer = -1
-.. @+node:ekr.20130915111638.11291: *4* goNext (nodeHistory, old)
-def goNext (self):
-
-    '''Return the next visited node, or None.'''
-
-    trace = False and not g.unitTesting
-    c = self.c
-    while self.beadPointer + 1 < len(self.beadList):
-        self.beadPointer += 1
-        p,chapter = self.beadList[self.beadPointer]
-        if c.positionExists(p):
-            if trace: g.trace(p and p.h)
-            break
-        else:
-            if trace: g.trace('does not exist',p and p.h)
-    else:
-        return None
-    self.selectChapter(chapter)
-    return p
-
-.. @+node:ekr.20130915111638.11293: *4* goPrev (nodeHistory, old)
-def goPrev (self):
-
-    '''Return the previous visited node, or None.'''
-
-    trace = False and not g.unitTesting
-    c = self.c
-    while self.beadPointer > 0:
-        self.beadPointer -= 1
-        p,chapter = self.beadList[self.beadPointer]
-        if c.positionExists(p):
-            if trace: g.trace(p and p.h)
-            break
-        else:
-            if trace: g.trace('does not exist',p and p.h)
-    else:
-        return None
-    self.selectChapter(chapter)
-    return p
-.. @+node:ekr.20070615132939.1: *4* remove (nodeHistory, not used)
-# def remove (self,p):
-
-    # '''Remove an item from the nav_buttons list.'''
-
-    # c = self.c
-    # target = self.beadPointer > -1 and self.beadList[self.beadPointer]
-
-    # self.beadList = [z for z in self.beadList
-                        # if z[0] != p and c.positionExists(z[0])]
-
-    # try:
-        # self.beadPointer = self.beadList.index(target)
-    # except ValueError:
-        # self.beadPointer = max(0,self.beadPointer-1)
-
-    # if self.trace:
-        # g.trace('bead list',p.h)
-        # g.pr([z[0].h for z in self.beadList])
-.. @+node:ekr.20070615140032: *4* selectChapter (nodeHistory)
-def selectChapter (self,chapter):
-
-    c,cc = self.c,self.c.chapterController
-    if cc and chapter and chapter != cc.getSelectedChapter():
-        cc.selectChapterByName(chapter.name)
-.. @+node:ekr.20070615140655: *4* visitedPositions
-def visitedPositions (self):
-
-    return [p.copy() for p,chapter in self.beadList]
-.. @+node:ekr.20031218072017.2887: *3* Find submenu (frame methods) (leoCommands.py)
-if 0:
-    @others
-.. @+node:ekr.20051013084200: *4* dismissFindPanel
-def dismissFindPanel (self,event=None):
-
-    c = self
-
-    if c.frame.findPanel:
-        c.frame.findPanel.dismiss()
-.. @+node:ekr.20031218072017.2888: *4* showFindPanel
-def showFindPanel (self,event=None):
-
-    '''Open Leo's legacy Find dialog.'''
-
-    c = self
-
-    if not c.frame.findPanel:
-        c.frame.findPanel = g.app.gui.createFindPanel(c)
-
-    if c.frame.findPanel:
-        c.frame.findPanel.bringToFront()
-    else:
-        g.warning('the',g.app.gui.guiName(),
-            'gui does not support a stand-alone find dialog')
-.. @+node:ekr.20031218072017.2889: *4* findNext
-def findNext (self,event=None):
-
-    c = self
-
-    if not c.frame.findPanel:
-        c.frame.findPanel = g.app.gui.createFindPanel(c)
-
-    c.frame.findPanel.findNextCommand(c)
-.. @+node:ekr.20031218072017.2890: *4* findPrevious
-def findPrevious (self,event=None):
-
-    c = self
-
-    if not c.frame.findPanel:
-        c.frame.findPanel = g.app.gui.createFindPanel(c)
-
-    c.frame.findPanel.findPreviousCommand(c)
-.. @+node:ekr.20031218072017.2891: *4* replace
-def replace (self,event=None):
-
-    c = self
-
-    if not c.frame.findPanel:
-        c.frame.findPanel = g.app.gui.createFindPanel(c)
-
-    c.frame.findPanel.changeCommand(c)
-.. @+node:ekr.20031218072017.2892: *4* replaceThenFind
-def replaceThenFind (self,event=None):
-
-    c = self
-
-    if not c.frame.findPanel:
-        c.frame.findPanel = g.app.gui.createFindPanel(c)
-
-    c.frame.findPanel.changeThenFindCommand(c)
-.. @+node:ekr.20051013083241: *4* replaceAll
-def replaceAll (self,event=None):
-
-    c = self
-
-    if not c.frame.findPanel:
-        c.frame.findPanel = g.app.gui.createFindPanel(c)
-
-    c.frame.findPanel.changeAllCommand(c)
-.. @+node:ekr.20110605121601.18388: *3* createFrame (leoQtSpellTab)
-# def createFrame (self):
-    # pass
-    # g.trace('***(leoQtSpellTab)',g.callers())
-
-.. @+node:ekr.20130920173602.11352: *3* From nullColorizer
-# def setFontFromConfig (self):
-    # pass
-    # self.bold_font = None
-    # self.italic_font = None
-    # self.bolditalic_font = None
-    # self.color_tags_list = []
-    # self.image_references = []
-.. @+node:ekr.20130920173602.11357: *3* setColorFromConfig (leoQTextEditWidget)
-# def setColorFromConfig (self,w=None):
-
-    # '''Set the font in the widget w (a body editor).'''
-.. @+node:ekr.20130920173602.11355: *3* setFontFromConfig (leoQTextEditWidget)
-# def setFontFromConfig (self,w=None):
-
-    # '''Set the font in the widget w (a body editor).'''
-
-    # c = self.c
-    # if not w: w = self.widget
-    # # g.trace(g.callers())
-
-    # font = c.config.getFontFromParams(
-        # "body_text_font_family", "body_text_font_size",
-        # "body_text_font_slant",  "body_text_font_weight",
-        # c.config.defaultBodyFontSize)
-
-    # self.fontRef = font # ESSENTIAL: retain a link to font.
-.. @+node:ekr.20130920173602.11358: *3* from HighLevelInterface
-# def onActivateLog (self,event=None):
-
-    # self.c.setLog()
-.. @+node:ekr.20110605121601.17870: *3* do-nothin config methods (nativeTree)
-# These can be over-ridden if desired,
-# but they do not have to be over-ridden.
-
-# def headWidth(self,p=None,s=''):            return 0 # To do: make this functional
-# def widthInPixels(self,s):                  return 0
-
-# def setEditLabelState (self,p,selectAll=False): pass # not called.
-# def setSelectedLabelState (self,p):         pass
-# def setUnselectedLabelState (self,p):       pass
-# def setDisabledHeadlineColors (self,p):     pass
-# def setEditHeadlineColors (self,p):         pass
-# def setUnselectedHeadlineColors (self,p):   pass
-# setNormalLabelState = setEditLabelState # For compatibility.
-.. @+node:ekr.20070228163350: *3* Colors & fonts (nullTree)
-# def getFont(self):
-    # return self.font
-
-# def setFont(self,font=None,fontName=None):
-    # self.font,self.fontName = font,fontName
-.. @+node:ekr.20110605121601.18337: *3* getFont & setFont (leoQtFont)
-# def getFont(self,family=None,size=12,slant='roman',weight='normal'):
-    # return g.app.config.defaultFont
-
-# def setFont(self,familyBox,sizeEntry,slantBox,weightBox,label):
-    # pass
-.. @+node:ekr.20130915052002.11287: *3* chapter.toLeoHoistStack (not used new in Leo 4.11)
-def toLeoHoistStack(self):
-    
-    '''Return the c.hoistStack corresponding to self.hoistStack.
-    
-    c.hoistStack has entries of the form (p,bool)
-    self.hoistStack has entries of the form (name,bool)
-    
-    Clear c.hoistStack if any @chapter node has been deleted.
-    '''
-    
-    cc,result = self,[]
-    for bunch in self.hoistStack:
-        name,expanded = bunch
-        p = cc.findChapterNode(name)
-        if p:
-            result.append(g.bunch(p.copy(),expanded))
-        else:
-            g.error('deleted @chapter %s' % (name))
-            result = []
-            break
-    return result
 .. @+node:ekr.20101127152442.5878: ** Url's
 @color
 
@@ -10130,5 +8493,1797 @@ http://technet.microsoft.com/en-us/sysinternals/bb896645.aspx?PHPSESSID=d926
 http://www.codeproject.com/Articles/36538/Windows-7-Tricks-and-Keyboard-Shortcuts.aspx
 
 @language rest
+.. @+node:ekr.20031218072017.434: ** Unused code
+@ignore
+@language python
+@color
+.. @+node:ekr.20050920084036.207: *3* queryReplaceCommandsClass (limited to single node)
+class queryReplaceCommandsClass (baseEditCommandsClass):
+
+    '''A class to handle query replace commands.'''
+
+    @others
+.. @+node:ekr.20050920084036.208: *4*  ctor & init (queryReplaceCommandsClass)
+def __init__ (self,c):
+
+    baseEditCommandsClass.__init__(self,c) # init the base class.
+    self.regexp = False # True: do query-replace-regexp.  Set in stateHandler.
+
+def init (self):
+
+    self.qQ = None
+    self.qR = None
+    self.replaced = 0 # The number of replacements.
+.. @+node:ekr.20050920084036.209: *4*  getPublicCommands
+def getPublicCommands (self):
+
+    return {
+        'query-replace':        self.queryReplace,
+        'query-replace-regex':  self.queryReplaceRegex,
+    }
+.. @+node:ekr.20050920084036.210: *4* Entry points
+def queryReplace (self,event):
+
+    '''Interactively find and replace text.
+    This is not recommended: Leo's other find and change commands are more capable.'''
+    self.regexp = False
+    self.stateHandler(event)
+
+def queryReplaceRegex (self,event):
+    '''Interactively find and replace text using regular expressions.
+    This is not recommended: Leo's other find and change commands are more capable.'''
+    self.regexp = True
+    self.stateHandler(event)
+.. @+node:ekr.20051005151838: *4* Helpers
+.. @+node:ekr.20050920084036.212: *5* doOneReplace
+def doOneReplace (self,event):
+
+    w = self.editWidget(event)
+    if not w: return
+
+    i = w.tag_ranges('qR')
+    w.delete(i[0],i[1])
+    ins = w.getInsertPoint()
+    w.insert(ins,self.qR)
+    self.replaced += 1
+.. @+node:ekr.20050920084036.219: *5* findNextMatch (query-replace)
+def findNextMatch (self,event):
+
+    '''Find the next match and select it.
+    Return True if a match was found.
+    Otherwise, call quitSearch and return False.'''
+
+    k = self.k
+    w = self.editWidget(event)
+    if not w: return
+
+    if g.app.gui.guiName() != 'tkinter':
+        return g.es('command not ready yet',color='blue')
+
+    w.tag_delete('qR')
+    if self.regexp:
+        << handle regexp >>
+    else:
+        << handle plain search >>
+.. @+node:ekr.20051005155611: *6* << handle regexp >>
+try:
+    regex = re.compile(self.qQ)
+except Exception:
+    self.quitSearch(event,'Illegal regular expression')
+    return False
+
+i = w.getInsertPoint()
+txt = w.get(i,'end')
+match = regex.search(txt)
+
+if match:
+    start = match.start()
+    end = match.end()
+    length = end - start
+    i = w.getInsertPoint()
+    w.setInsertPoint(i+start)
+    w.tag_add('qR','insert','insert +%sc' % length)
+    w.tag_config('qR',background='lightblue')
+    i = w.getInsertPoint()
+    txt = w.get(i,i+length)
+    return True
+else:
+    self.quitSearch(event)
+    return False
+.. @+node:ekr.20051005160923: *6* << handle plain search >> (tag_add & tag_config) LATER
+i = w.search(self.qQ,'insert',stopindex='end')
+
+if i:
+    w.setInsertPoint(i)
+    w.tag_add('qR','insert','insert +%sc' % len(self.qQ))
+    w.tag_config('qR',background='lightblue')
+    return True
+else:
+    self.quitSearch(event)
+    return False
+.. @+node:ekr.20050920084036.211: *5* getUserResponse
+def getUserResponse (self,event):
+
+    w = self.editWidget(event)
+    char = event and event.char or ''
+    
+    if not w or not char return
+
+    if char in ('Y','y'):
+        self.doOneReplace(event)
+        if not self.findNextMatch(event):
+            self.quitSearch(event)
+    elif char in ('Q','q','\n','Return'):
+        self.quitSearch(event)
+    elif char == '!':
+        while self.findNextMatch(event):
+            self.doOneReplace(event)
+    elif char in ('N','n','Delete'):
+        # Skip over the present match.
+        i = w.getInsertPoint()
+        w.setInsertPoint(i + len(self.qQ))
+        if not self.findNextMatch(event):
+            self.quitSearch(event)
+
+    w.seeInsertPoint()
+.. @+node:ekr.20050920084036.220: *5* quitSearch
+def quitSearch (self,event,message=None):
+
+    k = self.k
+    w = self.editWidget(event)
+    if not w: return
+
+    w.tag_delete('qR')
+    k.clearState()
+    if message is None:
+        message = 'Replaced %d occurences' % self.replaced
+    k.setLabelGrey(message)
+.. @+node:ekr.20050920084036.215: *5* stateHandler
+def stateHandler (self,event):
+
+    k = self.k ; state = k.getState('query-replace')
+
+    prompt = g.choose(self.regexp,'Query replace regexp','Query replace')
+
+    if state == 0: # Get the first arg.
+        self.init()
+        k.setLabelBlue(prompt + ': ',protect=True)
+        k.getArg(event,'query-replace',1,self.stateHandler)
+    elif state == 1: # Get the second arg.
+        self.qQ = k.arg
+        if len(k.arg) > 0:
+            prompt = '%s %s with: ' % (prompt,k.arg)
+            k.setLabelBlue(prompt)
+            k.getArg(event,'query-replace',2,self.stateHandler)
+        else:
+            k.resetLabel()
+            k.clearState()
+    elif state == 2: # Set the prompt and find the first match.
+        self.qR = k.arg # Null replacement arg is ok.
+        k.setLabelBlue('Query replacing %s with %s\n' % (self.qQ,self.qR) +
+            'y: replace, (n or Delete): skip, !: replace all, (q or Return): quit',
+            protect=True)
+        k.setState('query-replace',3,self.stateHandler)
+        self.findNextMatch(event)
+    elif state == 3:
+        self.getUserResponse(event)
+.. @+node:ekr.20101031172539.5880: *3* Existing autocompleter: do not delete
+.. @+node:ekr.20061031131434.43: *4* completeSelf (not used yet)
+def completeSelf (self):
+
+    g.trace(g.callers(4))
+
+    # This scan will be fast if an instant object already exists.
+    className,obj,p,s = self.classScanner.scan()
+    # g.trace(className,obj,p,s and len(s))
+
+    # First, look up the className.
+    if not obj and className:
+        obj = self.allClassesDict.get(className)
+        # if obj: g.trace('found in allClassesDict: %s = %s' % (className,obj))
+
+    # Second, create the object from class definition.
+    if not obj and s:
+        theClass = self.computeClassObjectFromString(className,s)
+        if theClass:
+            obj = self.createProxyObjectFromClass(className,theClass)
+            if obj:
+                self.selfObjectsDict [className] = obj
+                # This prevents future rescanning, even if the node moves.
+                self.selfVnodesDict [p.v] = obj
+    if obj:
+        self.selfClassName = className
+        self.push(self.theObject)
+        self.theObject = obj
+        self.membersList = self.getMembersList(obj=obj)
+    else:
+        # No further action possible or desirable.
+        self.selfClassName = None
+        self.theObject = None
+        self.clear()
+        self.membersList = []
+.. @+node:ekr.20061031131434.60: *4* class forgivingParserClass (not used)
+class forgivingParserClass:
+
+    '''A class to create a valid class instances from
+    a class definition that may contain syntax errors.'''
+
+    @others
+.. @+node:ekr.20061031131434.61: *5* ctor (forgivingParserClass)
+def __init__ (self,c):
+
+    self.c = c
+    self.excludedTnodesList = []
+    self.old_putBody = None # Set in parse for communication with newPutBody.
+.. @+node:ekr.20061031131434.62: *5* parse
+def parse (self,p):
+
+    '''The top-level parser method.
+
+    It patches c.atFileCommands.putBody, calls the forgiving parser and finally
+    restores c.atFileCommands.putBody.'''
+
+    c = self.c
+
+    # Create an ivar for communication with newPutBody.
+    self.old_putBody = c.atFileCommands.putBody
+
+    # Override atFile.putBody.
+    c.atFileCommands.putBody = self.newPutBody
+
+    try:
+        s = None
+        s = self.forgivingParser(p)
+    finally:
+        c.atFileCommands.putBody = self.old_putBody
+
+    return s # Don't put a return in a finally clause.
+
+
+.. @+node:ekr.20061031131434.63: *5* forgivingParser (leoKeys)
+def forgivingParser (self,p,suppress=False):
+
+    c = self.c ; root = p.copy()
+    self.excludedTnodesList = []
+    s = g.getScript(c,root,useSelectedText=False)
+    while s:
+        try:
+            if not g.isPython3:
+                s = g.toEncodedString(s)
+            compile(s+'\n','<string>','exec')
+            break
+        except SyntaxError:
+            fileName, n = g.getLastTracebackFileAndLineNumber()
+            p = self.computeErrorNode(c,root,n,lines=g.splitLines(s))
+            if not p or p == root:
+                if not suppress:
+                    g.es_print('syntax error in class node: can not continue')
+                s = None ; break
+            else:
+                # g.es_print('syntax error: deleting',p.h)
+                self.excludedTnodesList.append(p.v)
+                s = g.getScript(c,root,useSelectedText=False)
+        except Exception:
+            g.trace('unexpected exception')
+            g.es_exception()
+            break
+    return s or ''
+.. @+node:ekr.20061031131434.64: *5* computeErrorNode (leoKeys)
+def computeErrorNode (self,c,root,n,lines):
+
+    '''The from c.goToLineNumber that applies to scripts.
+    Unlike c.gotoLineNumberOpen, this function returns a position.'''
+
+    if n == 1 or n >= len(lines):
+        return root
+
+    # vnodeName, junk, junk, junk, junk = c.convertLineToVnodeNameIndexLine(
+        # lines, n, root, scriptFind = True)
+
+    goto = goToLineNumber(c)
+    vnodeName,junk,junk,junk = goto.findVnode(
+        root,lines,n,ignoreSentinels)
+
+    if vnodeName:
+        for p in root.self_and_subtree():
+            if p.matchHeadline(vnodeName):
+                return p
+
+    return None
+.. @+node:ekr.20061031131434.65: *5* newPutBody
+def newPutBody (self,p,oneNodeOnly=False,fromString=''):
+
+    if p.v in self.excludedTnodesList:
+        pass
+        # g.trace('ignoring',p.h)
+    else:
+        self.old_putBody(p,oneNodeOnly,fromString)
+.. @+node:ekr.20061031131434.66: *4* class classScannerClass (not used)
+# Called by completeSelf, which is not used.
+
+class classScannerClass:
+
+    '''A class to find class definitions in a node or its parents.'''
+
+    @others
+.. @+node:ekr.20061031131434.67: *5* ctor (classScannerClass)
+def __init__ (self,c):
+
+    self.c = c
+
+    # Ignore @root for now:
+    # self.start_in_doc = c.config.getBool('at_root_bodies_start_in_doc_mode')
+
+    self.start_in_doc = False
+.. @+node:ekr.20061031131434.68: *5* scan
+def scan (self):
+
+    c = self.c
+
+    className,obj,p = self.findParentClass(c.p)
+    # g.trace(className,obj,p)
+
+    if p and not obj:
+        parser = c.k.autoCompleter.forgivingParser
+        s = parser.parse(p)
+    else:
+        s = None
+
+    return className,obj,p,s
+.. @+node:ekr.20061031131434.69: *5* findParentClass
+def findParentClass (self,root):
+
+    autoCompleter = self.c.k.autoCompleter
+
+    # First, see if any parent has already been scanned.
+    for p in root.self_and_parents():
+        obj = autoCompleter.selfVnodesDict.get(p.v)
+        if obj:
+            # g.trace('found',obj,'in',p.h)
+            return None,obj,p
+
+    # Next, do a much slower scan.
+    # g.trace('slow scanning...')
+    for p in root.self_and_parents():
+        className = self.findClass(p)
+        if className:
+            # g.trace('found',className,'in',p.h)
+            return className,None,p
+
+    return None,None,None
+.. @+node:ekr.20061031131434.70: *5* findClass & helpers
+def findClass (self,p):
+
+    lines = g.splitLines(p.b)
+    inDoc = self.start_in_doc
+    # g.trace(p.h)
+    for s in lines:
+        if inDoc:
+            if self.endsDoc(s):
+                inDoc = False
+        else:
+            if self.startsDoc(s):
+                inDoc = True
+            else:
+                # Not a perfect scan: a triple-string could start with 'class',
+                # but perfection is not important.
+                className = self.startsClass(s)
+                if className: return className
+    else:
+        return None
+.. @+node:ekr.20061031131434.71: *6* endsDoc
+def endsDoc (self,s):
+
+    return s.startswith('@c')
+.. @+node:ekr.20061031131434.72: *6* startsClass
+def startsClass (self,s):
+
+    if s.startswith('class'):
+        i = 5
+        i = g.skip_ws(s,i)
+        j = g.skip_id(s,i)
+        word = s[i:j]
+        # g.trace(word)
+        return word
+    else:
+        return None
+.. @+node:ekr.20061031131434.73: *6* startsDoc
+def startsDoc (self,s):
+
+    for s2 in ('@doc','@ ','@\n', '@r', '@\t'):
+        if s.startswith(s2):
+            return True
+    else:
+        return False
+.. @+node:ekr.20061031131434.57: *4* Proxy classes and objects
+.. @+node:ekr.20061031131434.58: *5* createProxyObjectFromClass
+def createProxyObjectFromClass (self,className,theClass):
+
+    '''Create a dummy instance object by instantiating theClass with a dummy ctor.'''
+
+    if 0: # Calling the real ctor is way too dangerous.
+        # Set args to the list of required arguments.
+        args = inspect.getargs(theClass.__init__.im_func.func_code)
+        args = args[0] ; n = len(args)-1
+        args = [None for z in range(n)]
+
+    def dummyCtor (self):
+        pass
+
+    try:
+        obj = None
+        old_init = hasattr(theClass,'__init__') and theClass.__init__
+        theClass.__init__ = dummyCtor
+        obj = theClass()
+    finally:
+        if old_init:
+            theClass.__init__ = old_init
+        else:
+            delattr(theClass,'__init__')
+
+    g.trace(type(theClass),obj)
+
+    # Verify that it has all the proper attributes.
+    # g.trace(g.listToString(dir(obj)))
+    return obj
+.. @+node:ekr.20061031131434.59: *5* createClassObjectFromString
+def computeClassObjectFromString (self,className,s):
+
+    try:
+        # Add the the class definition to the present environment.
+        exec(s) # Security violation!
+
+        # Get the newly created object from the locals dict.
+        theClass = locals().get(className)
+        return theClass
+
+    except Exception:
+        if 1: # Could be a weird kind of user error.
+            g.es_print('unexpected exception in',computeProxyObject)
+            g.es_exception()
+        return None
+.. @+node:ekr.20080924032842.3: *4* getExternalCompletions
+def getExternalCompletions (self,s,p=None,language='python'):
+
+    '''Return the completions possible at the end of string 's'.
+       Return (theObject,completions):
+    - theObject is None unless the last character is 's' is a period.
+    - completions is the list of valid completions.'''
+
+    c = self.c ; k = c.k
+    if not p: p = c.p
+
+    # Use a separate widget containing just s.
+    self.widget = w = leoFrame.stringTextWidget(c,'compute-completions-widget')
+    w.setAllText(s)
+
+    # Scan back for the first period.
+    i = len(s)-1
+    # while i > 0 and s[i] != '.':
+    while i > 0 and g.isWordChar(s[i]):
+        i -= 1
+    if s[i] == '.': i += 1
+    prefix = s[i:].strip()
+
+    # Remember the prefix, but put the insert before the period.
+    w.setSelectionRange(i, len(s)-1, insert=i)
+
+    # Init the ivars...
+    self.language = p and g.scanForAtLanguage(c,p) or language
+    self.tabName = ''
+    old_enable = c.k.enable_autocompleter
+
+    # Get the completions.
+    try:
+        c.k.enable_autocompleter = True
+        self.useTabs = False
+        self.start(prefix=prefix)
+    finally:
+        c.k.enable_autocompleter = old_enable
+        self.useTabs = True
+
+    theObject,tabList = self.theObject,self.tabList
+    self.exit() # Not called from the autocompleter itself.
+    return theObject,tabList
+.. @+node:ekr.20120519114248.9884: *3* Unused vimoutlineScanner
+.. @+node:ekr.20120517124200.10026: *4* skipDecls (vimoutlinerScanner)
+def skipDecls (self,s,i,end,inClass):
+
+    '''Skip everything until the start of the next headline.'''
+    
+    assert False
+    
+    return 0 #
+
+    assert end == len(s)
+
+    while i < end:
+        progress = i
+        if self.isBodyLine(s,i):
+            putRef = True
+            i = start = g.skip_line(s,i)
+        else: break
+        assert progress < i,'i: %d, ch: %s' % (i,repr(s[i]))
+
+    return i
+.. @+node:ekr.20120517155536.10117: *4* isBodyLine
+def isBodyLine(self,s,i):
+    
+    while i < len(s) and s[i] == '\t':
+        i += 1
+        
+    return i+1 < len(s) and s[i] == ':' and s[i+1] == ' '
+.. @+node:ekr.20130930062914.15977: *3* From previous version of leoIPython.py
+.. @+node:ekr.20120402202350.10028: *4* << globals >> (leoIPython.py)
+# Globals switches...
+
+g_trace_imports = False
+    # True: trace imports
+
+# Global vars...
+
+g_c = None
+    # A copy of g.app.ipm.c
+
+g_import_ok = None
+    # True if any IPython found.
+
+g_ipm = None
+    # The global, singleton GlobalIPythonManager instance.
+    # This will remain None if there errors importing IPython.
+
+g_legacy = None
+    # True if IPython 0.11 or previous found.
+
+g_push_history = set()
+    # The IPython push history.
+.. @+node:ekr.20120401063816.10141: *4* << imports >> (leoIPython.py)
+import leo.core.leoGlobals as g
+
+import pprint
+import os
+import re
+import sys
+import time
+import textwrap
+
+if g.isPython3:
+    # pylint: disable=E0611
+    # E0611:No name 'UserDict' in module 'collections'
+    from collections import UserDict
+    UserDictMixin = UserDict
+else:
+    import UserDict
+    UserDictMixin = UserDict.DictMixin
+
+<< attempt to import new version of IPython >>
+if not g_import_ok:
+    << attempt to import legacy IPython >>
+
+if g_trace_imports and not g_import_ok:
+    print('leoIPython.py: can not import IPython')
+.. @+node:ekr.20120413094617.12250: *5* << attempt to import new version of IPython >>
+try:
+    # pylint: disable=E0611
+    # E0611:No name 'generics' in module 'IPython'
+    # E0611:No name 'genutils' in module 'IPython'
+    # E0611:No name 'hooks' in module 'IPython'
+    # E0611:No name 'ipapi' in module 'IPython'
+    # E0611:No name 'macro' in module 'IPython'
+
+    # Either of these works.
+    import IPython.frontend.terminal.ipapp as ipapp
+    import IPython.utils.generics as generics
+    import IPython.core.macro as macro
+    from IPython.external.simplegeneric import generic
+    from IPython.utils.text import SList
+    from IPython.core.completer import IPCompleter
+    from IPython.core.error import TryNext
+    from IPython.core.hooks import CommandChainDispatcher
+    from IPython.core.interactiveshell import InteractiveShell
+
+    g_import_ok = True
+    g_legacy = False
+    if g_trace_imports:
+        print('imported new-style IPython')
+
+except ImportError:
+    if g_trace_imports:
+        print('can not import new-style IPython')
+
+except Exception:
+    if g_trace_imports:
+        print('unexpected exception importing new-style IPython')
+.. @+node:ekr.20120413094617.12251: *5* << attempt to import legacy IPython >>
+try:
+    # pylint: disable=E0611
+    # E0611:No name 'generics' in module 'IPython'
+    # E0611:No name 'genutils' in module 'IPython'
+    # E0611:No name 'hooks' in module 'IPython'
+    # E0611:No name 'ipapi' in module 'IPython'
+    # E0611:No name 'macro' in module 'IPython'
+
+    import IPython.ipapi as ipapi
+    # import IPython.genutils as genutils
+    import IPython.generics as generics
+    import IPython.macro as macro
+    # import IPython.Shell as Shell # Used only for Shell.hijack_tk()
+    from IPython.hooks import CommandChainDispatcher
+    from IPython.external.simplegeneric import generic
+    from IPython.ipapi import TryNext
+    from IPython.genutils import SList
+    g_legacy = True
+    g_import_ok = True
+    if g_trace_imports:
+        print('imported legacy IPython')
+
+except ImportError:
+    g_legacy = False
+    g_import_ok = False
+    if g_trace_imports:
+        print('can not import legacy IPython.ipapi')
+
+except Exception:
+    g_legacy = False
+    g_import_ok = False
+    if g_trace_imports:
+        print('unexpected exception importing legacy IPython')
+.. @+node:ekr.20120401063816.10181: *4* << class LeoWorkbook >>
+class LeoWorkbook(object):
+    """ class for 'advanced' node access 
+
+    Has attributes for all "discoverable" nodes.
+    Node is discoverable if it either
+
+    - has a valid python name (Foo, bar_12)
+    - is a parent of an anchor node.
+    If it has a child '@a foo', it is visible as foo.
+
+    """
+    @others
+.. @+node:ekr.20120401063816.10182: *5* __getattr__
+def __getattr__(self, key):
+
+    if key.startswith('_') or key == 'trait_names' or not valid_attribute(key):
+        raise AttributeError
+    cells = all_cells()
+    p = cells.get(key,None)
+    if p is None:
+        return add_var(key)
+    else:
+        return LeoNode(p)
+.. @+node:ekr.20120401063816.10185: *5* __iter__
+def __iter__(self):
+    """ Iterate all (even non-exposed) nodes """
+
+    # cells = all_cells() # Huh???
+    c = g_ipm.c
+    if c:
+        return (LeoNode(p) for p in c.allNodes_iter())
+    else:
+        return (LeoNode(p) for p in [])
+.. @+node:ekr.20120401063816.10184: *5* __setattr__
+def __setattr__(self,key, val):
+    raise AttributeError(
+        "Direct assignment to workbook denied, try wb.%s.v = %s" % (
+            key,val))
+
+.. @+node:ekr.20120401063816.10183: *5* __str__
+def __str__(self):
+    return "<LeoWorkbook>"
+
+__repr__ = __str__
+.. @+node:ekr.20120401063816.10186: *5* current
+current = property(
+    lambda self: LeoNode(g_c.currentPosition()),
+    doc = "Currently selected node")
+.. @+node:ekr.20120401063816.10187: *5* match_h
+def match_h(self,regex):
+
+    cmp = re.compile(regex)
+    res = PosList()
+    for node in self:
+        if re.match(cmp, node.h, re.IGNORECASE):
+            res.append(node)
+    return res
+.. @+node:ekr.20120401063816.10188: *5* require
+def require(self, req):
+
+    """ Used to control node push dependencies 
+
+    Call this as first statement in nodes.
+    If node has not been pushed, it will be pushed before proceeding
+
+    E.g. wb.require('foo') will do wb.foo.ipush()
+    if it hasn't been done already.
+    """
+
+    global g_push_history
+
+    if req not in g_push_history:
+        es('Require: ' + req)
+        getattr(self,req).ipush()
+.. @+node:ekr.20120401082519.10036: *4* class GlobalIPythonManager & g_ipm
+class GlobalIPythonManager:
+
+    '''A class to manage global IPython data'''
+
+    @others
+
+g_ipm = GlobalIPythonManager()
+.. @+node:ekr.20120401082519.10037: *5* ctor (GlobalIPythonManager)
+def __init__ (self):
+
+    self.c = None
+        # The current commander, set by update_commander.
+    self.ip = None
+        # The global IPython instance.
+    self.inited = False
+        # True: init_ipython called
+    self.root_node = None
+        # The global root node used by the allcells() and rootnode() functions.
+    self.started = False
+        # True: IPython has been started.
+    self.wb = LeoWorkbook()
+        # The Leo workbook instance.
+.. @+node:ekr.20110605121601.18482: *5* embed_ipython & helpers
+def embed_ipython(self):
+
+    '''Run the Qt main loop using IPython if possible.'''
+
+    if not g_import_ok:
+        sys.exit(g.app.gui.qtApp.exec_())
+            # Just run the Qt main loop.
+    elif g_legacy:
+        self.start_legacy_api()
+    else:
+        self.start_new_api()
+.. @+node:ekr.20120401144849.10115: *6* start_legacy_api
+def start_legacy_api(self):
+
+    self.started = True
+
+    # No c is available: we can't get @string ipython_argv setting.
+    old_argv = sys.argv
+    sys.argv = ['leo.py', '-p', 'sh']         
+    session = ipapi.make_session()
+    self.ip = session.IP.getapi()
+    self.init_ipython()
+    sys.argv = old_argv
+
+    # Does not return until IPython closes.
+    # IPython runs the leo mainloop
+    session.mainloop()
+.. @+node:ekr.20120401144849.10116: *6* start_new_api
+def start_new_api(self):
+
+    # No c is available: we can't get @string ipython_argv setting.
+    sys.argv =  ['ipython']
+
+    self.started = True
+
+    # Prints signon.
+    # self.ip set in update_commander.
+    ipapp.launch_new_instance()
+
+        # Doesn't print signon.
+        # shell = ishell.TerminalInteractiveShell()
+        # self.ip = shell
+        # shell.mainloop()
+.. @+node:ekr.20120401144849.10084: *5* get_history
+def get_history(self,hstart = 0):
+    res = []
+
+    ip = self.ip
+
+    if g_legacy:
+        ihist = ip.IP.input_hist
+        ihist_raw = ip.IP.input_hist_raw
+        ohist = ip.IP.output_hist
+    else:
+        m = ip.history_manager
+        ihist = m.input_hist_parsed
+        ihist_raw = m.input_hist_raw
+        ohist = m.output_hist
+
+    # for idx in range(hstart, len(ip.IP.input_hist)):
+    for idx in range(hstart, len(ihist)):
+        val = ohist.get(idx,None)
+        has_output = True
+        # inp = ip.IP.input_hist_raw[idx]
+        inp = ihist_raw[idx]
+        if inp.strip():
+            res.append('In [%d]: %s' % (idx, inp))
+        if val:
+            res.append(pprint.pformat(val))
+            res.append('\n')    
+    return ''.join(res)
+.. @+node:ekr.20120401063816.10144: *5* init_ipython
+def init_ipython(self):
+
+    """ This will be run by _ip.load('ipy_leo') 
+
+    Leo still needs to run update_commander() after this.
+
+    """
+
+    ip = self.ip
+    # g.trace(ip)
+
+    if self.inited:
+        return
+
+    self.show_welcome()
+
+    #### Shell.hijack_tk()
+    ip.set_hook('complete_command',mb_completer,str_key = '%mb')
+
+    f = ip.expose_magic if g_legacy else ip.define_magic
+
+    f('mb',mb_f)
+    f('lee',lee_f)
+    f('leoref',leoref_f)
+    f('lleo',lleo_f)    
+    f('lshadow',lshadow_f)
+    f('lno',lno_f)
+
+    # Note that no other push command should EVER have lower than 0
+    g_ipm.expose_ileo_push(g_ipm.push_mark_req,-1)
+    g_ipm.expose_ileo_push(g_ipm.push_cl_node,100)
+    # this should be the LAST one that will be executed,
+    # and it will never raise TryNext.
+    g_ipm.expose_ileo_push(g_ipm.push_ipython_script,1000)
+    g_ipm.expose_ileo_push(g_ipm.push_plain_python,100)
+    g_ipm.expose_ileo_push(g_ipm.push_ev_node,100)
+
+    ip.set_hook('pre_prompt_hook',ileo_pre_prompt_hook) 
+
+    # global wb
+    # wb = LeoWorkbook()
+    ip.user_ns['wb'] = self.wb
+.. @+node:ekr.20120401144849.10094: *5* push...
+.. @+node:ekr.20120401144849.10095: *6* expose_ileo_push
+def expose_ileo_push(self,f,priority=0):
+
+    # self.push_from_leo.add(f,priority)
+    CommandChainDispatcher().add(f,priority)
+.. @+node:ekr.20120401144849.10102: *6* push_position_from_leo
+def push_position_from_leo(self,p):
+
+    try:
+        d = CommandChainDispatcher(LeoNode(p))
+        d()
+
+    except AttributeError as e:
+        if e.args == ("Commands instance has no attribute 'frame'",):
+            es("Error: ILeo not associated with .leo document")
+            es("Press alt+shift+I to fix!")
+        else:
+            raise
+.. @+node:ekr.20120401144849.10142: *6* push_to_ipython
+def push_to_ipython(self):
+
+    c,ip = self.c,self.ip
+    if not c:
+        return g.trace('can not happen: no c.')
+
+    if not self.ip:
+        return g.trace('can not happen: no ip.')
+
+    c.inCommand = False # Disable the command lockout logic
+
+    n = LeoNode(c.p)
+
+    def f(self=self,n=n):
+        self.push_ipython_script(n)
+        return True
+    d = CommandChainDispatcher()
+    d.add(f)
+    d()
+.. @+node:ekr.20120401144849.10096: *6* push_cl_node
+def push_cl_node(self,node):
+
+    """ If node starts with @cl, eval it
+
+    The result is put as last child of @ipy-results node, if it exists
+    """
+
+    c = self.c
+
+    if not node.b.startswith('@cl'):
+        raise TryNext
+
+    p2 = g.findNodeAnywhere(c,'@ipy-results')
+    val = node.v
+    if p2:
+        es("=> @ipy-results")
+        LeoNode(p2).v = val
+    es(val)
+
+.. @+node:ekr.20120401144849.10097: *6* push_ev_node
+def push_ev_node(self,node):
+
+    """ If headline starts with @ev, eval it and put result in body """
+
+    if not node.h.startswith('@ev '):
+        raise TryNext
+
+    expr = node.h.lstrip('@ev ')
+    es('ipy eval ' + expr)
+    res = self.ip.ev(expr)
+    node.v = res
+
+.. @+node:ekr.20120401144849.10098: *6* push_from_leo
+# push_from_leo = CommandChainDispatcher()
+.. @+node:ekr.20120401144849.10099: *6* push_ipython_script
+def push_ipython_script(self,node):
+    """ Execute the node body in IPython,
+    as if it was entered in interactive prompt """
+
+    trace = False
+    c = self.c
+    ip = self.ip
+    try:
+        if 0:
+            g.trace()
+            for z in sorted(dir(ip)):
+                print('%30s %s' % (z,getattr(ip,z).__class__))
+
+        if g_legacy:
+            ihist = ip.IP.input_hist
+            ohist = ip.IP.output_hist 
+            hstart = len(ip.IP.input_hist)
+        else:
+            m = ip.history_manager
+            hstart = ip.history_length
+            ihist = m.input_hist_parsed
+            ohist = m.output_hist
+
+        if trace:
+            g.trace('ihist',ihist)
+            g.trace('ohist',ohist)
+
+        script = node.script()
+
+        # The current node _p needs to handle
+        # wb.require() and recursive ipushes.
+        old_p = ip.user_ns.get('_p',None)
+        ip.user_ns['_p'] = node
+
+        if g_legacy:
+            ip.runlines(script)
+        else:
+            ip.runcode(script)
+
+        ip.user_ns['_p'] = old_p
+        if old_p is None:
+            del ip.user_ns['_p']
+
+        has_output = False
+        # for idx in range(hstart,len(ip.IP.input_hist)):
+        for idx in range(hstart,len(ihist)):
+            val = ohist.get(idx,None)
+            if val is not None:
+                has_output = True
+                # inp = ip.IP.input_hist[idx]
+                inp = ihist[idx]
+                if inp.strip():
+                    es('In: %s' % (inp[:40], ))
+                es('<%d> %s' % (idx,pprint.pformat(ohist[idx],width=40)))
+
+        if not has_output:
+            es('ipy run: %s (%d LL)' %(node.h,len(script)))
+    finally:
+        # if trace: g.trace('end push_ipython_script')
+        c.redraw()
+.. @+node:ekr.20120401144849.10100: *6* push_mark_req
+def push_mark_req(self,node):
+    """ This should be the first one that gets called.
+
+    It will mark the node as 'pushed', for wb.require.
+    """
+
+    global g_push_history
+
+    g_push_history.add(node.h)
+
+    raise TryNext
+.. @+node:ekr.20120401144849.10101: *6* push_plain_python
+def push_plain_python(self,node):
+
+    if not node.h.endswith('P'):
+        raise TryNext
+
+    script = node.script()
+    lines = script.count('\n')
+    try:
+        # exec script in ip.user_ns
+        # 2010/02/04: per 2to3
+        exec(script,self.ip.user_ns)
+    except:
+        print(" -- Exception in script:\n"+script + "\n --")
+        raise
+    es('ipy plain: %s (%d LL)' % (node.h,lines))
+.. @+node:ekr.20120401144849.10104: *5* run_leo_startup_node
+def run_leo_startup_node(self):
+
+    c = self.c
+    p = g.findNodeAnywhere(c,'@ipy-startup')
+    if p:
+        print("Running @ipy-startup nodes")
+        for n in LeoNode(p):
+            # self.push_from_leo(n)
+            CommandChainDispatcher(n)
+
+.. @+node:ekr.20120401144849.10119: *5* show_welcome
+def show_welcome(self):
+
+    print("------------------")
+    print("Welcome to Leo-enabled IPython session!")
+    print("Try %leoref for quick reference.")
+
+    if g_legacy:
+        # pylint: disable=E0611
+        # E0611:GlobalIPythonManager.show_welcome: No name 'platutils' in module 'IPython'
+        import IPython.platutils as u
+        u.set_term_title('ILeo')
+        u.freeze_term_title()
+    else:
+        import IPython.utils.terminal as u
+        u.toggle_set_term_title(True)
+        u.set_term_title('ILeo')
+.. @+node:ekr.20120415174008.10063: *5* get_ip
+def get_ip (self):
+
+    """Get the global InteractiveShell instance."""
+
+    shell = InteractiveShell.instance()
+
+    return shell
+.. @+node:ekr.20120401063816.10145: *5* update_commander
+def update_commander(self,c):
+    """ Set the Leo commander to use
+
+    This will be run every time Leo does ipython-launch; basically,
+    when the user switches the document he is focusing on, he should do
+    ipython-launch to tell ILeo what document the commands apply to.
+
+    """
+
+    ip = self.ip
+
+    if g_legacy:
+        assert ip
+    elif not ip:
+        ip = self.ip = self.get_ip()
+        assert ip
+
+    if not c:
+        return
+    if ip.user_ns.get('c') == c:
+        return
+
+    if not self.inited:
+        self.init_ipython()
+
+    global g_c
+    g_c = c
+    self.c = c
+    print("Set Leo Commander: %s" % c.frame.getTitle())
+
+    leox = LeoInterface(c,g)
+    leox.push = self.push_position_from_leo
+
+    # will probably be overwritten by user,
+    # but handy for experimentation early on.
+    ip.user_ns['c'] = c
+    ip.user_ns['g'] = g
+    ip.user_ns['_leo'] = leox
+        # inject leox into the namespace.
+
+    self.run_leo_startup_node()
+    ip.user_ns['_prompt_title'] = 'ileo'
+.. @+node:ekr.20120401063816.10247: *4* class LeoInterface
+class LeoInterface:
+
+    '''A class to allow full access to Leo from Ipython.
+
+    An instance of this class called leox is typically injected
+    into IPython's user_ns namespace by the init-ipython-command.'''
+
+    # pylint: disable=R0923
+    # R0923:LeoInterface: Interface not implemented
+
+    def __init__(self,c,g,tag='@ipython-results'):
+        self.c = c
+        self.g = g
+.. @+node:ekr.20120401063816.10189: *4* class LeoNode
+class LeoNode(UserDictMixin,object): #### (object,UserDict.DictMixin):
+    """ Node in Leo outline
+
+    Most important attributes (getters/setters available:
+     .v     - evaluate node, can also be aligned 
+     .b, .h - body string, headline string
+     .l     - value as string list
+
+    Also supports iteration, 
+
+    setitem / getitem (indexing):  
+     wb.foo['key'] = 12
+     assert wb.foo['key'].v == 12
+
+    Note the asymmetry on setitem and getitem! Also other
+    dict methods are available. 
+
+    .ipush() - run push-to-ipython
+
+    Minibuffer command access (tab completion works):
+
+     mb save-to-file
+
+    """
+    @others
+    uA = property(__get_uA,
+        doc = "Access persistent unknownAttributes of node")
+.. @+node:ekr.20120401063816.10190: *5* __init__ (LeoNode)
+def __init__(self,p):
+
+    self.c = p.v.context # New in Leo 4.10.1.
+    self.p = p.copy()
+
+.. @+node:ekr.20120401063816.10191: *5* __str__
+def __str__(self):
+    return "<LeoNode %s>" % str(self.p.h)
+
+__repr__ = __str__
+.. @+node:ekr.20120401063816.10192: *5* __get_h and _set_h
+def __get_h(self):
+
+    return self.p.headString()
+
+def __set_h(self,val):
+
+    c = self.c
+    c.setHeadString(self.p,val)
+    LeoNode.last_edited = self
+    c.redraw()
+
+h = property( __get_h, __set_h, doc = "Node headline string")  
+.. @+node:ekr.20120401063816.10193: *5* _get_b and __set_b
+def __get_b(self):
+    return self.p.bodyString()
+
+def __set_b(self,val):
+
+    c = self.c
+    c.setBodyString(self.p, val)
+    LeoNode.last_edited = self
+    c.redraw()
+
+b = property(__get_b, __set_b, doc = "Nody body string")
+.. @+node:ekr.20120401063816.10194: *5* __set_val
+def __set_val(self, val):        
+    self.b = format_for_leo(val)
+
+v = property(
+    # pylint: disable=W0108
+    # W0108:LeoNode.<lambda>: Lambda may not be necessary
+    lambda self: eval_node(self), __set_val,
+    doc = "Node evaluated value")
+.. @+node:ekr.20120401063816.10195: *5* __set_l
+def __set_l(self,val):
+    self.b = '\n'.join(val )
+
+l = property(lambda self : SList(self.b.splitlines()), 
+        __set_l, doc = "Node value as string list")
+.. @+node:ekr.20120401063816.10196: *5* __iter__
+def __iter__(self):
+    """ Iterate through nodes direct children """
+
+    return (LeoNode(p) for p in self.p.children_iter())
+
+.. @+node:ekr.20120401063816.10197: *5* __children
+def __children(self):
+    d = {}
+    for child in self:
+        head = child.h
+        tup = head.split(None,1)
+        if len(tup) > 1 and tup[0] == '@k':
+            d[tup[1]] = child
+            continue
+
+        if not valid_attribute(head):
+            d[head] = child
+            continue
+    return d
+.. @+node:ekr.20120401063816.10198: *5* keys
+def keys(self):
+    d = self.__children()
+    return sorted(list(d.keys()))
+.. @+node:ekr.20120401063816.10199: *5* __getitem__
+def __getitem__(self, key):
+    """ wb.foo['Some stuff']
+    Return a child node with headline 'Some stuff'
+
+    If key is a valid python name (e.g. 'foo'),
+    look for headline '@k foo' as well
+    """  
+    key = str(key)
+    d = self.__children()
+    return d[key]
+.. @+node:ekr.20120401063816.10200: *5* __setitem__
+def __setitem__(self, key, val):
+    """ You can do wb.foo['My Stuff'] = 12 to create children 
+
+    Create 'My Stuff' as a child of foo (if it does not exist), and 
+    do .v = 12 assignment.
+
+    Exception:
+
+    wb.foo['bar'] = 12
+
+    will create a child with headline '@k bar',
+    because bar is a valid python name and we don't want to crowd
+    the WorkBook namespace with (possibly numerous) entries.
+    """
+
+    c = self.c
+    key = str(key)
+    d = self.__children()
+    if key in d:
+        d[key].v = val
+        return
+
+    if not valid_attribute(key):
+        head = key
+    else:
+        head = '@k ' + key
+    p = c.createLastChildNode(self.p, head, '')
+    LeoNode(p).v = val
+
+.. @+node:ekr.20120401063816.10201: *5* __delitem__
+def __delitem__(self, key):
+    """ Remove child
+
+    Allows stuff like wb.foo.clear() to remove all children
+    """
+
+    c = self.c
+    self[key].p.doDelete()
+    c.redraw()
+
+.. @+node:ekr.20120401063816.10202: *5* ipush (LeoNode)
+def ipush(self):
+    """ Does push-to-ipython on the node """
+    # push_from_leo(self)
+    CommandChainDispatcher(self)
+.. @+node:ekr.20120401063816.10203: *5* go
+def go(self):
+    """ Set node as current node (to quickly see it in Outline) """
+    #c.setCurrentPosition(self.p)
+
+    # argh, there should be another way
+    #c.redraw()
+    #s = self.p.bodyString()
+    #c.setBodyString(self.p,s)
+
+    c = self.c
+    c.selectPosition(self.p)
+.. @+node:ekr.20120401063816.10204: *5* append
+def append(self):
+    """ Add new node as the last child, return the new node """
+    p = self.p.insertAsLastChild()
+    return LeoNode(p)
+.. @+node:ekr.20120401063816.10205: *5* script
+def script(self):
+    """ Method to get the 'tangled' contents of the node
+
+    (parse @others, section references etc.)
+    """
+
+    c = self.c
+    return g.getScript(c,self.p,useSelectedText=False,useSentinels=False)
+.. @+node:ekr.20120401063816.10206: *5* __get_uA
+def __get_uA(self):
+
+    # Create the uA if necessary.
+    p = self.p
+    if not hasattr(p.v,'unknownAttributes'):
+        p.v.unknownAttributes = {}        
+
+    d = p.v.unknownAttributes.setdefault('ipython', {})
+    return d        
+
+.. @+node:ekr.20120401063816.10180: *4* class PosList
+class PosList(list):
+
+    def select(self, pat):
+        res = PosList()
+        for n in self:
+            #print "po",p
+            for chi_p in n.p.children_iter():
+                #print "chi",chi_p
+                if re.match(pat, chi_p.headString()):
+                    res.append(LeoNode(chi_p))
+        return res
+.. @+node:ekr.20120401144849.10150: *4* Decorators
+.. @+node:ekr.20120401144849.10079: *5* edit_object_in_leo
+@generic
+def edit_object_in_leo(obj,varname):
+
+    """ Make it @cl node so it can be pushed back directly by alt+I """
+
+    node = add_var(varname)
+    formatted = format_for_leo(obj)
+    if not formatted.startswith('@cl'):
+        formatted = '@cl\n' + formatted
+    node.b = formatted 
+    node.go()
+.. @+node:ekr.20120401144849.10138: *4* IPython commands
+.. @+node:ekr.20120401144849.10139: *5* start-ipython
+@g.command('start-ipython')
+def startIPython(event=None):
+
+    '''The start-ipython command'''
+
+    c = event and event.get('c') or g_ipm
+
+    if not g_import_ok:
+        g.es_print('IPython not loaded')
+    elif g_ipm.started:
+        g_ipm.update_commander(c)
+    elif g_legacy:
+        g_ipm.start_legacy_api()
+    else:
+        g_ipm.start_new_api()
+.. @+node:ekr.20120401144849.10140: *5* pushToIPythonCommand (g.command push-to-ipython)
+@g.command('push-to-ipython')
+def pushToIPythonCommand(event=None):
+
+    '''The push-to-ipython command.
+
+    IPython must be started, but the commander need not be inited.'''
+
+    trace = False and not g.unitTesting
+
+    # Ensure that the correct commander is set.
+    startIPython(event=event)
+
+    g_ipm.push_to_ipython()
+.. @+node:ekr.20120401144849.10134: *4* Top-level functions
+.. @+node:ekr.20120401144849.10075: *5* add_file
+def add_file(fname):
+
+    c = g_ipm.c
+    if c:
+        p2 = c.currentPosition().insertAfter()
+.. @+node:ekr.20120401144849.10076: *5* add_var
+def add_var(varname):
+
+    # pylint: disable=E1101
+    # E1101:add_var: Class 'LeoNode' has no 'p' member
+
+    c = g_ipm.c
+    # g.trace(varname)
+    if not c:
+        return
+
+    r = rootnode()
+    try:
+        if r is None:
+            p2 = g.findNodeAnywhere(c,varname)
+        else:
+            p2 = g.findNodeInChildren(c,r.p,varname)
+        if p2:
+            return LeoNode(p2)
+
+        if r is not None:
+            p2 = r.p.insertAsLastChild()
+
+        else:
+            p2 = c.currentPosition().insertAfter()
+
+        c.setHeadString(p2,varname)
+        return LeoNode(p2)
+    finally:
+        c.redraw()
+.. @+node:ekr.20120401144849.10077: *5* all_cells
+def all_cells():
+
+    # pylint: disable=E1101
+    # E1101:all_cells: Class 'LeoNode' has no 'p' member
+
+    c = g_ipm.c
+    d = {}
+    if not c:
+        return d
+
+    r = rootnode() 
+    if r is not None:
+        nodes = r.p.children_iter()
+    else:
+        nodes = c.allNodes_iter()
+
+    for p in nodes:
+        h = p.headString()
+        if h.strip() == '@ipy-root':
+            # update root node (found it for the first time)
+            g_ipm.root_node = LeoNode         
+            # the next recursive call will use the children of new root
+            return all_cells()
+
+        if h.startswith('@a '):
+            d[h.lstrip('@a ').strip()] = p.parent().copy()
+        elif not valid_attribute(h):
+            continue 
+        d[h] = p.copy()
+    return d    
+.. @+node:ekr.20120401144849.10078: *5* edit_macro
+# E1101:edit_macro: Function 'edit_object_in_leo' has no 'when_type' member
+@edit_object_in_leo.when_type(macro.Macro) # pylint: disable=E1101
+def edit_macro(obj,varname):
+
+    bod = '_ip.defmacro("""\\\n' + obj.value + '""")'
+    node = add_var('Macro_' + varname)
+    node.b = bod
+    node.go()
+.. @+node:ekr.20120401144849.10080: *5* es
+def es(s):
+
+    g.es(s,tabName='IPython')
+.. @+node:ekr.20120401144849.10081: *5* eval_body
+def eval_body(body):
+
+    ip = g_ipm.ip
+
+    try:
+        val = ip.ev(body)
+    except Exception:
+        # just use stringlist if it's not completely legal python expression
+        val = SList(body.splitlines())
+    return val 
+
+.. @+node:ekr.20120401144849.10082: *5* eval_node
+def eval_node(n):
+
+    ip = g_ipm.ip
+    if not ip: return
+
+    body = n.b    
+    if not body.startswith('@cl'):
+        # plain python repr node, just eval it
+        return ip.ev(n.b)
+    # @cl nodes deserve special treatment:
+    # first eval the first line (minus cl),
+    # then use it to call the rest of body.
+    first, rest = body.split('\n',1)
+    tup = first.split(None, 1)
+    # @cl alone SPECIAL USE-> dump var to user_ns
+    if len(tup) == 1:
+        val = ip.ev(rest)
+        ip.user_ns[n.h] = val
+        es("%s = %s" % (n.h, repr(val)[:20]  )) 
+        return val
+
+    cl, hd = tup 
+    xformer = ip.ev(hd.strip())
+    es('Transform w/ %s' % repr(xformer))
+    return xformer(rest, n)
+.. @+node:ekr.20120401144849.10083: *5* format_for_leo
+@generic
+def format_for_leo(obj):
+    """ Convert obj to string representiation (for editing in Leo)"""
+    return pprint.pformat(obj)
+
+# Just an example - note that this is a bad to actually do!
+#@format_for_leo.when_type(list)
+#def format_list(obj):
+#    return "\n".join(str(s) for s in obj)
+.. @+node:ekr.20120401144849.10091: *5* mb_completer
+def mb_completer(event):
+
+    """ Custom completer for minibuffer """
+
+    c = g_ipm.c
+    ip = g_ipm.ip
+
+    cmd_param = event.line.split()
+    if event.line.endswith(' '):
+        cmd_param.append('')
+
+    if len(cmd_param) > 2:
+        if g_legacy:
+            return ip.IP.Completer.file_matches(event.symbol)
+        else:
+            completer = IPCompleter(shell=ip,
+                namespace=ip.user_ns,
+                global_namespace=None,
+                alias_table=None,
+                use_readline=True,
+                config=None)
+            return completer.file_matches(event.symbol)
+
+    return sorted(list(c.commandsDict.keys()))
+.. @+node:ekr.20120401144849.10092: *5* mb_f
+def mb_f(arg):
+
+    """ Execute leo minibuffer commands 
+
+    Example:
+     mb save-to-file
+    """
+
+    c = g_ipm.c
+    if c:
+        c.executeMinibufferCommand(arg)
+.. @+node:ekr.20120401144849.10093: *5* mkbutton
+def mkbutton(text, node_to_push):
+
+    c = g_ipm.c
+    if c:
+        ib = c.frame.getIconBarObject()
+        ib.add(text=text,command=node_to_push.ipush)
+.. @+node:ekr.20120401144849.10103: *5* rootnode
+def rootnode():
+    """ Get ileo root node (@ipy-root) 
+
+    if node has become invalid or has not been set, return None
+
+    Note that the root is the *first* @ipy-root item found    
+    """
+
+    # pylint: disable=E1101
+    # E1101:rootnode: Class 'LeoNode' has no 'p' member
+
+    c = g_ipm.c
+    n = g_ipm.root_node
+
+    if n is None:
+        return None
+    elif c.positionExists(n.p):
+        return n
+    else:
+        g_ipm.root_node = None
+        return None  
+.. @+node:ekr.20120401144849.10105: *5* shadow_walk
+def shadow_walk(directory, parent=None, isroot=True):
+    """ source: http://leo.zwiki.org/CreateShadows
+
+    """
+
+    c = g_ipm.c
+    if not c:
+        return
+
+    from os import listdir
+    from os.path import join, abspath, basename, normpath, isfile
+    from fnmatch import fnmatch
+
+    RELATIVE_PATHS = False
+
+    patterns_to_ignore = [
+        '*.pyc', '*.leo', '*.gif', '*.png', '*.jpg', '*.json']
+
+    match = lambda s: any(fnmatch(s, p) for p in patterns_to_ignore)
+
+    is_ignorable = lambda s: any([ s.startswith('.'), match(s) ])
+
+    p = c.currentPosition()
+
+    if not RELATIVE_PATHS: directory = abspath(directory)
+    if isroot:
+        body = "@path %s" % normpath(directory)
+        c.setHeadString(p, body)
+    for name in listdir(directory):
+        if is_ignorable(name):
+            continue
+        path = join(directory, name)
+        if isfile(path):
+            g.es('file:', path)
+            headline = '@shadow %s' % basename(path)
+            if parent:
+                node = parent
+            else:
+                node = p
+            child = node.insertAsLastChild()
+            child.initHeadString(headline)
+        else:
+            g.es('dir:', path)
+            headline = basename(path)
+            body = "@path %s" % normpath(path)
+            if parent:
+                node = parent
+            else:
+                node = p
+            child = node.insertAsLastChild()
+            child.initHeadString(headline)
+            child.initBodyString(body)
+            shadow_walk(path, parent=child, isroot=False)
+.. @+node:ekr.20120401144849.10107: *5* valid_attribute
+attribute_re = re.compile('^[a-zA-Z_][a-zA-Z0-9_]*$')
+
+def valid_attribute(s):
+    return attribute_re.match(s)    
+.. @+node:ekr.20120401144849.10108: *5* workbook_complete
+# E1103:workbook_complete: Function 'complete_object' has no 'when_type' member
+@generics.complete_object.when_type(LeoWorkbook) # pylint: disable=E1103
+def workbook_complete(self,obj,prev):
+
+    return list(all_cells().keys()) + [
+        s for s in prev if not s.startswith('_')]
+.. @+node:ekr.20120401144849.10109: *4* Top-level IPython magic functions
+# By IPython convention, these must have "self" as the first argument.
+.. @+node:ekr.20120401144849.10085: *5* ileo_pre_prompt_hook
+def ileo_pre_prompt_hook(self):
+
+    c = g_ipm.c
+    if c:
+        c.outerUpdate()
+
+    raise TryNext
+
+    # old code
+
+        # # this will fail if leo is not running yet
+        # try:
+            # c.outerUpdate()
+        # except (NameError, AttributeError):
+            # pass
+        # raise TryNext
+.. @+node:ekr.20120401144849.10086: *5* lee_f
+def lee_f(self,s):
+
+    """ Open file(s)/objects in Leo
+
+    - %lee hist -> open full session history in leo
+    - Takes an object. l = [1,2,"hello"]; %lee l.
+      Alt+I in leo pushes the object back
+    - Takes an mglob pattern, e.g. '%lee *.cpp' or %lee 'rec:*.cpp'
+    - Takes input history indices:  %lee 4 6-8 10 12-47
+    """
+
+    # import os
+
+    c = g_ipm.c
+    ip = g_ipm.ip
+    wb = g_ipm.wb
+
+    try:
+        if s == 'hist':
+            if c:
+                wb.ipython_history.b = g_ipm.get_history()
+                wb.ipython_history.go()
+            else:
+                g.trace('no c')
+            return
+
+        if s and s[0].isdigit():
+            # numbers; push input slices to leo
+            lines = self.extract_input_slices(s.strip().split(), True)
+            v = add_var('stored_ipython_input')
+            v.b = '\n'.join(lines)
+            return
+
+        # try editing the object directly
+        obj = ip.user_ns.get(s, None)
+        if obj is not None:
+            edit_object_in_leo(obj,s)
+            return
+
+        if not c:
+            # print('file not found: %s' % s)
+            return
+
+        # if it's not object, it's a file name / mglob pattern
+        from IPython.external import mglob
+
+        files = (os.path.abspath(f) for f in mglob.expand(s))
+        for fname in files:
+            p = g.findNodeAnywhere(c,'@auto ' + fname)
+            if not p:
+                p = c.currentPosition().insertAfter()
+
+            p.setHeadString('@auto ' + fname)
+            if os.path.isfile(fname):
+                c.setBodyString(p,open(fname).read())
+            c.selectPosition(p)
+        print("Editing file(s), \
+            press ctrl+shift+w in Leo to write @auto nodes")
+    finally:
+        if c:
+            c.redraw()
+.. @+node:ekr.20120401144849.10087: *5* leoref_f
+def leoref_f(self,s):
+    """ Quick reference for ILeo """
+
+    print(textwrap.dedent("""\
+    %lee file/object - open file / object in leo
+    %lleo Launch leo (use if you started ipython first!)
+    wb.foo.v  - eval node foo (i.e. headstring is 'foo' or '@ipy foo')
+    wb.foo.v = 12 - assign to body of node foo
+    wb.foo.b - read or write the body of node foo
+    wb.foo.l - body of node foo as string list
+
+    for el in wb.foo:
+      print el.v
+
+    """
+    ))
+.. @+node:ekr.20120401144849.10088: *5* lleo_f
+def lleo_f(selg,args):
+    """ Launch leo from within IPython
+
+    This command will return immediately when Leo has been
+    launched, leaving a Leo session that is connected 
+    with current IPython session (once you press alt+I in leo)
+
+    Usage::
+      lleo foo.leo
+      lleo 
+    """
+
+    import os
+    import sys
+    import shlex
+    argv = shlex.split(args)
+    ip = g_ipm.ip
+    if not ip: return
+
+    # when run without args, leo will open ipython_notebook for 
+    # quick note taking / experimentation
+
+    if not argv:
+        argv = [os.path.join(ip.options.ipythondir,'ipython_notebook.leo')]
+
+    sys.argv = ['leo'] + argv
+
+    # Set the --ipython option. 
+        # global _request_immediate_connect
+        # _request_immediate_connect = True.
+
+    if '--ipython' not in sys.argv:
+        sys.argv.append ('--ipython')
+
+    import leo.core.runLeo
+    leo.core.runLeo.run()
+.. @+node:ekr.20120401144849.10089: *5* lno_f
+def lno_f(self, arg):
+    """ %lno [note text]
+
+    Gather quick notes to leo notebook
+
+    """
+
+    wb = g_ipm.wb
+
+    try:
+        scr = wb.Scratch
+    except AttributeError:
+        print("No leo yet, attempt launch of notebook...")
+        lleo_f(self,'')
+        scr = wb.Scratch
+
+    child = scr.get(arg, None)
+    if child is None:
+        scr[arg] = time.asctime()
+        child = scr[arg]
+
+    child.go()
+.. @+node:ekr.20120401144849.10090: *5* lshadow_f
+def lshadow_f(self, arg):
+    """ lshadow [path] 
+
+    Create shadow nodes for path (default .)
+
+    """
+
+    c = g_ipm.c
+    if c:
+        if not arg.split():
+            arg = '.'
+        p = c.p.insertAfter()
+        c.setCurrentPosition(p)
+        shadow_walk(arg)
+        c.redraw()
 .. @-all
 .. @-leo
