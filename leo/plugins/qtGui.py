@@ -7414,7 +7414,7 @@ class leoQtGui(leoGui.leoGui):
         except Exception:
             g.es_exception()
             print('can not init leo.core.leoIPython.py')
-            return
+            self.runMainLoop()
 
         @g.command("ipython-new")
         def qtshell_f(event):            
@@ -7437,7 +7437,7 @@ class leoQtGui(leoGui.leoGui):
         c = event and event.get('c')
         ns = g.app.ipk.namespace
         if c and ns is not None:
-            script = g.getScript(c,p)
+            script = g.getScript(c,c.p)
             try:
                 exec(script,ns)
             except:

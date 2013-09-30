@@ -887,20 +887,17 @@ class LeoApp:
         # forceShutdown may already have fired the "end1" hook.
         if not g.app.killed:
             g.doHook("end1")
-
+        if g.app.ipk:
+            g.app.ipk.cleanup_consoles()
         self.destroyAllOpenWithFiles()
-
         if g.app.gui:
             g.app.gui.destroySelf()
-
         # Don't use g.trace!
         # print('app.finishQuit: setting g.app.killed',g.callers())
-
         g.app.killed = True
             # Disable all further hooks and events.
             # Alas, "idle" events can still be called
             # even after the following code.
-
         if g.app.afterHandler:
             g.app.afterHandler = None
     #@+node:ekr.20031218072017.2616: *3* app.forceShutdown

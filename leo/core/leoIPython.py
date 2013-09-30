@@ -21,7 +21,7 @@ versions that define the IPKernelApp class.
 #@+node:ekr.20130930062914.15990: ** << imports >>
 import sys
 import leo.core.leoGlobals as g
-import_trace = True
+import_trace = False
 try:
     from IPython.lib.kernel import connect_qtconsole
     if import_trace: print('ok: IPython.lib.kernel import connect_qtconsole')
@@ -84,15 +84,14 @@ class InternalIPKernel(object):
             print('%s IPKernelApp.instance failed' % (tag))
         return kernel
     #@+node:ekr.20130930062914.15995: *3* print_namespace
-    def print_namespace(self, evt=None):
+    def print_namespace(self,event=None):
         print("\n***Variables in User namespace***")
         for k, v in self.namespace.iteritems():
             if k not in self._init_keys and not k.startswith('_'):
                 print('%s -> %r' % (k, v))
         sys.stdout.flush()
-
     #@+node:ekr.20130930062914.15996: *3* new_qt_console
-    def new_qt_console(self,event):
+    def new_qt_console(self,event=None):
         """start a new qtconsole connected to our kernel"""
         ipk = g.app.ipk
         console = None
@@ -106,11 +105,11 @@ class InternalIPKernel(object):
                 self.consoles.append(console)
         return console
     #@+node:ekr.20130930062914.15997: *3* count
-    def count(self, evt=None):
+    def count(self,event=None):
         self.namespace['app_counter'] += 1
 
     #@+node:ekr.20130930062914.15998: *3* cleanup_consoles
-    def cleanup_consoles(self, evt=None):
+    def cleanup_consoles(self,event=None):
         for c in self.consoles:
             c.kill()
     #@-others
@@ -126,7 +125,10 @@ class LeoNameSpace(object):
 
     def __init__ (self):
         '''LeoNameSpace ctor.'''
-        self.c = None # The commander set by the c property.
+        self.commander = None
+            # The commander returned by the c property.
+        self.commanders_list = []
+            # The list of commanders returned by the commanders property.
         self.g = g
         self.update()
 
@@ -135,24 +137,34 @@ class LeoNameSpace(object):
     def __get_c(self):
         '''Return the designated commander, or the only open commander.'''
         self.update()
-        if self.c and self.c in self.commanders:
-            return self.c
-        elif len(self.commanders) == 1:
-            return self.commanders[0]
+        if self.commander and self.commander in self.commanders_list:
+            return self.commander
+        elif len(self.commanders_list) == 1:
+            return self.commanders_list[0]
         else:
             return None
 
     def __set_c(self,c):
         '''Designate the commander to be returned by the getter.'''
         self.update()
-        if c in self.commanders:
-            self.c = c
+        if c in self.commanders_list:
+            self.commander = c
         else:
+            g.trace(g.callers())
             raise ValueError(c)
 
     c = property(
         __get_c, __set_c,
         doc = "LeoNameSpace c property")
+    #@+node:edward.20130930125732.11822: *3* LeoNS.commanders property
+    def __get_commanders(self):
+        '''Return the designated commander, or the only open commander.'''
+        self.update()
+        return self.commanders_list
+
+    commanders = property(
+        __get_commanders, None,
+        doc = "LeoNameSpace commanders property (read-only)")
     #@+node:ekr.20130930062914.16009: *3* LeoNS.find_c
     def find_c(self,path):
         '''Return the commander associated with path, or None.'''
@@ -160,7 +172,7 @@ class LeoNameSpace(object):
         self.update()
         path = g.os_path_normcase(path)
         short_path = g.shortFileName(path)
-        for c in self.commanders:
+        for c in self.commanders_list:
             fn = g.os_path_normcase(c.fileName())
             short_fn = g.shortFileName(fn)
             if fn == path or short_fn == short_path:
@@ -168,7 +180,7 @@ class LeoNameSpace(object):
     #@+node:ekr.20130930062914.16003: *3* LeoNS.update
     def update (self):
         '''Update the list of available commanders.'''
-        self.commanders = [frame.c for frame in g.app.windowList]
+        self.commanders_list = [frame.c for frame in g.app.windowList]
     #@-others
     
 #@-others
