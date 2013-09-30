@@ -623,6 +623,8 @@ class todoController:
                 node._cached_src_c = c2
                 node._cached_src_vnode = p2.v
             node._cached_src_c.cleo.setat(node._cached_src_vnode, attrib, val)
+            op = node._cached_src_c.vnode2position(node._cached_src_vnode)
+            node._cached_src_c.cleo.loadIcons(op)
             node._cached_src_c.cleo.updateUI(k={'c': node._cached_src_c})
             node._cached_src_c.setChanged(True)
 
