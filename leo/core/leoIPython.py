@@ -21,13 +21,13 @@ versions that define the IPKernelApp class.
 #@+node:ekr.20130930062914.15990: ** << imports >>
 import sys
 import leo.core.leoGlobals as g
-import_trace = False
+import_trace = True
 try:
     from IPython.lib.kernel import connect_qtconsole
     if import_trace: print('ok: IPython.lib.kernel import connect_qtconsole')
 except ImportError:
     connect_qtconsole = None
-    print('internal_ipkernel.py: can not import connect_qtconsole')
+    print('leoIPython.py: can not import connect_qtconsole')
 try:
     # First, try the IPython 0.x import.
     from IPython.zmq.ipkernel import IPKernelApp
@@ -39,7 +39,7 @@ except ImportError:
         if import_trace: print('ok: from IPython.kernel.zmq.ipkernel import IPKernelApp')
     except ImportError:
         IPKernelApp = None
-        print('internal_ipkernel.py: can not import IPKernelApp')
+        print('leoIPython.py: can not import IPKernelApp')
 #@-<< imports >>
 #@+others
 #@+node:ekr.20130930062914.15993: ** class InternalIPKernel
@@ -69,7 +69,7 @@ class InternalIPKernel(object):
         """Launch and return an IPython kernel with pylab support for the desired gui
         """
         trace = True
-        tag = 'internal_ipkernel.py'
+        tag = 'leoIPython.py'
         kernel = IPKernelApp.instance()
         if kernel:
             # pylab is really needed, for Qt event loop integration.

@@ -89,7 +89,7 @@ def getPluginsList():
     return (
         'baseNativeTree',
         'bookmarks',
-        'internal_ipkernel.py',
+        # 'internal_ipkernel.py',
         # 'mod_http',
         'mod_scripting',
             # E0611:489:scriptingController.runDebugScriptCommand:
@@ -114,7 +114,7 @@ def getRecentCoreList():
 
     return (
         # 'runLeo',
-        # 'leoApp',
+        'leoApp',
         # 'leoAtFile',
         # 'leoBridge',
         # 'leoCache',
@@ -147,7 +147,7 @@ def getRecentPluginsList ():
         # 'baseNativeTree',
         # 'contextmenu',
         # 'codewisecompleter',
-        'internal_ipkernel.py',
+        # 'internal_ipkernel.py',
         # 'mod_scripting',
         # 'nested_splitter',
         # 'qtGui',

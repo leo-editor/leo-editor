@@ -7397,8 +7397,7 @@ class leoQtGui(leoGui.leoGui):
                 g.pr('End of batch script')
             else:
                 g.pr('no log, no commander for executeScript in qtGui.runMainLoop')
-        elif g.app.useIpython and g.app.ipm:
-            # g.app.ipm exists only if IPython was imported properly.
+        elif g.app.useIpython:
             self.runWithIpythonKernel()
         else:
             # This can be alarming when using Python's -i option.                           
@@ -7406,18 +7405,15 @@ class leoQtGui(leoGui.leoGui):
     #@+node:ekr.20130930062914.16001: *6* qtGui.runWithIpythonKernel & helper
     def runWithIpythonKernel(self):
         '''Init Leo to run in an IPython shell.'''
-        # This try/except does not work. IPython calls sys.exit on failure.
+        import leo.core.leoIPython as leoIPython
+        if not leoIPython.IPKernelApp:
+            return # leoIPython.py gives an error message.
         try:
-            import leo.plugins.internal_ipkernel as ipk
-        except ImportError:
-            print('can not import leo.plugins.internal_ipkernel')
-            g.es_exception()
-            return
-        try:
-            g.app.ipk = ipk = ipk.InternalIPKernel()
+            g.app.ipk = ipk = leoIPython.InternalIPKernel()
             ipk.new_qt_console(event=None)
         except Exception:
-            print('can not init leo.plugins.internal_ipkernel')
+            g.es_exception()
+            print('can not init leo.core.leoIPython.py')
             return
 
         @g.command("ipython-new")
