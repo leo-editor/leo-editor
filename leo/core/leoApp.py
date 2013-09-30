@@ -2034,35 +2034,23 @@ class LoadManager:
 
         trace = (False or g.trace_startup) and not g.unitTesting
         if trace: print('LM.initApp')
-
         assert g.app.loadManager
-
         import leo.core.leoConfig as leoConfig
         import leo.core.leoNodes as leoNodes
         import leo.core.leoPlugins as leoPlugins
         import leo.core.leoSessions as leoSessions
-
         # Import leoIPython only if requested.  The import is quite slow.
         if g.app.useIpython:
             import leo.core.leoIPython as leoIPython
-            #### Use the GlobalIPythonManager created during the import process.
-            #### This ensures that only one copy is ever created.
-            ### g.app.ipm = leoIPython.g_ipm
-
         # Make sure we call the new leoPlugins.init top-level function.
-        # This prevents a crash when run is called repeatedly from
-        # IPython's lleo extension.
-        ### leoPlugins.init()
-
+        leoPlugins.init()
         # Force the user to set g.app.leoID.
         g.app.setLeoID(verbose=verbose)
-
         # Create early classes *after* doing plugins.init()
         g.app.recentFilesManager = RecentFilesManager()
         g.app.config = leoConfig.GlobalConfigManager()
         g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
         g.app.sessionManager = leoSessions.SessionManager()
-
         # Complete the plugins class last.
         g.app.pluginsController.finishCreate()
     #@+node:ekr.20120219154958.10486: *5* LM.scanOptions & helper
