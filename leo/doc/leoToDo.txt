@@ -6,7 +6,7 @@
 .. @+node:ekr.20130926053913.11569: ** ** (fun) leoRope.py
 .. @+node:ekr.20130916105324.19893: ** To-do for 4.11
 @language rest
-.. @+node:ekr.20130926053913.11572: *3* for b1 (3)
+.. @+node:ekr.20130926053913.11572: *3* for b1 (2)
 @language rest
 .. @+node:ekr.20130908104426.11258: *4* 1180186 debian install not documented well enough
 https://bugs.launchpad.net/leo-editor/+bug/1180186
