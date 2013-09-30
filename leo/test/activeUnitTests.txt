@@ -372,7 +372,8 @@ if g.isPython3:
     if 0:
         << define exclude >>
     else:
-        exclude = []
+        exclude = ['leoIPython.py',]
+            # leoIPython.py will give an annoying error if IPython can't be imported.
 
     modules = tm.importAllModulesInPath(path,exclude=exclude)
     suite   = tm.createUnitTestsFromDoctests(modules)
@@ -384,6 +385,8 @@ else:
     
 #@+node:ekr.20090703093925.5003: *3* << define exclude >>
 exclude = [
+    # Gives an error if IPython can't be imported.
+    'leoIPython.py',
     # These cause no problems, but will not have unit tests.
     'leo_Debugger.py',
     'leo_FileList.py',

@@ -21,7 +21,7 @@ versions that define the IPKernelApp class.
 #@+node:ekr.20130930062914.15990: ** << imports >>
 import sys
 import leo.core.leoGlobals as g
-import_trace = False
+import_trace = False and not g.unitTesting
 try:
     from IPython.lib.kernel import connect_qtconsole
     if import_trace: print('ok: IPython.lib.kernel import connect_qtconsole')
