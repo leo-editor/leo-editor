@@ -181,6 +181,10 @@ class Commands (object):
         self.nodeConflictFileName = None
             # The fileName for c.nodeConflictList.
         self.timeStampDict = {}
+            # Keys are file names, values are time stamps.
+        self.user_dict = {}
+            # Non-persistent dictionary for free use by scripts and plugins.
+        
     #@+node:ekr.20120217070122.10467: *5* c.initEventIvars
     def initEventIvars(self):
 

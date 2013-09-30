@@ -184,6 +184,8 @@ class nullObject:
     def __setattr__(self,attr,val): return self
 #@-<< define the nullObject class >>
 tree_popup_handlers = [] # Set later.
+user_dict = {}
+    # Non-persistent dictionary for free use by scripts and plugins.
 # g = None
 app = None # The singleton app object. Set by runLeo.py.
 
