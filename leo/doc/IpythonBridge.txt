@@ -24,34 +24,44 @@ IPython and Leo
 
 .. _`run Leo in a console window`: installing.html#running-leo-from-a-console-window
 
-Leo's ipython plugin provides two-way communication (a bridge) between Leo and
-IPython: you can run Leo scripts from IPython, and IPython scripts from Leo. To
-use this plugin, you must `run Leo in a console window`_. When this plugin is
-enabled, Leo's start-ipython command starts IPython_ in this console.
+Leo's --ipython command-line option enables two-way communication (a
+bridge) between Leo and IPython: you can run Leo scripts from IPython, and
+IPython scripts from Leo. To do this, you should `run Leo in a console
+window`_
 
-Remarkably, Leo and IPython run simultaneously in the same process,
-yet their separate event loops do not interfere with each other.
-Scripts run from IPython *immediately* change Leo,
-*exactly* as if the script were run from Leo.
-Conversely, scripts run from Leo *immediately* affect the IPython interpreter.
-As a result, Leo might be considered an `IPython Notebook`_.
+The --ipython command-line option starts an instance of the IPython shell
+in the console and creates the ipython-new and ipython-exec commands. The
+ipython-new command creates a new instance of the IPython shell in a new
+console window. The ipython-exec command executes the body text of the
+presently selected Leo node in the address space of the IPython shell(!)
+
+Remarkably, Leo and IPython run simultaneously, yet their separate event
+loops do not interfere with each other. Scripts run from IPython
+*immediately* change Leo, *exactly* as if the script were run from Leo.
+Conversely, scripts run from Leo *immediately* affect the IPython
+interpreter. As a result, Leo might be considered an `IPython Notebook`_.
 
 The bridge between Leo and IPython is powerful because it is simple. Indeed,
 
 1. **You can run any IPython script from Leo**.
-On the Leo side, a single statement::
 
-    ip = IPython.ipapi.get()
+On the Leo side, the --ipython command-line option (or the ipython-new
+command) set the global variable g.app.ipk, an instance of the Leo class
+leo.plugins.internal.InernalIPKernel. Use g.app.ipk as follows::
 
-assigns ip to IPython's _ip variable. The ip variable allows scripts running in
-Leo to do *anything* that an IPython script can do.
+    a) g.app.ipk.ipkernel is an instance of IPython's zmq.ipkernel.IPKernelApp object.
+    b) g.app.ipk.namespace is IPython's namespace.
+    
+Access to g.app.ipk.ipkernel and g.app.ipk.namespace allows Leo scripts to do
+*anything* that an IPython script can do.
 
-2. **You can run any Leo script from IPython**. 
-The ipython plugin injects a single object named '_leo' into the IPython namespace. 
-IPython scripts access Leo's c and g objects as
-follows::
+2. **You can run any Leo script from IPython**.
 
-    c,g = _leo.c, _leo.g
+The --ipython command-line option (or the ipython-new command) injects a
+single object named '_leo' into the IPython namespace. IPython scripts
+access Leo's c and g objects as follows::
+
+    c,g = _leo_c, _leo_g
 
 The c and g variables allow scripts running in IPython to do *anything* that a
 Leo script can do. 
@@ -97,43 +107,15 @@ of ILeo over using %edit, you can save your experimental scripts all at one
 time, without having to organize them into script/module files (before you
 really want to, of course!)
 .. @+node:vivainio.20080302174639.2: *3* Installation and startup
-You need at least Leo 4.4.8, and IPython 0.8.3
+You need at least Leo 4.11, and IPython 0.8.3 or above.
 
-The ILeo concept is still being developed actively, so if you want to get access
-to latest features you can get IPython from Launchpad by installing bzr and
-doing::
+To activate the IPython bridge, simply add the --ipython option to the command line.
+This will start IPython in the console from which you started Leo.
 
-    bzr branch lp:ipython
-    cd ipython
-    python setupegg.py develop
 
-You need to enable the 'ipython.py' plugin in Leo: 
-
-- Help -> Open LeoSettings.leo
-
-- Edit @settings-->Plugins-->@enabled-plugins, add/uncomment 'ipython.py'
-
-- Alternatively, you can add @settings-->@enabled-plugins with body ipython.py to your leo document.
-
-- Restart Leo. Be sure that you have the console window open
-  (`run Leo in a console window`_, or double-click leo.py on windows)
-
-- When using the Qt ui, add --ipython argument to command line (e.g. launchLeo.py --ipython).
-
-- Press alt+shift+i OR alt-x start-ipython to launch IPython in the console that
-  started leo. You can start entering IPython commands normally, and Leo will keep
-  running at the same time.
-
-- Note that you can just press alt-I (push-to-ipython) - it will start IPython
-  if it has not been previously started. However, when you open a new leo
-  document, you have to execute start-ipython (alt+shift+I) again to tell
-  IPython that the new commands should target the new document. IPython session
-  will not be restarted, only the leo commander object is updated in the
-  existing session.
-
-- If you want to specify command line arguments to IPython (e.g. to choose a
-  profile, or to start in 'pylab' mode), add this to your @settings:
-  '@string ipython_argv = ipython -pylab' (where -pylab is the command line argument)
+If you want to specify command line arguments to IPython (e.g. to choose a
+profile, or to start in 'pylab' mode), add this to your @settings:
+'@string ipython_argv = ipython -pylab' (where -pylab is the command line argument)
 .. @+node:vivainio.20080302174639.3: *3* Accessing IPython from Leo
 IPython code
 ------------
