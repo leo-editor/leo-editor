@@ -7383,53 +7383,7 @@ class leoQtGui(leoGui.leoGui):
         else:
             self.frameFactory = SDIFrameFactory()
     #@+node:ekr.20110605121601.18483: *5* runMainLoop & runWithIpythonKernel (qtGui)
-    def runWithIpythonKernel(self):
-
-        try:
-            # This try/except does not work.
-            # Apparently ipython calls sys.exit on failure.
-            import leo.plugins.internal_ipkernel as ipk
-        except Exception:
-            print('can not import leo.plugins.internal_ipkernel')
-            g.app.ipk = None
-            g.app.ipm = None
-            g_ipm = None
-            g.es_exception()
-            return
-        g.app.ipk = ipk = ipk.InternalIPKernel()
-        if not ipk:
-            print('can not init leo.plugins.internal_ipkernel')
-            return
-        ipk.init_ipkernel('qt')
-        ns = ipk.namespace
-        ns['g'] = g
-        # launch the first shell, 'c' is not defined there
-        ipk.new_qt_console()
-
-        @g.command("ipython-new")
-        def qtshell_f(event):            
-            """ Launch new ipython shell window, associated with the same ipython kernel """
-            g.app.ipk.new_qt_console()
-            ns['c'] = event['c']
-
-        @g.command("ipython-exec")
-        def ipython_exec_f(event):
-            """ Execute script in current node in ipython namespace """
-            c = ns['c'] = event['c']
-            self.execInNamespace(c, c.p, g.app.ipk.namespace)
-
-        # blocks forever here, equivalent of 
-        # QApplication.exec_()
-        ipk.ipkernel.start()
-
-    def execInNamespace(self, c, p, ns):
-        """" Needed because c.executeScript doesn't handle ns properly """
-        script = g.getScript(c,p)
-        try:
-            exec(script, ns)
-        except:
-            g.es_exception()
-
+    #@+node:ekr.20130930062914.16000: *6* qtGui.runMainLoop
     def runMainLoop(self):
 
         '''Start the Qt main loop.'''
@@ -7449,6 +7403,51 @@ class leoQtGui(leoGui.leoGui):
         else:
             # This can be alarming when using Python's -i option.                           
             sys.exit(self.qtApp.exec_())
+    #@+node:ekr.20130930062914.16001: *6* qtGui.runWithIpythonKernel & helper
+    def runWithIpythonKernel(self):
+        '''Init Leo to run in an IPython shell.'''
+        # This try/except does not work. IPython calls sys.exit on failure.
+        try:
+            import leo.plugins.internal_ipkernel as ipk
+        except ImportError:
+            print('can not import leo.plugins.internal_ipkernel')
+            g.es_exception()
+            return
+        try:
+            g.app.ipk = ipk = ipk.InternalIPKernel()
+            ipk.new_qt_console(event=None)
+        except Exception:
+            print('can not init leo.plugins.internal_ipkernel')
+            return
+
+        @g.command("ipython-new")
+        def qtshell_f(event):            
+            """ Launch new ipython shell window, associated with the same ipython kernel """
+            g.app.ipk.new_qt_console(event=event)
+
+        @g.command("ipython-exec")
+        def ipython_exec_f(event):
+            """ Execute script in current node in ipython namespace """
+            self.exec_helper(event)
+
+        # blocks forever, equivalent of QApplication.exec_()
+        ipk.ipkernel.start()
+    #@+node:ekr.20130930062914.16010: *7* exec_helper
+    def exec_helper(self,event):
+        '''This helper is required because an unqualified "exec"
+        may not appear in a nested function.
+        
+        '''
+        c = event and event.get('c')
+        ns = g.app.ipk.namespace
+        if c and ns is not None:
+            script = g.getScript(c,p)
+            try:
+                exec(script,ns)
+            except:
+                g.es_exception()
+        else:
+            g.trace('no c')
     #@+node:ekr.20110605121601.18484: *5* destroySelf (qtGui)
     def destroySelf (self):
         QtCore.pyqtRemoveInputHook()
