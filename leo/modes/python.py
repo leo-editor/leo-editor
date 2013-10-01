@@ -263,6 +263,7 @@ python_main_keywords_dict = {
 	"reload": "keyword2",
 	"repr": "keyword2",
 	"return": "keyword1",
+	"reversed": "keyword2",
 	"round": "keyword2",
 	"setattr": "keyword2",
 	"slice": "keyword2",
