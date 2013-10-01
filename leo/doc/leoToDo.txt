@@ -38,7 +38,543 @@ warning,
 https://groups.google.com/d/topic/leo-editor-users/y6ZwJR3accs/discussion
 .. @+node:ekr.20130926053913.11565: *4* Highlight abbreviations and auto-completion
 Their own chapter, or prominent new sections.
-.. @+node:ekr.20130930142522.11348: *4* Does valuespace still work with IPython??
+.. @+node:ekr.20131001045038.11350: *4* Cheat-sheet for default .leo file (workbook)
+- The default will be leo/docs/default_workbook.leo.
+
+- doPostPluginsInit, the code that creates ~/workbook.leo, will make a copy
+  of the default file. This will allow continuous improvement on
+  default_workbook.leo.
+
+Keys    Command
+F3      Search forward
+F2      Search backward
+Alt-X   Alt-X
+Tab     Complete command in minibuffer (Alt-X )
+
+Objects
+    c
+    p
+    p.v
+    p.v.u   and a sample on how to use them (for instance, some nodes with
+            commands, c.p.u["test"]=yes, and another, g.es(c.p.u) p.v.u
+
+@<file> flavors
+    @edit   Load and edit the file from the filesystem
+    @shadow Load and edit the file from the filesystem, maintain Leo structure
+            without sentinels in file.
+    @file
+    @nosent
+    @as-is
+    @auto-rst
+
+Samples of use (Maybe):
+
+    Sample on how to import bookmarks from Internet browser (I have that
+    script ready myself, I could add that)
+
+    Sample of website generated with an outline, easy to open and edit for
+    the user to view its power. Ideally, just after transforming the
+    outline to website, the user should be able to open it and see it in
+    html.
+
+    Sample of RST outline and one click opening with render pane.
+
+    The RPG helper we recently discussed about.
+
+    And as many other practical and ready-to-go samples that could impress
+    the new user. All of them, ready to go, no edit required to view. There
+    are ways of using Leo that beginers cant think of and those would make
+    a great addon for such a beginer leo file.
+
+Commands:
+    List of Leo commands, categorized by activity (or with different
+    categorizations, thank to clones) Or, a link to the leopyref that
+    contains them.
+
+Other (JKN)
+    how to invoke Leo (short list of command-line parameters    
+    brief note on creeating your own settings (myLeoSettings etc)    
+    How to 'install' plugins, adding buttons    
+    @node summary usage    
+
+More: Rest of the directives:
+    @button    
+    @rclick    
+    and all of them, with sample of ussage    
+
+More: Associate leo files    
+    Include the bat + instructions on how to associate Leo files for
+    double-click oppening in windows.
+.. @+node:ekr.20131001045038.19033: *4* Home page re postcard
+Ask where you learned about Leo, how you use Leo, and any suggestions for
+explaining Leo to newbies.
+.. @+node:ekr.20131001045038.19046: *4* Protect Leo's wikipedia page
+​I need some help here:
+http://en.wikipedia.org/wiki/Leo_%28text_editor%29​
+
+QQQ
+
+The topic of this article may not meet Wikipedia's general notability
+guideline. Please help to establish notability by adding reliable,
+secondary sources about the topic. If notability cannot be established, the
+article is likely to be merged, redirected, or deleted.
+
+A major contributor to this article appears to have a close connection with
+its subject. It may require cleanup to comply with Wikipedia's content
+policies, particularly neutral point of view. Please discuss further on the
+talk page. (August 2013)
+
+QQQ
+.. @+node:ekr.20131001045038.19047: *4* * Important: debian distro for Leo
+.. @+node:ekr.20131001045038.19027: *4* Quotes from "Why Leo isn't more popular"
+@language rest
+.. @+node:ekr.20131001045038.19028: *5* Fidel
+When I say Learn Leo, I don't mean Learn or understand the code, I mean
+learn what you can do with it.
+
+My true feeling is that Leo is like an infinite ground, where amazing
+things can be built. Some of Leo users are already doing incredible things
+with it. But when you are new to Leo, you first have to learn the physics
+of this new world (Leo Code), and then develop your own engineering (Useful
+outlines structures) for building your "information cities"...
+
+Possibly, experienced leo users dont share this view since they learned Leo
+physics and engineering long time ago, but those look like a big wall when
+starting with Leo.
+
+So Leo files with samples would be like delivering this infinite ground
+with some pre-built "information cities" so people can begin using them
+right away. Ideally, those leo files should guide the user on how to build
+new structures, and in the end, be able to lead him to generate new
+structures.
+
+My (again, personal) feeling is that the current policy right now is: Let
+him read the code to understand how it works. So only the users willing to
+go through the (1) Learn the physics then (2) develop your own way to
+develop "information cities" can actually use leo and use its potential.
+
+Since most of the internet users are the ones who need the cities already
+built for them to use software, thats the chunk we are loosing.
+
+On the other hand, coming to why programmers (who have the skills to go
+through Leo learning process) dont come and use it, its the same story:
+
+Before coming into Leo, what I was doing was actually search for an IDE
+that I liked. I went through several, and in the ones I "liked" the most,
+it would take you around two hours learning for having a folder with your
+scripts and being able to edit them. With Leo, you first have to study and
+understand what are directives, how do they work, how everything interacts
+in the tree, etc. It takes more than two hours. I would say that it can be
+measured in weeks or months until you really know what you are doing.
+
+And here is where the "information cities" come again. If Leo were provided
+with an interactive Leo file, which would guide you into: - Importing your
+scripts to Leo - Clearly create folders and move/manage your files there -
+Suggest directives for those files. - Etc.
+
+That Leo file would save the new user many many hours and he would
+instantly start using leo, so we would help him skip the first wall and
+begin to get interested.
+
+So then again, this is why I still see that Leo default workbook should be
+dispatched with a Leo cheatsheet open by default, so new users begin to
+play with it as soon as they open Leo.
+.. @+node:ekr.20131001045038.19029: *5* Jacob Peck
+Leo represents a completely new paradigm for editing, programming, and
+interacting with data. Well, not completely new, but for many the surface
+level seems extremely foreign.
+
+Leo is primarily a tool aimed at python...the paradigm it exposes to the
+user is far more like Lisp (homoiconicity via the Node and Tree structure)
+and Smalltalk (.leo files save *most* of your programming environment's
+state, including data). This is a huge cognitive leap for people only
+accustomed to more imperative languages like Python...Leo asks a lot of
+
+-----
+
+​The PIM aspect was what initially led me to Leo. Wikipedia pointed me in
+Leo's direction while searching for some good open-source PIM tools. I
+tried Chandler but it didn't do what I wanted. Leo did.
+
+.. @+node:ekr.20131001045038.19030: *5* Kent
+Re: the original question "Why isn't Leo more popular" I can ask myself
+"Why don't I adopt tools which promise a better way to work?" I do a lot of
+grazing, and encounter very many such tools.
+
+A tool which does everything doesn't grab me, I don't need to do
+everything. A tool which, in it's few moments of my attention, describes a
+better way to do something I need, gets additional moments. If the tool
+salesperson mentions a task I encounter and a better way to do it, with a
+learning curve which justifies the benefit ... I will settle in for a
+while.
+
+Easier, more powerful boilerplates / templates / completion is the kind of
+bait I'll bite on, there's potential for decent return on investment.
+.. @+node:ekr.20131001045038.19031: *5* Fidel
+With "bread crumbs" I refer to...the interactive tutorial creator I have
+talked so much about. My aim with this tool is that anything you do,
+instantly becomes a tutorial, that can be done again and played forward and
+backwards. Basically, your actions become an outline, and other users can
+"play them" again. This should mean that making a tutorial will take as
+much time as it takes for you to perform the action originally.
+.. @+node:ekr.20131001045038.19032: *5* dufriz
+As a newbie, I agree. At least, that is the perception, which is
+discouraging. I believe it also has to do with the lack of learning
+material. The only manual is not very newbie-friendly. It contains a lot of
+cross-references to advanced internal commands (@xyz stuff) which put off
+newcomers, especially where they are thrown in altogether and may look
+scary.
+
+Currently the learning curve does nor _appear_ to be gentle at all. But it
+does not necessarily have to be like this. Even if Leo is indeed very
+complex and very advanced, I am sure that at least a subset of Leo
+functionality can be selected and presented in a nicer way, to attract more
+users and help newbies.
+
+Why can't we have some more accessible tutorial, with gentle, self
+contained lessons (maybe webcasts, or slides, or simple HTML pages) which
+_focus on the basic functionality_? Or perhaps, a two-tiered series of such
+lessons, i.e. basic and advanced levels. I think this would be very
+helpful.
+
+-----
+
+Another point: Leo is commonly advertised as a programming editor, but it
+should be made more clear that it is more than that.
+
+I believe you would attract more users if you also mentioned its usefulness
+for general-purpose editing and PIM functionality. Of course, that may be
+implicit, but I think you should be putting some more emphasis on this
+aspect.
+
+----- 
+
+For me, the trajectory was KeyNote --> MyBase --> NotecasePro/RightNote -->
+Leo (!!)
+
+Leo is the best, because it is fully customizable, and gives you seemingly
+infinite power. Only, it takes a lot to learn how to use that power.
+.. @+node:ekr.20131001045038.19034: *5* dufriz
+Consider that Leo is actively developed, and has a responsive community.
+When I requested the support for Rich Text, a couple of months ago, it was
+promptly implemented in a matter of days.
+
+As for the power, of course Leo can do whatever other PIMs can do, because
+it is extensible by Python. The question is whether enough people are
+interested in Leo as a PIM, so as to have enough user contributions. I am
+still at the beginning, so I have no idea how difficult it may be,
+technically, to impement all the PIM features that we need. But if we
+succeed in getting enough people interested, I am sure that nothing is
+beyond our reach.
+
+As far as PIM features go the next step, I believe, is implementing a good
+tagging system.
+.. @+node:ekr.20131001045038.19035: *5* Terry
+I think a lot of the problem is defining what Leo is. In some ways I think
+it's Python's Squeak (Squeak http://www.squeak.org/Screenshots/ being a
+SmallTalk environment where everything's an object).
+
+If all you want is an off the shelf turn key text editor with perhaps
+completion and syntax highlighting as its most advanced features, then
+there are several out there that are probably going to appeal more than
+Leo.
+
+If you're looking for an off the shelf turn key outliner, without the
+intent to use scripts etc., then again there are lots of alternatives, some
+of which probably seem more intuitive / simpler / even more feature rich
+than Leo. (The feature rich part is probably misleading, but they may seem
+that way initially).
+
+If your looking for an *environment* which includes a good editor and
+outliner and is completely scriptable / interactive / "live-code" in
+Python, then Leo wins hands down. Of course, it's basically alone in this
+field, as far as I know, but I'm sure it would do well even if it
+wasn't...I guess Emacs is sort of an environment like this, only in Lisp
+with a prehistoric GUI system.
+
+Sometimes I've wondered why Leo seems to appeal to people who aren't
+comfortable in Python, I think now it's because they still recognize the
+value of an *environment*, and there's just not much in this niche. So to
+me it's more why don't more people want an environment like this...
+
+My feeling, talking generally and not about Leo in particular, is that
+while not everyone needs to be a "programmer", everyone who uses computers
+would benefit from being able to interact with them with more of the
+flexibility and efficiency that comes with even relatively simple
+"scripting", and less of the limitations that come with the "buy our latest
+product and you'll be able to do anything you want with a click" view
+pushed by other suppliers of computing environments.
+.. @+node:ekr.20131001045038.19036: *5* Miles Fidelman (improve wiki)
+In that regard, Leo is barely mentioned on WikiPedia - it has a simple
+descriptive page, but on the list of text editors it's listed, but there's
+no information about o/s support or features.
+
+For marketing, packaging, features, documentation, tutorials,
+extensions,... - do a side by side comparison of Vim and Leo - and the
+answer(s) to "why leo isn't more popular" leap out at you.
+.. @+node:ekr.20131001045038.19038: *5* Chris George
+I came to Leo because it is the only outliner for Linux that supports
+cloning that doesn't require an internet connection.
+
+I am struggling to implement it into my workflow though, simply because I
+do not have time to figure out the simplest things. (full time university
+student) Right now I simply do not have the 200 minutes available to figure
+this out. Yet I can see that if I took the time to do my own setup it would
+save me far more time in the future. Leo would be a wonderful platform for
+writing anything, but especially for fiction. If there was a tutorial on
+setting up Leo to do the following, I know there would be immediate
+interest from people who write on Linux as there simply is not an outliner
+that meets the needs of the average writer.
+
+I need basic text formatting at the standard hot key level. ie. Ctrl-B for
+bold, Ctrl-I for italic etc. while in the edit window. I know this can be
+done, I almost had it working once but then got busy and by the time I came
+back it had escaped me how I had done it. I don't need buttons, I don't
+need WSIWYG, RST markup works fine as it gives me lots of output options. I
+just need the ability to put my head down and write, using the shortcuts
+that are baked into my fingertips at this point, and not having to relearn
+those keys. Support for standard word-processing keys are important for
+writers. :-)
+
+I think that by creating tutorials that address the basics for different
+groups of users who are not programmers, Leo could be an extremely popular
+program. I would be willing to contribute to such an effort for writers if
+I can get a workflow setup that makes sense for me. My current editor of
+choice is Scrivener for Windows run using Crossover. No cloning. :-(
+
+Leo is far too complex for the average person who simply wants to
+accomplish a task. Simplifying things for specific classes of users would
+open Leo up to many more people who share those requirements and may be
+interested in learning the rest of the power of Leo as their use of it
+increases. Give people a foot in the door and they will figure out how to
+open it the rest of the way as needed.
+.. @+node:ekr.20131001045038.19039: *5* Chris George
+i.e. RST markup for "bold".  Is that the goal?
+
+Cheers -Terry
+
+Almost. That plus the ability to be writing along and hit
+Ctrl-b s u d d e n l y Ctrl-b and continue on.
+
+I had Leo working to the extent that I could type suddenly Ctrl-Alt-b and
+have it retroactively add the markup but it was simply too much of a leap
+to change my work habits. Body memory takes years to develop and is not
+trivial to attempt to change.
+
+A set of keybindings that mimic the standard word processing key bindings
+that then markup the text using RST or Markdown would be a huge step
+forward for me in using Leo. Right now I try to find time to fiddle and
+play with it, but that has been going on for almost two years now and I
+have yet to commit to any serious work in Leo.
+
+===== Terry
+
+Which boils down to Ctrl-b inserting '*' if there's no selection?
+
+I guess it does.
+
+It may seem silly, as I could just type the *, but Shift-8 isn't baked into
+muscle memory, Ctrl-b is.
+
+It boils down to being able to replicate those standard word processing
+shortcuts in the edit pane and having them not conflict with other key
+combos in Leo. Abstracting it to other markup languages would be cool as
+well, some people like RST, some people like Markdown. Everyone can use
+Ctrl-b.
+
+Ckeditor looks interesting, but it isn't the buttons that matter. I rarely
+use the mouse for marking up text.
+
+==== Terry
+
+Quick stab at
+https://github.com/leo-editor/snippets/blob/master/ctrl_b_i_u.py
+not very tested.
+
+.. @+node:ekr.20131001045038.19040: *5* Terry's new code
+In you myLeoSettings.leo file, under @settings-->@keys-->@shortcuts,
+add the shrotcuts (in the body text of the '@shortcuts' node:
+
+markup_inline_bold ! body = Ctrl-B
+markup_inline_italic ! body = Ctrl-I
+markup_inline_underline ! body = Ctrl-U
+
+restart Leo
+
+Put the downloaded code in a node, and run it... normally you'd do that
+by hitting Ctrl-B, but we just redefined that :-)  So use alt-x
+execute-script instead.
+
+Now in the body you should be able to get
+
+**bold** *italic* :ul:`underline`
+
+with the expected keys.  It should be fairly predictable when there's a
+selection active.  When there isn't, it just opens or closes the markup
+type depending on whether the last action was an open or close, so I
+guess nesting would be problem, but rst doesn't understand nesting
+inline markup anyway.
+
+The difference between open and close only applies to underline, where
+the beginning and end delimiters are different - more a demo than
+anything.
+
+To make the code active without the execute-script step it could be
+placed in a node which starts with @script, although you need
+@bool scripting-at-script-nodes = True
+under your @settings node then.
+
+Ideally it would be in a plugin (although it seems heavy to put
+essentially one function in a plugin) or core, so it didn't need its
+own node in the target outline or @settings.
+.. @+node:ekr.20131001045038.19041: *5* Chris George
+I would like to start putting together everything that it would take to
+make Leo the default choice for writers on Linux. If it works for me, it'll
+work for many others.
+.. @+node:ekr.20131001045038.19042: *5* Terry's new markup_inline plugin
+> How difficult would a plugin be?
+
+Easy enough I guess, included in revision 6083, just pushed.
+
+In myLeoSettings.leo, under @settings-->@keys-->@shortcuts::
+
+    markup-inline-bold ! body = Ctrl-B
+    markup-inline-italic ! body = Ctrl-I
+    markup-inline-underline ! body = Ctrl-U
+
+  - Use Help -> leoSettings.leo to open leoSettings.leo, and copy
+    the @enabled-plugins node
+    
+  - paste this node into your myLeoSettings.leo as a child of the
+    @settings node
+    
+  - just before the line in @enabled-plugins where it says
+    "# Alphabetical list of all Leo plugins" add a line:
+
+    markup_inline.py
+.. @+node:ekr.20131001045038.19043: *5* Ludwig Schwardt: MacOS brew instructions
+Miles's comments inspired me to do something about the Homebrew version of
+Leo. Instead of following a long-winded and increasingly out-of-date set of
+installation instructions you will soon be able to go (if all goes well!):
+
+brew install leo
+
+I've created a rough formula for Leo and uploaded it to my Homebrew tap. To
+try it out, do the following:
+
+- Get Homebrew from http://brew.sh/, following their instructions on how to
+install it
+
+- Pay special attention to Python - if you have already installed a bunch
+of Python stuff, it's best to keep using the existing Python. Otherwise, if
+this is your first Python experience it is safe to install the Homebrew
+Python (which will make your life easier) via
+
+  brew install python
+
+  (If all your existing Python tools suddenly disappear, go 'brew remove
+  python' to restore order :-))
+
+- Get my formulas:
+
+  brew tap ska-sa/tap
+
+- Et voila:
+
+  brew install leo
+
+- If you kept your old Python, follow the instruction in the caveat printed
+at the end of:
+
+  brew info leo
+
+  (I.e. add the suggested line to your ~/.bash_profile file if you are not
+  using Homebrew Python)
+
+The formula has three versions:
+
+  brew install leo => installs the latest stable release (4.10)
+  brew install --devel leo => installs latest alpha (4.11-a2)
+  brew install --HEAD leo => installs the bleeding-edge bzr version from Launchpad
+
+It also installs PyEnchant by default (which can be disabled).
+
+I would love some testing of the installation before I submit it to the
+main Homebrew repository (if you guys think the formula is a good idea). I
+don't use Leo myself and have only done some cursory poking around.
+
+Miles's point about using a Ruby-based installer to install a Python
+package also rings true (although this is becoming more popular these days
+on the Mac given how awesome Homebrew is for dependencies and Python
+extensions, and this is not any stranger than the C-based "apt-get install
+leo").
+
+I would expect to install a Python package such as Leo using "pip install
+leo" or "easy_install leo". The main problem has always been that Leo has a
+non-standard package layout.
+
+I (only now!) see that Ville, Matt and others have created a setup.py and
+leo even exists on PyPI so that these installation commands actually do
+something. Unfortunately, for me "pip install leo" results in a Leo that
+throws an AssertionError upon running. What is the status of this
+installation route? (It is not even mentioned on the installation page!)
+Also, "leo 4.10-final" on PyPI actually installs "4.11-devel"...
+.. @+node:ekr.20131001045038.19044: *5* EKR
+> My (again, personal) feeling is that the current policy right now is: Let
+him read the code to understand how it works. So only the users willing to
+go through the (1) Learn the physics then (2) develop your own way to
+develop "information cities" can actually use leo and use its potential.
+
+​I've spent a lot of time on tutorials, slideshows, etc. However, in light
+of your first sentence quoted above, it does seem like I have neglected to
+show what people can really do with Leo, at least in the tutorial docs. ​
+ 
+> With Leo, you first have to study and understand what are directives, how
+do they work, how everything interacts in the tree, etc. It takes more than
+two hours. I would say that it can be measured in weeks or months until you
+really know what you are doing.
+
+Maybe, but there is a tantalizing possibility. ​I prototyped Leo in about
+two hours, using the MORE outliner as a prototype, and inventing @others in
+the process. (I was already deeply involved with sections and section
+references.)
+
+So for *me*, the Leo aha was almost instantaneous, once I had an outliner
+to prototype my thoughts. Since then, things have become more "voluminous",
+yet Leo's DOM is so much simpler and more powerful than it was in the early
+days. Do these improvement make Leo *more* difficult to learn? It's hard to
+believe so, but then nobody is closer to Leo than I.
+
+> And here is where the "information cities" come again. If Leo were
+provided with an interactive Leo file, which would guide you ​...
+
+​The idea of putting a cheat sheet into the default workbook.leo is a great
+one. There will be a default_workbook.leo in leo/docs, and the code that
+creates ~/workbook.leo will make a copy of the default file. This will
+allow continuous improvement on default_workbook.leo.
+.. @+node:ekr.20131001045038.19045: *5* EKR
+> For marketing, packaging, features, documentation, tutorials,
+extensions,... - do a side by side comparison of Vim and Leo - and the
+answer(s) to "why leo isn't more popular" leap out at you.
+
+
+​The answer is not so clear cut.​ Consider the first item returned by
+Google for the search "emacs tutorial":
+http://www2.lib.uchicago.edu/keith/tcl-course/emacs-tutorial.html
+
+This is hardly a breathtaking introduction to emacs. It would not *by
+itself* convert people to emacs. It doesn't even highlight what I consider
+the most important Aha about emacs, namely that you don't have to remember
+(or type) commands with long names!
+
+No, the reason emacs is popular is that it continues to be taught as *the*
+programming editor to generations of computer-programming students. The
+students learn *from each other*, using a tedious "tutorial" as a
+reference. They learn from looking over each other's shoulders.
+
+Leo would be just as popular, imo, if thousands of college students learned
+Leo from each other. This does not excuse lack of further work on Leo
+tutorials, but this *is* the essence of the situation.
 .. @+node:ekr.20130926053913.11573: *3* for b2/final (7)
 .. @+node:ekr.20130806072439.20477: *4* Fix full-screen bug
 I can't make Leo-Editor start in a full-screen window under openSUSU 12.1
