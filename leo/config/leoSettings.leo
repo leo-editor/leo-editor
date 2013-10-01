@@ -1431,9 +1431,6 @@
 <v t="ekr.20100907092300.6958"><vh>@string inkscape-template = ../docs/inkscape-template.svg</vh></v>
 <v t="ekr.20100907092300.6959"><vh>@string inkscape-bin = "c:\Program Files (x86)\Inkscape\inkscape.exe"</vh></v>
 </v>
-<v t="vivainio.20080307190927"><vh>IPython</vh>
-<v t="vivainio.20080307185812"><vh>@string ipython_argv = ipython -p sh</vh></v>
-</v>
 <v t="ekr.20111003085631.15488"><vh>mod_http plugin</vh>
 <v t="ekr.20111003085631.15489"><vh>@bool http_active = True</vh></v>
 <v t="ekr.20111003085631.15490"><vh>@int http_port = 8130</vh></v>
@@ -12656,7 +12653,5 @@ print(expand_css_constants(p.b))</t>
 <t tx="vitalije.20100306144625.8944"></t>
 <t tx="vitalije.20100306144625.8945"></t>
 <t tx="vitalije.20100306144625.8946"># Time between saves in seconds</t>
-<t tx="vivainio.20080307185812"></t>
-<t tx="vivainio.20080307190927"></t>
 </tnodes>
 </leo_file>

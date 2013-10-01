@@ -18,44 +18,12 @@
 
 .. @+all
 .. @+node:ekr.20080203101507.1: ** @rst html\IPythonBridge.html
-###############
-IPython and Leo
-###############
-
-.. _`run Leo in a console window`: installing.html#running-leo-from-a-console-window
-
-Leo's --ipython command-line option enables two-way communication (the
-**IPython bridge**) between Leo and IPython: you can run Leo scripts from
-IPython, and IPython scripts from Leo. Leo and IPython run simultaneously
-and independently. Their separate event loops do not interfere with each
-other. With the IPython bridge enabled, Leo becomes another kind of
-`IPython Notebook`_.
-
-To enable the IPython bridge, you `run Leo in a console window`_ with the
---ipython command-line option enabled. This option starts an instance of the
-IPython shell. When the Leo bridge is active:
-
-1. **You can run any IPython script from Leo**.
-
-The ipython-exec command executes the body text of the presently selected
-Leo node in the address space of the IPython shell(!) g.app.ipk.namespace
-is IPython's namespace, Leo scripts to do *anything* that an IPython script
-can do. Leo scripts *immediately* affect the IPython interpreter.
-
-2. **You can run any Leo script from IPython**.
-
-IPython scripts may access Leo's c and g objects as follows::
-
-    c,g = _leo.c, _leo.g
-
-This allows IPython scripts to do *anything* that a Leo script can do.
-Scripts run from IPython *immediately* change Leo, *exactly* as if the
-script were run from Leo.
+##########################
+ILeo: Leo's IPython Bridge
+##########################
 
 .. contents::
     :depth: 2
-
-
 .. @+node:ekr.20080203101507.2: *3* @rst-no-head links
 .. Links
 
@@ -68,79 +36,76 @@ script were run from Leo.
 
 .. _`run Leo in a console window`:  installing.html#running-leo-from-a-console-window
 .. _`console window`:               installing.html#running-leo-from-a-console-window
-.. @+node:vivainio.20080302174639.1: *3* Introduction
-ILeo, or leo-ipython bridge, creates a two-way communication channel
-between Leo and IPython. The level of integration is much deeper than
-conventional integration in IDEs; most notably, you are able to store and
-manipulate **data** in Leo nodes, in addition to mere program code -
-essentially making ILeo a hierarchical spreadsheet, albeit with non-grid
-view of the data. The possibilities of this are endless, and the approach
-can be applied in wide range of problem domains with very little actual
-coding.
 
-IPython users are accustomed to using things like %edit to produce non-trivial
-functions/classes (i.e. something that they don't want to enter directly on the
-interactive prompt, but creating a proper script/module involves too much
-overhead). In ILeo, this task consists just going to the Leo window, creating a node
-and writing the code there, and pressing alt+I (ipython-exec).
+.. @+node:vivainio.20080302174639.1: *3* Overview
+Leo's --ipython command-line option enables two-way communication
+(**ILeo**, the **IPython bridge**) between Leo and IPython: you can run Leo
+scripts from IPython, and IPython scripts from Leo.
 
-Obviously, you can save the Leo document as usual; a great advantage of
-ILeo over using %edit, you can save your experimental scripts all at one
-time, without having to organize them into script/module files (before you
-really want to, of course!)
-.. @+node:vivainio.20080302174639.2: *3* Installation and startup
-You need at least Leo 4.11, and IPython 0.8.3 or above.
+The level of integration is much deeper than conventional integration in
+IDEs. Most notably, you are able to store and manipulate *data* in Leo
+nodes, in addition to mere program code--essentially making ILeo a
+hierarchical spreadsheet, albeit with non-grid view of the data. The
+possibilities of this are endless, and the approach can be applied in wide
+range of problem domains with very little actual coding.
+.. @+node:vivainio.20080302174639.2: *3* Starting ILeo
+To run Leo's IPython bridge:
 
-To activate the IPython bridge, simply add the --ipython option to the command line.
-This will start IPython in the console from which you started Leo.
+1. Install IPython 0.8.3 or above.
 
-..  If you want to specify command line arguments to IPython (e.g. to choose a
-..  profile, or to start in 'pylab' mode), add this to your @settings:
-..  '@string ipython_argv = ipython -pylab' (where -pylab is the command line argument)
-.. @+node:vivainio.20080302174639.3: *3* @rst-ignore Accessing IPython from Leo
-IPython code
-------------
+2. `run Leo in a console window`_ with the --ipython command-line option
+   enabled. This option starts an instance of the IPython shell in the
+   console. Leo and IPython run simultaneously and independently. Their
+   separate event loops do not interfere with each other.
+.. @+node:ekr.20131001045038.18981: *3* Running Leo scripts from IPython
+*You can run any Leo script from IPython*. The IPython bridge injects an
+object called _leo into IPython's namespace. IPython scripts may access
+Leo's c and g objects as follows::
 
-Just enter IPython commands on a Leo node, then press alt-I to execute the
-ipython-exec command. 'commands' is interpreted loosely here - you can
-enter function and class definitions, in addition to the things you would
-usually enter at IPython prompt - calculations, system commands etc.
-Everything that would be legal to enter on IPython prompt is legal to
-execute from ILeo.
+    c,g = _leo.c, _leo.g
 
+This allows IPython scripts to do *anything* that a Leo script can do.
+Scripts run from IPython *immediately* change Leo, *exactly* as if the
+script were run from Leo.
 
-Suppose that a node had the following contents::
+**Important**: the _leo object is an instance of LeoNameSpace class,
+defined in leo.core.leoIPython.py. This class allows IPython scripts to
+access multiple Leo outlines at once. See the actual code for details.
+.. @+node:ekr.20131001045038.18980: *3* Running IPython scripts from Leo
+*You can run any IPython script from Leo*. Leo's ipython-exec (Alt-I)
+command executes the body text of the presently selected Leo node in the
+address space of the IPython shell. Such scripts *immediately* affect the
+IPython interpreter.
 
-    1+2
-    print("hello")
-    3+4
-    def f(x):
-        return x.upper()
-    f('hello world')
+The IPython bridge sets several global variables *within Leo*, allowing Leo
+scripts *complete* access to all of IPython's code and data:
 
-If you press alt+I on that node, you will see the following in Leo log window (IPython tab)::
+- g.app.ipk.namespace is IPython's namespace.
+- g.app.ipk.ipkernel is an IPython IPKernelApp object.
+- g.app.ipk.ipkernel.shell is an IPython InteractiveShell object.
+.. @+node:ekr.20131001045038.18979: *3* ILeo as an IPython notebook
+The IPython bridge turns Leo into another kind of `IPython Notebook`_.
+IPython users typically use %edit to produce non-trivial functions/classes
+instead of entering them directly on the interactive prompt. But this is a
+bit clumsy. With Leo, *every Leo node works like an IPython %edit file*:
 
-    In: 1+2
-    <2> 3
-    In: 3+4
-    <4> 7
-    In: f('hello world')
-    <6> 'HELLO WORLD'
+- You can execute any Leo node in IPython with <Alt-I> (ipython-exec)
+- Saving your Leo outline saves all your IPython scripts.
+- You can use Leo as always to organize all your IPython scripts.
+.. @+node:ekr.20131001045038.17448: *3* Acknowledgements and history
+This idea got started when I (Ville M. Vainio) saw this post by Edward Ream
+on IPython developer mailing list:
+http://lists.ipython.scipy.org/pipermail/ipython-dev/2008-January/003551.html
 
-(numbers like <6> mean IPython output history indices; the actual object can be
-referenced with _6 as usual in IPython).
+I was using FreeMind as mind mapping software, and so I had an immediate
+use case for Leo (which, incidentally, is superior to FreeMind as mind
+mapper). The wheels started rolling, I got obsessed with the power of this
+concept (everything clicked together), and Edwards excitement paralleled
+mine. Everything was mind-bogglingly easy/trivial, something that is
+typical of all promising technologies.
 
-
-Plain Python code
------------------
-
-If the headline of the node ends with capital P, alt-I will not run the code
-through IPython translation mechanism but use the direct python 'exec' statement
-(in IPython user namespace) to execute the code. It wont be shown in IPython
-history, and sometimes it is safer (and more efficient) to execute things as
-plain Python statements. Large class definitions are good candidates for P
-nodes.
-.. @+node:ekr.20080210101336: *3* Acknowledgements
-This plugin would not have been possible without the help of Ville M. Vainio.
+The goal of close cooperation between Leo and IPython went from vague dream
+to completed reality over the span of about 10 days. The IPython bridge has
+continued to evolve since then.
 .. @-all
 .. @-leo
