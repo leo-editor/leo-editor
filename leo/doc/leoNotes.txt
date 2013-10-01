@@ -10285,5 +10285,36 @@ def lshadow_f(self, arg):
         c.setCurrentPosition(p)
         shadow_walk(arg)
         c.redraw()
+.. @+node:edward.20130930180239.10568: *3* push_ipython_script (new)
+def push_ipython_script(self,c,code,script):
+    """ Execute the node body in IPython,
+    as if it was entered in interactive prompt """
+    # This really doesn't do much more than shell.run_code(code)
+    trace = True
+    def es(s):
+        g.es(s,tabName='IPython')
+    ipk = g.app.ipk
+    ns = ipk.namespace
+    ipkernel = ipk.ipkernel # IPKernelApp
+    shell = ipkernel.shell # ZMQInteractiveShell
+    m = shell.history_manager
+    hstart = 0
+    ihist = m.input_hist_parsed
+    ohist = m.output_hist
+    if trace:
+        g.trace('ihist',ihist)
+        g.trace('ohist',ohist)
+    shell.run_code(code)
+    has_output = False
+    for i in range(hstart,len(ihist)):
+        val = ohist.get(i,None)
+        if val is not None:
+            has_output = True
+            inp = ihist[i]
+            if inp.strip():
+                es('In: %s' % (inp[:40], ))
+            es('<%d> %s' % (i,pprint.pformat(ohist[i],width=40)))
+    if trace and not has_output:
+        es('ipy run: %s (%d LL)' %(c.p.h,len(script)))
 .. @-all
 .. @-leo

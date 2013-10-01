@@ -7411,6 +7411,7 @@ class leoQtGui(leoGui.leoGui):
         try:
             g.app.ipk = ipk = leoIPython.InternalIPKernel()
             ipk.new_qt_console(event=None)
+                # ipk.ipkernel is an IPKernelApp.
         except Exception:
             g.es_exception()
             print('can not init leo.core.leoIPython.py')
@@ -7435,15 +7436,23 @@ class leoQtGui(leoGui.leoGui):
         
         '''
         c = event and event.get('c')
-        ns = g.app.ipk.namespace
+        ipk = g.app.ipk
+        ns = ipk.namespace # The actual IPython namespace.
+        ipkernel = ipk.ipkernel # IPKernelApp
+        shell = ipkernel.shell # ZMQInteractiveShell
         if c and ns is not None:
-            script = g.getScript(c,c.p)
             try:
-                exec(script,ns)
-            except:
+                script = g.getScript(c,c.p)
+                if 1:
+                    code = compile(script,c.p.h,'exec')
+                    shell.run_code(code) # Run using IPython.
+                else:
+                    exec(script,ns) # Run in Leo in the IPython namespace.
+            except Exception:
                 g.es_exception()
-        else:
-            g.trace('no c')
+            finally:
+                sys.stdout.flush()
+                # sys.stderr.flush()
     #@+node:ekr.20110605121601.18484: *5* destroySelf (qtGui)
     def destroySelf (self):
         QtCore.pyqtRemoveInputHook()

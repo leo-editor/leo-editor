@@ -183,5 +183,29 @@ class LeoNameSpace(object):
         self.commanders_list = [frame.c for frame in g.app.windowList]
     #@-others
     
+#@+node:ekr.20130930062914.16010: ** exec_helper
+def exec_helper(self,event):
+    '''This helper is required because an unqualified "exec"
+    may not appear in a nested function.
+    
+    '''
+    c = event and event.get('c')
+    ipk = g.app.ipk
+    ns = ipk.namespace # The actual IPython namespace.
+    ipkernel = ipk.ipkernel # IPKernelApp
+    shell = ipkernel.shell # ZMQInteractiveShell
+    if c and ns is not None:
+        try:
+            script = g.getScript(c,c.p)
+            if 1:
+                code = compile(script,c.p.h,'exec')
+                shell.run_code(code) # Run using IPython.
+            else:
+                exec(script,ns) # Run in Leo in the IPython namespace.
+        except Exception:
+            g.es_exception()
+        finally:
+            sys.stdout.flush()
+            # sys.stderr.flush()
 #@-others
 #@-leo
