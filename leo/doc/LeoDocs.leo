@@ -141,7 +141,8 @@
 <v t="ekr.20100805165051.7168"><vh>@file emacs.txt</vh></v>
 </v>
 <v t="ekr.20080203101507"><vh>ILeo - the IPython bridge</vh>
-<v t="ekr.20100805165051.7171"><vh>@file IpythonBridge.txt</vh></v>
+<v t="ekr.20100805165051.7171"
+expanded="ekr.20080203101507.1,"><vh>@file IpythonBridge.txt</vh></v>
 </v>
 <v t="ekr.20070317033759"><vh>Embedding Leo with the leoBridge module</vh>
 <v t="ekr.20100805165051.7169"><vh>@file leoBridge.txt</vh></v>
@@ -435,7 +436,8 @@
 <v t="ekr.20130928065624.16027"><vh>** EKR post 2: how to use the new code</vh></v>
 <v t="ekr.20130928065624.16028"><vh>Windows installation</vh></v>
 </v>
-<v t="ekr.20100805165051.7171"></v>
+<v t="ekr.20100805165051.7171"
+expanded="ekr.20080203101507.1,"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>

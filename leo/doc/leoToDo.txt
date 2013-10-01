@@ -6,7 +6,7 @@
 .. @+node:ekr.20130926053913.11569: ** ** (fun) leoRope.py
 .. @+node:ekr.20130916105324.19893: ** To-do for 4.11
 @language rest
-.. @+node:ekr.20130926053913.11572: *3* for b1 (2)
+.. @+node:ekr.20130926053913.11572: *3* for b1
 @language rest
 .. @+node:ekr.20130908104426.11258: *4* 1180186 debian install not documented well enough
 https://bugs.launchpad.net/leo-editor/+bug/1180186
@@ -38,6 +38,7 @@ warning,
 https://groups.google.com/d/topic/leo-editor-users/y6ZwJR3accs/discussion
 .. @+node:ekr.20130926053913.11565: *4* Highlight abbreviations and auto-completion
 Their own chapter, or prominent new sections.
+.. @+node:ekr.20130930142522.11348: *4* Does valuespace still work with IPython??
 .. @+node:ekr.20130926053913.11573: *3* for b2/final (7)
 .. @+node:ekr.20130806072439.20477: *4* Fix full-screen bug
 I can't make Leo-Editor start in a full-screen window under openSUSU 12.1
