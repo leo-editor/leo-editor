@@ -272,6 +272,7 @@ if g.app.gui.guiName() == "qt":
             m = menu.addMenu("Priority")
             m.addAction('Priority Sort', o.priSort)
             m.addAction('Due Date Sort', o.dueSort)
+            m.addAction('Next Work Date Sort', lambda: o.dueSort(field='nextwork'))
             m.addAction('Clear Descendant Due Dates', o.dueClear)
             m.addAction('Mark children todo', o.childrenTodo)
             m.addAction('Show distribution', o.showDist)
@@ -999,20 +1000,20 @@ class todoController:
 
         return pa if pa != 24 else 0
     #@+node:tbrown.20110213153425.16373: *4* duekey
-    def duekey(self, v):
+    def duekey(self, v, field='due'):
         """key function for sorting by due date/time"""
 
-        date_ = self.getat(v, 'duedate') or datetime.date(3000,1,1)
-        time_ = self.getat(v, 'duetime') or datetime.time(23, 59, 59)
+        date_ = self.getat(v, field+'date') or datetime.date(3000,1,1)
+        time_ = self.getat(v, field+'time') or datetime.time(23, 59, 59)
             
         return date_, time_
     #@+node:tbrown.20110213153425.16377: *4* dueSort
     @redrawer
-    def dueSort(self, p=None):
+    def dueSort(self, p=None, field='due'):
         if p is None:
             p = self.c.currentPosition()
         self.c.selectPosition(p)
-        self.c.sortSiblings(key=self.duekey)
+        self.c.sortSiblings(key=lambda x: self.duekey(x, field=field))
     #@+node:tbrown.20090119215428.44: *4* priority_clear
     @redrawer
     def priority_clear(self,v=None):
