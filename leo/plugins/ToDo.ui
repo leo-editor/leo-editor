@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>393</width>
+    <width>483</width>
     <height>332</height>
    </rect>
   </property>
@@ -383,7 +383,8 @@
      <item row="2" column="9">
       <widget class="QPushButton" name="butPriClr">
        <property name="toolTip">
-        <string>Clear priority setting</string>
+        <string>Clear priority
+                                setting</string>
        </property>
        <property name="text">
         <string/>
@@ -403,7 +404,8 @@
      <item row="2" column="10">
       <widget class="QPushButton" name="butDetails">
        <property name="toolTip">
-        <string>Show / hide more interface</string>
+        <string>Show / hide more
+                                interface</string>
        </property>
        <property name="text">
         <string/>
@@ -462,7 +464,8 @@
            </font>
           </property>
           <property name="text">
-           <string>TextLabel</string>
+           <string>
+                                            TextLabel</string>
           </property>
           <property name="textFormat">
            <enum>Qt::PlainText</enum>
@@ -472,7 +475,8 @@
         <item>
          <widget class="QPushButton" name="butNextTodo">
           <property name="toolTip">
-           <string>Next TODO node</string>
+           <string>Next TODO
+                                            node</string>
           </property>
           <property name="text">
            <string/>
@@ -486,7 +490,8 @@
         <item>
          <widget class="QPushButton" name="butNext">
           <property name="toolTip">
-           <string>Next node</string>
+           <string>Next
+                                            node</string>
           </property>
           <property name="text">
            <string/>
@@ -503,9 +508,16 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>Due:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QTimeEdit" name="dueTimeEdit">
          <property name="enabled">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -525,7 +537,7 @@
        <item>
         <widget class="QDateEdit" name="dueDateEdit">
          <property name="enabled">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -554,8 +566,71 @@
          </property>
         </widget>
        </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
        <item>
-        <widget class="QComboBox" name="dueDateOffset">
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>Work:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QTimeEdit" name="nxtwkTimeEdit">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>4</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="nxtwkTimeToggle">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QDateEdit" name="nxtwkDateEdit">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>4</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="displayFormat">
+          <string>d MMM yy</string>
+         </property>
+         <property name="calendarPopup">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="nxtwkDateToggle">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="nxtwkDateOffset">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
            <horstretch>1</horstretch>
@@ -563,20 +638,23 @@
           </sizepolicy>
          </property>
          <property name="toolTip">
-          <string>+n -n days from now, or &lt;n &gt;n to subtract / add n days to existing date</string>
+          <string>+n -n days from now, or
+                                &lt;n &gt;n to subtract / add n
+                                days to existing date</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="butApplyOffset">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
          <property name="toolTip">
-          <string>Set Due Date to offset shown</string>
+          <string>Set Due Date to offset
+                                shown</string>
          </property>
          <property name="text">
           <string>=</string>
@@ -587,6 +665,13 @@
      </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Needs:</string>
+         </property>
+        </widget>
+       </item>
        <item>
         <widget class="QDoubleSpinBox" name="spinTime">
          <property name="sizePolicy">
@@ -602,7 +687,7 @@
           </size>
          </property>
          <property name="suffix">
-          <string> days</string>
+          <string>days</string>
          </property>
          <property name="decimals">
           <number>1</number>
@@ -627,7 +712,8 @@
           </sizepolicy>
          </property>
          <property name="toolTip">
-          <string>Clear time required</string>
+          <string>Clear time
+                                        required</string>
          </property>
          <property name="text">
           <string/>
@@ -641,6 +727,13 @@
            <width>16</width>
            <height>16</height>
           </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Done:</string>
          </property>
         </widget>
        </item>
@@ -687,7 +780,8 @@
           </sizepolicy>
          </property>
          <property name="toolTip">
-          <string>Clear progress</string>
+          <string>Clear
+                                        progress</string>
          </property>
          <property name="text">
           <string/>
@@ -706,66 +800,66 @@
        </item>
       </layout>
      </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <property name="sizeConstraint">
-      <enum>QLayout::SetMinimumSize</enum>
-     </property>
      <item>
-      <widget class="QPushButton" name="butMenu">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <property name="sizeConstraint">
+        <enum>QLayout::SetMinimumSize</enum>
        </property>
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>Menu</string>
-       </property>
-       <property name="flat">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="createdTxt">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="butHelp">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Help</string>
-       </property>
-       <property name="flat">
-        <bool>false</bool>
-       </property>
-      </widget>
+       <item>
+        <widget class="QPushButton" name="butMenu">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Menu</string>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="createdTxt">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="butHelp">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Help</string>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>

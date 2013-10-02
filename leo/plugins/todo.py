@@ -162,21 +162,25 @@ if g.app.gui.guiName() == "qt":
             self.connect(u.spinProg, QtCore.SIGNAL("valueChanged(int)"),
                 lambda v: o.set_progress(val=u.spinProg.value()))
 
-            # can't work out SIGNAL() names
             u.dueDateEdit.dateChanged.connect(
                 lambda v: o.set_due_date(val=u.dueDateEdit.date()))
             u.dueTimeEdit.timeChanged.connect(
                 lambda v: o.set_due_time(val=u.dueTimeEdit.time()))
 
+            u.nxtwkDateEdit.dateChanged.connect(
+                lambda v: o.set_due_date(val=u.nxtwkDateEdit.date(), field='nextworkdate'))
+            u.nxtwkTimeEdit.timeChanged.connect(
+                lambda v: o.set_due_time(val=u.nxtwkTimeEdit.time(), field='nextworktime'))
+
             u.dueDateToggle.stateChanged.connect(
                 lambda v: o.set_due_date(val=u.dueDateEdit.date(), mode='check'))
             u.dueTimeToggle.stateChanged.connect(
                 lambda v: o.set_due_time(val=u.dueTimeEdit.time(), mode='check'))
+            u.nxtwkDateToggle.stateChanged.connect(
+                lambda v: o.set_due_date(val=u.nxtwkDateEdit.date(), mode='check', field='nextworkdate'))
+            u.nxtwkTimeToggle.stateChanged.connect(
+                lambda v: o.set_due_time(val=u.nxtwkTimeEdit.time(), mode='check', field='nextworktime'))
                 
-            # FIXME - move to ui design
-            u.dueDateEdit.setEnabled(True)
-            u.dueTimeEdit.setEnabled(True)
-
             for but in ["butPri1", "butPri6", "butPriChk", "butPri2",
                 "butPri4", "butPri5", "butPri8", "butPri9", "butPri0",
                 "butPriToDo", "butPriXgry", "butPriBang", "butPriX",
@@ -203,10 +207,10 @@ if g.app.gui.guiName() == "qt":
                           '>7 <7 <14 >14 <28 >28'.split()
             self.date_offset_default = int(offsets[0].strip('>').replace('<', '-'))
             offsets = sorted(set(offsets), key=lambda x: (x[0],int(x[1:].strip('>').replace('<', '-'))))
-            u.dueDateOffset.addItems(offsets)
-            u.dueDateOffset.setCurrentIndex(self.date_offset_default)
-            self.connect(self.UI.dueDateOffset, QtCore.SIGNAL("activated(int)"),
-                lambda v: o.set_due_date_offset())
+            u.nxtwkDateOffset.addItems(offsets)
+            u.nxtwkDateOffset.setCurrentIndex(self.date_offset_default)
+            self.connect(self.UI.nxtwkDateOffset, QtCore.SIGNAL("activated(int)"),
+                lambda v: o.set_nxtwk_date_offset())
 
             self.setDueDate = self.make_func(self.UI.dueDateEdit,
                 self.UI.dueDateToggle, 'setDate',
@@ -214,6 +218,14 @@ if g.app.gui.guiName() == "qt":
                  
             self.setDueTime = self.make_func(self.UI.dueTimeEdit,
                 self.UI.dueTimeToggle, 'setTime',
+                datetime.datetime.now().time())
+                
+            self.setNextWorkDate = self.make_func(self.UI.nxtwkDateEdit,
+                self.UI.nxtwkDateToggle, 'setDate',
+                datetime.date.today() + datetime.timedelta(self.date_offset_default))
+                 
+            self.setNextWorkTime = self.make_func(self.UI.nxtwkTimeEdit,
+                self.UI.nxtwkTimeToggle, 'setTime',
                 datetime.datetime.now().time())
                 
             self.connect(self.UI.butDetails, QtCore.SIGNAL("clicked()"),
@@ -228,7 +240,7 @@ if g.app.gui.guiName() == "qt":
                 self.owner.find_todo)
                 
             self.connect(self.UI.butApplyOffset, QtCore.SIGNAL("clicked()"),
-                o.set_due_date_offset)
+                o.set_nxtwk_date_offset)
                 
         #@+node:ekr.20111118104929.10203: *3* make_func
         def make_func(self, edit, toggle, method, default):
@@ -275,33 +287,6 @@ if g.app.gui.guiName() == "qt":
             m.addAction('Delete Todo from node', o.clear_all)
             m.addAction('Delete Todo from subtree', lambda:o.clear_all(recurse=True))
             m.addAction('Delete Todo from all', lambda:o.clear_all(all=True))
-        #@+node:ekr.20111118104929.10209: *3* setDueDate
-        #X def setDueDate(self, date_):
-        #X     self.UI.dueDateEdit.blockSignals(True)
-        #X     self.UI.dueDateToggle.blockSignals(True)
-        #X     if date_:
-        #X         self.UI.dueDateEdit.setDate(date_)
-        #X         self.UI.dueDateEdit.setEnabled(True)
-        #X         self.UI.dueDateToggle.setChecked(Qt.Checked)
-        #X     else:
-        #X         self.UI.dueDateEdit.setDate(datetime.date.today() + 
-        #X             datetime.timedelta(7))
-        #X         self.UI.dueDateEdit.setEnabled(False)
-        #X         self.UI.dueDateToggle.setChecked(Qt.Unchecked)
-        #X     self.UI.dueDateEdit.blockSignals(False)
-        #X     self.UI.dueDateToggle.blockSignals(False)
-
-        #X    def setDueTime(self, time_):
-        #X     self.UI.dueTimeEdit.blockSignals(True)
-        #X     self.UI.dueTimeToggle.blockSignals(True)
-        #X     if time_:
-        #X         self.UI.dueTimeEdit.setTime(time_)
-        #X         self.UI.dueTimeToggle.setChecked(Qt.Checked)
-        #X     else:
-        #X         self.UI.dueTimeEdit.setTime(datetime.datetime.now().time())
-        #X         self.UI.dueTimeToggle.setChecked(Qt.Unchecked)
-        #X     self.UI.dueTimeEdit.blockSignals(False)
-        #X     self.UI.dueTimeToggle.blockSignals(False)
         #@+node:ekr.20111118104929.10207: *3* setProgress
         def setProgress(self, prgr):
             self.UI.spinProg.blockSignals(True)
@@ -538,7 +523,7 @@ class todoController:
                 duedate = self.getat(p.v, 'duedate')
                 duetime = self.getat(p.v, 'duetime')
                 
-                if duedate or duetime:
+                if duedate:
                     
                     if duedate < today:
                         icon = "date_past.png"
@@ -865,42 +850,53 @@ class todoController:
     def local_clear(self, p=None):
         self.recalc_time(p, clear=True)
     #@+node:tbrown.20110213091328.16233: *4* set_due_date
-    def set_due_date(self,p=None, val=None, mode='adjust'):
+    def set_due_date(self,p=None, val=None, mode='adjust', field='duedate'):
         "mode: `adjust` for change in time, `check` for checkbox toggle"
         if p is None:
             p = self.c.currentPosition()
         v = p.v
         
-        if mode == 'check':
-            if self.ui.UI.dueDateToggle.checkState() == Qt.Unchecked:
-                self.setat(v, 'duedate', "")
-            else:
-                self.setat(v, 'duedate', val.toPyDate())
+        if field == 'duedate':
+            toggle = self.ui.UI.dueDateToggle
         else:
-            self.ui.UI.dueDateToggle.setCheckState(Qt.Checked)
-            self.setat(v, 'duedate', val.toPyDate())
+            toggle = self.ui.UI.nxtwkDateToggle
+        
+        if mode == 'check':
+            if toggle.checkState() == Qt.Unchecked:
+                self.setat(v, field, "")
+            else:
+                self.setat(v, field, val.toPyDate())
+        else:
+            toggle.setCheckState(Qt.Checked)
+            self.setat(v, field, val.toPyDate())
 
         self.updateUI()  # if change was made to date with offset selector
         self.loadIcons(p)
     #@+node:tbrown.20110213091328.16235: *4* set_due_time
-    def set_due_time(self,p=None, val=None, mode='adjust'):
+    def set_due_time(self,p=None, val=None, mode='adjust', field='duetime'):
         "mode: `adjust` for change in time, `check` for checkbox toggle"
         if p is None:
             p = self.c.currentPosition()
         v = p.v
 
-        if mode == 'check':
-            if self.ui.UI.dueTimeToggle.checkState() == Qt.Unchecked:
-                self.setat(v, 'duetime', "")
-            else:
-                self.setat(v, 'duetime', val.toPyTime())
+        if field == 'duetime':
+            toggle = self.ui.UI.dueTimeToggle
         else:
-            self.ui.UI.dueTimeToggle.setCheckState(Qt.Checked)
-            self.setat(v, 'duetime', val.toPyTime())
+            toggle = self.ui.UI.nxtwkTimeToggle
+
+        if mode == 'check':
+            if toggle.checkState() == Qt.Unchecked:
+                self.setat(v, field, "")
+            else:
+                self.setat(v, field, val.toPyTime())
+        else:
+            toggle.setCheckState(Qt.Checked)
+            self.setat(v, field, val.toPyTime())
         self.loadIcons(p)
-    #@+node:tbrown.20121204084515.60965: *4* set_due_date_offset
-    def set_due_date_offset(self):
-        """set_due_date_offset - update date by selected offset
+
+    #@+node:tbrown.20121204084515.60965: *4* set_nxtwk_date_offset
+    def set_nxtwk_date_offset(self):
+        """set_nxtwk_date_offset - update date by selected offset
 
         offset sytax::
             
@@ -911,19 +907,19 @@ class todoController:
 
         """
 
-        offset = str(self.ui.UI.dueDateOffset.currentText())
+        offset = str(self.ui.UI.nxtwkDateOffset.currentText())
         
         mult = 1  # to handle '<' as a negative relative offset
 
         date = QtCore.QDate.currentDate()
 
         if '<' in offset or '>' in offset:
-            date = self.ui.UI.dueDateEdit.date()
+            date = self.ui.UI.nxtwkDateEdit.date()
         
         if offset.startswith('<'):
             mult = -1
         
-        self.set_due_date(val=date.addDays(mult*int(offset.strip('<>'))))
+        self.set_due_date(val=date.addDays(mult*int(offset.strip('<>'))), field='nextworkdate')
         p = self.c.currentPosition()
         self.loadIcons(p)
     #@+node:tbrown.20090119215428.40: *3* ToDo icon related...
@@ -1133,6 +1129,10 @@ class todoController:
         self.ui.setDueTime(self.getat(v, 'duetime'))
         # ditto
         
+        self.ui.setDueDate(self.getat(v, 'duedate'))
+        self.ui.setDueTime(self.getat(v, 'duetime'))
+        self.ui.setNextWorkDate(self.getat(v, 'nextworkdate'))
+        self.ui.setNextWorkTime(self.getat(v, 'nextworktime'))
 
         created = self.getat(v, 'created')
         if created:
