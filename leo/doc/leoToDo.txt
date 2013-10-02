@@ -108,23 +108,6 @@ More: Associate leo files
 .. @+node:ekr.20131001045038.19033: *4* Home page re postcard
 Ask where you learned about Leo, how you use Leo, and any suggestions for
 explaining Leo to newbies.
-.. @+node:ekr.20131001045038.19046: *4* Protect Leo's wikipedia page
-​I need some help here:
-http://en.wikipedia.org/wiki/Leo_%28text_editor%29​
-
-QQQ
-
-The topic of this article may not meet Wikipedia's general notability
-guideline. Please help to establish notability by adding reliable,
-secondary sources about the topic. If notability cannot be established, the
-article is likely to be merged, redirected, or deleted.
-
-A major contributor to this article appears to have a close connection with
-its subject. It may require cleanup to comply with Wikipedia's content
-policies, particularly neutral point of view. Please discuss further on the
-talk page. (August 2013)
-
-QQQ
 .. @+node:ekr.20131001045038.19047: *4* * Important: debian distro for Leo
 .. @+node:ekr.20131001045038.19027: *4* Quotes from "Why Leo isn't more popular"
 @language rest

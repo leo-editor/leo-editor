@@ -416,26 +416,39 @@
 <v t="ekr.20131001100236.15927"><vh>valuespace &amp; --ipython</vh></v>
 <v t="ekr.20131001100236.15928"><vh>highlights (for release noes)</vh></v>
 </v>
+<v t="ekr.20131001100335.15936"><vh>Navigation in 10 minutes OLD</vh></v>
 <v t="ekr.20131001100335.15924"><vh>Leo in two hours</vh>
 <v t="ekr.20131001100335.15928"><vh>Leo Use Cases</vh>
-<v t="ekr.20131001100335.15929"><vh>Leo for writing</vh></v>
 <v t="ekr.20131001100335.15933"><vh>Leo as a PIM</vh></v>
+<v t="ekr.20131001100335.15929"><vh>Leo for writing</vh></v>
 <v t="ekr.20131001100335.15930"><vh>Leo for studying programs</vh></v>
 <v t="ekr.20131001100335.15931"><vh>Leo for writing programs</vh></v>
 <v t="ekr.20131001100335.15932"><vh>Leo for scripting</vh></v>
 <v t="ekr.20131001100335.15934"><vh>Leo for scientific programming</vh></v>
 </v>
-<v t="ekr.20131001100335.15935"><vh>Tutorials</vh>
-<v t="ekr.20131001100335.15936"><vh>Navigation in 5 minutes</vh></v>
-<v t="ekr.20131001100335.15937"><vh>Editing text in 15 minutes</vh></v>
-<v t="ekr.20131001100335.15938"><vh>Finding &amp; replacing text in 5 minutes</vh></v>
-<v t="ekr.20131001100335.15939"><vh>Formatting text in 10 minutes</vh></v>
-<v t="ekr.20131001100335.15940"><vh>Configuring Leo in 10 minutes</vh></v>
-<v t="ekr.20131001100335.15946"><vh>Using the minibuffer in 5 minutes</vh></v>
-<v t="ekr.20131001100335.15941"><vh>Scripting Leo in 15 minutes</vh></v>
-<v t="ekr.20131001100335.15947"><vh>Getting help in 5 minutes</vh></v>
+<v t="ekr.20131001100335.15935"><vh>Learn the basics of Leo in less than an hour</vh>
+<v t="ekr.20131002055813.15973"><vh>Leo's main window (2 minutes)</vh></v>
+<v t="ekr.20131002055813.19835"><vh>Inserting and deleting nodes (2 minutes)</vh></v>
+<v t="ekr.20131002055813.19036"><vh>Selecting and moving outline nodes (5 minutes)</vh></v>
+<v t="ekr.20131002055813.19037"><vh>Moving the cursor in text panes (5 minutes)</vh></v>
+<v t="ekr.20131001100335.15938"><vh>Finding &amp; replacing text (5 minutes)</vh></v>
+<v t="ekr.20131001100335.15946"><vh>The minibuffer &amp; completions (5 minutes)</vh></v>
+<v t="ekr.20131002055813.19837" a="M"><vh>Undoing and redoing changes (2 minutes)</vh></v>
+<v t="ekr.20131001100335.15947" a="M"><vh>Getting help (2 minutes)</vh></v>
+<v t="ekr.20131001100335.15940" a="M"><vh>Configuring Leo (15 minutes)</vh></v>
+<v t="ekr.20131002055813.19697" a="M"><vh>Creating external files (10 minutes)</vh></v>
 </v>
-<v t="ekr.20131001100335.15942"><vh>Comparisons with other programs</vh>
+<v t="ekr.20131002055813.15970"><vh>Learn intermediate Leo topics in one hour</vh>
+<v t="ekr.20131002055813.19836"><vh>Cloning and reorganizing nodes (5 minutes)</vh></v>
+<v t="ekr.20131001100335.15937" a="M"><vh>Advanced editing commands (15 minutes)</vh></v>
+<v t="ekr.20131002055813.19038"><vh>Choosing your own key bindings</vh></v>
+<v t="ekr.20131002055813.19696"><vh>Addition cursor movement commands (5 minutes)</vh></v>
+<v t="ekr.20131001100335.15939"><vh>Formatting text (10 minutes)</vh></v>
+<v t="ekr.20131001100335.15941"><vh>Scripting Leo (15 minutes)</vh></v>
+<v t="ekr.20131002055813.15971"><vh>@button nodes (5 minutes)</vh></v>
+<v t="ekr.20131002055813.15972"><vh>@test nodes (10 minutes)</vh></v>
+</v>
+<v t="ekr.20131001100335.15942"><vh>Leo vs other programs</vh>
 <v t="ekr.20131001100335.15943"><vh>Leo vs Emacs</vh></v>
 <v t="ekr.20131001100335.15944"><vh>Leo vs Vim</vh></v>
 <v t="ekr.20131001100335.15945"><vh>Leo vs IPython</vh></v>
@@ -3842,22 +3855,125 @@ possibly work.
 
 </t>
 <t tx="ekr.20131001100335.15928"></t>
-<t tx="ekr.20131001100335.15929"></t>
+<t tx="ekr.20131001100335.15929">@rst nodes</t>
 <t tx="ekr.20131001100335.15930"></t>
 <t tx="ekr.20131001100335.15931"></t>
 <t tx="ekr.20131001100335.15932"></t>
-<t tx="ekr.20131001100335.15933"></t>
+<t tx="ekr.20131001100335.15933">@url
+Bookmarks
+Clones
+Views
+</t>
 <t tx="ekr.20131001100335.15934"></t>
 <t tx="ekr.20131001100335.15935"></t>
-<t tx="ekr.20131001100335.15936"></t>
-<t tx="ekr.20131001100335.15937">Emacs tutorial: http://www2.lib.uchicago.edu/keith/tcl-course/emacs-tutorial.html</t>
-<t tx="ekr.20131001100335.15938"></t>
+<t tx="ekr.20131001100335.15936">Arrow keys (including the Home and End keys) navigate within body text, and
+within the outline pane.
+
+You may select, expand and contract outline nodes with the mouse as usual,
+but using arrow keys is highly recommended.
+
+When focus is in the body pane (and when editing headlines), arrows keys
+(including Home and End) work as usual:
+
+- Plain arrow keys move the cursor.
+- Shift-arrow keys move the cursor, extending the selected text.
+- Ctrl-arrow keys move the cursor by words.
+- Ctrl-Shift-arrow keys move the cursor by words, extending the text selection.
+
+When focus is in the outline pane, plain arrows keys change the selected node:
+
+- Right-arrow selects the first child of a node, if it exists.
+- Left-arrow contracts a node if it's children are visible, and
+  selects the node's parent otherwise. 
+- Up-arrow selects the next *visible* outline node.
+- Down-arrow selects the previous *visible* outline node.
+  
+When focus is in the outline pane, Shift-arrow keys move the selected node
+in the direction of the arrow, if possible.
+
+Regardless of focus, Alt-arrow and Alt-Shift-arrow keys work on outline nodes:
+
+- Alt-Home selects the first outline node.
+- Alt-End selects the last outline node.
+- Alt-arrow keys select the outline pane, and then act just like the plain
+  arrow keys when the outline pane has focus.
+- Alt-Shift-arrow keys select the outline pane and move the selected node.
+
+Regardless of focus, Ctrl-H begins editing the headline of the selected
+node. &lt;Return&gt; ends the editing.</t>
+<t tx="ekr.20131001100335.15937"></t>
+<t tx="ekr.20131001100335.15938">To invoke the find command, type &lt;Ctrl-F&gt;. This puts the focus in the
+minibuffer and shows the Find tab.
+
+**Important**: the Find tab just shows you the status of search and replace
+operations. You control those operations from the minibuffer.
+
+**Note**: You can toggle the radio buttons and check boxes in the Find Tab
+with &lt;Ctrl-Alt&gt; keys. For example, &lt;Ctrl-Alt-X&gt; (toggle-find-regex-option)
+toggles the Regexp checkbox.
+
+Now type the search string, say "def", in the minibuffer.
+
+Start the find by typing &lt;return&gt;.
+
+But suppose you want to replace "def" with "foo", instead of just finding
+"foo".
+
+Before typing &lt;return&gt; type &lt;Shift-Ctrl-R&gt;. The minibuffer prompts for the
+replacement string. Notice that the status area now shows “def” as the Find
+string.
+
+Type "foo" and type &lt;return&gt; to start the find-next command.
+
+When Leo finds the next instance of "def", it will select it.
+
+You now have three options:
+
+1. To make the replacement, type &lt;Ctrl-minus&gt; (replace-then-find).
+
+2. To continue searching without making a replacement, type &lt;F3&gt; (find-next).
+
+3. To end the search, type &lt;Ctrl-G&gt; (keyboard-quit).
+</t>
 <t tx="ekr.20131001100335.15939"></t>
 <t tx="ekr.20131001100335.15940"></t>
 <t tx="ekr.20131001100335.15941"></t>
 <t tx="ekr.20131001100335.15942"></t>
-<t tx="ekr.20131001100335.15943"></t>
-<t tx="ekr.20131001100335.15944"></t>
+<t tx="ekr.20131001100335.15943">- Leo has shamelessly stolen all of Emacs's most important features: long
+  command names, the minibuffer, typing completion and flexible key
+  bindings.
+  
+- One set of Leo's default key bindings are similar to Emacs's defaults. If
+  you like, editing text in Leo can feel exactly like editing text in
+  Emacs.
+
+- You script Leo in Python, not elisp.
+
+- Emacs has no notion of nodes, cloned or otherwise. Emcas will never have
+  anything like @file, @test, @button, @command or @url nodes (etc.!), not
+  even in Emacs org-mode.
+  
+- Leo scripts have *easy* access all nodes via Leo's Document Object Model
+  (DOM). Emacs has no DOM at all. In Emacs, everything is just text.
+  
+- Leo has no dired mode because it isn't needed. Once you have created an
+  @file node (or @auto or @edit node), there is no need to drill down to
+  that file.
+</t>
+<t tx="ekr.20131001100335.15944">- One set of Leo's default key bindings are similar to Vim's defaults. If
+  you like, editing text in Leo can feel somewhat (not exactly) like
+  editing text in Emacs.  Leo has a vim-like command mode, but it's
+  still a work in progress.
+
+- You script Leo in Python, not Vim's scripting language.
+
+- Vim has no notion of nodes, cloned or otherwise. Vim will never have
+  anything like @file, @test, @button, @command or @url nodes (etc.!), not
+  even in Vim's outline-mode.
+  
+- Leo scripts have *easy* access all nodes via Leo's Document Object Model
+  (DOM). Vim has no DOM at all; everything is just text.
+</t>
 <t tx="ekr.20131001100335.15945"></t>
 <t tx="ekr.20131001100335.15946">Leo’s minibuffer appears at the bottom of Leo’s main window. You use the
 minibuffer to execute commands by name, and also to accumulate arguments to
@@ -3884,13 +4000,220 @@ Now just type "c&lt;tab&gt;" and you will see the print-commands command in the
 minibuffer.
 
 Finally, type &lt;return&gt; to execute the command.
+
+You will see the output of the print-commands command in the commands tab,
+and focus returns to the body pane.
+
+Using the minibuffer quickly becomes second nature. Summary:
+
+- &lt;tab&gt; shows all valid completions.
+- &lt;BackSpace&gt; shows more alternatives.
+- &lt;Ctrl-G&gt; exits the minibuffer and puts focus in the body pane.
 </t>
-<t tx="ekr.20131001100335.15947">F1 is bound to Leo's help command.
+<t tx="ekr.20131001100335.15947">F1 invokes Leo's help command.
 
 F11 invokes Leo's help-for-command command.
 
 F12 invokes the help-for-python command, giving access to Python's help system.
 </t>
+<t tx="ekr.20131002055813.15970"></t>
+<t tx="ekr.20131002055813.15971"></t>
+<t tx="ekr.20131002055813.15972"></t>
+<t tx="ekr.20131002055813.15973">Leo's main window consists of an **outline pane** at the top left,
+a **log pane** at the top right, a **body pane** below the outline pane,
+and **minibuffer** and **status line** areas at the very bottom of the
+main window.
+
+The log pane contains several tabs. The **Log tab** shows messages from
+Leo, the **Find Tab** shows the status of Leo's Find/Replace commands.
+
+Other tabs may also appear in the log pane: The **Spell Tab** controls
+Leo's spell-checking. The **Completion Tab** shows available typing
+completions.
+
+All data in Leo is stored in **nodes**. Nodes have **headlines** and **body text**
+
+The outline pane shows headlines; the body pane shows the body text
+of the node that is selected in the outline pane.
+</t>
+<t tx="ekr.20131002055813.19036">Arrow keys (including the Home and End keys) select and move nodes in the
+outline pane.
+
+You may select, expand and contract outline nodes with the mouse as usual,
+but using arrow keys is highly recommended.
+
+When focus is in the outline pane, *plain* arrows keys change the selected node:
+
+- Right-arrow selects the first child of a node, if it exists.
+- Left-arrow contracts a node if it's children are visible, and
+  selects the node's parent otherwise. 
+- Up-arrow selects the next *visible* outline node.
+- Down-arrow selects the previous *visible* outline node.
+  
+When focus is in the outline pane, Shift-arrow keys move the selected node
+in the direction of the arrow, if possible.
+
+Regardless of focus, Alt-arrow and Alt-Shift-arrow keys work on outline nodes:
+
+- Alt-Home selects the first outline node.
+- Alt-End selects the last outline node.
+- Alt-arrow keys select the outline pane, and then act just like the plain
+  arrow keys when the outline pane has focus.
+- Alt-Shift-arrow keys select the outline pane and move the selected node.
+</t>
+<t tx="ekr.20131002055813.19037">When focus is in any of Leo's text panes (body pane, log pane, headlines), arrows keys
+work as usual:
+
+- Plain arrow keys move the cursor.
+- Shift-arrow keys move the cursor, extending the selected text.
+- Ctrl-arrow keys move the cursor by words.
+- Ctrl-Shift-arrow keys move the cursor by words, extending the text selection.
+
+The Home and End keys work as follows:
+
+- Home and End move the cursor to the beginning or end of a line.
+- Ctrl-Home moves the cursor to the beginning of the body text.
+- Ctrl-End moves the cursor to the end of the body text.
+- Ctrl-Shift-Home and Ctrl-Shift-End move the cursor to the beginning
+  or end of the body text, and extend the selected text.
+  
+The PageUp and PageDown keys work in a similar manner:
+
+- PageDown and PageUp move the cursor up or down one page.
+- Shift-PageDown and Shift-PageUp move the cursor and extend the selection.
+
+Regardless of focus, you can edit headlines as follows:
+
+- Ctrl-H begins editing the headline of the selected node.
+- &lt;Return&gt; ends the editing, leaving the focus in the body pane.
+</t>
+<t tx="ekr.20131002055813.19038">The following tables show Leo's default bindings for the commands that move
+the cursor. You may specify additional bindings for each command.
+
+Put any such overrides in an @shortcuts node in your myLeoSettings.leo file.
+
+For example, to bind back-char command to Ctrl-B, add this line to the
+@shortcuts node: back-char = Ctrl-B
+
++--------------------+----------------------------------+
+| Binding            | Move by character                |
++====================+==================================+
+| Left-Arrow         | back-char                        |
++--------------------+----------------------------------+
+| Right-Arrow        | forward-char                     |
++--------------------+----------------------------------+
+| Shift-Right-Arrow  | forward-char-extend-selection    |
++--------------------+----------------------------------+
+| Shift-Left-Arrow   | back-char-extend-selection       |
++--------------------+----------------------------------+
+
++--------------------+----------------------------------+
+| Binding            | Move by word                     |
++====================+==================================+
+| Ctrl-Left          | back-word                        |
++--------------------+----------------------------------+
+| Ctrl-Right         | forward-word                     |
++--------------------+----------------------------------+
+| Shift-Ctrl-Left    | back-word-extend-selection       |
++--------------------+----------------------------------+
+| Shift-Ctrl-Right   | forward-word-extend-selection    |
++--------------------+----------------------------------+
+
++--------------------+-------------------------------------+
+| Binding            | Move by lines                       |
++====================+=====================================+
+| Down-Arrow         | next-line                           |
++--------------------+-------------------------------------+
+| End                | end-of-line                         |
++--------------------+-------------------------------------+
+| Home               | beginning-of-line                   |
++--------------------+-------------------------------------+
+| Shift-Down-Arrow   | next-line-extend-selection          |
++--------------------+-------------------------------------+
+| Shift-End          | end-of-line-extend-selection        |
++--------------------+-------------------------------------+
+| Shift-Home         | beginning-of-line-extend-selection  |
++--------------------+-------------------------------------+
+| Shift-Up-Arrow     | previous-line-extend-selection      |
++--------------------+-------------------------------------+
+| Up-Arrow           | previous-line                       |
++--------------------+-------------------------------------+
+
++--------------------+--------------------------------------+
+| Binding            | Move by sentences                    |
++====================+======================================+
+| None               | backward-sentence                    |
++--------------------+--------------------------------------+
+| None               | backward-sentence-extend-selection   |
++--------------------+--------------------------------------+
+| None               | forward-sentence                     |
++--------------------+--------------------------------------+
+| None               | forward-sentence-extend-selection    |
++--------------------+--------------------------------------+
+
++--------------------+--------------------------------------+
+| Binding            | Move by paragraphs                   |
++====================+======================================+
+| None               | backward-paragraph                   |
++--------------------+--------------------------------------+
+| None               | backward-paragraph-extend-selection  |
++--------------------+--------------------------------------+
+| None               | forward-paragraph                    |
++--------------------+--------------------------------------+
+| None               | forward-paragraph-extend-selection   |
++--------------------+--------------------------------------+
+
++--------------------+--------------------------------------+
+| Binding            | Move by pages                        |
++====================+======================================+
+| PageDown           | forward-page                         |
++--------------------+--------------------------------------+
+| PageUp             | backward-page                        |
++--------------------+--------------------------------------+
+| Shift-PageDown     | forward-page-extend-selection        |
++--------------------+--------------------------------------+
+| Shift-PageUp       | backward-page-extend-selection       |
++--------------------+--------------------------------------+
+
++--------------------+--------------------------------------+
+| Binding            | Move to start/end of buffer          |
++====================+======================================+
+| Ctrl-End           | end-of-buffer                        |
++--------------------+--------------------------------------+
+| Ctrl-Home          | beginning-of-buffer                  |
++--------------------+--------------------------------------+
+| Shift-Ctrl-End     | end-of-buffer-extend-selection       |
++--------------------+--------------------------------------+
+| Shift-Ctrl-Home    | beginning-of-buffer-extend-selection |
++--------------------+--------------------------------------+
+</t>
+<t tx="ekr.20131002055813.19696">You can move the cursor by sentences using the following commands, none of
+which have default key bindings. You execute such commands from the
+minibuffer.
+
+- back-sentence: moves the cursor to the beginning of the present or
+  previous sentence.
+- back-sentence-extend-selection: moves the cursor and extends the selection.
+- forward-sentence: moves the cursor to the end of the present sentence
+  or the end of the next sentence.
+- forward-sentence-extend-selection: move the cursor and extends the selection.
+
+Finally, you can move the cursor by sentences using the following commands,
+none of which have default key bindings. You execute such commands from the
+minibuffer.
+
+- back-paragraph: moves the cursor to the beginning of the present or
+  previous paragraph.
+- back-paragraph-extend-selection: moves the cursor and extends the selection.
+- forward-paragraph: moves the cursor to the end of the present paragraph
+  or the end of the next paragraph.
+- forward-paragraph-extend-selection: move the cursor and extends the selection.
+
+</t>
+<t tx="ekr.20131002055813.19697"></t>
+<t tx="ekr.20131002055813.19835"></t>
+<t tx="ekr.20131002055813.19836"></t>
+<t tx="ekr.20131002055813.19837"></t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
