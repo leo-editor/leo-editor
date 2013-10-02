@@ -384,7 +384,7 @@
       <widget class="QPushButton" name="butPriClr">
        <property name="toolTip">
         <string>Clear priority
-                                setting</string>
+setting</string>
        </property>
        <property name="text">
         <string/>
@@ -405,7 +405,7 @@
       <widget class="QPushButton" name="butDetails">
        <property name="toolTip">
         <string>Show / hide more
-                                interface</string>
+interface</string>
        </property>
        <property name="text">
         <string/>
@@ -476,7 +476,7 @@
          <widget class="QPushButton" name="butNextTodo">
           <property name="toolTip">
            <string>Next TODO
-                                            node</string>
+node</string>
           </property>
           <property name="text">
            <string/>
@@ -491,7 +491,7 @@
          <widget class="QPushButton" name="butNext">
           <property name="toolTip">
            <string>Next
-                                            node</string>
+node</string>
           </property>
           <property name="text">
            <string/>
@@ -509,6 +509,9 @@
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
         <widget class="QLabel" name="label_3">
+         <property name="toolTip">
+          <string/>
+         </property>
          <property name="text">
           <string>Due:</string>
          </property>
@@ -525,10 +528,19 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="toolTip">
+          <string>Time of day for alarm / item due</string>
+         </property>
+         <property name="displayFormat">
+          <string>HH:mm</string>
+         </property>
         </widget>
        </item>
        <item>
         <widget class="QCheckBox" name="dueTimeToggle">
+         <property name="toolTip">
+          <string>Enable / disable due time</string>
+         </property>
          <property name="text">
           <string/>
          </property>
@@ -551,6 +563,9 @@
            <height>0</height>
           </size>
          </property>
+         <property name="toolTip">
+          <string>Date for alarm / item due</string>
+         </property>
          <property name="displayFormat">
           <string>d MMM yy</string>
          </property>
@@ -561,6 +576,9 @@
        </item>
        <item>
         <widget class="QCheckBox" name="dueDateToggle">
+         <property name="toolTip">
+          <string>Enable / disable due date</string>
+         </property>
          <property name="text">
           <string/>
          </property>
@@ -572,6 +590,9 @@
       <layout class="QHBoxLayout" name="horizontalLayout_4">
        <item>
         <widget class="QLabel" name="label_4">
+         <property name="toolTip">
+          <string/>
+         </property>
          <property name="text">
           <string>Work:</string>
          </property>
@@ -583,15 +604,24 @@
           <bool>true</bool>
          </property>
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
            <horstretch>4</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string>Time of day to next work on this item</string>
+         </property>
+         <property name="displayFormat">
+          <string>HH:mm</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QCheckBox" name="nxtwkTimeToggle">
+         <property name="toolTip">
+          <string>Enable / disable next work time</string>
+         </property>
          <property name="text">
           <string/>
          </property>
@@ -603,7 +633,7 @@
           <bool>true</bool>
          </property>
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
            <horstretch>4</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -613,6 +643,9 @@
            <width>0</width>
            <height>0</height>
           </size>
+         </property>
+         <property name="toolTip">
+          <string>Date of day to next work on this item</string>
          </property>
          <property name="displayFormat">
           <string>d MMM yy</string>
@@ -624,6 +657,9 @@
        </item>
        <item>
         <widget class="QCheckBox" name="nxtwkDateToggle">
+         <property name="toolTip">
+          <string>Enable / disable next work date</string>
+         </property>
          <property name="text">
           <string/>
          </property>
@@ -632,32 +668,50 @@
        <item>
         <widget class="QComboBox" name="nxtwkDateOffset">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
            <horstretch>1</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
          <property name="toolTip">
           <string>+n -n days from now, or
-                                &lt;n &gt;n to subtract / add n
-                                days to existing date</string>
+&lt;n &gt;n to subtract / add n
+days to existing date</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="butApplyOffset">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="maximumSize">
+          <size>
+           <width>20</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="baseSize">
+          <size>
+           <width>20</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="toolTip">
-          <string>Set Due Date to offset
-                                shown</string>
+          <string>Set Next Work Date to offset
+shown</string>
          </property>
          <property name="text">
           <string>=</string>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>16</width>
+           <height>24</height>
+          </size>
          </property>
         </widget>
        </item>
@@ -667,6 +721,9 @@
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
         <widget class="QLabel" name="label">
+         <property name="toolTip">
+          <string/>
+         </property>
          <property name="text">
           <string>Needs:</string>
          </property>
@@ -685,6 +742,9 @@
            <width>30</width>
            <height>0</height>
           </size>
+         </property>
+         <property name="toolTip">
+          <string>Time required to complete item</string>
          </property>
          <property name="suffix">
           <string>days</string>
@@ -713,7 +773,7 @@
          </property>
          <property name="toolTip">
           <string>Clear time
-                                        required</string>
+required</string>
          </property>
          <property name="text">
           <string/>
@@ -751,6 +811,9 @@
            <height>0</height>
           </size>
          </property>
+         <property name="toolTip">
+          <string>Percent complete</string>
+         </property>
          <property name="buttonSymbols">
           <enum>QAbstractSpinBox::UpDownArrows</enum>
          </property>
@@ -781,7 +844,7 @@
          </property>
          <property name="toolTip">
           <string>Clear
-                                        progress</string>
+progress</string>
          </property>
          <property name="text">
           <string/>

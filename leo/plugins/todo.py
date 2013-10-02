@@ -58,6 +58,8 @@ import os
 import re
 import datetime
 
+NO_TIME = datetime.date(3000, 1, 1)
+
 if g.app.gui.guiName() == "qt":
 
     from PyQt4 import QtCore, QtGui, uic
@@ -520,15 +522,17 @@ class todoController:
                         2, on='vnode', cleoIcon='1', where=self.prog_location)
                     
             elif which == 'duedate':
-                
+             
                 duedate = self.getat(p.v, 'duedate')
-                duetime = self.getat(p.v, 'duetime')
+                nextworkdate = self.getat(p.v, 'nextworkdate')
                 
-                if duedate:
+                icondate = min(duedate or NO_TIME, nextworkdate or NO_TIME)
+                
+                if icondate <> NO_TIME:
                     
-                    if duedate < today:
+                    if icondate < today:
                         icon = "date_past.png"
-                    elif duedate == today:
+                    elif icondate == today:
                         icon = "date_today.png"
                     else:
                         icon = "date_future.png"
