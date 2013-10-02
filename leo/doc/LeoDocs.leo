@@ -141,8 +141,7 @@
 <v t="ekr.20100805165051.7168"><vh>@file emacs.txt</vh></v>
 </v>
 <v t="ekr.20080203101507"><vh>ILeo - the IPython bridge</vh>
-<v t="ekr.20100805165051.7171"
-expanded="ekr.20080203101507.1,"><vh>@file IpythonBridge.txt</vh></v>
+<v t="ekr.20100805165051.7171"><vh>@file IpythonBridge.txt</vh></v>
 </v>
 <v t="ekr.20070317033759"><vh>Embedding Leo with the leoBridge module</vh>
 <v t="ekr.20100805165051.7169"><vh>@file leoBridge.txt</vh></v>
@@ -411,8 +410,37 @@ expanded="ekr.20080203101507.1,"><vh>@file IpythonBridge.txt</vh></v>
 <v t="ekr.20130928065624.16027"><vh>** EKR post 2: how to use the new code</vh></v>
 <v t="ekr.20130928065624.16028"><vh>Windows installation</vh></v>
 </v>
-<v t="ekr.20100805165051.7171"
-expanded="ekr.20080203101507.1,"></v>
+<v t="ekr.20100805165051.7171"></v>
+<v t="ekr.20131001100236.15925"><vh>Notes for ipython bridge chapter</vh>
+<v t="ekr.20131001100236.15926"><vh>ipython-new &amp; dependencies</vh></v>
+<v t="ekr.20131001100236.15927"><vh>valuespace &amp; --ipython</vh></v>
+<v t="ekr.20131001100236.15928"><vh>highlights (for release noes)</vh></v>
+</v>
+<v t="ekr.20131001100335.15924"><vh>Leo in two hours</vh>
+<v t="ekr.20131001100335.15928"><vh>Leo Use Cases</vh>
+<v t="ekr.20131001100335.15929"><vh>Leo for writing</vh></v>
+<v t="ekr.20131001100335.15933"><vh>Leo as a PIM</vh></v>
+<v t="ekr.20131001100335.15930"><vh>Leo for studying programs</vh></v>
+<v t="ekr.20131001100335.15931"><vh>Leo for writing programs</vh></v>
+<v t="ekr.20131001100335.15932"><vh>Leo for scripting</vh></v>
+<v t="ekr.20131001100335.15934"><vh>Leo for scientific programming</vh></v>
+</v>
+<v t="ekr.20131001100335.15935"><vh>Tutorials</vh>
+<v t="ekr.20131001100335.15936"><vh>Navigation in 5 minutes</vh></v>
+<v t="ekr.20131001100335.15937"><vh>Editing text in 15 minutes</vh></v>
+<v t="ekr.20131001100335.15938"><vh>Finding &amp; replacing text in 5 minutes</vh></v>
+<v t="ekr.20131001100335.15939"><vh>Formatting text in 10 minutes</vh></v>
+<v t="ekr.20131001100335.15940"><vh>Configuring Leo in 10 minutes</vh></v>
+<v t="ekr.20131001100335.15946"><vh>Using the minibuffer in 5 minutes</vh></v>
+<v t="ekr.20131001100335.15941"><vh>Scripting Leo in 15 minutes</vh></v>
+<v t="ekr.20131001100335.15947"><vh>Getting help in 5 minutes</vh></v>
+</v>
+<v t="ekr.20131001100335.15942"><vh>Comparisons with other programs</vh>
+<v t="ekr.20131001100335.15943"><vh>Leo vs Emacs</vh></v>
+<v t="ekr.20131001100335.15944"><vh>Leo vs Vim</vh></v>
+<v t="ekr.20131001100335.15945"><vh>Leo vs IPython</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -3731,6 +3759,137 @@ g.app.ipk.namespace is the IPython namespace(!)
 <t tx="ekr.20130928065624.16028">https://github.com/zeromq/pyzmq/downloads
 
 pyzmq-2.2.0.win32-py2.7.msi
+</t>
+<t tx="ekr.20131001100236.15925">@language rest
+</t>
+<t tx="ekr.20131001100236.15926">You can do alt-x ipython-new to launch new terminals (connected to the same
+kernel)
+
+You need to install some dependencies to get this working. Try "sudo pip
+install ipython matplotlib" at least. This may fail if you don't have c
+compiler set up correctly; I leave it to others to repeat this and compose
+better instructions.
+</t>
+<t tx="ekr.20131001100236.15927">valuespace.py is now adapted to use ipython namespace at all times, if it's
+enabled (with --ipython command line switch).
+
+It's hard to briefly explain what valuespace plugin does and how it relates
+to ipython, but if you are curious check out Contrib branch
+Projects/valuespace.
+
+Basically, it provides a "workbook" like way to get data from Leo document
+to the namespace, and do calculations based on that data. Having this data
+be accessible to the ipython instance makes it convenient to interact and
+poke around with the same data.
+</t>
+<t tx="ekr.20131001100236.15928">Injects only _leo into the IPython namespace
+_leo.c is a property
+The getter returns the single element of _leo.commanders_list
+or a commander set previously by the setter.
+    
+_leo.commanders is a read-only property returning _leo.commanders_list
+after first doing an update.
+
+-----
+
+The highlights of the changes:
+
+1. leo.core.leoIPython.py now contains *all* of Leo's IPython-related code.
+   The setup code comes mainly from leo.plugins.internal_ipkernel.py.
+
+2. internal_ipkernel.py still exists (it will go away soon), but it has has
+   been completely disabled as follows::
+
+    if 0:
+        @others
+
+3. When the --ipython command-line argument is in effect, g.app.ipk is a
+   *singleton* IPython shell, shared by any and all IPython consoles.
+
+4. The startup code injects only a single object, _leo, into the IPython
+   namespace. This is an instance of the bulked-up LeoNameSpace class. This
+   interface class now contains features that make it easier to deal with
+   multiple open Leo commanders.
+
+- _leo.g is set to leoGlobals only once. Not exactly correct, perhaps, but
+  nobody will notice.
+
+- _leo.commanders is a (read-only) property returning the list of open
+  commanders. This list is always kept up-to-date: it scans
+  g.app.windowList before returning its result.
+
+- _leo.c is a (read/write) property returning g.app.windowList[0].c if the
+  windowList has only one element, or the "designated commander" if it
+  exists. Otherwise, it returns None. In that case, the expectation is that
+  the user will "designate" a commander with: _leo.c = aCommander.
+
+- _leo.find_c(path) returns the commander c such that c.fileName() or
+  g.shortFileName(c) matches path.
+
+5. Perhaps most importantly, that's *all* there is. In particular, Ville's
+   magic functions and LeoWorkbook class are gone.
+
+Imo, the deleted code might better exist as IPython startup code, but I
+could be wrong. Furthermore, Leo's p.h and p.b properties are new since
+Ville first created the code, and so this kind of support code is less
+urgently needed.
+
+If there is a great demand to restore these features, it can always be done
+later. For now, though, I wanted to do the simplest thing that could
+possibly work.
+</t>
+<t tx="ekr.20131001100335.15924">@language rest
+
+</t>
+<t tx="ekr.20131001100335.15928"></t>
+<t tx="ekr.20131001100335.15929"></t>
+<t tx="ekr.20131001100335.15930"></t>
+<t tx="ekr.20131001100335.15931"></t>
+<t tx="ekr.20131001100335.15932"></t>
+<t tx="ekr.20131001100335.15933"></t>
+<t tx="ekr.20131001100335.15934"></t>
+<t tx="ekr.20131001100335.15935"></t>
+<t tx="ekr.20131001100335.15936"></t>
+<t tx="ekr.20131001100335.15937">Emacs tutorial: http://www2.lib.uchicago.edu/keith/tcl-course/emacs-tutorial.html</t>
+<t tx="ekr.20131001100335.15938"></t>
+<t tx="ekr.20131001100335.15939"></t>
+<t tx="ekr.20131001100335.15940"></t>
+<t tx="ekr.20131001100335.15941"></t>
+<t tx="ekr.20131001100335.15942"></t>
+<t tx="ekr.20131001100335.15943"></t>
+<t tx="ekr.20131001100335.15944"></t>
+<t tx="ekr.20131001100335.15945"></t>
+<t tx="ekr.20131001100335.15946">Leo’s minibuffer appears at the bottom of Leo’s main window. You use the
+minibuffer to execute commands by name, and also to accumulate arguments to
+commands.
+
+Type &lt;Alt-x&gt; to put the cursor in the minibuffer.
+
+You could type the full command name in the minibuffer, followed by the
+&lt;return&gt; key to invoke the command, but that would be *way* too much work.
+
+Instead, you can avoid most typing using **tab completion**. With tab
+completion, there is no need to remember the exact names of Leo’s commands.
+
+For example, suppose you want to print out the list of Leo’s commands. You
+might remember only that there are several related commands and that they
+all start with "print". Just type::
+
+    &lt;alt-x&gt;pri&lt;tab&gt;
+
+You will see “print-” in the minibuffer. The Completion tab in the log pane
+shows all the commands that start with "print-".
+
+Now just type "c&lt;tab&gt;" and you will see the print-commands command in the
+minibuffer.
+
+Finally, type &lt;return&gt; to execute the command.
+</t>
+<t tx="ekr.20131001100335.15947">F1 is bound to Leo's help command.
+
+F11 invokes Leo's help-for-command command.
+
+F12 invokes the help-for-python command, giving access to Python's help system.
 </t>
 <t tx="sps.20100708203040.19008">@language python
 import os

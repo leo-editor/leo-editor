@@ -405,15 +405,28 @@ def pause_play_movie(event):
                 vp.play()
 #@+node:ekr.20110317080650.14386: *3* g.command('vr-show')
 @g.command('vr-show')
-def toggle_rendering_pane(event):
+def show_rendering_pane(event):
     
-    '''Show or hide the rendering pane.'''
+    '''Show the rendering pane.'''
 
     c = event.get('c')
     if c:
         vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
         if vr:
             pass # hide_rendering_pane(event)
+        else:
+            viewrendered(event)
+#@+node:ekr.20131001100335.16606: *3* g.command('vr-toggle')
+@g.command('vr-toggle')
+def toggle_rendering_pane(event):
+    
+    '''Toggle the rendering pane.'''
+
+    c = event.get('c')
+    if c:
+        vr = c.frame.top.findChild(QtGui.QWidget,'viewrendered_pane')
+        if vr:
+            hide_rendering_pane(event)
         else:
             viewrendered(event)
 #@+node:ekr.20130412180825.10345: *3* g.command('vr-unlock')

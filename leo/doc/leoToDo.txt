@@ -575,6 +575,14 @@ reference. They learn from looking over each other's shoulders.
 Leo would be just as popular, imo, if thousands of college students learned
 Leo from each other. This does not excuse lack of further work on Leo
 tutorials, but this *is* the essence of the situation.
+.. @+node:ekr.20131001100335.15927: *5* Links to Book about Leo
+This e-book has a whole sub-heading on using Leo for Joomla:
+http://www.gandsnut.net/downloads/Beginning_Joomla!_From_Novice_to_Professional.pdf
+
+amazon link:
+http://www.amazon.com/Beginning-Joomla-From-Novice-Professional/dp/1590598482/ref=sr_1_1?ie=UTF8&qid=1380681874&sr=8-1&keywords=beginning+joomla+from+novice+to+professional
+.. @+node:ekr.20131001100335.15926: *5* derwish
+To me, it's to directed acyclic graphs what MS Excel is to tables. 
 .. @+node:ekr.20130926053913.11573: *3* for b2/final (7)
 .. @+node:ekr.20130806072439.20477: *4* Fix full-screen bug
 I can't make Leo-Editor start in a full-screen window under openSUSU 12.1
