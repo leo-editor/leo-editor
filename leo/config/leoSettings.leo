@@ -9679,7 +9679,6 @@ When True, bindings that appear to specify the control key actually specify the 
 <t tx="ekr.20120229173025.20627">print('hi from leoSettings.leo')</t>
 <t tx="ekr.20120229173025.20628"></t>
 <t tx="ekr.20120305084218.11271"># Unbound F-Keys cause problems on Ubuntu
-# help-for-command= F1
 help            = F1
 # find-prev     = F2    # Set elsewhere
 # find-next     = F3    # Set elsewhere
@@ -9690,8 +9689,8 @@ open-spell-tab  = F7
 do-nothing      = F8
 do-nothing      = F9
 do-nothing      = F10
-do-nothing      = F11
-do-nothing      = F12
+help-for-command= F11
+help-for-python = F12
 
 do-nothing              = Ctrl-F1
 do-nothing              = Ctrl-F2
