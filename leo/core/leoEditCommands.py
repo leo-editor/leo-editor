@@ -6106,7 +6106,7 @@ class editCommandsClass (baseEditCommandsClass):
             w.setSelectionRange(i,i,insert=i)
         finally:
             self.endCommand(changed=True,setLabel=True)
-    #@+node:ekr.20050920084036.100: *4* fillRegion
+    #@+node:ekr.20050920084036.100: *4* fillRegion (can hang)
     def fillRegion (self,event):
 
         '''Fill all paragraphs in the selected text.'''
@@ -6118,10 +6118,11 @@ class editCommandsClass (baseEditCommandsClass):
         i,j = w.getSelectionRange()
         c.undoer.beforeChangeGroup(p,undoType)
         while 1:
-            self.c.reformatParagraph(event,undoType='reformat-paragraph')
+            progress = w.getInsertPoint()
+            c.reformatParagraph(event,undoType='reformat-paragraph')
             ins = w.getInsertPoint()
             s = w.getAllText()
-            if ins >= j or ins >= len(s):
+            if progress >= ins or ins >= j or ins >= len(s):
                 break
         c.undoer.afterChangeGroup(p,undoType)
     #@+node:ekr.20050920084036.104: *4* fillRegionAsParagraph
@@ -8787,6 +8788,7 @@ class leoCommandsClass (baseEditCommandsClass):
             'read-file-into-node':          c.readFileIntoNode,
             'read-outline-only':            c.readOutlineOnly,
             'redo':                         c.undoer.redo,
+            # 'reformat-body':              c.reformatBody, # 2013/10/02.
             'reformat-paragraph':           c.reformatParagraph,
             'remove-sentinels':             c.removeSentinels,
             'resize-to-screen':             f.resizeToScreen,

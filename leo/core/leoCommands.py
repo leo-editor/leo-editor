@@ -3727,6 +3727,26 @@ class Commands (object):
             g.es_exception() # Probably a bad format string in leoSettings.leo.
             s = time.strftime(default_format,time.gmtime())
         return s
+    #@+node:ekr.20131002055813.19033: *6* c.reformatBody (can hang)
+    def reformatBody (self,event=None):
+        
+        '''Reformat all paragraphs in the body.'''
+        
+        # New in Leo 4.11
+        c,p = self,self.p
+        undoType = 'reformat-body'
+        w = c.frame.body.bodyCtrl
+        c.undoer.beforeChangeGroup(p,undoType)
+        w.setInsertPoint(0)
+        while 1:
+            progress = w.getInsertPoint()
+            c.reformatParagraph(event,undoType=undoType)
+            ins = w.getInsertPoint()
+            s = w.getAllText()
+            w.setInsertPoint(ins)
+            if ins <= progress or ins >= len(s):
+                break
+        c.undoer.afterChangeGroup(p,undoType)
     #@+node:ekr.20101118113953.5839: *6* c.reformatParagraph & helpers
     def reformatParagraph (self,event=None,undoType='Reformat Paragraph'):
 
@@ -3744,7 +3764,7 @@ class Commands (object):
 
         c = self ; body = c.frame.body ; w = body.bodyCtrl
         if g.app.batchMode:
-            c.notValidInBatchMode("xxx")
+            c.notValidInBatchMode("reformat-paragraph")
             return
         if body.hasSelection():
             i,j = w.getSelectionRange()
@@ -3760,13 +3780,10 @@ class Commands (object):
 
         c = self
         head,ins,tail = c.frame.body.getInsertLines()
-
         if not ins or ins.isspace() or ins[0] == '@':
             return None,None,None
-
         head_lines = g.splitLines(head)
         tail_lines = g.splitLines(tail)
-
         if 0:
             #@+<< trace head_lines, ins, tail_lines >>
             #@+node:ekr.20031218072017.1826: *8* << trace head_lines, ins, tail_lines >>
@@ -3783,7 +3800,6 @@ class Commands (object):
                 g.es_print("ins: ",ins)
                 g.es_print("tail_lines: ",tail_lines)
             #@-<< trace head_lines, ins, tail_lines >>
-
         # Scan backwards.
         i = len(head_lines)
         while i > 0:
@@ -3791,26 +3807,21 @@ class Commands (object):
             line = head_lines[i]
             if len(line) == 0 or line.isspace() or line[0] == '@':
                 i += 1 ; break
-
         pre_para_lines = head_lines[:i]
         para_head_lines = head_lines[i:]
-
         # Scan forwards.
         i = 0
         for line in tail_lines:
             if not line or line.isspace() or line.startswith('@'):
                 break
             i += 1
-
         para_tail_lines = tail_lines[:i]
         post_para_lines = tail_lines[i:]
-
         head = g.joinLines(pre_para_lines)
         result = para_head_lines 
         result.extend([ins])
         result.extend(para_tail_lines)
         tail = g.joinLines(post_para_lines)
-
         return head,result,tail # string, list, string
     #@+node:ekr.20101118113953.5840: *7* rp_get_args
     def rp_get_args (self):
