@@ -483,7 +483,7 @@
 <v t="ekr.20080510072134.2"><vh>@shortcuts Changes</vh></v>
 <v t="ekr.20060925060533.1"><vh>@shortcuts Cursor Moves</vh></v>
 <v t="ville.20090701225947.3902"><vh>@shortcuts Default plugins</vh></v>
-<v t="ekr.20090408091222.1"><vh>@shortcuts duplicate bindings for Qt</vh></v>
+<v t="ekr.20090408091222.1"><vh>@shortcuts Duplicate bindings for Qt</vh></v>
 <v t="ekr.20120305084218.11271"><vh>@shortcuts F-Keys</vh></v>
 <v t="ekr.20060925061845"><vh>@shortcuts File commands</vh></v>
 <v t="ekr.20060603215208.19"><vh>@shortcuts Find commands</vh></v>
@@ -493,6 +493,7 @@
 <v t="ekr.20060603215208.20"><vh>@shortcuts Minibuffer commands</vh></v>
 <v t="ekr.20060925061845.1"><vh>@shortcuts Other commands</vh></v>
 <v t="ekr.20060925060533.3"><vh>@shortcuts Outline operations</vh></v>
+<v t="ekr.20131003040744.17561"><vh>@shortcuts Plugin-related commands </vh></v>
 <v t="ekr.20060925060533.4"><vh>@shortcuts Text operations</vh></v>
 </v>
 </v>
@@ -3177,6 +3178,7 @@ group-operations-transfer           = None
 toggle-input-state                  = None
 help                                = None
 help-for-minibuffer                 = None
+help-for-python                     = None
 help-for-command                    = None
 hide-body-pane                      = None
 hide-log-pane                       = None
@@ -3258,8 +3260,7 @@ number-command-7                    = None
 number-command-8                    = None
 number-command-9                    = None
 # number-to-register                = None
-# open-compare-window                 = None
-open-find-dialog                    = None # Deprecated: all find commands use the Find *tab*
+# open-compare-window               = None
 open-leoDocs-leo                    = None
 open-leoPlugins-leo                 = None
 open-leoSettings-leo                = None
@@ -3423,6 +3424,7 @@ untangle-marked                     = None
 upcase-region                       = None
 upcase-word                         = None
 view-lossage                        = None
+vr-toggle                           = None
 weave                               = None
 what-line                           = None
 word-search-backward                = None
@@ -9777,6 +9779,7 @@ action will be used instead.</t>
     
 1. @bool enable-abbreviations = True
 2. *either* this setting or @bool scripting-at-script-nodes = True</t>
+<t tx="ekr.20131003040744.17561">vr-toggle = Alt-0</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>

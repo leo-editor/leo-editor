@@ -185,6 +185,14 @@ beyond our reach.
 
 As far as PIM features go the next step, I believe, is implementing a good
 tagging system.
+.. @+node:ekr.20131003040744.18223: *5* dufriz **
+As a newbie who still has zero knowledge of Leo's technical details, I can
+say: I have absolutely no problem in conceptualizing what Leo is and what
+it can do, and probably I also get the Leo's aha -- the difficulty is in
+getting into the actual technical aspects of the program. Again, in the end
+this all boils down to newbie-friendly tutorials and learning materials...
+Something like Leo for dummies would be greatly appreciated.
+
 .. @+node:ekr.20131001045038.19035: *5* Terry
 I think a lot of the problem is defining what Leo is. In some ways I think
 it's Python's Squeak (Squeak http://www.squeak.org/Screenshots/ being a
