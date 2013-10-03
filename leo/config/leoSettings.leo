@@ -4524,6 +4524,7 @@ printing.py
 # quit_leo.py
 # read_only_nodes.py
 # redirect_to_log.py
+# rss.py
 # rst3.py
 # run_nodes.py
 # screen_capture.py

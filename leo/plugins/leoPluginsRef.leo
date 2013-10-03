@@ -134,6 +134,7 @@
 <v t="ekr.20130927071752.11380"><vh>@file internal_ipkernel.py</vh></v>
 <v t="EKR.20040517075715.1"><vh>@file mod_tempfname.py</vh></v>
 <v t="EKR.20040517080049.4"><vh>@file open_shell.py</vh></v>
+<v t="peckj.20131003103810.9494"><vh>@file rss.py</vh></v>
 <v t="ville.20090503124249.1"><vh>@file tomboy_import.py</vh></v>
 <v t="EKR.20040517075715.10"><vh>@file vim.py</vh></v>
 <v t="EKR.20040517075715.12"><vh>@file xemacs.py</vh></v>
