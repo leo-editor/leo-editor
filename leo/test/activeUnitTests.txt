@@ -6990,7 +6990,7 @@ during the event. StormReady helps community leaders and emergency managers
 strengthen local safety programs.
 
 StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-#@+node:ekr.20071007120750.4: *5* @test fill-region (one paragraph)
+#@+node:ekr.20071007120750.4: *5* @@test fill-region (one paragraph)
 @pagewidth 80
     # Required for external unit test.
 
@@ -7067,7 +7067,7 @@ weather through better planning, education, and awareness.
 No community is storm proof,
 but
 StormReady can help communities save lives. Does StormReady make a difference?
-#@+node:ekr.20071007124202: *5* @test fill-region (three paragraphs)
+#@+node:ekr.20071007124202: *5* @@test fill-region (three paragraphs)
 @pagewidth 80
     # Required for external unit test.
 

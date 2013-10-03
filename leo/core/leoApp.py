@@ -1525,6 +1525,7 @@ class LoadManager:
 
         # Get the name of the workbook.
         fn = g.app.config.getString(setting='default_leo_file')
+            # The default is ~/.leo/workbook.leo
         fn = g.os_path_finalize(fn)
         if not fn: return
         if g.os_path_exists(fn):

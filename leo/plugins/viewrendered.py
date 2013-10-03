@@ -368,6 +368,7 @@ def hide_rendering_pane(event):
             vr.deactivate()
             vr.deleteLater()
             h = c.hash()
+            c.bodyWantsFocus()
             if vr == controllers.get(h):
                 del controllers[h]
             else:

@@ -38,73 +38,6 @@ warning,
 https://groups.google.com/d/topic/leo-editor-users/y6ZwJR3accs/discussion
 .. @+node:ekr.20130926053913.11565: *4* Highlight abbreviations and auto-completion
 Their own chapter, or prominent new sections.
-.. @+node:ekr.20131001045038.11350: *4* Cheat-sheet for default .leo file (workbook)
-- The default will be leo/docs/default_workbook.leo.
-
-- doPostPluginsInit, the code that creates ~/workbook.leo, will make a copy
-  of the default file. This will allow continuous improvement on
-  default_workbook.leo.
-
-Keys    Command
-F3      Search forward
-F2      Search backward
-Alt-X   Alt-X
-Tab     Complete command in minibuffer (Alt-X )
-
-Objects
-    c
-    p
-    p.v
-    p.v.u   and a sample on how to use them (for instance, some nodes with
-            commands, c.p.u["test"]=yes, and another, g.es(c.p.u) p.v.u
-
-@<file> flavors
-    @edit   Load and edit the file from the filesystem
-    @shadow Load and edit the file from the filesystem, maintain Leo structure
-            without sentinels in file.
-    @file
-    @nosent
-    @as-is
-    @auto-rst
-
-Samples of use (Maybe):
-
-    Sample on how to import bookmarks from Internet browser (I have that
-    script ready myself, I could add that)
-
-    Sample of website generated with an outline, easy to open and edit for
-    the user to view its power. Ideally, just after transforming the
-    outline to website, the user should be able to open it and see it in
-    html.
-
-    Sample of RST outline and one click opening with render pane.
-
-    The RPG helper we recently discussed about.
-
-    And as many other practical and ready-to-go samples that could impress
-    the new user. All of them, ready to go, no edit required to view. There
-    are ways of using Leo that beginers cant think of and those would make
-    a great addon for such a beginer leo file.
-
-Commands:
-    List of Leo commands, categorized by activity (or with different
-    categorizations, thank to clones) Or, a link to the leopyref that
-    contains them.
-
-Other (JKN)
-    how to invoke Leo (short list of command-line parameters    
-    brief note on creeating your own settings (myLeoSettings etc)    
-    How to 'install' plugins, adding buttons    
-    @node summary usage    
-
-More: Rest of the directives:
-    @button    
-    @rclick    
-    and all of them, with sample of ussage    
-
-More: Associate leo files    
-    Include the bat + instructions on how to associate Leo files for
-    double-click oppening in windows.
 .. @+node:ekr.20131001045038.19033: *4* Home page re postcard
 Ask where you learned about Leo, how you use Leo, and any suggestions for
 explaining Leo to newbies.
@@ -566,6 +499,410 @@ amazon link:
 http://www.amazon.com/Beginning-Joomla-From-Novice-Professional/dp/1590598482/ref=sr_1_1?ie=UTF8&qid=1380681874&sr=8-1&keywords=beginning+joomla+from+novice+to+professional
 .. @+node:ekr.20131001100335.15926: *5* derwish
 To me, it's to directed acyclic graphs what MS Excel is to tables. 
+.. @+node:ekr.20131002055813.19034: *4* fill-region is broken
+.. @+node:ekr.20131002055813.15974: *4* reformat-body command
+Calls reformat-paragraph repeatedly.
+.. @+node:ekr.20050920084036.189: *5* << define dictionary d of names and Leo commands >>
+c = self.c ; f = c.frame
+
+d = {
+    'abort-edit-headline':          f.abortEditLabelCommand,
+    'about-leo':                    c.about,
+    'add-comments':                 c.addComments,     
+    'beautify':                     c.beautifyPythonCode,
+    'beautify-c':                   c.beautifyCCode,
+    'beautify-all':                 c.beautifyAllPythonCode,
+    'beautify-tree':                c.beautifyPythonTree,
+    'cascade-windows':              f.cascade,
+    # 'check-all-python-code':      c.checkAllPythonCode,
+    'check-derived-file':           c.atFileCommands.checkDerivedFile,
+    'check-leo-file':               c.fileCommands.checkLeoFile,
+    'check-outline':                c.checkOutline,
+    # 'check-python-code':          c.checkPythonCode,
+    'clean-recent-files':           c.cleanRecentFiles,
+    'clear-recent-files':           c.clearRecentFiles,
+    'clone-node':                   c.clone,
+    'close-window':                 c.close,
+    'contract-all':                 c.contractAllHeadlines,
+    'contract-all-other-nodes':     c.contractAllOtherNodes,
+    'contract-node':                c.contractNode,
+    'contract-or-go-left':          c.contractNodeOrGoToParent,
+    'contract-parent':              c.contractParent,
+    'convert-all-blanks':           c.convertAllBlanks,
+    'convert-all-tabs':             c.convertAllTabs,
+    'convert-blanks':               c.convertBlanks,
+    'convert-tabs':                 c.convertTabs,
+    'copy-node':                    c.copyOutline,
+    'copy-text':                    f.copyText,
+    'cut-node':                     c.cutOutline,
+    'cut-text':                     f.cutText,
+    'de-hoist':                     c.dehoist,
+    'delete-comments':              c.deleteComments,
+    'delete-node':                  c.deleteOutline,
+    'demote':                       c.demote,
+    'dump-outline':                 c.dumpOutline,
+    'edit-headline':                c.editHeadline,
+    'end-edit-headline':            f.endEditLabelCommand,
+    'equal-sized-panes':            f.equalSizedPanes,
+    'execute-script':               c.executeScript,
+    'exit-leo':                     g.app.onQuit,
+    'expand-all':                   c.expandAllHeadlines,
+    'expand-all-subheads':          c.expandAllSubheads,
+        # Fixes bug 604037 Status of expandAllSubheads
+    'expand-ancestors-only':        c.expandOnlyAncestorsOfNode,
+    'expand-and-go-right':          c.expandNodeAndGoToFirstChild,
+    'expand-next-level':            c.expandNextLevel,
+    'expand-node':                  c.expandNode,
+    'expand-or-go-right':           c.expandNodeOrGoToFirstChild,
+    'expand-prev-level':            c.expandPrevLevel,
+    'expand-to-level-1':            c.expandLevel1,
+    'expand-to-level-2':            c.expandLevel2,
+    'expand-to-level-3':            c.expandLevel3,
+    'expand-to-level-4':            c.expandLevel4,
+    'expand-to-level-5':            c.expandLevel5,
+    'expand-to-level-6':            c.expandLevel6,
+    'expand-to-level-7':            c.expandLevel7,
+    'expand-to-level-8':            c.expandLevel8,
+    'expand-to-level-9':            c.expandLevel9,
+    'export-headlines':             c.exportHeadlines,
+    'extract':                      c.extract,
+    'extract-names':                c.extractSectionNames,
+    # 'extract-python-method':        c.extractPythonMethod,
+    # 'extract-section':              c.extractSection,
+    'find-next-clone':              c.findNextClone,
+    'flatten-outline':              c.flattenOutline,
+    'go-back':                      c.goPrevVisitedNode,
+    'go-forward':                   c.goNextVisitedNode,
+    'goto-first-node':              c.goToFirstNode,
+    'goto-first-sibling':           c.goToFirstSibling,
+    'goto-first-visible-node':      c.goToFirstVisibleNode,
+    'goto-last-node':               c.goToLastNode,
+    'goto-last-sibling':            c.goToLastSibling,
+    'goto-last-visible-node':       c.goToLastVisibleNode,
+    'goto-next-changed':            c.goToNextDirtyHeadline,
+    'goto-next-clone':              c.goToNextClone,
+    'goto-next-history-node':       c.goToNextHistory,
+    'goto-next-marked':             c.goToNextMarkedHeadline,
+    'goto-next-node':               c.selectThreadNext,
+    'goto-next-sibling':            c.goToNextSibling,
+    'goto-next-visible':            c.selectVisNext,
+    'goto-parent':                  c.goToParent,
+    'goto-prev-history-node':       c.goToPrevHistory,
+    'goto-prev-node':               c.selectThreadBack,
+    'goto-prev-sibling':            c.goToPrevSibling,
+    'goto-prev-visible':            c.selectVisBack,
+    'hide-invisibles':              c.hideInvisibles,
+    'hoist':                        c.hoist,
+    'import-file':                  c.importAnyFile,
+    # 'import-at-file':               c.importAtFile,
+    # 'import-at-root':               c.importAtRoot,
+    # 'import-cweb-files':            c.importCWEBFiles,
+    # 'import-derived-file':          c.importDerivedFile,
+    # 'import-flattened-outline':     c.importFlattenedOutline,
+    # 'import-noweb-files':           c.importNowebFiles,
+    'indent-region':                c.indentBody,
+    'insert-body-time':             c.insertBodyTime,
+    'insert-child':                 c.insertChild,
+    'insert-headline-time':         f.insertHeadlineTime,
+    'insert-node':                  c.insertHeadline,
+    'insert-node-before':            c.insertHeadlineBefore,
+    'mark':                         c.markHeadline,
+    'mark-changed-items':           c.markChangedHeadlines,
+    # 'mark-changed-roots':           c.markChangedRoots,
+    # 'mark-clones':                c.markClones,
+    'mark-subheads':                c.markSubheads,
+    'match-brackets':               c.findMatchingBracket,
+    'minimize-all':                 f.minimizeAll,
+    'move-outline-down':            c.moveOutlineDown,
+    'move-outline-left':            c.moveOutlineLeft,
+    'move-outline-right':           c.moveOutlineRight,
+    'move-outline-up':              c.moveOutlineUp,
+    'new':                          c.new,
+    # 'open-compare-window':        c.openCompareWindow,
+    'open-leoDocs-leo':             c.leoDocumentation,
+    'open-leoPlugins-leo':          c.openLeoPlugins,
+    'open-leoSettings-leo':         c.openLeoSettings,
+    'open-myLeoSettings-leo':       c.openMyLeoSettings,
+    'open-offline-tutorial':        f.leoHelp,
+    'open-online-home':             c.leoHome,
+    # 'open-online-tutorial':       c.leoTutorial,
+    'open-outline':                 c.open,
+    'open-python-window':           c.openPythonWindow,
+    'open-quickstart-leo':          c.leoQuickStart,
+    'open-scripts-leo':             c.openLeoScripts,
+    'open-users-guide':             c.leoUsersGuide,
+    'open-with':                    c.openWith,
+    'outline-to-cweb':              c.outlineToCWEB,
+    'outline-to-noweb':             c.outlineToNoweb,
+    'paste-node':                   c.pasteOutline,
+    'paste-retaining-clones':       c.pasteOutlineRetainingClones,
+    'paste-text':                   f.pasteText,
+    'pretty-print-all-python-code': c.prettyPrintAllPythonCode,
+    'pretty-print-python-code':     c.prettyPrintPythonCode,
+    'promote':                      c.promote,
+    'read-at-auto-nodes':           c.readAtAutoNodes,
+    'read-at-file-nodes':           c.readAtFileNodes,
+    'read-at-shadow-nodes':         c.readAtShadowNodes,
+    'read-file-into-node':          c.readFileIntoNode,
+    'read-outline-only':            c.readOutlineOnly,
+    'redo':                         c.undoer.redo,
+    # 'reformat-body':              c.reformatBody, # 2013/10/02.
+    'reformat-paragraph':           c.reformatParagraph,
+    'remove-sentinels':             c.removeSentinels,
+    'resize-to-screen':             f.resizeToScreen,
+    'revert':                       c.revert,
+    'save-all':                     c.saveAll,
+    'save-file':                    c.save,
+    'save-file-as':                 c.saveAs,
+    'save-file-as-unzipped':        c.saveAsUnzipped,
+    'save-file-as-zipped':          c.saveAsZipped,
+    'save-file-to':                 c.saveTo,
+    'set-colors':                   c.colorPanel,
+    'set-font':                     c.fontPanel,
+    'settings':                     c.preferences,
+    'show-invisibles':              c.showInvisibles,
+    'sort-children':                c.sortChildren,
+    'sort-recent-files':            c.sortRecentFiles,
+    'sort-siblings':                c.sortSiblings,
+    'tangle':                       c.tangle,
+    'tangle-all':                   c.tangleAll,
+    'tangle-marked':                c.tangleMarked,
+    'toggle-active-pane':           f.toggleActivePane,
+    'toggle-angle-brackets':        c.toggleAngleBrackets,
+    'toggle-invisibles':            c.toggleShowInvisibles,
+    'toggle-sparse-move':           c.toggleSparseMove,
+    'toggle-split-direction':       f.toggleSplitDirection,
+    'undo':                         c.undoer.undo,
+    'unindent-region':              c.dedentBody,
+    'unmark-all':                   c.unmarkAll,
+    'untangle':                     c.untangle,
+    'untangle-all':                 c.untangleAll,
+    'untangle-marked':              c.untangleMarked,
+    'weave':                        c.weave,
+    'write-at-auto-nodes':          c.atFileCommands.writeAtAutoNodes,
+    'write-at-file-nodes':          c.fileCommands.writeAtFileNodes,
+    'write-at-shadow-nodes':        c.fileCommands.writeAtShadowNodes,
+    'write-dirty-at-auto-nodes':    c.atFileCommands.writeDirtyAtAutoNodes,
+    'write-dirty-at-file-nodes':    c.fileCommands.writeDirtyAtFileNodes,
+    'write-dirty-at-shadow-nodes':  c.fileCommands.writeDirtyAtShadowNodes,
+    'write-file-from-node':         c.writeFileFromNode,
+    'write-missing-at-file-nodes':  c.fileCommands.writeMissingAtFileNodes,
+    'write-outline-only':           c.fileCommands.writeOutlineOnly,
+}
+.. @+node:ekr.20050920084036.100: *5* fillRegion (can hang)
+def fillRegion (self,event):
+
+    '''Fill all paragraphs in the selected text.'''
+
+    # New in Leo 4.4.4: just use reformat-paragraph logic.
+
+    c = self.c ; p = c.p ; undoType = 'fill-region'
+    w = self.editWidget(event)
+    i,j = w.getSelectionRange()
+    c.undoer.beforeChangeGroup(p,undoType)
+    while 1:
+        progress = w.getInsertPoint()
+        c.reformatParagraph(event,undoType='reformat-paragraph')
+        ins = w.getInsertPoint()
+        s = w.getAllText()
+        if progress >= ins or ins >= j or ins >= len(s):
+            break
+    c.undoer.afterChangeGroup(p,undoType)
+.. @+node:ekr.20131002055813.19033: *5* c.reformatBody (can hang)
+def reformatBody (self,event=None):
+    
+    '''Reformat all paragraphs in the body.'''
+    
+    # New in Leo 4.11
+    c,p = self,self.p
+    undoType = 'reformat-body'
+    w = c.frame.body.bodyCtrl
+    c.undoer.beforeChangeGroup(p,undoType)
+    w.setInsertPoint(0)
+    while 1:
+        progress = w.getInsertPoint()
+        c.reformatParagraph(event,undoType=undoType)
+        ins = w.getInsertPoint()
+        s = w.getAllText()
+        w.setInsertPoint(ins)
+        if ins <= progress or ins >= len(s):
+            break
+    c.undoer.afterChangeGroup(p,undoType)
+.. @+node:ekr.20101118113953.5839: *5* c.reformatParagraph & helpers
+def reformatParagraph (self,event=None,undoType='Reformat Paragraph'):
+
+    """Reformat a text paragraph
+
+    Wraps the concatenated text to present page width setting. Leading tabs are
+    sized to present tab width setting. First and second line of original text is
+    used to determine leading whitespace in reformatted text. Hanging indentation
+    is honored.
+
+    Paragraph is bound by start of body, end of body and blank lines. Paragraph is
+    selected by position of current insertion cursor.
+
+    """
+
+    c = self ; body = c.frame.body ; w = body.bodyCtrl
+    if g.app.batchMode:
+        c.notValidInBatchMode("reformat-paragraph")
+        return
+    if body.hasSelection():
+        i,j = w.getSelectionRange()
+        w.setInsertPoint(i)
+    oldSel,oldYview,original,pageWidth,tabWidth = c.rp_get_args()
+    head,lines,tail = c.findBoundParagraph()
+    if lines:
+        indents,leading_ws = c.rp_get_leading_ws(lines,tabWidth)
+        result = c.rp_wrap_all_lines(indents,leading_ws,lines,pageWidth)
+        c.rp_reformat(head,oldSel,oldYview,original,result,tail,undoType)
+.. @+node:ekr.20031218072017.1825: *6* c.findBoundParagraph
+def findBoundParagraph (self,event=None):
+
+    c = self
+    head,ins,tail = c.frame.body.getInsertLines()
+    if not ins or ins.isspace() or ins[0] == '@':
+        return None,None,None
+    head_lines = g.splitLines(head)
+    tail_lines = g.splitLines(tail)
+    if 0:
+        << trace head_lines, ins, tail_lines >>
+    # Scan backwards.
+    i = len(head_lines)
+    while i > 0:
+        i -= 1
+        line = head_lines[i]
+        if len(line) == 0 or line.isspace() or line[0] == '@':
+            i += 1 ; break
+    pre_para_lines = head_lines[:i]
+    para_head_lines = head_lines[i:]
+    # Scan forwards.
+    i = 0
+    for line in tail_lines:
+        if not line or line.isspace() or line.startswith('@'):
+            break
+        i += 1
+    para_tail_lines = tail_lines[:i]
+    post_para_lines = tail_lines[i:]
+    head = g.joinLines(pre_para_lines)
+    result = para_head_lines 
+    result.extend([ins])
+    result.extend(para_tail_lines)
+    tail = g.joinLines(post_para_lines)
+    return head,result,tail # string, list, string
+.. @+node:ekr.20031218072017.1826: *7* << trace head_lines, ins, tail_lines >>
+if 0:
+    g.pr("\nhead_lines")
+    for line in head_lines:
+        g.pr(line)
+    g.pr("\nins", ins)
+    g.pr("\ntail_lines")
+    for line in tail_lines:
+        g.pr(line)
+else:
+    g.es_print("head_lines: ",head_lines)
+    g.es_print("ins: ",ins)
+    g.es_print("tail_lines: ",tail_lines)
+.. @+node:ekr.20101118113953.5840: *6* rp_get_args
+def rp_get_args (self):
+
+    '''Compute and return oldSel,oldYview,original,pageWidth,tabWidth.'''
+
+    c = self ; body = c.frame.body ;  w = body.bodyCtrl
+
+    d = c.scanAllDirectives()
+
+    # g.trace(c.editCommands.fillColumn)
+
+    if c.editCommands.fillColumn > 0:
+        pageWidth = c.editCommands.fillColumn
+    else:
+        pageWidth = d.get("pagewidth")
+
+    tabWidth  = d.get("tabwidth")
+    original = w.getAllText()
+    oldSel =  w.getSelectionRange()
+    oldYview = body.getYScrollPosition()
+
+    return oldSel,oldYview,original,pageWidth,tabWidth
+.. @+node:ekr.20101118113953.5841: *6* rp_get_leading_ws
+def rp_get_leading_ws (self,lines,tabWidth):
+
+    '''Compute and return indents and leading_ws.'''
+
+    # c = self
+    indents = [0,0]
+    leading_ws = ["",""]
+    for i in (0,1):
+        if i < len(lines):
+            # Use the original, non-optimized leading whitespace.
+            leading_ws[i] = ws = g.get_leading_ws(lines[i])
+            indents[i] = g.computeWidth(ws,tabWidth)
+
+    indents[1] = max(indents)
+
+    if len(lines) == 1:
+        leading_ws[1] = leading_ws[0]
+
+    return indents,leading_ws
+.. @+node:ekr.20101118113953.5842: *6* rp_reformat
+def rp_reformat (self,head,oldSel,oldYview,original,result,tail,undoType):
+
+    '''Reformat the body and update the selection.'''
+
+    c = self ; body = c.frame.body ; w = body.bodyCtrl
+    s = w.getAllText()
+    # This destroys recoloring.
+    junk, ins = body.setSelectionAreas(head,result,tail)
+    
+    changed = original != head + result + tail
+    if changed:
+        # 2013/09/14: fix an annoying glitch when there is no
+        # newline following the reformatted paragraph.
+        if not tail and ins < len(s): ins += 1
+        # 2010/11/16: stay in the paragraph.
+        body.onBodyChanged(undoType,oldSel=oldSel,oldYview=oldYview)
+    else:
+        # Advance to the next paragraph.
+        ins += 1 # Move past the selection.
+        while ins < len(s):
+            i,j = g.getLine(s,ins)
+            line = s[i:j]
+            # 2010/11/16: it's annoying, imo, to treat @ lines differently.
+            if line.isspace():
+                ins = j+1
+            else:
+                ins = i
+                break
+        # setSelectionAreas has destroyed the coloring.
+        c.recolor()
+    w.setSelectionRange(ins,ins,insert=ins)
+    # 2011/10/26: Calling see does more harm than good.
+        # w.see(ins)
+.. @+node:ekr.20101118113953.5843: *6* rp_wrap_all_lines
+def rp_wrap_all_lines (self,indents,leading_ws,lines,pageWidth):
+
+    '''compute the result of wrapping all lines.'''
+
+    trailingNL = lines and lines[-1].endswith('\n')
+    lines = [g.choose(z.endswith('\n'),z[:-1],z) for z in lines]
+
+    # Wrap the lines, decreasing the page width by indent.
+    result = g.wrap_lines(lines,
+        pageWidth-indents[1],
+        pageWidth-indents[0])
+
+    # prefix with the leading whitespace, if any
+    paddedResult = []
+    paddedResult.append(leading_ws[0] + result[0])
+    for line in result[1:]:
+        paddedResult.append(leading_ws[1] + line)
+
+    # Convert the result to a string.
+    result = '\n'.join(paddedResult)
+    if trailingNL: result = result + '\n'
+
+    return result
 .. @+node:ekr.20130926053913.11573: *3* for b2/final (7)
 .. @+node:ekr.20130806072439.20477: *4* Fix full-screen bug
 I can't make Leo-Editor start in a full-screen window under openSUSU 12.1
