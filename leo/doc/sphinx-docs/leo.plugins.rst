@@ -732,6 +732,14 @@ plugins Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`rss` Module
+-----------------
+
+.. automodule:: leo.plugins.rss
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`rst3` Module
 ------------------
 
