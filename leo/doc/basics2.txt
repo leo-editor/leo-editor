@@ -1,0 +1,407 @@
+.. @+leo-ver=5-thin
+.. @+node:ekr.20131003040744.18224: * @file basics2.txt
+.. @@language rest
+.. @@tabwidth -4
+
+.. @+at @rst-options
+..  call_docutils=False
+..  code_mode=False
+..  generate_rst=True
+..  http_server_support = False
+..  show_organizer_nodes=True
+..  show_headlines=True
+..  show_leo_directives=True
+..  stylesheet_path=..\doc
+..  write_intermediate_file = True
+..  verbose=True
+.. @@c
+.. @+all
+.. @+node:ekr.20131003040744.18226: ** @rst html\basics2.html
+#########################################
+Learn Intermediate Leo Topics in One Hour
+#########################################
+
+.. _`Leo's`: http://leoeditor.com/
+
+This tutorial continues `Leo's`_ tutorial. It covers several intermediate
+topics and should take less than an hour to complete.
+
+.. contents::
+    :depth: 4
+
+.. @+node:ekr.20131004073415.16044: *3* Clones
+..  .. index::
+    ..  pair: Clone; Tutorial
+    
+A **clone** is a node that appears in more than one place in a Leo outline.
+Clones are marked with a small red arrow in its icon box. 
+
+All clones of a node are actually *the same node*, so any change to one
+clone affects all clones. Inserting, moving or deleting any child of a
+clone will change all other clones on the screen.
+    
+Clones are one of Leo's most powerful features.
+Clones allow data to be stored in *arbitrarily many* places within an outline.
+
+Please take a few moments to experiment with clones:
+
+- Create a node whose headline is A.
+- Ctrl-` (clone-node) clones node A.
+- Type some text into the body of A.
+- All clones of A now have the same body.
+- Insert a node, say B, as a child of any of the A nodes.
+- All the A nodes now have a B child.
+- See what happens if you clone B.
+- See what happens if you insert, delete or move nodes that are children of A.
+- When you delete a node's penultimate clone,
+  the last clone becomes a regular node again.
+
+.. @+node:ekr.20131004073415.16045: *3* Views
+..  .. index::
+    ..  pair: Views; Tutorial
+
+Using clones, you can create as many views of your data as you like.
+
+Views gather data for bug fixes, design review or whatever.
+
+To create a new view:
+
+- Create an *ordinary* (non-cloned) node, to represent the view.
+  Let's call this the **view node**.
+
+- Clone the nodes from the outline that you want contained in the view.
+
+- "Add" these clones to the view node by moving them so they become children
+  of the view node.
+
+- You can also add uncloned nodes to the view node.
+
+It's particularly useful to create a new view for each programming task:
+
+- Add clones of all nodes related to the task to the view node.
+
+- Now you can work on nodes in a single place; the location of the original
+  clones doesn't matter.
+.. @+node:ekr.20131001100335.15939: *3* Creating documents with reStructuredText
+.. _docutils: http://docutils.sourceforge.net
+.. _LaTeX: http://www.latex-project.org/
+.. _reStructuredText: http://docutils.sourceforge.net/rst.html
+.. _Sphinx: http://sphinx.pocoo.org/
+.. _`this chapter`: http://leoeditor.com/rstplugin3.html
+.. _`Leo's Users Guide`: http://leoeditor.com/leo_toc.html
+
+The rst3 command converts an @rst tree to `reStructedText`_ (rST) and sends the
+result to `docutils`_ or `Sphinx`_ for further processing.
+
+With this tool chain, you can easily create HTML, PDF, LaTeX and other
+kinds of documents. All of Leo's documentation is written in Sphinx and
+processed with the rst3 command to produce HTML files.
+
+In "plain" rST, you denote sections by underlining heading names.
+Reorganizing an document is tedious: you have to change the underlining
+characters by hand.
+
+In contrast, the rst3 command automatically creates rST sections from
+headlines. Reorganizing your document is easy--just reorganize your @rst
+tree. You don't have to change rST markup!
+
+The rst3 command provides *many* other capabilities for power users. For
+full details, see `this chapter`_ in `Leo's Users Guide`_.
+.. @+node:ekr.20131004083454.16100: *3* Auto-completion
+.. @+node:ekr.20131001100335.15941: *3* Scripting Leo
+.. @+node:ekr.20131004073415.16042: *3* Using @first
+..  .. index::
+    ..  pair: @first; Tutorial
+
+The @first directive forces a lines to appear before the first sentinel of a
+external file. For example::
+
+    @first #! /usr/bin/env python
+    @first # -*- coding: utf-8 -*-
+.. @+node:ekr.20131004073415.16041: *3* Using @path
+..  .. index::
+    ..  pair: @path; Tutorial
+
+Rather than specifying long paths in @file nodes, you can specify a path in
+an ancestor @path node.
+
+For example, suppose three nodes have the following headlines::
+
+    @path a
+        @path b
+            @file c/d.py
+
+Because of the ancestor @path nodes, the @file node creates the file
+a/b/c/d.py
+
+Within @path and @<file> paths, {{exp}} gets evaluated with the following
+symbols known: c, g, p, os and sys.  For example::
+
+    @file {{os.path.abspath(os.curdir)}}/abc.py
+
+refers to the file abc.py in (absolute path of) the current directory.
+.. @+node:ekr.20131003040744.18225: *3* Using @auto nodes
+.. @+node:ekr.20131002055813.15971: *3* Using @button nodes
+.. @+node:ekr.20131002055813.15972: *3* Using @test nodes
+.. @+node:ekr.20131002055813.19038: *3* Key bindings for moving the cursor
+You may override the default key bindings in leoSettings.leo with
+@shortcuts nodes in your myLeoSettings.leo file.
+
+**Remember**, all @shortcuts nodes must be descendants of an @settings
+node.
+
+**Note**: you may use as many @shortcuts nodes as you like to organize your
+bindings.
+
+For example, to bind back-char command to Ctrl-B, add this line to the body
+text of one of your @shortcuts nodes::
+
+    back-char = Ctrl-B
+
+Here are the commands that move the cursor, with their default bindings, if
+any.
+
+Execute commands without bindings using the minibuffer, as usual.
+
++----------------------+--------------------------------------+
+| Binding              | Command                              |
++======================+======================================+
+|                      | **Move by characters**               |
++----------------------+--------------------------------------+
+| Left-Arrow           | back-char                            |
++----------------------+--------------------------------------+
+| Right-Arrow          | forward-char                         |
++----------------------+--------------------------------------+
+| Shift-Right-Arrow    | forward-char-extend-selection        |
++----------------------+--------------------------------------+
+| Shift-Left-Arrow     | back-char-extend-selection           |
++----------------------+--------------------------------------+
+|                      | **Move by words**                    |
++----------------------+--------------------------------------+
+| Ctrl-Left            | back-word                            |
++----------------------+--------------------------------------+
+| Ctrl-Right           | forward-word                         |
++----------------------+--------------------------------------+
+| Shift-Ctrl-Left      | back-word-extend-selection           |
++----------------------+--------------------------------------+
+| Shift-Ctrl-Right     | forward-word-extend-selection        |
++----------------------+--------------------------------------+
+|                      | **Move by lines**                    |
++----------------------+--------------------------------------+
+| Down-Arrow           | next-line                            |
++----------------------+--------------------------------------+
+| End                  | end-of-line                          |
++----------------------+--------------------------------------+
+| Home                 | beginning-of-line                    |
++----------------------+--------------------------------------+
+| Shift-Down-Arrow     | next-line-extend-selection           |
++----------------------+--------------------------------------+
+| Shift-End            | end-of-line-extend-selection         |
++----------------------+--------------------------------------+
+| Shift-Home           | beginning-of-line-extend-selection   |
++----------------------+--------------------------------------+
+| Shift-Up-Arrow       | previous-line-extend-selection       |
++----------------------+--------------------------------------+
+| Up-Arrow             | previous-line                        |
++----------------------+--------------------------------------+
+|                      | **Move by sentences**                |
++----------------------+--------------------------------------+
+| None                 | backward-sentence                    |
++----------------------+--------------------------------------+
+| None                 | backward-sentence-extend-selection   |
++----------------------+--------------------------------------+
+| None                 | forward-sentence                     |
++----------------------+--------------------------------------+
+| None                 | forward-sentence-extend-selection    |
++----------------------+--------------------------------------+
+|                      | **Move by paragraphs**               |
++----------------------+--------------------------------------+
+| None                 | backward-paragraph                   |
++----------------------+--------------------------------------+
+| None                 | backward-paragraph-extend-selection  |
++----------------------+--------------------------------------+
+| None                 | forward-paragraph                    |
++----------------------+--------------------------------------+
+| None                 | forward-paragraph-extend-selection   |
++----------------------+--------------------------------------+
+|                      | **Move by pages**                    |
++----------------------+--------------------------------------+
+| PageDown             | forward-page                         |
++----------------------+--------------------------------------+
+| PageUp               | backward-page                        |
++----------------------+--------------------------------------+
+| Shift-PageDown       | forward-page-extend-selection        |
++----------------------+--------------------------------------+
+| Shift-PageUp         | backward-page-extend-selection       |
++----------------------+--------------------------------------+
+|                      | **Move to start/end of buffer**      |
++----------------------+--------------------------------------+
+| Ctrl-End             | end-of-buffer                        |
++----------------------+--------------------------------------+
+| Ctrl-Home            | beginning-of-buffer                  |
++----------------------+--------------------------------------+
+| Shift-Ctrl-End       | end-of-buffer-extend-selection       |
++----------------------+--------------------------------------+
+| Shift-Ctrl-Home      | beginning-of-buffer-extend-selection |
++----------------------+--------------------------------------+
+.. @+node:ekr.20131002055813.19696: *4* @rst-ignore Additional cursor movement commands
+You can move the cursor by sentences or paragraphs using the following
+commands, none of which have default key bindings. You may execute such
+commands from the minibuffer, or bind your own keystrokes to them.
+
+Moves by sentences:
+
+- back-sentence: moves the cursor to the beginning of a sentence.
+- back-sentence-extend-selection: moves the cursor and extends the selection.
+- forward-sentence: moves the cursor to the end of a sentence.
+- forward-sentence-extend-selection: moves the cursor and extends the selection.
+
+Moves by paragraphs:
+
+- back-paragraph: moves the cursor to the beginning of a paragraph.
+- back-paragraph-extend-selection: moves the cursor and extends the selection.
+- forward-paragraph: moves the cursor to the end a paragraph.
+- forward-paragraph-extend-selection: moves the cursor and extends the selection.
+.. @+node:ekr.20131001100335.15937: *3* More editing commands
+http://www2.lib.uchicago.edu/keith/tcl-course/emacs-tutorial.html
+
+.. @+node:ekr.20131004083454.16099: *4* Deleting text
+Both <Backspace> and <Del> delete all selected text if some text is
+selected.
+
+If there is no selected text, <Backspace> deletes the character to the left
+of the cursor, and <Del> deletes the character to the right of the cursor.
+
+Deleted text is not available to be pasted or yanked (see below).
+.. @+node:ekr.20131004083454.16096: *4* Killing and yanking text
+Killing means to save the removed text, so that it can be yanked
+back later someplace else.
+
+Killed text is saved on the kill ring. The kill ring holds the last N
+kills, where N is 30 by default, but you can change it to anything you like
+by changing the value of the variable kill-ring-max. The kill ring acts
+like a fifo when you're killing things (after the 30th kill, kill number
+one is gone), but like a ring when you're yanking things back (you can yank
+around the ring circularly). kill-ring-max doesn't apply to the amount of
+text (in bytes) that can be saved in the kill ring (there's no limit), only
+to the number of distinct kills. Characters
+
+C-d delete-char. Deletes the character to the right of (under, if the
+    cursor is a block that covers a character) the cursor. DEL
+    delete-backward-char. Deletes the character to the left of the cursor.
+
+M-d kill-word. Kills to the end of the word to the right of the cursor
+    (forward). M-DEL backward-kill-word. Kills to the beginning of the word
+    to the left of the cursor (backward).
+
+Lines (vertically) It doesn't seem too intuitive to kill lines vertically
+by analogy with C-n and C-p; I know of no such commands. Lines
+(horizontally)
+
+C-k kill-line. Kills to the end of the current line, not including the
+    newline. Thus, if you're at the beginning of a line it takes two C-k's
+    to kill the whole line and close up the whitespace. C-u 0 C-k
+    kill-line. Kills to the beginning of the current line, not including
+    the newline.
+
+You might think that C-u -1 C-k would be used to kill to the beginning of
+the line, and it does, but it includes the newline before the line as well.
+Sentences
+
+M-k kill-sentence. Kills to the end of the current sentence, including any
+    newline within the sentence. C-u -1 M-k kill-sentence. Kills to the
+    beginning of the current sentence, including any newlines within the
+    sentence.
+
+Paragraphs The commands forward-kill-paragraph and backward-kill-paragraph
+exist, but are not bound to any keys by default. Pages There are no
+commands to kill pages (but see The Mark and the Region). Buffers The
+command kill-buffer doesn't kill all the text in the buffer, but rather the
+entire buffer data structure; see The Mark and the Region. S-Expressions
+(balanced parentheses)
+
+C-M-k kill-sexp. Kills the sexp after the cursor. C-u -1 C-M-k kill-sexp.
+    Kills the sexp before the cursor.
+
+The command backward-kill-sexp exists, but is not bound to any key by
+default. Functions There are no commands to kill functions (defuns) (but
+see The Mark and the Region). Extending Kills If you kill several times in
+a row, with any combination of kill commands, but without any non-kill
+commands in between, these kills are appended together in one entry on the
+kill ring. For example you can kill a block of text as several lines by
+saying C-u 6 C-k, which kills (as one kill) 6 lines. Yanking Once you've
+killed some text, how do you get it back? You can yank back the most
+recently killed text with C-y (yank). Since Emacs has only one kill ring
+(as opposed to one per buffer), you can kill in one buffer, switch to
+another and yank the text there.
+
+To get back previous kills, you move around the kill ring. Start with C-y
+to get the most recent kill, and then use M-y to move to the previous spot
+in the kill ring by replacing the just-yanked text with the previous kill.
+Subsequent M-y's move around the ring, each time replacing the yanked text.
+When you reach the text you you're interested in, just stop. Any other
+command (a motion command, self-insert, anything) breaks the cycling of the
+kill ring, and the next C-y yanks the most recent kill again.
+.. @+node:ekr.20131004083454.16097: *4* The Mark and the Region
+Emacs can manipulate arbitrary chunks of text as well as distinct textual
+objects. The way this is done is to define a region of text; many commands
+will operate on this region.
+
+The region is the text between point and mark. Point is actually the Emacs
+term for what we've been calling the cursor up to now. The mark, on the
+other hand, is set with a special command C-@ (set-mark-command). This sets
+the mark exactly where point is, but now you can move point elsewhere and
+you have: the region.
+
+Each buffer has a distinct point and mark, and therefore a distinct region.
+(It's also possible for there to be no mark in a buffer, and therefore no
+region.)
+
+The region is the same regardless of whether point comes first in the
+buffer or mark does; it makes no difference, just do what's convenient.
+
+The region is normally invisible (but see C-x C-x). You'll get used to
+this. However, if you're running Emacs under a windowing system, you can
+make the region visible by executing M-x transient-mark-mode.
+
+Many commands that move point a significant distance (like M-< and C-s, for
+example) leave the mark set at the spot they moved from. You'll see "Mark
+set" in the echo area when this happens.
+
+When using Emacs under a windowing system like X, the mouse can be used to
+sweep out the region, but many users find it faster to keep their hands
+on the keyboard and use the familiar motion commands.
+
+There are some special commands that are specifically designed to set the
+region around some interesting text.
+
+M-@ mark-word. Sets the region around the next word, or from point to the
+    end of the current word, if you're in the middle of one. M-h
+    mark-paragraph. Sets the region around the current paragraph. C-M-@
+    mark-sexp. Sets the region around the same sexp that C-M-f would move
+    to. C-M-h mark-defun. Sets the region around the current defun. C-x C-p
+    mark-page. Sets the region around the current page. C-x h
+    mark-whole-buffer. Sets the region around the entire buffer.
+
+So now you know how to define the region: what can you do with it?
+
+C-x C-x exchange-point-and-mark. Swaps mark and point. Repeated rapid
+    execution of this command makes it easy to see the extent of the
+    region. C-w kill-region. Kills the region. It goes on the kill ring, of
+    course. M-w kill-ring-save. Saves the region to the kill ring without
+    removing it from the buffer. This is exactly equivalent to typing C-w
+    C-y. C-x C-i indent-rigidly. Rigidly indents the region by as many
+    characters (columns) as you provide as a numeric argument (default is 1
+    column). C-x C-l downcase-region. Convert the entire region to
+    lowercase. This command is disabled by default. C-x C-u upcase-region.
+    Convert the entire region to uppercase. This command is disabled by
+    default. M-x fill-region fill-region. Fills, i.e., justifies with a
+    ragged right margin, all the paragraphs within the region.
+
+There are many, many more. 
+.. @+node:ekr.20131004083454.16098: *4* Indenting & unindenting text
+Tab (newline-and-indent) indents a line.
+
+Shift-Tab (unindent-region) unindents a line.
+.. @-all
+.. @-leo

@@ -1,0 +1,466 @@
+.. @+leo-ver=5-thin
+.. @+node:ekr.20131003040744.16025: * @file basics1.txt
+.. @@language rest
+.. @@tabwidth -4
+
+.. @+at @rst-options
+..  call_docutils=False
+..  code_mode=False
+..  generate_rst=True
+..  http_server_support = False
+..  show_organizer_nodes=True
+..  show_headlines=True
+..  show_leo_directives=True
+..  stylesheet_path=..\doc
+..  write_intermediate_file = True
+..  verbose=True
+.. @@c
+.. @+all
+.. @+node:ekr.20131003040744.16026: ** @rst html\basics1.html
+###################################
+Learn the Basics of Leo in One Hour
+###################################
+
+.. _Leo:    http://leoeditor.com/
+.. _`last section` : `Creating programming source files with @others`_
+.. _`ask for help`: https://groups.google.com/forum/#!forum/leo-editor
+
+This tutorial will teach you the basics of Leo_ in about one hour.
+
+The `last section`_ is challenging and is intended only for programmers. It
+is also what distinguishes Leo from all other programming environments.
+It will repay careful study.
+
+.. contents::
+    :depth: 4
+
+.. @+node:ekr.20131002211347.6456: *3* Command names
+Every Leo command has a **command name**. In this document, keystrokes that
+invoke a command will be followed by the command name in parentheses.
+
+For example, Ctrl-S (save-file) saves a Leo file.
+
+The full-command (Alt-X) command executes any other command by typing its
+full name. For full details see `The minibuffer & completions`_.
+.. @+node:ekr.20131002055813.15973: *3* Leo's main window
+Here is a slightly reduced screenshot of Leo's main window:
+
+.. image:: screen-shots/render-svg-sources.png
+   :alt: Screenshot
+   :scale: 80 %
+.. :align: left
+.. :height: 100px
+.. :width: 200 px
+
+Leo's main window consists of
+an **outline pane** at the top left,
+a **log pane** at the top right,
+a **body pane** at the bottom left,
+and an optional **viewrendered pane** at the bottom right.
+The **minibuffer** and **status line** lie at the bottom of the main window.
+
+The log pane contains several tabs. The **Log tab** shows messages from
+Leo, the **Find Tab** shows the status of Leo's Find/Replace commands.
+Other tabs may also appear in the log pane: The **Spell Tab** controls
+Leo's spell-checking. The **Completion Tab** shows available typing
+completions.
+
+Leo stores all data in **nodes**. Nodes have **headlines**, shown in
+the outline pane, and **body text**. The body pane shows the body text of
+the **presently selected node**, the node whose headline is selected in the
+outline pane.
+
+Alt-0 (vr-toggle) hides or shows the viewrendered pane.
+
+You may open multiple Leo outlines in different tabs within the same main
+window. Ctrl-Tab (tab-cycle-next) switches between outline tabs.
+.. @+node:ekr.20131002055813.19835: *3* Operations on nodes
+Ctrl-I (insert-node) inserts a new node into the outline.
+
+Ctrl-Shift-X (cut-node) cuts the outline and all its descendants, placing
+the node on the clipboard.
+
+Ctrl-Shift-V (paste-node) pastes a node (and its descendants) from the
+clipboard after the presently selected node.
+
+Ctrl-{ (promote) makes all the children of a headline siblings of the
+headline.
+
+Ctrl-} (demote) makes all following siblings of a headline children of the
+headline. The demote command is useful for gathering nodes together before
+moving or cutting them.
+.. @+node:ekr.20131002055813.19036: *3* Selecting and moving outline nodes
+Arrow keys (including the Home and End keys) select and move nodes in the
+outline pane.
+
+You may select, expand and contract outline nodes with the mouse as usual,
+but using arrow keys is *highly recommended*.
+
+When focus is in the outline pane, *plain* arrows keys change the selected node:
+
+- Right-arrow (expand-and-go-right) expands a node or selects its first child.
+- Left-arrow (contract-or-go-left) contracts a node if it's children are visible,
+  and selects the node's parent otherwise. 
+- Up-arrow (goto-prev-visible) selects the next *visible* outline node.
+- Down-arrow (goto-next-visible) selects the previous *visible* outline node.
+  
+When focus is in the outline pane, Shift-arrow keys move the selected node
+in the direction of the arrow, if possible.
+
+Regardless of focus, Alt-arrow and Alt-Shift-arrow keys work on outline nodes:
+
+- Alt-Home (goto-first-visible-node) selects the first outline node.
+- Alt-End (goto-last-visible-node) selects the last *visible* outline node.
+- Alt-arrow keys select the outline pane, and then act just like the plain
+  arrow keys when the outline pane has focus.
+- Alt-Shift-arrow keys select the outline pane and move the selected node.
+.. @+node:ekr.20131002055813.19037: *3* Moving the cursor in text panes
+When focus is in any of Leo's text panes (body pane, log pane, headlines), arrows keys
+work as usual:
+
+- Plain arrow keys move the cursor.
+- Shift-arrow keys move the cursor, extending the selected text.
+- Ctrl-arrow keys move the cursor by words.
+- Ctrl-Shift-arrow keys move the cursor by words, extending the text selection.
+
+The Home and End keys work as follows:
+
+- Home and End move the cursor to the beginning or end of a line.
+- Ctrl-Home moves the cursor to the beginning of the body text.
+- Ctrl-End moves the cursor to the end of the body text.
+- Ctrl-Shift-Home and Ctrl-Shift-End move the cursor to the beginning
+  or end of the body text, and extend the selected text.
+  
+The PageUp and PageDown keys work in a similar manner:
+
+- PageDown and PageUp move the cursor up or down one page.
+- Shift-PageDown and Shift-PageUp move the cursor and extend the selection.
+
+
+Regardless of focus, you can put the cursor in headline text as follows:
+
+- Ctrl-H (edit-headline) begins editing the headline of the selected node.
+- <Return> (end-edit-headline) ends the editing, leaving the focus in the body pane.
+.. @+node:ekr.20131001100335.15938: *3* Finding & replacing text
+Ctrl-F (search-with-present-options) shows the Find Tab and puts the focus
+in the minibuffer and shows the Find tab.
+
+**Important**: the Find tab just shows you the status of search and replace
+operations. You control those operations from the minibuffer.
+
+**Note**: You can toggle the radio buttons and check boxes in the Find Tab
+with Ctrl-Alt keys. For example, Ctrl-Alt-X (toggle-find-regex-option)
+toggles the Regexp checkbox.
+
+After typing Ctrl-F, type the search string, say "def", in the minibuffer.
+
+Start the find by typing <Return>.
+
+But suppose you want to replace "def" with "foo", instead of just finding
+"foo".
+
+Before typing <Return> type Shift-Ctrl-R. The minibuffer prompts for the
+replacement string. Notice that the status area now shows “def” as the Find
+string.
+
+Type "foo" and type <Return> to start the find-next command.
+
+When Leo finds the next instance of "def", it will select it.
+
+- Ctrl-minus (replace-then-find) replaces the selected text.
+- F3 (find-next) continues searching without making a replacement.
+- F2 (find-previous) continues the search in reverse.
+- Ctrl-G (keyboard-quit) ends the search.
+.. @+node:ekr.20131001100335.15946: *3* The minibuffer & completions
+Leo’s minibuffer appears at the bottom of Leo’s main window. You use the
+minibuffer to execute commands by name, and also to accumulate arguments to
+commands.
+
+Alt-X (full-command) puts the cursor in the minibuffer.
+
+You could type the full command name in the minibuffer, followed by the
+<Return> key to invoke the command, but that would be *way* too much work.
+
+Instead, you can avoid most typing using **tab completion**. With tab
+completion, there is no need to remember the exact names of Leo’s commands.
+
+For example, suppose you want to print out the list of Leo’s commands. You
+might remember only that there are several related commands and that they
+all start with "print". Just type::
+
+    <Alt-X>pri<Tab>
+
+You will see "print-" in the minibuffer. This is the longest common prefix
+of all the command names that start with "pri". The Completion tab in the log pane
+shows all the commands that start with "print-".
+
+Now just type "c<Tab>" and you will see the print-commands command in the
+minibuffer.
+
+Finally, <Return> executes the command.
+
+The output of the print-commands command appears in the commands tab, and
+focus returns to the body pane.
+
+Summary:
+
+- <Return> executes the command
+- <Tab> shows all valid completions.
+- <BackSpace> shows more alternatives.
+- Ctrl-G exits the minibuffer and puts focus in the body pane.
+.. @+node:ekr.20131002055813.19837: *3* Undoing and redoing changes
+Leo has unlimited undo--Leo remembers *all* changes you make to outline
+structure or the contents of any node since you restarted Leo.
+
+Ctrl-Z (undo) undoes the last change. Another Ctrl-Z undoes the
+previous change, etc. 
+
+Ctrl-Shift-Z (redo) undoes the effect of the last undo, etc.
+
+The first two entries of the Edit menu show what the next undo or redo
+operation will be.
+.. @+node:ekr.20131001100335.15947: *3* Getting help
+F1 (help) shows a help message appears in the viewrendered pane.
+Alt-0 (vr-toggle) hides or shows this pane.
+
+F11 (help-for-command) shows the documentation for any Leo command. F11
+prompts for the name of a Leo command in the minibuffer. Use tab completion
+to see the list of all commands that start with a given prefix.
+
+F12 (help-for-python) shows the documentation from Python's help system.
+Typing completion is not available: type the full name of any Python
+module, class, function or statement.
+
+Several commands clarify which settings are in effect, and where they came
+from:
+
+- print-bindings prints an organized list of all present key bindings.
+- print-settings prints an alphabetical list of all settings in effect 
+
+Using Leo, especially for programming, requires some learning initially.
+Please feel free to `ask for help`_ at any time.
+.. @+node:ekr.20131004064408.16020: *3* Leo directives
+.. .. index::
+..    pair: Directive; Tutorial
+
+**Directives** control Leo's operations.
+Directives start with '@' in the leftmost column.
+
+Directives may appear either in headlines or body text.
+
+Directives apply until overridden by the same (or related) directive in a
+descendant node.
+
+Some commonly used general-purpose directives:
+
+.. .. glossary::
+
+..  .. index::
+    ..  pair: @color; Tutorial
+    ..  pair: @nocolor; Tutorial
+    ..  pair: @killcolor; Tutorial
+
+::
+
+    @color
+    @killcolor
+    @nocolor
+
+These control whether to syntax color text.
+
+Nodes may contain multiple color directives.
+
+Nodes containing multiple color directives do not affect coloring of
+descendant nodes.
+    
+..  .. index::
+    ..  pair: @language; Tutorial
+
+::
+
+    @language python
+    @language c
+    @language rest # restructured text
+    @language plain # plain text: no syntax coloring.
+    
+These control which language to use when syntax coloring text.
+    
+
+..  .. index::
+    ..  pair: @pagewidth; Tutorial
+    
+::
+
+    @pagewidth 100
+    
+Sets the page width used when formatting paragraphs.
+
+..  .. index::
+    ..  pair: @tabwidth; Tutorial
+    ..  pair: Negative tab width; Tutorial
+
+::
+
+    @tabwidth -4
+    @tabwidth 8
+    
+Sets the width of tabs.
+
+Negative tab widths cause Leo to convert tabs to
+spaces and are highly recommended for Python programming.
+
+..  .. index::
+    ..  pair: @wrap; Tutorial
+    ..  pair: @nowrap; Tutorial
+    
+::
+
+    @nowrap
+    @wrap
+
+These enable or disable line wrapping in the body pane.
+
+.. @+node:ekr.20131002055813.19697: *3* Creating files
+.. _`Intermediate Topics tutorial`: http://leoeditor.com/basics2.html
+.. _`Using @auto and friends`: http://leoeditor.com/basics2.html#using-auto-nodes
+
+Leo stores outline data on your file system in **.leo files**.
+
+Rather than storing all your data in the .leo file, you may store parts of
+your outline data in **external files**, files on your file system.
+
+**@file nodes** create external files. @file nodes have headlines starting
+with @file followed by a file name::
+
+    @file leoNodes.py
+    @file ../../notes.text
+
+Leo reads external files automatically when you open Leo outline, and
+writes all **dirty** (changed) external files when you save any Leo
+outline.
+
+When writing @file nodes, Leo adds **sentinel comments** to external files.
+Sentinels embed Leo's outline structure into external files.
+
+If you don't want sentinels in your sources, skip head to
+`Using @auto and friends`_ in Leo's `Intermediate Topics tutorial`_.
+
+.. @+node:ekr.20131003040744.18221: *4* Creating non-programming files with @all
+Use the **@all** directive for non-programming files. @all tells Leo to
+write the **@file tree** (the @file node and all its descendants) to the
+external file in **outline order**, the order in which the nodes appear in
+the outline pane when all nodes are expanded.
+.. @+node:ekr.20131003040744.18222: *4* Creating programming source files with @others
+Now we come to the programming features that distinguish Leo from all other
+programming environments. Please study this section carefully if you intend
+to use Leo for programming. You may want to read this section several
+times--the introductory definitions may make more sense after looking at
+the examples toward the end of this section.
+If you get stuck, please `ask for help`_ immediately.
+
+The @others directive, and markup called section references (see below),
+tell Leo how to create external files.
+
+**Essential Terms**:
+
+- A **section name** is any text of the form: << any text >>.
+  (>> must not appear in "any text".)
+- A **section definition node** is any node whose headline starts with a
+  section name.
+- A **section reference** is a section name that appears in body text.
+
+Leo creates external files containing @others directives by writing the
+*expansion* of the @file node.
+
+The **expansion** of *any* node is the
+node's body text after making these text **substitutions**:
+
+1. Leo replaces @others with the *expansion* of all descendant nodes
+   **except** section definition nodes. That's how @others got its name.
+
+2. Leo replaces section references by the *expansion* of the body text of
+   the corresponding section definition node.
+
+Leo preserves leading whitespace appearing before section references and
+@others. As a result, Leo can generate source files for languages like
+Python where indentation is significant.
+
+Leo adds the whitespace appearing before @others to every line in the
+expansion of @others. Leo handles whitespace before section references in a
+similar manner.  As a result, the following **cute trick** works::
+
+    if 1:
+        << a section >>
+    if 0:
+        @others
+
+**Notes**:
+
+- Any node may contain an @others directive. No node may contain more
+  than one @others directive.
+
+- Nodes that *aren't* section definition nodes are included in the expansion
+  of the *nearest* ancestor node containing an @others directive.
+
+- An **orphan node** is a descendant of an @file node not included in any
+  substitution. Leo refuses to write external files containing orphan
+  nodes. Instead, Leo writes the tree to the .leo file itself, thereby
+  preserving all data.
+
+**Example**: The body of an @file node for a typical Python source-code file will look
+something like this::
+
+    '''The docstring for the file.'''
+    << imports >>
+    @others
+    if __name__ == '__main__':
+        main()
+        
+Leo replaces << imports >> by the expansion of the << imports >> node. This
+expansion follows the docstring, in exactly the indicated position.
+
+Leo replaces the @others directive with the expansion of all descendant
+nodes that *aren't* section definition nodes.
+.. @+node:ekr.20131001100335.15940: *3* Configuring Leo
+Leo has a flexible (perhaps *too* flexible) configuration system. It's best
+to use this flexibility in a restricted way as follows:
+
+1. The file leo/config/leoSettings.leo contains Leo's default settings.
+   Don't change this file unless you are one of Leo's developers.
+   
+2. The file ~/myLeoSettings.leo contains your personal settings. Leo will
+   not create this file automatically: you should create it yourself.
+   Settings in myLeoSettings.leo override (or add to) the default settings
+   in leoSettings.leo.
+   
+3. Any other .leo file may also contain settings. Such settings apply only
+   to that file and override all other settings. It's best to use such
+   settings sparingly.
+   
+As a result, settings may vary from one Leo file to another. This can be
+confusing. The following commands help resolve any confusion:
+
+- The print-settings command shows what the present value of each setting
+  is and which settings file is responsible for the present value of the
+  setting.
+  
+- The print-bindings command shows what key binding are in effect and what
+  settings file set each binding.
+
+**Important**: within any file, settings take effect **only** if they are
+contained in an **@settings tree**, that is, are descendants of a node
+whose headline is @settings. Nodes outside @settings trees do not affect
+settings in any way.
+
+Within @settings trees, you specify boolean settings with @bool nodes,
+string settings with @string nodes, menus with @menus and @menu nodes, etc.
+For exact details, please do study leoSettings.leo. You can open either
+leoSettings.leo or myLeoSettings.leo from the Help menu. Within
+leoSettings.leo:
+
+- The node "About this file" explains about settings.
+- The node "Candidates for settings in myLeoSettings.leo" highlights the
+  settings you are most likely to want to customize.
+
+.. @-all
+.. @-leo
