@@ -414,29 +414,22 @@ class Commands (object):
         trace = False and not g.unitTesting
         verbose = False # False: only print surprises.
         active = False # True: actually change the focus.
-
         c = self
         assert tag == 'idle'
-
         if g.app.unitTesting or keys.get('c') != c:
             return
-
         self.idle_focus_count += 1
-
         if c.in_qt_dialog:
             if trace and verbose: g.trace('in_qt_dialog')
             return
-
         if c.idle_callback:
             if trace: g.trace('calling c.idle_callback',c.idle_callback.__name__)
             c.idle_callback()
             c.idle_callback = None
             return
-
         w = g.app.gui.get_focus()
-
         if w:
-            if trace and verbose:
+            if trace:
                 g.trace(self.idle_focus_count,w)
         elif g.app.gui.active:
             if trace:
@@ -592,59 +585,48 @@ class Commands (object):
     def outerUpdate (self):
 
         trace = False and not g.unitTesting
-        verbose = True ; traceFocus = True
+        verbose = False ; traceFocus = True
         c = self ; aList = []
         if not c.exists or not c.k:
             return
-
         # Suppress any requested redraw until we have iconified or diconified.
         redrawFlag = c.requestRedrawFlag
         c.requestRedrawFlag = False
-
         if trace and (verbose or aList):
             g.trace('**start',c.shortFileName() or '<unnamed>',g.callers(5))
-
         if c.requestBringToFront:
             if hasattr(c.frame,'bringToFront'):
                 ### c.frame.bringToFront()
                 c.requestBringToFront.frame.bringToFront()
                     # c.requestBringToFront is a commander.
             c.requestBringToFront = None
-
         # The iconify requests are made only by c.bringToFront.
         if c.requestedIconify == 'iconify':
             if verbose: aList.append('iconify')
             c.frame.iconify()
-
         if c.requestedIconify == 'deiconify':
             if verbose: aList.append('deiconify')
             c.frame.deiconify()
-
         if redrawFlag:
             if trace: g.trace('****','tree.drag_p',c.frame.tree.drag_p)
             # A hack: force the redraw, even if we are dragging.
             aList.append('*** redraw')
             c.frame.tree.redraw_now(forceDraw=True)
-
         if c.requestRecolorFlag:
             aList.append('%srecolor' % (
                 g.choose(c.incrementalRecolorFlag,'','full ')))
             # This should be the only call to c.recolor_now.
             c.recolor_now(incremental=c.incrementalRecolorFlag)
-
         if c.requestedFocusWidget:
             w = c.requestedFocusWidget
-            if traceFocus: aList.append('focus: %s' % (
-                g.app.gui.widget_name(w)))
+            if traceFocus: aList.append('focus: %s' % w)
             c.set_focus(w)
         else:
             # We must not set the focus to the body pane here!
             # That would make nested calls to c.outerUpdate significant.
             pass
-
         if trace and (verbose or aList):
             g.trace('** end',aList)
-
         c.incrementalRecolorFlag = False
         c.requestRecolorFlag = None
         c.requestRedrawFlag = False
@@ -660,8 +642,6 @@ class Commands (object):
             #print(mods)
             g.doHook("contentModified",c=c, nodes = mods)
             mods.clear()
-
-        # g.trace('after')
     #@+node:ekr.20110510052422.14618: *3* c.alert
     def alert(self,message):
 
