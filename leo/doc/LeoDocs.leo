@@ -186,7 +186,7 @@
 <v t="ekr.20131003040744.16016"><vh>New Tutorials</vh>
 <v t="ekr.20131001100335.15935"><vh>Learn the basics of Leo in one hour</vh>
 <v t="ekr.20131003040744.16025"
-marks="ekr.20131002055813.19697,"><vh>@file basics1.txt</vh></v>
+expanded="ekr.20131003040744.16026,"><vh>@file basics1.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20090717084250.10702"><vh>Other docs</vh>
@@ -439,7 +439,8 @@ marks="ekr.20131002055813.19697,"><vh>@file basics1.txt</vh></v>
 <v t="ekr.20131001100335.15935"></v>
 <v t="ekr.20131002055813.15970"><vh>Learn intermediate Leo topics in one hour</vh>
 <v t="ekr.20131003040744.18224"
-marks="ekr.20131002055813.19836,ekr.20131001100335.15937,ekr.20131001100335.15939,ekr.20131001100335.15941,ekr.20131002055813.15971,ekr.20131002055813.15972,"><vh>@file basics2.txt</vh></v>
+marks="ekr.20131001100335.15939,ekr.20131001100335.15941,ekr.20131002055813.15971,ekr.20131002055813.15972,ekr.20131001100335.15937,"
+expanded="ekr.20131003040744.18226,"><vh>@file basics2.txt</vh></v>
 </v>
 </v>
 </vnodes>
