@@ -7971,7 +7971,7 @@ class leoQtGui(leoGui.leoGui):
                 # Kludge: DynamicWindow creates the body pane
                 # with wrapper = None, so return the leoQtBody.
                 w = c.frame.body
-        if trace: g.trace('***',w,g.callers())
+        if trace: g.trace('(qtGui)',w,g.callers())
         return w
 
     def set_focus(self,c,w):
@@ -7981,7 +7981,7 @@ class leoQtGui(leoGui.leoGui):
         trace = False and not g.unitTesting
         gui = self
         if w:
-            if trace: print('qtGui.set_focus',gui.widget_name(w),w,g.callers(2))
+            if trace: g.trace('(qtGui)',w,g.callers())
             w.setFocus()
 
     def ensure_commander_visible(self, c1):
