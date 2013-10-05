@@ -21,8 +21,12 @@
 Learn the Basics of Leo in One Hour
 ###################################
 
+.. |br| raw:: html
+
+   <br />
+
 .. _Leo:    http://leoeditor.com/
-.. _`last section` : `Creating programming source files with @others`_
+.. _`last section`: `Creating programming source files with @others`_
 .. _`ask for help`: https://groups.google.com/forum/#!forum/leo-editor
 
 This tutorial will teach you the basics of Leo_ in about one hour.
@@ -33,7 +37,6 @@ It will repay careful study.
 
 .. contents::
     :depth: 4
-
 .. @+node:ekr.20131002211347.6456: *3* Command names
 Every Leo command has a **command name**. In this document, keystrokes that
 invoke a command will be followed by the command name in parentheses.
@@ -70,47 +73,36 @@ the outline pane, and **body text**. The body pane shows the body text of
 the **presently selected node**, the node whose headline is selected in the
 outline pane.
 .. @+node:ekr.20131004191204.16079: *3* Operations on windows, panes & files
-<Return> puts focus in the body when it is in the outline pane.
-
-Alt-T (focus-to-tree) puts focus in the outline pane. 
-
-Ctrl-T (toggle-active-pane) toggles focus between the outline and body panes.
-
 Alt-0 (vr-toggle) hides or shows the viewrendered pane.
 
+<Return> puts focus in the body when it is in the outline pane. |br|
+Alt-T (focus-to-tree) puts focus in the outline pane.  |br|
+Ctrl-T (toggle-active-pane) toggles focus between the outline and body panes.
+
 You may open multiple Leo outlines in different tabs within the same main
-window. Ctrl-Tab (tab-cycle-next) switches between outline tabs.
+window. |br|
+Ctrl-Tab (tab-cycle-next) switches between outline tabs.
 
-Ctrl-N (new) creates a new outline in a new tab.
-
-Ctrl-O (open-outline) opens an existing .leo file.
-
-Ctrl-S (save-file) saves the outline.
-
+Ctrl-N (new) creates a new outline in a new tab. |br|
+Ctrl-O (open-outline) opens an existing .leo file. |br|
+Ctrl-S (save-file) saves the outline. |br|
 Ctrl-Q (exit-leo) exits Leo.  Leo will prompt you to save any unsaved outlines.
 .. @+node:ekr.20131002055813.19835: *3* Operations on nodes
-.. |br| raw:: html
-
-   <br />
-   
 Ctrl-M (mark) toggles the mark on a node.
    
 Ctrl-I or Insert (insert-node) inserts a new node into the outline.
 
 Ctrl-Shift-X (cut-node) cuts the outline and all its descendants, placing
-the node on the clipboard.
-
+the node on the clipboard. |br|
 Ctrl-Shift-V (paste-node) pastes a node (and its descendants) from the
 clipboard after the presently selected node.
 
 Ctrl-{ (promote) makes all the children of a headline siblings of the
-headline.
-
+headline. |br|
 Ctrl-} (demote) makes all following siblings of a headline children of the
 headline. |br|
-The demote command is useful for gathering nodes together before
+The demote and promote commands are useful for gathering nodes together before
 moving or cutting them.
-.. @+node:ekr.20131004191204.16080: *3* Operations on text
 .. @+node:ekr.20131002055813.19036: *3* Selecting and moving outline nodes
 Arrow keys (including the Home and End keys) select and move nodes in the
 outline pane.
@@ -139,10 +131,10 @@ Regardless of focus, Alt-arrow and Alt-Shift-arrow keys work on outline nodes:
 
 The following keys work anywhere, regardless of focus:
 
-- Alt-D (move-outline-down) moves the selected node down.
-- Alt-L (move-outline-left) moves the selected node left.
-- Alt-R (move-outline-right) moves the selected node right.
-- Alt-U (move-outline-up) moves the selected node up.
+- Ctrl-D (move-outline-down) moves the selected node down.
+- Ctrl-L (move-outline-left) moves the selected node left.
+- Ctrl-R (move-outline-right) moves the selected node right.
+- Ctrl-U (move-outline-up) moves the selected node up.
 .. @+node:ekr.20131002055813.19037: *3* Moving the cursor in text panes
 When focus is in any of Leo's text panes (body pane, log pane, headlines), arrows keys
 work as usual:
@@ -193,7 +185,8 @@ string.
 
 Type "foo" and type <Return> to start the find-next command.
 
-When Leo finds the next instance of "def", it will select it.
+When Leo finds the next instance of "def", it will select it. |br|
+You may type any command.  The following are most useful:
 
 - Ctrl-minus (replace-then-find) replaces the selected text.
 - F3 (find-next) continues searching without making a replacement.
@@ -258,11 +251,22 @@ F12 (help-for-python) shows the documentation from Python's help system.
 Typing completion is not available: type the full name of any Python
 module, class, function or statement.
 
-Several commands clarify which settings are in effect, and where they came
-from:
+These commands clarify which settings are in effect, and where they came
+from::
 
-- print-bindings prints an organized list of all present key bindings.
-- print-settings prints an alphabetical list of all settings in effect 
+    print-bindings
+    print-settings
+
+These commands discuss special topics::
+
+    help-for-abbreviations
+    help-for-autocompletion
+    help-for-bindings
+    help-for-debugging-commands
+    help-for-dynamic-abbreviations
+    help-for-find-commands
+    help-for-minibuffer
+    help-for-regular-expressions
 
 Using Leo, especially for programming, requires some learning initially.
 Please feel free to `ask for help`_ at any time.
@@ -378,10 +382,6 @@ write the **@file tree** (the @file node and all its descendants) to the
 external file in **outline order**, the order in which the nodes appear in
 the outline pane when all nodes are expanded.
 .. @+node:ekr.20131003040744.18222: *4* Creating programming source files with @others
-.. |br| raw:: html
-
-   <br />
-   
 Now we come to the programming features that distinguish Leo from all other
 programming environments. Please study this section carefully if you intend
 to use Leo for programming. If you get stuck, please `ask for help`_

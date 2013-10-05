@@ -107,7 +107,7 @@ outlines. The hello world example is::
 
 Here, c.all_positions() delivers a list of positions, and p.level() and p.h
 deliver the indentation level and head string of position p.
-.. @+node:ekr.20040403183229: *4* Import objects
+.. @+node:ekr.20040403183229: *4* Important objects
 Leo scripts typically use the following objects:
 
 **g**
