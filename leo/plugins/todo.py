@@ -528,7 +528,7 @@ class todoController:
                 
                 icondate = min(duedate or NO_TIME, nextworkdate or NO_TIME)
                 
-                if icondate <> NO_TIME:
+                if icondate != NO_TIME:
                     
                     if icondate < today:
                         icon = "date_past.png"
