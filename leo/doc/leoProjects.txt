@@ -123,6 +123,8 @@ urgently needed.
 If there is a great demand to restore these features, it can always be done
 later. For now, though, I wanted to do the simplest thing that could
 possibly work.
+#@+node:ekr.20131004191204.16076: *3* Fixed crasher in k.auto_completer_state_hander
+Happened when user typed tab.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

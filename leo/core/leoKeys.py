@@ -421,7 +421,8 @@ class AutoCompleterClass:
         elif ch == 'Escape':
             self.exit()
         elif ch in ('\t','Tab'):
-            k.doTabCompletion()
+            self.compute_completion_list()
+            # k.doTabCompletion(tabList)
         elif ch in ('\b','BackSpace'):
             self.do_backspace()
         elif ch == '.':

@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:peckj.20131003104251.5529: * @file rss.py
+#@+node:ekr.20131004162848.11444: * @file C:/leo.repo/trunk/leo/plugins/rss.py
 #@@language python
 #@@tabwidth -4
 
@@ -91,8 +91,13 @@ import leo.core.leoGlobals as g
 import time
 
 # Whatever other imports your plugins uses.
-feedparser = g.importExtension('feedparser',pluginName='rss.py',verbose=False)
+# feedparser = g.importExtension('feedparser',pluginName='rss.py',verbose=False)
 
+try:
+    import feedparser
+except ImportError:
+    feedparser = None
+    print('rss.py: can not import feedparser')
 #@-<< imports >>
 
 #@+others
