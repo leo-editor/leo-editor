@@ -29,6 +29,36 @@ topics and should take less than an hour to complete.
 .. contents::
     :depth: 4
 
+.. @+node:ekr.20131004191204.16077: *3* Other useful commands
+Alt-8 (goto-last-sibling) useful when a node has many children.
+Alt-A (sort-siblings)
+Alt-G (goto-global-line)
+Alt-minus (contract-all)
+Ctrl-A (select-all)
+Ctrl-B (execute-script)
+Ctrl-C (copy-text)
+Ctrl-G (keyboard-quit)
+Ctrl-P (repeat-complex-command)
+Ctrl-V (paste-text)
+Ctrl-W (extend-to-word)
+Ctrl-X (cut-text)
+Ctrl-( (add-comments)
+Ctrl-) (delete-comments)
+Ctrl-Shift-D (extract)
+Ctrl-Shift-P (reformat-paragraph)
+Ctrl-Shift-W (write-at-file-nodes)
+.. Ctrl-Shift-Tab (cycle-all-focus) ** Doesn't work.
+F7 (open-spell-tab)
+
+Tab (newline-and-indent) indents selected lines
+Shift-Tab (unindent-region) unindents selected lines
+
+beautify
+convert-all-tabs
+convert-tabs
+ddabbrev-expands
+print-commands: shows alternative bindings
+sort-lines
 .. @+node:ekr.20131004073415.16044: *3* Clones
 ..  .. index::
     ..  pair: Clone; Tutorial
@@ -90,8 +120,8 @@ It's particularly useful to create a new view for each programming task:
 .. _`this chapter`: http://leoeditor.com/rstplugin3.html
 .. _`Leo's Users Guide`: http://leoeditor.com/leo_toc.html
 
-The rst3 command converts an @rst tree to `reStructedText`_ (rST) and sends the
-result to `docutils`_ or `Sphinx`_ for further processing.
+The rst3 command converts an @rst tree to `reStructedText`_ (rST) and sends
+the result to `docutils`_ or `Sphinx`_ for further processing.
 
 With this tool chain, you can easily create HTML, PDF, LaTeX and other
 kinds of documents. All of Leo's documentation is written in Sphinx and
@@ -107,7 +137,19 @@ tree. You don't have to change rST markup!
 
 The rst3 command provides *many* other capabilities for power users. For
 full details, see `this chapter`_ in `Leo's Users Guide`_.
-.. @+node:ekr.20131004083454.16100: *3* Auto-completion
+.. @+node:ekr.20131004172324.16075: *3* Autocompletion
+Start or stop autocompletions with Alt-1 (toggle-autocompleter)
+
+Leo's autocompletion feature suggests **completions**, text may be valid in
+a given point in source code. For example, suppose the cursor follows:
+
+    os.path.os	
+    
+The valid completions are all the members of Python's os.path module whose
+names start with 's'.  You will see the valid completions in a Tab in the Log Pane.
+    
+Leo adds **Leo-specific** to this list. These completions assume that c is
+a commander, g is the leoGlobals object and p is a position.
 .. @+node:ekr.20131001100335.15941: *3* Scripting Leo
 .. @+node:ekr.20131004073415.16042: *3* Using @first
 ..  .. index::
@@ -220,9 +262,9 @@ Execute commands without bindings using the minibuffer, as usual.
 +----------------------+--------------------------------------+
 | None                 | backward-paragraph-extend-selection  |
 +----------------------+--------------------------------------+
-| None                 | forward-paragraph                    |
+| Alt-{                | forward-paragraph                    |
 +----------------------+--------------------------------------+
-| None                 | forward-paragraph-extend-selection   |
+| Alst-Shift-{         | forward-paragraph-extend-selection   |
 +----------------------+--------------------------------------+
 |                      | **Move by pages**                    |
 +----------------------+--------------------------------------+
@@ -244,36 +286,24 @@ Execute commands without bindings using the minibuffer, as usual.
 +----------------------+--------------------------------------+
 | Shift-Ctrl-Home      | beginning-of-buffer-extend-selection |
 +----------------------+--------------------------------------+
-.. @+node:ekr.20131002055813.19696: *4* @rst-ignore Additional cursor movement commands
-You can move the cursor by sentences or paragraphs using the following
-commands, none of which have default key bindings. You may execute such
-commands from the minibuffer, or bind your own keystrokes to them.
-
-Moves by sentences:
-
-- back-sentence: moves the cursor to the beginning of a sentence.
-- back-sentence-extend-selection: moves the cursor and extends the selection.
-- forward-sentence: moves the cursor to the end of a sentence.
-- forward-sentence-extend-selection: moves the cursor and extends the selection.
-
-Moves by paragraphs:
-
-- back-paragraph: moves the cursor to the beginning of a paragraph.
-- back-paragraph-extend-selection: moves the cursor and extends the selection.
-- forward-paragraph: moves the cursor to the end a paragraph.
-- forward-paragraph-extend-selection: moves the cursor and extends the selection.
-.. @+node:ekr.20131001100335.15937: *3* More editing commands
-http://www2.lib.uchicago.edu/keith/tcl-course/emacs-tutorial.html
-
-.. @+node:ekr.20131004083454.16099: *4* Deleting text
+.. @+node:ekr.20131004083454.16099: *3* Deleting text
 Both <Backspace> and <Del> delete all selected text if some text is
 selected.
+
+Ctrl-Backspace (backward-delete-word)
 
 If there is no selected text, <Backspace> deletes the character to the left
 of the cursor, and <Del> deletes the character to the right of the cursor.
 
 Deleted text is not available to be pasted or yanked (see below).
-.. @+node:ekr.20131004083454.16096: *4* Killing and yanking text
+.. @+node:ekr.20131004083454.16096: *3* Killing and yanking text
+Ctrl-K (kill line)
+Ctrl-Y (yank)
+Alt-Y (yank-pop)
+Alt-Z (zap-to-character)
+
+From Emacs tutorial: to be revised
+
 Killing means to save the removed text, so that it can be yanked
 back later someplace else.
 
@@ -342,7 +372,7 @@ Subsequent M-y's move around the ring, each time replacing the yanked text.
 When you reach the text you you're interested in, just stop. Any other
 command (a motion command, self-insert, anything) breaks the cycling of the
 kill ring, and the next C-y yanks the most recent kill again.
-.. @+node:ekr.20131004083454.16097: *4* The Mark and the Region
+.. @+node:ekr.20131004083454.16097: *3* The Mark and the Region
 Emacs can manipulate arbitrary chunks of text as well as distinct textual
 objects. The way this is done is to define a region of text; many commands
 will operate on this region.
@@ -399,9 +429,5 @@ C-x C-x exchange-point-and-mark. Swaps mark and point. Repeated rapid
     ragged right margin, all the paragraphs within the region.
 
 There are many, many more. 
-.. @+node:ekr.20131004083454.16098: *4* Indenting & unindenting text
-Tab (newline-and-indent) indents a line.
-
-Shift-Tab (unindent-region) unindents a line.
 .. @-all
 .. @-leo

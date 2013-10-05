@@ -69,13 +69,33 @@ Leo stores all data in **nodes**. Nodes have **headlines**, shown in
 the outline pane, and **body text**. The body pane shows the body text of
 the **presently selected node**, the node whose headline is selected in the
 outline pane.
+.. @+node:ekr.20131004191204.16079: *3* Operations on windows, panes & files
+<Return> puts focus in the body when it is in the outline pane.
+
+Alt-T (focus-to-tree) puts focus in the outline pane. 
+
+Ctrl-T (toggle-active-pane) toggles focus between the outline and body panes.
 
 Alt-0 (vr-toggle) hides or shows the viewrendered pane.
 
 You may open multiple Leo outlines in different tabs within the same main
 window. Ctrl-Tab (tab-cycle-next) switches between outline tabs.
+
+Ctrl-N (new) creates a new outline in a new tab.
+
+Ctrl-O (open-outline) opens an existing .leo file.
+
+Ctrl-S (save-file) saves the outline.
+
+Ctrl-Q (exit-leo) exits Leo.  Leo will prompt you to save any unsaved outlines.
 .. @+node:ekr.20131002055813.19835: *3* Operations on nodes
-Ctrl-I (insert-node) inserts a new node into the outline.
+.. |br| raw:: html
+
+   <br />
+   
+Ctrl-M (mark) toggles the mark on a node.
+   
+Ctrl-I or Insert (insert-node) inserts a new node into the outline.
 
 Ctrl-Shift-X (cut-node) cuts the outline and all its descendants, placing
 the node on the clipboard.
@@ -87,8 +107,10 @@ Ctrl-{ (promote) makes all the children of a headline siblings of the
 headline.
 
 Ctrl-} (demote) makes all following siblings of a headline children of the
-headline. The demote command is useful for gathering nodes together before
+headline. |br|
+The demote command is useful for gathering nodes together before
 moving or cutting them.
+.. @+node:ekr.20131004191204.16080: *3* Operations on text
 .. @+node:ekr.20131002055813.19036: *3* Selecting and moving outline nodes
 Arrow keys (including the Home and End keys) select and move nodes in the
 outline pane.
@@ -114,6 +136,13 @@ Regardless of focus, Alt-arrow and Alt-Shift-arrow keys work on outline nodes:
 - Alt-arrow keys select the outline pane, and then act just like the plain
   arrow keys when the outline pane has focus.
 - Alt-Shift-arrow keys select the outline pane and move the selected node.
+
+The following keys work anywhere, regardless of focus:
+
+- Alt-D (move-outline-down) moves the selected node down.
+- Alt-L (move-outline-left) moves the selected node left.
+- Alt-R (move-outline-right) moves the selected node right.
+- Alt-U (move-outline-up) moves the selected node up.
 .. @+node:ekr.20131002055813.19037: *3* Moving the cursor in text panes
 When focus is in any of Leo's text panes (body pane, log pane, headlines), arrows keys
 work as usual:
@@ -135,7 +164,6 @@ The PageUp and PageDown keys work in a similar manner:
 
 - PageDown and PageUp move the cursor up or down one page.
 - Shift-PageDown and Shift-PageUp move the cursor and extend the selection.
-
 
 Regardless of focus, you can put the cursor in headline text as follows:
 
@@ -180,7 +208,6 @@ Alt-X (full-command) puts the cursor in the minibuffer.
 
 You could type the full command name in the minibuffer, followed by the
 <Return> key to invoke the command, but that would be *way* too much work.
-
 Instead, you can avoid most typing using **tab completion**. With tab
 completion, there is no need to remember the exact names of Leo’s commands.
 
@@ -266,7 +293,7 @@ Some commonly used general-purpose directives:
     @killcolor
     @nocolor
 
-These control whether to syntax color text.
+These control whether to syntax color text. 
 
 Nodes may contain multiple color directives.
 
@@ -351,12 +378,14 @@ write the **@file tree** (the @file node and all its descendants) to the
 external file in **outline order**, the order in which the nodes appear in
 the outline pane when all nodes are expanded.
 .. @+node:ekr.20131003040744.18222: *4* Creating programming source files with @others
+.. |br| raw:: html
+
+   <br />
+   
 Now we come to the programming features that distinguish Leo from all other
 programming environments. Please study this section carefully if you intend
-to use Leo for programming. You may want to read this section several
-times--the introductory definitions may make more sense after looking at
-the examples toward the end of this section.
-If you get stuck, please `ask for help`_ immediately.
+to use Leo for programming. If you get stuck, please `ask for help`_
+immediately.
 
 The @others directive, and markup called section references (see below),
 tell Leo how to create external files.
@@ -370,24 +399,20 @@ tell Leo how to create external files.
 - A **section reference** is a section name that appears in body text.
 
 Leo creates external files containing @others directives by writing the
-*expansion* of the @file node.
-
-The **expansion** of *any* node is the
-node's body text after making these text **substitutions**:
+*expansion* of the @file node. |br|
+The **expansion** of *any* node is
+then ode's body text after making these text **substitutions**:
 
 1. Leo replaces @others with the *expansion* of all descendant nodes
    **except** section definition nodes. That's how @others got its name.
 
 2. Leo replaces section references by the *expansion* of the body text of
    the corresponding section definition node.
-
-Leo preserves leading whitespace appearing before section references and
-@others. As a result, Leo can generate source files for languages like
-Python where indentation is significant.
-
-Leo adds the whitespace appearing before @others to every line in the
-expansion of @others. Leo handles whitespace before section references in a
-similar manner.  As a result, the following **cute trick** works::
+   
+Whitespace is significant before @others and section references. Leo adds
+the leading whitespace appearing before each @others directive or section
+reference to every line of their expansion. As a result, Leo can generate
+external files even for Python.  The following cute trick works::
 
     if 1:
         << a section >>
@@ -396,7 +421,7 @@ similar manner.  As a result, the following **cute trick** works::
 
 **Notes**:
 
-- Any node may contain an @others directive. No node may contain more
+- Any node may contain a single @others directive. No node may contain more
   than one @others directive.
 
 - Nodes that *aren't* section definition nodes are included in the expansion
@@ -404,23 +429,23 @@ similar manner.  As a result, the following **cute trick** works::
 
 - An **orphan node** is a descendant of an @file node not included in any
   substitution. Leo refuses to write external files containing orphan
-  nodes. Instead, Leo writes the tree to the .leo file itself, thereby
-  preserving all data.
+  nodes. Instead, Leo writes the @file tree to the .leo file itself,
+  thereby preserving all data.
 
-**Example**: The body of an @file node for a typical Python source-code file will look
-something like this::
+**Example 1**: The body of the @file node for a typical Python module will
+look something like::
 
-    '''The docstring for the file.'''
+    '''A docstring.'''
     << imports >>
     @others
     if __name__ == '__main__':
         main()
         
-Leo replaces << imports >> by the expansion of the << imports >> node. This
-expansion follows the docstring, in exactly the indicated position.
+**Example 2**:  Here is a typical Python class definition in Leo::
 
-Leo replaces the @others directive with the expansion of all descendant
-nodes that *aren't* section definition nodes.
+    class MyClass:
+        '''A docstring.'''
+        @others
 .. @+node:ekr.20131001100335.15940: *3* Configuring Leo
 Leo has a flexible (perhaps *too* flexible) configuration system. It's best
 to use this flexibility in a restricted way as follows:
