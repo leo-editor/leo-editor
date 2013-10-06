@@ -51,9 +51,6 @@ Here is a slightly reduced screenshot of Leo's main window:
 .. image:: screen-shots/render-svg-sources.png
    :alt: Screenshot
    :scale: 80 %
-.. :align: left
-.. :height: 100px
-.. :width: 200 px
 
 Leo's main window consists of
 an **outline pane** at the top left,
@@ -104,9 +101,6 @@ headline. |br|
 The demote and promote commands are useful for gathering nodes together before
 moving or cutting them.
 .. @+node:ekr.20131002055813.19036: *3* Selecting and moving outline nodes
-Arrow keys (including the Home and End keys) select and move nodes in the
-outline pane.
-
 You may select, expand and contract outline nodes with the mouse as usual,
 but using arrow keys is *highly recommended*.
 
@@ -129,69 +123,30 @@ Regardless of focus, Alt-arrow and Alt-Shift-arrow keys work on outline nodes:
   arrow keys when the outline pane has focus.
 - Alt-Shift-arrow keys select the outline pane and move the selected node.
 
-The following keys work anywhere, regardless of focus:
+The following commands work anywhere, regardless of focus:
 
 - Ctrl-D (move-outline-down) moves the selected node down.
 - Ctrl-L (move-outline-left) moves the selected node left.
 - Ctrl-R (move-outline-right) moves the selected node right.
 - Ctrl-U (move-outline-up) moves the selected node up.
 .. @+node:ekr.20131002055813.19037: *3* Moving the cursor in text panes
-When focus is in any of Leo's text panes (body pane, log pane, headlines), arrows keys
-work as usual:
+When focus is in any of Leo's text panes (body pane, log pane, headlines),
+Leo work like most text editors:
 
-- Plain arrow keys move the cursor.
-- Shift-arrow keys move the cursor, extending the selected text.
-- Ctrl-arrow keys move the cursor by words.
-- Ctrl-Shift-arrow keys move the cursor by words, extending the text selection.
-
-The Home and End keys work as follows:
-
+- Plain arrow keys move the cursor up, down, left or right.
+- Ctrl-LeftArrow and Ctrl-RightArrow move the cursor by words.
 - Home and End move the cursor to the beginning or end of a line.
 - Ctrl-Home moves the cursor to the beginning of the body text.
 - Ctrl-End moves the cursor to the end of the body text.
-- Ctrl-Shift-Home and Ctrl-Shift-End move the cursor to the beginning
-  or end of the body text, and extend the selected text.
-  
-The PageUp and PageDown keys work in a similar manner:
-
 - PageDown and PageUp move the cursor up or down one page.
-- Shift-PageDown and Shift-PageUp move the cursor and extend the selection.
 
-Regardless of focus, you can put the cursor in headline text as follows:
+**Note**: adding the Shift key modifier to the keys above moves the cursor
+and extends the selection.
+
+Regardless of focus, you can put the cursor in headline text:
 
 - Ctrl-H (edit-headline) begins editing the headline of the selected node.
 - <Return> (end-edit-headline) ends the editing, leaving the focus in the body pane.
-.. @+node:ekr.20131001100335.15938: *3* Finding & replacing text
-Ctrl-F (search-with-present-options) shows the Find Tab and puts the focus
-in the minibuffer and shows the Find tab.
-
-**Important**: the Find tab just shows you the status of search and replace
-operations. You control those operations from the minibuffer.
-
-**Note**: You can toggle the radio buttons and check boxes in the Find Tab
-with Ctrl-Alt keys. For example, Ctrl-Alt-X (toggle-find-regex-option)
-toggles the Regexp checkbox.
-
-After typing Ctrl-F, type the search string, say "def", in the minibuffer.
-
-Start the find by typing <Return>.
-
-But suppose you want to replace "def" with "foo", instead of just finding
-"foo".
-
-Before typing <Return> type Shift-Ctrl-R. The minibuffer prompts for the
-replacement string. Notice that the status area now shows “def” as the Find
-string.
-
-Type "foo" and type <Return> to start the find-next command.
-
-When Leo finds the next instance of "def", it will select it. |br|
-You may type any command.  The following are most useful:
-
-- Ctrl-minus (replace-then-find) replaces the selected text.
-- F3 (find-next) continues searching without making a replacement.
-- F2 (find-previous) continues the search in reverse.
-- Ctrl-G (keyboard-quit) ends the search.
 .. @+node:ekr.20131001100335.15946: *3* The minibuffer & completions
 Leo’s minibuffer appears at the bottom of Leo’s main window. You use the
 minibuffer to execute commands by name, and also to accumulate arguments to
@@ -228,6 +183,37 @@ Summary:
 - <Tab> shows all valid completions.
 - <BackSpace> shows more alternatives.
 - Ctrl-G exits the minibuffer and puts focus in the body pane.
+.. @+node:ekr.20131001100335.15938: *3* Finding & replacing text
+Ctrl-F (search-with-present-options) shows the Find Tab and puts the focus
+in the minibuffer. |br|
+**Important**: the Find tab just shows you the status of search and replace
+operations. |br|
+You control those operations from the minibuffer.
+
+**Note**: You can toggle the radio buttons and check boxes in the Find Tab
+with Ctrl-Alt keys. For example, Ctrl-Alt-X (toggle-find-regex-option)
+toggles the Regexp checkbox.
+
+After typing Ctrl-F, type the search string, say "def", in the minibuffer.
+
+Start the find by typing <Return>.
+
+But suppose you want to replace "def" with "foo", instead of just finding
+"foo".
+
+Before typing <Return> type Shift-Ctrl-R. The minibuffer prompts for the
+replacement string. Notice that the status area now shows “def” as the Find
+string.
+
+Type "foo" and type <Return> to start the find-next command.
+
+When Leo finds the next instance of "def", it will select it. |br|
+You may type any command.  The following are most useful:
+
+- Ctrl-minus (replace-then-find) replaces the selected text.
+- F3 (find-next) continues searching without making a replacement.
+- F2 (find-previous) continues the search in reverse.
+- Ctrl-G (keyboard-quit) ends the search.
 .. @+node:ekr.20131002055813.19837: *3* Undoing and redoing changes
 Leo has unlimited undo--Leo remembers *all* changes you make to outline
 structure or the contents of any node since you restarted Leo.
@@ -463,14 +449,11 @@ to use this flexibility in a restricted way as follows:
    settings sparingly.
    
 As a result, settings may vary from one Leo file to another. This can be
-confusing. The following commands help resolve any confusion:
+confusing. These two commands can help:
 
-- The print-settings command shows what the present value of each setting
-  is and which settings file is responsible for the present value of the
-  setting.
+- print-settings shows each setting and where it came from.
   
-- The print-bindings command shows what key binding are in effect and what
-  settings file set each binding.
+- print-bindings shows each key binding and where it came from.
 
 **Important**: within any file, settings take effect **only** if they are
 contained in an **@settings tree**, that is, are descendants of a node
@@ -487,5 +470,28 @@ leoSettings.leo:
 - The node "Candidates for settings in myLeoSettings.leo" highlights the
   settings you are most likely to want to customize.
 
+.. @+node:ekr.20131005214621.16090: *3* Summary
+Here are the most important things to remember:
+
+- Leo has hundreds of commands, each having a command name.
+
+- You may execute any command by name from the minibuffer.
+
+- Many commands are bound to keystrokes.
+  
+- You may bind multiple keystrokes to a single command and change bindings to your taste.
+
+- Leo has commands to create, change and reorganize outlines.
+
+- Within the body pane, Leo uses standard key bindings to move the cursor.
+
+- Ctrl-F starts the find command. Use the minibuffer to complete the command.
+
+- Leo's configuration files specify all settings, including key bindings.
+
+- Leo directives control how Leo works.
+
+- Leo creates external files by replacing @others and section references
+  with their expansions. 
 .. @-all
 .. @-leo

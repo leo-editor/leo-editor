@@ -48,21 +48,21 @@
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
 <v t="ekr.20100805171546.4412"><vh>Files, including home page</vh>
-<v t="ekr.20130327143919.5868"><vh>@@file front.html (old home page)</vh></v>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
 <v t="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
-<v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
-<v t="ekr.20101025080245.5800"><vh>@edit leo_toc.html</vh></v>
 <v t="ekr.20101112045055.5064" descendentVnodeUnknownAttributes="7d7100285503302e3171017d710255097374725f6174696d657103550c313337363431323739362e3071047355013071057d71066803550c313337363431323932332e307107735503302e3071087d71096803550c313337363431323932372e30710a73752e"><vh>@file plugin_catalog.py</vh></v>
-<v t="ekr.20100808060203.4273"
-expanded="ekr.20100808060203.4286,"><vh>@file html/index.html</vh></v>
-<v t="ekr.20130807203905.16606"><vh>@edit html/leoLinks.html</vh></v>
-<v t="ekr.20101025080245.5801"><vh>@url modified toc</vh></v>
-<v t="ekr.20101026081737.5531"><vh>Links that replace those in actual built page</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
+<v t="ekr.20131005214621.16088"><vh>Leo's home page</vh>
+<v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
+<v t="ekr.20130807203905.16606"><vh>@edit html/leoLinks.html</vh></v>
 </v>
-<v t="ekr.20100808060203.4273"
-expanded="ekr.20100808060203.4286,"></v>
+<v t="ekr.20131005214621.16089"><vh>Leo TOC</vh>
+<v t="ekr.20101025080245.5800"><vh>@edit leo_toc.html</vh></v>
+<v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
+<v t="ekr.20101026081737.5531"><vh>Links that replace those in actual built page</vh></v>
+</v>
+</v>
+<v t="ekr.20100808060203.4273"></v>
 <v t="ekr.20040414161647"><vh>Users Guide</vh>
 <v t="ekr.20101104024804.4898"><vh> Generating the Users Guide</vh>
 <v t="sps.20100708203040.19008"><vh>@@button generate-full-userguide</vh>
@@ -97,8 +97,6 @@ expanded="ekr.20100808060203.4286,"></v>
 </v>
 <v t="ekr.20091130111843.6787"><vh>The Leo Tutorial</vh>
 <v t="ekr.20100805165051.7146"><vh>@file intro.txt</vh></v>
-<v t="ekr.20100808120531.4280"><vh>@file outline-commands.txt</vh></v>
-<v t="ekr.20100808120531.4283"><vh>@file nutshell.txt</vh></v>
 </v>
 <v t="EKR.20040524104904.99"><vh>Using Leo</vh>
 <v t="ekr.20100805165051.7155"><vh>@file commands.txt</vh></v>
@@ -440,10 +438,11 @@ expanded="ekr.20131003040744.16026,"><vh>@file basics1.txt</vh></v>
 </v>
 <v t="ekr.20131002055813.15970"><vh>Learn intermediate Leo topics in one hour</vh>
 <v t="ekr.20131003040744.18224"
-marks="ekr.20131005040354.16072,ekr.20131001100335.15941,ekr.20131002055813.15971,ekr.20131002055813.15972,ekr.20131004083454.16096,"
-expanded="ekr.20131003040744.18226,ekr.20131001100335.15941,"><vh>@file basics2.txt</vh></v>
+marks="ekr.20131005040354.16072,ekr.20131001100335.15941,ekr.20131002055813.15971,ekr.20131002055813.15972,ekr.20131004083454.16096,"><vh>@file basics2.txt</vh></v>
 </v>
 </v>
+<v t="ekr.20131003040744.16025"
+expanded="ekr.20131003040744.16026,"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -581,7 +580,9 @@ explains the difference.  There are two parts:
 2. `Learn intermediate topics in one hour`_.
 </t>
 <t tx="ekr.20100731112744.7267">@pagewidth 75</t>
-<t tx="ekr.20100805171546.4412"># This section contains important files used to generate Leo's web site.</t>
+<t tx="ekr.20100805171546.4412">@language rest
+
+This section contains important files used to generate Leo's web site.</t>
 <t tx="ekr.20100821182153.4341"></t>
 <t tx="ekr.20100907092300.4440"></t>
 <t tx="ekr.20100907092300.4441">Path to inkscape template file
@@ -613,7 +614,6 @@ False:
 <t tx="ekr.20101025080245.5796"></t>
 <t tx="ekr.20101025080245.5798"></t>
 <t tx="ekr.20101025080245.5799" str_atime="1376411965.0"></t>
-<t tx="ekr.20101025080245.5801">c:/leo.repo/trunk/leo/doc/leo_toc.html</t>
 <t tx="ekr.20101026081737.5531">@language html
 
 &lt;!-- EKR: changed these by hand to give the toc some structure --&gt;
@@ -709,16 +709,6 @@ run-all-unit-tests-externally = Alt-5
 </t>
 <t tx="ekr.20111127144911.5545"></t>
 <t tx="ekr.20120315101404.14224">@pagewidth 70</t>
-<t tx="ekr.20130327143919.5868">&lt;html&gt;
-&lt;head&gt;
-&lt;title&gt;Leo's home page has moved&lt;/title&gt;
-&lt;/head&gt;
-&lt;body&gt;
-&lt;h1&gt;Leo's home page has moved.&lt;/h1&gt;
-&lt;p&gt;This page has moved to &lt;a href="http://leoeditor.com"&gt;http://leoeditor.com&lt;/a&gt;.&lt;/p&gt;
-&lt;/body&gt;
-&lt;/html&gt;
-</t>
 <t tx="ekr.20130816100419.17299">The default language if no @language or @comment is in effect.
 
 Valid values are (case is ignored):
@@ -3915,6 +3905,8 @@ Views
 </t>
 <t tx="ekr.20131001100335.15945"></t>
 <t tx="ekr.20131002055813.15970"></t>
+<t tx="ekr.20131005214621.16088"></t>
+<t tx="ekr.20131005214621.16089">Leo uses a TOC that *looks* like a Sphinx toc but is built by hand.</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
