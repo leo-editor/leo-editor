@@ -4522,7 +4522,7 @@ class keyHandlerClass:
                 if trace: g.trace('repeat',n,'method',si.func.__name__,
                     'stroke',stroke,'widget',w)
                 for z in range(n):
-                    event = g.app.gui.create_key_event(c,None,stroke,w,event=event)
+                    event = g.app.gui.create_key_event(c,None,event,stroke,w)
                     k.masterCommand(commandName=None,event=event,func=si.func,stroke=stroke)
             else:
                 for z in range(n):
