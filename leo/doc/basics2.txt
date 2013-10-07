@@ -87,14 +87,14 @@ It's particularly useful to create a new view for each programming task:
 - Now you can work on nodes in a single place; the location of the original
   clones doesn't matter.
 .. @+node:ekr.20131001100335.15939: *3* Creating documents with reStructuredText
-.. _docutils: http://docutils.sourceforge.net
-.. _LaTeX: http://www.latex-project.org/
-.. _reStructuredText: http://docutils.sourceforge.net/rst.html
-.. _Sphinx: http://sphinx.pocoo.org/
+.. _`docutils`: http://docutils.sourceforge.net
+.. _`LaTeX`: http://www.latex-project.org/
+.. _`reStructuredText`: http://docutils.sourceforge.net/rst.html
+.. _`Sphinx`: http://sphinx.pocoo.org/
 .. _`this chapter`: http://leoeditor.com/rstplugin3.html
 .. _`Leo's Users Guide`: http://leoeditor.com/leo_toc.html
 
-The rst3 command converts an @rst tree to `reStructedText`_ (rST) and sends
+The rst3 command converts an @rst tree to `reStructuredText`_ (rST) and sends
 the result to `docutils`_ or `Sphinx`_ for further processing.
 
 With this tool chain, you can easily create HTML, PDF, LaTeX and other

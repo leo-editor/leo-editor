@@ -1,0 +1,41 @@
+.. @+leo-ver=5-thin
+.. @+node:ekr.20131007143750.16069: * @file cheatsheet.txt
+.. @@language rest
+.. @@tabwidth -4
+
+.. @+at @rst-options
+..  call_docutils=False
+..  code_mode=False
+..  generate_rst=True
+..  http_server_support = False
+..  show_organizer_nodes=True
+..  show_headlines=True
+..  show_leo_directives=True
+..  stylesheet_path=..\doc
+..  write_intermediate_file = True
+..  verbose=True
+.. @@c
+.. @+all
+.. @+node:ekr.20131007143750.16070: ** @rst html\cheatsheet.html
+##################
+The Leo CheatSheet
+##################
+
+.. |br| raw:: html
+
+   <br />
+
+.. _`Leo's`: http://leoeditor.com/
+
+This tutorial continues `Leo's`_ tutorial. It covers several intermediate
+topics and should take less than an hour to complete.
+
+.. contents::
+    :depth: 4
+
+.. @+node:ekr.20131007143750.16082: *3* Moving the cursor
+.. @+node:ekr.20131007143750.16083: *3* Commonly used commands
+.. @+node:ekr.20131007143750.16071: *3* Creating external files
+.. @+node:ekr.20131007143750.16074: *3* Scripting Leo
+.. @-all
+.. @-leo

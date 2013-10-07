@@ -11,11 +11,15 @@ Leo's Users Guide
 
 `Leo's home page`_
 
-Contents:
+.. This is only a template. The actual TOC, leo/doc/leo_toc is done by hand.
+.. Note: no comments allowed in the toctree directive.
+.. The download page is accessible from the home page.
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 4
    :glob:
+   
+   download
 
    frontMatter   
    preface
@@ -25,6 +29,10 @@ Contents:
    slides
    installing
    intro
+   basics1
+   basics2
+   basics3
+   cheatsheet
    commands
    customizing
    
@@ -53,5 +61,5 @@ Contents:
    glossary
    
    what-is-new
-   
+
 `Leo's home page`_

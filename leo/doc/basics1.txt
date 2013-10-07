@@ -341,6 +341,101 @@ spaces and are highly recommended for Python programming.
 
 These enable or disable line wrapping in the body pane.
 
+.. @+node:ekr.20131002055813.19697: *3* Creating .leo and external files
+.. _`Intermediate Topics tutorial`: http://leoeditor.com/basics2.html
+.. _`Using @auto and friends`: http://leoeditor.com/basics2.html#using-auto-nodes
+
+Leo stores outline data on your file system in **.leo files**.
+
+Rather than storing all your data in the .leo file, you may store parts of
+your outline data in **external files**, files on your file system.
+
+**@file nodes** create external files. @file nodes have headlines starting
+with @file followed by a file name::
+
+    @file leoNodes.py
+    @file ../../notes.text
+
+Leo reads external files automatically when you open Leo outline, and
+writes all **dirty** (changed) external files when you save any Leo
+outline.
+
+When writing @file nodes, Leo adds **sentinel comments** to external files.
+Sentinels embed Leo's outline structure into external files.
+
+If you don't want sentinels in your sources, skip head to
+`Using @auto and friends`_ in Leo's `Intermediate Topics tutorial`_.
+
+.. @+node:ekr.20131003040744.18221: *4* Creating non-programming files with @all
+Use the **@all** directive for non-programming files. @all tells Leo to
+write the **@file tree** (the @file node and all its descendants) to the
+external file in **outline order**, the order in which the nodes appear in
+the outline pane when all nodes are expanded.
+.. @+node:ekr.20131003040744.18222: *4* Creating programming source files with @others
+Now we come to the programming features that distinguish Leo from all other
+programming environments. Please study this section carefully if you intend
+to use Leo for programming. If you get stuck, please `ask for help`_
+immediately.
+
+The @others directive, and markup called section references (see below),
+tell Leo how to create external files.
+
+**Essential Terms**:
+
+- A **section name** is any text of the form: << any text >>.
+  (>> must not appear in "any text".)
+- A **section definition node** is any node whose headline starts with a
+  section name.
+- A **section reference** is a section name that appears in body text.
+
+Leo creates external files containing @others directives by writing the
+*expansion* of the @file node. |br|
+The **expansion** of *any* node is
+then ode's body text after making these text **substitutions**:
+
+1. Leo replaces @others with the *expansion* of all descendant nodes
+   **except** section definition nodes. That's how @others got its name.
+
+2. Leo replaces section references by the *expansion* of the body text of
+   the corresponding section definition node.
+   
+Whitespace is significant before @others and section references. Leo adds
+the leading whitespace appearing before each @others directive or section
+reference to every line of their expansion. As a result, Leo can generate
+external files even for Python.  The following cute trick works::
+
+    if 1:
+        << a section >>
+    if 0:
+        @others
+
+**Notes**:
+
+- Any node may contain a single @others directive. No node may contain more
+  than one @others directive.
+
+- Nodes that *aren't* section definition nodes are included in the expansion
+  of the *nearest* ancestor node containing an @others directive.
+
+- An **orphan node** is a descendant of an @file node not included in any
+  substitution. Leo refuses to write external files containing orphan
+  nodes. Instead, Leo writes the @file tree to the .leo file itself,
+  thereby preserving all data.
+
+**Example 1**: The body of the @file node for a typical Python module will
+look something like::
+
+    '''A docstring.'''
+    << imports >>
+    @others
+    if __name__ == '__main__':
+        main()
+        
+**Example 2**:  Here is a typical Python class definition in Leo::
+
+    class MyClass:
+        '''A docstring.'''
+        @others
 .. @+node:ekr.20131001100335.15940: *3* Configuring Leo
 Leo has a flexible (perhaps *too* flexible) configuration system. It's best
 to use this flexibility in a restricted way as follows:

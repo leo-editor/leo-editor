@@ -53,14 +53,12 @@
 <v t="ekr.20101112045055.5064" descendentVnodeUnknownAttributes="7d7100285503302e3171017d710255097374725f6174696d657103550c313337363431323739362e3071047355013071057d71066803550c313337363431323932332e307107735503302e3071087d71096803550c313337363431323932372e30710a73752e"><vh>@file plugin_catalog.py</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
 <v t="ekr.20131005214621.16088"><vh>Leo's home page</vh>
-<v t="ekr.20100808060203.4273"
-expanded="ekr.20100808060203.4286,ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
+<v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 <v t="ekr.20130807203905.16606"><vh>@edit html/leoLinks.html</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>Leo TOC</vh>
 <v t="ekr.20101025080245.5800"><vh>@edit leo_toc.html</vh></v>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
-<v t="ekr.20101026081737.5531"><vh>Links that replace those in actual built page</vh></v>
 </v>
 </v>
 <v t="ekr.20040414161647"><vh>Users Guide</vh>
@@ -99,13 +97,12 @@ expanded="ekr.20100808060203.4286,ekr.20100808060203.4282,"><vh>@file html/index
 <v t="ekr.20100805165051.7146"
 marks="ekr.20091130111843.6788,"><vh>@file intro.txt</vh></v>
 <v t="ekr.20131003040744.16025"
-marks="ekr.20131003040744.16026,ekr.20131005040354.16072,ekr.20131005214621.16090,"
-expanded="ekr.20131003040744.16026,"><vh>@file basics1.txt</vh></v>
-<v t="ekr.20131003040744.18224"
-expanded="ekr.20131003040744.18226,"><vh>@file basics2.txt</vh></v>
+marks="ekr.20131003040744.16026,ekr.20131005040354.16072,ekr.20131005214621.16090,"><vh>@file basics1.txt</vh></v>
+<v t="ekr.20131003040744.18224"><vh>@file basics2.txt</vh></v>
 <v t="ekr.20131005214621.16110"
-marks="ekr.20131005214621.16117,ekr.20131005214621.16123,ekr.20131005214621.16124,"
-expanded="ekr.20131005214621.16111,"><vh>@file basics3.txt</vh></v>
+marks="ekr.20131005214621.16117,ekr.20131005214621.16123,ekr.20131005214621.16124,"><vh>@file basics3.txt</vh></v>
+<v t="ekr.20131007143750.16069"
+marks="ekr.20131007143750.16071,ekr.20131007143750.16074,"><vh>@file cheatsheet.txt</vh></v>
 </v>
 <v t="EKR.20040524104904.99"><vh>Using Leo</vh>
 <v t="ekr.20100805165051.7155"><vh>@file commands.txt</vh></v>
@@ -139,9 +136,6 @@ expanded="ekr.20131005214621.16111,"><vh>@file basics3.txt</vh></v>
 <v t="ekr.20080730212711.14"><vh>Using @shadow</vh>
 <v t="ekr.20100805165051.7173"><vh>@file atShadow.txt</vh></v>
 </v>
-<v t="ekr.20120315101404.14224"><vh>The leoInspect Module</vh>
-<v t="ekr.20120315101404.14225"><vh>@file leoInspect.txt</vh></v>
-</v>
 <v t="tbrown.20120821215353.22854"><vh>Abbreviations and templates</vh>
 <v t="ekr.20130816100419.15609"><vh>@file abbreviations.txt</vh></v>
 </v>
@@ -166,7 +160,6 @@ expanded="ekr.20131005214621.16111,"><vh>@file basics3.txt</vh></v>
 <v t="ekr.20101025080245.5796"><vh>Reference</vh>
 <v t="ekr.20050831184021.5"><vh>Leo's Reference</vh>
 <v t="ekr.20100805001344.7253"
-marks="ekr.20131005214621.16131,ekr.20131004083454.16096,ekr.20131005214621.16129,"
 expanded="ekr.20050828061213,"><vh>@file directives.txt</vh></v>
 </v>
 <v t="EKR.20040524104904.161"><vh>Designing with Leo</vh>
@@ -410,6 +403,7 @@ expanded="ekr.20050828061213,"><vh>@file directives.txt</vh></v>
 </v>
 </v>
 </v>
+<v t="ekr.20131007143750.16111"><vh>To do</vh>
 <v t="ekr.20130928065624.16019"><vh>1168689 outdated documentation about ipython</vh>
 <v t="ekr.20130928065624.16020"><vh>Are g.app.ipm and g_ipm used???</vh></v>
 <v t="ekr.20130928065624.16021"><vh>code</vh>
@@ -428,17 +422,13 @@ expanded="ekr.20050828061213,"><vh>@file directives.txt</vh></v>
 <v t="ekr.20131001100236.15927"><vh>valuespace &amp; --ipython</vh></v>
 <v t="ekr.20131001100236.15928"><vh>highlights (for release noes)</vh></v>
 </v>
-<v t="ekr.20131007055150.17606"><vh>Highlight abbreviations and auto-completion</vh></v>
-<v t="ekr.20131001100335.15942" a="M"><vh>Leo vs other programs</vh>
+<v t="ekr.20131001100335.15942"><vh>Leo &amp; other programs</vh>
 <v t="ekr.20131001100335.15943"><vh>Leo vs Emacs</vh></v>
 <v t="ekr.20131001100335.15944"><vh>Leo vs Vim</vh></v>
 <v t="ekr.20131001100335.15945"><vh>Leo vs IPython</vh></v>
 </v>
-<v t="ekr.20131005214621.16132" a="M"><vh>Recent</vh>
-<v t="ekr.20050831184021.5"></v>
-<v t="ekr.20091130111843.6787"></v>
 </v>
-<v t="ekr.20131007055150.17609"><vh>Oops: @rst requires @file</vh></v>
+<v t="ekr.20091130111843.6787"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -553,7 +543,15 @@ False: Leo never attempts to create directories.
 </t>
 <t tx="ekr.20090717084250.10702"></t>
 <t tx="ekr.20091111112709.6671"></t>
-<t tx="ekr.20091130111843.6787"></t>
+<t tx="ekr.20091130111843.6787">@language rest
+
+To do:
+- New intro words for each chapter in intro.
+- New intros for all basics chapters.
+- basics2: Highlight abbreviations and auto-completion.
+- New/revised summaries of all basics chapter.
+- New cheatsheet.
+</t>
 <t tx="ekr.20100731112744.7267">@pagewidth 75</t>
 <t tx="ekr.20100805171546.4412">@language rest
 
@@ -589,70 +587,6 @@ False:
 <t tx="ekr.20101025080245.5796"></t>
 <t tx="ekr.20101025080245.5798"></t>
 <t tx="ekr.20101025080245.5799" str_atime="1376411965.0"></t>
-<t tx="ekr.20101026081737.5531">@language html
-
-&lt;!-- EKR: changed these by hand to give the toc some structure --&gt;
-
-&lt;p&gt;Preliminaries&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li class="toctree-l1"&gt;&lt;a class="reference external" href="frontMatter.html"&gt;Front Matter&lt;/a&gt;&lt;/li&gt;
-&lt;li class="toctree-l1"&gt;&lt;a class="reference external" href="preface.html"&gt;Preface&lt;/a&gt;&lt;/li&gt;
-&lt;li class="toctree-l1"&gt;&lt;a class="reference external" href="testimonials.html"&gt;What People Are Saying About Leo&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Basics&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li class="toctree-l1"&gt;&lt;a class="reference external" href="FAQ.html"&gt;FAQ&lt;/a&gt;&lt;/li&gt;
-&lt;li class="toctree-l1"&gt;&lt;a class="reference external" href="slides.html"&gt;Slides&lt;/a&gt;&lt;/li&gt;
-&lt;li class="toctree-l1"&gt;&lt;a class="reference external" href="installing.html"&gt;Installing Leo&lt;/a&gt;&lt;/li&gt;
-&lt;li class="toctree-l1"&gt;&lt;a class="reference external" href="intro.html"&gt;The Leo Tutorial&lt;/a&gt;&lt;/li&gt;
-&lt;li class="toctree-l1"&gt;&lt;a class="reference external" href="outlines.html"&gt;Using Outlines&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Intermediate Topics&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li class="toctree-l1"&gt;&lt;a class="reference external" href="commands.html"&gt;Using Leo&amp;#8217;s Commands&lt;/a&gt;&lt;/li&gt;
-&lt;li class="toctree-l1"&gt;&lt;a class="reference external" href="customizing.html"&gt;Customizing Leo&lt;/a&gt;&lt;/li&gt;
-&lt;li class="toctree-l1"&gt;&lt;a class="reference external" href="coloring.html"&gt;Controlling Syntax Coloring&lt;/a&gt;&lt;/li&gt;
-&lt;li class="toctree-l1"&gt;&lt;a class="reference external" href="rstplugin3.html"&gt;Creating Documents with Leo&lt;/a&gt;&lt;/li&gt;
-&lt;li class="toctree-l1"&gt;&lt;a class="reference external" href="scripting.html"&gt;Scripting Leo with Python&lt;/a&gt;&lt;/li&gt;
-&lt;li class="toctree-l1"&gt;&lt;a class="reference external" href="plugins.html"&gt;Plugins&lt;/a&gt;&lt;/li&gt;
-&lt;li class="toctree-l1"&gt;&lt;a class="reference external" href="writingPlugins.html"&gt;Writing Plugins&lt;/a&gt;&lt;/li&gt;
-&lt;li class="toctree-l1"&gt;&lt;a class="reference external" href="unitTesting.html"&gt;Unit testing with Leo&lt;/a&gt;&lt;/li&gt;
-&lt;li class="toctree-l1"&gt;&lt;a class="reference external" href="debuggers.html"&gt;Debugging with Leo&lt;/a&gt;&lt;/li&gt;
-&lt;li class="toctree-l1"&gt;&lt;a class="reference external" href="atShadow.html"&gt;Using &amp;#64;shadow&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Leo and Other Programs&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li class="toctree-l1"&gt;&lt;a class="reference external" href="emacs.html"&gt;Leo and Emacs&lt;/a&gt;&lt;/li&gt;
-&lt;li class="toctree-l1"&gt;&lt;a class="reference external" href="IPythonBridge.html"&gt;IPython and Leo&lt;/a&gt;&lt;/li&gt;
-&lt;li class="toctree-l1"&gt;&lt;a class="reference external" href="leoBridge.html"&gt;Embedding Leo with the leoBridge module&lt;/a&gt;&lt;/li&gt;
-&lt;li class="toctree-l1"&gt;&lt;a class="reference external" href="vimBindings.html"&gt;Using Vim Bindings with Leo&lt;/a&gt;&lt;/li&gt;
-&lt;li class="toctree-l1"&gt;&lt;a class="reference external" href="zodb.html"&gt;Using ZODB with Leo&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Reference&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li class="toctree-l1"&gt;&lt;a class="reference external" href="directives.html"&gt;Leo&amp;#8217;s Reference&lt;/a&gt;&lt;/li&gt;
-&lt;li class="toctree-l1"&gt;&lt;a class="reference external" href="design.html"&gt;Designing with Leo&lt;/a&gt;&lt;/li&gt;
-&lt;li class="toctree-l1"&gt;&lt;a class="reference external" href="history.html"&gt;History of Leo&lt;/a&gt;&lt;/li&gt;
-&lt;li class="toctree-l1"&gt;&lt;a class="reference external" href="theory.html"&gt;Theory of Operation&lt;/a&gt;&lt;/li&gt;
-&lt;li class="toctree-l1"&gt;&lt;a class="reference external" href="whitepapers.html"&gt;White Papers&lt;/a&gt;&lt;/li&gt;
-&lt;li class="toctree-l1"&gt;&lt;a class="reference external" href="appendices.html"&gt;Appendices&lt;/a&gt;&lt;/li&gt;
-&lt;li class="toctree-l1"&gt;&lt;a class="reference external" href="glossary.html"&gt;Glossary&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-Release Notes
-
-&lt;ul&gt;
-&lt;li class="toctree-l1"&gt;&lt;a class="reference external" href="what-is-new.html"&gt;What&amp;#8217;s New in Leo&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</t>
 <t tx="ekr.20101026082911.5536"></t>
 <t tx="ekr.20101104024804.4898">@nocolor-node
 
@@ -683,7 +617,6 @@ Important files:
 run-all-unit-tests-externally = Alt-5
 </t>
 <t tx="ekr.20111127144911.5545"></t>
-<t tx="ekr.20120315101404.14224">@pagewidth 70</t>
 <t tx="ekr.20130816100419.17299">The default language if no @language or @comment is in effect.
 
 Valid values are (case is ignored):
@@ -3827,7 +3760,7 @@ If there is a great demand to restore these features, it can always be done
 later. For now, though, I wanted to do the simplest thing that could
 possibly work.
 </t>
-<t tx="ekr.20131001100335.15942"></t>
+<t tx="ekr.20131001100335.15942">Give differences between Leo and Emacs, Vim &amp; IPython.</t>
 <t tx="ekr.20131001100335.15943">- Leo has shamelessly stolen all of Emacs's most important features: long
   command names, the minibuffer, typing completion and flexible key
   bindings.
@@ -3866,20 +3799,7 @@ possibly work.
 <t tx="ekr.20131001100335.15945"></t>
 <t tx="ekr.20131005214621.16088"></t>
 <t tx="ekr.20131005214621.16089">Leo uses a TOC that *looks* like a Sphinx toc but is built by hand.</t>
-<t tx="ekr.20131005214621.16132">@language rest
-
-To do:
-- New intro words for each chapter in intro.
-- New intros for all basics chapters.
-- New/revised summaries of all basics chapter.
-
-Reference:
-- New sections on expansion, key bidings.
-
-</t>
-<t tx="ekr.20131007055150.17606">Their own chapter, or prominent new sections.
-</t>
-<t tx="ekr.20131007055150.17609">http://mail.google.com/mail/u/0/#inbox/1418f0d8b1243c5d</t>
+<t tx="ekr.20131007143750.16111"></t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
