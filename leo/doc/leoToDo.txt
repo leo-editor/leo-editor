@@ -8,7 +8,6 @@
 @language rest
 .. @+node:ekr.20130926053913.11572: *3* for b1
 @language rest
-.. @+node:ekr.20131007055150.17616: *4* improve download button
 .. @+node:ekr.20131001045038.11350: *4* Cheat-sheet for default .leo file (workbook)
 - The default will be leo/docs/default_workbook.leo.
 
@@ -214,8 +213,7 @@ def make_screen_shot(self,fn):
     if g.app.gui.guiName() == 'qt':
         m = g.loadOnePlugin('screenshots')
         m.make_screen_shot(fn)
-.. @+node:ekr.20131007055150.17607: *4* bugs
-.. @+node:ekr.20131007055150.13036: *5* fix reformat-paragraph and related commands
+.. @+node:ekr.20131007055150.13036: *4* Improve reformat-paragraph
 This command was a major advance when one of Leo's users created it.
 
 However, it's limitations are becoming irritating as I use it constantly.
@@ -244,7 +242,7 @@ If possible, it would be good to add support for non-breaking space
 Leo has almost a dozen unit tests covering this command. Revising those
 tests and getting them to work should guarantee that the new
 reformat-paragraph command is sound.
-.. @+node:ekr.20101118113953.5839: *6* c.reformatParagraph & helpers
+.. @+node:ekr.20101118113953.5839: *5* c.reformatParagraph & helpers
 def reformatParagraph (self,event=None,undoType='Reformat Paragraph'):
 
     """Reformat a text paragraph
@@ -272,7 +270,7 @@ def reformatParagraph (self,event=None,undoType='Reformat Paragraph'):
         indents,leading_ws = c.rp_get_leading_ws(lines,tabWidth)
         result = c.rp_wrap_all_lines(indents,leading_ws,lines,pageWidth)
         c.rp_reformat(head,oldSel,oldYview,original,result,tail,undoType)
-.. @+node:ekr.20031218072017.1825: *7* c.findBoundParagraph
+.. @+node:ekr.20031218072017.1825: *6* c.findBoundParagraph
 def findBoundParagraph (self,event=None):
 
     c = self
@@ -306,7 +304,7 @@ def findBoundParagraph (self,event=None):
     result.extend(para_tail_lines)
     tail = g.joinLines(post_para_lines)
     return head,result,tail # string, list, string
-.. @+node:ekr.20031218072017.1826: *8* << trace head_lines, ins, tail_lines >>
+.. @+node:ekr.20031218072017.1826: *7* << trace head_lines, ins, tail_lines >>
 if 0:
     g.pr("\nhead_lines")
     for line in head_lines:
@@ -319,7 +317,7 @@ else:
     g.es_print("head_lines: ",head_lines)
     g.es_print("ins: ",ins)
     g.es_print("tail_lines: ",tail_lines)
-.. @+node:ekr.20101118113953.5840: *7* rp_get_args
+.. @+node:ekr.20101118113953.5840: *6* rp_get_args
 def rp_get_args (self):
 
     '''Compute and return oldSel,oldYview,original,pageWidth,tabWidth.'''
@@ -341,7 +339,7 @@ def rp_get_args (self):
     oldYview = body.getYScrollPosition()
 
     return oldSel,oldYview,original,pageWidth,tabWidth
-.. @+node:ekr.20101118113953.5841: *7* rp_get_leading_ws
+.. @+node:ekr.20101118113953.5841: *6* rp_get_leading_ws
 def rp_get_leading_ws (self,lines,tabWidth):
 
     '''Compute and return indents and leading_ws.'''
@@ -361,7 +359,7 @@ def rp_get_leading_ws (self,lines,tabWidth):
         leading_ws[1] = leading_ws[0]
 
     return indents,leading_ws
-.. @+node:ekr.20101118113953.5842: *7* rp_reformat
+.. @+node:ekr.20101118113953.5842: *6* rp_reformat
 def rp_reformat (self,head,oldSel,oldYview,original,result,tail,undoType):
 
     '''Reformat the body and update the selection.'''
@@ -395,7 +393,7 @@ def rp_reformat (self,head,oldSel,oldYview,original,result,tail,undoType):
     w.setSelectionRange(ins,ins,insert=ins)
     # 2011/10/26: Calling see does more harm than good.
         # w.see(ins)
-.. @+node:ekr.20101118113953.5843: *7* rp_wrap_all_lines
+.. @+node:ekr.20101118113953.5843: *6* rp_wrap_all_lines
 def rp_wrap_all_lines (self,indents,leading_ws,lines,pageWidth):
 
     '''compute the result of wrapping all lines.'''
@@ -419,10 +417,10 @@ def rp_wrap_all_lines (self,indents,leading_ws,lines,pageWidth):
     if trailingNL: result = result + '\n'
 
     return result
-.. @+node:ekr.20131002055813.19034: *6* fill-region is broken
-.. @+node:ekr.20131002055813.15974: *6* reformat-body command
+.. @+node:ekr.20131002055813.19034: *5* fill-region is broken
+.. @+node:ekr.20131002055813.15974: *5* reformat-body command
 Calls reformat-paragraph repeatedly.
-.. @+node:ekr.20050920084036.189: *7* << define dictionary d of names and Leo commands >>
+.. @+node:ekr.20050920084036.189: *6* << define dictionary d of names and Leo commands >>
 c = self.c ; f = c.frame
 
 d = {
@@ -609,7 +607,7 @@ d = {
     'write-missing-at-file-nodes':  c.fileCommands.writeMissingAtFileNodes,
     'write-outline-only':           c.fileCommands.writeOutlineOnly,
 }
-.. @+node:ekr.20050920084036.100: *7* fillRegion (can hang)
+.. @+node:ekr.20050920084036.100: *6* fillRegion (can hang)
 def fillRegion (self,event):
 
     '''Fill all paragraphs in the selected text.'''
@@ -628,7 +626,7 @@ def fillRegion (self,event):
         if progress >= ins or ins >= j or ins >= len(s):
             break
     c.undoer.afterChangeGroup(p,undoType)
-.. @+node:ekr.20131002055813.19033: *7* c.reformatBody (can hang)
+.. @+node:ekr.20131002055813.19033: *6* c.reformatBody (can hang)
 def reformatBody (self,event=None):
     
     '''Reformat all paragraphs in the body.'''
@@ -648,7 +646,7 @@ def reformatBody (self,event=None):
         if ins <= progress or ins >= len(s):
             break
     c.undoer.afterChangeGroup(p,undoType)
-.. @+node:ekr.20101118113953.5839: *7* c.reformatParagraph & helpers
+.. @+node:ekr.20101118113953.5839: *6* c.reformatParagraph & helpers
 def reformatParagraph (self,event=None,undoType='Reformat Paragraph'):
 
     """Reformat a text paragraph
@@ -676,7 +674,7 @@ def reformatParagraph (self,event=None,undoType='Reformat Paragraph'):
         indents,leading_ws = c.rp_get_leading_ws(lines,tabWidth)
         result = c.rp_wrap_all_lines(indents,leading_ws,lines,pageWidth)
         c.rp_reformat(head,oldSel,oldYview,original,result,tail,undoType)
-.. @+node:ekr.20031218072017.1825: *8* c.findBoundParagraph
+.. @+node:ekr.20031218072017.1825: *7* c.findBoundParagraph
 def findBoundParagraph (self,event=None):
 
     c = self
@@ -710,7 +708,7 @@ def findBoundParagraph (self,event=None):
     result.extend(para_tail_lines)
     tail = g.joinLines(post_para_lines)
     return head,result,tail # string, list, string
-.. @+node:ekr.20031218072017.1826: *9* << trace head_lines, ins, tail_lines >>
+.. @+node:ekr.20031218072017.1826: *8* << trace head_lines, ins, tail_lines >>
 if 0:
     g.pr("\nhead_lines")
     for line in head_lines:
@@ -723,7 +721,7 @@ else:
     g.es_print("head_lines: ",head_lines)
     g.es_print("ins: ",ins)
     g.es_print("tail_lines: ",tail_lines)
-.. @+node:ekr.20101118113953.5840: *8* rp_get_args
+.. @+node:ekr.20101118113953.5840: *7* rp_get_args
 def rp_get_args (self):
 
     '''Compute and return oldSel,oldYview,original,pageWidth,tabWidth.'''
@@ -745,7 +743,7 @@ def rp_get_args (self):
     oldYview = body.getYScrollPosition()
 
     return oldSel,oldYview,original,pageWidth,tabWidth
-.. @+node:ekr.20101118113953.5841: *8* rp_get_leading_ws
+.. @+node:ekr.20101118113953.5841: *7* rp_get_leading_ws
 def rp_get_leading_ws (self,lines,tabWidth):
 
     '''Compute and return indents and leading_ws.'''
@@ -765,7 +763,7 @@ def rp_get_leading_ws (self,lines,tabWidth):
         leading_ws[1] = leading_ws[0]
 
     return indents,leading_ws
-.. @+node:ekr.20101118113953.5842: *8* rp_reformat
+.. @+node:ekr.20101118113953.5842: *7* rp_reformat
 def rp_reformat (self,head,oldSel,oldYview,original,result,tail,undoType):
 
     '''Reformat the body and update the selection.'''
@@ -799,7 +797,7 @@ def rp_reformat (self,head,oldSel,oldYview,original,result,tail,undoType):
     w.setSelectionRange(ins,ins,insert=ins)
     # 2011/10/26: Calling see does more harm than good.
         # w.see(ins)
-.. @+node:ekr.20101118113953.5843: *8* rp_wrap_all_lines
+.. @+node:ekr.20101118113953.5843: *7* rp_wrap_all_lines
 def rp_wrap_all_lines (self,indents,leading_ws,lines,pageWidth):
 
     '''compute the result of wrapping all lines.'''
@@ -823,8 +821,8 @@ def rp_wrap_all_lines (self,indents,leading_ws,lines,pageWidth):
     if trailingNL: result = result + '\n'
 
     return result
-.. @+node:ekr.20131004191204.16078: *5* cycle-all-focus doesn't work
-.. @+node:ekr.20131007055150.13035: *4* doc to do
+.. @+node:ekr.20131004191204.16078: *4* cycle-all-focus doesn't work
+.. @+node:ekr.20131007055150.13035: *4* doc to do (7)
 .. @+node:ekr.20131005040354.16071: *5* to do: help-for-yank-and-kill
 .. @+node:ekr.20131005040354.16073: *5* to do: revise help-for-abbreviations
 .. @+node:ekr.20131005040354.16075: *5* to do: create help-for-dynamic-abbreviations

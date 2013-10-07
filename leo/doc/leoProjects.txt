@@ -126,6 +126,22 @@ possibly work.
 #@+node:ekr.20131004191204.16076: *3* Fixed crasher in k.auto_completer_state_hander
 Happened when user typed tab.
 #@+node:ekr.20131002210817.11412: *3* Alt-0 (vr-toggle) now puts focus in the body pane
+#@+node:ekr.20131007055150.11504: *3* Fixed Alt-Gr keys
+@language rest
+
+At rev 6107.
+    
+- Restored @bool ignore_unbound_non_ascii_keys setting to leoSettings.leo.
+- Made self-insert-char an official command, but it will do nothing if
+  executed from the minibuffer.
+- ec.selfInsertCommand now calls g.app.gui.insertKeyEvent for non-plain keys.
+- qtGui.insertKeyEvent uses QKeyEvent.text() to insert Alt-Ctrl keys as follows:
+  qw.insertPlainText(qevent.text()).
+  Viktor verifies that this strategy works.
+- Added event ivar (a QKeyEvent) to leoKeyEvent class.
+- Added event positional arg to leoGui.create_key_event.
+
+@language python
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
