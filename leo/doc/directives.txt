@@ -42,7 +42,8 @@ familiar with `Leo's tutorial`_.
 .. |leoAtFileMainNode| image:: screen-shots/leo-qt-at-file-main-node.JPG
 .. |leoAtFileFirstChild| image:: screen-shots/leo-qt-at-file-first-child.JPG
 .. |leoAtFileNamedChild| image:: screen-shots/leo-qt-at-file-named-child.JPG
-.. @+node:ekr.20100806170836.4392: *3* Part 1: \@<file> directives
+.. @+node:ekr.20131005214621.16130: *3* Directives
+.. @+node:ekr.20100806170836.4392: *4* Part 1: \@<file> directives
 .. index::
     pair: @<file>; Reference
 
@@ -90,7 +91,7 @@ symbols known: c, g, p, os and sys.  For example::
 
 refers to the file abc.py in (absolute path of) the current directory.
 
-.. @+node:ekr.20100806170836.4393: *4* \@asis <path>
+.. @+node:ekr.20100806170836.4393: *5* \@asis <path>
 .. index::
     pair: @asis; Reference
 
@@ -126,7 +127,7 @@ Within \@asis trees, Leo recognizes the \@ignore directive only in the
 prevent Leo from writing \@asis trees.
 
 **Note**: \@file-asis and \@silent are deprecated synonyms for \@asis.
-.. @+node:ekr.20100806170836.4396: *4* \@auto <path>
+.. @+node:ekr.20100806170836.4396: *5* \@auto <path>
 .. index::
     pair: @auto; Reference
 
@@ -200,7 +201,7 @@ can not represent such lines exactly: every line in an external file will have
 at least the indentation of any unindented line of the corresponding node in the
 outline. Leo will issue a warning (not an error) for underindented Python
 comment lines. Such lines can not change the meaning of Python programs.
-.. @+node:ekr.20100806170836.4395: *4* \@edit <path>
+.. @+node:ekr.20100806170836.4395: *5* \@edit <path>
 .. index::
     pair: @edit; Reference
 
@@ -211,7 +212,7 @@ that look like sentinels will be read just as they are.
 
 When writing \@edit nodes, \@edit nodes must not have children and section
 references and @others are not allowed.
-.. @+node:ekr.20100806170836.4403: *4* \@file <path> (aka @thin)
+.. @+node:ekr.20100806170836.4403: *5* \@file <path> (aka @thin)
 .. index::
     pair: @file; Reference
     pair: @thin; Reference
@@ -231,7 +232,7 @@ The \@thin directive is a synonym for \@file.
 
 Prior to Leo 4.7, \@file worked differently from \@thin. This should not be
 a problem: Leo 4.7 can read all external files written by Leo 4.6.
-.. @+node:ekr.20100806170836.4399: *4* \@nosent <path>
+.. @+node:ekr.20100806170836.4399: *5* \@nosent <path>
 .. index::
     pair: @nosent; Reference
 
@@ -252,7 +253,7 @@ creating external files without sentinels.
 **Note**: The \@bool force_newlines_in_at_nosent_bodies setting controls whether
 Leo writes a trailing newline if non-empty body text does not end in a newline.
 The default is True.
-.. @+node:ekr.20100806170836.4402: *4* \@shadow <path>
+.. @+node:ekr.20100806170836.4402: *5* \@shadow <path>
 .. index::
     pair: @shadow; Reference
     pair: Private file; Reference
@@ -269,7 +270,7 @@ external file.
 
 Leo can do an initial import of \@shadow trees by parsing the corresponding
 public file, exactly as is done for \@auto nodes.
-.. @+node:ekr.20100806170836.4411: *3* Part 2: \@all and \@others
+.. @+node:ekr.20100806170836.4411: *4* Part 2: \@all and \@others
 These control how Leo places text when writing external files.
 They are two of the most important directives in Leo.
 
@@ -302,7 +303,7 @@ They are two of the most important directives in Leo.
 
     A single node may contain only one \@others directive, but descendant nodes
     may have other \@others directives.
-.. @+node:ekr.20100806170836.4398: *3* Part 3: Syntax coloring directives
+.. @+node:ekr.20100806170836.4398: *4* Part 3: Syntax coloring directives
 The \@color, \@killcolor, \@nocolor and \@nocolor-node directives control how
 Leo colors text in the body pane.
 
@@ -347,7 +348,7 @@ descendant nodes.
     Disables coloring for only the node containing it. The \@nocolor-node
     directive overrides the \@color and \@nocolor directives within the same
     node.
-.. @+node:ekr.20100806170836.4408: *3* Part 4: Dangerous directives
+.. @+node:ekr.20100806170836.4408: *4* Part 4: Dangerous directives
 These directives alter how Leo represents data in external files. They are
 **dangerous**--mistakes in using these sentinels can make it impossible for Leo
 to read the resulting external file. Use them with care!
@@ -432,7 +433,7 @@ Nevertheless, these sentinels can be useful in special situations.
     or the end of the body text containing the \@raw directive. Within this
     range, Leo ignores all section references and directives, and Leo generates
     no additional leading whitespace.
-.. @+node:ekr.20100804133903.7262: *3* Part 5: All other directives
+.. @+node:ekr.20100804133903.7262: *4* Part 5: All other directives
 This section is a reference guide for all other Leo directives, organized
 alphabetically.
 
@@ -684,5 +685,262 @@ and they must start at the leftmost column of the node.
     Only the first \@wrap or \@nowrap directive in a node has any effect.
 
     \@wrap may appear in either headlines or body text.
+.. @+node:ekr.20131005214621.16131: *3* Key bindings
+.. @+node:ekr.20131004083454.16096: *4* @rst-ignore Killing and yanking text
+Ctrl-K (kill line)
+Ctrl-Y (yank)
+Alt-Y (yank-pop)
+Alt-Z (zap-to-character)
+
+From Emacs tutorial: to be revised
+
+Killing means to save the removed text, so that it can be yanked
+back later someplace else.
+
+Killed text is saved on the kill ring. The kill ring holds the last N
+kills, where N is 30 by default, but you can change it to anything you like
+by changing the value of the variable kill-ring-max. The kill ring acts
+like a fifo when you're killing things (after the 30th kill, kill number
+one is gone), but like a ring when you're yanking things back (you can yank
+around the ring circularly). kill-ring-max doesn't apply to the amount of
+text (in bytes) that can be saved in the kill ring (there's no limit), only
+to the number of distinct kills. Characters
+
+C-d delete-char. Deletes the character to the right of (under, if the
+    cursor is a block that covers a character) the cursor. DEL
+    delete-backward-char. Deletes the character to the left of the cursor.
+
+M-d kill-word. Kills to the end of the word to the right of the cursor
+    (forward). M-DEL backward-kill-word. Kills to the beginning of the word
+    to the left of the cursor (backward).
+
+Lines (vertically) It doesn't seem too intuitive to kill lines vertically
+by analogy with C-n and C-p; I know of no such commands. Lines
+(horizontally)
+
+C-k kill-line. Kills to the end of the current line, not including the
+    newline. Thus, if you're at the beginning of a line it takes two C-k's
+    to kill the whole line and close up the whitespace. C-u 0 C-k
+    kill-line. Kills to the beginning of the current line, not including
+    the newline.
+
+You might think that C-u -1 C-k would be used to kill to the beginning of
+the line, and it does, but it includes the newline before the line as well.
+Sentences
+
+M-k kill-sentence. Kills to the end of the current sentence, including any
+    newline within the sentence. C-u -1 M-k kill-sentence. Kills to the
+    beginning of the current sentence, including any newlines within the
+    sentence.
+
+Paragraphs The commands forward-kill-paragraph and backward-kill-paragraph
+exist, but are not bound to any keys by default. Pages There are no
+commands to kill pages (but see The Mark and the Region). Buffers The
+command kill-buffer doesn't kill all the text in the buffer, but rather the
+entire buffer data structure; see The Mark and the Region. S-Expressions
+(balanced parentheses)
+
+C-M-k kill-sexp. Kills the sexp after the cursor. C-u -1 C-M-k kill-sexp.
+    Kills the sexp before the cursor.
+
+The command backward-kill-sexp exists, but is not bound to any key by
+default. Functions There are no commands to kill functions (defuns) (but
+see The Mark and the Region). Extending Kills If you kill several times in
+a row, with any combination of kill commands, but without any non-kill
+commands in between, these kills are appended together in one entry on the
+kill ring. For example you can kill a block of text as several lines by
+saying C-u 6 C-k, which kills (as one kill) 6 lines. Yanking Once you've
+killed some text, how do you get it back? You can yank back the most
+recently killed text with C-y (yank). Since Emacs has only one kill ring
+(as opposed to one per buffer), you can kill in one buffer, switch to
+another and yank the text there.
+
+To get back previous kills, you move around the kill ring. Start with C-y
+to get the most recent kill, and then use M-y to move to the previous spot
+in the kill ring by replacing the just-yanked text with the previous kill.
+Subsequent M-y's move around the ring, each time replacing the yanked text.
+When you reach the text you you're interested in, just stop. Any other
+command (a motion command, self-insert, anything) breaks the cycling of the
+kill ring, and the next C-y yanks the most recent kill again.
+.. @+node:ekr.20131002055813.19038: *4* Reference: Moving the cursor
+You may override the default key bindings in leoSettings.leo with
+@shortcuts nodes in your myLeoSettings.leo file.
+
+**Remember**, all @shortcuts nodes must be descendants of an @settings
+node.
+
+**Note**: you may use as many @shortcuts nodes as you like to organize your
+bindings.
+
+For example, to bind back-char command to Ctrl-B, add this line to the body
+text of one of your @shortcuts nodes::
+
+    back-char = Ctrl-B
+
+Here are the commands that move the cursor, with their default bindings, if
+any.
+
+Execute commands without bindings using the minibuffer, as usual.
+
++----------------------+--------------------------------------+
+| Binding              | Command                              |
++======================+======================================+
+|                      | **Move by characters**               |
++----------------------+--------------------------------------+
+| Left-Arrow           | back-char                            |
++----------------------+--------------------------------------+
+| Right-Arrow          | forward-char                         |
++----------------------+--------------------------------------+
+| Shift-Right-Arrow    | forward-char-extend-selection        |
++----------------------+--------------------------------------+
+| Shift-Left-Arrow     | back-char-extend-selection           |
++----------------------+--------------------------------------+
+|                      | **Move by words**                    |
++----------------------+--------------------------------------+
+| Ctrl-Left            | back-word                            |
++----------------------+--------------------------------------+
+| Ctrl-Right           | forward-word                         |
++----------------------+--------------------------------------+
+| Shift-Ctrl-Left      | back-word-extend-selection           |
++----------------------+--------------------------------------+
+| Shift-Ctrl-Right     | forward-word-extend-selection        |
++----------------------+--------------------------------------+
+|                      | **Move by lines**                    |
++----------------------+--------------------------------------+
+| Down-Arrow           | next-line                            |
++----------------------+--------------------------------------+
+| End                  | end-of-line                          |
++----------------------+--------------------------------------+
+| Home                 | beginning-of-line                    |
++----------------------+--------------------------------------+
+| Shift-Down-Arrow     | next-line-extend-selection           |
++----------------------+--------------------------------------+
+| Shift-End            | end-of-line-extend-selection         |
++----------------------+--------------------------------------+
+| Shift-Home           | beginning-of-line-extend-selection   |
++----------------------+--------------------------------------+
+| Shift-Up-Arrow       | previous-line-extend-selection       |
++----------------------+--------------------------------------+
+| Up-Arrow             | previous-line                        |
++----------------------+--------------------------------------+
+|                      | **Move by sentences**                |
++----------------------+--------------------------------------+
+| None                 | backward-sentence                    |
++----------------------+--------------------------------------+
+| None                 | backward-sentence-extend-selection   |
++----------------------+--------------------------------------+
+| None                 | forward-sentence                     |
++----------------------+--------------------------------------+
+| None                 | forward-sentence-extend-selection    |
++----------------------+--------------------------------------+
+|                      | **Move by paragraphs**               |
++----------------------+--------------------------------------+
+| None                 | backward-paragraph                   |
++----------------------+--------------------------------------+
+| None                 | backward-paragraph-extend-selection  |
++----------------------+--------------------------------------+
+| Alt-{                | forward-paragraph                    |
++----------------------+--------------------------------------+
+| Alst-Shift-{         | forward-paragraph-extend-selection   |
++----------------------+--------------------------------------+
+|                      | **Move by pages**                    |
++----------------------+--------------------------------------+
+| PageDown             | forward-page                         |
++----------------------+--------------------------------------+
+| PageUp               | backward-page                        |
++----------------------+--------------------------------------+
+| Shift-PageDown       | forward-page-extend-selection        |
++----------------------+--------------------------------------+
+| Shift-PageUp         | backward-page-extend-selection       |
++----------------------+--------------------------------------+
+|                      | **Move to start/end of buffer**      |
++----------------------+--------------------------------------+
+| Ctrl-End             | end-of-buffer                        |
++----------------------+--------------------------------------+
+| Ctrl-Home            | beginning-of-buffer                  |
++----------------------+--------------------------------------+
+| Shift-Ctrl-End       | end-of-buffer-extend-selection       |
++----------------------+--------------------------------------+
+| Shift-Ctrl-Home      | beginning-of-buffer-extend-selection |
++----------------------+--------------------------------------+
+.. @+node:ekr.20131004191204.16077: *4* Reference: Frequently used commands
+Except for cursor-moving bindings, here are the key bindings I use on a
+regular basis::
+
+    Backspace (backward-delete-character)
+    Ctrl-Backspace (backward-delete-word)
+    Delete (delete-character)
+    Ctrl-Delete (delete-word)
+    Tab (newline-and-indent) indents selected lines
+    Shift-Tab (unindent-region) unindents selected lines
+    Alt-0 (vr-toggle)
+    Alt-1 (toggle-autocompleter)
+    Alt-8 (goto-last-sibling)
+    Alt-A (sort-siblings)
+    Alt-G (goto-global-line)
+    Alt-R (isearch-backward)
+    Alt-S (isearch-forward)
+    Alt-T (focus-to-tree)
+    Alt-Y (yank-pop)
+    Alt-Z (zap-to-character)
+    Alt-minus (contract-all)
+    Alt-/ (dabbrev-expands) Powerful!
+    Ctrl-A (select-all)
+    Ctrl-B (execute-script)
+    Ctrl-C (copy-text)
+    Ctrl-D (move-outline-down)
+    Ctrl-F (search-with-present-options)
+    Ctrl-G (keyboard-quit)
+    Ctrl-H (edit-headline)
+    Ctrl-I(insert-node)
+    Ctrl-K (kill-line)
+    Ctrl-L (move-outline-left) 
+    Ctrl-M (mark)
+    Ctrl-N (new)
+    Ctrl-O (open-outline)
+    Ctrl-P (repeat-complex-command) Useful!
+    Ctrl-Q (exit-leo)
+    Ctrl-R (move-outline-right) 
+    Ctrl-S (save-file)
+    Ctrl-U (move-outline-up) 
+    Ctrl-V (paste-text)
+    Ctrl-W (extend-to-word)
+    Ctrl-X (cut-text)
+    Ctrl-Y (yank)
+    Ctrl-Z (undo)
+    Ctrl-{ (promote) 
+    Ctrl-} (demote) 
+    Ctrl-( (add-comments)
+    Ctrl-) (delete-comments)
+    Ctrl-Shift-C (copy-node)
+    Ctrl-Shift-D (extract)
+    Ctrl-Shift-P (reformat-paragraph)
+    Ctrl-Shift-V (paste-node)
+    Ctrl-Shift-W (write-at-file-nodes)
+    Ctrl-Shift-X (cut-node)
+    Ctrl-Shift-Z (redo)
+    Alt+Ctrl+A toggle-find-wrap-around-option
+    Alt+Ctrl+B toggle-find-in-body-option
+    Alt+Ctrl+C toggle-find-mark-changes-option
+    Alt+Ctrl+E set-find-everywhere
+    Alt+Ctrl+F toggle-find-mark-finds-option
+    Alt+Ctrl+H toggle-find-in-headline-option
+    Alt+Ctrl+I toggle-find-ignore-case-option
+    Alt+Ctrl+N set-find-node-only
+    Alt+Ctrl+S set-find-suboutline-only
+    Alt+Ctrl+W toggle-find-word-option
+    Alt+Ctrl+X toggle-find-regex-option
+    F11 (help-for-command)
+    F12 (help-for-python)
+
+These useful commands have no default key bindings::
+
+    beautify
+    convert-all-tabs
+    convert-tabs
+    print-commands: shows alternative bindings
+    run-all-unit-tests-locally
+    sort-lines
+.. @+node:ekr.20131005214621.16129: *3* Expanding @others & section references
 .. @-all
 .. @-leo

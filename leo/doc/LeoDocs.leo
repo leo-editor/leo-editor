@@ -62,7 +62,6 @@
 <v t="ekr.20101026081737.5531"><vh>Links that replace those in actual built page</vh></v>
 </v>
 </v>
-<v t="ekr.20100808060203.4273"></v>
 <v t="ekr.20040414161647"><vh>Users Guide</vh>
 <v t="ekr.20101104024804.4898"><vh> Generating the Users Guide</vh>
 <v t="sps.20100708203040.19008"><vh>@@button generate-full-userguide</vh>
@@ -96,7 +95,16 @@
 <v t="ekr.20100805165051.7152" descendentVnodeUnknownAttributes="7d71005507302e302e332e3171017d710258120000007273745f687474705f61747472696275746571035d71042858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d333722206e616d653d22687474702d6e6f64652d6d61726b65722d3337223e710558040000003c2f613e71065d71072858260000003c64697620636c6173733d2273656374696f6e222069643d22672d726566696e64616c6c223e710858060000003c2f6469763e71095d710a28584f0000003c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d666f722d66696e64696e672d616e642d6368616e67696e672d746578742d66726f6d2d73637269707473223e710b58060000003c2f6469763e710c5d710d28583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710e58060000003c2f6469763e710f5d71102858060000003c626f64793e711158070000003c2f626f64793e71125d71132858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711458070000003c2f68746d6c3e71154e656565656558070000003c2f6469763e0a711658070000003c2f6469763e0a711758350000003c64697620636c6173733d2273656374696f6e222069643d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e0a7118586c0000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313922206e616d653d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e52756e6e696e67204c656f20696e206261746368206d6f64653c2f613e3c2f68313e0a71196573732e"><vh>@file installing.txt</vh></v>
 </v>
 <v t="ekr.20091130111843.6787"><vh>The Leo Tutorial</vh>
-<v t="ekr.20100805165051.7146"><vh>@file intro.txt</vh></v>
+<v t="ekr.20100805165051.7146"
+marks="ekr.20091130111843.6788,"><vh>@file intro.txt</vh></v>
+<v t="ekr.20131003040744.16025"
+marks="ekr.20131003040744.16026,ekr.20131005040354.16072,ekr.20131005214621.16090,"
+expanded="ekr.20131003040744.16026,"><vh>@file basics1.txt</vh></v>
+<v t="ekr.20131003040744.18224"
+expanded="ekr.20131003040744.18226,"><vh>@file basics2.txt</vh></v>
+<v t="ekr.20131005214621.16110"
+marks="ekr.20131005214621.16117,ekr.20131005214621.16123,ekr.20131005214621.16124,"
+expanded="ekr.20131005214621.16111,"><vh>@file basics3.txt</vh></v>
 </v>
 <v t="EKR.20040524104904.99"><vh>Using Leo</vh>
 <v t="ekr.20100805165051.7155"><vh>@file commands.txt</vh></v>
@@ -156,7 +164,9 @@
 </v>
 <v t="ekr.20101025080245.5796"><vh>Reference</vh>
 <v t="ekr.20050831184021.5"><vh>Leo's Reference</vh>
-<v t="ekr.20100805001344.7253"><vh>@file directives.txt</vh></v>
+<v t="ekr.20100805001344.7253"
+marks="ekr.20131005214621.16131,ekr.20131004083454.16096,ekr.20131005214621.16129,"
+expanded="ekr.20050828061213,"><vh>@file directives.txt</vh></v>
 </v>
 <v t="EKR.20040524104904.161"><vh>Designing with Leo</vh>
 <v t="ekr.20100805165051.7156"><vh>@file design.txt</vh></v>
@@ -417,32 +427,16 @@
 <v t="ekr.20131001100236.15927"><vh>valuespace &amp; --ipython</vh></v>
 <v t="ekr.20131001100236.15928"><vh>highlights (for release noes)</vh></v>
 </v>
-<v t="ekr.20131001100335.15928"><vh>Leo Use Cases</vh>
-<v t="ekr.20131001100335.15933"><vh>Leo as a PIM</vh></v>
-<v t="ekr.20131001100335.15929"><vh>Leo for writing</vh></v>
-<v t="ekr.20131001100335.15930"><vh>Leo for studying programs</vh></v>
-<v t="ekr.20131001100335.15931"><vh>Leo for writing programs</vh></v>
-<v t="ekr.20131001100335.15932"><vh>Leo for scripting</vh></v>
-<v t="ekr.20131001100335.15934"><vh>Leo for scientific programming</vh></v>
-</v>
-<v t="ekr.20131001100335.15942"><vh>Leo vs other programs</vh>
+<v t="ekr.20131007055150.17606"><vh>Highlight abbreviations and auto-completion</vh></v>
+<v t="ekr.20131001100335.15942" a="M"><vh>Leo vs other programs</vh>
 <v t="ekr.20131001100335.15943"><vh>Leo vs Emacs</vh></v>
 <v t="ekr.20131001100335.15944"><vh>Leo vs Vim</vh></v>
 <v t="ekr.20131001100335.15945"><vh>Leo vs IPython</vh></v>
 </v>
-<v t="ekr.20131001100335.15924"><vh>Learn Leo in two hours</vh>
-<v t="ekr.20091130111843.6788"><vh>@rst html\intro.html</vh></v>
-<v t="ekr.20131001100335.15935"><vh>Learn the basics of Leo in one hour</vh>
-<v t="ekr.20131003040744.16025"
-expanded="ekr.20131003040744.16026,"><vh>@file basics1.txt</vh></v>
+<v t="ekr.20131005214621.16132" a="M"><vh>Recent</vh>
+<v t="ekr.20050831184021.5"></v>
+<v t="ekr.20091130111843.6787"></v>
 </v>
-<v t="ekr.20131002055813.15970"><vh>Learn intermediate Leo topics in one hour</vh>
-<v t="ekr.20131003040744.18224"
-marks="ekr.20131005040354.16072,ekr.20131001100335.15941,ekr.20131002055813.15971,ekr.20131002055813.15972,ekr.20131004083454.16096,"><vh>@file basics2.txt</vh></v>
-</v>
-</v>
-<v t="ekr.20131003040744.16025"
-expanded="ekr.20131003040744.16026,"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -558,27 +552,6 @@ False: Leo never attempts to create directories.
 <t tx="ekr.20090717084250.10702"></t>
 <t tx="ekr.20091111112709.6671"></t>
 <t tx="ekr.20091130111843.6787"></t>
-<t tx="ekr.20091130111843.6788">################
-The Leo Tutorial
-################
-
-.. index:: Leo's tutorial
-
-.. _`free software`: https://en.wikipedia.org/wiki/Free_software
-.. _`Learn the basics of Leo in one hour`: http://leoeditor.com/basics1.html
-.. _`Learn intermediate topics in one hour`: http://leoeditor.com/basics2.html
-
-Leo is a power tool for people who want to organize, study and work with
-data, especially complex data like computer programs, books, web sites and
-data bases. Leonistas say Leo is a revolutionary tool and that Leo is fun
-to use--even addictive.
-
-Leo looks like other outlining programs, but it is not. This tutorial
-explains the difference.  There are two parts:
-
-1. `Learn the basics of Leo in one hour`_ and
-2. `Learn intermediate topics in one hour`_.
-</t>
 <t tx="ekr.20100731112744.7267">@pagewidth 75</t>
 <t tx="ekr.20100805171546.4412">@language rest
 
@@ -3852,21 +3825,6 @@ If there is a great demand to restore these features, it can always be done
 later. For now, though, I wanted to do the simplest thing that could
 possibly work.
 </t>
-<t tx="ekr.20131001100335.15924">@language rest
-
-</t>
-<t tx="ekr.20131001100335.15928"></t>
-<t tx="ekr.20131001100335.15929">@rst nodes</t>
-<t tx="ekr.20131001100335.15930"></t>
-<t tx="ekr.20131001100335.15931"></t>
-<t tx="ekr.20131001100335.15932"></t>
-<t tx="ekr.20131001100335.15933">@url
-Bookmarks
-Clones
-Views
-</t>
-<t tx="ekr.20131001100335.15934"></t>
-<t tx="ekr.20131001100335.15935"></t>
 <t tx="ekr.20131001100335.15942"></t>
 <t tx="ekr.20131001100335.15943">- Leo has shamelessly stolen all of Emacs's most important features: long
   command names, the minibuffer, typing completion and flexible key
@@ -3904,9 +3862,21 @@ Views
   (DOM). Vim has no DOM at all; everything is just text.
 </t>
 <t tx="ekr.20131001100335.15945"></t>
-<t tx="ekr.20131002055813.15970"></t>
 <t tx="ekr.20131005214621.16088"></t>
 <t tx="ekr.20131005214621.16089">Leo uses a TOC that *looks* like a Sphinx toc but is built by hand.</t>
+<t tx="ekr.20131005214621.16132">@language rest
+
+To do:
+- New intro words for each chapter in intro.
+- New intros for all basics chapters.
+- New/revised summaries of all basics chapter.
+
+Reference:
+- New sections on expansion, key bidings.
+
+</t>
+<t tx="ekr.20131007055150.17606">Their own chapter, or prominent new sections.
+</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]
