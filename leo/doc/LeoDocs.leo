@@ -437,6 +437,7 @@ expanded="ekr.20050828061213,"><vh>@file directives.txt</vh></v>
 <v t="ekr.20050831184021.5"></v>
 <v t="ekr.20091130111843.6787"></v>
 </v>
+<v t="ekr.20131007055150.17609"><vh>Oops: @rst requires @file</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.161"></t>
@@ -3877,6 +3878,7 @@ Reference:
 </t>
 <t tx="ekr.20131007055150.17606">Their own chapter, or prominent new sections.
 </t>
+<t tx="ekr.20131007055150.17609">http://mail.google.com/mail/u/0/#inbox/1418f0d8b1243c5d</t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]

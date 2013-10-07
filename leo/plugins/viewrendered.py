@@ -182,10 +182,9 @@ __version__ = '1.0'
 #@+<< imports >>
 #@+node:tbrown.20100318101414.5993: ** << imports >>
 import leo.core.leoGlobals as g
+import PyQt4.QtCore as QtCore
 import leo.plugins.qtGui as qtGui
-
 g.assertUi('qt')
-
 import os
 
 docutils = g.importExtension('docutils',pluginName='viewrendered.py',verbose=False)
@@ -367,6 +366,9 @@ def hide_rendering_pane(event):
         if vr:
             vr.deactivate()
             vr.deleteLater()
+            def at_idle(c=c):
+                c.bodyWantsFocusNow()
+            QtCore.QTimer.singleShot(0,at_idle)
             h = c.hash()
             c.bodyWantsFocus()
             if vr == controllers.get(h):

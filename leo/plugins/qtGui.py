@@ -8247,7 +8247,7 @@ class leoQtGui(leoGui.leoGui):
                 # Make no such assumption.
                 # We would like to use qevent to insert the character,
                 # but this would invoke eventFilter again!
-                # So set this flag for eventFiler, which will
+                # So set this flag for eventFilter, which will
                 # return False, indicating that the widget must handle
                 # qevent, which *presumably* is the best that can be done.
                 g.app.gui.insert_char_flag = True

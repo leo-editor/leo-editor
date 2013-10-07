@@ -8,6 +8,7 @@
 @language rest
 .. @+node:ekr.20130926053913.11572: *3* for b1
 @language rest
+.. @+node:ekr.20131007055150.17616: *4* improve download button
 .. @+node:ekr.20131007055150.17607: *4* bugs
 .. @+node:ekr.20131007055150.13036: *5* fix reformat-paragraph and related commands
 This command was a major advance when one of Leo's users created it.
