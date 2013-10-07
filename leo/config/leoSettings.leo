@@ -754,6 +754,7 @@
 <v t="ekr.20041119034357.20"></v>
 <v t="ekr.20060122105527.3"><vh>Keyboard and minibuffer options</vh>
 <v t="ekr.20120205022040.15410"><vh>@bool enable_alt_ctrl_bindings = True</vh></v>
+<v t="ekr.20131007055150.13034"><vh>@bool ignore_unbound_non_ascii_keys = False</vh></v>
 <v t="ekr.20060122105527.8"><vh>@bool showHelpWhenEnteringModes = False</vh></v>
 <v t="ekr.20120205022040.15411"></v>
 <v t="ekr.20060627065953"><vh>@bool trace_bind_key_exceptions = True</vh></v>
@@ -9780,6 +9781,7 @@ action will be used instead.</t>
 1. @bool enable-abbreviations = True
 2. *either* this setting or @bool scripting-at-script-nodes = True</t>
 <t tx="ekr.20131003040744.17561">vr-toggle = Alt-0</t>
+<t tx="ekr.20131007055150.13034"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>

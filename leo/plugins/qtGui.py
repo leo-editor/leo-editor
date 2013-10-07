@@ -7366,6 +7366,7 @@ class leoQtGui(leoGui.leoGui):
         self.qtApp = QtGui.QApplication(sys.argv)
         self.bodyTextWidget  = leoQtBaseTextWidget
         self.iconimages = {}
+        self.insert_char_flag = False # A flag for eventFilter.
         self.plainTextWidget = leoQtBaseTextWidget
         self.mGuiName = 'qt'
         self.color_theme = g.app.config and g.app.config.getString('color_theme') or None
@@ -8226,6 +8227,30 @@ class leoQtGui(leoGui.leoGui):
 
         # To make your application perform idle processing, use a QTimer with 0 timeout.
         timer.start(0)
+    #@+node:ekr.20131007055150.17608: *4* insertKeyEvent (qtGui) (New in 4.11)
+    def insertKeyEvent (self,event,i):
+        
+        '''Insert the key given by event in location i of widget event.w.'''
+        
+        import leo.core.leoGui as leoGui
+        assert isinstance(event,leoGui.leoKeyEvent)
+        qevent = event.event
+        assert isinstance(qevent,QtGui.QKeyEvent)
+        qw = hasattr(event.w,'widget') and event.w.widget or None
+        if qw and isinstance(qw,QtGui.QTextEdit):
+            g.trace(i,qevent.modifiers(),g.u(qevent.text()))
+            if 1:
+                # Assume that qevent.text() *is* the desired text.
+                # This means we don't have to hack eventFilter.
+                qw.insertPlainText(qevent.text())
+            else:
+                # Make no such assumption.
+                # We would like to use qevent to insert the character,
+                # but this would invoke eventFilter again!
+                # So set this flag for eventFiler, which will
+                # return False, indicating that the widget must handle
+                # qevent, which *presumably* is the best that can be done.
+                g.app.gui.insert_char_flag = True
     #@+node:ekr.20110605121601.18522: *4* isTextWidget (qtGui)
     def isTextWidget (self,w):
 
@@ -8678,8 +8703,14 @@ class leoQtEventFilter(QtCore.QObject):
                 if trace and traceKey:
                     g.trace('ignore',ignore,'bound',repr(shortcut),repr(aList))
                 w = self.w # Pass the wrapper class, not the wrapped widget.
+                qevent = event
                 event = self.create_key_event(event,c,w,ch,tkKey,shortcut)
                 k.masterKeyHandler(event)
+                if g.app.gui.insert_char_flag:
+                    # if trace and traceKey: g.trace('*** insert_char_flag',event.text())
+                    g.trace('*** insert_char_flag',qevent.text())
+                    g.app.gui.insert_char_flag = False
+                    override = False # *Do* pass the character back to the widget!
                 c.outerUpdate()
             else:
                 if trace and traceKey and verbose:
@@ -8738,8 +8769,8 @@ class leoQtEventFilter(QtCore.QObject):
         if trace and verbose: g.trace('ch: %s, shortcut: %s printable: %s' % (
             repr(ch),repr(shortcut),ch in string.printable))
 
-        return leoGui.leoKeyEvent(c,char,shortcut,w,x,y,x_root,y_root)
-    #@+node:ekr.20120204061120.10088: *3* Key construction...
+        return leoGui.leoKeyEvent(c,char,event,shortcut,w,x,y,x_root,y_root)
+    #@+node:ekr.20120204061120.10088: *3* Key construction (leoQtEventFilter)
     #@+node:ekr.20110605121601.18543: *4* toTkKey & helpers (must not change!)
     def toTkKey (self,event):
 

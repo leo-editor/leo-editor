@@ -29,7 +29,7 @@ class leoKeyEvent:
 
     #@+others
     #@+node:ekr.20110605121601.18846: *3* ctor (leoKeyEvent)
-    def __init__ (self,c,char,shortcut,w,x,y,x_root,y_root):
+    def __init__ (self,c,char,event,shortcut,w,x,y,x_root,y_root):
 
         trace = False and not g.unitTesting
 
@@ -46,6 +46,7 @@ class leoKeyEvent:
 
         self.c = c
         self.char = char or ''
+        self.event = event # New in Leo 4.11.
         self.stroke = stroke
         self.w = self.widget = w
 
@@ -97,13 +98,13 @@ class leoGui:
         self.ScriptingControllerClass = nullScriptingControllerClass
     #@+node:ekr.20061109212618.1: *3* Must be defined only in base class
     #@+node:ekr.20110605121601.18847: *4* create_key_event (leoGui)
-    def create_key_event (self,c,char,stroke,w,x=None,y=None,x_root=None,y_root=None):
+    def create_key_event (self,c,char,stroke,w,event=None,x=None,y=None,x_root=None,y_root=None):
 
         # Do not call strokeFromSetting here!
         # For example, this would wrongly convert Ctrl-C to Ctrl-c,
         # in effect, converting a user binding from Ctrl-Shift-C to Ctrl-C.
 
-        return leoKeyEvent(c,char,stroke,w,x,y,x_root,y_root)
+        return leoKeyEvent(c,char,event,stroke,w,x,y,x_root,y_root)
     #@+node:ekr.20031218072017.3740: *4* guiName
     def guiName(self):
 

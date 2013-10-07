@@ -3069,7 +3069,7 @@ class keyHandlerClass:
 
         # Special case for bindings handled in k.getArg:
 
-        assert g.isStroke(stroke)
+        assert g.isStroke(stroke),repr(stroke)
 
         if state in ('getArg','full-command'):
             if stroke in ('\b','BackSpace','\r','Linefeed','\n','Return','\t','Tab','Escape',):
@@ -3131,7 +3131,7 @@ class keyHandlerClass:
                         if si.commandName == 'auto-complete':
                             return True
         return False
-    #@+node:ekr.20080510095819.1: *5* k.handleUnboundKeys (always returns None)
+    #@+node:ekr.20080510095819.1: *5* k.handleUnboundKeys
     def handleUnboundKeys (self,event,char,stroke):
 
         trace = False and not g.unitTesting
@@ -4522,7 +4522,7 @@ class keyHandlerClass:
                 if trace: g.trace('repeat',n,'method',si.func.__name__,
                     'stroke',stroke,'widget',w)
                 for z in range(n):
-                    event = g.app.gui.create_key_event(c,None,stroke,w)
+                    event = g.app.gui.create_key_event(c,None,stroke,w,event=event)
                     k.masterCommand(commandName=None,event=event,func=si.func,stroke=stroke)
             else:
                 for z in range(n):

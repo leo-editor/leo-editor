@@ -1766,7 +1766,7 @@ class editCommandsClass (baseEditCommandsClass):
             'select-all':                           self.selectAllText,
             'select-to-matching-bracket':           self.selectToMatchingBracket,
             # Exists, but can not be executed via the minibuffer.
-            # 'self-insert-command':                self.selfInsertCommand,
+            'self-insert-command':                  self.selfInsertCommand,
             'set-comment-column':                   self.setCommentColumn,
             'set-extend-mode':                      self.setExtendMode,
             'set-fill-column':                      self.setFillColumn,
@@ -1800,7 +1800,6 @@ class editCommandsClass (baseEditCommandsClass):
 
         '''A placeholder command, useful for testing bindings.'''
 
-        # g.trace()
         pass
     #@+node:ekr.20110916215321.6709: *3* brackets (leoEditCommands)
     #@+node:ekr.20110916215321.6708: *4* selectToMatchingBracket (leoEditCommands)
@@ -4846,13 +4845,17 @@ class editCommandsClass (baseEditCommandsClass):
         elif inBrackets and self.autocompleteBrackets:
             self.updateAutomatchBracket(p,w,ch,oldSel)
         elif ch: # Null chars must not delete the selection.
+            isPlain = stroke.find('Alt') == -1 and stroke.find('Ctrl') == -1
             i,j = oldSel
             if i > j: i,j = j,i
             # Use raw insert/delete to retain the coloring.
             if i != j:                  w.delete(i,j)
             elif action == 'overwrite': w.delete(i)
-            w.insert(i,ch)
-            w.setInsertPoint(i+1)
+            if isPlain: # 2013/10/07: call insertKeyEvent for non-plain characters.
+                w.insert(i,ch)
+                w.setInsertPoint(i+1)
+            else:
+                g.app.gui.insertKeyEvent(event,i)
             if inBrackets and self.flashMatchingBrackets:
                 self.flashMatchingBracketsHelper(w,i,ch)               
         else:
