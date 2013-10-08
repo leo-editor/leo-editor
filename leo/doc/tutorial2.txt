@@ -31,8 +31,8 @@ External Files and Clones
 
 .. _`ask for help`: https://groups.google.com/forum/#!forum/leo-editor
 .. @+node:ekr.20131002055813.19697: *3* Creating external files
-.. _`Intermediate Topics tutorial`: http://leoeditor.com/basics2.html
-.. _`Using @auto and friends`: http://leoeditor.com/basics2.html#using-auto-nodes
+.. .. _`Intermediate Topics tutorial`: http://leoeditor.com/basics2.html
+.. .. _`Using @auto and friends`: http://leoeditor.com/basics2.html#using-auto-nodes
 
 Leo stores outline data on your file system in **.leo files**.
 

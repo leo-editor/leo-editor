@@ -34,7 +34,7 @@ Creating Documents
 .. _`LaTeX`: http://www.latex-project.org/
 .. _`reStructuredText`: http://docutils.sourceforge.net/rst.html
 .. _`Sphinx`: http://sphinx.pocoo.org/
-.. _`this chapter`: http://leoeditor.com/rstplugin3.html
+.. .. _`this chapter`: http://leoeditor.com/rstplugin3.html
 .. _`Leo's Users Guide`: http://leoeditor.com/leo_toc.html
 
 The rst3 command converts an @rst tree to `reStructuredText`_ (rST) and sends

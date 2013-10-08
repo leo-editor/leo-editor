@@ -37,10 +37,9 @@ then continues with a discussion of commands in each of Leo's menus.
 .. Relative links...
 .. _`Writing Programs in Leo`:          directives.html
 .. _`Customizing Leo`:                  customizing.html
-.. _`Clones and views`:                 intro.html#clones-views
+.. .. _`Clones and views`:                 intro.html#clones-views
 .. _`Creating script buttons`:          scripting.html#creating-script-buttons
-.. _`A Tutorial Introduction to Leo`:   intro.html
-
+.. _`A Tutorial Introduction to Leo`:   tutorial.html
 .. @+node:ekr.20060420094611: *3* The minibuffer and minibuffer commands
 The mini-buffer is a text area at the bottom of the body pane. You use it
 like the Emacs mini-buffer to invoke commands by their so-called *long name*.

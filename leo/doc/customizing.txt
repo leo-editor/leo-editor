@@ -29,8 +29,8 @@ See `Specifying settings`_ for a description of how to change Leo's settings.
     :depth: 3
 .. @+node:ekr.20050901102055: *3* @rst-no-head links
 .. _`Scripting Leo with Python`:    scripting.html
-.. _`History of Leo`:               history.html
-.. _`rst3 plugin`:                  glossary.html#rst3-plugin
+.. .. _`History of Leo`:               history.html
+.. .. _`rst3 plugin`:                  glossary.html#rst3-plugin
 .. _`Specifying settings`:          commands.html#specifying-settings
 .. @+node:EKR.20040524104904.140: *3* Specifying settings
 Leo stores options in **@settings trees**, outlines whose headline is
