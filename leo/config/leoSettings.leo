@@ -501,11 +501,12 @@
 <v t="ekr.20110611092035.16463"><vh>Tree operation</vh>
 <v t="ekr.20041119050749.3"><vh>@bool allow_clone_drags = False</vh></v>
 <v t="nh910.20110621123823.3423"><vh>@bool collapse_nodes_after_move = True</vh></v>
-<v t="ekr.20111109104336.12503"><vh>@bool collapse_on_lt_arrow = True</vh></v>
 <v t="ekr.20060930085532"><vh>@bool collapse_nodes_during_finds = True</vh></v>
 <v t="ekr.20080315083057.7"><vh>@bool collapse_nodes_while_spelling = True</vh></v>
+<v t="ekr.20111109104336.12503"><vh>@bool collapse_on_lt_arrow = True</vh></v>
 <v t="ekr.20070615094204"><vh>@bool contractVisitedNodes = True</vh></v>
 <v t="ekr.20041119050749.4"><vh>@bool enable_drag_messages = False</vh></v>
+<v t="ekr.20131008181812.17533"><vh>@bool enable_tree_dragging = True</vh></v>
 <v t="ekr.20061012122620"><vh>@bool insert_new_nodes_at_end = False</vh></v>
 <v t="tbrown.20110212091818.20118"><vh>@bool inter_outline_drag_moves = False</vh></v>
 <v t="ekr.20100107060708.6390"><vh>@bool qt-tree-multiple-selection = True</vh></v>
@@ -9782,6 +9783,7 @@ action will be used instead.</t>
 2. *either* this setting or @bool scripting-at-script-nodes = True</t>
 <t tx="ekr.20131003040744.17561">vr-toggle = Alt-0</t>
 <t tx="ekr.20131007055150.13034"></t>
+<t tx="ekr.20131008181812.17533">False: disable all drag and drop operations in the outline.</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>
