@@ -26,9 +26,9 @@ Running Leo
 This chapter tells how to run Leo and discusses Leo's command-line
 options.
 
-.. toctree::
-   :maxdepth: 4
-
+.. contents::
+    :depth: 2
+    
 .. @+node:ekr.20131008041326.16151: *3* Running Leo
 You can run Leo from a Python interpreter as follows::
 

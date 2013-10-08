@@ -39,9 +39,9 @@ Leo can be installed on MacOS, but the process is difficult and not recommended.
 **Important**: If you have *any* problems installing Leo,
 please ask for help on `Leo's help forum`_.
 
-.. toctree::
-   :maxdepth: 4
-
+.. contents::
+    :depth: 2
+    
 .. @+node:ekr.20101125062332.5090: *3* Installing packages
 Leo requires the `Python`_ and `PyQt_` package.
 The `PyEnchant`_ package is optional. 

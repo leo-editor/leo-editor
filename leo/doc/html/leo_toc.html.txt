@@ -22,6 +22,7 @@ Leo's Documentation Page
    running
    FAQ
    Cheat Sheet <cheatsheet>
+   glossary
    What's New <what-is-new>
 
 .. toctree::
@@ -30,7 +31,7 @@ Leo's Documentation Page
    Tutorial <tutorial>
    Users Guide <usersguide>
    Reference Guide <reference>
-   
+   appendices
 
 .. toctree::
    :hidden:

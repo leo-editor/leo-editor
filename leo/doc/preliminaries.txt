@@ -21,8 +21,8 @@
 Preliminaries
 #############
 
-.. toctree::
-   :maxdepth: 2
+.. contents::
+    :depth: 2
 .. @+node:ekr.20040414172218.4: *3* Acknowledgements
 Leo owes much of its visual design to MORE, possibly the most elegant
 computer program ever written. Leo's clone nodes are inspired by MORE.

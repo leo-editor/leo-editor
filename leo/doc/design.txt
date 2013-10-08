@@ -1,5 +1,5 @@
 .. @+leo-ver=5-thin
-.. @+node:ekr.20100805165051.7156: * @file design.txt
+.. @+node:ekr.20131008041326.16175: * @file design.txt
 .. @@language rest
 .. @@tabwidth -4
 
@@ -17,7 +17,7 @@
 .. @@c
 
 .. @+all
-.. @+node:ekr.20050901101608.3: ** @rst html\design.html
+.. @+node:ekr.20131008041326.16176: ** @rst html\design.html
 ##################
 Designing with Leo
 ##################

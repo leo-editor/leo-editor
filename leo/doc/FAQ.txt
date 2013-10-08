@@ -84,6 +84,111 @@ This is Leo's Frequently Asked Questions document.
 .. _`sentinel lines`:       glossary.html#sentinel
 .. _setting:                glossary.html#setting
 .. _settings:               glossary.html#settings
+.. @+node:ekr.20050830115714.26: *3* Customizing Leo
+.. @+node:ekr.20050830115714.29: *4* How can I add support for a new language?
+See the instructions are in LeoPy.leo in::
+
+    Notes:How To:How to add support for a new language section.
+
+This section contains clones of all relevant parts of Leo that you will change.
+Coming in Leo 4.4: Leo will use JEdit's language description files to drive the
+syntax colorer. To add support for a new language, just add another such
+description file.
+.. @+node:ekr.20050830115714.30: *4* How do I submit a plugin?
+You have two options: 
+
+-   Get cvs write access, and add the @file file to the plugins directory.
+
+-   Just send the @file file to me at edreamleo@gmail.com.
+    That's all you need to do.  In particular that there is no need to change leoPlugins.leo.
+.. @+node:ekr.20050830120844: *4* How do I add a new menu item from a plugin?
+c.frame.menu.createMenuItemsFromTable will append items to the end of an existing menu.
+For example, the following script will add a new item at the end of the 'File' menu::
+
+    def callback(*args,**keys):
+        g.trace()
+
+    table = (("Test1",None,callback),)
+
+    c.frame.menu.createMenuItemsFromTable('File',table)
+
+Plugins can do anything with menus using c.frame.menu.getMenu. For example, here
+is a script that adds a Test menu item after the 'Open With' menu item in the
+File menu::
+
+    def callback(*args,**keys):
+        g.trace()
+
+    fileMenu = c.frame.menu.getMenu('File')
+
+    # 3 is the position in the menu.  Other kinds of indices are possible.
+    fileMenu.insert(3,'command',label='Test2',command=callback)
+.. @+node:ekr.20060805094325: *4* How can I use Leo's legacy key bindings?
+You can 'revert' to old key bindings as follows:
+
+1. Open leoSettings.leo.
+
+2. Find the node 'Keyboard shortcuts'.
+
+3. Disable the old bindings by moving the node
+   '@keys EKR bindings: Emacs keys + modes'
+   so that it is a child of the node:
+   '@ignore Unused key bindings'.
+
+4. Notice that there are two child nodes of the node
+   '@ignore Unused key bindings'
+   that refer to legacy key bindings:
+
+   - '@keys Legacy Leo shortcuts with important Emacs bindings'
+
+   - '@keys Legacy Leo bindings'.
+
+5. Move **one** of these two legacy nodes up one level so that it is a child of the node
+   'Keyboard shortcuts'.
+   It should **not** be a child of the node
+   '@ignore Unused key bindings'.
+.. @+node:ekr.20060915112109: *4* How can I enable and disable support for psyco?
+Find the @file leoApp.py node in leoPy.leo.
+In the ctor for the LeoApp class set self.use_psyco to True or False.
+You will find this ctor in the node::
+
+    Code-->Core classes...-->@file leoApp.py-->app.__init__
+
+Note that this ivar can not be set using settings in leoSettings.leo because
+Leo uses g.app.use_psyco before processing configuration settings.
+.. @+node:ekr.20091105080104.9031: *4* How do I specify qt fonts?
+When using the Qt gui, you specify fonts
+using the node in leoSettings.leo called::
+
+    @data qt-gui-plugin-style-sheet
+
+As usual, you will probably want to put this node in your myLeoSettings.leo file.
+.. @+node:ekr.20110531155858.20564: *4* How do I set selection colors?
+You set most colors in the following settings node::
+
+    @data qt-gui-plugin-style-sheet
+    
+However, settings for colors that can change during Leo's execution
+are found in the node::
+
+    Body pane colors
+    
+These settings are as follows, with the defaults as shown::
+    
+
+    \@color body_cursor_background_color = None
+    \@color body_cursor_foreground_color = None
+    \@color body_insertion_cursor_color = None
+    \@color body_text_background_color = None
+    \@color body_text_foreground_color = None
+    \@color command_mode_bg_color = #f2fdff</vh></v>
+    \@color command_mode_fg_color = None</vh></v>
+    \@color insert_mode_bg_color = #fdf5f5</vh></v>
+    \@color insert_mode_fg_color = black</vh></v>
+    \@color overwrite_mode_bg_color = azure2</vh></v>
+    \@color overwrite_mode_fg_color = black</vh></v>
+    \@color unselected_body_bg_color = #ffffef</vh></v>
+    \@color unselected_body_fg_color = black</vh></v>
 .. @+node:ekr.20090212054250.5: *3* Getting Leo
 .. @+node:ekr.20090212054250.6: *4* Where can I get official releases of Leo?
 You can get the latest official releases of Leo at
@@ -457,276 +562,6 @@ files that are shared with those who don't want to see sentinel comments.
 
 To make this work, it's important to keep your folder containing Leo
 separate from your .mySettings.leo and any data files.
-.. @+node:ekr.20050830115714.13: *3* Using external files
-.. @+node:ekr.20050830115714.14: *4* How do I inhibit sentinels in external files?
-You have two options, depending on whether you want to be able to use sections
-or not.
-
--   Use @nosent trees.
-    Files derived from @nosent trees contain no sentinels_.
-    However, Leo create the external file just as in @file trees.
-    In particular, Leo expands section references and understands the @others directive.
-
--   Use @asis trees.
-    Files derived from @asis trees contain no sentinels_.
-    Moreover, Leo does not expand section references in asis trees.
-    In other words, Leo creates the `external file` simply by writing all body text in outline order.
-    Leo can't update the outline unless the external file contains sentinels,
-    so Leo does not update @nosent trees or @asis trees automatically when
-    you change the external file in an external editor.
-.. @+node:ekr.20050830115714.16: *4* How do I prevent Leo from expanding sections?
-Use @asis trees. Files derived from @asis trees contain no sentinels. Leo
-creates the external file simply by writing all body text in outline order. Leo
-can't update the outline unless the external file contains sentinels, so Leo
-does not update @asis trees automatically when you change the external file in
-an external editor.
-.. @+node:ekr.20050830115714.18: *4* How can I create Javascript comments?
-**Question**: I'm writing a Windows Script Component, which is an XML file with
-a CData section containing javascript. I can get the XML as I want it by using
-\@language html, but how can I get the tangling comments inside the CData
-section to be java-style comments rather than html ones?
-
-**Answer**: In @file trees you use the @delims directive to change comment delimiters.
-For example::
-
-    @delims /* */ 
-    Javascript stuff 
-    @delims <-- --> 
-    HTML stuff
-
-**Important**: Leo can not revert to previous delimiters automatically;
-you must change back to previous delimiters using another @delims directive_.
-.. @+node:ekr.20050830115714.19: *4* How can I disable PHP comments?
-By Zvi Boshernitzan: I was having trouble disabling '<?php' with comments (and
-couldn't override the comment character for the start of the page). Finally, I
-found a solution that worked, using php's heredoc string syntax::
-
-    @first <?php
-    @first $comment = <<<EOD
-    EOD;
-
-    // php code goes here.
-    echo "boogie";
-
-    $comment2 = <<<EOD
-    @last EOD;
-    @last ?>
-
-or::
-
-    @first <?php
-    @first /*
-    */
-
-    echo "hi";
-
-    @delims /* */
-    @last ?>
-.. @+node:ekr.20050830115714.20: *4* How can I use Leo with unsupported languages?
-Here is a posting which might be helpful:
-http://sourceforge.net/forum/message.php?msg_id=2300457 The @first
-directive_ is the key to output usable code in unsupported languages. For
-example, to use Leo with the Basic language, use the following::
-
-    @first $IFDEF LEOHEADER
-    @delims '
-    @c
-    $ENDIF
-
-So this would enable a basic compiler to "jump" over the "true" LEO-header-lines.
-Like this::
-
-    $IFDEF LEOHEADER <-conditional compilation directive 
-    #@+leo-ver=4 <-these lines not compiled
-    #@+node:@file QParser005.INC
-    #@@first
-    #@delims ' 
-    '@@c
-    $ENDIF <-... Until here!
-    <rest of derived code file ... >
-
-This changes the comment symbol the apostrophe,
-making comments parseable by a BASIC (or other language.)
-.. @+node:ekr.20050830115714.21: *4* How do I make external files start with a shebang line?
-Use the @first directive_ in @file trees or @nosent trees.
-
-The @first directive puts lines at the very start of files derived from @file.
-For example, the body text of @file spam.py might be::
-
-    @first #! /usr/bin/env python
-
-The body text of @file foo.pl might be::
-
-    @first #/usr/bin/perl
-
-Leo recognizes the @first directive_ only at the start of the body text of @file nodes.
-No text may precede @first directives_.
-More than one @first directive may exist, like this::
-
-    @first #! /usr/bin/env python
-    @first # more comments.
-.. @+node:ekr.20050830115714.24: *4* Can @file trees contain material not in the external file?
-No. Everything in an @file trees must be part of the external file: orphan and
-\@ignore nodes are invalid in @file trees. This restriction should not be
-troublesome. For example, you can organize your outline like this::
-
-    + myClass
-    ..+ ignored stuff
-    ..+ @file myClass
-
-(As usual, + denotes a headline.) So you simply create a new node_, called
-myClass, that holds your @file trees and stuff you don't want in the @file
-trees.
-.. @+node:ekr.20050830115714.25: *4* How can I use Leo with older C compilers
-By Rich Ries.
-Some older C compilers don't understand the "//" comment symbol, so using @language C won't work.
-Moreover, the following does not always work either::
-
-    @comment /* */
-
-This generates the following sentinel line::
-
-    /*@@comment /* */*/
-
-in the output file, and not all C compilers allow nested comments, so the last \*\/ generates an error.
-The solution is to use::
-
-    #if 0
-    @comment /* */
-    #endif
-
-Leo is happy: it recognizes the @comment directive_.
-The C compiler is happy: the C preprocessor strips out the offending line before the C
-compiler gets it.
-.. @+node:ekr.20060529053407: *4* Why can't I use @ignore directives in @file trees?
-@ignore can only be used in the root node of @file trees.  It tells Leo to ignore the tree.
-
-The @ignore directive can not be used elsewhere in @file trees because of the way Leo recreates 
-outlines from external files. This is an absolutely crucial restriction and will never go away.
-For a few more details, see `Leo 4.0: Eliminating error 'recovery'`_ in `History of Leo`_.
-
-There are several workaround, as shown in LeoPy.leo:
-
-- keep notes in the outline outside of any external file.
-
-- Use @all to gather notes in a external file, as in done in @file leoProjects.txt.
-.. @+node:shadow.20080825171547.9: *4* How can I avoid getting long lines in external files?
-**Question**: I must follow a coding standard when writing source code. It
-includes a maximum line length restriction. How can I know the length of a
-line when it gets written to the external file?
-
-**Answer**: If a node belongs to a external file hierarchy, its body might get
-indented when it is written to the external file. It happens when an
-\@others directive or a section name appears indented in a higher-level
-node body. While (**line**, **col**) in status area show the line and column
-containing the body text's cursor, **fcol** shows the cursor coordinate
-relative to the external file, not to the current node. The relation
-**fcol >= col** is always true.
-.. @+node:ekr.20050830115714.26: *3* Customizing Leo
-.. @+node:ekr.20050830115714.29: *4* How can I add support for a new language?
-See the instructions are in LeoPy.leo in::
-
-    Notes:How To:How to add support for a new language section.
-
-This section contains clones of all relevant parts of Leo that you will change.
-Coming in Leo 4.4: Leo will use JEdit's language description files to drive the
-syntax colorer. To add support for a new language, just add another such
-description file.
-.. @+node:ekr.20050830115714.30: *4* How do I submit a plugin?
-You have two options: 
-
--   Get cvs write access, and add the @file file to the plugins directory.
-
--   Just send the @file file to me at edreamleo@gmail.com.
-    That's all you need to do.  In particular that there is no need to change leoPlugins.leo.
-.. @+node:ekr.20050830120844: *4* How do I add a new menu item from a plugin?
-c.frame.menu.createMenuItemsFromTable will append items to the end of an existing menu.
-For example, the following script will add a new item at the end of the 'File' menu::
-
-    def callback(*args,**keys):
-        g.trace()
-
-    table = (("Test1",None,callback),)
-
-    c.frame.menu.createMenuItemsFromTable('File',table)
-
-Plugins can do anything with menus using c.frame.menu.getMenu. For example, here
-is a script that adds a Test menu item after the 'Open With' menu item in the
-File menu::
-
-    def callback(*args,**keys):
-        g.trace()
-
-    fileMenu = c.frame.menu.getMenu('File')
-
-    # 3 is the position in the menu.  Other kinds of indices are possible.
-    fileMenu.insert(3,'command',label='Test2',command=callback)
-.. @+node:ekr.20060805094325: *4* How can I use Leo's legacy key bindings?
-You can 'revert' to old key bindings as follows:
-
-1. Open leoSettings.leo.
-
-2. Find the node 'Keyboard shortcuts'.
-
-3. Disable the old bindings by moving the node
-   '@keys EKR bindings: Emacs keys + modes'
-   so that it is a child of the node:
-   '@ignore Unused key bindings'.
-
-4. Notice that there are two child nodes of the node
-   '@ignore Unused key bindings'
-   that refer to legacy key bindings:
-
-   - '@keys Legacy Leo shortcuts with important Emacs bindings'
-
-   - '@keys Legacy Leo bindings'.
-
-5. Move **one** of these two legacy nodes up one level so that it is a child of the node
-   'Keyboard shortcuts'.
-   It should **not** be a child of the node
-   '@ignore Unused key bindings'.
-.. @+node:ekr.20060915112109: *4* How can I enable and disable support for psyco?
-Find the @file leoApp.py node in leoPy.leo.
-In the ctor for the LeoApp class set self.use_psyco to True or False.
-You will find this ctor in the node::
-
-    Code-->Core classes...-->@file leoApp.py-->app.__init__
-
-Note that this ivar can not be set using settings in leoSettings.leo because
-Leo uses g.app.use_psyco before processing configuration settings.
-.. @+node:ekr.20091105080104.9031: *4* How do I specify qt fonts?
-When using the Qt gui, you specify fonts
-using the node in leoSettings.leo called::
-
-    @data qt-gui-plugin-style-sheet
-
-As usual, you will probably want to put this node in your myLeoSettings.leo file.
-.. @+node:ekr.20110531155858.20564: *4* How do I set selection colors?
-You set most colors in the following settings node::
-
-    @data qt-gui-plugin-style-sheet
-    
-However, settings for colors that can change during Leo's execution
-are found in the node::
-
-    Body pane colors
-    
-These settings are as follows, with the defaults as shown::
-    
-
-    \@color body_cursor_background_color = None
-    \@color body_cursor_foreground_color = None
-    \@color body_insertion_cursor_color = None
-    \@color body_text_background_color = None
-    \@color body_text_foreground_color = None
-    \@color command_mode_bg_color = #f2fdff</vh></v>
-    \@color command_mode_fg_color = None</vh></v>
-    \@color insert_mode_bg_color = #fdf5f5</vh></v>
-    \@color insert_mode_fg_color = black</vh></v>
-    \@color overwrite_mode_bg_color = azure2</vh></v>
-    \@color overwrite_mode_fg_color = black</vh></v>
-    \@color unselected_body_bg_color = #ffffef</vh></v>
-    \@color unselected_body_fg_color = black</vh></v>
 .. @+node:ekr.20050830115714.118: *3* Tips and techniques
 .. @+node:ekr.20050830115714.113: *4* How can I create a template .leo file?
 **Question**:
@@ -1351,5 +1186,170 @@ For example, the following Leo script shows various ways of printing La Peña pr
 
 For still more details, see:
 http://www.diveintopython.org/xml_processing/unicode.html 
+.. @+node:ekr.20050830115714.13: *3* Using external files
+.. @+node:ekr.20050830115714.14: *4* How do I inhibit sentinels in external files?
+You have two options, depending on whether you want to be able to use sections
+or not.
+
+-   Use @nosent trees.
+    Files derived from @nosent trees contain no sentinels_.
+    However, Leo create the external file just as in @file trees.
+    In particular, Leo expands section references and understands the @others directive.
+
+-   Use @asis trees.
+    Files derived from @asis trees contain no sentinels_.
+    Moreover, Leo does not expand section references in asis trees.
+    In other words, Leo creates the `external file` simply by writing all body text in outline order.
+    Leo can't update the outline unless the external file contains sentinels,
+    so Leo does not update @nosent trees or @asis trees automatically when
+    you change the external file in an external editor.
+.. @+node:ekr.20050830115714.16: *4* How do I prevent Leo from expanding sections?
+Use @asis trees. Files derived from @asis trees contain no sentinels. Leo
+creates the external file simply by writing all body text in outline order. Leo
+can't update the outline unless the external file contains sentinels, so Leo
+does not update @asis trees automatically when you change the external file in
+an external editor.
+.. @+node:ekr.20050830115714.18: *4* How can I create Javascript comments?
+**Question**: I'm writing a Windows Script Component, which is an XML file with
+a CData section containing javascript. I can get the XML as I want it by using
+\@language html, but how can I get the tangling comments inside the CData
+section to be java-style comments rather than html ones?
+
+**Answer**: In @file trees you use the @delims directive to change comment delimiters.
+For example::
+
+    @delims /* */ 
+    Javascript stuff 
+    @delims <-- --> 
+    HTML stuff
+
+**Important**: Leo can not revert to previous delimiters automatically;
+you must change back to previous delimiters using another @delims directive_.
+.. @+node:ekr.20050830115714.19: *4* How can I disable PHP comments?
+By Zvi Boshernitzan: I was having trouble disabling '<?php' with comments (and
+couldn't override the comment character for the start of the page). Finally, I
+found a solution that worked, using php's heredoc string syntax::
+
+    @first <?php
+    @first $comment = <<<EOD
+    EOD;
+
+    // php code goes here.
+    echo "boogie";
+
+    $comment2 = <<<EOD
+    @last EOD;
+    @last ?>
+
+or::
+
+    @first <?php
+    @first /*
+    */
+
+    echo "hi";
+
+    @delims /* */
+    @last ?>
+.. @+node:ekr.20050830115714.20: *4* How can I use Leo with unsupported languages?
+Here is a posting which might be helpful:
+http://sourceforge.net/forum/message.php?msg_id=2300457 The @first
+directive_ is the key to output usable code in unsupported languages. For
+example, to use Leo with the Basic language, use the following::
+
+    @first $IFDEF LEOHEADER
+    @delims '
+    @c
+    $ENDIF
+
+So this would enable a basic compiler to "jump" over the "true" LEO-header-lines.
+Like this::
+
+    $IFDEF LEOHEADER <-conditional compilation directive 
+    #@+leo-ver=4 <-these lines not compiled
+    #@+node:@file QParser005.INC
+    #@@first
+    #@delims ' 
+    '@@c
+    $ENDIF <-... Until here!
+    <rest of derived code file ... >
+
+This changes the comment symbol the apostrophe,
+making comments parseable by a BASIC (or other language.)
+.. @+node:ekr.20050830115714.21: *4* How do I make external files start with a shebang line?
+Use the @first directive_ in @file trees or @nosent trees.
+
+The @first directive puts lines at the very start of files derived from @file.
+For example, the body text of @file spam.py might be::
+
+    @first #! /usr/bin/env python
+
+The body text of @file foo.pl might be::
+
+    @first #/usr/bin/perl
+
+Leo recognizes the @first directive_ only at the start of the body text of @file nodes.
+No text may precede @first directives_.
+More than one @first directive may exist, like this::
+
+    @first #! /usr/bin/env python
+    @first # more comments.
+.. @+node:ekr.20050830115714.24: *4* Can @file trees contain material not in the external file?
+No. Everything in an @file trees must be part of the external file: orphan and
+\@ignore nodes are invalid in @file trees. This restriction should not be
+troublesome. For example, you can organize your outline like this::
+
+    + myClass
+    ..+ ignored stuff
+    ..+ @file myClass
+
+(As usual, + denotes a headline.) So you simply create a new node_, called
+myClass, that holds your @file trees and stuff you don't want in the @file
+trees.
+.. @+node:ekr.20050830115714.25: *4* How can I use Leo with older C compilers
+By Rich Ries.
+Some older C compilers don't understand the "//" comment symbol, so using @language C won't work.
+Moreover, the following does not always work either::
+
+    @comment /* */
+
+This generates the following sentinel line::
+
+    /*@@comment /* */*/
+
+in the output file, and not all C compilers allow nested comments, so the last \*\/ generates an error.
+The solution is to use::
+
+    #if 0
+    @comment /* */
+    #endif
+
+Leo is happy: it recognizes the @comment directive_.
+The C compiler is happy: the C preprocessor strips out the offending line before the C
+compiler gets it.
+.. @+node:ekr.20060529053407: *4* Why can't I use @ignore directives in @file trees?
+@ignore can only be used in the root node of @file trees.  It tells Leo to ignore the tree.
+
+The @ignore directive can not be used elsewhere in @file trees because of the way Leo recreates 
+outlines from external files. This is an absolutely crucial restriction and will never go away.
+For a few more details, see `Leo 4.0: Eliminating error 'recovery'`_ in `History of Leo`_.
+
+There are several workaround, as shown in LeoPy.leo:
+
+- keep notes in the outline outside of any external file.
+
+- Use @all to gather notes in a external file, as in done in @file leoProjects.txt.
+.. @+node:shadow.20080825171547.9: *4* How can I avoid getting long lines in external files?
+**Question**: I must follow a coding standard when writing source code. It
+includes a maximum line length restriction. How can I know the length of a
+line when it gets written to the external file?
+
+**Answer**: If a node belongs to a external file hierarchy, its body might get
+indented when it is written to the external file. It happens when an
+\@others directive or a section name appears indented in a higher-level
+node body. While (**line**, **col**) in status area show the line and column
+containing the body text's cursor, **fcol** shows the cursor coordinate
+relative to the external file, not to the current node. The relation
+**fcol >= col** is always true.
 .. @-all
 .. @-leo

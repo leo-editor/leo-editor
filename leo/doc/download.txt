@@ -35,8 +35,8 @@ Downloading Leo
 
 .. _`latest stable release`: https://sourceforge.net/projects/leo/files/Leo/4.10%20final/
 .. _`SourceForge`: https://sourceforge.net
-.. _`Leo's snapshots page`:     http://www.greygreen.org/leo/
-.. _`nightly snapshot`:             http://www.greygreen.org/leo/
+.. _`Leo's snapshots page`: http://www.greygreen.org/leo/
+.. _`nightly snapshot`: http://www.greygreen.org/leo/
 .. _`Leo's latest sources`: https://code.launchpad.net/leo-editor/
 .. _`Launchpad`: https://code.launchpad.net/
 .. _`bzr`: http://bazaar.canonical.com/
