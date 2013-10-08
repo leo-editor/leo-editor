@@ -1,0 +1,41 @@
+.. @+leo-ver=5-thin
+.. @+node:ekr.20131008041326.16096: * @file intermediatetopics.txt
+.. @@language rest
+.. @@tabwidth -4
+
+.. @+at @rst-options
+..  call_docutils=False
+..  code_mode=False
+..  generate_rst=True
+..  http_server_support = False
+..  show_organizer_nodes=True
+..  show_headlines=True
+..  show_leo_directives=True
+..  stylesheet_path=..\doc
+..  write_intermediate_file = True
+..  verbose=True
+.. @@c
+
+.. @+all
+.. @+node:ekr.20131008041326.16099: ** @rst html/intermediatetopics.html
+###################
+Intermediate Topics
+###################
+
+.. toctree::
+   :maxdepth: 2
+   :glob:
+
+   abbreviations
+   coloring
+   rstplugin3
+   scripting
+   plugins
+   writingPlugins
+   unitTesting
+   debuggers
+   atShadow
+   design
+   
+.. @-all
+.. @-leo

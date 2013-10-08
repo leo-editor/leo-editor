@@ -6,91 +6,36 @@
 
 .. 2013/10/08: This page now *does* generate the real TOC.
 
-Leo's Users Guide
-==================
-
-Introduction
-
-.. toctree::
-   :maxdepth: 1
-   :glob:
-
-   frontMatter   
-   preface
-   testimonials
-   
-Preliminaries
-
-.. toctree::
-   :maxdepth: 1
-   :glob:
-
-   FAQ
-   download
-   installing
-   
-The Leo Tutorial
+Leo's Documentation Page
+========================
 
 .. toctree::
    :maxdepth: 2
-   :glob:
-
-   intro
-
-Basic Topics
+   
+   preliminaries
 
 .. toctree::
    :maxdepth: 1
-   :glob:
-   
-   commands
-   customizing
-   
-Intermediate Topics
+
+   download
+   installing
+   running
+   FAQ
+   Cheat Sheet <cheatsheet>
+   What's New <what-is-new>
 
 .. toctree::
-   :maxdepth: 1
-   :glob:
+   :maxdepth: 2
 
-   coloring
-   rstplugin3
-   scripting
-   plugins
-   writingPlugins
-   unitTesting
-   debuggers
-   atShadow
-   design
-   abbreviations
+   Tutorial <tutorial>
+   Users Guide <usersguide>
+   Reference Guide <reference>
    
-Leo and other programs
 
 .. toctree::
-   :maxdepth: 1
-   :glob:
-   
-   emacs
-   IPythonBridge
-   leoBridge
-   vimBindings
-   zodb
-   
-Reference
+   :hidden:
 
-.. toctree::
-   :maxdepth: 1
-   :glob:
-   
-   cheatsheet
-   directives
-   history
-   theory
-   whitepapers
-   appendices
-   glossary
    slides
-   
-   what-is-new
 
 .. _`Leo's home page`: http://leoeditor.com/
 

@@ -27,9 +27,9 @@ stylesheet_path=..\doc
 write_intermediate_file = True
 @c
 
-################
+###############
 Downloading Leo
-################
+###############
 
 .. links
 
@@ -64,37 +64,5 @@ To summarize, you may get Leo in three ways:
    
 3. Download `Leo's latest sources`_ from `Launchpad`_ using `bzr`_. Once
    bzr is installed, getting the latest version of Leo is very easy.
-.. @+node:ekr.20111214105555.14112: ** @@@rst html/download.html
-@ @rst-options
-call_docutils=False
-stylesheet_path=..\doc
-write_intermediate_file = True
-@c
-
-################
-Downloading Leo
-################
-
-.. links
-
-.. _`latest stable release (Leo 4.9)`: http://sourceforge.net/projects/leo/files/Leo/4.9-final/
-.. _`SourceForge`: https://sourceforge.net
-.. _`Leo's snapshots page`: http://www.greygreen.org/leo/
-.. _`Leo's latest sources`: https://code.launchpad.net/leo-editor/
-.. _`Launchpad`: https://code.launchpad.net/
-.. _`bzr`: http://bazaar.canonical.com/
-
-
-You may get Leo in three ways:
-
-1. Download the `latest stable release (Leo 4.9)`_ from `SourceForge`_. This release
-   contains an executable installer.
-
-2. Download a daily snapshot from `Leo's snapshots page`_. This page contains
-   .zip archives of Leo's code from 1, 2, 5, 10, 30 and 90 days ago.
-   
-3. Download `Leo's latest sources`_ from `Launchpad`_ using `bzr`_. Installing bzr is
-   non-trivial, but once set up this is by far the easiest way to get the latest
-   version of Leo's code.
 .. @-all
 .. @-leo

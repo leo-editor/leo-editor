@@ -1,0 +1,36 @@
+.. @+leo-ver=5-thin
+.. @+node:ekr.20131008041326.16089: * @file reference.txt
+.. @@language rest
+.. @@tabwidth -4
+
+.. @+at @rst-options
+..  call_docutils=False
+..  code_mode=False
+..  generate_rst=True
+..  http_server_support = False
+..  show_organizer_nodes=True
+..  show_headlines=True
+..  show_leo_directives=True
+..  stylesheet_path=..\doc
+..  write_intermediate_file = True
+..  verbose=True
+.. @@c
+
+.. @+all
+.. @+node:ekr.20131008041326.16090: ** @rst html/reference.html
+#####################
+Leo's Reference Guide
+#####################
+   
+.. toctree::
+   :maxdepth: 2
+   :glob:
+
+   directives
+   history
+   theory
+   whitepapers
+   appendices
+   glossary
+.. @-all
+.. @-leo

@@ -18,9 +18,9 @@
 
 .. @+all
 .. @+node:ekr.20050828061213: ** @rst html/directives.html
-###############
-Leo's Reference
-###############
+####################
+Directives Reference
+####################
 
 This chapter is a reference for all of Leo's directives.
 
