@@ -1,5 +1,5 @@
 .. @+leo-ver=5-thin
-.. @+node:ekr.20100805165051.7174: * @file appendices.txt
+.. @+node:ekr.20131008041326.16340: * @file appendices.txt
 .. @@language rest
 .. @@tabwidth -4
 
@@ -17,14 +17,13 @@
 .. @@c
 
 .. @+all
-.. @+node:ekr.20050831231852: ** @rst html\appendices.html
-############
+.. @+node:ekr.20131008041326.16341: ** @rst html/appendices.html
+##########
 Appendices
-############
-
+##########
+   
 .. contents::
-    :depth: 2
-
+    :depth: 3
 .. @+node:ekr.20050831232205: *3* @rst-no-head links
 .. Relative links.
 .. _`Writing plugins`:   writingPlugins.html

@@ -10940,36 +10940,6 @@ LeoPyRef.leo (in the core subdirectory of the leo folder) contains almost all of
 Leo's source code. It provides hundreds of examples of everything discussed
 here. This file will repay close study. For full details on all aspects of Leo
 see LeoDocs.leo.
-.. @+node:ekr.20131008041326.16106: *4* Basic Commands
-.. @+node:ekr.20131008041326.16107: *5* @@@file basiccommands.txt
-@language rest
-@tabwidth -4
-
-@ @rst-options
-call_docutils=False
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
-@all
-.. @+node:ekr.20131008041326.16108: *6* @rst html/basiccommands.html
-####################
-Leo's Basic Commands
-####################
-
-.. toctree::
-   :maxdepth: 2
-   :glob:
-   
-   commands
-   customizing
 .. @+node:ekr.20131008041326.16117: *4* Preface
 .. @+node:ekr.20131008041326.16118: *5* Outline structure is real data
 To repeat: the fundamental unit in Leo is *not* text. True, headlines and body
