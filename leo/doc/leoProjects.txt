@@ -142,6 +142,7 @@ At rev 6107.
 - Added event positional arg to leoGui.create_key_event.
 
 @language python
+#@+node:ekr.20131008181812.17534: *3* Added @bool enable-tree-dragging to leoSettings.leo
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
