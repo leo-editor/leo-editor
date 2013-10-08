@@ -17,9 +17,9 @@
 .. @@c
 .. @+all
 .. @+node:ekr.20131007143750.16070: ** @rst html\cheatsheet.html
-##################
-The Leo CheatSheet
-##################
+##########
+CheatSheet
+##########
 
 .. |br| raw:: html
 

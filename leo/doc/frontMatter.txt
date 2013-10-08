@@ -28,7 +28,7 @@ Front Matter
 .. @+node:ekr.20050812134441: *3* @rst-no-head Links
 .. External links...
 .. _`Open Software`:    http://www.opensource.org/
-.. _Python:             http://www.python.org/
+.. _`Python`:             http://www.python.org/
 .. _`SourceForge`:      http://sourceforge.net/projects/leo/
 
 .. Relative links...
@@ -126,7 +126,7 @@ to be the same as the MIT license, namely that Leo is absolutely free, even for
 commercial use, including resale. There is no GNU-like "copyleft" restriction.
 This license is compatible with the GPL.
 
-**Copyright 1997-2011 by Edward K. Ream. All Rights Reserved.**
+**Copyright 1997-2013 by Edward K. Ream. All Rights Reserved.**
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -144,39 +144,5 @@ FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
 COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.**
-.. @+node:ekr.20040414174439: *3* @rst-ignore DISCLAIMER OF LIABILITY
-**EDWARD K. REAM (REAM) SPECIFICALLY DISCLAIMS ALL WARRANTIES, EXPRESSED OR
-IMPLIED, WITH RESPECT TO THIS COMPUTER SOFTWARE, INCLUDING BUT NOT LIMITED TO
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. IN
-NO EVENT SHALL REAM BE LIABLE FOR ANY LOSS OF PROFIT OR ANY COMMERCIAL DAMAGE,
-INCLUDING BUT NOT LIMITED TO SPECIAL, INCIDENTAL, CONSEQUENTIAL OR OTHER
-DAMAGES.**
-.. @+node:ekr.20040414172218.2: ** @rst-ignore Old Preface
-Leo_ has thousands of users_. Like me, many of them would never willingly be without Leo again.
-Here are Leo's essential features:
-
-1.  Leo outlines_ show you the big picture at all times,
-    while providing unlimited space for details.
-
-2.  Leo outlines_ can organize any kind of data:
-    computer programs, web sites, documentation, pictures, whatever.
-
-3.  Clones_ allow multiple views of the data within a *single* outline_.
-    You don't have to choose the 'correct' view; you can see data in many ways.
-
-4.  Plugins_ allow Leo's users to add new features to Leo.
-    Many of Leo's most successful features started life this way.
-
-5.  Leo is a superb scripting_ environment for Python.
-    Scripts contained in a Leo outline_ have easy access to all the outline's data.
-    It is natural to organize Leo outlines to make life easier for scripts.
-
-6.  Leo is `Open Software`_, written in 100% pure Python_.
-    Leo runs wherever Python does.
-
-Leo has a strong and active community of users on `SourceForge`_.
-Working with this community has been a constant source of joy and inspiration.
-Suggestions and plugins from users continue to drive Leo in excellent new directions.
-Who knows what the next plugin will bring? -- Edward K. Ream, September, 2005
 .. @-all
 .. @-leo

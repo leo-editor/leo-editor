@@ -52,12 +52,13 @@
 <v t="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
 <v t="ekr.20101112045055.5064" descendentVnodeUnknownAttributes="7d7100285503302e3171017d710255097374725f6174696d657103550c313337363431323739362e3071047355013071057d71066803550c313337363431323932332e307107735503302e3071087d71096803550c313337363431323932372e30710a73752e"><vh>@file plugin_catalog.py</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
-<v t="ekr.20131005214621.16088"><vh>Leo's home page</vh>
+<v t="ekr.20131005214621.16088"><vh>Home page</vh>
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
+</v>
+<v t="ekr.20131008041326.16065"><vh>Links page</vh>
 <v t="ekr.20130807203905.16606"><vh>@edit html/leoLinks.html</vh></v>
 </v>
-<v t="ekr.20131005214621.16089"><vh>Leo TOC</vh>
-<v t="ekr.20101025080245.5800"><vh>@edit leo_toc.html</vh></v>
+<v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
 </v>
 </v>
@@ -96,13 +97,23 @@
 <v t="ekr.20091130111843.6787"><vh>The Leo Tutorial</vh>
 <v t="ekr.20100805165051.7146"
 marks="ekr.20091130111843.6788,"><vh>@file intro.txt</vh></v>
-<v t="ekr.20131003040744.16025"
-marks="ekr.20131003040744.16026,ekr.20131005040354.16072,ekr.20131005214621.16090,"><vh>@file basics1.txt</vh></v>
-<v t="ekr.20131003040744.18224"><vh>@file basics2.txt</vh></v>
+<v t="ekr.20131008041326.16073"><vh>Basics</vh>
+<v t="ekr.20131003040744.16025"><vh>@file basics1.txt</vh></v>
+</v>
+<v t="ekr.20131008041326.16074"><vh>External files &amp; clones</vh>
+<v t="ekr.20131003040744.18224"
+marks="ekr.20131008041326.16066,"><vh>@file basics2.txt</vh></v>
+</v>
+<v t="ekr.20131008041326.16075"><vh>Creating documents</vh>
 <v t="ekr.20131005214621.16110"
-marks="ekr.20131005214621.16117,ekr.20131005214621.16123,ekr.20131005214621.16124,"><vh>@file basics3.txt</vh></v>
+marks="ekr.20131005040354.16072,"><vh>@file basics3.txt</vh></v>
+</v>
+<v t="ekr.20131008041326.16076"><vh>Programming with Leo</vh>
+<v t="ekr.20131008041326.16049"
+marks="ekr.20131008041326.16051,ekr.20131008041326.16057,ekr.20131008041326.16058,"><vh>@file basics4.txt</vh></v>
 <v t="ekr.20131007143750.16069"
 marks="ekr.20131007143750.16071,ekr.20131007143750.16074,"><vh>@file cheatsheet.txt</vh></v>
+</v>
 </v>
 <v t="EKR.20040524104904.99"><vh>Using Leo</vh>
 <v t="ekr.20100805165051.7155"><vh>@file commands.txt</vh></v>
@@ -159,8 +170,7 @@ marks="ekr.20131007143750.16071,ekr.20131007143750.16074,"><vh>@file cheatsheet.
 </v>
 <v t="ekr.20101025080245.5796"><vh>Reference</vh>
 <v t="ekr.20050831184021.5"><vh>Leo's Reference</vh>
-<v t="ekr.20100805001344.7253"
-expanded="ekr.20050828061213,"><vh>@file directives.txt</vh></v>
+<v t="ekr.20100805001344.7253"><vh>@file directives.txt</vh></v>
 </v>
 <v t="EKR.20040524104904.161"><vh>Designing with Leo</vh>
 <v t="ekr.20100805165051.7156"><vh>@file design.txt</vh></v>
@@ -428,6 +438,7 @@ expanded="ekr.20050828061213,"><vh>@file directives.txt</vh></v>
 <v t="ekr.20131001100335.15945"><vh>Leo vs IPython</vh></v>
 </v>
 </v>
+<v t="ekr.20090428102353.1"></v>
 <v t="ekr.20091130111843.6787"></v>
 </vnodes>
 <tnodes>
@@ -544,13 +555,6 @@ False: Leo never attempts to create directories.
 <t tx="ekr.20090717084250.10702"></t>
 <t tx="ekr.20091111112709.6671"></t>
 <t tx="ekr.20091130111843.6787">@language rest
-
-To do:
-- New intro words for each chapter in intro.
-- New intros for all basics chapters.
-- basics2: Highlight abbreviations and auto-completion.
-- New/revised summaries of all basics chapter.
-- New cheatsheet.
 </t>
 <t tx="ekr.20100731112744.7267">@pagewidth 75</t>
 <t tx="ekr.20100805171546.4412">@language rest
@@ -3800,6 +3804,11 @@ possibly work.
 <t tx="ekr.20131005214621.16088"></t>
 <t tx="ekr.20131005214621.16089">Leo uses a TOC that *looks* like a Sphinx toc but is built by hand.</t>
 <t tx="ekr.20131007143750.16111"></t>
+<t tx="ekr.20131008041326.16065"></t>
+<t tx="ekr.20131008041326.16073"></t>
+<t tx="ekr.20131008041326.16074"></t>
+<t tx="ekr.20131008041326.16075"></t>
+<t tx="ekr.20131008041326.16076"></t>
 <t tx="sps.20100708203040.19008">@language python
 import os
 pos = c.find_h("Users Guide")[0]

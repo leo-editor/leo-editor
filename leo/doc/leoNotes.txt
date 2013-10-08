@@ -6727,6 +6727,471 @@ writers\html4css1\__init__.py
 writers\latex2e\__init__.py
 writers\odf_odt\__init__.py
 writers\xetex\__init__.py
+.. @+node:ekr.20131001045038.19027: *3* Quotes from "Why Leo isn't more popular"
+@language rest
+.. @+node:ekr.20131001045038.19028: *4* Fidel
+When I say Learn Leo, I don't mean Learn or understand the code, I mean
+learn what you can do with it.
+
+My true feeling is that Leo is like an infinite ground, where amazing
+things can be built. Some of Leo users are already doing incredible things
+with it. But when you are new to Leo, you first have to learn the physics
+of this new world (Leo Code), and then develop your own engineering (Useful
+outlines structures) for building your "information cities"...
+
+Possibly, experienced leo users dont share this view since they learned Leo
+physics and engineering long time ago, but those look like a big wall when
+starting with Leo.
+
+So Leo files with samples would be like delivering this infinite ground
+with some pre-built "information cities" so people can begin using them
+right away. Ideally, those leo files should guide the user on how to build
+new structures, and in the end, be able to lead him to generate new
+structures.
+
+My (again, personal) feeling is that the current policy right now is: Let
+him read the code to understand how it works. So only the users willing to
+go through the (1) Learn the physics then (2) develop your own way to
+develop "information cities" can actually use leo and use its potential.
+
+Since most of the internet users are the ones who need the cities already
+built for them to use software, thats the chunk we are loosing.
+
+On the other hand, coming to why programmers (who have the skills to go
+through Leo learning process) dont come and use it, its the same story:
+
+Before coming into Leo, what I was doing was actually search for an IDE
+that I liked. I went through several, and in the ones I "liked" the most,
+it would take you around two hours learning for having a folder with your
+scripts and being able to edit them. With Leo, you first have to study and
+understand what are directives, how do they work, how everything interacts
+in the tree, etc. It takes more than two hours. I would say that it can be
+measured in weeks or months until you really know what you are doing.
+
+And here is where the "information cities" come again. If Leo were provided
+with an interactive Leo file, which would guide you into: - Importing your
+scripts to Leo - Clearly create folders and move/manage your files there -
+Suggest directives for those files. - Etc.
+
+That Leo file would save the new user many many hours and he would
+instantly start using leo, so we would help him skip the first wall and
+begin to get interested.
+
+So then again, this is why I still see that Leo default workbook should be
+dispatched with a Leo cheatsheet open by default, so new users begin to
+play with it as soon as they open Leo.
+.. @+node:ekr.20131001045038.19029: *4* Jacob Peck
+Leo represents a completely new paradigm for editing, programming, and
+interacting with data. Well, not completely new, but for many the surface
+level seems extremely foreign.
+
+Leo is primarily a tool aimed at python...the paradigm it exposes to the
+user is far more like Lisp (homoiconicity via the Node and Tree structure)
+and Smalltalk (.leo files save *most* of your programming environment's
+state, including data). This is a huge cognitive leap for people only
+accustomed to more imperative languages like Python...Leo asks a lot of
+
+-----
+
+​The PIM aspect was what initially led me to Leo. Wikipedia pointed me in
+Leo's direction while searching for some good open-source PIM tools. I
+tried Chandler but it didn't do what I wanted. Leo did.
+
+.. @+node:ekr.20131001045038.19030: *4* Kent
+Re: the original question "Why isn't Leo more popular" I can ask myself
+"Why don't I adopt tools which promise a better way to work?" I do a lot of
+grazing, and encounter very many such tools.
+
+A tool which does everything doesn't grab me, I don't need to do
+everything. A tool which, in it's few moments of my attention, describes a
+better way to do something I need, gets additional moments. If the tool
+salesperson mentions a task I encounter and a better way to do it, with a
+learning curve which justifies the benefit ... I will settle in for a
+while.
+
+Easier, more powerful boilerplates / templates / completion is the kind of
+bait I'll bite on, there's potential for decent return on investment.
+.. @+node:ekr.20131001045038.19031: *4* Fidel
+With "bread crumbs" I refer to...the interactive tutorial creator I have
+talked so much about. My aim with this tool is that anything you do,
+instantly becomes a tutorial, that can be done again and played forward and
+backwards. Basically, your actions become an outline, and other users can
+"play them" again. This should mean that making a tutorial will take as
+much time as it takes for you to perform the action originally.
+.. @+node:ekr.20131001045038.19032: *4* dufriz
+As a newbie, I agree. At least, that is the perception, which is
+discouraging. I believe it also has to do with the lack of learning
+material. The only manual is not very newbie-friendly. It contains a lot of
+cross-references to advanced internal commands (@xyz stuff) which put off
+newcomers, especially where they are thrown in altogether and may look
+scary.
+
+Currently the learning curve does nor _appear_ to be gentle at all. But it
+does not necessarily have to be like this. Even if Leo is indeed very
+complex and very advanced, I am sure that at least a subset of Leo
+functionality can be selected and presented in a nicer way, to attract more
+users and help newbies.
+
+Why can't we have some more accessible tutorial, with gentle, self
+contained lessons (maybe webcasts, or slides, or simple HTML pages) which
+_focus on the basic functionality_? Or perhaps, a two-tiered series of such
+lessons, i.e. basic and advanced levels. I think this would be very
+helpful.
+
+-----
+
+Another point: Leo is commonly advertised as a programming editor, but it
+should be made more clear that it is more than that.
+
+I believe you would attract more users if you also mentioned its usefulness
+for general-purpose editing and PIM functionality. Of course, that may be
+implicit, but I think you should be putting some more emphasis on this
+aspect.
+
+----- 
+
+For me, the trajectory was KeyNote --> MyBase --> NotecasePro/RightNote -->
+Leo (!!)
+
+Leo is the best, because it is fully customizable, and gives you seemingly
+infinite power. Only, it takes a lot to learn how to use that power.
+.. @+node:ekr.20131001045038.19034: *4* dufriz
+Consider that Leo is actively developed, and has a responsive community.
+When I requested the support for Rich Text, a couple of months ago, it was
+promptly implemented in a matter of days.
+
+As for the power, of course Leo can do whatever other PIMs can do, because
+it is extensible by Python. The question is whether enough people are
+interested in Leo as a PIM, so as to have enough user contributions. I am
+still at the beginning, so I have no idea how difficult it may be,
+technically, to impement all the PIM features that we need. But if we
+succeed in getting enough people interested, I am sure that nothing is
+beyond our reach.
+
+As far as PIM features go the next step, I believe, is implementing a good
+tagging system.
+.. @+node:ekr.20131003040744.18223: *4* dufriz **
+As a newbie who still has zero knowledge of Leo's technical details, I can
+say: I have absolutely no problem in conceptualizing what Leo is and what
+it can do, and probably I also get the Leo's aha -- the difficulty is in
+getting into the actual technical aspects of the program. Again, in the end
+this all boils down to newbie-friendly tutorials and learning materials...
+Something like Leo for dummies would be greatly appreciated.
+
+.. @+node:ekr.20131001045038.19035: *4* Terry
+I think a lot of the problem is defining what Leo is. In some ways I think
+it's Python's Squeak (Squeak http://www.squeak.org/Screenshots/ being a
+SmallTalk environment where everything's an object).
+
+If all you want is an off the shelf turn key text editor with perhaps
+completion and syntax highlighting as its most advanced features, then
+there are several out there that are probably going to appeal more than
+Leo.
+
+If you're looking for an off the shelf turn key outliner, without the
+intent to use scripts etc., then again there are lots of alternatives, some
+of which probably seem more intuitive / simpler / even more feature rich
+than Leo. (The feature rich part is probably misleading, but they may seem
+that way initially).
+
+If your looking for an *environment* which includes a good editor and
+outliner and is completely scriptable / interactive / "live-code" in
+Python, then Leo wins hands down. Of course, it's basically alone in this
+field, as far as I know, but I'm sure it would do well even if it
+wasn't...I guess Emacs is sort of an environment like this, only in Lisp
+with a prehistoric GUI system.
+
+Sometimes I've wondered why Leo seems to appeal to people who aren't
+comfortable in Python, I think now it's because they still recognize the
+value of an *environment*, and there's just not much in this niche. So to
+me it's more why don't more people want an environment like this...
+
+My feeling, talking generally and not about Leo in particular, is that
+while not everyone needs to be a "programmer", everyone who uses computers
+would benefit from being able to interact with them with more of the
+flexibility and efficiency that comes with even relatively simple
+"scripting", and less of the limitations that come with the "buy our latest
+product and you'll be able to do anything you want with a click" view
+pushed by other suppliers of computing environments.
+.. @+node:ekr.20131001045038.19036: *4* Miles Fidelman (improve wiki)
+In that regard, Leo is barely mentioned on WikiPedia - it has a simple
+descriptive page, but on the list of text editors it's listed, but there's
+no information about o/s support or features.
+
+For marketing, packaging, features, documentation, tutorials,
+extensions,... - do a side by side comparison of Vim and Leo - and the
+answer(s) to "why leo isn't more popular" leap out at you.
+.. @+node:ekr.20131001045038.19038: *4* Chris George
+I came to Leo because it is the only outliner for Linux that supports
+cloning that doesn't require an internet connection.
+
+I am struggling to implement it into my workflow though, simply because I
+do not have time to figure out the simplest things. (full time university
+student) Right now I simply do not have the 200 minutes available to figure
+this out. Yet I can see that if I took the time to do my own setup it would
+save me far more time in the future. Leo would be a wonderful platform for
+writing anything, but especially for fiction. If there was a tutorial on
+setting up Leo to do the following, I know there would be immediate
+interest from people who write on Linux as there simply is not an outliner
+that meets the needs of the average writer.
+
+I need basic text formatting at the standard hot key level. ie. Ctrl-B for
+bold, Ctrl-I for italic etc. while in the edit window. I know this can be
+done, I almost had it working once but then got busy and by the time I came
+back it had escaped me how I had done it. I don't need buttons, I don't
+need WSIWYG, RST markup works fine as it gives me lots of output options. I
+just need the ability to put my head down and write, using the shortcuts
+that are baked into my fingertips at this point, and not having to relearn
+those keys. Support for standard word-processing keys are important for
+writers. :-)
+
+I think that by creating tutorials that address the basics for different
+groups of users who are not programmers, Leo could be an extremely popular
+program. I would be willing to contribute to such an effort for writers if
+I can get a workflow setup that makes sense for me. My current editor of
+choice is Scrivener for Windows run using Crossover. No cloning. :-(
+
+Leo is far too complex for the average person who simply wants to
+accomplish a task. Simplifying things for specific classes of users would
+open Leo up to many more people who share those requirements and may be
+interested in learning the rest of the power of Leo as their use of it
+increases. Give people a foot in the door and they will figure out how to
+open it the rest of the way as needed.
+.. @+node:ekr.20131001045038.19039: *4* Chris George
+i.e. RST markup for "bold".  Is that the goal?
+
+Cheers -Terry
+
+Almost. That plus the ability to be writing along and hit
+Ctrl-b s u d d e n l y Ctrl-b and continue on.
+
+I had Leo working to the extent that I could type suddenly Ctrl-Alt-b and
+have it retroactively add the markup but it was simply too much of a leap
+to change my work habits. Body memory takes years to develop and is not
+trivial to attempt to change.
+
+A set of keybindings that mimic the standard word processing key bindings
+that then markup the text using RST or Markdown would be a huge step
+forward for me in using Leo. Right now I try to find time to fiddle and
+play with it, but that has been going on for almost two years now and I
+have yet to commit to any serious work in Leo.
+
+===== Terry
+
+Which boils down to Ctrl-b inserting '*' if there's no selection?
+
+I guess it does.
+
+It may seem silly, as I could just type the *, but Shift-8 isn't baked into
+muscle memory, Ctrl-b is.
+
+It boils down to being able to replicate those standard word processing
+shortcuts in the edit pane and having them not conflict with other key
+combos in Leo. Abstracting it to other markup languages would be cool as
+well, some people like RST, some people like Markdown. Everyone can use
+Ctrl-b.
+
+Ckeditor looks interesting, but it isn't the buttons that matter. I rarely
+use the mouse for marking up text.
+
+==== Terry
+
+Quick stab at
+https://github.com/leo-editor/snippets/blob/master/ctrl_b_i_u.py
+not very tested.
+
+.. @+node:ekr.20131001045038.19040: *4* Terry's new code
+In you myLeoSettings.leo file, under @settings-->@keys-->@shortcuts,
+add the shrotcuts (in the body text of the '@shortcuts' node:
+
+markup_inline_bold ! body = Ctrl-B
+markup_inline_italic ! body = Ctrl-I
+markup_inline_underline ! body = Ctrl-U
+
+restart Leo
+
+Put the downloaded code in a node, and run it... normally you'd do that
+by hitting Ctrl-B, but we just redefined that :-)  So use alt-x
+execute-script instead.
+
+Now in the body you should be able to get
+
+**bold** *italic* :ul:`underline`
+
+with the expected keys.  It should be fairly predictable when there's a
+selection active.  When there isn't, it just opens or closes the markup
+type depending on whether the last action was an open or close, so I
+guess nesting would be problem, but rst doesn't understand nesting
+inline markup anyway.
+
+The difference between open and close only applies to underline, where
+the beginning and end delimiters are different - more a demo than
+anything.
+
+To make the code active without the execute-script step it could be
+placed in a node which starts with @script, although you need
+@bool scripting-at-script-nodes = True
+under your @settings node then.
+
+Ideally it would be in a plugin (although it seems heavy to put
+essentially one function in a plugin) or core, so it didn't need its
+own node in the target outline or @settings.
+.. @+node:ekr.20131001045038.19041: *4* Chris George
+I would like to start putting together everything that it would take to
+make Leo the default choice for writers on Linux. If it works for me, it'll
+work for many others.
+.. @+node:ekr.20131001045038.19042: *4* Terry's new markup_inline plugin
+> How difficult would a plugin be?
+
+Easy enough I guess, included in revision 6083, just pushed.
+
+In myLeoSettings.leo, under @settings-->@keys-->@shortcuts::
+
+    markup-inline-bold ! body = Ctrl-B
+    markup-inline-italic ! body = Ctrl-I
+    markup-inline-underline ! body = Ctrl-U
+
+  - Use Help -> leoSettings.leo to open leoSettings.leo, and copy
+    the @enabled-plugins node
+    
+  - paste this node into your myLeoSettings.leo as a child of the
+    @settings node
+    
+  - just before the line in @enabled-plugins where it says
+    "# Alphabetical list of all Leo plugins" add a line:
+
+    markup_inline.py
+.. @+node:ekr.20131001045038.19043: *4* Ludwig Schwardt: MacOS brew instructions
+Miles's comments inspired me to do something about the Homebrew version of
+Leo. Instead of following a long-winded and increasingly out-of-date set of
+installation instructions you will soon be able to go (if all goes well!):
+
+brew install leo
+
+I've created a rough formula for Leo and uploaded it to my Homebrew tap. To
+try it out, do the following:
+
+- Get Homebrew from http://brew.sh/, following their instructions on how to
+install it
+
+- Pay special attention to Python - if you have already installed a bunch
+of Python stuff, it's best to keep using the existing Python. Otherwise, if
+this is your first Python experience it is safe to install the Homebrew
+Python (which will make your life easier) via
+
+  brew install python
+
+  (If all your existing Python tools suddenly disappear, go 'brew remove
+  python' to restore order :-))
+
+- Get my formulas:
+
+  brew tap ska-sa/tap
+
+- Et voila:
+
+  brew install leo
+
+- If you kept your old Python, follow the instruction in the caveat printed
+at the end of:
+
+  brew info leo
+
+  (I.e. add the suggested line to your ~/.bash_profile file if you are not
+  using Homebrew Python)
+
+The formula has three versions:
+
+  brew install leo => installs the latest stable release (4.10)
+  brew install --devel leo => installs latest alpha (4.11-a2)
+  brew install --HEAD leo => installs the bleeding-edge bzr version from Launchpad
+
+It also installs PyEnchant by default (which can be disabled).
+
+I would love some testing of the installation before I submit it to the
+main Homebrew repository (if you guys think the formula is a good idea). I
+don't use Leo myself and have only done some cursory poking around.
+
+Miles's point about using a Ruby-based installer to install a Python
+package also rings true (although this is becoming more popular these days
+on the Mac given how awesome Homebrew is for dependencies and Python
+extensions, and this is not any stranger than the C-based "apt-get install
+leo").
+
+I would expect to install a Python package such as Leo using "pip install
+leo" or "easy_install leo". The main problem has always been that Leo has a
+non-standard package layout.
+
+I (only now!) see that Ville, Matt and others have created a setup.py and
+leo even exists on PyPI so that these installation commands actually do
+something. Unfortunately, for me "pip install leo" results in a Leo that
+throws an AssertionError upon running. What is the status of this
+installation route? (It is not even mentioned on the installation page!)
+Also, "leo 4.10-final" on PyPI actually installs "4.11-devel"...
+.. @+node:ekr.20131001045038.19044: *4* EKR
+> My (again, personal) feeling is that the current policy right now is: Let
+him read the code to understand how it works. So only the users willing to
+go through the (1) Learn the physics then (2) develop your own way to
+develop "information cities" can actually use leo and use its potential.
+
+​I've spent a lot of time on tutorials, slideshows, etc. However, in light
+of your first sentence quoted above, it does seem like I have neglected to
+show what people can really do with Leo, at least in the tutorial docs. ​
+ 
+> With Leo, you first have to study and understand what are directives, how
+do they work, how everything interacts in the tree, etc. It takes more than
+two hours. I would say that it can be measured in weeks or months until you
+really know what you are doing.
+
+Maybe, but there is a tantalizing possibility. ​I prototyped Leo in about
+two hours, using the MORE outliner as a prototype, and inventing @others in
+the process. (I was already deeply involved with sections and section
+references.)
+
+So for *me*, the Leo aha was almost instantaneous, once I had an outliner
+to prototype my thoughts. Since then, things have become more "voluminous",
+yet Leo's DOM is so much simpler and more powerful than it was in the early
+days. Do these improvement make Leo *more* difficult to learn? It's hard to
+believe so, but then nobody is closer to Leo than I.
+
+> And here is where the "information cities" come again. If Leo were
+provided with an interactive Leo file, which would guide you ​...
+
+​The idea of putting a cheat sheet into the default workbook.leo is a great
+one. There will be a default_workbook.leo in leo/docs, and the code that
+creates ~/workbook.leo will make a copy of the default file. This will
+allow continuous improvement on default_workbook.leo.
+.. @+node:ekr.20131001045038.19045: *4* EKR
+> For marketing, packaging, features, documentation, tutorials,
+extensions,... - do a side by side comparison of Vim and Leo - and the
+answer(s) to "why leo isn't more popular" leap out at you.
+
+
+​The answer is not so clear cut.​ Consider the first item returned by
+Google for the search "emacs tutorial":
+http://www2.lib.uchicago.edu/keith/tcl-course/emacs-tutorial.html
+
+This is hardly a breathtaking introduction to emacs. It would not *by
+itself* convert people to emacs. It doesn't even highlight what I consider
+the most important Aha about emacs, namely that you don't have to remember
+(or type) commands with long names!
+
+No, the reason emacs is popular is that it continues to be taught as *the*
+programming editor to generations of computer-programming students. The
+students learn *from each other*, using a tedious "tutorial" as a
+reference. They learn from looking over each other's shoulders.
+
+Leo would be just as popular, imo, if thousands of college students learned
+Leo from each other. This does not excuse lack of further work on Leo
+tutorials, but this *is* the essence of the situation.
+.. @+node:ekr.20131001100335.15927: *4* Links to Book about Leo
+This e-book has a whole sub-heading on using Leo for Joomla:
+http://www.gandsnut.net/downloads/Beginning_Joomla!_From_Novice_to_Professional.pdf
+
+amazon link:
+http://www.amazon.com/Beginning-Joomla-From-Novice-Professional/dp/1590598482/ref=sr_1_1?ie=UTF8&qid=1380681874&sr=8-1&keywords=beginning+joomla+from+novice+to+professional
+.. @+node:ekr.20131001100335.15926: *4* derwish
+To me, it's to directed acyclic graphs what MS Excel is to tables. 
 .. @+node:ekr.20090105132011.6: *3* Regex notes
 # *** match pat2 if not preceded by pat1::
 
@@ -8449,6 +8914,173 @@ When chapters are enabled, the Cmds->Chapters menu shows all available chapter c
 - The ``chapter-move-node-to``, ``chapter-clone-node-to`` and ``chapter-copy-node-to`` commands
   prompt for a chapter name and add the currently selected node (and its descendants) to another chapter.
 
+.. @+node:ekr.20131008041326.16064: *4* @@@edit leo_toc.html
+@language html
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  
+<!-- EKR: modified Table of contents below by hand.
+    Use this file *instead of* leo_toc.html in _build/html.
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Leo's Users Guide &mdash; Leo 4.10 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '4.11',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <link rel="top" title="Leo 4.10 documentation" href="index.html" />
+    <link rel="next" title="Front Matter" href="frontMatter.html" /> 
+  </head>
+
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        
+        <li class="right" style="margin-right: 10px">
+            <a href="genindex.html" title="General Index" accesskey="I">index</a></li>
+        <li class="right" >
+            <a href="frontMatter.html" title="Front Matter" accesskey="N">next</a> |</li>
+        <li class="right" >
+            <a href="index.html" title="Home" accesskey="H">home</a> |</li>
+    
+        <li><a href="#">Leo 4.10 documentation</a> &raquo;</li>
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="leo-s-users-guide">
+
+<h1>Leo&#8217;s Users Guide<a class="headerlink" href="#leo-s-users-guide" title="Permalink to this headline">Â¶</a></h1>
+
+<p>Contents:</p>
+<div class="toctree-wrapper compound">
+
+<!-- EKR: changed these by hand to give the toc some structure -->
+
+<p>Preliminaries</p>
+
+<ul>
+<li class="toctree-l1"><a class="reference external" href="frontMatter.html">Front Matter</a></li>
+<li class="toctree-l1"><a class="reference external" href="preface.html">Preface</a></li>
+<li class="toctree-l1"><a class="reference external" href="testimonials.html">What People Are Saying About Leo</a></li>
+</ul>
+
+<p>Basics</p>
+
+<ul>
+<li class="toctree-l1"><a class="reference external" href="FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference external" href="slides.html">Slides</a></li>
+<li class="toctree-l1"><a class="reference external" href="installing.html">Installing Leo</a></li>
+<li class="toctree-l1"><a class="reference external" href="intro.html">The Leo Tutorial</a></li>
+<!--<li class="toctree-l1"><a class="reference external" href="outlines.html">Using Outlines</a></li>-->
+<li class="toctree-l1"><a class="reference external" href="commands.html">Using Leo</a></li>
+</ul>
+
+<p>Intermediate Topics</p>
+
+<ul>
+<li class="toctree-l1"><a class="reference external" href="customizing.html">Customizing Leo</a></li>
+<li class="toctree-l1"><a class="reference external" href="coloring.html">Controlling Syntax Coloring</a></li>
+<li class="toctree-l1"><a class="reference external" href="rstplugin3.html">Creating Documents with Leo</a></li>
+<li class="toctree-l1"><a class="reference external" href="scripting.html">Scripting Leo with Python</a></li>
+<li class="toctree-l1"><a class="reference external" href="plugins.html">Plugins</a></li>
+<li class="toctree-l1"><a class="reference external" href="writingPlugins.html">Writing Plugins</a></li>
+<li class="toctree-l1"><a class="reference external" href="unitTesting.html">Unit testing with Leo</a></li>
+<li class="toctree-l1"><a class="reference external" href="debuggers.html">Debugging with Leo</a></li>
+<li class="toctree-l1"><a class="reference external" href="atShadow.html">Using &#64;shadow</a></li>
+<li class="toctree-l1"><a class="reference external" href="design.html">Designing with Leo</a></li>
+<!-- <li class="toctree-l1"><a class="reference external" href="leoInspect.html">The leoInspect Module</a></li> -->
+<li class="toctree-l1"><a class="reference external" href="abbreviations.html">Abbreviations and Templates</a></li>
+</ul>
+
+<p>Leo and Other Programs</p>
+
+<ul>
+<li class="toctree-l1"><a class="reference external" href="emacs.html">Leo and Emacs</a></li>
+<li class="toctree-l1"><a class="reference external" href="IPythonBridge.html">IPython and Leo</a></li>
+<li class="toctree-l1"><a class="reference external" href="leoBridge.html">Embedding Leo with the leoBridge module</a></li>
+<li class="toctree-l1"><a class="reference external" href="vimBindings.html">Using Vim Bindings with Leo</a></li>
+<li class="toctree-l1"><a class="reference external" href="zodb.html">Using ZODB with Leo</a></li>
+</ul>
+
+<p>Reference</p>
+
+<ul>
+<li class="toctree-l1"><a class="reference external" href="directives.html">Leo&#8217;s Reference</a></li>
+<li class="toctree-l1"><a class="reference external" href="history.html">History of Leo</a></li>
+<li class="toctree-l1"><a class="reference external" href="theory.html">Theory of Operation</a></li>
+<li class="toctree-l1"><a class="reference external" href="whitepapers.html">White Papers</a></li>
+<li class="toctree-l1"><a class="reference external" href="appendices.html">Appendices</a></li>
+<li class="toctree-l1"><a class="reference external" href="glossary.html">Glossary</a></li>
+</ul>
+
+Release Notes
+
+<ul>
+<li class="toctree-l1"><a class="reference external" href="what-is-new.html">What&#8217;s New in Leo</a></li>
+</ul>
+
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="#">
+              <img class="logo" src="_static/Leo4-80-border.jpg" alt="Logo"/>
+            </a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="frontMatter.html"
+                        title="next chapter">Front Matter</a></p>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index">index</a></li>
+        <li class="right" >
+          <a href="frontMatter.html" title="Front Matter">next</a> |</li>
+        <li class="right">
+            <a href="index.html" title="Home">home</a> |</li>
+        <li><a href="#">Leo 4.10 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2001-2013, Edward K. Ream.
+      Last updated on May 5, 2013.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
+    </div>
+  </body>
+</html>
 .. @+node:ekr.20131001045038.19004: *4* @@@file IpythonBridge.txt
 @language rest
 @tabwidth -4
@@ -10180,71 +10812,6 @@ LeoPyRef.leo (in the core subdirectory of the leo folder) contains almost all of
 Leo's source code. It provides hundreds of examples of everything discussed
 here. This file will repay close study. For full details on all aspects of Leo
 see LeoDocs.leo.
-.. @+node:ekr.20131007143750.16110: *4* Links that replace those in actual built page
-@language html
-
-<!-- EKR: changed these by hand to give the toc some structure -->
-
-<p>Preliminaries</p>
-
-<ul>
-<li class="toctree-l1"><a class="reference external" href="frontMatter.html">Front Matter</a></li>
-<li class="toctree-l1"><a class="reference external" href="preface.html">Preface</a></li>
-<li class="toctree-l1"><a class="reference external" href="testimonials.html">What People Are Saying About Leo</a></li>
-</ul>
-
-<p>Basics</p>
-
-<ul>
-<li class="toctree-l1"><a class="reference external" href="FAQ.html">FAQ</a></li>
-<li class="toctree-l1"><a class="reference external" href="slides.html">Slides</a></li>
-<li class="toctree-l1"><a class="reference external" href="installing.html">Installing Leo</a></li>
-<li class="toctree-l1"><a class="reference external" href="intro.html">The Leo Tutorial</a></li>
-<li class="toctree-l1"><a class="reference external" href="outlines.html">Using Outlines</a></li>
-</ul>
-
-<p>Intermediate Topics</p>
-
-<ul>
-<li class="toctree-l1"><a class="reference external" href="commands.html">Using Leo&#8217;s Commands</a></li>
-<li class="toctree-l1"><a class="reference external" href="customizing.html">Customizing Leo</a></li>
-<li class="toctree-l1"><a class="reference external" href="coloring.html">Controlling Syntax Coloring</a></li>
-<li class="toctree-l1"><a class="reference external" href="rstplugin3.html">Creating Documents with Leo</a></li>
-<li class="toctree-l1"><a class="reference external" href="scripting.html">Scripting Leo with Python</a></li>
-<li class="toctree-l1"><a class="reference external" href="plugins.html">Plugins</a></li>
-<li class="toctree-l1"><a class="reference external" href="writingPlugins.html">Writing Plugins</a></li>
-<li class="toctree-l1"><a class="reference external" href="unitTesting.html">Unit testing with Leo</a></li>
-<li class="toctree-l1"><a class="reference external" href="debuggers.html">Debugging with Leo</a></li>
-<li class="toctree-l1"><a class="reference external" href="atShadow.html">Using &#64;shadow</a></li>
-</ul>
-
-<p>Leo and Other Programs</p>
-
-<ul>
-<li class="toctree-l1"><a class="reference external" href="emacs.html">Leo and Emacs</a></li>
-<li class="toctree-l1"><a class="reference external" href="IPythonBridge.html">IPython and Leo</a></li>
-<li class="toctree-l1"><a class="reference external" href="leoBridge.html">Embedding Leo with the leoBridge module</a></li>
-<li class="toctree-l1"><a class="reference external" href="vimBindings.html">Using Vim Bindings with Leo</a></li>
-<li class="toctree-l1"><a class="reference external" href="zodb.html">Using ZODB with Leo</a></li>
-</ul>
-
-<p>Reference</p>
-
-<ul>
-<li class="toctree-l1"><a class="reference external" href="directives.html">Leo&#8217;s Reference</a></li>
-<li class="toctree-l1"><a class="reference external" href="design.html">Designing with Leo</a></li>
-<li class="toctree-l1"><a class="reference external" href="history.html">History of Leo</a></li>
-<li class="toctree-l1"><a class="reference external" href="theory.html">Theory of Operation</a></li>
-<li class="toctree-l1"><a class="reference external" href="whitepapers.html">White Papers</a></li>
-<li class="toctree-l1"><a class="reference external" href="appendices.html">Appendices</a></li>
-<li class="toctree-l1"><a class="reference external" href="glossary.html">Glossary</a></li>
-</ul>
-
-Release Notes
-
-<ul>
-<li class="toctree-l1"><a class="reference external" href="what-is-new.html">What&#8217;s New in Leo</a></li>
-</ul>
 .. @+node:ekr.20111103102153.9715: *3* Unused scripts
 .. @+node:ekr.20111018143804.15945: *4* Not used from find-cmd-docstrings
 .. @+node:ekr.20111017211256.15900: *5* find_all_commands_classes

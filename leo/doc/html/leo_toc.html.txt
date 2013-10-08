@@ -1,41 +1,57 @@
 
-.. _`Leo's home page`: http://leoeditor.com
-
 .. Leo documentation documentation master file, created by
-   sphinx-quickstart on Mon Mar 30 16:39:02 2009.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+.. sphinx-quickstart on Mon Mar 30 16:39:02 2009.
+.. You can adapt this file completely to your liking, but it should at least
+.. contain the root `toctree` directive.
+
+.. 2013/10/08: This page now *does* generate the real TOC.
 
 Leo's Users Guide
 ==================
 
-`Leo's home page`_
-
-.. This is only a template. The actual TOC, leo/doc/leo_toc is done by hand.
-.. Note: no comments allowed in the toctree directive.
-.. The download page is accessible from the home page.
+Introduction
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 1
    :glob:
-   
-   download
 
    frontMatter   
    preface
    testimonials
+   
+Preliminaries
+
+.. toctree::
+   :maxdepth: 1
+   :glob:
 
    FAQ
-   slides
+   download
    installing
+   
+The Leo Tutorial
+
+.. toctree::
+   :maxdepth: 2
+   :glob:
+
    intro
-   basics1
-   basics2
-   basics3
-   cheatsheet
+
+Basic Topics
+
+.. toctree::
+   :maxdepth: 1
+   :glob:
+   
    commands
    customizing
    
+Intermediate Topics
+
+.. toctree::
+   :maxdepth: 1
+   :glob:
+
    coloring
    rstplugin3
    scripting
@@ -47,19 +63,37 @@ Leo's Users Guide
    design
    abbreviations
    
+Leo and other programs
+
+.. toctree::
+   :maxdepth: 1
+   :glob:
+   
    emacs
    IPythonBridge
    leoBridge
    vimBindings
    zodb
    
+Reference
+
+.. toctree::
+   :maxdepth: 1
+   :glob:
+   
+   cheatsheet
    directives
    history
    theory
    whitepapers
    appendices
    glossary
+   slides
    
    what-is-new
 
-`Leo's home page`_
+.. _`Leo's home page`: http://leoeditor.com/
+
+`Leo's home page`_.
+
+    

@@ -24,9 +24,12 @@ The Leo Tutorial
 
 .. index:: Leo's tutorial
 
-.. _`free software`: https://en.wikipedia.org/wiki/Free_software
-.. _`Learn the basics of Leo in one hour`: http://leoeditor.com/basics1.html
-.. _`Learn intermediate topics in one hour`: http://leoeditor.com/basics2.html
+.. _`reStructuredText`: http://docutils.sourceforge.net/rst.html
+.. _`Part 1`: http://leoeditor.com/basics1.html
+.. _`Part 2`: http://leoeditor.com/basics2.html
+.. _`Part 3`: http://leoeditor.com/basics3.html
+.. _`Part 4`: http://leoeditor.com/basics4.html
+.. _`Python`: http://www.python.org/
 
 Leo is a power tool for people who want to organize, study and work with
 data, especially complex data like computer programs, books, web sites and
@@ -34,9 +37,21 @@ data bases. Leonistas say Leo is a revolutionary tool and that Leo is fun
 to use--even addictive.
 
 Leo looks like other outlining programs, but it is not. This tutorial
-explains the difference.  There are two parts:
+explains the difference.
 
-1. `Learn the basics of Leo in one hour`_ and
-2. `Learn intermediate topics in one hour`_.
+There are four parts, plus a cheatsheet. Each part will take about 30
+minutes to read. The last part is optional, and assumes some familiarity
+with programming in `Python`_.
+
+.. toctree::
+   :maxdepth: 1
+   :glob:
+
+   basics1
+   basics2
+   basics3
+   basics4
+   cheatsheet
+
 .. @-all
 .. @-leo
