@@ -133,7 +133,6 @@ class rstCommands:
 
         global SilverCity
 
-        # g.trace(c)
         self.c = c
         #@+<< init ivars >>
         #@+node:ekr.20090502071837.36: *5* << init ivars >> (leoRst)
@@ -540,6 +539,7 @@ class rstCommands:
         self.init_write(p) # ScanAllDirectives sets self.path and self.encoding.
         self.scanAllOptions(p) # Settings for p are valid after this call.
         callDocutils = self.getOption('call_docutils')
+        # g.trace('callDocutils',callDocutils)
         writeIntermediateFile = self.getOption('write_intermediate_file')
 
         # Write the rst sources to self.source.
@@ -784,6 +784,7 @@ class rstCommands:
             if not self.getOption('show_markup_doc_parts'):
                 lines = self.handleSpecialDocParts(lines,'@rst-markup',
                     retainContents=False)
+            # g.trace(self.getOption('show_leo_directives'))
             if not self.getOption('show_leo_directives'):
                 lines = self.removeLeoDirectives(lines)
             lines = self.handleCodeMode(lines)
@@ -1277,6 +1278,8 @@ class rstCommands:
 
     def setOption (self,name,val,tag=None):
 
+        # if self.munge(name) == 'call_docutils':
+            # g.trace(name,val,'tag:',tag)
         self.optionsDict [self.munge(name)] = val
     #@+node:ekr.20090502071837.45: *4* initCodeBlockString
     def initCodeBlockString(self,p):
@@ -1518,18 +1521,23 @@ class rstCommands:
     def initOptionsFromSettings (self):
 
         c = self.c
-
         d = self.defaultOptionsDict
         keys = sorted(d)
-
         for key in keys:
             for getter,kind in (
                 (c.config.getBool,'@bool'),
                 (c.config.getString,'@string'),
                 (d.get,'default'),
             ):
-                val = getter(key)
+                # 2013/10/09: major bug fix: prefix 'rst3_' to c.config names!
+                if kind == 'default':
+                    val = getter(key)
+                else:
+                    val = getter('rst3_'+key)
                 if kind == 'default' or val is not None:
+                    # if key == 'call_docutils':
+                        # g.trace(key,val,c,getter)
+                        # g.trace(c.config.getBool('rst3_call_docutils'))
                     self.setOption(key,val,'initOptionsFromSettings')
                     break
 
