@@ -204,18 +204,6 @@ Nevertheless, you can steal a peek at the doc here:
 
 http://vvtools.googlecode.com/files/Leodocumentation.pdf 
 .. @+node:ekr.20090401113141.2: *3* @rst c:\prog\test\test.html
-@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
-
 ====
 Test
 ====
@@ -229,20 +217,9 @@ This is the rST version of the Tech Report handed out at EuroPython in 2005.
 **Important**: Leo's tutorial is now a clearer explanation of the basics.
 This tech report should be rewritten.
 
-@nocolor
+@language rest
 @tabwidth -4
 .. @+node:ekr.20091107093823.6791: *3* @rst html\techReport.html
-@ @rst-options
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = False
-verbose=True
-@c
 
 ##########################################
 The Essentials of Leo

@@ -2,20 +2,6 @@
 .. @+node:ekr.20100805165051.7170: * @file unitTesting.txt
 .. @@language rest
 .. @@tabwidth -4
-
-.. @+at @rst-options
-..  call_docutils=False
-..  code_mode=False
-..  generate_rst=True
-..  http_server_support = False
-..  show_organizer_nodes=True
-..  show_headlines=True
-..  show_leo_directives=True
-..  stylesheet_path=..\doc
-..  write_intermediate_file = True
-..  verbose=True
-.. @@c
-
 .. @+all
 .. @+node:ekr.20070628083442.1: ** @rst html\unitTesting.html
 #####################
