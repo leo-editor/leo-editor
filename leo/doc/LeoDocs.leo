@@ -253,19 +253,21 @@
 <v t="ekr.20131009082755.16791"><vh>Sentinel comments</vh></v>
 <v t="ekr.20131005214621.16090"><vh>Summary</vh></v>
 </v>
-<v t="ekr.20131008041326.16222"><vh>@rst html\tutorial-pim.html</vh>
+<v t="ekr.20131008041326.16222" a="M"><vh>@rst html\tutorial-pim.html</vh>
 <v t="ekr.20131008041326.16248"><vh>@rst-no-head links &amp; markup</vh></v>
 <v t="ekr.20131004073415.16044"><vh>Clones</vh></v>
 <v t="ekr.20131004073415.16045"><vh>Views</vh></v>
+<v t="ekr.20131005040354.16072" a="M"><vh>Using abbreviations &amp; templates</vh></v>
+<v t="ekr.20131009100732.16737"><vh>\@url nodes</vh></v>
+<v t="ekr.20131009100732.16738"><vh>The bookmarks plugin</vh></v>
 <v t="ekr.20131008041326.16066" a="M"><vh>Summary</vh></v>
 </v>
-<v t="ekr.20131008041326.16241"><vh>@rst html\tutorial-rst3.html</vh>
+<v t="ekr.20131008041326.16241" a="M"><vh>@rst html\tutorial-rst3.html</vh>
 <v t="ekr.20131008041326.16250"><vh>@rst-no-head links &amp; markup</vh></v>
-<v t="ekr.20131005040354.16072" a="M"><vh>Using abbreviations &amp; templates</vh></v>
-<v t="ekr.20131001100335.15939"><vh>Creating documents with reStructuredText</vh></v>
+<v t="ekr.20131001100335.15939"><vh>The rst3 command</vh></v>
 <v t="ekr.20131005214621.16128"><vh>Summary</vh></v>
 </v>
-<v t="ekr.20131008041326.16245"><vh>@rst html\tutorial-programming.html</vh>
+<v t="ekr.20131008041326.16245" a="M"><vh>@rst html\tutorial-programming.html</vh>
 <v t="ekr.20131008041326.16252"><vh>@rst-no-head links &amp; markup</vh></v>
 <v t="ekr.20131003040744.18222"><vh>Creating programming source files with @others</vh></v>
 <v t="ekr.20131008041326.16051" a="M"><vh>Scripting Leo</vh>
@@ -1219,11 +1221,9 @@
 </v>
 </v>
 <v t="ekr.20131007143750.16111"><vh>To do</vh>
-<v t="ekr.20131008041326.16254" a="M"><vh>Revise docs</vh>
 <v t="ekr.20131008041326.16109"><vh>Add a Expansion section to the Reference chapter</vh></v>
 <v t="ekr.20131008041326.16110"><vh>Revise or eliminate the Using Leo section</vh></v>
 <v t="ekr.20131008041326.16111"><vh>Where to put Abbreviations section?</vh></v>
-</v>
 <v t="ekr.20130928065624.16019"><vh>1168689 outdated documentation about ipython</vh>
 <v t="ekr.20130928065624.16020"><vh>Are g.app.ipm and g_ipm used???</vh></v>
 <v t="ekr.20130928065624.16021"><vh>code</vh>
@@ -1247,6 +1247,7 @@
 <v t="ekr.20131001100335.15945"><vh>Leo vs IPython</vh></v>
 </v>
 </v>
+<v t="ekr.20091130111843.6787"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -20763,17 +20764,10 @@ You may type any command.  The following are most useful:
 - F2 (find-previous) continues the search in reverse.
 - Ctrl-G (keyboard-quit) ends the search.
 </t>
-<t tx="ekr.20131001100335.15939">.. _`docutils`: http://docutils.sourceforge.net
-.. _`LaTeX`: http://www.latex-project.org/
-.. _`reStructuredText`: http://docutils.sourceforge.net/rst.html
-.. _`Sphinx`: http://sphinx.pocoo.org/
-.. _`this chapter`: http://leoeditor.com/tutorial-rst3.html
-.. _`Leo's Users Guide`: http://leoeditor.com/leo_toc.html
-
-The rst3 command converts an @rst tree to `reStructuredText`_ (rST) and sends
+<t tx="ekr.20131001100335.15939">The rst3 command converts an @rst tree to `reStructuredText`_ (rST) and sends
 the result to `docutils`_ or `Sphinx`_ for further processing.
 
-With this tool chain, you can easily create HTML, PDF, LaTeX and other
+With this tool chain, you can easily create HTML, PDF, `LaTeX`_ and other
 kinds of documents. All of Leo's documentation is written in Sphinx and
 processed with the rst3 command to produce HTML files.
 
@@ -20786,7 +20780,7 @@ headlines. Reorganizing your document is easy--just reorganize your @rst
 tree. You don't have to change rST markup!
 
 The rst3 command provides *many* other capabilities for power users. For
-full details, see `this chapter`_ in `Leo's Users Guide`_.
+full details, see `the rst3 chapter`_ in `Leo's Users Guide`_.
 </t>
 <t tx="ekr.20131001100335.15940">Leo has a flexible (perhaps *too* flexible) configuration system. It's best
 to use this flexibility in a restricted way as follows:
@@ -21307,7 +21301,18 @@ Ctrl-Q (exit-leo) exits Leo.  Leo will prompt you to save any unsaved outlines.
 - Leo directives control how Leo works.
 - @all creates an external file from all the nodes of an outline.
 </t>
-<t tx="ekr.20131005214621.16128"></t>
+<t tx="ekr.20131005214621.16128">- The rst3 command converts an @rst tree to an external rST text file.
+
+- Within @rst trees, headlines become rST sections.
+
+- Sections levels in the generated rST correspond to outline levels in Leo.
+
+- You can reorganize your rST documents without changing any rST markup in
+  your outline.
+
+- Leo's rst3 command has many powerful options. |br|
+  For full details, see `the rst3 chapter`_.
+</t>
 <t tx="ekr.20131005214621.16130">This is a reference for all of Leo's directives.
 
 This sections assumes you are *thoroughly* familiar with `Leo's tutorial`_.
@@ -21465,9 +21470,7 @@ refers to the file abc.py in (absolute path of) the current directory.
 <t tx="ekr.20131008041326.16057"></t>
 <t tx="ekr.20131008041326.16058"></t>
 <t tx="ekr.20131008041326.16065"></t>
-<t tx="ekr.20131008041326.16066">- Leo creates external files by replacing @others and section references
-  with their expansions. 
-</t>
+<t tx="ekr.20131008041326.16066"></t>
 <t tx="ekr.20131008041326.16079">#############
 Preliminaries
 #############
@@ -21752,9 +21755,13 @@ for organizing data.
 .. contents::
     :depth: 2
 </t>
-<t tx="ekr.20131008041326.16241">##################
-Creating Documents
-##################
+<t tx="ekr.20131008041326.16241">########################################
+Creating Documents with the rst3 Command
+########################################
+
+This tells you how to Leo's rst3 command. 
+
+Leo's web site and all of Leo's documentation was generated by the rst3 command.
 
 .. contents::
     :depth: 2
@@ -21766,7 +21773,10 @@ Programming and scripting in Leo
 .. contents::
     :depth: 2
 </t>
-<t tx="ekr.20131008041326.16246"></t>
+<t tx="ekr.20131008041326.16246">- Leo creates external files by replacing @others and section references
+  with their expansions. 
+
+</t>
 <t tx="ekr.20131008041326.16248">.. |br| raw:: html
 
    &lt;br /&gt;
@@ -21776,6 +21786,13 @@ Programming and scripting in Leo
 <t tx="ekr.20131008041326.16250">.. |br| raw:: html
 
    &lt;br /&gt;
+
+.. _`LaTeX`:                http://www.latex-project.org/
+.. _`Leo's Users Guide`:    http://leoeditor.com/leo_toc.html
+.. _`Sphinx`:               http://sphinx.pocoo.org/
+.. _`docutils`:             http://docutils.sourceforge.net
+.. _`reStructuredText`:     http://docutils.sourceforge.net/rst.html
+.. _`the rst3 chapter`:     http://leoeditor.com/tutorial-rst3.html
 </t>
 <t tx="ekr.20131008041326.16252">.. |br| raw:: html
 
@@ -21787,7 +21804,6 @@ Leo 4.9 featured the completed transition to the `PyQt`_ application
 framework, the introduction of the viewrendered pane, and
 autocompletion.
 </t>
-<t tx="ekr.20131008041326.16254"></t>
 <t tx="ekr.20131008041326.16341">##########
 Appendices
 ##########
@@ -21858,6 +21874,8 @@ Sentinels embed Leo's outline structure into external files.
 If you don't want sentinels in your sources, skip head to
 the `Using @auto nodes`_ part of Leo's `programming tutorial`_.
 </t>
+<t tx="ekr.20131009100732.16737"></t>
+<t tx="ekr.20131009100732.16738"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
