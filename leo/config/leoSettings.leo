@@ -1487,6 +1487,7 @@
 <v t="ekr.20071213061504.3"><vh>@string rst3_publish_argv_for_missing_stylesheets = None</vh></v>
 </v>
 <v t="ekr.20071213060514"><vh>rst3 global options</vh>
+<v t="ekr.20131009050634.17656"><vh>@bool rst3_call_docutils = True</vh></v>
 <v t="ekr.20080916092417.1"><vh>@string rst3_default_encoding = uTf-8</vh></v>
 <v t="ekr.20071213061811"><vh>@bool rst3_number_code_lines = True</vh></v>
 <v t="ekr.20071213061811.1"><vh>@string rst3_underline_characters = #=+*^~"'`-:&gt;&lt;_</vh></v>
@@ -9784,6 +9785,7 @@ action will be used instead.</t>
 <t tx="ekr.20131003040744.17561">vr-toggle = Alt-0</t>
 <t tx="ekr.20131007055150.13034"></t>
 <t tx="ekr.20131008181812.17533">False: disable all drag and drop operations in the outline.</t>
+<t tx="ekr.20131009050634.17656"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>
