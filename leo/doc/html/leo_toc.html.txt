@@ -21,9 +21,6 @@ Leo's Documentation Page
    installing
    running
    FAQ
-   Cheat Sheet <cheatsheet>
-   glossary
-   What's New <what-is-new>
 
 .. toctree::
    :maxdepth: 2
@@ -32,6 +29,13 @@ Leo's Documentation Page
    Users Guide <usersguide>
    Reference Guide <reference>
    appendices
+   
+.. toctree::
+   :maxdepth: 1
+   
+   Cheat Sheet <cheatsheet>
+   glossary
+   What's New <what-is-new>
 
 .. toctree::
    :hidden:
