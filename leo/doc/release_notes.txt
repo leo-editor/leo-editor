@@ -2021,8 +2021,8 @@ The highlights of 4.3.3 (and 4.3.2)
 -----------------------------------
 
 - Improved Leo's documentation:
-    - A tutorial introduction to Leo: http://leoeditor.com/intro.html
-    - A 5-minute guide to programming with Leo: http://leoeditor.com/intro.html#quick-start-for-programmers
+    - A tutorial introduction to Leo.
+    - A 5-minute guide to programming with Leo.
 
 - The new rst3 plugin creates .html and .tex files from reStructuredText
   embedded in Leo files. Any node of the source outline may contain options for
@@ -2211,10 +2211,8 @@ The highlights of 4.3.2:
 -----------------------
 
 - Improved Leo's documentation:
-    - A tutorial introduction to Leo:
-      http://leoeditor.com/intro.html
-    - A 5-minute guide to programming with Leo:
-      http://leoeditor.com/intro.html#quick-start-for-programmers
+    - A tutorial introduction to Leo.
+    - A 5-minute guide to programming with Leo.
 
 - The new rst3 plugin creates .html and .tex files from reStructuredText
   embedded in Leo files. Any node of the source outline may contain options for
@@ -2399,10 +2397,8 @@ The highlights of 4.3.2:
 -----------------------
 
 - Improved Leo's documentation:
-    - A tutorial introduction to Leo:
-      http://leoeditor.com/intro.html
-    - A 5-minute guide to programming with Leo:
-      http://leoeditor.com/intro.html#quick-start-for-programmers
+    - A tutorial introduction to Leo.
+    - A 5-minute guide to programming with Leo.
 
 - The new rst3 plugin creates .html and .tex files from reStructuredText
   embedded in Leo files. Any node of the source outline may contain options for
@@ -18356,7 +18352,7 @@ myLeoSettings.leo:
         # Last, leoSettings.leo in leo/config directory.
         join(g.app.globalConfigDir, settings_fn),
     )
-#@+node:ekr.20130926053913.15855: *3* 4.11 Better abbreviations, many bug fixes 
+#@+node:ekr.20130926053913.15855: *3* 4.11 Better abbreviations, many bug fixes
 #@+node:ekr.20130806072439.19990: *4* Leo 4.11 a2 Release notes
 @language rest
 

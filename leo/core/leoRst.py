@@ -273,6 +273,7 @@ class rstCommands:
         self.scanAllOptions(p) # Settings for p are valid after this call.
         callDocutils = self.getOption('call_docutils')
         writeIntermediateFile = self.getOption('write_intermediate_file')
+        # g.trace('writeIntermediateFile',writeIntermediateFile)
         fn = self.getOption('output-file-name') or 'code_to_rst.html'
         junk,ext = g.os_path_splitext(fn)
 

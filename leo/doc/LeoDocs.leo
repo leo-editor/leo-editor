@@ -74,7 +74,7 @@
 <v t="ekr.20131008041326.16086"><vh>Referenced from home page</vh>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
 <v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028550b302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473550b302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473550b302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473550b302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
-<v t="ekr.20100821182153.4344"><vh>@file screen-shots.txt</vh></v>
+<v t="ekr.20100821182153.4343"><vh>@rst html/slides.html</vh></v>
 </v>
 </v>
 <v t="ekr.20090717084250.10702"><vh>Other docs</vh>
@@ -116,6 +116,7 @@
 <v t="ekr.20050830074815.16"><vh>Dan Winkler 3</vh></v>
 </v>
 </v>
+<v t="ekr.20131009082755.16739"><vh>@rst-ignore Preface</vh></v>
 </v>
 </v>
 <v t="ekr.20131008041326.16092"><vh>Installing &amp; running Leo</vh>
@@ -147,7 +148,7 @@
 </v>
 <v t="ekr.20050831195331.1"><vh>FAQ</vh>
 <v t="ekr.20050830115714"><vh>@rst html\FAQ.html</vh>
-<v t="ekr.20050830120007"><vh>@rst-no-head Links</vh></v>
+<v t="ekr.20050830120007"><vh>@rst-no-head Links (FAQ)</vh></v>
 <v t="ekr.20050830115714.26"><vh>Customizing Leo</vh>
 <v t="ekr.20050830115714.29"><vh>How can I add support for a new language?</vh></v>
 <v t="ekr.20050830115714.30"><vh>How do I submit a plugin?</vh></v>
@@ -234,7 +235,7 @@
 </v>
 <v t="ekr.20091130111843.6787"><vh>Tutorial</vh>
 <v t="ekr.20091130111843.6788"><vh>@rst html\tutorial.html</vh></v>
-<v t="ekr.20131008041326.16203"><vh>@rst html\tutorial1.html</vh>
+<v t="ekr.20131008041326.16203"><vh>@rst html\tutorial-basics.html</vh>
 <v t="ekr.20131008041326.16204"><vh>@rst-no-head links &amp; markup</vh></v>
 <v t="ekr.20131002211347.6456"><vh>Command names</vh></v>
 <v t="ekr.20131002055813.15973"><vh>Leo's main window</vh></v>
@@ -250,24 +251,23 @@
 <v t="ekr.20131001100335.15940"><vh>Configuring Leo</vh></v>
 <v t="ekr.20131005214621.16090"><vh>Summary</vh></v>
 </v>
-<v t="ekr.20131008041326.16222"><vh>@rst html\tutorial2.html</vh>
+<v t="ekr.20131008041326.16222"><vh>@rst html\tutorial-pim.html</vh>
 <v t="ekr.20131008041326.16248"><vh>@rst-no-head links &amp; markup</vh></v>
 <v t="ekr.20131002055813.19697"><vh>Creating external files</vh>
 <v t="ekr.20131003040744.18221"><vh>Creating non-programming files with @all</vh></v>
 <v t="ekr.20131003040744.18222"><vh>Creating programming source files with @others</vh></v>
 </v>
-<v t="ekr.20131008041326.16072"><vh>Using @auto</vh></v>
 <v t="ekr.20131004073415.16044"><vh>Clones</vh></v>
 <v t="ekr.20131004073415.16045"><vh>Views</vh></v>
 <v t="ekr.20131008041326.16066" a="M"><vh>Summary</vh></v>
 </v>
-<v t="ekr.20131008041326.16241"><vh>@rst html\tutorial3.html</vh>
+<v t="ekr.20131008041326.16241"><vh>@rst html\tutorial-rst3.html</vh>
 <v t="ekr.20131008041326.16250"><vh>@rst-no-head links &amp; markup</vh></v>
 <v t="ekr.20131005040354.16072" a="M"><vh>Using abbreviations &amp; templates</vh></v>
 <v t="ekr.20131001100335.15939"><vh>Creating documents with reStructuredText</vh></v>
 <v t="ekr.20131005214621.16128"><vh>Summary</vh></v>
 </v>
-<v t="ekr.20131008041326.16245"><vh>@rst html\tutorial4.html</vh>
+<v t="ekr.20131008041326.16245"><vh>@rst html\tutorial-programming.html</vh>
 <v t="ekr.20131008041326.16252"><vh>@rst-no-head links &amp; markup</vh></v>
 <v t="ekr.20131008041326.16051" a="M"><vh>Scripting Leo</vh>
 <v t="ekr.20131008041326.16052"><vh>Leo scripts</vh></v>
@@ -761,7 +761,7 @@
 <v t="ekr.20060921064744.1"><vh>Format of external files</vh></v>
 <v t="EKR.20040524104904.354"><vh>Unicode reference</vh></v>
 </v>
-<v t="ekr.20091111112709.6672"><vh>@rst html\glossary.html</vh>
+<v t="ekr.20091111112709.6672"><vh>@rst html/glossary.html</vh>
 <v t="ekr.20100804133903.7250"><vh>\@</vh></v>
 <v t="ekr.20100804133903.7251"><vh>A - C</vh></v>
 <v t="ekr.20100804133903.7252"><vh>D - G</vh></v>
@@ -770,8 +770,10 @@
 <v t="ekr.20100804133903.7255"><vh>P - R</vh></v>
 <v t="ekr.20100804133903.7256"><vh>S - Z</vh></v>
 </v>
-<v t="ekr.20131008041326.16090"><vh>@rst html/reference.html</vh>
+<v t="ekr.20131009065148.31762"><vh>Reference</vh>
+<v t="ekr.20131008041326.16090"><vh>@rst html/reference.html</vh></v>
 <v t="ekr.20131005214621.16130"><vh>Directives Reference</vh>
+<v t="ekr.20131009065148.31758"><vh>@rst html/directives.html</vh>
 <v t="ekr.20050828160132"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20100806170836.4392"><vh>Part 1: \@&lt;file&gt; directives</vh>
 <v t="ekr.20100806170836.4393"><vh>\@asis &lt;path&gt;</vh></v>
@@ -786,7 +788,9 @@
 <v t="ekr.20100806170836.4408"><vh>Part 4: Dangerous directives</vh></v>
 <v t="ekr.20100804133903.7262"><vh>Part 5: All other directives</vh></v>
 </v>
+</v>
 <v t="ekr.20131008041326.16177"><vh>History of Leo</vh>
+<v t="ekr.20131009065148.31759"><vh>@rst html/history.html</vh>
 <v t="ekr.20050901102147"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20050902105852"><vh>Beginnings</vh></v>
 <v t="ekr.20050902105852.1"><vh>Breakthrough</vh></v>
@@ -823,7 +827,9 @@
 </v>
 </v>
 </v>
+</v>
 <v t="ekr.20131008041326.16178"><vh>Theory of operation</vh>
+<v t="ekr.20131009065148.31760"><vh>@rst html/theory.html</vh>
 <v t="ekr.20050901102300"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20120319065417.6092"><vh>Autocompletion</vh>
 <v t="ekr.20120229094652.15115"><vh>UI notes</vh></v>
@@ -855,12 +861,15 @@
 <v t="EKR.20040524104904.269"><vh>Unlimited undo</vh></v>
 <v t="ekr.20120229094652.15141"><vh>Leo's load process</vh></v>
 </v>
+</v>
 <v t="ekr.20050901084134"><vh>Why I like Python</vh>
+<v t="ekr.20131009065148.31761"><vh>@rst html/whitepapers.html</vh>
 <v t="ekr.20050901092232.2"><vh>Clarity</vh></v>
 <v t="ekr.20050901092232.3"><vh>Power</vh></v>
 <v t="ekr.20050901092232.4"><vh>Safety</vh></v>
 <v t="ekr.20050901092232.5"><vh>Speed</vh></v>
 <v t="ekr.20050901092232.6"><vh>Conclusions</vh></v>
+</v>
 </v>
 </v>
 </v>
@@ -1211,7 +1220,6 @@
 </v>
 </v>
 <v t="ekr.20131007143750.16111"><vh>To do</vh>
-<v t="ekr.20131008041326.16423"><vh>broken links</vh></v>
 <v t="ekr.20131008041326.16254" a="M"><vh>Revise docs</vh>
 <v t="ekr.20131008041326.16109"><vh>Add a Expansion section to the Reference chapter</vh></v>
 <v t="ekr.20131008041326.16110"><vh>Revise or eliminate the Using Leo section</vh></v>
@@ -1240,6 +1248,8 @@
 <v t="ekr.20131001100335.15945"><vh>Leo vs IPython</vh></v>
 </v>
 </v>
+<v t="ekr.20090428102353.1"></v>
+<v t="ekr.20091130111843.6787"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -4495,7 +4505,7 @@ or::
 </t>
 <t tx="ekr.20050830115714.2">First, read the tutorial_. This will be enough to get you started if you just
 want to use Leo as an outliner_. If you intend to use Leo for programming, read
-the `Quick start for programmers`_, then look at Leo's source code in the file LeoPy.leo.
+the `tutorial about programming`_, then look at Leo's source code in the file LeoPy.leo.
 Spend 5 or 10 minutes browsing through the outline. Don't worry about details;
 just look for the following common usage patterns:
 
@@ -4601,10 +4611,8 @@ description file.
 -   Just send the @file file to me at edreamleo@gmail.com.
     That's all you need to do.  In particular that there is no need to change leoPlugins.leo.
 </t>
-<t tx="ekr.20050830115714.4">.. .. _`Clones &amp; views`:   intro.html#clones-views
-
-You will lose much of Leo's power if you don't use clones.
-See `Clones &amp; views`_ for full details.
+<t tx="ekr.20050830115714.4">You will lose much of Leo's power if you don't use clones.
+See `Clones`_ and `Views`_ for full details.
 </t>
 <t tx="ekr.20050830115714.7">Use methods for any code that is used (called or referenced) more than once.
 
@@ -4698,20 +4706,20 @@ new_leo_file_encoding
 
 .. ----- Relative links into Leo's documentation.
 
-.. .. _`Associating Leo with .leo Files`:  installing.html#how-to-associate-leo-with-leo-files-on-windows
-.. .. _`How to install Leo on Windows`:    installing.html#how-to-install-leo-on-windows
+.. _`Associating Leo with .leo Files`:  installing.html#creating-windows-file-associations
+.. _`How to install Leo on Windows`:    installing.html#installing-leo-on-windows
 
-.. _`CWEB mode`:                                directives.html#cweb-mode
-.. _command:                                    commands.html
-.. _commands:                                   commands.html
-.. .. _`quick start for programmers`:              intro.html#quick-start-for-programmers
-.. .. _`rst3 plugin`:                              rstplugin3.html
-
+.. _`Clones`:       tutorial-pim.html#clones
+.. _`Views`:        tutorial-pim.html#views
+.. _`CWEB mode`:    directives.html#cweb-mode
+.. _command:        commands.html
+.. _commands:       commands.html
+.. _`tutorial about programming`:               tutorial-programming.html
 .. _tutorial:                                   tutorial.html
-.. .. _`Leo 4.0: Eliminating error 'recovery'`:    history.html#leo-4-0-eliminating-error-recovery
-.. .. _`History of Leo`:                           history.html
-.. .. _`run Leo in a console window`:              installing.html#running-leo-from-a-console-window
-.. .. _`console window`:                           installing.html#running-leo-from-a-console-window
+.. _`Leo 4.0: Eliminating error 'recovery'`:    history.html#leo-4-0-eliminating-error-recovery
+.. _`History of Leo`:                           history.html
+.. _`run Leo in a console window`:              running.html#running-leo-from-a-console-window
+.. _`console window`:                           running.html#running-leo-from-a-console-window
 
 .. ----- References to the glossary: the glossary now contains references to the tutorial.
 .. _`@asis`:                glossary.html#asis-trees
@@ -4945,13 +4953,13 @@ See `Specifying settings`_ for a description of how to change Leo's settings.
 .. Relative links...
 .. _`Writing Programs in Leo`:          directives.html
 .. _`Customizing Leo`:                  customizing.html
-.. .. _`Clones and views`:                 intro.html#clones-views
+.. _`Clones`:                           tutorial-pim.html#clones
 .. _`Creating script buttons`:          scripting.html#creating-script-buttons
 .. _`A Tutorial Introduction to Leo`:   tutorial.html
 </t>
 <t tx="ekr.20050901102055">.. _`Scripting Leo with Python`:    scripting.html
-.. .. _`History of Leo`:               history.html
-.. .. _`rst3 plugin`:                  glossary.html#rst3-plugin
+.. _`History of Leo`:               history.html
+.. _`rst3 plugin`:                  glossary.html#rst3-plugin
 .. _`Specifying settings`:          commands.html#specifying-settings
 </t>
 <t tx="ekr.20050901102147">.. Relative links...
@@ -10070,24 +10078,20 @@ Leo's Tutorial
 
 .. _`Python`: http://www.python.org/
 
-Leo is a power tool for people who want to organize, study and work with
-data, especially complex data like computer programs, books, web sites and
-data bases. Leonistas say Leo is a revolutionary tool and that Leo is fun
-to use--even addictive.
-
 Leo looks like other outlining programs, but it is not. This tutorial
 explains the difference.
 
-There are four partsEach part will take about 30 minutes to read. |br|
+There are four parts to this tutorial, and will take less than two hours to complete.
+
 The last part is optional, and assumes some familiarity with programming in `Python`_.
     
 .. toctree::
     :maxdepth: 1
     
-    tutorial1
-    tutorial2
-    tutorial3
-    tutorial4
+    tutorial-basics
+    tutorial-pim
+    tutorial-rst3
+    tutorial-programming
 
 </t>
 <t tx="ekr.20100122073254.11655">This section describes the process of creating an importer for a new language.
@@ -12178,6 +12182,44 @@ future pushes to that location. Then, you only need to execute bzr push.
 
 After your branch is pushed, you can email the Leo mailing list and request it
 to be reviewed and merged to trunk.
+</t>
+<t tx="ekr.20100821182153.4343">@ @rst-options
+call_docutils=False
+stylesheet_path=..\doc
+write_intermediate_file = True
+@c
+
+######
+Slides
+######
+
+This is the front page for various slide shows about Leo.
+
+.. links
+.. _`Clones and views`:         slides/clones-and-views/slide-001.html
+.. _`External files`:           slides/external-files/slide-005.html
+.. _`Installation`:             slides/installation/slide-001.html
+.. _`Leo Basics Step By Step`:  slides/leo-basics-step-by-step/slide-001.html
+.. _`Scripting Leo`:            slides/scripting-leo/slide-001.html
+.. _`Using Leo's Minibuffer`:   slides/using-leos-minibuffer/slide-001.html
+
+Basic slide shows
+-----------------
+
+`Installation`_  tells how to install Leo.
+
+`Leo Basics Step By Step`_  explains the basics of Leo outlines.
+
+`External Files`_ discusses creating external files with \@file, \@auto and \@edit.
+
+`Clones and views`_ illustrates how clones work and show how they create views.
+
+`Using Leo's Minibuffer`_ tells how to execute Leo's commands by name.
+
+Intermediate slide shows
+------------------------
+
+`Scripting Leo`_ explains how to use Python scripting in Leo.
 </t>
 <t tx="ekr.20100907092300.4440"></t>
 <t tx="ekr.20100907092300.4441">Path to inkscape template file
@@ -15164,7 +15206,6 @@ time. Even with a source code control system this would be an intolerable
 situation.
 </t>
 <t tx="ekr.20110531155858.20559">.. _`This FAQ entry`: http://leoeditor.com/FAQ.html#how-can-i-use-leo-to-develop-leo-itself
-.. .. _`about clones and views`: http://leoeditor.com/intro.html#clones-views
 
 Here is the workflow I use to develop Leo. The intention is to help
 present and potential developers use Leo effectively.
@@ -15217,7 +15258,7 @@ C. I use scripts to open particular Leo files. These are batch files on Windows,
   't' or 'u' or, if I want Python 2.x, 'e2' or 't2' or 'u2'.
 
 D. Use clones to focus attention on the task at hand.
-   For more details, see `about clones and views`_.
+   For more details, see the tutorial's introduction to `clones`_.
 
 E. For thousand of example of my programming style, see leoPy.leo and
    leoGuiPlugins.leo. The projects section in leoPy.leo contains many examples
@@ -16920,7 +16961,7 @@ and any of its clones. Any headline or body update of a clone headed
 subtree affects all of its clones simultaneously. A cloned node becomes a
 regular node whenever deletion of its other clones makes it the only one
 left. Clones are useful for making alternate views of a program. See
-`Clones and views`_ for full details.
+`Clones`_ for full details.
 
 The ``clone-node`` (Ctrl-\`) command creates a clone as the immediate
 sibling of a selected node. You have to place it where you want it by
@@ -20729,7 +20770,7 @@ You may type any command.  The following are most useful:
 .. _`LaTeX`: http://www.latex-project.org/
 .. _`reStructuredText`: http://docutils.sourceforge.net/rst.html
 .. _`Sphinx`: http://sphinx.pocoo.org/
-.. .. _`this chapter`: http://leoeditor.com/rstplugin3.html
+.. _`this chapter`: http://leoeditor.com/tutorial-rst3.html
 .. _`Leo's Users Guide`: http://leoeditor.com/leo_toc.html
 
 The rst3 command converts an @rst tree to `reStructuredText`_ (rST) and sends
@@ -20959,8 +21000,8 @@ Leo work like most text editors:
 **Note**: As usual, adding the Shift key modifier to any of the keys above
 moves the cursor and extends the selected text.
 </t>
-<t tx="ekr.20131002055813.19697">.. .. _`Intermediate Topics tutorial`: http://leoeditor.com/basics2.html
-.. .. _`Using @auto and friends`: http://leoeditor.com/basics2.html#using-auto-nodes
+<t tx="ekr.20131002055813.19697">.. _`programming tutorial`: http://leoeditor.com/basics2.html
+.. _`Using @auto nodes`: http://leoeditor.com/tutorial-programming.html#using-auto-nodes
 
 Leo stores outline data on your file system in **.leo files**.
 
@@ -20981,7 +21022,7 @@ When writing @file nodes, Leo adds **sentinel comments** to external files.
 Sentinels embed Leo's outline structure into external files.
 
 If you don't want sentinels in your sources, skip head to
-`Using @auto and friends`_ in Leo's `Intermediate Topics tutorial`_.
+the `Using @auto nodes`_ part of Leo's `programming tutorial`_.
 
 </t>
 <t tx="ekr.20131002055813.19835">Ctrl-I or Insert (insert-node) inserts a new node into the outline.
@@ -21444,7 +21485,6 @@ refers to the file abc.py in (absolute path of) the current directory.
 <t tx="ekr.20131008041326.16066">- Leo creates external files by replacing @others and section references
   with their expansions. 
 </t>
-<t tx="ekr.20131008041326.16072"></t>
 <t tx="ekr.20131008041326.16079">#############
 Preliminaries
 #############
@@ -21459,7 +21499,6 @@ Leo's Users' Guide
 
 .. toctree::
    :maxdepth: 2
-   :glob:
    
    commands
    customizing
@@ -21472,8 +21511,13 @@ Leo's Users' Guide
 Leo's Reference Guide
 #####################
    
-.. contents::
-    :depth: 3
+.. toctree::
+   :maxdepth: 1
+
+   directives
+   history
+   theory
+   whitepapers
 </t>
 <t tx="ekr.20131008041326.16091">@language rest
 </t>
@@ -21509,8 +21553,7 @@ Intermediate Topics
 ###################
 
 .. toctree::
-   :maxdepth: 2
-   :glob:
+   :maxdepth: 1
 
    abbreviations
    coloring
@@ -21529,8 +21572,7 @@ Leo and Other Programs
 ######################
 
 .. toctree::
-   :maxdepth: 2
-   :glob:
+   :maxdepth: 1
 
    emacs
    IPythonBridge
@@ -21691,15 +21733,17 @@ understand and manipulate (script) complex data is what Leo does best.
 </t>
 <t tx="ekr.20131008041326.16177">This section discusses the most important milestones in history of Leo.
 
+.. contents::
+    :depth: 2
 </t>
 <t tx="ekr.20131008041326.16178">This sections discusses how Leo's code works, paying particular attention
 to topics that have caused difficulties in design or implementation. This
 chapter will be of use primarily to those wanting to change Leo's code.
 
 </t>
-<t tx="ekr.20131008041326.16203">##############################
-Creating and Editing Headlines
-##############################
+<t tx="ekr.20131008041326.16203">##################
+The Basics of Leo
+##################
 
 .. contents::
     :depth: 2
@@ -21711,9 +21755,14 @@ Creating and Editing Headlines
 .. _Leo:    http://leoeditor.com/
 .. _`ask for help`: https://groups.google.com/forum/#!forum/leo-editor
 </t>
-<t tx="ekr.20131008041326.16222">##########################
-External Files and Clones
-##########################
+<t tx="ekr.20131008041326.16222">###################
+Using Leo as a PIM
+###################
+
+This chapter tells how you can use Leo as a Personal Information Manager.
+
+It introduces `clones`_: one of Leo's most unusual and powerful features
+for organizing data.
 
 .. contents::
     :depth: 2
@@ -21761,25 +21810,6 @@ Appendices
 .. contents::
     :depth: 3
 </t>
-<t tx="ekr.20131008041326.16423">
-c:\leo.repo\trunk\leo\doc\html\FAQ.html.txt:292: ERROR: Unknown target name: "how to install leo on windows".
-c:\leo.repo\trunk\leo\doc\html\FAQ.html.txt:292: ERROR: Unknown target name: "run leo in a console window".
-c:\leo.repo\trunk\leo\doc\html\FAQ.html.txt:313: ERROR: Unknown target name: "quick start for programmers".
-c:\leo.repo\trunk\leo\doc\html\FAQ.html.txt:333: ERROR: Unknown target name: "clones &amp; views".
-c:\leo.repo\trunk\leo\doc\html\FAQ.html.txt:493: ERROR: Unknown target name: "about clones and views".
-c:\leo.repo\trunk\leo\doc\html\FAQ.html.txt:1029: ERROR: Unknown target name: "run leo in a console window".
-c:\leo.repo\trunk\leo\doc\html\FAQ.html.txt:1046: ERROR: Unknown target name: "run leo in a console window".
-c:\leo.repo\trunk\leo\doc\html\FAQ.html.txt:1083: ERROR: Unknown target name: "run leo in a console window".
-c:\leo.repo\trunk\leo\doc\html\FAQ.html.txt:1105: ERROR: Unknown target name: "run leo in a console window".
-c:\leo.repo\trunk\leo\doc\html\FAQ.html.txt:1139: ERROR: Unknown target name: "how to install leo on windows".
-c:\leo.repo\trunk\leo\doc\html\FAQ.html.txt:1139: ERROR: Unknown target name: "run leo in a console window".
-c:\leo.repo\trunk\leo\doc\html\FAQ.html.txt:1532: ERROR: Unknown target name: "leo 4.0: eliminating error 'recovery'".
-c:\leo.repo\trunk\leo\doc\html\FAQ.html.txt:1532: ERROR: Unknown target name: "history of leo".
-c:\leo.repo\trunk\leo\doc\html\commands.html.txt:1461: ERROR: Unknown target name: "clones and views".
-c:\leo.repo\trunk\leo\doc\html\tutorial2.html.txt:40: ERROR: Unknown target name: "using @auto and friends".
-c:\leo.repo\trunk\leo\doc\html\tutorial2.html.txt:40: ERROR: Unknown target name: "intermediate topics tutorial".
-c:\leo.repo\trunk\leo\doc\html\tutorial3.html.txt:44: ERROR: Unknown target name: "this chapter".
-</t>
 <t tx="ekr.20131009050634.17610"></t>
 <t tx="ekr.20131009050634.17616"></t>
 <t tx="ekr.20131009050634.17622"></t>
@@ -21802,6 +21832,40 @@ stylesheet_path=..\doc
 write_intermediate_file = True
 verbose=True
 @c</t>
+<t tx="ekr.20131009065148.31758">####################
+Directives Reference
+####################
+
+.. contents::
+    :depth: 2
+</t>
+<t tx="ekr.20131009065148.31759">##############
+History of Leo
+##############
+
+.. contents::
+    :depth: 2
+</t>
+<t tx="ekr.20131009065148.31760">###################
+Theory of Operation
+###################
+
+.. contents::
+    :depth: 2
+</t>
+<t tx="ekr.20131009065148.31761">#################
+Why I like Python
+#################
+
+.. contents::
+    :depth: 2
+</t>
+<t tx="ekr.20131009065148.31762"></t>
+<t tx="ekr.20131009082755.16739">Leo is a power tool for people who want to organize, study and work with
+data, especially complex data like computer programs, books, web sites and
+data bases. Leonistas say Leo is a revolutionary tool and that Leo is fun
+to use--even addictive.
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
