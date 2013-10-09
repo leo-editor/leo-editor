@@ -143,6 +143,32 @@ At rev 6107.
 
 @language python
 #@+node:ekr.20131008181812.17534: *3* Added @bool enable-tree-dragging to leoSettings.leo
+#@+node:ekr.20131009082755.16740: *3* Fixed major bug in rst3 command
+@language rest
+
+Rev 6119 fixes a major bug involving the rst3 command.
+Previously, rst3-related settings, which start with "rst3_"
+where not, in fact, initializing the internal rst3 settings!
+
+I never noticed this because all the documentation in
+LeoDocs.leo used to use @ @rst-options parts to specify
+settings.
+
+But using @ @rst-options this way is *very* bad style: it
+hides any variations in settings in the blah-blah-blah of
+specifying defaults.
+
+Now, the defaults are given in settings in the "Startup"
+node. This is correct: defaults are given *one*, in an
+out-of-the way place.
+
+BTW, now that almost all @ @rst-options parts are gone,
+there is even less reason for the @file nodes in
+LeoDocs.leo. I'm going to remove them, thereby removing all
+the not-really-needed .txt files they generate. Naturally,
+this makes LeoDocs.leo bigger, but I think the clarity of
+expression is worthwhile. LeoDocs.leo really should be a
+model of good practice.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

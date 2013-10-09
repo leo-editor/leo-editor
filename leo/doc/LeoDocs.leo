@@ -249,14 +249,12 @@
 <v t="ekr.20131001100335.15947"><vh>Getting help</vh></v>
 <v t="ekr.20131004064408.16020"><vh>Leo directives</vh></v>
 <v t="ekr.20131001100335.15940"><vh>Configuring Leo</vh></v>
+<v t="ekr.20131003040744.18221" a="M"><vh>Creating external files with @file and @all</vh></v>
+<v t="ekr.20131009082755.16791"><vh>Sentinel comments</vh></v>
 <v t="ekr.20131005214621.16090"><vh>Summary</vh></v>
 </v>
 <v t="ekr.20131008041326.16222"><vh>@rst html\tutorial-pim.html</vh>
 <v t="ekr.20131008041326.16248"><vh>@rst-no-head links &amp; markup</vh></v>
-<v t="ekr.20131002055813.19697"><vh>Creating external files</vh>
-<v t="ekr.20131003040744.18221"><vh>Creating non-programming files with @all</vh></v>
-<v t="ekr.20131003040744.18222"><vh>Creating programming source files with @others</vh></v>
-</v>
 <v t="ekr.20131004073415.16044"><vh>Clones</vh></v>
 <v t="ekr.20131004073415.16045"><vh>Views</vh></v>
 <v t="ekr.20131008041326.16066" a="M"><vh>Summary</vh></v>
@@ -269,6 +267,7 @@
 </v>
 <v t="ekr.20131008041326.16245"><vh>@rst html\tutorial-programming.html</vh>
 <v t="ekr.20131008041326.16252"><vh>@rst-no-head links &amp; markup</vh></v>
+<v t="ekr.20131003040744.18222"><vh>Creating programming source files with @others</vh></v>
 <v t="ekr.20131008041326.16051" a="M"><vh>Scripting Leo</vh>
 <v t="ekr.20131008041326.16052"><vh>Leo scripts</vh></v>
 <v t="ekr.20131008041326.16053"><vh>Plugins</vh></v>
@@ -1248,8 +1247,6 @@
 <v t="ekr.20131001100335.15945"><vh>Leo vs IPython</vh></v>
 </v>
 </v>
-<v t="ekr.20090428102353.1"></v>
-<v t="ekr.20091130111843.6787"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -21000,31 +20997,6 @@ Leo work like most text editors:
 **Note**: As usual, adding the Shift key modifier to any of the keys above
 moves the cursor and extends the selected text.
 </t>
-<t tx="ekr.20131002055813.19697">.. _`programming tutorial`: http://leoeditor.com/basics2.html
-.. _`Using @auto nodes`: http://leoeditor.com/tutorial-programming.html#using-auto-nodes
-
-Leo stores outline data on your file system in **.leo files**.
-
-Rather than storing all your data in the .leo file, you may store parts of
-your outline data in **external files**, files on your file system.
-
-**@file nodes** create external files. @file nodes have headlines starting
-with @file followed by a file name::
-
-    @file leoNodes.py
-    @file ../../notes.text
-
-Leo reads external files automatically when you open Leo outline, and
-writes all **dirty** (changed) external files when you save any Leo
-outline.
-
-When writing @file nodes, Leo adds **sentinel comments** to external files.
-Sentinels embed Leo's outline structure into external files.
-
-If you don't want sentinels in your sources, skip head to
-the `Using @auto nodes`_ part of Leo's `programming tutorial`_.
-
-</t>
 <t tx="ekr.20131002055813.19835">Ctrl-I or Insert (insert-node) inserts a new node into the outline.
 
 Regardless of focus, Ctrl-H (edit-headline) begins editing the headline of
@@ -21067,10 +21039,29 @@ For example, Ctrl-S (save-file) saves a Leo file.
 The full-command (Alt-X) command executes any other command by typing its
 full name. For full details see `The minibuffer &amp; completions`_.
 </t>
-<t tx="ekr.20131003040744.18221">Use the **@all** directive for non-programming files. @all tells Leo to
-write the **@file tree** (the @file node and all its descendants) to the
-external file in **outline order**, the order in which the nodes appear in
-the outline pane when all nodes are expanded.
+<t tx="ekr.20131003040744.18221">Leo stores outline data on your file system in **.leo files**.
+
+Rather than storing all your data in the .leo file, you may store parts of
+your outline data in **external files**, files on your file system.
+
+**@file nodes** create external files. @file nodes have headlines starting
+with @file followed by a file name::
+
+    @file leoNodes.py
+    @file ../../notes.text
+
+Leo reads external files automatically when you open Leo outline, and
+writes all **dirty** (changed) external files when you save any Leo
+outline.
+
+The **@all** directive tells Leo to write the **@file tree** (the @file
+node and all its descendants) to the external file in **outline order**,
+the order in which the nodes appear in the outline pane when all nodes are
+expanded. Non-programmers will typically use the @all directive;
+programmers typically use the @others directive, as discussed in the
+`programming tutorial`_.
+
+
 </t>
 <t tx="ekr.20131003040744.18222">Now we come to the programming features that distinguish Leo from all other
 programming environments. Please study this section carefully if you intend
@@ -21303,26 +21294,18 @@ Ctrl-Q (exit-leo) exits Leo.  Leo will prompt you to save any unsaved outlines.
 <t tx="ekr.20131005040354.16072"></t>
 <t tx="ekr.20131005214621.16088"></t>
 <t tx="ekr.20131005214621.16089">Leo uses a TOC that *looks* like a Sphinx toc but is built by hand.</t>
-<t tx="ekr.20131005214621.16090">Here are the most important things to remember:
+<t tx="ekr.20131005214621.16090">Remember:
 
 - Every command has a name.
-
 - You may execute any command by name from the minibuffer.
-
 - Many commands are bound to keystrokes.
-
 - You may bind multiple keystrokes to a single command and change bindings to your taste.
-
 - Leo has commands to create, change and reorganize outlines.
-
 - Within the body pane, Leo uses standard key bindings to move the cursor.
-
 - Ctrl-F starts the find command. Use the minibuffer to complete the command.
-
 - Leo's configuration files specify all settings, including key bindings.
-
 - Leo directives control how Leo works.
-
+- @all creates an external file from all the nodes of an outline.
 </t>
 <t tx="ekr.20131005214621.16128"></t>
 <t tx="ekr.20131005214621.16130">This is a reference for all of Leo's directives.
@@ -21752,8 +21735,10 @@ The Basics of Leo
 
    &lt;br /&gt;
 
-.. _Leo:    http://leoeditor.com/
-.. _`ask for help`: https://groups.google.com/forum/#!forum/leo-editor
+.. _Leo:                    http://leoeditor.com/
+.. _`ask for help`:         https://groups.google.com/forum/#!forum/leo-editor
+.. _`programming tutorial`: http://leoeditor.com/tutorial-programming.html
+.. _`Using @auto nodes`:    http://leoeditor.com/tutorial-programming.html#using-auto-nodes
 </t>
 <t tx="ekr.20131008041326.16222">###################
 Using Leo as a PIM
@@ -21865,6 +21850,13 @@ Why I like Python
 data, especially complex data like computer programs, books, web sites and
 data bases. Leonistas say Leo is a revolutionary tool and that Leo is fun
 to use--even addictive.
+</t>
+<t tx="ekr.20131009082755.16791">
+When writing @file nodes, Leo adds **sentinel comments** to external files.
+Sentinels embed Leo's outline structure into external files.
+
+If you don't want sentinels in your sources, skip head to
+the `Using @auto nodes`_ part of Leo's `programming tutorial`_.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
