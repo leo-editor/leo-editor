@@ -262,14 +262,22 @@
 <v t="ekr.20131009100732.16738"><vh>The bookmarks plugin</vh></v>
 <v t="ekr.20131008041326.16066" a="M"><vh>Summary</vh></v>
 </v>
-<v t="ekr.20131008041326.16241" a="M"><vh>@rst html\tutorial-rst3.html</vh>
+<v t="ekr.20131008041326.16241"><vh>@rst html\tutorial-rst3.html</vh>
 <v t="ekr.20131008041326.16250"><vh>@rst-no-head links &amp; markup</vh></v>
-<v t="ekr.20131001100335.15939"><vh>The rst3 command</vh></v>
+<v t="ekr.20131001100335.15939"><vh>Overview</vh>
+<v t="ekr.20131009100732.16754"><vh>Specify settings</vh></v>
+<v t="ekr.20131009100732.16748"><vh>Create the @rst tree</vh></v>
+<v t="ekr.20131009100732.16750"><vh>Give your document a title</vh></v>
+<v t="ekr.20131009100732.16755"><vh>Special headlines</vh></v>
+<v t="ekr.20131009100732.16751"><vh>Write your document</vh></v>
+<v t="ekr.20131009100732.16752"><vh>Run the rst3 command</vh></v>
+</v>
+<v t="ekr.20131009100732.16753"><vh>Further study</vh></v>
 <v t="ekr.20131005214621.16128"><vh>Summary</vh></v>
 </v>
 <v t="ekr.20131008041326.16245" a="M"><vh>@rst html\tutorial-programming.html</vh>
 <v t="ekr.20131008041326.16252"><vh>@rst-no-head links &amp; markup</vh></v>
-<v t="ekr.20131003040744.18222"><vh>Creating programming source files with @others</vh></v>
+<v t="ekr.20131003040744.18222" a="O"><vh>Creating programming source files with @others</vh></v>
 <v t="ekr.20131008041326.16051" a="M"><vh>Scripting Leo</vh>
 <v t="ekr.20131008041326.16052"><vh>Leo scripts</vh></v>
 <v t="ekr.20131008041326.16053"><vh>Plugins</vh></v>
@@ -3404,10 +3412,10 @@ Leo and rst3 make writing rST/Sphinx documents a *lot* easier:
    features, all by themselves, would make Leo an excellent choice for
    editing rST documents.
 
-2. But the rst3 command does more: it automatically creates rST sections from
-   headlines. Without Leo, changing the level of a section is clumsy and error
-   prone: you must carefully change the section's underlining character. Leo's
-   rst3 command eliminates all this bother.
+2. Furthermore, the rst3 command automatically creates rST sections from
+   headlines. Without Leo, changing the level of a section is clumsy and
+   error prone: you must carefully change the section's underlining
+   character. Leo's rst3 command eliminates all this bother.
 
 3. The rst3 command converts an \@rst tree to rST and then sends this text to
    docutils or Sphinx for further processing.
@@ -20764,23 +20772,18 @@ You may type any command.  The following are most useful:
 - F2 (find-previous) continues the search in reverse.
 - Ctrl-G (keyboard-quit) ends the search.
 </t>
-<t tx="ekr.20131001100335.15939">The rst3 command converts an @rst tree to `reStructuredText`_ (rST) and sends
-the result to `docutils`_ or `Sphinx`_ for further processing.
+<t tx="ekr.20131001100335.15939">The rst3 command converts an @rst tree containing `reStructuredText`_ (rST)
+markup into a plain-text **intermediate file** containing *other* rST
+markup.
 
-With this tool chain, you can easily create HTML, PDF, `LaTeX`_ and other
-kinds of documents. All of Leo's documentation is written in Sphinx and
-processed with the rst3 command to produce HTML files.
+The rst3 command converts headlines within @rst trees to rST markup
+(in the intermediate file) denoting rST section headings.
 
-In "plain" rST, you denote sections by underlining heading names.
-Reorganizing an document is tedious: you have to change the underlining
-characters by hand.
+Except for chapter titles, you *never* have to denote section headings with
+explicit rST markup; |br|
+you reorganize your documents by reorganizing your @rst tree!
 
-In contrast, the rst3 command automatically creates rST sections from
-headlines. Reorganizing your document is easy--just reorganize your @rst
-tree. You don't have to change rST markup!
-
-The rst3 command provides *many* other capabilities for power users. For
-full details, see `the rst3 chapter`_ in `Leo's Users Guide`_.
+The following paragraphs explain how to create documents step by step:
 </t>
 <t tx="ekr.20131001100335.15940">Leo has a flexible (perhaps *too* flexible) configuration system. It's best
 to use this flexibility in a restricted way as follows:
@@ -21303,16 +21306,23 @@ Ctrl-Q (exit-leo) exits Leo.  Leo will prompt you to save any unsaved outlines.
 </t>
 <t tx="ekr.20131005214621.16128">- The rst3 command converts an @rst tree to an external rST text file.
 
-- Within @rst trees, headlines become rST sections.
+- Settings starting with "rst3" govern how the rst3 command works.
 
-- Sections levels in the generated rST correspond to outline levels in Leo.
+- Within @rst trees, headlines become rST sections. |br|
+  Sections levels in the generated rST correspond to outline levels in Leo.
 
 - You can reorganize your rST documents without changing any rST markup in
   your outline.
+  
+- The rst3 command works acts on the nearest ancestor @rst node, if any, or
+  on all descendant @rst nodes.
+  
+- @rst-no-head nodes insert text (or markup) without an rST headline.
 
-- Leo's rst3 command has many powerful options. |br|
-  For full details, see `the rst3 chapter`_.
-</t>
+- @rst-ignore nodes are a way of commenting out text.
+
+- The rst3 command provides *many* other capabilities. For details, see
+  `the rst3 chapter`_.</t>
 <t tx="ekr.20131005214621.16130">This is a reference for all of Leo's directives.
 
 This sections assumes you are *thoroughly* familiar with `Leo's tutorial`_.
@@ -21514,13 +21524,14 @@ Installing Leo
 
 .. Links used in this document...
 
-.. _`Leo's download page`: http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
-.. _`PyEnchant`: https://sourceforge.net/projects/pyenchant/
-.. _`PyQt`: http://www.riverbankcomputing.com/software/pyqt/intro
-.. _`Python`: http://www.python.org
-.. _`bzr`: http://bazaar.canonical.com/
-.. _`Leo's help forum`: http://groups.google.com/group/leo-editor
-.. _`Running Leo`: http://leoeditor.com/running.html
+.. _`Leo's download page`:  http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
+.. _`Leo's help forum`:     http://groups.google.com/group/leo-editor
+.. _`PyEnchant`:            https://sourceforge.net/projects/pyenchant/
+.. _`PyQt`:                 http://www.riverbankcomputing.com/software/pyqt/intro
+.. _`Python`:               http://www.python.org
+.. _`Running Leo`:          http://leoeditor.com/running.html
+.. _`ask for help`:         https://groups.google.com/forum/#!forum/leo-editor
+.. _`bzr`:                  http://bazaar.canonical.com/
 
 .. index:: Installing Leo
 
@@ -21759,12 +21770,16 @@ for organizing data.
 Creating Documents with the rst3 Command
 ########################################
 
-This tells you how to Leo's rst3 command. 
+.. _`LaTeX`: http://www.latex-project.org/
 
-Leo's web site and all of Leo's documentation was generated by the rst3 command.
+This part of the tutorial tell how to Leo's rst3 command to create HTML,
+PDF, `LaTeX`_ and other kinds of documents.
+
+Leo's web site and all of Leo's documentation were generated by the rst3
+command.
 
 .. contents::
-    :depth: 2
+    :depth: 3
 </t>
 <t tx="ekr.20131008041326.16245">################################
 Programming and scripting in Leo
@@ -21787,9 +21802,10 @@ Programming and scripting in Leo
 
    &lt;br /&gt;
 
-.. _`LaTeX`:                http://www.latex-project.org/
 .. _`Leo's Users Guide`:    http://leoeditor.com/leo_toc.html
 .. _`Sphinx`:               http://sphinx.pocoo.org/
+.. _`The rst3 chapter`:     http://leoeditor.com/tutorial-rst3.html
+.. _`ask for help`:         https://groups.google.com/forum/#!forum/leo-editor
 .. _`docutils`:             http://docutils.sourceforge.net
 .. _`reStructuredText`:     http://docutils.sourceforge.net/rst.html
 .. _`the rst3 chapter`:     http://leoeditor.com/tutorial-rst3.html
@@ -21876,6 +21892,112 @@ the `Using @auto nodes`_ part of Leo's `programming tutorial`_.
 </t>
 <t tx="ekr.20131009100732.16737"></t>
 <t tx="ekr.20131009100732.16738"></t>
+<t tx="ekr.20131009100732.16748">Create an \@rst node. This node and its descendants will contain your
+document.
+
+The headline of the \@rst node has the form::
+
+        @rst &lt;filename&gt;
+
+By default, the rst3 command will write two files: the **output file**
+(&lt;filename&gt;) and the intermediate file (&lt;filename&gt;.txt).
+
+For example, the rst3 command applied to @rst abc.html will write abc.html
+and abc.html.txt.
+
+When the rst3 command writes an @rst tree:
+
+1. Each node becomes an rST/Sphinx section.
+
+   The level of each section corresponds to the level of the node in the
+   headline. Children of the @rst node create level 1 sections.
+   Grandchildren of the \@rst node create level 2 sections, and so on.
+
+2. The headline of each node becomes the section heading.
+
+3. The body text of each node becomes the contents of the node's section.
+
+</t>
+<t tx="ekr.20131009100732.16750">Put something like this in the body of the @rst node::
+
+    #############
+    War and Peace
+    #############
+
+**Note**: You must use '#' as shown to mark the title. Don't use any other
+underlining character.
+
+Put introductory words in the body of the @rst node itself::
+
+    Well, Prince, so Genoa and Lucca are now just family estates of the
+    Buonapartes. But I warn you, if you don't tell me that this means war,
+    if you still try to defend the infamies and horrors perpetrated by that
+    Antichrist--I really believe he is Antichrist--I will have nothing more
+    to do with you and you are no longer my friend, no longer my 'faithful
+    slave,' as you call yourself! But how do you do? I see I have
+    frightened you--sit down and tell me all the news.
+</t>
+<t tx="ekr.20131009100732.16751">Now you write your novel, short story, documentation or whatever. As
+always, you organize your work with outlines.
+
+Use @rst-no-head nodes to add text without creating a new rST section.
+
+Use @rst-ignore nodes to comment out text.
+</t>
+<t tx="ekr.20131009100732.16752">&lt;Alt-X&gt;rst3&lt;Return&gt; runs the rst3 command.
+
+If the present node is an @rst node, or a descendent node of an @rst node,
+the rst3 command applies to the nearest ancestor @rst node. Otherwise, the
+rst3 command applies to all descendant @rst trees.
+
+When using docutils, the rst3 command will call docutils automatically to
+create the output files.
+
+When using sphinx, run sphinx's "make" utility after running the rst3
+command to create the final output files.
+</t>
+<t tx="ekr.20131009100732.16753">You now know enough to get started with the rst3 command. Some possible
+next steps are:
+
+1. Look at Leo's own documentation in LeoDocs.leo. Discover how the nodes
+   in this tree correspond to the documentation you see before you.
+
+2. Create your own @rst nodes. Run the rst3 command on them and see what
+   happens. If you get stuck, please `ask for help`_.</t>
+<t tx="ekr.20131009100732.16754">To use docutils as your markup engine, use this settings::
+
+    @bool rst3_call_docutils = True
+    
+otherwise, use::
+
+    @bool rst3_call_docutils = False
+
+In both cases, use this setting::
+
+    @bool rst3_write_intermediate_file = True
+</t>
+<t tx="ekr.20131009100732.16755">Headlines that start with '@rst-' control the rst3 command. The three most
+useful are:
+
+.. glossary::
+
+\@rst-no-head &lt;ignored-text&gt;
+
+    Causes the rst3 command to copy just the body text of the node. In
+    other words, the node's body text become part of the previous section.
+    Leo's docs use such nodes for rST links and other "invisible" markup.
+
+\@rst-ignore &lt;ignored-text&gt;
+
+    The rst3 command ignores any \@rst-ignore node. Neither the headline
+    nor the body text becomes part of the output. You can use such nodes
+    for notes that you do not want to become part of the actual document.
+
+\@rst-ignore-tree &lt;ignored-text&gt;
+
+    The rst3 command ignores the \@rst-ignore-tree node and all its
+    descendants.
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
