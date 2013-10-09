@@ -257,9 +257,9 @@
 <v t="ekr.20131008041326.16248"><vh>@rst-no-head links &amp; markup</vh></v>
 <v t="ekr.20131004073415.16044"><vh>Clones</vh></v>
 <v t="ekr.20131004073415.16045"><vh>Views</vh></v>
-<v t="ekr.20131005040354.16072" a="M"><vh>Using abbreviations &amp; templates</vh></v>
-<v t="ekr.20131009100732.16737"><vh>\@url nodes</vh></v>
-<v t="ekr.20131009100732.16738"><vh>The bookmarks plugin</vh></v>
+<v t="ekr.20131009100732.16760"><vh>Using abbreviations and templates</vh></v>
+<v t="ekr.20131009100732.16737" a="M"><vh>\@url nodes</vh></v>
+<v t="ekr.20131009100732.16738" a="M"><vh>The bookmarks plugin</vh></v>
 <v t="ekr.20131008041326.16066" a="M"><vh>Summary</vh></v>
 </v>
 <v t="ekr.20131008041326.16241"><vh>@rst html\tutorial-rst3.html</vh>
@@ -284,7 +284,7 @@
 </v>
 <v t="ekr.20131008041326.16054"><vh>Using @first</vh></v>
 <v t="ekr.20131008041326.16055"><vh>Using @path</vh></v>
-<v t="ekr.20131008041326.16056"><vh>Using @auto nodes</vh></v>
+<v t="ekr.20131008041326.16056" a="M"><vh>Using @auto nodes</vh></v>
 <v t="ekr.20131008041326.16057" a="M"><vh>Using @button nodes</vh></v>
 <v t="ekr.20131008041326.16058" a="M"><vh>Using @test nodes</vh></v>
 <v t="ekr.20131004172324.16075"><vh>Autocompletion</vh></v>
@@ -21288,7 +21288,6 @@ Ctrl-O (open-outline) opens an existing .leo file. |br|
 Ctrl-S (save-file) saves the outline. |br|
 Ctrl-Q (exit-leo) exits Leo.  Leo will prompt you to save any unsaved outlines.
 </t>
-<t tx="ekr.20131005040354.16072"></t>
 <t tx="ekr.20131005214621.16088"></t>
 <t tx="ekr.20131005214621.16089">Leo uses a TOC that *looks* like a Sphinx toc but is built by hand.</t>
 <t tx="ekr.20131005214621.16090">Remember:
@@ -21480,7 +21479,13 @@ refers to the file abc.py in (absolute path of) the current directory.
 <t tx="ekr.20131008041326.16057"></t>
 <t tx="ekr.20131008041326.16058"></t>
 <t tx="ekr.20131008041326.16065"></t>
-<t tx="ekr.20131008041326.16066"></t>
+<t tx="ekr.20131008041326.16066">- Leo expands abbreviations as you type.
+
+    - Abbreviations range from simple shortcuts to multi-line templates
+      containing fields.
+    - Type ",," to move to the next field.
+    - Abbreviations can also insert the result of executing code.
+</t>
 <t tx="ekr.20131008041326.16079">#############
 Preliminaries
 #############
@@ -21797,6 +21802,7 @@ Programming and scripting in Leo
    &lt;br /&gt;
 
 .. _`ask for help`: https://groups.google.com/forum/#!forum/leo-editor
+.. _`abbreviations section of Leo's User Guide`: http://leoeditor.com/abbreviations.html
 </t>
 <t tx="ekr.20131008041326.16250">.. |br| raw:: html
 
@@ -21997,6 +22003,47 @@ useful are:
 
     The rst3 command ignores the \@rst-ignore-tree node and all its
     descendants.
+</t>
+<t tx="ekr.20131009100732.16760">Leo optionally expands any defined abbreviations as you type.
+
+Abbreviations typically end with something like ";;"
+so they won't trigger by accident.
+
+You define abbreviations in @data abbreviations nodes or @data global-abbreviations nodes. |br|
+None come predefined, but leoSettings.leo contains example abbreviations in the node::
+
+    @@data abbreviations examples
+
+Abbreviations can simply be shortcuts::
+
+    ncn;;=@nocolor
+    
+Abbreviations can span multiple lines. Continued lines start with \\:, like this::
+
+    form;;=&lt;form action="main_submit" method="get" acccept-charset="utf-8"&gt;
+    \:&lt;p&gt;&lt;input type="submit" value="Continue &amp;rarr;"&gt;&lt;/p&gt;
+    \:&lt;/form&gt;\n
+
+Abreviations can define templates in which \|a-field-name\| denotes a field to be filled in::
+
+    input;;=&lt;input type="text/submit/hidden/button"
+    \:name="&lt;|name|&gt;"
+    \:value="" id="&lt;|id|&gt;"&gt;\n
+
+Typing ",," after inserting a template selects the next field.
+
+Abbreviations can execute **abbreviation scripts**, delimited by \|{ and }\|::
+
+    date;;={|{import time ; x=time.asctime()}|}
+    ts;;={|{x=time.strftime("%Y%m%d%H%M%S")}|}
+    
+For example, typing ts;; gives::
+
+    20131009171117
+
+For full details about abbreviations and templates, especially settings,
+see the `abbreviations section of Leo's User Guide`_.
+
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few

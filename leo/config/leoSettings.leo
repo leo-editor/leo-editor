@@ -10070,6 +10070,7 @@ def django_tag():
 
 date;;={|{x=time.asctime()}|}
 ts;;={|{x=time.strftime("%Y%m%d%H%M%S")}|}
+tss;;={|{x=time.strftime("%Y%m%d")}|}
 
 # template for a .py file
 """;;=@language python
@@ -10087,10 +10088,6 @@ ts;;={|{x=time.strftime("%Y%m%d%H%M%S")}|}
 \:
 \:if __name__ == '__main__':
 \:    main()\n
-
-date;;={|{x=time.asctime()}|}
-ts;;={|{x=time.strftime("%Y%m%d%H%M%S")}|}
-tss;;={|{x=time.strftime("%Y%m%d")}|}
 
 # see abbreviations-subst-env - `antid;;;` will expand to
 # `antidisestablishmentarianism` if `antidisestablishmentarianism`
