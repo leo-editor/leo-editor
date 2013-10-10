@@ -1259,6 +1259,7 @@
 </v>
 <v t="ekr.20091130111843.6787"></v>
 <v t="ekr.20131008041326.16222"></v>
+<v t="ekr.20131009100732.16760"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -21984,7 +21985,7 @@ Use @rst-ignore nodes to comment out text.
 </t>
 <t tx="ekr.20131009100732.16752">&lt;Alt-X&gt;rst3&lt;Return&gt; runs the rst3 command.
 
-If the present node is an @rst node, or a descendent node of an @rst node,
+If the present node is an @rst node, or a descendant node of an @rst node,
 the rst3 command applies to the nearest ancestor @rst node. Otherwise, the
 rst3 command applies to all descendant @rst trees.
 
@@ -22054,11 +22055,11 @@ Abbreviations can simply be shortcuts::
 Abbreviations can span multiple lines. Continued lines start with \\:, like
 this::
 
-    form;;=&lt;form action="main_submit" method="get" acccept-charset="utf-8"&gt;
+    form;;=&lt;form action="main_submit" method="get" accept-charset="utf-8"&gt;
     \:&lt;p&gt;&lt;input type="submit" value="Continue &amp;rarr;"&gt;&lt;/p&gt;
     \:&lt;/form&gt;\n
 
-Abreviations can define templates in which \|a-field-name\| denotes a field
+Abbreviations can define templates in which &lt;\|a-field-name\|&gt; denotes a field
 to be filled in::
 
     input;;=&lt;input type="text/submit/hidden/button"
@@ -22067,8 +22068,8 @@ to be filled in::
 
 Typing ",," after inserting a template selects the next field.
 
-Abbreviations can execute **abbreviation scripts**, delimited by \|{ and
-}\|::
+Abbreviations can execute **abbreviation scripts**, delimited by {\|{ and
+}\|}::
 
     date;;={|{import time ; x=time.asctime()}|}
     ts;;={|{import time ; x=time.strftime("%Y%m%d%H%M%S")}|}
@@ -22105,7 +22106,7 @@ Programmers have contributed dozens of plugins, including:
 
 - `mod_scripting.py`_: extends Leo's scripting capabilities.
 
-- `todo.py`_: provides to-do list and simple project-management capabilites.
+- `todo.py`_: provides to-do list and simple project-management capabilities.
 
 - `valuespace.py`_: adds outline-oriented spreadsheet capabilities.
 
