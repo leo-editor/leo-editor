@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20131004162848.11444: * @file C:/leo.repo/trunk/leo/plugins/rss.py
+#@+node:ekr.20131004162848.11444: * @file rss.py
 #@@language python
 #@@tabwidth -4
 

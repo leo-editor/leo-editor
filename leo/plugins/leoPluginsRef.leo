@@ -36,7 +36,7 @@
 <v t="ekr.20100909111553.5588"><vh>@mark-for-unit-tests</vh></v>
 </v>
 <v t="ekr.20080707101341.1"><vh>@file ../modes/forth.py</vh></v>
-<v t="edream.110203113231.618" a="E"><vh>Plugins</vh>
+<v t="edream.110203113231.618"><vh>Plugins</vh>
 <v t="EKR.20040517090508"><vh>  Enable plugins using @enabled-plugins nodes</vh></v>
 <v t="ekr.20050303051035"><vh>  Templates</vh>
 <v t="ekr.20041114102139"><vh>Notes for plugin writers</vh></v>
@@ -134,7 +134,6 @@
 <v t="ekr.20130927071752.11380"><vh>@file internal_ipkernel.py</vh></v>
 <v t="EKR.20040517075715.1"><vh>@file mod_tempfname.py</vh></v>
 <v t="EKR.20040517080049.4"><vh>@file open_shell.py</vh></v>
-<v t="peckj.20131003103810.9494"><vh>@file rss.py</vh></v>
 <v t="ville.20090503124249.1"><vh>@file tomboy_import.py</vh></v>
 <v t="EKR.20040517075715.10"><vh>@file vim.py</vh></v>
 <v t="EKR.20040517075715.12"><vh>@file xemacs.py</vh></v>
@@ -181,6 +180,7 @@
 <v t="ekr.20050111122605"><vh>Servers</vh>
 <v t="ville.20091009202416.10040"><vh>@file leoremote.py</vh></v>
 <v t="EKR.20040517080250.1"><vh>@file mod_http.py</vh></v>
+<v t="ekr.20131004162848.11444"><vh>@file rss.py</vh></v>
 </v>
 <v t="ekr.20101004082701.5674"><vh>Slideshows, screencasts &amp; screenshots</vh>
 <v t="ekr.20120913110135.10579"><vh>@file screencast.py</vh></v>
@@ -201,7 +201,6 @@
 <v t="danr7.20060902083957"><vh>@file leo_to_rtf.py</vh></v>
 <v t="ville.20110409151021.5699"><vh>@file jinjarender.py</vh></v>
 <v t="tbrown.20130813134319.11942"><vh>@file richtext.py</vh></v>
-<v t="tbrown.20130930160706.23451"><vh>@file markup_inline.py</vh></v>
 <v t="ekr.20050817132814"><vh>rst3</vh>
 <v t="ekr.20090704103932.5160"><vh>@file leo_pdf.py</vh></v>
 <v t="ekr.20050805162550"><vh>@file rst3.py</vh></v>
