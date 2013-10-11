@@ -1096,31 +1096,8 @@
 <v t="ekr.20131011050613.16792" a="M"><vh>Important methods</vh></v>
 <v t="ekr.20131011050613.16816"><vh>Special topics</vh>
 <v t="ekr.20131011050613.16815"><vh>Startup</vh></v>
-<v t="ekr.20131011050613.16814" a="M"><vh>Why key handling is inherently complex</vh></v>
+<v t="ekr.20131011050613.16814"><vh>Why key handling is complex</vh></v>
 <v t="EKR.20040524104904.268"><vh>Unicode</vh></v>
-</v>
-<v t="ekr.20131011050613.16813"><vh>@rst-ignore-tree Detailed code notes</vh>
-<v t="ekr.20120319065417.6092" a="M"><vh>Autocompletion</vh>
-<v t="ekr.20120229094652.15115"><vh>UI notes</vh></v>
-<v t="ekr.20120229094652.15117"><vh>Appearance</vh></v>
-<v t="ekr.20120229094652.15119"><vh>Performance</vh></v>
-</v>
-<v t="ekr.20110611085637.5019" a="M"><vh>Key handling</vh>
-<v t="ekr.20110611085637.5014"><vh>Key domains</vh>
-<v t="ekr.20110611085637.5015"><vh>Domain 1: Parsing user bindings in @keys, @mode and @shortcut nodes</vh></v>
-<v t="ekr.20110611085637.5016"><vh>Domain 2: Maintaining and using binding tables</vh></v>
-<v t="ekr.20110611085637.5017"><vh>Domain 3: Translating incoming key events into standard events</vh></v>
-<v t="ekr.20110611085637.5018"><vh>Domain 4: Printing key bindings in a human-readable format</vh></v>
-</v>
-<v t="ekr.20060602142732"><vh>Key bindings</vh></v>
-<v t="ekr.20110609120520.16494"><vh>Handling key events</vh>
-<v t="ekr.20120313134250.15733"><vh>All events are key events</vh></v>
-<v t="ekr.20120313134250.15734"><vh>c.check_event</vh></v>
-</v>
-<v t="ekr.20120315101404.14218"><vh>About the KeyStroke class</vh></v>
-<v t="ekr.20120315101404.14219"><vh>Simplifying the Qt input code</vh></v>
-<v t="ekr.20120315101404.14220"><vh>Typed dicts</vh></v>
-</v>
 </v>
 </v>
 </v>
@@ -1275,7 +1252,6 @@
 <v t="EKR.20040524104904.357"></v>
 <v t="ekr.20091130111843.6787"></v>
 <v t="ekr.20131008041326.16178"></v>
-<v t="ekr.20131011050613.16812"><vh>Find code (move to leoFind.py)</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -6128,58 +6104,6 @@ There are several workaround, as shown in LeoPy.leo:
 - keep notes in the outline outside of any external file.
 
 - Use @all to gather notes in a external file, as in done in @file leoProjects.txt.
-</t>
-<t tx="ekr.20060602142732">There are two kinds of bindings, gui bindings and pane bindings.
-
-**Gui bindings** are the actual binding as seen by  whatever gui is in effect.
-Leo binds every key that has a binding to k.masterKeyHander.
-
-At present Leo makes gui bindings in several places, all equivalent.
-Bindings are made to callbacks, all of which have this form::
-
-     def callback(event=None,k=k,stroke=stroke):
-        return k.masterKeyHandler(event,stroke)
-
-As a result, changing gui bindings actually has no effect whatever.
-It would be clearer to have a single place to make these bindings...
-
-In any case, the purpose of these callbacks is to capture the value of 'stroke' so
-that it can be passed to k.masterKeyHandler.
-This relieves k.masterKeyHandler of the impossible task of computing the stroke from the event.
-
-**Important**:  No function argument is ever passed to k.masterKeyHandler from these callbacks,
-because k.masterKeyHandler binds keys to command handlers as described next.
-
-**Pane bindings** are bindings represented by various Python dictionaries in the
-keyHandlerClass (see below). k.masterKeyHandler and its helpers use these
-dictionaries to call the proper command or mode handler. This logic is hairy,
-but it is completely separate from the gui binding logic.
-
-Here are the dictionaries that k.masterKeyHandler uses:
-
-- c.commandsDict:
-  Keys are minibuffer command names; values are functions f.
-
-- k.inverseCommandsDict:
-  Keys are f.__name__l values are emacs command names.
-
-- k.bindingsDict:
-  Keys are shortcuts; values are *lists* of g.bunch(func,name,warningGiven).
-
-- k.masterBindingsDict:
-  Keys are pane names: 'all','text',etc. or mode names.
-  Values are dicts:  keys are strokes; values are g.Bunch(commandName,func,pane,stroke).
-
-- k.modeWidgetsDict:
-  Keys are mode names; values are lists of widgets to which bindings have been made.
-
-- k.settingsNameDict:
-  Keys are lowercase settings; values are 'real' Tk key specifiers.
-  Important: this table has no inverse.
-
-- inverseBindingDict:
-  This is *not* an ivar; it is computed by k.computeInverseBindingDict().
-  Keys are emacs command names; values are *lists* of shortcuts.
 </t>
 <t tx="ekr.20060612102055" str_atime="1376414161.0">.. Most of this has nothing to do with *writing* plugins.</t>
 <t tx="ekr.20060612103240" str_atime="1376414163.0">###############
@@ -15620,7 +15544,6 @@ probably is close to optimal in most situations.
 
 - Fixed crasher in graphcanvas plugin caused by a bug in CommandChainDispatcher.add.
 </t>
-<t tx="ekr.20110609120520.16494"></t>
 <t tx="ekr.20110611085637.5009"></t>
 <t tx="ekr.20110611085637.5010">- Fixed ancient, major bug: F3 now makes sure to save headline changes
 
@@ -15764,51 +15687,6 @@ begins and ends with the '\b' anchor.
     
         True: recursively expand definitions by expanding any
         references found in definitions.
-</t>
-<t tx="ekr.20110611085637.5014">Leo's key-handling code has almost nothing to do with supporting multiple guis.
-Rather, the key-handling code is complex because it must deal with the following
-four fundamentally different problem domains.
-</t>
-<t tx="ekr.20110611085637.5015">In this domain, complexity arises from allowing the user a variety of
-*equivalent* ways of specifying bindings. Furthermore, this domain allows the
-user to specify modes and per-pane bindings. Thus, all these complexities are
-unavoidable.
-</t>
-<t tx="ekr.20110611085637.5016">The result of parsing user bindings are a set of binding tables. These tables
-are complex, but we need not go into details here because only one method,
-k.masterKeyHandler (and its helper, getPaneBinding) uses the tables.
-
-The only thing we have to remember about the binding tables is that bindings are
-expressed in terms of so-called **strokes**.  Strokes are the "official" form of
-every user binding.  The essential property of a stroke is that it contains
-*all* the information required to handle the stroke: Leo can unambiguously
-determine exactly what a stroke means and what bindings are in effect for a
-stroke.  If necessary, Leo can correctly insert the proper character
-*corresponding* to the stroke into any text widget. 
-
-This correspondence (association) between the stroke and the actual
-character to be inserted into text widgets is crucial.  This
-correspondence is created in the next domain.
-
-Anticipating a bit, for any incoming key event, event.stroke is the
-stroke, and event.char is the character (if any) that *might*
-(depending on bindings) be inserted into text widgets.
-
-**New in Leo 4.9**: k.stroke2char calculates the to-be-inserted char from
-any stroke.
-</t>
-<t tx="ekr.20110611085637.5017">The eventFilter method in qtGui.py creates leoKeyEvent objects.  Turning "raw"
-Qt key events into leoKeyEvents is unavoidably complicated because eventFilter
-(and its allies) **must** carefully compute the stroke corresponding to the raw
-key event.  There is no way around this requirement if Leo's binding machinery
-in domain 2 is to work.  This code has been stable for a long time. 
-</t>
-<t tx="ekr.20110611085637.5018">It's important not to forget this domain: there are some situations in which we
-want to represent '\b','\r','\n' and '\t' as 'BackSpace','Linefeed','Return' and
-'Tab'.
-</t>
-<t tx="ekr.20110611085637.5019">The following three sections deal with different aspects of how Leo handle's
-keystrokes that the user types. This is the most complex code in Leo.
 </t>
 <t tx="ekr.20110612104631.16414">@language rest
 
@@ -16214,20 +16092,6 @@ if the context is ``os.path.join``, typing '?' will show::
 It is not possible at present to copy the docstring from the log pane when
 using the QCompleter because the QCompleter popup window is a modal dialog.
 </t>
-<t tx="ekr.20120229094652.15115">Both the legacy and new completer now work *exactly* the same way, because
-they both use the AutoCompleterClass to compute the list of completions.
-
-The strict "stateless" requirement means that the "intermediate"
-completions must be entered into the body pane while completion is active.
-It works well as a visual cue when using the tabbed completer: indeed, the
-tabbed completer would be difficult to use without this cue.
-
-The situation is slightly different with the qcompleter. Adding code before
-the user accepts the completion might be considered an "advanced" feature.
-However, it does have two important advantages, especially when "chaining"
-across periods: it indicates the status of the chaining and it limits what
-must appear in the qcompleter window.
-</t>
 <t tx="ekr.20120229094652.15116">These are found in leoSettings.leo: @settings--&gt;Autocompleter::
 
 **@bool use_qcompleter = True**
@@ -16252,52 +16116,6 @@ must appear in the qcompleter window.
     
     True: Don't add characters during autocompletion that are not part of
     any computed completion.
-</t>
-<t tx="ekr.20120229094652.15117">There is little change to the legacy completer, except that no text is
-highlighted in the body pane during completion. This is calmer than before.
-Furthermore, there is no longer any need for highlighting, because when the
-user types a backspace the legacy completer now simply deletes a single
-character instead of the highlighted text.
-
-One minor change: the legacy completer now *does* insert characters that do
-not match the start of any possible completion. This is an experimental
-feature, but it might play well with using codewise completions as a
-fallback to Leo-related completions.
-
-</t>
-<t tx="ekr.20120229094652.15119">Performance of Leo-related completions is *much* better than before. The
-old code used Python's inspect module and was horribly complex. The new
-code uses eval and is perfectly straightforward.
-
-The present codewise-related code caches completions for all
-previously-seen prefixes. This dramatically speeds up backspacing. Global
-caching is possible because completions depend *only* on the present
-prefix, *not* on the presently selected node. If ContextSniffer were used,
-completions would depend on the selected node and caching would likely be
-impractical. Despite these improvements, the performance of
-codewise-oriented completions is noticeably slower than Leo-related
-completions.
-
-The ac.get_cached_options cuts back the prefix until it finds a cached
-prefix. ac.compute_completion_list then uses this
-(perhaps-way-too-long-list) as a starting point, and computes the final
-completion list by calling g.itemsMatchingPrefixInList.
-
-This may not be absolutely the fastest way, but it is much simpler and more
-robust than attempting to do "prefix AI" based on comparing old and new
-prefixes. Furthermore, this scheme is completely independent of the how
-completions are actually computed. The autocompleter now caches options
-lists, regardless of whether using eval or codewise.
-
-In most cases the scheme is extremely fast: calls to get_completions
-replace calls to g.itemsMatchingPrefixInList. However, for short prefixes,
-the list that g.g.itemsMatchingPrefixInList scans can have thousands of
-items. Scanning large lists can't be helped in any case for short prefixes.
-
-Happily, the new scheme is still *completely* stateless: the completionDict
-does *not* define state (it is valid everywhere) and no state variables had
-to be added. In short, the new caching scheme is much better than before,
-and it probably is close to optimal in most situations.
 </t>
 <t tx="ekr.20120229094652.15124">It sometimes happens that the focus gets left in a Leo
 widget that doesn't support Leo's key bindings. You would
@@ -16401,130 +16219,6 @@ various values for C, nicely formatted so that it is easy to determine
 where the differences are.
 
 </t>
-<t tx="ekr.20120313134250.15733">All event objects passed around Leo are *key* event objects. Taking a look at
-the eventFilter method, we see clearly see that *only* key events ever get
-passed to Leo's core. All other events are handled by Qt-specific event
-handlers.
-
-As can be seen, these non-key events *can* be passed to Leo, but only as the
-event arg in g.doHook (!) At present, no plugin ever calls k.masterKeyHandler.
-The only call to k.masterKeyHandler in qtGui.py is the expected call in
-eventFilter.
-
-There are other calls to k.masterKeyHandler in Leo's core, but we can prove (by
-induction, if you will), that all events passed to k.masterKeyHandler are proper
-leoKeyEvent objects.
-</t>
-<t tx="ekr.20120313134250.15734">The essential invariant is that the events passed to Leo's core methods really
-are leoKeyEvent objects created by qtGui.py.  Rather than asserting this
-invariant, the code will contains calls to c.check_event in essential places. 
-c.check_event is a "relaxed" place to do as much error checking is needed.  In
-particular, running the unit tests calls c.check_event many times. 
-
-c.check_event is a happy "accident".  It turns out to be the essential
-consistency check that continually verifies that the Qt event methods are
-delivering the expected keys to k.masterKeyHandler. 
-</t>
-<t tx="ekr.20120315101404.14218">The KeyStroke class distinguish between "raw" user settings
-and the "canonicalized" form used throughout Leo. Indeed,
-the ability to explicitly distinguish between the two, using
-type checking, substantially clarifies and simplifies the
-code.
-
-The KeyStroke class makes possible vital type-related
-assertions. Knowing *for sure* exactly what crucial data is
-and what it means is a huge step forward.
-
-Objects of the KeyStroke class can be used *exactly* as a
-strings may be used:
-
-A. KeyStroke objects may be used as dictionary keys, because
-they have __hash__ methods and all the so-called rich
-comparison methods: __eq__, __ne__, __ge__, __gt__, __le__
-and __lt__. Note that KeyStroke objects may be compared with
-other KeyStroke objects, strings and None.
-
-B. At present, KeyStroke objects supports the find, lower
-and startswith methods. This simplifies the code
-substantially: we can apply these methods to either strings
-or KeyStroke objects, so there is no need to create
-different versions of the code depending on the value of
-g.new_strokes.
-
-However, having the KeyStroke class support string methods
-is bad design. Indeed, it is a symptom that the client code
-that uses KeyStroke objects knows too much about the
-internals of KeyStroke objects. Instead, the KeyStroke class
-should have higher-level methods that use s.find, s.lower
-and s.startswith internally.
-
-You could say that the fact that code in leoKeys.py calls
-s.find, s.lower and s.startswith is a symptom of non OO
-programming. The internal details of settings and strokes
-"pollutes" the code. This must be fixed. This will likely
-create opportunities for further simplifications.
-
-&gt; Why not just have .s attribute in KeyStroke, that contains
-the string version?
-
-It is truly impossible to understand the key code without
-knowing whether an object is a string representing a user
-setting or the canonicalized version used in Leo's core,
-that is, a KeyStroke object. Using ks.s instead of ks
-destroys precisely the information needed to understand the
-code.
-
-Again, this is not a theoretical concern. The key code now
-contains assertions of the form::
-
-    assert g.isStroke(stroke)
-
-or::
-
-    assert g.isStrokeOrNone(stroke)
-
-Getting these assertions to pass in *all* situations
-required several important revisions of the code. The code
-that makes the assertions pass is "innocuous", that is,
-almost invisible in the mass of code, but obviously, these
-small pieces of code are vital.
-
-This is in no way a violation of OO principles. The code is
-not dispatching on the type of objects, it is merely
-enforcing vital consistency checks. This code is complex:
-confusion about the types of objects is intolerable.
-Happily, the resulting clarity allows the code to be
-substantially simpler than it would otherwise be, which in
-turn clarifies the code further, and so on...
-</t>
-<t tx="ekr.20120315101404.14219">The Qt key input code can be greatly simplified by calling a
-new k.makeKeyStrokeFromData factory method. At present, the
-Qt key input code knows *all* the details of the format of
-*canonicalized* settings. This is absolutely wretched
-design.
-
-Instead, the Qt input key code should simply pass the key
-modifiers and other key information to
-k.makeKeyStrokeFromData, in a some kind of "easy" format.
-For example, the Qt input key code would represent the
-internal Qt modifiers as lists of strings like "alt",
-"ctrl", "meta", "shift". k.makeKeyStrokeFromData would then
-create a *user* setting from the components, and then call
-k.strokeFromSetting to complete the transformation.
-</t>
-<t tx="ekr.20120315101404.14220">Leo's key dictionaries will always be complex, but basing
-them on the TypedDict class was a major improvement.
-
-The g.TypedDict and g.TypedDictOfLists classes are useful
-for more than type checking: they have unique names and a
-dump method that dumps the dict in an easy-to-read format
-that includes the name, and valid types for keys and values.
-
-Plain dicts do have their uses, but for "long-lived" dicts,
-and dicts passed around between methods, plain dicts are as
-ill-advised as g.Bunches.
-
-</t>
 <t tx="ekr.20120317130339.8282">@language rest
 @pagewidth 75
 
@@ -16549,7 +16243,6 @@ something like::
 
     g.app.my_script_w = w
 </t>
-<t tx="ekr.20120319065417.6092"></t>
 <t tx="ekr.20120319065417.8788">The following check boxes options appear in the search dialog and control
 the operations of the find and change commands.
 
@@ -22041,6 +21734,8 @@ The most important setters of any position p are::
 <t tx="ekr.20131010160850.17462"></t>
 <t tx="ekr.20131011050613.16792">::
 
+    k.getArg.
+    *tab-completion*
     c.endEditing
     leoQtEventFilter.eventFilter
     c.outerUpdate (eliminates flicker)
@@ -22096,7 +21791,6 @@ g.app is the singleton instance of the leoApp class.
 
 The ivars of the LeoApp object act like global variables for the Leo app.
 Code throughout Leo reads these variables, and sometimes set them.
-
 </t>
 <t tx="ekr.20131011050613.16803"></t>
 <t tx="ekr.20131011050613.16804">A controller updates the model and view in response to commands.
@@ -22160,59 +21854,17 @@ Here are the most important *gui-independent* view classes:
 The gui-independent view classes are considerably more complex than their
 QT counterparts. |br|
 This is good design: we the Qt code to handle only gui-related concerns.</t>
-<t tx="ekr.20131011050613.16812">.. _`Leo's Find code`:
+<t tx="ekr.20131011050613.16814">Leo's key bindings is complex because it does inherently complex things:
 
-leoFind.py contains the gui-independant part of all of Leo's find/change code.
+- Code in leoMenu.py processes user preferences.
 
-Such code is tricky, which is why it should be gui-independent code!
+- eventFilter and its helpers translates incoming QKeyEvents to strokes
+  corresponding to user preferences.
 
-Here are the governing principles:
-
-1. Find and Change commands initialize themselves using only the state of
-   the present Leo window. In particular, the Find class must not save
-   internal state information from one invocation to the next. This means
-   that when the user changes the nodes, or selects new text in headline or
-   body text, those changes will affect the next invocation of any Find or
-   Change command. Failure to follow this principle caused all kinds of
-   problems earlier versions.
+- k.masterKeyHandler associates incoming strokes with a pane-dependant binding.
    
-   There is one exception to this rule: we must remember where interactive
-   wrapped searches start.
-   
-   This principle simplifies the code because most ivars do not persist.
-   However, each command must ensure that the Leo window is left in a state
-   suitable for restarting the incremental (interactive) Find and Change
-   commands. Details of initialization are discussed below.
-
-2. The Find and Change commands must not change the state of the outline or
-   body pane during execution. That would cause severe flashing and slow
-   down the commands a great deal. In particular, c.selectPosition and
-   c.editPosition must not be called while looking for matches.
-
-3. When incremental Find or Change commands succeed they must leave the Leo
-   window in the proper state to execute another incremental command. We
-   restore the Leo window as it was on entry whenever an incremental search
-   fails and after any Find All and Replace All command. Initialization
-   involves setting the self.c, self.v, self.in_headline, self.wrapping and
-   self.s_text ivars.
-
-Setting self.in_headline is tricky; we must be sure to retain the state of
-the outline pane until initialization is complete. Initializing the Find
-All and Replace All commands is much easier because such initialization
-does not depend on the state of the Leo window. Using the same kind of text
-widget for both headlines and body text results in a huge simplification of
-the code.
-
-Indeed, the searching code does not know whether it is searching headline
-or body text. The search code knows only that self.s_text is a text widget
-that contains the text to be searched or changed and the insert and sel
-attributes of self.search_text indicate the range of text to be searched.
-Searching headline and body text simultaneously is complicated. The
-selectNextVnode() method handles the many details involved by setting
-self.s_text and its insert and sel attributes.
+- k.masterKeyHandler also handles mode-specific bindings.
 </t>
-<t tx="ekr.20131011050613.16813"></t>
-<t tx="ekr.20131011050613.16814"></t>
 <t tx="ekr.20131011050613.16815">The LoadManager (LM) class (in leoApp.py) loads .leo files and the
 corresponding external files.
 
@@ -22221,17 +21873,15 @@ leoConfig.py contains most of the configuration code:
 - g.app.config is an instance of the GlobalConfigManager class.
 - c.config is an instance of the LocalConfigManager class.
 
-The LoadManager class (in leoApp.py) is responsible for initing
-all settings properly. |br|
+The LoadManager class (in leoApp.py) is responsible for initing all settings properly. |br|
 This is a complex process: see comments in leoApp.py for details. |br|
 Here are the general principles:
 
-- Leo reads each local (non-settings) file twice. The first load discovers
-  the settings to be used in the second load. |br|
+- Leo reads each local (non-settings) file twice. |br|
+  The first load discovers the settings to be used in the second load. |br|
   This ensures that proper settings are *available* during the second load.
 
-- Ctors init settings "early", before calling the ctors for subsidiary
-  objects. |br|
+- Ctors init settings "early", before calling the ctors for subsidiary objects. |br|
   This ensures that proper settings are *in effect* for subsidiary ctors.
 </t>
 <t tx="ekr.20131011050613.16816"></t>
