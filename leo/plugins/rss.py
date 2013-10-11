@@ -77,12 +77,13 @@ Clears the viewed stories history of every `@feed` node in the current outline.
 '''
 #@-<< docstring >>
 
-__version__ = '0.1'
+__version__ = '0.2'
 #@+<< version history >>
 #@+node:peckj.20131002201824.5540: ** << version history >>
 #@+at
 # 
 # Version 0.1 - initial functionality.  NO UNDO.
+# Version 0.2 - bugfix for bug reported by Viktor Ransmayr regarding not having dates in the feed.
 #@-<< version history >>
 
 #@+<< imports >>
@@ -134,6 +135,8 @@ class RSSController:
         self.c = c
         # Warning: hook handlers must use keywords.get('c'), NOT self.c.
         
+        self._NO_TIME = (3000,0,0,0,0,0,0,0,0)
+        
         # register commands
         c.k.registerCommand('rss-parse-selected-feed',shortcut=None,func=self.parse_selected_feed)
         c.k.registerCommand('rss-parse-all-feeds',shortcut=None,func=self.parse_all_feeds)
@@ -165,12 +168,12 @@ class RSSController:
             return
         
         # process entries
-        stories = sorted(data.entries, key=lambda entry: entry.published_parsed)
+        stories = sorted(data.entries, key=lambda entry: self.grab_date_parsed(entry))
         stories.reverse()
         pos = feed
         for entry in stories:
             if not self.entry_in_history(feed, entry):
-                date = time.strftime('%Y-%m-%d %I:%M %p',entry.published_parsed)
+                date = time.strftime('%Y-%m-%d %I:%M %p',self.grab_date_parsed(entry))
                 name = entry.title
                 link = entry.link
                 desc = entry.summary
@@ -187,10 +190,30 @@ class RSSController:
             
         
             
+    #@+node:peckj.20131011131135.5848: *4* grab_date_parsed
+    def grab_date_parsed(self, entry):
+        published = None
+        keys = ['published_parsed', 'created_parsed', 'updated_parsed']
+        for k in keys:
+            published = entry.get(k, default=None)
+            if published is not None:
+                return published
+        if published is None:
+            return self._NO_TIME
+    #@+node:peckj.20131011131135.5850: *4* grab_date
+    def grab_date(self, entry):
+        published = None
+        keys = ['published', 'created', 'updated']
+        for k in keys:
+            published = entry.get(k, default=None)
+            if published is not None:
+                return published
+        if published is None:
+            return ""
     #@+node:peckj.20131003102740.5570: *3* history stuff
     #@+node:peckj.20131003095152.10662: *4* hash_entry
     def hash_entry(self, entry):
-        s = entry.title + entry.published + entry.summary + entry.link
+        s = entry.title + self.grab_date(entry) + entry.summary + entry.link
         return str(hash(s) & 0xffffffff)
 
         
