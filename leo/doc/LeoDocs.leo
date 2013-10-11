@@ -1250,16 +1250,6 @@
 </v>
 </v>
 </v>
-<v t="EKR.20040524104904.357"></v>
-<v t="ekr.20091130111843.6787"></v>
-<v t="ekr.20131011050613.16857"><vh>Old writing</vh>
-<v t="ekr.20131011050613.16875"><vh>Startup</vh></v>
-<v t="ekr.20131011050613.16867"><vh>MVC</vh></v>
-<v t="ekr.20131011050613.16802"><vh>Application classes</vh></v>
-<v t="ekr.20131011050613.16805"><vh>View classes</vh></v>
-<v t="ekr.20131011050613.16874"><vh>Controller classes</vh></v>
-</v>
-<v t="ekr.20131008041326.16178"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -21768,41 +21758,6 @@ tree traversal.
 All of Leo's iterators use a *single* position for the entire traversal;
 that position (its ivars) constantly changes throughout the traversal.
 </t>
-<t tx="ekr.20131011050613.16802">The leoApp class (in leoApp.py) represents the Leo application itself.
-
-g.app is the singleton instance of the leoApp class.
-
-The ivars of the LeoApp object act like global variables for the Leo app.
-Code throughout Leo reads these variables, and sometimes set them.
-</t>
-<t tx="ekr.20131011050613.16805">View classes draw Leo's screen. They are split into two parts:
-
-- Gui-independent files in the tree leoPy.leo#Code--&gt;Gui base classes
-
-- Qt-related files in the tree leoPy.leo#Code--&gt;Qt gui
-
-Here are the most important *gui-independent* view classes:
-
-.. _`leoFrame class`:
-
-- The leoFrame class (in leoFrame.py) contains all gui-independent code
-  relating to Leo's main window and its components.
-  
-- leoFrame.__init__ defines the following **official ivars**: frame.body,
-  frame.tree, frame.log frame.statusLine and frame.minibufferWidget.
-  
-- The leoFind class (in leoFind.py) handles Leo's find &amp; replace commands.
-  See comments in leoFind.py for details.
-
-- The leoKeys class (in leoKeys.py) handles the nasty complications of
-  handling key bindings.
-
-- The leoMenu class (in leoMenu.py) handles the equally nasty complications
-  of creating menuse from user settings.
-  
-The gui-independent view classes are considerably more complex than their
-QT counterparts. |br|
-This is good design: we the Qt code to handle only gui-related concerns.</t>
 <t tx="ekr.20131011050613.16815">The LoadManager (LM) class (in leoApp.py) is responsible for initing all
 objects and settings. This is a complex process. Here is the big picture:
 
@@ -21813,30 +21768,6 @@ objects and settings. This is a complex process. Here is the big picture:
 - Ctors init settings "early", before calling the ctors for subsidiary objects.
   This ensures that proper settings are *in effect* for subsidiary ctors.
 </t>
-<t tx="ekr.20131011050613.16857">.. _`Model-View-Controller`: https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller
-
-
-This chapter discusses everything a future chief implementor of
-Leo needs to know in order to fix bugs and add major features.
-
-I (EKR) have kept details to a minimum for several reasons:
-
-- I think of Leo in terms of its organization, not details.
-   
-- It's easier to understand brief explanations than long ones.
-  
-- This chapter is written for experts like Terry, Ville et. al.
-
-- General principles remain valid long after details have changed.
-
-- It is usually self evident where to look for the code relating to a given topic. |br|
-  Indeed that's a hallmark of good code!
-
-Leo's code follows a `Model-View-Controller`_ (MVC) organization in some ways,
-but modules and classes frequently mix controller and view aspects.
-
-The most important part of this document is probably the list of important methods. |br|
-These methods are usually where I start when fixing bugs.</t>
 <t tx="ekr.20131011050613.16860">In Leo, each class hides (encapsulates) the details of its internal
 workings from user (client) classes. This design principle has been
 spectacularly successful. Leo's overall design has remained remarkably
@@ -21888,12 +21819,6 @@ These comments may be helpful, but do *not* assume that they are accurate.
 
 When in doubt, trust the code, not the comments.
 </t>
-<t tx="ekr.20131011050613.16867">.. _`Model-View-Controller`: https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller
-
-Leo's early design was loosly based on the `Model-View-Controller`_ (MVC) pattern. |br|
-In practice, however, the MVC pattern has no operational significance: |br|
-Leo's classes relate to topics, without any real regard to MVC
-</t>
 <t tx="ekr.20131011050613.16868">I have said many times that I remember few details about the code. I'm not
 kidding!
 
@@ -21928,25 +21853,6 @@ the end of each command.
 c.outerUpdate contains several sophisticated and useful traces.
 </t>
 <t tx="ekr.20131011050613.16872"></t>
-<t tx="ekr.20131011050613.16874">Each outline has an instance of the Commands class representing:
-
-- All the data in the outline associated with c.
-- All the commands that apply to that data.
-- All the panes in the main window.
-
-The ctor of the Commands class creates and inits **subcommanders**.
-
-See c.initObjects for a complete lists of all the subcommanders.
-</t>
-<t tx="ekr.20131011050613.16875">The LoadManager (LM) class (in leoApp.py) loads .leo files and the
-corresponding external files.
-
-leoConfig.py contains most of the configuration code:
-
-- g.app.config is an instance of the GlobalConfigManager class.
-- c.config is an instance of the LocalConfigManager class.
-
-</t>
 <t tx="ekr.20131011050613.16876">The following methods are surprisingly fragile. Change them only after
 careful thought. Make *sure* to run all unit tests after changing them in
 any way:
