@@ -291,6 +291,7 @@
 </v>
 </v>
 <v t="ekr.20131007143750.16111"><vh>To do</vh>
+<v t="ekr.20131010160850.17454"><vh>Insert index entries into the tutorial</vh></v>
 <v t="ekr.20131008041326.16109"><vh>Add a Expansion section to the Reference chapter</vh></v>
 <v t="ekr.20131008041326.16110"><vh>Revise or eliminate the Using Leo section</vh></v>
 <v t="ekr.20131008041326.16111"><vh>Where to put Abbreviations section?</vh></v>
@@ -513,12 +514,19 @@
 </v>
 <v t="ekr.20131008041326.16245" a="M"><vh>@rst html\tutorial-programming.html</vh>
 <v t="ekr.20131008041326.16252"><vh>@rst-no-head links &amp; markup</vh></v>
-<v t="ekr.20131003040744.18222" a="O"><vh>Creating programming source files with @others</vh></v>
-<v t="ekr.20131008041326.16051" a="M"><vh>Scripting Leo</vh>
-<v t="ekr.20131008041326.16052"><vh>Leo scripts</vh></v>
-<v t="ekr.20131008041326.16053"><vh>Plugins</vh></v>
+<v t="ekr.20131003040744.18222" a="O"><vh>Creating source code with @others</vh></v>
+<v t="ekr.20131008041326.16052" a="M"><vh>Writing Leo scripts</vh>
+<v t="ekr.20131010160850.17462"><vh>vnodes &amp; dags</vh></v>
+<v t="ekr.20131010160850.17456"><vh>positions</vh></v>
+<v t="ekr.20131010160850.17460"><vh>position methods</vh></v>
+<v t="ekr.20131010160850.17461"><vh>iterators</vh></v>
+<v t="ekr.20131010160850.17455"><vh>generators</vh></v>
+<v t="ekr.20131010160850.17457"><vh>predefined symbols in scripts</vh></v>
+<v t="ekr.20131010160850.17458"><vh>leoGlobals functions</vh></v>
+<v t="ekr.20131010160850.17459"><vh>Commander class</vh></v>
 </v>
-<v t="ekr.20131008041326.16054"><vh>Using @first</vh></v>
+<v t="ekr.20131008041326.16053"><vh>Writing Plugins</vh></v>
+<v t="ekr.20131008041326.16054"><vh>Using @first and @last</vh></v>
 <v t="ekr.20131008041326.16055"><vh>Using @path</vh></v>
 <v t="ekr.20131008041326.16056" a="M"><vh>Using @auto nodes</vh></v>
 <v t="ekr.20131008041326.16057" a="M"><vh>Using @button nodes</vh></v>
@@ -890,7 +898,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20060612102055"><vh>Writing Plugins</vh>
+<v t="ekr.20060612102055"><vh>Writing Plugins (Users Guide: Rewrite)</vh>
 <v t="ekr.20060612103240"><vh>@rst html\writingPlugins.html</vh>
 <v t="ekr.20060612103824"><vh>@rst-no-head links</vh></v>
 <v t="ville.20100807185755.4510"><vh>enabled-plugins</vh></v>
@@ -1077,16 +1085,27 @@
 </v>
 <v t="ekr.20131008041326.16178"><vh>Theory of operation</vh>
 <v t="ekr.20131009065148.31760"><vh>@rst html/theory.html</vh>
-<v t="ekr.20050901102300"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20120319065417.6092"><vh>Autocompletion</vh>
+<v t="ekr.20050901102300"><vh>@rst-no-head markup &amp; links</vh></v>
+<v t="ekr.20131011050613.16802"><vh>Application classes</vh></v>
+<v t="ekr.20131011050613.16804"><vh>Controller classes</vh></v>
+<v t="ekr.20131011050613.16803"><vh>Model classes</vh>
+<v t="ekr.20131011050613.16796"><vh>class vnode (leoNodes.py)</vh></v>
+<v t="ekr.20131011050613.16797"><vh>class position (leoNodes.py)</vh></v>
+</v>
+<v t="ekr.20131011050613.16805"><vh>View classes</vh></v>
+<v t="ekr.20131011050613.16792" a="M"><vh>Important methods</vh></v>
+<v t="ekr.20131011050613.16816"><vh>Special topics</vh>
+<v t="ekr.20131011050613.16815"><vh>Startup</vh></v>
+<v t="ekr.20131011050613.16814" a="M"><vh>Why key handling is inherently complex</vh></v>
+<v t="EKR.20040524104904.268"><vh>Unicode</vh></v>
+</v>
+<v t="ekr.20131011050613.16813"><vh>@rst-ignore-tree Detailed code notes</vh>
+<v t="ekr.20120319065417.6092" a="M"><vh>Autocompletion</vh>
 <v t="ekr.20120229094652.15115"><vh>UI notes</vh></v>
 <v t="ekr.20120229094652.15117"><vh>Appearance</vh></v>
 <v t="ekr.20120229094652.15119"><vh>Performance</vh></v>
 </v>
-<v t="EKR.20040524104904.265"><vh>Clones</vh></v>
-<v t="EKR.20040524104904.264"><vh>Drawing and events</vh></v>
-<v t="EKR.20040524104904.266"><vh>Find and change commands</vh></v>
-<v t="ekr.20110611085637.5019"><vh>Key handling</vh>
+<v t="ekr.20110611085637.5019" a="M"><vh>Key handling</vh>
 <v t="ekr.20110611085637.5014"><vh>Key domains</vh>
 <v t="ekr.20110611085637.5015"><vh>Domain 1: Parsing user bindings in @keys, @mode and @shortcut nodes</vh></v>
 <v t="ekr.20110611085637.5016"><vh>Domain 2: Maintaining and using binding tables</vh></v>
@@ -1102,11 +1121,7 @@
 <v t="ekr.20120315101404.14219"><vh>Simplifying the Qt input code</vh></v>
 <v t="ekr.20120315101404.14220"><vh>Typed dicts</vh></v>
 </v>
-<v t="EKR.20040524104904.263"><vh>Nodes</vh></v>
-<v t="EKR.20040524104904.262"><vh>Overview</vh></v>
-<v t="EKR.20040524104904.268"><vh>Unicode</vh></v>
-<v t="EKR.20040524104904.269"><vh>Unlimited undo</vh></v>
-<v t="ekr.20120229094652.15141"><vh>Leo's load process</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20050901084134"><vh>Why I like Python</vh>
@@ -1257,9 +1272,10 @@
 </v>
 </v>
 </v>
+<v t="EKR.20040524104904.357"></v>
 <v t="ekr.20091130111843.6787"></v>
-<v t="ekr.20131008041326.16222"></v>
-<v t="ekr.20131009100732.16760"></v>
+<v t="ekr.20131008041326.16178"></v>
+<v t="ekr.20131011050613.16812"><vh>Find code (move to leoFind.py)</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -1877,225 +1893,28 @@ spurious read errors. Such errors undermine confidence in Leo and can cause
 disastrous reversions. See my diary entries for January 2002 in leo.py for
 details.
 </t>
-<t tx="EKR.20040524104904.262">All versions of Leo are organized as a collection of classes. The general
-organization of Leo has remained remarkably stable throughout all versions of
-Leo, although the names of classes are different in different versions.
-Smalltalk's Model/View/Controller terminology is a good way think about Leo's
-classes. **Model classes** represent the fundamental data. The vnode
-class is Leo's primary model class.
+<t tx="EKR.20040524104904.268">Leo's grand strategy for handling text is as follows:
 
-**View classes** draw the screen. The main view classes are leoFrame.py and
-leoTree.py. The colorizer class in leoColor.py handles syntax coloring in the
-body pane. Leo's view classes know about data stored in the vnode class. Most
-events (keystrokes and mouse actions) in the outline and body pane are handled
-in the leoTree class. The leoFrame class also creates the Leo window, including
-menus, and dispatches the appropriate members of the controller classes in
-response to menu commands.
+1. Internally, Leo uses unicode objects for all text.
 
-**Controller classes** (aka commanders) control the application. In Leo,
-controllers mostly handle menu commands. Commanders create subcommanders to
-handle complex commands. The atFile class reads and writes files derived from
-\@file trees. The LeoFind class handles the Find and Change commands. The
-leoImportCommands class handles the Import and Export commands, and the undoer
-class handles the Undo command. Other classes could be considered controller
-classes.
+2. When reading files or user input, Leo converts all plain (encoded)
+   strings to unicode.
 
-Each Leo window has its own commander and subcommanders. Subcommanders are not
-subclasses of their commander. Instead, subcommanders know the commander that
-created them, and call that commander as needed. Commanders and subcommanders
-call the model and view classes as needed. For example, the Commands class
-handles outline commands. To move a headline, the commander for the window calls
-a vnode move routine to alter the data, then calls the view class to redraw the
-screen based on the new data.
+3. When reading or writing files, Leo converts unicode strings to encoded
+   strings.
+   
+To make this strategy work, Leo must know the encoding used for external
+files. |br|
+This is why Leo supports the @encoding directive and various
+encoding-related settings.
 
-A singleton instance of the **LeoApp** class represents the application itself.
-All code uses the app() global function to gain access to this singleton member.
-The ivars of the LeoApp object are the equivalent of Leo's global variables.
-leo.py uses no global Python variables, except the gApp variable returned by
-app(). leoGlobals.py defines all application constants. Naturally, most
-constants are local to the class that uses them.
+The g.toUnicode and g.toEncodedString functions convert to and from
+unicode. |br|
+These methods catch all unicode-related exceptions. 
 
-Several classes combine aspects of model, view and controller. For example, the
-**LeoPrefs** class represents user preferences (model), the Preference Panel
-(view) and the Preferences menu command (controller). Similarly, the **LeoFind**
-class represents find settings, the Find/Change dialog, and the Find/Change
-commands.
-
-We use the following convention throughout this documentation. Any variable
-named c is a commander, i.e., an instance of the Commands class in
-leoCommands.py. Variables named v are vnodes. These classes are defined in
-leoNodes.py.
-</t>
-<t tx="EKR.20040524104904.263">The vnode class is Leo's fundamental model class. A **vnode** represents the
-data represented by headlines. As of Leo 4.7, all clones of a node are in fact
-**exactly the same node**.
-
-The vnode contains **all** data associated with a node. A vnode contains
-headline text, body text, and **user attributes**, uA's for short.
-
-Because Leo has unlimited Undo commands, Leo deletes vnodes only when a window
-closes. Leo deletes nodes indirectly using destroy methods. Several classes,
-including the vnode, leoFrame and leoTree classes, have destroy methods. destroy
-methods merely clear links so that Python's reference counting mechanisms will
-eventually delete vnodes and other data when a window closes.
-
-Leo's XML file format uses **tx** and **t** attributes to associate &lt;v&gt; elements
-with &lt;t&gt; elements. &lt;v&gt; elements represent nodes. &lt;t&gt; elements represent the body
-text of nodes. This is a (somewhat dubious) space optimization. The values of tx
-and t attributes are **gnx's** (global node indices). These indices do not
-change once a node has created.
-</t>
-<t tx="EKR.20040524104904.264">Leo must redraw the outline pane when commands are executed and as the result of mouse and keyboard events.
-The main challenges are eliminating flicker and handling events properly.
-These topics are interrelated.
-
-**Eliminating flicker**. Leo must update the outline pane with minimum flicker.
-Various versions of Leo have approached this problem in different ways. The
-drawing code in leo.py is robust, flexible, relatively simple and should work in
-almost any conceivable environment. Leo assumes that all code that changes the
-outline pane will be enclosed in matching calls to the c.beginUpdate and
-c.endUpdate methods of the Commands class. c.beginUpdate() inhibits drawing
-until the matching c.endUpdate(). These calls may be nested; only the outermost
-call to c.endUpdate() calls c.redraw() to force a redraw of the outline pane.
-
-Code may call c.endUpdate(flag) instead of c.endUpdate(). Leo redraws
-the screen only if flag is true. This allows code to suppress redrawing entirely
-when needed. For example, here is how the idle_body_key event handler in
-leoTree.py conditionally redraws the outline pane::
-
-	redraw_flag = false
-  	c.beginUpdate()
-	val = v.computeIcon()
-	if val != v.iconVal:
-		v.iconVal = val
-		redraw_flag = true
-	c.endUpdate(redraw_flag) # redraw only if necessary
-
-The leoTree class redraws all icons automatically when c.redraw() is called.
-This is a major simplification compared to previous versions of Leo. The entire
-machinery of drawing icons in the vnode class has been eliminated. The
-v.computeIcon method tells what the icon should be. The v.iconVal ivar
-tells what the present icon is. The event handler simply compares these two
-values and sets redraw_flag if they don't match.
-
-**Handling events.** Besides redrawing the screen, Leo must handle events or
-commands that change the text in the outline or body panes.
-
-The leoTree class contains all the event handlers for the body and outline
-panes. The actual work is done in the idle_head_key and idle_body_key methods.
-These routines are surprisingly complex; they must handle all the tasks
-mentioned above, as well as others. The idle_head_key and idle_body_key methods
-should not be called outside the leoTree class. However, it often happens that
-code that handles user commands must simulate an event. That is, the code needs
-to indicate that headline or body text has changed so that the screen may be
-redrawn properly. The leoTree class defines the following simplified event
-handlers: onBodyChanged, onBodyWillChange, onBodyKey, onHeadChanged and
-onHeadlineKey. Commanders and subcommanders call these event handlers to
-indicate that a command has changed, or will change, the headline or body text.
-Calling event handlers rather than c.beginUpdate and c.endUpdate ensures that
-the outline pane is redrawn only when needed.
-</t>
-<t tx="EKR.20040524104904.265">New in Leo 4.7. All clones of a node **are the same node**. This is the
-so-called **one-node** world. In this world, vnodes represent data, generators
-and positions represent the location of the data in an outline.  This is a much
-simpler world than all previous data representations.
-
-In Leo versions 4.2 to 4.6 clones were represented by sharing **tnodes**. Cloned
-vnodes shared the same tnode. This shared tnode represented the entire shared
-subtree of both clones. Thus, the _firstChild link had to reside in
-*tnodes*, not *vnodes*.
-
-Prior to Leo version 4.2, Leo duplicated all the descendants of vnode v when
-cloning v. This created many complications that were removed in the shared tnode
-world. In particular, in the shared tnode scheme a vnode v is cloned if and only
-if len(v.vnodeList) &gt; 1.
-</t>
-<t tx="EKR.20040524104904.266">The find and change commands are tricky; there are many details that must be
-handled properly. The following principles govern the LeoFind class:
-
-1.  Find and Change commands initialize themselves using only the state of the
-    present Leo window. In particular, the Find class must not save internal
-    state information from one invocation to the next. This means that when the
-    user changes the nodes, or selects new text in headline or body text, those
-    changes will affect the next invocation of any Find or Change command.
-    Failure to follow this principle caused all kinds of problems in the Borland
-    and Macintosh codes. There is one exception to this rule: we must remember
-    where interactive wrapped searches start. This principle simplifies the code
-    because most ivars do not persist. However, each command must ensure that
-    the Leo window is left in a state suitable for restarting the incremental
-    (interactive) Find and Change commands. Details of initialization are
-    discussed below.
-
-2.  The Find and Change commands must not change the state of the outline or body
-    pane during execution. That would cause severe flashing and slow down the
-    commands a great deal. In particular, the c.selectPosition and c.editPosition
-    methods must not be called while looking for matches.
-
-3.  When incremental Find or Change commands succeed they must leave the Leo
-    window in the proper state to execute another incremental command. We
-    restore the Leo window as it was on entry whenever an incremental search
-    fails and after any Find All and Replace All command. Initialization involves
-    setting the self.c, self.v, self.in_headline, self.wrapping and
-    self.s_text ivars.
-
-Setting self.in_headline is tricky; we must be sure to retain the state of the
-outline pane until initialization is complete. Initializing the Find All and
-Replace All commands is much easier because such initialization does not depend
-on the state of the Leo window. Using the same kind of text widget for both
-headlines and body text results in a huge simplification of the code.
-
-Indeed, the searching code does not know whether it is searching headline or
-body text. The search code knows only that self.s_text is a text widget that
-contains the text to be searched or changed and the insert and sel attributes
-of self.search_text indicate the range of text to be searched. Searching
-headline and body text simultaneously is complicated. The selectNextVnode()
-method handles the many details involved by setting self.s_text and its insert
-and sel attributes.
-</t>
-<t tx="EKR.20040524104904.268">Leo uses unicode objects in vnodes to denote headline and body text.
-Note that unicode strings have no encoding; only plain strings have encodings.
-This means that once an (encoded) plain string has been converted to a unicode
-string it doesn't matter how the unicode string was created. This is the key
-that makes Leo's new code robust: internally Leo never has to worry about
-encodings. Encoding matter only when encoded strings are converted to and from
-Unicode. This happens when Leo reads or writes files.
-
-Python expressions that mix unicode strings u and plain strings s, like one of these::
-
-	u + s
-	u == s
-	u[5] == s[2:]
-
-are promoted to unicode objects using the "system encoding". This encoding
-should never be changed, but we can't assume that we know what it is, so for
-safety we should assume the most restrictive encoding, namely "ascii". With this
-assumption, Leo's code can't throw an exception during these promotions provided
-that: 
-
-- Leo converts all text to unicode when Leo reads files or gets text from
-  text widgets.
-
-- All string literals in Leo's code have only ascii characters.
-</t>
-<t tx="EKR.20040524104904.269">Unlimited undo is straightforward; it merely requires that all commands that
-affect the outline or body text must be undoable. In other words, everything
-that affects the outline or body text must be remembered. We may think of all
-the actions that may be Undone or Redone as a string of beads (undo nodes).
-
-Undoing an operation moves backwards to the next bead; redoing an operation moves
-forwards to the next bead. A bead pointer points to the present bead. The bead
-pointer points in front of the first bead when Undo is disabled. The bead
-pointer points at the last bead when Redo is disabled. An undo node is a Python
-dictionary containing all information needed to undo or redo the operation. The
-Undo command uses the present bead to undo the action, then moves the bead
-pointer backwards.
-
-The Redo command uses the bead after the present bead to redo the action, then
-moves the bead pointer forwards. All undoable operations call setUndoParams() to
-create a new bead. The list of beads does not branch; all undoable operations
-(except the Undo and Redo commands themselves) delete any beads following the
-newly created bead. I did not invent this model of unlimited undo.
-I first came across it in the documentation for Apple's Yellow Box classes.
+The g.u function should be used *only* to convert from the Qt string type
+(a wrapper for a unicode string) to unicode. |br|
+Do not use g.u instead of g.toUnicode.
 </t>
 <t tx="EKR.20040524104904.354">Leo uses unicode internally for all strings.
 
@@ -2127,14 +1946,7 @@ I first came across it in the documentation for Apple's Yellow Box classes.
 4.  The @encoding directive specifies the encoding used in a external file.
     You can't mix encodings in a single external file.
 </t>
-<t tx="EKR.20040524104904.357">This technical information may be of use to those wanting to process Leo files
-with special-purpose filters. Leo's uses XML for its file format. The following
-sections describe this format in detail. **Important**: The actual read/write
-code in leoFileCommands.py is the authoritative guide. When in doubt about what
-Leo actually writes, look at an actual .leo file in another editor.
-
-Here are the elements that may appear in Leo files.
-These elements must appear in this order.
+<t tx="EKR.20040524104904.357">Here are the XML elements that may appear in Leo files:
 
 &lt;?xml&gt;
     Leo files start with the following line::
@@ -4990,8 +4802,11 @@ See `Specifying settings`_ for a description of how to change Leo's settings.
 .. Absolute links..
 .. _OPML:   http://en.wikipedia.org/wiki/OPML
 </t>
-<t tx="ekr.20050901102300">.. _`History of Leo`:   history.html
-.. _`White Papers`:     whitepapers.html
+<t tx="ekr.20050901102300">.. |br| raw:: html
+
+   &lt;br /&gt;
+
+.. _`DAGs`: https://en.wikipedia.org/wiki/Directed_acyclic_graph
 </t>
 <t tx="ekr.20050902073404">Scripts must wary of saving positions because positions become invalid
 whenever the user moves, inserts or deletes nodes.  It is valid to store
@@ -6366,7 +6181,7 @@ Here are the dictionaries that k.masterKeyHandler uses:
   This is *not* an ivar; it is computed by k.computeInverseBindingDict().
   Keys are emacs command names; values are *lists* of shortcuts.
 </t>
-<t tx="ekr.20060612102055" str_atime="1376414161.0"></t>
+<t tx="ekr.20060612102055" str_atime="1376414161.0">.. Most of this has nothing to do with *writing* plugins.</t>
 <t tx="ekr.20060612103240" str_atime="1376414163.0">###############
 Writing Plugins
 ###############
@@ -6392,7 +6207,6 @@ Writing plugins is quite similar to writing any other Leo script.  See
    details, see the section called `event handlers`_ in Leo's scripting chapter.
 
 The rest of this chapters discusses topics related specifically to plugins.
-
 
 .. contents::
     :depth: 2
@@ -7985,8 +7799,9 @@ outlines. The hello world example is::
 Here, c.all_positions() delivers a list of positions, and p.level() and p.h
 deliver the indentation level and head string of position p.
 </t>
-<t tx="ekr.20070122093626">Positions become invalid whenever the outline changes. Plugins and scripts that
-can make sure the position p is still valid by calling c.positionExists(p).
+<t tx="ekr.20070122093626">Positions become invalid whenever the outline changes. 
+
+c.positionExists(p) returns True if position p is (still) valid in Commander c.
 
 The following code will find a position p2 having the same vnode as p::
 
@@ -16542,35 +16357,6 @@ something like::
 To make this work, it's important to keep your folder containing Leo
 separate from your .mySettings.leo and any data files.
 </t>
-<t tx="ekr.20120229094652.15141">Leo reads local files twice. The first load discovers the
-settings to be used in the second load. This ensures that
-proper settings are *available* during the second load.
-
-Ctors init settings "early", before calling the ctors for
-subsidiary objects. This ensures that proper settings are
-*in effect* for the subsidiary ctors.
-
-After creating all subsidiary objects, c.__init__ simply
-calls c.finishCreate! Creating Commands objects is now
-completely self-contained. In particular, c.__init__ now
-creates the fully-inited gui frame. This is a revolution in
-Leo's startup code! c.__init__ no longer needs a frame
-argument, a surprisingly important conceptual
-simplification.
-
-The old code inited Leo windows in several *places*
-(c.__init__, the end of g.app.newLeoCommanderAndFrame and
-the end of g.openWithFileName) and in several *phases*,
-(g.app.newCommanderAndFrame, g.openWithFileName and
-c.finishCreate.)
-
-The new code has c.__init__ do *all* the work, in one place,
-and in one phase. This is supremely important for future
-maintainers. The old code was difficult for me to understand
-yesterday, even after a full week of study. The new code is
-a simple as could possibly be imagined. This is a gigantic
-step forward for Leo.
-</t>
 <t tx="ekr.20120229094652.15148">.. _`this posting about BibTeX citations`: http://groups.google.com/group/leo-editor/browse_thread/thread/d36d76174dcd6786/9c2a298049f4f01c
 
 .. _`raw-data`: http://docutils.sourceforge.net/docs/ref/rst/directives.html#raw-data-pass-through
@@ -16727,7 +16513,7 @@ create a *user* setting from the components, and then call
 k.strokeFromSetting to complete the transformation.
 </t>
 <t tx="ekr.20120315101404.14220">Leo's key dictionaries will always be complex, but basing
-them on the TypedDict class is a major improvement.
+them on the TypedDict class was a major improvement.
 
 The g.TypedDict and g.TypedDictOfLists classes are useful
 for more than type checking: they have unique names and a
@@ -21070,12 +20856,7 @@ Sentinels embed Leo's outline structure into external files.
 If you don't want sentinels in your sources, skip head to
 the `Using @auto nodes`_ part of Leo's `programming tutorial`_.
 </t>
-<t tx="ekr.20131003040744.18222">Now we come to the programming features that distinguish Leo from all other
-programming environments. Please study this section carefully if you intend
-to use Leo for programming. If you get stuck, please `ask for help`_
-immediately.
-
-The @others directive, and markup called section references (see below),
+<t tx="ekr.20131003040744.18222">The @others directive, and markup called section references (see below),
 tell Leo how to create external files.
 
 **Essential Terms**:
@@ -21361,109 +21142,89 @@ topics and should take less than an hour to complete.
 <t tx="ekr.20131007143750.16082"></t>
 <t tx="ekr.20131007143750.16083"></t>
 <t tx="ekr.20131007143750.16111"></t>
-<t tx="ekr.20131008041326.16051"></t>
-<t tx="ekr.20131008041326.16052">Ctrl-B (execute-script) executes the body pane after expanding @others and
-section references throughout the tree. The symbols 'c', 'g' and 'p'
-are predefined as follows:
+<t tx="ekr.20131008041326.16052">
 
-- c is the Commander of the outline in which the script is executing.
-- g is the leo.core.leoGlobals module.
-- p is c.p (the same as c.currentPosition())
-
-These three predefined variables give any Leo script full access to
-all methods defined in Leo's source code. Examples::
-
-    c.redraw() # requests redraw of Leo's screen.
-    g.es(s) # prints string s to the log window.
-    g.app # the singleton instance of the leoApp class.
-    g.app.gui # the the singleton instance of the leoGui class.
-    g.app.windowList # the list of presently open frames.
-
-    # Returns list of all open commanders
-    commanders = [frame.c for frame in g.app.windowList]
-
-For any position p, here are p's getters::
-
-    p.b # p's body text.
-    p.h # p's headline.
-    p.u # p's uA, the same as p.unknownAttributes.
-    p.v # the vnode corresponding to p.
-    p2 = p.copy() # p2 is a copy of p.
-
-    # Returning ints:
     
-        p.childIndex()
-        p.numberOfChildren()
-        p.level()
-
-    # Returning bools:
-    
-        p.hasChildren()
-        p.isAncestorOf(v2) # True if v2 is a child, grandchild, etc. of p.
-        p.isCloned()
-        p.isDirty()
-        p.isExpanded()
-        p.isMarked()
-        p.isVisible()
-        p.isVisited()
-        
-Here are p's most important setters::
-
-    p.b = s  # Sets the body text of p.
-    p.h = s  # Sets the headline text of p.
-    p.u = aDict # Sets p.u to the given dictionary.
-
-Here is the list of Leo's iterators::
-
-    c.all_nodes             # all vnodes in c.
-    c.all_unique_nodes      # all unique vnodes in c.
-    c.all_positions         # all positions in c.
-    c.all_unique_positions  # all unique positions in c.
-
-    p.children              # all children of p.
-    p.following_siblings    # all siblings of p that follow p.
-    p.nodes                 # all vnodes in p's subtree.
-    p.parents               # all parents of p.
-    p.self_and_parents      # p and all parents of p.
-    p.siblings              # all siblings of p, including p.
-    p.subtree               # all positions in p's subtree, excluding p.
-    p.self_and_subtree      # all positions in p's subtree, including p.
-    p.unique_nodes          # all unique vnodes in p's subtree.
-    p.unique_subtree        # all unique positions in p's subtree.
 
 </t>
-<t tx="ekr.20131008041326.16053">Scripting plugins is exactly like writing Leo scripts,
-except that plugins must compute c, g and p as follows:
+<t tx="ekr.20131008041326.16053">A plugin is a Python file in Leo's plugins folder.
 
-**g**::
+Every plugin should have a top-level init function that returns True if the
+plugin has been initialized properly. The init function typically:
+
+1. Registers an onCreate event handler, called when Leo creates a new window.
+2. Calls g.plugin_signon(__name__)
+
+For example::
+
+    def init():
+        if &lt;&lt; all imports successful &gt;&gt;:
+            g.registerHandler('after-create-leo-frame',onCreate)
+            g.plugin_signon(__name__)
+            return True
+        else:
+            return False
+   
+Plugins do *not* have automatic access to c, g and p.
+
+Plugins define g by importing it::
 
     import leo.core.leoGlobals as g
     
-**c**:
+Plugins gain access to c using event handlers::
 
-In the top-level init function::
-
-    g.registerHandler(event_name,my_event_handler)
-
-Define event_handler as follows::
-
-    def my_event_handler (kind,keywords):
-        c = keywords.get('c'):
+    controllers = {}
+    
+    def init():
+        g.registerHandler('after-create-leo-frame',onCreate)
+        return True
+        
+    def onCreate (tag, keys):
+        global controllers
+        c = keys.get('c')
         if c:
-            ...
-   
-**p**::
+            hash = c.hash()
+            if hash not in controllers.keys():
+                controllers(hash) = PluginController(c)
+            
+    def eventHander(tag,keys):
+        global controllers
+        c = keys.get('c')
+        if c:
+            controller = controllers.get(c.hash())
+            controller.handleEvent()
+            
+Some plugins inject ivars into the Commands clas rather than using
+a global controllers dict::
 
-    p = c.p
+    def onCreate (tag, keys):
+        c = keys.get('c')
+        if c:
+            c.my_plugin_controller = ControllerClass(c)
+            
+    def eventHander(tag,keys):
+        c = keys.get('c')
+        if c:
+            c.my_plugin_controller.handleEvent()
+
+For details about event handling, see the `event handlers`_ section in
+`Leo's scripting chapter`_.
+
+Once c is determined, the presently selected position is simply c.p.
 </t>
 <t tx="ekr.20131008041326.16054">..  .. index::
     ..  pair: @first; Tutorial
 
-The @first directive forces a lines to appear before the first sentinel of a
+The @first directive forces lines to appear before the first sentinel of a
 external file. For example::
 
     @first #! /usr/bin/env python
     @first # -*- coding: utf-8 -*-
+    
+..  .. index::
+    ..  pair: @last; Tutorial
+    
+Similarly, @last forces lines to appear after the last sentinel.
 </t>
 <t tx="ekr.20131008041326.16055">..  .. index::
     ..  pair: @path; Tutorial
@@ -21477,15 +21238,12 @@ For example, suppose three nodes have the following headlines::
         @path b
             @file c/d.py
 
-Because of the ancestor @path nodes, the @file node creates the file
-a/b/c/d.py
+The @file node creates the file a/b/c/d.py
 
 Within @path and @&lt;file&gt; paths, {{exp}} gets evaluated with the following
-symbols known: c, g, p, os and sys.  For example::
+predefined symbols: c, g, p, os and sys.  For example::
 
     @file {{os.path.abspath(os.curdir)}}/abc.py
-
-refers to the file abc.py in (absolute path of) the current directory.
 </t>
 <t tx="ekr.20131008041326.16056"></t>
 <t tx="ekr.20131008041326.16057"></t>
@@ -21763,11 +21521,7 @@ understand and manipulate (script) complex data is what Leo does best.
 .. contents::
     :depth: 2
 </t>
-<t tx="ekr.20131008041326.16178">This sections discusses how Leo's code works, paying particular attention
-to topics that have caused difficulties in design or implementation. This
-chapter will be of use primarily to those wanting to change Leo's code.
-
-</t>
+<t tx="ekr.20131008041326.16178"></t>
 <t tx="ekr.20131008041326.16203">##################
 The Basics of Leo
 ##################
@@ -21815,6 +21569,17 @@ command.
 Programming and scripting in Leo
 ################################
 
+.. |br| raw:: html
+
+   &lt;br /&gt;
+
+.. _`ask for help`: https://groups.google.com/forum/#!forum/leo-editor
+
+Now we come to the programming features that distinguish Leo from all other
+programming environments. |br|
+Please study this section carefully if you intend to use Leo for programming. |br|
+If you get stuck, please `ask for help`_ immediately.
+
 .. contents::
     :depth: 2
 </t>
@@ -21839,11 +21604,8 @@ Programming and scripting in Leo
 .. _`reStructuredText`:     http://docutils.sourceforge.net/rst.html
 .. _`the rst3 chapter`:     tutorial-rst3.html
 </t>
-<t tx="ekr.20131008041326.16252">.. |br| raw:: html
-
-   &lt;br /&gt;
-
-.. _`ask for help`: https://groups.google.com/forum/#!forum/leo-editor</t>
+<t tx="ekr.20131008041326.16252">.. _`event handlers`:
+.. _`Leo's scripting chapter`:</t>
 <t tx="ekr.20131008041326.16253">.. _`PyQt`: http://www.riverbankcomputing.com/software/pyqt/intro
 
 Leo 4.9 featured the completed transition to the `PyQt`_ application
@@ -21897,8 +21659,29 @@ History of Leo
 Theory of Operation
 ###################
 
+.. _`Model-View-Controller`: https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller
+
+This chapter discusses everything a future chief implementor of
+Leo needs to know in order to fix bugs and add major features.
+
+I (EKR) have kept details to a minimum for several reasons:
+
+- I think of Leo in terms of its organization, not details.
+   
+- It's easier to understand brief explanations than long ones.
+  
+- This chapter is written for experts like Terry, Ville et. al.
+
+- General principles remain valid long after details have changed.
+
+Leo's code loosely follows a `Model-View-Controller`_ (MVC) organization,
+as does this document.
+
+The most important part of this document is probably the list of important methods. |br|
+These methods are usually where I start when fixing bugs.
+
 .. contents::
-    :depth: 2
+    :depth: 3
 </t>
 <t tx="ekr.20131009065148.31761">#################
 Why I like Python
@@ -22083,7 +21866,7 @@ It's even possible to define a context in which abbreviation scripts execute.
 .. _`abbreviations section of Leo's User Guide`: abbreviations.html
 
 See the `abbreviations section of Leo's User Guide`_ for full details,
-including settings that apply to abbreviations.
+including applicable settings.
 </t>
 <t tx="ekr.20131009100732.19038">.. _`Plugins`:          plugins.html
 .. _`bookmarks.py`:     plugins.html#bookmarks-py
@@ -22145,6 +21928,313 @@ http://leoeditor.com/slides/leo-basics-step-by-step/index.html
 http://leoeditor.com/slides/clones-and-views/index.html
 http://leoeditor.com/images/mail_item.html
 http://leoeditor.com/images/page_setup.html</t>
+<t tx="ekr.20131010160850.17454"></t>
+<t tx="ekr.20131010160850.17455">Iterators return positions or nodes, one after another::
+
+    for p in c.all_positions():
+        print(p.h)
+        
+Positions become invalid whenever the outline changes.
+        
+To capture positions *temporarily* (when the outline isn't changing), call
+p.copy()::
+
+    aList = [p.copy() for p in c.all_positions()]
+</t>
+<t tx="ekr.20131010160850.17456">A **position** object represents a specific location in a Leo outline.
+
+Because of clones, a node may appear arbitrarily many times in an outline,
+so a node may appear at arbitrarily many positions in the outline.
+
+For any position p, **p.v** is the vnode at position p.
+A node's vnode never changes, regardless of where the node appears in the
+outline, and regardless of whether the node is cloned or not.
+
+**Positions become invalid when the outline changes.** You may save and and
+use positions *provided* the outline remains unchanged.
+
+Generators deliver positions (or nodes, depending on the generator), one
+after each other, using a *single* (ever-changing) position object. As a
+result, scripts must use p.copy() to create lists of positions. For
+example::
+
+    aList = [p.copy() for p in c.rootPosition().subtree()]
+</t>
+<t tx="ekr.20131010160850.17457">Ctrl-B (execute-script) executes the body pane after expanding @others and
+section references throughout the tree.
+
+The symbols 'c', 'g' and 'p' are predefined as follows:
+
+- c is the Commander of the outline in which the script is executing.
+- g is the leo.core.leoGlobals module.
+- p is c.p (the same as c.currentPosition())
+
+These three predefined vars give the script full access to all methods
+defined in Leo's source code.
+</t>
+<t tx="ekr.20131010160850.17458">Important leoGlobals functions::
+
+    g.es(s) # prints string s to the log window.
+    g.app # the singleton instance of the leoApp class.
+    g.app.gui # the the singleton instance of the leoGui class.
+    g.app.windowList # the list of presently open frames.
+</t>
+<t tx="ekr.20131010160850.17459">The Commander class provides direct access to all of Leo's source code. The
+most important for most scripts is::
+    
+    c.redraw() # requests redraw of Leo's screen.
+
+To get the list of all open commanders::
+
+    commanders = [frame.c for frame in g.app.windowList]
+</t>
+<t tx="ekr.20131010160850.17460">The getters of any position p are::
+
+    p.b # p's body text.
+    p.h # p's headline.
+    p.u # p's uA, the same as p.unknownAttributes.
+    p.v # the vnode corresponding to p.
+    p2 = p.copy() # p2 is a copy of p.
+
+    # Returning ints:
+    
+        p.childIndex()
+        p.numberOfChildren()
+        p.level()
+
+    # Returning bools:
+    
+        p.hasChildren()
+        p.isAncestorOf(v2) # True if v2 is a child, grandchild, etc. of p.
+        p.isCloned()
+        p.isDirty()
+        p.isExpanded()
+        p.isMarked()
+        p.isVisible()
+        p.isVisited()
+        
+The most important setters of any position p are::
+
+    p.b = s  # Sets the body text of p.
+    p.h = s  # Sets the headline text of p.
+    p.u = aDict # Sets p.u to the given dictionary.
+    
+</t>
+<t tx="ekr.20131010160850.17461">Iterators generate positions, usually outline order::
+
+    c.all_nodes             # all vnodes in c.
+    c.all_unique_nodes      # all unique vnodes in c.
+    c.all_positions         # all positions in c.
+    c.all_unique_positions  # all unique positions in c.
+
+    p.children              # all children of p.
+    p.following_siblings    # all siblings of p that follow p.
+    p.nodes                 # all vnodes in p's subtree.
+    p.parents               # all parents of p.
+    p.self_and_parents      # p and all parents of p.
+    p.siblings              # all siblings of p, including p.
+    p.subtree               # all positions in p's subtree, excluding p.
+    p.self_and_subtree      # all positions in p's subtree, including p.
+    p.unique_nodes          # all unique vnodes in p's subtree.
+    p.unique_subtree        # all unique positions in p's subtree.
+</t>
+<t tx="ekr.20131010160850.17462"></t>
+<t tx="ekr.20131011050613.16792">::
+
+    c.endEditing
+    leoQtEventFilter.eventFilter
+    c.outerUpdate (eliminates flicker)
+    k.masterKeyHandler &amp; all its helpers
+    leoTree.select
+    c.__init__</t>
+<t tx="ekr.20131011050613.16796">The vnode class (in leoNodes.py) contains *all* outline data.
+
+The v.children and v.parents arrays carry all outline structure.
+
+Because Leo outlines are `DAGs`_, vnodes may have mutliple parents.
+
+**Important**: All clones of a node **are the same node**.
+
+..  This is the so-called **one-node** world. In this world, vnodes represent
+..  data, generators and positions represent the location of the data in an
+..  outline. Leo's drawing code creates the illusion that a node can appear in
+..  multiple parts of an outline.
+
+..  In Leo versions 4.2 to 4.6 clones were represented by sharing **tnodes**.
+..  Cloned vnodes shared the same tnode. This shared tnode represented the
+..  entire shared subtree of both clones. Thus, the _firstChild link had to
+..  reside in *tnodes*, not *vnodes*.
+
+..  Prior to Leo version 4.2, Leo duplicated all the descendants of vnode v
+..  when cloning v. This created many complications that were removed in the
+..  shared tnode world. In particular, in the shared tnode scheme a vnode v is
+..  cloned if and only if len(v.vnodeList) &gt; 1.
+
+Strictly speaking, only the v.children arrays are needed to carry outline
+structure. |br|
+v.parents is a speed optimization. It eliminates the need to search the
+outline when inserting or deleting nodes.
+
+Because of unlimited Undo, Leo deletes vnodes only when a window closes.
+</t>
+<t tx="ekr.20131011050613.16797">The position class defines a location in a traversal of an outline.
+
+Positions have three ivars: p.v, p.childIndex, and p.stack.
+
+p.stack represents p's *present* parents, that is, the parents at a
+particular point of a tree traversal.
+
+Entries in p.stack describe all ancestors of p at a particular point of a
+tree traversal.
+
+All of Leo's iterators use a *single* position for the entire traversal;
+that position (its ivars) constantly changes throughout the traversal.
+</t>
+<t tx="ekr.20131011050613.16802">The leoApp class (in leoApp.py) represents the Leo application itself.
+
+g.app is the singleton instance of the leoApp class.
+
+The ivars of the LeoApp object act like global variables for the Leo app.
+Code throughout Leo reads these variables, and sometimes set them.
+
+</t>
+<t tx="ekr.20131011050613.16803"></t>
+<t tx="ekr.20131011050613.16804">A controller updates the model and view in response to commands.
+
+The Commands class in leoCommands.py is the main controller for each Leo window.
+
+The ctor of the Commands class creates many **subcommanders**.
+
+Each outline has an instance of the Commands class representing:
+
+- All the data in the outline associated with c.
+- All the commands that apply to that data.
+
+Furthermore, c.frame represents the entire view of the outline.
+See the discussion of the `leoFrame class`_ for more details.
+
+The Commands class is too large.  It would be even larger if
+it did not delegate much of its work to **subcommanders**.
+See c.initObjects for a complete lists of all the subcommanders.
+
+Commands.__init__ does all the work of initing a new commander
+and all its subcommanders.
+
+The most important subcommanders are:
+
+- class fileCommands (leoFileCommands.py): reads and writes .leo files.
+- class atFile (leoAtFileCommands.py): reads and writes external files.
+- class shadowController (leoShadow.py): reads and writes @shadow files.
+- various classes in leoEditCommands.py: implement many Leo commands.
+- class leoImportCommands (leoImport.py): implements import/export commands.
+- class undoer (leoUndo.py): manages undo/redo operations.
+
+..  **Aside**: leoCommands.py also contains many of Leo's original commands. It
+..  would be better to move those commands somewhere else, but it wouldn't be a
+..  trivial task.</t>
+<t tx="ekr.20131011050613.16805">View classes draw Leo's screen. They are split into two parts:
+
+- Gui-independent files in the tree leoPy.leo#Code--&gt;Gui base classes
+
+- Qt-related files in the tree leoPy.leo#Code--&gt;Qt gui
+
+Here are the most important *gui-independent* view classes:
+
+.. _`leoFrame class`:
+
+- The leoFrame class (in leoFrame.py) contains all gui-independent code
+  relating to Leo's main window and its components.
+  
+- leoFrame.__init__ defines the following **official ivars**: frame.body,
+  frame.tree, frame.log frame.statusLine and frame.minibufferWidget.
+  
+- The leoFind class (in leoFind.py) handles Leo's find &amp; replace commands.
+  See comments in leoFind.py for details.
+
+- The leoKeys class (in leoKeys.py) handles the nasty complications of
+  handling key bindings.
+
+- The leoMenu class (in leoMenu.py) handles the equally nasty complications
+  of creating menuse from user settings.
+  
+The gui-independent view classes are considerably more complex than their
+QT counterparts. |br|
+This is good design: we the Qt code to handle only gui-related concerns.</t>
+<t tx="ekr.20131011050613.16812">.. _`Leo's Find code`:
+
+leoFind.py contains the gui-independant part of all of Leo's find/change code.
+
+Such code is tricky, which is why it should be gui-independent code!
+
+Here are the governing principles:
+
+1. Find and Change commands initialize themselves using only the state of
+   the present Leo window. In particular, the Find class must not save
+   internal state information from one invocation to the next. This means
+   that when the user changes the nodes, or selects new text in headline or
+   body text, those changes will affect the next invocation of any Find or
+   Change command. Failure to follow this principle caused all kinds of
+   problems earlier versions.
+   
+   There is one exception to this rule: we must remember where interactive
+   wrapped searches start.
+   
+   This principle simplifies the code because most ivars do not persist.
+   However, each command must ensure that the Leo window is left in a state
+   suitable for restarting the incremental (interactive) Find and Change
+   commands. Details of initialization are discussed below.
+
+2. The Find and Change commands must not change the state of the outline or
+   body pane during execution. That would cause severe flashing and slow
+   down the commands a great deal. In particular, c.selectPosition and
+   c.editPosition must not be called while looking for matches.
+
+3. When incremental Find or Change commands succeed they must leave the Leo
+   window in the proper state to execute another incremental command. We
+   restore the Leo window as it was on entry whenever an incremental search
+   fails and after any Find All and Replace All command. Initialization
+   involves setting the self.c, self.v, self.in_headline, self.wrapping and
+   self.s_text ivars.
+
+Setting self.in_headline is tricky; we must be sure to retain the state of
+the outline pane until initialization is complete. Initializing the Find
+All and Replace All commands is much easier because such initialization
+does not depend on the state of the Leo window. Using the same kind of text
+widget for both headlines and body text results in a huge simplification of
+the code.
+
+Indeed, the searching code does not know whether it is searching headline
+or body text. The search code knows only that self.s_text is a text widget
+that contains the text to be searched or changed and the insert and sel
+attributes of self.search_text indicate the range of text to be searched.
+Searching headline and body text simultaneously is complicated. The
+selectNextVnode() method handles the many details involved by setting
+self.s_text and its insert and sel attributes.
+</t>
+<t tx="ekr.20131011050613.16813"></t>
+<t tx="ekr.20131011050613.16814"></t>
+<t tx="ekr.20131011050613.16815">The LoadManager (LM) class (in leoApp.py) loads .leo files and the
+corresponding external files.
+
+leoConfig.py contains most of the configuration code:
+
+- g.app.config is an instance of the GlobalConfigManager class.
+- c.config is an instance of the LocalConfigManager class.
+
+The LoadManager class (in leoApp.py) is responsible for initing
+all settings properly. |br|
+This is a complex process: see comments in leoApp.py for details. |br|
+Here are the general principles:
+
+- Leo reads each local (non-settings) file twice. The first load discovers
+  the settings to be used in the second load. |br|
+  This ensures that proper settings are *available* during the second load.
+
+- Ctors init settings "early", before calling the ctors for subsidiary
+  objects. |br|
+  This ensures that proper settings are *in effect* for subsidiary ctors.
+</t>
+<t tx="ekr.20131011050613.16816"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
