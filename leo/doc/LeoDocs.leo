@@ -318,6 +318,10 @@
 <v t="ekr.20131001100335.15945"><vh>Leo vs IPython</vh></v>
 </v>
 <v t="ekr.20131009100732.19041"><vh>Broken links</vh></v>
+<v t="ekr.20131011050613.16872"><vh>To scripting chapter</vh>
+<v t="ekr.20131011050613.16796"><vh>class vnode (leoNodes.py)</vh></v>
+<v t="ekr.20131011050613.16797"><vh>class position (leoNodes.py)</vh></v>
+</v>
 </v>
 <v t="ekr.20040414161647"><vh>Leo's Documentation</vh>
 <v t="ekr.20101104024804.4898"><vh> Generating the Documentation</vh>
@@ -1084,21 +1088,18 @@
 </v>
 </v>
 <v t="ekr.20131008041326.16178"><vh>Theory of operation</vh>
-<v t="ekr.20131009065148.31760"><vh>@rst html/theory.html</vh>
+<v t="ekr.20131009065148.31760" a="M"><vh>@rst html/theory.html</vh>
 <v t="ekr.20050901102300"><vh>@rst-no-head markup &amp; links</vh></v>
-<v t="ekr.20131011050613.16802"><vh>Application classes</vh></v>
-<v t="ekr.20131011050613.16804"><vh>Controller classes</vh></v>
-<v t="ekr.20131011050613.16803"><vh>Model classes</vh>
-<v t="ekr.20131011050613.16796"><vh>class vnode (leoNodes.py)</vh></v>
-<v t="ekr.20131011050613.16797"><vh>class position (leoNodes.py)</vh></v>
+<v t="ekr.20131011050613.16860"><vh>General notes about classes</vh></v>
+<v t="ekr.20131011050613.16868"><vh>Knowing where to look</vh>
+<v t="ekr.20131011050613.16870"><vh>Key handling</vh></v>
+<v t="ekr.20131011050613.16871"><vh>Drawing the screen</vh></v>
+<v t="ekr.20131011050613.16876"><vh>Fragile methods</vh></v>
 </v>
-<v t="ekr.20131011050613.16805"><vh>View classes</vh></v>
-<v t="ekr.20131011050613.16792" a="M"><vh>Important methods</vh></v>
-<v t="ekr.20131011050613.16816"><vh>Special topics</vh>
+<v t="ekr.20131011050613.16862"><vh>Debugging with g.trace &amp; g.callers</vh></v>
+<v t="ekr.20131011050613.16866"><vh>Read long comments with caution</vh></v>
 <v t="ekr.20131011050613.16815"><vh>Startup</vh></v>
-<v t="ekr.20131011050613.16814"><vh>Why key handling is complex</vh></v>
 <v t="EKR.20040524104904.268"><vh>Unicode</vh></v>
-</v>
 </v>
 </v>
 <v t="ekr.20050901084134"><vh>Why I like Python</vh>
@@ -1251,6 +1252,13 @@
 </v>
 <v t="EKR.20040524104904.357"></v>
 <v t="ekr.20091130111843.6787"></v>
+<v t="ekr.20131011050613.16857"><vh>Old writing</vh>
+<v t="ekr.20131011050613.16875"><vh>Startup</vh></v>
+<v t="ekr.20131011050613.16867"><vh>MVC</vh></v>
+<v t="ekr.20131011050613.16802"><vh>Application classes</vh></v>
+<v t="ekr.20131011050613.16805"><vh>View classes</vh></v>
+<v t="ekr.20131011050613.16874"><vh>Controller classes</vh></v>
+</v>
 <v t="ekr.20131008041326.16178"></v>
 </vnodes>
 <tnodes>
@@ -1880,17 +1888,15 @@ details.
    strings.
    
 To make this strategy work, Leo must know the encoding used for external
-files. |br|
-This is why Leo supports the @encoding directive and various
+files. This is why Leo supports the @encoding directive and various
 encoding-related settings.
 
 The g.toUnicode and g.toEncodedString functions convert to and from
-unicode. |br|
-These methods catch all unicode-related exceptions. 
+unicode. These methods catch all unicode-related exceptions.
 
 The g.u function should be used *only* to convert from the Qt string type
-(a wrapper for a unicode string) to unicode. |br|
-Do not use g.u instead of g.toUnicode.
+(a wrapper for a unicode string) to unicode. Do not use g.u instead of
+g.toUnicode.
 </t>
 <t tx="EKR.20040524104904.354">Leo uses unicode internally for all strings.
 
@@ -4781,8 +4787,6 @@ See `Specifying settings`_ for a description of how to change Leo's settings.
 <t tx="ekr.20050901102300">.. |br| raw:: html
 
    &lt;br /&gt;
-
-.. _`DAGs`: https://en.wikipedia.org/wiki/Directed_acyclic_graph
 </t>
 <t tx="ekr.20050902073404">Scripts must wary of saving positions because positions become invalid
 whenever the user moves, inserts or deletes nodes.  It is valid to store
@@ -21352,26 +21356,15 @@ History of Leo
 Theory of Operation
 ###################
 
-.. _`Model-View-Controller`: https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller
+This chapter assumes that you are one of Leo's implementors.
 
-This chapter discusses everything a future chief implementor of
-Leo needs to know in order to fix bugs and add major features.
+You already know that leoFind.py implements Leo's find command, that
+leoUndo.py implements Leo's undo system, and so on.
 
-I (EKR) have kept details to a minimum for several reasons:
+This chapter discusses topics that may not be apparent from perusing the
+code.
 
-- I think of Leo in terms of its organization, not details.
-   
-- It's easier to understand brief explanations than long ones.
-  
-- This chapter is written for experts like Terry, Ville et. al.
-
-- General principles remain valid long after details have changed.
-
-Leo's code loosely follows a `Model-View-Controller`_ (MVC) organization,
-as does this document.
-
-The most important part of this document is probably the list of important methods. |br|
-These methods are usually where I start when fixing bugs.
+Reading this chapter should take about 20 minutes.
 
 .. contents::
     :depth: 3
@@ -21732,16 +21725,6 @@ The most important setters of any position p are::
     p.unique_subtree        # all unique positions in p's subtree.
 </t>
 <t tx="ekr.20131010160850.17462"></t>
-<t tx="ekr.20131011050613.16792">::
-
-    k.getArg.
-    *tab-completion*
-    c.endEditing
-    leoQtEventFilter.eventFilter
-    c.outerUpdate (eliminates flicker)
-    k.masterKeyHandler &amp; all its helpers
-    leoTree.select
-    c.__init__</t>
 <t tx="ekr.20131011050613.16796">The vnode class (in leoNodes.py) contains *all* outline data.
 
 The v.children and v.parents arrays carry all outline structure.
@@ -21792,40 +21775,6 @@ g.app is the singleton instance of the leoApp class.
 The ivars of the LeoApp object act like global variables for the Leo app.
 Code throughout Leo reads these variables, and sometimes set them.
 </t>
-<t tx="ekr.20131011050613.16803"></t>
-<t tx="ekr.20131011050613.16804">A controller updates the model and view in response to commands.
-
-The Commands class in leoCommands.py is the main controller for each Leo window.
-
-The ctor of the Commands class creates many **subcommanders**.
-
-Each outline has an instance of the Commands class representing:
-
-- All the data in the outline associated with c.
-- All the commands that apply to that data.
-
-Furthermore, c.frame represents the entire view of the outline.
-See the discussion of the `leoFrame class`_ for more details.
-
-The Commands class is too large.  It would be even larger if
-it did not delegate much of its work to **subcommanders**.
-See c.initObjects for a complete lists of all the subcommanders.
-
-Commands.__init__ does all the work of initing a new commander
-and all its subcommanders.
-
-The most important subcommanders are:
-
-- class fileCommands (leoFileCommands.py): reads and writes .leo files.
-- class atFile (leoAtFileCommands.py): reads and writes external files.
-- class shadowController (leoShadow.py): reads and writes @shadow files.
-- various classes in leoEditCommands.py: implement many Leo commands.
-- class leoImportCommands (leoImport.py): implements import/export commands.
-- class undoer (leoUndo.py): manages undo/redo operations.
-
-..  **Aside**: leoCommands.py also contains many of Leo's original commands. It
-..  would be better to move those commands somewhere else, but it wouldn't be a
-..  trivial task.</t>
 <t tx="ekr.20131011050613.16805">View classes draw Leo's screen. They are split into two parts:
 
 - Gui-independent files in the tree leoPy.leo#Code--&gt;Gui base classes
@@ -21854,18 +21803,142 @@ Here are the most important *gui-independent* view classes:
 The gui-independent view classes are considerably more complex than their
 QT counterparts. |br|
 This is good design: we the Qt code to handle only gui-related concerns.</t>
-<t tx="ekr.20131011050613.16814">Leo's key bindings is complex because it does inherently complex things:
+<t tx="ekr.20131011050613.16815">The LoadManager (LM) class (in leoApp.py) is responsible for initing all
+objects and settings. This is a complex process. Here is the big picture:
 
-- Code in leoMenu.py processes user preferences.
+- The LM reads each local (non-settings) file twice.
+  The first load discovers the settings to be used in the second load.
+  This ensures that proper settings are *available* during the second load.
 
-- eventFilter and its helpers translates incoming QKeyEvents to strokes
-  corresponding to user preferences.
-
-- k.masterKeyHandler associates incoming strokes with a pane-dependant binding.
-   
-- k.masterKeyHandler also handles mode-specific bindings.
+- Ctors init settings "early", before calling the ctors for subsidiary objects.
+  This ensures that proper settings are *in effect* for subsidiary ctors.
 </t>
-<t tx="ekr.20131011050613.16815">The LoadManager (LM) class (in leoApp.py) loads .leo files and the
+<t tx="ekr.20131011050613.16857">.. _`Model-View-Controller`: https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller
+
+
+This chapter discusses everything a future chief implementor of
+Leo needs to know in order to fix bugs and add major features.
+
+I (EKR) have kept details to a minimum for several reasons:
+
+- I think of Leo in terms of its organization, not details.
+   
+- It's easier to understand brief explanations than long ones.
+  
+- This chapter is written for experts like Terry, Ville et. al.
+
+- General principles remain valid long after details have changed.
+
+- It is usually self evident where to look for the code relating to a given topic. |br|
+  Indeed that's a hallmark of good code!
+
+Leo's code follows a `Model-View-Controller`_ (MVC) organization in some ways,
+but modules and classes frequently mix controller and view aspects.
+
+The most important part of this document is probably the list of important methods. |br|
+These methods are usually where I start when fixing bugs.</t>
+<t tx="ekr.20131011050613.16860">In Leo, each class hides (encapsulates) the details of its internal
+workings from user (client) classes. This design principle has been
+spectacularly successful. Leo's overall design has remained remarkably
+stable for 20 years, even as the internal details of many classes have
+radically changed.
+
+The distinction between gui-dependent and gui-independent is important.
+Almost all gui-dependent code resides in the plugins folder. Leo's core
+code is almost completely gui independent.
+
+Leo's core typically assumes that w (an abstract widget) is a subclass of
+the baseTextWidget class. This class implements the DummyHighLevelInterface
+interface. Actually, w is usually a LeoQTextBrowser or leoQtBaseTextWidget
+object, defined in qtGui.py. These classes provide thin wrappers for
+corresponding Qt widgets.
+
+Wrapper classes are useful, regardless of gui independence:
+
+- Wrapper classes often simplify the corresponding code in Leo's code.
+- Wrapper classes provide convenient methods for debugging and tracing.
+</t>
+<t tx="ekr.20131011050613.16862">Once you know approximately where to look, it is easy to use traces to
+discover what is going on. To trace the last n (default 4) callers of any
+function::
+
+    g.trace(g.callers(n))
+    
+Many complex methods define a trace variable::
+
+    trace = False and not g.unitTesting
+    
+A good rule of thumb: the more complex a method is, the more useful its
+traces are likely to be.
+</t>
+<t tx="ekr.20131011050613.16866">Several modules contain long comments::
+
+    &lt;&lt; about new sentinels &gt;&gt; (leoAtFile.py)
+    &lt;&lt; about the leoBridge module &gt;&gt; (leoBridge.py)
+    &lt;&lt; how to write a new importer &gt;&gt; (leoImport.py)
+    &lt;&lt; How Leo implements unlimited undo &gt;&gt; (leoUndo.py)
+    &lt;&lt; about gui classes and gui plugins &gt;&gt;
+    &lt;&lt; About handling events &gt;&gt; (leoFrame.py)
+    &lt;&lt; Theory of operation of find/change &gt;&gt; (leoFind.py)
+    &lt;&lt; Key bindings, an overview &gt;&gt; (leoKeys.py)
+    &lt;&lt; about 'internal' bindings &gt;&gt; (leoKeys.py)
+    &lt;&lt; about key dicts &gt;&gt; (leoKeys.py)
+    
+These comments may be helpful, but do *not* assume that they are accurate.
+
+When in doubt, trust the code, not the comments.
+</t>
+<t tx="ekr.20131011050613.16867">.. _`Model-View-Controller`: https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller
+
+Leo's early design was loosly based on the `Model-View-Controller`_ (MVC) pattern. |br|
+In practice, however, the MVC pattern has no operational significance: |br|
+Leo's classes relate to topics, without any real regard to MVC
+</t>
+<t tx="ekr.20131011050613.16868">I have said many times that I remember few details about the code. I'm not
+kidding!
+
+When fixing a bug, it's *easy* to know where to start looking. Isolating
+the module or modules involved is usually obvious.
+
+Within a particular module, I know from long experience where the most
+important and fragile methods are. Here they are...
+</t>
+<t tx="ekr.20131011050613.16870">The following methods and their helpers all have useful traces:
+
+- leoQtEventFilter.eventFilter (qtGui.py) and helpers create keystrokes 
+  (LeoKeyEvents) from QKeyEvent events.
+
+- k.masterKeyHandler (leoKeys.py) receives LeoKeyEvents from eventFilter
+  and invokes one of Leo's commands based on the users bindings.
+
+- k.getArg handles commands like Ctrl-F (search-with-present-options)
+  that prompt the user for input.
+  
+Leo's key handling is complex because it does inherently complex things:
+
+- Code in various places translate user key bindings to dictionaries.
+
+- eventFilter and its helpers translates incoming QKeyEvents to LeoKeyEvents.
+
+- k.masterKeyHandler associates incoming LeoKeyEvents with
+  mode-and-pane-dependent bindings.</t>
+<t tx="ekr.20131011050613.16871">c.outerUpdate and helpers eliminate flicker by redrawing the screen only at
+the end of each command.
+
+c.outerUpdate contains several sophisticated and useful traces.
+</t>
+<t tx="ekr.20131011050613.16872"></t>
+<t tx="ekr.20131011050613.16874">Each outline has an instance of the Commands class representing:
+
+- All the data in the outline associated with c.
+- All the commands that apply to that data.
+- All the panes in the main window.
+
+The ctor of the Commands class creates and inits **subcommanders**.
+
+See c.initObjects for a complete lists of all the subcommanders.
+</t>
+<t tx="ekr.20131011050613.16875">The LoadManager (LM) class (in leoApp.py) loads .leo files and the
 corresponding external files.
 
 leoConfig.py contains most of the configuration code:
@@ -21873,18 +21946,26 @@ leoConfig.py contains most of the configuration code:
 - g.app.config is an instance of the GlobalConfigManager class.
 - c.config is an instance of the LocalConfigManager class.
 
-The LoadManager class (in leoApp.py) is responsible for initing all settings properly. |br|
-This is a complex process: see comments in leoApp.py for details. |br|
-Here are the general principles:
-
-- Leo reads each local (non-settings) file twice. |br|
-  The first load discovers the settings to be used in the second load. |br|
-  This ensures that proper settings are *available* during the second load.
-
-- Ctors init settings "early", before calling the ctors for subsidiary objects. |br|
-  This ensures that proper settings are *in effect* for subsidiary ctors.
 </t>
-<t tx="ekr.20131011050613.16816"></t>
+<t tx="ekr.20131011050613.16876">The following methods are surprisingly fragile. Change them only after
+careful thought. Make *sure* to run all unit tests after changing them in
+any way:
+
+- leoTree.select and c.selectPosition switch nodes.
+
+- c.endEditing ends editing in a headline and updates undo data.
+
+- leoBody.onBodyChanged updates undo data when body text changes.
+
+- baseNativeTree.onHeadChanged (baseNativeTree.py) updates undo data.
+
+  **Note**: This method overrides leoTree.onHeadChanged (leoFrame.py),
+  which is not used.
+
+In addition, *all* event handling in baseNativeTree.py is extremely
+fragile. Don't even think about changing this code unless you know exactly
+what you are doing.
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
