@@ -35,6 +35,50 @@ Important Note
 This plugin currently doesn't have any undo capability - any changes performed
 by the following commands are not undoable.
 
+Configuration Settings
+======================
+
+This plugin is configured with the following @settings:
+
+@string rss-date-format
+-----------------------
+
+Format string to provide datetime.time.strftime, to format entry dates.  Defaults to '%Y-%m-%d %I:%M %p' if not provided.
+
+@bool rss-sort-newest-first
+---------------------------
+
+If True, newest entries are placed before older entries.  If False, older entries are placed before newer entries.
+
+@string rss-headline-format
+---------------------------
+
+The format of an entry headline, specified with various tokens.  Defaults to '[<date>] <title>' if not provided.
+
+Valid tokens are:
+    
+| <date> - the date, formatted according to `@string rss-date-format`
+| <title> - the entry title
+| <link> - the entry link (not recommended in headline)
+| <summary> - the entry summary (extremely not recommeded in headline)
+
+Anything that isn't a valid token is retained untouched, such as the square brackets in the default setting.
+
+@data rss-body-format
+---------------------
+
+The body of this node will provide the structure of the body of parsed entry nodes.  Empty lines should be denoted with '\\n' on a line by itself.  It defaults to the following, if not provided::
+    
+    @url <link>
+    \n
+    <title>
+    <date>
+    \n
+    <summary>
+
+Valid tokens are the same as for `@string rss-headline-format`.  Any instance of '\n' on a line by itself is replaced with an empty line.  All other strings that are not valid tokens are retained untouched, such as the `@url` directive in the default.
+
+
 Commands
 ========
 
@@ -77,13 +121,14 @@ Clears the viewed stories history of every `@feed` node in the current outline.
 '''
 #@-<< docstring >>
 
-__version__ = '0.2'
+__version__ = '0.3'
 #@+<< version history >>
 #@+node:peckj.20131002201824.5540: ** << version history >>
 #@+at
 # 
 # Version 0.1 - initial functionality.  NO UNDO.
 # Version 0.2 - bugfix for bug reported by Viktor Ransmayr regarding not having dates in the feed.
+# Version 0.3 - configurable with a few @settings in myLeoSettings.leo
 #@-<< version history >>
 
 #@+<< imports >>
@@ -136,6 +181,9 @@ class RSSController:
         # Warning: hook handlers must use keywords.get('c'), NOT self.c.
         
         self._NO_TIME = (3000,0,0,0,0,0,0,0,0)
+        self._NO_SUMMARY = 'NO SUMMARY'
+        self._NO_NAME = 'NO TITLE'
+        self._NO_LINK = 'NO LINK'
         
         # register commands
         c.k.registerCommand('rss-parse-selected-feed',shortcut=None,func=self.parse_selected_feed)
@@ -159,6 +207,8 @@ class RSSController:
         return pos.v.h.startswith('@feed') and g.getUrlFromNode(pos)
     #@+node:peckj.20131002201824.11901: *4* parse_feed
     def parse_feed(self, feed):
+        c = self.c
+        
         g.es("Parsing feed: %s" % feed.h, color='blue')
         feedurl = g.getUrlFromNode(feed)
         data = feedparser.parse(feedurl)
@@ -167,23 +217,31 @@ class RSSController:
             g.es("Error: bad feed data.", color='red')
             return
         
+        # grab config settings
+        sort_newest_first = c.config.getBool('rss-sort-newest-first', default=True)
+        body_format = c.config.getData('rss-body-format') or ['@url <link>','\\n','<title>','<date>','\\n','<summary>']
+        body_format = "\n".join(body_format)
+        body_format = body_format.replace('\\n','')
+        headline_format = c.config.getString('rss-headline-format') or '[<date>] <title>'
+        date_format = c.config.getString('rss-date-format') or '%Y-%m-%d %I:%M %p'
+        
         # process entries
         stories = sorted(data.entries, key=lambda entry: self.grab_date_parsed(entry))
-        stories.reverse()
+        if sort_newest_first:
+            stories.reverse()
         pos = feed
         for entry in stories:
             if not self.entry_in_history(feed, entry):
-                date = time.strftime('%Y-%m-%d %I:%M %p',self.grab_date_parsed(entry))
-                name = entry.title
-                link = entry.link
-                desc = entry.summary
-                headline = '[' + date + '] ' + name
-                body = '@url ' + link + '\n\n' + desc
+                date = time.strftime(date_format,self.grab_date_parsed(entry))
+                name = entry.get('title',default=self._NO_NAME)
+                link = entry.get('link',default=self._NO_LINK)
+                desc = entry.get('summary',default=self._NO_SUMMARY)
+                headline = headline_format.replace('<date>',date).replace('<title>',name).replace('<summary>',desc).replace('<link>',link)
+                body = body_format.replace('<date>',date).replace('<title>',name).replace('<summary>',desc).replace('<link>',link)
                 newp = pos.insertAsLastChild()
                 newp.h = headline
                 newp.b = body
                 self.add_entry_to_history(feed, entry)
-            
         
         self.c.redraw_now()
         

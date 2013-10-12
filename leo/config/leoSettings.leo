@@ -1473,6 +1473,12 @@
 <v t="tbrown.20130813134319.7224"><vh>@bool richtext_cke_autosave = False</vh></v>
 <v t="tbrown.20130813181208.23979"><vh>@data richtext_cke_config</vh></v>
 </v>
+<v t="peckj.20131012154112.5294"><vh>rss plugin</vh>
+<v t="peckj.20131012154112.5295"><vh>@string rss-headline-format = [&lt;date&gt;] &lt;title&gt;</vh></v>
+<v t="peckj.20131012154112.5296"><vh>@data rss-body-format</vh></v>
+<v t="peckj.20131012154112.5297"><vh>@string rss-date-format = %Y-%m-%d %I:%M %p</vh></v>
+<v t="peckj.20131012154112.5298"><vh>@bool rss-sort-newest-first = True</vh></v>
+</v>
 <v t="ekr.20071213060239"><vh>rst3 plugin</vh>
 <v t="ekr.20071213060239.1"><vh>rst3 http options</vh>
 <v t="ekr.20071213061454"><vh>@bool rst3_clear_http_attributes = False</vh></v>
@@ -9796,6 +9802,22 @@ Size is in px.  Default 12.</t>
 to choose a monospaced font.
 
 Default: DejaVu Sans Mono</t>
+<t tx="peckj.20131012154112.5294">Settings for the rss.py plugin.</t>
+<t tx="peckj.20131012154112.5295">Format for headlines of RSS feed entries.  Valid tokens are:
+
+&lt;date&gt; - the date, formatted according to `@string rss-date-format`
+&lt;title&gt; - the entry title
+&lt;link&gt; - the entry link (not recommended in headline)
+&lt;summary&gt; - the entry summary (extremely not recommeded in headline)</t>
+<t tx="peckj.20131012154112.5296">@url &lt;link&gt;
+\n
+&lt;title&gt;
+&lt;date&gt;
+\n
+&lt;summary&gt;</t>
+<t tx="peckj.20131012154112.5297">A valid string to act as the `fmt` string datetime.time.strftime().</t>
+<t tx="peckj.20131012154112.5298">If True, newer entries are on top.
+If False, older entries are on top.</t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename
 as its heading, and the two (or more) paths as its entries.  This is easier to
