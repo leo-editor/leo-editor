@@ -81,6 +81,7 @@
 <v t="ekr.20100805165051.7176"><vh>@file other_docs.txt</vh></v>
 </v>
 </v>
+<v t="ekr.20090428102353.1"></v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
 <v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d710028550a302e302e31322e302e3771017d710255097374725f6174696d657103550c313337363431323238302e30710473550b302e302e332e302e322e3371057d71066803550c313337363431323838382e307107735510302e302e31322e312e302e372e302e3171087d710958090000007374725f6174696d65710a550c313337363431323238382e30710b73550e302e302e31322e302e372e302e31710c7d710d6803550c313337363431323238382e30710e735509302e302e312e302e30710f7d71106803550c313337363431323837322e30711173550b302e302e332e312e312e3371127d71136803550c313337363431323838392e30711473550c302e302e31322e312e302e3771157d711658090000007374725f6174696d657117550c313337363431323238302e30711873752e"><vh>@file release_notes.txt</vh></v>
 </v>
@@ -291,6 +292,7 @@
 </v>
 </v>
 <v t="ekr.20131007143750.16111"><vh>To do</vh>
+<v t="ekr.20131012060912.16766"><vh>Revise the TOC</vh></v>
 <v t="ekr.20131010160850.17454"><vh>Insert index entries into the tutorial</vh></v>
 <v t="ekr.20131008041326.16109"><vh>Add a Expansion section to the Reference chapter</vh></v>
 <v t="ekr.20131008041326.16110"><vh>Revise or eliminate the Using Leo section</vh></v>
@@ -318,10 +320,6 @@
 <v t="ekr.20131001100335.15945"><vh>Leo vs IPython</vh></v>
 </v>
 <v t="ekr.20131009100732.19041"><vh>Broken links</vh></v>
-<v t="ekr.20131011050613.16872"><vh>To scripting chapter</vh>
-<v t="ekr.20131011050613.16796"><vh>class vnode (leoNodes.py)</vh></v>
-<v t="ekr.20131011050613.16797"><vh>class position (leoNodes.py)</vh></v>
-</v>
 </v>
 <v t="ekr.20040414161647"><vh>Leo's Documentation</vh>
 <v t="ekr.20101104024804.4898"><vh> Generating the Documentation</vh>
@@ -723,60 +721,72 @@
 </v>
 <v t="ekr.20050831195331.4"><vh>Scripting Leo with Python</vh>
 <v t="ekr.20040403171740"><vh>@rst html\scripting.html</vh>
-<v t="ekr.20050812134441.1"><vh>@rst-no-head Links</vh></v>
-<v t="ekr.20101124083644.5047"><vh>Basics</vh>
-<v t="ekr.20130521122236.15098"><vh>Positions</vh></v>
-<v t="ekr.20070120075236"><vh>c, g and p</vh></v>
-<v t="ekr.20040403183229"><vh>Important objects</vh></v>
-<v t="ekr.20040403173920.3"><vh>g.es writes to the log pane</vh></v>
-<v t="ekr.20040403173920.6"><vh>p.h and p.b</vh></v>
-<v t="ekr.20040403173920.17"><vh>c.redraw</vh></v>
-<v t="ekr.20050902073404"><vh>p.copy</vh></v>
-<v t="ekr.20040403173920.9"><vh>Generators</vh>
+<v t="ekr.20050812134441.1"><vh>@rst-no-head markup &amp; links</vh></v>
+<v t="ekr.20131012060912.16778"><vh>Introductory example</vh></v>
+<v t="ekr.20131012060912.16773"><vh>Basics</vh>
+<v t="ekr.20131012060912.16774"><vh>vnodes</vh></v>
+<v t="ekr.20131012060912.16775"><vh>generators</vh></v>
+<v t="ekr.20131012060912.16776" a="M"><vh>positions</vh></v>
+<v t="ekr.20131012060912.16777" a="M"><vh>clones &amp; DAGs</vh></v>
+</v>
+<v t="ekr.20131012060912.16781"><vh>Access to Leo's code</vh>
+<v t="ekr.20070120075236"><vh>Predefined symbols: c, g and p</vh></v>
+<v t="ekr.20131012060912.16795"><vh>generators</vh>
 <v t="ekr.20040403173920.10"><vh>c.all_positions &amp; c.all_unique_positions</vh></v>
+<v t="ekr.20131012060912.16799" a="M"><vh>c.all_nodes &amp; c.all_unique_nodes</vh></v>
 <v t="ekr.20040403173920.13"><vh>p.children</vh></v>
+<v t="ekr.20131012060912.16800" a="M"><vh>p.nodes &amp; p.unique_nodes</vh></v>
 <v t="ekr.20040403173920.14"><vh>p.parents &amp; p.self_and_parents</vh></v>
 <v t="ekr.20040403173920.15"><vh>p.siblings &amp; p.following_siblings</vh></v>
-<v t="ekr.20040403173920.16"><vh>p.subtree &amp; p.self_and_subtree</vh></v>
+<v t="ekr.20040403173920.16"><vh>p.subtree &amp; p.self_and_subtree &amp; p.unique_subtree</vh></v>
 </v>
-<v t="ekr.20040903100514"><vh>Testing whether a position is valid</vh></v>
+<v t="ekr.20131012060912.16782"><vh>g functions, etc.</vh>
+<v t="ville.20090603183524.5672"><vh>\@g.command</vh></v>
+<v t="ekr.20131012060912.16786"><vh>g.app and its ivars</vh></v>
+<v t="ekr.20071026183116"><vh>g.app.gui.run*</vh></v>
+<v t="ekr.20071021102946"><vh>g.enableIdleTimeHook &amp; g.enableIdleTimeHook</vh></v>
+<v t="ekr.20040403173920.3"><vh>g.es</vh></v>
+<v t="ekr.20101124083644.5051"><vh>g.getScript</vh></v>
+<v t="ekr.20101124083644.5050"><vh>g.openWithFileName</vh></v>
 <v t="ekr.20101124083644.5049"><vh>g.pdb</vh></v>
-<v t="ekr.20050903161843"><vh>\@button scripts</vh></v>
+<v t="ekr.20040403173920.5"><vh>g.redirect etc.</vh></v>
+<v t="ekr.20131012060912.16792"><vh>g.user_dict</vh></v>
+</v>
+<v t="ekr.20131012060912.16784"><vh>c methods &amp; ivars</vh>
+<v t="ekr.20050907094633"><vh>c.config methods</vh></v>
+<v t="ekr.20090223065025.3"><vh>c.frame.body.bodyCtrl</vh></v>
+<v t="ekr.20131012060912.16788" a="M"><vh>c.frame.log</vh></v>
+<v t="ekr.20040403173920.17"><vh>c.redraw</vh></v>
+<v t="ekr.20131012060912.16794"><vh>c.user_dict</vh></v>
+<v t="ekr.20040403173920.19"><vh>commander preferences</vh></v>
+</v>
+<v t="ekr.20131012060912.16785" a="M"><vh>p methods &amp; properties</vh>
+<v t="ekr.20050902073404"><vh>p.copy</vh></v>
+<v t="ekr.20040403173920.6" a="M"><vh>p.h, p.b &amp; p.u</vh></v>
+<v t="ekr.20131012060912.16804" a="M"><vh>p.getters</vh></v>
+<v t="ekr.20040403173920.28"><vh>p setters</vh></v>
+</v>
+</v>
+<v t="ekr.20131012060912.16806"><vh>Other important topics</vh>
 <v t="ekr.20101124083644.5052"><vh>autocompletion</vh></v>
-<v t="ekr.20040403173920.26"><vh>Summary</vh>
-<v t="ekr.20040411151245"><vh>Iterators</vh></v>
-<v t="ekr.20040403173920.27"><vh>Getters</vh></v>
-<v t="ekr.20040403173920.28"><vh>Setters</vh></v>
-</v>
-</v>
 <v t="ekr.20050903074833"><vh>Event handlers</vh>
 <v t="ekr.20050903074833.1"><vh>@rst-no-head Summary of event handlers</vh></v>
-<v t="ekr.20071021102946"><vh>Enabling idle time event handlers</vh></v>
 </v>
-<v t="ekr.20101124083644.5048"><vh>Other topics</vh>
-<v t="ekr.20040403175157.1"><vh>g.app.windowList: the list of all open frames</vh></v>
-<v t="ekr.20070122093626"><vh>Ensuring that positions are valid</vh></v>
-<v t="ekr.20101124083644.5050"><vh>g.openWithFileName</vh></v>
-<v t="ekr.20101124083644.5051"><vh>g.getScript</vh></v>
-<v t="ekr.20090223065025.3"><vh>c.frame.body.bodyCtrl</vh></v>
-<v t="ekr.20040403173920.18"><vh>Invoking commands from scripts</vh></v>
-<v t="ekr.20050907094633"><vh>Getting settings from @settings trees</vh></v>
-<v t="ekr.20040403173920.19"><vh>Preferences ivars</vh></v>
-<v t="ekr.20040403173920.25"><vh>Functions defined in leoGlobals.py</vh></v>
 <v t="ekr.20050417072710.1"><vh>Making operations undoable</vh></v>
-<v t="ekr.20040403173920.5"><vh>Redirecting output from scripts</vh></v>
-<v t="ekr.20111115063523.13619"><vh>Creating Qt Windows from Leo scripts</vh></v>
-<v t="ekr.20061003204952"><vh>Writing to different log tabs</vh></v>
-<v t="ekr.20071026183116"><vh>Invoking dialogs using the g.app.gui class</vh></v>
-<v t="ekr.20080109074102"><vh>Inserting and deleting icons</vh></v>
-<v t="ekr.20081205084002.2"><vh>Working with directives and paths</vh></v>
+<v t="ekr.20050903161843"><vh>Using @button</vh></v>
 <v t="ekr.20040403173920.24"><vh>Running Leo in batch mode</vh></v>
-<v t="ekr.20080922124033.1"><vh>Getting interactive input from scripts</vh></v>
-<v t="ville.20090603183524.5672"><vh>The @g.command decorator</vh></v>
-<v t="ekr.20100506062734.11593"><vh>Modifying plugins with @script scripts</vh></v>
+</v>
+<v t="ekr.20101124083644.5048"><vh>Miscellaneous topics</vh>
 <v t="ekr.20110531155858.20563"><vh>Creating minimal outlines</vh></v>
+<v t="ekr.20111115063523.13619"><vh>Creating Qt Windows from Leo scripts</vh></v>
+<v t="ekr.20080922124033.1"><vh>Getting interactive input from scripts</vh></v>
+<v t="ekr.20080109074102"><vh>Inserting and deleting icons</vh></v>
+<v t="ekr.20040403173920.18"><vh>Invoking commands from scripts</vh></v>
+<v t="ekr.20100506062734.11593"><vh>Modifying plugins with @script scripts</vh></v>
+<v t="ekr.20070122093626"><vh>Recovering vnodes</vh></v>
 <v t="ekr.20120317130339.8282"><vh>Retaining pointers to Qt windows</vh></v>
-<v t="ekr.20130930062914.15969"><vh>c.user_dict and g.user_dict</vh></v>
+<v t="ekr.20081205084002.2"><vh>Working with directives and paths</vh></v>
+<v t="ekr.20061003204952"><vh>Writing to different log tabs</vh></v>
 </v>
 </v>
 </v>
@@ -1088,18 +1098,21 @@
 </v>
 </v>
 <v t="ekr.20131008041326.16178"><vh>Theory of operation</vh>
-<v t="ekr.20131009065148.31760" a="M"><vh>@rst html/theory.html</vh>
-<v t="ekr.20050901102300"><vh>@rst-no-head markup &amp; links</vh></v>
-<v t="ekr.20131011050613.16860"><vh>General notes about classes</vh></v>
-<v t="ekr.20131011050613.16868"><vh>Knowing where to look</vh>
-<v t="ekr.20131011050613.16870"><vh>Key handling</vh></v>
-<v t="ekr.20131011050613.16871"><vh>Drawing the screen</vh></v>
-<v t="ekr.20131011050613.16876"><vh>Fragile methods</vh></v>
+<v t="ekr.20131009065148.31760"><vh>@rst html/theory.html</vh>
+<v t="ekr.20131011050613.16868"><vh>How to explore Leo's sources</vh>
+<v t="ekr.20131012060912.16768"><vh>Finding commands</vh></v>
+<v t="ekr.20131011050613.16870"><vh>Finding key-handling code</vh></v>
+<v t="ekr.20131011050613.16871"><vh>Finding redraw and refocus code</vh></v>
+<v t="ekr.20131011050613.16862"><vh>Debugging with g.trace, g.callers &amp; g.pdb</vh></v>
 </v>
-<v t="ekr.20131011050613.16862"><vh>Debugging with g.trace &amp; g.callers</vh></v>
+<v t="ekr.20131012060912.16769"><vh>Special topics</vh>
+<v t="ekr.20131011050613.16860"><vh>The design of Leo's classes</vh></v>
+<v t="ekr.20131011050613.16876"><vh>Fragile methods</vh></v>
 <v t="ekr.20131011050613.16866"><vh>Read long comments with caution</vh></v>
 <v t="ekr.20131011050613.16815"><vh>Startup</vh></v>
 <v t="EKR.20040524104904.268"><vh>Unicode</vh></v>
+<v t="ekr.20131012060912.16770"><vh>Why key handling is complex</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20050901084134"><vh>Why I like Python</vh>
@@ -1250,6 +1263,13 @@
 </v>
 </v>
 </v>
+<v t="ekr.20131011050613.16872"><vh>To scripting chapter</vh>
+<v t="ekr.20131011050613.16797"><vh>class position (leoNodes.py)</vh></v>
+</v>
+<v t="ekr.20131012060912.16807"><vh>Unused</vh>
+<v t="ekr.20131012060912.16808"><vh>From basics</vh></v>
+</v>
+<v t="ekr.20050831195331.4"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -2499,35 +2519,19 @@ show_doc_parts_as_paragraphs = True
 Scripting Leo with Python
 #########################
 
-This chapter describes how to write Python scripts that control Leo and
-access the data in Leo outlines. To write such scripts, you must understand
-the basics of Leo's internal data structures. As we shall see, these basics
-are quite simple.
+This chapter tells how to write **Leo scripts**, Python scripts run from
+any Leo node.
 
-Although this chapter discusses everything you will need to write most
-scripts, please keep in mind that your scripts have complete access to all
-of Leo's source code, that is, all the code in LeoPy.leo.
+Ctrl-B (execute-script) runs the script in the presently selected body text.
 
-You can put Leo script in the body text of *any* outline node.  You can run
-scripts in several ways:
+..  You can use Ctrl-B even if you are reading this in leoDocs.leo!
+..  If the node contains comments interspersed with code,
+..  select the code you want to execute before typing Ctrl-B.
 
-1. Select a node containing the script and do Ctrl-B (execute-script).
-
-..  **Note**: If you are reading this documentation in leoDocs.leo you can
-..  execute all code examples in this chapter whit Ctrl-B. You may have to
-..  select the actual code to execute if a node contains comments
-..  interspersed with the code.
-
-2. \@button and \@command nodes allow you to run scripts while selecting
-   some *other* node. This brings scripts to data, an extremely powerful
-   capability. \@button nodes create a button in Leo's icon area. You can
-   execute the script **on the presently selected node** by pressing the
-   button. \@command nodes work similarly, but instead of creating a
-   button, they create a Leo command. (Actually, \@button nodes also create
-   Leo commands).
+You can also run scripts from @button and @command nodes, as explained below.
 
 .. contents::
-    :depth: 3
+    :depth: 2
 
 </t>
 <t tx="ekr.20040403173920.10" rst_http_attribute="5d71002858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d313322206e616d653d22687474702d6e6f64652d6d61726b65722d3133223e710158040000003c2f613e71025d710328582e0000003c64697620636c6173733d2273656374696f6e222069643d2274726176657273696e672d6f75746c696e6573223e710458060000003c2f6469763e71055d710628583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710758060000003c2f6469763e71085d71092858060000003c626f64793e710a58070000003c2f626f64793e710b5d710c2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710d58070000003c2f68746d6c3e710e4e65656565582b0000003c64697620636c6173733d2273656374696f6e222069643d22632d616c6c6e6f6465732d69746572223e0a710f58570000003c68323e3c6120636c6173733d22746f632d6261636b7265662220687265663d222369643722206e616d653d22632d616c6c6e6f6465732d69746572223e632e616c6c4e6f6465735f697465723c2f613e3c2f68323e0a7110652e">The c.all_positions generator returns a list of all positions in the outline.
@@ -2673,45 +2677,9 @@ headlines in that file::
     for p in c2.all_positions():
         g.es(g.toEncodedString(p.h,"utf-8"))
 </t>
-<t tx="ekr.20040403173920.25" rst_http_attribute="5d71002858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d333922206e616d653d22687474702d6e6f64652d6d61726b65722d3339223e710158040000003c2f613e71025d71032858340000003c64697620636c6173733d2273656374696f6e222069643d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e710458060000003c2f6469763e71055d710628583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710758060000003c2f6469763e71085d71092858060000003c626f64793e710a58070000003c2f626f64793e710b5d710c2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710d58070000003c2f68746d6c3e710e4e6565656558070000003c2f6469763e0a710f583e0000003c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d646566696e65642d696e2d6c656f676c6f62616c732d7079223e0a7110587e0000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964323022206e616d653d2266756e6374696f6e732d646566696e65642d696e2d6c656f676c6f62616c732d7079223e46756e6374696f6e7320646566696e656420696e206c656f476c6f62616c732e70793c2f613e3c2f68313e0a7111652e">leoGlobals.py contains many utility functions and constants.
-The following script prints all the names defined in leoGlobals.py::
-
-    print("Names defined in leoGlobals.py",color="purple")
-    names = g.__dict__.keys()
-    names.sort()
-    for name in names:
-        print(name)
-</t>
-<t tx="ekr.20040403173920.26" rst_http_attribute="5d71002858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d343322206e616d653d22687474702d6e6f64652d6d61726b65722d3433223e710158040000003c2f613e71025d710328583a0000003c64697620636c6173733d2273656374696f6e222069643d227265646972656374696e672d6f75747075742d66726f6d2d73637269707473223e710458060000003c2f6469763e71055d710628583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710758060000003c2f6469763e71085d71092858060000003c626f64793e710a58070000003c2f626f64793e710b5d710c2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710d58070000003c2f68746d6c3e710e4e6565656558070000003c2f6469763e0a710f58450000003c64697620636c6173733d2273656374696f6e222069643d2273756d6d6172792d6f662d7468652d766e6f64652d616e642d706f736974696f6e2d636c6173736573223e0a7110588c0000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964323222206e616d653d2273756d6d6172792d6f662d7468652d766e6f64652d616e642d706f736974696f6e2d636c6173736573223e53756d6d617279206f662074686520766e6f646520616e6420706f736974696f6e20636c61737365733c2f613e3c2f68313e0a7111652e">The following sections summarizes the most useful methods that your
-scripts can use.
-</t>
-<t tx="ekr.20040403173920.27" rst_http_attribute="5d71002858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d343722206e616d653d22687474702d6e6f64652d6d61726b65722d3437223e710158040000003c2f613e71025d71032858240000003c64697620636c6173733d2273656374696f6e222069643d226974657261746f7273223e710458060000003c2f6469763e71055d71062858440000003c64697620636c6173733d2273656374696f6e222069643d2273756d6d6172792d6f662d7468652d766e6f64652d616e642d706f736974696f6e2d636c6173736573223e710758060000003c2f6469763e71085d710928583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710a58060000003c2f6469763e710b5d710c2858060000003c626f64793e710d58070000003c2f626f64793e710e5d710f2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711058070000003c2f68746d6c3e71114e656565656558070000003c2f6469763e0a711258230000003c64697620636c6173733d2273656374696f6e222069643d2267657474657273223e0a711358480000003c68323e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964323422206e616d653d2267657474657273223e476574746572733c2f613e3c2f68323e0a7114652e">Here are the most useful getters of the vnode and position classes.
-
-Returning strings::
-
-    p.b # the body string of p.
-    p.h # the headline string of p. A property.
-
-Returning ints::
-
-    p.childIndex()
-    p.numberOfChildren()
-    p.level()
-
-Returning bools representing property bits::
-
-    p.hasChildren()
-    p.isAncestorOf(v2) # True if v2 is a child, grandchild, etc. of p.
-    p.isCloned()
-    p.isDirty()
-    p.isExpanded()
-    p.isMarked()
-    p.isVisible()
-    p.isVisited()
-</t>
-<t tx="ekr.20040403173920.28" rst_http_attribute="5d71002858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d343922206e616d653d22687474702d6e6f64652d6d61726b65722d3439223e710158040000003c2f613e71025d71032858220000003c64697620636c6173733d2273656374696f6e222069643d2267657474657273223e710458060000003c2f6469763e71055d71062858440000003c64697620636c6173733d2273656374696f6e222069643d2273756d6d6172792d6f662d7468652d766e6f64652d616e642d706f736974696f6e2d636c6173736573223e710758060000003c2f6469763e71085d710928583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710a58060000003c2f6469763e710b5d710c2858060000003c626f64793e710d58070000003c2f626f64793e710e5d710f2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711058070000003c2f68746d6c3e71114e656565656558070000003c2f6469763e0a711258230000003c64697620636c6173733d2273656374696f6e222069643d2273657474657273223e0a711358480000003c68323e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964323522206e616d653d2273657474657273223e536574746572733c2f613e3c2f68323e0a7114652e">Here are the most useful setters of the Commands and position classes.
-The following setters of the position class regardless of whether
-p is the presently selected position::
+<t tx="ekr.20040403173920.28" rst_http_attribute="5d71002858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d343922206e616d653d22687474702d6e6f64652d6d61726b65722d3439223e710158040000003c2f613e71025d71032858220000003c64697620636c6173733d2273656374696f6e222069643d2267657474657273223e710458060000003c2f6469763e71055d71062858440000003c64697620636c6173733d2273656374696f6e222069643d2273756d6d6172792d6f662d7468652d766e6f64652d616e642d706f736974696f6e2d636c6173736573223e710758060000003c2f6469763e71085d710928583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710a58060000003c2f6469763e710b5d710c2858060000003c626f64793e710d58070000003c2f626f64793e710e5d710f2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711058070000003c2f68746d6c3e71114e656565656558070000003c2f6469763e0a711258230000003c64697620636c6173733d2273656374696f6e222069643d2273657474657273223e0a711358480000003c68323e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964323522206e616d653d2273657474657273223e536574746572733c2f613e3c2f68323e0a7114652e">Here are the most useful setters of the Commands and position classes. The
+following setters of the position class regardless of whether p is the
+presently selected position::
 
     p.b = s  # Sets the body text of p.
     p.h = s  # Sets the headline text of p.
@@ -2730,7 +2698,7 @@ Many commands use this bits for tree traversal, so these bits do not persist::
     p.clearVisited()
     p.setVisited()
 </t>
-<t tx="ekr.20040403173920.3" rst_http_attribute="5d71002858440000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d3522206e616d653d22687474702d6e6f64652d6d61726b65722d35223e710158040000003c2f613e71025d71032858400000003c64697620636c6173733d2273656374696f6e222069643d22672d746f702d7468652d636f6d6d616e6465722d6f662d7468652d746f702d77696e646f77223e710458060000003c2f6469763e71055d710628583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710758060000003c2f6469763e71085d71092858060000003c626f64793e710a58070000003c2f626f64793e710b5d710c2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710d58070000003c2f68746d6c3e710e4e6565656558070000003c2f6469763e0a710f58360000003c64697620636c6173733d2273656374696f6e222069643d22672d65732d77726974652d746f2d7468652d6c6f672d70616e65223e0a711058700000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d222369643322206e616d653d22672d65732d77726974652d746f2d7468652d6c6f672d70616e65223e672e657328293a20777269746520746f20746865206c6f672070616e653c2f613e3c2f68313e0a7111652e">The g.es method prints its arguments to the Log tab of the log pane::
+<t tx="ekr.20040403173920.3" rst_http_attribute="5d71002858440000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d3522206e616d653d22687474702d6e6f64652d6d61726b65722d35223e710158040000003c2f613e71025d71032858400000003c64697620636c6173733d2273656374696f6e222069643d22672d746f702d7468652d636f6d6d616e6465722d6f662d7468652d746f702d77696e646f77223e710458060000003c2f6469763e71055d710628583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710758060000003c2f6469763e71085d71092858060000003c626f64793e710a58070000003c2f626f64793e710b5d710c2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710d58070000003c2f68746d6c3e710e4e6565656558070000003c2f6469763e0a710f58360000003c64697620636c6173733d2273656374696f6e222069643d22672d65732d77726974652d746f2d7468652d6c6f672d70616e65223e0a711058700000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d222369643322206e616d653d22672d65732d77726974652d746f2d7468652d6c6f672d70616e65223e672e657328293a20777269746520746f20746865206c6f672070616e653c2f613e3c2f68313e0a7111652e">The g.es method prints zero or more arguments to the log window::
 
     g.es("Hello world")
 
@@ -2738,18 +2706,8 @@ g.es converts non-string arguments using repr::
 
     g.es(c)
 
-g.es prints multiple arguments separated by commas::
-
-    g.es("Hello","world")
-
-To create a tab named 'Test' or make it visible if it already exists::
-
-    c.frame.log.selectTab('Test')
-
-When first created, a tab contains a text widget. To write to this widget,
-add the tabName argument to g.es::
-
-    g.es('Test',color='blue',tabName='Test')
+..  g.es prints multiple arguments separated by commas::
+..      g.es("Hello","world")
 </t>
 <t tx="ekr.20040403173920.5" rst_http_attribute="5d71002858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d343122206e616d653d22687474702d6e6f64652d6d61726b65722d3431223e710158040000003c2f613e71025d710328583d0000003c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d646566696e65642d696e2d6c656f676c6f62616c732d7079223e710458060000003c2f6469763e71055d710628583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710758060000003c2f6469763e71085d71092858060000003c626f64793e710a58070000003c2f626f64793e710b5d710c2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710d58070000003c2f68746d6c3e710e4e6565656558070000003c2f6469763e0a710f583b0000003c64697620636c6173733d2273656374696f6e222069643d227265646972656374696e672d6f75747075742d66726f6d2d73637269707473223e0a711058780000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964323122206e616d653d227265646972656374696e672d6f75747075742d66726f6d2d73637269707473223e5265646972656374696e67206f75747075742066726f6d20736372697074733c2f613e3c2f68313e0a7111652e">leoGlobals.py defines 6 convenience methods for redirecting stdout and stderr::
 
@@ -2803,115 +2761,6 @@ Here is how to access data at position p.
 In such cases, you can use g.angleBrackets.  For example::
 
     g.es(g.angleBrackets('abc'))
-</t>
-<t tx="ekr.20040403173920.9" rst_http_attribute="5d71002858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d313122206e616d653d22687474702d6e6f64652d6d61726b65722d3131223e710158040000003c2f613e71025d71032858450000003c64697620636c6173733d2273656374696f6e222069643d2267657474696e672d616e642d73657474696e672d686561646c696e652d616e642d626f64792d74657874223e710458060000003c2f6469763e71055d710628583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710758060000003c2f6469763e71085d71092858060000003c626f64793e710a58070000003c2f626f64793e710b5d710c2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710d58070000003c2f68746d6c3e710e4e6565656558070000003c2f6469763e0a710f582f0000003c64697620636c6173733d2273656374696f6e222069643d2274726176657273696e672d6f75746c696e6573223e0a7110585f0000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d222369643622206e616d653d2274726176657273696e672d6f75746c696e6573223e54726176657273696e67206f75746c696e65733c2f613e3c2f68313e0a7111652e">Leo scripts can easily access any node of an outline with iterator. Leo's
-iterators return positions or nodes, one after another. Iterators do not
-return lists, but you can make lists from iterators easily. For example, the
-c.all_positions() iterator returns every position in c's tree, one after
-another. You can use the iterator directly, like this::
-
-    for p in c.all_positions():
-        print(p.h)
-        
-It is seldom a good idea to capture positions in a list: positions become
-invalid whenever the outline changes. Using an invalid position could cause
-a (soft) crash in Leo. If you do want to capture positions temporarily, the
-proper way is to call p.copy(). Like this::
-
-    aList = [p.copy() for p in c.all_positions()]
-    
-The following will **not** work::
-
-    aList = list(c.all_positions())
-    
-because it is equivalent to::
-
-    aList = [p for p in c.all_positions()]
-    
-The problem is that the c.all_positions iterator uses a *single* position,
-and merely alters that position each time it is called. Thus, aList will
-contain multiple copies of an empty position!
-    
-However, the following *does* work::
-
-    aList = list(c.all_nodes())
-    
-In this case, aList will contain a list of all the *vnodes* in the outline.
-</t>
-<t tx="ekr.20040403175157.1" rst_http_attribute="5d71002858440000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d3722206e616d653d22687474702d6e6f64652d6d61726b65722d37223e710158040000003c2f613e71025d71032858350000003c64697620636c6173733d2273656374696f6e222069643d22672d65732d77726974652d746f2d7468652d6c6f672d70616e65223e710458060000003c2f6469763e71055d710628583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710758060000003c2f6469763e71085d71092858060000003c626f64793e710a58070000003c2f626f64793e710b5d710c2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710d58070000003c2f68746d6c3e710e4e6565656558070000003c2f6469763e0a710f58460000003c64697620636c6173733d2273656374696f6e222069643d226170702d77696e646f776c6973742d7468652d6c6973742d6f662d616c6c2d6f70656e2d6672616d6573223e0a7110588e0000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d222369643422206e616d653d226170702d77696e646f776c6973742d7468652d6c6973742d6f662d616c6c2d6f70656e2d6672616d6573223e6170702e77696e646f774c6973743a20746865206c697374206f6620616c6c206f70656e206672616d65733c2f613e3c2f68313e0a7111652e">The windowlist attribute of the application instance contains the list of the
-frames of all open windows. The commands ivar of the frame gives the commander
-for that frame::
-
-    aList = g.app.windowList # get the list of all open frames.
-    g.es("windows...")
-    for f in aList:
-        c = f.c # c is f's commander
-        g.es(f)
-        g.es(f.shortFileName())
-        g.es(c)
-        g.es(c.rootPosition())
-
-There is also g.app.commanders() method, that gives the list of all active
-commanders directly.
-</t>
-<t tx="ekr.20040403183229" rst_http_attribute="5d71002858440000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d3122206e616d653d22687474702d6e6f64652d6d61726b65722d31223e710158040000003c2f613e71025d710328583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710458060000003c2f6469763e71055d71062858060000003c626f64793e710758070000003c2f626f64793e71085d71092858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710a58070000003c2f68746d6c3e710b4e65656558240000003c64697620636c6173733d2273656374696f6e222069643d226f76657276696577223e0a710c58490000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d222369643122206e616d653d226f76657276696577223e4f766572766965773c2f613e3c2f68313e0a710d652e">Leo scripts typically use the following objects:
-
-**g**
-    The predefined object g is the leo.core.leoGlobals module. This module
-    contains several dozen utility functions and classes.
-
-**g.app**
-    g.app is the **application object** representing the entire Leo application.
-    The instance variables (ivars) of g.app represent Leo's global variables.
-
-**commander**
-    The predefined object c is the commander of the window containing the
-    script. Commanders represent all aspects of a single Leo window. For any
-    commander c, c.p is the presently selected position (see below), and
-    c.rootPosition() is the root (first) position in the outline. Given
-    c, Leo scripts can gain access to all data present while Leo is running,
-    including all of Leo's classes, functions and data.
-
-**position**
-    The predefined object p is the position of the presently selected
-    node. Positions represent locations in Leo outlines. For any position p,
-    p.v is the vnode at that position.
-
-**vnode**
-    A vnode represents a single outline node. Because of clones, a vnode may
-    appear in several places on the screen. Vnodes hold most of the data in Leo
-    outlines. For any vnode v, v.h is the node's headline, and v.b is the node's
-    body text. As a convenience, for any position p, p.h and p.b are synonyms
-    for p.v.h and p.v.b.
-
-Most scripts will need only the objects and classes described above.
-</t>
-<t tx="ekr.20040411151245" rst_http_attribute="5d71002858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d343522206e616d653d22687474702d6e6f64652d6d61726b65722d3435223e710158040000003c2f613e71025d71032858440000003c64697620636c6173733d2273656374696f6e222069643d2273756d6d6172792d6f662d7468652d766e6f64652d616e642d706f736974696f6e2d636c6173736573223e710458060000003c2f6469763e71055d710628583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710758060000003c2f6469763e71085d71092858060000003c626f64793e710a58070000003c2f626f64793e710b5d710c2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710d58070000003c2f68746d6c3e710e4e6565656558250000003c64697620636c6173733d2273656374696f6e222069643d226974657261746f7273223e0a710f584c0000003c68323e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964323322206e616d653d226974657261746f7273223e4974657261746f72733c2f613e3c2f68323e0a7110652e">Here is the list of Leo's iterators::
-
-    c.all_nodes             # all vnodes in c.
-    c.all_unique_nodes      # all unique vnodes in c.
-    c.all_positions         # all positions in c.
-    c.all_unique_positions  # all unique positions in c.
-
-    p.children              # all children of p.
-    p.following_siblings    # all siblings of p that follow p.
-    p.nodes                 # all vnodes in p's subtree.
-    p.parents               # all parents of p.
-    p.self_and_parents      # p and all parents of p.
-    p.siblings              # all siblings of p, including p.
-    p.subtree               # all positions in p's subtree, excluding p.
-    p.self_and_subtree      # all positions in p's subtree, including p.
-    p.unique_nodes          # all unique vnodes in p's subtree.
-    p.unique_subtree        # all unique positions in p's subtree.
-
-**Note**: An iterator that returns **unique positions** is an iterator that returns
-a list of positions such that p.v == v at most once for any vnode v.
-Similarly, a generator that returns **unique nodes** is a generator that returns
-a list that contains any vnode at most once.
-
-**Note**: The names given above are the recommended names for Leo's iterators.
-Leo continues to support the names of iterators used before Leo 4.7.
-These names typically end with the _iter suffix.
 </t>
 <t tx="ekr.20040414161647" str_atime="1376411963.0">@pagewidth 70
 @tabwidth -4
@@ -3013,17 +2862,6 @@ My brother, David Speed Ream, tested Leo and made many useful suggestions.
 Rebecca, James and Linda make it all worthwhile.
 It was during a conversation with Rebecca that I realized that MORE could be used as a prototype for Leo.
 That was a crucial first step.
-</t>
-<t tx="ekr.20040903100514" rst_http_attribute="5d71002858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d323322206e616d653d22687474702d6e6f64652d6d61726b65722d3233223e710158040000003c2f613e71025d71032858450000003c64697620636c6173733d2273656374696f6e222069643d22702d737562747265652d697465722d616e642d702d73656c662d616e642d737562747265652d69746572223e710458060000003c2f6469763e71055d710628582e0000003c64697620636c6173733d2273656374696f6e222069643d2274726176657273696e672d6f75746c696e6573223e710758060000003c2f6469763e71085d710928583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710a58060000003c2f6469763e710b5d710c2858060000003c626f64793e710d58070000003c2f626f64793e710e5d710f2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711058070000003c2f68746d6c3e71114e656565656558070000003c2f6469763e0a7112583f0000003c64697620636c6173733d2273656374696f6e222069643d2274657374696e672d776865746865722d612d706f736974696f6e2d69732d76616c6964223e0a711358800000003c68323e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313222206e616d653d2274657374696e672d776865746865722d612d706f736974696f6e2d69732d76616c6964223e54657374696e672077686574686572206120706f736974696f6e2069732076616c69643c2f613e3c2f68323e0a7114652e">The tests::
-
-    if p:       # Right
-    if not p:   # Right
-
-are the **only** correct ways to test whether a position p is valid.
-In particular, the following **will not work**::
-
-    if p is None:       # Wrong
-    if p is not None:   # Wrong
 </t>
 <t tx="ekr.20050306090601">Leo's .leo file format is extensible.
 The basis for extending .leo files are the v.unknownAttributes ivars of vnodes,
@@ -3173,6 +3011,14 @@ Removes @ignore, @nocolor, @wrap directives.
 <t tx="ekr.20050812123002.7">Used differently.  See rst2_pure_document.
 </t>
 <t tx="ekr.20050812134441.1">.. Links used in this document.
+
+.. |br| raw:: html
+
+   &lt;br /&gt;
+
+.. _`Directed Acyclic Graphs`:  https://en.wikipedia.org/wiki/Directed_acyclic_graph
+.. _`Python generator`:         https://wiki.python.org/moin/Generators
+.. _`Python generators`:        https://wiki.python.org/moin/Generators
 .. _front:                  index.html
 .. _`Designing with Leo`:   design.html
 .. _`Customizing Leo`:      customizing.html
@@ -4774,10 +4620,6 @@ See `Specifying settings`_ for a description of how to change Leo's settings.
 .. Absolute links..
 .. _OPML:   http://en.wikipedia.org/wiki/OPML
 </t>
-<t tx="ekr.20050901102300">.. |br| raw:: html
-
-   &lt;br /&gt;
-</t>
 <t tx="ekr.20050902073404">Scripts must wary of saving positions because positions become invalid
 whenever the user moves, inserts or deletes nodes.  It is valid to store
 positions **only** when a script knows that the stored position will be used
@@ -4946,7 +4788,7 @@ information in external files. This made the read code much more robust, and
 eliminated all the previous unworkable error recovery schemes. At last Leo
 was on a completely firm foundation.
 </t>
-<t tx="ekr.20050903074833">Plugins and other scripts can register event handlers (also known as hooks) with code such as::
+<t tx="ekr.20050903074833">Plugins and other scripts can register event handlers (also known as hooks)::
 
     leoPlugins.registerHandler("after-create-leo-frame",onCreate)
     leoPlugins.registerHandler("idle", on_idle) 
@@ -7695,33 +7537,26 @@ My second choice is using g.pdb to set breakpoints for the pdb_ debugger. Pdb
 uses the console for all interaction, so you must `run Leo in a console window`_.
 See `the FAQ`_ for a discussion of both g.trace and g.pdb.
 </t>
-<t tx="ekr.20070120075236">All Leo scripts run with the execute-script command (Ctrl-B)
-have access to the following three **predefined objects**:
+<t tx="ekr.20070120075236">The execute-script command (Ctrl-B) predefines the symbols c, g and p.
 
-- c is the commander of the outline containing the script.
+c is the **commander** of the outline containing the script.
 
-- g is Leo's leo.core.leoGlobals module.
+- Commanders are instances of the Commands class, defined in
+  leoCommands.py. The Commands class is huge, but Leo scripts typically
+  only use a few commander methods, discussed later.
 
-- p is the presently selected position, the same as c.p.
+g is Leo's leo.core.leoGlobals module.
 
-The predefined c, g and p variables give *full* and *easy* access to all
-the data in your outlines, as well as hundreds, if not thousands, of useful
-Python functions in Leo's core. These variables define an easy-to-use DOM
-(Document Object Model) through which you can get o set any data in *your*
-outlines. The hello world example is::
+- Leo scripts typically use several utility functions defined in this module.
 
-   for p in c.all_positions():
-       indent = '.' * p.level()
-       print('%s%s' % (indent,p.h))
+p is the presently selected position, c.p.
 
-Here, c.all_positions() delivers a list of positions, and p.level() and p.h
-deliver the indentation level and head string of position p.
+Leo scripts can redefine these symbols if they like.
 </t>
 <t tx="ekr.20070122093626">Positions become invalid whenever the outline changes. 
 
-c.positionExists(p) returns True if position p is (still) valid in Commander c.
-
-The following code will find a position p2 having the same vnode as p::
+This script finds a position p2 having the same vnode as an invalid
+position p::
 
     if not c.positionExists(p):
         for p2 in c.all_positions():
@@ -8508,10 +8343,14 @@ in an @item node is just a hyphen (-), the item represents a menu separator.
 <t tx="ekr.20071005100213">Essentially all of Leo's startup code now runs with jython 2.2 and the (unfinished!) swing gui.
 </t>
 <t tx="ekr.20071021102946">Two methods in leoGlobals.py allow scripts and plugins to enable and disable 'idle' events.
-**g.enableIdleTimeHook(idleTimeDelay=100)** enables the "idle" hook.
-Afterwards, Leo will call the "idle" hook approximately every idleTimeDelay milliseconds.
-Leo will continue to call the "idle" hook periodically until disableIdleTimeHook is called.
-**g.disableIdleTimeHook()** disables the "idle" hook.
+
+g.enableIdleTimeHook(idleTimeDelay=100) enables the "idle" hook.
+
+- Leo will call the "idle" hook approximately every idleTimeDelay milliseconds.
+
+- Leo will continue to call the "idle" hook periodically until disableIdleTimeHook is called.
+
+g.disableIdleTimeHook() disables the "idle" hook.
 </t>
 <t tx="ekr.20071026055929"></t>
 <t tx="ekr.20071026055929.1">First, you must change Python's default encoding to something other than 'ascii'.  To do this, put the following in your sitecustomize.py file in Python's Lib folder::
@@ -8559,9 +8398,10 @@ icons to do the following:
 Fixed a bug in the icon handling in the outline widget that caused
 duplicate icons not to be drawn properly.
 </t>
-<t tx="ekr.20071026183116">Scripts can invoke various dialogs using the following methods of the g.app.gui object.
-Here is a partial list. You can use typing completion(default bindings: Alt-1 and Alt-2) to get the full list!
-::
+<t tx="ekr.20071026183116">Scripts can invoke various dialogs using the following methods of the
+g.app.gui object.
+
+Here is a partial list. Use typing completion to get the full list::
 
     g.app.gui.runAskOkCancelNumberDialog(c,title,message)
     g.app.gui.runAskOkCancelStringDialog(c,title,message)
@@ -14819,7 +14659,6 @@ settings. In particular, the default export path, "c:\" must be changed for \*ni
 systems.
 
 </t>
-<t tx="ekr.20101124083644.5047"></t>
 <t tx="ekr.20101124083644.5048"></t>
 <t tx="ekr.20101124083644.5049">.. _`pdb`:  http://docs.python.org/library/pdb.html
 .. _`pudb`: http://pypi.python.org/pypi/pudb
@@ -14827,24 +14666,21 @@ systems.
 g.pdb() invokes Python `pdb`_ debugger.  You must be running Leo
 from a console to invoke g.pdb().
 
-g.pdb() is merely a convenience.  It is equivalent to::
+g.pdb() is equivalent to::
 
     import pdb
     pdb.set_trace()
-
-The debugger_pudb.py plugin causes g.pdb() to invoke the full-screen `pudb`_
-debugger instead of pdb. pudb works on Linux and similar systems; it does not
-work on Windows.
 </t>
-<t tx="ekr.20101124083644.5050">**g.openWithFileName** opens a .leo file. For example::
+<t tx="ekr.20101124083644.5050">g.openWithFileName opens a .leo file::
 
     new_c = g.openWithFileName(fileName,c)
 
 new_c is the commander of the newly-created outline.
 </t>
-<t tx="ekr.20101124083644.5051">**g.getScript(c,p)** returns the expansion of p's body text. (If p is the
-presently selected node and there is a text selection, g.getScript returns the
-expansion of only the selected text.)
+<t tx="ekr.20101124083644.5051">g.getScript(c,p) returns the expansion of p's body text.
+
+If p is the presently selected node and there is a text selection,
+g.getScript returns the expansion of only the selected text.
 
 Leo scripts can use g.getScript to implement new ways of executing Python code.
 For example, the mod_scripting plugin uses g.getScript to implement @button nodes,
@@ -16761,24 +16597,6 @@ For details, see the release notes.
 For full details, see the release notes.
 </t>
 <t tx="ekr.20120320153011.8551"></t>
-<t tx="ekr.20130521122236.15098">A **position** object represents a specific node in a Leo outline.
-Equivalently, a position represents the state of a Leo generator, that is,
-a specific node during a traversal of a Leo outline.
-Because of clones, a node may appear arbitrarily many times in an outline,
-so a node may appear at arbitrarily many positions in the outline.
-
-For any position p, **p.v** is the vnode at position p.
-A node's vnode never changes, regardless of where the node appears in the
-outline, and regardless of whether the node is cloned or not.
-
-**Positions become invalid when the outline changes.** You may save and and
-use positions *provided* the outline remains unchanged. Leo's generators
-deliver positions, one after each other, using a *single* (ever-changing)
-position object. As a result, scripts must use p.copy() to create lists of
-positions. For example::
-
-    aList = [p.copy() for p in c.rootPosition().subtree()]
-</t>
 <t tx="ekr.20130807203905.16526">@language rest
 
 When I study a program, I like to import it into Leo. I have several
@@ -20087,11 +19905,6 @@ g.app.ipk.namespace is the IPython namespace(!)
 
 pyzmq-2.2.0.win32-py2.7.msi
 </t>
-<t tx="ekr.20130930062914.15969">The leoGlobals module g defines a Python dictionary called g.user_dict.
-Similarly, each commander c defines a Python dictionary, c.user_dict. These
-dictionaries do not persist when Leo exits. They are for use of scripts and
-plugins.
-</t>
 <t tx="ekr.20131001045038.17448">This idea got started when I (Ville M. Vainio) saw this post by Edward Ream
 on IPython developer mailing list:
 http://lists.ipython.scipy.org/pipermail/ipython-dev/2008-January/003551.html
@@ -21342,17 +21155,24 @@ History of Leo
 .. contents::
     :depth: 2
 </t>
-<t tx="ekr.20131009065148.31760">###################
-Theory of Operation
-###################
+<t tx="ekr.20131009065148.31760">#########################
+Exploring Leo's Code Base
+#########################
 
-This chapter assumes that you are one of Leo's implementors.
+.. |br| raw:: html
 
-You already know that leoFind.py implements Leo's find command, that
-leoUndo.py implements Leo's undo system, and so on.
+   &lt;br /&gt;
+   
+This chapter is for anyone who wants to understand Leo's code base,
+including those who want to be one of Leo's implementors.
 
-This chapter discusses topics that may not be apparent from perusing the
-code.
+You already know that leoFind.py and leoUndo.py implement Leo's find and
+undo command, and so on.
+
+This chapter focuses on the *process* of finding your way around Leo's
+code, not the myriad details you will find within Leo's code.
+
+It's actually very easy! Try it. You'll see.
 
 Reading this chapter should take about 20 minutes.
 
@@ -21715,36 +21535,6 @@ The most important setters of any position p are::
     p.unique_subtree        # all unique positions in p's subtree.
 </t>
 <t tx="ekr.20131010160850.17462"></t>
-<t tx="ekr.20131011050613.16796">The vnode class (in leoNodes.py) contains *all* outline data.
-
-The v.children and v.parents arrays carry all outline structure.
-
-Because Leo outlines are `DAGs`_, vnodes may have mutliple parents.
-
-**Important**: All clones of a node **are the same node**.
-
-..  This is the so-called **one-node** world. In this world, vnodes represent
-..  data, generators and positions represent the location of the data in an
-..  outline. Leo's drawing code creates the illusion that a node can appear in
-..  multiple parts of an outline.
-
-..  In Leo versions 4.2 to 4.6 clones were represented by sharing **tnodes**.
-..  Cloned vnodes shared the same tnode. This shared tnode represented the
-..  entire shared subtree of both clones. Thus, the _firstChild link had to
-..  reside in *tnodes*, not *vnodes*.
-
-..  Prior to Leo version 4.2, Leo duplicated all the descendants of vnode v
-..  when cloning v. This created many complications that were removed in the
-..  shared tnode world. In particular, in the shared tnode scheme a vnode v is
-..  cloned if and only if len(v.vnodeList) &gt; 1.
-
-Strictly speaking, only the v.children arrays are needed to carry outline
-structure. |br|
-v.parents is a speed optimization. It eliminates the need to search the
-outline when inserting or deleting nodes.
-
-Because of unlimited Undo, Leo deletes vnodes only when a window closes.
-</t>
 <t tx="ekr.20131011050613.16797">The position class defines a location in a traversal of an outline.
 
 Positions have three ivars: p.v, p.childIndex, and p.stack.
@@ -21801,7 +21591,12 @@ Many complex methods define a trace variable::
     
 A good rule of thumb: the more complex a method is, the more useful its
 traces are likely to be.
-</t>
+
+You can also to use g.pdb() to single-step through the code.
+I typically use g.pdb() only for deep mysteries!
+
+**Note**: you must run Leo from a console window to use either g.trace or
+g.pdb. I recommend always running Leo from a console.</t>
 <t tx="ekr.20131011050613.16866">Several modules contain long comments::
 
     &lt;&lt; about new sentinels &gt;&gt; (leoAtFile.py)
@@ -21819,14 +21614,14 @@ These comments may be helpful, but do *not* assume that they are accurate.
 
 When in doubt, trust the code, not the comments.
 </t>
-<t tx="ekr.20131011050613.16868">I have said many times that I remember few details about the code. I'm not
-kidding!
+<t tx="ekr.20131011050613.16868">You can learn *anything* about Leo, provided that you can cause Leo to
+execute the relevant code. That's usually very easy!
 
-When fixing a bug, it's *easy* to know where to start looking. Isolating
-the module or modules involved is usually obvious.
+- It should be straightforward to isolate the module or modules involved.
+- The next several sections give hints about finding interesting code.
+- Once you find a bit of interesting code, use g.pdb or g.trace to study it.
 
-Within a particular module, I know from long experience where the most
-important and fragile methods are. Here they are...
+The following sections provide more details...
 </t>
 <t tx="ekr.20131011050613.16870">The following methods and their helpers all have useful traces:
 
@@ -21838,19 +21633,14 @@ important and fragile methods are. Here they are...
 
 - k.getArg handles commands like Ctrl-F (search-with-present-options)
   that prompt the user for input.
-  
-Leo's key handling is complex because it does inherently complex things:
-
-- Code in various places translate user key bindings to dictionaries.
-
-- eventFilter and its helpers translates incoming QKeyEvents to LeoKeyEvents.
-
-- k.masterKeyHandler associates incoming LeoKeyEvents with
-  mode-and-pane-dependent bindings.</t>
+</t>
 <t tx="ekr.20131011050613.16871">c.outerUpdate and helpers eliminate flicker by redrawing the screen only at
 the end of each command.
 
 c.outerUpdate contains several sophisticated and useful traces.
+
+qtGui.set_focus (qtGui.py) is the only place that actually explicitly sets
+focus in Leo. Enabling a trace there can be useful.
 </t>
 <t tx="ekr.20131011050613.16872"></t>
 <t tx="ekr.20131011050613.16876">The following methods are surprisingly fragile. Change them only after
@@ -21871,6 +21661,264 @@ any way:
 In addition, *all* event handling in baseNativeTree.py is extremely
 fragile. Don't even think about changing this code unless you know exactly
 what you are doing.
+</t>
+<t tx="ekr.20131012060912.16766"></t>
+<t tx="ekr.20131012060912.16768">Leo creates commands in two ways:
+
+1. Using the @g.command(command-name) decorator.
+
+2. Using tables, usually getPublicCommands methods in various classes.
+
+For example, to find the code for the sort-lines command, search for
+sort-lines. You will find::
+
+    'sort-lines':    self.sortLines,
+    
+Now search for "def sortLines" and you have arrived.</t>
+<t tx="ekr.20131012060912.16769">The following sections discuss topics that may not be apparent from reading
+the sources.
+</t>
+<t tx="ekr.20131012060912.16770">Leo's key handling is complex because it does inherently complex things:
+
+- Code in various places translate user key bindings to dictionaries.
+
+- eventFilter and its helpers translates incoming QKeyEvents to LeoKeyEvents.
+
+- k.masterKeyHandler associates incoming LeoKeyEvents with
+  mode-and-pane-dependent bindings.
+  
+Much of this complexity is a direct result in the flexibility given to
+users in specifying key bindings.
+</t>
+<t tx="ekr.20131012060912.16773"></t>
+<t tx="ekr.20131012060912.16774">The vnode class is defined in leoNodes.py.
+
+A **vnode** stores the all the data in a single Leo node. For any vnode v:
+
+- v.h is the node's headline
+- v.b is the node's body text
+- v.u is the node's **user data**. (more about that later).
+
+Every vnode has internal ivars representing outline structure. Your scripts
+should *never* change those ivars directly. Instead, scripts should use
+position methods to insert, delete or move nodes, as explained later.
+
+Because of unlimited undo, vnode objects continue to exist after the user
+has deleted the corresponding node. Leo permanently deletes vnodes only
+when a window closes.
+
+Because of clones, any particular vnode may appear in several places in an
+outine.
+
+In fact, there is *no way* to traverse (visit) all the nodes of a Leo
+outline using only the data found in vnodes. Instead, generators must be
+used to produce a list of positions, as discussed next.
+</t>
+<t tx="ekr.20131012060912.16775">Leo generators provide (generate) a sequence of positions.
+
+- Like all `Python generators`_, Leo generators do *not* return actual
+  lists; this saves lots of space for large outlines.
+
+- During a traversal, Leo generators use a *single* position, saving even
+  more space.
+  
+- Leo generators return an **empty position** when the generator finishes.
+
+- Empty positions have p.v == None.
+
+- Here are the right and wrong ways to test for empty positions::
+
+    if p:               # Right
+    if not p:           # Right
+    if p is None:       # Wrong
+    if p is not None:   # Wrong</t>
+<t tx="ekr.20131012060912.16776">The position class defines a location in a traversal of an outline.
+
+Positions have three ivars: p.v, p.childIndex, and p.stack.
+
+p.stack represents p's *present* parents, that is, the parents at a
+particular point of a tree traversal.
+
+Entries in p.stack describe all ancestors of p at a particular point of a
+tree traversal.
+
+All of Leo's iterators use a *single* position for the entire traversal;
+that position (its ivars) constantly changes throughout the traversal.
+
+**Positions become invalid whenever the outline changes.**
+
+c.positionExists(p) returns True if position p is (still) valid in Commander c.
+
+
+
+
+
+    for p in c.all_positions():
+        print(id(p))
+        print(p.v)
+        print(p.h)
+        
+        
+        
+====================
+        
+A **position** object represents a specific node in a Leo outline.
+Equivalently, a position represents the state of a Leo generator, that is,
+a specific node during a traversal of a Leo outline.
+Because of clones, a node may appear arbitrarily many times in an outline,
+so a node may appear at arbitrarily many positions in the outline.
+
+For any position p, **p.v** is the vnode at position p.
+A node's vnode never changes, regardless of where the node appears in the
+outline, and regardless of whether the node is cloned or not.
+
+**Positions become invalid when the outline changes.** You may save and and
+use positions *provided* the outline remains unchanged. Leo's generators
+deliver positions, one after each other, using a *single* (ever-changing)
+position object. As a result, scripts must use p.copy() to create lists of
+positions. For example::
+
+    aList = [p.copy() for p in c.rootPosition().subtree()]
+</t>
+<t tx="ekr.20131012060912.16777">The v.children and v.parents arrays carry all outline structure.
+
+Because Leo outlines are `DAGs`_, vnodes may have multiple parents.
+
+**Important**: All clones of a node **are the same node**.
+
+..  Strictly speaking, only the v.children arrays are needed to carry outline
+..  structure. v.parents is a speed optimization. It eliminates the need to
+..  search the outline when inserting or deleting nodes.
+</t>
+<t tx="ekr.20131012060912.16778">Leo scripts are elegant--they pack a lot of power in small packages. For
+example, this short script prints the headline of all nodes in the outline
+in Leo's log pane::
+
+    for p in c.all_positions():
+        g.es(p.h)
+
+These two lines use *all* the basic features of Leo scripts: predefined
+symbols, generators, positions and vnodes:
+
+- The execute-script command runs this script without errors because it
+  predefines the c and g symbols. c is a Commands object; g is the
+  leo.core.leoGlobals module.
+  
+- c and g give access to all of Leo's source code, including many functions
+  and methods commonly used in Leo scripts.
+
+- c.all_positions() is a **Leo generator**, a `Python generator`_ defined by Leo.
+
+- Leo generators **traverse** (visit each node of) the outline, usually in outline order.
+
+- Leo generators return a sequence of **positions** p.
+
+- Each position represents a particular state (position) of the traversal.
+
+- For any position p, p.v is the **vnode** at p.
+
+- vnodes contain *all* the data in Leo outlines.
+
+- For any vnode v, v.h is the node's headline; v.b is the node's body text.
+
+- For any position p, p.b and p.h are synonyms for p.v.b and p.v.h.
+
+- The g.es function prints its arguments to the Log pane.
+
+Whew! There is a lot to digest in this simple example.
+
+Happily, scripting Leo becomes second nature after a bit of experience.
+</t>
+<t tx="ekr.20131012060912.16781"></t>
+<t tx="ekr.20131012060912.16782">The leo.core.leoGlobals module defines hundreds of utility functions. See
+the sources for leoGlobals.py for a complete list.
+
+The following are the most useful.</t>
+<t tx="ekr.20131012060912.16784"></t>
+<t tx="ekr.20131012060912.16785"></t>
+<t tx="ekr.20131012060912.16786">g.app is the singleton leoApp object representing the Leo application itself.
+
+The ivars of g.app act Like Leo's global variables:
+
+- g.app.commanders() returns a list of all active commanders.
+
+- g.app.gui is the singleton leoGui object representing Leo's gui-related code.
+
+- g.unitTesting is True if Leo is running unit tests.
+
+- g.app windowlist is a list of all frames of all open window.
+  
+
+</t>
+<t tx="ekr.20131012060912.16788">g.es can send it's output to tabs other than the log tab::
+
+    c.frame.log.selectTab('Test')
+        # Create Test or make it visible.
+
+    g.es('Test',color='blue',tabName='Test')
+        # Write to the test tab.
+</t>
+<t tx="ekr.20131012060912.16792">g.user_dict is a Python dictionary for use by scripts and plugins.
+It does not persist when Leo exists.
+
+Leo creates a similar dictionary, c.user_dict, in each commander.
+</t>
+<t tx="ekr.20131012060912.16794">c.user_dict is a Python dictionary for use by scripts and plugins.
+It does not persist when Leo exists.
+
+Leo creates a similar dictionary, g.user_dict.
+</t>
+<t tx="ekr.20131012060912.16795"></t>
+<t tx="ekr.20131012060912.16799"></t>
+<t tx="ekr.20131012060912.16800"></t>
+<t tx="ekr.20131012060912.16804">Returning strings::
+
+    p.b # the body string of p.
+    p.h # the headline string of p. A property.
+
+Returning ints::
+
+    p.childIndex()
+    p.numberOfChildren()
+    p.level()
+
+Returning bools representing property bits::
+
+    p.hasChildren()
+    p.isAncestorOf(v2) # True if v2 is a child, grandchild, etc. of p.
+    p.isCloned()
+    p.isDirty()
+    p.isExpanded()
+    p.isMarked()
+    p.isVisible()
+    p.isVisited()
+</t>
+<t tx="ekr.20131012060912.16806"></t>
+<t tx="ekr.20131012060912.16807"></t>
+<t tx="ekr.20131012060912.16808">To write Leo scripts, you must understand a bit about how Leo actually
+works behind the scenes. Here is the big picture:
+
+1. **vnodes** store all the data in Leo outlines.
+
+- Because of clones, there is *no way* to traverse (visit) all the nodes of
+  a Leo outline using only the data found in vnodes.
+
+2. **generators** traverse Leo outlines node by node.
+
+- Leo's generators generate a sequence of positions.
+
+3. **positions** represent a particular point (node) of a traversal.
+
+- position objects give access to nodes (vnodes) during a traversal.
+
+4. All clones of a node are actually **exactly the same vnode**.
+
+- Leo outlines are Directed Acyclic Graphs (DAGs), not simple trees.
+
+- Multiple (different!) positions may give access to the same vnode.
+
+This is a lot to digest at one time. The following sections explain these
+statements in detail.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few

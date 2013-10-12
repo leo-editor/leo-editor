@@ -8384,91 +8384,6 @@ whole profile at one time, without messing with the local system's registry.
 
 Also handy for those not in portable mode, but working on different windows 
 boxes and bored with having to tweak each one separately.
-.. @+node:ekr.20130807203905.16678: *3* For Implementors
-@language rest
-
-- Don't read code: use g.trace and g.pdb instead.
-- Where the bodies are hidden.
-    - self.w in leoEditCommands.py
-- Complex code that *can't* be simplified.
-- The top 20 methods.  You must understand these *in general*.
-    - k.masterKeyHandler.
-    - qt.eventFilter.
-    
-** Add mandatory _kind fields to all g.Bunches.
-.. @+node:ekr.20130807203905.16679: *4* Centralizing focus handling (to make debugging easier)
-From: "Ville M. Vainio" <vivainio@gmail.com>
-
-I am having some problems wrapping my head around how focus behaves
-throughout leo.
-
-IMO it would be a good idea to have only one place in Leo where focus is
-explicitly set. E.g. g.setFocus(widget). This implementetation would
-suffice:
-
-def setFocus(widget):
-  widget.setFocus()
-
-Reasoning: it would be handy to add debugging stuff here, to see why my
-focus stuff is failing in alt-x go-anywhere handling.
-
-(My guess is treeFocusHelper only understanding focus being either in tree
-or body, but no time to explore further now)
-
-===== EKR
-
-In fact, there is only one such place: c.outerUpdate.  The various
-xWantsFocus methods simply set ivars, which c.outerUpdate uses to set the
-focus when a command completes.
-
-The various xWantsFocusNow methods call c.outerUpdate immediately.  Usually
-we don't want to do this, because it could cause screen flash, but
-sometimes the immediate update is essential.
-
-I've marked this thread as a topic for implementers.  Such things will form
-the basis for documentation for my successors.
-.. @+node:ekr.20130807203905.16681: *4* Free "continuous integration" for Leo
-From: "Ville M. Vainio" <vivainio@gmail.com>
-
---089e0122f80868cb1b04dce55d84
-Content-Type: text/plain; charset=ISO-8859-1
-
-Someone may be interested in investigating a free CI system for Leo:
-
-https://travis-ci.org/
-
-This could e.g. create debian packages for daily builds, run unit tests,
-check stuff with lint, try compiling with python3 so we (*cough*) wouldn't
-have accidental print statements in the source...
-.. @+node:ekr.20130807203905.16684: *4* Toolkit independent apis
-From: "Ville M. Vainio" <vivainio@gmail.com>
-
-Ramblings relevant to Leo, by the PyQt lead developer:
-
-http://www.riverbankcomputing.co.uk/static/Docs/dip/architecture.html#the-realities-of-software-development
-
-esp "The Myth of Toolkit Independence"
-
-===== EKR
-
-Leo's core benefits greatly from toolkit independence, despite some
-(usually minor) extra complexity. Obviously, this has not constrained
-what plugins can do.
-
-This is pretty much a non-issue for Leo.  The reason is clear enough:
-the hundreds of commands defined in Leo's core are mostly
-straightforward renditions of emacs text commands.  There, the
-constraints of an abstraction layer do not pinch.  Furthermore, using
-common gui-level code is a good application of the DRY (Don't Repeat
-Yourself) principle, as recent bug fixes in the common code
-illustrate.
-
-The code for ensuring that the outline and body text are updated
-properly (and in synch!) is much more difficult, but the difficulties
-are fundamental: they have almost nothing to do with actual guis.
-
-In short, I think Leo's design uses the best of the gui-dependent and
-gui-independent approaches.
 .. @+node:ekr.20130803125244.17101: *3* Gallery of screenshots
 .. @+node:ekr.20130807203905.16650: *3* Leo in a nutshell (statistics)
 https://groups.google.com/forum/#!topic/leo-editor/lgHE4OJSLzw
@@ -9040,6 +8955,91 @@ with it avoiding repetitive tasks for me.
 Thanks for your software, Im really excited to have found it.
 .. @+node:ekr.20130806211959.17307: ** Help (For FAQ?)
 @language rest
+.. @+node:ekr.20130807203905.16678: *3* For Implementors
+@language rest
+
+- Don't read code: use g.trace and g.pdb instead.
+- Where the bodies are hidden.
+    - self.w in leoEditCommands.py
+- Complex code that *can't* be simplified.
+- The top 20 methods.  You must understand these *in general*.
+    - k.masterKeyHandler.
+    - qt.eventFilter.
+    
+** Add mandatory _kind fields to all g.Bunches.
+.. @+node:ekr.20130807203905.16679: *4* Centralizing focus handling (to make debugging easier)
+From: "Ville M. Vainio" <vivainio@gmail.com>
+
+I am having some problems wrapping my head around how focus behaves
+throughout leo.
+
+IMO it would be a good idea to have only one place in Leo where focus is
+explicitly set. E.g. g.setFocus(widget). This implementetation would
+suffice:
+
+def setFocus(widget):
+  widget.setFocus()
+
+Reasoning: it would be handy to add debugging stuff here, to see why my
+focus stuff is failing in alt-x go-anywhere handling.
+
+(My guess is treeFocusHelper only understanding focus being either in tree
+or body, but no time to explore further now)
+
+===== EKR
+
+In fact, there is only one such place: c.outerUpdate.  The various
+xWantsFocus methods simply set ivars, which c.outerUpdate uses to set the
+focus when a command completes.
+
+The various xWantsFocusNow methods call c.outerUpdate immediately.  Usually
+we don't want to do this, because it could cause screen flash, but
+sometimes the immediate update is essential.
+
+I've marked this thread as a topic for implementers.  Such things will form
+the basis for documentation for my successors.
+.. @+node:ekr.20130807203905.16681: *4* Free "continuous integration" for Leo
+From: "Ville M. Vainio" <vivainio@gmail.com>
+
+--089e0122f80868cb1b04dce55d84
+Content-Type: text/plain; charset=ISO-8859-1
+
+Someone may be interested in investigating a free CI system for Leo:
+
+https://travis-ci.org/
+
+This could e.g. create debian packages for daily builds, run unit tests,
+check stuff with lint, try compiling with python3 so we (*cough*) wouldn't
+have accidental print statements in the source...
+.. @+node:ekr.20130807203905.16684: *4* Toolkit independent apis
+From: "Ville M. Vainio" <vivainio@gmail.com>
+
+Ramblings relevant to Leo, by the PyQt lead developer:
+
+http://www.riverbankcomputing.co.uk/static/Docs/dip/architecture.html#the-realities-of-software-development
+
+esp "The Myth of Toolkit Independence"
+
+===== EKR
+
+Leo's core benefits greatly from toolkit independence, despite some
+(usually minor) extra complexity. Obviously, this has not constrained
+what plugins can do.
+
+This is pretty much a non-issue for Leo.  The reason is clear enough:
+the hundreds of commands defined in Leo's core are mostly
+straightforward renditions of emacs text commands.  There, the
+constraints of an abstraction layer do not pinch.  Furthermore, using
+common gui-level code is a good application of the DRY (Don't Repeat
+Yourself) principle, as recent bug fixes in the common code
+illustrate.
+
+The code for ensuring that the outline and body text are updated
+properly (and in synch!) is much more difficult, but the difficulties
+are fundamental: they have almost nothing to do with actual guis.
+
+In short, I think Leo's design uses the best of the gui-dependent and
+gui-independent approaches.
 .. @+node:ekr.20130806211959.17315: *3* Background Images in body pane?
 From: tfer <tfetherston@aol.com>
 
