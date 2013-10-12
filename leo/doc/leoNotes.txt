@@ -7192,6 +7192,52 @@ amazon link:
 http://www.amazon.com/Beginning-Joomla-From-Novice-Professional/dp/1590598482/ref=sr_1_1?ie=UTF8&qid=1380681874&sr=8-1&keywords=beginning+joomla+from+novice+to+professional
 .. @+node:ekr.20131001100335.15926: *4* derwish
 To me, it's to directed acyclic graphs what MS Excel is to tables. 
+.. @+node:ekr.20131012060912.16765: *4* matt
+What an enormously long and interesting thread!
+
+Thanks for the sub-thread on using Leo for plain ol' writing. It rings true
+for me. Leo doesn't leverage much of my prior muscle memory, and that leads
+me away from it, and once away it takes awhile to return. This is still
+true even though I've been using Leo for half a decade now, and have even
+contributed a small thing or two to the bzr repository.
+
+I generally use notepad2, notepad++ for quick and dirty scripts (usually
+Windows batch files), editing .ini,.conf, xml etc., etc. files. Way fast
+startup time and their syntax highlighting know more file types and is more
+reliable (complete). They also grok (some) regular expressions.
+
+I use vim (+cream) when I want to do search and replace, which happens a
+lot. I just never figured out how to use this properly in Leo;
+`[esc]:%s/old-thing/new-thing/g` is just so much faster (modulo the
+significant time it takes to construct regular expressions that actually
+work!). Saved mini-buffer commands across sessions is also very handy. If
+vim+cream was faster to start I'd never use the notepad replacements.
+
+Weirdly, even for python I often use PyScripter instead of Leo. Sometimes
+it's because I need to write for a different version of python than I'm
+running Leo from. Others it's because the output I get from running a Leo
+node as a script differs from the same thing from a cmd
+shell/IDLE/PyScripter console. I also find PyScripter's code completion a
+bit more intuitive for the way I type (though, I didn't discover that until
+I'd already wandered away from Leo for a time).
+
+None of this is meant as a slam against or complaint about Leo! It's just
+sharing observations of my personal use/not-use patterns.
+
+Part of my difficulty in becoming comfortable with Leo is that I'm also not
+that comfortable with python, or even general programming. I'm not a
+software developer; this is changing, but very slowly. Consequently I spend
+a lot of in-Leo time in a state of confusion, often unsure whether I'm
+trying to learn programming or python or Leo or more about the actual
+problem I'm started out trying to solve this morning. :)
+
+Anyway, the point touched on earlier about leveraging the skills and
+experience people already have before they encounter Leo is pretty key to
+the overall adoption rate, I think.
+
+cheers,
+
+-matt
 .. @+node:ekr.20090105132011.6: *3* Regex notes
 # *** match pat2 if not preceded by pat1::
 
@@ -13555,5 +13601,46 @@ lifetime. Another reason why lifetimes are not a standard technique is that they
 are a potentially dangerous optimization. Errors in specifying lifetimes will
 result in dangling pointer references. But this danger might disappear if pypy
 could deduce lifetimes automatically.
+.. @+node:ekr.20131012060912.16790: *3* Functions defined in leoGlobals.py
+leoGlobals.py contains many utility functions and constants.
+The following script prints all the names defined in leoGlobals.py::
+
+    print("Names defined in leoGlobals.py",color="purple")
+    names = g.__dict__.keys()
+    names.sort()
+    for name in names:
+        print(name)
+.. @+node:ekr.20131012060912.16798: *3* Important objects (to be removed)
+Leo scripts typically use the following objects:
+
+**g**
+    The predefined object g is the leo.core.leoGlobals module. This module
+    contains several dozen utility functions and classes.
+
+**g.app**
+    g.app is the **application object** representing the entire Leo application.
+    The instance variables (ivars) of g.app represent Leo's global variables.
+
+**commander**
+    The predefined object c is the commander of the window containing the
+    script. Commanders represent all aspects of a single Leo window. For any
+    commander c, c.p is the presently selected position (see below), and
+    c.rootPosition() is the root (first) position in the outline. Given
+    c, Leo scripts can gain access to all data present while Leo is running,
+    including all of Leo's classes, functions and data.
+
+**position**
+    The predefined object p is the position of the presently selected
+    node. Positions represent locations in Leo outlines. For any position p,
+    p.v is the vnode at that position.
+
+**vnode**
+    A vnode represents a single outline node. Because of clones, a vnode may
+    appear in several places on the screen. Vnodes hold most of the data in Leo
+    outlines. For any vnode v, v.h is the node's headline, and v.b is the node's
+    body text. As a convenience, for any position p, p.h and p.b are synonyms
+    for p.v.h and p.v.b.
+
+Most scripts will need only the objects and classes described above.
 .. @-all
 .. @-leo
