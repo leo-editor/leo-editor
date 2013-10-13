@@ -726,22 +726,17 @@
 <v t="ekr.20131012060912.16773"><vh>Basics</vh>
 <v t="ekr.20131012060912.16774"><vh>vnodes</vh></v>
 <v t="ekr.20131012060912.16775"><vh>generators</vh></v>
-<v t="ekr.20131012060912.16776" a="M"><vh>positions</vh></v>
+<v t="ekr.20131012060912.16776"><vh>positions</vh></v>
 <v t="ekr.20131012060912.16777" a="M"><vh>clones &amp; DAGs</vh></v>
+<v t="ekr.20131012191145.16788"><vh>commanders</vh></v>
 </v>
 <v t="ekr.20131012060912.16781"><vh>Access to Leo's code</vh>
 <v t="ekr.20070120075236"><vh>Predefined symbols: c, g and p</vh></v>
-<v t="ekr.20131012060912.16795"><vh>generators</vh>
-<v t="ekr.20040403173920.10"><vh>c.all_positions &amp; c.all_unique_positions</vh></v>
-<v t="ekr.20131012060912.16799" a="M"><vh>c.all_nodes &amp; c.all_unique_nodes</vh></v>
-<v t="ekr.20040403173920.13"><vh>p.children</vh></v>
-<v t="ekr.20131012060912.16800" a="M"><vh>p.nodes &amp; p.unique_nodes</vh></v>
-<v t="ekr.20040403173920.14"><vh>p.parents &amp; p.self_and_parents</vh></v>
-<v t="ekr.20040403173920.15"><vh>p.siblings &amp; p.following_siblings</vh></v>
-<v t="ekr.20040403173920.16"><vh>p.subtree &amp; p.self_and_subtree &amp; p.unique_subtree</vh></v>
-</v>
+<v t="ekr.20131012192434.16803"><vh>c generators</vh></v>
+<v t="ekr.20131012060912.16795"><vh>p generators</vh></v>
 <v t="ekr.20131012060912.16782"><vh>g functions, etc.</vh>
 <v t="ville.20090603183524.5672"><vh>\@g.command</vh></v>
+<v t="ekr.20131012192434.16792"><vh>g.angleBrackets</vh></v>
 <v t="ekr.20131012060912.16786"><vh>g.app and its ivars</vh></v>
 <v t="ekr.20071026183116"><vh>g.app.gui.run*</vh></v>
 <v t="ekr.20071021102946"><vh>g.enableIdleTimeHook &amp; g.enableIdleTimeHook</vh></v>
@@ -753,6 +748,7 @@
 <v t="ekr.20131012060912.16792"><vh>g.user_dict</vh></v>
 </v>
 <v t="ekr.20131012060912.16784"><vh>c methods &amp; ivars</vh>
+<v t="ekr.20131012191145.16789"><vh>c ivars &amp; properties</vh></v>
 <v t="ekr.20050907094633"><vh>c.config methods</vh></v>
 <v t="ekr.20090223065025.3"><vh>c.frame.body.bodyCtrl</vh></v>
 <v t="ekr.20131012060912.16788" a="M"><vh>c.frame.log</vh></v>
@@ -760,11 +756,10 @@
 <v t="ekr.20131012060912.16794"><vh>c.user_dict</vh></v>
 <v t="ekr.20040403173920.19"><vh>commander preferences</vh></v>
 </v>
-<v t="ekr.20131012060912.16785" a="M"><vh>p methods &amp; properties</vh>
-<v t="ekr.20050902073404"><vh>p.copy</vh></v>
-<v t="ekr.20040403173920.6" a="M"><vh>p.h, p.b &amp; p.u</vh></v>
-<v t="ekr.20131012060912.16804" a="M"><vh>p.getters</vh></v>
-<v t="ekr.20040403173920.28"><vh>p setters</vh></v>
+<v t="ekr.20131012060912.16785"><vh>p methods &amp; properties</vh>
+<v t="ekr.20131012192434.16794"><vh>p properties</vh></v>
+<v t="ekr.20050902073404"><vh>p copy</vh></v>
+<v t="ekr.20131012192434.16795"><vh>p methods acting on nodes</vh></v>
 </v>
 </v>
 <v t="ekr.20131012060912.16806"><vh>Other important topics</vh>
@@ -2534,73 +2529,6 @@ You can also run scripts from @button and @command nodes, as explained below.
     :depth: 2
 
 </t>
-<t tx="ekr.20040403173920.10" rst_http_attribute="5d71002858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d313322206e616d653d22687474702d6e6f64652d6d61726b65722d3133223e710158040000003c2f613e71025d710328582e0000003c64697620636c6173733d2273656374696f6e222069643d2274726176657273696e672d6f75746c696e6573223e710458060000003c2f6469763e71055d710628583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710758060000003c2f6469763e71085d71092858060000003c626f64793e710a58070000003c2f626f64793e710b5d710c2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710d58070000003c2f68746d6c3e710e4e65656565582b0000003c64697620636c6173733d2273656374696f6e222069643d22632d616c6c6e6f6465732d69746572223e0a710f58570000003c68323e3c6120636c6173733d22746f632d6261636b7265662220687265663d222369643722206e616d653d22632d616c6c6e6f6465732d69746572223e632e616c6c4e6f6465735f697465723c2f613e3c2f68323e0a7110652e">The c.all_positions generator returns a list of all positions in the outline.
-This script makes a list of all the nodes in an outline::
-
-    nodes = list(c.all_positions())
-    print("This outline contains %d nodes" % len(nodes))
-
-The c.all_unique_positions generator returns a list of all unique positions in the outline.
-For each vnode v in the outline, exactly one position p is returned such that p.v == v.
-
-This script prints the *distinct* vnodes of an outline::
-
-    for p in c.all_unique_positions():
-        sep = g.choose(p.hasChildren(),'+','-')
-        print('%s%s %s' % (' '*p.level(),sep,p.h))
-</t>
-<t tx="ekr.20040403173920.13" rst_http_attribute="5d71002858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d313522206e616d653d22687474702d6e6f64652d6d61726b65722d3135223e710158040000003c2f613e71025d710328582a0000003c64697620636c6173733d2273656374696f6e222069643d22632d616c6c6e6f6465732d69746572223e710458060000003c2f6469763e71055d710628582e0000003c64697620636c6173733d2273656374696f6e222069643d2274726176657273696e672d6f75746c696e6573223e710758060000003c2f6469763e71085d710928583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710a58060000003c2f6469763e710b5d710c2858060000003c626f64793e710d58070000003c2f626f64793e710e5d710f2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711058070000003c2f68746d6c3e71114e656565656558070000003c2f6469763e0a7112582b0000003c64697620636c6173733d2273656374696f6e222069643d22702d6368696c6472656e2d69746572223e0a711358570000003c68323e3c6120636c6173733d22746f632d6261636b7265662220687265663d222369643822206e616d653d22702d6368696c6472656e2d69746572223e702e6368696c6472656e5f697465723c2f613e3c2f68323e0a7114652e">The p.children generator returns a list of all children of position p::
-
-    parent = p.parent()
-    print("children of %s" % parent.h)
-    for p in parent.children():
-        print(p.h)
-</t>
-<t tx="ekr.20040403173920.14" rst_http_attribute="5d71002858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d313722206e616d653d22687474702d6e6f64652d6d61726b65722d3137223e710158040000003c2f613e71025d710328582a0000003c64697620636c6173733d2273656374696f6e222069643d22702d6368696c6472656e2d69746572223e710458060000003c2f6469763e71055d710628582e0000003c64697620636c6173733d2273656374696f6e222069643d2274726176657273696e672d6f75746c696e6573223e710758060000003c2f6469763e71085d710928583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710a58060000003c2f6469763e710b5d710c2858060000003c626f64793e710d58070000003c2f626f64793e710e5d710f2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711058070000003c2f68746d6c3e71114e656565656558070000003c2f6469763e0a711258460000003c64697620636c6173733d2273656374696f6e222069643d22702d706172656e74732d697465722d616e642d702d73656c662d616e642d706172656e74732d69746572223e0a7113588d0000003c68323e3c6120636c6173733d22746f632d6261636b7265662220687265663d222369643922206e616d653d22702d706172656e74732d697465722d616e642d702d73656c662d616e642d706172656e74732d69746572223e702e706172656e74735f6974657220616e6420702e73656c665f616e645f706172656e74735f697465723c2f613e3c2f68323e0a7114652e">The p.parents generator returns a list of all parents of position p,
-excluding p::
-
-    current = p.copy()
-    print("exclusive of %s" % (current.h),color="purple")
-    for p in current.parents():
-        print(p.h)
-
-The p.self_and_parents generator returns a list of all parents of position
-p, including p::
-
-    current = p.copy()
-    print("inclusive parents of %s" % (current.h),color="purple")
-    for p in current.self_and_parents():
-        print(p.h)    
-</t>
-<t tx="ekr.20040403173920.15" rst_http_attribute="5d71002858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d313922206e616d653d22687474702d6e6f64652d6d61726b65722d3139223e710158040000003c2f613e71025d71032858450000003c64697620636c6173733d2273656374696f6e222069643d22702d706172656e74732d697465722d616e642d702d73656c662d616e642d706172656e74732d69746572223e710458060000003c2f6469763e71055d710628582e0000003c64697620636c6173733d2273656374696f6e222069643d2274726176657273696e672d6f75746c696e6573223e710758060000003c2f6469763e71085d710928583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710a58060000003c2f6469763e710b5d710c2858060000003c626f64793e710d58070000003c2f626f64793e710e5d710f2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711058070000003c2f68746d6c3e71114e656565656558070000003c2f6469763e0a711258490000003c64697620636c6173733d2273656374696f6e222069643d22702d7369626c696e67732d697465722d616e642d702d666f6c6c6f77696e672d7369626c696e67732d69746572223e0a711358940000003c68323e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313022206e616d653d22702d7369626c696e67732d697465722d616e642d702d666f6c6c6f77696e672d7369626c696e67732d69746572223e702e7369626c696e67735f6974657220616e6420702e666f6c6c6f77696e675f7369626c696e67735f697465723c2f613e3c2f68323e0a7114652e">The p.siblings generator returns a list of all siblings of position p::
-
-    current = c.p
-    print("all siblings of %s" % (current.h),color="purple")
-    for p in current.self_and_siblings():
-        print(p.h)
-
-The p.following_siblings generator returns a list of all siblings that
-follow position p::
-
-    current = c.p
-    print("following siblings of %s" % (current.h),color="purple")
-    for p in current.following_siblings():
-        print(p.h)
-</t>
-<t tx="ekr.20040403173920.16" rst_http_attribute="5d71002858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d323122206e616d653d22687474702d6e6f64652d6d61726b65722d3231223e710158040000003c2f613e71025d71032858480000003c64697620636c6173733d2273656374696f6e222069643d22702d7369626c696e67732d697465722d616e642d702d666f6c6c6f77696e672d7369626c696e67732d69746572223e710458060000003c2f6469763e71055d710628582e0000003c64697620636c6173733d2273656374696f6e222069643d2274726176657273696e672d6f75746c696e6573223e710758060000003c2f6469763e71085d710928583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710a58060000003c2f6469763e710b5d710c2858060000003c626f64793e710d58070000003c2f626f64793e710e5d710f2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711058070000003c2f68746d6c3e71114e656565656558070000003c2f6469763e0a711258460000003c64697620636c6173733d2273656374696f6e222069643d22702d737562747265652d697465722d616e642d702d73656c662d616e642d737562747265652d69746572223e0a7113588e0000003c68323e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313122206e616d653d22702d737562747265652d697465722d616e642d702d73656c662d616e642d737562747265652d69746572223e702e737562747265655f6974657220616e6420702e73656c665f616e645f737562747265655f697465723c2f613e3c2f68323e0a7114652e">The p.subtree generator returns a list of all positions in p's subtree, excluding p::
-
-    parent = p.parent()
-    print("exclusive subtree of %s" % (parent.h),color="purple")
-    for p in parent.subtree():
-        print(p.h)
-
-The p.self_and_subtree generator returns a list of all positions in p's subtree, including p::
-
-    parent = p.parent()
-    print("inclusive subtree of %s" % (parent.h),color="purple")
-    for p in parent.self_and_subtree():
-        print(p.h)
-</t>
 <t tx="ekr.20040403173920.17" rst_http_attribute="5d71002858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d323522206e616d653d22687474702d6e6f64652d6d61726b65722d3235223e710158040000003c2f613e71025d710328583e0000003c64697620636c6173733d2273656374696f6e222069643d2274657374696e672d776865746865722d612d706f736974696f6e2d69732d76616c6964223e710458060000003c2f6469763e71055d710628582e0000003c64697620636c6173733d2273656374696f6e222069643d2274726176657273696e672d6f75746c696e6573223e710758060000003c2f6469763e71085d710928583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710a58060000003c2f6469763e710b5d710c2858060000003c626f64793e710d58070000003c2f626f64793e710e5d710f2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711058070000003c2f68746d6c3e71114e656565656558070000003c2f6469763e0a711258070000003c2f6469763e0a7113582f0000003c64697620636c6173733d2273656374696f6e222069643d227570646174696e672d7468652d73637265656e223e0a711458600000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313322206e616d653d227570646174696e672d7468652d73637265656e223e5570646174696e67207468652073637265656e3c2f613e3c2f68313e0a7115652e">You can use c.redraw_now to redraw the entire screen immediately::
 
     c.redraw_now()
@@ -2677,27 +2605,6 @@ headlines in that file::
     for p in c2.all_positions():
         g.es(g.toEncodedString(p.h,"utf-8"))
 </t>
-<t tx="ekr.20040403173920.28" rst_http_attribute="5d71002858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d343922206e616d653d22687474702d6e6f64652d6d61726b65722d3439223e710158040000003c2f613e71025d71032858220000003c64697620636c6173733d2273656374696f6e222069643d2267657474657273223e710458060000003c2f6469763e71055d71062858440000003c64697620636c6173733d2273656374696f6e222069643d2273756d6d6172792d6f662d7468652d766e6f64652d616e642d706f736974696f6e2d636c6173736573223e710758060000003c2f6469763e71085d710928583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710a58060000003c2f6469763e710b5d710c2858060000003c626f64793e710d58070000003c2f626f64793e710e5d710f2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711058070000003c2f68746d6c3e71114e656565656558070000003c2f6469763e0a711258230000003c64697620636c6173733d2273656374696f6e222069643d2273657474657273223e0a711358480000003c68323e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964323522206e616d653d2273657474657273223e536574746572733c2f613e3c2f68323e0a7114652e">Here are the most useful setters of the Commands and position classes. The
-following setters of the position class regardless of whether p is the
-presently selected position::
-
-    p.b = s  # Sets the body text of p.
-    p.h = s  # Sets the headline text of p.
-
-Moving nodes::
-
-    p.moveAfter(v2)           # move p after v2
-    p.moveToNthChildOf(v2,n)  # move p to the n'th child of v2
-    p.moveToRoot(oldRoot)     # make p the root position.
-                              # oldRoot must be the old root position if it exists.
-
-The "visited" bit may be used by commands or scripts for any purpose.
-Many commands use this bits for tree traversal, so these bits do not persist::
-
-    c.clearAllVisited() # Clears all visited bits in c's tree.
-    p.clearVisited()
-    p.setVisited()
-</t>
 <t tx="ekr.20040403173920.3" rst_http_attribute="5d71002858440000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d3522206e616d653d22687474702d6e6f64652d6d61726b65722d35223e710158040000003c2f613e71025d71032858400000003c64697620636c6173733d2273656374696f6e222069643d22672d746f702d7468652d636f6d6d616e6465722d6f662d7468652d746f702d77696e646f77223e710458060000003c2f6469763e71055d710628583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710758060000003c2f6469763e71085d71092858060000003c626f64793e710a58070000003c2f626f64793e710b5d710c2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710d58070000003c2f68746d6c3e710e4e6565656558070000003c2f6469763e0a710f58360000003c64697620636c6173733d2273656374696f6e222069643d22672d65732d77726974652d746f2d7468652d6c6f672d70616e65223e0a711058700000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d222369643322206e616d653d22672d65732d77726974652d746f2d7468652d6c6f672d70616e65223e672e657328293a20777269746520746f20746865206c6f672070616e653c2f613e3c2f68313e0a7111652e">The g.es method prints zero or more arguments to the log window::
 
     g.es("Hello world")
@@ -2740,27 +2647,6 @@ controls where output for each stream goes.
     g.restoreStdout()
     print("stdout isRedirected: %s" % g.stdOutIsRedirected())
     print("stderr isRedirected: %s" % g.stdErrIsRedirected())
-</t>
-<t tx="ekr.20040403173920.6" rst_http_attribute="5d71002858440000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d3922206e616d653d22687474702d6e6f64652d6d61726b65722d39223e710158040000003c2f613e71025d71032858450000003c64697620636c6173733d2273656374696f6e222069643d226170702d77696e646f776c6973742d7468652d6c6973742d6f662d616c6c2d6f70656e2d6672616d6573223e710458060000003c2f6469763e71055d710628583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710758060000003c2f6469763e71085d71092858060000003c626f64793e710a58070000003c2f626f64793e710b5d710c2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710d58070000003c2f68746d6c3e710e4e6565656558070000003c2f6469763e0a710f58460000003c64697620636c6173733d2273656374696f6e222069643d2267657474696e672d616e642d73657474696e672d686561646c696e652d616e642d626f64792d74657874223e0a7110588d0000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d222369643522206e616d653d2267657474696e672d616e642d73657474696e672d686561646c696e652d616e642d626f64792d74657874223e47657474696e6720616e642073657474696e6720686561646c696e6520616e6420626f647920746578743c2f613e3c2f68313e0a7111652e">Here is how to access the data of a Leo window::
-
-    g.es(p) # p is already defined.
-    p = c.p # get the current position.
-    g.es(p)
-    g.es("head:",p.h)
-    g.es("body:",p.b)
-
-Here is how to access data at position p.
-**Note**: these methods work whether or not p is the current position::
-
-    body = p.b # get the body text.
-    head = p.h # get the headline text.
-    p.b = body # set body text of p to body.
-    p.h = head # set headline text of p to head.
-
-**Note**: Sometimes you want to use text that *looks* like a section reference, but isn't.
-In such cases, you can use g.angleBrackets.  For example::
-
-    g.es(g.angleBrackets('abc'))
 </t>
 <t tx="ekr.20040414161647" str_atime="1376411963.0">@pagewidth 70
 @tabwidth -4
@@ -3017,6 +2903,7 @@ Removes @ignore, @nocolor, @wrap directives.
    &lt;br /&gt;
 
 .. _`Directed Acyclic Graphs`:  https://en.wikipedia.org/wiki/Directed_acyclic_graph
+.. _`DAGs`:                     https://en.wikipedia.org/wiki/Directed_acyclic_graph
 .. _`Python generator`:         https://wiki.python.org/moin/Generators
 .. _`Python generators`:        https://wiki.python.org/moin/Generators
 .. _front:                  index.html
@@ -4620,25 +4507,17 @@ See `Specifying settings`_ for a description of how to change Leo's settings.
 .. Absolute links..
 .. _OPML:   http://en.wikipedia.org/wiki/OPML
 </t>
-<t tx="ekr.20050902073404">Scripts must wary of saving positions because positions become invalid
-whenever the user moves, inserts or deletes nodes.  It is valid to store
-positions **only** when a script knows that the stored position will be used
-before the outline's structure changes.
+<t tx="ekr.20050902073404">p.copy() returns a copy of position p.
 
-To store a position, the script must use the p.copy() method::
+Scripts copy positions so they will not change later::
 
     p2 = p.copy()   # Correct: p2 will not change when p changes later.
-
-The following **will not work**::
-
     p2 = p  # Wrong.  p2 will change if p changes later.
 
-For example, the following creates a dictionary of saved positions::
+Copied positions usually become invalid when the outline changes.
 
-    d = {}
-    for p in c.all_positions():
-        d[p.v] = p.copy()
-
+Scripts should use copied positions only in situations in which
+the outline does not change.
 </t>
 <t tx="ekr.20050902100834">This following information may be of interest to historians. It is not of
 general enough interest to put in Leo's Users Guide on the web. I am including
@@ -7537,21 +7416,15 @@ My second choice is using g.pdb to set breakpoints for the pdb_ debugger. Pdb
 uses the console for all interaction, so you must `run Leo in a console window`_.
 See `the FAQ`_ for a discussion of both g.trace and g.pdb.
 </t>
-<t tx="ekr.20070120075236">The execute-script command (Ctrl-B) predefines the symbols c, g and p.
+<t tx="ekr.20070120075236">The execute-script command predefines the symbols c, g and p:
 
-c is the **commander** of the outline containing the script.
+- c is the **commander** of the outline containing the script.
+ 
+- g is Leo's leo.core.leoGlobals module.
 
-- Commanders are instances of the Commands class, defined in
-  leoCommands.py. The Commands class is huge, but Leo scripts typically
-  only use a few commander methods, discussed later.
+- p is the presently selected position, c.p.
 
-g is Leo's leo.core.leoGlobals module.
-
-- Leo scripts typically use several utility functions defined in this module.
-
-p is the presently selected position, c.p.
-
-Leo scripts can redefine these symbols if they like.
+Leo scripts can redefine any of these symbols if they like.
 </t>
 <t tx="ekr.20070122093626">Positions become invalid whenever the outline changes. 
 
@@ -21699,7 +21572,7 @@ A **vnode** stores the all the data in a single Leo node. For any vnode v:
 - v.b is the node's body text
 - v.u is the node's **user data**. (more about that later).
 
-Every vnode has internal ivars representing outline structure. Your scripts
+Every vnode has internal ivars representing outline structure. Scripts
 should *never* change those ivars directly. Instead, scripts should use
 position methods to insert, delete or move nodes, as explained later.
 
@@ -21720,7 +21593,11 @@ used to produce a list of positions, as discussed next.
   lists; this saves lots of space for large outlines.
 
 - During a traversal, Leo generators use a *single* position, saving even
-  more space.
+  more space. For example, this script will report the same value for id(p)
+  for every position returned by the generator::
+  
+    for p in c.all_positions():
+        g.es(id(p),p.h)
   
 - Leo generators return an **empty position** when the generator finishes.
 
@@ -21732,51 +21609,28 @@ used to produce a list of positions, as discussed next.
     if not p:           # Right
     if p is None:       # Wrong
     if p is not None:   # Wrong</t>
-<t tx="ekr.20131012060912.16776">The position class defines a location in a traversal of an outline.
+<t tx="ekr.20131012060912.16776">The position class is defined in leoNodes.py.
 
-Positions have three ivars: p.v, p.childIndex, and p.stack.
+A position object defines a location in a traversal of an outline.
 
-p.stack represents p's *present* parents, that is, the parents at a
-particular point of a tree traversal.
+For any position p, p.v is the vnode at position p.
 
-Entries in p.stack describe all ancestors of p at a particular point of a
-tree traversal.
+..  p.stack represents p's *present* parents, that is, the parents at a
+..  particular point of a tree traversal.
 
-All of Leo's iterators use a *single* position for the entire traversal;
-that position (its ivars) constantly changes throughout the traversal.
+..  Entries in p.stack describe all ancestors of p at a particular point of a
+..  tree traversal.
 
-**Positions become invalid whenever the outline changes.**
+**Important**: Positions become invalid whenever the outline changes.
 
 c.positionExists(p) returns True if position p is (still) valid in Commander c.
 
+Scripts can save and and use positions *provided* the outline remains
+unchanged.
 
-
-
-
-    for p in c.all_positions():
-        print(id(p))
-        print(p.v)
-        print(p.h)
-        
-        
-        
-====================
-        
-A **position** object represents a specific node in a Leo outline.
-Equivalently, a position represents the state of a Leo generator, that is,
-a specific node during a traversal of a Leo outline.
-Because of clones, a node may appear arbitrarily many times in an outline,
-so a node may appear at arbitrarily many positions in the outline.
-
-For any position p, **p.v** is the vnode at position p.
-A node's vnode never changes, regardless of where the node appears in the
-outline, and regardless of whether the node is cloned or not.
-
-**Positions become invalid when the outline changes.** You may save and and
-use positions *provided* the outline remains unchanged. Leo's generators
-deliver positions, one after each other, using a *single* (ever-changing)
-position object. As a result, scripts must use p.copy() to create lists of
-positions. For example::
+Leo's generators deliver positions, one after each other, using a *single*
+(ever-changing) position object. As a result, scripts must use p.copy() to
+create lists of positions. For example::
 
     aList = [p.copy() for p in c.rootPosition().subtree()]
 </t>
@@ -21789,7 +21643,8 @@ Because Leo outlines are `DAGs`_, vnodes may have multiple parents.
 ..  Strictly speaking, only the v.children arrays are needed to carry outline
 ..  structure. v.parents is a speed optimization. It eliminates the need to
 ..  search the outline when inserting or deleting nodes.
-</t>
+
+XXX To do: explain structure of a sample outline.</t>
 <t tx="ekr.20131012060912.16778">Leo scripts are elegant--they pack a lot of power in small packages. For
 example, this short script prints the headline of all nodes in the outline
 in Leo's log pane::
@@ -21868,30 +21723,17 @@ It does not persist when Leo exists.
 
 Leo creates a similar dictionary, g.user_dict.
 </t>
-<t tx="ekr.20131012060912.16795"></t>
-<t tx="ekr.20131012060912.16799"></t>
-<t tx="ekr.20131012060912.16800"></t>
-<t tx="ekr.20131012060912.16804">Returning strings::
-
-    p.b # the body string of p.
-    p.h # the headline string of p. A property.
-
-Returning ints::
-
-    p.childIndex()
-    p.numberOfChildren()
-    p.level()
-
-Returning bools representing property bits::
-
-    p.hasChildren()
-    p.isAncestorOf(v2) # True if v2 is a child, grandchild, etc. of p.
-    p.isCloned()
-    p.isDirty()
-    p.isExpanded()
-    p.isMarked()
-    p.isVisible()
-    p.isVisited()
+<t tx="ekr.20131012060912.16795">- p.children generates all child positions of p.
+- p.nodes generates p.v and all vnodes in p's subtree.
+- p.unique_nodes generates all vnodes in p's subtree, excluding
+  any previously generated vnode.
+- p.parents generates all parent positions of position p.
+- p.self_and_parents generates position p and all parent positions of p.
+- p.self_and siblings generates all sibling positions of p, including p.
+- p.following_siblings generates all siblings positions that follow
+  position p.
+- p.subtree generates all positions in p's subtree, excluding p.
+- p.self_and_subtree generates all positions in p's subtree, including p.
 </t>
 <t tx="ekr.20131012060912.16806"></t>
 <t tx="ekr.20131012060912.16807"></t>
@@ -21919,6 +21761,59 @@ works behind the scenes. Here is the big picture:
 
 This is a lot to digest at one time. The following sections explain these
 statements in detail.
+</t>
+<t tx="ekr.20131012191145.16788">Commanders are instances of the Commands class, defined in leoCommands.py.
+
+Loosly speaking, a commander is controlls all aspects of Leo's operation in
+a single window.
+      
+The Commands class is huge, but Leo scripts typically only use a few
+commander methods, discussed later.
+</t>
+<t tx="ekr.20131012191145.16789">For any commander c:
+
+- c.p is the presently selected position.
+- c.frame is a leoFrame object representing the main window.
+- c.frame.body is a leoBody object representing the body pane.
+- c.frame.body.bodyCtrl is a leoQTextEditWidget.
+- c.frame.body.bodyCtrl.widget is a LeoQTextBrowser (a QTextBrowser)
+- c.frame.tree is a leoQtTree object, representing the tree pane.
+- c.frame.tree.treeWidget is a LeoQTreeWidget, a (QTreeWidget)</t>
+<t tx="ekr.20131012192434.16792">g.angleBrackets(aString) returns '&lt;&lt;' + aString + '&gt;&gt;
+
+This function useful for creating strings that would otherwise be treated
+as section references.g.angleBrackets('abc')</t>
+<t tx="ekr.20131012192434.16794">The position class defines the following properties:
+
+- p.b gets the body text at p.
+- p.b = s sets the body text of p.
+
+- p.h gets the headline text at p.
+- p.h = s sets the headline text of p.
+
+- p.u gets the **user data** at p.
+- p.u = aDict sets the user data at p.
+</t>
+<t tx="ekr.20131012192434.16795">- p.doDelete(new_position) deletes p and selects new_position.
+- p.moveAfter(p2) moves p after position p2
+- p.moveToNthChildOf(parent,n) move p to the n'th child of the parent position.
+- p.moveToRoot(oldRoot=None) moves p the root position.
+  (oldRoot must be the old root position if it exists).
+</t>
+<t tx="ekr.20131012192434.16803">- c.all_positions generates all positions in the outline in outline order.
+
+This prints the headlines of all nodes in the outline, in outline order::
+
+    for p in c.all_positions():
+        print(p.h)
+
+- c.all_unique_positions generates all positions in the outline, excluding
+  positions p2 for which p2.v == p for some any generated position p.
+
+- c._all_nodes generates all vnodes in the entire outline, in outline order.
+
+- c.all_unique_nodes generates all vnodes in the entire outline, generating
+  each vnode exactly once.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few

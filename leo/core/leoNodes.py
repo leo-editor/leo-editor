@@ -975,7 +975,8 @@ class position (object):
 
         p = self
         p = p.copy()
-        while p:
+        after = p.nodeAfterTree()
+        while p and p != after: # bug fix: 2013/10/12
             yield p.v
             p.moveToThreadNext()
 

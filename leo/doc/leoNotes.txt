@@ -13642,5 +13642,28 @@ Leo scripts typically use the following objects:
     for p.v.h and p.v.b.
 
 Most scripts will need only the objects and classes described above.
+.. @+node:ekr.20131012192434.16801: *3* p getters
+Returning ints::
+
+    p.childIndex()
+    p.numberOfChildren()
+    p.level()
+
+Returning bools representing property bits::
+
+    p.hasChildren()
+    p.isAncestorOf(v2) # True if v2 is a child, grandchild, etc. of p.
+    p.isCloned()
+    p.isDirty()
+    p.isExpanded()
+    p.isMarked()
+    p.isVisible()
+    p.isVisited()
+.. @+node:ekr.20131012192434.16802: *3* p setters
+Many commands use this bits for tree traversal, so these bits do not persist::
+
+    c.clearAllVisited() # Clears all visited bits in c's tree.
+    p.clearVisited()
+    p.setVisited()
 .. @-all
 .. @-leo
