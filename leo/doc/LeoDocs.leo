@@ -518,24 +518,7 @@
 <v t="ekr.20131008041326.16245" a="M"><vh>@rst html\tutorial-programming.html</vh>
 <v t="ekr.20131008041326.16252"><vh>@rst-no-head links &amp; markup</vh></v>
 <v t="ekr.20131003040744.18222" a="O"><vh>Creating source code with @others</vh></v>
-<v t="ekr.20131008041326.16052" a="M"><vh>Writing Leo scripts</vh>
-<v t="ekr.20131010160850.17462"><vh>vnodes &amp; dags</vh></v>
-<v t="ekr.20131010160850.17456"><vh>positions</vh></v>
-<v t="ekr.20131010160850.17460"><vh>position methods</vh></v>
-<v t="ekr.20131010160850.17461"><vh>iterators</vh></v>
-<v t="ekr.20131010160850.17455"><vh>generators</vh></v>
-<v t="ekr.20131010160850.17457"><vh>predefined symbols in scripts</vh></v>
-<v t="ekr.20131010160850.17458"><vh>leoGlobals functions</vh></v>
-<v t="ekr.20131010160850.17459"><vh>Commander class</vh></v>
-</v>
-<v t="ekr.20131008041326.16053"><vh>Writing Plugins</vh></v>
-<v t="ekr.20131008041326.16054"><vh>Using @first and @last</vh></v>
-<v t="ekr.20131008041326.16055"><vh>Using @path</vh></v>
-<v t="ekr.20131008041326.16056" a="M"><vh>Using @auto nodes</vh></v>
-<v t="ekr.20131008041326.16057" a="M"><vh>Using @button nodes</vh></v>
-<v t="ekr.20131008041326.16058" a="M"><vh>Using @test nodes</vh></v>
-<v t="ekr.20131004172324.16075"><vh>Autocompletion</vh></v>
-<v t="ekr.20131008041326.16246" a="M"><vh>Summary</vh></v>
+<v t="ekr.20131008041326.16246"><vh>Summary</vh></v>
 </v>
 </v>
 <v t="ekr.20131008041326.16091"><vh>Cheat Sheet</vh>
@@ -723,14 +706,31 @@
 <v t="ekr.20050831195331.4"><vh>Scripting Leo with Python</vh>
 <v t="ekr.20040403171740"><vh>@rst html\scripting.html</vh>
 <v t="ekr.20050812134441.1"><vh>@rst-no-head markup &amp; links</vh></v>
+<v t="ekr.20131014053720.16807"><vh>A tutorial introduction to Leo scripts</vh>
 <v t="ekr.20131013060803.16852"><vh>Hello world</vh></v>
 <v t="ekr.20070120075236"><vh>Predefined symbols: c, g and p</vh></v>
-<v t="ekr.20131014050027.16801"><vh>Positions, traversals &amp; generators</vh></v>
+<v t="ekr.20131014053720.16810"><vh>Vnodes</vh></v>
+<v t="ekr.20131014050027.16801"><vh>Positions</vh></v>
+<v t="ekr.20131012060912.16775"><vh>Generators</vh></v>
+<v t="ekr.20131014053720.16809"><vh>Capturing positions</vh></v>
+<v t="ekr.20131014053720.16811" a="M"><vh>@rst-ignore-tree Examples: not ready yet</vh>
 <v t="ekr.20131013060803.16854"><vh>An example outline &amp; vnodes</vh></v>
 <v t="ekr.20131013060803.16857"><vh>A traversal script (new)</vh></v>
 <v t="ekr.20131013060803.16783"><vh>traversals, tree structure &amp; positions</vh></v>
-<v t="ekr.20131012060912.16776"><vh>positions</vh></v>
-<v t="ekr.20131012060912.16781"><vh>Access to Leo's code</vh>
+<v t="ekr.20131013060803.16791"><vh>position trace</vh></v>
+<v t="ekr.20131012060912.16778"><vh>Introductory example (old)</vh></v>
+</v>
+<v t="ekr.20131014053720.16803"><vh>@rst-ignore-tree old tutorial</vh>
+<v t="ekr.20131010160850.17456"><vh>positions</vh></v>
+<v t="ekr.20131010160850.17460"><vh>position methods</vh></v>
+<v t="ekr.20131010160850.17461"><vh>iterators</vh></v>
+<v t="ekr.20131010160850.17455"><vh>generators</vh></v>
+<v t="ekr.20131010160850.17457"><vh>predefined symbols in scripts</vh></v>
+<v t="ekr.20131010160850.17458"><vh>leoGlobals functions</vh></v>
+<v t="ekr.20131010160850.17459"><vh>Commander class</vh></v>
+</v>
+</v>
+<v t="ekr.20131012060912.16781"><vh>Scripting reference</vh>
 <v t="ekr.20131012192434.16803"><vh>c generators</vh></v>
 <v t="ekr.20131012060912.16795"><vh>p generators</vh></v>
 <v t="ekr.20131012060912.16784"><vh>c methods &amp; ivars</vh>
@@ -756,18 +756,20 @@
 <v t="ekr.20131012060912.16792"><vh>g.user_dict</vh></v>
 </v>
 </v>
-<v t="ekr.20131013060803.16791"><vh>position trace</vh></v>
-<v t="ekr.20131014050027.16800"><vh>----------------------</vh></v>
-<v t="ekr.20131013060803.16858"><vh>vnodes: how Leo stores data (later??)</vh></v>
-<v t="ekr.20131012060912.16778"><vh>Introductory example (old)</vh></v>
-<v t="ekr.20131012060912.16773"><vh>Basics</vh>
-<v t="ekr.20131012060912.16774"><vh>vnodes</vh></v>
-<v t="ekr.20131012060912.16775"><vh>generators</vh></v>
-<v t="ekr.20131012060912.16777" a="M"><vh>clones &amp; DAGs</vh></v>
-</v>
 <v t="ekr.20101124083644.5052" a="M"><vh>autocompletion</vh></v>
 <v t="ekr.20050903161843" a="M"><vh>Using @button nodes</vh></v>
-<v t="ekr.20131013060803.16853"><vh>@rst-ignore</vh>
+<v t="ekr.20131008041326.16053"><vh>Writing Plugins</vh></v>
+<v t="ekr.20050903074833"><vh>Handling events</vh>
+<v t="ekr.20050903074833.1"><vh>@rst-no-head Summary of event handlers</vh></v>
+</v>
+<v t="ekr.20131008041326.16054"><vh>Using @first and @last</vh></v>
+<v t="ekr.20131008041326.16055"><vh>Using @path</vh></v>
+<v t="ekr.20131008041326.16056" a="M"><vh>Using @auto nodes</vh></v>
+<v t="ekr.20131008041326.16058" a="M"><vh>Using @test nodes</vh></v>
+<v t="ekr.20131013060803.16853"><vh>@rst-ignore-tree</vh>
+<v t="ekr.20131012060912.16776"><vh>positions</vh></v>
+<v t="ekr.20131012060912.16774"><vh>vnodes</vh></v>
+<v t="ekr.20131012060912.16777" a="M"><vh>clones &amp; DAGs</vh></v>
 <v t="ekr.20101124083644.5048"><vh>Miscellaneous topics</vh>
 <v t="ekr.20110531155858.20563"><vh>Creating minimal outlines</vh></v>
 <v t="ekr.20111115063523.13619"><vh>Creating Qt Windows from Leo scripts</vh></v>
@@ -784,9 +786,6 @@
 <v t="ekr.20040403173920.24"><vh>Running Leo in batch mode</vh></v>
 <v t="ekr.20081205084002.2"><vh>Working with directives and paths</vh></v>
 <v t="ekr.20131012060912.16788"><vh>Writing g.es output to other tabs</vh></v>
-</v>
-<v t="ekr.20050903074833"><vh>Handling events</vh>
-<v t="ekr.20050903074833.1"><vh>@rst-no-head Summary of event handlers</vh></v>
 </v>
 </v>
 </v>
@@ -1264,7 +1263,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20050831195331.4"></v>
+<v t="ekr.20040403171740"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -2519,12 +2518,14 @@ Scripting Leo with Python
 This chapter tells how to write **Leo scripts**, Python scripts run from
 any Leo node.
 
+This chapter also discusses several topics related to scripting, in
+particular @button, a brilliant scripting invention.
+
 This chapter is intended for those fairly comfortable with Python
 scripting. If you are not, please study the excellent `Python Tutorial`_.
 
 .. contents::
-    :depth: 2
-
+    :depth: 3
 </t>
 <t tx="ekr.20040403173920.17" rst_http_attribute="5d71002858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d323522206e616d653d22687474702d6e6f64652d6d61726b65722d3235223e710158040000003c2f613e71025d710328583e0000003c64697620636c6173733d2273656374696f6e222069643d2274657374696e672d776865746865722d612d706f736974696f6e2d69732d76616c6964223e710458060000003c2f6469763e71055d710628582e0000003c64697620636c6173733d2273656374696f6e222069643d2274726176657273696e672d6f75746c696e6573223e710758060000003c2f6469763e71085d710928583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710a58060000003c2f6469763e710b5d710c2858060000003c626f64793e710d58070000003c2f626f64793e710e5d710f2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711058070000003c2f68746d6c3e71114e656565656558070000003c2f6469763e0a711258070000003c2f6469763e0a7113582f0000003c64697620636c6173733d2273656374696f6e222069643d227570646174696e672d7468652d73637265656e223e0a711458600000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313322206e616d653d227570646174696e672d7468652d73637265656e223e5570646174696e67207468652073637265656e3c2f613e3c2f68313e0a7115652e">You can use c.redraw_now to redraw the entire screen immediately::
 
@@ -7407,11 +7408,17 @@ g is Leo's **leo.core.leoGlobals** module.
 
 p is the **position** of the presently selected node.
 
-- Positions are instances of the position class, defined in leoNodes.py.
+- positions are instances of the position class, defined in leoNodes.py.
 
-- Positions represent a specific outline node.
+- The position class provides safe, convenient ways of accessing and
+  modifying outline nodes.
 
-Well discuss c, g and p in much more detail later...
+- For any position p, p.v is a **vnode** object.
+
+- vnodes contain all the permanent data in a Leo outline.
+
+The next two sections are crucial: they discuss vnodes and positions in all
+necessary detail.
 </t>
 <t tx="ekr.20070122093626">Positions become invalid whenever the outline changes. 
 
@@ -20401,20 +20408,6 @@ It's particularly useful to create a new view for each programming task:
 - Now you can work on nodes in a single place; the location of the original
   clones doesn't matter.
 </t>
-<t tx="ekr.20131004172324.16075">Start or stop autocompletions with Alt-1 (toggle-autocompleter)
-
-Leo's autocompletion feature suggests **completions**, text may be valid in
-a given point in source code. For example, suppose the cursor follows::
-
-    os.path.os.st
-    
-The valid completions are all the members of Python's os.path module whose
-names start with 'st'. The valid completions appear in a Tab in the Log
-Pane.
-
-Leo also shows completions. These completions assume that c is a commander,
-g is the leoGlobals object and p is a position.
-</t>
 <t tx="ekr.20131004191204.16079">Alt-0 (vr-toggle) hides or shows the viewrendered pane.
 
 &lt;Return&gt; puts focus in the body when it is in the outline pane. |br|
@@ -20490,7 +20483,6 @@ topics and should take less than an hour to complete.
 <t tx="ekr.20131007143750.16082"></t>
 <t tx="ekr.20131007143750.16083"></t>
 <t tx="ekr.20131007143750.16111"></t>
-<t tx="ekr.20131008041326.16052"></t>
 <t tx="ekr.20131008041326.16053">A plugin is a Python file in Leo's plugins folder.
 
 Every plugin should have a top-level init function that returns True if the
@@ -20551,9 +20543,6 @@ a global controllers dict::
         if c:
             c.my_plugin_controller.handleEvent()
 
-For details about event handling, see the `event handlers`_ section in
-`Leo's scripting chapter`_.
-
 Once c is determined, the presently selected position is simply c.p.
 </t>
 <t tx="ekr.20131008041326.16054">..  .. index::
@@ -20589,8 +20578,7 @@ predefined symbols: c, g, p, os and sys.  For example::
 
     @file {{os.path.abspath(os.curdir)}}/abc.py
 </t>
-<t tx="ekr.20131008041326.16056"></t>
-<t tx="ekr.20131008041326.16057"></t>
+<t tx="ekr.20131008041326.16056">.. Why is this here????</t>
 <t tx="ekr.20131008041326.16058"></t>
 <t tx="ekr.20131008041326.16065"></t>
 <t tx="ekr.20131008041326.16066">Clones are nodes appearing multiple places in the outline.
@@ -20913,15 +20901,14 @@ command.
 Programming and scripting in Leo
 ################################
 
-.. |br| raw:: html
-
-   &lt;br /&gt;
 
 .. _`ask for help`: https://groups.google.com/forum/#!forum/leo-editor
 
 Now we come to the programming features that distinguish Leo from all other
-programming environments. |br|
-Please study this section carefully if you intend to use Leo for programming. |br|
+programming environments.
+
+Please study this section carefully if you intend to use Leo for programming.
+
 If you get stuck, please `ask for help`_ immediately.
 
 .. contents::
@@ -20948,7 +20935,11 @@ If you get stuck, please `ask for help`_ immediately.
 .. _`reStructuredText`:     http://docutils.sourceforge.net/rst.html
 .. _`the rst3 chapter`:     tutorial-rst3.html
 </t>
-<t tx="ekr.20131008041326.16252">.. _`event handlers`:
+<t tx="ekr.20131008041326.16252">.. |br| raw:: html
+
+   &lt;br /&gt;
+
+.. _`event handlers`:
 .. _`Leo's scripting chapter`:</t>
 <t tx="ekr.20131008041326.16253">.. _`PyQt`: http://www.riverbankcomputing.com/software/pyqt/intro
 
@@ -21378,7 +21369,6 @@ The most important setters of any position p are::
     p.unique_nodes          # all unique vnodes in p's subtree.
     p.unique_subtree        # all unique positions in p's subtree.
 </t>
-<t tx="ekr.20131010160850.17462"></t>
 <t tx="ekr.20131011050613.16815">The LoadManager (LM) class (in leoApp.py) is responsible for initing all
 objects and settings. This is a complex process. Here is the big picture:
 
@@ -21520,7 +21510,6 @@ the sources.
 Much of this complexity is a direct result in the flexibility given to
 users in specifying key bindings.
 </t>
-<t tx="ekr.20131012060912.16773"></t>
 <t tx="ekr.20131012060912.16774">The vnode class is defined in leoNodes.py.
 
 A **vnode** stores the all the data in a single Leo node. For any vnode v:
@@ -21544,28 +21533,31 @@ In fact, there is *no way* to traverse (visit) all the nodes of a Leo
 outline using only the data found in vnodes. Instead, generators must be
 used to produce a list of positions, as discussed next.
 </t>
-<t tx="ekr.20131012060912.16775">Leo generators provide (generate) a sequence of positions.
+<t tx="ekr.20131012060912.16775">Leo generators are `Python generators`_. Leo generators traverse (step
+through) Leo outlines node by node:
+**Leo generators yield a sequence of positions.**
 
-- Like all `Python generators`_, Leo generators do *not* return actual
-  lists; this saves lots of space for large outlines.
+The Commands (commander) and position classes define several generators,
+discussed later in this chapter. For example, c.all_positions() traverses
+the outline in outline order::
 
-- During a traversal, Leo generators use a *single* position, saving even
-  more space. For example, this script will report the same value for id(p)
-  for every position returned by the generator::
-  
     for p in c.all_positions():
-        g.es(id(p),p.h)
+        print(p.h)
+        
+Leo generators **yield** (return a sequence of) positions. They do *not*
+return actual lists; this saves lots of space for large outlines.
+In fact, this "sequence of positions" is actually a sequence of a
+**single, constantly changing** position.
+This is a very important space optimization.
   
-- Leo generators return an **empty position** when the generator finishes.
+When a generator is finished, this single position becomes an **empty
+position**. p.v is None for empty positions. There are the right and wrong
+ways to test for empty positions::
 
-- Empty positions have p.v == None.
-
-- Here are the right and wrong ways to test for empty positions::
-
-    if p:               # Right
-    if not p:           # Right
-    if p is None:       # Wrong
-    if p is not None:   # Wrong</t>
+    if not p:       # Right
+    if not p.v:     # Right
+    if p is None:   # Wrong!
+  </t>
 <t tx="ekr.20131012060912.16776">The position class is defined in leoNodes.py.
 
 A position object defines a location in a traversal of an outline.
@@ -21734,9 +21726,7 @@ as section references.g.angleBrackets('abc')</t>
 - p.moveToRoot(oldRoot=None) moves the vnode at position p to the root position.
   (oldRoot must be the old root position if it exists).
 </t>
-<t tx="ekr.20131012192434.16803">- c.all_positions generates all positions in the outline in outline order.
-
-This prints the headlines of all nodes in the outline, in outline order::
+<t tx="ekr.20131012192434.16803">- c.all_positions generates all positions in the outline in outline order::
 
     for p in c.all_positions():
         print(p.h)
@@ -21844,44 +21834,46 @@ D::
     id(p): 214733232 id(p.v): 192725520 (1 D) p.stack: (0 A)
     id(p): 214733232 id(p.v): 192725520 (1 D) p.stack: (2 A)
 </t>
-<t tx="ekr.20131013060803.16791">+ A (clone)
-  + B
-    - C
-  - D
-- E
-+ A (clone)
-  + B
-    - C
-  - D
-- F
+<t tx="ekr.20131013060803.16791">::
 
-(0 A) p.stack:
-(0 B) p.stack: (0 A)
-(0 C) p.stack: (0 A),(0 B)
-(1 D) p.stack: (0 A)
-(1 E) p.stack:
-(2 A) p.stack:
-(0 B) p.stack: (2 A)
-(0 C) p.stack: (2 A),(0 B)
-(1 D) p.stack: (2 A)
-(3 F) p.stack:
-
-Top-level nodes:
-
-(0 A) p.stack:
-(1 E) p.stack:
-(2 A) p.stack:
-(3 F) p.stack:
-
-B:
-
-(0 B) p.stack: (0 A)
-(0 B) p.stack: (2 A)
-
-C: 
-
-(0 C) p.stack: (0 A),(0 B)
-(0 C) p.stack: (2 A),(0 B)</t>
+    + A (clone)
+      + B
+        - C
+      - D
+    - E
+    + A (clone)
+      + B
+        - C
+      - D
+    - F
+    
+    (0 A) p.stack:
+    (0 B) p.stack: (0 A)
+    (0 C) p.stack: (0 A),(0 B)
+    (1 D) p.stack: (0 A)
+    (1 E) p.stack:
+    (2 A) p.stack:
+    (0 B) p.stack: (2 A)
+    (0 C) p.stack: (2 A),(0 B)
+    (1 D) p.stack: (2 A)
+    (3 F) p.stack:
+    
+Top-level nodes::
+    
+    (0 A) p.stack:
+    (1 E) p.stack:
+    (2 A) p.stack:
+    (3 F) p.stack:
+    
+B::
+    
+    (0 B) p.stack: (0 A)
+    (0 B) p.stack: (2 A)
+    
+C::
+    
+    (0 C) p.stack: (0 A),(0 B)
+    (0 C) p.stack: (2 A),(0 B)</t>
 <t tx="ekr.20131013060803.16851">@language python
 
 # Should be run from an empty .leo file.
@@ -21913,7 +21905,7 @@ If text is selected, execute-script executes only the selected text.
 
 ..  You can use Ctrl-B even if you are reading this in leoDocs.leo!
 
-Yes, this script *does* work without error, because...
+g seems to be undefined, yet this script *does* work without error, because...
 </t>
 <t tx="ekr.20131013060803.16853">To be placed in separate chapters</t>
 <t tx="ekr.20131013060803.16854">This chapter uses the following outline (with all nodes expaneded) as an
@@ -21949,7 +21941,7 @@ represents this outline internally:
   
 Here is how Leo represents the example outline.
 
-Each Leo outline contains a hidden vnode, c.hiddenRootNode.
+Each Leo outline contains a hidden vnode, c.hiddenRootNode::
 
     c.hiddenRootVnode.children: [A, E, A, F]
     A.children: [B]
@@ -22021,29 +22013,78 @@ For example, if p refers to either node A, p.subtree() yields::
 
     B, C, D
 </t>
-<t tx="ekr.20131013060803.16858">vnodes are one of Leo's most important classes:
+<t tx="ekr.20131014050027.16801">A **position** represents a specific outline node at an exact location in
+the outline. Positions are instances of the position class, defined in
+leoNodes.py. Methods of the position class provide safe ways to insert,
+delete and move outline nodes. Later sections will discuss these methods.
+Notes:
 
-- **vnodes** are instances of the vnode class in leoNodes.py.
+- The vnode at position p is p.v.
 
-- vnodes contain all the data in Leo outlines, including outline
-  structure.
+- Because all clones share the same vnode, |br|
+  many positions may have the same p.v field.
 
-- Every outline node corresponds to exactly one vnode, but the
-  converse is *not* true...
+- p.b, p.h and p.u are synonyms for p.v.b, p.v.h and p.v.u.
 
-- All cloned outline nodes share the *same* vnode.
+- For any commander c, c.p is the presently selected node.
 
-- Each vnode represents *all* the clones of an outline node.
+**positions usually become invalid when outline structure changes**.
+Scripts should store positions for later use only if the script does not
+cause the outline to change in any way.
 
-- An outline node is a clone if and only if its vnode has multiple
-  parents.
-  
-- Every vnode has *private* lists of its children and parents.
-
-- Scripts must *never* change these private lists directly!
+The next section describes generators. Generators are a great way of
+gaining access to outline nodes.
 </t>
-<t tx="ekr.20131014050027.16800"></t>
-<t tx="ekr.20131014050027.16801"></t>
+<t tx="ekr.20131014053720.16803"></t>
+<t tx="ekr.20131014053720.16807"></t>
+<t tx="ekr.20131014053720.16809">As mentioned previously,
+**positions become invalid whenever nodes are inserted, deleted or moved**.
+
+It is valid to capture positions *temporarily*, *provided* that the outline
+does not changed while the captured positions are being used. Here is the
+proper way::
+
+    aList = [p.copy() for p in c.all_positions()]
+        # aList is valid until the outline changes.
+        
+The p.copy() method returns a *separate* position that does not change when
+p changes. Beginners erroneously try to capture positions like this::
+
+    aList = [p for p in c.all_positions()] # Wrong!
+    
+This is wrong. Leo's generators use a single position, and yield that
+*same* position for every node in the outline. Furthermore, that position
+will be empty when the generator ends, so every member of aList will be the
+(same) empty position!
+
+
+
+</t>
+<t tx="ekr.20131014053720.16810">This section discusses vnodes; the next discusses positions. To script Leo
+properly, you *must* understand how vnodes and positions are related.
+
+**vnodes** are instances of the vnode class, defined in leoNodes.py. Each
+vnode represents *all* the data associated with an outline node, including
+*private* data carrying its outline structure. For each vnode v:
+
+- v.b is the (outline) node's body text.
+
+- v.h is the node's headline.
+
+- v.u is the nodes **user data**, discussed later in this chapter.
+
+..  - v.children is a list of all child vnodes of v.
+..  - v.parents is a list of all parent vnodes of v. |br|
+..    (v is a clone if and only if len(v.parents) &gt; 1
+..  - Scripts **absolutely must not change** v.parents and v.children!
+  
+**All cloned outline nodes share a common vnode**. Conversely, |br| each
+vnode represents *all* the clones of the corresonding outline node.
+
+Because a *single* vnode can represent *many* outline nodes, it is awkward
+to use vnodes directly. This is where positions come in: **positions
+simplify access to vnodes**...</t>
+<t tx="ekr.20131014053720.16811"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
