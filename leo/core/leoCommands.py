@@ -1058,13 +1058,13 @@ class Commands (object):
         c = self
         for p in c.all_positions():
             yield p.v
-        raise StopIteration
+        # raise StopIteration
 
     def all_unique_nodes(self):
         c = self
         for p in c.all_unique_positions():
             yield p.v
-        raise StopIteration
+        # raise StopIteration
 
     # Compatibility with old code.
     all_tnodes_iter = all_nodes
@@ -1083,7 +1083,7 @@ class Commands (object):
                 seen.add(p.v)
                 yield p
                 p.moveToThreadNext()
-        raise StopIteration
+        # raise StopIteration
 
     # Compatibility with old code.
     all_positions_with_unique_tnodes_iter = all_unique_positions
@@ -1095,7 +1095,7 @@ class Commands (object):
         while p:
             yield p
             p.moveToThreadNext()
-        raise StopIteration
+        # raise stopIteration
 
     # Compatibility with old code.
     all_positions_iter = all_positions

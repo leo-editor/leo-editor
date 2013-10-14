@@ -1661,8 +1661,7 @@ class GlobalConfigManager:
                     letter = lm.computeBindingLetter(gs.path)
                     # g.trace('%3s %40s %s' % (letter,key,gs.val))
                     yield key,gs.val,c,letter
-
-        raise StopIteration
+        # raise stopIteration
     #@-others
 #@+node:ekr.20041118104831.1: ** class LocalConfigManager
 class LocalConfigManager:

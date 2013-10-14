@@ -950,7 +950,7 @@ class position (object):
         while p:
             yield p
             p.moveToNext()
-        raise StopIteration
+        # raise stopIteration
 
     # Compatibility with old code.
     children_iter = children
@@ -966,7 +966,7 @@ class position (object):
         while p:
             yield p
             p.moveToNext()
-        raise StopIteration
+        # raise stopIteration
 
     # Compatibility with old code.
     following_siblings_iter = following_siblings
@@ -993,7 +993,7 @@ class position (object):
         while p:
             yield p
             p.moveToParent()
-        raise StopIteration
+        # raise stopIteration
 
     # Compatibility with old code.
     parents_iter = parents
@@ -1007,7 +1007,7 @@ class position (object):
         while p:
             yield p
             p.moveToParent()
-        raise StopIteration
+        # raise stopIteration
 
     # Compatibility with old code.
     self_and_parents_iter = self_and_parents
@@ -1023,7 +1023,7 @@ class position (object):
         while p:
             yield p
             p.moveToNext()
-        raise StopIteration
+        # raise stopIteration
 
     # Compatibility with old code.
     self_and_siblings_iter = self_and_siblings
@@ -1038,7 +1038,7 @@ class position (object):
         while p and p != after:
             yield p
             p.moveToThreadNext()
-        raise StopIteration
+        # raise stopIteration
 
     # Compatibility with old code.
     self_and_subtree_iter = self_and_subtree
@@ -1054,25 +1054,34 @@ class position (object):
         while p and p != after:
             yield p
             p.moveToThreadNext()
-        raise StopIteration
+        # raise stopIteration
 
     # Compatibility with old code.
     subtree_iter = subtree
     #@+node:ekr.20091002083910.6105: *4* p.unique_nodes
     def unique_nodes (self):
-
+        
         p = self
-        p = p.copy()
-        seen = set()
-        after = p.nodeAfterTree()
-        while p and p != after: # 2011/05/02
-            if p.v in seen:
-                p.moveToNodeAfterTree()
-            else:
-                seen.add(p.v)
-                yield p.v
-                p.moveToThreadNext()
-        raise StopIteration
+        
+        if 1:
+            seen = set()
+            for p in p.self_and_subtree():
+                if p.v not in seen:
+                    seen.add(p.v)
+                    yield p.v
+        else:
+            # This is just wrong.
+            p = p.copy()
+            seen = set()
+            after = p.nodeAfterTree()
+            while p and p != after: # 2011/05/02
+                if p.v in seen:
+                    p.moveToNodeAfterTree()
+                else:
+                    seen.add(p.v)
+                    yield p.v
+                    p.moveToThreadNext()
+            # raise stopIteration
 
     # Compatibility with old code.
     unique_tnodes_iter = unique_nodes
@@ -1082,17 +1091,25 @@ class position (object):
         '''Return unique positions in p's entire subtree, including p.'''
 
         p = self
-        p = p.copy()
-        after = p.nodeAfterTree()
-        seen = set()
-        while p and p != after:
-            if p.v in seen:
-                p.moveToNodeAfterTree()
-            else:
-                seen.add(p.v)
-                yield p
-                p.moveToThreadNext()
-        raise StopIteration
+        if 1:
+            seen = set()
+            for p in p.subtree():
+                if p.v not in seen:
+                    seen.add(p.v)
+                    yield p.v
+            # raise stopIteration
+        else:   
+            p = p.copy()
+            after = p.nodeAfterTree()
+            seen = set()
+            while p and p != after:
+                if p.v in seen:
+                    p.moveToNodeAfterTree()
+                else:
+                    seen.add(p.v)
+                    yield p
+                    p.moveToThreadNext()
+            # raise stopIteration
 
     # Compatibility with old code.
     subtree_with_unique_tnodes_iter = unique_subtree
