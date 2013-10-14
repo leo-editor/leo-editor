@@ -10506,6 +10506,38 @@ def push_ipython_script(self,c,code,script):
         es('ipy run: %s (%d LL)' %(c.p.h,len(script)))
 .. @+node:ekr.20120319174225.9743: ** Unused documentation (from LeoDocs.leo)
 @language rest
+.. @+node:ekr.20131013060803.16840: *3* hidden_root
+@language python
+
+# No longer used: see positions.leo instead
+
+tag = p.h
+
+def print_p(p):
+    if p.v.h == tag:
+        return ''
+    else:
+        c,result = p.v.context,[]
+        v,n = p.v,p.childIndex()
+        for data in p.stack:
+            v,n = data
+            if v.h == tag: n = p.childIndex()
+            result.append('(%s %s)' % (n,v.h))
+    return ','.join(result)
+
+for p in p.self_and_subtree():
+    h = '' if p.h == tag else '%s p.stack: ' % (p.h)
+    print('%s%s' % (h,print_p(p)))
+.. @+node:ekr.20131013060803.16846: *4* A
+.. @+node:ekr.20131013060803.16847: *5* B
+.. @+node:ekr.20131013060803.16848: *6* C
+.. @+node:ekr.20131013060803.16849: *5* D
+.. @+node:ekr.20131013060803.16845: *4* E
+.. @+node:ekr.20131013060803.16846: *4* A
+.. @+node:ekr.20131013060803.16847: *5* B
+.. @+node:ekr.20131013060803.16848: *6* C
+.. @+node:ekr.20131013060803.16849: *5* D
+.. @+node:ekr.20131013060803.16850: *4* F
 .. @+node:ekr.20131011050613.16838: *3* From theory chapter
 .. @+node:ekr.20131011050613.16839: *4* Autocompletion
 .. @+node:ekr.20131011050613.16840: *5* UI notes
