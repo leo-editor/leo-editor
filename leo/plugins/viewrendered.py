@@ -187,7 +187,12 @@ import leo.plugins.qtGui as qtGui
 g.assertUi('qt')
 import os
 
-docutils = g.importExtension('docutils',pluginName='viewrendered.py',verbose=False)
+# docutils = g.importExtension('docutils',pluginName='viewrendered.py',verbose=False)
+try:
+    import docutils
+    import docutils.core
+except ImportError:
+    docutils = None
 if docutils:
     try:
         from docutils.core import publish_string

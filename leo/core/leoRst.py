@@ -21,7 +21,14 @@ if 0:
 #@+node:ekr.20100908120927.5971: ** << imports >> (leoRst)
 verbose = False
 import leo.core.leoGlobals as g
-docutils = g.importExtension('docutils',pluginName='leoRst.py',verbose=False)
+
+# Weird: this does not work if viewrendered plugin is not enabled.
+# docutils = g.importExtension('docutils',pluginName='leoRst.py',verbose=False)
+try:
+    import docutils
+    import docutils.core
+except ImportError:
+    docutils = None
 if docutils:
     try:
         if verbose: print('leoRst.py',docutils)
@@ -1820,13 +1827,11 @@ class rstCommands:
         '''Send s to docutils using the writer implied by ext and return the result.'''
 
         trace = False and not g.unitTesting
-
         if not docutils:
             g.error('writeToDocutils: docutils not present')
             return None
         openDirectory = self.c.frame.openDirectory
         overrides = {'output_encoding': self.encoding }
-
         # Compute the args list if the stylesheet path does not exist.
         styleSheetArgsDict = self.handleMissingStyleSheetArgs()
         if ext == '.pdf':
@@ -1853,21 +1858,19 @@ class rstCommands:
             else:
                 g.error('unknown docutils extension: %s' % (ext))
                 return None
-        if ext in ('.html','.htm') and not SilverCity:
+        # SilverCity seems not to be supported, so this warning is strange.
+        if False and ext in ('.html','.htm') and not SilverCity:
             if not self.silverCityWarningGiven:
                 self.silverCityWarningGiven = True
                 if not g.unitTesting:
                     g.es('SilverCity not present so no syntax highlighting')
-
         # Make the stylesheet path relative to the directory containing the output file.
         rel_stylesheet_path = self.getOption('stylesheet_path') or ''
-
         # New in Leo 4.5: The rel_stylesheet_path is relative to the open directory.
         stylesheet_path = g.os_path_finalize_join(
             openDirectory,rel_stylesheet_path)
         path = g.os_path_finalize_join(
             stylesheet_path,self.getOption('stylesheet_name'))
-
         if self.getOption('stylesheet_embed') == False:
             rel_path = g.os_path_join(
                 rel_stylesheet_path,self.getOption('stylesheet_name'))
