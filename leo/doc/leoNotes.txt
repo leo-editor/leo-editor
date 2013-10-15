@@ -13419,6 +13419,62 @@ LeoPyRef.leo (in the core subdirectory of the leo folder) contains almost all of
 Leo's source code. It provides hundreds of examples of everything discussed
 here. This file will repay close study. For full details on all aspects of Leo
 see LeoDocs.leo.
+.. @+node:ekr.20131015104133.16771: *3* @rst html/whitepapers.html
+#################
+Why I like Python
+#################
+
+.. contents::
+    :depth: 2
+.. @+node:ekr.20131015104133.16773: *3* @rst html/history.html
+##############
+History of Leo
+##############
+
+.. contents::
+    :depth: 2
+.. @+node:ekr.20131015104133.16775: *3* @rst html/reference.html
+#####################
+Leo's Reference Guide
+#####################
+   
+.. toctree::
+   :maxdepth: 1
+
+   directives
+   history
+   whitepapers
+.. @+node:ekr.20131015104133.16778: *3* @rst html/abbreviations.html
+###########################
+Abbreviations and Templates
+###########################
+
+.. |br| raw:: html
+
+   <br />
+   
+Leo supports versatile abbreviations and templating capabilities. For
+example, you can type ``def;;``, and Leo will prompt you for a
+function name, using the node name as a default, detect whether the
+function needs a ``self`` parameter, ask for a list of parameters, and
+expand you input (just ``"some_function"`` and ``"one, two, three=4"``
+to something like::
+    
+    def some_function(one, two, three=4):
+        """some_function - Return <|return|>
+    
+        :Parameters:
+        - `one`: <|describe one|>
+        - `two`: <|describe two|>
+        - `three`: <|describe three|>
+        """
+    
+        <|code|>
+
+Leo selects the first placeholder, ``<|return|>`` so you can begin
+typing in the right place. Hitting ``,,`` will select the next place
+holder, and so on.
+
 .. @+node:ekr.20131008041326.16117: *3* Preface
 .. @+node:ekr.20131008041326.16118: *4* Outline structure is real data
 To repeat: the fundamental unit in Leo is *not* text. True, headlines and body
@@ -13697,5 +13753,1357 @@ Many commands use this bits for tree traversal, so these bits do not persist::
     c.clearAllVisited() # Clears all visited bits in c's tree.
     p.clearVisited()
     p.setVisited()
+.. @+node:ekr.20131015104133.16785: *3* Scripting reference
+.. @+node:ekr.20131015104133.16786: *4* generators
++------------------------+----------------------------------------------------+
+| **Generator**          | **Yields**                                         |
++------------------------+----------------------------------------------------+
+| c.all_positions        | All positions in the outline, in outline order     |
++------------------------+----------------------------------------------------+
+| c.all_unique_positions | All positions in the outline, excluding duplicates |
++------------------------+----------------------------------------------------+
+| p.children             | All child positions of p                           |
++------------------------+----------------------------------------------------+
+| p.parents              | All parent positions of p                          |
++------------------------+----------------------------------------------------+
+| p.self_and_parents     | p and all parent positions of p                    |
++------------------------+----------------------------------------------------+
+| p.self_and siblings    | All sibling positions of p, including p            |
++------------------------+----------------------------------------------------+
+| p.following_siblings   | All siblings positions that follow p               |
++------------------------+----------------------------------------------------+
+| p.subtree              | All positions in p's subtree                       |
++------------------------+----------------------------------------------------+
+| p.self_and_subtree     | p and all positions in p's subtree.                |
++------------------------+----------------------------------------------------+
+
+..  - c._all_nodes generates all vnodes in the entire outline, in outline order.
+..  - c.all_unique_nodes generates all vnodes in the entire outline, generating
+..    each vnode exactly once.
+.. @+node:ekr.20131015104133.16787: *4* c.redraw & c.redraw_now
+c.redraw_now redraws the entire screen immediately::
+
+    c.redraw_now()
+
+However, it is usually better to *request* a redraw to be done later as
+follows::
+
+    c.redraw()
+
+Leo actually redraws the screen in c.outerUpdate, provided that a redraw has
+been requested. Leo will call c.outerUpdate at the end of each script, event
+handler and Leo command.
+.. @+node:ekr.20131015104133.16788: *4* p methods acting on nodes
++-----------------------------+--------------------------------------------------------+
+| **Method**                  | **What it does**                                       |
++-----------------------------+--------------------------------------------------------+
+| p.doDelete(new_position)    | deletes p and selects new_position.                    | 
++-----------------------------+--------------------------------------------------------+
+| p.insertAfter()             | returns the position of a new vnode inserted after p   |
++-----------------------------+--------------------------------------------------------+
+| p.insertAsNthChild(n)       | returns the position of a new vnode inserted           |
+|                             | as the n'th child of p                                 |
++-----------------------------+--------------------------------------------------------+
+| p.insertBefore()            | returns the position of a new vnode inserted before p  |
++-----------------------------+--------------------------------------------------------+
+| p.moveAfter(p2)             | moves the node at position p after position p2         |
++-----------------------------+--------------------------------------------------------+
+| p.moveToNthChildOf(parent,n)| moves the vnode at position p to the n'th child of     |
+|                             | the parent position                                    |
++-----------------------------+--------------------------------------------------------+
+| p.moveToRoot(oldRoot=None)  | moves the vnode at position p to the root position     |
+|                             | (oldRoot must be the old root position if it exists)   |
++-----------------------------+--------------------------------------------------------+
+.. @+node:ekr.20131015104133.16789: *4* g.app
+g.app is the singleton leoApp object representing the Leo application itself:
+
+- g.app.commanders() returns a list of all active commanders.
+
+- g.app.gui is the singleton leoGui object representing Leo's gui-related code.
+
+- g.unitTesting is True if Leo is running unit tests.
+
+- g.app.windowlist is a list of all frames of all open window.
+  
+
+.. @+node:ekr.20131015104133.16812: *3* From Using Leo chapter (delete these or move to tutorial)
+.. @+node:ekr.20131015104133.16813: *4* The minibuffer and minibuffer commands
+The mini-buffer is a text area at the bottom of the body pane. You use it
+like the Emacs mini-buffer to invoke commands by their so-called *long name*.
+
+The ``full-command`` (Alt-x) command puts the focus in the minibuffer. Type
+a full command name, then hit <Return> to execute the command. Tab
+completion works, but not yet for file names. For example, to print a list
+of all commands type::
+
+    <Alt-X>print-commands<Return>
+    
+**Extremely important**: Like Emacs, many of Leo's commands have
+long-winded names. It is **not** necessary to type the entire name in the
+minibuffer! Instead, you can use **tab completion** to shortcut your
+typing. For example, Suppose you want to execute the print-commands return.
+First, you type the first few characters of the command, and hit the <tab>
+key::
+
+    <Alt-x>pri<Tab>
+    
+You will see the following list of completions in the log window::
+
+    print-all-uas
+    print-bindings
+    print-buttons
+    print-cmd-docstrings
+    print-commands
+    print-focus
+    print-node-uas
+    print-plugin-handlers
+    print-plugins-info
+    print-settings
+    
+The minibuffer now contains the **longest common prefix** of all the completions,
+in this case::
+
+    print-
+    
+So now, all you have to do is type::
+
+    s<tab>
+    
+and the minibuffer will show::
+
+    print-settings
+    
+Finally, execute the command by hitting the <return> key. Using tab
+completion quickly becomes second nature. It saves a huge amount of typing.
+More importantly, it means that not every command needs to be bound to a
+keystroke in order to be conveniently available.
+
+The ``keyboard-quit`` (Ctrl-g) commands exits any minibuffer mode and puts
+the focus in the body pane. **Important**: Use ctrl-g whenever you are
+unsure of what is happening.
+
+..  The ``universal-argument`` (Alt-u) command acts like Emacs Ctrl-u.
+.. It adds a repeat count for later command. Ctrl-u 999 a adds 999 a's.
+
+The following sections list the various commands that you can invoke from
+the minibuffer. **Important**: you may bind keystrokes to any of these
+commands. See `Customizing Leo`_ for full details.
+.. @+node:ekr.20131015104133.16814: *5* Basic editing commands
+Here is a list of Leo's basic editing commands with the default (EKR)
+bindings shown::
+
+    Left                back-char
+    Shift-Left          back-char-extend-selection
+                        back-paragraph
+                        back-paragraph-extend-selection
+                        back-sentence
+                        back-sentence-extend-selection
+                        back-to-indentation
+    Alt-B or Ctrl-Left  back-word
+    Alt-Shift-B         back-word-extend-selection
+    Ctrl-Shift-Left     back-word-extend-selection
+    BackSpace           backward-delete-char
+    Shift-BackSpace     backward-delete-char
+    Ctrl-BackSpace      backward-delete-word
+                        backward-delete-word-smart
+                        backward-kill-paragraph
+                        backward-kill-sentence
+                        backward-kill-word
+    Ctrl-Home           beginning-of-buffer
+    Ctrl-Shift-Home     beginning-of-buffer-extend-selection
+    Home                beginning-of-line
+    Shift-Home          beginning-of-line-extend-selection
+    Ctrl-C              copy-text
+    Ctrl-X              cut-text
+    Delete              delete-char
+    Ctrl-End            end-of-buffer
+    Ctrl-Shift-End      end-of-buffer-extend-selection
+    End                 end-of-line
+    Shift-End           end-of-line-extend-selection
+    Alt-M               exchange-point-mark
+    Ctrl-W              extend-to-word
+    Right               forward-char
+    Shift-Right         forward-char-extend-selection
+                        forward-paragraph
+                        forward-paragraph-extend-selection
+                        forward-sentence
+                        forward-sentence-extend-selection
+    Ctrl-Right          forward-word
+    Ctrl-Shift-Right    forward-word-extend-selection
+    Tab                 indent-region
+    Return              insert-newline
+                        move-lines-down
+                        move-lines-up
+                        move-past-close
+                        move-past-close-extend-selection
+    Ctrl-J or Tab       newline-and-indent
+    Down                next-line
+    Shift-Down          next-line-extend-selection
+    Ctrl-V              paste-text
+    Up                  previous-line
+    Shift-Up            previous-line-extend-selection
+    Shift-Ctrl-Z        redo
+    Ctrl-A              select-all
+    Ctrl-Z              undo
+    Shift-Tab           unindent-region
+.. @+node:ekr.20131015104133.16815: *5* Debugging commands
+These commands are for debugging Leo itself::
+
+    debug
+    dump-outline
+    gc-collect-garbage
+    gc-dump-all-objects
+    gc-dump-new-objects
+    gc-dump-objects-verbose
+    gc-print-summary
+    gc-trace-disable
+    gc-trace-enable
+    print-focus
+.. @+node:ekr.20131015104133.16816: *5* Emacs commands
+The following commands work just like their Emacs counterparts.
+Use the help-for-command command for further details::
+
+                add-space-to-lines
+                add-tab-to-lines
+                advertised-undo
+                capitalize-word
+                center-line
+                center-region
+                clean-lines
+                clear-extend-mode
+                clear-kill-ring
+                clear-rectangle
+                clear-selected-text
+                count-pages
+                count-region
+                dabbrev-completion
+                dabbrev-expands
+                delete-comments
+                delete-file
+                delete-indentation
+                delete-rectangle
+                delete-spaces
+                diff
+                digit-argument
+                downcase-region
+                downcase-word
+                end-kbd-macro
+                escape
+                eval-expression
+                expand-region-abbrevs
+                fill-paragraph
+                fill-region
+                fill-region-as-paragraph
+                flush-lines
+                full-command
+                goto-char
+                how-many
+                increment-register
+                indent-region
+                indent-relative
+                indent-rigidly
+                indent-to-comment-column
+                insert-body-time
+                insert-file
+                insert-keyboard-macro
+                insert-parentheses
+                insert-register
+                inverse-add-global-abbrev
+                jump-to-register
+                keep-lines
+                keyboard-quit
+                kill-all-abbrevs
+                kill-buffer
+    Ctrl-K      kill-line
+                kill-paragraph
+                kill-rectangle
+                kill-region
+                kill-region-save
+                kill-sentence
+                kill-word
+                line-number
+                list-abbrevs
+                list-buffers-alphabetically
+                load-file
+                macro-call
+                macro-call-last
+                macro-end-recording
+                macro-load-all
+                macro-name-last
+                macro-print-all
+                macro-print-last
+                macro-save-all
+                macro-start-recording
+                make-directory
+                match-bracket
+                name-last-kbd-macro
+                negative-argument
+                number-command
+                number-command-0
+                number-command-1
+                number-command-2
+                number-command-3
+                number-command-4
+                number-command-5
+                number-command-6
+                number-command-7
+                number-command-8
+                number-command-9
+                open-rectangle
+                point-to-register
+                prepend-to-buffer
+                prepend-to-register
+                read-abbrev-file
+                rectangle-clear
+                rectangle-close
+                rectangle-delete
+                rectangle-kill
+                rectangle-open
+                rectangle-string
+                rectangle-yank
+                register-append-to
+                register-copy-rectangle-to
+                register-copy-to
+                register-increment
+                register-insert
+                register-jump-to
+                register-point-to
+                register-prepend-to
+                register-view
+                remove-blank-lines
+                remove-directory
+                remove-sentinels
+                remove-space-from-lines
+                remove-tab-from-lines
+                rename-buffer
+                repeat-complex-command
+                reverse-region
+                run-unit-tests
+                select-paragraph
+                set-comment-column
+                set-fill-column
+                set-fill-prefix
+                shell-command
+                shell-command-on-region
+                sort-columns
+                sort-fields
+                sort-lines
+                split-line
+                start-kbd-macro
+                string-rectangle
+                suspend
+                switch-to-buffer
+                tabify
+                transpose-chars
+                transpose-lines
+                transpose-words
+                unindent-region
+                universal-argument
+                unmark-all
+                untabify
+                upcase-region
+                upcase-word
+                view-lossage
+                what-line
+    Ctrl-Y      yank
+    Alt-Y       yank-pop
+                zap-to-character
+.. @+node:ekr.20131015104133.16817: *5* Find commands
+Here is a list of all of Leo's find commands. The help-for-find-commands
+command will print a detailed help message discussing these commands::
+
+                    clone-find-all
+                    clone-find-all-flattened
+                    find-all
+    Ctrl+Key+2      find-character
+    Ctrl+Shift-2    find-character-extend-selection
+                    find-clone-all
+                    find-clone-all-flattened
+    F3              find-next
+                    find-next-clone
+    F2              find-prev
+                    find-quick
+    Ctrl+Shift+F    find-quick-selected
+                    find-quick-test-failures
+                    find-quick-timeline
+                    find-tab-hide
+                    find-tab-open
+                    find-word
+                    find-word-in-line
+    Alt+R           isearch-backward
+                    isearch-backward-regexp
+    Alt+S           isearch-forward
+                    isearch-forward-regexp
+                    isearch-with-present-options
+                    re-search-backward
+                    re-search-forward
+                    replace-string
+                    search-again
+                    search-backward
+                    search-forward
+    Ctrl-F          search-with-present-options
+    Alt+Ctrl+E      set-find-everywhere
+    Alt+Ctrl+N      set-find-node-only
+    Alt+Ctrl+S      set-find-suboutline-only
+                    toggle-find-collapses-nodes
+    Alt+Ctrl+I      toggle-find-ignore-case-option
+    Alt+Ctrl+B      toggle-find-in-body-option
+    Alt+Ctrl+H      toggle-find-in-headline-option
+    Alt+Ctrl+C      toggle-find-mark-changes-option
+    Alt+Ctrl+F      toggle-find-mark-finds-option
+    Alt+Ctrl+X      toggle-find-regex-option
+    Alt+Ctrl+W      toggle-find-word-option
+    Alt+Ctrl+A      toggle-find-wrap-around-option
+                    word-search-backward
+                    word-search-forward
+.. @+node:ekr.20131015104133.16818: *5* Gui commands
+The following commands simulate mouse clicks, double-clicks or drags::
+
+                    abort-edit-headline
+                    activate-cmds-menu
+                    activate-edit-menu
+                    activate-file-menu
+                    activate-help-menu
+                    activate-outline-menu
+                    activate-plugins-menu
+                    activate-window-menu
+                    add-editor
+                    cascade-windows
+                    click-click-box
+                    click-headline
+                    click-icon-box
+                    close-window
+                    contract-body-pane
+                    contract-log-pane
+                    contract-outline-pane
+    Alt-Ctrl-Minus  contract-pane
+    Ctrl-Shift-Tab  cycle-all-focus
+                    cycle-editor-focus
+                    cycle-focus
+                    delete-editor
+                    double-click-headline
+                    double-click-icon-box
+                    edit-headline
+                    end-edit-headline
+                    equal-sized-panes
+                    expand-body-pane
+                    expand-log-pane
+                    expand-outline-pane
+    Alt-Ctrl-Plus   expand-pane
+    Alt-D           focus-to-body
+                    focus-to-log
+                    focus-to-minibuffer
+    Alt-T           focus-to-tree
+                    fully-expand-body-pane
+                    fully-expand-log-pane
+                    fully-expand-outline-pane
+                    fully-expand-pane
+                    hide-body-pane
+                    hide-find-tab
+                    hide-invisibles
+                    hide-log-pane
+                    hide-outline-pane
+                    hide-pane
+                    hide-spell-tab
+                    iconify-frame
+                    minimize-all
+                    open-compare-window
+                    open-spell-tab
+                    resize-to-screen
+    Shift+Next      scroll-down-half-page
+                    scroll-down-line
+    Next            scroll-down-page
+                    scroll-outline-down-line
+                    scroll-outline-down-page
+                    scroll-outline-left
+                    scroll-outline-right
+                    scroll-outline-up-line
+                    scroll-outline-up-page
+    Shift+Prior     scroll-up-half-page
+                    scroll-up-line
+    Prior           scroll-up-page
+                    simulate-begin-drag
+                    simulate-end-drag
+    Ctrl-T          toggle-active-pane
+                    toggle-invisibles
+                    toggle-split-direction
+.. @+node:ekr.20131015104133.16819: *5* Help commands
+The following commands print various helpful messages.
+Apropos commands print longer discussions of specific topics.
+The help-for-command command prompts for a command name
+(you can use typing completion to specify the command)
+and then prints a brief description of that command::
+
+    F1  help
+        help-for-abbreviations
+        help-for-autocompletion
+        help-for-bindings
+        help-for-command
+        help-for-debugging-commands
+        help-for-find-commands
+        help-for-minibuffer
+    F12 help-for-python
+        help-for-regular-expressions
+        mode-help
+        print-bindings
+        print-buttons
+        print-cmd-docstrings
+        print-commands
+        print-focus
+        print-plugins-info
+        print-settings
+.. @+node:ekr.20131015104133.16820: *5* Mode commands
+These commands put Leo into various kinds of modes.
+
+- The enter-x-mode commands enter modes defined by \@mode nodes in leoSettings.leo
+  (or in other .leo files).
+
+- The set-command-state, set-insert-state, set-overwrite-state commands
+  determine how treats unbound plain keys. Leo ignores such keys in command
+  state, inserts them into the body pane in insert state, and overwrites the
+  character at the cursor position in overwrite state.
+
+- Other commands determine whether autocompletion or calltips are in effect.
+
+- When extend mode is effect, basic editing commands that move the cursor
+  also extend the selected text. For example, in extend mode the back-char
+  command works the same as the back-char-extend-selection command.
+
+Here is the a list of mode-related commands. There may be other
+enter-xxx-mode commands depending on \@mode nodes in your settings files::
+
+                auto-complete
+    Ctrl-Space  auto-complete-force
+                disable-autocompleter
+                disable-calltips
+                enable-autocompleter
+                enable-calltips
+                enter-quick-command-mode
+                enter-toggle-find-mode
+                exit-named-mode
+                set-command-state
+                set-extend-mode
+                set-insert-state
+                set-overwrite-state
+                set-silent-mode
+                show-calltips
+                show-calltips-force
+    Alt-1       toggle-autocompleter
+    Alt-2       toggle-calltips
+                toggle-extend-mode
+                toggle-input-state
+.. @+node:ekr.20131015104133.16821: *5* Outline commands
+The following commands invoke Leo's outline commands::
+
+    Ctrl-`          clone-node
+    Alt-Minus       contract-all
+                    contract-node
+    Left            contract-or-go-left
+                    contract-parent
+    Ctrl-Shift-C    copy-node
+                    cut-node
+                    de-hoist
+                    delete-node
+    Ctrl-]          demote
+                    expand-to-level-1
+                    expand-to-level-2
+                    expand-to-level-3
+                    expand-to-level-4
+                    expand-to-level-5
+                    expand-to-level-6
+                    expand-to-level-7
+                    expand-to-level-8
+                    expand-to-level-9
+                    expand-all
+                    expand-and-go-right
+                    expand-next-level
+    Alt-}           expand-node
+                    expand-or-go-right
+                    expand-prev-level
+                    go-back
+                    go-forward
+                    goto-first-node
+                    goto-first-sibling
+                    goto-last-node
+                    goto-last-sibling
+                    goto-last-visible
+                    goto-line
+                    goto-line-number
+                    goto-next-changed
+                    goto-next-clone
+                    goto-next-marked
+                    goto-next-node
+                    goto-next-sibling
+                    goto-next-visible
+                    goto-parent
+                    goto-prev-node
+                    goto-prev-sibling
+                    goto-prev-visible
+                    hoist
+                    insert-node
+    Ctrl-M          mark
+                    mark-changed-items
+                    mark-subheads
+    Ctrl+D          move-outline-down
+    Shift+Down      move-outline-down
+    Alt+Shift+Down  move-outline-down
+    Shift+Left      move-outline-left
+    Alt+Shift+Left  move-outline-left
+    Shift+Right     move-outline-right
+    Alt+Shift+Up    move-outline-up
+    Ctrl+U          move-outline-up
+                    outline-to-CWEB
+                    outline-to-noweb
+                    paste-node
+                    paste-retaining-clones
+    Ctrl-[          promote
+                    sort-children
+    Alt-A           sort-siblings
+.. @+node:ekr.20131015104133.16822: *5* Miscellaneous commands
+Here are various miscellaneous minibuffer commands::
+
+    about-leo
+    add-comments
+    check-all-python-code
+    check-outline
+    check-python-code
+    clear-recent-files
+    convert-all-blanks
+    convert-all-tabs
+    convert-blanks
+    convert-tabs
+    execute-script
+    export-headlines
+    exit-leo
+    extract
+    extract-names
+    extract-section
+    flatten-outline
+    goto-global-line
+    import-at-file
+    import-at-root
+    import-cweb-files
+    import-derived-file
+    import-flattened-outline
+    import-noweb-files
+    insert-headline-time
+    new
+    open-leoDocs-leo
+    open-leoPlugins-leo
+    open-leoSettings-leo
+    open-offline-tutorial
+    open-online-home
+    open-online-tutorial
+    open-outline
+    open-outline-by-name
+    open-python-window
+    open-with
+    open-with-idle
+    open-with-word
+    open-with-wordpad
+    pretty-print-all-python-code
+    pretty-print-python-code
+    read-at-file-nodes
+    read-outline-only
+    reformat-paragraph
+    revert
+    save-buffers-kill-leo
+    save-file
+    save-file-as
+    save-file-to
+    settings
+    set-colors
+    set-font
+    show-colors
+    show-find-options
+    show-fonts
+    show-invisibles
+    spell-change
+    spell-change-then-find
+    spell-find
+    spell-ignore
+    toggle-angle-brackets
+    weave
+    write-abbrev-file
+    write-at-file-nodes
+    write-dirty-at-file-nodes
+    write-missing-at-file-nodes
+    write-outline-only
+.. @+node:ekr.20131015104133.16823: *4* Autocompletion
+Leo's autocompletion feature suggests **completions**, text may be valid in
+a given point, or **context** in source code. For example, suppose the
+context is::
+
+    os.path.s
+    
+That is, suppose the cursor follows ``os.path.s`` in the body pane. The
+valid completions are all the members of Python's os.path module whose
+names start with 's', namely::
+
+    samefile
+    sameopenfile
+    sep
+    split
+    splitdrive
+    splitext
+    splitunc
+    stat
+    supports_unicode_filenames
+    sys
+    
+How Leo displays these completions depends on the setting::
+
+    @bool use_qcompleter
+    
+True: Leo shows completions in the QCompleter popup window.
+False: Leo shows completions in the log pane.
+    
+To compute the list of completions, Leo first computes **Leo-specific**
+completions. These completions assume that c is a commander, g is the
+leoGlobals object and p is a position. If there are no such completions, Leo
+computes completions using ctags data. In order to use these additional
+completions you must create the ctags data as described in a later section.
+.. @+node:ekr.20131015104133.16824: *5* Starting autocompletion
+There are two ways to have Leo show completions. **Manual autocompletion**
+shows autocompletions whenever you execute the auto-complete-force
+(ctrl-space) command. **Automatic autocompletion** shows completions
+whenever you type a period in the body pane.
+
+You can enable autocompletion in two ways:
+
+1. By setting @bool enable_autocompleter_initially = True.
+
+2. By using the toggle-autocompleter (Alt-1) command.
+.. @+node:ekr.20131015104133.16825: *5* Using the QCompleter
+When the ``@bool use_qcompleter`` setting is False, Leo shows all
+completions in a popup window, regardless of how many completions there
+are. To **accept** a completion, use the up and down arrows to select a
+completion, then type the return key. To **cancel** completion, type the
+escape key. As an important shortcut, if the popup window contains only one
+entry, you may accept a completion by simply typing the return key.
+.. @+node:ekr.20131015104133.16826: *5* Using the Log pane completer
+When the ``@bool use_qcompleter`` setting is True, Leo shows completions in in
+Leo's log pane. When there are more than 20 completions, Leo shows only the
+characters that start a completions. For example, when completing ``os.path.``
+the log pane will show::
+
+    _ 17
+    a 2
+    b 1
+    c 2
+    d 3
+    e 4
+    g 5
+    i 5
+    j 1
+    l 1
+    n 2
+    o 1
+    p 2
+    r 2
+    s 10
+    
+To see the complete list, type the '!' character.  You will see::
+
+    __all__
+    __builtins__
+    __cached__
+    __doc__
+    __file__
+    __name__
+    __package__
+    _get_altsep
+    _get_bothseps
+    _get_colon
+    _get_dot
+    _get_empty
+    _get_sep
+    _get_special
+    _getfileinformation
+    _getfinalpathname
+    _getfullpathname
+    abspath
+    altsep
+    basename
+    commonprefix
+    curdir
+    defpath
+    devnull
+    dirname
+    exists
+    ...
+
+Typically, however, you would simply type one of the valid prefix characters.
+For example, typing the letter 'a' would create the context ``os.path.a`` and
+the log pane would show::
+
+    abspath
+    altsep
+    
+As you type, Leo enters the longest common prefix of all completions into the
+body pane. Typing return, escape or ctrl-g (or any other alt or ctrl key) ends
+completion.
+.. @+node:ekr.20131015104133.16827: *5* Showing docstrings
+Regardless of the setting of ``@bool use_qcompleter``, typing '?' while
+autocompleting will show the docstring of the present context. For example,
+if the context is ``os.path.join``, typing '?' will show::
+
+    Join two or more pathname components, inserting "\" as needed.
+    If any component is an absolute path, all previous path components
+    will be discarded.
+    
+It is not possible at present to copy the docstring from the log pane when
+using the QCompleter because the QCompleter popup window is a modal dialog.
+.. @+node:ekr.20131015104133.16828: *5* Autocompleter settings
+These are found in leoSettings.leo: @settings-->Autocompleter::
+
+**@bool use_qcompleter = True**
+
+    True:  show completions in a QCompleter popup.
+    False: show completions in Leo's Completions tab.
+    
+**@bool auto_tab_complete = False**
+    
+    True: Automatically extend the completed text to the longest common
+    prefix of all completions.
+    
+**@bool autocomplete-brackets = False**
+    
+    True: When typing an opening bracket '(','[' or '{', immediately type
+    the corresponding closing bracket. To move past the closing bracket,
+    just type it.
+    
+**@bool enable_calltips_initially = False**
+    
+**@bool forbid_invalid_completions = False**
+    
+    True: Don't add characters during autocompletion that are not part of
+    any computed completion.
+.. @+node:ekr.20131015104133.16829: *5* Creating ctags data
+This section describes how to create ctags data files describing the
+desired completions. You must do this when the use_codewise setting is
+True.
+
+1. Make sure you have exuberant ctags (not just regular ctags)
+   installed. It's an Ubuntu package, so its easy to install if
+   you're using Ubuntu.
+   
+2. Execute the following commands from Leo's external/codewise.py
+   module. **Note**: On Windows, you can use codewise.bat to
+   execute these commands. For example::
+
+        python <path to leo>\external\codewise.py %*
+    
+A. [Optional] Create a custom ~/.ctags file containing default
+   configuration settings for ctags::
+    
+        codewise setup
+        
+    This command will leave the ~/.ctags file unchanged if it
+    exists.  Otherwise, the ``codewise setup`` command will
+    create a ~/.ctags file containing the following defaults::
+    
+        --exclude=*.html
+        --exclude=*.css
+    
+    http://ctags.sourceforge.net/ctags.html#FILES for more
+    details about the .ctags file.
+    
+B. [Optional] Delete the existing ctags database in ~/.codewise.db::
+   
+        codewise init
+        
+C. Add ctags data to the existing ctags database::
+
+        codewise parse <path to directory>
+        
+   You can add data from multiple sources by running
+   the ``codewise parse`` command on multiple directories.
+.. @+node:ekr.20131015104133.16830: *4* Calltips
+Calltips appear after you type an open parenthesis in code. Calltips shows the
+expected arguments to a function or method. Calltips work for any Python
+function or method, including Python's global functions. Typing Return or
+Control-g (keyboard-quit) exits calltips.
+
+Examples:
+
+a)  'g.toUnicode('  gives 'g.toUnicode(s, encoding, reportErrors=False'
+b) 'c.widgetWantsFocusNow' gives 'c.widgetWantsFocusNow(w'
+c) 'reduce(' gives 'reduce(function, sequence[, initial]) -> value'
+
+The calltips appear directly in the text and the argument list is highlighted so
+you can just type to replace it. The calltips appear also in the status line for
+reference after you have started to replace the args.
+
+Options
+
+Both autocompletion and calltips are initially enabled or disabled by the
+enable_autocompleter and enable_calltips settings in leoSettings.leo. You may
+enable or disable these features at any time with these commands:
+enable-auto-completer-command, enable-calltips-command,
+disable-auto-completer-command and disable-calltips-command.
+.. @+node:ekr.20131015104133.16831: *4* Abbreviations and templates
+.. @+node:ekr.20131015104133.16832: *5* settings
+Here are the Leo settings which relate to abbreviations. See the
+actual settings in leoSettings.leo for full details.
+
+**@bool enable-abbreviations** = True
+
+Enables or disables abbreviations. Typically you would enable
+abbreviations in myLeoSettings.leo or in individual .leo files.
+    
+**@data global-abbreviations** & **@data abbreviations**
+
+These define local and global abbreviations. Definitions in \@data
+abbreviation nodes override definitions in \@data global-abbreviation
+nodes. Typically you would define \@data abbreviation nodes in
+myLeoSettings.leo. Comments lines (lines starting with '#') are
+ignored. Non-comment lines should have the form::
+
+    name=definition
+    
+**@string abbreviations-subst-start** = ``{|{`` |br|
+**@string abbreviations-subst-end** = ``}|}``
+
+If abbreviations-subst-start is something other than None, *and* \@bool
+scripting-at-script-nodes = True, then substitutions will be made when
+abbreviations are inserted. For example, if abbreviations-subst-start
+is set to ``{|{`` and abbreviations-subst-end is set to ``}|}``, an
+abbreviation like::
+    
+    date;;={|{import time;x=time.asctime()}|}
+    
+will expand to something like "Mon Aug 20 22:00:40 2012"
+
+**Note**: abbreviations-subst-end has no effect if abbreviations-subst-start is None.
+    
+**@data abbreviations-subst-env**
+
+If abbreviations-subst-start is set, the code in this node will be
+executed (once only) when the outline is loaded, in an environment
+which will be used for execution of substitutions in abbreviations.
+
+For example, if this node contains ``import time``, an abbreviation
+like::
+    
+    date;;={|{import time;x=time.asctime()}|}
+    
+can be written more simply as::
+    
+    date;;={|{x=time.asctime()}|}
+    
+The environment will contain ``c`` and ``g``, a dict called
+``_values`` (see ask() and get() in @data abbreviations-subst-env),
+and ``_abr``, the abbreviation being expanded.
+    
+**Note**: start lines with ``\:`` to preserve indentation.
+    
+**@string abbreviations-place-start** = ``<|`` |br|
+**@string abbreviations-place-end** = ``|>``
+
+These settings specify the start and end of a placeholder for template
+expansions. For example, the ``<|`` and ``|>`` in::
+
+    w;;=while <|condition|>:
+    \:    <|code|>
+
+This would expand with the ``<|condition|>`` selected, and ``,,``, if
+that's an abbreviation linked to __NEXT_PLACEHOLDER, see \@@data
+abbreviations examples, would select ``<|code|>``.
+.. @+node:ekr.20131015104133.16833: *5* examples
+See the node ``@@data abbreviations examples`` in leoSettings.leo for
+examples of advanced abbreviations with substitutions.
+.. @+node:ekr.20131015104133.16842: *3* @rst-ignore-tree old scripting tutorial
+.. @+node:ekr.20131015104133.16843: *4* positions
+A **position** object represents a specific location in a Leo outline.
+
+Because of clones, a node may appear arbitrarily many times in an outline,
+so a node may appear at arbitrarily many positions in the outline.
+
+For any position p, **p.v** is the vnode at position p.
+A node's vnode never changes, regardless of where the node appears in the
+outline, and regardless of whether the node is cloned or not.
+
+**Positions become invalid when the outline changes.** You may save and and
+use positions *provided* the outline remains unchanged.
+
+Generators deliver positions (or nodes, depending on the generator), one
+after each other, using a *single* (ever-changing) position object. As a
+result, scripts must use p.copy() to create lists of positions. For
+example::
+
+    aList = [p.copy() for p in c.rootPosition().subtree()]
+.. @+node:ekr.20131015104133.16844: *4* position methods
+The getters of any position p are::
+
+    p.b # p's body text.
+    p.h # p's headline.
+    p.u # p's uA, the same as p.unknownAttributes.
+    p.v # the vnode corresponding to p.
+    p2 = p.copy() # p2 is a copy of p.
+
+    # Returning ints:
+    
+        p.childIndex()
+        p.numberOfChildren()
+        p.level()
+
+    # Returning bools:
+    
+        p.hasChildren()
+        p.isAncestorOf(v2) # True if v2 is a child, grandchild, etc. of p.
+        p.isCloned()
+        p.isDirty()
+        p.isExpanded()
+        p.isMarked()
+        p.isVisible()
+        p.isVisited()
+        
+The most important setters of any position p are::
+
+    p.b = s  # Sets the body text of p.
+    p.h = s  # Sets the headline text of p.
+    p.u = aDict # Sets p.u to the given dictionary.
+    
+.. @+node:ekr.20131015104133.16845: *4* iterators
+Iterators generate positions, usually outline order::
+
+    c.all_nodes             # all vnodes in c.
+    c.all_unique_nodes      # all unique vnodes in c.
+    c.all_positions         # all positions in c.
+    c.all_unique_positions  # all unique positions in c.
+
+    p.children              # all children of p.
+    p.following_siblings    # all siblings of p that follow p.
+    p.nodes                 # all vnodes in p's subtree.
+    p.parents               # all parents of p.
+    p.self_and_parents      # p and all parents of p.
+    p.siblings              # all siblings of p, including p.
+    p.subtree               # all positions in p's subtree, excluding p.
+    p.self_and_subtree      # all positions in p's subtree, including p.
+    p.unique_nodes          # all unique vnodes in p's subtree.
+    p.unique_subtree        # all unique positions in p's subtree.
+.. @+node:ekr.20131015104133.16846: *4* generators
+Iterators return positions or nodes, one after another::
+
+    for p in c.all_positions():
+        print(p.h)
+        
+Positions become invalid whenever the outline changes.
+        
+To capture positions *temporarily* (when the outline isn't changing), call
+p.copy()::
+
+    aList = [p.copy() for p in c.all_positions()]
+.. @+node:ekr.20131015104133.16847: *4* predefined symbols in scripts
+Ctrl-B (execute-script) executes the body pane after expanding @others and
+section references throughout the tree.
+
+The symbols 'c', 'g' and 'p' are predefined as follows:
+
+- c is the Commander of the outline in which the script is executing.
+- g is the leo.core.leoGlobals module.
+- p is c.p (the same as c.currentPosition())
+
+These three predefined vars give the script full access to all methods
+defined in Leo's source code.
+.. @+node:ekr.20131015104133.16848: *4* leoGlobals functions
+Important leoGlobals functions::
+
+    g.es(s) # prints string s to the log window.
+    g.app # the singleton instance of the leoApp class.
+    g.app.gui # the the singleton instance of the leoGui class.
+    g.app.windowList # the list of presently open frames.
+.. @+node:ekr.20131015104133.16849: *4* Commander class
+The Commander class provides direct access to all of Leo's source code. The
+most important for most scripts is::
+    
+    c.redraw() # requests redraw of Leo's screen.
+
+To get the list of all open commanders::
+
+    commanders = [frame.c for frame in g.app.windowList]
+.. @+node:ekr.20131015104133.16856: *3* @rst-ignore-tree scripting examples: not ready yet
+.. @+node:ekr.20131015104133.16857: *4* An example outline & vnodes
+This chapter uses the following outline (with all nodes expaneded) as an
+ongoing example::
+
+    + A (clone)
+      + B
+        - C
+      - D
+    - E
+    + A (clone)
+      + B
+        - C
+      - D
+    - F
+
+Only the A nodes are clones of each other.
+
+To script Leo effectively, you *must* understand how Leo
+represents this outline internally:
+
+- Leo represents outline nodes using **vnodes**,
+  instances of the vnode class in leoNodes.py.
+
+- Each vnode contains all the outline node's data.
+
+- Each vnode represents it's place in the outline with two private arrays.
+  Your scripts should *never* change these arrays directly!
+  
+- All clones of the same node are actually **exactly the same vnode**.
+  This means that Leo outlines are not simple trees, but rather
+  `Directed Acyclic Graphs`_ (DAGs)
+  
+Here is how Leo represents the example outline.
+
+Each Leo outline contains a hidden vnode, c.hiddenRootNode::
+
+    c.hiddenRootVnode.children: [A, E, A, F]
+    A.children: [B]
+    B.children: [C]
+    C.children: []
+    D.children: []
+    E.children: []
+    F.children: []
+    
+    c.hiddenRootVnode.parents: []
+    A.parents: [c.hiddenRootVnode,c.hiddenRootVnode]
+    B.parents: [A]
+    C.parents: [B]
+    D.parents: [A]
+    E.parents: [c.hiddenRootVnode]
+    F.parents: [c.hiddenRootVnode]
+    
+A vnode v is a clone if and only if len(v.parents) > 1.
+.. @+node:ekr.20131015104133.16858: *4* A traversal script (new)
+The following script prints the headlines of all nodes of the outline, in
+outline order::
+
+    for p in c.all_positions():
+        g.es(p.h)
+        
+This script will print the following in the log pane::
+
+    A
+    B
+    C
+    D
+    E
+    A
+    B
+    C
+    D
+    F
+        
+This script introduces several important new concepts.
+
+- execute-script predefines c to be an object representing the entire
+  outline. More details about c later.
+
+- c.all_positions is a Leo generator, a `Python generator`_ defined by Leo.
+  There are about a dozen Leo generators; each visits nodes of the outline
+  in some particular order. c.all_positions visits all the nodes of the
+  outline in outline order.
+  
+- All Leo generators yield **position objects** (positions for short).
+  position objects *refer* to nodes; positions are not nodes!
+  
+
+Here is some very **important terminology**:
+
+A **traversal** of a Leo outline is a list of some (or all) of the nodes of
+the outline in some particular order.
+
+Leo defines several (Python) **generators** that yield the nodes of various
+traversals.
+
+c.all_positions() is a generator that yields all the nodes of an outline in
+outline order. This generator, when applied to the example tree above,
+yields::
+
+    A, B, C, D, E, A, B, C, D, F.
+
+p.subtree() is a generator that yields all the descendant nodes of p.
+For example, if p refers to either node A, p.subtree() yields::
+
+    B, C, D
+.. @+node:ekr.20131015104133.16859: *4* traversals, tree structure & positions
+::
+
+    + A (clone)
+      + B
+        - C
+      - D
+    - E
+    + A (clone)
+      + B
+        - C
+      - D
+    - F
+    
+    (0 A) p.stack:
+    (0 B) p.stack: (0 A)
+    (0 C) p.stack: (0 A),(0 B)
+    (1 D) p.stack: (0 A)
+    (1 E) p.stack:
+    (2 A) p.stack:
+    (0 B) p.stack: (2 A)
+    (0 C) p.stack: (2 A),(0 B)
+    (1 D) p.stack: (2 A)
+    (3 F) p.stack:
+
+Top-level nodes::
+
+    (0 A) p.stack:
+    (1 E) p.stack:
+    (2 A) p.stack:
+    (3 F) p.stack:
+
+B::
+
+    (0 B) p.stack: (0 A)
+    (0 B) p.stack: (2 A)
+
+C::
+
+    (0 C) p.stack: (0 A),(0 B)
+    (0 C) p.stack: (2 A),(0 B)
+
+The above was created by the following script::
+
+    def print_p_stack(p):
+        
+        c,result = p.v.context,[]
+        v,n = p.v,p.childIndex()
+        for data in p.stack:
+            v,n = data
+            result.append('(%s %s)' % (n,v.h))
+        return ','.join(result)
+    
+    for p in c.all_positions():
+        print('(%s %s) p.stack: %s' % (
+            p.childIndex(),p.h,print_p_stack(p)))
+
+All Leo generators use a single, ever-changing, position object::
+
+    for p in c.all_positions():
+        print('id(p): %s id(p.v): %s (%s %s) p.stack: %s' % (
+            id(p),id(p.v),p.childIndex(),p.h,print_p_stack(p)))
+
+::
+
+    id(p): 214733232 id(p.v): 192725360 (0 A) p.stack:
+    id(p): 214733232 id(p.v): 192725488 (0 B) p.stack: (0 A)
+    id(p): 214733232 id(p.v): 192725552 (0 C) p.stack: (0 A),(0 B)
+    id(p): 214733232 id(p.v): 192725520 (1 D) p.stack: (0 A)
+    id(p): 214733232 id(p.v): 192725392 (1 E) p.stack:
+    id(p): 214733232 id(p.v): 192725360 (2 A) p.stack:
+    id(p): 214733232 id(p.v): 192725488 (0 B) p.stack: (2 A)
+    id(p): 214733232 id(p.v): 192725552 (0 C) p.stack: (2 A),(0 B)
+    id(p): 214733232 id(p.v): 192725520 (1 D) p.stack: (2 A)
+    id(p): 214733232 id(p.v): 192725584 (3 F) p.stack:
+    
+A::
+
+    id(p): 214733232 id(p.v): 192725360 (0 A) p.stack:
+    id(p): 214733232 id(p.v): 192725360 (2 A) p.stack:
+    
+B::
+
+    id(p): 214733232 id(p.v): 192725552 (0 C) p.stack: (0 A),(0 B)
+    id(p): 214733232 id(p.v): 192725552 (0 C) p.stack: (2 A),(0 B)
+
+C::
+
+    id(p): 214733232 id(p.v): 192725552 (0 C) p.stack: (0 A),(0 B)
+    id(p): 214733232 id(p.v): 192725552 (0 C) p.stack: (2 A),(0 B)
+
+D::
+
+    id(p): 214733232 id(p.v): 192725520 (1 D) p.stack: (0 A)
+    id(p): 214733232 id(p.v): 192725520 (1 D) p.stack: (2 A)
+.. @+node:ekr.20131015104133.16860: *4* position trace
+::
+
+    + A (clone)
+      + B
+        - C
+      - D
+    - E
+    + A (clone)
+      + B
+        - C
+      - D
+    - F
+    
+    (0 A) p.stack:
+    (0 B) p.stack: (0 A)
+    (0 C) p.stack: (0 A),(0 B)
+    (1 D) p.stack: (0 A)
+    (1 E) p.stack:
+    (2 A) p.stack:
+    (0 B) p.stack: (2 A)
+    (0 C) p.stack: (2 A),(0 B)
+    (1 D) p.stack: (2 A)
+    (3 F) p.stack:
+    
+Top-level nodes::
+    
+    (0 A) p.stack:
+    (1 E) p.stack:
+    (2 A) p.stack:
+    (3 F) p.stack:
+    
+B::
+    
+    (0 B) p.stack: (0 A)
+    (0 B) p.stack: (2 A)
+    
+C::
+    
+    (0 C) p.stack: (0 A),(0 B)
+    (0 C) p.stack: (2 A),(0 B)
+.. @+node:ekr.20131015104133.16861: *4* Introductory example (old)
+Leo scripts are elegant--they pack a lot of power in small packages. For
+example, this short script prints the headline of all nodes in the outline
+in Leo's log pane, in outline order::
+
+    for p in c.all_positions():
+        g.es(p.h)
+
+These two lines illustrate *all* the basic features of Leo scripts:
+predefined symbols, generators, positions and vnodes:
+
+- The execute-script command runs this script without errors because the
+  execute-script command predefines c and g.
+  
+- c is a Commands object; g is the leo.core.leoGlobals module. c and g give
+  access to all of Leo's source code, including everything commonly used in
+  Leo scripts.
+
+- c.all_positions() is a **Leo generator**, a `Python generator`_ defined by Leo.
+
+- Leo generators **traverse** (visit each node of) the outline, usually in outline order.
+
+- Leo generators yield a sequence of **positions** p.
+
+- Each position represents a particular state (position) of the traversal.
+
+- For any position p, p.v is the **vnode** at p.
+
+- vnodes contain *all* the data in Leo outline nodes.
+
+- For any vnode v, v.h is the node's headline; v.b is the node's body text.
+  (p.b and p.h are synonyms for p.v.b and p.v.h).
+
+- The g.es function prints its arguments to the Log pane.
+
+Whew! There is a lot to digest in this simple example!
+
+Happily, scripting Leo soon becomes second nature.
+
+The following sections explain all the terms discusses here in detail.
 .. @-all
 .. @-leo

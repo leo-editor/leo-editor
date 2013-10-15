@@ -13,27 +13,26 @@ Leo's Documentation Page
    :maxdepth: 2
    
    preliminaries
-
+   
 .. toctree::
    :maxdepth: 1
 
-   download
-   installing
-   running
-   FAQ
-
+   getting-started
+   
 .. toctree::
    :maxdepth: 2
 
    Tutorial <tutorial>
    Users Guide <usersguide>
-   Reference Guide <reference>
+   leoandotherprograms
+   intermediatetopics
    appendices
-   
+
 .. toctree::
    :maxdepth: 1
-   
+
    Cheat Sheet <cheatsheet>
+   FAQ
    glossary
    What's New <what-is-new>
 

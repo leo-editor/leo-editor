@@ -56,6 +56,8 @@
 </v>
 <v t="ekr.20101028112631.4959" descendentVnodeUnknownAttributes="7d710028550b302e312e302e302e302e3171017d7102580b0000007374725f6c656f5f706f73710358000000007104735503302e3371057d710655097374725f6174696d657107550c313337363431323931392e307108735505302e332e3071097d710a6807550c313337363431323736382e30710b735509302e312e302e302e33710c7d710d6807550c313337363431323930312e30710e73752e"><vh>@file doc-startup.txt</vh></v>
 <v t="ekr.20131013060803.16851"><vh>script used to generate position trace</vh></v>
+<v t="ekr.20131015091948.16781"><vh>@button make-html @key=Alt-period</vh></v>
+<v t="ekr.20131015104133.16765"><vh>@button make-all</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
 <v t="ekr.20100805171546.4412"><vh>Files, including home page</vh>
@@ -82,7 +84,6 @@
 <v t="ekr.20100805165051.7176"><vh>@file other_docs.txt</vh></v>
 </v>
 </v>
-<v t="ekr.20090428102353.1"></v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
 <v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d710028550a302e302e31322e302e3771017d710255097374725f6174696d657103550c313337363431323238302e30710473550b302e302e332e302e322e3371057d71066803550c313337363431323838382e307107735510302e302e31322e312e302e372e302e3171087d710958090000007374725f6174696d65710a550c313337363431323238382e30710b73550e302e302e31322e302e372e302e31710c7d710d6803550c313337363431323238382e30710e735509302e302e312e302e30710f7d71106803550c313337363431323837322e30711173550b302e302e332e312e312e3371127d71136803550c313337363431323838392e30711473550c302e302e31322e312e302e3771157d711658090000007374725f6174696d657117550c313337363431323238302e30711873752e"><vh>@file release_notes.txt</vh></v>
 </v>
@@ -293,7 +294,7 @@
 </v>
 </v>
 <v t="ekr.20131007143750.16111"><vh>To do</vh>
-<v t="ekr.20131012060912.16766"><vh>Revise the TOC</vh></v>
+<v t="ekr.20131015091948.16783"><vh>Add links between chapters</vh></v>
 <v t="ekr.20131010160850.17454"><vh>Insert index entries into the tutorial</vh></v>
 <v t="ekr.20131008041326.16109"><vh>Add a Expansion section to the Reference chapter?</vh></v>
 <v t="ekr.20131008041326.16110"><vh>Revise or eliminate the Using Leo section</vh></v>
@@ -360,6 +361,7 @@
 </v>
 </v>
 <v t="ekr.20131008041326.16092"><vh>Installing &amp; running Leo</vh>
+<v t="ekr.20131015104133.16766"><vh>@rst html/getting-started.html</vh></v>
 <v t="ekr.20111127144911.5544"><vh>@rst html/download.html</vh></v>
 <v t="ekr.20131008041326.16094"><vh>@rst html/installing.html</vh>
 <v t="ekr.20101125062332.5090"><vh>Installing packages</vh></v>
@@ -518,101 +520,27 @@
 <v t="ekr.20131008041326.16252"><vh>@rst-no-head links &amp; markup</vh></v>
 <v t="ekr.20131003040744.18222" a="O"><vh>Creating source code with @others</vh></v>
 <v t="ekr.20131008041326.16056" a="M"><vh>Using @auto nodes</vh></v>
-<v t="ekr.20050903161843"><vh>Using @button nodes</vh></v>
-<v t="ekr.20101124083644.5052"><vh>autocompletion</vh></v>
 <v t="ekr.20131008041326.16054"><vh>Using @first and @last</vh></v>
-<v t="ekr.20131008041326.16058" a="M"><vh>Using @test nodes</vh></v>
 <v t="ekr.20131008041326.16055"><vh>Using @path</vh></v>
 <v t="ekr.20131008041326.16246" a="M"><vh>Summary</vh></v>
 </v>
+<v t="ekr.20040403171740" a="M"><vh>@rst html\tutorial-scripting.html</vh>
+<v t="ekr.20050812134441.1"><vh>@rst-no-head markup &amp; links</vh></v>
+<v t="ekr.20131015104133.16862"><vh>A tutorial introduction to scripting</vh>
+<v t="ekr.20131013060803.16852"><vh>Hello world</vh></v>
+<v t="ekr.20070120075236"><vh>Predefined symbols: c, g and p</vh></v>
+<v t="ekr.20131014053720.16810"><vh>Vnodes</vh></v>
+<v t="ekr.20131014050027.16801"><vh>Positions</vh></v>
+<v t="ekr.20131012060912.16775"><vh>Generators</vh></v>
+<v t="ekr.20131014053720.16809"><vh>Capturing positions</vh></v>
 </v>
-<v t="ekr.20131008041326.16091"><vh>Cheat Sheet</vh>
-<v t="ekr.20131007143750.16070"><vh>@rst html\cheatsheet.html</vh>
-<v t="ekr.20131015035606.16778"><vh>Key bindings: selecting outline nodes</vh></v>
-<v t="ekr.20131015035606.16800"><vh>Key bindings: moving outline nodes</vh></v>
-<v t="ekr.20131015035606.16780"><vh>Key bindings: moving the cursor in text panes</vh></v>
-<v t="ekr.20131015035606.16801"><vh>Common commands</vh></v>
-<v t="ekr.20131015035606.16786"><vh>Leo directives</vh></v>
-<v t="ekr.20131015035606.16788"><vh>Settings</vh></v>
-<v t="ekr.20131015035606.16799"><vh>Creating external files</vh></v>
-<v t="ekr.20131007143750.16074"><vh>Scripting</vh></v>
+<v t="ekr.20101124083644.5052"><vh>autocompletion</vh></v>
+<v t="ekr.20050903161843"><vh>Using @button nodes</vh></v>
+<v t="ekr.20131008041326.16058" a="M"><vh>Using @test nodes</vh></v>
 </v>
 </v>
 <v t="ekr.20131008041326.16080"><vh>Users Guide</vh>
 <v t="ekr.20131008041326.16082"><vh>@rst html/usersguide.html</vh></v>
-<v t="EKR.20040524104904.99"><vh>Using Leo</vh>
-<v t="ekr.20050901101608.2"><vh>@rst html\commands.html</vh>
-<v t="ekr.20050901101852"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20060420094611"><vh>The minibuffer and minibuffer commands</vh>
-<v t="ekr.20060613062025.6"><vh>Basic editing commands</vh></v>
-<v t="ekr.20060613062025.1"><vh>Debugging commands</vh></v>
-<v t="ekr.20060613062025.4"><vh>Emacs commands</vh></v>
-<v t="ekr.20060613062025.5"><vh>Find commands</vh></v>
-<v t="ekr.20060613062025.9"><vh>Gui commands</vh></v>
-<v t="ekr.20060613062025.2"><vh>Help commands</vh></v>
-<v t="ekr.20060613062025.10"><vh>Mode commands</vh></v>
-<v t="ekr.20060613062025.7"><vh>Outline commands</vh></v>
-<v t="ekr.20060613062025.8"><vh>Miscellaneous commands</vh></v>
-</v>
-<v t="ekr.20120229094652.15103"><vh>Autocompletion</vh>
-<v t="ekr.20120229094652.15104"><vh>Starting autocompletion</vh></v>
-<v t="ekr.20120229094652.15106"><vh>Using the QCompleter</vh></v>
-<v t="ekr.20120229094652.15107"><vh>Using the Log pane completer</vh></v>
-<v t="ekr.20120229094652.15108"><vh>Showing docstrings</vh></v>
-<v t="ekr.20120229094652.15116"><vh>Autocompleter settings</vh></v>
-<v t="ekr.20120229094652.15102"><vh>Creating ctags data</vh></v>
-</v>
-<v t="ekr.20100504092040.17423"><vh>Calltips</vh></v>
-<v t="EKR.20040524104904.100"><vh>File commands</vh>
-<v t="EKR.20040524104904.101"><vh>Loading, Saving and Reverting Files</vh></v>
-<v t="EKR.20040524104904.102"><vh>Communicating with external editors</vh></v>
-<v t="EKR.20040524104904.108"><vh>Importing Files into Leo Outlines</vh></v>
-<v t="EKR.20040524104904.109"><vh>Exporting Files from Leo Outlines</vh></v>
-<v t="EKR.20040524104904.110"><vh>Quitting Leo</vh></v>
-</v>
-<v t="EKR.20040524104904.111"><vh>Edit commands</vh>
-<v t="EKR.20040524104904.112"><vh>Undoing changes</vh></v>
-<v t="EKR.20040524104904.113"><vh>Cutting, pasting and selecting text</vh></v>
-<v t="EKR.20040524104904.114"><vh>Indenting body text</vh></v>
-<v t="ekr.20050313102319"><vh>Adding and deleting comments in body text</vh></v>
-<v t="EKR.20040524104904.115"><vh>Creating nodes from body text</vh></v>
-<v t="EKR.20040524104904.116"><vh>Converting leading blanks and tabs in body text</vh></v>
-<v t="EKR.20040524104904.117"><vh>Executing Python scripts in body text</vh></v>
-<v t="EKR.20040524104904.118"><vh>Finding and replacing text</vh>
-<v t="ekr.20120319065417.8792"><vh>Overview</vh></v>
-<v t="ekr.20120319065417.8790"><vh>Basic searches</vh></v>
-<v t="ekr.20120319065417.8791"><vh>find-all, clone-find-all &amp; clone-find-all-flattened</vh></v>
-<v t="ekr.20120319065417.8797"><vh>Replace commands</vh></v>
-<v t="ekr.20120319065417.8798"><vh>Incremental find commands</vh></v>
-<v t="ekr.20120319065417.8794"><vh>Commands that set find options</vh></v>
-<v t="ekr.20120319065417.8795"><vh>Word search and regex search commands</vh></v>
-<v t="ekr.20120319065417.8788"><vh>Find settings</vh></v>
-</v>
-<v t="EKR.20040524104904.134"><vh>Go To Line Number</vh></v>
-<v t="EKR.20040524104904.136"><vh>Inserting the date and time</vh></v>
-<v t="EKR.20040524104904.137"><vh>Reformatting paragraphs in body text</vh></v>
-<v t="EKR.20040524104904.139"><vh>Matching brackets and parenthesis</vh></v>
-<v t="ekr.20120319170934.6104"><vh>Indenting body text automatically</vh></v>
-<v t="ekr.20120319170934.6105"><vh>Creating and destroying multiple body editors</vh></v>
-<v t="ekr.20120319170934.6110"><vh>Using chapters</vh></v>
-</v>
-<v t="EKR.20040524104904.143"><vh>Outline commands</vh>
-<v t="ekr.20120319170934.6096"><vh>Creating and destroying nodes</vh></v>
-<v t="ekr.20120319170934.6095"><vh>Expanding &amp; contracting nodes</vh></v>
-<v t="ekr.20120319170934.6097"><vh>Cutting, pasting and deleting nodes</vh></v>
-<v t="ekr.20120319170934.6094"><vh>Navigating through the outline</vh></v>
-<v t="ekr.20120319170934.6098"><vh>Moving &amp; Reorganizing nodes</vh></v>
-<v t="ekr.20120319170934.6099"><vh>Cloning nodes</vh></v>
-<v t="ekr.20120319170934.6100"><vh>Marking nodes</vh></v>
-<v t="ekr.20120319170934.6101"><vh>Dragging nodes</vh></v>
-<v t="EKR.20040524104904.148"><vh>Hoisting &amp; De-hoisting nodes</vh></v>
-<v t="EKR.20040524104904.144"><vh>Checking outlines</vh></v>
-<v t="ekr.20120319170934.6108"><vh>Resizing panes</vh></v>
-</v>
-<v t="EKR.20040524104904.151"><vh>Window commands</vh></v>
-<v t="EKR.20040524104904.157"><vh>Help commands</vh></v>
-</v>
-</v>
 <v t="EKR.20040524104904.211"><vh>Customizing Leo</vh>
 <v t="ekr.20050901101608.4"><vh>@rst html\customizing.html</vh>
 <v t="ekr.20050901102055"><vh>@rst-no-head links</vh></v>
@@ -640,37 +568,6 @@
 <v t="ekr.20050306090601"><vh>Adding extensible attributes to nodes and .leo files</vh></v>
 <v t="ekr.20080310093038.4"><vh>Translating Leo's menus and messages</vh></v>
 <v t="ekr.20100122073254.11655"><vh>Writing new importers</vh></v>
-</v>
-</v>
-<v t="ekr.20101025080245.5799"><vh>Intermediate Topics</vh>
-<v t="ekr.20131008041326.16099"><vh>@rst html/intermediatetopics.html</vh></v>
-<v t="ekr.20060430221745"><vh>Controlling syntax coloring</vh>
-<v t="ekr.20060430221745.1"><vh>@rst html\coloring.html</vh>
-<v t="ekr.20060430222753"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20060830142929"><vh>Syntax coloring settings</vh></v>
-<v t="ekr.20060430220749"><vh>Files</vh></v>
-<v t="ekr.20060502084233"><vh>The colorizer's inner loop</vh></v>
-<v t="ekr.20060502084233.1"><vh>Format of colorizer control files</vh>
-<v t="ekr.20060502100550"><vh>Ruleset names</vh></v>
-<v t="ekr.20060502090516"><vh>x.properties</vh></v>
-<v t="ekr.20060510085547"><vh>Attribute dictionaries and x.attributesDictDict</vh></v>
-<v t="ekr.20060502090516.1"><vh>Keyword dictionaries and x.keywordsDictDict</vh></v>
-<v t="ekr.20060502090516.2"><vh>Rules, rules dictionaries and x.rulesDictDict</vh></v>
-<v t="ekr.20060503072213"><vh>x.importDict and imported versus delegated rulesets</vh></v>
-</v>
-<v t="ekr.20060502122950"><vh>Rule methods</vh>
-<v t="ekr.20060503064515"><vh>Arguments to rule methods</vh></v>
-<v t="ekr.20060502122950.7"><vh>match_eol_span</vh></v>
-<v t="ekr.20060502122950.10"><vh>match_eol_span_regexp</vh></v>
-<v t="ekr.20060502122950.13"><vh>match_keywords</vh></v>
-<v t="ekr.20060502122950.14"><vh>match_mark_following</vh></v>
-<v t="ekr.20060502125223"><vh>match_mark_previous</vh></v>
-<v t="ekr.20060502122950.40"><vh>match_seq</vh></v>
-<v t="ekr.20060502122950.41"><vh>match_seq_regexp</vh></v>
-<v t="ekr.20060502122950.42"><vh>match_span</vh></v>
-<v t="ekr.20060502122950.47"><vh>match_span_regexp</vh></v>
-<v t="ekr.20060502122950.48"><vh>match_terminate</vh></v>
-</v>
 </v>
 </v>
 <v t="ekr.20050831184021.1"><vh>Creating documents with the rst3 Command</vh>
@@ -710,74 +607,6 @@
 <v t="ekr.20050818163826.13"><vh>Further study</vh></v>
 <v t="ekr.20050818163826.16"><vh>Acknowledgements</vh></v>
 <v t="ekr.20050818163826.14"><vh>Theory of operation</vh></v>
-</v>
-</v>
-<v t="ekr.20050831195331.4"><vh>Scripting Leo with Python</vh>
-<v t="ekr.20040403171740"><vh>@rst html\scripting.html</vh>
-<v t="ekr.20050812134441.1"><vh>@rst-no-head markup &amp; links</vh></v>
-<v t="ekr.20131014053720.16807"><vh>A tutorial introduction to Leo scripts</vh>
-<v t="ekr.20131013060803.16852"><vh>Hello world</vh></v>
-<v t="ekr.20070120075236"><vh>Predefined symbols: c, g and p</vh></v>
-<v t="ekr.20131014053720.16810"><vh>Vnodes</vh></v>
-<v t="ekr.20131014050027.16801"><vh>Positions</vh></v>
-<v t="ekr.20131012060912.16775"><vh>Generators</vh></v>
-<v t="ekr.20131014053720.16809"><vh>Capturing positions</vh></v>
-<v t="ekr.20131014053720.16811" a="M"><vh>@rst-ignore-tree Examples: not ready yet</vh>
-<v t="ekr.20131013060803.16854"><vh>An example outline &amp; vnodes</vh></v>
-<v t="ekr.20131013060803.16857"><vh>A traversal script (new)</vh></v>
-<v t="ekr.20131013060803.16783"><vh>traversals, tree structure &amp; positions</vh></v>
-<v t="ekr.20131013060803.16791"><vh>position trace</vh></v>
-<v t="ekr.20131012060912.16778"><vh>Introductory example (old)</vh></v>
-</v>
-<v t="ekr.20131014053720.16803"><vh>@rst-ignore-tree old tutorial</vh>
-<v t="ekr.20131010160850.17456"><vh>positions</vh></v>
-<v t="ekr.20131010160850.17460"><vh>position methods</vh></v>
-<v t="ekr.20131010160850.17461"><vh>iterators</vh></v>
-<v t="ekr.20131010160850.17455"><vh>generators</vh></v>
-<v t="ekr.20131010160850.17457"><vh>predefined symbols in scripts</vh></v>
-<v t="ekr.20131010160850.17458"><vh>leoGlobals functions</vh></v>
-<v t="ekr.20131010160850.17459"><vh>Commander class</vh></v>
-</v>
-</v>
-<v t="ekr.20131012060912.16781"><vh>Scripting reference</vh>
-<v t="ekr.20131012192434.16803"><vh>generators</vh></v>
-<v t="ekr.20040403173920.17"><vh>c.redraw &amp; c.redraw_now</vh></v>
-<v t="ekr.20131012192434.16795"><vh>p methods acting on nodes</vh></v>
-<v t="ekr.20131012060912.16786"><vh>g.app</vh></v>
-</v>
-<v t="ekr.20131013060803.16853"><vh>@rst-ignore-tree (Do not delete)</vh>
-<v t="ekr.20131012192434.16794"><vh>p properties</vh></v>
-<v t="ekr.20101124083644.5048"><vh>Miscellaneous topics</vh>
-<v t="ekr.20110531155858.20563"><vh>Creating minimal outlines</vh></v>
-<v t="ekr.20111115063523.13619"><vh>Creating Qt Windows from Leo scripts</vh></v>
-<v t="ekr.20071026183116"><vh>g.app.gui.run*</vh></v>
-<v t="ekr.20040403173920.19"><vh>Getting commander preferences</vh></v>
-<v t="ekr.20050907094633"><vh>Getting configuration settings</vh></v>
-<v t="ekr.20080922124033.1"><vh>Getting interactive input from scripts</vh></v>
-<v t="ekr.20080109074102"><vh>Inserting and deleting icons</vh></v>
-<v t="ekr.20040403173920.18"><vh>Invoking commands from scripts</vh></v>
-<v t="ekr.20050417072710.1"><vh>Making operations undoable</vh></v>
-<v t="ekr.20100506062734.11593"><vh>Modifying plugins with @script scripts</vh></v>
-<v t="ekr.20090223065025.3"><vh>Modifying the body pane directly</vh></v>
-<v t="ekr.20070122093626"><vh>Recovering vnodes</vh></v>
-<v t="ekr.20120317130339.8282"><vh>Retaining pointers to Qt windows</vh></v>
-<v t="ekr.20040403173920.24"><vh>Running Leo in batch mode</vh></v>
-<v t="ekr.20081205084002.2"><vh>Working with directives and paths</vh></v>
-<v t="ekr.20131012060912.16788"><vh>Writing g.es output to other tabs</vh></v>
-</v>
-<v t="ekr.20131014053720.16816"><vh>@button example</vh></v>
-<v t="ekr.20131012060912.16782"><vh>g decorators &amp; functions</vh>
-<v t="ville.20090603183524.5672"><vh>\@g.command</vh></v>
-<v t="ekr.20131012192434.16792"><vh>g.angleBrackets</vh></v>
-<v t="ekr.20071021102946"><vh>g.enableIdleTimeHook &amp; g.enableIdleTimeHook</vh></v>
-<v t="ekr.20040403173920.3"><vh>g.es</vh></v>
-<v t="ekr.20101124083644.5051"><vh>g.getScript</vh></v>
-<v t="ekr.20101124083644.5050"><vh>g.openWithFileName</vh></v>
-<v t="ekr.20101124083644.5049"><vh>g.pdb</vh></v>
-<v t="ekr.20040403173920.5"><vh>g.redirect etc.</vh></v>
-<v t="ekr.20131012060912.16792"><vh>g.user_dict</vh></v>
-</v>
-</v>
 </v>
 </v>
 <v t="ekr.20050912125144"><vh>Plugins</vh>
@@ -902,63 +731,74 @@
 </v>
 </v>
 </v>
-<v t="ekr.20060612102055"><vh>Writing Plugins (Rewrite)</vh>
-<v t="ekr.20060612103240"><vh>@rst html\writingPlugins.html</vh>
-<v t="ekr.20060612103824"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20131008041326.16053"><vh>Writing Plugins</vh></v>
-<v t="ville.20100807185755.4510"><vh>enabled-plugins</vh></v>
-<v t="EKR.20040524104904.240"><vh>Support for unit testing</vh></v>
-<v t="EKR.20040524104904.224"><vh>Important security warnings</vh></v>
-<v t="peckj.20130813123907.6841"><vh>Documenting plugins</vh></v>
-<v t="ekr.20131012191145.16789"><vh>c ivars &amp; properties</vh></v>
-<v t="ekr.20050903074833"><vh>Handling events</vh>
-<v t="ekr.20050903074833.1"><vh>@rst-no-head Summary of event handlers</vh></v>
+<v t="ekr.20131005214621.16130"><vh>Directives Reference</vh>
+<v t="ekr.20131009065148.31758"><vh>@rst html/directives.html</vh>
+<v t="ekr.20050828160132"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20100806170836.4392"><vh>Part 1: \@&lt;file&gt; directives</vh>
+<v t="ekr.20100806170836.4393"><vh>\@asis &lt;path&gt;</vh></v>
+<v t="ekr.20100806170836.4396"><vh>\@auto &lt;path&gt;</vh></v>
+<v t="ekr.20100806170836.4395"><vh>\@edit &lt;path&gt;</vh></v>
+<v t="ekr.20100806170836.4403"><vh>\@file &lt;path&gt; (aka @thin)</vh></v>
+<v t="ekr.20100806170836.4399"><vh>\@nosent &lt;path&gt;</vh></v>
+<v t="ekr.20100806170836.4402"><vh>\@shadow &lt;path&gt;</vh></v>
+</v>
+<v t="ekr.20100806170836.4411"><vh>Part 2: \@all and \@others</vh></v>
+<v t="ekr.20100806170836.4398"><vh>Part 3: Syntax coloring directives</vh></v>
+<v t="ekr.20100806170836.4408"><vh>Part 4: Dangerous directives</vh></v>
+<v t="ekr.20100804133903.7262"><vh>Part 5: All other directives</vh></v>
 </v>
 </v>
+<v t="EKR.20040524104904.99"><vh>Commands Reference</vh>
+<v t="ekr.20050901101608.2"><vh>@rst html\commands.html</vh>
+<v t="ekr.20050901101852"><vh>@rst-no-head links</vh></v>
+<v t="EKR.20040524104904.100"><vh>File commands</vh>
+<v t="EKR.20040524104904.101"><vh>Loading, Saving and Reverting Files</vh></v>
+<v t="EKR.20040524104904.102"><vh>Communicating with external editors</vh></v>
+<v t="EKR.20040524104904.108"><vh>Importing Files into Leo Outlines</vh></v>
+<v t="EKR.20040524104904.109"><vh>Exporting Files from Leo Outlines</vh></v>
+<v t="EKR.20040524104904.110"><vh>Quitting Leo</vh></v>
 </v>
-<v t="ekr.20070628083442"><vh>Unit testing with Leo</vh>
-<v t="ekr.20070628083442.1"><vh>@rst html\unitTesting.html</vh>
-<v t="ekr.20070628083442.2"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20070628084351"><vh>Using @test nodes</vh></v>
-<v t="ekr.20070628094515.1"><vh>Using @suite nodes</vh></v>
-<v t="ekr.20120229094652.15125"><vh>Using @mark-for-unit-tests</vh></v>
-<v t="ekr.20070628094515.2"><vh>How the unit test commands work</vh></v>
-<v t="ekr.20080729064227.6"><vh>\@button timer</vh></v>
-<v t="ekr.20080729064227.7"><vh>\@button profile</vh></v>
+<v t="EKR.20040524104904.111"><vh>Edit commands</vh>
+<v t="EKR.20040524104904.112"><vh>Undoing changes</vh></v>
+<v t="EKR.20040524104904.113"><vh>Cutting, pasting and selecting text</vh></v>
+<v t="EKR.20040524104904.114"><vh>Indenting body text</vh></v>
+<v t="ekr.20050313102319"><vh>Adding and deleting comments in body text</vh></v>
+<v t="EKR.20040524104904.115"><vh>Creating nodes from body text</vh></v>
+<v t="EKR.20040524104904.116"><vh>Converting leading blanks and tabs in body text</vh></v>
+<v t="EKR.20040524104904.117"><vh>Executing Python scripts in body text</vh></v>
+<v t="EKR.20040524104904.118"><vh>Finding and replacing text</vh>
+<v t="ekr.20120319065417.8792"><vh>Overview</vh></v>
+<v t="ekr.20120319065417.8790"><vh>Basic searches</vh></v>
+<v t="ekr.20120319065417.8791"><vh>find-all, clone-find-all &amp; clone-find-all-flattened</vh></v>
+<v t="ekr.20120319065417.8797"><vh>Replace commands</vh></v>
+<v t="ekr.20120319065417.8798"><vh>Incremental find commands</vh></v>
+<v t="ekr.20120319065417.8794"><vh>Commands that set find options</vh></v>
+<v t="ekr.20120319065417.8795"><vh>Word search and regex search commands</vh></v>
+<v t="ekr.20120319065417.8788"><vh>Find settings</vh></v>
 </v>
+<v t="EKR.20040524104904.134"><vh>Go To Line Number</vh></v>
+<v t="EKR.20040524104904.136"><vh>Inserting the date and time</vh></v>
+<v t="EKR.20040524104904.137"><vh>Reformatting paragraphs in body text</vh></v>
+<v t="EKR.20040524104904.139"><vh>Matching brackets and parenthesis</vh></v>
+<v t="ekr.20120319170934.6104"><vh>Indenting body text automatically</vh></v>
+<v t="ekr.20120319170934.6105"><vh>Creating and destroying multiple body editors</vh></v>
+<v t="ekr.20120319170934.6110"><vh>Using chapters</vh></v>
 </v>
-<v t="ekr.20060527105211"><vh>Debugging with Leo</vh>
-<v t="ekr.20060527105617"><vh>@rst html\debuggers.html</vh>
-<v t="ekr.20060527105804"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20070116062405"><vh>Using g.trace and g.pdb</vh></v>
-<v t="ekr.20060527112801"><vh>Settings for winpdb</vh></v>
-<v t="ekr.20070115172724"><vh>Debugging scripts with winpdb</vh>
-<v t="ekr.20070115172724.1"><vh>The debug command</vh></v>
-<v t="ekr.20070115172724.3"><vh>The execute-script command with explicit debugger breaks</vh></v>
+<v t="EKR.20040524104904.143"><vh>Outline commands</vh>
+<v t="ekr.20120319170934.6096"><vh>Creating and destroying nodes</vh></v>
+<v t="ekr.20120319170934.6095"><vh>Expanding &amp; contracting nodes</vh></v>
+<v t="ekr.20120319170934.6097"><vh>Cutting, pasting and deleting nodes</vh></v>
+<v t="ekr.20120319170934.6094"><vh>Navigating through the outline</vh></v>
+<v t="ekr.20120319170934.6098"><vh>Moving &amp; Reorganizing nodes</vh></v>
+<v t="ekr.20120319170934.6099"><vh>Cloning nodes</vh></v>
+<v t="ekr.20120319170934.6100"><vh>Marking nodes</vh></v>
+<v t="ekr.20120319170934.6101"><vh>Dragging nodes</vh></v>
+<v t="EKR.20040524104904.148"><vh>Hoisting &amp; De-hoisting nodes</vh></v>
+<v t="EKR.20040524104904.144"><vh>Checking outlines</vh></v>
+<v t="ekr.20120319170934.6108"><vh>Resizing panes</vh></v>
 </v>
-</v>
-</v>
-<v t="ekr.20080730212711.14"><vh>Using @shadow</vh>
-<v t="ekr.20080730212711.15"><vh>@rst html\atShadow.html</vh>
-<v t="ekr.20080730212711.16"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20080730212711.39"><vh>Overview</vh></v>
-<v t="ekr.20080730212711.42"><vh>Creating @shadow trees</vh></v>
-<v t="ekr.20080730212711.40"><vh>What the update algorithm does</vh></v>
-<v t="ekr.20080730212711.52"><vh>Aha: boundary cases don't matter</vh></v>
-</v>
-</v>
-<v t="tbrown.20120821215353.22854"><vh>Abbreviations and templates</vh>
-<v t="ekr.20130816100419.17150"><vh>@rst html/abbreviations.html</vh>
-<v t="ekr.20130816100419.15610"><vh>settings</vh></v>
-<v t="ekr.20130816100419.17151"><vh>examples</vh></v>
-</v>
-</v>
-<v t="EKR.20040524104904.161"><vh>Designing with Leo</vh>
-<v t="ekr.20131008041326.16176"><vh>@rst html\design.html</vh>
-<v t="ekr.20100807120250.4399"><vh>Outlines embody design</vh></v>
-<v t="ekr.20100807120250.4398"><vh>Nodes hide details</vh></v>
-<v t="ekr.20100807120250.4400"><vh>Clones create views</vh></v>
-<v t="ekr.20100807120250.4401"><vh>Nodes create context</vh></v>
+<v t="EKR.20040524104904.151"><vh>Window commands</vh></v>
+<v t="EKR.20040524104904.157"><vh>Help commands</vh></v>
 </v>
 </v>
 </v>
@@ -1016,45 +856,150 @@
 </v>
 </v>
 </v>
+<v t="ekr.20101025080245.5799"><vh>Advanced Topics</vh>
+<v t="ekr.20131008041326.16099"><vh>@rst html/intermediatetopics.html</vh></v>
+<v t="ekr.20060430221745"><vh>Controlling syntax coloring</vh>
+<v t="ekr.20060430221745.1"><vh>@rst html\coloring.html</vh>
+<v t="ekr.20060430222753"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20060830142929"><vh>Syntax coloring settings</vh></v>
+<v t="ekr.20060430220749"><vh>Files</vh></v>
+<v t="ekr.20060502084233"><vh>The colorizer's inner loop</vh></v>
+<v t="ekr.20060502084233.1"><vh>Format of colorizer control files</vh>
+<v t="ekr.20060502100550"><vh>Ruleset names</vh></v>
+<v t="ekr.20060502090516"><vh>x.properties</vh></v>
+<v t="ekr.20060510085547"><vh>Attribute dictionaries and x.attributesDictDict</vh></v>
+<v t="ekr.20060502090516.1"><vh>Keyword dictionaries and x.keywordsDictDict</vh></v>
+<v t="ekr.20060502090516.2"><vh>Rules, rules dictionaries and x.rulesDictDict</vh></v>
+<v t="ekr.20060503072213"><vh>x.importDict and imported versus delegated rulesets</vh></v>
 </v>
-<v t="ekr.20050831184021.5"><vh>Reference, appendices &amp; glossary</vh>
+<v t="ekr.20060502122950"><vh>Rule methods</vh>
+<v t="ekr.20060503064515"><vh>Arguments to rule methods</vh></v>
+<v t="ekr.20060502122950.7"><vh>match_eol_span</vh></v>
+<v t="ekr.20060502122950.10"><vh>match_eol_span_regexp</vh></v>
+<v t="ekr.20060502122950.13"><vh>match_keywords</vh></v>
+<v t="ekr.20060502122950.14"><vh>match_mark_following</vh></v>
+<v t="ekr.20060502125223"><vh>match_mark_previous</vh></v>
+<v t="ekr.20060502122950.40"><vh>match_seq</vh></v>
+<v t="ekr.20060502122950.41"><vh>match_seq_regexp</vh></v>
+<v t="ekr.20060502122950.42"><vh>match_span</vh></v>
+<v t="ekr.20060502122950.47"><vh>match_span_regexp</vh></v>
+<v t="ekr.20060502122950.48"><vh>match_terminate</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20060612102055"><vh>Writing Plugins (Rewrite)</vh>
+<v t="ekr.20060612103240"><vh>@rst html\writingPlugins.html</vh>
+<v t="ekr.20060612103824"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20131008041326.16053"><vh>Writing Plugins</vh></v>
+<v t="ville.20100807185755.4510"><vh>enabled-plugins</vh></v>
+<v t="EKR.20040524104904.240"><vh>Support for unit testing</vh></v>
+<v t="EKR.20040524104904.224"><vh>Important security warnings</vh></v>
+<v t="peckj.20130813123907.6841"><vh>Documenting plugins</vh></v>
+<v t="ekr.20131012191145.16789"><vh>c ivars &amp; properties</vh></v>
+<v t="ekr.20050903074833"><vh>Handling events</vh>
+<v t="ekr.20050903074833.1"><vh>@rst-no-head Summary of event handlers</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20070628083442"><vh>Unit testing with Leo</vh>
+<v t="ekr.20070628083442.1"><vh>@rst html\unitTesting.html</vh>
+<v t="ekr.20070628083442.2"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20070628084351"><vh>Using @test nodes</vh></v>
+<v t="ekr.20070628094515.1"><vh>Using @suite nodes</vh></v>
+<v t="ekr.20120229094652.15125"><vh>Using @mark-for-unit-tests</vh></v>
+<v t="ekr.20070628094515.2"><vh>How the unit test commands work</vh></v>
+<v t="ekr.20080729064227.6"><vh>\@button timer</vh></v>
+<v t="ekr.20080729064227.7"><vh>\@button profile</vh></v>
+</v>
+</v>
+<v t="ekr.20060527105211"><vh>Debugging with Leo</vh>
+<v t="ekr.20060527105617"><vh>@rst html\debuggers.html</vh>
+<v t="ekr.20060527105804"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20070116062405"><vh>Using g.trace and g.pdb</vh></v>
+<v t="ekr.20060527112801"><vh>Settings for winpdb</vh></v>
+<v t="ekr.20070115172724"><vh>Debugging scripts with winpdb</vh>
+<v t="ekr.20070115172724.1"><vh>The debug command</vh></v>
+<v t="ekr.20070115172724.3"><vh>The execute-script command with explicit debugger breaks</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20080730212711.14"><vh>Using @shadow</vh>
+<v t="ekr.20080730212711.15"><vh>@rst html\atShadow.html</vh>
+<v t="ekr.20080730212711.16"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20080730212711.39"><vh>Overview</vh></v>
+<v t="ekr.20080730212711.42"><vh>Creating @shadow trees</vh></v>
+<v t="ekr.20080730212711.40"><vh>What the update algorithm does</vh></v>
+<v t="ekr.20080730212711.52"><vh>Aha: boundary cases don't matter</vh></v>
+</v>
+</v>
+<v t="EKR.20040524104904.161"><vh>Designing with Leo</vh>
+<v t="ekr.20131008041326.16176"><vh>@rst html\design.html</vh>
+<v t="ekr.20100807120250.4399"><vh>Outlines embody design</vh></v>
+<v t="ekr.20100807120250.4398"><vh>Nodes hide details</vh></v>
+<v t="ekr.20100807120250.4400"><vh>Clones create views</vh></v>
+<v t="ekr.20100807120250.4401"><vh>Nodes create context</vh></v>
+</v>
+</v>
+<v t="ekr.20131015104133.16763"><vh>A scripting miscellany</vh>
+<v t="ekr.20131015091948.16784"><vh>@rst html\scripting-miscellany.html</vh>
+<v t="ekr.20110531155858.20563"><vh>Creating minimal outlines</vh></v>
+<v t="ekr.20111115063523.13619"><vh>Creating Qt Windows from Leo scripts</vh></v>
+<v t="ekr.20071026183116"><vh>g.app.gui.run* methods run dialogs</vh></v>
+<v t="ekr.20040403173920.19"><vh>Getting commander preferences</vh></v>
+<v t="ekr.20050907094633"><vh>Getting configuration settings</vh></v>
+<v t="ekr.20080922124033.1"><vh>Getting interactive input from scripts</vh></v>
+<v t="ekr.20080109074102"><vh>Inserting and deleting icons</vh></v>
+<v t="ekr.20040403173920.18"><vh>Invoking commands from scripts</vh></v>
+<v t="ekr.20050417072710.1"><vh>Making operations undoable</vh></v>
+<v t="ekr.20100506062734.11593"><vh>Modifying plugins with @script scripts</vh></v>
+<v t="ekr.20090223065025.3"><vh>Modifying the body pane directly</vh></v>
+<v t="ekr.20070122093626"><vh>Recovering vnodes</vh></v>
+<v t="ekr.20120317130339.8282"><vh>Retaining pointers to Qt windows</vh></v>
+<v t="ekr.20040403173920.24"><vh>Running Leo in batch mode</vh></v>
+<v t="ekr.20081205084002.2"><vh>Working with directives and paths</vh></v>
+<v t="ekr.20131012060912.16788"><vh>Writing g.es output to other tabs</vh></v>
+<v t="ekr.20131014053720.16816"><vh>@button example</vh></v>
+</v>
+</v>
+<v t="ekr.20131008041326.16178"><vh>Exploring Leo's Code Base</vh>
+<v t="ekr.20131009065148.31760"><vh>@rst html/theory.html</vh>
+<v t="ekr.20131011050613.16868"><vh>How to explore Leo's sources</vh>
+<v t="ekr.20131012060912.16768"><vh>Finding commands</vh></v>
+<v t="ekr.20131011050613.16870"><vh>Finding key-handling code</vh></v>
+<v t="ekr.20131011050613.16871"><vh>Finding redraw and refocus code</vh></v>
+<v t="ekr.20131011050613.16862"><vh>Debugging with g.trace, g.callers &amp; g.pdb</vh></v>
+</v>
+<v t="ekr.20131012060912.16769"><vh>Special topics</vh>
+<v t="ekr.20131011050613.16860"><vh>The design of Leo's classes</vh></v>
+<v t="ekr.20131011050613.16876"><vh>Fragile methods</vh></v>
+<v t="ekr.20131011050613.16866"><vh>Read long comments with caution</vh></v>
+<v t="ekr.20131011050613.16815"><vh>Startup</vh></v>
+<v t="EKR.20040524104904.268"><vh>Unicode</vh></v>
+<v t="ekr.20131012060912.16770"><vh>Why key handling is complex</vh></v>
+</v>
+</v>
+</v>
+</v>
+<v t="ekr.20131008041326.16091"><vh>Cheat Sheet</vh>
+<v t="ekr.20131007143750.16070"><vh>@rst html\cheatsheet.html</vh>
+<v t="ekr.20131015035606.16778"><vh>Key bindings: selecting outline nodes</vh></v>
+<v t="ekr.20131015035606.16800"><vh>Key bindings: moving outline nodes</vh></v>
+<v t="ekr.20131015035606.16780"><vh>Key bindings: moving the cursor in text panes</vh></v>
+<v t="ekr.20131015035606.16801"><vh>Common commands</vh></v>
+<v t="ekr.20131015035606.16786"><vh>Leo directives</vh></v>
+<v t="ekr.20131015035606.16788"><vh>Settings</vh></v>
+<v t="ekr.20131015035606.16799"><vh>Creating external files</vh></v>
+<v t="ekr.20131007143750.16074"><vh>Scripting</vh></v>
+</v>
+</v>
+<v t="ekr.20050831184021.5"><vh>Appendices &amp; glossary</vh>
 <v t="ekr.20131008041326.16341"><vh>@rst html/appendices.html</vh>
 <v t="ekr.20050831232205"><vh>@rst-no-head links</vh></v>
 <v t="EKR.20040524104904.357"><vh>Format of .leo files</vh></v>
 <v t="ekr.20060921064744.1"><vh>Format of external files</vh></v>
 <v t="EKR.20040524104904.354"><vh>Unicode reference</vh></v>
 <v t="ekr.20120319170934.6109"><vh>Valid URL's</vh></v>
-</v>
-<v t="ekr.20091111112709.6672"><vh>@rst html/glossary.html</vh>
-<v t="ekr.20100804133903.7250"><vh>\@</vh></v>
-<v t="ekr.20100804133903.7251"><vh>A - C</vh></v>
-<v t="ekr.20100804133903.7252"><vh>D - G</vh></v>
-<v t="ekr.20100804133903.7253"><vh>H - L</vh></v>
-<v t="ekr.20100804133903.7254"><vh>M - O</vh></v>
-<v t="ekr.20100804133903.7255"><vh>P - R</vh></v>
-<v t="ekr.20100804133903.7256"><vh>S - Z</vh></v>
-</v>
-<v t="ekr.20131009065148.31762"><vh>Reference</vh>
-<v t="ekr.20131008041326.16090"><vh>@rst html/reference.html</vh></v>
-<v t="ekr.20131005214621.16130"><vh>Directives Reference</vh>
-<v t="ekr.20131009065148.31758"><vh>@rst html/directives.html</vh>
-<v t="ekr.20050828160132"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20100806170836.4392"><vh>Part 1: \@&lt;file&gt; directives</vh>
-<v t="ekr.20100806170836.4393"><vh>\@asis &lt;path&gt;</vh></v>
-<v t="ekr.20100806170836.4396"><vh>\@auto &lt;path&gt;</vh></v>
-<v t="ekr.20100806170836.4395"><vh>\@edit &lt;path&gt;</vh></v>
-<v t="ekr.20100806170836.4403"><vh>\@file &lt;path&gt; (aka @thin)</vh></v>
-<v t="ekr.20100806170836.4399"><vh>\@nosent &lt;path&gt;</vh></v>
-<v t="ekr.20100806170836.4402"><vh>\@shadow &lt;path&gt;</vh></v>
-</v>
-<v t="ekr.20100806170836.4411"><vh>Part 2: \@all and \@others</vh></v>
-<v t="ekr.20100806170836.4398"><vh>Part 3: Syntax coloring directives</vh></v>
-<v t="ekr.20100806170836.4408"><vh>Part 4: Dangerous directives</vh></v>
-<v t="ekr.20100804133903.7262"><vh>Part 5: All other directives</vh></v>
-</v>
-</v>
 <v t="ekr.20131008041326.16177"><vh>History of Leo</vh>
-<v t="ekr.20131009065148.31759"><vh>@rst html/history.html</vh>
 <v t="ekr.20050901102147"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20050902105852"><vh>Beginnings</vh></v>
 <v t="ekr.20050902105852.1"><vh>Breakthrough</vh></v>
@@ -1091,27 +1036,7 @@
 </v>
 </v>
 </v>
-</v>
-<v t="ekr.20131008041326.16178"><vh>Theory of operation</vh>
-<v t="ekr.20131009065148.31760"><vh>@rst html/theory.html</vh>
-<v t="ekr.20131011050613.16868"><vh>How to explore Leo's sources</vh>
-<v t="ekr.20131012060912.16768"><vh>Finding commands</vh></v>
-<v t="ekr.20131011050613.16870"><vh>Finding key-handling code</vh></v>
-<v t="ekr.20131011050613.16871"><vh>Finding redraw and refocus code</vh></v>
-<v t="ekr.20131011050613.16862"><vh>Debugging with g.trace, g.callers &amp; g.pdb</vh></v>
-</v>
-<v t="ekr.20131012060912.16769"><vh>Special topics</vh>
-<v t="ekr.20131011050613.16860"><vh>The design of Leo's classes</vh></v>
-<v t="ekr.20131011050613.16876"><vh>Fragile methods</vh></v>
-<v t="ekr.20131011050613.16866"><vh>Read long comments with caution</vh></v>
-<v t="ekr.20131011050613.16815"><vh>Startup</vh></v>
-<v t="EKR.20040524104904.268"><vh>Unicode</vh></v>
-<v t="ekr.20131012060912.16770"><vh>Why key handling is complex</vh></v>
-</v>
-</v>
-</v>
 <v t="ekr.20050901084134"><vh>Why I like Python</vh>
-<v t="ekr.20131009065148.31761"><vh>@rst html/whitepapers.html</vh>
 <v t="ekr.20050901092232.2"><vh>Clarity</vh></v>
 <v t="ekr.20050901092232.3"><vh>Power</vh></v>
 <v t="ekr.20050901092232.4"><vh>Safety</vh></v>
@@ -1119,6 +1044,14 @@
 <v t="ekr.20050901092232.6"><vh>Conclusions</vh></v>
 </v>
 </v>
+<v t="ekr.20091111112709.6672"><vh>@rst html/glossary.html</vh>
+<v t="ekr.20100804133903.7250"><vh>\@</vh></v>
+<v t="ekr.20100804133903.7251"><vh>A - C</vh></v>
+<v t="ekr.20100804133903.7252"><vh>D - G</vh></v>
+<v t="ekr.20100804133903.7253"><vh>H - L</vh></v>
+<v t="ekr.20100804133903.7254"><vh>M - O</vh></v>
+<v t="ekr.20100804133903.7255"><vh>P - R</vh></v>
+<v t="ekr.20100804133903.7256"><vh>S - Z</vh></v>
 </v>
 </v>
 <v t="ekr.20060620094033"><vh>What's New...</vh>
@@ -1258,11 +1191,12 @@
 </v>
 </v>
 </v>
-<v t="ekr.20131008041326.16203"></v>
+<v t="ekr.20090428102353.1"></v>
+<v t="ekr.20131015104133.16767"><vh>Find leo_toc if no @rst node</vh></v>
 <v t="ekr.20060612102055"></v>
 <v t="ekr.20131008041326.16245" a="M"></v>
-<v t="ekr.20040403171740"></v>
-<v t="ekr.20131007143750.16070"></v>
+<v t="ekr.20040403171740" a="M"></v>
+<v t="ekr.20050912125144.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -2526,19 +2460,6 @@ scripting. If you are not, please study the excellent `Python Tutorial`_.
 .. contents::
     :depth: 3
 </t>
-<t tx="ekr.20040403173920.17" rst_http_attribute="5d71002858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d323522206e616d653d22687474702d6e6f64652d6d61726b65722d3235223e710158040000003c2f613e71025d710328583e0000003c64697620636c6173733d2273656374696f6e222069643d2274657374696e672d776865746865722d612d706f736974696f6e2d69732d76616c6964223e710458060000003c2f6469763e71055d710628582e0000003c64697620636c6173733d2273656374696f6e222069643d2274726176657273696e672d6f75746c696e6573223e710758060000003c2f6469763e71085d710928583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710a58060000003c2f6469763e710b5d710c2858060000003c626f64793e710d58070000003c2f626f64793e710e5d710f2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e711058070000003c2f68746d6c3e71114e656565656558070000003c2f6469763e0a711258070000003c2f6469763e0a7113582f0000003c64697620636c6173733d2273656374696f6e222069643d227570646174696e672d7468652d73637265656e223e0a711458600000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313322206e616d653d227570646174696e672d7468652d73637265656e223e5570646174696e67207468652073637265656e3c2f613e3c2f68313e0a7115652e">c.redraw_now redraws the entire screen immediately::
-
-    c.redraw_now()
-
-However, it is usually better to *request* a redraw to be done later as
-follows::
-
-    c.redraw()
-
-Leo actually redraws the screen in c.outerUpdate, provided that a redraw has
-been requested. Leo will call c.outerUpdate at the end of each script, event
-handler and Leo command.
-</t>
 <t tx="ekr.20040403173920.18" rst_http_attribute="5d71002858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d323722206e616d653d22687474702d6e6f64652d6d61726b65722d3237223e710158040000003c2f613e71025d710328582e0000003c64697620636c6173733d2273656374696f6e222069643d227570646174696e672d7468652d73637265656e223e710458060000003c2f6469763e71055d710628583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710758060000003c2f6469763e71085d71092858060000003c626f64793e710a58070000003c2f626f64793e710b5d710c2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710d58070000003c2f68746d6c3e710e4e6565656558070000003c2f6469763e0a710f583a0000003c64697620636c6173733d2273656374696f6e222069643d22696e766f6b696e672d636f6d6d616e64732d66726f6d2d73637269707473223e0a711058760000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313422206e616d653d22696e766f6b696e672d636f6d6d616e64732d66726f6d2d73637269707473223e496e766f6b696e6720636f6d6d616e64732066726f6d20736372697074733c2f613e3c2f68313e0a7111652e">Leo dispatches commands using c.doCommand,
 which calls the "command1" and "command2" hook routines for the given label.
 c.doCommand catches all exceptions thrown by the command::
@@ -2602,49 +2523,6 @@ headlines in that file::
 
     for p in c2.all_positions():
         g.es(g.toEncodedString(p.h,"utf-8"))
-</t>
-<t tx="ekr.20040403173920.3" rst_http_attribute="5d71002858440000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d3522206e616d653d22687474702d6e6f64652d6d61726b65722d35223e710158040000003c2f613e71025d71032858400000003c64697620636c6173733d2273656374696f6e222069643d22672d746f702d7468652d636f6d6d616e6465722d6f662d7468652d746f702d77696e646f77223e710458060000003c2f6469763e71055d710628583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710758060000003c2f6469763e71085d71092858060000003c626f64793e710a58070000003c2f626f64793e710b5d710c2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710d58070000003c2f68746d6c3e710e4e6565656558070000003c2f6469763e0a710f58360000003c64697620636c6173733d2273656374696f6e222069643d22672d65732d77726974652d746f2d7468652d6c6f672d70616e65223e0a711058700000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d222369643322206e616d653d22672d65732d77726974652d746f2d7468652d6c6f672d70616e65223e672e657328293a20777269746520746f20746865206c6f672070616e653c2f613e3c2f68313e0a7111652e">The g.es method prints zero or more arguments to the log window::
-
-    g.es("Hello world")
-
-g.es converts non-string arguments using repr::
-
-    g.es(c)
-
-..  g.es prints multiple arguments separated by commas::
-..      g.es("Hello","world")
-</t>
-<t tx="ekr.20040403173920.5" rst_http_attribute="5d71002858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d343122206e616d653d22687474702d6e6f64652d6d61726b65722d3431223e710158040000003c2f613e71025d710328583d0000003c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d646566696e65642d696e2d6c656f676c6f62616c732d7079223e710458060000003c2f6469763e71055d710628583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710758060000003c2f6469763e71085d71092858060000003c626f64793e710a58070000003c2f626f64793e710b5d710c2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710d58070000003c2f68746d6c3e710e4e6565656558070000003c2f6469763e0a710f583b0000003c64697620636c6173733d2273656374696f6e222069643d227265646972656374696e672d6f75747075742d66726f6d2d73637269707473223e0a711058780000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964323122206e616d653d227265646972656374696e672d6f75747075742d66726f6d2d73637269707473223e5265646972656374696e67206f75747075742066726f6d20736372697074733c2f613e3c2f68313e0a7111652e">leoGlobals.py defines 6 convenience methods for redirecting stdout and stderr::
-
-    g.redirectStderr() # Redirect stderr to the current log pane.
-    g.redirectStdout() # Redirect stdout to the current log pane.
-    g.restoreStderr()  # Restores stderr so it prints to the console window.
-    g.restoreStdout()  # Restores stdout so it prints to the console window.
-    g.stdErrIsRedirected() # Returns True if the stderr stream is redirected to the log pane.
-    g.stdOutIsRedirected() # Returns True if the stdout stream is redirected to the log pane.
-
-Calls need *not* be paired. Redundant calls are ignored and the last call made
-controls where output for each stream goes.
-**Note**: you must execute Leo in a console window to see non-redirected output from the print statement::
-
-    print("stdout isRedirected: %s" % g.stdOutIsRedirected())
-    print("stderr isRedirected: %s" % g.stdErrIsRedirected())
-
-    g.redirectStderr()
-    print("stdout isRedirected: %s" % g.stdOutIsRedirected())
-    print("stderr isRedirected: %s" % g.stdErrIsRedirected())
-
-    g.redirectStdout()
-    print("stdout isRedirected: %s" % g.stdOutIsRedirected())
-    print("stderr isRedirected: %s" % g.stdErrIsRedirected())
-
-    g.restoreStderr()
-    print("stdout isRedirected: %s" % g.stdOutIsRedirected())
-    print("stderr isRedirected: %s" % g.stdErrIsRedirected())
-
-    g.restoreStdout()
-    print("stdout isRedirected: %s" % g.stdOutIsRedirected())
-    print("stderr isRedirected: %s" % g.stdErrIsRedirected())
 </t>
 <t tx="ekr.20040414161647" str_atime="1376411963.0">@pagewidth 70
 @tabwidth -4
@@ -2947,7 +2825,7 @@ capabilities for power users. We'll discuss these features later.
 </t>
 <t tx="ekr.20050818163826.1">.. rST links used in this document...
 
-.. _`Scripting`:            scripting.html
+.. _`Scripting`:            tutorial-scripting.html
 
 .. External links...
 .. _docutils:               http://docutils.sourceforge.net
@@ -3250,7 +3128,8 @@ prefix the option name with 'rst3\_'.  For example::
 .. _front:                      index.html
 .. _`Leo's tutorial`:           intro.html
 .. _`Leo and reStructuredText`: rstplugin3.html
-.. _`History of Leo`:           history.html
+.. _`History of Leo`:           appendices.html#history-of-leo
+.. was history.html
 .. _`Using Chapters`:           outlines.html#using-chapters
 
 .. For reasons unknown, images must appear in the _images folder on the web site.
@@ -4241,8 +4120,10 @@ new_leo_file_encoding
 .. _commands:       commands.html
 .. _`tutorial about programming`:               tutorial-programming.html
 .. _tutorial:                                   tutorial.html
-.. _`Leo 4.0: Eliminating error 'recovery'`:    history.html#leo-4-0-eliminating-error-recovery
-.. _`History of Leo`:                           history.html
+.. _`Leo 4.0: Eliminating error 'recovery'`:    appendices.html#leo-4-0-eliminating-error-recovery
+.. was: history.html#leo-4-0-eliminating-error-recovery
+.. _`History of Leo`:                           appendices.html#history-of-leo
+.. was: history.html
 .. _`run Leo in a console window`:              running.html#running-leo-from-a-console-window
 .. _`console window`:                           running.html#running-leo-from-a-console-window
 
@@ -4335,7 +4216,6 @@ The benefits of the new workflow:
 <t tx="ekr.20050831184021.4"></t>
 <t tx="ekr.20050831184021.5"></t>
 <t tx="ekr.20050831195331.1"></t>
-<t tx="ekr.20050831195331.4"></t>
 <t tx="ekr.20050831195449">@language rest
 
 For instruction about installing Leo see:
@@ -4449,9 +4329,9 @@ Edward K. Ream, October 25, 2001.  P.S., September, 2005:
 Four years of experience have only added to my admiration for Python. Leo could
 not possibly be what it is today without Python.
 </t>
-<t tx="ekr.20050901101608.2">###########
-Using Leo
-###########
+<t tx="ekr.20050901101608.2">##################
+Commands Reference
+##################
 
 This chapter discusses the basics of using Leo, including all of Leo's
 commands. It starts with a discussion of the Emacs-like minibuffer,
@@ -4479,16 +4359,16 @@ See `Specifying settings`_ for a description of how to change Leo's settings.
 .. _`Writing Programs in Leo`:          directives.html
 .. _`Customizing Leo`:                  customizing.html
 .. _`Clones`:                           tutorial-pim.html#clones
-.. _`Creating script buttons`:          scripting.html#creating-script-buttons
 .. _`A Tutorial Introduction to Leo`:   tutorial.html
 </t>
-<t tx="ekr.20050901102055">.. _`Scripting Leo with Python`:    scripting.html
-.. _`History of Leo`:               history.html
+<t tx="ekr.20050901102055">.. _`Scripting Leo with Python`:    tutorial-scripting.html
+.. _`History of Leo`:               appendices.html#history-of-leo
+.. was: history.html
 .. _`rst3 plugin`:                  glossary.html#rst3-plugin
 .. _`Specifying settings`:          commands.html#specifying-settings
 </t>
 <t tx="ekr.20050901102147">.. Relative links...
-.. _`Scripting Leo with Python`:        scripting.html
+.. _`Scripting Leo with Python`:        tutorial-scripting.html
 .. _`Customizing Leo`:                  customizing.html
 .. _`Theory of Operation`:              theory.html
 .. _`Controlling Syntax Coloring`:      coloring.html
@@ -4848,7 +4728,7 @@ Event name (tag argument)     Stop?    When called                         Keys 
 </t>
 <t tx="ekr.20050903161843">The mod_scripting.py plugins must be enabled to create @button nodes.
 
-@button nodes create **script buttons in Leo's icon area.
+@button nodes create **script buttons** in Leo's icon area.
 
 Each @button node also creates a corresponding minibuffer command.
 
@@ -4897,27 +4777,24 @@ The getBool 'default' argument to getBool specifies the value to be
 returned if the setting does not exist.
 </t>
 <t tx="ekr.20050912125144" str_atime="1376413890.0"></t>
-<t tx="ekr.20050912125144.1" str_atime="1376413508.0">.. _`Writing Plugins`:  writingPlugins.html
-.. _`Creating script buttons`:  scripting.html#creating-script-buttons
-
-
-#######
+<t tx="ekr.20050912125144.1" str_atime="1376413508.0">#######
 Plugins
 #######
+
+.. _`Using @button nodes`:  tutorial-scripting#using-button-nodes
+.. _`Writing Plugins`:  writingPlugins.html
 
 This chapter discusses the plugins contained in leoPlugins.leo.
 These plugins are part of Leo's official distribution.
 The next chapter, `Writing Plugins`_, tells how to write plugins.
 
 The scripting plugin (mod_scripting.py) deserves special mention. This
-plugin lets you create **script buttons** in a matter of seconds. See `Creating
-script buttons`_. Script buttons are extraordinarily useful. Try them, you'll be
-instantly hooked.
+plugin lets you create **script buttons** in a matter of seconds. See
+`Using @button nodes`_. Script buttons are extraordinarily useful.
 
 .. contents::
     :depth: 5
     
-
 </t>
 <t tx="ekr.20050912125735">.. External links...
 .. _docutils:             http://docutils.sourceforge.net
@@ -4929,7 +4806,6 @@ instantly hooked.
 .. _`Specifying settings`:      customizing.html#specifying-settings
 .. _`Customizing Leo`:          customizing.html
 .. .. _`Writing Plugins`:          writingPlugins.html
-.. .. _`Creating script buttons`:  scripting.html#creating-script-buttons
 </t>
 <t tx="ekr.20050912125735.363">The dyna_menu plugin is a remarkable body of work by 'e'.
 This plugin creates a dyna_menu menu from which you can execute commands.
@@ -5022,67 +4898,6 @@ as described at `How to install Leo on Windows`_.
 However you are installing Leo,
 be sure to `run Leo in a console window`_.
 because as a last resort Leo prints error messages to the console.
-</t>
-<t tx="ekr.20060420094611">The mini-buffer is a text area at the bottom of the body pane. You use it
-like the Emacs mini-buffer to invoke commands by their so-called *long name*.
-
-The ``full-command`` (Alt-x) command puts the focus in the minibuffer. Type
-a full command name, then hit &lt;Return&gt; to execute the command. Tab
-completion works, but not yet for file names. For example, to print a list
-of all commands type::
-
-    &lt;Alt-X&gt;print-commands&lt;Return&gt;
-    
-**Extremely important**: Like Emacs, many of Leo's commands have
-long-winded names. It is **not** necessary to type the entire name in the
-minibuffer! Instead, you can use **tab completion** to shortcut your
-typing. For example, Suppose you want to execute the print-commands return.
-First, you type the first few characters of the command, and hit the &lt;tab&gt;
-key::
-
-    &lt;Alt-x&gt;pri&lt;Tab&gt;
-    
-You will see the following list of completions in the log window::
-
-    print-all-uas
-    print-bindings
-    print-buttons
-    print-cmd-docstrings
-    print-commands
-    print-focus
-    print-node-uas
-    print-plugin-handlers
-    print-plugins-info
-    print-settings
-    
-The minibuffer now contains the **longest common prefix** of all the completions,
-in this case::
-
-    print-
-    
-So now, all you have to do is type::
-
-    s&lt;tab&gt;
-    
-and the minibuffer will show::
-
-    print-settings
-    
-Finally, execute the command by hitting the &lt;return&gt; key. Using tab
-completion quickly becomes second nature. It saves a huge amount of typing.
-More importantly, it means that not every command needs to be bound to a
-keystroke in order to be conveniently available.
-
-The ``keyboard-quit`` (Ctrl-g) commands exits any minibuffer mode and puts
-the focus in the body pane. **Important**: Use ctrl-g whenever you are
-unsure of what is happening.
-
-..  The ``universal-argument`` (Alt-u) command acts like Emacs Ctrl-u.
-.. It adds a repeat count for later command. Ctrl-u 999 a adds 999 a's.
-
-The following sections list the various commands that you can invoke from
-the minibuffer. **Important**: you may bind keystrokes to any of these
-commands. See `Customizing Leo`_ for full details.
 </t>
 <t tx="ekr.20060430220749">The jEdit_ editor drives its syntax colorer using xml **language description files.**
 Rather than using the xml language description files directly, Leo uses
@@ -5806,7 +5621,7 @@ Writing plugins is quite similar to writing any other Leo script.  See
    defined in leoPy.leo.
 
 2. Plugins can register event handlers just like any other Leo script. For full
-   details, see the section called `event handlers`_ in Leo's scripting chapter.
+   details, see the section called `Handling Events`_ later in this chapter.
 
 The rest of this chapters discusses topics related specifically to plugins.
 
@@ -5817,553 +5632,10 @@ The rest of this chapters discusses topics related specifically to plugins.
 .. _docutils:             http://docutils.sourceforge.net
 .. _LaTeX:                http://www.latex-project.org/
 .. _reStructuredText:     http://docutils.sourceforge.net/rst.html
-.. .. _SilverCity:           http://silvercity.sourceforge.net
 
 .. Relative links...
-.. _`Event handlers`:               scripting.html#event-handlers
-.. _`Scripting Leo with Python`:    scripting.html
+.. _`Scripting Leo with Python`:    tutorial-scripting.html
 .. _`Customizing Leo`:              customizing.html
-</t>
-<t tx="ekr.20060613062025.1">These commands are for debugging Leo itself::
-
-    debug
-    dump-outline
-    gc-collect-garbage
-    gc-dump-all-objects
-    gc-dump-new-objects
-    gc-dump-objects-verbose
-    gc-print-summary
-    gc-trace-disable
-    gc-trace-enable
-    print-focus
-</t>
-<t tx="ekr.20060613062025.10">These commands put Leo into various kinds of modes.
-
-- The enter-x-mode commands enter modes defined by \@mode nodes in leoSettings.leo
-  (or in other .leo files).
-
-- The set-command-state, set-insert-state, set-overwrite-state commands
-  determine how treats unbound plain keys. Leo ignores such keys in command
-  state, inserts them into the body pane in insert state, and overwrites the
-  character at the cursor position in overwrite state.
-
-- Other commands determine whether autocompletion or calltips are in effect.
-
-- When extend mode is effect, basic editing commands that move the cursor
-  also extend the selected text. For example, in extend mode the back-char
-  command works the same as the back-char-extend-selection command.
-
-Here is the a list of mode-related commands. There may be other
-enter-xxx-mode commands depending on \@mode nodes in your settings files::
-
-                auto-complete
-    Ctrl-Space  auto-complete-force
-                disable-autocompleter
-                disable-calltips
-                enable-autocompleter
-                enable-calltips
-                enter-quick-command-mode
-                enter-toggle-find-mode
-                exit-named-mode
-                set-command-state
-                set-extend-mode
-                set-insert-state
-                set-overwrite-state
-                set-silent-mode
-                show-calltips
-                show-calltips-force
-    Alt-1       toggle-autocompleter
-    Alt-2       toggle-calltips
-                toggle-extend-mode
-                toggle-input-state
-</t>
-<t tx="ekr.20060613062025.2">The following commands print various helpful messages.
-Apropos commands print longer discussions of specific topics.
-The help-for-command command prompts for a command name
-(you can use typing completion to specify the command)
-and then prints a brief description of that command::
-
-    F1  help
-        help-for-abbreviations
-        help-for-autocompletion
-        help-for-bindings
-        help-for-command
-        help-for-debugging-commands
-        help-for-find-commands
-        help-for-minibuffer
-    F12 help-for-python
-        help-for-regular-expressions
-        mode-help
-        print-bindings
-        print-buttons
-        print-cmd-docstrings
-        print-commands
-        print-focus
-        print-plugins-info
-        print-settings
-</t>
-<t tx="ekr.20060613062025.4">The following commands work just like their Emacs counterparts.
-Use the help-for-command command for further details::
-
-                add-space-to-lines
-                add-tab-to-lines
-                advertised-undo
-                capitalize-word
-                center-line
-                center-region
-                clean-lines
-                clear-extend-mode
-                clear-kill-ring
-                clear-rectangle
-                clear-selected-text
-                count-pages
-                count-region
-                dabbrev-completion
-                dabbrev-expands
-                delete-comments
-                delete-file
-                delete-indentation
-                delete-rectangle
-                delete-spaces
-                diff
-                digit-argument
-                downcase-region
-                downcase-word
-                end-kbd-macro
-                escape
-                eval-expression
-                expand-region-abbrevs
-                fill-paragraph
-                fill-region
-                fill-region-as-paragraph
-                flush-lines
-                full-command
-                goto-char
-                how-many
-                increment-register
-                indent-region
-                indent-relative
-                indent-rigidly
-                indent-to-comment-column
-                insert-body-time
-                insert-file
-                insert-keyboard-macro
-                insert-parentheses
-                insert-register
-                inverse-add-global-abbrev
-                jump-to-register
-                keep-lines
-                keyboard-quit
-                kill-all-abbrevs
-                kill-buffer
-    Ctrl-K      kill-line
-                kill-paragraph
-                kill-rectangle
-                kill-region
-                kill-region-save
-                kill-sentence
-                kill-word
-                line-number
-                list-abbrevs
-                list-buffers-alphabetically
-                load-file
-                macro-call
-                macro-call-last
-                macro-end-recording
-                macro-load-all
-                macro-name-last
-                macro-print-all
-                macro-print-last
-                macro-save-all
-                macro-start-recording
-                make-directory
-                match-bracket
-                name-last-kbd-macro
-                negative-argument
-                number-command
-                number-command-0
-                number-command-1
-                number-command-2
-                number-command-3
-                number-command-4
-                number-command-5
-                number-command-6
-                number-command-7
-                number-command-8
-                number-command-9
-                open-rectangle
-                point-to-register
-                prepend-to-buffer
-                prepend-to-register
-                read-abbrev-file
-                rectangle-clear
-                rectangle-close
-                rectangle-delete
-                rectangle-kill
-                rectangle-open
-                rectangle-string
-                rectangle-yank
-                register-append-to
-                register-copy-rectangle-to
-                register-copy-to
-                register-increment
-                register-insert
-                register-jump-to
-                register-point-to
-                register-prepend-to
-                register-view
-                remove-blank-lines
-                remove-directory
-                remove-sentinels
-                remove-space-from-lines
-                remove-tab-from-lines
-                rename-buffer
-                repeat-complex-command
-                reverse-region
-                run-unit-tests
-                select-paragraph
-                set-comment-column
-                set-fill-column
-                set-fill-prefix
-                shell-command
-                shell-command-on-region
-                sort-columns
-                sort-fields
-                sort-lines
-                split-line
-                start-kbd-macro
-                string-rectangle
-                suspend
-                switch-to-buffer
-                tabify
-                transpose-chars
-                transpose-lines
-                transpose-words
-                unindent-region
-                universal-argument
-                unmark-all
-                untabify
-                upcase-region
-                upcase-word
-                view-lossage
-                what-line
-    Ctrl-Y      yank
-    Alt-Y       yank-pop
-                zap-to-character
-</t>
-<t tx="ekr.20060613062025.5">Here is a list of all of Leo's find commands. The help-for-find-commands
-command will print a detailed help message discussing these commands::
-
-                    clone-find-all
-                    clone-find-all-flattened
-                    find-all
-    Ctrl+Key+2      find-character
-    Ctrl+Shift-2    find-character-extend-selection
-                    find-clone-all
-                    find-clone-all-flattened
-    F3              find-next
-                    find-next-clone
-    F2              find-prev
-                    find-quick
-    Ctrl+Shift+F    find-quick-selected
-                    find-quick-test-failures
-                    find-quick-timeline
-                    find-tab-hide
-                    find-tab-open
-                    find-word
-                    find-word-in-line
-    Alt+R           isearch-backward
-                    isearch-backward-regexp
-    Alt+S           isearch-forward
-                    isearch-forward-regexp
-                    isearch-with-present-options
-                    re-search-backward
-                    re-search-forward
-                    replace-string
-                    search-again
-                    search-backward
-                    search-forward
-    Ctrl-F          search-with-present-options
-    Alt+Ctrl+E      set-find-everywhere
-    Alt+Ctrl+N      set-find-node-only
-    Alt+Ctrl+S      set-find-suboutline-only
-                    toggle-find-collapses-nodes
-    Alt+Ctrl+I      toggle-find-ignore-case-option
-    Alt+Ctrl+B      toggle-find-in-body-option
-    Alt+Ctrl+H      toggle-find-in-headline-option
-    Alt+Ctrl+C      toggle-find-mark-changes-option
-    Alt+Ctrl+F      toggle-find-mark-finds-option
-    Alt+Ctrl+X      toggle-find-regex-option
-    Alt+Ctrl+W      toggle-find-word-option
-    Alt+Ctrl+A      toggle-find-wrap-around-option
-                    word-search-backward
-                    word-search-forward
-</t>
-<t tx="ekr.20060613062025.6">Here is a list of Leo's basic editing commands with the default (EKR)
-bindings shown::
-
-    Left                back-char
-    Shift-Left          back-char-extend-selection
-                        back-paragraph
-                        back-paragraph-extend-selection
-                        back-sentence
-                        back-sentence-extend-selection
-                        back-to-indentation
-    Alt-B or Ctrl-Left  back-word
-    Alt-Shift-B         back-word-extend-selection
-    Ctrl-Shift-Left     back-word-extend-selection
-    BackSpace           backward-delete-char
-    Shift-BackSpace     backward-delete-char
-    Ctrl-BackSpace      backward-delete-word
-                        backward-delete-word-smart
-                        backward-kill-paragraph
-                        backward-kill-sentence
-                        backward-kill-word
-    Ctrl-Home           beginning-of-buffer
-    Ctrl-Shift-Home     beginning-of-buffer-extend-selection
-    Home                beginning-of-line
-    Shift-Home          beginning-of-line-extend-selection
-    Ctrl-C              copy-text
-    Ctrl-X              cut-text
-    Delete              delete-char
-    Ctrl-End            end-of-buffer
-    Ctrl-Shift-End      end-of-buffer-extend-selection
-    End                 end-of-line
-    Shift-End           end-of-line-extend-selection
-    Alt-M               exchange-point-mark
-    Ctrl-W              extend-to-word
-    Right               forward-char
-    Shift-Right         forward-char-extend-selection
-                        forward-paragraph
-                        forward-paragraph-extend-selection
-                        forward-sentence
-                        forward-sentence-extend-selection
-    Ctrl-Right          forward-word
-    Ctrl-Shift-Right    forward-word-extend-selection
-    Tab                 indent-region
-    Return              insert-newline
-                        move-lines-down
-                        move-lines-up
-                        move-past-close
-                        move-past-close-extend-selection
-    Ctrl-J or Tab       newline-and-indent
-    Down                next-line
-    Shift-Down          next-line-extend-selection
-    Ctrl-V              paste-text
-    Up                  previous-line
-    Shift-Up            previous-line-extend-selection
-    Shift-Ctrl-Z        redo
-    Ctrl-A              select-all
-    Ctrl-Z              undo
-    Shift-Tab           unindent-region
-</t>
-<t tx="ekr.20060613062025.7">The following commands invoke Leo's outline commands::
-
-    Ctrl-`          clone-node
-    Alt-Minus       contract-all
-                    contract-node
-    Left            contract-or-go-left
-                    contract-parent
-    Ctrl-Shift-C    copy-node
-                    cut-node
-                    de-hoist
-                    delete-node
-    Ctrl-]          demote
-                    expand-to-level-1
-                    expand-to-level-2
-                    expand-to-level-3
-                    expand-to-level-4
-                    expand-to-level-5
-                    expand-to-level-6
-                    expand-to-level-7
-                    expand-to-level-8
-                    expand-to-level-9
-                    expand-all
-                    expand-and-go-right
-                    expand-next-level
-    Alt-}           expand-node
-                    expand-or-go-right
-                    expand-prev-level
-                    go-back
-                    go-forward
-                    goto-first-node
-                    goto-first-sibling
-                    goto-last-node
-                    goto-last-sibling
-                    goto-last-visible
-                    goto-line
-                    goto-line-number
-                    goto-next-changed
-                    goto-next-clone
-                    goto-next-marked
-                    goto-next-node
-                    goto-next-sibling
-                    goto-next-visible
-                    goto-parent
-                    goto-prev-node
-                    goto-prev-sibling
-                    goto-prev-visible
-                    hoist
-                    insert-node
-    Ctrl-M          mark
-                    mark-changed-items
-                    mark-subheads
-    Ctrl+D          move-outline-down
-    Shift+Down      move-outline-down
-    Alt+Shift+Down  move-outline-down
-    Shift+Left      move-outline-left
-    Alt+Shift+Left  move-outline-left
-    Shift+Right     move-outline-right
-    Alt+Shift+Up    move-outline-up
-    Ctrl+U          move-outline-up
-                    outline-to-CWEB
-                    outline-to-noweb
-                    paste-node
-                    paste-retaining-clones
-    Ctrl-[          promote
-                    sort-children
-    Alt-A           sort-siblings
-</t>
-<t tx="ekr.20060613062025.8">Here are various miscellaneous minibuffer commands::
-
-    about-leo
-    add-comments
-    check-all-python-code
-    check-outline
-    check-python-code
-    clear-recent-files
-    convert-all-blanks
-    convert-all-tabs
-    convert-blanks
-    convert-tabs
-    execute-script
-    export-headlines
-    exit-leo
-    extract
-    extract-names
-    extract-section
-    flatten-outline
-    goto-global-line
-    import-at-file
-    import-at-root
-    import-cweb-files
-    import-derived-file
-    import-flattened-outline
-    import-noweb-files
-    insert-headline-time
-    new
-    open-leoDocs-leo
-    open-leoPlugins-leo
-    open-leoSettings-leo
-    open-offline-tutorial
-    open-online-home
-    open-online-tutorial
-    open-outline
-    open-outline-by-name
-    open-python-window
-    open-with
-    open-with-idle
-    open-with-word
-    open-with-wordpad
-    pretty-print-all-python-code
-    pretty-print-python-code
-    read-at-file-nodes
-    read-outline-only
-    reformat-paragraph
-    revert
-    save-buffers-kill-leo
-    save-file
-    save-file-as
-    save-file-to
-    settings
-    set-colors
-    set-font
-    show-colors
-    show-find-options
-    show-fonts
-    show-invisibles
-    spell-change
-    spell-change-then-find
-    spell-find
-    spell-ignore
-    toggle-angle-brackets
-    weave
-    write-abbrev-file
-    write-at-file-nodes
-    write-dirty-at-file-nodes
-    write-missing-at-file-nodes
-    write-outline-only
-</t>
-<t tx="ekr.20060613062025.9">The following commands simulate mouse clicks, double-clicks or drags::
-
-                    abort-edit-headline
-                    activate-cmds-menu
-                    activate-edit-menu
-                    activate-file-menu
-                    activate-help-menu
-                    activate-outline-menu
-                    activate-plugins-menu
-                    activate-window-menu
-                    add-editor
-                    cascade-windows
-                    click-click-box
-                    click-headline
-                    click-icon-box
-                    close-window
-                    contract-body-pane
-                    contract-log-pane
-                    contract-outline-pane
-    Alt-Ctrl-Minus  contract-pane
-    Ctrl-Shift-Tab  cycle-all-focus
-                    cycle-editor-focus
-                    cycle-focus
-                    delete-editor
-                    double-click-headline
-                    double-click-icon-box
-                    edit-headline
-                    end-edit-headline
-                    equal-sized-panes
-                    expand-body-pane
-                    expand-log-pane
-                    expand-outline-pane
-    Alt-Ctrl-Plus   expand-pane
-    Alt-D           focus-to-body
-                    focus-to-log
-                    focus-to-minibuffer
-    Alt-T           focus-to-tree
-                    fully-expand-body-pane
-                    fully-expand-log-pane
-                    fully-expand-outline-pane
-                    fully-expand-pane
-                    hide-body-pane
-                    hide-find-tab
-                    hide-invisibles
-                    hide-log-pane
-                    hide-outline-pane
-                    hide-pane
-                    hide-spell-tab
-                    iconify-frame
-                    minimize-all
-                    open-compare-window
-                    open-spell-tab
-                    resize-to-screen
-    Shift+Next      scroll-down-half-page
-                    scroll-down-line
-    Next            scroll-down-page
-                    scroll-outline-down-line
-                    scroll-outline-down-page
-                    scroll-outline-left
-                    scroll-outline-right
-                    scroll-outline-up-line
-                    scroll-outline-up-page
-    Shift+Prior     scroll-up-half-page
-                    scroll-up-line
-    Prior           scroll-up-page
-                    simulate-begin-drag
-                    simulate-end-drag
-    Ctrl-T          toggle-active-pane
-                    toggle-invisibles
-                    toggle-split-direction
 </t>
 <t tx="ekr.20060620094033"></t>
 <t tx="ekr.20060620094033.1">The main features of Leo 4.4.1 are:
@@ -8176,16 +7448,6 @@ in an @item node is just a hyphen (-), the item represents a menu separator.
 </t>
 <t tx="ekr.20071005100213">Essentially all of Leo's startup code now runs with jython 2.2 and the (unfinished!) swing gui.
 </t>
-<t tx="ekr.20071021102946">Two methods in leoGlobals.py allow scripts and plugins to enable and disable 'idle' events.
-
-g.enableIdleTimeHook(idleTimeDelay=100) enables the "idle" hook.
-
-- Leo will call the "idle" hook approximately every idleTimeDelay milliseconds.
-
-- Leo will continue to call the "idle" hook periodically until disableIdleTimeHook is called.
-
-g.disableIdleTimeHook() disables the "idle" hook.
-</t>
 <t tx="ekr.20071026055929"></t>
 <t tx="ekr.20071026055929.1">First, you must change Python's default encoding to something other than 'ascii'.  To do this, put the following in your sitecustomize.py file in Python's Lib folder::
 
@@ -8414,7 +7676,7 @@ ILeo: Leo's IPython Bridge
 .. _`IPython Notebook`:     http://projects.scipy.org/ipython/ipython/wiki/NoteBook
 .. _extensionAPI:           http://ipython.scipy.org/moin/IpythonExtensionApi
 .. _`The Ipython Extension API`: extensionAPI_
-.. _`Scripting Leo with Python`:    scripting.html
+.. _`Scripting Leo with Python`:    tutorial-scripting.html
 
 .. _`run Leo in a console window`:  installing.html#running-leo-from-a-console-window
 .. _`console window`:               installing.html#running-leo-from-a-console-window
@@ -9502,12 +8764,13 @@ There are four parts to this tutorial, and will take less than two hours to comp
 The last part is optional, and assumes some familiarity with programming in `Python`_.
     
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
     
     tutorial-basics
     tutorial-pim
     tutorial-rst3
     tutorial-programming
+    tutorial-scripting
 
 </t>
 <t tx="ekr.20100122073254.11655">This section describes the process of creating an importer for a new language.
@@ -9632,29 +8895,6 @@ The latter opens vim whenever a new node is selected in Leo.
 <t tx="ekr.20100129054823.17680">Leo requires Python 2.6 or above, including Python 3.0 and above.
 </t>
 <t tx="ekr.20100211221936.7098">- The clear-cache and clear-all-caches commands.
-</t>
-<t tx="ekr.20100504092040.17423">Calltips appear after you type an open parenthesis in code. Calltips shows the
-expected arguments to a function or method. Calltips work for any Python
-function or method, including Python's global functions. Typing Return or
-Control-g (keyboard-quit) exits calltips.
-
-Examples:
-
-a)  'g.toUnicode('  gives 'g.toUnicode(s, encoding, reportErrors=False'
-b) 'c.widgetWantsFocusNow' gives 'c.widgetWantsFocusNow(w'
-c) 'reduce(' gives 'reduce(function, sequence[, initial]) -&gt; value'
-
-The calltips appear directly in the text and the argument list is highlighted so
-you can just type to replace it. The calltips appear also in the status line for
-reference after you have started to replace the args.
-
-Options
-
-Both autocompletion and calltips are initially enabled or disabled by the
-enable_autocompleter and enable_calltips settings in leoSettings.leo. You may
-enable or disable these features at any time with these commands:
-enable-auto-completer-command, enable-calltips-command,
-disable-auto-completer-command and disable-calltips-command.
 </t>
 <t tx="ekr.20100506062734.11593">The mod_scripting plugin runs @scripts before plugin initiation is complete.
 Thus, such scripts can not directly modify plugins. Instead, a script can create
@@ -14492,33 +13732,6 @@ settings. In particular, the default export path, "c:\" must be changed for \*ni
 systems.
 
 </t>
-<t tx="ekr.20101124083644.5048"></t>
-<t tx="ekr.20101124083644.5049">.. _`pdb`:  http://docs.python.org/library/pdb.html
-.. _`pudb`: http://pypi.python.org/pypi/pudb
-
-g.pdb() invokes Python `pdb`_ debugger.  You must be running Leo
-from a console to invoke g.pdb().
-
-g.pdb() is equivalent to::
-
-    import pdb
-    pdb.set_trace()
-</t>
-<t tx="ekr.20101124083644.5050">g.openWithFileName opens a .leo file::
-
-    new_c = g.openWithFileName(fileName,c)
-
-new_c is the commander of the newly-created outline.
-</t>
-<t tx="ekr.20101124083644.5051">g.getScript(c,p) returns the expansion of p's body text.
-
-If p is the presently selected node and there is a text selection,
-g.getScript returns the expansion of only the selected text.
-
-Leo scripts can use g.getScript to implement new ways of executing Python code.
-For example, the mod_scripting plugin uses g.getScript to implement @button nodes,
-and Leo's core uses g.getScript to implement @test nodes.
-</t>
 <t tx="ekr.20101124083644.5052">Autocompletion reminds you of all members (functions, methods, ivars, etc.)
 contained in objects in Leo's source code, and in Python's standard library
 modules.
@@ -15566,196 +14779,6 @@ Similarly to see the list of your \@command nodes, type::
 
     &lt;alt-x&gt;@b&lt;tab&gt;
 </t>
-<t tx="ekr.20120229094652.15102">This section describes how to create ctags data files describing the
-desired completions. You must do this when the use_codewise setting is
-True.
-
-1. Make sure you have exuberant ctags (not just regular ctags)
-   installed. It's an Ubuntu package, so its easy to install if
-   you're using Ubuntu.
-   
-2. Execute the following commands from Leo's external/codewise.py
-   module. **Note**: On Windows, you can use codewise.bat to
-   execute these commands. For example::
-
-        python &lt;path to leo&gt;\external\codewise.py %*
-    
-A. [Optional] Create a custom ~/.ctags file containing default
-   configuration settings for ctags::
-    
-        codewise setup
-        
-    This command will leave the ~/.ctags file unchanged if it
-    exists.  Otherwise, the ``codewise setup`` command will
-    create a ~/.ctags file containing the following defaults::
-    
-        --exclude=*.html
-        --exclude=*.css
-    
-    http://ctags.sourceforge.net/ctags.html#FILES for more
-    details about the .ctags file.
-    
-B. [Optional] Delete the existing ctags database in ~/.codewise.db::
-   
-        codewise init
-        
-C. Add ctags data to the existing ctags database::
-
-        codewise parse &lt;path to directory&gt;
-        
-   You can add data from multiple sources by running
-   the ``codewise parse`` command on multiple directories.
-</t>
-<t tx="ekr.20120229094652.15103">Leo's autocompletion feature suggests **completions**, text may be valid in
-a given point, or **context** in source code. For example, suppose the
-context is::
-
-    os.path.s
-    
-That is, suppose the cursor follows ``os.path.s`` in the body pane. The
-valid completions are all the members of Python's os.path module whose
-names start with 's', namely::
-
-    samefile
-    sameopenfile
-    sep
-    split
-    splitdrive
-    splitext
-    splitunc
-    stat
-    supports_unicode_filenames
-    sys
-    
-How Leo displays these completions depends on the setting::
-
-    @bool use_qcompleter
-    
-True: Leo shows completions in the QCompleter popup window.
-False: Leo shows completions in the log pane.
-    
-To compute the list of completions, Leo first computes **Leo-specific**
-completions. These completions assume that c is a commander, g is the
-leoGlobals object and p is a position. If there are no such completions, Leo
-computes completions using ctags data. In order to use these additional
-completions you must create the ctags data as described in a later section.
-</t>
-<t tx="ekr.20120229094652.15104">There are two ways to have Leo show completions. **Manual autocompletion**
-shows autocompletions whenever you execute the auto-complete-force
-(ctrl-space) command. **Automatic autocompletion** shows completions
-whenever you type a period in the body pane.
-
-You can enable autocompletion in two ways:
-
-1. By setting @bool enable_autocompleter_initially = True.
-
-2. By using the toggle-autocompleter (Alt-1) command.
-</t>
-<t tx="ekr.20120229094652.15106">When the ``@bool use_qcompleter`` setting is False, Leo shows all
-completions in a popup window, regardless of how many completions there
-are. To **accept** a completion, use the up and down arrows to select a
-completion, then type the return key. To **cancel** completion, type the
-escape key. As an important shortcut, if the popup window contains only one
-entry, you may accept a completion by simply typing the return key.
-</t>
-<t tx="ekr.20120229094652.15107">When the ``@bool use_qcompleter`` setting is True, Leo shows completions in in
-Leo's log pane. When there are more than 20 completions, Leo shows only the
-characters that start a completions. For example, when completing ``os.path.``
-the log pane will show::
-
-    _ 17
-    a 2
-    b 1
-    c 2
-    d 3
-    e 4
-    g 5
-    i 5
-    j 1
-    l 1
-    n 2
-    o 1
-    p 2
-    r 2
-    s 10
-    
-To see the complete list, type the '!' character.  You will see::
-
-    __all__
-    __builtins__
-    __cached__
-    __doc__
-    __file__
-    __name__
-    __package__
-    _get_altsep
-    _get_bothseps
-    _get_colon
-    _get_dot
-    _get_empty
-    _get_sep
-    _get_special
-    _getfileinformation
-    _getfinalpathname
-    _getfullpathname
-    abspath
-    altsep
-    basename
-    commonprefix
-    curdir
-    defpath
-    devnull
-    dirname
-    exists
-    ...
-
-Typically, however, you would simply type one of the valid prefix characters.
-For example, typing the letter 'a' would create the context ``os.path.a`` and
-the log pane would show::
-
-    abspath
-    altsep
-    
-As you type, Leo enters the longest common prefix of all completions into the
-body pane. Typing return, escape or ctrl-g (or any other alt or ctrl key) ends
-completion.
-</t>
-<t tx="ekr.20120229094652.15108">Regardless of the setting of ``@bool use_qcompleter``, typing '?' while
-autocompleting will show the docstring of the present context. For example,
-if the context is ``os.path.join``, typing '?' will show::
-
-    Join two or more pathname components, inserting "\" as needed.
-    If any component is an absolute path, all previous path components
-    will be discarded.
-    
-It is not possible at present to copy the docstring from the log pane when
-using the QCompleter because the QCompleter popup window is a modal dialog.
-</t>
-<t tx="ekr.20120229094652.15116">These are found in leoSettings.leo: @settings--&gt;Autocompleter::
-
-**@bool use_qcompleter = True**
-
-    True:  show completions in a QCompleter popup.
-    False: show completions in Leo's Completions tab.
-    
-**@bool auto_tab_complete = False**
-    
-    True: Automatically extend the completed text to the longest common
-    prefix of all completions.
-    
-**@bool autocomplete-brackets = False**
-    
-    True: When typing an opening bracket '(','[' or '{', immediately type
-    the corresponding closing bracket. To move past the closing bracket,
-    just type it.
-    
-**@bool enable_calltips_initially = False**
-    
-**@bool forbid_invalid_completions = False**
-    
-    True: Don't add characters during autocompletion that are not part of
-    any computed completion.
-</t>
 <t tx="ekr.20120229094652.15124">It sometimes happens that the focus gets left in a Leo
 widget that doesn't support Leo's key bindings. You would
 think that you would have to use the mouse to click in, say,
@@ -16547,107 +15570,6 @@ The timestamp plugin manages the following node attributes:
 - str_ctime: creation time
 - str_mtime: time node was last modified
 - str_atime: time node contents were last viewed
-</t>
-<t tx="ekr.20130816100419.15610">Here are the Leo settings which relate to abbreviations. See the
-actual settings in leoSettings.leo for full details.
-
-**@bool enable-abbreviations** = True
-
-Enables or disables abbreviations. Typically you would enable
-abbreviations in myLeoSettings.leo or in individual .leo files.
-    
-**@data global-abbreviations** &amp; **@data abbreviations**
-
-These define local and global abbreviations. Definitions in \@data
-abbreviation nodes override definitions in \@data global-abbreviation
-nodes. Typically you would define \@data abbreviation nodes in
-myLeoSettings.leo. Comments lines (lines starting with '#') are
-ignored. Non-comment lines should have the form::
-
-    name=definition
-    
-**@string abbreviations-subst-start** = ``{|{`` |br|
-**@string abbreviations-subst-end** = ``}|}``
-
-If abbreviations-subst-start is something other than None, *and* \@bool
-scripting-at-script-nodes = True, then substitutions will be made when
-abbreviations are inserted. For example, if abbreviations-subst-start
-is set to ``{|{`` and abbreviations-subst-end is set to ``}|}``, an
-abbreviation like::
-    
-    date;;={|{import time;x=time.asctime()}|}
-    
-will expand to something like "Mon Aug 20 22:00:40 2012"
-
-**Note**: abbreviations-subst-end has no effect if abbreviations-subst-start is None.
-    
-**@data abbreviations-subst-env**
-
-If abbreviations-subst-start is set, the code in this node will be
-executed (once only) when the outline is loaded, in an environment
-which will be used for execution of substitutions in abbreviations.
-
-For example, if this node contains ``import time``, an abbreviation
-like::
-    
-    date;;={|{import time;x=time.asctime()}|}
-    
-can be written more simply as::
-    
-    date;;={|{x=time.asctime()}|}
-    
-The environment will contain ``c`` and ``g``, a dict called
-``_values`` (see ask() and get() in @data abbreviations-subst-env),
-and ``_abr``, the abbreviation being expanded.
-    
-**Note**: start lines with ``\:`` to preserve indentation.
-    
-**@string abbreviations-place-start** = ``&lt;|`` |br|
-**@string abbreviations-place-end** = ``|&gt;``
-
-These settings specify the start and end of a placeholder for template
-expansions. For example, the ``&lt;|`` and ``|&gt;`` in::
-
-    w;;=while &lt;|condition|&gt;:
-    \:    &lt;|code|&gt;
-
-This would expand with the ``&lt;|condition|&gt;`` selected, and ``,,``, if
-that's an abbreviation linked to __NEXT_PLACEHOLDER, see \@@data
-abbreviations examples, would select ``&lt;|code|&gt;``.
-</t>
-<t tx="ekr.20130816100419.17150">###########################
-Abbreviations and Templates
-###########################
-
-.. |br| raw:: html
-
-   &lt;br /&gt;
-   
-Leo supports versatile abbreviations and templating capabilities. For
-example, you can type ``def;;``, and Leo will prompt you for a
-function name, using the node name as a default, detect whether the
-function needs a ``self`` parameter, ask for a list of parameters, and
-expand you input (just ``"some_function"`` and ``"one, two, three=4"``
-to something like::
-    
-    def some_function(one, two, three=4):
-        """some_function - Return &lt;|return|&gt;
-    
-        :Parameters:
-        - `one`: &lt;|describe one|&gt;
-        - `two`: &lt;|describe two|&gt;
-        - `three`: &lt;|describe three|&gt;
-        """
-    
-        &lt;|code|&gt;
-
-Leo selects the first placeholder, ``&lt;|return|&gt;`` so you can begin
-typing in the right place. Hitting ``,,`` will select the next place
-holder, and so on.
-
-</t>
-<t tx="ekr.20130816100419.17151">See the node ``@@data abbreviations examples`` in leoSettings.leo for
-examples of advanced abbreviations with substitutions.
 </t>
 <t tx="ekr.20130816100419.17299">The default language if no @language or @comment is in effect.
 
@@ -20427,9 +19349,14 @@ Leo's Cheat Sheet
 
 .. contents::
     :depth: 4
-
 </t>
-<t tx="ekr.20131007143750.16074">**Pre-defined symbols** in Leo scripts::
+<t tx="ekr.20131007143750.16074">Here is a list of the ivars, properties, functions and methods most
+commonly used in Leo scripts.
+
+**Very important**: use Alt-1 (toggle-autocompleter) and Alt-2
+(toggle-calltips) to recreate these lists as you type.
+
+**Pre-defined symbols** in Leo scripts::
 
     c: The commander of the present outline.
     g: The leo.core.leoGlobals module.
@@ -20442,16 +19369,23 @@ Leo's Cheat Sheet
     p.children()
     p.parents()
     p.self_and_parents()
-    p.self_and siblings()
+    p.self_and_siblings()
     p.following_siblings()
     p.subtree()
     p.self_and_subtree()
+    
+**Commander ivars and methods**:
+
+    c.user_dict  a temporary dict for use of scripts and plugins.
+    c.redraw()
+    c.positionExists(p)
+    
 
 **Vnode properties**::
 
     v.b: v's body text.
     v.h: v's headline text.
-    v.u: v.unknownAttributes, a Python dictionary.
+    v.u: v.unknownAttributes, a persistent Python dictionary.
 
 **Position properties**::
 
@@ -20461,6 +19395,15 @@ Leo's Cheat Sheet
 
 **Position getters**::
 
+    p.back()
+    p.children()
+    p.firstChild()
+    p.hasBack()
+    p.hasChildren()
+    p.hasNext()
+    p.hasParent()
+    p.hasThreadBack()
+    p.hasThreadNext()
     p.isAncestorOf(p2)
     p.isAnyAtFileNode()
     p.isAt...Node()
@@ -20470,16 +19413,30 @@ Leo's Cheat Sheet
     p.isMarked()
     p.isRoot()
     p.isVisible()
+    p.lastChild()
     p.level()
+    p.next()
+    p.nodeAfterTree()
+    p.nthChild()
+    p.numberOfChildren()
+    p.parent()
+    p.parents()
+    p.threadBack()
+    p.threadNext()
+    p.visBack()
+    p.visNext()
     
 **Positions setters**::
 
     p.setDirty()
     p.setMarked()
 
-**Inserting, deleting &amp; moving nodes**::
+**Cloning, inserting, deleting, moving nodes, expanding &amp; contracting nodes**::
 
+    p.clone()
+    p.contract()
     p.doDelete(new_position)
+    p.expand()
     p.insertAfter()
     p.insertAsNthChild(n)
     p.insertBefore()
@@ -20517,16 +19474,27 @@ Use these when generators are not flexible enough::
 
     g.app
     g.app.gui
-    g.unitTesting
     g.app.windowlist
+    g.unitTesting
+    g.user_dict  # a temporary dict for use of scripts and plugins.
     
-**g functions** (only the most useful: there are dozens)::
+**g decorator**::
+
+    @g.command(command-name)
     
+**g functions** (the most interesing: there are many more in leoGlobals.py)::
+    
+    g.angleBrackets()
     g.app.commanders()
     g.app.gui.guiName()
     g.es(*args,**keys)
     g.es_print(*args,**keys)
     g.es_exception()
+    g.getScript(c,p,
+        useSelectedText=True,
+        forcePythonSentinels=True,
+        useSentinels=True)
+    g.openWithFileName(fileName,old_c=None,gui=None)
     g.os_path_... # Wrappers for os.path methods.
     g.pdb(message='')
     g.toEncodedString(s,encoding='utf-8',reportErrors=False)
@@ -20661,32 +19629,20 @@ Preliminaries
     :depth: 2
 </t>
 <t tx="ekr.20131008041326.16080"></t>
-<t tx="ekr.20131008041326.16082">##################
-Leo's Users' Guide
-##################
+<t tx="ekr.20131008041326.16082">#######################
+Leo's Command Reference
+#######################
 
 .. toctree::
    :maxdepth: 2
-   
-   commands
+
    customizing
-   intermediatetopics
-   leoandotherprograms
-   
+   rstplugin3
+   plugins
+   directives
+   commands
 </t>
 <t tx="ekr.20131008041326.16086"></t>
-<t tx="ekr.20131008041326.16090">#####################
-Leo's Reference Guide
-#####################
-   
-.. toctree::
-   :maxdepth: 1
-
-   directives
-   history
-   theory
-   whitepapers
-</t>
 <t tx="ekr.20131008041326.16091">@language rest
 </t>
 <t tx="ekr.20131008041326.16092"></t>
@@ -20718,30 +19674,31 @@ please ask for help on `Leo's help forum`_.
     
 </t>
 <t tx="ekr.20131008041326.16099">###################
-Intermediate Topics
+Advanced Topics
 ###################
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
-   abbreviations
    coloring
-   rstplugin3
-   scripting
-   plugins
    writingPlugins
    unitTesting
    debuggers
+   
+.. toctree::
+   :maxdepth: 1
+
    atShadow
    design
-   
+   scripting-miscellany
+   theory
 </t>
 <t tx="ekr.20131008041326.16100">######################
 Leo and Other Programs
 ######################
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    emacs
    IPythonBridge
@@ -20948,10 +19905,9 @@ command.
 .. contents::
     :depth: 3
 </t>
-<t tx="ekr.20131008041326.16245">################################
-Programming and scripting in Leo
-################################
-
+<t tx="ekr.20131008041326.16245">####################
+Programming with Leo
+####################
 
 .. _`ask for help`: https://groups.google.com/forum/#!forum/leo-editor
 
@@ -21035,13 +19991,6 @@ Directives Reference
 .. contents::
     :depth: 2
 </t>
-<t tx="ekr.20131009065148.31759">##############
-History of Leo
-##############
-
-.. contents::
-    :depth: 2
-</t>
 <t tx="ekr.20131009065148.31760">#########################
 Exploring Leo's Code Base
 #########################
@@ -21066,14 +20015,6 @@ Reading this chapter should take about 20 minutes.
 .. contents::
     :depth: 3
 </t>
-<t tx="ekr.20131009065148.31761">#################
-Why I like Python
-#################
-
-.. contents::
-    :depth: 2
-</t>
-<t tx="ekr.20131009065148.31762"></t>
 <t tx="ekr.20131009082755.16739">Leo is a power tool for people who want to organize, study and work with
 data, especially complex data like computer programs, books, web sites and
 data bases. Leonistas say Leo is a revolutionary tool and that Leo is fun
@@ -21246,10 +20187,7 @@ For example, typing ts;; gives::
     
 It's even possible to define a context in which abbreviation scripts execute.
 
-.. _`abbreviations section of Leo's User Guide`: abbreviations.html
-
-See the `abbreviations section of Leo's User Guide`_ for full details,
-including applicable settings.
+See the leoSettings.leo for full details, including applicable settings.
 </t>
 <t tx="ekr.20131009100732.19038">.. _`Plugins`:          plugins.html
 .. _`bookmarks.py`:     plugins.html#bookmarks-py
@@ -21312,115 +20250,6 @@ http://leoeditor.com/slides/clones-and-views/index.html
 http://leoeditor.com/images/mail_item.html
 http://leoeditor.com/images/page_setup.html</t>
 <t tx="ekr.20131010160850.17454"></t>
-<t tx="ekr.20131010160850.17455">Iterators return positions or nodes, one after another::
-
-    for p in c.all_positions():
-        print(p.h)
-        
-Positions become invalid whenever the outline changes.
-        
-To capture positions *temporarily* (when the outline isn't changing), call
-p.copy()::
-
-    aList = [p.copy() for p in c.all_positions()]
-</t>
-<t tx="ekr.20131010160850.17456">A **position** object represents a specific location in a Leo outline.
-
-Because of clones, a node may appear arbitrarily many times in an outline,
-so a node may appear at arbitrarily many positions in the outline.
-
-For any position p, **p.v** is the vnode at position p.
-A node's vnode never changes, regardless of where the node appears in the
-outline, and regardless of whether the node is cloned or not.
-
-**Positions become invalid when the outline changes.** You may save and and
-use positions *provided* the outline remains unchanged.
-
-Generators deliver positions (or nodes, depending on the generator), one
-after each other, using a *single* (ever-changing) position object. As a
-result, scripts must use p.copy() to create lists of positions. For
-example::
-
-    aList = [p.copy() for p in c.rootPosition().subtree()]
-</t>
-<t tx="ekr.20131010160850.17457">Ctrl-B (execute-script) executes the body pane after expanding @others and
-section references throughout the tree.
-
-The symbols 'c', 'g' and 'p' are predefined as follows:
-
-- c is the Commander of the outline in which the script is executing.
-- g is the leo.core.leoGlobals module.
-- p is c.p (the same as c.currentPosition())
-
-These three predefined vars give the script full access to all methods
-defined in Leo's source code.
-</t>
-<t tx="ekr.20131010160850.17458">Important leoGlobals functions::
-
-    g.es(s) # prints string s to the log window.
-    g.app # the singleton instance of the leoApp class.
-    g.app.gui # the the singleton instance of the leoGui class.
-    g.app.windowList # the list of presently open frames.
-</t>
-<t tx="ekr.20131010160850.17459">The Commander class provides direct access to all of Leo's source code. The
-most important for most scripts is::
-    
-    c.redraw() # requests redraw of Leo's screen.
-
-To get the list of all open commanders::
-
-    commanders = [frame.c for frame in g.app.windowList]
-</t>
-<t tx="ekr.20131010160850.17460">The getters of any position p are::
-
-    p.b # p's body text.
-    p.h # p's headline.
-    p.u # p's uA, the same as p.unknownAttributes.
-    p.v # the vnode corresponding to p.
-    p2 = p.copy() # p2 is a copy of p.
-
-    # Returning ints:
-    
-        p.childIndex()
-        p.numberOfChildren()
-        p.level()
-
-    # Returning bools:
-    
-        p.hasChildren()
-        p.isAncestorOf(v2) # True if v2 is a child, grandchild, etc. of p.
-        p.isCloned()
-        p.isDirty()
-        p.isExpanded()
-        p.isMarked()
-        p.isVisible()
-        p.isVisited()
-        
-The most important setters of any position p are::
-
-    p.b = s  # Sets the body text of p.
-    p.h = s  # Sets the headline text of p.
-    p.u = aDict # Sets p.u to the given dictionary.
-    
-</t>
-<t tx="ekr.20131010160850.17461">Iterators generate positions, usually outline order::
-
-    c.all_nodes             # all vnodes in c.
-    c.all_unique_nodes      # all unique vnodes in c.
-    c.all_positions         # all positions in c.
-    c.all_unique_positions  # all unique positions in c.
-
-    p.children              # all children of p.
-    p.following_siblings    # all siblings of p that follow p.
-    p.nodes                 # all vnodes in p's subtree.
-    p.parents               # all parents of p.
-    p.self_and_parents      # p and all parents of p.
-    p.siblings              # all siblings of p, including p.
-    p.subtree               # all positions in p's subtree, excluding p.
-    p.self_and_subtree      # all positions in p's subtree, including p.
-    p.unique_nodes          # all unique vnodes in p's subtree.
-    p.unique_subtree        # all unique positions in p's subtree.
-</t>
 <t tx="ekr.20131011050613.16815">The LoadManager (LM) class (in leoApp.py) is responsible for initing all
 objects and settings. This is a complex process. Here is the big picture:
 
@@ -21534,7 +20363,6 @@ In addition, *all* event handling in baseNativeTree.py is extremely
 fragile. Don't even think about changing this code unless you know exactly
 what you are doing.
 </t>
-<t tx="ekr.20131012060912.16766"></t>
 <t tx="ekr.20131012060912.16768">Leo creates commands in two ways:
 
 1. Using the @g.command(command-name) decorator.
@@ -21587,62 +20415,6 @@ ways to test for empty positions::
     if not p.v:     # Right
     if p is None:   # Wrong!
   </t>
-<t tx="ekr.20131012060912.16778">Leo scripts are elegant--they pack a lot of power in small packages. For
-example, this short script prints the headline of all nodes in the outline
-in Leo's log pane, in outline order::
-
-    for p in c.all_positions():
-        g.es(p.h)
-
-These two lines illustrate *all* the basic features of Leo scripts:
-predefined symbols, generators, positions and vnodes:
-
-- The execute-script command runs this script without errors because the
-  execute-script command predefines c and g.
-  
-- c is a Commands object; g is the leo.core.leoGlobals module. c and g give
-  access to all of Leo's source code, including everything commonly used in
-  Leo scripts.
-
-- c.all_positions() is a **Leo generator**, a `Python generator`_ defined by Leo.
-
-- Leo generators **traverse** (visit each node of) the outline, usually in outline order.
-
-- Leo generators yield a sequence of **positions** p.
-
-- Each position represents a particular state (position) of the traversal.
-
-- For any position p, p.v is the **vnode** at p.
-
-- vnodes contain *all* the data in Leo outline nodes.
-
-- For any vnode v, v.h is the node's headline; v.b is the node's body text.
-  (p.b and p.h are synonyms for p.v.b and p.v.h).
-
-- The g.es function prints its arguments to the Log pane.
-
-Whew! There is a lot to digest in this simple example!
-
-Happily, scripting Leo soon becomes second nature.
-
-The following sections explain all the terms discusses here in detail.
-</t>
-<t tx="ekr.20131012060912.16781"></t>
-<t tx="ekr.20131012060912.16782">The leo.core.leoGlobals module defines hundreds of utility functions. See
-the sources for leoGlobals.py for a complete list. The following are the
-most useful...</t>
-<t tx="ekr.20131012060912.16786">g.app is the singleton leoApp object representing the Leo application itself:
-
-- g.app.commanders() returns a list of all active commanders.
-
-- g.app.gui is the singleton leoGui object representing Leo's gui-related code.
-
-- g.unitTesting is True if Leo is running unit tests.
-
-- g.app.windowlist is a list of all frames of all open window.
-  
-
-</t>
 <t tx="ekr.20131012060912.16788">g.es can send it's output to tabs other than the log tab::
 
     c.frame.log.selectTab('Test')
@@ -21660,11 +20432,6 @@ log tab containing a graphics widget. Here is an example script::
         w = log.createCanvas(tag)
         w.configure(bg='yellow')
     log.selectTab(tag)
-</t>
-<t tx="ekr.20131012060912.16792">g.user_dict is a Python dictionary for use by scripts and plugins.
-It does not persist when Leo exists.
-
-Leo creates a similar dictionary, c.user_dict, in each commander.
 </t>
 <t tx="ekr.20131012191145.16789">For any commander c:
 
@@ -21690,203 +20457,6 @@ Leo creates a similar dictionary, c.user_dict, in each commander.
 | c.user_dict                  | a Python dictionary for use by scripts and |
 |                              | plugins. Does not persist when Leo exists. |
 +------------------------------+--------------------------------------------+</t>
-<t tx="ekr.20131012192434.16792">g.angleBrackets(aString) returns '&lt;&lt;' + aString + '&gt;&gt;
-
-This function useful for creating strings that would otherwise be treated
-as section references.g.angleBrackets('abc')</t>
-<t tx="ekr.20131012192434.16794">The position class defines the following properties:
-
-- p.b gets the body text at p.
-- p.b = s sets the body text of p.
-
-- p.h gets the headline text at p.
-- p.h = s sets the headline text of p.
-
-- p.u gets the **user data** at p.
-- p.u = aDict sets the user data at p.
-</t>
-<t tx="ekr.20131012192434.16795">+-----------------------------+--------------------------------------------------------+
-| **Method**                  | **What it does**                                       |
-+-----------------------------+--------------------------------------------------------+
-| p.doDelete(new_position)    | deletes p and selects new_position.                    | 
-+-----------------------------+--------------------------------------------------------+
-| p.insertAfter()             | returns the position of a new vnode inserted after p   |
-+-----------------------------+--------------------------------------------------------+
-| p.insertAsNthChild(n)       | returns the position of a new vnode inserted           |
-|                             | as the n'th child of p                                 |
-+-----------------------------+--------------------------------------------------------+
-| p.insertBefore()            | returns the position of a new vnode inserted before p  |
-+-----------------------------+--------------------------------------------------------+
-| p.moveAfter(p2)             | moves the node at position p after position p2         |
-+-----------------------------+--------------------------------------------------------+
-| p.moveToNthChildOf(parent,n)| moves the vnode at position p to the n'th child of     |
-|                             | the parent position                                    |
-+-----------------------------+--------------------------------------------------------+
-| p.moveToRoot(oldRoot=None)  | moves the vnode at position p to the root position     |
-|                             | (oldRoot must be the old root position if it exists)   |
-+-----------------------------+--------------------------------------------------------+
-</t>
-<t tx="ekr.20131012192434.16803">+------------------------+----------------------------------------------------+
-| **Generator**          | **Yields**                                         |
-+------------------------+----------------------------------------------------+
-| c.all_positions        | All positions in the outline, in outline order     |
-+------------------------+----------------------------------------------------+
-| c.all_unique_positions | All positions in the outline, excluding duplicates |
-+------------------------+----------------------------------------------------+
-| p.children             | All child positions of p                           |
-+------------------------+----------------------------------------------------+
-| p.parents              | All parent positions of p                          |
-+------------------------+----------------------------------------------------+
-| p.self_and_parents     | p and all parent positions of p                    |
-+------------------------+----------------------------------------------------+
-| p.self_and siblings    | All sibling positions of p, including p            |
-+------------------------+----------------------------------------------------+
-| p.following_siblings   | All siblings positions that follow p               |
-+------------------------+----------------------------------------------------+
-| p.subtree              | All positions in p's subtree                       |
-+------------------------+----------------------------------------------------+
-| p.self_and_subtree     | p and all positions in p's subtree.                |
-+------------------------+----------------------------------------------------+
-
-..  - c._all_nodes generates all vnodes in the entire outline, in outline order.
-..  - c.all_unique_nodes generates all vnodes in the entire outline, generating
-..    each vnode exactly once.
-</t>
-<t tx="ekr.20131013060803.16783">::
-
-    + A (clone)
-      + B
-        - C
-      - D
-    - E
-    + A (clone)
-      + B
-        - C
-      - D
-    - F
-    
-    (0 A) p.stack:
-    (0 B) p.stack: (0 A)
-    (0 C) p.stack: (0 A),(0 B)
-    (1 D) p.stack: (0 A)
-    (1 E) p.stack:
-    (2 A) p.stack:
-    (0 B) p.stack: (2 A)
-    (0 C) p.stack: (2 A),(0 B)
-    (1 D) p.stack: (2 A)
-    (3 F) p.stack:
-
-Top-level nodes::
-
-    (0 A) p.stack:
-    (1 E) p.stack:
-    (2 A) p.stack:
-    (3 F) p.stack:
-
-B::
-
-    (0 B) p.stack: (0 A)
-    (0 B) p.stack: (2 A)
-
-C::
-
-    (0 C) p.stack: (0 A),(0 B)
-    (0 C) p.stack: (2 A),(0 B)
-
-The above was created by the following script::
-
-    def print_p_stack(p):
-        
-        c,result = p.v.context,[]
-        v,n = p.v,p.childIndex()
-        for data in p.stack:
-            v,n = data
-            result.append('(%s %s)' % (n,v.h))
-        return ','.join(result)
-    
-    for p in c.all_positions():
-        print('(%s %s) p.stack: %s' % (
-            p.childIndex(),p.h,print_p_stack(p)))
-
-All Leo generators use a single, ever-changing, position object::
-
-    for p in c.all_positions():
-        print('id(p): %s id(p.v): %s (%s %s) p.stack: %s' % (
-            id(p),id(p.v),p.childIndex(),p.h,print_p_stack(p)))
-
-::
-
-    id(p): 214733232 id(p.v): 192725360 (0 A) p.stack:
-    id(p): 214733232 id(p.v): 192725488 (0 B) p.stack: (0 A)
-    id(p): 214733232 id(p.v): 192725552 (0 C) p.stack: (0 A),(0 B)
-    id(p): 214733232 id(p.v): 192725520 (1 D) p.stack: (0 A)
-    id(p): 214733232 id(p.v): 192725392 (1 E) p.stack:
-    id(p): 214733232 id(p.v): 192725360 (2 A) p.stack:
-    id(p): 214733232 id(p.v): 192725488 (0 B) p.stack: (2 A)
-    id(p): 214733232 id(p.v): 192725552 (0 C) p.stack: (2 A),(0 B)
-    id(p): 214733232 id(p.v): 192725520 (1 D) p.stack: (2 A)
-    id(p): 214733232 id(p.v): 192725584 (3 F) p.stack:
-    
-A::
-
-    id(p): 214733232 id(p.v): 192725360 (0 A) p.stack:
-    id(p): 214733232 id(p.v): 192725360 (2 A) p.stack:
-    
-B::
-
-    id(p): 214733232 id(p.v): 192725552 (0 C) p.stack: (0 A),(0 B)
-    id(p): 214733232 id(p.v): 192725552 (0 C) p.stack: (2 A),(0 B)
-
-C::
-
-    id(p): 214733232 id(p.v): 192725552 (0 C) p.stack: (0 A),(0 B)
-    id(p): 214733232 id(p.v): 192725552 (0 C) p.stack: (2 A),(0 B)
-
-D::
-
-    id(p): 214733232 id(p.v): 192725520 (1 D) p.stack: (0 A)
-    id(p): 214733232 id(p.v): 192725520 (1 D) p.stack: (2 A)
-</t>
-<t tx="ekr.20131013060803.16791">::
-
-    + A (clone)
-      + B
-        - C
-      - D
-    - E
-    + A (clone)
-      + B
-        - C
-      - D
-    - F
-    
-    (0 A) p.stack:
-    (0 B) p.stack: (0 A)
-    (0 C) p.stack: (0 A),(0 B)
-    (1 D) p.stack: (0 A)
-    (1 E) p.stack:
-    (2 A) p.stack:
-    (0 B) p.stack: (2 A)
-    (0 C) p.stack: (2 A),(0 B)
-    (1 D) p.stack: (2 A)
-    (3 F) p.stack:
-    
-Top-level nodes::
-    
-    (0 A) p.stack:
-    (1 E) p.stack:
-    (2 A) p.stack:
-    (3 F) p.stack:
-    
-B::
-    
-    (0 B) p.stack: (0 A)
-    (0 B) p.stack: (2 A)
-    
-C::
-    
-    (0 C) p.stack: (0 A),(0 B)
-    (0 C) p.stack: (2 A),(0 B)</t>
 <t tx="ekr.20131013060803.16851">@language python
 
 # Should be run from an empty .leo file.
@@ -21920,112 +20490,6 @@ If text is selected, execute-script executes only the selected text.
 
 g seems to be undefined, yet this script *does* work without error, because...
 </t>
-<t tx="ekr.20131013060803.16853">To be placed in separate chapters...</t>
-<t tx="ekr.20131013060803.16854">This chapter uses the following outline (with all nodes expaneded) as an
-ongoing example::
-
-    + A (clone)
-      + B
-        - C
-      - D
-    - E
-    + A (clone)
-      + B
-        - C
-      - D
-    - F
-
-Only the A nodes are clones of each other.
-
-To script Leo effectively, you *must* understand how Leo
-represents this outline internally:
-
-- Leo represents outline nodes using **vnodes**,
-  instances of the vnode class in leoNodes.py.
-
-- Each vnode contains all the outline node's data.
-
-- Each vnode represents it's place in the outline with two private arrays.
-  Your scripts should *never* change these arrays directly!
-  
-- All clones of the same node are actually **exactly the same vnode**.
-  This means that Leo outlines are not simple trees, but rather
-  `Directed Acyclic Graphs`_ (DAGs)
-  
-Here is how Leo represents the example outline.
-
-Each Leo outline contains a hidden vnode, c.hiddenRootNode::
-
-    c.hiddenRootVnode.children: [A, E, A, F]
-    A.children: [B]
-    B.children: [C]
-    C.children: []
-    D.children: []
-    E.children: []
-    F.children: []
-    
-    c.hiddenRootVnode.parents: []
-    A.parents: [c.hiddenRootVnode,c.hiddenRootVnode]
-    B.parents: [A]
-    C.parents: [B]
-    D.parents: [A]
-    E.parents: [c.hiddenRootVnode]
-    F.parents: [c.hiddenRootVnode]
-    
-A vnode v is a clone if and only if len(v.parents) &gt; 1.
-</t>
-<t tx="ekr.20131013060803.16857">The following script prints the headlines of all nodes of the outline, in
-outline order::
-
-    for p in c.all_positions():
-        g.es(p.h)
-        
-This script will print the following in the log pane::
-
-    A
-    B
-    C
-    D
-    E
-    A
-    B
-    C
-    D
-    F
-        
-This script introduces several important new concepts.
-
-- execute-script predefines c to be an object representing the entire
-  outline. More details about c later.
-
-- c.all_positions is a Leo generator, a `Python generator`_ defined by Leo.
-  There are about a dozen Leo generators; each visits nodes of the outline
-  in some particular order. c.all_positions visits all the nodes of the
-  outline in outline order.
-  
-- All Leo generators yield **position objects** (positions for short).
-  position objects *refer* to nodes; positions are not nodes!
-  
-
-Here is some very **important terminology**:
-
-A **traversal** of a Leo outline is a list of some (or all) of the nodes of
-the outline in some particular order.
-
-Leo defines several (Python) **generators** that yield the nodes of various
-traversals.
-
-c.all_positions() is a generator that yields all the nodes of an outline in
-outline order. This generator, when applied to the example tree above,
-yields::
-
-    A, B, C, D, E, A, B, C, D, F.
-
-p.subtree() is a generator that yields all the descendant nodes of p.
-For example, if p refers to either node A, p.subtree() yields::
-
-    B, C, D
-</t>
 <t tx="ekr.20131014050027.16801">A **position** represents a specific outline node at an exact location in
 the outline. Positions are instances of the position class, defined in
 leoNodes.py. Methods of the position class provide safe ways to insert,
@@ -22050,8 +20514,6 @@ cause the outline to change in any way.
 The next section describes generators. Generators are a great way of
 gaining access to outline nodes.
 </t>
-<t tx="ekr.20131014053720.16803"></t>
-<t tx="ekr.20131014053720.16807"></t>
 <t tx="ekr.20131014053720.16809">As mentioned previously,
 **positions become invalid whenever nodes are inserted, deleted or moved**.
 
@@ -22099,7 +20561,6 @@ vnode represents *all* the clones of the corresonding outline node.
 Because a *single* vnode can represent *many* outline nodes, it is awkward
 to use vnodes directly. This is where positions come in: **positions
 simplify access to vnodes**...</t>
-<t tx="ekr.20131014053720.16811"></t>
 <t tx="ekr.20131014053720.16816">The .leo files in Leo's distribution contain many @button nodes (many
 disabled), that do repetitive chores. Here is one, @button
 promote-child-bodies, from LeoDocs.leo::
@@ -22134,15 +20595,30 @@ Regardless of focus::
     Alt-Up-arrow (goto-prev-visible) 
     Alt-Down-arrow (goto-next-visible)
 </t>
-<t tx="ekr.20131015035606.16780">When focus is in any of Leo's text panes (body pane, log pane, headlines)::
+<t tx="ekr.20131015035606.16780">When focus is in any of Leo's text panes (body pane, log pane, headlines):
 
-    Arrow keys move the cursor by characters.
-    Ctrl-LeftArrow and Ctrl-RightArrow move the cursor by words.
-    Home and End move the cursor to the beginning/end of a line.
-    Ctrl-Home moves the cursor to the beginning of the body text.
-    Ctrl-End moves the cursor to the end of the body text.
-    PageDown and PageUp move the cursor up or down one page.
-
+    +-------------------+-----------------------+
+    | **Key**           | **Move Cursor**       |
+    +-------------------+-----------------------+
+    | Arrow keys        | one character         |
+    +-------------------+-----------------------+
+    | Ctrl-LeftArrow    | back one word         |
+    +-------------------+-----------------------+
+    | Ctrl-RightArrow   | foreward one word     |
+    +-------------------+-----------------------+
+    | Home              | beginning of line     |
+    +-------------------+-----------------------+
+    | End               | end of line           |
+    +-------------------+-----------------------+
+    | Ctrl-Home         | beginning of the body |
+    +-------------------+-----------------------+
+    | Ctrl-End          | end of body           |
+    +-------------------+-----------------------+
+    | PageDown          | down one page         |
+    +-------------------+-----------------------+
+    | PageUp            | up one page           |
+    +-------------------+-----------------------+
+    
 Adding the Shift key modifier to any of the keys above
 moves the cursor and extends the selected text.
 </t>
@@ -22168,17 +20644,17 @@ Leading whitespace is allowed (and significant) for::
     </t>
 <t tx="ekr.20131015035606.16788">For documentation see node: "About this file" in leoSettings.leo.
 
-Key bindings::
+- Key bindings:     @shortcuts
+- Visual settings:  @data qt-gui-plugin-style-sheet
+- Enabling plugins: @enabled-plugins
 
-    @shortcuts
+To disable a binding for a key, bind it to do-nothing::
+
+    do-nothing = Insert
     
-Gui gettings::
+This overrides the following default binding in leoSettings.leo::
 
-    @data qt-gui-plugin-style-sheet
-    
-Enabling plugins::
-
-    @enabled-plugins
+    insert-node = Insert
 </t>
 <t tx="ekr.20131015035606.16799">\@&lt;file&gt; nodes create external files::
 
@@ -22213,14 +20689,14 @@ Expansion of section names and @others:
 
     Shift-Down-arrow (move-outline-down) 
     Shift-Left-arrow (move-outline-left) 
-    Shift-Rigth-arrow (move-outline-right) 
+    Shift-Right-arrow (move-outline-right) 
     Shift-Up-arrow (move-outline-up)
 
 Regardless of focus::
 
     Alt-Shift-Down-arrow (move-outline-down) 
     Alt-Shift-Left-arrow (move-outline-left) 
-    Alt-Shift-Rigth-arrow (move-outline-right) 
+    Alt-Shift-Right-arrow (move-outline-right) 
     Alt-Shift-Up-arrow (move-outline-up)
     Ctrl-D (move-outline-down)
     Ctrl-L (move-outline-left) 
@@ -22280,6 +20756,85 @@ Undo::
     Ctrl-Z (undo)
     Ctrl-Shift-Z (redo)
 </t>
+<t tx="ekr.20131015091948.16781">import os
+g.cls()
+c.save()
+c.rstCommands.rst3()
+path = g.os_path_finalize_join(g.app.loadDir,'..','doc','html')
+os.chdir(path)
+os.system('make html')
+for p2 in p.self_and_subtree():
+    if g.match_word(p2.h,0,'@rst'):
+        break
+else:
+    for p2 in p.parents():
+        if g.match_word(p2.h,0,'@rst'):
+            break
+    else: p2 = None
+if p2:
+    fn = p2.h[4:].strip()
+    base_fn = g.os_path_basename(fn)
+    fn = g.os_path_finalize_join(path,'_build','html',base_fn)
+    print('opening: %s' % (fn))
+    if g.os_path_exists(fn):
+        os.system(fn)
+</t>
+<t tx="ekr.20131015091948.16783">In general, I would add in the end of each chapter a link to the expanded
+version of the summary.
+
+- From cheatsheet to tutorials or references.
+
+​For instance, for the @directives part, I would add a link to the
+directives part of the tutorial, so the user can review that if he doesnt
+remember any specifics about those. Same for the g functions list, it would
+be great to point to the full list :) Or for instance a link to a list of
+all the minibuffer commands when the "Common commands" chapter ends.
+</t>
+<t tx="ekr.20131015091948.16784">#############################
+A Miscellany of Leo Scripting
+#############################
+
+This chapter covers miscellaneous topics related to Leo scripts.
+
+You might call this a FAQ for scripts...
+
+.. contents::
+    :depth: 3
+</t>
+<t tx="ekr.20131015104133.16763"></t>
+<t tx="ekr.20131015104133.16765">import os
+g.cls()
+c.save()
+h = 'Leo\'s Documentation'
+p2 = g.findNodeAnywhere(c,h)
+path = g.os_path_finalize_join(g.app.loadDir,'..','doc','html')
+if p2:
+    c.selectPosition(p2)
+    c.rstCommands.rst3()
+    os.chdir(path)
+    os.system('make clean')
+    os.system('make html')
+    fn = g.os_path_finalize_join(path,'_build','html','leo_toc.html')
+    if g.os_path_exists(fn):
+            os.system(fn)
+else:
+    print('not found: ' % (h))
+</t>
+<t tx="ekr.20131015104133.16766">#####################################
+Downloading, Installing &amp; Running Leo
+#####################################
+
+.. This page exists simply to organize the main TOC.
+
+.. toctree::
+   :maxdepth: 1
+
+   download
+   installing
+   running
+</t>
+<t tx="ekr.20131015104133.16767"></t>
+<t tx="ekr.20131015104133.16862"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
@@ -22342,59 +20897,6 @@ os.system('../../fixup.pl &lt; Leodocumentation.tex &gt; LeoDoc.tex')
 os.system('make LeoDoc.pdf')
 </t>
 <t tx="sps.20100708213227.44914"></t>
-<t tx="tbrown.20120821215353.22854"></t>
-<t tx="ville.20090603183524.5672">The @g.command decorator creates new commands.
-
-This is an easy-to-use
-wrapper for c.k.registerCommand(), with the following advantages over it:
-
-* The new command is automatically created for all Leo controllers (open Leo documents).
-
-* The new command is also automatically available on all new Leo controllers 
-  (documents that will be opened in the future).
-
-* Prettier syntax.
-
-The @g.command decorator can be prototyped with execute-script
-(Ctrl+b) in Leo node.
-
-As an example, you can execute this script to make command hello available::
-
-    @g.command('hello')
-    def hello_f(event):
-        # use even['c'] to access controller
-        c = event['c']
-        pos = c.currentPosition()
-        g.es('hello from', pos.h)
-
-If you want to create a plugin that only exposes new commands, this is basically all you need in the plugins .py file.
-There is no need to hook up for 'after-create-leo-frame' just to make your commands available.
-
-If you want to create a command in object oriented style (so that the commands deal with your own objects), 
-create them using closures like this (note how self is available inside command functions)::
-
-    class MyCommands:
-        def create(self):        
-            @g.command('foo1')
-            def foo1_f(event):
-               self.foo = 1
-
-            @g.command('foo2')
-            def foo2_f(event):
-               self.foo = 2
-
-            @g.command('foo-print')
-            def foo_print_f(event):
-               g.es('foo is', self.foo)
-
-    o = MyCommands()
-    o.create()
-
-Note that running create() in this example in `after-create-leo-frame` is
-pointless--the newly created commands will override the commands in all
-previous controllers. You should consider this in your plugin design, and
-create your commands only once per Leo session.
-</t>
 <t tx="ville.20090705224948.5734">import os
 pos = c.find_h("Users Guide")[0]
 c.selectPosition(pos)
