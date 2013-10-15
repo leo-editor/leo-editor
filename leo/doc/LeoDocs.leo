@@ -528,10 +528,14 @@
 </v>
 <v t="ekr.20131008041326.16091"><vh>Cheat Sheet</vh>
 <v t="ekr.20131007143750.16070"><vh>@rst html\cheatsheet.html</vh>
-<v t="ekr.20131007143750.16082"><vh>Moving the cursor</vh></v>
-<v t="ekr.20131007143750.16083"><vh>Commonly used commands</vh></v>
-<v t="ekr.20131007143750.16071" a="M"><vh>Creating external files</vh></v>
-<v t="ekr.20131007143750.16074" a="M"><vh>Scripting Leo</vh></v>
+<v t="ekr.20131015035606.16778"><vh>Key bindings: selecting outline nodes</vh></v>
+<v t="ekr.20131015035606.16800"><vh>Key bindings: moving outline nodes</vh></v>
+<v t="ekr.20131015035606.16780"><vh>Key bindings: moving the cursor in text panes</vh></v>
+<v t="ekr.20131015035606.16801"><vh>Common commands</vh></v>
+<v t="ekr.20131015035606.16786"><vh>Leo directives</vh></v>
+<v t="ekr.20131015035606.16788"><vh>Settings</vh></v>
+<v t="ekr.20131015035606.16799"><vh>Creating external files</vh></v>
+<v t="ekr.20131007143750.16074"><vh>Scripting</vh></v>
 </v>
 </v>
 <v t="ekr.20131008041326.16080"><vh>Users Guide</vh>
@@ -1254,9 +1258,11 @@
 </v>
 </v>
 </v>
+<v t="ekr.20131008041326.16203"></v>
 <v t="ekr.20060612102055"></v>
 <v t="ekr.20131008041326.16245" a="M"></v>
 <v t="ekr.20040403171740"></v>
+<v t="ekr.20131007143750.16070"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -20096,6 +20102,8 @@ the selected node.  |br|
 When editing a headline, &lt;Return&gt; (end-edit-headline) ends the editing,
 leaving the focus in the body pane.
 
+Ctrl-Shift-C (copy-node) copies the outline and all it's descendants,
+placing the node on the clipboard. |br|
 Ctrl-Shift-X (cut-node) cuts the outline and all its descendants, placing
 the node on the clipboard. |br|
 Ctrl-Shift-V (paste-node) pastes a node (and its descendants) from the
@@ -20417,19 +20425,115 @@ Leo's Cheat Sheet
 
    &lt;br /&gt;
 
-.. _`Leo's`: http://leoeditor.com/
-
-This tutorial continues `Leo's`_ tutorial. It covers several intermediate
-topics and should take less than an hour to complete.
-
 .. contents::
     :depth: 4
 
 </t>
-<t tx="ekr.20131007143750.16071"></t>
-<t tx="ekr.20131007143750.16074"></t>
-<t tx="ekr.20131007143750.16082"></t>
-<t tx="ekr.20131007143750.16083"></t>
+<t tx="ekr.20131007143750.16074">**Pre-defined symbols** in Leo scripts::
+
+    c: The commander of the present outline.
+    g: The leo.core.leoGlobals module.
+    p: The presently selected position, c.p.
+    
+**Generators**::
+
+    c.all_positions()
+    c.all_unique_positions()
+    p.children()
+    p.parents()
+    p.self_and_parents()
+    p.self_and siblings()
+    p.following_siblings()
+    p.subtree()
+    p.self_and_subtree()
+
+**Vnode properties**::
+
+    v.b: v's body text.
+    v.h: v's headline text.
+    v.u: v.unknownAttributes, a Python dictionary.
+
+**Position properties**::
+
+    p.b: same as p.v.b.
+    p.h: same as p.v.h.
+    p.u: same as p.v.u.
+
+**Position getters**::
+
+    p.isAncestorOf(p2)
+    p.isAnyAtFileNode()
+    p.isAt...Node()
+    p.isCloned()
+    p.isDirty()
+    p.isExpanded()
+    p.isMarked()
+    p.isRoot()
+    p.isVisible()
+    p.level()
+    
+**Positions setters**::
+
+    p.setDirty()
+    p.setMarked()
+
+**Inserting, deleting &amp; moving nodes**::
+
+    p.doDelete(new_position)
+    p.insertAfter()
+    p.insertAsNthChild(n)
+    p.insertBefore()
+    p.moveAfter(p2)
+    p.moveToNthChildOf(parent,n)
+    p.moveToRoot(oldRoot=None)
+        # oldRoot **must** be the old root position if it exists.
+        
+**Moving positions**
+
+The following move positions *themselves*:
+they change the node to which a position refers. |br|
+They do *not* change outline structure in any way!
+Use these when generators are not flexible enough::
+
+    p.moveAfter(p2)
+    p.moveToBack()
+    p.moveToFirstChild()
+    p.moveToFirstChildOf(p2)
+    p.moveToLastChild()
+    p.moveToLastChildOf(p2)
+    p.moveToLastNode()
+    p.moveToNext()
+    p.moveToNodeAfterTree(p2)
+    p.moveToNthChild()
+    p.moveToNthChildOf(p2)
+    p.moveToParent()
+    p.moveToRoot()
+    p.moveToThreadBack()
+    p.moveToThreadNext()
+    p.moveToVisBack(c)
+    p.moveToVisNext(c)
+    
+**g vars**::
+
+    g.app
+    g.app.gui
+    g.unitTesting
+    g.app.windowlist
+    
+**g functions** (only the most useful: there are dozens)::
+    
+    g.app.commanders()
+    g.app.gui.guiName()
+    g.es(*args,**keys)
+    g.es_print(*args,**keys)
+    g.es_exception()
+    g.os_path_... # Wrappers for os.path methods.
+    g.pdb(message='')
+    g.toEncodedString(s,encoding='utf-8',reportErrors=False)
+    g.toUnicode(s, encoding='utf-8',reportErrors=False)
+    g.trace(*args,**keys)
+    g.warning(*args,**keys)
+</t>
 <t tx="ekr.20131007143750.16111"></t>
 <t tx="ekr.20131008041326.16053">A plugin is a Python file in Leo's plugins folder.
 
@@ -21535,7 +21639,7 @@ most useful...</t>
 
 - g.unitTesting is True if Leo is running unit tests.
 
-- g.app windowlist is a list of all frames of all open window.
+- g.app.windowlist is a list of all frames of all open window.
   
 
 </t>
@@ -22014,6 +22118,168 @@ promote-child-bodies, from LeoDocs.leo::
     c.undoer.afterChangeNodeContents(p,'promote-child-bodies',b)
 
 This creates a fully undoable promote-child-bodies command.</t>
+<t tx="ekr.20131015035606.16778">When focus is in the outline pane::
+
+    Right-arrow (expand-and-go-right)
+    Left-arrow (contract-or-go-left)
+    Up-arrow (goto-prev-visible) 
+    Down-arrow (goto-next-visible)
+    
+Regardless of focus::
+
+    Alt-Home (goto-first-visible-node) 
+    Alt-End (goto-last-visible-node)
+    Alt-Right-arrow (expand-and-go-right)
+    Alt-Left-arrow (contract-or-go-left)
+    Alt-Up-arrow (goto-prev-visible) 
+    Alt-Down-arrow (goto-next-visible)
+</t>
+<t tx="ekr.20131015035606.16780">When focus is in any of Leo's text panes (body pane, log pane, headlines)::
+
+    Arrow keys move the cursor by characters.
+    Ctrl-LeftArrow and Ctrl-RightArrow move the cursor by words.
+    Home and End move the cursor to the beginning/end of a line.
+    Ctrl-Home moves the cursor to the beginning of the body text.
+    Ctrl-End moves the cursor to the end of the body text.
+    PageDown and PageUp move the cursor up or down one page.
+
+Adding the Shift key modifier to any of the keys above
+moves the cursor and extends the selected text.
+</t>
+<t tx="ekr.20131015035606.16786">Directives starting with '@ in the leftmost column::
+
+    @color
+    @killcolor
+    @nocolor
+    @language python
+    @language c
+    @language rest # restructured text
+    @language plain # plain text: no syntax coloring.
+    @pagewidth 100
+    @tabwidth -4 # use spaces
+    @tabwidth 8 # use tabs
+    @nowrap
+    @wrap
+    
+Leading whitespace is allowed (and significant) for::
+
+    @all
+    @others
+    </t>
+<t tx="ekr.20131015035606.16788">For documentation see node: "About this file" in leoSettings.leo.
+
+Key bindings::
+
+    @shortcuts
+    
+Gui gettings::
+
+    @data qt-gui-plugin-style-sheet
+    
+Enabling plugins::
+
+    @enabled-plugins
+</t>
+<t tx="ekr.20131015035606.16799">\@&lt;file&gt; nodes create external files::
+
+    @asis &lt;filename&gt;
+    @auto &lt;filename&gt;
+    @edit &lt;filename&gt;
+    @file &lt;filename&gt;
+    @nosent &lt;filename&gt;
+    @shadow &lt;filename&gt;
+    
+**Section names** have the form::
+
+    &lt;&lt; any text, except double closing angle brackets &gt;&gt;
+    
+**Section-definition nodes** have headlines starting with a section name.
+
+Leo performs **expansions** for all @&lt;file&gt; nodes except @asis.
+
+Expansion of @all:
+
+- Leo replaces @all by the *unexpanded* body text of *all* nodes.
+
+Expansion of section names and @others:
+
+- Leo replaces section names in body text by the *expanded*
+  text of the corresponding section definition node.
+  
+- Leo replaces @others with the *expanded* text of all nodes
+  that *aren't* section-definition nodes.
+</t>
+<t tx="ekr.20131015035606.16800">When focus is in the outline::
+
+    Shift-Down-arrow (move-outline-down) 
+    Shift-Left-arrow (move-outline-left) 
+    Shift-Rigth-arrow (move-outline-right) 
+    Shift-Up-arrow (move-outline-up)
+
+Regardless of focus::
+
+    Alt-Shift-Down-arrow (move-outline-down) 
+    Alt-Shift-Left-arrow (move-outline-left) 
+    Alt-Shift-Rigth-arrow (move-outline-right) 
+    Alt-Shift-Up-arrow (move-outline-up)
+    Ctrl-D (move-outline-down)
+    Ctrl-L (move-outline-left) 
+    Ctrl-R (move-outline-right)
+    Ctrl-U (move-outline-up)
+</t>
+<t tx="ekr.20131015035606.16801">Files::
+
+    Ctrl-N (new) 
+    Ctrl-O (open-outline)
+    Ctrl-S (save-file) 
+    Ctrl-Q (exit-leo)
+
+Focus::
+
+    Alt-T (focus-to-tree) 
+    Ctrl-T (toggle-active-pane)
+    Ctrl-Tab (tab-cycle-next)
+    
+Help::
+
+    Alt-0 (vr-toggle)
+    F1 (help) 
+    F11 (help-for-command) 
+    F12 (help-for-python)
+    print-bindings
+    print-settings
+    help-for-...
+
+Find/Replace::
+
+    Ctrl-F (search-with-present-options) 
+    Shift-Ctrl-R (replace-string)
+    Ctrl-minus (replace-then-find) 
+    F3 (find-next) 
+    F2 (find-previous)
+    
+Minibuffer::
+
+    Alt-X (full-command)
+    Ctrl-G (keyboard-quit)
+
+Nodes::
+
+    Ctrl-I or Insert (insert-node)
+    Ctrl-H (edit-headline)
+    &lt;Return&gt; (when editing a headline) (end-edit-headline)
+    Ctrl-Shift-C (copy-node)
+    Ctrl-Shift-X (cut-node) 
+    Ctrl-Shift-V (paste-node) 
+    Ctrl-{ (promote)
+    Ctrl-} (demote)
+    Ctrl-M (mark) 
+
+Undo::
+
+    Ctrl-Z (undo)
+    Ctrl-Shift-Z (redo)
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.

@@ -169,6 +169,8 @@ the not-really-needed .txt files they generate. Naturally,
 this makes LeoDocs.leo bigger, but I think the clarity of
 expression is worthwhile. LeoDocs.leo really should be a
 model of good practice.
+#@+node:ekr.20131015031840.19010: *3* Fixed import problem in leoRst.py
+https://groups.google.com/forum/#!topic/leo-editor/Mbn3VzY-jr0
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

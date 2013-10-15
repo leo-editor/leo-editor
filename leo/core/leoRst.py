@@ -22,8 +22,6 @@ if 0:
 verbose = False
 import leo.core.leoGlobals as g
 
-# Weird: this does not work if viewrendered plugin is not enabled.
-# docutils = g.importExtension('docutils',pluginName='leoRst.py',verbose=False)
 try:
     import docutils
     import docutils.core
