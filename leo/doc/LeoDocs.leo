@@ -2772,7 +2772,10 @@ Removes @ignore, @nocolor, @wrap directives.
 
    &lt;br /&gt;
 
+.. _`Leo's Directive Reference`: directives.html
+.. _`Leo's cheat sheet`: cheatsheet.html
 .. _`Python generators`:    https://wiki.python.org/moin/Generators
+.. _`scripting portion`: cheatsheet.html#scripting
 </t>
 <t tx="ekr.20050818163826">########################################
 Creating Documents with the rst3 Command
@@ -20446,6 +20449,9 @@ ways to test for empty positions::
     if not p:       # Right
     if not p.v:     # Right
     if p is None:   # Wrong!
+    
+The `scripting portion`_ of `Leo's cheat sheet`_ lists all of Leo's
+generators.
   </t>
 <t tx="ekr.20131012060912.16788">g.es can send it's output to tabs other than the log tab::
 
@@ -20519,11 +20525,12 @@ g.es prints its arguments to Leo's log pane.
 
 g seems to be undefined, yet this script *does* work without error, because...
 </t>
-<t tx="ekr.20131014050027.16801">A **position** represents a specific outline node at an exact location in
-the outline. Positions are instances of the position class, defined in
-leoNodes.py. Methods of the position class provide safe ways to insert,
-delete and move outline nodes. Later sections will discuss these methods.
-Notes:
+<t tx="ekr.20131014050027.16801">A **position** represents a specific outline node at an exact location
+in the outline. Positions are instances of the position class, defined
+in leoNodes.py. Methods of the position class provide safe ways to
+insert, delete and move outline nodes. The `scripting portion`_ of
+`Leo's cheat sheet`_ lists the most important methods of the position
+class.
 
 - The vnode at position p is p.v.
 
@@ -20853,11 +20860,7 @@ if aList:
         # Don't wait for this command to exit!
         g.execute_shell_commands(['&amp;%s' % (fn)],trace=trace)
 </t>
-<t tx="ekr.20131016084446.16726">.. _`Leo's cheat sheet`: cheatsheet.html
-.. _`scripting portion`: cheatsheet.html#scripting
-.. _`Leo's Directive Reference`: directives.html
-
-The `scripting portion`_ of `Leo's cheat sheet`_ contains much more
+<t tx="ekr.20131016084446.16726">The `scripting portion`_ of `Leo's cheat sheet`_ contains much more
 information about scripting, including lists of Leo's generators and useful
 methods of the commander and position classes. 
 
