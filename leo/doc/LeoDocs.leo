@@ -56,8 +56,7 @@
 </v>
 <v t="ekr.20101028112631.4959" descendentVnodeUnknownAttributes="7d710028550b302e312e302e302e302e3171017d7102580b0000007374725f6c656f5f706f73710358000000007104735503302e3371057d710655097374725f6174696d657107550c313337363431323931392e307108735505302e332e3071097d710a6807550c313337363431323736382e30710b735509302e312e302e302e33710c7d710d6807550c313337363431323930312e30710e73752e"><vh>@file doc-startup.txt</vh></v>
 <v t="ekr.20131013060803.16851"><vh>script used to generate position trace</vh></v>
-<v t="ekr.20131015091948.16781"><vh>@button make-html @key=Alt-period</vh></v>
-<v t="ekr.20131015104133.16765"><vh>@button make-all</vh></v>
+<v t="ekr.20131016083406.16724"><vh>@button make-sphinx @key=Alt-.</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
 <v t="ekr.20100805171546.4412"><vh>Files, including home page</vh>
@@ -294,7 +293,7 @@
 </v>
 </v>
 <v t="ekr.20131007143750.16111"><vh>To do</vh>
-<v t="ekr.20131015104133.16767"><vh>Improve &amp; unify the make buttons</vh></v>
+<v t="ekr.20131016032805.16720"><vh>Add link from scripting tutorial to cheat sheet</vh></v>
 <v t="ekr.20131015091948.16783"><vh>Add links between chapters</vh></v>
 <v t="ekr.20131010160850.17454"><vh>Insert index entries into the tutorial</vh></v>
 <v t="ekr.20131008041326.16109"><vh>Add a Expansion section to the Reference chapter?</vh></v>
@@ -321,6 +320,20 @@
 <v t="ekr.20131001100335.15945"><vh>Leo vs IPython</vh></v>
 </v>
 <v t="ekr.20131009100732.19041"><vh>Broken links</vh></v>
+</v>
+<v t="ekr.20060612102055"><vh>Writing Plugins (Rewrite)</vh>
+<v t="ekr.20060612103240"><vh>@rst html\writingPlugins.html</vh>
+<v t="ekr.20060612103824"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20131008041326.16053"><vh>Writing Plugins</vh></v>
+<v t="ville.20100807185755.4510"><vh>enabled-plugins</vh></v>
+<v t="EKR.20040524104904.240"><vh>Support for unit testing</vh></v>
+<v t="EKR.20040524104904.224"><vh>Important security warnings</vh></v>
+<v t="peckj.20130813123907.6841"><vh>Documenting plugins</vh></v>
+<v t="ekr.20131012191145.16789"><vh>c ivars &amp; properties</vh></v>
+<v t="ekr.20050903074833"><vh>Handling events</vh>
+<v t="ekr.20050903074833.1"><vh>@rst-no-head Summary of event handlers</vh></v>
+</v>
+</v>
 </v>
 <v t="ekr.20040414161647"><vh>Leo's Documentation</vh>
 <v t="ekr.20101104024804.4898"><vh> Generating the Documentation</vh>
@@ -887,20 +900,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20060612102055"><vh>Writing Plugins (Rewrite)</vh>
-<v t="ekr.20060612103240"><vh>@rst html\writingPlugins.html</vh>
-<v t="ekr.20060612103824"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20131008041326.16053"><vh>Writing Plugins</vh></v>
-<v t="ville.20100807185755.4510"><vh>enabled-plugins</vh></v>
-<v t="EKR.20040524104904.240"><vh>Support for unit testing</vh></v>
-<v t="EKR.20040524104904.224"><vh>Important security warnings</vh></v>
-<v t="peckj.20130813123907.6841"><vh>Documenting plugins</vh></v>
-<v t="ekr.20131012191145.16789"><vh>c ivars &amp; properties</vh></v>
-<v t="ekr.20050903074833"><vh>Handling events</vh>
-<v t="ekr.20050903074833.1"><vh>@rst-no-head Summary of event handlers</vh></v>
-</v>
-</v>
-</v>
+<v t="ekr.20060612102055"></v>
 <v t="ekr.20070628083442"><vh>Unit testing with Leo</vh>
 <v t="ekr.20070628083442.1"><vh>@rst html\unitTesting.html</vh>
 <v t="ekr.20070628083442.2"><vh>@rst-no-head links</vh></v>
@@ -1191,7 +1191,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20060612102055"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -2526,7 +2525,7 @@ headlines in that file::
 These are the sources for Leo's users guide.
 
 They contain sphinx markup. See::
-    
+
     http://sphinx.pocoo.org/
     http://docutils.sourceforge.net/docs/user/rst/quickstart.html
     
@@ -20783,32 +20782,6 @@ Undo::
     Ctrl-Z (undo)
     Ctrl-Shift-Z (redo)
 </t>
-<t tx="ekr.20131015091948.16781">@language python
-import os
-g.cls()
-c.save()
-c.rstCommands.rst3()
-path = g.os_path_finalize_join(g.app.loadDir,'..','doc','html')
-os.chdir(path)
-os.system('make html')
-for p2 in p.self_and_subtree():
-    if g.match_word(p2.h,0,'@rst'):
-        break
-else:
-    for p2 in p.parents():
-        if g.match_word(p2.h,0,'@rst'):
-            break
-    else: p2 = None
-if p2:
-    fn = p2.h[4:].strip()
-    base_fn = g.os_path_basename(fn)
-    fn = g.os_path_finalize_join(path,'_build','html',base_fn)
-    print('opening: %s' % (fn))
-    if g.os_path_exists(fn):
-        os.system(fn)
-else:
-    print('no @rst node')
-</t>
 <t tx="ekr.20131015091948.16783">In general, I would add in the end of each chapter a link to the expanded
 version of the summary.
 
@@ -20832,24 +20805,6 @@ You might call this a FAQ for scripts...
     :depth: 3
 </t>
 <t tx="ekr.20131015104133.16763"></t>
-<t tx="ekr.20131015104133.16765">import os
-g.cls()
-c.save()
-h = 'Leo\'s Documentation'
-p2 = g.findNodeAnywhere(c,h)
-path = g.os_path_finalize_join(g.app.loadDir,'..','doc','html')
-if p2:
-    c.selectPosition(p2)
-    c.rstCommands.rst3()
-    os.chdir(path)
-    os.system('make clean')
-    os.system('make html')
-    fn = g.os_path_finalize_join(path,'_build','html','leo_toc.html')
-    if g.os_path_exists(fn):
-        os.system(fn)
-else:
-    print('not found: ' % (h))
-</t>
 <t tx="ekr.20131015104133.16766">#####################################
 Downloading, Installing &amp; Running Leo
 #####################################
@@ -20863,8 +20818,7 @@ Downloading, Installing &amp; Running Leo
    installing
    running
 </t>
-<t tx="ekr.20131015104133.16767">Find leo_toc if no @rst node</t>
-<t tx="ekr.20131016021541.16893">- The execute script command predefines c, g and p.
+<t tx="ekr.20131016021541.16893">- execute-script predefines c, g and p.
 - c is a commander, g is the leoGlobals module, and p is the current position.
 - Vnodes contain all outline data.
 - Positions provide easy access to vnodes.
@@ -20879,6 +20833,24 @@ Downloading, Installing &amp; Running Leo
 <t tx="ekr.20131016021541.16894">Use @edit instead of @file to place the entire contents of an external file
 into a single outline node. Leo writes no sentinel when writing @edit
 files.</t>
+<t tx="ekr.20131016032805.16720"></t>
+<t tx="ekr.20131016083406.16724">@language python
+import os
+trace = False
+g.cls()
+c.save()
+aList = c.rstCommands.rst3()
+if aList:
+    path = g.os_path_finalize_join(g.app.loadDir,'..','doc','html')
+    os.chdir(path)
+    if len(aList) &gt; 1: g.execute_shell_commands(['make clean'],trace=trace)
+    g.execute_shell_commands(['make html'],trace=trace)
+    fn = aList[0].h.strip() if len(aList) == 1 else 'leo_toc.html'
+    fn = g.os_path_finalize_join(path,'_build','html',g.os_path_basename(fn))
+    if g.os_path_exists(fn):
+        # Don't wait for this command to exit!
+        g.execute_shell_commands(['&amp;%s' % (fn)])
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
