@@ -221,10 +221,14 @@ if g.app.gui.guiName() == "qt":
                           '>7 <7 <14 >14 <28 >28'.split()
             self.date_offset_default = int(offsets[0].strip('>').replace('<', '-'))
             offsets = sorted(set(offsets), key=lambda x: (x[0],int(x[1:].strip('>').replace('<', '-'))))
+            u.dueDateOffset.addItems(offsets)
+            u.dueDateOffset.setCurrentIndex(self.date_offset_default)
+            self.connect(self.UI.dueDateOffset, QtCore.SIGNAL("activated(int)"),
+                lambda v: o.set_date_offset(field='duedate'))
             u.nxtwkDateOffset.addItems(offsets)
             u.nxtwkDateOffset.setCurrentIndex(self.date_offset_default)
             self.connect(self.UI.nxtwkDateOffset, QtCore.SIGNAL("activated(int)"),
-                lambda v: o.set_nxtwk_date_offset())
+                lambda v: o.set_date_offset(field='nextworkdate'))
 
             self.setDueDate = self.make_func(self.UI.dueDateEdit,
                 self.UI.dueDateToggle, 'setDate',
@@ -253,8 +257,10 @@ if g.app.gui.guiName() == "qt":
             self.connect(self.UI.butNextTodo, QtCore.SIGNAL("clicked()"),
                 self.owner.find_todo)
                 
+            self.connect(self.UI.butApplyDueOffset, QtCore.SIGNAL("clicked()"),
+                lambda: o.set_date_offset(field='duedate'))
             self.connect(self.UI.butApplyOffset, QtCore.SIGNAL("clicked()"),
-                o.set_nxtwk_date_offset)
+                lambda: o.set_date_offset(field='nextworkdate'))
             
             n = g.app.config.getInt("todo_calendar_n")  
             cols = g.app.config.getInt("todo_calendar_cols")  
@@ -919,8 +925,8 @@ class todoController:
             self.setat(v, field, val.toPyTime())
         self.loadIcons(p)
 
-    #@+node:tbrown.20121204084515.60965: *4* set_nxtwk_date_offset
-    def set_nxtwk_date_offset(self):
+    #@+node:tbrown.20121204084515.60965: *4* set_date_offset
+    def set_date_offset(self, field='nextworkdate'):
         """set_nxtwk_date_offset - update date by selected offset
 
         offset sytax::
@@ -932,7 +938,10 @@ class todoController:
 
         """
 
-        offset = str(self.ui.UI.nxtwkDateOffset.currentText())
+        if field == 'nextworkdate':
+            offset = str(self.ui.UI.nxtwkDateOffset.currentText())
+        else:
+            offset = str(self.ui.UI.dueDateOffset.currentText())
         
         mult = 1  # to handle '<' as a negative relative offset
 
@@ -944,7 +953,7 @@ class todoController:
         if offset.startswith('<'):
             mult = -1
         
-        self.set_due_date(val=date.addDays(mult*int(offset.strip('<>'))), field='nextworkdate')
+        self.set_due_date(val=date.addDays(mult*int(offset.strip('<>'))), field=field)
         p = self.c.currentPosition()
         self.loadIcons(p)
     #@+node:tbrown.20090119215428.40: *3* ToDo icon related...
