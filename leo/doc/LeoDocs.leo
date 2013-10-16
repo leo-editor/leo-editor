@@ -65,7 +65,8 @@
 <v t="ekr.20101112045055.5064" descendentVnodeUnknownAttributes="7d7100285503302e3171017d710255097374725f6174696d657103550c313337363431323739362e3071047355013071057d71066803550c313337363431323932332e307107735503302e3071087d71096803550c313337363431323932372e30710a73752e"><vh>@file plugin_catalog.py</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
 <v t="ekr.20131005214621.16088"><vh>Home page</vh>
-<v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
+<v t="ekr.20100808060203.4273"
+expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20131008041326.16065"><vh>Links page</vh>
 <v t="ekr.20130807203905.16606"><vh>@edit html/leoLinks.html</vh></v>
