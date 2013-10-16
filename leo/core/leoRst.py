@@ -175,6 +175,7 @@ class rstCommands:
         self.atAutoWriteUnderlines = '' # Forced underlines for writeAtAutoFile.
         self.leoDirectivesList = g.globalDirectiveList
         self.encoding = 'utf-8'
+        self.rst_nodes = [] # The list of positions for all @rst nodes.
         self.outputFile = None # The open file being written.
         self.path = '' # The path from any @path directive.
         self.source = None # The written source as a string.
@@ -469,7 +470,9 @@ class rstCommands:
 
         '''Write all @rst nodes.'''
 
+        self.rst_nodes = []
         self.processTopTree(self.c.p)
+        return self.rst_nodes # A list of positions.
     #@+node:ekr.20090502071837.62: *5* processTopTree
     def processTopTree (self,p,justOneFile=False):
 
@@ -502,6 +505,7 @@ class rstCommands:
         while p and p != after:
             h = p.h.strip()
             if g.match_word(h,0,"@rst"):
+                self.rst_nodes.append(p.copy())
                 fn = h[4:].strip()
                 if ((fn and fn[0] != '-') or (toString and not fn)):
                     if trace: g.trace('found: %s',p.h)
