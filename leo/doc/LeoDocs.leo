@@ -293,7 +293,6 @@
 </v>
 </v>
 <v t="ekr.20131007143750.16111"><vh>To do</vh>
-<v t="ekr.20131016032805.16720"><vh>Add link from scripting tutorial to cheat sheet</vh></v>
 <v t="ekr.20131015091948.16783"><vh>Add links between chapters</vh></v>
 <v t="ekr.20131010160850.17454"><vh>Insert index entries into the tutorial</vh></v>
 <v t="ekr.20131008041326.16109"><vh>Add a Expansion section to the Reference chapter?</vh></v>
@@ -488,7 +487,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20091130111843.6787"><vh>Tutorial</vh>
+<v t="ekr.20091130111843.6787"><vh>Tutorials</vh>
 <v t="ekr.20091130111843.6788"><vh>@rst html\tutorial.html</vh></v>
 <v t="ekr.20131008041326.16203"><vh>@rst html\tutorial-basics.html</vh>
 <v t="ekr.20131008041326.16204"><vh>@rst-no-head links &amp; markup</vh></v>
@@ -546,6 +545,7 @@
 <v t="ekr.20131014050027.16801"><vh>Positions</vh></v>
 <v t="ekr.20131012060912.16775"><vh>Generators</vh></v>
 <v t="ekr.20131014053720.16809"><vh>Capturing positions</vh></v>
+<v t="ekr.20131016084446.16726"><vh>Further study</vh></v>
 <v t="ekr.20101124083644.5052"><vh>autocompletion</vh></v>
 <v t="ekr.20050903161843"><vh>Using @button nodes</vh></v>
 <v t="ekr.20131008041326.16058"><vh>Using @test nodes</vh></v>
@@ -8741,12 +8741,15 @@ Leo's Tutorial
 Leo looks like other outlining programs, but it is not. This tutorial
 explains the difference.
 
-There are four parts to this tutorial, and will take less than two hours to complete.
+There are five parts to this tutorial. The first three are for general
+users and will take about an hour to complete.
 
-The last part is optional, and assumes some familiarity with programming in `Python`_.
+The last two parts are optional. They are for computer programmers and both
+assume some familiarity with `Python`_ programming. They will take about an
+hour to complete.
     
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 3
     
     tutorial-basics
     tutorial-pim
@@ -20833,10 +20836,9 @@ Downloading, Installing &amp; Running Leo
 <t tx="ekr.20131016021541.16894">Use @edit instead of @file to place the entire contents of an external file
 into a single outline node. Leo writes no sentinel when writing @edit
 files.</t>
-<t tx="ekr.20131016032805.16720"></t>
 <t tx="ekr.20131016083406.16724">@language python
 import os
-trace = False
+trace = True
 g.cls()
 c.save()
 aList = c.rstCommands.rst3()
@@ -20849,8 +20851,18 @@ if aList:
     fn = g.os_path_finalize_join(path,'_build','html',g.os_path_basename(fn))
     if g.os_path_exists(fn):
         # Don't wait for this command to exit!
-        g.execute_shell_commands(['&amp;%s' % (fn)])
+        g.execute_shell_commands(['&amp;%s' % (fn)],trace=trace)
 </t>
+<t tx="ekr.20131016084446.16726">.. _`Leo's cheat sheet`: cheatsheet.html
+.. _`scripting portion`: cheatsheet.html#scripting
+.. _`Leo's Directive Reference`: directives.html
+
+The `scripting portion`_ of `Leo's cheat sheet`_ contains much more
+information about scripting, including lists of Leo's generators and useful
+methods of the commander and position classes. 
+
+`Leo's Directive Reference`_ discusses all directives in great detail.
+It would be a good idea to skim this chapter to see what it contains.</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
