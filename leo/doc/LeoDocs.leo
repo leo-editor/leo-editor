@@ -8759,7 +8759,6 @@ hour to complete.
     tutorial-rst3
     tutorial-programming
     tutorial-scripting
-
 </t>
 <t tx="ekr.20100122073254.11655">This section describes the process of creating an importer for a new language.
 There are a set of "importers" in leoImport.py, all based on the
