@@ -480,18 +480,18 @@ if changed:
     g.es('deleted %s nodes' % (changed))
     c.undoer.afterChangeTree(p,'remove-@url-final-output',b)
     c.redraw()
-#@+node:ville.20090520232034.6345: *3* @button preview
+#@+node:ville.20090520232034.6345: *3* @@button preview
 g.app.gui.runScrolledMessageDialog(c=c, msg = g.u('rst:') + p.b)
-#@+node:ekr.20101109084947.4909: *3* @button preview-tree
+#@+node:ekr.20101109084947.4909: *3* @@button preview-tree
 result = []
 for p2 in p.subtree():
     result.append(p2.b)
 s = '\n'.join(result)
 
 g.app.gui.runScrolledMessageDialog(c=c, msg = g.u('rst:') + s)
-#@+node:ekr.20110406082808.18151: *3* @button rst3
+#@+node:ekr.20110406082808.18151: *3* @@button rst3
 c.rstCommands.rst3()
-#@+node:ekr.20130803073926.17120: *3* @button clean-mail
+#@+node:ekr.20130803073926.17120: *3* @@button clean-mail
 target = '-- \nYou received this message because'
 target = '--=20\nYou received this message because'
 

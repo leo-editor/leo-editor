@@ -294,10 +294,10 @@
 </v>
 </v>
 <v t="ekr.20131007143750.16111"><vh>To do</vh>
+<v t="ekr.20131015104133.16767"><vh>Improve &amp; unify the make buttons</vh></v>
 <v t="ekr.20131015091948.16783"><vh>Add links between chapters</vh></v>
 <v t="ekr.20131010160850.17454"><vh>Insert index entries into the tutorial</vh></v>
 <v t="ekr.20131008041326.16109"><vh>Add a Expansion section to the Reference chapter?</vh></v>
-<v t="ekr.20131008041326.16110"><vh>Revise or eliminate the Using Leo section</vh></v>
 <v t="ekr.20130928065624.16019"><vh>1168689 outdated documentation about ipython</vh>
 <v t="ekr.20130928065624.16020"><vh>Are g.app.ipm and g_ipm used???</vh></v>
 <v t="ekr.20130928065624.16021"><vh>code</vh>
@@ -516,27 +516,27 @@
 <v t="ekr.20131009100732.16753"><vh>Further study</vh></v>
 <v t="ekr.20131005214621.16128"><vh>Summary</vh></v>
 </v>
-<v t="ekr.20131008041326.16245" a="M"><vh>@rst html\tutorial-programming.html</vh>
+<v t="ekr.20131008041326.16245"><vh>@rst html\tutorial-programming.html</vh>
 <v t="ekr.20131008041326.16252"><vh>@rst-no-head links &amp; markup</vh></v>
 <v t="ekr.20131003040744.18222" a="O"><vh>Creating source code with @others</vh></v>
-<v t="ekr.20131008041326.16056" a="M"><vh>Using @auto nodes</vh></v>
 <v t="ekr.20131008041326.16054"><vh>Using @first and @last</vh></v>
 <v t="ekr.20131008041326.16055"><vh>Using @path</vh></v>
-<v t="ekr.20131008041326.16246" a="M"><vh>Summary</vh></v>
+<v t="ekr.20131016021541.16894"><vh>Using @edit nodes</vh></v>
+<v t="ekr.20131008041326.16056"><vh>Using @auto nodes</vh></v>
+<v t="ekr.20131008041326.16246"><vh>Summary</vh></v>
 </v>
-<v t="ekr.20040403171740" a="M"><vh>@rst html\tutorial-scripting.html</vh>
+<v t="ekr.20040403171740"><vh>@rst html\tutorial-scripting.html</vh>
 <v t="ekr.20050812134441.1"><vh>@rst-no-head markup &amp; links</vh></v>
-<v t="ekr.20131015104133.16862"><vh>A tutorial introduction to scripting</vh>
 <v t="ekr.20131013060803.16852"><vh>Hello world</vh></v>
 <v t="ekr.20070120075236"><vh>Predefined symbols: c, g and p</vh></v>
 <v t="ekr.20131014053720.16810"><vh>Vnodes</vh></v>
 <v t="ekr.20131014050027.16801"><vh>Positions</vh></v>
 <v t="ekr.20131012060912.16775"><vh>Generators</vh></v>
 <v t="ekr.20131014053720.16809"><vh>Capturing positions</vh></v>
-</v>
 <v t="ekr.20101124083644.5052"><vh>autocompletion</vh></v>
 <v t="ekr.20050903161843"><vh>Using @button nodes</vh></v>
-<v t="ekr.20131008041326.16058" a="M"><vh>Using @test nodes</vh></v>
+<v t="ekr.20131008041326.16058"><vh>Using @test nodes</vh></v>
+<v t="ekr.20131016021541.16893"><vh>Summary</vh></v>
 </v>
 </v>
 <v t="ekr.20131008041326.16080"><vh>Users Guide</vh>
@@ -958,7 +958,7 @@
 <v t="ekr.20040403173920.24"><vh>Running Leo in batch mode</vh></v>
 <v t="ekr.20081205084002.2"><vh>Working with directives and paths</vh></v>
 <v t="ekr.20131012060912.16788"><vh>Writing g.es output to other tabs</vh></v>
-<v t="ekr.20131014053720.16816"><vh>@button example</vh></v>
+<v t="ekr.20131014053720.16816"><vh>\@button example</vh></v>
 </v>
 </v>
 <v t="ekr.20131008041326.16178"><vh>Exploring Leo's Code Base</vh>
@@ -1191,12 +1191,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20090428102353.1"></v>
-<v t="ekr.20131015104133.16767"><vh>Find leo_toc if no @rst node</vh></v>
 <v t="ekr.20060612102055"></v>
-<v t="ekr.20131008041326.16245" a="M"></v>
-<v t="ekr.20040403171740" a="M"></v>
-<v t="ekr.20050912125144.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -2451,8 +2446,8 @@ Scripting Leo with Python
 This chapter tells how to write **Leo scripts**, Python scripts run from
 any Leo node.
 
-This chapter also discusses several topics related to scripting, in
-particular @button, a brilliant scripting invention.
+This chapter also discusses several topics related to scripting:
+autocompletion, @button and @test.
 
 This chapter is intended for those fairly comfortable with Python
 scripting. If you are not, please study the excellent `Python Tutorial`_.
@@ -2778,14 +2773,7 @@ Removes @ignore, @nocolor, @wrap directives.
 
    &lt;br /&gt;
 
-.. _`Directed Acyclic Graphs`:  https://en.wikipedia.org/wiki/Directed_acyclic_graph
-.. _`DAGs`:                     https://en.wikipedia.org/wiki/Directed_acyclic_graph
-.. _`Python generator`:         https://wiki.python.org/moin/Generators
-.. _`Python generators`:        https://wiki.python.org/moin/Generators
-.. _front:                  index.html
-.. _`Designing with Leo`:   design.html
-.. _`Customizing Leo`:      customizing.html
-.. _`rst3 plugin`:          rstplugin3.html
+.. _`Python generators`:    https://wiki.python.org/moin/Generators
 </t>
 <t tx="ekr.20050818163826">########################################
 Creating Documents with the rst3 Command
@@ -3124,8 +3112,7 @@ prefix the option name with 'rst3\_'.  For example::
 
     @bool rst3_write_intermediate_file = True
 </t>
-<t tx="ekr.20050828160132">.. Leo's homdownload and slides.. Links to other chapters
-.. _front:                      index.html
+<t tx="ekr.20050828160132">.. _front:                      index.html
 .. _`Leo's tutorial`:           intro.html
 .. _`Leo and reStructuredText`: rstplugin3.html
 .. _`History of Leo`:           appendices.html#history-of-leo
@@ -4726,9 +4713,7 @@ Event name (tag argument)     Stop?    When called                         Keys 
     dictionary whose keys are all the tags specified by the user in the body of the
     @openwith node.
 </t>
-<t tx="ekr.20050903161843">The mod_scripting.py plugins must be enabled to create @button nodes.
-
-@button nodes create **script buttons** in Leo's icon area.
+<t tx="ekr.20050903161843">\@button nodes create **script buttons** in Leo's icon area.
 
 Each @button node also creates a corresponding minibuffer command.
 
@@ -4740,16 +4725,16 @@ Script buttons **bring scripts to outlines** a powerful pattern. Creating
 an @button script should be your first thought whenever you want to
 automate any task.
 
-**Notes**:
+- The mod_scripting.py plugins must be enabled to create @button nodes.
 
-- Script buttons execute the **present** body text of the @button node. You
-  can modify a script button's script at any time.
+- Script buttons execute the **present** body text of the @button node. |br|
+  You can modify a script button's script at any time.
 
 - You can bind keys to the commands created by script buttons::
 
     @button my-button @key=Alt-8
 
-- You can delete any script button by right-clicking on it.
+- Right-clicking a script button deletes it.
 </t>
 <t tx="ekr.20050906090012">Leo (and other programs) often send more detailed error messages to stderr,
 the output stream that goes to the console window. In Linux and MacOS
@@ -6637,9 +6622,7 @@ c is the **commander** of the outline containing the script.
 
 - Commanders are instances of the Commands class, defined in leoCommands.py.
 
-- Commanders provide full access to all of Leo's source code.
-
-- Commanders provide full access to all the data in an outline.
+- Commanders provide access to all outline data *and* all of Leo's source code.
 
 g is Leo's **leo.core.leoGlobals** module.
 
@@ -8193,7 +8176,7 @@ print the full path to the created file::
        g.es(name)
 </t>
 <t tx="ekr.20090116094356.10">\@menuat modifies the menu tree created by \@menus. This allows settings in
-myLeoSettings.leo to change menues without copying the entire menu tree from
+myLeoSettings.leo to change menus without copying the entire menu tree from
 leoSettings.leo. This ensures you don’t miss out when new things are added in
 the @menus in leoSettings.leo, as you would if you replaced the @menus in
 leoSettings.leo with one in myLeoSettings.leo.
@@ -13737,7 +13720,7 @@ contained in objects in Leo's source code, and in Python's standard library
 modules.
 
 Alt-1 (toggle-autocompleter) enables and disables autocompletion. **Note**:
-Autocomopletion can be enabled only when @language python is in effect.
+Autocompletion can be enabled only when @language python is in effect.
 
 For example, typing just "c.atF" (in the body pane, with autocompletion
 enabled) automatically inserts "c.atFileCommands" into the body pane,
@@ -15509,7 +15492,7 @@ Written by Jacob M. Peck.
 <t tx="ekr.20130815102041.15628">By Ville M. Vainio
 See: http://en.wikipedia.org/wiki/Mylyn
 
-I went on to start a "leo mylyn" plugin to excercise using the
+I went on to start a "leo mylyn" plugin to exercise using the
 childrenModified and contentModified signals.
 
 If you want to play with it, enable leomylyn.py, modify stuff around the
@@ -15525,7 +15508,7 @@ associated with a "project" (e.g."own research", "work project foo"), each
 of them having their own typical node working set.
 
 Mylyn was a nice boost back in the eclipse days, it could work for Leo too.
-My main motivation right now was to demonstare the signals with something
+My main motivation right now was to demonstrate the signals with something
 that is much simpler than using them in qmlnotebook.
 
 </t>
@@ -15533,7 +15516,7 @@ that is much simpler than using them in qmlnotebook.
 
 See http://leo-editor.github.io/screen_capture.html
 
-screen_capture_now captures an image immediately, screen_capture_5sec waits
+screen_capture now captures an image immediately, screen_capture_5sec waits
 five seconds, so you can position the pointer, open menus etc. The only
 feedback is in the console, as messages in the log would be distracting in
 the captured image.
@@ -19482,7 +19465,7 @@ Use these when generators are not flexible enough::
 
     @g.command(command-name)
     
-**g functions** (the most interesing: there are many more in leoGlobals.py)::
+**g functions** (the most interesting: there are many more in leoGlobals.py)::
     
     g.angleBrackets()
     g.app.commanders()
@@ -19550,7 +19533,7 @@ Plugins gain access to c using event handlers::
             controller = controllers.get(c.hash())
             controller.handleEvent()
             
-Some plugins inject ivars into the Commands clas rather than using
+Some plugins inject ivars into the Commands class rather than using
 a global controllers dict::
 
     def onCreate (tag, keys):
@@ -19598,8 +19581,47 @@ predefined symbols: c, g, p, os and sys.  For example::
 
     @file {{os.path.abspath(os.curdir)}}/abc.py
 </t>
-<t tx="ekr.20131008041326.16056"></t>
-<t tx="ekr.20131008041326.16058"></t>
+<t tx="ekr.20131008041326.16056">Use @auto instead of @file when you don't want to add sentinels in the file.
+
+.. index::
+    pair: Importer; Tutorial
+
+When reading @auto files, Leo **importers** create an outline from the
+external file. Importers create nodes for each class, method and function
+in the external file.
+
+Notes:
+
+- Leo determines the language using the file's extension.
+
+- Importers exist for C, C#, elisp, html, .ini files, Java, Javascript,
+  Pascal, PHP, Python, TypeScript, vimoutliner files and xml.
+
+- If no importer exists for a file, Leo reads the entire file into an @edit
+  node.
+
+</t>
+<t tx="ekr.20131008041326.16058">Leo's unit test commands (&lt;Alt-X&gt;run&lt;tab&gt; gives the full list)
+create unit tests from the body text of @test nodes.
+
+- The headline gives the name of the test::
+
+    @test test that g is predefined
+    
+- The body contains the unit test::
+
+    assert g
+    
+- The unit test commands convert the body to a subclass of
+  unittest.TestCase.  This saves a lot of typing.
+  
+- The unit test commands predefine c, g, and p as usual.
+
+- 'self' is predefined as the test itself, that is, the instance of
+  unittest.TestCase created by the @test node. For example::
+  
+    self.assertTrue(g)
+</t>
 <t tx="ekr.20131008041326.16065"></t>
 <t tx="ekr.20131008041326.16066">Clones are nodes appearing multiple places in the outline.
 
@@ -19708,7 +19730,6 @@ Leo and Other Programs
 
 </t>
 <t tx="ekr.20131008041326.16109">.. Gives details about expanding @others and section references.</t>
-<t tx="ekr.20131008041326.16110"></t>
 <t tx="ekr.20131008041326.16140">##############
 Running Leo
 ##############
@@ -19924,8 +19945,17 @@ If you get stuck, please `ask for help`_ immediately.
 <t tx="ekr.20131008041326.16246">- Leo creates external files by replacing @others and section references
   with their expansions. 
 
-- Autocompletion suggests completions for Leo's modules, Python
-  standard library and more.</t>
+- @first places lines before the first sentinel lines of a file.
+
+- @path specifies a common prefix for the file names of @file and @auto nodes.
+
+- @edit reads an entire external file into a single outline node.
+
+- @auto imports an external file into an outline, creating nodes for
+  functions, methods and classes.
+  
+- Use @edit or @auto to avoid adding Leo sentinels to external files.
+</t>
 <t tx="ekr.20131008041326.16248">.. |br| raw:: html
 
    &lt;br /&gt;
@@ -20464,12 +20494,10 @@ log tab containing a graphics widget. Here is an example script::
 g.cls()
 
 def print_p(p):
-    
     c,result = p.v.context,[]
     v,n = p.v,p.childIndex()
     for data in p.stack:
         v,n = data
-       
         result.append('(%s %s)' % (n,v.h))
     return ','.join(result)
 
@@ -20480,11 +20508,10 @@ for p in c.all_positions():
 
     g.es('Hello World!')
     
-g.es prints its arguments to Leo's log pane.
-
-Ctrl-B (execute-script) executes the body text of the selected node as a Python script.
-
+Ctrl-B (execute-script) executes the body text of the selected node as a Python script. |br|
 If text is selected, execute-script executes only the selected text.
+
+g.es prints its arguments to Leo's log pane.
 
 ..  You can use Ctrl-B even if you are reading this in leoDocs.leo!
 
@@ -20554,9 +20581,9 @@ vnode represents *all* the data associated with an outline node, including
 ..  - v.parents is a list of all parent vnodes of v. |br|
 ..    (v is a clone if and only if len(v.parents) &gt; 1
 ..  - Scripts **absolutely must not change** v.parents and v.children!
-  
+
 **All cloned outline nodes share a common vnode**. Conversely, |br| each
-vnode represents *all* the clones of the corresonding outline node.
+vnode represents *all* the clones of the corresponding outline node.
 
 Because a *single* vnode can represent *many* outline nodes, it is awkward
 to use vnodes directly. This is where positions come in: **positions
@@ -20604,7 +20631,7 @@ Regardless of focus::
     +-------------------+-----------------------+
     | Ctrl-LeftArrow    | back one word         |
     +-------------------+-----------------------+
-    | Ctrl-RightArrow   | foreward one word     |
+    | Ctrl-RightArrow   | forward one word      |
     +-------------------+-----------------------+
     | Home              | beginning of line     |
     +-------------------+-----------------------+
@@ -20756,7 +20783,8 @@ Undo::
     Ctrl-Z (undo)
     Ctrl-Shift-Z (redo)
 </t>
-<t tx="ekr.20131015091948.16781">import os
+<t tx="ekr.20131015091948.16781">@language python
+import os
 g.cls()
 c.save()
 c.rstCommands.rst3()
@@ -20778,6 +20806,8 @@ if p2:
     print('opening: %s' % (fn))
     if g.os_path_exists(fn):
         os.system(fn)
+else:
+    print('no @rst node')
 </t>
 <t tx="ekr.20131015091948.16783">In general, I would add in the end of each chapter a link to the expanded
 version of the summary.
@@ -20816,7 +20846,7 @@ if p2:
     os.system('make html')
     fn = g.os_path_finalize_join(path,'_build','html','leo_toc.html')
     if g.os_path_exists(fn):
-            os.system(fn)
+        os.system(fn)
 else:
     print('not found: ' % (h))
 </t>
@@ -20833,8 +20863,22 @@ Downloading, Installing &amp; Running Leo
    installing
    running
 </t>
-<t tx="ekr.20131015104133.16767"></t>
-<t tx="ekr.20131015104133.16862"></t>
+<t tx="ekr.20131015104133.16767">Find leo_toc if no @rst node</t>
+<t tx="ekr.20131016021541.16893">- The execute script command predefines c, g and p.
+- c is a commander, g is the leoGlobals module, and p is the current position.
+- Vnodes contain all outline data.
+- Positions provide easy access to vnodes.
+- Positions become invalid when outline nodes are inserted, deleted or moved.
+- Generators visit all or parts of the outline, in a specified order.
+- Generators yield a *single* position whose value constantly changes.
+- p.copy() yields a new position that does not change when p changes.
+- Alt-1 enables autocompletion.
+- Leo's autocompleter understands symbols such as c, g, g.app, etc.
+- @button nodes create scripts that can be applied to any outline node.
+- @test nodes create unit tests (subclasses of unittest.TestCase) from body text.</t>
+<t tx="ekr.20131016021541.16894">Use @edit instead of @file to place the entire contents of an external file
+into a single outline node. Leo writes no sentinel when writing @edit
+files.</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.

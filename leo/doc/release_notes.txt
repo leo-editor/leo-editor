@@ -18225,7 +18225,7 @@ Here's the button code:
         statusLine = 'Make filter button',
         bg = "LightBlue"
     ) 
-#@+node:ekr.20120229173025.20635: *6* @button fac
+#@+node:ekr.20120229173025.20635: *6* @@button fac
 @language python
 
 from leo.plugins.mod_scripting import scriptingController
