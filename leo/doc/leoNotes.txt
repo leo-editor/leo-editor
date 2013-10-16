@@ -15105,5 +15105,10 @@ Whew! There is a lot to digest in this simple example!
 Happily, scripting Leo soon becomes second nature.
 
 The following sections explain all the terms discusses here in detail.
+.. @+node:ekr.20131016103844.16726: *3* From writing plugins
+You **enable** plugins using @enabled-plugins nodes in leoSettings.leo or
+myLeoSettings.leo. For more details, see the @enabled-plugins node in
+leoSettings.leo. Leo imports all enabled plugins at startup time. Plugins become
+**active** if importing the plugin was successful.
 .. @-all
 .. @-leo

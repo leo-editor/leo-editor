@@ -59,14 +59,13 @@
 <v t="ekr.20131016083406.16724"><vh>@button make-sphinx @key=Alt-.</vh></v>
 </v>
 <v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20100805171546.4412"><vh>Files, including home page</vh>
+<v t="ekr.20100805171546.4412"><vh>Files, including Leo's home page</vh>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
 <v t="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
 <v t="ekr.20101112045055.5064" descendentVnodeUnknownAttributes="7d7100285503302e3171017d710255097374725f6174696d657103550c313337363431323739362e3071047355013071057d71066803550c313337363431323932332e307107735503302e3071087d71096803550c313337363431323932372e30710a73752e"><vh>@file plugin_catalog.py</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
 <v t="ekr.20131005214621.16088"><vh>Home page</vh>
-<v t="ekr.20100808060203.4273"
-expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
+<v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20131008041326.16065"><vh>Links page</vh>
 <v t="ekr.20130807203905.16606"><vh>@edit html/leoLinks.html</vh></v>
@@ -83,9 +82,6 @@ expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
 <v t="ekr.20090717084250.10702"><vh>Other docs</vh>
 <v t="ekr.20100805165051.7176"><vh>@file other_docs.txt</vh></v>
 </v>
-</v>
-<v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d710028550a302e302e31322e302e3771017d710255097374725f6174696d657103550c313337363431323238302e30710473550b302e302e332e302e322e3371057d71066803550c313337363431323838382e307107735510302e302e31322e312e302e372e302e3171087d710958090000007374725f6174696d65710a550c313337363431323238382e30710b73550e302e302e31322e302e372e302e31710c7d710d6803550c313337363431323238382e30710e735509302e302e312e302e30710f7d71106803550c313337363431323837322e30711173550b302e302e332e312e312e3371127d71136803550c313337363431323838392e30711473550c302e302e31322e312e302e3771157d711658090000007374725f6174696d657117550c313337363431323238302e30711873752e"><vh>@file release_notes.txt</vh></v>
 </v>
 <v t="ekr.20130926053913.15854"><vh>Leo 4.11 b1 Release notes</vh>
 <v t="ekr.20130926053913.16258"><vh>a1 and a2 releases</vh>
@@ -294,9 +290,8 @@ expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
 </v>
 </v>
 <v t="ekr.20131007143750.16111"><vh>To do</vh>
+<v t="ekr.20131016103844.16722"><vh>What is new should reference 4.11</vh></v>
 <v t="ekr.20131015091948.16783"><vh>Add links between chapters</vh></v>
-<v t="ekr.20131010160850.17454"><vh>Insert index entries into the tutorial</vh></v>
-<v t="ekr.20131008041326.16109"><vh>Add a Expansion section to the Reference chapter?</vh></v>
 <v t="ekr.20130928065624.16019"><vh>1168689 outdated documentation about ipython</vh>
 <v t="ekr.20130928065624.16020"><vh>Are g.app.ipm and g_ipm used???</vh></v>
 <v t="ekr.20130928065624.16021"><vh>code</vh>
@@ -314,25 +309,15 @@ expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
 <v t="ekr.20131001100236.15927"><vh>valuespace &amp; --ipython</vh></v>
 <v t="ekr.20131001100236.15928"><vh>highlights (for release noes)</vh></v>
 </v>
+<v t="ekr.20131010160850.17454"><vh>Insert index entries into the tutorial</vh></v>
+<v t="ekr.20131016103844.16721"><vh>For b2</vh>
+<v t="ekr.20131008041326.16109"><vh>Add a Expansion section to the Reference chapter?</vh></v>
 <v t="ekr.20131001100335.15942"><vh>Leo &amp; other programs</vh>
 <v t="ekr.20131001100335.15943"><vh>Leo vs Emacs</vh></v>
 <v t="ekr.20131001100335.15944"><vh>Leo vs Vim</vh></v>
 <v t="ekr.20131001100335.15945"><vh>Leo vs IPython</vh></v>
 </v>
 <v t="ekr.20131009100732.19041"><vh>Broken links</vh></v>
-</v>
-<v t="ekr.20060612102055"><vh>Writing Plugins (Rewrite)</vh>
-<v t="ekr.20060612103240"><vh>@rst html\writingPlugins.html</vh>
-<v t="ekr.20060612103824"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20131008041326.16053"><vh>Writing Plugins</vh></v>
-<v t="ville.20100807185755.4510"><vh>enabled-plugins</vh></v>
-<v t="EKR.20040524104904.240"><vh>Support for unit testing</vh></v>
-<v t="EKR.20040524104904.224"><vh>Important security warnings</vh></v>
-<v t="peckj.20130813123907.6841"><vh>Documenting plugins</vh></v>
-<v t="ekr.20131012191145.16789"><vh>c ivars &amp; properties</vh></v>
-<v t="ekr.20050903074833"><vh>Handling events</vh>
-<v t="ekr.20050903074833.1"><vh>@rst-no-head Summary of event handlers</vh></v>
-</v>
 </v>
 </v>
 <v t="ekr.20040414161647"><vh>Leo's Documentation</vh>
@@ -504,8 +489,8 @@ expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
 <v t="ekr.20131001100335.15947"><vh>Getting help</vh></v>
 <v t="ekr.20131004064408.16020"><vh>Leo directives</vh></v>
 <v t="ekr.20131001100335.15940"><vh>Configuring Leo</vh></v>
+<v t="ekr.20131009100732.19038"><vh>Plugins</vh></v>
 <v t="ekr.20131003040744.18221"><vh>Creating external files with @file and @all</vh></v>
-<v t="ekr.20131009100732.19038"><vh>plugins</vh></v>
 <v t="ekr.20131005214621.16090"><vh>Summary</vh></v>
 </v>
 <v t="ekr.20131008041326.16222"><vh>@rst html\tutorial-pim.html</vh>
@@ -901,7 +886,19 @@ expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20060612102055"></v>
+<v t="ekr.20060612102055"><vh>Writing Plugins (Rewrite)</vh>
+<v t="ekr.20060612103240"><vh>@rst html\writingPlugins.html</vh>
+<v t="ekr.20060612103824"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20131008041326.16053"><vh>Writing Plugins</vh></v>
+<v t="EKR.20040524104904.224"><vh>Important security warnings</vh></v>
+<v t="peckj.20130813123907.6841"><vh>Documenting plugins</vh></v>
+<v t="ekr.20131012191145.16789"><vh>c ivars &amp; properties</vh></v>
+<v t="ekr.20050903074833"><vh>Handling events</vh>
+<v t="ekr.20050903074833.1"><vh>Summary of event handlers</vh></v>
+</v>
+<v t="EKR.20040524104904.240"><vh>Support for unit testing</vh></v>
+</v>
+</v>
 <v t="ekr.20070628083442"><vh>Unit testing with Leo</vh>
 <v t="ekr.20070628083442.1"><vh>@rst html\unitTesting.html</vh>
 <v t="ekr.20070628083442.2"><vh>@rst-no-head links</vh></v>
@@ -989,6 +986,7 @@ expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
 <v t="ekr.20131015035606.16801"><vh>Common commands</vh></v>
 <v t="ekr.20131015035606.16786"><vh>Leo directives</vh></v>
 <v t="ekr.20131015035606.16788"><vh>Settings</vh></v>
+<v t="ekr.20131016103844.16730"><vh>Notable Plugins</vh></v>
 <v t="ekr.20131015035606.16799"><vh>Creating external files</vh></v>
 <v t="ekr.20131007143750.16074"><vh>Scripting</vh></v>
 </v>
@@ -1190,6 +1188,9 @@ expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
 </v>
 </v>
 </v>
+</v>
+<v t="ekr.20101026082911.5536"><vh>Release notes</vh>
+<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d710028550a302e302e31322e302e3771017d710255097374725f6174696d657103550c313337363431323238302e30710473550b302e302e332e302e322e3371057d71066803550c313337363431323838382e307107735510302e302e31322e312e302e372e302e3171087d710958090000007374725f6174696d65710a550c313337363431323238382e30710b73550e302e302e31322e302e372e302e31710c7d710d6803550c313337363431323238382e30710e735509302e302e312e302e30710f7d71106803550c313337363431323837322e30711173550b302e302e332e312e312e3371127d71136803550c313337363431323838392e30711473550c302e302e31322e312e302e3771157d711658090000007374725f6174696d657117550c313337363431323238302e30711873752e"><vh>@file release_notes.txt</vh></v>
 </v>
 </v>
 </vnodes>
@@ -1523,11 +1524,12 @@ prohibited by rexec, and without leaving any traces of the perpetrating script
 behind. The damage will become permanent *outside* this script when the user
 saves the .leo file.
 </t>
-<t tx="EKR.20040524104904.240" str_atime="1376411987.0">The plugins test suite creates a new convention: if a plugin has a function at
-the outer (module) level called unitTest, Leo will call that function when
-doing unit testing for plugins. So it would be good if writers of plugins would
-create such a unitTest function. To indicate a failure the unitTest just
-throws an exception. Leo's plugins test suite takes care of the rest.
+<t tx="EKR.20040524104904.240" str_atime="1376411987.0">If a plugin has a function at the outer (module) level called unitTest,
+Leo's unit tests will call that function.
+
+So it would be good if writers of plugins would create such a unitTest
+function. To indicate a failure the unitTest can just throw an exception.
+Leo's plugins test suite takes care of the rest.
 </t>
 <t tx="EKR.20040524104904.247">In May of 1999 I began work on the Borland version of Leo for Windows.  The
 Borland Delphi classes were a pleasure to use and free of bugs.  I redesigned
@@ -5591,18 +5593,14 @@ There are several workaround, as shown in LeoPy.leo:
 Writing Plugins
 ###############
 
-A **plugin** is a Python file that appears in Leo's plugin directory. Plugins
-modify how Leo works. With plugins you can give Leo new commands, modify how
-existing commands work, or change any other aspect of Leo's look and feel.
+Plugins modify how Leo works. With plugins you can give Leo new commands,
+modify how existing commands work, or change any other aspect of Leo's look
+and feel.
+
 leoPlugins.leo contains all of Leo's official plugins. Studying this file is
 a good way to learn how to write plugins.
 
-You **enable** plugins using @enabled-plugins nodes in leoSettings.leo or
-myLeoSettings.leo. For more details, see the @enabled-plugins node in
-leoSettings.leo. Leo imports all enabled plugins at startup time. Plugins become
-**active** if importing the plugin was successful.
-
-Writing plugins is quite similar to writing any other Leo script.  See
+Writing plugins is like writing any other Leo script.  See
 `Scripting Leo with Python`_. In particular:
 
 1. Plugins can use any of Leo's source code simply by importing any module
@@ -19892,6 +19890,10 @@ understand and manipulate (script) complex data is what Leo does best.
 The Basics of Leo
 ##################
 
+This chapter introduces Leo's basic operations for creating and
+changing outlines. Commands can be executed using keystrokes, or by
+name.
+
 .. contents::
     :depth: 2
 </t>
@@ -20228,14 +20230,17 @@ See the leoSettings.leo for full details, including applicable settings.
 .. _`bookmarks.py`:     plugins.html#bookmarks-py
 .. _`contextmenu.py`:   plugins.html#contextmenu-py
 .. _`mod_scripting.py`: plugins.html#mod-scripting-py
+.. _`quicksearch.py`:   plugins.html#quicksearch-py
 .. _`todo.py`:          plugins.html#todo-py
 .. _`valuespace.py`:    plugins.html#valuespace-py
 .. _`viewrendered.py`:  plugins.html#viewrendered-py
 
-`Plugins`_ extend what Leo can do.
+`Plugins`_ are Python programs that extend what Leo can do.
 
-Enable plugins by adding their file names in @enabled-plugins nodes an
-\@settings tree.
+Plugins reside in the leo/plugins folder.
+
+Enable plugins by adding their file names in @enabled-plugins nodes an @settings tree. |br|
+The @enabled-plugins bundled in leoSettings.leo contains a list of default (recommended) plugins.
 
 Programmers have contributed dozens of plugins, including:
 
@@ -20243,7 +20248,9 @@ Programmers have contributed dozens of plugins, including:
 
 - `contextmenu.py`_: shows a context menu when you right-click a headline.
 
-- `mod_scripting.py`_: extends Leo's scripting capabilities.
+- `mod_scripting.py`_: supports @button and @command nodes.
+
+- `quicksearch.py`_: Adds Nav tab for searching.
 
 - `todo.py`_: provides to-do list and simple project-management capabilities.
 
@@ -20430,11 +20437,12 @@ through) Leo outlines node by node:
 **Leo generators yield a sequence of positions.**
 
 The Commands (commander) and position classes define several generators,
-discussed later in this chapter. For example, c.all_positions() traverses
-the outline in outline order::
+discussed later in this chapter. c.all_positions() traverses
+the outline in outline order.  The following prints a properly-indented
+list of all headlines::
 
     for p in c.all_positions():
-        print(p.h)
+        print(' '*p.level()+p.h)
         
 Leo generators **yield** (return a sequence of) positions. They do *not*
 return actual lists; this saves lots of space for large outlines.
@@ -20866,6 +20874,18 @@ methods of the commander and position classes.
 
 `Leo's Directive Reference`_ discusses all directives in great detail.
 It would be a good idea to skim this chapter to see what it contains.</t>
+<t tx="ekr.20131016103844.16721"></t>
+<t tx="ekr.20131016103844.16722"></t>
+<t tx="ekr.20131016103844.16730">See the docstring of these plugins for more details:
+
+- bookmarks.py: Manages URL's used as bookmarks.
+- contextmenu.py: Brings up context menu when user right-clicks a headline.
+- mod_scripting.py: Supports @button and @command nodes.
+- quicksearch.py: Adds Nav tab for searching.
+- todo.py: Manages to-do lists and simple project management.
+- valuepace.py: Creates an outline-oriented spreadsheet.
+- viewrendered.py: Creates a rendering pane. Automatically loaded by Leo's help commands.
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
@@ -20948,48 +20968,6 @@ os.chdir(mandir)
 os.system('make latex')
 os.chdir('_build/latex')
 os.system('make all-pdf')
-</t>
-<t tx="ville.20100807185755.4510" str_atime="1376411971.0">@enabled-plugins node is as list of plugins to load. If you have @enabled-plugins
-node in your myLeoSettings.leo, the plugins are loaded from there. If such a
-node doesn't exist, the global leoSettings.leo is used instead.
-
-The @enabled-plugins bundled in leoSettings.leo contains a list of default
-(recommended) plugins. For your own @enabled-plugins in myLeoSettings.leo, you
-should use the node in leoSettings.leo as a starting point unless you are
-certain you want to disable a recommended plugin.
-
-@enabled-plugins nodes contain the list of enabled plugins, one per line.
-
-Comment lines starting with '#' are ignored.
-
-Plugins are essentially normal python modules, and loading a plugin basically
-means importing it and running the "init" function in the module's root level
-namespace. A line in @enabled-plugins is a module name that leo should import.
-
-Here's an example @enabled-plugins node::
-
-    # Standard plugins enabled in official distributions....
-
-    plugins_menu.py
-    quicksearch.py
-
-    # third party plugins
-
-    # 'leoplugin' module inside python package 'foo'
-    foo.leoplugin
-
-    # top-level module
-    barplugin
-
-Note that some entries end with .py. This is done to retain backwards
-compatibility - if an entry ends with .py, it means a plugin in Leo's 'plugins'
-directory (package) and is translated to e.g. "leo.plugins.plugins_menu" before
-importing.
-
-Normally, a third party plugin should be a basic python module that is installed
-globally for the python interpreter with "python setup.py install". Installing 
-plugins to Leo's 'plugins' directory is not recommended, as such plugins 
-can disappear when Leo is upgraded. 
 </t>
 <t tx="vivainio.20080302174639.1">Leo's --ipython command-line option enables two-way communication
 (**ILeo**, the **IPython bridge**) between Leo and IPython: you can run Leo

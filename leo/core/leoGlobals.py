@@ -4268,10 +4268,11 @@ def execute_shell_commands(commands,trace = False):
     Execute each shell command in a separate process.
     Wait for each command to complete, except those starting with '&'
     '''
+    if g.isString(commands): commands = [commands]
     for command in commands:
         wait = not command.startswith('&')
         if command.startswith('&'): command = command[1:].strip()
-        if trace: g.trace('wait',wait,'command',command)
+        if trace: g.trace('wait: %s command: %s' % (wait,command))
         proc = subprocess.Popen(command,shell=True)
         if wait: proc.communicate()
 #@+node:ekr.20040321065415: *3* g.findNode... &,findTopLevelNode
