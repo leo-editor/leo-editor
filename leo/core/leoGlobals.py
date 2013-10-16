@@ -4262,6 +4262,18 @@ def executeFile(filename, options= ''):
     rc, so, se = subprocess_wrapper('%s %s %s'%(sys.executable, fname, options))
     if rc: g.pr('return code', rc)
     g.pr(so,se)
+#@+node:ekr.20131016032805.16721: *3* g.execute_shell_commands 
+def execute_shell_commands(commands,trace = False):
+    '''
+    Execute each shell command in a separate process.
+    Wait for each command to complete, except those starting with '&'
+    '''
+    for command in commands:
+        wait = not command.startswith('&')
+        if command.startswith('&'): command = command[1:].strip()
+        if trace: g.trace('wait',wait,'command',command)
+        proc = subprocess.Popen(command,shell=True)
+        if wait: proc.communicate()
 #@+node:ekr.20040321065415: *3* g.findNode... &,findTopLevelNode
 def findNodeInChildren(c,p,headline):
 
