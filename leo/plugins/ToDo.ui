@@ -552,7 +552,7 @@ node</string>
       </widget>
      </item>
      <item row="0" column="3">
-      <widget class="QDateEdit" name="dueDateEdit">
+      <widget class="QNDateEdit" name="dueDateEdit">
        <property name="enabled">
         <bool>true</bool>
        </property>
@@ -629,7 +629,7 @@ node</string>
       </widget>
      </item>
      <item row="1" column="3">
-      <widget class="QDateEdit" name="nxtwkDateEdit">
+      <widget class="QNDateEdit" name="nxtwkDateEdit">
        <property name="enabled">
         <bool>true</bool>
        </property>
@@ -930,6 +930,13 @@ progress</string>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QNDateEdit</class>
+   <extends>QDateEdit</extends>
+   <header>leo.plugins.QNCalendarWidget</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

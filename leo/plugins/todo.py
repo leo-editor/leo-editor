@@ -37,10 +37,22 @@ images with any others you wish.
 @Settings
 =========
 
-Most seeting documented elsewhere (http://leo.zwiki.org/Tododoc).
+Most setting documented elsewhere (http://leo.zwiki.org/Tododoc).
 
 todo_compact_interface
   Hide one line of the interface to preserve original height
+todo_icon_location
+  "beforeHeadline", "afterHeadline" might also work
+todo_due_date_offsets
+  A list of offsets like "+7" or "<3" or ">5", for 7 days from now,
+  3 days earlier, or 5 days later
+todo_calendar_n
+  Number of months to display at once in calendar pop up, default 3
+todo_calendar_cols
+  Number of columns to use when displaying multiple months in
+  in calendar pop up, default 3 - extra rows are used as needed to
+  display `todo_calendar_n` months.
+
 
 '''
 
@@ -243,7 +255,15 @@ if g.app.gui.guiName() == "qt":
                 
             self.connect(self.UI.butApplyOffset, QtCore.SIGNAL("clicked()"),
                 o.set_nxtwk_date_offset)
+            
+            n = g.app.config.getInt("todo_calendar_n")  
+            cols = g.app.config.getInt("todo_calendar_cols")  
+            if n or cols:
+                self.UI.dueDateEdit.calendarWidget().build(n or 3, cols or 3)
+                self.UI.nxtwkDateEdit.calendarWidget().build(n or 3, cols or 3)
                 
+            
+
         #@+node:ekr.20111118104929.10203: *3* make_func
         def make_func(self, edit, toggle, method, default):
 
