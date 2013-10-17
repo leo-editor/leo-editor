@@ -11,7 +11,7 @@
 <find_panel_settings/>
 <vnodes>
 <v t="ekr.20070610174018"><vh>Startup</vh>
-<v t="ekr.20131009052848.6457"><vh>defaults previously set in @ @rst-options</vh></v>
+<v t="ekr.20070325123558"><vh>@chapters</vh></v>
 <v t="ekr.20050407144417"><vh>@settings</vh>
 <v t="ekr.20111108052738.5507"><vh>@shortcuts</vh></v>
 <v t="ekr.20130816100419.17299"><vh>@string target_language = rest</vh></v>
@@ -54,31 +54,107 @@
 </v>
 </v>
 </v>
-<v t="ekr.20101028112631.4959" descendentVnodeUnknownAttributes="7d710028550b302e312e302e302e302e3171017d7102580b0000007374725f6c656f5f706f73710358000000007104735503302e3371057d710655097374725f6174696d657107550c313337363431323931392e307108735505302e332e3071097d710a6807550c313337363431323736382e30710b735509302e312e302e302e33710c7d710d6807550c313337363431323930312e30710e73752e"><vh>@file doc-startup.txt</vh></v>
-<v t="ekr.20131013060803.16851"><vh>script used to generate position trace</vh></v>
+<v t="ekr.20131017051340.16847"><vh>Buttons</vh>
+<v t="ekr.20111017085134.16158"><vh> Slideshow Buttons</vh>
+<v t="ekr.20111017085134.16159"><vh>@@button copy-@screenshot-node</vh>
+<v t="ekr.20111017085134.16160"><vh>@screenshot</vh>
+<v t="ekr.20111017085134.16161"><vh>To Do List</vh>
+<v t="ekr.20111017085134.16162"><vh>Urgent</vh></v>
+<v t="ekr.20111017085134.16163"><vh>Important</vh></v>
+<v t="ekr.20111017085134.16164"><vh>Soon</vh></v>
+<v t="ekr.20111017085134.16165"><vh>Whenever</vh></v>
+</v>
+<v t="ekr.20111017085134.16166"><vh>Diary</vh>
+<v t="ekr.20111017085134.16167"><vh>2009</vh>
+<v t="ekr.20111017085134.16168"><vh>Jul 2009</vh></v>
+<v t="ekr.20111017085134.16169"><vh>Aug 2009</vh></v>
+<v t="ekr.20111017085134.16170"><vh>Sep 2009</vh></v>
+<v t="ekr.20111017085134.16171"><vh>Oct 2009</vh></v>
+<v t="ekr.20111017085134.16172"><vh>Nov 2009</vh></v>
+<v t="ekr.20111017085134.16173"><vh>Dec 2009</vh></v>
+</v>
+<v t="ekr.20111017085134.16174"><vh>2010</vh></v>
+</v>
+</v>
+<v t="ekr.20111017085134.16175"><vh>@select Urgent</vh></v>
+<v t="ekr.20111017085134.16176"><vh>@@button ins-@slide-nodes</vh></v>
+<v t="ekr.20111017085134.16177"><vh>@@button make-slide @key=Alt-8</vh></v>
+<v t="ekr.20111017085134.16178"><vh>@@button make-slide-show @key=Alt-8</vh></v>
+<v t="ekr.20111017085134.16179"><vh>@@button meld</vh>
+<v t="ekr.20111017085134.16180"><vh>class MeldController</vh>
+<v t="ekr.20111017085134.16181"><vh>utils</vh>
+<v t="ekr.20111017085134.16182"><vh>finalize &amp; fix</vh></v>
+<v t="ekr.20111017085134.16183"><vh>has_at_no_screenshot_node</vh></v>
+<v t="ekr.20111017085134.16184"><vh>match</vh></v>
+</v>
+<v t="ekr.20111017085134.16185"><vh>run &amp; helpers</vh>
+<v t="ekr.20111017085134.16186"><vh>adjust_slideshow &amp; helper</vh>
+<v t="ekr.20111017085134.16187"><vh>adjust_slide_node &amp; helpers</vh>
+<v t="ekr.20111017085134.16188"><vh>add_at_url_final_output_file</vh></v>
+<v t="ekr.20111017085134.16189"><vh>add_image_directive</vh></v>
+<v t="ekr.20111017085134.16190"><vh>delete_at_url_built_slide_node</vh></v>
+</v>
+</v>
+<v t="ekr.20111017085134.16191"><vh>check &amp; helpers</vh>
+<v t="ekr.20111017085134.16192"><vh>check_dir</vh></v>
+<v t="ekr.20111017085134.16193"><vh>count_slide_nodes</vh></v>
+</v>
+<v t="ekr.20111017085134.16194"><vh>copy_files &amp; helper</vh>
+<v t="ekr.20111017085134.16195"><vh>copy_file</vh></v>
+</v>
+<v t="ekr.20111017085134.16196"><vh>get_wink_screenshots</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20111017085134.16197"><vh>@@button renumber nodes</vh></v>
+</v>
+<v t="ekr.20111017085134.16198"><vh>@@button remove-image-directives</vh></v>
+<v t="ekr.20111017085134.16199"><vh>@@button remove-built-slides</vh></v>
+<v t="ekr.20111017085134.16200"><vh>@@button remove-final-output</vh></v>
+</v>
+<v t="ekr.20130803073926.17120"><vh>@@button clean-mail</vh></v>
 <v t="ekr.20131016083406.16724"><vh>@button make-sphinx @key=Alt-.</vh></v>
 </v>
-<v t="ekr.20050831195449"><vh>Read me first</vh></v>
-<v t="ekr.20100805171546.4412"><vh>Files, including Leo's home page</vh>
-<v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
-<v t="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
-<v t="ekr.20101112045055.5064" descendentVnodeUnknownAttributes="7d7100285503302e3171017d710255097374725f6174696d657103550c313337363431323739362e3071047355013071057d71066803550c313337363431323932332e307107735503302e3071087d71096803550c313337363431323932372e30710a73752e"><vh>@file plugin_catalog.py</vh></v>
-<v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
-<v t="ekr.20131005214621.16088"><vh>Home page</vh>
-<v t="ekr.20100808060203.4273"
-expanded="ekr.20100808060203.4286,"><vh>@file html/index.html</vh></v>
+<v t="ekr.20131017051340.16777"><vh>Old descriptions of Leo</vh>
+<v t="ekr.20131017051340.16788"><vh>Leo in a nutshell</vh></v>
+<v t="ekr.20131017051340.16778"><vh>Old home page</vh></v>
+<v t="ekr.20131017051340.16789"><vh>Old Leo tutorial</vh>
+<v t="ekr.20131017051340.16790"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20131017051340.16791"><vh>Leo's main window</vh></v>
+<v t="ekr.20131017051340.16792"><vh>External files and @file nodes</vh></v>
+<v t="ekr.20131017051340.16793"><vh>Creating external files from outlines</vh>
+<v t="ekr.20131017051340.16794"><vh>Section references</vh></v>
+<v t="ekr.20131017051340.16795"><vh>The @others directive</vh></v>
+<v t="ekr.20131017051340.16796"><vh>The @all directive</vh></v>
+<v t="ekr.20131017051340.16797"><vh>Choosing between @others and sections</vh></v>
+<v t="ekr.20131017051340.16798"><vh>Organizing programs as outlines</vh></v>
 </v>
-<v t="ekr.20131008041326.16065"><vh>Links page</vh>
-<v t="ekr.20130807203905.16606"><vh>@edit html/leoLinks.html</vh></v>
+<v t="ekr.20131017051340.16799"><vh>Clones &amp; views</vh></v>
+<v t="ekr.20131017051340.16800"><vh>More about directives</vh></v>
+<v t="ekr.20131017051340.16801"><vh>Scripting, extending and customizing Leo</vh></v>
+<v t="ekr.20131017051340.16802"><vh>Summary</vh></v>
+<v t="ekr.20131017051340.16803"><vh>Further study</vh></v>
 </v>
-<v t="ekr.20131005214621.16089"><vh>TOC</vh>
-<v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
+<v t="ekr.20131017051340.16804"><vh>Old preface</vh>
+<v t="ekr.20131017051340.16805"><vh>Outline structure is real data</vh></v>
+<v t="ekr.20131017051340.16806"><vh>Leo outlines aren't your average outline</vh></v>
+<v t="ekr.20131017051340.16807"><vh>Conclusions &amp; encouragements</vh></v>
 </v>
-<v t="ekr.20131008041326.16086"><vh>Referenced from home page</vh>
-<v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028550b302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473550b302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473550b302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473550b302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
-<v t="ekr.20100821182153.4343"><vh>@rst html/slides.html</vh></v>
 </v>
+<v t="ekr.20131017051340.16850"><vh>Scripts</vh>
+<v t="ekr.20101111175617.5037"><vh>Script: get-plugin-docstrings</vh>
+<v t="ekr.20101111175617.56915"><vh>class controller</vh>
+<v t="ekr.20101112045055.13356"><vh>allowDir</vh></v>
+<v t="ekr.20101112222250.5322"><vh>allowFile</vh></v>
+<v t="ekr.20101112045055.13355"><vh>createDocs</vh></v>
+<v t="ekr.20101112045055.13354"><vh>createSummary</vh></v>
+<v t="ekr.20101111175617.14683"><vh>getDocString</vh></v>
+<v t="ekr.20101112045055.13357"><vh>getFirstParagraph</vh></v>
+<v t="ekr.20101111175617.24328"><vh>openPlugins</vh></v>
+<v t="ekr.20101111175617.5787"><vh>run</vh></v>
+</v>
+</v>
+<v t="ekr.20131013060803.16851"><vh>Script: generate position trace</vh></v>
 </v>
 <v t="ekr.20131017051340.16816"><vh>Unused documentation</vh>
 <v t="ekr.20131017051340.16779"><vh>@@rst html/leoInspect.html</vh>
@@ -108,32 +184,6 @@ expanded="ekr.20100808060203.4286,"><vh>@file html/index.html</vh></v>
 <v t="ekr.20131017051340.16843"><vh>Magic functions</vh></v>
 <v t="ekr.20131017051340.16844"><vh>Acknowledgements and history</vh></v>
 </v>
-<v t="ekr.20131017051340.16777"><vh>Old descriptions of Leo</vh>
-<v t="ekr.20131017051340.16778"><vh>&lt;&lt; Leo is... &gt;&gt; (From old home page)</vh></v>
-<v t="ekr.20131017051340.16788"><vh>@@rst html/nutshell.html</vh></v>
-<v t="ekr.20131017051340.16789"><vh>@@rst html/intro.html</vh>
-<v t="ekr.20131017051340.16790"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20131017051340.16791"><vh>Leo's main window</vh></v>
-<v t="ekr.20131017051340.16792"><vh>External files and @file nodes</vh></v>
-<v t="ekr.20131017051340.16793"><vh>Creating external files from outlines</vh>
-<v t="ekr.20131017051340.16794"><vh>Section references</vh></v>
-<v t="ekr.20131017051340.16795"><vh>The @others directive</vh></v>
-<v t="ekr.20131017051340.16796"><vh>The @all directive</vh></v>
-<v t="ekr.20131017051340.16797"><vh>Choosing between @others and sections</vh></v>
-<v t="ekr.20131017051340.16798"><vh>Organizing programs as outlines</vh></v>
-</v>
-<v t="ekr.20131017051340.16799"><vh>Clones &amp; views</vh></v>
-<v t="ekr.20131017051340.16800"><vh>More about directives</vh></v>
-<v t="ekr.20131017051340.16801"><vh>Scripting, extending and customizing Leo</vh></v>
-<v t="ekr.20131017051340.16802"><vh>Summary</vh></v>
-<v t="ekr.20131017051340.16803"><vh>Further study</vh></v>
-</v>
-<v t="ekr.20131017051340.16804"><vh>Old preface</vh>
-<v t="ekr.20131017051340.16805"><vh>Outline structure is real data</vh></v>
-<v t="ekr.20131017051340.16806"><vh>Leo outlines aren't your average outline</vh></v>
-<v t="ekr.20131017051340.16807"><vh>Conclusions &amp; encouragements</vh></v>
-</v>
-</v>
 <v t="ekr.20131017051340.16812"><vh>Html tables</vh>
 <v t="ekr.20131017051340.16813"><vh>generators tables</vh></v>
 <v t="ekr.20131017051340.16814"><vh>p methods table</vh></v>
@@ -144,8 +194,31 @@ expanded="ekr.20100808060203.4286,"><vh>@file html/index.html</vh></v>
 <v t="ekr.20131017051340.16811"><vh>Implications for pypy</vh></v>
 </v>
 </v>
-<v t="ekr.20090717084250.10702"><vh>Other docs</vh>
+</v>
+<v t="ekr.20050831195449"><vh>Read me first</vh></v>
+<v t="ekr.20100805171546.4412"><vh>Web pages</vh>
+<v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
+<v t="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
+<v t="ekr.20101112045055.5064" descendentVnodeUnknownAttributes="7d7100285503302e3171017d710255097374725f6174696d657103550c313337363431323739362e3071047355013071057d71066803550c313337363431323932332e307107735503302e3071087d71096803550c313337363431323932372e30710a73752e"><vh>@file plugin_catalog.py</vh></v>
+<v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
+<v t="ekr.20131005214621.16088"><vh>Home page</vh>
+<v t="ekr.20100808060203.4273"
+expanded="ekr.20100808060203.4286,"><vh>@file html/index.html</vh></v>
+</v>
+<v t="ekr.20131008041326.16065"><vh>Links page</vh>
+<v t="ekr.20130807203905.16606"><vh>@edit html/leoLinks.html</vh></v>
+</v>
+<v t="ekr.20131005214621.16089"><vh>TOC</vh>
+<v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
+</v>
+<v t="ekr.20090717084250.10702"><vh>Other docs page</vh>
 <v t="ekr.20100805165051.7176"><vh>@file other_docs.txt</vh></v>
+<v t="ekr.20131008041326.16086"><vh>Referenced from home page</vh>
+<v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028550b302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473550b302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473550b302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473550b302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20100821182153.4343"><vh>@rst html/slides.html</vh></v>
+</v>
+</v>
 </v>
 </v>
 <v t="ekr.20130926053913.15854"><vh>Leo 4.11 b1 Release notes</vh>
@@ -1263,6 +1336,7 @@ expanded="ekr.20100808060203.4286,"><vh>@file html/index.html</vh></v>
 <v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d710028550a302e302e31322e302e3771017d710255097374725f6174696d657103550c313337363431323238302e30710473550b302e302e332e302e322e3371057d71066803550c313337363431323838382e307107735510302e302e31322e312e302e372e302e3171087d710958090000007374725f6174696d65710a550c313337363431323238382e30710b73550e302e302e31322e302e372e302e31710c7d710d6803550c313337363431323238382e30710e735509302e302e312e302e30710f7d71106803550c313337363431323837322e30711173550b302e302e332e312e312e3371127d71136803550c313337363431323838392e30711473550c302e302e31322e312e302e3771157d711658090000007374725f6174696d657117550c313337363431323238302e30711873752e"><vh>@file release_notes.txt</vh></v>
 </v>
 </v>
+<v t="ekr.20131017051340.16849"><vh>** intro.html is no longer used</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -6895,6 +6969,7 @@ The type may be one of the following:
 Complex nodes specify settings in their body text.
 See the following sections for details.
 </t>
+<t tx="ekr.20070325123558"></t>
 <t tx="ekr.20070513113903">The highlights of Leo 4.4.3:
 
 - @test and @suite nodes may now be embedded directly in external files.
@@ -9933,7 +10008,8 @@ and they must start at the leftmost column of the node.
 </t>
 <t tx="ekr.20100805171546.4412">@language rest
 
-This section contains important files used to generate Leo's web site.</t>
+This section contains files used to generate Leo's web site,
+including Leo's home page.</t>
 <t tx="ekr.20100806170836.4392">.. index::
     pair: @&lt;file&gt;; Reference
 
@@ -11190,10 +11266,12 @@ the "guesses" that the \@shadow algorithm has made, you can simply change the
 choice. The next time you open the outline, you will see the choices *you* made,
 not the guesses that the \@shadow algorithm made.
 </t>
-<t tx="ekr.20101104024804.4898">@nocolor-node
+<t tx="ekr.20101104024804.4898">@language rest
 
-The children of this node contain two @button scripts. These are disabled, but
-you can execute them by selecting them and hitting Ctrl-B (execute-script).
+- Select the node "Leo's Documentation"
+
+- Run the make-sphinx command or click the make-sphinx button.
+
 
 To generate these docs by hand:
 
@@ -11210,9 +11288,8 @@ To create pdf (probably easiest on Linux, with necessary latex packages installe
 Important files:
 
 - doc\html\conf.py contains settings, including the name of the master toctree
-  document, leo_toc.html.txt.
+  document: leo_toc.html.txt.
 
-- leo_toc.html.txt contains a list of all file to be included.
 </t>
 <t tx="ekr.20101104173324.5141">- Added code-to-rst command.
 
@@ -11224,7 +11301,176 @@ Important files:
 
 - Added extract-python-method command.
 </t>
+<t tx="ekr.20101111175617.14683">def getDocString(self,p):
+
+    '''Return the docstring of the @&lt;file&gt; node p.'''
+
+    trace = False # p.h.find('@file rClick.py') &gt; -1
+    if trace: g.trace('='*20)
+    for p2 in p.self_and_subtree():
+        s = p2.b
+        if trace: g.trace(p2.h)
+        for tag in ("'''",'"""'):
+            i = s.find(tag)
+            if i &gt; -1:
+                j = s.find(tag,i+3)
+                if j &gt; -1:
+                    if trace: g.trace('**found**',p2.h,'\n',s)
+                    return s[i+3:j]
+    else:
+        return ''
+</t>
+<t tx="ekr.20101111175617.24328">def openLeoPlugins(self):
+
+    fn = g.os_path_finalize_join(
+        g.app.loadDir,'..','plugins','leoPlugins.leo')
+
+    ok,frame = g.openWithFileName(fn,
+        old_c=self.c,enableLog=True,
+        gui=None,readAtFileNodesFlag=True)
+
+    if ok:
+        return frame.c
+    else:
+        g.error('can not open leoPlugins.leo')
+        return None
+</t>
+<t tx="ekr.20101111175617.5037" str_atime="1376412919.0">@language python
+
+'''Creates an outline containing most docstrings from leoPlugins.leo.
+
+Documentation for some docstings are suppressed.'''
+
+@others
+
+controller(c).run()
+</t>
+<t tx="ekr.20101111175617.56915" str_atime="1376412768.0">class controller:
+
+    def __init__ (self,c):
+        self.c = c
+        self.trace = False
+
+    @others
+</t>
+<t tx="ekr.20101111175617.5787">def run(self):
+
+    c = self.c
+    new_c = self.openLeoPlugins()
+    if not new_c: return
+
+    # Create the top-level output node.
+    output = c.p.insertAfter()
+    output.h = 'get-docstrings-output'
+    output.b = '@language rest\n'
+
+    # Scan the descendants of the Plugins node.
+    root = g.findNodeAnywhere(new_c,'Plugins')
+    if root:
+        if self.trace: print('='*20)
+        self.createSummary(output,root)
+        self.createDocs(output,root)
+        c.frame.bringToFront() # new_c.close()
+        c.redraw()
+    else:
+        g.error('no Plugins node')
+
+
+
+@language python
+
+@language python
+
+@language python
+</t>
+<t tx="ekr.20101112045055.13354">def createSummary (self,output,root):
+
+    summary = output.insertAsLastChild()
+    summary.h = 'Summary'
+    result = []
+
+    for p in root.children():
+        if self.allowDir(p):
+            for p2 in p.subtree():
+                if self.allowFile(p2):
+                    h = p2.anyAtFileNodeName()
+                    s = self.getDocString(p2)
+                    s = self.getFirstParagraph(s).rstrip()
+                    if s:
+                        if not s.endswith('.'): s = s + '.'
+                        result.append('%s\n%s\n\n' % (h,s))
+
+    # Sort by plugin name, ignoring case.
+    def lower(s): return s.lower()
+    result.sort(key=lower)
+    summary.b = ''.join(result)
+</t>
+<t tx="ekr.20101112045055.13355">def createDocs (self,output,root):
+
+     for p in root.children():
+        if self.allowDir(p):
+            if self.trace: print('\n**',p.h)
+            child = output.insertAsLastChild()
+            child.h = p.h
+            for p2 in p.subtree():
+                if self.allowFile(p2):
+                    h = p2.anyAtFileNodeName()
+                    s = self.getDocString(p2)
+                    if self.trace: print('%5s %s' % (len(s),h))
+                    child2 = child.insertAsLastChild()
+                    child2.h = h
+                    child2.b = "%s\n\n" % s.strip()
+</t>
+<t tx="ekr.20101112045055.13356">def allowDir (self,p):
+
+    '''Return True if we should allow scan of directory p.'''
+
+    aList = (
+        # Suppressed directories.
+        'Examples','Experimental',
+        'Dyna plugins by e',
+        'Gui plugins','Testing',
+    )
+    return p.h not in aList and not p.h.startswith('  ')
+</t>
+<t tx="ekr.20101112045055.13357">def getFirstParagraph (self,s):
+
+    lines =  g.splitLines(s.strip())
+    if not lines: return ''
+
+    result = []
+    for s in lines:
+        if s.strip():
+            result.append('   '+s)
+        else:
+            break
+
+    return ''.join(result)
+</t>
 <t tx="ekr.20101112045055.5065" str_atime="1376412774.0">http://www.greygreen.org/tmp/plugins.html</t>
+<t tx="ekr.20101112222250.5322">def allowFile (self,p):
+
+    '''Return True if we should allow scan of a file at p.'''
+
+    aList = (
+        # Suppresssed files.
+        '@file bookmarks.py',       # Replaced by better @url.
+        '@file rst3.py',            # Replaced by core rst3 command.
+        '@file stickynotes_plus.py', # Experimental version of stickynotes
+        '@file testnode.py',        # Replaced by @edit.
+        # These all depend on old plugins_manager.py.
+        '@file autotrees.py', 
+        '@file old_plugin_manager.py',
+        '@file leoupdate.py',
+        # These are used only by autotrees.py.
+        r'@file trees\doc.py',
+        r'@file trees\news.py',
+        r'@file trees\remote.py',
+        r'@file trees\rss.py',
+        r'@file trees\test.py',
+    )
+    return p.h not in aList and p.isAnyAtFileNode() and p.h.endswith('.py')
+</t>
 <t tx="ekr.20101113063552.9398" str_atime="1376413523.0">.. |br| raw:: html
 
    &lt;br /&gt;
@@ -14667,6 +14913,481 @@ Notes:
 - The open-python-window command fails more gracefully It issues a message
   instead of crashing if idlelib does not exist.
 </t>
+<t tx="ekr.20111017085134.16158"></t>
+<t tx="ekr.20111017085134.16159">'''
+Copy the @screenshot node (a child of this node)
+to all @slide nodes under p, (an @slideshow node),
+that do not contain an @screenshot node.
+'''
+
+error = None
+# Find this node:
+h = '@button copy-@screenshot-node'
+p2 = g.findNodeAnywhere(c,h)
+if not p2:
+    error = 'Can not find',p.h
+# Find the @screenshot tree and the optional @select node.
+if not error:
+    select,template = None,None
+    for child in p2.children():
+        if g.match_word(child.h,0,'@screenshot'):
+            template = child.copy()
+        if g.match_word(child.h,0,'@select'):
+            select = child.copy()
+    if not template:
+        error = 'No template @slideshow node in %s' % p2.h
+if not error:
+    if not g.match_word(p.h,0,'@slideshow'):
+        error = 'not an @slideshow node',p.h
+if error:
+    g.error(error)
+else:
+    c.selectPosition(template)
+    c.copyOutline()
+    changed = False
+    b = c.undoer.beforeChangeTree(p)
+    for child in p.children():
+        if not g.match_word(child.h,0,'@slide'):
+            continue
+        for grandChild in child.children():
+            if g.match_word(grandChild.h,0,'@screenshot'):
+                break
+        else:
+            changed = True
+            p3 = child.insertAsLastChild()
+            c.selectPosition(p3)
+            c.pasteOutline()
+            g.note('copied @screenshot to %s' % child.h)
+            if select:
+                c.selectPosition(p3)
+                p4 = child.insertAsLastChild()
+                p4.h = select.h
+                g.note('copied %s to %s' % (select.h,child.h))
+            c.selectPosition(p3)
+            c.deleteOutline(p3)
+            child.contract()
+    if changed:
+        c.undoer.afterChangeTree(p,'copy-@screenshot',b)
+    c.redraw()
+</t>
+<t tx="ekr.20111017085134.16160"></t>
+<t tx="ekr.20111017085134.16161">My to-do list.
+</t>
+<t tx="ekr.20111017085134.16162">1. Make Leo tutorials.  The world is waiting.
+2. Pay phone bill or the world will never know.
+</t>
+<t tx="ekr.20111017085134.16163"></t>
+<t tx="ekr.20111017085134.16164"></t>
+<t tx="ekr.20111017085134.16165"></t>
+<t tx="ekr.20111017085134.16166"></t>
+<t tx="ekr.20111017085134.16167">@language rest
+
+This is my diary.
+</t>
+<t tx="ekr.20111017085134.16168">July 1
+    Started writing in my diary.
+July 2
+    Wrote another sentence in my diary.
+July 3
+    Keeping my diary very regularly.
+July 5
+    Oops...Yesterday I forgot towrite in my diary.
+</t>
+<t tx="ekr.20111017085134.16169"></t>
+<t tx="ekr.20111017085134.16170"></t>
+<t tx="ekr.20111017085134.16171"></t>
+<t tx="ekr.20111017085134.16172"></t>
+<t tx="ekr.20111017085134.16173"></t>
+<t tx="ekr.20111017085134.16174"></t>
+<t tx="ekr.20111017085134.16175"></t>
+<t tx="ekr.20111017085134.16176">'''Create @slide nodes under p, an @slideshow node.'''
+
+n = 23 # Number of last slide to be created.
+
+existing = [z.copy().h for z in p.children() 
+    if g.match_word(z.h,0,'@slide')]
+
+if g.match_word(p.h,0,'@slideshow'):
+    b = c.undoer.beforeChangeTree(p)
+    changed = False
+    for n in range(1,n+1):
+        h = '@slide %03d' % n
+        if h not in existing:
+            changed = True
+            child = p.insertAsLastChild()
+            child.h = h
+            g.note('created %s' % h)
+    if changed:
+        c.undoer.afterChangeTree(p,'ins-@slide-nodes',b)
+    else:
+        g.note('no @slide nodes inserted')
+    c.redraw()
+else:
+    g.error('not an @slideshow node',p.h)
+</t>
+<t tx="ekr.20111017085134.16177" str_atime="1376412901.0">m = g.loadOnePlugin('screenshots')
+m.make_slide_command(event={'c':c})
+</t>
+<t tx="ekr.20111017085134.16178">m = g.loadOnePlugin('screenshots')
+m.make_slide_show_command(event={'c':c})
+</t>
+<t tx="ekr.20111017085134.16179">'''Meld Wink slides into an @slideshow folder.
+
+   Copy screenshot files from the wink_dir to slideshow_dir, numbering
+   the destination files to reflect "holes" created by @no-screenshot
+   nodes.
+
+   This script carefully checks that the number of screenshot files
+   matches the number of screenshots referenced by the @slide nodes.
+   No copying takes place if the numbers are not as expected.'''
+
+@language python
+
+import glob
+import os
+import shutil
+
+slideshow_dir = 'C:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step'
+
+wink_dir = 'C:/leo.repo/trunk/leo/doc/html/slides/leo-basics-step-by-step/_files'
+    # The directory containing the wink screenshots.
+    # This will usually be &lt;slideshow_dir&gt;/_files.
+    # **Important** You generate these screenshots using Wink's 
+    # Export As Html command (!)
+
+@others
+
+mc = MeldController(c,p,slideshow_dir,wink_dir)
+mc.run()
+</t>
+<t tx="ekr.20111017085134.16180">class MeldController:
+
+    def __init__ (self,c,p,slideshow_dir,wink_dir):
+
+        self.c = c
+        self.slideshow_dir = slideshow_dir
+        self.slideshow_node = p
+        self.wink_dir = wink_dir
+
+    @others
+</t>
+<t tx="ekr.20111017085134.16181"></t>
+<t tx="ekr.20111017085134.16182">def fix (self,fn):
+    return os.path.normcase(fn).replace('\\','/')
+
+def finalize (self,fn):
+    return self.fix(g.os_path_finalize_join(self.slideshow_dir,fn))
+</t>
+<t tx="ekr.20111017085134.16183">def has_at_no_screenshot_node (self,p):
+
+    for p in p.children():
+        if self.match(p,'@no-screenshot'):
+            return True
+    else:
+        return False
+</t>
+<t tx="ekr.20111017085134.16184">def match (self,p,pattern):
+
+    '''Return True if p.h matches the pattern.'''
+
+    return g.match_word(p.h,0,pattern)
+</t>
+<t tx="ekr.20111017085134.16185">def run (self):
+
+    print('='*20)
+
+    aList = self.get_wink_screenshots()
+    if not aList:
+        return
+
+    if not self.check(aList):
+        return
+
+    # Pass 1: copy files for @slide nodes w/o @no-screenshot nodes.
+    self.copy_files(aList)
+
+    # Pass 2: adjust children of @slide nodes.
+    self.adjust_slideshow()
+
+    print('meld done')
+</t>
+<t tx="ekr.20111017085134.16186">def adjust_slideshow(self):
+
+    '''Adjust all @slide nodes in the slideshow.'''
+
+    # Traverse the tree as in the screenshot plugin.
+    # That is, ignore @ignore trees and nested @slide nodes.
+    # This ensures that the slide number, n, is correct.
+    p = self.slideshow_node
+    after = p.nodeAfterTree()
+    p = p.firstChild()
+    n = 1
+    while p and p != after:
+        if self.match(p,'@slide'):
+            self.adjust_slide_node(p,n)
+            n += 1
+            p.moveToNodeAfterTree()
+        elif self.match(p,'@ignore'):
+            p.moveToNodeAfterTree()
+        else:
+            p.moveToThreadNext()
+</t>
+<t tx="ekr.20111017085134.16187">def adjust_slide_node (self,p,slide_number):
+
+    '''Adjust p, an @slide node.'''
+
+    trace = True
+
+    # Delete the first "@url built slide" node.
+    self.delete_at_url_built_slide_node(p)
+
+    # Do nothing more if there is an @no-screenshot node.
+    if self.has_at_no_screenshot_node(p):
+        return
+
+    # Add or update the "@url final output file" node.
+    p2 = self.add_at_url_final_output_file(p,slide_number)
+
+    # Add the .. image:: directive.
+    self.add_image_directive(p,slide_number)
+</t>
+<t tx="ekr.20111017085134.16188">def add_at_url_final_output_file (self,p,slide_number):
+
+    '''Create or update the "@url final output file" node.'''
+
+    trace = True
+    tag ='@url final output file'
+
+    for child in p.children():
+        if self.match(child,tag):
+            p2 = child ; break
+    else:
+        if trace: g.es('add %s' % tag)
+        p2 = p.insertAsLastChild()
+        p2.h = tag
+
+    p2.b = self.finalize(
+        'slide-%03d.png' % (slide_number))
+
+    return p2
+</t>
+<t tx="ekr.20111017085134.16189">def add_image_directive (self,p,slide_number):
+
+    '''Add an image directive in p if it is not there.'''
+
+    s = '.. image:: slide-%03d.png' % (slide_number)
+
+    if p.b.find(s) == -1:
+        p.b = p.b.rstrip() + '\n\n%s\n\n' % (s)
+</t>
+<t tx="ekr.20111017085134.16190">def delete_at_url_built_slide_node (self,p):
+
+    '''Delete any "@url built slide" node in p's children.'''
+
+    trace = True
+    tag = '@url built slide'
+
+    for child in p.children():
+        if self.match(child,tag):
+            if trace: g.es('del %s in %s' % (tag,p.h))
+            child.doDelete()
+            break
+</t>
+<t tx="ekr.20111017085134.16191">def check (self,aList):
+
+    '''
+    Check that len(aList) matches the number of @slide nodes in the
+    slideshow. Don't count @slide nodes containing an @no-screenshot node.
+    '''
+
+    p = self.slideshow_node
+    n1 = len(aList)
+    n2,n3 = self.count_slide_nodes()
+
+    if not self.check_dir(self.wink_dir):
+        return False
+    if not self.check_dir(self.slideshow_dir):
+        return False
+    if not self.match(p,'@slideshow'):
+        return g.error('not a @slideshow node: %s',p.h)
+
+    if n1 != (n2-n3):
+        return g.error(
+            '%s wink slides\n'
+            '%s @slide nodes\n'
+            '%s @no_screenshot nodes' % (
+                n1,n2,n3))
+
+    return True
+</t>
+<t tx="ekr.20111017085134.16192">def check_dir (self,theDir):
+
+    if not g.os_path_exists(theDir):
+        return g.error('not found: %s' % (theDir))
+
+    if not g.os_path_isdir(theDir):
+        return g.error('not a directory: %s' % (theDir))
+
+    return True
+</t>
+<t tx="ekr.20111017085134.16193">def count_slide_nodes (self):
+
+    '''Return n1,n2
+
+    n1 is the total number of @slide nodes in the @slideshow tree.
+    n2 is number of @slide nodes containing an @no-slideshow child.
+    '''
+
+    p = self.slideshow_node
+    after = p.nodeAfterTree()
+    p = p.firstChild()
+    n1,n2 = 0,0
+    while p and p != after:
+        if self.match(p,'@slide'):
+            n1 += 1
+            if self.has_at_no_screenshot_node(p):
+                n2 += 1
+            p.moveToNodeAfterTree()
+        elif self.match(p,'@ignore'):
+            p.moveToNodeAfterTree()
+        else:
+            p.moveToThreadNext()
+
+    g.trace(n1,n2)
+    return n1,n2
+</t>
+<t tx="ekr.20111017085134.16194">def copy_files (self,aList):
+
+    '''Copy files from the wink_dir to slideshow_dir,
+    numbering the destination files to reflect "holes"
+    created by @no-screenshot nodes.'''
+
+    # Traverse the tree as in the screenshot plugin.
+    # That is, ignore @ignore trees and nested @slide nodes.
+    # This ensures that the slide number, n, is correct.
+    p = self.slideshow_node
+    after = p.nodeAfterTree()
+    p = p.firstChild()
+    wink_n = 0 # Wink screenshot numbers start at 0.
+    slide_n = 1 # Slide numbers start at 1.
+    while p and p != after:
+        if self.match(p,'@slide'):
+            if not self.has_at_no_screenshot_node(p):
+                self.copy_file(aList,slide_n,wink_n)
+                wink_n += 1
+            slide_n += 1
+            p.moveToNodeAfterTree()
+        elif self.match(p,'@ignore'):
+            p.moveToNodeAfterTree()
+        else:
+            p.moveToThreadNext()
+</t>
+<t tx="ekr.20111017085134.16195">def copy_file (self,aList,slide_n,wink_n):
+
+    trace = True
+
+    if wink_n &gt;= len(aList):
+        return g.trace('can not happen: '
+            'len(aList): %s, n: %s' % (
+                len(aList),wink_n))
+
+    fn_src = aList[wink_n]
+    fn_dst = 'slide-%03d.png' % (slide_n)
+
+    if trace:
+        g.trace('%7s -&gt; %s' % (g.shortFileName(fn_src),fn_dst))
+
+    shutil.copyfile(fn_src,fn_dst)
+</t>
+<t tx="ekr.20111017085134.16196">def get_wink_screenshots (self):
+
+    '''Return the properly sorted list of wink screenshots.'''
+
+    trace = False
+
+    aList = glob.glob(self.wink_dir + '/*.png')
+
+    def key(s):
+        path,ext = g.os_path_splitext(s)
+        junk,n = g.os_path_split(path)
+        n = n.strip()
+        if n.isdigit():
+            return int(n)
+        else:
+            g.error('bad wink screenshot: %s' % (s))
+            raise KeyError
+
+    aList.sort(key=key) # Essential.
+
+    if trace:
+        for z in aList:
+            print(z)
+
+    return aList
+</t>
+<t tx="ekr.20111017085134.16197">'''Renumber @slide nodes under p, an @slideshow node.'''
+
+if g.match_word(p.h,0,'@slideshow'):
+    n = 1
+    for child in p.children():
+        if g.match(child.h,0,'@slide'):
+            child.h = '@slide %03d' % n
+            n += 1
+    c.redraw()
+else:
+    g.error('not an @slideshow node',p.h)
+</t>
+<t tx="ekr.20111017085134.16198">@language python
+
+changed = 0
+b = c.undoer.beforeChangeTree(p)
+
+for child in p.children():
+    s = child.b
+    i = s.find('.. image::')
+    if i &gt; -1:
+        i,j = g.getLine(s,i)
+        child.b = s[:i] + s[j+1:]
+        # g.es(child.h)
+        changed += 1
+
+if changed:
+    g.es('changed %s nodes' % changed)
+    c.undoer.afterChangeTree(p,'remove-image-directives',b)
+
+</t>
+<t tx="ekr.20111017085134.16199">@language python
+
+changed = 0
+b = c.undoer.beforeChangeTree(p)
+for child in p.children():
+    for child2 in child.children():
+        if g.match_word(child2.h,0,'@url built slide'):
+            child2.doDelete()
+            changed += 1
+            break
+
+if changed:
+    g.es('deleted %s nodes' % (changed))
+    c.undoer.afterChangeTree(p,'remove-@url-built-slide',b)
+    c.redraw()
+</t>
+<t tx="ekr.20111017085134.16200">@language python
+
+changed = 0
+b = c.undoer.beforeChangeTree(p)
+for child in p.children():
+    for child2 in child.children():
+        if g.match_word(child2.h,0,'@url final output file'):
+            child2.doDelete()
+            changed += 1
+            break
+
+if changed:
+    g.es('deleted %s nodes' % (changed))
+    c.undoer.afterChangeTree(p,'remove-@url-final-output',b)
+    c.redraw()
+</t>
 <t tx="ekr.20111108052738.5507">run-marked-unit-tests-externally = Alt-4
 run-all-unit-tests-externally = Alt-5
 </t>
@@ -15486,6 +16207,16 @@ For details, see the release notes.
 For full details, see the release notes.
 </t>
 <t tx="ekr.20120320153011.8551"></t>
+<t tx="ekr.20130803073926.17120">target = '-- \nYou received this message because'
+target = '--=20\nYou received this message because'
+while p:
+    s = p.b
+    i = s.find(target)
+    if i &gt; -1:
+        p.b = s[:i]
+        g.es(p.h)
+    p.moveToThreadNext()
+</t>
 <t tx="ekr.20130807203905.16526">@language rest
 
 When I study a program, I like to import it into Leo. I have several
@@ -20080,18 +20811,6 @@ Appendices
 <t tx="ekr.20131009050634.17631"></t>
 <t tx="ekr.20131009050634.17658"></t>
 <t tx="ekr.20131009052848.6456"></t>
-<t tx="ekr.20131009052848.6457">@ @rst-options
-call_docutils=False
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c</t>
 <t tx="ekr.20131009065148.31758">####################
 Directives Reference
 ####################
@@ -20577,6 +21296,7 @@ log tab containing a graphics widget. Here is an example script::
 <t tx="ekr.20131013060803.16851">@language python
 
 # Should be run from an empty .leo file.
+# Such traces might be part of the tutorial, but aren't at present.
 
 g.cls()
 
@@ -20931,8 +21651,8 @@ aList = c.rstCommands.rst3()
 if aList:
     path = g.os_path_finalize_join(g.app.loadDir,'..','doc','html')
     os.chdir(path)
-    if len(aList) &gt; 1: g.execute_shell_commands(['make clean'],trace=trace)
-    g.execute_shell_commands(['make html'],trace=trace)
+    if len(aList) &gt; 1: g.execute_shell_commands('make clean',trace=trace)
+    g.execute_shell_commands('make html',trace=trace)
     fn = aList[0].h.strip() if len(aList) == 1 else 'leo_toc.html'
     fn = g.os_path_finalize_join(path,'_build','html',g.os_path_basename(fn))
     if g.os_path_exists(fn):
@@ -21082,57 +21802,58 @@ Each Leo outline contains a hidden vnode, c.hiddenRootNode::
     F.parents: [c.hiddenRootVnode]
 </t>
 <t tx="ekr.20131017051340.16777">@language rest
+
+This section contains several attempts to describe what Leo is.
 </t>
-<t tx="ekr.20131017051340.16778">
+<t tx="ekr.20131017051340.16778">.. _`Emacs`:            http://www.gnu.org/software/emacs/
+.. _`IPython`:          http://ipython.org/
+.. _`MIT license`:      http://www.opensource.org/licenses/mit-license.php/
+.. _`Open Software`:    http://www.opensource.org/
+.. _`PyQt`:             http://www.riverbankcomputing.co.uk/software/pyqt/intro
+.. _`Python`:           http://www.python.org/
+.. _`reSTructuredText`: http://docutils.sourceforge.net/rst.html
+.. _`svg graphics`:     http://www.w3.org/Graphics/SVG/
+.. _`vim`:              http://www.vim.org/
+.. _`xemacs`:           http://www.xemacs.org/
+
 Leo is...
 
-&lt;li&gt;
-    An IDE (Integrated Development Environment), fully scriptable using
-    &lt;a HREF="http://www.python.org/"&gt;Python&lt;/a&gt;.
-    Leo works well with &lt;a href="http://www.gnu.org/software/emacs/"&gt;emacs&lt;/a&gt;,
-    &lt;a href="http://www.xemacs.org/"&gt;xemacs&lt;/a&gt;,
-    &lt;a href="http://www.vim.org/"&gt;vim&lt;/a&gt;, and
-    &lt;a href="http://ipython.org/"&gt;ipython&lt;/a&gt;.
-    &lt;/li&gt;
-&lt;li&gt;
-    An outline-oriented, flexible filing cabinet holding any kind of data: including
-    programs, web sites, text documents of all kinds, music, graphics and movies.&lt;/li&gt;
-&lt;li&gt;
-    &lt;i&gt;The&lt;/i&gt; premier platform for creating, generating, studying, scripting, testing,
-    and validating computer programs, web sites and any other complex data.&lt;/li&gt;
-&lt;li&gt;
-    A rendering engine for
-    &lt;a HREF="http://docutils.sourceforge.net/rst.html"&gt;reStructuredText&lt;/a&gt;, web pages and
-    &lt;a HREF="http://www.w3.org/Graphics/SVG/"&gt;svg graphics&lt;/a&gt;.&lt;/li&gt;
-&lt;li&gt;
-    A music and movie player.&lt;/li&gt;
-&lt;li&gt;
-    A sophisticated
-    &lt;a HREF="http://www.riverbankcomputing.co.uk/software/pyqt/intro"&gt;PyQt&lt;/a&gt;
-    app running on Windows and Linux.&lt;/li&gt;
-&lt;li&gt;
-    100% pure &lt;a HREF="http://www.python.org/"&gt;Python&lt;/a&gt;,
-    running on Python 2.6 and above, including Python 3.x.&lt;/li&gt;
-&lt;li&gt;
-    &lt;a href="http://www.opensource.org/"&gt;&lt;i&gt;Open Software&lt;/i&gt;&lt;/a&gt;,
-    distributed under the
-    &lt;a href="http://www.opensource.org/licenses/mit-license.php/"&gt;MIT License&lt;/a&gt;.&lt;/li&gt;
+- An IDE (Integrated Development Environment), fully scriptable using
+  `Python`_. Leo works well with `Emacs`_, `xemacs`_, `vim`_ and
+  `IPython`_.
     
-&lt;p&gt;These features make Leo special:&lt;/p&gt;
+- An outline-oriented, flexible filing cabinet holding any kind of data:
+  including programs, web sites, text documents of all kinds, music,
+  graphics and movies.
 
-&lt;li&gt;Leo is &lt;em&gt;completely organizable&lt;/em&gt;: outline nodes may appear
-&lt;em&gt;many&lt;/em&gt;times in the same outline. That is, nodes act like
-either file folders or plain data (or both) Any node may be "filed" in
-arbitrarily many folders.&lt;/li&gt;
+- The *premier* platform for creating, generating, studying, scripting,
+    testing, and validating computer programs, web sites and any other
+    complex data.
 
-&lt;li&gt;Leo is &lt;em&gt;programmable&lt;/em&gt;: &lt;dfn&gt;Leo scripts&lt;/dfn&gt; (Python
-scripts in Leo outlines) have &lt;em&gt;easy&lt;/em&gt; access to all Leo outlines, and
-&lt;em&gt;easy&lt;/em&gt; access to all of Leo's own source code. Conversely, Leo
-outlines naturally organize even the largest computer programs.&lt;/li&gt;
+- A rendering engine for `reSTructuredText`_, web pages and `svg graphics`_.
+   
+- A music and movie player.
 
-&lt;li&gt;The &lt;dfn&gt;Leo Aha&lt;/dfn&gt; is the moment when someone realizes how well Leo outlines and
-Leo scripts work together.&lt;/li&gt;
-</t>
+- A sophisticated `PyQt`_ app running on Windows and Linux.&lt;/li&gt;
+
+- 100% pure `Python`_ running on Python 2.6 and above, including Python 3.x.
+
+- `Open Software`_ distributed under the `MIT License`_.
+
+These features make Leo special:
+
+- Leo is **completely organizable**: outline nodes may appear *many* times
+  in the same outline. That is, nodes act like either file folders or plain
+  data (or both) Any node may be "filed" in arbitrarily many folders.
+
+- Leo is **programmable**: **Leo scripts** (Python scripts in Leo outlines)
+  have *easy* access to all Leo outlines, and *easy* access to all of Leo's
+  own source code. Conversely, Leo outlines naturally organize even the
+  largest computer programs.
+
+- The Leo Aha is the moment when someone realizes how well Leo outlines and
+  Leo scripts work together.
+  </t>
 <t tx="ekr.20131017051340.16779">#######################
 The leoInspect Module
 #######################
@@ -22231,31 +22952,30 @@ This means several specific things:
    boring and repetitive editing tasks.
 
 </t>
-<t tx="ekr.20131017051340.16806">Earlier I said that *any* node can be built from other nodes, and *any* node can
-be used by any other node. It takes a very special kind of outline for this to
-be possible. In a typical outline, such as Emacs outline mode, for example,
-nodes appear exactly once in the outline. This makes it impossible to 'reuse'
-nodes in multiple places. Leo removes that limitation: any outline node can be
-**cloned**, and clones can appear in as many places in an outline as you like.
-Although clones may look distinct on the screen, at the data level
-**each clone is exactly the same node**.
+<t tx="ekr.20131017051340.16806">Earlier I said that *any* node can be built from other nodes, and *any*
+node can be used by any other node. It takes a very special kind of outline
+for this to be possible. In a typical outline, such as Emacs outline mode,
+for example, nodes appear exactly once in the outline. This makes it
+impossible to 'reuse' nodes in multiple places. Leo removes that
+limitation: any outline node can be **cloned**, and clones can appear in as
+many places in an outline as you like. Although clones may look distinct on
+the screen, at the data level **each clone is exactly the same node**.
 
-Earlier I said that you can think of nodes as representing 'organization' or
-'structure' or 'views' or even 'architecture'. Clones are the crucial feature
-that allows this point of view. For example, we can build up multiple 'views' of
-data in an outline using clones as follows:
+Earlier I said that you can think of nodes as representing 'organization'
+or 'structure' or 'views' or even 'architecture'. Clones are the crucial
+feature that allows this point of view. For example, we can build up
+multiple 'views' of data in an outline using clones as follows:
 
 - Create a 'view node' that will represent a *user-specified* view.
 
-- Clone all nodes that are to be part of the view, and move them so that each
-  clone is a child of the view node.
+- Clone all nodes that are to be part of the view, and move them so that
+  each clone is a child of the view node.
 
-That's about all there is to it. The view node, and its children *is* a new view
-of the outline. This notion of 'view' is so important that Leo supports it
-directly. Leo's **chapters** are simply views created as I have just described.
-When you select one chapter, you only see the nodes of that chapter in Leo's
-outline pane.
-
+That's about all there is to it. The view node, and its children *is* a new
+view of the outline. This notion of 'view' is so important that Leo
+supports it directly. Leo's **chapters** are simply views created as I have
+just described. When you select one chapter, you only see the nodes of that
+chapter in Leo's outline pane.
 </t>
 <t tx="ekr.20131017051340.16807">So Leo offers a new way to understand, organize and manipulate *any* kind
 of complex data, including computer programs, *designs* of computer
@@ -22459,7 +23179,9 @@ global functions. Examples::
     c.widgetWantsFocusNow(  c.widgetWantsFocusNow(w
     reduce(                 reduce(function, sequence[, initial]) -&gt; value
 </t>
-<t tx="ekr.20131017051340.16816"></t>
+<t tx="ekr.20131017051340.16816">This section supplementary documentation.
+
+It will not be of interest for most users of Leo.</t>
 <t tx="ekr.20131017051340.16831">###############
 IPython and Leo
 ###############
@@ -23018,6 +23740,12 @@ typical of all promising technologies.
 
 The goal of close cooperation between Leo and IPython went from vague dream
 to completed reality over the span of about 10 days.
+</t>
+<t tx="ekr.20131017051340.16847">@language python
+
+</t>
+<t tx="ekr.20131017051340.16849"></t>
+<t tx="ekr.20131017051340.16850">@language python
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
