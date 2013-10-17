@@ -2360,7 +2360,7 @@ class keyHandlerClass:
         # This isn't perfect in variable-width fonts.
         lines = ['%*s %s\n' % (-n,s1,s2) for s1,s2 in data]
         g.es('',''.join(lines),tabName=tabName)
-    #@+node:ekr.20061031131434.122: *4* repeatComplexCommand & helper
+    #@+node:ekr.20061031131434.122: *4* k.repeatComplexCommand & helper
     def repeatComplexCommand (self,event):
 
         '''Repeat the previously executed minibuffer command.'''
@@ -2371,6 +2371,7 @@ class keyHandlerClass:
         else:
             g.warning('no previous command')
 
+    #@+node:ekr.20131017100903.16689: *5* repeatComplexCommandHelper
     def repeatComplexCommandHelper (self,event):
 
         k = self ; c = k.c

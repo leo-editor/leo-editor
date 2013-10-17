@@ -8,18 +8,17 @@
 @language rest
 .. @+node:ekr.20130926053913.11572: *3* for b1
 @language rest
-.. @+node:ekr.20131016084446.16724: *4* c.setComplexCommand
-# for repeat-complex-command.
-.. @+node:ekr.20131007055150.13035: *4* doc to do (7)
-.. @+node:ekr.20130920055521.11280: *5* Create Leo cheat sheet
-.. @+node:ekr.20131005040354.16071: *5* to do: help-for-yank-and-kill
-.. @+node:ekr.20131005040354.16073: *5* to do: revise help-for-abbreviations
-.. @+node:ekr.20131005040354.16075: *5* to do: create help-for-dynamic-abbreviations
-.. @+node:ekr.20131005040354.16074: *5* to do: revise help-for-find-commands
-Use the tutorial text.
-.. @+node:ekr.20131001045038.19033: *5* Home page re postcard
+.. @+node:ekr.20131017100903.16688: *4* revise help-for commands
+create help-for-dynamic-abbreviations
+
+Revise, using the tutorial text.
+
+- help-for-yank-and-kill
+- help-for-abbreviations
+- help-for-find-commands
+.. @+node:ekr.20131001045038.19033: *4* Home page re postcard
 How do you use Leo?
-.. @+node:ekr.20130908104426.11258: *5* 1180186 debian install not documented well enough
+.. @+node:ekr.20130908104426.11258: *4* 1180186 debian install not documented well enough
 https://bugs.launchpad.net/leo-editor/+bug/1180186
 
 Installing Leo in debian and other apt-get enabled linux distros is not

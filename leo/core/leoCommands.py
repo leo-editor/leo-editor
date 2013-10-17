@@ -6866,7 +6866,7 @@ class Commands (object):
 
         url = 'http://leoeditor.com/leo_toc.html'
         g.handleUrl(url)
-    #@+node:ekr.20110402084740.14490: *4* goToNext/PrevHistory
+    #@+node:ekr.20110402084740.14490: *4* c.goToNext/PrevHistory
     def goToNextHistory (self,event=None):
         '''Go to the next node in the history list.'''
         c = self
@@ -6876,6 +6876,11 @@ class Commands (object):
         '''Go to the previous node in the history list.'''
         c = self
         c.nodeHistory.goPrev()
+    #@+node:ekr.20131016084446.16724: *4* c.setComplexCommand
+    def setComplexCommand(self,commandName):
+        '''Make commandName the command to be executed by repeat-complex-command.'''
+        c = self
+        c.k.mb_history.insert(0,commandName)
     #@+node:ekr.20031218072017.2945: *3* Dragging (commands)
     #@+node:ekr.20031218072017.2353: *4* c.dragAfter
     def dragAfter(self,p,after):
