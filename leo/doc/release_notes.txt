@@ -2015,7 +2015,7 @@ Leo 4.3.3 final                 September 17, 2005
 
 Leo 4.3.3 fixes several bugs reported in Leo 4.3.2 final in the last several days.
 
-To learn about Leo, see: http://leoeditor.com/intro.html
+To learn about Leo, see: http://leoeditor.com/tutorial.html
 
 The highlights of 4.3.3 (and 4.3.2)
 -----------------------------------
@@ -2205,7 +2205,7 @@ The new Pretty Print code has the following improvements:
 #@+node:ekr.20050913131848: *4* 4.3.2 final
 Leo 4.3.2 final                 September 16, 2005
 
-To learn about Leo, see: http://leoeditor.com/intro.html
+To learn about Leo, see: http://leoeditor.com/tutorial.html
 
 The highlights of 4.3.2:
 -----------------------
@@ -2391,7 +2391,7 @@ The new Pretty Print code has the following improvements:
 #@+node:ekr.20050906104918: *4* 4.3.2 beta 1
 Leo 4.3.2 beta 1                  September 10, 2005
 
-To learn about Leo, see: http://leoeditor.com/intro.html
+To learn about Leo, see: http://leoeditor.com/tutorial.html
 
 The highlights of 4.3.2:
 -----------------------
@@ -4341,7 +4341,7 @@ This will be the last alpha version of Leo 4.4. Beta 1 is coming in about a
 week. You should be able to use this version safely; there are no known serious
 bugs.
 
-To learn about Leo, see: http://leoeditor.com/intro.html
+To learn about Leo, see: http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.4:
 ----------------------------------
@@ -4483,7 +4483,7 @@ You should be able to use this version safely. There are no known serious bugs,
 but several minibuffer commands are not ready for prime time. All the major
 features of 4.4 are in place.
 
-To learn about Leo, see: http://leoeditor.com/intro.html
+To learn about Leo, see: http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.4:
 ----------------------------------
@@ -5101,7 +5101,7 @@ The code is stable; there are no known serious bugs. Some features are
 incomplete.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.4:
 --------------------------
@@ -5304,7 +5304,7 @@ This version fixes dozens of bugs, improves performance and polishes the user
 interface. The code is stable; there are no known serious bugs.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.4b2:
 ----------------------------
@@ -5921,7 +5921,7 @@ Besides fixing the fatal problems with Leo 4.4b2, this version fixes two minor b
 and adds some new settings in leoSettings.leo.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.4 b2 and a6:
 ----------------------------
@@ -5999,7 +5999,7 @@ This version fixes some minor problems with Leo 4.4a6 and adds autocompletion
 and calltips.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.4:
 --------------------------
@@ -6075,7 +6075,7 @@ This version fixes some minor problems and adds various features.  This code
 has been in use for several weeks without any major problems reported.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.4:
 --------------------------
@@ -6267,7 +6267,7 @@ your environment before recommending this version of Leo to others, (such as
 your students).
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.4:
 --------------------------
@@ -6465,7 +6465,7 @@ This version fixes a few minor bug reported in 4.4b4 and adds 9 new commands.
 The open-outline-by-name command supports filename completion.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.4:
 --------------------------
@@ -6552,7 +6552,7 @@ Leo 4.4 Final is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.4:
 --------------------------
@@ -6591,7 +6591,7 @@ Leo 4.4.1 final is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.4.1:
 ----------------------------
@@ -6684,7 +6684,7 @@ Leo 4.4.1 beta 4 is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.4.1:
 ----------------------------
@@ -6759,7 +6759,7 @@ Leo 4.4.1 beta 1 is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.4.1:
 ----------------------------
@@ -6885,7 +6885,7 @@ Leo 4.4.1 beta 2 is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.4.1:
 ----------------------------
@@ -7205,7 +7205,7 @@ Leo 4.4.1 beta 3 is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.4.1:
 ----------------------------
@@ -7301,7 +7301,7 @@ Leo 4.4.1.1 corrects a serious last-minute unicode bug in Leo 4.4.1.
 This version also adds the new slideshow plugin.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.4.1:
 ----------------------------
@@ -7333,7 +7333,7 @@ Leo 4.4.2 beta 1 is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.4.2:
 ----------------------------
@@ -7530,7 +7530,7 @@ Leo 4.4.2 beta 2 is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.4.2:
 ----------------------------
@@ -7761,7 +7761,7 @@ are no known major bugs in Leo.  This will be the last beta release before
 Leo 4.4.2 final.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.4.2:
 ----------------------------
@@ -7960,7 +7960,7 @@ significant bugs in this version of Leo.
 Leo 4.4.2 final fixes a few bugs and adds support for pymacs. 
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.4.2:
 ----------------------------
@@ -8018,7 +8018,7 @@ Leo 4.4.3 alpha 1 is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 Important: the wxGui plugin is still alpha-quality code at present.
 
@@ -8208,7 +8208,7 @@ distribution because not all plugins have been tested on the reorganized code
 base.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.4.3:
 ----------------------------
@@ -8399,7 +8399,7 @@ Leo 4.4.3 beta 1 is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.4.3:
 ----------------------------
@@ -8515,7 +8515,7 @@ Leo 4.4.3 beta 2 is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.4.3:
 ----------------------------
@@ -8628,7 +8628,7 @@ http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 This release fixes all known bugs and adds several new features.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.4.3:
 ----------------------------
@@ -8693,7 +8693,7 @@ Leo 4.4.3 final is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.4.3:
 ----------------------------
@@ -8725,7 +8725,7 @@ Leo 4.4.3.1 is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.4.3.1:
 ----------------------------
@@ -8791,7 +8791,7 @@ Leo 4.4.4 beta 1 is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.4.4:
 ----------------------------
@@ -8916,7 +8916,7 @@ Leo 4.4.4 beta 2 is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.4.4:
 ----------------------------
@@ -9081,7 +9081,7 @@ Leo 4.4.4 contains many important features originally planned for later releases
 It's been a good month :-)
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.4.4:
 ----------------------------
@@ -9404,7 +9404,7 @@ http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 This beta 4 version fixes all bugs reported against Leo 4.4.4 beta 3.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 Leo 4.4.4 contains many important features originally planned for later releases.
 
@@ -9506,7 +9506,7 @@ Leo 4.4.4 Final is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 Leo 4.4.4 contains many important features originally planned for later releases.
 
@@ -9578,7 +9578,7 @@ Leo 4.4.5 beta 1 is available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 Leo 4.4.5 fixes several long-delayed bug fixes and adds several new features.
 
@@ -9853,7 +9853,7 @@ This beta 2 release fixes several recently reported bugs.  A final release
 is due in about a week.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 Leo 4.4.5 fixes several long-delayed bug fixes and adds several new features.
 
@@ -9977,7 +9977,7 @@ http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 Leo 4.4.5 fixes several long-delayed bug fixes and adds several new features.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.4.5:
 ----------------------------
@@ -10006,7 +10006,7 @@ http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 Leo 4.4.6 fixes several recently reported bugs, all minor.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.4.6:
 ----------------------------
@@ -10098,7 +10098,7 @@ http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 Leo 4.4.6 fixes several recently reported bugs, all minor.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.4.6:
 ----------------------------
@@ -10156,7 +10156,7 @@ http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 Leo 4.4.6 fixes several recently reported bugs, all minor.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.4.6:
 ----------------------------
@@ -10184,7 +10184,7 @@ between Leo and IPython.  See http://leoeditor.com/IPythonBridge.html
 Leo's main discussion is now at: http://groups.google.com/group/leo-editor
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.4.7:
 ----------------------------
@@ -10241,7 +10241,7 @@ This version features a new ipython plugin that provides a two-way bridge
 between Leo and IPython.  See http://leoeditor.com/IPythonBridge.html
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.4.7:
 ----------------------------
@@ -10300,7 +10300,7 @@ This version features a new ipython plugin that provides a two-way bridge
 between Leo and IPython.  See http://leoeditor.com/IPythonBridge.html
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.4.8:
 ----------------------------
@@ -10375,7 +10375,7 @@ This version features a new ipython plugin that provides a two-way bridge
 between Leo and IPython.  See http://leoeditor.com/IPythonBridge.html
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.4.8:
 ----------------------------
@@ -10509,7 +10509,7 @@ This version features a new ipython plugin that provides a two-way bridge
 between Leo and IPython.  See http://leoeditor.com/IPythonBridge.html
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.4.8:
 ----------------------------
@@ -10585,7 +10585,7 @@ This version features a new ipython plugin that provides a two-way bridge
 between Leo and IPython.  See http://leoeditor.com/IPythonBridge.html
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.4.8:
 ----------------------------
@@ -10626,7 +10626,7 @@ This version features a new ipython plugin that provides a two-way bridge
 between Leo and IPython.  See http://leoeditor.com/IPythonBridge.html
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.4.8:
 ----------------------------
@@ -10658,7 +10658,7 @@ Leo 4.5 beta 1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.5:
 --------------------------
@@ -11150,7 +11150,7 @@ http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 Leo 4.5 contains many important new features.  See below for details.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.5:
 --------------------------
@@ -11263,7 +11263,7 @@ http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 Leo 4.5 contains many important new features.  See below for details.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.5:
 --------------------------
@@ -11380,7 +11380,7 @@ http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 Leo 4.5 contains many important new features.  See below for details.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.5:
 --------------------------
@@ -11495,7 +11495,7 @@ http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 Leo 4.5 contains many important new features.  See below for details.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.5:
 --------------------------
@@ -11608,7 +11608,7 @@ Leo 4.5 final is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.5:
 --------------------------
@@ -11732,7 +11732,7 @@ Leo 4.5.1 final fixes several important bugs in Leo 4.5 final:
 - Improved Leo's installer.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.5:
 --------------------------
@@ -11778,7 +11778,7 @@ Leo 4.6 b1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.6:
 --------------------------
@@ -12001,7 +12001,7 @@ Leo 4.6 b2 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.6:
 --------------------------
@@ -12225,7 +12225,7 @@ Leo 4.6 rc1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.6:
 --------------------------
@@ -12333,7 +12333,7 @@ Leo 4.6 final is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.6:
 --------------------------
@@ -12760,7 +12760,7 @@ Leo 4.6.1 final is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 Leo 4.6.1 fixes several minor bugs in Leo 4.6.
 
@@ -13190,7 +13190,7 @@ Leo 4.6.2 final is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 Leo 4.6.2 fixes several bugs reported since Leo 4.6 was released.
 
@@ -13233,7 +13233,7 @@ Leo 4.6.3 final is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 Leo 4.6.3 fixes a significant caching bug in Leo 4.6.2.
 Leo 4.6.3 also comes with an executable installer for Windows.
@@ -13279,7 +13279,7 @@ Leo 4.7 beta 1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 This version of Leo is labeled a beta version because it contains some new,
 relatively untested plugins.  However, Leo's core should be quite reliable.
@@ -13359,7 +13359,7 @@ http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 Leo 4.7 beta 1 fixes all known serious bugs in Leo.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.7:
 --------------------------
@@ -13726,7 +13726,7 @@ http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 Leo 4.7 beta 3 fixes all known serious bugs in Leo.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.7:
 --------------------------
@@ -13789,7 +13789,7 @@ http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 Leo 4.7 rc 1 fixes all known bugs in Leo, serious or minor.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.7:
 --------------------------
@@ -14013,7 +14013,7 @@ http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 Leo 4.7 final fixes all known bugs in Leo.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.7:
 --------------------------
@@ -14072,7 +14072,7 @@ converted external file and .leo file together, making it impossible to lose
 data.
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.7:
 --------------------------
@@ -14131,7 +14131,7 @@ Leo 4.8 alpha 1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.8:
 --------------------------
@@ -14172,7 +14172,7 @@ Leo 4.8 beta 1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.8:
 --------------------------
@@ -14214,7 +14214,7 @@ Leo 4.8 release candidate 1 is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.8:
 --------------------------
@@ -14962,7 +14962,7 @@ Leo 4.8 final is now available at:
 http://sourceforge.net/project/showfiles.php?group_id=3458&package_id=29106
 
 Leo is a text editor, data organizer, project manager and much more. See:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.8:
 --------------------------
@@ -15712,7 +15712,7 @@ Leo 4.9 final is now available at:
 http://sourceforge.net/projects/leo/files/
 
 Leo is a text editor, data organizer, project manager and much more.
-See: http://leoeditor.com/intro.html
+See: http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.9:
 --------------------------
@@ -16418,7 +16418,7 @@ Leo 4.10 final                                         March 29, 2012
 Leo 4.10 final is now available at: http://sourceforge.net/projects/leo/files/Leo/4.10%20final/
 
 Leo is a text editor, data organizer, project manager and much more.
-See http://leoeditor.com/intro.html
+See http://leoeditor.com/tutorial.html
 
 Leo 4.10 contains 9 months of intense work on Leo. Several very important
 features are subtle; you could almost call them Easter Eggs, so please read
@@ -18362,7 +18362,7 @@ Leo 4.11 a2 is now available at: http://sourceforge.net/projects/leo/files/Leo/
 Leo 4.11 contains over a year's work on Leo.
 
 Leo is a text editor, data organizer, project manager and much more.
-See http://leoeditor.com/intro.html
+See http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.11:
 ---------------------------
@@ -20566,7 +20566,7 @@ Leo 4.11 b1 is now available at: http://sourceforge.net/projects/leo/files/Leo/
 Leo 4.11 contains over a year's work on Leo.
 
 Leo is a text editor, data organizer, project manager and much more.
-See http://leoeditor.com/intro.html
+See http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.11:
 ---------------------------

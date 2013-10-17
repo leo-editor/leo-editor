@@ -113,6 +113,14 @@
 <v t="ekr.20111017085134.16200"><vh>@@button remove-final-output</vh></v>
 </v>
 <v t="ekr.20130803073926.17120"><vh>@@button clean-mail</vh></v>
+<v t="sps.20100708203040.19008"><vh>@@button generate-full-userguide</vh>
+<v t="sps.20100708203040.19009"><vh>&lt;&lt; html manual &gt;&gt;</vh></v>
+<v t="sps.20100708203040.19010"><vh>&lt;&lt; pdf manual &gt;&gt;</vh></v>
+</v>
+<v t="ville.20090705224948.5734"><vh>@@button generate-userguide</vh>
+<v t="ville.20090705225609.5736"><vh>&lt;&lt; html manual &gt;&gt;</vh></v>
+<v t="ville.20090705225609.5738"><vh>&lt;&lt; pdf manual &gt;&gt;</vh></v>
+</v>
 <v t="ekr.20131016083406.16724"><vh>@button make-sphinx @key=Alt-.</vh></v>
 </v>
 <v t="ekr.20131017051340.16777"><vh>Old descriptions of Leo</vh>
@@ -140,6 +148,25 @@
 <v t="ekr.20131017051340.16806"><vh>Leo outlines aren't your average outline</vh></v>
 <v t="ekr.20131017051340.16807"><vh>Conclusions &amp; encouragements</vh></v>
 </v>
+<v t="ekr.20091107093823.6790"><vh>Old Tech report</vh>
+<v t="ekr.20091107093823.6791"><vh>@@rst html\techReport.html</vh>
+<v t="ekr.20091107093823.6793"><vh>Leo’s window, outlines &amp; clones</vh></v>
+<v t="ekr.20091107093823.6794"><vh>Relations: organizer nodes, views, tasks and metadata</vh></v>
+<v t="ekr.20091107093823.6795"><vh>Plugins</vh></v>
+<v t="ekr.20091107093823.6796"><vh>Derived files and special nodes</vh></v>
+<v t="ekr.20091107093823.6797"><vh>Markup for scripts</vh></v>
+<v t="ekr.20091107093823.6798"><vh>Scripting Leo</vh></v>
+<v t="ekr.20091107093823.6799"><vh>Leo’s modules and classes</vh></v>
+<v t="ekr.20091107093823.6800"><vh>Predefined symbols in scripts</vh></v>
+<v t="ekr.20091107093823.6801"><vh>Accessing data</vh></v>
+<v t="ekr.20091107093823.6802"><vh>Traversing outlines</vh></v>
+<v t="ekr.20091107093823.6803"><vh>Executing commands from scripts</vh></v>
+<v t="ekr.20091107093823.6804"><vh>Bringing scripts to data</vh></v>
+<v t="ekr.20091107093823.6805"><vh>Unit Testing with @test and @suite nodes</vh></v>
+<v t="ekr.20091107093823.6806"><vh>Plugins and hooks</vh></v>
+<v t="ekr.20091107093823.6807"><vh>Contacts</vh></v>
+</v>
+</v>
 </v>
 <v t="ekr.20131017051340.16850"><vh>Scripts</vh>
 <v t="ekr.20101111175617.5037"><vh>Script: get-plugin-docstrings</vh>
@@ -157,18 +184,6 @@
 <v t="ekr.20131013060803.16851"><vh>Script: generate position trace</vh></v>
 </v>
 <v t="ekr.20131017051340.16816"><vh>Unused documentation</vh>
-<v t="ekr.20131017051340.16779"><vh>@@rst html/leoInspect.html</vh>
-<v t="ekr.20131017051340.16780"><vh>A query language</vh></v>
-<v t="ekr.20131017051340.16781"><vh>Comparing leoInspect and Pylint</vh></v>
-<v t="ekr.20131017051340.16782"><vh>Still to do</vh></v>
-<v t="ekr.20131017051340.16783"><vh>Theory of operation</vh>
-<v t="ekr.20131017051340.16784"><vh>Getters</vh></v>
-<v t="ekr.20131017051340.16785"><vh>Computing token ranges</vh>
-<v t="ekr.20131017051340.16786"><vh>Token-info prepass</vh></v>
-<v t="ekr.20131017051340.16787"><vh>token_range</vh></v>
-</v>
-</v>
-</v>
 <v t="ekr.20131017051340.16831"><vh>@@rst html/IPythonBridge.html</vh>
 <v t="ekr.20131017051340.16832"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20131017051340.16833"><vh>Introduction</vh></v>
@@ -184,14 +199,17 @@
 <v t="ekr.20131017051340.16843"><vh>Magic functions</vh></v>
 <v t="ekr.20131017051340.16844"><vh>Acknowledgements and history</vh></v>
 </v>
-<v t="ekr.20131017051340.16812"><vh>Html tables</vh>
-<v t="ekr.20131017051340.16813"><vh>generators tables</vh></v>
-<v t="ekr.20131017051340.16814"><vh>p methods table</vh></v>
+<v t="ekr.20131017051340.16779"><vh>@@rst html/leoInspect.html</vh>
+<v t="ekr.20131017051340.16780"><vh>A query language</vh></v>
+<v t="ekr.20131017051340.16781"><vh>Comparing leoInspect and Pylint</vh></v>
+<v t="ekr.20131017051340.16782"><vh>Still to do</vh></v>
+<v t="ekr.20131017051340.16783"><vh>Theory of operation</vh>
+<v t="ekr.20131017051340.16784"><vh>Getters</vh></v>
+<v t="ekr.20131017051340.16785"><vh>Computing token ranges</vh>
+<v t="ekr.20131017051340.16786"><vh>Token-info prepass</vh></v>
+<v t="ekr.20131017051340.16787"><vh>token_range</vh></v>
 </v>
-<v t="ekr.20131017051340.16808"><vh>Allocating storage using lifetimes</vh>
-<v t="ekr.20131017051340.16809"><vh>Lifetime allocation</vh></v>
-<v t="ekr.20131017051340.16810"><vh>Typical lifetimes</vh></v>
-<v t="ekr.20131017051340.16811"><vh>Implications for pypy</vh></v>
+</v>
 </v>
 </v>
 </v>
@@ -208,18 +226,21 @@ expanded="ekr.20100808060203.4286,"><vh>@file html/index.html</vh></v>
 <v t="ekr.20131008041326.16065"><vh>Links page</vh>
 <v t="ekr.20130807203905.16606"><vh>@edit html/leoLinks.html</vh></v>
 </v>
+<v t="ekr.20090711120622.10446"><vh>Screen shots page</vh>
+<v t="ekr.20090711120622.10447"><vh>@rst html/screen-shots.html</vh>
+<v t="ekr.20090811090022.14452"><vh>Windows screen shots</vh></v>
+<v t="ekr.20090811090022.14453"><vh>Linux screen shots</vh></v>
+</v>
+</v>
+<v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028550b302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473550b302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473550b302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473550b302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"
+expanded="ekr.20101025080245.5540,ekr.20101121032151.5375,ekr.20101011071655.4919,"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20100821182153.4343"><vh>@rst html/slides.html</vh></v>
+</v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
 </v>
-<v t="ekr.20090717084250.10702"><vh>Other docs page</vh>
-<v t="ekr.20100805165051.7176"><vh>@file other_docs.txt</vh></v>
-<v t="ekr.20131008041326.16086"><vh>Referenced from home page</vh>
-<v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028550b302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473550b302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473550b302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473550b302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
-<v t="ekr.20100821182153.4343"><vh>@rst html/slides.html</vh></v>
-</v>
-</v>
-</v>
+<v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
 <v t="ekr.20130926053913.15854"><vh>Leo 4.11 b1 Release notes</vh>
 <v t="ekr.20130926053913.16258"><vh>a1 and a2 releases</vh>
@@ -459,15 +480,14 @@ expanded="ekr.20100808060203.4286,"><vh>@file html/index.html</vh></v>
 </v>
 </v>
 <v t="ekr.20040414161647"><vh>Leo's Documentation</vh>
-<v t="ekr.20101104024804.4898"><vh> Generating the Documentation</vh>
-<v t="sps.20100708203040.19008"><vh>@@button generate-full-userguide</vh>
-<v t="sps.20100708203040.19009"><vh>&lt;&lt; html manual &gt;&gt;</vh></v>
-<v t="sps.20100708203040.19010"><vh>&lt;&lt; pdf manual &gt;&gt;</vh></v>
+<v t="ekr.20131017094004.16739"><vh>How to...</vh>
+<v t="ekr.20090401113141.1"><vh>How to generate odt/rtf/pdf files</vh>
+<v t="ekr.20090620131445.5595"><vh>Post from ville</vh></v>
+<v t="ekr.20090401113141.2"><vh>@rst c:\prog\test\test.html</vh>
+<v t="ekr.20090401113141.4"><vh>section 1</vh></v>
 </v>
-<v t="ville.20090705224948.5734"><vh>@@button generate-userguide</vh>
-<v t="ville.20090705225609.5736"><vh>&lt;&lt; html manual &gt;&gt;</vh></v>
-<v t="ville.20090705225609.5738"><vh>&lt;&lt; pdf manual &gt;&gt;</vh></v>
 </v>
+<v t="ekr.20101104024804.4898"><vh>How to generate these docs</vh></v>
 </v>
 <v t="ekr.20101025080245.5794"><vh>Preliminaries</vh>
 <v t="ekr.20131008041326.16079"><vh>@rst html/preliminaries.html</vh>
@@ -1336,7 +1356,6 @@ expanded="ekr.20100808060203.4286,"><vh>@file html/index.html</vh></v>
 <v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d710028550a302e302e31322e302e3771017d710255097374725f6174696d657103550c313337363431323238302e30710473550b302e302e332e302e322e3371057d71066803550c313337363431323838382e307107735510302e302e31322e312e302e372e302e3171087d710958090000007374725f6174696d65710a550c313337363431323238382e30710b73550e302e302e31322e302e372e302e31710c7d710d6803550c313337363431323238382e30710e735509302e302e312e302e30710f7d71106803550c313337363431323837322e30711173550b302e302e332e312e312e3371127d71136803550c313337363431323838392e30711473550c302e302e31322e312e302e3771157d711658090000007374725f6174696d657117550c313337363431323238302e30711873752e"><vh>@file release_notes.txt</vh></v>
 </v>
 </v>
-<v t="ekr.20131017051340.16849"><vh>** intro.html is no longer used</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -3262,7 +3281,7 @@ prefix the option name with 'rst3\_'.  For example::
     @bool rst3_write_intermediate_file = True
 </t>
 <t tx="ekr.20050828160132">.. _front:                      index.html
-.. _`Leo's tutorial`:           intro.html
+.. _`Leo's tutorial`:           tutorial.html
 .. _`Leo and reStructuredText`: rstplugin3.html
 .. _`History of Leo`:           appendices.html#history-of-leo
 .. was history.html
@@ -4358,7 +4377,7 @@ For instruction about installing Leo see:
 http://leoeditor.com/installing.html
 
 For everything a beginner needs to know about Leo see:
-http://leoeditor.com/intro.html
+http://leoeditor.com/tutorial.html
 
 For help, please ask questions at:
 http://groups.google.com/group/leo-editor</t>
@@ -8808,6 +8827,48 @@ Scripts can get or change the context of the body as follows::
 
 - New plugins: spydershell.py, qtframecommands.py, and mod_framesize.py.
 </t>
+<t tx="ekr.20090401113141.1">To generate .odt or .rtf or .pdf files, you create an intermediate file and
+ignore the the "official" output file, in this case test.html. The intermediate
+file contains the rST text corresponding to the @rst tree.
+
+To tell the rst3 plugin to generate an intermediate file, do::
+
+    write_intermediate_file = True
+
+After you create the intermediate file, in this case, test.html.txt,
+You can create an odt file as follows::
+
+    python &lt;path-to-python&gt;/scripts/rst2odt.py test.html.txt test.odt
+
+I a batch file, rst2odt.bat, like this:
+
+    rst2odt test
+
+Note that rst3odt.py is in the tools directory of the DocUtils distribution.
+
+To generate .rtf, you can use PanDoc to convert test.html.txt to RTF.
+
+To generate .pdf files, you would first convert test.html.txt to LaTeX::
+
+    python rst2newlatex.py test.html.txt test.tex
+
+    -- OR --
+
+    cd leo\docs\html
+    make latex
+
+You can then use one of the LaTeX to .pdf converters to create the final .pdf
+file. See http://docutils.sourceforge.net/docs/user/latex.html#pdf-generation
+for details.
+</t>
+<t tx="ekr.20090401113141.2">====
+Test
+====
+
+This is a test.
+</t>
+<t tx="ekr.20090401113141.4">This is section 1
+</t>
 <t tx="ekr.20090620073906.12095">- leoDynamicTest.py now supports a ``--path`` argument giving the .leo file.
   This is so useful!
 
@@ -8831,6 +8892,27 @@ Scripts can get or change the context of the body as follows::
 so that the files can be "round-tripped" without introducing extraneous changes.
 This makes Leo a superb environment for using rST.
 </t>
+<t tx="ekr.20090620131445.5595">I just tweaked conf.py a bit to enable pdf generation.
+
+Howto:
+
+QQQ
+
+4. To create pdf (probably easiest on Linux, with necessary latex
+packages installed):
+
+- make latex
+- cd _build/latex
+- make all-pdf
+
+QQQ
+
+There were several errors in the pdf generation process. Notably,
+there are probably lots of unicode errors (and toc doesn't appear).
+Nevertheless, you can steal a peek at the doc here:
+
+http://vvtools.googlecode.com/files/Leodocumentation.pdf 
+</t>
 <t tx="ekr.20090706042206.14718">Leo's sentinels add outline structure to source files.
 However, those sentinels annoy some people who don't use Leo.
 
@@ -8846,7 +8928,55 @@ files that are shared with those who don't want to see sentinel comments.
 
 - @nosent is appropriate only for files that you alone modify.
 </t>
-<t tx="ekr.20090717084250.10702"></t>
+<t tx="ekr.20090711120622.10446">@language rest
+</t>
+<t tx="ekr.20090711120622.10447">################
+Leo screen shots
+################
+
+</t>
+<t tx="ekr.20090811090022.14452">.. |leoQtMainWindow|    image:: screen-shots/leo-main-window.png
+
+Here is Leo's main window on Windows 7 showing
+the outline pane (1),
+the body pane (2),
+the minibuffer (3),
+the log pane, showing the find tab (4).
+
+The body pane shows the contents of the presently selected node in the outline pane.
+
+|leoQtMainWindow|
+
+.. _`reStructuredText`: http://docutils.sourceforge.net/rst.html
+
+.. |renderRST|      image:: screen-shots/render-rst.png
+.. |renderSVGref|   image:: screen-shots/render-svg-movie.png
+.. |renderSVGsrc|   image:: screen-shots/render-svg-sources.png
+.. |renderSplash|   image:: screen-shots/render-splash-screen.png
+
+The following screenshots show Leo's rendering pane.  It can render `reStructuredText`_:
+
+|renderRST|
+
+The rendering pane can render svg pictures, including animated pictures.  Here we see
+an .svg file included by reference:
+
+|renderSVGref|
+
+The rendering pane can also render svg sources contained in the body pane:
+
+|renderSVGsrc|
+
+The rendering pane can show pictures, music and movies.  Here we see Leo's splash screen:
+
+|renderSplash|
+</t>
+<t tx="ekr.20090811090022.14453">.. |LinuxMainWindow| image:: screen-shots/leo-qt-main-window-linux.png
+
+Here is Leo's main window as it appears on Linux:
+
+|LinuxMainWindow|
+</t>
 <t tx="ekr.20091105080104.9031">When using the Qt gui, you specify fonts
 using the node in leoSettings.leo called::
 
@@ -8854,15 +8984,322 @@ using the node in leoSettings.leo called::
 
 As usual, you will probably want to put this node in your myLeoSettings.leo file.
 </t>
+<t tx="ekr.20091107093823.6790">This is the rST version of the Tech Report handed out at EuroPython in 2005.
+
+**Important**: Leo's tutorial is now a clearer explanation of the basics.
+This tech report should be rewritten.
+
+@language rest
+@tabwidth -4
+</t>
+<t tx="ekr.20091107093823.6791">
+##########################################
+The Essentials of Leo
+##########################################
+
+.. contents::
+</t>
+<t tx="ekr.20091107093823.6793">Leo organizes all data into nodes containing a **headline**, an expandable page of
+**body text** and a (possibly empty) subtree of **descendant nodes**. The **contents** of a
+node are its headline and body text. Leo’s main window contains an **outline** pane
+at the top left, a **log pane** at the top right, and a **body pane** at the bottom. The
+outline pane shows headlines; the body pane shows the body text of the selected
+headline. The log pane displays messages from Leo.
+
+Small red arrows mark **cloned nodes** (clones). Clones share the same content and
+descendants. All clones of the same node are equivalent, so changing the
+contents of one node (call it node N) changes the contents of all clones of N.
+Furthermore, inserting, deleting or changing any descendant of node N causes the
+corresponding insertion, deletion or change in all other clones of N.
+</t>
+<t tx="ekr.20091107093823.6794">Clones allow you to organize data in multiple ways within the same outline. You
+do not have to choose a single ‘correct’ organization: you can organize your
+data in as many ways as you like.
+
+You can use **organizer nodes** to create explicit relations (relationships) among
+the data in your outline. The headline of the organizer node is the
+relationship’s name. Now make clones of nodes from other parts of the outline
+that participate in the relation. Drag the newly created clones so they become
+children of the organizer node. You may want to create other (non-cloned)
+children of the organizer node that contain data found nowhere else in the
+outline. Voilà: you have just created the set of all nodes that pertain to the
+relationship. The organizer node is the relation; the terms relation,
+relationship and organizer node are interchangeable.
+
+Three kinds of relations deserve special mention. A **view** is a relation (an
+organizer node) containing all nodes related to a desired view (or slice) of the
+data in the outline. Similarly, a **task** is an organizer node containing all nodes
+related to a task. Relations are not limited to tasks or views: the notion of
+relationship is completely general. Headlines naturally describe the data in
+body text. That is, nodes relate **metadata** (descriptions of data) to data.
+Separating data from metadata is useful for humans. It is even more valuable for
+scripts: scripts can access data and metadata without complex parsing.
+</t>
+<t tx="ekr.20091107093823.6795">Plugins are Python (.py) files contained in Leo’s plugins folder. Users can
+write plugins to change how Leo works and to add new features without changing
+Leo’s core code. We’ll discuss plugins in more detail later.
+</t>
+<t tx="ekr.20091107093823.6796">Leo can generate many external files called **derived files** from an outline. Leo
+outlines can organize files throughout your computer’s file system. Nodes whose
+headlines start with ‘@’ are special nodes. Several **special nodes** indicate the
+root of a tree that generates a derived file::
+
+    @asis filename    Creates a derived file. Ignores all markup in body text.
+    @file filename    Creates a derived file. External files contain all outline structure.
+    @nosent filename  Creates a derived file without sentinels.
+
+Leo recognizes several other special nodes::
+
+    @settings   Defines settings local to the .leo file.
+    @url url    Double-clicking the node’s icon opens the url in Leo or in a browser.
+
+The scripting plugin scans for the following nodes when opening an outline::
+
+    @button         Creates a button in the **icon area** at the top of the Leo window.
+    @plugin plugin  Enables a plugin if the plugin has not already been enabled.
+    @script         Executes a script when opening the outline. This is a security risk: it is disabled by default.
+
+Plugins, @button nodes and @script nodes can create other kinds of special nodes::
+
+    @suite       Creates a suite of unit tests from script in body. Requires scripting plugin.
+    @test        Creates a unit text from script in body. Requires scripting plugin.
+    @rst         Outputs a tree containing markup for reStructuredText. Requires rst2 plugin.
+    @run command Double clicking the node’s icon executes the command.  Requires run_nodes plugin.
+</t>
+<t tx="ekr.20091107093823.6797">Leo’s Execute Script command **preprocesses** the script to be executed by scanning
+a node N and its descendants looking for markup. **Markup** is special syntax that
+controls this preprocessing. If node N contains no markup, the resulting script
+is just N’s body text. Otherwise, the preprocessed script will include text from
+descendant nodes as described below. The main kinds of markup are **section
+references**, **directives** and **doc parts**.
+
+1.  **Section references** have the form::
+
+        &lt;&lt;section name&gt;&gt;
+
+    The &lt;&lt; and &gt;&gt; must appear on the same line. Conversely, any line
+    containing &lt;&lt; and &gt;&gt; is a section reference, regardless of context. However,
+    section references are not recognized in doc parts. Any characters may appear
+    between &lt;&lt; and &gt;&gt;.
+
+    Section references are functional pseudo-code: while preprocessing a script, Leo
+    replaces section references by the actual text of the section’s definition.
+    Sections are defined in **section definition nodes**, whose headlines start with a
+    section reference and whose body text defines the section. Each section
+    definition node must descend from the node containing the section reference.
+
+2.  **Directives** start with ‘@’ in the leftmost column of body text. Directives
+    specify options and control Leo’s operation. The @others directive is the
+    minimal markup needed to organize scripts. @others tells Leo to insert the
+    preprocessed text of all descendant nodes (except section definition nodes) at
+    the spot at which the @others directive occurs. Nodes are inserted in **outline
+    order**, the order in which nodes appear in the outline. **Important**: Leo adds the
+    whitespace preceding the @others directive to the indentation of all
+    preprocessed text.
+
+    Using @others is more convenient than using section references. Use @others when
+    the order of included text does not matter::
+
+        class myClass:
+	        @others # Include the methods of the class. Order doesn’t matter.
+
+    Use section references when the order of included text does matter. In the following script, for example,
+    &lt;&lt; imports &gt;&gt; ensures that imports come first. The @others directive then includes the body text of all other
+    descendant nodes::
+
+        @language python
+        &lt;&lt; imports&gt;&gt;
+        @others # Define classes &amp; functions in child nodes.
+        main()
+
+    Here is a list of all of Leo’s standard directives::
+
+        @whitespace (or @doc)   Starts a doc part &amp; ends code part.
+        @all                    Like @others, but includes all descendant nodes.
+        @c, @code               Starts a code part and ends a doc part.
+        @color                  Enables syntax coloring.
+        @delims                 Temporarily changes comment delims.
+        @nocolor, @killcolor    Disables syntax coloring.
+        @comment                Sets comment delimiters in external (derived) files.
+        @language languagename  Sets language for syntax coloring and comments.
+        @lineending lineending  Sets ending of lines in derived files.
+        @others                 Inserts body text of all descendants except definition nodes. 
+        @pagewidth n            Sets page width for justifying comments in doc parts.
+        @path path              Sets prefix to use in relative file names in @file nodes, etc.
+        @raw, @end_raw          Inhibits sections references in a range of text. (@file only.)
+        @tabwidth n             Sets width of tabs (negative widths convert tabs to spaces.)
+        @wrap, @nowrap          Controls wrapping of text in body pane.
+
+3.  Doc parts start with the ‘@’ directive and continue until the end of the body text or until the ‘@c’ directive.
+    Body text not in a doc part is in a code part. Here is an example of a doc part::
+
+        @ This is a doc part. Doc parts may span many lines. Leo converts doc parts to comments.
+        Leo reformats the doc part by justifying lines so they are no longer than the page width.
+        @c
+
+    Leo reformats doc parts by justifying the text into comment lines.
+    The @pagewidth directive controls the length of these comment lines.
+    The @language and @comment directives specify the comment delimiters used in doc parts.
+</t>
+<t tx="ekr.20091107093823.6798">The Execute Script command preprocesses the selected text of the presently
+selected outline node, or the entire text of the node if there is no selected
+text. See the section called Markup for Scripts for a discussion of how Leo
+preprocesses scripts. That section also discusses how Leo organizes scripts
+using outlines. Conversely, scripts can use outlines to organize their data. To
+write such scripts you must understand at least the basics of Leo’s modules and
+classes...
+</t>
+<t tx="ekr.20091107093823.6799">Leo’s source code is organized as a collection of modules. The following
+paragraphs describe five of the most important modules. See LeoPy.leo (Leo’s
+full source code) for more details: scripts have full access to all of Leo’s
+classes and data.
+
+1.  The **leoGlobals** module contains utility functions.
+    By convention, in Leo’s code g is always the leoGlobals module.
+
+2.  The **leoApp** module defines a class representing the entire Leo application.
+    **g.app** is the singleton object of this class: the application object.
+    The instance variables (ivars) of the application object are Leo’s global variables.
+
+3.  The leoCommands module defines the Commands class.
+    A commander is an instance of this class.
+    Commanders contain the operations that can be performed on a particular outline.
+    Each open Leo outline has its own commander.
+    By convention, in Leo’s code **c** is always a commander.
+
+4.  The leoFrame module defines the base leoFrame class for objects that create and manage
+    the visual appearance of Leo’s windows and panes.
+    qtGui.py contains subclasses of the base classes in the leoFrame module.
+    A frame (an instance of the leoFrame class, or a subclass)
+    contains all the internal data needed to manage a Leo window.
+    **c.frame** is the frame associated with commander c.
+    If **f** is a frame, **f.c** is the frame’s commander, **f.body** is the frame’s body pane,
+    **f.tree** is the frame’s outline pane, and **f.log** is the frame’s log pane.
+
+5.  The leoNodes module defines several classes that implement Leo’s fundamental data structures.
+    These classes are complex.
+    Happily, scripts can and should ignore these complications by accessing nodes using
+    high-level methods of the position class.
+
+A **position** (an instance of the position class) is the state of some traversal of an outline. Equivalently, a position is a particular visual place in an outline. Cloned nodes may appear many times in an outline. Non-cloned nodes may also appear in many places: consider a non-cloned descendant of a cloned node. By convention, in Leo’s source code p is a position.
+</t>
+<t tx="ekr.20091107093823.6800">When executing scripts Leo predefines the following three symbols:
+**c** is the commander of the outline in which the script is defined,
+**g** is the leoGlobals module and
+**p** is the position of the selected node in c’s outline, i.e., c.currentPosition().
+</t>
+<t tx="ekr.20091107093823.6801">Scripts should get and set data using high-level access methods. Here are some important getters::
+
+    g.app                The application object. Its ivars are Leo’s global variables.
+    g.app.windowList     The list of all open frames.
+    c.currentPosition()  The position of the selected node.
+    c.rootPosition()     The position of the first node in the outline.
+    p.headString()       The headline of position p.
+    p.bodyString()       The body text of position p.
+    p.childIndex()       The number of siblings that precede p.
+    p.numberOfChildren() The number of p’s children.
+    p.level()            The number of p’s ancestors.
+    p.hasChildren()      True if p has children.
+    p.isAncestorOf(p2)   True if p2 is a child, grandchild, etc. of p.
+    p.isCloned()         True if p is a clone.
+    p.isDirty()          True if p’s contents have been changed.
+    p.isExpanded()       True if p has children and p’s outline is expanded.
+    p.isMarked()         True if p’s headline is marked.
+    p.isVisible()        True if all of p’s ancestors are expanded.
+
+And here are some important setters::
+
+    p.setBodyStringOrPane(s) Set body text of p to s.
+    p.setHeadString(s)       Set headline of p to s.
+</t>
+<t tx="ekr.20091107093823.6802">Scripts can visit some or all of the nodes of a Leo outline using the following iterators::
+
+    c.allNodes_iter             # All positions in the outline, in outline order.
+    p.children_iter()           # All children of p.
+    p.parents_iter()            # All parents of p.
+    p.siblings_iter()           # All siblings of p, including p.
+    p.following_siblings_iter() # All siblings following p, not including p.
+
+For example, the following prints all the nodes of an outline, properly indented::
+
+    for p in c.allNodes_iter():
+        print ' '*p.level(), p.headString()
+</t>
+<t tx="ekr.20091107093823.6803">Scripts may open other Leo outlines, or execute any of Leo’s commands.  Here are some examples::
+
+    ok,frame = g.openWithFileName(path,c)	# Opens the .leo file found at path.
+    c.deleteOutline()   # Deletes the selected node.
+    c.insertHeadline()  # Inserts a new node after present position.
+
+For more examples, see Scripting Leo with Python, in Leo’s Users Guide.
+</t>
+<t tx="ekr.20091107093823.6804">The scripting plugin creates two buttons in the icon area at the top of the Leo
+window. The Run Script button executes the script in the selected node just
+like the Execute Script command. The Script Button button creates a new
+button whose headline is the headline of the presently selected node, call it
+node N. Pressing this button executes the script in node N with p predefined as
+c.currentPosition() at the time the script is executed. This clever trick
+brings the script to the data in the selected outline.
+</t>
+<t tx="ekr.20091107093823.6805">test.leo contains all of Leo’s unit tests. An @button node in test.leo
+creates a blue Unit Test button in the icon area. This button is an
+excellent example of bringing scripts to data. The Unit Test button executes
+all the unit tests specified by @test and @suite nodes in the selected
+outline. **Important**: @button, @test and @suite nodes require the
+scripting plugin to be enabled.
+
+@test nodes greatly simplify unit testing. The Unit Test button creates
+a unit test from the body text of each @test node. In effect, the Unit
+Test button automatically creates an instance of unittest.TestCase whose
+run method is the body text of the @test node. There is no need to create
+TestCase objects explicitly!
+
+@suite nodes support legacy unit tests. When the Unit Test script button
+finds an @suite node it executes the script in its body text. This script
+should create a suite of unit tests and set::
+
+    g.app.scriptDict['suite'] = suite
+
+where suite is the created suite. The Unit Test button then runs that
+created suite of unit tests.
+</t>
+<t tx="ekr.20091107093823.6806">Plugins are Python (.py) files in Leo’s plugin subdirectory. It is easy to
+create new plugins: Leo’s users have contributed dozens of plugins that extend
+Leo’s capabilities in new ways. Leo imports all enabled plugins during startup.
+The file pluginsManager.txt lists all enabled plugins. You can use the plugin
+manager plugin to control plugins without updating pluginsManager.txt by hand.
+
+Plugins can override any class, method or function in Leo’s core, the files in
+Leo’s src subdirectory (the files derived from LeoPy.leo). Besides altering
+Leo’s core, plugins can register functions called hooks that Leo calls at
+various times during Leo’s execution. Events that trigger hooks include key
+pressed events, screen drawing events, node selection events and many others.
+When importing a plugin, Leo will call the top-level init() function if it
+exists. This function should register the plugin’s hooks by calling
+leoPlugins.registerHandler.
+
+For full details about hooks and events see Customizing Leo, in
+Leo’s Users Guide. The file leoPlugins.leo contains all plugins that are
+presently distributed with Leo; studying these plugins is a good way of learning
+to write your own plugins.
+</t>
+<t tx="ekr.20091107093823.6807">- Leo’s home page:  google edreamleo or http://leoeditor.com
+
+- Edward K. Ream
+  166 N. Prospect Ave.
+  Madison WI 53726
+  edreamleo@gmail.com
+  (608) 886-5730
+</t>
 <t tx="ekr.20091111112709.6672">#########
 Glossary
 #########
 
 .. Links
-.. _`Customizing Leo`:          customizing.html
+.. _`Customizing Leo`:              customizing.html
 .. _`Writing plugins and hooks`:    writingPlugins.html
-.. _`Leo's reference`:          directives.html
-.. _`leo's tutorial`:           intro.html
+.. _`Leo's reference`:              directives.html
+.. _`leo's tutorial`:               tutorial.html
 
 This is a short glossary of important terms in Leo's world. For more information
 about terms, look in the index for links to discussions in other places,
@@ -14035,6 +14472,97 @@ settings. In particular, the default export path, "c:\" must be changed for \*ni
 systems.
 
 </t>
+<t tx="ekr.20101115152915.4937">@nocolor-node
+
+{{Infobox software
+| name = Leo: Leonine Editor with Outlines
+| screenshot = [http://sourceforge.net/project/screenshots.php?group_id=3458&amp;ssid=22298 Screenshots]
+| caption =
+| developer = Edward K. Ream
+| latest_release_version = 4.8 release candidate 1
+| latest_release_date = {{release date and age|2010|11|15}}
+| operating_system = [[Cross-platform]]
+| genre = [[Text editor]], [[Outliner]], [[Integrated development environment|IDE]]
+| license = [[Python (programming language)|Python]] License
+| website = http://leoeditor.com
+}}
+
+'''Leo''' ('''L'''eonine '''E'''ditor with '''O'''utlines) is a [[text editor]]
+that features [[outliner|outlines]] with clones as its central tool of
+organization, navigation, customization and scripting.
+
+==Language==
+
+Leo is written in [[Python (programming language)|Python]] and uses the [[Qt
+(toolkit)|Qt]]. It is fully scriptable using Python and can be extended with
+plugins. In Leo, outlines are hierarchical data structures that people use to
+work with and manage text files—including code.
+
+==Trees, clones and views==
+
+Leo is an [[outliner]]. Leo's outline pane shows a [[tree (data structure)]] of data nodes.
+Nodes contain headlines, body text, and other information.
+Headlines naturally serve as descriptions of the body text.
+For example, @file nodes are nodes whose headline starts with @file.
+
+Leo trees are in fact [[directed acyclic graph|directed acyclic graphs]];
+nodes may have more than one parent.
+Leo calls such nodes clones.
+Clones appear in several places in the outline pane.
+
+Views are simply nodes whose children contain clones. A single outline may contain
+arbitrarily many views of the nodes contained therein.
+Views and clones turn Leo into a supremely flexible filing cabinet: any node may be filed
+in arbitrarily many places.
+&lt;ref&gt;[http://leoeditor.com/nutshell.html Leo documentation: Leo in a Nutshell]&lt;/ref&gt;
+
+==External files==
+
+@file nodes represent external files, files on the computer's file system.
+When saving an outline Leo automatically writes all changed @file
+trees back to the external files.
+Comments, called sentinel lines, in external files represent the outline structure.
+When reading an outline, these comments allows Leo to recreate
+@file trees using only the data in the external file.
+
+@auto nodes represent external files without using sentinel comments.
+When reading @auto nodes, Leo uses the program structure of the external file
+to create the @auto tree.
+
+==Scripting==
+
+Leo's scripting environment takes full advantage of outline structure:
+
+* The body text of any node may contain a Leo script, a Python script executed in the context of a Leo outline.
+
+* A simple [[API]] &lt;ref&gt;[http://leoeditor.com/scripting.html Leo documentation: Scripting Leo with Python]&lt;/ref&gt; gives Leo scripts full access to all data in loaded outlines, as well as full access to Leo's own source code. The API includes Python [[iterators]] that allow scripts to traverse outlines easily.
+
+* Scripts may be composed of any tree of nodes.
+  A [[markup language]] similar to [[noweb]] &lt;ref&gt;[http://leoeditor.com/tutorial.html#section-references Leo documentation: Tutorial]&lt;/ref&gt; tells Leo how to create scripts from (parts of) an outline.
+
+* Headlines naturally control and guide scripts.
+
+** @test nodes represent unit tests. Leo can execute the body of an @test node as unit test, without the body having to create an explicit subclass of Python's UnitTest.TestCase class. &lt;ref&gt;[
+
+** @button nodes contain scripts that can be applied to other nodes.  In effect, @button nodes create user-defined commands. &lt;ref&gt;
+
+==External links==
+{{Portal|Free software}}
+*[http://leoeditor.com Leo's homepage]
+*[http://sourceforge.net/projects/leo/ Leo at SourceForge],[http://sourceforge.net/project/screenshots.php?group_id=3458&amp;ssid=22298 screenshots]
+*[http://groups.google.com/group/leo-editor leo-editor Google Group]
+*{{cite web | title=Literate Programming and Leo | publisher = [[Slashdot]] | date=2002-08-28 | url=http://developers.slashdot.org/article.pl?sid=02/08/28/1655207 }}
+*{{cite web |author=[[James Tauber]] |title=Using the Leo Outliner as a PIM | date=2004-05-15 |url=http://jtauber.com/blog/2004/05/15/using_the_leo_outliner_as_a_pim/ }}
+*{{cite book | author = Vreda Pieterse, Derrick G. Kourie, Andrew Boake | title=ACM International Conference Proceeding Series; Vol. 75. Proceedings of the 2004 annual research conference of the South African institute of computer scientists and information technologists on IT research in developing countries | chapter=A case for contemporary literate programming | editor=[[Association for Computing Machinery|ACM]] | pages=2–9 | url=http://portal.acm.org/citation.cfm?id=1035054}} (cited in references)
+
+==References==
+&lt;references/&gt;
+
+{{DEFAULTSORT:Leo (Text Editor)}}
+[[Category:Free text editors]]
+[[Category:Free software programmed in Python]]
+[[Category:Outliners]]
+</t>
 <t tx="ekr.20101124083644.5052">Autocompletion reminds you of all members (functions, methods, ivars, etc.)
 contained in objects in Leo's source code, and in Python's standard library
 modules.
@@ -16373,7 +16901,7 @@ Leo 4.11 b1 is now available at: http://sourceforge.net/projects/leo/files/Leo/
 Leo 4.11 contains over a year's work on Leo.
 
 Leo is a text editor, data organizer, project manager and much more.
-See http://leoeditor.com/intro.html
+See http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.11:
 ---------------------------
@@ -20469,7 +20997,6 @@ Leo's Users Guide
    directives
    commands
 </t>
-<t tx="ekr.20131008041326.16086"></t>
 <t tx="ekr.20131008041326.16091">@language rest
 </t>
 <t tx="ekr.20131008041326.16092"></t>
@@ -23005,167 +23532,6 @@ That's about it, except for some words of caution and advice:
 
 Edward K. Ream July, 2007
 </t>
-<t tx="ekr.20131017051340.16808">This white paper describes the storage allocation used in a commercial
-optimizing C compiler written for Tuple, Inc. ca. 1993. The last section
-discusses tantalizing possibilities for the pypy project. These possibilities
-are why I wrote this paper.
-
-Storage allocation is crucial to any compiler because of the number, size and
-complexity of data which must be allocated. You might event say that a compiler
-consists of storage allocation and everything else. I paid a lot of attention to
-storage allocation in CC2, and that work paid off. The resulting compiler was a
-few percent faster than the CodeWarrior C compiler, perhaps the fastest C
-compiler in existence at that time. The original notes were written around 1993,
-so I would do some things differently today. However, the design discussed below
-still seems relevant today. Indeed, attention to low-level details can make a
-huge difference.
-</t>
-<t tx="ekr.20131017051340.16809">CC2 allocated objects one-at-a-time (simple allocation), in blocks of
-fixed-sized objects (block allocation) or in blocks of variable-sized objects
-(lifetime-based allocation). Simple-allocation was used for short-lived objects
-and will not be discussed further. Block allocation was used in several ways, the
-most interesting of which was to allocate "cons cells" used to represent lists.
-These cons cells could be reused by placing them on a global avail list. Thus,
-the blocks holding cons cells could (and did) have permanent lifetime: they were
-never deallocated.
-
-The most interesting aspect of CC2's storage allocation scheme was what I
-eventually came to call **lifetime-based** storage allocation. This was, for me,
-an new discovery, though clearly I was not the first to discover it. The Aha is
-that a lifetime is defined by the time (or equivalently by the place in program
-code) at which objects are **deallocated**. A lifetime may hold many different
-kinds of objects that were allocated at many different times. The essence of
-lifetime-based allocation is that **the proper time to specify when an object
-will be deallocated is when the object is created**.
-
-Lifetime-based allocation is a superb invention:
-
-- It becomes an effective design tool. Thinking of objects in terms of their
-  lifetimes often shows the essence of a design problem.
-
-- It can be used for any kind of object, regardless of its size or type.
-
-- It reduces the number of calls to calloc and free by one or two orders of
-  magnitude over naive schemes. Furthermore, it typically requests
-  standard-sized blocks (say 8K or more) from calloc, further easing the burden
-  on calloc and free.
-
-- CC2 could allocate objects with a particular lifetime using small, extremely fast, macros.
-  The macros expanded to C code something like this::
-
-    if lifetime -&gt; avail &gt;= sizeof(theObjectKind) {
-        // Allocate the storage.
-        theObject = lifetime -&gt; ptr 
-        lifetime -&gt; ptr += sizeof(theObjectKind)
-    }
-    else {
-        &lt;&lt; allocate theObject in another block &gt;&gt;
-    }
-
-Importantly, the speed of the else clause makes absolutely no difference because
-it is so seldom executed. Thus, it uses a function call. Clearly then, this code
-is optimal: it could not be improved even if coded in assembly language.
-
-</t>
-<t tx="ekr.20131017051340.16810">What makes lifetime-based allocation so powerful is that so few lifetimes are
-typically required. Indeed, CC2 had only the following lifetimes:
-
-- Permanent: These objects were never deallocated. Examples were list pointers
-  held in cons cells and other kinds of application-wide objects.
-
-- Tokenizer: Tokenizing in C is complex due to C's various preprocessing
-  directives and macro expansion. Objects with tokenizer lifetime are
-  deallocated before the parser starts.
-
-- Function: Objects with function lifetime are deallocated after the compiler
-  generates code for the function.
-
-- File: Objects with file lifetime are deallocated after the compiler completes
-  a source file.
-
-That's all. Similarly, if Leo were recast as a C program only the following
-lifetimes would be needed:
-
-- Permanent: application-wide objects.
-
-- Window/outline: All data associated with a single Leo outline. This is a
-  'semi-permanent' lifetime. Leo has unlimited undo, so it is essentially
-  impossible to delete any data object (an object that could be written to an
-  output file) until the entire outline closes.
-
-- Dialog: data associated with a temporary dialog.
-
-- Function/method: data not used outside a single function or method.
-
-The remarkable thing about dynamic languages like Python is how often objects
-can, in fact, be assigned static lifetimes.
-</t>
-<t tx="ekr.20131017051340.16811">Lifetime allocation isn't used in Java, Python, etc. because these languages
-have no way of knowing (in general) what the lifetime of any object will be.
-Furthermore, translating Python to C would be straightforward were it not for
-storage allocation issues. For example, most of Leo's code could easily be
-translated into C, **provided** that the lifetime of all objects were known.
-Again, just for example, the prospect of translating the Python version of Leo
-to a fully optimized C version is tantalizing.
-
-This is where pypy comes in: its extensive flow analysis may be sufficient to
-discover lifetimes for a significant percentage of objects. Perhaps user hints
-may be effective. For example, pypy offers the chance to make something like
-`region inference`_ truly useful. Note that the pypy project might benefit from
-deducing lifetimes even if not all objects could be assigned a static
-lifetime. Another reason why lifetimes are not a standard technique is that they
-are a potentially dangerous optimization. Errors in specifying lifetimes will
-result in dangling pointer references. But this danger might disappear if pypy
-could deduce lifetimes automatically.
-</t>
-<t tx="ekr.20131017051340.16812"></t>
-<t tx="ekr.20131017051340.16813">+------------------------+----------------------------------------------------+
-| **Generator**          | **Yields**                                         |
-+------------------------+----------------------------------------------------+
-| c.all_positions        | All positions in the outline, in outline order     |
-+------------------------+----------------------------------------------------+
-| c.all_unique_positions | All positions in the outline, excluding duplicates |
-+------------------------+----------------------------------------------------+
-| p.children             | All child positions of p                           |
-+------------------------+----------------------------------------------------+
-| p.parents              | All parent positions of p                          |
-+------------------------+----------------------------------------------------+
-| p.self_and_parents     | p and all parent positions of p                    |
-+------------------------+----------------------------------------------------+
-| p.self_and siblings    | All sibling positions of p, including p            |
-+------------------------+----------------------------------------------------+
-| p.following_siblings   | All siblings positions that follow p               |
-+------------------------+----------------------------------------------------+
-| p.subtree              | All positions in p's subtree                       |
-+------------------------+----------------------------------------------------+
-| p.self_and_subtree     | p and all positions in p's subtree.                |
-+------------------------+----------------------------------------------------+
-
-..  - c._all_nodes generates all vnodes in the entire outline, in outline order.
-..  - c.all_unique_nodes generates all vnodes in the entire outline, generating
-..    each vnode exactly once.
-</t>
-<t tx="ekr.20131017051340.16814">+-----------------------------+--------------------------------------------------------+
-| **Method**                  | **What it does**                                       |
-+-----------------------------+--------------------------------------------------------+
-| p.doDelete(new_position)    | deletes p and selects new_position.                    | 
-+-----------------------------+--------------------------------------------------------+
-| p.insertAfter()             | returns the position of a new vnode inserted after p   |
-+-----------------------------+--------------------------------------------------------+
-| p.insertAsNthChild(n)       | returns the position of a new vnode inserted           |
-|                             | as the n'th child of p                                 |
-+-----------------------------+--------------------------------------------------------+
-| p.insertBefore()            | returns the position of a new vnode inserted before p  |
-+-----------------------------+--------------------------------------------------------+
-| p.moveAfter(p2)             | moves the node at position p after position p2         |
-+-----------------------------+--------------------------------------------------------+
-| p.moveToNthChildOf(parent,n)| moves the vnode at position p to the n'th child of     |
-|                             | the parent position                                    |
-+-----------------------------+--------------------------------------------------------+
-| p.moveToRoot(oldRoot=None)  | moves the vnode at position p to the root position     |
-|                             | (oldRoot must be the old root position if it exists)   |
-+-----------------------------+--------------------------------------------------------+
-</t>
 <t tx="ekr.20131017051340.16815">Calltips show the expected arguments to functions and methods:
 
 - Alt-2 (toggle-calltpips) enables and disables calltips.
@@ -23744,9 +24110,9 @@ to completed reality over the span of about 10 days.
 <t tx="ekr.20131017051340.16847">@language python
 
 </t>
-<t tx="ekr.20131017051340.16849"></t>
 <t tx="ekr.20131017051340.16850">@language python
 </t>
+<t tx="ekr.20131017094004.16739"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
