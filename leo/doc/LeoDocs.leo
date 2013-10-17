@@ -220,8 +220,7 @@
 <v t="ekr.20101112045055.5064" descendentVnodeUnknownAttributes="7d7100285503302e3171017d710255097374725f6174696d657103550c313337363431323739362e3071047355013071057d71066803550c313337363431323932332e307107735503302e3071087d71096803550c313337363431323932372e30710a73752e"><vh>@file plugin_catalog.py</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
 <v t="ekr.20131005214621.16088"><vh>Home page</vh>
-<v t="ekr.20100808060203.4273"
-expanded="ekr.20100808060203.4286,"><vh>@file html/index.html</vh></v>
+<v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20131008041326.16065"><vh>Links page</vh>
 <v t="ekr.20130807203905.16606"><vh>@edit html/leoLinks.html</vh></v>
@@ -233,8 +232,7 @@ expanded="ekr.20100808060203.4286,"><vh>@file html/index.html</vh></v>
 </v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028550b302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473550b302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473550b302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473550b302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"
-expanded="ekr.20101025080245.5540,ekr.20101121032151.5375,ekr.20101011071655.4919,"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028550b302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473550b302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473550b302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473550b302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 <v t="ekr.20100821182153.4343"><vh>@rst html/slides.html</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
@@ -2686,7 +2684,6 @@ headlines in that file::
 </t>
 <t tx="ekr.20040414161647" str_atime="1376411963.0">@pagewidth 70
 @tabwidth -4
-@language rest
 
 These are the sources for Leo's users guide.
 
@@ -4371,9 +4368,7 @@ The benefits of the new workflow:
 <t tx="ekr.20050831184021.4"></t>
 <t tx="ekr.20050831184021.5"></t>
 <t tx="ekr.20050831195331.1"></t>
-<t tx="ekr.20050831195449">@language rest
-
-For instruction about installing Leo see:
+<t tx="ekr.20050831195449">For instruction about installing Leo see:
 http://leoeditor.com/installing.html
 
 For everything a beginner needs to know about Leo see:
@@ -7001,7 +6996,9 @@ See the following sections for details.
 - Removed all gui-dependent code from Leo's core.
 - The__wx_gui plugin is now functional.
 </t>
-<t tx="ekr.20070610174018"></t>
+<t tx="ekr.20070610174018">This section contains settings for this file.
+
+It also contains other information of little interest to most Leo users.</t>
 <t tx="ekr.20070622185234">The 'official' way to start a replace command is::
 
     &lt;Ctrl-shift-r&gt;find-pattern&lt;return&gt;replace-text&lt;return&gt;
@@ -10443,9 +10440,7 @@ and they must start at the leftmost column of the node.
 
     \@wrap may appear in either headlines or body text.
 </t>
-<t tx="ekr.20100805171546.4412">@language rest
-
-This section contains files used to generate Leo's web site,
+<t tx="ekr.20100805171546.4412">This section contains files used to generate Leo's web site,
 including Leo's home page.</t>
 <t tx="ekr.20100806170836.4392">.. index::
     pair: @&lt;file&gt;; Reference
@@ -16893,9 +16888,7 @@ Valid values are (case is ignored):
 
 actionscript,c,csharp,css,cweb,elisp,html,java,latex,
 pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
-<t tx="ekr.20130926053913.15854">@language rest
-
-Leo 4.11 b1                                     September 26, 2013
+<t tx="ekr.20130926053913.15854">Leo 4.11 b1                                     September 26, 2013
 
 Leo 4.11 b1 is now available at: http://sourceforge.net/projects/leo/files/Leo/
 Leo 4.11 contains over a year's work on Leo.
@@ -23545,7 +23538,9 @@ global functions. Examples::
     c.widgetWantsFocusNow(  c.widgetWantsFocusNow(w
     reduce(                 reduce(function, sequence[, initial]) -&gt; value
 </t>
-<t tx="ekr.20131017051340.16816">This section supplementary documentation.
+<t tx="ekr.20131017051340.16816">@language rest
+
+This section contains supplementary documentation.
 
 It will not be of interest for most users of Leo.</t>
 <t tx="ekr.20131017051340.16831">###############
