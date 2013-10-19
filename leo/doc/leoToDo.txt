@@ -8,6 +8,8 @@
 @language rest
 .. @+node:ekr.20130926053913.11572: *3* for b1
 @language rest
+.. @+node:ekr.20131001045038.19033: *4* Home page re postcard
+How do you use Leo?
 .. @+node:ekr.20131017100903.16688: *4* revise help-for commands
 create help-for-dynamic-abbreviations
 
@@ -16,8 +18,974 @@ Revise, using the tutorial text.
 - help-for-yank-and-kill
 - help-for-abbreviations
 - help-for-find-commands
-.. @+node:ekr.20131001045038.19033: *4* Home page re postcard
-How do you use Leo?
+.. @+node:ekr.20060205164707: *5* helpCommandsClass
+class helpCommandsClass (baseEditCommandsClass):
+
+    '''A class to load files into buffers and save buffers to files.'''
+
+    @others
+.. @+node:ekr.20060205165501: *6* getPublicCommands (helpCommands)
+def getPublicCommands (self):
+
+    return {
+    'help':                         self.help,
+    'help-for-abbreviations':       self.aproposAbbreviations,
+    'help-for-autocompletion':      self.aproposAutocompletion,
+    'help-for-bindings':            self.aproposBindings,
+    'help-for-command':             self.helpForCommand,
+    'help-for-debugging-commands':  self.aproposDebuggingCommands,
+    'help-for-find-commands':       self.aproposFindCommands,
+    'help-for-minibuffer':          self.helpForMinibuffer,
+    'help-for-python':              self.pythonHelp,
+    'help-for-regular-expressions': self.aproposRegularExpressions,
+    'print-settings':               self.printSettings,
+    }
+.. @+node:ekr.20051014170754: *6* helpForMinibuffer
+def helpForMinibuffer (self,event=None):
+
+    '''Print a messages telling you how to get started with Leo.'''
+
+    # A bug in Leo: triple quotes puts indentation before each line.
+    c = self.c    
+    << define s >>
+    c.putApropos(s)
+.. @+node:ekr.20120522024827.9899: *7* << define s >> (helpForMinibuffer)
+@language rest
+
+s = '''\
+
+++++++++++++++++++++
+About the Minibuffer
+++++++++++++++++++++
+
+The mini-buffer is intended to be like the Emacs buffer:
+
+full-command: (default shortcut: Alt-x) Puts the focus in the minibuffer. Type a
+full command name, then hit <Return> to execute the command. Tab completion
+works, but not yet for file names.
+
+quick-command-mode (default shortcut: Alt-x). Like Emacs Control-C. This mode is
+defined in leoSettings.leo. It is useful for commonly-used commands.
+
+universal-argument (default shortcut: Alt-u). Like Emacs Ctrl-u. Adds a repeat
+count for later command. Ctrl-u 999 a adds 999 a's. Many features remain
+unfinished.
+
+keyboard-quit (default shortcut: Ctrl-g) Exits any minibuffer mode and puts
+the focus in the body pane.
+
+Use the help-for-command command to see documentation for a particular command.
+'''
+.. @+node:ekr.20060417203717: *6* helpForCommand & helpers
+def helpForCommand (self,event):
+
+    '''Prompts for a command name and prints the help message for that command.'''
+
+    k = self.k
+    << define s >>
+    self.c.putApropos(s)
+    k.fullCommand(event,help=True,helpHandler=self.helpForCommandFinisher)
+
+.. @+node:ekr.20130412180825.10342: *7* << define s >> (help-for-command)
+s = '''
+
+Type the name of the command, followed by Return.
+
+'''
+
+.. @+node:ekr.20120521114035.9870: *7* getBindingsForCommand
+def getBindingsForCommand(self,commandName):
+
+    c = self.c ; k = c.k
+    data = [] ; n1 = 4 ; n2 = 20
+    d = k.bindingsDict
+    for stroke in sorted(d):
+        assert g.isStroke(stroke),repr(stroke)
+        aList = d.get(stroke,[])
+        for si in aList:
+            assert g.isShortcutInfo(si),si
+            if si.commandName == commandName:
+                pane = g.choose(si.pane=='all','',' %s:' % (si.pane))
+                s1 = pane
+                s2 = k.prettyPrintKey(stroke)
+                s3 = si.commandName
+                n1 = max(n1,len(s1))
+                n2 = max(n2,len(s2))
+                data.append((s1,s2,s3),)
+
+    data.sort(key=lambda x: x[1])
+    return ','.join(['%s %s' % (s1,s2) for s1,s2,s3 in data]).strip()
+.. @+node:ekr.20120521114035.9871: *7* helpForCommandFinisher
+def helpForCommandFinisher (self,commandName):
+
+    c = self.c ; s = None
+
+    if commandName and commandName.startswith('apropos-'):
+        # Execute the command itself.
+        c.k.simulateCommand(commandName)
+    else:
+        if commandName:
+            bindings = self.getBindingsForCommand(commandName)
+            func = c.commandsDict.get(commandName)
+            s = g.getDocStringForFunction(func)
+            if s:
+                s = self.replaceBindingPatterns(s)
+            else:
+                s = 'no docstring available'
+
+            # Create the title.
+            s2 = '%s (%s)' % (commandName,bindings) if bindings else commandName
+            underline = '+' * len(s2)
+            # title = '%s\n%s\n%s\n\n' % (underline,s2,underline)
+            title = '%s\n%s\n\n' % (s2,underline)
+
+            # Fixes bug 618570:
+            s = title + ''.join([
+                g.choose(line.strip(),line.lstrip(),'\n')
+                    for line in g.splitLines(s)])
+        else:
+            << set s to about help-for-command >>
+
+        c.putApropos(s) # calls g.adjustTripleString.
+.. @+node:ekr.20120521114035.9872: *8* << set s to about help-for-command >>
+s = '''\
+
+++++++++++++++++++++++++
+About Leo's help command
+++++++++++++++++++++++++
+
+Invoke Leo's help-for-command as follows::
+
+    <F1>
+    <Alt-X>help-for-command<return>
+
+Next, type the name of one of Leo's commands.
+You can use tab completion.  Examples::
+
+    <F1><tab>           shows all commands.
+    <F1>apropos<tab>    shows all apropos commands.
+
+Here are the apropos commands::
+
+    apropos-abbreviations
+    apropos-autocompletion
+    apropos-bindings
+    apropos-debugging-commands
+    apropos-find-commands
+'''
+.. @+node:ekr.20120524151127.9886: *7* replaceBindingPatterns
+def replaceBindingPatterns (self,s):
+
+    '''For each instance of the pattern !<command-name>! is s,
+    replace the pattern by the key binding for command-name.'''
+
+    c = self.c
+    pattern = re.compile('!<(.*)>!')
+    while True:
+        m = pattern.search(s,0)
+        if m is None: break
+        name = m.group(1)
+        junk,aList = c.config.getShortcut(name)
+        for si in aList:
+            if si.pane == 'all':
+                key = c.k.prettyPrintKey(si.stroke.s)
+                break
+        else: key = '<Alt-X>%s<Return>' % name
+        s = s[:m.start()] + key + s[m.end():]
+    return s
+
+.. @+node:ekr.20100901080826.5850: *6* aproposAbbreviations
+def aproposAbbreviations (self,event=None):
+
+    '''Prints a discussion of abbreviations.'''
+
+    << define s >>
+
+    self.c.putApropos(s)
+.. @+node:ekr.20110530082209.18251: *7* << define s >> (helpForAbbreviations)
+@language rest
+
+s = '''\
+
++++++++++++++++++++
+About Abbreviations
++++++++++++++++++++
+
+When abbreviation mode is on (abbrev-mode toggles this mode) Leo will
+expand abbreviations as you type. Type the name of an abbreviation,
+followed by a space. As soon as you type the space, Leo will replace the
+name by the abbreviations value. You can undo the replacement as usual.
+
+Note that defining any abbreviation automatically turns on abbreviation
+mode.
+
+The add-global-abbreviation command (<alt-x>add-gl<tab><return>) takes the
+selected text as the replacement value of the abbreviation. The minibuffer
+prompts you for the name of the abbreviation.
+
+Settings
+========
+
+As usual, the following settings have effect
+only in @settings trees...
+
+@bool enable-abbreviations (default: False)
+
+When true, enables substitution of
+abbreviations.
+
+@data global-abbreviations
+@data abbreviations
+
+In both cases, body text contains lines of
+the form::
+
+   name=value
+
+name is the abbreviation name, value is the
+substituted text. Whitespace is ignore around
+the name, but is significant in the value.
+Abbreviation names may contain only
+alphabetic characters, but may start with the
+'@' sign.
+
+By *convention* @data global-abbreviations
+setting should be defined in
+myLeoSettings.leo, while @data abbreviations
+should be defined in other .leo files.
+Regardless of where they are defined,
+abbreviations in @data abbreviation nodes
+will override settings (with the same name)
+in @data global-abbreviations nodes.
+
+Commands
+========
+
+apropos-abbreviations
+
+Prints this summary.
+
+dabbrev-completion
+
+Insert the common prefix of all dynamic
+abbreviations matching the present word.
+Similar C-M-/ in Emacs.
+
+dabbrev-expands
+
+Expand the word in the buffer before point as
+a dynamic abbrev, by searching in the buffer
+for words starting with that abbreviation
+(dabbrev-expand). Similar to M-/ in Emacs
+
+abbrev-mode
+
+Toggles abbreviation mode. Abbreviations are
+only active when this mode is on.
+
+add-global-abbrev
+
+Adds an abbreviation for the selected text.
+The minibuffer prompts for the abbreviation
+name.
+
+inverse-add-global-abbrev
+
+Adds an abbreviation. The selected text is
+the abbreviation name. The minibuffer prompts
+for the value of the abbreviation.
+
+kill-all-abbrevs
+
+Removes all abbreviations.
+
+list-abbrevs
+
+Lists all active abbreviations.
+
+read-abbrev-file
+
+Read an external file containing
+abbreviations.
+
+write-abbrev-file
+
+Writes abbreviations to an external file.
+
+Scripting
+=========
+
+Leo scripts may read abbreviations from a file with::
+
+    c.abbrevCommands.readAbbreviationsFromFile(fn)
+
+'''
+.. @+node:ekr.20060226131603.1: *6* aproposAutocompletion
+def aproposAutocompletion (self,event=None):
+
+    '''Prints a discussion of autocompletion.'''
+
+    << define s >>
+
+    self.c.putApropos(s)
+.. @+node:ekr.20110530082209.18252: *7* << define s >> (aproposAutocompletion)
+# @pagewidth 40
+@language rest
+
+s = '''
++++++++++++++++++++++++++++++++++
+About Autocompletion and Calltips
++++++++++++++++++++++++++++++++++
+
+This documentation describes both
+autocompletion and calltips.
+
+Typing a period when @language python is
+in effect starts autocompletion. Typing
+'(' during autocompletion shows the
+calltip. Typing Return or Control-g
+(keyboard-quit) exits autocompletion or
+calltips.
+
+Autocompletion
+==============
+
+Autocompletion shows what may follow a
+period in code. For example, after
+typing g. Leo will show a list of all
+the global functions in leoGlobals.py.
+Autocompletion works much like tab
+completion in the minibuffer. Unlike the
+minibuffer, the presently selected
+completion appears directly in the body
+pane.
+
+A leading period brings up 'Autocomplete
+Modules'. (The period goes away.) You
+can also get any module by typing its
+name. If more than 25 items would appear
+in the Autocompleter tab, Leo shows only
+the valid starting characters. At this
+point, typing an exclamation mark shows
+the complete list. Thereafter, typing
+further exclamation marks toggles
+between full and abbreviated modes.
+
+If x is a list 'x.!' shows all its
+elements, and if x is a Python
+dictionary, 'x.!' shows list(x.keys()).
+For example, 'sys.modules.!' Again,
+further exclamation marks toggles
+between full and abbreviated modes.
+
+During autocompletion, typing a question
+mark shows the docstring for the object.
+For example: 'g.app?' shows the
+docstring for g.app. This doesn't work
+(yet) directly for Python globals, but
+'__builtin__.f?' does. Example:
+'__builtin__.pow?' shows the docstring
+for pow.
+
+Autocompletion works in the Find tab;
+you can use <Tab> to cycle through the
+choices. The 'Completion' tab appears
+while you are doing this; the Find tab
+reappears once the completion is
+finished.
+
+Calltips
+========
+
+Calltips appear after you type an open
+parenthesis in code. Calltips shows the
+expected arguments to a function or
+method. Calltips work for any Python
+function or method, including Python's
+global function. Examples:
+
+a) g.toUnicode(
+   gives:
+   g.toUnicode(s,encoding, reportErrors=False
+
+b) c.widgetWantsFocusNow
+   gives:
+   c.widgetWantsFocusNow(w
+
+c) reduce(
+   gives:
+   reduce(function, sequence[,initial]) -> value
+
+The calltips appear directly in the text
+and the argument list is highlighted so
+you can just type to replace it. The
+calltips appear also in the status line
+for reference after you have started to
+replace the args.
+
+Options
+=======
+
+Both autocompletion and calltips are
+initially enabled or disabled by the
+enable_autocompleter_initially and
+enable_calltips_initially settings in
+leoSettings.leo. You may enable or
+disable these features at any time with
+these commands: enable-autocompleter,
+enable-calltips, disable-autocompleter
+and disable-calltips. '''
+.. @+node:ekr.20060205170335: *6* aproposBindings
+def aproposBindings (self,event=None):
+
+    '''Prints a discussion of keyboard bindings.'''
+
+    << define s >>
+
+    self.c.putApropos(s)
+.. @+node:ekr.20110530082209.18253: *7* << define s >> (aproposBindings)
+# @pagewidth 40
+@language rest
+
+s = '''
+++++++++++++++++++
+About Key Bindings
+++++++++++++++++++
+
+A shortcut specification has the form:
+
+command-name = shortcutSpecifier
+
+or
+
+command-name ! pane = shortcutSpecifier
+
+The first form creates a binding for all
+panes except the minibuffer. The second
+form creates a binding for one or more
+panes. The possible values for 'pane'
+are:
+
+====    ===============
+pane    bound panes
+====    ===============
+all     body,log,tree
+body    body
+log     log
+mini    minibuffer
+text    body,log
+tree    tree
+====    ===============
+
+You may use None as the specifier.
+Otherwise, a shortcut specifier consists
+of a head followed by a tail. The head
+may be empty, or may be a concatenation
+of the following: (All entries in each
+row are equivalent)::
+
+    Shift+ Shift-
+    Alt+ or Alt-
+    Control+, Control-, Ctrl+ or Ctrl-
+
+Notes:
+
+1. The case of plain letters is significant:
+   a is not A.
+
+2. The Shift- (or Shift+) prefix can be
+   applied *only* to letters or
+   multi-letter tails. Leo will ignore
+   (with a warning) the shift prefix
+   applied to other single letters,
+   e.g., Ctrl-Shift-(
+
+3. The case of letters prefixed by
+   Ctrl-, Alt-, Key- or Shift- is *not*
+   significant.
+
+The following table illustrates these
+rules. In each row, the first entry is
+the key (for k.bindingsDict) and the
+other entries are equivalents that the
+user may specify in leoSettings.leo::
+
+    a, Key-a, Key-A
+    A, Shift-A
+    Alt-a, Alt-A
+    Alt-A, Alt-Shift-a, Alt-Shift-A
+    Ctrl-a, Ctrl-A
+    Ctrl-A, Ctrl-Shift-a, Ctrl-Shift-A
+    !, Key-!,Key-exclam,exclam
+
+'''
+.. @+node:ekr.20130412173637.10333: *6* help
+def help (self,event=None):
+
+    '''Prints and introduction to Leo's help system.'''
+
+    << define rst_s >>
+    self.c.putApropos(rst_s)
+.. @+node:ekr.20130412173637.10330: *7* << define rst_s >> (F1)
+rst_s = '''
+
+**Welcome to Leo's help system.**
+
+To learn about ``<Alt-X>`` commands, type::
+    
+    <Alt-X>help-for-minibuffer<Enter>
+    
+To get a list of help topics, type::
+    
+    <Alt-X>help-<tab>
+    
+For Leo commands (tab completion allowed), type::
+    
+    <Alt-X>help-for-command<Enter>
+    <a Leo command name><Enter>
+    
+To use Python's help system, type::
+    
+    <Alt-X>help-for-python<Enter>
+    <a python symbol><Enter>
+
+'''
+.. @+node:ekr.20070501092655: *6* aproposDebuggingCommands
+def aproposDebuggingCommands (self,event=None):
+
+    '''Prints a discussion of of Leo's debugging commands.'''
+
+    << define s >>
+
+    self.c.putApropos(s)
+.. @+node:ekr.20070501092655.1: *7* << define s >> (aproposDebuggingCommands)
+# @pagewidth 40
+@language rest
+
+s = '''
+++++++++++++++++++++++++
+About Debugging Commands
+++++++++++++++++++++++++
+
+The following commands are useful for debugging::
+
+    collect-garbage:   Invoke the garbage collector.
+    debug:             Start an external debugger in another process.
+    disable-gc-trace:  Disable tracing of the garbage collector.
+    dump-all-objects:  Print a summary of all existing Python objects.
+    dump-new-objects:  Print a summary of all newly-created Python objects.
+    enable-gc-trace:   Enable tracing of the garbage collector.
+    free-tree-widgets: Free all widgets used in Leo's outline pane.
+    print-focus:       Print information about the requested focus.
+    print-stats:       Print statistics about existing Python objects.
+    print-gc-summary:  Print a brief summary of all Python objects.
+    run-unit-tests:    Run unit tests in the presently selected tree.
+    verbose-dump-objects: Print a more verbose listing of all existing Python objects.
+
+Leo also has many debugging settings that enable and disable traces.
+For details, see the node: @settings-->Debugging in leoSettings.leo.
+'''
+.. @+node:ekr.20060205170335.1: *6* aproposFindCommands
+def aproposFindCommands (self, event=None):
+
+    '''Prints a discussion of of Leo's find commands.'''
+
+    << define s >>
+    << define old_s >>
+
+    self.c.putApropos(s)
+.. @+node:ekr.20130411023826.16595: *7* << define s >> (apropos-find-commands)
+@language rest
+
+s = '''
+
+.. |br| raw:: html
+
+   <br />
+
+Finding text
+------------
+
+**Ctrl-F** starts searching. |br|\
+The cursor moves to the minibuffer. |br|\
+To abandon a search, type **Ctrl-G**.
+
+The Find Tab shows the present settings. |br|\
+Underlined characters are keyboard hints: |br|\
+**Alt-Ctrl-W** toggles the Whole Word checkbox, and so on.
+
+Type the search string in the minibuffer. |br|\
+Type the **Enter** key to start the search.
+
+Once searching has begun:
+    **F3** searches again. |br|\
+    **F2** searches backwards.
+
+Replacing text
+--------------
+
+Type **Ctrl-F** and enter the find string as before. |br|\
+Type **Ctrl-R** instead of **Enter**.
+
+Type the replacement string. |br|\
+The **Enter** key starts the search.
+
+When a match is found:
+    The **=** key makes the replacement. |br|\
+    The **-** key replaces and finds again. |br|\
+    The **F2** and **F3** keys work as before.
+
+Incremental searching
+---------------------
+
+**Alt-S** starts an incremental search. |br|\
+**Alt-R** starts a reverse incremental search.
+
+Any characters you type extend the search. |br|\
+**Backspace** retracts the search. 
+
+During an incremental search:
+    **Enter** or **Ctrl-G** stops the search. |br|\
+    **Alt-S** finds the search string again. |br|\
+    **Alt-R** does the same during a reverse search.
+
+'''
+.. @+node:ekr.20060209082023.1: *7* << define old_s >> (aproposFindCommands)_
+# @pagewidth 40
+@language rest
+
+old_s = '''
++++++++++++++++++++
+About Find Commands
++++++++++++++++++++
+
+Note: all bindings shown are the default
+bindings for these commands. You may
+change any of these bindings using
+@shortcuts nodes in leoSettings.leo.
+
+Settings
+========
+
+leoSettings.leo now contains several
+settings related to the Find tab:
+
+@bool show_only_find_tab_options = True
+
+  When True (recommended), the Find tab
+  does not show the 'Find', 'Replace',
+  'Replace, Then Find', 'Find All' and
+  'Replace All' buttons.
+
+@bool minibufferSearchesShowFindTab = True
+
+  When True, Leo shows the Find tab when
+  executing most of the commands
+  discussed below.
+
+Basic find commands
+===================
+
+open-find-tab
+
+  Makes the Find tab visible. The Find
+  tab does **not** need to be visible to
+  execute any search command discussed
+  below.
+
+hide-find-tab
+
+  Hides the Find tab, but retains all
+  the present settings.
+
+search-with-present-options (Ctrl-F)
+
+  Prompts for a search string. Typing
+  the <Return> key puts the search
+  string in the Find tab and executes a
+  search based on all the settings in
+  the Find tab. This is a recommended
+  default search command.
+
+show-search-options
+
+  Shows the present search options in
+  the status line. This command also
+  makes the Find tab visible.
+
+find-next (F3)
+
+  Like search-with-present-options,
+  except that it uses the search string
+  in the find-tab. Recommended as the
+  default 'search again' command.
+
+find-previous (F2)
+
+  Repeats the command specified by the
+  Find tab, but in reverse.
+
+find-again
+
+  Like find-next if a search pattern is
+  not '<find pattern here>'. Otherwise,
+  like search-with-present-options.
+
+Setting find options
+====================
+
+Several minibuffer commands toggle the
+checkboxes and radio buttons in the Find
+tab, and thus affect the operation of
+the search-with-present-options command.
+You may bind these commands to keys or
+toggle these options in a mode.
+
+These commands toggle checkboxes::
+
+    toggle-find-ignore-case-option
+    toggle-find-in-body-option
+    toggle-find-in-headline-option
+    toggle-find-mark-changes-option
+    toggle-find-mark-finds-option
+    toggle-find-regex-option
+    toggle-find-word-option
+    toggle-find-wrap-around-option
+
+These commands set radio buttons::
+
+    set-find-everywhere,
+    set-find-node-only, and
+    set-find-suboutline-only.
+
+enter-find-options-mode (Ctrl-Shift-F)
+
+enters a mode in which you may change
+all checkboxes and radio buttons in the
+Find tab with plain keys. As always, you
+can use the mode-help (Tab) command to
+see a list of key bindings in effect for
+the mode.
+
+Search commands with side effects
+=================================
+
+The following commands set an option in
+the Find tab, then work exactly like the
+search-with-present-options command.
+
+- search-backward and search-forward set
+  the 'Whole Word' checkbox to False.
+
+- word-search-backward and
+  word-search-forward set the 'Whole
+  Word' checkbox to True.
+
+- re-search-forward and re-search-backward
+  set the 'Regexp' checkbox to True.
+
+Find all commands
+=================
+
+find-all
+
+  Prints all matches in the log pane.
+
+clone-find-all
+
+  Replaces the previous 'Clone Find'
+  checkbox. It prints all matches in the
+  log pane, and creates a node at the
+  beginning of the outline containing
+  clones of all nodes containing the
+  'find' string. Only one clone is made
+  of each node, regardless of how many
+  clones the node has, or of how many
+  matches are found in each node.
+
+Note: the radio buttons in the Find tab
+(Entire Outline, Suboutline Only and
+Node only) control how much of the
+outline is affected by the find-all and
+clone-find-all commands.
+
+Search and replace commands
+===========================
+
+replace-string
+
+  Prompts for a search string. Type
+  <Return> to end the search string. The
+  command will then prompt for the
+  replacement string. Typing a second
+  <Return> key will place both strings
+  in the Find tab and executes a
+  **find** command, that is,
+  search-with-present-options.
+
+So the only difference between
+replace-string and
+search-with-present-options is that
+replace-string has the side effect of
+setting 'change' string in the Find tab.
+However, this is an extremely useful
+side effect, because of the following
+commands...
+
+replace (Ctrl-=)
+
+  Replaces the selected text with the
+  'change' text in the Find tab.
+
+replace-then-find (Ctrl--)
+
+  Replaces the selected text with the
+  'change' text in the Find tab, then
+  executes the find command again.
+
+find-next, change and change-then-find
+can simulate any kind of query-replace
+command.
+
+replaces-all
+
+  Replaces all occurrences of the 'find'
+  text with the 'change' text.
+  Important: the radio buttons in the
+  Find tab (Entire Outline, Suboutline
+  Only and Node only) control how much
+  of the outline is affected by this
+  command.
+
+Incremental search commands
+===========================
+
+Here are Leo's incremental find commands::
+
+    isearch-backward (Alt-R)
+    isearch-backward-regexp
+    isearch-forward (Alt-S)
+    isearch-forward-regexp
+
+You may use backspace to backtrack. To
+repeat an incremental search, type the
+shortcut for that command again.'''
+.. @+node:ekr.20120522024827.9897: *6* aproposRegularExpressions
+def aproposRegularExpressions (self, event=None):
+
+    '''Prints a discussion of of Leo's find commands.'''
+
+    << define s >>
+
+    self.c.putApropos(s)
+.. @+node:ekr.20120522024827.9898: *7* << define s >> (aproposRegularExpressions)
+@language rest
+
+# Using raw string is essential.
+s = r'''\
+
+.. _`regular expressions`: http://docs.python.org/library/re.html
+.. _`quick reference`:     http://rgruet.free.fr/PQR26/PQR2.6.html
+
++++++++++++++++++++++++++++
+About Regular expressions
++++++++++++++++++++++++++++
+
+Leo supports Python's regular expressionsin find patterns.
+Here is a quick reference::
+
+    .               Matches any character (including newline if DOTALL flag specified).
+    ^               Matches start of the string (of every line in MULTILINE mode).
+    $               Matches end of the string (of every line in MULTILINE mode).
+    *               0 or more of preceding regular expression (as many as possible).
+    +               1 or more of preceding regular expression (as many as possible).
+    ?               0 or 1 occurrence of preceding regular expression.
+    *?, +?, ??      Same as *, + and ? but matches as few characters as possible.
+    {m,n}           Matches from m to n repetitions of preceding RE.
+    {m,n}?          Same as {m,n}, but attempting to match as few repetitions as possible.
+    [ ]             Defines character set: e.g. '[a-zA-Z]' to match all letters (see also \w \S).
+    [^ ]            Defines complemented character set: matches if char is NOT in set.
+    \               Escapes special chars '*?+&$|()' and introduces special sequences (see below).
+                    If not using a raw string, write as '\\' in the pattern string.
+    \\              Matches a literal '\'.
+    |               Specifies alternative: 'foo|bar' matches 'foo' or 'bar'.
+    (...)           Matches any RE inside (), and delimits a group.
+    (?:...)         Mathces RE inside (), but doesn't delimit a group.
+    (?P<name>...)   Matches any RE inside (), and delimits a named group.
+                    r'(?P<id>[a-zA-Z_]\w*)' defines a group named id.
+    (?P=name)       Matches whatever text was matched by the earlier group named name.
+    (?=...)         Matches if ... matches next, but doesn't consume any of the string
+                    'Isaac (?=Asimov)' matches 'Isaac' only if followed by 'Asimov'.
+    (?!...)         Matches if ... doesn't match next. Negative of (?=...).
+    (?<=...)        Matches if the current position in the string is preceded by a match
+                    for ... that ends at the current position.
+                    This is called a positive lookbehind assertion.
+    (?<!...)        Matches if the current position in the string is not preceded by a match for ...
+                    This is called a negative lookbehind assertion.
+    (?(group)A|B)   Group is either a numeric group ID or a group name defined with (?Pgroup...)
+                    earlier in the expression.
+                    If the specified group matched, the regular expression pattern A will be tested
+                    against the string; if the group didn't match, the pattern B will be used instead.
+    (?#...)         A comment; ignored.
+    (?letters)      Each letter is in 'ilmsux' and sets the corresponding flag.
+                    re.I, re.L, re.M, re.S, re.U, re.X.
+    \number         Matches content of the group of the same number.     
+    \A              Matches only at the start of the string.
+    \b              Empty str at beginning or end of word:
+                    '\bis\b' matches 'is', but not 'his'.
+    \B              Empty str NOT at beginning or end of word.
+    \d              Any decimal digit:          [0-9]
+    \D              Any non-decimal digit char  [^0-9]).
+    \s              Any whitespace char         [ \t\n\r\f\v]
+    \S              Any non-whitespace char     [^ \t\n\r\f\v]
+    \w              Any alphaNumeric char (depends on LOCALE flag).
+    \W              Any non-alphaNumeric char (depends on LOCALE flag).
+    \Z              Matches only at the end of the string.
+
+For complete details, see: http://docs.python.org/library/re.html
+
+'''
+.. @+node:ekr.20060602154458: *6* pythonHelp
+def pythonHelp (self,event=None):
+
+    '''Prompt for a arg for Python's help function, and put it to the log pane.'''
+
+    c = self.c ; k = c.k ; tag = 'python-help' ; state = k.getState(tag)
+
+    if state == 0:
+        c.minibufferWantsFocus()
+        k.setLabelBlue('Python help: ',protect=True)
+        k.getArg(event,tag,1,self.pythonHelp)
+    else:
+        k.clearState()
+        k.resetLabel()
+        s = k.arg.strip()
+        if s:
+            # Capture the output of Python's help command.
+            old = sys.stdout
+            try:
+                sys.stdout = stdout = g.fileLikeObject()
+                help(str(s))
+                s2 = stdout.read()
+            finally:
+                sys.stdout = old
+            # Send it to the vr pane as a <pre> block
+            s2 = '<pre>' + s2 + '</pre>'
+            c.putApropos(s2)
+.. @+node:ekr.20070418074444: *6* printSettings
+def printSettings (self,event=None):
+
+    '''Prints the value of every setting, except key bindings and commands and open-with tables.
+    The following shows where the active setting came from:
+
+    -     leoSettings.leo,
+    - [D] default settings.
+    - [F] indicates the file being loaded,
+    - [M] myLeoSettings.leo,
+
+    '''
+
+    self.c.config.printSettings()
 .. @+node:ekr.20130908104426.11258: *4* 1180186 debian install not documented well enough
 https://bugs.launchpad.net/leo-editor/+bug/1180186
 
@@ -252,6 +1220,18 @@ def make_screen_shot(self,fn):
         m = g.loadOnePlugin('screenshots')
         m.make_screen_shot(fn)
 .. @+node:ekr.20131001045038.19047: *4* * Important: debian distro for Leo
+.. @+node:ekr.20131017174814.17480: *3* c.shouldBeExpanded
+def shouldBeExpanded(self,p):
+    c,root,v = self,self.rootPosition(),p.v
+    if p == c.p or p.isAncestorOf(c.p):
+        return True
+    if v.isExpanded():
+        v.expandedList = [p2 for p2 in v.expandedList if c.positionExists(p2,root=root)]
+        for p2 in v.expandedList:
+            if p == p2:
+                return True
+    return False
+
 .. @+node:ekr.20130926053913.11573: *3* for b2/final (7)
 .. @+node:ekr.20131004191204.16078: *4* cycle-all-focus doesn't work
 .. @+node:ekr.20130806072439.20477: *4* Fix full-screen bug
