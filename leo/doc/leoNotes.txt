@@ -8788,139 +8788,6 @@ http://technet.microsoft.com/en-us/sysinternals/bb896645.aspx?PHPSESSID=d926
 http://www.codeproject.com/Articles/36538/Windows-7-Tricks-and-Keyboard-Shortcuts.aspx
 
 @language rest
-.. @+node:ekr.20131017094004.16736: ** Unused code documentation
-.. @+node:ekr.20131017094004.16744: *3* Html tables
-.. @+node:ekr.20131017094004.16745: *4* generators tables
-+------------------------+----------------------------------------------------+
-| **Generator**          | **Yields**                                         |
-+------------------------+----------------------------------------------------+
-| c.all_positions        | All positions in the outline, in outline order     |
-+------------------------+----------------------------------------------------+
-| c.all_unique_positions | All positions in the outline, excluding duplicates |
-+------------------------+----------------------------------------------------+
-| p.children             | All child positions of p                           |
-+------------------------+----------------------------------------------------+
-| p.parents              | All parent positions of p                          |
-+------------------------+----------------------------------------------------+
-| p.self_and_parents     | p and all parent positions of p                    |
-+------------------------+----------------------------------------------------+
-| p.self_and siblings    | All sibling positions of p, including p            |
-+------------------------+----------------------------------------------------+
-| p.following_siblings   | All siblings positions that follow p               |
-+------------------------+----------------------------------------------------+
-| p.subtree              | All positions in p's subtree                       |
-+------------------------+----------------------------------------------------+
-| p.self_and_subtree     | p and all positions in p's subtree.                |
-+------------------------+----------------------------------------------------+
-
-..  - c._all_nodes generates all vnodes in the entire outline, in outline order.
-..  - c.all_unique_nodes generates all vnodes in the entire outline, generating
-..    each vnode exactly once.
-.. @+node:ekr.20131017094004.16746: *4* p methods table
-+-----------------------------+--------------------------------------------------------+
-| **Method**                  | **What it does**                                       |
-+-----------------------------+--------------------------------------------------------+
-| p.doDelete(new_position)    | deletes p and selects new_position.                    | 
-+-----------------------------+--------------------------------------------------------+
-| p.insertAfter()             | returns the position of a new vnode inserted after p   |
-+-----------------------------+--------------------------------------------------------+
-| p.insertAsNthChild(n)       | returns the position of a new vnode inserted           |
-|                             | as the n'th child of p                                 |
-+-----------------------------+--------------------------------------------------------+
-| p.insertBefore()            | returns the position of a new vnode inserted before p  |
-+-----------------------------+--------------------------------------------------------+
-| p.moveAfter(p2)             | moves the node at position p after position p2         |
-+-----------------------------+--------------------------------------------------------+
-| p.moveToNthChildOf(parent,n)| moves the vnode at position p to the n'th child of     |
-|                             | the parent position                                    |
-+-----------------------------+--------------------------------------------------------+
-| p.moveToRoot(oldRoot=None)  | moves the vnode at position p to the root position     |
-|                             | (oldRoot must be the old root position if it exists)   |
-+-----------------------------+--------------------------------------------------------+
-.. @+node:ekr.20131017094004.16731: *3* Important notes about Leo's code
-.. @+node:ekr.20131017094004.16733: *4* High-level code notes
-I've often said that I don't remember many details about Leo. This documentation
-describes what I *do* remember about Leo's various modules. I hope this will be
-useful to potential readers, users and modifiers of Leo's code.
-
-In general, if you want to understand the code, read through it quickly, looking
-for pieces of code that are unexpected complex, or unexpectedly simple. Forget
-the details; remember the shape. Once you have the general shape in mind, you
-are ready to modify the code. No kidding. Besides, more reading won't help :-)
-.. @+node:ekr.20131017094004.16734: *5* leoFileCommands.py and leoAtFile.py
-In general, write code is much simpler than read code,
-because reading requires parsing. There are a few exceptions below.
-
-leoFileCommands.py contains the code that reads and writes .leo files.
-
-- This file uses the sax parser to parse the xml in .leo files.
-- Complex code, driven by sax, turns sax nodes into Leo nodes.
-- The putVnode method is "interesting".  Take a look.
-  In the past, there have been significant, surprising bottlenecks in
-  putVnode and maybe putTnode as well.  No longer.
-
-leoAtFileCommands.py contains the code that reads and writes external files.
-
-- There are options to read and write strings.
-  These are useful for performance and for unit testing.
-- atFile.replaceTargetFileIfDifferent is an important optimization.
-- There are a lot of read/write commands for external files,
-  and this results in lots of options being passed around.
-
-Initing is tricky for both leoFileCommands.py and leoAtFileCommands.py.
-
-- The bizarre call to initReadIvars() at the end of getLeoFile is one
-  symptom of the difficulties.
-- Never change init code without careful thought and unit testing.
-.. @+node:ekr.20131017094004.16735: *5* Leo's MVC architecture
-I. Background
-
-Leo has had a robust MVC (Model,View,Controller) architecture from day one.
-
-Leo's model are the classes in leoNodes.py. They are completely independent from
-the rest of Leo. Many parts of Leo *use* these classes, but not vice versa!
-
-Leo's controller is everything else in 'Code-->Core classes'. This code has *no*
-direct dependencies on Leo's gui code, as will be explained next.
-
-Leo's view has two parts:
-
-1. The classes in the tree 'Code-->Gui Base classes'.
-   These are part of Leo's core.
-
-2. The classes in Leo's Qt gui, in qtGui.py.
-
-Leo's core consists of the Model, Controller and the gui base classes.
-
-II. Why Leo's core is gui-independent
-
-Leo uses a completely standard way of separating gui-dependent code from
-gui-independent code. Base gui classes (part 1 of the view) define an interface
-used by Leo's core. Subclasses (part 2 of the view) implement the interface for
-a particular gui.
-
-** Subclasses can change without affecting Leo's code in any way.**
-
-The essential design rule is: if gui-related code can be made gui- independent,
-it should be part of a base class. Otherwise it must be part of a subclass of a
-base gui class.
-
-The gui base classes are far more than do-nothing interfaces. Examples of
-complex code that reside in base classes:
-
-A. tree.select. I am proud that this method is gui-independent. Switching nodes
-is a very tricky business. Making it gui-independent is a big win.
-
-B. leoFind.py. Finds the next/previous matches, and dealing with an "idealized"
-find tab. Adapter classes exist in leoEditCommands.py.
-
-C. Autocompletion and minibuffer code in leoKeys.py.
-
-D. A generalized, gui-independent interface to Leo's body pane. The commands in
-leoEditCommands.py (part of the controller) use this interface (baseTextWidget)
-rather than using gui widgets directly.
-
-**If you want to understand Leo's design, study Leo's base gui classes.**
 .. @+node:ekr.20131017051340.16845: ** Unused scripts
 .. @+node:edward.20130930180239.10568: *3* push_ipython_script (new)
 def push_ipython_script(self,c,code,script):
@@ -8961,19 +8828,6 @@ for name in sorted(g.__dict__.keys()):
 @ignore
 @language python
 @color
-.. @+node:ekr.20131017051340.16852: *3* rst3 defaults previously set in @ @rst-options
-@ @rst-options
-call_docutils=False
-code_mode=False
-generate_rst=True
-http_server_support = False
-show_organizer_nodes=True
-show_headlines=True
-show_leo_directives=True
-stylesheet_path=..\doc
-write_intermediate_file = True
-verbose=True
-@c
 .. @+node:ekr.20050920084036.207: *3* queryReplaceCommandsClass (limited to single node)
 class queryReplaceCommandsClass (baseEditCommandsClass):
 
@@ -10735,6 +10589,138 @@ def lshadow_f(self, arg):
         shadow_walk(arg)
         c.redraw()
 .. @+node:ekr.20131017174814.17481: ** Unused documentation
+.. @+node:ekr.20131017094004.16731: *3* Important notes about Leo's code
+.. @+node:ekr.20131017094004.16733: *4* High-level code notes
+I've often said that I don't remember many details about Leo. This documentation
+describes what I *do* remember about Leo's various modules. I hope this will be
+useful to potential readers, users and modifiers of Leo's code.
+
+In general, if you want to understand the code, read through it quickly, looking
+for pieces of code that are unexpected complex, or unexpectedly simple. Forget
+the details; remember the shape. Once you have the general shape in mind, you
+are ready to modify the code. No kidding. Besides, more reading won't help :-)
+.. @+node:ekr.20131017094004.16734: *5* leoFileCommands.py and leoAtFile.py
+In general, write code is much simpler than read code,
+because reading requires parsing. There are a few exceptions below.
+
+leoFileCommands.py contains the code that reads and writes .leo files.
+
+- This file uses the sax parser to parse the xml in .leo files.
+- Complex code, driven by sax, turns sax nodes into Leo nodes.
+- The putVnode method is "interesting".  Take a look.
+  In the past, there have been significant, surprising bottlenecks in
+  putVnode and maybe putTnode as well.  No longer.
+
+leoAtFileCommands.py contains the code that reads and writes external files.
+
+- There are options to read and write strings.
+  These are useful for performance and for unit testing.
+- atFile.replaceTargetFileIfDifferent is an important optimization.
+- There are a lot of read/write commands for external files,
+  and this results in lots of options being passed around.
+
+Initing is tricky for both leoFileCommands.py and leoAtFileCommands.py.
+
+- The bizarre call to initReadIvars() at the end of getLeoFile is one
+  symptom of the difficulties.
+- Never change init code without careful thought and unit testing.
+.. @+node:ekr.20131017094004.16735: *5* Leo's MVC architecture
+I. Background
+
+Leo has had a robust MVC (Model,View,Controller) architecture from day one.
+
+Leo's model are the classes in leoNodes.py. They are completely independent from
+the rest of Leo. Many parts of Leo *use* these classes, but not vice versa!
+
+Leo's controller is everything else in 'Code-->Core classes'. This code has *no*
+direct dependencies on Leo's gui code, as will be explained next.
+
+Leo's view has two parts:
+
+1. The classes in the tree 'Code-->Gui Base classes'.
+   These are part of Leo's core.
+
+2. The classes in Leo's Qt gui, in qtGui.py.
+
+Leo's core consists of the Model, Controller and the gui base classes.
+
+II. Why Leo's core is gui-independent
+
+Leo uses a completely standard way of separating gui-dependent code from
+gui-independent code. Base gui classes (part 1 of the view) define an interface
+used by Leo's core. Subclasses (part 2 of the view) implement the interface for
+a particular gui.
+
+** Subclasses can change without affecting Leo's code in any way.**
+
+The essential design rule is: if gui-related code can be made gui- independent,
+it should be part of a base class. Otherwise it must be part of a subclass of a
+base gui class.
+
+The gui base classes are far more than do-nothing interfaces. Examples of
+complex code that reside in base classes:
+
+A. tree.select. I am proud that this method is gui-independent. Switching nodes
+is a very tricky business. Making it gui-independent is a big win.
+
+B. leoFind.py. Finds the next/previous matches, and dealing with an "idealized"
+find tab. Adapter classes exist in leoEditCommands.py.
+
+C. Autocompletion and minibuffer code in leoKeys.py.
+
+D. A generalized, gui-independent interface to Leo's body pane. The commands in
+leoEditCommands.py (part of the controller) use this interface (baseTextWidget)
+rather than using gui widgets directly.
+
+**If you want to understand Leo's design, study Leo's base gui classes.**
+.. @+node:ekr.20131017094004.16744: *3* Html tables
+.. @+node:ekr.20131017094004.16745: *4* generators tables
++------------------------+----------------------------------------------------+
+| **Generator**          | **Yields**                                         |
++------------------------+----------------------------------------------------+
+| c.all_positions        | All positions in the outline, in outline order     |
++------------------------+----------------------------------------------------+
+| c.all_unique_positions | All positions in the outline, excluding duplicates |
++------------------------+----------------------------------------------------+
+| p.children             | All child positions of p                           |
++------------------------+----------------------------------------------------+
+| p.parents              | All parent positions of p                          |
++------------------------+----------------------------------------------------+
+| p.self_and_parents     | p and all parent positions of p                    |
++------------------------+----------------------------------------------------+
+| p.self_and siblings    | All sibling positions of p, including p            |
++------------------------+----------------------------------------------------+
+| p.following_siblings   | All siblings positions that follow p               |
++------------------------+----------------------------------------------------+
+| p.subtree              | All positions in p's subtree                       |
++------------------------+----------------------------------------------------+
+| p.self_and_subtree     | p and all positions in p's subtree.                |
++------------------------+----------------------------------------------------+
+
+..  - c._all_nodes generates all vnodes in the entire outline, in outline order.
+..  - c.all_unique_nodes generates all vnodes in the entire outline, generating
+..    each vnode exactly once.
+.. @+node:ekr.20131017094004.16746: *4* p methods table
++-----------------------------+--------------------------------------------------------+
+| **Method**                  | **What it does**                                       |
++-----------------------------+--------------------------------------------------------+
+| p.doDelete(new_position)    | deletes p and selects new_position.                    | 
++-----------------------------+--------------------------------------------------------+
+| p.insertAfter()             | returns the position of a new vnode inserted after p   |
++-----------------------------+--------------------------------------------------------+
+| p.insertAsNthChild(n)       | returns the position of a new vnode inserted           |
+|                             | as the n'th child of p                                 |
++-----------------------------+--------------------------------------------------------+
+| p.insertBefore()            | returns the position of a new vnode inserted before p  |
++-----------------------------+--------------------------------------------------------+
+| p.moveAfter(p2)             | moves the node at position p after position p2         |
++-----------------------------+--------------------------------------------------------+
+| p.moveToNthChildOf(parent,n)| moves the vnode at position p to the n'th child of     |
+|                             | the parent position                                    |
++-----------------------------+--------------------------------------------------------+
+| p.moveToRoot(oldRoot=None)  | moves the vnode at position p to the root position     |
+|                             | (oldRoot must be the old root position if it exists)   |
++-----------------------------+--------------------------------------------------------+
 .. @+node:ekr.20131017174814.17482: *3* From home page
 <p>
 Leo is an outliner program whose outline node can hold any kind of data.
@@ -10766,132 +10752,6 @@ Leo works well with <a href="http://www.gnu.org/software/emacs/">emacs</a>,
   <a href="http://www.vim.org/">vim</a>, and
   <a href="http://ipython.org/">ipython</a>.</li>
 </p>
-.. @+node:ekr.20131018100353.16708: *3* Clones create views (from tutorial)
-..  .. index::
-    ..  pair: Views; Tutorial
-
-Using clones, you can create as many views of your data as you like.
-
-Views gather data for bug fixes, design review or whatever.
-
-To create a new view:
-
-- Create an *ordinary* (non-cloned) node, to represent the view.
-  Let's call this the **view node**.
-
-- Clone the nodes from the outline that you want contained in the view.
-
-- "Add" these clones to the view node by moving them so they become children
-  of the view node.
-
-- You can also add uncloned nodes to the view node.
-
-It's particularly useful to create a new view for each programming task:
-
-- Add clones of all nodes related to the task to the view node.
-
-- Now you can work on nodes in a single place; the location of the original
-  clones doesn't matter.
-.. @+node:ekr.20131019035402.17568: *3* @rst html\design.html
-##################
-Designing with Leo
-##################
-
-This chapter discusses how outlines can improve the design of programs, web
-sites and any other complex data. The more complex your program or data, the
-more useful Leo becomes.
-
-Furthermore, the same features that help with design also help with
-implementation, maintenance and testing. In all cases, being able to organize,
-understand and manipulate (script) complex data is what Leo does best.
-
-.. contents::
-    :depth: 2
-
-.. @+node:ekr.20131019035402.17569: *4* Outlines embody design
-Leo's outlines don't merely represent design. They often *are* the design.
-Outlines effortlessly show relationships between class, methods or any other
-data.
-
-Outlines express design and structure directly. In most programs, the grouping
-of functions into files, or the organization of a single file as a set of
-functions, etc. 
-
-Typical design tools are separate from the resulting product. With Leo, your
-designs become your programs or web site.
-
-Leo's outline pane always shows you the big picture, and the relationship of the
-presently selected outline to that big picture. At all times you are aware of
-both the overall design and all the intermediate levels of detail.
-
-Outlines create new design dimensions.
-
-There are many ways to express a program as a Leo outline. Such choices are
-important. They add clarity to the entire program. These are different *kind* of
-choices. They simply can not be expressed at all in other editors. In other
-words, such choices exist in a new design space. 
-
-Outlines add a new dimension to the design and coding process. Choices about
-what sections do, what they are named, what order they appear in, are choices in
-a design space different from "normal" programming. This an abstract concept, to
-be sure. However, the previous paragraphs are really a manifestation of
-working in this new design space.
-.. @+node:ekr.20131019035402.17570: *4* Nodes hide details
-Organizer nodes convey information about the structure and design of a large
-system. Decoupling structure from content in this way is precisely what is
-needed for flexibility: one can reorganize at will without worrying about
-changing the meaning of the code.
-
-Outlines clarify the shape of code
-
-These last several paragraphs have discussed comments in detail because the net
-effect of "putting comments where they belong" is that comments don't clutter
-the code. Section references hide irrelevant detail, so larger-scale patterns
-within functions (or declarations) become more apparent. Often just recasting
-code into web format has created Aha's about my own code, with no special
-attention to recoding or redesign! Recasting a function as a web raises the real
-and apparent level of abstraction.
-
-Organizer nodes eliminate mundane comments
-The headline of an organizer node is often all that needs to be said.
-
-Nodes create places for comments
-
-Each of Leo's nodes provide a place for lengthy comments that do not clutter
-other code. In practice this encourages comments where they are needed.
-
-Outlines reduce the need for comments
-
-Bridge or transition phrases are almost always unnecessary in a
-Leo outline. One never needs to say something like, "having just finished
-with topic x, we turn now to topic y."
-
-Comments and formatting no longer have to indicate overall design; node do that.
-
-Nodes reduce the visual "weight" of code
-
-Nodes and their helpers (usually in child nodes) can be as complex as
-necessary without affecting the organization of the outline. Moreover,
-collapsed nodes are inconspicuous, no matter how many children they contain
-and no matter how much code each child contains.
-.. @+node:ekr.20131019035402.17571: *4* Clones create views
-Typical browsers show you a fixed view of code. In contrast, Leo allows you to
-organize your programs as *you* want, and *Leo remembers your organizations*.
-
-Furthermore, Leo does not constrain you to a single "right" view of your data,
-programs or designs. By using clones, a single outline may contain dozens or
-even thousands of views of the nodes in the outline. You are free to create a
-new view for every new task or project.
-
-Finally, you can insert organizer nodes anywhere in an outline, including
-anywhere in any view. Organizer nodes do not change the meaning of programs,
-html pages or web sites, yet they can clarify and simplify designs, programs,
-web sites or data.
-.. @+node:ekr.20131019035402.17572: *4* Nodes create context
-Nodes naturally provide **useful** context. For example, @button and @test nodes.
-
-Outlines provide a convenient way of expressing the intended scope of commands.
-Many of Leo's commands operates on the presently selected tree.
 .. @+node:ekr.20131019035402.17438: *3* Old descriptions of Leo
 @language rest
 
