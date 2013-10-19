@@ -1233,6 +1233,36 @@ def shouldBeExpanded(self,p):
     return False
 
 .. @+node:ekr.20130926053913.11573: *3* for b2/final (7)
+.. @+node:ekr.20131019061259.16697: *4* Fix broken links on Leo's web site
+found 27 broken links.
+
+http://leoeditor.com/images/edit_note.html
+http://leoeditor.com/images/toolbar.html
+http://leoeditor.com/images/delete.html
+http://leoeditor.com/images/editcopy.html
+http://leoeditor.com/images/duedate.html
+http://leoeditor.com/slides/external-files/index.html
+http://leoeditor.com/slides/leo-basics-step-by-step/_sources/slide-010.html
+http://leoeditor.com/images/newlist.html
+http://leoeditor.com/images/new_item.html
+http://leoeditor.com/images/owners.html
+http://leoeditor.com/images/complete.html
+http://leoeditor.com/images/openlist.html
+http://leoeditor.com/images/editcut.html
+http://leoeditor.com/images/print.html
+http://leoeditor.com/slides/installation/index.html
+http://leoeditor.com/images/refresh.html
+http://leoeditor.com/slides/using-leos-minibuffer/index.html
+http://leoeditor.com/images/editpaste.html
+http://leoeditor.com/slides/installation/_static/underscore.html
+http://leoeditor.com/images/find.html
+http://leoeditor.com/front.html
+http://leoeditor.com/slides/scripting-leo/index.html
+http://leoeditor.com/images/printprev.html
+http://leoeditor.com/slides/leo-basics-step-by-step/index.html
+http://leoeditor.com/slides/clones-and-views/index.html
+http://leoeditor.com/images/mail_item.html
+http://leoeditor.com/images/page_setup.html
 .. @+node:ekr.20131004191204.16078: *4* cycle-all-focus doesn't work
 .. @+node:ekr.20130806072439.20477: *4* Fix full-screen bug
 I can't make Leo-Editor start in a full-screen window under openSUSU 12.1

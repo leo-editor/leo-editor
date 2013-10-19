@@ -854,15 +854,24 @@
 </v>
 <v t="ekr.20131008041326.16091"><vh>Cheat Sheet</vh>
 <v t="ekr.20131007143750.16070"><vh>@rst html\cheatsheet.html</vh>
-<v t="ekr.20131015035606.16778"><vh>Key bindings: selecting outline nodes</vh></v>
-<v t="ekr.20131015035606.16800"><vh>Key bindings: moving outline nodes</vh></v>
-<v t="ekr.20131015035606.16780"><vh>Key bindings: moving the cursor in text panes</vh></v>
-<v t="ekr.20131015035606.16801"><vh>Common commands</vh></v>
+<v t="ekr.20131019061259.16693"><vh>Key bindings</vh>
+<v t="ekr.20131015035606.16778"><vh>Selecting outline nodes</vh></v>
+<v t="ekr.20131015035606.16800"><vh>Moving outline nodes</vh></v>
+<v t="ekr.20131015035606.16780"><vh>Moving the cursor</vh></v>
+</v>
+<v t="ekr.20131015035606.16801"><vh>Frequently used commands</vh></v>
 <v t="ekr.20131015035606.16786"><vh>Leo directives</vh></v>
 <v t="ekr.20131015035606.16788"><vh>Settings</vh></v>
 <v t="ekr.20131016103844.16730"><vh>Notable Plugins</vh></v>
 <v t="ekr.20131015035606.16799"><vh>External files (@&lt;file&gt; nodes)</vh></v>
-<v t="ekr.20131007143750.16074"><vh>Scripting</vh></v>
+<v t="ekr.20131007143750.16074"><vh>Scripting</vh>
+<v t="ekr.20131019061259.16686"><vh>Pre-defined symbols</vh></v>
+<v t="ekr.20131019061259.16687"><vh>Generators</vh></v>
+<v t="ekr.20131019061259.16688"><vh>Commands class</vh></v>
+<v t="ekr.20131019061259.16690"><vh>vnode class</vh></v>
+<v t="ekr.20131019061259.16691"><vh>position class</vh></v>
+<v t="ekr.20131019061259.16692"><vh>leo.core.leoGlobals module</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20050831184021.5"><vh>Appendices &amp; glossary</vh>
@@ -1275,7 +1284,6 @@
 </v>
 <v t="ekr.20131007143750.16111"><vh>To do</vh>
 <v t="ekr.20101025080245.5791"></v>
-<v t="ekr.20131015091948.16783"><vh>Add links between chapters</vh></v>
 <v t="ekr.20130928065624.16019"><vh>Fix bug: 1168689 outdated documentation about ipython</vh>
 <v t="ekr.20131019061259.16677"><vh>Notes</vh>
 <v t="ekr.20130928065624.16021"><vh>code</vh>
@@ -1294,16 +1302,12 @@
 <v t="ekr.20131001100236.15928"><vh>highlights (for release noes)</vh></v>
 </v>
 </v>
-<v t="ekr.20131010160850.17454"><vh>Insert index entries into the tutorial</vh></v>
-<v t="ekr.20131016103844.16721"><vh>For b2</vh>
-<v t="ekr.20131008041326.16109"><vh>Add a Expansion section to the Reference chapter?</vh></v>
 <v t="ekr.20131001100335.15942"><vh>Leo &amp; other programs</vh>
 <v t="ekr.20131001100335.15943"><vh>Leo vs Emacs</vh></v>
 <v t="ekr.20131001100335.15944"><vh>Leo vs Vim</vh></v>
 <v t="ekr.20131001100335.15945"><vh>Leo vs IPython</vh></v>
 </v>
-<v t="ekr.20131009100732.19041"><vh>Broken links</vh></v>
-</v>
+<v t="ekr.20131008041326.16109"><vh>Add a Expansion section to the Reference chapter?</vh></v>
 </v>
 <v t="ekr.20131019061259.16683"><vh>Changed</vh>
 <v t="ekr.20131007143750.16070"></v>
@@ -1317,6 +1321,7 @@
 <v t="ekr.20131003040744.18221"></v>
 </v>
 </v>
+<v t="ekr.20131010160850.17454"><vh>Insert index entries into the tutorial</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -20215,174 +20220,20 @@ Leo's Cheat Sheet
 .. |br| raw:: html
 
    &lt;br /&gt;
+   
+.. _`Directives reference`: directives.html
+.. _`Commands Reference`: commands.html
+.. _`userAttributes`: customizing.html#adding-extensible-attributes-to-nodes-and-leo-files
+.. _`Customizing Leo`: customizing.html
 
 .. contents::
     :depth: 4
 </t>
-<t tx="ekr.20131007143750.16074">Here is a list of the ivars, properties, functions and methods most
-commonly used in Leo scripts. |br|
+<t tx="ekr.20131007143750.16074">This sections lists the ivars, properties, functions and methods most
+commonly used in Leo scripts.
+
 **Very important**: use Alt-1 (toggle-autocompleter) and Alt-2
 (toggle-calltips) to recreate these lists as you type.
-
-**Pre-defined symbols** in Leo scripts::
-
-    c: The commander of the present outline.
-    g: The leo.core.leoGlobals module.
-    p: The presently selected position, c.p.
-    
-**Generators**::
-
-    c.all_positions()
-    c.all_unique_positions()
-    p.children()
-    p.parents()
-    p.self_and_parents()
-    p.self_and_siblings()
-    p.following_siblings()
-    p.subtree()
-    p.self_and_subtree()
-    
-**Commander ivars and methods**::
-
-    c.frame         c's outer frame, a leoFrame instance.
-    c.user_dict     a temporary dict for use of scripts and plugins.
-    c.redraw()
-    c.positionExists(p)
-    
-**c.frame ivars**:
-
-Here is a partial list of the **official ivars** of any leoFrame f::
-
-    f.c                     is the frame’s commander.
-    f.body                  is a leoBody instance.
-    f.body.bodyCtl          is a leoQTextEditWidget instance.
-    f.body.bodyCtrl.widget  is a LeoQTextBrowser(QTextBrowser) instance.
-    f.log                   is a leoLog instance.
-    f.tree                  is a leoQtTree instance.
-    f.tree.treeWidget       is a LeoQTreeWidget (a QTreeWidget) instance.
-    
-Use autocompletion to explore these objects!
-
-**Vnode properties**::
-
-    v.b: v's body text.
-    v.h: v's headline text.
-    v.u: v.unknownAttributes, a persistent Python dictionary.
-
-**Position properties**::
-
-    p.b: same as p.v.b.
-    p.h: same as p.v.h.
-    p.u: same as p.v.u.
-
-**Position getters**::
-
-    p.back()
-    p.children()
-    p.firstChild()
-    p.hasBack()
-    p.hasChildren()
-    p.hasNext()
-    p.hasParent()
-    p.hasThreadBack()
-    p.hasThreadNext()
-    p.isAncestorOf(p2)
-    p.isAnyAtFileNode()
-    p.isAt...Node()
-    p.isCloned()
-    p.isDirty()
-    p.isExpanded()
-    p.isMarked()
-    p.isRoot()
-    p.isVisible()
-    p.lastChild()
-    p.level()
-    p.next()
-    p.nodeAfterTree()
-    p.nthChild()
-    p.numberOfChildren()
-    p.parent()
-    p.parents()
-    p.threadBack()
-    p.threadNext()
-    p.visBack()
-    p.visNext()
-    
-**Positions setters**::
-
-    p.setDirty()
-    p.setMarked()
-
-**Cloning, inserting, deleting, moving nodes, expanding &amp; contracting nodes**::
-
-    p.clone()
-    p.contract()
-    p.doDelete(new_position)
-    p.expand()
-    p.insertAfter()
-    p.insertAsNthChild(n)
-    p.insertBefore()
-    p.moveAfter(p2)
-    p.moveToNthChildOf(parent,n)
-    p.moveToRoot(oldRoot=None)
-        # oldRoot **must** be the old root position if it exists.
-        
-**Moving positions**
-
-The following move positions *themselves*:
-they change the node to which a position refers. |br|
-They do *not* change outline structure in any way!
-Use these when generators are not flexible enough::
-
-    p.moveAfter(p2)
-    p.moveToBack()
-    p.moveToFirstChild()
-    p.moveToFirstChildOf(p2)
-    p.moveToLastChild()
-    p.moveToLastChildOf(p2)
-    p.moveToLastNode()
-    p.moveToNext()
-    p.moveToNodeAfterTree(p2)
-    p.moveToNthChild()
-    p.moveToNthChildOf(p2)
-    p.moveToParent()
-    p.moveToRoot()
-    p.moveToThreadBack()
-    p.moveToThreadNext()
-    p.moveToVisBack(c)
-    p.moveToVisNext(c)
-    
-**g vars**::
-
-    g.app
-    g.app.gui
-    g.app.windowlist
-    g.unitTesting
-    g.user_dict  # a temporary dict for use of scripts and plugins.
-    
-**g decorator**::
-
-    @g.command(command-name)
-    
-**g functions** (the most interesting: there are many more in leoGlobals.py)::
-    
-    g.angleBrackets()
-    g.app.commanders()
-    g.app.gui.guiName()
-    g.es(*args,**keys)
-    g.es_print(*args,**keys)
-    g.es_exception()
-    g.getScript(c,p,
-        useSelectedText=True,
-        forcePythonSentinels=True,
-        useSentinels=True)
-    g.openWithFileName(fileName,old_c=None,gui=None)
-    g.os_path_... # Wrappers for os.path methods.
-    g.pdb(message='')
-    g.toEncodedString(s,encoding='utf-8',reportErrors=False)
-    g.toUnicode(s, encoding='utf-8',reportErrors=False)
-    g.trace(*args,**keys)
-    g.warning(*args,**keys)
 </t>
 <t tx="ekr.20131007143750.16111"></t>
 <t tx="ekr.20131008041326.16053">A plugin is a Python file in Leo's plugins folder.
@@ -21130,35 +20981,6 @@ Programmers have contributed dozens of plugins, including:
 </t>
 <t tx="ekr.20131009100732.19040">Supports outline-based calculations similar to spreadsheets.
 </t>
-<t tx="ekr.20131009100732.19041">found 27 broken links.
-
-http://leoeditor.com/images/edit_note.html
-http://leoeditor.com/images/toolbar.html
-http://leoeditor.com/images/delete.html
-http://leoeditor.com/images/editcopy.html
-http://leoeditor.com/images/duedate.html
-http://leoeditor.com/slides/external-files/index.html
-http://leoeditor.com/slides/leo-basics-step-by-step/_sources/slide-010.html
-http://leoeditor.com/images/newlist.html
-http://leoeditor.com/images/new_item.html
-http://leoeditor.com/images/owners.html
-http://leoeditor.com/images/complete.html
-http://leoeditor.com/images/openlist.html
-http://leoeditor.com/images/editcut.html
-http://leoeditor.com/images/print.html
-http://leoeditor.com/slides/installation/index.html
-http://leoeditor.com/images/refresh.html
-http://leoeditor.com/slides/using-leos-minibuffer/index.html
-http://leoeditor.com/images/editpaste.html
-http://leoeditor.com/slides/installation/_static/underscore.html
-http://leoeditor.com/images/find.html
-http://leoeditor.com/front.html
-http://leoeditor.com/slides/scripting-leo/index.html
-http://leoeditor.com/images/printprev.html
-http://leoeditor.com/slides/leo-basics-step-by-step/index.html
-http://leoeditor.com/slides/clones-and-views/index.html
-http://leoeditor.com/images/mail_item.html
-http://leoeditor.com/images/page_setup.html</t>
 <t tx="ekr.20131010160850.17454"></t>
 <t tx="ekr.20131011050613.16815">The LoadManager (LM) class (in leoApp.py) is responsible for initing all
 objects and settings. This is a complex process. Here is the big picture:
@@ -21535,7 +21357,9 @@ Regardless of focus::
 Adding the Shift key modifier to any of the keys above
 moves the cursor and extends the selected text.
 </t>
-<t tx="ekr.20131015035606.16786">Directives starting with '@ in the leftmost column::
+<t tx="ekr.20131015035606.16786">Directives starting with '@ in the leftmost column
+    
+See the `Directives reference`_ for full details::
 
     @                       # starts doc part
     @c                      # ends doc part
@@ -21582,8 +21406,6 @@ This overrides the following default binding in leoSettings.leo::
     @file &lt;filename&gt;
     @nosent &lt;filename&gt;  
     @shadow &lt;filename&gt;
-
-.. _`Directives reference`: directives.html
     
 See the `Directives reference`_ for full details.
     
@@ -21625,7 +21447,9 @@ Regardless of focus::
     Ctrl-R (move-outline-right)
     Ctrl-U (move-outline-up)
 </t>
-<t tx="ekr.20131015035606.16801">Files::
+<t tx="ekr.20131015035606.16801">For much more information, see the `Commands Reference`_.
+
+Files::
 
     Ctrl-N (new) 
     Ctrl-O (open-outline)
@@ -21678,26 +21502,6 @@ Undo::
     Ctrl-Z (undo)
     Ctrl-Shift-Z (redo)
 </t>
-<t tx="ekr.20131015091948.16783">In general, I would add in the end of each chapter a link to the expanded
-version of the summary.
-
-- From cheatsheet to tutorials or references.
-
-​For instance, for the @directives part, I would add a link to the
-directives part of the tutorial, so the user can review that if he doesnt
-remember any specifics about those. Same for the g functions list, it would
-be great to point to the full list :) Or for instance a link to a list of
-all the minibuffer commands when the "Common commands" chapter ends.
-
-I have read the new tutorial, I like it very much. And a very small
-suggestion, in this section,
-http://leoeditor.com/tutorial-programming.html#leo-scripts
-
-
-p.u # p's uA, the same as p.unknownAttributes.
-
-Could it possible to list a example(maybe 3 or 4 words) to illustrate what
-p.u is usually for?</t>
 <t tx="ekr.20131015091948.16784">#############################
 A Miscellany of Leo Scripting
 #############################
@@ -21762,7 +21566,6 @@ methods of the commander and position classes.
 
 `Leo's Directive Reference`_ discusses all directives in great detail.
 It would be a good idea to skim this chapter to see what it contains.</t>
-<t tx="ekr.20131016103844.16721"></t>
 <t tx="ekr.20131016103844.16730">See the docstring of these plugins for more details:
 
 - bookmarks.py: Manages URL's used as bookmarks.
@@ -22797,6 +22600,174 @@ databases. In my brother Speed's outlines, suboutlines *are* SQL queries!
 <t tx="ekr.20131019061259.16677"></t>
 <t tx="ekr.20131019061259.16683"></t>
 <t tx="ekr.20131019061259.16684"></t>
+<t tx="ekr.20131019061259.16686">execute-script predefines::
+
+    c: The commander of the present outline.
+    g: The leo.core.leoGlobals module.
+    p: The presently selected position, c.p.
+    
+@test scripts predefine all the above, plus::
+
+    self: The instance of unittest.TestCase
+</t>
+<t tx="ekr.20131019061259.16687">::
+
+    c.all_positions()
+    c.all_unique_positions()
+    p.children()
+    p.parents()
+    p.self_and_parents()
+    p.self_and_siblings()
+    p.following_siblings()
+    p.subtree()
+    p.self_and_subtree()
+</t>
+<t tx="ekr.20131019061259.16688">::
+
+    c.frame         c's outer frame, a leoFrame instance.
+    c.user_dict     a temporary dict for use of scripts and plugins.
+    c.redraw()
+    c.positionExists(p)
+
+Here is a partial list of the **official ivars** of any leoFrame f::
+
+    f.c                     is the frame’s commander.
+    f.body                  is a leoBody instance.
+    f.body.bodyCtl          is a leoQTextEditWidget instance.
+    f.body.bodyCtrl.widget  is a LeoQTextBrowser(QTextBrowser) instance.
+    f.log                   is a leoLog instance.
+    f.tree                  is a leoQtTree instance.
+    f.tree.treeWidget       is a LeoQTreeWidget (a QTreeWidget) instance.
+    
+Use autocompletion to explore these objects!
+</t>
+<t tx="ekr.20131019061259.16690">::
+
+    v.b: v's body text.
+    v.h: v's headline text.
+    v.u: v.unknownAttributes, a persistent Python dictionary.
+    
+v.u (uA's or unknownAttributes or userAttributes) allow plugins or scripts
+to associate persistant data with vnodes. For details see the section about
+`userAttributes`_ in the `Customizing Leo`_ chapter.
+</t>
+<t tx="ekr.20131019061259.16691">**Properties**::
+
+    p.b: same as p.v.b.
+    p.h: same as p.v.h.
+    p.u: same as p.v.u.
+
+**Getters**::
+
+    p.back()
+    p.children()
+    p.firstChild()
+    p.hasBack()
+    p.hasChildren()
+    p.hasNext()
+    p.hasParent()
+    p.hasThreadBack()
+    p.hasThreadNext()
+    p.isAncestorOf(p2)
+    p.isAnyAtFileNode()
+    p.isAt...Node()
+    p.isCloned()
+    p.isDirty()
+    p.isExpanded()
+    p.isMarked()
+    p.isRoot()
+    p.isVisible()
+    p.lastChild()
+    p.level()
+    p.next()
+    p.nodeAfterTree()
+    p.nthChild()
+    p.numberOfChildren()
+    p.parent()
+    p.parents()
+    p.threadBack()
+    p.threadNext()
+    p.visBack()
+    p.visNext()
+    
+**Setters**::
+
+    p.setDirty()
+    p.setMarked()
+
+**Operations on nodes**::
+
+    p.clone()
+    p.contract()
+    p.doDelete(new_position)
+    p.expand()
+    p.insertAfter()
+    p.insertAsNthChild(n)
+    p.insertBefore()
+    p.moveAfter(p2)
+    p.moveToNthChildOf(parent,n)
+    p.moveToRoot(oldRoot=None)
+        # oldRoot **must** be the old root position if it exists.
+        
+**Moving positions**
+
+The following move positions *themselves*: they change the node to which a
+position refers. They do *not* change outline structure in any way! Use
+these when generators are not flexible enough::
+
+    p.moveAfter(p2)
+    p.moveToBack()
+    p.moveToFirstChild()
+    p.moveToFirstChildOf(p2)
+    p.moveToLastChild()
+    p.moveToLastChildOf(p2)
+    p.moveToLastNode()
+    p.moveToNext()
+    p.moveToNodeAfterTree(p2)
+    p.moveToNthChild()
+    p.moveToNthChildOf(p2)
+    p.moveToParent()
+    p.moveToRoot()
+    p.moveToThreadBack()
+    p.moveToThreadNext()
+    p.moveToVisBack(c)
+    p.moveToVisNext(c)
+</t>
+<t tx="ekr.20131019061259.16692">For full details, see @file leoGlobals.py in LeoPyRef.leo.
+
+**g vars**::
+
+    g.app
+    g.app.gui
+    g.app.windowlist
+    g.unitTesting
+    g.user_dict  # a temporary dict for use of scripts and plugins.
+    
+**g decorator**::
+
+    @g.command(command-name)
+    
+**g functions** (the most interesting: there are many more in leoGlobals.py)::
+    
+    g.angleBrackets()
+    g.app.commanders()
+    g.app.gui.guiName()
+    g.es(*args,**keys)
+    g.es_print(*args,**keys)
+    g.es_exception()
+    g.getScript(c,p,
+        useSelectedText=True,
+        forcePythonSentinels=True,
+        useSentinels=True)
+    g.openWithFileName(fileName,old_c=None,gui=None)
+    g.os_path_... # Wrappers for os.path methods.
+    g.pdb(message='')
+    g.toEncodedString(s,encoding='utf-8',reportErrors=False)
+    g.toUnicode(s, encoding='utf-8',reportErrors=False)
+    g.trace(*args,**keys)
+    g.warning(*args,**keys)
+</t>
+<t tx="ekr.20131019061259.16693"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
