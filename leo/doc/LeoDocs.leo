@@ -1283,6 +1283,11 @@
 </v>
 </v>
 <v t="ekr.20131007143750.16111"><vh>To do</vh>
+<v t="ekr.20131010160850.17454"><vh>* Insert index entries into the tutorial</vh></v>
+<v t="ekr.20131019184243.16701"><vh>* Add more introductory words</vh>
+<v t="ekr.20131019184243.16660"><vh>Python tutorial</vh></v>
+<v t="ekr.20131019184243.16661"><vh>Emacs tutorial</vh></v>
+</v>
 <v t="ekr.20101025080245.5791"></v>
 <v t="ekr.20130928065624.16019"><vh>Fix bug: 1168689 outdated documentation about ipython</vh>
 <v t="ekr.20131019061259.16677"><vh>Notes</vh>
@@ -1321,7 +1326,6 @@
 <v t="ekr.20131003040744.18221"></v>
 </v>
 </v>
-<v t="ekr.20131010160850.17454"><vh>Insert index entries into the tutorial</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -22768,6 +22772,68 @@ these when generators are not flexible enough::
     g.warning(*args,**keys)
 </t>
 <t tx="ekr.20131019061259.16693"></t>
+<t tx="ekr.20131019184243.16660">@language rest
+
+Python is an easy to learn, powerful programming language. It has efficient
+high-level data structures and a simple but effective approach to
+object-oriented programming. Python’s elegant syntax and dynamic typing,
+together with its interpreted nature, make it an ideal language for
+scripting and rapid application development in many areas on most
+platforms.
+
+The Python interpreter and the extensive standard library are freely
+available in source or binary form for all major platforms from the Python
+Web site, http://www.python.org/, and may be freely distributed. The same
+site also contains distributions of and pointers to many free third party
+Python modules, programs and tools, and additional documentation.
+
+The Python interpreter is easily extended with new functions and data types
+implemented in C or C++ (or other languages callable from C). Python is
+also suitable as an extension language for customizable applications.
+
+This tutorial introduces the reader informally to the basic concepts and
+features of the Python language and system. It helps to have a Python
+interpreter handy for hands-on experience, but all examples are
+self-contained, so the tutorial can be read off-line as well.
+</t>
+<t tx="ekr.20131019184243.16661">What GNU Emacs Is
+
+GNU Emacs is a free, portable, extensible text editor. That it is free
+means specifically that the source code is freely copyable and
+redistributable. That it is portable means that it runs on many machines
+under many different operating systems, so that you can probably count on
+being able to use the same editor no matter what machine you're using. That
+it is extensible means that you can not only customize all aspects of its
+usage (from key bindings through fonts, colors, windows, mousage and
+menus), but you can program Emacs to do entirely new things that its
+designers never thought of.
+
+Because of all this, Emacs is an extremely successful program, and does
+more for you than any other editor. It's particularly good for programmers.
+If you use a common programming language, Emacs probably provides a mode
+that makes it especially easy to edit code in that language, providing
+context sensitive indentation and layout. It also probably allows you to
+compile your programs inside Emacs, with links from error messages to
+source code; debug your programs inside Emacs, with links to the source;
+interact directly with the language interpretor (where appropriate); manage
+change logs; jump directly to a location in the source by symbol (function
+or variable name); and interact with your revision control system.
+
+Emacs also provides mail readers, news readers, World Wide Web, gopher, and
+FTP clients, spell checking, and a Rogerian therapist, all of which are
+also useful for programming. But in this document we'll concentrate on the
+basics of Emacs usage for programmers.
+
+What GNU Emacs Is Not
+
+First and foremost, GNU Emacs is not a WYSIWYG word processor. This is
+primarily because it's designed as a programmer's editor, but Emacs is also
+used to edit documents by people who use non-WYSIWYG typesetters like TeX
+and Troff.
+
+Actually, this is about the only thing I can think of that GNU Emacs is
+not.</t>
+<t tx="ekr.20131019184243.16701"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
