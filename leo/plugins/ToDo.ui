@@ -509,7 +509,7 @@ node</string>
        </property>
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>4</horstretch>
+         <horstretch>6</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
@@ -552,13 +552,13 @@ node</string>
       </widget>
      </item>
      <item row="0" column="3">
-      <widget class="QDateEdit" name="dueDateEdit">
+      <widget class="QNDateEdit" name="dueDateEdit">
        <property name="enabled">
         <bool>true</bool>
        </property>
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>4</horstretch>
+         <horstretch>9</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
@@ -596,7 +596,7 @@ node</string>
        </property>
        <property name="sizePolicy">
         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-         <horstretch>3</horstretch>
+         <horstretch>6</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
@@ -629,13 +629,13 @@ node</string>
       </widget>
      </item>
      <item row="1" column="3">
-      <widget class="QDateEdit" name="nxtwkDateEdit">
+      <widget class="QNDateEdit" name="nxtwkDateEdit">
        <property name="enabled">
         <bool>true</bool>
        </property>
        <property name="sizePolicy">
         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-         <horstretch>7</horstretch>
+         <horstretch>9</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
@@ -706,6 +706,29 @@ shown</string>
        </property>
       </widget>
      </item>
+     <item row="0" column="5">
+      <widget class="QComboBox" name="dueDateOffset">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="6">
+      <widget class="QPushButton" name="butApplyDueOffset">
+       <property name="maximumSize">
+        <size>
+         <width>20</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>=</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>
@@ -750,7 +773,7 @@ shown</string>
         <double>9999.000000000000000</double>
        </property>
        <property name="singleStep">
-        <double>1.000000000000000</double>
+        <double>0.100000000000000</double>
        </property>
       </widget>
      </item>
@@ -930,6 +953,13 @@ progress</string>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QNDateEdit</class>
+   <extends>QDateEdit</extends>
+   <header>leo.plugins.QNCalendarWidget</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
