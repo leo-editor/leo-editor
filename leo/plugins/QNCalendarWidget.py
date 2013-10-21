@@ -1,7 +1,10 @@
 """
 QNCalendarWidget.py - a QCalendarWidget which shows N months at a time.
 
-Terry Brown, Terry_N_Brown@yahoo.com, Tue Oct 15 09:53:38 2013
+Not a full QCalendarWidget implementation, just enough to work
+with a QDateEdit (QNDateEdit) in a particular context.
+
+Terry_N_Brown@yahoo.com, Tue Oct 15 09:53:38 2013
 """
 
 import os
@@ -93,6 +96,12 @@ class QNCalendarWidget(QtGui.QCalendarWidget):
         - `cal`: the calendar that was activated
         """
         
+        for i in self.calendars:
+            old = i.blockSignals(True)  # stop currentPageChanged firing
+            y, m = i.yearShown(), i.monthShown()
+            i.setSelectedDate(date)
+            i.setCurrentPage(y, m)
+            i.blockSignals(old)
         self.activated.emit(date)
         
 class QNDateEdit(QtGui.QDateEdit):
@@ -109,10 +118,6 @@ class QNDateEdit(QtGui.QDateEdit):
         self.setCalendarPopup(True)
         self.cw = QNCalendarWidget(n=n, columns=columns)
         self.setCalendarWidget(self.cw)
-
-    #X def calendarWidget(self):
-    #X     # print("This is never called")
-    #X     return QNCalendarWidget()
 
 def main():
     app = QtGui.QApplication(sys.argv)
