@@ -6890,6 +6890,9 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
         self.detached.append((name, w))
         self.factory.detachTab(w)
         
+        w.window().setWindowIcon(QtGui.QIcon(
+            g.app.gui.getImageImageFinder("application-x-leo-outline.png")))
+
         c = w.leo_c
         
         # in case c.config.getData('qt-gui-plugin-style-sheet') 
@@ -6907,9 +6910,6 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
             sheet = g.expand_css_constants(sheet, c.font_size_delta)
             w.setStyleSheet(sheet)
             
-        w.window().setWindowIcon(QtGui.QIcon(
-            g.app.gui.getImageImageFinder("application-x-leo-outline.png")))
-
         def reattach(event, w=w, name=name, tabManager=self):
             tabManager.detached = [i for i in tabManager.detached
                                    if i[1] != w]
