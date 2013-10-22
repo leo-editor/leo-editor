@@ -6891,6 +6891,12 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
         self.factory.detachTab(w)
         
         c = w.leo_c
+        
+        # in case c.config.getData('qt-gui-plugin-style-sheet') 
+        # returns nothing usable
+        main = g.app.gui.frameFactory.masterFrame
+        w.setStyleSheet(main.styleSheet())
+        
         sheet = c.config.getData('qt-gui-plugin-style-sheet')
         if sheet:
             if '\n' in sheet[0]:
