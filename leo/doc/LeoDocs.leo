@@ -1536,6 +1536,7 @@
 </v>
 <v t="ekr.20060620094033"></v>
 <v t="ekr.20131019190351.16664"></v>
+<v t="ekr.20131023180133.17108"><vh>Add step-by-step for rst3 and maybe others</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -3716,7 +3717,7 @@ although once I've done that the transfer to the Palm is automatic.
 
 You're my hero! Thank you so much.
 </t>
-<t tx="ekr.20050830074815.15">Another day, another breakthrough using Leo---now I realize Leo is the 
+<t tx="ekr.20050830074815.15">Another day, another breakthrough using Leo--now I realize Leo is the 
 best URL bookmark manager there is.  No more bookmarks menus or 
 favorites lists inside the browser for me.  With the @url directive I 
 can just double click on the URL to open it in my browser.  Leo lets me 
@@ -3758,7 +3759,7 @@ needs to see write the data out to a file in the form a LaTeX table.
 
 Sometimes a row of a table would have a result that was calculated by adding up
 a list of numbers. For that I used the modern day equivalent of an adding
-machine paper tape---I stored a lisp s-expression in a Leo comment. I like
+machine paper tape--I stored a lisp s-expression in a Leo comment. I like
 s-expressions for this because once I put the opening "(+" on one line and the
 closing ")" on another line, I can fill in additional numbers just by typing
 them and can even annotate them with comments. So in the middle of generating a
@@ -3778,16 +3779,17 @@ That's an annotated record of how I arrived at the number the accountant will
 actually see. I can just paste it into any lisp or scheme interpreter and get
 the total. Adding additional numbers is easy.
 
-For next year, I think I might take this a step further. What I did this year is
-good for adding up numbers to get a total for one row of a LaTeX table. But it
-turns out I'd also like some more processing done on those tables (which I had
-to do by hand this time--- I'd like the rows sorted in reverse order by
-magnitude (so that the big numbers jump out at you from the start of the tables)
-and I'd like a total of all the rows in the table. So I think next year, instead
-of having an s-expression that computes the total of one row for me, I think
-I'll use s-expressions that generate whole tables, formatted for LaTex, from the
-underlying data. So I'm thinking next year my s-expressions might look more like
-this::
+For next year, I think I might take this a step further. What I did
+this year is good for adding up numbers to get a total for one row of
+a LaTeX table. But it turns out I'd also like some more processing
+done on those tables (which I had to do by hand this time--I'd like
+the rows sorted in reverse order by magnitude (so that the big numbers
+jump out at you from the start of the tables) and I'd like a total of
+all the rows in the table. So I think next year, instead of having an
+s-expression that computes the total of one row for me, I think I'll
+use s-expressions that generate whole tables, formatted for LaTex,
+from the underlying data. So I'm thinking next year my s-expressions
+might look more like this::
 
     @
     (table "Widget Related Expenses"
@@ -3812,15 +3814,14 @@ this::
     )
     @c
 
-The job of that "table" function would be to return the LaTeX code needed to
-display a table with the category names and values, sorted descending by
-magnitude, with the total displayed. It's sort of a poor man's way of doing a
-spreadsheet inside Leo and then making it look great using LaTeX. The idea would
-be as I wanted to add more data, I'd add it to the s-expression and then
-reevaluate the whole thing by pasting it into a lisp interpreter and then
-copying the result back into the same Leo node for LaTeX to process.
-
--- Dan
+The job of that "table" function would be to return the LaTeX code
+needed to display a table with the category names and values, sorted
+descending by magnitude, with the total displayed. It's sort of a poor
+man's way of doing a spreadsheet inside Leo and then making it look
+great using LaTeX. The idea would be as I wanted to add more data, I'd
+add it to the s-expression and then reevaluate the whole thing by
+pasting it into a lisp interpreter and then copying the result back
+into the same Leo node for LaTeX to process.---Dan
 </t>
 <t tx="ekr.20050830074815.2">"Thanks for a wonderful program – everybody should be using it! It blows the
 socks off that Java Mind mapping software that won project of the month a while
@@ -3890,8 +3891,7 @@ trajectory puts you on track to kick Emacs into the dustbin of computing
 history."---Dan Winkler
 
 </t>
-<t tx="ekr.20050830074815.5">"Word outlines are very useful. But Leo makes Word look like a clunky toy."
---Joe Orr
+<t tx="ekr.20050830074815.5">"Word outlines are very useful. But Leo makes Word look like a clunky toy."---Joe Orr
 
 "Leo is an interactive editor for organizing text fragments hierarchically and
 sequentially into one or more files and hierarchical folders, without arbitrary
@@ -3905,8 +3905,7 @@ rendered pages (big Leo win). This is really a super tool - in a matter of days
 I've started to use it on all my projects and I still haven't figured out how I
 lived without it."---John Sequeira
 
-"Leo is EXACTLY the kind of outliner I was looking for--fantastic job!"
--- Steve Allen
+"Leo is EXACTLY the kind of outliner I was looking for--fantastic job!"---Steve Allen
 </t>
 <t tx="ekr.20050830074815.6">"If you are like me, you have a kind of knowledge base with infos gathered over
 time. And you have projects, where you use some of those infos. Now, with
@@ -3964,8 +3963,7 @@ system."---Steven P. Schaefer
 
 "A funny observation with Leo is that when I 'Leo-ise' other people's code, Leo
 makes the code's structure so transparent that design faults become very quickly
-apparent. For example, maintenance pain caused by lack of factorization." --
-David McNab
+apparent. For example, maintenance pain caused by lack of factorization."---David McNab
 
 "Leo is a powerful tool for organizing text into tree structures, and for just
 generally attacking a number of problems from a tree-based perspective."---Joe
@@ -26498,6 +26496,7 @@ From Ville M. Vainio:
     different tools for my needs that deal with the headline structure
     directly.
 </t>
+<t tx="ekr.20131023180133.17108"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
