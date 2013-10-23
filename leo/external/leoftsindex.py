@@ -37,7 +37,13 @@ sys.path.append("/home/tbrown/Package/leo/bzr/leo.repo/trunk")
 import leo.core.leoBridge as leoBridge
 import leo.plugins.leofts as leofts
 
-controller = leoBridge.controller(gui='nullGui')
+controller = leoBridge.controller(
+    gui='nullGui',
+    loadPlugins=False,  # True: attempt to load plugins.
+    readSettings=False, # True: read standard settings files.
+    silent=False,       # True: don't print signon messages.
+    verbose=False
+)
 g = controller.globals()
 
 # list of "files" to process
