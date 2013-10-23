@@ -6890,18 +6890,31 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
         self.detached.append((name, w))
         self.factory.detachTab(w)
         
-        w.window().setWindowIcon(QtGui.QIcon(
-            g.app.gui.getImageImageFinder("application-x-leo-outline.png")))
+        print("DBG: %s has been detached" % w)
+        icon = g.app.gui.getImageImageFinder("application-x-leo-outline.png")
+        print("DBG: icon file %s" % icon)
+        icon = QtGui.QIcon(icon)
+        print("DBG: icon instance %s" % icon)
+        
+        w.window().setWindowIcon(icon)
+        
+        print("DBG: icon set for window %s" % w.window())
 
         c = w.leo_c
         
         # in case c.config.getData('qt-gui-plugin-style-sheet') 
         # returns nothing usable
         main = g.app.gui.frameFactory.masterFrame
+        print("DBG: master frame %s" % main)
+        print("DBG: master frame style sheet %s bytes" % len(main.styleSheet()))
         w.setStyleSheet(main.styleSheet())
+        print("DBG: style sheet set on %s" % w)
         
         sheet = c.config.getData('qt-gui-plugin-style-sheet')
-        if sheet:
+        
+        print("DBG: config sheet %s bytes" % (sheet and len(sheet) or -999))
+        
+        if False and sheet:
             if '\n' in sheet[0]:
                 sheet = ''.join(sheet)
             else:
@@ -6922,6 +6935,8 @@ class LeoTabbedTopLevel(QtGui.QTabWidget):
         w.closeEvent = reattach
         if platform.system() == 'Windows':
             w.move(20, 20)  # Windows (XP and 7) conspire to place the windows title bar off screen
+            
+        print("DBG: returning from detach")
 
         return w
     #@+node:tbrown.20120112093714.27963: *4* tile
