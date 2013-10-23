@@ -12051,5 +12051,52 @@ write your own plugins.
   Madison WI 53726
   edreamleo@gmail.com
 
+.. @+node:ekr.20131023115938.17130: *3* << Leo is... >> (OLD)
+<p><blockquote>
+  "Leo is a revolutionary step in the right direction for programming."
+  -- Brian Takita
+</blockquote></p>
+<p>
+Leo is an outliner whose nodes can hold any kind of data.
+The following unusual features make Leo an unusually powerful 
+  <a href="https://en.wikipedia.org/wiki/Personal_information_manager">PIM</a>, 
+  <a href="https://en.wikipedia.org/wiki/Integrated_development_environment">IDE</a> 
+  and data organizer:
+<li>
+  Leo outlines are views on an underlying
+  <a href="https://en.wikipedia.org/wiki/Directed_acyclic_graph">graph</a>.
+<li>
+  Outline nodes can reside in <strong>many</strong> places within a single outline.</li>
+<li>
+  Leo is fully scriptable in <a HREF="http://www.python.org/">Python</a>.</li>
+<li>
+  Leo scripts have full access to Leo's source code and all outline data.</li>
+<li>
+  <a href="http://leoeditor.com/tutorial-programming.html">Outline-oriented markup</a> generates
+  <a href="http://leoeditor.com/tutorial-basics.html#creating-external-files-with-file-and-all">external files</a>
+  from outlines.</li>
+</p>
+<p>
+  <a href="http://leoeditor.com/preliminaries.html#preface">
+    <strong>Learn why Leo is special</strong></a>.
+  <br>
+  <a href="http://leoeditor.com/tutorial.html">
+    <strong>Learn about Leo in two hours</strong></a>.
+</p>
+<p>
+Furthermore:
+</p>
+<li>
+Leo is <a href="http://www.opensource.org/"><i>Open Software</i></a>,
+written in pure <a HREF="http://www.python.org/">Python</a>.
+<li>
+Leo a <a HREF="http://www.riverbankcomputing.co.uk/software/pyqt/intro">PyQt</a>
+app that runs on Linux, Windows and MacOS.</li>
+<li>
+Leo works well with <a href="http://www.gnu.org/software/emacs/">emacs</a>,
+  <a href="http://www.xemacs.org/">xemacs</a>,
+  <a href="http://www.vim.org/">vim</a>, and
+  <a href="http://ipython.org/">ipython</a>.</li>
+</p>
 .. @-all
 .. @-leo
