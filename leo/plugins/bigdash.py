@@ -254,7 +254,7 @@ class GlobalSearch:
         fts = self.get_fts()
         hits = ["""
             <html><head><style>
-                * { font-family: sans-serif; }
+                * { font-family: sans-serif; background: white; }
                 pre { font-family: monospace; }
                 pre * { font-family: monospace; }
                 a { text-decoration: none; }
