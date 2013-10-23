@@ -1146,6 +1146,24 @@ class position (object):
         for child in p.children():
             child2 = p2.insertAsLastChild()
             child.copyTreeFromSelfTo(child2)
+    #@+node:peckj.20131023115434.10115: *4* p.createNodeHierarchy
+    def createNodeHierarchy(self, heads, forcecreate=False):
+        ''' Create the proper hierarchy of nodes with headlines defined in 
+            'heads' as children of the current position
+            
+            params:
+            heads - list of headlines in order to create, i.e. ['foo','bar','baz']
+                    will create:
+                      self
+                      -foo
+                      --bar
+                      ---baz
+            forcecreate - If False (default), will not create nodes unless they don't exist
+                          If True, will create nodes regardless of existing nodes
+            returns the final position ('baz' in the above example)
+        '''
+        c = self.v.context
+        return c.createNodeHierarchy(heads, parent=self, forcecreate=forcecreate)
     #@+node:ekr.20040303175026.2: *4* p.doDelete
     #@+at This is the main delete routine.
     # It deletes the receiver's entire tree from the screen.
