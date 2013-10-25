@@ -225,6 +225,7 @@
 <v t="ekr.20050830074815.14"><vh>Dan Winkler</vh></v>
 <v t="ekr.20050830074815.15"><vh>Dan Winkler 2</vh></v>
 <v t="ekr.20050830074815.16"><vh>Dan Winkler 3</vh></v>
+<v t="ekr.20131025044901.17144"><vh>Steve Litt</vh></v>
 </v>
 </v>
 <v t="ekr.20040414172218.4"><vh>@rst html/acknowledgements.html</vh>
@@ -375,16 +376,18 @@
 <v t="ekr.20131009100732.16737"><vh>Using URLs</vh></v>
 <v t="ekr.20131008041326.16066"><vh>Summary</vh></v>
 </v>
-<v t="ekr.20131008041326.16241"><vh>@rst html\tutorial-rst3.html</vh>
+<v t="ekr.20131008041326.16241" a="M"><vh>@rst html\tutorial-rst3.html</vh>
 <v t="ekr.20131008041326.16250"><vh>@rst-no-head links &amp; markup</vh></v>
-<v t="ekr.20131001100335.15939"><vh>Overview</vh>
-<v t="ekr.20131009100732.16754"><vh>Specify settings</vh></v>
-<v t="ekr.20131009100732.16748"><vh>Create the @rst tree</vh></v>
-<v t="ekr.20131009100732.16750"><vh>Give your document a title</vh></v>
-<v t="ekr.20131009100732.16755"><vh>Special headlines</vh></v>
+<v t="ekr.20131009100732.16748"><vh>Create the @rst node</vh></v>
+<v t="ekr.20131009100732.16750"><vh>Put a title in the @rst node </vh></v>
+<v t="ekr.20131024051649.17136"><vh>Put introductory text to the @rst node</vh></v>
+<v t="ekr.20131024051649.17137"><vh>Create sections and subsections</vh></v>
+<v t="ekr.20131009100732.16755"><vh>Organizing text without creating sections</vh></v>
+<v t="ekr.20131025044901.17147"><vh>Ignoring reference text</vh></v>
 <v t="ekr.20131009100732.16751"><vh>Write your document</vh></v>
+<v t="ekr.20131025044901.17148"><vh>Special markup</vh></v>
+<v t="ekr.20131009100732.16754"><vh>Specify settings</vh></v>
 <v t="ekr.20131009100732.16752"><vh>Run the rst3 command</vh></v>
-</v>
 <v t="ekr.20131009100732.16753"><vh>Further study</vh></v>
 <v t="ekr.20131005214621.16128"><vh>Summary</vh></v>
 </v>
@@ -1507,6 +1510,10 @@
 </v>
 </v>
 <v t="ekr.20131007143750.16111"><vh>To do</vh>
+<v t="ekr.20131024051649.17112"><vh>** Using clones to focus attention</vh></v>
+<v t="ekr.20131023180133.17111"><vh>** Example Leo patterns</vh>
+<v t="ekr.20131023180133.17112"><vh>Request</vh></v>
+</v>
 <v t="ekr.20101025080245.5791"></v>
 <v t="ekr.20130928065624.16019"><vh>Fix bug: 1168689 outdated documentation about ipython</vh>
 <v t="ekr.20131019061259.16677"><vh>Notes</vh>
@@ -1529,6 +1536,7 @@
 </v>
 <v t="ekr.20131001100335.15942"><vh>Leo &amp; other programs</vh>
 <v t="ekr.20131001100335.15943"><vh>Leo vs Emacs</vh></v>
+<v t="ekr.20131025044901.17143"><vh>post Leo vs Emacs</vh></v>
 <v t="ekr.20131001100335.15944"><vh>Leo vs Vim</vh></v>
 <v t="ekr.20131001100335.15945"><vh>Leo vs IPython</vh></v>
 </v>
@@ -1536,7 +1544,6 @@
 </v>
 <v t="ekr.20060620094033"></v>
 <v t="ekr.20131019190351.16664"></v>
-<v t="ekr.20131023180133.17108"><vh>Add step-by-step for rst3 and maybe others</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -3859,6 +3866,19 @@ Leo has simplified updating and creating new scripts and .bats keeping similar
 information in the same place. there is almost an addictive withdrawal effect
 when I can complete an operation in so much less time with Leo &amp; python than I
 had become used to.---Anon
+
+Leo is my Favorites Mind Capsule ;-)
+- she can contain all kinds of my Works (novel, code, slides, documents...)
+- and she can magic record my chaos mind in same time and same place and NOT Disturb my working...
+- livin Leo, make me freedom with chaos mind and structuring work export!
+
+.. _`atta. snap`: https://11707503125000652521.googlegroups.com/attach/44b6acf597f1cb02/snap4ZQMBP_131025_10.54.12.png?part=2&amp;view=1&amp;vt=ANaJVrFBMujBCjUslLye_M28daClPfNBKlr-AIYDCPl3DjULx2ZQPEOVBygH9p_vWzHCZS9xxRrW6h0HjabrZkEY3_jID2hmRdXaBh0NunGKcwov2tkazJY
+
+`atta. snap`_ is my slides write env: 
+- all my Slides is make with rst2s5
+- write rst in Leo
+- usage CLI tools generate html slides
+- easy, geek, and freedom!---人生苦短 (Zoom.Quiet)
 </t>
 <t tx="ekr.20050830074815.4">"[Leo] should either replace or greatly augment the development tools that I
 use."---Zak Greant
@@ -4568,7 +4588,7 @@ What People are Saying about Leo
    &lt;br /&gt;
 
 .. contents::
-    :depth: 2
+    :depth: 3
 </t>
 <t tx="ekr.20050831184021.5"></t>
 <t tx="ekr.20050831195331.1"></t>
@@ -19931,23 +19951,6 @@ You may type any command.  The following are most useful:
 - F2 (find-previous) continues the search in reverse.
 - Ctrl-G (keyboard-quit) ends the search.
 </t>
-<t tx="ekr.20131001100335.15939">.. index::
-    pair: reSTructuredText; Tutorial
-    pair: Intermediate File; Tutorial
-
-The rst3 command converts an @rst tree containing `reStructuredText`_ (rST)
-markup into a plain-text **intermediate file** containing *other* rST
-markup.
-
-The rst3 command converts headlines within @rst trees to rST markup
-(in the intermediate file) denoting rST section headings.
-
-Except for chapter titles, you *never* have to denote section headings with
-explicit rST markup; |br|
-you reorganize your documents by reorganizing your @rst tree!
-
-The following paragraphs explain how to create documents step by step:
-</t>
 <t tx="ekr.20131001100335.15940">.. index::
     pair: leoSettings.leo; Tutorial
     pair: myLeoSettings.leo; Tutorial
@@ -20548,20 +20551,22 @@ Ctrl-Q (exit-leo) exits Leo.  Leo will prompt you to save any unsaved outlines.
 </t>
 <t tx="ekr.20131005214621.16128">- The rst3 command converts an @rst tree to an external rST text file.
 
-- Settings starting with "rst3" govern how the rst3 command works.
+- Settings starting with the "rst3" prefix govern how the rst3 command works.
 
-- Within @rst trees, headlines become rST sections. |br|
-  Sections levels in the generated rST correspond to outline levels in Leo.
+- Within @rst trees, headlines become rST sections.
 
-- You can reorganize your rST documents without changing any rST markup in
-  your outline.
+- Sections levels in the generated rST correspond to outline levels in Leo.
+
+- You reorganize your rST documents just by reorganizing the corresponding @rst tree.
   
 - The rst3 command works acts on the nearest ancestor @rst node, if any, or
   on all descendant @rst nodes.
   
 - @rst-no-head nodes insert text (or markup) without an rST headline.
 
-- @rst-ignore nodes are a way of commenting out text.
+- The rst3 command ignores @rst-ignore nodes and @rst-ignore-tree trees.
+
+- The @button make-sphinx node in LeoDocs.leo calls sphinx automatically.
 
 - The rst3 command provides *many* other capabilities. For details, see
   `the rst3 chapter`_.</t>
@@ -21064,10 +21069,10 @@ Creating Documents with the rst3 Command
     revolutionary programming tool I have ever used and it (along with the
     Python language) has utterly changed my view of programming (indeed of
     writing) forever."---Shakeeb Alireza
-
-This tutorial tell how to use Leo's rst3 command to create HTML, PDF, `LaTeX`_
-and other kinds of documents. This command generates Leo's web site and all
-of Leo's documentation.
+    
+Leo's rst3 command creates HTML, PDF, `LaTeX`_ and other kinds of documents
+from Leo outlines. Leo's web site and documentation were created this way.
+This tutorial explains how, step-by-step:
 
 .. contents::
     :depth: 3
@@ -21217,69 +21222,47 @@ URL's should contain no spaces: use %20 instead of spaces. |br|
 </t>
 <t tx="ekr.20131009100732.16748">.. index::
     pair: @rst Node; Tutorial
+    
+1. Create a node someplace in your outline.
 
-Create an \@rst node. This node and its descendants will contain your
-document.
+2. Type this in the headline::
 
-The headline of the \@rst node has the form::
-
-        @rst &lt;filename&gt;
-
-By default, the rst3 command will write two files: the **output file**
-(&lt;filename&gt;) and the intermediate file (&lt;filename&gt;.txt).
-
-For example, the rst3 command applied to @rst abc.html will write abc.html
-and abc.html.txt.
-
-When the rst3 command writes an @rst tree:
-
-1. Each node becomes an rST/Sphinx section.
-
-   The level of each section corresponds to the level of the node in the
-   headline. Children of the @rst node create level 1 sections.
-   Grandchildren of the \@rst node create level 2 sections, and so on.
-
-2. The headline of each node becomes the section heading.
-
-3. The body text of each node becomes the contents of the node's section.
+        @rst myDocument.html
+        
+   This node represents your document. Leo's rst3 command will generate the
+   **output file**, myDocument.html, from this node and its children,
+   grand-children, etc.
 </t>
 <t tx="ekr.20131009100732.16750">Put something like this in the body of the @rst node::
 
     #############
     War and Peace
     #############
-
-**Note**: You must use '#' as shown to mark the title. Don't use any other
-underlining character.
-
-Put introductory words in the body of the @rst node itself::
-
-    Well, Prince, so Genoa and Lucca are now just family estates of the
-    Buonapartes. But I warn you, if you don't tell me that this means war,
-    if you still try to defend the infamies and horrors perpetrated by that
-    Antichrist--I really believe he is Antichrist--I will have nothing more
-    to do with you and you are no longer my friend, no longer my 'faithful
-    slave,' as you call yourself! But how do you do? I see I have
-    frightened you--sit down and tell me all the news.
+    
+This creates an rST chapter title. Use only the "#" character, as shown.
 </t>
-<t tx="ekr.20131009100732.16751">Now you write your novel, short story, documentation or whatever. As
-always, you organize your work with outlines.
+<t tx="ekr.20131009100732.16751">Now you write your novel, short story, documentation or whatever.
 
-Use @rst-no-head nodes to add text without creating a new rST section.
+As always, you organize your work with outlines:
 
-Use @rst-ignore nodes to comment out text.
+- Use @rst-no-head nodes to add text without creating a new rST section.
+
+- Use @rst-ignore nodes and @rst-ignore-tree trees to comment out text.
+
+- All other nodes create sections, subsections, etc.
 </t>
 <t tx="ekr.20131009100732.16752">.. index::
     pair: rst3 Command; Tutorial
 
 &lt;Alt-X&gt;rst3&lt;Return&gt; runs the rst3 command.
 
-If the present node is an @rst node, or a descendant node of an @rst node,
-the rst3 command applies to the nearest ancestor @rst node. Otherwise, the
-rst3 command applies to all descendant @rst trees.
+- If the present node is an @rst node, or a descendant node of an @rst
+  node, the rst3 command applies to the nearest ancestor @rst node.
 
-When using docutils, the rst3 command will call docutils automatically to
-create the output files.
+- Otherwise, the rst3 command applies to all descendant @rst trees.
+
+If @bool rst3_call_docutils is True, the rst3 command will call docutils
+automatically to create the output files.
 
 When using sphinx, run sphinx's "make" utility after running the rst3
 command to create the final output files.
@@ -21287,11 +21270,15 @@ command to create the final output files.
 <t tx="ekr.20131009100732.16753">You now know enough to get started with the rst3 command. Some possible
 next steps are:
 
-1. Look at Leo's own documentation in LeoDocs.leo. Discover how the nodes
-   in this tree correspond to the documentation you see before you.
+- Look at Leo's own documentation in LeoDocs.leo. Discover how the nodes in
+  this tree correspond to the documentation you see before you.
+   
+- LeoDocs.leo has an @button make-sphinx script that calls sphinx
+  automatically.
 
-2. Create your own @rst nodes. Run the rst3 command on them and see what
-   happens. If you get stuck, please `ask for help`_.</t>
+- Create your own @rst nodes. Run the rst3 command on them and see what
+  happens. If you get stuck, please `ask for help`_.
+</t>
 <t tx="ekr.20131009100732.16754">To use docutils as your markup engine, use this settings::
 
     @bool rst3_call_docutils = True
@@ -21304,27 +21291,18 @@ In both cases, use this setting::
 
     @bool rst3_write_intermediate_file = True
 </t>
-<t tx="ekr.20131009100732.16755">Headlines that start with '@rst-' control the rst3 command. The three most
-useful are:
+<t tx="ekr.20131009100732.16755">Sometimes you want to organize text without creating sections:
 
-.. glossary::
+1. Create an outline node to organize your text.
 
-\@rst-no-head &lt;ignored-text&gt;
+2. Type the following in the headline::
 
-    Causes the rst3 command to copy just the body text of the node. In
-    other words, the node's body text become part of the previous section.
-    Leo's docs use such nodes for rST links and other "invisible" markup.
+    @rst-no-head &lt;any text: it is ignored&gt;
+    
+The rst3 command adds the body text of this node to the previous section:
 
-\@rst-ignore &lt;ignored-text&gt;
-
-    The rst3 command ignores any \@rst-ignore node. Neither the headline
-    nor the body text becomes part of the output. You can use such nodes
-    for notes that you do not want to become part of the actual document.
-
-\@rst-ignore-tree &lt;ignored-text&gt;
-
-    The rst3 command ignores the \@rst-ignore-tree node and all its
-    descendants.
+- The headline is ignored.
+- The @rst-no-head node does not change the rST section structure in any way.
 </t>
 <t tx="ekr.20131009100732.16760">.. index::
     pair: Abbreviation; Tutorial
@@ -23177,6 +23155,8 @@ to associate persistant data with vnodes. For details see the section about
     p.insertAsNthChild(n)
     p.insertBefore()
     p.moveAfter(p2)
+    p.moveToFirstChildOf(parent,n)
+    p.moveToLastChildOf(paren,n)
     p.moveToNthChildOf(parent,n)
     p.moveToRoot(oldRoot=None)
         # oldRoot **must** be the old root position if it exists.
@@ -23187,19 +23167,14 @@ The following move positions *themselves*: they change the node to which a
 position refers. They do *not* change outline structure in any way! Use
 these when generators are not flexible enough::
 
-    p.moveAfter(p2)
     p.moveToBack()
     p.moveToFirstChild()
-    p.moveToFirstChildOf(p2)
     p.moveToLastChild()
-    p.moveToLastChildOf(p2)
     p.moveToLastNode()
     p.moveToNext()
     p.moveToNodeAfterTree(p2)
-    p.moveToNthChild()
-    p.moveToNthChildOf(p2)
+    p.moveToNthChild(n)) 
     p.moveToParent()
-    p.moveToRoot()
     p.moveToThreadBack()
     p.moveToThreadNext()
     p.moveToVisBack(c)
@@ -26496,7 +26471,230 @@ From Ville M. Vainio:
     different tools for my needs that deal with the headline structure
     directly.
 </t>
-<t tx="ekr.20131023180133.17108"></t>
+<t tx="ekr.20131023180133.17111">- Cut &amp; copy a clone to create an unlinked (archived, non-cloned) copy of it.
+
+- if 0:
+    @others
+    
+- Reorganize (clone) @test nodes to specify only those tests that you want to run.
+
+- Clone nodes and move them close together to focus your attention on them.
+
+- class myClass:
+    @others
+    
+- &lt;&lt; imports &gt;&gt;
+
+- Creating to-do nodes to get to-do items *out* of sight.
+
+- Put the project I am working on at the *bottom* of the outline.</t>
+<t tx="ekr.20131023180133.17112">@language rest
+
+From Writers Workshop: https://groups.google.com/forum/#!topic/leo-editor/6zR9WK66Nz4s
+
+I still think the best way to do is to put examples. I was not able to
+realize how to -clearly- say this until I read a recent post talking about
+how tutos are right now regarding the hello world, and how they should be.
+
+That made me realize that that is exactly what I have being missing so far:
+A step by step guide of the cool things Leo can do.
+
+I wish I could get a step by step guide on how to transform an outline or a
+subtree into a website html and open it. That is cool but I dont know how
+to do that. How to post a node into a blog How to call and run an R file
+from Leo Use RST properly
+
+By step by step, I mean, literally, "write this in a new node" "write this
+other thing in a sub-node" "Select the first node, then execute command..."
+
+Heck, for pretty much any export file Leo can transform an outline into, I
+would actually do something like that, in a "Leo quick examples" so within
+a few examples and step-by-step guides as the ones mentioned, the users
+will see how easy is to just write information once and have it as a
+website, as a document, posted into a blog, etc.
+
+Thanks to the new changes in the tutorial, now I clearly know how to find
+strings, but it got me some months to be able to easily do something as
+simple as that. But since the new tuto explains that step by step (copy
+this, insert text etc) as soon as I read that I could do that. There are
+more Leo skills that dont come to mind but often find myself wandering
+about when will I be able to do those, that is why I often ask for examples
+on how do you guys use things, because without those, the new user has to
+figure out how are the steps by himself without guides, and even though
+they are very simple, you only know how simple those are after you see them
+done, before, its just something you cant even imagine that is there.
+</t>
+<t tx="ekr.20131024051649.17112">A preview: I make a clone of anything I'm working on, and move it to the *last* node of the outline.  This can be a multi-step process.
+
+Suppose, as will soon happen, that I am going to fix a bug in Leo's @shadow logic.
+
+1. Find @file leoShadow.py in leoPy.leo
+
+2. Clone that node.
+
+   This allows easy access to the file that probably contains all the to-be-changed code.
+
+3. Move the newly-cloned node to last node of the outline.
+
+   This will automatically close the @file leoShadow.py node.
+
+4. Opened the cloned copy of @file leoShadow.py.
+
+   Note: the original @file node would expand if it were visible, but it's not.
+
+5. Look around :-) I don't remember details.
+
+6. Clone class shadowController and move it to the last outline node.
+
+   The &lt;&lt;docstring&gt;&gt; and &lt;&lt;imports&gt;&gt; sections aren't
+   going to be changed. Cloning the class node focuses attention on it.
+
+   Once again, moving the cloned node to the top level closes the
+   @file node.
+   
+7. Within the class node, look around for nodes are tree relating the the bug.
+
+8. Repeat this process each node that is related to the bug:
+   clone it and move to the last node of the outline.
+
+9. When all relevant nodes have been discovered, change the clones at the
+   top level, thereby changing the nodes in @file leoShadow.py.
+
+10. When the project is done, document what has happened and just *delete*
+    all the cloned top-level nodes.</t>
+<t tx="ekr.20131024051649.17136">Put introductory words in the body of the @rst node itself:
+
+    Well, Prince, so Genoa and Lucca are now just family estates of the
+    Buonapartes. But I warn you, if you don't tell me that this means war,
+    if you still try to defend the infamies and horrors perpetrated by that
+    Antichrist--I really believe he is Antichrist--I will have nothing more
+    to do with you and you are no longer my friend, no longer my 'faithful
+    slave,' as you call yourself! But how do you do? I see I have
+    frightened you--sit down and tell me all the news.
+</t>
+<t tx="ekr.20131024051649.17137">To create a new section, subsection, in the output file:
+
+1. Create a new outline node, as some descendant of the @rst node.
+
+2. **The node's headline becomes the section's title**.
+
+3. Type the contents of the section in the body text of the node.
+
+That's all there is to it:
+
+- **The rst3 command generates rST underlining automatically**.
+
+- **You reorganize your document by reorganizing nodes**.
+
+There is *no* need to change markup when reorganizing your document, a huge
+improvement over writing "raw" rST.
+
+.. - The outline level of a node determines the underlining character.
+
+</t>
+<t tx="ekr.20131025044901.17143">Org mode is kinda like Leo for Emacs: http://orgmode.org/manual/index.html
+
+As a result of "convergent evolution" it has many of Leo's features:
+
+- Outline commands:
+http://orgmode.org/manual/Structure-editing.html#Structure-editing
+
+- To-do lists: http://orgmode.org/manual/TODO-Items.html#TODO-Items
+
+- Hyperlinks: http://orgmode.org/manual/Hyperlinks.html#Hyperlinks
+
+This is natural.
+
+But org mode lacks *all* of Leo's crucial scripting features:
+
+1. Org mode gives scripts *no* access to org mode outlines! There is no API, for elisp or any other language. No predefined c,g,p. In org mode, **everything is just text**.
+
+2. Org mode has no extensibility features: no plugin architecture, no event handlers, no @button.
+
+3. Org mode has no clones, generators, or positions because everything is a simple tree.
+
+It is possible to create source files using org mode:
+http://orgmode.org/manual/Working-With-Source-Code.html#Working-With-Source-Code
+
+But org mode is feeble in comparison:
+
+- No @others(!!)  noweb is used as the markup--there is *no* integration of markup with outline structure.
+- Source code must be delimited with markup(!!)
+  http://orgmode.org/manual/Structure-of-code-blocks.html#Structure-of-code-blocks
+- No automatic tangling.
+- No untangling at all.
+- No automatic imports (@auto).
+
+Emacs makes up for it's lack true outline structure with a huge user base,
+so most (not all!) Leo's features have gotten *simulated* in an ugly,
+hard-to-extend, way. But simulation has its limits: features like @button
+and @test do not exist in org mode.</t>
+<t tx="ekr.20131025044901.17144">"Not sure why you said 'you can specify a computer program as an
+outline like thing in an outliner like setting.' Why not just say,
+'write a computer program in an outline?' Is there some nuance I am
+missing?"---EKR
+
+There are probably a million reasons I said it like that, but I think
+the main one is my everpresent, brightly burning belief that a program
+should be designed before its coded. Remember those guys, back in the
+day, who after receiving their programming assignment, would go to the
+keyboard and start pounding out C code? Remember their finished
+product? Remember how long it took them to finally complete the
+project?
+
+Meanwhile, when receiving an assignment, I'd spend hours to days with
+a bunch of paper, drawing diagrams. By the time I sat down at the
+terminal, I knew my data structures and algorithms. The hours to days
+head start of the "start coding immediately" guys evaporated because
+for me, coding was just a secretarial task, and I was required to do
+less refactoring, or even worse, kludging. Later, sometimes I'd
+substitute an outliner for the diagrams on paper; in the days of
+functional decomposition, an outliner was the perfect fit.
+
+Back to your question: If all I needed to do was **write** a program,
+I'd just sit down at a computer and start pounding out C or Python or
+Lua or whatever. But that's not my style. I need to **design** a
+program, and after all, a design is just a specification of how the
+program is going to be written.
+
+So it seems to me that I *design* the program on Leo, and then, when
+the time comes, I flip a switch and Leo *writes* the program for me.
+That's how I'd view what I've heard about Leo.
+</t>
+<t tx="ekr.20131025044901.17147">It is often useful to put reference material in your @rst tree
+that will *not* be included in the actual output.
+
+To have the rst3 command ignore a single node, type this in the node's headline::
+
+    @rst-ignore &lt;ignored-text&gt;
+    
+Neither the headline nor body text will be part of the output file.
+    
+To have the rst3 command ignore a node and all its descendants,
+type this in the node's headline::
+
+    @rst-ignore-tree &lt;ignored-text&gt;
+</t>
+<t tx="ekr.20131025044901.17148">.. _`rST manual`: http://docutils.sourceforge.net/docs/user/rst/quickref.html#directives
+
+It is often necessary to insert special characters into the output file.
+The `rST manual`_ tells how to insert "raw" markup into the output. For
+example, Leo's documentation uses the following two kinds of special
+markup::
+
+    .. |br| raw:: html
+    
+       &lt;br /&gt;
+    
+    .. |---| unicode:: U+02015 .. for quotes
+       :trim:
+
+With this markup in place, \|br\| has the effect of inserting &lt;br /&gt; (a
+line break), while - - - inserts the unicode "quotation dash" used to
+indicate the author of quotations.
+
+Note that rST automatically turns - - into a dash: --.
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
