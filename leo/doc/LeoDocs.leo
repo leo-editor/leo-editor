@@ -1510,11 +1510,6 @@
 </v>
 </v>
 <v t="ekr.20131007143750.16111"><vh>To do</vh>
-<v t="ekr.20131024051649.17112"><vh>** Using clones to focus attention</vh></v>
-<v t="ekr.20131023180133.17111"><vh>** Example Leo patterns</vh>
-<v t="ekr.20131023180133.17112"><vh>Request</vh></v>
-</v>
-<v t="ekr.20101025080245.5791"></v>
 <v t="ekr.20130928065624.16019"><vh>Fix bug: 1168689 outdated documentation about ipython</vh>
 <v t="ekr.20131019061259.16677"><vh>Notes</vh>
 <v t="ekr.20130928065624.16021"><vh>code</vh>
@@ -1534,6 +1529,12 @@
 </v>
 <v t="ekr.20131019190351.16678"></v>
 </v>
+<v t="ekr.20131025114335.17128"><vh>Finish what's new and release notes</vh></v>
+<v t="ekr.20131025114335.17127"><vh>b2</vh>
+<v t="ekr.20131024051649.17112"><vh>** Using clones to focus attention</vh></v>
+<v t="ekr.20131023180133.17111"><vh>** Example Leo patterns</vh>
+<v t="ekr.20131023180133.17112"><vh>Request</vh></v>
+</v>
 <v t="ekr.20131001100335.15942"><vh>Leo &amp; other programs</vh>
 <v t="ekr.20131001100335.15943"><vh>Leo vs Emacs</vh></v>
 <v t="ekr.20131025044901.17143"><vh>post Leo vs Emacs</vh></v>
@@ -1542,8 +1543,11 @@
 </v>
 <v t="ekr.20131008041326.16109"><vh>Add a Expansion section to the Reference chapter?</vh></v>
 </v>
+</v>
 <v t="ekr.20060620094033"></v>
 <v t="ekr.20131019190351.16664"></v>
+<v t="ekr.20101025080245.5791"></v>
+<v t="ekr.20131008041326.16241" a="M"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -3867,18 +3871,18 @@ information in the same place. there is almost an addictive withdrawal effect
 when I can complete an operation in so much less time with Leo &amp; python than I
 had become used to.---Anon
 
+.. _`atta. snap`: https://11707503125000652521.googlegroups.com/attach/44b6acf597f1cb02/snap4ZQMBP_131025_10.54.12.png?part=2&amp;view=1&amp;vt=ANaJVrFBMujBCjUslLye_M28daClPfNBKlr-AIYDCPl3DjULx2ZQPEOVBygH9p_vWzHCZS9xxRrW6h0HjabrZkEY3_jID2hmRdXaBh0NunGKcwov2tkazJY
+.. `atta. snap`_ is my slides write env: 
+
 Leo is my Favorites Mind Capsule ;-)
+
 - she can contain all kinds of my Works (novel, code, slides, documents...)
 - and she can magic record my chaos mind in same time and same place and NOT Disturb my working...
 - livin Leo, make me freedom with chaos mind and structuring work export!
-
-.. _`atta. snap`: https://11707503125000652521.googlegroups.com/attach/44b6acf597f1cb02/snap4ZQMBP_131025_10.54.12.png?part=2&amp;view=1&amp;vt=ANaJVrFBMujBCjUslLye_M28daClPfNBKlr-AIYDCPl3DjULx2ZQPEOVBygH9p_vWzHCZS9xxRrW6h0HjabrZkEY3_jID2hmRdXaBh0NunGKcwov2tkazJY
-
-`atta. snap`_ is my slides write env: 
 - all my Slides is make with rst2s5
 - write rst in Leo
 - usage CLI tools generate html slides
-- easy, geek, and freedom!---人生苦短 (Zoom.Quiet)
+- easy, geek, and freedom!--- 周琦 (Zoom.Quiet)
 </t>
 <t tx="ekr.20050830074815.4">"[Leo] should either replace or greatly augment the development tools that I
 use."---Zak Greant
@@ -21132,11 +21136,10 @@ If you get stuck, please `ask for help`_ immediately.
 
 .. _`Leo's Users Guide`:    leo_toc.html
 .. _`Sphinx`:               http://sphinx.pocoo.org/
-.. _`The rst3 chapter`:     tutorial-rst3.html
 .. _`ask for help`:         https://groups.google.com/forum/#!forum/leo-editor
 .. _`docutils`:             http://docutils.sourceforge.net
 .. _`reStructuredText`:     http://docutils.sourceforge.net/rst.html
-.. _`the rst3 chapter`:     tutorial-rst3.html
+.. _`the rst3 chapter`:     rstplugin3.html
 </t>
 <t tx="ekr.20131008041326.16252">.. |br| raw:: html
 
@@ -26695,6 +26698,8 @@ indicate the author of quotations.
 
 Note that rST automatically turns - - into a dash: --.
 </t>
+<t tx="ekr.20131025114335.17127"></t>
+<t tx="ekr.20131025114335.17128"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.

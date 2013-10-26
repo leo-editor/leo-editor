@@ -2058,7 +2058,6 @@ class LoadManager:
 
         trace = False
         lm = self
-
         # print('scanOptions',sys.argv)
 
         # Note: this automatically implements the --help option.
@@ -2107,10 +2106,8 @@ class LoadManager:
             g.trace('options',options)
 
         # Handle the args...
-
         # --gui
         gui = options.gui
-
         if gui:
             gui = gui.lower()
             if gui == 'qttabs':
@@ -2127,47 +2124,38 @@ class LoadManager:
         else:
             gui = 'qttabs'
             g.app.qt_use_tabs = True
-
         assert gui
         g.app.guiArgName = gui
-
         # --ipython
         g.app.useIpython = options.use_ipython
         if trace: g.trace('g.app.useIpython',g.app.useIpython)
-
         # --fullscreen
         # --minimized
         # --maximized
         g.app.start_fullscreen = options.fullscreen
         g.app.start_maximized = options.maximized
         g.app.start_minimized = options.minimized
-
         # --no-cache
         if options.no_cache:
             if trace: print('scanOptions: disabling caching')
             g.enableDB = False
-
         # --no-plugins
         if options.no_plugins:
             if trace: print('scanOptions: disabling plugins')
             g.app.enablePlugins = False
-
         # --no-splash
         # g.trace('--no-splash',options.no_splash_screen)
         g.app.use_splash_screen = not options.no_splash_screen
-
         # --screen-shot=fn
         screenshot_fn = options.screenshot_fn
         if screenshot_fn:
             screenshot_fn = screenshot_fn.strip('"')
             if trace: print('scanOptions: screenshot_fn',screenshot_fn)
-
         # --script
         script_path = options.script
         script_path_w = options.script_window
         if script_path and script_path_w:
             parser.error("--script and script-window are mutually exclusive")
-
         script_name = script_path or script_path_w
         if script_name:
             script_name = g.os_path_finalize_join(g.app.loadDir,script_name)
@@ -2176,43 +2164,35 @@ class LoadManager:
         else:
             script = None
             # if trace: print('scanOptions: no script')
-
         # --select
         select = options.select
         if select:
             select = select.strip('"')
             if trace: print('scanOptions: select',repr(select))
-
         # --session-restore & --session-save
         g.app.restore_session = bool(options.session_restore)
         g.app.save_session = bool(options.session_save)
-
         # --silent
         g.app.silentMode = options.silent
         # print('scanOptions: silentMode',g.app.silentMode)
-
         # --version: print the version and exit.
         versionFlag = options.version
-
-
         # --window-size
         windowSize = options.window_size
         if windowSize:
             if trace: print('windowSize',repr(windowSize))
             try:
                 h,w = windowSize.split('x')
+                windowSize = int(h),int(w)
             except ValueError:
                 windowSize = None
                 g.trace('bad --window-size:',windowSize)
-
         # Compute lm.files
         lm.files = lm.computeFilesList(fileName)
-
         # Post-process the options.
         if pymacs:
             script = None
             windowFlag = None
-
         # Compute the return values.
         windowFlag = script and script_path_w
         d = {
@@ -2224,9 +2204,7 @@ class LoadManager:
             'windowFlag':windowFlag,
             'windowSize':windowSize,
         }
-
         if trace: g.trace(d)
-
         return d
     #@+node:ekr.20120219154958.10483: *6* LM.computeFilesList
     def computeFilesList(self,fileName):

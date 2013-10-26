@@ -305,18 +305,25 @@ if sys.platform != 'cli':
 
             trace = False and not g.unitTesting
             c = self.c
-
-            if trace: g.trace(c.mFileName)
-
             d = {}
-
-            if g.enableDB and c.mFileName:
+            windowSize = g.app.loadManager.options.get('windowSize')
+            if windowSize is not None:
+                h,w = windowSize # checked in LM.scanOption.
+                d['height'] = h
+                d['width'] = w
+                for bunch in self.attrsToList(attrs):
+                    name = bunch.name ; val = bunch.val
+                    if name in ('top','left'):
+                        try:
+                            d[name] = int(val)
+                        except ValueError:
+                            d[name] = 50 # A reasonable default.
+                if trace: g.trace(d)
+            elif g.enableDB and c.mFileName:
                 d = c.cacher.getCachedWindowPositionDict(c.mFileName)
-
             if not d and c.fixed and c.fixedWindowPosition:
                 width,height,left,top = c.fixedWindowPosition
                 d = {'top':top,'left':left,'width':width,'height':height}
-
             if not d:
                 for bunch in self.attrsToList(attrs):
                     name = bunch.name ; val = bunch.val
@@ -327,9 +334,8 @@ if sys.platform != 'cli':
                             d[name] = 100 # A reasonable default.
                     else:
                         g.trace(name,len(val))
-
-            # if trace: g.trace(d)
-            return d
+            if trace: g.trace(c.mFileName,d)
+            return d # Assigned to self.global_window_position
         #@+node:ekr.20060919110638.37: *5* startGlobals (sax read)
         def startGlobals (self,attrs):
 
@@ -386,12 +392,11 @@ if sys.platform != 'cli':
             # g.trace(d,w,h,x,y)
 
             # Redraw the window before writing into it.
-            # 2011/06/16: Honor --minimized, --maximized or --fullscreen.
-            if (
-                not g.app.start_minimized and
-                not g.app.start_maximized and
-                not g.app.start_fullscreen
-            ):
+            # Honor --minimized, --maximized or --fullscreen.
+            # 2013/10/25: do set the geometry for minimized windows.
+            if g.app.start_minimized:
+                c.frame.setTopGeometry(w,h,x,y)
+            elif not g.app.start_maximized and not g.app.start_fullscreen:
                 c.frame.setTopGeometry(w,h,x,y)
                 c.frame.deiconify()
                 c.frame.lift()
