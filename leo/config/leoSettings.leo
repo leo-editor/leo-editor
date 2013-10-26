@@ -4430,6 +4430,8 @@ That way all your .leo files will use the same plugins.
 If you do put @enabled-plugins nodes in x.leo, be prepared for confusion from time to time. </t>
 <t tx="ekr.20070224073109.1"># Leo loads plugins in the order they appear here.
 
+# This node *MUST* be a child of the @settings node to take effect.
+
 # **Important**: to change these defaults, put
 # an @enabled-plugins node in myLeoSettings.leo.
 
