@@ -442,6 +442,8 @@ def cmd_run_text(c):
 def cmd_run_all_text(c, move=True):
     """pass whole body text to shell app. via screen and move to next body"""
     txt = c.p.b
+    if txt[-1] != '\n':
+        txt += '\n'
     c.leo_screen.run_text(txt,c)
     if move:
         c.selectThreadNext()
