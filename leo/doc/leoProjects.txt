@@ -1,6 +1,18 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20100120072650.6089: * @file ../doc/leoProjects.txt
 #@+all
+#@+node:ekr.20131025114335.17130: ** Fixed several window-sizing bugs
+@language rest
+
+Bug: Window size was not set when --minimized is in effect.
+
+LM.scanOptions now sets LM.options['windowSize'] to (h,w), both ints.
+
+getWindowPositionAttributes now checks LM.options.get('windowSize')
+
+startVnodes now properly sets top geometry when --minimized is in effect.
+
+@language python
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
