@@ -12098,5 +12098,178 @@ Leo works well with <a href="http://www.gnu.org/software/emacs/">emacs</a>,
   <a href="http://www.vim.org/">vim</a>, and
   <a href="http://ipython.org/">ipython</a>.</li>
 </p>
+.. @+node:ekr.20131027064821.18702: *3* Old rst3 tutorial from Users Guide (rstplugin3.html) 
+This tutorial tells how to get started with Leo's rst3 command. The tutorial
+covers only rst3's basic features. You can do a *lot* with these features--Leo's
+documentation uses only the features described here!
+
+Step-by-step, here is how to use the rst3 command:
+
+1. Create an \@rst node. This node and its descendants will contain your
+   document. The \@rst node itself is a good place to specify general
+   information about your documentation, including its title, one or more
+   external files created by the rst3 command, and global settings for the rst3
+   command.
+
+2. Write your documentation in the descendants of the \@rst node. Within the
+   \@rst tree, **headlines represent section headings**. Body text contain your
+   writing, including rST or Sphinx markup.
+
+3. To create your documents, run the rst3 command on an outline containing one
+   or more \@rst nodes. 
+
+That's all there is to it! The organization of the \@rst tree *is* the organization
+of your document. To reorganize your document, you just reorganize the nodes in
+the \@rst tree!  When you are done writing, create your output using the rst3 command.
+
+The next sections will discuss these three steps in more detail. As you will
+see, after you set up the \@rst node, you can focus exclusively on writing and
+organizing. Leo's rst3 command will take care of the rest.
+.. @+node:ekr.20131027064821.18703: *4* Step 1: Create the @rst node
+The headline of the \@rst node has the form::
+
+        @rst <filename>
+
+Depending on options to be discussed later, the rst3 command will write one or two files:
+the **output file** (<filename>), and the **intermediate file** (<filename>.txt).
+
+For example, the rst3 command applied to \@rst abc.html will write
+abc.html or abc.html.txt or both.
+
+**Important**: The intermediate file *always* contains rST/Sphinx markup
+*regardless* of the type of the final output files. When in doubt about the rst3
+command, you can examine the intermediate file to see what rst3 has done.
+
+Let's turn our attention to the the body of the \@rst node...
+.. @+node:ekr.20131027064821.18704: *5* Set global options
+The \@rst node is a good place for options that apply to the entire \@rst
+tree. Typically, you will just set these options once and then completely forget
+about them.
+
+You set rst3 options in body parts like this::
+
+    @ @rst-options
+    rst3 options, one per line
+    @c
+
+This is a Leo doc part: the '@' must appear in the leftmost column. As usual,
+the doc part ends with the \@c directive, or the end of the body text.
+
+Here are the recommended options when using docutils::
+
+    @ @rst-options
+    call_docutils=True
+    code_mode=False
+    stylesheet_path=..\doc
+    write_intermediate_file=True
+    @c
+
+And here are the recommended options when using Sphinx::
+
+    @ @rst-options
+    call_docutils=False
+    code_mode=False
+    stylesheet_path=..\doc
+    write_intermediate_file=True
+    @c
+
+**Note 1**: It is good style to specify all these options explicitly, even if they are
+the same as the standard default values. This ensures that the rst3 command
+will produce the same results no matter where the \@rst node is located.
+
+**Note 2**: You may have to change the stylesheet_path option so that the
+generated output file can find the proper stylesheets.
+.. @+node:ekr.20131027064821.18705: *5* Set your document's title
+Next, set your document's title by putting something like this in the
+body text of the \@rst node::
+
+    #############
+    War and Peace
+    #############
+
+**Important**: The rst3 command reserves the '#' character for the document
+titles--don't use any other underlining character.
+
+Sometimes I put the first words of a document in the \@rst node::
+
+    Well, Prince, so Genoa and Lucca are now just family estates of the
+    Buonapartes. But I warn you, if you don't tell me that this means war, if
+    you still try to defend the infamies and horrors perpetrated by that
+    Antichrist--I really believe he is Antichrist--I will have nothing more to
+    do with you and you are no longer my friend, no longer my 'faithful slave,'
+    as you call yourself! But how do you do? I see I have frightened you--sit
+    down and tell me all the news.
+.. @+node:ekr.20131027064821.18706: *4* Step 2: Write your document
+Now comes the "interesting" part--actually writing your novel, short story,
+documentation or whatever.
+
+As always with Leo, you organize your work with outlines. By default, (that is,
+with the recommended options discussed in Step 1) the rst3 command will produce
+the following output:
+
+1. Each node becomes an rST/Sphinx section.
+
+   The level of each section corresponds to the level of the node in the
+   headline. Children of the @rst node create level 1 sections. Grandchildren of
+   the \@rst node create level 2 sections, and so on.
+
+2. The headline of each node becomes the section heading.
+
+3. The body text of each node becomes the contents of the node's section.
+
+   **Note**: The body text of any node in an \@rst tree contains plain text,
+   with optional rST or Sphinx markup. Sphinx markup is a superset of rST
+   markup. For more details on markup, see the `Sphinx`_ or `reStructuredText`_
+   documentation.
+
+That's all there is to it!
+
+Well almost. There is one other feature you should know about. Headlines that
+start with '\@rst-' control the rst3 command.  The three most useful are: 
+
+.. glossary::
+
+\@rst-no-head <ignored-text>
+
+    Causes the rst3 command to copy just the body text of the node. In other
+    words, the node's body text become part of the previous section. Leo's docs
+    use such nodes for rST links and other "invisible" markup.
+
+\@rst-ignore <ignored-text>
+
+    The rst3 command ignores any \@rst-ignore node. Neither the headline nor the
+    body text becomes part of the output. You can use such nodes for notes that
+    you do not want to become part of the actual document.
+
+\@rst-ignore-tree <ignored-text>
+
+    The rst3 command ignores the \@rst-ignore-tree node and all its descendants.
+.. @+node:ekr.20131027064821.18707: *4* Step 3: Run the rst3 command
+This step is easy. Select an outline containing one or more \@rst trees. Now do
+<Alt-X>rst3<Return>. You can use <Ctrl-P> (repeat-complex-command) instead if
+the last minibuffer command was the rst3 command.
+
+The rst3 command writes its output to either the output file or the intermediate
+file, or both:
+
+- With the recommended settings for docutils, the rst3 command will run docutils
+  automatically, producing the output file as the result.
+
+- With the recommended settings for Sphinx, the rst3 command will generate the
+  intermediate file. You must then run Sphinx's make utility to turn the
+  intermediate file into the final output file.
+.. @+node:ekr.20131027064821.18708: *4* Go forth and experiment
+.. _`Leo's Google Group`:   http://groups.google.com/group/leo-editor
+
+You now know everything needed to get started with the rst3 command.
+Some possible next steps are:
+
+1. Look at Leo's own documentation in LeoDocs.leo. It's in the node "@rst
+   html\rstplugin3.html". Discover how the nodes in this tree correspond to the
+   documentation you see before you.
+
+2. Create your own @rst nodes. Run the rst3 command on them and see what
+   happens. If you get stuck, you please ask for help at
+   `Leo's Google Group`_.
 .. @-all
 .. @-leo
