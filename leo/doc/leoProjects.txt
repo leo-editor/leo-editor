@@ -38,6 +38,13 @@ Traceback (most recent call last):
 UnicodeEncodeError: 'ascii' codec can't encode character u'\xe9' in position 129: ordinal not in range(128)
 
 There is no error for the @file or @nosent files.
+#@+node:ekr.20131028142644.17093: ** Fixed bug #1243855: @auto-rst doesn't save text
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/1243855
+
+The fix was to not make assumptions about type in compareFiles and create.
+
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

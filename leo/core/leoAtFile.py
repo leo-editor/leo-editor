@@ -4736,25 +4736,24 @@ class atFile:
         # We can't use 'U' mode because of encoding issues (Python 2.x only).
         if new_write:
             s1 = at.outputContents
-            e = self.encoding
-            assert g.isUnicode(s1),(type(s1),s1)
+            e1 = at.encoding
+            if trace: g.trace('type(s1)',type(s1))
         else:
-            s1,e = g.readFileIntoString(path1,mode='rb',raw=True)
+            s1,e1 = g.readFileIntoString(path1,mode='rb',raw=True)
         if s1 is None:
             g.internalError('empty compare file: %s' % path1)
             return False
-        s2,e = g.readFileIntoString(path2,mode='rb',raw=True)
+        s2,e2 = g.readFileIntoString(path2,mode='rb',raw=True)
         if s2 is None:
             g.internalError('empty compare file: %s' % path2)
             return False
-        if trace: g.trace('s1',type(s1),'s2',type(s2),path2)
-        # 2010/03/29: Make sure both strings are unicode.
+        # 2013/10/28: fix bug #1243855: @auto-rst doesn't save text 
+        # Make sure both strings are unicode.
         # This is requred to handle binary files in Python 3.x.
-        if new_write:
-            assert g.isUnicode(s1)
-        else:
-            s1 = g.toUnicode(s1,encoding=at.encoding)
-        s2 = g.toUnicode(s2,encoding=at.encoding)
+        if not g.isUnicode(s1):
+            s1 = g.toUnicode(s1,encoding=e1)
+        if not g.isUnicode(s2):
+            s2 = g.toUnicode(s2,encoding=e2)
         equal = s1 == s2
         if ignoreBlankLines and not equal:
             s1 = g.removeBlankLines(s1)
@@ -5423,15 +5422,15 @@ class atFile:
         
         at = self
         assert new_write
-        assert g.isUnicode(s),(type(s),repr(s))
+        # 2013/10/28: fix bug 1243847: unicode error when saving @shadow nodes
+        if g.isUnicode(s):
+            s = g.toEncodedString(s,encoding=at.encoding)
         try:
-            e = at.encoding
             # g.trace(repr(at.output_newline))
             f = open(fn,'wb') # Must be 'wb' to preserve line endings.
             if at.output_newline != '\n':
                 s = s.replace('\r','').replace('\n',at.output_newline)
             # This is the *only* call to g.toEncodedString in the new_write logic.
-            s = g.toEncodedString(s,e)
             f.write(s)
             f.close()
         except Exception:
