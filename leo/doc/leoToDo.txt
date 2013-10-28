@@ -13,6 +13,8 @@ Private email: http://mail.google.com/mail/u/0/#inbox/141ddfe09c389e4f
 @language rest
 .. @+node:ekr.20130926053913.11572: *3* for b1
 @language rest
+.. @+node:ekr.20131028142644.17093: *4* Fix bug #1243855: @auto-rst doesn't save text 
+https://bugs.launchpad.net/leo-editor/+bug/1243855
 .. @+node:ekr.20131001045038.11350: *4* * use cheatsheet.leo for default .leo file (workbook)
 - The default will be leo/docs/default_workbook.leo.
 

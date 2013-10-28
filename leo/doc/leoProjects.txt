@@ -18,9 +18,6 @@ startVnodes now properly sets top geometry when --minimized is in effect.
 
 https://bugs.launchpad.net/leo-editor/+bug/1243847
 
-Probably related to bug 243855: @auto-rst doesn't save text:
-
-https://bugs.launchpad.net/leo-editor/+bug/1243855
 
 The fix: at.replaceFileWithString now *always* calls g.toEncodedString.
 
