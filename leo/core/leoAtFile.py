@@ -5192,8 +5192,9 @@ class atFile:
         # Replace
         try:
             f = open(fn,'wb')
-            if g.isPython3:
-                s = g.toEncodedString(s,encoding=self.encoding)
+            # 2013/10/28: Fix bug 1243847: unicode error when saving @shadow nodes.
+            # Call g.toEncodedString regardless of Python version.
+            s = g.toEncodedString(s,encoding=self.encoding)
             f.write(s)
             f.close()
             if g.unitTesting:

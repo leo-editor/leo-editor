@@ -13,6 +13,9 @@ import datetime
 
 from PyQt4 import QtGui, QtCore
 
+def init():
+    return True # For unit tests.
+
 class QNCalendarWidget(QtGui.QCalendarWidget):
     def __init__(self, n=3, columns=3, year=None, month=None):
         """set up

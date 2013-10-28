@@ -44,7 +44,7 @@
 <v t="ekr.20131009050634.17623"><vh>@bool rst3_write_intermediate_file = True</vh></v>
 <v t="ekr.20051202072010"><vh>@string rst3_default_path =</vh></v>
 <v t="ekr.20131009050634.17616"><vh>@string rst3_stylesheet_path = ..\doc</vh></v>
-<v t="sps.20100708213227.44914"><vh>@string rst3_write_intermediate_extension = .txt</vh></v>
+<v t="ekr.20131027064821.18685"><vh>@string rst3_write_intermediate_extension = .txt</vh></v>
 <v t="ekr.20050812123002.1"><vh>Http options...</vh>
 <v t="ekr.20050812123002.2"><vh>@bool rst3_clear_http_attributes = False</vh></v>
 <v t="ekr.20050812123002.3"><vh>@string rst3_http_attributename = 'rst_http_attribute'</vh></v>
@@ -376,9 +376,17 @@
 <v t="ekr.20131009100732.16737"><vh>Using URLs</vh></v>
 <v t="ekr.20131008041326.16066"><vh>Summary</vh></v>
 </v>
-<v t="ekr.20131008041326.16241" a="M"><vh>@rst html\tutorial-rst3.html</vh>
-<v t="ekr.20131008041326.16250"><vh>@rst-no-head links &amp; markup</vh></v>
+<v t="ekr.20131008041326.16241"><vh>@rst html\tutorial-rst3.html</vh>
 <v t="ekr.20131009100732.16748"><vh>Create the @rst node</vh></v>
+<v t="ekr.20131027064821.17144"><vh>The output and intermediate files</vh></v>
+<v t="ekr.20131009100732.16754"><vh>Specify settings</vh>
+<v t="ekr.20131027064821.18687"><vh>@bool rst3_call_docutils</vh></v>
+<v t="ekr.20131027064821.18688"><vh>@bool rst3_write_intermediate_file</vh></v>
+<v t="ekr.20131027064821.18690"><vh>@string rst3_write_intermediate_extension</vh></v>
+<v t="ekr.20131027064821.18689"><vh>Setting up sphinx: conf.py</vh></v>
+<v t="ekr.20131027064821.18686"><vh>Where to put settings</vh></v>
+<v t="ekr.20131027064821.18691"><vh>Summary of settings</vh></v>
+</v>
 <v t="ekr.20131009100732.16750"><vh>Put a title in the @rst node </vh></v>
 <v t="ekr.20131024051649.17136"><vh>Put introductory text to the @rst node</vh></v>
 <v t="ekr.20131024051649.17137"><vh>Create sections and subsections</vh></v>
@@ -386,7 +394,6 @@
 <v t="ekr.20131025044901.17147"><vh>Ignoring reference text</vh></v>
 <v t="ekr.20131009100732.16751"><vh>Write your document</vh></v>
 <v t="ekr.20131025044901.17148"><vh>Special markup</vh></v>
-<v t="ekr.20131009100732.16754"><vh>Specify settings</vh></v>
 <v t="ekr.20131009100732.16752"><vh>Run the rst3 command</vh></v>
 <v t="ekr.20131009100732.16753"><vh>Further study</vh></v>
 <v t="ekr.20131005214621.16128"><vh>Summary</vh></v>
@@ -453,8 +460,8 @@
 </v>
 <v t="ekr.20050831184021.1"><vh>Creating documents with the rst3 Command</vh>
 <v t="ekr.20050818163826"><vh>@rst html\rstplugin3.html</vh>
-<v t="ekr.20050818163826.1"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20100810203016.4296"><vh>@rst-ignore</vh>
+<v t="ekr.20131027064821.18709"><vh>unused links</vh></v>
 <v t="ekr.20050818163826.6"><vh>Options that set command names</vh></v>
 <v t="ekr.20050818163826.4"><vh>Advanced topics</vh>
 <v t="ekr.20100810203016.4298"><vh>Modes</vh></v>
@@ -462,15 +469,6 @@
 <v t="ekr.20100810091118.4306"><vh>Rst mode options</vh></v>
 <v t="ekr.20050818163826.10"><vh>The code-block directive</vh></v>
 </v>
-</v>
-<v t="ekr.20100809162244.4289"><vh>Tutorial</vh>
-<v t="ekr.20100809162244.4292"><vh>Step 1: Create the @rst node</vh>
-<v t="ekr.20100809162244.4298"><vh>Set global options</vh></v>
-<v t="ekr.20100809162244.4297"><vh>Set your document's title</vh></v>
-</v>
-<v t="ekr.20100809162244.4295"><vh>Step 2: Write your document</vh></v>
-<v t="ekr.20100809162244.4296"><vh>Step 3: Run the rst3 command</vh></v>
-<v t="ekr.20100809162244.4301"><vh>Go forth and experiment</vh></v>
 </v>
 <v t="ekr.20100813075851.4296"><vh>Options</vh>
 <v t="ekr.20100809122216.4286"><vh>General options</vh></v>
@@ -1536,6 +1534,7 @@
 <v t="ekr.20131023180133.17112"><vh>Request</vh></v>
 </v>
 <v t="ekr.20131001100335.15942"><vh>Leo &amp; other programs</vh>
+<v t="ekr.20131027064821.17131"><vh>Leo vs emacs &amp; vim</vh></v>
 <v t="ekr.20131001100335.15943"><vh>Leo vs Emacs</vh></v>
 <v t="ekr.20131025044901.17143"><vh>post Leo vs Emacs</vh></v>
 <v t="ekr.20131001100335.15944"><vh>Leo vs Vim</vh></v>
@@ -1547,7 +1546,6 @@
 <v t="ekr.20060620094033"></v>
 <v t="ekr.20131019190351.16664"></v>
 <v t="ekr.20101025080245.5791"></v>
-<v t="ekr.20131008041326.16241" a="M"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -3145,57 +3143,23 @@ Removes @ignore, @nocolor, @wrap directives.
 .. _`Python generators`:    https://wiki.python.org/moin/Generators
 .. _`scripting portion`: cheatsheet.html#scripting
 </t>
-<t tx="ekr.20050818163826">########################################
-Creating Documents with the rst3 Command
-########################################
+<t tx="ekr.20050818163826">######################
+rst3 Command Reference
+######################
 
-This chapter discusses Leo's rst3 command. The rst3 command creates HTML, PDF,
-LaTeX and other kinds of documents from Leo outlines containing
-`reStructuredText`_ (rST) or `Sphinx`_ markup.
+.. _`rst3 tutorial`: tutorial-rst3.html
 
-**Note**: `docutils`_ is a document processing system using rST markup.
-`Sphinx`_ extends docutils: Sphinx markup is a superset of rST markup. All of
-Leo's documentation is written in Sphinx and processed with the rst3 command to
-produce HTML files.
+Please read the `rst3 tutorial`_ before reading this chapter.
 
-Leo and rst3 make writing rST/Sphinx documents a *lot* easier:
+This chapter covers advanced settings and features of the rst3 command. It
+is for power users only.
 
-1. Leo outlines organize writing in all the usual ways. You always see the
-   structure of your writing clearly no matter how large it is. You can
-   reorganize chapters, sections and paragraphs effortlessly. View nodes can
-   show you many different views of your writing simultaneously. These
-   features, all by themselves, would make Leo an excellent choice for
-   editing rST documents.
-
-2. Furthermore, the rst3 command automatically creates rST sections from
-   headlines. Without Leo, changing the level of a section is clumsy and
-   error prone: you must carefully change the section's underlining
-   character. Leo's rst3 command eliminates all this bother.
-
-3. The rst3 command converts an \@rst tree to rST and then sends this text to
-   docutils or Sphinx for further processing.
-
-In addition to these basic features, the rst3 command provides *many* other
-capabilities for power users. We'll discuss these features later.
+Are you sure you want to read this chapter? The tutorial covers everything
+most people need to know about the rst3 command. Leo's own documentation
+uses none of the features discussed here.
 
 .. contents::
     :depth: 4
-</t>
-<t tx="ekr.20050818163826.1">.. rST links used in this document...
-
-.. _`Scripting`:            tutorial-scripting.html
-
-.. External links...
-.. _docutils:               http://docutils.sourceforge.net
-.. _LaTeX:                  http://www.latex-project.org/
-.. _reStructuredText:       http://docutils.sourceforge.net/rst.html
-.. .. _SilverCity:             http://silvercity.sourceforge.net
-.. _Sphinx:                 http://sphinx.pocoo.org/
-.. _`Leo's Google Group`:   http://groups.google.com/group/leo-editor
-
-.. Hard links to Leo's web site...
-.. _ListManagerDocs.html: http://leoeditor.com/ListManagerDocs.html
-.. _wxListManager.leo:    http://leoeditor.com/wxListManager.leo
 </t>
 <t tx="ekr.20050818163826.10">The rst3 command defines a code-block rST directive. The primary purpose of this
 directive is to show formatted source code.
@@ -3216,7 +3180,9 @@ The output looks like this::
     import leo.core.leoPlugins as leoPlugins
     import leo.core.leoGlobals as g
 
-See `Scripting`_ for many examples of how to use code-blocks.
+.. _`Scripting Tutorial`:   tutorial-scripting.html
+
+See the `Scripting Tutorial`_ for many examples of how to use code-blocks.
 </t>
 <t tx="ekr.20050818163826.11">HTML files generated by the rst3 command assume that three .css (cascading style
 sheet) files exist in the same directory. For the HTML output to look good the
@@ -3234,7 +3200,10 @@ The latter two style sheets are imported at the end of the default.css.
 wouldn't be possible with "plain" rST. For instance, the background color of
 this page was specified in a body style.
 </t>
-<t tx="ekr.20050818163826.13">The file `ListManagerDocs.html`_ is an impressive example of the kind of output
+<t tx="ekr.20050818163826.13">.. _ListManagerDocs.html: http://leoeditor.com/ListManagerDocs.html
+.. _wxListManager.leo:    http://leoeditor.com/wxListManager.leo
+
+The file `ListManagerDocs.html`_ is an impressive example of the kind of output
 that can be generated relatively easily using the rst3 command.
 
 The source for ListManagerDocs.html is `wxListManager.leo`_. **Important**:
@@ -10894,177 +10863,6 @@ write_intermediate_file (default: False)
     This option has effect only if the generate_rst option is True.
 
     False: writes the intermediate file to an internal Python object.
-</t>
-<t tx="ekr.20100809162244.4289">This tutorial tells how to get started with Leo's rst3 command. The tutorial
-covers only rst3's basic features. You can do a *lot* with these features--Leo's
-documentation uses only the features described here!
-
-Step-by-step, here is how to use the rst3 command:
-
-1. Create an \@rst node. This node and its descendants will contain your
-   document. The \@rst node itself is a good place to specify general
-   information about your documentation, including its title, one or more
-   external files created by the rst3 command, and global settings for the rst3
-   command.
-
-2. Write your documentation in the descendants of the \@rst node. Within the
-   \@rst tree, **headlines represent section headings**. Body text contain your
-   writing, including rST or Sphinx markup.
-
-3. To create your documents, run the rst3 command on an outline containing one
-   or more \@rst nodes. 
-
-That's all there is to it! The organization of the \@rst tree *is* the organization
-of your document. To reorganize your document, you just reorganize the nodes in
-the \@rst tree!  When you are done writing, create your output using the rst3 command.
-
-The next sections will discuss these three steps in more detail. As you will
-see, after you set up the \@rst node, you can focus exclusively on writing and
-organizing. Leo's rst3 command will take care of the rest.
-</t>
-<t tx="ekr.20100809162244.4292">The headline of the \@rst node has the form::
-
-        @rst &lt;filename&gt;
-
-Depending on options to be discussed later, the rst3 command will write one or two files:
-the **output file** (&lt;filename&gt;), and the **intermediate file** (&lt;filename&gt;.txt).
-
-For example, the rst3 command applied to \@rst abc.html will write
-abc.html or abc.html.txt or both.
-
-**Important**: The intermediate file *always* contains rST/Sphinx markup
-*regardless* of the type of the final output files. When in doubt about the rst3
-command, you can examine the intermediate file to see what rst3 has done.
-
-Let's turn our attention to the the body of the \@rst node...
-</t>
-<t tx="ekr.20100809162244.4295">Now comes the "interesting" part--actually writing your novel, short story,
-documentation or whatever.
-
-As always with Leo, you organize your work with outlines. By default, (that is,
-with the recommended options discussed in Step 1) the rst3 command will produce
-the following output:
-
-1. Each node becomes an rST/Sphinx section.
-
-   The level of each section corresponds to the level of the node in the
-   headline. Children of the @rst node create level 1 sections. Grandchildren of
-   the \@rst node create level 2 sections, and so on.
-
-2. The headline of each node becomes the section heading.
-
-3. The body text of each node becomes the contents of the node's section.
-
-   **Note**: The body text of any node in an \@rst tree contains plain text,
-   with optional rST or Sphinx markup. Sphinx markup is a superset of rST
-   markup. For more details on markup, see the `Sphinx`_ or `reStructuredText`_
-   documentation.
-
-That's all there is to it!
-
-Well almost. There is one other feature you should know about. Headlines that
-start with '\@rst-' control the rst3 command.  The three most useful are: 
-
-.. glossary::
-
-\@rst-no-head &lt;ignored-text&gt;
-
-    Causes the rst3 command to copy just the body text of the node. In other
-    words, the node's body text become part of the previous section. Leo's docs
-    use such nodes for rST links and other "invisible" markup.
-
-\@rst-ignore &lt;ignored-text&gt;
-
-    The rst3 command ignores any \@rst-ignore node. Neither the headline nor the
-    body text becomes part of the output. You can use such nodes for notes that
-    you do not want to become part of the actual document.
-
-\@rst-ignore-tree &lt;ignored-text&gt;
-
-    The rst3 command ignores the \@rst-ignore-tree node and all its descendants.
-</t>
-<t tx="ekr.20100809162244.4296">This step is easy. Select an outline containing one or more \@rst trees. Now do
-&lt;Alt-X&gt;rst3&lt;Return&gt;. You can use &lt;Ctrl-P&gt; (repeat-complex-command) instead if
-the last minibuffer command was the rst3 command.
-
-The rst3 command writes its output to either the output file or the intermediate
-file, or both:
-
-- With the recommended settings for docutils, the rst3 command will run docutils
-  automatically, producing the output file as the result.
-
-- With the recommended settings for Sphinx, the rst3 command will generate the
-  intermediate file. You must then run Sphinx's make utility to turn the
-  intermediate file into the final output file.
-</t>
-<t tx="ekr.20100809162244.4297">Next, set your document's title by putting something like this in the
-body text of the \@rst node::
-
-    #############
-    War and Peace
-    #############
-
-**Important**: The rst3 command reserves the '#' character for the document
-titles--don't use any other underlining character.
-
-Sometimes I put the first words of a document in the \@rst node::
-
-    Well, Prince, so Genoa and Lucca are now just family estates of the
-    Buonapartes. But I warn you, if you don't tell me that this means war, if
-    you still try to defend the infamies and horrors perpetrated by that
-    Antichrist--I really believe he is Antichrist--I will have nothing more to
-    do with you and you are no longer my friend, no longer my 'faithful slave,'
-    as you call yourself! But how do you do? I see I have frightened you--sit
-    down and tell me all the news.
-</t>
-<t tx="ekr.20100809162244.4298">The \@rst node is a good place for options that apply to the entire \@rst
-tree. Typically, you will just set these options once and then completely forget
-about them.
-
-You set rst3 options in body parts like this::
-
-    @ @rst-options
-    rst3 options, one per line
-    @c
-
-This is a Leo doc part: the '@' must appear in the leftmost column. As usual,
-the doc part ends with the \@c directive, or the end of the body text.
-
-Here are the recommended options when using docutils::
-
-    @ @rst-options
-    call_docutils=True
-    code_mode=False
-    stylesheet_path=..\doc
-    write_intermediate_file=True
-    @c
-
-And here are the recommended options when using Sphinx::
-
-    @ @rst-options
-    call_docutils=False
-    code_mode=False
-    stylesheet_path=..\doc
-    write_intermediate_file=True
-    @c
-
-**Note 1**: It is good style to specify all these options explicitly, even if they are
-the same as the standard default values. This ensures that the rst3 command
-will produce the same results no matter where the \@rst node is located.
-
-**Note 2**: You may have to change the stylesheet_path option so that the
-generated output file can find the proper stylesheets.
-</t>
-<t tx="ekr.20100809162244.4301">You now know everything needed to get started with the rst3 command.
-Some possible next steps are:
-
-1. Look at Leo's own documentation in LeoDocs.leo. It's in the node "@rst
-   html\rstplugin3.html". Discover how the nodes in this tree correspond to the
-   documentation you see before you.
-
-2. Create your own @rst nodes. Run the rst3 command on them and see what
-   happens. If you get stuck, you please ask for help at
-   `Leo's Google Group`_.
 </t>
 <t tx="ekr.20100810091118.4298">**Markup doc parts** have the following form::
 
@@ -20553,9 +20351,15 @@ Ctrl-Q (exit-leo) exits Leo.  Leo will prompt you to save any unsaved outlines.
 - @all creates an external file from all the nodes of an outline.
 - Enable plugins using @enabled-plugins nodes in an @settings tree.
 </t>
-<t tx="ekr.20131005214621.16128">- The rst3 command converts an @rst tree to an external rST text file.
+<t tx="ekr.20131005214621.16128">.. _`the rst3 chapter`: rstplugin3.html
 
-- Settings starting with the "rst3" prefix govern how the rst3 command works.
+- The rst3 command converts an @rst tree to one or more text files
+  containing reStructuredText markup.
+
+- When using sphinx, the rst3 command creates an intermediate file which
+  sphinx then using as its input file.
+
+- Settings prefixed with "rst3" control how the rst3 command works.
 
 - Within @rst trees, headlines become rST sections.
 
@@ -20573,7 +20377,8 @@ Ctrl-Q (exit-leo) exits Leo.  Leo will prompt you to save any unsaved outlines.
 - The @button make-sphinx node in LeoDocs.leo calls sphinx automatically.
 
 - The rst3 command provides *many* other capabilities. For details, see
-  `the rst3 chapter`_.</t>
+  `the rst3 chapter`_.
+</t>
 <t tx="ekr.20131005214621.16130">This is a reference for all of Leo's directives.
 
 This sections assumes you are *thoroughly* familiar with `Leo's tutorial`_.
@@ -21062,21 +20867,46 @@ for organizing data.
 </t>
 <t tx="ekr.20131008041326.16241">.. |---| unicode:: U+02015 .. for quotes
    :trim:
+   
+.. |br| raw:: html
+
+   &lt;br /&gt;
 
 ########################################
 Creating Documents with the rst3 Command
 ########################################
 
-.. _`LaTeX`: http://www.latex-project.org/
+.. _`LaTeX`:    http://www.latex-project.org/
+.. _`Python's`: http://www.python.org/
+.. _`Sphinx`:   http://sphinx-doc.org/
+.. _`Sphinx documentation`: http://sphinx-doc.org/contents.html
+.. _`docutils`: http://docutils.sourceforge.net
+.. _`reStructuredText`: http://docutils.sourceforge.net/rst.html
+.. _`rST primer`: http://sphinx-doc.org/rest.html
 
     "I am a huge fan of Leo. I think it's quite possibly the most
     revolutionary programming tool I have ever used and it (along with the
     Python language) has utterly changed my view of programming (indeed of
     writing) forever."---Shakeeb Alireza
     
-Leo's rst3 command creates HTML, PDF, `LaTeX`_ and other kinds of documents
-from Leo outlines. Leo's web site and documentation were created this way.
-This tutorial explains how, step-by-step:
+Leo's rst3 command converts Leo trees containing `reStructuredText`_ (rST)
+or `Sphinx`_ markup to HTML, PDF, `LaTeX`_ and other kinds of output files.
+This tutorial gives step-by-step instructions for using the rst3 command.
+If you are new to rST, please read the `rST primer`_. For full information
+about Sphinx, please read the `Sphinx documentation`_.
+
+The rst3 command makes using rST or Sphinx *much* easier by automatically
+creating underlining for rST sections. To reorganize a document, just
+reorganize the corresponding Leo outline: you don't have to change
+underlining characters by hand.
+
+Leo always requires the `docutils`_ Python package. You must also install
+the `Sphinx`_ package if you use sphinx markup. Sphinx gives Leo's and
+`Python's`_ web sites their distinctive appearance and features.
+
+The tutorial covers only the basic features of the rst3 command. You can do
+a *lot* with these features--Leo's documentation uses only the features
+described here!
 
 .. contents::
     :depth: 3
@@ -21129,17 +20959,6 @@ If you get stuck, please `ask for help`_ immediately.
 
    &lt;br /&gt;
 
-</t>
-<t tx="ekr.20131008041326.16250">.. |br| raw:: html
-
-   &lt;br /&gt;
-
-.. _`Leo's Users Guide`:    leo_toc.html
-.. _`Sphinx`:               http://sphinx.pocoo.org/
-.. _`ask for help`:         https://groups.google.com/forum/#!forum/leo-editor
-.. _`docutils`:             http://docutils.sourceforge.net
-.. _`reStructuredText`:     http://docutils.sourceforge.net/rst.html
-.. _`the rst3 chapter`:     rstplugin3.html
 </t>
 <t tx="ekr.20131008041326.16252">.. |br| raw:: html
 
@@ -21232,18 +21051,25 @@ URL's should contain no spaces: use %20 instead of spaces. |br|
 
         @rst myDocument.html
         
-   This node represents your document. Leo's rst3 command will generate the
-   **output file**, myDocument.html, from this node and its children,
-   grand-children, etc.
-</t>
+The @rst node represents your document.</t>
 <t tx="ekr.20131009100732.16750">Put something like this in the body of the @rst node::
 
     #############
     War and Peace
     #############
     
-This creates an rST chapter title. Use only the "#" character, as shown.
-</t>
+rST markup uses over/underlining to indicate chapter titles. Put a
+**overline** consisting of pounds signs above the title (War and Peace),
+and an identical **underline** of pound signs below as shown.
+
+rST markup for chapter titles is a bit picky:
+
+- under/overlines must be at least 4 characters long
+- under/overlines must be at least as long as the title.
+- The overline and underline must be identical.
+
+In addition, the rst3 command requires that the "#" character be used in
+the over/underlines for chapter titles.</t>
 <t tx="ekr.20131009100732.16751">Now you write your novel, short story, documentation or whatever.
 
 As always, you organize your work with outlines:
@@ -21270,7 +21096,9 @@ automatically to create the output files.
 When using sphinx, run sphinx's "make" utility after running the rst3
 command to create the final output files.
 </t>
-<t tx="ekr.20131009100732.16753">You now know enough to get started with the rst3 command. Some possible
+<t tx="ekr.20131009100732.16753">.. _`ask for help`: https://groups.google.com/forum/#!forum/leo-editor
+
+You now know enough to get started with the rst3 command. Some possible
 next steps are:
 
 - Look at Leo's own documentation in LeoDocs.leo. Discover how the nodes in
@@ -21282,17 +21110,8 @@ next steps are:
 - Create your own @rst nodes. Run the rst3 command on them and see what
   happens. If you get stuck, please `ask for help`_.
 </t>
-<t tx="ekr.20131009100732.16754">To use docutils as your markup engine, use this settings::
-
-    @bool rst3_call_docutils = True
-    
-otherwise, use::
-
-    @bool rst3_call_docutils = False
-
-In both cases, use this setting::
-
-    @bool rst3_write_intermediate_file = True
+<t tx="ekr.20131009100732.16754">There are many settings that affect the operation of the rst3 command.
+The following sections discuss the most important...
 </t>
 <t tx="ekr.20131009100732.16755">Sometimes you want to organize text without creating sections:
 
@@ -26579,7 +26398,7 @@ Suppose, as will soon happen, that I am going to fix a bug in Leo's @shadow logi
 
 1. Create a new outline node, as some descendant of the @rst node.
 
-2. **The node's headline becomes the section's title**.
+2. **The @rst node's headline becomes the section's title**.
 
 3. Type the contents of the section in the body text of the node.
 
@@ -26591,6 +26410,8 @@ That's all there is to it:
 
 There is *no* need to change markup when reorganizing your document, a huge
 improvement over writing "raw" rST.
+
+**Note**: All markup generated by the rst3 command appears in the intermediate file.
 
 .. - The outline level of a node determines the underlining character.
 
@@ -26700,6 +26521,140 @@ Note that rST automatically turns - - into a dash: --.
 </t>
 <t tx="ekr.20131025114335.17127"></t>
 <t tx="ekr.20131025114335.17128"></t>
+<t tx="ekr.20131027064821.17131">@language rest
+
+Leo's read code parses text into true Python objects: Leo's positions and vnodes.
+
+As a result, Leo scripts will be **orders of magnitude faster** than similar code in vim or emacs.
+
+Leo scripts will also be **orders of magnitude simpler** than similar code in vim or emacs.
+
+As a result, Leo has major subsystems, such as the rst3 command, that are virtually unthinkable
+in text-oriented worlds such as vim or Emacs.  It would require emulating all of Leo's
+fundamental, behind-the-scenes, data structures: generators, positions, and vnodes, including
+the code that creates those data structures from both .leo files (xml readers and writers) 
+and external files (code that creates vnodes from sentinel comments).
+
+..  It would be easier in emacs, because elisp is more capable than the vim scripting language,
+..  but neither elisp nor vimscript is anywhere near as easy to use as Python.
+
+Emulating Leo in emacs or vim would have one advantage, it would not have to duplicate
+the 15+ year process of improvement in Leo's read code (sentinals), data structures (vnodes)
+and support code (generators).  But this would be a gigantic effort: to get the benefits of Leo
+in either vim or Emacs the leoFileCommands, leoAtFileCommands and leoNodes modules would have to
+be emulated.
+</t>
+<t tx="ekr.20131027064821.17144">The rst3 command applied to::
+
+    @rst myDocument.html
+    
+will generate an **output file**, myDocument.html, from this node and its
+children, grand-children, etc. By default, rst3 command creates the output
+file in the same directory as the .leo file containing the @rst node. You
+can specify other directories using absolute or relative paths. Examples::
+
+    @rst ../myDocument.html
+    @rst html/myDocument.html
+    @rst ../docs/html/myDocument.html
+    @rst ~/docs/myDocument.html
+    
+By default, the rst3 command also writes an **intermediate file** in the
+same directory as the output file. By default, this file has the same name
+as the output file, but with the suffix ".txt" appended. The intermediate
+file contains the reStructuredText markup generated from the @rst node.
+
+These defaults, and many others, can be changed using settings...
+</t>
+<t tx="ekr.20131027064821.18685"></t>
+<t tx="ekr.20131027064821.18686">Depending on your situation, you can put settings in various places:
+
+1. In an @settings tree in myLeoSettings.leo.
+
+This is appropriate for personal documentation files with common settings.
+
+2. In an @settings tree in the .leo file containing the documentation.
+
+This is appropriate for public projects with common settings.
+
+3. In "\@ \@rst-options" comments in each @rst node.  For example::
+
+    @ @rst-options
+    call_docutils=False
+    stylesheet_path=..\doc
+    write_intermediate_file = True
+    @c
+    
+.. _`rst3 Command Reference`: rstplugin3.html
+
+This is appropriate when @rst nodes contain different settings. Common
+settings can still reside in some @settings tree.
+Using \@ \@rst-options you can even set options on a node-by-node basis.
+See the `rst3 Command Reference`_ of Leo's Users Guide for details.
+</t>
+<t tx="ekr.20131027064821.18687">The rst3_call_docutils setting determines whether to use plain rST markup
+or full sphinx markup. To use plain reStructuredText markup::
+
+    @bool rst3_call_docutils = True
+    
+To use sphinx markup::
+
+    @bool rst3_call_docutils = False
+</t>
+<t tx="ekr.20131027064821.18688">The rst3_write_intermediate_file setting determines whether the rst3 command will
+write an intermediate file.
+**This setting must be True when using Sphinx**.
+    
+    @bool rst3_write_intermediate_file = True
+    
+Writing intermediate files is useful for debugging even when not using
+sphinx.
+</t>
+<t tx="ekr.20131027064821.18689">When using sphinx you must ensure that sphinx's conf.py file is configured
+so that it will find the intermediate files created by the rst3 command.
+
+For example, the conf.py file for Leo's docs contains the following::
+
+    source_suffix = '.html.txt'
+    
+This "matches" the form of the intermediate files.  For example,
+given::
+
+    @rst myDocument.html
+    
+and the default value for the rst3_write_intermediate_extension setting::
+
+    @string rst3_write_intermediate_extension = .txt
+    
+the name of intermediate file will be::
+
+    myDocument.html.txt
+    
+This is the **input** file for sphinx.
+</t>
+<t tx="ekr.20131027064821.18690">The rst3_write_intermediate_extension settings determines the file type to
+be appended to the name of the output file to give the name of the
+intermediate file. The default is::
+
+    @string rst3_write_intermediate_extension = .txt
+
+When using sphinx, ensure that sphinx's conf.py file uses the intermediate
+files as input, as discussed next.
+</t>
+<t tx="ekr.20131027064821.18691">- For most purposes, the following settings will suffice::
+
+    @bool rst3_call_docutils = True
+        # Use False when using Sphinx
+    @bool rst3_write_intermediate_file = True
+    @string rst3_write_intermediate_extension = .txt
+    
+- When using Sphinx, make sure conf.py is set up so that Sphinx recognizes
+  the intermediate files as Sphinx's input files.
+    
+- Usually, you place these settings in an @settings tree and forget them.</t>
+<t tx="ekr.20131027064821.18709">.. _`docutils`:         http://docutils.sourceforge.net
+.. _LaTeX:              http://www.latex-project.org/
+.. _`reStructuredText`: http://docutils.sourceforge.net/rst.html
+.. _`Sphinx`:           http://sphinx.pocoo.org/</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
@@ -26761,7 +26716,6 @@ os.chdir('_build/latex')
 os.system('../../fixup.pl &lt; Leodocumentation.tex &gt; LeoDoc.tex')
 os.system('make LeoDoc.pdf')
 </t>
-<t tx="sps.20100708213227.44914"></t>
 <t tx="ville.20090705224948.5734">import os
 pos = c.find_h("Users Guide")[0]
 c.selectPosition(pos)

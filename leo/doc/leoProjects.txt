@@ -13,6 +13,34 @@ getWindowPositionAttributes now checks LM.options.get('windowSize')
 startVnodes now properly sets top geometry when --minimized is in effect.
 
 @language python
+#@+node:ekr.20131024051649.17111: ** Fixed bug 1243847: unicode error when saving @shadow nodes
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/1243847
+
+Probably related to bug 243855: @auto-rst doesn't save text:
+
+https://bugs.launchpad.net/leo-editor/+bug/1243855
+
+The fix: at.replaceFileWithString now *always* calls g.toEncodedString.
+
+When I save an @ shadow node with a unicode character, such as é, I get the following error:
+
+exception writing external files
+Traceback (most recent call last):
+  File "/data2/Soft/leo-editor/trunk3/leo/core/leoFileCommands.py", line 2034, in writeAllAtFileNodesHelper
+    c.atFileCommands.writeAll()
+  File "/data2/Soft/leo-editor/trunk3/leo/core/leoAtFile.py", line 3240, in writeAll
+    self.writeAllHelper(p,force,toString,writeAtFileNodesFlag,writtenFiles)
+  File "/data2/Soft/leo-editor/trunk3/leo/core/leoAtFile.py", line 3325, in writeAllHelper
+    at.writeOneAtShadowNode(p,toString=toString,force=force or pathChanged)
+  File "/data2/Soft/leo-editor/trunk3/leo/core/leoAtFile.py", line 3551, in writeOneAtShadowNode
+    at.replaceFileWithString(private_fn,at.private_s)
+  File "/data2/Soft/leo-editor/trunk3/leo/core/leoAtFile.py", line 5197, in replaceFileWithString
+    f.write(s)
+UnicodeEncodeError: 'ascii' codec can't encode character u'\xe9' in position 129: ordinal not in range(128)
+
+There is no error for the @file or @nosent files.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

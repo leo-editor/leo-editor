@@ -1487,6 +1487,7 @@
 <v t="ekr.20071213061454.3"><vh>@string rst3_node_begin_marker = http-node-marker-</vh></v>
 </v>
 <v t="ekr.20071213060239.2"><vh>rst3 path options</vh>
+<v t="ekr.20131027064821.18683"><vh>@string rst3_write_intermediate_extension = .txt</vh></v>
 <v t="ekr.20071213061504"><vh>@string rst3_default_path = None</vh></v>
 <v t="ekr.20071213061504.1"><vh>@string rst3_stylesheet_name = default.css</vh></v>
 <v t="ekr.20071213061504.2"><vh>@string rst3_stylesheet_path = None</vh></v>
@@ -1498,7 +1499,7 @@
 <v t="ekr.20071213061811"><vh>@bool rst3_number_code_lines = True</vh></v>
 <v t="ekr.20071213061811.1"><vh>@string rst3_underline_characters = #=+*^~"'`-:&gt;&lt;_</vh></v>
 <v t="ekr.20071213061811.2"><vh>@bool rst3_verbose = True</vh></v>
-<v t="ekr.20071213061811.3"><vh>@bool rst3_write_intermediate_file = False</vh></v>
+<v t="ekr.20071213061811.3"><vh>@bool rst3_write_intermediate_file = True</vh></v>
 </v>
 <v t="ekr.20071213060514.1"><vh>rst3 mode options</vh>
 <v t="ekr.20071213061923"><vh>@bool rst3_code_mode = False</vh></v>
@@ -1807,6 +1808,7 @@
 </v>
 <v t="ekr.20060603215208"></v>
 <v t="ekr.20100904134301.11000"></v>
+<v t="ekr.20071213060239"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -5168,7 +5170,7 @@ rst3_show_headline_prefix =    @rst-head</t>
 <t tx="ekr.20071213061811"></t>
 <t tx="ekr.20071213061811.1"></t>
 <t tx="ekr.20071213061811.2"></t>
-<t tx="ekr.20071213061811.3"># Used only if generate_rst is True.</t>
+<t tx="ekr.20071213061811.3">Required if using Sphinx markup.</t>
 <t tx="ekr.20071213061923"># True: generate rst markup from @code and @doc parts.</t>
 <t tx="ekr.20071213061923.1"># True: generate only from @doc parts.</t>
 <t tx="ekr.20071213061923.2"># True: generate rst markup. False: generate plain text.</t>
@@ -9794,6 +9796,7 @@ action will be used instead.</t>
 <t tx="ekr.20131007055150.13034"></t>
 <t tx="ekr.20131008181812.17533">False: disable all drag and drop operations in the outline.</t>
 <t tx="ekr.20131009050634.17656"></t>
+<t tx="ekr.20131027064821.18683"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>
