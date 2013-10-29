@@ -51,6 +51,10 @@ Added LM.openEmptyWorkBook.
 Added open-cheat-sheet-leo command.
 Added "Open CheatSheet.leo" menu item.
 Changed LM.doPostPluginsInit.
+#@+node:ekr.20131017100903.16688: ** revised help-for commands
+help-for-dynamic-abbreviations
+help-for-abbreviations
+help-for-find-commands
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

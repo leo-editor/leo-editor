@@ -5,7 +5,7 @@
 """ Creates stand-alone slideshows containing screenshots.
 
 This plugin defines five commands. The
-**apropos-slides** command prints this message to
+**help-for-slides** command prints this message to
 Leo's log pane. The **slide-show-info** command
 prints the settings in effect.
 
@@ -347,8 +347,8 @@ import xml.etree.ElementTree as etree
 #@+others
 #@+node:ekr.20100914090933.5771: ** Top level
 #@+node:ekr.20100908110845.5581: *3* g.command(apropos-slides)
-@g.command('apropos-slides')
-def apropos_screen_shots(event):
+@g.command('help-for-slides')
+def help_for_screen_shots(event):
 
     # Just print the module's docstring.
     g.es(__doc__)
@@ -423,7 +423,7 @@ class ScreenShotController(object):
 
     '''A class to take screen shots and control Inkscape.
 
-    apropos-screenshots contains a more complete description.'''
+    help-for-screenshots contains a more complete description.'''
 
     #@+others
     #@+node:ekr.20100908110845.5532: *3*  ctor & helpers

@@ -572,7 +572,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
         Insert the common prefix of all dynamic abbrev's matching the present word.
         This corresponds to C-M-/ in Emacs.'''
 
-        c,p,u = self.c,self.c.p,self.c.u
+        c,p,u = self.c,self.c.p,self.c.p.v.u
         w = self.editWidget(event)
         if not w: return
         s = w.getAllText()
@@ -7234,15 +7234,16 @@ class helpCommandsClass (baseEditCommandsClass):
 
         return {
         'help':                         self.help,
-        'help-for-abbreviations':       self.aproposAbbreviations,
-        'help-for-autocompletion':      self.aproposAutocompletion,
-        'help-for-bindings':            self.aproposBindings,
+        'help-for-abbreviations':       self.helpForAbbreviations,
+        'help-for-autocompletion':      self.helpForAutocompletion,
+        'help-for-bindings':            self.helpForBindings,
         'help-for-command':             self.helpForCommand,
-        'help-for-debugging-commands':  self.aproposDebuggingCommands,
-        'help-for-find-commands':       self.aproposFindCommands,
+        'help-for-debugging-commands':  self.helpForDebuggingCommands,
+        'help-for-dynamic-abbreviations': self.helpForDynamicAbbreviations,
+        'help-for-find-commands':       self.helpForFindCommands,
         'help-for-minibuffer':          self.helpForMinibuffer,
         'help-for-python':              self.pythonHelp,
-        'help-for-regular-expressions': self.aproposRegularExpressions,
+        'help-for-regular-expressions': self.helpForRegularExpressions,
         'print-settings':               self.printSettings,
         }
     #@+node:ekr.20051014170754: *3* helpForMinibuffer
@@ -7281,7 +7282,7 @@ class helpCommandsClass (baseEditCommandsClass):
         Use the help-for-command command to see documentation for a particular command.
         '''
         #@-<< define s >>
-        c.putApropos(s)
+        c.putHelpFor(s)
     #@+node:ekr.20060417203717: *3* helpForCommand & helpers
     def helpForCommand (self,event):
 
@@ -7297,7 +7298,7 @@ class helpCommandsClass (baseEditCommandsClass):
         '''
 
         #@-<< define s >>
-        self.c.putApropos(s)
+        self.c.putHelpFor(s)
         k.fullCommand(event,help=True,helpHandler=self.helpForCommandFinisher)
 
     #@+node:ekr.20120521114035.9870: *4* getBindingsForCommand
@@ -7327,7 +7328,7 @@ class helpCommandsClass (baseEditCommandsClass):
 
         c = self.c ; s = None
 
-        if commandName and commandName.startswith('apropos-'):
+        if commandName and commandName.startswith('help-for-'):
             # Execute the command itself.
             c.k.simulateCommand(commandName)
         else:
@@ -7368,19 +7369,25 @@ class helpCommandsClass (baseEditCommandsClass):
                 You can use tab completion.  Examples::
 
                     <F1><tab>           shows all commands.
-                    <F1>apropos<tab>    shows all apropos commands.
+                    <F1>help-for<tab>   shows all help-for- commands.
 
-                Here are the apropos commands::
+                Here are the help-for commands::
 
-                    apropos-abbreviations
-                    apropos-autocompletion
-                    apropos-bindings
-                    apropos-debugging-commands
-                    apropos-find-commands
+                    help-for-abbreviations
+                    help-for-autocompletion
+                    help-for-bindings
+                    help-for-command
+                    help-for-debugging-commands
+                    help-for-dynamic-abbreviations
+                    help-for-find-commands
+                    help-for-minibuffer
+                    help-for-python
+                    help-for-regular-expressions
+
                 '''
                 #@-<< set s to about help-for-command >>
 
-            c.putApropos(s) # calls g.adjustTripleString.
+            c.putHelpFor(s) # calls g.adjustTripleString.
     #@+node:ekr.20120524151127.9886: *4* replaceBindingPatterns
     def replaceBindingPatterns (self,s):
 
@@ -7402,8 +7409,8 @@ class helpCommandsClass (baseEditCommandsClass):
             s = s[:m.start()] + key + s[m.end():]
         return s
 
-    #@+node:ekr.20100901080826.5850: *3* aproposAbbreviations
-    def aproposAbbreviations (self,event=None):
+    #@+node:ekr.20100901080826.5850: *3* helpForAbbreviations
+    def helpForAbbreviations (self,event=None):
 
         '''Prints a discussion of abbreviations.'''
 
@@ -7417,125 +7424,62 @@ class helpCommandsClass (baseEditCommandsClass):
         About Abbreviations
         +++++++++++++++++++
 
-        When abbreviation mode is on (abbrev-mode toggles this mode) Leo will
-        expand abbreviations as you type. Type the name of an abbreviation,
-        followed by a space. As soon as you type the space, Leo will replace the
-        name by the abbreviations value. You can undo the replacement as usual.
+        Leo optionally expands abbreviations as you type.
 
-        Note that defining any abbreviation automatically turns on abbreviation
-        mode.
+        Abbreviations typically end with something like ";;" so they won't trigger
+        by accident.
 
-        The add-global-abbreviation command (<alt-x>add-gl<tab><return>) takes the
-        selected text as the replacement value of the abbreviation. The minibuffer
-        prompts you for the name of the abbreviation.
+        You define abbreviations in @data abbreviations nodes or @data
+        global-abbreviations nodes. None come predefined, but leoSettings.leo
+        contains example abbreviations in the node::
 
-        Settings
-        ========
+            @@data abbreviations examples
 
-        As usual, the following settings have effect
-        only in @settings trees...
+        Abbreviations can simply be shortcuts::
 
-        @bool enable-abbreviations (default: False)
+            ncn;;=@nocolor
+            
+        Abbreviations can span multiple lines. Continued lines start with \\:, like
+        this::
 
-        When true, enables substitution of
-        abbreviations.
+            form;;=<form action="main_submit" method="get" accept-charset="utf-8">
+            \:<p><input type="submit" value="Continue &rarr;"></p>
+            \:</form>\n
 
-        @data global-abbreviations
-        @data abbreviations
+        Abbreviations can define templates in which <\|a-field-name\|> denotes a field
+        to be filled in::
 
-        In both cases, body text contains lines of
-        the form::
+            input;;=<input type="text/submit/hidden/button"
+            \:name="<|name|>"
+            \:value="" id="<|id|>">\n
 
-           name=value
+        Typing ",," after inserting a template selects the next field.
 
-        name is the abbreviation name, value is the
-        substituted text. Whitespace is ignore around
-        the name, but is significant in the value.
-        Abbreviation names may contain only
-        alphabetic characters, but may start with the
-        '@' sign.
+        Abbreviations can execute **abbreviation scripts**, delimited by {\|{ and
+        }\|}::
 
-        By *convention* @data global-abbreviations
-        setting should be defined in
-        myLeoSettings.leo, while @data abbreviations
-        should be defined in other .leo files.
-        Regardless of where they are defined,
-        abbreviations in @data abbreviation nodes
-        will override settings (with the same name)
-        in @data global-abbreviations nodes.
+            date;;={|{import time ; x=time.asctime()}|}
+            ts;;={|{import time ; x=time.strftime("%Y%m%d%H%M%S")}|}
+            
+        For example, typing ts;; gives::
 
-        Commands
-        ========
+            20131009171117
+            
+        It's even possible to define a context in which abbreviation scripts execute.
 
-        apropos-abbreviations
-
-        Prints this summary.
-
-        dabbrev-completion
-
-        Insert the common prefix of all dynamic
-        abbreviations matching the present word.
-        Similar C-M-/ in Emacs.
-
-        dabbrev-expands
-
-        Expand the word in the buffer before point as
-        a dynamic abbrev, by searching in the buffer
-        for words starting with that abbreviation
-        (dabbrev-expand). Similar to M-/ in Emacs
-
-        abbrev-mode
-
-        Toggles abbreviation mode. Abbreviations are
-        only active when this mode is on.
-
-        add-global-abbrev
-
-        Adds an abbreviation for the selected text.
-        The minibuffer prompts for the abbreviation
-        name.
-
-        inverse-add-global-abbrev
-
-        Adds an abbreviation. The selected text is
-        the abbreviation name. The minibuffer prompts
-        for the value of the abbreviation.
-
-        kill-all-abbrevs
-
-        Removes all abbreviations.
-
-        list-abbrevs
-
-        Lists all active abbreviations.
-
-        read-abbrev-file
-
-        Read an external file containing
-        abbreviations.
-
-        write-abbrev-file
-
-        Writes abbreviations to an external file.
-
-        Scripting
-        =========
-
-        Leo scripts may read abbreviations from a file with::
-
-            c.abbrevCommands.readAbbreviationsFromFile(fn)
+        See leoSettings.leo for full details.
 
         '''
         #@-<< define s >>
 
-        self.c.putApropos(s)
-    #@+node:ekr.20060226131603.1: *3* aproposAutocompletion
-    def aproposAutocompletion (self,event=None):
+        self.c.putHelpFor(s)
+    #@+node:ekr.20060226131603.1: *3* helpForAutocompletion
+    def helpForAutocompletion (self,event=None):
 
         '''Prints a discussion of autocompletion.'''
 
         #@+<< define s >>
-        #@+node:ekr.20110530082209.18252: *4* << define s >> (aproposAutocompletion)
+        #@+node:ekr.20110530082209.18252: *4* << define s >> (helpForAutocompletion)
         # @pagewidth 40
         #@@language rest
 
@@ -7644,14 +7588,14 @@ class helpCommandsClass (baseEditCommandsClass):
         and disable-calltips. '''
         #@-<< define s >>
 
-        self.c.putApropos(s)
-    #@+node:ekr.20060205170335: *3* aproposBindings
-    def aproposBindings (self,event=None):
+        self.c.putHelpFor(s)
+    #@+node:ekr.20060205170335: *3* helpForBindings
+    def helpForBindings (self,event=None):
 
         '''Prints a discussion of keyboard bindings.'''
 
         #@+<< define s >>
-        #@+node:ekr.20110530082209.18253: *4* << define s >> (aproposBindings)
+        #@+node:ekr.20110530082209.18253: *4* << define s >> (helpForBindings)
         # @pagewidth 40
         #@@language rest
 
@@ -7729,7 +7673,7 @@ class helpCommandsClass (baseEditCommandsClass):
         '''
         #@-<< define s >>
 
-        self.c.putApropos(s)
+        self.c.putHelpFor(s)
     #@+node:ekr.20130412173637.10333: *3* help
     def help (self,event=None):
 
@@ -7761,14 +7705,14 @@ class helpCommandsClass (baseEditCommandsClass):
 
         '''
         #@-<< define rst_s >>
-        self.c.putApropos(rst_s)
-    #@+node:ekr.20070501092655: *3* aproposDebuggingCommands
-    def aproposDebuggingCommands (self,event=None):
+        self.c.putHelpFor(rst_s)
+    #@+node:ekr.20070501092655: *3* helpForDebuggingCommands
+    def helpForDebuggingCommands (self,event=None):
 
         '''Prints a discussion of of Leo's debugging commands.'''
 
         #@+<< define s >>
-        #@+node:ekr.20070501092655.1: *4* << define s >> (aproposDebuggingCommands)
+        #@+node:ekr.20070501092655.1: *4* << define s >> (helpForDebuggingCommands)
         # @pagewidth 40
         #@@language rest
 
@@ -7797,14 +7741,61 @@ class helpCommandsClass (baseEditCommandsClass):
         '''
         #@-<< define s >>
 
-        self.c.putApropos(s)
-    #@+node:ekr.20060205170335.1: *3* aproposFindCommands
-    def aproposFindCommands (self, event=None):
+        self.c.putHelpFor(s)
+    #@+node:ekr.20131029061413.17094: *3* helpForDynamicAbbreviations
+    def helpForDynamicAbbreviations (self,event=None):
+
+        '''Prints a discussion of abbreviations.'''
+
+        #@+<< define s >>
+        #@+node:ekr.20131029061413.17095: *4* << define s >> (helpForDynamicAbbreviations)
+        #@@language rest
+
+        s = '''\
+
+        +++++++++++++++++++++++++++
+        About Dynamic Abbreviations
+        +++++++++++++++++++++++++++
+
+        .. Description taken from http://www.emacswiki.org/emacs/DynamicAbbreviations
+
+        A dynamic abbreviation (dabbrev) is like a normal abbreviation except:
+
+        - You do not have to define it(!)
+        - You expand it with Alt-/ (dabbrev-expand) or Alt-Ctrl-/ (dabbrev-completion)
+
+        For example, suppose the text aLongIvarName appears anywhere in the
+        outline. To type this name again type::
+
+            aLong<Alt-/>
+
+        You will see a list of possible completions in the log pane.
+
+        Alt-Ctrl-/ (dabbrev-completion) inserts the longest prefix of all
+        completions immediately.  For instance, suppose the following appear in text::
+
+            aVeryLongIvarName
+            aVeryLongMethodName
+            
+        Typing::
+
+            aVery<Alt-Ctrl-/>
+            
+        will immediately extend the typing to::
+
+            aVeryLong
+
+        '''
+        #@-<< define s >>
+
+        self.c.putHelpFor(s)
+    #@+node:ekr.20060205170335.1: *3* helpForFindCommands
+    def helpForFindCommands (self, event=None):
 
         '''Prints a discussion of of Leo's find commands.'''
 
         #@+<< define s >>
-        #@+node:ekr.20130411023826.16595: *4* << define s >> (apropos-find-commands)
+        #@+node:ekr.20130411023826.16595: *4* << define s >> (helpFor-find-commands)
         #@@language rest
 
         s = '''
@@ -7813,285 +7804,66 @@ class helpCommandsClass (baseEditCommandsClass):
 
            <br />
 
-        Finding text
-        ------------
+        Finding & replacing text
+        ------------------------
 
-        **Ctrl-F** starts searching. |br|\
-        The cursor moves to the minibuffer. |br|\
-        To abandon a search, type **Ctrl-G**.
+        Ctrl-F (search-with-present-options) shows the Find Tab and puts the focus
+        in the minibuffer.
 
-        The Find Tab shows the present settings. |br|\
-        Underlined characters are keyboard hints: |br|\
-        **Alt-Ctrl-W** toggles the Whole Word checkbox, and so on.
+        **Important**: the Find tab just shows you the status of search and replace
+        operations.
 
-        Type the search string in the minibuffer. |br|\
-        Type the **Enter** key to start the search.
+        You control those operations from the minibuffer.
 
-        Once searching has begun:
-            **F3** searches again. |br|\
-            **F2** searches backwards.
+        **Note**: You can toggle the radio buttons and check boxes in the Find Tab
+        with Ctrl-Alt keys. For example, Ctrl-Alt-X (toggle-find-regex-option)
+        toggles the Regexp checkbox.
 
-        Replacing text
-        --------------
+        After typing Ctrl-F, type the search string, say "def", in the minibuffer.
 
-        Type **Ctrl-F** and enter the find string as before. |br|\
-        Type **Ctrl-R** instead of **Enter**.
+        Start the find by typing <Return>.
 
-        Type the replacement string. |br|\
-        The **Enter** key starts the search.
+        But suppose you want to replace "def" with "foo", instead of just finding
+        "foo".
 
-        When a match is found:
-            The **=** key makes the replacement. |br|\
-            The **-** key replaces and finds again. |br|\
-            The **F2** and **F3** keys work as before.
+        Before typing <Return> type Shift-Ctrl-R. The minibuffer prompts for the
+        replacement string. Notice that the status area now shows “def” as the Find
+        string.
+
+        Type "foo" and type <Return> to start the find-next command.
+
+        When Leo finds the next instance of "def", it will select it. |br|
+        You may type any command.  The following are most useful:
+
+        - Ctrl-minus (replace-then-find) replaces the selected text.
+        - F3 (find-next) continues searching without making a replacement.
+        - F2 (find-previous) continues the search in reverse.
+        - Ctrl-G (keyboard-quit) ends the search.
 
         Incremental searching
         ---------------------
 
-        **Alt-S** starts an incremental search. |br|\
+        **Alt-S** starts an incremental search. |br|
         **Alt-R** starts a reverse incremental search.
 
-        Any characters you type extend the search. |br|\
+        Any characters you type extend the search. |br|
         **Backspace** retracts the search. 
 
         During an incremental search:
-            **Enter** or **Ctrl-G** stops the search. |br|\
-            **Alt-S** finds the search string again. |br|\
+            **Enter** or **Ctrl-G** stops the search. |br|
+            **Alt-S** finds the search string again. |br|
             **Alt-R** does the same during a reverse search.
 
         '''
         #@-<< define s >>
-        #@+<< define old_s >>
-        #@+node:ekr.20060209082023.1: *4* << define old_s >> (aproposFindCommands)_
-        # @pagewidth 40
-        #@@language rest
-
-        old_s = '''
-        +++++++++++++++++++
-        About Find Commands
-        +++++++++++++++++++
-
-        Note: all bindings shown are the default
-        bindings for these commands. You may
-        change any of these bindings using
-        @shortcuts nodes in leoSettings.leo.
-
-        Settings
-        ========
-
-        leoSettings.leo now contains several
-        settings related to the Find tab:
-
-        @bool show_only_find_tab_options = True
-
-          When True (recommended), the Find tab
-          does not show the 'Find', 'Replace',
-          'Replace, Then Find', 'Find All' and
-          'Replace All' buttons.
-
-        @bool minibufferSearchesShowFindTab = True
-
-          When True, Leo shows the Find tab when
-          executing most of the commands
-          discussed below.
-
-        Basic find commands
-        ===================
-
-        open-find-tab
-
-          Makes the Find tab visible. The Find
-          tab does **not** need to be visible to
-          execute any search command discussed
-          below.
-
-        hide-find-tab
-
-          Hides the Find tab, but retains all
-          the present settings.
-
-        search-with-present-options (Ctrl-F)
-
-          Prompts for a search string. Typing
-          the <Return> key puts the search
-          string in the Find tab and executes a
-          search based on all the settings in
-          the Find tab. This is a recommended
-          default search command.
-
-        show-search-options
-
-          Shows the present search options in
-          the status line. This command also
-          makes the Find tab visible.
-
-        find-next (F3)
-
-          Like search-with-present-options,
-          except that it uses the search string
-          in the find-tab. Recommended as the
-          default 'search again' command.
-
-        find-previous (F2)
-
-          Repeats the command specified by the
-          Find tab, but in reverse.
-
-        find-again
-
-          Like find-next if a search pattern is
-          not '<find pattern here>'. Otherwise,
-          like search-with-present-options.
-
-        Setting find options
-        ====================
-
-        Several minibuffer commands toggle the
-        checkboxes and radio buttons in the Find
-        tab, and thus affect the operation of
-        the search-with-present-options command.
-        You may bind these commands to keys or
-        toggle these options in a mode.
-
-        These commands toggle checkboxes::
-
-            toggle-find-ignore-case-option
-            toggle-find-in-body-option
-            toggle-find-in-headline-option
-            toggle-find-mark-changes-option
-            toggle-find-mark-finds-option
-            toggle-find-regex-option
-            toggle-find-word-option
-            toggle-find-wrap-around-option
-
-        These commands set radio buttons::
-
-            set-find-everywhere,
-            set-find-node-only, and
-            set-find-suboutline-only.
-
-        enter-find-options-mode (Ctrl-Shift-F)
-
-        enters a mode in which you may change
-        all checkboxes and radio buttons in the
-        Find tab with plain keys. As always, you
-        can use the mode-help (Tab) command to
-        see a list of key bindings in effect for
-        the mode.
-
-        Search commands with side effects
-        =================================
-
-        The following commands set an option in
-        the Find tab, then work exactly like the
-        search-with-present-options command.
-
-        - search-backward and search-forward set
-          the 'Whole Word' checkbox to False.
-
-        - word-search-backward and
-          word-search-forward set the 'Whole
-          Word' checkbox to True.
-
-        - re-search-forward and re-search-backward
-          set the 'Regexp' checkbox to True.
-
-        Find all commands
-        =================
-
-        find-all
-
-          Prints all matches in the log pane.
-
-        clone-find-all
-
-          Replaces the previous 'Clone Find'
-          checkbox. It prints all matches in the
-          log pane, and creates a node at the
-          beginning of the outline containing
-          clones of all nodes containing the
-          'find' string. Only one clone is made
-          of each node, regardless of how many
-          clones the node has, or of how many
-          matches are found in each node.
-
-        Note: the radio buttons in the Find tab
-        (Entire Outline, Suboutline Only and
-        Node only) control how much of the
-        outline is affected by the find-all and
-        clone-find-all commands.
-
-        Search and replace commands
-        ===========================
-
-        replace-string
-
-          Prompts for a search string. Type
-          <Return> to end the search string. The
-          command will then prompt for the
-          replacement string. Typing a second
-          <Return> key will place both strings
-          in the Find tab and executes a
-          **find** command, that is,
-          search-with-present-options.
-
-        So the only difference between
-        replace-string and
-        search-with-present-options is that
-        replace-string has the side effect of
-        setting 'change' string in the Find tab.
-        However, this is an extremely useful
-        side effect, because of the following
-        commands...
-
-        replace (Ctrl-=)
-
-          Replaces the selected text with the
-          'change' text in the Find tab.
-
-        replace-then-find (Ctrl--)
-
-          Replaces the selected text with the
-          'change' text in the Find tab, then
-          executes the find command again.
-
-        find-next, change and change-then-find
-        can simulate any kind of query-replace
-        command.
-
-        replaces-all
-
-          Replaces all occurrences of the 'find'
-          text with the 'change' text.
-          Important: the radio buttons in the
-          Find tab (Entire Outline, Suboutline
-          Only and Node only) control how much
-          of the outline is affected by this
-          command.
-
-        Incremental search commands
-        ===========================
-
-        Here are Leo's incremental find commands::
-
-            isearch-backward (Alt-R)
-            isearch-backward-regexp
-            isearch-forward (Alt-S)
-            isearch-forward-regexp
-
-        You may use backspace to backtrack. To
-        repeat an incremental search, type the
-        shortcut for that command again.'''
-        #@-<< define old_s >>
-
-        self.c.putApropos(s)
-    #@+node:ekr.20120522024827.9897: *3* aproposRegularExpressions
-    def aproposRegularExpressions (self, event=None):
+        self.c.putHelpFor(s)
+    #@+node:ekr.20120522024827.9897: *3* helpForRegularExpressions
+    def helpForRegularExpressions (self, event=None):
 
         '''Prints a discussion of of Leo's find commands.'''
 
         #@+<< define s >>
-        #@+node:ekr.20120522024827.9898: *4* << define s >> (aproposRegularExpressions)
+        #@+node:ekr.20120522024827.9898: *4* << define s >> (helpForRegularExpressions)
         #@@language rest
 
         # Using raw string is essential.
@@ -8160,7 +7932,7 @@ class helpCommandsClass (baseEditCommandsClass):
         '''
         #@-<< define s >>
 
-        self.c.putApropos(s)
+        self.c.putHelpFor(s)
     #@+node:ekr.20060602154458: *3* pythonHelp
     def pythonHelp (self,event=None):
 
@@ -8187,7 +7959,7 @@ class helpCommandsClass (baseEditCommandsClass):
                     sys.stdout = old
                 # Send it to the vr pane as a <pre> block
                 s2 = '<pre>' + s2 + '</pre>'
-                c.putApropos(s2)
+                c.putHelpFor(s2)
     #@+node:ekr.20070418074444: *3* printSettings
     def printSettings (self,event=None):
 

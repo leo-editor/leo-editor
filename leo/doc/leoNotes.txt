@@ -12098,7 +12098,8 @@ Leo works well with <a href="http://www.gnu.org/software/emacs/">emacs</a>,
   <a href="http://www.vim.org/">vim</a>, and
   <a href="http://ipython.org/">ipython</a>.</li>
 </p>
-.. @+node:ekr.20131027064821.18702: *3* Old rst3 tutorial from Users Guide (rstplugin3.html)
+.. @+node:ekr.20131029082947.17108: *3* old rst tutorial
+.. @+node:ekr.20131027064821.18702: *4* Old rst3 tutorial from Users Guide (rstplugin3.html)
 This tutorial tells how to get started with Leo's rst3 command. The tutorial
 covers only rst3's basic features. You can do a *lot* with these features--Leo's
 documentation uses only the features described here!
@@ -12125,7 +12126,7 @@ the \@rst tree!  When you are done writing, create your output using the rst3 co
 The next sections will discuss these three steps in more detail. As you will
 see, after you set up the \@rst node, you can focus exclusively on writing and
 organizing. Leo's rst3 command will take care of the rest.
-.. @+node:ekr.20131027064821.18703: *4* Step 1: Create the @rst node
+.. @+node:ekr.20131027064821.18703: *5* Step 1: Create the @rst node
 The headline of the \@rst node has the form::
 
         @rst <filename>
@@ -12141,7 +12142,7 @@ abc.html or abc.html.txt or both.
 command, you can examine the intermediate file to see what rst3 has done.
 
 Let's turn our attention to the the body of the \@rst node...
-.. @+node:ekr.20131027064821.18704: *5* Set global options
+.. @+node:ekr.20131027064821.18704: *6* Set global options
 The \@rst node is a good place for options that apply to the entire \@rst
 tree. Typically, you will just set these options once and then completely forget
 about them.
@@ -12179,7 +12180,7 @@ will produce the same results no matter where the \@rst node is located.
 
 **Note 2**: You may have to change the stylesheet_path option so that the
 generated output file can find the proper stylesheets.
-.. @+node:ekr.20131027064821.18705: *5* Set your document's title
+.. @+node:ekr.20131027064821.18705: *6* Set your document's title
 Next, set your document's title by putting something like this in the
 body text of the \@rst node::
 
@@ -12199,7 +12200,7 @@ Sometimes I put the first words of a document in the \@rst node::
     do with you and you are no longer my friend, no longer my 'faithful slave,'
     as you call yourself! But how do you do? I see I have frightened you--sit
     down and tell me all the news.
-.. @+node:ekr.20131027064821.18706: *4* Step 2: Write your document
+.. @+node:ekr.20131027064821.18706: *5* Step 2: Write your document
 Now comes the "interesting" part--actually writing your novel, short story,
 documentation or whatever.
 
@@ -12244,7 +12245,7 @@ start with '\@rst-' control the rst3 command.  The three most useful are:
 \@rst-ignore-tree <ignored-text>
 
     The rst3 command ignores the \@rst-ignore-tree node and all its descendants.
-.. @+node:ekr.20131027064821.18707: *4* Step 3: Run the rst3 command
+.. @+node:ekr.20131027064821.18707: *5* Step 3: Run the rst3 command
 This step is easy. Select an outline containing one or more \@rst trees. Now do
 <Alt-X>rst3<Return>. You can use <Ctrl-P> (repeat-complex-command) instead if
 the last minibuffer command was the rst3 command.
@@ -12258,7 +12259,7 @@ file, or both:
 - With the recommended settings for Sphinx, the rst3 command will generate the
   intermediate file. You must then run Sphinx's make utility to turn the
   intermediate file into the final output file.
-.. @+node:ekr.20131027064821.18708: *4* Go forth and experiment
+.. @+node:ekr.20131027064821.18708: *5* Go forth and experiment
 .. _`Leo's Google Group`:   http://groups.google.com/group/leo-editor
 
 You now know everything needed to get started with the rst3 command.
@@ -12271,7 +12272,7 @@ Some possible next steps are:
 2. Create your own @rst nodes. Run the rst3 command on them and see what
    happens. If you get stuck, you please ask for help at
    `Leo's Google Group`_.
-.. @+node:ekr.20131028213522.17141: *3* Where to put settings (from rst3 tutorial)
+.. @+node:ekr.20131028213522.17141: *4* Where to put settings (from rst3 tutorial)
 Depending on your situation, you can put settings in various places:
 
 1. In an @settings tree in myLeoSettings.leo.
@@ -12296,7 +12297,7 @@ This is appropriate when @rst nodes contain different settings. Common
 settings can still reside in some @settings tree.
 Using \@ \@rst-options you can even set options on a node-by-node basis.
 See the `rst3 Command Reference`_ of Leo's Users Guide for details.
-.. @+node:ekr.20131028213522.17143: *3* @bool rst3_write_intermediate_file (from rst3 tutorial)
+.. @+node:ekr.20131028213522.17143: *4* @bool rst3_write_intermediate_file (from rst3 tutorial)
 The rst3_write_intermediate_file setting determines whether the rst3 command will
 write an intermediate file.
 **This setting must be True when using Sphinx**.
@@ -12305,7 +12306,7 @@ write an intermediate file.
     
 Writing intermediate files is useful for debugging even when not using
 sphinx.
-.. @+node:ekr.20131028213522.17145: *3* @string rst3_write_intermediate_extension
+.. @+node:ekr.20131028213522.17145: *4* @string rst3_write_intermediate_extension
 The rst3_write_intermediate_extension settings determines the file type to
 be appended to the name of the output file to give the name of the
 intermediate file. The default is::
@@ -12314,7 +12315,7 @@ intermediate file. The default is::
 
 When using sphinx, ensure that sphinx's conf.py file uses the intermediate
 files as input, as discussed next.
-.. @+node:ekr.20131028213522.17147: *3* @bool rst3_call_docutils
+.. @+node:ekr.20131028213522.17147: *4* @bool rst3_call_docutils
 The rst3_call_docutils setting determines whether to use plain rST markup
 or full sphinx markup. To use plain reStructuredText markup::
 
@@ -12323,7 +12324,7 @@ or full sphinx markup. To use plain reStructuredText markup::
 To use sphinx markup::
 
     @bool rst3_call_docutils = False
-.. @+node:ekr.20131028213522.17149: *3* Summary of settings
+.. @+node:ekr.20131028213522.17149: *4* Summary of settings
 - For most purposes, the following settings will suffice::
 
     @bool rst3_call_docutils = True
@@ -12333,5 +12334,123 @@ To use sphinx markup::
     
 - When using Sphinx, set up sure conf.py so that Sphinx recognizes
   the intermediate files as Sphinx's input files.
+.. @+node:ekr.20131029082947.17104: *3* << define s >> (helpForAbbreviations)
+@language rest
+
+s = '''\
+
++++++++++++++++++++
+About Abbreviations
++++++++++++++++++++
+
+When abbreviation mode is on (abbrev-mode toggles this mode) Leo will
+expand abbreviations as you type. Type the name of an abbreviation,
+followed by a space. As soon as you type the space, Leo will replace the
+name by the abbreviations value. You can undo the replacement as usual.
+
+Note that defining any abbreviation automatically turns on abbreviation
+mode.
+
+The add-global-abbreviation command (<alt-x>add-gl<tab><return>) takes the
+selected text as the replacement value of the abbreviation. The minibuffer
+prompts you for the name of the abbreviation.
+
+Settings
+========
+
+As usual, the following settings have effect
+only in @settings trees...
+
+@bool enable-abbreviations (default: False)
+
+When true, enables substitution of
+abbreviations.
+
+@data global-abbreviations
+@data abbreviations
+
+In both cases, body text contains lines of
+the form::
+
+   name=value
+
+name is the abbreviation name, value is the
+substituted text. Whitespace is ignore around
+the name, but is significant in the value.
+Abbreviation names may contain only
+alphabetic characters, but may start with the
+'@' sign.
+
+By *convention* @data global-abbreviations
+setting should be defined in
+myLeoSettings.leo, while @data abbreviations
+should be defined in other .leo files.
+Regardless of where they are defined,
+abbreviations in @data abbreviation nodes
+will override settings (with the same name)
+in @data global-abbreviations nodes.
+
+Commands
+========
+
+help-for-abbreviations
+
+Prints this summary.
+
+dabbrev-completion
+
+Insert the common prefix of all dynamic
+abbreviations matching the present word.
+Similar C-M-/ in Emacs.
+
+dabbrev-expands
+
+Expand the word in the buffer before point as
+a dynamic abbrev, by searching in the buffer
+for words starting with that abbreviation
+(dabbrev-expand). Similar to M-/ in Emacs
+
+abbrev-mode
+
+Toggles abbreviation mode. Abbreviations are
+only active when this mode is on.
+
+add-global-abbrev
+
+Adds an abbreviation for the selected text.
+The minibuffer prompts for the abbreviation
+name.
+
+inverse-add-global-abbrev
+
+Adds an abbreviation. The selected text is
+the abbreviation name. The minibuffer prompts
+for the value of the abbreviation.
+
+kill-all-abbrevs
+
+Removes all abbreviations.
+
+list-abbrevs
+
+Lists all active abbreviations.
+
+read-abbrev-file
+
+Read an external file containing
+abbreviations.
+
+write-abbrev-file
+
+Writes abbreviations to an external file.
+
+Scripting
+=========
+
+Leo scripts may read abbreviations from a file with::
+
+    c.abbrevCommands.readAbbreviationsFromFile(fn)
+
+'''
 .. @-all
 .. @-leo

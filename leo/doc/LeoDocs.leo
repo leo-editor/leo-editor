@@ -9224,7 +9224,7 @@ Leo's Tutorial
 
 .. _`Python`: http://www.python.org/
 
-    "[Leo] should either replace or greatly augment the development tools
+    "Leo should either replace or greatly augment the development tools
     that I use."---Zak Greant
 
     "Leo is a quantum leap for me in terms of how many projects I can manage
@@ -20013,7 +20013,6 @@ moving or cutting them.
 
 Ctrl-M (mark) toggles the mark on a node. |br|
 Marked nodes have a vertical red bar in their icon area.
-
 </t>
 <t tx="ekr.20131002055813.19837">Leo has unlimited undo--Leo remembers *all* changes you make to outline
 structure or the contents of any node since you restarted Leo.
@@ -21179,7 +21178,7 @@ For example, typing ts;; gives::
     
 It's even possible to define a context in which abbreviation scripts execute.
 
-See the leoSettings.leo for full details, including applicable settings.
+See leoSettings.leo for full details.
 </t>
 <t tx="ekr.20131009100732.19038">.. _`Plugins`:          plugins.html
 .. _`bookmarks.py`:     plugins.html#bookmarks-py
@@ -21715,6 +21714,16 @@ Regardless of focus::
 </t>
 <t tx="ekr.20131015035606.16801">For much more information, see the `Commands Reference`_.
 
+Copy/Paste (text)::
+
+    Ctrl-C (copy-text)
+    Ctrl-K (kill)
+    Ctrl-V (paste-text)
+    Ctrl-X (cut-text)
+    Ctrl-Y (yank)
+    Alt-Y  (yank-pop)
+    kill-...
+
 Files::
 
     Ctrl-N (new) 
@@ -21844,7 +21853,7 @@ It would be a good idea to skim this chapter to see what it contains.
 - mod_scripting.py: Supports @button and @command nodes.
 - quicksearch.py: Adds Nav tab for searching.
 - todo.py: Manages to-do lists and simple project management.
-- valuepace.py: Creates an outline-oriented spreadsheet.
+- valuespace.py: Creates an outline-oriented spreadsheet.
 - viewrendered.py: Creates a rendering pane. Automatically loaded by Leo's help commands.
 </t>
 <t tx="ekr.20131017051340.16732">These are not included on the web, but may be of interest to those
@@ -22930,7 +22939,7 @@ Use autocompletion to explore these objects!
     v.u: v.unknownAttributes, a persistent Python dictionary.
     
 v.u (uA's or unknownAttributes or userAttributes) allow plugins or scripts
-to associate persistant data with vnodes. For details see the section about
+to associate persistent data with vnodes. For details see the section about
 `userAttributes`_ in the `Customizing Leo`_ chapter.
 </t>
 <t tx="ekr.20131019061259.16691">**Properties**::
@@ -22988,7 +22997,7 @@ to associate persistant data with vnodes. For details see the section about
     p.insertBefore()
     p.moveAfter(p2)
     p.moveToFirstChildOf(parent,n)
-    p.moveToLastChildOf(paren,n)
+    p.moveToLastChildOf(parent,n)
     p.moveToNthChildOf(parent,n)
     p.moveToRoot(oldRoot=None)
         # oldRoot **must** be the old root position if it exists.

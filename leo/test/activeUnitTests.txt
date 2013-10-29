@@ -5462,16 +5462,16 @@ first line
             line b
     line c
 last line
-#@+node:ekr.20071113145804.16: *5* @test apropos_bindings
+#@+node:ekr.20071113145804.16: *5* @test helpForbindings
 # vr plugin not loaded externally.
 if not g.app.isExternalUnitTest:
 
-    c.helpCommands.aproposBindings()
-#@+node:ekr.20071113145804.17: *5* @test apropos_find_commands
+    c.helpCommands.helpForBindings()
+#@+node:ekr.20071113145804.17: *5* @test helpForFindCommands
 # vr plugin not loaded externally.
 if not g.app.isExternalUnitTest:
 
-    c.helpCommands.aproposFindCommands()
+    c.helpCommands.helpForFindCommands()
 #@+node:ekr.20061101121602.86: *5* @test back-char
 c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.87: *6* work

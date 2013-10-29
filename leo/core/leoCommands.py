@@ -1159,8 +1159,8 @@ class Commands (object):
     p = property(
         __get_p, # No setter.
         doc = "commander current position property")
-    #@+node:ekr.20110530082209.18250: *3* c.putApropos
-    def putApropos (self,s):
+    #@+node:ekr.20110530082209.18250: *3* c.putHelpFor
+    def putHelpFor(self,s):
 
         c = self
         s = g.adjustTripleString(s.rstrip(),c.tab_width)
