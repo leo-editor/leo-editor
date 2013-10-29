@@ -3139,7 +3139,7 @@ class atFile:
                         self.remove(at.outputFileName) 
 
                     #@-<< set dirty and orphan bits >>
-                    g.es("not written:",at.outputFileName)
+                    g.es("not written:",g.shortFileName(at.targetFileName))
                 else:
                     # Fix bug 889175: Remember the full fileName.
                     at.rememberReadPath(eventualFileName,root)
