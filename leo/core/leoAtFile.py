@@ -11,7 +11,7 @@
 #@@pagewidth 60
 
 allow_cloned_sibs = True # True: allow cloned siblings in @file nodes.
-new_write = True # True: new write code: convert to unicode only once.
+# new_write = True # True: new write code: convert to unicode only once.
 # new_read = True # True: read the entire file at once, and set at.read_lines.
 use_stringio = False # True: use cstringio instead of g.fileLikeObject. 
     # or base g.fileLikeObject on cstringio.
@@ -2923,10 +2923,6 @@ class atFile:
                 if g.match(s,0,"@@"):
                     s = s[2:]
                     if s and len(s) > 0:
-                        if new_write:
-                            pass
-                        else:
-                            s = g.toEncodedString(s,at.encoding,reportErrors=True)
                         at.outputFile.write(s)
                 #@-<< Write p's headline if it starts with @@ >>
                 #@+<< Write p's body >>
@@ -2999,10 +2995,7 @@ class atFile:
             except AttributeError:
                 pass # os.access() may not exist on all platforms.
         try:
-            if new_write:
-                at.outputFileName = None
-            else:
-                at.outputFileName = at.targetFileName + ".tmp"
+            at.outputFileName = None
             kind,at.outputFile = self.openForWrite(at.outputFileName,'wb')
             if not at.outputFile:
                 kind = g.choose(kind=='check',
@@ -3035,18 +3028,12 @@ class atFile:
             if self.writing_to_shadow_directory:
                 if trace: g.trace(filename,shadow_filename)
                 x.message('writing %s' % shadow_filename)
-                if new_write:
-                    f = g.fileLikeObject()
-                else:
-                    f = open(open_file_name,wb)
+                f = g.fileLikeObject()
                 return 'shadow',f
             else:
                 ok = c.checkFileTimeStamp(at.targetFileName)
                 if ok:
-                    if new_write:
-                        f = g.fileLikeObject()
-                    else:
-                        f = open(open_file_name,wb)
+                    f = g.fileLikeObject()
                 else:
                     f = None
                 # return 'check',ok and open(open_file_name,wb)
@@ -4564,10 +4551,7 @@ class atFile:
             targetFn = at.targetFileName
         if targetFn and targetFn.endswith('.py') and at.checkPythonCodeOnWrite:
             if not s:
-                if new_write:
-                    s = at.outputContents
-                else:
-                    s,e = g.readFileIntoString(at.outputFileName)
+                s = at.outputContents
                 if not s: return
             # It's too slow to check each node separately.
             ok = at.checkPythonSyntax(root,s)
@@ -4664,8 +4648,7 @@ class atFile:
         if theFile:
             theFile.flush()
             s = at.stringOutput = theFile.get()
-            if new_write:
-                at.outputContents = s
+            at.outputContents = s
             theFile.close()
             at.outputFile = None
             at.outputFileName = '' if g.isPython3 else unicode('')
@@ -4683,8 +4666,7 @@ class atFile:
         if at.outputFile:
             # g.trace('**closing',at.outputFileName,at.outputFile)
             at.outputFile.flush()
-            if new_write:
-                at.outputContents = at.outputFile.get()
+            at.outputContents = at.outputFile.get()
             if at.toString:
                 at.stringOutput = at.outputFile.get()
             at.outputFile.close()
@@ -4699,12 +4681,9 @@ class atFile:
         trace = False and not g.unitTesting
         at = self
         # We can't use 'U' mode because of encoding issues (Python 2.x only).
-        if new_write:
-            s1 = at.outputContents
-            e1 = at.encoding
-            if trace: g.trace('type(s1)',type(s1))
-        else:
-            s1,e1 = g.readFileIntoString(path1,mode='rb',raw=True)
+        s1 = at.outputContents
+        e1 = at.encoding
+        if trace: g.trace('type(s1)',type(s1))
         if s1 is None:
             g.internalError('empty compare file: %s' % path1)
             return False
@@ -4869,10 +4848,7 @@ class atFile:
 
         """Write a newline to the output stream."""
         
-        if new_write:
-            self.os('\n')
-        else:
-            self.os(self.output_newline)
+        self.os('\n') # not self.output_newline
 
     def onl_sent(self):
 
@@ -4891,20 +4867,16 @@ class atFile:
         at = self
         tag = self.underindentEscapeString
         f = at.outputFile
-        if new_write:
-            assert isinstance(f,g.fileLikeObject),f
+        assert isinstance(f,g.fileLikeObject),f
         if s and f:
             try:
                 if s.startswith(tag):
                     junk,s = self.parseUnderindentTag(s)
                 # Bug fix: this must be done last.
-                if new_write:
-                    # Convert everything to unicode.
-                    # We expect plain text coming only from sentinels.
-                    if not g.isUnicode(s):
-                        s = g.toUnicode(s,'ascii')
-                else:
-                    s = g.toEncodedString(s,at.encoding,reportErrors=True)
+                # Convert everything to unicode.
+                # We expect plain text coming only from sentinels.
+                if not g.isUnicode(s):
+                    s = g.toUnicode(s,'ascii')
                 if trace: g.trace(at.encoding,f,repr(s))
                 f.write(s)
             except Exception:
@@ -5187,10 +5159,6 @@ class atFile:
 
         trace = False and not g.unitTesting
         at = self ; c = at.c
-        if new_write:
-            pass
-        else:
-            assert at.outputFile is None
         if at.toString:
             # Do *not* change the actual file or set any dirty flag.
             at.fileChangedFlag = False
@@ -5216,20 +5184,9 @@ class atFile:
                 ignoreBlankLines=ignoreBlankLines
             ):
                 # Files are identical.
-                if new_write:
-                    ok = True
-                else:
-                    ok = at.remove(at.outputFileName)
                 if trace: g.trace('files are identical')
-                if ok:
-                    if not g.unitTesting:
-                        g.es('unchanged:',at.shortFileName)
-                else:
-                    g.error('error writing',at.shortFileName)
-                    g.es('not written:',at.shortFileName)
-                    if root:
-                        root.setDirty() # New in 4.4.8.
-                        root.setOrphan() # 2010/10/22.
+                if not g.unitTesting:
+                    g.es('unchanged:',at.shortFileName)
                 at.fileChangedFlag = False
                 return False
             else:
@@ -5247,11 +5204,8 @@ class atFile:
                     g.warning("correcting line endings in:",at.targetFileName)
                 #@-<< report if the files differ only in line endings >>
                 mode = at.stat(at.targetFileName)
-                if new_write:
-                    s = at.outputContents
-                    ok = at.create(at.targetFileName,s)
-                else:
-                    ok = at.rename(at.outputFileName,at.targetFileName,mode)
+                s = at.outputContents
+                ok = at.create(at.targetFileName,s)
                 if ok:
                     c.setFileTimeStamp(at.targetFileName)
                     if not g.unitTesting:
@@ -5265,12 +5219,8 @@ class atFile:
                 at.fileChangedFlag = ok
                 return ok
         else:
-            if new_write:
-                s = at.outputContents
-                ok = self.create(at.targetFileName,s)
-            else:
-                # Rename the output file.
-                ok = at.rename(at.outputFileName,at.targetFileName)
+            s = at.outputContents
+            ok = self.create(at.targetFileName,s)
             if ok:
                 c.setFileTimeStamp(at.targetFileName)
                 if not g.unitTesting:
@@ -5386,16 +5336,15 @@ class atFile:
         '''Create a file whose contents are s.'''
         
         at = self
-        assert new_write
+        # This is part of the new_write logic.
+        # This is the only call to g.toEncodedString in the new_write logic.
         # 2013/10/28: fix bug 1243847: unicode error when saving @shadow nodes
         if g.isUnicode(s):
             s = g.toEncodedString(s,encoding=at.encoding)
         try:
-            # g.trace(repr(at.output_newline))
             f = open(fn,'wb') # Must be 'wb' to preserve line endings.
             if at.output_newline != '\n':
                 s = s.replace('\r','').replace('\n',at.output_newline)
-            # This is the *only* call to g.toEncodedString in the new_write logic.
             f.write(s)
             f.close()
         except Exception:
