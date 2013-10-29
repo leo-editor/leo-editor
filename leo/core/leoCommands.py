@@ -6790,6 +6790,20 @@ class Commands (object):
         url = "http://leoeditor.com/"
         email = "edreamleo@gmail.com"
         g.app.gui.runAboutLeoDialog(c,version,theCopyright,url,email)
+    #@+node:ekr.20131028155339.17096: *5* openCheatSheet
+    def openCheatSheet(self,event=None,redraw=True):
+        '''Open leo/doc/cheatSheet.leo'''
+        c = self
+        fn = g.os_path_finalize_join(g.app.loadDir,'..','doc','CheatSheet.leo')
+        if g.os_path_exists(fn):
+            c2 = g.openWithFileName(fn,old_c=c)
+            if redraw:
+                c2.rootPosition().expand()
+                c2.redraw()
+            return c2
+        else:
+            g.es('file not found: %s' % fn)
+            return None
     #@+node:ekr.20031218072017.2943: *5* openLeoSettings and openMyLeoSettings
     def openLeoSettings (self,event=None):
         '''Open leoSettings.leo in a new Leo window.'''

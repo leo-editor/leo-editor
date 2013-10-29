@@ -8764,6 +8764,7 @@ class leoCommandsClass (baseEditCommandsClass):
             'move-outline-up':              c.moveOutlineUp,
             'new':                          c.new,
             # 'open-compare-window':        c.openCompareWindow,
+            'open-cheat-sheet-leo':         c.openCheatSheet,
             'open-leoDocs-leo':             c.leoDocumentation,
             'open-leoPlugins-leo':          c.openLeoPlugins,
             'open-leoSettings-leo':         c.openLeoSettings,

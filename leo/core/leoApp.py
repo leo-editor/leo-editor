@@ -2015,9 +2015,7 @@ class LoadManager:
         fn = g.app.config.getString('default_leo_file')
         fn = g.os_path_finalize(fn)
         if not fn: return
-
         # g.trace(g.os_path_exists(fn),fn)
-
         if g.os_path_exists(fn):
             return fn
         elif g.os_path_isabs(fn):
@@ -2064,13 +2062,13 @@ class LoadManager:
         parser = optparse.OptionParser()
         add = parser.add_option
         add('--fullscreen', action="store_true",
-            help = 'start fullscreen (Qt only)')
-        add('--ipython',      action="store_true",dest="use_ipython",
+            help = 'start fullscreen')
+        add('--ipython',    action="store_true",dest="use_ipython",
             help = 'enable ipython support')
         add('--gui',
             help = 'gui to use (qt/qttabs)')
         add('--maximized', action="store_true",
-            help = 'start maximized (Qt only)')
+            help = 'start maximized')
         add('--minimized', action="store_true",
             help = 'start minimized')
         add('--no-cache', action="store_true", dest='no_cache',
@@ -2096,7 +2094,7 @@ class LoadManager:
         add('-v', '--version', action="store_true", dest="version",
             help='print version number and exit')
         add('--window-size', dest='window_size',
-            help='initial window size in height x width format')
+            help='initial window size (height x width)')
 
         # Parse the options, and remove them from sys.argv.
         options, args = parser.parse_args()
@@ -2227,9 +2225,7 @@ class LoadManager:
         # Clear g.app.initing _before_ creating commanders.
         lm = self
         g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
-
         # Create the main frame.  Show it and all queued messages.
-
         # g.trace(lm.files)
         if lm.files:
             # A terrible kludge for Linux only:
@@ -2252,7 +2248,6 @@ class LoadManager:
                     kludge = False
         else:
             c = c1 = None
-
         if g.app.restore_session:
             m = g.app.sessionManager
             if m:
@@ -2260,40 +2255,30 @@ class LoadManager:
                 if aList:
                     m.load_session(c1,aList)
                     c = c1 = g.app.windowList[0].c
-
         if not g.app.windowList:
-            # Create an empty frame.
-            fn = lm.computeWorkbookFileName()
-            c = c1 = lm.loadLocalFile(fn,gui=g.app.gui,old_c=None)
-
+            c1 = lm.openEmptyWorkBook()
         # Put the focus in the first-opened file.
         fileName = lm.files[0] if lm.files else None
         c = c1
-
         # For qttabs gui, select the first-loaded tab.
         if hasattr(g.app.gui,'frameFactory'):
             factory = g.app.gui.frameFactory
             if factory and hasattr(factory,'setTabForCommander'):
                 factory.setTabForCommander(c)
-
         # Fix bug 844953: tell Unity which menu to use.
         c.enableMenuBar()
-
         # Do the final inits.
         g.app.logInited = True
         g.app.initComplete = True
         c.setLog()
         # print('doPostPluginsInit: ***** set log')
-
         g.doHook("start2",c=c,p=c.p,v=c.p,fileName=fileName)
         g.enableIdleTimeHook(idleTimeDelay=500)
         lm.initFocusAndDraw(c,fileName)
-
         screenshot_fn = lm.options.get('screenshot_fn')
         if screenshot_fn:
             lm.make_screen_shot(screenshot_fn)
             return False # Force an immediate exit.
-
         return True
     #@+node:ekr.20120219154958.10488: *5* LM.initFocusAndDraw
     def initFocusAndDraw(self,c,fileName):
@@ -2319,6 +2304,26 @@ class LoadManager:
         if g.app.gui.guiName() == 'qt':
             m = g.loadOnePlugin('screenshots')
             m.make_screen_shot(fn)
+    #@+node:ekr.20131028155339.17098: *5* LM.openEmptyWorkBook
+    def openEmptyWorkBook(self):
+        '''Open an empty frame and paste the contents of CheatSheet.leo into it.'''
+        lm = self
+        # Create an empty frame.
+        fn = lm.computeWorkbookFileName()
+        c = lm.loadLocalFile(fn,gui=g.app.gui,old_c=None)
+        # Open the cheatsheet.
+        if not g.os_path_exists(fn):
+            # Paste the contents of CheetSheet.leo into c1.
+            c2 = c.openCheatSheet(redraw=False)
+            if c2:
+                c2.copyOutline(c2.rootPosition())
+                c2.close(new_c=c)
+                p = c.pasteOutline()
+                p.expand()
+                p.clearDirty()
+                c.setChanged(False)
+                c.redraw()
+        return c
     #@+node:ekr.20120219154958.10491: *4* LM.isValidPython & emergency (Tk) dialog class
     def isValidPython(self):
 

@@ -1293,6 +1293,7 @@
 <v t="ekr.20070925144534.409"><vh>@@@item *open-online-&amp;tutorial</vh></v>
 <v t="ekr.20070925144534.410"><vh>@item *open-&amp;users-guide</vh></v>
 <v t="ekr.20070925144534.411"><vh>@item -</vh></v>
+<v t="ekr.20131028155339.18637"><vh>@item open-cheat-sheet-leo</vh></v>
 <v t="ekr.20070925144534.412"><vh>@item open-leoDocs-leo</vh></v>
 <v t="ekr.20070925144534.413"><vh>@item open-leoPlugins-leo</vh></v>
 <v t="ekr.20070925144534.414"><vh>@item open-leoSettings-leo</vh></v>
@@ -1808,7 +1809,6 @@
 </v>
 <v t="ekr.20060603215208"></v>
 <v t="ekr.20100904134301.11000"></v>
-<v t="ekr.20071213060239"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -9797,6 +9797,7 @@ action will be used instead.</t>
 <t tx="ekr.20131008181812.17533">False: disable all drag and drop operations in the outline.</t>
 <t tx="ekr.20131009050634.17656"></t>
 <t tx="ekr.20131027064821.18683"></t>
+<t tx="ekr.20131028155339.18637">Open &amp;CheatSheet.leo</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>
