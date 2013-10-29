@@ -525,58 +525,19 @@ class shadowController:
 
         trace = False and not g.unitTesting ; verbose = False
         import leo.core.leoAtFile as leoAtFile
-        new_read = leoAtFile.new_read
         x = self ; at = self.c.atFileCommands
         at.errors = 0
-        if new_read:
-            pass # Everything handled below.
-        else:
-            # A massive klude: read the file private file just to read the encoding.
-            f = open(old_private_file,'rb')
-                # 2011/10/21: read in 'rb' mode.
-            at.scanHeader(f,old_private_file) # sets at.encoding
-            f.close()
         if trace: g.trace('*** header scanned: encoding:',at.encoding)
         self.encoding = at.encoding
-        if new_read:
-            s = at.readFileToUnicode(old_private_file)
-                # Sets at.encoding and inits at.readLines.
-            old_private_lines = g.splitLines(s)
-            s = at.readFileToUnicode(old_public_file)
-            if at.encoding != self.encoding:
-                g.trace('can not happen: encoding mismatch: %s %s' % (
-                    at.encoding,self.encoding))
-                at.encoding = self.encoding
-            old_public_lines = g.splitLines(s)
-        else:
-            if g.isPython3:
-                try:
-                    old_public_lines  = open(old_public_file,encoding=self.encoding).readlines()
-                except UnicodeDecodeError:
-                    at.error('UnicodeDecodeError reading %s', old_public_file)
-                    return None
-                try:
-                    old_private_lines = open(old_private_file,encoding=self.encoding).readlines()
-                except UnicodeDecodeError:
-                    at.error('UnicodeDecodeError reading %s', old_private_file)
-                    return None
-            else:
-                try:
-                    old_public_lines  = open(old_public_file).readlines()
-                except UnicodeDecodeError:
-                    at.error('UnicodeDecodeError reading %s', old_public_file)
-                    return None
-                try:
-                    old_private_lines = open(old_private_file).readlines()
-                except UnicodeDecodeError:
-                    at.error('UnicodeDecodeError reading %s', old_private_file)
-                    return None
-                # 2011/09/09: convert each line to unicode.
-                def cvt(s):
-                    # return g.choose(g.isUnicode(s),s,g.toUnicode(s,self.encoding))
-                    return s if g.isUnicode(s) else g.toUnicode(s,self.encoding)
-                old_public_lines  = [cvt(s) for s in old_public_lines]
-                old_private_lines = [cvt(s) for s in old_private_lines]
+        s = at.readFileToUnicode(old_private_file)
+            # Sets at.encoding and inits at.readLines.
+        old_private_lines = g.splitLines(s)
+        s = at.readFileToUnicode(old_public_file)
+        if at.encoding != self.encoding:
+            g.trace('can not happen: encoding mismatch: %s %s' % (
+                at.encoding,self.encoding))
+            at.encoding = self.encoding
+        old_public_lines = g.splitLines(s)
         if 0:
             g.trace('\nprivate lines...%s' % old_private_file)
             for s in old_private_lines:

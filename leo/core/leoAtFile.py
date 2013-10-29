@@ -12,7 +12,7 @@
 
 allow_cloned_sibs = True # True: allow cloned siblings in @file nodes.
 new_write = True # True: new write code: convert to unicode only once.
-new_read = True # True: read the entire file at once, and set at.read_lines.
+# new_read = True # True: read the entire file at once, and set at.read_lines.
 use_stringio = False # True: use cstringio instead of g.fileLikeObject. 
     # or base g.fileLikeObject on cstringio.
 
@@ -258,9 +258,8 @@ class atFile:
         at.out = None
         at.outStack = []
         at.perfectImportRoot = perfectImportRoot
-        if new_read:
-            at.read_i = 0
-            at.read_lines = []
+        at.read_i = 0
+        at.read_lines = []
         at.readVersion = ''
             # New in Leo 4.8: "4" or "5" for new-style thin files.
         at.readVersion5 = False
@@ -379,7 +378,7 @@ class atFile:
         
         '''Init the ivars so that at.readLine will read all of s.'''
         
-        assert new_read # This is part of the new_read logic.
+        # This is part of the new_read logic.
         at = self
         at.read_i = 0
         at.read_lines = g.splitLines(s)
@@ -502,24 +501,12 @@ class atFile:
             try:
                 # Open the file in binary mode to allow 0x1a in bodies & headlines.
                 at.inputFile = f = open(fn,'rb')
-                if new_read:
-                    s = f.read()
-                    at.bom_encoding,s = g.stripBOM(s)
-                    e = at.bom_encoding or at.encoding
-                    s = g.toUnicode(s,e)
-                    s = s.replace('\r\n','\n')
-                    at.read_lines = g.splitLines(s)
-                else:
-                    try:
-                        # Get the encoding from the BOM, then reset the read.
-                        # Be careful: not all files support seek.
-                        f.seek(0)
-                        s = f.readline()
-                        at.bom_encoding,junk = g.stripBOM(s)
-                        # g.trace(at.bom_encoding)
-                        f.seek(0)
-                    except Exception:
-                        at.bom_encoding = None
+                s = f.read()
+                at.bom_encoding,s = g.stripBOM(s)
+                e = at.bom_encoding or at.encoding
+                s = g.toUnicode(s,e)
+                s = s.replace('\r\n','\n')
+                at.read_lines = g.splitLines(s)
                 if trace: g.trace(at.bom_encoding,fn)
                 at.warnOnReadOnlyFile(fn)
             except IOError:
@@ -1169,7 +1156,7 @@ class atFile:
         Return None on failure.
         '''
         
-        assert new_read # This is part of the new read logic.
+        # This is part of the new_read logic.
         at = self
         s = at.openFileHelper(fn)
         if s is not None:
@@ -1261,7 +1248,7 @@ class atFile:
         if trace: g.trace('filename:',fileName)
         try:
             while at.errors == 0 and not at.done:
-                s = at.readLine(theFile)
+                s = at.readLine() ### theFile)
                 if trace and verbose: g.trace(repr(s))
                 at.lineNumber += 1
                 if len(s) == 0:
@@ -1889,7 +1876,7 @@ class atFile:
         # Ignore everything after @-leo.
         # Such lines were presumably written by @last.
         while 1:
-            s = at.readLine(at.inputFile)
+            s = at.readLine() ### at.inputFile)
             if len(s) == 0: break
             at.lastLines.append(s) # Capture all trailing lines, even if empty.
 
@@ -2051,7 +2038,7 @@ class atFile:
         assert g.match(s,i,"afterref"),'missing afterref'
 
         # Append the next line to the text.
-        s = at.readLine(at.inputFile)
+        s = at.readLine() ### at.inputFile)
 
         v = at.lastRefNode
         hasList = hasattr(v,'tempBodyList')
@@ -2274,7 +2261,7 @@ class atFile:
         assert g.match(s,i,"verbatim"),'missing verbatim sentinel'
 
         # Append the next line to the text.
-        s = at.readLine(at.inputFile) 
+        s = at.readLine() ### at.inputFile) 
         i = at.skipIndent(s,0,at.indent)
         # Do **not** insert the verbatim line itself!
             # at.appendToOut("@verbatim\n")
@@ -2659,31 +2646,21 @@ class atFile:
     #@+node:ekr.20041005105605.128: *4* at.readLine (unused args when new_read is True)
     # theFile & fileName not used when new_read is True.
         
-    def readLine (self,theFile,fileName=None):
+    def readLine (self): ### ,theFile,fileName=None):
 
         """Reads one line from file using the present encoding.
-        
-        When new_read is true, this method returns at.read_lines[at.read_i++],
-        that is, the theFile and fileName arguments are not used.
+        Returns at.read_lines[at.read_i++]
         """
 
         trace = False and not g.unitTesting
         at = self
-        if new_read:
-            if at.read_i < len(at.read_lines):
-                s = at.read_lines[at.read_i]
-                at.read_i += 1
-                if trace: g.trace(at.read_i-1,repr(s))
-                return s
-            else:
-                return '' # Not an error.
-        else:
-            s = g.readlineForceUnixNewline(theFile,fileName=fileName)
-                # calls theFile.readline
-            if trace: g.trace(repr(s))
-            e = at.bom_encoding or at.encoding
-            s = g.toUnicode(s,e)
+        if at.read_i < len(at.read_lines):
+            s = at.read_lines[at.read_i]
+            at.read_i += 1
+            if trace: g.trace(at.read_i-1,repr(s))
             return s
+        else:
+            return '' # Not an error.
     #@+node:ekr.20041005105605.129: *4* at.scanHeader
     def scanHeader(self,theFile,fileName,giveErrors=True):
 
@@ -2716,11 +2693,11 @@ class atFile:
         # at-first lines are written "verbatim", so nothing more needs to be done!
         #@@c
 
-        s = at.readLine(theFile,fileName)
+        s = at.readLine() ### theFile,fileName)
         if trace: g.trace(fileName,'first line',repr(s))
         while s and s.find(tag) == -1:
             firstLines.append(s) # Queue the line
-            s = at.readLine(theFile,fileName)
+            s = at.readLine() ### theFile,fileName)
 
         n = len(s)
         valid = n > 0
@@ -2745,22 +2722,10 @@ class atFile:
         This is a kludgy method used only by the import code.'''
 
         at = self
-        if new_read:
-            # old_encoding,old_lines,old_i = at.encoding,at.read_lines,at.read_i
-            s = at.readFileToUnicode(fileName)
-                # inits at.readLine.
-            junk,junk,isThin = at.scanHeader(None,None)
-                # scanHeader uses at.readline instead of its args.
-            # at.encoding,at.read_lines,at_read_i = old_encoding,old_lines,old_i
-        else:
-            # The encoding doesn't matter.  No error messages are given.
-            at.encoding = at.c.config.default_derived_file_encoding
-            try:
-                theFile = open(fileName,'rb')
-                junk,junk,isThin = at.scanHeader(theFile,fileName)
-                theFile.close()
-            except IOError:
-                isThin = False
+        s = at.readFileToUnicode(fileName)
+            # inits at.readLine.
+        junk,junk,isThin = at.scanHeader(None,None)
+            # scanHeader uses at.readline instead of its args.
         return isThin
     #@+node:ekr.20041005105605.131: *4* at.skipIndent
     # Skip past whitespace equivalent to width spaces.
