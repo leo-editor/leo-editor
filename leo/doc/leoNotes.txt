@@ -12098,7 +12098,7 @@ Leo works well with <a href="http://www.gnu.org/software/emacs/">emacs</a>,
   <a href="http://www.vim.org/">vim</a>, and
   <a href="http://ipython.org/">ipython</a>.</li>
 </p>
-.. @+node:ekr.20131027064821.18702: *3* Old rst3 tutorial from Users Guide (rstplugin3.html) 
+.. @+node:ekr.20131027064821.18702: *3* Old rst3 tutorial from Users Guide (rstplugin3.html)
 This tutorial tells how to get started with Leo's rst3 command. The tutorial
 covers only rst3's basic features. You can do a *lot* with these features--Leo's
 documentation uses only the features described here!
@@ -12271,5 +12271,67 @@ Some possible next steps are:
 2. Create your own @rst nodes. Run the rst3 command on them and see what
    happens. If you get stuck, you please ask for help at
    `Leo's Google Group`_.
+.. @+node:ekr.20131028213522.17141: *3* Where to put settings (from rst3 tutorial)
+Depending on your situation, you can put settings in various places:
+
+1. In an @settings tree in myLeoSettings.leo.
+
+This is appropriate for personal documentation files with common settings.
+
+2. In an @settings tree in the .leo file containing the documentation.
+
+This is appropriate for public projects with common settings.
+
+3. In "\@ \@rst-options" comments in each @rst node.  For example::
+
+    @ @rst-options
+    call_docutils=False
+    stylesheet_path=..\doc
+    write_intermediate_file = True
+    @c
+    
+.. _`rst3 Command Reference`: rstplugin3.html
+
+This is appropriate when @rst nodes contain different settings. Common
+settings can still reside in some @settings tree.
+Using \@ \@rst-options you can even set options on a node-by-node basis.
+See the `rst3 Command Reference`_ of Leo's Users Guide for details.
+.. @+node:ekr.20131028213522.17143: *3* @bool rst3_write_intermediate_file (from rst3 tutorial)
+The rst3_write_intermediate_file setting determines whether the rst3 command will
+write an intermediate file.
+**This setting must be True when using Sphinx**.
+    
+    @bool rst3_write_intermediate_file = True
+    
+Writing intermediate files is useful for debugging even when not using
+sphinx.
+.. @+node:ekr.20131028213522.17145: *3* @string rst3_write_intermediate_extension
+The rst3_write_intermediate_extension settings determines the file type to
+be appended to the name of the output file to give the name of the
+intermediate file. The default is::
+
+    @string rst3_write_intermediate_extension = .txt
+
+When using sphinx, ensure that sphinx's conf.py file uses the intermediate
+files as input, as discussed next.
+.. @+node:ekr.20131028213522.17147: *3* @bool rst3_call_docutils
+The rst3_call_docutils setting determines whether to use plain rST markup
+or full sphinx markup. To use plain reStructuredText markup::
+
+    @bool rst3_call_docutils = True
+    
+To use sphinx markup::
+
+    @bool rst3_call_docutils = False
+.. @+node:ekr.20131028213522.17149: *3* Summary of settings
+- For most purposes, the following settings will suffice::
+
+    @bool rst3_call_docutils = True
+        # Use False when using Sphinx
+    @bool rst3_write_intermediate_file = True
+    @string rst3_write_intermediate_extension = .txt
+    
+- When using Sphinx, set up sure conf.py so that Sphinx recognizes
+  the intermediate files as Sphinx's input files.
 .. @-all
 .. @-leo

@@ -1040,6 +1040,8 @@ And run `leo` from command prompt.
 A recent user reports this install method still works, albeit with a
 warning,
 https://groups.google.com/d/topic/leo-editor-users/y6ZwJR3accs/discussion
+.. @+node:ekr.20131028213522.17139: *5* Tell how to convert Leo outlines to Word outlines
+https://groups.google.com/forum/#!topic/leo-editor/hl1ulaq7Bcg
 .. @+node:ekr.20131001045038.19047: *4* * Debian distro for Leo
 .. @+node:ekr.20131017174814.17480: *3* c.shouldBeExpanded
 def shouldBeExpanded(self,p):

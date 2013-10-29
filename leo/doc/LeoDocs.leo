@@ -380,21 +380,18 @@
 <v t="ekr.20131009100732.16748"><vh>Create the @rst node</vh></v>
 <v t="ekr.20131027064821.17144"><vh>The output and intermediate files</vh></v>
 <v t="ekr.20131009100732.16754"><vh>Specify settings</vh>
-<v t="ekr.20131027064821.18687"><vh>@bool rst3_call_docutils</vh></v>
-<v t="ekr.20131027064821.18688"><vh>@bool rst3_write_intermediate_file</vh></v>
-<v t="ekr.20131027064821.18690"><vh>@string rst3_write_intermediate_extension</vh></v>
-<v t="ekr.20131027064821.18689"><vh>Setting up sphinx: conf.py</vh></v>
-<v t="ekr.20131027064821.18686"><vh>Where to put settings</vh></v>
-<v t="ekr.20131027064821.18691"><vh>Summary of settings</vh></v>
+<v t="ekr.20131027064821.18689"><vh>Setting up conf.py for sphinx</vh></v>
 </v>
 <v t="ekr.20131009100732.16750"><vh>Put a title in the @rst node </vh></v>
 <v t="ekr.20131024051649.17136"><vh>Put introductory text to the @rst node</vh></v>
 <v t="ekr.20131024051649.17137"><vh>Create sections and subsections</vh></v>
-<v t="ekr.20131009100732.16755"><vh>Organizing text without creating sections</vh></v>
-<v t="ekr.20131025044901.17147"><vh>Ignoring reference text</vh></v>
 <v t="ekr.20131009100732.16751"><vh>Write your document</vh></v>
-<v t="ekr.20131025044901.17148"><vh>Special markup</vh></v>
 <v t="ekr.20131009100732.16752"><vh>Run the rst3 command</vh></v>
+<v t="ekr.20131028213522.17150"><vh>Other topics</vh>
+<v t="ekr.20131009100732.16755"><vh>\@rst-no-head suppresses sections</vh></v>
+<v t="ekr.20131025044901.17147"><vh>\@rst-ignore &amp; @rst-ignore-tree ignore text</vh></v>
+<v t="ekr.20131025044901.17148"><vh>Inserting line breaks and special characters</vh></v>
+</v>
 <v t="ekr.20131009100732.16753"><vh>Further study</vh></v>
 <v t="ekr.20131005214621.16128"><vh>Summary</vh></v>
 </v>
@@ -1548,6 +1545,7 @@
 <v t="ekr.20060620094033"></v>
 <v t="ekr.20131019190351.16664"></v>
 <v t="ekr.20101025080245.5791"></v>
+<v t="ekr.20131008041326.16241"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -20902,13 +20900,12 @@ creating underlining for rST sections. To reorganize a document, just
 reorganize the corresponding Leo outline: you don't have to change
 underlining characters by hand.
 
-Leo always requires the `docutils`_ Python package. You must also install
-the `Sphinx`_ package if you use sphinx markup. Sphinx gives Leo's and
-`Python's`_ web sites their distinctive appearance and features.
+The rst3 command requires the `docutils`_ Python package. You must also
+install the `Sphinx`_ package if you use sphinx markup. Sphinx gives Leo's
+and `Python's`_ web sites their distinctive appearance and features.
 
-The tutorial covers only the basic features of the rst3 command. You can do
-a *lot* with these features--Leo's documentation uses only the features
-described here!
+The tutorial covers only the basic features of the rst3 command. Leo's
+documentation uses only the features described here!
 
 .. contents::
     :depth: 3
@@ -21112,8 +21109,16 @@ next steps are:
 - Create your own @rst nodes. Run the rst3 command on them and see what
   happens. If you get stuck, please `ask for help`_.
 </t>
-<t tx="ekr.20131009100732.16754">There are many settings that affect the operation of the rst3 command.
-The following sections discuss the most important...
+<t tx="ekr.20131009100732.16754">Put the following setting in the @settings tree in the .leo file containing the @rst node.
+
+The rst3_call_docutils setting determines whether to use plain rST markup
+or full sphinx markup. To use plain reStructuredText markup::
+
+    @bool rst3_call_docutils = True
+    
+To use sphinx markup::
+
+    @bool rst3_call_docutils = False
 </t>
 <t tx="ekr.20131009100732.16755">Sometimes you want to organize text without creating sections:
 
@@ -26506,7 +26511,6 @@ type this in the node's headline::
 </t>
 <t tx="ekr.20131025044901.17148">.. _`rST manual`: http://docutils.sourceforge.net/docs/user/rst/quickref.html#directives
 
-It is often necessary to insert special characters into the output file.
 The `rST manual`_ tells how to insert "raw" markup into the output. For
 example, Leo's documentation uses the following two kinds of special
 markup::
@@ -26554,7 +26558,7 @@ be emulated.
     @rst myDocument.html
     
 will generate an **output file**, myDocument.html, from this node and its
-children, grand-children, etc. By default, rst3 command creates the output
+children, grand-children, etc. The rst3 command creates the output
 file in the same directory as the .leo file containing the @rst node. You
 can specify other directories using absolute or relative paths. Examples::
 
@@ -26563,57 +26567,15 @@ can specify other directories using absolute or relative paths. Examples::
     @rst ../docs/html/myDocument.html
     @rst ~/docs/myDocument.html
     
-By default, the rst3 command also writes an **intermediate file** in the
-same directory as the output file. By default, this file has the same name
-as the output file, but with the suffix ".txt" appended. The intermediate
-file contains the reStructuredText markup generated from the @rst node.
+The rst3 command writes an **intermediate file** in the same directory as
+the output file. This file has the same name as the output file, with the
+suffix ".txt"::
 
-These defaults, and many others, can be changed using settings...
+    myDocument.html.txt
+
+This file contains the reStructuredText markup generated by the rst3 command.
 </t>
 <t tx="ekr.20131027064821.18685"></t>
-<t tx="ekr.20131027064821.18686">Depending on your situation, you can put settings in various places:
-
-1. In an @settings tree in myLeoSettings.leo.
-
-This is appropriate for personal documentation files with common settings.
-
-2. In an @settings tree in the .leo file containing the documentation.
-
-This is appropriate for public projects with common settings.
-
-3. In "\@ \@rst-options" comments in each @rst node.  For example::
-
-    @ @rst-options
-    call_docutils=False
-    stylesheet_path=..\doc
-    write_intermediate_file = True
-    @c
-    
-.. _`rst3 Command Reference`: rstplugin3.html
-
-This is appropriate when @rst nodes contain different settings. Common
-settings can still reside in some @settings tree.
-Using \@ \@rst-options you can even set options on a node-by-node basis.
-See the `rst3 Command Reference`_ of Leo's Users Guide for details.
-</t>
-<t tx="ekr.20131027064821.18687">The rst3_call_docutils setting determines whether to use plain rST markup
-or full sphinx markup. To use plain reStructuredText markup::
-
-    @bool rst3_call_docutils = True
-    
-To use sphinx markup::
-
-    @bool rst3_call_docutils = False
-</t>
-<t tx="ekr.20131027064821.18688">The rst3_write_intermediate_file setting determines whether the rst3 command will
-write an intermediate file.
-**This setting must be True when using Sphinx**.
-    
-    @bool rst3_write_intermediate_file = True
-    
-Writing intermediate files is useful for debugging even when not using
-sphinx.
-</t>
 <t tx="ekr.20131027064821.18689">When using sphinx you must ensure that sphinx's conf.py file is configured
 so that it will find the intermediate files created by the rst3 command.
 
@@ -26633,29 +26595,9 @@ and the default value for the rst3_write_intermediate_extension setting::
 the name of intermediate file will be::
 
     myDocument.html.txt
-    
-This is the **input** file for sphinx.
+
+myDocument.html.txt is the **input** file for sphinx.
 </t>
-<t tx="ekr.20131027064821.18690">The rst3_write_intermediate_extension settings determines the file type to
-be appended to the name of the output file to give the name of the
-intermediate file. The default is::
-
-    @string rst3_write_intermediate_extension = .txt
-
-When using sphinx, ensure that sphinx's conf.py file uses the intermediate
-files as input, as discussed next.
-</t>
-<t tx="ekr.20131027064821.18691">- For most purposes, the following settings will suffice::
-
-    @bool rst3_call_docutils = True
-        # Use False when using Sphinx
-    @bool rst3_write_intermediate_file = True
-    @string rst3_write_intermediate_extension = .txt
-    
-- When using Sphinx, make sure conf.py is set up so that Sphinx recognizes
-  the intermediate files as Sphinx's input files.
-    
-- Usually, you place these settings in an @settings tree and forget them.</t>
 <t tx="ekr.20131027064821.18709">.. _`docutils`:         http://docutils.sourceforge.net
 .. _LaTeX:              http://www.latex-project.org/
 .. _`reStructuredText`: http://docutils.sourceforge.net/rst.html
@@ -26720,6 +26662,7 @@ More: Associate leo files
   --window-size=WINDOW_SIZE
                         initial window size (height x width)
 </t>
+<t tx="ekr.20131028213522.17150"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
