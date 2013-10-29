@@ -121,7 +121,7 @@
 <v t="ville.20090705225609.5736"><vh>&lt;&lt; html manual &gt;&gt;</vh></v>
 <v t="ville.20090705225609.5738"><vh>&lt;&lt; pdf manual &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20131016083406.16724"><vh>@button make-sphinx @key=Alt-.</vh></v>
+<v t="ekr.20131016083406.16724"><vh>@button make-sphinx</vh></v>
 </v>
 <v t="ekr.20131017051340.16850"><vh>Scripts</vh>
 <v t="ekr.20101111175617.5037"><vh>Script: get-plugin-docstrings</vh>
