@@ -1290,6 +1290,44 @@
 <v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d710028550a302e302e31322e302e3771017d710255097374725f6174696d657103550c313337363431323238302e30710473550b302e302e332e302e322e3371057d71066803550c313337363431323838382e307107735510302e302e31322e312e302e372e302e3171087d710958090000007374725f6174696d65710a550c313337363431323238382e30710b73550e302e302e31322e302e372e302e31710c7d710d6803550c313337363431323238382e30710e735509302e302e312e302e30710f7d71106803550c313337363431323837322e30711173550b302e302e332e312e312e3371127d71136803550c313337363431323838392e30711473550c302e302e31322e312e302e3771157d711658090000007374725f6174696d657117550c313337363431323238302e30711873752e"><vh>@file release_notes.txt</vh></v>
 </v>
 </v>
+<v t="ekr.20131007143750.16111"><vh>To do</vh>
+<v t="ekr.20130928065624.16019"><vh>Fix bug: 1168689 outdated documentation about ipython</vh>
+<v t="ekr.20131019061259.16677"><vh>Notes</vh>
+<v t="ekr.20130928065624.16021"><vh>code</vh>
+<v t="ekr.20130928065624.16022"><vh>runMainLoop &amp; runWithIpythonKernel (qtGui)</vh></v>
+</v>
+<v t="ekr.20130928065624.16023"><vh>post 1</vh></v>
+<v t="ekr.20130928065624.16024"><vh>post 2</vh></v>
+<v t="ekr.20130928065624.16025"><vh>post 3</vh></v>
+<v t="ekr.20130928065624.16026"><vh>EKR post re new code</vh></v>
+<v t="ekr.20130928065624.16027"><vh>** EKR post 2: how to use the new code</vh></v>
+<v t="ekr.20130928065624.16028"><vh>Windows installation</vh></v>
+</v>
+<v t="ekr.20131001100236.15925"><vh>Revise ipython bridge chapter</vh>
+<v t="ekr.20131001100236.15926"><vh>ipython-new &amp; dependencies</vh></v>
+<v t="ekr.20131001100236.15927"><vh>valuespace &amp; --ipython</vh></v>
+<v t="ekr.20131001100236.15928"><vh>highlights (for release noes)</vh></v>
+</v>
+<v t="ekr.20131019190351.16678"><vh>Fixed bug 1168689 re ipython</vh></v>
+</v>
+<v t="ekr.20131025114335.17128"><vh>Finish what's new and release notes</vh></v>
+<v t="ekr.20131028213522.17137"><vh>Examples for cheat sheet</vh></v>
+<v t="ekr.20131025114335.17127"><vh>b2</vh>
+<v t="ekr.20131024051649.17112"><vh>** Using clones to focus attention</vh></v>
+<v t="ekr.20131023180133.17111"><vh>** Example Leo patterns</vh>
+<v t="ekr.20131023180133.17112"><vh>Request</vh></v>
+</v>
+<v t="ekr.20131001100335.15942"><vh>Leo &amp; other programs</vh>
+<v t="ekr.20131027064821.17131"><vh>Leo vs emacs &amp; vim</vh></v>
+<v t="ekr.20131001100335.15943"><vh>Leo vs Emacs</vh></v>
+<v t="ekr.20131025044901.17143"><vh>post Leo vs Emacs</vh></v>
+<v t="ekr.20131001100335.15944"><vh>Leo vs Vim</vh></v>
+<v t="ekr.20131001100335.15945"><vh>Leo vs IPython</vh></v>
+</v>
+<v t="ekr.20131008041326.16109"><vh>Add a Expansion section to the Reference chapter?</vh></v>
+</v>
+</v>
+<v t="ekr.20101025080245.5791"></v>
 <v t="ekr.20130926053913.15854"><vh>Leo 4.11 b1 Release notes</vh>
 <v t="ekr.20130926053913.16258"><vh>a1 and a2 releases</vh>
 <v t="ekr.20130926053913.16131"><vh>Bugs</vh>
@@ -1434,6 +1472,7 @@
 <v t="ekr.20130926053913.16257"><vh>Web site improvements</vh></v>
 </v>
 <v t="ekr.20130926053913.16259"><vh>b1 release</vh>
+<v t="ekr.20131029095615.17083"><vh>Greatly improved tutorials</vh></v>
 <v t="ekr.20130926053913.16363"><vh>Code improvements</vh>
 <v t="ekr.20131019190351.16677"><vh>Added c.user_dict and g.user_dict</vh></v>
 <v t="ekr.20130926053913.16348"><vh>simplified creation of event filters in qtGui.py</vh></v>
@@ -1489,13 +1528,18 @@
 <v t="ekr.20131019190351.16680"><vh>Alt-0 (vr-toggle) now puts focus in the body pane</vh></v>
 <v t="ekr.20131019190351.16679"><vh>Fixed crasher in k.auto_completer_state_hander</vh></v>
 <v t="ekr.20131019190351.16676"><vh>Fixed problems with c.save commands in the leoBridge</vh></v>
-<v t="ekr.20131019190351.16678"><vh>Fixed bug 1168689 re ipython</vh></v>
+<v t="ekr.20131019190351.16678"></v>
+<v t="ekr.20131029095615.17077"><vh>Fixed several window-sizing bugs</vh></v>
+<v t="ekr.20131029095615.17078"><vh>Fixed bug 1243847: unicode error when saving @shadow nodes</vh></v>
+<v t="ekr.20131029095615.17079"><vh>Fixed bug #1243855: @auto-rst doesn't save text</vh></v>
 </v>
 <v t="ekr.20130926053913.16364"><vh>New commands &amp; features</vh>
 <v t="ekr.20130926053913.16349"><vh>created insert-node-before command &amp; p.insertBefore</vh></v>
 <v t="ekr.20130926053913.16314"><vh>Added yes-to-all button when prompting for dangerous writes</vh></v>
 <v t="ekr.20130926053913.16325"><vh>Added help text to the find panel</vh></v>
 <v t="ekr.20131019190351.16682"><vh>Added @bool enable-tree-dragging to leoSettings.leo</vh></v>
+<v t="ekr.20131029095615.17080"><vh>Copy cheatsheet.leo when creating workbook</vh></v>
+<v t="ekr.20131029095615.17081"><vh>revised help-for commands</vh></v>
 </v>
 <v t="ekr.20130926053913.16366"><vh>New key binding</vh>
 <v t="ekr.20130926053913.16326"><vh>Bound Alt-Ctrl-M for macro-call-last</vh></v>
@@ -1505,47 +1549,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20131007143750.16111"><vh>To do</vh>
-<v t="ekr.20130928065624.16019"><vh>Fix bug: 1168689 outdated documentation about ipython</vh>
-<v t="ekr.20131019061259.16677"><vh>Notes</vh>
-<v t="ekr.20130928065624.16021"><vh>code</vh>
-<v t="ekr.20130928065624.16022"><vh>runMainLoop &amp; runWithIpythonKernel (qtGui)</vh></v>
-</v>
-<v t="ekr.20130928065624.16023"><vh>post 1</vh></v>
-<v t="ekr.20130928065624.16024"><vh>post 2</vh></v>
-<v t="ekr.20130928065624.16025"><vh>post 3</vh></v>
-<v t="ekr.20130928065624.16026"><vh>EKR post re new code</vh></v>
-<v t="ekr.20130928065624.16027"><vh>** EKR post 2: how to use the new code</vh></v>
-<v t="ekr.20130928065624.16028"><vh>Windows installation</vh></v>
-</v>
-<v t="ekr.20131001100236.15925"><vh>Revise ipython bridge chapter</vh>
-<v t="ekr.20131001100236.15926"><vh>ipython-new &amp; dependencies</vh></v>
-<v t="ekr.20131001100236.15927"><vh>valuespace &amp; --ipython</vh></v>
-<v t="ekr.20131001100236.15928"><vh>highlights (for release noes)</vh></v>
-</v>
-<v t="ekr.20131019190351.16678"></v>
-</v>
-<v t="ekr.20131025114335.17128"><vh>Finish what's new and release notes</vh></v>
-<v t="ekr.20131028213522.17137"><vh>Examples for cheat sheet</vh></v>
-<v t="ekr.20131025114335.17127"><vh>b2</vh>
-<v t="ekr.20131024051649.17112"><vh>** Using clones to focus attention</vh></v>
-<v t="ekr.20131023180133.17111"><vh>** Example Leo patterns</vh>
-<v t="ekr.20131023180133.17112"><vh>Request</vh></v>
-</v>
-<v t="ekr.20131001100335.15942"><vh>Leo &amp; other programs</vh>
-<v t="ekr.20131027064821.17131"><vh>Leo vs emacs &amp; vim</vh></v>
-<v t="ekr.20131001100335.15943"><vh>Leo vs Emacs</vh></v>
-<v t="ekr.20131025044901.17143"><vh>post Leo vs Emacs</vh></v>
-<v t="ekr.20131001100335.15944"><vh>Leo vs Vim</vh></v>
-<v t="ekr.20131001100335.15945"><vh>Leo vs IPython</vh></v>
-</v>
-<v t="ekr.20131008041326.16109"><vh>Add a Expansion section to the Reference chapter?</vh></v>
-</v>
-</v>
-<v t="ekr.20060620094033"></v>
-<v t="ekr.20131019190351.16664"></v>
-<v t="ekr.20101025080245.5791"></v>
-<v t="ekr.20131008041326.16241"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -9212,9 +9215,9 @@ especially in `Leo's Tutorial`_ and `Leo's Reference`_.
 <t tx="ekr.20091130111843.6788">.. |---| unicode:: U+02015 .. for quotes
    :trim:
 
-##############
-Leo's Tutorial
-##############
+###############
+Leo's Tutorials
+###############
 
 .. |br| raw:: html
 
@@ -16553,6 +16556,7 @@ See http://leoeditor.com/tutorial.html
 The highlights of Leo 4.11:
 ---------------------------
 
+- A complete rewritten set of tutorials.
 - Greatly improved abbreviations.
 - Clones are now valid anywhere in @file nodes.
 - Leo now warns if a .leo file is open elsewhere.
@@ -16569,6 +16573,7 @@ The highlights of Leo 4.11:
 Links:
 ------
 Leo:      http://leoeditor.com
+Tutorials: http://leoeditor.com/tutorial.html
 Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/projects/leo/files/
 Bzr:      http://code.launchpad.net/leo-editor/
@@ -16848,7 +16853,7 @@ directory to the directory containing the script, and run the script.
 You will see the this exception on the console:
 
 2012-11-16 11:28:51 /home/ldi/tmp
-$ python readSettingsFalse.py
+$ python readSettingsFile.py
 Traceback (most recent call last):
 File "readSettingsFalse.py", line 5, in &lt;module&gt;
   cmdrUnl = bridge.openLeoFile('minimal.leo')
@@ -17058,7 +17063,7 @@ Also converted two section references in leoTree.selectHelper to selectNewNode.
 
 In my installation, now on the latest revision ( r5195) I'm still
 experiencing an issue with the '@url command' using 'File-URL' in a Windows
-environement.
+environment.
 
 I'm able to create the Leo User documentation locally. - However, when I
 try to read the documentation using the 'File-URL'
@@ -17081,7 +17086,7 @@ The fix is simply to special-case file:/// on Windows in g.computeFileUrl.
 </t>
 <t tx="ekr.20130926053913.16155">LeoQTextBrowser.onSliderChanged must set v.scrollBarSpot only if "self" is actually the body pane.
 
-Othewise scrolling the log pane will scroll the body pane!
+Otherwise scrolling the log pane will scroll the body pane!
 </t>
 <t tx="ekr.20130926053913.16156">The maintain_scroll option is *evil*.
 </t>
@@ -17192,7 +17197,7 @@ The solution would be to create a new onClick event handler...
   
   setAllText now *only* sets text, nothing else!
 
-- All calls to leoMoveCursorHelper are follwed by code that updates
+- All calls to leoMoveCursorHelper are followed by code that updates
   v.insertSpot, v.selectionStart and v.selectionLength.
   
 - v.restoreCursorAndScroll now *carefully* restores selection
@@ -17389,7 +17394,7 @@ Screenshot attached.
 
 My usage is that I collect and organize findings (of technology studies) in
 leo, and then dump the report to excel, to be read and actioned upon by
-other ppl.
+other people.
 
 I haven't yet polished this workflow in that there is a bunch of manual
 work in formatting the report...
@@ -17441,7 +17446,7 @@ you want to try it, open the .leo file, ensure you are running latest Leo
 from trunk, and press ctrl+b on the first node.
 
 It's probably the first stab at using QML to solve a problem in Leo. It
-doesnt' run from leo yet (it's not a plugin, more protoing needed before
+doesn't run from leo yet (it's not a plugin, more protoing needed before
 it's worthwhile to make it a plugin.
 
 When you add and delete text, the cells resize naturally.
@@ -17491,7 +17496,7 @@ of the file, retaining the 'chunk' metadata (node headlines).
 
 ===== Ville
 
-Getting an overview of a file could be an interesting extra usecase, my
+Getting an overview of a file could be an interesting extra use case, my
 main interest is still in using it for interactive programming/computation
 (like ipython notebook) .
 
@@ -18125,7 +18130,7 @@ The highlights::
 
 1. The @data abbreviations-subst-env node contains a script defining the
    environment in which all abbreviations execute. This allows helper
-   functions to be deined. Very handly.
+   functions to be defined. Very handy.
    
 2. Scripts may span multiple lines. Line starting with "\:" (2 characters)
    continue a script. This allows abbreviations to define multi-line
@@ -18285,7 +18290,7 @@ Created at.writeAtAutoOtlFile.
 <t tx="ekr.20130926053913.16244">From: Ville M. Vainio
 See: http://en.wikipedia.org/wiki/Mylyn
 
-I went on to start a "leo mylyn" plugin to excercise using the
+I went on to start a "leo mylyn" plugin to exercise using the
 childrenModified and contentModified signals.
 
 If you want to play with it, pull, enable leomylyn.py, modify stuff
@@ -18301,13 +18306,13 @@ be associated with a "project" (e.g."own research", "work project
 foo"), each of them having their own typical node working set.
 
 Mylyn was a nice boost back in the eclipse days, it could work for Leo
-too. My main motivation right now was to demonstare the signals with
+too. My main motivation right now was to demonstrate the signals with
 something that is much simpler than using them in qmlnotebook.
 </t>
 <t tx="ekr.20130926053913.16245" str_atime="1376412288.0">The printing.py plugin fixes this bug:
 https://bugs.launchpad.net/leo-editor/+bug/1132804
 
-Here's the docscring:
+Here's the docstring:
 
 '''Supports printing from the Qt GUI.
 
@@ -18348,7 +18353,7 @@ print-preview-expanded-node
 ---------------------------
 
 Opens up the print preview dialog to preview the expanded contents
-of theselected node, with top-level headline.
+of the selected node, with top-level headline.
 
 print-expanded-node-body
 ------------------------
@@ -18467,7 +18472,7 @@ e.g.::
 
 to place them in the `Incoming` node in the `@bookmarks` node in the `.bookmarks.leo` outline.
 
-The headline is preceeded with '@url ' *unless* the ``bookmarks`` plugin is loaded.
+The headline is preceded with '@url ' *unless* the ``bookmarks`` plugin is loaded.
 If the ``bookmarks`` plugin is loaded the bookmark will have to be moved to a ``@bookmarks`` tree to be useful.
 
 The browser may or may not be able to close the bookmark form window for you, depending on settings - set ``dom.allow_scripts_to_close_windows`` to true
@@ -18526,7 +18531,7 @@ Some further notes:
 For now, the best way to study it is valuespage_example.py in contrib
 branch.
 
-I'm being very succesful in using it + new ipython support as "ipython
+I'm being very successful in using it + new ipython support as "ipython
 notebook" workalike.
 
 Ipython notebook is better for quick experiments, but I'm doing long term
@@ -18558,7 +18563,7 @@ selected text::
     import datetime
     today = datetime.date.today()
     
-will captue the value of ``today`` even though the last line is a
+will capture the value of ``today`` even though the last line is a
 statement, not an expression.
     
 Stores results in ``c.vs['_last']`` for insertion
@@ -18641,7 +18646,7 @@ pane to the right node in Leo. But that would mean that the preview panel=
 would have have to be properly indexed so that from the cursor position in=
 
 the panel the plugin could find the proper node back in the Leo panel.
- (Kludgy way: put the node id in the text!)
+ (Kludgey way: put the node id in the text!)
 
 Thanks for the suggestion.
 
@@ -18675,7 +18680,7 @@ Which is what I thought it did.
 ===== Matt Wilkie
 
 Are the links in the overview supposed to open up a browser window? The
-alt-tip text gives an in-Leo hiearchy, e.g. "B:\code\dropbox-code.leo#leo
+alt-tip text gives an in-Leo hierarchy, e.g. "B:\code\dropbox-code.leo#leo
 stuff--&gt;Overview of selected nodes" but clicking goes to
 http://www.google.ca/, and in Internet Explorer even though Firefox is my
 default browser.
@@ -18894,7 +18899,7 @@ From: Chema Cortes &lt;pych3m4@gmail.com&gt;
 
 I have some external files encoded with utf8 and utf16-le with BOM marks.
 Leo ignores these marks, and these files become garbled. I cannot fix this
-problem with @enconding directives.
+problem with @encoding directives.
 
 Reading the code, I can see the problem when leo opens files as
 binary, followed by a unicode encoding. Why not use, instead, the
@@ -19042,7 +19047,7 @@ Details:
 - Eliminated chapter.hoistStack.
   Append one entry to c.hoistStack when selection a non-main chapter.
   Pop one entry when unselecting a non-main chapter.
-- Created LeoQComboBox in tt.createControl in order to be able to sublass focusInEvent.
+- Created LeoQComboBox in tt.createControl in order to be able to subclass focusInEvent.
 - Created cc.setAllChapterNames, called from LeoQComboBox.focusInEvent.
 - Added "create" keyword argument to selectChapterByName.
   This avoid a compile-time choice: it is True except when the user
@@ -19127,7 +19132,7 @@ this fixed the problem.
 <t tx="ekr.20130926053913.16342">From: "Ville M. Vainio" &lt;vivainio@gmail.com&gt;
 Leo 4.10 deb for Ubuntu Precise available
 
-The open_dict now protects agains crashes with try/except.
+The open_dict now protects again crashes with try/except.
 It's not clear when this new code happened.
 
 When launched from command line, it causes this error that should
@@ -19268,7 +19273,7 @@ Rev 6019:
 - Removed HighLevelInterface: onActivateLog, disable, enable.
 - Removed *all* defs of setFocus.  They are never called!
 - Removed all defs of setTabBindings and one call.  All defs were do-nothings.
-- Ditto for setMinibufferBindings and createBindings.  All defs were do-notings.
+- Ditto for setMinibufferBindings and createBindings.  All defs were do-nothings.
 * Removed tree methods: headWidth,widthInPixels,
     setEditLabelState,setUnselectedLabelState,
     setDisabledHeadlineColors,setEditHeadlineColors,setUnselectedHeadlineColors,
@@ -19276,7 +19281,7 @@ Rev 6019:
 </t>
 <t tx="ekr.20130926053913.16348">Added qtGui.setFilter and used it to simplify the code.
 
-The new code is only enabled if the newFilter is set at the start of qtGui.pyi
+The new code is only enabled if the newFilter is set at the start of qtGui.py.
 </t>
 <t tx="ekr.20130926053913.16349">Added c.insertHeadlineBefore and unit tests for same.
 </t>
@@ -19364,7 +19369,7 @@ The result is::
     embperl     # A helper mode
     patch       # No comment lines
     phpsection  # A helper mode.
-    pseudoplain # No coment lines.
+    pseudoplain # No comment lines.
     rtf         # Annotations not exactly a comment.
 </t>
 <t tx="ekr.20130926053913.16360">import glob
@@ -21049,7 +21054,7 @@ URL's should contain no spaces: use %20 instead of spaces. |br|
 
         @rst myDocument.html
         
-The @rst node represents your document.</t>
+The @rst node, and all its descendants, represents your document.</t>
 <t tx="ekr.20131009100732.16750">Put something like this in the body of the @rst node::
 
     #############
@@ -23058,6 +23063,7 @@ these when generators are not flexible enough::
 <t tx="ekr.20131019061259.16693"></t>
 <t tx="ekr.20131019190351.16664">.. what's new
 
+- A completely rewritten set of tutorials
 - Greatly improved abbreviations.
 - Clones are now valid anywhere in @file nodes.
 - Leo now warns if a .leo file is open elsewhere.
@@ -26672,6 +26678,62 @@ More: Associate leo files
                         initial window size (height x width)
 </t>
 <t tx="ekr.20131028213522.17150"></t>
+<t tx="ekr.20131029095615.17077">@language rest
+
+Bug: Window size was not set when --minimized is in effect.
+
+LM.scanOptions now sets LM.options['windowSize'] to (h,w), both ints.
+
+getWindowPositionAttributes now checks LM.options.get('windowSize')
+
+startVnodes now properly sets top geometry when --minimized is in effect.
+
+@language python
+</t>
+<t tx="ekr.20131029095615.17078">@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/1243847
+
+
+The fix: at.replaceFileWithString now *always* calls g.toEncodedString.
+
+When I save an @ shadow node with a unicode character, such as é, I get the following error:
+
+exception writing external files
+Traceback (most recent call last):
+  File "/data2/Soft/leo-editor/trunk3/leo/core/leoFileCommands.py", line 2034, in writeAllAtFileNodesHelper
+    c.atFileCommands.writeAll()
+  File "/data2/Soft/leo-editor/trunk3/leo/core/leoAtFile.py", line 3240, in writeAll
+    self.writeAllHelper(p,force,toString,writeAtFileNodesFlag,writtenFiles)
+  File "/data2/Soft/leo-editor/trunk3/leo/core/leoAtFile.py", line 3325, in writeAllHelper
+    at.writeOneAtShadowNode(p,toString=toString,force=force or pathChanged)
+  File "/data2/Soft/leo-editor/trunk3/leo/core/leoAtFile.py", line 3551, in writeOneAtShadowNode
+    at.replaceFileWithString(private_fn,at.private_s)
+  File "/data2/Soft/leo-editor/trunk3/leo/core/leoAtFile.py", line 5197, in replaceFileWithString
+    f.write(s)
+UnicodeEncodeError: 'ascii' codec can't encode character u'\xe9' in position 129: ordinal not in range(128)
+
+There is no error for the @file or @nosent files.
+</t>
+<t tx="ekr.20131029095615.17079">@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/1243855
+
+The fix was to not make assumptions about type in compareFiles and create.
+
+</t>
+<t tx="ekr.20131029095615.17080">Added c.openCheatSheet.
+Added LM.openEmptyWorkBook.
+Added open-cheat-sheet-leo command.
+Added "Open CheatSheet.leo" menu item.
+Changed LM.doPostPluginsInit.
+</t>
+<t tx="ekr.20131029095615.17081">help-for-dynamic-abbreviations
+help-for-abbreviations
+help-for-find-commands
+</t>
+<t tx="ekr.20131029095615.17083">See http://leoeditor.com/tutorial.html
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
