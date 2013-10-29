@@ -1,60 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20100120072650.6089: * @file ../doc/leoProjects.txt
 #@+all
-#@+node:ekr.20131025114335.17130: ** Fixed several window-sizing bugs
-@language rest
-
-Bug: Window size was not set when --minimized is in effect.
-
-LM.scanOptions now sets LM.options['windowSize'] to (h,w), both ints.
-
-getWindowPositionAttributes now checks LM.options.get('windowSize')
-
-startVnodes now properly sets top geometry when --minimized is in effect.
-
-@language python
-#@+node:ekr.20131024051649.17111: ** Fixed bug 1243847: unicode error when saving @shadow nodes
-@language rest
-
-https://bugs.launchpad.net/leo-editor/+bug/1243847
-
-
-The fix: at.replaceFileWithString now *always* calls g.toEncodedString.
-
-When I save an @ shadow node with a unicode character, such as é, I get the following error:
-
-exception writing external files
-Traceback (most recent call last):
-  File "/data2/Soft/leo-editor/trunk3/leo/core/leoFileCommands.py", line 2034, in writeAllAtFileNodesHelper
-    c.atFileCommands.writeAll()
-  File "/data2/Soft/leo-editor/trunk3/leo/core/leoAtFile.py", line 3240, in writeAll
-    self.writeAllHelper(p,force,toString,writeAtFileNodesFlag,writtenFiles)
-  File "/data2/Soft/leo-editor/trunk3/leo/core/leoAtFile.py", line 3325, in writeAllHelper
-    at.writeOneAtShadowNode(p,toString=toString,force=force or pathChanged)
-  File "/data2/Soft/leo-editor/trunk3/leo/core/leoAtFile.py", line 3551, in writeOneAtShadowNode
-    at.replaceFileWithString(private_fn,at.private_s)
-  File "/data2/Soft/leo-editor/trunk3/leo/core/leoAtFile.py", line 5197, in replaceFileWithString
-    f.write(s)
-UnicodeEncodeError: 'ascii' codec can't encode character u'\xe9' in position 129: ordinal not in range(128)
-
-There is no error for the @file or @nosent files.
-#@+node:ekr.20131028142644.17093: ** Fixed bug #1243855: @auto-rst doesn't save text
-@language rest
-
-https://bugs.launchpad.net/leo-editor/+bug/1243855
-
-The fix was to not make assumptions about type in compareFiles and create.
-
-#@+node:ekr.20131001045038.11350: ** Copy cheatsheet.leo when creating workbook
-Added c.openCheatSheet.
-Added LM.openEmptyWorkBook.
-Added open-cheat-sheet-leo command.
-Added "Open CheatSheet.leo" menu item.
-Changed LM.doPostPluginsInit.
-#@+node:ekr.20131017100903.16688: ** revised help-for commands
-help-for-dynamic-abbreviations
-help-for-abbreviations
-help-for-find-commands
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
