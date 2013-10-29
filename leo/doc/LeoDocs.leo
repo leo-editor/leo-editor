@@ -873,6 +873,7 @@
 <v t="ekr.20131019061259.16691"><vh>position class</vh></v>
 <v t="ekr.20131019061259.16692"><vh>leo.core.leoGlobals module</vh></v>
 </v>
+<v t="ekr.20131028213522.17138"><vh>Command-line options</vh></v>
 </v>
 </v>
 <v t="ekr.20050831184021.5"><vh>Appendices &amp; glossary</vh>
@@ -1528,6 +1529,7 @@
 <v t="ekr.20131019190351.16678"></v>
 </v>
 <v t="ekr.20131025114335.17128"><vh>Finish what's new and release notes</vh></v>
+<v t="ekr.20131028213522.17137"><vh>Examples for cheat sheet</vh></v>
 <v t="ekr.20131025114335.17127"><vh>b2</vh>
 <v t="ekr.20131024051649.17112"><vh>** Using clones to focus attention</vh></v>
 <v t="ekr.20131023180133.17111"><vh>** Example Leo patterns</vh>
@@ -21658,11 +21660,13 @@ This overrides the following default binding in leoSettings.leo::
 <t tx="ekr.20131015035606.16799">\@&lt;file&gt; nodes create external files::
 
     @asis &lt;filename&gt;    
-    @auto &lt;filename&gt;    
+    @auto &lt;filename&gt;        creates outline using importer
+    @auto-rst &lt;filename&gt;    (reStructuredText importer)
     @edit &lt;filename&gt;
-    @file &lt;filename&gt;
+    @file &lt;filename&gt;        recommended
     @nosent &lt;filename&gt;  
-    @shadow &lt;filename&gt;
+    @shadow &lt;filename&gt;      creates outline structure
+                            without sentinels in file
     
 See the `Directives reference`_ for full details.
     
@@ -21741,6 +21745,7 @@ Minibuffer::
 
     Alt-X (full-command)
     Ctrl-G (keyboard-quit)
+    Tab (not a command, completes typing)
 
 Nodes::
 
@@ -26655,6 +26660,66 @@ files as input, as discussed next.
 .. _LaTeX:              http://www.latex-project.org/
 .. _`reStructuredText`: http://docutils.sourceforge.net/rst.html
 .. _`Sphinx`:           http://sphinx.pocoo.org/</t>
+<t tx="ekr.20131028213522.17137">@language rest
+
+Samples of use (Maybe):
+
+    Sample on how to import bookmarks from Internet browser (I have that
+    script ready myself, I could add that)
+
+    Sample of website generated with an outline, easy to open and edit for
+    the user to view its power. Ideally, just after transforming the
+    outline to website, the user should be able to open it and see it in
+    html.
+
+    Sample of RST outline and one click opening with render pane.
+
+    The RPG helper we recently discussed about.
+
+    And as many other practical and ready-to-go samples that could impress
+    the new user. All of them, ready to go, no edit required to view. There
+    are ways of using Leo that beginers cant think of and those would make
+    a great addon for such a beginer leo file.
+
+Other (JKN)
+    how to invoke Leo (short list of command-line parameters    
+    brief note on creating your own settings (myLeoSettings etc)    
+    How to 'install' plugins, adding buttons    
+    @node summary usage    
+
+More: Rest of the directives:
+    @button    
+    @rclick    
+    and all of them, with sample of ussage    
+
+More: Associate leo files    
+    Include the bat + instructions on how to associate Leo files for
+    double-click oppening in windows.
+</t>
+<t tx="ekr.20131028213522.17138">::
+
+  -h, --help            show this help message and exit
+  --fullscreen          start fullscreen
+  --ipython             enable ipython support
+  --gui=GUI             gui to use (qt/qttabs)
+  --maximized           start maximized
+  --minimized           start minimized
+  --no-cache            disable reading of cached files
+  --no-plugins          disable all plugins
+  --no-splash           disable the splash screen
+  --screen-shot=SCREENSHOT_FN
+                        take a screen shot and then exit
+  --script=SCRIPT       execute a script and then exit
+  --script-window=SCRIPT_WINDOW
+                        open a window for scripts
+  --select=SELECT       headline or gnx of node to select
+  --session-restore     restore previously saved session tabs at startup
+  --session-save        save session tabs on exit
+  --silent              disable all log messages
+  -v, --version         print version number and exit
+  --window-size=WINDOW_SIZE
+                        initial window size (height x width)
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.

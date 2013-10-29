@@ -45,6 +45,12 @@ https://bugs.launchpad.net/leo-editor/+bug/1243855
 
 The fix was to not make assumptions about type in compareFiles and create.
 
+#@+node:ekr.20131001045038.11350: ** Copy cheatsheet.leo when creating workbook
+Added c.openCheatSheet.
+Added LM.openEmptyWorkBook.
+Added open-cheat-sheet-leo command.
+Added "Open CheatSheet.leo" menu item.
+Changed LM.doPostPluginsInit.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
