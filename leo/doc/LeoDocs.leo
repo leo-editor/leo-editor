@@ -377,13 +377,14 @@
 <v t="ekr.20131008041326.16066"><vh>Summary</vh></v>
 </v>
 <v t="ekr.20131008041326.16241"><vh>@rst html\tutorial-rst3.html</vh>
+<v t="ekr.20131030071311.17087"><vh>@rst-ignore notes</vh></v>
 <v t="ekr.20131009100732.16748"><vh>Create the @rst node</vh></v>
 <v t="ekr.20131027064821.17144"><vh>The output and intermediate files</vh></v>
-<v t="ekr.20131009100732.16754"><vh>Specify settings</vh>
+<v t="ekr.20131009100732.16754"><vh>Choose docutils or sphinx</vh>
 <v t="ekr.20131027064821.18689"><vh>Setting up conf.py for sphinx</vh></v>
 </v>
 <v t="ekr.20131009100732.16750"><vh>Put a title in the @rst node </vh></v>
-<v t="ekr.20131024051649.17136"><vh>Put introductory text to the @rst node</vh></v>
+<v t="ekr.20131024051649.17136"><vh>Start the chapter</vh></v>
 <v t="ekr.20131024051649.17137"><vh>Create sections and subsections</vh></v>
 <v t="ekr.20131009100732.16751"><vh>Write your document</vh></v>
 <v t="ekr.20131009100732.16752"><vh>Run the rst3 command</vh></v>
@@ -392,8 +393,8 @@
 <v t="ekr.20131025044901.17147"><vh>\@rst-ignore &amp; @rst-ignore-tree ignore text</vh></v>
 <v t="ekr.20131025044901.17148"><vh>Inserting line breaks and special characters</vh></v>
 </v>
-<v t="ekr.20131009100732.16753"><vh>Further study</vh></v>
 <v t="ekr.20131005214621.16128"><vh>Summary</vh></v>
+<v t="ekr.20131009100732.16753"><vh>Further study</vh></v>
 </v>
 <v t="ekr.20131008041326.16245"><vh>@rst html\tutorial-programming.html</vh>
 <v t="ekr.20131008041326.16252"><vh>@rst-no-head links &amp; markup</vh></v>
@@ -1549,6 +1550,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20131008041326.16241"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -20380,8 +20382,12 @@ Ctrl-Q (exit-leo) exits Leo.  Leo will prompt you to save any unsaved outlines.
 
 - The @button make-sphinx node in LeoDocs.leo calls sphinx automatically.
 
+- CheatSheet.leo contains an expanded version of the example used in this
+  tutorial. You can open CheatSheet.leo from Leo's help menu.
+  
 - The rst3 command provides *many* other capabilities. For details, see
   `the rst3 chapter`_.
+  
 </t>
 <t tx="ekr.20131005214621.16130">This is a reference for all of Leo's directives.
 
@@ -20911,6 +20917,9 @@ and `Python's`_ web sites their distinctive appearance and features.
 The tutorial covers only the basic features of the rst3 command. Leo's
 documentation uses only the features described here!
 
+CheatSheet.leo contains an expanded version of the example used in this
+tutorial. You can open CheatSheet.leo from Leo's help menu.
+
 .. contents::
     :depth: 3
 </t>
@@ -21063,9 +21072,8 @@ The @rst node, and all its descendants, represents your document.</t>
     
 rST markup uses over/underlining to indicate chapter titles. Put a
 **overline** consisting of pounds signs above the title (War and Peace),
-and an identical **underline** of pound signs below as shown.
-
-rST markup for chapter titles is a bit picky:
+and an identical **underline** of pound signs below as shown. rST markup
+for chapter titles is a bit picky:
 
 - under/overlines must be at least 4 characters long
 - under/overlines must be at least as long as the title.
@@ -21073,15 +21081,11 @@ rST markup for chapter titles is a bit picky:
 
 In addition, the rst3 command requires that the "#" character be used in
 the over/underlines for chapter titles.</t>
-<t tx="ekr.20131009100732.16751">Now you write your novel, short story, documentation or whatever.
+<t tx="ekr.20131009100732.16751">Now you write your novel, short story, documentation or whatever. Organize
+your work as always:
 
-As always, you organize your work with outlines:
-
-- Use @rst-no-head nodes to add text without creating a new rST section.
-
-- Use @rst-ignore nodes and @rst-ignore-tree trees to comment out text.
-
-- All other nodes create sections, subsections, etc.
+    **nodes create sections, subsections, sub-sub-sections, etc.**, |br|
+    **depending on their position in the outline**.
 </t>
 <t tx="ekr.20131009100732.16752">.. index::
     pair: rst3 Command; Tutorial
@@ -21113,10 +21117,9 @@ next steps are:
 - Create your own @rst nodes. Run the rst3 command on them and see what
   happens. If you get stuck, please `ask for help`_.
 </t>
-<t tx="ekr.20131009100732.16754">Put the following setting in the @settings tree in the .leo file containing the @rst node.
-
-The rst3_call_docutils setting determines whether to use plain rST markup
-or full sphinx markup. To use plain reStructuredText markup::
+<t tx="ekr.20131009100732.16754">Put the rst3_call_docutils setting in the @settings tree in the .leo file
+containing the @rst node. This setting determines whether to use plain rST
+markup or full sphinx markup. To use plain reStructuredText markup::
 
     @bool rst3_call_docutils = True
     
@@ -26411,19 +26414,27 @@ Suppose, as will soon happen, that I am going to fix a bug in Leo's @shadow logi
     all the cloned top-level nodes.</t>
 <t tx="ekr.20131024051649.17136">Put introductory words in the body of the @rst node itself:
 
-    Well, Prince, so Genoa and Lucca are now just family estates of the
+    "Well, Prince, so Genoa and Lucca are now just family estates of the
     Buonapartes. But I warn you, if you don't tell me that this means war,
     if you still try to defend the infamies and horrors perpetrated by that
     Antichrist--I really believe he is Antichrist--I will have nothing more
     to do with you and you are no longer my friend, no longer my 'faithful
     slave,' as you call yourself! But how do you do? I see I have
-    frightened you--sit down and tell me all the news.
+    frightened you--sit down and tell me all the news."
+    
+    It was in July, 1805, and the speaker was the well-known Anna Pavlovna
+    Scherer, maid of honor and favorite of the Empress Marya Fedorovna.
+    With these words she greeted Prince Vasili Kuragin, a man of high rank
+    and importance, who was the first to arrive at her reception. Anna
+    Pavlovna had had a cough for some days. She was, as she said, suffering
+    from la grippe; grippe being then a new word in St. Petersburg, used
+    only by the elite.
 </t>
-<t tx="ekr.20131024051649.17137">To create a new section, subsection, in the output file:
+<t tx="ekr.20131024051649.17137">To create a new section, subsection, etc., in the output file:
 
 1. Create a new outline node, as some descendant of the @rst node.
 
-2. **The @rst node's headline becomes the section's title**.
+2. **The new node's headline becomes the section's title**.
 
 3. Type the contents of the section in the body text of the node.
 
@@ -26435,11 +26446,6 @@ That's all there is to it:
 
 There is *no* need to change markup when reorganizing your document, a huge
 improvement over writing "raw" rST.
-
-**Note**: All markup generated by the rst3 command appears in the intermediate file.
-
-.. - The outline level of a node determines the underlining character.
-
 </t>
 <t tx="ekr.20131025044901.17143">Org mode is kinda like Leo for Emacs: http://orgmode.org/manual/index.html
 
@@ -26577,18 +26583,17 @@ children, grand-children, etc. The rst3 command creates the output
 file in the same directory as the .leo file containing the @rst node. You
 can specify other directories using absolute or relative paths. Examples::
 
-    @rst ../myDocument.html
-    @rst html/myDocument.html
-    @rst ../docs/html/myDocument.html
-    @rst ~/docs/myDocument.html
+    @rst myDocument.html        # in same folder as the .leo file
+    @rst html/myDocument.html   # in a subfolder
+    @rst ~/docs/myDocument.html # an absolute path to the folder
     
 The rst3 command writes an **intermediate file** in the same directory as
-the output file. This file has the same name as the output file, with the
-suffix ".txt"::
+the output file. This intermediate file contains the reStructuredText
+markup generated by the rst3 command. It has the suffix .txt::
 
     myDocument.html.txt
 
-This file contains the reStructuredText markup generated by the rst3 command.
+
 </t>
 <t tx="ekr.20131027064821.18685"></t>
 <t tx="ekr.20131027064821.18689">When using sphinx you must ensure that sphinx's conf.py file is configured
@@ -26734,6 +26739,16 @@ help-for-find-commands
 </t>
 <t tx="ekr.20131029095615.17083">See http://leoeditor.com/tutorial.html
 </t>
+<t tx="ekr.20131030071311.17087">This tutorial would benefit from an example toolchain for a writer. How to
+actually get an html file that can be loaded into a word processor to
+output an .odt or .docx file for example.
+
+For most of the purposes that a programmer would use rst, ie. documentation
+or a web page, the tutorial goes far enough. But for those who have
+different output goals, highlighting the flexibility that Leo with rst
+should be a primary goal. There are literally hundreds of writers in the
+world for every programmer. If you want Leo to become popular, this is a
+critical understanding. IMHO.</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.

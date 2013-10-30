@@ -6798,7 +6798,10 @@ class Commands (object):
         if g.os_path_exists(fn):
             c2 = g.openWithFileName(fn,old_c=c)
             if redraw:
-                c2.rootPosition().expand()
+                p = g.findNodeAnywhere(c2,"Leo's cheat sheet")
+                if p:
+                    c2.selectPosition(p,enableRedrawFlag=False)
+                    p.expand()
                 c2.redraw()
             return c2
         else:

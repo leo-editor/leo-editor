@@ -2317,11 +2317,23 @@ class LoadManager:
             # Paste the contents of CheetSheet.leo into c1.
             c2 = c.openCheatSheet(redraw=False)
             if c2:
-                c2.copyOutline(c2.rootPosition())
+                for p2 in c2.rootPosition().self_and_siblings():
+                    c2.selectPosition(p2)
+                    c2.copyOutline()
+                    p = c.pasteOutline()
+                    c.selectPosition(p)
+                    p.contract()
+                    p.clearDirty()
                 c2.close(new_c=c)
-                p = c.pasteOutline()
-                p.expand()
-                p.clearDirty()
+                root = c.rootPosition()
+                if root.h == g.shortFileName(fn):
+                    root.doDelete(newNode=root.next())
+                p = g.findNodeAnywhere(c,"Leo's cheat sheet")
+                if p:
+                    c.selectPosition(p,enableRedrawFlag=False)
+                    # p.expand()
+                c.target_language = 'rest'
+                    # Settings not parsed the first time.
                 c.setChanged(False)
                 c.redraw()
         return c

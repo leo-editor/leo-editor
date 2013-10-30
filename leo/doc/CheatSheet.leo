@@ -10,6 +10,17 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
+<v t="ekr.20131030071311.17125"><vh>Startup</vh>
+<v t="ekr.20131030071311.18741"><vh>@button make-sphinx</vh></v>
+<v t="ekr.20131030071311.17126"><vh>@settings</vh>
+<v t="ekr.20131030071311.18671"><vh>@string target_language = rest</vh></v>
+<v t="ekr.20131030071311.17128"><vh>For rst3 command</vh>
+<v t="ekr.20131030071311.17127"><vh>@bool rst3_call_docutils = True</vh></v>
+<v t="ekr.20131030071311.17129"><vh>@bool rst3_write_intermediate_file = True</vh></v>
+<v t="ekr.20131030071311.18669"><vh>@string rst3_write_intermediate_extension = .txt</vh></v>
+</v>
+</v>
+</v>
 <v t="ekr.20131019184243.16683"><vh>Leo's cheat sheet</vh>
 <v t="ekr.20131019184243.16685"><vh>Key bindings</vh>
 <v t="ekr.20131019184243.16686"><vh>Selecting outline nodes</vh></v>
@@ -30,10 +41,23 @@
 <v t="ekr.20131019184243.16700"><vh>leo.core.leoGlobals module</vh></v>
 </v>
 </v>
+<v t="ekr.20131030071311.18723"><vh>The rst3 tutorial</vh>
+<v t="ekr.20131030071311.18732"><vh>@rst ~/myDocument.html</vh>
+<v t="ekr.20131030071311.18733"><vh>Chapter I</vh>
+<v t="ekr.20131030071311.18734"><vh>@rst-ignore</vh></v>
+</v>
+<v t="ekr.20131030071311.18735"><vh>@rst-ignore-tree Chapter 2+</vh>
+<v t="ekr.20131030071311.18736"><vh>Chapter II</vh>
+<v t="ekr.20131030071311.18737"><vh>translation</vh></v>
+</v>
+</v>
+<v t="ekr.20131030071311.18738"><vh>Chapter XII</vh></v>
+<v t="ekr.20131030071311.18739"><vh>@rst-no-head The End</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
-<t tx="ekr.20131019184243.16683">@language rest
-</t>
+<t tx="ekr.20131019184243.16683"></t>
 <t tx="ekr.20131019184243.16685"></t>
 <t tx="ekr.20131019184243.16686">When focus is in the outline pane::
 
@@ -415,6 +439,114 @@ these when generators are not flexible enough::
     g.toUnicode(s, encoding='utf-8',reportErrors=False)
     g.trace(*args,**keys)
     g.warning(*args,**keys)
+</t>
+<t tx="ekr.20131030071311.17125">By convention, a Startup node contains settings, scripts, etc.
+that mostly one wants to have hidden.
+</t>
+<t tx="ekr.20131030071311.17126">**Imortant**: to take effect, all settings must be descendants of this
+@settings node.
+
+**Note**: This file colors text as reStructuredText by default because of
+the setting::
+
+    @string target_language = rest
+</t>
+<t tx="ekr.20131030071311.17127"># Use False when using Sphinx</t>
+<t tx="ekr.20131030071311.17128"></t>
+<t tx="ekr.20131030071311.17129"></t>
+<t tx="ekr.20131030071311.18669"></t>
+<t tx="ekr.20131030071311.18671">The default language if no @language or @comment is in effect.
+
+Valid values are (case is ignored):
+
+actionscript,c,csharp,css,cweb,elisp,html,java,latex,
+pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
+<t tx="ekr.20131030071311.18723">Here is an expanded version of the example from
+http://leoeditor.com/tutorial-rst3.html
+
+Control-click the URL above to open the page in your browser.
+
+Notes:
+
+1. The Startup node in this file contains the settings for the rst3
+   command. If you use sphinx, **set @bool rst3_call_docutils = False**.
+   
+2. Leo will not create ~/myDocument.html automatically. Only the rst3
+   command does that.
+   
+3. Executing the make-sphinx command will do everything needed to make
+   myDocument.html. The @button make-sphinx node (a child of the Startup
+   node) creates the make-sphinx command.</t>
+<t tx="ekr.20131030071311.18732">#############
+War and Peace
+#############
+
+        by Leo Tolstoy/Tolstoi
+        
+        BOOK ONE: 1805
+</t>
+<t tx="ekr.20131030071311.18733">"Well, Prince, so Genoa and Lucca are now just family estates of the
+Buonapartes. But I warn you, if you don't tell me that this means war, if
+you still try to defend the infamies and horrors perpetrated by that
+Antichrist--I really believe he is Antichrist--I will have nothing more to
+do with you and you are no longer my friend, no longer my 'faithful slave',
+as you call yourself! But how do you do? I see I have frightened you--sit
+down and tell me all the news."
+
+It was in July, 1805, and the speaker was the well-known Anna Pavlovna
+Scherer, maid of honor and favorite of the Empress Marya Fedorovna. With
+these words she greeted Prince Vasili Kuragin, a man of high rank and
+importance, who was the first to arrive at her reception. Anna Pavlovna had
+had a cough for some days. She was, as she said, suffering from la grippe;
+grippe being then a new word in St. Petersburg, used only by the elite.
+
+...stuff happens...</t>
+<t tx="ekr.20131030071311.18734">You can make whatever notes 
+to yourself you like here, 
+as these lines won't appear 
+in the output files. :)
+
+</t>
+<t tx="ekr.20131030071311.18735">Neither this node nor any descendant node will appear in the output file.</t>
+<t tx="ekr.20131030071311.18736">TL;DR
+
+...la femme la plus seduisante de Petersbourg,* ...</t>
+<t tx="ekr.20131030071311.18737">*The most fascinating woman in Petersburg.</t>
+<t tx="ekr.20131030071311.18738">From the time the law of Copernicus was discovered and proved, the mere
+recognition of the fact that it was not the sun but the earth that moves
+sufficed to destroy the whole cosmography of the ancients.
+
+...
+</t>
+<t tx="ekr.20131030071311.18739">..  and now we skip to the end of last chapter, while demonstrating use of an
+..  organizer node (a node whose name does not appear in the output document),
+..  and that rst comments appear as html comments (try 'View Source' on
+..  output.html)
+
+In the first case it was necessary to renounce the consciousness of an
+unreal immobility in space and to recognize a motion we did not feel; in
+the present case it is similarly necessary to renounce a freedom that does
+not exist, and to recognize a dependence of which we are not conscious.
+   
+--- The End ---
+</t>
+<t tx="ekr.20131030071311.18741">@language python
+import os
+trace = True
+g.cls()
+c.setComplexCommand('make-sphinx')
+c.save()
+aList = c.rstCommands.rst3()
+if aList:
+    path = g.os_path_finalize_join(g.app.loadDir,'..','doc','html')
+    os.chdir(path)
+    if len(aList) &gt; 1: g.execute_shell_commands('make clean',trace=trace)
+    g.execute_shell_commands('make html',trace=trace)
+    fn = aList[0].h.strip() if len(aList) == 1 else 'leo_toc.html'
+    fn = g.os_path_finalize_join(path,'_build','html',g.os_path_basename(fn))
+    if g.os_path_exists(fn):
+        # Don't wait for this command to exit!
+        g.execute_shell_commands(['&amp;%s' % (fn)],trace=trace)
 </t>
 </tnodes>
 </leo_file>
