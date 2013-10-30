@@ -3,6 +3,56 @@
 .. @@language rest
 
 .. @+all
+.. @+node:ekr.20131030053655.17092: ** bzr hooks: prototypes
+.. @+node:ekr.20131030053655.17093: *3* @@file c:\apps\Bazaar\plugins\push_hook.py
+from bzrlib import branch
+
+def post_push_hook(push_result):
+    # print "The new revno is %d" % push_result.new_revno
+    print('post_push_hook')
+    # print('\n'.join(dir(push_result)))
+    
+if 0: # Disable.
+    branch.Branch.hooks.install_named_hook(
+        'post_push', post_push_hook,'EKR post_push hook')
+.. @+node:ekr.20131030053655.17094: *3* @@file c:\apps\Bazaar\plugins\status_hook.py
+from bzrlib import status
+
+def post_status_hook(args):
+    print('status_hook.py: post_status_hook')
+    if 0:
+        # args.old_tree, args.new_tree, args.to_file,
+        # args.versioned, args.show_ids, args.short, args.verbose
+        print('\n'.join(
+            ['%s %s' % (z,getattr(args,z)) for z in sorted(dir(args))
+                if not z.startswith('_')]))
+
+if 0: # disable
+    status.StatusHooks().install_named_hook(
+        'post_status',post_status_hook,'EKR post_status hook')
+.. @+node:ekr.20131030053655.17095: *3* @@file c:\apps\Bazaar\plugins\command_hook.py
+@language python
+
+from bzrlib import commands
+from bzrlib import mutabletree
+
+def pre_command_hook(*args,**keys):
+    print('command_hook.py: pre_command_hook')
+    
+def post_commit_hook(args):
+    print('command_hook.py: post_commit_hook')
+    if 0:
+        print('\n'.join(
+            ['%s %s' % (z,getattr(args,z)) for z in sorted(dir(args))
+                if not z.startswith('_')]))
+
+if 0: # does not work.
+    commands.CommandHooks().install_named_hook(
+        'pre_command',pre_command_hook,'EKR pre_command hook')
+        
+if 0: # works.
+    mutabletree.MutableTreeHooks().install_named_hook(
+        'post_commit',post_commit_hook,'EKR post_commit hook')
 .. @+node:ekr.20131005214621.16081: ** Notes
 .. @+node:ekr.20090202064534.4: *3*  Your mission, should you choose to accept it
 @language rest
