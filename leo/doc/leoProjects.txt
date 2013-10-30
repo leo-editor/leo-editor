@@ -1,6 +1,8 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20100120072650.6089: * @file ../doc/leoProjects.txt
 #@+all
+#@+node:ekr.20131030053655.17096: ** --minimized now disables splash screen
+start_minimized
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

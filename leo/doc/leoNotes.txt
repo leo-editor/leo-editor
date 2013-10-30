@@ -7,10 +7,10 @@
 .. @+node:ekr.20131030053655.17093: *3* @@file c:\apps\Bazaar\plugins\push_hook.py
 from bzrlib import branch
 
-def post_push_hook(push_result):
+def post_push_hook(arg):
     # print "The new revno is %d" % push_result.new_revno
     print('post_push_hook')
-    # print('\n'.join(dir(push_result)))
+    # print('\n'.join(dir(arg)))
     
 if 0: # Disable.
     branch.Branch.hooks.install_named_hook(

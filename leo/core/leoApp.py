@@ -2141,9 +2141,10 @@ class LoadManager:
         if options.no_plugins:
             if trace: print('scanOptions: disabling plugins')
             g.app.enablePlugins = False
-        # --no-splash
-        # g.trace('--no-splash',options.no_splash_screen)
-        g.app.use_splash_screen = not options.no_splash_screen
+        # --no-splash: --minimized disables the splash screen
+        g.app.use_splash_screen = (
+            not options.no_splash_screen and
+            not options.minimized)
         # --screen-shot=fn
         screenshot_fn = options.screenshot_fn
         if screenshot_fn:
