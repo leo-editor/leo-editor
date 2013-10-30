@@ -233,7 +233,7 @@ This overrides the following default binding in leoSettings.leo::
 - mod_scripting.py: Supports @button and @command nodes.
 - quicksearch.py: Adds Nav tab for searching.
 - todo.py: Manages to-do lists and simple project management.
-- valuepace.py: Creates an outline-oriented spreadsheet.
+- valuespace.py: Creates an outline-oriented spreadsheet.
 - viewrendered.py: Creates a rendering pane. Automatically loaded by Leo's help commands.
 </t>
 <t tx="ekr.20131019184243.16693">\@&lt;file&gt; nodes create external files::
