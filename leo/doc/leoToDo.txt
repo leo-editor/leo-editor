@@ -7,52 +7,6 @@
 By mid December.
 
 Private email: http://mail.google.com/mail/u/0/#inbox/141ddfe09c389e4f
-.. @+node:ekr.20131028213522.17139: ** Tell how to convert Leo outlines to Word outlines
-@language rest
-
-https://groups.google.com/forum/#!topic/leo-editor/hl1ulaq7Bcg
-.. @+node:ekr.20131029095615.17084: *3* Don Dwiggins
-Sudden wild idea:
-
-OpenOffice/LibreOffice have been used successfully for years as a MS Word
-replacement; HOWEVER, there's an outstanding feature request that's been
-around almost as long: a decent way to create/maintain an outline in a
-document. Apparently, MS Word does have at least a basic capability to
-easily do outline creation and editing, which makes it hard for some folks
-to move over to OSS.
-
-So, could Leo act as a sort of "companion" to OOo/LO (maybe using PyUNO),
-to combine Leo's superior outlining with their "pulication" capabilities?
-
-And here's an additional feature that could really excite writers: allow
-for user-controlled "mapping" of outlines into .odt styles. In other words,
-it'd be easy to cobble up an outline in Leo, then choose whether you want
-the outline levels to be Heading levels, numbered/bulleted list levels, ...
-.. @+node:ekr.20131029095615.17085: *3* Chris George
-- Leo --> rst --> output using docutils using rst3 command
-- pandoc to convert to html that LibreOffice can open correctly
-- save as .odt
-
-Works for me.
-.. @+node:ekr.20131029095615.17086: *3* Fidel N
-Could you tell me how to import a html file (which comes from RTF--> save
-as html) into a leo outline with pandoc?
-
-I dont care [if I] loose format as long as I keep tables and the main
-outline.
-
-Is that possible?
-.. @+node:ekr.20131029095615.17088: *3* Terry
-- Leo --> rst --> output using docutils using rst3 command 
-- pandoc to convert to html that LibreOffice can open correctly
-- save as .odt
-
-or:
-
-    rst2odt --strip-comments --smart-quotes=yes prog201310.rst >prog201310.odt
-    libreoffice --headless --convert-to docx prog201310.odt
-
-.docx files from Leo. :-)
 .. @+node:ekr.20130926053913.11569: ** ** (fun) leoRope.py
 .. @+node:ekr.20131025044901.17142: ** Create stand-alone @shadow code for push hooks
 http://doc.bazaar.canonical.com/beta/en/user-guide/hooks.html
@@ -61,7 +15,6 @@ http://doc.bazaar.canonical.com/beta/en/user-guide/hooks.html
 .. @+node:ekr.20130926053913.11572: *3* for b1
 @language rest
 .. @+node:ekr.20131027064821.18712: *4* docs
-.. @+node:ekr.20131029095615.17089: *5* ** A cool tricks section
 .. @+node:ekr.20131019190351.17123: *5* Add links to sourceforge site
 @language rest
 
@@ -126,6 +79,7 @@ def shouldBeExpanded(self,p):
     return False
 
 .. @+node:ekr.20130926053913.11573: *3* for b2/final (7)
+.. @+node:ekr.20131029095615.17089: *4* ** A cool tricks section
 .. @+node:ekr.20131027064821.18715: *4* Autocompleter ? usually doesn't work
 https://groups.google.com/forum/#!topic/leo-editor/rTN1S9u74RQ
 
@@ -7449,6 +7403,13 @@ plugins.  A prototype of this script exists somewhere.  Making it an
 
 Terry wrote plugin_catalog.py.  It is in LeoDocs.leo
 .. @+node:ekr.20130919120947.12504: ** 5.0
+.. @+node:ekr.20131030082936.17512: *3* Can't fix (yet) bug 1090950: refresh from disk - cut node ressurection
+https://bugs.launchpad.net/leo-editor/+bug/1090950
+
+A shock: fixing bug 1090950 re resurrected nodes may define Leo 5.0
+https://groups.google.com/forum/#!topic/leo-editor/nIl3ud7Tbig
+
+
 .. @+node:ekr.20130919120947.12505: *3* Compatibility mode
 Leo already works fairly well with vim, emacs and ipython. However, I think
 Leo's file format could be friendlier to emacs's org-mode outlines.

@@ -139,6 +139,23 @@
 <v t="ekr.20131013060803.16851"><vh>Script: generate position trace</vh></v>
 <v t="ekr.20131030082936.17514"><vh>get-child-headlines</vh></v>
 </v>
+<v t="ekr.20131007143750.16111"><vh>To do</vh>
+<v t="ekr.20131028213522.17137"><vh>Examples for cheat sheet</vh></v>
+<v t="ekr.20131025114335.17127"><vh>b2</vh>
+<v t="ekr.20131024051649.17112"><vh>** Using clones to focus attention</vh></v>
+<v t="ekr.20131023180133.17111"><vh>** Example Leo patterns</vh>
+<v t="ekr.20131023180133.17112"><vh>Request</vh></v>
+</v>
+<v t="ekr.20131001100335.15942"><vh>Leo &amp; other programs</vh>
+<v t="ekr.20131027064821.17131"><vh>Leo vs emacs &amp; vim</vh></v>
+<v t="ekr.20131001100335.15943"><vh>Leo vs Emacs</vh></v>
+<v t="ekr.20131025044901.17143"><vh>post Leo vs Emacs</vh></v>
+<v t="ekr.20131001100335.15944"><vh>Leo vs Vim</vh></v>
+<v t="ekr.20131001100335.15945"><vh>Leo vs IPython</vh></v>
+</v>
+<v t="ekr.20131008041326.16109"><vh>Add a Expansion section to the Reference chapter?</vh></v>
+</v>
+</v>
 <v t="ekr.20131017051340.16816"><vh>Unused documentation</vh>
 <v t="ekr.20131017051340.16831"><vh>@@rst html/IPythonBridge.html</vh>
 <v t="ekr.20131017051340.16832"><vh>@rst-no-head links</vh></v>
@@ -1082,44 +1099,7 @@
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
 <v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d710028550a302e302e31322e302e3771017d710255097374725f6174696d657103550c313337363431323238302e30710473550b302e302e332e302e322e3371057d71066803550c313337363431323838382e307107735510302e302e31322e312e302e372e302e3171087d710958090000007374725f6174696d65710a550c313337363431323238382e30710b73550e302e302e31322e302e372e302e31710c7d710d6803550c313337363431323238382e30710e735509302e302e312e302e30710f7d71106803550c313337363431323837322e30711173550b302e302e332e312e312e3371127d71136803550c313337363431323838392e30711473550c302e302e31322e312e302e3771157d711658090000007374725f6174696d657117550c313337363431323238302e30711873752e"
-expanded="ekr.20130926053913.15854,ekr.20130926053913.16131,"><vh>@file release_notes.txt</vh></v>
-</v>
-</v>
-<v t="ekr.20131007143750.16111"><vh>To do</vh>
-<v t="ekr.20130928065624.16019"><vh>Fix bug: 1168689 outdated documentation about ipython</vh>
-<v t="ekr.20131019061259.16677"><vh>Notes</vh>
-<v t="ekr.20130928065624.16021"><vh>code</vh>
-<v t="ekr.20130928065624.16022"><vh>runMainLoop &amp; runWithIpythonKernel (qtGui)</vh></v>
-</v>
-<v t="ekr.20130928065624.16023"><vh>post 1</vh></v>
-<v t="ekr.20130928065624.16024"><vh>post 2</vh></v>
-<v t="ekr.20130928065624.16025"><vh>post 3</vh></v>
-<v t="ekr.20130928065624.16026"><vh>EKR post re new code</vh></v>
-<v t="ekr.20130928065624.16027"><vh>** EKR post 2: how to use the new code</vh></v>
-<v t="ekr.20130928065624.16028"><vh>Windows installation</vh></v>
-</v>
-<v t="ekr.20131001100236.15925"><vh>Revise ipython bridge chapter</vh>
-<v t="ekr.20131001100236.15926"><vh>ipython-new &amp; dependencies</vh></v>
-<v t="ekr.20131001100236.15927"><vh>valuespace &amp; --ipython</vh></v>
-<v t="ekr.20131001100236.15928"><vh>highlights (for release noes)</vh></v>
-</v>
-<v t="ekr.20131019190351.16678"><vh>Fixed bug 1168689 re ipython</vh></v>
-</v>
-<v t="ekr.20131025114335.17128"><vh>Finish what's new and release notes</vh></v>
-<v t="ekr.20131028213522.17137"><vh>Examples for cheat sheet</vh></v>
-<v t="ekr.20131025114335.17127"><vh>b2</vh>
-<v t="ekr.20131024051649.17112"><vh>** Using clones to focus attention</vh></v>
-<v t="ekr.20131023180133.17111"><vh>** Example Leo patterns</vh>
-<v t="ekr.20131023180133.17112"><vh>Request</vh></v>
-</v>
-<v t="ekr.20131001100335.15942"><vh>Leo &amp; other programs</vh>
-<v t="ekr.20131027064821.17131"><vh>Leo vs emacs &amp; vim</vh></v>
-<v t="ekr.20131001100335.15943"><vh>Leo vs Emacs</vh></v>
-<v t="ekr.20131025044901.17143"><vh>post Leo vs Emacs</vh></v>
-<v t="ekr.20131001100335.15944"><vh>Leo vs Vim</vh></v>
-<v t="ekr.20131001100335.15945"><vh>Leo vs IPython</vh></v>
-</v>
-<v t="ekr.20131008041326.16109"><vh>Add a Expansion section to the Reference chapter?</vh></v>
+expanded="ekr.20130926053913.16131,"><vh>@file release_notes.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20130926053913.15854"><vh>Leo 4.11 b1 Release notes</vh>
@@ -1268,21 +1248,19 @@ expanded="ekr.20130926053913.15854,ekr.20130926053913.16131,"><vh>@file release_
 <v t="ekr.20130926053913.16259"><vh>b1 release</vh>
 <v t="ekr.20131029095615.17083"><vh>Greatly improved tutorials</vh></v>
 <v t="ekr.20130926053913.16363"><vh>Code improvements</vh>
+<v t="ekr.20130926053913.16313"><vh>Added c.recursiveImport and ic.recursiveImportController</vh></v>
 <v t="ekr.20131019190351.16677"><vh>Added c.user_dict and g.user_dict</vh></v>
-<v t="ekr.20130926053913.16348"><vh>simplified creation of event filters in qtGui.py</vh></v>
-<v t="ekr.20130926053913.16358"><vh>added strip_data argument to config.getData</vh></v>
-<v t="ekr.20130926053913.16347"><vh>Removed unused binding &amp; gui code</vh></v>
+<v t="ekr.20130926053913.16358"><vh>Added strip_data argument to config.getData</vh></v>
 <v t="ekr.20130926053913.16353"><vh>Improved abbreviations</vh></v>
+<v t="ekr.20130926053913.16347"><vh>Removed unused binding &amp; gui code</vh></v>
+<v t="ekr.20130926053913.16348"><vh>Simplified creation of event filters in qtGui.py</vh></v>
 </v>
 <v t="ekr.20130926053913.16362"><vh>Fixed bugs</vh>
-<v t="ekr.20130926053913.16361"><vh>Can't fix (yet) bug 1090950: refresh from disk - cut node ressurection</vh></v>
 <v t="ekr.20130926053913.16346"><vh>cycle-all-focus now works with the Spell Tab enabled</vh></v>
 <v t="ekr.20130926053913.16334"><vh>Fixed annoying reformat-paragraph bug</vh></v>
 <v t="ekr.20130926053913.16350"><vh>Fixed autocompletion crasher</vh></v>
 <v t="ekr.20130926053913.16336"><vh>Fixed bug  869385: Chapters make the nav_qt.py plugin useless</vh></v>
-<v t="ekr.20130926053913.16359"><vh>Fixed bug  879338: Global tables in leoApp.py should describe all languages known</vh>
-<v t="ekr.20130926053913.16360"><vh>Extra keys</vh></v>
-</v>
+<v t="ekr.20130926053913.16359"><vh>Fixed bug  879338: Global tables in leoApp.py should describe all languages known</vh></v>
 <v t="ekr.20130926053913.16319"><vh>Fixed bug 1019794: p.copyTreeFromSelfTo, chould deepcopy p.v.u</vh></v>
 <v t="ekr.20130926053913.16330"><vh>Fixed bug 1028986: create relative urls when dragging binary files to Leo</vh></v>
 <v t="ekr.20130926053913.16329"><vh>Fixed bug 1046195: character encoding changes when dragging outline between leo files</vh></v>
@@ -1322,28 +1300,42 @@ expanded="ekr.20130926053913.15854,ekr.20130926053913.16131,"><vh>@file release_
 <v t="ekr.20131019190351.16680"><vh>Alt-0 (vr-toggle) now puts focus in the body pane</vh></v>
 <v t="ekr.20131019190351.16679"><vh>Fixed crasher in k.auto_completer_state_hander</vh></v>
 <v t="ekr.20131019190351.16676"><vh>Fixed problems with c.save commands in the leoBridge</vh></v>
-<v t="ekr.20131019190351.16678"></v>
+<v t="ekr.20131019190351.16678"><vh>Fixed bug 1168689 re ipython</vh></v>
 <v t="ekr.20131029095615.17077"><vh>Fixed several window-sizing bugs</vh></v>
 <v t="ekr.20131029095615.17078"><vh>Fixed bug 1243847: unicode error when saving @shadow nodes</vh></v>
 <v t="ekr.20131029095615.17079"><vh>Fixed bug #1243855: @auto-rst doesn't save text</vh></v>
+<v t="ekr.20131030082936.17638"><vh>--minimized now disables splash screen</vh></v>
 </v>
-<v t="ekr.20130926053913.16364"><vh>New commands &amp; features</vh>
-<v t="ekr.20130926053913.16349"><vh>created insert-node-before command &amp; p.insertBefore</vh></v>
-<v t="ekr.20130926053913.16314"><vh>Added yes-to-all button when prompting for dangerous writes</vh></v>
-<v t="ekr.20130926053913.16325"><vh>Added help text to the find panel</vh></v>
+<v t="ekr.20130926053913.16364"><vh>New commands, features &amp; settings</vh>
 <v t="ekr.20131019190351.16682"><vh>Added @bool enable-tree-dragging to leoSettings.leo</vh></v>
+<v t="ekr.20130926053913.16325"><vh>Added help text to the find panel</vh></v>
+<v t="ekr.20130926053913.16314"><vh>Added yes-to-all button when prompting for dangerous writes</vh></v>
+<v t="ekr.20130926053913.16366"><vh>Bound Alt-Ctrl-M for macro-call-last</vh></v>
 <v t="ekr.20131029095615.17080"><vh>Copy cheatsheet.leo when creating workbook</vh></v>
-<v t="ekr.20131029095615.17081"><vh>revised help-for commands</vh></v>
-</v>
-<v t="ekr.20130926053913.16366"><vh>New key binding</vh>
-<v t="ekr.20130926053913.16326"><vh>Bound Alt-Ctrl-M for macro-call-last</vh></v>
-</v>
-<v t="ekr.20130926053913.16365"><vh>New scripts</vh>
-<v t="ekr.20130926053913.16313"><vh>Added c.recursiveImport and ic.recursiveImportController</vh></v>
+<v t="ekr.20130926053913.16349"><vh>Created insert-node-before command &amp; p.insertBefore</vh></v>
+<v t="ekr.20131029095615.17081"><vh>Revised help-for commands</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20101025080245.5791"></v>
+<v t="ekr.20130928065624.16019"><vh>Fix bug: 1168689 outdated documentation about ipython</vh>
+<v t="ekr.20131019061259.16677"><vh>Notes</vh>
+<v t="ekr.20130928065624.16021"><vh>code</vh>
+<v t="ekr.20130928065624.16022"><vh>runMainLoop &amp; runWithIpythonKernel (qtGui)</vh></v>
+</v>
+<v t="ekr.20130928065624.16023"><vh>post 1</vh></v>
+<v t="ekr.20130928065624.16024"><vh>post 2</vh></v>
+<v t="ekr.20130928065624.16025"><vh>post 3</vh></v>
+<v t="ekr.20130928065624.16026"><vh>EKR post re new code</vh></v>
+<v t="ekr.20130928065624.16027"><vh>** EKR post 2: how to use the new code</vh></v>
+<v t="ekr.20130928065624.16028"><vh>Windows installation</vh></v>
+</v>
+<v t="ekr.20131001100236.15925"><vh>Revise ipython bridge chapter</vh>
+<v t="ekr.20131001100236.15926"><vh>ipython-new &amp; dependencies</vh></v>
+<v t="ekr.20131001100236.15927"><vh>valuespace &amp; --ipython</vh></v>
+<v t="ekr.20131001100236.15928"><vh>highlights (for release noes)</vh></v>
+</v>
+<v t="ekr.20131019190351.16678"></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -16351,28 +16343,27 @@ See http://leoeditor.com/tutorial.html
 The highlights of Leo 4.11:
 ---------------------------
 
-- A complete rewritten set of tutorials.
-- Greatly improved abbreviations.
+- Leo's tutorials have been rewritten and simplified.
+- Greatly improved abbreviations, including templates.
 - Clones are now valid anywhere in @file nodes.
 - Leo now warns if a .leo file is open elsewhere.
-- Added support for sessions
+- Added support for @testsetup and @testclass.
+- Added support for sessions.
 - Added colorizing themes.
 - A colored border highlights the pane with focus.
 - Added support for the clojure, markdown and TypeScript languages.
 - Added importers for .ipynb, .otl and vimoutliner files.
-- Many new and improved plugins.
-- Dozens of new scripts.
-- Dozens of improved commands.
+- Many new and improved commands, plugins and scripts.
 - Dozens of bug fixes and code-level improvements.
 
 Links:
 ------
-Leo:      http://leoeditor.com
+Leo:       http://leoeditor.com
 Tutorials: http://leoeditor.com/tutorial.html
-Forum:    http://groups.google.com/group/leo-editor
-Download: http://sourceforge.net/projects/leo/files/
-Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://leoeditor.com/testimonials.html
+Forum:     http://groups.google.com/group/leo-editor
+Download:  http://sourceforge.net/projects/leo/files/
+Bzr:       http://code.launchpad.net/leo-editor/
+Quotes:    http://leoeditor.com/testimonials.html
 </t>
 <t tx="ekr.20130926053913.16131"></t>
 <t tx="ekr.20130926053913.16132"></t>
@@ -18638,8 +18629,6 @@ c.frame.tree.redraw.
 <t tx="ekr.20130926053913.16321">This bug was fixed by the new_read (and new_write) logic
 first committed at Rev. 5960.
 
-To do when removing new_read switch:
-- Remove unused theFile &amp; fileName args from at.readLine.
 </t>
 <t tx="ekr.20130926053913.16322">https://bugs.launchpad.net/leo-editor/+bug/1223383
 
@@ -18704,7 +18693,6 @@ Testing with system:
 Leo 4.11 devel, build 5418, 2012-07-09 09:10:17
 Python 2.7.3, qt version 4.8.0
 Windows 5, 1, 2600, 2, Service Pack 3
-
 </t>
 <t tx="ekr.20130926053913.16323">Added new_write master switch in leoAtFile.py.
 When new_write is True:
@@ -18748,9 +18736,6 @@ Changed mod_scripting.py and setCommandForButton in qtGui.py.
 <t tx="ekr.20130926053913.16325">Changed DynamicWindow.createFindTab.
 
 Added a help line at the bottom.
-</t>
-<t tx="ekr.20130926053913.16326">c-x e in emacs.
-Use Alt-Ctrl-M
 </t>
 <t tx="ekr.20130926053913.16327">Already fixed.
 </t>
@@ -19085,16 +19070,15 @@ The new code is only enabled if the newFilter is set at the start of qtGui.py.
 </t>
 <t tx="ekr.20130926053913.16353">Made the following changes:
 
+- Refactored the code in abbrevClass.finishCreate into three parts, mostly
+  so each may have its own docstring.
 
-2. Refactored the code in abbrevClass.finishCreate into three parts, mostly
-   so each may have its own docstring.
+- Added try/finally protection in the exec statement, so that errors in
+  \@data abbreviations-subst-env do not cause problems during startup.
 
-3. Added try/finally protection in the exec statement, so that errors in
-   \@data abbreviations-subst-env do not cause problems during startup.
-
-4. Added a new setting: @bool scripting-abbreviations, default False.
-   Scripting abbreviations will be enabled if *either* of the following is
-   True::
+- Added a new setting: @bool scripting-abbreviations, default False.
+  Scripting abbreviations will be enabled if *either* of the following is
+  True::
 
         @bool scripting-abbreviations
         @bool scripting-at-script-nodes
@@ -19103,7 +19087,7 @@ The new code is only enabled if the newFilter is set at the start of qtGui.py.
     enabled *without* enabling the (very dangerous in general)
     scripting-at-script-nodes setting.
 
-5. finishCreate always reports either::
+- finishCreate always reports either::
 
         Abbreviations on
         Abbreviations off
@@ -19114,9 +19098,10 @@ The new code is only enabled if the newFilter is set at the start of qtGui.py.
 
         Note: @abbreviations-subst-start found, but no substitutions without @scripting-at-script-nodes = True"
 
-6. Changed @data abbreviations-subst-env node to handle missing os.environ['LOGNAME'].
+- Changed @data abbreviations-subst-env node to handle missing os.environ['LOGNAME'].
 
-7. To make this work, the doData parser in leoConfig.py no longer strips lines.
+- To make this work, the doData parser in leoConfig.py no longer strips
+  lines.
 </t>
 <t tx="ekr.20130926053913.16354">https://bugs.launchpad.net/leo-editor/+bug/1229896
 
@@ -19167,49 +19152,10 @@ The result is::
     pseudoplain # No comment lines.
     rtf         # Annotations not exactly a comment.
 </t>
-<t tx="ekr.20130926053913.16360">import glob
-files = glob.glob(g.os_path_finalize_join(
-    g.app.loadDir,'..','modes','*.py'))
-files = [g.shortFileName(z)[:-3] for z in files]
-print('\n'.join(sorted(files)))
-keys = sorted(g.app.language_delims_dict.keys())
-g.cls()
-for key in keys:
-    if key not in files:
-        print(key)
-
-    ada
-    autohotkey
-    config
-    cpp
-    cweb
-    elisp
-    javaserverpage
-    kshell
-    noweb
-    perlpod
-    rapidq
-    rst
-    tcltk
-    typescript
-    unknown
-    unknown_language
-    vim
-    vimoutline
-    xslt
-</t>
-<t tx="ekr.20130926053913.16361">https://bugs.launchpad.net/leo-editor/+bug/1090950
-
-A shock: fixing bug 1090950 re resurrected nodes may define Leo 5.0
-https://groups.google.com/forum/#!topic/leo-editor/nIl3ud7Tbig
-
-
-</t>
 <t tx="ekr.20130926053913.16362"></t>
 <t tx="ekr.20130926053913.16363"></t>
 <t tx="ekr.20130926053913.16364"></t>
-<t tx="ekr.20130926053913.16365"></t>
-<t tx="ekr.20130926053913.16366"></t>
+<t tx="ekr.20130926053913.16366">Bound Alt-Ctrl-M for macro-call-last (c-x e in emacs).</t>
 <t tx="ekr.20130928065624.16019">@language rest
 
 https://bugs.launchpad.net/leo-editor/+bug/1168689
@@ -23042,7 +22988,10 @@ model of good practice.
 <t tx="ekr.20131019190351.16947">New commands:
 
 - go-anywhere (quicksearch plugin).
-- help-for-regular- command
+- help-for-abbreviations
+- help-for-dynamic-abbreviations
+- help-for-find-commands
+- help-for-regular-expressions
 - insert-node-before
 - normalize-whitespace
 - parse-body
@@ -23440,7 +23389,6 @@ indicate the author of quotations.
 Note that rST automatically turns - - into a dash: --.
 </t>
 <t tx="ekr.20131025114335.17127"></t>
-<t tx="ekr.20131025114335.17128"></t>
 <t tx="ekr.20131027064821.17131">@language rest
 
 Leo's read code parses text into true Python objects: Leo's positions and vnodes.
@@ -23643,6 +23591,8 @@ critical understanding. IMHO.</t>
 for child in p.children():
     s = s + '\n- ' + child.h
 p.b = s</t>
+<t tx="ekr.20131030082936.17638">start_minimized
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.

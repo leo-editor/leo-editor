@@ -15463,6 +15463,10 @@ for p in current.self_and_parents():
         path = d.get('path')
         print g.os_path_join(path,p.atFileNodeName())
         break
+#@+node:ekr.20131030082936.19134: *3* Functions defined in leoGlobals.py
+print("Names defined in leoGlobals.py",color="purple")
+for name in sorted(g.__dict__.keys()):
+    print(name)
 #@+node:ekr.20051110105027.151: *3* Get statistics using dis module
 # routines to gather static statistics about opcodes based on dis module.
 import compiler

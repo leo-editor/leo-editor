@@ -20569,28 +20569,27 @@ See http://leoeditor.com/tutorial.html
 The highlights of Leo 4.11:
 ---------------------------
 
-- A complete rewritten set of tutorials.
-- Greatly improved abbreviations.
+- Leo's tutorials have been rewritten and simplified.
+- Greatly improved abbreviations, including templates.
 - Clones are now valid anywhere in @file nodes.
 - Leo now warns if a .leo file is open elsewhere.
-- Added support for sessions
+- Added support for @testsetup and @testclass.
+- Added support for sessions.
 - Added colorizing themes.
 - A colored border highlights the pane with focus.
 - Added support for the clojure, markdown and TypeScript languages.
 - Added importers for .ipynb, .otl and vimoutliner files.
-- Many new and improved plugins.
-- Dozens of new scripts.
-- Dozens of improved commands.
+- Many new and improved commands, plugins and scripts.
 - Dozens of bug fixes and code-level improvements.
 
 Links:
 ------
-Leo:      http://leoeditor.com
+Leo:       http://leoeditor.com
 Tutorials: http://leoeditor.com/tutorial.html
-Forum:    http://groups.google.com/group/leo-editor
-Download: http://sourceforge.net/projects/leo/files/
-Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://leoeditor.com/testimonials.html
+Forum:     http://groups.google.com/group/leo-editor
+Download:  http://sourceforge.net/projects/leo/files/
+Bzr:       http://code.launchpad.net/leo-editor/
+Quotes:    http://leoeditor.com/testimonials.html
 #@+node:ekr.20130926053913.16258: *5* a1 and a2 releases
 #@+node:ekr.20130926053913.16131: *6* Bugs
 #@+node:ekr.20130926053913.16132: *7* Bugs: minor
@@ -22766,13 +22765,46 @@ The new home page is http://leoeditor.com/
 #@+node:ekr.20131029095615.17083: *6* Greatly improved tutorials
 See http://leoeditor.com/tutorial.html
 #@+node:ekr.20130926053913.16363: *6* Code improvements
+#@+node:ekr.20130926053913.16313: *7* Added c.recursiveImport and ic.recursiveImportController
+This will reduce duplicate scripts.
 #@+node:ekr.20131019190351.16677: *7* Added c.user_dict and g.user_dict
 There are non-persistent Python dicts, for free use by plugins and scripts.
-#@+node:ekr.20130926053913.16348: *7* simplified creation of event filters in qtGui.py
-Added qtGui.setFilter and used it to simplify the code.
+#@+node:ekr.20130926053913.16358: *7* Added strip_data argument to config.getData
+#@+node:ekr.20130926053913.16353: *7* Improved abbreviations
+Made the following changes:
 
-The new code is only enabled if the newFilter is set at the start of qtGui.py.
-#@+node:ekr.20130926053913.16358: *7* added strip_data argument to config.getData
+- Refactored the code in abbrevClass.finishCreate into three parts, mostly
+  so each may have its own docstring.
+
+- Added try/finally protection in the exec statement, so that errors in
+  \@data abbreviations-subst-env do not cause problems during startup.
+
+- Added a new setting: @bool scripting-abbreviations, default False.
+  Scripting abbreviations will be enabled if *either* of the following is
+  True::
+
+        @bool scripting-abbreviations
+        @bool scripting-at-script-nodes
+    
+    This is a safety feature: it allows scripting abbreviations to be
+    enabled *without* enabling the (very dangerous in general)
+    scripting-at-script-nodes setting.
+
+- finishCreate always reports either::
+
+        Abbreviations on
+        Abbreviations off
+
+    in the normal operating environment (not unit testing, not null gui,
+    not batch mode, etc.) As a result, there is less need to issue the
+    following message::
+
+        Note: @abbreviations-subst-start found, but no substitutions without @scripting-at-script-nodes = True"
+
+- Changed @data abbreviations-subst-env node to handle missing os.environ['LOGNAME'].
+
+- To make this work, the doData parser in leoConfig.py no longer strips
+  lines.
 #@+node:ekr.20130926053913.16347: *7* Removed unused binding & gui code
 Found empty methods using: ^[ ]*def.*$(\n[ ]*)*pass
     
@@ -22824,49 +22856,11 @@ Rev 6019:
     setEditLabelState,setUnselectedLabelState,
     setDisabledHeadlineColors,setEditHeadlineColors,setUnselectedHeadlineColors,
     setFont,getFont.
-#@+node:ekr.20130926053913.16353: *7* Improved abbreviations
-Made the following changes:
+#@+node:ekr.20130926053913.16348: *7* Simplified creation of event filters in qtGui.py
+Added qtGui.setFilter and used it to simplify the code.
 
-
-2. Refactored the code in abbrevClass.finishCreate into three parts, mostly
-   so each may have its own docstring.
-
-3. Added try/finally protection in the exec statement, so that errors in
-   \@data abbreviations-subst-env do not cause problems during startup.
-
-4. Added a new setting: @bool scripting-abbreviations, default False.
-   Scripting abbreviations will be enabled if *either* of the following is
-   True::
-
-        @bool scripting-abbreviations
-        @bool scripting-at-script-nodes
-    
-    This is a safety feature: it allows scripting abbreviations to be
-    enabled *without* enabling the (very dangerous in general)
-    scripting-at-script-nodes setting.
-
-5. finishCreate always reports either::
-
-        Abbreviations on
-        Abbreviations off
-
-    in the normal operating environment (not unit testing, not null gui,
-    not batch mode, etc.) As a result, there is less need to issue the
-    following message::
-
-        Note: @abbreviations-subst-start found, but no substitutions without @scripting-at-script-nodes = True"
-
-6. Changed @data abbreviations-subst-env node to handle missing os.environ['LOGNAME'].
-
-7. To make this work, the doData parser in leoConfig.py no longer strips lines.
+The new code is only enabled if the newFilter is set at the start of qtGui.py.
 #@+node:ekr.20130926053913.16362: *6* Fixed bugs
-#@+node:ekr.20130926053913.16361: *7* Can't fix (yet) bug 1090950: refresh from disk - cut node ressurection
-https://bugs.launchpad.net/leo-editor/+bug/1090950
-
-A shock: fixing bug 1090950 re resurrected nodes may define Leo 5.0
-https://groups.google.com/forum/#!topic/leo-editor/nIl3ud7Tbig
-
-
 #@+node:ekr.20130926053913.16346: *7* cycle-all-focus now works with the Spell Tab enabled
 The problem was that no standard bindings were created for the spell tab.
 This is done in leoQtLog.createTab.  Yes, it's a terrible hack.
@@ -22930,37 +22924,6 @@ The result is::
     phpsection  # A helper mode.
     pseudoplain # No comment lines.
     rtf         # Annotations not exactly a comment.
-#@+node:ekr.20130926053913.16360: *8* Extra keys
-import glob
-files = glob.glob(g.os_path_finalize_join(
-    g.app.loadDir,'..','modes','*.py'))
-files = [g.shortFileName(z)[:-3] for z in files]
-print('\n'.join(sorted(files)))
-keys = sorted(g.app.language_delims_dict.keys())
-g.cls()
-for key in keys:
-    if key not in files:
-        print(key)
-
-    ada
-    autohotkey
-    config
-    cpp
-    cweb
-    elisp
-    javaserverpage
-    kshell
-    noweb
-    perlpod
-    rapidq
-    rst
-    tcltk
-    typescript
-    unknown
-    unknown_language
-    vim
-    vimoutline
-    xslt
 #@+node:ekr.20130926053913.16319: *7* Fixed bug 1019794: p.copyTreeFromSelfTo, chould deepcopy p.v.u
 https://bugs.launchpad.net/leo-editor/+bug/1019794
 
@@ -23084,8 +23047,6 @@ The fix was to close theFile in fc.getLeoFile.
 This bug was fixed by the new_read (and new_write) logic
 first committed at Rev. 5960.
 
-To do when removing new_read switch:
-- Remove unused theFile & fileName args from at.readLine.
 #@+node:ekr.20130926053913.16322: *8*  report
 https://bugs.launchpad.net/leo-editor/+bug/1223383
 
@@ -23150,7 +23111,6 @@ Testing with system:
 Leo 4.11 devel, build 5418, 2012-07-09 09:10:17
 Python 2.7.3, qt version 4.8.0
 Windows 5, 1, 2600, 2, Service Pack 3
-
 #@+node:ekr.20130926053913.16323: *8*  what I did
 Added new_write master switch in leoAtFile.py.
 When new_write is True:
@@ -23609,9 +23569,14 @@ https://bugs.launchpad.net/leo-editor/+bug/1243855
 
 The fix was to not make assumptions about type in compareFiles and create.
 
-#@+node:ekr.20130926053913.16364: *6* New commands & features
-#@+node:ekr.20130926053913.16349: *7* created insert-node-before command & p.insertBefore
-Added c.insertHeadlineBefore and unit tests for same.
+#@+node:ekr.20131030082936.17638: *7* --minimized now disables splash screen
+start_minimized
+#@+node:ekr.20130926053913.16364: *6* New commands, features & settings
+#@+node:ekr.20131019190351.16682: *7* Added @bool enable-tree-dragging to leoSettings.leo
+#@+node:ekr.20130926053913.16325: *7* Added help text to the find panel
+Changed DynamicWindow.createFindTab.
+
+Added a help line at the bottom.
 #@+node:ekr.20130926053913.16314: *7* Added yes-to-all button when prompting for dangerous writes
 importing a medium sized java project ~ 400 files
 https://groups.google.com/forum/#!searchin/leo-editor/importing$20a$20medium$20sized$20java$20project/leo-editor/PiuFXtAHG0s/o6vwu19PsMEJ
@@ -23628,28 +23593,20 @@ Fixed at rev 5935. What I did:
 
 4. at.promptForDangerousWrite sets cancelFlag and yesToAll *only* if canCancelFlag is True.
    This ensures that these flags are not changed outside the code managed by at.writeAll.
-#@+node:ekr.20130926053913.16325: *7* Added help text to the find panel
-Changed DynamicWindow.createFindTab.
-
-Added a help line at the bottom.
-#@+node:ekr.20131019190351.16682: *7* Added @bool enable-tree-dragging to leoSettings.leo
+#@+node:ekr.20130926053913.16366: *7* Bound Alt-Ctrl-M for macro-call-last
+Bound Alt-Ctrl-M for macro-call-last (c-x e in emacs).
 #@+node:ekr.20131029095615.17080: *7* Copy cheatsheet.leo when creating workbook
 Added c.openCheatSheet.
 Added LM.openEmptyWorkBook.
 Added open-cheat-sheet-leo command.
 Added "Open CheatSheet.leo" menu item.
 Changed LM.doPostPluginsInit.
-#@+node:ekr.20131029095615.17081: *7* revised help-for commands
+#@+node:ekr.20130926053913.16349: *7* Created insert-node-before command & p.insertBefore
+Added c.insertHeadlineBefore and unit tests for same.
+#@+node:ekr.20131029095615.17081: *7* Revised help-for commands
 help-for-dynamic-abbreviations
 help-for-abbreviations
 help-for-find-commands
-#@+node:ekr.20130926053913.16366: *6* New key binding
-#@+node:ekr.20130926053913.16326: *7* Bound Alt-Ctrl-M for macro-call-last
-c-x e in emacs.
-Use Alt-Ctrl-M
-#@+node:ekr.20130926053913.16365: *6* New scripts
-#@+node:ekr.20130926053913.16313: *7* Added c.recursiveImport and ic.recursiveImportController
-This will reduce duplicate scripts.
 #@+node:edream.110203163054.63: ** Latest version
 #@-all
 #@-leo
