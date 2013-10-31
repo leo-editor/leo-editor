@@ -1,15 +1,15 @@
 Metadata-Version: 1.0
 Name: leo
-Version: 4.11-alpha-1
+Version: 4.11-b1
 Summary: Leo: Literate Editor with Outlines
 Home-page: http://leoeditor.com/
 Author: Edward K. Ream
 Author-email: edreamleo@gmail.com
 License: Python
 Description:
-    Leo is an outline-oriented IDE written in 100% pure Python.
+    Leo is a PIM, IDE and outliner written in 100% pure Python.
     Leo features a multi-window outlining editor, Python colorizing,
     powerful outline commands and many other things, including 
     unlimited Undo/Redo and an integrated Python shell(IDLE) window.
-    Leo requires Python 2.6 or above.  Leo works with Python 3.x.
+    Leo requires Python 2.6 or above. Leo works with Python 3.x.
 Platform: Windows, Linux, MacOS.

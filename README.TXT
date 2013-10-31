@@ -1,31 +1,37 @@
-Leo 4.11 a2                                     August 19, 2013
+Leo 4.11 b1                                     October 31, 2013
 
-Leo 4.11 a2 is now available at: http://sourceforge.net/projects/leo/files/Leo/
+Leo 4.11 b1 is now available at: http://sourceforge.net/projects/leo/files/Leo/
 Leo 4.11 contains over a year's work on Leo.
 
+Leo is a PIM, an IDE and an outliner for programmers, authors and web
+designers. Leo's unique features organize data in a revolutionary way.
+
 Leo is a text editor, data organizer, project manager and much more.
-See http://leoeditor.com/intro.html
+See http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.11:
 ---------------------------
 
-- Greatly improved abbreviations.
+- Leo's tutorials have been rewritten and simplified.
+- Greatly improved abbreviations, including templates.
 - Clones are now valid anywhere in @file nodes.
 - Leo now warns if a .leo file is open elsewhere.
-- Added support for sessions
+- Leo's IPython bridge now works with IPython 1.x.
+- Added support for @testsetup and @testclass.
+- Added support for sessions.
 - Added colorizing themes.
 - A colored border highlights the pane with focus.
 - Added support for the clojure, markdown and TypeScript languages.
 - Added importers for .ipynb, .otl and vimoutliner files.
-- Many new and improved plugins.
-- Dozens of new scripts.
-- Dozens of improved commands.
+- Many new and improved commands, plugins and scripts.
 - Dozens of bug fixes and code-level improvements.
 
 Links:
 ------
-Leo:      http://leoeditor.com
-Forum:    http://groups.google.com/group/leo-editor
-Download: http://sourceforge.net/projects/leo/files/
-Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://leoeditor.com/testimonials.html
+Leo:       http://leoeditor.com
+Docs:      http://leoeditor.com/leo_toc.html
+Tutorials: http://leoeditor.com/tutorial.html
+Forum:     http://groups.google.com/group/leo-editor
+Download:  http://sourceforge.net/projects/leo/files/
+Bzr:       http://code.launchpad.net/leo-editor/
+Quotes:    http://leoeditor.com/testimonials.html

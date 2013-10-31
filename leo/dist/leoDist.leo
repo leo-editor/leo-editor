@@ -12,6 +12,16 @@
 <vnodes>
 <v t="ekr.20050315084904"><vh>Startup</vh>
 <v t="ekr.20070325123540"><vh>@chapters</vh></v>
+<v t="ekr.20101025095431.1517"><vh>Installer/Distribution bugs &amp; to-do</vh>
+<v t="ekr.20101025095431.1518"><vh>Fixed Bug 514656 Uninstall operation does not work as expected</vh>
+<v t="ekr.20090901092556.1576"><vh>genUninstallData &amp; helpers</vh>
+<v t="ekr.20090901121423.1568"><vh>getDeleteDirectories</vh></v>
+<v t="ekr.20090901121423.1569"><vh>getDeleteFiles</vh></v>
+<v t="ekr.20090901121423.1567"><vh>getUninstallVariableData</vh></v>
+</v>
+</v>
+<v t="ekr.20101026142031.1516"><vh>Registry Keys</vh></v>
+</v>
 </v>
 <v t="EKR.20040519091259"><vh>Annoucements</vh>
 <v t="EKR.20040519091259.1"><vh>Download statistics</vh></v>
@@ -19,6 +29,7 @@
 <v t="ekr.20110603112852.1505"><vh>Leo 4.9 final</vh></v>
 <v t="ekr.20120328150744.1791"><vh>Leo 4.10 final</vh></v>
 <v t="ekr.20130818115031.6263"><vh>Leo 4.11 a2</vh></v>
+<v t="ekr.20131031071750.2233"><vh>Leo 4.11 b1</vh></v>
 <v t="EKR.20040519091259.2"><vh>Quotes of the month</vh>
 <v t="ekr.20080901114425.2"><vh>Sept 2008</vh></v>
 <v t="ekr.20070425092712"><vh>April 2007</vh></v>
@@ -47,16 +58,6 @@
 <v t="EKR.20040519090846.9"><vh>@asis ../../README.TXT</vh></v>
 </v>
 <v t="ekr.20100202061222.1494"><vh>Distribution checklist</vh></v>
-<v t="ekr.20101025095431.1517"><vh>Installer/Distribution bugs &amp; to-do</vh>
-<v t="ekr.20101025095431.1518"><vh>Fixed Bug 514656 Uninstall operation does not work as expected</vh>
-<v t="ekr.20090901092556.1576"><vh>genUninstallData &amp; helpers</vh>
-<v t="ekr.20090901121423.1568"><vh>getDeleteDirectories</vh></v>
-<v t="ekr.20090901121423.1569"><vh>getDeleteFiles</vh></v>
-<v t="ekr.20090901121423.1567"><vh>getUninstallVariableData</vh></v>
-</v>
-</v>
-<v t="ekr.20101026142031.1516"><vh>Registry Keys</vh></v>
-</v>
 <v t="ekr.20101027070126.1639"><vh>@button make leo</vh>
 <v t="ekr.20090905082405.1487"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
 <v t="ekr.20110614062644.1379"><vh>&lt;&lt; define global paths and file names &gt;&gt;</vh></v>
@@ -132,51 +133,57 @@ INCIDENTAL, CONSEQUENTIAL OR OTHER DAMAGES.
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 4.11-alpha-1
+Version: 4.11-b1
 Summary: Leo: Literate Editor with Outlines
 Home-page: http://leoeditor.com/
 Author: Edward K. Ream
 Author-email: edreamleo@gmail.com
 License: Python
 Description:
-    Leo is an outline-oriented IDE written in 100% pure Python.
+    Leo is a PIM, IDE and outliner written in 100% pure Python.
     Leo features a multi-window outlining editor, Python colorizing,
     powerful outline commands and many other things, including 
     unlimited Undo/Redo and an integrated Python shell(IDLE) window.
-    Leo requires Python 2.6 or above.  Leo works with Python 3.x.
+    Leo requires Python 2.6 or above. Leo works with Python 3.x.
 Platform: Windows, Linux, MacOS.
 </t>
-<t tx="EKR.20040519090846.9">Leo 4.11 a2                                     August 19, 2013
+<t tx="EKR.20040519090846.9">Leo 4.11 b1                                     October 31, 2013
 
-Leo 4.11 a2 is now available at: http://sourceforge.net/projects/leo/files/Leo/
+Leo 4.11 b1 is now available at: http://sourceforge.net/projects/leo/files/Leo/
 Leo 4.11 contains over a year's work on Leo.
 
+Leo is a PIM, an IDE and an outliner for programmers, authors and web
+designers. Leo's unique features organize data in a revolutionary way.
+
 Leo is a text editor, data organizer, project manager and much more.
-See http://leoeditor.com/intro.html
+See http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.11:
 ---------------------------
 
-- Greatly improved abbreviations.
+- Leo's tutorials have been rewritten and simplified.
+- Greatly improved abbreviations, including templates.
 - Clones are now valid anywhere in @file nodes.
 - Leo now warns if a .leo file is open elsewhere.
-- Added support for sessions
+- Leo's IPython bridge now works with IPython 1.x.
+- Added support for @testsetup and @testclass.
+- Added support for sessions.
 - Added colorizing themes.
 - A colored border highlights the pane with focus.
 - Added support for the clojure, markdown and TypeScript languages.
 - Added importers for .ipynb, .otl and vimoutliner files.
-- Many new and improved plugins.
-- Dozens of new scripts.
-- Dozens of improved commands.
+- Many new and improved commands, plugins and scripts.
 - Dozens of bug fixes and code-level improvements.
 
 Links:
 ------
-Leo:      http://leoeditor.com
-Forum:    http://groups.google.com/group/leo-editor
-Download: http://sourceforge.net/projects/leo/files/
-Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://leoeditor.com/testimonials.html
+Leo:       http://leoeditor.com
+Docs:      http://leoeditor.com/leo_toc.html
+Tutorials: http://leoeditor.com/tutorial.html
+Forum:     http://groups.google.com/group/leo-editor
+Download:  http://sourceforge.net/projects/leo/files/
+Bzr:       http://code.launchpad.net/leo-editor/
+Quotes:    http://leoeditor.com/testimonials.html
 </t>
 <t tx="EKR.20040519091259">@pagewidth 70
 
@@ -438,10 +445,10 @@ Release notes and web documentation:
     - Update version number and modification date on Leo's home page.
     - (The sphinx date is updated automatically.)
     - Regenerate all .html files.
-    - Copy files to web.  Include the home page, but *not* the toc.
-LeoPy.leo:
-    - Update version numbers.
-    - Update the build number.
+    - Copy files to web.
+leoVersion.py
+    - Update version constant.
+    - Update the static_version build number.
 LeoDocs.leo:
     - Update version numbers in html/conf.py
     - Remove top-level clones.
@@ -500,9 +507,7 @@ Announcements
 - Twitter
 - My blog</t>
 <t tx="ekr.20101025095431.1517">@language rest</t>
-<t tx="ekr.20101025095431.1518">
-
-https://bugs.launchpad.net/leo-editor/+bug/514656
+<t tx="ekr.20101025095431.1518">https://bugs.launchpad.net/leo-editor/+bug/514656
 </t>
 <t tx="ekr.20101026142031.1516">@nocolor-node
 
@@ -535,7 +540,7 @@ HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonPath
         leo.zip.
 '''
 
-version = '4.11-a2' ##version
+version = '4.11-b1' ##version
 &lt;&lt; includes &gt;&gt;
 &lt;&lt; define global paths and file names &gt;&gt;
 
@@ -1307,6 +1312,44 @@ Forum:    http://groups.google.com/group/leo-editor
 Download: http://sourceforge.net/projects/leo/files/
 Bzr:      http://code.launchpad.net/leo-editor/
 Quotes:   http://leoeditor.com/testimonials.html
+</t>
+<t tx="ekr.20131031071750.2233">Leo 4.11 b1                                     October 31, 2013
+
+Leo 4.11 b1 is now available at: http://sourceforge.net/projects/leo/files/Leo/
+Leo 4.11 contains over a year's work on Leo.
+
+Leo is a PIM, an IDE and an outliner for programmers, authors and web
+designers. Leo's unique features organize data in a revolutionary way.
+
+Leo is a text editor, data organizer, project manager and much more.
+See http://leoeditor.com/tutorial.html
+
+The highlights of Leo 4.11:
+---------------------------
+
+- Leo's tutorials have been rewritten and simplified.
+- Greatly improved abbreviations, including templates.
+- Clones are now valid anywhere in @file nodes.
+- Leo now warns if a .leo file is open elsewhere.
+- Leo's IPython bridge now works with IPython 1.x.
+- Added support for @testsetup and @testclass.
+- Added support for sessions.
+- Added colorizing themes.
+- A colored border highlights the pane with focus.
+- Added support for the clojure, markdown and TypeScript languages.
+- Added importers for .ipynb, .otl and vimoutliner files.
+- Many new and improved commands, plugins and scripts.
+- Dozens of bug fixes and code-level improvements.
+
+Links:
+------
+Leo:       http://leoeditor.com
+Docs:      http://leoeditor.com/leo_toc.html
+Tutorials: http://leoeditor.com/tutorial.html
+Forum:     http://groups.google.com/group/leo-editor
+Download:  http://sourceforge.net/projects/leo/files/
+Bzr:       http://code.launchpad.net/leo-editor/
+Quotes:    http://leoeditor.com/testimonials.html
 </t>
 </tnodes>
 </leo_file>

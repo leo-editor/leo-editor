@@ -16269,10 +16269,13 @@ Valid values are (case is ignored):
 
 actionscript,c,csharp,css,cweb,elisp,html,java,latex,
 pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
-<t tx="ekr.20130926053913.15854">Leo 4.11 b1                                     September 26, 2013
+<t tx="ekr.20130926053913.15854">Leo 4.11 b1                                     October 31, 2013
 
 Leo 4.11 b1 is now available at: http://sourceforge.net/projects/leo/files/Leo/
 Leo 4.11 contains over a year's work on Leo.
+
+Leo is a PIM, an IDE and an outliner for programmers, authors and web
+designers. Leo's unique features organize data in a revolutionary way.
 
 Leo is a text editor, data organizer, project manager and much more.
 See http://leoeditor.com/tutorial.html
@@ -16297,6 +16300,7 @@ The highlights of Leo 4.11:
 Links:
 ------
 Leo:       http://leoeditor.com
+Docs:      http://leoeditor.com/leo_toc.html
 Tutorials: http://leoeditor.com/tutorial.html
 Forum:     http://groups.google.com/group/leo-editor
 Download:  http://sourceforge.net/projects/leo/files/
