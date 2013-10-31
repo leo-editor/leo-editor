@@ -7,66 +7,14 @@
 By mid December.
 
 Private email: http://mail.google.com/mail/u/0/#inbox/141ddfe09c389e4f
-.. @+node:ekr.20130926053913.11569: ** ** (fun) leoRope.py
-.. @+node:ekr.20131025044901.17142: ** Create stand-alone @shadow code for push hooks
-http://doc.bazaar.canonical.com/beta/en/user-guide/hooks.html
 .. @+node:ekr.20130916105324.19893: ** To-do for 4.11
 @language rest
 .. @+node:ekr.20130926053913.11572: *3* for b1
 @language rest
-.. @+node:ekr.20131027064821.18712: *4* docs
-.. @+node:ekr.20131019190351.17123: *5* Add links to sourceforge site
-@language rest
-
-
-Possible things for Leo's entry on Sourceforge:
-
-Add to Categories:
-
-   Topic::Text Editors
-   Topic::Text Editors::Text Processing
-.. @+node:ekr.20131019190351.17130: *5* Make sure Leo videos are prominent on the home page
-@language rest
-
-But if no one is willing to make those, at least the website could include an in-website video to some of the already existing ones such as:
-
-Leo: A Paradigm shifting IDE (Which btw has a very catchy name)
-
-or 
-
-Leo: Intro to outline manipulation
-
-Found by googling it
-.. @+node:ekr.20130908104426.11258: *5* 1180186 debian install not documented well enough
-https://bugs.launchpad.net/leo-editor/+bug/1180186
-
-Installing Leo in debian and other apt-get enabled linux distros is not
-documented well enough, stating merely ""find and install the debian
-package".
-
-The best instructions seem to from 3 years ago, in mailing list
-announcement by Ville:
-https://groups.google.com/forum/#!msg/leo-editor/9yqhWD90Vtg/yCR8O_FBvIwJ
-
-{{{
-Add these files to `/etc/apt/sources.list`:
-
-    deb http://ppa.launchpad.net/villemvainio/ppa/ubuntu jaunty main
-    deb-src http://ppa.launchpad.net/villemvainio/ppa/ubuntu jaunty main
-
-Then, run
-
-    sudo apt-get update
-    sudo apt-get install leo
-
-And run `leo` from command prompt.
-}}}
-
-A recent user reports this install method still works, albeit with a
-warning,
-https://groups.google.com/d/topic/leo-editor-users/y6ZwJR3accs/discussion
 .. @+node:ekr.20131001045038.19047: *4* * Debian distro for Leo
 .. @+node:ekr.20131017174814.17480: *3* c.shouldBeExpanded
+@language python
+
 def shouldBeExpanded(self,p):
     c,root,v = self,self.rootPosition(),p.v
     if p == c.p or p.isAncestorOf(c.p):
@@ -77,8 +25,7 @@ def shouldBeExpanded(self,p):
             if p == p2:
                 return True
     return False
-
-.. @+node:ekr.20130926053913.11573: *3* for b2/final (7)
+.. @+node:ekr.20130926053913.11573: *3* for b2/final
 .. @+node:ekr.20131029095615.17089: *4* ** A cool tricks section
 .. @+node:ekr.20131027064821.18715: *4* Autocompleter ? usually doesn't work
 https://groups.google.com/forum/#!topic/leo-editor/rTN1S9u74RQ
@@ -2439,6 +2386,7 @@ clumsy.
     
 - Look at key-handling afresh, with an eye towards more vim-like operation on a "temporary" basis.
 
+.. @+node:ekr.20130926053913.11569: *3* ** (leoRope.py
 .. @+node:ekr.20130806211959.17377: *3* Add coffeescript importer
 From: "Edward K. Ream" <edreamleo@gmail.com>
 

@@ -193,10 +193,11 @@
 <v t="ekr.20101112045055.5064" descendentVnodeUnknownAttributes="7d7100285503302e3171017d710255097374725f6174696d657103550c313337363431323739362e3071047355013071057d71066803550c313337363431323932332e307107735503302e3071087d71096803550c313337363431323932372e30710a73752e"><vh>@file plugin_catalog.py</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
 <v t="ekr.20131005214621.16088"><vh>Home page</vh>
-<v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
+<v t="ekr.20100808060203.4273"
+expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20131008041326.16065"><vh>Links page</vh>
-<v t="ekr.20130807203905.16606"><vh>@edit html/leoLinks.html</vh></v>
+<v t="ekr.20131030184445.16582"><vh>@rst html/leoLinks.html </vh></v>
 </v>
 <v t="ekr.20090711120622.10446"><vh>Screen shots page</vh>
 <v t="ekr.20090711120622.10447"><vh>@rst html/screen-shots.html</vh>
@@ -715,6 +716,7 @@
 <v t="ekr.20131001045038.18981"><vh>Running Leo scripts from IPython</vh></v>
 <v t="ekr.20131001045038.18980"><vh>Running IPython scripts from Leo</vh></v>
 <v t="ekr.20131001045038.18979"><vh>ILeo as an IPython notebook</vh></v>
+<v t="ekr.20131001100236.15927"><vh>ILeo and the valuespace plugin</vh></v>
 <v t="ekr.20131001045038.17448"><vh>Acknowledgements and history</vh></v>
 </v>
 </v>
@@ -1098,8 +1100,7 @@
 </v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d710028550a302e302e31322e302e3771017d710255097374725f6174696d657103550c313337363431323238302e30710473550b302e302e332e302e322e3371057d71066803550c313337363431323838382e307107735510302e302e31322e312e302e372e302e3171087d710958090000007374725f6174696d65710a550c313337363431323238382e30710b73550e302e302e31322e302e372e302e31710c7d710d6803550c313337363431323238382e30710e735509302e302e312e302e30710f7d71106803550c313337363431323837322e30711173550b302e302e332e312e312e3371127d71136803550c313337363431323838392e30711473550c302e302e31322e312e302e3771157d711658090000007374725f6174696d657117550c313337363431323238302e30711873752e"
-expanded="ekr.20130926053913.16131,"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d710028550a302e302e31322e302e3771017d710255097374725f6174696d657103550c313337363431323238302e30710473550b302e302e332e302e322e3371057d71066803550c313337363431323838382e307107735510302e302e31322e312e302e372e302e3171087d710958090000007374725f6174696d65710a550c313337363431323238382e30710b73550e302e302e31322e302e372e302e31710c7d710d6803550c313337363431323238382e30710e735509302e302e312e302e30710f7d71106803550c313337363431323837322e30711173550b302e302e332e312e312e3371127d71136803550c313337363431323838392e30711473550c302e302e31322e312e302e3771157d711658090000007374725f6174696d657117550c313337363431323238302e30711873752e"><vh>@file release_notes.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20130926053913.15854"><vh>Leo 4.11 b1 Release notes</vh>
@@ -1239,6 +1240,7 @@ expanded="ekr.20130926053913.16131,"><vh>@file release_notes.txt</vh></v>
 <v t="ekr.20130926053913.16253"><vh>viewrendered.py</vh></v>
 </v>
 </v>
+<v t="ekr.20131001100236.15928"><vh>Revised IPython Bridge</vh></v>
 <v t="ekr.20130926053913.16254"><vh>Scripts</vh>
 <v t="ekr.20130926053913.16255"><vh>Full tree preview</vh></v>
 </v>
@@ -1305,6 +1307,7 @@ expanded="ekr.20130926053913.16131,"><vh>@file release_notes.txt</vh></v>
 <v t="ekr.20131029095615.17078"><vh>Fixed bug 1243847: unicode error when saving @shadow nodes</vh></v>
 <v t="ekr.20131029095615.17079"><vh>Fixed bug #1243855: @auto-rst doesn't save text</vh></v>
 <v t="ekr.20131030082936.17638"><vh>--minimized now disables splash screen</vh></v>
+<v t="ekr.20131030184445.16572"><vh>Fixed bug: 1168689 outdated documentation about ipython</vh></v>
 </v>
 <v t="ekr.20130926053913.16364"><vh>New commands, features &amp; settings</vh>
 <v t="ekr.20131019190351.16682"><vh>Added @bool enable-tree-dragging to leoSettings.leo</vh></v>
@@ -1315,27 +1318,10 @@ expanded="ekr.20130926053913.16131,"><vh>@file release_notes.txt</vh></v>
 <v t="ekr.20130926053913.16349"><vh>Created insert-node-before command &amp; p.insertBefore</vh></v>
 <v t="ekr.20131029095615.17081"><vh>Revised help-for commands</vh></v>
 </v>
+<v t="ekr.20131030184445.16556"><vh>New plugins</vh></v>
 </v>
 </v>
-<v t="ekr.20130928065624.16019"><vh>Fix bug: 1168689 outdated documentation about ipython</vh>
-<v t="ekr.20131019061259.16677"><vh>Notes</vh>
-<v t="ekr.20130928065624.16021"><vh>code</vh>
-<v t="ekr.20130928065624.16022"><vh>runMainLoop &amp; runWithIpythonKernel (qtGui)</vh></v>
-</v>
-<v t="ekr.20130928065624.16023"><vh>post 1</vh></v>
-<v t="ekr.20130928065624.16024"><vh>post 2</vh></v>
-<v t="ekr.20130928065624.16025"><vh>post 3</vh></v>
-<v t="ekr.20130928065624.16026"><vh>EKR post re new code</vh></v>
-<v t="ekr.20130928065624.16027"><vh>** EKR post 2: how to use the new code</vh></v>
-<v t="ekr.20130928065624.16028"><vh>Windows installation</vh></v>
-</v>
-<v t="ekr.20131001100236.15925"><vh>Revise ipython bridge chapter</vh>
-<v t="ekr.20131001100236.15926"><vh>ipython-new &amp; dependencies</vh></v>
-<v t="ekr.20131001100236.15927"><vh>valuespace &amp; --ipython</vh></v>
-<v t="ekr.20131001100236.15928"><vh>highlights (for release noes)</vh></v>
-</v>
-<v t="ekr.20131019190351.16678"></v>
-</v>
+<v t="ekr.20131030184445.16580"><vh>1180186 debian install not documented well enough</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -16347,6 +16333,7 @@ The highlights of Leo 4.11:
 - Greatly improved abbreviations, including templates.
 - Clones are now valid anywhere in @file nodes.
 - Leo now warns if a .leo file is open elsewhere.
+- Leo's IPython bridge now works with IPython 1.x.
 - Added support for @testsetup and @testclass.
 - Added support for sessions.
 - Added colorizing themes.
@@ -19155,190 +19142,7 @@ The result is::
 <t tx="ekr.20130926053913.16362"></t>
 <t tx="ekr.20130926053913.16363"></t>
 <t tx="ekr.20130926053913.16364"></t>
-<t tx="ekr.20130926053913.16366">Bound Alt-Ctrl-M for macro-call-last (c-x e in emacs).</t>
-<t tx="ekr.20130928065624.16019">@language rest
-
-https://bugs.launchpad.net/leo-editor/+bug/1168689
-
-You must use "python launchLeo.py --ipython" instead of the ipython.py plugin
-
-The old ipython.py plugin is deprecated: it exists in leo/plugins/obsolete.
-
-The docs of ipython and leo should be updated
-
-https://groups.google.com/forum/?fromgroups#!topic/leo-editor/n5IVGe6fh2k
-</t>
-<t tx="ekr.20130928065624.16021">@language python
-
-</t>
-<t tx="ekr.20130928065624.16022">def runWithIpythonKernel(self):
-
-    try:
-        # This try/except does not work.
-        # Apparently ipython calls sys.exit on failure.
-        import leo.plugins.internal_ipkernel as ipk
-    except Exception:
-        print('can not import leo.plugins.internal_ipkernel')
-        g.app.ipk = None
-        g.app.ipm = None
-        g_ipm = None
-        g.es_exception()
-        return
-    g.app.ipk = ipk = ipk.InternalIPKernel()
-    if not ipk:
-        print('can not init leo.plugins.internal_ipkernel')
-        return
-    ipk.init_ipkernel('qt')
-    ns = ipk.namespace
-    ns['g'] = g
-    # launch the first shell, 'c' is not defined there
-    ipk.new_qt_console()
-
-    @g.command("ipython-new")
-    def qtshell_f(event):            
-        """ Launch new ipython shell window, associated with the same ipython kernel """
-        g.app.ipk.new_qt_console()
-        ns['c'] = event['c']
-
-    @g.command("ipython-exec")
-    def ipython_exec_f(event):
-        """ Execute script in current node in ipython namespace """
-        c = ns['c'] = event['c']
-        self.execInNamespace(c, c.p, g.app.ipk.namespace)
-
-    # blocks forever here, equivalent of 
-    # QApplication.exec_()
-    ipk.ipkernel.start()
-
-def execInNamespace(self, c, p, ns):
-    """" Needed because c.executeScript doesn't handle ns properly """
-    script = g.getScript(c,p)
-    try:
-        exec(script, ns)
-    except:
-        g.es_exception()
-
-def runMainLoop(self):
-
-    '''Start the Qt main loop.'''
-
-    g.app.gui.dismiss_splash_screen()
-    if self.script:
-        log = g.app.log
-        if log:
-            g.pr('Start of batch script...\n')
-            log.c.executeScript(script=self.script)
-            g.pr('End of batch script')
-        else:
-            g.pr('no log, no commander for executeScript in qtGui.runMainLoop')
-    elif g.app.useIpython and g.app.ipm:
-        # g.app.ipm exists only if IPython was imported properly.
-        self.runWithIpythonKernel()
-    else:
-        # This can be alarming when using Python's -i option.                           
-        sys.exit(self.qtApp.exec_())
-</t>
-<t tx="ekr.20130928065624.16023">Leo finally caught up with modern IPython ;-).
-
-I added support for the client/server ipython architecture, where Leo
-process runs an ipython "kernel", and terminal sessions can connect to it
-from other processes. So you can launch a new xterminal, and connect an
-ipython ui session (qt or terminal based).
-
-Branch is here:
-
-https://code.launchpad.net/~villemvainio/leo-editor/ipkerneldemo
-
-Launch leo by "python launchLeo.py --ipython"
-
-You should see a terminal being launched.
-
-You can do alt-x ipython-new to launch new terminals (connected to the same
-kernel)
-
-You need to install some dependencies to get this working. Try "sudo pip
-install ipython matplotlib" at least. This may fail if you don't have c
-compiler set up correctly; I leave it to others to repeat this and compose
-better instructions.
-
-Screenshot attached. "c" is available because I launched the session with
-alt-x ipython-new
-</t>
-<t tx="ekr.20130928065624.16024">===== EKR
-
-But the old push-to-ipython command crashes. Is there a way to pass scripts
-from Leo to ipython?
-
-===== Ville
-
-At least push-to-ipython can evaluate scripts in ipython namespace (you can
-see where that namespace dict is from my code).
-
-Now that we know it works on windows as well, do you want me to merge the
-code with leo trunk?
-
-Also, enthought python distribution has PyQt too? Maybe it could be a good
-recommendation for Windows users to use that when installing Leo on blank
-machine...
-</t>
-<t tx="ekr.20130928065624.16025">Added a new command: alt-x ipython-exec
-
-This executes the currently selected node/script in ipython kernels
-namespace
-
-This is a replacement for the old push-to-ipython command.
-
------
-
-valuespace.py is now adapted to use ipython namespace at all times, if it's
-enabled (with --ipython command line switch).
-
-It's hard to briefly explain what valuespace plugin does and how it relates
-to ipython, but if you are curious check out Contrib branch
-Projects/valuespace.
-
-Basically, it provides a "workbook" like way to get data from Leo document
-to the namespace, and do calculations based on that data. Having this data
-be accessible to the ipython instance makes it convenient to interact and
-poke around with the same data.
-</t>
-<t tx="ekr.20130928065624.16026">alr
-
-Bug 1168689 "outdated documentation about ipython" is misnamed. I have
-been tweaking Leo's IPython-related code as described below. I still hope
-to release b1 tomorrow, but I'll delay another day if there are problems.
-
-Recent revs have updated Leo's code relating to IPython as follows:
-
-- The old ipython.py plugin has demoted to leo/plugins/obsolete.
-
-- internal_ipkernel.py (the code called when the user gives the --ipython
-  option) now can import the IPKernelApp class regardless of which version
-  (0.x or 1.x) of IPython is in effect.
-
-The --ipython option works on Ubuntu; it *might* work on Windows, but I'm
-having installation problems.
-
-Questions:
-
-1. Is anyone using IPython with Leo successfully on Windows?
-
-2. I don't see any way to access Leo's data from IPython? In particular,
-   internal_ipkernel.py injects no _leo object into the IPython namespace.
-   Is this intentional?
-</t>
-<t tx="ekr.20130928065624.16027">'c' is available because I launched the session with alt-x ipython-new​"
-
-The --python option injects "g" into the namespace right away.
-
-g.app.ipk is an instance of the InternalIPKernel class defined in
-internal_ipkernel.py.
-
-g.app.ipk.namespace is the IPython namespace(!)
-</t>
-<t tx="ekr.20130928065624.16028">https://github.com/zeromq/pyzmq/downloads
-
-pyzmq-2.2.0.win32-py2.7.msi
+<t tx="ekr.20130926053913.16366">Bound Alt-Ctrl-M for macro-call-last (c-x e in emacs).
 </t>
 <t tx="ekr.20131001045038.17448">This idea got started when I (Ville M. Vainio) saw this post by Edward Ream
 on IPython developer mailing list:
@@ -19390,39 +19194,15 @@ script were run from Leo.
 defined in leo.core.leoIPython.py. This class allows IPython scripts to
 access multiple Leo outlines at once. See the actual code for details.
 </t>
-<t tx="ekr.20131001100236.15925">@language rest
+<t tx="ekr.20131001100236.15927">Leo's valuespace.py plugin uses the ipython namespace when the
+--ipython command line switch is in effect.
+
+This plugin provides a "workbook" like way to get data from Leo document to
+the namespace, and do calculations based on that data. Having this data be
+accessible to the ipython instance makes it convenient to interact and poke
+around with the same data.
 </t>
-<t tx="ekr.20131001100236.15926">You can do alt-x ipython-new to launch new terminals (connected to the same
-kernel)
-
-You need to install some dependencies to get this working. Try "sudo pip
-install ipython matplotlib" at least. This may fail if you don't have c
-compiler set up correctly; I leave it to others to repeat this and compose
-better instructions.
-</t>
-<t tx="ekr.20131001100236.15927">valuespace.py is now adapted to use ipython namespace at all times, if it's
-enabled (with --ipython command line switch).
-
-It's hard to briefly explain what valuespace plugin does and how it relates
-to ipython, but if you are curious check out Contrib branch
-Projects/valuespace.
-
-Basically, it provides a "workbook" like way to get data from Leo document
-to the namespace, and do calculations based on that data. Having this data
-be accessible to the ipython instance makes it convenient to interact and
-poke around with the same data.
-</t>
-<t tx="ekr.20131001100236.15928">Injects only _leo into the IPython namespace
-_leo.c is a property
-The getter returns the single element of _leo.commanders_list
-or a commander set previously by the setter.
-    
-_leo.commanders is a read-only property returning _leo.commanders_list
-after first doing an update.
-
------
-
-The highlights of the changes:
+<t tx="ekr.20131001100236.15928">The highlights of the changes:
 
 1. leo.core.leoIPython.py now contains *all* of Leo's IPython-related code.
    The setup code comes mainly from leo.plugins.internal_ipkernel.py.
@@ -19724,7 +19504,7 @@ The following commands work anywhere, regardless of focus:
 - Ctrl-U (move-outline-up) moves the selected node up.
 </t>
 <t tx="ekr.20131002055813.19037">When focus is in any of Leo's text panes (body pane, log pane, headlines),
-Leo work like most text editors:
+Leo works like most text editors:
 
 - Plain arrow keys move the cursor up, down, left or right.
 - Ctrl-LeftArrow and Ctrl-RightArrow move the cursor by words.
@@ -20098,13 +19878,12 @@ Ctrl-Q (exit-leo) exits Leo.  Leo will prompt you to save any unsaved outlines.
 </t>
 <t tx="ekr.20131005214621.16128">.. _`the rst3 chapter`: rstplugin3.html
 
-- The rst3 command converts an @rst tree to one or more text files
-  containing reStructuredText markup.
+- The rst3 command converts an @rst tree to an output file and
+  an intermediate file.
 
-- When using sphinx, the rst3 command creates an intermediate file which
-  sphinx then using as its input file.
+- docutils uses the output file; sphinx uses the intermediate file.
 
-- Settings prefixed with "rst3" control how the rst3 command works.
+- Settings starting with "rst3" control how the rst3 command works.
 
 - Within @rst trees, headlines become rST sections.
 
@@ -22637,7 +22416,6 @@ books.
 **Databases**: Leo's clones create new opportunities for scriptable
 databases. In my brother Speed's outlines, suboutlines *are* SQL queries!
 </t>
-<t tx="ekr.20131019061259.16677"></t>
 <t tx="ekr.20131019061259.16686">execute-script predefines::
 
     c: The commander of the present outline.
@@ -22809,6 +22587,7 @@ these when generators are not flexible enough::
 - Greatly improved abbreviations, including templates.
 - Clones are now valid anywhere in @file nodes.
 - Leo now warns if a .leo file is open elsewhere.
+- Leo's IPython bridge now works with IPython 1.x.
 - Added support for @testsetup and @testclass.
 - Added support for sessions.
 - Added colorizing themes.
@@ -23026,6 +22805,7 @@ Improved commands:
 
 Improved features:
 
+- Leo's IPython bridge now works with IPython 1.x.
 - @wrap now suppresses horizontal scrolling.
 - Added docstrings for all commands.
 - Added help text to the find panel.
@@ -23036,7 +22816,10 @@ Improved features:
 <t tx="ekr.20131019190351.16990" str_atime="1376412280.0">New plugins:
 
 - leomylyn.py
+- markup_inline.py
 - printing.py
+- richtext.py
+- rss.py
 - screen_capture.py
 - screencast.py
 - timestamp.py
@@ -23593,6 +23376,85 @@ for child in p.children():
 p.b = s</t>
 <t tx="ekr.20131030082936.17638">start_minimized
 </t>
+<t tx="ekr.20131030184445.16556">markup_inline.py,richtext.py, rss.py.</t>
+<t tx="ekr.20131030184445.16572">@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/1168689
+
+You must use "python launchLeo.py --ipython" instead of the ipython.py plugin
+
+The old ipython.py plugin is deprecated: it exists in leo/plugins/obsolete.
+
+The docs of ipython and leo should be updated
+
+https://groups.google.com/forum/?fromgroups#!topic/leo-editor/n5IVGe6fh2k
+</t>
+<t tx="ekr.20131030184445.16580">https://bugs.launchpad.net/leo-editor/+bug/1180186
+
+Installing Leo in debian and other apt-get enabled linux distros is not
+documented well enough, stating merely ""find and install the debian
+package".
+
+The best instructions seem to from 3 years ago, in mailing list
+announcement by Ville:
+https://groups.google.com/forum/#!msg/leo-editor/9yqhWD90Vtg/yCR8O_FBvIwJ
+
+{{{
+Add these files to `/etc/apt/sources.list`:
+
+    deb http://ppa.launchpad.net/villemvainio/ppa/ubuntu jaunty main
+    deb-src http://ppa.launchpad.net/villemvainio/ppa/ubuntu jaunty main
+
+Then, run
+
+    sudo apt-get update
+    sudo apt-get install leo
+
+And run `leo` from command prompt.
+}}}
+
+A recent user reports this install method still works, albeit with a
+warning,
+https://groups.google.com/d/topic/leo-editor-users/y6ZwJR3accs/discussion
+</t>
+<t tx="ekr.20131030184445.16582">##################
+More Leo Resources
+##################
+
+
+.. _`Introduction to Leo`:  http://www.youtube.com/watch?v=Zu6J-J0qFi0
+.. _`bookmarks plugin video`: https://vimeo.com/77720098 
+.. _`2012 PyOhio talk`:     http://www.youtube.com/watch?v=JgJ89ekGj-s
+
+.. _`slashdot article`:     http://leoeditor.com/testimonials.html#speed-ream-s-slashdot-article
+.. _`wikipedia page`:       http://en.wikipedia.org/wiki/Leo_(editor)
+.. _`literate programming`: http://www.literateprogramming.com/
+.. _`Leo's resource page`:  http://www.jserv.com/jk_orr/xml/leo.htm
+.. _`Mind Mapping`:         http://www.mind-mapping.org/
+.. _`Icons`:                http://leoeditor.com/icons.html
+
+Videos:
+
+- Ville Vainio's `Introduction to Leo`_.
+
+- Terry Brown's `bookmarks plugin video`_.
+
+- Tom Fetherston's `2012 PyOhio talk`_
+
+More resources:
+
+- Speed Ream's `slashdot article`_ about Leo.
+
+- Leo's `wikipedia page`_.
+
+- A page about `literate programming`_.
+
+- Joe Orr's `Leo's resource page`_ containing XSLT stylesheets for Leo.
+
+- The `Mind Mapping`_ page.
+
+- `Icons`_ telling the world that you used Leo.
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
@@ -23694,6 +23556,8 @@ range of problem domains with very little actual coding.
    enabled. This option starts an instance of the IPython shell in the
    console. Leo and IPython run simultaneously and independently. Their
    separate event loops do not interfere with each other.
-</t>
+
+   The ipython-new command launches new terminals connected to the same
+   IPython kernel.</t>
 </tnodes>
 </leo_file>

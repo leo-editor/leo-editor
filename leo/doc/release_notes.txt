@@ -20573,6 +20573,7 @@ The highlights of Leo 4.11:
 - Greatly improved abbreviations, including templates.
 - Clones are now valid anywhere in @file nodes.
 - Leo now warns if a .leo file is open elsewhere.
+- Leo's IPython bridge now works with IPython 1.x.
 - Added support for @testsetup and @testclass.
 - Added support for sessions.
 - Added colorizing themes.
@@ -22607,6 +22608,52 @@ Supported ctrl-clicks in viewrendered panes.
 Jacob Peck added support for markdown
 http://packages.python.org/Markdown/
 markup in viewrendered panes.
+#@+node:ekr.20131001100236.15928: *6* Revised IPython Bridge
+The highlights of the changes:
+
+1. leo.core.leoIPython.py now contains *all* of Leo's IPython-related code.
+   The setup code comes mainly from leo.plugins.internal_ipkernel.py.
+
+2. internal_ipkernel.py still exists (it will go away soon), but it has has
+   been completely disabled as follows::
+
+    if 0:
+        @others
+
+3. When the --ipython command-line argument is in effect, g.app.ipk is a
+   *singleton* IPython shell, shared by any and all IPython consoles.
+
+4. The startup code injects only a single object, _leo, into the IPython
+   namespace. This is an instance of the bulked-up LeoNameSpace class. This
+   interface class now contains features that make it easier to deal with
+   multiple open Leo commanders.
+
+- _leo.g is set to leoGlobals only once. Not exactly correct, perhaps, but
+  nobody will notice.
+
+- _leo.commanders is a (read-only) property returning the list of open
+  commanders. This list is always kept up-to-date: it scans
+  g.app.windowList before returning its result.
+
+- _leo.c is a (read/write) property returning g.app.windowList[0].c if the
+  windowList has only one element, or the "designated commander" if it
+  exists. Otherwise, it returns None. In that case, the expectation is that
+  the user will "designate" a commander with: _leo.c = aCommander.
+
+- _leo.find_c(path) returns the commander c such that c.fileName() or
+  g.shortFileName(c) matches path.
+
+5. Perhaps most importantly, that's *all* there is. In particular, Ville's
+   magic functions and LeoWorkbook class are gone.
+
+Imo, the deleted code might better exist as IPython startup code, but I
+could be wrong. Furthermore, Leo's p.h and p.b properties are new since
+Ville first created the code, and so this kind of support code is less
+urgently needed.
+
+If there is a great demand to restore these features, it can always be done
+later. For now, though, I wanted to do the simplest thing that could
+possibly work.
 #@+node:ekr.20130926053913.16254: *6* Scripts
 The following scripts have been added to scripts.leo:
 
@@ -23571,6 +23618,18 @@ The fix was to not make assumptions about type in compareFiles and create.
 
 #@+node:ekr.20131030082936.17638: *7* --minimized now disables splash screen
 start_minimized
+#@+node:ekr.20131030184445.16572: *7* Fixed bug: 1168689 outdated documentation about ipython
+@language rest
+
+https://bugs.launchpad.net/leo-editor/+bug/1168689
+
+You must use "python launchLeo.py --ipython" instead of the ipython.py plugin
+
+The old ipython.py plugin is deprecated: it exists in leo/plugins/obsolete.
+
+The docs of ipython and leo should be updated
+
+https://groups.google.com/forum/?fromgroups#!topic/leo-editor/n5IVGe6fh2k
 #@+node:ekr.20130926053913.16364: *6* New commands, features & settings
 #@+node:ekr.20131019190351.16682: *7* Added @bool enable-tree-dragging to leoSettings.leo
 #@+node:ekr.20130926053913.16325: *7* Added help text to the find panel
@@ -23607,6 +23666,8 @@ Added c.insertHeadlineBefore and unit tests for same.
 help-for-dynamic-abbreviations
 help-for-abbreviations
 help-for-find-commands
+#@+node:ekr.20131030184445.16556: *6* New plugins
+markup_inline.py,richtext.py, rss.py.
 #@+node:edream.110203163054.63: ** Latest version
 #@-all
 #@-leo

@@ -40,6 +40,7 @@ Leo's Documentation Page
    :hidden:
 
    slides
+   leoLinks
 
 .. _`Leo's home page`: http://leoeditor.com/
 
