@@ -95,7 +95,6 @@
 <v t="ekr.20111124095033.10203"><vh>@edit bzr_version.py</vh></v>
 </v>
 </v>
-<v t="ekr.20090802181029.5988"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040430162943"></t>

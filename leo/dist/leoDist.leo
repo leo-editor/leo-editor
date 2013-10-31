@@ -474,7 +474,7 @@ Run make-leo, making sure that the final revno matches the build number in versi
     - Commit the change to version.py, thereby making the build number match the final revno.
 Create the executable installer:
     - Choose leo.nsi in Windows Explorer and select "Compile NSI Script"
-    - or just double-click leo.nsi.
+      or just double-click leo.nsi.
 Test files in installed folder.
     - Run all unit tests in the installed folder, with the installed Leo.
     - Make sure the following open without errors:
