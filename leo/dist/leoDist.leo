@@ -154,8 +154,6 @@ Leo 4.11 contains over a year's work on Leo.
 
 Leo is a PIM, an IDE and an outliner for programmers, authors and web
 designers. Leo's unique features organize data in a revolutionary way.
-
-Leo is a text editor, data organizer, project manager and much more.
 See http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.11:
@@ -177,13 +175,14 @@ The highlights of Leo 4.11:
 
 Links:
 ------
-Leo:       http://leoeditor.com
-Docs:      http://leoeditor.com/leo_toc.html
-Tutorials: http://leoeditor.com/tutorial.html
-Forum:     http://groups.google.com/group/leo-editor
-Download:  http://sourceforge.net/projects/leo/files/
-Bzr:       http://code.launchpad.net/leo-editor/
-Quotes:    http://leoeditor.com/testimonials.html
+Leo:        http://leoeditor.com
+Docs:       http://leoeditor.com/leo_toc.html
+Tutorials:  http://leoeditor.com/tutorial.html
+What's new: http://leoeditor.com/what-is-new.html#leo-4-11
+Forum:      http://groups.google.com/group/leo-editor
+Download:   http://sourceforge.net/projects/leo/files/
+Bzr:        http://code.launchpad.net/leo-editor/
+Quotes:     http://leoeditor.com/testimonials.html
 </t>
 <t tx="EKR.20040519091259">@pagewidth 70
 
@@ -488,9 +487,8 @@ Create a bzr tag **last**.
     - bzr push
 Optional: update leoDist.leo *after* doing the commit that adds the tag.
     - This ensures that leoDist.leo in the distro matches the leoDist.leo in the tagged revno.
-@color
-# **** Scan all folders &amp; files before uploading.
-@nocolor
+
+===== Scan all folders &amp; files before uploading.
 
 Create Release on SourceForge:
     http://sourceforge.net/projects/leo/
@@ -1320,8 +1318,6 @@ Leo 4.11 contains over a year's work on Leo.
 
 Leo is a PIM, an IDE and an outliner for programmers, authors and web
 designers. Leo's unique features organize data in a revolutionary way.
-
-Leo is a text editor, data organizer, project manager and much more.
 See http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.11:
