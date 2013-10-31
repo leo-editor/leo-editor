@@ -30,6 +30,7 @@
 <v t="ekr.20131019184243.16689"><vh>Frequently used commands</vh></v>
 <v t="ekr.20131019184243.16690"><vh>Leo directives</vh></v>
 <v t="ekr.20131019184243.16691"><vh>Settings</vh></v>
+<v t="ekr.20131031101712.19298"><vh>Node types</vh></v>
 <v t="ekr.20131019184243.16692"><vh>Notable Plugins</vh></v>
 <v t="ekr.20131019184243.16693"><vh>External files (@&lt;file&gt; nodes)</vh></v>
 <v t="ekr.20131019184243.16694"><vh>Scripting</vh>
@@ -547,6 +548,32 @@ if aList:
     if g.os_path_exists(fn):
         # Don't wait for this command to exit!
         g.execute_shell_commands(['&amp;%s' % (fn)],trace=trace)
+</t>
+<t tx="ekr.20131031101712.19298">Supported by Leo's core:
+
+- @chapters, @chapter
+- @rst, @rst-no-head, @rst-ignore, @rst-ignore-tree
+- @settings
+- @test, @testsetup, @testclass
+- @url
+
+Within @settings trees:
+
+- @bool, @color, @directory, @encoding, @int
+- @float, @font, @ratio, @path, @string
+- @buttons, @commands
+- @menus, @menu, @menuat, @item
+- @openwith, @shortcuts
+
+Supported by plugins:
+
+- bookmarks.py: @bookmarks, @bookmark
+- at_folder.py: @folder
+- at_produce.py: @produce
+- at_view.py: @clip, @strip, @view
+- expfolder.py: @expfolder
+- mod_scripting.py: @button, @command, @script
+- viewrendered.py: @graphics-script, @image, @html, @movie and @svg
 </t>
 </tnodes>
 </leo_file>

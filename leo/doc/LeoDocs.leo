@@ -851,6 +851,7 @@
 <v t="ekr.20131015035606.16801"><vh>Frequently used commands</vh></v>
 <v t="ekr.20131015035606.16786"><vh>Leo directives</vh></v>
 <v t="ekr.20131015035606.16788"><vh>Settings</vh></v>
+<v t="ekr.20131031101712.16486"><vh>Node types</vh></v>
 <v t="ekr.20131016103844.16730"><vh>Notable Plugins</vh></v>
 <v t="ekr.20131015035606.16799"><vh>External files (@&lt;file&gt; nodes)</vh></v>
 <v t="ekr.20131007143750.16074"><vh>Scripting</vh>
@@ -1294,8 +1295,7 @@
 <v t="ekr.20131030184445.16556"><vh>New plugins</vh></v>
 </v>
 </v>
-<v t="ekr.20131008041326.16177"></v>
-<v t="ekr.20131031101712.16486"><vh>cheat sheet: catalog of node types</vh></v>
+<v t="ekr.20131007143750.16070"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -11557,6 +11557,7 @@ viewrendered.py |br|
    Creates a window for *live* rendering of rst, html, etc.
    This plugin uses docutils, http://docutils.sourceforge.net/,
    to do the rendering, so installing docutils is recommended.
+   Supports @graphics-script, @image, @html, @movie and @svg nodes.
 
 vim.py |br|
    Enables two-way communication with VIM.
@@ -11869,6 +11870,7 @@ For full documentation see:
 
 </t>
 <t tx="ekr.20101113063552.9410">Creates a window for *live* rendering of rst, html, etc.  Qt only.
+Supports @graphics-script, @image, @html, @movie and @svg nodes.
 
 viewrendered.py creates a single ``Alt-X`` style command, ``viewrendered``,
 which opens a new window where the current body text is rendered as HTML
@@ -20273,8 +20275,8 @@ You will get something like the following::
 </t>
 <t tx="ekr.20131008041326.16177">This section discusses the most important milestones in history of Leo.
 
-.. contents::
-    :depth: 2
+..  .. contents::
+    ..  :depth: 2
 </t>
 <t tx="ekr.20131008041326.16178"></t>
 <t tx="ekr.20131008041326.16203">.. |---| unicode:: U+02015
@@ -21316,7 +21318,9 @@ It would be a good idea to skim this chapter to see what it contains.
 - quicksearch.py: Adds Nav tab for searching.
 - todo.py: Manages to-do lists and simple project management.
 - valuespace.py: Creates an outline-oriented spreadsheet.
-- viewrendered.py: Creates a rendering pane. Automatically loaded by Leo's help commands.
+- viewrendered.py: Creates a rendering pane.
+  Automatically loaded by Leo's help commands.
+  Supports @graphics-script, @image, @html, @movie and @svg nodes.
 </t>
 <t tx="ekr.20131017051340.16732">These are not included on the web, but may be of interest to those
 reading LeoDocs.leo.</t>
@@ -22542,7 +22546,32 @@ You can, instead, add the following link::
 
 That's it!  See `Running Leo`_ for how to run Leo after installing it.
 </t>
-<t tx="ekr.20131031101712.16486"></t>
+<t tx="ekr.20131031101712.16486">Supported by Leo's core:
+
+- @chapters, @chapter
+- @rst, @rst-no-head, @rst-ignore, @rst-ignore-tree
+- @settings
+- @test, @testsetup, @testclass
+- @url
+
+Within @settings trees:
+
+- @bool, @color, @directory, @encoding, @int
+- @float, @font, @ratio, @path, @string
+- @buttons, @commands
+- @menus, @menu, @menuat, @item
+- @openwith, @shortcuts
+
+Supported by plugins:
+
+- bookmarks.py: @bookmarks, @bookmark
+- at_folder.py: @folder
+- at_produce.py: @produce
+- at_view.py: @clip, @strip, @view
+- expfolder.py: @expfolder
+- mod_scripting.py: @button, @command, @script
+- viewrendered.py: @graphics-script, @image, @html, @movie and @svg
+</t>
 <t tx="ekr.20131031101712.16685">- Tab completion now shows all @command &amp; @button nodes.
 - Leo tabs may be detached from the main window.
 - The Open With menu now works.
