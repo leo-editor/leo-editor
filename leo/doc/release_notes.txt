@@ -23630,6 +23630,8 @@ The old ipython.py plugin is deprecated: it exists in leo/plugins/obsolete.
 The docs of ipython and leo should be updated
 
 https://groups.google.com/forum/?fromgroups#!topic/leo-editor/n5IVGe6fh2k
+#@+node:ekr.20131030184445.16580: *7* Fixed bug 1180186: debian install not documented well enough
+https://bugs.launchpad.net/leo-editor/+bug/1180186
 #@+node:ekr.20130926053913.16364: *6* New commands, features & settings
 #@+node:ekr.20131019190351.16682: *7* Added @bool enable-tree-dragging to leoSettings.leo
 #@+node:ekr.20130926053913.16325: *7* Added help text to the find panel

@@ -260,11 +260,14 @@ expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
 <v t="ekr.20100817101952.4303"><vh>Installing Leo itself</vh>
 <v t="ekr.20100731112744.7276"><vh>Installing Leo on Windows</vh>
 <v t="ekr.20130807203905.16602"><vh>Using the single-click installer</vh></v>
-<v t="ekr.20130807203905.16603"><vh>Installing from sources</vh>
+<v t="ekr.20130807203905.16603"><vh>Installing from sources (Windows)</vh>
 <v t="ekr.20130807203905.16597"><vh>Creating Windows file associations</vh></v>
 </v>
 </v>
-<v t="ekr.20100731112744.7274"><vh>Installing Leo on Linux</vh></v>
+<v t="ekr.20100731112744.7274"><vh>Installing Leo on Linux</vh>
+<v t="ekr.20131030184445.17285"><vh>Installing from a debian package</vh></v>
+<v t="ekr.20131030184445.17286"><vh>Installing from sources (Linux)</vh></v>
+</v>
 <v t="ekr.20100731112744.7275"><vh>@rst-ignore Installing Leo on MacOS X</vh></v>
 <v t="ekr.20120229094652.15098"><vh>Installing Leo on MacOs 10.7 Lion</vh></v>
 <v t="ekr.20100817101952.4306"><vh>Contributing to Leo with bzr</vh></v>
@@ -1308,6 +1311,7 @@ expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
 <v t="ekr.20131029095615.17079"><vh>Fixed bug #1243855: @auto-rst doesn't save text</vh></v>
 <v t="ekr.20131030082936.17638"><vh>--minimized now disables splash screen</vh></v>
 <v t="ekr.20131030184445.16572"><vh>Fixed bug: 1168689 outdated documentation about ipython</vh></v>
+<v t="ekr.20131030184445.16580"><vh>Fixed bug 1180186: debian install not documented well enough</vh></v>
 </v>
 <v t="ekr.20130926053913.16364"><vh>New commands, features &amp; settings</vh>
 <v t="ekr.20131019190351.16682"><vh>Added @bool enable-tree-dragging to leoSettings.leo</vh></v>
@@ -1321,7 +1325,6 @@ expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
 <v t="ekr.20131030184445.16556"><vh>New plugins</vh></v>
 </v>
 </v>
-<v t="ekr.20131030184445.16580"><vh>1180186 debian install not documented well enough</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -9186,32 +9189,14 @@ Attempting to modify c.cleo.prikey immediately in the @script gives an
 AttributeError as c has no .cleo when the @script is executed. Deferring it by
 using registerHandler() avoids the problem.
 </t>
-<t tx="ekr.20100731112744.7274">If you are using Debian/Ubuntu, find and install the debian package. This
-provides the best integration with your desktop (file associations, icons, launcher
-item). Failing that, follow the instructions below.
+<t tx="ekr.20100731112744.7274">.. _`install Leo from a debian package`: installing.html#installing-from-a-debian-package
+.. _`install Leo from sources`: installing.html#installing-from-sources-linux
 
-You may download Leo's sources in one of three ways, as described at:
-http://leoeditor.com/download.html If the sources are zipped, unzip them
-into the **unpacked folder** in your home directory. The unpacked folder
-will be called something like leo-4-11.
+If you are using Debian/Ubuntu, it's best to
+`install Leo from a debian package`_, as described next.
+This provides file associations, icons, launcher items, etc.
 
-You now have two choices:
-
-1. You can run Leo from your home directory.
-   Just add  ~/leo-4-5 to your path.
-
-2. You can install leo into /usr/local/lib and /usr/local/bin by running Leo's install script as follows::
-
-    cd ~/leo-4-11-final # Change version as appropriate.
-    chmod u+x install
-    sudo ./install
-
-The install script will instruct you to add /usr/local/bin to your path.
-You can, instead, add the following link::
-
-    sudo ln -s /usr/local/lib/leo/ /usr/local/lib/python2.6/site-packages/
-
-That's it!  See `Running Leo`_ for how to run Leo after installing it.
+Otherwise, `install Leo from sources`_.
 </t>
 <t tx="ekr.20100731112744.7275">**Important**: Installing Leo on MacOS is difficult and not recommended.
 Furthermore, Leo does not work as well on MacOS as on other platforms.
@@ -20165,7 +20150,7 @@ Leo can be installed on MacOS, but the process is difficult and not recommended.
 please ask for help on `Leo's help forum`_.
 
 .. contents::
-    :depth: 2
+    :depth: 4
     
 </t>
 <t tx="ekr.20131008041326.16099">###################
@@ -21323,7 +21308,7 @@ Downloading, Installing &amp; Running Leo
 .. This page exists simply to organize the main TOC.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
 
    download
    installing
@@ -23390,32 +23375,6 @@ The docs of ipython and leo should be updated
 https://groups.google.com/forum/?fromgroups#!topic/leo-editor/n5IVGe6fh2k
 </t>
 <t tx="ekr.20131030184445.16580">https://bugs.launchpad.net/leo-editor/+bug/1180186
-
-Installing Leo in debian and other apt-get enabled linux distros is not
-documented well enough, stating merely ""find and install the debian
-package".
-
-The best instructions seem to from 3 years ago, in mailing list
-announcement by Ville:
-https://groups.google.com/forum/#!msg/leo-editor/9yqhWD90Vtg/yCR8O_FBvIwJ
-
-{{{
-Add these files to `/etc/apt/sources.list`:
-
-    deb http://ppa.launchpad.net/villemvainio/ppa/ubuntu jaunty main
-    deb-src http://ppa.launchpad.net/villemvainio/ppa/ubuntu jaunty main
-
-Then, run
-
-    sudo apt-get update
-    sudo apt-get install leo
-
-And run `leo` from command prompt.
-}}}
-
-A recent user reports this install method still works, albeit with a
-warning,
-https://groups.google.com/d/topic/leo-editor-users/y6ZwJR3accs/discussion
 </t>
 <t tx="ekr.20131030184445.16582">##################
 More Leo Resources
@@ -23454,6 +23413,39 @@ More resources:
 - The `Mind Mapping`_ page.
 
 - `Icons`_ telling the world that you used Leo.
+</t>
+<t tx="ekr.20131030184445.17285">Add these files to `/etc/apt/sources.list`::
+
+    deb http://ppa.launchpad.net/villemvainio/ppa/ubuntu jaunty main
+    deb-src http://ppa.launchpad.net/villemvainio/ppa/ubuntu jaunty main
+
+Then run::
+
+    sudo apt-get update
+    sudo apt-get install leo
+</t>
+<t tx="ekr.20131030184445.17286">You may download Leo's sources in one of three ways, as described at:
+http://leoeditor.com/download.html If the sources are zipped, unzip them
+into the **unpacked folder** in your home directory. The unpacked folder
+will be called something like leo-4-11.
+
+You now have two choices:
+
+1. You can run Leo from your home directory.
+   Just add  ~/leo-4-5 to your path.
+
+2. You can install leo into /usr/local/lib and /usr/local/bin by running Leo's install script as follows::
+
+    cd ~/leo-4-11-final # Change version as appropriate.
+    chmod u+x install
+    sudo ./install
+
+The install script will instruct you to add /usr/local/bin to your path.
+You can, instead, add the following link::
+
+    sudo ln -s /usr/local/lib/leo/ /usr/local/lib/python2.6/site-packages/
+
+That's it!  See `Running Leo`_ for how to run Leo after installing it.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
