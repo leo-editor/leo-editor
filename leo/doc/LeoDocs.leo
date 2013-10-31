@@ -1295,7 +1295,6 @@
 <v t="ekr.20131030184445.16556"><vh>New plugins</vh></v>
 </v>
 </v>
-<v t="ekr.20131007143750.16070"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -22559,6 +22558,7 @@ Within @settings trees:
 - @bool, @color, @directory, @encoding, @int
 - @float, @font, @ratio, @path, @string
 - @buttons, @commands
+- @enabled-plugins
 - @menus, @menu, @menuat, @item
 - @openwith, @shortcuts
 

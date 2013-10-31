@@ -561,6 +561,7 @@ Within @settings trees:
 
 - @bool, @color, @directory, @encoding, @int
 - @float, @font, @ratio, @path, @string
+- @enabled-plugins
 - @buttons, @commands
 - @menus, @menu, @menuat, @item
 - @openwith, @shortcuts
