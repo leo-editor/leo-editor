@@ -26,8 +26,7 @@
 <v t="ekr.20100120072650.6089"><vh>@file ../doc/leoProjects.txt</vh></v>
 </v>
 <v t="EKR.20040519090151.2"><vh>To do</vh>
-<v t="ekr.20100119205347.6015"
-marks="ekr.20130806211959.17355,"><vh>@file ../doc/leoToDo.txt</vh></v>
+<v t="ekr.20100119205347.6015"><vh>@file ../doc/leoToDo.txt</vh></v>
 </v>
 <v t="ekr.20031218072017.2406"><vh>Code</vh>
 <v t="ekr.20031218072017.2604"><vh>Core classes</vh>
@@ -96,6 +95,7 @@ marks="ekr.20130806211959.17355,"><vh>@file ../doc/leoToDo.txt</vh></v>
 <v t="ekr.20111124095033.10203"><vh>@edit bzr_version.py</vh></v>
 </v>
 </v>
+<v t="ekr.20090802181029.5988"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040430162943"></t>
