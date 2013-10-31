@@ -893,7 +893,9 @@
 <v t="ekr.20101025080245.6087"><vh>Leo 4.7 The one node world and Python 3k</vh></v>
 <v t="ekr.20101025080245.6089"><vh>Leo 4.8 Simple sentinels &amp; better data recovery</vh></v>
 <v t="ekr.20131008041326.16253"><vh>Leo 4.9 Qt, autocompleter, vr pane</vh></v>
-<v t="ekr.20050902100834"><vh>@rst-ignore-tree Details</vh>
+<v t="ekr.20131031101712.16685"><vh>Leo 4.10 Many improvements</vh></v>
+<v t="ekr.20131031101712.17211"><vh>Leo 4.11 Many more improvements</vh></v>
+<v t="ekr.20050902100834"><vh>@rst-ignore-tree More history</vh>
 <v t="EKR.20040524104904.247"><vh>Versions</vh></v>
 <v t="EKR.20040524104904.248"><vh>Designing @file trees</vh>
 <v t="EKR.20040524104904.249"><vh>Deciding to do Leo2</vh></v>
@@ -1292,6 +1294,8 @@
 <v t="ekr.20131030184445.16556"><vh>New plugins</vh></v>
 </v>
 </v>
+<v t="ekr.20131008041326.16177"></v>
+<v t="ekr.20131031101712.16486"><vh>cheat sheet: catalog of node types</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -8880,8 +8884,7 @@ files that are shared with those who don't want to see sentinel comments.
 
 - @nosent is appropriate only for files that you alone modify.
 </t>
-<t tx="ekr.20090711120622.10446">@language rest
-</t>
+<t tx="ekr.20090711120622.10446"></t>
 <t tx="ekr.20090711120622.10447">################
 Leo screen shots
 ################
@@ -8953,8 +8956,7 @@ especially in `Leo's Tutorial`_ and `Leo's Reference`_.
 .. glossary::
     :sorted:
 </t>
-<t tx="ekr.20091130111843.6787">@language rest
-</t>
+<t tx="ekr.20091130111843.6787"></t>
 <t tx="ekr.20091130111843.6788">.. |---| unicode:: U+02015 .. for quotes
    :trim:
 
@@ -11086,9 +11088,7 @@ the "guesses" that the \@shadow algorithm has made, you can simply change the
 choice. The next time you open the outline, you will see the choices *you* made,
 not the guesses that the \@shadow algorithm made.
 </t>
-<t tx="ekr.20101104024804.4898">@language rest
-
-- Select the node "Leo's Documentation"
+<t tx="ekr.20101104024804.4898">- Select the node "Leo's Documentation"
 
 - Run the make-sphinx command or click the make-sphinx button.
 
@@ -13995,9 +13995,7 @@ http://pythonhosted.org/pyenchant/download.html There is an executable
 installer for Windows users.
 
 </t>
-<t tx="ekr.20110521135104.18151">@language rest 
-
-Cross-file clones are cloned nodes in one outline that refer to data in another
+<t tx="ekr.20110521135104.18151">Cross-file clones are cloned nodes in one outline that refer to data in another
 outline. This is a frequently requested feature. For example::
 
     I would absolutely love to have the leo files in different project
@@ -14180,8 +14178,7 @@ These settings are as follows, with the defaults as shown::
     \@color unselected_body_bg_color = #ffffef&lt;/vh&gt;&lt;/v&gt;
     \@color unselected_body_fg_color = black&lt;/vh&gt;&lt;/v&gt;
 </t>
-<t tx="ekr.20110601105631.19349">@language rest
-
+<t tx="ekr.20110601105631.19349">
 </t>
 <t tx="ekr.20110601105631.19360">- Fixed an important bug involving orphan nodes. Leo now never saves an external
   file containing orphan nodes. This ensures that all the information in the
@@ -14747,9 +14744,7 @@ begins and ends with the '\b' anchor.
         True: recursively expand definitions by expanding any
         references found in definitions.
 </t>
-<t tx="ekr.20110612104631.16414">@language rest
-
-**New in Leo 4.9**: The following three options allow you
+<t tx="ekr.20110612104631.16414">**New in Leo 4.9**: The following three options allow you
 to expand noweb section references, much like Leo itself does.
 
 **expand_noweb_references**
@@ -15314,8 +15309,7 @@ creates a permanent reference to the window so the window won't be garbage
 collected after the Leo script exits.
     
 </t>
-<t tx="ekr.20111127144911.5544">@language rest
-@pagewidth 75
+<t tx="ekr.20111127144911.5544">@pagewidth 75
 
 @ @rst-options
 call_docutils=False
@@ -15482,8 +15476,7 @@ follows::
 **Note**: putting @settings trees as descendants of an @mark-for-unit-test node
 will copy the @setting tree, but will *not* actually set the corresponding settings.
 </t>
-<t tx="ekr.20120229094652.15130">@language rest
-@pagewidth 75
+<t tx="ekr.20120229094652.15130">@pagewidth 75
 
 Q. When I run the following script I see a window appear and then
 immediately disappear::
@@ -15563,8 +15556,7 @@ various values for C, nicely formatted so that it is easy to determine
 where the differences are.
 
 </t>
-<t tx="ekr.20120317130339.8282">@language rest
-@pagewidth 75
+<t tx="ekr.20120317130339.8282">@pagewidth 75
 
 The following script won't work as intended:
 
@@ -15898,9 +15890,7 @@ When chapters are enabled, the Cmds-&gt;Chapters menu shows all available chapte
 - The ``chapter-move-node-to``, ``chapter-clone-node-to`` and ``chapter-copy-node-to`` commands
   prompt for a chapter name and add the currently selected node (and its descendants) to another chapter.
 </t>
-<t tx="ekr.20120320153011.6055">@language rest
-
-.. What's new.
+<t tx="ekr.20120320153011.6055">.. What's new.
 </t>
 <t tx="ekr.20120320153011.6056">.. _`bug 800157`: https://bugs.launchpad.net/leo-editor/+bug/800157
 .. _`bug 823267`: https://bugs.launchpad.net/leo-editor/+bug/823267
@@ -16121,9 +16111,7 @@ while p:
         g.es(p.h)
     p.moveToThreadNext()
 </t>
-<t tx="ekr.20130807203905.16526">@language rest
-
-When I study a program, I like to import it into Leo. I have several
+<t tx="ekr.20130807203905.16526">When I study a program, I like to import it into Leo. I have several
 scripts that do this: some create @auto nodes; others create @file nodes.
 Whatever the method used, the import process has the potential to change
 many files. Usually, I just change @auto and @file to @@auto or @@file, so
@@ -17844,9 +17832,7 @@ That's why enabling requires @bool scripting-at-script-nodes = True as
 well as the abbreviation specific stuff.  The risk seems equivalent to
 the scripting-at-script-nodes = True risk.
 </t>
-<t tx="ekr.20130926053913.16234">@language rest
-
-Leo's abbreviations have been significantly improved by adding scripted
+<t tx="ekr.20130926053913.16234">Leo's abbreviations have been significantly improved by adding scripted
 abbreviations and templates. This is the work of Terry Brown,
 &lt;terry_n_brown@yahoo.com&gt;
 
@@ -18009,8 +17995,7 @@ much pervasively used ... it could be a good thing for leo (-:
 Created at.writeAtAutoOtlFile.
 </t>
 <t tx="ekr.20130926053913.16241"></t>
-<t tx="ekr.20130926053913.16242" str_atime="1376412280.0">@language rest
-</t>
+<t tx="ekr.20130926053913.16242" str_atime="1376412280.0"></t>
 <t tx="ekr.20130926053913.16243">Added printing.py.
 </t>
 <t tx="ekr.20130926053913.16244">From: Ville M. Vainio
@@ -20091,8 +20076,7 @@ This is Leo's Users Guide. It covers additional material not covered in the
    directives
    commands
 </t>
-<t tx="ekr.20131008041326.16091">@language rest
-</t>
+<t tx="ekr.20131008041326.16091"></t>
 <t tx="ekr.20131008041326.16092"></t>
 <t tx="ekr.20131008041326.16094">##############
 Installing Leo
@@ -21813,9 +21797,7 @@ if __name__ == '__main__':
 </t>
 <t tx="ekr.20131019190351.16677">There are non-persistent Python dicts, for free use by plugins and scripts.
 </t>
-<t tx="ekr.20131019190351.16678">@language rest
-
-1168689 outdated documentation about ipython
+<t tx="ekr.20131019190351.16678">1168689 outdated documentation about ipython
 https://bugs.launchpad.net/leo-editor/+bug/1168689
 
 Changed runWithIpythonKernel, LM.initApp, app.finishQuit.
@@ -21828,8 +21810,6 @@ or a commander set previously by the setter.
     
 _leo.commanders is a read-only property returning _leo.commanders_list
 after first doing an update.
-
------
 
 The highlights of the changes:
 
@@ -21880,9 +21860,7 @@ possibly work.
 <t tx="ekr.20131019190351.16679">Happened when user typed tab.
 </t>
 <t tx="ekr.20131019190351.16680"></t>
-<t tx="ekr.20131019190351.16681">@language rest
-
-At rev 6107.
+<t tx="ekr.20131019190351.16681">At rev 6107.
     
 - Restored @bool ignore_unbound_non_ascii_keys setting to leoSettings.leo.
 - Made self-insert-char an official command, but it will do nothing if
@@ -21893,13 +21871,9 @@ At rev 6107.
   Viktor verifies that this strategy works.
 - Added event ivar (a QKeyEvent) to leoKeyEvent class.
 - Added event positional arg to leoGui.create_key_event.
-
-@language python
 </t>
 <t tx="ekr.20131019190351.16682"></t>
-<t tx="ekr.20131019190351.16683">@language rest
-
-Rev 6119 fixes a major bug involving the rst3 command.
+<t tx="ekr.20131019190351.16683">Rev 6119 fixes a major bug involving the rst3 command.
 Previously, rst3-related settings, which start with "rst3_"
 where not, in fact, initializing the internal rst3 settings!
 
@@ -22121,9 +22095,7 @@ From Ville M. Vainio:
 - Creating to-do nodes to get to-do items *out* of sight.
 
 - Put the project I am working on at the *bottom* of the outline.</t>
-<t tx="ekr.20131023180133.17112">@language rest
-
-From Writers Workshop: https://groups.google.com/forum/#!topic/leo-editor/6zR9WK66Nz4s
+<t tx="ekr.20131023180133.17112">From Writers Workshop: https://groups.google.com/forum/#!topic/leo-editor/6zR9WK66Nz4s
 
 I still think the best way to do is to put examples. I was not able to
 realize how to -clearly- say this until I read a recent post talking about
@@ -22294,9 +22266,7 @@ indicate the author of quotations.
 
 Note that rST automatically turns - - into a dash: --.
 </t>
-<t tx="ekr.20131027064821.17131">@language rest
-
-Leo's read code parses text into true Python objects: Leo's positions and vnodes.
+<t tx="ekr.20131027064821.17131">Leo's read code parses text into true Python objects: Leo's positions and vnodes.
 
 As a result, Leo scripts will be **orders of magnitude faster** than similar code in vim or emacs.
 
@@ -22365,9 +22335,7 @@ myDocument.html.txt is the **input** file for sphinx.
 .. _LaTeX:              http://www.latex-project.org/
 .. _`reStructuredText`: http://docutils.sourceforge.net/rst.html
 .. _`Sphinx`:           http://sphinx.pocoo.org/</t>
-<t tx="ekr.20131028213522.17137">@language rest
-
-Samples of use (Maybe):
+<t tx="ekr.20131028213522.17137">Samples of use (Maybe):
 
     Sample on how to import bookmarks from Internet browser (I have that
     script ready myself, I could add that)
@@ -22426,22 +22394,15 @@ More: Associate leo files
                         initial window size (height x width)
 </t>
 <t tx="ekr.20131028213522.17150"></t>
-<t tx="ekr.20131029095615.17077">@language rest
-
-Bug: Window size was not set when --minimized is in effect.
+<t tx="ekr.20131029095615.17077">Bug: Window size was not set when --minimized is in effect.
 
 LM.scanOptions now sets LM.options['windowSize'] to (h,w), both ints.
 
 getWindowPositionAttributes now checks LM.options.get('windowSize')
 
 startVnodes now properly sets top geometry when --minimized is in effect.
-
-@language python
 </t>
-<t tx="ekr.20131029095615.17078">@language rest
-
-https://bugs.launchpad.net/leo-editor/+bug/1243847
-
+<t tx="ekr.20131029095615.17078">https://bugs.launchpad.net/leo-editor/+bug/1243847
 
 The fix: at.replaceFileWithString now *always* calls g.toEncodedString.
 
@@ -22463,9 +22424,7 @@ UnicodeEncodeError: 'ascii' codec can't encode character u'\xe9' in position 129
 
 There is no error for the @file or @nosent files.
 </t>
-<t tx="ekr.20131029095615.17079">@language rest
-
-https://bugs.launchpad.net/leo-editor/+bug/1243855
+<t tx="ekr.20131029095615.17079">https://bugs.launchpad.net/leo-editor/+bug/1243855
 
 The fix was to not make assumptions about type in compareFiles and create.
 
@@ -22500,9 +22459,7 @@ p.b = s</t>
 </t>
 <t tx="ekr.20131030184445.16556">markup_inline.py,richtext.py, rss.py.
 </t>
-<t tx="ekr.20131030184445.16572">@language rest
-
-https://bugs.launchpad.net/leo-editor/+bug/1168689
+<t tx="ekr.20131030184445.16572">https://bugs.launchpad.net/leo-editor/+bug/1168689
 
 You must use "python launchLeo.py --ipython" instead of the ipython.py plugin
 
@@ -22584,6 +22541,32 @@ You can, instead, add the following link::
     sudo ln -s /usr/local/lib/leo/ /usr/local/lib/python2.6/site-packages/
 
 That's it!  See `Running Leo`_ for how to run Leo after installing it.
+</t>
+<t tx="ekr.20131031101712.16486"></t>
+<t tx="ekr.20131031101712.16685">- Tab completion now shows all @command &amp; @button nodes.
+- Leo tabs may be detached from the main window.
+- The Open With menu now works.
+- Leo can highlight the pane containing the focus.
+- The bigdash plugin searches across multiple files.
+- Improved abbreviation capabilities.
+- Improved handling of URL's.
+- Improved editing of non-Leo files.
+- Improvements create "weightless" unit testing.
+
+</t>
+<t tx="ekr.20131031101712.17211">- Rewrote Leo's tutorials.
+- Greatly improved abbreviations, including templates.
+- Clones are now valid anywhere in @file nodes.
+- Leo now warns if a .leo file is open elsewhere.
+- Leo's IPython bridge now works with IPython 1.x.
+- Added support for @testsetup and @testclass.
+- Added support for sessions.
+- Added colorizing themes.
+- A colored border highlights the pane with focus.
+- Added support for the clojure, markdown and TypeScript languages.
+- Added importers for .ipynb, .otl and vimoutliner files.
+- Many new and improved commands, plugins and scripts.
+- Dozens of bug fixes and code-level improvements.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few

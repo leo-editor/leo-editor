@@ -10341,8 +10341,6 @@ Leo now contains minimal support for arguments to minibuffer commands.
 
 - At present, the repeat-complex-command command does not support arguments.
 #@+node:ekr.20080304112802.25: *6* Added translation services
-@language rest
-@color
 #@+node:ekr.20080310093038.4: *7* Translating Leo's menus and messages
 .. _gettext: http://docs.python.org/lib/module-gettext.html
 
@@ -10420,8 +10418,6 @@ Leo now contains minimal support for arguments to minibuffer commands.
 
 - At present, the repeat-complex-command command does not support arguments.
 #@+node:ekr.20080311060457.212: *7* Added translation services
-@language rest
-@color
 #@+node:ekr.20080311060457.213: *8* Translating Leo's menus and messages
 .. _gettext: http://docs.python.org/lib/module-gettext.html
 
@@ -14123,8 +14119,6 @@ Quotes:   http://leoeditor.com/testimonials.html
 - Corrected date in trunk/license.txt.
 #@+node:ekr.20101104091058.5045: *3* 4.8 Simpler sentinels, better installer, recovery nodes
 #@+node:ekr.20101024234254.5433: *4* 4.8 a1
-@language rest
-
 Leo 4.8 alpha 1                    October 29, 2010
 
 Leo 4.8 alpha 1 is now available at:
@@ -14263,8 +14257,6 @@ PyEnchant.
 #@+node:ekr.20101104091058.4979: *8* Fixed vampire nodes and created p.deletePositionsInList
 # Also, created a "Resurrected Nodes" node to handle such nodes cleanly and safely.
 #@+node:ekr.20101104091058.4980: *9* Post re vampire nodes
-@language rest
-
 Vampire nodes from cvs
 
 I've just discovered a major problem with cvs updates.  It is a subtle
@@ -14489,8 +14481,7 @@ The problematic code line is the statement "g.match_word(s, 0,key)" in the follo
 
 As far as I understand the function match_word, it returns 1 if s contains key at index 0,
 The self.leoDirectivesList contains all directive like color, language, ... (without @) but
-s is a complete body line that looks like:
-@language rest
+s is a complete body line that looks like: @language rest
 
 That means language starts at index 1 not at 0.
 changing the line to
@@ -15011,8 +15002,6 @@ PyEnchant.
 #@+node:ekr.20101124102457.5140: *8* Fixed vampire nodes and created p.deletePositionsInList
 # Also, created a "Resurrected Nodes" node to handle such nodes cleanly and safely.
 #@+node:ekr.20101124102457.5141: *9* Post re vampire nodes
-@language rest
-
 Vampire nodes from cvs
 
 I've just discovered a major problem with cvs updates.  It is a subtle
@@ -15237,8 +15226,7 @@ The problematic code line is the statement "g.match_word(s, 0,key)" in the follo
 
 As far as I understand the function match_word, it returns 1 if s contains key at index 0,
 The self.leoDirectivesList contains all directive like color, language, ... (without @) but
-s is a complete body line that looks like:
-@language rest
+s is a complete body line that looks like: @language rest
 
 That means language starts at index 1 not at 0.
 changing the line to
@@ -15704,8 +15692,6 @@ The installer now makes proper entries in the Windows start menu.
 #@+node:ekr.20101124102457.5227: *5* New in 4.8 final
 - Fixed key redefinition message.
 #@+node:ekr.20110531155858.19246: *3* 4.9 Qt only, autocompleter, vr pane
-@language rest
-
 Leo 4.9 final              June 21, 2011
 
 Leo 4.9 final is now available at:
@@ -16411,8 +16397,6 @@ Other changes
 #@+node:ekr.20110620083705.14902: *4* New in 4.9 final
 Fixed crash on mouse clicks in minibuffer.
 #@+node:ekr.20120229094652.14053: *3* 4.10 Incremental improvements
-@language rest
-
 Leo 4.10 final                                         March 29, 2012
 
 Leo 4.10 final is now available at: http://sourceforge.net/projects/leo/files/Leo/4.10%20final/
@@ -17089,17 +17073,11 @@ I instantly like this new binding.
 https://bugs.launchpad.net/leo-editor/+bug/923301
 #@+node:ekr.20120313074006.14738: *6* Fixed g.os_startfile on Linux
 #@+node:ekr.20120313074006.14800: *6* Fixed Bug: multiple @language directive not colored correctly
-@language rest
-
 Example: typing in this rest section recolors as *Python*.
 The correct coloring is restored when the entire text is recolored.
 
 In this case, a workaround, and a performance improvement, would be to put
 the ``@language python`` directive before the ``language rest``.
-
-@language python
-
-
 #@+node:ekr.20120313074006.14906: *6* Fixed Bug: multiple @language directives mess up add-comments command
 - Added scanToCursor argument to c.scanAllDirectives in c.insert/removedComments.
 
@@ -18354,8 +18332,6 @@ myLeoSettings.leo:
     )
 #@+node:ekr.20130926053913.15855: *3* 4.11 Better abbreviations, many bug fixes
 #@+node:ekr.20130806072439.19990: *4* Leo 4.11 a2 Release notes
-@language rest
-
 Leo 4.11 a2                                     August 19, 2013
 
 Leo 4.11 a2 is now available at: http://sourceforge.net/projects/leo/files/Leo/
@@ -19927,8 +19903,6 @@ That's why enabling requires @bool scripting-at-script-nodes = True as
 well as the abbreviation specific stuff.  The risk seems equivalent to
 the scripting-at-script-nodes = True risk.
 #@+node:ekr.20130925072610.22619: *6* Major improvements made to abbreviations
-@language rest
-
 Leo's abbreviations have been significantly improved by adding scripted
 abbreviations and templates. This is the work of Terry Brown,
 <terry_n_brown@yahoo.com>
@@ -20092,7 +20066,6 @@ Created vimoutlinerScanner.
 Created at.writeAtAutoOtlFile.
 #@+node:ekr.20130807203905.16545: *6* Added support for clojure syntax coloring
 #@+node:ekr.20130803073926.17114: *5* Plugins
-@language rest
 #@+node:ekr.20130814140750.17194: *6* New plugins
 Added printing.py.
 #@+node:ekr.20130806072439.18567: *7* leomylyn.py
@@ -22134,8 +22107,6 @@ That's why enabling requires @bool scripting-at-script-nodes = True as
 well as the abbreviation specific stuff.  The risk seems equivalent to
 the scripting-at-script-nodes = True risk.
 #@+node:ekr.20130926053913.16234: *7* Major improvements made to abbreviations
-@language rest
-
 Leo's abbreviations have been significantly improved by adding scripted
 abbreviations and templates. This is the work of Terry Brown,
 <terry_n_brown@yahoo.com>
@@ -22299,7 +22270,6 @@ Created vimoutlinerScanner.
 Created at.writeAtAutoOtlFile.
 #@+node:ekr.20130926053913.16241: *7* Added support for clojure syntax coloring
 #@+node:ekr.20130926053913.16242: *6* Plugins
-@language rest
 #@+node:ekr.20130926053913.16243: *7* New plugins
 Added printing.py.
 #@+node:ekr.20130926053913.16244: *8* leomylyn.py
@@ -23413,8 +23383,6 @@ wrote recent file: /home/ville/.leo/.leoRecentFiles.txt
 #@+node:ekr.20131019190351.16684: *7* Fixed import problem in leoRst.py
 https://groups.google.com/forum/#!topic/leo-editor/Mbn3VzY-jr0
 #@+node:ekr.20131019190351.16683: *7* Fixed major bug in rst3 command
-@language rest
-
 Rev 6119 fixes a major bug involving the rst3 command.
 Previously, rst3-related settings, which start with "rst3_"
 where not, in fact, initializing the internal rst3 settings!
@@ -23439,8 +23407,6 @@ this makes LeoDocs.leo bigger, but I think the clarity of
 expression is worthwhile. LeoDocs.leo really should be a
 model of good practice.
 #@+node:ekr.20131019190351.16681: *7* Fixed Alt-Gr keys
-@language rest
-
 At rev 6107.
     
 - Restored @bool ignore_unbound_non_ascii_keys setting to leoSettings.leo.
@@ -23452,8 +23418,6 @@ At rev 6107.
   Viktor verifies that this strategy works.
 - Added event ivar (a QKeyEvent) to leoKeyEvent class.
 - Added event positional arg to leoGui.create_key_event.
-
-@language python
 #@+node:ekr.20131019190351.16680: *7* Alt-0 (vr-toggle) now puts focus in the body pane
 #@+node:ekr.20131019190351.16679: *7* Fixed crasher in k.auto_completer_state_hander
 Happened when user typed tab.
@@ -23511,8 +23475,6 @@ if __name__ == '__main__':
     assert os.path.exists(path),path
     assert g.os_path_exists(path),path
 #@+node:ekr.20131019190351.16678: *7* Fixed bug 1168689 re ipython
-@language rest
-
 1168689 outdated documentation about ipython
 https://bugs.launchpad.net/leo-editor/+bug/1168689
 
@@ -23526,8 +23488,6 @@ or a commander set previously by the setter.
     
 _leo.commanders is a read-only property returning _leo.commanders_list
 after first doing an update.
-
------
 
 The highlights of the changes:
 
@@ -23575,8 +23535,6 @@ If there is a great demand to restore these features, it can always be done
 later. For now, though, I wanted to do the simplest thing that could
 possibly work.
 #@+node:ekr.20131029095615.17077: *7* Fixed several window-sizing bugs
-@language rest
-
 Bug: Window size was not set when --minimized is in effect.
 
 LM.scanOptions now sets LM.options['windowSize'] to (h,w), both ints.
@@ -23584,13 +23542,8 @@ LM.scanOptions now sets LM.options['windowSize'] to (h,w), both ints.
 getWindowPositionAttributes now checks LM.options.get('windowSize')
 
 startVnodes now properly sets top geometry when --minimized is in effect.
-
-@language python
 #@+node:ekr.20131029095615.17078: *7* Fixed bug 1243847: unicode error when saving @shadow nodes
-@language rest
-
 https://bugs.launchpad.net/leo-editor/+bug/1243847
-
 
 The fix: at.replaceFileWithString now *always* calls g.toEncodedString.
 
@@ -23612,8 +23565,6 @@ UnicodeEncodeError: 'ascii' codec can't encode character u'\xe9' in position 129
 
 There is no error for the @file or @nosent files.
 #@+node:ekr.20131029095615.17079: *7* Fixed bug #1243855: @auto-rst doesn't save text
-@language rest
-
 https://bugs.launchpad.net/leo-editor/+bug/1243855
 
 The fix was to not make assumptions about type in compareFiles and create.
@@ -23621,8 +23572,6 @@ The fix was to not make assumptions about type in compareFiles and create.
 #@+node:ekr.20131030082936.17638: *7* --minimized now disables splash screen
 start_minimized
 #@+node:ekr.20131030184445.16572: *7* Fixed bug: 1168689 outdated documentation about ipython
-@language rest
-
 https://bugs.launchpad.net/leo-editor/+bug/1168689
 
 You must use "python launchLeo.py --ipython" instead of the ipython.py plugin

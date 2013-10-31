@@ -440,6 +440,7 @@ Pre-testing:
     - Run pylint -a.
 Release notes and web documentation:
     - Update the release notes.
+    - Update link to what's new section.
     - Copy release notes to leoDist.leo.
     - Update version number and modification date on Leo's home page.
     - (The sphinx date is updated automatically.)

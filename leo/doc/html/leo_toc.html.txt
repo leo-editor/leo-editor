@@ -20,6 +20,11 @@ Leo's Documentation Page
    getting-started
    
 .. toctree::
+   :maxdepth: 1
+
+   Cheat Sheet <cheatsheet>
+   
+.. toctree::
    :maxdepth: 2
 
    Tutorial <tutorial>
@@ -31,7 +36,6 @@ Leo's Documentation Page
 .. toctree::
    :maxdepth: 1
 
-   Cheat Sheet <cheatsheet>
    FAQ
    glossary
    What's New <what-is-new>
