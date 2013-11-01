@@ -4527,6 +4527,7 @@ printing.py
 # nested_splitter.py
 # niceNosent.py
 # nodeActions.py
+# nodewatch.py
 # notebook.py
 # open_shell.py
 # outline_export.py
