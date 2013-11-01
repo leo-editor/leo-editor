@@ -21,7 +21,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20131019184243.16683"><vh>Leo's cheat sheet</vh>
+<v t="ekr.20131019184243.16683" a="E"><vh>Leo's cheat sheet</vh>
 <v t="ekr.20131019184243.16685"><vh>Key bindings</vh>
 <v t="ekr.20131019184243.16686"><vh>Selecting outline nodes</vh></v>
 <v t="ekr.20131019184243.16687"><vh>Moving outline nodes</vh></v>
@@ -574,7 +574,9 @@ Supported by plugins:
 - at_view.py: @clip, @strip, @view
 - expfolder.py: @expfolder
 - mod_scripting.py: @button, @command, @script
-- viewrendered.py: @graphics-script, @image, @html, @movie and @svg
+- viewrendered.py: @graphics-script, @image, @html, @md, @movie and @svg
+- rss.py: @feed
+
 </t>
 </tnodes>
 </leo_file>
