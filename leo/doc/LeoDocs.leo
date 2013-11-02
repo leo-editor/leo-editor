@@ -1296,7 +1296,6 @@
 <v t="ekr.20131030184445.16556"><vh>New plugins</vh></v>
 </v>
 </v>
-<v t="ekr.20131008041326.16241"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -22610,7 +22609,7 @@ Supported by plugins:
 install the `Sphinx`_ package if you use sphinx markup. Sphinx gives Leo's
 and `Python's`_ web sites their distinctive appearance and features.
 
-After installing docutils or sphinx, you must restart Leo so that new
+After installing docutils or sphinx, you must restart Leo so that the new
 installation will take effect.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
