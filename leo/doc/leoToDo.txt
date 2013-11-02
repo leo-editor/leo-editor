@@ -7,6 +7,47 @@
 By mid December.
 
 Private email: http://mail.google.com/mail/u/0/#inbox/141ddfe09c389e4f
+.. @+node:ekr.20131101080215.16488: ** * Outreach to magazine editors
+===== Steve Litt
+
+I think the first step in getting this kind of review is to get more
+fans who can write and who are listened to. To do that, you'd need to
+give them enough of a burning desire to spend a few days learning the
+ins and outs of Leo. I'll give you an idea how to do this later in this
+email.
+
+But first, I think Leo has an image problem. Mention Leo, and most
+people say "it's an outliner." If that's all Leo was, VimOutliner would
+have eaten Leo's lunch years ago --- VimOutliner's faster and has the
+90% of outlining features that people use 90% of the time. Not only
+that, face the facts, 95% of the population will never believe they
+need an outliner or that an outliner would do them any good, or that
+outlining is a skill they need to bother to acquire.
+
+My understanding, and please correct me if I'm wrong, is that Leo is a
+mechanism by which you can specify a computer program as an outline
+like thing in an outliner like setting, flip a switch, and bang, there's
+your program. THAT'S what's going to hook people.
+
+So here's what to do. Make a 3 minute video showing how to compose an
+application outline and turn it into a program. The program can be
+trivially simple, but make the program as 2014 relevant as possible: A
+web app would be nice. At the end of the video explain that although
+this video's program was simple, Leo can be used to make arbitrarily
+complex apps, and make them well.
+
+Maybe have a second video showing how to make a GUI app. Maybe a 3rd
+showing how to write a book in Leo, flip a switch, and have it be a
+book, flip it back, and see your book as an outline again, ready for
+changes, either minor, or structurally major.
+
+Publicize these videos, and you're going to get some journalists
+excited, and those are your reviews.
+
+One more thing: Start publicizing different ways people use Leo.
+Encourage them to write in with their unique uses, and publicize them.
+I bet people are doing things with Leo you never dreamed of, and some
+of those things might be the itch some journalist wants to scratch.
 .. @+node:ekr.20130916105324.19893: ** To-do for 4.11
 @language rest
 .. @+node:ekr.20130926053913.11572: *3* for b1

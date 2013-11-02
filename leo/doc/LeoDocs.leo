@@ -367,6 +367,7 @@
 </v>
 <v t="ekr.20131008041326.16241"><vh>@rst html\tutorial-rst3.html</vh>
 <v t="ekr.20131030071311.17087"><vh>@rst-ignore notes</vh></v>
+<v t="ekr.20131102044158.16488"><vh>Install docutils and (optional) sphinx</vh></v>
 <v t="ekr.20131009100732.16748"><vh>Create the @rst node</vh></v>
 <v t="ekr.20131027064821.17144"><vh>The output and intermediate files</vh></v>
 <v t="ekr.20131009100732.16754"><vh>Choose docutils or sphinx</vh>
@@ -1295,6 +1296,7 @@
 <v t="ekr.20131030184445.16556"><vh>New plugins</vh></v>
 </v>
 </v>
+<v t="ekr.20131008041326.16241"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -20308,9 +20310,9 @@ name.
 <t tx="ekr.20131008041326.16222">.. |---| unicode:: U+02015 .. for quotes
    :trim:
    
-###################
-Using Leo as a PIM
-###################
+###########################################
+Using Leo as a Personal Information Manager
+###########################################
 
     "Cloning is pure genius!"---Michael Manti
 
@@ -20365,12 +20367,8 @@ creating underlining for rST sections. To reorganize a document, just
 reorganize the corresponding Leo outline: you don't have to change
 underlining characters by hand.
 
-The rst3 command requires the `docutils`_ Python package. You must also
-install the `Sphinx`_ package if you use sphinx markup. Sphinx gives Leo's
-and `Python's`_ web sites their distinctive appearance and features.
-
-The tutorial covers only the basic features of the rst3 command. Leo's
-documentation uses only the features described here!
+The tutorial covers only the basic features of the rst3 command. This is
+enough to generate all of Leo's documentation!
 
 CheatSheet.leo contains an expanded version of the example used in this
 tutorial. You can open CheatSheet.leo from Leo's help menu.
@@ -20557,6 +20555,17 @@ automatically to create the output files.
 
 When using sphinx, run sphinx's "make" utility after running the rst3
 command to create the final output files.
+
+**Errors and warnings**:
+
+1. Install docutils and then restart Leo if you see this error::
+
+    writeToDocutils: docutils not present
+    
+2. ​Leo has a default stylesheet ​​that centers titles and makes them big and bold,
+   so you can disregard messages such as::
+
+    stylesheet not found &lt;path-to&gt;default.css
 </t>
 <t tx="ekr.20131009100732.16753">.. _`ask for help`: https://groups.google.com/forum/#!forum/leo-editor
 
@@ -22596,6 +22605,13 @@ Supported by plugins:
 - Added importers for .ipynb, .otl and vimoutliner files.
 - Many new and improved commands, plugins and scripts.
 - Dozens of bug fixes and code-level improvements.
+</t>
+<t tx="ekr.20131102044158.16488">The rst3 command requires the `docutils`_ Python package. You must also
+install the `Sphinx`_ package if you use sphinx markup. Sphinx gives Leo's
+and `Python's`_ web sites their distinctive appearance and features.
+
+After installing docutils or sphinx, you must restart Leo so that new
+installation will take effect.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
