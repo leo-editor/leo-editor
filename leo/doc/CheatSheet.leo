@@ -21,7 +21,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20131019184243.16683" a="E"><vh>Leo's cheat sheet</vh>
+<v t="ekr.20131019184243.16683"><vh>Leo's cheat sheet</vh>
 <v t="ekr.20131019184243.16685"><vh>Key bindings</vh>
 <v t="ekr.20131019184243.16686"><vh>Selecting outline nodes</vh></v>
 <v t="ekr.20131019184243.16687"><vh>Moving outline nodes</vh></v>
@@ -55,6 +55,7 @@
 <v t="ekr.20131030071311.18738"><vh>Chapter XII</vh></v>
 <v t="ekr.20131030071311.18739"><vh>@rst-no-head The End</vh></v>
 </v>
+<v t="ekr.20131102044158.16563"><vh>~/myDocument.html.txt</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -477,7 +478,11 @@ Notes:
    
 3. Executing the make-sphinx command will do everything needed to make
    myDocument.html. The @button make-sphinx node (a child of the Startup
-   node) creates the make-sphinx command.</t>
+   node) creates the make-sphinx command.
+   
+4. The node myDocument.html.txt is the intermediate file produced by the
+   rst3 command.
+</t>
 <t tx="ekr.20131030071311.18732">#############
 War and Peace
 #############
@@ -576,6 +581,53 @@ Supported by plugins:
 - mod_scripting.py: @button, @command, @script
 - viewrendered.py: @graphics-script, @image, @html, @md, @movie and @svg
 - rss.py: @feed
+
+</t>
+<t tx="ekr.20131102044158.16563">.. rst3: filename: ~/myDocument.html
+
+#############
+War and Peace
+#############
+
+        by Leo Tolstoy/Tolstoi
+        
+        BOOK ONE: 1805
+
+Chapter I
++++++++++
+
+"Well, Prince, so Genoa and Lucca are now just family estates of the
+Buonapartes. But I warn you, if you don't tell me that this means war,
+if you still try to defend the infamies and horrors perpetrated by
+that Antichrist--I really believe he is Antichrist--I will have
+nothing more to do with you and you are no longer my friend, no longer
+my 'faithful slave,' as you call yourself! But how do you do? I see
+I have frightened you--sit down and tell me all the news."
+
+...stuff happens...
+
+Chapter XII
++++++++++++
+
+From the time the law of Copernicus was discovered and proved, the
+mere recognition of the fact that it was not the sun but the earth
+that moves sufficed to destroy the whole cosmography of the
+ancients.
+
+...
+
+.. and now we skip to the end of last chapter, while demonstrating use of an
+    organizer node (a node whose name does not appear in the output document),
+    and that rst comments appear as html comments (try 'View Source' on
+    output.html)
+
+In the first case it was necessary to renounce the consciousness
+of an unreal immobility in space and to recognize a motion we did
+not feel; in the present case it is similarly necessary to renounce
+a freedom that does not exist, and to recognize a dependence of
+which we are not conscious.
+   
+--- The End ---
 
 </t>
 </tnodes>
