@@ -1,6 +1,18 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20100120072650.6089: * @file ../doc/leoProjects.txt
 #@+all
+#@+node:ekr.20131103054650.16529: ** Long winded discussions about brevity
+@language rest
+
+I am finding them unbearable. If you have a specific
+suggestion for Leo's docs, just make it.
+
+Please do read Leo's documentation before complaining about
+it. That includes the table of contents, index & glossary.
+
+Yes, learning about Leo requires real study. Get to it.
+
+Edward
 #@+node:ekr.20131103054650.16528: ** b2/final
 #@+node:ekr.20131007055150.13036: *3* Improved reformat-paragraph
 @language rest
@@ -31,6 +43,15 @@ What I did:
     - c.starts/endParagraph
     - c.singleLineParagraph.
 - Add space adjustments to rp_wrap_all_lines.
+#@+node:ekr.20131103054650.16526: *3* Fixed bug: add/remove comments now handle ambiguous @language directives
+@language rest
+
+- g.set_language doesn't handle ambigous @language directives!!
+- Eliminated scanToCursor logic
+- Added c.hasAmbiguousLanguage and c.getLanguageAtCursor helpers.
+- Changed c.insertComments and c.removeComments.
+
+@language python
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

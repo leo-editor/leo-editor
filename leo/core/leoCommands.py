@@ -786,7 +786,7 @@ class Commands (object):
     #@+node:ekr.20080901124540.1: *3* c.Directive scanning
     # These are all new in Leo 4.5.1.
     #@+node:ekr.20080827175609.39: *4* c.scanAllDirectives
-    def scanAllDirectives(self,p=None,scanToCursor=False):
+    def scanAllDirectives(self,p=None):
 
         '''Scan p and ancestors for directives.
 
@@ -814,7 +814,7 @@ class Commands (object):
         )
 
         # Set d by scanning all directives.
-        aList = g.get_directives_dict_list(p,scanToCursor=scanToCursor)
+        aList = g.get_directives_dict_list(p)
         d = {}
         for key,default,func in table:
             val = func(aList)
@@ -3595,9 +3595,42 @@ class Commands (object):
             result = ''.join(result)
             c.updateBodyPane(head,result,tail,undoType,oldSel,oldYview)
     #@+node:ekr.20050312114529: *6* c.insert/removeComments
+    #@+node:ekr.20131103054650.16535: *7* c.hasAmbiguousLangauge
+    def hasAmbiguousLanguage(self,p):
+        '''Return True if p.b contains different @language directives.'''
+        c,languages,tag = self,set(),'@language'
+        for s in g.splitLines(p.b):
+            if g.match_word(s,0,tag):
+                i = g.skip_ws(s,len(tag))
+                j = g.skip_id(s,i)
+                word = s[i:j]
+                languages.add(word)
+        return len(list(languages)) > 1
+    #@+node:ekr.20131103054650.16536: *7* c.getLanguageAtCursor
+    def getLanguageAtCursor(self,p,language):
+        '''
+        Return the language in effect at the present insert point.
+        Use the language argument as a default if no @language directive seen.
+        '''
+        c = self
+        tag = '@language'     
+        w = c.frame.body.bodyCtrl
+        ins = w.getInsertPoint()
+        n = 0
+        for s in g.splitLines(p.b):
+            # g.trace(ins,n,repr(s))
+            if g.match_word(s,0,tag):
+                i = g.skip_ws(s,len(tag))
+                j = g.skip_id(s,i)
+                language = s[i:j]
+            if n <= ins < n + len(s):
+                break
+            else:
+                n += len(s)
+        # g.trace(ins,n,language)
+        return language
     #@+node:ekr.20050312114529.1: *7* addComments
     def addComments (self,event=None):
-
         #@+<< addComments docstring >>
         #@+node:ekr.20111115111842.9789: *8* << addComments docstring >>
         #@@pagewidth 50
@@ -3620,19 +3653,22 @@ class Commands (object):
         *See also*: delete-comments.
         '''
         #@-<< addComments docstring >>
-
         c = self ; p = c.p
-        d = c.scanAllDirectives(p,scanToCursor=True)
-        d1,d2,d3 = d.get('delims') # d1 is the line delim.
         head,lines,tail,oldSel,oldYview = self.getBodyLines()
         if not lines:
             g.warning('no text selected')
             return
-
+        # The default language in effect at p.
+        language = c.frame.body.colorizer.scanColorDirectives(p)
+        if c.hasAmbiguousLanguage(p):
+            language = c.getLanguageAtCursor(p,language)
+        # g.trace(language,p.h)
+        d1,d2,d3 = g.set_delims_from_language(language)
         d2 = d2 or '' ; d3 = d3 or ''
-        if d1: openDelim,closeDelim = d1+' ',''
-        else:  openDelim,closeDelim = d2+' ',' '+d3
-
+        if d1:
+            openDelim,closeDelim = d1+' ',''
+        else:
+            openDelim,closeDelim = d2+' ',' '+d3
         # Comment out non-blank lines.
         indent = c.config.getBool('indent_added_comments',default=True)
         result = []
@@ -3645,7 +3681,6 @@ class Commands (object):
                     result.append(openDelim+line.replace('\n','')+closeDelim+'\n')
             else:
                 result.append(line)
-
         result = ''.join(result)
         c.updateBodyPane(head,result,tail,undoType='Add Comments',oldSel=None,oldYview=oldYview)
     #@+node:ekr.20050312114529.2: *7* deleteComments
@@ -3667,18 +3702,17 @@ class Commands (object):
         *See also*: add-comments.
         '''
         #@-<< deleteComments docstring >>
-
         c = self ; p = c.p
-        d = c.scanAllDirectives(p,scanToCursor=True)
-        # d1 is the line delim.
-        d1,d2,d3 = d.get('delims')
-
         head,lines,tail,oldSel,oldYview = self.getBodyLines()
         result = []
         if not lines:
             g.warning('no text selected')
             return
-
+        # The default language in effect at p.
+        language = c.frame.body.colorizer.scanColorDirectives(p)
+        if c.hasAmbiguousLanguage(p):
+            language = c.getLanguageAtCursor(p,language)
+        d1,d2,d3 = g.set_delims_from_language(language)
         if d1:
             # Remove the single-line comment delim in front of each line
             d1b = d1 + ' '
@@ -3705,7 +3739,6 @@ class Commands (object):
                     result.append(s[:i] + s[first:last] + s[j+n3:])
                 else:
                     result.append(s)
-
         result = ''.join(result)
         c.updateBodyPane(head,result,tail,undoType='Delete Comments',oldSel=None,oldYview=oldYview)
     #@+node:ekr.20031218072017.1831: *6* insertBodyTime, helpers and tests

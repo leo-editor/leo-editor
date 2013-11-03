@@ -9328,12 +9328,10 @@ class leoQtColorizer:
                     doc = c.config.at_root_bodies_start_in_doc_mode
                     self.rootMode = g.choose(doc,"doc","code")
             #@-<< Test for @root, @root-doc or @root-code >>
-
         # 2011/05/28: If no language, get the language from any @<file> node.
         if self.language:
             if trace: g.trace('found @language %s %s' % (self.language,self.languageList))
             return self.language
-
         #  Attempt to get the language from the nearest enclosing @<file> node.
         self.language = g.getLanguageFromAncestorAtFileNode(root)
         if not self.language:

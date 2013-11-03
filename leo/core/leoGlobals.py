@@ -339,35 +339,28 @@ def findReference(c,name,root):
 
 g_noweb_root = re.compile('<'+'<'+'*'+'>'+'>'+'=',re.MULTILINE)
 
-def get_directives_dict(p,root=None,scanToCursor=False):
-
-    """Scan p for @directives found in globalDirectiveList.
+def get_directives_dict(p,root=None):
+    """
+    Scan p for @directives found in globalDirectiveList.
 
     Returns a dict containing the stripped remainder of the line
-    following the first occurrence of each recognized directive"""
-
+    following the first occurrence of each recognized directive
+    """
     trace = False and not g.unitTesting
     verbose = False
     if trace: g.trace('*'*20,p.h)
-
     if root: root_node = root[0]
     d = {}
-
     # Do this every time so plugins can add directives.
     pat = g.compute_directives_re()
     directives_pat = re.compile(pat,re.MULTILINE)
-
     # The headline has higher precedence because it is more visible.
     for kind,s in (('head',p.h),('body',p.b)):
         anIter = directives_pat.finditer(s)
         for m in anIter:
             word = m.group(0)[1:] # Omit the @
             i = m.start(0)
-            if (
-                # 2012/03/9: Special case @language directive in the body.
-                (kind == 'body' and scanToCursor and word.strip() == 'language')
-                or word.strip() not in d
-            ):
+            if word.strip() not in d:
                 j = i + 1 + len(word)
                 k = g.skip_line(s,j)
                 val = s[j:k].strip()
@@ -378,24 +371,12 @@ def get_directives_dict(p,root=None,scanToCursor=False):
                 else:
                     directive_word = word.strip()
                     if directive_word == 'language':
-                        if kind == 'body' and scanToCursor:
-                            # 2012/03/09:Only add preceding @language directives.
-                            c = p.v.context
-                            w = c.frame.body.bodyCtrl
-                            ins = w.getInsertPoint()
-                            i1,i2 = g.getLine(s,i)
-                            if trace: g.trace(kind,directive_word,val)
-                            if ins >= i2:
-                                d[directive_word] = val
-                        else:
-                            d[directive_word] = val
+                        d[directive_word] = val
                     else:
                         if directive_word in ('root-doc', 'root-code'):
                             d['root'] = val # in addition to optioned version
                         d[directive_word] = val
-
                     # g.trace(kind,directive_word,val)
-
                     if trace: g.trace(word.strip(),kind,repr(val))
                     # A special case for @path in the body text of @<file> nodes.
                     # Don't give an actual warning: just set some flags.
@@ -413,8 +394,8 @@ def get_directives_dict(p,root=None,scanToCursor=False):
                 g.es('%s= may only occur in a topmost node (i.e., without a parent)' % (
                     g.angleBrackets('*')))
             break
-
-    if trace and verbose: g.trace('%4d' % (len(p.h) + len(p.b)),g.callers(5))
+    if trace and verbose:
+        g.trace('%4d' % (len(p.h) + len(p.b)))
     return d
 #@+node:ekr.20090214075058.10: *5* compute_directives_re
 def compute_directives_re ():
@@ -434,7 +415,7 @@ def compute_directives_re ():
 
     return '|'.join(aList)
 #@+node:ekr.20080827175609.1: *4* g.get_directives_dict_list (must be fast)
-def get_directives_dict_list(p,scanToCursor=False):
+def get_directives_dict_list(p):
 
     """Scans p and all its ancestors for directives.
 
@@ -445,8 +426,7 @@ def get_directives_dict_list(p,scanToCursor=False):
     p1 = p.copy()
     for p in p1.self_and_parents():
         root = None if p.hasParent() else [p.copy()]
-        result.append(g.get_directives_dict(p,root=root,
-            scanToCursor=scanToCursor and p == p1))
+        result.append(g.get_directives_dict(p,root=root))
     # if trace:
         # n = len(p1.h) + len(p1.b)
         # g.trace('%4d %s' % (n,g.timeSince(time1)))
@@ -828,10 +808,8 @@ def set_language(s,i,issue_errors_flag=False):
         language = arg
         delim1, delim2, delim3 = g.set_delims_from_language(language)
         return language, delim1, delim2, delim3
-
     if issue_errors_flag:
         g.es("ignoring:",g.get_line(s,i))
-
     return None, None, None, None,
 #@+node:ekr.20081001062423.9: *4* g.setDefaultDirectory & helper
 def setDefaultDirectory(c,p,importing=False):
