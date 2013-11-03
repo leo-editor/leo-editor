@@ -1,6 +1,36 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20100120072650.6089: * @file ../doc/leoProjects.txt
 #@+all
+#@+node:ekr.20131103054650.16528: ** b2/final
+#@+node:ekr.20131007055150.13036: *3* Improved reformat-paragraph
+@language rest
+
+1. The following are always single-line paragraphs::
+    
+    @anything
+    '''         # on a line all by itself. 
+    """         # on a line all by itself.
+
+2. The following always start a paragraph, terminating the previous
+   paragraph::
+
+    - Whatever
+    1. Whatever
+    22) Whatever
+    a. Whatever # single character only.
+    Z. Whatever # single character only.
+
+3. The leading indentation in lists will be at least the the number of
+   characters preceding "Whatever".
+
+Not yet: support for non-breaking space (unicode code point U+00A0).
+
+What I did:
+    
+- Rewrote c.findBoundParagraph & added helpers:
+    - c.starts/endParagraph
+    - c.singleLineParagraph.
+- Add space adjustments to rp_wrap_all_lines.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

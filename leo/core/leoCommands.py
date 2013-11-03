@@ -3791,7 +3791,7 @@ class Commands (object):
         selected by position of current insertion cursor.
 
         """
-
+        trace = False and not g.unitTesting
         c = self ; body = c.frame.body ; w = body.bodyCtrl
         if g.app.batchMode:
             c.notValidInBatchMode("reformat-paragraph")
@@ -3802,78 +3802,120 @@ class Commands (object):
         oldSel,oldYview,original,pageWidth,tabWidth = c.rp_get_args()
         head,lines,tail = c.findBoundParagraph()
         if lines:
+            if trace: g.trace('\n'+'\n'.join(lines))
             indents,leading_ws = c.rp_get_leading_ws(lines,tabWidth)
             result = c.rp_wrap_all_lines(indents,leading_ws,lines,pageWidth)
             c.rp_reformat(head,oldSel,oldYview,original,result,tail,undoType)
-    #@+node:ekr.20031218072017.1825: *7* c.findBoundParagraph
+        else:
+            if trace: g.trace('no lines')
+    #@+node:ekr.20031218072017.1825: *7* c.findBoundParagraph & helpers
     def findBoundParagraph (self,event=None):
-
+        '''Return the lines of a paragraph to be reformatted.'''
         c = self
+        trace = False and not g.unitTesting
         head,ins,tail = c.frame.body.getInsertLines()
-        if not ins or ins.isspace() or ins[0] == '@':
-            return None,None,None
         head_lines = g.splitLines(head)
         tail_lines = g.splitLines(tail)
-        if 0:
-            #@+<< trace head_lines, ins, tail_lines >>
-            #@+node:ekr.20031218072017.1826: *8* << trace head_lines, ins, tail_lines >>
-            if 0:
-                g.pr("\nhead_lines")
-                for line in head_lines:
-                    g.pr(line)
-                g.pr("\nins", ins)
-                g.pr("\ntail_lines")
-                for line in tail_lines:
-                    g.pr(line)
+        if trace:
+            g.trace("head_lines:\n%s" % ''.join(head_lines))
+            g.trace("ins: ",ins)
+            g.trace("tail_lines:\n%s" % ''.join(tail_lines))
+            g.trace('*****')
+        result = []
+        insert_lines = g.splitLines(ins)
+        para_lines = insert_lines + tail_lines
+        # If the present line doesn't start a paragraph,
+        # scan backward, adding trailing lines of head to ins.
+        if insert_lines and not c.startsParagraph(insert_lines[0]):
+            n = 0 # number of moved lines.
+            for i,s in enumerate(reversed(head_lines)):
+                if c.endsParagraph(s) or c.singleLineParagraph(s):
+                    break
+                elif c.startsParagraph(s):
+                    n += 1
+                    break
+                else: n += 1
+            if n > 0:
+                para_lines = head_lines[-n:] + para_lines
+                head_lines = head_lines[:-n]
+        ended,started = False,False
+        for i,s in enumerate(para_lines):
+            if trace: g.trace(
+                # 'i: %s started: %5s single: %5s starts: %5s: ends: %5s %s' % (
+                i,started,
+                c.singleLineParagraph(s),
+                c.startsParagraph(s),
+                c.endsParagraph(s),repr(s))
+            if started:
+                if c.endsParagraph(s) or c.startsParagraph(s):
+                    ended = True
+                    break
+                else:
+                    result.append(s)
+            elif s.strip():
+                result.append(s)
+                started = True
+                if c.endsParagraph(s) or c.singleLineParagraph(s):
+                    i += 1
+                    ended = True
+                    break
             else:
-                g.es_print("head_lines: ",head_lines)
-                g.es_print("ins: ",ins)
-                g.es_print("tail_lines: ",tail_lines)
-            #@-<< trace head_lines, ins, tail_lines >>
-        # Scan backwards.
-        i = len(head_lines)
-        while i > 0:
-            i -= 1
-            line = head_lines[i]
-            if len(line) == 0 or line.isspace() or line[0] == '@':
-                i += 1 ; break
-        pre_para_lines = head_lines[:i]
-        para_head_lines = head_lines[i:]
-        # Scan forwards.
-        i = 0
-        for line in tail_lines:
-            if not line or line.isspace() or line.startswith('@'):
-                break
-            i += 1
-        para_tail_lines = tail_lines[:i]
-        post_para_lines = tail_lines[i:]
-        head = g.joinLines(pre_para_lines)
-        result = para_head_lines 
-        result.extend([ins])
-        result.extend(para_tail_lines)
-        tail = g.joinLines(post_para_lines)
-        return head,result,tail # string, list, string
+                head_lines.append(s)
+        if started:
+            head = g.joinLines(head_lines)
+            tail_lines = para_lines[i:] if ended else []
+            tail = g.joinLines(tail_lines)
+            return head,result,tail # string, list, string
+        else:
+            if trace: g.trace('no paragraph')
+            return None,None,None
+    #@+node:ekr.20131102044158.16572: *8* c.endsParagraph & c.singleLineParagraph
+    def endsParagraph(self,s):
+        '''Return True if s is a blank line.'''
+        return not s.strip()
+        
+    def singleLineParagraph(self,s):
+        '''Return True if s is a single-line paragraph.'''
+        return s.startswith('@') or s.strip() in ('"""',"'''")
+    #@+node:ekr.20131102044158.16570: *8* c.startsParagraph
+    def startsParagraph(self,s):
+        '''Return True if line s starts a paragraph.'''
+        trace = False and not g.unitTesting
+        if not s.strip():
+            val = False
+        elif s.strip() in ('"""',"'''"):
+            val = True
+        elif s[0].isdigit():
+            i = 0
+            while i < len(s) and s[i].isdigit():
+                i += 1
+            val = g.match(s,i,')') or g.match(s,i,'.')
+        elif s[0].isalpha():
+            # Careful: single characters only.
+            # This could cause problems in some situations.
+            val = g.match(s,1,')') or g.match(s,1,'.')
+        else:
+            val = s.startswith('@') or s.startswith('-')
+        if trace: g.trace(val,repr(s))
+        return val
     #@+node:ekr.20101118113953.5840: *7* rp_get_args
     def rp_get_args (self):
 
         '''Compute and return oldSel,oldYview,original,pageWidth,tabWidth.'''
 
-        c = self ; body = c.frame.body ;  w = body.bodyCtrl
-
+        c = self
+        body = c.frame.body
+        w = body.bodyCtrl
         d = c.scanAllDirectives()
-
         # g.trace(c.editCommands.fillColumn)
-
         if c.editCommands.fillColumn > 0:
             pageWidth = c.editCommands.fillColumn
         else:
             pageWidth = d.get("pagewidth")
-
         tabWidth  = d.get("tabwidth")
         original = w.getAllText()
         oldSel =  w.getSelectionRange()
         oldYview = body.getYScrollPosition()
-
         return oldSel,oldYview,original,pageWidth,tabWidth
     #@+node:ekr.20101118113953.5841: *7* rp_get_leading_ws
     def rp_get_leading_ws (self,lines,tabWidth):
@@ -3933,25 +3975,46 @@ class Commands (object):
     def rp_wrap_all_lines (self,indents,leading_ws,lines,pageWidth):
 
         '''compute the result of wrapping all lines.'''
-
+        c = self
         trailingNL = lines and lines[-1].endswith('\n')
         lines = [g.choose(z.endswith('\n'),z[:-1],z) for z in lines]
-
+        if len(lines) > 1:
+            s = lines[0]
+            if c.startsParagraph(s):
+                # Adjust indents[1]
+                # Similar to code in c.startsParagraph(s)
+                i = 0
+                if s[0].isdigit():
+                    while i < len(s) and s[i].isdigit():
+                        i += 1
+                    if g.match(s,i,')') or g.match(s,i,'.'):
+                        i += 1
+                elif s[0].isalpha():
+                    if g.match(s,1,')') or g.match(s,1,'.'):
+                        i = 2
+                elif s[0] == '-':
+                    i = 1
+                if i > 0:
+                    i = g.skip_ws(s,i+1)
+                    # Never decrease indentation.
+                    if i > indents[1]:
+                        indents[1] = i
+                        leading_ws[1] = ' '*i
+                    # g.trace('indents[1]',indents[1])
+                else:
+                    g.trace('can not happen')
         # Wrap the lines, decreasing the page width by indent.
         result = g.wrap_lines(lines,
             pageWidth-indents[1],
             pageWidth-indents[0])
-
         # prefix with the leading whitespace, if any
         paddedResult = []
         paddedResult.append(leading_ws[0] + result[0])
         for line in result[1:]:
             paddedResult.append(leading_ws[1] + line)
-
         # Convert the result to a string.
         result = '\n'.join(paddedResult)
         if trailingNL: result = result + '\n'
-
         return result
     #@+node:ekr.20031218072017.1838: *6* updateBodyPane (handles changeNodeContents)
     def updateBodyPane (self,head,middle,tail,undoType,oldSel,oldYview):

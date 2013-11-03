@@ -9330,5 +9330,91 @@ def getExternalCompletions (self,s,p=None,language='python'):
     theObject,tabList = self.theObject,self.tabList
     self.exit() # Not called from the autocompleter itself.
     return theObject,tabList
+.. @+node:ekr.20131102044158.16576: *3* c.findBoundParagraph OLD
+def findBoundParagraph (self,event=None):
+    '''Return the lines of a paragraph to be reformatted.'''
+    c = self
+    trace = False and not g.unitTesting
+    head,ins,tail = c.frame.body.getInsertLines()
+    if ins.isspace() or ins[0] == '@':
+        if trace: g.trace('no ins')
+        return None,None,None
+    head_lines = g.splitLines(head)
+    tail_lines = g.splitLines(tail)
+    if trace:
+        g.trace("head_lines:\n%s" % ''.join(head_lines))
+        g.trace("ins: ",ins)
+        g.trace("tail_lines:\n%s" % ''.join(tail_lines))
+        g.trace('*****')
+    # Scan backwards.
+    i = len(head_lines)
+    while i > 0:
+        i -= 1
+        line = head_lines[i]
+        if c.startsParagraph(line):
+            if trace: g.trace('line')
+            i += 1 ; break
+    pre_para_lines = head_lines[:i]
+    para_head_lines = head_lines[i:]
+    # Scan forwards.
+    i = 0
+    for line in tail_lines:
+        if c.startsParagraph(line):
+        # if not line or line.isspace() or line.startswith('@'):
+            break
+        i += 1
+    para_tail_lines = tail_lines[:i]
+    post_para_lines = tail_lines[i:]
+    head = g.joinLines(pre_para_lines)
+    result = para_head_lines 
+    result.extend([ins])
+    result.extend(para_tail_lines)
+    tail = g.joinLines(post_para_lines)
+    return head,result,tail # string, list, string
+.. @+node:ekr.20131102044158.16577: *4* c.startsParagraph
+def startsParagraph(self,s):
+    '''Return True if line s ends a paragraph.'''
+    if not s.strip():
+        return False
+    if s[0].isdigit():
+        i = 0
+        while i < len(s) and s[i].isdigit():
+            i += 1
+        return g.match(s,i,')') or g.match(s,i,'.')
+    elif s[0].isalpha():
+        i = 0
+        while i < len(s) and s[i].isalpha():
+            i += 1
+        return g.match(s,i,')') or g.match(s,i,'.')
+    else:
+        return s.startswith('@') or s.startswith('-')
+.. @+node:ekr.20131102044158.16578: *4* c.endsParagraph
+def endsParagraph(self,s):
+    '''Return True if line s ends a paragraph.'''
+    return not s.strip() or s.startswith('@')
+.. @+node:ekr.20131102044158.16580: *3* rp_wrap_all_lines OLD
+def rp_wrap_all_lines (self,indents,leading_ws,lines,pageWidth):
+
+    '''compute the result of wrapping all lines.'''
+
+    trailingNL = lines and lines[-1].endswith('\n')
+    lines = [g.choose(z.endswith('\n'),z[:-1],z) for z in lines]
+
+    # Wrap the lines, decreasing the page width by indent.
+    result = g.wrap_lines(lines,
+        pageWidth-indents[1],
+        pageWidth-indents[0])
+
+    # prefix with the leading whitespace, if any
+    paddedResult = []
+    paddedResult.append(leading_ws[0] + result[0])
+    for line in result[1:]:
+        paddedResult.append(leading_ws[1] + line)
+
+    # Convert the result to a string.
+    result = '\n'.join(paddedResult)
+    if trailingNL: result = result + '\n'
+
+    return result
 .. @-all
 .. @-leo

@@ -8936,332 +8936,6 @@ c.contractParent()
 g.app.unitTestDict['restoreSelectedNode']=False
 
 #@+node:ekr.20110118082508.3729: *5* reformat-paragraph tests
-#@+node:ekr.20110118082508.3730: *6* @test reformat-paragraph simple hanging indent
-# Required when running tests externally
-@language plain
-@pagewidth 40
-@tabwidth 8
-
-c.testManager.runEditCommandTest(p)
-#@+node:ekr.20110118082508.3745: *7* work
-Honor this line that has a hanging
-  indentation, please. Hanging
-  indentation is valuable for lists of
-  all kinds. But it is tricky to get
-  right.
-
-Next paragraph.
-#@+node:ekr.20110118082508.3746: *7* before sel= 1.0,1.0
-Honor this line that has a hanging indentation, please.  Hanging
-  indentation is valuable for lists of all kinds.  But it is tricky to get right.
-
-Next paragraph.
-#@+node:ekr.20110118082508.3747: *7* after sel= 5.8,5.8
-Honor this line that has a hanging
-  indentation, please. Hanging
-  indentation is valuable for lists of
-  all kinds. But it is tricky to get
-  right.
-
-Next paragraph.
-#@+node:ekr.20110118082508.3748: *6* @test reformat-paragraph simple hanging indent 2
-# Required when running tests externally
-@language plain
-@pagewidth 40
-@tabwidth 8
-
-c.testManager.runEditCommandTest(p)
-#@+node:ekr.20110118082508.3754: *7* work
-Honor this line that has a hanging
-  indentation, please. Hanging
-  indentation is valuable for lists of
-  all kinds. But it is tricky to get
-  right.
-
-Next paragraph.
-#@+node:ekr.20110118082508.3755: *7* before sel=2.0,2.0
-Honor this line that has
-  a hanging indentation, please.  Hanging
-    indentation is valuable for lists of all kinds.  But it is tricky to get right.
-
-Next paragraph.
-#@+node:ekr.20110118082508.3756: *7* after sel=5.8,5.8
-Honor this line that has a hanging
-  indentation, please. Hanging
-  indentation is valuable for lists of
-  all kinds. But it is tricky to get
-  right.
-
-Next paragraph.
-#@+node:ekr.20110118082508.3757: *6* @test reformat-paragraph simple hanging indent 3
-# Required when running tests externally
-@language plain
-@pagewidth 40
-@tabwidth 8
-
-c.testManager.runEditCommandTest(p)
-#@+node:ekr.20110118082508.3763: *7* work
-Honor this line that has a hanging
-  indentation, please. Hanging
-  indentation is valuable for lists of
-  all kinds. But it is tricky to get
-  right.
-
-Next Paragraph.
-#@+node:ekr.20110118082508.3764: *7* before sel=1.0,1.0
-Honor this line that 
-  has a hanging indentation, 
-  please.  Hanging
-   indentation is valuable
-    for lists of all kinds.  But 
-    it is tricky to get right.
-
-Next Paragraph.
-#@+node:ekr.20110118082508.3765: *7* after sel=5.8,5.8
-Honor this line that has a hanging
-  indentation, please. Hanging
-  indentation is valuable for lists of
-  all kinds. But it is tricky to get
-  right.
-
-Next Paragraph.
-#@+node:ekr.20110118082508.3766: *6* @test reformat-paragraph paragraph 1 of 3
-# Required when running tests externally
-@language plain
-@pagewidth 40
-@tabwidth 8
-
-c.testManager.runEditCommandTest(p)
-#@+node:ekr.20110118082508.3772: *7* work
-Americans live in the most severe
-weather-prone country on Earth. Each
-year, Americans cope with an average of
-10,000 thunderstorms, 2,500 floods,
-1,000 tornadoes, as well as an average
-of 6 deadly hurricanes. Potentially
-deadly weather impacts every American.
-Communities can now rely on the National
-Weather Service’s StormReady program to
-help them guard against the ravages of
-Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-
-Last paragraph.
-#@+node:ekr.20110118082508.3773: *7* before sel=1.0,1.0
-Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-
-Last paragraph.
-#@+node:ekr.20110118082508.3792: *7* after sel=11.14,11.14
-Americans live in the most severe
-weather-prone country on Earth. Each
-year, Americans cope with an average of
-10,000 thunderstorms, 2,500 floods,
-1,000 tornadoes, as well as an average
-of 6 deadly hurricanes. Potentially
-deadly weather impacts every American.
-Communities can now rely on the National
-Weather Service’s StormReady program to
-help them guard against the ravages of
-Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-
-Last paragraph.
-#@+node:ekr.20110118082508.3779: *6* @test reformat-paragraph paragraph 2 of 3
-# Required when running tests externally
-@language plain
-@pagewidth 40
-@tabwidth 8
-
-c.testManager.runEditCommandTest(p)
-#@+node:ekr.20110118082508.3780: *7* work
-Americans live in the most severe
-weather-prone country on Earth. Each
-year, Americans cope with an average of
-10,000 thunderstorms, 2,500 floods,
-1,000 tornadoes, as well as an average
-of 6 deadly hurricanes. Potentially
-deadly weather impacts every American.
-Communities can now rely on the National
-Weather Service’s StormReady program to
-help them guard against the ravages of
-Mother Nature.
-
-Some 90% of all presidentially declared
-disasters are weather related, leading
-to around 500 deaths per year and nearly
-$14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK,
-helps arm America's communities with the
-communication and safety skills needed
-to save lives and property– before and
-during the event. StormReady helps
-community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-
-Last paragraph.
-#@+node:ekr.20110118082508.3781: *7* before sel=13.0,13.0
-Americans live in the most severe
-weather-prone country on Earth. Each
-year, Americans cope with an average of
-10,000 thunderstorms, 2,500 floods,
-1,000 tornadoes, as well as an average
-of 6 deadly hurricanes. Potentially
-deadly weather impacts every American.
-Communities can now rely on the National
-Weather Service’s StormReady program to
-help them guard against the ravages of
-Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-
-Last paragraph.
-#@+node:ekr.20110118082508.3782: *7* after sel=23.33,23.33
-Americans live in the most severe
-weather-prone country on Earth. Each
-year, Americans cope with an average of
-10,000 thunderstorms, 2,500 floods,
-1,000 tornadoes, as well as an average
-of 6 deadly hurricanes. Potentially
-deadly weather impacts every American.
-Communities can now rely on the National
-Weather Service’s StormReady program to
-help them guard against the ravages of
-Mother Nature.
-
-Some 90% of all presidentially declared
-disasters are weather related, leading
-to around 500 deaths per year and nearly
-$14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK,
-helps arm America's communities with the
-communication and safety skills needed
-to save lives and property– before and
-during the event. StormReady helps
-community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-
-Last paragraph.
-#@+node:ekr.20110118082508.3787: *6* @test reformat-paragraph paragraph 3 of 3
-# Required when running tests externally
-@language plain
-@pagewidth 40
-@tabwidth 8
-
-c.testManager.runEditCommandTest(p)
-#@+node:ekr.20110118082508.3788: *7* work
-Americans live in the most severe
-weather-prone country on Earth. Each
-year, Americans cope with an average of
-10,000 thunderstorms, 2,500 floods,
-1,000 tornadoes, as well as an average
-of 6 deadly hurricanes. Potentially
-deadly weather impacts every American.
-Communities can now rely on the National
-Weather Service’s StormReady program to
-help them guard against the ravages of
-Mother Nature.
-
-Some 90% of all presidentially declared
-disasters are weather related, leading
-to around 500 deaths per year and nearly
-$14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK,
-helps arm America's communities with the
-communication and safety skills needed
-to save lives and property– before and
-during the event. StormReady helps
-community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better
-prepared to save lives from the
-onslaught of severe weather through
-better planning, education, and
-awareness. No community is storm proof,
-but StormReady can help communities save
-lives. Does StormReady make a
-difference?
-
-Last paragraph.
-#@+node:ekr.20110118082508.3789: *7* before sel=25.10,25.10
-Americans live in the most severe
-weather-prone country on Earth. Each
-year, Americans cope with an average of
-10,000 thunderstorms, 2,500 floods,
-1,000 tornadoes, as well as an average
-of 6 deadly hurricanes. Potentially
-deadly weather impacts every American.
-Communities can now rely on the National
-Weather Service’s StormReady program to
-help them guard against the ravages of
-Mother Nature.
-
-Some 90% of all presidentially declared
-disasters are weather related, leading
-to around 500 deaths per year and nearly
-$14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK,
-helps arm America's communities with the
-communication and safety skills needed
-to save lives and property– before and
-during the event. StormReady helps
-community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-
-Last paragraph.
-#@+node:ekr.20110118082508.3790: *7* after sel=32.11,32.11
-Americans live in the most severe
-weather-prone country on Earth. Each
-year, Americans cope with an average of
-10,000 thunderstorms, 2,500 floods,
-1,000 tornadoes, as well as an average
-of 6 deadly hurricanes. Potentially
-deadly weather impacts every American.
-Communities can now rely on the National
-Weather Service’s StormReady program to
-help them guard against the ravages of
-Mother Nature.
-
-Some 90% of all presidentially declared
-disasters are weather related, leading
-to around 500 deaths per year and nearly
-$14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK,
-helps arm America's communities with the
-communication and safety skills needed
-to save lives and property– before and
-during the event. StormReady helps
-community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better
-prepared to save lives from the
-onslaught of severe weather through
-better planning, education, and
-awareness. No community is storm proof,
-but StormReady can help communities save
-lives. Does StormReady make a
-difference?
-
-Last paragraph.
 #@+node:ekr.20110118082508.3793: *6* @test reformat-paragraph list 1 of 5
 # Required when running tests externally
 @language plain
@@ -9522,6 +9196,500 @@ the "lead" paragraph.
 
 This paragraph ends the test. It is the
 "final" paragraph.
+#@+node:ekr.20131103084038.4274: *6* @test reformat-paragraph new code 1 of 8
+# Required when running tests externally
+@language plain
+@pagewidth 40
+@tabwidth 8
+
+c.testManager.runEditCommandTest(p)
+#@+node:ekr.20131103084038.4275: *7* work
+@pagewidth 40
+'''
+docstring.
+'''
+#@+node:ekr.20131103084038.4276: *7* before sel=1.0,1.0
+@pagewidth 40
+'''
+docstring.
+'''
+#@+node:ekr.20131103084038.4277: *7* after sel=2.0,2.0
+@pagewidth 40
+'''
+docstring.
+'''
+#@+node:ekr.20131103084038.4282: *6* @test reformat-paragraph new code 2 of 8
+# Required when running tests externally
+@language plain
+@pagewidth 40
+@tabwidth 8
+
+c.testManager.runEditCommandTest(p)
+#@+node:ekr.20131103084038.4283: *7* work
+@pagewidth 40
+'''
+docstring.
+'''
+#@+node:ekr.20131103084038.4284: *7* before sel=2.0,2.0
+@pagewidth 40
+'''
+docstring.
+'''
+#@+node:ekr.20131103084038.4285: *7* after sel=3.0,3.0
+@pagewidth 40
+'''
+docstring.
+'''
+#@+node:ekr.20131103084038.4290: *6* @test reformat-paragraph new code 3 of 8
+# Required when running tests externally
+@language plain
+@pagewidth 40
+@tabwidth 8
+
+c.testManager.runEditCommandTest(p)
+#@+node:ekr.20131103084038.4291: *7* work
+@pagewidth 40
+'''
+docstring. more docstring.
+'''
+#@+node:ekr.20131103084038.4292: *7* before sel=3.1,4.1
+@pagewidth 40
+'''
+docstring.
+more docstring.
+'''
+#@+node:ekr.20131103084038.4293: *7* after sel=3.26,3.26
+@pagewidth 40
+'''
+docstring. more docstring.
+'''
+#@+node:ekr.20131103084038.4298: *6* @test reformat-paragraph new code 4 of 8
+# Required when running tests externally
+@language plain
+@pagewidth 40
+@tabwidth 8
+
+c.testManager.runEditCommandTest(p)
+#@+node:ekr.20131103084038.4299: *7* work
+- Point 1. xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  Line 11.
+A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+#@+node:ekr.20131103084038.4300: *7* before sel=1.0,1.0
+- Point 1. xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+Line 11.
+A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+#@+node:ekr.20131103084038.4301: *7* after sel=2.10,2.10
+- Point 1. xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  Line 11.
+A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+#@+node:ekr.20131103084038.4306: *6* @test reformat-paragraph new code 5 of 8
+# Required when running tests externally
+@language plain
+@pagewidth 40
+@tabwidth 8
+
+c.testManager.runEditCommandTest(p)
+#@+node:ekr.20131103084038.4307: *7* work
+A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+   Line 22.
+1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+#@+node:ekr.20131103084038.4308: *7* before sel=1.0,2.0
+A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+  Line 22.
+1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+#@+node:ekr.20131103084038.4309: *7* after sel=2.11,2.11
+A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+   Line 22.
+1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+#@+node:ekr.20131103084038.4314: *6* @test reformat-paragraph new code 6 of 8
+# Required when running tests externally
+@language plain
+@pagewidth 40
+@tabwidth 8
+
+c.testManager.runEditCommandTest(p)
+#@+node:ekr.20131103084038.4315: *7* work
+1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+   Line 32.
+
+2. Point 4  xxxxxxxxxxxxxxxxxxxxxxxxxxx
+#@+node:ekr.20131103084038.4316: *7* before sel=1.0,1.0
+1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+Line 32.
+
+2. Point 4  xxxxxxxxxxxxxxxxxxxxxxxxxxx
+#@+node:ekr.20131103084038.4317: *7* after sel=2.11,2.11
+1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+   Line 32.
+
+2. Point 4  xxxxxxxxxxxxxxxxxxxxxxxxxxx
+#@+node:ekr.20131103084038.4322: *6* @test reformat-paragraph new code 7 of 8
+# Required when running tests externally
+@language plain
+@pagewidth 40
+@tabwidth 8
+
+c.testManager.runEditCommandTest(p)
+#@+node:ekr.20131103084038.4323: *7* work
+1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+   Line 32.
+
+2. Point 4 xxxxxxxxxxxxxxxxxxxxxxxxxxx
+        Line 41.
+#@+node:ekr.20131103084038.4324: *7* before sel=2.11,2.11
+1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+   Line 32.
+
+2. Point 4 xxxxxxxxxxxxxxxxxxxxxxxxxxx
+        Line 41.
+#@+node:ekr.20131103084038.4325: *7* after sel=3.1,3.1
+1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+   Line 32.
+
+2. Point 4 xxxxxxxxxxxxxxxxxxxxxxxxxxx
+        Line 41.
+#@+node:ekr.20131103084038.4330: *6* @test reformat-paragraph new code 8 of 8
+# Required when running tests externally
+@language plain
+@pagewidth 40
+@tabwidth 8
+
+c.testManager.runEditCommandTest(p)
+#@+node:ekr.20131103084038.4331: *7* work
+2. Point 4 xxxxxxxxxxxxxxxxxxxxxxxxxxx
+        Line 41.
+#@+node:ekr.20131103084038.4332: *7* before sel=1.0,1.0
+2. Point 4 xxxxxxxxxxxxxxxxxxxxxxxxxxx
+        Line 41.
+#@+node:ekr.20131103084038.4333: *7* after sel=3.0,3.0
+2. Point 4 xxxxxxxxxxxxxxxxxxxxxxxxxxx
+        Line 41.
+#@+node:ekr.20110118082508.3766: *6* @test reformat-paragraph paragraph 1 of 3
+# Required when running tests externally
+@language plain
+@pagewidth 40
+@tabwidth 8
+
+c.testManager.runEditCommandTest(p)
+#@+node:ekr.20110118082508.3772: *7* work
+Americans live in the most severe
+weather-prone country on Earth. Each
+year, Americans cope with an average of
+10,000 thunderstorms, 2,500 floods,
+1,000 tornadoes, as well as an average
+of 6 deadly hurricanes. Potentially
+deadly weather impacts every American.
+Communities can now rely on the National
+Weather Service’s StormReady program to
+help them guard against the ravages of
+Mother Nature.
+
+Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+
+StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+
+Last paragraph.
+#@+node:ekr.20110118082508.3773: *7* before sel=1.0,1.0
+Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+
+Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+
+StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+
+Last paragraph.
+#@+node:ekr.20110118082508.3792: *7* after sel=11.14,11.14
+Americans live in the most severe
+weather-prone country on Earth. Each
+year, Americans cope with an average of
+10,000 thunderstorms, 2,500 floods,
+1,000 tornadoes, as well as an average
+of 6 deadly hurricanes. Potentially
+deadly weather impacts every American.
+Communities can now rely on the National
+Weather Service’s StormReady program to
+help them guard against the ravages of
+Mother Nature.
+
+Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+
+StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+
+Last paragraph.
+#@+node:ekr.20110118082508.3779: *6* @test reformat-paragraph paragraph 2 of 3
+# Required when running tests externally
+@language plain
+@pagewidth 40
+@tabwidth 8
+
+c.testManager.runEditCommandTest(p)
+#@+node:ekr.20110118082508.3780: *7* work
+Americans live in the most severe
+weather-prone country on Earth. Each
+year, Americans cope with an average of
+10,000 thunderstorms, 2,500 floods,
+1,000 tornadoes, as well as an average
+of 6 deadly hurricanes. Potentially
+deadly weather impacts every American.
+Communities can now rely on the National
+Weather Service’s StormReady program to
+help them guard against the ravages of
+Mother Nature.
+
+Some 90% of all presidentially declared
+disasters are weather related, leading
+to around 500 deaths per year and nearly
+$14 billion in damage. StormReady, a
+program started in 1999 in Tulsa, OK,
+helps arm America's communities with the
+communication and safety skills needed
+to save lives and property– before and
+during the event. StormReady helps
+community leaders and emergency managers
+strengthen local safety programs.
+
+StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+
+Last paragraph.
+#@+node:ekr.20110118082508.3781: *7* before sel=13.0,13.0
+Americans live in the most severe
+weather-prone country on Earth. Each
+year, Americans cope with an average of
+10,000 thunderstorms, 2,500 floods,
+1,000 tornadoes, as well as an average
+of 6 deadly hurricanes. Potentially
+deadly weather impacts every American.
+Communities can now rely on the National
+Weather Service’s StormReady program to
+help them guard against the ravages of
+Mother Nature.
+
+Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+
+StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+
+Last paragraph.
+#@+node:ekr.20110118082508.3782: *7* after sel=23.33,23.33
+Americans live in the most severe
+weather-prone country on Earth. Each
+year, Americans cope with an average of
+10,000 thunderstorms, 2,500 floods,
+1,000 tornadoes, as well as an average
+of 6 deadly hurricanes. Potentially
+deadly weather impacts every American.
+Communities can now rely on the National
+Weather Service’s StormReady program to
+help them guard against the ravages of
+Mother Nature.
+
+Some 90% of all presidentially declared
+disasters are weather related, leading
+to around 500 deaths per year and nearly
+$14 billion in damage. StormReady, a
+program started in 1999 in Tulsa, OK,
+helps arm America's communities with the
+communication and safety skills needed
+to save lives and property– before and
+during the event. StormReady helps
+community leaders and emergency managers
+strengthen local safety programs.
+
+StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+
+Last paragraph.
+#@+node:ekr.20110118082508.3787: *6* @test reformat-paragraph paragraph 3 of 3
+# Required when running tests externally
+@language plain
+@pagewidth 40
+@tabwidth 8
+
+c.testManager.runEditCommandTest(p)
+#@+node:ekr.20110118082508.3788: *7* work
+Americans live in the most severe
+weather-prone country on Earth. Each
+year, Americans cope with an average of
+10,000 thunderstorms, 2,500 floods,
+1,000 tornadoes, as well as an average
+of 6 deadly hurricanes. Potentially
+deadly weather impacts every American.
+Communities can now rely on the National
+Weather Service’s StormReady program to
+help them guard against the ravages of
+Mother Nature.
+
+Some 90% of all presidentially declared
+disasters are weather related, leading
+to around 500 deaths per year and nearly
+$14 billion in damage. StormReady, a
+program started in 1999 in Tulsa, OK,
+helps arm America's communities with the
+communication and safety skills needed
+to save lives and property– before and
+during the event. StormReady helps
+community leaders and emergency managers
+strengthen local safety programs.
+
+StormReady communities are better
+prepared to save lives from the
+onslaught of severe weather through
+better planning, education, and
+awareness. No community is storm proof,
+but StormReady can help communities save
+lives. Does StormReady make a
+difference?
+
+Last paragraph.
+#@+node:ekr.20110118082508.3789: *7* before sel=25.10,25.10
+Americans live in the most severe
+weather-prone country on Earth. Each
+year, Americans cope with an average of
+10,000 thunderstorms, 2,500 floods,
+1,000 tornadoes, as well as an average
+of 6 deadly hurricanes. Potentially
+deadly weather impacts every American.
+Communities can now rely on the National
+Weather Service’s StormReady program to
+help them guard against the ravages of
+Mother Nature.
+
+Some 90% of all presidentially declared
+disasters are weather related, leading
+to around 500 deaths per year and nearly
+$14 billion in damage. StormReady, a
+program started in 1999 in Tulsa, OK,
+helps arm America's communities with the
+communication and safety skills needed
+to save lives and property– before and
+during the event. StormReady helps
+community leaders and emergency managers
+strengthen local safety programs.
+
+StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+
+Last paragraph.
+#@+node:ekr.20110118082508.3790: *7* after sel=32.11,32.11
+Americans live in the most severe
+weather-prone country on Earth. Each
+year, Americans cope with an average of
+10,000 thunderstorms, 2,500 floods,
+1,000 tornadoes, as well as an average
+of 6 deadly hurricanes. Potentially
+deadly weather impacts every American.
+Communities can now rely on the National
+Weather Service’s StormReady program to
+help them guard against the ravages of
+Mother Nature.
+
+Some 90% of all presidentially declared
+disasters are weather related, leading
+to around 500 deaths per year and nearly
+$14 billion in damage. StormReady, a
+program started in 1999 in Tulsa, OK,
+helps arm America's communities with the
+communication and safety skills needed
+to save lives and property– before and
+during the event. StormReady helps
+community leaders and emergency managers
+strengthen local safety programs.
+
+StormReady communities are better
+prepared to save lives from the
+onslaught of severe weather through
+better planning, education, and
+awareness. No community is storm proof,
+but StormReady can help communities save
+lives. Does StormReady make a
+difference?
+
+Last paragraph.
+#@+node:ekr.20110118082508.3730: *6* @test reformat-paragraph simple hanging indent
+# Required when running tests externally
+@language plain
+@pagewidth 40
+@tabwidth 8
+
+c.testManager.runEditCommandTest(p)
+#@+node:ekr.20110118082508.3745: *7* work
+Honor this line that has a hanging
+  indentation, please. Hanging
+  indentation is valuable for lists of
+  all kinds. But it is tricky to get
+  right.
+
+Next paragraph.
+#@+node:ekr.20110118082508.3746: *7* before sel= 1.0,1.0
+Honor this line that has a hanging indentation, please.  Hanging
+  indentation is valuable for lists of all kinds.  But it is tricky to get right.
+
+Next paragraph.
+#@+node:ekr.20110118082508.3747: *7* after sel= 5.8,5.8
+Honor this line that has a hanging
+  indentation, please. Hanging
+  indentation is valuable for lists of
+  all kinds. But it is tricky to get
+  right.
+
+Next paragraph.
+#@+node:ekr.20110118082508.3748: *6* @test reformat-paragraph simple hanging indent 2
+# Required when running tests externally
+@language plain
+@pagewidth 40
+@tabwidth 8
+
+c.testManager.runEditCommandTest(p)
+#@+node:ekr.20110118082508.3754: *7* work
+Honor this line that has a hanging
+  indentation, please. Hanging
+  indentation is valuable for lists of
+  all kinds. But it is tricky to get
+  right.
+
+Next paragraph.
+#@+node:ekr.20110118082508.3755: *7* before sel=2.0,2.0
+Honor this line that has
+  a hanging indentation, please.  Hanging
+    indentation is valuable for lists of all kinds.  But it is tricky to get right.
+
+Next paragraph.
+#@+node:ekr.20110118082508.3756: *7* after sel=5.8,5.8
+Honor this line that has a hanging
+  indentation, please. Hanging
+  indentation is valuable for lists of
+  all kinds. But it is tricky to get
+  right.
+
+Next paragraph.
+#@+node:ekr.20110118082508.3757: *6* @test reformat-paragraph simple hanging indent 3
+# Required when running tests externally
+@language plain
+@pagewidth 40
+@tabwidth 8
+
+c.testManager.runEditCommandTest(p)
+#@+node:ekr.20110118082508.3763: *7* work
+Honor this line that has a hanging
+  indentation, please. Hanging
+  indentation is valuable for lists of
+  all kinds. But it is tricky to get
+  right.
+
+Next Paragraph.
+#@+node:ekr.20110118082508.3764: *7* before sel=1.0,1.0
+Honor this line that 
+  has a hanging indentation, 
+  please.  Hanging
+   indentation is valuable
+    for lists of all kinds.  But 
+    it is tricky to get right.
+
+Next Paragraph.
+#@+node:ekr.20110118082508.3765: *7* after sel=5.8,5.8
+Honor this line that has a hanging
+  indentation, please. Hanging
+  indentation is valuable for lists of
+  all kinds. But it is tricky to get
+  right.
+
+Next Paragraph.
 #@+node:ekr.20061104172236.1: *4*  Function tests
 #@+node:ekr.20100902074747.5970: *5* @test addAbbrevHelper
 f = c.abbrevCommands.addAbbrevHelper
