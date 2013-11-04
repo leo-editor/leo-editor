@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:peckj.20131101143803.8010: * @file nodewatch.py
+#@+node:peckj.20131104080650.8049: * @file nodewatch.py
 #@@language python
 #@@tabwidth -4
 
@@ -67,19 +67,20 @@ Commands
 
 This plugin defines only one command.
 
-nodewatch-update
-----------------
+nodewatch-refresh
+-----------------
 Run all @settings->@nodewatch nodes in the outline, and update the nodewatch GUI (same as clicking the refresh button in the nodewatch GUI).
 
 '''
 #@-<< docstring >>
 
-__version__ = '0.1'
+__version__ = '0.2'
 #@+<< version history >>
 #@+node:peckj.20131101132841.6446: ** << version history >>
 #@+at
 # 
 # Version 0.1 - initial release
+# Version 0.2 - a few bug fixes, same basic behavior
 # 
 #@@c
 #@-<< version history >>
@@ -128,6 +129,7 @@ class NodewatchController:
         c.frame.log.createTab('Nodewatch', widget=self.ui)
     #@+node:peckj.20131101132841.6453: *3* add
     def add(self, key, values):
+        ''' add a list of vnodes ('values') to the nodewatch category 'key' '''
         self.watchlists[key]=list(enumerate(values))
     #@-others
 #@+node:peckj.20131101132841.6451: ** class LeoNodewatchWidget
@@ -194,10 +196,9 @@ class LeoNodewatchWidget(QtGui.QWidget):
     #@+node:peckj.20131101132841.6460: *4* update_combobox
     def update_combobox(self):
         self.c.theNodewatchController.watchlists = {}
-        for node in self.c.all_unique_nodes():
-            if (node.h.startswith('@nodewatch') and 
-              '@settings' in [n.h for n in node.parents]):
-                self.c.executeScript(p=self.c.vnode2position(node))
+        nodes = self.get_valid_nodewatch_nodes()
+        for node in nodes:
+            self.c.executeScript(p=self.c.vnode2position(node))
         self.comboBox.clear()
         keys = sorted(self.c.theNodewatchController.watchlists.keys())
         self.comboBox.addItems(keys)
@@ -209,6 +210,7 @@ class LeoNodewatchWidget(QtGui.QWidget):
             self.listWidget.addItem(n[1].h)
     #@+node:peckj.20131101132841.6458: *4* update_all
     def update_all(self,event=None):
+        ''' updates the nodewatch GUI by running all valid @nodewatch nodes '''
         key = str(self.comboBox.currentText())
         self.update_combobox()
         if len(key) > 0:
@@ -218,6 +220,26 @@ class LeoNodewatchWidget(QtGui.QWidget):
             idx = 0 
         self.comboBox.setCurrentIndex(idx)
         self.update_list()
+    #@+node:peckj.20131104093045.6578: *3* helpers
+    #@+node:peckj.20131104093045.6579: *4* get_valid_nodewatch_nodes
+    def get_valid_nodewatch_nodes(self):
+        ''' returns a list of valid vnodes '''
+        nodes = []
+        for node in self.c.all_unique_nodes():
+            if node.h.startswith('@nodewatch'):
+                poslist = self.c.vnode2allPositions(node)
+                parentheads = []
+                for n in poslist:
+                    for parent in n.parents():
+                        parentheads.append(parent.h)
+                settings = '@settings' in parentheads
+                ignore = False
+                for x in parentheads:
+                    if x.startswith('@ignore'):
+                        ignore = True
+                if settings and not ignore:
+                    nodes.append(node)
+        return nodes
     #@-others
 #@-others
 #@-leo
