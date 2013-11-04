@@ -49,6 +49,7 @@ Encourage them to write in with their unique uses, and publicize them.
 I bet people are doing things with Leo you never dreamed of, and some
 of those things might be the itch some journalist wants to scratch.
 .. @+node:ekr.20131102044158.16568: ** For 4.11.1
+.. @+node:ekr.20131104103309.16513: *3* Add key bindings to status line
 .. @+node:ekr.20131102044158.16569: *3* fix find bugs
 .. @+node:ekr.20131027064821.18715: *3* Autocompleter ? usually doesn't work
 https://groups.google.com/forum/#!topic/leo-editor/rTN1S9u74RQ

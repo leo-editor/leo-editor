@@ -4845,7 +4845,9 @@ class editCommandsClass (baseEditCommandsClass):
         elif inBrackets and self.autocompleteBrackets:
             self.updateAutomatchBracket(p,w,ch,oldSel)
         elif ch: # Null chars must not delete the selection.
-            isPlain = stroke.find('Alt') == -1 and stroke.find('Ctrl') == -1
+            isPlain =  (
+                sys.platform == 'darwin' or
+                stroke.find('Alt') == -1 and stroke.find('Ctrl') == -1)
             i,j = oldSel
             if i > j: i,j = j,i
             # Use raw insert/delete to retain the coloring.
