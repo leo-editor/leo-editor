@@ -10923,8 +10923,9 @@ class jEditColorizer:
         method is called.
         '''
         trace = False and not g.unitTesting
-        traceFail = False
+        traceFail = True
         self.totalKeywordsCalls += 1
+        # g.trace(i,repr(s[i:]))
         # We must be at the start of a word.
         if i > 0 and s[i-1] in self.word_chars:
             # if trace: g.trace('not at word start',s[i-1])
@@ -10932,6 +10933,9 @@ class jEditColorizer:
         # Get the word as quickly as possible.
         j = i ; n = len(s)
         chars = self.word_chars
+        # 2013/11/04: A kludge just for Haskell:
+        if self.language_name == 'haskell':
+            chars["'"] = "'"
         while j < n and s[j] in chars:
             j += 1
         word = s[i:j]
@@ -11056,11 +11060,12 @@ class jEditColorizer:
     #@+node:ekr.20110605121601.18620: *5* match_seq
     def match_seq (self,s,i,
         kind='',seq='',
-        at_line_start=False,at_whitespace_end=False,at_word_start=False,
-        delegate=''):
-
+        at_line_start=False,
+        at_whitespace_end=False,
+        at_word_start=False,
+        delegate=''
+    ):
         '''Succeed if s[:] mathces seq.'''
-
         if at_line_start and i != 0 and s[i-1] != '\n':
             j = i
         elif at_whitespace_end and i != g.skip_ws(s,0):
@@ -11485,7 +11490,7 @@ class jEditColorizer:
 
         trace = False and not g.unitTesting
         traceMatch = True
-        traceFail = False
+        traceFail = True
         traceState = True
         traceEndState = True
         if trace:

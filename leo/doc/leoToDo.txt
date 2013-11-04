@@ -50,9 +50,41 @@ I bet people are doing things with Leo you never dreamed of, and some
 of those things might be the itch some journalist wants to scratch.
 .. @+node:ekr.20130916105324.19893: ** To-do for 4.11 final
 @language rest
+.. @+node:ekr.20131101080215.16490: *3* Investigate Key handling on Mac
+https://groups.google.com/forum/#!searchin/leo-editor/key$20handling$20broken/leo-editor/OBIMAFHigZo/R8zSbAD7eWoJ
+
+I am trying Leo on OSX with Finnish keyboard layout.
+
+To get the @ character, you have to press Option + 2. Option doubles as
+"alt", so I guess it's misinterpreted as alt-2.
+
+I recall there were email threads about alt gr, leo and international
+keyboards, but I thought there was a resolution for that problem back then
+(until I actually tried Leo on mac, that is).
+
+Apart from this glitch, getting Leo running on Mac is much easier than I
+remembered (just use homebrew to install PyQt).
 .. @+node:ekr.20131102044158.16581: *3* Fix text in Find Panel
 .. @+node:ekr.20131102044158.16566: *3* bugs
-.. @+node:ekr.20131102044158.16564: *4* Fix install problem
+.. @+node:ekr.20131102044158.16564: *4* **Fix install problem
+Using the LeoSetup-4.11-b1.exe installer with Python27 works fine.
+
+However using Python33 it's not so happy. Selecting Start Menu>Leo does not launch Leo, I just see a flash of the splashscreen and it dies.
+Same result using the desktop shortcut icon.
+
+The target properties of the desktop icon are:
+C:\Python33\pythonw.exe "C:\Program Files (x86)\Leo-4.11-b1\launchLeo.py"
+
+I can run Leo from a console though. Here is the log:
+C:\Program Files (x86)\Leo-4.11-b1>launchleo.py
+
+** isPython3: True
+Leo 4.11b1, build 5020, 2012-02-26 13:18:08 -0600
+Python 3.3.3, qt version 4.8.5
+Windows 6, 1, 7601, 2, Service Pack 1
+...
+
+Running from a command shell works fine with no errors.
 .. @+node:ekr.20131027064821.18715: *4* Autocompleter ? usually doesn't work
 https://groups.google.com/forum/#!topic/leo-editor/rTN1S9u74RQ
 
@@ -71,167 +103,7 @@ Obviously, there are many other situations where you have typed a unique method 
 
 There is no quick fix for this.  Probably a new command is needed.
 .. @+node:ekr.20131004191204.16078: *4* cycle-all-focus doesn't work
-.. @+node:ekr.20130806072439.20477: *4* Fix full-screen bug
-I can't make Leo-Editor start in a full-screen window under openSUSU 12.1
-
-From: SegundoBob <bhossley@ieee.org>
-
-I much prefer to almost always use Leo-editor in a full-screen window.   
-When I run Ubuntu 11.10 with either the Fluxbox or the Gnome Classic 
-sessions, when I re-open an outline that was last closed when its window 
-was full-screen, Leo-Editor comes up in a full-screen window.  When I run 
-openSUSE 12.1 with either the XFCE or IceWM sessions, Leo-Editor never 
-comes up in a full-screen widow.  In all my tests I used exactly the same 
-Leo-Editor for all operating systems and session managers.
-
-Other applications can be made to come up in full-screen windows under 
-openSUSE 12.1.  For example, Thunderbird and Thunar will come up in 
-full-screen windows.
-
-I have seen this problem with all of the following revisions of 
-Leo-Editor:  5051, 5089, 5093, 5106, 5113, 5115, 5121, 5123, 5128, 5130, 
-5138, 5141, 5143, 5147, 5148, 5161, 5166, 5200, 5220, 5248, and 5252.  I 
-believe all my tests used Python 2.7.2, qt version 4.7.4.
-
-Does anyone have any ideas about solving this problem?
-.. @+node:ekr.20130806072439.20478: *5* "Re: I can't make Leo-Editor start in a full-screen window under openSUSU 12.1"
-@nocolor
-
-From: technatica <technatica@gmail.com>
-
-1. Start Leo.
-2. Ctrl-S
-3. Close Leo.
-4. Open Leo with window size saved.
-
-On Apr 14, 9:43=A0am, SegundoBob <bhoss...@ieee.org> wrote:
-> I much prefer to almost always use Leo-editor in a full-screen window.
-> When I run Ubuntu 11.10 with either the Fluxbox or the Gnome Classic
-> sessions, when I re-open an outline that was last closed when its window
-> was full-screen, Leo-Editor comes up in a full-screen window. =A0When I r=
-un
-> openSUSE 12.1 with either the XFCE or IceWM sessions, Leo-Editor never
-> comes up in a full-screen widow. =A0In all my tests I used exactly the sa=
-me
-> Leo-Editor for all operating systems and session managers.
->
-> Other applications can be made to come up in full-screen windows under
-> openSUSE 12.1. =A0For example, Thunderbird and Thunar will come up in
-> full-screen windows.
->
-> I have seen this problem with all of the following revisions of
-> Leo-Editor: =A05051, 5089, 5093, 5106, 5113, 5115, 5121, 5123, 5128, 5130=
-,
-> 5138, 5141, 5143, 5147, 5148, 5161, 5166, 5200, 5220, 5248, and 5252. =A0=
-I
-> believe all my tests used Python 2.7.2, qt version 4.7.4.
->
-> Does anyone have any ideas about solving this problem?
-
-.. @+node:ekr.20130806072439.20479: *5* "Re: I can't make Leo-Editor start in a full-screen window under openSUSU 12.1"
-@nocolor
-
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
---047d7b62201042c3c804dba80ccb
-
-
-On Sat, Apr 28, 2012 at 11:24 AM, SegundoBob <bhossley@ieee.org> wrote:
-
-> Thanks for the suggestion.  But doing a save does not help with my
-> problem.  I was already aware that some parameters are only remembered when
-> a save is done--and this is a minor annoyance.  Wouldn't it be better, more
-> consistent, and more useable, if every exit saved all the parameters that
-> initialization restores?
->
-> The symptoms of my problem are that window sizes of less than full-window
-> are remembered and restored, but when Leo-Editor is in full-screen at exit,
-> then it is restarted in partial-screen mode with an arbitrary unused band
-> at the top of the screen.
-
-
-Have you filed an official bug for this?  If not, please do.
-
-Edward
-
---047d7b62201042c3c804dba80ccb
-
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr">On Sat, Apr 28, 2012 at 11:24 AM, SegundoBob <span dir=3D"=
-ltr">&lt;<a href=3D"mailto:bhossley@ieee.org" target=3D"_blank">bhossley@ie=
-ee.org</a>&gt;</span> wrote:<br><div class=3D"gmail_extra"><div class=3D"gm=
-ail_quote">
-<blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1p=
-x #ccc solid;padding-left:1ex">Thanks for the suggestion.=A0 But doing a sa=
-ve does not help with my problem.=A0 I was already aware that some paramete=
-rs are only remembered when a save is done--and this is a minor annoyance.=
-=A0 Wouldn&#39;t it be better, more consistent, and more useable, if every =
-exit saved all the parameters that initialization restores?<br>
-<br>The symptoms of my problem are that window sizes of less than full-wind=
-ow are remembered and restored, but when Leo-Editor is in full-screen at ex=
-it, then it is restarted in partial-screen mode with an arbitrary unused ba=
-nd at the top of the screen.</blockquote>
-<div><br></div><div>Have you filed an official bug for this?=A0 If not, ple=
-ase do.<br><br>Edward</div></div></div></div>
-
---047d7b62201042c3c804dba80ccb--
-.. @+node:ekr.20130806072439.20480: *5* "Re: I can't make Leo-Editor start in a full-screen window under openSUSU 12.1"
-@nocolor
-
-From: technatica <technatica@gmail.com>
-
-I have the exact same behaviour with Leo 4.10 final, build 5286,
-2012-04-27 23:02:15.
-
-It refuses to remember its window settings.
-
-Arch Linux, 64bit, installed from bzr.
-
-On Apr 14, 9:43=A0am, SegundoBob <bhoss...@ieee.org> wrote:
-> I much prefer to almost always use Leo-editor in a full-screen window.
-> When I run Ubuntu 11.10 with either the Fluxbox or the Gnome Classic
-> sessions, when I re-open an outline that was last closed when its window
-> was full-screen, Leo-Editor comes up in a full-screen window. =A0When I r=
-un
-> openSUSE 12.1 with either the XFCE or IceWM sessions, Leo-Editor never
-> comes up in a full-screen widow. =A0In all my tests I used exactly the sa=
-me
-> Leo-Editor for all operating systems and session managers.
->
-> Other applications can be made to come up in full-screen windows under
-> openSUSE 12.1. =A0For example, Thunderbird and Thunar will come up in
-> full-screen windows.
->
-> I have seen this problem with all of the following revisions of
-> Leo-Editor: =A05051, 5089, 5093, 5106, 5113, 5115, 5121, 5123, 5128, 5130=
-,
-> 5138, 5141, 5143, 5147, 5148, 5161, 5166, 5200, 5220, 5248, and 5252. =A0=
-I
-> believe all my tests used Python 2.7.2, qt version 4.7.4.
->
-> Does anyone have any ideas about solving this problem?
-
-.. @+node:ekr.20130806072439.20481: *5* "Re: I can't make Leo-Editor start in a full-screen window under openSUSU 12.1"
-@nocolor
-
-From: SegundoBob <bhossley@ieee.org>
-
-
-
-
-Thanks for the suggestion.  But doing a save does not help with my 
-problem.  I was already aware that some parameters are only remembered when 
-a save is done--and this is a minor annoyance.  Wouldn't it be better, more 
-consistent, and more useable, if every exit saved all the parameters that 
-initialization restores?
-
-The symptoms of my problem are that window sizes of less than full-window 
-are remembered and restored, but when Leo-Editor is in full-screen at exit, 
-then it is restarted in partial-screen mode with an arbitrary unused band 
-at the top of the screen.
-.. @+node:ekr.20130926053913.11564: *4* Workaround for refresh-from-disk?
-.. @+node:ekr.20131102044158.16489: *4* Review bugs
+# Use table?
 .. @+node:ekr.20131103054650.16527: *4* fill-region & format-body can hang
 .. @+node:ekr.20050920084036.189: *5* << define dictionary d of names and Leo commands >>
 c = self.c ; f = c.frame
@@ -2245,6 +2117,63 @@ wrapped (as there is no space in the string) nor I can see the end of it
 
 The workaround is to disable @wrap in order to see the url, but this is
 clumsy.
+.. @+node:ekr.20130806072439.20477: *4* Fix full-screen bug (works for me)
+I can't make Leo-Editor start in a full-screen window under openSUSU 12.1
+
+From: SegundoBob <bhossley@ieee.org>
+
+I much prefer to almost always use Leo-editor in a full-screen window.   
+When I run Ubuntu 11.10 with either the Fluxbox or the Gnome Classic 
+sessions, when I re-open an outline that was last closed when its window 
+was full-screen, Leo-Editor comes up in a full-screen window.  When I run 
+openSUSE 12.1 with either the XFCE or IceWM sessions, Leo-Editor never 
+comes up in a full-screen widow.  In all my tests I used exactly the same 
+Leo-Editor for all operating systems and session managers.
+
+Other applications can be made to come up in full-screen windows under 
+openSUSE 12.1.  For example, Thunderbird and Thunar will come up in 
+full-screen windows.
+
+I have seen this problem with all of the following revisions of 
+Leo-Editor:  5051, 5089, 5093, 5106, 5113, 5115, 5121, 5123, 5128, 5130, 
+5138, 5141, 5143, 5147, 5148, 5161, 5166, 5200, 5220, 5248, and 5252.  I 
+believe all my tests used Python 2.7.2, qt version 4.7.4.
+
+Does anyone have any ideas about solving this problem?
+.. @+node:ekr.20130806072439.20478: *5* "Re: I can't make Leo-Editor start in a full-screen window under openSUSU 12.1"
+@nocolor
+
+From: technatica <technatica@gmail.com>
+
+1. Start Leo.
+2. Ctrl-S
+3. Close Leo.
+4. Open Leo with window size saved.
+.. @+node:ekr.20130806072439.20479: *5* "Re: I can't make Leo-Editor start in a full-screen window under openSUSU 12.1"
+Have you filed an official bug for this?  If not, please do.
+
+.. @+node:ekr.20130806072439.20480: *5* "Re: I can't make Leo-Editor start in a full-screen window under openSUSU 12.1"
+From: technatica <technatica@gmail.com>
+
+I have the exact same behaviour with Leo 4.10 final, build 5286,
+2012-04-27 23:02:15.
+
+It refuses to remember its window settings.
+
+Arch Linux, 64bit, installed from bzr.
+
+.. @+node:ekr.20130806072439.20481: *5* "Re: I can't make Leo-Editor start in a full-screen window under openSUSU 12.1"
+From: SegundoBob <bhossley@ieee.org>
+
+Doing a save does not help with my problem. I was already aware that some
+parameters are only remembered when a save is done--and this is a minor
+annoyance. Wouldn't it be better, more consistent, and more useable, if
+every exit saved all the parameters that initialization restores?
+
+The symptoms of my problem are that window sizes of less than full-window 
+are remembered and restored, but when Leo-Editor is in full-screen at exit, 
+then it is restarted in partial-screen mode with an arbitrary unused band 
+at the top of the screen.
 .. @+node:ekr.20110921094450.6956: ** 4.12
 @language rest
 
