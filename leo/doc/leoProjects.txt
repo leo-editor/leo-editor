@@ -87,6 +87,77 @@ for 4 different methods of determining square root.
 The fix was a hack to match_keywords, and an alteration to rule28.
 #@+node:ekr.20131102044158.16581: *3* Fixed text in Find Panel
 Changed defaults in leoSettings.leo from 14px to 12px.
+#@+node:ekr.20131102044158.16564: *3* Investigated install problem
+@language rest
+
+https://groups.google.com/forum/#!topic/leo-editor/qglPWiqnyog
+
+Using the LeoSetup-4.11-b1.exe installer with Python27 works fine.
+
+However using Python33 it's not so happy. Selecting Start Menu>Leo does not launch Leo, I just see a flash of the splashscreen and it dies.
+Same result using the desktop shortcut icon.
+
+The target properties of the desktop icon are:
+C:\Python33\pythonw.exe "C:\Program Files (x86)\Leo-4.11-b1\launchLeo.py"
+
+I can run Leo from a console though. Here is the log:
+C:\Program Files (x86)\Leo-4.11-b1>launchleo.py
+
+** isPython3: True
+Leo 4.11b1, build 5020, 2012-02-26 13:18:08 -0600
+Python 3.3.3, qt version 4.8.5
+Windows 6, 1, 7601, 2, Service Pack 1
+...
+
+Running from a command shell works fine with no errors.
+
+===== EKR
+
+    Using the LeoSetup-4.11-b1.exe installer with Python27 works fine.
+
+    However using Python33 it's not so happy. Selecting Start Menu>Leo does not launch Leo, I just see a flash of the splashscreen and it dies.
+    Same result using the desktop shortcut icon.
+
+
+Thanks for this report.
+
+> The target properties of the desktop icon are:
+> C:\Python33\pythonw.exe "C:\Program Files (x86)\Leo-4.11-b1\launchLeo.py"
+
+These look correct. And they work for me after a clean install. Note: the
+initial load of Leo can take quite awhile: all .py files must be compiled.
+
+For trouble shooting, please do the following:
+
+- Change pythonw.exe to python.exe
+- Add an -i option to the target properties.
+
+The effect of this will be to run Leo in a console window, holding the
+console window open.
+
+This should tell you exactly what is happening.
+
+> Selecting Start Menu>Leo does not launch Leo, I just see a flash of the
+  splashscreen and it dies.
+
+I did find an issue related to the start menu. If I chose "All Programs"
+then Leo, there was an old copy of the leo shortcut lying around that
+didn't work. And even after deleting the Leo install, there was an old,
+out-out-date Leo folder accessible from the start menu. And furthermore,
+there were differences (from the start menu) between opening Leo and
+opening Leo for all users.
+
+This is surely confusing, but it may be the result of old installs.
+
+My suggestion:
+
+1. Uninstall b1.
+2. Delete everything related to Leo from your start menu, both accessible
+   via "search programs and files" and the "all programs list". Make sure
+   to delete everything for all users as well as yourself.
+3. Reinstall b1.
+4. Test. If problems remain, make the changes above (-i, python.exe), and
+   report the results.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
