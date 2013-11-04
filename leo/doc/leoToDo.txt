@@ -50,7 +50,7 @@ I bet people are doing things with Leo you never dreamed of, and some
 of those things might be the itch some journalist wants to scratch.
 .. @+node:ekr.20130916105324.19893: ** To-do for 4.11 final
 @language rest
-.. @+node:ekr.20131101080215.16490: *3* Investigate Key handling on Mac
+.. @+node:ekr.20131101080215.16490: *3* **Investigate Key handling on Mac
 https://groups.google.com/forum/#!searchin/leo-editor/key$20handling$20broken/leo-editor/OBIMAFHigZo/R8zSbAD7eWoJ
 
 I am trying Leo on OSX with Finnish keyboard layout.
@@ -64,9 +64,7 @@ keyboards, but I thought there was a resolution for that problem back then
 
 Apart from this glitch, getting Leo running on Mac is much easier than I
 remembered (just use homebrew to install PyQt).
-.. @+node:ekr.20131102044158.16581: *3* Fix text in Find Panel
-.. @+node:ekr.20131102044158.16566: *3* bugs
-.. @+node:ekr.20131102044158.16564: *4* **Fix install problem
+.. @+node:ekr.20131102044158.16564: *3* **Fix install problem
 Using the LeoSetup-4.11-b1.exe installer with Python27 works fine.
 
 However using Python33 it's not so happy. Selecting Start Menu>Leo does not launch Leo, I just see a flash of the splashscreen and it dies.
@@ -85,6 +83,7 @@ Windows 6, 1, 7601, 2, Service Pack 1
 ...
 
 Running from a command shell works fine with no errors.
+.. @+node:ekr.20131102044158.16566: *3* bugs (all optional)
 .. @+node:ekr.20131027064821.18715: *4* Autocompleter ? usually doesn't work
 https://groups.google.com/forum/#!topic/leo-editor/rTN1S9u74RQ
 
@@ -571,7 +570,7 @@ def rp_wrap_all_lines (self,indents,leading_ws,lines,pageWidth):
     result = '\n'.join(paddedResult)
     if trailingNL: result = result + '\n'
     return result
-.. @+node:ekr.20131102044158.16565: *3* marketing
+.. @+node:ekr.20131102044158.16565: *3* marketing (all optional)
 .. @+node:ekr.20131029095615.17089: *4* ** A cool tricks section
 .. @+node:ekr.20130908104426.11243: *4*  969391 setup.py confuses newbies
 https://bugs.launchpad.net/leo-editor/+bug/969391

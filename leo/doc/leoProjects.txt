@@ -1,22 +1,9 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20100120072650.6089: * @file ../doc/leoProjects.txt
 #@+all
-#@+node:ekr.20131103054650.16529: ** Long winded discussions about brevity
-@language rest
-
-I am finding them unbearable. If you have a specific
-suggestion for Leo's docs, just make it.
-
-Please do read Leo's documentation before complaining about
-it. That includes the table of contents, index & glossary.
-
-Yes, learning about Leo requires real study. Get to it.
-
-Edward
 #@+node:ekr.20131103054650.16528: ** b2/final
-#@+node:ekr.20131007055150.13036: *3* Improved reformat-paragraph
 @language rest
-
+#@+node:ekr.20131007055150.13036: *3* Improved reformat-paragraph
 1. The following are always single-line paragraphs::
     
     @anything
@@ -44,14 +31,62 @@ What I did:
     - c.singleLineParagraph.
 - Add space adjustments to rp_wrap_all_lines.
 #@+node:ekr.20131103054650.16526: *3* Fixed bug: add/remove comments now handle ambiguous @language directives
-@language rest
-
 - g.set_language doesn't handle ambigous @language directives!!
 - Eliminated scanToCursor logic
 - Added c.hasAmbiguousLanguage and c.getLanguageAtCursor helpers.
 - Changed c.insertComments and c.removeComments.
+#@+node:ekr.20131104024103.16526: *3* Fixed Haskell coloring problem
+https://bugs.launchpad.net/leo-editor/+bug/1247672
 
-@language python
+In Haskell it is common to end certain functions with the single quote character. i.e.
+
+sum = foldl' (+) 0
+
+foldl' is a variety of the function foldl with modified characteristics. In
+this case, it is strict.
+
+The haskell syntax highlighter on Leo treats that single quote as the
+beginning of a string.
+
+As a note that may matter -- I don't know Leo so below may be non-important
+I see this:
+
+def haskell_rule4(colorer, s, i):
+    return colorer.match_seq(s, i, kind="literal1", seq="' '",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+
+In the leo/modes/haskell.py file.
+
+Haskell does have strings that are surrounded by single quotes. Single
+quotes are either (somewhat) regular characters or surround a single (
+non-string ) character.
+
+Gatesphere on the #Leo was helpful today and asked that I include the link
+to this jedit xml syntax def for haskell:
+
+http://jedit.git.sourceforge.net/git/gitweb.cgi?p=jedit/jEdit.bak;a=blob_plain;f=modes/haskell.xml;hb=HEAD
+
+Feel free to contact me if you need additional info.
+
+====
+
+
+
+Oh -- I should add that it is not uncommon to end function names with
+multiple single quotes as well.
+
+i.e.
+
+sqrt
+sqrt'
+sqrt''
+sqrt'''
+
+for 4 different methods of determining square root.
+
+The fix was a hack to match_keywords, and an alteration to rule28.
+#@+node:ekr.20131102044158.16581: *3* Fixed text in Find Panel
+Changed defaults in leoSettings.leo from 14px to 12px.
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.

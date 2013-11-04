@@ -518,7 +518,7 @@
 </v>
 </v>
 <v t="ekr.20070224073109.1"></v>
-<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
+<v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
 <v t="ekr.20130924110246.13745"><vh>@bool scripting-abbreviations = False</vh></v>
@@ -1397,7 +1397,7 @@
 <v t="ekr.20110611092035.16492"><vh>Mouse</vh>
 <v t="ekr.20080324105006.6"><vh>@bool allow_middle_button_paste = False</vh></v>
 </v>
-<v t="ekr.20051123100536" a="E"><vh>Plugins</vh>
+<v t="ekr.20051123100536"><vh>Plugins</vh>
 <v t="ekr.20041119034357.13"><vh>@bool use_plugins = True</vh></v>
 <v t="ekr.20071113084330"><vh>@bool warn_when_plugins_fail_to_load = True</vh></v>
 <v t="ekr.20070224073109.1"></v>
@@ -1447,7 +1447,7 @@
 <v t="TL.20090225102340.34"><vh>@bool nodeActions_save_atFile_nodes = False</vh></v>
 <v t="TL.20090303191843.1"><vh>@int nodeActions_message_level = 1</vh></v>
 </v>
-<v t="peckj.20131101143409.5814" a="E"><vh>nodewatch plugin</vh>
+<v t="peckj.20131101143409.5814"><vh>nodewatch plugin</vh>
 <v t="peckj.20131101143409.5816"><vh>@bool nodewatch_autoexecute_scripts = False</vh></v>
 </v>
 <v t="ekr.20060919171527"><vh>opml plugin</vh>
@@ -5797,21 +5797,21 @@ QWidget#findTab {
 
 QLabel#findHeading {
     font-family: DejaVu Sans Mono;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal,italic,oblique */
 }
 
 QLabel#findLabel {
     font-family: DejaVu Sans Mono;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal,italic,oblique */
 }
 
 QLabel#changeLabel {
     font-family: DejaVu Sans Mono;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal,italic,oblique */
 }
