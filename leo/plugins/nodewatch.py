@@ -189,6 +189,8 @@ class LeoNodewatchWidget(QtGui.QWidget):
     def item_selected(self):
         idx = self.listWidget.currentRow()
         key = str(self.comboBox.currentText())
+        if key == '' or idx > len(self.c.theNodewatchController.watchlists[key]):
+            return
         tup = self.c.theNodewatchController.watchlists[key][idx]
         pos = self.c.vnode2position(tup[1])
         self.c.selectPosition(pos)
