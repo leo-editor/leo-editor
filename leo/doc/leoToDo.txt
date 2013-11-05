@@ -3,11 +3,12 @@
 .. @@language rest # override the default .txt coloring.
 
 .. @+all
-.. @+node:ekr.20131027064821.18693: ** * Make introductory video about Leo for PyCon2013China
+.. @+node:ekr.20131105020211.18058: ** Important
+.. @+node:ekr.20131027064821.18693: *3* * Make introductory video about Leo for PyCon2013China
 By mid December.
 
 Private email: http://mail.google.com/mail/u/0/#inbox/141ddfe09c389e4f
-.. @+node:ekr.20131101080215.16488: ** * Outreach to magazine editors
+.. @+node:ekr.20131101080215.16488: *3* * Outreach to magazine editors
 ===== Steve Litt
 
 I think the first step in getting this kind of review is to get more
@@ -48,7 +49,571 @@ One more thing: Start publicizing different ways people use Leo.
 Encourage them to write in with their unique uses, and publicize them.
 I bet people are doing things with Leo you never dreamed of, and some
 of those things might be the itch some journalist wants to scratch.
+.. @+node:ekr.20131105020211.18059: *3* Per-node expansions!
+https://groups.google.com/forum/#!topic/leo-editor/Wd0NtBLEZZk
+
+The idea is store "ephemeral" or position-related data **in vnodes*. This
+is a completely new idea in Leo's history!
+
+Suppose every vnode contains a new ivar: v.expandedPositions, a list of
+(copies of) positions at which v is to be expanded. This would work as
+follows:
+
+1. Contracting a node at position p clears p.v.expandedPositions. The happy
+   side effects is that contracting any clone will contract them all.
+
+2. Expanding a node at position appends p.copy() to p.v.expandedPositions,
+   and purges any no-longer-existing positions from that list.
+
+3. Leo's drawing code will call c.shouldBeExpanded(p) (instead of
+p.isExpanded()) to determine whether to expand the outline node at position
+p.
+
+As always, changing outline structure will invalidate positions. Because
+c.p and all it's ancestors are always expanded, the worst that can happen
+when an outline changes is that some positions that *aren't* the present
+position will contract unexpectedly. Most such contraction will occur off
+screen.
+
+Note: We could add v ivars for other kinds of data, such as marks, but
+that's not going to happen. I think this trick is appropriate only in very
+special circumstances. Furthermore, vnodes should be as small as possible.
+.. @+node:ekr.20131017174814.17480: *3* c.shouldBeExpanded
+@language python
+
+def shouldBeExpanded(self,p):
+    c,root,v = self,self.rootPosition(),p.v
+    if p == c.p or p.isAncestorOf(c.p):
+        return True
+    if v.isExpanded():
+        v.expandedList = [p2 for p2 in v.expandedList if c.positionExists(p2,root=root)]
+        for p2 in v.expandedList:
+            if p == p2:
+                return True
+    return False
+.. @+node:ekr.20131030082936.17512: *3* Can't fix (yet) bug 1090950: refresh from disk - cut node ressurection
+https://bugs.launchpad.net/leo-editor/+bug/1090950
+
+A shock: fixing bug 1090950 re resurrected nodes may define Leo 5.0
+https://groups.google.com/forum/#!topic/leo-editor/nIl3ud7Tbig
+
+
+.. @+node:ekr.20130926053913.11569: *3* leoRope.py
+.. @+node:ekr.20100828074347.5827: *3* Better support for vim
+@language rest
+
+About vim and Leo: no further major work is coming.
+http://groups.google.com/group/leo-editor/browse_thread/thread/6882f02321dc1edf
+
+Vim mode users: your top 3 complaints, please
+http://groups.google.com/group/leo-editor/browse_thread/thread/141690c553bfde55
+.. @+node:ekr.20100113075303.6270: *4* Vim problems
+# None of these is easily solvable in Leo's present environment.
+.. @+node:ekr.20100112051224.6239: *5* Displaying mode help
+The "--> mode-help" command has the following issues related to the
+display of the "Help" tab:
+
+1. Key label always capitalized.
+
+Vim commands are mapped to both lower-case and upper-case keys but always appear
+mapped to upper-case keys within the "Help" tab.
+
+2. Layout of tab's contents.
+
+To improve readability and better support narrow tab cards, display the mode's
+label without the "enter-" and "-mode" text and place the key label before the
+mode label.
+
+For example, the following entries would change from::
+    enter-vi-delete-line-mode d
+    enter-vi-delete-to-begin-of-word-mode b
+to::
+    d : vi-delete-line
+    b : vi-delete-to-begin-of-word
+.. @+node:ekr.20100112051224.6225: *5* Repeat last cursor movement command
+Support the ';' key: repeat the last "To character" or "Find character" command.
+.. @+node:ekr.20100113075303.6271: *5* Need mode-oriented bindings
+Mapping a number to a command or an @mode node works but can not be used as it
+prevents the number from being entered as text while in Vi's insert state.
+
+Binding 'bksp' key to back-char to move back a character in command mode
+prevents 'bksp' from deleting characters in text edit mode.
+.. @+node:ekr.20080616110054.2: *5* Support vim dot command
+The ability to repeat the last editing related command by pressing the period
+key is not supported and there is no workaround in place.
+
+Binding keys within nodes:
+
+Some commands can be "easily" repeated by having the command's mode
+bind itself to the period key.  This is not currently working.  
+
+Support commands requesting input:
+
+Add companion commands that reuse input.  For example, a zap-to-
+character-again command could exist which will reuse the key entered
+in the last zap-to-character command.  With this support, the mode
+that performs the initial command would assign the period key to a
+companion mode that is identical to the initial mode but with the zap-
+to-character command replaced by the zap-to-character-again command.
+
+Commands requiring companion commands are:
+  zap-to-character
+  find-character
+  backward-find-character
+  (Any others?)
+
+Notes:
+
+- The copy of the character should be saved somewhere that does NOT affect the
+  contents of the clipboard.
+
+- The same or a separate storage location can be used for all commands to retain
+  a copy of the character entered by the user. It doesn't matter since only the
+  last command is assigned to the period key to be re-executed.
+.. @+node:ekr.20100112051224.6238: *5* Some commands do not work in headline
+Leo functions exist which unconditionally set focus to the body pane
+regardless of the active pane.
+
+For example, bracket matching commands ("%" key) do not work within
+a node's headline text.  Instead, the command is performed on the
+node's body text.
+
+Using the "undo" command (key 'u') to undo a change to a node's headline text
+only works correctly after another node has been selected. It appears that
+changes made to a node's headline text are not recorded in Leo's change history
+until the edited node has lost focus.
+.. @+node:ekr.20100112051224.6222: *5* Commands requesting user input
+Commands requesting user input must be the last command executed within an @mode
+node. This prevents the implementation of commands such as "yank to <character>"
+that requires a "copy to clipboard" operation after the "find-character"
+command.
+
+======
+
+Maybe we just need more commands...
+.. @+node:ekr.20100112051224.6223: *5* Editing node headlines using @mode nodes
+Commands modifying or selecting headline text do not work correctly within a
+@mode node.
+
+This eliminates accurate implementation of vi's delete/change/substitute/yank
+object commands. As a workaround, the commands are currently written to only
+select the text. The user must perform the subsequent delete, change,
+substitute, and yank.
+.. @+node:ekr.20100112051224.6246: *5* Missing commands/features
+.. @+node:ekr.20100112051224.6234: *6* Move current line (to screen position)
+Vi has a collection of "z<movement>" commands that will move the
+current line to the top, middle, and bottom of the screen.  They are
+not supported in Leo.
+.. @+node:ekr.20100112051224.6235: *6* Move body text up/down
+Vi maps keys to scroll the text up/down one line and by half the
+number of visible lines.  Leo does not support this.
+
+.. @+node:ekr.20110529115328.18247: *6* Block cursor
+Having worked with Tk text canvases more that Qt, there still seem to
+be things that it had that have to be worked around as the Qt people
+just haven't seen the need for.
+
+One is the block cursor, I giving Leo Vim like functionality, it would
+be nice if one where supported, theses new kids just don't understand
+something so primitive I guess.
+.. @+node:ekr.20110202094848.12568: *6* Named marks
+Another is named marks, in Vim you can store a number of cursor
+locations, and recall them to jump around in your code.  This was also
+useful in filling out templates as each stop could be given a name
+mark.  This helped make filling out a template easier as you weren't
+stuck in a linear filling in the blanks in a set order, template stops
+where linked in rings, you could jump from the last stop back to the
+first and make and changes you wanted on a second go round.  Gravity
+of marks made things easier to inspect to determine what stops where
+used and which ones were being bypassed.
+
+As these things had an actual presence in the text buffer, it going to
+be a little harder to come up with a reasonable work around.
+.. @+node:ekr.20110115062009.6025: *5* Commands that work differently in Vim
+.. @+node:ekr.20100112051224.6236: *6* Two kinds of words
+Vi supports two types of words in its commands:
+
+1. Words that consist of only a subset of the character set and
+2. words that consist of all characters except the space and tab characters.
+
+Leo's always considers a word to consist of a subset of characters
+although some word related commands include different characters
+than others.
+.. @+node:ekr.20090629183608.8446: *6* Copy/paste/yank/delete
+Yank vs. Yank:
+Vi's "yank" commands copy the selected text TO the clipboard.
+Leo's "yank" commands insert text FROM the clipboard.
+
+copy-text in modes:
+Leo's copy-text command does not work within a mode.  As a result,
+all "copy to clipboard" capability is being implemented using the
+kill-<object> command followed by Leo's "yank" command to put the
+text back.
+
+paste-text in modes:
+The paste-text command does not work within an @mode node.  Leo's
+"yank" command is used instead.
+
+delete-node does not copy node to clipboard:
+A copy-node command is issued to copy the node to the clipboard
+followed by the delete-node command.
+.. @+node:ekr.20100521090440.5887: *4* Generalize minibuffer code
+@nocolor-node
+
+From Tom L
+
+This is hardwired for the first parameter.  Things I need to expand
+this:
+
+1. put in a variable that cycles through the tabStops
+
+2. In this mock up, you are entering the parameters in the minibuffer,
+a more advanced version would collect each keypress and put it in the
+body at the current tabStop, a tab would finalize the entry and
+advance to the next stop, no text other than the 'help', ends up in
+the minibuffer.
+
+Sinc I'm only modifying existing code without real understanding of
+what Leo is doing, any guidance would be appreciated.
+
+Tom
+.. @+node:ekr.20110529115328.18254: *5* EKR notes
+@language rest
+
+The general idea is to make it easier to prompt for series of values.
+
+This might be important in the vim project, but it is not worth doing outside the vim project.
+.. @+node:ekr.20110529115328.18253: *5* code
+@language python
+
+#Just playing with part of a template system, the (partial) mock up for "range()" is:
+
+def tabStopNaming (event=None):
+
+  stateName = 'naming'
+  k = c.k
+  state = k.getState(stateName)
+
+  help = ('start-value -- optional, -> fill-in or tab eliminate.  ',
+           'end-value -- required, -> fill-in.  ',
+           'step -- optional, ->fill-in or tab to eliminate.  ')
+  tabStop = ('start-value', 'end-value', 'step')
+
+  if state == 0:
+      k.setLabelBlue(help[0],protect=True)
+      k.getArg(event,stateName,1,tabStopNaming)
+      # g.es('does this ever executed?') # yes, imediately!
+  else:
+      k.clearState()
+      g.es_print('%s : %s' % (tabStop[0], k.arg))
+      k.setLabelBlue('')
+
+tabStopNaming()
+.. @+node:ekr.20100112051224.6226: *4* Vim-related: Range prefix to commands/objects (k.getArgs)
+The ability to specify a numeric range prefix is not supported. For example,
+entering "3dd" will not delete the next three lines and "20G" will not move the
+cursor to the 20th line in the file.
+
+The ability to specify a numeric range prefix to an object is not supported. For
+example, the "d2fx" command should Delete up to and including the 2nd Found "x"
+character.
 .. @+node:ekr.20131102044158.16568: ** For 4.11.1
+.. @+node:ekr.20131101080215.16490: *3* * Fix option-key bug on Mac
+@language rest
+
+EKR: rev 6107: changes re Alt-Ctrl (Alt-Gr) keys.
+leoEditCommands.py: changed selfInsertCommand. Added isPlain logic.
+
+https://groups.google.com/forum/#!searchin/leo-editor/key$20handling$20broken/leo-editor/OBIMAFHigZo/R8zSbAD7eWoJ
+
+I am trying Leo on OSX with Finnish keyboard layout.
+
+To get the @ character, you have to press Option + 2. Option doubles as
+"alt", so I guess it's misinterpreted as alt-2.
+
+I recall there were email threads about alt gr, leo and international
+keyboards, but I thought there was a resolution for that problem back then
+(until I actually tried Leo on mac, that is).
+
+Apart from this glitch, getting Leo running on Mac is much easier than I
+remembered (just use homebrew to install PyQt).
+
+@language python
+.. @+node:ekr.20051125080855: *4* selfInsertCommand, helpers
+def selfInsertCommand(self,event,action='insert'):
+
+    '''Insert a character in the body pane.
+    This is the default binding for all keys in the body pane.'''
+
+    trace = False and not g.unitTesting
+    c,k = self.c,self.k
+    verbose = True
+    w = self.editWidget(event)
+    if not w: return # (for Tk) 'break'
+    << set local vars >>
+    assert g.isStrokeOrNone(stroke)
+
+    if trace: g.trace('ch',repr(ch),'stroke',stroke)
+    if g.doHook("bodykey1",c=c,p=p,v=p,ch=ch,oldSel=oldSel,undoType=undoType):
+        return # (for Tk) "break" # The hook claims to have handled the event.
+    if ch == '\t':
+        self.updateTab(p,w)
+    elif ch == '\b':
+        # This is correct: we only come here if there no bindngs for this key. 
+        self.backwardDeleteCharacter(event)
+    elif ch in ('\r','\n'):
+        ch = '\n'
+        self.insertNewlineHelper(w,oldSel,undoType)
+    elif inBrackets and self.autocompleteBrackets:
+        self.updateAutomatchBracket(p,w,ch,oldSel)
+    elif ch: # Null chars must not delete the selection.
+        isPlain = stroke.find('Alt') == -1 and stroke.find('Ctrl') == -1
+        i,j = oldSel
+        if i > j: i,j = j,i
+        # Use raw insert/delete to retain the coloring.
+        if i != j:                  w.delete(i,j)
+        elif action == 'overwrite': w.delete(i)
+        if isPlain: # 2013/10/07: call insertKeyEvent for non-plain characters.
+            w.insert(i,ch)
+            w.setInsertPoint(i+1)
+        else:
+            g.app.gui.insertKeyEvent(event,i)
+        if inBrackets and self.flashMatchingBrackets:
+            self.flashMatchingBracketsHelper(w,i,ch)               
+    else:
+        return # (for Tk) 'break' # This method *always* returns 'break'
+
+    # Set the column for up and down keys.
+    spot = w.getInsertPoint()
+    c.editCommands.setMoveCol(w,spot)
+
+    # Update the text and handle undo.
+    newText = w.getAllText()
+    changed = newText != oldText
+    if trace and verbose:
+        g.trace('ch',repr(ch),'changed',changed,'newText',repr(newText[-10:]))
+    if changed:
+        # g.trace('ins',w.getInsertPoint())
+        c.frame.body.onBodyChanged(undoType=undoType,
+            oldSel=oldSel,oldText=oldText,oldYview=None)
+
+    g.doHook("bodykey2",c=c,p=p,v=p,ch=ch,oldSel=oldSel,undoType=undoType)
+    return # (for Tk) 'break'
+.. @+node:ekr.20061103114242: *5* << set local vars >>
+p = c.p
+
+stroke = event and event.stroke or None
+ch = event and event.char or ''
+
+if ch == 'Return':
+    ch = '\n' # This fixes the MacOS return bug.
+if ch == 'Tab':
+    ch = '\t'
+
+name = c.widget_name(w)
+oldSel =  name.startswith('body') and w.getSelectionRange() or (None,None)
+oldText = name.startswith('body') and p.b or ''
+undoType = 'Typing'
+brackets = self.openBracketsList + self.closeBracketsList
+inBrackets = ch and g.toUnicode(ch) in brackets
+# if trace: g.trace(name,repr(ch),ch and ch in brackets)
+.. @+node:ekr.20090213065933.14: *5* doPlainTab
+def doPlainTab(self,s,i,tab_width,w):
+
+    '''Insert spaces equivalent to one tab.'''
+
+    start,end = g.getLine(s,i)
+    s2 = s[start:i]
+    width = g.computeWidth(s2,tab_width)
+
+    if tab_width > 0:
+        w.insert(i,'\t')
+        ins = i+1
+    else:
+        n = abs(tab_width) - (width % abs(tab_width))
+        w.insert(i,' ' * n)
+        ins = i+n
+
+    w.setSelectionRange(ins,ins,insert=ins)
+.. @+node:ekr.20060627091557: *5* flashCharacter (leoEditCommands)
+def flashCharacter(self,w,i):
+
+    bg      = self.bracketsFlashBg or 'DodgerBlue1'
+    fg      = self.bracketsFlashFg or 'white'
+    flashes = self.bracketsFlashCount or 3
+    delay   = self.bracketsFlashDelay or 75
+
+    w.flashCharacter(i,bg,fg,flashes,delay)
+.. @+node:ekr.20060627083506: *5* flashMatchingBracketsHelper
+def flashMatchingBracketsHelper (self,w,i,ch):
+
+    d = {}
+    if ch in self.openBracketsList:
+        for z in range(len(self.openBracketsList)):
+            d [self.openBracketsList[z]] = self.closeBracketsList[z]
+        reverse = False # Search forward
+    else:
+        for z in range(len(self.openBracketsList)):
+            d [self.closeBracketsList[z]] = self.openBracketsList[z]
+        reverse = True # Search backward
+
+    delim2 = d.get(ch)
+
+    s = w.getAllText()
+    j = g.skip_matching_python_delims(s,i,ch,delim2,reverse=reverse)
+    if j != -1:
+        self.flashCharacter(w,j)
+.. @+node:ekr.20060804095512: *5* initBracketMatcher
+def initBracketMatcher (self,c):
+
+    if len(self.openBracketsList) != len(self.closeBracketsList):
+
+        g.es_print('bad open/close_flash_brackets setting: using defaults')
+        self.openBracketsList  = '([{'
+        self.closeBracketsList = ')]}'
+
+    # g.trace('self.openBrackets',openBrackets)
+    # g.trace('self.closeBrackets',closeBrackets)
+.. @+node:ekr.20051026171121: *5* insertNewlineHelper
+def insertNewlineHelper (self,w,oldSel,undoType):
+
+    trace = False and not g.unitTesting
+    c = self.c ; p = c.p
+    i,j = oldSel ; ch = '\n'
+    if trace:
+        s = w.widget.toPlainText()
+        g.trace(i,j,len(s),w)
+
+    if i != j:
+        # No auto-indent if there is selected text.
+        w.delete(i,j)
+        w.insert(i,ch)
+        w.setInsertPoint(i+1)
+    else:
+        w.insert(i,ch)
+        w.setInsertPoint(i+1)
+
+        if (c.autoindent_in_nocolor or 
+            (c.frame.body.colorizer.useSyntaxColoring(p) and
+            undoType != "Change")
+        ):
+            # No auto-indent if in @nocolor mode or after a Change command.
+            self.updateAutoIndent(p,w)
+
+    w.seeInsertPoint()
+.. @+node:ekr.20051026171121.1: *5* updateAutoIndent (leoEditCommands)
+def updateAutoIndent (self,p,w):
+
+    trace = False and not g.unitTesting
+    c = self.c
+    d = c.scanAllDirectives(p)
+    tab_width = d.get("tabwidth",c.tab_width)
+    # Get the previous line.
+    s = w.getAllText()
+    ins = w.getInsertPoint()
+    i = g.skip_to_start_of_line(s,ins)
+    i,j = g.getLine(s,i-1)
+    s = s[i:j-1]
+
+    # Add the leading whitespace to the present line.
+    junk, width = g.skip_leading_ws_with_indent(s,0,tab_width)
+    # g.trace('width',width,'tab_width',tab_width)
+
+    if s and s [-1] == ':':
+        # For Python: increase auto-indent after colons.
+        if g.findLanguageDirectives(c,p) == 'python':
+            width += abs(tab_width)
+
+    if self.smartAutoIndent:
+        # Determine if prev line has unclosed parens/brackets/braces
+        bracketWidths = [width] ; tabex = 0
+        for i in range(0,len(s)):
+            if s [i] == '\t':
+                tabex += tab_width-1
+            if s [i] in '([{':
+                bracketWidths.append(i+tabex+1)
+            elif s [i] in '}])' and len(bracketWidths) > 1:
+                bracketWidths.pop()
+        width = bracketWidths.pop()
+
+    ws = g.computeLeadingWhitespace(width,tab_width)
+    if ws:
+        if trace: g.trace('width: %s, tab_width: %s, ws: %s' % (
+            width,tab_width,repr(ws)))
+        i = w.getInsertPoint()
+        w.insert(i,ws)
+        w.setInsertPoint(i+len(ws))
+        w.seeInsertPoint()
+            # 2011/10/02: Fix cursor-movement bug.
+.. @+node:ekr.20051027172949: *5* updateAutomatchBracket
+def updateAutomatchBracket (self,p,w,ch,oldSel):
+
+    # assert ch in ('(',')','[',']','{','}')
+
+    c = self.c ; d = c.scanAllDirectives(p)
+    i,j = oldSel
+    language = d.get('language')
+    s = w.getAllText()
+
+    if ch in ('(','[','{',):
+        automatch = language not in ('plain',)
+        if automatch:
+            ch = ch + {'(':')','[':']','{':'}'}.get(ch)
+        if i != j: w.delete(i,j)
+        w.insert(i,ch)
+        if automatch:
+            ins = w.getInsertPoint()
+            w.setInsertPoint(ins-1)
+    else:
+        ins = w.getInsertPoint()
+        ch2 = ins<len(s) and s[ins] or ''
+        if ch2 in (')',']','}'):
+            ins = w.getInsertPoint()
+            w.setInsertPoint(ins+1)
+        else:
+            if i != j: w.delete(i,j)
+            w.insert(i,ch)
+            w.setInsertPoint(i+1)
+.. @+node:ekr.20051026092433: *5* updateTab
+def updateTab (self,p,w,smartTab=True):
+
+    trace = False and not g.unitTesting
+    c = self.c
+
+    # g.trace('tab_width',tab_width)
+    i,j = w.getSelectionRange()
+        # Returns insert point if no selection, with i <= j.
+
+    if i != j:
+        # w.delete(i,j)
+        c.indentBody()
+    else:
+        d = c.scanAllDirectives(p)
+        tab_width = d.get("tabwidth",c.tab_width)
+        if trace: g.trace(tab_width)
+
+        # Get the preceeding characters.
+        s = w.getAllText()
+        start,end = g.getLine(s,i)
+        after = s[i:end]
+        if after.endswith('\n'): after = after[:-1]
+
+        # Only do smart tab at the start of a blank line.
+        doSmartTab = (smartTab and c.smart_tab and i == start)
+            # Truly at the start of the line.
+            # and not after # Nothing *at all* after the cursor.
+
+        if trace:
+            g.trace('smartTab',doSmartTab,'tab_width',tab_width)
+                # 'i %s start %s after %s' % (i,start,repr(after)))
+
+        if doSmartTab:
+            self.updateAutoIndent(p,w)
+            # Add a tab if otherwise nothing would happen.
+            if s == w.getAllText():
+                self.doPlainTab(s,i,tab_width,w)
+        else:
+            self.doPlainTab(s,i,tab_width,w)
 .. @+node:ekr.20131104103309.16513: *3* Add key bindings to status line
 .. @+node:ekr.20131102044158.16569: *3* fix find bugs
 .. @+node:ekr.20131027064821.18715: *3* Autocompleter ? usually doesn't work
@@ -71,41 +636,12 @@ There is no quick fix for this.  Probably a new command is needed.
 .. @+node:ekr.20131004191204.16078: *3* cycle-all-focus doesn't work
 # Use table?
 .. @+node:ekr.20131103054650.16527: *3* fill-region & format-body can hang
-.. @+node:ekr.20131102044158.16567: *3* features
-.. @+node:ekr.20131017174814.17480: *4* c.shouldBeExpanded
-@language python
-
-def shouldBeExpanded(self,p):
-    c,root,v = self,self.rootPosition(),p.v
-    if p == c.p or p.isAncestorOf(c.p):
-        return True
-    if v.isExpanded():
-        v.expandedList = [p2 for p2 in v.expandedList if c.positionExists(p2,root=root)]
-        for p2 in v.expandedList:
-            if p == p2:
-                return True
-    return False
-.. @+node:ekr.20131025044901.17146: *4* Clone-to-last-node
+.. @+node:ekr.20131025044901.17146: *3* Clone-to-last-node
 # Don't change selected node!
-.. @+node:ekr.20131102044158.16565: *3* marketing (all optional)
-.. @+node:ekr.20131029095615.17089: *4* ** A cool tricks section
-.. @+node:ekr.20130908104426.11243: *4*  969391 setup.py confuses newbies
-https://bugs.launchpad.net/leo-editor/+bug/969391
-
-setup.py is necessary for creating Ubuntu packages, but it is *not*
-necessary for installation. This confuses newbies a lot.
-
-I'd like to move, rename or otherwise hide this file, but Ville says that's
-not trivial to do:
-
-QQQ
-I need to research it. The change won't be free, as the debian tooling
-(python-support) expects it to be called setup.py. I need to find a
-workaround, but can't do it right now.
-QQQ
-.. @+node:ekr.20130909111702.13058: *4* Allow paypal donations to Leo
-.. @+node:ekr.20130803125244.17100: *3* Docs
-.. @+node:ekr.20130806072439.20414: *4* Cannot open Leo files by double-click in Windows Explorer?
+.. @+node:ekr.20130803125244.17100: ** Docs & marketing
+.. @+node:ekr.20131029095615.17089: *3* A cool tricks section
+.. @+node:ekr.20130909111702.13058: *3* Allow paypal donations to Leo
+.. @+node:ekr.20130806072439.20414: *3* Cannot open Leo files by double-click in Windows Explorer?
 From: Nick_H <nah@plextek.co.uk>
 
 Sorry, this is probably a foolish question, but when I double-click on
@@ -123,7 +659,7 @@ Thank you!
 
 Nick
 
-.. @+node:ekr.20130806072439.20415: *5* Re: Cannot open Leo files by double-click in Windows Explorer?
+.. @+node:ekr.20130806072439.20415: *4* Re: Cannot open Leo files by double-click in Windows Explorer?
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
 "On Wed, Apr 18, 2012 at 12:20 AM, Matt Wilkie <maphew@gmail.com> wrote:
@@ -136,7 +672,7 @@ try to generalize it a bit so people will understand what is intended.
  The fix will probably be tricky: it's so hard to be clear and general
 at the same time.  Otoh, making instructions
 Python-and-Leo-version-depenedent is pretty hopeless.
-.. @+node:ekr.20130806072439.20416: *5* Re: Cannot open Leo files by double-click in Windows Explorer?
+.. @+node:ekr.20130806072439.20416: *4* Re: Cannot open Leo files by double-click in Windows Explorer?
 From: Matt Wilkie <maphew@gmail.com>
 
 > The file association contains the following command to execute for the
@@ -155,7 +691,7 @@ When in a batch file %1 passes just the first command line parameter.
 It is logical to expect %* to work for click file association as well,
 but it doesn't. I don't know why.
 
-.. @+node:ekr.20130806072439.20417: *5* Re: Cannot open Leo files by double-click in Windows Explorer?
+.. @+node:ekr.20130806072439.20417: *4* Re: Cannot open Leo files by double-click in Windows Explorer?
 From: Matt Wilkie <maphew@gmail.com>
 
 > Set up file type association:
@@ -178,7 +714,7 @@ s
 
 =20
 -matt=20
-.. @+node:ekr.20130806072439.20418: *5* Re: Cannot open Leo files by double-click in Windows Explorer?
+.. @+node:ekr.20130806072439.20418: *4* Re: Cannot open Leo files by double-click in Windows Explorer?
 From: Nick_H <nah@plextek.co.uk>
 
 Many thanks to all for these replies!
@@ -216,7 +752,7 @@ On Saturday, April 14, 2012 4:30:10 PM UTC+1, Matt Wilkie wrote:
 > -matt
 >
 >
-.. @+node:ekr.20130806072439.20419: *5* Re: Cannot open Leo files by double-click in Windows Explorer?
+.. @+node:ekr.20130806072439.20419: *4* Re: Cannot open Leo files by double-click in Windows Explorer?
 From: HansBKK <hansbkk@gmail.com>
 
 On Tuesday, April 17, 2012 1:43:34 AM UTC+7, Matt Wilkie wrote:
@@ -239,7 +775,7 @@ the sloppier a/v packages.
 If you want to be safe, get a more balanced picture from one of these:
 http://www.virustotal.com/
 http://virusscan.jotti.org/en
-.. @+node:ekr.20130806072439.20420: *5* Re: Cannot open Leo files by double-click in Windows Explorer?
+.. @+node:ekr.20130806072439.20420: *4* Re: Cannot open Leo files by double-click in Windows Explorer?
 From: Matt Wilkie <maphew@gmail.com>
 
 > it's the trailing %*, use "%1" instead.
@@ -256,7 +792,7 @@ C:\\> assoc .leo=3DLeoFile
 And put this leo.bat in %PATH%:
 
 @start /b "Leo" C:\\Python27\\python.exe C:\\apps\\leo\\launchLeo.py %*
-.. @+node:ekr.20130806072439.20421: *5* Re: Cannot open Leo files by double-click in Windows Explorer?
+.. @+node:ekr.20130806072439.20421: *4* Re: Cannot open Leo files by double-click in Windows Explorer?
 From: Matt Wilkie <maphew@gmail.com>
 
 > there's a very cool tool called "PortableFileAssociator" that allows you to
@@ -267,7 +803,7 @@ oh, looks like it's problematic with portableapps.com suite 'cause of
 high false-positive AV warnings... but maybe the same functionality
 will be incorporated into the PA menu launcher. Cool.
 http://portableapps.com/node/15583?page=4
-.. @+node:ekr.20130806072439.20422: *5* Re: Cannot open Leo files by double-click in Windows Explorer?
+.. @+node:ekr.20130806072439.20422: *4* Re: Cannot open Leo files by double-click in Windows Explorer?
 From: HansBKK <hansbkk@gmail.com>
 
 Here's my launch batch. Note nothing's actually installed
@@ -277,7 +813,7 @@ cd \\aasync\\PortableApps\\leo-editor
 start "" "..\\CommonFiles\\Python27\\pythonw.exe" 
 "..\\CommonFiles\\Python27\\Lib\\site-packages\\leo-editor4\\launchLeo.py" %*
 exit
-.. @+node:ekr.20130806072439.20424: *5* Re: Cannot open Leo files by double-click in Windows Explorer?
+.. @+node:ekr.20130806072439.20424: *4* Re: Cannot open Leo files by double-click in Windows Explorer?
 From: Eoin <eoinmccarthy@fastmail.fm>
 
 I got the association working on Windows 7 using:
@@ -285,7 +821,7 @@ I got the association working on Windows 7 using:
 >ftype LeoFile=3D"C:\\Python322\\pythonw.exe" "C:\\Program Files (x86)\\Leo-4.9-final\\launchLeo.py" "%1"
 >assoc .leo=3DLeoFile
 >regsvr32 /i shell32.dll
-.. @+node:ekr.20130806072439.20425: *5* Re: Cannot open Leo files by double-click in Windows Explorer?
+.. @+node:ekr.20130806072439.20425: *4* Re: Cannot open Leo files by double-click in Windows Explorer?
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
 On Fri, Apr 13, 2012 at 5:24 AM, Nick_H <nah@plextek.co.uk> wrote:
@@ -309,7 +845,7 @@ adding the --gui=qttabs option::
 
 C:\\Tools\\Python32\\python.exe C:\\Tools\\Leo-4.10-final\\launchLeo.py
 --gui=qttabs %*
-.. @+node:ekr.20130806072439.20426: *5* Re: Cannot open Leo files by double-click in Windows Explorer?
+.. @+node:ekr.20130806072439.20426: *4* Re: Cannot open Leo files by double-click in Windows Explorer?
 From: Matt Wilkie <maphew@gmail.com>
 
 I'm glad you got it working.
@@ -322,7 +858,7 @@ associations, and may undo some other customizations you've done
 Here are some things it does:
 http://www.pcworld.com/article/126116/windows_tips_fix_windows_glitches_by_reregistering_your_dlls.html
 
-.. @+node:ekr.20130806072439.20427: *5* Re: Cannot open Leo files by double-click in Windows Explorer?
+.. @+node:ekr.20130806072439.20427: *4* Re: Cannot open Leo files by double-click in Windows Explorer?
 From: HansBKK <hansbkk@gmail.com>
 
 This is a bit OT, but: for those like me who work in "portable" mode, 
@@ -332,8 +868,8 @@ whole profile at one time, without messing with the local system's registry.
 
 Also handy for those not in portable mode, but working on different windows 
 boxes and bored with having to tweak each one separately.
-.. @+node:ekr.20130803125244.17101: *4* Gallery of screenshots
-.. @+node:ekr.20130807203905.16650: *4* Leo in a nutshell (statistics)
+.. @+node:ekr.20130803125244.17101: *3* Gallery of screenshots
+.. @+node:ekr.20130807203905.16650: *3* Leo in a nutshell (statistics)
 https://groups.google.com/forum/#!topic/leo-editor/lgHE4OJSLzw
 
 In a Nutshell, The Leo Editor...
@@ -348,7 +884,7 @@ In a Nutshell, The Leo Editor...
 - took an estimated 292 years of effort (COCOMO model)
   starting with its first commit in February, 2002
   ending with its most recent commit 2 days ago 
-.. @+node:ekr.20130806072439.20514: *4* Newbie Leo questions for php projects
+.. @+node:ekr.20130806072439.20514: *3* Newbie Leo questions for php projects
 From: Richard <richardjohnlyon@gmail.com>
 
 I am looking into using Leo for a few php projects at work.
@@ -418,15 +954,15 @@ $foo->bar = "bar";
 $foo->foobar();
 
 Does this seem right? Or should I be doing something differently?
-.. @+node:ekr.20130806211959.17359: *4* User comments
-.. @+node:ekr.20130807090137.11464: *5* From Vili
+.. @+node:ekr.20130806211959.17359: *3* User comments
+.. @+node:ekr.20130807090137.11464: *4* From Vili
 From: vili <viljem.tisnikar@gmail.com>
 
 Despite I am no programmer, I have been using Leo for some years now
 as my "Intelligent PIM" - I organize my (complex) life with Leo.
 
 Many thanks to Edward and others for the great application.
-.. @+node:ekr.20130806211959.17360: *5* Blog post about how Leo can improve organization of code bases
+.. @+node:ekr.20130806211959.17360: *4* Blog post about how Leo can improve organization of code bases
 From: Rickard Lindberg <ricli85@gmail.com>
 
 I wrote a blog post about how Leo can be used to improve the organization 
@@ -476,7 +1012,7 @@ present programs so that humans can understand them. I'm not sure literate
 programming like Knuth uses it is the best way (in particular, I think the
 programs are harder to modify), but I also think that a folder with just
 source code is not so good either.
-.. @+node:ekr.20130806211959.17363: *6* Re: Blog post about how Leo can improve organization of code bases
+.. @+node:ekr.20130806211959.17363: *5* Re: Blog post about how Leo can improve organization of code bases
 From: Matt Wilkie <maphew@gmail.com>
 
 Nice article Rickard, I think it captures the background problem well.
@@ -484,7 +1020,7 @@ Nice article Rickard, I think it captures the background problem well.
 I'm not sure the images communicate clones effectively -- but don't really
 have an alternative suggestion that would be an improvement. It's just
 really hard to appreciate how well they work without experiencing them!
-.. @+node:ekr.20130806211959.17364: *6* Re: Blog post about how Leo can improve organization of code bases
+.. @+node:ekr.20130806211959.17364: *5* Re: Blog post about how Leo can improve organization of code bases
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 On Sun, 24 Feb 2013 03:12:16 -0800 (PST)
@@ -502,7 +1038,7 @@ html template, css, java-script, url-dispatch, tests, model definitions.
 In fact I've just made some updates to the bookmarks display plugin
 which make using it effectively smoother, for a mouse user, anyway, to
 help with this.  Will push them soon.
-.. @+node:ekr.20130806211959.17365: *5* Leo as PIM and authoring tool
+.. @+node:ekr.20130806211959.17365: *4* Leo as PIM and authoring tool
 Josef <joe_da@gmx.net>
 7/30/12
 		
@@ -675,7 +1211,7 @@ Leo to whatever the tool needs (using @setting). Ideally, one would even
 have a choice between opening the new page in a different or in the same
 PDF viewer instance as the last page, but few viewers support that (Okular
 does - but I don't know any cross-platform solution).
-.. @+node:ekr.20130806211959.17366: *5* persistent state with json as a leo abbreviation
+.. @+node:ekr.20130806211959.17366: *4* persistent state with json as a leo abbreviation
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 I've added an abbreviation to my myLeoSettings.leo abbreviations:
@@ -712,7 +1248,7 @@ for what is barely 4 lines of actual code, but those 4 lines give you
 very handy robust persistence, so something like an editor abbreviation
 is the obvious way to make the available - nothing Leo specific here,
 except that only serious editors have abbreviation like that ;-).
-.. @+node:ekr.20130806211959.17369: *6* Re: persistent state with json as a leo abbreviation
+.. @+node:ekr.20130806211959.17369: *5* Re: persistent state with json as a leo abbreviation
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 
@@ -767,7 +1303,7 @@ if __name__ == '__main__':
         json.dump(cache_info, open(json_state_file, 'w'), indent=4)
 ---cut here---
 
-.. @+node:ekr.20130806211959.17370: *5* why Leo
+.. @+node:ekr.20130806211959.17370: *4* why Leo
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 Because I have two nodes which were originally identical but are now
@@ -793,7 +1329,7 @@ takes to write an email about it - well, that's "why Leo".
 (I also have @file ~/.leo/sql and @file ~/.leo/dml for commands for
 handling SQL and an XML dialect I use a lot, it's a great way to manage
 little snippet functions)
-.. @+node:ekr.20130806211959.17371: *6* Fw: why Leo
+.. @+node:ekr.20130806211959.17371: *5* Fw: why Leo
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 Because I have two nodes which were originally identical but are now
@@ -821,7 +1357,7 @@ handling SQL and an XML dialect I use a lot, it's a great way to manage
 little snippet functions)
 
 Cheers -Terry
-.. @+node:ekr.20130806211959.17374: *7* Re: why Leo
+.. @+node:ekr.20130806211959.17374: *6* Re: why Leo
 From: wgw <wgwinder@gmail.com>
 
 Useful!
@@ -882,7 +1418,7 @@ Le vendredi 1 f=E9vrier 2013 11:08:30 UTC-8, Terry a =E9crit :
 > Cheers -Terry
 >
 
-.. @+node:ekr.20130806211959.17375: *5* Fidel's first post
+.. @+node:ekr.20130806211959.17375: *4* Fidel's first post
 From: <fidelperez@gmail.com>
 
 This is my first post on this group, as I discovered your software only 
@@ -901,9 +1437,9 @@ to track the information just in the way I like it, but to also operate
 with it avoiding repetitive tasks for me.
 
 Thanks for your software, Im really excited to have found it.
-.. @+node:ekr.20130806211959.17307: *4* Help (For FAQ?)
+.. @+node:ekr.20130806211959.17307: *3* Help (For FAQ?)
 @language rest
-.. @+node:ekr.20130807203905.16678: *5* For Implementors
+.. @+node:ekr.20130807203905.16678: *4* For Implementors
 @language rest
 
 - Don't read code: use g.trace and g.pdb instead.
@@ -915,7 +1451,7 @@ Thanks for your software, Im really excited to have found it.
     - qt.eventFilter.
     
 ** Add mandatory _kind fields to all g.Bunches.
-.. @+node:ekr.20130807203905.16679: *6* Centralizing focus handling (to make debugging easier)
+.. @+node:ekr.20130807203905.16679: *5* Centralizing focus handling (to make debugging easier)
 From: "Ville M. Vainio" <vivainio@gmail.com>
 
 I am having some problems wrapping my head around how focus behaves
@@ -946,7 +1482,7 @@ sometimes the immediate update is essential.
 
 I've marked this thread as a topic for implementers.  Such things will form
 the basis for documentation for my successors.
-.. @+node:ekr.20130807203905.16681: *6* Free "continuous integration" for Leo
+.. @+node:ekr.20130807203905.16681: *5* Free "continuous integration" for Leo
 From: "Ville M. Vainio" <vivainio@gmail.com>
 
 --089e0122f80868cb1b04dce55d84
@@ -959,7 +1495,7 @@ https://travis-ci.org/
 This could e.g. create debian packages for daily builds, run unit tests,
 check stuff with lint, try compiling with python3 so we (*cough*) wouldn't
 have accidental print statements in the source...
-.. @+node:ekr.20130807203905.16684: *6* Toolkit independent apis
+.. @+node:ekr.20130807203905.16684: *5* Toolkit independent apis
 From: "Ville M. Vainio" <vivainio@gmail.com>
 
 Ramblings relevant to Leo, by the PyQt lead developer:
@@ -988,7 +1524,7 @@ are fundamental: they have almost nothing to do with actual guis.
 
 In short, I think Leo's design uses the best of the gui-dependent and
 gui-independent approaches.
-.. @+node:ekr.20130806211959.17315: *5* Background Images in body pane?
+.. @+node:ekr.20130806211959.17315: *4* Background Images in body pane?
 From: tfer <tfetherston@aol.com>
 
 I was wondering if the Qt widget used for body text has a provision for 
@@ -998,7 +1534,7 @@ I'm thinking that it might be interesting to have some wallpapers/tiles to
 visually represent various categories of methods, e.g. initors, setters, 
 getters, etc.  Maybe ones that hint at the uses of a particular design 
 pattern.  Maybe us a uA to control setting?
-.. @+node:ekr.20130806211959.17316: *6* Re: Background Images in body pane?
+.. @+node:ekr.20130806211959.17316: *5* Re: Background Images in body pane?
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
 On Fri, Jul 13, 2012 at 3:57 PM, tfer <tfetherston@aol.com> wrote:
@@ -1012,7 +1548,7 @@ http://qt-project.org/doc/qt-4.8/qtextbrowser.html
 a subclass of QTextEdit.  QTextBrowser also inherits from QFrame and
 QWidget, so there *might* be a way to have a background image "leak"
 through the text.
-.. @+node:ekr.20130806211959.17317: *6* Re: Background Images in body pane?
+.. @+node:ekr.20130806211959.17317: *5* Re: Background Images in body pane?
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 --MP_/NJ5QIult88.7_K/HpvnV2eA
@@ -1048,7 +1584,7 @@ QTextEdit#richTextEdit[leo_gnx='tbrown.20130430222443.19340'] {
 
 Cheers -Terry
 
-.. @+node:ekr.20130806211959.17318: *6* Re: Background Images in body pane?
+.. @+node:ekr.20130806211959.17318: *5* Re: Background Images in body pane?
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
 On Wed, May 1, 2013 at 8:42 AM, Terry Brown <terry_n_brown@yahoo.com> wrote:
@@ -1074,7 +1610,7 @@ pane :-)
 
 I'll add this to the Leo/To Document list.  Not sure yet how that list is
 going to get translated into action.  Still reading Getting Things Done :-)
-.. @+node:ekr.20130806211959.17319: *5* Best way to synchronize/update myLeoSettings.leo and leoSettings.leo ?
+.. @+node:ekr.20130806211959.17319: *4* Best way to synchronize/update myLeoSettings.leo and leoSettings.leo ?
 From: wgw <wgwinder@gmail.com>
 
 For the moment, I use Meld to compare/update myLeoSettings.leo file. That 
@@ -1123,7 +1659,7 @@ to this Google Group is under no further obligation to somehow be
 compatible with *any* other submission rules.  Somehow, it's up to me, or
 the other core developers, to find a simple, reliable way of "indexing" the
 submissions.  Right now I have no solutions.
-.. @+node:ekr.20130806211959.17320: *5* Create Pane For matplotlib chart
+.. @+node:ekr.20130806211959.17320: *4* Create Pane For matplotlib chart
 From: felix74 <hjuucy@googlemail.com>
 
 I'm trying to create a interactive chart in a embedded in a new leo pane 
@@ -1140,7 +1676,7 @@ instead of columns. As such I have data in nodes and can create new data
 nodes by applying python functions to data in existing nodes. The thing 
 missing is the visualization within a leo pane (I can easily launch a chart 
 in it's own window) .
-.. @+node:ekr.20130806211959.17321: *6* Re: Create Pane For matplotlib chart
+.. @+node:ekr.20130806211959.17321: *5* Re: Create Pane For matplotlib chart
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 On Tue, 18 Sep 2012 05:59:59 -0700 (PDT)
@@ -1208,7 +1744,7 @@ Above again :-)
 The value returned by ns_provider_id should be unique for the provider
 class, but constant.  So it can just return "matplotlib provider ver 1"
 or something.
-.. @+node:ekr.20130806211959.17323: *6* Re: Create Pane For matplotlib chart
+.. @+node:ekr.20130806211959.17323: *5* Re: Create Pane For matplotlib chart
 From: felix74 <hjuucy@googlemail.com>
 
 
@@ -1264,7 +1800,7 @@ Matplot when pressing the Action button. How do I stop this from happening?
 I have alrewady tried returning a unique integer in * ns_provider_id *but 
 that did not work.*
  
-.. @+node:ekr.20130806211959.17324: *6* Re: Create Pane For matplotlib chart
+.. @+node:ekr.20130806211959.17324: *5* Re: Create Pane For matplotlib chart
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 On Sun, 16 Sep 2012 22:23:18 -0700 (PDT)
@@ -1310,7 +1846,7 @@ button 'Action' appears.  Click it, and select "Add matplot" from the
 context menu.
 
 Instead of "w = QtGui.QSlider()", you want "w = myMatplotWidget()"
-.. @+node:ekr.20130806211959.17325: *5* How to call functions from LeoPyRef.Leo
+.. @+node:ekr.20130806211959.17325: *4* How to call functions from LeoPyRef.Leo
 From: <fidelperez@gmail.com>
 
 I am going through something similar Matt Wilkie went through in this
@@ -1333,7 +1869,7 @@ chrome/mozilla which will also import the icons of the links! x)
 I will prepare some more interesting utils (import mindmap, etc) then 
 release them together with manuals oriented to noob users.
 
-.. @+node:ekr.20130806211959.17326: *6* Re: How to call functions from LeoPyRef.Leo
+.. @+node:ekr.20130806211959.17326: *5* Re: How to call functions from LeoPyRef.Leo
 From: <fidelperez@gmail.com>
 
 Sounds great!
@@ -1378,7 +1914,7 @@ On Monday, May 20, 2013 3:47:35 PM UTC+2, Terry wrote:
 > Cheers -Terry
 >
 
-.. @+node:ekr.20130806211959.17327: *6* Re: How to call functions from LeoPyRef.Leo
+.. @+node:ekr.20130806211959.17327: *5* Re: How to call functions from LeoPyRef.Leo
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
 On Mon, May 20, 2013 at 8:47 AM, Terry Brown <terry_n_brown@yahoo.com>wrote:
@@ -1441,7 +1977,7 @@ As shown, the LeoQTextBrowser class is a real (subclass of) QTextBrowser.
 
 HTH.  I've made a note to discuss official ivars in more detail in the
 scripting chapter.
-.. @+node:ekr.20130806211959.17328: *6* Re: How to call functions from LeoPyRef.Leo
+.. @+node:ekr.20130806211959.17328: *5* Re: How to call functions from LeoPyRef.Leo
 From: <fidelperez@gmail.com>
 
 Ok, in order to print icons, the code is this:
@@ -1479,7 +2015,7 @@ On Sunday, May 19, 2013 12:43:50 PM UTC+2, Fidel P=E9rez wrote:
 > release them together with manuals oriented to noob users.
 >
 
-.. @+node:ekr.20130806211959.17329: *6* Re: How to call functions from LeoPyRef.Leo
+.. @+node:ekr.20130806211959.17329: *5* Re: How to call functions from LeoPyRef.Leo
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 On Mon, 20 May 2013 04:00:59 -0700 (PDT) <fidelperez@gmail.com> wrote:
@@ -1512,7 +2048,7 @@ and it recursively searches for it.
 
 Cheers -Terry
 
-.. @+node:ekr.20130806211959.17330: *6* Re: How to call functions from LeoPyRef.Leo
+.. @+node:ekr.20130806211959.17330: *5* Re: How to call functions from LeoPyRef.Leo
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 On Mon, 20 May 2013 08:47:35 -0500
@@ -1545,7 +2081,7 @@ work.  So the tool I've written may be the best approach to mapping
 Leo's runtime structure. Another thing it could do, try and map 'major'
 classes, or at least classes from leo.core.* - i.e. ignore the built in
 types.
-.. @+node:ekr.20130806211959.17331: *5* How to make body text insertion at cursor permanent?
+.. @+node:ekr.20130806211959.17331: *4* How to make body text insertion at cursor permanent?
 From: SegundoBob <bhossley@ieee.org>
 
 This thread gives a recipe for inserting text into the body of a node
@@ -1562,13 +2098,13 @@ The following recipe fixes this problem:
 http://pastebin.com/GAc15jRL
 
 Is this recipe the right way to do it or is there a better way?
-.. @+node:ekr.20130806211959.17332: *6* Re: How to make body text insertion at cursor permanent?
+.. @+node:ekr.20130806211959.17332: *5* Re: How to make body text insertion at cursor permanent?
 From: SegundoBob <bhossley@ieee.org>
 
 I'm sorry no one has suggested a better way to make the changes
 permanent.  How does Leo-Editor notice that typing has inserted a few
 more characters?  Couldn't the same mechanism be used here?
-.. @+node:ekr.20130806211959.17333: *6* Re: How to make body text insertion at cursor permanent?
+.. @+node:ekr.20130806211959.17333: *5* Re: How to make body text insertion at cursor permanent?
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 On Wed, 17 Apr 2013 12:09:52 -0700 (PDT)
@@ -1608,7 +2144,7 @@ Other possibly useful methods:
 
     i,j = w.getSelectionRange(sort=True)
     s = w.getSelectedText()  
-.. @+node:ekr.20130806211959.17334: *6* Re: How to make body text insertion at cursor permanent?
+.. @+node:ekr.20130806211959.17334: *5* Re: How to make body text insertion at cursor permanent?
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 On Wed, 17 Apr 2013 16:53:10 -0700 (PDT)
@@ -1689,7 +2225,7 @@ Cheers -Terry
 > 
 > Yes, these are very useful.
 > 
-.. @+node:ekr.20130806211959.17335: *6* Re: the workflow of write leo scripts?
+.. @+node:ekr.20130806211959.17335: *5* Re: the workflow of write leo scripts?
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 On Fri, 12 Apr 2013 10:09:40 +0800
@@ -1705,7 +2241,7 @@ the API could be improved, or, seeing the existing API make sense for
 what it is, we could have additional "easy text manipulation" API.
 So long since I used Emacs I can't really remember its model, and if it
 would apply here.
-.. @+node:ekr.20130806211959.17336: *5* How to use leo to make mathematical notes?
+.. @+node:ekr.20130806211959.17336: *4* How to use leo to make mathematical notes?
 From: <lzyerste@gmail.com>
 
 If I want to use leo to make mathematical notes, how can I type in some
@@ -1754,7 +2290,7 @@ http://ipython.org/
 I'm using it for all my math related writing and I think that point the
 future of interactive writing in Python. I dream of a body pane on leo
 with the features of the pyton qt console.
-.. @+node:ekr.20130806211959.17337: *5* Indexing files for full text search
+.. @+node:ekr.20130806211959.17337: *4* Indexing files for full text search
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 Just pushed leo/external/leoftsindex.py:
@@ -1784,7 +2320,7 @@ note::
     as the '#' may be interpreted as a comment delimiter::
         
         python leoftsindex.py "workbook.leo#Links"
-.. @+node:ekr.20130806211959.17339: *5* Parameterized template nodes
+.. @+node:ekr.20130806211959.17339: *4* Parameterized template nodes
 From: Alexandre_Toledo <jalexandretoledo@gmail.com>
 
 As I use Leo to write PL/SQL code, I need to write similar text several
@@ -1814,7 +2350,7 @@ Another alternative would be creating some kind of directive @something,
 but I have no idea of how to do that.
 
 Any ideas?
-.. @+node:ekr.20130806211959.17340: *6* Re: Parameterized template nodes
+.. @+node:ekr.20130806211959.17340: *5* Re: Parameterized template nodes
 From: =?UTF-8?Q?Fidel_P=C3=A9rez?= <fidelperez@gmail.com>
 
 
@@ -1846,7 +2382,7 @@ On Saturday, May 4, 2013 12:48:27 AM UTC+2, Jo=E3o Alexandre Toledo wrote:
 > Thank you.
 >
 > Jo=E3o
-.. @+node:ekr.20130806211959.17341: *6* Re: Parameterized template nodes
+.. @+node:ekr.20130806211959.17341: *5* Re: Parameterized template nodes
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 On Sun, 5 May 2013 16:35:59 -0700 (PDT)
@@ -1902,7 +2438,7 @@ More like generating a website from data etc.
 
 Cheers -Terry
 
-.. @+node:ekr.20130806211959.17342: *6* Re: Parameterized template nodes
+.. @+node:ekr.20130806211959.17342: *5* Re: Parameterized template nodes
 From: =?UTF-8?Q?Jo=C3=A3o_Alexandre_Toledo?= <jalexandretoledo@gmail.com>
 
 Hi,
@@ -1913,7 +2449,7 @@ Thank you.
 
 Jo=E3o
 
-.. @+node:ekr.20130806211959.17343: *6* Re: Parameterized template nodes
+.. @+node:ekr.20130806211959.17343: *5* Re: Parameterized template nodes
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
 --001a11c27f4813f73804dbad029f
@@ -1948,7 +2484,7 @@ Content-Transfer-Encoding: quoted-printable
 <br></div><div>Does that do what you want?<br><br></div><div>Edward<br></div></div></div></div>
 
 --001a11c27f4813f73804dbad029f--
-.. @+node:ekr.20130806211959.17344: *6* Re: Parameterized template nodes
+.. @+node:ekr.20130806211959.17344: *5* Re: Parameterized template nodes
 From: =?UTF-8?Q?Fidel_P=C3=A9rez?= <fidelperez@gmail.com>
 
 
@@ -2019,7 +2555,7 @@ On Monday, May 6, 2013 5:13:42 AM UTC+2, Terry wrote:
 >
 > Cheers -Terry
 >
-.. @+node:ekr.20130806211959.17345: *6* Re: Parameterized template nodes
+.. @+node:ekr.20130806211959.17345: *5* Re: Parameterized template nodes
 From: =?UTF-8?Q?Jo=C3=A3o_Alexandre_Toledo?= <jalexandretoledo@gmail.com>
 
 
@@ -2074,13 +2610,13 @@ On Friday, May 3, 2013 7:48:27 PM UTC-3, Jo=E3o Alexandre Toledo wrote:
 > Thank you.
 >
 > Jo=E3o
-.. @+node:ekr.20130806211959.17346: *5* Terry, how do you create the buttons with dropdown menus?
+.. @+node:ekr.20130806211959.17346: *4* Terry, how do you create the buttons with dropdown menus?
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
 I have a note that it was an @rclick node handled by the context_menu.py 
 plugin, but I am not able to see code or documentation anywhere.  This 
 seems *well* hidden :-)
-.. @+node:ekr.20130806211959.17347: *6* Re: Terry, how do you create the buttons with dropdown menus?
+.. @+node:ekr.20130806211959.17347: *5* Re: Terry, how do you create the buttons with dropdown menus?
 From: Kent Tenney <ktenney@gmail.com>
 
 I don't have any visual indication of the existence of @rclick nodes,
@@ -2091,7 +2627,7 @@ Something I've found useful is adding a @click node like:
 
 that separates my entries from the ever present
 'Remove Button' and 'Goto Script' entries
-.. @+node:ekr.20130806211959.17349: *6* Re: Terry, how do you create the buttons with dropdown menus?
+.. @+node:ekr.20130806211959.17349: *5* Re: Terry, how do you create the buttons with dropdown menus?
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
 On Thu, Apr 11, 2013 at 8:10 PM, Edward K. Ream <edreamleo@gmail.com> wrote:
@@ -2102,7 +2638,7 @@ One more thing.  It's reasonable to have the top-level button just be a
 placeholder for subsidiary @rclick nodes.  To do that without getting a
 warning when clicking the top-level button, set its script to "empty
 string".
-.. @+node:ekr.20130806211959.17350: *6* Re: Terry, how do you create the buttons with dropdown menus?
+.. @+node:ekr.20130806211959.17350: *5* Re: Terry, how do you create the buttons with dropdown menus?
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 On Thu, 11 Apr 2013 00:56:51 -0700 (PDT)
@@ -2118,7 +2654,7 @@ ideal implementation.  OTOH it hasn't broken for 1-2 years.
 
 Cheers -Terry
 
-.. @+node:ekr.20130806211959.17351: *6* Re: Terry, how do you create the buttons with dropdown menus?
+.. @+node:ekr.20130806211959.17351: *5* Re: Terry, how do you create the buttons with dropdown menus?
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
 On Thu, Apr 11, 2013 at 2:56 AM, Edward K. Ream <edreamleo@gmail.com> wrote:
@@ -2129,7 +2665,7 @@ right-clicking the created top-level button work pretty much as expected.
 But I remember that on your machine there was some indicator (a triangle?)
 in the top-level button indicating that it had structure.  Is that the
 case?  If so, how did you create such buttons?
-.. @+node:ekr.20130806211959.17352: *6* Re: Terry, how do you create the buttons with dropdown menus?
+.. @+node:ekr.20130806211959.17352: *5* Re: Terry, how do you create the buttons with dropdown menus?
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 On Thu, 11 Apr 2013 13:50:25 -0500
@@ -2146,7 +2682,7 @@ On Thu, 11 Apr 2013 13:50:25 -0500
 
 @settings
    @string mod_scripting_subtext =3D =E2=96=BE
-.. @+node:ekr.20130806211959.17353: *6* Re: Terry, how do you create the buttons with dropdown menus?
+.. @+node:ekr.20130806211959.17353: *5* Re: Terry, how do you create the buttons with dropdown menus?
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 On Thu, 11 Apr 2013 20:15:33 -0500
@@ -2163,7 +2699,7 @@ On Thu, 11 Apr 2013 20:15:33 -0500
 
 I think you mean set its script to a docstring describing the
 functions it groups together for the tooltip hover text :-)
-.. @+node:ekr.20130806211959.17355: *6* Re: Terry, how do you create the buttons with dropdown menus?
+.. @+node:ekr.20130806211959.17355: *5* Re: Terry, how do you create the buttons with dropdown menus?
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
 On Thu, Apr 11, 2013 at 7:29 AM, Terry Brown <terry_n_brown@yahoo.com>wrote:
@@ -2186,7 +2722,7 @@ qtIconBarClass.setCommandForButton.
 
 I'll add documentation for this, in leoSettings.leo and also in the
 customizing Leo chapter.
-.. @+node:ekr.20130806211959.17356: *5* the workflow of write leo scripts?
+.. @+node:ekr.20130806211959.17356: *4* the workflow of write leo scripts?
 From: HaveF <iamaplayer@gmail.com>
 
 I have read the scripting chapter of leo-editor, and already make my daily
@@ -2226,7 +2762,7 @@ seems to help
 find more example code.
 
 Any suggestion to improve this workflow?
-.. @+node:ekr.20130806211959.17357: *5* Tool for diffing Leo files
+.. @+node:ekr.20130806211959.17357: *4* Tool for diffing Leo files
 From: Terry Brown
 
 The script below is a tool for diffing two Leo files. The attached
@@ -2378,7 +2914,7 @@ if v:
 
 c.bringToFront()
 c.redraw()
-.. @+node:ekr.20130806211959.17358: *6* Re: Tool for diffing Leo files
+.. @+node:ekr.20130806211959.17358: *5* Re: Tool for diffing Leo files
 From: resi147 <scalet@yebu.de>
 
 
@@ -2402,7 +2938,7 @@ vt = to_c.hiddenRootNode
 """
 just to feed in the 2 nodes, Any quick idea how this can be done the best 
 way?
-.. @+node:ekr.20130806072439.20488: *5* Issue 1 with build 5752 (docutils & rst3)
+.. @+node:ekr.20130806072439.20488: *4* Issue 1 with build 5752 (docutils & rst3)
 From: Viktor Ransmayr <viktor.ransmayr@gmail.com>
 
 now that you've 'cancelled' the 'leo/extensions/docutils' experiment I 
@@ -2551,6 +3087,348 @@ Hope this helps you finding the root cause of this issue.
 
 
 
+.. @+node:ekr.20130503155210.24814: *3* Tutorials/Screencasts
+@nocolor-node
+
+Rewrite in screencast-script style:
+- Docstrings for the most important plugins.
+- All help-for-<topic> text.
+- Leo's tutorials.
+
+** Screencast style for plugins docstrings.
+* Screencast style for help messages.
+* Screencast style for tutorials.
+* Create YouTube channel for Leo screencasts.
+
+Topics:
+- Minibuffer: alt-x, tab-completion.
+- @button.
+- @rclick
+- Find/Change (done)
+- execute-script.
+- bookmarks.py.
+
+.. @+node:ekr.20130807203905.16656: *4* A beautiful pattern for composing large strings
+From: "Edward K. Ream" <edreamleo@gmail.com>
+
+I continue to work feverishly on various aspects of static type checking.
+
+That work lead to a discovery that may benefit you.  It's one of the most 
+beautiful patterns I've ever created: it allows a program to simply and 
+naturally build up huge strings without using any string operations.  
+Generating an html file with minimal stress on the gc is an obvious 
+application.  You could also say that the pattern creates a Pythonic way of 
+using lisp-like algorithms, but more safely than in lisp.
+
+Full details at the stc documentation page::
+http://webpages.charter.net/edreamleo/stc/stc.html#a-beautiful-pattern-for-building-large-strings
+
+.. @+node:ekr.20130807203905.16657: *5* Re: A beautiful pattern for composing large strings
+From: "Edward K. Ream" <edreamleo@gmail.com>
+
+On Wednesday, January 2, 2013 10:02:40 AM UTC-6, Edward K. Ream wrote:
+
+ReportTraverser uses this pattern at rev 288.  It is a remarkable 
+simplification.
+ 
+
+> The revised r.div method will be something like::
+>
+>     def div(self,aList):
+>         compute old and new indents
+>         return [
+>             <div>, with old indent,
+>             aList, with new indent,
+>             </div>, with old indent,
+>         ]
+>
+
+This doesn't work!  aList won't have the proper indentation.  In 
+particular, the following won't work::
+
+    [['  ',z] for z in aList],
+
+flatten_list will add the two spaces before the line, that is, before a 
+newline. Instead, a hack is needed:
+
+    return [
+        div,
+        join_list(aList,indent='  '),
+        '\\n</div>'
+    ]
+
+The new 'indent' keyword tells flatten_list to add the given indentation 
+(two spaces, here), to strings that start with a newline.  The new code in 
+flatten_list is::
+
+        for i,item in enumerate(aList):
+            if leading:                  yield leading
+            for s in flatten_list(item):
+                if indent:
+                    if s.startswith('\\n'):
+                        yield '\\n'+indent+s[1:]
+                    else:
+                        yield s
+                else:
+                    yield s
+            if sep and i < len(aList)-1: yield sep
+            if trailing:                 yield trailing
+
+The point is that the indentation must be "moved behind the newline".
+
+Edward
+
+.. @+node:ekr.20130807203905.16659: *5* Re: A beautiful pattern for composing large strings
+From: "Ville M. Vainio" <vivainio@gmail.com>
+
+This seems like a spiritual relative of "rope" data structure:
+
+http://en.wikipedia.org/wiki/Rope_(data_structure)
+
+http://www.sgi.com/tech/stl/Rope.html
+
+===== EKR
+
+Yes, there is a similarity. However, the real beauty of new pattern is the
+flatten_list method. It's the combination of the lists and flatten_list
+that gives the pattern real power. We've just seen how the 'indent' keyword
+hack allows sophisticated processing of the lists. I wouldn't expect more
+hacks to be needed, but I've been surprised before ;-)
+.. @+node:ekr.20130807203905.16660: *5* Re: A beautiful pattern for composing large strings
+On Tue, 1 Jan 2013 17:03:05 -0800 (PST)
+"Edward K. Ream" <edreamleo@gmail.com> wrote:
+
+> Generating an html file with minimal stress on the gc is an obvious 
+> application.
+
+Nice.  An HTML specific approach which avoids things like the
+r.div_end() construct is the LXML element factory:
+http://lxml.de/tutorial.html#the-e-factory
+
+Cheers -Terry
+
+.. @+node:ekr.20130807203905.16662: *5* Re: A beautiful pattern for composing large strings
+From: "Edward K. Ream" <edreamleo@gmail.com>
+
+On Thursday, January 3, 2013 3:28:52 AM UTC-6, Ville M. Vainio wrote:
+>
+> Yes, it's indeed an interesting pattern. 
+>
+> It would seem more useful in faster languages than python though; in 
+> python, string operations (and gc) are faster in comparison to executing 
+> other code, whereas in fast, more static languages (C++, Java, Go) avoiding 
+> GC gives you great benefits (I saw 5x perf increase reported for some Go 
+> app when eliminating GC).
+>
+
+Thanks for these remarks.  I've enjoyed thinking about them.  A few 
+responses:
+
+1. This is a smallish pattern--it can't change the world, except insofar as 
+something beautiful changes the world.
+
+2. Otoh, the pattern changes the way I think about lisp and lisp-like 
+patterns.  That's not nothing. For the first time, it makes list-oriented  
+programming pattern completely safe.  It does this because it doesn't 
+matter what each component list contains, nor does it matter *at all* what 
+the shape of any part of the tree is.  This makes the pattern completely 
+flexible.
+
+3. The pattern can be generalized.  The pattern I described uses a tree of 
+component strings to describe a (large) resulting string.  But one can 
+easily imagine using lists to hold anything at all (of whatever tree shape) 
+and then use another version of flatten_list to compose results of other 
+types.  Alternatively, rather than composing a result, the analog of 
+flatten_list could process the tree of lists in other ways.  So the most 
+general version of the pattern is:
+
+A) The tree of lists can contain any data whatever, especially including 
+None,
+B) The "producers" (visitors) can create subtrees of whatever shape,
+C) The analog of flatten_list is free to do anything whatever with the 
+resulting tree.
+
+I suspect that these features are what appeal to lisp programmers ;-)
+
+4. I'm not sure whether the pattern is more useful in "faster" languages or 
+not.  True, anything that helps a feeble language like C++ will seem useful 
+:-)  But points 1-3 above have nothing to do with speed: they just make 
+programming simpler, more flexible, more powerful and more fun.
+
+Imo, gc issues are important both in Python and in C++.  For stc, the only 
+way to get reproducible timing statistics for tests was to do the following 
+before running the test::
+
+    for z in (0,1,2): gc.collect(z)
+
+The ReportTraverser class no longer contains *any* calls to string.join, so 
+one could imagine that all strings used in the code would be interned.  The 
+generated tree actually contains nothing but *references* to strings, and 
+if all strings are interned the references will not themselves cause any 
+new strings to be allocated.
+
+Naturally, gc issues are even more important in language like C++ without a 
+gc.  Lol.  The preceding paragraph is more important for C++ than in 
+Python.  So yes, in this sense I agree with you completely that the pattern 
+is more useful for "fast" languages than for Python.
+
+Thanks, Ville, for provoking all these pleasant thoughts :-)
+.. @+node:ekr.20130807203905.16663: *5* Re: A beautiful pattern for composing large strings
+From: "Edward K. Ream" <edreamleo@gmail.com>
+
+On Tue, Jan 1, 2013 at 9:48 PM, Terry Brown <terry_n_brown@yahoo.com> wrote:
+
+> On Tue, 1 Jan 2013 17:03:05 -0800 (PST)
+> "Edward K. Ream" <edreamleo@gmail.com> wrote:
+>
+> > Generating an html file with minimal stress on the gc is an obvious
+> > application.
+>
+> Nice.  An HTML specific approach which avoids things like the
+> r.div_end() construct is the LXML element factory:
+> http://lxml.de/tutorial.html#the-e-factory
+>
+
+Beautiful.  With the list framework the revised r.div method would be
+something like::
+
+    def div(self,aList):
+        compute old and new indents
+        return [
+            <div>, with old indent,
+            aList, with new indent,
+            </div>, with old indent,
+        ]
+
+An example of the pattern in use::
+
+    return [
+        ...
+        r.div([
+            contents of the div,
+        ]),
+        ...
+    ]
+
+Similarly for span, etc. Thanks for pointing this out.  This is too good to
+ignore.  I'll do it soon.
+.. @+node:ekr.20130807203905.16664: *4* All about clone conflicts
+From: "Edward K. Ream" <edreamleo@gmail.com>
+
+Some people seem to think that it is difficult to understand how Leo
+handles "clone wars":  differing values for a cloned nodes that appear
+in several external files.  That's not true.  The rule is::
+
+    **The last clone that Leo reads wins.**
+
+That is, for any cloned node C, Leo takes the value of C.h and C.b to
+be the values specified by the last copy that Leo reads.
+
+There is only one complication::
+
+    **Leo reads the entire outline before reading any external
+files.**
+
+Thus, if C appears in x.leo, y.py and z.py, Leo will choose the value
+for C in x.py or y.py, depending on which @<file> node appears later
+in the outline.
+
+Notes:
+
+1. Whenever Leo detects multiple values for C when opening an outline, Leo
+   creates a "Recovered nodes" tree. This tree contains all the various
+   values for C, nicely formatted so that it is easy to determine where the
+   differences are.
+
+2. I've just refreshed my memory by looking at the code.  The relevant methods are:
+
+    fc.getLeoFile # Reads the outline, then calls at.readAll to read all external files.
+    at.indicateNodeChanged # Adds data to c.nodeConflictList
+    cacher.reportChangedClone # Adds data to c.nodeConflictList
+    fc.handleNodeConflicts # Creates "Recovered Nodes" node and its children.
+
+3. The present code is the simplest code that could possibly work. There is
+no way Leo is going to do AI in order to implement complex rules for which
+clones are "more important" than others. Thus, if you use cross-file
+clones, it is up to *you* to know these rules and handle any resulting
+conflicts. Imo, the "Recovered Nodes" feature is a big step forward for
+Leo, and makes it impossible to lose data unless you willfully refuse to
+examine the data.
+.. @+node:ekr.20130807203905.16665: *5* Re: All about clone conflicts
+From: Joon Ro <joonpyro@gmail.com>
+
+Thanks for the explanation. As a matter of fact, I was having hard time 
+understanding this. 
+
+I had my source file in a @shadow node, and then I had a backup of that 
+file as @file node, which had clones of the nodes of the source @shadow 
+file and some other codes that I stashed. 
+
+Whenever I changed the source code externally with leo closed, when I open 
+leo, it made recovered nodes. The problem was since @file was placed 
+"later" in the outline, leo kept putting the new changes I made to old, 
+instead of new.
+
+Now I understand how this works. but I think in multiple external file 
+cases, it would make more sense if leo checks the file modification time 
+when it makes decision which node is new, instead of just depending on the 
+order of files in the outline. In above case, it is natural for me to have 
+actual source nodes on the top of the outline and backup nodes on the 
+bottom. Please let me know what you think. 
+.. @+node:ekr.20130807203905.16668: *4* Draft: unit-testing tutorial
+From: "Edward K. Ream" <edreamleo@gmail.com>
+
+The following is a first draft of a unit-testing tutorial.  It will form 
+the basis of a new help-for-unit-testing command, and may also become the 
+introduction to Leo unit-testing chapter.
+
+All comments are welcome.  Please let me know if anything is unclear.
+
+-----
+
+Leo makes it easy to create and run unit tests from individual outline 
+nodes or trees.
+
+A node whose headline starts with @tests defines a unit test.
+
+The body text of the @test node contains a **self-contained** unit test.
+
+For example, this creates a complete unit test::
+
+    @test fails  (headline)
+    assert False (body text)
+
+To run this test, select the @test node and do:
+<alt-x>run-selected-unit-tests-locally.
+Leo will create and run the unit test automatically.
+
+To see all of Leo's unit testing commands, do:
+<alt-x>run<tab>
+
+Leo pre-defines 'c', 'g' and 'p' in unit tests just as in scripts.
+
+For more details about unit testing, see: 
+http://leoeditor.com/unitTesting.html
+
+**Notes for Leo developers**
+
+leo/test/unitTest.leo contains all of Leo's own unit tests.
+
+Running all tests is not necessary.  Just select::
+
+    Active Unit Tests
+
+and then do Alt-4 (run-selected-unit-tests-locally).
+
+**Note**: Some tests will likely fail on machines other than EKR's.
+You only need to be concerned about unit tests that start failing after you 
+make your changes.
+
+.. @+node:ekr.20130807203905.16669: *4* Tutorials re plugins
+contextmenu
+screenshots
+todo
+valuespace
 .. @+node:ekr.20120226183512.10195: ** Bugs
 @language rest
 .. @+node:ekr.20130908104426.11232: *3* Bug-tracker: High priority
@@ -2840,6 +3718,20 @@ I have a Leo file with settings for context menu:
 then these settings are lost if I save the leo file to a new name using
 File - Save as
 If I reload the leo file, they do return
+.. @+node:ekr.20130908104426.11243: *5*  969391 setup.py confuses newbies
+https://bugs.launchpad.net/leo-editor/+bug/969391
+
+setup.py is necessary for creating Ubuntu packages, but it is *not*
+necessary for installation. This confuses newbies a lot.
+
+I'd like to move, rename or otherwise hide this file, but Ville says that's
+not trivial to do:
+
+QQQ
+I need to research it. The change won't be free, as the debian tooling
+(python-support) expects it to be called setup.py. I need to find a
+workaround, but can't do it right now.
+QQQ
 .. @+node:ekr.20130908104426.11266: *5* 1193820 Focus change on tree pane after saving current Leo file
 .. @+node:ekr.20130920055521.11282: *5* 1228099 Cancelling save of dirty untitled commander doesn't work with --ipython
 @language rest
@@ -2852,7 +3744,6 @@ The examples in the IPython chapter seem to be out of date.
 http://leoeditor.com/IPythonBridge.html
 
 Requires that IPython work with Leo using the --ipython option.
-.. @+node:ekr.20111014074810.15652: *5* Fix bug: viewrendered should work better when docutils does not exist
 .. @+node:ekr.20130806072439.20380: *5* auto-rst error? need more robust?
 From: HaveF <iamaplayer@gmail.com>
 
@@ -2980,6 +3871,7 @@ It says I need a extra "="...
 
 I have attached this file, for someone has interest to reproduce the error.
 
+.. @+node:ekr.20111014074810.15652: *5* Fix bug: viewrendered should work better when docutils does not exist
 .. @+node:ekr.20120401144849.10037: *5* Fix installer problem
 @language rest
 
@@ -4118,7 +5010,7 @@ The symptoms of my problem are that window sizes of less than full-window
 are remembered and restored, but when Leo-Editor is in full-screen at exit, 
 then it is restarted in partial-screen mode with an arbitrary unused band 
 at the top of the screen.
-.. @+node:ekr.20110921094450.6956: ** 4.12
+.. @+node:ekr.20110921094450.6956: ** Featues
 @language rest
 
 - Revisit some of the worst parts of Leo's code, especially undo and headline editing.
@@ -4127,18 +5019,56 @@ at the top of the screen.
 
 - Allow abbreviations that insert nodes.
 
-.. @+node:ekr.20130926053913.11569: *3* ** (leoRope.py
-.. @+node:ekr.20130806211959.17377: *3* Add coffeescript importer
-From: "Edward K. Ream" <edreamleo@gmail.com>
+.. @+node:ekr.20111021105253.9478: *3*  First?
+.. @+node:ekr.20120604071051.10187: *4* Add multiple body editors to session machinery
+# Terry will do this, or help with it.
+.. @+node:ekr.20120520055508.11873: *4* Add split-window commands
+.. @+node:ekr.20111125072438.10219: *4* Open file dialogs starting with @path directory
+@nocolor-node
 
-Just yesterday I was looking into the CoffeeScript/XUL combination as
-part of my study of FireBug. JQuery looks at first glance like a more
-portable alternative.
+File 'Open' or 'Import File' command to follow @path directive
+http://groups.google.com/group/leo-editor/browse_thread/thread/7e508921c85d18bc
 
-As I write this, I realize that Leo would benefit from a CoffeeScript
-importer.  I'll get on it :-)
+Suppose my focus node is under a @path directive, say @path E:
+\Documents\Some Folder\
 
-.. @+node:ekr.20130602065849.14314: *3* Add tag handler
+Is there a setting that would cause the 'File>Open' or 'File>Import
+File' commands to begin the search dialog in the directory, E:
+\Documents\Some Folder\ instead of the last directory used?
+
+Would others find this a useful feature?
+.. @+node:ekr.20111221114145.10217: *5* Found: runOpenFileDialog
+# Important: many plugins use g.app.gui.openFileDialog.
+.. @+node:ekr.20111026075003.16481: *4* Support ~/.leo_config.py
+@language python
+@language rest
+
+1. Imo, it is time to consider adding a typical "startup" file to Leo,
+~/leo_config.py, similar to ~/.emacs or ipython_config.py.  This will
+make Leo "thicker", that is more professional/standard.
+
+IPython adds lots of bells and whistles to configuration.  Leo
+emulates most of them, but .leo_config.py would be a good addition.
+Think of .leo_config.py as a lightweight plugin.
+
+leo_config.py should execute after settings have been parsed, but
+before plugins have been loaded.  If desired, leo_config.py may
+register "start2" event handlers, which execute after all plugins have
+been loaded, just before starting the main Qt event loop.
+
+2. Leo commands form a good framework for other solutions to Qt
+stylesheet issues.  Consider the following commands::
+
+- qt-stylesheet-set-global-stylesheet
+- qt-stylesheet-append-to-global-stylesheet
+- qt-stylesheet-set-widget-stylesheet
+- qt-stylesheet-append-to-widget-stylesheet
+
+.. @+node:ekr.20111019104425.15868: *4* Render to tex, pdf, rst, etc.
+.. @+node:ekr.20111003232155.6988: *4* Use c.db for marks & expansion bits
+This would allow us to eliminate @bool put_expansion_bits_in_leo_files.
+.. @+node:ekr.20130508084413.10631: *4* add g.etrace
+.. @+node:ekr.20130508084413.10634: *4* quickmove-jump-to adds button
 .. @+node:ekr.20120515193246.14289: *3* Code cleanup
 .. @+node:ekr.20120208062900.10146: *4* Complete new_modes
 @nocolor-node
@@ -4213,10 +5143,23 @@ for func,h,expected in table:
         c.redraw()
 .. @+node:ekr.20130503061707.10516: *6* @path rel-path
 .. @+node:ekr.20130503061707.10517: *7* @@file fj-test-1
-.. @+node:ekr.20130803125244.17098: *3* Easy
-.. @+node:ekr.20130508084413.10631: *4* add g.etrace
-.. @+node:ekr.20130508084413.10634: *4* quickmove-jump-to adds button
+.. @+node:ekr.20130921043420.11270: *4* improve unit tests of class relationships
+@language rest
+
+- Use @testsetup to create smaller tests.
+- Make sure leoBody follows HighLevelInterface?
 .. @+node:ekr.20120527053550.12058: *3* Fun
+.. @+node:ekr.20130806211959.17377: *4* Add coffeescript importer
+From: "Edward K. Ream" <edreamleo@gmail.com>
+
+Just yesterday I was looking into the CoffeeScript/XUL combination as
+part of my study of FireBug. JQuery looks at first glance like a more
+portable alternative.
+
+As I write this, I realize that Leo would benefit from a CoffeeScript
+importer.  I'll get on it :-)
+
+.. @+node:ekr.20130602065849.14314: *4* Add tag handler
 .. @+node:ekr.20081119132758.2: *4* Support @ifgui in settings trees
 This can be done now that gui's are created on the command line.
 .. @+node:ekr.20120527053550.10117: *4* Create find-def command
@@ -6346,366 +7289,6 @@ I guess leoscreen would do the same things as the vs-* commands if you
 used it against a python shell.  The inspiration for the vs-* commands
 was wanting Leo to tell you what 3.57 * 365 / 12 was without a lot of
 effort, but of course you can define functions etc. etc.
-.. @+node:ekr.20111021105253.9478: *3* Important (7)
-.. @+node:ekr.20120604071051.10187: *4* Add multiple body editors to session machinery
-# Terry will do this, or help with it.
-.. @+node:ekr.20120520055508.11873: *4* Add split-window commands
-.. @+node:ekr.20111125072438.10219: *4* Open file dialogs starting with @path directory
-@nocolor-node
-
-File 'Open' or 'Import File' command to follow @path directive
-http://groups.google.com/group/leo-editor/browse_thread/thread/7e508921c85d18bc
-
-Suppose my focus node is under a @path directive, say @path E:
-\Documents\Some Folder\
-
-Is there a setting that would cause the 'File>Open' or 'File>Import
-File' commands to begin the search dialog in the directory, E:
-\Documents\Some Folder\ instead of the last directory used?
-
-Would others find this a useful feature?
-.. @+node:ekr.20111221114145.10217: *5* Found: runOpenFileDialog
-# Important: many plugins use g.app.gui.openFileDialog.
-.. @+node:ekr.20111026075003.16481: *4* Support ~/.leo_config.py
-@language python
-@language rest
-
-1. Imo, it is time to consider adding a typical "startup" file to Leo,
-~/leo_config.py, similar to ~/.emacs or ipython_config.py.  This will
-make Leo "thicker", that is more professional/standard.
-
-IPython adds lots of bells and whistles to configuration.  Leo
-emulates most of them, but .leo_config.py would be a good addition.
-Think of .leo_config.py as a lightweight plugin.
-
-leo_config.py should execute after settings have been parsed, but
-before plugins have been loaded.  If desired, leo_config.py may
-register "start2" event handlers, which execute after all plugins have
-been loaded, just before starting the main Qt event loop.
-
-2. Leo commands form a good framework for other solutions to Qt
-stylesheet issues.  Consider the following commands::
-
-- qt-stylesheet-set-global-stylesheet
-- qt-stylesheet-append-to-global-stylesheet
-- qt-stylesheet-set-widget-stylesheet
-- qt-stylesheet-append-to-widget-stylesheet
-
-.. @+node:ekr.20111019104425.15868: *4* Render to tex, pdf, rst, etc.
-.. @+node:ekr.20111003232155.6988: *4* Use c.db for marks & expansion bits
-This would allow us to eliminate @bool put_expansion_bits_in_leo_files.
-.. @+node:ekr.20100828074347.5827: *4* Better support for vim
-@language rest
-
-About vim and Leo: no further major work is coming.
-http://groups.google.com/group/leo-editor/browse_thread/thread/6882f02321dc1edf
-
-Vim mode users: your top 3 complaints, please
-http://groups.google.com/group/leo-editor/browse_thread/thread/141690c553bfde55
-.. @+node:ekr.20100113075303.6270: *5* Vim problems
-# None of these is easily solvable in Leo's present environment.
-.. @+node:ekr.20100112051224.6239: *6* Displaying mode help
-The "--> mode-help" command has the following issues related to the
-display of the "Help" tab:
-
-1. Key label always capitalized.
-
-Vim commands are mapped to both lower-case and upper-case keys but always appear
-mapped to upper-case keys within the "Help" tab.
-
-2. Layout of tab's contents.
-
-To improve readability and better support narrow tab cards, display the mode's
-label without the "enter-" and "-mode" text and place the key label before the
-mode label.
-
-For example, the following entries would change from::
-    enter-vi-delete-line-mode d
-    enter-vi-delete-to-begin-of-word-mode b
-to::
-    d : vi-delete-line
-    b : vi-delete-to-begin-of-word
-.. @+node:ekr.20100112051224.6225: *6* Repeat last cursor movement command
-Support the ';' key: repeat the last "To character" or "Find character" command.
-.. @+node:ekr.20100113075303.6271: *6* Need mode-oriented bindings
-Mapping a number to a command or an @mode node works but can not be used as it
-prevents the number from being entered as text while in Vi's insert state.
-
-Binding 'bksp' key to back-char to move back a character in command mode
-prevents 'bksp' from deleting characters in text edit mode.
-.. @+node:ekr.20080616110054.2: *6* Support vim dot command
-The ability to repeat the last editing related command by pressing the period
-key is not supported and there is no workaround in place.
-
-Binding keys within nodes:
-
-Some commands can be "easily" repeated by having the command's mode
-bind itself to the period key.  This is not currently working.  
-
-Support commands requesting input:
-
-Add companion commands that reuse input.  For example, a zap-to-
-character-again command could exist which will reuse the key entered
-in the last zap-to-character command.  With this support, the mode
-that performs the initial command would assign the period key to a
-companion mode that is identical to the initial mode but with the zap-
-to-character command replaced by the zap-to-character-again command.
-
-Commands requiring companion commands are:
-  zap-to-character
-  find-character
-  backward-find-character
-  (Any others?)
-
-Notes:
-
-- The copy of the character should be saved somewhere that does NOT affect the
-  contents of the clipboard.
-
-- The same or a separate storage location can be used for all commands to retain
-  a copy of the character entered by the user. It doesn't matter since only the
-  last command is assigned to the period key to be re-executed.
-.. @+node:ekr.20100112051224.6238: *6* Some commands do not work in headline
-Leo functions exist which unconditionally set focus to the body pane
-regardless of the active pane.
-
-For example, bracket matching commands ("%" key) do not work within
-a node's headline text.  Instead, the command is performed on the
-node's body text.
-
-Using the "undo" command (key 'u') to undo a change to a node's headline text
-only works correctly after another node has been selected. It appears that
-changes made to a node's headline text are not recorded in Leo's change history
-until the edited node has lost focus.
-.. @+node:ekr.20100112051224.6222: *6* Commands requesting user input
-Commands requesting user input must be the last command executed within an @mode
-node. This prevents the implementation of commands such as "yank to <character>"
-that requires a "copy to clipboard" operation after the "find-character"
-command.
-
-======
-
-Maybe we just need more commands...
-.. @+node:ekr.20100112051224.6223: *6* Editing node headlines using @mode nodes
-Commands modifying or selecting headline text do not work correctly within a
-@mode node.
-
-This eliminates accurate implementation of vi's delete/change/substitute/yank
-object commands. As a workaround, the commands are currently written to only
-select the text. The user must perform the subsequent delete, change,
-substitute, and yank.
-.. @+node:ekr.20100112051224.6246: *6* Missing commands/features
-.. @+node:ekr.20100112051224.6234: *7* Move current line (to screen position)
-Vi has a collection of "z<movement>" commands that will move the
-current line to the top, middle, and bottom of the screen.  They are
-not supported in Leo.
-.. @+node:ekr.20100112051224.6235: *7* Move body text up/down
-Vi maps keys to scroll the text up/down one line and by half the
-number of visible lines.  Leo does not support this.
-
-.. @+node:ekr.20110529115328.18247: *7* Block cursor
-Having worked with Tk text canvases more that Qt, there still seem to
-be things that it had that have to be worked around as the Qt people
-just haven't seen the need for.
-
-One is the block cursor, I giving Leo Vim like functionality, it would
-be nice if one where supported, theses new kids just don't understand
-something so primitive I guess.
-.. @+node:ekr.20110202094848.12568: *7* Named marks
-Another is named marks, in Vim you can store a number of cursor
-locations, and recall them to jump around in your code.  This was also
-useful in filling out templates as each stop could be given a name
-mark.  This helped make filling out a template easier as you weren't
-stuck in a linear filling in the blanks in a set order, template stops
-where linked in rings, you could jump from the last stop back to the
-first and make and changes you wanted on a second go round.  Gravity
-of marks made things easier to inspect to determine what stops where
-used and which ones were being bypassed.
-
-As these things had an actual presence in the text buffer, it going to
-be a little harder to come up with a reasonable work around.
-.. @+node:ekr.20110115062009.6025: *6* Commands that work differently in Vim
-.. @+node:ekr.20100112051224.6236: *7* Two kinds of words
-Vi supports two types of words in its commands:
-
-1. Words that consist of only a subset of the character set and
-2. words that consist of all characters except the space and tab characters.
-
-Leo's always considers a word to consist of a subset of characters
-although some word related commands include different characters
-than others.
-.. @+node:ekr.20090629183608.8446: *7* Copy/paste/yank/delete
-Yank vs. Yank:
-Vi's "yank" commands copy the selected text TO the clipboard.
-Leo's "yank" commands insert text FROM the clipboard.
-
-copy-text in modes:
-Leo's copy-text command does not work within a mode.  As a result,
-all "copy to clipboard" capability is being implemented using the
-kill-<object> command followed by Leo's "yank" command to put the
-text back.
-
-paste-text in modes:
-The paste-text command does not work within an @mode node.  Leo's
-"yank" command is used instead.
-
-delete-node does not copy node to clipboard:
-A copy-node command is issued to copy the node to the clipboard
-followed by the delete-node command.
-.. @+node:ekr.20100521090440.5887: *5* Generalize minibuffer code
-@nocolor-node
-
-From Tom L
-
-This is hardwired for the first parameter.  Things I need to expand
-this:
-
-1. put in a variable that cycles through the tabStops
-
-2. In this mock up, you are entering the parameters in the minibuffer,
-a more advanced version would collect each keypress and put it in the
-body at the current tabStop, a tab would finalize the entry and
-advance to the next stop, no text other than the 'help', ends up in
-the minibuffer.
-
-Sinc I'm only modifying existing code without real understanding of
-what Leo is doing, any guidance would be appreciated.
-
-Tom
-.. @+node:ekr.20110529115328.18254: *6* EKR notes
-@language rest
-
-The general idea is to make it easier to prompt for series of values.
-
-This might be important in the vim project, but it is not worth doing outside the vim project.
-.. @+node:ekr.20110529115328.18253: *6* code
-@language python
-
-#Just playing with part of a template system, the (partial) mock up for "range()" is:
-
-def tabStopNaming (event=None):
-
-  stateName = 'naming'
-  k = c.k
-  state = k.getState(stateName)
-
-  help = ('start-value -- optional, -> fill-in or tab eliminate.  ',
-           'end-value -- required, -> fill-in.  ',
-           'step -- optional, ->fill-in or tab to eliminate.  ')
-  tabStop = ('start-value', 'end-value', 'step')
-
-  if state == 0:
-      k.setLabelBlue(help[0],protect=True)
-      k.getArg(event,stateName,1,tabStopNaming)
-      # g.es('does this ever executed?') # yes, imediately!
-  else:
-      k.clearState()
-      g.es_print('%s : %s' % (tabStop[0], k.arg))
-      k.setLabelBlue('')
-
-tabStopNaming()
-.. @+node:ekr.20100112051224.6226: *5* Vim-related: Range prefix to commands/objects (k.getArgs)
-The ability to specify a numeric range prefix is not supported. For example,
-entering "3dd" will not delete the next three lines and "20G" will not move the
-cursor to the 20th line in the file.
-
-The ability to specify a numeric range prefix to an object is not supported. For
-example, the "d2fx" command should Delete up to and including the 2nd Found "x"
-character.
-.. @+node:ekr.20120327163022.9740: *3* Improve LeoInspect
-.. @+node:ekr.20120613104401.10222: *4* Notes
-.. @+node:ekr.20120623165430.10710: *5* New to do
-@nocolor-node
-
-Create global name table.
-.. @+node:ekr.20120515193246.10035: *5* To do
-@language rest
-
-The leoInspect chapter has a good to-do list:
-    
-http://webpages.charter.net/edreamleo/leoInspect.html#still-to-do
-
-The assignments_to, assignments_using and the new calls_to getters all
-specify a pattern to be matched against the the lhs of assignments (or
-against function names in the calls_to getter). At present, the pattern
-must match as a plain word match, but it would be more natural to use regex
-matches. That’s coming.
-
-Three new getters would give leoInspect the ability to replace refactored code:
-
-    o.token_range: Returns pointers the list of tokens comprising o.
-    o.text: Returns o’s source text (a string).
-    o.text_range: Returns the starting and ending offsets of the text in the file.
-
-These getters are non-trivial to do, but a reasonable design is in place.
-.. @+node:ekr.20120515183732.10136: *5* What I did
-@language rest
-
-- Made leoInspect a stand-alone module.
-    The code attempts to import leo.core.leoGlobals.
-    If that fails, it uses an internal LeoGlobals class.
-.. @+node:ekr.20111128103520.10245: *5* Finish leoInspect.token_range
-Traverse the tree, setting N.end_lineno and N.end_col_offset.
-
-See the notes below.
-.. @+node:ekr.20111129084537.10357: *6* Notes
-> All this means that it would likely be too expensive (or just too
-> ugly) to compute the data needed for token_range in the base
-> AstTraverser class.  Such computations will be performed by traversing
-> the module's entire AST the first time "token_range" is called.
-
-There are two parts to the problem.  Happily, neither requires a
-separate tree-traversal class.
-
-A token-info prepass
-====================
-
-For each node N of a module's tree, we want to inject the following
-two new ivars:
-
-- N.end_lineno: the line number of the last character of the token.
-- N.end_col_offset: the (byte) offset of the last character of the
-token.
-
-After experimenting with a few traversals last night I suddenly
-realized tree structure is irrelevant when computing these fields: we
-simply want a **sorted** list of (N.lineno,No.col_offset, N) tuples!
-
-The prepass will use ast.walk(root), to generate the list.  After
-sorting the list, the prepass will inject inject N.end_lineno and
-N.end_col_offset ivars into each node N by stepping through the list.
-The ending values of the previous node on the list are the the same as
-the beginning values of the next node on the list.
-
-This prepass need only be done once per module.
-
-token_range
-===========
-
-To compute token_range for a *particular* N, we want to discover
-values M.end_lineno and M.end_col_offset for M, the **last** token in
-N's entire tree.
-
-token_range will do the prepass on the modules tree if necessary.
-token_range will then call ast.walk(N) to discover all of N's nodes,
-sort the list, and return the last element of the list!
-
-In short, token_range is clean and bullet-proof--a happy result.
-.. @+node:ekr.20120625183830.11319: *5* Ideas
-@nocolor-node
-
-2012/05/20: ideas for LeoInspect
-
-- Want hints/cheats that make computations simpler.
-    
-- A few hours spent on hints/cheats will pay off because such hints are
-  descriptive and useful. They are like unit tests in that regards.
-    
-- Focus on difficult modules: qtGui.py and leoKeys.py.
-    
-- The assertions for TypedDict and TypedDictOfLists are ugly. We would like
-  a lint-like tool to do away with them.
-    
 .. @+node:ekr.20130812034101.12580: *3* Installation wishlist
 @language rest
 .. @+node:ekr.20130806072439.20650: *4* Wishlist: brew install leo
@@ -8972,7 +9555,6 @@ Windows:
 - Removed all former versions of Enthought and ActiveState Python and IPython.
 .. @+node:ekr.20120516140545.9991: *3* Maybe
 .. @+node:ekr.20130807203905.16773: *4* Leo for portableapps?
-.. @+node:ekr.20120527053550.12057: *4* Kent: salt: remote execution manager
 .. @+node:ekr.20060227131611: *4* Kent: extensible auto-completion-like capabilities
 @nocolor
 http://sourceforge.net/forum/message.php?msg_id=3593116
@@ -9091,19 +9673,21 @@ plugins.  A prototype of this script exists somewhere.  Making it an
 @command node will make it much more visible. 
 
 Terry wrote plugin_catalog.py.  It is in LeoDocs.leo
-.. @+node:ekr.20130921043420.11270: *3* improve unit tests of class relationships
+.. @+node:ekr.20040123102724: ** Can't or won't do
 @language rest
+.. @+node:ekr.20130919120947.12506: *3* ** Why Leo won't be a web app
+here are two reasons why Leo is unlikely ever to be a web app.
 
-- Use @testsetup to create smaller tests.
-- Make sure leoBody follows HighLevelInterface?
-.. @+node:ekr.20130919120947.12504: ** 5.0
-.. @+node:ekr.20131030082936.17512: *3* Can't fix (yet) bug 1090950: refresh from disk - cut node ressurection
-https://bugs.launchpad.net/leo-editor/+bug/1090950
+1. There are somewhere around a million lines of Python code in Leo's core
+   and plugins. Thus, a *solid* python in javascript system is required.
+   This isn't likely to happen.
 
-A shock: fixing bug 1090950 re resurrected nodes may define Leo 5.0
-https://groups.google.com/forum/#!topic/leo-editor/nIl3ud7Tbig
+2. Creating a Leo outline widget is extremely complex. Even starting with a
+   working javascript outliner, one has to deal with events (commands)
+   coming from Leo scripts rather than from the user.
 
-
+These seem like the most important obstacles. There may be others, but these
+suffice
 .. @+node:ekr.20130919120947.12505: *3* Compatibility mode
 Leo already works fairly well with vim, emacs and ipython. However, I think
 Leo's file format could be friendlier to emacs's org-mode outlines.
@@ -9131,21 +9715,99 @@ important bridge to emacs if (optionally) Leo could write and read standard
 org-mode files. Similar remarks probably apply to vim-outline mode.
 
 Org mode won't be part of Leo 4.11, but it might be part of Leo 5.0.
-.. @+node:ekr.20040123102724: ** Can't or won't do
+.. @+node:ekr.20120327163022.9740: *3* Improve LeoInspect
+.. @+node:ekr.20120623165430.10710: *4* New to do
+@nocolor-node
+
+Create global name table.
+.. @+node:ekr.20120515193246.10035: *4* To do
 @language rest
-.. @+node:ekr.20130919120947.12506: *3* ** Why Leo won't be a web app
-here are two reasons why Leo is unlikely ever to be a web app.
 
-1. There are somewhere around a million lines of Python code in Leo's core
-   and plugins. Thus, a *solid* python in javascript system is required.
-   This isn't likely to happen.
+The leoInspect chapter has a good to-do list:
+    
+http://webpages.charter.net/edreamleo/leoInspect.html#still-to-do
 
-2. Creating a Leo outline widget is extremely complex. Even starting with a
-   working javascript outliner, one has to deal with events (commands)
-   coming from Leo scripts rather than from the user.
+The assignments_to, assignments_using and the new calls_to getters all
+specify a pattern to be matched against the the lhs of assignments (or
+against function names in the calls_to getter). At present, the pattern
+must match as a plain word match, but it would be more natural to use regex
+matches. That’s coming.
 
-These seem like the most important obstacles. There may be others, but these
-suffice
+Three new getters would give leoInspect the ability to replace refactored code:
+
+    o.token_range: Returns pointers the list of tokens comprising o.
+    o.text: Returns o’s source text (a string).
+    o.text_range: Returns the starting and ending offsets of the text in the file.
+
+These getters are non-trivial to do, but a reasonable design is in place.
+.. @+node:ekr.20120515183732.10136: *4* What I did
+@language rest
+
+- Made leoInspect a stand-alone module.
+    The code attempts to import leo.core.leoGlobals.
+    If that fails, it uses an internal LeoGlobals class.
+.. @+node:ekr.20111128103520.10245: *4* Finish leoInspect.token_range
+Traverse the tree, setting N.end_lineno and N.end_col_offset.
+
+See the notes below.
+.. @+node:ekr.20111129084537.10357: *5* Notes
+> All this means that it would likely be too expensive (or just too
+> ugly) to compute the data needed for token_range in the base
+> AstTraverser class.  Such computations will be performed by traversing
+> the module's entire AST the first time "token_range" is called.
+
+There are two parts to the problem.  Happily, neither requires a
+separate tree-traversal class.
+
+A token-info prepass
+====================
+
+For each node N of a module's tree, we want to inject the following
+two new ivars:
+
+- N.end_lineno: the line number of the last character of the token.
+- N.end_col_offset: the (byte) offset of the last character of the
+token.
+
+After experimenting with a few traversals last night I suddenly
+realized tree structure is irrelevant when computing these fields: we
+simply want a **sorted** list of (N.lineno,No.col_offset, N) tuples!
+
+The prepass will use ast.walk(root), to generate the list.  After
+sorting the list, the prepass will inject inject N.end_lineno and
+N.end_col_offset ivars into each node N by stepping through the list.
+The ending values of the previous node on the list are the the same as
+the beginning values of the next node on the list.
+
+This prepass need only be done once per module.
+
+token_range
+===========
+
+To compute token_range for a *particular* N, we want to discover
+values M.end_lineno and M.end_col_offset for M, the **last** token in
+N's entire tree.
+
+token_range will do the prepass on the modules tree if necessary.
+token_range will then call ast.walk(N) to discover all of N's nodes,
+sort the list, and return the last element of the list!
+
+In short, token_range is clean and bullet-proof--a happy result.
+.. @+node:ekr.20120625183830.11319: *4* Ideas
+@nocolor-node
+
+2012/05/20: ideas for LeoInspect
+
+- Want hints/cheats that make computations simpler.
+    
+- A few hours spent on hints/cheats will pay off because such hints are
+  descriptive and useful. They are like unit tests in that regards.
+    
+- Focus on difficult modules: qtGui.py and leoKeys.py.
+    
+- The assertions for TypedDict and TypedDictOfLists are ugly. We would like
+  a lint-like tool to do away with them.
+    
 .. @+node:ekr.20040216054459: *3* @h @f @endh and @endf directives
 @nocolor
 
@@ -9767,7 +10429,7 @@ http://leoeditor.com/slides/leo-basics-step-by-step/index.html
 http://leoeditor.com/slides/clones-and-views/index.html
 http://leoeditor.com/images/mail_item.html
 http://leoeditor.com/images/page_setup.html
-.. @+node:ekr.20120516140545.9987: ** Might do (ideas)
+.. @+node:ekr.20120516140545.9987: ** Ideas
 .. @+node:ekr.20120515193246.10087: *3* * DOM
 .. @+node:ekr.20071001052501: *4* Versioning for nodes
 @nocolor
@@ -12759,471 +13421,6 @@ extra slash at all.
 
 -->Jake
 
-.. @+node:ekr.20130503155210.24814: ** Tutorials/Screencasts
-@nocolor-node
-
-Rewrite in screencast-script style:
-- Docstrings for the most important plugins.
-- All help-for-<topic> text.
-- Leo's tutorials.
-
-** Screencast style for plugins docstrings.
-* Screencast style for help messages.
-* Screencast style for tutorials.
-* Create YouTube channel for Leo screencasts.
-
-Topics:
-- Minibuffer: alt-x, tab-completion.
-- @button.
-- @rclick
-- Find/Change (done)
-- execute-script.
-- bookmarks.py.
-
-.. @+node:ekr.20130807203905.16656: *3* A beautiful pattern for composing large strings
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-I continue to work feverishly on various aspects of static type checking.
-
-That work lead to a discovery that may benefit you.  It's one of the most 
-beautiful patterns I've ever created: it allows a program to simply and 
-naturally build up huge strings without using any string operations.  
-Generating an html file with minimal stress on the gc is an obvious 
-application.  You could also say that the pattern creates a Pythonic way of 
-using lisp-like algorithms, but more safely than in lisp.
-
-Full details at the stc documentation page::
-http://webpages.charter.net/edreamleo/stc/stc.html#a-beautiful-pattern-for-building-large-strings
-
-.. @+node:ekr.20130807203905.16657: *4* Re: A beautiful pattern for composing large strings
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-On Wednesday, January 2, 2013 10:02:40 AM UTC-6, Edward K. Ream wrote:
-
-ReportTraverser uses this pattern at rev 288.  It is a remarkable 
-simplification.
- 
-
-> The revised r.div method will be something like::
->
->     def div(self,aList):
->         compute old and new indents
->         return [
->             <div>, with old indent,
->             aList, with new indent,
->             </div>, with old indent,
->         ]
->
-
-This doesn't work!  aList won't have the proper indentation.  In 
-particular, the following won't work::
-
-    [['  ',z] for z in aList],
-
-flatten_list will add the two spaces before the line, that is, before a 
-newline. Instead, a hack is needed:
-
-    return [
-        div,
-        join_list(aList,indent='  '),
-        '\\n</div>'
-    ]
-
-The new 'indent' keyword tells flatten_list to add the given indentation 
-(two spaces, here), to strings that start with a newline.  The new code in 
-flatten_list is::
-
-        for i,item in enumerate(aList):
-            if leading:                  yield leading
-            for s in flatten_list(item):
-                if indent:
-                    if s.startswith('\\n'):
-                        yield '\\n'+indent+s[1:]
-                    else:
-                        yield s
-                else:
-                    yield s
-            if sep and i < len(aList)-1: yield sep
-            if trailing:                 yield trailing
-
-The point is that the indentation must be "moved behind the newline".
-
-Edward
-
-.. @+node:ekr.20130807203905.16659: *4* Re: A beautiful pattern for composing large strings
-From: "Ville M. Vainio" <vivainio@gmail.com>
-
-This seems like a spiritual relative of "rope" data structure:
-
-http://en.wikipedia.org/wiki/Rope_(data_structure)
-
-http://www.sgi.com/tech/stl/Rope.html
-
-===== EKR
-
-Yes, there is a similarity. However, the real beauty of new pattern is the
-flatten_list method. It's the combination of the lists and flatten_list
-that gives the pattern real power. We've just seen how the 'indent' keyword
-hack allows sophisticated processing of the lists. I wouldn't expect more
-hacks to be needed, but I've been surprised before ;-)
-.. @+node:ekr.20130807203905.16660: *4* Re: A beautiful pattern for composing large strings
-On Tue, 1 Jan 2013 17:03:05 -0800 (PST)
-"Edward K. Ream" <edreamleo@gmail.com> wrote:
-
-> Generating an html file with minimal stress on the gc is an obvious 
-> application.
-
-Nice.  An HTML specific approach which avoids things like the
-r.div_end() construct is the LXML element factory:
-http://lxml.de/tutorial.html#the-e-factory
-
-Cheers -Terry
-
-.. @+node:ekr.20130807203905.16662: *4* Re: A beautiful pattern for composing large strings
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-On Thursday, January 3, 2013 3:28:52 AM UTC-6, Ville M. Vainio wrote:
->
-> Yes, it's indeed an interesting pattern. 
->
-> It would seem more useful in faster languages than python though; in 
-> python, string operations (and gc) are faster in comparison to executing 
-> other code, whereas in fast, more static languages (C++, Java, Go) avoiding 
-> GC gives you great benefits (I saw 5x perf increase reported for some Go 
-> app when eliminating GC).
->
-
-Thanks for these remarks.  I've enjoyed thinking about them.  A few 
-responses:
-
-1. This is a smallish pattern--it can't change the world, except insofar as 
-something beautiful changes the world.
-
-2. Otoh, the pattern changes the way I think about lisp and lisp-like 
-patterns.  That's not nothing. For the first time, it makes list-oriented  
-programming pattern completely safe.  It does this because it doesn't 
-matter what each component list contains, nor does it matter *at all* what 
-the shape of any part of the tree is.  This makes the pattern completely 
-flexible.
-
-3. The pattern can be generalized.  The pattern I described uses a tree of 
-component strings to describe a (large) resulting string.  But one can 
-easily imagine using lists to hold anything at all (of whatever tree shape) 
-and then use another version of flatten_list to compose results of other 
-types.  Alternatively, rather than composing a result, the analog of 
-flatten_list could process the tree of lists in other ways.  So the most 
-general version of the pattern is:
-
-A) The tree of lists can contain any data whatever, especially including 
-None,
-B) The "producers" (visitors) can create subtrees of whatever shape,
-C) The analog of flatten_list is free to do anything whatever with the 
-resulting tree.
-
-I suspect that these features are what appeal to lisp programmers ;-)
-
-4. I'm not sure whether the pattern is more useful in "faster" languages or 
-not.  True, anything that helps a feeble language like C++ will seem useful 
-:-)  But points 1-3 above have nothing to do with speed: they just make 
-programming simpler, more flexible, more powerful and more fun.
-
-Imo, gc issues are important both in Python and in C++.  For stc, the only 
-way to get reproducible timing statistics for tests was to do the following 
-before running the test::
-
-    for z in (0,1,2): gc.collect(z)
-
-The ReportTraverser class no longer contains *any* calls to string.join, so 
-one could imagine that all strings used in the code would be interned.  The 
-generated tree actually contains nothing but *references* to strings, and 
-if all strings are interned the references will not themselves cause any 
-new strings to be allocated.
-
-Naturally, gc issues are even more important in language like C++ without a 
-gc.  Lol.  The preceding paragraph is more important for C++ than in 
-Python.  So yes, in this sense I agree with you completely that the pattern 
-is more useful for "fast" languages than for Python.
-
-Thanks, Ville, for provoking all these pleasant thoughts :-)
-.. @+node:ekr.20130807203905.16663: *4* Re: A beautiful pattern for composing large strings
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-On Tue, Jan 1, 2013 at 9:48 PM, Terry Brown <terry_n_brown@yahoo.com> wrote:
-
-> On Tue, 1 Jan 2013 17:03:05 -0800 (PST)
-> "Edward K. Ream" <edreamleo@gmail.com> wrote:
->
-> > Generating an html file with minimal stress on the gc is an obvious
-> > application.
->
-> Nice.  An HTML specific approach which avoids things like the
-> r.div_end() construct is the LXML element factory:
-> http://lxml.de/tutorial.html#the-e-factory
->
-
-Beautiful.  With the list framework the revised r.div method would be
-something like::
-
-    def div(self,aList):
-        compute old and new indents
-        return [
-            <div>, with old indent,
-            aList, with new indent,
-            </div>, with old indent,
-        ]
-
-An example of the pattern in use::
-
-    return [
-        ...
-        r.div([
-            contents of the div,
-        ]),
-        ...
-    ]
-
-Similarly for span, etc. Thanks for pointing this out.  This is too good to
-ignore.  I'll do it soon.
-.. @+node:ekr.20130807203905.16664: *3* All about clone conflicts
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-Some people seem to think that it is difficult to understand how Leo
-handles "clone wars":  differing values for a cloned nodes that appear
-in several external files.  That's not true.  The rule is::
-
-    **The last clone that Leo reads wins.**
-
-That is, for any cloned node C, Leo takes the value of C.h and C.b to
-be the values specified by the last copy that Leo reads.
-
-There is only one complication::
-
-    **Leo reads the entire outline before reading any external
-files.**
-
-Thus, if C appears in x.leo, y.py and z.py, Leo will choose the value
-for C in x.py or y.py, depending on which @<file> node appears later
-in the outline.
-
-Notes:
-
-1. Whenever Leo detects multiple values for C when opening an outline, Leo
-   creates a "Recovered nodes" tree. This tree contains all the various
-   values for C, nicely formatted so that it is easy to determine where the
-   differences are.
-
-2. I've just refreshed my memory by looking at the code.  The relevant methods are:
-
-    fc.getLeoFile # Reads the outline, then calls at.readAll to read all external files.
-    at.indicateNodeChanged # Adds data to c.nodeConflictList
-    cacher.reportChangedClone # Adds data to c.nodeConflictList
-    fc.handleNodeConflicts # Creates "Recovered Nodes" node and its children.
-
-3. The present code is the simplest code that could possibly work. There is
-no way Leo is going to do AI in order to implement complex rules for which
-clones are "more important" than others. Thus, if you use cross-file
-clones, it is up to *you* to know these rules and handle any resulting
-conflicts. Imo, the "Recovered Nodes" feature is a big step forward for
-Leo, and makes it impossible to lose data unless you willfully refuse to
-examine the data.
-.. @+node:ekr.20130807203905.16665: *4* Re: All about clone conflicts
-From: Joon Ro <joonpyro@gmail.com>
-
-Thanks for the explanation. As a matter of fact, I was having hard time 
-understanding this. 
-
-I had my source file in a @shadow node, and then I had a backup of that 
-file as @file node, which had clones of the nodes of the source @shadow 
-file and some other codes that I stashed. 
-
-Whenever I changed the source code externally with leo closed, when I open 
-leo, it made recovered nodes. The problem was since @file was placed 
-"later" in the outline, leo kept putting the new changes I made to old, 
-instead of new.
-
-Now I understand how this works. but I think in multiple external file 
-cases, it would make more sense if leo checks the file modification time 
-when it makes decision which node is new, instead of just depending on the 
-order of files in the outline. In above case, it is natural for me to have 
-actual source nodes on the top of the outline and backup nodes on the 
-bottom. Please let me know what you think. 
-.. @+node:ekr.20130807203905.16666: *3* Draft: Position tutorial
-@language rest
-
-A **position** object represents a specific node in a Leo outline.
-
-Equivalently, a position represents the state of a Leo generator, that is,
-a specific node during a traversal of a Leo outline.
-
-Because of clones, a node may appear arbitrarily many times in an outline,
-so a node may appear at arbitrarily many positions in the outline.
-
-For any position p, **p.v** is the vnode at position p.
-
-A node's vnode never changes, regardless of where the node appears in the
-outline, and regardless of whether the node is cloned or not.
-
-**Positions become invalid when the outline changes.**
-
-You may save and and use positions *provided* the outline remains unchanged.
-
-Leo's generators deliver positions, one after each other, using a *single*
-(ever-changing) position. As a result, scripts must use p.copy() to create
-lists of positions. For example::
-
-    aList = [p.copy() for p in c.rootPosition().subtree()]
-.. @+node:ekr.20130807203905.16667: *4* other info
-Consider this example, where nodes with the same names are clones of each other::
-
-+ Root
-    + A
-        - B
-    + A
-        - B
-    - B
-
-Leo's c.all_nodes() iterator will deliver 9 positions:
-
-    1: Root
-    2: A
-    3: B
-    4: A
-    5: B
-    6: B
-
-*All* positions returned by a traversal are distinct.  Some examples:
-
-- Position 2: A is different from position 4: A
-  The former is the first child of root; the latter is the second child of root.
-  
-- The parent of position 3: B is A at childIndex 0 of Root.
-  The parent of position 5: B is A at childIndex 1 of Root.
-  The parent of position 6: B is Root. The childIndex of 6: B is 2.
-
-.. @+node:ekr.20130807203905.16668: *3* Draft: unit-testing tutorial
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-The following is a first draft of a unit-testing tutorial.  It will form 
-the basis of a new help-for-unit-testing command, and may also become the 
-introduction to Leo unit-testing chapter.
-
-All comments are welcome.  Please let me know if anything is unclear.
-
------
-
-Leo makes it easy to create and run unit tests from individual outline 
-nodes or trees.
-
-A node whose headline starts with @tests defines a unit test.
-
-The body text of the @test node contains a **self-contained** unit test.
-
-For example, this creates a complete unit test::
-
-    @test fails  (headline)
-    assert False (body text)
-
-To run this test, select the @test node and do:
-<alt-x>run-selected-unit-tests-locally.
-Leo will create and run the unit test automatically.
-
-To see all of Leo's unit testing commands, do:
-<alt-x>run<tab>
-
-Leo pre-defines 'c', 'g' and 'p' in unit tests just as in scripts.
-
-For more details about unit testing, see: 
-http://leoeditor.com/unitTesting.html
-
-**Notes for Leo developers**
-
-leo/test/unitTest.leo contains all of Leo's own unit tests.
-
-Running all tests is not necessary.  Just select::
-
-    Active Unit Tests
-
-and then do Alt-4 (run-selected-unit-tests-locally).
-
-**Note**: Some tests will likely fail on machines other than EKR's.
-You only need to be concerned about unit tests that start failing after you 
-make your changes.
-
-.. @+node:ekr.20130807203905.16669: *3* Tutorial scripts (To be written)
-.. @+node:ekr.20130807203905.16670: *4* What makes Leo special: shorter
-@wrap
-@language rest
-
-.. |br| raw:: html
-
-   <br />
-   
-**Leo completely integrates scripting and outlines.** |br|
-Leo outlines are true Python objects, not just text.
-
-\1. **Headlines naturally define types**, such as:
-
-**@file** trees create external files. |br|
-**@test** nodes and trees create unit tests. |br|
-**@button** nodes create **script buttons**. |br|
-**@command** nodes create user-defined commands. |br|
-**@html** trees create web pages. |br|
-**@settings** trees contain Leo settings.
-
-\2. **Any node may contain a Leo script**:
-
-A simple outline-aware markup language creates scripts |br|
-and external files from outline nodes and trees.
-
-\3. **Leo scripts have *easy* access to all outline data**:
-
-All Leo scripts execute with these **predefined symbols**: |br|
-**c** gives access to all outline data and all of Leo's code. |br|
-**p** is the presently selected node in the script. |br|
-**p.h** is the headline text; **p.b** is the body text. |br|
-**g** is a module containing utility functions & classes.
-
-\4. **All parts of Leo are scriptable**, including: |br|
-
-.. In short, all outline data are completely scriptable.
-.. @+node:ekr.20130807203905.16671: *4* What makes Leo special
-@language rest
-
-Leo looks like relatively ordinary outline editor,
-but it has unique scripting and data-organizing abilities.
-
-Scripting
----------
-
-- Any node in the outline may contain a Leo script.
-- Leo can *compose* scripts from a node and its descendants.
-- Leo scripts can *easily* access all the data in any outline.
-
-Leo scripts can do things that can't be *imagined* in other editors.
-
-Data-organizing
----------------
-
-- Cloned nodes may appear many times in the same outline.
-- Clones create views of data that persist indefinitely.
-  Any set of nodes may appear in arbitrirly many views of the data.
-- Headlines naturally describe the data contained in nodes.
-
-
-Script nodes
-------------
-
-There are many ways to combine these capabilities.
-.. @+node:ekr.20130807203905.16672: *4* Scripting
-.. @+node:ekr.20130807203905.16673: *4* External files
-.. @+node:ekr.20130807203905.16674: *4* The screenshots plugin
-.. @+node:ekr.20130807203905.16675: *4* The contextmenu plugin
-@language rest
-
-Adds configurable right-click menu items to nodes.
-.. @+node:ekr.20130807203905.16676: *4* The bookmarks plugin
-.. @+node:ekr.20130807203905.16677: *4* The todo plugin
-.. @+node:ekr.20130807203905.16818: *4* The valuespace plugin (promised!)
 .. @+node:ekr.20130803073926.12442: ** Waiting
 - Waiting for answer re ubuntu splashscreen
     http://qt-project.org/forums/viewthread/30837/

@@ -3926,7 +3926,9 @@ class Commands (object):
         elif s[0].isalpha():
             # Careful: single characters only.
             # This could cause problems in some situations.
-            val = g.match(s,1,')') or g.match(s,1,'.')
+            val = (
+                (g.match(s,1,')') or g.match(s,1,'.')) and
+                (len(s) < 2 or s[2] in (' \t\n')))
         else:
             val = s.startswith('@') or s.startswith('-')
         if trace: g.trace(val,repr(s))

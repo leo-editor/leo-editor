@@ -20289,7 +20289,6 @@ The Basics of Leo
     "Edward... you've come up with perhaps the most powerful new concept in
     code manipulation since VI and Emacs."---David McNab
 
-
 This chapter introduces Leo's basic operations for creating and
 changing outlines. Commands can be executed using keystrokes, or by
 name.
@@ -20349,6 +20348,7 @@ Creating Documents with the rst3 Command
 .. _`docutils`: http://docutils.sourceforge.net
 .. _`reStructuredText`: http://docutils.sourceforge.net/rst.html
 .. _`rST primer`: http://sphinx-doc.org/rest.html
+.. _`first tutorial`: tutorial-basics.html
 
     "I am a huge fan of Leo. I think it's quite possibly the most
     revolutionary programming tool I have ever used and it (along with the
@@ -20358,8 +20358,10 @@ Creating Documents with the rst3 Command
 Leo's rst3 command converts Leo trees containing `reStructuredText`_ (rST)
 or `Sphinx`_ markup to HTML, PDF, `LaTeX`_ and other kinds of output files.
 This tutorial gives step-by-step instructions for using the rst3 command.
-If you are new to rST, please read the `rST primer`_. For full information
-about Sphinx, please read the `Sphinx documentation`_.
+
+**Prerequisites**: Please make sure you have read the `first tutorial`_ before reading this
+one. If you are new to rST, please read the `rST primer`_. For full
+information about Sphinx, please read the `Sphinx documentation`_.
 
 The rst3 command makes using rST or Sphinx *much* easier by automatically
 creating underlining for rST sections. To reorganize a document, just
@@ -20367,7 +20369,7 @@ reorganize the corresponding Leo outline: you don't have to change
 underlining characters by hand.
 
 The tutorial covers only the basic features of the rst3 command. This is
-enough to generate all of Leo's documentation!
+enough to generate all of Leo's documentation! 
 
 CheatSheet.leo contains an expanded version of the example used in this
 tutorial. You can open CheatSheet.leo from Leo's help menu.
@@ -20549,8 +20551,11 @@ your work as always:
 
 - Otherwise, the rst3 command applies to all descendant @rst trees.
 
+.. _`this section`: tutorial-basics.html#configuring-leo
+
 If @bool rst3_call_docutils is True, the rst3 command will call docutils
-automatically to create the output files.
+automatically to create the output files. For more information about
+Leo settings, see `this section`_.
 
 When using sphinx, run sphinx's "make" utility after running the rst3
 command to create the final output files.
@@ -22456,7 +22461,7 @@ help-for-find-commands
 actually get an html file that can be loaded into a word processor to
 output an .odt or .docx file for example.
 
-For most of the purposes that a programmer would use rst, ie. documentation
+For most of the purposes that a programmer would use rst, i.e., documentation
 or a web page, the tutorial goes far enough. But for those who have
 different output goals, highlighting the flexibility that Leo with rst
 should be a primary goal. There are literally hundreds of writers in the
