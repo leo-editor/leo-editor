@@ -575,6 +575,7 @@ class Tabula(QMainWindow):
         def do_close_all():
             for i in self.mdi.subWindowList():
                 self.mdi.removeSubWindow(i)
+            self.notes = {}
 
 
         def do_go():
