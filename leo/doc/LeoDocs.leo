@@ -18438,7 +18438,8 @@ import os
 trace = True
 g.cls()
 c.setComplexCommand('make-sphinx')
-c.save()
+if c.isChanged():
+    c.save()
 aList = c.rstCommands.rst3()
 if aList:
     path = g.os_path_finalize_join(g.app.loadDir,'..','doc','html')
