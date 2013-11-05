@@ -28,8 +28,7 @@
 <v t="ekr.20101115090518.1494"><vh>Leo 4.8 final</vh></v>
 <v t="ekr.20110603112852.1505"><vh>Leo 4.9 final</vh></v>
 <v t="ekr.20120328150744.1791"><vh>Leo 4.10 final</vh></v>
-<v t="ekr.20130818115031.6263"><vh>Leo 4.11 a2</vh></v>
-<v t="ekr.20131031071750.2233"><vh>Leo 4.11 b1</vh></v>
+<v t="ekr.20131105110107.16636"><vh>Leo 4.11 final</vh></v>
 <v t="EKR.20040519091259.2"><vh>Quotes of the month</vh>
 <v t="ekr.20080901114425.2"><vh>Sept 2008</vh></v>
 <v t="ekr.20070425092712"><vh>April 2007</vh></v>
@@ -1280,45 +1279,14 @@ stores this identifier in the file ``.leoID.txt``. Leo attempts to create
 finally in Leo's core directory. You can change this identifier at any time by
 editing ``.leoID.txt``.
 </t>
-<t tx="ekr.20130818115031.6263">Leo 4.11 a2                                     August 19, 2013
+<t tx="ekr.20131105110107.16636">Leo 4.11 final released: Python scripting IDE
 
-Leo 4.11 a2 is now available at: http://sourceforge.net/projects/leo/files/Leo/
-Leo 4.11 contains over a year's work on Leo.
-
-Leo is a text editor, data organizer, project manager and much more.
-See http://leoeditor.com/intro.html
-
-The highlights of Leo 4.11:
----------------------------
-
-- Greatly improved abbreviations.
-- Clones are now valid anywhere in @file nodes.
-- Leo now warns if a .leo file is open elsewhere.
-- Added support for sessions
-- Added colorizing themes.
-- A colored border highlights the pane with focus.
-- Added support for the clojure, markdown and TypeScript languages.
-- Added importers for .ipynb, .otl and vimoutliner files.
-- Many new and improved plugins.
-- Dozens of new scripts.
-- Dozens of improved commands.
-- Dozens of bug fixes and code-level improvements.
-
-Links:
-------
-Leo:      http://leoeditor.com
-Forum:    http://groups.google.com/group/leo-editor
-Download: http://sourceforge.net/projects/leo/files/
-Bzr:      http://code.launchpad.net/leo-editor/
-Quotes:   http://leoeditor.com/testimonials.html
-</t>
-<t tx="ekr.20131031071750.2233">Leo 4.11 b1                                     October 31, 2013
-
-Leo 4.11 b1 is now available at: http://sourceforge.net/projects/leo/files/Leo/
+Leo 4.11 final is now available at: http://sourceforge.net/projects/leo/files/Leo/
 Leo 4.11 contains over a year's work on Leo.
 
 Leo is a PIM, an IDE and an outliner for programmers, authors and web
 designers. Leo's unique features organize data in a revolutionary way.
+Python scripts can easily access all parts of Leo outlines.
 See http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.11:
