@@ -18332,7 +18332,7 @@ myLeoSettings.leo:
     )
 #@+node:ekr.20130926053913.15855: *3* 4.11 Better abbreviations, many bug fixes
 #@+node:ekr.20131105110107.16836: *4* Leo 4.11 final Release notes
-Leo 4.11 final                                     November 4, 2013
+Leo 4.11 final                                     November 6, 2013
 
 Leo 4.11 final is now available at: http://sourceforge.net/projects/leo/files/Leo/
 Leo 4.11 contains over a year's work on Leo.
@@ -21582,7 +21582,7 @@ My suggestion:
    report the results.
 #@+node:edream.110203163054.63: ** Latest version
 #@+node:ekr.20131105110107.16836: *3* Leo 4.11 final Release notes
-Leo 4.11 final                                     November 4, 2013
+Leo 4.11 final                                     November 6, 2013
 
 Leo 4.11 final is now available at: http://sourceforge.net/projects/leo/files/Leo/
 Leo 4.11 contains over a year's work on Leo.

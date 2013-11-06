@@ -19534,7 +19534,7 @@ and `Python's`_ web sites their distinctive appearance and features.
 After installing docutils or sphinx, you must restart Leo so that the new
 installation will take effect.
 </t>
-<t tx="ekr.20131105110107.16836">Leo 4.11 final                                     November 4, 2013
+<t tx="ekr.20131105110107.16836">Leo 4.11 final                                     November 6, 2013
 
 Leo 4.11 final is now available at: http://sourceforge.net/projects/leo/files/Leo/
 Leo 4.11 contains over a year's work on Leo.
