@@ -472,8 +472,7 @@ Run make-leo, making sure that the final revno matches the build number in versi
     - Change the build number in version.py to one more than the present revno.
     - Commit the change to version.py, thereby making the build number match the final revno.
 Create the executable installer:
-    - Choose leo.nsi in Windows Explorer and select "Compile NSI Script"
-      or just double-click leo.nsi.
+    - Double-click leo.nsi.
 Test files in installed folder.
     - Run all unit tests in the installed folder, with the installed Leo.
     - Make sure the following open without errors:
@@ -481,7 +480,6 @@ Test files in installed folder.
         - leoPy.leo
         - LeoDocs.leo
 Create a bzr tag **last**.
-    - Update the build number.  Open any Leo file to test.
     - bzr tag leo-x-y
     - bzr commit --unchanged -m "added tag"
     - bzr push

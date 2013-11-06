@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
+<!-- Created by Leo (http://leoeditor.com/leo_toc.html) -->
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
@@ -1094,6 +1094,12 @@
 </v>
 <v t="ekr.20121011100948.4582"></v>
 <v t="ekr.20121011195530.3405"><vh>pyv8</vh></v>
+<v t="ekr.20131106145203.3631"><vh>@button display css</vh>
+<v t="ekr.20131106145203.3632"><vh>define css</vh></v>
+<v t="ekr.20131106145203.3633"><vh>escapeHtml</vh></v>
+<v t="ekr.20131106145203.3634"><vh>headlineToHtml</vh></v>
+</v>
+<v t="ekr.20131106145203.3636"><vh>@html display</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1394,7 +1400,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="7"></t>
+<t tx="ekr.20070416075121" str_leo_pos="9"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -12430,5 +12436,220 @@ if 0:
     cx.enter()                    
     cx.eval("hello()")
 </t>
+<t tx="ekr.20131106145203.3631"># Displays both the css and the html to the log pane.
+# The viewrendered plugin doesn't display result properly:
+# https://bugs.launchpad.net/leo-editor/+bug/782009
+
+@language python
+
+def icon(s):
+    url = 'http://leoeditor.com/%s' % s # not https
+    return "'%s'" % url
+@others
+tag = '@html display'
+p2 = g.findNodeAnywhere(c,tag)
+if p2:
+    html = [
+        '&lt;!DOCTYPE html&gt;',
+        '&lt;html&gt;',
+        '&lt;head&gt;','&lt;style&gt;',
+            base_css,plus_minus_css,boxes_css,
+        '&lt;/style&gt;','&lt;/head&gt;',
+        '&lt;body&gt;','&lt;ul class="leo-tree-example"&gt;',
+    ]
+    html.extend(headlineToHtml(p))
+    html.extend(['&lt;/ul&gt;','&lt;/body&gt;','&lt;/html&gt;',])
+    p2.b = '\n'.join(html)
+    c.selectPosition(p2)
+    c.redraw()
+else:
+    g.es('not found: %s' % tag)
+</t>
+<t tx="ekr.20131106145203.3632"># ul.leo-tree-example li {
+    # background-repeat: no-repeat;
+    # background-position: 0px 5px;
+    # padding-left: 27px;
+# }
+
+base_css = \
+r'''ul.leo-tree-example  {
+    background-color: #ffffec;
+}
+li {
+    background-image:
+url('https://raw.github.com/vivainio/leo/master/leo/Icons/box00.GIF');
+    background-repeat: no-repeat;
+    background-position: 0px 5px;
+    padding-left: 27px;
+}
+li.selected {
+    background-color: lightgrey;
+}
+li.leaf {
+    list-style-type: none;
+}'''
+
+table = (
+    ('plus','plusnode.gif'),
+    ('minus','minusnode.gif'),
+)
+plus_minus_css = '\n'.join([
+    'li.%s {\n  list-style-image: url(%s)\n}' % (kind,icon(image))
+        for kind,image in table])
+# plus_css = '''
+# li.plus {
+    # list-style-image: url(%s);
+# }''' % icon('plusnode.gif')
+
+# minus_css = '''
+# li.minus {
+    # list-style-image: url(%s);
+# }''' % icon('minusnode.gif')
+
+table = (
+    # bits: dirty=8,clone=4,mark=2,body=1.
+    (0,'leaf'),
+    (1,'body'),
+    (2,'mark'),
+    (3,'mark-body'),
+    (4,'clone'),
+    (5,'clone-body'),
+    (6,'clone-mark'),
+    (7,'clone-mark-body'),
+    (8,'dirty'),
+    (9,'dirty-body'),
+    (10,'dirty-mark'),
+    (11,'dirty-mark-body'),
+    (12,'dirty-clone'),
+    (13,'dirty-clone-body'),
+    (14,'dirty-clone-mark'),
+    (15,'dirty-clone-mark-body'),
+)
+boxes_css = '\n'.join([
+    'li.%s {\n  background-image: url(%s)\n}' % (kind,icon('box%02d.GIF' % (n)))
+        for n,kind in table])
+
+</t>
+<t tx="ekr.20131106145203.3633">def escapeHtml(s):
+    return s.replace('&amp;', '&amp;amp;').replace('&lt;', '&amp;lt;').replace('&gt;', '&amp;gt;')
+</t>
+<t tx="ekr.20131106145203.3634">def headlineToHtml(p,level=0):
+    '''
+        Returns html representation (unordered list)
+        of the visible portions of the subtree rooted
+        at position p. CSS classes corresponding to the
+        expansion state and icon box are included in
+        each list item. Combined with the proper CSS, the
+        result can be made to look similar to leo's tree
+        pane.
+    '''
+    pad = '  '*level
+    if p.isExpanded(): box = 'plus'
+    elif p.hasChildren(): box = 'minus'
+    else: box = 'leaf'
+    bits = []
+    table = (
+        (p.isDirty(),'dirty'),
+        (p.isCloned(),'clone'),
+        (p.isMarked(),'mark'),
+        (bool(p.b),'body'),
+    )
+    for bit,kind in table:
+        if bit: bits.append(kind)
+    bits = '-'.join(bits)
+    theClass = '%s %s' % (box,bits) if bits else box
+    html = ["%s&lt;li class='%s'&gt;" % (pad,theClass)]
+    html.append('%s%s' % (pad,escapeHtml(p.h)))
+    html.append("%s&lt;/li&gt;" % pad)
+    if p.isExpanded() and p.hasChildren():
+        html.append("%s&lt;ul&gt;" % pad)
+        for child in p.children():
+            html.extend(headlineToHtml(child,level=level+1))
+        html.append("%s&lt;/ul&gt;" % pad)
+    return html</t>
+<t tx="ekr.20131106145203.3636">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;style&gt;
+ul.leo-tree-example  {
+    background-color: #ffffec;
+}
+li {
+    background-image:
+url('https://raw.github.com/vivainio/leo/master/leo/Icons/box00.GIF');
+    background-repeat: no-repeat;
+    background-position: 0px 5px;
+    padding-left: 27px;
+}
+li.selected {
+    background-color: lightgrey;
+}
+li.leaf {
+    list-style-type: none;
+}
+li.plus {
+  list-style-image: url('http://leoeditor.com/plusnode.gif')
+}
+li.minus {
+  list-style-image: url('http://leoeditor.com/minusnode.gif')
+}
+li.leaf {
+  background-image: url('http://leoeditor.com/box00.GIF')
+}
+li.body {
+  background-image: url('http://leoeditor.com/box01.GIF')
+}
+li.mark {
+  background-image: url('http://leoeditor.com/box02.GIF')
+}
+li.mark-body {
+  background-image: url('http://leoeditor.com/box03.GIF')
+}
+li.clone {
+  background-image: url('http://leoeditor.com/box04.GIF')
+}
+li.clone-body {
+  background-image: url('http://leoeditor.com/box05.GIF')
+}
+li.clone-mark {
+  background-image: url('http://leoeditor.com/box06.GIF')
+}
+li.clone-mark-body {
+  background-image: url('http://leoeditor.com/box07.GIF')
+}
+li.dirty {
+  background-image: url('http://leoeditor.com/box08.GIF')
+}
+li.dirty-body {
+  background-image: url('http://leoeditor.com/box09.GIF')
+}
+li.dirty-mark {
+  background-image: url('http://leoeditor.com/box10.GIF')
+}
+li.dirty-mark-body {
+  background-image: url('http://leoeditor.com/box11.GIF')
+}
+li.dirty-clone {
+  background-image: url('http://leoeditor.com/box12.GIF')
+}
+li.dirty-clone-body {
+  background-image: url('http://leoeditor.com/box13.GIF')
+}
+li.dirty-clone-mark {
+  background-image: url('http://leoeditor.com/box14.GIF')
+}
+li.dirty-clone-mark-body {
+  background-image: url('http://leoeditor.com/box15.GIF')
+}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;ul class="leo-tree-example"&gt;
+&lt;li class='minus dirty-body'&gt;
+@button display css
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/body&gt;
+&lt;/html&gt;</t>
 </tnodes>
 </leo_file>
