@@ -36,7 +36,7 @@
 <v t="ekr.20100909111553.5588"><vh>@mark-for-unit-tests</vh></v>
 </v>
 <v t="ekr.20080707101341.1"><vh>@file ../modes/forth.py</vh></v>
-<v t="edream.110203113231.618" a="E"><vh>Plugins</vh>
+<v t="edream.110203113231.618"><vh>Plugins</vh>
 <v t="EKR.20040517090508"><vh>  Enable plugins using @enabled-plugins nodes</vh></v>
 <v t="ekr.20050303051035"><vh>  Templates</vh>
 <v t="ekr.20041114102139"><vh>Notes for plugin writers</vh></v>
@@ -174,9 +174,8 @@
 <v t="ekr.20060328125248"><vh>@file mod_scripting.py</vh></v>
 <v t="edream.110203113231.925"><vh>@file script_io_to_body.py</vh></v>
 </v>
-<v t="ekr.20120309073937.9878" a="E"><vh>Searching</vh>
+<v t="ekr.20120309073937.9878"><vh>Searching</vh>
 <v t="ekr.20120309073748.9872"><vh>@file bigdash.py</vh></v>
-<v t="peckj.20131101143803.8010"><vh>@file nodewatch.py</vh></v>
 </v>
 <v t="ekr.20050111122605"><vh>Servers</vh>
 <v t="ville.20091009202416.10040"><vh>@file leoremote.py</vh></v>
