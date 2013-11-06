@@ -19791,9 +19791,6 @@ The key is to use a descriptor in LeoQTextBrowser stylesheets.  Example::
 'LeoQTextBrowser { &lt;&lt; the actual stylesheet &gt;&gt; }
 
 See http://stackoverflow.com/questions/9554435/qtextedit-background-color-change-also-the-color-of-scrollbar
-
-
-    
 </t>
 <t tx="ekr.20131105110107.16849">https://bugs.launchpad.net/leo-editor/+bug/998090
 save file as doesn't remove entry from open file list
@@ -21903,16 +21900,17 @@ The fix was to adjust ins in rp_reformat as follows::
 
 Example::
 
-A file that is both source controlled and customized by the user is inconvenient for both novices and experts.
+A file that is both source controlled and customized by the user is
+inconvenient for both novices and experts.
 </t>
-<t tx="ekr.20131105110107.16978">Typed tab while autocompleting:  The fix was adding a better guard in tab_callback.
+<t tx="ekr.20131105110107.16978">Typed tab while autocompleting: The fix was adding a better guard in
+tab_callback.
 
 </t>
 <t tx="ekr.20131105110107.16979">https://bugs.launchpad.net/leo-editor/+bug/869385
 
 The Nav pane and the "prev" and "next" buttons can't position
 from one chapter to another.
-
 
 What I did:
     
@@ -21942,6 +21940,8 @@ The following script finds all language keys lacking a mode file::
     for fn in files:
         if fn not in keys:
             print(fn)
+            
+@language rest
             
 The result is::
         
@@ -22554,31 +22554,13 @@ startVnodes now properly sets top geometry when --minimized is in effect.
 <t tx="ekr.20131105110107.17021">https://bugs.launchpad.net/leo-editor/+bug/1243847
 
 The fix: at.replaceFileWithString now *always* calls g.toEncodedString.
-
-When I save an @ shadow node with a unicode character, such as é, I get the following error:
-
-exception writing external files
-Traceback (most recent call last):
-  File "/data2/Soft/leo-editor/trunk3/leo/core/leoFileCommands.py", line 2034, in writeAllAtFileNodesHelper
-    c.atFileCommands.writeAll()
-  File "/data2/Soft/leo-editor/trunk3/leo/core/leoAtFile.py", line 3240, in writeAll
-    self.writeAllHelper(p,force,toString,writeAtFileNodesFlag,writtenFiles)
-  File "/data2/Soft/leo-editor/trunk3/leo/core/leoAtFile.py", line 3325, in writeAllHelper
-    at.writeOneAtShadowNode(p,toString=toString,force=force or pathChanged)
-  File "/data2/Soft/leo-editor/trunk3/leo/core/leoAtFile.py", line 3551, in writeOneAtShadowNode
-    at.replaceFileWithString(private_fn,at.private_s)
-  File "/data2/Soft/leo-editor/trunk3/leo/core/leoAtFile.py", line 5197, in replaceFileWithString
-    f.write(s)
-UnicodeEncodeError: 'ascii' codec can't encode character u'\xe9' in position 129: ordinal not in range(128)
-
-There is no error for the @file or @nosent files.
 </t>
 <t tx="ekr.20131105110107.17022">https://bugs.launchpad.net/leo-editor/+bug/1243855
 
 The fix was to not make assumptions about type in compareFiles and create.
 
 </t>
-<t tx="ekr.20131105110107.17023">start_minimized
+<t tx="ekr.20131105110107.17023">
 </t>
 <t tx="ekr.20131105110107.17024">https://bugs.launchpad.net/leo-editor/+bug/1168689
 
@@ -22659,7 +22641,7 @@ What I did:
     - c.singleLineParagraph.
 - Add space adjustments to rp_wrap_all_lines.
 </t>
-<t tx="ekr.20131105110107.17043">- g.set_language doesn't handle ambigous @language directives!!
+<t tx="ekr.20131105110107.17043">- g.set_language doesn't handle ambiguous @language directives!!
 - Eliminated scanToCursor logic
 - Added c.hasAmbiguousLanguage and c.getLanguageAtCursor helpers.
 - Changed c.insertComments and c.removeComments.
