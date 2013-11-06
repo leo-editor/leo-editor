@@ -1407,7 +1407,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="10"></t>
+<t tx="ekr.20070416075121" str_leo_pos="8"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -12450,6 +12450,11 @@ if 0:
 ul.leo-tree-example  {
     background-color: #ffffec;
 }
+ul.leo-tree-example li {
+    background-repeat: no-repeat;
+    background-position: 0px 5px;
+    padding-left: 27px;
+}
 li {
     background-image:
 url('https://raw.github.com/vivainio/leo/master/leo/Icons/box00.GIF');
@@ -12521,9 +12526,27 @@ li.dirty-clone-mark-body {
 &lt;/head&gt;
 &lt;body&gt;
 &lt;ul class="leo-tree-example"&gt;
-&lt;li class='minus dirty-body'&gt;
-@button display css
+&lt;li class='plus clone-mark'&gt;
+test
 &lt;/li&gt;
+&lt;ul&gt;
+  &lt;li class='plus clone-body'&gt;
+  child
+  &lt;/li&gt;
+  &lt;ul&gt;
+    &lt;li class='leaf body'&gt;
+    grandchild
+    &lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;li class='plus clone-body'&gt;
+  child
+  &lt;/li&gt;
+  &lt;ul&gt;
+    &lt;li class='leaf body'&gt;
+    grandchild
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/ul&gt;
 &lt;/ul&gt;
 &lt;/body&gt;
 &lt;/html&gt;</t>
