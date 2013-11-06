@@ -132,7 +132,7 @@ INCIDENTAL, CONSEQUENTIAL OR OTHER DAMAGES.
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 4.11-b1
+Version: 4.11-final
 Summary: Leo: Literate Editor with Outlines
 Home-page: http://leoeditor.com/
 Author: Edward K. Ream
@@ -146,13 +146,14 @@ Description:
     Leo requires Python 2.6 or above. Leo works with Python 3.x.
 Platform: Windows, Linux, MacOS.
 </t>
-<t tx="EKR.20040519090846.9">Leo 4.11 b1                                     October 31, 2013
+<t tx="EKR.20040519090846.9">Leo 4.11 final                                  November 6, 2013
 
-Leo 4.11 b1 is now available at: http://sourceforge.net/projects/leo/files/Leo/
+Leo 4.11 final is now available at: http://sourceforge.net/projects/leo/files/Leo/
 Leo 4.11 contains over a year's work on Leo.
 
 Leo is a PIM, an IDE and an outliner for programmers, authors and web
 designers. Leo's unique features organize data in a revolutionary way.
+Python scripts can easily access all parts of Leo outlines.
 See http://leoeditor.com/tutorial.html
 
 The highlights of Leo 4.11:
@@ -174,14 +175,13 @@ The highlights of Leo 4.11:
 
 Links:
 ------
-Leo:        http://leoeditor.com
-Docs:       http://leoeditor.com/leo_toc.html
-Tutorials:  http://leoeditor.com/tutorial.html
-What's new: http://leoeditor.com/what-is-new.html#leo-4-11
-Forum:      http://groups.google.com/group/leo-editor
-Download:   http://sourceforge.net/projects/leo/files/
-Bzr:        http://code.launchpad.net/leo-editor/
-Quotes:     http://leoeditor.com/testimonials.html
+Leo:       http://leoeditor.com
+Docs:      http://leoeditor.com/leo_toc.html
+Tutorials: http://leoeditor.com/tutorial.html
+Forum:     http://groups.google.com/group/leo-editor
+Download:  http://sourceforge.net/projects/leo/files/
+Bzr:       http://code.launchpad.net/leo-editor/
+Quotes:    http://leoeditor.com/testimonials.html
 </t>
 <t tx="EKR.20040519091259">@pagewidth 70
 
@@ -538,7 +538,7 @@ HKEY_LOCAL_MACHINE\SOFTWARE\Python\PythonPath
         leo.zip.
 '''
 
-version = '4.11-b1' ##version
+version = '4.11-final' ##version
 &lt;&lt; includes &gt;&gt;
 &lt;&lt; define global paths and file names &gt;&gt;
 

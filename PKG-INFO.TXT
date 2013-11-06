@@ -1,6 +1,6 @@
 Metadata-Version: 1.0
 Name: leo
-Version: 4.11-b1
+Version: 4.11-final
 Summary: Leo: Literate Editor with Outlines
 Home-page: http://leoeditor.com/
 Author: Edward K. Ream
