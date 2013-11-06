@@ -16824,6 +16824,10 @@ Directives start with '@' in the leftmost column.
 
 Directives may appear either in headlines or body text.
 
+When people speak of an @x node, they are implying that the headline starts
+with @x. If a node contains an @x directive (in the body pane), they will
+usually say something like, "a node containing an @x directive".
+
 Directives apply until overridden by the same (or related) directive in a
 descendant node.
 

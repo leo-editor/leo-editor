@@ -4,6 +4,7 @@
 
 .. @+all
 .. @+node:ekr.20131105020211.18058: ** Important
+.. @+node:ekr.20131106061848.16384: *3* * Create github repo
 .. @+node:ekr.20131027064821.18693: *3* * Make introductory video about Leo for PyCon2013China
 By mid December.
 
