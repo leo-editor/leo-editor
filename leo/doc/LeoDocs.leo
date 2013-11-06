@@ -10717,7 +10717,7 @@ The code_mode and doc_only_mode options determine the mode as follows:
 <t tx="ekr.20100813075851.4297"></t>
 <t tx="ekr.20100817101952.4303">.. links
 
-.. _`latest stable release`: http://sourceforge.net/projects/leo/files/Leo/4.10%20final/
+.. _`latest stable release`: http://sourceforge.net/projects/leo/files/Leo/4.11%20final/
 .. _`SourceForge`: https://sourceforge.net
 .. _`Leo's snapshots page`:     http://www.greygreen.org/leo/
 .. _`nightly snapshot`:             http://www.greygreen.org/leo/
@@ -15332,7 +15332,7 @@ Downloading Leo
 
 .. links
 
-.. _`latest stable release`: https://sourceforge.net/projects/leo/files/Leo/4.10%20final/
+.. _`latest stable release`: https://sourceforge.net/projects/leo/files/Leo/4.11%20final/
 .. _`SourceForge`: https://sourceforge.net
 .. _`Leo's snapshots page`: http://www.greygreen.org/leo/
 .. _`nightly snapshot`: http://www.greygreen.org/leo/

@@ -13,6 +13,7 @@
 # Leo 4.11 a1: August 18, 2013
 # Leo 4.11 a2: August 19, 2013
 # Leo 4.11 b1: October 31, 2013
+# Leo 4.11 final: November 6, 2013
 
 #@@language python
 #@@tabwidth -4
@@ -29,9 +30,9 @@ except ImportError:
     bzr_version = None
 #@-<< imports >>
 
-static_version = 6208
-static_date = "2013-10-31"
-version = "4.11b1"
+static_version = 6236
+static_date = "2013-11-06"
+version = "4.11 final"
 
 theDir = os.path.dirname(__file__)
 path = os.path.join(theDir,'..','..','.bzr','branch','last-revision')
