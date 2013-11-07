@@ -1659,7 +1659,7 @@
 <v t="tbrown.20130411154439.14767"><vh>@ignore Spare parts</vh>
 <v t="tbrown.20130411154439.14746"><vh>@ignore border</vh></v>
 </v>
-<v t="tbrown.20130411155428.5767"><vh>@data qt-gui-plugin-style-sheet</vh></v>
+<v t="tbrown.20131107090449.36193"><vh>@data qt-gui-plugin-style-sheet</vh></v>
 </v>
 <v t="tbrown.20130411154439.14772"><vh>Solarized colorizing settings</vh>
 <v t="tbrown.20130411154439.14773"><vh>Solarized colors (Reference)</vh></v>
@@ -10428,9 +10428,11 @@ background: @bg-gradient; margin-right: 5px; padding: 2px;
 QTabBar::tab:selected { color: @solarized-green; } 
 QTabBar::tab:hover { background: @bg-gradient-hover; color: @button-hover-fg; }</t>
 <t tx="tbrown.20130411154439.14757">QMenu { color: @text-foreground-bright }
-QMenuBar::item:hover { color: red; background: white; }
+QMenuBar::item:selected { color: @button-hover-fg; background: @bg-gradient-hover; }
+QMenu::item:selected { color: @button-hover-fg; background: @bg-gradient-hover; }
 QMenuBar::item { color: @text-foreground; background: @bg-gradient; }
-QMenuBar::item:pressed { color: @text-foreground-bright; background: @bg-gradient; }</t>
+QMenuBar::item:pressed { color: @text-foreground-bright; background: @bg-gradient; }
+</t>
 <t tx="tbrown.20130411154439.14758">QSplitter::handle {
     background-color: @splitter-bg;  /* #CAE1FF;  lightSteelBlue1 */
 }
@@ -10748,10 +10750,51 @@ LightSteelBlue1 # Good for testing.</t>
 g.app.gui.frameFactory.masterFrame.setStyleSheet(
     expand_css_constants(p.b))
 print(expand_css_constants(p.b))</t>
-<t tx="tbrown.20130411155428.5767">/*
+<t tx="tbrown.20130813134319.7223"></t>
+<t tx="tbrown.20130813134319.7224">Set this to True for rich text edits to be saved automatically.
+
+BE CAREFUL - plain-text nodes will be converted to rich text
+without confirmation if you edit them in rich text mode when
+this is True.</t>
+<t tx="tbrown.20130813181208.23979"># This node's non-"#" content should be valid java-script.  This is
+# a toolbar configuration for CKEditor 4.2.
+# 
+# To enable all CKE features, clear this setting, i.e. remove
+# everything below these "#" lines in your myLeoSettings.leo
+
+{toolbar: [ 
+   	{ name: 'document', groups: [ 'mode', 'document', 'doctools' ], items: [ 'Source' ] },
+	{ name: 'clipboard', groups: [ 'clipboard', 'undo' ], items: [ 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ] },
+	{ name: 'editing', groups: [ 'find', 'selection', 'spellchecker' ], items: [ 'Scayt' ] },
+	{ name: 'styles', items: [ 'Styles', 'Format' ] },
+	{ name: 'tools', items: [ 'Maximize' ] },
+	{ name: 'others', items: [ '-' ] },
+	{ name: 'about', items: [ 'About' ] },
+	'/',
+	{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ], items: [ 'Bold', 'Italic', 'Underline', 'Strike', '-', 'RemoveFormat', "TextColor", "BGColor" ] },
+     { name: 'justification', items: ["JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock" ] },
+	{ name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align' ], items: [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote' ] },
+	{ name: 'links', items: [ 'Link', 'Unlink', 'Anchor' ] },
+	{ name: 'insert', items: [ 'Image', 'Table', 'HorizontalRule', 'SpecialChar' ] }
+]}
+</t>
+<t tx="tbrown.20130916082438.55678">Sizes for the status bar splitter. The status bar shows "line: 1, col:
+35, fcol: 35" on the left and the path to the current node on the right.
+
+The default value "1 2" gives one third for the line number etc., and 2
+thirds for node path.  You may find "1 4" or "1 5" makes it easier to see
+all the relevant components of the node path without having to move the
+splitter.
+
+The string must be only two integers, separated by spaces and or commas.
+
+Dev. note: this setting is new (201309) and can't be replaced by the
+stylesheet, the other settings in this group should probably be handled
+by the stylesheet and could be considered for removal.</t>
+<t tx="tbrown.20131107090449.36193">/*
   AUTOMATICALLY GENERATED FROM:
-  file:///mnt/usr1/usr1/home/tbrown/Package/leo/bzr/leo.repo/zoom2/leo/config/leoSettings.leo#Themes--&gt;leo_dark%20theme%200%20settings--&gt;stylesheet%20&amp;%20source
-  2013-04-11 15:58
+  file:///mnt/usr1/usr1/home/tbrown/Package/leo/bzr/leo.repo/trunk/leo/config/leoSettings.leo#Themes--&gt;leo_dark%20theme%200%20settings--&gt;stylesheet%20&amp;%20source
+  2013-11-07 12:56
 */
 
 /*### config ################################################################*/
@@ -10804,18 +10847,6 @@ constants:
 @focused-border-width = 3px
 @focused-border-focus-color = cyan
 @focused-border-unfocus-color = white
-
-/*### border ################################################################*/
-QTextEdit#log-widget, LeoQTreeWidget#treeWidget, QTextEdit#richTextEdit { 
-  border-style: @focused-border-style;
-  border-width: @focused-border-width; 
-  border-color: @focused-border-unfocus-color; 
-}
-QTextEdit:focus#log-widget, LeoQTreeWidget:focus#treeWidget, QTextEdit:focus#richTextEdit { 
-  border-style: @focused-border-style;
-  border-width: @focused-border-width; 
-  border-color: @focused-border-focus-color; 
-}
 
 /*### Color styles ##########################################################*/
 
@@ -10929,7 +10960,8 @@ QTabBar::tab:hover { background: @bg-gradient-hover; color: @button-hover-fg; }
 
 /*### Color styles--&gt;menus ##################################################*/
 QMenu { color: @text-foreground-bright }
-QMenuBar::item:hover { color: red; background: white; }
+QMenuBar::item:selected { color: @button-hover-fg; background: @bg-gradient-hover; }
+QMenu::item:selected { color: @button-hover-fg; background: @bg-gradient-hover; }
 QMenuBar::item { color: @text-foreground; background: @bg-gradient; }
 QMenuBar::item:pressed { color: @text-foreground-bright; background: @bg-gradient; }
 
@@ -11021,47 +11053,6 @@ QLineEdit#status2 {
 }
 
 </t>
-<t tx="tbrown.20130813134319.7223"></t>
-<t tx="tbrown.20130813134319.7224">Set this to True for rich text edits to be saved automatically.
-
-BE CAREFUL - plain-text nodes will be converted to rich text
-without confirmation if you edit them in rich text mode when
-this is True.</t>
-<t tx="tbrown.20130813181208.23979"># This node's non-"#" content should be valid java-script.  This is
-# a toolbar configuration for CKEditor 4.2.
-# 
-# To enable all CKE features, clear this setting, i.e. remove
-# everything below these "#" lines in your myLeoSettings.leo
-
-{toolbar: [ 
-   	{ name: 'document', groups: [ 'mode', 'document', 'doctools' ], items: [ 'Source' ] },
-	{ name: 'clipboard', groups: [ 'clipboard', 'undo' ], items: [ 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ] },
-	{ name: 'editing', groups: [ 'find', 'selection', 'spellchecker' ], items: [ 'Scayt' ] },
-	{ name: 'styles', items: [ 'Styles', 'Format' ] },
-	{ name: 'tools', items: [ 'Maximize' ] },
-	{ name: 'others', items: [ '-' ] },
-	{ name: 'about', items: [ 'About' ] },
-	'/',
-	{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ], items: [ 'Bold', 'Italic', 'Underline', 'Strike', '-', 'RemoveFormat', "TextColor", "BGColor" ] },
-     { name: 'justification', items: ["JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock" ] },
-	{ name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align' ], items: [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote' ] },
-	{ name: 'links', items: [ 'Link', 'Unlink', 'Anchor' ] },
-	{ name: 'insert', items: [ 'Image', 'Table', 'HorizontalRule', 'SpecialChar' ] }
-]}
-</t>
-<t tx="tbrown.20130916082438.55678">Sizes for the status bar splitter. The status bar shows "line: 1, col:
-35, fcol: 35" on the left and the path to the current node on the right.
-
-The default value "1 2" gives one third for the line number etc., and 2
-thirds for node path.  You may find "1 4" or "1 5" makes it easier to see
-all the relevant components of the node path without having to move the
-splitter.
-
-The string must be only two integers, separated by spaces and or commas.
-
-Dev. note: this setting is new (201309) and can't be replaced by the
-stylesheet, the other settings in this group should probably be handled
-by the stylesheet and could be considered for removal.</t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 # cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,
