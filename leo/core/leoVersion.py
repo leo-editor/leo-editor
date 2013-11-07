@@ -14,6 +14,7 @@
 # Leo 4.11 a2: August 19, 2013
 # Leo 4.11 b1: October 31, 2013
 # Leo 4.11 final: November 6, 2013
+trace = False
 
 #@@language python
 #@@tabwidth -4
@@ -24,10 +25,11 @@ import os
 import time
 
 # bzr_version.py should always exist: it is part of the bzr repository.
-try:
-    import leo.core.bzr_version as bzr_version
-except ImportError:
-    bzr_version = None
+if 0: # The bzr_version stuff just causes problems.
+    try:
+        import leo.core.bzr_version as bzr_version
+    except ImportError:
+        bzr_version = None
 #@-<< imports >>
 
 static_version = 6240
@@ -41,21 +43,22 @@ path = os.path.abspath(path)
 
 # First, try to get the version from the .bzr/branch/last-revision.
 if os.path.exists(path):
-    # print('leoVersion.py: %s' % (path))
+    if trace: print('leoVersion.py: %s' % (path))
     s = open(path,'r').read()
     i = s.find(' ')
     build = static_version if i == -1 else s[:i]
     secs = os.path.getmtime(path)
     t = time.localtime(secs)
     date = time.strftime('%Y-%m-%d %H:%M:%S',t)
-elif bzr_version:
-    # Next use bzr_version_info.
-    d = bzr_version.version_info
-    build = d.get('revno','<unknown revno>')
-    date  = d.get('build_date','<unknown build date>')
+# elif bzr_version:
+    # # Next use bzr_version_info.
+    # if trace: print('leoVersion.py: bzr_version_info',bzr_version)
+    # d = bzr_version.version_info
+    # build = d.get('revno','<unknown revno>')
+    # date  = d.get('build_date','<unknown build date>')
 else:
-    # Finally, fall back to hard-coded values.
-    # print('leoVersion.py: %s does not exist' % (path))
+    # Fall back to hard-coded values.
+    if trace: print('leoVersion.py: %s does not exist' % (path))
     build = static_version
     date = static_date
 #@-leo
