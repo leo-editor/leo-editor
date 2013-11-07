@@ -1095,7 +1095,8 @@
 <v t="ekr.20121011100948.4582"></v>
 <v t="ekr.20121011195530.3405"><vh>pyv8</vh></v>
 <v t="ekr.20131106150237.3641"><vh>@button display css</vh>
-<v t="ekr.20131106150237.3642"><vh>define css</vh></v>
+<v t="ekr.20131106150237.3642"><vh>&lt;&lt; define css &gt;&gt;</vh></v>
+<v t="ekr.20131106192510.3643"><vh>css utils</vh></v>
 <v t="ekr.20131106150237.3643"><vh>escapeHtml</vh></v>
 <v t="ekr.20131106150237.3644"><vh>headlineToHtml</vh></v>
 </v>
@@ -1407,7 +1408,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="8,0"></t>
+<t tx="ekr.20070416075121" str_leo_pos="8,1"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -12552,11 +12553,8 @@ test
 # https://bugs.launchpad.net/leo-editor/+bug/782009
 
 @language python
-
-def icon(s):
-    url = 'http://leoeditor.com/%s' % s # not https
-    return "'%s'" % url
 @others
+&lt;&lt; define css &gt;&gt;
 tag = '@html display'
 p2 = g.findNodeAnywhere(c,tag)
 if p2:
@@ -12606,37 +12604,8 @@ table = (
 plus_minus_css = '\n'.join([
     'li.%s {\n  list-style-image: url(%s)\n}' % (kind,icon(image))
         for kind,image in table])
-if 1:
-    def selector(n):
-        table = ((8,'dirty'),(4,'clone'),(2,'mark'),(1,'body'))
-        return '-'.join([s for n2,s in table if n &amp; n2]) or 'leaf'
-    def css(n):
-        return 'li.%s {\n  background-image: url(%s)\n}' % (
-            selector(n),icon('box%02d.GIF' % n))
-    boxes_css = '\n'.join([css(n) for n in range(15)])
-else:
-    table = (
-        # bits: dirty=8,clone=4,mark=2,body=1.
-        (0,'leaf'),
-        (1,'body'),
-        (2,'mark'),
-        (3,'mark-body'),
-        (4,'clone'),
-        (5,'clone-body'),
-        (6,'clone-mark'),
-        (7,'clone-mark-body'),
-        (8,'dirty'),
-        (9,'dirty-body'),
-        (10,'dirty-mark'),
-        (11,'dirty-mark-body'),
-        (12,'dirty-clone'),
-        (13,'dirty-clone-body'),
-        (14,'dirty-clone-mark'),
-        (15,'dirty-clone-mark-body'),
-    )
-    boxes_css = '\n'.join([
-        'li.%s {\n  background-image: url(%s)\n}' % (kind,icon('box%02d.GIF' % (n)))
-            for n,kind in table])
+
+boxes_css = '\n'.join([css(n) for n in range(15)])
 </t>
 <t tx="ekr.20131106150237.3643">def escapeHtml(s):
     return s.replace('&amp;', '&amp;amp;').replace('&lt;', '&amp;lt;').replace('&gt;', '&amp;gt;')
@@ -12679,5 +12648,19 @@ else:
 <t tx="ekr.20131106150237.3651">This is a child. 
 </t>
 <t tx="ekr.20131106150237.3652">grandchild</t>
+<t tx="ekr.20131106192510.3643">def box(n):
+    return icon('box%02d.GIF' % n)
+
+def css(n):
+    return 'li.%s {\n  background-image: url(%s)\n}' % (selector(n),box(n))
+    
+def icon(s):
+    url = 'http://leoeditor.com/%s' % s # not https
+    return "'%s'" % url
+
+def selector(n):
+    table = ((8,'dirty'),(4,'clone'),(2,'mark'),(1,'body'))
+    return '-'.join([s for (n2,s) in table if n &amp; n2]) or 'leaf'
+</t>
 </tnodes>
 </leo_file>
