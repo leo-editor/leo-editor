@@ -3,7 +3,7 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.45" body_secondary_ratio="0.74">
+<globals body_outline_ratio="0.38" body_secondary_ratio="0.69">
 	<global_window_position top="127" left="550" height="861" width="1185"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -1407,7 +1407,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="8"></t>
+<t tx="ekr.20070416075121" str_leo_pos="8,0"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -12519,9 +12519,6 @@ li.dirty-clone-body {
 li.dirty-clone-mark {
   background-image: url('http://leoeditor.com/box14.GIF')
 }
-li.dirty-clone-mark-body {
-  background-image: url('http://leoeditor.com/box15.GIF')
-}
 &lt;/style&gt;
 &lt;/head&gt;
 &lt;body&gt;
@@ -12609,28 +12606,37 @@ table = (
 plus_minus_css = '\n'.join([
     'li.%s {\n  list-style-image: url(%s)\n}' % (kind,icon(image))
         for kind,image in table])
-table = (
-    # bits: dirty=8,clone=4,mark=2,body=1.
-    (0,'leaf'),
-    (1,'body'),
-    (2,'mark'),
-    (3,'mark-body'),
-    (4,'clone'),
-    (5,'clone-body'),
-    (6,'clone-mark'),
-    (7,'clone-mark-body'),
-    (8,'dirty'),
-    (9,'dirty-body'),
-    (10,'dirty-mark'),
-    (11,'dirty-mark-body'),
-    (12,'dirty-clone'),
-    (13,'dirty-clone-body'),
-    (14,'dirty-clone-mark'),
-    (15,'dirty-clone-mark-body'),
-)
-boxes_css = '\n'.join([
-    'li.%s {\n  background-image: url(%s)\n}' % (kind,icon('box%02d.GIF' % (n)))
-        for n,kind in table])
+if 1:
+    def selector(n):
+        table = ((8,'dirty'),(4,'clone'),(2,'mark'),(1,'body'))
+        return '-'.join([s for n2,s in table if n &amp; n2]) or 'leaf'
+    def css(n):
+        return 'li.%s {\n  background-image: url(%s)\n}' % (
+            selector(n),icon('box%02d.GIF' % n))
+    boxes_css = '\n'.join([css(n) for n in range(15)])
+else:
+    table = (
+        # bits: dirty=8,clone=4,mark=2,body=1.
+        (0,'leaf'),
+        (1,'body'),
+        (2,'mark'),
+        (3,'mark-body'),
+        (4,'clone'),
+        (5,'clone-body'),
+        (6,'clone-mark'),
+        (7,'clone-mark-body'),
+        (8,'dirty'),
+        (9,'dirty-body'),
+        (10,'dirty-mark'),
+        (11,'dirty-mark-body'),
+        (12,'dirty-clone'),
+        (13,'dirty-clone-body'),
+        (14,'dirty-clone-mark'),
+        (15,'dirty-clone-mark-body'),
+    )
+    boxes_css = '\n'.join([
+        'li.%s {\n  background-image: url(%s)\n}' % (kind,icon('box%02d.GIF' % (n)))
+            for n,kind in table])
 </t>
 <t tx="ekr.20131106150237.3643">def escapeHtml(s):
     return s.replace('&amp;', '&amp;amp;').replace('&lt;', '&amp;lt;').replace('&gt;', '&amp;gt;')
