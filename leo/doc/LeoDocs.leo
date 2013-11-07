@@ -235,8 +235,7 @@
 <v t="ekr.20131030184445.17285"><vh>Installing from a debian package</vh></v>
 <v t="ekr.20131030184445.17286"><vh>Installing from sources (Linux)</vh></v>
 </v>
-<v t="ekr.20100731112744.7275"><vh>@rst-ignore Installing Leo on MacOS X</vh></v>
-<v t="ekr.20120229094652.15098"><vh>Installing Leo on MacOs 10.7 Lion</vh></v>
+<v t="ekr.20120229094652.15098"><vh>Installing Leo on MacOs 10.7 (Lion) and later</vh></v>
 <v t="ekr.20100817101952.4306"><vh>Contributing to Leo with bzr</vh></v>
 </v>
 </v>
@@ -9174,54 +9173,6 @@ This provides file associations, icons, launcher items, etc.
 
 Otherwise, `install Leo from sources`_.
 </t>
-<t tx="ekr.20100731112744.7275">**Important**: Installing Leo on MacOS is difficult and not recommended.
-Furthermore, Leo does not work as well on MacOS as on other platforms.
-
-Here is how to install Leo on MacOS 10.5 (Leopard):
-
-1. MacOS 10.5 comes with Python pre-installed.
-
-   See http://www.python.org/download/mac/ and
-   http://wiki.python.org/moin/MacPython/Leopard
-   for information about using the latest version of Python.
-
-2. Download and install bzr:
-
-   - Download bzr from http://bazaar-vcs.org/Download
-
-   - Install bzr using the file just downloaded.
-
-3. Get Leo's sources from Leo's trunk::
-
-    cd ~
-    mkdir leo.repo
-    cd leo.repo
-    bzr init
-    bzr branch lp:leo-editor
-    cd leo-editor
-
-4. If you already have Qt and PyQt installed, you can run the qt version of Leo as follows::
-
-    python launchLeo.py --gui=qt
-
-5. If you don't have Qt or PyQt installed, you will have to install Qt and PyQt
-    from sources. There does not seem to be any pre-built binaries.
-
-    A: You may need to install XCode from http://developer.apple.com/mac/
-       in order to get a development environment.
-
-    B: Download and install the sip package, following the direction at
-       http://www.riverbankcomputing.co.uk/software/sip/download
-
-    C: Download the OpenSource Qt libraries for Mac from
-       http://www.qtsoftware.com/downloads
-
-    D: At various points along the way you will need to build the sources::
-
-         python configure.py 
-         make
-         sudo make install
-</t>
 <t tx="ekr.20100731112744.7276">Install Python and Qt, as described above (`Installing Packages`_).
 
 Now you have a choice.  You can use Leo's binary (single-click) installer
@@ -14002,7 +13953,6 @@ binary PyQt installer.
 Leo's Spell tab. Download and install the PyEnchant package from
 http://pythonhosted.org/pyenchant/download.html There is an executable
 installer for Windows users.
-
 </t>
 <t tx="ekr.20110521135104.18151">Cross-file clones are cloned nodes in one outline that refer to data in another
 outline. This is a frequently requested feature. For example::
@@ -15366,10 +15316,8 @@ To summarize, you may get Leo in three ways:
 </t>
 <t tx="ekr.20120229094652.15098">.. .. http://groups.google.com/group/leo-editor/browse_thread/thread/92ae059cc5213ad3
 
-**Important**: Installing Leo on MacOS is challenging. Furthermore, Leo
-does not work as well on MacOS as on other platforms.
-
 Many thanks to Ludwig Schwardt for the following installation instructions.
+Using the HomeBrew installation method is *much* easier than before.
 
 I recently received a new MacBook Pro and did a fresh upgrade to Mac OS
 10.7 (Lion). I then used the opportunity to test out installation
@@ -15385,27 +15333,26 @@ their Macs, and the source of much confusion and pain). It installs to
 /usr/local, the standard place to find third-party libraries and headers,
 instead of the obscure /opt or /sw. It's simple to use and to extend.
 
-I last installed Leo on Mac OS 10.4 (Tiger) back in the Tk days, and
-wondered what it looked like in Qt. All the horror stories of PyQT on Mac
-discouraged me from trying this before, so I was keen to see if Homebrew
-helps. Here is my installation write-up:
+Here is my installation write-up:
 
-- Read the Homebrew installation instructions at
-  https://github.com/mxcl/homebrew/wiki/Installation
+- Read the Homebrew installation instructions at http://brew.sh/
 
 - Make sure you have Xcode installed (test it by confirming that "gcc" runs
-  in the Terminal). You can either get the full Xcode beast or the
-  lean-and-mean Command-Line Tools for Xcode, as suggested in the Homebrew
-  installation instructions.
+  in the Terminal). Only the smaller command-line tools are required;
+  there is no need to get the full Xcode beast.
 
 - In preparation for Homebrew, the best option in my opinion is
   to delete /usr/local via::
 
     sudo rm -rf /usr/local
 
-  and install any software in it via Homebrew instead. If this step
-  fills you with dread and you do not want to lose your beloved
-  third-party software, the second-best option is to make sure you
+  and install any software in it via HomeBrew instead.
+  
+  Note from EKR: The HomeBrew package manager is so easy to use
+  that you will find replacing deleted packages a snap.
+  
+  If deleting /usr/local fills you with dread (you do not want to lose your
+  beloved third-party software), the second-best option is to make sure you
   have write permission for the directory via::
 
     sudo chown -R &lt;your user name&gt;:admin /usr/local
@@ -15418,10 +15365,15 @@ helps. Here is my installation write-up:
 
 - Install Homebrew (http://mxcl.github.com/homebrew/) by running the
   following command in the Terminal::
-
-    /usr/bin/ruby -e "$(/usr/bin/curl -fsSL https://raw.github.com/mxcl/homebrew/master/Library/Contributions/install_homebrew.rb)"
+  
+    ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"
     
+.. old command: /usr/bin/ruby -e "$(/usr/bin/curl -fsSL https://raw.github.com/mxcl/homebrew/master/Library/Contributions/install_homebrew.rb)"
+
 - Run "brew doctor" and check any further suggestions to improve your system.
+
+  EKR note: I thought I had installed command-line tools after installing
+  the XCode page. I hadn't, and "brew doctor" told me so.
 
 - Run "brew update" to get the latest formulas
 
