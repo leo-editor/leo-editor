@@ -430,6 +430,7 @@ import time</t>
 </t>
 <t tx="ekr.20100202061222.1494">@language rest
 
+Make sure Leo looks good without myLeoSettings.leo.
 Clean files and create a *trial* manifest.
     (The make-leo button runs make-leo-manifest automatically.)
     - Delete any unknown files reported by bzr status.

@@ -1812,6 +1812,7 @@
 </v>
 <v t="ekr.20060603215208"></v>
 <v t="ekr.20100904134301.11000"></v>
+<v t="ekr.20081018053140.12"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -5743,8 +5744,8 @@ If there are more than this number, a new row is created.</t>
 /* constants - *parsed from this comment*
 
    needed for zoom in / out
-   
-   @font-size-body = 12px
+
+   @font-size-body = 14pt
    
    *color names*
    @MistyRose1 = #FFE4E1
@@ -5797,35 +5798,35 @@ QWidget#findTab {
 
 QLabel#findHeading {
     font-family: DejaVu Sans Mono;
-    font-size: 12px;
+    font-size: 12pt;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal,italic,oblique */
 }
 
 QLabel#findLabel {
     font-family: DejaVu Sans Mono;
-    font-size: 12px;
+    font-size: 12pt;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal,italic,oblique */
 }
 
 QLabel#changeLabel {
     font-family: DejaVu Sans Mono;
-    font-size: 12px;
+    font-size: 12pt;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal,italic,oblique */
 }
 
 QLineEdit#findPattern {
     font-family: DejaVu Sans Mono;
-    font-size: 14px;
+    font-size: 12pt;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal,italic,oblique */
 }
 
 QLineEdit#findChange {
     font-family: DejaVu Sans Mono;
-    font-size: 14px;
+    font-size: 12pt;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal,italic,oblique */
 }
@@ -5857,7 +5858,7 @@ QTreeWidget {
     selection-background-color: lightgrey;
     /* font-family: SansSerif; */
     font-family: DejaVu Sans Mono;
-    font-size: 12px;
+    font-size: 14pt;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal, italic,oblique */
     show-decoration-selected: 1 /* 1: select entire row */
@@ -5869,7 +5870,7 @@ QTreeWidget QLineEdit {
     selection-color: white;
     selection-background-color: blue;
     font-family: DejaVu Sans Mono;
-    font-size: 12px;
+    font-size: 14pt;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal, italic,oblique */
 }
@@ -5881,14 +5882,14 @@ QTextEdit {
     selection-background-color: blue;
     /* font-family: Courier New; */
     font-family: DejaVu Sans Mono;
-    font-size: 12px;
+    font-size: 14pt;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal, italic,oblique */
 }
 
 /* The body pane */
 QTextEdit#richTextEdit {
-    background-color: #fdf5f5; /* A kind of pink. */
+    background-color: white; /* #fdf5f5; A kind of pink. */
     selection-color: white;
     selection-background-color: lightgrey;
     font-family: DejaVu Sans Mono;
@@ -5900,7 +5901,7 @@ QTextEdit#richTextEdit {
 
 QLabel {
     font-family: DejaVu Sans Mono;
-    font-size: 12px;
+    font-size: 12pt;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal,italic,oblique */
 }
@@ -5909,7 +5910,7 @@ QLabel {
 QLineEdit#editorLabel {
     background-color: #ffffec;
     font-family: DejaVu Sans Mono;
-    font-size: 12px;
+    font-size: 14pt;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal,italic,oblique */
     border: 2px;
@@ -5923,7 +5924,7 @@ Do not overide QLabel directly.  It is used for dialog text.
 
 QLabel#minibufferLabel {
     font-family: DejaVu Sans Mono;
-    font-size: 12px;
+    font-size: 14pt;
     font-weight: normal; 
     font-style: normal;
 }
@@ -5943,7 +5944,7 @@ QLineEdit#lineEdit {
     selection-color: white;
     selection-background-color: lightgrey;
     font-family: DejaVu Sans Mono;
-    font-size: 12px;
+    font-size: 14pt;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal,italic,oblique */
 }
@@ -5953,6 +5954,7 @@ QLineEdit#status1 {
     border-width: 1px;
     border-style: solid;
     border-color: darkgrey;
+    font-size: 14pt;
 }
 
 QLineEdit#status2 {
@@ -5960,6 +5962,7 @@ QLineEdit#status2 {
     border-width: 1px;
     border-style: solid;
     border-color: darkgrey;
+    font-size: 14pt;
 }
 
 /* button_kind based button coloring */
