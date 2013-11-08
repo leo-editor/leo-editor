@@ -1302,6 +1302,7 @@
 <v t="ekr.20131105110107.17046"><vh>Investigated install problem</vh></v>
 </v>
 </v>
+<v t="ekr.20131108071132.17025"><vh>improve MacOS install: chmod</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -22721,6 +22722,7 @@ My suggestion:
 4. Test. If problems remain, make the changes above (-i, python.exe), and
    report the results.
 </t>
+<t tx="ekr.20131108071132.17025"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.

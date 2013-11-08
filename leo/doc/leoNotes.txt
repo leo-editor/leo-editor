@@ -9333,34 +9333,38 @@ def getExternalCompletions (self,s,p=None,language='python'):
 .. @+node:ekr.20131105122124.16479: ** vim reference card
 @killcolor
 .. @+node:ekr.20131105122124.16482: *3*  keys (do not sort!!)
-    <BS>                    delete the character in front of the cursor
-N   <Del>                   delete N characters under and after the cursor
-    <Del>                   delete the character under the cursor
-    <Del>                   while entering a count: delete last character
-    <Esc>                   abandon command-line (if 'wildchar' is <Esc>, type it twice)
-    <Left>/<Right>          cursor left/right
-    <S-Left>/<S-Right>      cursor one word left/right
-    <S-Up>/<S-Down>         recall older/newer command-line from history
-    <Up>/<Down>             recall older/newer command-line that starts with current command
+    <BS>        delete the character in front of the cursor
+N   <Del>       delete N characters under and after the cursor
+    <Del>       delete the character under the cursor
+    <Del>       while entering a count: delete last character
+    <Down>      recall newer command-line that starts with current command
+    <Esc>       abandon command-line (if 'wildchar' is <Esc>, type it twice)
+    <Left>      (motion) cursor left
+    <Right>     (motion) cursor right
+    <S-Down>    recall newer command-line from history
+    <S-Left>    (motion) cursor one word left
+    <S-Right>   (motion) cursor one word right
+    <S-Up>      recall older command-line from history
+    <Up>        recall older command-line that starts with current command
 
 N   CTRL-^                  Edit alternate file N (equivalent to ":e #N").
 N   CTRL-A                  add N to the number at or after the cursor
 N   CTRL-B                  window N pages Backwards (upwards)
-    CTRL-B                  cursor to beginning of command-line
+    CTRL-B                  (motion?) cursor to beginning of command-line
     CTRL-BREAK              MS-DOS: during searches: interrupt the search
     CTRL-C                  during searches: interrupt the search
 N   CTRL-D                  window N lines Downwards (default: 1/2 window)
 N   CTRL-E                  window N lines downwards (default: 1)
-    CTRL-E                  cursor to end of command-line
-N   CTRL-F                  window N pages Forwards (downwards)
+    CTRL-E                  (motion?) cursor to end of command-line
+N   CTRL-F                  (motion) window N pages Forwards (downwards)
     CTRL-G                  show current file name (with path) and cursor position
-N   CTRL-I                  go to Nth newer position in jump list
+N   CTRL-I                  (motion) go to Nth newer position in jump list
     CTRL-K {char1} {char2}  enter digraph
     CTRL-L                  Clear and redraw the screen.
-N   CTRL-O                  go to Nth older position in jump list
+N   CTRL-O                  (motion) go to Nth older position in jump list
 N   CTRL-R                  redo last N undone changes
     CTRL-R <0-9a-z"%:->     insert contents of register <0-9a-z"%:->
-N   CTRL-T                  Jump back from Nth older tag in tag list
+N   CTRL-T                  (motion) Jump back from Nth older tag in tag list
 N   CTRL-U                  window N lines Upwards (default: 1/2 window)
     CTRL-U                  remove all characters
     CTRL-V                  highlight blockwise or stop highlighting
@@ -9395,153 +9399,149 @@ N   CTRL-Y                  window N lines upwards (default: 1)
     CTRL-Z                  Same as ":stop!"
     CTRL-]                  Jump to the tag under cursor, unless changes have been made
     
+    0               (motion) to first character in the line (also: <Home> key)
 VIS ~               switch case for highlighted text
 N   ~               switch case for N characters and advance cursor
-
-N   +               down N lines, on the first non-blank character (also: CTRL-M and <CR>)
-N   _               down N-1 lines, on the first non-blank character
-N   -               up N lines, on the first non-blank character
-
-N   ,               repeat the last "f", "F", "t", or "T" N times in opposite direction
-N   .               repeat last change (with count replaced with N)
-N   ;               repeat the last "f", "F", "t", or "T" N times
-
-N   (               N sentences backward
-N   )               N sentences forward
-N   {               N paragraphs backward
-N   }               N paragraphs forward
-N   |               to column N (default: 1)
-
-    `"              go to the position when last editing this file
-    '<a-zA-Z0-9[]'"<>>  same as `, but on the first non-blank in the line
-    `<              go to the start of the (previous) Visual area
-    `<0-9>          go to the position where Vim was last exited
-    `<A-Z>          go to mark <A-Z> in any file
-    `<a-z>          go to mark <a-z> within current file
-    `>              go to the end of the (previous) Visual area
-    `[              go to the start of the previously operated or put text
-    `]              go to the end of the previously operated or put text
-    ``              go to the position before the last jump
-N   $               go to the last character in the line (N-1 lines lower) (also: <End> key)
-    ^               go to first non-blank character in the line
-N   %               goto line N percentage down in the file.  N must be given, otherwise it is the % command.
-    %               find the next brace, bracket, comment, or "#if"/ "#else"/"#endif" in this line and go to its match
+N   +               (motion) down N lines, on the first non-blank character (also: CTRL-M and <CR>)
+N   _               (motion) down N-1 lines, on the first non-blank character
+N   -               (motion) up N lines, on the first non-blank character
+N   ,               (motion) repeat the last "f", "F", "t", or "T" N times in opposite direction
+N   .               (motion?) repeat last change (with count replaced with N)
+N   ;               (motion) repeat the last "f", "F", "t", or "T" N times
+N   (               (motion) N sentences backward
+N   )               (motion) N sentences forward
+N   {               (motion) N paragraphs backward
+N   }               (motion) N paragraphs forward
+N   |               (motion) to column N (default: 1)
+    `"              (motion) go to the position when last editing this file
+    '<a-zA-Z0-9[]'"<>>  (motion) same as `, but on the first non-blank in the line
+    `<              (motion) go to the start of the (previous) Visual area
+    `<0-9>          (motion) go to the position where Vim was last exited
+    `<A-Z>          (motion) go to mark <A-Z> in any file
+    `<a-z>          (motion) go to mark <a-z> within current file
+    `>              (motion) go to the end of the (previous) Visual area
+    `[              (motion) go to the start of the previously operated or put text
+    `]              (motion) go to the end of the previously operated or put text
+    ``              (motion) go to the position before the last jump
+N   $               (motion) go to the last character in the line (N-1 lines lower) (also: <End> key)
+    ^               (motion) go to first non-blank character in the line
+N   %               (motion) goto line N percentage down in the file.  N must be given, otherwise it is the % command.
+    %               (motion) find the next brace, bracket, comment, or "#if"/ "#else"/"#endif" in this line and go to its match
     
 N   <{motion}       move the lines that are moved over with {motion} one shiftwidth left
 N   >{motion}       move the lines that are moved over with {motion} one shiftwidth right
 N   <<              move N lines one shiftwidth left
 N   >>              move N lines one shiftwidth right
 
-N   #                           search backward for the identifier under the cursor
-N   *                           search forward for the identifier under the cursor
-N   /<CR>                       repeat last search, in the forward direction
-N   /{pattern}[/[offset]]<CR>   search forward for the Nth occurrence of {pattern}
-N   ?<CR>                       repeat last search, in the backward direction
-N   ?{pattern}[?[offset]]<CR>   search backward for the Nth occurrence of {pattern}
+N   #                           (motion) search backward for the identifier under the cursor
+N   *                           (motion) search forward for the identifier under the cursor
+N   /<CR>                       (motion) repeat last search, in the forward direction
+N   /{pattern}[/[offset]]<CR>   (motion) search forward for the Nth occurrence of {pattern}
+N   ?<CR>                       (motion) repeat last search, in the backward direction
+N   ?{pattern}[?[offset]]<CR>   (motion) search backward for the Nth occurrence of {pattern}
 
 N   @<a-z>          execute the contents of register <a-z> (N times)
-N   @@              repeat previous @<a-z> (N times)
+N   @@              (motion?) repeat previous @<a-z> (N times)
 
     "<char>         use register <char> for the next delete, yank, or put
 
-N   [#              N times back to unclosed "#if" or "#else"
-N   [(              N times back to unclosed '('
-N   [*              N times back to start of comment "/*"
-N   [[              N sections backward, at start of section
-N   []              N sections backward, at end of section
-N   [p              like P, but adjust indent to current line
-N   [{              N times back to unclosed '{'
-N   ]#              N times forward to unclosed "#else" or "#endif"
-N   ])              N times forward to unclosed ')'
-N   ]*              N times forward to end of comment "*/"
-N   ][              N sections forward, at end of section
-N   ]]              N sections forward, at start of section
-N   ]p              like p, but adjust indent to current line
-N   ]}              N times forward to unclosed '}'
+N   [#              (motion) N times back to unclosed "#if" or "#else"
+N   [(              (motion) N times back to unclosed '('
+N   [*              (motion) N times back to start of comment "/*"
+N   [[              (motion) N sections backward, at start of section
+N   []              (motion) N sections backward, at end of section
+N   [p              (motion?) like P, but adjust indent to current line
+N   [{              (motion) N times back to unclosed '{'
+N   ]#              (motion) N times forward to unclosed "#else" or "#endif"
+N   ])              (motion) N times forward to unclosed ')'
+N   ]*              (motion) N times forward to end of comment "*/"
+N   ][              (motion) N sections forward, at end of section
+N   ]]              (motion) N sections forward, at start of section
+N   ]p              (motion?) like p, but adjust indent to current line
+N   ]}              (motion) N times forward to unclosed '}'
 
 N   A               append text at the end of the line (N times)
-N   B               N blank-separated WORDS backward
+N   B               (motion) N blank-separated WORDS backward
 N   C               change to end-of-line (and N-1 more lines)
 N   D               delete to end-of-line (and N-1 more lines)
-N   E               forward to the end of the Nth blank-separated WORD
-N   F<char>         to the Nth occurrence of <char> to the left
-N   G               goto line N (default: last line), on the first non-blank character
-N   H               go to the Nth line in the window, on the first non-blank
+N   E               (motion) forward to the end of the Nth blank-separated WORD
+N   F<char>         (motion) to the Nth occurrence of <char> to the left
+N   G               (motion) goto line N (default: last line), on the first non-blank character
+N   H               (motion?) go to the Nth line in the window, on the first non-blank
 N   I               insert text before the first non-blank in the line (N times)
-N   J               join N-1 lines (delete newlines)
-VIS J               join the highlighted lines
+N   J               (motion?) join N-1 lines (delete newlines)
+VIS J               (motion?) join the highlighted lines
     K               lookup keyword under the cursor with 'keywordprg' program (default: "man")
-    M               go to the middle line in the window, on the first non-blank
-N   L               go to the Nth line from the bottom, on the first non-blank
-N   N               repeat last search, in opposite direction
+    M               (motion?) go to the middle line in the window, on the first non-blank
+N   L               (motion?) go to the Nth line from the bottom, on the first non-blank
+N   N               (motion) repeat last search, in opposite direction
 N   O               open a new line above the current line, append text (N times)
 N   P               put a register before the cursor position (N times)
 N   R               enter Replace mode (repeat the entered text N times)
 N   S               change N lines
-N   T<char>         till before the Nth occurrence of <char> to the left
+N   T<char>         (motion) till before the Nth occurrence of <char> to the left
     U               restore last changed line
 VIS U               make highlighted text uppercase
     V               highlight linewise or stop highlighting
     V               start highlighting linewise    }  operator to affect
-N   W               N blank-separated WORDS forward
+N   W               (motion) N blank-separated WORDS forward
 N   X               delete N characters before the cursor
 N   Y               yank N lines
     ZQ              Same as ":q!".
     ZZ              Same as ":x".
-    0               to first character in the line (also: <Home> key)
 N   a               append text after the cursor (N times)
-N   b               N words backward
+N   b               (motion) N words backward
 N   cc              change N lines
 N   c{motion}       change the text that is moved over with {motion}
 VIS c               change the highlighted text
 VIS d               delete the highlighted text
 N   dd              delete N lines
 N   d{motion}       delete the text that is moved over with {motion}
-N   e               forward to the end of the Nth word
-N   f<char>         to the Nth occurrence of <char> to the right
+N   e               (motion) forward to the end of the Nth word
+N   f<char>         (motion) to the Nth occurrence of <char> to the right
     g CTRL-G        show cursor column, line, and character position
-N   g^              to first non-blank character in screen line (differs from "^" when lines wrap)
+N   g^              (motion) to first non-blank character in screen line (differs from "^" when lines wrap)
     g~{motion}      switch case for the text that is moved over with {motion}
-N   g#              like "#", but also find partial matches
-N   g$              to last character in screen line (differs from "$" when lines wrap)
-N   g*              like "*", but also find partial matches
-N   g0              to first character in screen line (differs from "0" when lines wrap)
-    gD              goto global declaration of identifier under the cursor
-N   gE              backward to the end of the Nth blank-separated WORD
+N   g#              (motion) like "#", but also find partial matches
+N   g$              (motion) to last character in screen line (differs from "$" when lines wrap)
+N   g*              (motion) like "*", but also find partial matches
+N   g0              (motion) to first character in screen line (differs from "0" when lines wrap)
+    gD              (motion) goto global declaration of identifier under the cursor
+N   gE              (motion) backward to the end of the Nth blank-separated WORD
 N   gI              insert text in column 1 (N times)
     gU{motion}      make the text that is moved over with {motion} uppercase
     ga              show ascii value of character under cursor in decimal, hex, and octal
-    gd              goto local declaration of identifier under the cursor
+    gd              (motion) goto local declaration of identifier under the cursor
     gf  or ]f       Edit the file whose name is under the cursor
-N   ge              backward to the end of the Nth word
-N   gg              goto line N (default: first line), on the first non-blank character
-N   gj              down N screen lines (differs from "j" when line wraps)
-N   gk              up N screen lines (differs from "k" when line wraps)
+N   ge              (motion) backward to the end of the Nth word
+N   gg              (motion) goto line N (default: first line), on the first non-blank character
+N   gj              (motion) down N screen lines (differs from "j" when line wraps)
+N   gk              (motion) up N screen lines (differs from "k" when line wraps)
 N   gq{motion}      format the lines that are moved over with {motion} to 'textwidth' length
 N   gs              Goto Sleep for N seconds
     gu{motion}      make the text that is moved over with {motion} lowercase
     gv              start highlighting on previous visual area
-N   h               left (also: CTRL-H, <BS>, or <Left> key)
+N   h               (motion) left (also: CTRL-H, <BS>, or <Left> key)
 N   i               insert text before the cursor (N times) (also: <Insert>)
-N   j               down N lines (also: CTRL-J, CTRL-N, <NL>, and <Down>)
-N   k               up N lines (also: CTRL-P and <Up>)
-N   l               right (also: <Space> or <Right> key)
-N   n               repeat last search
+N   j               (motion) down N lines (also: CTRL-J, CTRL-N, <NL>, and <Down>)
+N   k               (motion) up N lines (also: CTRL-P and <Up>)
+N   l               (motion) right (also: <Space> or <Right> key)
+N   n               (motion?) repeat last search
     m<a-zA-Z>       mark current position with mark <a-zA-Z>
 N   o               open a new line below the current line, append text (N times)
-    o               exchange cursor position with start of highlighting
+    o               (motion?) exchange cursor position with start of highlighting
 N   p               put a register after the cursor position (N times)
     q               stop recording
     q<A-Z>          record typed characters, appended to register <a-z>
     q<a-z>          record typed characters into register <a-z>
 N   r<char>         replace N characters with <char>
 N   s               change N characters
-N   t<char>         till before the Nth occurrence of <char> to the right
+N   t<char>         (motion) till before the Nth occurrence of <char> to the right
 N   u               undo last N changes
 VIS u               make highlighted text lowercase
     v               highlight characters or stop highlighting
     v               start highlighting characters  }  move cursor and use
-N   w               N words forward
+N   w               (motion) N words forward
 N   x               delete N characters under and after the cursor
 N   yy              yank N lines 
 N   y{motion}       yank the text moved over with {motion} 
@@ -9551,6 +9551,174 @@ VIS y               yank the highlighted text
     z<CR> or zt     redraw, current line at top of window
 N   zh              scroll screen N characters to the right
 N   zl              scroll screen N characters to the left
+.. @+node:ekr.20131108082341.18235: *3* motion keys
+    CTRL-B  (motion?) cursor to beginning of command-line
+    CTRL-E  (motion?) cursor to end of command-line
+    N   .   (motion?) repeat last change (with count replaced with N)
+N   [p      (motion?) like P, but adjust indent to current line
+N   ]p      (motion?) like p, but adjust indent to current line
+    
+    <Left>  (motion) cursor left
+    <Right> (motion) cursor right
+    <S-Left>/<S-Right>  (motion) cursor one word left/right
+    
+N   CTRL-F  (motion) window N pages Forwards (downwards)
+N   CTRL-I  (motion) go to Nth newer position in jump list
+N   CTRL-O  (motion) go to Nth older position in jump list
+N   CTRL-T  (motion) Jump back from Nth older tag in tag list
+    0       (motion) to first character in the line (also: <Home> key)
+N   +       (motion) down N lines, on the first non-blank character (also: CTRL-M and <CR>)
+N   _       (motion) down N-1 lines, on the first non-blank character
+N   -       (motion) up N lines, on the first non-blank character
+N   ,       (motion) repeat the last "f", "F", "t", or "T" N times in opposite direction
+N   ;       (motion) repeat the last "f", "F", "t", or "T" N times
+N   (       (motion) N sentences backward
+N   )       (motion) N sentences forward
+N   {       (motion) N paragraphs backward
+N   }       (motion) N paragraphs forward
+N   |       (motion) to column N (default: 1)
+
+    `"                  (motion) go to the position when last editing this file
+    '<a-zA-Z0-9[]'"<>>  (motion) same as `, but on the first non-blank in the line
+    `<                  (motion?) go to the start of the (previous) Visual area
+    `<0-9>              (motion) go to the position where Vim was last exited
+    `<A-Z>              (motion) go to mark <A-Z> in any file
+    `<a-z>              (motion) go to mark <a-z> within current file
+    `>                  (motion) go to the end of the (previous) Visual area
+    `[                  (motion) go to the start of the previously operated or put text
+    `]                  (motion) go to the end of the previously operated or put text
+    ``                  (motion) go to the position before the last jump
+
+N   $       (motion) go to the last character in the line (N-1 lines lower) (also: <End> key)
+    ^       (motion) go to first non-blank character in the line
+N   %       (motion) goto line N percentage down in the file.  N must be given, otherwise it is the % command.
+    %       (motion) find the next brace, bracket, comment, or "#if"/ "#else"/"#endif" in this line and go to its match
+    
+N   #       (motion) search backward for the identifier under the cursor
+N   *       (motion) search forward for the identifier under the cursor
+N   /<CR>   (motion) repeat last search, in the forward direction
+
+N   /{pattern}[/[offset]]<CR>   (motion) search forward for the Nth occurrence of {pattern}
+N   ?<CR>                       (motion) repeat last search, in the backward direction
+N   ?{pattern}[?[offset]]<CR>   (motion) search backward for the Nth occurrence of {pattern}
+
+N   [#      (motion) N times back to unclosed "#if" or "#else"
+N   [(      (motion) N times back to unclosed '('
+N   [*      (motion) N times back to start of comment "/*"
+N   [[      (motion) N sections backward, at start of section
+N   []      (motion) N sections backward, at end of section
+N   [{      (motion) N times back to unclosed '{'
+
+N   ]#      (motion) N times forward to unclosed "#else" or "#endif"
+N   ])      (motion) N times forward to unclosed ')'
+N   ]*      (motion) N times forward to end of comment "*/"
+N   ][      (motion) N sections forward, at end of section
+N   ]]      (motion) N sections forward, at start of section
+N   ]}      (motion) N times forward to unclosed '}'
+
+N   B       (motion) N blank-separated WORDS backward
+N   E       (motion) forward to the end of the Nth blank-separated WORD
+N   F<char> (motion) to the Nth occurrence of <char> to the left
+N   G       (motion) goto line N (default: last line), on the first non-blank character
+N   H       (motion?) go to the Nth line in the window, on the first non-blank
+N   J       (motion?) join N-1 lines (delete newlines)
+VIS J       (motion?) join the highlighted lines
+    M       (motion?) go to the middle line in the window, on the first non-blank
+N   L       (motion?) go to the Nth line from the bottom, on the first non-blank
+N   N       (motion) repeat last search, in opposite direction
+N   T<char> (motion) till before the Nth occurrence of <char> to the left
+N   W       (motion) N blank-separated WORDS forward
+
+N   b       (motion) N words backward
+N   e       (motion) forward to the end of the Nth word
+N   f<char> (motion) to the Nth occurrence of <char> to the right
+N   g^      (motion) to first non-blank character in screen line (differs from "^" when lines wrap)
+N   g#      (motion) like "#", but also find partial matches
+N   g$      (motion) to last character in screen line (differs from "$" when lines wrap)
+N   g*      (motion) like "*", but also find partial matches
+N   g0      (motion) to first character in screen line (differs from "0" when lines wrap)
+    gD      (motion) goto global declaration of identifier under the cursor
+N   gE      (motion) backward to the end of the Nth blank-separated WORD
+    gd      (motion) goto local declaration of identifier under the cursor
+N   ge      (motion) backward to the end of the Nth word
+N   gg      (motion) goto line N (default: first line), on the first non-blank character
+N   gj      (motion) down N screen lines (differs from "j" when line wraps)
+N   gk      (motion) up N screen lines (differs from "k" when line wraps)
+N   h       (motion) left (also: CTRL-H, <BS>, or <Left> key)
+N   j       (motion) down N lines (also: CTRL-J, CTRL-N, <NL>, and <Down>)
+N   k       (motion) up N lines (also: CTRL-P and <Up>)
+N   l       (motion) right (also: <Space> or <Right> key)
+N   n       (motion?) repeat last search
+    o       (motion?) exchange cursor position with start of highlighting
+N   t<char> (motion) till before the Nth occurrence of <char> to the right
+N   w       (motion) N words forward
+.. @+node:ekr.20131108082341.18226: *3* motions
+@color
+
+w   to start of next word, excluding it's first character.
+e   to end of next word, including it's last character.
+$   to end of line, including the last character.
+0   to start of line
+
+Motions may include repeat count:
+
+d2w
+2dd
+d2d
+
+From: http://bullium.com/support/vim.html#motion
+
+Basic motion commands:
+
+N h
+N j or Ctrl-N
+N k or Ctrl-P
+0 or <Home>
+^ 
+$ or <End>
+g0 or
+g<Home> 	
+g^
+g$ or g<End>
+f{char}
+F{char}
+t{char}
+T{char}
+; 	Repeat latest f, t, F or T [count] times.
+, 	Repeat latest f, t, F or T in opposite direction [count] times.
+-
+N + or CTRL-M or <CR>
+N _
+<C-End> or G
+N <C-Home> or gg
+N <S-Right> or w
+N <C-Right> or W
+N e 	Forward to the end of word [count]
+E 	Forward to the end of WORD [count]
+<S-Left> or
+b 	[count] words backward
+<C-Left> or
+B 	[count] WORDS backward
+ge 	Backward to the end of word [count]
+gE 	Backward to the end of WORD [count]
+
+These commands move over words or WORDS.
+
+A word consists of a sequence of letters, digits and underscores, or a
+sequence of other non-blank characters, separated with white space (spaces,
+tabs, ). This can be changed with the 'iskeyword' option.
+
+A WORD consists of a sequence of non-blank characters, separated with white
+space. An empty line is also considered to be a word and a WORD.
+
+N ( 	    
+N ) 	    
+N { 	    
+N } 	
+N ]] 	    
+N ][ 	    
+N [[ 	    
+N [] 	
 .. @+node:ekr.20131105122124.16483: *3* vim regex
                                            Value of magic option
                                            ---------------------
