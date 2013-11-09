@@ -7,7 +7,9 @@
 .. @+node:ekr.20131108082341.16372: *3* * Vim mode: was minibuffer abbreviations
 @language rest
 
-https://groups.google.com/forum/#!topic/leo-editor/OSe0_D5tmJQ
+# https://groups.google.com/forum/#!topic/leo-editor/OSe0_D5tmJQ
+
+# http://stackoverflow.com/questions/7325052/can-someone-explain-to-me-why-the-dot-command-is-so-useful-in-vim
 
 * Make keystrokes in vim's command mode visible in the minibuffer.
 
@@ -1077,82 +1079,83 @@ Automatic execution of commands on certain events.
 :wv[iminfo]! [file]             write info to viminfo file [file]
 :x[it][!] [file]                like ":wq" but write only when changes have been made
 :xall[!]  or :wqall[!]          Write all changed buffers and exit
-.. @+node:ekr.20131108082341.18228: *4* @test vim prototype
+.. @+node:ekr.20131108203402.16399: *4* unit tests
+.. @+node:ekr.20131108203402.16419: *5* @test g.cls
+g.cls()
+.. @+node:ekr.20131108203402.16397: *5* @test motion regex
+@language python
+
 # http://docs.python.org/2/library/re.html
 import re
-g.cls()
+# g.cls()
 
 def escape(ch):
     return ch if ch.isalnum() else '\\%s' % ch
+# Not yet.
+# N /<CR> (motion) repeat last search, in the forward direction
 
-# 0       (motion) to first character in the line (also: <Home> key)
-# ^       (motion) go to first non-blank character in the line
-# %       (motion) find the next brace, bracket, comment, or "#if"/ "#else"/"#endif" in this line and go to its match
-
+# 0 (motion) to first character in the line (also: <Home> key)
+# ^ (motion) go to first non-blank character in the line
+# % (motion) find the next brace, bracket, comment,
+#            or "#if"/ "#else"/"#endif" in this line and go to its match
 plain_motion_chars = '0^%'
 plain_motion =   '|'.join([escape(ch) for ch in plain_motion_chars])
-# print(plain_motion_chars)
-
-# N   +       (motion) down N lines, on the first non-blank character (also: CTRL-M and <CR>)
-# N   _       (motion) down N-1 lines, on the first non-blank character
-# N   -       (motion) up N lines, on the first non-blank character
-# N   ,       (motion) repeat the last "f", "F", "t", or "T" N times in opposite direction
-# N   ;       (motion) repeat the last "f", "F", "t", or "T" N times
-# N   (       (motion) N sentences backward
-# N   )       (motion) N sentences forward
-# N   {       (motion) N paragraphs backward
-# N   }       (motion) N paragraphs forward
-# N   |       (motion) to column N (default: 1)
-# N   $       (motion) go to the last character in the line (N-1 lines lower) (also: <End> key)
-# N   %       (motion) goto line N percentage down in the file.  N must be given, otherwise it is the % command.
-# N   #       (motion) search backward for the identifier under the cursor
-# N   *       (motion) search forward for the identifier under the cursor
-### N   /<CR> (motion) repeat last search, in the forward direction
-
+# N + (motion) down N lines, on the first non-blank character (also: CTRL-M and <CR>)
+# N _ (motion) down N-1 lines, on the first non-blank character
+# N - (motion) up N lines, on the first non-blank character
+# N , (motion) repeat the last "f", "F", "t", or "T" N times in opposite direction
+# N ; (motion) repeat the last "f", "F", "t", or "T" N times
+# N ( (motion) N sentences backward
+# N ) (motion) N sentences forward
+# N { (motion) N paragraphs backward
+# N } (motion) N paragraphs forward
+# N | (motion) to column N (default: 1)
+# N $ (motion) go to the last character in the line (N-1 lines lower) (also: <End> key)
+# N % (motion) goto line N percentage down in the file.  N must be given, otherwise it is the % command.
+# N # (motion) search backward for the identifier under the cursor
+# N * (motion) search forward for the identifier under the cursor
 n_motion_chars = '+_-,;(){}|$%#*'
 n_motion_alts = ' | '.join([escape(ch) for ch in n_motion_chars])
-# print(n_motion_chars)
-
-# N   [#      (motion) N times back to unclosed "#if" or "#else"
-# N   [(      (motion) N times back to unclosed '('
-# N   [*      (motion) N times back to start of comment "/*"
-# N   [[      (motion) N sections backward, at start of section
-# N   []      (motion) N sections backward, at end of section
-# N   [{      (motion) N times back to unclosed '{'
-
-# N   ]#      (motion) N times forward to unclosed "#else" or "#endif"
-# N   ])      (motion) N times forward to unclosed ')'
-# N   ]*      (motion) N times forward to end of comment "*/"
-# N   ][      (motion) N sections forward, at end of section
-# N   ]]      (motion) N sections forward, at start of section
-# N   ]}      (motion) N times forward to unclosed '}'
-
+# N [#  (motion) N times back to unclosed "#if" or "#else"
+# N [(  (motion) N times back to unclosed '('
+# N [*  (motion) N times back to start of comment "/*"
+# N [[  (motion) N sections backward, at start of section
+# N []  (motion) N sections backward, at end of section
+# N [{  (motion) N times back to unclosed '{'
 open_bracket_chars  = ['[%s' % (ch) for ch in '#(*[]{']
+# N ]#  (motion) N times forward to unclosed "#else" or "#endif"
+# N ])  (motion) N times forward to unclosed ')'
+# N ]*  (motion) N times forward to end of comment "*/"
+# N ][  (motion) N sections forward, at end of section
+# N ]]  (motion) N sections forward, at start of section
+# N ]}  (motion) N times forward to unclosed '}'
 close_bracket_chars = [']%s' % (ch) for ch in '#)*[]}']
 bracket_chars = open_bracket_chars + close_bracket_chars
 bracket_motion = ' | '.join(['%s%s' % (escape(s[0]),escape(s[1])) for s in bracket_chars])
 bracket_alts =      r'(?P<bracket_alt>%s)' % (bracket_motion)
-print(bracket_alts)
-
-# N   g^      (motion) to first non-blank character in screen line (differs from "^" when lines wrap)
-# N   g#      (motion) like "#", but also find partial matches
-# N   g$      (motion) to last character in screen line (differs from "$" when lines wrap)
-# N   g*      (motion) like "*", but also find partial matches
-# N   g0      (motion) to first character in screen line (differs from "0" when lines wrap)
-#     gD      (motion) goto global declaration of identifier under the cursor
-# N   gE      (motion) backward to the end of the Nth blank-separated WORD
-#     gd      (motion) goto local declaration of identifier under the cursor
-# N   ge      (motion) backward to the end of the Nth word
-# N   gg      (motion) goto line N (default: first line), on the first non-blank character
-# N   gj      (motion) down N screen lines (differs from "j" when line wraps)
-# N   gk      (motion) up N screen lines (differs from "k" when line wraps)
-
+# print(bracket_alts)
+# gD (motion) goto global declaration of identifier under the cursor
+# gd (motion) goto local declaration of identifier under the cursor
+g_bare_alts =   r'(?P<bare_g_alts>(gD|gd))'
+# N g^      (motion) to first non-blank character in screen line (differs from "^" when lines wrap)
+# N g#      (motion) like "#", but also find partial matches
+# N g$      (motion) to last character in screen line (differs from "$" when lines wrap)
+# N g*      (motion) like "*", but also find partial matches
+# N g0      (motion) to first character in screen line (differs from "0" when lines wrap)
+# N gE      (motion) backward to the end of the Nth blank-separated WORD
+# N ge      (motion) backward to the end of the Nth word
+# N gg      (motion) goto line N (default: first line), on the first non-blank character
+# N gj      (motion) down N screen lines (differs from "j" when line wraps)
+# N gk      (motion) up N screen lines (differs from "k" when line wraps)
 g_alt_chars =   ' | '.join([escape(ch) for ch in '^#$*0Eegjk'])
 g_alts =        r'(?P<g_n>[0-9]*)(?P<g_alt>g(%s))' % (g_alt_chars)
-g_bare_alts =   r'(?P<bare_g_alts>(gD|gd))'
 g_motion = 'g(%s | %s)' % (g_bare_alts,g_alts)
 print(g_motion)
-
+.. @+node:ekr.20131108203402.16398: *5* @test command regex
+@language python
+# http://docs.python.org/2/library/re.html
+import re
+# g.cls()
 n =     r'(?P<n>[0-9]*)'    # Optional digits
 cmd =   r'(?P<cmd>[^0-9]+)' # Required: anything *except* digits.
 n2 =    r'(?P<n2>[0-9]*)'   # Optional digits
@@ -1174,110 +1177,409 @@ for pat,aList in tables:
                 g.es_exception()
                 val = None
             print('    %7s %s' % (field,val or 'None'))
-.. @+node:ekr.20131108082341.18237: *5* motion keys
-@killcolor
+.. @+node:ekr.20131108082341.18228: *5* @test vim prototype
+@language python
 
-    CTRL-B  (motion?) cursor to beginning of command-line
-    CTRL-E  (motion?) cursor to end of command-line
-    N   .   (motion?) repeat last change (with count replaced with N)
-N   [p      (motion?) like P, but adjust indent to current line
-N   ]p      (motion?) like p, but adjust indent to current line
+import string
+
+class VimParser:
+    @others
     
-    <Left>      (motion) cursor left
-    <Right>     (motion) cursor right
-    <S-Left>    (motion) cursor one word left
-    <S-Right>   (motion) cursor one word right
+vp = VimParser()
+table = (
+    'gg',
+    '2dd',
+)
+for s in table:
+    n1,command,n2,motion = vp.scan(s)
+    print(s)
+    print('  %r %r %r %r' % (n1,command,n2,motion))
+.. @+node:ekr.20131108203402.16422: *6* ctor
+def __init__(self):
     
-N   CTRL-F  (motion) window N pages Forwards (downwards)
-N   CTRL-I  (motion) go to Nth newer position in jump list
-N   CTRL-O  (motion) go to Nth older position in jump list
-N   CTRL-T  (motion) Jump back from Nth older tag in tag list
-    0       (motion) to first character in the line (also: <Home> key)
-N   +       (motion) down N lines, on the first non-blank character (also: CTRL-M and <CR>)
-N   _       (motion) down N-1 lines, on the first non-blank character
-N   -       (motion) up N lines, on the first non-blank character
-N   ,       (motion) repeat the last "f", "F", "t", or "T" N times in opposite direction
-N   ;       (motion) repeat the last "f", "F", "t", or "T" N times
-N   (       (motion) N sentences backward
-N   )       (motion) N sentences forward
-N   {       (motion) N paragraphs backward
-N   }       (motion) N paragraphs forward
-N   |       (motion) to column N (default: 1)
-
-    `"                  (motion) go to the position when last editing this file
-    '<a-zA-Z0-9[]'"<>>  (motion) same as `, but on the first non-blank in the line
-    `<                  (motion?) go to the start of the (previous) Visual area
-    `<0-9>              (motion) go to the position where Vim was last exited
-    `<A-Z>              (motion) go to mark <A-Z> in any file
-    `<a-z>              (motion) go to mark <a-z> within current file
-    `>                  (motion) go to the end of the (previous) Visual area
-    `[                  (motion) go to the start of the previously operated or put text
-    `]                  (motion) go to the end of the previously operated or put text
-    ``                  (motion) go to the position before the last jump
-
-N   $       (motion) go to the last character in the line (N-1 lines lower) (also: <End> key)
-    ^       (motion) go to first non-blank character in the line
-N   %       (motion) goto line N percentage down in the file.  N must be given, otherwise it is the % command.
-    %       (motion) find the next brace, bracket, comment, or "#if"/ "#else"/"#endif" in this line and go to its match
+    self.char_m  = 'FTft'
+    self.commands_d = self.make_commands_dict()
+        # Keys are commands, values are additional parsers.
+    self.motions_d = self.make_motions_dict()
+        # Keys are characters,
+        # Values are strings listing valid following characters.
+.. @+node:ekr.20131108203402.16427: *6* make_commands_dict
+def make_commands_dict(self):
     
-N   #       (motion) search backward for the identifier under the cursor
-N   *       (motion) search forward for the identifier under the cursor
-N   /<CR>   (motion) repeat last search, in the forward direction
+    trace = True
+    d = {}
+        # Keys are commands, values are additional parsers.
+    # Not used.
+    #   o (motion?) exchange cursor position with start of highlighting
+    # Single-character commands.
+    for ch in '0~^%_+-,;(){}|$#*ABCDEGHIJKLMNOPRSUVWXYabehijklnopqsuvwx':
+        d[ch] = self.scan_one_character_command
+    # Two-character commands.
+    for ch in 'Zz':
+        d[ch] = self.scan_two_character_command
+    # Commands with complex parsers.
+    table = (
+        # Followed by an arbitrary character...
+            ('"',self.scan_char),
+            ('F',self.scan_char),
+            ('T',self.scan_char),
+            ('f',self.scan_char),
+            ('t',self.scan_char),
+        # Individualized parsers...
+            ('/',self.scan_slash),
+            ('<',self.scan_open_angle_bracket),
+            ('>',self.scan_close_angle_bracket),
+            ('@',self.scan_at),
+            ('[',self.scan_close_square_bracket),
+            (']',self.scan_open_square_bracket),
+            ('`',self.scan_back_tick),
+            ('c',self.scan_c),
+            ('d',self.scan_d),
+            ('g',self.scan_g),
+            ('m',self.scan_m),
+            ('q',self.scan_q),
+            ('y',self.scan_y),
+    )
+    for ch,func in table:
+        d[ch] = func
+    if trace:
+        for key in sorted(d.keys()):
+            print('%r %s' % (key,d.get(key).__name__))
+    return d
+.. @+node:ekr.20131108203402.16424: *6* make_motions_dict
+def make_motions_dict(self):
+    
+    trace = False
+    char = [ch for ch in string.printable if 32 <= ord(ch) < 128]
+    # if trace: g.trace('printable:',''.join(char))
+    d = {}
+    # Single-character motions.
+    for ch in '0^%_+-,;(){}|$#*BEGNWbehjklnw':
+        d[ch] = []
+    # Lead-in characters followed by a single character.
+    table = (
+        ('[','#(*[]{'),
+        (']','#)*[]}'),
+        ('F',char),
+        ('T',char),
+        ('f',char),
+        ('g','^#$*0DEdegjk'),
+        ('t',char),
+        ('/','\\n'),
+    )
+    for ch,s in table:
+        d[ch] = s
+    if trace:
+        for key in sorted(d.keys()):
+            val = d.get(key)
+            if val:
+                if val == char: val = '<char>'
+                print('%s %s' % (key,val))
+            else:
+                print(key)
+    return d
+.. @+node:ekr.20131108203402.16423: *6* run
+def run(self,s):
+    g.trace()
+.. @+node:ekr.20131108203402.16421: *6* scan
+def scan(self,s):
+    
+    g.trace(repr(s))
+    i,n1 = self.scan_count(s,0)
+    g.trace(i,n1)
+    command,n2,motion = self.scan_command(s,i)
+    return n1,command,n2,motion
+    
+   
+.. @+node:ekr.20131108203402.16443: *6* per-characer scanners
+.. @+node:ekr.20131108203402.16442: *7* scan_at
+# N   @<a-z>          execute the contents of register <a-z> (N times)
+# N   @@              (motion?) repeat previous @<a-z> (N times)
+def scan_at(self,s,i):
+    g.trace(s[i:])
+.. @+node:ekr.20131108203402.16428: *7* scan_back_tick
+# `"        go to the position when last editing this file
+# '<a-zA-Z0-9[]'"<>>  same as `, but on the first non-blank in the line
+# `<        go to the start of the (previous) Visual area
+# `<0-9>    go to the position where Vim was last exited
+# `<A-Z>    go to mark <A-Z> in any file
+# `<a-z>    go to mark <a-z> within current file
+# `>        go to the end of the (previous) Visual area
+# `[        go to the start of the previously operated or put text
+# `]        go to the end of the previously operated or put text
+# ``        go to the position before the last jump
+def scan_back_tick(self,s,i):
+    g.trace(s[i:])
+.. @+node:ekr.20131108203402.16431: *7* scan_close_angle_bracket
+# N >{motion} move the lines that are moved over with {motion} one shiftwidth right
+# N >>        move N lines one shiftwidth right
+def scan_close_angle_bracket(self,s,i):
+    g.trace(s[i:])
+.. @+node:ekr.20131108203402.16438: *7* scan_c
+# N   cc              change N lines
+# N   c{motion}       change the text that is moved over with {motion}
+# VIS c               change the highlighted text
+def scan_c(self,s,i):
+    g.trace(s[i:])
+.. @+node:ekr.20131108203402.16435: *7* scan_close_square_bracket
+# N   ]#              (motion) N times forward to unclosed "#else" or "#endif"
+# N   ])              (motion) N times forward to unclosed ')'
+# N   ]*              (motion) N times forward to end of comment "*/"
+# N   ][              (motion) N sections forward, at end of section
+# N   ]]              (motion) N sections forward, at start of section
+# N   ]p              (motion?) like p, but adjust indent to current line
+# N   ]}              (motion) N times forward to unclosed '}'
+def scan_close_square_bracket(self,s,i):
+    g.trace(s[i:])
+.. @+node:ekr.20131108203402.16439: *7* scan_d
+# VIS d               delete the highlighted text
+# N   dd              delete N lines
+# N   d{motion}       delete the text that is moved over with {motion}
+def scan_d(self,s,i):
+    g.trace(s[i:])
+.. @+node:ekr.20131108203402.16436: *7* scan_g
+#     g CTRL-G        show cursor column, line, and character position
+# N   g^              (motion) to first non-blank character in screen line (differs from "^" when lines wrap)
+#     g~{motion}      switch case for the text that is moved over with {motion}
+# N   g#              (motion) like "#", but also find partial matches
+# N   g$              (motion) to last character in screen line (differs from "$" when lines wrap)
+# N   g*              (motion) like "*", but also find partial matches
+# N   g0              (motion) to first character in screen line (differs from "0" when lines wrap)
+#     gD              (motion) goto global declaration of identifier under the cursor
+# N   gE              (motion) backward to the end of the Nth blank-separated WORD
+# N   gI              insert text in column 1 (N times)
+#      gU{motion}      make the text that is moved over with {motion} uppercase
+#     ga              show ascii value of character under cursor in decimal, hex, and octal
+#     gd              (motion) goto local declaration of identifier under the cursor
+#     gf  or ]f        Edit the file whose name is under the cursor
+# N   ge              (motion) backward to the end of the Nth word
+# N   gg              (motion) goto line N (default: first line), on the first non-blank character
+# N   gj              (motion) down N screen lines (differs from "j" when line wraps)
+# N   gk              (motion) up N screen lines (differs from "k" when line wraps)
+# N   gq{motion}      format the lines that are moved over with {motion} to 'textwidth' length
+# N   gs              Goto Sleep for N seconds
+#     gu{motion}      make the text that is moved over with {motion} lowercase
+#     gv              start highlighting on previous visual area
+def scan_g(self,s,i):
+    g.trace(s[i:])
+.. @+node:ekr.20131108203402.16430: *7* scan_open_angle_bracket
+# N <{motion} move the lines that are moved over with {motion} one shiftwidth left
+# N <<        move N lines one shiftwidth left
+def scan_open_angle_bracket(self,s,i):
+    g.trace(s[i:])
+.. @+node:ekr.20131108203402.16434: *7* scan_open_square_bracket
+# N   [#              (motion) N times back to unclosed "#if" or "#else"
+# N   [(              (motion) N times back to unclosed '('
+# N   [*              (motion) N times back to start of comment "/*"
+# N   [[              (motion) N sections backward, at start of section
+# N   []              (motion) N sections backward, at end of section
+# N   [p              (motion?) like P, but adjust indent to current line
+# N   [{              (motion) N times back to unclosed '{'
+def scan_open_square_bracket(self,s,i):
+    g.trace(s[i:])
+.. @+node:ekr.20131108203402.16447: *7* scan_m
+# m <a-zA-Z> mark current position with mark <a-zA-Z>
+def scan_m(self,s,i):
+    g.trace(s[i:])
+.. @+node:ekr.20131108203402.16446: *7* scan_q
+# q<A-Z>    record typed characters, appended to register <a-z>
+# q<a-z>    record typed characters into register <a-z>
+def scan_q(self,s,i):
+    g.trace(s[i:])
 
-N   /{pattern}[/[offset]]<CR>   (motion) search forward for the Nth occurrence of {pattern}
-N   ?<CR>                       (motion) repeat last search, in the backward direction
-N   ?{pattern}[?[offset]]<CR>   (motion) search backward for the Nth occurrence of {pattern}
+.. @+node:ekr.20131108203402.16433: *7* scan_question
+# N ?<CR>                       (motion) repeat last search, in the backward direction
+# N ?{pattern}[?[offset]]<CR>   (motion) search backward for the Nth occurrence of {pattern}
+def scan_question(self,s,i):
+    g.trace(s[i:])
+.. @+node:ekr.20131108203402.16429: *7* scan_one_character_command
+# N   A    append text at the end of the line (N times)
+# N   B    (motion) N blank-separated WORDS backward
+# N   C    change to end-of-line (and N-1 more lines)
+# N   D    delete to end-of-line (and N-1 more lines)
+# N   E    (motion) forward to the end of the Nth blank-separated WORD
+# N   G    (motion) goto line N (default: last line), on the first non-blank character
+# N   H    (motion?) go to the Nth line in the window, on the first non-blank
+# N   I    insert text before the first non-blank in the line (N times)
+# N   J    (motion?) join N-1 lines (delete newlines)
+# VIS J    (motion?) join the highlighted lines
+    # K    lookup keyword under the cursor with 'keywordprg' program (default: "man")
+    # M    (motion?) go to the middle line in the window, on the first non-blank
+# N   L    (motion?) go to the Nth line from the bottom, on the first non-blank
+# N   N    (motion) repeat last search, in opposite direction
+# N   O    open a new line above the current line, append text (N times)
+# N   P    put a register before the cursor position (N times)
+# N   R    enter Replace mode (repeat the entered text N times)
+# N   S    change N lines
+    # U    restore last changed line
+# VIS U    make highlighted text uppercase
+    # V    highlight linewise or stop highlighting
+    # V    start highlighting linewise    }  operator to affect
+# N   W    (motion) N blank-separated WORDS forward
+# N   X    delete N characters before the cursor
+# N   Y    yank N lines
+# N   a               append text after the cursor (N times)
+# N   b               (motion) N words backward
+# N   e    (motion) forward to the end of the Nth word
+# N   h    (motion) left (also: CTRL-H, <BS>, or <Left> key)
+# N   i    insert text before the cursor (N times) (also: <Insert>)
+# N   j    (motion) down N lines (also: CTRL-J, CTRL-N, <NL>, and <Down>)
+# N   k    (motion) up N lines (also: CTRL-P and <Up>)
+# N   l    (motion) right (also: <Space> or <Right> key)
+# N   n    (motion?) repeat last search
+# N   o     open a new line below the current line, append text (N times)
+# N   p     put a register after the cursor position (N times)
+#     q     stop recording
+# N   s     change N characters
+# N   u     undo last N changes
+# VIS u     make highlighted text lowercase
+#     v     highlight characters or stop highlighting
+#     v     start highlighting characters  }  move cursor and use
+# N   w     (motion) N words forward
+# N   x     delete N characters under and after the cursor
+def scan_one_character_command(self,s,i):
+    g.trace(s[i:])
+.. @+node:ekr.20131108203402.16449: *7* scan_two_character_command
+#     z- or zb      redraw, current line at bottom of window
+#     z. or zz      redraw, current line at center of window
+#     z<CR> or zt   redraw, current line at top of window
+# N   zh            scroll screen N characters to the right
+# N   zl            scroll screen N characters to the left
+#     ZQ            Same as ":q!".
+#     ZZ            Same as ":x".
+def scan_two_character_command(self,s,i):
+    g.trace(s[i:])
+.. @+node:ekr.20131108203402.16432: *7* scan_slash
+# N /<CR>                       (motion) repeat last search, in the forward direction
+# N /{pattern}[/[offset]]<CR>   (motion) search forward for the Nth occurrence of {pattern}
+def scan_slash(self,s,i):
+    g.trace(s[i:])
+.. @+node:ekr.20131108203402.16440: *7* scan_y
+# N   yy            yank N lines 
+# N   y {motion}    yank the text moved over with {motion} 
+# VIS y             yank the highlighted text
+def scan_y(self,s,i):
+    g.trace(s[i:])
+.. @+node:ekr.20131108203402.16444: *7* scan_Z
+# ZQ    Same as ":q!".
+# ZZ    Same as ":x".
+def scan_Z(self,s,i):
+    g.trace(s[i:])
+.. @+node:ekr.20131108203402.16437: *6* scan_char
+#   " <char>  use register <char> for the next delete, yank, or put
+# N F <char>  (motion) to the Nth occurrence of <char> to the left
+# N T <char>  (motion) till before the Nth occurrence of <char> to the left
+# N f <char>  (motion) to the Nth occurrence of <char> to the right
+# N r <char>  replace N characters with <char>
+# N t <char>  (motion) till before the Nth occurrence of <char> to the right
+def scan_char(self,s,i):
+    g.trace(s[i:])
+.. @+node:ekr.20131108203402.16425: *6* scan_count
+def scan_count(self,s,i):
+    
+    # Zero does not start a count.
+    i1 = i
+    if i < len(s) and s[i] in '123456789':
+        while i < len(s) and s[i].isdigit():
+            i += 1
+        n = int(s[i1:i])
+    else:
+        n = None
+    return i,n
+.. @+node:ekr.20131108203402.16426: *6* scan_command
+def scan_command(self,s,i):
+    
+    command = s[i:]
+    n = None
+    motion = None
+    g.trace(command)
+    return command,n,motion
+.. @+node:ekr.20131108203402.16396: *5* @test vim motion
+@language python
+# g.cls()
 
-N   [#      (motion) N times back to unclosed "#if" or "#else"
-N   [(      (motion) N times back to unclosed '('
-N   [*      (motion) N times back to start of comment "/*"
-N   [[      (motion) N sections backward, at start of section
-N   []      (motion) N sections backward, at end of section
-N   [{      (motion) N times back to unclosed '{'
+# Unknown:
+# N   H  (motion?) go to the Nth line in the window, on the first non-blank
+# N   J  (motion?) join N-1 lines (delete newlines)
+# VIS J  (motion?) join the highlighted lines
+    # M  (motion?) go to the middle line in the window, on the first non-blank
+# N   L  (motion?) go to the Nth line from the bottom, on the first non-blank
+# o      (motion?) exchange cursor position with start of highlighting
 
-N   ]#      (motion) N times forward to unclosed "#else" or "#endif"
-N   ])      (motion) N times forward to unclosed ')'
-N   ]*      (motion) N times forward to end of comment "*/"
-N   ][      (motion) N sections forward, at end of section
-N   ]]      (motion) N sections forward, at start of section
-N   ]}      (motion) N times forward to unclosed '}'
+# Not used:
+# N %    goto line N percentage down in the file.
+#        N must be given, otherwise it is the % command.
 
-N   B       (motion) N blank-separated WORDS backward
-N   E       (motion) forward to the end of the Nth blank-separated WORD
-N   F<char> (motion) to the Nth occurrence of <char> to the left
-N   G       (motion) goto line N (default: last line), on the first non-blank character
-N   H       (motion?) go to the Nth line in the window, on the first non-blank
-N   J       (motion?) join N-1 lines (delete newlines)
-VIS J       (motion?) join the highlighted lines
-    M       (motion?) go to the middle line in the window, on the first non-blank
-N   L       (motion?) go to the Nth line from the bottom, on the first non-blank
-N   N       (motion) repeat last search, in opposite direction
-N   T<char> (motion) till before the Nth occurrence of <char> to the left
-N   W       (motion) N blank-separated WORDS forward
-
-N   b       (motion) N words backward
-N   e       (motion) forward to the end of the Nth word
-N   f<char> (motion) to the Nth occurrence of <char> to the right
-N   g^      (motion) to first non-blank character in screen line (differs from "^" when lines wrap)
-N   g#      (motion) like "#", but also find partial matches
-N   g$      (motion) to last character in screen line (differs from "$" when lines wrap)
-N   g*      (motion) like "*", but also find partial matches
-N   g0      (motion) to first character in screen line (differs from "0" when lines wrap)
-    gD      (motion) goto global declaration of identifier under the cursor
-N   gE      (motion) backward to the end of the Nth blank-separated WORD
-    gd      (motion) goto local declaration of identifier under the cursor
-N   ge      (motion) backward to the end of the Nth word
-N   gg      (motion) goto line N (default: first line), on the first non-blank character
-N   gj      (motion) down N screen lines (differs from "j" when line wraps)
-N   gk      (motion) up N screen lines (differs from "k" when line wraps)
-N   h       (motion) left (also: CTRL-H, <BS>, or <Left> key)
-N   j       (motion) down N lines (also: CTRL-J, CTRL-N, <NL>, and <Down>)
-N   k       (motion) up N lines (also: CTRL-P and <Up>)
-N   l       (motion) right (also: <Space> or <Right> key)
-N   n       (motion?) repeat last search
-    o       (motion?) exchange cursor position with start of highlighting
-N   t<char> (motion) till before the Nth occurrence of <char> to the right
-N   w       (motion) N words forward
+#   0    to first character in the line (also: <Home> key)
+#   ^    go to first non-blank character in the line
+#   %    find the next brace, bracket, comment,
+#        or "#if"/ "#else"/"#endif" in this line and go to its match
+# N +    down N lines, on the first non-blank character (also: CTRL-M and <CR>)
+# N _    down N-1 lines, on the first non-blank character
+# N -    up N lines, on the first non-blank character
+# N ,    repeat the last "f", "F", "t", or "T" N times in opposite direction
+# N ;    repeat the last "f", "F", "t", or "T" N times
+# N (    N sentences backward
+# N )    N sentences forward
+# N {    N paragraphs backward
+# N }    N paragraphs forward
+# N |    to column N (default: 1)
+# N $    go to the last character in the line (N-1 lines lower) (also: <End> key)
+# N #    search backward for the identifier under the cursor
+# N *    search forward  for the identifier under the cursor
+# N B    N blank-separated WORDS backward
+# N E    forward to the end of the Nth blank-separated WORD
+# N G    goto line N (default: last line), on the first non-blank character
+# N N    repeat last search, in opposite direction
+# N W    N blank-separated WORDS forward
+# N b    N words backward
+# N e    forward to the end of the Nth word
+# N h    left (also: CTRL-H, <BS>, or <Left> key)
+# N j    down N lines (also: CTRL-J, CTRL-N, <NL>, and <Down>)
+# N k    up N lines (also: CTRL-P and <Up>)
+# N l    right (also: <Space> or <Right> key)
+# N n    repeat last search
+# N w    N words forward
+single_char_motions = [ch for ch in '0^%_+-,;(){}|$#*BEGNWbehjklnw']
+# N [#   N times back to unclosed "#if" or "#else"
+# N [(   N times back to unclosed '('
+# N [*   N times back to start of comment "/*"
+# N [[   N sections backward, at start of section
+# N []   N sections backward, at end of section
+# N [{   N times back to unclosed '{'
+m1  = ['['+ ch for ch in '#(*[]{']
+# N ]#   N times forward to unclosed "#else" or "#endif"
+# N ])   N times forward to unclosed ')'
+# N ]*   N times forward to end of comment "*/"
+# N ][   N sections forward, at end of section
+# N ]]   N sections forward, at start of section
+# N ]}   N times forward to unclosed '}'
+m2 = [']'+ch for ch in '#)*[]}']
+#   gD   goto global declaration of identifier under the cursor
+#   gd   goto local declaration of identifier under the cursor
+# N g^   to first non-blank character in screen line (differs from "^" when lines wrap)
+# N g#   like "#", but also find partial matches
+# N g$   to last character in screen line (differs from "$" when lines wrap)
+# N g*   like "*", but also find partial matches
+# N g0   to first character in screen line (differs from "0" when lines wrap)
+# N gE   backward to the end of the Nth blank-separated WORD
+# N ge   backward to the end of the Nth word
+# N gg   goto line N (default: first line), on the first non-blank character
+# N gj   down N screen lines (differs from "j" when line wraps)
+# N gk   up N screen lines (differs from "k" when line wraps)
+m3 = ['g'+ch for ch in '^#$*0DEdegjk']
+# N /<CR>  repeat last search, in the forward direction
+m4 = ['/\\n',]
+# N F<char>  to the Nth occurrence of <char> to the left
+# N T<char>  till before the Nth occurrence of <char> to the left
+# N f<char>  to the Nth occurrence of <char> to the right
+# N t<char>  till before the Nth occurrence of <char> to the right
+char_motions = [ch for ch in 'FTft']
+multi_char_leadins = '/g[]'
+multi_char_motions = m1+m2+m3+m4
+print('\n'.join(single_char_motions))
+print('\n'.join(multi_char_motions))
+print('\n'.join(['%s<char>' % (ch) for ch in char_motions]))
 .. @+node:ekr.20131108082341.16371: *3* * Node-creating abbreviations
 @language rest
 
