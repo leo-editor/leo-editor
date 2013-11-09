@@ -657,7 +657,8 @@ class scriptingController:
 
         if g.app.gui.guiName().startswith('qt'):
             # w is a leoIconBarButton.
-            w.button.setToolTip(label)
+            if hasattr(w,'button'):
+                w.button.setToolTip(label)
     #@+node:ekr.20060328125248.17: *4* createIconButton
     def createIconButton (self,text,command,statusLine,bg=None,kind=None):
 
