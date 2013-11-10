@@ -170,7 +170,7 @@ class VimCommands:
                 g.trace('not found: %s' % s)
         else:
             return c.config.getData(s)
-    #@+node:ekr.20131110050932.16533: *3* vc.scan
+    #@+node:ekr.20131110050932.16533: *3* vc.scan & helpers
     def scan(self,s):
         
         trace = False ; verbose = False
@@ -200,32 +200,38 @@ class VimCommands:
                                 status = 'scan'
                                 break
                         else:
-                            # g.trace('***',tail,pattern)
-                            if pattern == 'motion':
-                                # We assume the *entire* tail is a motion.
-                                status,n2,motion = self.scan_motion(tail)
-                            elif pattern == 'char':
-                                status = 'oops' # not ready yet.
-                            elif pattern in ('letter','register'):
-                                status = 'oops' # not ready yet.
+                            status,n2,motion = self.scan_any_pattern(pattern,tail)
                 elif None in tails:
                     status = 'scan' if pattern else 'done'
                 else:
                     status = 'scan' if tails else 'oops'
         if trace: g.trace('%8s' % (s),status,n1,command,n2,motion)
         return status,n1,command,n2,motion
+    #@+node:ekr.20131110050932.16559: *4* vc.scan_any_pattern
+    def scan_any_pattern(self,pattern,s):
+        '''Scan s, looking for the indicated pattern.'''
+        motion,n2,status = None,None,'oops'
+        if pattern == 'motion':
+            status,n2,motion = self.scan_motion(s)
+        elif len(s) == 1 and (
+            pattern == 'char' and s in self.chars or
+            pattern == 'letter' and s in self.letters or
+            pattern == 'register' and s in self.registers
+        ):
+            status = 'done'
+        # g.trace(status,pattern,s,n2,motion)
+        return status,n2,motion
     #@+node:ekr.20131110050932.16540: *4* vc.scan_count
     def scan_count(self,s):
-        
-        # Zero does not start a count.
-        i = 0
-        if i < len(s) and s[i] in '123456789':
-            while i < len(s) and s[i].isdigit():
-                i += 1
-            n = int(s[:i])
+
+        # Zero is a command.  It does not start repeat counts.
+        if s and s[0].isdigit() and s[0] != '0':
+            for i,ch in enumerate(s):
+                if not ch.isdigit():
+                    break
+            return i,int(s[:i])
         else:
-            n = None
-        return i,n
+            return 0,None
     #@+node:ekr.20131110050932.16558: *4* vc.scan_motion
     def scan_motion(self,s):
         
