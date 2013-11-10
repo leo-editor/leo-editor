@@ -22,9 +22,11 @@ class VimCommands:
         self.c = c
         self.chars = [ch for ch in string.printable if 32 <= ord(ch) < 128]
         self.letters = string.ascii_letters
-        self.tail_kinds = ['char','letter','motion','pattern']
+        self.registers = string.ascii_letters
+        self.tail_kinds = ['char','letter','motion','pattern','register',]
+        self.motion_kinds = ['char','letter','register'] # only 'char' used at present.
             # Valid selectors in @data vim-*-tails.
-            
+
         # Call after setting ivars.
         self.create_dicts()
         for ivar in ('command_tails_d','motion_tails_d','motions_d','commands_d'):
@@ -33,7 +35,7 @@ class VimCommands:
     #@+node:ekr.20131109170017.46983: *3* vc.create_dicts & helpers
     def create_dicts(self):
 
-        dump = True
+        dump = False
         # Compute tails first.
         self.command_tails_d = self.create_command_tails_d(dump)
         self.motion_tails_d  = self.create_motion_tails_d(dump)
@@ -41,6 +43,8 @@ class VimCommands:
         self.motions_d = self.create_motions_d(dump)
         # Then commands.
         self.commands_d = self.create_commands_d(dump)
+        # Finally, check.
+        self.check_dicts()
     #@+node:ekr.20131110050932.16529: *4* create_command_tails_d
     def create_command_tails_d(self,dump):
 
@@ -117,6 +121,17 @@ class VimCommands:
                 g.trace('missing command chars: %s' % (s))
         if dump: self.dump('command_d',d)
         return d
+    #@+node:ekr.20131110050932.16536: *4* check_dicts
+    def check_dicts(self):
+        
+        d = self.commands_d
+        for key in sorted(d.keys()):
+            d2 = d.get(key)
+            ch = d2.get('ch')
+            pattern = d2.get('tail_pattern')
+            aList = d2.get('tail_chars')
+            if aList and len(aList) > 1 and None in aList and not pattern:
+                g.trace('ambiguous entry for %s: %s' % (ch,d2))
     #@+node:ekr.20131109170017.46984: *3* vc.dump
     def dump(self,name,d):
         '''Dump a dictionary.'''
@@ -155,6 +170,87 @@ class VimCommands:
                 g.trace('not found: %s' % s)
         else:
             return c.config.getData(s)
+    #@+node:ekr.20131110050932.16533: *3* vc.scan
+    def scan(self,s):
+        
+        trace = False ; verbose = False
+        n1,n2,motion,status = None,None,None,'oops'
+        i,n1 = self.scan_count(s)
+        command = s[i:]
+        tail = command[1:]
+        if command:
+            ch = command[0]
+            d = self.commands_d.get(ch)
+                # Keys are characters, values are inner dicts.
+            if d:
+                tails = d.get('tail_chars') or []
+                    # A list of characters that can follow ch.
+                pattern = d.get('tail_pattern')
+                if trace and verbose: g.trace('%s %s [%s]' % (
+                    command,repr(tail),
+                    ','.join([z if z else repr(z) for z in tails])))
+                if tail:
+                    if tail in tails:
+                        status = 'done' # A complete match.
+                    else:
+                        # First, see if tail is a prefix of any item of tails.
+                        for item in tails:
+                            if item is not None and item.startswith(tail):
+                                status = 'scan'
+                        else:
+                            # g.trace('***',tail,pattern)
+                            if pattern == 'motion':
+                                # We assume the *entire* tail is a motion.
+                                status,n2,motion = self.scan_motion(tail)
+                            elif pattern == 'char':
+                                status = 'oops' # not ready yet.
+                            elif pattern in ('letter','register'):
+                                status = 'oops' # not ready yet.
+                elif None in tails:
+                    status = 'scan' if pattern else 'done'
+                else:
+                    status = 'scan'
+               
+        if trace: g.trace('%8s' % (s),status,n1,command,n2,motion)
+        return status,n1,command,n2,motion
+    #@+node:ekr.20131110050932.16540: *4* vc.scan_count
+    def scan_count(self,s):
+        
+        # Zero does not start a count.
+        i = 0
+        if i < len(s) and s[i] in '123456789':
+            while i < len(s) and s[i].isdigit():
+                i += 1
+            n = int(s[:i])
+        else:
+            n = None
+        return i,n
+    #@+node:ekr.20131110050932.16558: *4* vc.scan_motion
+    def scan_motion(self,s):
+        
+        trace = False
+        status = 'oops'
+        i,n2 = self.scan_count(s)
+        motion = s[i:]
+        if motion:
+            # motions_d: keys are *full* commands; values are in self.motion_kinds
+            d = self.motions_d
+            motion_kind = d.get(motion)
+            if motion_kind:
+                status = 'oops' ### not ready yet.
+                # There is *another* field to parse.
+            else:
+                if motion in d.keys():
+                    status = 'done'
+                else:
+                    # We are scanning if motion is a prefix of any key of motions_d.
+                    for key in d.keys():
+                        if key.startswith('motion'):
+                            status = 'scan'
+                            break
+                    else:
+                        status = 'oops'
+        return status,n2,motion
     #@+node:ekr.20131110050932.16501: *3* vc.split_arg_line
     def split_arg_line(self,s):
         '''

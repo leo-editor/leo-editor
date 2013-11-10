@@ -11449,7 +11449,7 @@ def make_motions_dict(self):
 .. @+node:ekr.20131108203402.16423: *5* run
 def run(self,s):
     g.trace()
-.. @+node:ekr.20131108203402.16421: *5* scan
+.. @+node:ekr.20131108203402.16421: *5* scan & helpers
 def scan(self,s):
     
     g.trace(repr(s))
@@ -11459,6 +11459,18 @@ def scan(self,s):
     return n1,command,n2,motion
     
    
+.. @+node:ekr.20131108203402.16425: *6* scan_count
+def scan_count(self,s,i):
+    
+    # Zero does not start a count.
+    i1 = i
+    if i < len(s) and s[i] in '123456789':
+        while i < len(s) and s[i].isdigit():
+            i += 1
+        n = int(s[i1:i])
+    else:
+        n = None
+    return i,n
 .. @+node:ekr.20131108203402.16443: *5* per-characer scanners
 .. @+node:ekr.20131108203402.16442: *6* scan_at
 # N   @<a-z>          execute the contents of register <a-z> (N times)
@@ -11642,18 +11654,6 @@ def scan_Z(self,s,i):
 # N t <char>  (motion) till before the Nth occurrence of <char> to the right
 def scan_char(self,s,i):
     g.trace(s[i:])
-.. @+node:ekr.20131108203402.16425: *5* scan_count
-def scan_count(self,s,i):
-    
-    # Zero does not start a count.
-    i1 = i
-    if i < len(s) and s[i] in '123456789':
-        while i < len(s) and s[i].isdigit():
-            i += 1
-        n = int(s[i1:i])
-    else:
-        n = None
-    return i,n
 .. @+node:ekr.20131108203402.16426: *5* scan_command
 def scan_command(self,s,i):
     
