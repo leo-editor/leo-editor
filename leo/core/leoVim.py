@@ -181,22 +181,24 @@ class VimCommands:
         if command:
             ch = command[0]
             d = self.commands_d.get(ch)
-                # Keys are characters, values are inner dicts.
+                # commands_d: keys are single characters, values are inner dicts.
             if d:
                 tails = d.get('tail_chars') or []
-                    # A list of characters that can follow ch.
+                    # A list of strings that can follow ch.
+                    # May include None, in which case pattern may fire.
                 pattern = d.get('tail_pattern')
                 if trace and verbose: g.trace('%s %s [%s]' % (
                     command,repr(tail),
                     ','.join([z if z else repr(z) for z in tails])))
                 if tail:
                     if tail in tails:
-                        status = 'done' # A complete match.
+                        status = 'done' # A complete match.  Pattern irrelevant.
                     else:
                         # First, see if tail is a prefix of any item of tails.
                         for item in tails:
                             if item is not None and item.startswith(tail):
                                 status = 'scan'
+                                break
                         else:
                             # g.trace('***',tail,pattern)
                             if pattern == 'motion':
@@ -209,8 +211,7 @@ class VimCommands:
                 elif None in tails:
                     status = 'scan' if pattern else 'done'
                 else:
-                    status = 'scan'
-               
+                    status = 'scan' if tails else 'oops'
         if trace: g.trace('%8s' % (s),status,n1,command,n2,motion)
         return status,n1,command,n2,motion
     #@+node:ekr.20131110050932.16540: *4* vc.scan_count
