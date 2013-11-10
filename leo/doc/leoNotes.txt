@@ -9330,9 +9330,874 @@ def getExternalCompletions (self,s,p=None,language='python'):
     theObject,tabList = self.theObject,self.tabList
     self.exit() # Not called from the autocompleter itself.
     return theObject,tabList
-.. @+node:ekr.20131105122124.16479: ** vim reference card
+.. @+node:ekr.20131109090612.29139: ** normal_cmd (execute command,revised)
+@language c
+/* Execute a command in Normal mode. */
+void normal_cmd(oap, toplevel)
+    oparg_T *oap;
+    int	  toplevel UNUSED; /* TRUE when called from main() */
+{
+    << init vars >>
+    << check for pending operator >>
+    << reset the count >>
+    << restore counts before receiving K_CURSORHOLD >>
+    << get command character from user >>
+    << handle special caces for visual/select mode >>
+    << invert horizontal movements and operations >>
+    << get additional character >>
+    << flush the showcmd characters to the screen >>
+    #ifdef FEAT_AUTOCMD
+    if (ca.cmdchar != K_IGNORE)
+        did_cursorhold = FALSE;
+    #endif
+    State = NORMAL;
+    << goto normal_end on ESC >>
+    << set msg_ vars >>
+    << remember where the cursor was >>
+    /*
+     * Execute the command!
+     * Call the command function found in the commands table.
+     */
+    ca.arg = nv_cmds[idx].cmd_arg;
+    (nv_cmds[idx].cmd_func)(&ca);
+    << reset oap-regname >>
+    << set old_mapped_len >>
+    << handle pending operator >>
+    << wait to write message >>
+normal_end:
+    << finish up >>
+}
+.. @+node:ekr.20131109090612.29156: *3* << init vars >>
+cmdarg_T	ca;			/* command arguments */
+int		c;
+int		ctrl_w = FALSE;		/* got CTRL-W command */
+int		old_col = curwin->w_curswant;
+#ifdef FEAT_CMDL_INFO
+    int		need_flushbuf;		/* need to call out_flush() */
+#endif
+#ifdef FEAT_VISUAL
+    pos_T	old_pos;		/* cursor position before command */
+    int		mapped_len;
+    static int	old_mapped_len = 0;
+#endif
+int		idx;
+#ifdef FEAT_EVAL
+    int		set_prevcount = FALSE;
+#endif
+vim_memset(&ca, 0, sizeof(ca));	/* also resets ca.retval */
+ca.oap = oap;
+<< use remembered count before entering an operator >>
+#ifdef FEAT_SNIFF
+    want_sniff_request = sniff_connected;
+#endif
+.. @+node:ekr.20131109090612.29155: *4* << use remembered count before entering an operator >>
+/* Use a count remembered from before entering an operator.  After typing
+ * "3d" we return from normal_cmd() and come back here, the "3" is
+ * remembered in "opcount". */
+ca.opcount = opcount;
+.. @+node:ekr.20131109090612.29154: *3* << check for pending operator >>
+/*
+ * If there is an operator pending, then the command we take this time
+ * will terminate it. Finish_op tells us to finish the operation before
+ * returning this time (unless the operation was cancelled).
+ */
+#ifdef CURSOR_SHAPE
+    c = finish_op;
+#endif
+finish_op = (oap->op_type != OP_NOP);
+#ifdef CURSOR_SHAPE
+    if (finish_op != c)
+    {
+        ui_cursor_shape(); /* may show different cursor shape */
+        # ifdef FEAT_MOUSESHAPE
+            update_mouseshape(-1);
+        # endif
+    }
+#endif
+.. @+node:ekr.20131109090612.29153: *3* << reset the count >>
+/* When not finishing an operator and no register name typed, reset the count. */
+if (!finish_op && !oap->regname)
+{
+    ca.opcount = 0;
+    #ifdef FEAT_EVAL
+        set_prevcount = TRUE;
+    #endif
+}
+.. @+node:ekr.20131109090612.29152: *3* << restore counts before receiving K_CURSORHOLD >>
+#ifdef FEAT_AUTOCMD
+    /* Restore counts from before receiving K_CURSORHOLD.  This means after
+     * typing "3", handling K_CURSORHOLD and then typing "2" we get "32", not
+     * "3 * 2". */
+    if (oap->prev_opcount > 0 || oap->prev_count0 > 0)
+    {
+        ca.opcount = oap->prev_opcount;
+        ca.count0 = oap->prev_count0;
+        oap->prev_opcount = 0;
+        oap->prev_count0 = 0;
+    }
+#endif
+#ifdef FEAT_VISUAL
+    mapped_len = typebuf_maplen();
+#endif
+State = NORMAL_BUSY;
+#ifdef USE_ON_FLY_SCROLL
+    dont_scroll = FALSE;	/* allow scrolling here */
+#endif
+.. @+node:ekr.20131109090612.29151: *3* << get command character from user >>
+/*
+ * Get the command character from the user.
+ */
+c = safe_vgetc();
+LANGMAP_ADJUST(c, TRUE);
+#ifdef FEAT_VISUAL
+/*
+ * If a mapping was started in Visual or Select mode, remember the length
+ * of the mapping.  This is used below to not return to Insert mode for as
+ * long as the mapping is being executed.
+ */
+if (restart_edit == 0)
+old_mapped_len = 0;
+else if (old_mapped_len
+    || (VIsual_active && mapped_len == 0 && typebuf_maplen() > 0))
+old_mapped_len = typebuf_maplen();
+#endif
+if (c == NUL)
+    c = K_ZERO;
+#ifdef FEAT_VISUAL
+/*
+ * In Select mode, typed text replaces the selection.
+ */
+if (VIsual_active
+    && VIsual_select
+    && (vim_isprintc(c) || c == NL || c == CAR || c == K_KENTER)
+)
+{
+    /* Fake a "c"hange command.  When "restart_edit" is set (e.g., because
+     * 'insertmode' is set) fake a "d"elete command, Insert mode will
+     * restart automatically.
+     * Insert the typed character in the typeahead buffer, so that it can
+     * be mapped in Insert mode.  Required for ":lmap" to work. */
+    ins_char_typebuf(c);
+    if (restart_edit != 0)
+        c = 'd';
+    else
+        c = 'c';
+    msg_nowait = TRUE;	/* don't delay going to insert mode */
+}
+#endif
+
+#ifdef FEAT_CMDL_INFO
+need_flushbuf = add_to_showcmd(c);
+#endif
+
+getcount:
+
+#ifdef FEAT_VISUAL
+if (!(VIsual_active && VIsual_select))
+#endif
+{
+    /*
+     * Handle a count before a command and compute ca.count0.
+     * Note that '0' is a command and not the start of a count, but it's
+     * part of a count after other digits.
+     */
+    while (    (c >= '1' && c <= '9')
+        || (ca.count0 != 0 && (c == K_DEL || c == K_KDEL || c == '0'))
+    ) {
+        if (c == K_DEL || c == K_KDEL)
+        {
+            ca.count0 /= 10;
+            #ifdef FEAT_CMDL_INFO
+                    del_from_showcmd(4);	/* delete the digit and ~@% */
+            #endif
+        }
+        else
+            ca.count0 = ca.count0 * 10 + (c - '0');
+        if (ca.count0 < 0)	    /* got too large! */
+            ca.count0 = 999999999L;
+        #ifdef FEAT_EVAL
+        /* Set v:count here, when called from main() and not a stuffed
+         * command, so that v:count can be used in an expression mapping
+         * right after the count. */
+        if (toplevel && stuff_empty())
+        {
+            long count = ca.count0;
+        
+            /* multiply with ca.opcount the same way as below */
+            if (ca.opcount != 0)
+                count = ca.opcount * (count == 0 ? 1 : count);
+            set_vcount(count, count == 0 ? 1 : count, set_prevcount);
+            set_prevcount = FALSE;  /* only set v:prevcount once */
+        }
+        #endif
+        if (ctrl_w)
+        {
+            ++no_mapping;
+            ++allow_keys;		/* no mapping for nchar, but keys */
+        }
+        ++no_zero_mapping;		/* don't map zero here */
+        c = plain_vgetc();
+        LANGMAP_ADJUST(c, TRUE);
+        --no_zero_mapping;
+        if (ctrl_w)
+        {
+            --no_mapping;
+            --allow_keys;
+        }
+        #ifdef FEAT_CMDL_INFO
+        need_flushbuf |= add_to_showcmd(c);
+        #endif
+    }
+    
+    /*
+     * If we got CTRL-W there may be a/another count
+     */
+    if (c == Ctrl_W && !ctrl_w && oap->op_type == OP_NOP)
+    {
+        ctrl_w = TRUE;
+        ca.opcount = ca.count0;	/* remember first count */
+        ca.count0 = 0;
+        ++no_mapping;
+        ++allow_keys;		/* no mapping for nchar, but keys */
+        c = plain_vgetc();		/* get next character */
+        LANGMAP_ADJUST(c, TRUE);
+        --no_mapping;
+        --allow_keys;
+        #ifdef FEAT_CMDL_INFO
+            need_flushbuf |= add_to_showcmd(c);
+        #endif
+        goto getcount;		/* jump back */
+    }
+}
+
+#ifdef FEAT_AUTOCMD
+if (c == K_CURSORHOLD)
+{
+    /* Save the count values so that ca.opcount and ca.count0 are exactly
+     * the same when coming back here after handling K_CURSORHOLD. */
+    oap->prev_opcount = ca.opcount;
+    oap->prev_count0 = ca.count0;
+}
+else
+#endif
+if (ca.opcount != 0)
+{
+    /*
+     * If we're in the middle of an operator (including after entering a
+     * yank buffer with '"') AND we had a count before the operator, then
+     * that count overrides the current value of ca.count0.
+     * What this means effectively, is that commands like "3dw" get turned
+     * into "d3w" which makes things fall into place pretty neatly.
+     * If you give a count before AND after the operator, they are
+     * multiplied.
+     */
+    if (ca.count0)
+        ca.count0 *= ca.opcount;
+    else
+        ca.count0 = ca.opcount;
+}
+/*
+ * Always remember the count.  It will be set to zero (on the next call,
+ * above) when there is no pending operator.
+ * When called from main(), save the count for use by the "count" built-in
+ * variable.
+ */
+ca.opcount = ca.count0;
+ca.count1 = (ca.count0 == 0 ? 1 : ca.count0);
+
+#ifdef FEAT_EVAL
+/*
+ * Only set v:count when called from main() and not a stuffed command.
+ */
+if (toplevel && stuff_empty())
+    set_vcount(ca.count0, ca.count1, set_prevcount);
+#endif
+
+/*
+ * Find the command character in the table of commands.
+ * For CTRL-W we already got nchar when looking for a count.
+ */
+if (ctrl_w)
+{
+    ca.nchar = c;
+    ca.cmdchar = Ctrl_W;
+}
+else
+    ca.cmdchar = c;
+idx = find_command(ca.cmdchar);
+if (idx < 0)
+{
+    /* Not a known command: beep. */
+    clearopbeep(oap);
+    goto normal_end;
+}
+if (text_locked() && (nv_cmds[idx].cmd_flags & NV_NCW))
+{
+    /* This command is not allowed while editing a ccmdline: beep. */
+    clearopbeep(oap);
+    text_locked_msg();
+    goto normal_end;
+}
+
+#ifdef FEAT_AUTOCMD
+if ((nv_cmds[idx].cmd_flags & NV_NCW) && curbuf_locked())
+    goto normal_end;
+#endif
+.. @+node:ekr.20131109090612.29150: *3* << handle special caces for visual/select mode >>
+#ifdef FEAT_VISUAL
+/*
+ * In Visual/Select mode, a few keys are handled in a special way.
+ */
+if (VIsual_active)
+{
+    /* when 'keymodel' contains "stopsel" may stop Select/Visual mode */
+    if (km_stopsel
+        && (nv_cmds[idx].cmd_flags & NV_STS)
+        && !(mod_mask & MOD_MASK_SHIFT)
+    ) {
+        end_visual_mode();
+        redraw_curbuf_later(INVERTED);
+    }
+    
+    /* Keys that work different when 'keymodel' contains "startsel" */
+    if (km_startsel)
+    {
+        if (nv_cmds[idx].cmd_flags & NV_SS)
+        {
+            unshift_special(&ca);
+            idx = find_command(ca.cmdchar);
+            if (idx < 0)
+            {
+                /* Just in case */
+                clearopbeep(oap);
+                goto normal_end;
+            }
+        }
+        else if ((nv_cmds[idx].cmd_flags & NV_SSS)
+            && (mod_mask & MOD_MASK_SHIFT)
+        ) {
+            mod_mask &= ~MOD_MASK_SHIFT;
+        }
+    }
+}
+#endif
+.. @+node:ekr.20131109090612.29149: *3* << invert horizontal movements and operations >>
+#ifdef FEAT_RIGHTLEFT
+if (curwin->w_p_rl && KeyTyped && !KeyStuffed
+				  && (nv_cmds[idx].cmd_flags & NV_RL))
+{
+    /* Invert horizontal movements and operations.  Only when typed by the
+     * user directly, not when the result of a mapping or "x" translated
+     * to "dl". */
+    switch (ca.cmdchar)
+    {
+        case 'l':	    ca.cmdchar = 'h'; break;
+        case K_RIGHT:   ca.cmdchar = K_LEFT; break;
+        case K_S_RIGHT: ca.cmdchar = K_S_LEFT; break;
+        case K_C_RIGHT: ca.cmdchar = K_C_LEFT; break;
+        case 'h':	    ca.cmdchar = 'l'; break;
+        case K_LEFT:    ca.cmdchar = K_RIGHT; break;
+        case K_S_LEFT:  ca.cmdchar = K_S_RIGHT; break;
+        case K_C_LEFT:  ca.cmdchar = K_C_RIGHT; break;
+        case '>':	    ca.cmdchar = '<'; break;
+        case '<':	    ca.cmdchar = '>'; break;
+    }
+    idx = find_command(ca.cmdchar);
+}
+#endif
+.. @+node:ekr.20131109090612.29148: *3* << get additional character >>
+/*
+ * Get an additional character if we need one.
+ */
+if ((nv_cmds[idx].cmd_flags & NV_NCH)
+    && (((nv_cmds[idx].cmd_flags & NV_NCH_NOP) == NV_NCH_NOP
+	    && oap->op_type == OP_NOP)
+	|| (nv_cmds[idx].cmd_flags & NV_NCH_ALW) == NV_NCH_ALW
+	|| (ca.cmdchar == 'q'
+	    && oap->op_type == OP_NOP
+	    && !Recording
+	    && !Exec_reg)
+	|| ((ca.cmdchar == 'a' || ca.cmdchar == 'i')
+	    && (oap->op_type != OP_NOP
+#ifdef FEAT_VISUAL
+		|| VIsual_active
+#endif
+    )))
+) {
+    int	*cp;
+    int	repl = FALSE;	/* get character for replace mode */
+    int	lit = FALSE;	/* get extra character literally */
+    int	langmap_active = FALSE;    /* using :lmap mappings */
+    int	lang;		/* getting a text character */
+
+    #ifdef USE_IM_CONTROL
+    int	save_smd;	/* saved value of p_smd */
+    #endif
+    
+    ++no_mapping;
+    ++allow_keys;		/* no mapping for nchar, but allow key codes */
+
+    #ifdef FEAT_AUTOCMD
+    /* Don't generate a CursorHold event here, most commands can't handle
+     * it, e.g., nv_replace(), nv_csearch(). */
+    did_cursorhold = TRUE;
+    #endif
+
+    if (ca.cmdchar == 'g')
+    {
+        /*
+         * For 'g' get the next character now, so that we can check for
+         * "gr", "g'" and "g`".
+         */
+        ca.nchar = plain_vgetc();
+        LANGMAP_ADJUST(ca.nchar, TRUE);
+        
+        #ifdef FEAT_CMDL_INFO
+        need_flushbuf |= add_to_showcmd(ca.nchar);
+        #endif
+    
+        if (ca.nchar == 'r' || ca.nchar == '\'' ||
+            ca.nchar == '`' || ca.nchar == Ctrl_BSL
+        ) {
+            cp = &ca.extra_char;	/* need to get a third character */
+            if (ca.nchar != 'r')
+                lit = TRUE;	/* get it literally */
+            else
+                repl = TRUE;	/* get it in replace mode */
+        }
+        else
+            cp = NULL;	/* no third character needed */
+    }
+    else
+    {
+        if (ca.cmdchar == 'r')	/* get it in replace mode */
+        repl = TRUE;
+        cp = &ca.nchar;
+    }
+    lang = (repl || (nv_cmds[idx].cmd_flags & NV_LANG));
+
+    if (cp != NULL)
+    {
+        << get second or third character >>
+    }
+    --no_mapping;
+    --allow_keys;
+}
+.. @+node:ekr.20131109090612.29158: *4* << get second or third character >>
+/*
+ * Get a second or third character.
+ */
+#ifdef CURSOR_SHAPE
+if (repl)
+{
+    State = REPLACE;	/* pretend Replace mode */
+    ui_cursor_shape();	/* show different cursor shape */
+}
+#endif
+
+if (lang && curbuf->b_p_iminsert == B_IMODE_LMAP)
+{
+    /* Allow mappings defined with ":lmap". */
+    --no_mapping;
+    --allow_keys;
+    if (repl)
+        State = LREPLACE;
+    else
+        State = LANGMAP;
+    langmap_active = TRUE;
+}
+
+#ifdef USE_IM_CONTROL
+save_smd = p_smd;
+p_smd = FALSE;	/* Don't let the IM code show the mode here */
+if (lang && curbuf->b_p_iminsert == B_IMODE_IM)
+    im_set_active(TRUE);
+#endif
+
+*cp = plain_vgetc();
+if (langmap_active)
+{
+    /* Undo the decrement done above */
+    ++no_mapping;
+    ++allow_keys;
+    State = NORMAL_BUSY;
+}
+
+#ifdef USE_IM_CONTROL
+if (lang)
+{
+    if (curbuf->b_p_iminsert != B_IMODE_LMAP)
+        im_save_status(&curbuf->b_p_iminsert);
+    im_set_active(FALSE);
+}
+p_smd = save_smd;
+#endif
+
+#ifdef CURSOR_SHAPE
+State = NORMAL_BUSY;
+#endif
+
+#ifdef FEAT_CMDL_INFO
+need_flushbuf |= add_to_showcmd(*cp);
+#endif
+
+if (!lit)
+{
+    #ifdef FEAT_DIGRAPHS
+    /* Typing CTRL-K gets a digraph. */
+    if (*cp == Ctrl_K
+        && ((nv_cmds[idx].cmd_flags & NV_LANG)
+            || cp == &ca.extra_char)
+        && vim_strchr(p_cpo, CPO_DIGRAPH) == NULL)
+    {
+        c = get_digraph(FALSE);
+        if (c > 0)
+        {
+            *cp = c;
+            # ifdef FEAT_CMDL_INFO
+            /* Guessing how to update showcmd here... */
+            del_from_showcmd(3);
+            need_flushbuf |= add_to_showcmd(*cp);
+            # endif
+        }
+    }
+    #endif
+
+    /* adjust chars > 127, except after "tTfFr" commands */
+    LANGMAP_ADJUST(*cp, !lang);
+
+    #ifdef FEAT_RIGHTLEFT
+    /* adjust Hebrew mapped char */
+    if (p_hkmap && lang && KeyTyped)
+        *cp = hkmap(*cp);
+        # ifdef FEAT_FKMAP
+        /* adjust Farsi mapped char */
+        if (p_fkmap && lang && KeyTyped)
+            *cp = fkmap(*cp);
+        # endif
+    #endif
+}
+/*
+ * When the next character is CTRL-\ a following CTRL-N means the
+ * command is aborted and we go to Normal mode.
+ */
+if (cp == &ca.extra_char
+    && ca.nchar == Ctrl_BSL
+    && (ca.extra_char == Ctrl_N || ca.extra_char == Ctrl_G))
+{
+    ca.cmdchar = Ctrl_BSL;
+    ca.nchar = ca.extra_char;
+    idx = find_command(ca.cmdchar);
+}
+else if (*cp == Ctrl_BSL)
+{
+    long towait = (p_ttm >= 0 ? p_ttm : p_tm);
+    /* There is a busy wait here when typing "f<C-\>" and then
+     * something different from CTRL-N.  Can't be avoided. */
+    while ((c = vpeekc()) <= 0 && towait > 0L)
+    {
+        do_sleep(towait > 50L ? 50L : towait);
+        towait -= 50L;
+    }
+    if (c > 0)
+    {
+        c = plain_vgetc();
+        if (c != Ctrl_N && c != Ctrl_G)
+        vungetc(c);
+        else
+        {
+            ca.cmdchar = Ctrl_BSL;
+            ca.nchar = c;
+            idx = find_command(ca.cmdchar);
+        }
+    }
+}
+
+#ifdef FEAT_MBYTE
+/* When getting a text character and the next character is a
+* multi-byte character, it could be a composing character.
+* However, don't wait for it to arrive. */
+while (enc_utf8 && lang && (c = vpeekc()) > 0
+     && (c >= 0x100 || MB_BYTE2LEN(vpeekc()) > 1))
+{
+    c = plain_vgetc();
+    if (!utf_iscomposing(c))
+    {
+        vungetc(c);		/* it wasn't, put it back */
+        break;
+    }
+    else if (ca.ncharC1 == 0)
+        ca.ncharC1 = c;
+    else
+        ca.ncharC2 = c;
+}
+#endif
+.. @+node:ekr.20131109090612.29147: *3* << flush the showcmd characters to the screen >>
+
+#ifdef FEAT_CMDL_INFO
+/*
+ * Flush the showcmd characters onto the screen so we can see them while
+ * the command is being executed.  Only do this when the shown command was
+ * actually displayed, otherwise this will slow down a lot when executing
+ * mappings.
+ */
+if (need_flushbuf)
+    out_flush();
+#endif
+.. @+node:ekr.20131109090612.29157: *3* << goto normal_end on ESC >>
+if (ca.nchar == ESC)
+{
+    clearop(oap);
+    if (restart_edit == 0 && goto_im())
+        restart_edit = 'a';
+    goto normal_end;
+}
+.. @+node:ekr.20131109090612.29146: *3* << remember where the cursor was >>
+#ifdef FEAT_VISUAL
+old_pos = curwin->w_cursor;		/* remember where cursor was */
+
+/* When 'keymodel' contains "startsel" some keys start Select/Visual
+ * mode. */
+if (!VIsual_active && km_startsel)
+{
+    if (nv_cmds[idx].cmd_flags & NV_SS)
+    {
+        start_selection();
+        unshift_special(&ca);
+        idx = find_command(ca.cmdchar);
+    }
+    else if ((nv_cmds[idx].cmd_flags & NV_SSS) && (mod_mask & MOD_MASK_SHIFT)
+    ) {
+        start_selection();
+        mod_mask &= ~MOD_MASK_SHIFT;
+    }
+}
+#endif
+.. @+node:ekr.20131109090612.29159: *3* << set msg_ vars >>
+if (ca.cmdchar != K_IGNORE)
+{
+    msg_didout = FALSE;    /* don't scroll screen up for normal command */
+    msg_col = 0;
+}
+.. @+node:ekr.20131109090612.29143: *3* << reset oap-regname >>
+/*
+ * If we didn't start or finish an operator, reset oap->regname, unless we
+ * need it later.
+ */
+if (!finish_op
+    && !oap->op_type
+    && (idx < 0 || !(nv_cmds[idx].cmd_flags & NV_KEEPREG))
+) {
+    clearop(oap);
+
+    #ifdef FEAT_EVAL
+    set_reg_var('"');
+    #endif
+}
+.. @+node:ekr.20131109090612.29144: *3* << set old_mapped_len >>
+
+#ifdef FEAT_VISUAL
+/* Get the length of mapped chars again after typing a count, second
+ * character or "z333<cr>". */
+if (old_mapped_len > 0)
+    old_mapped_len = typebuf_maplen();
+#endif
+.. @+node:ekr.20131109090612.29145: *3* << handle pending operator >>
+/*
+ * If an operation is pending, handle it...
+ */
+do_pending_operator(&ca, old_col, FALSE);
+.. @+node:ekr.20131109090612.29142: *3* << wait to write message >>
+/*
+ * Wait for a moment when a message is displayed that will be overwritten
+ * by the mode message.
+ * In Visual mode and with "^O" in Insert mode, a short message will be
+ * overwritten by the mode message.  Wait a bit, until a key is hit.
+ * In Visual mode, it's more important to keep the Visual area updated
+ * than keeping a message (e.g. from a /pat search).
+ * Only do this if the command was typed, not from a mapping.
+ * Don't wait when emsg_silent is non-zero.
+ * Also wait a bit after an error message, e.g. for "^O:".
+ * Don't redraw the screen, it would remove the message.
+ */
+if (       ((p_smd
+	    && msg_silent == 0
+	    && (restart_edit != 0
+#ifdef FEAT_VISUAL
+		|| (VIsual_active
+		    && old_pos.lnum == curwin->w_cursor.lnum
+		    && old_pos.col == curwin->w_cursor.col)
+#endif
+	       )
+	    && (clear_cmdline
+		|| redraw_cmdline)
+	    && (msg_didout || (msg_didany && msg_scroll))
+	    && !msg_nowait
+	    && KeyTyped)
+	|| (restart_edit != 0
+#ifdef FEAT_VISUAL
+	    && !VIsual_active
+#endif
+	    && (msg_scroll
+		|| emsg_on_display)))
+    && oap->regname == 0
+    && !(ca.retval & CA_COMMAND_BUSY)
+    && stuff_empty()
+    && typebuf_typed()
+    && emsg_silent == 0
+    && !did_wait_return
+    && oap->op_type == OP_NOP)
+{
+    int	save_State = State;
+    /* Draw the cursor with the right shape here */
+    if (restart_edit != 0)
+        State = INSERT;
+    /* If need to redraw, and there is a "keep_msg", redraw before the delay */
+    if (must_redraw && keep_msg != NULL && !emsg_on_display)
+    {
+        char_u	*kmsg;
+        kmsg = keep_msg;
+        keep_msg = NULL;
+        /* showmode() will clear keep_msg, but we want to use it anyway */
+        update_screen(0);
+        /* now reset it, otherwise it's put in the history again */
+        keep_msg = kmsg;
+        msg_attr(kmsg, keep_msg_attr);
+        vim_free(kmsg);
+    }
+    setcursor();
+    cursor_on();
+    out_flush();
+    if (msg_scroll || emsg_on_display)
+        ui_delay(1000L, TRUE);	/* wait at least one second */
+    ui_delay(3000L, FALSE);	/* wait up to three seconds */
+    State = save_State;
+    msg_scroll = FALSE;
+    emsg_on_display = FALSE;
+}
+.. @+node:ekr.20131109090612.29141: *3* << finish up >>
+/*
+ * Finish up after executing a Normal mode command.
+ */
+
+msg_nowait = FALSE;
+
+/* Reset finish_op, in case it was set */
+#ifdef CURSOR_SHAPE
+c = finish_op;
+#endif
+
+finish_op = FALSE;
+
+#ifdef CURSOR_SHAPE
+/* Redraw the cursor with another shape, if we were in Operator-pending
+ * mode or did a replace command. */
+if (c || ca.cmdchar == 'r')
+{
+    ui_cursor_shape();		/* may show different cursor shape */
+    # ifdef FEAT_MOUSESHAPE
+    update_mouseshape(-1);
+    # endif
+}
+#endif
+
+#ifdef FEAT_CMDL_INFO
+if (oap->op_type == OP_NOP && oap->regname == 0
+    # ifdef FEAT_AUTOCMD
+        && ca.cmdchar != K_CURSORHOLD
+    # endif
+)
+    clear_showcmd();
+#endif
+
+checkpcmark();	/* check if we moved since setting pcmark */
+vim_free(ca.searchbuf);
+
+#ifdef FEAT_MBYTE
+if (has_mbyte)
+    mb_adjust_cursor();
+#endif
+
+#ifdef FEAT_SCROLLBIND
+if (curwin->w_p_scb && toplevel)
+{
+    validate_cursor();	/* may need to update w_leftcol */
+    do_check_scrollbind(TRUE);
+}
+#endif
+
+<< possibly restart edit >>
+
+#ifdef FEAT_VISUAL
+if (restart_VIsual_select == 2)
+    restart_VIsual_select = 1;
+#endif
+
+/* Save count before an operator for next time. */
+opcount = ca.opcount;
+.. @+node:ekr.20131109090612.29140: *4* << possibly restart edit >>
+/*
+ * May restart edit(), if we got here with CTRL-O in Insert mode (but not
+ * if still inside a mapping that started in Visual mode).
+ * May switch from Visual to Select mode after CTRL-O command.
+ */
+if ( oap->op_type == OP_NOP
+
+    #ifdef FEAT_VISUAL
+    && ((restart_edit != 0 && !VIsual_active && old_mapped_len == 0)
+    || restart_VIsual_select == 1)
+    #else
+        && restart_edit != 0
+    #endif
+
+    && !(ca.retval & CA_COMMAND_BUSY)
+    && stuff_empty()
+    && oap->regname == 0
+) {
+    #ifdef FEAT_VISUAL
+    if (restart_VIsual_select == 1)
+    {
+        VIsual_select = TRUE;
+        showmode();
+        restart_VIsual_select = 0;
+    }
+    #endif
+
+    if (restart_edit != 0
+        #ifdef FEAT_VISUAL
+        && !VIsual_active && old_mapped_len == 0
+        #endif
+    )
+        (void)edit(restart_edit, FALSE, 1L);
+}
+.. @+node:ekr.20131108082341.16372: ** Vim mode
+@language rest
+
+# https://groups.google.com/forum/#!topic/leo-editor/OSe0_D5tmJQ
+
+# http://stackoverflow.com/questions/7325052/can-someone-explain-to-me-why-the-dot-command-is-so-useful-in-vim
+
+* Make keystrokes in vim's command mode visible in the minibuffer.
+
+    - Not exactly how vim works.
+    - Add stay-in-minibuffer switch?
+    - Is this how Leo already works?
+
+* Add support for numeric arguments.
+
+* Add Support for "instant execution" of abbreviations.
+
+    - Create a tree of valid minibuffer completions.
+    - Execute a command when it is the only possible completion.
+
+* Add Vim-oriented commands.
+
+In principle, these new commands could handle all possible vim commands. In
+practice, some new design work (on the abbreviations themselves) would be
+necessary to handle the much richer environment that Leo provides.
+.. @+node:ekr.20131105122124.16479: *3* vim reference card
 @killcolor
-.. @+node:ekr.20131105122124.16482: *3*  keys (do not sort!!)
+.. @+node:ekr.20131105122124.16482: *4*  keys (do not sort!!)
     <BS>        delete the character in front of the cursor
 N   <Del>       delete N characters under and after the cursor
     <Del>       delete the character under the cursor
@@ -9551,7 +10416,7 @@ VIS y               yank the highlighted text
     z<CR> or zt     redraw, current line at top of window
 N   zh              scroll screen N characters to the right
 N   zl              scroll screen N characters to the left
-.. @+node:ekr.20131108082341.18235: *3* motion keys
+.. @+node:ekr.20131108082341.18235: *4* motion keys
     CTRL-B  (motion?) cursor to beginning of command-line
     CTRL-E  (motion?) cursor to end of command-line
     N   .   (motion?) repeat last change (with count replaced with N)
@@ -9652,7 +10517,7 @@ N   n       (motion?) repeat last search
     o       (motion?) exchange cursor position with start of highlighting
 N   t<char> (motion) till before the Nth occurrence of <char> to the right
 N   w       (motion) N words forward
-.. @+node:ekr.20131108082341.18226: *3* motions
+.. @+node:ekr.20131108082341.18226: *4* motions
 @color
 
 w   to start of next word, excluding it's first character.
@@ -9719,7 +10584,7 @@ N ]]
 N ][ 	    
 N [[ 	    
 N [] 	
-.. @+node:ekr.20131105122124.16483: *3* vim regex
+.. @+node:ekr.20131105122124.16483: *4* vim regex
                                            Value of magic option
                                            ---------------------
                         meaning            magic       nomagic
@@ -9750,7 +10615,7 @@ matches 1 or more of the preceding atom      \+           \+
    matches 0 or 1 of the preceding atom      \=           \=
                  separates two branches      \|           \|
            group a pattern into an atom      \(\)         \(\)
-.. @+node:ekr.20131105122124.16484: *3* keys in insert mode
+.. @+node:ekr.20131105122124.16484: *4* keys in insert mode
     char                action in Insert mode
     ----                --------------------- 
  
@@ -9786,7 +10651,7 @@ matches 1 or more of the preceding atom      \+           \+
     CTRL-W              delete word before the cursor
     CTRL-X ...          complete the word before the cursor in various ways
     CTRL-Y              insert the character from above the cursor
-.. @+node:ekr.20131105122124.16485: *3* complex
+.. @+node:ekr.20131105122124.16485: *4* complex
 N  !{motion}{command}<CR>  filter the lines that are moved over through {command}
 N  !!{command}<CR>         filter N lines through {command}
    {visual}!{command}<CR>  filter the highlighted lines through {command}
@@ -9799,7 +10664,7 @@ N  ==                      filter N lines through "indent"
 :[range]s[ubstitute] [g][c]
    &         Repeat previous ":s" on current line without options
 :[range]ret[ab][!] [tabstop]
-.. @+node:ekr.20131105122124.16486: *3* text object
+.. @+node:ekr.20131105122124.16486: *4* text object
 Used only in Visual mode or after an operator
 
 a            Select current word
@@ -9808,7 +10673,7 @@ s            Select current sentence
 p            Select current paragraph
 S            Select current block (from "[(" to "])")
 P            Select current block (from "[{" to "]}")
-.. @+node:ekr.20131105122124.16487: *3* offsets after search command
+.. @+node:ekr.20131105122124.16487: *4* offsets after search command
 [num]       [num] lines downwards, in column 1
 +[num]      [num] lines downwards, in column 1
 -[num]      [num] lines upwards, in column 1
@@ -9825,7 +10690,7 @@ b[-num]     [num] characters to the left of the start (begin) of the match
 /test/e			on the last t of "test"
 /test/s+2		on the 's' of "test"
 /test/b-3		three characters before "test"
-.. @+node:ekr.20131105122124.16488: *3* Examples
+.. @+node:ekr.20131105122124.16488: *4* Examples
 :%g/^a/-1join     join lines starting with character 'a' to previous line
 :%g/^ *$/d        delete empty lines
 :%v/vim/m 1       move lines not matching the word 'vim' to line 1
@@ -9834,7 +10699,7 @@ b[-num]     [num] characters to the left of the start (begin) of the match
 :so[urce] {file}    Read Ex commands from {file}.
 :so[urce]! {file}   Read Vim commands from {file}.
 :sl[eep] [N]        don't do anything for N seconds
-.. @+node:ekr.20131105122124.16489: *3* Options overview
+.. @+node:ekr.20131105122124.16489: *4* Options overview
 
 name       short name   explanation
 ----       ----------   -----------
@@ -9988,7 +10853,7 @@ wrapscan       ws       searches wrap around the end of the file
 writeany       wa       write to file with no need for "!" override
 writebackup    wb       make a backup before overwriting a file
 writedelay     wd       delay this many msec for each char (for debug)
-.. @+node:ekr.20131105122124.16490: *3* Command-line completion
+.. @+node:ekr.20131105122124.16490: *4* Command-line completion
 'wildchar' (default: <Tab>)
     do completion on the pattern in front of the cursor. If there are
     multiple matches, beep and show the first one; further 'wildchar' will
@@ -9999,7 +10864,7 @@ CTRL-D  list all names that match the pattern in front of the cursor
 CTRL-L  insert longest common part of names that match pattern
 CTRL-N  after 'wildchar' with multiple matches: go to next match
 CTRL-P  after 'wildchar' with multiple matches: go to previous match
-.. @+node:ekr.20131105122124.16491: *3* Special Ex characters
+.. @+node:ekr.20131105122124.16491: *4* Special Ex characters
 
 |           separates two commands (not for ":global" and ":!")
 "           begins comment
@@ -10020,7 +10885,7 @@ After "%", "#", "<cfile>", or "<afile>"
 :t          tail
 :r          root
 :e          extension
-.. @+node:ekr.20131105122124.16492: *3* Ex ranges
+.. @+node:ekr.20131105122124.16492: *4* Ex ranges
 ,               separates two line numbers
 ;               idem, set cursor to the first line number
                 before interpreting the second one
@@ -10034,7 +10899,7 @@ $               the last line in the file
 ?{pattern}[?]   the previous line where {pattern} matches
 +[num]          add [num] to the preceding line number (default: 1)
 -[num]          subtract [num] from the preceding line number (default: 1)
-.. @+node:ekr.20131105122124.16493: *3* Starting vim
+.. @+node:ekr.20131105122124.16493: *4* Starting vim
 38 -- Starting VIM
 
 
@@ -10089,7 +10954,7 @@ Automatic execution of commands on certain events.
 :au! * {pat}            Remove all autocommands for {pat}
 :au! {event} {pat}      Remove all autocommands for {event} with {pat}
 :au! {event} {pat} {cmd}  Remove all autocommands for {event} with {pat} and enter new one
-.. @+node:ekr.20131105122124.16494: *3* : commands unsorted
+.. @+node:ekr.20131105122124.16494: *4* : commands unsorted
 :marks                  print the active marks
 :ju[mps]                print the jump list
 :ta[g][!] {tag}         Jump to tag {tag}
@@ -10240,7 +11105,7 @@ Automatic execution of commands on certain events.
 :sbrewind           to first arg/buf (in new window)
 :sblast             to last arg/buf (in new window)
 :[N]sbmod [N]       to Nth modified buf (in new window)
-.. @+node:ekr.20131105122124.16495: *3* : commands merged (do not sort!)
+.. @+node:ekr.20131105122124.16495: *4* : commands merged (do not sort!)
 :!{command}                     execute {command} with a shell
 :@<a-z>                         execute the contents of register <a-z> as an Ex command
 :@@                             repeat previous :@<a-z>
@@ -10380,5 +11245,508 @@ Automatic execution of commands on certain events.
 :wv[iminfo]! [file]             write info to viminfo file [file]
 :x[it][!] [file]                like ":wq" but write only when changes have been made
 :xall[!]  or :wqall[!]          Write all changed buffers and exit
+.. @+node:ekr.20131108203402.16399: *3* vim unit tests
+if 0: # Don't execute this code when loading the file!
+    @others
+.. @+node:ekr.20131108203402.16419: *4* @test g.cls
+g.cls()
+.. @+node:ekr.20131108203402.16397: *4* @test motion regex
+@language python
+
+# http://docs.python.org/2/library/re.html
+import re
+# g.cls()
+
+def escape(ch):
+    return ch if ch.isalnum() else '\\%s' % ch
+# Not yet.
+# N /<CR> (motion) repeat last search, in the forward direction
+
+# 0 (motion) to first character in the line (also: <Home> key)
+# ^ (motion) go to first non-blank character in the line
+# % (motion) find the next brace, bracket, comment,
+#            or "#if"/ "#else"/"#endif" in this line and go to its match
+plain_motion_chars = '0^%'
+plain_motion =   '|'.join([escape(ch) for ch in plain_motion_chars])
+# N + (motion) down N lines, on the first non-blank character (also: CTRL-M and <CR>)
+# N _ (motion) down N-1 lines, on the first non-blank character
+# N - (motion) up N lines, on the first non-blank character
+# N , (motion) repeat the last "f", "F", "t", or "T" N times in opposite direction
+# N ; (motion) repeat the last "f", "F", "t", or "T" N times
+# N ( (motion) N sentences backward
+# N ) (motion) N sentences forward
+# N { (motion) N paragraphs backward
+# N } (motion) N paragraphs forward
+# N | (motion) to column N (default: 1)
+# N $ (motion) go to the last character in the line (N-1 lines lower) (also: <End> key)
+# N % (motion) goto line N percentage down in the file.  N must be given, otherwise it is the % command.
+# N # (motion) search backward for the identifier under the cursor
+# N * (motion) search forward for the identifier under the cursor
+n_motion_chars = '+_-,;(){}|$%#*'
+n_motion_alts = ' | '.join([escape(ch) for ch in n_motion_chars])
+# N [#  (motion) N times back to unclosed "#if" or "#else"
+# N [(  (motion) N times back to unclosed '('
+# N [*  (motion) N times back to start of comment "/*"
+# N [[  (motion) N sections backward, at start of section
+# N []  (motion) N sections backward, at end of section
+# N [{  (motion) N times back to unclosed '{'
+open_bracket_chars  = ['[%s' % (ch) for ch in '#(*[]{']
+# N ]#  (motion) N times forward to unclosed "#else" or "#endif"
+# N ])  (motion) N times forward to unclosed ')'
+# N ]*  (motion) N times forward to end of comment "*/"
+# N ][  (motion) N sections forward, at end of section
+# N ]]  (motion) N sections forward, at start of section
+# N ]}  (motion) N times forward to unclosed '}'
+close_bracket_chars = [']%s' % (ch) for ch in '#)*[]}']
+bracket_chars = open_bracket_chars + close_bracket_chars
+bracket_motion = ' | '.join(['%s%s' % (escape(s[0]),escape(s[1])) for s in bracket_chars])
+bracket_alts =      r'(?P<bracket_alt>%s)' % (bracket_motion)
+# print(bracket_alts)
+# gD (motion) goto global declaration of identifier under the cursor
+# gd (motion) goto local declaration of identifier under the cursor
+g_bare_alts =   r'(?P<bare_g_alts>(gD|gd))'
+# N g^      (motion) to first non-blank character in screen line (differs from "^" when lines wrap)
+# N g#      (motion) like "#", but also find partial matches
+# N g$      (motion) to last character in screen line (differs from "$" when lines wrap)
+# N g*      (motion) like "*", but also find partial matches
+# N g0      (motion) to first character in screen line (differs from "0" when lines wrap)
+# N gE      (motion) backward to the end of the Nth blank-separated WORD
+# N ge      (motion) backward to the end of the Nth word
+# N gg      (motion) goto line N (default: first line), on the first non-blank character
+# N gj      (motion) down N screen lines (differs from "j" when line wraps)
+# N gk      (motion) up N screen lines (differs from "k" when line wraps)
+g_alt_chars =   ' | '.join([escape(ch) for ch in '^#$*0Eegjk'])
+g_alts =        r'(?P<g_n>[0-9]*)(?P<g_alt>g(%s))' % (g_alt_chars)
+g_motion = 'g(%s | %s)' % (g_bare_alts,g_alts)
+print(g_motion)
+.. @+node:ekr.20131108203402.16398: *4* @test command regex
+@language python
+# http://docs.python.org/2/library/re.html
+import re
+# g.cls()
+n =     r'(?P<n>[0-9]*)'    # Optional digits
+cmd =   r'(?P<cmd>[^0-9]+)' # Required: anything *except* digits.
+n2 =    r'(?P<n2>[0-9]*)'   # Optional digits
+cmd2 =  r'(?P<cmd2>[a-zA-Z]?)' # Optional letter.
+n_c = n+cmd+n2+cmd2
+tables = (
+    (n_c,('35N','N','2d2','d2d','gg',)),
+)
+for pat,aList in tables:
+    fields = re.findall('\(\?P<([a-z_A-Z0-9]+)>',pat)
+    print('pattern: %s\n fields: %s' % (pat,','.join(fields)))
+    for s in aList:
+        print('  %s' % s)
+        m = re.search(pat,s)
+        for field in fields:
+            try:
+                val = m.group(field)
+            except Exception:
+                g.es_exception()
+                val = None
+            print('    %7s %s' % (field,val or 'None'))
+.. @+node:ekr.20131108082341.18228: *4* @test vim old prototype
+@language python
+
+import string
+
+class VimParser:
+    @others
+    
+vp = VimParser()
+table = (
+    'gg',
+    '2dd',
+)
+for s in table:
+    n1,command,n2,motion = vp.scan(s)
+    print(s)
+    print('  %r %r %r %r' % (n1,command,n2,motion))
+.. @+node:ekr.20131108203402.16422: *5* ctor
+def __init__(self):
+    
+    self.char_m  = 'FTft'
+    self.commands_d = self.make_commands_dict()
+        # Keys are commands, values are additional parsers.
+    self.motions_d = self.make_motions_dict()
+        # Keys are characters,
+        # Values are strings listing valid following characters.
+.. @+node:ekr.20131108203402.16427: *5* make_commands_dict
+def make_commands_dict(self):
+    
+    trace = True
+    d = {}
+        # Keys are commands, values are additional parsers.
+    # Not used.
+    #   o (motion?) exchange cursor position with start of highlighting
+    # Single-character commands.
+    for ch in '0~^%_+-,;(){}|$#*ABCDEGHIJKLMNOPRSUVWXYabehijklnopqsuvwx':
+        d[ch] = self.scan_one_character_command
+    # Two-character commands.
+    for ch in 'Zz':
+        d[ch] = self.scan_two_character_command
+    # Commands with complex parsers.
+    table = (
+        # Followed by an arbitrary character...
+            ('"',self.scan_char),
+            ('F',self.scan_char),
+            ('T',self.scan_char),
+            ('f',self.scan_char),
+            ('t',self.scan_char),
+        # Individualized parsers...
+            ('/',self.scan_slash),
+            ('<',self.scan_open_angle_bracket),
+            ('>',self.scan_close_angle_bracket),
+            ('@',self.scan_at),
+            ('[',self.scan_close_square_bracket),
+            (']',self.scan_open_square_bracket),
+            ('`',self.scan_back_tick),
+            ('c',self.scan_c),
+            ('d',self.scan_d),
+            ('g',self.scan_g),
+            ('m',self.scan_m),
+            ('q',self.scan_q),
+            ('y',self.scan_y),
+    )
+    for ch,func in table:
+        d[ch] = func
+    if trace:
+        for key in sorted(d.keys()):
+            print('%r %s' % (key,d.get(key).__name__))
+    return d
+.. @+node:ekr.20131108203402.16424: *5* make_motions_dict
+def make_motions_dict(self):
+    
+    trace = False
+    char = [ch for ch in string.printable if 32 <= ord(ch) < 128]
+    # if trace: g.trace('printable:',''.join(char))
+    d = {}
+    # Single-character motions.
+    for ch in '0^%_+-,;(){}|$#*BEGNWbehjklnw':
+        d[ch] = []
+    # Lead-in characters followed by a single character.
+    table = (
+        ('[','#(*[]{'),
+        (']','#)*[]}'),
+        ('F',char),
+        ('T',char),
+        ('f',char),
+        ('g','^#$*0DEdegjk'),
+        ('t',char),
+        ('/','\\n'),
+    )
+    for ch,s in table:
+        d[ch] = s
+    if trace:
+        for key in sorted(d.keys()):
+            val = d.get(key)
+            if val:
+                if val == char: val = '<char>'
+                print('%s %s' % (key,val))
+            else:
+                print(key)
+    return d
+.. @+node:ekr.20131108203402.16423: *5* run
+def run(self,s):
+    g.trace()
+.. @+node:ekr.20131108203402.16421: *5* scan
+def scan(self,s):
+    
+    g.trace(repr(s))
+    i,n1 = self.scan_count(s,0)
+    g.trace(i,n1)
+    command,n2,motion = self.scan_command(s,i)
+    return n1,command,n2,motion
+    
+   
+.. @+node:ekr.20131108203402.16443: *5* per-characer scanners
+.. @+node:ekr.20131108203402.16442: *6* scan_at
+# N   @<a-z>          execute the contents of register <a-z> (N times)
+# N   @@              (motion?) repeat previous @<a-z> (N times)
+def scan_at(self,s,i):
+    g.trace(s[i:])
+.. @+node:ekr.20131108203402.16428: *6* scan_back_tick
+# `"        go to the position when last editing this file
+# '<a-zA-Z0-9[]'"<>>  same as `, but on the first non-blank in the line
+# `<        go to the start of the (previous) Visual area
+# `<0-9>    go to the position where Vim was last exited
+# `<A-Z>    go to mark <A-Z> in any file
+# `<a-z>    go to mark <a-z> within current file
+# `>        go to the end of the (previous) Visual area
+# `[        go to the start of the previously operated or put text
+# `]        go to the end of the previously operated or put text
+# ``        go to the position before the last jump
+def scan_back_tick(self,s,i):
+    g.trace(s[i:])
+.. @+node:ekr.20131108203402.16431: *6* scan_close_angle_bracket
+# N >{motion} move the lines that are moved over with {motion} one shiftwidth right
+# N >>        move N lines one shiftwidth right
+def scan_close_angle_bracket(self,s,i):
+    g.trace(s[i:])
+.. @+node:ekr.20131108203402.16438: *6* scan_c
+# N   cc              change N lines
+# N   c{motion}       change the text that is moved over with {motion}
+# VIS c               change the highlighted text
+def scan_c(self,s,i):
+    g.trace(s[i:])
+.. @+node:ekr.20131108203402.16435: *6* scan_close_square_bracket
+# N   ]#              (motion) N times forward to unclosed "#else" or "#endif"
+# N   ])              (motion) N times forward to unclosed ')'
+# N   ]*              (motion) N times forward to end of comment "*/"
+# N   ][              (motion) N sections forward, at end of section
+# N   ]]              (motion) N sections forward, at start of section
+# N   ]p              (motion?) like p, but adjust indent to current line
+# N   ]}              (motion) N times forward to unclosed '}'
+def scan_close_square_bracket(self,s,i):
+    g.trace(s[i:])
+.. @+node:ekr.20131108203402.16439: *6* scan_d
+# VIS d               delete the highlighted text
+# N   dd              delete N lines
+# N   d{motion}       delete the text that is moved over with {motion}
+def scan_d(self,s,i):
+    g.trace(s[i:])
+.. @+node:ekr.20131108203402.16436: *6* scan_g
+#     g CTRL-G        show cursor column, line, and character position
+# N   g^              (motion) to first non-blank character in screen line (differs from "^" when lines wrap)
+#     g~{motion}      switch case for the text that is moved over with {motion}
+# N   g#              (motion) like "#", but also find partial matches
+# N   g$              (motion) to last character in screen line (differs from "$" when lines wrap)
+# N   g*              (motion) like "*", but also find partial matches
+# N   g0              (motion) to first character in screen line (differs from "0" when lines wrap)
+#     gD              (motion) goto global declaration of identifier under the cursor
+# N   gE              (motion) backward to the end of the Nth blank-separated WORD
+# N   gI              insert text in column 1 (N times)
+#      gU{motion}      make the text that is moved over with {motion} uppercase
+#     ga              show ascii value of character under cursor in decimal, hex, and octal
+#     gd              (motion) goto local declaration of identifier under the cursor
+#     gf  or ]f        Edit the file whose name is under the cursor
+# N   ge              (motion) backward to the end of the Nth word
+# N   gg              (motion) goto line N (default: first line), on the first non-blank character
+# N   gj              (motion) down N screen lines (differs from "j" when line wraps)
+# N   gk              (motion) up N screen lines (differs from "k" when line wraps)
+# N   gq{motion}      format the lines that are moved over with {motion} to 'textwidth' length
+# N   gs              Goto Sleep for N seconds
+#     gu{motion}      make the text that is moved over with {motion} lowercase
+#     gv              start highlighting on previous visual area
+def scan_g(self,s,i):
+    g.trace(s[i:])
+.. @+node:ekr.20131108203402.16430: *6* scan_open_angle_bracket
+# N <{motion} move the lines that are moved over with {motion} one shiftwidth left
+# N <<        move N lines one shiftwidth left
+def scan_open_angle_bracket(self,s,i):
+    g.trace(s[i:])
+.. @+node:ekr.20131108203402.16434: *6* scan_open_square_bracket
+# N   [#              (motion) N times back to unclosed "#if" or "#else"
+# N   [(              (motion) N times back to unclosed '('
+# N   [*              (motion) N times back to start of comment "/*"
+# N   [[              (motion) N sections backward, at start of section
+# N   []              (motion) N sections backward, at end of section
+# N   [p              (motion?) like P, but adjust indent to current line
+# N   [{              (motion) N times back to unclosed '{'
+def scan_open_square_bracket(self,s,i):
+    g.trace(s[i:])
+.. @+node:ekr.20131108203402.16447: *6* scan_m
+# m <a-zA-Z> mark current position with mark <a-zA-Z>
+def scan_m(self,s,i):
+    g.trace(s[i:])
+.. @+node:ekr.20131108203402.16446: *6* scan_q
+# q<A-Z>    record typed characters, appended to register <a-z>
+# q<a-z>    record typed characters into register <a-z>
+def scan_q(self,s,i):
+    g.trace(s[i:])
+
+.. @+node:ekr.20131108203402.16433: *6* scan_question
+# N ?<CR>                       (motion) repeat last search, in the backward direction
+# N ?{pattern}[?[offset]]<CR>   (motion) search backward for the Nth occurrence of {pattern}
+def scan_question(self,s,i):
+    g.trace(s[i:])
+.. @+node:ekr.20131108203402.16429: *6* scan_one_character_command
+# N   A    append text at the end of the line (N times)
+# N   B    (motion) N blank-separated WORDS backward
+# N   C    change to end-of-line (and N-1 more lines)
+# N   D    delete to end-of-line (and N-1 more lines)
+# N   E    (motion) forward to the end of the Nth blank-separated WORD
+# N   G    (motion) goto line N (default: last line), on the first non-blank character
+# N   H    (motion?) go to the Nth line in the window, on the first non-blank
+# N   I    insert text before the first non-blank in the line (N times)
+# N   J    (motion?) join N-1 lines (delete newlines)
+# VIS J    (motion?) join the highlighted lines
+    # K    lookup keyword under the cursor with 'keywordprg' program (default: "man")
+    # M    (motion?) go to the middle line in the window, on the first non-blank
+# N   L    (motion?) go to the Nth line from the bottom, on the first non-blank
+# N   N    (motion) repeat last search, in opposite direction
+# N   O    open a new line above the current line, append text (N times)
+# N   P    put a register before the cursor position (N times)
+# N   R    enter Replace mode (repeat the entered text N times)
+# N   S    change N lines
+    # U    restore last changed line
+# VIS U    make highlighted text uppercase
+    # V    highlight linewise or stop highlighting
+    # V    start highlighting linewise    }  operator to affect
+# N   W    (motion) N blank-separated WORDS forward
+# N   X    delete N characters before the cursor
+# N   Y    yank N lines
+# N   a               append text after the cursor (N times)
+# N   b               (motion) N words backward
+# N   e    (motion) forward to the end of the Nth word
+# N   h    (motion) left (also: CTRL-H, <BS>, or <Left> key)
+# N   i    insert text before the cursor (N times) (also: <Insert>)
+# N   j    (motion) down N lines (also: CTRL-J, CTRL-N, <NL>, and <Down>)
+# N   k    (motion) up N lines (also: CTRL-P and <Up>)
+# N   l    (motion) right (also: <Space> or <Right> key)
+# N   n    (motion?) repeat last search
+# N   o     open a new line below the current line, append text (N times)
+# N   p     put a register after the cursor position (N times)
+#     q     stop recording
+# N   s     change N characters
+# N   u     undo last N changes
+# VIS u     make highlighted text lowercase
+#     v     highlight characters or stop highlighting
+#     v     start highlighting characters  }  move cursor and use
+# N   w     (motion) N words forward
+# N   x     delete N characters under and after the cursor
+def scan_one_character_command(self,s,i):
+    g.trace(s[i:])
+.. @+node:ekr.20131108203402.16449: *6* scan_two_character_command
+#     z- or zb      redraw, current line at bottom of window
+#     z. or zz      redraw, current line at center of window
+#     z<CR> or zt   redraw, current line at top of window
+# N   zh            scroll screen N characters to the right
+# N   zl            scroll screen N characters to the left
+#     ZQ            Same as ":q!".
+#     ZZ            Same as ":x".
+def scan_two_character_command(self,s,i):
+    g.trace(s[i:])
+.. @+node:ekr.20131108203402.16432: *6* scan_slash
+# N /<CR>                       (motion) repeat last search, in the forward direction
+# N /{pattern}[/[offset]]<CR>   (motion) search forward for the Nth occurrence of {pattern}
+def scan_slash(self,s,i):
+    g.trace(s[i:])
+.. @+node:ekr.20131108203402.16440: *6* scan_y
+# N   yy            yank N lines 
+# N   y {motion}    yank the text moved over with {motion} 
+# VIS y             yank the highlighted text
+def scan_y(self,s,i):
+    g.trace(s[i:])
+.. @+node:ekr.20131108203402.16444: *6* scan_Z
+# ZQ    Same as ":q!".
+# ZZ    Same as ":x".
+def scan_Z(self,s,i):
+    g.trace(s[i:])
+.. @+node:ekr.20131108203402.16437: *5* scan_char
+#   " <char>  use register <char> for the next delete, yank, or put
+# N F <char>  (motion) to the Nth occurrence of <char> to the left
+# N T <char>  (motion) till before the Nth occurrence of <char> to the left
+# N f <char>  (motion) to the Nth occurrence of <char> to the right
+# N r <char>  replace N characters with <char>
+# N t <char>  (motion) till before the Nth occurrence of <char> to the right
+def scan_char(self,s,i):
+    g.trace(s[i:])
+.. @+node:ekr.20131108203402.16425: *5* scan_count
+def scan_count(self,s,i):
+    
+    # Zero does not start a count.
+    i1 = i
+    if i < len(s) and s[i] in '123456789':
+        while i < len(s) and s[i].isdigit():
+            i += 1
+        n = int(s[i1:i])
+    else:
+        n = None
+    return i,n
+.. @+node:ekr.20131108203402.16426: *5* scan_command
+def scan_command(self,s,i):
+    
+    command = s[i:]
+    n = None
+    motion = None
+    g.trace(command)
+    return command,n,motion
+.. @+node:ekr.20131108203402.16396: *4* @test vim motion
+@language python
+# g.cls()
+
+# Unknown:
+# N   H  (motion?) go to the Nth line in the window, on the first non-blank
+# N   J  (motion?) join N-1 lines (delete newlines)
+# VIS J  (motion?) join the highlighted lines
+    # M  (motion?) go to the middle line in the window, on the first non-blank
+# N   L  (motion?) go to the Nth line from the bottom, on the first non-blank
+# o      (motion?) exchange cursor position with start of highlighting
+
+# Not used:
+# N %    goto line N percentage down in the file.
+#        N must be given, otherwise it is the % command.
+
+#   0    to first character in the line (also: <Home> key)
+#   ^    go to first non-blank character in the line
+#   %    find the next brace, bracket, comment,
+#        or "#if"/ "#else"/"#endif" in this line and go to its match
+# N +    down N lines, on the first non-blank character (also: CTRL-M and <CR>)
+# N _    down N-1 lines, on the first non-blank character
+# N -    up N lines, on the first non-blank character
+# N ,    repeat the last "f", "F", "t", or "T" N times in opposite direction
+# N ;    repeat the last "f", "F", "t", or "T" N times
+# N (    N sentences backward
+# N )    N sentences forward
+# N {    N paragraphs backward
+# N }    N paragraphs forward
+# N |    to column N (default: 1)
+# N $    go to the last character in the line (N-1 lines lower) (also: <End> key)
+# N #    search backward for the identifier under the cursor
+# N *    search forward  for the identifier under the cursor
+# N B    N blank-separated WORDS backward
+# N E    forward to the end of the Nth blank-separated WORD
+# N G    goto line N (default: last line), on the first non-blank character
+# N N    repeat last search, in opposite direction
+# N W    N blank-separated WORDS forward
+# N b    N words backward
+# N e    forward to the end of the Nth word
+# N h    left (also: CTRL-H, <BS>, or <Left> key)
+# N j    down N lines (also: CTRL-J, CTRL-N, <NL>, and <Down>)
+# N k    up N lines (also: CTRL-P and <Up>)
+# N l    right (also: <Space> or <Right> key)
+# N n    repeat last search
+# N w    N words forward
+single_char_motions = [ch for ch in '0^%_+-,;(){}|$#*BEGNWbehjklnw']
+# N [#   N times back to unclosed "#if" or "#else"
+# N [(   N times back to unclosed '('
+# N [*   N times back to start of comment "/*"
+# N [[   N sections backward, at start of section
+# N []   N sections backward, at end of section
+# N [{   N times back to unclosed '{'
+m1  = ['['+ ch for ch in '#(*[]{']
+# N ]#   N times forward to unclosed "#else" or "#endif"
+# N ])   N times forward to unclosed ')'
+# N ]*   N times forward to end of comment "*/"
+# N ][   N sections forward, at end of section
+# N ]]   N sections forward, at start of section
+# N ]}   N times forward to unclosed '}'
+m2 = [']'+ch for ch in '#)*[]}']
+#   gD   goto global declaration of identifier under the cursor
+#   gd   goto local declaration of identifier under the cursor
+# N g^   to first non-blank character in screen line (differs from "^" when lines wrap)
+# N g#   like "#", but also find partial matches
+# N g$   to last character in screen line (differs from "$" when lines wrap)
+# N g*   like "*", but also find partial matches
+# N g0   to first character in screen line (differs from "0" when lines wrap)
+# N gE   backward to the end of the Nth blank-separated WORD
+# N ge   backward to the end of the Nth word
+# N gg   goto line N (default: first line), on the first non-blank character
+# N gj   down N screen lines (differs from "j" when line wraps)
+# N gk   up N screen lines (differs from "k" when line wraps)
+m3 = ['g'+ch for ch in '^#$*0DEdegjk']
+# N /<CR>  repeat last search, in the forward direction
+m4 = ['/\\n',]
+# N F<char>  to the Nth occurrence of <char> to the left
+# N T<char>  till before the Nth occurrence of <char> to the left
+# N f<char>  to the Nth occurrence of <char> to the right
+# N t<char>  till before the Nth occurrence of <char> to the right
+char_motions = [ch for ch in 'FTft']
+multi_char_leadins = '/g[]'
+multi_char_motions = m1+m2+m3+m4
+print('\n'.join(single_char_motions))
+print('\n'.join(multi_char_motions))
+print('\n'.join(['%s<char>' % (ch) for ch in char_motions]))
 .. @-all
 .. @-leo
