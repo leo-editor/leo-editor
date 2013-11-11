@@ -40,7 +40,7 @@ class VimCommands:
         self.oops()
     #@+node:ekr.20131111061547.18015: *5* vim_l
     def vim_l(self):
-        '''Move cursor left.'''
+        '''Move cursor right.'''
         g.trace()
         if self.extend:
             self.ec.forwardCharacterExtendSelection(self.event)
@@ -309,12 +309,11 @@ class VimCommands:
         # Call after setting ivars.
         self.create_dicts()
         
-    #@+node:ekr.20131111054309.16528: *3* vc.exec_ & helpers
+    #@+node:ekr.20131111054309.16528: *3* vc.exec_
     def exec_(self,command,n1,n2,motion):
         
-        trace = False
-        c = self.c
-        d = self.commands_d.get(command) or {'command_name':self.oops}
+        trace = True
+        d = self.commands_d.get(command,{})
         command_name = d.get('command_name')
         func = self.dispatch_d.get(command_name,self.oops)
         # Set ivars describing the command.
@@ -325,12 +324,13 @@ class VimCommands:
         self.motion = motion
         if trace: self.trace_command()
         func()
-        
-    #@+node:ekr.20131111061547.16462: *4* vc.trace_command
+            
+    #@+node:ekr.20131111061547.16462: *3* vc.trace_command
     def trace_command(self):
         
+        func_name = self.func and self.func.__name__ or 'oops'
         print('%s func: %s command: %r n1: %-4r n2: %-4r motion: %r' % (
-            g.callers(1),self.func.__name__,self.command,self.n1,self.n2,self.motion))
+            g.callers(1),func_name,self.command,self.n1,self.n2,self.motion))
     #@+node:ekr.20131111061547.16461: *3* vc.oops
     def oops(self):
         
@@ -458,6 +458,8 @@ class VimCommands:
 # but for now it's much more convenient to have them in leoVim.py.
 
 if 0: # Don't execute this code when loading the file!
+    # pylint: disable=E0602
+    # E0602: undefined variable: c
     #@+others
     #@+node:ekr.20131108203402.16419: *3* @test g.cls
     g.cls()
@@ -692,12 +694,21 @@ if 0: # Don't execute this code when loading the file!
         # 'gg','gk','#','dd','d3j',
         # 'h', # works
         # 'l', # works
-        'j', # Not yet.
+        # 'j', # Not yet.
+        'ggg',
     )
     for s in table:
         status,n1,command,n2,motion = vc.scan(s)
+        # print('status',status,'command',command)
         if status == 'done':
             vc.exec_(command,n1,n2,motion)
+        else:
+            print('status: %s %s' % (status,s))
+            vc.command = s
+            vc.n1 = n1
+            vc.n2 = n2
+            vc.motion = motion
+            vc.oops()
 
     if 0: # This never seems to work!
         def callback(*args,**keys):
