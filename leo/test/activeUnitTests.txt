@@ -9,6 +9,7 @@
 All support code should be placed as a child of this @mark-for-unit-test node
 so that it will be copied to dynamicUnitTest.leo when running tests externally.
 #@+node:ekr.20111113102936.4600: *3* Test headline abc
+AB
 #@+node:ekr.20120212130242.3980: *3* newHeadline
 #@+node:ekr.20090529141856.4700: *3* importTests
 @language plain
@@ -9837,13 +9838,17 @@ try:
     w = c.frame.body.bodyCtrl
     w.setInsertPoint(2)
     c.outerUpdate() # This fixed the problem.
-    g.app.gui.event_generate(c,'Delete','Delete',w) # Calls c.outerUpdate()
+    if 1:
+        c.k.simulateCommand('delete-char')
+    else:
+        # This fails unless Delete is bound to delete-char
+        g.app.gui.event_generate(c,'Delete','Delete',w) # Calls c.outerUpdate()
     assert p.b == s[:-1],'oops1: expected "AB", got %s' % p.b
     c.selectPosition(p.threadBack())
     c.selectPosition(p)
     assert p.b == s[:-1],'oops2: expected "AB", got %s' % p.b
 finally:
-    if 1:
+    if 0:
         c.setBodyString(p,'')
         c.redraw(p)
 #@+node:ekr.20051125170139: *5* @test Delete key sticks in headline
