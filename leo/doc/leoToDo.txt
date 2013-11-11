@@ -1079,6 +1079,20 @@ Automatic execution of commands on certain events.
 :wv[iminfo]! [file]             write info to viminfo file [file]
 :x[it][!] [file]                like ":wq" but write only when changes have been made
 :xall[!]  or :wqall[!]          Write all changed buffers and exit
+.. @+node:ekr.20131111140646.16535: *4* vim-command unit tests
+# These can't be part of leoVim.py: they would cause syntax errors.
+.. @+node:ekr.20131111140646.16540: *5* @test h middle of line
+import imp
+import leo.core.leoVim as leoVim
+imp.reload(leoVim)
+
+leoVim.VimCommands(c).runTest(p)
+.. @+node:ekr.20131111140646.16541: *6* work
+first line
+.. @+node:ekr.20131111140646.16542: *6* before sel=1.5,1.5
+first line
+.. @+node:ekr.20131111140646.16543: *6* after sel=1.4,1.4
+first line
 .. @+node:ekr.20131108082341.16371: *3* * Node-creating abbreviations
 @language rest
 
