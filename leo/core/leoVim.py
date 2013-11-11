@@ -12,28 +12,40 @@
 import string
 import leo.core.leoGlobals as g
 
+# Useful for debugging.  May possibly be removed later.
+import PyQt4.QtCore as QtCore
+import PyQt4.QtGui as QtGui
+
 #@+others
 #@+node:ekr.20131109170017.16505: ** class VimCommands
 class VimCommands:
     #@+others
-    #@+node:ekr.20131109170017.16507: *3* ctor
-    def __init__(self,c):
-        
-        self.c = c
-        self.chars = [ch for ch in string.printable if 32 <= ord(ch) < 128]
-        self.letters = string.ascii_letters
-        self.registers = string.ascii_letters
-        self.tail_kinds = ['char','letter','motion','pattern','register',]
-        self.motion_kinds = ['char','letter','register'] # only 'char' used at present.
-            # Valid selectors in @data vim-*-tails.
-        # Set by self.exec_
-        self.command = None
-        self.motion = None
-        self.n1 = None
-        self.n2 = None
-        # Call after setting ivars.
-        self.create_dicts()
-        
+    #@+node:ekr.20131111061547.16467: *3* vc.commands
+    #@+node:ekr.20131111061547.16468: *4* vim_h/j/k/l
+    #@+node:ekr.20131111061547.18012: *5* vim_h
+    def vim_h(self):
+        '''Move cursor left.'''
+        g.trace()
+        if self.extend:
+            self.ec.backCharacterExtendSelection(self.event)
+        else:
+            self.ec.backCharacter(self.event)
+    #@+node:ekr.20131111061547.18013: *5* vim_j
+    def vim_j(self):
+        '''Move cursor down.'''
+        self.oops()
+    #@+node:ekr.20131111061547.18014: *5* vim_k
+    def vim_k(self):
+        '''Move cursor up.'''
+        self.oops()
+    #@+node:ekr.20131111061547.18015: *5* vim_l
+    def vim_l(self):
+        '''Move cursor left.'''
+        g.trace()
+        if self.extend:
+            self.ec.forwardCharacterExtendSelection(self.event)
+        else:
+            self.ec.forwardCharacter(self.event)
     #@+node:ekr.20131109170017.46983: *3* vc.create_dicts & helpers
     def create_dicts(self):
 
@@ -101,6 +113,8 @@ class VimCommands:
                     assert d2.get('ch') == ch
                 else:
                     d2['ch']=ch
+                # Remember the command name
+                d2['command_name'] = func
                 # Append the tail (including None) to d2['tail_chars']
                 aList = d2.get('tail_chars',[])
                 if tail in aList:
@@ -117,7 +131,7 @@ class VimCommands:
                 d[ch] = d2
             else:
                 g.trace('missing command chars: %s' % (s))
-        if dump: self.dump('command_d',d)
+        if False or dump: self.dump('command_d',d)
         return d
     #@+node:ekr.20131110050932.16530: *4* create_motion_tails_d
     def create_motion_tails_d(self,dump):
@@ -148,87 +162,87 @@ class VimCommands:
         return d
     #@+node:ekr.20131111061547.16460: *4* create_dispatch_d
     def create_dispatch_d(self):
-        vim_oops = self.vim_oops
+        oops = self.oops
         d = {
         # brackets.
-        'vim_lcurly':   vim_oops,
-        'vim_lparen':   vim_oops,
-        'vim_lsquare':  vim_oops,
-        'vim_rcurly':   vim_oops,
-        'vim_rparen':   vim_oops,
-        'vim_rsquare':  vim_oops,
+        'vim_lcurly':   oops,
+        'vim_lparen':   oops,
+        'vim_lsquare':  oops,
+        'vim_rcurly':   oops,
+        'vim_rparen':   oops,
+        'vim_rsquare':  oops,
         # Special chars.
-        'vim_at':       vim_oops,
-        'vim_backtick': vim_oops,
-        'vim_caret':    vim_oops,
-        'vim_comma':    vim_oops,
-        'vim_dollar':   vim_oops,
-        'vim_dot':      vim_oops,
-        'vim_dquote':   vim_oops,
-        'vim_langle':   vim_oops,
-        'vim_minus':    vim_oops,
-        'vim_percent':  vim_oops,
-        'vim_plus':     vim_oops,
-        'vim_pound':    vim_oops,
-        'vim_question': vim_oops,
-        'vim_rangle':   vim_oops,
-        'vim_semicolon': vim_oops,
-        'vim_slash':    vim_oops,
-        'vim_star':     vim_oops,
-        'vim_tilda':    vim_oops,
-        'vim_underscore': vim_oops,
-        'vim_vertical': vim_oops,
+        'vim_at':       oops,
+        'vim_backtick': oops,
+        'vim_caret':    oops,
+        'vim_comma':    oops,
+        'vim_dollar':   oops,
+        'vim_dot':      oops,
+        'vim_dquote':   oops,
+        'vim_langle':   oops,
+        'vim_minus':    oops,
+        'vim_percent':  oops,
+        'vim_plus':     oops,
+        'vim_pound':    oops,
+        'vim_question': oops,
+        'vim_rangle':   oops,
+        'vim_semicolon': oops,
+        'vim_slash':    oops,
+        'vim_star':     oops,
+        'vim_tilda':    oops,
+        'vim_underscore': oops,
+        'vim_vertical': oops,
         # Letters and digits.
-        'vim_0': vim_oops,
-        'vim_A': vim_oops,
-        'vim_B': vim_oops,
-        'vim_C': vim_oops,
-        'vim_D': vim_oops,
-        'vim_E': vim_oops,
-        'vim_F': vim_oops,
-        'vim_G': vim_oops,
-        'vim_H': vim_oops,
-        'vim_I': vim_oops,
-        'vim_J': vim_oops,
-        'vim_K': vim_oops,
-        'vim_M': vim_oops,
-        'vim_L': vim_oops,
-        'vim_N': vim_oops,
-        'vim_O': vim_oops,
-        'vim_P': vim_oops,
-        'vim_R': vim_oops,
-        'vim_S': vim_oops,
-        'vim_T': vim_oops,
-        'vim_U': vim_oops,
-        'vim_V': vim_oops,
-        'vim_W': vim_oops,
-        'vim_X': vim_oops,
-        'vim_Y': vim_oops,
-        'vim_Z': vim_oops,
-        'vim_a': vim_oops,
-        'vim_b': vim_oops,
-        'vim_c': vim_oops,
-        'vim_d': vim_oops,
-        'vim_g': vim_oops,
-        'vim_h': vim_oops,
-        'vim_i': vim_oops,
-        'vim_j': vim_oops,
-        'vim_k': vim_oops,
-        'vim_l': vim_oops,
-        'vim_n': vim_oops,
-        'vim_m': vim_oops,
-        'vim_o': vim_oops,
-        'vim_p': vim_oops,
-        'vim_q': vim_oops,
-        'vim_r': vim_oops,
-        'vim_s': vim_oops,
-        'vim_t': vim_oops,
-        'vim_u': vim_oops,
-        'vim_v': vim_oops,
-        'vim_w': vim_oops,
-        'vim_x': vim_oops,
-        'vim_y': vim_oops,
-        'vim_z': vim_oops,
+        'vim_0': oops,
+        'vim_A': oops,
+        'vim_B': oops,
+        'vim_C': oops,
+        'vim_D': oops,
+        'vim_E': oops,
+        'vim_F': oops,
+        'vim_G': oops,
+        'vim_H': oops,
+        'vim_I': oops,
+        'vim_J': oops,
+        'vim_K': oops,
+        'vim_M': oops,
+        'vim_L': oops,
+        'vim_N': oops,
+        'vim_O': oops,
+        'vim_P': oops,
+        'vim_R': oops,
+        'vim_S': oops,
+        'vim_T': oops,
+        'vim_U': oops,
+        'vim_V': oops,
+        'vim_W': oops,
+        'vim_X': oops,
+        'vim_Y': oops,
+        'vim_Z': oops,
+        'vim_a': oops,
+        'vim_b': oops,
+        'vim_c': oops,
+        'vim_d': oops,
+        'vim_g': oops,
+        'vim_h': self.vim_h,
+        'vim_i': oops,
+        'vim_j': self.vim_j,
+        'vim_k': self.vim_k,
+        'vim_l': self.vim_l,
+        'vim_n': oops,
+        'vim_m': oops,
+        'vim_o': oops,
+        'vim_p': oops,
+        'vim_q': oops,
+        'vim_r': oops,
+        'vim_s': oops,
+        'vim_t': oops,
+        'vim_u': oops,
+        'vim_v': oops,
+        'vim_w': oops,
+        'vim_x': oops,
+        'vim_y': oops,
+        'vim_z': oops,
         }
         return d
     #@+node:ekr.20131109170017.46984: *4* dump
@@ -269,28 +283,77 @@ class VimCommands:
                 g.trace('not found: %s' % s)
         else:
             return c.config.getData(s)
+    #@+node:ekr.20131109170017.16507: *3* vc.ctor
+    def __init__(self,c):
+        
+        self.c = c
+        self.chars = [ch for ch in string.printable if 32 <= ord(ch) < 128]
+        self.ec = c.editCommands
+        self.event = None
+        self.extend = False # True: extending selection.
+        self.letters = string.ascii_letters
+        self.motion_kinds = ['char','letter','register'] # only 'char' used at present.
+            # Valid selectors in @data vim-*-tails.
+        self.register_names = string.ascii_letters
+        self.register_d = {}
+            # Keys are register names (letters); values are strings.
+        self.tail_kinds = ['char','letter','motion','pattern','register',]
+        self.w = c.frame.body.bodyCtrl
+        # g.trace(isinstance(self.w.widget,QtGui.QTextEdit),self.w)
+        # Set by self.exec_
+        self.command = None
+        self.func = None
+        self.motion = None
+        self.n1 = None
+        self.n2 = None
+        # Call after setting ivars.
+        self.create_dicts()
+        
     #@+node:ekr.20131111054309.16528: *3* vc.exec_ & helpers
     def exec_(self,command,n1,n2,motion):
         
-        func = self.dispatch_d.get(command,self.vim_oops)
-        # g.trace(func.__name__,s)
+        trace = False
+        c = self.c
+        d = self.commands_d.get(command) or {'command_name':self.oops}
+        command_name = d.get('command_name')
+        func = self.dispatch_d.get(command_name,self.oops)
+        # Set ivars describing the command.
         self.command = command
+        self.func = func
         self.n1 = n1
         self.n2 = n2
         self.motion = motion
+        if trace: self.trace_command()
         func()
         
     #@+node:ekr.20131111061547.16462: *4* vc.trace_command
     def trace_command(self):
         
-        caller = g.callers(1)
-        print('%-10s command: %-5r n1: %-4r n2: %-4r motion: %r' % (
-            caller,self.command,self.n1,self.n2,self.motion))
-    #@+node:ekr.20131111061547.16461: *4* vc.vim_oops
-    def vim_oops(self):
+        print('%s func: %s command: %r n1: %-4r n2: %-4r motion: %r' % (
+            g.callers(1),self.func.__name__,self.command,self.n1,self.n2,self.motion))
+    #@+node:ekr.20131111061547.16461: *3* vc.oops
+    def oops(self):
         
         self.trace_command()
         
+    #@+node:ekr.20131111061547.18011: *3* vc.runAtIdle
+    # For testing: ensure that this always gets called.
+
+    def runAtIdle (self,aFunc,trace=True):
+        '''
+        Run aFunc at idle time.
+        This can not be called in some contexts.
+        '''
+        g.trace('(VimCommands)',aFunc.__name__)
+        timer = QtCore.QTimer()
+        timer.setSingleShot(True)
+        def atIdleCallback(aFunc=aFunc,trace=trace):
+            print('atIdleCallBack',aFunc)
+            aFunc()
+        timer.connect(timer,QtCore.SIGNAL("timeout()"),atIdleCallback)
+        # To make your application perform idle processing,
+        # use a QTimer with 0 timeout.
+        timer.start(0)
     #@+node:ekr.20131110050932.16533: *3* vc.scan & helpers
     def scan(self,s):
         
@@ -337,7 +400,7 @@ class VimCommands:
         elif len(s) == 1 and (
             pattern == 'char' and s in self.chars or
             pattern == 'letter' and s in self.letters or
-            pattern == 'register' and s in self.registers
+            pattern == 'register' and s in self.register_names
         ):
             status = 'done'
         # g.trace(status,pattern,s,n2,motion)
@@ -391,6 +454,9 @@ class VimCommands:
         return head,tail
     #@-others
 #@+node:ekr.20131108203402.16399: ** vim unit tests
+# Eventually these tests will move to unitTest.leo,
+# but for now it's much more convenient to have them in leoVim.py.
+
 if 0: # Don't execute this code when loading the file!
     #@+others
     #@+node:ekr.20131108203402.16419: *3* @test g.cls
@@ -623,12 +689,21 @@ if 0: # Don't execute this code when loading the file!
     imp.reload(leoVim)
     vc = leoVim.VimCommands(c)
     table = (
-        'gg','gk','#','dd','d3j',
+        # 'gg','gk','#','dd','d3j',
+        # 'h', # works
+        # 'l', # works
+        'j', # Not yet.
     )
     for s in table:
         status,n1,command,n2,motion = vc.scan(s)
         if status == 'done':
             vc.exec_(command,n1,n2,motion)
+
+    if 0: # This never seems to work!
+        def callback(*args,**keys):
+            g.trace(args,keys)
+            c.bodyWantsFocusNow()
+        vc.runAtIdle(callback,trace=True)
     #@-others
 #@-others
 #@-leo

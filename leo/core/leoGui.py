@@ -509,14 +509,16 @@ class unitTestGui(nullGui):
 
         pass # This method keeps pylint happy.
     #@+node:ekr.20111001155050.15484: *3* runAtIdle
-    def runAtIdle (self,aFunc):
+    if 1: # Huh?
 
-        '''Run aFunc immediately for a unit test.
-
-        This is a kludge, but it is probably the best that can be done.
-        '''
-
-        aFunc()
+        def runAtIdle (self,aFunc):
+        
+            '''Run aFunc immediately for a unit test.
+        
+            This is a kludge, but it is probably the best that can be done.
+            '''
+        
+            aFunc()
     #@+node:ekr.20081119083601.1: *3* toUnicode
     def toUnicode (self,s):
 
