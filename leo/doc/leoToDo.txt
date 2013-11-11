@@ -4,6 +4,1081 @@
 
 .. @+all
 .. @+node:ekr.20131108082341.16373: ** First
+.. @+node:ekr.20131108082341.16372: *3* * Vim mode
+@language rest
+
+# https://groups.google.com/forum/#!topic/leo-editor/OSe0_D5tmJQ
+
+# http://stackoverflow.com/questions/7325052/can-someone-explain-to-me-why-the-dot-command-is-so-useful-in-vim
+
+* Make keystrokes in vim's command mode visible in the minibuffer.
+
+    - Not exactly how vim works.
+    - Add stay-in-minibuffer switch?
+    - Is this how Leo already works?
+
+* Add support for numeric arguments.
+
+* Add Support for "instant execution" of abbreviations.
+
+    - Create a tree of valid minibuffer completions.
+    - Execute a command when it is the only possible completion.
+
+* Add Vim-oriented commands.
+
+In principle, these new commands could handle all possible vim commands. In
+practice, some new design work (on the abbreviations themselves) would be
+necessary to handle the much richer environment that Leo provides.
+.. @+node:ekr.20131105122124.16479: *4* vim reference card
+@killcolor
+.. @+node:ekr.20131105122124.16482: *5*  keys (do not sort!!)
+    <BS>        delete the character in front of the cursor
+N   <Del>       delete N characters under and after the cursor
+    <Del>       delete the character under the cursor
+    <Del>       while entering a count: delete last character
+    <Down>      recall newer command-line that starts with current command
+    <Esc>       abandon command-line (if 'wildchar' is <Esc>, type it twice)
+    <Left>      (motion) cursor left
+    <Right>     (motion) cursor right
+    <S-Down>    recall newer command-line from history
+    <S-Left>    (motion) cursor one word left
+    <S-Right>   (motion) cursor one word right
+    <S-Up>      recall older command-line from history
+    <Up>        recall older command-line that starts with current command
+
+N   CTRL-^                  Edit alternate file N (equivalent to ":e #N").
+N   CTRL-A                  add N to the number at or after the cursor
+N   CTRL-B                  window N pages Backwards (upwards)
+    CTRL-B                  (motion?) cursor to beginning of command-line
+    CTRL-BREAK              MS-DOS: during searches: interrupt the search
+    CTRL-C                  during searches: interrupt the search
+N   CTRL-D                  window N lines Downwards (default: 1/2 window)
+N   CTRL-E                  window N lines downwards (default: 1)
+    CTRL-E                  (motion?) cursor to end of command-line
+N   CTRL-F                  (motion) window N pages Forwards (downwards)
+    CTRL-G                  show current file name (with path) and cursor position
+N   CTRL-I                  (motion) go to Nth newer position in jump list
+    CTRL-K {char1} {char2}  enter digraph
+    CTRL-L                  Clear and redraw the screen.
+N   CTRL-O                  (motion) go to Nth older position in jump list
+N   CTRL-R                  redo last N undone changes
+    CTRL-R <0-9a-z"%:->     insert contents of register <0-9a-z"%:->
+N   CTRL-T                  (motion) Jump back from Nth older tag in tag list
+N   CTRL-U                  window N lines Upwards (default: 1/2 window)
+    CTRL-U                  remove all characters
+    CTRL-V                  highlight blockwise or stop highlighting
+    CTRL-V                  start highlighting blockwise   }  highlighted text
+    CTRL-V {char}           insert {char} literally
+    CTRL-V {number}         enter decimal value of character (up to three digits)
+    CTRL-W                  delete the word in front of the cursor
+    CTRL-W +                Increase current window height
+    CTRL-W -                Decrease current window height
+    CTRL-W =                Make all windows equal height
+    CTRL-W CTRL-W           Move cursor to window below (wrap)
+    CTRL-W CTRL-^           Split window and edit alternate file
+    CTRL-W R                Rotate windows upwards
+    CTRL-W W                Move cursor to window above (wrap)
+    CTRL-W ]                Split window and jump to tag under cursor
+    CTRL-W _                Set current window height (default: very high)
+    CTRL-W b                Move cursor to bottom window
+    CTRL-W c  or :cl[ose]   Make buffer hidden and close window
+    CTRL-W f                Split window and edit file name under the cursor
+    CTRL-W j                Move cursor to window below
+    CTRL-W k                Move cursor to window above
+    CTRL-W n  or :new       Create new empty window
+    CTRL-W o  or :on[ly]    Make current window only one on the screen
+    CTRL-W p                Move cursor to previous active window
+    CTRL-W q  or :q[uit]    Quit editing and close window
+    CTRL-W r                Rotate windows downwards
+    CTRL-W s                Split window into two parts
+    CTRL-W t                Move cursor to top window
+    CTRL-W x                Exchange current window with next one
+N   CTRL-X                  subtract N from the number at or after the cursor
+N   CTRL-Y                  window N lines upwards (default: 1)
+    CTRL-Z                  Same as ":stop!"
+    CTRL-]                  Jump to the tag under cursor, unless changes have been made
+    
+    0               (motion) to first character in the line (also: <Home> key)
+VIS ~               switch case for highlighted text
+N   ~               switch case for N characters and advance cursor
+N   +               (motion) down N lines, on the first non-blank character (also: CTRL-M and <CR>)
+N   _               (motion) down N-1 lines, on the first non-blank character
+N   -               (motion) up N lines, on the first non-blank character
+N   ,               (motion) repeat the last "f", "F", "t", or "T" N times in opposite direction
+N   .               (motion?) repeat last change (with count replaced with N)
+N   ;               (motion) repeat the last "f", "F", "t", or "T" N times
+N   (               (motion) N sentences backward
+N   )               (motion) N sentences forward
+N   {               (motion) N paragraphs backward
+N   }               (motion) N paragraphs forward
+N   |               (motion) to column N (default: 1)
+    `"              (motion) go to the position when last editing this file
+    '<a-zA-Z0-9[]'"<>>  (motion) same as `, but on the first non-blank in the line
+    `<              (motion) go to the start of the (previous) Visual area
+    `<0-9>          (motion) go to the position where Vim was last exited
+    `<A-Z>          (motion) go to mark <A-Z> in any file
+    `<a-z>          (motion) go to mark <a-z> within current file
+    `>              (motion) go to the end of the (previous) Visual area
+    `[              (motion) go to the start of the previously operated or put text
+    `]              (motion) go to the end of the previously operated or put text
+    ``              (motion) go to the position before the last jump
+N   $               (motion) go to the last character in the line (N-1 lines lower) (also: <End> key)
+    ^               (motion) go to first non-blank character in the line
+N   %               (motion) goto line N percentage down in the file.  N must be given, otherwise it is the % command.
+    %               (motion) find the next brace, bracket, comment, or "#if"/ "#else"/"#endif" in this line and go to its match
+    
+N   <{motion}       move the lines that are moved over with {motion} one shiftwidth left
+N   >{motion}       move the lines that are moved over with {motion} one shiftwidth right
+N   <<              move N lines one shiftwidth left
+N   >>              move N lines one shiftwidth right
+
+N   #                           (motion) search backward for the identifier under the cursor
+N   *                           (motion) search forward for the identifier under the cursor
+N   /<CR>                       (motion) repeat last search, in the forward direction
+N   /{pattern}[/[offset]]<CR>   (motion) search forward for the Nth occurrence of {pattern}
+N   ?<CR>                       (motion) repeat last search, in the backward direction
+N   ?{pattern}[?[offset]]<CR>   (motion) search backward for the Nth occurrence of {pattern}
+
+N   @<a-z>          execute the contents of register <a-z> (N times)
+N   @@              (motion?) repeat previous @<a-z> (N times)
+
+    "<char>         use register <char> for the next delete, yank, or put
+
+N   [#              (motion) N times back to unclosed "#if" or "#else"
+N   [(              (motion) N times back to unclosed '('
+N   [*              (motion) N times back to start of comment "/*"
+N   [[              (motion) N sections backward, at start of section
+N   []              (motion) N sections backward, at end of section
+N   [p              (motion?) like P, but adjust indent to current line
+N   [{              (motion) N times back to unclosed '{'
+N   ]#              (motion) N times forward to unclosed "#else" or "#endif"
+N   ])              (motion) N times forward to unclosed ')'
+N   ]*              (motion) N times forward to end of comment "*/"
+N   ][              (motion) N sections forward, at end of section
+N   ]]              (motion) N sections forward, at start of section
+N   ]p              (motion?) like p, but adjust indent to current line
+N   ]}              (motion) N times forward to unclosed '}'
+
+N   A               append text at the end of the line (N times)
+N   B               (motion) N blank-separated WORDS backward
+N   C               change to end-of-line (and N-1 more lines)
+N   D               delete to end-of-line (and N-1 more lines)
+N   E               (motion) forward to the end of the Nth blank-separated WORD
+N   F<char>         (motion) to the Nth occurrence of <char> to the left
+N   G               (motion) goto line N (default: last line), on the first non-blank character
+N   H               (motion?) go to the Nth line in the window, on the first non-blank
+N   I               insert text before the first non-blank in the line (N times)
+N   J               (motion?) join N-1 lines (delete newlines)
+VIS J               (motion?) join the highlighted lines
+    K               lookup keyword under the cursor with 'keywordprg' program (default: "man")
+    M               (motion?) go to the middle line in the window, on the first non-blank
+N   L               (motion?) go to the Nth line from the bottom, on the first non-blank
+N   N               (motion) repeat last search, in opposite direction
+N   O               open a new line above the current line, append text (N times)
+N   P               put a register before the cursor position (N times)
+N   R               enter Replace mode (repeat the entered text N times)
+N   S               change N lines
+N   T<char>         (motion) till before the Nth occurrence of <char> to the left
+    U               restore last changed line
+VIS U               make highlighted text uppercase
+    V               highlight linewise or stop highlighting
+    V               start highlighting linewise    }  operator to affect
+N   W               (motion) N blank-separated WORDS forward
+N   X               delete N characters before the cursor
+N   Y               yank N lines
+    ZQ              Same as ":q!".
+    ZZ              Same as ":x".
+N   a               append text after the cursor (N times)
+N   b               (motion) N words backward
+N   cc              change N lines
+N   c{motion}       change the text that is moved over with {motion}
+VIS c               change the highlighted text
+VIS d               delete the highlighted text
+N   dd              delete N lines
+N   d{motion}       delete the text that is moved over with {motion}
+N   e               (motion) forward to the end of the Nth word
+N   f<char>         (motion) to the Nth occurrence of <char> to the right
+    g CTRL-G        show cursor column, line, and character position
+N   g^              (motion) to first non-blank character in screen line (differs from "^" when lines wrap)
+    g~{motion}      switch case for the text that is moved over with {motion}
+N   g#              (motion) like "#", but also find partial matches
+N   g$              (motion) to last character in screen line (differs from "$" when lines wrap)
+N   g*              (motion) like "*", but also find partial matches
+N   g0              (motion) to first character in screen line (differs from "0" when lines wrap)
+    gD              (motion) goto global declaration of identifier under the cursor
+N   gE              (motion) backward to the end of the Nth blank-separated WORD
+N   gI              insert text in column 1 (N times)
+    gU{motion}      make the text that is moved over with {motion} uppercase
+    ga              show ascii value of character under cursor in decimal, hex, and octal
+    gd              (motion) goto local declaration of identifier under the cursor
+    gf  or ]f       Edit the file whose name is under the cursor
+N   ge              (motion) backward to the end of the Nth word
+N   gg              (motion) goto line N (default: first line), on the first non-blank character
+N   gj              (motion) down N screen lines (differs from "j" when line wraps)
+N   gk              (motion) up N screen lines (differs from "k" when line wraps)
+N   gq{motion}      format the lines that are moved over with {motion} to 'textwidth' length
+N   gs              Goto Sleep for N seconds
+    gu{motion}      make the text that is moved over with {motion} lowercase
+    gv              start highlighting on previous visual area
+N   h               (motion) left (also: CTRL-H, <BS>, or <Left> key)
+N   i               insert text before the cursor (N times) (also: <Insert>)
+N   j               (motion) down N lines (also: CTRL-J, CTRL-N, <NL>, and <Down>)
+N   k               (motion) up N lines (also: CTRL-P and <Up>)
+N   l               (motion) right (also: <Space> or <Right> key)
+N   n               (motion?) repeat last search
+    m<a-zA-Z>       mark current position with mark <a-zA-Z>
+N   o               open a new line below the current line, append text (N times)
+    o               (motion?) exchange cursor position with start of highlighting
+N   p               put a register after the cursor position (N times)
+    q               stop recording
+    q<A-Z>          record typed characters, appended to register <a-z>
+    q<a-z>          record typed characters into register <a-z>
+N   r<char>         replace N characters with <char>
+N   s               change N characters
+N   t<char>         (motion) till before the Nth occurrence of <char> to the right
+N   u               undo last N changes
+VIS u               make highlighted text lowercase
+    v               highlight characters or stop highlighting
+    v               start highlighting characters  }  move cursor and use
+N   w               (motion) N words forward
+N   x               delete N characters under and after the cursor
+N   yy              yank N lines 
+N   y{motion}       yank the text moved over with {motion} 
+VIS y               yank the highlighted text 
+    z- or zb        redraw, current line at bottom of window
+    z. or zz        redraw, current line at center of window
+    z<CR> or zt     redraw, current line at top of window
+N   zh              scroll screen N characters to the right
+N   zl              scroll screen N characters to the left
+.. @+node:ekr.20131108082341.18235: *5* motion keys
+    CTRL-B  (motion?) cursor to beginning of command-line
+    CTRL-E  (motion?) cursor to end of command-line
+    N   .   (motion?) repeat last change (with count replaced with N)
+N   [p      (motion?) like P, but adjust indent to current line
+N   ]p      (motion?) like p, but adjust indent to current line
+    
+    <Left>  (motion) cursor left
+    <Right> (motion) cursor right
+    <S-Left>/<S-Right>  (motion) cursor one word left/right
+    
+N   CTRL-F  (motion) window N pages Forwards (downwards)
+N   CTRL-I  (motion) go to Nth newer position in jump list
+N   CTRL-O  (motion) go to Nth older position in jump list
+N   CTRL-T  (motion) Jump back from Nth older tag in tag list
+    0       (motion) to first character in the line (also: <Home> key)
+N   +       (motion) down N lines, on the first non-blank character (also: CTRL-M and <CR>)
+N   _       (motion) down N-1 lines, on the first non-blank character
+N   -       (motion) up N lines, on the first non-blank character
+N   ,       (motion) repeat the last "f", "F", "t", or "T" N times in opposite direction
+N   ;       (motion) repeat the last "f", "F", "t", or "T" N times
+N   (       (motion) N sentences backward
+N   )       (motion) N sentences forward
+N   {       (motion) N paragraphs backward
+N   }       (motion) N paragraphs forward
+N   |       (motion) to column N (default: 1)
+
+    `"                  (motion) go to the position when last editing this file
+    '<a-zA-Z0-9[]'"<>>  (motion) same as `, but on the first non-blank in the line
+    `<                  (motion?) go to the start of the (previous) Visual area
+    `<0-9>              (motion) go to the position where Vim was last exited
+    `<A-Z>              (motion) go to mark <A-Z> in any file
+    `<a-z>              (motion) go to mark <a-z> within current file
+    `>                  (motion) go to the end of the (previous) Visual area
+    `[                  (motion) go to the start of the previously operated or put text
+    `]                  (motion) go to the end of the previously operated or put text
+    ``                  (motion) go to the position before the last jump
+
+N   $       (motion) go to the last character in the line (N-1 lines lower) (also: <End> key)
+    ^       (motion) go to first non-blank character in the line
+N   %       (motion) goto line N percentage down in the file.  N must be given, otherwise it is the % command.
+    %       (motion) find the next brace, bracket, comment, or "#if"/ "#else"/"#endif" in this line and go to its match
+    
+N   #       (motion) search backward for the identifier under the cursor
+N   *       (motion) search forward for the identifier under the cursor
+N   /<CR>   (motion) repeat last search, in the forward direction
+
+N   /{pattern}[/[offset]]<CR>   (motion) search forward for the Nth occurrence of {pattern}
+N   ?<CR>                       (motion) repeat last search, in the backward direction
+N   ?{pattern}[?[offset]]<CR>   (motion) search backward for the Nth occurrence of {pattern}
+
+N   [#      (motion) N times back to unclosed "#if" or "#else"
+N   [(      (motion) N times back to unclosed '('
+N   [*      (motion) N times back to start of comment "/*"
+N   [[      (motion) N sections backward, at start of section
+N   []      (motion) N sections backward, at end of section
+N   [{      (motion) N times back to unclosed '{'
+
+N   ]#      (motion) N times forward to unclosed "#else" or "#endif"
+N   ])      (motion) N times forward to unclosed ')'
+N   ]*      (motion) N times forward to end of comment "*/"
+N   ][      (motion) N sections forward, at end of section
+N   ]]      (motion) N sections forward, at start of section
+N   ]}      (motion) N times forward to unclosed '}'
+
+N   B       (motion) N blank-separated WORDS backward
+N   E       (motion) forward to the end of the Nth blank-separated WORD
+N   F<char> (motion) to the Nth occurrence of <char> to the left
+N   G       (motion) goto line N (default: last line), on the first non-blank character
+N   H       (motion?) go to the Nth line in the window, on the first non-blank
+N   J       (motion?) join N-1 lines (delete newlines)
+VIS J       (motion?) join the highlighted lines
+    M       (motion?) go to the middle line in the window, on the first non-blank
+N   L       (motion?) go to the Nth line from the bottom, on the first non-blank
+N   N       (motion) repeat last search, in opposite direction
+N   T<char> (motion) till before the Nth occurrence of <char> to the left
+N   W       (motion) N blank-separated WORDS forward
+
+N   b       (motion) N words backward
+N   e       (motion) forward to the end of the Nth word
+N   f<char> (motion) to the Nth occurrence of <char> to the right
+N   g^      (motion) to first non-blank character in screen line (differs from "^" when lines wrap)
+N   g#      (motion) like "#", but also find partial matches
+N   g$      (motion) to last character in screen line (differs from "$" when lines wrap)
+N   g*      (motion) like "*", but also find partial matches
+N   g0      (motion) to first character in screen line (differs from "0" when lines wrap)
+    gD      (motion) goto global declaration of identifier under the cursor
+N   gE      (motion) backward to the end of the Nth blank-separated WORD
+    gd      (motion) goto local declaration of identifier under the cursor
+N   ge      (motion) backward to the end of the Nth word
+N   gg      (motion) goto line N (default: first line), on the first non-blank character
+N   gj      (motion) down N screen lines (differs from "j" when line wraps)
+N   gk      (motion) up N screen lines (differs from "k" when line wraps)
+N   h       (motion) left (also: CTRL-H, <BS>, or <Left> key)
+N   j       (motion) down N lines (also: CTRL-J, CTRL-N, <NL>, and <Down>)
+N   k       (motion) up N lines (also: CTRL-P and <Up>)
+N   l       (motion) right (also: <Space> or <Right> key)
+N   n       (motion?) repeat last search
+    o       (motion?) exchange cursor position with start of highlighting
+N   t<char> (motion) till before the Nth occurrence of <char> to the right
+N   w       (motion) N words forward
+.. @+node:ekr.20131108082341.18226: *5* motions
+@color
+
+w   to start of next word, excluding it's first character.
+e   to end of next word, including it's last character.
+$   to end of line, including the last character.
+0   to start of line
+
+Motions may include repeat count:
+
+d2w
+2dd
+d2d
+
+From: http://bullium.com/support/vim.html#motion
+
+Basic motion commands:
+
+N h
+N j or Ctrl-N
+N k or Ctrl-P
+0 or <Home>
+^ 
+$ or <End>
+g0 or
+g<Home> 	
+g^
+g$ or g<End>
+f{char}
+F{char}
+t{char}
+T{char}
+; 	Repeat latest f, t, F or T [count] times.
+, 	Repeat latest f, t, F or T in opposite direction [count] times.
+-
+N + or CTRL-M or <CR>
+N _
+<C-End> or G
+N <C-Home> or gg
+N <S-Right> or w
+N <C-Right> or W
+N e 	Forward to the end of word [count]
+E 	Forward to the end of WORD [count]
+<S-Left> or
+b 	[count] words backward
+<C-Left> or
+B 	[count] WORDS backward
+ge 	Backward to the end of word [count]
+gE 	Backward to the end of WORD [count]
+
+These commands move over words or WORDS.
+
+A word consists of a sequence of letters, digits and underscores, or a
+sequence of other non-blank characters, separated with white space (spaces,
+tabs, ). This can be changed with the 'iskeyword' option.
+
+A WORD consists of a sequence of non-blank characters, separated with white
+space. An empty line is also considered to be a word and a WORD.
+
+N ( 	    
+N ) 	    
+N { 	    
+N } 	
+N ]] 	    
+N ][ 	    
+N [[ 	    
+N [] 	
+.. @+node:ekr.20131105122124.16483: *5* vim regex
+                                           Value of magic option
+                                           ---------------------
+                        meaning            magic       nomagic
+
+           matches any single character      .            \.
+                  matches start of line      ^            ^
+                    matches end of line      $            $
+                  matches start of word      \<           \<
+                    matches end of word      \>           \>
+   matches a single char from the range      [a-z]        \[a-z]
+ matches a single char not in the range      [^a-z]       \[^a-z]
+             matches an identifier char      \i           \i
+              idem but excluding digits      \I           \I
+            matches a keyword character      \k           \k
+              idem but excluding digits      \K           \K
+           matches a filename character      \f           \f
+              idem but excluding digits      \F           \F
+          matches a printable character      \p           \p
+              idem but excluding digits      \P           \P
+
+                          matches <Esc>      \e           \e
+                          matches <Tab>      \t           \t
+                           matches <CR>      \r           \r
+                           matches <BS>      \b           \b
+
+matches 0 or more of the preceding atom      *            \*
+matches 1 or more of the preceding atom      \+           \+
+   matches 0 or 1 of the preceding atom      \=           \=
+                 separates two branches      \|           \|
+           group a pattern into an atom      \(\)         \(\)
+.. @+node:ekr.20131105122124.16484: *5* keys in insert mode
+    char                action in Insert mode
+    ----                --------------------- 
+ 
+    <Esc>               end Insert mode, back to Normal mode
+    <BS> or CTRL-H      delete the character before the cursor
+    {char1} <BS> {char2}    enter digraph if 'digraph' option set
+    <Del>               delete the character under the cursor
+    <End>               cursor after last character in the line
+    <Home>              cursor to first character in the line
+    <NL> or <CR>        begin new line
+    
+    cursor keys         move cursor left/right/up/down
+    shift-left/right    one word left/right
+    shift-up/down       one screenful backward/forward
+
+    CTRL-@              insert previously inserted text and stop insert
+    CTRL-A              insert previously inserted text
+    CTRL-B              toggle 'revins' (reverse insert) option
+    CTRL-C              like <Esc>, but do not do an abbreviation
+    CTRL-D              delete one shiftwidth of indent in front of the current line
+0   CTRL-D              delete all indent in the current line
+^   CTRL-D              delete all indent in the current line, restore indent in next line
+    CTRL-E              insert the character from below the cursor
+    CTRL-K {char1} {char2}  enter digraph
+    CTRL-M or CTRL-J    begin new line
+    CTRL-N              insert next match of identifier before the cursor
+    CTRL-O {command}    execute {command}
+    CTRL-P              insert previous match of identifier before the cursor
+    CTRL-R <0-9a-z%:.-"> insert contents of register <0-9a-z%:.-">
+    CTRL-T              insert one shiftwidth of indent in front of the current line
+    CTRL-U              delete all entered characters in the current line
+    CTRL-V <char>..     insert character literally, or enter decimal byte value
+    CTRL-W              delete word before the cursor
+    CTRL-X ...          complete the word before the cursor in various ways
+    CTRL-Y              insert the character from above the cursor
+.. @+node:ekr.20131105122124.16485: *5* complex
+N  !{motion}{command}<CR>  filter the lines that are moved over through {command}
+N  !!{command}<CR>         filter N lines through {command}
+   {visual}!{command}<CR>  filter the highlighted lines through {command}
+   :[range]! {command}<CR> filter [range] lines through {command}
+N  ={motion}               filter the lines that are moved over through "indent"
+N  ==                      filter N lines through "indent"
+   {visual}=               filter the highlighted lines through "indent"
+   
+:[range]s[ubstitute]/{pattern}/{string}/[g][c]
+:[range]s[ubstitute] [g][c]
+   &         Repeat previous ":s" on current line without options
+:[range]ret[ab][!] [tabstop]
+.. @+node:ekr.20131105122124.16486: *5* text object
+Used only in Visual mode or after an operator
+
+a            Select current word
+A            Select current WORD
+s            Select current sentence
+p            Select current paragraph
+S            Select current block (from "[(" to "])")
+P            Select current block (from "[{" to "]}")
+.. @+node:ekr.20131105122124.16487: *5* offsets after search command
+[num]       [num] lines downwards, in column 1
++[num]      [num] lines downwards, in column 1
+-[num]      [num] lines upwards, in column 1
+e[+num]     [num] characters to the right of the end of the match
+e[-num]     [num] characters to the left of the end of the match
+s[+num]     [num] characters to the right of the start of the match
+s[-num]     [num] characters to the left of the start of the match
+b[+num]     [num] characters to the right of the start (begin) of the match
+b[-num]     [num] characters to the left of the start (begin) of the match
+;{search command}   execute {search command} next
+
+
+/test/+1		one line below "test", in column 1
+/test/e			on the last t of "test"
+/test/s+2		on the 's' of "test"
+/test/b-3		three characters before "test"
+.. @+node:ekr.20131105122124.16488: *5* Examples
+:%g/^a/-1join     join lines starting with character 'a' to previous line
+:%g/^ *$/d        delete empty lines
+:%v/vim/m 1       move lines not matching the word 'vim' to line 1
+:%g/^a/+1d        delete lines after the ones starting with character 'a'
+
+:so[urce] {file}    Read Ex commands from {file}.
+:so[urce]! {file}   Read Vim commands from {file}.
+:sl[eep] [N]        don't do anything for N seconds
+.. @+node:ekr.20131105122124.16489: *5* Options overview
+
+name       short name   explanation
+----       ----------   -----------
+aleph          al       ASCII code of the letter Aleph (RIGHTLEFT)
+autoindent     ai       take indent for new line from previous line
+autowrite      aw       automatically write file if changed
+backspace      bs       how backspace works at start of line
+backup         bk       keep backup file after overwriting a file
+backupdir      bdir     list of directories for the backup file
+backupext      bex      extension used for the backup file
+binary         bin      edit binary file mode
+bioskey        biosk    MS-DOS: use bios calls for input characters
+breakat        brk      characters that may cause a line break
+cindent        cin      do C program indenting
+cinkeys        cink     keys that trigger indent when 'cindent' is set
+cinoptions     cino     how to do indenting when 'cindent' is set
+cinwords       cinw     words where 'si' and 'cin' add an indent
+cmdheight      ch       number of lines to use for the command-line
+columns        co       number of columns in the display
+comments       com      patterns that can start a comment line
+compatible     cp       behave Vi-compatibly as much as possible
+cpoptions      cpo      flags for Vi-compatible behaviour
+define         def      pattern to be used to find a macro definition
+dictionary     dict     list of filenames used for keyword completion
+digraph        dg       enable the entering of digraphs in Insert mode
+directory      dir      list of directory names for the swapfile
+edcompatible   ed       toggle flags of ":substitute" command
+endofline      eol      write end-of-line for last line in file
+equalalways    ea       windows are automatically made the same size
+equalprg       ep       external program to use for "=" command
+errorbells     eb       ring the bell for error messages
+errorfile      ef       name of the error file for the QuickFix mode
+errorformat    efm      description of the lines in the error file
+esckeys        ek       recognize function keys in Insert mode
+expandtab      et       use spaces when <Tab> is inserted
+exrc                    read .vimrc and .exrc in the current directory
+formatoptions  fo       how automatic formatting is to be done
+formatprg      fp       name of external program used with "gq" command
+gdefault       gd       the ":substitute" flag 'g' is default on
+guifont        gfn      GUI: Name(s) of font(s) to be used
+guioptions     go       GUI: Which components and options are used
+guipty                  GUI: try to use a pseudo-tty for ":!" commands
+helpfile       hf       name of this help file
+helpheight     hh       minimum height of a new help window
+hidden         hid      don't unload buffer when it is abandoned
+highlight      hl       sets highlighting mode for various occasions
+history        hi       number of command-lines that are remembered
+hkmap          hk       Hebrew keyboard mapping (RIGHTLEFT)
+icon                    set icon of the window to the name of the file
+ignorecase     ic       ignore case in search patterns
+include        inc      pattern to be used to find an include file
+incsearch      is       highlight match while typing search pattern
+infercase      inf      adjust case of match for keyword completion
+insertmode     im       start the edit of a file in Insert mode
+isfname        isf      characters included in filenames and pathnames
+isident        isi      characters included in identifiers
+isprint        isp      printable characters
+iskeyword      isk      characters included in keywords
+joinspaces     js       two spaces after a period with a join command
+keywordprg     kp       program to use for the "K" command
+langmap        lmap     alphabetic characters for other language mode
+laststatus     ls       tells when last window has status lines
+linebreak      lbr      wrap long lines at a blank
+lines                   number of lines in the display
+lisp                    automatic indenting for Lisp
+list                    show <Tab> and end-of-line
+magic                   changes special characters in search patterns
+makeprg        mp       program to use for the ":make" command
+maxmapdepth    mmd      maximum recursive depth for mapping
+maxmem         mm       maximum memory (in Kbyte) used for one buffer
+maxmemtot      mmt      maximum memory (in Kbyte) used for all buffers
+modeline       ml       recognize modelines at start or end of file
+modelines      mls      number of lines checked for modelines
+modified       mod      buffer has been modified
+more                    pause listings when the whole screen is filled
+mouse                   enable the use of mouse clicks
+mousetime      mouset   max time between mouse double-click
+number         nu       print the line number in front of each line
+paragraphs     para     nroff macros that separate paragraphs
+paste                   allow pasting text
+patchmode      pm       keep the oldest version of a file
+path           pa       list of directories searched with "gf" et.al.
+readonly       ro       disallow writing the buffer
+remap                   allow mappings to work recursively
+report                  threshold for reporting nr. of lines changed
+restorescreen  rs       Win32: restore screen when exiting
+revins         ri       inserting characters will work backwards
+rightleft      rl       window is right-to-left oriented (RIGHTLEFT)
+ruler          ru       show cursor line and column in the status line
+scroll         scr      lines to scroll with CTRL-U and CTRL-D
+scrolljump     sj       minimum number of lines to scroll
+scrolloff      so       minimum nr. of lines above and below cursor
+sections       sect     nroff macros that separate sections
+secure                  secure mode for reading .vimrc in current dir
+shell          sh       name of shell to use for external commands
+shellcmdflag   shcf     flag to shell to execute one command
+shellpipe      sp       string to put output of ":make" in error file
+shellquote     shq      quote character(s) for around shell command
+shellredir     srr      string to put output of filter in a temp file
+shelltype      st       Amiga: influences how to use a shell
+shiftround     sr       round indent to multiple of shiftwidth
+shiftwidth     sw       number of spaces to use for (auto)indent step
+shortmess      shm      list of flags, reduce length of messages
+shortname      sn       non-MS-DOS: File names assumed to be 8.3 chars
+showbreak      sbr      string to use at the start of wrapped lines
+showcmd        sc       show (partial) command in status line
+showmatch      sm       briefly jump to matching bracket if insert one
+showmode       smd      message on status line to show current mode
+sidescroll     ss       minimum number of columns to scroll horizontal
+smartcase      scs      no ignore case when pattern has uppercase
+smartindent    si       smart autoindenting for C programs. For perl
+                        script editing set this option and the following
+                        key mapping: inoremap # x<BS># 
+smarttab       sta      use 'shiftwidth' when inserting <Tab>
+splitbelow     sb       new window from split is below the current one
+startofline    sol      commands move cursor to first blank in line
+suffixes       su       suffixes that are ignored with multiple match
+swapsync       sws      how to sync swapfile
+tabstop        ts       number of spaces that <Tab> in file uses
+taglength      tl       number of significant characters for a tag
+tagrelative    tr       filenames in tag file are relative
+tags           tag      list of filenames used by the tag command
+term                    name of the terminal
+terse                   shorten some messages
+textauto       ta       set 'textmode' automatically when reading file
+textmode       tx       lines are separated by <CR><NL>
+textwidth      tw       maximum width of text that is being inserted
+tildeop        top      tilde command "~" behaves like an operator
+timeout        to       time out on mappings and key codes
+ttimeout                time out on mappings
+timeoutlen     tm       time out time in milliseconds
+ttimeoutlen    ttm      time out time for key codes in milliseconds
+title                   set title of window to the name of the file
+ttybuiltin     tbi      use built-in termcap before external termcap
+ttyfast        tf       indicates a fast terminal connection
+ttyscroll      tsl      maximum number of lines for a scroll
+ttytype        tty      alias for 'term'
+undolevels     ul       maximum number of changes that can be undone
+updatecount    uc       after this many characters flush swapfile
+updatetime     ut       after this many milliseconds flush swapfile
+viminfo        vi       use .viminfo file upon startup and exiting
+visualbell     vb       use visual bell instead of beeping
+warn                    warn for shell command when buffer was changed
+weirdinvert    wi       for terminals that have weird inversion method
+whichwrap      ww       allow specified keys to cross line boundaries
+wildchar       wc       command-line character for wildcard expansion
+winheight      wh       minimum number of lines for the current window
+wrap                    long lines wrap and continue on the next line
+wrapmargin     wm       chars from the right where wrapping starts
+wrapscan       ws       searches wrap around the end of the file
+writeany       wa       write to file with no need for "!" override
+writebackup    wb       make a backup before overwriting a file
+writedelay     wd       delay this many msec for each char (for debug)
+.. @+node:ekr.20131105122124.16490: *5* Command-line completion
+'wildchar' (default: <Tab>)
+    do completion on the pattern in front of the cursor. If there are
+    multiple matches, beep and show the first one; further 'wildchar' will
+    show the next ones.
+                   
+CTRL-A  insert all names that match pattern in front of cursor
+CTRL-D  list all names that match the pattern in front of the cursor
+CTRL-L  insert longest common part of names that match pattern
+CTRL-N  after 'wildchar' with multiple matches: go to next match
+CTRL-P  after 'wildchar' with multiple matches: go to previous match
+.. @+node:ekr.20131105122124.16491: *5* Special Ex characters
+
+|           separates two commands (not for ":global" and ":!")
+"           begins comment
+
+%           current filename (only where filename is expected)
+#[number]   alternate filename [number] (only where filename is expected)
+
+Note: The next four are typed literally; these are not special keys!
+
+<cword>     word under the cursor (only where filename is expected)
+<cWORD>     WORD under the cursor (only where filename is expected)
+<cfile>     file name under the cursor (only where filename is expected)
+<afile>     file name for autocommand (only where filename is expected)
+
+After "%", "#", "<cfile>", or "<afile>"
+:p          full path
+:h          head
+:t          tail
+:r          root
+:e          extension
+.. @+node:ekr.20131105122124.16492: *5* Ex ranges
+,               separates two line numbers
+;               idem, set cursor to the first line number
+                before interpreting the second one
+{number}        an absolute line number
+.               the current line
+$               the last line in the file
+%               equal to 1,$ (the entire file)
+*               equal to '<,'> (visual area)
+'t              position of mark t
+/{pattern}[/]   the next line where {pattern} matches
+?{pattern}[?]   the previous line where {pattern} matches
++[num]          add [num] to the preceding line number (default: 1)
+-[num]          subtract [num] from the preceding line number (default: 1)
+.. @+node:ekr.20131105122124.16493: *5* Starting vim
+38 -- Starting VIM
+
+
+vim [options]                start editing with an empty buffer
+vim [options] {file ..}      start editing one or more files
+vim [options] -t {tag}       edit the file associated with {tag}
+vim [options] -e [fname]     start editing in QuickFix mode, display the first error
+
+
+39 -- Vim Command Line Arguments
+
+
+-g                  start GUI (also allows other options)
+
++[num]              put the cursor at line [num] (default: last line)
++{command}          execute {command} after loading the file
++/{pat} {file ..}   put the cursor at the first occurrence of {pat}
+-v                  read-only mode (View), implies -n
+-R                  read-only mode, same as -v
+-b                  binary mode
+-l                  lisp mode
+-H                  Hebrew mode ('hkmap' and 'rightleft' are set)
+-r                  give list of swap files
+-r {file ..}        recover aborted edit session
+-n                  do not create swapfile
+-o [N]              open N windows (default: one for each file)
+-x                  Amiga: do not restart VIM to open a window (for
+                        e.g., mail)
+-s {scriptin}       first read commands from the file {scriptin}
+-w {scriptout}      write typed chars to file {scriptout} (append)
+-W {scriptout}      write typed chars to file {scriptout} (overwrite)
+-T {terminal}       set terminal name
+-d {device}         Amiga: open {device} to be used as a console
+-u {vimrc}          read inits from {vimrc} instead of other inits
+-i {viminfo}        read info from {viminfo} instead of other files
+--                  end of options, other arguments are file names
+
+Automatic option setting when editing a file
+
+vim:{set-arg}: ..       In the first and last lines of the
+                        file (see 'ml' option), {set-arg} is
+                        given as an argument to ":set"
+                        
+Automatic execution of commands on certain events.
+
+:au                     List all autocommands
+:au {event}             List all autocommands for {event}
+:au {event} {pat}       List all autocommands for {event} with {pat}
+:au {event} {pat} {cmd} Enter new autocommands for {event} with {pat}
+:au!                    Remove all autocommands
+:au! {event}            Remove all autocommands for {event}
+:au! * {pat}            Remove all autocommands for {pat}
+:au! {event} {pat}      Remove all autocommands for {event} with {pat}
+:au! {event} {pat} {cmd}  Remove all autocommands for {event} with {pat} and enter new one
+.. @+node:ekr.20131105122124.16494: *5* : commands unsorted
+:marks                  print the active marks
+:ju[mps]                print the jump list
+:ta[g][!] {tag}         Jump to tag {tag}
+:[count]ta[g][!]        Jump to [count]'th newer tag in tag list
+:[count]po[p][!]        Jump back from [count]'th older tag in tag list
+:tags                   Print tag list
+:dig[raphs]                                 show current list of digraphs
+:dig[raphs] {char1}{char2} {number} ...     add digraph(s) to the list
+:r [file]               insert the contents of [file] below the cursor
+:r! {command}           insert the standard output of {command} below the cursor
+:[range]d [x]           delete [range] lines [into register x]
+:reg                    show the contents of all registers
+:reg {arg}              show the contents of registers mentioned in {arg}
+:[range]ce[nter] [width] center the lines in [range]
+:[range]le[ft] [indent]  left-align the lines in [range] [with indent]
+:[range]ri[ght] [width]  right-align the lines in [range]
+:@<a-z>                 execute the contents of register <a-z> as an Ex command
+:@@                     repeat previous :@<a-z>
+:[range]g[lobal]/{pattern}/[cmd] 
+:[range]g[lobal]!/{pattern}/[cmd]     or    :[range]v/{pattern}/[cmd]
+:ma[p] {lhs} {rhs}          Map {lhs} to {rhs} in Normal and Visual mode.
+:ma[p]! {lhs} {rhs}         Map {lhs} to {rhs} in Insert and Command-line mode.
+:no[remap][!] {lhs} {rhs}   Same as ":map", no remapping for this {rhs}
+:unm[ap] {lhs}              Remove the mapping of {lhs} for Normal and Visual mode.
+:unm[ap]! {lhs}             Remove the mapping of {lhs} for Insert and Command-line mode.
+:ma[p] [lhs]         List mappings (starting with [lhs]) for Normal and Visual mode.
+:ma[p]! [lhs]        List mappings (starting with [lhs]) for Insert and Command-line mode.
+:cmap/:cunmap/:cnoremap 
+:imap/:iunmap/:inoremap
+:nmap/:nunmap/:nnoremap
+:vmap/:vunmap/:vnoremap
+:mk[exrc][!] [file]  write current mappings, abbreviations, and settings to [file] (default: ".exrc"; use ! to overwrite)
+:mkv[imrc][!] [file] same as ":mkexrc", but with default ".vimrc"
+:mapc[lear]          remove mappings for Normal and Visual mode
+:mapc[lear]!         remove mappings for Insert and Cmdline mode
+:imapc[lear]         remove mappings for Insert mode
+:vmapc[lear]         remove mappings for Visual mode
+:nmapc[lear]         remove mappings for Normal mode
+:cmapc[lear]         remove mappings for Cmdline mode
+
+:ab[breviate] {lhs} {rhs}  add abbreviation for {lhs} to {rhs}
+:ab[breviate] {lhs}        show abbr's that start with {lhs}
+:ab[breviate]              show all abbreviations
+:una[bbreviate] {lhs}      remove abbreviation for {lhs}
+:norea[bbrev] [lhs] [rhs]  like ":ab", but don't remap [rhs]
+:iab/:iunab/:inoreab       like ":ab", but only for Insert mode
+:cab/:cunab/:cnoreab       like ":ab", but only for Command-line mode
+:abc[lear]                 remove all abbreviations
+:cabc[lear]                remove all abbr's for Cmdline mode
+:iabc[lear]                remove all abbr's for Insert mode
+:se[t]                  Show all modified options.
+:se[t] all              Show all options.
+:se[t] {option}         Set toggle option on, show string or number option.
+:se[t] no{option}       Set toggle option off.
+:se[t] inv{option}      invert toggle option.
+:se[t] {option}={value} Set string or number option to {value}.
+:se[t] {option}?        Show value of {option}.
+:se[t] {option}&        Reset {option} to its default value.
+:fix[del]               Set value of 't_kD' according to value of 't_kb'.
+:sh[ell]        start a shell
+:!{command}     execute {command} with a shell
+:cc [nr]        display error [nr] (default is the same again)
+:cn             display the next error
+:cp             display the previous error
+:cl             list all errors
+:cf             read errors from the file 'errorfile'
+:cq             quit without writing and return error code (to the compiler)
+:make [args]    start make, read errors, and jump to first error
+:ve[rsion]      show exact version number of this Vim
+:mode N         MS-DOS: set screen mode to N (number, C80, C4350, etc.)
+:norm[al][!] {commands} Execute Normal mode commands.
+:e[dit]              Edit the current file, unless changes have been made.
+:e[dit]!             Edit the current file always.  Discard any changes.
+:e[dit] {file}       Edit {file}, unless changes have been made.
+:e[dit]! {file}      Edit {file} always.  Discard any changes.
+:pwd                 Print the current directory name.
+:cd [path]           Change the current directory to [path].
+:f[ile]              Print the current filename and the cursor position.
+:f[ile] {name}       Set the current filename to {name}.
+:files               Show alternate filenames.
+
+:argu[ment] N       edit file N
+:n[ext]             edit next file
+:n[ext] {arglist}   define new arg list and edit first file
+:N[ext]             edit previous file
+:rew[ind][!]        edit first file
+:last               edit last file
+:sar[gument] N      edit file N (new window)
+:sn[ext]            edit next file (new window)
+:sn[ext] {arglist}  define new arg list and edit first file (new window)
+:sN[ext]            Edit previous file (new window)
+:srew[ind]          Edit first file (new window)
+:slast              Edit last file (new window)
+
+
+:ar[gs]              Print the argument list, with the current file in "[]".
+:all  or :sall       Open a window for every file in the arg list.
+:wn[ext][!]          Write file and edit next file.
+:wn[ext][!] {file}   Write to {file} and edit next file, unless {file} exists.  With !, overwrite existing file.
+:wN[ext][!] [file]   Write file and edit previous file.
+:[range]w[rite][!]            Write to the current file.
+:[range]w[rite] {file}        Write to {file}, unless it already exists.
+:[range]w[rite]! {file}       Write to {file}.  Overwrite an existing file.
+:[range]w[rite][!] >>         Append to the current file.
+:[range]w[rite][!] >> {file}  Append to {file}.
+:[range]w[rite] !{cmd}        Execute {cmd} with [range] lines as standard input.
+:wall[!]                      write all changed buffers
+
+:q[uit]               Quit current buffer.
+:q[uit]!              Quit current buffer always.
+:qall                 Exit Vim, unless changes have been made.
+:qall!                Exit Vim always, discard any changes.
+:cq                   Quit without writing and return error code.
+
+:wq[!]                Write the current file and exit.
+:wq[!] {file}         Write to {file} and exit.
+:x[it][!] [file]      Like ":wq" but write only when changes have been made
+:xall[!]  or :wqall[!]  Write all changed buffers and exit
+:st[op][!]              Suspend VIM or start new shell. If 'aw' option is set and [!] not given write the buffer.
+
+:rv[iminfo] [file]      Read info from viminfo file [file]
+:rv[iminfo]! [file]     idem, overwrite exisiting info
+:wv[iminfo] [file]      Add info to viminfo file [file]
+:wv[iminfo]! [file]     Write info to viminfo file [file]
+
+:split                  Split window into two parts
+:split {file}           Split window and edit {file} in one of them
+
+:buffers  or  :files    list all known buffer and file names
+:ball     or  :sball    edit all args/buffers
+:unhide   or  :sunhide  edit all loaded buffers
+
+:bunload[!] [N]         unload buffer [N] from memory
+:bdelete[!] [N]         unload buffer [N] and delete it from the buffer list
+
+:[N]buffer [N]      to arg/buf N
+:[N]bnext [N]       to Nth next arg/buf
+:[N]bNext [N]       to Nth previous arg/buf
+:[N]bprevious [N]   to Nth previous arg/buf
+:brewind            to first arg/buf
+:blast              to last arg/buf
+:[N]bmod [N]        to Nth modified buf
+
+:[N]sbuffer [N]     to arg/buf N (in new window)
+:[N]sbnext [N]      to Nth next arg/buf (in new window)
+:[N]sbNext [N]      to Nth previous arg/buf (in new window)
+:[N]sbprevious [N]  to Nth previous arg/buf (in new window)
+:sbrewind           to first arg/buf (in new window)
+:sblast             to last arg/buf (in new window)
+:[N]sbmod [N]       to Nth modified buf (in new window)
+.. @+node:ekr.20131105122124.16495: *5* : commands merged (do not sort!)
+:!{command}                     execute {command} with a shell
+:@<a-z>                         execute the contents of register <a-z> as an Ex command
+:@@                             repeat previous :@<a-z>
+:N[ext]                         edit previous file
+:ab[breviate]                   show all abbreviations
+:ab[breviate] {lhs}             show abbr's that start with {lhs}
+:ab[breviate] {lhs} {rhs}       add abbreviation for {lhs} to {rhs}
+:abc[lear]                      remove all abbreviations
+:all  or :sall                  open a window for every file in the arg list.
+:ar[gs]                         print the argument list, with the current file in "[]".
+:argu[ment] N                   edit file N
+:[N]bNext [N]                   to Nth previous arg/buf
+:ball     or  :sball            edit all args/buffers
+:bdelete[!] [N]                 unload buffer [N] and delete it from the buffer list
+:blast                          to last arg/buf
+:[N]bmod [N]                    to Nth modified buf
+:[N]bnext [N]                   to Nth next arg/buf
+:[N]bprevious [N]               to Nth previous arg/buf
+:[N]buffer [N]                  to arg/buf N
+:brewind                        to first arg/buf
+:buffers  or  :files            list all known buffer and file names
+:bunload[!] [N]                 unload buffer [N] from memory
+:cab/:cunab/:cnoreab            like ":ab", but only for Command-line mode
+:cabc[lear]                     remove all abbr's for Cmdline mode
+:cc [nr]                        display error [nr] (default is the same again)
+:cd [path]                      change the current directory to [path].
+:[range]ce[nter] [width]        center the lines in [range]
+:cf                             read errors from the file 'errorfile'
+:cl                             list all errors
+:cmap/:cunmap/:cnoremap 
+:cmapc[lear]                    remove mappings for Cmdline mode
+:cn                             display the next error
+:cp                             display the previous error
+:cq                             quit without writing and return error code.
+:cq                             quit without writing and return error code (to the compiler)
+:[range]d [x]                   delete [range] lines [into register x]
+:dig[raphs]                     show current list of digraphs
+:dig[raphs] {char1}{char2} {number} ...     add digraph(s) to the list
+:e[dit]                         edit the current file, unless changes have been made.
+:e[dit] {file}                  edit {file}, unless changes have been made.
+:e[dit]!                        edit the current file always.  Discard any changes.
+:e[dit]! {file}                 edit {file} always.  Discard any changes.
+:f[ile]                         print the current filename and the cursor position.
+:f[ile] {name}                  set the current filename to {name}.
+:files                          show alternate filenames.
+:fix[del]                       set value of 't_kD' according to value of 't_kb'.
+:[range]g[lobal]!/{pattern}/[cmd]
+:[range]g[lobal]/{pattern}/[cmd] 
+:iab/:iunab/:inoreab            like ":ab", but only for Insert mode
+:iabc[lear]                     remove all abbr's for Insert mode
+:imap/:iunmap/:inoremap
+:imapc[lear]                    remove mappings for Insert mode
+:ju[mps]                        print the jump list
+:last                           edit last file
+:[range]le[ft] [indent]         left-align the lines in [range] [with indent]
+:ma[p] [lhs]                    list mappings (starting with [lhs]) for Normal and Visual mode.
+:ma[p] {lhs} {rhs}              map {lhs} to {rhs} in Normal and Visual mode.
+:ma[p]! [lhs]                   list mappings (starting with [lhs]) for Insert and Command-line mode.
+:ma[p]! {lhs} {rhs}             map {lhs} to {rhs} in Insert and Command-line mode.
+:make [args]                    start make, read errors, and jump to first error
+:mapc[lear]                     remove mappings for Normal and Visual mode
+:mapc[lear]!                    remove mappings for Insert and Cmdline mode
+:marks                          print the active marks
+:mk[exrc][!] [file]             write current mappings, abbreviations, and settings to [file] (default: ".exrc"; use ! to overwrite)
+:mkv[imrc][!] [file]            same as ":mkexrc", but with default ".vimrc"
+:mode N                         MS-DOS: set screen mode to N (number, C80, C4350, etc.)
+:n[ext]                         edit next file
+:n[ext] {arglist}               define new arg list and edit first file
+:nmap/:nunmap/:nnoremap
+:nmapc[lear]                    remove mappings for Normal mode
+:no[remap][!] {lhs} {rhs}       same as ":map", no remapping for this {rhs}
+:norea[bbrev] [lhs] [rhs]       like ":ab", but don't remap [rhs]
+:norm[al][!] {commands}         execute Normal mode commands.
+:[count]po[p][!]                jump back from [count]'th older tag in tag list
+:pwd                            print the current directory name.
+:q[uit]                         quit current buffer.
+:q[uit]!                        quit current buffer always.
+:qall                           exit Vim, unless changes have been made.
+:qall!                          exit Vim always, discard any changes.
+:r [file]                       insert the contents of [file] below the cursor
+:r! {command}                   insert the standard output of {command} below the cursor
+:reg                            show the contents of all registers
+:reg {arg}                      show the contents of registers mentioned in {arg}
+:rew[ind][!]                    edit first file
+:[range]ri[ght] [width]         right-align the lines in [range]
+:rv[iminfo] [file]              read info from viminfo file [file]
+:rv[iminfo]! [file]             idem, overwrite exisiting info
+:sN[ext]                        edit previous file (new window)
+:sar[gument] N                  edit file N (new window)
+:sblast                         to last arg/buf (in new window)
+:[N]sbNext [N]                  to Nth previous arg/buf (in new window)
+:[N]sbmod [N]                   to Nth modified buf (in new window)
+:[N]sbnext [N]                  to Nth next arg/buf (in new window)
+:[N]sbprevious [N]              to Nth previous arg/buf (in new window)
+:[N]sbuffer [N]                 to arg/buf N (in new window)
+:sbrewind                       to first arg/buf (in new window)
+:se[t]                          show all modified options.
+:se[t] all                      show all options.
+:se[t] inv{option}              invert toggle option.
+:se[t] no{option}               set toggle option off.
+:se[t] {option}                 set toggle option on, show string or number option.
+:se[t] {option}&                reset {option} to its default value.
+:se[t] {option}={value}         set string or number option to {value}.
+:se[t] {option}?                show value of {option}.
+:sh[ell]                        start a shell
+:slast                          edit last file (new window)
+:sn[ext]                        edit next file (new window)
+:sn[ext] {arglist}              define new arg list and edit first file (new window)
+:split                          Split window into two parts
+:split {file}                   Split window and edit {file} in one of them
+:srew[ind]                      Edit first file (new window)
+:st[op][!]                      Suspend VIM or start new shell. If 'aw' option is set and [!] not given write the buffer.
+:[count]ta[g][!]                jump to [count]'th newer tag in tag list
+:ta[g][!] {tag}                 jump to tag {tag}
+:tags                           print tag list
+:una[bbreviate] {lhs}           remove abbreviation for {lhs}
+:unhide   or  :sunhide          edit all loaded buffers
+:unm[ap] {lhs}                  remove the mapping of {lhs} for Normal and Visual mode.
+:unm[ap]! {lhs}                 remove the mapping of {lhs} for Insert and Command-line mode.
+:[range]v/{pattern}/[cmd]
+:ve[rsion]                      show exact version number of this Vim
+:vmap/:vunmap/:vnoremap
+:vmapc[lear]                    remove mappings for Visual mode
+:[range]w[rite] !{cmd}          execute {cmd} with [range] lines as standard input.
+:[range]w[rite] {file}          write to {file}, unless it already exists.
+:[range]w[rite]! {file}         write to {file}.  Overwrite an existing file.
+:[range]w[rite][!]              write to the current file.
+:[range]w[rite][!] >>           append to the current file.
+:[range]w[rite][!] >> {file}    append to {file}.
+:wN[ext][!] [file]              write file and edit previous file.
+:wall[!]                        write all changed buffers
+:wn[ext][!]                     write file and edit next file.
+:wn[ext][!] {file}              write to {file} and edit next file, unless {file} exists.  With !, overwrite existing file.
+:wq[!]                          write the current file and exit.
+:wq[!] {file}                   write to {file} and exit.
+:wv[iminfo] [file]              add info to viminfo file [file]
+:wv[iminfo]! [file]             write info to viminfo file [file]
+:x[it][!] [file]                like ":wq" but write only when changes have been made
+:xall[!]  or :wqall[!]          Write all changed buffers and exit
 .. @+node:ekr.20131108082341.16371: *3* * Node-creating abbreviations
 @language rest
 
