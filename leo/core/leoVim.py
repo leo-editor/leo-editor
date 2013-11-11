@@ -25,7 +25,7 @@ class VimCommands:
     #@+node:ekr.20131111061547.18012: *5* vim_h
     def vim_h(self):
         '''Move cursor left.'''
-        g.trace()
+        # g.trace()
         if self.extend:
             self.ec.backCharacterExtendSelection(self.event)
         else:
@@ -288,6 +288,7 @@ class VimCommands:
         
         self.c = c
         self.chars = [ch for ch in string.printable if 32 <= ord(ch) < 128]
+        self.dot = '' # The previous command in normal mode.
         self.ec = c.editCommands
         self.event = None
         self.extend = False # True: extending selection.
@@ -312,7 +313,7 @@ class VimCommands:
     #@+node:ekr.20131111054309.16528: *3* vc.exec_
     def exec_(self,command,n1,n2,motion):
         
-        trace = True
+        trace = False
         d = self.commands_d.get(command,{})
         command_name = d.get('command_name')
         func = self.dispatch_d.get(command_name,self.oops)
@@ -339,21 +340,12 @@ class VimCommands:
     #@+node:ekr.20131111061547.18011: *3* vc.runAtIdle
     # For testing: ensure that this always gets called.
 
-    def runAtIdle (self,aFunc,trace=True):
+    def runAtIdle (self,aFunc):
         '''
         Run aFunc at idle time.
         This can not be called in some contexts.
         '''
-        g.trace('(VimCommands)',aFunc.__name__)
-        timer = QtCore.QTimer()
-        timer.setSingleShot(True)
-        def atIdleCallback(aFunc=aFunc,trace=trace):
-            print('atIdleCallBack',aFunc)
-            aFunc()
-        timer.connect(timer,QtCore.SIGNAL("timeout()"),atIdleCallback)
-        # To make your application perform idle processing,
-        # use a QTimer with 0 timeout.
-        timer.start(0)
+        QtCore.QTimer.singleShot(0,aFunc)
     #@+node:ekr.20131110050932.16533: *3* vc.scan & helpers
     def scan(self,s):
         
@@ -692,10 +684,10 @@ if 0: # Don't execute this code when loading the file!
     vc = leoVim.VimCommands(c)
     table = (
         # 'gg','gk','#','dd','d3j',
-        # 'h', # works
+        'h', # works
         # 'l', # works
         # 'j', # Not yet.
-        'ggg',
+        # 'ggg',
     )
     for s in table:
         status,n1,command,n2,motion = vc.scan(s)
@@ -710,11 +702,9 @@ if 0: # Don't execute this code when loading the file!
             vc.motion = motion
             vc.oops()
 
-    if 0: # This never seems to work!
-        def callback(*args,**keys):
-            g.trace(args,keys)
-            c.bodyWantsFocusNow()
-        vc.runAtIdle(callback,trace=True)
+    if g.unitTesting:
+        # Unit testing messes up the focus.
+        vc.runAtIdle(c.bodyWantsFocusNow)
     #@-others
 #@-others
 #@-leo

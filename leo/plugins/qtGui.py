@@ -8238,19 +8238,7 @@ class leoQtGui(leoGui.leoGui):
 
         '''This can not be called in some contexts.'''
 
-        timer = QtCore.QTimer()
-        timer.setSingleShot(True)
-
-        # print('runAtIdle',aFunc)
-
-        def atIdleCallback(aFunc=aFunc):
-            print('atIdleCallBack',aFunc)
-            aFunc()
-
-        timer.connect(timer,QtCore.SIGNAL("timeout()"),atIdleCallback)
-
-        # To make your application perform idle processing, use a QTimer with 0 timeout.
-        timer.start(0)
+        QtCore.QTimer.singleShot(0,aFunc)
     #@+node:ekr.20131007055150.17608: *4* insertKeyEvent (qtGui) (New in 4.11)
     def insertKeyEvent (self,event,i):
         
