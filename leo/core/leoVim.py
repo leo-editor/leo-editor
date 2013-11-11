@@ -26,12 +26,14 @@ class VimCommands:
         self.tail_kinds = ['char','letter','motion','pattern','register',]
         self.motion_kinds = ['char','letter','register'] # only 'char' used at present.
             # Valid selectors in @data vim-*-tails.
-
+        # Set by self.exec_
+        self.command = None
+        self.motion = None
+        self.n1 = None
+        self.n2 = None
         # Call after setting ivars.
         self.create_dicts()
-        for ivar in ('command_tails_d','motion_tails_d','motions_d','commands_d'):
-            assert hasattr(self,ivar),ivar
-
+        
     #@+node:ekr.20131109170017.46983: *3* vc.create_dicts & helpers
     def create_dicts(self):
 
@@ -43,8 +45,31 @@ class VimCommands:
         self.motions_d = self.create_motions_d(dump)
         # Then commands.
         self.commands_d = self.create_commands_d(dump)
-        # Finally, check.
+        # Can be done any time.
+        self.dispatch_d = self.create_dispatch_d()
+        # Check dict contents.
         self.check_dicts()
+        # Check ivars.
+        for ivar in (
+            'command_tails_d','commands_d',
+            'dispatch_d',
+            'motion_tails_d','motions_d',
+        ):
+            assert hasattr(self,ivar),ivar
+
+        
+    #@+node:ekr.20131110050932.16536: *4* check_dicts
+    def check_dicts(self):
+        
+        # Check user settings.
+        d = self.commands_d
+        for key in sorted(d.keys()):
+            d2 = d.get(key)
+            ch = d2.get('ch')
+            pattern = d2.get('tail_pattern')
+            aList = d2.get('tail_chars')
+            if aList and len(aList) > 1 and None in aList and not pattern:
+                g.trace('ambiguous entry for %s: %s' % (ch,d2))
     #@+node:ekr.20131110050932.16529: *4* create_command_tails_d
     def create_command_tails_d(self,dump):
 
@@ -58,33 +83,6 @@ class VimCommands:
             else:
                 g.trace('bad kind: %s' % (s))
         if dump: self.dump('command_tails_d',d)
-        return d
-    #@+node:ekr.20131110050932.16530: *4* create_motion_tails_d
-    def create_motion_tails_d(self,dump):
-
-        # @data vim-motion-tails
-        d = {}
-        data = self.getData('vim-motion-tails')
-        for s in data:
-            kind,command = self.split_arg_line(s)
-            command = command.strip()
-            if kind in self.tail_kinds:
-                d[command] = kind
-            else:
-                g.trace('bad kind: %s' % (s))
-        if dump: self.dump('motion_tails_d',d)
-        return d
-    #@+node:ekr.20131110050932.16531: *4* create_motions_d
-    def create_motions_d(self,dump):
-        
-        # @data vim-motions
-        d = {}
-        data = self.getData('vim-motions')
-        for command in data:
-            command = command.strip()
-            d[command] = self.motion_tails_d.get(command,'')
-                # List of possible tails
-        if dump: self.dump('motions_d',d)
         return d
     #@+node:ekr.20131110050932.16532: *4* create_commands_d
     def create_commands_d(self,dump):
@@ -121,18 +119,119 @@ class VimCommands:
                 g.trace('missing command chars: %s' % (s))
         if dump: self.dump('command_d',d)
         return d
-    #@+node:ekr.20131110050932.16536: *4* check_dicts
-    def check_dicts(self):
+    #@+node:ekr.20131110050932.16530: *4* create_motion_tails_d
+    def create_motion_tails_d(self,dump):
+
+        # @data vim-motion-tails
+        d = {}
+        data = self.getData('vim-motion-tails')
+        for s in data:
+            kind,command = self.split_arg_line(s)
+            command = command.strip()
+            if kind in self.tail_kinds:
+                d[command] = kind
+            else:
+                g.trace('bad kind: %s' % (s))
+        if dump: self.dump('motion_tails_d',d)
+        return d
+    #@+node:ekr.20131110050932.16531: *4* create_motions_d
+    def create_motions_d(self,dump):
         
-        d = self.commands_d
-        for key in sorted(d.keys()):
-            d2 = d.get(key)
-            ch = d2.get('ch')
-            pattern = d2.get('tail_pattern')
-            aList = d2.get('tail_chars')
-            if aList and len(aList) > 1 and None in aList and not pattern:
-                g.trace('ambiguous entry for %s: %s' % (ch,d2))
-    #@+node:ekr.20131109170017.46984: *3* vc.dump
+        # @data vim-motions
+        d = {}
+        data = self.getData('vim-motions')
+        for command in data:
+            command = command.strip()
+            d[command] = self.motion_tails_d.get(command,'')
+                # List of possible tails
+        if dump: self.dump('motions_d',d)
+        return d
+    #@+node:ekr.20131111061547.16460: *4* create_dispatch_d
+    def create_dispatch_d(self):
+        vim_oops = self.vim_oops
+        d = {
+        # brackets.
+        'vim_lcurly':   vim_oops,
+        'vim_lparen':   vim_oops,
+        'vim_lsquare':  vim_oops,
+        'vim_rcurly':   vim_oops,
+        'vim_rparen':   vim_oops,
+        'vim_rsquare':  vim_oops,
+        # Special chars.
+        'vim_at':       vim_oops,
+        'vim_backtick': vim_oops,
+        'vim_caret':    vim_oops,
+        'vim_comma':    vim_oops,
+        'vim_dollar':   vim_oops,
+        'vim_dot':      vim_oops,
+        'vim_dquote':   vim_oops,
+        'vim_langle':   vim_oops,
+        'vim_minus':    vim_oops,
+        'vim_percent':  vim_oops,
+        'vim_plus':     vim_oops,
+        'vim_pound':    vim_oops,
+        'vim_question': vim_oops,
+        'vim_rangle':   vim_oops,
+        'vim_semicolon': vim_oops,
+        'vim_slash':    vim_oops,
+        'vim_star':     vim_oops,
+        'vim_tilda':    vim_oops,
+        'vim_underscore': vim_oops,
+        'vim_vertical': vim_oops,
+        # Letters and digits.
+        'vim_0': vim_oops,
+        'vim_A': vim_oops,
+        'vim_B': vim_oops,
+        'vim_C': vim_oops,
+        'vim_D': vim_oops,
+        'vim_E': vim_oops,
+        'vim_F': vim_oops,
+        'vim_G': vim_oops,
+        'vim_H': vim_oops,
+        'vim_I': vim_oops,
+        'vim_J': vim_oops,
+        'vim_K': vim_oops,
+        'vim_M': vim_oops,
+        'vim_L': vim_oops,
+        'vim_N': vim_oops,
+        'vim_O': vim_oops,
+        'vim_P': vim_oops,
+        'vim_R': vim_oops,
+        'vim_S': vim_oops,
+        'vim_T': vim_oops,
+        'vim_U': vim_oops,
+        'vim_V': vim_oops,
+        'vim_W': vim_oops,
+        'vim_X': vim_oops,
+        'vim_Y': vim_oops,
+        'vim_Z': vim_oops,
+        'vim_a': vim_oops,
+        'vim_b': vim_oops,
+        'vim_c': vim_oops,
+        'vim_d': vim_oops,
+        'vim_g': vim_oops,
+        'vim_h': vim_oops,
+        'vim_i': vim_oops,
+        'vim_j': vim_oops,
+        'vim_k': vim_oops,
+        'vim_l': vim_oops,
+        'vim_n': vim_oops,
+        'vim_m': vim_oops,
+        'vim_o': vim_oops,
+        'vim_p': vim_oops,
+        'vim_q': vim_oops,
+        'vim_r': vim_oops,
+        'vim_s': vim_oops,
+        'vim_t': vim_oops,
+        'vim_u': vim_oops,
+        'vim_v': vim_oops,
+        'vim_w': vim_oops,
+        'vim_x': vim_oops,
+        'vim_y': vim_oops,
+        'vim_z': vim_oops,
+        }
+        return d
+    #@+node:ekr.20131109170017.46984: *4* dump
     def dump(self,name,d):
         '''Dump a dictionary.'''
         print('\nDump of %s' % name)
@@ -157,11 +256,7 @@ class VimCommands:
                     print('%s\n%s' % (key,val3))
             else:
                 print('%5s %s' % (key,val))
-    #@+node:ekr.20131111054309.16528: *3* vc.exec_
-    def exec_(self,s):
-        
-        g.trace(s)
-    #@+node:ekr.20131109170017.46985: *3* vc.getData
+    #@+node:ekr.20131109170017.46985: *4* getData
     def getData(self,s):
         
         c = self.c
@@ -174,6 +269,28 @@ class VimCommands:
                 g.trace('not found: %s' % s)
         else:
             return c.config.getData(s)
+    #@+node:ekr.20131111054309.16528: *3* vc.exec_ & helpers
+    def exec_(self,command,n1,n2,motion):
+        
+        func = self.dispatch_d.get(command,self.vim_oops)
+        # g.trace(func.__name__,s)
+        self.command = command
+        self.n1 = n1
+        self.n2 = n2
+        self.motion = motion
+        func()
+        
+    #@+node:ekr.20131111061547.16462: *4* vc.trace_command
+    def trace_command(self):
+        
+        caller = g.callers(1)
+        print('%-10s command: %-5r n1: %-4r n2: %-4r motion: %r' % (
+            caller,self.command,self.n1,self.n2,self.motion))
+    #@+node:ekr.20131111061547.16461: *4* vc.vim_oops
+    def vim_oops(self):
+        
+        self.trace_command()
+        
     #@+node:ekr.20131110050932.16533: *3* vc.scan & helpers
     def scan(self,s):
         
@@ -262,7 +379,7 @@ class VimCommands:
                     else:
                         status = 'oops'
         return status,n2,motion
-    #@+node:ekr.20131110050932.16501: *3* vc.split_arg_line
+    #@+node:ekr.20131110050932.16501: *4* vc.split_arg_line
     def split_arg_line(self,s):
         '''
         Split line s into a head and tail.
@@ -508,8 +625,10 @@ if 0: # Don't execute this code when loading the file!
     table = (
         'gg','gk','#','dd','d3j',
     )
-    for command in table:
-        vc.exec_(command)
+    for s in table:
+        status,n1,command,n2,motion = vc.scan(s)
+        if status == 'done':
+            vc.exec_(command,n1,n2,motion)
     #@-others
 #@-others
 #@-leo
