@@ -9330,7 +9330,130 @@ def getExternalCompletions (self,s,p=None,language='python'):
     theObject,tabList = self.theObject,self.tabList
     self.exit() # Not called from the autocompleter itself.
     return theObject,tabList
-.. @+node:ekr.20131109090612.29139: ** normal_cmd (execute command,revised)
+.. @+node:ekr.20131111105746.16556: *3* class VimTestCase (not used)
+class editBodyTestCase(unittest.TestCase):
+
+    """Data-driven unit tests for vim commands commands."""
+
+    @others
+.. @+node:ekr.20131111105746.16557: *4*  __init__(VimTestCase)
+def __init__ (self,c,parent,before,after,sel,ins,tempNode):
+
+    
+    unittest.TestCase.__init__(self)
+        # Init the base class.
+    self.c = c
+    self.failFlag = False
+    self.parent = parent.copy()
+    self.before = before.copy()
+    self.after  = after.copy()
+    self.sel    = sel.copy() # Two lines giving the selection range in tk coordinates.
+    self.ins    = ins.copy() # One line giving the insert point in tk coordinate.
+    self.tempNode = tempNode.copy()
+    self.vc = VimCommands(c)
+.. @+node:ekr.20131111105746.16558: *4* vtc.fail
+def fail (self,msg=None):
+
+    """Mark a unit test as having failed."""
+
+    import leo.core.leoGlobals as g
+    g.app.unitTestDict["fail"] = g.callers()
+    self.failFlag = True
+.. @+node:ekr.20131111140646.16533: *4* vtc.compare
+def compare(self,commandName):
+    
+    
+    def comp(before,after,compareHeadlines=False,report=False):
+        return tm.compareOutlines(before,after,
+            compareHeadlines=compareHeadlines,
+            report=report)
+
+    # Don't call the undoer if we expect no change.
+    if comp(self.before,self.after):
+        return
+    try:
+        s = commandName
+        after,before,temp = self.after,self.before,self.tempNode
+        assert comp(temp,after),'%s: before undo1' % s
+        if 0: # Not ready yet?
+            c.undoer.undo()
+            assert comp(temp,before),'%s: after undo1' % s
+            c.undoer.redo()
+            assert comp(temp,after),'%s: after redo' % s
+            c.undoer.undo()
+            assert comp(temp,before),'%s: after undo2' % s
+    except Exception:
+        self.fail()
+        raise
+.. @+node:ekr.20131111140646.16534: *4* vtc.deleteChildren
+def deleteChildren(self,p):
+    
+    # Delete all children of p.
+    while p.hadChildren():
+        p.firstChild().doDelete()
+.. @+node:ekr.20131111105746.16559: *4* vtc.editBody
+def editBody (self):
+
+    c,vc = self.c, self.vc
+    # Get the command.
+    command = self.parent.h
+    i = command.find(' ')
+    if i > -1: command = command[:i]
+    # Compute the result in tempNode.b
+    status,n1,command,n2,motion = vc.scan(command)
+    assert status == 'done',repr(status)
+    vc.exec_(command,n1,n2,motion)
+    return commandName
+.. @+node:ekr.20131111105746.16560: *4* vtc.runTest
+def runTest(self):
+
+    commandName = self.editBody()
+    self.compare(commandName)
+.. @+node:ekr.20131111105746.16561: *4* vtc.setUp
+def setUp(self):
+
+    c = self.c
+    tempNode = self.tempNode
+    c.undoer.clearUndoState()
+    self.deleteChildren(tempNode)
+    text = self.before.b
+    # tempNode.setBodyString(text)
+    tempNode.b = text
+    c.selectPosition(self.tempNode)
+    w = c.frame.body.bodyCtrl
+    if self.sel:
+        # self.sel is a **tk** index.
+        s = str(self.sel.b) # Can't be unicode.
+        lines = s.split('\n')
+        w.setSelectionRange(lines[0],lines[1])
+    if self.ins:
+        s = str(self.ins.b) # Can't be unicode.
+        lines = s.split('\n')
+        g.trace(lines)
+        w.setInsertPoint(lines[0])
+    if not self.sel and not self.ins:
+        w.setInsertPoint(0)
+        w.setSelectionRange(0,0)
+.. @+node:ekr.20131111105746.16562: *4* vtc.shortDescription
+def shortDescription (self):
+
+    try:
+        return "VimTestCase: %s" % (self.parent.h)
+    except Exception:
+        g.es_print_exception()
+        return "VimTestCase"
+.. @+node:ekr.20131111105746.16563: *4* vtc.tearDown
+def tearDown (self):
+
+    c = self.c
+    tempNode = self.tempNode
+    c.selectPosition(tempNode)
+    if not self.failFlag:
+        tempNode.setBodyString("")
+        self.deleteChildren(tempNode)
+    tempNode.clearDirty()
+    c.undoer.clearUndoState()
+.. @+node:ekr.20131109090612.29139: *3* normal_cmd (execute command,revised)
 @language c
 /* Execute a command in Normal mode. */
 void normal_cmd(oap, toplevel)
@@ -9367,7 +9490,7 @@ void normal_cmd(oap, toplevel)
 normal_end:
     << finish up >>
 }
-.. @+node:ekr.20131109090612.29156: *3* << init vars >>
+.. @+node:ekr.20131109090612.29156: *4* << init vars >>
 cmdarg_T	ca;			/* command arguments */
 int		c;
 int		ctrl_w = FALSE;		/* got CTRL-W command */
@@ -9390,12 +9513,12 @@ ca.oap = oap;
 #ifdef FEAT_SNIFF
     want_sniff_request = sniff_connected;
 #endif
-.. @+node:ekr.20131109090612.29155: *4* << use remembered count before entering an operator >>
+.. @+node:ekr.20131109090612.29155: *5* << use remembered count before entering an operator >>
 /* Use a count remembered from before entering an operator.  After typing
  * "3d" we return from normal_cmd() and come back here, the "3" is
  * remembered in "opcount". */
 ca.opcount = opcount;
-.. @+node:ekr.20131109090612.29154: *3* << check for pending operator >>
+.. @+node:ekr.20131109090612.29154: *4* << check for pending operator >>
 /*
  * If there is an operator pending, then the command we take this time
  * will terminate it. Finish_op tells us to finish the operation before
@@ -9414,7 +9537,7 @@ finish_op = (oap->op_type != OP_NOP);
         # endif
     }
 #endif
-.. @+node:ekr.20131109090612.29153: *3* << reset the count >>
+.. @+node:ekr.20131109090612.29153: *4* << reset the count >>
 /* When not finishing an operator and no register name typed, reset the count. */
 if (!finish_op && !oap->regname)
 {
@@ -9423,7 +9546,7 @@ if (!finish_op && !oap->regname)
         set_prevcount = TRUE;
     #endif
 }
-.. @+node:ekr.20131109090612.29152: *3* << restore counts before receiving K_CURSORHOLD >>
+.. @+node:ekr.20131109090612.29152: *4* << restore counts before receiving K_CURSORHOLD >>
 #ifdef FEAT_AUTOCMD
     /* Restore counts from before receiving K_CURSORHOLD.  This means after
      * typing "3", handling K_CURSORHOLD and then typing "2" we get "32", not
@@ -9443,7 +9566,7 @@ State = NORMAL_BUSY;
 #ifdef USE_ON_FLY_SCROLL
     dont_scroll = FALSE;	/* allow scrolling here */
 #endif
-.. @+node:ekr.20131109090612.29151: *3* << get command character from user >>
+.. @+node:ekr.20131109090612.29151: *4* << get command character from user >>
 /*
  * Get the command character from the user.
  */
@@ -9643,7 +9766,7 @@ if (text_locked() && (nv_cmds[idx].cmd_flags & NV_NCW))
 if ((nv_cmds[idx].cmd_flags & NV_NCW) && curbuf_locked())
     goto normal_end;
 #endif
-.. @+node:ekr.20131109090612.29150: *3* << handle special caces for visual/select mode >>
+.. @+node:ekr.20131109090612.29150: *4* << handle special caces for visual/select mode >>
 #ifdef FEAT_VISUAL
 /*
  * In Visual/Select mode, a few keys are handled in a special way.
@@ -9681,7 +9804,7 @@ if (VIsual_active)
     }
 }
 #endif
-.. @+node:ekr.20131109090612.29149: *3* << invert horizontal movements and operations >>
+.. @+node:ekr.20131109090612.29149: *4* << invert horizontal movements and operations >>
 #ifdef FEAT_RIGHTLEFT
 if (curwin->w_p_rl && KeyTyped && !KeyStuffed
 				  && (nv_cmds[idx].cmd_flags & NV_RL))
@@ -9705,7 +9828,7 @@ if (curwin->w_p_rl && KeyTyped && !KeyStuffed
     idx = find_command(ca.cmdchar);
 }
 #endif
-.. @+node:ekr.20131109090612.29148: *3* << get additional character >>
+.. @+node:ekr.20131109090612.29148: *4* << get additional character >>
 /*
  * Get an additional character if we need one.
  */
@@ -9783,7 +9906,7 @@ if ((nv_cmds[idx].cmd_flags & NV_NCH)
     --no_mapping;
     --allow_keys;
 }
-.. @+node:ekr.20131109090612.29158: *4* << get second or third character >>
+.. @+node:ekr.20131109090612.29158: *5* << get second or third character >>
 /*
  * Get a second or third character.
  */
@@ -9932,7 +10055,7 @@ while (enc_utf8 && lang && (c = vpeekc()) > 0
         ca.ncharC2 = c;
 }
 #endif
-.. @+node:ekr.20131109090612.29147: *3* << flush the showcmd characters to the screen >>
+.. @+node:ekr.20131109090612.29147: *4* << flush the showcmd characters to the screen >>
 
 #ifdef FEAT_CMDL_INFO
 /*
@@ -9944,7 +10067,7 @@ while (enc_utf8 && lang && (c = vpeekc()) > 0
 if (need_flushbuf)
     out_flush();
 #endif
-.. @+node:ekr.20131109090612.29157: *3* << goto normal_end on ESC >>
+.. @+node:ekr.20131109090612.29157: *4* << goto normal_end on ESC >>
 if (ca.nchar == ESC)
 {
     clearop(oap);
@@ -9952,7 +10075,7 @@ if (ca.nchar == ESC)
         restart_edit = 'a';
     goto normal_end;
 }
-.. @+node:ekr.20131109090612.29146: *3* << remember where the cursor was >>
+.. @+node:ekr.20131109090612.29146: *4* << remember where the cursor was >>
 #ifdef FEAT_VISUAL
 old_pos = curwin->w_cursor;		/* remember where cursor was */
 
@@ -9973,13 +10096,13 @@ if (!VIsual_active && km_startsel)
     }
 }
 #endif
-.. @+node:ekr.20131109090612.29159: *3* << set msg_ vars >>
+.. @+node:ekr.20131109090612.29159: *4* << set msg_ vars >>
 if (ca.cmdchar != K_IGNORE)
 {
     msg_didout = FALSE;    /* don't scroll screen up for normal command */
     msg_col = 0;
 }
-.. @+node:ekr.20131109090612.29143: *3* << reset oap-regname >>
+.. @+node:ekr.20131109090612.29143: *4* << reset oap-regname >>
 /*
  * If we didn't start or finish an operator, reset oap->regname, unless we
  * need it later.
@@ -9994,7 +10117,7 @@ if (!finish_op
     set_reg_var('"');
     #endif
 }
-.. @+node:ekr.20131109090612.29144: *3* << set old_mapped_len >>
+.. @+node:ekr.20131109090612.29144: *4* << set old_mapped_len >>
 
 #ifdef FEAT_VISUAL
 /* Get the length of mapped chars again after typing a count, second
@@ -10002,12 +10125,12 @@ if (!finish_op
 if (old_mapped_len > 0)
     old_mapped_len = typebuf_maplen();
 #endif
-.. @+node:ekr.20131109090612.29145: *3* << handle pending operator >>
+.. @+node:ekr.20131109090612.29145: *4* << handle pending operator >>
 /*
  * If an operation is pending, handle it...
  */
 do_pending_operator(&ca, old_col, FALSE);
-.. @+node:ekr.20131109090612.29142: *3* << wait to write message >>
+.. @+node:ekr.20131109090612.29142: *4* << wait to write message >>
 /*
  * Wait for a moment when a message is displayed that will be overwritten
  * by the mode message.
@@ -10075,7 +10198,7 @@ if (       ((p_smd
     msg_scroll = FALSE;
     emsg_on_display = FALSE;
 }
-.. @+node:ekr.20131109090612.29141: *3* << finish up >>
+.. @+node:ekr.20131109090612.29141: *4* << finish up >>
 /*
  * Finish up after executing a Normal mode command.
  */
@@ -10135,7 +10258,7 @@ if (restart_VIsual_select == 2)
 
 /* Save count before an operator for next time. */
 opcount = ca.opcount;
-.. @+node:ekr.20131109090612.29140: *4* << possibly restart edit >>
+.. @+node:ekr.20131109090612.29140: *5* << possibly restart edit >>
 /*
  * May restart edit(), if we got here with CTRL-O in Insert mode (but not
  * if still inside a mapping that started in Visual mode).
@@ -10170,322 +10293,5 @@ if ( oap->op_type == OP_NOP
     )
         (void)edit(restart_edit, FALSE, 1L);
 }
-.. @+node:ekr.20131108082341.18228: ** @@test vim old prototype
-@language python
-
-import string
-
-class VimParser:
-    @others
-    
-vp = VimParser()
-table = (
-    'gg',
-    '2dd',
-)
-for s in table:
-    n1,command,n2,motion = vp.scan(s)
-    print(s)
-    print('  %r %r %r %r' % (n1,command,n2,motion))
-.. @+node:ekr.20131108203402.16422: *3* ctor
-def __init__(self):
-    
-    self.char_m  = 'FTft'
-    self.commands_d = self.make_commands_dict()
-        # Keys are commands, values are additional parsers.
-    self.motions_d = self.make_motions_dict()
-        # Keys are characters,
-        # Values are strings listing valid following characters.
-.. @+node:ekr.20131108203402.16427: *3* make_commands_dict
-def make_commands_dict(self):
-    
-    trace = True
-    d = {}
-        # Keys are commands, values are additional parsers.
-    # Not used.
-    #   o (motion?) exchange cursor position with start of highlighting
-    # Single-character commands.
-    for ch in '0~^%_+-,;(){}|$#*ABCDEGHIJKLMNOPRSUVWXYabehijklnopqsuvwx':
-        d[ch] = self.scan_one_character_command
-    # Two-character commands.
-    for ch in 'Zz':
-        d[ch] = self.scan_two_character_command
-    # Commands with complex parsers.
-    table = (
-        # Followed by an arbitrary character...
-            ('"',self.scan_char),
-            ('F',self.scan_char),
-            ('T',self.scan_char),
-            ('f',self.scan_char),
-            ('t',self.scan_char),
-        # Individualized parsers...
-            ('/',self.scan_slash),
-            ('<',self.scan_open_angle_bracket),
-            ('>',self.scan_close_angle_bracket),
-            ('@',self.scan_at),
-            ('[',self.scan_close_square_bracket),
-            (']',self.scan_open_square_bracket),
-            ('`',self.scan_back_tick),
-            ('c',self.scan_c),
-            ('d',self.scan_d),
-            ('g',self.scan_g),
-            ('m',self.scan_m),
-            ('q',self.scan_q),
-            ('y',self.scan_y),
-    )
-    for ch,func in table:
-        d[ch] = func
-    if trace:
-        for key in sorted(d.keys()):
-            print('%r %s' % (key,d.get(key).__name__))
-    return d
-.. @+node:ekr.20131108203402.16424: *3* make_motions_dict
-def make_motions_dict(self):
-    
-    trace = False
-    char = [ch for ch in string.printable if 32 <= ord(ch) < 128]
-    # if trace: g.trace('printable:',''.join(char))
-    d = {}
-    # Single-character motions.
-    for ch in '0^%_+-,;(){}|$#*BEGNWbehjklnw':
-        d[ch] = []
-    # Lead-in characters followed by a single character.
-    table = (
-        ('[','#(*[]{'),
-        (']','#)*[]}'),
-        ('F',char),
-        ('T',char),
-        ('f',char),
-        ('g','^#$*0DEdegjk'),
-        ('t',char),
-        ('/','\\n'),
-    )
-    for ch,s in table:
-        d[ch] = s
-    if trace:
-        for key in sorted(d.keys()):
-            val = d.get(key)
-            if val:
-                if val == char: val = '<char>'
-                print('%s %s' % (key,val))
-            else:
-                print(key)
-    return d
-.. @+node:ekr.20131108203402.16423: *3* run
-def run(self,s):
-    g.trace()
-.. @+node:ekr.20131108203402.16421: *3* scan & helpers
-def scan(self,s):
-    
-    g.trace(repr(s))
-    i,n1 = self.scan_count(s,0)
-    g.trace(i,n1)
-    command,n2,motion = self.scan_command(s,i)
-    return n1,command,n2,motion
-    
-   
-.. @+node:ekr.20131108203402.16425: *4* scan_count
-def scan_count(self,s,i):
-    
-    # Zero does not start a count.
-    i1 = i
-    if i < len(s) and s[i] in '123456789':
-        while i < len(s) and s[i].isdigit():
-            i += 1
-        n = int(s[i1:i])
-    else:
-        n = None
-    return i,n
-.. @+node:ekr.20131108203402.16443: *3* per-characer scanners
-.. @+node:ekr.20131108203402.16442: *4* scan_at
-# N   @<a-z>          execute the contents of register <a-z> (N times)
-# N   @@              (motion?) repeat previous @<a-z> (N times)
-def scan_at(self,s,i):
-    g.trace(s[i:])
-.. @+node:ekr.20131108203402.16428: *4* scan_back_tick
-# `"        go to the position when last editing this file
-# '<a-zA-Z0-9[]'"<>>  same as `, but on the first non-blank in the line
-# `<        go to the start of the (previous) Visual area
-# `<0-9>    go to the position where Vim was last exited
-# `<A-Z>    go to mark <A-Z> in any file
-# `<a-z>    go to mark <a-z> within current file
-# `>        go to the end of the (previous) Visual area
-# `[        go to the start of the previously operated or put text
-# `]        go to the end of the previously operated or put text
-# ``        go to the position before the last jump
-def scan_back_tick(self,s,i):
-    g.trace(s[i:])
-.. @+node:ekr.20131108203402.16431: *4* scan_close_angle_bracket
-# N >{motion} move the lines that are moved over with {motion} one shiftwidth right
-# N >>        move N lines one shiftwidth right
-def scan_close_angle_bracket(self,s,i):
-    g.trace(s[i:])
-.. @+node:ekr.20131108203402.16438: *4* scan_c
-# N   cc              change N lines
-# N   c{motion}       change the text that is moved over with {motion}
-# VIS c               change the highlighted text
-def scan_c(self,s,i):
-    g.trace(s[i:])
-.. @+node:ekr.20131108203402.16435: *4* scan_close_square_bracket
-# N   ]#              (motion) N times forward to unclosed "#else" or "#endif"
-# N   ])              (motion) N times forward to unclosed ')'
-# N   ]*              (motion) N times forward to end of comment "*/"
-# N   ][              (motion) N sections forward, at end of section
-# N   ]]              (motion) N sections forward, at start of section
-# N   ]p              (motion?) like p, but adjust indent to current line
-# N   ]}              (motion) N times forward to unclosed '}'
-def scan_close_square_bracket(self,s,i):
-    g.trace(s[i:])
-.. @+node:ekr.20131108203402.16439: *4* scan_d
-# VIS d               delete the highlighted text
-# N   dd              delete N lines
-# N   d{motion}       delete the text that is moved over with {motion}
-def scan_d(self,s,i):
-    g.trace(s[i:])
-.. @+node:ekr.20131108203402.16436: *4* scan_g
-#     g CTRL-G        show cursor column, line, and character position
-# N   g^              (motion) to first non-blank character in screen line (differs from "^" when lines wrap)
-#     g~{motion}      switch case for the text that is moved over with {motion}
-# N   g#              (motion) like "#", but also find partial matches
-# N   g$              (motion) to last character in screen line (differs from "$" when lines wrap)
-# N   g*              (motion) like "*", but also find partial matches
-# N   g0              (motion) to first character in screen line (differs from "0" when lines wrap)
-#     gD              (motion) goto global declaration of identifier under the cursor
-# N   gE              (motion) backward to the end of the Nth blank-separated WORD
-# N   gI              insert text in column 1 (N times)
-#      gU{motion}      make the text that is moved over with {motion} uppercase
-#     ga              show ascii value of character under cursor in decimal, hex, and octal
-#     gd              (motion) goto local declaration of identifier under the cursor
-#     gf  or ]f        Edit the file whose name is under the cursor
-# N   ge              (motion) backward to the end of the Nth word
-# N   gg              (motion) goto line N (default: first line), on the first non-blank character
-# N   gj              (motion) down N screen lines (differs from "j" when line wraps)
-# N   gk              (motion) up N screen lines (differs from "k" when line wraps)
-# N   gq{motion}      format the lines that are moved over with {motion} to 'textwidth' length
-# N   gs              Goto Sleep for N seconds
-#     gu{motion}      make the text that is moved over with {motion} lowercase
-#     gv              start highlighting on previous visual area
-def scan_g(self,s,i):
-    g.trace(s[i:])
-.. @+node:ekr.20131108203402.16430: *4* scan_open_angle_bracket
-# N <{motion} move the lines that are moved over with {motion} one shiftwidth left
-# N <<        move N lines one shiftwidth left
-def scan_open_angle_bracket(self,s,i):
-    g.trace(s[i:])
-.. @+node:ekr.20131108203402.16434: *4* scan_open_square_bracket
-# N   [#              (motion) N times back to unclosed "#if" or "#else"
-# N   [(              (motion) N times back to unclosed '('
-# N   [*              (motion) N times back to start of comment "/*"
-# N   [[              (motion) N sections backward, at start of section
-# N   []              (motion) N sections backward, at end of section
-# N   [p              (motion?) like P, but adjust indent to current line
-# N   [{              (motion) N times back to unclosed '{'
-def scan_open_square_bracket(self,s,i):
-    g.trace(s[i:])
-.. @+node:ekr.20131108203402.16447: *4* scan_m
-# m <a-zA-Z> mark current position with mark <a-zA-Z>
-def scan_m(self,s,i):
-    g.trace(s[i:])
-.. @+node:ekr.20131108203402.16446: *4* scan_q
-# q<A-Z>    record typed characters, appended to register <a-z>
-# q<a-z>    record typed characters into register <a-z>
-def scan_q(self,s,i):
-    g.trace(s[i:])
-
-.. @+node:ekr.20131108203402.16433: *4* scan_question
-# N ?<CR>                       (motion) repeat last search, in the backward direction
-# N ?{pattern}[?[offset]]<CR>   (motion) search backward for the Nth occurrence of {pattern}
-def scan_question(self,s,i):
-    g.trace(s[i:])
-.. @+node:ekr.20131108203402.16429: *4* scan_one_character_command
-# N   A    append text at the end of the line (N times)
-# N   B    (motion) N blank-separated WORDS backward
-# N   C    change to end-of-line (and N-1 more lines)
-# N   D    delete to end-of-line (and N-1 more lines)
-# N   E    (motion) forward to the end of the Nth blank-separated WORD
-# N   G    (motion) goto line N (default: last line), on the first non-blank character
-# N   H    (motion?) go to the Nth line in the window, on the first non-blank
-# N   I    insert text before the first non-blank in the line (N times)
-# N   J    (motion?) join N-1 lines (delete newlines)
-# VIS J    (motion?) join the highlighted lines
-    # K    lookup keyword under the cursor with 'keywordprg' program (default: "man")
-    # M    (motion?) go to the middle line in the window, on the first non-blank
-# N   L    (motion?) go to the Nth line from the bottom, on the first non-blank
-# N   N    (motion) repeat last search, in opposite direction
-# N   O    open a new line above the current line, append text (N times)
-# N   P    put a register before the cursor position (N times)
-# N   R    enter Replace mode (repeat the entered text N times)
-# N   S    change N lines
-    # U    restore last changed line
-# VIS U    make highlighted text uppercase
-    # V    highlight linewise or stop highlighting
-    # V    start highlighting linewise    }  operator to affect
-# N   W    (motion) N blank-separated WORDS forward
-# N   X    delete N characters before the cursor
-# N   Y    yank N lines
-# N   a               append text after the cursor (N times)
-# N   b               (motion) N words backward
-# N   e    (motion) forward to the end of the Nth word
-# N   h    (motion) left (also: CTRL-H, <BS>, or <Left> key)
-# N   i    insert text before the cursor (N times) (also: <Insert>)
-# N   j    (motion) down N lines (also: CTRL-J, CTRL-N, <NL>, and <Down>)
-# N   k    (motion) up N lines (also: CTRL-P and <Up>)
-# N   l    (motion) right (also: <Space> or <Right> key)
-# N   n    (motion?) repeat last search
-# N   o     open a new line below the current line, append text (N times)
-# N   p     put a register after the cursor position (N times)
-#     q     stop recording
-# N   s     change N characters
-# N   u     undo last N changes
-# VIS u     make highlighted text lowercase
-#     v     highlight characters or stop highlighting
-#     v     start highlighting characters  }  move cursor and use
-# N   w     (motion) N words forward
-# N   x     delete N characters under and after the cursor
-def scan_one_character_command(self,s,i):
-    g.trace(s[i:])
-.. @+node:ekr.20131108203402.16449: *4* scan_two_character_command
-#     z- or zb      redraw, current line at bottom of window
-#     z. or zz      redraw, current line at center of window
-#     z<CR> or zt   redraw, current line at top of window
-# N   zh            scroll screen N characters to the right
-# N   zl            scroll screen N characters to the left
-#     ZQ            Same as ":q!".
-#     ZZ            Same as ":x".
-def scan_two_character_command(self,s,i):
-    g.trace(s[i:])
-.. @+node:ekr.20131108203402.16432: *4* scan_slash
-# N /<CR>                       (motion) repeat last search, in the forward direction
-# N /{pattern}[/[offset]]<CR>   (motion) search forward for the Nth occurrence of {pattern}
-def scan_slash(self,s,i):
-    g.trace(s[i:])
-.. @+node:ekr.20131108203402.16440: *4* scan_y
-# N   yy            yank N lines 
-# N   y {motion}    yank the text moved over with {motion} 
-# VIS y             yank the highlighted text
-def scan_y(self,s,i):
-    g.trace(s[i:])
-.. @+node:ekr.20131108203402.16444: *4* scan_Z
-# ZQ    Same as ":q!".
-# ZZ    Same as ":x".
-def scan_Z(self,s,i):
-    g.trace(s[i:])
-.. @+node:ekr.20131108203402.16437: *3* scan_char
-#   " <char>  use register <char> for the next delete, yank, or put
-# N F <char>  (motion) to the Nth occurrence of <char> to the left
-# N T <char>  (motion) till before the Nth occurrence of <char> to the left
-# N f <char>  (motion) to the Nth occurrence of <char> to the right
-# N r <char>  replace N characters with <char>
-# N t <char>  (motion) till before the Nth occurrence of <char> to the right
-def scan_char(self,s,i):
-    g.trace(s[i:])
-.. @+node:ekr.20131108203402.16426: *3* scan_command
-def scan_command(self,s,i):
-    
-    command = s[i:]
-    n = None
-    motion = None
-    g.trace(command)
-    return command,n,motion
 .. @-all
 .. @-leo

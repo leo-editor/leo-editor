@@ -255,34 +255,33 @@ class VimCommands:
     #@+node:ekr.20131109170017.46985: *5* getData
     def getData(self,s):
         
+        trace = False and not g.unitTesting
         c = self.c
-        
-        if 1: # Good for testing: can change the @data node on the fly.
+        if 0: # Good for testing: can change the @data node on the fly.
             p = g.findNodeAnywhere(c,'@data %s' % s)
             if p:
                 return [s for s in g.splitLines(p.b) if s.strip() and not s.startswith('#')]
             else:
-                g.trace('not found: %s' % s)
+                if trace: g.trace('not found: %s' % s)
+                return []
         else:
-            return c.config.getData(s)
+            return c.config.getData(s) or []
     #@+node:ekr.20131111105746.16547: *4* vc.init_ivars
     def init_ivars(self,c):
         
         self.c = c
         # Internal ivars.
-        self.ec = c.editCommands
         self.event = None
-        self.w = c.frame.body.bodyCtrl # A QTextBrowser.
+        self.w = c.frame.body and c.frame.body.bodyCtrl # A QTextBrowser.
         # Ivars describing command syntax.
         self.chars = [ch for ch in string.printable if 32 <= ord(ch) < 128]
         self.letters = string.ascii_letters
-        self.motion_kinds = ['char','letter','register']
-            # Valid selectors in @data vim-*-tails.
+        self.motion_kinds = ['char','letter','register'] # selectors in @data vim-*-tails.
         self.register_names = string.ascii_letters
         self.tail_kinds = ['char','letter','motion','pattern','register',]
         # Ivars accessible via commands.
-        self.extend = False # True: extending selection.
         self.dot = '' # The previous command in normal mode.
+        self.extend = False # True: extending selection.
         self.register_d = {} # Keys are letters; values are strings.
         # Status isvars set by self.exec_
         self.command = None
@@ -419,57 +418,6 @@ class VimCommands:
         head = s[:i]
         tail = s[i:].strip()
         return head,tail
-    #@+node:ekr.20131111140646.16544: *4* vc.runTest
-    # Similar to TM.runEditCommandTest in leoTest.py.
-    def runTest(self,p):
-
-        c,vc = self.c,self
-        tm = c.testManager
-        atTest = p.copy()
-        w = c.frame.body.bodyCtrl
-        h = atTest.h
-        assert h.startswith('@test '),'expected head: %s, got: %s' % ('@test',h)
-        s = h[6:].strip()
-        # The command is everything up to the first blank.
-        i = 0
-        while i < len(s) and s[i] not in ' \t\n':
-            i += 1
-        command = s[:i]
-        assert command, 'empty vim command'
-        assert command, 'no command: %s' % (command)
-        work,before,after = tm.findChildrenOf(atTest)
-        before_h = 'before sel='
-        after_h = 'after sel='
-        for node,h in ((work,'work'),(before,before_h),(after,after_h)):
-            h2 = node.h
-            assert h2.startswith(h),'expected head: %s, got: %s' % (h,h2)
-        sels = []
-        for node,h in ((before,before_h),(after,after_h)):
-            sel = node.h[len(h):].strip()
-            aList = [str(z) for z in sel.split(',')]
-            sels.append(tuple(aList))
-        sel1,sel2 = sels
-        c.selectPosition(work)
-        c.setBodyString(work,before.b)
-        w.setSelectionRange(sel1[0],sel1[1],insert=sel1[1])
-        # The vim-specific part.
-        status,n1,command,n2,motion = vc.scan(command)
-        assert status == 'done',repr(status)
-        vc.exec_(command,n1,n2,motion)
-        # Check the result.
-        s1 = work.b ; s2 = after.b
-        assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
-        sel3 = w.getSelectionRange()
-        # Convert both selection ranges to gui indices.
-        sel2_orig = sel2
-        assert len(sel2) == 2,'Bad headline index.  Expected index,index.  got: %s' % sel2
-        i,j = sel2 ; sel2 = w.toGuiIndex(i),w.toGuiIndex(j)
-        assert len(sel3) == 2,'Bad headline index.  Expected index,index.  got: %s' % sel3
-        i,j = sel3 ; sel3 = w.toGuiIndex(i),w.toGuiIndex(j)
-        assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
-        c.selectPosition(atTest)
-        atTest.contract()
-        # Don't redraw.
     #@+node:ekr.20131111061547.16462: *4* vc.trace_command
     def trace_command(self):
         
@@ -481,155 +429,36 @@ class VimCommands:
     #@+node:ekr.20131111061547.18012: *5* vim_h
     def vim_h(self):
         '''Move cursor left.'''
-        # g.trace()
         if self.extend:
-            self.ec.backCharacterExtendSelection(self.event)
+            self.c.editCommands.backCharacterExtendSelection(self.event)
         else:
-            self.ec.backCharacter(self.event)
+            self.c.editCommands.backCharacter(self.event)
     #@+node:ekr.20131111061547.18013: *5* vim_j
     def vim_j(self):
         '''Move cursor down.'''
-        self.oops()
+        if self.extend:
+            self.c.editCommands.nextLineExtendSelection(self.event)
+        else:
+            self.c.editCommands.nextLine(self.event)
     #@+node:ekr.20131111061547.18014: *5* vim_k
     def vim_k(self):
         '''Move cursor up.'''
-        self.oops()
+        if self.extend:
+            self.c.editCommands.prevLineExtendSelection(self.event)
+        else:
+            self.c.editCommands.prevLine(self.event)
     #@+node:ekr.20131111061547.18015: *5* vim_l
     def vim_l(self):
         '''Move cursor right.'''
         g.trace()
         if self.extend:
-            self.ec.forwardCharacterExtendSelection(self.event)
+            self.c.editCommands.forwardCharacterExtendSelection(self.event)
         else:
-            self.ec.forwardCharacter(self.event)
+            self.c.editCommands.forwardCharacter(self.event)
     #@+node:ekr.20131111105746.16544: *4* vim_dot
     def vim_dot(self):
         
         g.trace()
-    #@-others
-#@+node:ekr.20131111105746.16556: ** class VimTestCase (not used)
-class editBodyTestCase(unittest.TestCase):
-
-    """Data-driven unit tests for vim commands commands."""
-
-    #@+others
-    #@+node:ekr.20131111105746.16557: *3*  __init__(VimTestCase)
-    def __init__ (self,c,parent,before,after,sel,ins,tempNode):
-
-        
-        unittest.TestCase.__init__(self)
-            # Init the base class.
-        self.c = c
-        self.failFlag = False
-        self.parent = parent.copy()
-        self.before = before.copy()
-        self.after  = after.copy()
-        self.sel    = sel.copy() # Two lines giving the selection range in tk coordinates.
-        self.ins    = ins.copy() # One line giving the insert point in tk coordinate.
-        self.tempNode = tempNode.copy()
-        self.vc = VimCommands(c)
-    #@+node:ekr.20131111105746.16558: *3* vtc.fail
-    def fail (self,msg=None):
-
-        """Mark a unit test as having failed."""
-
-        import leo.core.leoGlobals as g
-        g.app.unitTestDict["fail"] = g.callers()
-        self.failFlag = True
-    #@+node:ekr.20131111140646.16533: *3* vtc.compare
-    def compare(self,commandName):
-        
-        
-        def comp(before,after,compareHeadlines=False,report=False):
-            return tm.compareOutlines(before,after,
-                compareHeadlines=compareHeadlines,
-                report=report)
-
-        # Don't call the undoer if we expect no change.
-        if comp(self.before,self.after):
-            return
-        try:
-            s = commandName
-            after,before,temp = self.after,self.before,self.tempNode
-            assert comp(temp,after),'%s: before undo1' % s
-            if 0: # Not ready yet?
-                c.undoer.undo()
-                assert comp(temp,before),'%s: after undo1' % s
-                c.undoer.redo()
-                assert comp(temp,after),'%s: after redo' % s
-                c.undoer.undo()
-                assert comp(temp,before),'%s: after undo2' % s
-        except Exception:
-            self.fail()
-            raise
-    #@+node:ekr.20131111140646.16534: *3* vtc.deleteChildren
-    def deleteChildren(self,p):
-        
-        # Delete all children of p.
-        while p.hadChildren():
-            p.firstChild().doDelete()
-    #@+node:ekr.20131111105746.16559: *3* vtc.editBody
-    def editBody (self):
-
-        c,vc = self.c, self.vc
-        # Get the command.
-        command = self.parent.h
-        i = command.find(' ')
-        if i > -1: command = command[:i]
-        # Compute the result in tempNode.b
-        status,n1,command,n2,motion = vc.scan(command)
-        assert status == 'done',repr(status)
-        vc.exec_(command,n1,n2,motion)
-        return commandName
-    #@+node:ekr.20131111105746.16560: *3* vtc.runTest
-    def runTest(self):
-
-        commandName = self.editBody()
-        self.compare(commandName)
-    #@+node:ekr.20131111105746.16561: *3* vtc.setUp
-    def setUp(self):
-
-        c = self.c
-        tempNode = self.tempNode
-        c.undoer.clearUndoState()
-        self.deleteChildren(tempNode)
-        text = self.before.b
-        # tempNode.setBodyString(text)
-        tempNode.b = text
-        c.selectPosition(self.tempNode)
-        w = c.frame.body.bodyCtrl
-        if self.sel:
-            # self.sel is a **tk** index.
-            s = str(self.sel.b) # Can't be unicode.
-            lines = s.split('\n')
-            w.setSelectionRange(lines[0],lines[1])
-        if self.ins:
-            s = str(self.ins.b) # Can't be unicode.
-            lines = s.split('\n')
-            g.trace(lines)
-            w.setInsertPoint(lines[0])
-        if not self.sel and not self.ins:
-            w.setInsertPoint(0)
-            w.setSelectionRange(0,0)
-    #@+node:ekr.20131111105746.16562: *3* vtc.shortDescription
-    def shortDescription (self):
-
-        try:
-            return "VimTestCase: %s" % (self.parent.h)
-        except Exception:
-            g.es_print_exception()
-            return "VimTestCase"
-    #@+node:ekr.20131111105746.16563: *3* vtc.tearDown
-    def tearDown (self):
-
-        c = self.c
-        tempNode = self.tempNode
-        c.selectPosition(tempNode)
-        if not self.failFlag:
-            tempNode.setBodyString("")
-            self.deleteChildren(tempNode)
-        tempNode.clearDirty()
-        c.undoer.clearUndoState()
     #@-others
 #@+node:ekr.20131108203402.16399: ** vim unit tests (must be valid python)
 # Eventually these tests will move to unitTest.leo,

@@ -1288,6 +1288,58 @@ class TestManager:
                 assert inputSet[t] == result, "Expected %s with content %s, got %s" % (t,inputSet[t],result)
         finally:
             rootTestToChangeP.doDelete()
+    #@+node:ekr.20131111140646.16544: *4* TM.runVimTest
+    # Similar to runEditCommandTest.
+    def runVimTest(self,p):
+        
+        tm = self
+        c = self.c
+        vc = c.vimCommands
+        atTest = p.copy()
+        w = c.frame.body.bodyCtrl
+        h = atTest.h
+        assert h.startswith('@test '),'expected head: %s, got: %s' % ('@test',h)
+        s = h[6:].strip()
+        # The vim command is everything up to the first blank.
+        i = 0
+        while i < len(s) and s[i] not in ' \t\n':
+            i += 1
+        command = s[:i]
+        assert command, 'empty vim command'
+        assert command, 'no command: %s' % (command)
+        work,before,after = tm.findChildrenOf(atTest)
+        before_h = 'before sel='
+        after_h = 'after sel='
+        for node,h in ((work,'work'),(before,before_h),(after,after_h)):
+            h2 = node.h
+            assert h2.startswith(h),'expected head: %s, got: %s' % (h,h2)
+        sels = []
+        for node,h in ((before,before_h),(after,after_h)):
+            sel = node.h[len(h):].strip()
+            aList = [str(z) for z in sel.split(',')]
+            sels.append(tuple(aList))
+        sel1,sel2 = sels
+        c.selectPosition(work)
+        c.setBodyString(work,before.b)
+        w.setSelectionRange(sel1[0],sel1[1],insert=sel1[1])
+        # The vim-specific part.
+        status,n1,command,n2,motion = vc.scan(command)
+        assert status == 'done',repr(status)
+        vc.exec_(command,n1,n2,motion)
+        # Check the result.
+        s1 = work.b ; s2 = after.b
+        assert s1 == s2, 'mismatch in body\nexpected: %s\n     got: %s' % (repr(s2),repr(s1))
+        sel3 = w.getSelectionRange()
+        # Convert both selection ranges to gui indices.
+        sel2_orig = sel2
+        assert len(sel2) == 2,'Bad headline index.  Expected index,index.  got: %s' % sel2
+        i,j = sel2 ; sel2 = w.toGuiIndex(i),w.toGuiIndex(j)
+        assert len(sel3) == 2,'Bad headline index.  Expected index,index.  got: %s' % sel3
+        i,j = sel3 ; sel3 = w.toGuiIndex(i),w.toGuiIndex(j)
+        assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
+        c.selectPosition(atTest)
+        atTest.contract()
+        # Don't redraw.
     #@+node:ekr.20051104075904.2: *3* TM.Utils
     #@+node:ekr.20051104075904.93: *4* TM.checkFileSyntax
     def checkFileSyntax (self,fileName,s,reraise=True,suppress=False):

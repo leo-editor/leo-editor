@@ -275,6 +275,7 @@ class Commands (object):
         self.searchCommands = None
         self.spellCommands = None
         self.leoTestManager = None
+        self.vimCommands = None
     #@+node:ekr.20120217070122.10470: *5* c.initObjects
     def initObjects(self,gui):
 
@@ -318,6 +319,7 @@ class Commands (object):
         import leo.core.leoTangle as leoTangle
         import leo.core.leoTest as leoTest
         import leo.core.leoUndo as leoUndo
+        import leo.core.leoVim as leoVim
 
         self.keyHandler = self.k = leoKeys.keyHandlerClass(c)
         self.chapterController  = leoChapters.chapterController(c)
@@ -328,6 +330,7 @@ class Commands (object):
         self.rstCommands        = leoRst.rstCommands(c)
         self.tangleCommands     = leoTangle.tangleCommands(c)
         self.testManager        = leoTest.TestManager(c)
+        self.vimCommands        = leoVim.VimCommands(c)
 
         self.editCommandsManager = leoEditCommands.EditCommandsManager(c)
         self.editCommandsManager.createEditCommanders()

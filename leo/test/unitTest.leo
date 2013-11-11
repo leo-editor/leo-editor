@@ -34,6 +34,13 @@
 <v t="ekr.20050328101834.2"><vh>@int  port = 8080</vh></v>
 <v t="ekr.20050328101834.3"><vh>@string rst_http_attributename = ''</vh></v>
 </v>
+<v t="ekr.20131111155830.4249"><vh>Vim settings</vh>
+<v t="ekr.20131111155830.4250"><vh>@@@data vim-control-character-commands</vh></v>
+<v t="ekr.20131111155830.4251"><vh>@data vim-command-tails</vh></v>
+<v t="ekr.20131111155830.4252"><vh>@data vim-commands</vh></v>
+<v t="ekr.20131111155830.4253"><vh>@data vim-motions</vh></v>
+<v t="ekr.20131111155830.4254"><vh>@data vim-motion-tails</vh></v>
+</v>
 </v>
 <v t="ekr.20111112092813.4154"><vh>@command cls</vh></v>
 </v>
@@ -149,7 +156,15 @@
 <v t="ekr.20101220161557.6014"><vh>@file inactiveTests.txt</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e382e3671017d71025808000000616e6e6f7461746571037d7104735508302e372e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e372e31342e3671097d710a5808000000616e6e6f74617465710b7d710c735508302e372e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e382e3671017d71025808000000616e6e6f7461746571037d7104735508302e372e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e372e31342e3671097d710a5808000000616e6e6f74617465710b7d710c735508302e372e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"
+marks="ekr.20131111155107.4239,"><vh>@file activeUnitTests.txt</vh></v>
+</v>
+<v t="ekr.20131111155107.4238"><vh>vim-command unit tests</vh>
+<v t="ekr.20131111155107.4239" a="M"><vh>@test h middle of line</vh>
+<v t="ekr.20131111155107.4240"><vh>work</vh></v>
+<v t="ekr.20131111155107.4241"><vh>before sel=1.5,1.5</vh></v>
+<v t="ekr.20131111155107.4242"><vh>after sel=1.4,1.4</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -951,6 +966,287 @@ finally:
 <t tx="ekr.20120229082711.3935"># node 1 text A.
 </t>
 <t tx="ekr.20120229082711.3936"># node 2 text B.
+</t>
+<t tx="ekr.20131111155107.4238"># These can't be part of leoVim.py: they would cause syntax errors.
+</t>
+<t tx="ekr.20131111155107.4239">c.testManager.runVimTest(p)
+
+</t>
+<t tx="ekr.20131111155107.4240">first line
+</t>
+<t tx="ekr.20131111155107.4241">first line
+</t>
+<t tx="ekr.20131111155107.4242">first line
+</t>
+<t tx="ekr.20131111155830.4249"></t>
+<t tx="ekr.20131111155830.4250"># Not yet...
+
+    &lt;BS&gt;        delete the character in front of the cursor
+N   &lt;Del&gt;       delete N characters under and after the cursor
+    &lt;Del&gt;       delete the character under the cursor
+    &lt;Del&gt;       while entering a count: delete last character
+    &lt;Down&gt;      recall newer command-line that starts with current command
+    &lt;Esc&gt;       abandon command-line (if 'wildchar' is &lt;Esc&gt;, type it twice)
+    &lt;Left&gt;      (motion) cursor left
+    &lt;Right&gt;     (motion) cursor right
+    &lt;S-Down&gt;    recall newer command-line from history
+    &lt;S-Left&gt;    (motion) cursor one word left
+    &lt;S-Right&gt;   (motion) cursor one word right
+    &lt;S-Up&gt;      recall older command-line from history
+    &lt;Up&gt;        recall older command-line that starts with current command
+
+N   CTRL-^                  Edit alternate file N (equivalent to ":e #N").
+N   CTRL-A                  add N to the number at or after the cursor
+N   CTRL-B                  window N pages Backwards (upwards)
+    CTRL-B                  (motion?) cursor to beginning of command-line
+    CTRL-BREAK              MS-DOS: during searches: interrupt the search
+    CTRL-C                  during searches: interrupt the search
+N   CTRL-D                  window N lines Downwards (default: 1/2 window)
+N   CTRL-E                  window N lines downwards (default: 1)
+    CTRL-E                  (motion?) cursor to end of command-line
+N   CTRL-F                  (motion) window N pages Forwards (downwards)
+    CTRL-G                  show current file name (with path) and cursor position
+N   CTRL-I                  (motion) go to Nth newer position in jump list
+    CTRL-K {char1} {char2}  enter digraph
+    CTRL-L                  Clear and redraw the screen.
+N   CTRL-O                  (motion) go to Nth older position in jump list
+N   CTRL-R                  redo last N undone changes
+    CTRL-R &lt;0-9a-z"%:-&gt;     insert contents of register &lt;0-9a-z"%:-&gt;
+N   CTRL-T                  (motion) Jump back from Nth older tag in tag list
+N   CTRL-U                  window N lines Upwards (default: 1/2 window)
+    CTRL-U                  remove all characters
+    CTRL-V                  highlight blockwise or stop highlighting
+    CTRL-V                  start highlighting blockwise   }  highlighted text
+    CTRL-V {char}           insert {char} literally
+    CTRL-V {number}         enter decimal value of character (up to three digits)
+    CTRL-W                  delete the word in front of the cursor
+    CTRL-W +                Increase current window height
+    CTRL-W -                Decrease current window height
+    CTRL-W =                Make all windows equal height
+    CTRL-W CTRL-W           Move cursor to window below (wrap)
+    CTRL-W CTRL-^           Split window and edit alternate file
+    CTRL-W R                Rotate windows upwards
+    CTRL-W W                Move cursor to window above (wrap)
+    CTRL-W ]                Split window and jump to tag under cursor
+    CTRL-W _                Set current window height (default: very high)
+    CTRL-W b                Move cursor to bottom window
+    CTRL-W c  or :cl[ose]   Make buffer hidden and close window
+    CTRL-W f                Split window and edit file name under the cursor
+    CTRL-W j                Move cursor to window below
+    CTRL-W k                Move cursor to window above
+    CTRL-W n  or :new       Create new empty window
+    CTRL-W o  or :on[ly]    Make current window only one on the screen
+    CTRL-W p                Move cursor to previous active window
+    CTRL-W q  or :q[uit]    Quit editing and close window
+    CTRL-W r                Rotate windows downwards
+    CTRL-W s                Split window into two parts
+    CTRL-W t                Move cursor to top window
+    CTRL-W x                Exchange current window with next one
+N   CTRL-X                  subtract N from the number at or after the cursor
+N   CTRL-Y                  window N lines upwards (default: 1)
+    CTRL-Z                  Same as ":stop!"
+    CTRL-]                  Jump to the tag under cursor, unless changes have been made</t>
+<t tx="ekr.20131111155830.4251">char F
+char T
+char f
+char r
+char t
+letter m
+letter q
+motion &lt;
+motion &gt;
+motion c
+motion d
+motion gU
+motion gq
+motion gu
+motion g~
+motion y
+pattern /
+pattern ?
+register @
+</t>
+<t tx="ekr.20131111155830.4252"># http://tnerual.eriogerg.free.fr/vimqrc.html
+vim_0 0
+vim_tilda ~
+vim_plus +
+vim_underscore _
+vim_minus -
+vim_comma ,
+vim_dot .
+vim_semicolon ;
+vim_lparen (
+vim_rparen )
+vim_lcurly {
+vim_rcurly }
+vim_vertical |
+vim_backtick `
+vim_dollar $
+vim_caret ^
+vim_percent %
+vim_langle &lt;
+vim_langle &lt;&lt;
+vim_rangle &gt;
+vim_rangle &gt;&gt;
+vim_pound #
+vim_star *
+vim_slash /\\n
+vim_slash /
+vim_question ?\\n
+vim_question ?
+vim_at @
+vim_at @@
+vim_dquote "
+vim_lsquare [#
+vim_lsquare [(
+vim_lsquare [*
+vim_lsquare [[
+vim_lsquare []
+vim_lsquare [p
+vim_lsquare [{
+vim_rsquare ]#
+vim_rsquare ])
+vim_rsquare ]*
+vim_rsquare ][
+vim_rsquare ]]
+vim_rsquare ]p
+vim_rsquare ]}
+vim_A A
+vim_B B
+vim_C C
+vim_D D
+vim_E E
+vim_F F
+vim_G G
+vim_H H
+vim_I I
+vim_J J
+vim_K K
+vim_M M
+vim_L L
+vim_N N
+vim_O O
+vim_P P
+vim_R R
+vim_S S
+vim_T T
+vim_U U
+vim_V V
+vim_W W
+vim_X X
+vim_Y Y
+vim_Z ZQ
+vim_Z ZZ
+vim_a a
+vim_b b
+vim_c c
+vim_d dd
+vim_d d
+vim_g g~
+vim_g g^
+vim_g g#
+vim_g g$
+vim_g g*
+vim_g g0
+vim_g gD
+vim_g gE
+vim_g gI
+vim_g gU
+vim_g ga
+vim_g gd
+vim_g ge
+vim_g gf
+vim_g gg
+vim_g gj
+vim_g gk
+vim_g gq
+vim_g gs
+vim_g gu
+vim_g gv
+vim_h h
+vim_i i
+vim_j j
+vim_k k
+vim_l l
+vim_n n
+vim_m m
+vim_o o
+vim_p p
+vim_q q
+vim_r r
+vim_s s
+vim_t t
+vim_u u
+vim_v v
+vim_w w
+vim_x x
+vim_y y
+vim_y yy
+vim_z z-
+vim_z z.
+vim_z z&lt;CR&gt;
+vim_z zb
+vim_z zh
+vim_z zl
+vim_z zt
+vim_z zz
+</t>
+<t tx="ekr.20131111155830.4253"># CR
+# Ctrl-End
+# Ctrl-Home
+# Ctrl-Left
+# Ctrl-M
+# Ctrl-N
+# Ctrl-P
+# Ctrl-Right
+# End
+# Home
+# Shift-Left
+# Shift-Right
+
+( 	
+)
+{
+}
+[[
+[]
+][
+]]
+$
+^	
++
+,
+-
+;
+_
+0
+B
+E
+F
+G
+T
+W
+b
+e
+f
+g$
+g^
+g0
+gE
+# gEnd
+# gHome	
+ge
+gg
+h
+j
+k
+t
+w
+</t>
+<t tx="ekr.20131111155830.4254">char F
+char T
+char f
+char t
 </t>
 </tnodes>
 </leo_file>

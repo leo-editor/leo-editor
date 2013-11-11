@@ -20295,6 +20295,18 @@ c.contractParent()
 g.app.unitTestDict['restoreSelectedNode']=False
 
 print('\nEnd of leoUndo tests.')
+#@+node:ekr.20131111160618.4261: *3* leoVim
+#@+node:ekr.20131111155107.4238: *4* vim-command unit tests
+# These can't be part of leoVim.py: they would cause syntax errors.
+#@+node:ekr.20131111155107.4239: *5* @test h middle of line
+c.testManager.runVimTest(p)
+
+#@+node:ekr.20131111155107.4240: *6* work
+first line
+#@+node:ekr.20131111155107.4241: *6* before sel=1.5,1.5
+first line
+#@+node:ekr.20131111155107.4242: *6* after sel=1.4,1.4
+first line
 #@+node:ekr.20050120095423: ** Plugins
 # Do this last.
 #@+node:ekr.20110610082755.3362: *3*  qtGui.py
