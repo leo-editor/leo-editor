@@ -7,6 +7,15 @@
 Uses NestedSplitter, a more intelligent QSplitter, from leo.plugins.nested_splitter
 
 Requires Qt.
+
+Commands (bindable with @settings-->@keys-->@shortcuts):
+
+free-layout-load
+    Open context menu for loading a different layout,
+    conventient keyboard shortcut target.
+free-layout-restore
+    Use the layout this outline had when it was opened.
+
 """
 #@-<< docstring >>
 
@@ -439,5 +448,28 @@ def free_layout_restore(kwargs):
 
     c = kwargs['c']
     c.free_layout.loadLayouts('reload', {'c':c}, reloading=True)
+#@+node:tbrown.20131111194858.29876: ** @g.command free-layout-load
+@g.command('free-layout-load')
+def free_layout_load(kwargs):
+    """free_layout_load - load layout from menu
+
+    :Parameters:
+    - `kwargs`: from command callback
+    """
+    g.es('k')
+    c = kwargs['c']
+    d = g.app.db.get('ns_layouts', {})
+    menu = QtGui.QMenu(c.frame.top)
+    for k in d:
+        menu.addAction(k)
+        g.es(k)
+    pos = c.frame.top.window().frameGeometry().center()
+    action = menu.exec_(pos)
+    if action is None:
+        return
+    name = str(action.text())
+    c.db['_ns_layout'] = name
+    layout = g.app.db['ns_layouts'][name]
+    c.free_layout.get_top_splitter().load_layout(layout)
 #@-others
 #@-leo
