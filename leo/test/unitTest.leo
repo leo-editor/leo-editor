@@ -3,7 +3,7 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.71" body_secondary_ratio="0.68">
+<globals body_outline_ratio="0.49" body_secondary_ratio="0.68">
 	<global_window_position top="30" left="341" height="1001" width="1227"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -170,8 +170,8 @@
 <v t="ekr.20131111155107.4242"><vh>after sel=1.4,1.4</vh></v>
 </v>
 <v t="ekr.20131111162157.4275"><vh>@test vim.exec_</vh></v>
-<v t="ekr.20131112062722.4277"><vh>@test vim.scan</vh>
-<v t="ekr.20131112062722.4278"><vh>&lt;&lt; define test tables &gt;&gt;</vh></v>
+<v t="ekr.20131112103759.4277"><vh>@test vim.scan</vh>
+<v t="ekr.20131112103759.4278"><vh>&lt;&lt; define test tables &gt;&gt;</vh></v>
 </v>
 </v>
 </vnodes>
@@ -1467,7 +1467,7 @@ if g.unitTesting:
     vc.runAtIdle(c.bodyWantsFocusNow)
 </t>
 <t tx="ekr.20131111162157.4276"></t>
-<t tx="ekr.20131112062722.4277">import leo.core.leoVim as leoVim
+<t tx="ekr.20131112103759.4277">import leo.core.leoVim as leoVim
 if 0: # When running from leoPy.leo
     import imp
     imp.reload(leoVim)
@@ -1494,20 +1494,30 @@ for i in range(1):
 if trace_time:
     delta = time.clock()-t1
     print("%s %6.6f sec." % (n,delta/n))
-    # print(n,g.timeSince(t1))
 </t>
-<t tx="ekr.20131112062722.4278"># To do: handle d2d, 2dd, etc.
-complete_table = (
-    'gg','gk','#','dd','d3j',
-    '2dta', # d is not (yet) a motion
-)
-incomplete_table = (
-    'g','[',']',
-    '25',
-)
-error_table = (
-    'gX','ZA',
-)
+<t tx="ekr.20131112103759.4278"># To do: handle d2d, 2dd, etc.
+if 0: # Individual test:
+    complete_table = ()
+    incomplete_table = ('d3','d4t',)
+    error_table = ()
+else:
+    complete_table = (
+        '#',
+        'gg','gk','dd',
+        'd3j',
+        '2dta', # d is not (yet) a motion
+        'dFb',
+        'gU[]',
+    )
+    incomplete_table = (
+        'g','[',']',
+        '25',
+        'd3t',
+        'd3',
+    )
+    error_table = (
+        'gX','ZA',
+    )
 </t>
 </tnodes>
 </leo_file>

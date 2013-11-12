@@ -20517,7 +20517,7 @@ for s in table:
 if g.unitTesting:
     # Unit testing messes up the focus.
     vc.runAtIdle(c.bodyWantsFocusNow)
-#@+node:ekr.20131112062722.4277: *4* @test vim.scan
+#@+node:ekr.20131112103759.4277: *4* @test vim.scan
 import leo.core.leoVim as leoVim
 if 0: # When running from leoPy.leo
     import imp
@@ -20545,20 +20545,30 @@ for i in range(1):
 if trace_time:
     delta = time.clock()-t1
     print("%s %6.6f sec." % (n,delta/n))
-    # print(n,g.timeSince(t1))
-#@+node:ekr.20131112062722.4278: *5* << define test tables >>
+#@+node:ekr.20131112103759.4278: *5* << define test tables >>
 # To do: handle d2d, 2dd, etc.
-complete_table = (
-    'gg','gk','#','dd','d3j',
-    '2dta', # d is not (yet) a motion
-)
-incomplete_table = (
-    'g','[',']',
-    '25',
-)
-error_table = (
-    'gX','ZA',
-)
+if 0: # Individual test:
+    complete_table = ()
+    incomplete_table = ('d3','d4t',)
+    error_table = ()
+else:
+    complete_table = (
+        '#',
+        'gg','gk','dd',
+        'd3j',
+        '2dta', # d is not (yet) a motion
+        'dFb',
+        'gU[]',
+    )
+    incomplete_table = (
+        'g','[',']',
+        '25',
+        'd3t',
+        'd3',
+    )
+    error_table = (
+        'gX','ZA',
+    )
 #@+node:ekr.20050120095423: ** Plugins
 # Do this last.
 #@+node:ekr.20110610082755.3362: *3*  qtGui.py

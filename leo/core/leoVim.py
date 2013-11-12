@@ -79,6 +79,7 @@ class VimCommands:
     def create_commands_d(self,dump):
         
         # @data vim-commands
+        trace = False
         d = {} # Keys are single characters, values are inner dicts.
         data = self.getData('vim-commands')
         for s in data:
@@ -93,15 +94,16 @@ class VimCommands:
                     assert d2.get('ch') == ch
                 else:
                     d2['ch']=ch
+                # if ch == '#': g.pdb()
                 # Remember the command name
                 d2['command_name'] = func
                 # Append the tail (including None) to d2['tail_chars']
                 aList = d2.get('tail_chars',[])
-                if tail in aList:
-                    if tail is not None:
+                if tail is not None:
+                    if tail in aList:
                         g.trace('duplicate command tail: %s' % tail)
-                else:
-                    aList.append(tail)
+                    else:
+                        aList.append(tail)
                 # Set d2['tail_pattern'] and append None to aList if there is a pattern.
                 pattern = self.command_tails_d.get(ch)
                 if pattern:
@@ -112,7 +114,7 @@ class VimCommands:
                 d[ch] = d2
             else:
                 g.trace('missing command chars: %s' % (s))
-        if False or dump: self.dump('command_d',d)
+        if trace or dump: self.dump('command_d',d)
         return d
     #@+node:ekr.20131110050932.16530: *4* create_motion_tails_d
     def create_motion_tails_d(self,dump):
@@ -374,21 +376,54 @@ class VimCommands:
             command,pattern,repr(tail),self.repr_list(tails)))
         if tail:
             status,n2,tail = self.match_tails(full_command,pattern,tails)
+        elif None in tails and pattern:
+            status = 'scan'
         else:
-            status = 'scan' if tails else 'oops'
+            status = 'scan' if tails else 'done'
         if trace: g.trace('s: %s status: %s n1: %s command: %s n2: %s tail: %s' % (
             s,status,n1,command,n2,tail))
         assert command is None or len(command) == 1
             # Commands are single letters!
         return status,n1,command,n2,tail
+    #@+node:ekr.20131112061353.16543: *4* vc.match_motion_tails
+    def match_motion_tails(self,tail,pattern,tails):
+        
+        trace = False
+        # Simpler than match_tails because the tail can have no motion pattern.
+        if pattern == 'motion':
+            g.trace('can not happen',pattern,tail)
+        if trace: g.trace('s: %s pattern: %s tails: [%s]' % (
+            tail,pattern or 'None',self.repr_list(tails)))
+        if tail:
+            if tail in tails:
+                status = 'done' # A complete match.  Pattern irrelevant.
+            else:
+                # First, see if tail is a prefix of any item of tails.
+                for item in tails:
+                    if item is not None and item.startswith(tail):
+                        status = 'scan'
+                        break
+                else:
+                    if None in tails:
+                        # Handle the None case. Match the tail against the pattern.
+                        status,junk,junk = self.scan_any_pattern(pattern,tail)
+                    else:
+                        status = 'oops'
+        elif None in tails:
+            status = 'scan' if pattern else 'done'
+        else:
+            status = 'scan' if tails else 'oops'
+        assert status in ('done','oops','scan'),status
+        return status
+        
     #@+node:ekr.20131112061353.16541: *4* vc.match_tails
     def match_tails(self,s,pattern,tails):
         '''s is the tail of a command. See if it matches any tail in tails.'''
         trace = False
         n2,status,tail = None,'oops',None
-        if trace: g.trace('tails: [%s]' % self.repr_list(tails))
+        if trace: g.trace('s: %s tails: [%s]' % (s,self.repr_list(tails)))
         if s[1:] in tails:
-            if trace: g.trace('complete match: %s [%s]' % (s,tails_s))
+            if trace: g.trace('complete match: %s' % s)
             return 'done',n2,s # A complete match.  Pattern irrelevant.
         # See if any head string (longest first!) is a prefix of any tail.
         i = len(s)
@@ -400,10 +435,8 @@ class VimCommands:
                     if trace: g.trace('prefix match: %s head: %s tail %s' % (
                         s,head,tail))
                     motion = s[i+1:]
-                    # g.trace('**motion**',motion)
                     if motion:
-                        if None in tails:
-                            # g.trace('**scanning motion**',motion)
+                        if None in tails and pattern:
                             status,tail,n2 = self.scan_any_pattern(pattern,motion)
                             if trace: g.trace('pattern match: %s head: %s tail: %s' % (
                                 s,head,tail))
@@ -415,13 +448,12 @@ class VimCommands:
                     else:
                         return 'scan',n2,s
         # Handle the None case. Try to match any tail against the pattern.
-        # g.trace('**',pattern,tail)
         if None in tails and pattern:
             status,tail,n2 = self.scan_any_pattern(pattern,tail)
-            if trace: g.trace('pattern match: %s [%s]' % (s,tails_s))
+            if trace: g.trace('pattern match: %s' % s)
             return status,n2,tail
         else:
-            if trace: g.trace('no match: %s [%s]' % (s,tails_s))
+            if trace: g.trace('no match: %s' % s)
             return 'oops',n2,s
     #@+node:ekr.20131110050932.16559: *4* vc.scan_any_pattern
     def scan_any_pattern(self,pattern,s):
@@ -454,35 +486,18 @@ class VimCommands:
     def scan_motion(self,s):
         
         trace = False
-        status = 'oops'
         i,n2 = self.scan_count(s)
         motion = s[i:]
-        ch = motion[:1]
-        tail = motion[1:]
         if motion:
-            # motions_d: keys are single characters, values are inner dicts.
+            ch = motion[:1]
+            tail = motion[1:]
             d = self.motions_d.get(ch,{})
+                # motions_d: keys are single characters, values are inner dicts.
             tails = d.get('tail_chars',[])
             pattern = d.get('tail_pattern')
-            # Just like scan.
-            if tail:
-                if tail in tails:
-                    status = 'done' # A complete match.  Pattern irrelevant.
-                else:
-                    # First, see if tail is a prefix of any item of tails.
-                    for item in tails:
-                        if item is not None and item.startswith(tail):
-                            status = 'scan'
-                            break
-                    else:
-                        # Handle the None case. Try to match the tail against the pattern.
-                        if pattern == 'motion':
-                            g.trace('can not happen',pattern,tail)
-                        status,junk,n2 = self.scan_any_pattern(pattern,tail)
-            elif None in tails:
-                status = 'scan' if pattern else 'done'
-            else:
-                status = 'scan' if tails else 'oops'
+            status = self.match_motion_tails(tail,pattern,tails)
+        else:
+            status = 'scan'
         if trace: g.trace(status,n2,motion)
         return status,n2,motion
     #@+node:ekr.20131110050932.16501: *4* vc.split_arg_line
