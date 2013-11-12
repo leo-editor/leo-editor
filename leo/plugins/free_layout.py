@@ -456,13 +456,11 @@ def free_layout_load(kwargs):
     :Parameters:
     - `kwargs`: from command callback
     """
-    g.es('k')
     c = kwargs['c']
     d = g.app.db.get('ns_layouts', {})
     menu = QtGui.QMenu(c.frame.top)
     for k in d:
         menu.addAction(k)
-        g.es(k)
     pos = c.frame.top.window().frameGeometry().center()
     action = menu.exec_(pos)
     if action is None:
