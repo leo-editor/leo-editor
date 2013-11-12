@@ -5817,6 +5817,13 @@ QLabel#changeLabel {
     font-style: normal; /* normal,italic,oblique */
 }
 
+QLabel#findHelp {
+    font-family: DejaVu Sans Mono;
+    font-size: 12pt;
+    font-weight: normal; /* normal,bold,100,..,900 */
+    font-style: normal; /* normal,italic,oblique */
+}
+
 QLineEdit#findPattern {
     font-family: DejaVu Sans Mono;
     font-size: 12pt;
