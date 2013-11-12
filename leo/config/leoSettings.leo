@@ -5916,14 +5916,14 @@ Do not overide QLabel directly.  It is used for dialog text.
 */
 
 /* 
-    # QLabel {
-        # font-family: DejaVu Sans Mono;
-        # font-size: 12pt;
-        # font-weight: normal; /* normal,bold,100,..,900 */
-        # font-style: normal; /* normal,italic,oblique */
-        # border: 2px;
-        # margin: 2px;
-    # }
+    QLabel {
+        font-family: DejaVu Sans Mono;
+        font-size: 12pt;
+        font-weight: normal; 
+        font-style: normal;
+        border: 2px;
+        margin: 2px;
+    }
 */ 
 
 QLabel#minibufferLabel {
