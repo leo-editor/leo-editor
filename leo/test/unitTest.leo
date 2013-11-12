@@ -170,8 +170,8 @@
 <v t="ekr.20131111155107.4242"><vh>after sel=1.4,1.4</vh></v>
 </v>
 <v t="ekr.20131111162157.4275"><vh>@test vim.exec_</vh></v>
-<v t="ekr.20131111162157.4273"><vh>@test vim.scan</vh>
-<v t="ekr.20131111162157.4274"><vh>&lt;&lt; define test tables &gt;&gt;</vh></v>
+<v t="ekr.20131112062722.4277"><vh>@test vim.scan</vh>
+<v t="ekr.20131112062722.4278"><vh>&lt;&lt; define test tables &gt;&gt;</vh></v>
 </v>
 </v>
 </vnodes>
@@ -1437,49 +1437,10 @@ g_alts =        r'(?P&lt;g_n&gt;[0-9]*)(?P&lt;g_alt&gt;g(%s))' % (g_alt_chars)
 g_motion = 'g(%s | %s)' % (g_bare_alts,g_alts)
 print(g_motion)
 </t>
-<t tx="ekr.20131111162157.4273">import imp
-import leo.core.leoVim as leoVim
-imp.reload(leoVim)
-import time
-trace_time = False
-&lt;&lt; define test tables &gt;&gt;
-vc = leoVim.VimCommands(c)
-test_table = (
-    ('done',complete_table),
-    ('scan',incomplete_table),
-    ('oops',error_table),
-)
-if trace_time: t1 = time.clock()
-n = 0
-for i in range(1):
-    for expected,table in test_table:
-        for s in table:
-            for prefix in ('','1023456789'):
-                command = prefix + s
-                status,n1,command2,n2,motion = vc.scan(command)
-                n += 1
-                assert status == expected,'expected %s, got %s command: %s' % (
-                    expected,status,command)
-if trace_time:
-    delta = time.clock()-t1
-    print("%s %6.6f sec." % (n,delta/n))
-    # print(n,g.timeSince(t1))
-</t>
-<t tx="ekr.20131111162157.4274"># To do: handle d2d, 2dd, etc.
-complete_table = (
-    'gg','gk','#','dd','d3j',
-    #'d2d', # d is not (yet) a motion
-)
-incomplete_table = (
-    'g','[',']',
-)
-error_table = (
-    'gX','ZA',
-)
-</t>
-<t tx="ekr.20131111162157.4275">import imp
-import leo.core.leoVim as leoVim
-imp.reload(leoVim)
+<t tx="ekr.20131111162157.4275">import leo.core.leoVim as leoVim
+if 0: # When running from leoPy.leo
+    import imp
+    imp.reload(leoVim)
 vc = leoVim.VimCommands(c)
 table = (
     # 'gg','gk','#','dd','d3j',
@@ -1506,5 +1467,47 @@ if g.unitTesting:
     vc.runAtIdle(c.bodyWantsFocusNow)
 </t>
 <t tx="ekr.20131111162157.4276"></t>
+<t tx="ekr.20131112062722.4277">import leo.core.leoVim as leoVim
+if 0: # When running from leoPy.leo
+    import imp
+    imp.reload(leoVim)
+import time
+trace_time = False
+&lt;&lt; define test tables &gt;&gt;
+vc = leoVim.VimCommands(c)
+test_table = (
+    ('done',complete_table),
+    ('scan',incomplete_table),
+    ('oops',error_table),
+)
+if trace_time: t1 = time.clock()
+n = 0
+for i in range(1):
+    for expected,table in test_table:
+        for s in table:
+            for prefix in ('','1023456789'):
+                command = prefix + s
+                status,n1,command2,n2,motion = vc.scan(command)
+                n += 1
+                assert status == expected,'expected %s, got %s command: %s' % (
+                    expected,status,command)
+if trace_time:
+    delta = time.clock()-t1
+    print("%s %6.6f sec." % (n,delta/n))
+    # print(n,g.timeSince(t1))
+</t>
+<t tx="ekr.20131112062722.4278"># To do: handle d2d, 2dd, etc.
+complete_table = (
+    'gg','gk','#','dd','d3j',
+    '2dta', # d is not (yet) a motion
+)
+incomplete_table = (
+    'g','[',']',
+    '25',
+)
+error_table = (
+    'gX','ZA',
+)
+</t>
 </tnodes>
 </leo_file>

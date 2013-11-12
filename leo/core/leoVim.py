@@ -65,11 +65,15 @@ class VimCommands:
         data = self.getData('vim-command-tails')
         for s in data:
             kind,command = self.split_arg_line(s)
-            if kind in self.tail_kinds:
-                d[command] = kind
+            if command:
+                ch = command[0] # Keys are single characters.
+                if kind in self.tail_kinds:
+                    d[ch] = kind
+                else:
+                    g.trace('bad kind: %s' % s)
             else:
-                g.trace('bad kind: %s' % (s))
-        if dump: self.dump('command_tails_d',d)
+                g.trace('bad command: %s' % s)
+        if False or dump: self.dump('command_tails_d',d)
         return d
     #@+node:ekr.20131110050932.16532: *4* create_commands_d
     def create_commands_d(self,dump):
@@ -81,6 +85,7 @@ class VimCommands:
             func,command = self.split_arg_line(s)
             command = command.strip()
             if command:
+                # 1. Get the inner dict.
                 ch = command[0]
                 tail = command[1:] or None
                 d2 = d.get(ch,{})
@@ -93,16 +98,17 @@ class VimCommands:
                 # Append the tail (including None) to d2['tail_chars']
                 aList = d2.get('tail_chars',[])
                 if tail in aList:
-                    g.trace('duplicate command tail: %s' % tail)
+                    if tail is not None:
+                        g.trace('duplicate command tail: %s' % tail)
                 else:
                     aList.append(tail)
-                    d2['tail_chars']=aList
-                # Also set d2['tail_pattern'] if tail is None.
-                if tail is None:
-                    if d2.get('tail_pattern'):
-                        g.trace('duplicate entry for %r' % (ch))
-                    else:
-                        d2['tail_pattern'] = self.command_tails_d.get(ch)
+                # Set d2['tail_pattern'] and append None to aList if there is a pattern.
+                pattern = self.command_tails_d.get(ch)
+                if pattern:
+                    d2['tail_pattern'] = pattern
+                    if not None in aList:
+                        aList.append(None)
+                d2['tail_chars']=aList
                 d[ch] = d2
             else:
                 g.trace('missing command chars: %s' % (s))
@@ -117,10 +123,14 @@ class VimCommands:
         for s in data:
             kind,command = self.split_arg_line(s)
             command = command.strip()
-            if kind in self.tail_kinds:
-                d[command] = kind
+            if command:
+                ch = command[0] # Keys are single characters.
+                if kind in self.tail_kinds:
+                    d[ch] = kind
+                else:
+                    g.trace('bad kind: %s' % s)
             else:
-                g.trace('bad kind: %s' % (s))
+                g.trace('bad command: %s' % s)
         if False or dump: self.dump('motion_tails_d',d)
         return d
     #@+node:ekr.20131110050932.16531: *4* create_motions_d
@@ -238,31 +248,6 @@ class VimCommands:
         'vim_z': oops,
         }
         return d
-    #@+node:ekr.20131109170017.46984: *4* dump
-    def dump(self,name,d):
-        '''Dump a dictionary.'''
-        print('\nDump of %s' % name)
-        for key in sorted(d.keys()):
-            val = d.get(key)
-            if type(val) in (type([]),type((),)):
-                val = ' '.join([z for z in val if z])
-                print('%5s %s' % (key,val))
-            elif type(val) == type({}):
-                result = []
-                for key2 in sorted(val.keys()):
-                    val2 = val.get(key2)
-                    if type(val2) in (type([]),type((),)):
-                        val2 = ','.join([repr(z) if z is None else z for z in val2])
-                    pad = ' '*2
-                    if val2:
-                        result.append('%s%s %s' % (pad,key2,val2))
-                val3 = '\n'.join(result)
-                if len(result) == 1:
-                    print('%s %s' % (key,val3))
-                else:
-                    print('%s\n%s' % (key,val3))
-            else:
-                print('%5s %s' % (key,val))
     #@+node:ekr.20131109170017.46985: *4* getData
     def getData(self,s):
         
@@ -301,11 +286,38 @@ class VimCommands:
         self.n1 = None
         self.n2 = None
     #@+node:ekr.20131111105746.16546: **  vc.helpers
+    #@+node:ekr.20131109170017.46984: *3* vc.dump
+    def dump(self,name,d):
+        '''Dump a dictionary.'''
+        print('\nDump of %s' % name)
+        for key in sorted(d.keys()):
+            val = d.get(key)
+            if type(val) in (type([]),type((),)):
+                val = ' '.join([z for z in val if z])
+                print('%5s %s' % (key,val))
+            elif type(val) == type({}):
+                result = []
+                for key2 in sorted(val.keys()):
+                    val2 = val.get(key2)
+                    if type(val2) in (type([]),type((),)):
+                        # val2 = ','.join([repr(z) if z is None else z for z in val2])
+                        val2 = self.repr_list(val2)
+                    pad = ' '*2
+                    if val2:
+                        result.append('%s%s %s' % (pad,key2,val2))
+                val3 = '\n'.join(result)
+                if len(result) == 1:
+                    print('%s %s' % (key,val3))
+                else:
+                    print('%s\n%s' % (key,val3))
+            else:
+                print('%5s %s' % (key,val))
     #@+node:ekr.20131111054309.16528: *3* vc.exec_
     def exec_(self,command,n1,n2,tail):
         
-        trace = True
+        trace = False
         d = self.commands_d.get(command,{})
+            # Keys are single letters.
         command_name = d.get('command_name')
         func = self.dispatch_d.get(command_name,self.oops)
         # Set ivars describing the command.
@@ -322,6 +334,10 @@ class VimCommands:
         
         self.trace_command()
         
+    #@+node:ekr.20131112061353.16542: *3* vc.repr_list
+    def repr_list(self,aList):
+
+        return ','.join([repr(z) if z is None else z for z in aList])
     #@+node:ekr.20131111061547.18011: *3* vc.runAtIdle
     # For testing: ensure that this always gets called.
 
@@ -348,37 +364,65 @@ class VimCommands:
         d = self.commands_d.get(ch)
             # d is an innder dict.
         if not d:
-            status = 'oops'
             if trace: g.trace('s: %s status: %s (invalid command)' % (s,status))
-            return status,n1,command,n2,tail
+            return 'oops',n1,command,n2,tail
         tails = d.get('tail_chars') or []
             # A list of strings that can follow ch.
             # May include None, in which case pattern may fire.
         pattern = d.get('tail_pattern')
-        if trace and verbose: g.trace('command: %s tail: %s tails: [%s] pattern: %s' % (
-            command,repr(tail),
-            ','.join([z if z else repr(z) for z in tails]),
-            pattern))
+        if trace and verbose: g.trace('command: %s pattern: %s tail: %s tails: [%s]' % (
+            command,pattern,repr(tail),self.repr_list(tails)))
         if tail:
-            if tail in tails:
-                status = 'done' # A complete match.  Pattern irrelevant.
-            else:
-                # First, see if tail is a prefix of any item of tails.
-                for item in tails:
-                    if item is not None and item.startswith(tail):
-                        status = 'scan'
-                        break
-                else:
-                    # Handle the None case. Try to match the tail against the pattern.
-                    # g.trace('**',pattern,tail)
-                    status,tail,n2 = self.scan_any_pattern(pattern,tail)
-        elif None in tails:
-            status = 'scan' if pattern else 'done'
+            status,n2,tail = self.match_tails(full_command,pattern,tails)
         else:
             status = 'scan' if tails else 'oops'
         if trace: g.trace('s: %s status: %s n1: %s command: %s n2: %s tail: %s' % (
             s,status,n1,command,n2,tail))
+        assert command is None or len(command) == 1
+            # Commands are single letters!
         return status,n1,command,n2,tail
+    #@+node:ekr.20131112061353.16541: *4* vc.match_tails
+    def match_tails(self,s,pattern,tails):
+        '''s is the tail of a command. See if it matches any tail in tails.'''
+        trace = False
+        n2,status,tail = None,'oops',None
+        if trace: g.trace('tails: [%s]' % self.repr_list(tails))
+        if s[1:] in tails:
+            if trace: g.trace('complete match: %s [%s]' % (s,tails_s))
+            return 'done',n2,s # A complete match.  Pattern irrelevant.
+        # See if any head string (longest first!) is a prefix of any tail.
+        i = len(s)
+        while i >= 0:
+            head = s[1:i]
+            i -= 1
+            for tail in tails:
+                if tail is not None and tail.startswith(head):
+                    if trace: g.trace('prefix match: %s head: %s tail %s' % (
+                        s,head,tail))
+                    motion = s[i+1:]
+                    # g.trace('**motion**',motion)
+                    if motion:
+                        if None in tails:
+                            # g.trace('**scanning motion**',motion)
+                            status,tail,n2 = self.scan_any_pattern(pattern,motion)
+                            if trace: g.trace('pattern match: %s head: %s tail: %s' % (
+                                s,head,tail))
+                            return status,n2,tail
+                        else:
+                            if trace: g.trace('**None not in tails**: %s head %s tail: %s' % (
+                                s,head,tail))
+                            return 'oops',n2,s
+                    else:
+                        return 'scan',n2,s
+        # Handle the None case. Try to match any tail against the pattern.
+        # g.trace('**',pattern,tail)
+        if None in tails and pattern:
+            status,tail,n2 = self.scan_any_pattern(pattern,tail)
+            if trace: g.trace('pattern match: %s [%s]' % (s,tails_s))
+            return status,n2,tail
+        else:
+            if trace: g.trace('no match: %s [%s]' % (s,tails_s))
+            return 'oops',n2,s
     #@+node:ekr.20131110050932.16559: *4* vc.scan_any_pattern
     def scan_any_pattern(self,pattern,s):
         '''Scan s, looking for the indicated pattern.'''
@@ -400,9 +444,9 @@ class VimCommands:
 
         # Zero is a command.  It does not start repeat counts.
         if s and s[0].isdigit() and s[0] != '0':
-            for i,ch in enumerate(s):
-                if not ch.isdigit():
-                    break
+            i  = 0
+            while i < len(s) and s[i].isdigit():
+                i += 1
             return i,int(s[:i])
         else:
             return 0,None
@@ -417,7 +461,7 @@ class VimCommands:
         tail = motion[1:]
         if motion:
             # motions_d: keys are single characters, values are inner dicts.
-            d = self.motions_d.get(ch)
+            d = self.motions_d.get(ch,{})
             tails = d.get('tail_chars',[])
             pattern = d.get('tail_pattern')
             # Just like scan.
