@@ -543,6 +543,7 @@
 <v t="ekr.20110611092035.16471"></v>
 <v t="ekr.20041119034357.10"><vh>Command options</vh>
 <v t="ekr.20111115083813.12518"><vh>@bool indent_added_comments = True</vh></v>
+<v t="ekr.20131112150804.18737"><vh>@bool force_execute_entire_body = False</vh></v>
 <v t="ekr.20041119041019.1"><vh>@string remove_sentinels_extension = .txt</vh></v>
 <v t="ekr.20110611092035.16488"><vh>Bracket matching</vh>
 <v t="ekr.20060804095015.1"><vh>@string close_flash_brackets = )]}</vh></v>
@@ -9816,6 +9817,7 @@ action will be used instead.</t>
 <t tx="ekr.20131009050634.17656"></t>
 <t tx="ekr.20131027064821.18683"></t>
 <t tx="ekr.20131028155339.18637">Open &amp;CheatSheet.leo</t>
+<t tx="ekr.20131112150804.18737">True: the execute-script command executes the entire body, even if text is selected.</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>

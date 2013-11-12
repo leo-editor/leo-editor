@@ -236,6 +236,7 @@ class Commands (object):
 
         self.fixed = False
         self.fixedWindowPosition = []
+        self.forceExecuteEntireBody = False
         self.focus_border_color = 'white'
         self.focus_border_width = 1 # pixels
         self.outlineHasInitialFocus = False
@@ -476,6 +477,7 @@ class Commands (object):
         c.focus_border_overwrite_state_color = getColor(
             'focus_border_overwrite_state_color') or 'green'
         c.focus_border_width        = getInt('focus_border_width') or 1 # pixels
+        c.forceExecuteEntireBody    = getBool('force_execute_entire_body',default=False)
         c.outlineHasInitialFocus    = getBool('outline_pane_has_initial_focus')
         # c.showMinibuffer            = getBool('useMinibuffer')
             # This option is a bad idea.
@@ -2418,6 +2420,8 @@ class Commands (object):
         c = self ; script1 = script
 
         if not script:
+            if c.forceExecuteEntireBody:
+                useSelectedText = False
             script = g.getScript(c,p or c.p,useSelectedText=useSelectedText)
 
         script_p = p or c.p # Only for error reporting below.
