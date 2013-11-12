@@ -10,13 +10,8 @@
 #@@pagewidth 70
 
 import string
-import unittest
 import leo.core.leoGlobals as g
-import leo.core.leoTest as leoTest
-
-# Useful for debugging.  May possibly be removed later.
 import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
 
 class VimCommands:
     #@+others
@@ -335,7 +330,8 @@ class VimCommands:
         Run aFunc at idle time.
         This can not be called in some contexts.
         '''
-        QtCore.QTimer.singleShot(0,aFunc)
+        if QtCore:
+            QtCore.QTimer.singleShot(0,aFunc)
     #@+node:ekr.20131110050932.16533: *3* vc.scan & helpers
     def scan(self,s):
         
@@ -346,7 +342,7 @@ class VimCommands:
         if not full_command:
             status = 'scan' # Still looking for the start of a command.
             if trace: g.trace('s: %s status: %s (no command)' % (s,status))
-            return status,n1,command,n2,tail
+            return status,n1,full_command,n2,tail
         tail = full_command[1:]
         ch = command = full_command[0]
         d = self.commands_d.get(ch)
