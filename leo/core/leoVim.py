@@ -273,6 +273,7 @@ class VimCommands:
         self.w = c.frame.body and c.frame.body.bodyCtrl # A QTextBrowser.
         # Ivars describing command syntax.
         self.chars = [ch for ch in string.printable if 32 <= ord(ch) < 128]
+        # g.trace(''.join(self.chars))
         self.letters = string.ascii_letters
         self.motion_kinds = ['char','letter','register'] # selectors in @data vim-*-tails.
         self.register_names = string.ascii_letters
@@ -421,7 +422,7 @@ class VimCommands:
         '''s is the tail of a command. See if it matches any tail in tails.'''
         trace = False
         n2,status,tail = None,'oops',None
-        if trace: g.trace('s: %s tails: [%s]' % (s,self.repr_list(tails)))
+        if trace: g.trace('s: %s tails: [%s]' % (s or 'None',self.repr_list(tails)))
         if s[1:] in tails:
             if trace: g.trace('complete match: %s' % s)
             return 'done',n2,s # A complete match.  Pattern irrelevant.
@@ -438,8 +439,8 @@ class VimCommands:
                     if motion:
                         if None in tails and pattern:
                             status,tail,n2 = self.scan_any_pattern(pattern,motion)
-                            if trace: g.trace('pattern match: %s head: %s tail: %s' % (
-                                s,head,tail))
+                            if trace: g.trace('pattern match: %s %s head: %s tail: %s' % (
+                                s,status,head,tail))
                             return status,n2,tail
                         else:
                             if trace: g.trace('**None not in tails**: %s head %s tail: %s' % (
@@ -449,8 +450,8 @@ class VimCommands:
                         return 'scan',n2,s
         # Handle the None case. Try to match any tail against the pattern.
         if None in tails and pattern:
-            status,tail,n2 = self.scan_any_pattern(pattern,tail)
-            if trace: g.trace('pattern match: %s' % s)
+            status,tail,n2 = self.scan_any_pattern(pattern,s[1:])
+            if trace: g.trace('pattern match: %s %s' % (status,s))
             return status,n2,tail
         else:
             if trace: g.trace('no match: %s' % s)
@@ -459,9 +460,10 @@ class VimCommands:
     def scan_any_pattern(self,pattern,s):
         '''Scan s, looking for the indicated pattern.'''
         trace = False
+        if trace: g.trace(pattern,s)
         if pattern == 'motion':
             status,n2,result = self.scan_motion(s)
-        elif len(s) == 1 and (
+        elif s and len(s) == 1 and (
             pattern == 'char' and s in self.chars or
             pattern == 'letter' and s in self.letters or
             pattern == 'register' and s in self.register_names
@@ -500,6 +502,21 @@ class VimCommands:
             status = 'scan'
         if trace: g.trace(status,n2,motion)
         return status,n2,motion
+    #@+node:ekr.20131112104359.16686: *4* vc.simulate_typing
+    def simulate_typing (self,s):
+        '''Simulate typing of command s.
+        Return (status,head) for increasing prefixes of s, including s.
+        '''
+        
+        trace = False
+        i = 1
+        while i < len(s):
+            head = s[:i]
+            i += 1
+            if trace: g.trace('scan',s,head)
+            yield 'scan',head
+        if trace: g.trace('done',s)
+        yield 'done',s
     #@+node:ekr.20131110050932.16501: *4* vc.split_arg_line
     def split_arg_line(self,s):
         '''

@@ -170,8 +170,8 @@
 <v t="ekr.20131111155107.4242"><vh>after sel=1.4,1.4</vh></v>
 </v>
 <v t="ekr.20131111162157.4275"><vh>@test vim.exec_</vh></v>
-<v t="ekr.20131112103759.4277"><vh>@test vim.scan</vh>
-<v t="ekr.20131112103759.4278"><vh>&lt;&lt; define test tables &gt;&gt;</vh></v>
+<v t="ekr.20131112142742.4293"><vh>@test vim.scan</vh>
+<v t="ekr.20131112142742.4294"><vh>&lt;&lt; define test tables &gt;&gt;</vh></v>
 </v>
 </v>
 </vnodes>
@@ -1467,11 +1467,12 @@ if g.unitTesting:
     vc.runAtIdle(c.bodyWantsFocusNow)
 </t>
 <t tx="ekr.20131111162157.4276"></t>
-<t tx="ekr.20131112103759.4277">import leo.core.leoVim as leoVim
+<t tx="ekr.20131112142742.4293">import leo.core.leoVim as leoVim
 if 0: # When running from leoPy.leo
     import imp
     imp.reload(leoVim)
 import time
+trace = False
 trace_time = False
 &lt;&lt; define test tables &gt;&gt;
 vc = leoVim.VimCommands(c)
@@ -1485,32 +1486,57 @@ n = 0
 for i in range(1):
     for expected,table in test_table:
         for s in table:
-            for prefix in ('','1023456789'):
-                command = prefix + s
-                status,n1,command2,n2,motion = vc.scan(command)
-                n += 1
-                assert status == expected,'expected %s, got %s command: %s' % (
-                    expected,status,command)
+            if table == complete_table:
+                command = s
+                for expected,command2 in vc.simulate_typing(command):
+                    status,n1,command3,n2,motion = vc.scan(command2)
+                    n += 1
+                    if trace:
+                        err = '   ' if status == expected else '***'
+                        print('%s%s %s' % (err,status,command2))
+                    else:
+                        assert status == expected,'expected %s, got %s command: %s' % (
+                        expected,status,command2)
+            else:
+                for prefix in ('','1023456789'):
+                    command = prefix + s
+                    status,n1,command2,n2,motion = vc.scan(command)
+                    n += 1
+                    if trace:
+                        err = '   ' if status == expected else '***'
+                        print('%s%s %s' % (err,status,command))
+                    else:
+                        assert status == expected,'expected %s, got %s command: %s' % (
+                        expected,status,command)
 if trace_time:
     delta = time.clock()-t1
     print("%s %6.6f sec." % (n,delta/n))
+
 </t>
-<t tx="ekr.20131112103759.4278"># To do: handle d2d, 2dd, etc.
+<t tx="ekr.20131112142742.4294"># To do: handle d2d, 2dd, etc.
 if 0: # Individual test:
-    complete_table = ()
-    incomplete_table = ('d3','d4t',)
+    complete_table = ('ta',)
+        # Note: gu is complete, so gu[] is an invalid test.
+    incomplete_table = () # 'd3','d4t','dt',
     error_table = ()
 else:
     complete_table = (
+        '0',
+        'N',
         '#',
         'gg','gk','dd',
         'd3j',
         '2dta', # d is not (yet) a motion
         'dFb',
-        'gU[]',
+        'gu',
+        'g[]',
+        'ta',
+        't!',
     )
     incomplete_table = (
-        'g','[',']',
+        'g',
+        '[',
+        ']',
         '25',
         'd3t',
         'd3',
