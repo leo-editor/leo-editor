@@ -223,6 +223,7 @@ except ImportError:
 import PyQt4.QtCore as QtCore
 import PyQt4.QtGui as QtGui
 import PyQt4.QtSvg as QtSvg
+import PyQt4.QtWebKit as QtWebKit
 #@-<< imports >>
 
 #@+<< define stylesheet >>
@@ -516,6 +517,7 @@ class ViewRenderedController(QtGui.QWidget):
         self.splitter_index = None # The index of the rendering pane in the splitter.
         self.svg_class = QtSvg.QSvgWidget
         self.text_class = QtGui.QTextBrowser # QtGui.QTextEdit # qtGui.LeoQTextBrowser 
+        self.html_class = QtWebKit.QWebView
         self.graphics_class = QtGui.QGraphicsWidget
         self.vp = None # The present video player.
         self.w = None # The present widget in the rendering pane.
@@ -770,11 +772,15 @@ class ViewRenderedController(QtGui.QWidget):
         
         pc = self
         
+        if pc.must_change_widget(pc.html_class):
+            w = pc.html_class()
+            pc.embed_widget(w)
+            assert (w == pc.w)
+        else:
+            w = pc.w
+
         pc.show()
-        w = pc.ensure_text_widget()
-        w.setReadOnly(False)
         w.setHtml(s)
-        w.setReadOnly(True)
     #@+node:ekr.20110320120020.14482: *4* update_image
     def update_image (self,s,keywords):
         
