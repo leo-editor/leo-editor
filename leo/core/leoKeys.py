@@ -2009,7 +2009,7 @@ class keyHandlerClass:
 
         '''Handle 'full-command' (alt-x) mode.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         verbose = True
         k = self ; c = k.c
         if c.vim_mode:
