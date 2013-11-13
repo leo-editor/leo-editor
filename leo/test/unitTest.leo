@@ -156,7 +156,8 @@
 <v t="ekr.20101220161557.6014"><vh>@file inactiveTests.txt</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e382e3671017d71025808000000616e6e6f7461746571037d7104735508302e372e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e372e31342e3671097d710a5808000000616e6e6f74617465710b7d710c735508302e372e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e382e3671017d71025808000000616e6e6f7461746571037d7104735508302e372e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e372e31342e3671097d710a5808000000616e6e6f74617465710b7d710c735508302e372e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"
+expanded="ekr.20131111160618.4261,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20131111160618.4261"><vh>leoVim</vh>
 <v t="ekr.20131111162157.4276"><vh>Unused</vh>
@@ -169,9 +170,9 @@
 <v t="ekr.20131111155107.4241"><vh>before sel=1.5,1.5</vh></v>
 <v t="ekr.20131111155107.4242"><vh>after sel=1.4,1.4</vh></v>
 </v>
-<v t="ekr.20131111162157.4275"><vh>@test vim.exec_</vh></v>
-<v t="ekr.20131112142742.4293"><vh>@test vim.scan</vh>
-<v t="ekr.20131112142742.4294"><vh>&lt;&lt; define test tables &gt;&gt;</vh></v>
+<v t="ekr.20131111162157.4275"><vh>@test vr.exec_</vh></v>
+<v t="ekr.20131113071911.4281"><vh>@test vr.scan</vh>
+<v t="ekr.20131113071911.4282"><vh>&lt;&lt; define test tables &gt;&gt;</vh></v>
 </v>
 </v>
 </vnodes>
@@ -589,7 +590,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="8"></t>
+<t tx="ekr.20070417092935" str_leo_pos="9,3"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1467,7 +1468,7 @@ if g.unitTesting:
     vc.runAtIdle(c.bodyWantsFocusNow)
 </t>
 <t tx="ekr.20131111162157.4276"></t>
-<t tx="ekr.20131112142742.4293">import leo.core.leoVim as leoVim
+<t tx="ekr.20131113071911.4281">import leo.core.leoVim as leoVim
 if 0: # When running from leoPy.leo
     import imp
     imp.reload(leoVim)
@@ -1513,7 +1514,7 @@ if trace_time:
     print("%s %6.6f sec." % (n,delta/n))
 
 </t>
-<t tx="ekr.20131112142742.4294"># To do: handle d2d, 2dd, etc.
+<t tx="ekr.20131113071911.4282"># To do: handle d2d, 2dd, etc.
 if 0: # Individual test:
     complete_table = ('ta',)
         # Note: gu is complete, so gu[] is an invalid test.

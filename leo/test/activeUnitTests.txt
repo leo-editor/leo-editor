@@ -20488,7 +20488,7 @@ first line
 first line
 #@+node:ekr.20131111155107.4242: *5* after sel=1.4,1.4
 first line
-#@+node:ekr.20131111162157.4275: *4* @test vim.exec_
+#@+node:ekr.20131111162157.4275: *4* @test vr.exec_
 import leo.core.leoVim as leoVim
 if 0: # When running from leoPy.leo
     import imp
@@ -20517,7 +20517,7 @@ for s in table:
 if g.unitTesting:
     # Unit testing messes up the focus.
     vc.runAtIdle(c.bodyWantsFocusNow)
-#@+node:ekr.20131112142742.4293: *4* @test vim.scan
+#@+node:ekr.20131113071911.4281: *4* @test vr.scan
 import leo.core.leoVim as leoVim
 if 0: # When running from leoPy.leo
     import imp
@@ -20563,7 +20563,7 @@ if trace_time:
     delta = time.clock()-t1
     print("%s %6.6f sec." % (n,delta/n))
 
-#@+node:ekr.20131112142742.4294: *5* << define test tables >>
+#@+node:ekr.20131113071911.4282: *5* << define test tables >>
 # To do: handle d2d, 2dd, etc.
 if 0: # Individual test:
     complete_table = ('ta',)

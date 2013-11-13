@@ -2590,7 +2590,8 @@ class keyHandlerClass:
                 k.setLabelBlue('%s' % (prompt),protect=True)
                 vr.exec_(command2,n1,n2,tail)
             elif status == 'oops':
-                g.trace('invalid char')
+                # ring bell?
+                if trace: g.trace('invalid char') ###
             c.bodyWantsFocus()
     #@+node:ekr.20061031131434.130: *4* k.keyboardQuit
     def keyboardQuit (self,event=None,setFocus=True,mouseClick=False):
