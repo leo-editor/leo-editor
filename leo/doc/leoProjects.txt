@@ -1924,7 +1924,7 @@ def vim_at(self):
 def vim_m(self):
     
     g.trace(self.command,self.tail)
-#@+node:ekr.20131111161433.16516: *4* @test vim.exec_ (also in unitTest.leo)
+#@+node:ekr.20131111161433.16516: *4* @test vr.exec_ (also in unitTest.leo)
 import imp
 import leo.core.leoVim as leoVim
 imp.reload(leoVim)
@@ -1956,7 +1956,7 @@ for s in table:
 if g.unitTesting:
     # Unit testing messes up the focus.
     vc.runAtIdle(c.bodyWantsFocusNow)
-#@+node:ekr.20131112061353.16538: *4* @test vim.scan
+#@+node:ekr.20131112061353.16538: *4* @test vr.scan
 import leo.core.leoVim as leoVim
 if 1: # When running from leoPy.leo
     import imp
