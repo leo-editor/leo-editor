@@ -67,6 +67,9 @@ You can specify the following options in leoSettings.leo.  See the node:
 
     @bool scripting-at-button-nodes = True
     True: adds a button for every @button node.
+    
+    @bool scripting-at-rclick-nodes = False
+    True: define a minibuffer command for every @rclick node.
 
     @bool scripting-at-commands-nodes = True
     True: define a minibuffer command for every @command node.
@@ -203,6 +206,8 @@ class scriptingController:
             # True: adds a button for every @button node.
         self.atCommandsNodes = getBool('scripting-at-commands-nodes')
             # True: define a minibuffer command for every @command node.
+        self.atRclickNodes = getBool('scripting-at-rclick-nodes')
+            # True: define a minibuffer command for every @rclick node.
         self.atPluginNodes = getBool('scripting-at-plugin-nodes')
             # True: dynamically loads plugins in @plugins nodes when a window is created.
         self.atScriptNodes = getBool('scripting-at-script-nodes')
@@ -223,7 +228,7 @@ class scriptingController:
     #@+node:ekr.20060328125248.8: *3* createAllButtons & helpers
     def createAllButtons (self):
 
-        '''Scans the outline looking for @button, @command, @plugin and @script nodes.'''
+        '''Scans the outline looking for @button, @rclick, @command, @plugin and @script nodes.'''
         
         def match(p,s):
             return g.match_word(p.h,0,s)
@@ -250,6 +255,10 @@ class scriptingController:
             else:
                 if self.atButtonNodes and match(p,'@button'): 
                     self.handleAtButtonNode(p)
+                # 2013/11/13 Jake Peck:
+                # @rclick nodes create minibuffer commands
+                elif self.atRclickNodes and match(p,'@rclick'):
+                    self.handleAtRclickNode(p)
                 elif self.atCommandsNodes and match(p,'@command'):
                     self.handleAtCommandNode(p)
                 elif self.atPluginNodes and match(p,'@plugin'):
@@ -520,6 +529,26 @@ class scriptingController:
             
         self.registerTwoCommands(h,func=atCommandCallback,
             pane='all',tag='local @command')
+            
+        g.app.config.atLocalCommandsList.append(p.copy())
+        # g.trace(c.config,p.h)
+    #@+node:peckj.20131113130420.6851: *4* handleAtRclickNode @rclick (mod_scripting)
+    def handleAtRclickNode (self,p):
+
+        '''Handle @rclick name [@key[=]shortcut].'''
+
+        # trace = True and not g.app.unitTesting # and not g.app.batchMode
+
+        c = self.c ; k = c.keyHandler ; h = p.h
+        if not h.strip(): return
+
+        args = self.getArgs(h)
+
+        def atCommandCallback (event=None,args=args,c=c,p=p.copy()):
+            c.executeScript(args=args,p=p,silent=True)
+            
+        self.registerTwoCommands(h,func=atCommandCallback,
+            pane='all',tag='local @rclick')
             
         g.app.config.atLocalCommandsList.append(p.copy())
         # g.trace(c.config,p.h)
@@ -812,8 +841,10 @@ class scriptingController:
 
         k.registerCommand(s,func=func,
             pane=pane,shortcut=shortcut,verbose=trace)
-            
-        for tag in ('@button-','@command-'):
+        
+        # 2013/11/13 Jake Peck:
+        # include '@rclick-' in list of tags    
+        for tag in ('@button-','@command-','@rclick-'):
             if s.startswith(tag):
                 command = s[len(tag):].strip()
                 # Create a *second* func, to avoid collision in c.commandsDict.
