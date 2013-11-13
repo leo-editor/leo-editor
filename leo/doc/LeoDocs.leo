@@ -1401,7 +1401,7 @@ char (not recommended)
 ``copy-text`` (Ctrl-C) and ``paste-text`` (Ctrl-V), and ``select-all``
 (Ctrl-A) commands. These commands work with either headline or body text.
 </t>
-<t tx="EKR.20040524104904.114">The ``indent-region`` (Ctrl-Tab) and ``unindent-region`` (Tab) commands
+<t tx="EKR.20040524104904.114">The ``indent-region`` (Tab) and ``unindent-region`` (Shift-Tab) commands
 shift selected lines in the body text left or right one tab position. These
 commands shift the entire line if any characters in that line are selected.
 If no text is selected, the Tab character insert a hard or soft tab
