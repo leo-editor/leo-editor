@@ -3,7 +3,7 @@
 #@+node:ekr.20131109170017.16504: * @file leoVim.py
 #@@first
 
-'''Vim command code.'''
+'''Leo's vim emulator.'''
 
 #@@language python
 #@@tabwidth -4
@@ -13,15 +13,32 @@ import string
 import leo.core.leoGlobals as g
 import PyQt4.QtCore as QtCore
 
+#@+others
+#@+node:ekr.20131113045621.16547: ** class VimCommands
 class VimCommands:
+    '''
+    A class that handles most aspects of vim simulation in Leo.
+    
+    - vr.create_dicts creates dictionaries from vim-related @data nodes.
+    - vr.create_dicst also creates a dispatch dictionary associating
+      the first letter of each vim command with a vr method.
+    - vr.scan uses those tables to parse a command into its components.
+      vr.scan returns a status in ('oops','scan','done').
+    - vr.exec_ executes a completed command.
+    
+    k.getVimArg accumulates vim commands while status is 'scan'
+    (ignoring characters when status is 'oops') and calls vr.exec_
+    when status is 'done'.
+    '''
+
     #@+others
-    #@+node:ekr.20131111105746.16545: **  vc.Birth
-    #@+node:ekr.20131109170017.16507: *3* vc.ctor
+    #@+node:ekr.20131111105746.16545: *3*  vc.Birth
+    #@+node:ekr.20131109170017.16507: *4* vc.ctor
     def __init__(self,c):
 
         self.init_ivars(c)
         self.create_dicts()
-    #@+node:ekr.20131109170017.46983: *3* vc.create_dicts & helpers
+    #@+node:ekr.20131109170017.46983: *4* vc.create_dicts & helpers
     def create_dicts(self):
 
         dump = False
@@ -45,7 +62,7 @@ class VimCommands:
             assert hasattr(self,ivar),ivar
 
         
-    #@+node:ekr.20131110050932.16536: *4* check_dicts
+    #@+node:ekr.20131110050932.16536: *5* check_dicts
     def check_dicts(self):
         
         # Check user settings.
@@ -57,7 +74,7 @@ class VimCommands:
             aList = d2.get('tail_chars')
             if aList and len(aList) > 1 and None in aList and not pattern:
                 g.trace('ambiguous entry for %s: %s' % (ch,d2))
-    #@+node:ekr.20131110050932.16529: *4* create_command_tails_d
+    #@+node:ekr.20131110050932.16529: *5* create_command_tails_d
     def create_command_tails_d(self,dump):
 
         # @data vim-command-tails
@@ -75,7 +92,7 @@ class VimCommands:
                 g.trace('bad command: %s' % s)
         if False or dump: self.dump('command_tails_d',d)
         return d
-    #@+node:ekr.20131110050932.16532: *4* create_commands_d
+    #@+node:ekr.20131110050932.16532: *5* create_commands_d
     def create_commands_d(self,dump):
         
         # @data vim-commands
@@ -116,7 +133,7 @@ class VimCommands:
                 g.trace('missing command chars: %s' % (s))
         if trace or dump: self.dump('command_d',d)
         return d
-    #@+node:ekr.20131110050932.16530: *4* create_motion_tails_d
+    #@+node:ekr.20131110050932.16530: *5* create_motion_tails_d
     def create_motion_tails_d(self,dump):
 
         # @data vim-motion-tails
@@ -135,7 +152,7 @@ class VimCommands:
                 g.trace('bad command: %s' % s)
         if False or dump: self.dump('motion_tails_d',d)
         return d
-    #@+node:ekr.20131110050932.16531: *4* create_motions_d
+    #@+node:ekr.20131110050932.16531: *5* create_motions_d
     def create_motions_d(self,dump):
         
         # @data vim-motions
@@ -165,7 +182,7 @@ class VimCommands:
             d[ch] = d2
         if False or dump: self.dump('motions_d',d)
         return d
-    #@+node:ekr.20131111061547.16460: *4* create_dispatch_d
+    #@+node:ekr.20131111061547.16460: *5* create_dispatch_d
     def create_dispatch_d(self):
         oops = self.oops
         d = {
@@ -250,7 +267,7 @@ class VimCommands:
         'vim_z': oops,
         }
         return d
-    #@+node:ekr.20131109170017.46985: *4* getData
+    #@+node:ekr.20131109170017.46985: *5* getData
     def getData(self,s):
         
         trace = False and not g.unitTesting
@@ -264,7 +281,7 @@ class VimCommands:
                 return []
         else:
             return c.config.getData(s) or []
-    #@+node:ekr.20131111105746.16547: *3* vc.init_ivars
+    #@+node:ekr.20131111105746.16547: *4* vc.init_ivars
     def init_ivars(self,c):
         
         self.c = c
@@ -288,8 +305,8 @@ class VimCommands:
         self.tail = None
         self.n1 = None
         self.n2 = None
-    #@+node:ekr.20131111105746.16546: **  vc.helpers
-    #@+node:ekr.20131109170017.46984: *3* vc.dump
+    #@+node:ekr.20131111105746.16546: *3*  vc.helpers
+    #@+node:ekr.20131109170017.46984: *4* vc.dump
     def dump(self,name,d):
         '''Dump a dictionary.'''
         print('\nDump of %s' % name)
@@ -315,7 +332,7 @@ class VimCommands:
                     print('%s\n%s' % (key,val3))
             else:
                 print('%5s %s' % (key,val))
-    #@+node:ekr.20131111054309.16528: *3* vc.exec_
+    #@+node:ekr.20131111054309.16528: *4* vc.exec_
     def exec_(self,command,n1,n2,tail):
         
         trace = False
@@ -332,16 +349,16 @@ class VimCommands:
         if trace: self.trace_command()
         for i in range(n1 or 1):
             func()
-    #@+node:ekr.20131111061547.16461: *3* vc.oops
+    #@+node:ekr.20131111061547.16461: *4* vc.oops
     def oops(self):
         
         self.trace_command()
         
-    #@+node:ekr.20131112061353.16542: *3* vc.repr_list
+    #@+node:ekr.20131112061353.16542: *4* vc.repr_list
     def repr_list(self,aList):
 
         return ','.join([repr(z) if z is None else z for z in aList])
-    #@+node:ekr.20131111061547.18011: *3* vc.runAtIdle
+    #@+node:ekr.20131111061547.18011: *4* vc.runAtIdle
     # For testing: ensure that this always gets called.
 
     def runAtIdle (self,aFunc):
@@ -351,7 +368,7 @@ class VimCommands:
         '''
         if QtCore:
             QtCore.QTimer.singleShot(0,aFunc)
-    #@+node:ekr.20131110050932.16533: *3* vc.scan & helpers
+    #@+node:ekr.20131110050932.16533: *4* vc.scan & helpers
     def scan(self,s):
         
         trace = False ; verbose = True
@@ -386,7 +403,7 @@ class VimCommands:
         assert command is None or len(command) == 1
             # Commands are single letters!
         return status,n1,command,n2,tail
-    #@+node:ekr.20131112061353.16543: *4* vc.match_motion_tails
+    #@+node:ekr.20131112061353.16543: *5* vc.match_motion_tails
     def match_motion_tails(self,tail,pattern,tails):
         
         trace = False
@@ -417,7 +434,7 @@ class VimCommands:
         assert status in ('done','oops','scan'),status
         return status
         
-    #@+node:ekr.20131112061353.16541: *4* vc.match_tails
+    #@+node:ekr.20131112061353.16541: *5* vc.match_tails
     def match_tails(self,s,pattern,tails):
         '''s is the tail of a command. See if it matches any tail in tails.'''
         trace = False
@@ -456,7 +473,7 @@ class VimCommands:
         else:
             if trace: g.trace('no match: %s' % s)
             return 'oops',n2,s
-    #@+node:ekr.20131110050932.16559: *4* vc.scan_any_pattern
+    #@+node:ekr.20131110050932.16559: *5* vc.scan_any_pattern
     def scan_any_pattern(self,pattern,s):
         '''Scan s, looking for the indicated pattern.'''
         trace = False
@@ -473,7 +490,7 @@ class VimCommands:
             n2,result,status = None,s,'oops'
         if trace: g.trace(status,pattern,s,result,n2)
         return status,result,n2
-    #@+node:ekr.20131110050932.16540: *4* vc.scan_count
+    #@+node:ekr.20131110050932.16540: *5* vc.scan_count
     def scan_count(self,s):
 
         # Zero is a command.  It does not start repeat counts.
@@ -484,7 +501,7 @@ class VimCommands:
             return i,int(s[:i])
         else:
             return 0,None
-    #@+node:ekr.20131110050932.16558: *4* vc.scan_motion
+    #@+node:ekr.20131110050932.16558: *5* vc.scan_motion
     def scan_motion(self,s):
         
         trace = False
@@ -502,7 +519,7 @@ class VimCommands:
             status = 'scan'
         if trace: g.trace(status,n2,motion)
         return status,n2,motion
-    #@+node:ekr.20131112104359.16686: *4* vc.simulate_typing
+    #@+node:ekr.20131112104359.16686: *5* vc.simulate_typing
     def simulate_typing (self,s):
         '''Simulate typing of command s.
         Return (status,head) for increasing prefixes of s, including s.
@@ -517,7 +534,7 @@ class VimCommands:
             yield 'scan',head
         if trace: g.trace('done',s)
         yield 'done',s
-    #@+node:ekr.20131110050932.16501: *4* vc.split_arg_line
+    #@+node:ekr.20131110050932.16501: *5* vc.split_arg_line
     def split_arg_line(self,s):
         '''
         Split line s into a head and tail.
@@ -527,58 +544,58 @@ class VimCommands:
         head = s[:i]
         tail = s[i:].strip()
         return head,tail
-    #@+node:ekr.20131111061547.16462: *3* vc.trace_command
+    #@+node:ekr.20131111061547.16462: *4* vc.trace_command
     def trace_command(self):
         
         func_name = self.func and self.func.__name__ or 'oops'
         print('%s func: %s command: %r n1: %r n2: %r tail: %r' % (
             g.callers(1),func_name,self.command,self.n1,self.n2,self.tail))
-    #@+node:ekr.20131111061547.16467: ** vc.commands
-    #@+node:ekr.20131111061547.16468: *3* vim_h/j/k/l
-    #@+node:ekr.20131111171616.16498: *4* vim_d
+    #@+node:ekr.20131111061547.16467: *3* vc.commands
+    #@+node:ekr.20131111061547.16468: *4* vim_h/j/k/l
+    #@+node:ekr.20131111171616.16498: *5* vim_d
     def vim_d(self):
         
         g.trace(self.command,self.tail)
-    #@+node:ekr.20131111061547.18012: *4* vim_h
+    #@+node:ekr.20131111061547.18012: *5* vim_h
     def vim_h(self):
         '''Move cursor left.'''
         if self.extend:
             self.c.editCommands.backCharacterExtendSelection(self.event)
         else:
             self.c.editCommands.backCharacter(self.event)
-    #@+node:ekr.20131111061547.18013: *4* vim_j
+    #@+node:ekr.20131111061547.18013: *5* vim_j
     def vim_j(self):
         '''Move cursor down.'''
         if self.extend:
             self.c.editCommands.nextLineExtendSelection(self.event)
         else:
             self.c.editCommands.nextLine(self.event)
-    #@+node:ekr.20131111061547.18014: *4* vim_k
+    #@+node:ekr.20131111061547.18014: *5* vim_k
     def vim_k(self):
         '''Move cursor up.'''
         if self.extend:
             self.c.editCommands.prevLineExtendSelection(self.event)
         else:
             self.c.editCommands.prevLine(self.event)
-    #@+node:ekr.20131111061547.18015: *4* vim_l
+    #@+node:ekr.20131111061547.18015: *5* vim_l
     def vim_l(self):
         '''Move cursor right.'''
         if self.extend:
             self.c.editCommands.forwardCharacterExtendSelection(self.event)
         else:
             self.c.editCommands.forwardCharacter(self.event)
-    #@+node:ekr.20131111105746.16544: *3* vim_dot
+    #@+node:ekr.20131111105746.16544: *4* vim_dot
     def vim_dot(self):
         
         g.trace()
-    #@+node:ekr.20131111171616.16496: *3* vim_at
+    #@+node:ekr.20131111171616.16496: *4* vim_at
     def vim_at(self):
         
         g.trace(self.command,self.tail)
-    #@+node:ekr.20131111171616.16497: *3* vim_m
+    #@+node:ekr.20131111171616.16497: *4* vim_m
     def vim_m(self):
         
         g.trace(self.command,self.tail)
     #@-others
-
+#@-others
 #@-leo

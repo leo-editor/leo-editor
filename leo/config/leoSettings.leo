@@ -3,8 +3,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
+	<global_window_position top="75" left="401" height="913" width="1212"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -579,6 +579,7 @@
 <v t="ekr.20041119041019.2"><vh>@bool save_clears_undo_buffer = False</vh></v>
 <v t="ekr.20050126083026"><vh>@string undo_granularity = None</vh></v>
 </v>
+<v t="ekr.20131112161153.4420"><vh>@bool vim-mode = False</vh></v>
 </v>
 <v t="ekr.20070926132045"><vh>Common @button nodes</vh>
 <v t="ekr.20070926082407"><vh>@buttons</vh>
@@ -4673,7 +4674,7 @@ False: Chapter tabs do not appear.</t>
 #propagate-key-event = Alt-W
 </t>
 <t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
-<t tx="ekr.20070622214401"></t>
+<t tx="ekr.20070622214401" str_leo_pos="4,4,11"></t>
 <t tx="ekr.20070729101310">True: trace import commands and @auto imports.</t>
 <t tx="ekr.20070803082435">True: import commands (including @auto nodes) do full checks.</t>
 <t tx="ekr.20070925144534"></t>
@@ -9818,6 +9819,7 @@ action will be used instead.</t>
 <t tx="ekr.20131027064821.18683"></t>
 <t tx="ekr.20131028155339.18637">Open &amp;CheatSheet.leo</t>
 <t tx="ekr.20131112150804.18737">True: the execute-script command executes the entire body, even if text is selected.</t>
+<t tx="ekr.20131112161153.4420">True: use built-in vim emulation.</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>

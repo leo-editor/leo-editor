@@ -251,6 +251,7 @@ class Commands (object):
         self.untangle_batch_flag = False
         self.use_body_focus_border = True
         self.use_focus_border = False
+        self.vim_mode = False
     #@+node:ekr.20120217070122.10468: *5* c.initObjectIvars
     def initObjectIvars (self):
 
@@ -494,6 +495,7 @@ class Commands (object):
         c.tab_width                 = getInt('tab_width') or -4
         c.use_body_focus_border     = getBool('use_body_focus_border',default=True)
         c.use_focus_border          = getBool('use_focus_border',default=True)
+        c.vim_mode                  = getBool('vim_mode',default=False)
         c.write_script_file         = getBool('write_script_file')
 
         # g.trace('smart %s, tab_width %s' % (c.smart_tab, c.tab_width))

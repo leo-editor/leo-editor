@@ -2009,15 +2009,18 @@ class keyHandlerClass:
 
         '''Handle 'full-command' (alt-x) mode.'''
 
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         verbose = True
         k = self ; c = k.c
+        if c.vim_mode:
+            return k.getVimArg(event)
         recording = c.macroCommands.recordingMacro
         state = k.getState('full-command')
         helpPrompt = 'Help for command: '
         c.check_event(event)
         ch = char = event and event.char or ''
         stroke = event and event.stroke or None
+        if trace and verbose: g.trace(g.callers())
         if trace: g.trace('recording',recording,'state',state,char)
         if recording:
             c.macroCommands.startRecordingMacro(event)
@@ -2447,11 +2450,9 @@ class keyHandlerClass:
         trace = False and not g.app.unitTesting
         state = k.getState('getArg')
         c.check_event(event)
-
-        # 2011/06/06: remember these events also.
+        # Remember these events also.
         if c.macroCommands.recordingMacro and state > 0:
             c.macroCommands.startRecordingMacro(event)
-
         char = event and event.char or ''
         if state > 0:
             k.setLossage(char,stroke)
@@ -2463,7 +2464,7 @@ class keyHandlerClass:
         if state == 0:
             k.arg = ''
             #@+<< init altX vars >>
-            #@+node:ekr.20061031131434.129: *5* << init altX vars >>
+            #@+node:ekr.20061031131434.129: *5* << init altX vars >> k.getArg
             k.argSelectedText = c.frame.body.bodyCtrl.getSelectedText()
                 # 2010/09/01: remember the selected text for abbreviations.
             k.argTabList = tabList and tabList[:] or []
@@ -2512,6 +2513,85 @@ class keyHandlerClass:
             k.mb_tabList = []
             k.updateLabel(event)
             k.mb_tabListPrefix = k.getLabel()
+    #@+node:ekr.20131112152450.16537: *4* k.getVimArg
+    def getVimArg(self,event,specialStroke=None,specialFunc=None):
+        '''Handle all keys in the minibuffer when c.vim_mode is True.'''
+        ### help=False,
+        ### helpHandler=None
+        trace = False # and not g.unitTesting
+        verbose = False
+        k,c = self,self.c
+        k = self ; c = k.c
+        vr = c.vimCommands
+        prompt = 'Normal Mode: ' ###
+        recording = c.macroCommands.recordingMacro
+        state = k.getState('vim-mode')
+        if trace: g.trace('**',k.getLabel(),state)
+        c.check_event(event)
+        ch = char = event and event.char or ''
+        stroke = event and event.stroke or None
+        if trace: g.trace('state',state,char) # 'recording',recording,
+        # if recording:
+            # c.macroCommands.startRecordingMacro(event)
+        # if state > 0:
+            # k.setLossage(char,stroke)
+        if state == 0:
+            k.mb_event = event # Save the full event for later.
+            k.setState('vim-mode',1,handler=k.getVimArg)
+            k.setLabelBlue('%s' % (prompt),protect=True)
+            # Init mb_ ivars. This prevents problems with an initial backspace.
+            k.mb_prompt = k.mb_tabListPrefix = k.mb_prefix = prompt
+            k.mb_tabList = [] ; k.mb_tabListIndex = -1
+            k.mb_help = None ### help
+            k.mb_helpHandler = None ### helpHandler
+        # Unlike fullCommand, we *do* have a key.
+        elif char == 'Ins' or k.isFKey(char):
+            pass
+        elif char == 'Escape':
+            k.keyboardQuit()
+        elif char in ('\n','Return'):
+            if trace and verbose: g.trace('***Return')
+            c.frame.log.deleteTab('Completion')
+            k.callAltXFunction(k.mb_event)
+            # if k.mb_help:
+                # s = k.getLabel()
+                # commandName = s[len(helpPrompt):].strip()
+                # k.clearState()
+                # k.resetLabel()
+                # if k.mb_helpHandler: k.mb_helpHandler(commandName)
+            # else:
+                # k.callAltXFunction(k.mb_event)
+        # elif char in ('\t','Tab'):
+            # if trace and verbose: g.trace('***Tab')
+            # k.doTabCompletion(list(c.commandsDict.keys()),allow_empty_completion=True)
+            # c.minibufferWantsFocus()
+        elif char in ('\b','BackSpace'):
+            if trace and verbose: g.trace('***BackSpace')
+            k.doBackSpace(list(c.commandsDict.keys()))
+        elif k.ignore_unbound_non_ascii_keys and len(ch) > 1:
+            if trace: g.trace('non-ascii')
+            if specialStroke:
+                g.trace(specialStroke)
+                specialFunc()
+        else:
+            # Clear the list, any other character besides tab indicates that a new prefix is in effect.
+            k.mb_tabList = []
+            k.updateLabel(event)
+            k.mb_tabListPrefix = k.getLabel()
+            if trace: g.trace('new prefix',k.mb_tabListPrefix)
+        # Examine each keystroke to see if we have a complete command.
+        if state != 0:
+            command = k.getLabel(ignorePrompt=True)
+            status,n1,command2,n2,tail = vr.scan(command)
+            if trace: g.trace('status: %s %s command: %s n1: %s n2: %s tail: %s' % (
+                status,command,command2,n1,n2,tail))
+            if status == 'done':
+                k.resetLabel()
+                k.setLabelBlue('%s' % (prompt),protect=True)
+                vr.exec_(command2,n1,n2,tail)
+            elif status == 'oops':
+                g.trace('invalid char')
+            c.bodyWantsFocus()
     #@+node:ekr.20061031131434.130: *4* k.keyboardQuit
     def keyboardQuit (self,event=None,setFocus=True,mouseClick=False):
 
@@ -2925,10 +3005,8 @@ class keyHandlerClass:
         k = self ; val = None 
         ch = event and event.char or ''
         stroke = event and event.stroke or ''
-
         if trace: g.trace(k.state.kind,'ch',ch,'stroke',stroke,
             'ignore_unbound_non_ascii_keys',k.ignore_unbound_non_ascii_keys)
-
         if k.state.kind == 'auto-complete':
             # 2011/06/17.
             # k.auto_completer_state_handler returns 'do-standard-keys' for control keys.
@@ -2950,21 +3028,23 @@ class keyHandlerClass:
                     k.endCommand(k.commandName)
             else:
                 g.error('callStateFunction: no state function for',k.state.kind)
-
         return val
     #@+node:ekr.20091230094319.6244: *5* doMode
     def doMode (self,event,state,stroke):
 
         trace = False and not g.unitTesting
         k = self
-
         # First, honor minibuffer bindings for all except user modes.
-        if state in ('getArg','getFileName','full-command','auto-complete'):
+        if state in ('getArg','getFileName','full-command','auto-complete','vim-mode'):
             if k.handleMiniBindings(event,state,stroke):
                 return True
-
         # Second, honor general modes.
-        if state == 'getArg':
+        # Handle vim mode.
+        if k.c.vim_mode and state in ('full-command','vim-mode'):
+            if trace: g.trace('vim-mode',state)
+            k.getVimArg(event)
+            return True
+        elif state == 'getArg':
             k.getArg(event,stroke=stroke)
             return True
         elif state == 'getFileName':
@@ -2976,7 +3056,6 @@ class keyHandlerClass:
             val = k.callStateFunction(event) # Calls end-command.
             if trace: g.trace('state function returns',repr(val))
             return val != 'do-standard-keys'
-
         # Third, pass keys to user modes.
         d =  k.masterBindingsDict.get(state)
         if d:
@@ -3009,7 +3088,7 @@ class keyHandlerClass:
     def getPaneBinding (self,stroke,w):
 
         trace = False and not g.unitTesting
-        verbose = False
+        verbose = True
         k = self ; w_name = k.c.widget_name(w)
         # keyStatesTuple = ('command','insert','overwrite')
         state = k.unboundKeyAction
@@ -3749,7 +3828,6 @@ class keyHandlerClass:
         if ins <= len(k.mb_prefix):
             # g.trace('at start')
             return
-            
         # Step 1: actually delete the character.
         i,j = w.getSelectionRange()
         if i == j:
@@ -3760,9 +3838,9 @@ class keyHandlerClass:
             ins = i
             w.delete(i,j)
             w.setSelectionRange(i,i,insert=ins)
-
         # Step 2: compute completions.
         if not completion: return
+        if k.c.vim_mode: return
         k.mb_tabListPrefix = w.getAllText()
         k.computeCompletionList(defaultCompletionList,backspace=True)
     #@+node:ekr.20061031131434.178: *4* k.doTabCompletion
