@@ -3,8 +3,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
-	<global_window_position top="75" left="401" height="913" width="1212"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -541,7 +541,7 @@
 <v t="ekr.20110510071925.14589"><vh>@bool use_qcompleter = True</vh></v>
 </v>
 <v t="ekr.20110611092035.16471"></v>
-<v t="ekr.20041119034357.10"><vh>Command options</vh>
+<v t="ekr.20041119034357.10" a="E"><vh>Command options</vh>
 <v t="ekr.20111115083813.12518"><vh>@bool indent_added_comments = True</vh></v>
 <v t="ekr.20131112150804.18737"><vh>@bool force_execute_entire_body = False</vh></v>
 <v t="ekr.20041119041019.1"><vh>@string remove_sentinels_extension = .txt</vh></v>
@@ -4674,7 +4674,7 @@ False: Chapter tabs do not appear.</t>
 #propagate-key-event = Alt-W
 </t>
 <t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
-<t tx="ekr.20070622214401" str_leo_pos="4,4,11"></t>
+<t tx="ekr.20070622214401"></t>
 <t tx="ekr.20070729101310">True: trace import commands and @auto imports.</t>
 <t tx="ekr.20070803082435">True: import commands (including @auto nodes) do full checks.</t>
 <t tx="ekr.20070925144534"></t>
@@ -5747,7 +5747,7 @@ If there are more than this number, a new row is created.</t>
 
    needed for zoom in / out
 
-   @font-size-body = 14pt
+   @font-size-body = 12pt
    
    *color names*
    @MistyRose1 = #FFE4E1
@@ -5867,7 +5867,7 @@ QTreeWidget {
     selection-background-color: lightgrey;
     /* font-family: SansSerif; */
     font-family: DejaVu Sans Mono;
-    font-size: 14pt;
+    font-size: 12pt;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal, italic,oblique */
     show-decoration-selected: 1 /* 1: select entire row */
@@ -5879,7 +5879,7 @@ QTreeWidget QLineEdit {
     selection-color: white;
     selection-background-color: blue;
     font-family: DejaVu Sans Mono;
-    font-size: 14pt;
+    font-size: 12pt;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal, italic,oblique */
 }
@@ -5891,7 +5891,7 @@ QTextEdit {
     selection-background-color: blue;
     /* font-family: Courier New; */
     font-family: DejaVu Sans Mono;
-    font-size: 14pt;
+    font-size: 12pt;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal, italic,oblique */
 }
@@ -5912,7 +5912,7 @@ QTextEdit#richTextEdit {
 QLineEdit#editorLabel {
     background-color: #ffffec;
     font-family: DejaVu Sans Mono;
-    font-size: 14pt;
+    font-size: 12pt;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal,italic,oblique */
     border: 2px;
@@ -5937,7 +5937,7 @@ Do not overide QLabel directly.  It is used for dialog text.
 
 QLabel#minibufferLabel {
     font-family: DejaVu Sans Mono;
-    font-size: 14pt;
+    font-size: 12pt;
     font-weight: normal; 
     font-style: normal;
 }
@@ -5957,7 +5957,7 @@ QLineEdit#lineEdit {
     selection-color: white;
     selection-background-color: lightgrey;
     font-family: DejaVu Sans Mono;
-    font-size: 14pt;
+    font-size: 12pt;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal,italic,oblique */
 }
@@ -5967,7 +5967,7 @@ QLineEdit#status1 {
     border-width: 1px;
     border-style: solid;
     border-color: darkgrey;
-    font-size: 14pt;
+    font-size: 12pt;
 }
 
 QLineEdit#status2 {
@@ -5975,7 +5975,7 @@ QLineEdit#status2 {
     border-width: 1px;
     border-style: solid;
     border-color: darkgrey;
-    font-size: 14pt;
+    font-size: 12pt;
 }
 
 /* button_kind based button coloring */
