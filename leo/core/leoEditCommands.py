@@ -624,6 +624,8 @@ class abbrevCommandsClass (baseEditCommandsClass):
         trace = False
         c = self.c
         val,do_placeholder = self.template_start(p.b)
+        if not do_placeholder:
+            p.b = val
         if trace: # and do_placeholder:
             g.trace(do_placeholder,len(val),p.h)
         c.selectPosition(p)
