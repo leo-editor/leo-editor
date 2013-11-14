@@ -3,12 +3,119 @@
 .. @@language rest # override the default .txt coloring.
 
 .. @+all
-.. @+node:ekr.20131114051702.23446: ** ** g.createScratchCommander
-.. @+node:ekr.20131106061848.16384: ** * Create github repo
-.. @+node:ekr.20131027064821.18693: ** * Make introductory video about Leo for PyCon2013China
+.. @+node:ekr.20131114124839.16664: ** First
+@language rest
+
+Post: I'll be working on videos soon.
+
+Do all the vim commands in the tutorial.
+
+Post:
+- I'll be revising the code.
+- double comma might search for <|block|> everywhere.
+
+Clean up expandAbbrev code:
+- **review all code**.
+- Move search code from template_end to next_place.
+- Pay attention to selection & redraw issues.
+    - In some places, we can just set p.b.
+    - In some places, we have to set body text.
+    - self.abbrev_select helper??
+.. @+node:ekr.20131114051702.22728: *3* Document @outline-data in leoSettings.leo
+.. @+node:ekr.20131114051702.20438: *3* Document outline abbreviations
+@language rest
+
+@settings trees may now contain @outline-data nodes. These nodes, and their
+descendants, can be used to pass entire outlines as the value of
+c.config.getOutlineData. Details below.
+
+Leo's abbreviation manager now uses settings of the form::
+
+    @outline-data tree-abbreviations
+
+to create abbreviations that expand into *outlines* when they fire. When
+such **tree abbreviations** fire, Leo pastes the nodes of a the
+abbreviations outline as children of the node that is selected when the
+outline fires.
+
+Here's how it works. The body text of the @outline-data tree-abbreviations
+node contains the names of the tree abbreviations, each on a separate line.
+Like this::
+
+   abc;;
+   xyz;;
+
+As with @data nodes, Leo ignores any line starting with '#'.
+
+For each abbreviation name, there should be corresponding child node, the
+**abbreviation node** whose headline matches the abbreviation name.
+
+In this case, the @outline-data tree-abbreviations node should have two
+(direct) children, whose headlines are abc;; and xyz;; So these are the two
+abbreviation nodes.
+
+When the abc;; abbreviation fires, Leo pastes the *children* of the abc;;
+node as the children of the selected node. (Any pasted nodes follow any
+existing children).
+
+That's it.
+
+leoSettings.leo contains an example node:
+
+    @@outline-data tree-abbreviations examples
+
+To make this node active, rename it to::
+
+    @outline-data tree-abbreviations
+
+Edward
+
+P.S. Here are some implementation notes. Feel free to ignore.
+
+I got tree abbreviations working yesterday with a series of hacks that
+bypassed Leo's default settings priority mechanism.
+
+Then I had an Aha. Suppose the *value* returned by (a new)
+c.config.getOutlineData was the xml string created when Leo pastes the
+@outline-data node to the clipboard!
+
+This was a stroke of genius, if I do say so myself. Leo can then use all
+the standard configuration code for @outline-data! So settings in a local
+file override myLeoSettings.leo settings, which override settings in
+leoSettings.leo.
+
+Of course, the "consumer" of c.config.getOutlineData must then paste the
+xml string into the outline. Like this::
+
+    c.fileCommands.leo_file_encoding='utf-8' p =
+    c.pasteOutline(s=tree_s,redrawFlag=False,undoFlag=False)
+
+The consumer must then use the pasted outline in some way. For tree
+abbreviations, abbrevCommandsClass.init_tree_abbrev pastes the outline,
+uses the outline to define abbreviations, and then *deletes* the tree.
+
+Still, this is a general pattern: we have now expanded the notion of
+settings to include full outlines!!
+
+P.P.S. The redrawFlag and undoFlag keyword args to c.pasteOutline are new.
+They ensure that operations happening at startup time do not cause unwanted
+side effects.
+
+EKR
+.. @+node:ekr.20131027064821.18693: *3* * Make introductory video about Leo for PyCon2013China
 By mid December.
 
 Private email: http://mail.google.com/mail/u/0/#inbox/141ddfe09c389e4f
+.. @+node:ekr.20131106061848.16384: *3* * Create github repo
+.. @+node:ekr.20131114124839.16665: *3* g.createScratchCommander
+def createScratchCommander(fileName=None)
+    
+    c = g.app.newCommander(fileName)
+    frame = c.frame
+    frame.createFirstTreeNode()
+    assert c.rootPosition()
+    frame.setInitialWindowGeometry()
+    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
 .. @+node:ekr.20131105020211.18058: ** Important
 .. @+node:ekr.20131101080215.16488: *3* * Outreach to magazine editors
 ===== Steve Litt
