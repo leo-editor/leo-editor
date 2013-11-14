@@ -5522,12 +5522,18 @@ The c.forceExecuteEntireBody ivar can be toggled by scripts.
 http://mail.google.com/mail/u/0/#inbox/1423c5445471eeb2
 
 The Command reference was wrong.
-#@+node:ekr.20131108082341.16371: *3* Added support for @tree-abbreviations
+#@+node:ekr.20131114051702.16540: *3* Added support for @outline-data
+- Restored c.config.getData.
+- Added gcm.getOutlineData, c.config.getOutlineData.
+- Added parser.doOutlineData and getOutlineDataHelper.
+#@+node:ekr.20131108082341.16371: *3* Added support for @outline-data tree-abbreviations
 @language rest
 
 https://groups.google.com/forum/#!topic/leo-editor/OSe0_D5tmJQ
 
-To do: *remove* a tree abbreviation if it fires *successfully*.
+To do:
+1. Remove abbreviation name from body text when it fires.
+2. (Maybe) Support template scanning after the substitution.
 
 What I did:
 

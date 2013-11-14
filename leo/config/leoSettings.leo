@@ -518,18 +518,39 @@
 </v>
 </v>
 <v t="ekr.20070224073109.1"></v>
-<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
+<v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
+<v t="tbrown.20120820202856.25331"><vh>@@data abbreviations examples</vh></v>
+<v t="ekr.20131114051702.18852"><vh>@@outline-data tree-abbreviations examples</vh>
+<v t="ekr.20131114051702.18853"><vh>abc;;</vh>
+<v t="ekr.20131114051702.18854"><vh>node 1</vh></v>
+<v t="ekr.20131114051702.18855"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20131114051702.18856"><vh>xyz;;</vh>
+<v t="ekr.20131114051702.18857"><vh>node xyz</vh></v>
+</v>
+<v t="ekr.20131114051702.18858"><vh>per-commander-plugin;;</vh>
+<v t="ekr.20131114051702.18859"><vh>@@file pluginname.py</vh>
+<v t="ekr.20131114051702.18860"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
+<v t="ekr.20131114051702.18861"><vh>&lt;&lt; version history &gt;&gt;</vh></v>
+<v t="ekr.20131114051702.18862"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20131114051702.18863"><vh>init</vh></v>
+<v t="ekr.20131114051702.18864"><vh>onCreate</vh></v>
+<v t="ekr.20131114051702.18865"><vh>class pluginController</vh>
+<v t="ekr.20131114051702.18866"><vh>__init__</vh></v>
+</v>
+</v>
+</v>
+</v>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
 <v t="ekr.20130924110246.13745"><vh>@bool scripting-abbreviations = False</vh></v>
-<v t="ekr.20100904134301.11002"><vh>@data global-abbreviations</vh></v>
 <v t="ekr.20100904134301.11004"><vh>@data abbreviations</vh></v>
-<v t="tbrown.20120820202856.25328"><vh>@string abbreviations-subst-start = None</vh></v>
-<v t="tbrown.20120820202856.25329"><vh>@string abbreviations-subst-end = }|}</vh></v>
 <v t="tbrown.20120820202856.25330"><vh>@data abbreviations-subst-env</vh></v>
-<v t="tbrown.20120820202856.25331"><vh>@@data abbreviations examples</vh></v>
-<v t="tbrown.20120821183537.18663"><vh>@string abbreviations-place-start = &lt;|</vh></v>
+<v t="ekr.20100904134301.11002"><vh>@data global-abbreviations</vh></v>
 <v t="tbrown.20120821183537.18662"><vh>@string abbreviations-place-end = |&gt;</vh></v>
+<v t="tbrown.20120821183537.18663"><vh>@string abbreviations-place-start = &lt;|</vh></v>
+<v t="tbrown.20120820202856.25329"><vh>@string abbreviations-subst-end = }|}</vh></v>
+<v t="tbrown.20120820202856.25328"><vh>@string abbreviations-subst-start = None</vh></v>
 </v>
 <v t="ekr.20110611092035.16470"></v>
 <v t="ekr.20110510071925.14588"><vh>Autocompleter</vh>
@@ -1399,7 +1420,7 @@
 <v t="ekr.20110611092035.16492"><vh>Mouse</vh>
 <v t="ekr.20080324105006.6"><vh>@bool allow_middle_button_paste = False</vh></v>
 </v>
-<v t="ekr.20051123100536" a="E"><vh>Plugins</vh>
+<v t="ekr.20051123100536"><vh>Plugins</vh>
 <v t="ekr.20041119034357.13"><vh>@bool use_plugins = True</vh></v>
 <v t="ekr.20071113084330"><vh>@bool warn_when_plugins_fail_to_load = True</vh></v>
 <v t="ekr.20070224073109.1"></v>
@@ -1545,7 +1566,7 @@
 <v t="ekr.20100910115903.8297"><vh>screenshot settings</vh>
 <v t="ekr.20100910115903.8299"><vh>@string screenshot-bin = "c:\Program Files (x86)\Inkscape\inkscape.exe"</vh></v>
 </v>
-<v t="ekr.20060930111325" a="E"><vh>scripting plugin</vh>
+<v t="ekr.20060930111325"><vh>scripting plugin</vh>
 <v t="ekr.20060930111325.2"><vh>@bool scripting-at-button-nodes = True</vh></v>
 <v t="peckj.20131113130420.8678"><vh>@bool scripting-at-rclick-nodes = False</vh></v>
 <v t="ekr.20060930111325.3"><vh>@bool scripting-at-commands-nodes = True</vh></v>
@@ -1816,6 +1837,7 @@
 <v t="ekr.20060603215208"></v>
 <v t="ekr.20100904134301.11000"></v>
 <v t="ekr.20081018053140.12"></v>
+<v t="ekr.20131114051702.18852"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -9821,6 +9843,70 @@ action will be used instead.</t>
 <t tx="ekr.20131028155339.18637">Open &amp;CheatSheet.leo</t>
 <t tx="ekr.20131112150804.18737">True: the execute-script command executes the entire body, even if text is selected.</t>
 <t tx="ekr.20131112161153.4420">True: use built-in vim emulation.</t>
+<t tx="ekr.20131114051702.18852"># Important: the headline must be @outline-data tree-abbreviations
+
+# The body should contain a list tree abbreviation names.
+
+# For each item in this list, there should be a child node,
+# the **abbreviation node** whose headline matches the abbreviation name.
+
+# When a tree abbreviation fires, Leo pastes all the descendants of
+# the abbreviation node as the last children of the presently selected node.
+
+abc;;
+xyz;;
+per-commander-plugin;;
+
+</t>
+<t tx="ekr.20131114051702.18853"></t>
+<t tx="ekr.20131114051702.18854">1</t>
+<t tx="ekr.20131114051702.18855">2</t>
+<t tx="ekr.20131114051702.18856"></t>
+<t tx="ekr.20131114051702.18857"></t>
+<t tx="ekr.20131114051702.18858">&lt;&lt; docstring &gt;&gt;
+
+__version__ = '0.0'
+&lt;&lt; version history &gt;&gt;
+
+&lt;&lt; imports &gt;&gt;
+
+@others</t>
+<t tx="ekr.20131114051702.18859"></t>
+<t tx="ekr.20131114051702.18860">'''
+This docstring should be a clear, concise description of
+what the plugin does and how to use it.
+'''
+</t>
+<t tx="ekr.20131114051702.18861">@
+Put notes about each version here.</t>
+<t tx="ekr.20131114051702.18862">import leo.core.leoGlobals as g
+
+# Whatever other imports your plugins uses.
+</t>
+<t tx="ekr.20131114051702.18863">def init ():
+        
+    ok = g.app.gui.guiName() in ('qt','qttabs')
+    if ok:
+        if 1: # Create the commander class *before* the frame is created.
+            g.registerHandler('before-create-leo-frame',onCreate)
+        else: # Create the commander class *after* the frame is created.
+            g.registerHandler('after-create-leo-frame',onCreate)
+        g.plugin_signon(__name__)   
+    return ok
+</t>
+<t tx="ekr.20131114051702.18864">def onCreate (tag, keys):
+    
+    c = keys.get('c')
+    if c:
+        thePluginController = pluginController(c)
+</t>
+<t tx="ekr.20131114051702.18865">class pluginController:
+    
+    @others</t>
+<t tx="ekr.20131114051702.18866">def __init__ (self,c):
+    
+    self.c = c
+    # Warning: hook handlers must use keywords.get('c'), NOT self.c.</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>

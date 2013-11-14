@@ -32,6 +32,7 @@ class ParserBaseClass:
         'openwith','page','settings','shortcuts',
         'buttons','menus', # New in Leo 4.4.4.
         'menuat', 'popup', # New in Leo 4.4.8.
+        'outlinedata', # New in Leo 4.11.1.
         ]
 
     # Keys are settings names, values are (type,value) tuples.
@@ -78,6 +79,7 @@ class ParserBaseClass:
             'popup':        self.doPopup, # New in 4.4.8
             'mode':         self.doMode, # New in 4.4b1.
             'openwith':     self.doOpenWith, # New in 4.4.3 b1.
+            'outlinedata':  self.doOutlineData, # New in 4.11.1.
             'path':         self.doPath,
             'page':         self.doPage,
             'ratio':        self.doRatio,
@@ -238,20 +240,24 @@ class ParserBaseClass:
         aList = d.get(key,[])
         aList.append(c.shortFileName())
         d[key] = aList
-    #@+node:ekr.20071214140900: *4* doData (changed for Leo 4.11.1)
+    #@+node:ekr.20071214140900: *4* doData
     def doData (self,p,kind,name,val):
 
         # New in Leo 4.11: do not strip lines.
         c = self.c
         data = [z for z in g.splitLines(p.b) if not z.startswith('#')]
-        # Special case for tree abbreviations.
-        if name in ('tree-abbreviations',):
-            data = self.doTreeAbbreviationData(p,name,data)
         self.set(p,kind,name,data)
-    #@+node:ekr.20131113080917.17876: *5* doTreeAbbreviationData
-    def doTreeAbbreviationData(self,p,name,data):
+    #@+node:ekr.20131114051702.16545: *4* doOutlineData & helper (new in Leo 4.11.1)
+    def doOutlineData (self,p,kind,name,val):
+
+        # New in Leo 4.11: do not strip lines.
         c = self.c
-        if not p: return
+        data = self.getOutlineDataHelper(p)
+        self.set(p,kind,name,data)
+    #@+node:ekr.20131114051702.16546: *5* getOutlineDataHelper
+    def getOutlineDataHelper(self,p):
+        c = self.c
+        if not p: return None
         old_p = c.p
         c.selectPosition(p)
         try:
@@ -1254,7 +1260,6 @@ class GlobalConfigManager:
         self.use_plugins = False # Required to keep pylint happy.
         self.create_nonexistent_directories = False # Required to keep pylint happy.
 
-        self.treeAbbreviationsDict = {} # Keys are .leo file names, values are inner dicts.
         self.atCommonButtonsList = [] # List of info for common @buttons nodes.
         self.atCommonCommandsList = [] # List of info for common @commands nodes.
         self.atLocalButtonsList = [] # List of positions of @button nodes.
@@ -1535,12 +1540,19 @@ class GlobalConfigManager:
         '''Return the list of tuples (headline,script) for common @command nodes.'''
 
         return g.app.config.atCommonCommandsList
-    #@+node:ekr.20071214140900.1: *4* gcm.getData
+    #@+node:ekr.20071214140900.1: *4* gcm.getData & getOutlineData
     def getData (self,setting):
 
         '''Return a list of non-comment strings in the body text of @data setting.'''
 
         return self.get(setting,"data")
+        
+    def getOutlineData (self,setting):
+
+        '''Return the pastable (xml text) of the entire @outline-data tree.'''
+
+        return self.get(setting,"outlinedata")
+
     #@+node:ekr.20041117093009.1: *4* gcm.getDirectory
     def getDirectory (self,setting):
 
@@ -1800,7 +1812,8 @@ class LocalConfigManager:
     #     getInt (self,setting)
     #     getLanguage (self,setting)
     #     getMenusList (self)
-    #     getOpenWith (self):
+    #     getOutlineData (self)
+    #     getOpenWith (self)
     #     getRatio (self,setting)
     #     getShortcut (self,commandName)
     #     getString (self,setting)
@@ -1918,6 +1931,12 @@ class LocalConfigManager:
         if data and strip_data:
             data = [z.strip() for z in data if z.strip()]
         return data
+    #@+node:ekr.20131114051702.16542: *5* c.config.getOutlineData
+    def getOutlineData (self,setting):
+
+        '''Return the pastable (xml) text of the entire @outline-data tree.'''
+
+        return self.get(setting,"outlinedata")
     #@+node:ekr.20120215072959.12528: *5* c.config.getDirectory
     def getDirectory (self,setting):
 

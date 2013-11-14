@@ -339,20 +339,6 @@ class abbrevCommandsClass (baseEditCommandsClass):
             not g.app.batchMode and not c.gui.isNullGui
         ):
             g.red('Abbreviations %s' % ('on' if c.k.abbrevOn else 'off'))
-    #@+node:ekr.20131113150347.17250: *5* dump_tree_abbrev_d
-    def dump_tree_abbrev_d(self):
-        '''dump g.app.config.treeAbbreviationsDict'''
-        c = self.c
-        d = g.app.config.treeAbbreviationsDict
-        for key in sorted(d.keys()):
-            print(key)
-            d2 = d.get(key)
-            for key2 in sorted(d2.keys()):
-                print('  %s' % key2)
-                d3 = d2.get(key2)
-                for key3 in sorted(d3.keys()):
-                    val = d3.get(key3,'')
-                    print('    %s' % key3)
     #@+node:ekr.20130924110246.13738: *5* init_abbrev
     def init_abbrev(self):
         '''
@@ -448,7 +434,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
         if not c.p:
             if trace and verbose: g.trace('no c.p',fn)
             return
-        tree_s = c.config.getData('tree-abbreviations',strip_data=False)
+        tree_s = c.config.getOutlineData('tree-abbreviations')
         if not tree_s:
             if trace and verbose: g.trace('no tree_s',fn)
             return
