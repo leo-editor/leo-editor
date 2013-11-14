@@ -3,6 +3,7 @@
 .. @@language rest # override the default .txt coloring.
 
 .. @+all
+.. @+node:ekr.20131114051702.23446: ** ** g.createScratchCommander
 .. @+node:ekr.20131106061848.16384: ** * Create github repo
 .. @+node:ekr.20131027064821.18693: ** * Make introductory video about Leo for PyCon2013China
 By mid December.

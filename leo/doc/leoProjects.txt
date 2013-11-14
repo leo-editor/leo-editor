@@ -5531,12 +5531,9 @@ The Command reference was wrong.
 
 https://groups.google.com/forum/#!topic/leo-editor/OSe0_D5tmJQ
 
-To do:
-- (Maybe) Support template scanning after the substitution.
-
-
 What I did:
-
+    
+- Added (complex) code to support scanning after tree substitutions.
 - Added support for @data tree-abbreviations.
     - The body contains a list of the abbreviation names.
     - The children should contain nodes matching each abbreviation name.

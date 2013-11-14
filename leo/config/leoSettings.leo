@@ -9872,6 +9872,7 @@ __version__ = '0.0'
 
 @others</t>
 <t tx="ekr.20131114051702.18859">&lt;&lt; docstring &gt;&gt;
+# From leoSettings.leo.
 @language python
 @tabwidth -4
 __version__ = '0.0'
