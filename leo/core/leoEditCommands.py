@@ -431,89 +431,51 @@ class abbrevCommandsClass (baseEditCommandsClass):
             c.config.getBool('scripting-abbreviations'))
         self.subst_env = c.config.getData('abbreviations-subst-env',strip_data=False)
         
-    #@+node:ekr.20131113080917.17866: *5* init_tree_abbrev & helpers (new)
-    def init_tree_abbrev(self):
-        '''Init tree-valued abbreviations from @data tree-abbreviations nodes.'''
-        self.tree_abbrevs_d = self.make_tree_abbrev_d()
-    #@+node:ekr.20131113150347.17251: *6* create_tree_dict_lists
-    def create_tree_dict_lists(self):
-        '''Create 3 lists, containing tree-abbreviation dicts for each scope.'''
-        trace = False
+    #@+node:ekr.20131113150347.17255: *5* init_tree_abbrev
+    def init_tree_abbrev (self):
+        '''Init tree_abbrevs_d from @data tree-abbreviations nodes.'''
+        trace = False ; verbose = True
         c = self.c
-        local_list,my_list,settings_list = [],[],[]
-        d = g.app.config.treeAbbreviationsDict
-        for key in sorted(d.keys()):
-            d2 = d.get(key)
-            fn = key.lower()
-            if fn.endswith('myleosettings.leo'):
-                my_list.append(d2)
-            elif fn.endswith('leosettings.leo'):
-                settings_list.append(d2)
-            elif fn.endswith('.leo'):
-                local_list.append(d2)
-            else:
-                g.trace('unknown settings file: %s' % fn)
-        # Order matters: last abbreviation wins.
-        if trace: g.trace(len(local_list),len(my_list),len(settings_list),
-            c.shortFileName())
-        return local_list,my_list,settings_list
-    #@+node:ekr.20131113150347.17252: *6* make_tree_abbrev_d
-    def make_tree_abbrev_d(self):
-        '''Make the dict that will become the tree_abbrev_d.'''
-        d = {}
-            # Keys are abbreviation names; values are pastable (xml) strings.
-        # Order matters: last abbreviation wins.
-        for aList in self.create_tree_dict_lists():
-            for d2 in aList:
-                d3 = d2.get('tree-abbreviations')
-                if d3:
-                    body = d3.get('body')
-                    tree_s = d3.get('tree_s')
-                    if body is None or tree_s is None:
-                        g.trace('bad tree-abbreviations dict: %s' % d3)
-                    else:
-                        self.set_tree_abbrev(d,body,tree_s)
-        return d
-    #@+node:ekr.20131113150347.17255: *6* set_tree_abbrev
-    def set_tree_abbrev(self,d,body,tree_s):
-        '''
-        Create an entry in d for each abbrev in body.
-        tree_s is xml representation of the corresponding tree.
-        '''
-        trace = False ; verbose = False
-        c = self.c
-        if trace and verbose:
-            g.trace('body...\n%s\n\ntree_s...\n%s' % (body,tree_s))
+        fn = c.shortFileName()
+        d = {} # Keys are abbreviation names; Values are (xml) strings.
         # Careful. This happens early in startup.
         root = c.rootPosition()
         if not root:
-            if trace and verbose: g.trace('no root')
+            # if trace and verbose: g.trace('no root',fn)
             return
         if not c.p:
             c.selectPosition(root)
         if not c.p:
-            if trace and verbose: g.trace('no c.p')
+            if trace and verbose: g.trace('no c.p',fn)
             return
+        tree_s = c.config.getData('tree-abbreviations',strip_data=False)
+        if not tree_s:
+            if trace and verbose: g.trace('no tree_s',fn)
+            return
+        if trace and verbose: g.trace(fn,len(tree_s or ''))
         # Expand the tree so we can traverse it.
         if not c.canPasteOutline(tree_s):
-            if trace and verbose: g.trace('bad copied outline')
+            if trace and verbose: g.trace('bad copied outline',fn)
             return
         c.fileCommands.leo_file_encoding='utf-8'
         old_p = c.p.copy()
         p = c.pasteOutline(s=tree_s,redrawFlag=False,undoFlag=False)
         if not p: return g.trace('no pasted node')
-        for s in g.splitLines(body):
+        for s in g.splitLines(p.b):
             abbrev_name = s.strip()
             for child in p.children():
                 if child.h.strip() == abbrev_name:
                     c.selectPosition(child)
                     abbrev_s = c.fileCommands.putLeoOutline()
-                    if trace and verbose: g.trace('define',abbrev_name,'\n\n',abbrev_s)
+                    if trace and verbose:
+                        g.trace('define',abbrev_name,len(abbrev_s))
+                        # g.trace('define',abbrev_name,'\n\n',abbrev_s)
                     d[abbrev_name] = abbrev_s
         p.doDelete(newNode=old_p)
         c.selectPosition(old_p)
         if trace and (d or verbose):
-            g.trace(c.shortFileName(),sorted(d.keys()))
+            g.trace(fn,sorted(d.keys()))
+        self.tree_abbrevs_d = d
     #@+node:ekr.20050920084036.15: *4* getPublicCommands & getStateCommands
     def getPublicCommands (self):
 
@@ -641,7 +603,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
         return True
     #@+node:ekr.20131113150347.17258: *5* expand_tree
     def expand_tree(self,tree_s,word):
-        '''Paste the tree representation of tree_s as children of c.p.'''
+        '''Paste tree_s as children of c.p.'''
         trace = False and not g.unitTesting
         c,u = self.c,self.c.undoer
         if not c.canPasteOutline(tree_s):

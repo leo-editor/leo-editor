@@ -5536,11 +5536,11 @@ What I did:
     - The children should contain nodes matching each abbreviation name.
         The children of *those* nodes are pasted as the last children
         of the present node when the tree abbreviation fires.
-- Added ParserBaseClass.doTreeAbbreviationData, called from doData.
+- Added ParserBaseClass.doTreeAbbreviationData, called from PBC.doData.
 - Added abbrevClass.init_tree_abbrev and helpers.
-- Refactored and changed expandAbbrev: added expand_text and expand_tree.
-- Added some flags to c.pasteOutline and c.promote, to disable unwanted
-  actions. when expanding tree abbreviations.
+- Refactored and changed expandAbbrev: added ac.expand_text and ac.expand_tree.
+- Added some flags to c.pasteOutline and c.promote,
+  These flags disable unwanted actions when expanding tree abbreviations.
 
 @language python
 #@-all

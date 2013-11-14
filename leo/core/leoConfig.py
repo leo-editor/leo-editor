@@ -244,36 +244,26 @@ class ParserBaseClass:
         # New in Leo 4.11: do not strip lines.
         c = self.c
         data = [z for z in g.splitLines(p.b) if not z.startswith('#')]
-        self.set(p,kind,name,data)
         # Special case for tree abbreviations.
         if name in ('tree-abbreviations',):
-            self.doTreeAbbreviationData(p,name,data)
+            data = self.doTreeAbbreviationData(p,name,data)
+        self.set(p,kind,name,data)
     #@+node:ekr.20131113080917.17876: *5* doTreeAbbreviationData
     def doTreeAbbreviationData(self,p,name,data):
         c = self.c
-        fn = self.c.mFileName
-        if not fn: return
         if not p: return
-        # g.trace(name,g.shortFileName(fn))
-        d = g.app.config.treeAbbreviationsDict
-        if d is None: return
         old_p = c.p
         c.selectPosition(p)
         try:
-            # Copy then entire tree to s.
+            # Copy the entire tree to s.
             c.fileCommands.leo_file_encoding='utf-8'
             s = c.fileCommands.putLeoOutline()
             s = g.toUnicode(s,encoding='utf-8')
-            d2 = d.get(fn,{})
-            d3 = d2.get(name,{})
-            d3['body'] = ''.join(data)
-            d3['tree_s'] = s
-            d2[name] = d3
-            d[fn] = d2
         except Exception:
             g.es_exception()
         finally:
             if old_p: c.selectPosition(old_p)
+        return s
     #@+node:ekr.20041120094940.3: *4* doDirectory & doPath
     def doDirectory (self,p,kind,name,val):
 
