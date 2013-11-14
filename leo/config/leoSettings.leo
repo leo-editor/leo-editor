@@ -9847,7 +9847,7 @@ action will be used instead.</t>
 
 # The body should contain a list tree abbreviation names.
 
-# For each item in this list, there should be a child node,
+# For each abbreviation name, there should be corresponding child node,
 # the **abbreviation node** whose headline matches the abbreviation name.
 
 # When a tree abbreviation fires, Leo pastes all the descendants of
