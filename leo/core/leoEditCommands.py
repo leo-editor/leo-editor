@@ -316,7 +316,8 @@ class abbrevCommandsClass (baseEditCommandsClass):
         baseEditCommandsClass.__init__(self,c) # init the base class.
 
         # Set local ivars.
-        self.abbrevs ={} # Keys are names, values are (abbrev,tag).
+        self.abbrevs = {} # Keys are names, values are (abbrev,tag).
+        self.tree_abbrevs_d = {} # Keys are names, values are (tree,tag).
         self.daRanges = []
         self.event = None
         self.dynaregex = re.compile( # For dynamic abbreviations
@@ -332,18 +333,32 @@ class abbrevCommandsClass (baseEditCommandsClass):
         baseEditCommandsClass.finishCreate(self)
         self.init_settings()
         self.init_abbrev()
+        self.init_tree_abbrev()
         self.init_env()
         if (not g.app.initing and not g.unitTesting and
             not g.app.batchMode and not c.gui.isNullGui
         ):
             g.red('Abbreviations %s' % ('on' if c.k.abbrevOn else 'off'))
+    #@+node:ekr.20131113150347.17250: *5* dump_tree_abbrev_d
+    def dump_tree_abbrev_d(self):
+        '''dump g.app.config.treeAbbreviationsDict'''
+        c = self.c
+        d = g.app.config.treeAbbreviationsDict
+        for key in sorted(d.keys()):
+            print(key)
+            d2 = d.get(key)
+            for key2 in sorted(d2.keys()):
+                print('  %s' % key2)
+                d3 = d2.get(key2)
+                for key3 in sorted(d3.keys()):
+                    val = d3.get(key3,'')
+                    print('    %s' % key3)
     #@+node:ekr.20130924110246.13738: *5* init_abbrev
     def init_abbrev(self):
-        
-        '''Init the user abbreviations from @data global-abbreviations
+        '''
+        Init the user abbreviations from @data global-abbreviations
         and @data abbreviations nodes.
         '''
-
         c = self.c
         table = (
             ('global-abbreviations','global'),
@@ -371,9 +386,10 @@ class abbrevCommandsClass (baseEditCommandsClass):
                 self.addAbbrevHelper(s,tag)
     #@+node:ekr.20130924110246.13748: *5* init_env
     def init_env(self):
-        
-        '''Init c.abbrev_subst_env by executing the contents of the
-        @data abbreviations-subst-env node.'''
+        '''
+        Init c.abbrev_subst_env by executing the contents of the
+        @data abbreviations-subst-env node.
+        '''
         
         c = self.c
         if c.abbrev_place_start and self.enabled:
@@ -415,7 +431,89 @@ class abbrevCommandsClass (baseEditCommandsClass):
             c.config.getBool('scripting-abbreviations'))
         self.subst_env = c.config.getData('abbreviations-subst-env',strip_data=False)
         
-        
+    #@+node:ekr.20131113080917.17866: *5* init_tree_abbrev & helpers (new)
+    def init_tree_abbrev(self):
+        '''Init tree-valued abbreviations from @data tree-abbreviations nodes.'''
+        self.tree_abbrevs_d = self.make_tree_abbrev_d()
+    #@+node:ekr.20131113150347.17251: *6* create_tree_dict_lists
+    def create_tree_dict_lists(self):
+        '''Create 3 lists, containing tree-abbreviation dicts for each scope.'''
+        trace = False
+        c = self.c
+        local_list,my_list,settings_list = [],[],[]
+        d = g.app.config.treeAbbreviationsDict
+        for key in sorted(d.keys()):
+            d2 = d.get(key)
+            fn = key.lower()
+            if fn.endswith('myleosettings.leo'):
+                my_list.append(d2)
+            elif fn.endswith('leosettings.leo'):
+                settings_list.append(d2)
+            elif fn.endswith('.leo'):
+                local_list.append(d2)
+            else:
+                g.trace('unknown settings file: %s' % fn)
+        # Order matters: last abbreviation wins.
+        if trace: g.trace(len(local_list),len(my_list),len(settings_list),
+            c.shortFileName())
+        return local_list,my_list,settings_list
+    #@+node:ekr.20131113150347.17252: *6* make_tree_abbrev_d
+    def make_tree_abbrev_d(self):
+        '''Make the dict that will become the tree_abbrev_d.'''
+        d = {}
+            # Keys are abbreviation names; values are pastable (xml) strings.
+        # Order matters: last abbreviation wins.
+        for aList in self.create_tree_dict_lists():
+            for d2 in aList:
+                d3 = d2.get('tree-abbreviations')
+                if d3:
+                    body = d3.get('body')
+                    tree_s = d3.get('tree_s')
+                    if body is None or tree_s is None:
+                        g.trace('bad tree-abbreviations dict: %s' % d3)
+                    else:
+                        self.set_tree_abbrev(d,body,tree_s)
+        return d
+    #@+node:ekr.20131113150347.17255: *6* set_tree_abbrev
+    def set_tree_abbrev(self,d,body,tree_s):
+        '''
+        Create an entry in d for each abbrev in body.
+        tree_s is xml representation of the corresponding tree.
+        '''
+        trace = False ; verbose = False
+        c = self.c
+        if trace and verbose:
+            g.trace('body...\n%s\n\ntree_s...\n%s' % (body,tree_s))
+        # Careful. This happens early in startup.
+        root = c.rootPosition()
+        if not root:
+            if trace and verbose: g.trace('no root')
+            return
+        if not c.p:
+            c.selectPosition(root)
+        if not c.p:
+            if trace and verbose: g.trace('no c.p')
+            return
+        # Expand the tree so we can traverse it.
+        if not c.canPasteOutline(tree_s):
+            if trace and verbose: g.trace('bad copied outline')
+            return
+        c.fileCommands.leo_file_encoding='utf-8'
+        old_p = c.p.copy()
+        p = c.pasteOutline(s=tree_s,redrawFlag=False,undoFlag=False)
+        if not p: return g.trace('no pasted node')
+        for s in g.splitLines(body):
+            abbrev_name = s.strip()
+            for child in p.children():
+                if child.h.strip() == abbrev_name:
+                    c.selectPosition(child)
+                    abbrev_s = c.fileCommands.putLeoOutline()
+                    if trace and verbose: g.trace('define',abbrev_name,'\n\n',abbrev_s)
+                    d[abbrev_name] = abbrev_s
+        p.doDelete(newNode=old_p)
+        c.selectPosition(old_p)
+        if trace and (d or verbose):
+            g.trace(c.shortFileName(),sorted(d.keys()))
     #@+node:ekr.20050920084036.15: *4* getPublicCommands & getStateCommands
     def getPublicCommands (self):
 
@@ -438,16 +536,16 @@ class abbrevCommandsClass (baseEditCommandsClass):
             'abbrev-write':             self.writeAbbreviations,
         }
     #@+node:ekr.20100901080826.6155: *3*  Entry point
-    #@+node:ekr.20050920084036.27: *4* expandAbbrev
+    #@+node:ekr.20050920084036.27: *4* expandAbbrev & helpers
     def expandAbbrev (self,event,stroke):
-
-        '''Not a command.  Called from k.masterCommand to expand
+        '''
+        Not a command.  Called from k.masterCommand to expand
         abbreviations in event.widget.
 
         Words start with '@'.
         '''
-
         trace = False and not g.unitTesting
+        verbose = False
         c = self.c
         ch = event and event.char or ''
         w = self.editWidget(event,forceFocus=False)
@@ -455,7 +553,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
         if w.hasSelection(): return False
         assert g.isStrokeOrNone(stroke)
         if stroke in ('BackSpace','Delete'):
-            if trace: g.trace(stroke)
+            if trace and verbose: g.trace(stroke)
             return False
         d = {'Return':'\n','Tab':'\t','space':' ','underscore':'_'}
         if stroke:
@@ -470,19 +568,21 @@ class abbrevCommandsClass (baseEditCommandsClass):
                     ch = event and event.char or ''
         else:
             ch = event.char
-        if trace: g.trace('ch',repr(ch),'stroke',repr(stroke))
-
+        if trace and verbose: g.trace('ch',repr(ch),'stroke',repr(stroke))
         # New code allows *any* sequence longer than 1 to be an abbreviation.
         # Any whitespace stops the search.
+        d = self.tree_abbrevs_d
         s = w.getAllText()
         j = w.getInsertPoint()
         i = j-1
         while len(s) > i >= 0 and s[i] not in ' \t\n':
             prefix = s[i:j]
             word = prefix+ch
-            val,tag = self.abbrevs.get(word,(None,None))
-            if trace: g.trace(repr(word),val,tag)
+            val,tag = d.get(word),'tree'
+            if not val:
+                val,tag = self.abbrevs.get(word,(None,None))
             if val:
+                if trace: g.trace(repr(word),val,tag)
                 # Require a word match if the abbreviation is itself a word.
                 if ch in ' \t\n': word = word.rstrip()
                 if word.isalnum() and word[0].isalpha():
@@ -495,22 +595,27 @@ class abbrevCommandsClass (baseEditCommandsClass):
             else: i -= 1
         else:
             return False
-
+        if tag == 'tree':
+            self.expand_tree(val,word)
+        else:
+            self.expand_text(w,i,j,val,word)
+        return True
+        
+    #@+node:ekr.20131113150347.17257: *5* expand_text
+    def expand_text(self,w,i,j,val,word):
+        '''Make a text expansion at location i,j of widget w.'''
+        trace = False and not g.unitTesting
+        c = self.c
         if c.abbrev_subst_start:
-            
             while c.abbrev_subst_start in val:
-                
                 prefix, rest = val.split(c.abbrev_subst_start, 1)
                 content = rest.split(c.abbrev_subst_end, 1)
                 if len(content) != 2:
                     break
                 content, rest = content
                 c.abbrev_subst_env['_abr'] = word
-
                 exec(content, c.abbrev_subst_env, c.abbrev_subst_env)
-
                 val = "%s%s%s" % (prefix, c.abbrev_subst_env['x'], rest)
-                
         if val == "__NEXT_PLACEHOLDER":
             # user explicitly called for next placeholder in an abbrev.
             # inserted previously
@@ -518,15 +623,13 @@ class abbrevCommandsClass (baseEditCommandsClass):
             do_placeholder = True
         else:
             do_placeholder = False 
-
         if trace: g.trace('**inserting',repr(val))
         oldSel = j,j
         c.frame.body.onBodyChanged(undoType='Typing',oldSel=oldSel)
         if i != j: w.delete(i,j)
         w.insert(i,val)
-        c.frame.body.forceFullRecolor() # 2011/10/21
+        c.frame.body.forceFullRecolor()
         c.frame.body.onBodyChanged(undoType='Abbreviation',oldSel=oldSel)
-
         if (do_placeholder or
             c.abbrev_place_start and c.abbrev_place_start in val):
             new_text, start, end = self.next_place(c.frame.body.getAllText(), offset=i)
@@ -535,8 +638,29 @@ class abbrevCommandsClass (baseEditCommandsClass):
                 # setInsertPoint() clears selection raise, so must come first
                 c.frame.body.setInsertPoint(end)
                 c.frame.body.setSelectionRange(start, end)
-            
         return True
+    #@+node:ekr.20131113150347.17258: *5* expand_tree
+    def expand_tree(self,tree_s,word):
+        '''Paste the tree representation of tree_s as children of c.p.'''
+        trace = False and not g.unitTesting
+        c,u = self.c,self.c.undoer
+        if not c.canPasteOutline(tree_s):
+            return g.trace('bad copied outline: %s' % tree_s)
+        if trace: g.trace(word,tree_s[:20])
+        c.fileCommands.leo_file_encoding='utf-8'
+        old_p = c.p.copy()
+        bunch = c.undoer.beforeChangeTree(old_p)
+        p = c.pasteOutline(s=tree_s,redrawFlag=False,undoFlag=False)
+        if not p:
+            return g.trace('paste failed')
+        # Promote the name node, then delete it.
+        p.moveToLastChildOf(old_p)
+        c.selectPosition(p)
+        c.promote(undoFlag=False)
+        p.doDelete()
+        c.undoer.afterChangeTree(old_p,'tree-abbreviation',bunch)
+        c.selectPosition(old_p)
+        c.redraw()
     #@+node:tbrown.20130326094709.25669: *4* next_place
     def next_place(self, text, offset=0):
         """Given text containing a placeholder like <|block01|>,
