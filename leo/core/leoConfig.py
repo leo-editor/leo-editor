@@ -238,12 +238,42 @@ class ParserBaseClass:
         aList = d.get(key,[])
         aList.append(c.shortFileName())
         d[key] = aList
-    #@+node:ekr.20071214140900: *4* doData
+    #@+node:ekr.20071214140900: *4* doData (changed for Leo 4.11.1)
     def doData (self,p,kind,name,val):
 
         # New in Leo 4.11: do not strip lines.
+        c = self.c
         data = [z for z in g.splitLines(p.b) if not z.startswith('#')]
         self.set(p,kind,name,data)
+        # Special case for tree abbreviations.
+        if name in ('tree-abbreviations',):
+            self.doTreeAbbreviationData(p,name,data)
+    #@+node:ekr.20131113080917.17876: *5* doTreeAbbreviationData
+    def doTreeAbbreviationData(self,p,name,data):
+        c = self.c
+        fn = self.c.mFileName
+        if not fn: return
+        if not p: return
+        # g.trace(name,g.shortFileName(fn))
+        d = g.app.config.treeAbbreviationsDict
+        if d is None: return
+        old_p = c.p
+        c.selectPosition(p)
+        try:
+            # Copy then entire tree to s.
+            c.fileCommands.leo_file_encoding='utf-8'
+            s = c.fileCommands.putLeoOutline()
+            s = g.toUnicode(s,encoding='utf-8')
+            d2 = d.get(fn,{})
+            d3 = d2.get(name,{})
+            d3['body'] = ''.join(data)
+            d3['tree_s'] = s
+            d2[name] = d3
+            d[fn] = d2
+        except Exception:
+            g.es_exception()
+        finally:
+            if old_p: c.selectPosition(old_p)
     #@+node:ekr.20041120094940.3: *4* doDirectory & doPath
     def doDirectory (self,p,kind,name,val):
 
@@ -1234,6 +1264,7 @@ class GlobalConfigManager:
         self.use_plugins = False # Required to keep pylint happy.
         self.create_nonexistent_directories = False # Required to keep pylint happy.
 
+        self.treeAbbreviationsDict = {} # Keys are .leo file names, values are inner dicts.
         self.atCommonButtonsList = [] # List of info for common @buttons nodes.
         self.atCommonCommandsList = [] # List of info for common @commands nodes.
         self.atLocalButtonsList = [] # List of positions of @button nodes.

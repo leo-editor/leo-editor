@@ -4170,65 +4170,55 @@ class Commands (object):
     #@+node:ekr.20031218072017.1551: *7* c.pasteOutline
     # To cut and paste between apps, just copy into an empty body first, then copy to Leo's clipboard.
 
-    def pasteOutline(self,event=None,reassignIndices=True):
-
-        '''Paste an outline into the present outline from the clipboard.
-        Nodes do *not* retain their original identify.'''
-
-        # trace = False and not g.unitTesting
+    def pasteOutline(self,event=None,reassignIndices=True,redrawFlag=True,s=None,undoFlag=True):
+        '''
+        Paste an outline into the present outline from the clipboard.
+        Nodes do *not* retain their original identify.
+        '''
         c = self
-        s = g.app.gui.getTextFromClipboard()
+        if s is None:
+            s = g.app.gui.getTextFromClipboard()
         pasteAsClone = not reassignIndices
         undoType = g.choose(reassignIndices,'Paste Node','Paste As Clone')
         c.endEditing()
-
         if not s or not c.canPasteOutline(s):
             return # This should never happen.
-
         isLeo = g.match(s,0,g.app.prolog_prefix_string)
-
         vnodeInfoDict = c.computeVnodeInfoDict() if pasteAsClone else {}
-
         # create a *position* to be pasted.
         if isLeo:
             pasted = c.fileCommands.getLeoOutlineFromClipboard(s,reassignIndices)
         else:
             pasted = c.importCommands.convertMoreStringToOutlineAfter(s,c.p)
-
         if not pasted: return None
-
         if pasteAsClone:
             copiedBunchList = c.computeCopiedBunchList(pasted,vnodeInfoDict)
         else:
             copiedBunchList = []
-
-        undoData = c.undoer.beforeInsertNode(c.p,
-            pasteAsClone=pasteAsClone,copiedBunchList=copiedBunchList)
-
+        if undoFlag:
+            undoData = c.undoer.beforeInsertNode(c.p,
+                pasteAsClone=pasteAsClone,copiedBunchList=copiedBunchList)
         c.validateOutline()
         c.selectPosition(pasted)
         pasted.setDirty()
         c.setChanged(True)
-
         # paste as first child if back is expanded.
         back = pasted.back()
-
         if back and back.hasChildren() and back.isExpanded():
             # 2011/06/21: fixed hanger: test back.hasChildren().
             pasted.moveToNthChildOf(back,0)
-
         if pasteAsClone:
             # Set dirty bits for ancestors of *all* pasted nodes.
             # Note: the setDescendentsDirty flag does not do what we want.
             for p in pasted.self_and_subtree():
                 p.setAllAncestorAtFileNodesDirty(
                     setDescendentsDirty=False)
-
-        c.undoer.afterInsertNode(pasted,undoType,undoData)
-        c.redraw(pasted)
-        c.recolor()
-
-        return pasted # For unit testing.
+        if undoFlag:
+            c.undoer.afterInsertNode(pasted,undoType,undoData)
+        if redrawFlag:
+            c.redraw(pasted)
+            c.recolor()
+        return pasted
     #@+node:ekr.20050418084539: *8* c.computeVnodeInfoDict
     #@+at
     # 
@@ -6462,10 +6452,8 @@ class Commands (object):
         c.redraw(p,setFocus=True)
         c.updateSyntaxColorer(p) # Moving can change syntax coloring.
     #@+node:ekr.20031218072017.1774: *6* c.promote
-    def promote (self,event=None):
-
+    def promote (self,event=None,undoFlag=True):
         '''Make all children of the selected nodes siblings of the selected node.'''
-
         c = self ; u = c.undoer ; p = c.p
         if not p or not p.hasChildren():
             c.treeFocusHelper()
@@ -6483,20 +6471,19 @@ class Commands (object):
         parent_v.children.extend(z[n:])
         # Remove v's children.
         p.v.children = []
-
         # Adjust the parent links in the moved children.
         # There is no need to adjust descendant links.
         for child in children:
             child.parents.remove(p.v)
             child.parents.append(parent_v)
-
         c.setChanged(True)
-        if not inAtIgnoreRange and isAtIgnoreNode:
-            # The promoted nodes have just become newly unignored.
-            dirtyVnodeList = p.setDirty() # Mark descendent @thin nodes dirty.
-        else: # No need to mark descendents dirty.
-            dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-        u.afterPromote(p,children,dirtyVnodeList)
+        if undoFlag:
+            if not inAtIgnoreRange and isAtIgnoreNode:
+                # The promoted nodes have just become newly unignored.
+                dirtyVnodeList = p.setDirty() # Mark descendent @thin nodes dirty.
+            else: # No need to mark descendents dirty.
+                dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+            u.afterPromote(p,children,dirtyVnodeList)
         c.redraw(p,setFocus=True)
         c.updateSyntaxColorer(p) # Moving can change syntax coloring.
     #@+node:ekr.20071213185710: *6* c.toggleSparseMove

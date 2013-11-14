@@ -627,22 +627,21 @@ class baseFileCommands:
             c.loading = False # reenable c.changed
     #@+node:ekr.20031218072017.1559: *4* fc.getLeoOutlineFromClipboard & helpers
     def getLeoOutlineFromClipboard (self,s,reassignIndices=True):
-
         '''Read a Leo outline from string s in clipboard format.'''
-
         trace = False and not g.unitTesting
         verbose = False
-        c = self.c ; current = c.p ; check = not reassignIndices
+        c = self.c
+        current = c.p
+        if not current:
+            g.trace('no c.p')
+            return None
+        check = not reassignIndices
         checkAfterRead = False or c.config.getBool('check_outline_after_read')
-
-        self.initReadIvars() # 2010/02/05
-
+        self.initReadIvars()
         # Save the hidden root's children.
         children = c.hiddenRootNode.children
-
         # 2011/12/10: never recreate the gnxDict.
             # self.gnxDict = {}
-
         # 2011/12/12: save and clear gnxDict.
         # This ensures that new indices will be used for all nodes.
         if reassignIndices:
@@ -654,13 +653,11 @@ class baseFileCommands:
             for v in c.all_unique_nodes():
                 index = x.toString(v.fileIndex)
                 self.gnxDict[index] = v
-
         self.usingClipboard = True
         try:
             # This encoding must match the encoding used in putLeoOutline.
             s = g.toEncodedString(s,self.leo_file_encoding,reportErrors=True)
             if trace: g.trace(s)
-
             # readSaxFile modifies the hidden root.
             v = self.readSaxFile(
                 theFile=None, fileName='<clipboard>',
@@ -670,15 +667,11 @@ class baseFileCommands:
                 return g.es("the clipboard is not valid ",color="blue")
         finally:
             self.usingClipboard = False
-
         # Restore the hidden root's children
         c.hiddenRootNode.children = children
-
         # Unlink v from the hidden root.
         v.parents.remove(c.hiddenRootNode)
-
         p = leoNodes.position(v)
-
         # Important: we must not adjust links when linking v
         # into the outline.  The read code has already done that.
         if current.hasChildren() and current.isExpanded():
@@ -689,7 +682,6 @@ class baseFileCommands:
             if check and not self.checkPaste(current.parent(),p):
                 return None
             p._linkAfter(current,adjust=False)
-
         if reassignIndices:
             self.gnxDict = oldGnxDict
                 # 2011/12/12: restore gnxDict.
@@ -697,15 +689,12 @@ class baseFileCommands:
                 v = p2.v
                 v.fileIndex = index = g.app.nodeIndices.getNewIndex()
                 self.gnxDict[index] = v
-
         if trace and verbose:
             g.trace('**** dumping outline...')
             c.dumpOutline()
-
         if checkAfterRead:
             g.blue('checking outline after paste')
             c.checkOutline(event=None,verbose=True,unittest=False,full=True)
-
         c.selectPosition(p)
         self.initReadIvars() # 2010/02/05
         return p

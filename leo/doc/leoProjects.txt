@@ -12,278 +12,188 @@ To do:
 - Simulate a box cursor by always selecting one character.
 
 @language python
-#@+node:ekr.20131109170017.46980: *3* vim settings
-@nocolor
 
-For testing, these are loaded "by hand" so that reloading this file is not
-needed.
-#@+node:ekr.20131109170017.46978: *4* @@@data vim-control-character-commands
-# Not yet...
+https://groups.google.com/forum/#!topic/leo-editor/OSe0_D5tmJQ
 
-    <BS>        delete the character in front of the cursor
-N   <Del>       delete N characters under and after the cursor
-    <Del>       delete the character under the cursor
-    <Del>       while entering a count: delete last character
-    <Down>      recall newer command-line that starts with current command
-    <Esc>       abandon command-line (if 'wildchar' is <Esc>, type it twice)
-    <Left>      (motion) cursor left
-    <Right>     (motion) cursor right
-    <S-Down>    recall newer command-line from history
-    <S-Left>    (motion) cursor one word left
-    <S-Right>   (motion) cursor one word right
-    <S-Up>      recall older command-line from history
-    <Up>        recall older command-line that starts with current command
+http://stackoverflow.com/questions/7325052/can-someone-explain-to-me-why-the-dot-command-is-so-useful-in-vim
+#@+node:ekr.20100113075303.6270: *3* Vim problems (from TL)
+# None of these is easily solvable in Leo's present environment.
+#@+node:ekr.20100112051224.6239: *4* Displaying mode help
+The "--> mode-help" command has the following issues related to the
+display of the "Help" tab:
 
-N   CTRL-^                  Edit alternate file N (equivalent to ":e #N").
-N   CTRL-A                  add N to the number at or after the cursor
-N   CTRL-B                  window N pages Backwards (upwards)
-    CTRL-B                  (motion?) cursor to beginning of command-line
-    CTRL-BREAK              MS-DOS: during searches: interrupt the search
-    CTRL-C                  during searches: interrupt the search
-N   CTRL-D                  window N lines Downwards (default: 1/2 window)
-N   CTRL-E                  window N lines downwards (default: 1)
-    CTRL-E                  (motion?) cursor to end of command-line
-N   CTRL-F                  (motion) window N pages Forwards (downwards)
-    CTRL-G                  show current file name (with path) and cursor position
-N   CTRL-I                  (motion) go to Nth newer position in jump list
-    CTRL-K {char1} {char2}  enter digraph
-    CTRL-L                  Clear and redraw the screen.
-N   CTRL-O                  (motion) go to Nth older position in jump list
-N   CTRL-R                  redo last N undone changes
-    CTRL-R <0-9a-z"%:->     insert contents of register <0-9a-z"%:->
-N   CTRL-T                  (motion) Jump back from Nth older tag in tag list
-N   CTRL-U                  window N lines Upwards (default: 1/2 window)
-    CTRL-U                  remove all characters
-    CTRL-V                  highlight blockwise or stop highlighting
-    CTRL-V                  start highlighting blockwise   }  highlighted text
-    CTRL-V {char}           insert {char} literally
-    CTRL-V {number}         enter decimal value of character (up to three digits)
-    CTRL-W                  delete the word in front of the cursor
-    CTRL-W +                Increase current window height
-    CTRL-W -                Decrease current window height
-    CTRL-W =                Make all windows equal height
-    CTRL-W CTRL-W           Move cursor to window below (wrap)
-    CTRL-W CTRL-^           Split window and edit alternate file
-    CTRL-W R                Rotate windows upwards
-    CTRL-W W                Move cursor to window above (wrap)
-    CTRL-W ]                Split window and jump to tag under cursor
-    CTRL-W _                Set current window height (default: very high)
-    CTRL-W b                Move cursor to bottom window
-    CTRL-W c  or :cl[ose]   Make buffer hidden and close window
-    CTRL-W f                Split window and edit file name under the cursor
-    CTRL-W j                Move cursor to window below
-    CTRL-W k                Move cursor to window above
-    CTRL-W n  or :new       Create new empty window
-    CTRL-W o  or :on[ly]    Make current window only one on the screen
-    CTRL-W p                Move cursor to previous active window
-    CTRL-W q  or :q[uit]    Quit editing and close window
-    CTRL-W r                Rotate windows downwards
-    CTRL-W s                Split window into two parts
-    CTRL-W t                Move cursor to top window
-    CTRL-W x                Exchange current window with next one
-N   CTRL-X                  subtract N from the number at or after the cursor
-N   CTRL-Y                  window N lines upwards (default: 1)
-    CTRL-Z                  Same as ":stop!"
-    CTRL-]                  Jump to the tag under cursor, unless changes have been made
-#@+node:ekr.20131109170017.41921: *4* @data vim-command-tails
-char F
-char T
-char f
-char r
-char t
-letter m
-letter q
-motion <
-motion >
-motion c
-motion d
-motion g
-motion y
-pattern /
-pattern ?
-register @
-#@+node:ekr.20131109170017.41922: *4* @data vim-commands
-# http://tnerual.eriogerg.free.fr/vimqrc.html
-vim_0 0
-vim_tilda ~
-vim_plus +
-vim_underscore _
-vim_minus -
-vim_comma ,
-vim_dot .
-vim_semicolon ;
-vim_lparen (
-vim_rparen )
-vim_lcurly {
-vim_rcurly }
-vim_vertical |
-vim_backtick `
-vim_dollar $
-vim_caret ^
-vim_percent %
-vim_langle <
-vim_langle <<
-vim_rangle >
-vim_rangle >>
-vim_pound #
-vim_star *
-vim_slash /\\n
-vim_slash /
-vim_question ?\\n
-vim_question ?
-vim_at @
-vim_at @@
-vim_dquote "
-vim_lsquare [#
-vim_lsquare [(
-vim_lsquare [*
-vim_lsquare [[
-vim_lsquare []
-vim_lsquare [p
-vim_lsquare [{
-vim_rsquare ]#
-vim_rsquare ])
-vim_rsquare ]*
-vim_rsquare ][
-vim_rsquare ]]
-vim_rsquare ]p
-vim_rsquare ]}
-vim_A A
-vim_B B
-vim_C C
-vim_D D
-vim_E E
-vim_F F
-vim_G G
-vim_H H
-vim_I I
-vim_J J
-vim_K K
-vim_M M
-vim_L L
-vim_N N
-vim_O O
-vim_P P
-vim_R R
-vim_S S
-vim_T T
-vim_U U
-vim_V V
-vim_W W
-vim_X X
-vim_Y Y
-vim_Z ZQ
-vim_Z ZZ
-vim_a a
-vim_b b
-vim_c c
-vim_d dd
-vim_d d
-vim_g g~
-vim_g g^
-vim_g g#
-vim_g g$
-vim_g g*
-vim_g g0
-vim_g gD
-vim_g gE
-vim_g gI
-vim_g gU
-vim_g ga
-vim_g gd
-vim_g ge
-vim_g gf
-vim_g gg
-vim_g gj
-vim_g gk
-vim_g gq
-vim_g gs
-vim_g gu
-vim_g gv
-vim_h h
-vim_i i
-vim_j j
-vim_k k
-vim_l l
-vim_n n
-vim_m m
-vim_o o
-vim_p p
-vim_q q
-vim_r r
-vim_s s
-vim_t t
-vim_u u
-vim_v v
-vim_w w
-vim_x x
-vim_y y
-vim_y yy
-vim_z z-
-vim_z z.
-vim_z z<CR>
-vim_z zb
-vim_z zh
-vim_z zl
-vim_z zt
-vim_z zz
-#@+node:ekr.20131109170017.46979: *4* @data vim-motions
-# CR
-# Ctrl-End
-# Ctrl-Home
-# Ctrl-Left
-# Ctrl-M
-# Ctrl-N
-# Ctrl-P
-# Ctrl-Right
-# End
-# Home
-# Shift-Left
-# Shift-Right
+1. Key label always capitalized.
 
-( 	
-)
-{
-}
-[[
-[]
-][
-]]
-$
-^	
-+
-,
--
-;
-_
-0
-B
-E
-F
-G
-T
-W
-b
-e
-f
-g$
-g^
-g0
-gE
-# gEnd
-# gHome	
-ge
-gg
-h
-j
-k
-t
-w
-#@+node:ekr.20131109170017.46981: *4* @data vim-motion-tails
-char F
-char T
-char f
-char t
+Vim commands are mapped to both lower-case and upper-case keys but always appear
+mapped to upper-case keys within the "Help" tab.
+
+2. Layout of tab's contents.
+
+To improve readability and better support narrow tab cards, display the mode's
+label without the "enter-" and "-mode" text and place the key label before the
+mode label.
+
+For example, the following entries would change from::
+    enter-vi-delete-line-mode d
+    enter-vi-delete-to-begin-of-word-mode b
+to::
+    d : vi-delete-line
+    b : vi-delete-to-begin-of-word
+#@+node:ekr.20100112051224.6225: *4* Repeat last cursor movement command
+Support the ';' key: repeat the last "To character" or "Find character" command.
+#@+node:ekr.20100113075303.6271: *4* Need mode-oriented bindings
+Mapping a number to a command or an @mode node works but can not be used as it
+prevents the number from being entered as text while in Vi's insert state.
+
+Binding 'bksp' key to back-char to move back a character in command mode
+prevents 'bksp' from deleting characters in text edit mode.
+#@+node:ekr.20080616110054.2: *4* Support vim dot command
+The ability to repeat the last editing related command by pressing the period
+key is not supported and there is no workaround in place.
+
+Binding keys within nodes:
+
+Some commands can be "easily" repeated by having the command's mode
+bind itself to the period key.  This is not currently working.  
+
+Support commands requesting input:
+
+Add companion commands that reuse input.  For example, a zap-to-
+character-again command could exist which will reuse the key entered
+in the last zap-to-character command.  With this support, the mode
+that performs the initial command would assign the period key to a
+companion mode that is identical to the initial mode but with the zap-
+to-character command replaced by the zap-to-character-again command.
+
+Commands requiring companion commands are:
+  zap-to-character
+  find-character
+  backward-find-character
+  (Any others?)
+
+Notes:
+
+- The copy of the character should be saved somewhere that does NOT affect the
+  contents of the clipboard.
+
+- The same or a separate storage location can be used for all commands to retain
+  a copy of the character entered by the user. It doesn't matter since only the
+  last command is assigned to the period key to be re-executed.
+#@+node:ekr.20100112051224.6238: *4* Some commands do not work in headline
+Leo functions exist which unconditionally set focus to the body pane
+regardless of the active pane.
+
+For example, bracket matching commands ("%" key) do not work within
+a node's headline text.  Instead, the command is performed on the
+node's body text.
+
+Using the "undo" command (key 'u') to undo a change to a node's headline text
+only works correctly after another node has been selected. It appears that
+changes made to a node's headline text are not recorded in Leo's change history
+until the edited node has lost focus.
+#@+node:ekr.20100112051224.6222: *4* Commands requesting user input
+Commands requesting user input must be the last command executed within an @mode
+node. This prevents the implementation of commands such as "yank to <character>"
+that requires a "copy to clipboard" operation after the "find-character"
+command.
+
+======
+
+Maybe we just need more commands...
+#@+node:ekr.20100112051224.6223: *4* Editing node headlines using @mode nodes
+Commands modifying or selecting headline text do not work correctly within a
+@mode node.
+
+This eliminates accurate implementation of vi's delete/change/substitute/yank
+object commands. As a workaround, the commands are currently written to only
+select the text. The user must perform the subsequent delete, change,
+substitute, and yank.
+#@+node:ekr.20100112051224.6246: *4* Missing commands/features
+#@+node:ekr.20100112051224.6234: *5* Move current line (to screen position)
+Vi has a collection of "z<movement>" commands that will move the
+current line to the top, middle, and bottom of the screen.  They are
+not supported in Leo.
+#@+node:ekr.20100112051224.6235: *5* Move body text up/down
+Vi maps keys to scroll the text up/down one line and by half the
+number of visible lines.  Leo does not support this.
+
+#@+node:ekr.20110529115328.18247: *5* Block cursor
+Having worked with Tk text canvases more that Qt, there still seem to
+be things that it had that have to be worked around as the Qt people
+just haven't seen the need for.
+
+One is the block cursor, I giving Leo Vim like functionality, it would
+be nice if one where supported, theses new kids just don't understand
+something so primitive I guess.
+#@+node:ekr.20110202094848.12568: *5* Named marks
+Another is named marks, in Vim you can store a number of cursor
+locations, and recall them to jump around in your code.  This was also
+useful in filling out templates as each stop could be given a name
+mark.  This helped make filling out a template easier as you weren't
+stuck in a linear filling in the blanks in a set order, template stops
+where linked in rings, you could jump from the last stop back to the
+first and make and changes you wanted on a second go round.  Gravity
+of marks made things easier to inspect to determine what stops where
+used and which ones were being bypassed.
+
+As these things had an actual presence in the text buffer, it going to
+be a little harder to come up with a reasonable work around.
+#@+node:ekr.20110115062009.6025: *4* Commands that work differently in Vim
+#@+node:ekr.20100112051224.6236: *5* Two kinds of words
+Vi supports two types of words in its commands:
+
+1. Words that consist of only a subset of the character set and
+2. words that consist of all characters except the space and tab characters.
+
+Leo's always considers a word to consist of a subset of characters
+although some word related commands include different characters
+than others.
+#@+node:ekr.20090629183608.8446: *5* Copy/paste/yank/delete
+Yank vs. Yank:
+Vi's "yank" commands copy the selected text TO the clipboard.
+Leo's "yank" commands insert text FROM the clipboard.
+
+copy-text in modes:
+Leo's copy-text command does not work within a mode.  As a result,
+all "copy to clipboard" capability is being implemented using the
+kill-<object> command followed by Leo's "yank" command to put the
+text back.
+
+paste-text in modes:
+The paste-text command does not work within an @mode node.  Leo's
+"yank" command is used instead.
+
+delete-node does not copy node to clipboard:
+A copy-node command is issued to copy the node to the clipboard
+followed by the delete-node command.
+#@+node:ekr.20100521090440.5887: *4* Generalize minibuffer code
+@nocolor-node
+
+From Tom L
+
+This is hardwired for the first parameter.  Things I need to expand
+this:
+
+1. put in a variable that cycles through the tabStops
+
+2. In this mock up, you are entering the parameters in the minibuffer,
+a more advanced version would collect each keypress and put it in the
+body at the current tabStop, a tab would finalize the entry and
+advance to the next stop, no text other than the 'help', ends up in
+the minibuffer.
+
+Sinc I'm only modifying existing code without real understanding of
+what Leo is doing, any guidance would be appreciated.
+
+Tom
+#@+node:ekr.20100112051224.6226: *4* Vim-related: Range prefix to commands/objects (k.getArgs)
+The ability to specify a numeric range prefix is not supported. For example,
+entering "3dd" will not delete the next three lines and "20G" will not move the
+cursor to the 20th line in the file.
+
+The ability to specify a numeric range prefix to an object is not supported. For
+example, the "d2fx" command should Delete up to and including the 2nd Found "x"
+character.
 #@+node:ekr.20131105122124.16479: *3* vim reference card
 @killcolor
 #@+node:ekr.20131105122124.16482: *4*  keys (do not sort!!)
@@ -5612,6 +5522,27 @@ The c.forceExecuteEntireBody ivar can be toggled by scripts.
 http://mail.google.com/mail/u/0/#inbox/1423c5445471eeb2
 
 The Command reference was wrong.
+#@+node:ekr.20131108082341.16371: *3* Added support for @tree-abbreviations
+@language rest
+
+https://groups.google.com/forum/#!topic/leo-editor/OSe0_D5tmJQ
+
+To do: *remove* a tree abbreviation if it fires *successfully*.
+
+What I did:
+
+- Added support for @data tree-abbreviations.
+    - The body contains a list of the abbreviation names.
+    - The children should contain nodes matching each abbreviation name.
+        The children of *those* nodes are pasted as the last children
+        of the present node when the tree abbreviation fires.
+- Added ParserBaseClass.doTreeAbbreviationData, called from doData.
+- Added abbrevClass.init_tree_abbrev and helpers.
+- Refactored and changed expandAbbrev: added expand_text and expand_tree.
+- Added some flags to c.pasteOutline and c.promote, to disable unwanted
+  actions. when expanding tree abbreviations.
+
+@language python
 #@-all
 
 # Put this @language after the @all as a kind of permanent unit test.
