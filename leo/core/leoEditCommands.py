@@ -544,7 +544,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
         else:
             return False
         if tag == 'tree':
-            self.expand_tree(val,word)
+            self.expand_tree(w,i,j,val,word)
         else:
             self.expand_text(w,i,j,val,word)
         return True
@@ -588,16 +588,21 @@ class abbrevCommandsClass (baseEditCommandsClass):
                 c.frame.body.setSelectionRange(start, end)
         return True
     #@+node:ekr.20131113150347.17258: *5* expand_tree
-    def expand_tree(self,tree_s,word):
+    def expand_tree(self,w,i,j,tree_s,word):
         '''Paste tree_s as children of c.p.'''
         trace = False and not g.unitTesting
         c,u = self.c,self.c.undoer
         if not c.canPasteOutline(tree_s):
             return g.trace('bad copied outline: %s' % tree_s)
         if trace: g.trace(word,tree_s[:20])
-        c.fileCommands.leo_file_encoding='utf-8'
         old_p = c.p.copy()
         bunch = c.undoer.beforeChangeTree(old_p)
+        # Delete the abbreviation that fired.
+        if i != j:
+            w.delete(i,j)
+            old_p.b = w.getAllText()
+        # Paste the tree (temporarily) into the outline.
+        c.fileCommands.leo_file_encoding='utf-8'
         p = c.pasteOutline(s=tree_s,redrawFlag=False,undoFlag=False)
         if not p:
             return g.trace('paste failed')

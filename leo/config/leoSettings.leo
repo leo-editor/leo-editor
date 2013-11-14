@@ -9871,7 +9871,13 @@ __version__ = '0.0'
 &lt;&lt; imports &gt;&gt;
 
 @others</t>
-<t tx="ekr.20131114051702.18859"></t>
+<t tx="ekr.20131114051702.18859">&lt;&lt; docstring &gt;&gt;
+@language python
+@tabwidth -4
+__version__ = '0.0'
+&lt;&lt; version history &gt;&gt;
+&lt;&lt; imports &gt;&gt;
+@others</t>
 <t tx="ekr.20131114051702.18860">'''
 This docstring should be a clear, concise description of
 what the plugin does and how to use it.

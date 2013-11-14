@@ -5532,9 +5532,7 @@ The Command reference was wrong.
 https://groups.google.com/forum/#!topic/leo-editor/OSe0_D5tmJQ
 
 To do:
-1. Remove abbreviation name from body text when it fires.
-2. Create helper to paste xml outline text.
-3. (Maybe) Support template scanning after the substitution.
+- (Maybe) Support template scanning after the substitution.
 
 
 What I did:
