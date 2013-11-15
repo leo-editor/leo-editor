@@ -88,6 +88,7 @@
 <v t="ekr.20041119035704.2"><vh>\@ignore comment</vh></v>
 <v t="ekr.20130503155210.16364"><vh>\@menuat</vh></v>
 <v t="ekr.20070411172718"><vh>\@openwith name = shortcut</vh></v>
+<v t="ekr.20131115075142.18226"><vh>\@outline-data setting-name</vh></v>
 <v t="ekr.20041119105509"><vh>\@set name = value</vh></v>
 <v t="ekr.20041120155431.1"><vh>\@shortcuts</vh></v>
 <v t="ekr.20041119035704.3"><vh>\@type type-name: base-type = [list of valid values]</vh></v>
@@ -541,6 +542,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20131115075142.18233"><vh>node xyz</vh></v>
 </v>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
 <v t="ekr.20130924110246.13745"><vh>@bool scripting-abbreviations = False</vh></v>
@@ -9847,6 +9849,8 @@ action will be used instead.</t>
 
 # The body should contain a list tree abbreviation names.
 
+# As with @data nodes, Leo ignores comment lines starting with '#'.
+
 # For each abbreviation name, there should be corresponding child node,
 # the **abbreviation node** whose headline matches the abbreviation name.
 
@@ -9854,7 +9858,7 @@ action will be used instead.</t>
 # the abbreviation node as the last children of the presently selected node.
 
 abc;;
-xyz;;
+
 per-commander-plugin;;
 
 </t>
@@ -9914,6 +9918,28 @@ Put notes about each version here.</t>
     
     self.c = c
     # Warning: hook handlers must use keywords.get('c'), NOT self.c.</t>
+<t tx="ekr.20131115075142.18226">\@outline-data nodes and their descendants create settings whose values are
+entire trees. Here's how it works:
+
+The *value* returned by c.config.getOutlineData is the xml string created when
+Leo pastes the @outline-data node to the clipboard. As a result, Leo can use all
+the standard configuration code for @outline-data! Settings in a local file
+override myLeoSettings.leo settings, which override settings in leoSettings.leo.
+
+To retrive the value of an @outline-data setting::
+
+    s = c.config.getOutlineData(setting-name)
+    c.fileCommands.leo_file_encoding='utf-8' p =
+    c.pasteOutline(s=tree_s,redrawFlag=False,undoFlag=False)
+    
+This makes the outline available for further processing.
+
+For example, to handle tree-valued abbreviations, the inint code in the
+abbrevCommandsClass pastes the outline into the present outline, uses the pasted
+outline to discover tree-valued abbreviations, and then *deletes* the tree.
+
+</t>
+<t tx="ekr.20131115075142.18233"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>
