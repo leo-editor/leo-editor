@@ -313,8 +313,8 @@ class abbrevCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20100901080826.6003: *4* ctor (abbrevCommandsClass
     def __init__ (self,c):
 
-        baseEditCommandsClass.__init__(self,c) # init the base class.
-
+        baseEditCommandsClass.__init__(self,c)
+            # init the base class.
         # Set local ivars.
         self.abbrevs = {} # Keys are names, values are (abbrev,tag).
         self.tree_abbrevs_d = {} # Keys are names, values are (tree,tag).
@@ -324,8 +324,6 @@ class abbrevCommandsClass (baseEditCommandsClass):
             # Not a unicode problem.
         self.event = None
         self.globalDynamicAbbrevs = c.config.getBool('globalDynamicAbbrevs')
-        self.in_tree_abbrev = False
-        self.tree_abbrev_root = None
         self.store ={'rlist':[], 'stext':''} # For dynamic expansion.
         self.w = None
     #@+node:ekr.20100901080826.6004: *4* finishCreate (abbrevClass) & helpers
@@ -556,85 +554,76 @@ class abbrevCommandsClass (baseEditCommandsClass):
             return False
         c.abbrev_subst_env['_abr'] = word
         if tag == 'tree':
-            self.in_tree_abbrev = True
-            self.tree_abbrev_root = c.p.copy()
             self.expand_tree(w,i,j,val,word)
         else:
             self.expand_text(w,i,j,val,word)
         c.frame.body.forceFullRecolor()
         c.bodyWantsFocusNow()
         return True
-        
     #@+node:ekr.20131113150347.17257: *5* expand_text
     def expand_text(self,w,i,j,val,word):
         '''Make a text expansion at location i,j of widget w.'''
         c = self.c
-        val,do_placeholder = self.make_script_substitutions(val)
+        # g.trace(i,j,word,g.callers())
+        val,do_placeholder = self.make_script_substitutions(i,j,val)
         self.replace_abbrev_name(w,i,j,val)
-        self.find_place_holder(i,val,do_placeholder)
+        # Search to the end.  We may have been called via a tree abbrev.
+        p = c.p.copy()
+        while p:
+            c.selectPosition(p)
+            if self.find_place_holder(p,do_placeholder):
+                return
+            else:
+                p.moveToThreadNext()
     #@+node:ekr.20131113150347.17258: *5* expand_tree & helper
     def expand_tree(self,w,i,j,tree_s,word):
         '''Paste tree_s as children of c.p.'''
-        trace = False and not g.unitTesting
         c,u = self.c,self.c.undoer
         if not c.canPasteOutline(tree_s):
             return g.trace('bad copied outline: %s' % tree_s)
-        if trace: g.trace(word,tree_s[:20])
         old_p = c.p.copy()
         bunch = u.beforeChangeTree(old_p)
         self.replace_abbrev_name(w,i,j,None)
         self.paste_tree(old_p,tree_s)
+        # Make all script substitutions first.
         for p in old_p.subtree():
             # Search for the next place-holder.
             c.selectPosition(p)
-            val,do_placeholder = self.make_script_substitutions(p.b)
+            val,do_placeholder = self.make_script_substitutions(0,0,p.b)
             if not do_placeholder: p.b = val
-            if self.find_place_holder(0,p.b,do_placeholder):
+        # Now search for all place-holders.
+        for p in old_p.subtree():
+            c.selectPosition(p)
+            if self.find_place_holder(p,do_placeholder):
                 break
-        else:
-            c.selectPosition(old_p)
-            c.redraw()
-        c.undoer.afterChangeTree(old_p,'tree-abbreviation',bunch)
-    #@+node:ekr.20131114051702.22732: *5* find_place_holder (calls next_place)
-    def find_place_holder(self,i,val,do_placeholder):
-        
+        u.afterChangeTree(old_p,'tree-abbreviation',bunch)
+    #@+node:ekr.20131114051702.22732: *5* find_place_holder
+    def find_place_holder(self,p,do_placeholder):
+        '''
+        Search for the next place-holder.
+        If found, select the place-holder (without the delims).
+        '''
         c = self.c
-        if do_placeholder or c.abbrev_place_start and c.abbrev_place_start in val:
-            s = c.frame.body.getAllText()
-            new_s,start,end = self.next_place(s,offset=i)
-            if start is None:
-                if self.in_tree_abbrev:
-                    root = self.tree_abbrev_root
-                    assert root
-                    p = c.p.threadNext()
-                    while p and root.isAncestorOf(p):
-                        new_s,start,end = self.next_place(p.b,offset=0)
-                        if start is None:
-                            p.moveToThreadNext()
-                        else:
-                            c.selectPosition(p)
-                            c.frame.body.setAllText(new_s)
-                            c.p.b = new_s
-                            c.redraw()
-                            self.set_selection(start,end)
-                            return True
-                    else:
-                        # No match. End in_tree mode.
-                        self.in_tree_abbrev
-            else:
+        s = p.b
+        if do_placeholder or c.abbrev_place_start and c.abbrev_place_start in s:
+            new_s,i,j = self.next_place(s,offset=0)
+            if i is not None:
                 c.frame.body.setAllText(new_s)
                 c.p.b = new_s
                 c.redraw()
-                self.set_selection(start,end)
+                self.set_selection(i,j)
                 return True
         return False
     #@+node:ekr.20131114051702.22731: *5* make_script_substitutions
-    def make_script_substitutions(self,val):
+    def make_script_substitutions(self,i,j,val):
         '''Make scripting substitutions in node p.'''
         trace = False
         c = self.c
         if not c.abbrev_subst_start:
             if trace: g.trace('no subst_start')
+            return val,False
+        # Nothing to undo.
+        if c.abbrev_subst_start not in val:
             return val,False
         # Perform all scripting substitutions.
         while c.abbrev_subst_start in val:
@@ -653,7 +642,8 @@ class abbrevCommandsClass (baseEditCommandsClass):
             do_placeholder = True
         else:
             do_placeholder = False
-            c.frame.body.onBodyChanged(undoType='Typing',oldSel=None)
+            oldSel = i,j
+            c.frame.body.onBodyChanged(undoType='Typing',oldSel=oldSel)
         if trace: g.trace(do_placeholder,val)
         return val,do_placeholder
     #@+node:tbrown.20130326094709.25669: *5* next_place
@@ -663,12 +653,8 @@ class abbrevCommandsClass (baseEditCommandsClass):
         return (s2,start,end) where s2 is s without the <| and |>,
         and start, end are the positions of the beginning and end of block.
         """
-        trace = False ; verbose = False
+        trace = False
         c = self.c
-        if trace and verbose:
-            print('');
-            g.trace(c.p.h)
-            # g.trace('...\n\n',s)
         new_pos = s.find(c.abbrev_place_start,offset)
         new_end = s.find(c.abbrev_place_end,offset)
         if (new_pos < 0 or new_end < 0) and offset:
@@ -702,19 +688,19 @@ class abbrevCommandsClass (baseEditCommandsClass):
         else:
             g.trace('paste failed')
     #@+node:ekr.20131114124839.17398: *5* replace_abbrev_name
-    def replace_abbrev_name(self,w,i,j,val):
-        '''Replace the abbreviation name by val.'''
+    def replace_abbrev_name(self,w,i,j,s):
+        '''Replace the abbreviation name by s.'''
         c = self.c
         if i != j:
             w.delete(i,j)
-        if val is not None:
-            w.insert(i,val)
+        if s is not None:
+            w.insert(i,s)
         oldSel = j,j
         c.frame.body.onBodyChanged(undoType='Abbreviation',oldSel=oldSel)
     #@+node:ekr.20131114124839.17399: *5* set_selection
-    def set_selection(self,start,end):
+    def set_selection(self,i,j):
         '''Set the selection range, with the insert point at the end.'''
-        self.c.frame.body.setSelectionRange(start,end,insert=end)
+        self.c.frame.body.setSelectionRange(i,j,insert=j)
     #@+node:ekr.20050920084036.58: *3* dynamic abbreviation...
     #@+node:ekr.20050920084036.60: *4* dynamicCompletion C-M-/
     def dynamicCompletion (self,event=None):

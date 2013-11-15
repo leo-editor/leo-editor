@@ -6,21 +6,11 @@
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 
-Post: I'll be working on videos soon.
+* Do all common vim commands.
 
-Do all the vim commands in the tutorial.
+* Start work on videos!
 
-Post:
-- I'll be revising the code.
-- double comma might search for <|block|> everywhere.
 
-Clean up expandAbbrev code:
-- **review all code**.
-- Move search code from template_end to next_place.
-- Pay attention to selection & redraw issues.
-    - In some places, we can just set p.b.
-    - In some places, we have to set body text.
-    - self.abbrev_select helper??
 .. @+node:ekr.20131114051702.22728: *3* Document @outline-data in leoSettings.leo
 .. @+node:ekr.20131114051702.20438: *3* Document outline abbreviations
 @language rest
