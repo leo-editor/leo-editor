@@ -6,11 +6,13 @@
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 
+- Change file name stand-along to stand-alone
 - Do all common vim commands:
     - Leave arrow keys and control keys unchanged.
     - Focus plain-key normal-mode commands: a,i,d,c,x,s.
     - Use minibuffer for find command (save find/change strings for dot).
 
+* Gallery of screen shots: different font sizes, coloring schemes, plugins, etc.
 * Start work on videos!
 * Create github repo.
 .. @+node:ekr.20131105020211.18058: ** Important
