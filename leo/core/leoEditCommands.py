@@ -568,16 +568,13 @@ class abbrevCommandsClass (baseEditCommandsClass):
         val,do_placeholder = self.make_script_substitutions(i,j,val)
         self.replace_abbrev_name(w,i,j,val)
         # Search to the end.  We may have been called via a tree abbrev.
-        old_p = c.p.copy()
         p = c.p.copy()
         while p:
-            c.selectPosition(p)
             if self.find_place_holder(p,do_placeholder):
                 return
             else:
                 p.moveToThreadNext()
-        c.selectPosition(old_p)
-
+        
     #@+node:ekr.20131113150347.17258: *5* expand_tree & helper
     def expand_tree(self,w,i,j,tree_s,word):
         '''Paste tree_s as children of c.p.'''
@@ -591,12 +588,10 @@ class abbrevCommandsClass (baseEditCommandsClass):
         # Make all script substitutions first.
         for p in old_p.subtree():
             # Search for the next place-holder.
-            c.selectPosition(p)
             val,do_placeholder = self.make_script_substitutions(0,0,p.b)
             if not do_placeholder: p.b = val
         # Now search for all place-holders.
         for p in old_p.subtree():
-            c.selectPosition(p)
             if self.find_place_holder(p,do_placeholder):
                 break
         u.afterChangeTree(old_p,'tree-abbreviation',bunch)
@@ -611,6 +606,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
         if do_placeholder or c.abbrev_place_start and c.abbrev_place_start in s:
             new_s,i,j = self.next_place(s,offset=0)
             if i is not None:
+                c.selectPosition(p) ###
                 c.frame.body.setAllText(new_s)
                 c.p.b = new_s
                 c.redraw()
