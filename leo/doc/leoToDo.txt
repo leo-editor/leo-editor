@@ -6,36 +6,13 @@
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 
-- Tip: use .leo files to test settings.
 - Document @outline-data in leoSettings.leo.
 - Document outline abbreviations (see child node).
-* Do all common vim commands.
+
+- Do all common vim commands. (see child node)
 
 * Start work on videos! (see child node).
 * Create github repo.
-.. @+node:ekr.20131115075142.16631: *3* tip: use settings files to test settings
-@language rest
-
-In the previous thread I discussed four new files in Leo's leo/config
-directory: leo10pt.leo, leo12pt.leo, leo14-12pt.leo and leo14pt.leo.
-
-These files are an example of an important technique, that belongs in a Leo
-tips section.
-
-The idea is to use .leo files to test settings rather than to contain data.
-
-This is a surprisingly important technique, one that first occurred to me
-last week. Indeed, it was an essential step in getting the vim-mode project
-started. I created a file, called ekr-vim.leo, and a corresponding script
-that launched it. This file contains @bool vim-mode = True. As a result, I
-can test vim mode *safely*, without interfering with my normal work flow.
-
-In other words, these kinds of files limit the effects of
-experimental/non-standard/risky settings to a single file. It's a great
-technique to know.
-
-As the latest example, the files leo10pt.leo, leo12pt.leo, leo14-12pt.leo
-and leo14pt.leo make it easy to compare different font settings.
 .. @+node:ekr.20131114051702.20438: *3* Document outline abbreviations
 @language rest
 
@@ -116,6 +93,10 @@ They ensure that operations happening at startup time do not cause unwanted
 side effects.
 
 EKR
+.. @+node:ekr.20131115075142.16634: *3* Do common vim commands
+- Leave arrow keys and control keys unchanged.
+- Focus plain-key normal-mode commands: a,i,d,c,x,s.
+- Use minibuffer for find command (save find/change strings for dot).
 .. @+node:ekr.20131027064821.18693: *3* Video about Leo for PyCon2013China
 By mid December.
 

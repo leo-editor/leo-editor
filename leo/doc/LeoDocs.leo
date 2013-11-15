@@ -140,6 +140,7 @@
 <v t="ekr.20131030082936.17514"><vh>get-child-headlines</vh></v>
 </v>
 <v t="ekr.20131007143750.16111"><vh>To do</vh>
+<v t="ekr.20131108071132.17025"><vh>improve MacOS install: chmod</vh></v>
 <v t="ekr.20131028213522.17137"><vh>Examples for cheat sheet</vh></v>
 <v t="ekr.20131023180133.17111"><vh>Example Leo patterns</vh>
 <v t="ekr.20131023180133.17112"><vh>Request</vh></v>
@@ -294,6 +295,7 @@
 <v t="ekr.20120229094652.15124"><vh>How can I restore focus without using the mouse</vh></v>
 <v t="ekr.20060822111759"><vh>How can I reuse @button nodes in multiple files?</vh></v>
 <v t="ekr.20050830115714.116"><vh>How can I show Leo files with Excel?</vh></v>
+<v t="ekr.20131115075142.16636"><vh>How can I test settings easily?</vh></v>
 <v t="ekr.20120229094652.15148"><vh>How can I use BibTeX citations from Leo?</vh></v>
 <v t="ekr.20130807203905.16526"><vh>How can I use bzr to check Leo's importers?</vh></v>
 <v t="ekr.20050830120857"><vh>How can I use Leo to develop Leo itself?</vh></v>
@@ -1302,7 +1304,6 @@
 <v t="ekr.20131105110107.17046"><vh>Investigated install problem</vh></v>
 </v>
 </v>
-<v t="ekr.20131108071132.17025"><vh>improve MacOS install: chmod</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -22723,6 +22724,22 @@ My suggestion:
    report the results.
 </t>
 <t tx="ekr.20131108071132.17025"></t>
+<t tx="ekr.20131115075142.16636">@language rest
+
+Use .leo files to test settings rather than to contain data. These files
+would typically contain just an @settings tree, and one or two nodes
+illustrating their effect. Opening such files limits the effects of
+experimental/non-standard/risky settings. This is a great tip to know.
+
+For example, the files leo10pt.leo, leo12pt.leo, leo14-12pt.leo and
+leo14pt.leo in the leo/config folder make it easy to compare different font
+settings.
+
+As another example, when starting the vim-mode project I created a .leo
+file containing @bool vim-mode = True. By opening this file I test vim mode
+without interfering with my normal work flow.
+
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
