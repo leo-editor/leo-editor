@@ -6,6 +6,8 @@
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 
+* Start work on videos!
+
 ** Does Leo allow comments after @data setting-name?
 
 - Do all common vim commands:
@@ -14,8 +16,33 @@
     - Use minibuffer for find command (save find/change strings for dot).
 
 * Gallery of screen shots: different font sizes, coloring schemes, plugins, etc.
-* Start work on videos!
-* Create github repo.
+
+* Create github repo (call speed).
+
+* Too much flash when doing date;;
+
+.. @+node:ekr.20131115120119.17434: *3* Improve tab pane?
+@language rest
+
+What I did:
+    
+- Created LeoBaseTabWidget, containing most of the code of LeoTabbedTopLevel.
+- LeoTabbedTopLevel derives from this new class.
+    
+- leoQtLog.__init__ now calls tw.setMovable(True).
+  This allows Log pane tabs to be rearranged.
+  
+- Changed dw.createTabWidget.  The changes have as yet no effect:
+
+    def createTabWidget (self,parent,name,hPolicy=None,vPolicy=None):
+    
+        # w = LeoBaseTabWidget(parent)
+        w = QtGui.QTabWidget(parent)
+        tb = w.tabBar()
+        # tb.setTabsClosable(True)
+        self.setSizePolicy(w,kind1=hPolicy,kind2=vPolicy)
+        self.setName(w,name)
+        return w
 .. @+node:ekr.20131105020211.18058: ** Important
 .. @+node:ekr.20131101080215.16488: *3* * Outreach to magazine editors
 ===== Steve Litt
@@ -4379,7 +4406,7 @@ def createTab (self,tabName,createText=True,widget=None,wrap='none'):
         self.contentsDict[tabName] = contents
         self.tabWidget.addTab(contents,tabName)
     return contents
-.. @+node:ekr.20110605121601.18166: *5* createFindTab (DynamicWindow)
+.. @+node:ekr.20110605121601.18166: *5* dw.createFindTab
 def createFindTab (self,parent,tab_widget):
 
     c,dw = self.leo_c,self
@@ -4452,7 +4479,7 @@ def createFindTab (self,parent,tab_widget):
     self.findChange = findChange
     # self.findLab = lab2
     # self.changeLab = lab3
-.. @+node:ekr.20110605121601.18156: *5* createGrid (DynamicWindow)
+.. @+node:ekr.20110605121601.18156: *5* dw.createGrid
 def createGrid (self,parent,name,margin=0,spacing=0):
 
     w = QtGui.QGridLayout(parent)
@@ -4460,7 +4487,7 @@ def createGrid (self,parent,name,margin=0,spacing=0):
     w.setSpacing(spacing)
     self.setName(w,name)
     return w
-.. @+node:ekr.20110605121601.18145: *5* createLogPane
+.. @+node:ekr.20110605121601.18145: *5* dw.createLogPane (DynamicWindow)
 def createLogPane (self,parent):
 
     # Create widgets.

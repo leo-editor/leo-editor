@@ -899,7 +899,8 @@ nodeB
 # From stc.leo.
 run-selected-unit-tests-locally = Alt-4
 run-marked-unit-tests-locally = Alt-5
-run-all-unit-tests-locally = Alt-6
+# run-all-unit-tests-locally = Alt-6
+do-nothing = Alt-6
 </t>
 <t tx="ekr.20111115080347.3872"></t>
 <t tx="ekr.20111123042627.6654"># Leo loads plugins in the order they appear here.
