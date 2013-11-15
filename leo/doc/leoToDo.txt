@@ -6,11 +6,7 @@
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 
-- Settings:
-    - Create leo12-10pt.leo
-    - Copy all the @data nodes from these files to leoSettings.leo
-    - Use leo10pt settings in LeoSettings.leo by default.
-    - Does Leo allow comments after @data setting-name?
+** Does Leo allow comments after @data setting-name?
 
 - Do all common vim commands:
     - Leave arrow keys and control keys unchanged.
