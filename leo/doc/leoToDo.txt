@@ -6,12 +6,13 @@
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 
+- 10pt or 12pt
+- Document @outline-data in leoSettings.leo.
+- Document outline abbreviations (see child node).
 * Do all common vim commands.
 
-* Start work on videos!
-
-
-.. @+node:ekr.20131114051702.22728: *3* Document @outline-data in leoSettings.leo
+* Start work on videos! (see child node).
+* Create github repo.
 .. @+node:ekr.20131114051702.20438: *3* Document outline abbreviations
 @language rest
 
@@ -96,16 +97,6 @@ EKR
 By mid December.
 
 Private email: http://mail.google.com/mail/u/0/#inbox/141ddfe09c389e4f
-.. @+node:ekr.20131106061848.16384: *3* * Create github repo
-.. @+node:ekr.20131114124839.16665: *3* g.createScratchCommander
-def createScratchCommander(fileName=None)
-    
-    c = g.app.newCommander(fileName)
-    frame = c.frame
-    frame.createFirstTreeNode()
-    assert c.rootPosition()
-    frame.setInitialWindowGeometry()
-    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
 .. @+node:ekr.20131105020211.18058: ** Important
 .. @+node:ekr.20131101080215.16488: *3* * Outreach to magazine editors
 ===== Steve Litt

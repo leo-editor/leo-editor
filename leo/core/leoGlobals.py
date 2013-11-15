@@ -5258,6 +5258,15 @@ def computeWindowTitle (fileName):
         if os.sep in '/\\':
             title = title.replace('/',os.sep).replace('\\',os.sep)
         return title
+#@+node:ekr.20131114124839.16665: *3* g.createScratchCommander
+def createScratchCommander(fileName=None):
+    
+    c = g.app.newCommander(fileName)
+    frame = c.frame
+    frame.createFirstTreeNode()
+    assert c.rootPosition()
+    frame.setInitialWindowGeometry()
+    frame.resizePanesToRatio(frame.ratio,frame.secondary_ratio)
 #@+node:ekr.20090516135452.5777: *3* g.ensureLeading/TrailingNewlines
 def ensureLeadingNewlines (s,n):
 
@@ -5558,6 +5567,95 @@ def getLine (s,i):
 def isMacOS():
 
     return sys.platform == 'darwin'
+#@+node:ekr.20120201164453.10090: *3* g.KeyStroke & isStroke/OrNone
+class KeyStroke:
+
+    '''A class that announces that its contents has been canonicalized by k.strokeFromSetting.
+
+    This allows type-checking assertions in the code.'''
+
+    #@+others
+    #@+node:ekr.20120204061120.10066: *4*  ks.ctor
+    def __init__ (self,s):
+
+        trace = False and not g.unitTesting and s == 'name'
+        if trace: g.trace('(KeyStroke)',s,g.callers())
+
+        assert s,repr(s)
+        assert g.isString(s)
+            # type('s') does not work in Python 3.x.
+        self.s = s
+    #@+node:ekr.20120204061120.10068: *4*  Special methods
+    #@+node:ekr.20120203053243.10118: *5* ks.__hash__
+    # Allow KeyStroke objects to be keys in dictionaries.
+
+    def __hash__ (self):
+
+        return self.s.__hash__() if self.s else 0
+    #@+node:ekr.20120204061120.10067: *5* ks.__repr___ & __str__
+    def __str__ (self):
+
+        return '<KeyStroke: %s>' % (repr(self.s))
+
+    __repr__ = __str__
+    #@+node:ekr.20120203053243.10117: *5* ks.rich comparisons
+    #@+at All these must be defined in order to say, for example:
+    #     for key in sorted(d)
+    # where the keys of d are KeyStroke objects.
+    #@@c
+
+    def __eq__ (self,other): 
+        if not other:               return False
+        elif hasattr(other,'s'):    return self.s == other.s
+        else:                       return self.s == other
+
+    def __lt__ (self,other):
+        if not other:               return False
+        elif hasattr(other,'s'):    return self.s < other.s
+        else:                       return self.s < other
+
+    def __le__ (self,other): return self.__lt__(other) or self.__eq__(other)    
+    def __ne__ (self,other): return not self.__eq__(other)
+    def __gt__ (self,other): return not self.__lt__(other) and not self.__eq__(other)  
+    def __ge__ (self,other): return not self.__lt__(other)
+    #@+node:ekr.20120203053243.10124: *4* ks.find, lower & startswith
+    # These may go away later, but for now they make conversion of string strokes easier.
+
+    def find (self,pattern):
+
+        return self.s.find(pattern)
+
+    def lower (self):
+
+        return self.s.lower()
+
+    def startswith(self,s):
+
+        return self.s.startswith(s)
+    #@+node:ekr.20120203053243.10121: *4* ks.isFKey
+    def isFKey (self):
+
+        s = self.s.lower()
+
+        return s.startswith('f') and len(s) <= 3 and s[1:].isdigit()
+    #@+node:ekr.20120203053243.10125: *4* ks.toGuiChar
+    def toGuiChar (self):
+
+        '''Replace special chars by the actual gui char.'''
+
+        s = self.s.lower()
+        if s in ('\n','return'):        s = '\n'
+        elif s in ('\t','tab'):         s = '\t'
+        elif s in ('\b','backspace'):   s = '\b'
+        elif s in ('.','period'):       s = '.'
+        return s
+    #@-others
+
+def isStroke(obj):
+    return isinstance(obj,KeyStroke)
+
+def isStrokeOrNone(obj):
+    return obj is None or isinstance(obj,KeyStroke)
 #@+node:ekr.20050920084036.4: *3* g.longestCommonPrefix & g.itemsMatchingPrefixInList
 def longestCommonPrefix (s1,s2):
 
@@ -5756,13 +5854,6 @@ def toPythonIndex (s,index):
             return 0
 
 toGuiIndex = toPythonIndex
-#@+node:ekr.20120912153732.10597: *3* g.wait
-def sleep (n):
-
-    '''Wait about n milliseconds.'''
-
-    from time import sleep
-    sleep(n) #sleeps for 5 seconds
 #@+node:ekr.20120129181245.10220: *3* g.TypedDict/OfLists & isTypedDict/OfLists
 class TypedDict:
 
@@ -5907,6 +5998,13 @@ class TypedDictOfLists (TypedDict):
 
 def isTypedDictOfLists(obj):
     return isinstance(obj,TypedDictOfLists)
+#@+node:ekr.20120912153732.10597: *3* g.wait
+def sleep (n):
+
+    '''Wait about n milliseconds.'''
+
+    from time import sleep
+    sleep(n) #sleeps for 5 seconds
 #@+node:ekr.20041219095213: *3* import wrappers
 #@+node:ekr.20040917061619: *4* g.cantImport
 def cantImport (moduleName,pluginName=None,verbose=True):
@@ -6073,95 +6171,6 @@ class readLinesClass:
         return line
 
     __next__ = next
-#@+node:ekr.20120201164453.10090: *3* g.KeyStroke & isStroke/OrNone
-class KeyStroke:
-
-    '''A class that announces that its contents has been canonicalized by k.strokeFromSetting.
-
-    This allows type-checking assertions in the code.'''
-
-    #@+others
-    #@+node:ekr.20120204061120.10066: *4*  ks.ctor
-    def __init__ (self,s):
-
-        trace = False and not g.unitTesting and s == 'name'
-        if trace: g.trace('(KeyStroke)',s,g.callers())
-
-        assert s,repr(s)
-        assert g.isString(s)
-            # type('s') does not work in Python 3.x.
-        self.s = s
-    #@+node:ekr.20120204061120.10068: *4*  Special methods
-    #@+node:ekr.20120203053243.10118: *5* ks.__hash__
-    # Allow KeyStroke objects to be keys in dictionaries.
-
-    def __hash__ (self):
-
-        return self.s.__hash__() if self.s else 0
-    #@+node:ekr.20120204061120.10067: *5* ks.__repr___ & __str__
-    def __str__ (self):
-
-        return '<KeyStroke: %s>' % (repr(self.s))
-
-    __repr__ = __str__
-    #@+node:ekr.20120203053243.10117: *5* ks.rich comparisons
-    #@+at All these must be defined in order to say, for example:
-    #     for key in sorted(d)
-    # where the keys of d are KeyStroke objects.
-    #@@c
-
-    def __eq__ (self,other): 
-        if not other:               return False
-        elif hasattr(other,'s'):    return self.s == other.s
-        else:                       return self.s == other
-
-    def __lt__ (self,other):
-        if not other:               return False
-        elif hasattr(other,'s'):    return self.s < other.s
-        else:                       return self.s < other
-
-    def __le__ (self,other): return self.__lt__(other) or self.__eq__(other)    
-    def __ne__ (self,other): return not self.__eq__(other)
-    def __gt__ (self,other): return not self.__lt__(other) and not self.__eq__(other)  
-    def __ge__ (self,other): return not self.__lt__(other)
-    #@+node:ekr.20120203053243.10124: *4* ks.find, lower & startswith
-    # These may go away later, but for now they make conversion of string strokes easier.
-
-    def find (self,pattern):
-
-        return self.s.find(pattern)
-
-    def lower (self):
-
-        return self.s.lower()
-
-    def startswith(self,s):
-
-        return self.s.startswith(s)
-    #@+node:ekr.20120203053243.10121: *4* ks.isFKey
-    def isFKey (self):
-
-        s = self.s.lower()
-
-        return s.startswith('f') and len(s) <= 3 and s[1:].isdigit()
-    #@+node:ekr.20120203053243.10125: *4* ks.toGuiChar
-    def toGuiChar (self):
-
-        '''Replace special chars by the actual gui char.'''
-
-        s = self.s.lower()
-        if s in ('\n','return'):        s = '\n'
-        elif s in ('\t','tab'):         s = '\t'
-        elif s in ('\b','backspace'):   s = '\b'
-        elif s in ('.','period'):       s = '.'
-        return s
-    #@-others
-
-def isStroke(obj):
-    return isinstance(obj,KeyStroke)
-
-def isStrokeOrNone(obj):
-    return obj is None or isinstance(obj,KeyStroke)
 #@+node:ekr.20031218072017.3197: ** Whitespace...
 #@+node:ekr.20031218072017.3198: *3* g.computeLeadingWhitespace
 # Returns optimized whitespace corresponding to width with the indicated tab_width.
