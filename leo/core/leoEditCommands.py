@@ -568,6 +568,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
         val,do_placeholder = self.make_script_substitutions(i,j,val)
         self.replace_abbrev_name(w,i,j,val)
         # Search to the end.  We may have been called via a tree abbrev.
+        old_p = c.p.copy()
         p = c.p.copy()
         while p:
             c.selectPosition(p)
@@ -575,6 +576,8 @@ class abbrevCommandsClass (baseEditCommandsClass):
                 return
             else:
                 p.moveToThreadNext()
+        c.selectPosition(old_p)
+
     #@+node:ekr.20131113150347.17258: *5* expand_tree & helper
     def expand_tree(self,w,i,j,tree_s,word):
         '''Paste tree_s as children of c.p.'''
