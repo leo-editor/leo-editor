@@ -80,42 +80,42 @@ QWidget#findTab {
 
 QLabel#findHeading {
     font-family: DejaVu Sans Mono;
-    font-size: 12pt;
+    font-size: 10pt;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal,italic,oblique */
 }
 
 QLabel#findLabel {
     font-family: DejaVu Sans Mono;
-    font-size: 12pt;
+    font-size: 10pt;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal,italic,oblique */
 }
 
 QLabel#changeLabel {
     font-family: DejaVu Sans Mono;
-    font-size: 12pt;
+    font-size: 10pt;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal,italic,oblique */
 }
 
 QLabel#findHelp {
     font-family: DejaVu Sans Mono;
-    font-size: 12pt;
+    font-size: 10pt;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal,italic,oblique */
 }
 
 QLineEdit#findPattern {
     font-family: DejaVu Sans Mono;
-    font-size: 12pt;
+    font-size: 10pt;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal,italic,oblique */
 }
 
 QLineEdit#findChange {
     font-family: DejaVu Sans Mono;
-    font-size: 12pt;
+    font-size: 10pt;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal,italic,oblique */
 }

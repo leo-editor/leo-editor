@@ -6,7 +6,7 @@
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 
-- 10pt or 12pt
+- Tip: use .leo files to test settings.
 - Document @outline-data in leoSettings.leo.
 - Document outline abbreviations (see child node).
 * Do all common vim commands.
