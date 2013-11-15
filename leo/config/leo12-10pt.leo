@@ -20,6 +20,8 @@
 10pt for everything except Find/Change captions.</t>
 <t tx="ekr.20131114191618.17400">/* Disable this to continually test leoSettings.leo */
 
+/* From leo12-10pt.leo */
+
 /* Documentation of Qt stylesheets at http://doc.trolltech.com/4.2/stylesheet.html */
 
 /* constants - *parsed from this comment*

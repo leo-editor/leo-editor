@@ -22,6 +22,8 @@
 <t tx="ekr.20131114191618.17401"></t>
 <t tx="ekr.20131115071553.1949">/* Disable this to continually test leoSettings.leo */
 
+/* From leo14-12pt.leo */
+
 /* Documentation of Qt stylesheets at http://doc.trolltech.com/4.2/stylesheet.html */
 
 /* constants - *parsed from this comment*

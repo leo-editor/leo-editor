@@ -20,6 +20,8 @@
 <t tx="ekr.20131115092348.16664"></t>
 <t tx="ekr.20131115092348.17397">/* Disable this to continually test leoSettings.leo */
 
+/* From leo14pt-ekr.leo */
+
 /* Documentation of Qt stylesheets at http://doc.trolltech.com/4.2/stylesheet.html */
 
 /* constants - *parsed from this comment*
