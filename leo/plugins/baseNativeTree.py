@@ -828,6 +828,13 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         if e:
             # A nice hack: just set the focus request.
             c.requestedFocusWidget = e
+            
+            # following lines were added by Vitalije 2013/11/16
+            # copied from onItemDoubleClicked (nativeTree)
+            wrapper.setEditorColors(
+                    c.k.insert_mode_bg_color,
+                    c.k.insert_mode_fg_color)
+            
 
         # 2012/09/27.
         g.app.gui.add_border(c,c.frame.tree.treeWidget)
