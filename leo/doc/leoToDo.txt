@@ -6,9 +6,7 @@
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 
-* Start work on videos!
-
-** Does Leo allow comments after @data setting-name?
+* Does Leo allow comments after @data setting-name?
 
 - Do all common vim commands:
     - Leave arrow keys and control keys unchanged.
@@ -17,10 +15,7 @@
 
 * Gallery of screen shots: different font sizes, coloring schemes, plugins, etc.
 
-* Create github repo (call speed).
-
-* Too much flash when doing date;;
-
+* Create github repo (call Speed).
 .. @+node:ekr.20131115120119.17434: *3* Improve tab pane?
 @language rest
 

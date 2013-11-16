@@ -7486,11 +7486,10 @@ class leoQtGui(leoGui.leoGui):
     #@+node:ekr.20111022215436.16685: *4* Borders (qtGui)
     #@+node:ekr.20120927164343.10092: *5* add_border (qtGui)
     def add_border(self,c,w):
-
-        state = c.k and c.k.unboundKeyAction
-
-        if state and c.use_focus_border:
         
+        trace = False and not g.unitTesting
+        state = c.k and c.k.unboundKeyAction
+        if state and c.use_focus_border:
             d = {
                 'command':  c.focus_border_command_state_color,
                 'insert':   c.focus_border_color,
@@ -7498,32 +7497,29 @@ class leoQtGui(leoGui.leoGui):
             }
             color = d.get(state,c.focus_border_color)
             name = g.u(w.objectName())
-            if name =='richTextEdit':
-                w = c.frame.top.leo_body_inner_frame
-                self.paint_qframe(w,color)
-            elif name.startswith('head'):
-                pass
-            else:
-                # Always use the default border color for the tree.
+            if trace: g.trace(name,'color',color)
+            # if name =='richTextEdit':
+                # w = c.frame.top.leo_body_inner_frame
+                # self.paint_qframe(w,color)
+            # elif
+            if not name.startswith('head'):
+                selector = w.__class__.__name__
                 color = c.focus_border_color
                 sheet = "border: %spx solid %s" % (c.focus_border_width,color)
-                self.update_style_sheet(w,'border',sheet,selector=w.__class__.__name__)
+                self.update_style_sheet(w,'border',sheet,selector=selector)
     #@+node:ekr.20120927164343.10093: *5* remove_border (qtGui)
     def remove_border(self,c,w):
 
-        if not c.use_focus_border:
-            return
-
-        name = g.u(w.objectName())
-        width = c.focus_border_width
-        if w.objectName()=='richTextEdit':
-            w = c.frame.top.leo_body_inner_frame
-            self.paint_qframe(w,'white')
-        elif name.startswith('head'):
-            pass
-        else:
-            sheet = "border: %spx solid white" % width
-            self.update_style_sheet(w,'border',sheet,selector=w.__class__.__name__)
+        if c.use_focus_border:
+            name = g.u(w.objectName())
+            # if w.objectName()=='richTextEdit':
+                # w = c.frame.top.leo_body_inner_frame
+                # self.paint_qframe(w,'white')
+            # elif
+            if not name.startswith('head'):
+                selector = w.__class__.__name__
+                sheet = "border: %spx solid white" % c.focus_border_width
+                self.update_style_sheet(w,'border',sheet,selector=selector)
     #@+node:ekr.20120927164343.10094: *5* paint_qframe (qtGui)
     def paint_qframe (self,w,color):
 
