@@ -1,7 +1,9 @@
-#@+leo-ver=5-thin
-#@+node:ekr.20100120072650.6089: * @file ../doc/leoProjects.txt
-#@+all
-#@+node:ekr.20131111061547.16464: ** vim project
+.. @+leo-ver=5-thin
+.. @+node:ekr.20100120072650.6089: * @file ../doc/leoProjects.txt
+.. @@language rest
+
+.. @+all
+.. @+node:ekr.20131111061547.16464: ** vim project
 @language rest
 
 To do: 
@@ -16,9 +18,9 @@ To do:
 https://groups.google.com/forum/#!topic/leo-editor/OSe0_D5tmJQ
 
 http://stackoverflow.com/questions/7325052/can-someone-explain-to-me-why-the-dot-command-is-so-useful-in-vim
-#@+node:ekr.20100113075303.6270: *3* Vim problems (from TL)
+.. @+node:ekr.20100113075303.6270: *3* Vim problems (from TL)
 # None of these is easily solvable in Leo's present environment.
-#@+node:ekr.20100112051224.6239: *4* Displaying mode help
+.. @+node:ekr.20100112051224.6239: *4* Displaying mode help
 The "--> mode-help" command has the following issues related to the
 display of the "Help" tab:
 
@@ -39,15 +41,15 @@ For example, the following entries would change from::
 to::
     d : vi-delete-line
     b : vi-delete-to-begin-of-word
-#@+node:ekr.20100112051224.6225: *4* Repeat last cursor movement command
+.. @+node:ekr.20100112051224.6225: *4* Repeat last cursor movement command
 Support the ';' key: repeat the last "To character" or "Find character" command.
-#@+node:ekr.20100113075303.6271: *4* Need mode-oriented bindings
+.. @+node:ekr.20100113075303.6271: *4* Need mode-oriented bindings
 Mapping a number to a command or an @mode node works but can not be used as it
 prevents the number from being entered as text while in Vi's insert state.
 
 Binding 'bksp' key to back-char to move back a character in command mode
 prevents 'bksp' from deleting characters in text edit mode.
-#@+node:ekr.20080616110054.2: *4* Support vim dot command
+.. @+node:ekr.20080616110054.2: *4* Support vim dot command
 The ability to repeat the last editing related command by pressing the period
 key is not supported and there is no workaround in place.
 
@@ -79,7 +81,7 @@ Notes:
 - The same or a separate storage location can be used for all commands to retain
   a copy of the character entered by the user. It doesn't matter since only the
   last command is assigned to the period key to be re-executed.
-#@+node:ekr.20100112051224.6238: *4* Some commands do not work in headline
+.. @+node:ekr.20100112051224.6238: *4* Some commands do not work in headline
 Leo functions exist which unconditionally set focus to the body pane
 regardless of the active pane.
 
@@ -91,7 +93,7 @@ Using the "undo" command (key 'u') to undo a change to a node's headline text
 only works correctly after another node has been selected. It appears that
 changes made to a node's headline text are not recorded in Leo's change history
 until the edited node has lost focus.
-#@+node:ekr.20100112051224.6222: *4* Commands requesting user input
+.. @+node:ekr.20100112051224.6222: *4* Commands requesting user input
 Commands requesting user input must be the last command executed within an @mode
 node. This prevents the implementation of commands such as "yank to <character>"
 that requires a "copy to clipboard" operation after the "find-character"
@@ -100,7 +102,7 @@ command.
 ======
 
 Maybe we just need more commands...
-#@+node:ekr.20100112051224.6223: *4* Editing node headlines using @mode nodes
+.. @+node:ekr.20100112051224.6223: *4* Editing node headlines using @mode nodes
 Commands modifying or selecting headline text do not work correctly within a
 @mode node.
 
@@ -108,16 +110,16 @@ This eliminates accurate implementation of vi's delete/change/substitute/yank
 object commands. As a workaround, the commands are currently written to only
 select the text. The user must perform the subsequent delete, change,
 substitute, and yank.
-#@+node:ekr.20100112051224.6246: *4* Missing commands/features
-#@+node:ekr.20100112051224.6234: *5* Move current line (to screen position)
+.. @+node:ekr.20100112051224.6246: *4* Missing commands/features
+.. @+node:ekr.20100112051224.6234: *5* Move current line (to screen position)
 Vi has a collection of "z<movement>" commands that will move the
 current line to the top, middle, and bottom of the screen.  They are
 not supported in Leo.
-#@+node:ekr.20100112051224.6235: *5* Move body text up/down
+.. @+node:ekr.20100112051224.6235: *5* Move body text up/down
 Vi maps keys to scroll the text up/down one line and by half the
 number of visible lines.  Leo does not support this.
 
-#@+node:ekr.20110529115328.18247: *5* Block cursor
+.. @+node:ekr.20110529115328.18247: *5* Block cursor
 Having worked with Tk text canvases more that Qt, there still seem to
 be things that it had that have to be worked around as the Qt people
 just haven't seen the need for.
@@ -125,7 +127,7 @@ just haven't seen the need for.
 One is the block cursor, I giving Leo Vim like functionality, it would
 be nice if one where supported, theses new kids just don't understand
 something so primitive I guess.
-#@+node:ekr.20110202094848.12568: *5* Named marks
+.. @+node:ekr.20110202094848.12568: *5* Named marks
 Another is named marks, in Vim you can store a number of cursor
 locations, and recall them to jump around in your code.  This was also
 useful in filling out templates as each stop could be given a name
@@ -138,8 +140,8 @@ used and which ones were being bypassed.
 
 As these things had an actual presence in the text buffer, it going to
 be a little harder to come up with a reasonable work around.
-#@+node:ekr.20110115062009.6025: *4* Commands that work differently in Vim
-#@+node:ekr.20100112051224.6236: *5* Two kinds of words
+.. @+node:ekr.20110115062009.6025: *4* Commands that work differently in Vim
+.. @+node:ekr.20100112051224.6236: *5* Two kinds of words
 Vi supports two types of words in its commands:
 
 1. Words that consist of only a subset of the character set and
@@ -148,7 +150,7 @@ Vi supports two types of words in its commands:
 Leo's always considers a word to consist of a subset of characters
 although some word related commands include different characters
 than others.
-#@+node:ekr.20090629183608.8446: *5* Copy/paste/yank/delete
+.. @+node:ekr.20090629183608.8446: *5* Copy/paste/yank/delete
 Yank vs. Yank:
 Vi's "yank" commands copy the selected text TO the clipboard.
 Leo's "yank" commands insert text FROM the clipboard.
@@ -166,7 +168,7 @@ The paste-text command does not work within an @mode node.  Leo's
 delete-node does not copy node to clipboard:
 A copy-node command is issued to copy the node to the clipboard
 followed by the delete-node command.
-#@+node:ekr.20100521090440.5887: *4* Generalize minibuffer code
+.. @+node:ekr.20100521090440.5887: *4* Generalize minibuffer code
 @nocolor-node
 
 From Tom L
@@ -186,7 +188,7 @@ Sinc I'm only modifying existing code without real understanding of
 what Leo is doing, any guidance would be appreciated.
 
 Tom
-#@+node:ekr.20100112051224.6226: *4* Vim-related: Range prefix to commands/objects (k.getArgs)
+.. @+node:ekr.20100112051224.6226: *4* Vim-related: Range prefix to commands/objects (k.getArgs)
 The ability to specify a numeric range prefix is not supported. For example,
 entering "3dd" will not delete the next three lines and "20G" will not move the
 cursor to the 20th line in the file.
@@ -194,9 +196,9 @@ cursor to the 20th line in the file.
 The ability to specify a numeric range prefix to an object is not supported. For
 example, the "d2fx" command should Delete up to and including the 2nd Found "x"
 character.
-#@+node:ekr.20131105122124.16479: *3* vim reference card
+.. @+node:ekr.20131105122124.16479: *3* vim reference card
 @killcolor
-#@+node:ekr.20131105122124.16482: *4*  keys (do not sort!!)
+.. @+node:ekr.20131105122124.16482: *4*  keys (do not sort!!)
     <BS>        delete the character in front of the cursor
 N   <Del>       delete N characters under and after the cursor
     <Del>       delete the character under the cursor
@@ -415,7 +417,7 @@ VIS y               yank the highlighted text
     z<CR> or zt     redraw, current line at top of window
 N   zh              scroll screen N characters to the right
 N   zl              scroll screen N characters to the left
-#@+node:ekr.20131108082341.18235: *4* motion keys
+.. @+node:ekr.20131108082341.18235: *4* motion keys
     CTRL-B  (motion?) cursor to beginning of command-line
     CTRL-E  (motion?) cursor to end of command-line
     N   .   (motion?) repeat last change (with count replaced with N)
@@ -516,7 +518,7 @@ N   n       (motion?) repeat last search
     o       (motion?) exchange cursor position with start of highlighting
 N   t<char> (motion) till before the Nth occurrence of <char> to the right
 N   w       (motion) N words forward
-#@+node:ekr.20131108082341.18226: *4* motions
+.. @+node:ekr.20131108082341.18226: *4* motions
 @color
 
 w   to start of next word, excluding it's first character.
@@ -583,7 +585,7 @@ N ]]
 N ][ 	    
 N [[ 	    
 N [] 	
-#@+node:ekr.20131105122124.16483: *4* vim regex
+.. @+node:ekr.20131105122124.16483: *4* vim regex
                                            Value of magic option
                                            ---------------------
                         meaning            magic       nomagic
@@ -614,7 +616,7 @@ matches 1 or more of the preceding atom      \+           \+
    matches 0 or 1 of the preceding atom      \=           \=
                  separates two branches      \|           \|
            group a pattern into an atom      \(\)         \(\)
-#@+node:ekr.20131105122124.16484: *4* keys in insert mode
+.. @+node:ekr.20131105122124.16484: *4* keys in insert mode
     char                action in Insert mode
     ----                --------------------- 
  
@@ -650,7 +652,7 @@ matches 1 or more of the preceding atom      \+           \+
     CTRL-W              delete word before the cursor
     CTRL-X ...          complete the word before the cursor in various ways
     CTRL-Y              insert the character from above the cursor
-#@+node:ekr.20131105122124.16485: *4* complex
+.. @+node:ekr.20131105122124.16485: *4* complex
 N  !{motion}{command}<CR>  filter the lines that are moved over through {command}
 N  !!{command}<CR>         filter N lines through {command}
    {visual}!{command}<CR>  filter the highlighted lines through {command}
@@ -663,7 +665,7 @@ N  ==                      filter N lines through "indent"
 :[range]s[ubstitute] [g][c]
    &         Repeat previous ":s" on current line without options
 :[range]ret[ab][!] [tabstop]
-#@+node:ekr.20131105122124.16486: *4* text object
+.. @+node:ekr.20131105122124.16486: *4* text object
 Used only in Visual mode or after an operator
 
 a            Select current word
@@ -672,7 +674,7 @@ s            Select current sentence
 p            Select current paragraph
 S            Select current block (from "[(" to "])")
 P            Select current block (from "[{" to "]}")
-#@+node:ekr.20131105122124.16487: *4* offsets after search command
+.. @+node:ekr.20131105122124.16487: *4* offsets after search command
 [num]       [num] lines downwards, in column 1
 +[num]      [num] lines downwards, in column 1
 -[num]      [num] lines upwards, in column 1
@@ -689,7 +691,7 @@ b[-num]     [num] characters to the left of the start (begin) of the match
 /test/e			on the last t of "test"
 /test/s+2		on the 's' of "test"
 /test/b-3		three characters before "test"
-#@+node:ekr.20131105122124.16488: *4* Examples
+.. @+node:ekr.20131105122124.16488: *4* Examples
 :%g/^a/-1join     join lines starting with character 'a' to previous line
 :%g/^ *$/d        delete empty lines
 :%v/vim/m 1       move lines not matching the word 'vim' to line 1
@@ -698,7 +700,7 @@ b[-num]     [num] characters to the left of the start (begin) of the match
 :so[urce] {file}    Read Ex commands from {file}.
 :so[urce]! {file}   Read Vim commands from {file}.
 :sl[eep] [N]        don't do anything for N seconds
-#@+node:ekr.20131105122124.16489: *4* Options overview
+.. @+node:ekr.20131105122124.16489: *4* Options overview
 
 name       short name   explanation
 ----       ----------   -----------
@@ -852,7 +854,7 @@ wrapscan       ws       searches wrap around the end of the file
 writeany       wa       write to file with no need for "!" override
 writebackup    wb       make a backup before overwriting a file
 writedelay     wd       delay this many msec for each char (for debug)
-#@+node:ekr.20131105122124.16490: *4* Command-line completion
+.. @+node:ekr.20131105122124.16490: *4* Command-line completion
 'wildchar' (default: <Tab>)
     do completion on the pattern in front of the cursor. If there are
     multiple matches, beep and show the first one; further 'wildchar' will
@@ -863,7 +865,7 @@ CTRL-D  list all names that match the pattern in front of the cursor
 CTRL-L  insert longest common part of names that match pattern
 CTRL-N  after 'wildchar' with multiple matches: go to next match
 CTRL-P  after 'wildchar' with multiple matches: go to previous match
-#@+node:ekr.20131105122124.16491: *4* Special Ex characters
+.. @+node:ekr.20131105122124.16491: *4* Special Ex characters
 
 |           separates two commands (not for ":global" and ":!")
 "           begins comment
@@ -884,7 +886,7 @@ After "%", "#", "<cfile>", or "<afile>"
 :t          tail
 :r          root
 :e          extension
-#@+node:ekr.20131105122124.16492: *4* Ex ranges
+.. @+node:ekr.20131105122124.16492: *4* Ex ranges
 ,               separates two line numbers
 ;               idem, set cursor to the first line number
                 before interpreting the second one
@@ -898,7 +900,7 @@ $               the last line in the file
 ?{pattern}[?]   the previous line where {pattern} matches
 +[num]          add [num] to the preceding line number (default: 1)
 -[num]          subtract [num] from the preceding line number (default: 1)
-#@+node:ekr.20131105122124.16493: *4* Starting vim
+.. @+node:ekr.20131105122124.16493: *4* Starting vim
 38 -- Starting VIM
 
 
@@ -953,7 +955,7 @@ Automatic execution of commands on certain events.
 :au! * {pat}            Remove all autocommands for {pat}
 :au! {event} {pat}      Remove all autocommands for {event} with {pat}
 :au! {event} {pat} {cmd}  Remove all autocommands for {event} with {pat} and enter new one
-#@+node:ekr.20131105122124.16494: *4* : commands unsorted
+.. @+node:ekr.20131105122124.16494: *4* : commands unsorted
 :marks                  print the active marks
 :ju[mps]                print the jump list
 :ta[g][!] {tag}         Jump to tag {tag}
@@ -1104,7 +1106,7 @@ Automatic execution of commands on certain events.
 :sbrewind           to first arg/buf (in new window)
 :sblast             to last arg/buf (in new window)
 :[N]sbmod [N]       to Nth modified buf (in new window)
-#@+node:ekr.20131105122124.16495: *4* : commands merged (do not sort!)
+.. @+node:ekr.20131105122124.16495: *4* : commands merged (do not sort!)
 :!{command}                     execute {command} with a shell
 :@<a-z>                         execute the contents of register <a-z> as an Ex command
 :@@                             repeat previous :@<a-z>
@@ -1244,7 +1246,7 @@ Automatic execution of commands on certain events.
 :wv[iminfo]! [file]             write info to viminfo file [file]
 :x[it][!] [file]                like ":wq" but write only when changes have been made
 :xall[!]  or :wqall[!]          Write all changed buffers and exit
-#@+node:ekr.20131113045621.16547: *3* class VimCommands
+.. @+node:ekr.20131113045621.16547: *3* class VimCommands
 class VimCommands:
     '''
     A class that handles most aspects of vim simulation in Leo.
@@ -1262,13 +1264,13 @@ class VimCommands:
     '''
 
     @others
-#@+node:ekr.20131111105746.16545: *4*  vc.Birth
-#@+node:ekr.20131109170017.16507: *5* vc.ctor
+.. @+node:ekr.20131111105746.16545: *4*  vc.Birth
+.. @+node:ekr.20131109170017.16507: *5* vc.ctor
 def __init__(self,c):
 
     self.init_ivars(c)
     self.create_dicts()
-#@+node:ekr.20131109170017.46983: *5* vc.create_dicts & helpers
+.. @+node:ekr.20131109170017.46983: *5* vc.create_dicts & helpers
 def create_dicts(self):
 
     dump = False
@@ -1292,7 +1294,7 @@ def create_dicts(self):
         assert hasattr(self,ivar),ivar
 
     
-#@+node:ekr.20131110050932.16536: *6* check_dicts
+.. @+node:ekr.20131110050932.16536: *6* check_dicts
 def check_dicts(self):
     
     # Check user settings.
@@ -1304,7 +1306,7 @@ def check_dicts(self):
         aList = d2.get('tail_chars')
         if aList and len(aList) > 1 and None in aList and not pattern:
             g.trace('ambiguous entry for %s: %s' % (ch,d2))
-#@+node:ekr.20131110050932.16529: *6* create_command_tails_d
+.. @+node:ekr.20131110050932.16529: *6* create_command_tails_d
 def create_command_tails_d(self,dump):
 
     # @data vim-command-tails
@@ -1322,7 +1324,7 @@ def create_command_tails_d(self,dump):
             g.trace('bad command: %s' % s)
     if False or dump: self.dump('command_tails_d',d)
     return d
-#@+node:ekr.20131110050932.16532: *6* create_commands_d
+.. @+node:ekr.20131110050932.16532: *6* create_commands_d
 def create_commands_d(self,dump):
     
     # @data vim-commands
@@ -1363,7 +1365,7 @@ def create_commands_d(self,dump):
             g.trace('missing command chars: %s' % (s))
     if trace or dump: self.dump('command_d',d)
     return d
-#@+node:ekr.20131110050932.16530: *6* create_motion_tails_d
+.. @+node:ekr.20131110050932.16530: *6* create_motion_tails_d
 def create_motion_tails_d(self,dump):
 
     # @data vim-motion-tails
@@ -1382,7 +1384,7 @@ def create_motion_tails_d(self,dump):
             g.trace('bad command: %s' % s)
     if False or dump: self.dump('motion_tails_d',d)
     return d
-#@+node:ekr.20131110050932.16531: *6* create_motions_d
+.. @+node:ekr.20131110050932.16531: *6* create_motions_d
 def create_motions_d(self,dump):
     
     # @data vim-motions
@@ -1412,7 +1414,7 @@ def create_motions_d(self,dump):
         d[ch] = d2
     if False or dump: self.dump('motions_d',d)
     return d
-#@+node:ekr.20131111061547.16460: *6* create_dispatch_d
+.. @+node:ekr.20131111061547.16460: *6* create_dispatch_d
 def create_dispatch_d(self):
     oops = self.oops
     d = {
@@ -1497,7 +1499,7 @@ def create_dispatch_d(self):
     'vim_z': oops,
     }
     return d
-#@+node:ekr.20131109170017.46985: *6* getData
+.. @+node:ekr.20131109170017.46985: *6* getData
 def getData(self,s):
     
     trace = False and not g.unitTesting
@@ -1511,7 +1513,7 @@ def getData(self,s):
             return []
     else:
         return c.config.getData(s) or []
-#@+node:ekr.20131111105746.16547: *5* vc.init_ivars
+.. @+node:ekr.20131111105746.16547: *5* vc.init_ivars
 def init_ivars(self,c):
     
     self.c = c
@@ -1535,8 +1537,8 @@ def init_ivars(self,c):
     self.tail = None
     self.n1 = None
     self.n2 = None
-#@+node:ekr.20131111105746.16546: *4*  vc.helpers
-#@+node:ekr.20131109170017.46984: *5* vc.dump
+.. @+node:ekr.20131111105746.16546: *4*  vc.helpers
+.. @+node:ekr.20131109170017.46984: *5* vc.dump
 def dump(self,name,d):
     '''Dump a dictionary.'''
     print('\nDump of %s' % name)
@@ -1562,7 +1564,7 @@ def dump(self,name,d):
                 print('%s\n%s' % (key,val3))
         else:
             print('%5s %s' % (key,val))
-#@+node:ekr.20131111054309.16528: *5* vc.exec_
+.. @+node:ekr.20131111054309.16528: *5* vc.exec_
 def exec_(self,command,n1,n2,tail):
     
     trace = False
@@ -1579,16 +1581,16 @@ def exec_(self,command,n1,n2,tail):
     if trace: self.trace_command()
     for i in range(n1 or 1):
         func()
-#@+node:ekr.20131111061547.16461: *5* vc.oops
+.. @+node:ekr.20131111061547.16461: *5* vc.oops
 def oops(self):
     
     self.trace_command()
     
-#@+node:ekr.20131112061353.16542: *5* vc.repr_list
+.. @+node:ekr.20131112061353.16542: *5* vc.repr_list
 def repr_list(self,aList):
 
     return ','.join([repr(z) if z is None else z for z in aList])
-#@+node:ekr.20131111061547.18011: *5* vc.runAtIdle
+.. @+node:ekr.20131111061547.18011: *5* vc.runAtIdle
 # For testing: ensure that this always gets called.
 
 def runAtIdle (self,aFunc):
@@ -1598,7 +1600,7 @@ def runAtIdle (self,aFunc):
     '''
     if QtCore:
         QtCore.QTimer.singleShot(0,aFunc)
-#@+node:ekr.20131110050932.16533: *5* vc.scan & helpers
+.. @+node:ekr.20131110050932.16533: *5* vc.scan & helpers
 def scan(self,s):
     
     trace = False ; verbose = True
@@ -1633,7 +1635,7 @@ def scan(self,s):
     assert command is None or len(command) == 1
         # Commands are single letters!
     return status,n1,command,n2,tail
-#@+node:ekr.20131112061353.16543: *6* vc.match_motion_tails
+.. @+node:ekr.20131112061353.16543: *6* vc.match_motion_tails
 def match_motion_tails(self,tail,pattern,tails):
     
     trace = False
@@ -1664,7 +1666,7 @@ def match_motion_tails(self,tail,pattern,tails):
     assert status in ('done','oops','scan'),status
     return status
     
-#@+node:ekr.20131112061353.16541: *6* vc.match_tails
+.. @+node:ekr.20131112061353.16541: *6* vc.match_tails
 def match_tails(self,s,pattern,tails):
     '''s is the tail of a command. See if it matches any tail in tails.'''
     trace = False
@@ -1703,7 +1705,7 @@ def match_tails(self,s,pattern,tails):
     else:
         if trace: g.trace('no match: %s' % s)
         return 'oops',n2,s
-#@+node:ekr.20131110050932.16559: *6* vc.scan_any_pattern
+.. @+node:ekr.20131110050932.16559: *6* vc.scan_any_pattern
 def scan_any_pattern(self,pattern,s):
     '''Scan s, looking for the indicated pattern.'''
     trace = False
@@ -1720,7 +1722,7 @@ def scan_any_pattern(self,pattern,s):
         n2,result,status = None,s,'oops'
     if trace: g.trace(status,pattern,s,result,n2)
     return status,result,n2
-#@+node:ekr.20131110050932.16540: *6* vc.scan_count
+.. @+node:ekr.20131110050932.16540: *6* vc.scan_count
 def scan_count(self,s):
 
     # Zero is a command.  It does not start repeat counts.
@@ -1731,7 +1733,7 @@ def scan_count(self,s):
         return i,int(s[:i])
     else:
         return 0,None
-#@+node:ekr.20131110050932.16558: *6* vc.scan_motion
+.. @+node:ekr.20131110050932.16558: *6* vc.scan_motion
 def scan_motion(self,s):
     
     trace = False
@@ -1749,7 +1751,7 @@ def scan_motion(self,s):
         status = 'scan'
     if trace: g.trace(status,n2,motion)
     return status,n2,motion
-#@+node:ekr.20131112104359.16686: *6* vc.simulate_typing
+.. @+node:ekr.20131112104359.16686: *6* vc.simulate_typing
 def simulate_typing (self,s):
     '''Simulate typing of command s.
     Return (status,head) for increasing prefixes of s, including s.
@@ -1764,7 +1766,7 @@ def simulate_typing (self,s):
         yield 'scan',head
     if trace: g.trace('done',s)
     yield 'done',s
-#@+node:ekr.20131110050932.16501: *6* vc.split_arg_line
+.. @+node:ekr.20131110050932.16501: *6* vc.split_arg_line
 def split_arg_line(self,s):
     '''
     Split line s into a head and tail.
@@ -1774,59 +1776,59 @@ def split_arg_line(self,s):
     head = s[:i]
     tail = s[i:].strip()
     return head,tail
-#@+node:ekr.20131111061547.16462: *5* vc.trace_command
+.. @+node:ekr.20131111061547.16462: *5* vc.trace_command
 def trace_command(self):
     
     func_name = self.func and self.func.__name__ or 'oops'
     print('%s func: %s command: %r n1: %r n2: %r tail: %r' % (
         g.callers(1),func_name,self.command,self.n1,self.n2,self.tail))
-#@+node:ekr.20131111061547.16467: *4* vc.commands
-#@+node:ekr.20131111061547.16468: *5* vim_h/j/k/l
-#@+node:ekr.20131111171616.16498: *6* vim_d
+.. @+node:ekr.20131111061547.16467: *4* vc.commands
+.. @+node:ekr.20131111061547.16468: *5* vim_h/j/k/l
+.. @+node:ekr.20131111171616.16498: *6* vim_d
 def vim_d(self):
     
     g.trace(self.command,self.tail)
-#@+node:ekr.20131111061547.18012: *6* vim_h
+.. @+node:ekr.20131111061547.18012: *6* vim_h
 def vim_h(self):
     '''Move cursor left.'''
     if self.extend:
         self.c.editCommands.backCharacterExtendSelection(self.event)
     else:
         self.c.editCommands.backCharacter(self.event)
-#@+node:ekr.20131111061547.18013: *6* vim_j
+.. @+node:ekr.20131111061547.18013: *6* vim_j
 def vim_j(self):
     '''Move cursor down.'''
     if self.extend:
         self.c.editCommands.nextLineExtendSelection(self.event)
     else:
         self.c.editCommands.nextLine(self.event)
-#@+node:ekr.20131111061547.18014: *6* vim_k
+.. @+node:ekr.20131111061547.18014: *6* vim_k
 def vim_k(self):
     '''Move cursor up.'''
     if self.extend:
         self.c.editCommands.prevLineExtendSelection(self.event)
     else:
         self.c.editCommands.prevLine(self.event)
-#@+node:ekr.20131111061547.18015: *6* vim_l
+.. @+node:ekr.20131111061547.18015: *6* vim_l
 def vim_l(self):
     '''Move cursor right.'''
     if self.extend:
         self.c.editCommands.forwardCharacterExtendSelection(self.event)
     else:
         self.c.editCommands.forwardCharacter(self.event)
-#@+node:ekr.20131111105746.16544: *5* vim_dot
+.. @+node:ekr.20131111105746.16544: *5* vim_dot
 def vim_dot(self):
     
     g.trace()
-#@+node:ekr.20131111171616.16496: *5* vim_at
+.. @+node:ekr.20131111171616.16496: *5* vim_at
 def vim_at(self):
     
     g.trace(self.command,self.tail)
-#@+node:ekr.20131111171616.16497: *5* vim_m
+.. @+node:ekr.20131111171616.16497: *5* vim_m
 def vim_m(self):
     
     g.trace(self.command,self.tail)
-#@+node:ekr.20131111161433.16516: *3* @test vr.exec_ (also in unitTest.leo)
+.. @+node:ekr.20131111161433.16516: *3* @test vr.exec_ (also in unitTest.leo)
 import imp
 import leo.core.leoVim as leoVim
 imp.reload(leoVim)
@@ -1858,7 +1860,7 @@ for s in table:
 if g.unitTesting:
     # Unit testing messes up the focus.
     vc.runAtIdle(c.bodyWantsFocusNow)
-#@+node:ekr.20131112061353.16538: *3* @test vr.scan
+.. @+node:ekr.20131112061353.16538: *3* @test vr.scan
 import leo.core.leoVim as leoVim
 if 1: # When running from leoPy.leo
     import imp
@@ -1904,7 +1906,7 @@ if trace_time:
     delta = time.clock()-t1
     print("%s %6.6f sec." % (n,delta/n))
 
-#@+node:ekr.20131112061353.16539: *4* << define test tables >>
+.. @+node:ekr.20131112061353.16539: *4* << define test tables >>
 # To do: handle d2d, 2dd, etc.
 if 0: # Individual test:
     complete_table = ('ta',)
@@ -1936,7 +1938,7 @@ else:
     error_table = (
         'gX','ZA',
     )
-#@+node:ekr.20131112152450.16537: *3* k.getVimArg
+.. @+node:ekr.20131112152450.16537: *3* k.getVimArg
 def getVimArg(self,event,specialStroke=None,specialFunc=None):
     '''Handle all keys in the minibuffer when c.vim_mode is True.'''
     ### help=False,
@@ -2016,14 +2018,14 @@ def getVimArg(self,event,specialStroke=None,specialFunc=None):
             # ring bell?
             if trace: g.trace('invalid char') ###
         c.bodyWantsFocus()
-#@+node:ekr.20061031131434.74: *3* class keyHandlerClass
+.. @+node:ekr.20061031131434.74: *3* class keyHandlerClass
 class keyHandlerClass:
 
     '''A class to support emacs-style commands.'''
 
     @others
-#@+node:ekr.20061031131434.75: *4*  k.Birth
-#@+node:ekr.20061031131434.76: *5* k.__init__
+.. @+node:ekr.20061031131434.75: *4*  k.Birth
+.. @+node:ekr.20061031131434.76: *5* k.__init__
 def __init__ (self,c):
 
     '''Create a key handler for c.'''
@@ -2063,7 +2065,7 @@ def __init__ (self,c):
 
     self.setDefaultUnboundKeyAction()
     self.setDefaultEditingAction() # 2011/02/09
-#@+node:ekr.20061031131434.78: *5* k.defineExternallyVisibleIvars
+.. @+node:ekr.20061031131434.78: *5* k.defineExternallyVisibleIvars
 def defineExternallyVisibleIvars(self):
 
     self.abbrevOn = False
@@ -2085,7 +2087,7 @@ def defineExternallyVisibleIvars(self):
     # self.regx = g.bunch(iter=None,key=None)
     self.repeatCount = None
     self.state = g.bunch(kind=None,n=None,handler=None)
-#@+node:ekr.20061031131434.79: *5* k.defineInternalIvars
+.. @+node:ekr.20061031131434.79: *5* k.defineInternalIvars
 def defineInternalIvars(self):
 
     self.abbreviationsDict = {}
@@ -2139,7 +2141,7 @@ def defineInternalIvars(self):
     self.modeBindingsDict = {}
     self.modeWidget = None
     self.silentMode = False
-#@+node:ekr.20080509064108.7: *5* k.defineMultiLineCommands
+.. @+node:ekr.20080509064108.7: *5* k.defineMultiLineCommands
 def defineMultiLineCommands (self):
 
     k = self
@@ -2235,7 +2237,7 @@ def defineMultiLineCommands (self):
         'find-next',
         'find-prev',
     ]
-#@+node:ekr.20120217070122.10479: *5* k.defineSettingIvars
+.. @+node:ekr.20120217070122.10479: *5* k.defineSettingIvars
 def defineSettingsIvars(self):
 
     # Part 1: These were in the ctor.
@@ -2272,7 +2274,7 @@ def defineSettingsIvars(self):
     self.unselected_body_fg_color = getColor('unselected_body_fg_color') or bg
 
     # g.trace(self.c.shortFileName())
-#@+node:ekr.20080509064108.6: *5* k.defineSingleLineCommands
+.. @+node:ekr.20080509064108.6: *5* k.defineSingleLineCommands
 def defineSingleLineCommands (self):
 
     k = self
@@ -2370,7 +2372,7 @@ def defineSingleLineCommands (self):
         'insert-register',
         'prepend-to-register',
     ]
-#@+node:ekr.20070123085931: *5* k.defineSpecialKeys
+.. @+node:ekr.20070123085931: *5* k.defineSpecialKeys
 def defineSpecialKeys (self):
 
     '''Define k.guiBindNamesDict and k.guiBindNamesInverseDict.
@@ -2428,7 +2430,7 @@ def defineSpecialKeys (self):
     k.guiBindNamesInverseDict = {}
     for key in k.guiBindNamesDict:
         k.guiBindNamesInverseDict [k.guiBindNamesDict.get(key)] = key
-#@+node:ekr.20070123143428: *5* k.defineTkNames
+.. @+node:ekr.20070123143428: *5* k.defineTkNames
 def defineTkNames (self):
 
     k = self
@@ -2482,7 +2484,7 @@ KP_Multiply, KP_Separator,KP_Space, KP_Subtract, KP_Tab,
 KP_F1,KP_F2,KP_F3,KP_F4,
 KP_0,KP_1,KP_2,KP_3,KP_4,KP_5,KP_6,KP_7,KP_8,KP_9,
 Insert
-#@+node:ekr.20061031131434.80: *5* k.finishCreate & helpers
+.. @+node:ekr.20061031131434.80: *5* k.finishCreate & helpers
 def finishCreate (self):
 
     '''Complete the construction of the keyHandler class.
@@ -2501,7 +2503,7 @@ def finishCreate (self):
 
     k.setDefaultInputState()
     k.resetLabel()
-#@+node:ekr.20061031131434.81: *6* createInverseCommandsDict
+.. @+node:ekr.20061031131434.81: *6* createInverseCommandsDict
 def createInverseCommandsDict (self):
 
     '''Add entries to k.inverseCommandsDict using c.commandDict.
@@ -2521,11 +2523,11 @@ def createInverseCommandsDict (self):
         except Exception:
             g.es_exception()
             g.trace(repr(name),repr(f),g.callers())
-#@+node:ekr.20061101071425: *5* oops
+.. @+node:ekr.20061101071425: *5* oops
 def oops (self):
 
     g.trace('Should be defined in subclass:',g.callers(4))
-#@+node:ekr.20110209093958.15413: *5* setDefaultEditingKeyAction (New)
+.. @+node:ekr.20110209093958.15413: *5* setDefaultEditingKeyAction (New)
 def setDefaultEditingAction (self):
 
     k = self ; c = k.c
@@ -2538,7 +2540,7 @@ def setDefaultEditingAction (self):
         action = 'insert'
 
     self.defaultEditingAction = action
-#@+node:ekr.20061031131434.82: *5* setDefaultUnboundKeyAction
+.. @+node:ekr.20061031131434.82: *5* setDefaultUnboundKeyAction
 def setDefaultUnboundKeyAction (self,allowCommandState=True):
 
     k = self ; c = k.c
@@ -2561,8 +2563,8 @@ def setDefaultUnboundKeyAction (self,allowCommandState=True):
     self.defaultUnboundKeyAction = self.unboundKeyAction
 
     k.setInputState(self.defaultUnboundKeyAction)
-#@+node:ekr.20061031131434.88: *4* k.Binding
-#@+node:ekr.20061031131434.89: *5* k.bindKey & helpers
+.. @+node:ekr.20061031131434.88: *4* k.Binding
+.. @+node:ekr.20061031131434.89: *5* k.bindKey & helpers
 def bindKey (self,pane,shortcut,callback,commandName,modeFlag=False,tag=None):
 
     '''Bind the indicated shortcut (a Tk keystroke) to the callback.
@@ -2612,7 +2614,7 @@ def bindKey (self,pane,shortcut,callback,commandName,modeFlag=False,tag=None):
         return False
 
 bindShortcut = bindKey # For compatibility
-#@+node:ekr.20120130074511.10228: *6* k.check_bind_key
+.. @+node:ekr.20120130074511.10228: *6* k.check_bind_key
 def check_bind_key(self,commandName,pane,shortcut):
 
      #k = self
@@ -2631,7 +2633,7 @@ def check_bind_key(self,commandName,pane,shortcut):
         return False
     else:
         return True
-#@+node:ekr.20120130074511.10227: *6* k.kill_one_shortcut
+.. @+node:ekr.20120130074511.10227: *6* k.kill_one_shortcut
 def kill_one_shortcut (self,stroke):
 
     '''Update the dicts so that c.config.getShortcut(name) will return None
@@ -2654,7 +2656,7 @@ def kill_one_shortcut (self,stroke):
     # aList = inv_d.get(stroke,[])
     inv_d[stroke] = []
     c.config.shortcutsDict = lm.uninvert(inv_d)
-#@+node:ekr.20061031131434.92: *6* k.remove_conflicting_definitions
+.. @+node:ekr.20061031131434.92: *6* k.remove_conflicting_definitions
 def remove_conflicting_definitions (self,aList,commandName,pane,shortcut):
 
     trace = False and not g.unitTesting
@@ -2672,7 +2674,7 @@ def remove_conflicting_definitions (self,aList,commandName,pane,shortcut):
         else:
             result.append(si)
     return result
-#@+node:ekr.20061031131434.93: *6* k.bindKeyToDict
+.. @+node:ekr.20061031131434.93: *6* k.bindKeyToDict
 def bindKeyToDict (self,pane,stroke,si):
 
     '''Update k.masterBindingsDict for the stroke.'''
@@ -2683,7 +2685,7 @@ def bindKeyToDict (self,pane,stroke,si):
     d = k.masterBindingsDict.get(pane,{})
     d[stroke] = si
     k.masterBindingsDict [pane] = d
-#@+node:ekr.20061031131434.94: *6* k.bindOpenWith
+.. @+node:ekr.20061031131434.94: *6* k.bindOpenWith
 def bindOpenWith (self,d):
 
     '''Register an open-with command.'''
@@ -2702,7 +2704,7 @@ def bindOpenWith (self,d):
     # Use k.registerCommand to set the shortcuts in the various binding dicts.
     commandName = 'open-with-%s' % name.lower()
     k.registerCommand(commandName,shortcut,openWithCallback,pane='all',verbose=False)
-#@+node:ekr.20061031131434.95: *5* k.checkBindings
+.. @+node:ekr.20061031131434.95: *5* k.checkBindings
 def checkBindings (self):
 
     '''Print warnings if commands do not have any @shortcut entry.
@@ -2722,7 +2724,7 @@ def checkBindings (self):
                     name,abbrev,key))
             else:
                 g.trace('No shortcut for %s = %s' % (name,key))
-#@+node:ekr.20061031131434.97: *5* k.completeAllBindings
+.. @+node:ekr.20061031131434.97: *5* k.completeAllBindings
 def completeAllBindings (self,w=None):
 
     '''New in 4.4b3: make an actual binding in *all* the standard places.
@@ -2736,7 +2738,7 @@ def completeAllBindings (self,w=None):
     for stroke in k.bindingsDict:
         assert g.isStroke(stroke),repr(stroke)
         k.makeMasterGuiBinding(stroke,w=w)
-#@+node:ekr.20061031131434.96: *5* k.completeAllBindingsForWidget
+.. @+node:ekr.20061031131434.96: *5* k.completeAllBindingsForWidget
 def completeAllBindingsForWidget (self,w):
     
     '''Make all a master gui binding for widget w.'''
@@ -2745,7 +2747,7 @@ def completeAllBindingsForWidget (self,w):
     for stroke in k.bindingsDict:
         assert g.isStroke(stroke),repr(stroke)
         k.makeMasterGuiBinding(stroke,w=w)
-#@+node:ekr.20070218130238: *5* k.dumpMasterBindingsDict
+.. @+node:ekr.20070218130238: *5* k.dumpMasterBindingsDict
 def dumpMasterBindingsDict (self):
     
     '''Dump k.masterBindingsDict.'''
@@ -2761,7 +2763,7 @@ def dumpMasterBindingsDict (self):
             si = d2.get(key2)
             assert g.isShortcutInfo(si),si
             g.pr('%20s %s' % (key2,si.commandName))
-#@+node:ekr.20061031131434.99: *5* k.initAbbrev & helper
+.. @+node:ekr.20061031131434.99: *5* k.initAbbrev & helper
 def initAbbrev (self):
 
     k = self ; c = k.c ; d = c.config.getAbbrevDict()
@@ -2773,7 +2775,7 @@ def initAbbrev (self):
             else:
                 self.initOneAbbrev(commandName,key)
 
-#@+node:ekr.20130924035029.12741: *6* k.initOneAbbrev
+.. @+node:ekr.20130924035029.12741: *6* k.initOneAbbrev
 def initOneAbbrev (self,commandName,key):
     
     '''Enter key as an abbreviation for commandName in c.commandsDict.'''
@@ -2789,7 +2791,7 @@ def initOneAbbrev (self,commandName,key):
             # k.inverseCommandsDict[func.__name__] = key
         else:
             g.warning('bad abbrev:',key,'unknown command name:',commandName)
-#@+node:ekr.20061031131434.101: *5* k.initSpecialIvars
+.. @+node:ekr.20061031131434.101: *5* k.initSpecialIvars
 def initSpecialIvars (self):
 
     '''Set ivars for special keystrokes from previously-existing bindings.'''
@@ -2815,7 +2817,7 @@ def initSpecialIvars (self):
                     found = True; break
         if not found and warn:
             g.trace('no setting for %s' % commandName)
-#@+node:ekr.20061031131434.98: *5* k.makeAllBindings
+.. @+node:ekr.20061031131434.98: *5* k.makeAllBindings
 def makeAllBindings (self):
     
     '''Make all key bindings in all of Leo's panes.'''
@@ -2831,7 +2833,7 @@ def makeAllBindings (self):
     k.initAbbrev()
     k.completeAllBindings()
     k.checkBindings()
-#@+node:ekr.20061031131434.102: *5* k.makeBindingsFromCommandsDict & helper
+.. @+node:ekr.20061031131434.102: *5* k.makeBindingsFromCommandsDict & helper
 def makeBindingsFromCommandsDict (self):
 
     '''Add bindings for all entries in c.commandDict.'''
@@ -2880,7 +2882,7 @@ def makeBindingsFromCommandsDict (self):
         t3 = time.time()
         g.trace('%0.2fsec' % (t2-t1))
         g.trace('%0.2fsec' % (t3-t2))
-#@+node:ekr.20061031131434.103: *5* k.makeMasterGuiBinding
+.. @+node:ekr.20061031131434.103: *5* k.makeMasterGuiBinding
 def makeMasterGuiBinding (self,stroke,w=None):
 
     '''Make a master gui binding for stroke in pane w, or in all the standard widgets.'''
@@ -2902,8 +2904,8 @@ def makeMasterGuiBinding (self,stroke,w=None):
         if w not in aList:
             aList.append(w)
             k.masterGuiBindingsDict [stroke] = aList
-#@+node:ekr.20061031131434.104: *4* k.Dispatching
-#@+node:ekr.20061031131434.111: *5* fullCommand (alt-x) & helper
+.. @+node:ekr.20061031131434.104: *4* k.Dispatching
+.. @+node:ekr.20061031131434.111: *5* fullCommand (alt-x) & helper
 def fullCommand (self,event,specialStroke=None,specialFunc=None,help=False,helpHandler=None):
 
     '''Handle 'full-command' (alt-x) mode.'''
@@ -2972,7 +2974,7 @@ def fullCommand (self,event,specialStroke=None,specialFunc=None,help=False,helpH
         k.mb_tabListPrefix = k.getLabel()
         c.minibufferWantsFocus()
         # g.trace('new prefix',k.mb_tabListPrefix)
-#@+node:ekr.20061031131434.112: *6* callAltXFunction
+.. @+node:ekr.20061031131434.112: *6* callAltXFunction
 def callAltXFunction (self,event):
 
     trace = False and not g.unitTesting
@@ -3004,7 +3006,7 @@ def callAltXFunction (self,event):
             k.keyboardQuit()
             k.setLabel('Command does not exist: %s' % commandName)
             c.bodyWantsFocus()
-#@+node:ekr.20061031131434.113: *5* k.endCommand
+.. @+node:ekr.20061031131434.113: *5* k.endCommand
 def endCommand (self,commandName):
 
     '''Make sure Leo updates the widget following a command.
@@ -3029,8 +3031,8 @@ def endCommand (self,commandName):
             c.widgetWantsFocusNow(k.newMinibufferWidget)
             # g.pr('endCommand', g.app.gui.widget_name(k.newMinibufferWidget),g.callers())
             k.newMinibufferWidget = None
-#@+node:ekr.20061031131434.114: *4* k.Externally visible commands
-#@+node:ekr.20061031131434.115: *5* digitArgument & universalArgument
+.. @+node:ekr.20061031131434.114: *4* k.Externally visible commands
+.. @+node:ekr.20061031131434.115: *5* digitArgument & universalArgument
 def universalArgument (self,event):
 
     '''Prompt for a universal argument.'''
@@ -3044,12 +3046,12 @@ def digitArgument (self,event):
     k = self
     k.setLabelBlue('Digit Argument: ',protect=True)
     k.universalDispatcher(event)
-#@+node:ekr.20070613133500: *5* k.menuCommandKey
+.. @+node:ekr.20070613133500: *5* k.menuCommandKey
 def menuCommandKey (self,event=None):
 
     # This method must exist, but it never gets called.
     pass 
-#@+node:ekr.20061031131434.117: *5* negativeArgument (redo?)
+.. @+node:ekr.20061031131434.117: *5* negativeArgument (redo?)
 def negativeArgument (self,event):
 
     '''Prompt for a negative digit argument.'''
@@ -3067,7 +3069,7 @@ def negativeArgument (self,event):
         # func = k.negArgFunctions.get(k.stroke)
         # if func:
             # func(event)
-#@+node:ekr.20061031131434.118: *5* numberCommand
+.. @+node:ekr.20061031131434.118: *5* numberCommand
 def numberCommand (self,event,stroke,number):
 
     '''Enter a number prefix for commands.'''
@@ -3118,7 +3120,7 @@ def numberCommand8 (self,event):
 def numberCommand9 (self,event):
     '''Execute command number 9.'''
     return self.numberCommand (event,None,9)
-#@+node:ekr.20061031131434.119: *5* k.printBindings & helper
+.. @+node:ekr.20061031131434.119: *5* k.printBindings & helper
 def printBindings (self,event=None):
 
     '''Print all the bindings presently in effect.'''
@@ -3178,7 +3180,7 @@ legend:
         g.es('',''.join(result),tabName=tabName)
     k.showStateAndMode()
     return result # for unit test.
-#@+node:ekr.20061031131434.120: *6* printBindingsHelper
+.. @+node:ekr.20061031131434.120: *6* printBindingsHelper
 def printBindingsHelper (self,result,data,prefix):
 
     lm = g.app.loadManager
@@ -3201,7 +3203,7 @@ def printBindingsHelper (self,result,data,prefix):
 
     if data:
         result.append('\n')
-#@+node:ekr.20120520174745.9867: *5* k.printButtons
+.. @+node:ekr.20120520174745.9867: *5* k.printButtons
 def printButtons (self,event=None):
 
     '''Print all @button and @command commands, their bindings and their source.'''
@@ -3237,7 +3239,7 @@ M myLeoSettings.leo
 '''
     legend = g.adjustTripleString(legend,c.tab_width)
     put(''.join(legend))
-#@+node:ekr.20061031131434.121: *5* k.printCommands
+.. @+node:ekr.20061031131434.121: *5* k.printCommands
 def printCommands (self,event=None):
 
     '''Print all the known commands and their bindings, if any.'''
@@ -3262,7 +3264,7 @@ def printCommands (self,event=None):
     # This isn't perfect in variable-width fonts.
     lines = ['%*s %s\n' % (-n,s1,s2) for s1,s2 in data]
     g.es('',''.join(lines),tabName=tabName)
-#@+node:ekr.20061031131434.122: *5* k.repeatComplexCommand & helper
+.. @+node:ekr.20061031131434.122: *5* k.repeatComplexCommand & helper
 def repeatComplexCommand (self,event):
 
     '''Repeat the previously executed minibuffer command.'''
@@ -3273,7 +3275,7 @@ def repeatComplexCommand (self,event):
     else:
         g.warning('no previous command')
 
-#@+node:ekr.20131017100903.16689: *6* repeatComplexCommandHelper
+.. @+node:ekr.20131017100903.16689: *6* repeatComplexCommandHelper
 def repeatComplexCommandHelper (self,event):
 
     k = self ; c = k.c
@@ -3286,7 +3288,7 @@ def repeatComplexCommandHelper (self,event):
     else:
         # g.trace('oops')
         return k.keyboardQuit()
-#@+node:ekr.20061031131434.123: *5* set-xxx-State
+.. @+node:ekr.20061031131434.123: *5* set-xxx-State
 def setCommandState (self,event):
     '''Enter the 'command' editing state.'''
     # g.trace(g.callers())
@@ -3313,7 +3315,7 @@ def setOverwriteState (self,event):
     # This command is also valid in headlines.
     # k.c.bodyWantsFocus()
     k.showStateAndMode()
-#@+node:ekr.20061031131434.124: *5* toggle-input-state
+.. @+node:ekr.20061031131434.124: *5* toggle-input-state
 def toggleInputState (self,event=None):
 
     '''The toggle-input-state command.'''
@@ -3331,8 +3333,8 @@ def toggleInputState (self,event=None):
 
     k.setInputState(state)
     k.showStateAndMode()
-#@+node:ekr.20061031131434.125: *4* k.Externally visible helpers
-#@+node:ekr.20061031131434.128: *5* k.getArg
+.. @+node:ekr.20061031131434.125: *4* k.Externally visible helpers
+.. @+node:ekr.20061031131434.128: *5* k.getArg
 def getArg (self,event,
     returnKind=None,returnState=None,handler=None,
     prefix=None,tabList=[],completion=True,oneCharacter=False,
@@ -3397,7 +3399,7 @@ def getArg (self,event,
         k.mb_tabList = []
         k.updateLabel(event)
         k.mb_tabListPrefix = k.getLabel()
-#@+node:ekr.20061031131434.129: *6* << init altX vars >> k.getArg
+.. @+node:ekr.20061031131434.129: *6* << init altX vars >> k.getArg
 k.argSelectedText = c.frame.body.bodyCtrl.getSelectedText()
     # 2010/09/01: remember the selected text for abbreviations.
 k.argTabList = tabList and tabList[:] or []
@@ -3411,7 +3413,7 @@ k.mb_tabList = []
 # Clear the list: any non-tab indicates that a new prefix is in effect.
 k.mb_tabListPrefix = k.getLabel()
 k.oneCharacterArg = oneCharacter
-#@+node:ekr.20131112152450.16537: *5* k.getVimArg
+.. @+node:ekr.20131112152450.16537: *5* k.getVimArg
 def getVimArg(self,event,specialStroke=None,specialFunc=None):
     '''Handle all keys in the minibuffer when c.vim_mode is True.'''
     ### help=False,
@@ -3491,7 +3493,7 @@ def getVimArg(self,event,specialStroke=None,specialFunc=None):
             # ring bell?
             if trace: g.trace('invalid char') ###
         c.bodyWantsFocus()
-#@+node:ekr.20061031131434.130: *5* k.keyboardQuit
+.. @+node:ekr.20061031131434.130: *5* k.keyboardQuit
 def keyboardQuit (self,event=None,setFocus=True,mouseClick=False):
 
     '''This method clears the state and the minibuffer label.
@@ -3531,7 +3533,7 @@ def keyboardQuit (self,event=None,setFocus=True,mouseClick=False):
     k.setDefaultInputState()
     # This was what caused the unwanted scrolling.
     k.showStateAndMode(setFocus=setFocus)
-#@+node:ekr.20061031131434.126: *5* k.manufactureKeyPressForCommandName (changed)
+.. @+node:ekr.20061031131434.126: *5* k.manufactureKeyPressForCommandName (changed)
 def manufactureKeyPressForCommandName (self,w,commandName):
 
     '''Implement a command by passing a keypress to the gui.'''
@@ -3563,7 +3565,7 @@ def manufactureKeyPressForCommandName (self,w,commandName):
             raise AttributeError(message)
         else:
             g.error(message)
-#@+node:ekr.20071212104050: *5* k.overrideCommand
+.. @+node:ekr.20071212104050: *5* k.overrideCommand
 def overrideCommand (self,commandName,func):
 
     # Override entries in c.k.masterBindingsDict
@@ -3577,7 +3579,7 @@ def overrideCommand (self,commandName,func):
             if si.commandName == commandName:
                 si.func=func
                 d2[key2] = si
-#@+node:ekr.20061031131434.131: *5* k.registerCommand
+.. @+node:ekr.20061031131434.131: *5* k.registerCommand
 def registerCommand (self,commandName,shortcut,func,
     pane='all',verbose=False, wrap=True):
 
@@ -3650,7 +3652,7 @@ def registerCommand (self,commandName,shortcut,func,
                 if d.get(key) == commandName:
                     c.commandsDict [key] = c.commandsDict.get(commandName)
                     break
-#@+node:ekr.20061031131434.127: *5* k.simulateCommand
+.. @+node:ekr.20061031131434.127: *5* k.simulateCommand
 def simulateCommand (self,commandName):
 
     k = self ; c = k.c
@@ -3686,8 +3688,8 @@ def simulateCommand (self,commandName):
         else:
             g.error('simulateCommand: no command for %s' % (commandName))
             return None
-#@+node:ekr.20061031131434.145: *4* k.Master event handlers
-#@+node:ekr.20061031131434.105: *5* k.masterCommand & helpers
+.. @+node:ekr.20061031131434.145: *4* k.Master event handlers
+.. @+node:ekr.20061031131434.105: *5* k.masterCommand & helpers
 def masterCommand (self,commandName=None,event=None,func=None,stroke=None):
 
     '''This is the central dispatching method.
@@ -3764,7 +3766,7 @@ def masterCommand (self,commandName=None,event=None,func=None,stroke=None):
         if c.exists:
             c.frame.updateStatusLine()
         if traceGC: g.printNewObjects('masterCom 4')
-#@+node:ekr.20061031131434.106: *6* << define specialKeysyms >>
+.. @+node:ekr.20061031131434.106: *6* << define specialKeysyms >>
 specialKeysyms = (
     'Alt_L','Alt_R',
     'Meta_L','Meta_R', # Meta support.
@@ -3772,7 +3774,7 @@ specialKeysyms = (
     'Num_Lock',
     'Shift_L','Shift_R',
 )
-#@+node:ekr.20061031131434.110: *6* k.handleDefaultChar
+.. @+node:ekr.20061031131434.110: *6* k.handleDefaultChar
 def handleDefaultChar(self,event,stroke):
 
     k = self ; c = k.c
@@ -3816,7 +3818,7 @@ def handleDefaultChar(self,event,stroke):
         elif trace: g.trace('Not a HighLevelInterface object',w)
     else:
         pass # Ignore the event
-#@+node:ekr.20061031131434.146: *5* k.masterKeyHandler & helpers
+.. @+node:ekr.20061031131434.146: *5* k.masterKeyHandler & helpers
 master_key_count = 0
 
 def masterKeyHandler (self,event):
@@ -3878,7 +3880,7 @@ def masterKeyHandler (self,event):
         if traceGC: g.printNewObjects('masterKey 4')
         if trace: g.trace(' unbound',stroke)
         k.handleUnboundKeys(event,char,stroke)
-#@+node:ekr.20061031131434.147: *6* << define vars >>
+.. @+node:ekr.20061031131434.147: *6* << define vars >>
 w = event and event.widget
 char = event and event.char or ''
 stroke = event and event.stroke or None
@@ -3895,7 +3897,7 @@ special_keys = (
 
 self.master_key_count += 1
 isPlain =  k.isPlainKey(stroke)
-#@+node:ekr.20061031131434.108: *6* callStateFunction
+.. @+node:ekr.20061031131434.108: *6* callStateFunction
 def callStateFunction (self,event):
 
     trace = False and not g.unitTesting
@@ -3926,7 +3928,7 @@ def callStateFunction (self,event):
         else:
             g.error('callStateFunction: no state function for',k.state.kind)
     return val
-#@+node:ekr.20091230094319.6244: *6* doMode
+.. @+node:ekr.20091230094319.6244: *6* doMode
 def doMode (self,event,state,stroke):
 
     trace = False and not g.unitTesting
@@ -3981,7 +3983,7 @@ def doMode (self,event,state,stroke):
         else:
             if trace: g.trace('No state handler for %s' % state)
         return True
-#@+node:ekr.20091230094319.6240: *6* getPaneBinding
+.. @+node:ekr.20091230094319.6240: *6* getPaneBinding
 def getPaneBinding (self,stroke,w):
 
     trace = False and not g.unitTesting
@@ -4038,7 +4040,7 @@ def getPaneBinding (self,stroke,w):
                         return si
 
     return None
-#@+node:ekr.20061031131434.152: *6* handleMiniBindings
+.. @+node:ekr.20061031131434.152: *6* handleMiniBindings
 def handleMiniBindings (self,event,state,stroke):
 
     k = self ; c = k.c
@@ -4087,7 +4089,7 @@ def handleMiniBindings (self,event,state,stroke):
                     return True
 
     return False
-#@+node:ekr.20110209083917.16004: *6* isAutoCompleteChar
+.. @+node:ekr.20110209083917.16004: *6* isAutoCompleteChar
 def isAutoCompleteChar (self,stroke):
 
     '''Return True if stroke is bound to the auto-complete in
@@ -4108,7 +4110,7 @@ def isAutoCompleteChar (self,stroke):
                     if si.commandName == 'auto-complete':
                         return True
     return False
-#@+node:ekr.20080510095819.1: *6* k.handleUnboundKeys
+.. @+node:ekr.20080510095819.1: *6* k.handleUnboundKeys
 def handleUnboundKeys (self,event,char,stroke):
 
     trace = False and not g.unitTesting
@@ -4160,14 +4162,14 @@ def handleUnboundKeys (self,event,char,stroke):
         if trace: g.trace('no func',repr(char),repr(stroke))
         k.masterCommand(event=event,stroke=stroke)
         return
-#@+node:ekr.20061031170011.3: *4* k.Minibuffer
+.. @+node:ekr.20061031170011.3: *4* k.Minibuffer
 # These may be overridden, but this code is now gui-independent.
-#@+node:ekr.20061031131434.135: *5* k.minibufferWantsFocus
+.. @+node:ekr.20061031131434.135: *5* k.minibufferWantsFocus
 # def minibufferWantsFocus(self):
 
     # c = self.c
     # c.widgetWantsFocus(c.miniBufferWidget)
-#@+node:ekr.20061031170011.5: *5* k.getLabel
+.. @+node:ekr.20061031170011.5: *5* k.getLabel
 def getLabel (self,ignorePrompt=False):
 
     k = self ; w = self.w
@@ -4179,7 +4181,7 @@ def getLabel (self,ignorePrompt=False):
         return s[len(k.mb_prefix):]
     else:
         return s or ''
-#@+node:ekr.20080408060320.791: *5* k.killLine
+.. @+node:ekr.20080408060320.791: *5* k.killLine
 def killLine (self,protect=True):
 
     k = self
@@ -4191,7 +4193,7 @@ def killLine (self,protect=True):
     w.setSelectionRange(n,n,insert=n)
     if protect:
         k.mb_prefix = s
-#@+node:ekr.20061031170011.6: *5* k.protectLabel
+.. @+node:ekr.20061031170011.6: *5* k.protectLabel
 def protectLabel (self):
 
     k = self ; w = self.w
@@ -4199,7 +4201,7 @@ def protectLabel (self):
 
     k.mb_prefix = w.getAllText()
 
-#@+node:ekr.20061031170011.7: *5* k.resetLabel
+.. @+node:ekr.20061031170011.7: *5* k.resetLabel
 def resetLabel (self):
 
     k = self ; w = self.w
@@ -4210,7 +4212,7 @@ def resetLabel (self):
         w.setSelectionRange(0,0,insert=0)
         state = k.unboundKeyAction
         k.setLabelBlue(label='%s State' % (state.capitalize()),protect=True)
-#@+node:ekr.20061031170011.8: *5* k.setLabel
+.. @+node:ekr.20061031170011.8: *5* k.setLabel
 def setLabel (self,s,protect=False):
 
     trace = (False or g.trace_minibuffer) and not g.app.unitTesting
@@ -4224,7 +4226,7 @@ def setLabel (self,s,protect=False):
     w.setSelectionRange(n,n,insert=n)
     if protect:
         k.mb_prefix = s
-#@+node:ekr.20061031170011.9: *5* k.extendLabel
+.. @+node:ekr.20061031170011.9: *5* k.extendLabel
 def extendLabel(self,s,select=False,protect=False):
 
     trace = False and not g.unitTesting
@@ -4244,7 +4246,7 @@ def extendLabel(self,s,select=False,protect=False):
 
     if protect:
         k.protectLabel()
-#@+node:ekr.20080408060320.790: *5* k.selectAll
+.. @+node:ekr.20080408060320.790: *5* k.selectAll
 def selectAll (self):
 
     '''Select all the user-editable text of the minibuffer.'''
@@ -4254,7 +4256,7 @@ def selectAll (self):
     w.setSelectionRange(i,j,insert=j)
 
 
-#@+node:ekr.20061031170011.10: *5* k.setLabelBlue
+.. @+node:ekr.20061031170011.10: *5* k.setLabelBlue
 def setLabelBlue (self,label=None,protect=False):
 
     k = self ; w = k.w
@@ -4268,7 +4270,7 @@ def setLabelBlue (self,label=None,protect=False):
 
     if label is not None:
         k.setLabel(label,protect)
-#@+node:ekr.20061031170011.11: *5* k.setLabelGrey
+.. @+node:ekr.20061031170011.11: *5* k.setLabelGrey
 def setLabelGrey (self,label=None):
 
     k = self ; w = self.w
@@ -4280,7 +4282,7 @@ def setLabelGrey (self,label=None):
         k.setLabel(label)
 
 setLabelGray = setLabelGrey
-#@+node:ekr.20080510153327.2: *5* k.setLabelRed
+.. @+node:ekr.20080510153327.2: *5* k.setLabelRed
 def setLabelRed (self,label=None,protect=False):
 
     k = self ; w = self.w
@@ -4292,7 +4294,7 @@ def setLabelRed (self,label=None,protect=False):
 
     if label is not None:
         k.setLabel(label,protect)
-#@+node:ekr.20061031170011.12: *5* k.updateLabel
+.. @+node:ekr.20061031170011.12: *5* k.updateLabel
 def updateLabel (self,event):
 
     '''Mimic what would happen with the keyboard and a Text editor
@@ -4318,7 +4320,7 @@ def updateLabel (self,event):
         else:
             w.insert(ins,ch)
             i = ins+1
-#@+node:ekr.20061031170011.13: *5* k.getEditableTextRange
+.. @+node:ekr.20061031170011.13: *5* k.getEditableTextRange
 def getEditableTextRange (self):
 
     k = self ; w = self.w
@@ -4326,8 +4328,8 @@ def getEditableTextRange (self):
     i = len(k.mb_prefix)
     j = len(s)
     return i,j
-#@+node:ekr.20120208064440.10190: *4* k.Modes (no change)
-#@+node:ekr.20061031131434.100: *5* k.addModeCommands (enterModeCallback)
+.. @+node:ekr.20120208064440.10190: *4* k.Modes (no change)
+.. @+node:ekr.20061031131434.100: *5* k.addModeCommands (enterModeCallback)
 def addModeCommands (self):
 
     '''Add commands created by @mode settings to c.commandsDict and k.inverseCommandsDict.'''
@@ -4348,7 +4350,7 @@ def addModeCommands (self):
         c.commandsDict[key] = f = enterModeCallback
         k.inverseCommandsDict [f.__name__] = key
         if trace: g.trace(f.__name__,key,'len(c.commandsDict.keys())',len(list(c.commandsDict.keys())))
-#@+node:ekr.20061031131434.157: *5* k.badMode
+.. @+node:ekr.20061031131434.157: *5* k.badMode
 def badMode(self,modeName):
 
     k = self
@@ -4356,7 +4358,7 @@ def badMode(self,modeName):
     k.clearState()
     if modeName.endswith('-mode'): modeName = modeName[:-5]
     k.setLabelGrey('@mode %s is not defined (or is empty)' % modeName)
-#@+node:ekr.20061031131434.158: *5* k.createModeBindings
+.. @+node:ekr.20061031131434.158: *5* k.createModeBindings
 def createModeBindings (self,modeName,d,w):
 
     '''Create mode bindings for the named mode using dictionary d for w, a text widget.'''
@@ -4400,7 +4402,7 @@ def createModeBindings (self,modeName,d,w):
                     nextMode=si.nextMode,
                     stroke=stroke)
                 k.masterBindingsDict [ modeName ] = d2
-#@+node:ekr.20120208064440.10179: *5* k.endMode
+.. @+node:ekr.20120208064440.10179: *5* k.endMode
 def endMode(self):
 
     k = self ; c = k.c
@@ -4417,14 +4419,14 @@ def endMode(self):
 
     if w:
         c.widgetWantsFocusNow(w)
-#@+node:ekr.20061031131434.160: *5* k.enterNamedMode
+.. @+node:ekr.20061031131434.160: *5* k.enterNamedMode
 def enterNamedMode (self,event,commandName):
 
     k = self ; c = k.c
     modeName = commandName[6:]
     c.inCommand = False # Allow inner commands in the mode.
     k.generalModeHandler(event,modeName=modeName)
-#@+node:ekr.20061031131434.161: *5* k.exitNamedMode
+.. @+node:ekr.20061031131434.161: *5* k.exitNamedMode
 def exitNamedMode (self,event=None):
 
     '''Exit an input mode.'''
@@ -4435,7 +4437,7 @@ def exitNamedMode (self,event=None):
         k.endMode()
 
     k.showStateAndMode()
-#@+node:ekr.20061031131434.165: *5* k.modeHelp & helper (revise helper)
+.. @+node:ekr.20061031131434.165: *5* k.modeHelp & helper (revise helper)
 def modeHelp (self,event):
 
     '''The mode-help command.
@@ -4451,7 +4453,7 @@ def modeHelp (self,event):
         k.modeHelpHelper(d)
     if not k.silentMode:
         c.minibufferWantsFocus()
-#@+node:ekr.20061031131434.166: *6* modeHelpHelper
+.. @+node:ekr.20061031131434.166: *6* modeHelpHelper
 def modeHelpHelper (self,d):
 
     k = self ; c = k.c ; tabName = 'Mode'
@@ -4485,7 +4487,7 @@ def modeHelpHelper (self,d):
     # This isn't perfect in variable-width fonts.
     for s1,s2 in data:
         g.es('','%*s %s' % (n,s1,s2),tabName=tabName)
-#@+node:ekr.20061031131434.164: *5* k.reinitMode (call k.createModeBindings???)
+.. @+node:ekr.20061031131434.164: *5* k.reinitMode (call k.createModeBindings???)
 def reinitMode (self,modeName):
 
     k = self
@@ -4498,7 +4500,7 @@ def reinitMode (self,modeName):
     else:
         # Do not set the status line here.
         k.setLabelBlue(modeName+': ',protect=True)
-#@+node:ekr.20120208064440.10199: *5* k.generalModeHandler (OLD)
+.. @+node:ekr.20120208064440.10199: *5* k.generalModeHandler (OLD)
 def generalModeHandler (self,event,
     commandName=None,func=None,modeName=None,nextMode=None,prompt=None):
 
@@ -4552,8 +4554,8 @@ def generalModeHandler (self,event,
             else:
                 k.silentMode = False # All silent modes must do --> set-silent-mode.
                 self.initMode(event,nextMode) # Enter another mode.
-#@+node:ekr.20061031131434.156: *4* k.Modes (changed)
-#@+node:ekr.20061031131434.163: *5* k.initMode (changed)
+.. @+node:ekr.20061031131434.156: *4* k.Modes (changed)
+.. @+node:ekr.20061031131434.163: *5* k.initMode (changed)
 def initMode (self,event,modeName):
 
     k = self ; c = k.c
@@ -4605,7 +4607,7 @@ def initMode (self,event,modeName):
         w = g.choose(k.silentMode,k.modeWidget,k.w)
         k.createModeBindings(modeName,d,w)
         k.showStateAndMode(prompt=prompt)
-#@+node:ekr.20120208064440.10201: *5* k.NEWgeneralModeHandler (NEW MODES)
+.. @+node:ekr.20120208064440.10201: *5* k.NEWgeneralModeHandler (NEW MODES)
 def NEWgeneralModeHandler (self,event,
     commandName=None,func=None,modeName=None,nextMode=None,prompt=None):
 
@@ -4660,8 +4662,8 @@ def NEWgeneralModeHandler (self,event,
                 self.initMode(event,nextMode) # Enter another mode.
                 # Careful: k.initMode can execute commands that will destroy a commander.
                 # if g.app.quitting or not c.exists: return
-#@+node:ekr.20061031131434.167: *4* k.Shared helpers
-#@+node:ekr.20061031131434.175: *5* k.computeCompletionList
+.. @+node:ekr.20061031131434.167: *4* k.Shared helpers
+.. @+node:ekr.20061031131434.175: *5* k.computeCompletionList
 # Important: this code must not change mb_tabListPrefix.  Only doBackSpace should do that.
 
 def computeCompletionList (self,defaultTabList,backspace,allow_empty_completion=False):
@@ -4709,7 +4711,7 @@ def computeCompletionList (self,defaultTabList,backspace,allow_empty_completion=
         aList = ['%*s %s' % (-n,s1,s2) for s1,s2 in data]
         g.es('','\n'.join(aList),tabName=tabName)
     c.bodyWantsFocus()
-#@+node:ekr.20061031131434.177: *5* k.doBackSpace
+.. @+node:ekr.20061031131434.177: *5* k.doBackSpace
 # Used by getArg and fullCommand.
 
 def doBackSpace (self,defaultCompletionList,completion=True):
@@ -4740,7 +4742,7 @@ def doBackSpace (self,defaultCompletionList,completion=True):
     if k.c.vim_mode: return
     k.mb_tabListPrefix = w.getAllText()
     k.computeCompletionList(defaultCompletionList,backspace=True)
-#@+node:ekr.20061031131434.178: *5* k.doTabCompletion
+.. @+node:ekr.20061031131434.178: *5* k.doTabCompletion
 # Used by getArg and fullCommand.
 
 def doTabCompletion (self,defaultTabList,redraw=True,allow_empty_completion=False):
@@ -4765,7 +4767,7 @@ def doTabCompletion (self,defaultTabList,redraw=True,allow_empty_completion=Fals
                 allow_empty_completion=allow_empty_completion)
 
     c.minibufferWantsFocus()
-#@+node:ekr.20061031131434.168: *5* k.getFileName & helpers
+.. @+node:ekr.20061031131434.168: *5* k.getFileName & helpers
 def getFileName (self,event=None,handler=None,prefix='',filterExt='.leo'):
 
     '''Similar to k.getArg, but uses completion to indicate files on the file system.'''
@@ -4799,7 +4801,7 @@ def getFileName (self,event=None,handler=None,prefix='',filterExt='.leo'):
         c.minibufferWantsFocus()
     else:
         k.doFileNameChar(event)
-#@+node:ekr.20061031131434.169: *6* << init altX vars >>
+.. @+node:ekr.20061031131434.169: *6* << init altX vars >>
 k.filterExt = filterExt
 k.mb_prefix = (prefix or k.getLabel())
 k.mb_prompt = prefix or k.getLabel()
@@ -4810,7 +4812,7 @@ theDir = g.os_path_finalize(os.curdir)
 k.extendLabel(theDir,select=False,protect=False)
 
 k.mb_tabListPrefix = k.getLabel()
-#@+node:ekr.20061031131434.170: *6* k.doFileNameBackSpace
+.. @+node:ekr.20061031131434.170: *6* k.doFileNameBackSpace
 def doFileNameBackSpace (self):
 
     '''Cut back to previous prefix and update prefix.'''
@@ -4824,7 +4826,7 @@ def doFileNameBackSpace (self):
     if len(k.mb_tabListPrefix) > len(k.mb_prefix):
         k.mb_tabListPrefix = k.mb_tabListPrefix [:-1]
         k.setLabel(k.mb_tabListPrefix)
-#@+node:ekr.20061031131434.171: *6* k.doFileNameChar
+.. @+node:ekr.20061031131434.171: *6* k.doFileNameChar
 def doFileNameChar (self,event):
 
     k = self
@@ -4842,7 +4844,7 @@ def doFileNameChar (self,event):
         # Restore everything.
         old = k.getLabel(ignorePrompt=True)[:-1]
         k.setLabel(k.mb_prompt + old)
-#@+node:ekr.20061031131434.172: *6* k.doFileNameTab
+.. @+node:ekr.20061031131434.172: *6* k.doFileNameTab
 def doFileNameTab (self):
 
     k = self
@@ -4850,7 +4852,7 @@ def doFileNameTab (self):
 
     if k.mb_tabList:
         k.setLabel(k.mb_prompt + common_prefix)
-#@+node:ekr.20061031131434.173: *6* k.computeFileNameCompletionList
+.. @+node:ekr.20061031131434.173: *6* k.computeFileNameCompletionList
 # This code must not change mb_tabListPrefix.
 def computeFileNameCompletionList (self):
 
@@ -4871,7 +4873,7 @@ def computeFileNameCompletionList (self):
         c.frame.log.clearTab(tabName)
         k.showFileNameTabList()
     return common_prefix
-#@+node:ekr.20061031131434.174: *6* k.showFileNameTabList
+.. @+node:ekr.20061031131434.174: *6* k.showFileNameTabList
 def showFileNameTabList (self):
 
     k = self ; tabName = 'Completion'
@@ -4881,7 +4883,7 @@ def showFileNameTabList (self):
         s = g.choose(path.endswith('\\'),theDir,fileName)
         s = fileName or g.os_path_basename(theDir) + '\\'
         g.es('',s,tabName=tabName)
-#@+node:ekr.20110609161752.16459: *5* k.setLossage
+.. @+node:ekr.20110609161752.16459: *5* k.setLossage
 def setLossage (self,ch,stroke):
 
     trace = False and not g.unitTesting
@@ -4892,7 +4894,7 @@ def setLossage (self,ch,stroke):
             g.app.lossage.pop()
     # This looks like a memory leak, but isn't.
     g.app.lossage.insert(0,(ch,stroke),)
-#@+node:ekr.20061031131434.180: *5* k.traceBinding (not used)
+.. @+node:ekr.20061031131434.180: *5* k.traceBinding (not used)
 def traceBinding (self,si,shortcut,w):
 
     k = self ; c = k.c ; gui = g.app.gui
@@ -4904,8 +4906,8 @@ def traceBinding (self,si,shortcut,w):
     pane_filter = c.config.getString('trace_bindings_pane_filter')
     if not pane_filter or pane_filter.lower() == si.pane:
         g.trace(si.pane,shortcut,si.commandName,gui.widget_name(w))
-#@+node:ekr.20061031131434.181: *4* k.Shortcuts & bindings
-#@+node:ekr.20061031131434.176: *5* k.computeInverseBindingDict
+.. @+node:ekr.20061031131434.181: *4* k.Shortcuts & bindings
+.. @+node:ekr.20061031131434.176: *5* k.computeInverseBindingDict
 def computeInverseBindingDict (self):
 
     k = self ; d = {}
@@ -4932,7 +4934,7 @@ def computeInverseBindingDict (self):
             d [si.commandName] = shortcutList
 
     return d
-#@+node:ekr.20061031131434.179: *5* k.getShortcutForCommand/Name
+.. @+node:ekr.20061031131434.179: *5* k.getShortcutForCommand/Name
 def getShortcutForCommandName (self,commandName):
 
     k = self ; c = k.c
@@ -4959,7 +4961,7 @@ def getShortcutForCommand (self,command):
                 if si.commandName == command.__name__:
                     return stroke
     return None
-#@+node:ekr.20090518072506.8494: *5* k.isFKey
+.. @+node:ekr.20090518072506.8494: *5* k.isFKey
 def isFKey (self,stroke):
 
     # k = self
@@ -4968,7 +4970,7 @@ def isFKey (self,stroke):
     s = stroke.s if g.isStroke(stroke) else stroke
     s = s.lower()
     return s.startswith('f') and len(s) <= 3 and s[1:].isdigit()
-#@+node:ekr.20061031131434.182: *5* k.isPlainKey
+.. @+node:ekr.20061031131434.182: *5* k.isPlainKey
 def isPlainKey (self,stroke):
 
     '''Return true if the shortcut refers to a plain (non-Alt,non-Ctl) key.'''
@@ -5000,7 +5002,7 @@ def isPlainKey (self,stroke):
 
         # g.trace(isPlain,repr(shortcut))
         return isPlain and not self.isFKey(shortcut)
-#@+node:ekr.20061031131434.191: *5* k.prettyPrintKey
+.. @+node:ekr.20061031131434.191: *5* k.prettyPrintKey
 def prettyPrintKey (self,stroke,brief=False):
 
     trace = False and not g.unitTesting
@@ -5043,7 +5045,7 @@ def prettyPrintKey (self,stroke,brief=False):
         s = s[:-1]+'Space' # 2010/11/06
 
     return s
-#@+node:ekr.20061031131434.184: *5* k.strokeFromSetting
+.. @+node:ekr.20061031131434.184: *5* k.strokeFromSetting
 def strokeFromSetting (self,setting,addKey=True):
 
     k = self
@@ -5070,7 +5072,7 @@ def strokeFromSetting (self,setting,addKey=True):
 
 canonicalizeShortcut = strokeFromSetting # For compatibility.
 ### strokeFromSetting = shortcutFromSetting
-#@+node:ekr.20061031131434.185: *6* << define cmd, ctrl, alt, shift >>
+.. @+node:ekr.20061031131434.185: *6* << define cmd, ctrl, alt, shift >>
 s2 = s.lower()
 
 cmd   = s2.find("cmd") >= 0     or s2.find("command") >= 0
@@ -5078,18 +5080,18 @@ ctrl  = s2.find("control") >= 0 or s2.find("ctrl") >= 0
 alt   = s2.find("alt") >= 0
 shift = s2.find("shift") >= 0   or s2.find("shft") >= 0
 meta  = s2.find("meta") >= 0
-#@+node:ekr.20061031131434.186: *6* << swap cmd and ctrl keys >>
+.. @+node:ekr.20061031131434.186: *6* << swap cmd and ctrl keys >>
 if ctrl and not cmd:
     cmd = True ; ctrl = False
 if alt and not ctrl:
     ctrl = True ; alt = False
-#@+node:ekr.20061031131434.187: *6* << convert minus signs to plus signs >>
+.. @+node:ekr.20061031131434.187: *6* << convert minus signs to plus signs >>
 # Replace all minus signs by plus signs, except a trailing minus:
 if s.endswith('-'):
     s = s[:-1].replace('-','+') + '-'
 else:
     s = s.replace('-','+')
-#@+node:ekr.20061031131434.188: *6* << compute the last field >>
+.. @+node:ekr.20061031131434.188: *6* << compute the last field >>
 if s.endswith('+'):
     last = '+'
 else:
@@ -5120,7 +5122,7 @@ else:
     # This is a *one-way* translation, done only here.
     d = k.settingsNameDict
     last = d.get(last.lower(),last)
-#@+node:ekr.20061031131434.189: *6* << compute shortcut >>
+.. @+node:ekr.20061031131434.189: *6* << compute shortcut >>
 table = (
     (alt, 'Alt+'),
     (ctrl,'Ctrl+'),
@@ -5132,7 +5134,7 @@ table = (
 
 # new in 4.4b3: convert all characters to unicode first.
 shortcut = ''.join([g.toUnicode(val) for flag,val in table if flag])
-#@+node:ekr.20110606004638.16929: *5* k.stroke2char
+.. @+node:ekr.20110606004638.16929: *5* k.stroke2char
 def stroke2char (self,stroke):
 
     '''Convert a stroke to an (insertable) char.
@@ -5192,30 +5194,30 @@ def stroke2char (self,stroke):
 
     if trace: g.trace(repr(stroke),repr(val)) # 'shift',shift,
     return val
-#@+node:ekr.20061031131434.193: *4* k.States
-#@+node:ekr.20061031131434.194: *5* clearState
+.. @+node:ekr.20061031131434.193: *4* k.States
+.. @+node:ekr.20061031131434.194: *5* clearState
 def clearState (self):
 
     k = self
     k.state.kind = None
     k.state.n = None
     k.state.handler = None
-#@+node:ekr.20061031131434.196: *5* getState
+.. @+node:ekr.20061031131434.196: *5* getState
 def getState (self,kind):
 
     k = self
     val = g.choose(k.state.kind == kind,k.state.n,0)
     # g.trace(state,'returns',val)
     return val
-#@+node:ekr.20061031131434.195: *5* getStateHandler
+.. @+node:ekr.20061031131434.195: *5* getStateHandler
 def getStateHandler (self):
 
     return self.state.handler
-#@+node:ekr.20061031131434.197: *5* getStateKind
+.. @+node:ekr.20061031131434.197: *5* getStateKind
 def getStateKind (self):
 
     return self.state.kind
-#@+node:ekr.20061031131434.198: *5* inState
+.. @+node:ekr.20061031131434.198: *5* inState
 def inState (self,kind=None):
 
     k = self
@@ -5224,7 +5226,7 @@ def inState (self,kind=None):
         return k.state.kind == kind and k.state.n != None
     else:
         return k.state.kind and k.state.n != None
-#@+node:ekr.20080511122507.4: *5* setDefaultInputState
+.. @+node:ekr.20080511122507.4: *5* setDefaultInputState
 def setDefaultInputState (self):
 
     k = self ; state = k.defaultUnboundKeyAction
@@ -5232,7 +5234,7 @@ def setDefaultInputState (self):
     # g.trace(state)
 
     k.setInputState(state)
-#@+node:ekr.20110209093958.15411: *5* setEditingState
+.. @+node:ekr.20110209093958.15411: *5* setEditingState
 def setEditingState (self):
 
     k = self ; state = k.defaultEditingAction
@@ -5240,7 +5242,7 @@ def setEditingState (self):
     # g.trace(state)
 
     k.setInputState(state)
-#@+node:ekr.20061031131434.133: *5* setInputState
+.. @+node:ekr.20061031131434.133: *5* setInputState
 def setInputState (self,state,set_border=False):
 
     c,k = self.c,self
@@ -5250,7 +5252,7 @@ def setInputState (self,state,set_border=False):
         w = c.frame.body.bodyCtrl
         if hasattr(w,'widget'):
             g.app.gui.add_border(c,w.widget)
-#@+node:ekr.20061031131434.199: *5* setState
+.. @+node:ekr.20061031131434.199: *5* setState
 def setState (self,kind,n,handler=None):
 
     trace = False and not g.unitTesting
@@ -5268,7 +5270,7 @@ def setState (self,kind,n,handler=None):
         k.clearState()
 
     # k.showStateAndMode()
-#@+node:ekr.20061031131434.192: *5* k.showStateAndMode
+.. @+node:ekr.20061031131434.192: *5* k.showStateAndMode
 def showStateAndMode(self,w=None,prompt=None,setFocus=True):
 
     trace = False and not g.unitTesting
@@ -5322,7 +5324,7 @@ def showStateAndMode(self,w=None,prompt=None,setFocus=True):
     if w and isText:
         k.showStateColors(inOutline,w)
         k.showStateCursor(state,w)
-#@+node:ekr.20080512115455.1: *5* k.showStateColors (changed)
+.. @+node:ekr.20080512115455.1: *5* k.showStateColors (changed)
 def showStateColors (self,inOutline,w):
 
     trace = False and not g.unitTesting
@@ -5365,7 +5367,7 @@ def showStateColors (self,inOutline,w):
             w.configure(bg=bg,fg=fg)
         except Exception:
             pass # g.es_exception()
-#@+node:ekr.20110202111105.15439: *5* showStateCursor
+.. @+node:ekr.20110202111105.15439: *5* showStateCursor
 def showStateCursor (self,state,w):
 
     # g.trace(state,w)
@@ -5373,7 +5375,7 @@ def showStateCursor (self,state,w):
     pass
 
 
-#@+node:ekr.20061031131434.200: *4* k.universalDispatcher & helpers
+.. @+node:ekr.20061031131434.200: *4* k.universalDispatcher & helpers
 def universalDispatcher (self,event):
 
     '''Handle accumulation of universal argument.'''
@@ -5416,7 +5418,7 @@ def universalDispatcher (self,event):
             k.keyboardQuit()
     elif state == 2:
         k.doControlU(event,stroke)
-#@+node:ekr.20061031131434.201: *5* << about repeat counts >>
+.. @+node:ekr.20061031131434.201: *5* << about repeat counts >>
 @nocolor
 
 @  Any Emacs command can be given a numeric argument. Some commands interpret the
@@ -5470,7 +5472,7 @@ A few commands treat a plain C-u differently from an ordinary argument. A few
 others may treat an argument of just a minus sign differently from an argument
 of -1. These unusual cases will be described when they come up; they are always
 to make the individual command more convenient to use.
-#@+node:ekr.20061031131434.202: *5* k.executeNTimes
+.. @+node:ekr.20061031131434.202: *5* k.executeNTimes
 def executeNTimes (self,event,n):
 
     trace = False and not g.unitTesting
@@ -5496,7 +5498,7 @@ def executeNTimes (self,event,n):
         else:
             for z in range(n):
                 k.masterKeyHandler(event)
-#@+node:ekr.20061031131434.203: *5* doControlU
+.. @+node:ekr.20061031131434.203: *5* doControlU
 def doControlU (self,event,stroke):
 
     k = self ; c = k.c
@@ -5510,23 +5512,23 @@ def doControlU (self,event,stroke):
         k.resetLabel()
         c.macroCommands.startKbdMacro(event)
         c.macroCommands.callLastKeyboardMacro(event)
-#@+node:ekr.20131112152450.16536: ** 4.11.1
-#@+node:ekr.20131112061353.16544: *3* Added @bool force_execute_entire_body
+.. @+node:ekr.20131112152450.16536: ** 4.11.1
+.. @+node:ekr.20131112061353.16544: *3* Added @bool force_execute_entire_body
 @language rest
 
 Added support for @bool force_execute_entire_body, default False.
 When True, the execute_script command forces whole text to be the text.
 
 The c.forceExecuteEntireBody ivar can be toggled by scripts.
-#@+node:ekr.20131111060930.18015: *3* fixed documentation of ctrl-tab
+.. @+node:ekr.20131111060930.18015: *3* fixed documentation of ctrl-tab
 http://mail.google.com/mail/u/0/#inbox/1423c5445471eeb2
 
 The Command reference was wrong.
-#@+node:ekr.20131114051702.16540: *3* Added support for @outline-data
+.. @+node:ekr.20131114051702.16540: *3* Added support for @outline-data
 - Restored c.config.getData.
 - Added gcm.getOutlineData, c.config.getOutlineData.
 - Added parser.doOutlineData and getOutlineDataHelper.
-#@+node:ekr.20131108082341.16371: *3* Added support for @outline-data tree-abbreviations
+.. @+node:ekr.20131108082341.16371: *3* Added support for @outline-data tree-abbreviations
 @language rest
 
 https://groups.google.com/forum/#!topic/leo-editor/OSe0_D5tmJQ
@@ -5546,11 +5548,13 @@ What I did:
   These flags disable unwanted actions when expanding tree abbreviations.
 
 @language python
-#@-all
+.. @+node:ekr.20131116122602.16664: *3* Got focus border working again
+Changed add_border and remove_border in qtGui.py
+.. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
 
-#@@language python # Override the default .txt coloring.
+.. @@language python # Override the default .txt coloring.
 
-#@@pagewidth 60
-#@-leo
+.. @@pagewidth 60
+.. @-leo

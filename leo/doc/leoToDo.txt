@@ -6,6 +6,8 @@
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 
+*** Links to screencasts on Leo's home page.
+
 * Does Leo allow comments after @data setting-name?
 
 - Do all common vim commands:
@@ -2222,7 +2224,7 @@ and I get
       """foo - Return
  
       :Parameters:
-      - `this`: <|describe this|>
+      - `this`: describe this
       - `that`: <|describe that|>
       """
  
