@@ -9787,15 +9787,17 @@ class minibufferFind (baseEditCommandsClass):
     #@+node:ekr.20060210164421: *4* addFindStringToLabel
     def addFindStringToLabel (self,protect=True):
 
-        c = self.c ; k = c.k ; h = self.finder ; w = h.find_ctrl
-
+        c = self.c ; k = c.k
+        if g.new_find:
+            h = c.findCommands.findTabManager
+        else:
+            h = self.finder
+        w = h.find_ctrl
         c.frame.log.selectTab('Find')
         c.minibufferWantsFocus()
-
         s = w.getAllText()
         while s.endswith('\n') or s.endswith('\r'):
             s = s[:-1]
-
         k.extendLabel(s,select=True,protect=protect)
     #@+node:ekr.20070105123800: *4* changeAll (minibufferFind)
     def changeAll (self,event):
@@ -10052,10 +10054,14 @@ class minibufferFind (baseEditCommandsClass):
             k.resetLabel()
             k.showStateAndMode()
             self.generalSearchHelper(k.arg)
-    #@+node:ekr.20060124134356: *4* setupArgs
+    #@+node:ekr.20060124134356: *4* setupArgs minibufferFind
     def setupArgs (self,forward=False,regexp=False,word=False):
-
-        h = self.finder
+        
+        c = self.c
+        if g.new_find:
+            return
+        else:
+            h = self.finder
         reverse = None if forward is None else not forward
         # if forward is None:
             # reverse = None
@@ -10070,7 +10076,7 @@ class minibufferFind (baseEditCommandsClass):
             if val is not None:
                 self.setOption(ivar,val)
 
-        h.p = p = self.c.p
+        h.p = p = c.p
         h.v = p.v
         h.update_ivars()
         self.showFindOptions()

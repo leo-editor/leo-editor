@@ -283,30 +283,20 @@ class Commands (object):
 
         trace = (False or g.trace_startup) and not g.unitTesting
         c = self
-
         if trace:
-            print('g.initObjects %s %s' % (
-                c.shortFileName(),g.app.gui))
-
+            print('g.initObjects %s %s' % (c.shortFileName(),g.app.gui))
         self.hiddenRootNode = leoNodes.vnode(context=c)
         self.hiddenRootNode.setHeadString('<hidden root vnode>')
-
         # Create the gui frame.
         title = c.computeWindowTitle(c.mFileName)
-
         if not g.app.initing:
             g.doHook("before-create-leo-frame",c=c)
-
         self.frame = gui.createLeoFrame(c,title)
         assert self.frame
         assert self.frame.c == c
-
         self.nodeHistory = nodeHistory(c)
-
         self.initConfigSettings()
-
         c.setWindowPosition() # Do this after initing settings.
-
         # Break circular import dependencies by importing here.
         # These imports take almost 3/4 sec in the leoBridge.
         import leo.core.leoAtFile as leoAtFile
@@ -323,7 +313,6 @@ class Commands (object):
         import leo.core.leoTest as leoTest
         import leo.core.leoUndo as leoUndo
         import leo.core.leoVim as leoVim
-
         self.keyHandler = self.k = leoKeys.keyHandlerClass(c)
         self.chapterController  = leoChapters.chapterController(c)
         self.shadowController   = leoShadow.shadowController(c)
@@ -335,14 +324,11 @@ class Commands (object):
         self.tangleCommands     = leoTangle.tangleCommands(c)
         self.testManager        = leoTest.TestManager(c)
         self.vimCommands        = leoVim.VimCommands(c)
-
         self.editCommandsManager = leoEditCommands.EditCommandsManager(c)
         self.editCommandsManager.createEditCommanders()
-
         self.cacher = leoCache.cacher(c)
         self.cacher.initFileDB(self.mFileName)
         self.undoer = leoUndo.undoer(self)
-
         import leo.plugins.free_layout as free_layout
         self.free_layout = free_layout.FreeLayoutController(c)
     #@+node:ekr.20031218072017.2814: *4* c.__repr__ & __str__

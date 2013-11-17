@@ -2427,8 +2427,14 @@ class DynamicWindow(QtGui.QMainWindow):
         self.leo_spell_label = lab # Must exist (!!)
     #@+node:ekr.20110605121601.18166: *6* dw.createFindTab (changed for 4.11.1)
     def createFindTab (self,parent,tab_widget):
-
+        # g.trace('***(DynamicWindow)***',g.callers())
         c,dw = self.leo_c,self
+        fc = c.findCommands
+        assert not fc.findTabManager
+        if g.new_find:
+            fc.findTabManager = ftm = FindTabManager(c)
+        else:
+            ftm = g.nullObject()
         assert c.findCommands
         grid = self.createGrid(parent,'findGrid',margin=10,spacing=10)
         grid.setColumnStretch(0,100)
@@ -2447,22 +2453,36 @@ class DynamicWindow(QtGui.QMainWindow):
             grid.addWidget(lab1,heading_row,col_0,span_1,span_2,QtCore.Qt.AlignLeft) # AlignHCenter
             row += 1
         # The find row.
-        findPattern = self.createLineEdit(parent,'findPattern',disabled=False)
+        w = self.createLineEdit(parent,'findPattern',disabled=False)
+        if g.new_find:
+            assert ftm.find_ctrl is None
+            ftm.find_ctrl = w
+        else:
+            dw.findPattern = w
         lab2 = self.createLabel(parent,'findLabel','Find:')
         grid.addWidget(lab2,row,col_0)
-        grid.addWidget(findPattern,row,col_1,span_1,span_2)
+        grid.addWidget(w,row,col_1,span_1,span_2)
         row += 1
         # The change row.
-        findChange  = self.createLineEdit(parent,'findChange',disabled=False)
+        w = self.createLineEdit(parent,'findChange',disabled=False)
+        if g.new_find:
+            assert ftm.change_ctrl is None
+            ftm.change_ctrl = w
+        else:
+            dw.findChange = w
         lab3 = self.createLabel(parent,'changeLabel','Replace:') # Leo 4.11.1.
         grid.addWidget(lab3,row,col_0)
-        grid.addWidget(findChange,row,col_1,span_1,span_2)
+        grid.addWidget(w,row,col_1,span_1,span_2)
         row += 1
         # Check boxes and radio buttons.
-        # Radio buttons are mutually exclusive because they have the same parent.
-        def mungeName(name):
-            # The value returned here is significant: it creates an ivar.
-            return 'checkBox%s' % label.replace(' ','').replace('&','')
+        def mungeName(kind,label):
+            # The returned value is the namve of an ivar.
+            if g.new_find:
+                kind = 'checkBox' if kind == 'box' else 'radioButton'
+            else:
+                kind = 'checkBox'
+            name = label.replace(' ','').replace('&','')
+            return '%s%s' % (kind,name)
         # Rows for check boxes, radio buttons & execution buttons...
         d = {
             'box': self.createCheckBox,
@@ -2491,12 +2511,17 @@ class DynamicWindow(QtGui.QMainWindow):
         max_row2 = 1
         for kind,label,row2,col in table:
             max_row2 = max(max_row2,row2)
-            name = mungeName(label)
+            name = mungeName(kind,label)
             func = d.get(kind)
             assert func
             w = func(parent,name,label)
             grid.addWidget(w,row+row2,col)
-            setattr(self,name,w)
+            # The the checkbox ivars in dw and ftm classes.
+            if g.new_find:
+                assert getattr(ftm,name) is None
+                setattr(ftm,name,w)
+            else:
+                setattr(dw,name,w)
         # Create Buttons in column 2 (Leo 4.11.1.)
         table = (
             (0,2,'findNextCommand','Find Next'),
@@ -2536,12 +2561,8 @@ class DynamicWindow(QtGui.QMainWindow):
         grid.addWidget(w,row,col_1)
         grid.addWidget(w,row,col_2)
         grid.setRowStretch(row,100)
-        # Official ivars (in addition to setattr ivars).
+        # Official ivars (in addition to checkbox ivars).
         self.leo_find_widget = tab_widget # A scrollArea.
-        self.findPattern = findPattern
-        self.findChange = findChange
-        # self.findLab = lab2
-        # self.changeLab = lab3
     #@+node:ekr.20110605121601.18168: *5* dw.utils
     #@+node:ekr.20110605121601.18169: *6* dw.setName
     def setName (self,widget,name):
@@ -3583,26 +3604,68 @@ class leoQtBody (leoFrame.leoBody):
             fg = self.unselectedForegroundColor
             c.frame.body.setEditorColors(bg,fg)
     #@-others
-#@+node:ekr.20110605121601.18225: *3* class leoQtFindTab (findTab)
+#@+node:ekr.20110605121601.18225: *3* Qt.Find classes
 if g.new_find:
     #@+<< define FindTabManager (new_find) >>
     #@+node:ekr.20131117054619.16698: *4* << define FindTabManager (new_find) >>
     class FindTabManager:
-
-        '''new_find: QT Find Tab Manager'''
-
+        
+        '''A helper class for the leoFind class.'''
+        
         #@+others
-        #@+node:ekr.20131117054619.16705: *5* ftm.init & helpers
-        def init (self,c):
+        #@+node:ekr.20131117120458.16794: *5*  ftm.ctor
+        def __init__ (self,c):
+            # g.trace('(FindTabManager)',c.shortFileName(),g.callers())
+            self.c = c
+            # Find/change text boxes.
+            self.find_ctrl = None
+            self.change_ctrl = None
+            # Check boxes.
+            self.checkBoxIgnoreCase = None
+            self.checkBoxMarkChanges = None
+            self.checkBoxMarkFinds = None
+            self.checkBoxRegexp = None
+            self.checkBoxSearchBody = None
+            self.checkBoxSearchHeadline = None
+            self.checkBoxWholeWord = None
+            self.checkBoxWrapAround = None
+            # Radio buttons
+            self.radioButtonEntireOutline = None
+            self.radioButtonNodeOnly = None
+            self.radioButtonSuboutlineOnly = None
+        #@+node:ekr.20131117120458.16793: *5* ftm.dummies (to be deleted)
+        def getAllText(self):
+            return 'NO TEXT'
 
-            '''Init the widgets of the 'Find' tab.'''
+        def getOption(self,ivar):
+            g.trace(ivar)
 
-            # g.trace('leoQtFindTab.init')
-            self.createIvars()
-            self.initIvars()
-            self.initTextWidgets()
-            self.initCheckBoxes()
-            self.initRadioButtons()
+        def update_ivars(self):
+            g.trace(g.callers())
+        #@+node:ekr.20131117120458.16790: *5* ftm.create (needed??)
+        def create(self):
+            '''Create the Find Pane.'''
+        #@+node:ekr.20131117120458.16789: *5* ftm.init_widgets (rewrite)
+        def init_widget(self):
+            '''Init widgets from c.config settings.'''
+        #@+node:ekr.20131117120458.16792: *5* ftm.set_radio_button
+        def set_radio_button(self,value):
+            '''Set the value of the radio buttons to the indicated value.'''
+        #@+node:ekr.20131117120458.16791: *5* ftm.toggle_checkbox
+        def toggle_checkbox(self,widget_name):
+            '''Toggle the value of the checkbox whose name is given.'''
+        #@+node:ekr.20131117054619.16705: *5* OLDftm.init & helpers (to be deleted)
+        if 0:
+            def init (self,c):
+            
+                '''Init the widgets of the 'Find' tab.'''
+            
+                # g.trace('leoQtFindTab.init')
+                self.createIvars()
+                self.initIvars()
+                self.initTextWidgets()
+                self.initCheckBoxes()
+                self.initRadioButtons()
         #@+node:ekr.20131117054619.16706: *6* ftm.createIvars
         def createIvars (self):
 
@@ -7774,7 +7837,7 @@ class leoQtGui(leoGui.leoGui):
         filters = ['%s (%s)' % (z) for z in filetypes]
 
         return ';;'.join(filters)
-    #@+node:ekr.20110605121601.18492: *5* qtGui panels
+    #@+node:ekr.20110605121601.18492: *5* qtGui panels (qtGui)
     def createComparePanel(self,c):
 
         """Create a qt color picker panel."""
@@ -7783,7 +7846,10 @@ class leoQtGui(leoGui.leoGui):
 
     def createFindTab (self,c,parentFrame):
         """Create a qt find tab in the indicated frame."""
-        return leoQtFindTab(c,parentFrame)
+        if g.new_find:
+            pass # Now done in dw.createFindTab.
+        else:
+            return leoQtFindTab(c,parentFrame)
 
     def createLeoFrame(self,c,title):
         """Create a new Leo frame."""

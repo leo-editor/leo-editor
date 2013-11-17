@@ -1913,25 +1913,20 @@ class vnode (baseVnode):
         # The primary data: headline and body text.
         self._headString = g.u('newHeadline')
         self._bodyString = g.u('')
-
         # Structure data...
         self.children = [] # Ordered list of all children of this node.
         self.parents = [] # Unordered list of all parents of this node.
-
         # Other essential data...
         self.fileIndex = g.app.nodeIndices.getNewIndex()
             # The immutable file index for this vnode.
             # New in Leo 4.6 b2: allocate gnx (fileIndex) immediately.
         self.iconVal = 0 # The present value of the node's icon.
         self.statusBits = 0 # status bits
-
-        # v.t no longer exists.  All code must now be aware of the one-node world.
-        # self.t = self # For compatibility with scripts and plugins.
-
         # Information that is never written to any file...
         self.context = context # The context containing context.hiddenRootNode.
             # Required so we can compute top-level siblings.
             # It is named .context rather than .c to emphasize its limited usage.
+        self.find_generation = None # Leo 4.11.1: for wrapped finds.
         self.insertSpot = None # Location of previous insert point.
         self.scrollBarSpot = None # Previous value of scrollbar position.
         self.selectionLength = 0 # The length of the selected body text.

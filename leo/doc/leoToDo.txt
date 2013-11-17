@@ -4486,8 +4486,14 @@ def createTab (self,tabName,createText=True,widget=None,wrap='none'):
     return contents
 .. @+node:ekr.20110605121601.18166: *5* dw.createFindTab (changed for 4.11.1)
 def createFindTab (self,parent,tab_widget):
-
+    # g.trace('***(DynamicWindow)***',g.callers())
     c,dw = self.leo_c,self
+    fc = c.findCommands
+    assert not fc.findTabManager
+    if g.new_find:
+        fc.findTabManager = ftm = FindTabManager(c)
+    else:
+        ftm = g.nullObject()
     assert c.findCommands
     grid = self.createGrid(parent,'findGrid',margin=10,spacing=10)
     grid.setColumnStretch(0,100)
@@ -4506,22 +4512,36 @@ def createFindTab (self,parent,tab_widget):
         grid.addWidget(lab1,heading_row,col_0,span_1,span_2,QtCore.Qt.AlignLeft) # AlignHCenter
         row += 1
     # The find row.
-    findPattern = self.createLineEdit(parent,'findPattern',disabled=False)
+    w = self.createLineEdit(parent,'findPattern',disabled=False)
+    if g.new_find:
+        assert ftm.find_ctrl is None
+        ftm.find_ctrl = w
+    else:
+        dw.findPattern = w
     lab2 = self.createLabel(parent,'findLabel','Find:')
     grid.addWidget(lab2,row,col_0)
-    grid.addWidget(findPattern,row,col_1,span_1,span_2)
+    grid.addWidget(w,row,col_1,span_1,span_2)
     row += 1
     # The change row.
-    findChange  = self.createLineEdit(parent,'findChange',disabled=False)
+    w = self.createLineEdit(parent,'findChange',disabled=False)
+    if g.new_find:
+        assert ftm.change_ctrl is None
+        ftm.change_ctrl = w
+    else:
+        dw.findChange = w
     lab3 = self.createLabel(parent,'changeLabel','Replace:') # Leo 4.11.1.
     grid.addWidget(lab3,row,col_0)
-    grid.addWidget(findChange,row,col_1,span_1,span_2)
+    grid.addWidget(w,row,col_1,span_1,span_2)
     row += 1
     # Check boxes and radio buttons.
-    # Radio buttons are mutually exclusive because they have the same parent.
-    def mungeName(name):
-        # The value returned here is significant: it creates an ivar.
-        return 'checkBox%s' % label.replace(' ','').replace('&','')
+    def mungeName(kind,label):
+        # The returned value is the namve of an ivar.
+        if g.new_find:
+            kind = 'checkBox' if kind == 'box' else 'radioButton'
+        else:
+            kind = 'checkBox'
+        name = label.replace(' ','').replace('&','')
+        return '%s%s' % (kind,name)
     # Rows for check boxes, radio buttons & execution buttons...
     d = {
         'box': self.createCheckBox,
@@ -4550,12 +4570,17 @@ def createFindTab (self,parent,tab_widget):
     max_row2 = 1
     for kind,label,row2,col in table:
         max_row2 = max(max_row2,row2)
-        name = mungeName(label)
+        name = mungeName(kind,label)
         func = d.get(kind)
         assert func
         w = func(parent,name,label)
         grid.addWidget(w,row+row2,col)
-        setattr(self,name,w)
+        # The the checkbox ivars in dw and ftm classes.
+        if g.new_find:
+            assert getattr(ftm,name) is None
+            setattr(ftm,name,w)
+        else:
+            setattr(dw,name,w)
     # Create Buttons in column 2 (Leo 4.11.1.)
     table = (
         (0,2,'findNextCommand','Find Next'),
@@ -4595,12 +4620,8 @@ def createFindTab (self,parent,tab_widget):
     grid.addWidget(w,row,col_1)
     grid.addWidget(w,row,col_2)
     grid.setRowStretch(row,100)
-    # Official ivars (in addition to setattr ivars).
+    # Official ivars (in addition to checkbox ivars).
     self.leo_find_widget = tab_widget # A scrollArea.
-    self.findPattern = findPattern
-    self.findChange = findChange
-    # self.findLab = lab2
-    # self.changeLab = lab3
 .. @+node:ekr.20110605121601.18156: *5* dw.createGrid
 def createGrid (self,parent,name,margin=0,spacing=0):
 
