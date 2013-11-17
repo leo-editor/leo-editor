@@ -1091,6 +1091,7 @@
 <v t="ekr.20131117052950.18284"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.82"><vh>@item *find-tab-&amp;open</vh></v>
 <v t="ekr.20070925144534.83"><vh>@item *find-tab-&amp;hide</vh></v>
+<v t="ekr.20131117053425.19893"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.84"><vh>@item *search-&amp;with-present-options</vh></v>
 <v t="ekr.20130807090137.20911"><vh>@item *replace</vh></v>
 <v t="ekr.20130807090137.20912"><vh>@item *replace-then-find</vh></v>
@@ -1098,6 +1099,7 @@
 <v t="ekr.20070925144534.86"><vh>@item *find-&amp;next</vh></v>
 <v t="ekr.20070925144534.87"><vh>@item *find-&amp;prev</vh></v>
 <v t="ekr.20070925144534.88"><vh>@item *&amp;change</vh></v>
+<v t="ekr.20131117053425.19894"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.89"><vh>@item *find-&amp;all</vh></v>
 <v t="ekr.20070925144534.90"><vh>@item *clone-fi&amp;nd-all</vh></v>
 <v t="ekr.20070925144534.91"><vh>@item *change-a&amp;ll</vh></v>
@@ -11674,6 +11676,8 @@ QTextEdit:focus#log-widget, LeoQTreeWidget:focus#treeWidget, QTextEdit:focus#ric
 <t tx="ekr.20131117052950.18283"></t>
 <t tx="ekr.20131117052950.18284"></t>
 <t tx="ekr.20131117052950.18285"></t>
+<t tx="ekr.20131117053425.19893"></t>
+<t tx="ekr.20131117053425.19894"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>
