@@ -27,10 +27,10 @@ The highlights of Leo 4.11:
 
 Links:
 ------
-Leo:       http://leoeditor.com
-Docs:      http://leoeditor.com/leo_toc.html
-Tutorials: http://leoeditor.com/tutorial.html
-Forum:     http://groups.google.com/group/leo-editor
-Download:  http://sourceforge.net/projects/leo/files/
-Bzr:       http://code.launchpad.net/leo-editor/
-Quotes:    http://leoeditor.com/testimonials.html
+| Leo:       http://leoeditor.com
+| Docs:      http://leoeditor.com/leo_toc.html
+| Tutorials: http://leoeditor.com/tutorial.html
+| Forum:     http://groups.google.com/group/leo-editor
+| Download:  http://sourceforge.net/projects/leo/files/
+| Bzr:       http://code.launchpad.net/leo-editor/
+| Quotes:    http://leoeditor.com/testimonials.html

@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:maphew.20130530154450.1707: * @file setup.py
+#@+node:maphew.20131101000129.2139: * @file setup.py
 #@@language python
 #@@tabwidth -4
 #@+others
@@ -31,7 +31,12 @@ Requires PyQt and SIP preinstalled.
     """
 #@+node:maphew.20130508020338.1645: ** Get version
 import leo.core.leoVersion
-version = '{0}-build-{1}'.format(leo.core.leoVersion.version, leo.core.leoVersion.build)
+# for development snapshots
+#version = '{0}-build-{1}'.format(leo.core.leoVersion.version, leo.core.leoVersion.build)
+
+# for stable builds / full release
+version = leo.core.leoVersion.version
+version = '4.11-final'
 #@+node:ville.20090213231648.3: ** fullsplit
 import sys
 
@@ -81,20 +86,22 @@ for dirpath, dirnames, filenames in os.walk(leo_dir):
 
 packages = find_packages()
 
-import pprint
-print("data files")
-pprint.pprint(data_files)
-print("packages (pre-cleanup)")
-pprint.pprint(packages)
-
+if '--debug' in sys.argv[1:]:
+    import pprint
+    print("data files")
+    pprint.pprint(data_files)
+    print("packages (pre-cleanup)")
+    pprint.pprint(packages)
+    
 #cleanup unwanted packages
 
 # extensions should be provided through repos (packaging)
 packages = [pa for pa in packages if not pa.startswith('leo.extensions')]
 
-print("packages (post-cleanup)")
-pprint.pprint(packages)
-
+if '--debug' in sys.argv[1:]:
+    print("packages (post-cleanup)")
+    pprint.pprint(packages)
+    
 #cleanup unwanted data files
 #@+node:ville.20090213231648.6: ** bdist_wininst hack
 # Small hack for working with bdist_wininst.
@@ -115,8 +122,10 @@ setup(
     version = version,
     author = "Edward K. Ream",
     author_email = 'edreamleo@gmail.com',
-    maintainer = 'Matt Wilkie',
-    maintainer_email = 'maphew@gmail.com',
+# don't use maintainer, else it overwrites author in PKG-INFO
+# c.f. note 3 @url http://docs.python.org/3/distutils/setupscript.html#additional-meta-data
+#    maintainer = 'Matt Wilkie',
+#    maintainer_email = 'maphew@gmail.com',
     url = 'http://leoeditor.com',
     license = 'MIT License',
     description = "Leonine Editor with Outlines",
