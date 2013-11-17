@@ -6,7 +6,13 @@
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 
-*** Links to screencasts on Leo's home page.
+** Do not search outside present node when expanding text abbreviations!
+
+* F2 doesn't work when only searching in headlines.
+
+* The find pane must be usable for newbies, that is, using the mouse.
+    There must be buttons, as in scite.
+    There probably should be a separate search menu.  There's enough space!
 
 * Does Leo allow comments after @data setting-name?
 
@@ -18,6 +24,93 @@
 * Gallery of screen shots: different font sizes, coloring schemes, plugins, etc.
 
 * Create github repo (call Speed).
+.. @+node:ekr.20131117043223.16675: *3* Find/Replace for newbies!
+Leo must have find/replace commands that newbies can use. This will be part
+of Leo 4.11.1. I'd like to target this for the next week or so.
+
+The new find replace will likely be based on scite and similar editors:
+
+- A separate Search menu.
+- Quite possibly, a Search *tab* distinct from the Find tab.
+- Buttons in the Find/Search tabs initiate the desired actions.
+- Editable find/search text areas to specify the find/search strings.
+- Complete integration with the minibuffer-based commands.
+
+Various search-related bugs must be fixed. For instance, F2 does work in
+headline-only mode!
+.. @+node:ekr.20131116212505.16665: *3* Screencasts
+Links to screencasts on Leo's home page.
+    Download to YouTube.
+    Download to leoeditor.com? (Ask Speed first).
+
+** Review Leo's text tutorials.
+Using settings.
+Leo's help commands.
+Auto-completion.
+Viewrendered, A0.
+Viewrendered, test.leo examples: @svg, @html, @movie, etc.
+Arrow keys.
+Intro to Leo.
+Tips and techniques:
+    - Small test .leo files: useful for settings.
+
+Scripting:
+    Introduction to Leo's code base.
+        500,000 lines of code made easy.
+    ** Create a helper outline, illustrating each point:
+        print('c:'+c)
+    ** @button
+    @test
+    c, g, p: commanders, generators, p.b, p.h etc.
+   
+.. @+node:ekr.20131117043223.16676: *4* Using Leo *is* easy
+​Well, I don't think the Leo Aha is all that hard to get, despite perhaps
+being a bit difficult to describe. Of course, my opinion is not quite
+reliable on this subject ;-)
+
+Still, I think three or four tutorials could make a big difference. The
+first tutorial, about clones and work flow, is *one* reason I would never
+willingly program without Leo.
+
+Another ​reason is that leoPy.leo contains at least 500,000 lines of code,
+all easily accessible. In particular, the rule (of thumb) that helper
+methods should be children of the method that calls them instantly reveals
+that programs are outlines in disguise. Once you have a way of seeing that
+fact *at all times*, one can never go back to the flat, myopic way of
+seeing. It's really that simple.
+
+And then there is c, g, and p, including especially Leo's iterators and p.h
+and p.b and p.u. Really, this is **not** all that hard.
+
+And finally, there is @others. I created it within the first hour of
+prototyping Leo in the MORE outliner. It has remained unchanged all these
+years because it is, fundamentally, a very simple idea.
+
+In short, I have hopes that 3 or 4 screencasts will demonstrate that anyone
+can use Leo.
+.. @+node:ekr.20131116123026.16661: *4* Example
+# For the Find screencast.  It could be improved so the differences between nodes is more apparent.
+.. @+node:ekr.20131116123026.16662: *5* spam
+DEF spam():
+    pass
+.. @+node:ekr.20131116123026.16663: *5* eggs
+def eggs():
+    pass
+.. @+node:ekr.20131116212505.16666: *4* Introduction to scripting
+@language python
+.. @+node:ekr.20131116212505.16668: *5* Ctrl-B (execute-script)
+# Ctrl-B executes the Python code in the presently-selected body pane.
+g.es('hello world')
+
+.. @+node:ekr.20131116212505.16669: *5* Ctrl-B on selected text
+print('hi')
+print('there')
+.. @+node:ekr.20131116212505.16667: *5* g
+# g is a Python module containing global utility functions and classes.
+# g.es prints its arguments to Leo's log pane.
+g.es(g.es)
+# g is a large module:
+g.es(len(list(dir(g))))
 .. @+node:ekr.20131115120119.17434: *3* Improve tab pane?
 @language rest
 
