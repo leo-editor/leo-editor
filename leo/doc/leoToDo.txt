@@ -4488,6 +4488,7 @@ def createTab (self,tabName,createText=True,widget=None,wrap='none'):
 def createFindTab (self,parent,tab_widget):
 
     c,dw = self.leo_c,self
+    assert c.findCommands
     grid = self.createGrid(parent,'findGrid',margin=10,spacing=10)
     grid.setColumnStretch(0,100)
     grid.setColumnStretch(1,100)
@@ -4525,7 +4526,6 @@ def createFindTab (self,parent,tab_widget):
     d = {
         'box': self.createCheckBox,
         'rb':  self.createRadioButton,
-        # 'but': self.createButton,
     }
     table = (
         # First row.
@@ -4556,8 +4556,7 @@ def createFindTab (self,parent,tab_widget):
         w = func(parent,name,label)
         grid.addWidget(w,row+row2,col)
         setattr(self,name,w)
-    # Create Buttons in column 2.
-    # New in Leo 4.11.1.
+    # Create Buttons in column 2 (Leo 4.11.1.)
     table = (
         (0,2,'findNextCommand','Find Next'),
         (1,2,'findPrevCommand','Find Previous'),
@@ -4570,7 +4569,10 @@ def createFindTab (self,parent,tab_widget):
     for row2,col,func_name,label in table:
         def find_tab_button_callback(c=c,func_name=func_name):
             # h will exist when the Find Tab is open.
-            h = c.searchCommands.findTabHandler
+            if g.new_find:
+                h = c.findCommands
+            else:
+                h = c.searchCommands.findTabHandler
             assert h
             func = getattr(h,func_name,None)
             if func: func()

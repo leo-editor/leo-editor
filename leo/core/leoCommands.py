@@ -313,6 +313,7 @@ class Commands (object):
         import leo.core.leoCache as leoCache
         import leo.core.leoChapters as leoChapters
         import leo.core.leoEditCommands as leoEditCommands
+        import leo.core.leoFind as leoFind # Leo 4.11.1
         import leo.core.leoKeys as leoKeys
         import leo.core.leoFileCommands as leoFileCommands
         import leo.core.leoImport as leoImport
@@ -327,6 +328,7 @@ class Commands (object):
         self.chapterController  = leoChapters.chapterController(c)
         self.shadowController   = leoShadow.shadowController(c)
         self.fileCommands       = leoFileCommands.fileCommands(c)
+        self.findCommands       = leoFind.leoFind(c)
         self.atFileCommands     = leoAtFile.atFile(c)
         self.importCommands     = leoImport.leoImportCommands(c)
         self.rstCommands        = leoRst.rstCommands(c)

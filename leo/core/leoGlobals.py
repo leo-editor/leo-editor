@@ -15,10 +15,14 @@ Important: This module imports no other Leo module.
 import sys
 isPython3 = sys.version_info >= (3,0,0)
 #@+<< global switches >>
-#@+node:ekr.20120212060348.10374: **  << global switches >>
+#@+node:ekr.20120212060348.10374: **  << global switches >> (leoGlobals.py)
 trace_startup = False
     # These traces use print instead of g.trace so that
     # the traces can add class info the method name.
+    
+new_find = False
+    # True: a complete rewrite of Leo's find code.
+if new_find: print('***** new_find')
 
 new_modes = False
     # True: use ModeController and ModeInfo classes.

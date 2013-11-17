@@ -2429,6 +2429,7 @@ class DynamicWindow(QtGui.QMainWindow):
     def createFindTab (self,parent,tab_widget):
 
         c,dw = self.leo_c,self
+        assert c.findCommands
         grid = self.createGrid(parent,'findGrid',margin=10,spacing=10)
         grid.setColumnStretch(0,100)
         grid.setColumnStretch(1,100)
@@ -2466,7 +2467,6 @@ class DynamicWindow(QtGui.QMainWindow):
         d = {
             'box': self.createCheckBox,
             'rb':  self.createRadioButton,
-            # 'but': self.createButton,
         }
         table = (
             # First row.
@@ -2497,8 +2497,7 @@ class DynamicWindow(QtGui.QMainWindow):
             w = func(parent,name,label)
             grid.addWidget(w,row+row2,col)
             setattr(self,name,w)
-        # Create Buttons in column 2.
-        # New in Leo 4.11.1.
+        # Create Buttons in column 2 (Leo 4.11.1.)
         table = (
             (0,2,'findNextCommand','Find Next'),
             (1,2,'findPrevCommand','Find Previous'),
@@ -2511,7 +2510,10 @@ class DynamicWindow(QtGui.QMainWindow):
         for row2,col,func_name,label in table:
             def find_tab_button_callback(c=c,func_name=func_name):
                 # h will exist when the Find Tab is open.
-                h = c.searchCommands.findTabHandler
+                if g.new_find:
+                    h = c.findCommands
+                else:
+                    h = c.searchCommands.findTabHandler
                 assert h
                 func = getattr(h,func_name,None)
                 if func: func()
@@ -3582,307 +3584,453 @@ class leoQtBody (leoFrame.leoBody):
             c.frame.body.setEditorColors(bg,fg)
     #@-others
 #@+node:ekr.20110605121601.18225: *3* class leoQtFindTab (findTab)
-class leoQtFindTab (leoFind.findTab):
+if g.new_find:
+    #@+<< define FindTabManager (new_find) >>
+    #@+node:ekr.20131117054619.16698: *4* << define FindTabManager (new_find) >>
+    class FindTabManager:
 
-    '''A subclass of the findTab class containing all Qt Gui code.'''
-
-    if 0: # We can use the base-class ctor.
-        def __init__ (self,c,parentFrame):
-            leoFind.findTab.__init__(self,c,parentFrame)
-                # Init the base class.
-                # Calls initGui, createFrame and init(c), in that order.
-
-    #@+others
-    #@+node:ekr.20110605121601.18226: *4*  Birth: called from leoFind ctor
-    # leoFind.__init__ calls initGui, createFrame and init, in that order.
-    #@+node:ekr.20110605121601.18227: *5* initGui
-    def initGui (self):
-
-        owner = self
-
-        self.svarDict = {}
-            # Keys are ivar names, values are svar objects.
-
-        # Keys are option names; values are <svars>.
-        for ivar in self.intKeys:
-            self.svarDict[ivar] = self.svar(owner,ivar)
-
-        # g.trace(self.svarDict)
-
-        # Add a hack for 'entire_outline' radio button.
-        ivar = 'entire_outline'
-        self.svarDict[ivar] = self.svar(owner,ivar)
-
-        for ivar in self.newStringKeys:
-            # "radio-find-type", "radio-search-scope"
-            self.svarDict[ivar] = self.svar(owner,ivar)
-    #@+node:ekr.20110605121601.18228: *5* init (qtFindTab) & helpers
-    def init (self,c):
-
-        '''Init the widgets of the 'Find' tab.'''
-
-        # g.trace('leoQtFindTab.init')
-        self.createIvars()
-        self.initIvars()
-        self.initTextWidgets()
-        self.initCheckBoxes()
-        self.initRadioButtons()
-    #@+node:ekr.20110605121601.18229: *6* createIvars (qtFindTab)
-    def createIvars (self):
-
-        c = self.c ; w = c.frame.top.leo_ui # A Window ui object.
-
-        # Bind boxes to Window objects.
-        self.widgetsDict = {} # Keys are ivars, values are Qt widgets.
-        findWidget   = leoQLineEditWidget(w.findPattern,'find-widget',c)
-        changeWidget = leoQLineEditWidget(w.findChange,'change-widget',c)
-        data = (
-            ('find_ctrl',       findWidget),
-            ('change_ctrl',     changeWidget),
-            ('whole_word',      w.checkBoxWholeWord),
-            ('ignore_case',     w.checkBoxIgnoreCase),
-            ('wrap',            w.checkBoxWrapAround),
-            ## ('reverse',         w.checkBoxReverse),
-            ('pattern_match',   w.checkBoxRegexp),
-            ('mark_finds',      w.checkBoxMarkFinds),
-            ('entire_outline',  w.checkBoxEntireOutline),
-            ('suboutline_only', w.checkBoxSuboutlineOnly),  
-            ('node_only',       w.checkBoxNodeOnly),
-            ('search_headline', w.checkBoxSearchHeadline),
-            ('search_body',     w.checkBoxSearchBody),
-            ('mark_changes',    w.checkBoxMarkChanges),
-            ('batch', None),
-        )
-        for ivar,widget in data:
-            setattr(self,ivar,widget)
-            self.widgetsDict[ivar] = widget
-            # g.trace(ivar,widget)
-    #@+node:ekr.20110605121601.18230: *6* initIvars
-    def initIvars(self):
-
-        c = self.c
-
-        # Separate c.ivars are much more convenient than a svarDict.
-        for ivar in self.intKeys:
-            # Get ivars from @settings.
-            val = c.config.getBool(ivar)
-            setattr(self,ivar,val)
-            val = g.choose(val,1,0)
-            svar = self.svarDict.get(ivar)
-            if svar:
-                svar.set(val)
-
-            # g.trace(ivar,val)
-    #@+node:ekr.20110605121601.18231: *6* initTextWidgets (qtFindTab)
-    def initTextWidgets(self):
-
-        '''Init the find/change text areas.'''
-
-        c = self.c
-
-        table = (
-            (self.find_ctrl,    "find_text",    '<find pattern here>'),
-            (self.change_ctrl,  "change_text",  ''),
-        )
-
-        for w,setting,defaultText in table:
-            # w is a textWrapper object
-            w.setAllText(c.config.getString(setting) or defaultText)
-    #@+node:ekr.20110605121601.18232: *6* initCheckBoxes
-    def initCheckBoxes (self):
-
-        for ivar,key in (
-            ("pattern_match","pattern-search"),
-        ):
-            svar = self.svarDict[ivar].get()
-            if svar:
-                self.svarDict["radio-find-type"].set(key)
-                w = self.widgetsDict.get(key)
-                if w: w.setChecked(True)
-                break
-        else:
-            self.svarDict["radio-find-type"].set("plain-search")
-
-        aList = (
-            'ignore_case','mark_changes','mark_finds',
-            'pattern_match',
-            # 'reverse',
-            'search_body','search_headline',
-            'whole_word','wrap',
-            'node_only','suboutline_only','entire_outline',
-        )
-
-        for ivar in aList:
-            svar = self.svarDict.get(ivar)
-            if svar:
-                # w is a QCheckBox or a QRadioButton.
-                w = self.widgetsDict.get(ivar)
-                if w:
-                    val = svar.get()
-                    svar.setWidget(w)
-                    svar.set(val)
-                    if isinstance(w,QtGui.QCheckBox):
-                        def checkBoxCallback(val,svar=svar):
-                            svar.set(val)
-                        w.connect(w,
-                            QtCore.SIGNAL("stateChanged(int)"),
-                            checkBoxCallback)
-                    else:
-                        def radioButtonCallback(val,svar=svar):
-                            svar.set(val)
-                        w.connect(w,
-                            QtCore.SIGNAL("clicked(bool)"),
-                            radioButtonCallback)
-                else: g.trace('*** no w',ivar)
-            else: g.trace('*** no svar',ivar)
-    #@+node:ekr.20110605121601.18233: *6* initRadioButtons
-    def initRadioButtons (self):
-
-        scopeSvar = self.svarDict.get('radio-search-scope')
-
-        table = (
-            ("suboutline_only","suboutline-only"),
-            ("node_only","node-only"))
-
-        for ivar,key in table:
-            svar = self.svarDict.get(ivar)
-            if svar:
-                val = svar.get()
-                if val:
-                    scopeSvar.init(key)
-                    break
-        else:
-            scopeSvar.init('entire-outline')
-            self.svarDict.get('entire_outline').init(True)
-
-        w = self.widgetsDict.get(key)
-        if w: w.setChecked(True)
-
-        # g.trace(scopeSvar.get())
-    #@+node:ekr.20110605121601.18234: *4* class svar (qtFindTab)
-    class svar:
-        '''A class like Tk's IntVar and StringVar classes.'''
+        '''new_find: QT Find Tab Manager'''
 
         #@+others
-        #@+node:ekr.20110605121601.18235: *5* svar.ctor
-        def __init__(self,owner,ivar):
+        #@+node:ekr.20131117054619.16705: *5* ftm.init & helpers
+        def init (self,c):
 
-            self.ivar = ivar
-            self.owner = owner
-            self.radioButtons = ['node_only','suboutline_only','entire_outline']
-            self.trace = False
-            self.val = None
-            self.w = None
+            '''Init the widgets of the 'Find' tab.'''
 
-        def __repr__(self):
-            return '<svar %s>' % self.ivar
-        #@+node:ekr.20110605121601.18236: *5* get
-        def get (self):
+            # g.trace('leoQtFindTab.init')
+            self.createIvars()
+            self.initIvars()
+            self.initTextWidgets()
+            self.initCheckBoxes()
+            self.initRadioButtons()
+        #@+node:ekr.20131117054619.16706: *6* ftm.createIvars
+        def createIvars (self):
 
-            trace = False and not g.unitTesting
+            c = self.c
+            w = c.frame.top.leo_ui # A Window ui object.
 
-            if self.w:
-                val = self.w.isChecked()
-                if trace:
-                    g.trace('qt svar %15s = %s' % (
-                        self.ivar,val),g.callers(5))        
+            # Bind boxes to Window objects.
+            self.widgetsDict = {} # Keys are ivars, values are Qt widgets.
+            findWidget   = leoQLineEditWidget(w.findPattern,'find-widget',c)
+            changeWidget = leoQLineEditWidget(w.findChange,'change-widget',c)
+            data = (
+                ('find_ctrl',       findWidget),
+                ('change_ctrl',     changeWidget),
+                ('whole_word',      w.checkBoxWholeWord),
+                ('ignore_case',     w.checkBoxIgnoreCase),
+                ('wrap',            w.checkBoxWrapAround),
+                ## ('reverse',         w.checkBoxReverse),
+                ('pattern_match',   w.checkBoxRegexp),
+                ('mark_finds',      w.checkBoxMarkFinds),
+                ('entire_outline',  w.checkBoxEntireOutline),
+                ('suboutline_only', w.checkBoxSuboutlineOnly),  
+                ('node_only',       w.checkBoxNodeOnly),
+                ('search_headline', w.checkBoxSearchHeadline),
+                ('search_body',     w.checkBoxSearchBody),
+                ('mark_changes',    w.checkBoxMarkChanges),
+                ('batch', None),
+            )
+            for ivar,widget in data:
+                setattr(self,ivar,widget)
+                self.widgetsDict[ivar] = widget
+                # g.trace(ivar,widget)
+        #@+node:ekr.20131117054619.16707: *6* ftm.initIvars
+        def initIvars(self):
+
+            c = self.c
+            for ivar in self.intKeys:
+                # Get ivars from @settings.
+                val = c.config.getBool(ivar)
+                setattr(self,ivar,val)
+                val = g.choose(val,1,0)
+                svar = self.svarDict.get(ivar)
+                if svar:
+                    svar.set(val)
+        #@+node:ekr.20131117054619.16708: *6* ftm.initTextWidgets
+        def initTextWidgets(self):
+
+            '''Init the find/change text areas.'''
+
+            c = self.c
+
+            table = (
+                (self.find_ctrl,    "find_text",    '<find pattern here>'),
+                (self.change_ctrl,  "change_text",  ''),
+            )
+
+            for w,setting,defaultText in table:
+                # w is a textWrapper object
+                w.setAllText(c.config.getString(setting) or defaultText)
+        #@+node:ekr.20131117054619.16709: *6* ftm.initCheckBoxes
+        def initCheckBoxes (self):
+
+            for ivar,key in (("pattern_match","pattern-search"),):
+                svar = self.svarDict[ivar].get()
+                if svar:
+                    self.svarDict["radio-find-type"].set(key)
+                    w = self.widgetsDict.get(key)
+                    if w: w.setChecked(True)
+                    break
             else:
-                val = self.val
-            return val
-        #@+node:ekr.20110605121601.18237: *5* init
-        def init (self,val):
+                self.svarDict["radio-find-type"].set("plain-search")
+            aList = (
+                'ignore_case','mark_changes','mark_finds',
+                'pattern_match',
+                # 'reverse',
+                'search_body','search_headline',
+                'whole_word','wrap',
+                'node_only','suboutline_only','entire_outline',
+            )
 
-            '''Init the svar, but do *not* init radio buttons.
-            (This is called from initRadioButtons).'''
+            for ivar in aList:
+                svar = self.svarDict.get(ivar)
+                if svar:
+                    # w is a QCheckBox or a QRadioButton.
+                    w = self.widgetsDict.get(ivar)
+                    if w:
+                        val = svar.get()
+                        svar.setWidget(w)
+                        svar.set(val)
+                        if isinstance(w,QtGui.QCheckBox):
+                            def checkBoxCallback(val,svar=svar):
+                                svar.set(val)
+                            w.connect(w,
+                                QtCore.SIGNAL("stateChanged(int)"),
+                                checkBoxCallback)
+                        else:
+                            def radioButtonCallback(val,svar=svar):
+                                svar.set(val)
+                            w.connect(w,
+                                QtCore.SIGNAL("clicked(bool)"),
+                                radioButtonCallback)
+                    else: g.trace('*** no w',ivar)
+                else: g.trace('*** no svar',ivar)
+        #@+node:ekr.20131117054619.16710: *6* ftm.initRadioButtons
+        def initRadioButtons (self):
 
-            trace = False and not g.unitTesting
-
-            if val in (0,1):
-                self.val = bool(val)
+            scopeSvar = self.svarDict.get('radio-search-scope')
+            table = (
+                ("suboutline_only","suboutline-only"),
+                ("node_only","node-only"))
+            for ivar,key in table:
+                svar = self.svarDict.get(ivar)
+                if svar:
+                    val = svar.get()
+                    if val:
+                        scopeSvar.init(key)
+                        break
             else:
-                self.val = val # Don't contain the scope values!
+                scopeSvar.init('entire-outline')
+                self.svarDict.get('entire_outline').init(True)
+            w = self.widgetsDict.get(key)
+            if w: w.setChecked(True)
 
-            if self.w:
-                self.w.setChecked(bool(val))
+        #@-others
+    #@-<< define FindTabManager (new_find) >>
+else:
+    #@+<< define leoQtFindTab (legacy) >>
+    #@+node:ekr.20131117054619.16697: *4* << define leoQtFindTab (legacy) >>
+    class leoQtFindTab (leoFind.findTab):
 
-            if trace: g.trace('qt svar %15s = %s' % (
-                self.ivar,val),g.callers(5))
-        #@+node:ekr.20110605121601.18238: *5* set
-        def set (self,val):
+        '''A subclass of the findTab class containing all Qt Gui code.'''
 
-            '''Init the svar and update the radio buttons.'''
+        #@+others
+        #@+node:ekr.20110605121601.18226: *5*  Birth: called from leoFind ctor
+        if 0: # We can use the base-class ctor.
+            def __init__ (self,c,parentFrame):
+                leoFind.findTab.__init__(self,c,parentFrame)
+                    # Init the base class.
+                    # Calls initGui, createFrame and init(c), in that order.
+        #@+node:ekr.20110605121601.18227: *6* initGui
+        def initGui (self):
 
-            trace = False and not g.unitTesting
-            if trace: g.trace(val)
+            owner = self
 
-            self.init(val)
+            self.svarDict = {}
+                # Keys are ivar names, values are svar objects.
 
-            if self.ivar in self.radioButtons:
-                self.owner.initRadioButtons()
-            elif self.ivar == 'radio-search-scope':
-                self.setRadioScope(val)
+            # Keys are option names; values are <svars>.
+            for ivar in self.intKeys:
+                self.svarDict[ivar] = self.svar(owner,ivar)
 
+            # g.trace(self.svarDict)
 
-        #@+node:ekr.20110605121601.18239: *5* setRadioScope
-        def setRadioScope (self,val):
+            # Add a hack for 'entire_outline' radio button.
+            ivar = 'entire_outline'
+            self.svarDict[ivar] = self.svar(owner,ivar)
 
-            '''Update the svars corresponding to the scope value.'''
+            for ivar in self.newStringKeys:
+                # "radio-find-type", "radio-search-scope"
+                self.svarDict[ivar] = self.svar(owner,ivar)
+        #@+node:ekr.20110605121601.18228: *6* init (qtFindTab) & helpers
+        def init (self,c):
+
+            '''Init the widgets of the 'Find' tab.'''
+
+            # g.trace('leoQtFindTab.init')
+            self.createIvars()
+            self.initIvars()
+            self.initTextWidgets()
+            self.initCheckBoxes()
+            self.initRadioButtons()
+        #@+node:ekr.20110605121601.18229: *7* createIvars (qtFindTab)
+        def createIvars (self):
+
+            c = self.c ; w = c.frame.top.leo_ui # A Window ui object.
+
+            # Bind boxes to Window objects.
+            self.widgetsDict = {} # Keys are ivars, values are Qt widgets.
+            findWidget   = leoQLineEditWidget(w.findPattern,'find-widget',c)
+            changeWidget = leoQLineEditWidget(w.findChange,'change-widget',c)
+            data = (
+                ('find_ctrl',       findWidget),
+                ('change_ctrl',     changeWidget),
+                ('whole_word',      w.checkBoxWholeWord),
+                ('ignore_case',     w.checkBoxIgnoreCase),
+                ('wrap',            w.checkBoxWrapAround),
+                ## ('reverse',         w.checkBoxReverse),
+                ('pattern_match',   w.checkBoxRegexp),
+                ('mark_finds',      w.checkBoxMarkFinds),
+                ('entire_outline',  w.checkBoxEntireOutline),
+                ('suboutline_only', w.checkBoxSuboutlineOnly),  
+                ('node_only',       w.checkBoxNodeOnly),
+                ('search_headline', w.checkBoxSearchHeadline),
+                ('search_body',     w.checkBoxSearchBody),
+                ('mark_changes',    w.checkBoxMarkChanges),
+                ('batch', None),
+            )
+            for ivar,widget in data:
+                setattr(self,ivar,widget)
+                self.widgetsDict[ivar] = widget
+                # g.trace(ivar,widget)
+        #@+node:ekr.20110605121601.18230: *7* initIvars
+        def initIvars(self):
+
+            c = self.c
+
+            # Separate c.ivars are much more convenient than a svarDict.
+            for ivar in self.intKeys:
+                # Get ivars from @settings.
+                val = c.config.getBool(ivar)
+                setattr(self,ivar,val)
+                val = g.choose(val,1,0)
+                svar = self.svarDict.get(ivar)
+                if svar:
+                    svar.set(val)
+
+                # g.trace(ivar,val)
+        #@+node:ekr.20110605121601.18231: *7* initTextWidgets (qtFindTab)
+        def initTextWidgets(self):
+
+            '''Init the find/change text areas.'''
+
+            c = self.c
+
+            table = (
+                (self.find_ctrl,    "find_text",    '<find pattern here>'),
+                (self.change_ctrl,  "change_text",  ''),
+            )
+
+            for w,setting,defaultText in table:
+                # w is a textWrapper object
+                w.setAllText(c.config.getString(setting) or defaultText)
+        #@+node:ekr.20110605121601.18232: *7* initCheckBoxes
+        def initCheckBoxes (self):
+
+            for ivar,key in (
+                ("pattern_match","pattern-search"),
+            ):
+                svar = self.svarDict[ivar].get()
+                if svar:
+                    self.svarDict["radio-find-type"].set(key)
+                    w = self.widgetsDict.get(key)
+                    if w: w.setChecked(True)
+                    break
+            else:
+                self.svarDict["radio-find-type"].set("plain-search")
+
+            aList = (
+                'ignore_case','mark_changes','mark_finds',
+                'pattern_match',
+                # 'reverse',
+                'search_body','search_headline',
+                'whole_word','wrap',
+                'node_only','suboutline_only','entire_outline',
+            )
+
+            for ivar in aList:
+                svar = self.svarDict.get(ivar)
+                if svar:
+                    # w is a QCheckBox or a QRadioButton.
+                    w = self.widgetsDict.get(ivar)
+                    if w:
+                        val = svar.get()
+                        svar.setWidget(w)
+                        svar.set(val)
+                        if isinstance(w,QtGui.QCheckBox):
+                            def checkBoxCallback(val,svar=svar):
+                                svar.set(val)
+                            w.connect(w,
+                                QtCore.SIGNAL("stateChanged(int)"),
+                                checkBoxCallback)
+                        else:
+                            def radioButtonCallback(val,svar=svar):
+                                svar.set(val)
+                            w.connect(w,
+                                QtCore.SIGNAL("clicked(bool)"),
+                                radioButtonCallback)
+                    else: g.trace('*** no w',ivar)
+                else: g.trace('*** no svar',ivar)
+        #@+node:ekr.20110605121601.18233: *7* initRadioButtons
+        def initRadioButtons (self):
+
+            scopeSvar = self.svarDict.get('radio-search-scope')
 
             table = (
                 ("suboutline_only","suboutline-only"),
-                ("node_only","node-only"),
-                ("entire_outline","entire-outline"))
+                ("node_only","node-only"))
 
-            for ivar,val2 in table:
-                if val == val2:
-                    svar = self.owner.svarDict.get(ivar)
-                    val = svar.get()
-                    svar.init(True)
-        #@+node:ekr.20110605121601.18240: *5* setWidget
-        def setWidget(self,w):
-
-            self.w = w
-        #@-others
-    #@+node:ekr.20110605121601.18241: *4* Support for minibufferFind class (qtFindTab)
-    # This is the same as the Tk code because we simulate Tk svars.
-    #@+node:ekr.20110605121601.18242: *5* getOption
-    def getOption (self,ivar):
-
-        var = self.svarDict.get(ivar)
-
-        if var:
-            val = var.get()
-            # g.trace('ivar %s = %s' % (ivar,val))
-            return val
-        else:
-            # g.trace('bad ivar name: %s' % ivar)
-            return None
-    #@+node:ekr.20110605121601.18243: *5* setOption (findTab)
-    def setOption (self,ivar,val):
-
-        trace = False and not g.unitTesting
-        if trace: g.trace(ivar,val)
-
-        if ivar in self.intKeys:
-            if val is not None:
+            for ivar,key in table:
                 svar = self.svarDict.get(ivar)
-                svar.set(val)
-                if trace: g.trace('qtFindTab: ivar %s = %s' % (
-                    ivar,val))
+                if svar:
+                    val = svar.get()
+                    if val:
+                        scopeSvar.init(key)
+                        break
+            else:
+                scopeSvar.init('entire-outline')
+                self.svarDict.get('entire_outline').init(True)
 
-        elif not g.app.unitTesting:
-            g.trace('oops: bad find ivar %s' % ivar)
-    #@+node:ekr.20110605121601.18244: *5* toggleOption
-    def toggleOption (self,ivar):
+            w = self.widgetsDict.get(key)
+            if w: w.setChecked(True)
 
-        if ivar in self.intKeys:
+            # g.trace(scopeSvar.get())
+        #@+node:ekr.20110605121601.18234: *5* class svar (qtFindTab)
+        class svar:
+            '''A class like Tk's IntVar and StringVar classes.'''
+
+            #@+others
+            #@+node:ekr.20110605121601.18235: *6* svar.ctor
+            def __init__(self,owner,ivar):
+
+                self.ivar = ivar
+                self.owner = owner
+                self.radioButtons = ['node_only','suboutline_only','entire_outline']
+                self.trace = False
+                self.val = None
+                self.w = None
+
+            def __repr__(self):
+                return '<svar %s>' % self.ivar
+            #@+node:ekr.20110605121601.18236: *6* get
+            def get (self):
+
+                trace = False and not g.unitTesting
+                if self.w:
+                    val = self.w.isChecked()
+                    if trace:
+                        g.trace('qt svar %15s = %s' % (
+                            self.ivar,val),g.callers(5))        
+                else:
+                    val = self.val
+                return val
+            #@+node:ekr.20110605121601.18237: *6* init
+            def init (self,val):
+
+                '''Init the svar, but do *not* init radio buttons.
+                (This is called from initRadioButtons).'''
+
+                trace = False and not g.unitTesting
+
+                if val in (0,1):
+                    self.val = bool(val)
+                else:
+                    self.val = val # Don't contain the scope values!
+
+                if self.w:
+                    self.w.setChecked(bool(val))
+
+                if trace: g.trace('qt svar %15s = %s' % (
+                    self.ivar,val),g.callers(5))
+            #@+node:ekr.20110605121601.18238: *6* set
+            def set (self,val):
+
+                '''Init the svar and update the radio buttons.'''
+
+                trace = False and not g.unitTesting
+                if trace: g.trace(val)
+
+                self.init(val)
+
+                if self.ivar in self.radioButtons:
+                    self.owner.initRadioButtons()
+                elif self.ivar == 'radio-search-scope':
+                    self.setRadioScope(val)
+
+
+            #@+node:ekr.20110605121601.18239: *6* setRadioScope
+            def setRadioScope (self,val):
+
+                '''Update the svars corresponding to the scope value.'''
+
+                table = (
+                    ("suboutline_only","suboutline-only"),
+                    ("node_only","node-only"),
+                    ("entire_outline","entire-outline"))
+
+                for ivar,val2 in table:
+                    if val == val2:
+                        svar = self.owner.svarDict.get(ivar)
+                        val = svar.get()
+                        svar.init(True)
+            #@+node:ekr.20110605121601.18240: *6* setWidget
+            def setWidget(self,w):
+
+                self.w = w
+            #@-others
+        #@+node:ekr.20110605121601.18241: *5* Support for minibufferFind class (qtFindTab)
+        # This is the same as the Tk code because we simulate Tk svars.
+        #@+node:ekr.20110605121601.18242: *6* getOption
+        def getOption (self,ivar):
+
             var = self.svarDict.get(ivar)
-            val = not var.get()
-            var.set(val)
-            # g.trace('%s = %s' % (ivar,val),var)
-        else:
-            g.trace('oops: bad find ivar %s' % ivar)
-    #@-others
+
+            if var:
+                val = var.get()
+                # g.trace('ivar %s = %s' % (ivar,val))
+                return val
+            else:
+                # g.trace('bad ivar name: %s' % ivar)
+                return None
+        #@+node:ekr.20110605121601.18243: *6* setOption (findTab)
+        def setOption (self,ivar,val):
+
+            trace = False and not g.unitTesting
+            if trace: g.trace(ivar,val)
+
+            if ivar in self.intKeys:
+                if val is not None:
+                    svar = self.svarDict.get(ivar)
+                    svar.set(val)
+                    if trace: g.trace('qtFindTab: ivar %s = %s' % (
+                        ivar,val))
+
+            elif not g.app.unitTesting:
+                g.trace('oops: bad find ivar %s' % ivar)
+        #@+node:ekr.20110605121601.18244: *6* toggleOption
+        def toggleOption (self,ivar):
+
+            if ivar in self.intKeys:
+                var = self.svarDict.get(ivar)
+                val = not var.get()
+                var.set(val)
+                # g.trace('%s = %s' % (ivar,val),var)
+            else:
+                g.trace('oops: bad find ivar %s' % ivar)
+        #@-others
+
+    #@-<< define leoQtFindTab (legacy) >>
+
 #@+node:ekr.20110605121601.18245: *3* class leoQtFrame
 class leoQtFrame (leoFrame.leoFrame):
 
