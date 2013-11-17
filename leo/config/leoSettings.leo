@@ -519,7 +519,190 @@
 </v>
 </v>
 <v t="ekr.20070224073109.1"></v>
-<v t="ekr.20041119034357.1"><vh>@settings</vh>
+<v t="tbrown.20130327180636.20857"><vh>Themes</vh>
+<v t="tbrown.20130411154439.14739"><vh>leo_dark theme 0 settings</vh>
+<v t="tbrown.20130411154439.14740"><vh>README</vh></v>
+<v t="tbrown.20130411154439.14741"><vh>@string color_theme = leo_dark_0</vh></v>
+<v t="tbrown.20130411154439.14742"><vh>@bool color_theme_is_dark = True</vh></v>
+<v t="tbrown.20130411154439.14743"><vh>stylesheet &amp; source</vh>
+<v t="tbrown.20130411154439.14744"><vh>config</vh></v>
+<v t="tbrown.20130411154439.14747"><vh>Color styles</vh>
+<v t="tbrown.20130411154439.14748"><vh>ase</vh></v>
+<v t="tbrown.20130411154439.14749"><vh>body editor</vh></v>
+<v t="tbrown.20130411154439.14750"><vh>tree</vh></v>
+<v t="tbrown.20130411154439.14751"><vh>log</vh></v>
+<v t="tbrown.20130411154439.14752"><vh>mini-buffer &amp; status</vh></v>
+<v t="tbrown.20130411154439.14753"><vh>line edit</vh></v>
+<v t="tbrown.20130411154439.14754"><vh>labels</vh></v>
+<v t="tbrown.20130411154439.14755"><vh>buttons</vh></v>
+<v t="tbrown.20130411154439.14756"><vh>tab bar</vh></v>
+<v t="tbrown.20130411154439.14757"><vh>menus</vh></v>
+<v t="tbrown.20130411154439.14758"><vh>splitters</vh></v>
+</v>
+<v t="tbrown.20130411154439.14759"><vh>Non-color styles (fonts etc.)</vh>
+<v t="tbrown.20130411154439.14760"><vh>controls, default font size</vh></v>
+<v t="tbrown.20130411154439.14761"><vh>body editor</vh></v>
+<v t="tbrown.20130411154439.14762"><vh>tab bar</vh></v>
+<v t="tbrown.20130411154439.14763"><vh>scroll bars</vh></v>
+<v t="tbrown.20130411154439.14764"><vh>tree</vh></v>
+<v t="tbrown.20130411154439.14765"><vh>log</vh></v>
+<v t="tbrown.20130411154439.14766"><vh>mini-buffer &amp; status</vh></v>
+</v>
+<v t="tbrown.20130411154439.14767"><vh>@ignore Spare parts</vh>
+<v t="tbrown.20130411154439.14746"><vh>@ignore border</vh></v>
+</v>
+<v t="tbrown.20131107090449.36193"><vh>@data qt-gui-plugin-style-sheet</vh></v>
+</v>
+<v t="tbrown.20130411154439.14772"><vh>Solarized colorizing settings</vh>
+<v t="tbrown.20130411154439.14773"><vh>Solarized colors (Reference)</vh></v>
+<v t="tbrown.20130411154439.14774"><vh>Default colors, used if no language-specific color are in effect</vh>
+<v t="tbrown.20130411154439.14775"><vh>@color blank_color = grey</vh></v>
+<v t="tbrown.20130411154439.14776"><vh>@color tab_color = red</vh></v>
+<v t="tbrown.20130411154439.14777"><vh>@color label_color = red</vh></v>
+<v t="tbrown.20130411154439.14778"><vh>@color keyword1_color = #268bd2</vh></v>
+<v t="tbrown.20130411154439.14779"><vh>@color keyword2_color = #268bd2</vh></v>
+<v t="tbrown.20130411154439.14780"><vh>@color keyword3_color = #268bd2</vh></v>
+<v t="tbrown.20130411154439.14781"><vh>@color keyword4_color = #268bd2</vh></v>
+<v t="tbrown.20130411154439.14782"><vh>@color literal1_color = #859900</vh></v>
+<v t="tbrown.20130411154439.14783"><vh>@color literal2_color = #859900</vh></v>
+<v t="tbrown.20130411154439.14784"><vh>@color literal3_color = #859900</vh></v>
+<v t="tbrown.20130411154439.14785"><vh>@color literal4_color = #859900</vh></v>
+<v t="tbrown.20130411154439.14786"><vh>@color markup_color = #2aa198</vh></v>
+<v t="tbrown.20130411154439.14787"><vh>@color comment1_color = #d33682</vh></v>
+<v t="tbrown.20130411154439.14788"><vh>@color comment2_color = #d33682</vh></v>
+<v t="tbrown.20130411154439.14789"><vh>@color comment3_color = #d33682</vh></v>
+<v t="tbrown.20130411154439.14790"><vh>@color comment4_color = #d33682</vh></v>
+<v t="tbrown.20130411154439.14791"><vh>@color operator_color = None</vh></v>
+</v>
+</v>
+<v t="tbrown.20130411154439.14792"><vh>@color plain null color = #6c71c4</vh></v>
+<v t="tbrown.20130411154439.14793"><vh>Body pane colors</vh>
+<v t="tbrown.20130411154439.14794"><vh>@color body_text_background_color = #002b36</vh></v>
+<v t="tbrown.20130411154439.14795"><vh>@color unselected_body_bg_color = #002b36</vh></v>
+<v t="tbrown.20130411154439.14796"><vh>@color unselected_body_fg_color = #839496</vh></v>
+<v t="tbrown.20130411154439.14797"><vh>@color body_text_foreground_color = #839496</vh></v>
+<v t="tbrown.20130411154439.14798"><vh>@color insert_mode_bg_color = #002b36</vh></v>
+<v t="tbrown.20130411154439.14799"><vh>@color insert_mode_fg_color = #839496</vh></v>
+</v>
+<v t="tbrown.20130411154439.14800"><vh>Outline pane colors</vh>
+<v t="tbrown.20130411154439.14801"><vh>@color headline_text_unselected_background_color = #ffffff</vh></v>
+<v t="tbrown.20130411154439.14802"><vh>@color headline_text_unselected_foreground_color = None</vh></v>
+<v t="tbrown.20130411154439.14803"><vh>@color headline_text_selected_background_color = #586e75</vh></v>
+<v t="tbrown.20130411154439.14804"><vh>@color headline_text_selected_foreground_color = #002b36</vh></v>
+<v t="tbrown.20130411154439.14805"><vh>@color headline_text_editing_background_color = None</vh></v>
+<v t="tbrown.20130411154439.14806"><vh>@color headline_text_editing_foreground_color = None</vh></v>
+<v t="tbrown.20130411154439.14807"><vh>@color headline_text_editing_selection_foreground_color = None</vh></v>
+<v t="tbrown.20130411154439.14808"><vh>@color headline_text_editing_selection_background_color = None</vh></v>
+<v t="tbrown.20130411154439.14809"><vh>@color outline_pane_background_color = #ffffff</vh></v>
+</v>
+<v t="tbrown.20130411154439.14810"><vh>Log pane colors</vh>
+<v t="tbrown.20130411154439.14811"><vh>@color log_error_color = #dc322f</vh></v>
+<v t="tbrown.20130411154439.14812"><vh>@color log_warning_color = #268bd2</vh></v>
+<v t="tbrown.20130411154439.14813"><vh>@color log_text_foreground_color = #93a1a1</vh></v>
+<v t="tbrown.20130411154439.14814"><vh>@color log_text_background_color = #073642</vh></v>
+<v t="tbrown.20130411154439.14815"><vh>@color log_pane_background_color = #002b36</vh></v>
+<v t="tbrown.20130411154439.14816"><vh>@color log_pane_Find_tab_background_color = #d6c7d3</vh></v>
+<v t="tbrown.20130411154439.14817"><vh>@color log_pane_Spell_tab_background_color = MistyRose1</vh></v>
+</v>
+<v t="tbrown.20130411154439.14818"><vh>@color minibuffer_background_color = #073642</vh></v>
+<v t="tbrown.20130411154439.14819"><vh>@color minibuffer_foreground_color = #b58900</vh></v>
+<v t="tbrown.20130411154439.14820"><vh>@color url_color = #6c71c4</vh></v>
+<v t="tbrown.20130411154439.14821"><vh>@button set-style</vh></v>
+</v>
+<v t="ville.20130416213952.3797"><vh>leo_dark theme 1 settings</vh>
+<v t="ville.20130416213952.3798"><vh>README</vh></v>
+<v t="ville.20130416213952.3799"><vh>@string color_theme = leo_dark_0</vh></v>
+<v t="ville.20130416213952.3800"><vh>@bool color_theme_is_dark = True</vh></v>
+<v t="ville.20130416213952.3801"><vh>stylesheet &amp; source</vh>
+<v t="ville.20130416213952.3802"><vh>config</vh></v>
+<v t="ville.20130416213952.3803"><vh>Color styles</vh>
+<v t="ville.20130416213952.3804"><vh>ase</vh></v>
+<v t="ville.20130416213952.3805"><vh>body editor</vh></v>
+<v t="ville.20130416213952.3806"><vh>tree</vh></v>
+<v t="ville.20130416213952.3807"><vh>log</vh></v>
+<v t="ville.20130416213952.3808"><vh>mini-buffer &amp; status</vh></v>
+<v t="ville.20130416213952.3809"><vh>line edit</vh></v>
+<v t="ville.20130416213952.3810"><vh>labels</vh></v>
+<v t="ville.20130416213952.3811"><vh>buttons</vh></v>
+<v t="ville.20130416213952.3812"><vh>tab bar</vh></v>
+<v t="ville.20130416213952.3813"><vh>menus</vh></v>
+<v t="ville.20130416213952.3814"><vh>splitters</vh></v>
+</v>
+<v t="ville.20130416213952.3815"><vh>Non-color styles (fonts etc.)</vh>
+<v t="ville.20130416213952.3816"><vh>controls, default font size</vh></v>
+<v t="ville.20130416213952.3817"><vh>body editor</vh></v>
+<v t="ville.20130416213952.3818"><vh>tab bar</vh></v>
+<v t="ville.20130416213952.3819"><vh>scroll bars</vh></v>
+<v t="ville.20130416213952.3820"><vh>tree</vh></v>
+<v t="ville.20130416213952.3821"><vh>log</vh></v>
+<v t="ville.20130416213952.3822"><vh>mini-buffer &amp; status</vh></v>
+</v>
+<v t="ville.20130416213952.3823"><vh>@ignore Spare parts</vh>
+<v t="ville.20130416213952.3824"><vh>@ignore border</vh></v>
+</v>
+<v t="ville.20130416213952.3825"><vh>@@data qt-gui-plugin-style-sheet</vh></v>
+<v t="ville.20130416213952.3826"><vh>@@data qt-gui-plugin-style-sheet</vh></v>
+<v t="ville.20130416213952.3827"><vh>@@data qt-gui-plugin-style-sheet</vh></v>
+<v t="ville.20130416213952.3828"><vh>@data qt-gui-plugin-style-sheet</vh></v>
+</v>
+<v t="ville.20130416213952.3829"><vh>Solarized colorizing settings</vh>
+<v t="ville.20130416213952.3830"><vh>Solarized colors (Reference)</vh></v>
+<v t="ville.20130416213952.3831"><vh>Default colors, used if no language-specific color are in effect</vh>
+<v t="ville.20130416213952.3832"><vh>@color blank_color = grey</vh></v>
+<v t="ville.20130416213952.3833"><vh>@color tab_color = red</vh></v>
+<v t="ville.20130416213952.3834"><vh>@color label_color = red</vh></v>
+<v t="ville.20130416213952.3835"><vh>@color keyword1_color = #268bd2</vh></v>
+<v t="ville.20130416213952.3836"><vh>@color keyword2_color = #268bd2</vh></v>
+<v t="ville.20130416213952.3837"><vh>@color keyword3_color = #268bd2</vh></v>
+<v t="ville.20130416213952.3838"><vh>@color keyword4_color = #268bd2</vh></v>
+<v t="ville.20130416213952.3839"><vh>@color literal1_color = #859900</vh></v>
+<v t="ville.20130416213952.3840"><vh>@color literal2_color = #859900</vh></v>
+<v t="ville.20130416213952.3841"><vh>@color literal3_color = #859900</vh></v>
+<v t="ville.20130416213952.3842"><vh>@color literal4_color = #859900</vh></v>
+<v t="ville.20130416213952.3843"><vh>@color markup_color = #2aa198</vh></v>
+<v t="ville.20130416213952.3844"><vh>@color comment1_color = #d33682</vh></v>
+<v t="ville.20130416213952.3845"><vh>@color comment2_color = #d33682</vh></v>
+<v t="ville.20130416213952.3846"><vh>@color comment3_color = #d33682</vh></v>
+<v t="ville.20130416213952.3847"><vh>@color comment4_color = #d33682</vh></v>
+<v t="ville.20130416213952.3848"><vh>@color operator_color = None</vh></v>
+</v>
+</v>
+<v t="ville.20130416213952.3849"><vh>@color plain null color = #6c71c4</vh></v>
+<v t="ville.20130416213952.3850"><vh>Body pane colors</vh>
+<v t="ville.20130416213952.3851"><vh>@color body_text_background_color = #002b36</vh></v>
+<v t="ville.20130416213952.3852"><vh>@color unselected_body_bg_color = #002b36</vh></v>
+<v t="ville.20130416213952.3853"><vh>@color unselected_body_fg_color = #839496</vh></v>
+<v t="ville.20130416213952.3854"><vh>@color body_text_foreground_color = #839496</vh></v>
+<v t="ville.20130416213952.3855"><vh>@color insert_mode_bg_color = #002b36</vh></v>
+<v t="ville.20130416213952.3856"><vh>@color insert_mode_fg_color = #839496</vh></v>
+</v>
+<v t="ville.20130416213952.3857"><vh>Outline pane colors</vh>
+<v t="ville.20130416213952.3858"><vh>@color headline_text_unselected_background_color = #ffffff</vh></v>
+<v t="ville.20130416213952.3859"><vh>@color headline_text_unselected_foreground_color = None</vh></v>
+<v t="ville.20130416213952.3860"><vh>@color headline_text_selected_background_color = #586e75</vh></v>
+<v t="ville.20130416213952.3861"><vh>@color headline_text_selected_foreground_color = #002b36</vh></v>
+<v t="ville.20130416213952.3862"><vh>@color headline_text_editing_background_color = None</vh></v>
+<v t="ville.20130416213952.3863"><vh>@color headline_text_editing_foreground_color = None</vh></v>
+<v t="ville.20130416213952.3864"><vh>@color headline_text_editing_selection_foreground_color = None</vh></v>
+<v t="ville.20130416213952.3865"><vh>@color headline_text_editing_selection_background_color = None</vh></v>
+<v t="ville.20130416213952.3866"><vh>@color outline_pane_background_color = #ffffff</vh></v>
+</v>
+<v t="ville.20130416213952.3867"><vh>Log pane colors</vh>
+<v t="ville.20130416213952.3868"><vh>@color log_error_color = #dc322f</vh></v>
+<v t="ville.20130416213952.3869"><vh>@color log_warning_color = #268bd2</vh></v>
+<v t="ville.20130416213952.3870"><vh>@color log_text_foreground_color = #93a1a1</vh></v>
+<v t="ville.20130416213952.3871"><vh>@color log_text_background_color = #073642</vh></v>
+<v t="ville.20130416213952.3872"><vh>@color log_pane_background_color = #002b36</vh></v>
+<v t="ville.20130416213952.3873"><vh>@color log_pane_Find_tab_background_color = #d6c7d3</vh></v>
+<v t="ville.20130416213952.3874"><vh>@color log_pane_Spell_tab_background_color = MistyRose1</vh></v>
+</v>
+<v t="ville.20130416213952.3875"><vh>@color minibuffer_background_color = #073642</vh></v>
+<v t="ville.20130416213952.3876"><vh>@color minibuffer_foreground_color = #b58900</vh></v>
+<v t="ville.20130416213952.3877"><vh>@color url_color = #6c71c4</vh></v>
+<v t="ville.20130416213952.3878"><vh>@button set-style</vh></v>
+</v>
+</v>
+<v t="ekr.20060603215208"></v>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="tbrown.20120820202856.25331"><vh>@@data abbreviations examples</vh></v>
 <v t="ekr.20131114051702.18852"><vh>@@outline-data tree-abbreviations examples</vh>
@@ -554,6 +737,30 @@
 <v t="tbrown.20120820202856.25329"><vh>@string abbreviations-subst-end = }|}</vh></v>
 <v t="tbrown.20120820202856.25328"><vh>@string abbreviations-subst-start = None</vh></v>
 </v>
+<v t="ekr.20131115092802.18224"></v>
+<v t="ekr.20131114051702.18852"></v>
+<v t="ekr.20131115113459.18223"><vh>Example (disabled) style sheets</vh>
+<v t="ekr.20131115113459.18226"><vh>From leo/config/leo10pt.leo</vh>
+<v t="ekr.20131115113459.18225"><vh>@@data qt-gui-plugin-style-sheet</vh></v>
+</v>
+<v t="ekr.20131115113459.18227"><vh>From leo/config/leo12-10pt.leo</vh>
+<v t="ekr.20131115113459.18229"><vh>@@data qt-gui-plugin-style-sheet</vh></v>
+</v>
+<v t="ekr.20131115113459.18230"><vh>From leo/config/leo12pt.leo</vh>
+<v t="ekr.20131115113459.18232"><vh>@@data qt-gui-plugin-style-sheet</vh></v>
+</v>
+<v t="ekr.20131115113459.18233"><vh>From leo/config/leo14-12pt.leo</vh>
+<v t="ekr.20131115113459.18235"><vh>@@data qt-gui-plugin-style-sheet</vh></v>
+</v>
+<v t="ekr.20131115113459.18236"><vh>From leo/config/leo14pt.leo</vh>
+<v t="ekr.20131115113459.18238"><vh>@@data qt-gui-plugin-style-sheet</vh></v>
+</v>
+<v t="ekr.20131115113459.18239"><vh>From leo/config/leo14pt-ekr.leo</vh>
+<v t="ekr.20131115113459.18241"><vh>@@data qt-gui-plugin-style-sheet</vh></v>
+</v>
+</v>
+<v t="ekr.20041119034357.1"><vh>@settings</vh>
+<v t="ekr.20100904134301.11000"></v>
 <v t="ekr.20110611092035.16470"></v>
 <v t="ekr.20110510071925.14588"><vh>Autocompleter</vh>
 <v t="ekr.20110512085854.14461"><vh>@bool auto_tab_complete = False</vh></v>
@@ -876,7 +1083,14 @@
 <v t="ekr.20070925144534.79"><vh>@item *insert-headline-&amp;time</vh></v>
 <v t="ekr.20070925144534.80"><vh>@item *toggle-&amp;angle-brackets</vh></v>
 </v>
-<v t="ekr.20070925144534.81"><vh>@menu &amp;Find</vh>
+<v t="ekr.20070925144534.105"><vh>@item *&amp;goto-global-line</vh></v>
+<v t="ekr.20070925144534.106"><vh>@item *&amp;execute-script</vh></v>
+<v t="ekr.20070925144534.107"><vh>@item toggle-invisibles</vh></v>
+<v t="ekr.20070925144534.108"><vh>@item open-leoSettings-leo</vh></v>
+</v>
+<v t="ekr.20131117052950.18283"><vh>@menu &amp;Search</vh>
+<v t="ekr.20131117052950.18285"><vh>@item *help-for-find-commands</vh></v>
+<v t="ekr.20131117052950.18284"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.82"><vh>@item *find-tab-&amp;open</vh></v>
 <v t="ekr.20070925144534.83"><vh>@item *find-tab-&amp;hide</vh></v>
 <v t="ekr.20070925144534.84"><vh>@item *search-&amp;with-present-options</vh></v>
@@ -902,11 +1116,6 @@
 <v t="ekr.20070925144534.102"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.103"><vh>@@item *&amp;query-replace</vh></v>
 <v t="ekr.20070925144534.104"><vh>@@item *q&amp;uery-replace-regex</vh></v>
-</v>
-<v t="ekr.20070925144534.105"><vh>@item *&amp;goto-global-line</vh></v>
-<v t="ekr.20070925144534.106"><vh>@item *&amp;execute-script</vh></v>
-<v t="ekr.20070925144534.107"><vh>@item toggle-invisibles</vh></v>
-<v t="ekr.20070925144534.108"><vh>@item open-leoSettings-leo</vh></v>
 </v>
 <v t="ekr.20070925144534.109"><vh>@menu &amp;Outline</vh>
 <v t="ekr.20070925144534.110"><vh>@item *c&amp;ut-node</vh></v>
@@ -1653,213 +1862,7 @@
 </v>
 </v>
 </v>
-<v t="tbrown.20130327180636.20857"><vh>Themes</vh>
-<v t="tbrown.20130411154439.14739"><vh>leo_dark theme 0 settings</vh>
-<v t="tbrown.20130411154439.14740"><vh>README</vh></v>
-<v t="tbrown.20130411154439.14741"><vh>@string color_theme = leo_dark_0</vh></v>
-<v t="tbrown.20130411154439.14742"><vh>@bool color_theme_is_dark = True</vh></v>
-<v t="tbrown.20130411154439.14743"><vh>stylesheet &amp; source</vh>
-<v t="tbrown.20130411154439.14744"><vh>config</vh></v>
-<v t="tbrown.20130411154439.14747"><vh>Color styles</vh>
-<v t="tbrown.20130411154439.14748"><vh>ase</vh></v>
-<v t="tbrown.20130411154439.14749"><vh>body editor</vh></v>
-<v t="tbrown.20130411154439.14750"><vh>tree</vh></v>
-<v t="tbrown.20130411154439.14751"><vh>log</vh></v>
-<v t="tbrown.20130411154439.14752"><vh>mini-buffer &amp; status</vh></v>
-<v t="tbrown.20130411154439.14753"><vh>line edit</vh></v>
-<v t="tbrown.20130411154439.14754"><vh>labels</vh></v>
-<v t="tbrown.20130411154439.14755"><vh>buttons</vh></v>
-<v t="tbrown.20130411154439.14756"><vh>tab bar</vh></v>
-<v t="tbrown.20130411154439.14757"><vh>menus</vh></v>
-<v t="tbrown.20130411154439.14758"><vh>splitters</vh></v>
-</v>
-<v t="tbrown.20130411154439.14759"><vh>Non-color styles (fonts etc.)</vh>
-<v t="tbrown.20130411154439.14760"><vh>controls, default font size</vh></v>
-<v t="tbrown.20130411154439.14761"><vh>body editor</vh></v>
-<v t="tbrown.20130411154439.14762"><vh>tab bar</vh></v>
-<v t="tbrown.20130411154439.14763"><vh>scroll bars</vh></v>
-<v t="tbrown.20130411154439.14764"><vh>tree</vh></v>
-<v t="tbrown.20130411154439.14765"><vh>log</vh></v>
-<v t="tbrown.20130411154439.14766"><vh>mini-buffer &amp; status</vh></v>
-</v>
-<v t="tbrown.20130411154439.14767"><vh>@ignore Spare parts</vh>
-<v t="tbrown.20130411154439.14746"><vh>@ignore border</vh></v>
-</v>
-<v t="tbrown.20131107090449.36193"><vh>@data qt-gui-plugin-style-sheet</vh></v>
-</v>
-<v t="tbrown.20130411154439.14772"><vh>Solarized colorizing settings</vh>
-<v t="tbrown.20130411154439.14773"><vh>Solarized colors (Reference)</vh></v>
-<v t="tbrown.20130411154439.14774"><vh>Default colors, used if no language-specific color are in effect</vh>
-<v t="tbrown.20130411154439.14775"><vh>@color blank_color = grey</vh></v>
-<v t="tbrown.20130411154439.14776"><vh>@color tab_color = red</vh></v>
-<v t="tbrown.20130411154439.14777"><vh>@color label_color = red</vh></v>
-<v t="tbrown.20130411154439.14778"><vh>@color keyword1_color = #268bd2</vh></v>
-<v t="tbrown.20130411154439.14779"><vh>@color keyword2_color = #268bd2</vh></v>
-<v t="tbrown.20130411154439.14780"><vh>@color keyword3_color = #268bd2</vh></v>
-<v t="tbrown.20130411154439.14781"><vh>@color keyword4_color = #268bd2</vh></v>
-<v t="tbrown.20130411154439.14782"><vh>@color literal1_color = #859900</vh></v>
-<v t="tbrown.20130411154439.14783"><vh>@color literal2_color = #859900</vh></v>
-<v t="tbrown.20130411154439.14784"><vh>@color literal3_color = #859900</vh></v>
-<v t="tbrown.20130411154439.14785"><vh>@color literal4_color = #859900</vh></v>
-<v t="tbrown.20130411154439.14786"><vh>@color markup_color = #2aa198</vh></v>
-<v t="tbrown.20130411154439.14787"><vh>@color comment1_color = #d33682</vh></v>
-<v t="tbrown.20130411154439.14788"><vh>@color comment2_color = #d33682</vh></v>
-<v t="tbrown.20130411154439.14789"><vh>@color comment3_color = #d33682</vh></v>
-<v t="tbrown.20130411154439.14790"><vh>@color comment4_color = #d33682</vh></v>
-<v t="tbrown.20130411154439.14791"><vh>@color operator_color = None</vh></v>
-</v>
-</v>
-<v t="tbrown.20130411154439.14792"><vh>@color plain null color = #6c71c4</vh></v>
-<v t="tbrown.20130411154439.14793"><vh>Body pane colors</vh>
-<v t="tbrown.20130411154439.14794"><vh>@color body_text_background_color = #002b36</vh></v>
-<v t="tbrown.20130411154439.14795"><vh>@color unselected_body_bg_color = #002b36</vh></v>
-<v t="tbrown.20130411154439.14796"><vh>@color unselected_body_fg_color = #839496</vh></v>
-<v t="tbrown.20130411154439.14797"><vh>@color body_text_foreground_color = #839496</vh></v>
-<v t="tbrown.20130411154439.14798"><vh>@color insert_mode_bg_color = #002b36</vh></v>
-<v t="tbrown.20130411154439.14799"><vh>@color insert_mode_fg_color = #839496</vh></v>
-</v>
-<v t="tbrown.20130411154439.14800"><vh>Outline pane colors</vh>
-<v t="tbrown.20130411154439.14801"><vh>@color headline_text_unselected_background_color = #ffffff</vh></v>
-<v t="tbrown.20130411154439.14802"><vh>@color headline_text_unselected_foreground_color = None</vh></v>
-<v t="tbrown.20130411154439.14803"><vh>@color headline_text_selected_background_color = #586e75</vh></v>
-<v t="tbrown.20130411154439.14804"><vh>@color headline_text_selected_foreground_color = #002b36</vh></v>
-<v t="tbrown.20130411154439.14805"><vh>@color headline_text_editing_background_color = None</vh></v>
-<v t="tbrown.20130411154439.14806"><vh>@color headline_text_editing_foreground_color = None</vh></v>
-<v t="tbrown.20130411154439.14807"><vh>@color headline_text_editing_selection_foreground_color = None</vh></v>
-<v t="tbrown.20130411154439.14808"><vh>@color headline_text_editing_selection_background_color = None</vh></v>
-<v t="tbrown.20130411154439.14809"><vh>@color outline_pane_background_color = #ffffff</vh></v>
-</v>
-<v t="tbrown.20130411154439.14810"><vh>Log pane colors</vh>
-<v t="tbrown.20130411154439.14811"><vh>@color log_error_color = #dc322f</vh></v>
-<v t="tbrown.20130411154439.14812"><vh>@color log_warning_color = #268bd2</vh></v>
-<v t="tbrown.20130411154439.14813"><vh>@color log_text_foreground_color = #93a1a1</vh></v>
-<v t="tbrown.20130411154439.14814"><vh>@color log_text_background_color = #073642</vh></v>
-<v t="tbrown.20130411154439.14815"><vh>@color log_pane_background_color = #002b36</vh></v>
-<v t="tbrown.20130411154439.14816"><vh>@color log_pane_Find_tab_background_color = #d6c7d3</vh></v>
-<v t="tbrown.20130411154439.14817"><vh>@color log_pane_Spell_tab_background_color = MistyRose1</vh></v>
-</v>
-<v t="tbrown.20130411154439.14818"><vh>@color minibuffer_background_color = #073642</vh></v>
-<v t="tbrown.20130411154439.14819"><vh>@color minibuffer_foreground_color = #b58900</vh></v>
-<v t="tbrown.20130411154439.14820"><vh>@color url_color = #6c71c4</vh></v>
-<v t="tbrown.20130411154439.14821"><vh>@button set-style</vh></v>
-</v>
-<v t="ville.20130416213952.3797"><vh>leo_dark theme 1 settings</vh>
-<v t="ville.20130416213952.3798"><vh>README</vh></v>
-<v t="ville.20130416213952.3799"><vh>@string color_theme = leo_dark_0</vh></v>
-<v t="ville.20130416213952.3800"><vh>@bool color_theme_is_dark = True</vh></v>
-<v t="ville.20130416213952.3801"><vh>stylesheet &amp; source</vh>
-<v t="ville.20130416213952.3802"><vh>config</vh></v>
-<v t="ville.20130416213952.3803"><vh>Color styles</vh>
-<v t="ville.20130416213952.3804"><vh>ase</vh></v>
-<v t="ville.20130416213952.3805"><vh>body editor</vh></v>
-<v t="ville.20130416213952.3806"><vh>tree</vh></v>
-<v t="ville.20130416213952.3807"><vh>log</vh></v>
-<v t="ville.20130416213952.3808"><vh>mini-buffer &amp; status</vh></v>
-<v t="ville.20130416213952.3809"><vh>line edit</vh></v>
-<v t="ville.20130416213952.3810"><vh>labels</vh></v>
-<v t="ville.20130416213952.3811"><vh>buttons</vh></v>
-<v t="ville.20130416213952.3812"><vh>tab bar</vh></v>
-<v t="ville.20130416213952.3813"><vh>menus</vh></v>
-<v t="ville.20130416213952.3814"><vh>splitters</vh></v>
-</v>
-<v t="ville.20130416213952.3815"><vh>Non-color styles (fonts etc.)</vh>
-<v t="ville.20130416213952.3816"><vh>controls, default font size</vh></v>
-<v t="ville.20130416213952.3817"><vh>body editor</vh></v>
-<v t="ville.20130416213952.3818"><vh>tab bar</vh></v>
-<v t="ville.20130416213952.3819"><vh>scroll bars</vh></v>
-<v t="ville.20130416213952.3820"><vh>tree</vh></v>
-<v t="ville.20130416213952.3821"><vh>log</vh></v>
-<v t="ville.20130416213952.3822"><vh>mini-buffer &amp; status</vh></v>
-</v>
-<v t="ville.20130416213952.3823"><vh>@ignore Spare parts</vh>
-<v t="ville.20130416213952.3824"><vh>@ignore border</vh></v>
-</v>
-<v t="ville.20130416213952.3825"><vh>@@data qt-gui-plugin-style-sheet</vh></v>
-<v t="ville.20130416213952.3826"><vh>@@data qt-gui-plugin-style-sheet</vh></v>
-<v t="ville.20130416213952.3827"><vh>@@data qt-gui-plugin-style-sheet</vh></v>
-<v t="ville.20130416213952.3828"><vh>@data qt-gui-plugin-style-sheet</vh></v>
-</v>
-<v t="ville.20130416213952.3829"><vh>Solarized colorizing settings</vh>
-<v t="ville.20130416213952.3830"><vh>Solarized colors (Reference)</vh></v>
-<v t="ville.20130416213952.3831"><vh>Default colors, used if no language-specific color are in effect</vh>
-<v t="ville.20130416213952.3832"><vh>@color blank_color = grey</vh></v>
-<v t="ville.20130416213952.3833"><vh>@color tab_color = red</vh></v>
-<v t="ville.20130416213952.3834"><vh>@color label_color = red</vh></v>
-<v t="ville.20130416213952.3835"><vh>@color keyword1_color = #268bd2</vh></v>
-<v t="ville.20130416213952.3836"><vh>@color keyword2_color = #268bd2</vh></v>
-<v t="ville.20130416213952.3837"><vh>@color keyword3_color = #268bd2</vh></v>
-<v t="ville.20130416213952.3838"><vh>@color keyword4_color = #268bd2</vh></v>
-<v t="ville.20130416213952.3839"><vh>@color literal1_color = #859900</vh></v>
-<v t="ville.20130416213952.3840"><vh>@color literal2_color = #859900</vh></v>
-<v t="ville.20130416213952.3841"><vh>@color literal3_color = #859900</vh></v>
-<v t="ville.20130416213952.3842"><vh>@color literal4_color = #859900</vh></v>
-<v t="ville.20130416213952.3843"><vh>@color markup_color = #2aa198</vh></v>
-<v t="ville.20130416213952.3844"><vh>@color comment1_color = #d33682</vh></v>
-<v t="ville.20130416213952.3845"><vh>@color comment2_color = #d33682</vh></v>
-<v t="ville.20130416213952.3846"><vh>@color comment3_color = #d33682</vh></v>
-<v t="ville.20130416213952.3847"><vh>@color comment4_color = #d33682</vh></v>
-<v t="ville.20130416213952.3848"><vh>@color operator_color = None</vh></v>
-</v>
-</v>
-<v t="ville.20130416213952.3849"><vh>@color plain null color = #6c71c4</vh></v>
-<v t="ville.20130416213952.3850"><vh>Body pane colors</vh>
-<v t="ville.20130416213952.3851"><vh>@color body_text_background_color = #002b36</vh></v>
-<v t="ville.20130416213952.3852"><vh>@color unselected_body_bg_color = #002b36</vh></v>
-<v t="ville.20130416213952.3853"><vh>@color unselected_body_fg_color = #839496</vh></v>
-<v t="ville.20130416213952.3854"><vh>@color body_text_foreground_color = #839496</vh></v>
-<v t="ville.20130416213952.3855"><vh>@color insert_mode_bg_color = #002b36</vh></v>
-<v t="ville.20130416213952.3856"><vh>@color insert_mode_fg_color = #839496</vh></v>
-</v>
-<v t="ville.20130416213952.3857"><vh>Outline pane colors</vh>
-<v t="ville.20130416213952.3858"><vh>@color headline_text_unselected_background_color = #ffffff</vh></v>
-<v t="ville.20130416213952.3859"><vh>@color headline_text_unselected_foreground_color = None</vh></v>
-<v t="ville.20130416213952.3860"><vh>@color headline_text_selected_background_color = #586e75</vh></v>
-<v t="ville.20130416213952.3861"><vh>@color headline_text_selected_foreground_color = #002b36</vh></v>
-<v t="ville.20130416213952.3862"><vh>@color headline_text_editing_background_color = None</vh></v>
-<v t="ville.20130416213952.3863"><vh>@color headline_text_editing_foreground_color = None</vh></v>
-<v t="ville.20130416213952.3864"><vh>@color headline_text_editing_selection_foreground_color = None</vh></v>
-<v t="ville.20130416213952.3865"><vh>@color headline_text_editing_selection_background_color = None</vh></v>
-<v t="ville.20130416213952.3866"><vh>@color outline_pane_background_color = #ffffff</vh></v>
-</v>
-<v t="ville.20130416213952.3867"><vh>Log pane colors</vh>
-<v t="ville.20130416213952.3868"><vh>@color log_error_color = #dc322f</vh></v>
-<v t="ville.20130416213952.3869"><vh>@color log_warning_color = #268bd2</vh></v>
-<v t="ville.20130416213952.3870"><vh>@color log_text_foreground_color = #93a1a1</vh></v>
-<v t="ville.20130416213952.3871"><vh>@color log_text_background_color = #073642</vh></v>
-<v t="ville.20130416213952.3872"><vh>@color log_pane_background_color = #002b36</vh></v>
-<v t="ville.20130416213952.3873"><vh>@color log_pane_Find_tab_background_color = #d6c7d3</vh></v>
-<v t="ville.20130416213952.3874"><vh>@color log_pane_Spell_tab_background_color = MistyRose1</vh></v>
-</v>
-<v t="ville.20130416213952.3875"><vh>@color minibuffer_background_color = #073642</vh></v>
-<v t="ville.20130416213952.3876"><vh>@color minibuffer_foreground_color = #b58900</vh></v>
-<v t="ville.20130416213952.3877"><vh>@color url_color = #6c71c4</vh></v>
-<v t="ville.20130416213952.3878"><vh>@button set-style</vh></v>
-</v>
-</v>
-<v t="ekr.20060603215208"></v>
-<v t="ekr.20100904134301.11000"></v>
-<v t="ekr.20131115092802.18224"></v>
-<v t="ekr.20131114051702.18852"></v>
-<v t="ekr.20131115113459.18223"><vh>Example (disabled) style sheets</vh>
-<v t="ekr.20131115113459.18226"><vh>From leo/config/leo10pt.leo</vh>
-<v t="ekr.20131115113459.18225"><vh>@@data qt-gui-plugin-style-sheet</vh></v>
-</v>
-<v t="ekr.20131115113459.18227"><vh>From leo/config/leo12-10pt.leo</vh>
-<v t="ekr.20131115113459.18229"><vh>@@data qt-gui-plugin-style-sheet</vh></v>
-</v>
-<v t="ekr.20131115113459.18230"><vh>From leo/config/leo12pt.leo</vh>
-<v t="ekr.20131115113459.18232"><vh>@@data qt-gui-plugin-style-sheet</vh></v>
-</v>
-<v t="ekr.20131115113459.18233"><vh>From leo/config/leo14-12pt.leo</vh>
-<v t="ekr.20131115113459.18235"><vh>@@data qt-gui-plugin-style-sheet</vh></v>
-</v>
-<v t="ekr.20131115113459.18236"><vh>From leo/config/leo14pt.leo</vh>
-<v t="ekr.20131115113459.18238"><vh>@@data qt-gui-plugin-style-sheet</vh></v>
-</v>
-<v t="ekr.20131115113459.18239"><vh>From leo/config/leo14pt-ekr.leo</vh>
-<v t="ekr.20131115113459.18241"><vh>@@data qt-gui-plugin-style-sheet</vh></v>
-</v>
-</v>
+<v t="ekr.20070925144534"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -5098,7 +5101,6 @@ False: Chapter tabs do not appear.</t>
 <t tx="ekr.20070925144534.79"></t>
 <t tx="ekr.20070925144534.8">Save &amp;As...</t>
 <t tx="ekr.20070925144534.80"></t>
-<t tx="ekr.20070925144534.81"></t>
 <t tx="ekr.20070925144534.82"></t>
 <t tx="ekr.20070925144534.83"></t>
 <t tx="ekr.20070925144534.84"></t>
@@ -11672,6 +11674,9 @@ QTextEdit:focus#log-widget, LeoQTreeWidget:focus#treeWidget, QTextEdit:focus#ric
   border-color: @focused-border-focus-color; 
 }
 </t>
+<t tx="ekr.20131117052950.18283"></t>
+<t tx="ekr.20131117052950.18284"></t>
+<t tx="ekr.20131117052950.18285"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>
