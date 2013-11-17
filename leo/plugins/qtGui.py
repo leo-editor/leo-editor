@@ -2425,7 +2425,7 @@ class DynamicWindow(QtGui.QMainWindow):
         self.leo_spell_widget = parent # 2013/09/20: To allow bindings to be set.
         self.leo_spell_listBox = listBox # Must exist
         self.leo_spell_label = lab # Must exist (!!)
-    #@+node:ekr.20110605121601.18166: *6* dw.createFindTab
+    #@+node:ekr.20110605121601.18166: *6* dw.createFindTab (changed for 4.11.1)
     def createFindTab (self,parent,tab_widget):
 
         c,dw = self.leo_c,self
@@ -2439,61 +2439,103 @@ class DynamicWindow(QtGui.QMainWindow):
         # Aliases for column numbers
         col_0,col_1,col_2 = 0,1,2
         span_1,span_2,span_3 = 1,2,3
-        # Row 0: heading.
-        heading_row = 0
-        lab1 = self.createLabel(parent,'findHeading','Find/Change Settings...')
-        grid.addWidget(lab1,heading_row,col_0,span_1,span_2,QtCore.Qt.AlignLeft) # AlignHCenter
-        # Rows 1,2: the find/change boxes, now disabled.
-        find_row = 1
-        change_row = 2
-        findPattern = self.createLineEdit(parent,'findPattern',disabled=True)
-        findChange  = self.createLineEdit(parent,'findChange',disabled=True)
+        row = 0 # The row index for the present row.
+        # The heading row.
+        if False:
+            lab1 = self.createLabel(parent,'findHeading','Find/Change Settings...')
+            grid.addWidget(lab1,heading_row,col_0,span_1,span_2,QtCore.Qt.AlignLeft) # AlignHCenter
+            row += 1
+        # The find row.
+        findPattern = self.createLineEdit(parent,'findPattern',disabled=False)
         lab2 = self.createLabel(parent,'findLabel','Find:')
-        lab3 = self.createLabel(parent,'changeLabel','Change:')
-        grid.addWidget(lab2,find_row,col_0)
-        grid.addWidget(lab3,change_row,col_0)
-        grid.addWidget(findPattern,find_row,col_1,span_1,span_2)
-        grid.addWidget(findChange,change_row,col_1,span_1,span_2)
+        grid.addWidget(lab2,row,col_0)
+        grid.addWidget(findPattern,row,col_1,span_1,span_2)
+        row += 1
+        # The change row.
+        findChange  = self.createLineEdit(parent,'findChange',disabled=False)
+        lab3 = self.createLabel(parent,'changeLabel','Replace:') # Leo 4.11.1.
+        grid.addWidget(lab3,row,col_0)
+        grid.addWidget(findChange,row,col_1,span_1,span_2)
+        row += 1
         # Check boxes and radio buttons.
         # Radio buttons are mutually exclusive because they have the same parent.
         def mungeName(name):
             # The value returned here is significant: it creates an ivar.
             return 'checkBox%s' % label.replace(' ','').replace('&','')
-        # Rows 3 through 8...
-        base_row = 3
+        # Rows for check boxes, radio buttons & execution buttons...
+        d = {
+            'box': self.createCheckBox,
+            'rb':  self.createRadioButton,
+            # 'but': self.createButton,
+        }
         table = (
+            # First row.
             ('box', 'Whole &Word',      0,0),
             ('rb',  '&Entire Outline',  0,1),
+            # Second row.
             ('box', '&Ignore Case',     1,0),
             ('rb',  '&Suboutline Only', 1,1),
+            # Third row.
             ('box', 'Wrap &Around',     2,0),
             ('rb',  '&Node Only',       2,1),
-            ('box', 'Search &Headline', 3,1),
+            # Fourth row.
             ('box', 'Rege&xp',          3,0),
-            ('box', 'Search &Body',     4,1),
+            ('box', 'Search &Headline', 3,1),
+            # Fifth row.
             ('box', 'Mark &Finds',      4,0),
-            ('box', 'Mark &Changes',    5,0))
+            ('box', 'Search &Body',     4,1),
+            # Sixth row.
+            ('box', 'Mark &Changes',    5,0),
             # a,b,c,e,f,h,i,n,rs,w
-        for kind,label,row,col in table:
+        )
+        max_row2 = 1
+        for kind,label,row2,col in table:
+            max_row2 = max(max_row2,row2)
             name = mungeName(label)
-            func = g.choose(kind=='box',
-                self.createCheckBox,self.createRadioButton)
+            func = d.get(kind)
+            assert func
             w = func(parent,name,label)
-            grid.addWidget(w,row+base_row,col)
+            grid.addWidget(w,row+row2,col)
             setattr(self,name,w)
-        # Row 9: help row.
-        help_row = 9
-        w = self.createLabel(parent,'findHelp','For help: <alt-x>help-for-find-commands<return>')
-        grid.addWidget(w,help_row,col_0,span_1,span_3)
-        # Row 10: Widgets that take all additional vertical space.
+        # Create Buttons in column 2.
+        # New in Leo 4.11.1.
+        table = (
+            (0,2,'findNextCommand','Find Next'),
+            (1,2,'findPrevCommand','Find Previous'),
+            (2,2,'findAll','Find All'),
+            (3,2,'changeCommand', 'Replace'),
+            (4,2,'changeThenFind','Replace Then Find'),
+            (5,2,'changeAll','Replace All'),  # weird.  Doesn't call callback!
+        )
+        # findTabHandler does not exist yet.
+        for row2,col,func_name,label in table:
+            def find_tab_button_callback(c=c,func_name=func_name):
+                # h will exist when the Find Tab is open.
+                h = c.searchCommands.findTabHandler
+                assert h
+                func = getattr(h,func_name,None)
+                if func: func()
+                else: g.trace('* does not exist:',func_name)
+            w = self.createButton(parent,name,label)
+            # Connect the button with the command.
+            QtCore.QObject.connect(w,QtCore.SIGNAL("clicked()"),
+                find_tab_button_callback)
+            grid.addWidget(w,row+row2,col)
+        row += max_row2
+        row += 1
+        # Help row.
+        if False:
+            w = self.createLabel(parent,'findHelp','For help: <alt-x>help-for-find-commands<return>')
+            grid.addWidget(w,row,col_0,span_1,span_3)
+            row += 1
+        # Last row: Widgets that take all additional vertical space.
         w = QtGui.QWidget()
-        space_row = 10
-        grid.addWidget(w,space_row,col_0)
-        grid.addWidget(w,space_row,col_1)
-        grid.addWidget(w,space_row,col_2)
-        grid.setRowStretch(space_row,100)
+        grid.addWidget(w,row,col_0)
+        grid.addWidget(w,row,col_1)
+        grid.addWidget(w,row,col_2)
+        grid.setRowStretch(row,100)
         # Official ivars (in addition to setattr ivars).
-        self.leo_find_widget = tab_widget # 2011/11/21: a scrollArea.
+        self.leo_find_widget = tab_widget # A scrollArea.
         self.findPattern = findPattern
         self.findChange = findChange
         # self.findLab = lab2

@@ -9634,7 +9634,7 @@ class registerCommandsClass (baseEditCommandsClass):
                 k.setLabelGrey('Register must be a letter')
         c.bodyWantsFocus()
     #@-others
-#@+node:ekr.20051023094009: ** Search classes
+#@+node:ekr.20051023094009: ** Search classes (leoEditCommands)
 #@+node:ekr.20060123125256: *3* class minibufferFind (the findHandler)
 class minibufferFind (baseEditCommandsClass):
 
@@ -10212,13 +10212,9 @@ class searchCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20060123131421: *4* Top-level methods
     #@+node:ekr.20051020120306: *5* openFindTab
     def openFindTab (self,event=None,show=True):
-
         '''Open the Find tab in the log pane.'''
-
         c = self.c ; log = c.frame.log ; tabName = 'Find'
-
         wasOpen = self.inited
-
         if self.inited:
             log.selectTab(tabName)
         else:
@@ -10226,7 +10222,6 @@ class searchCommandsClass (baseEditCommandsClass):
             log.selectTab(tabName,createText=False)
             f = log.frameDict.get(tabName)
             self.findTabHandler = g.app.gui.createFindTab(c,f)
-
         if show or wasOpen or c.config.getBool('minibufferSearchesShowFindTab'):
             pass # self.findTabHandler.bringToFront()
         else:
