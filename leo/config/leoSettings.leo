@@ -95,10 +95,65 @@
 <v t="ekr.20041120155431.2"><vh>\@type type-name: script: script-name</vh></v>
 </v>
 <v t="ekr.20061011082224"><vh>Candidates for settings in myLeoSettings.leo</vh>
+<v t="ekr.20131115092802.18224"><vh>@data qt-gui-plugin-style-sheet</vh></v>
 <v t="ekr.20070224073109.1"><vh>@enabled-plugins</vh></v>
+<v t="ekr.20060603215208"><vh>@keys EKR bindings</vh>
+<v t="ekr.20080510121331.16"><vh>@@shortcuts  Vim plain keys</vh></v>
+<v t="ekr.20080513095644.1"><vh>@mode quick-command :: quick command</vh></v>
+<v t="ekr.20080512082834.1"><vh>@shortcuts Arrow keys and the &lt;return&gt; key</vh></v>
+<v t="ekr.20080510072134.2"><vh>@shortcuts Changes</vh></v>
+<v t="ekr.20060925060533.1"><vh>@shortcuts Cursor Moves</vh></v>
+<v t="ville.20090701225947.3902"><vh>@shortcuts Default plugins</vh></v>
+<v t="ekr.20090408091222.1"><vh>@shortcuts Duplicate bindings for Qt</vh></v>
+<v t="ekr.20120305084218.11271"><vh>@shortcuts F-Keys</vh></v>
+<v t="ekr.20060925061845"><vh>@shortcuts File commands</vh></v>
+<v t="ekr.20060603215208.19"><vh>@shortcuts Find commands</vh></v>
+<v t="ekr.20060925060533.2"><vh>@shortcuts Gui operations</vh></v>
+<v t="ekr.20080204124255"><vh>@shortcuts IPython commands</vh></v>
+<v t="ekr.20070613133747"><vh>@shortcuts Menu commands</vh></v>
+<v t="ekr.20060603215208.20"><vh>@shortcuts Minibuffer commands</vh></v>
+<v t="ekr.20060925061845.1"><vh>@shortcuts Other commands</vh></v>
+<v t="ekr.20060925060533.3"><vh>@shortcuts Outline operations</vh></v>
+<v t="ekr.20131003040744.17561"><vh>@shortcuts Plugin-related commands </vh></v>
+<v t="ekr.20060925060533.4"><vh>@shortcuts Text operations</vh></v>
+</v>
+<v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
+<v t="tbrown.20120820202856.25331"><vh>@@data abbreviations examples</vh></v>
+<v t="ekr.20131114051702.18852"><vh>@@outline-data tree-abbreviations examples</vh>
+<v t="ekr.20131114051702.18853"><vh>abc;;</vh>
+<v t="ekr.20131114051702.18854"><vh>node 1</vh></v>
+<v t="ekr.20131114051702.18855"><vh>node 2</vh></v>
+</v>
+<v t="ekr.20131114051702.18856"><vh>xyz;;</vh>
+<v t="ekr.20131114051702.18857"><vh>node xyz</vh></v>
+</v>
+<v t="ekr.20131114051702.18858"><vh>per-commander-plugin;;</vh>
+<v t="ekr.20131114051702.18859"><vh>@@file pluginname.py</vh>
+<v t="ekr.20131114051702.18860"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
+<v t="ekr.20131114051702.18861"><vh>&lt;&lt; version history &gt;&gt;</vh></v>
+<v t="ekr.20131114051702.18862"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
+<v t="ekr.20131114051702.18863"><vh>init</vh></v>
+<v t="ekr.20131114051702.18864"><vh>onCreate</vh></v>
+<v t="ekr.20131114051702.18865"><vh>class pluginController</vh>
+<v t="ekr.20131114051702.18866"><vh>__init__</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20131115075142.18233"><vh>node xyz</vh></v>
+</v>
+<v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
+<v t="ekr.20130924110246.13745"><vh>@bool scripting-abbreviations = False</vh></v>
+<v t="ekr.20100904134301.11004"><vh>@data abbreviations</vh></v>
+<v t="tbrown.20120820202856.25330"><vh>@data abbreviations-subst-env</vh></v>
+<v t="ekr.20100904134301.11002"><vh>@data global-abbreviations</vh></v>
+<v t="tbrown.20120821183537.18662"><vh>@string abbreviations-place-end = |&gt;</vh></v>
+<v t="tbrown.20120821183537.18663"><vh>@string abbreviations-place-start = &lt;|</vh></v>
+<v t="tbrown.20120820202856.25329"><vh>@string abbreviations-subst-end = }|}</vh></v>
+<v t="tbrown.20120820202856.25328"><vh>@string abbreviations-subst-start = None</vh></v>
+</v>
 <v t="ekr.20110611092035.16470"><vh>Appearance</vh>
 <v t="ekr.20111024091133.16701"><vh>@@@int qt-tab-width = 40</vh></v>
-<v t="ekr.20131115092802.18224"><vh>@data qt-gui-plugin-style-sheet</vh></v>
+<v t="ekr.20131115092802.18224"></v>
 <v t="ekr.20081023060109.13"><vh>@int qt-rich-text-zoom-in = 10</vh></v>
 <v t="ekr.20110611092035.16489"><vh>Chapters</vh>
 <v t="ekr.20070604075218"><vh>@bool use_chapter_tabs = True</vh></v>
@@ -477,26 +532,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20060603215208"><vh>@keys EKR bindings</vh>
-<v t="ekr.20080510121331.16"><vh>@@shortcuts  Vim plain keys</vh></v>
-<v t="ekr.20080513095644.1"><vh>@mode quick-command :: quick command</vh></v>
-<v t="ekr.20080512082834.1"><vh>@shortcuts Arrow keys and the &lt;return&gt; key</vh></v>
-<v t="ekr.20080510072134.2"><vh>@shortcuts Changes</vh></v>
-<v t="ekr.20060925060533.1"><vh>@shortcuts Cursor Moves</vh></v>
-<v t="ville.20090701225947.3902"><vh>@shortcuts Default plugins</vh></v>
-<v t="ekr.20090408091222.1"><vh>@shortcuts Duplicate bindings for Qt</vh></v>
-<v t="ekr.20120305084218.11271"><vh>@shortcuts F-Keys</vh></v>
-<v t="ekr.20060925061845"><vh>@shortcuts File commands</vh></v>
-<v t="ekr.20060603215208.19"><vh>@shortcuts Find commands</vh></v>
-<v t="ekr.20060925060533.2"><vh>@shortcuts Gui operations</vh></v>
-<v t="ekr.20080204124255"><vh>@shortcuts IPython commands</vh></v>
-<v t="ekr.20070613133747"><vh>@shortcuts Menu commands</vh></v>
-<v t="ekr.20060603215208.20"><vh>@shortcuts Minibuffer commands</vh></v>
-<v t="ekr.20060925061845.1"><vh>@shortcuts Other commands</vh></v>
-<v t="ekr.20060925060533.3"><vh>@shortcuts Outline operations</vh></v>
-<v t="ekr.20131003040744.17561"><vh>@shortcuts Plugin-related commands </vh></v>
-<v t="ekr.20060925060533.4"><vh>@shortcuts Text operations</vh></v>
-</v>
+<v t="ekr.20060603215208"></v>
 </v>
 </v>
 <v t="ekr.20110611092035.16463"><vh>Tree operation</vh>
@@ -517,9 +553,7 @@
 <v t="ekr.20060122105527.7"><vh>@bool stayInTreeAfterSelect = True</vh></v>
 <v t="ekr.20061002115414.1"><vh>@float outline_nav_extend_delay = 2.0</vh></v>
 </v>
-</v>
-<v t="ekr.20070224073109.1"></v>
-<v t="tbrown.20130327180636.20857"><vh>Themes</vh>
+<v t="tbrown.20130327180636.20857"><vh>Themes (disabled)</vh>
 <v t="tbrown.20130411154439.14739"><vh>leo_dark theme 0 settings</vh>
 <v t="tbrown.20130411154439.14740"><vh>README</vh></v>
 <v t="tbrown.20130411154439.14741"><vh>@string color_theme = leo_dark_0</vh></v>
@@ -702,43 +736,7 @@
 <v t="ville.20130416213952.3878"><vh>@button set-style</vh></v>
 </v>
 </v>
-<v t="ekr.20060603215208"></v>
-<v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
-<v t="tbrown.20120820202856.25331"><vh>@@data abbreviations examples</vh></v>
-<v t="ekr.20131114051702.18852"><vh>@@outline-data tree-abbreviations examples</vh>
-<v t="ekr.20131114051702.18853"><vh>abc;;</vh>
-<v t="ekr.20131114051702.18854"><vh>node 1</vh></v>
-<v t="ekr.20131114051702.18855"><vh>node 2</vh></v>
 </v>
-<v t="ekr.20131114051702.18856"><vh>xyz;;</vh>
-<v t="ekr.20131114051702.18857"><vh>node xyz</vh></v>
-</v>
-<v t="ekr.20131114051702.18858"><vh>per-commander-plugin;;</vh>
-<v t="ekr.20131114051702.18859"><vh>@@file pluginname.py</vh>
-<v t="ekr.20131114051702.18860"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
-<v t="ekr.20131114051702.18861"><vh>&lt;&lt; version history &gt;&gt;</vh></v>
-<v t="ekr.20131114051702.18862"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
-<v t="ekr.20131114051702.18863"><vh>init</vh></v>
-<v t="ekr.20131114051702.18864"><vh>onCreate</vh></v>
-<v t="ekr.20131114051702.18865"><vh>class pluginController</vh>
-<v t="ekr.20131114051702.18866"><vh>__init__</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20131115075142.18233"><vh>node xyz</vh></v>
-</v>
-<v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
-<v t="ekr.20130924110246.13745"><vh>@bool scripting-abbreviations = False</vh></v>
-<v t="ekr.20100904134301.11004"><vh>@data abbreviations</vh></v>
-<v t="tbrown.20120820202856.25330"><vh>@data abbreviations-subst-env</vh></v>
-<v t="ekr.20100904134301.11002"><vh>@data global-abbreviations</vh></v>
-<v t="tbrown.20120821183537.18662"><vh>@string abbreviations-place-end = |&gt;</vh></v>
-<v t="tbrown.20120821183537.18663"><vh>@string abbreviations-place-start = &lt;|</vh></v>
-<v t="tbrown.20120820202856.25329"><vh>@string abbreviations-subst-end = }|}</vh></v>
-<v t="tbrown.20120820202856.25328"><vh>@string abbreviations-subst-start = None</vh></v>
-</v>
-<v t="ekr.20131115092802.18224"></v>
-<v t="ekr.20131114051702.18852"></v>
 <v t="ekr.20131115113459.18223"><vh>Example (disabled) style sheets</vh>
 <v t="ekr.20131115113459.18226"><vh>From leo/config/leo10pt.leo</vh>
 <v t="ekr.20131115113459.18225"><vh>@@data qt-gui-plugin-style-sheet</vh></v>
@@ -1862,7 +1860,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20070925144534"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
