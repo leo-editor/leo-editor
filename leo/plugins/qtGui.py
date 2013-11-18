@@ -2425,7 +2425,7 @@ class DynamicWindow(QtGui.QMainWindow):
         self.leo_spell_widget = parent # 2013/09/20: To allow bindings to be set.
         self.leo_spell_listBox = listBox # Must exist
         self.leo_spell_label = lab # Must exist (!!)
-    #@+node:ekr.20110605121601.18166: *6* dw.createFindTab (changed for 4.11.1)
+    #@+node:ekr.20110605121601.18166: *6* dw.createFindTab
     def createFindTab (self,parent,tab_widget):
         # g.trace('***(DynamicWindow)***',g.callers())
         c,dw = self.leo_c,self
@@ -2450,10 +2450,10 @@ class DynamicWindow(QtGui.QMainWindow):
         # The heading row.
         if False:
             lab1 = self.createLabel(parent,'findHeading','Find/Change Settings...')
-            grid.addWidget(lab1,heading_row,col_0,span_1,span_2,QtCore.Qt.AlignLeft) # AlignHCenter
+            grid.addWidget(lab1,row,col_0,span_1,span_2,QtCore.Qt.AlignLeft) # AlignHCenter
             row += 1
         # The find row.
-        w = self.createLineEdit(parent,'findPattern',disabled=False)
+        w = self.createLineEdit(parent,'findPattern',disabled=not g.new_find)
         if g.new_find:
             assert ftm.find_ctrl is None
             ftm.find_ctrl = w
@@ -2464,7 +2464,7 @@ class DynamicWindow(QtGui.QMainWindow):
         grid.addWidget(w,row,col_1,span_1,span_2)
         row += 1
         # The change row.
-        w = self.createLineEdit(parent,'findChange',disabled=False)
+        w = self.createLineEdit(parent,'findChange',disabled=not g.new_find)
         if g.new_find:
             assert ftm.change_ctrl is None
             ftm.change_ctrl = w
@@ -2563,6 +2563,8 @@ class DynamicWindow(QtGui.QMainWindow):
         grid.setRowStretch(row,100)
         # Official ivars (in addition to checkbox ivars).
         self.leo_find_widget = tab_widget # A scrollArea.
+        if g.new_find:
+            ftm.init_widgets()
     #@+node:ekr.20110605121601.18168: *5* dw.utils
     #@+node:ekr.20110605121601.18169: *6* dw.setName
     def setName (self,widget,name):
@@ -3633,161 +3635,136 @@ if g.new_find:
             self.radioButtonEntireOutline = None
             self.radioButtonNodeOnly = None
             self.radioButtonSuboutlineOnly = None
-        #@+node:ekr.20131117120458.16793: *5* ftm.dummies (to be deleted)
-        def getAllText(self):
-            return 'NO TEXT'
+        #@+node:ekr.20131117164142.16853: *5* ftm.text getters/setters
+        def getFindText(self):
+            return g.u(self.find_ctrl.text())
+            
+        def getReplaceText(self):
+            return g.u(self.change_ctrl.text())
 
+        getChangeText = getReplaceText
+
+        def setFindText(self,s):
+            w = self.find_ctrl
+            s = g.toUnicode(s)
+            w.clear()
+            w.insert(s)
+            
+        def setReplaceText(self,s):
+            w = self.change_ctrl
+            s = g.toUnicode(s)
+            w.clear()
+            w.insert(s)
+            
+        setChangeText = setReplaceText
+        #@+node:ekr.20131117120458.16793: *5* ftm.dummies (to be deleted)
         def getOption(self,ivar):
             g.trace(ivar)
 
         def update_ivars(self):
             g.trace(g.callers())
-        #@+node:ekr.20131117120458.16790: *5* ftm.create (needed??)
-        def create(self):
-            '''Create the Find Pane.'''
-        #@+node:ekr.20131117120458.16789: *5* ftm.init_widgets (rewrite)
-        def init_widget(self):
-            '''Init widgets from c.config settings.'''
+        #@+node:ekr.20131117120458.16789: *5* ftm.init_widgets
+        def init_widgets(self):
+            '''
+            Init widgets and ivars from c.config settings.
+            Create callbacks that always keep the leoFind ivars up to date.
+            '''
+            c = self.c
+            find = c.findCommands
+            # Find/change text boxes.
+            table = (
+                ('find_ctrl','find_text','<find pattern here>'),
+                ('change_ctrl','change_text',''),
+            )
+            for ivar,setting_name,default in table:
+                s = c.config.getString(setting_name) or default
+                w = getattr(self,ivar)
+                w.insert(g.u(s))
+            # Check boxes.
+            table = (
+                ('ignore_case',     self.checkBoxIgnoreCase),
+                ('mark_changes',    self.checkBoxMarkChanges),
+                ('mark_finds',      self.checkBoxMarkFinds),
+                ('pattern_match',   self.checkBoxRegexp),
+                ('search_body',     self.checkBoxSearchBody),
+                ('search_headline', self.checkBoxSearchHeadline),
+                ('whole_word',      self.checkBoxWholeWord),
+                ('wrap',            self.checkBoxWrapAround),
+            )
+            for setting_name,w in table:
+                val = c.config.getBool(setting_name,default=False)
+                # The setting name is also the name of the leoFind ivar.
+                assert hasattr(find,setting_name),setting_name
+                setattr(find,setting_name,val)
+                if val: w.toggle()
+                def check_box_callback(n,setting_name=setting_name,w=w):
+                    val = w.isChecked()
+                    # g.trace(setting_name,val)
+                    assert hasattr(find,setting_name),setting_name
+                    setattr(find,setting_name,val)
+                QtCore.QObject.connect(w,QtCore.SIGNAL("stateChanged(int)"),
+                    check_box_callback)
+            # Radio buttons
+            table = (
+                ('node_only',       'node_only',        self.radioButtonNodeOnly),
+                ('entire_outline',  None,               self.radioButtonEntireOutline),
+                ('suboutline_only', 'suboutline_only',  self.radioButtonSuboutlineOnly),
+            )
+            for setting_name,ivar,w in table:
+                val = c.config.getBool(setting_name,default=False)
+                # The setting name is also the name of the leoFind ivar.
+                # g.trace(setting_name,ivar,val)
+                if ivar is not None:
+                    assert hasattr(find,setting_name),setting_name
+                    setattr(find,setting_name,val)
+                    w.toggle()
+                def radio_button_callback(n,ivar=ivar,setting_name=setting_name,w=w):
+                    val = w.isChecked()
+                    # g.trace(setting_name,ivar,val)
+                    if ivar:
+                        assert hasattr(find,ivar),ivar
+                        setattr(find,ivar,val)
+                QtCore.QObject.connect(w,QtCore.SIGNAL("toggled(bool)"),
+                    radio_button_callback)
+            # Ensure one radio button is set.
+            if not find.node_only and not find.suboutline_only:
+                w = self.radioButtonEntireOutline
+                w.toggle()
         #@+node:ekr.20131117120458.16792: *5* ftm.set_radio_button
-        def set_radio_button(self,value):
-            '''Set the value of the radio buttons to the indicated value.'''
+        def set_radio_button(self,name):
+            '''Set the value of the radio buttons'''
+            
+            d = {
+                'node_only': self.radioButtonNodeOnly,
+                'entire_outline': self.radioButtonEntireOutline,
+                'suboutline_only': self.radioButtonSuboutlineOnly,
+            }
+            w = d.get(name)
+            assert w
+            # Most of the work will be done in the radio button callback.
+            if not w.isChecked():
+                w.toggle()
         #@+node:ekr.20131117120458.16791: *5* ftm.toggle_checkbox
-        def toggle_checkbox(self,widget_name):
+        def toggle_checkbox(self,checkbox_name):
             '''Toggle the value of the checkbox whose name is given.'''
-        #@+node:ekr.20131117054619.16705: *5* OLDftm.init & helpers (to be deleted)
-        if 0:
-            def init (self,c):
-            
-                '''Init the widgets of the 'Find' tab.'''
-            
-                # g.trace('leoQtFindTab.init')
-                self.createIvars()
-                self.initIvars()
-                self.initTextWidgets()
-                self.initCheckBoxes()
-                self.initRadioButtons()
-        #@+node:ekr.20131117054619.16706: *6* ftm.createIvars
-        def createIvars (self):
-
-            c = self.c
-            w = c.frame.top.leo_ui # A Window ui object.
-
-            # Bind boxes to Window objects.
-            self.widgetsDict = {} # Keys are ivars, values are Qt widgets.
-            findWidget   = leoQLineEditWidget(w.findPattern,'find-widget',c)
-            changeWidget = leoQLineEditWidget(w.findChange,'change-widget',c)
-            data = (
-                ('find_ctrl',       findWidget),
-                ('change_ctrl',     changeWidget),
-                ('whole_word',      w.checkBoxWholeWord),
-                ('ignore_case',     w.checkBoxIgnoreCase),
-                ('wrap',            w.checkBoxWrapAround),
-                ## ('reverse',         w.checkBoxReverse),
-                ('pattern_match',   w.checkBoxRegexp),
-                ('mark_finds',      w.checkBoxMarkFinds),
-                ('entire_outline',  w.checkBoxEntireOutline),
-                ('suboutline_only', w.checkBoxSuboutlineOnly),  
-                ('node_only',       w.checkBoxNodeOnly),
-                ('search_headline', w.checkBoxSearchHeadline),
-                ('search_body',     w.checkBoxSearchBody),
-                ('mark_changes',    w.checkBoxMarkChanges),
-                ('batch', None),
-            )
-            for ivar,widget in data:
-                setattr(self,ivar,widget)
-                self.widgetsDict[ivar] = widget
-                # g.trace(ivar,widget)
-        #@+node:ekr.20131117054619.16707: *6* ftm.initIvars
-        def initIvars(self):
-
-            c = self.c
-            for ivar in self.intKeys:
-                # Get ivars from @settings.
-                val = c.config.getBool(ivar)
-                setattr(self,ivar,val)
-                val = g.choose(val,1,0)
-                svar = self.svarDict.get(ivar)
-                if svar:
-                    svar.set(val)
-        #@+node:ekr.20131117054619.16708: *6* ftm.initTextWidgets
-        def initTextWidgets(self):
-
-            '''Init the find/change text areas.'''
-
-            c = self.c
-
-            table = (
-                (self.find_ctrl,    "find_text",    '<find pattern here>'),
-                (self.change_ctrl,  "change_text",  ''),
-            )
-
-            for w,setting,defaultText in table:
-                # w is a textWrapper object
-                w.setAllText(c.config.getString(setting) or defaultText)
-        #@+node:ekr.20131117054619.16709: *6* ftm.initCheckBoxes
-        def initCheckBoxes (self):
-
-            for ivar,key in (("pattern_match","pattern-search"),):
-                svar = self.svarDict[ivar].get()
-                if svar:
-                    self.svarDict["radio-find-type"].set(key)
-                    w = self.widgetsDict.get(key)
-                    if w: w.setChecked(True)
-                    break
-            else:
-                self.svarDict["radio-find-type"].set("plain-search")
-            aList = (
-                'ignore_case','mark_changes','mark_finds',
-                'pattern_match',
-                # 'reverse',
-                'search_body','search_headline',
-                'whole_word','wrap',
-                'node_only','suboutline_only','entire_outline',
-            )
-
-            for ivar in aList:
-                svar = self.svarDict.get(ivar)
-                if svar:
-                    # w is a QCheckBox or a QRadioButton.
-                    w = self.widgetsDict.get(ivar)
-                    if w:
-                        val = svar.get()
-                        svar.setWidget(w)
-                        svar.set(val)
-                        if isinstance(w,QtGui.QCheckBox):
-                            def checkBoxCallback(val,svar=svar):
-                                svar.set(val)
-                            w.connect(w,
-                                QtCore.SIGNAL("stateChanged(int)"),
-                                checkBoxCallback)
-                        else:
-                            def radioButtonCallback(val,svar=svar):
-                                svar.set(val)
-                            w.connect(w,
-                                QtCore.SIGNAL("clicked(bool)"),
-                                radioButtonCallback)
-                    else: g.trace('*** no w',ivar)
-                else: g.trace('*** no svar',ivar)
-        #@+node:ekr.20131117054619.16710: *6* ftm.initRadioButtons
-        def initRadioButtons (self):
-
-            scopeSvar = self.svarDict.get('radio-search-scope')
-            table = (
-                ("suboutline_only","suboutline-only"),
-                ("node_only","node-only"))
-            for ivar,key in table:
-                svar = self.svarDict.get(ivar)
-                if svar:
-                    val = svar.get()
-                    if val:
-                        scopeSvar.init(key)
-                        break
-            else:
-                scopeSvar.init('entire-outline')
-                self.svarDict.get('entire_outline').init(True)
-            w = self.widgetsDict.get(key)
-            if w: w.setChecked(True)
-
+            find = self.c.findCommands
+            d = {
+                'ignore_case':     self.checkBoxIgnoreCase,
+                'mark_changes':    self.checkBoxMarkChanges,
+                'mark_finds':      self.checkBoxMarkFinds,
+                'pattern_match':   self.checkBoxRegexp,
+                'search_body':     self.checkBoxSearchBody,
+                'search_headline': self.checkBoxSearchHeadline,
+                'whole_word':      self.checkBoxWholeWord,
+                'wrap':            self.checkBoxWrapAround,
+            }
+            w = d.get(checkbox_name)
+            assert w
+            assert hasattr(find,checkbox_name),checkbox_name
+            old_val = getattr(find,checkbox_name)
+            w.toggle() # The checkbox callback toggles the ivar.
+            new_val = getattr(find,checkbox_name)
+            # g.trace(checkbox_name,old_val,new_val)
         #@-others
     #@-<< define FindTabManager (new_find) >>
 else:
@@ -5279,7 +5256,10 @@ class leoQtLog (leoFrame.leoLog):
                 w.removeTab(i)
         w.insertTab(0,logWidget,'Log')
 
-        c.searchCommands.openFindTab(show=False)
+        if g.new_find:
+            c.findCommands.openFindTab(show=False)
+        else:
+            c.searchCommands.openFindTab(show=False)
         c.spellCommands.openSpellTab()
     #@+node:ekr.20110605121601.18316: *5* leoQtLog.getName
     def getName (self):

@@ -4484,7 +4484,7 @@ def createTab (self,tabName,createText=True,widget=None,wrap='none'):
         self.contentsDict[tabName] = contents
         self.tabWidget.addTab(contents,tabName)
     return contents
-.. @+node:ekr.20110605121601.18166: *5* dw.createFindTab (changed for 4.11.1)
+.. @+node:ekr.20110605121601.18166: *5* dw.createFindTab
 def createFindTab (self,parent,tab_widget):
     # g.trace('***(DynamicWindow)***',g.callers())
     c,dw = self.leo_c,self
@@ -4509,10 +4509,10 @@ def createFindTab (self,parent,tab_widget):
     # The heading row.
     if False:
         lab1 = self.createLabel(parent,'findHeading','Find/Change Settings...')
-        grid.addWidget(lab1,heading_row,col_0,span_1,span_2,QtCore.Qt.AlignLeft) # AlignHCenter
+        grid.addWidget(lab1,row,col_0,span_1,span_2,QtCore.Qt.AlignLeft) # AlignHCenter
         row += 1
     # The find row.
-    w = self.createLineEdit(parent,'findPattern',disabled=False)
+    w = self.createLineEdit(parent,'findPattern',disabled=not g.new_find)
     if g.new_find:
         assert ftm.find_ctrl is None
         ftm.find_ctrl = w
@@ -4523,7 +4523,7 @@ def createFindTab (self,parent,tab_widget):
     grid.addWidget(w,row,col_1,span_1,span_2)
     row += 1
     # The change row.
-    w = self.createLineEdit(parent,'findChange',disabled=False)
+    w = self.createLineEdit(parent,'findChange',disabled=not g.new_find)
     if g.new_find:
         assert ftm.change_ctrl is None
         ftm.change_ctrl = w
@@ -4622,6 +4622,8 @@ def createFindTab (self,parent,tab_widget):
     grid.setRowStretch(row,100)
     # Official ivars (in addition to checkbox ivars).
     self.leo_find_widget = tab_widget # A scrollArea.
+    if g.new_find:
+        ftm.init_widgets()
 .. @+node:ekr.20110605121601.18156: *5* dw.createGrid
 def createGrid (self,parent,name,margin=0,spacing=0):
 

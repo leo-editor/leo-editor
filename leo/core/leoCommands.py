@@ -351,25 +351,20 @@ class Commands (object):
         # p = c.p
         assert c.gui
         assert k
-
         c.frame.finishCreate()
         c.miniBufferWidget = c.frame.miniBufferWidget
             # Will be None for nullGui.
-
         # This costs little.
         c.commandsDict = c.editCommandsManager.finishCreateEditCommanders()
         self.rstCommands.finishCreate()
-
         # copy global commands to this controller    
         for name,f in g.app.global_commands_dict.items():
             k.registerCommand(name,
                 shortcut=None,func=f,pane='all',verbose=False)        
-
         k.finishCreate()
-
+        c.findCommands.finishCreate() # 2013/11/17
         if not c.gui.isNullGui:
             g.registerHandler('idle',c.idle_focus_helper)
-
         c.frame.menu.finishCreate()
         c.frame.log.finishCreate()
         c.undoer.clearUndoState()

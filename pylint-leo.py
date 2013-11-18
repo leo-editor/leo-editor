@@ -123,7 +123,7 @@ def getRecentCoreList():
         # 'leoConfig',
         'leoEditCommands',
         # 'leoFileCommands',
-        # 'leoFind',
+        'leoFind',
         # 'leoFrame',
         # 'leoGlobals',
         # 'leoGui',
@@ -139,7 +139,7 @@ def getRecentCoreList():
         # 'leoTangle',
         # 'leoTest',
         # 'leoUndo',
-        'leoVim',
+        # 'leoVim',
 )
 #@+node:ekr.20120528063627.10137: ** getRecentPluginsList
 def getRecentPluginsList ():
@@ -151,7 +151,7 @@ def getRecentPluginsList ():
         # 'internal_ipkernel.py',
         # 'mod_scripting',
         # 'nested_splitter',
-        # 'qtGui',
+        'qtGui',
         # 'plugins_menu',
         # 'screencast',
         # 'viewrendered',

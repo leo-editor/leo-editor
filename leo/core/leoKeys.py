@@ -2440,14 +2440,13 @@ class keyHandlerClass:
         stroke=None, # New in 4.4.1.
         useMinibuffer=True # New in 4.4.1
     ):
-
-        '''Accumulate an argument until the user hits return (or control-g).
+        '''
+        Accumulate an argument until the user hits return (or control-g).
         Enter the given return state when done.
         The prefix does not form the arg.  The prefix defaults to the k.getLabel().
         '''
-
-        k = self ; c = k.c
         trace = False and not g.app.unitTesting
+        k = self ; c = k.c
         state = k.getState('getArg')
         c.check_event(event)
         # Remember these events also.
@@ -2928,7 +2927,7 @@ class keyHandlerClass:
 
         trace = (False or g.trace_masterKeyHandler) and not g.app.unitTesting
         traceGC = g.trace_masterKeyHandlerGC and not g.app.unitTesting
-        verbose = False
+        verbose = True
         k,c = self,self.c
         c.check_event(event)
         #@+<< define vars >>
@@ -3093,12 +3092,9 @@ class keyHandlerClass:
         k = self ; w_name = k.c.widget_name(w)
         # keyStatesTuple = ('command','insert','overwrite')
         state = k.unboundKeyAction
-
         assert g.isStroke(stroke)
-
         if trace: g.trace('w_name',repr(w_name),'stroke',stroke,'w',w,
             'isTextWidget(w)',g.app.gui.isTextWidget(w))
-
         for key,name in (
             # Order here is similar to bindtags order.
             ('command',None),
@@ -3140,24 +3136,19 @@ class keyHandlerClass:
                             if trace: g.trace('key: %7s name: %6s  found %s = %s' % (
                                 key,name,repr(si.stroke),si.commandName))
                             return si
-
         return None
     #@+node:ekr.20061031131434.152: *5* handleMiniBindings
     def handleMiniBindings (self,event,state,stroke):
 
         k = self ; c = k.c
         trace = (False or g.trace_masterKeyHandler) and not g.app.unitTesting
-
         # Special case for bindings handled in k.getArg:
-
         assert g.isStroke(stroke),repr(stroke)
-
         if state in ('getArg','full-command'):
             if stroke in ('\b','BackSpace','\r','Linefeed','\n','Return','\t','Tab','Escape',):
                 return False
             if k.isFKey(stroke):
                 return False
-
         if not state.startswith('auto-'):
             # New in Leo 4.5: ignore plain key binding in the minibuffer.
             if not stroke or k.isPlainKey(stroke):
@@ -3189,7 +3180,6 @@ class keyHandlerClass:
                         if c.exists and not k.silentMode:
                             c.minibufferWantsFocus()
                         return True
-
         return False
     #@+node:ekr.20110209083917.16004: *5* isAutoCompleteChar
     def isAutoCompleteChar (self,stroke):
