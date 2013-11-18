@@ -554,14 +554,15 @@
 <v t="ekr.20061002115414.1"><vh>@float outline_nav_extend_delay = 2.0</vh></v>
 </v>
 <v t="tbrown.20130327180636.20857"><vh>Themes (disabled)</vh>
-<v t="tbrown.20130411154439.14739"><vh>leo_dark theme 0 settings</vh>
+<v t="tbrown.20130411154439.14739" a="E"><vh>leo_dark theme 0 settings</vh>
 <v t="tbrown.20130411154439.14740"><vh>README</vh></v>
+<v t="tbrown.20131118091457.30162"><vh>README - theme developers</vh></v>
 <v t="tbrown.20130411154439.14741"><vh>@string color_theme = leo_dark_0</vh></v>
 <v t="tbrown.20130411154439.14742"><vh>@bool color_theme_is_dark = True</vh></v>
-<v t="tbrown.20130411154439.14743"><vh>stylesheet &amp; source</vh>
+<v t="tbrown.20130411154439.14743" a="E"><vh>stylesheet &amp; source</vh>
 <v t="tbrown.20130411154439.14744"><vh>config</vh></v>
 <v t="tbrown.20130411154439.14747"><vh>Color styles</vh>
-<v t="tbrown.20130411154439.14748"><vh>ase</vh></v>
+<v t="tbrown.20130411154439.14748"><vh>base</vh></v>
 <v t="tbrown.20130411154439.14749"><vh>body editor</vh></v>
 <v t="tbrown.20130411154439.14750"><vh>tree</vh></v>
 <v t="tbrown.20130411154439.14751"><vh>log</vh></v>
@@ -574,6 +575,7 @@
 <v t="tbrown.20130411154439.14758"><vh>splitters</vh></v>
 </v>
 <v t="tbrown.20130411154439.14759"><vh>Non-color styles (fonts etc.)</vh>
+<v t="tbrown.20130411154439.14746"><vh>border</vh></v>
 <v t="tbrown.20130411154439.14760"><vh>controls, default font size</vh></v>
 <v t="tbrown.20130411154439.14761"><vh>body editor</vh></v>
 <v t="tbrown.20130411154439.14762"><vh>tab bar</vh></v>
@@ -582,10 +584,8 @@
 <v t="tbrown.20130411154439.14765"><vh>log</vh></v>
 <v t="tbrown.20130411154439.14766"><vh>mini-buffer &amp; status</vh></v>
 </v>
-<v t="tbrown.20130411154439.14767"><vh>@ignore Spare parts</vh>
-<v t="tbrown.20130411154439.14746"><vh>@ignore border</vh></v>
-</v>
-<v t="tbrown.20131107090449.36193"><vh>@data qt-gui-plugin-style-sheet</vh></v>
+<v t="tbrown.20130411154439.14767"><vh>@ignore Spare parts</vh></v>
+<v t="tbrown.20131118091457.30167"><vh>@data qt-gui-plugin-style-sheet</vh></v>
 </v>
 <v t="tbrown.20130411154439.14772"><vh>Solarized colorizing settings</vh>
 <v t="tbrown.20130411154439.14773"><vh>Solarized colors (Reference)</vh></v>
@@ -641,7 +641,6 @@
 <v t="tbrown.20130411154439.14818"><vh>@color minibuffer_background_color = #073642</vh></v>
 <v t="tbrown.20130411154439.14819"><vh>@color minibuffer_foreground_color = #b58900</vh></v>
 <v t="tbrown.20130411154439.14820"><vh>@color url_color = #6c71c4</vh></v>
-<v t="tbrown.20130411154439.14821"><vh>@button set-style</vh></v>
 </v>
 <v t="ville.20130416213952.3797"><vh>leo_dark theme 1 settings</vh>
 <v t="ville.20130416213952.3798"><vh>README</vh></v>
@@ -733,7 +732,6 @@
 <v t="ville.20130416213952.3875"><vh>@color minibuffer_background_color = #073642</vh></v>
 <v t="ville.20130416213952.3876"><vh>@color minibuffer_foreground_color = #b58900</vh></v>
 <v t="ville.20130416213952.3877"><vh>@color url_color = #6c71c4</vh></v>
-<v t="ville.20130416213952.3878"><vh>@button set-style</vh></v>
 </v>
 </v>
 </v>
@@ -12071,7 +12069,10 @@ if that's an abbreviation linked to next_place(), see
 <t tx="tbrown.20130327180636.20857">Enable themes by copying their nodes into your myLeoSettings.leo file,
 as the last node under the @settings node. You may need to move any
 existing `@color` and `@data qt-gui-plugin-style-sheet` nodes out of the
-way. See README node in individual themes for more information.</t>
+way, i.e. delete them or collect them under a top level node of their
+own so they're no longer descendants of @settings.
+
+See README node in individual themes for more information.</t>
 <t tx="tbrown.20130411154439.14739">"Solarized" dark theme.
 
 Copy into mySettings.leo under @settings to enable theme
@@ -12082,13 +12083,8 @@ Place this node at the *bottom* of the list of nodes under
 
 See parent nodes for installation notes.
 
-A theme's folder should be in either .../leo/themes or
-$HOME/.leo/themes.
 NOTE: to use with a non-dark desktop theme, switch '@ignore base' below
       to 'base' and `run-script` on the `stylesheet &amp; source` node.
-
-A theme is a combination of @color settings, a stylesheet, and,
-optionally, some icons. Icons go in &lt;theme_dir&gt;/Icons.
 
 *IMPORTANT:* to change the stylesheet, edit the Leo tree under the
 `stylesheet &amp; source` node below, not the 
@@ -12097,9 +12093,6 @@ optionally, some icons. Icons go in &lt;theme_dir&gt;/Icons.
 Then select the `stylesheet &amp; source` node and click the `run-script`
 button. This creates a new `@data qt-gui-plugin-style-sheet` node and
 disables the old one by adding `@@data`.
-
-Finally, select the new `@data qt-gui-plugin-style-sheet` node and click
-the `set-style` button to see the style without re-loading.
 
 Within the `stylesheet &amp; source` tree you can reference Leo color
 settings (without the hyphens/underscores, so log_background_color is
@@ -12127,10 +12120,14 @@ import datetime
 nd = cp.insertAsLastChild()
 unl = cp.get_UNL()+'--&gt;'
 nd.h = '@ignore'  # removed after processing
-nd.b = "/*\n  AUTOMATICALLY GENERATED FROM:\n  %s\n  %s\n*/\n\n" % (
+nd.b = ("/*\n  DON'T EDIT THIS, EDIT THE OTHER NODES UNDER "
+    "'stylesheet &amp; source'\n  AND RECREATE THIS BY SELECTING "
+    "'stylesheet &amp; source' AND USING CTRL-B"
+    "\n\n  AUTOMATICALLY GENERATED FROM:\n  %s\n  %s\n*/\n\n"
+    % (
     cp.get_UNL(with_proto=True),
     datetime.datetime.now().strftime('%Y-%m-%d %H:%M'),
-)
+))
 
 for i in cp.subtree():
     src = i.get_UNL().replace(unl, '')
@@ -12157,6 +12154,8 @@ c.redraw()</t>
 This *comment* is parsed to extract constants (macros) defined below.
 
 constants:
+
+Names for solarized colors
 
 @solarized-base03 = #002b36
 @solarized-base02 = #073642
@@ -12197,24 +12196,29 @@ constants:
 @font-family-log = @font-family
 @font-size-body = 18px
 
+Note, for these to work, you need to a node
+  @bool use_focus_border = False
+under your @settings node to turn off non-stylesheet based border
+highlighting.  Also, set @focused-border-style to something other
+than none, below.  'solid' works.
+
 @focused-border-style = none
 @focused-border-width = 3px
 @focused-border-focus-color = cyan
+@focused-border-hover-color = red
 @focused-border-unfocus-color = white
-
-
-
 </t>
-<t tx="tbrown.20130411154439.14746">/* unneeded alternative active pane highlighting */
+<t tx="tbrown.20130411154439.14746">/* alternative active pane highlighting */
 QTextEdit#log-widget, LeoQTreeWidget#treeWidget, QTextEdit#richTextEdit { 
   border-style: @focused-border-style;
   border-width: @focused-border-width; 
   border-color: @focused-border-unfocus-color; 
 }
 QTextEdit:focus#log-widget, LeoQTreeWidget:focus#treeWidget, QTextEdit:focus#richTextEdit { 
-  border-style: @focused-border-style;
-  border-width: @focused-border-width; 
   border-color: @focused-border-focus-color; 
+}
+QTextEdit:hover#log-widget, LeoQTreeWidget:hover#treeWidget, QTextEdit:hover#richTextEdit { 
+  border-color: @focused-border-hover-color; 
 }
 </t>
 <t tx="tbrown.20130411154439.14747"></t>
@@ -12629,10 +12633,6 @@ LightSteelBlue1 # Good for testing.</t>
 <t tx="tbrown.20130411154439.14818"></t>
 <t tx="tbrown.20130411154439.14819"></t>
 <t tx="tbrown.20130411154439.14820"></t>
-<t tx="tbrown.20130411154439.14821">from leo.plugins.qtGui import expand_css_constants
-g.app.gui.frameFactory.masterFrame.setStyleSheet(
-    expand_css_constants(p.b))
-print(expand_css_constants(p.b))</t>
 <t tx="tbrown.20130813134319.7223"></t>
 <t tx="tbrown.20130813134319.7224">Set this to True for rich text edits to be saved automatically.
 
@@ -12674,10 +12674,18 @@ The string must be only two integers, separated by spaces and or commas.
 Dev. note: this setting is new (201309) and can't be replaced by the
 stylesheet, the other settings in this group should probably be handled
 by the stylesheet and could be considered for removal.</t>
-<t tx="tbrown.20131107090449.36193">/*
+<t tx="tbrown.20131118091457.30162">A theme's folder should be in either .../leo/themes or
+$HOME/.leo/themes.
+
+A theme is a combination of @color settings, a stylesheet, and,
+optionally, some icons. Icons go in &lt;theme_dir&gt;/Icons.</t>
+<t tx="tbrown.20131118091457.30167">/*
+  DON'T EDIT THIS, EDIT THE OTHER NODES UNDER 'stylesheet &amp; source'
+  AND RECREATE THIS BY SELECTING 'stylesheet &amp; source' AND USING CTRL-B
+
   AUTOMATICALLY GENERATED FROM:
-  file:///mnt/usr1/usr1/home/tbrown/Package/leo/bzr/leo.repo/trunk/leo/config/leoSettings.leo#Themes--&gt;leo_dark%20theme%200%20settings--&gt;stylesheet%20&amp;%20source
-  2013-11-07 12:56
+  file:///mnt/usr1/usr1/home/tbrown/Package/leo/bzr/leo.repo/trunk/leo/config/leoSettings.leo#Candidates%20for%20settings%20in%20myLeoSettings.leo--&gt;Themes%20(disabled)--&gt;leo_dark%20theme%200%20settings--&gt;stylesheet%20&amp;%20source
+  2013-11-18 10:31
 */
 
 /*### config ################################################################*/
@@ -12686,6 +12694,8 @@ by the stylesheet and could be considered for removal.</t>
 This *comment* is parsed to extract constants (macros) defined below.
 
 constants:
+
+Names for solarized colors
 
 @solarized-base03 = #002b36
 @solarized-base02 = #073642
@@ -12726,15 +12736,22 @@ constants:
 @font-family-log = @font-family
 @font-size-body = 18px
 
+Note, for these to work, you need to a node
+  @bool use_focus_border = False
+under your @settings node to turn off non-stylesheet based border
+highlighting.  Also, set @focused-border-style to something other
+than none, below.  'solid' works.
+
 @focused-border-style = none
 @focused-border-width = 3px
 @focused-border-focus-color = cyan
+@focused-border-hover-color = red
 @focused-border-unfocus-color = white
 
 /*### Color styles ##########################################################*/
 
 
-/*### Color styles--&gt;ase ####################################################*/
+/*### Color styles--&gt;base ###################################################*/
 QWidget { color: @solarized-base1; background-color: @solarized-base03; 
   border-color: @solarized-base1; 
 }
@@ -12858,6 +12875,20 @@ QSplitter::handle:hover {
 
 /*### Non-color styles (fonts etc.) #########################################*/
 
+
+/*### Non-color styles (fonts etc.)--&gt;border ################################*/
+/* alternative active pane highlighting */
+QTextEdit#log-widget, LeoQTreeWidget#treeWidget, QTextEdit#richTextEdit { 
+  border-style: @focused-border-style;
+  border-width: @focused-border-width; 
+  border-color: @focused-border-unfocus-color; 
+}
+QTextEdit:focus#log-widget, LeoQTreeWidget:focus#treeWidget, QTextEdit:focus#richTextEdit { 
+  border-color: @focused-border-focus-color; 
+}
+QTextEdit:hover#log-widget, LeoQTreeWidget:hover#treeWidget, QTextEdit:hover#richTextEdit { 
+  border-color: @focused-border-hover-color; 
+}
 
 /*### Non-color styles (fonts etc.)--&gt;controls, default font size ###########*/
 QPushButton, QDoubleSpinBox, QSpinBox, QDateEdit, QTimeEdit { border: none; padding: 3px; margin-right: 5px; }
@@ -14565,10 +14596,6 @@ LightSteelBlue1 # Good for testing.</t>
 <t tx="ville.20130416213952.3875"></t>
 <t tx="ville.20130416213952.3876"></t>
 <t tx="ville.20130416213952.3877"></t>
-<t tx="ville.20130416213952.3878">from leo.plugins.qtGui import expand_css_constants
-g.app.gui.frameFactory.masterFrame.setStyleSheet(
-    expand_css_constants(p.b))
-print(expand_css_constants(p.b))</t>
 <t tx="vitalije.20100306144625.8944"></t>
 <t tx="vitalije.20100306144625.8945"></t>
 <t tx="vitalije.20100306144625.8946"># Time between saves in seconds</t>
