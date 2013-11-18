@@ -5080,27 +5080,24 @@ class leoQtLog (leoFrame.leoLog):
     def finishCreate (self):
 
         c = self.c ; log = self ; w = self.tabWidget
-
         # Remove unneeded tabs.
         for name in ('Tab 1','Page'):
             for i in range(w.count()):
                 if name == w.tabText(i):
                     w.removeTab(i)
                     break
-
         # Rename the 'Tab 2' tab to 'Find'.
         for i in range(w.count()):
             if w.tabText(i) in ('Find','Tab 2'):
                 w.setTabText(i,'Find')
                 self.contentsDict['Find'] = w.currentWidget()
                 break
-
         # Create the log tab as the leftmost tab.
         # log.selectTab('Log')
         log.createTab('Log')
         logWidget = self.contentsDict.get('Log')
-        logWidget.setWordWrapMode(QtGui.QTextOption.WordWrap if self.wrap
-            else QtGui.QTextOption.NoWrap)
+        logWidget.setWordWrapMode(
+            QtGui.QTextOption.WordWrap if self.wrap else QtGui.QTextOption.NoWrap)
         for i in range(w.count()):
             if w.tabText(i) == 'Log':
                 w.removeTab(i)

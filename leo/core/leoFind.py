@@ -9,6 +9,10 @@
 import leo.core.leoGlobals as g
 import re
 
+#@+<< global leoFind switch >>
+#@+node:ekr.20131118113639.17704: ** << global leoFind switch >>
+stateless_find = True # True, use stateless finds.
+#@-<< global leoFind switch >>
 #@+<< Theory of operation of find/change >>
 #@+node:ekr.20031218072017.2414: ** << Theory of operation of find/change >>
 #@@nocolor-node
@@ -199,7 +203,7 @@ class leoFind:
         self.wrapPosition = None # The start of wrapped searches: persists between calls.
         self.onlyPosition = None # The starting node for suboutline-only searches.
         self.wrapPos = None # The starting position of the wrapped search: persists between calls.
-    #@+node:ekr.20131117164142.17022: *4* leoFind.finishCreate (new)
+    #@+node:ekr.20131117164142.17022: *4* leoFind.finishCreate
     def finishCreate(self):
         
         # New in 4.11.1.  Must be called after keyHandler is initied.

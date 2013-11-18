@@ -30,6 +30,10 @@
 Links to screencasts on Leo's home page.
     Download to YouTube.
     Download to leoeditor.com? (Ask Speed first).
+    
+** Common tasks like changing settings, importing files and file structures
+etc. shouldn't eat up all the time people are willing to invest in trying
+out a new product.
 
 ** Review Leo's text tutorials.
 Using settings.
