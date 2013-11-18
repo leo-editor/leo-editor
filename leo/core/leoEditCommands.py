@@ -10196,7 +10196,7 @@ class searchCommandsClass (baseEditCommandsClass):
             'replace':                        find.change, ### findTabChange,
             'replace-all':                    find.minibufferReplaceAll,
             'replace-string':                 find.replaceString,
-            'replace-then-find':              find.changeThenFind, ### findTabChangeThenFind,
+            'replace-then-find':              find.changeThenFindCommand, ### findTabChangeThenFind,
             're-search-forward':              find.reSearchForward,
             're-search-backward':             find.reSearchBackward,
             ### 'search-again':                   find.findAgain,

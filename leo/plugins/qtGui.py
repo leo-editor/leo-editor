@@ -3735,9 +3735,10 @@ if g.new_find:
             '''Set the value of the radio buttons'''
             
             d = {
-                'node_only': self.radioButtonNodeOnly,
-                'entire_outline': self.radioButtonEntireOutline,
-                'suboutline_only': self.radioButtonSuboutlineOnly,
+                # Name is not an ivar. Set by find.setFindScope... commands.
+                'node-only': self.radioButtonNodeOnly,
+                'entire-outline': self.radioButtonEntireOutline,
+                'suboutline-only': self.radioButtonSuboutlineOnly,
             }
             w = d.get(name)
             assert w
@@ -5445,20 +5446,19 @@ class leoQtLog (leoFrame.leoLog):
         self.selectTab(tabName,createText=False)
         if trace: g.trace('(leoQtLog)',i,w,w.count(),w.currentIndex(),g.u(tabName))
         return i
-    #@+node:ekr.20110605121601.18328: *5* deleteTab
+    #@+node:ekr.20110605121601.18328: *5* deleteTab (leoQtLog)
     def deleteTab (self,tabName,force=False):
-
-        c = self.c ; w = self.tabWidget
-
+        '''Delete the tab if it exists.  Otherwise do *nothing*.'''
+        c = self.c
+        w = self.tabWidget
         if force or tabName not in ('Log','Find','Spell'):
             for i in range(w.count()):
                 if tabName == w.tabText(i):
                     w.removeTab(i)
-                    break
-
-        self.selectTab('Log')
-        c.invalidateFocus()
-        c.bodyWantsFocus()
+                    self.selectTab('Log')
+                    c.invalidateFocus()
+                    c.bodyWantsFocus()
+                    return
     #@+node:ekr.20110605121601.18329: *5* hideTab
     def hideTab (self,tabName):
 
@@ -5479,11 +5479,8 @@ class leoQtLog (leoFrame.leoLog):
             # **Note**: the base-class version of this uses frameDict.
     #@+node:ekr.20110605121601.18331: *5* selectTab & helper (leoQtLog)
     # createText is used by leoLog.selectTab.
-
     def selectTab (self,tabName,createText=True,widget=None,wrap='none'):
-
         '''Create the tab if necessary and make it active.'''
-
         if not self.selectHelper(tabName):
             self.createTab(tabName,widget=widget,wrap=wrap)
             self.selectHelper(tabName)

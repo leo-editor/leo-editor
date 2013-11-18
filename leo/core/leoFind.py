@@ -231,24 +231,24 @@ class leoFind:
         
     #@+node:ekr.20060123065756.1: *3* leoFind.Buttons (immediate execution)
     #@+node:ekr.20031218072017.3057: *4* changeAllButton
-    def changeAllButton(self):
+    def changeAllButton(self,event=None):
         '''Handle Replace All button.'''
         c = self.c
         self.setup_button()
         c.clearAllVisited() # For context reporting.
         self.changeAll()
     #@+node:ekr.20031218072017.3056: *4* changeButton
-    def changeButton(self):
+    def changeButton(self,event=None):
         '''Handle Change button.'''
         self.setup_button()
         self.change()
     #@+node:ekr.20031218072017.3058: *4* changeThenFindButton
-    def changeThenFindButton(self):
+    def changeThenFindButton(self,event=None):
         '''Handle Change, Then Find button.'''
         self.setup_button()
         self.changeThenFind()
     #@+node:ekr.20031218072017.3060: *4* findAllButton
-    def findAllButton(self):
+    def findAllButton(self,event=None):
         '''Handle Find All button.'''
         c = self.c
         self.setup_button()
@@ -258,12 +258,12 @@ class leoFind:
             c.clearAllVisited()
         self.findAll()
     #@+node:ekr.20031218072017.3059: *4* findButton
-    def findButton(self):
+    def findButton(self,event=None):
         '''Handle pressing the "Find" button in the find panel.'''
         self.setup_button()
         self.findNext()
     #@+node:ekr.20131117054619.16688: *4* findPreviousButton (new in 4.11.1)
-    def findPreviousButton(self):
+    def findPreviousButton(self,event=None):
         '''Handle the Find Previous button.'''
         self.setup_button()
         self.reverse = not self.reverse
@@ -280,26 +280,25 @@ class leoFind:
         self.update_ivars()
     #@+node:ekr.20031218072017.3055: *3* leoFind.Commands (immediate execution)
     #@+node:ekr.20031218072017.3061: *4* find.changeCommand
-    def changeCommand(self,c):
+    def changeCommand(self,event=None):
         '''Handle replace command.'''
         self.setup_command()
         self.change()
     #@+node:ekr.20031218072017.3062: *4* find.changeThenFindCommand
-    def changeThenFindCommand(self,c):
+    def changeThenFindCommand(self,event=None):
         '''Handle the replace-then-find command.'''
         self.setup_command()
         self.changeThenFind()
     #@+node:ekr.20031218072017.3063: *4* find.findNextCommand
     # The user has selected the "Find Next" menu item.
 
-    def findNextCommand(self,c=None): ###
-        c = self.c
+    def findNextCommand(self,event=None):
         self.setup_command()
         self.findNext()
     #@+node:ekr.20031218072017.3064: *4* find.findPrevCommand
     # The user has selected the "Find Previous" menu item.
 
-    def findPrevCommand(self,c):
+    def findPrevCommand(self,event=None):
         self.setup_command()
         self.reverse = not self.reverse
         self.findNext()
@@ -329,11 +328,8 @@ class leoFind:
 
     def setup_command(self):
 
-        # g.trace('leoFind')
-
         if 0: # We _must_ retain the editing status for incremental searches!
             self.c.endEditing()
-
         self.update_ivars()
     #@+node:ekr.20131117164142.16939: *3* leoFind.ISearch (new_find)
     if g.new_find:
@@ -899,7 +895,6 @@ class leoFind:
             if trace: g.trace('state',state)
             if state == 0:
                 self.setupArgs(forward=None,regexp=None,word=None)
-                g.trace(self.replaceStringShortcut,id(self))
                 self.stateZeroHelper(
                     event,tag,'Search: ',self.searchWithPresentOptions,
                     escapes=[self.replaceStringShortcut])
@@ -1021,20 +1016,20 @@ class leoFind:
         def toggleOption(self,checkbox_name):
             self.findTabManager.toggle_checkbox(checkbox_name)
         #@+node:ekr.20131117164142.17019: *4* setFindScope...
-        def setFindScopeEveryWhere (self, event):
+        def setFindScopeEveryWhere (self,event=None):
             '''Set the 'Entire Outline' radio button in the Find tab.'''
             return self.setFindScope('entire-outline')
-        def setFindScopeNodeOnly  (self, event):
+        def setFindScopeNodeOnly  (self,event=None):
             '''Set the 'Node Only' radio button in the Find tab.'''
             return self.setFindScope('node-only')
-        def setFindScopeSuboutlineOnly (self, event):
+        def setFindScopeSuboutlineOnly (self,event=None):
             '''Set the 'Suboutline Only' radio button in the Find tab.'''
             return self.setFindScope('suboutline-only')
         def setFindScope(self,where):
             '''Set the radio buttons to the given scope'''
             self.findTabManager.set_radio_button(where)
         #@+node:ekr.20131117164142.16989: *4* showFindOptions
-        def showFindOptions (self):
+        def showFindOptions (self,event=None):
             '''Show the present find options in the status line.'''
             frame = self.c.frame ; z = []
             # Set the scope field.
@@ -1172,7 +1167,6 @@ class leoFind:
             #@-<< change body >>
     #@+node:ekr.20031218072017.3068: *4* find.change
     def change(self,event=None):
-
         if self.checkArgs():
             self.initInHeadline()
             self.changeSelection()
@@ -1285,10 +1279,8 @@ class leoFind:
         return ''.join(result)
     #@+node:ekr.20031218072017.3071: *4* find.changeThenFind
     def changeThenFind(self):
-
         if not self.checkArgs():
             return
-
         self.initInHeadline()
         if self.changeSelection():
             self.findNext(False) # don't reinitialize
@@ -1351,7 +1343,6 @@ class leoFind:
     #@+node:ekr.20031218072017.3074: *4* find.findNext
     def findNext(self,initFlag=True):
 
-        # c = self.c
         if not self.checkArgs():
             return
         if initFlag:
@@ -2004,18 +1995,17 @@ class leoFind:
             # w.seeInsertPoint()
             c.outerUpdate()
         return w # Support for isearch.
-    #@+node:ekr.20031218072017.1460: *4* find.update_ivars (changed)
+    #@+node:ekr.20031218072017.1460: *4* find.update_ivars
     def update_ivars (self):
         """Update ivars from the find panel."""
+        trace = False and not g.unitTesting
         if g.new_find:
             pass # LeoFindManager always keeps these ivars up-to-date.
         else:
-            trace = False and not g.unitTesting
             self.p = self.c.p
             self.v = self.p.v
             for key in self.intKeys:
                 val = self.svarDict[key].get()
-                # if trace: g.trace(self.svarDict.get(key),val)
                 setattr(self, key, val) # No more _flag hack.
             # Set ivars from radio buttons. Convert these to 1 or 0.
             search_scope = self.svarDict["radio-search-scope"].get()
@@ -2023,24 +2013,33 @@ class leoFind:
             self.suboutline_only = g.choose(search_scope == "suboutline-only",1,0)
             self.node_only       = g.choose(search_scope == "node-only",1,0)
             self.selection       = g.choose(search_scope == "selection-only",1,0)
-            # New in 4.3: The caller is responsible for removing most trailing cruft.
-            # Among other things, this allows Leo to search for a single trailing space.
+            
+        # The caller is responsible for removing most trailing cruft.
+        # Among other things, this allows Leo to search for a single trailing space.
+        if g.new_find:
+            ftm = self.findTabManager
+            s = ftm.getFindText()
+        else:
             s = self.find_ctrl.getAllText()
-            s = g.toUnicode(s)
-            if trace: g.trace('find',repr(s),self.find_ctrl)
-            if s and s[-1] in ('\r','\n'):
-                s = s[:-1]
-            # 2011/06/13: clear wrap_pos if the find_text changes.
-            if s != self.find_text:
-                # g.trace('clearing self.wrap_pos')
-                self.wrapPosition = None
-            self.find_text = s
+        s = g.toUnicode(s)
+        if trace: g.trace('find',repr(s),self.find_ctrl)
+        if s and s[-1] in ('\r','\n'):
+            s = s[:-1]
+        # clear wrap_pos if the find_text changes.
+        if s != self.find_text:
+            # g.trace('clearing self.wrap_pos')
+            self.wrapPosition = None
+        self.find_text = s
+        # Get replacement text.
+        if g.new_find:
+            s = ftm.getReplaceText()
+        else:
             s = self.change_ctrl.getAllText()
-            if s and s[-1] in ('\r','\n'):
-                s = s[:-1]
-            s = g.toUnicode(s)
-            self.change_text = s
-            if trace: g.trace('change',repr(s))
+        s = g.toUnicode(s)
+        if s and s[-1] in ('\r','\n'):
+            s = s[:-1]
+        self.change_text = s
+        if trace: g.trace('change',repr(s))
     #@-others
 #@+node:ekr.20051020120306.6: ** class findTab (leoFind) (To be deleted)
 if g.new_find:
@@ -2162,248 +2161,251 @@ else:
         # self.oops is defined in the leoFind class.
         #@-others
 #@+node:ekr.20070302090616: ** class nullFindTab class (subclass of findTab)
-class nullFindTab (findTab):
+if g.new_find:
+    pass
+else:
+    class nullFindTab (findTab):
+    
+        #@+others
+        #@+node:ekr.20070302090616.1: *3* Birth (nullFindTab)
+        #@+node:ekr.20070302090616.2: *4*  ctor (nullFindTab)
+        if 0: # Use the base class ctor.
 
-    #@+others
-    #@+node:ekr.20070302090616.1: *3* Birth (nullFindTab)
-    #@+node:ekr.20070302090616.2: *4*  ctor (nullFindTab)
-    if 0: # Use the base class ctor.
+            def __init__ (self,c,parentFrame):
 
-        def __init__ (self,c,parentFrame):
+                findTab.__init__(self,c,parentFrame)
+                # Init the base class.
+                    # Calls initGui, createFrame and init(c), in that order.
+        #@+node:ekr.20070302090616.3: *4* initGui (nullFindTab)
+        # Called from findTab.ctor.
 
-            findTab.__init__(self,c,parentFrame)
-            # Init the base class.
-                # Calls initGui, createFrame and init(c), in that order.
-    #@+node:ekr.20070302090616.3: *4* initGui (nullFindTab)
-    # Called from findTab.ctor.
+        def initGui (self):
 
-    def initGui (self):
+            self.svarDict = {} # Keys are ivar names, values are svar objects.
 
-        self.svarDict = {} # Keys are ivar names, values are svar objects.
+            for key in self.intKeys:
+                self.svarDict[key] = self.svar() # Was Tk.IntVar.
 
-        for key in self.intKeys:
-            self.svarDict[key] = self.svar() # Was Tk.IntVar.
+            for key in self.newStringKeys:
+                self.svarDict[key] = self.svar() # Was Tk.StringVar.
 
-        for key in self.newStringKeys:
-            self.svarDict[key] = self.svar() # Was Tk.StringVar.
-
-        # Bug fix: 2011/11/13: significant for external unit tests.
-        # Add the same hack as in the qtGui for the 'entire_outline' radio button.
-        self.svarDict['entire-outline'] = self.svar()
-    #@+node:ekr.20070302090616.4: *4* init (nullFindTab)
-    # Called from findTab.ctor.
-
-    def init (self,c):
-
-        # Separate c.ivars are much more convenient than a svarDict.
-        for key in self.intKeys:
-            # Get ivars from @settings.
-            val = c.config.getBool(key)
-            setattr(self,key,val)
-            val = g.choose(val,1,0)
-            svar = self.svarDict.get(key)
-            if svar: svar.set(val)
-            #g.trace(key,val)
-
-        #@+<< set find/change widgets >>
-        #@+node:ekr.20070302090616.5: *5* << set find/change widgets >>
-        self.find_ctrl.delete(0,"end")
-        self.change_ctrl.delete(0,"end")
-
-        # Get setting from @settings.
-        for w,setting,defaultText in (
-            (self.find_ctrl,"find_text",'<find pattern here>'),
-            (self.change_ctrl,"change_text",''),
-        ):
-            s = c.config.getString(setting)
-            if not s: s = defaultText
-            w.insert("end",s)
-        #@-<< set find/change widgets >>
-        #@+<< set radio buttons from ivars >>
-        #@+node:ekr.20070302090616.6: *5* << set radio buttons from ivars >>
-        # In Tk, setting the var also sets the widget.
-        # Here, we do so explicitly.
-        # d = self.widgetsDict
-        for ivar,key in (
-            ("pattern_match","pattern-search"),
-            #("script_search","script-search")
-        ):
-            svar = self.svarDict[ivar].get()
-            if svar:
-                self.svarDict["radio-find-type"].set(key)
-                # w = d.get(key)
-                # if w: w.set(True)
-                break
-        else:
-            self.svarDict["radio-find-type"].set("plain-search")
-
-        for ivar,key in (
-            ("suboutline_only","suboutline-only"),
-            ("node_only","node-only"),
-            # ("selection_only","selection-only")
-        ):
-            svar = self.svarDict[ivar].get()
-            if svar:
-                self.svarDict["radio-search-scope"].set(key)
-                break
-        else:
-            key = ivar = 'entire-outline'
-            svar = self.svarDict[ivar].get()
-            if svar:
-                self.svarDict["radio-search-scope"].set(key)
-            # self.svarDict["radio-search-scope"].set(key)
-            # w = self.widgetsDict.get(key)
-            # if w: w.set(True)
-        #@-<< set radio buttons from ivars >>
-        #@+<< set checkboxes from ivars >>
-        #@+node:ekr.20070302090616.7: *5* << set checkboxes from ivars >>
-        for ivar in (
-            'ignore_case',
-            'mark_changes',
-            'mark_finds',
-            'pattern_match',
-            'reverse',
-            'search_body',
-            'search_headline',
-            'whole_word',
-            'wrap',
-        ):
             # Bug fix: 2011/11/13: significant for external unit tests.
-            svar = self.svarDict[ivar]
-            if svar:
-                svar.set(True)
-                # w = self.widgetsDict.get(ivar)
-                # if w: w.set(True)
-        #@-<< set checkboxes from ivars >>
-    #@+node:ekr.20070302090616.9: *4* createFrame (nullFindTab)
-    def createFrame (self,parentFrame):
+            # Add the same hack as in the qtGui for the 'entire_outline' radio button.
+            self.svarDict['entire-outline'] = self.svar()
+        #@+node:ekr.20070302090616.4: *4* init (nullFindTab)
+        # Called from findTab.ctor.
 
-        self.parentFrame = self.top = parentFrame
+        def init (self,c):
 
-        self.createFindChangeAreas()
-        self.createBoxes()
-    #@+node:ekr.20070302090616.10: *5* createFindChangeAreas
-    def createFindChangeAreas (self):
+            # Separate c.ivars are much more convenient than a svarDict.
+            for key in self.intKeys:
+                # Get ivars from @settings.
+                val = c.config.getBool(key)
+                setattr(self,key,val)
+                val = g.choose(val,1,0)
+                svar = self.svarDict.get(key)
+                if svar: svar.set(val)
+                #g.trace(key,val)
 
-        c = self.c
+            #@+<< set find/change widgets >>
+            #@+node:ekr.20070302090616.5: *5* << set find/change widgets >>
+            self.find_ctrl.delete(0,"end")
+            self.change_ctrl.delete(0,"end")
 
-        # A plainTextWidget must be a stringTextWidget
-        plainTextWidget = g.app.gui.plainTextWidget
-
-        import leo.core.leoFrame as leoFrame
-        assert issubclass(plainTextWidget,leoFrame.stringTextWidget)
-
-        self.find_ctrl   = plainTextWidget(c,name='find-text')
-        self.change_ctrl = plainTextWidget(c,name='change-text')
-    #@+node:ekr.20070302090616.12: *5* createBoxes
-    def createBoxes (self):
-
-        '''Create two columns of radio buttons & check boxes.'''
-
-        # c = self.c
-        # f = self.parentFrame
-        self.boxes = []
-        self.widgetsDict = {} # Keys are ivars, values are checkboxes or radio buttons.
-
-        data = ( # Leading star denotes a radio button.
-            ('Whole &Word', 'whole_word',),
-            ('&Ignore Case','ignore_case'),
-            ('Wrap &Around','wrap'),
-            ('&Reverse',    'reverse'),
-            ('Rege&xp',     'pattern_match'),
-            ('Mark &Finds', 'mark_finds'),
-            ("*&Entire Outline","entire-outline"),
-            ("*&Suboutline Only","suboutline-only"),  
-            ("*&Node Only","node-only"),
-            ('Search &Headline','search_headline'),
-            ('Search &Body','search_body'),
-            ('Mark &Changes','mark_changes'),
-        )
-
-        # Important: changing these controls merely changes entries in self.svarDict.
-        # First, leoFind.update_ivars sets the find ivars from self.svarDict.
-        # Second, self.init sets the values of widgets from the ivars.
-        # inGroup = False
-        for label,ivar in data:
-            if label.startswith('*'):
-                label = label[1:]
-                w = self.buttonWidget(label)
-                self.widgetsDict[ivar] = w
+            # Get setting from @settings.
+            for w,setting,defaultText in (
+                (self.find_ctrl,"find_text",'<find pattern here>'),
+                (self.change_ctrl,"change_text",''),
+            ):
+                s = c.config.getString(setting)
+                if not s: s = defaultText
+                w.insert("end",s)
+            #@-<< set find/change widgets >>
+            #@+<< set radio buttons from ivars >>
+            #@+node:ekr.20070302090616.6: *5* << set radio buttons from ivars >>
+            # In Tk, setting the var also sets the widget.
+            # Here, we do so explicitly.
+            # d = self.widgetsDict
+            for ivar,key in (
+                ("pattern_match","pattern-search"),
+                #("script_search","script-search")
+            ):
+                svar = self.svarDict[ivar].get()
+                if svar:
+                    self.svarDict["radio-find-type"].set(key)
+                    # w = d.get(key)
+                    # if w: w.set(True)
+                    break
             else:
-                w = self.buttonWidget(label)
-                self.widgetsDict[ivar] = w
-            self.boxes.append(w)
-    #@+node:ekr.20070302090616.14: *5* createButtons (not used)
-    def createButtons (self):
+                self.svarDict["radio-find-type"].set("plain-search")
 
-        '''Create two columns of buttons.'''
-    #@+node:ekr.20070302090616.8: *3* class svar (nullFindTab)
-    class svar:
+            for ivar,key in (
+                ("suboutline_only","suboutline-only"),
+                ("node_only","node-only"),
+                # ("selection_only","selection-only")
+            ):
+                svar = self.svarDict[ivar].get()
+                if svar:
+                    self.svarDict["radio-search-scope"].set(key)
+                    break
+            else:
+                key = ivar = 'entire-outline'
+                svar = self.svarDict[ivar].get()
+                if svar:
+                    self.svarDict["radio-search-scope"].set(key)
+                # self.svarDict["radio-search-scope"].set(key)
+                # w = self.widgetsDict.get(key)
+                # if w: w.set(True)
+            #@-<< set radio buttons from ivars >>
+            #@+<< set checkboxes from ivars >>
+            #@+node:ekr.20070302090616.7: *5* << set checkboxes from ivars >>
+            for ivar in (
+                'ignore_case',
+                'mark_changes',
+                'mark_finds',
+                'pattern_match',
+                'reverse',
+                'search_body',
+                'search_headline',
+                'whole_word',
+                'wrap',
+            ):
+                # Bug fix: 2011/11/13: significant for external unit tests.
+                svar = self.svarDict[ivar]
+                if svar:
+                    svar.set(True)
+                    # w = self.widgetsDict.get(ivar)
+                    # if w: w.set(True)
+            #@-<< set checkboxes from ivars >>
+        #@+node:ekr.20070302090616.9: *4* createFrame (nullFindTab)
+        def createFrame (self,parentFrame):
 
-        '''A class like Tk's IntVar and StringVar classes.'''
+            self.parentFrame = self.top = parentFrame
 
-        def __init__(self):
-            self.val = None
-        def get (self):
-            return self.val
-        def set (self,val):
-            self.val = val
+            self.createFindChangeAreas()
+            self.createBoxes()
+        #@+node:ekr.20070302090616.10: *5* createFindChangeAreas
+        def createFindChangeAreas (self):
 
-        SetValue = set # SetValue is the wxWidgets spelling.
-    #@+node:ekr.20070302092907: *3* class buttonWidget (nullFindTab)
-    class buttonWidget:
+            c = self.c
 
-        '''A class to simulate a Tk.Button.'''
+            # A plainTextWidget must be a stringTextWidget
+            plainTextWidget = g.app.gui.plainTextWidget
 
-        def __init__ (self,label):
-            self.label = label
-            self.val = False
+            import leo.core.leoFrame as leoFrame
+            assert issubclass(plainTextWidget,leoFrame.stringTextWidget)
 
-        def __repr (self):
-            return 'nullFindTab.buttonWidget: %s' % self.label
+            self.find_ctrl   = plainTextWidget(c,name='find-text')
+            self.change_ctrl = plainTextWidget(c,name='change-text')
+        #@+node:ekr.20070302090616.12: *5* createBoxes
+        def createBoxes (self):
 
-        def get (self):
-            return self.val
+            '''Create two columns of radio buttons & check boxes.'''
 
-        def set (self,val):
-            self.val = val
-    #@+node:ekr.20070302090616.16: *3* Options
-    # This is the same as the Tk code because we simulate Tk svars.
-    #@+node:ekr.20070302090616.17: *4* getOption
-    def getOption (self,ivar):
+            # c = self.c
+            # f = self.parentFrame
+            self.boxes = []
+            self.widgetsDict = {} # Keys are ivars, values are checkboxes or radio buttons.
 
-        var = self.svarDict.get(ivar)
+            data = ( # Leading star denotes a radio button.
+                ('Whole &Word', 'whole_word',),
+                ('&Ignore Case','ignore_case'),
+                ('Wrap &Around','wrap'),
+                ('&Reverse',    'reverse'),
+                ('Rege&xp',     'pattern_match'),
+                ('Mark &Finds', 'mark_finds'),
+                ("*&Entire Outline","entire-outline"),
+                ("*&Suboutline Only","suboutline-only"),  
+                ("*&Node Only","node-only"),
+                ('Search &Headline','search_headline'),
+                ('Search &Body','search_body'),
+                ('Mark &Changes','mark_changes'),
+            )
 
-        if var:
-            val = var.get()
-            # g.trace('%s = %s' % (ivar,val))
-            return val
-        else:
-            g.trace('bad ivar name: %s' % ivar)
-            return None
-    #@+node:ekr.20070302090616.18: *4* setOption
-    def setOption (self,ivar,val):
+            # Important: changing these controls merely changes entries in self.svarDict.
+            # First, leoFind.update_ivars sets the find ivars from self.svarDict.
+            # Second, self.init sets the values of widgets from the ivars.
+            # inGroup = False
+            for label,ivar in data:
+                if label.startswith('*'):
+                    label = label[1:]
+                    w = self.buttonWidget(label)
+                    self.widgetsDict[ivar] = w
+                else:
+                    w = self.buttonWidget(label)
+                    self.widgetsDict[ivar] = w
+                self.boxes.append(w)
+        #@+node:ekr.20070302090616.14: *5* createButtons (not used)
+        def createButtons (self):
 
-        trace = False and not g.unitTesting
+            '''Create two columns of buttons.'''
+        #@+node:ekr.20070302090616.8: *3* class svar (nullFindTab)
+        class svar:
 
-        if ivar in self.intKeys:
-            if val is not None:
-                var = self.svarDict.get(ivar)
-                var.set(val)
-                if trace: g.trace('nullFindTab: %s = %s' % (ivar,val))
+            '''A class like Tk's IntVar and StringVar classes.'''
 
-        elif not g.app.unitTesting:
-            g.trace('oops: bad find ivar %s' % ivar)
-    #@+node:ekr.20070302090616.19: *4* toggleOption
-    def toggleOption (self,ivar):
+            def __init__(self):
+                self.val = None
+            def get (self):
+                return self.val
+            def set (self,val):
+                self.val = val
 
-        if ivar in self.intKeys:
+            SetValue = set # SetValue is the wxWidgets spelling.
+        #@+node:ekr.20070302092907: *3* class buttonWidget (nullFindTab)
+        class buttonWidget:
+
+            '''A class to simulate a Tk.Button.'''
+
+            def __init__ (self,label):
+                self.label = label
+                self.val = False
+
+            def __repr (self):
+                return 'nullFindTab.buttonWidget: %s' % self.label
+
+            def get (self):
+                return self.val
+
+            def set (self,val):
+                self.val = val
+        #@+node:ekr.20070302090616.16: *3* Options
+        # This is the same as the Tk code because we simulate Tk svars.
+        #@+node:ekr.20070302090616.17: *4* getOption
+        def getOption (self,ivar):
+
             var = self.svarDict.get(ivar)
-            val = not var.get()
-            var.set(val)
-            # g.trace('%s = %s' % (ivar,val),var)
-        else:
-            g.trace('oops: bad find ivar %s' % ivar)
-    #@-others
+
+            if var:
+                val = var.get()
+                # g.trace('%s = %s' % (ivar,val))
+                return val
+            else:
+                g.trace('bad ivar name: %s' % ivar)
+                return None
+        #@+node:ekr.20070302090616.18: *4* setOption
+        def setOption (self,ivar,val):
+
+            trace = False and not g.unitTesting
+
+            if ivar in self.intKeys:
+                if val is not None:
+                    var = self.svarDict.get(ivar)
+                    var.set(val)
+                    if trace: g.trace('nullFindTab: %s = %s' % (ivar,val))
+
+            elif not g.app.unitTesting:
+                g.trace('oops: bad find ivar %s' % ivar)
+        #@+node:ekr.20070302090616.19: *4* toggleOption
+        def toggleOption (self,ivar):
+
+            if ivar in self.intKeys:
+                var = self.svarDict.get(ivar)
+                val = not var.get()
+                var.set(val)
+                # g.trace('%s = %s' % (ivar,val),var)
+            else:
+                g.trace('oops: bad find ivar %s' % ivar)
+        #@-others
 #@-others
 #@-leo

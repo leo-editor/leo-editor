@@ -1627,7 +1627,7 @@ class leoLog (HighLevelInterface):
             tabName = list(d.keys())[i]
             self.selectTab(tabName)
             return i
-    #@+node:ekr.20070302094848.5: *4* deleteTab
+    #@+node:ekr.20070302094848.5: *4* deleteTab (leoLog)
     def deleteTab (self,tabName,force=False):
 
         c = self.c
@@ -1682,28 +1682,22 @@ class leoLog (HighLevelInterface):
     def renameTab (self,oldName,newName):
         pass
     #@+node:ekr.20070302094848.11: *4* selectTab (leoLog)
-    def selectTab (self,tabName,createText=True,widget=None,wrap='none'):
-        # widget unused.
-
+    def selectTab (self,tabName,createText=True,widget=None,wrap='none'):# widget unused.
         '''Create the tab if necessary and make it active.'''
-
         c = self.c
         tabFrame = self.frameDict.get(tabName)
         if not tabFrame:
             self.createTab(tabName,createText=createText)
-
         # Update the status vars.
         self.tabName = tabName
         self.canvasCtrl = self.canvasDict.get(tabName)
         self.widget = self.textDict.get(tabName)
             # logCtrl is now a property.
         self.tabFrame = self.frameDict.get(tabName)
-
         if 0:
             # Absolutely do not do this here!
             # It is a cause of the 'sticky focus' problem.
             c.widgetWantsFocusNow(self.logCtrl)
-
         return tabFrame
     #@+node:ekr.20031218072017.3700: *3* leoLog.oops
     def oops (self):

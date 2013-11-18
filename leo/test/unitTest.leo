@@ -174,6 +174,11 @@
 <v t="ekr.20131113071911.4282"><vh>&lt;&lt; define test tables &gt;&gt;</vh></v>
 </v>
 </v>
+<v t="ekr.20131118084923.4361"><vh>Failures &amp; changes</vh>
+<v t="ekr.20100204173354.5375"><vh>@test toggle-find-x</vh></v>
+<v t="ekr.20060130151716.4"><vh>@test show-find-options</vh></v>
+<v t="ekr.20060130151716.2"><vh>@test set find mode commands</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -439,6 +444,20 @@ It also includes a trace back, but for AssertionErrors, it does not seem to offe
 assert('Spam' == 'Ham')</t>
 <t tx="ekr.20051012104957"></t>
 <t tx="ekr.20051013162226"></t>
+<t tx="ekr.20060130151716.2">table = (
+    'set-find-everywhere',
+    'set-find-node-only',
+    'set-find-suboutline-only',
+)
+
+# show-find-tab-options     = Ctrl-o
+# show-find-options         = o
+
+for command in table:
+    c.k.simulateCommand(command)
+</t>
+<t tx="ekr.20060130151716.4">c.k.simulateCommand('show-find-options')
+</t>
 <t tx="ekr.20070113145100"># Not part of cvs distributions, but needed for two unit tests.
 
 dir = g.os_path_join(g.app.loadDir,'..','test','unittest',g.u('chinese\u8116folder'),encoding='utf-8')
@@ -855,6 +874,41 @@ for tag,aList in table:
         d1 = inspect.getargspec(func)
         d2 = inspect.getargspec(func2)
         assert d1==d2,'\n%s\n\nd1 %s\n\nd2 %s' % (z,d1,d2)
+</t>
+<t tx="ekr.20100204173354.5375">table = (
+    ('ignore_case','toggle-find-ignore-case-option'),
+    ('search_body','toggle-find-in-body-option'),
+    ('search_headline','toggle-find-in-headline-option'),
+    ('mark_changes','toggle-find-mark-changes-option'),
+    ('mark_finds','toggle-find-mark-finds-option'),
+    ('pattern_match','toggle-find-regex-option'),
+    # ('reverse','toggle-find-reverse-option'),
+    ('whole_word','toggle-find-word-option'),
+    ('wrap','toggle-find-wrap-around-option'),
+)
+
+if g.new_find:
+    finder = c.findCommands
+    def getOption(ivar):
+        return getattr(c.findCommands,ivar)
+    def setOption(ivar,val):
+        setattr(c.findCommands,ivar,val)
+else:
+    finder = c.searchCommands.getHandler().finder
+    getOption = finder.getOption
+    setOption = finder.setOption
+    
+for ivar,command in table:
+    val1 = getOption(ivar)
+    try:
+        c.k.simulateCommand(command)
+        val2 = getOption(ivar)
+        assert val2 == (not val1),'failed 1 %s' % command
+        c.k.simulateCommand(command)
+        val3 = getOption(ivar)
+        assert val3 == val1,'failed 2 %s' % command
+    finally:
+        setOption(ivar,val1)
 </t>
 <t tx="ekr.20101009105124.6195">True (recommended):
     Write "E" attribute bits in &lt;v&gt; elements.
@@ -1546,5 +1600,6 @@ else:
         'gX','ZA',
     )
 </t>
+<t tx="ekr.20131118084923.4361"></t>
 </tnodes>
 </leo_file>

@@ -405,7 +405,11 @@ class nullGui(leoGui):
 
     def createFindTab (self,c,parentFrame):
         """Create a find tab in the indicated frame."""
-        return leoFind.nullFindTab(c,parentFrame)
+        if g.new_find:
+            g.trace('**** unexpected call *****')
+            return None
+        else:
+            return leoFind.nullFindTab(c,parentFrame)
 
     def createLeoFrame(self,c,title):
         """Create a null Leo Frame."""
