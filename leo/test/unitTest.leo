@@ -608,7 +608,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="8"></t>
+<t tx="ekr.20070417092935" str_leo_pos="10"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -886,29 +886,23 @@ for tag,aList in table:
     ('whole_word','toggle-find-word-option'),
     ('wrap','toggle-find-wrap-around-option'),
 )
+fc = c.findCommands
+# def getOption(ivar):
+    # return getattr(c.findCommands,ivar)
+# def setOption(ivar,val):
+    # setattr(c.findCommands,ivar,val)
 
-if g.new_find:
-    finder = c.findCommands
-    def getOption(ivar):
-        return getattr(c.findCommands,ivar)
-    def setOption(ivar,val):
-        setattr(c.findCommands,ivar,val)
-else:
-    finder = c.searchCommands.getHandler().finder
-    getOption = finder.getOption
-    setOption = finder.setOption
-    
 for ivar,command in table:
-    val1 = getOption(ivar)
+    val1 = getattr(fc,ivar)
     try:
         c.k.simulateCommand(command)
-        val2 = getOption(ivar)
+        val2 = getattr(fc,ivar)
         assert val2 == (not val1),'failed 1 %s' % command
         c.k.simulateCommand(command)
-        val3 = getOption(ivar)
+        val3 = getattr(fc,ivar)
         assert val3 == val1,'failed 2 %s' % command
     finally:
-        setOption(ivar,val1)
+        setattr(fc,ivar,val1)
 </t>
 <t tx="ekr.20101009105124.6195">True (recommended):
     Write "E" attribute bits in &lt;v&gt; elements.

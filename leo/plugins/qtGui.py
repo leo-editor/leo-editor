@@ -25,7 +25,7 @@ import leo.core.leoGlobals as g
 
 import leo.core.leoColor as leoColor
 import leo.core.leoFrame as leoFrame
-import leo.core.leoFind as leoFind
+# import leo.core.leoFind as leoFind
 import leo.core.leoGui as leoGui
 import leo.core.leoMenu as leoMenu
 import leo.core.leoPlugins as leoPlugins
@@ -2431,10 +2431,7 @@ class DynamicWindow(QtGui.QMainWindow):
         c,dw = self.leo_c,self
         fc = c.findCommands
         assert not fc.findTabManager
-        if g.new_find:
-            fc.findTabManager = ftm = FindTabManager(c)
-        else:
-            ftm = g.nullObject()
+        fc.findTabManager = ftm = FindTabManager(c)
         assert c.findCommands
         grid = self.createGrid(parent,'findGrid',margin=10,spacing=10)
         grid.setColumnStretch(0,100)
@@ -2453,23 +2450,17 @@ class DynamicWindow(QtGui.QMainWindow):
             grid.addWidget(lab1,row,col_0,span_1,span_2,QtCore.Qt.AlignLeft) # AlignHCenter
             row += 1
         # The find row.
-        w = self.createLineEdit(parent,'findPattern',disabled=not g.new_find)
-        if g.new_find:
-            assert ftm.find_ctrl is None
-            ftm.find_ctrl = w
-        else:
-            dw.findPattern = w
+        w = self.createLineEdit(parent,'findPattern',disabled=fc.expert_mode)
+        assert ftm.find_ctrl is None
+        ftm.find_ctrl = w
         lab2 = self.createLabel(parent,'findLabel','Find:')
         grid.addWidget(lab2,row,col_0)
         grid.addWidget(w,row,col_1,span_1,span_2)
         row += 1
         # The change row.
-        w = self.createLineEdit(parent,'findChange',disabled=not g.new_find)
-        if g.new_find:
-            assert ftm.change_ctrl is None
-            ftm.change_ctrl = w
-        else:
-            dw.findChange = w
+        w = self.createLineEdit(parent,'findChange',disabled=fc.expert_mode)
+        assert ftm.change_ctrl is None
+        ftm.change_ctrl = w
         lab3 = self.createLabel(parent,'changeLabel','Replace:') # Leo 4.11.1.
         grid.addWidget(lab3,row,col_0)
         grid.addWidget(w,row,col_1,span_1,span_2)
@@ -2477,10 +2468,7 @@ class DynamicWindow(QtGui.QMainWindow):
         # Check boxes and radio buttons.
         def mungeName(kind,label):
             # The returned value is the namve of an ivar.
-            if g.new_find:
-                kind = 'checkBox' if kind == 'box' else 'radioButton'
-            else:
-                kind = 'checkBox'
+            kind = 'checkBox' if kind == 'box' else 'radioButton'
             name = label.replace(' ','').replace('&','')
             return '%s%s' % (kind,name)
         # Rows for check boxes, radio buttons & execution buttons...
@@ -2517,11 +2505,8 @@ class DynamicWindow(QtGui.QMainWindow):
             w = func(parent,name,label)
             grid.addWidget(w,row+row2,col)
             # The the checkbox ivars in dw and ftm classes.
-            if g.new_find:
-                assert getattr(ftm,name) is None
-                setattr(ftm,name,w)
-            else:
-                setattr(dw,name,w)
+            assert getattr(ftm,name) is None
+            setattr(ftm,name,w)
         # Create Buttons in column 2 (Leo 4.11.1.)
         table = (
             (0,2,'findNextCommand','Find Next'),
@@ -2535,12 +2520,8 @@ class DynamicWindow(QtGui.QMainWindow):
         for row2,col,func_name,label in table:
             def find_tab_button_callback(c=c,func_name=func_name):
                 # h will exist when the Find Tab is open.
-                if g.new_find:
-                    h = c.findCommands
-                else:
-                    h = c.searchCommands.findTabHandler
-                assert h
-                func = getattr(h,func_name,None)
+                fc = c.findCommands
+                func = getattr(fc,func_name,None)
                 if func: func()
                 else: g.trace('* does not exist:',func_name)
             w = self.createButton(parent,name,label)
@@ -2563,8 +2544,7 @@ class DynamicWindow(QtGui.QMainWindow):
         grid.setRowStretch(row,100)
         # Official ivars (in addition to checkbox ivars).
         self.leo_find_widget = tab_widget # A scrollArea.
-        if g.new_find:
-            ftm.init_widgets()
+        ftm.init_widgets()
     #@+node:ekr.20110605121601.18168: *5* dw.utils
     #@+node:ekr.20110605121601.18169: *6* dw.setName
     def setName (self,widget,name):
@@ -2744,6 +2724,344 @@ class DynamicWindow(QtGui.QMainWindow):
         return ratio
     #@-others
 
+#@+node:ekr.20131117054619.16698: *3* class FindTabManager
+class FindTabManager:
+    
+    '''A helper class for the leoFind class.'''
+    
+    #@+others
+    #@+node:ekr.20131117120458.16794: *4*  ftm.ctor
+    def __init__ (self,c):
+        # g.trace('(FindTabManager)',c.shortFileName(),g.callers())
+        self.c = c
+        # Find/change text boxes.
+        self.find_ctrl = None
+        self.change_ctrl = None
+        # Check boxes.
+        self.checkBoxIgnoreCase = None
+        self.checkBoxMarkChanges = None
+        self.checkBoxMarkFinds = None
+        self.checkBoxRegexp = None
+        self.checkBoxSearchBody = None
+        self.checkBoxSearchHeadline = None
+        self.checkBoxWholeWord = None
+        self.checkBoxWrapAround = None
+        # Radio buttons
+        self.radioButtonEntireOutline = None
+        self.radioButtonNodeOnly = None
+        self.radioButtonSuboutlineOnly = None
+    #@+node:ekr.20131117164142.16853: *4* ftm.text getters/setters
+    def getFindText(self):
+        return g.u(self.find_ctrl.text())
+        
+    def getReplaceText(self):
+        return g.u(self.change_ctrl.text())
+
+    getChangeText = getReplaceText
+
+    def setFindText(self,s):
+        w = self.find_ctrl
+        s = g.toUnicode(s)
+        w.clear()
+        w.insert(s)
+        
+    def setReplaceText(self,s):
+        w = self.change_ctrl
+        s = g.toUnicode(s)
+        w.clear()
+        w.insert(s)
+        
+    setChangeText = setReplaceText
+    #@+node:ekr.20131117120458.16793: *4* ftm.dummies (to be deleted)
+    def getOption(self,ivar):
+        g.trace(ivar)
+
+    def update_ivars(self):
+        g.trace(g.callers())
+    #@+node:ekr.20131117120458.16789: *4* ftm.init_widgets
+    def init_widgets(self):
+        '''
+        Init widgets and ivars from c.config settings.
+        Create callbacks that always keep the leoFind ivars up to date.
+        '''
+        c = self.c
+        find = c.findCommands
+        # Find/change text boxes.
+        table = (
+            ('find_ctrl','find_text','<find pattern here>'),
+            ('change_ctrl','change_text',''),
+        )
+        for ivar,setting_name,default in table:
+            s = c.config.getString(setting_name) or default
+            w = getattr(self,ivar)
+            w.insert(g.u(s))
+        # Check boxes.
+        table = (
+            ('ignore_case',     self.checkBoxIgnoreCase),
+            ('mark_changes',    self.checkBoxMarkChanges),
+            ('mark_finds',      self.checkBoxMarkFinds),
+            ('pattern_match',   self.checkBoxRegexp),
+            ('search_body',     self.checkBoxSearchBody),
+            ('search_headline', self.checkBoxSearchHeadline),
+            ('whole_word',      self.checkBoxWholeWord),
+            ('wrap',            self.checkBoxWrapAround),
+        )
+        for setting_name,w in table:
+            val = c.config.getBool(setting_name,default=False)
+            # The setting name is also the name of the leoFind ivar.
+            assert hasattr(find,setting_name),setting_name
+            setattr(find,setting_name,val)
+            if val: w.toggle()
+            def check_box_callback(n,setting_name=setting_name,w=w):
+                val = w.isChecked()
+                # g.trace(setting_name,val)
+                assert hasattr(find,setting_name),setting_name
+                setattr(find,setting_name,val)
+            QtCore.QObject.connect(w,QtCore.SIGNAL("stateChanged(int)"),
+                check_box_callback)
+        # Radio buttons
+        table = (
+            ('node_only',       'node_only',        self.radioButtonNodeOnly),
+            ('entire_outline',  None,               self.radioButtonEntireOutline),
+            ('suboutline_only', 'suboutline_only',  self.radioButtonSuboutlineOnly),
+        )
+        for setting_name,ivar,w in table:
+            val = c.config.getBool(setting_name,default=False)
+            # The setting name is also the name of the leoFind ivar.
+            # g.trace(setting_name,ivar,val)
+            if ivar is not None:
+                assert hasattr(find,setting_name),setting_name
+                setattr(find,setting_name,val)
+                w.toggle()
+            def radio_button_callback(n,ivar=ivar,setting_name=setting_name,w=w):
+                val = w.isChecked()
+                # g.trace(setting_name,ivar,val)
+                if ivar:
+                    assert hasattr(find,ivar),ivar
+                    setattr(find,ivar,val)
+            QtCore.QObject.connect(w,QtCore.SIGNAL("toggled(bool)"),
+                radio_button_callback)
+        # Ensure one radio button is set.
+        if not find.node_only and not find.suboutline_only:
+            w = self.radioButtonEntireOutline
+            w.toggle()
+    #@+node:ekr.20131117120458.16792: *4* ftm.set_radio_button
+    def set_radio_button(self,name):
+        '''Set the value of the radio buttons'''
+        
+        d = {
+            # Name is not an ivar. Set by find.setFindScope... commands.
+            'node-only': self.radioButtonNodeOnly,
+            'entire-outline': self.radioButtonEntireOutline,
+            'suboutline-only': self.radioButtonSuboutlineOnly,
+        }
+        w = d.get(name)
+        assert w
+        # Most of the work will be done in the radio button callback.
+        if not w.isChecked():
+            w.toggle()
+    #@+node:ekr.20131117120458.16791: *4* ftm.toggle_checkbox
+    def toggle_checkbox(self,checkbox_name):
+        '''Toggle the value of the checkbox whose name is given.'''
+        find = self.c.findCommands
+        d = {
+            'ignore_case':     self.checkBoxIgnoreCase,
+            'mark_changes':    self.checkBoxMarkChanges,
+            'mark_finds':      self.checkBoxMarkFinds,
+            'pattern_match':   self.checkBoxRegexp,
+            'search_body':     self.checkBoxSearchBody,
+            'search_headline': self.checkBoxSearchHeadline,
+            'whole_word':      self.checkBoxWholeWord,
+            'wrap':            self.checkBoxWrapAround,
+        }
+        w = d.get(checkbox_name)
+        assert w
+        assert hasattr(find,checkbox_name),checkbox_name
+        old_val = getattr(find,checkbox_name)
+        w.toggle() # The checkbox callback toggles the ivar.
+        new_val = getattr(find,checkbox_name)
+        # g.trace(checkbox_name,old_val,new_val)
+    #@-others
+#@+node:ekr.20131115120119.17376: *3* class LeoBaseTabWidget(QtGui.QTabWidget)
+class LeoBaseTabWidget (QtGui.QTabWidget):
+    """Base class for all QTabWidgets in Leo."""
+
+    #@+others
+    #@+node:ekr.20131115120119.17390: *4* __init__ (LeoBaseTabWidget)
+    def __init__(self,*args,**kwargs):
+
+        self.factory = kwargs.get('factory')
+        if self.factory:
+            del kwargs['factory']
+        QtGui.QTabWidget.__init__(self,*args,**kwargs)
+        self.detached = []
+        self.setMovable(True)
+        def tabContextMenu(point):
+            index = self.tabBar().tabAt(point)
+            if index < 0 or (self.count() < 2 and not self.detached):
+                return
+            menu = QtGui.QMenu()
+            if self.count() > 1:
+                a = menu.addAction("Detach")
+                a.connect(a, QtCore.SIGNAL("triggered()"),
+                    lambda: self.detach(index))
+                a = menu.addAction("Horizontal tile")
+                a.connect(a, QtCore.SIGNAL("triggered()"),
+                    lambda: self.tile(index, orientation='H'))
+                a = menu.addAction("Vertical tile")
+                a.connect(a, QtCore.SIGNAL("triggered()"),
+                    lambda: self.tile(index, orientation='V'))
+            if self.detached:
+                a = menu.addAction("Re-attach All")
+                a.connect(a, QtCore.SIGNAL("triggered()"), self.reattach_all)
+            menu.exec_(self.mapToGlobal(point))
+        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.connect(self,
+            QtCore.SIGNAL("customContextMenuRequested(QPoint)"), tabContextMenu)
+    #@+node:ekr.20131115120119.17391: *4* detach
+    def detach(self, index):
+        """detach tab (from tab's context menu)"""
+        w = self.widget(index)
+        name = self.tabText(index)
+        self.detached.append((name, w))
+        self.factory.detachTab(w)
+        
+        icon = g.app.gui.getImageImageFinder("application-x-leo-outline.png")
+        icon = QtGui.QIcon(icon)
+        
+        w.window().setWindowIcon(icon)
+        
+        c = w.leo_c
+       
+        sheet = c.config.getData('qt-gui-plugin-style-sheet')
+        
+        if sheet:
+            if '\n' in sheet[0]:
+                sheet = ''.join(sheet)
+            else:
+                sheet = '\n'.join(sheet)
+            c.active_stylesheet = sheet
+            sheet = g.expand_css_constants(sheet, c.font_size_delta)
+            w.setStyleSheet(sheet)
+        else:
+            main = g.app.gui.frameFactory.masterFrame
+            w.setStyleSheet(main.styleSheet())
+            
+        def reattach(event, w=w, name=name, tabManager=self):
+            tabManager.detached = [i for i in tabManager.detached
+                                   if i[1] != w]
+            w.closeEvent = w.defaultClose
+            tabManager.addTab(w, name)
+            tabManager.factory.leoFrames[w] = w.leo_c.frame
+            event.ignore()
+
+        w.defaultClose = w.closeEvent
+        w.closeEvent = reattach
+        if platform.system() == 'Windows':
+            w.move(20, 20)  # Windows (XP and 7) conspire to place the windows title bar off screen
+            
+        return w
+    #@+node:ekr.20131115120119.17392: *4* tile
+    def tile(self, index, orientation='V'):
+        """detach tab and tile with parent window"""
+        w = self.widget(index)
+        window = w.window()
+        # window.showMaximized()
+        # this doesn't happen until we've returned to main even loop
+        # user needs to do it before using this function
+        fg = window.frameGeometry()
+        geom = window.geometry()
+        x,y,fw,fh = fg.x(),fg.y(),fg.width(),fg.height()
+        ww, wh = geom.width(), geom.height()
+        w = self.detach(index)
+        if window.isMaximized():
+            window.showNormal()
+        if orientation == 'V':
+            # follow MS Windows convention for which way is horizontal/vertical
+            window.resize(ww/2, wh)
+            window.move(x, y)
+            w.resize(ww/2, wh)
+            w.move(x+fw/2, y)
+        else:
+            window.resize(ww, wh/2)
+            window.move(x, y)
+            w.resize(ww, wh/2)
+            w.move(x, y+fh/2)
+    #@+node:ekr.20131115120119.17393: *4* reattach_all
+    def reattach_all(self):
+        """reattach all detached tabs"""
+        for name, w in self.detached:
+            self.addTab(w, name)
+            self.factory.leoFrames[w] = w.leo_c.frame
+        self.detached = []
+    #@+node:ekr.20131115120119.17394: *4* delete (LeoTabbedTopLevel)
+    def delete(self, w):
+        """called by TabbedFrameFactory to tell us a detached tab
+        has been deleted"""
+        self.detached = [i for i in self.detached if i[1] != w]
+    #@+node:ekr.20131115120119.17395: *4* setChanged (LeoTabbedTopLevel)
+    def setChanged (self,c,changed):
+
+        # 2011/03/01: Find the tab corresponding to c.
+        trace = False and not g.unitTesting
+        dw = c.frame.top # A DynamicWindow
+        i = self.indexOf(dw)
+        if i < 0: return
+        s = self.tabText(i)
+        s = g.u(s)
+        # g.trace('LeoTabbedTopLevel',changed,repr(s),g.callers())
+        if len(s) > 2:
+            if changed:
+                if not s.startswith('* '):
+                    title = "* " + s
+                    self.setTabText(i,title)
+                    if trace: g.trace(title)
+            else:
+                if s.startswith('* '):
+                    title = s[2:]
+                    self.setTabText(i,title)
+                    if trace: g.trace(title)
+    #@+node:ekr.20131115120119.17396: *4* setTabName (LeoTabbedTopLevel)
+    def setTabName (self,c,fileName):
+
+        '''Set the tab name for c's tab to fileName.'''
+
+        # Find the tab corresponding to c.
+        dw = c.frame.top # A DynamicWindow
+        i = self.indexOf(dw)
+        if i > -1:
+            self.setTabText(i,g.shortFileName(fileName))
+    #@+node:ekr.20131115120119.17397: *4* closeEvent (leoTabbedTopLevel)
+    def closeEvent(self, event):
+
+        noclose = False
+
+        # g.trace('(leoTabbedTopLevel)',g.callers())
+
+        if g.app.save_session and g.app.sessionManager:
+            g.app.sessionManager.save_snapshot()
+
+        for c in g.app.commanders():
+            res = c.exists and g.app.closeLeoWindow(c.frame)
+            if not res:
+                noclose = True
+
+        if noclose:
+            event.ignore()
+        else:            
+            event.accept()
+    #@+node:ekr.20131115120119.17398: *4* select (leoTabbedTopLevel)
+    def select (self,c):
+
+        '''Select the tab for c.'''
+
+        # g.trace(c.frame.title,g.callers())
+        dw = c.frame.top # A DynamicWindow
+        i = self.indexOf(dw)
+        self.setCurrentIndex(i)
+        # Fix bug 844953: tell Unity which menu to use.
+        c.enableMenuBar()
+    #@-others
 #@+node:ekr.20110605121601.18180: *3* class leoQtBody (subclass of leoBody)
 class leoQtBody (leoFrame.leoBody):
 
@@ -3606,472 +3924,6 @@ class leoQtBody (leoFrame.leoBody):
             fg = self.unselectedForegroundColor
             c.frame.body.setEditorColors(bg,fg)
     #@-others
-#@+node:ekr.20110605121601.18225: *3* Qt.Find classes
-if g.new_find:
-    #@+<< define FindTabManager (new_find) >>
-    #@+node:ekr.20131117054619.16698: *4* << define FindTabManager (new_find) >>
-    class FindTabManager:
-        
-        '''A helper class for the leoFind class.'''
-        
-        #@+others
-        #@+node:ekr.20131117120458.16794: *5*  ftm.ctor
-        def __init__ (self,c):
-            # g.trace('(FindTabManager)',c.shortFileName(),g.callers())
-            self.c = c
-            # Find/change text boxes.
-            self.find_ctrl = None
-            self.change_ctrl = None
-            # Check boxes.
-            self.checkBoxIgnoreCase = None
-            self.checkBoxMarkChanges = None
-            self.checkBoxMarkFinds = None
-            self.checkBoxRegexp = None
-            self.checkBoxSearchBody = None
-            self.checkBoxSearchHeadline = None
-            self.checkBoxWholeWord = None
-            self.checkBoxWrapAround = None
-            # Radio buttons
-            self.radioButtonEntireOutline = None
-            self.radioButtonNodeOnly = None
-            self.radioButtonSuboutlineOnly = None
-        #@+node:ekr.20131117164142.16853: *5* ftm.text getters/setters
-        def getFindText(self):
-            return g.u(self.find_ctrl.text())
-            
-        def getReplaceText(self):
-            return g.u(self.change_ctrl.text())
-
-        getChangeText = getReplaceText
-
-        def setFindText(self,s):
-            w = self.find_ctrl
-            s = g.toUnicode(s)
-            w.clear()
-            w.insert(s)
-            
-        def setReplaceText(self,s):
-            w = self.change_ctrl
-            s = g.toUnicode(s)
-            w.clear()
-            w.insert(s)
-            
-        setChangeText = setReplaceText
-        #@+node:ekr.20131117120458.16793: *5* ftm.dummies (to be deleted)
-        def getOption(self,ivar):
-            g.trace(ivar)
-
-        def update_ivars(self):
-            g.trace(g.callers())
-        #@+node:ekr.20131117120458.16789: *5* ftm.init_widgets
-        def init_widgets(self):
-            '''
-            Init widgets and ivars from c.config settings.
-            Create callbacks that always keep the leoFind ivars up to date.
-            '''
-            c = self.c
-            find = c.findCommands
-            # Find/change text boxes.
-            table = (
-                ('find_ctrl','find_text','<find pattern here>'),
-                ('change_ctrl','change_text',''),
-            )
-            for ivar,setting_name,default in table:
-                s = c.config.getString(setting_name) or default
-                w = getattr(self,ivar)
-                w.insert(g.u(s))
-            # Check boxes.
-            table = (
-                ('ignore_case',     self.checkBoxIgnoreCase),
-                ('mark_changes',    self.checkBoxMarkChanges),
-                ('mark_finds',      self.checkBoxMarkFinds),
-                ('pattern_match',   self.checkBoxRegexp),
-                ('search_body',     self.checkBoxSearchBody),
-                ('search_headline', self.checkBoxSearchHeadline),
-                ('whole_word',      self.checkBoxWholeWord),
-                ('wrap',            self.checkBoxWrapAround),
-            )
-            for setting_name,w in table:
-                val = c.config.getBool(setting_name,default=False)
-                # The setting name is also the name of the leoFind ivar.
-                assert hasattr(find,setting_name),setting_name
-                setattr(find,setting_name,val)
-                if val: w.toggle()
-                def check_box_callback(n,setting_name=setting_name,w=w):
-                    val = w.isChecked()
-                    # g.trace(setting_name,val)
-                    assert hasattr(find,setting_name),setting_name
-                    setattr(find,setting_name,val)
-                QtCore.QObject.connect(w,QtCore.SIGNAL("stateChanged(int)"),
-                    check_box_callback)
-            # Radio buttons
-            table = (
-                ('node_only',       'node_only',        self.radioButtonNodeOnly),
-                ('entire_outline',  None,               self.radioButtonEntireOutline),
-                ('suboutline_only', 'suboutline_only',  self.radioButtonSuboutlineOnly),
-            )
-            for setting_name,ivar,w in table:
-                val = c.config.getBool(setting_name,default=False)
-                # The setting name is also the name of the leoFind ivar.
-                # g.trace(setting_name,ivar,val)
-                if ivar is not None:
-                    assert hasattr(find,setting_name),setting_name
-                    setattr(find,setting_name,val)
-                    w.toggle()
-                def radio_button_callback(n,ivar=ivar,setting_name=setting_name,w=w):
-                    val = w.isChecked()
-                    # g.trace(setting_name,ivar,val)
-                    if ivar:
-                        assert hasattr(find,ivar),ivar
-                        setattr(find,ivar,val)
-                QtCore.QObject.connect(w,QtCore.SIGNAL("toggled(bool)"),
-                    radio_button_callback)
-            # Ensure one radio button is set.
-            if not find.node_only and not find.suboutline_only:
-                w = self.radioButtonEntireOutline
-                w.toggle()
-        #@+node:ekr.20131117120458.16792: *5* ftm.set_radio_button
-        def set_radio_button(self,name):
-            '''Set the value of the radio buttons'''
-            
-            d = {
-                # Name is not an ivar. Set by find.setFindScope... commands.
-                'node-only': self.radioButtonNodeOnly,
-                'entire-outline': self.radioButtonEntireOutline,
-                'suboutline-only': self.radioButtonSuboutlineOnly,
-            }
-            w = d.get(name)
-            assert w
-            # Most of the work will be done in the radio button callback.
-            if not w.isChecked():
-                w.toggle()
-        #@+node:ekr.20131117120458.16791: *5* ftm.toggle_checkbox
-        def toggle_checkbox(self,checkbox_name):
-            '''Toggle the value of the checkbox whose name is given.'''
-            find = self.c.findCommands
-            d = {
-                'ignore_case':     self.checkBoxIgnoreCase,
-                'mark_changes':    self.checkBoxMarkChanges,
-                'mark_finds':      self.checkBoxMarkFinds,
-                'pattern_match':   self.checkBoxRegexp,
-                'search_body':     self.checkBoxSearchBody,
-                'search_headline': self.checkBoxSearchHeadline,
-                'whole_word':      self.checkBoxWholeWord,
-                'wrap':            self.checkBoxWrapAround,
-            }
-            w = d.get(checkbox_name)
-            assert w
-            assert hasattr(find,checkbox_name),checkbox_name
-            old_val = getattr(find,checkbox_name)
-            w.toggle() # The checkbox callback toggles the ivar.
-            new_val = getattr(find,checkbox_name)
-            # g.trace(checkbox_name,old_val,new_val)
-        #@-others
-    #@-<< define FindTabManager (new_find) >>
-else:
-    #@+<< define leoQtFindTab (legacy) >>
-    #@+node:ekr.20131117054619.16697: *4* << define leoQtFindTab (legacy) >>
-    class leoQtFindTab (leoFind.findTab):
-
-        '''A subclass of the findTab class containing all Qt Gui code.'''
-
-        #@+others
-        #@+node:ekr.20110605121601.18226: *5*  Birth: called from leoFind ctor
-        if 0: # We can use the base-class ctor.
-            def __init__ (self,c,parentFrame):
-                leoFind.findTab.__init__(self,c,parentFrame)
-                    # Init the base class.
-                    # Calls initGui, createFrame and init(c), in that order.
-        #@+node:ekr.20110605121601.18227: *6* initGui
-        def initGui (self):
-
-            owner = self
-
-            self.svarDict = {}
-                # Keys are ivar names, values are svar objects.
-
-            # Keys are option names; values are <svars>.
-            for ivar in self.intKeys:
-                self.svarDict[ivar] = self.svar(owner,ivar)
-
-            # g.trace(self.svarDict)
-
-            # Add a hack for 'entire_outline' radio button.
-            ivar = 'entire_outline'
-            self.svarDict[ivar] = self.svar(owner,ivar)
-
-            for ivar in self.newStringKeys:
-                # "radio-find-type", "radio-search-scope"
-                self.svarDict[ivar] = self.svar(owner,ivar)
-        #@+node:ekr.20110605121601.18228: *6* init (qtFindTab) & helpers
-        def init (self,c):
-
-            '''Init the widgets of the 'Find' tab.'''
-
-            # g.trace('leoQtFindTab.init')
-            self.createIvars()
-            self.initIvars()
-            self.initTextWidgets()
-            self.initCheckBoxes()
-            self.initRadioButtons()
-        #@+node:ekr.20110605121601.18229: *7* createIvars (qtFindTab)
-        def createIvars (self):
-
-            c = self.c ; w = c.frame.top.leo_ui # A Window ui object.
-
-            # Bind boxes to Window objects.
-            self.widgetsDict = {} # Keys are ivars, values are Qt widgets.
-            findWidget   = leoQLineEditWidget(w.findPattern,'find-widget',c)
-            changeWidget = leoQLineEditWidget(w.findChange,'change-widget',c)
-            data = (
-                ('find_ctrl',       findWidget),
-                ('change_ctrl',     changeWidget),
-                ('whole_word',      w.checkBoxWholeWord),
-                ('ignore_case',     w.checkBoxIgnoreCase),
-                ('wrap',            w.checkBoxWrapAround),
-                ## ('reverse',         w.checkBoxReverse),
-                ('pattern_match',   w.checkBoxRegexp),
-                ('mark_finds',      w.checkBoxMarkFinds),
-                ('entire_outline',  w.checkBoxEntireOutline),
-                ('suboutline_only', w.checkBoxSuboutlineOnly),  
-                ('node_only',       w.checkBoxNodeOnly),
-                ('search_headline', w.checkBoxSearchHeadline),
-                ('search_body',     w.checkBoxSearchBody),
-                ('mark_changes',    w.checkBoxMarkChanges),
-                ('batch', None),
-            )
-            for ivar,widget in data:
-                setattr(self,ivar,widget)
-                self.widgetsDict[ivar] = widget
-                # g.trace(ivar,widget)
-        #@+node:ekr.20110605121601.18230: *7* initIvars
-        def initIvars(self):
-
-            c = self.c
-
-            # Separate c.ivars are much more convenient than a svarDict.
-            for ivar in self.intKeys:
-                # Get ivars from @settings.
-                val = c.config.getBool(ivar)
-                setattr(self,ivar,val)
-                val = g.choose(val,1,0)
-                svar = self.svarDict.get(ivar)
-                if svar:
-                    svar.set(val)
-
-                # g.trace(ivar,val)
-        #@+node:ekr.20110605121601.18231: *7* initTextWidgets (qtFindTab)
-        def initTextWidgets(self):
-
-            '''Init the find/change text areas.'''
-
-            c = self.c
-
-            table = (
-                (self.find_ctrl,    "find_text",    '<find pattern here>'),
-                (self.change_ctrl,  "change_text",  ''),
-            )
-
-            for w,setting,defaultText in table:
-                # w is a textWrapper object
-                w.setAllText(c.config.getString(setting) or defaultText)
-        #@+node:ekr.20110605121601.18232: *7* initCheckBoxes
-        def initCheckBoxes (self):
-
-            for ivar,key in (
-                ("pattern_match","pattern-search"),
-            ):
-                svar = self.svarDict[ivar].get()
-                if svar:
-                    self.svarDict["radio-find-type"].set(key)
-                    w = self.widgetsDict.get(key)
-                    if w: w.setChecked(True)
-                    break
-            else:
-                self.svarDict["radio-find-type"].set("plain-search")
-
-            aList = (
-                'ignore_case','mark_changes','mark_finds',
-                'pattern_match',
-                # 'reverse',
-                'search_body','search_headline',
-                'whole_word','wrap',
-                'node_only','suboutline_only','entire_outline',
-            )
-
-            for ivar in aList:
-                svar = self.svarDict.get(ivar)
-                if svar:
-                    # w is a QCheckBox or a QRadioButton.
-                    w = self.widgetsDict.get(ivar)
-                    if w:
-                        val = svar.get()
-                        svar.setWidget(w)
-                        svar.set(val)
-                        if isinstance(w,QtGui.QCheckBox):
-                            def checkBoxCallback(val,svar=svar):
-                                svar.set(val)
-                            w.connect(w,
-                                QtCore.SIGNAL("stateChanged(int)"),
-                                checkBoxCallback)
-                        else:
-                            def radioButtonCallback(val,svar=svar):
-                                svar.set(val)
-                            w.connect(w,
-                                QtCore.SIGNAL("clicked(bool)"),
-                                radioButtonCallback)
-                    else: g.trace('*** no w',ivar)
-                else: g.trace('*** no svar',ivar)
-        #@+node:ekr.20110605121601.18233: *7* initRadioButtons
-        def initRadioButtons (self):
-
-            scopeSvar = self.svarDict.get('radio-search-scope')
-
-            table = (
-                ("suboutline_only","suboutline-only"),
-                ("node_only","node-only"))
-
-            for ivar,key in table:
-                svar = self.svarDict.get(ivar)
-                if svar:
-                    val = svar.get()
-                    if val:
-                        scopeSvar.init(key)
-                        break
-            else:
-                scopeSvar.init('entire-outline')
-                self.svarDict.get('entire_outline').init(True)
-
-            w = self.widgetsDict.get(key)
-            if w: w.setChecked(True)
-
-            # g.trace(scopeSvar.get())
-        #@+node:ekr.20110605121601.18234: *5* class svar (qtFindTab)
-        class svar:
-            '''A class like Tk's IntVar and StringVar classes.'''
-
-            #@+others
-            #@+node:ekr.20110605121601.18235: *6* svar.ctor
-            def __init__(self,owner,ivar):
-
-                self.ivar = ivar
-                self.owner = owner
-                self.radioButtons = ['node_only','suboutline_only','entire_outline']
-                self.trace = False
-                self.val = None
-                self.w = None
-
-            def __repr__(self):
-                return '<svar %s>' % self.ivar
-            #@+node:ekr.20110605121601.18236: *6* get
-            def get (self):
-
-                trace = False and not g.unitTesting
-                if self.w:
-                    val = self.w.isChecked()
-                    if trace:
-                        g.trace('qt svar %15s = %s' % (
-                            self.ivar,val),g.callers(5))        
-                else:
-                    val = self.val
-                return val
-            #@+node:ekr.20110605121601.18237: *6* init
-            def init (self,val):
-
-                '''Init the svar, but do *not* init radio buttons.
-                (This is called from initRadioButtons).'''
-
-                trace = False and not g.unitTesting
-
-                if val in (0,1):
-                    self.val = bool(val)
-                else:
-                    self.val = val # Don't contain the scope values!
-
-                if self.w:
-                    self.w.setChecked(bool(val))
-
-                if trace: g.trace('qt svar %15s = %s' % (
-                    self.ivar,val),g.callers(5))
-            #@+node:ekr.20110605121601.18238: *6* set
-            def set (self,val):
-
-                '''Init the svar and update the radio buttons.'''
-
-                trace = False and not g.unitTesting
-                if trace: g.trace(val)
-
-                self.init(val)
-
-                if self.ivar in self.radioButtons:
-                    self.owner.initRadioButtons()
-                elif self.ivar == 'radio-search-scope':
-                    self.setRadioScope(val)
-
-
-            #@+node:ekr.20110605121601.18239: *6* setRadioScope
-            def setRadioScope (self,val):
-
-                '''Update the svars corresponding to the scope value.'''
-
-                table = (
-                    ("suboutline_only","suboutline-only"),
-                    ("node_only","node-only"),
-                    ("entire_outline","entire-outline"))
-
-                for ivar,val2 in table:
-                    if val == val2:
-                        svar = self.owner.svarDict.get(ivar)
-                        val = svar.get()
-                        svar.init(True)
-            #@+node:ekr.20110605121601.18240: *6* setWidget
-            def setWidget(self,w):
-
-                self.w = w
-            #@-others
-        #@+node:ekr.20110605121601.18241: *5* Support for minibufferFind class (qtFindTab)
-        # This is the same as the Tk code because we simulate Tk svars.
-        #@+node:ekr.20110605121601.18242: *6* getOption
-        def getOption (self,ivar):
-
-            var = self.svarDict.get(ivar)
-
-            if var:
-                val = var.get()
-                # g.trace('ivar %s = %s' % (ivar,val))
-                return val
-            else:
-                # g.trace('bad ivar name: %s' % ivar)
-                return None
-        #@+node:ekr.20110605121601.18243: *6* setOption (findTab)
-        def setOption (self,ivar,val):
-
-            trace = False and not g.unitTesting
-            if trace: g.trace(ivar,val)
-
-            if ivar in self.intKeys:
-                if val is not None:
-                    svar = self.svarDict.get(ivar)
-                    svar.set(val)
-                    if trace: g.trace('qtFindTab: ivar %s = %s' % (
-                        ivar,val))
-
-            elif not g.app.unitTesting:
-                g.trace('oops: bad find ivar %s' % ivar)
-        #@+node:ekr.20110605121601.18244: *6* toggleOption
-        def toggleOption (self,ivar):
-
-            if ivar in self.intKeys:
-                var = self.svarDict.get(ivar)
-                val = not var.get()
-                var.set(val)
-                # g.trace('%s = %s' % (ivar,val),var)
-            else:
-                g.trace('oops: bad find ivar %s' % ivar)
-        #@-others
-
-    #@-<< define leoQtFindTab (legacy) >>
-
 #@+node:ekr.20110605121601.18245: *3* class leoQtFrame
 class leoQtFrame (leoFrame.leoFrame):
 
@@ -5247,20 +5099,13 @@ class leoQtLog (leoFrame.leoLog):
         # log.selectTab('Log')
         log.createTab('Log')
         logWidget = self.contentsDict.get('Log')
-        logWidget.setWordWrapMode(
-            g.choose(self.wrap,
-                QtGui.QTextOption.WordWrap,
-                QtGui.QTextOption.NoWrap))
-
+        logWidget.setWordWrapMode(QtGui.QTextOption.WordWrap if self.wrap
+            else QtGui.QTextOption.NoWrap)
         for i in range(w.count()):
             if w.tabText(i) == 'Log':
                 w.removeTab(i)
         w.insertTab(0,logWidget,'Log')
-
-        if g.new_find:
-            c.findCommands.openFindTab(show=False)
-        else:
-            c.searchCommands.openFindTab(show=False)
+        c.findCommands.openFindTab(show=False)
         c.spellCommands.openSpellTab()
     #@+node:ekr.20110605121601.18316: *5* leoQtLog.getName
     def getName (self):
@@ -7071,186 +6916,6 @@ class leoQtTreeTab:
         w.clear()
         w.insertItems(0,names)
     #@-others
-#@+node:ekr.20131115120119.17376: *3* class LeoBaseTabWidget(QtGui.QTabWidget)
-class LeoBaseTabWidget (QtGui.QTabWidget):
-    """Base class for all QTabWidgets in Leo."""
-
-    #@+others
-    #@+node:ekr.20131115120119.17390: *4* __init__ (LeoBaseTabWidget)
-    def __init__(self,*args,**kwargs):
-
-        self.factory = kwargs.get('factory')
-        if self.factory:
-            del kwargs['factory']
-        QtGui.QTabWidget.__init__(self,*args,**kwargs)
-        self.detached = []
-        self.setMovable(True)
-        def tabContextMenu(point):
-            index = self.tabBar().tabAt(point)
-            if index < 0 or (self.count() < 2 and not self.detached):
-                return
-            menu = QtGui.QMenu()
-            if self.count() > 1:
-                a = menu.addAction("Detach")
-                a.connect(a, QtCore.SIGNAL("triggered()"),
-                    lambda: self.detach(index))
-                a = menu.addAction("Horizontal tile")
-                a.connect(a, QtCore.SIGNAL("triggered()"),
-                    lambda: self.tile(index, orientation='H'))
-                a = menu.addAction("Vertical tile")
-                a.connect(a, QtCore.SIGNAL("triggered()"),
-                    lambda: self.tile(index, orientation='V'))
-            if self.detached:
-                a = menu.addAction("Re-attach All")
-                a.connect(a, QtCore.SIGNAL("triggered()"), self.reattach_all)
-            menu.exec_(self.mapToGlobal(point))
-        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.connect(self,
-            QtCore.SIGNAL("customContextMenuRequested(QPoint)"), tabContextMenu)
-    #@+node:ekr.20131115120119.17391: *4* detach
-    def detach(self, index):
-        """detach tab (from tab's context menu)"""
-        w = self.widget(index)
-        name = self.tabText(index)
-        self.detached.append((name, w))
-        self.factory.detachTab(w)
-        
-        icon = g.app.gui.getImageImageFinder("application-x-leo-outline.png")
-        icon = QtGui.QIcon(icon)
-        
-        w.window().setWindowIcon(icon)
-        
-        c = w.leo_c
-       
-        sheet = c.config.getData('qt-gui-plugin-style-sheet')
-        
-        if sheet:
-            if '\n' in sheet[0]:
-                sheet = ''.join(sheet)
-            else:
-                sheet = '\n'.join(sheet)
-            c.active_stylesheet = sheet
-            sheet = g.expand_css_constants(sheet, c.font_size_delta)
-            w.setStyleSheet(sheet)
-        else:
-            main = g.app.gui.frameFactory.masterFrame
-            w.setStyleSheet(main.styleSheet())
-            
-        def reattach(event, w=w, name=name, tabManager=self):
-            tabManager.detached = [i for i in tabManager.detached
-                                   if i[1] != w]
-            w.closeEvent = w.defaultClose
-            tabManager.addTab(w, name)
-            tabManager.factory.leoFrames[w] = w.leo_c.frame
-            event.ignore()
-
-        w.defaultClose = w.closeEvent
-        w.closeEvent = reattach
-        if platform.system() == 'Windows':
-            w.move(20, 20)  # Windows (XP and 7) conspire to place the windows title bar off screen
-            
-        return w
-    #@+node:ekr.20131115120119.17392: *4* tile
-    def tile(self, index, orientation='V'):
-        """detach tab and tile with parent window"""
-        w = self.widget(index)
-        window = w.window()
-        # window.showMaximized()
-        # this doesn't happen until we've returned to main even loop
-        # user needs to do it before using this function
-        fg = window.frameGeometry()
-        geom = window.geometry()
-        x,y,fw,fh = fg.x(),fg.y(),fg.width(),fg.height()
-        ww, wh = geom.width(), geom.height()
-        w = self.detach(index)
-        if window.isMaximized():
-            window.showNormal()
-        if orientation == 'V':
-            # follow MS Windows convention for which way is horizontal/vertical
-            window.resize(ww/2, wh)
-            window.move(x, y)
-            w.resize(ww/2, wh)
-            w.move(x+fw/2, y)
-        else:
-            window.resize(ww, wh/2)
-            window.move(x, y)
-            w.resize(ww, wh/2)
-            w.move(x, y+fh/2)
-    #@+node:ekr.20131115120119.17393: *4* reattach_all
-    def reattach_all(self):
-        """reattach all detached tabs"""
-        for name, w in self.detached:
-            self.addTab(w, name)
-            self.factory.leoFrames[w] = w.leo_c.frame
-        self.detached = []
-    #@+node:ekr.20131115120119.17394: *4* delete (LeoTabbedTopLevel)
-    def delete(self, w):
-        """called by TabbedFrameFactory to tell us a detached tab
-        has been deleted"""
-        self.detached = [i for i in self.detached if i[1] != w]
-    #@+node:ekr.20131115120119.17395: *4* setChanged (LeoTabbedTopLevel)
-    def setChanged (self,c,changed):
-
-        # 2011/03/01: Find the tab corresponding to c.
-        trace = False and not g.unitTesting
-        dw = c.frame.top # A DynamicWindow
-        i = self.indexOf(dw)
-        if i < 0: return
-        s = self.tabText(i)
-        s = g.u(s)
-        # g.trace('LeoTabbedTopLevel',changed,repr(s),g.callers())
-        if len(s) > 2:
-            if changed:
-                if not s.startswith('* '):
-                    title = "* " + s
-                    self.setTabText(i,title)
-                    if trace: g.trace(title)
-            else:
-                if s.startswith('* '):
-                    title = s[2:]
-                    self.setTabText(i,title)
-                    if trace: g.trace(title)
-    #@+node:ekr.20131115120119.17396: *4* setTabName (LeoTabbedTopLevel)
-    def setTabName (self,c,fileName):
-
-        '''Set the tab name for c's tab to fileName.'''
-
-        # Find the tab corresponding to c.
-        dw = c.frame.top # A DynamicWindow
-        i = self.indexOf(dw)
-        if i > -1:
-            self.setTabText(i,g.shortFileName(fileName))
-    #@+node:ekr.20131115120119.17397: *4* closeEvent (leoTabbedTopLevel)
-    def closeEvent(self, event):
-
-        noclose = False
-
-        # g.trace('(leoTabbedTopLevel)',g.callers())
-
-        if g.app.save_session and g.app.sessionManager:
-            g.app.sessionManager.save_snapshot()
-
-        for c in g.app.commanders():
-            res = c.exists and g.app.closeLeoWindow(c.frame)
-            if not res:
-                noclose = True
-
-        if noclose:
-            event.ignore()
-        else:            
-            event.accept()
-    #@+node:ekr.20131115120119.17398: *4* select (leoTabbedTopLevel)
-    def select (self,c):
-
-        '''Select the tab for c.'''
-
-        # g.trace(c.frame.title,g.callers())
-        dw = c.frame.top # A DynamicWindow
-        i = self.indexOf(dw)
-        self.setCurrentIndex(i)
-        # Fix bug 844953: tell Unity which menu to use.
-        c.enableMenuBar()
-    #@-others
 #@+node:ekr.20110605121601.18448: *3* class LeoTabbedTopLevel (LeoBaseTabWidget)
 class LeoTabbedTopLevel(LeoBaseTabWidget):
     """ Toplevel frame for tabbed ui """
@@ -7823,10 +7488,7 @@ class leoQtGui(leoGui.leoGui):
 
     def createFindTab (self,c,parentFrame):
         """Create a qt find tab in the indicated frame."""
-        if g.new_find:
-            pass # Now done in dw.createFindTab.
-        else:
-            return leoQtFindTab(c,parentFrame)
+        pass # Now done in dw.createFindTab.
 
     def createLeoFrame(self,c,title):
         """Create a new Leo frame."""
