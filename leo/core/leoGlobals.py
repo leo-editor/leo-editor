@@ -20,7 +20,7 @@ trace_startup = False
     # These traces use print instead of g.trace so that
     # the traces can add class info the method name.
     
-new_find = False
+new_find = True
     # True: a complete rewrite of Leo's find code.
 if new_find: print('***** new_find')
 

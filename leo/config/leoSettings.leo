@@ -1092,22 +1092,22 @@
 <v t="ekr.20070925144534.82"><vh>@item *find-tab-&amp;open</vh></v>
 <v t="ekr.20070925144534.83"><vh>@item *find-tab-&amp;hide</vh></v>
 <v t="ekr.20131117053425.19893"><vh>@item -</vh></v>
-<v t="ekr.20070925144534.84"><vh>@item *search-&amp;with-present-options</vh></v>
+<v t="ekr.20070925144534.84"><vh>@@@item search-with-present-options</vh></v>
+<v t="ekr.20131118105637.18573"><vh>@item set-replace-string</vh></v>
 <v t="ekr.20130807090137.20911"><vh>@item *replace</vh></v>
 <v t="ekr.20130807090137.20912"><vh>@item *replace-then-find</vh></v>
 <v t="ekr.20070925144534.85"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.86"><vh>@item *find-&amp;next</vh></v>
 <v t="ekr.20070925144534.87"><vh>@item *find-&amp;prev</vh></v>
-<v t="ekr.20070925144534.88"><vh>@item *&amp;change</vh></v>
 <v t="ekr.20131117053425.19894"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.89"><vh>@item *find-&amp;all</vh></v>
 <v t="ekr.20070925144534.90"><vh>@item *clone-fi&amp;nd-all</vh></v>
 <v t="ekr.20070925144534.91"><vh>@item *change-a&amp;ll</vh></v>
 <v t="ekr.20070925144534.92"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.93"><vh>@item *&amp;find-character</vh></v>
-<v t="ekr.20070925144534.94"><vh>@item *find-character-extend-&amp;selection</vh></v>
-<v t="ekr.20070925144534.95"><vh>@item *&amp;backward-find-character</vh></v>
-<v t="ekr.20070925144534.96"><vh>@item *backward-find-character-&amp;extend-selection</vh></v>
+<v t="ekr.20070925144534.94"><vh>@item find-character-extend-&amp;selection</vh></v>
+<v t="ekr.20070925144534.95"><vh>@item backward-find-character</vh></v>
+<v t="ekr.20070925144534.96"><vh>@item backward-find-character-&amp;extend-selection</vh></v>
 <v t="ekr.20070925144534.97"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.98"><vh>@item *&amp;isearch-forward</vh></v>
 <v t="ekr.20070925144534.99"><vh>@item *isea&amp;rch-backward</vh></v>
@@ -3425,7 +3425,8 @@ set-find-suboutline-only            = None
 set-font                            = None
 set-command-state                   = None
 set-insert-state                    = None
-# set-mark-command                    = None
+# set-mark-command                  = None
+set-replace-string                  = None
 set-overwrite-state                 = None
 settings                            = None
 shell-command                       = None
@@ -3995,6 +3996,7 @@ search-again
 search-backward
 search-forward
 search-with-present-options
+set-replace-string
 
 Setting find options:
 
@@ -4069,9 +4071,9 @@ find-character                              = None ### = Alt-P
 find-character-extend-selection             = None ### = Alt-Shift-P
 
 # To start finds and changes...
-search-again                        = None  # similar to search-with-present-options.
-search-with-present-options         = Ctrl-f
-replace-string                      = Ctrl-Shift-r
+# search-again                        = None  # similar to search-with-present-options.
+search-with-present-options         = None ### was Ctrl-f
+set-replace-string                  = Ctrl-f ### was Ctrl-Shift-r
 find-tab-hide                       = None
 find-tab-open                       = None
 
@@ -5102,20 +5104,20 @@ False: Chapter tabs do not appear.</t>
 <t tx="ekr.20070925144534.80"></t>
 <t tx="ekr.20070925144534.82"></t>
 <t tx="ekr.20070925144534.83"></t>
-<t tx="ekr.20070925144534.84"></t>
+<t tx="ekr.20070925144534.84">&amp;Set Search String
+</t>
 <t tx="ekr.20070925144534.85"></t>
 <t tx="ekr.20070925144534.86"></t>
 <t tx="ekr.20070925144534.87"></t>
-<t tx="ekr.20070925144534.88"></t>
 <t tx="ekr.20070925144534.89"></t>
 <t tx="ekr.20070925144534.9">Save As &amp;Unzipped...</t>
 <t tx="ekr.20070925144534.90"></t>
 <t tx="ekr.20070925144534.91"></t>
 <t tx="ekr.20070925144534.92"></t>
 <t tx="ekr.20070925144534.93"></t>
-<t tx="ekr.20070925144534.94"></t>
-<t tx="ekr.20070925144534.95"></t>
-<t tx="ekr.20070925144534.96"></t>
+<t tx="ekr.20070925144534.94">Find Char Extend &amp;Sel</t>
+<t tx="ekr.20070925144534.95">&amp;Back Find Char</t>
+<t tx="ekr.20070925144534.96">Back Find Char Extend Sel</t>
 <t tx="ekr.20070925144534.97"></t>
 <t tx="ekr.20070925144534.98"></t>
 <t tx="ekr.20070925144534.99"></t>
@@ -11678,6 +11680,7 @@ QTextEdit:focus#log-widget, LeoQTreeWidget:focus#treeWidget, QTextEdit:focus#ric
 <t tx="ekr.20131117052950.18285"></t>
 <t tx="ekr.20131117053425.19893"></t>
 <t tx="ekr.20131117053425.19894"></t>
+<t tx="ekr.20131118105637.18573">&amp;Start Search</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>

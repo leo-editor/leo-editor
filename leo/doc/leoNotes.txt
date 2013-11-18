@@ -10367,5 +10367,263 @@ def createFindTab (self,parent,tab_widget):
     self.findChange = findChange
     # self.findLab = lab2
     # self.changeLab = lab3
+.. @+node:ekr.20131117054619.16693: *3*   unused code (new_find)
+if 0:
+    @others
+.. @+node:ekr.20031218072017.3072: *4* doFind...Script (leoFind)
+def doFindScript (self):
+
+    g.app.searchDict["type"] = "find"
+    self.runFindScript()
+
+def doFindAllScript (self):
+
+    """The user has just pressed the Find All button with script-find radio button checked.
+
+    N.B. Only this code is executed."""
+
+    g.app.searchDict["type"] = "findAll"
+    while 1:
+        self.runFindScript()
+        if not g.app.searchDict.get("continue"):
+            break
+
+def runFindScript (self):
+
+    try:
+        exec(self.find_text,{},{})
+    except:
+        g.es("exception executing find script")
+        g.es_exception(full=False)
+        g.app.searchDict["continue"] = False # 2/1/04
+.. @+node:ekr.20131117054619.16694: *4* from leoFind.__init__
+    # Spell checkers use this class, so we can't always compute a title.
+    if title:
+        self.title = title
+    else:
+        if not c.mFileName:
+            s = "untitled"
+        else:
+            path,s = g.os_path_split(c.mFileName)
+        
+        self.title = "Find/Change for %s" %  s
+.. @+node:ekr.20031218072017.2417: *4* doChange...Scrip (leoFind)t
+def doChangeScript (self):
+
+    g.app.searchDict["type"] = "change"
+    self.runChangeScript()
+
+def doChangeAllScript (self):
+
+    """The user has just pressed the Replace All button with script-change box checked.
+
+    N.B. Only this code is executed."""
+
+    g.app.searchDict["type"] = "changeAll"
+    while 1:
+        self.runChangeScript()
+        if not g.app.searchDict.get("continue"):
+            break
+
+def runChangeScript (self):
+
+    try:
+        assert(self.script_change)
+        exec(self.change_text,{},{})
+    except Exception:
+        g.es("exception executing change script")
+        g.es_exception(full=False)
+        g.app.searchDict["continue"] = False # 2/1/04
+.. @+node:ekr.20051013084200.1: *4* dismiss: defined in subclass class
+def dismiss (self):
+    pass
+.. @+node:ekr.20061111084423.1: *4* oops (leoFind)
+def oops(self):
+    g.pr(("leoFind oops:",
+        g.callers(10),"should be overridden in subclass"))
+.. @+node:ekr.20051020120306.26: *4* leoFind.bringToFront
+def bringToFront (self):
+
+    """Bring the Find Tab to the front and select the entire find text."""
+
+    c = self.c ; w = self.find_ctrl
+
+    c.widgetWantsFocusNow(w)
+    # g.app.gui.selectAllText(w)
+    w.selectAllText()
+    c.widgetWantsFocus(w)
+.. @+node:ekr.20051020120306.27: *4* selectAllFindText (leoFind)
+def selectAllFindText (self,event=None):
+
+    # This is called only when the user presses ctrl-a in the find panel.
+
+    w = self.frame.focus_get()
+    if g.app.gui.isTextWidget(w):
+        w.selectAllText()
+
+    return # (for Tk) "break"
+.. @+node:ekr.20131117164142.16984: *4*  ctor (minibufferFind) (not used in leoFind)
+if 0:
+    def __init__(self,c,finder):
+
+        baseEditCommandsClass.__init__(self,c) # init the base class.
+        # g.trace('minibufferFind: finder',finder)
+        self.c = c
+        self.k = k = c.k
+        self.w = None
+        self.finder = finder
+        self.findTextList = []
+        self.changeTextList = []
+        commandName = 'replace-string'
+        s = k.getShortcutForCommandName(commandName)
+        s = k.prettyPrintKey(s)
+        s = k.strokeFromSetting(s)
+        # g.trace('replaceStringShortcut',s)
+        self.replaceStringShortcut = s
+.. @+node:ekr.20131117164142.17012: *4* not used (from leoEditCommands when new_find is true
+if 0:
+    @others
+.. @+node:ekr.20131117164142.16920: *5* Find wrappers
+def changeAll(self,event=None):
+    '''Execute the 'Replace All' command with the settings shown in the Find tab.'''
+    self.getHandler().changeAll(event)
+
+def cloneFindAll (self,event):
+    '''Do search-with-present-options and print all matches in the log pane. It
+    also creates a node at the beginning of the outline containing clones of all
+    nodes containing the 'find' string. Only one clone is made of each node,
+    regardless of how many clones the node has, or of how many matches are found
+    in each node. Nodes that are descendants of previously added nodes are not
+    added again.'''
+    self.getHandler().cloneFindAll(event)
+
+def cloneFindAllFlattened (self,event):
+    '''Do search-with-present-options and print all matches in the log pane. It
+    also creates a node at the beginning of the outline containing clones of all
+    nodes containing the 'find' string. Only one clone is made of each node,
+    regardless of how many clones the node has, or of how many matches are found
+    in each node. Nodes that are descendants of previously added nodes **are**
+    added again at the top level.'''
+    self.getHandler().cloneFindAllFlattened(event)
+
+def findAll (self,event):
+    '''Do search-with-present-options and print all matches in the log pane.'''
+    self.getHandler().findAll(event)
+
+def replaceString (self,event):
+    '''Prompts for a search string. Type <Return> to end the search string. The
+    command will then prompt for the replacement string. Typing a second
+    <Return> key will place both strings in the Find tab and executes a **find**
+    command, that is, the search-with-present-options command.'''
+    self.getHandler().replaceString(event)
+
+def reSearchBackward   (self,event):
+    '''Do a reverse regex search.'''
+    self.getHandler().reSearchBackward(event)
+
+def reSearchForward    (self,event):
+    '''Do a forward regex search.'''
+    self.getHandler().reSearchForward(event)
+
+def searchBackward     (self,event):
+    '''Do a backward plain search.'''
+    self.getHandler().searchBackward(event)
+
+def searchForward      (self,event):
+    '''Do a forward plain search.'''
+    self.getHandler().searchForward(event)
+
+def wordSearchBackward (self,event):
+    '''Do a backward word-only search.'''
+    self.getHandler().wordSearchBackward(event)
+
+def wordSearchForward  (self,event):
+    '''Do a forward word-only search.'''
+    self.getHandler().wordSearchForward(event)
+
+def searchWithPresentOptions (self,event):
+    '''Prompts for a search string. Typing the <Return> key puts the search
+    string in the Find tab and executes a search based on all the settings in
+    the Find tab. Recommended as the default search command.'''
+    self.getHandler().searchWithPresentOptions(event)
+.. @+node:ekr.20131117164142.16921: *5* findAgain (brain dead)
+def findAgain (self,event):
+
+    '''The find-again command is the same as the find-next command
+    if the search pattern in the Find tab is not '<find pattern here>'
+    Otherwise, the find-again is the same as the search-with-present-options command.'''
+
+    h = self.getHandler()
+
+    # h.findAgain returns False if there is no search pattern.
+    # In that case, we revert to search-with-present-options.
+    if not h.findAgain(event):
+        h.searchWithPresentOptions(event)
+.. @+node:ekr.20131117164142.16918: *4* getHandler (not used when new_find)
+def getHandler(self,show=False):
+    '''Return the minibuffer handler, creating it if necessary.'''
+    c = self.c
+    g.trace(show)
+    self.openFindTab(show=show)
+    if g.new_find:
+        return self
+    else:
+        # sets self.findTabHandler,
+        # but *not* minibufferFindHandler.
+        if not self.minibufferFindHandler:
+            self.minibufferFindHandler = minibufferFind(c,self.findTabHandler)
+        return self.minibufferFindHandler
+.. @+node:ekr.20131117164142.16917: *4* Find Tab commands (not used when new_find)
+# Just open the Find tab if it has never been opened.
+# For minibuffer commands, it would be good to force the Find tab to be visible.
+# However, this leads to unfortunate confusion when executed from a shortcut.
+
+def findTabChange(self,event=None):
+    '''Execute the 'Change' command with the settings shown in the Find tab.'''
+    if self.findTabHandler:
+        self.findTabHandler.changeCommand()
+    else:
+        self.openFindTab()
+
+def findTabChangeThenFind(self,event=None):
+    '''Execute the 'Replace, Find' command with the settings shown in the Find tab.'''
+    if self.findTabHandler:
+        self.findTabHandler.changeThenFindCommand()
+    else:
+        self.openFindTab()
+
+def findTabFindAll(self,event=None):
+    '''Execute the 'Find All' command with the settings shown in the Find tab.'''
+    if self.findTabHandler:
+        self.findTabHandler.findAllCommand()
+    else:
+        self.openFindTab()
+
+def findTabFindNext (self,event=None):
+    '''Execute the 'Find Next' command with the settings shown in the Find tab.'''
+    if self.findTabHandler:
+        self.findTabHandler.findNextCommand()
+    else:
+        self.openFindTab()
+
+def findTabFindPrev (self,event=None):
+    '''Execute the 'Find Previous' command with the settings shown in the Find tab.'''
+    if self.findTabHandler:
+        self.findTabHandler.findPrevCommand()
+    else:
+        self.openFindTab()
+
+.. @+node:ekr.20131117164142.16988: *4* get/set/toggleOption (minibufferFind)
+# This redirection is required to remove gui-dependencies.
+
+def getOption (self,ivar):          return self.finder.getOption(ivar)
+def setOption (self,ivar,val):      self.finder.setOption(ivar,val)
+def toggleOption (self,ivar):       self.finder.toggleOption(ivar)
+.. @+node:ekr.20131117054619.16695: *4* init (leoFind)
+if g.new_find:
+    pass
+else:
+    def init(self):
+        assert False,g.callers()
 .. @-all
 .. @-leo
