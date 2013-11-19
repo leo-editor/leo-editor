@@ -119,10 +119,9 @@
 <v t="ekr.20070604075218"><vh>@bool use_chapter_tabs = True</vh></v>
 <v t="ekr.20070318065601"><vh>@bool use_chapters = True</vh></v>
 </v>
-<v t="ekr.20041119034357.10"><vh>Commands</vh>
+<v t="ekr.20041119034357.10"><vh>Command options</vh>
 <v t="ekr.20131112150804.18737"><vh>@bool force_execute_entire_body = False</vh></v>
 <v t="ekr.20111115083813.12518"><vh>@bool indent_added_comments = True</vh></v>
-<v t="ekr.20131112161153.4420"><vh>@bool vim-mode = False</vh></v>
 <v t="ekr.20041119041019.1"><vh>@string remove_sentinels_extension = .txt</vh></v>
 <v t="ekr.20110611092035.16488"><vh>Bracket matching</vh>
 <v t="ekr.20060804095015.1"><vh>@string close_flash_brackets = )]}</vh></v>
@@ -141,17 +140,9 @@
 <v t="ekr.20041119050749.11"><vh>@string headline_gmt_time = None</vh></v>
 <v t="ekr.20041119050749.10"><vh>@string headline_time_format_string = %m/%d</vh></v>
 </v>
-<v t="ekr.20071214132254"><vh>Import options</vh>
-<v t="ekr.20101104191857.8345"><vh>@bool at_auto_separate_non_def_nodes = False</vh></v>
-<v t="ekr.20111029055127.16616"><vh>@data import_html_tags</vh></v>
-<v t="ekr.20111029055127.16614"><vh>@data import_xml_tags</vh></v>
-</v>
-<v t="ekr.20110611092035.16481"><vh>Scripting</vh>
-<v t="ekr.20041119041019"><vh>@bool redirect_execute_script_output_to_log_pane = False</vh></v>
-<v t="ekr.20061029091403"><vh>@bool show_full_tracebacks_in_scripts = False</vh></v>
-</v>
 <v t="ekr.20110611092035.16478"><vh>Tangle/Untange</vh>
 <v t="ekr.20041119034357.14"><vh>@bool at_root_bodies_start_in_doc_mode = True</vh></v>
+<v t="ekr.20041119034357.29"><vh>@directory default_tangle_directory = None</vh></v>
 </v>
 <v t="ekr.20110611092035.16477"><vh>Undo</vh>
 <v t="ekr.20060127050605"><vh>@int max_undo_stack_size = 0</vh></v>
@@ -242,20 +233,13 @@
 </v>
 </v>
 </v>
-<v t="ekr.20110611092035.16491"><vh>Directives</vh>
-<v t="ekr.20041119034357.32"><vh>@int page_width = 80</vh></v>
-<v t="ekr.20041119034357.31"><vh>@int tab_width = -4</vh></v>
-</v>
-<v t="ekr.20041119034357.11"><vh>Directories</vh>
-<v t="ekr.20041119034357.29"><vh>@directory default_tangle_directory = None</vh></v>
-<v t="ekr.20041119041304"><vh>@bool create_nonexistent_directories = False</vh></v>
-<v t="ekr.20041119041304.1"><vh>@string relative_path_base_directory = .</vh></v>
-<v t="ekr.20061210091932"><vh>@bool chdir_to_relative_path = False</vh></v>
-</v>
-<v t="ekr.20061003173413"><vh>Files</vh>
-<v t="ekr.20090514111518.8379"><vh>@bool check_python_code_on_write = True</vh></v>
-<v t="ekr.20041119034357.5"><vh>@bool read_only = False</vh></v>
+<v t="ekr.20061003173413"><vh>Files &amp; directories</vh>
 <v t="ekr.20071110153046"><vh>@bool at_auto_warns_about_leading_whitespace = True</vh></v>
+<v t="ekr.20061210091932"><vh>@bool chdir_to_relative_path = False</vh></v>
+<v t="ekr.20090514111518.8379"><vh>@bool check_python_code_on_write = True</vh></v>
+<v t="ekr.20041119041304"><vh>@bool create_nonexistent_directories = False</vh></v>
+<v t="ekr.20041119034357.5"><vh>@bool read_only = False</vh></v>
+<v t="ekr.20041119041304.1"><vh>@string relative_path_base_directory = .</vh></v>
 <v t="ekr.20041119034357.12"><vh>External files</vh>
 <v t="ekr.20070419103554"><vh>@bool force_newlines_in_at_nosent_bodies = True</vh></v>
 <v t="ekr.20041119041747.4"><vh>@bool write_strips_blank_lines = True</vh></v>
@@ -279,20 +263,14 @@
 <v t="ekr.20060730101451.5"><vh>@string shadow_subdir = .leo_shadow</vh></v>
 </v>
 </v>
-<v t="ekr.20110611092035.16480"><vh>Import commands</vh>
-<v t="ekr.20070803082435"><vh>@bool full_import_checks = True</vh></v>
-<v t="ekr.20080811105020.2"><vh>@bool suppress_import_parsing = False</vh></v>
-</v>
-<v t="ekr.20041119034357.20"><vh>Find/Change panel</vh>
+<v t="ekr.20041119034357.20"><vh>Find/replace options</vh>
+<v t="ekr.20131119143342.20107"><vh>@bool minibuffer_find_mode = False</vh></v>
 <v t="ekr.20060204124608"><vh>@bool minibufferSearchesShowFindTab = True</vh></v>
 <v t="ekr.20041120152900.2"><vh>@bool script_search = None</vh></v>
 <v t="ekr.20060125104049"><vh>@bool show_only_find_tab_options = True</vh></v>
 <v t="ekr.20041119050105.1"><vh>@string change_text = None</vh></v>
 <v t="ekr.20041119050105.2"><vh>@string find_text = None</vh></v>
-<v t="ekr.20110611092035.16476"><vh>Radio buttons in the Find panel</vh>
-<v t="ekr.20041119050105.12"><vh>@bool node_only = False</vh></v>
-<v t="ekr.20041119050105.16"><vh>@bool suboutline_only = False</vh></v>
-</v>
+<v t="ekr.20131119143342.20108"><vh>Find panel defaults</vh>
 <v t="ekr.20041119050105.3"><vh>Checkboxes in the Find panel</vh>
 <v t="ekr.20041119050105.4"><vh>@bool batch = False</vh></v>
 <v t="ekr.20041119050105.5"><vh>@bool ignore_case = True</vh></v>
@@ -306,6 +284,18 @@
 <v t="ekr.20041119050105.10"><vh>@bool whole_word = False</vh></v>
 <v t="ekr.20041119050105.11"><vh>@bool wrap = False</vh></v>
 </v>
+<v t="ekr.20110611092035.16476"><vh>Radio buttons in the Find panel</vh>
+<v t="ekr.20041119050105.12"><vh>@bool node_only = False</vh></v>
+<v t="ekr.20041119050105.16"><vh>@bool suboutline_only = False</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20110611092035.16480"><vh>Import options</vh>
+<v t="ekr.20101104191857.8345"><vh>@bool at_auto_separate_non_def_nodes = False</vh></v>
+<v t="ekr.20070803082435"><vh>@bool full_import_checks = True</vh></v>
+<v t="ekr.20080811105020.2"><vh>@bool suppress_import_parsing = False</vh></v>
+<v t="ekr.20111029055127.16616"><vh>@data import_html_tags</vh></v>
+<v t="ekr.20111029055127.16614"><vh>@data import_xml_tags</vh></v>
 </v>
 <v t="ekr.20060122105527.3"><vh>Keyboard and minibuffer options</vh>
 <v t="ekr.20120205022040.15410"><vh>@bool enable_alt_ctrl_bindings = True</vh></v>
@@ -313,6 +303,7 @@
 <v t="ekr.20060122105527.8"><vh>@bool showHelpWhenEnteringModes = False</vh></v>
 <v t="ekr.20120205022040.15411"><vh>@bool swap_mac_keys = False</vh></v>
 <v t="ekr.20060627065953"><vh>@bool trace_bind_key_exceptions = True</vh></v>
+<v t="ekr.20131112161153.4420"><vh>@bool vim-mode = False</vh></v>
 <v t="ekr.20060926161207.1"><vh>@bool warn_about_redefined_shortcuts = True</vh></v>
 <v t="ekr.20060926161207.2"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
 </v>
@@ -344,6 +335,10 @@
 <v t="ekr.20131003040744.17561"><vh>@shortcuts Plugin-related commands </vh></v>
 <v t="ekr.20060925060533.4"><vh>@shortcuts Text operations</vh></v>
 </v>
+</v>
+<v t="ekr.20110611092035.16491"><vh>Leo Directives</vh>
+<v t="ekr.20041119034357.32"><vh>@int page_width = 80</vh></v>
+<v t="ekr.20041119034357.31"><vh>@int tab_width = -4</vh></v>
 </v>
 <v t="ekr.20070925144552"><vh>Menus</vh>
 <v t="ekr.20071010123015"><vh>@@menu 文件</vh>
@@ -1144,8 +1139,7 @@
 <v t="ekr.20060904211808.1"><vh>@string zodb_storage_file = c:\prog\zopeTemp\leo.fs</vh></v>
 </v>
 </v>
-<v t="ekr.20131119143342.18879"><vh>Qt Gui</vh>
-<v t="ekr.20111024091133.16701"><vh>@@@int qt-tab-width = 40</vh></v>
+<v t="ekr.20131119143342.18879"><vh>Qt Gui (appearance)</vh>
 <v t="ekr.20131115092802.18224"><vh>@data qt-gui-plugin-style-sheet</vh></v>
 <v t="ekr.20081023060109.13"><vh>@int qt-rich-text-zoom-in = 10</vh></v>
 <v t="ekr.20100507153425.8304"><vh>@string qt-toolbar-location=top</vh></v>
@@ -1155,6 +1149,10 @@
 <v t="ekr.20081020075840.10"><vh>@int qt-scintilla-zoom-in = 6</vh></v>
 <v t="leohag.20081204085551.13"><vh>@string qt-ui-file-name = qt_main.ui</vh></v>
 </v>
+</v>
+<v t="ekr.20110611092035.16481"><vh>Scripting</vh>
+<v t="ekr.20041119041019"><vh>@bool redirect_execute_script_output_to_log_pane = False</vh></v>
+<v t="ekr.20061029091403"><vh>@bool show_full_tracebacks_in_scripts = False</vh></v>
 </v>
 <v t="ekr.20051025084017"><vh>Spell checking</vh>
 <v t="ekr.20100904095239.8440"><vh>@string enchant_language = en_US</vh></v>
@@ -1246,7 +1244,7 @@
 <v t="ekr.20041119042929.10"><vh>@string new_leo_file_encoding = utf-8</vh></v>
 <v t="ekr.20090620112052.9070"><vh>@string qt-default-encoding = UTF-8</vh></v>
 </v>
-<v t="ekr.20050203090810"><vh>Unit test</vh>
+<v t="ekr.20050203090810"><vh>Unit test option</vh>
 <v t="ekr.20050203085250"><vh>@int global_setting_for_unit_tests = 132</vh></v>
 </v>
 <v t="ekr.20110611092035.16471"><vh>Widget colors</vh>
@@ -1389,15 +1387,11 @@ vertical: body pane on the botton
 </t>
 <t tx="ekr.20041119034357.1">@language rest
 
-The @settings tree contains all active settings.
+This @settings tree contains all active settings.
 
 Settings outside this tree have no effect.
-
-**Important**: changing *clones* of nodes that exist in the @settings
-tree will change all clones, so changing clones *will* have an effect.
 </t>
 <t tx="ekr.20041119034357.10">See the "Tree Operation" node for settings that affect how the tree pane works.</t>
-<t tx="ekr.20041119034357.11"></t>
 <t tx="ekr.20041119034357.12"></t>
 <t tx="ekr.20041119034357.13">True: Leo loads plugins on startup.
 
@@ -1426,7 +1420,8 @@ This way makes @root trees more compatible with @file trees.</t>
 None  Compares all files when comparing directories.
 .py   Compares only .py files when comparing directories.</t>
 <t tx="ekr.20041119034357.19">These options have no effect when comparing directories.</t>
-<t tx="ekr.20041119034357.20"></t>
+<t tx="ekr.20041119034357.20">
+</t>
 <t tx="ekr.20041119034357.29">DEPRECATED
 
 The default directory used if no directory specified in @path, @root or @file directives.
@@ -3813,7 +3808,6 @@ rst3_show_headline_prefix =    @rst-head</t>
 <t tx="ekr.20071213062019.9"></t>
 <t tx="ekr.20071213190345"></t>
 <t tx="ekr.20071213190345.1"></t>
-<t tx="ekr.20071214132254"></t>
 <t tx="ekr.20071217093419">The body text should contain the data, one string per line.
 Comments lines starting with '#' are ignored.</t>
 <t tx="ekr.20080204124255"># For testing only.
@@ -5331,10 +5325,6 @@ node of that theme.</t>
 <t tx="ekr.20111024091133.16650"></t>
 <t tx="ekr.20111024091133.16651"></t>
 <t tx="ekr.20111024091133.16671"></t>
-<t tx="ekr.20111024091133.16701">No longer used.
-
-configure_hard_tab_width now does a good, but not great,
-job of computing what the width of a hard tab should be.</t>
 <t tx="ekr.20111026083456.16490"></t>
 <t tx="ekr.20111026083456.16491">import glob
 
@@ -5875,6 +5865,9 @@ QTextEdit:focus#log-widget, LeoQTreeWidget:focus#treeWidget, QTextEdit:focus#ric
 <t tx="ekr.20131119060731.22451"></t>
 <t tx="ekr.20131119060731.22454"></t>
 <t tx="ekr.20131119143342.18879">These customize the Qt Gui.</t>
+<t tx="ekr.20131119143342.20107">True: start-find command puts focus in minibuffer.
+False: start-find commands puts focus in Find panel.</t>
+<t tx="ekr.20131119143342.20108"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>
