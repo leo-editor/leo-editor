@@ -1953,7 +1953,7 @@ class DynamicWindow(QtGui.QMainWindow):
         self.leo_ui = None # Set in construct.
         c.font_size_delta = 0  # for adjusting font sizes dynamically
         # g.trace('(DynamicWindow)',g.listToString(dir(self),sort=True))
-    #@+node:ekr.20110605121601.18140: *4* dw.closeEvent (DynamicWindow)
+    #@+node:ekr.20110605121601.18140: *4* dw.closeEvent
     def closeEvent (self,event):
 
         trace = False and not g.unitTesting
@@ -1976,7 +1976,7 @@ class DynamicWindow(QtGui.QMainWindow):
                 event.accept()
             else:
                 event.ignore()
-    #@+node:ekr.20110605121601.18139: *4* dw.construct (DynamicWindow)
+    #@+node:ekr.20110605121601.18139: *4* dw.construct
     def construct(self,master=None):
         """ Factor 'heavy duty' code out from ctor """
 
@@ -2090,7 +2090,7 @@ class DynamicWindow(QtGui.QMainWindow):
 
         # Official ivars.
         self.centralwidget = w
-    #@+node:ekr.20110605121601.18145: *6* dw.createLogPane (DynamicWindow)
+    #@+node:ekr.20110605121601.18145: *6* dw.createLogPane & helper
     def createLogPane (self,parent):
 
         # Create widgets.
@@ -2100,32 +2100,38 @@ class DynamicWindow(QtGui.QMainWindow):
             hPolicy=QtGui.QSizePolicy.Preferred,
             vPolicy=QtGui.QSizePolicy.Expanding)
         tabWidget = self.createTabWidget(innerFrame,'logTabWidget')
-
         # Pack.
         innerGrid = self.createGrid(innerFrame,'logInnerGrid')
         innerGrid.addWidget(tabWidget, 0, 0, 1, 1)
         outerGrid = self.createGrid(logFrame,'logGrid')
         outerGrid.addWidget(innerFrame, 0, 0, 1, 1)
-
-        # 2011/10/01: Embed the Find tab in a QScrollArea.
+        # Embed the Find tab in a QScrollArea.
         findScrollArea = QtGui.QScrollArea()
         findScrollArea.setObjectName('findScrollArea')
+        # Find tab.
         findTab = QtGui.QWidget()
         findTab.setObjectName('findTab')
         tabWidget.addTab(findScrollArea,'Find')
-        self.createFindTab(findTab,findScrollArea)
-        findScrollArea.setWidget(findTab)
-
+        if 1: # Do this later, in leoFind.finishCreate
+            self.findScrollArea = findScrollArea
+            self.findTab = findTab
+        else:
+            self.createFindTab(findTab,findScrollArea)
+            findScrollArea.setWidget(findTab)
+        # Spell tab.
         spellTab = QtGui.QWidget()
         spellTab.setObjectName('spellTab')
         tabWidget.addTab(spellTab,'Spell')
         self.createSpellTab(spellTab)
-
         tabWidget.setCurrentIndex(1)
-
         # Official ivars
         self.tabWidget = tabWidget # Used by leoQtLog.
-    #@+node:ekr.20110605121601.18146: *6* dw.createMainLayout (DynamicWindow)
+    #@+node:ekr.20131118172620.16858: *7* dw.finishCreateLogPane
+    def finishCreateLogPane(self):
+        '''It's useful to create this late, because c.config is now valid.'''
+        self.createFindTab(self.findTab,self.findScrollArea)
+        self.findScrollArea.setWidget(self.findTab)
+    #@+node:ekr.20110605121601.18146: *6* dw.createMainLayout 
     def createMainLayout (self,parent):
 
         # c = self.leo_c
@@ -2150,7 +2156,7 @@ class DynamicWindow(QtGui.QMainWindow):
         self.splitter_2 = splitter2
         self.setSizePolicy(self.splitter)
         self.verticalLayout.addWidget(self.splitter_2)
-    #@+node:ekr.20110605121601.18147: *6* dw.createMenuBar (DynamicWindow)
+    #@+node:ekr.20110605121601.18147: *6* dw.createMenuBar
     def createMenuBar (self):
 
         MainWindow = self
@@ -2425,7 +2431,7 @@ class DynamicWindow(QtGui.QMainWindow):
         self.leo_spell_widget = parent # 2013/09/20: To allow bindings to be set.
         self.leo_spell_listBox = listBox # Must exist
         self.leo_spell_label = lab # Must exist (!!)
-    #@+node:ekr.20110605121601.18166: *6* dw.createFindTab
+    #@+node:ekr.20110605121601.18166: *6* dw.createFindTab & helpers
     def createFindTab (self,parent,tab_widget):
         # g.trace('***(DynamicWindow)***',g.callers())
         c,dw = self.leo_c,self
@@ -2433,6 +2439,49 @@ class DynamicWindow(QtGui.QMainWindow):
         assert not fc.findTabManager
         fc.findTabManager = ftm = FindTabManager(c)
         assert c.findCommands
+        grid = self.create_find_grid(parent)
+        row = 0 # The index for the present row.
+        row = dw.create_find_header(grid,parent,row)
+        row = dw.create_find_findbox(grid,parent,row)
+        row = dw.create_find_replacebox(grid,parent,row)
+        max_row2 = 1
+        max_row2 = dw.create_find_checkboxes(grid,parent,max_row2,row)
+        row = dw.create_find_buttons(grid,parent,max_row2,row)
+        row = dw.create_help_row(grid,parent,row)
+        dw.override_events()
+        # Last row: Widgets that take all additional vertical space.
+        w = QtGui.QWidget()
+        grid.addWidget(w,row,0)
+        grid.addWidget(w,row,1)
+        grid.addWidget(w,row,2)
+        grid.setRowStretch(row,100)
+        # Official ivars (in addition to checkbox ivars).
+        self.leo_find_widget = tab_widget # A scrollArea.
+        ftm.init_widgets()
+    #@+node:ekr.20131118172620.16876: *7* class ButtonEventFilter (not used)
+    class ButtonEventFilter(QtCore.QObject):
+        
+        def __init__(self,c,w):
+            # g.trace('ButtonEventFilter',tag,w)
+            QtCore.QObject.__init__(self) # Init the base class.
+            self.c = c
+            self.w = w
+
+        #@+others
+        #@+node:ekr.20131118172620.16879: *8* eventFilter (ButtonEventFilter)
+        def eventFilter(self,obj,event):
+
+            ev = QtCore.QEvent
+            eType = event.type()
+            print(event)
+            if eType in (ev.KeyPress,ev.KeyRelease):
+                print('key',obj)
+            return True
+
+                
+        #@-others
+    #@+node:ekr.20131118152731.16847: *7* dw.create_find_grid
+    def create_find_grid(self,parent):
         grid = self.createGrid(parent,'findGrid',margin=10,spacing=10)
         grid.setColumnStretch(0,100)
         grid.setColumnStretch(1,100)
@@ -2440,32 +2489,50 @@ class DynamicWindow(QtGui.QMainWindow):
         grid.setColumnMinimumWidth(1,75)
         grid.setColumnMinimumWidth(2,175)
         grid.setColumnMinimumWidth(3,50)
-        # Aliases for column numbers
-        col_0,col_1,col_2 = 0,1,2
-        span_1,span_2,span_3 = 1,2,3
-        row = 0 # The row index for the present row.
-        # The heading row.
+        return grid
+    #@+node:ekr.20131118152731.16849: *7* dw.create_find_header
+    def create_find_header(self,grid,parent,row):
         if False:
-            lab1 = self.createLabel(parent,'findHeading','Find/Change Settings...')
-            grid.addWidget(lab1,row,col_0,span_1,span_2,QtCore.Qt.AlignLeft) # AlignHCenter
+            dw = self
+            lab1 = dw.createLabel(parent,'findHeading','Find/Change Settings...')
+            grid.addWidget(lab1,row,0,1,2,QtCore.Qt.AlignLeft)
+                # AlignHCenter
             row += 1
-        # The find row.
-        w = self.createLineEdit(parent,'findPattern',disabled=fc.expert_mode)
+        return row
+    #@+node:ekr.20131118152731.16848: *7* dw.create_find_findbox
+    def create_find_findbox(self,grid,parent,row):
+        '''Create the Find: label and text area.'''
+        c,dw = self.leo_c,self
+        fc = c.findCommands
+        ftm = fc.findTabManager
+        dw.find_findbox = w = dw.createLineEdit(parent,'findPattern',disabled=fc.expert_mode)
         assert ftm.find_ctrl is None
         ftm.find_ctrl = w
         lab2 = self.createLabel(parent,'findLabel','Find:')
-        grid.addWidget(lab2,row,col_0)
-        grid.addWidget(w,row,col_1,span_1,span_2)
+        grid.addWidget(lab2,row,0)
+        grid.addWidget(w,row,1,1,2)
         row += 1
-        # The change row.
-        w = self.createLineEdit(parent,'findChange',disabled=fc.expert_mode)
+        return row
+    #@+node:ekr.20131118152731.16850: *7* dw.create_find_replacebox
+    def create_find_replacebox(self,grid,parent,row):
+        '''Create the Replace: label and text area.'''
+        c,dw = self.leo_c,self
+        fc = c.findCommands
+        ftm = fc.findTabManager
+        dw.find_replacebox = w = dw.createLineEdit(parent,'findChange',disabled=fc.expert_mode)
         assert ftm.change_ctrl is None
         ftm.change_ctrl = w
-        lab3 = self.createLabel(parent,'changeLabel','Replace:') # Leo 4.11.1.
-        grid.addWidget(lab3,row,col_0)
-        grid.addWidget(w,row,col_1,span_1,span_2)
+        lab3 = dw.createLabel(parent,'changeLabel','Replace:') # Leo 4.11.1.
+        grid.addWidget(lab3,row,0)
+        grid.addWidget(w,row,1,1,2)
         row += 1
-        # Check boxes and radio buttons.
+        return row
+    #@+node:ekr.20131118152731.16851: *7* dw.create_find_checkboxes
+    def create_find_checkboxes(self,grid,parent,max_row2,row):
+        '''Create check boxes and radio buttons.'''
+        c,dw = self.leo_c,self
+        fc = c.findCommands
+        ftm = fc.findTabManager
         def mungeName(kind,label):
             # The returned value is the namve of an ivar.
             kind = 'checkBox' if kind == 'box' else 'radioButton'
@@ -2473,8 +2540,8 @@ class DynamicWindow(QtGui.QMainWindow):
             return '%s%s' % (kind,name)
         # Rows for check boxes, radio buttons & execution buttons...
         d = {
-            'box': self.createCheckBox,
-            'rb':  self.createRadioButton,
+            'box': dw.createCheckBox,
+            'rb':  dw.createRadioButton,
         }
         table = (
             # First row.
@@ -2496,7 +2563,6 @@ class DynamicWindow(QtGui.QMainWindow):
             ('box', 'Mark &Changes',    5,0),
             # a,b,c,e,f,h,i,n,rs,w
         )
-        max_row2 = 1
         for kind,label,row2,col in table:
             max_row2 = max(max_row2,row2)
             name = mungeName(kind,label)
@@ -2507,44 +2573,161 @@ class DynamicWindow(QtGui.QMainWindow):
             # The the checkbox ivars in dw and ftm classes.
             assert getattr(ftm,name) is None
             setattr(ftm,name,w)
+        return max_row2
+        
+    #@+node:ekr.20131118152731.16852: *7* dw.create_find_buttons
+    def create_find_buttons(self,grid,parent,max_row2,row):
+        c,dw = self.leo_c,self
+        k = c.k
+        def mungeName(label):
+            kind = 'push-button'
+            name = label.replace(' ','').replace('&','')
+            return '%s%s' % (kind,name)
         # Create Buttons in column 2 (Leo 4.11.1.)
         table = (
-            (0,2,'findNextCommand','Find Next'),
-            (1,2,'findPrevCommand','Find Previous'),
-            (2,2,'findAll','Find All'),
-            (3,2,'changeCommand', 'Replace'),
-            (4,2,'changeThenFind','Replace Then Find'),
-            (5,2,'changeAll','Replace All'),  # weird.  Doesn't call callback!
+            (0,2,'findNextCommand','Find Next','find-next'),
+            (1,2,'findPrevCommand','Find Previous','find-prev'),
+            (2,2,'findAll','Find All','find-all'),
+            (3,2,'changeCommand', 'Replace','replace'),
+            (4,2,'changeThenFind','Replace Then Find','replace-then-find'),
+            (5,2,'changeAll','Replace All','replace-all'),
         )
         # findTabHandler does not exist yet.
-        for row2,col,func_name,label in table:
+        for row2,col,func_name,label,cmd_name in table:
             def find_tab_button_callback(c=c,func_name=func_name):
                 # h will exist when the Find Tab is open.
                 fc = c.findCommands
                 func = getattr(fc,func_name,None)
                 if func: func()
                 else: g.trace('* does not exist:',func_name)
-            w = self.createButton(parent,name,label)
+            name = mungeName(label)
+            # Prepend the shortcut if it exists:
+            if 0: # The shortcuts don't work in the minibuffer, so they are confusing.
+                s = k.getShortcutForCommandName(cmd_name)
+                if s: label = '%s (%s)' % (label,k.prettyPrintKey(s))
+            if 1: # Not bad.
+                w = dw.createButton(parent,name,label)
+                grid.addWidget(w,row+row2,col)
+            else:
+                # grid.addLayout(layout,row+row2,col)
+                # layout = dw.createHLayout(frame,name='button_layout',margin=0,spacing=0)
+                # frame.setLayout(layout)
+                frame = dw.createFrame(parent,name='button:%s' % label)
+                w = dw.createButton(frame,name,label)
+                grid.addWidget(frame,row+row2,col)
             # Connect the button with the command.
             QtCore.QObject.connect(w,QtCore.SIGNAL("clicked()"),
                 find_tab_button_callback)
-            grid.addWidget(w,row+row2,col)
+            # Set the ivar.
+            ivar = '%s-%s' % (cmd_name,'button')
+            ivar = ivar.replace('-','_')
+            setattr(dw,ivar,w)
         row += max_row2
         row += 1
+        return row
+    #@+node:ekr.20131118152731.16853: *7* dw.create_help_row
+    def create_help_row(self,grid,parent,row):
         # Help row.
         if False:
-            w = self.createLabel(parent,'findHelp','For help: <alt-x>help-for-find-commands<return>')
-            grid.addWidget(w,row,col_0,span_1,span_3)
+            w = self.createLabel(parent,
+                'findHelp','For help: <alt-x>help-for-find-commands<return>')
+            grid.addWidget(w,row,0,1,3)
             row += 1
-        # Last row: Widgets that take all additional vertical space.
-        w = QtGui.QWidget()
-        grid.addWidget(w,row,col_0)
-        grid.addWidget(w,row,col_1)
-        grid.addWidget(w,row,col_2)
-        grid.setRowStretch(row,100)
-        # Official ivars (in addition to checkbox ivars).
-        self.leo_find_widget = tab_widget # A scrollArea.
-        ftm.init_widgets()
+        return row
+    #@+node:ekr.20131118172620.16891: *7* dw.override_events
+    def override_events(self):
+        
+        c,dw = self.leo_c,self
+        fc = c.findCommands
+        ftm = fc.findTabManager
+        # Define class EventWrapper.
+        #@+others
+        #@+node:ekr.20131118172620.16892: *8* class EventWrapper
+        class EventWrapper:
+            def __init__(self,w,next_w,func):
+                self.w = w
+                self.next_w = next_w
+                self.func = func
+                self.oldEvent = w.event
+                w.event = self.wrapper
+            #@+others
+            #@+node:ekr.20131118172620.16893: *9* wrapper
+            def wrapper(self,event):
+                
+                trace = False
+                e = QtCore.QEvent
+                type_ = event.type()
+                # Must intercept KeyPress for events that generate FocusOut!
+                if type_ == e.KeyPress:
+                    return self.keyPress(event)
+                elif type_ == e.KeyRelease:
+                    return self.keyRelease(event)
+                elif trace and  type_ not in (12,170):
+                    # (5,10,11,12,110,127,128,129,170):
+                    # http://qt-project.org/doc/qt-4.8/qevent.html#Type-enum
+                    g.trace(type_)
+                return self.oldEvent(event)
+            #@+node:ekr.20131118172620.16894: *9* keyPress
+            def keyPress(self,event):
+                
+                trace = False
+                s = g.u(event.text())
+                if 0: # This doesn't work.
+                    eat = isinstance(self.w,(QtGui.QCheckBox,QtGui.QRadioButton))
+                    g.trace('eat',eat,w)
+                    if eat and s in ('\n','\r'):
+                        return True
+                out = s in ('\t','\r','\n')
+                if trace: g.trace(out,repr(s))
+                if out:
+                    # Move focus to next widget.
+                    if s == '\t':
+                        if self.next_w:
+                            if trace: g.trace('tab widget',self.next_w)
+                            self.next_w.setFocus(QtCore.Qt.TabFocusReason)
+                        else:
+                            # Do the normal processing.
+                            return self.oldEvent(event)
+                    elif self.func:
+                        if trace: g.trace('return func',self.func.__name__)
+                        self.func()
+                    return True
+                else:
+                    # Do the normal processing.
+                    return self.oldEvent(event)
+            #@+node:ekr.20131118172620.16895: *9* keyRelease
+            def keyRelease(self,event):
+                
+                s = g.u(event.text())
+                # g.trace('key-release',s)
+                return self.oldEvent(event)
+            #@-others
+            
+        #@-others
+        EventWrapper(w=dw.find_findbox,next_w=dw.find_replacebox,func=fc.findNextCommand)
+        EventWrapper(w=dw.find_replacebox,next_w=self.find_next_button,func=fc.findNextCommand)
+        table = (
+            ('findNextCommand','find-next'),
+            ('findPrevCommand','find-prev'),
+            ('findAll','find-all'),
+            ('changeCommand','replace'),
+            ('changeThenFind','replace-then-find'),
+            ('changeAll','replace-all'),
+        )
+        for func_name,cmd_name in table:
+            ivar = '%s-%s' % (cmd_name,'button')
+            ivar = ivar.replace('-','_')
+            w = getattr(dw,ivar,None)
+            func = getattr(fc,func_name,None)
+            if w and func:
+                # g.trace(cmd_name,ivar,bool(w),func and func.__name__)
+                # next_w = dw.find_findbox if cmd_name == 'replace-all' else None
+                next_w = ftm.checkBoxWholeWord if cmd_name == 'replace-all' else None
+                EventWrapper(w=w,next_w=next_w,func=func)
+            else:
+                g.trace('**oops**')
+        # Finally, checkBoxMarkChanges goes back to dw.find_findBox.
+        EventWrapper(w=ftm.checkBoxMarkChanges,next_w=self.find_findbox,func=None)
     #@+node:ekr.20110605121601.18168: *5* dw.utils
     #@+node:ekr.20110605121601.18169: *6* dw.setName
     def setName (self,widget,name):
@@ -2793,8 +2976,10 @@ class FindTabManager:
         )
         for ivar,setting_name,default in table:
             s = c.config.getString(setting_name) or default
+            s = g.u(s)
             w = getattr(self,ivar)
-            w.insert(g.u(s))
+            w.insert(s)
+            w.setSelection(0,len(s))
         # Check boxes.
         table = (
             ('ignore_case',     self.checkBoxIgnoreCase),
@@ -8430,9 +8615,6 @@ class leoQtGui(leoGui.leoGui):
             obj.installEventFilter(theFilter)
             w.ev_filter = theFilter
                 # Set the official ivar in w.
-
-
-
     #@-others
 #@+node:ekr.20110605121601.18533: ** Non-essential
 #@+node:ekr.20110605121601.18534: *3* quickheadlines

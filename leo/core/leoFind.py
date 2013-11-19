@@ -215,7 +215,10 @@ class leoFind:
         s = k.strokeFromSetting(s)
         self.replaceStringShortcut = s
         self.expert_mode = c.config.getBool('expert-mode',default=False)
-        ### Create Find tab here ???
+        # now that configuration settings are valid,
+        # we can finish creating the Find pane.
+        dw = c.frame.top
+        if dw: dw.finishCreateLogPane()
     #@+node:ekr.20060123065756.1: *3* leoFind.Buttons (immediate execution)
     #@+node:ekr.20031218072017.3057: *4* changeAllButton
     def changeAllButton(self,event=None):
@@ -874,10 +877,6 @@ class leoFind:
             
     # Compatibility, especially for settings.
     setSearchString = searchWithPresentOptions
-    #@+node:ekr.20131117164142.17006: *4* find.setupArgs (**replace by showFindOptions)
-    def setupArgs (self,forward=False,regexp=False,word=False):
-        
-        self.showFindOptions()
     #@+node:ekr.20131117164142.17007: *4* find.stateZeroHelper
     def stateZeroHelper (self,event,tag,prefix,handler,escapes=None):
 
@@ -1211,7 +1210,8 @@ class leoFind:
     def findAll(self):
         trace = False and not g.unitTesting
         c = self.c ; w = self.s_ctrl ; u = c.undoer
-        undoType = 'Clone Find All Flattened' if self.clone_find_all_flattened else 'Clone Find All'
+        undoType = ('Clone Find All Flattened'
+            if self.clone_find_all_flattened else 'Clone Find All')
         if not self.checkArgs():
             return
         self.initInHeadline()
@@ -1225,7 +1225,7 @@ class leoFind:
         if trace: g.trace(self.clone_find_all_flattened,self.p and self.p.h)
         while 1:
             pos, newpos = self.findNextMatch() # sets self.p.
-            assert self.p
+            if not self.p: self.p = c.p.copy()
             if pos is None: break
             if self.clone_find_all and self.p.v in skip:
                 continue
@@ -1653,6 +1653,13 @@ class leoFind:
             self.in_headline = self.search_headline
             self.initNextText()
         return p
+    #@+node:ekr.20131117164142.17006: *4* find.setupArgs
+    def setupArgs (self,forward=False,regexp=False,word=False):
+        
+        if forward is not None: self.reverse = not forward
+        if regexp  is not None: self.patern_match = True
+        if word    is not None: self.whole_word = True
+        self.showFindOptions()
     #@+node:ekr.20031218072017.3082: *3* leoFind.Initing & finalizing
     #@+node:ekr.20031218072017.3083: *4* find.checkArgs
     def checkArgs (self):
