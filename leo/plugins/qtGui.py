@@ -2436,8 +2436,8 @@ class DynamicWindow(QtGui.QMainWindow):
         # g.trace('***(DynamicWindow)***',g.callers())
         c,dw = self.leo_c,self
         fc = c.findCommands
-        assert not fc.findTabManager
-        fc.findTabManager = ftm = FindTabManager(c)
+        assert not fc.ftm
+        fc.ftm = ftm = FindTabManager(c)
         assert c.findCommands
         grid = self.create_find_grid(parent)
         row = 0 # The index for the present row.
@@ -2504,7 +2504,7 @@ class DynamicWindow(QtGui.QMainWindow):
         '''Create the Find: label and text area.'''
         c,dw = self.leo_c,self
         fc = c.findCommands
-        ftm = fc.findTabManager
+        ftm = fc.ftm
         dw.find_findbox = w = dw.createLineEdit(parent,'findPattern',disabled=fc.expert_mode)
         assert ftm.find_ctrl is None
         ftm.find_ctrl = w
@@ -2518,7 +2518,7 @@ class DynamicWindow(QtGui.QMainWindow):
         '''Create the Replace: label and text area.'''
         c,dw = self.leo_c,self
         fc = c.findCommands
-        ftm = fc.findTabManager
+        ftm = fc.ftm
         dw.find_replacebox = w = dw.createLineEdit(parent,'findChange',disabled=fc.expert_mode)
         assert ftm.change_ctrl is None
         ftm.change_ctrl = w
@@ -2532,7 +2532,7 @@ class DynamicWindow(QtGui.QMainWindow):
         '''Create check boxes and radio buttons.'''
         c,dw = self.leo_c,self
         fc = c.findCommands
-        ftm = fc.findTabManager
+        ftm = fc.ftm
         def mungeName(kind,label):
             # The returned value is the namve of an ivar.
             kind = 'checkBox' if kind == 'box' else 'radioButton'
@@ -2639,7 +2639,7 @@ class DynamicWindow(QtGui.QMainWindow):
         
         c,dw = self.leo_c,self
         fc = c.findCommands
-        ftm = fc.findTabManager
+        ftm = fc.ftm
         # Define class EventWrapper.
         #@+others
         #@+node:ekr.20131118172620.16892: *8* class EventWrapper
@@ -2961,6 +2961,10 @@ class FindTabManager:
 
     def update_ivars(self):
         g.trace(g.callers())
+    #@+node:ekr.20131119060731.22455: *4* ftm.init_focus
+    def init_focus(self):
+        
+        self.find_ctrl.setFocus()
     #@+node:ekr.20131117120458.16789: *4* ftm.init_widgets
     def init_widgets(self):
         '''

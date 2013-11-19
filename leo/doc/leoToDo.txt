@@ -12,6 +12,8 @@
 
 - Replace all should always start at present node.
 
+- command or button to open #leo session.
+
 - Does Leo allow comments after @data setting-name?
 
 - Do all common vim commands:
@@ -22,14 +24,45 @@
 * Gallery of screen shots: different font sizes, coloring schemes, plugins, etc.
 
 * Create github repo (call Speed).
-.. @+node:ekr.20131117054619.16683: *3* new_find project
+.. @+node:ekr.20131119060731.20105: *3* Today
+@language rest
+
+1. Simply find commands:
+    - fc.minibuffer_mode replaces fc.expert_mode.
+    - start-find command
+    - Tab easter egg.
+    - Where to bind Ctrl-F ??  open-find-tab?  start-find?
+
+2. (Wait for Terry's comments) Create leo/config/exampleSettings.leo
+    - No clones.
+    - No disabled nodes.
+    - No scripts.
+    - (Maybe) helpful @button nodes.
+    - Comments in Startup node.
+    - Comments in About this file node.
+        Exception: @button nodes creating buttons useful for newbies.
+        
+3. Complete key binding in Find tab:
+    - Bind important shortcuts (including F2, return, etc.)
+    - Add shortcuts to button names.
+    
+4. open-irc-leo: g.openUrl(p)' on a node containing
+    
+import webbrowser
+webbrowser.open("http://webchat.freenode.net/?channels=%23leo&uio=d4")
+
+.. @+node:ekr.20131117054619.16683: *3* To do: new_find
 @language rest
 
 **** Put links to screencasts on Leo's home page.
 
 1. Get the newbies gui working.
+- Run check-settings script.
 - Create a newbie Start Search command that puts focus in the dw.find_findbox.
 - Honor Ctrl-G, F2, F3, Ctrl-- & Ctrl-+ from any widget in the find pane.
+- Create help button in the Find pane.
+- dw code should set ftm ivars, not dw ivars.
+- find.openFindTab should put focus in the findbox.
 
 2. Improve the minibuffer find command:
 ** Tab (instead of Shift-Ctrl-R) is hard-bound to get the replacement text!!
@@ -42,7 +75,8 @@
 To do:
 - Get rid of clones in leoSettings.leo!
 - Get rid of extra @data qt-gui nodes!
-- Search menu conflicts with Alt-s.  Quick search mode??
+- Search menu conflicts with Alt-s.
+- Use vim as a template for quick search mode?
 
 Later:
 * Don't use leoFind as baseclass for spelling class!
@@ -73,6 +107,9 @@ Changed methods:
 - dw.createFindTab creates the FindTabManager and calls ftm.init_widgets.
 * Added find_generation ivar to vnode class.
 .. @+node:ekr.20131116212505.16665: *3* Screencasts
+** Send note to Dave Winer when they are ready.
+** Announcements to comp.lang.python & SourceForge when they are ready.
+
 Links to screencasts on Leo's home page.
     Download to YouTube.
     Download to leoeditor.com? (Ask Speed first).
@@ -102,7 +139,6 @@ Scripting:
     ** @button
     @test
     c, g, p: commanders, generators, p.b, p.h etc.
-   
 .. @+node:ekr.20131117043223.16676: *4* Using Leo *is* easy
 ​Well, I don't think the Leo Aha is all that hard to get, despite perhaps
 being a bit difficult to describe. Of course, my opinion is not quite
@@ -162,7 +198,7 @@ What I did:
 - leoQtLog.__init__ now calls tw.setMovable(True).
   This allows Log pane tabs to be rearranged.
   
-- Changed dw.createTabWidget.  The changes have as yet no effect:
+- Changed dw.createTabWidget. The changes have as yet no effect:
 
     def createTabWidget (self,parent,name,hPolicy=None,vPolicy=None):
     
@@ -173,6 +209,40 @@ What I did:
         self.setSizePolicy(w,kind1=hPolicy,kind2=vPolicy)
         self.setName(w,name)
         return w
+.. @+node:ekr.20131119060731.20106: *3* Use vim-like bindings to move the cursor?
+@language rest
+
+After all these years of preaching about not using the mouse, I still use
+the mouse when I get impatient. Indeed, it seems unbearably slow to select
+text without the mouse.
+
+I actually never use Alt-S because it never does quite what I want. But
+it's close!
+
+What I want is a *really easy* way of making plain keys move the cursor
+and/or select text.
+
+Naturally, Vim bindings come to mind. There are several possibilities:
+
+1. Just use vim-mode when it becomes available. Some may think it's the
+   best way. But perhaps we don't have to go whole hog.
+
+2. Create a vim-like minibuffer handler that makes it easy to move the
+   cursor, extending text, or not, in an *easily* switchable way.
+
+3. Something else :-)
+.. @+node:ekr.20131119060731.20107: *3* Put @button nodes in the template myLeoSettings.leo
+We could use @button nodes to munge settings. Naturally, this should be
+done in myLeoSettings.leo.
+
+This meshes well with the wishlist bug of creating myLeoSettings.leo
+automatically if it does not exist.
+
+This default myLeoSettings.leo file would be a copy of a template file in
+leo/config.
+
+This template file could have all the @button nodes we could want. It's an
+easy, flexible plan.
 .. @+node:ekr.20131105020211.18058: ** Important
 .. @+node:ekr.20131101080215.16488: *3* * Outreach to magazine editors
 ===== Steve Litt
@@ -4541,8 +4611,8 @@ def createFindTab (self,parent,tab_widget):
     # g.trace('***(DynamicWindow)***',g.callers())
     c,dw = self.leo_c,self
     fc = c.findCommands
-    assert not fc.findTabManager
-    fc.findTabManager = ftm = FindTabManager(c)
+    assert not fc.ftm
+    fc.ftm = ftm = FindTabManager(c)
     assert c.findCommands
     grid = self.create_find_grid(parent)
     row = 0 # The index for the present row.
@@ -4608,7 +4678,7 @@ def create_find_findbox(self,grid,parent,row):
     '''Create the Find: label and text area.'''
     c,dw = self.leo_c,self
     fc = c.findCommands
-    ftm = fc.findTabManager
+    ftm = fc.ftm
     dw.find_findbox = w = dw.createLineEdit(parent,'findPattern',disabled=fc.expert_mode)
     assert ftm.find_ctrl is None
     ftm.find_ctrl = w
@@ -4622,7 +4692,7 @@ def create_find_replacebox(self,grid,parent,row):
     '''Create the Replace: label and text area.'''
     c,dw = self.leo_c,self
     fc = c.findCommands
-    ftm = fc.findTabManager
+    ftm = fc.ftm
     dw.find_replacebox = w = dw.createLineEdit(parent,'findChange',disabled=fc.expert_mode)
     assert ftm.change_ctrl is None
     ftm.change_ctrl = w
@@ -4636,7 +4706,7 @@ def create_find_checkboxes(self,grid,parent,max_row2,row):
     '''Create check boxes and radio buttons.'''
     c,dw = self.leo_c,self
     fc = c.findCommands
-    ftm = fc.findTabManager
+    ftm = fc.ftm
     def mungeName(kind,label):
         # The returned value is the namve of an ivar.
         kind = 'checkBox' if kind == 'box' else 'radioButton'
@@ -4743,7 +4813,7 @@ def override_events(self):
     
     c,dw = self.leo_c,self
     fc = c.findCommands
-    ftm = fc.findTabManager
+    ftm = fc.ftm
     # Define class EventWrapper.
     @others
     EventWrapper(w=dw.find_findbox,next_w=dw.find_replacebox,func=fc.findNextCommand)

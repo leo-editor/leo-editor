@@ -9706,6 +9706,7 @@ class searchCommandsClass (baseEditCommandsClass):
         'set-find-node-only':             find.setFindScopeNodeOnly,
         'set-find-suboutline-only':       find.setFindScopeSuboutlineOnly,
         'show-find-options':              find.showFindOptions,
+        'start-search':                   find.startSearch, # 4.11.1.
         'toggle-find-collapses-nodes':    find.toggleFindCollapesNodes,
         'toggle-find-ignore-case-option': find.toggleIgnoreCaseOption,
         'toggle-find-in-body-option':     find.toggleSearchBodyOption,

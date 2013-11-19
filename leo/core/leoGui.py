@@ -17,7 +17,7 @@ Plugins may define their own gui classes by setting g.app.gui."""
 #@+<< imports >>
 #@+node:ekr.20120219194520.10466: ** << imports >> (leoGui.py)
 import leo.core.leoGlobals as g
-import leo.core.leoFind as leoFind # for nullFindTab.
+# import leo.core.leoFind as leoFind # for nullFindTab.
 import leo.core.leoFrame as leoFrame # for nullGui and stringTextWidget.
 #@-<< imports >>
 

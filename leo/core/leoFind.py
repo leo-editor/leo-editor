@@ -143,7 +143,7 @@ class leoFind:
         self.clone_find_all = None
         self.errors = 0
         self.expert_mode = False # set in finishCreate.
-        self.findTabManager = None
+        self.ftm = None
             # Created by dw.createFindTab.
         self.frame = None
         self.k = k = c.k
@@ -214,7 +214,7 @@ class leoFind:
         s = k.prettyPrintKey(s)
         s = k.strokeFromSetting(s)
         self.replaceStringShortcut = s
-        self.expert_mode = c.config.getBool('expert-mode',default=False)
+        self.minibuffer_mode = c.config.getBool('minibuffer-find-mode',default=False)
         # now that configuration settings are valid,
         # we can finish creating the Find pane.
         dw = c.frame.top
@@ -304,7 +304,7 @@ class leoFind:
     def openFindTab (self,event=None,show=True):
         '''Open the Find tab in the log pane.'''
         self.c.frame.log.selectTab('Find')
-    #@+node:ekr.20131117164142.17016: *4* find.changeAllCommand (NEW)
+    #@+node:ekr.20131117164142.17016: *4* find.changeAllCommand (4.11.1)
     def changeAllCommand(self,event=None):
         
         self.setup_command()
@@ -317,6 +317,14 @@ class leoFind:
         if 0: # We _must_ retain the editing status for incremental searches!
             self.c.endEditing()
         self.update_ivars()
+    #@+node:ekr.20131119060731.22452: *4* find.startSearch (4.11.1)
+    def startSearch(self,event):
+        
+        if self.minibuffer_mode:
+            self.searchWithPresentOptions(event)
+        else:
+            self.openFindTab(event)
+            self.ftm.init_focus()
     #@+node:ekr.20131117164142.16939: *3* leoFind.ISearch
     #@+node:ekr.20131117164142.16941: *4* find.isearchForward
     def isearchForward (self,event):
@@ -685,7 +693,7 @@ class leoFind:
     def addChangeStringToLabel (self,protect=True):
 
         c = self.c
-        ftm = c.findCommands.findTabManager
+        ftm = c.findCommands.ftm
         s = ftm.getChangeText()
         c.frame.log.selectTab('Find')
         c.minibufferWantsFocus()
@@ -696,7 +704,7 @@ class leoFind:
     def addFindStringToLabel (self,protect=True):
 
         c = self.c ; k = c.k
-        ftm = c.findCommands.findTabManager
+        ftm = c.findCommands.ftm
         s = ftm.getFindText()
         c.frame.log.selectTab('Find')
         c.minibufferWantsFocus()
@@ -851,7 +859,7 @@ class leoFind:
             self.updateChangeList(k.arg)
             self.lastStateHelper()
             self.generalChangeHelper(self._sString,k.arg)
-    #@+node:ekr.20131117164142.17005: *4* find.setSearchString (searchWithPresentOptions)
+    #@+node:ekr.20131117164142.17005: *4* find.searchWithPresentOptions
     def searchWithPresentOptions (self,event):
         '''Open the search pane and get the search string.'''
         trace = False and not g.unitTesting
@@ -861,7 +869,7 @@ class leoFind:
         if state == 0:
             self.setupArgs(forward=None,regexp=None,word=None)
             self.stateZeroHelper(
-                event,tag,'Search: ',self.setSearchString,
+                event,tag,'Search: ',self.searchWithPresentOptions,
                 escapes=[self.replaceStringShortcut])
         elif k.getArgEscape:
             # Switch to the replace command.
@@ -874,9 +882,7 @@ class leoFind:
             k.resetLabel()
             k.showStateAndMode()
             self.generalSearchHelper(k.arg)
-            
-    # Compatibility, especially for settings.
-    setSearchString = searchWithPresentOptions
+        
     #@+node:ekr.20131117164142.17007: *4* find.stateZeroHelper
     def stateZeroHelper (self,event,tag,prefix,handler,escapes=None):
 
@@ -958,7 +964,7 @@ class leoFind:
         '''Toggle the 'Wrap Around' checkbox in the Find tab.'''
         return self.toggleOption('wrap')
     def toggleOption(self,checkbox_name):
-        self.findTabManager.toggle_checkbox(checkbox_name)
+        self.ftm.toggle_checkbox(checkbox_name)
     #@+node:ekr.20131117164142.17019: *4* setFindScope...
     def setFindScopeEveryWhere (self,event=None):
         '''Set the 'Entire Outline' radio button in the Find tab.'''
@@ -971,7 +977,7 @@ class leoFind:
         return self.setFindScope('suboutline-only')
     def setFindScope(self,where):
         '''Set the radio buttons to the given scope'''
-        self.findTabManager.set_radio_button(where)
+        self.ftm.set_radio_button(where)
     #@+node:ekr.20131117164142.16989: *4* showFindOptions
     def showFindOptions (self,event=None):
         '''Show the present find options in the status line.'''
@@ -1020,14 +1026,12 @@ class leoFind:
         frame.putStatusLine(' '.join(z))
     #@+node:ekr.20131117164142.16990: *4* setupChangePattern
     def setupChangePattern (self,pattern):
-        
-        ftm = self.c.findCommands.findTabManager
-        ftm.setChangeText(pattern)
+
+        self.ftm.setChangeText(pattern)
     #@+node:ekr.20131117164142.16991: *4* setupSearchPattern
     def setupSearchPattern (self,pattern):
 
-        ftm = self.c.findCommands.findTabManager
-        ftm.setFindText(pattern)
+        self.ftm.setFindText(pattern)
     #@+node:ekr.20031218072017.3067: *3* leoFind.Utils
     #@+node:ekr.20031218072017.2293: *4* find.batchChange (sets start of replace-all group)
     #@+at This routine performs a single batch change operation, updating the
@@ -1668,7 +1672,7 @@ class leoFind:
         if not self.search_headline and not self.search_body:
             g.es("not searching headline or body")
             val = False
-        s = self.c.findCommands.findTabManager.getFindText()
+        s = self.ftm.getFindText()
         if len(s) == 0:
             g.es("empty find patttern")
             val = False
@@ -1882,7 +1886,7 @@ class leoFind:
         trace = False and not g.unitTesting
         c = self.c
         self.p = c.p.copy()
-        ftm = self.findTabManager    
+        ftm = self.ftm    
         # The caller is responsible for removing most trailing cruft.
         # Among other things, this allows Leo to search for a single trailing space.
         s = ftm.getFindText()

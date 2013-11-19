@@ -126,7 +126,7 @@ def getRecentCoreList():
         'leoFind',
         # 'leoFrame',
         # 'leoGlobals',
-        # 'leoGui',
+        'leoGui',
         # 'leoImport',
         # 'leoIPython',
         # 'leoKeys',
