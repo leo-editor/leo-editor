@@ -4,7 +4,7 @@
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.50" body_secondary_ratio="0.59">
-	<global_window_position top="110" left="501" height="846" width="1022"/>
+	<global_window_position top="79" left="594" height="846" width="1182"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -2077,7 +2077,6 @@ import leo.core.leoTest as leoTest
 
 # u = leoTest.testUtils(c)
 parser = leoConfig.SettingsTreeParser(c)
-
 # Add these as required to handle commands defined by plugins.
 optionalCommandPrefixes = ['group-operations']
 optionalCommandNames = [
@@ -2098,9 +2097,7 @@ shortcutsDict = {}
 main()
 </t>
 <t tx="ekr.20060112104119">def defineSetNames():
-
     global setNames
-
     if 1:
         setNames = []
         for p in c.allNodes_iter():
@@ -2137,7 +2134,6 @@ main()
 <t tx="ekr.20060112104333.1">def checkSets():
 
     global setNames, optionalCommandPrefixes, optionalCommandNames
-
     # Compute the union of all the command names.
     allNames = {}
     for setName in setNames:
@@ -2152,16 +2148,17 @@ main()
     # Warn about missing names.
     for setName in ('No bindings',): # setNames:
         d = setsDict.get(setName)
-        if not d:
-            g.es_print("'@keys No bindings' not found",color='red')
-        for key in keys:
-            if key not in ('none','None',None) and key not in d.keys():
-                # Don't warn about missing 'enter-xxx-mode' commands.
-                if (
-                    not (key.startswith('enter-') and key.endswith('-mode')) and
-                    not (key.startswith('press-') and key.endswith('-button'))
-                ):
-                    g.es_print('%s is missing %-35s = None' % (setName,repr(key)))
+        if d:
+            for key in keys:
+                if key not in ('none','None',None) and key not in d.keys():
+                    # Don't warn about missing 'enter-xxx-mode' commands.
+                    if (
+                        not (key.startswith('enter-') and key.endswith('-mode')) and
+                        not (key.startswith('press-') and key.endswith('-button'))
+                    ):
+                        g.es_print('%s is missing %-35s = None' % (setName,repr(key)))
+        else:
+            g.es_print("'@keys No bindings' not found",color='blue')
     # Warn about undefined commands.
     for key in keys:
         if not c.commandsDict.get(key):
@@ -4869,20 +4866,16 @@ Controller(c).run()</t>
         for kind in table:
             config_key = 'get%s' % kind
             settings_key = '@%s' % kind.lower()
-            
             config_list = configs_d.get(config_key,[])
             settings_list = settings_d.get(settings_key,[])
-            
             munged_config_list =   [self.munge(s) for s in config_list]
             munged_settings_list = [self.munge(s) for s in settings_list]
-            
             print('\nmissing %s settings...' % settings_key)
             missing = set()
             for s in munged_config_list:
                 # Ignore plugins settings.
                 if s not in munged_settings_list:
                     missing.add(s)
-
             if missing:
                 print(format % ('Canonical','Actual'))
                 print(format % ('=' * len('Canonical'),'=' * len('Actual')))
@@ -4890,26 +4883,20 @@ Controller(c).run()</t>
                     self.print_missing(format,s,
                         config_list,settings_list,
                         munged_config_list,munged_settings_list)
-                    
-                        
     # More important: print missing calls to c.config.getX
     if 1:
         for kind in table:
             config_key = 'get%s' % kind
             settings_key = '@%s' % kind.lower()
-            
             config_list = configs_d.get(config_key,[])
             settings_list = settings_d.get(settings_key,[])
-            
             munged_config_list =   [self.munge(s) for s in config_list]
             munged_settings_list = [self.munge(s) for s in settings_list]
-
             print('\nmissing config.%s calls...' % config_key)
             missing = set()
             for s in munged_settings_list:
                 if s not in munged_config_list:
                     missing.add(s)
-
             if missing:
                 print(format % ('Canonical','Actual'))
                 print(format % ('=' * len('Canonical'),'=' * len('Actual')))
@@ -4963,22 +4950,18 @@ Controller(c).run()</t>
     '''
     
     trace = True
-    
     for p in c.all_positions():
         self.scan_for_configs(p,d)
-        
     if trace:
         for key in sorted(list(d.keys())):
             print(key)
             aList = d.get(key)
             for name in sorted(aList):
                 print('  ' + name)
-    
     return d</t>
 <t tx="ekr.20111006212449.11857">def scan_for_configs (self,p,d):
     
     '''Scan the body text of p, finding all calls to getX.'''
-
     kinds = ('getBool','getColor','getInt','getFloat',
         # '@font', # special case.
         'getRatio','getPath','getString',
@@ -5016,7 +4999,6 @@ Controller(c).run()</t>
         else:
             i += 1
         assert progress &lt; i
-    
     return d</t>
 <t tx="ekr.20111006212449.11858">def get_settings (self):
     
@@ -5082,7 +5064,9 @@ Controller(c).run()</t>
     
     '''Return the canonicalized name for settings and arguments to c.config.getX.'''
     
-    return s.replace('-','').replace('_','').lower()</t>
+    s = s.replace('-','').replace('_','').lower()
+    return g.toUnicode(s)
+</t>
 <t tx="ekr.20111006212449.11862">def run(self):
     
     import os ; os.system('cls')
@@ -5098,24 +5082,18 @@ Controller(c).run()</t>
 <t tx="ekr.20111007043902.15697">def print_missing(self,format,munged_s,in_list,out_list,munged_in_list,munged_out_list):
     
     '''Print the canonical name, followed by the list of names that match.'''
-    
     assert munged_s in munged_in_list,munged_s
     assert munged_s not in munged_out_list,munged_s
-    
     if 0: # These should not be necessary.  Something is wrong.
-        
         # Ignore plugins settings and global switches.
         for prefix in ('color','datenodes','http','opml','rst3','todo','trace','vim','zodb'):
             if munged_s.startswith(prefix):
-                return
-                
+                return  
     # Ignore color settings.  They are handled differently...
     for suffix in ('color',):
         if munged_s.endswith(suffix):
             return
-    
     match_list = [s for s in in_list if self.munge(s) == munged_s]
-    
     print(format % (munged_s,match_list))</t>
 <t tx="ekr.20111010200020.15684"></t>
 <t tx="ekr.20111010200020.15685"></t>
