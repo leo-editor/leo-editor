@@ -3,8 +3,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.59">
+	<global_window_position top="110" left="501" height="846" width="1022"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -446,7 +446,7 @@
 <v t="ekr.20131117053425.19894"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.89"><vh>@item *find-&amp;all</vh></v>
 <v t="ekr.20070925144534.90"><vh>@item *clone-fi&amp;nd-all</vh></v>
-<v t="ekr.20070925144534.91"><vh>@item *change-a&amp;ll</vh></v>
+<v t="ekr.20070925144534.91"><vh>@item *replace-a&amp;ll</vh></v>
 <v t="ekr.20070925144534.92"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.93"><vh>@item *&amp;find-character</vh></v>
 <v t="ekr.20070925144534.94"><vh>@item find-character-extend-&amp;selection</vh></v>
@@ -2147,11 +2147,8 @@ main()
                 allNames[key] = key
         else:
             g.es_print('No setsDict for %s' % (repr(setName)),color='red')
-
     k = c.keyHandler
-    keys = list(allNames.keys())
-    keys.sort()
-
+    keys = sorted(allNames.keys())
     # Warn about missing names.
     for setName in ('No bindings',): # setNames:
         d = setsDict.get(setName)
@@ -2165,7 +2162,6 @@ main()
                     not (key.startswith('press-') and key.endswith('-button'))
                 ):
                     g.es_print('%s is missing %-35s = None' % (setName,repr(key)))
-
     # Warn about undefined commands.
     for key in keys:
         if not c.commandsDict.get(key):
@@ -3276,7 +3272,7 @@ False: Chapter tabs do not appear.</t>
 #propagate-key-event = Alt-W
 </t>
 <t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
-<t tx="ekr.20070622214401"></t>
+<t tx="ekr.20070622214401" str_leo_pos="3"></t>
 <t tx="ekr.20070729101310">True: trace import commands and @auto imports.</t>
 <t tx="ekr.20070803082435">True: import commands (including @auto nodes) do full checks.</t>
 <t tx="ekr.20070925144534"></t>

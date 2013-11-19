@@ -6,7 +6,10 @@
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 
-** New find project: see child node.
+- Add open-irc-leo command:
+    # Works.
+    import webbrowser
+    webbrowser.open("http://webchat.freenode.net/?channels=%23leo&uio=d4")
 
 * F2 doesn't work when only searching in headlines.
 
@@ -27,58 +30,30 @@
 .. @+node:ekr.20131119060731.20105: *3* Today
 @language rest
 
-1. Simply find commands:
-    - fc.minibuffer_mode replaces fc.expert_mode.
-    - start-find command
-    - Tab easter egg.
-    - Where to bind Ctrl-F ??  open-find-tab?  start-find?
+Run check-settings script.
 
-2. (Wait for Terry's comments) Create leo/config/exampleSettings.leo
-    - No clones.
-    - No disabled nodes.
-    - No scripts.
-    - (Maybe) helpful @button nodes.
-    - Comments in Startup node.
-    - Comments in About this file node.
-        Exception: @button nodes creating buttons useful for newbies.
-        
-3. Complete key binding in Find tab:
-    - Bind important shortcuts (including F2, return, etc.)
-    - Add shortcuts to button names.
-    
-4. open-irc-leo: g.openUrl(p)' on a node containing
-    
-import webbrowser
-webbrowser.open("http://webchat.freenode.net/?channels=%23leo&uio=d4")
+Add tab easter egg to searchWithPresentOptions.
 
+Finish the gui-oriented Find pane:
+- Add shortcuts to button names.
+- Honor Ctrl-G, F2, F3, Ctrl-- & Ctrl-+ from any widget in the find pane.
+- Create help button in the Find pane.
+- dw code should set ftm ivars, not dw ivars.
+    
 .. @+node:ekr.20131117054619.16683: *3* To do: new_find
 @language rest
 
 **** Put links to screencasts on Leo's home page.
 
-1. Get the newbies gui working.
-- Run check-settings script.
-- Create a newbie Start Search command that puts focus in the dw.find_findbox.
-- Honor Ctrl-G, F2, F3, Ctrl-- & Ctrl-+ from any widget in the find pane.
-- Create help button in the Find pane.
-- dw code should set ftm ivars, not dw ivars.
-- find.openFindTab should put focus in the findbox.
-
-2. Improve the minibuffer find command:
-** Tab (instead of Shift-Ctrl-R) is hard-bound to get the replacement text!!
-- Allow replace for an empty selection.  Doh!
 
 3. Other improvements:
+- (Maybe) Add helpful @button nodes to leoSettings.leo.
 - find-all and change-all never wrap.
 - Create save/restore_isearch_vars methods using isearch_save_d.
 
-To do:
-- Get rid of clones in leoSettings.leo!
-- Get rid of extra @data qt-gui nodes!
-- Search menu conflicts with Alt-s.
-- Use vim as a template for quick search mode?
-
 Later:
+- Allow replace for an empty selection.  Doh!
+- Use vim as a template for quick search mode?
 * Don't use leoFind as baseclass for spelling class!
 - Only the first line of body text in an @menu node should be significant.
 - Use stateless finds.
@@ -90,7 +65,11 @@ Later:
 @language rest
 
 What I did:
-- Put shortcuts in button names. This is confusing unless the key bindings are active.
+- Removed all clones and dead code from leoSettings.leo.
+  (Improved introductory comments.)
+- Createf leo/config/exampleSettings.leo.
+- fc.minibuffer_mode replaces fc.expert_mode.
+- start-find command
 - test set-replace-string.
 - Protect self.p everywhere.
 - Don't hide find pane during searches.
