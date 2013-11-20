@@ -173,6 +173,9 @@
 <v t="ekr.20090811090022.14453"><vh>Linux screen shots</vh></v>
 </v>
 </v>
+<v t="ekr.20131120115900.16327"><vh>Screencasts</vh>
+<v t="ekr.20131120115900.16329"><vh>@rst html/screencasts.html</vh></v>
+</v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
 <v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028550b302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473550b302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473550b302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473550b302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 <v t="ekr.20100821182153.4343"><vh>@rst html/slides.html</vh></v>
@@ -1304,7 +1307,6 @@
 <v t="ekr.20131105110107.17046"><vh>Investigated install problem</vh></v>
 </v>
 </v>
-<v t="ekr.20131120115900.16326"><vh>Add links</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -22741,12 +22743,38 @@ file containing @bool vim-mode = True. By opening this file I test vim mode
 without interfering with my normal work flow.
 
 </t>
-<t tx="ekr.20131120115900.16326">- Leo's Find &amp; Change commands:
-    https://www.youtube.com/watch?v=N5vRTGdA4Aw
-    http://www.screencast.com/t/fkHH0uwmRAMQ
+<t tx="ekr.20131120115900.16327"></t>
+<t tx="ekr.20131120115900.16329">###########
+Screencasts
+###########
 
-- #leo on home page:
-    http://webchat.freenode.net/?channels=%23leo&amp;uio=d4
+.. |br| raw:: html
+
+   &lt;br /&gt;
+
+
+This page links to screencasts describing Leo.  **Important notes**:
+
+- Screencasts hosted at screencast.com look a bit clearer than YouTube videos, |br|
+  but they may not always be available due to bandwidth limits.
+- Be sure to click the "Full Size" button when viewing screencast.com screencasts. |br|
+- YouTube videos typically become much clearer after a few seconds.
+
+.. _`Using clones to speed work flow (screencast.com)`: http://www.screencast.com/t/l8W9H5G8zB
+
+.. _`The Find Pane (screencast.com)`: http://www.screencast.com/t/fkHH0uwmRAMQ
+.. _`The Find Pane (YouTube)`: https://www.youtube.com/watch?v=N5vRTGdA4Aw
+.. _`Using the minibuffer (screencast.com)`: http://www.screencast.com/t/tEQ7brI4n6
+
+screencast.com screencasts:
+
+- `Basic: The Find pane &lt;http://www.screencast.com/t/fkHH0uwmRAMQ&gt;`_ |br|
+- `Basic: Using the minibuffer &lt;http://www.screencast.com/t/tEQ7brI4n6&gt;`_ |br|
+- `Intermediate: Using clones to speed work flow &lt;http://www.screencast.com/t/l8W9H5G8zB&gt;`_ |br|
+
+YouTube screencasts:
+
+- `Basic: The Find pane &lt;https://www.youtube.com/watch?v=N5vRTGdA4Aw&gt;`_
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
