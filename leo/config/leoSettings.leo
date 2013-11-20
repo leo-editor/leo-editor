@@ -11,7 +11,6 @@
 <find_panel_settings/>
 <vnodes>
 <v t="ekr.20070622214401"><vh>Startup</vh>
-<v t="ekr.20070326094544"><vh>@chapters</vh></v>
 <v t="ekr.20060112110750"><vh>Local buttons</vh>
 <v t="ekr.20090203131919.1"><vh>@button check-menus-cmds</vh></v>
 <v t="ekr.20111006212449.11850"><vh>@button check-settings</vh>
@@ -3172,7 +3171,6 @@ printing.py
 </t>
 <t tx="ekr.20070318065601">True:  Chapter commands are functional.
 False: Chapter commands do not exists.</t>
-<t tx="ekr.20070326094544"></t>
 <t tx="ekr.20070411101857">The body of @openwith nodes contains one or more lines of the following
 form::
 
@@ -3266,7 +3264,11 @@ False: Chapter tabs do not appear.</t>
 #propagate-key-event = Alt-W
 </t>
 <t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
-<t tx="ekr.20070622214401"></t>
+<t tx="ekr.20070622214401">@nocolor-node
+
+Please don't change this node and its descendants; they are for Leo's
+developers.
+</t>
 <t tx="ekr.20070729101310">True: trace import commands and @auto imports.</t>
 <t tx="ekr.20070803082435">True: import commands (including @auto nodes) do full checks.</t>
 <t tx="ekr.20070925144534"></t>

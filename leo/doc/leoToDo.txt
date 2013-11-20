@@ -30,8 +30,6 @@
 .. @+node:ekr.20131119060731.20105: *3* Today
 @language rest
 
-Run check-settings script.
-
 Add tab easter egg to searchWithPresentOptions.
 
 Finish the gui-oriented Find pane:
