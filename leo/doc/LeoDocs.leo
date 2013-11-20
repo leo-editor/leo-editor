@@ -22752,13 +22752,13 @@ Screencasts
 
    &lt;br /&gt;
 
-
 This page links to screencasts describing Leo.  **Important notes**:
 
 - Screencasts hosted at screencast.com look a bit clearer than YouTube videos, |br|
   but they may not always be available due to bandwidth limits.
-- Be sure to click the "Full Size" button when viewing screencast.com screencasts. |br|
-- YouTube videos typically become much clearer after a few seconds.
+- screencast.com viewers: be sure to click the "Full Size" button. |br|
+- YouTube viewers: be sure to select top quality in the video settings. |br|
+  YouTube videos typically become much clearer after a few seconds.
 
 .. _`Using clones to speed work flow (screencast.com)`: http://www.screencast.com/t/l8W9H5G8zB
 
