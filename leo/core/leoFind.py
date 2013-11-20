@@ -196,16 +196,9 @@ class leoFind:
     #@+node:ekr.20131117164142.17022: *4* leoFind.finishCreate
     def finishCreate(self):
         
-        # New in 4.11.1.  Must be called after keyHandler is initied.
+        # New in 4.11.1.
+        # Must be called when config settings are valid.
         c = self.c
-        k = c.k
-        if 0:
-            # This is used to convert Shift-Ctrl-R to replace-string.
-            s = k.getShortcutForCommandName('replace-string')
-            s = k.prettyPrintKey(s)
-            s = k.strokeFromSetting(s)
-            self.replaceStringShortcut = s
-            g.trace('replaceStringShortcut',s)
         self.minibuffer_mode = c.config.getBool('minibuffer-find-mode',default=False)
         # now that configuration settings are valid,
         # we can finish creating the Find pane.
@@ -288,10 +281,18 @@ class leoFind:
             self.reverse = not self.reverse
         
     ### findPreviousCommand = findPrevCommand
+    #@+node:ekr.20131119204029.16479: *4* find.helpForFindCommands
+    def helpForFindCommands(self,event=None):
+        '''Called from Find panel.  Redirect.'''
+        self.c.helpCommands.helpForFindCommands(event)
     #@+node:ekr.20131117164142.17015: *4* find.hideFindTab
     def hideFindTab (self,event=None):
         '''Hide the Find tab.'''
-        self.c.frame.log.selectTab('Log')
+        c = self.c
+        if self.minibuffer_mode:
+            c.k.keyboardQuit()
+        else:
+            self.c.frame.log.selectTab('Log')
     #@+node:ekr.20131117164142.16916: *4* find.openFindTab
     def openFindTab (self,event=None,show=True):
         '''Open the Find tab in the log pane.'''
@@ -581,15 +582,7 @@ class leoFind:
 
         c,k = self.c,self.k
         # None is a signal to get the option from the find tab.
-        ### if forward is None or not self.findTabHandler: self.openFindTab(show=False)
-        ###if not self.minibufferFindHandler:
-        ###    self.minibufferFindHandler = minibufferFind(c,self.findTabHandler)
-        ### getOption = self.minibufferFindHandler.getOption
         self.event = event
-        ##########
-        ###self.forward    = not getOption('reverse') if forward is None else forward
-        ###self.ignoreCase = getOption('ignore_case') if ignoreCase is None else ignoreCase
-        ###self.regexp     = getOption('pattern_match') if regexp is None else regexp
         self.isearch_forward = not self.reverse if forward is None else forward
         self.isearch_ignore_case = self.ignore_case if ignoreCase is None else ignoreCase
         self.isearch_regexp = self.pattern_match if regexp is None else regexp
@@ -769,7 +762,7 @@ class leoFind:
             self.setupArgs(forward=False,regexp=True,word=None)
             self.stateZeroHelper(
                 event,tag,'Regexp Search Backward:',self.reSearchBackward,
-                escapes=['\t']) ### self.replaceStringShortcut])
+                escapes=['\t']) # The Tab Easter Egg.
         elif k.getArgEscapeFlag:
             # Switch to the replace command.
             k.setState('replace-string',1,self.setReplaceString)
@@ -786,7 +779,7 @@ class leoFind:
             self.setupArgs(forward=True,regexp=True,word=None)
             self.stateZeroHelper(
                 event,tag,'Regexp Search:',self.reSearchForward,
-                escapes=['\t']) ### self.replaceStringShortcut])
+                escapes=['\t']) # The Tab Easter Egg.
         elif k.getArgEscapeFlag:
             # Switch to the replace command.
             k.setState('replace-string',1,self.setReplaceString)
@@ -803,7 +796,7 @@ class leoFind:
             self.setupArgs(forward=False,regexp=False,word=False)
             self.stateZeroHelper(
                 event,tag,'Search Backward: ',self.searchBackward,
-                escapes=['\t']) ### self.replaceStringShortcut])
+                escapes=['\t']) # The Tab Easter Egg.
         elif k.getArgEscapeFlag:
             # Switch to the replace command.
             k.setState('replace-string',1,self.setReplaceString)
@@ -819,7 +812,7 @@ class leoFind:
             self.setupArgs(forward=True,regexp=False,word=False)
             self.stateZeroHelper(
                 event,tag,'Search: ',self.searchForward,
-                escapes=['\t']) ### self.replaceStringShortcut])
+                escapes=['\t']) # The Tab Easter Egg.
         elif k.getArgEscapeFlag:
             # Switch to the replace command.
             k.setState('replace-string',1,self.setReplaceString)
@@ -834,7 +827,7 @@ class leoFind:
         trace = False and not g.unitTesting
         k = self.k ; tag = 'replace-string' ; state = k.getState(tag)
         prompt = 'Replace ' + 'Regex' if self.pattern_match else 'String'
-        g.trace(state,g.callers())
+        if trace: g.trace(state)
         if state == 0:
             self.setupArgs(forward=None,regexp=None,word=None)
             prefix = '%s: ' % prompt
@@ -861,7 +854,7 @@ class leoFind:
             self.setupArgs(forward=None,regexp=None,word=None)
             self.stateZeroHelper(
                 event,tag,'Search: ',self.searchWithPresentOptions,
-                escapes=['\t']) ### self.replaceStringShortcut])
+                escapes=['\t']) # The Tab Easter Egg.
         elif k.getArgEscapeFlag:
             # Switch to the replace command.
             self.setupSearchPattern(k.arg) # 2010/01/10: update the find text immediately.
@@ -924,7 +917,7 @@ class leoFind:
             self.lastStateHelper()
             self.generalSearchHelper(k.arg)
     #@+node:ekr.20131117164142.16915: *3* leoFind.Option commands
-    #@+node:ekr.20131117164142.16919: *4* toggle checkbox commands
+    #@+node:ekr.20131117164142.16919: *4* leoFind.toggle checkbox commands
     def toggleFindCollapesNodes(self,event):
         '''Toggle the 'Collapse Nodes' checkbox in the find tab.'''
         c = self.c
@@ -957,7 +950,7 @@ class leoFind:
         return self.toggleOption('wrap')
     def toggleOption(self,checkbox_name):
         self.ftm.toggle_checkbox(checkbox_name)
-    #@+node:ekr.20131117164142.17019: *4* setFindScope...
+    #@+node:ekr.20131117164142.17019: *4* leoFind.setFindScope...
     def setFindScopeEveryWhere (self,event=None):
         '''Set the 'Entire Outline' radio button in the Find tab.'''
         return self.setFindScope('entire-outline')
@@ -970,13 +963,13 @@ class leoFind:
     def setFindScope(self,where):
         '''Set the radio buttons to the given scope'''
         self.ftm.set_radio_button(where)
-    #@+node:ekr.20131117164142.16989: *4* showFindOptions
+    #@+node:ekr.20131117164142.16989: *4* leoFind.showFindOptions
     def showFindOptions (self,event=None):
         '''Show the present find options in the status line.'''
         frame = self.c.frame ; z = []
         # Set the scope field.
-        head  = self.search_headline ### self.getOption('search_headline')
-        body  = self.search_body ### self.getOption('search_body')
+        head = self.search_headline
+        body = self.search_body
         if self.suboutline_only:
             scope = 'tree'
         elif self.node_only:
@@ -993,16 +986,8 @@ class leoFind:
         s = '%s%s%s %s  ' % (head,sep,body,scope)
         frame.putStatusLine(s,color='blue')
         # Set the type field.
-        # script = self.script_search ### self.getOption('script_search')
-        regex  = self.pattern_match ### self.getOption('pattern_match')
-        ### change = self.getOption('script_change')
-        # if script:
-            # s1 = '*Script-find'
-            # s2 = g.choose(change,'-change*','*')
-            # z.append(s1+s2)
-        # el
+        regex  = self.pattern_match
         if regex: z.append('regex')
-
         table = (
             ('reverse',         'reverse'),
             ('ignore_case',     'noCase'),
@@ -1012,15 +997,14 @@ class leoFind:
             ('mark_finds',      'markFnd'),
         )
         for ivar,s in table:
-            ### val = self.getOption(ivar)
             val = getattr(self,ivar)
             if val: z.append(s)
         frame.putStatusLine(' '.join(z))
-    #@+node:ekr.20131117164142.16990: *4* setupChangePattern
+    #@+node:ekr.20131117164142.16990: *4* leoFind.setupChangePattern
     def setupChangePattern (self,pattern):
 
         self.ftm.setChangeText(pattern)
-    #@+node:ekr.20131117164142.16991: *4* setupSearchPattern
+    #@+node:ekr.20131117164142.16991: *4* leoFind.setupSearchPattern
     def setupSearchPattern (self,pattern):
 
         self.ftm.setFindText(pattern)

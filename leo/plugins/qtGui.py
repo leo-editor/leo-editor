@@ -2505,9 +2505,8 @@ class DynamicWindow(QtGui.QMainWindow):
         c,dw = self.leo_c,self
         fc = c.findCommands
         ftm = fc.ftm
-        dw.find_findbox = w = dw.createLineEdit(parent,'findPattern',disabled=fc.expert_mode)
-        assert ftm.find_ctrl is None
-        ftm.find_ctrl = w
+        assert ftm.find_findbox is None
+        ftm.find_findbox = w = dw.createLineEdit(parent,'findPattern',disabled=fc.expert_mode)
         lab2 = self.createLabel(parent,'findLabel','Find:')
         grid.addWidget(lab2,row,0)
         grid.addWidget(w,row,1,1,2)
@@ -2519,9 +2518,8 @@ class DynamicWindow(QtGui.QMainWindow):
         c,dw = self.leo_c,self
         fc = c.findCommands
         ftm = fc.ftm
-        dw.find_replacebox = w = dw.createLineEdit(parent,'findChange',disabled=fc.expert_mode)
-        assert ftm.change_ctrl is None
-        ftm.change_ctrl = w
+        assert ftm.find_replacebox is None
+        ftm.find_replacebox = w = dw.createLineEdit(parent,'findChange',disabled=fc.expert_mode)
         lab3 = dw.createLabel(parent,'changeLabel','Replace:') # Leo 4.11.1.
         grid.addWidget(lab3,row,0)
         grid.addWidget(w,row,1,1,2)
@@ -2579,6 +2577,7 @@ class DynamicWindow(QtGui.QMainWindow):
     def create_find_buttons(self,grid,parent,max_row2,row):
         c,dw = self.leo_c,self
         k = c.k
+        ftm = c.findCommands.ftm
         def mungeName(label):
             kind = 'push-button'
             name = label.replace(' ','').replace('&','')
@@ -2591,6 +2590,7 @@ class DynamicWindow(QtGui.QMainWindow):
             (3,2,'changeCommand', 'Replace','replace'),
             (4,2,'changeThenFind','Replace Then Find','replace-then-find'),
             (5,2,'changeAll','Replace All','replace-all'),
+            # (6,2,'helpForFindCommands','Help','help-for-find-commands'),
         )
         # findTabHandler does not exist yet.
         for row2,col,func_name,label,cmd_name in table:
@@ -2602,9 +2602,10 @@ class DynamicWindow(QtGui.QMainWindow):
                 else: g.trace('* does not exist:',func_name)
             name = mungeName(label)
             # Prepend the shortcut if it exists:
-            if 0: # The shortcuts don't work in the minibuffer, so they are confusing.
-                s = k.getShortcutForCommandName(cmd_name)
-                if s: label = '%s (%s)' % (label,k.prettyPrintKey(s))
+            stroke = k.getShortcutForCommandName(cmd_name)
+            if stroke:
+                label = '%s:  %s' % (label,k.prettyPrintKey(stroke))
+                # ftm.shortcuts_d[stroke.s] = cmd_name
             if 1: # Not bad.
                 w = dw.createButton(parent,name,label)
                 grid.addWidget(w,row+row2,col)
@@ -2621,9 +2622,11 @@ class DynamicWindow(QtGui.QMainWindow):
             # Set the ivar.
             ivar = '%s-%s' % (cmd_name,'button')
             ivar = ivar.replace('-','_')
-            setattr(dw,ivar,w)
+            assert getattr(ftm,ivar) is None
+            setattr(ftm,ivar,w)
+        # g.trace(ftm.shortcuts_d)
         row += max_row2
-        row += 1
+        row += 2
         return row
     #@+node:ekr.20131118152731.16853: *7* dw.create_help_row
     def create_help_row(self,grid,parent,row):
@@ -2644,13 +2647,17 @@ class DynamicWindow(QtGui.QMainWindow):
         #@+others
         #@+node:ekr.20131118172620.16892: *8* class EventWrapper
         class EventWrapper:
-            def __init__(self,w,next_w,func):
+
+            #@+others
+            #@+node:ekr.20131119204029.18406: *9* ctor
+            def __init__(self,c,w,next_w,func):
+                self.c = c
                 self.w = w
                 self.next_w = next_w
+                self.eventFilter = leoQtEventFilter(c,w,'EventWrapper')
                 self.func = func
                 self.oldEvent = w.event
                 w.event = self.wrapper
-            #@+others
             #@+node:ekr.20131118172620.16893: *9* wrapper
             def wrapper(self,event):
                 
@@ -2698,14 +2705,25 @@ class DynamicWindow(QtGui.QMainWindow):
             #@+node:ekr.20131118172620.16895: *9* keyRelease
             def keyRelease(self,event):
                 
-                s = g.u(event.text())
-                # g.trace('key-release',s)
+                # c = self.c
+                # ef = self.eventFilter
+                # ftm = c.findCommands.ftm
+                # s = g.u(event.text())
                 return self.oldEvent(event)
+                # tkKey,ch,ignore = ef.toTkKey(event)
+                # stroke = ef.toStroke(tkKey,ch) # ch not used.
+                # cmd_name = ftm.shortcuts_d.get(stroke)
+                # g.trace('key-release',s,tkKey,stroke,cmd_name)
+                # if False and cmd_name:
+                    # c.k.simulateCommand(cmd_name)
+                    # return True
+                # else:
+                    # return self.oldEvent(event)
             #@-others
             
         #@-others
-        EventWrapper(w=dw.find_findbox,next_w=dw.find_replacebox,func=fc.findNextCommand)
-        EventWrapper(w=dw.find_replacebox,next_w=self.find_next_button,func=fc.findNextCommand)
+        EventWrapper(c,w=ftm.find_findbox,next_w=ftm.find_replacebox,func=fc.findNextCommand)
+        EventWrapper(c,w=ftm.find_replacebox,next_w=ftm.find_next_button,func=fc.findNextCommand)
         table = (
             ('findNextCommand','find-next'),
             ('findPrevCommand','find-prev'),
@@ -2717,17 +2735,16 @@ class DynamicWindow(QtGui.QMainWindow):
         for func_name,cmd_name in table:
             ivar = '%s-%s' % (cmd_name,'button')
             ivar = ivar.replace('-','_')
-            w = getattr(dw,ivar,None)
+            w = getattr(ftm,ivar,None)
             func = getattr(fc,func_name,None)
             if w and func:
                 # g.trace(cmd_name,ivar,bool(w),func and func.__name__)
-                # next_w = dw.find_findbox if cmd_name == 'replace-all' else None
                 next_w = ftm.checkBoxWholeWord if cmd_name == 'replace-all' else None
-                EventWrapper(w=w,next_w=next_w,func=func)
+                EventWrapper(c,w=w,next_w=next_w,func=func)
             else:
                 g.trace('**oops**')
-        # Finally, checkBoxMarkChanges goes back to dw.find_findBox.
-        EventWrapper(w=ftm.checkBoxMarkChanges,next_w=self.find_findbox,func=None)
+        # Finally, checkBoxMarkChanges goes back to ftm.find_findBox.
+        EventWrapper(c,w=ftm.checkBoxMarkChanges,next_w=ftm.find_findbox,func=None)
     #@+node:ekr.20110605121601.18168: *5* dw.utils
     #@+node:ekr.20110605121601.18169: *6* dw.setName
     def setName (self,widget,name):
@@ -2917,9 +2934,12 @@ class FindTabManager:
     def __init__ (self,c):
         # g.trace('(FindTabManager)',c.shortFileName(),g.callers())
         self.c = c
+        ### self.shortcuts_d = {}
+            # keys are shortcuts;
+            # values are command-names
         # Find/change text boxes.
-        self.find_ctrl = None
-        self.change_ctrl = None
+        self.find_findbox = None
+        self.find_replacebox = None
         # Check boxes.
         self.checkBoxIgnoreCase = None
         self.checkBoxMarkChanges = None
@@ -2933,23 +2953,31 @@ class FindTabManager:
         self.radioButtonEntireOutline = None
         self.radioButtonNodeOnly = None
         self.radioButtonSuboutlineOnly = None
+        # Push buttons
+        self.find_next_button = None
+        self.find_prev_button = None
+        self.find_all_button = None
+        self.help_for_find_commands_button = None
+        self.replace_button = None
+        self.replace_then_find_button = None
+        self.replace_all_button = None
     #@+node:ekr.20131117164142.16853: *4* ftm.text getters/setters
     def getFindText(self):
-        return g.u(self.find_ctrl.text())
+        return g.u(self.find_findbox.text())
         
     def getReplaceText(self):
-        return g.u(self.change_ctrl.text())
+        return g.u(self.find_replacebox.text())
 
     getChangeText = getReplaceText
 
     def setFindText(self,s):
-        w = self.find_ctrl
+        w = self.find_findbox
         s = g.toUnicode(s)
         w.clear()
         w.insert(s)
         
     def setReplaceText(self,s):
-        w = self.change_ctrl
+        w = self.find_replacebox
         s = g.toUnicode(s)
         w.clear()
         w.insert(s)
@@ -2958,11 +2986,11 @@ class FindTabManager:
     #@+node:ekr.20131119185305.16478: *4* ftm.clear_focus & init_focus
     def clear_focus(self):
         
-        self.find_ctrl.clearFocus()
+        self.find_findbox.clearFocus()
 
     def init_focus(self):
         
-        self.find_ctrl.setFocus()
+        self.find_findbox.setFocus()
     #@+node:ekr.20131117120458.16789: *4* ftm.init_widgets
     def init_widgets(self):
         '''
@@ -2973,8 +3001,8 @@ class FindTabManager:
         find = c.findCommands
         # Find/change text boxes.
         table = (
-            ('find_ctrl','find_text','<find pattern here>'),
-            ('change_ctrl','change_text',''),
+            ('find_findbox','find_text','<find pattern here>'),
+            ('find_replacebox','change_text',''),
         )
         for ivar,setting_name,default in table:
             s = c.config.getString(setting_name) or default

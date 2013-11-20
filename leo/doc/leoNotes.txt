@@ -10293,11 +10293,64 @@ if ( oap->op_type == OP_NOP
     )
         (void)edit(restart_edit, FALSE, 1L);
 }
-.. @+node:ekr.20131117120458.16793: *3* ftm.dummies (to be deleted)
-def getOption(self,ivar):
-    g.trace(ivar)
+.. @+node:ekr.20131119204029.16481: *3* << define s >> (help-for-find-commands)
+@language rest
 
-def update_ivars(self):
-    g.trace(g.callers())
+s = '''
+
+.. |br| raw:: html
+
+   <br />
+
+Finding & replacing text
+------------------------
+
+Ctrl-F (start-search) shows the Find Tab
+
+**Important**: the Find tab just shows you the status of search and replace
+operations.
+
+You control those operations from the minibuffer.
+
+**Note**: You can toggle the radio buttons and check boxes in the Find Tab
+with Ctrl-Alt keys. For example, Ctrl-Alt-X (toggle-find-regex-option)
+toggles the Regexp checkbox.
+
+After typing Ctrl-F, type the search string, say "def", in the minibuffer.
+
+Start the find by typing <Return>.
+
+But suppose you want to replace "def" with "foo", instead of just finding
+"foo".
+
+Before typing <Return> type Shift-Ctrl-R. The minibuffer prompts for the
+replacement string. Notice that the status area now shows “def” as the Find
+string.
+
+Type "foo" and type <Return> to start the find-next command.
+
+When Leo finds the next instance of "def", it will select it. |br|
+You may type any command.  The following are most useful:
+
+- Ctrl-minus (replace-then-find) replaces the selected text.
+- F3 (find-next) continues searching without making a replacement.
+- F2 (find-previous) continues the search in reverse.
+- Ctrl-G (keyboard-quit) ends the search.
+
+Incremental searching
+---------------------
+
+**Alt-S** starts an incremental search. |br|
+**Alt-R** starts a reverse incremental search.
+
+Any characters you type extend the search. |br|
+**Backspace** retracts the search. 
+
+During an incremental search:
+    **Enter** or **Ctrl-G** stops the search. |br|
+    **Alt-S** finds the search string again. |br|
+    **Alt-R** does the same during a reverse search.
+
+'''
 .. @-all
 .. @-leo

@@ -436,7 +436,7 @@
 <v t="ekr.20131117052950.18285"><vh>@item *help-for-find-commands</vh></v>
 <v t="ekr.20131117053425.19893"><vh>@item -</vh></v>
 <v t="ekr.20131119060731.22451"><vh>@item *start-search</vh></v>
-<v t="ekr.20070925144534.83"><vh>@item find-tab-&amp;hide</vh></v>
+<v t="ekr.20070925144534.83"><vh>@item find-tab-hide</vh></v>
 <v t="ekr.20131119060731.22454"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.86"><vh>@item *find-&amp;next</vh></v>
 <v t="ekr.20070925144534.87"><vh>@item *find-&amp;prev</vh></v>
@@ -2618,7 +2618,7 @@ find-character-extend-selection             = None ### = Alt-Shift-P
 
 # To start finds and changes...
 search-with-present-options         = Ctrl-f
-set-replace-string                  = Ctrl-Shift-r
+set-replace-string                  = None ### Ctrl-Shift-r
 find-tab-hide                       = None
 find-tab-open                       = None
 

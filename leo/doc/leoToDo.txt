@@ -6,63 +6,57 @@
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 
-
-* F2 doesn't work when only searching in headlines.
-
-- Replace all should always start at present node.
-
-- command or button to open #leo session.
-
-- Does Leo allow comments after @data setting-name?
-
-- Do all common vim commands:
-    - Leave arrow keys and control keys unchanged.
-    - Focus plain-key normal-mode commands: a,i,d,c,x,s.
-    - Use minibuffer for find command (save find/change strings for dot).
-
-* Gallery of screen shots: different font sizes, coloring schemes, plugins, etc.
-
-* Create github repo (call Speed).
-.. @+node:ekr.20131119060731.20105: *3* Today
-@language rest
-
-Add tab easter egg to searchWithPresentOptions.
-
-Finish the gui-oriented Find pane:
-- Add shortcuts to button names.
-- Honor Ctrl-G, F2, F3, Ctrl-- & Ctrl-+ from any widget in the find pane.
-- Create help button in the Find pane.
-- dw code should set ftm ivars, not dw ivars.
-    
 - Add open-irc-leo command:
     # Works.
     import webbrowser
     webbrowser.open("http://webchat.freenode.net/?channels=%23leo&uio=d4")
-.. @+node:ekr.20131117054619.16683: *3* To do: new_find
+
+Marketing:
+- Put links to screencasts on Leo's home page.
+- Gallery of screen shots: different font sizes, coloring schemes, plugins, etc.
+
+For newbies/community:
+- (Maybe) Add helpful @button nodes to leoSettings.leo.
+- command or button to open #leo session.
+
+- Does Leo allow comments after @data setting-name?
+
+* Create github repo (call Speed).
+.. @+node:ekr.20131119195900.18522: *3* vim-mode
+- Do all common vim commands:
+    - Leave arrow keys and control keys unchanged.
+    - Focus plain-key normal-mode commands: a,i,d,c,x,s.
+    - Use minibuffer for find command (save find/change strings for dot).
+.. @+node:ekr.20131117054619.16683: *3* new_find
 @language rest
 
-**** Put links to screencasts on Leo's home page.
+*Some* default leo bindingswork in find pane!
+Trace k.masterKeyHandler to find out why alt-ctrl keys don't work.
 
-
-3. Other improvements:
-- (Maybe) Add helpful @button nodes to leoSettings.leo.
-- find-all and change-all never wrap.
-- Create save/restore_isearch_vars methods using isearch_save_d.
+- ftm should init ftm.shortcuts_d.
+* The second Ctrl-F doesn't set focus properly?
 
 Later:
-- Allow replace for an empty selection.  Doh!
-- Use vim as a template for quick search mode?
-* Don't use leoFind as baseclass for spelling class!
+
+- Create save/restore_isearch_vars methods using isearch_save_d.
+- F2 doesn't work when only searching in headlines.
+- find-all and change-all never wrap.
+- Allow replace for an empty selection.
+- Don't use leoFind as baseclass for spelling class!
 - Only the first line of body text in an @menu node should be significant.
 - Use stateless finds.
 - Search strings, not widgets.
 
-- create the find buttons, etc, in leoFind.finishCreate?
 @language python
 .. @+node:ekr.20131118113639.17705: *4* Done
 @language rest
 
 What I did:
+- Add shortcuts to button names.
+- Honor Ctrl-G, F2, F3, Ctrl-- & Ctrl-+ from any widget in the find pane.
+- Create help button in the Find pane.
+- dw code now sets ftm ivars, not dw ivars.
+- Added tab easter egg to searchWithPresentOptions.
 - Removed all clones and dead code from leoSettings.leo.
   (Improved introductory comments.)
 - Createf leo/config/exampleSettings.leo.
@@ -4656,9 +4650,8 @@ def create_find_findbox(self,grid,parent,row):
     c,dw = self.leo_c,self
     fc = c.findCommands
     ftm = fc.ftm
-    dw.find_findbox = w = dw.createLineEdit(parent,'findPattern',disabled=fc.expert_mode)
-    assert ftm.find_ctrl is None
-    ftm.find_ctrl = w
+    assert ftm.find_findbox is None
+    ftm.find_findbox = w = dw.createLineEdit(parent,'findPattern',disabled=fc.expert_mode)
     lab2 = self.createLabel(parent,'findLabel','Find:')
     grid.addWidget(lab2,row,0)
     grid.addWidget(w,row,1,1,2)
@@ -4670,9 +4663,8 @@ def create_find_replacebox(self,grid,parent,row):
     c,dw = self.leo_c,self
     fc = c.findCommands
     ftm = fc.ftm
-    dw.find_replacebox = w = dw.createLineEdit(parent,'findChange',disabled=fc.expert_mode)
-    assert ftm.change_ctrl is None
-    ftm.change_ctrl = w
+    assert ftm.find_replacebox is None
+    ftm.find_replacebox = w = dw.createLineEdit(parent,'findChange',disabled=fc.expert_mode)
     lab3 = dw.createLabel(parent,'changeLabel','Replace:') # Leo 4.11.1.
     grid.addWidget(lab3,row,0)
     grid.addWidget(w,row,1,1,2)
@@ -4730,6 +4722,7 @@ def create_find_checkboxes(self,grid,parent,max_row2,row):
 def create_find_buttons(self,grid,parent,max_row2,row):
     c,dw = self.leo_c,self
     k = c.k
+    ftm = c.findCommands.ftm
     def mungeName(label):
         kind = 'push-button'
         name = label.replace(' ','').replace('&','')
@@ -4742,6 +4735,7 @@ def create_find_buttons(self,grid,parent,max_row2,row):
         (3,2,'changeCommand', 'Replace','replace'),
         (4,2,'changeThenFind','Replace Then Find','replace-then-find'),
         (5,2,'changeAll','Replace All','replace-all'),
+        # (6,2,'helpForFindCommands','Help','help-for-find-commands'),
     )
     # findTabHandler does not exist yet.
     for row2,col,func_name,label,cmd_name in table:
@@ -4753,9 +4747,10 @@ def create_find_buttons(self,grid,parent,max_row2,row):
             else: g.trace('* does not exist:',func_name)
         name = mungeName(label)
         # Prepend the shortcut if it exists:
-        if 0: # The shortcuts don't work in the minibuffer, so they are confusing.
-            s = k.getShortcutForCommandName(cmd_name)
-            if s: label = '%s (%s)' % (label,k.prettyPrintKey(s))
+        stroke = k.getShortcutForCommandName(cmd_name)
+        if stroke:
+            label = '%s:  %s' % (label,k.prettyPrintKey(stroke))
+            # ftm.shortcuts_d[stroke.s] = cmd_name
         if 1: # Not bad.
             w = dw.createButton(parent,name,label)
             grid.addWidget(w,row+row2,col)
@@ -4772,9 +4767,11 @@ def create_find_buttons(self,grid,parent,max_row2,row):
         # Set the ivar.
         ivar = '%s-%s' % (cmd_name,'button')
         ivar = ivar.replace('-','_')
-        setattr(dw,ivar,w)
+        assert getattr(ftm,ivar) is None
+        setattr(ftm,ivar,w)
+    # g.trace(ftm.shortcuts_d)
     row += max_row2
-    row += 1
+    row += 2
     return row
 .. @+node:ekr.20131118152731.16853: *6* dw.create_help_row
 def create_help_row(self,grid,parent,row):
@@ -4793,8 +4790,8 @@ def override_events(self):
     ftm = fc.ftm
     # Define class EventWrapper.
     @others
-    EventWrapper(w=dw.find_findbox,next_w=dw.find_replacebox,func=fc.findNextCommand)
-    EventWrapper(w=dw.find_replacebox,next_w=self.find_next_button,func=fc.findNextCommand)
+    EventWrapper(c,w=ftm.find_findbox,next_w=ftm.find_replacebox,func=fc.findNextCommand)
+    EventWrapper(c,w=ftm.find_replacebox,next_w=ftm.find_next_button,func=fc.findNextCommand)
     table = (
         ('findNextCommand','find-next'),
         ('findPrevCommand','find-prev'),
@@ -4806,27 +4803,30 @@ def override_events(self):
     for func_name,cmd_name in table:
         ivar = '%s-%s' % (cmd_name,'button')
         ivar = ivar.replace('-','_')
-        w = getattr(dw,ivar,None)
+        w = getattr(ftm,ivar,None)
         func = getattr(fc,func_name,None)
         if w and func:
             # g.trace(cmd_name,ivar,bool(w),func and func.__name__)
-            # next_w = dw.find_findbox if cmd_name == 'replace-all' else None
             next_w = ftm.checkBoxWholeWord if cmd_name == 'replace-all' else None
-            EventWrapper(w=w,next_w=next_w,func=func)
+            EventWrapper(c,w=w,next_w=next_w,func=func)
         else:
             g.trace('**oops**')
-    # Finally, checkBoxMarkChanges goes back to dw.find_findBox.
-    EventWrapper(w=ftm.checkBoxMarkChanges,next_w=self.find_findbox,func=None)
+    # Finally, checkBoxMarkChanges goes back to ftm.find_findBox.
+    EventWrapper(c,w=ftm.checkBoxMarkChanges,next_w=ftm.find_findbox,func=None)
 .. @+node:ekr.20131118172620.16892: *7* class EventWrapper
 class EventWrapper:
-    def __init__(self,w,next_w,func):
-        self.w = w
-        self.next_w = next_w
-        self.func = func
-        self.oldEvent = w.event
-        w.event = self.wrapper
+
     @others
     
+.. @+node:ekr.20131119204029.18406: *8* ctor
+def __init__(self,c,w,next_w,func):
+    self.c = c
+    self.w = w
+    self.next_w = next_w
+    self.eventFilter = leoQtEventFilter(c,w,'EventWrapper')
+    self.func = func
+    self.oldEvent = w.event
+    w.event = self.wrapper
 .. @+node:ekr.20131118172620.16893: *8* wrapper
 def wrapper(self,event):
     
@@ -4874,9 +4874,20 @@ def keyPress(self,event):
 .. @+node:ekr.20131118172620.16895: *8* keyRelease
 def keyRelease(self,event):
     
-    s = g.u(event.text())
-    # g.trace('key-release',s)
+    # c = self.c
+    # ef = self.eventFilter
+    # ftm = c.findCommands.ftm
+    # s = g.u(event.text())
     return self.oldEvent(event)
+    # tkKey,ch,ignore = ef.toTkKey(event)
+    # stroke = ef.toStroke(tkKey,ch) # ch not used.
+    # cmd_name = ftm.shortcuts_d.get(stroke)
+    # g.trace('key-release',s,tkKey,stroke,cmd_name)
+    # if False and cmd_name:
+        # c.k.simulateCommand(cmd_name)
+        # return True
+    # else:
+        # return self.oldEvent(event)
 .. @+node:ekr.20110605121601.18156: *5* dw.createGrid
 def createGrid (self,parent,name,margin=0,spacing=0):
 

@@ -7945,7 +7945,7 @@ class helpCommandsClass (baseEditCommandsClass):
         '''Prints a discussion of of Leo's find commands.'''
 
         #@+<< define s >>
-        #@+node:ekr.20130411023826.16595: *4* << define s >> (helpFor-find-commands)
+        #@+node:ekr.20130411023826.16595: *4* << define s >> (help-for-find-commands)
         #@@language rest
 
         s = '''
@@ -7957,33 +7957,13 @@ class helpCommandsClass (baseEditCommandsClass):
         Finding & replacing text
         ------------------------
 
-        Ctrl-F (search-with-present-options) shows the Find Tab and puts the focus
-        in the minibuffer.
+        **Ctrl-F** (start-search) shows the Find Tab.
 
-        **Important**: the Find tab just shows you the status of search and replace
-        operations.
+        Enter the Find text, and (optionally) the Replace text.
 
-        You control those operations from the minibuffer.
+        Click one of the buttons.
 
-        **Note**: You can toggle the radio buttons and check boxes in the Find Tab
-        with Ctrl-Alt keys. For example, Ctrl-Alt-X (toggle-find-regex-option)
-        toggles the Regexp checkbox.
-
-        After typing Ctrl-F, type the search string, say "def", in the minibuffer.
-
-        Start the find by typing <Return>.
-
-        But suppose you want to replace "def" with "foo", instead of just finding
-        "foo".
-
-        Before typing <Return> type Shift-Ctrl-R. The minibuffer prompts for the
-        replacement string. Notice that the status area now shows “def” as the Find
-        string.
-
-        Type "foo" and type <Return> to start the find-next command.
-
-        When Leo finds the next instance of "def", it will select it. |br|
-        You may type any command.  The following are most useful:
+        When Leo selects the found text. Then:
 
         - Ctrl-minus (replace-then-find) replaces the selected text.
         - F3 (find-next) continues searching without making a replacement.
