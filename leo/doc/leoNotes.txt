@@ -10352,5 +10352,22 @@ During an incremental search:
     **Alt-R** does the same during a reverse search.
 
 '''
+.. @+node:ekr.20131119223150.16484: *3* OLD keyRelease
+def keyRelease(self,event):
+    
+    # c = self.c
+    # ef = self.eventFilter
+    # ftm = c.findCommands.ftm
+    # s = g.u(event.text())
+    return self.oldEvent(event)
+    # tkKey,ch,ignore = ef.toTkKey(event)
+    # stroke = ef.toStroke(tkKey,ch) # ch not used.
+    # cmd_name = ftm.shortcuts_d.get(stroke)
+    # g.trace('key-release',s,tkKey,stroke,cmd_name)
+    # if False and cmd_name:
+        # c.k.simulateCommand(cmd_name)
+        # return True
+    # else:
+        # return self.oldEvent(event)
 .. @-all
 .. @-leo

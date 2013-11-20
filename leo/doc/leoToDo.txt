@@ -10,6 +10,8 @@
     # Works.
     import webbrowser
     webbrowser.open("http://webchat.freenode.net/?channels=%23leo&uio=d4")
+    
+- Only the first line of body text in an @menu node should be significant.
 
 Marketing:
 - Put links to screencasts on Leo's home page.
@@ -30,21 +32,15 @@ For newbies/community:
 .. @+node:ekr.20131117054619.16683: *3* new_find
 @language rest
 
-*Some* default leo bindingswork in find pane!
-Trace k.masterKeyHandler to find out why alt-ctrl keys don't work.
-
-- ftm should init ftm.shortcuts_d.
-* The second Ctrl-F doesn't set focus properly?
-
-Later:
+* s
 
 - Create save/restore_isearch_vars methods using isearch_save_d.
 - F2 doesn't work when only searching in headlines.
 - find-all and change-all never wrap.
 - Allow replace for an empty selection.
 - Don't use leoFind as baseclass for spelling class!
-- Only the first line of body text in an @menu node should be significant.
-- Use stateless finds.
+
+Stateless finds.
 - Search strings, not widgets.
 
 @language python
@@ -52,6 +48,10 @@ Later:
 @language rest
 
 What I did:
+- start-find selects all text in findbox.
+- Removed eventFilter ivar
+- All defaults work in the Find pane, except the Alt-Ctrl bindings.
+  The user can just use the standard Alt-bindings to set checkboxes and radio buttons.
 - Add shortcuts to button names.
 - Honor Ctrl-G, F2, F3, Ctrl-- & Ctrl-+ from any widget in the find pane.
 - Create help button in the Find pane.
@@ -4750,7 +4750,6 @@ def create_find_buttons(self,grid,parent,max_row2,row):
         stroke = k.getShortcutForCommandName(cmd_name)
         if stroke:
             label = '%s:  %s' % (label,k.prettyPrintKey(stroke))
-            # ftm.shortcuts_d[stroke.s] = cmd_name
         if 1: # Not bad.
             w = dw.createButton(parent,name,label)
             grid.addWidget(w,row+row2,col)
@@ -4769,7 +4768,6 @@ def create_find_buttons(self,grid,parent,max_row2,row):
         ivar = ivar.replace('-','_')
         assert getattr(ftm,ivar) is None
         setattr(ftm,ivar,w)
-    # g.trace(ftm.shortcuts_d)
     row += max_row2
     row += 2
     return row
@@ -4823,7 +4821,8 @@ def __init__(self,c,w,next_w,func):
     self.c = c
     self.w = w
     self.next_w = next_w
-    self.eventFilter = leoQtEventFilter(c,w,'EventWrapper')
+    # Not needed.
+    # self.eventFilter = leoQtEventFilter(c,w,'EventWrapper')
     self.func = func
     self.oldEvent = w.event
     w.event = self.wrapper
@@ -4873,21 +4872,7 @@ def keyPress(self,event):
         return self.oldEvent(event)
 .. @+node:ekr.20131118172620.16895: *8* keyRelease
 def keyRelease(self,event):
-    
-    # c = self.c
-    # ef = self.eventFilter
-    # ftm = c.findCommands.ftm
-    # s = g.u(event.text())
     return self.oldEvent(event)
-    # tkKey,ch,ignore = ef.toTkKey(event)
-    # stroke = ef.toStroke(tkKey,ch) # ch not used.
-    # cmd_name = ftm.shortcuts_d.get(stroke)
-    # g.trace('key-release',s,tkKey,stroke,cmd_name)
-    # if False and cmd_name:
-        # c.k.simulateCommand(cmd_name)
-        # return True
-    # else:
-        # return self.oldEvent(event)
 .. @+node:ekr.20110605121601.18156: *5* dw.createGrid
 def createGrid (self,parent,name,margin=0,spacing=0):
 

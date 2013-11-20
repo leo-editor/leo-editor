@@ -2605,7 +2605,6 @@ class DynamicWindow(QtGui.QMainWindow):
             stroke = k.getShortcutForCommandName(cmd_name)
             if stroke:
                 label = '%s:  %s' % (label,k.prettyPrintKey(stroke))
-                # ftm.shortcuts_d[stroke.s] = cmd_name
             if 1: # Not bad.
                 w = dw.createButton(parent,name,label)
                 grid.addWidget(w,row+row2,col)
@@ -2624,7 +2623,6 @@ class DynamicWindow(QtGui.QMainWindow):
             ivar = ivar.replace('-','_')
             assert getattr(ftm,ivar) is None
             setattr(ftm,ivar,w)
-        # g.trace(ftm.shortcuts_d)
         row += max_row2
         row += 2
         return row
@@ -2654,7 +2652,8 @@ class DynamicWindow(QtGui.QMainWindow):
                 self.c = c
                 self.w = w
                 self.next_w = next_w
-                self.eventFilter = leoQtEventFilter(c,w,'EventWrapper')
+                # Not needed.
+                # self.eventFilter = leoQtEventFilter(c,w,'EventWrapper')
                 self.func = func
                 self.oldEvent = w.event
                 w.event = self.wrapper
@@ -2704,21 +2703,7 @@ class DynamicWindow(QtGui.QMainWindow):
                     return self.oldEvent(event)
             #@+node:ekr.20131118172620.16895: *9* keyRelease
             def keyRelease(self,event):
-                
-                # c = self.c
-                # ef = self.eventFilter
-                # ftm = c.findCommands.ftm
-                # s = g.u(event.text())
                 return self.oldEvent(event)
-                # tkKey,ch,ignore = ef.toTkKey(event)
-                # stroke = ef.toStroke(tkKey,ch) # ch not used.
-                # cmd_name = ftm.shortcuts_d.get(stroke)
-                # g.trace('key-release',s,tkKey,stroke,cmd_name)
-                # if False and cmd_name:
-                    # c.k.simulateCommand(cmd_name)
-                    # return True
-                # else:
-                    # return self.oldEvent(event)
             #@-others
             
         #@-others
@@ -2934,9 +2919,6 @@ class FindTabManager:
     def __init__ (self,c):
         # g.trace('(FindTabManager)',c.shortFileName(),g.callers())
         self.c = c
-        ### self.shortcuts_d = {}
-            # keys are shortcuts;
-            # values are command-names
         # Find/change text boxes.
         self.find_findbox = None
         self.find_replacebox = None
@@ -2989,8 +2971,11 @@ class FindTabManager:
         self.find_findbox.clearFocus()
 
     def init_focus(self):
-        
-        self.find_findbox.setFocus()
+
+        w = self.find_findbox
+        w.setFocus()
+        s = g.u(w.text())
+        w.setSelection(0,len(s))
     #@+node:ekr.20131117120458.16789: *4* ftm.init_widgets
     def init_widgets(self):
         '''
