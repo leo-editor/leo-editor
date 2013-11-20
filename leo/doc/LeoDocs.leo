@@ -1304,6 +1304,7 @@
 <v t="ekr.20131105110107.17046"><vh>Investigated install problem</vh></v>
 </v>
 </v>
+<v t="ekr.20131120115900.16326"><vh>Add links</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -22739,6 +22740,13 @@ As another example, when starting the vim-mode project I created a .leo
 file containing @bool vim-mode = True. By opening this file I test vim mode
 without interfering with my normal work flow.
 
+</t>
+<t tx="ekr.20131120115900.16326">- Leo's Find &amp; Change commands:
+    https://www.youtube.com/watch?v=N5vRTGdA4Aw
+    http://www.screencast.com/t/fkHH0uwmRAMQ
+
+- #leo on home page:
+    http://webchat.freenode.net/?channels=%23leo&amp;uio=d4
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few

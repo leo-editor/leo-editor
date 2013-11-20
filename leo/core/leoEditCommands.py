@@ -206,23 +206,28 @@ class baseEditCommandsClass:
 
 #@+others
 #@+node:ekr.20120315062642.9746: ** Module-level commands
-#@+node:ekr.20120315062642.9743: *3* URL's (leoEditCommands)
-#@+node:ekr.20120315062642.9742: *4* openUrl (open-url)
-@g.command('open-url')
-def openUrl(event):
-    c = event.get('c')
-    if c:
-        g.openUrl(c.p)
-
-@g.command('open-url-under-cursor')
-def openUrlUnderCursor(event):
-    return g.openUrlOnClick(event)
-#@+node:ekr.20120315062642.9745: *4* ctrlClickAtCursor (ctrl-click-at-cursor)
+#@+node:ekr.20120315062642.9745: *3* ctrl-click-at-cursor
 @g.command('ctrl-click-at-cursor')
 def ctrlClickAtCursor(event):
     c = event.get('c')
     if c:
         g.openUrlOnClick(event)
+#@+node:ekr.20131120115900.16323: *3* join-leo-irc
+@g.command('join-leo-irc')
+def join_leo_irc(event=None):
+    import webbrowser
+    webbrowser.open("http://webchat.freenode.net/?channels=%23leo&uio=d4")
+#@+node:ekr.20120315062642.9742: *3* open-url
+@g.command('open-url')
+def openUrl(event=None):
+    c = event.get('c')
+    if c:
+        g.openUrl(c.p)
+
+#@+node:ekr.20131120115900.16324: *3* open-url-under-cursor
+@g.command('open-url-under-cursor')
+def openUrlUnderCursor(event=None):
+    return g.openUrlOnClick(event)
 #@+node:ekr.20120211121736.10817: ** class EditCommandsManager
 class EditCommandsManager:
 

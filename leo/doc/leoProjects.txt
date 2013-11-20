@@ -5550,6 +5550,7 @@ What I did:
 @language python
 .. @+node:ekr.20131116122602.16664: *3* Got focus border working again
 Changed add_border and remove_border in qtGui.py
+.. @+node:ekr.20131120115900.16325: *3* Added join-irc-leo command
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
