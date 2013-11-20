@@ -173,16 +173,6 @@ class leoFind:
         # Widget ivars.
         self.change_ctrl = None
         self.find_ctrl = None
-        self.newStringKeys = ["radio-find-type", "radio-search-scope"]
-        # These are the names of leoFind ivars.
-        ### Remove these?
-        self.intKeys = [
-            "batch","ignore_case", "node_only",
-            "pattern_match", "search_headline", "search_body",
-            "suboutline_only", "mark_changes", "mark_finds", "reverse",
-            "script_search","script_change","selection_only",
-            "wrap", "whole_word",
-        ]
         self.s_ctrl = searchWidget() # The search text for this search.
         # Status ivars.
         self.backwardAttempts = 0
@@ -209,11 +199,13 @@ class leoFind:
         # New in 4.11.1.  Must be called after keyHandler is initied.
         c = self.c
         k = c.k
-        # This is used to convert Shift-Ctrl-R to replace-string.
-        s = k.getShortcutForCommandName('replace-string')
-        s = k.prettyPrintKey(s)
-        s = k.strokeFromSetting(s)
-        self.replaceStringShortcut = s
+        if 0:
+            # This is used to convert Shift-Ctrl-R to replace-string.
+            s = k.getShortcutForCommandName('replace-string')
+            s = k.prettyPrintKey(s)
+            s = k.strokeFromSetting(s)
+            self.replaceStringShortcut = s
+            g.trace('replaceStringShortcut',s)
         self.minibuffer_mode = c.config.getBool('minibuffer-find-mode',default=False)
         # now that configuration settings are valid,
         # we can finish creating the Find pane.
@@ -321,6 +313,7 @@ class leoFind:
     def startSearch(self,event):
         
         if self.minibuffer_mode:
+            self.ftm.clear_focus()
             self.searchWithPresentOptions(event)
         else:
             self.openFindTab(event)
@@ -776,8 +769,8 @@ class leoFind:
             self.setupArgs(forward=False,regexp=True,word=None)
             self.stateZeroHelper(
                 event,tag,'Regexp Search Backward:',self.reSearchBackward,
-                escapes=[self.replaceStringShortcut])
-        elif k.getArgEscape:
+                escapes=['\t']) ### self.replaceStringShortcut])
+        elif k.getArgEscapeFlag:
             # Switch to the replace command.
             k.setState('replace-string',1,self.setReplaceString)
             self.setReplaceString(event=None)
@@ -793,8 +786,8 @@ class leoFind:
             self.setupArgs(forward=True,regexp=True,word=None)
             self.stateZeroHelper(
                 event,tag,'Regexp Search:',self.reSearchForward,
-                escapes=[self.replaceStringShortcut])
-        elif k.getArgEscape:
+                escapes=['\t']) ### self.replaceStringShortcut])
+        elif k.getArgEscapeFlag:
             # Switch to the replace command.
             k.setState('replace-string',1,self.setReplaceString)
             self.setReplaceString(event=None)
@@ -806,13 +799,12 @@ class leoFind:
     def searchBackward (self,event):
 
         k = self.k ; tag = 'search-backward' ; state = k.getState(tag)
-
         if state == 0:
             self.setupArgs(forward=False,regexp=False,word=False)
             self.stateZeroHelper(
                 event,tag,'Search Backward: ',self.searchBackward,
-                escapes=[self.replaceStringShortcut])
-        elif k.getArgEscape:
+                escapes=['\t']) ### self.replaceStringShortcut])
+        elif k.getArgEscapeFlag:
             # Switch to the replace command.
             k.setState('replace-string',1,self.setReplaceString)
             self.setReplaceString(event=None)
@@ -822,15 +814,13 @@ class leoFind:
             self.generalSearchHelper(k.arg)
 
     def searchForward (self,event):
-
         k = self.k ; tag = 'search-forward' ; state = k.getState(tag)
-
         if state == 0:
             self.setupArgs(forward=True,regexp=False,word=False)
             self.stateZeroHelper(
                 event,tag,'Search: ',self.searchForward,
-                escapes=[self.replaceStringShortcut])
-        elif k.getArgEscape:
+                escapes=['\t']) ### self.replaceStringShortcut])
+        elif k.getArgEscapeFlag:
             # Switch to the replace command.
             k.setState('replace-string',1,self.setReplaceString)
             self.setReplaceString(event=None)
@@ -841,9 +831,10 @@ class leoFind:
     #@+node:ekr.20131117164142.17002: *4* find.setReplaceString
     def setReplaceString (self,event):
 
+        trace = False and not g.unitTesting
         k = self.k ; tag = 'replace-string' ; state = k.getState(tag)
-        ### pattern_match = self.getOption ('pattern_match')
         prompt = 'Replace ' + 'Regex' if self.pattern_match else 'String'
+        g.trace(state,g.callers())
         if state == 0:
             self.setupArgs(forward=None,regexp=None,word=None)
             prefix = '%s: ' % prompt
@@ -865,16 +856,17 @@ class leoFind:
         trace = False and not g.unitTesting
         k = self.k ; tag = 'search-with-present-options'
         state = k.getState(tag)
-        if trace: g.trace('state',state)
+        if trace: g.trace('state',state,k.getArgEscapeFlag)
         if state == 0:
             self.setupArgs(forward=None,regexp=None,word=None)
             self.stateZeroHelper(
                 event,tag,'Search: ',self.searchWithPresentOptions,
-                escapes=[self.replaceStringShortcut])
-        elif k.getArgEscape:
+                escapes=['\t']) ### self.replaceStringShortcut])
+        elif k.getArgEscapeFlag:
             # Switch to the replace command.
             self.setupSearchPattern(k.arg) # 2010/01/10: update the find text immediately.
             k.setState('replace-string',1,self.setReplaceString)
+            if trace: g.trace(k.getState('replace-string'))
             self.setReplaceString(event=None)
         else:
             self.updateFindList(k.arg)
@@ -896,7 +888,7 @@ class leoFind:
         # g.trace(escapes,g.callers())
         if escapes is None: escapes = []
         k.getArgEscapes = escapes
-        k.getArgEscape = None # k.getArg may set this.
+        k.getArgEscapeFlag = False # k.getArg may set this.
         k.getArg(event,tag,1,handler, # enter state 1
             tabList=self.findTextList,completion=True,prefix=prefix)
     #@+node:ekr.20131117164142.17008: *4* find.updateChange/FindList

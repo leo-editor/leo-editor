@@ -2955,13 +2955,11 @@ class FindTabManager:
         w.insert(s)
         
     setChangeText = setReplaceText
-    #@+node:ekr.20131117120458.16793: *4* ftm.dummies (to be deleted)
-    def getOption(self,ivar):
-        g.trace(ivar)
+    #@+node:ekr.20131119185305.16478: *4* ftm.clear_focus & init_focus
+    def clear_focus(self):
+        
+        self.find_ctrl.clearFocus()
 
-    def update_ivars(self):
-        g.trace(g.callers())
-    #@+node:ekr.20131119060731.22455: *4* ftm.init_focus
     def init_focus(self):
         
         self.find_ctrl.setFocus()
@@ -2983,7 +2981,10 @@ class FindTabManager:
             s = g.u(s)
             w = getattr(self,ivar)
             w.insert(s)
-            w.setSelection(0,len(s))
+            if find.minibuffer_mode:
+                w.clearFocus()
+            else:
+                w.setSelection(0,len(s))
         # Check boxes.
         table = (
             ('ignore_case',     self.checkBoxIgnoreCase),

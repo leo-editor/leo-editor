@@ -10293,5 +10293,11 @@ if ( oap->op_type == OP_NOP
     )
         (void)edit(restart_edit, FALSE, 1L);
 }
+.. @+node:ekr.20131117120458.16793: *3* ftm.dummies (to be deleted)
+def getOption(self,ivar):
+    g.trace(ivar)
+
+def update_ivars(self):
+    g.trace(g.callers())
 .. @-all
 .. @-leo

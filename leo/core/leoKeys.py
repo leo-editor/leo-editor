@@ -1174,7 +1174,7 @@ class keyHandlerClass:
         self.argSelectedText = '' # The selected text in state 0.
         self.commandName = None # The name of the command being executed.
         self.funcReturn = None # For k.simulateCommand
-        self.getArgEscape = None # A signal that the user escaped getArg in an unusual way.
+        self.getArgEscapeFlag = False # A signal that the user escaped getArg in an unusual way.
         self.givenArgs = [] # New in Leo 4.4.8: arguments specified after the command name in k.simulateCommand.
         self.inputModeBindings = {}
         self.inputModeName = '' # The name of the input mode, or None.
@@ -2487,11 +2487,22 @@ class keyHandlerClass:
             if useMinibuffer: c.minibufferWantsFocus()
         elif char == 'Escape':
             k.keyboardQuit()
-        elif char in ('\n','Return',) or k.oneCharacterArg or (stroke and stroke in k.getArgEscapes):
+        elif (
+            char in ('\n','Return',) or
+            k.oneCharacterArg or 
+            stroke and stroke in k.getArgEscapes or
+            char == '\t' and char in k.getArgEscapes # The Find Easter Egg.
+        ):
+            if trace:
+                g.trace('***escape***','char',repr(char),
+                    stroke,k.getArgEscapes,k.afterGetArgState)
+                # g.trace(g.callers())
+            if char == '\t' and char in k.getArgEscapes:
+                k.getArgEscapeFlag = True
             if stroke and stroke in k.getArgEscapes:
-                k.getArgEscape = stroke
+                k.getArgEscapeFlag = True
             if k.oneCharacterArg:
-                k.arg = char ##
+                k.arg = char
             else:
                 k.arg = k.getLabel(ignorePrompt=True)
             kind,n,handler = k.afterGetArgState
@@ -2500,6 +2511,7 @@ class keyHandlerClass:
             if trace: g.trace('kind',kind,'n',n,'handler',handler and handler.__name__)
             if handler: handler(event)
         elif char in('\t','Tab'):
+            if trace: g.trace('***tab***')
             k.doTabCompletion(k.argTabList,k.arg_completion)
         elif char in ('\b','BackSpace'):
             k.doBackSpace(k.argTabList,k.arg_completion)
@@ -4350,12 +4362,11 @@ class keyHandlerClass:
             w = c.frame.body.bodyCtrl
             if hasattr(w,'widget'):
                 g.app.gui.add_border(c,w.widget)
-    #@+node:ekr.20061031131434.199: *4* setState
+    #@+node:ekr.20061031131434.199: *4* k.setState
     def setState (self,kind,n,handler=None):
 
         trace = False and not g.unitTesting
         k = self
-
         if kind and n != None:
             if trace: g.trace('**** setting %s %s %s' % (
                 kind,n,handler and handler.__name__),g.callers())
@@ -4366,7 +4377,6 @@ class keyHandlerClass:
         else:
             if trace: g.trace('clearing')
             k.clearState()
-
         # k.showStateAndMode()
     #@+node:ekr.20061031131434.192: *4* k.showStateAndMode
     def showStateAndMode(self,w=None,prompt=None,setFocus=True):

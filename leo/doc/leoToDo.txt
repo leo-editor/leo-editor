@@ -6,10 +6,6 @@
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 
-- Add open-irc-leo command:
-    # Works.
-    import webbrowser
-    webbrowser.open("http://webchat.freenode.net/?channels=%23leo&uio=d4")
 
 * F2 doesn't work when only searching in headlines.
 
@@ -38,6 +34,10 @@ Finish the gui-oriented Find pane:
 - Create help button in the Find pane.
 - dw code should set ftm ivars, not dw ivars.
     
+- Add open-irc-leo command:
+    # Works.
+    import webbrowser
+    webbrowser.open("http://webchat.freenode.net/?channels=%23leo&uio=d4")
 .. @+node:ekr.20131117054619.16683: *3* To do: new_find
 @language rest
 
