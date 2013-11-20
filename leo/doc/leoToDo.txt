@@ -6,34 +6,29 @@
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 
+Today:
+- Put links to screencasts on Leo's home page.
+- Revise help-for-find-commands
 - Add open-irc-leo command:
     # Works.
     import webbrowser
     webbrowser.open("http://webchat.freenode.net/?channels=%23leo&uio=d4")
-    
+
+Next:
+- Need focus to x, where x is a *temporary* log pane, like completions, commands, etc.
 - Only the first line of body text in an @menu node should be significant.
-
-Marketing:
-- Put links to screencasts on Leo's home page.
-- Gallery of screen shots: different font sizes, coloring schemes, plugins, etc.
-
-For newbies/community:
-- (Maybe) Add helpful @button nodes to leoSettings.leo.
-- command or button to open #leo session.
-
 - Does Leo allow comments after @data setting-name?
+- Add helpful @button nodes to leoSettings.leo?
 
-* Create github repo (call Speed).
-.. @+node:ekr.20131119195900.18522: *3* vim-mode
-- Do all common vim commands:
-    - Leave arrow keys and control keys unchanged.
-    - Focus plain-key normal-mode commands: a,i,d,c,x,s.
-    - Use minibuffer for find command (save find/change strings for dot).
+
+
+
 .. @+node:ekr.20131117054619.16683: *3* new_find
 @language rest
 
-* s
-
+* move dw.createFindTab into leoFind class(!)
+    - Just define dw, and use dw methods to create the actual widgets.
+    - No need for qt imports.
 - Create save/restore_isearch_vars methods using isearch_save_d.
 - F2 doesn't work when only searching in headlines.
 - find-all and change-all never wrap.
@@ -47,7 +42,13 @@ Stateless finds.
 .. @+node:ekr.20131118113639.17705: *4* Done
 @language rest
 
+Important classes & methods:
+- dw.createFindTab & helpers
+- class FindTabManager
+- class EventWrapper
+
 What I did:
+- Added support for Alt-Ctrl keys.
 - start-find selects all text in findbox.
 - Removed eventFilter ivar
 - All defaults work in the Find pane, except the Alt-Ctrl bindings.
@@ -77,6 +78,17 @@ Changed methods:
 - dw.createFindTab adds find buttons and calls.
 - dw.createFindTab creates the FindTabManager and calls ftm.init_widgets.
 * Added find_generation ivar to vnode class.
+.. @+node:ekr.20131118113639.17704: *4* << global leoFind switch >>
+stateless_find = True # True, use stateless finds.
+.. @+node:ekr.20131120054058.16280: *3* Gallery of screen shots
+
+different font sizes, coloring schemes, plugins, etc.
+.. @+node:ekr.20131120054058.16279: *3* Create github repo (call Speed)
+.. @+node:ekr.20131119195900.18522: *3* vim-mode
+- Do all common vim commands:
+    - Leave arrow keys and control keys unchanged.
+    - Focus plain-key normal-mode commands: a,i,d,c,x,s.
+    - Use minibuffer for find command (save find/change strings for dot).
 .. @+node:ekr.20131116212505.16665: *3* Screencasts
 ** Send note to Dave Winer when they are ready.
 ** Announcements to comp.lang.python & SourceForge when they are ready.
@@ -214,6 +226,46 @@ leo/config.
 
 This template file could have all the @button nodes we could want. It's an
 easy, flexible plan.
+.. @+node:ekr.20130411023826.16595: *3* << define s >> (help-for-find-commands)
+@language rest
+
+s = '''
+
+.. |br| raw:: html
+
+   <br />
+
+Finding & replacing text
+------------------------
+
+**Ctrl-F** (start-search) shows the Find Tab.
+
+Enter the Find text, and (optionally) the Replace text.
+
+Click one of the buttons.
+
+When Leo selects the found text. Then:
+
+- Ctrl-minus (replace-then-find) replaces the selected text.
+- F3 (find-next) continues searching without making a replacement.
+- F2 (find-previous) continues the search in reverse.
+- Ctrl-G (keyboard-quit) ends the search.
+
+Incremental searching
+---------------------
+
+**Alt-S** starts an incremental search. |br|
+**Alt-R** starts a reverse incremental search.
+
+Any characters you type extend the search. |br|
+**Backspace** retracts the search. 
+
+During an incremental search:
+    **Enter** or **Ctrl-G** stops the search. |br|
+    **Alt-S** finds the search string again. |br|
+    **Alt-R** does the same during a reverse search.
+
+'''
 .. @+node:ekr.20131105020211.18058: ** Important
 .. @+node:ekr.20131101080215.16488: *3* * Outreach to magazine editors
 ===== Steve Litt
@@ -4604,27 +4656,6 @@ def createFindTab (self,parent,tab_widget):
     # Official ivars (in addition to checkbox ivars).
     self.leo_find_widget = tab_widget # A scrollArea.
     ftm.init_widgets()
-.. @+node:ekr.20131118172620.16876: *6* class ButtonEventFilter (not used)
-class ButtonEventFilter(QtCore.QObject):
-    
-    def __init__(self,c,w):
-        # g.trace('ButtonEventFilter',tag,w)
-        QtCore.QObject.__init__(self) # Init the base class.
-        self.c = c
-        self.w = w
-
-    @others
-.. @+node:ekr.20131118172620.16879: *7* eventFilter (ButtonEventFilter)
-def eventFilter(self,obj,event):
-
-    ev = QtCore.QEvent
-    eType = event.type()
-    print(event)
-    if eType in (ev.KeyPress,ev.KeyRelease):
-        print('key',obj)
-    return True
-
-        
 .. @+node:ekr.20131118152731.16847: *6* dw.create_find_grid
 def create_find_grid(self,parent):
     grid = self.createGrid(parent,'findGrid',margin=10,spacing=10)
@@ -4819,13 +4850,34 @@ class EventWrapper:
 .. @+node:ekr.20131119204029.18406: *8* ctor
 def __init__(self,c,w,next_w,func):
     self.c = c
+    self.d = self.create_d() # Keys: strokes; values: command-names.
     self.w = w
     self.next_w = next_w
-    # Not needed.
-    # self.eventFilter = leoQtEventFilter(c,w,'EventWrapper')
+    self.eventFilter = leoQtEventFilter(c,w,'EventWrapper')
     self.func = func
     self.oldEvent = w.event
     w.event = self.wrapper
+.. @+node:ekr.20131120054058.16281: *8* create_d
+def create_d(self):
+    '''Create self.d dictionary.'''
+    c = self.c
+    d = {}
+    table = (
+        'toggle-find-ignore-case-option',
+        'toggle-find-in-body-option',
+        'toggle-find-in-headline-option',
+        'toggle-find-mark-changes-option',
+        'toggle-find-mark-finds-option',
+        'toggle-find-regex-option',
+        'toggle-find-word-option',
+        'toggle-find-wrap-around-option',
+    )
+    for cmd_name in table:
+        stroke = c.k.getShortcutForCommandName(cmd_name)
+        if not stroke: g.trace('missing',cmd_name) #,repr(stroke and stroke.s)
+        if stroke:
+            d[stroke.s] = cmd_name
+    return d
 .. @+node:ekr.20131118172620.16893: *8* wrapper
 def wrapper(self,event):
     
@@ -4868,8 +4920,17 @@ def keyPress(self,event):
             self.func()
         return True
     else:
-        # Do the normal processing.
-        return self.oldEvent(event)
+        ef = self.eventFilter
+        tkKey,ch,ignore = ef.toTkKey(event)
+        stroke = ef.toStroke(tkKey,ch) # ch not used.
+        cmd_name = self.d.get(stroke)
+        if cmd_name:
+            # g.trace(cmd_name,s,tkKey,stroke,
+            self.c.k.simulateCommand(cmd_name)
+            return True
+        else:
+            # Do the normal processing.
+            return self.oldEvent(event)
 .. @+node:ekr.20131118172620.16895: *8* keyRelease
 def keyRelease(self,event):
     return self.oldEvent(event)

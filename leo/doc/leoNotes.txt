@@ -10352,22 +10352,26 @@ During an incremental search:
     **Alt-R** does the same during a reverse search.
 
 '''
-.. @+node:ekr.20131119223150.16484: *3* OLD keyRelease
-def keyRelease(self,event):
+.. @+node:ekr.20131118172620.16876: *3* class ButtonEventFilter (not used)
+class ButtonEventFilter(QtCore.QObject):
     
-    # c = self.c
-    # ef = self.eventFilter
-    # ftm = c.findCommands.ftm
-    # s = g.u(event.text())
-    return self.oldEvent(event)
-    # tkKey,ch,ignore = ef.toTkKey(event)
-    # stroke = ef.toStroke(tkKey,ch) # ch not used.
-    # cmd_name = ftm.shortcuts_d.get(stroke)
-    # g.trace('key-release',s,tkKey,stroke,cmd_name)
-    # if False and cmd_name:
-        # c.k.simulateCommand(cmd_name)
-        # return True
-    # else:
-        # return self.oldEvent(event)
+    def __init__(self,c,w):
+        # g.trace('ButtonEventFilter',tag,w)
+        QtCore.QObject.__init__(self) # Init the base class.
+        self.c = c
+        self.w = w
+
+    @others
+.. @+node:ekr.20131118172620.16879: *4* eventFilter (ButtonEventFilter)
+def eventFilter(self,obj,event):
+
+    ev = QtCore.QEvent
+    eType = event.type()
+    print(event)
+    if eType in (ev.KeyPress,ev.KeyRelease):
+        print('key',obj)
+    return True
+
+        
 .. @-all
 .. @-leo

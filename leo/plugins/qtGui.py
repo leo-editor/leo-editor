@@ -2131,7 +2131,7 @@ class DynamicWindow(QtGui.QMainWindow):
         '''It's useful to create this late, because c.config is now valid.'''
         self.createFindTab(self.findTab,self.findScrollArea)
         self.findScrollArea.setWidget(self.findTab)
-    #@+node:ekr.20110605121601.18146: *6* dw.createMainLayout 
+    #@+node:ekr.20110605121601.18146: *6* dw.createMainLayout
     def createMainLayout (self,parent):
 
         # c = self.leo_c
@@ -2458,28 +2458,6 @@ class DynamicWindow(QtGui.QMainWindow):
         # Official ivars (in addition to checkbox ivars).
         self.leo_find_widget = tab_widget # A scrollArea.
         ftm.init_widgets()
-    #@+node:ekr.20131118172620.16876: *7* class ButtonEventFilter (not used)
-    class ButtonEventFilter(QtCore.QObject):
-        
-        def __init__(self,c,w):
-            # g.trace('ButtonEventFilter',tag,w)
-            QtCore.QObject.__init__(self) # Init the base class.
-            self.c = c
-            self.w = w
-
-        #@+others
-        #@+node:ekr.20131118172620.16879: *8* eventFilter (ButtonEventFilter)
-        def eventFilter(self,obj,event):
-
-            ev = QtCore.QEvent
-            eType = event.type()
-            print(event)
-            if eType in (ev.KeyPress,ev.KeyRelease):
-                print('key',obj)
-            return True
-
-                
-        #@-others
     #@+node:ekr.20131118152731.16847: *7* dw.create_find_grid
     def create_find_grid(self,parent):
         grid = self.createGrid(parent,'findGrid',margin=10,spacing=10)
@@ -2650,13 +2628,34 @@ class DynamicWindow(QtGui.QMainWindow):
             #@+node:ekr.20131119204029.18406: *9* ctor
             def __init__(self,c,w,next_w,func):
                 self.c = c
+                self.d = self.create_d() # Keys: strokes; values: command-names.
                 self.w = w
                 self.next_w = next_w
-                # Not needed.
-                # self.eventFilter = leoQtEventFilter(c,w,'EventWrapper')
+                self.eventFilter = leoQtEventFilter(c,w,'EventWrapper')
                 self.func = func
                 self.oldEvent = w.event
                 w.event = self.wrapper
+            #@+node:ekr.20131120054058.16281: *9* create_d
+            def create_d(self):
+                '''Create self.d dictionary.'''
+                c = self.c
+                d = {}
+                table = (
+                    'toggle-find-ignore-case-option',
+                    'toggle-find-in-body-option',
+                    'toggle-find-in-headline-option',
+                    'toggle-find-mark-changes-option',
+                    'toggle-find-mark-finds-option',
+                    'toggle-find-regex-option',
+                    'toggle-find-word-option',
+                    'toggle-find-wrap-around-option',
+                )
+                for cmd_name in table:
+                    stroke = c.k.getShortcutForCommandName(cmd_name)
+                    if not stroke: g.trace('missing',cmd_name) #,repr(stroke and stroke.s)
+                    if stroke:
+                        d[stroke.s] = cmd_name
+                return d
             #@+node:ekr.20131118172620.16893: *9* wrapper
             def wrapper(self,event):
                 
@@ -2699,8 +2698,17 @@ class DynamicWindow(QtGui.QMainWindow):
                         self.func()
                     return True
                 else:
-                    # Do the normal processing.
-                    return self.oldEvent(event)
+                    ef = self.eventFilter
+                    tkKey,ch,ignore = ef.toTkKey(event)
+                    stroke = ef.toStroke(tkKey,ch) # ch not used.
+                    cmd_name = self.d.get(stroke)
+                    if cmd_name:
+                        # g.trace(cmd_name,s,tkKey,stroke,
+                        self.c.k.simulateCommand(cmd_name)
+                        return True
+                    else:
+                        # Do the normal processing.
+                        return self.oldEvent(event)
             #@+node:ekr.20131118172620.16895: *9* keyRelease
             def keyRelease(self,event):
                 return self.oldEvent(event)
