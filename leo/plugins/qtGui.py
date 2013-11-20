@@ -1904,7 +1904,7 @@ def zoom_in(event=None, delta=1):
 
     c = event['c']
     c.font_size_delta += delta
-    ss = g.expand_css_constants(c.active_stylesheet, c.font_size_delta)
+    ss = g.expand_css_constants(c, c.active_stylesheet, c.font_size_delta)
     c.frame.body.bodyCtrl.widget.setStyleSheet(ss)
     
 @g.command("zoom-out")
@@ -2854,7 +2854,7 @@ class DynamicWindow(QtGui.QMainWindow):
             # store *before* expanding, so later expansions get new zoom
             c.active_stylesheet = sheet
             
-            sheet = g.expand_css_constants(sheet, c.font_size_delta)
+            sheet = g.expand_css_constants(c, sheet, c.font_size_delta)
             
             if trace: g.trace(len(sheet))
             w = self.leo_ui
@@ -3152,7 +3152,7 @@ class LeoBaseTabWidget (QtGui.QTabWidget):
             else:
                 sheet = '\n'.join(sheet)
             c.active_stylesheet = sheet
-            sheet = g.expand_css_constants(sheet, c.font_size_delta)
+            sheet = g.expand_css_constants(c, sheet, c.font_size_delta)
             w.setStyleSheet(sheet)
         else:
             main = g.app.gui.frameFactory.masterFrame
