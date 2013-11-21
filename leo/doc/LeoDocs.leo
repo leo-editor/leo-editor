@@ -22745,21 +22745,21 @@ without interfering with my normal work flow.
 
 </t>
 <t tx="ekr.20131120115900.16327"></t>
-<t tx="ekr.20131120115900.16329">###########
-Screencasts
-###########
+<t tx="ekr.20131120115900.16329">################
+Videos about Leo
+################
 
 .. |br| raw:: html
 
    &lt;br /&gt;
 
-This page links to screencasts describing Leo.  **Important notes**:
+This page links to videos about Leo.  **Important notes**:
 
-- Screencasts hosted at screencast.com look a bit clearer than YouTube videos, |br|
+- Videos hosted at screencast.com look a bit clearer than YouTube videos, |br|
   but they may not always be available due to bandwidth limits.
-- screencast.com viewers: be sure to click the "Full Size" button. |br|
-- YouTube viewers: be sure to select top quality in the video settings. |br|
-  YouTube videos typically become much clearer after a few seconds.
+- screencast.com viewers: click the "Full Size" button. |br|
+- YouTube viewers: select top quality in the video settings. |br|
+  YouTube videos typically become clearer after a few seconds.
 
 .. _`Using Leo's Find Pane (screencast.com)`: http://www.screencast.com/t/fkHH0uwmRAMQ
 .. _`Using Leo's Find Pane (YouTube)`: https://www.youtube.com/watch?v=N5vRTGdA4Aw
@@ -22770,17 +22770,22 @@ This page links to screencasts describing Leo.  **Important notes**:
 .. _`Using clones to speed work flow (screencast.com)`: http://www.screencast.com/t/l8W9H5G8zB
 .. _`Using clones to speed work flow (YouTube)`: https://www.youtube.com/watch?v=DsHEHNLKi2o
 
-screencast.com screencasts:
+Videos at screencast.com:
 
 - `Basic: Using Leo's Find pane &lt;http://www.screencast.com/t/fkHH0uwmRAMQ&gt;`_
 - `Basic: Using Leo's minibuffer &lt;http://www.screencast.com/t/tEQ7brI4n6&gt;`_
 - `Intermediate: Using clones to speed your work flow &lt;http://www.screencast.com/t/l8W9H5G8zB&gt;`_
 
-YouTube screencasts:
+YouTube videos:
 
 - `Basic: Using Leo's Find pane &lt;https://www.youtube.com/watch?v=N5vRTGdA4Aw&gt;`_
 - `Basic: Using Leo's minibuffer &lt;https://www.youtube.com/watch?v=dEaGOi6hVpo&gt;`_
 - `Intermediate: Using clones to speed your work flow &lt;https://www.youtube.com/watch?v=DsHEHNLKi2o&gt;`_
+- `Ville Vianio's introduction to Leo &lt;http://www.youtube.com/watch?v=Zu6J-J0qFi0&gt;`_
+
+Other videos about Leo:
+
+- `Terry Brown talks introduces his bookmarks plugin &lt;https://vimeo.com/77720098&gt;`_
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few

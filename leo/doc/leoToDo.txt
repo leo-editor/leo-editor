@@ -6,9 +6,6 @@
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 
-** Change screencast to video.
-    - And add other videos about Leo.
-
 Thursday: Create screencast about settings.
 
 Easy:
