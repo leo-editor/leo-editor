@@ -5558,6 +5558,17 @@ name.
 The first line is significant.  All others are comments.
 
 The fix was to ParserBaseClass.doItems.
+.. @+node:ekr.20131121050226.16330: *3* Improved debugging capabilities
+Disambiguated various debug switches.
+
+The master debug switches are now::
+    
+    g.app.debug_app
+    g.app.debug_widgets
+
+Added leoQtEventFilter.traceWidget.
+
+Added toggle-debug button in my copy of leoPy.leo.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.

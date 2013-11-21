@@ -8745,15 +8745,13 @@ class leoQtEventFilter(QtCore.QObject):
         verbose = False
         traceEvent = False # True: call self.traceEvent.
         traceKey = (True or g.trace_masterKeyHandler)
-        traceWidget = True
         c = self.c ; k = c.k
         eventType = event.type()
         ev = QtCore.QEvent
         gui = g.app.gui
         aList = []
-        # Widget traces work regardless of the trace switch.
-        if traceWidget:
-            self.traceWidget(event)
+        # g.app.debug_app enables traceWidget.
+        self.traceWidget(event)
         kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
         # Hack: QLineEdit generates ev.KeyRelease only on Windows,Ubuntu
         lineEditKeyKinds = [ev.KeyPress,ev.KeyRelease]
@@ -9230,6 +9228,7 @@ class leoQtEventFilter(QtCore.QObject):
         # pylint: disable=E1101
         # E1101:9240,0:Class 'QEvent' has no 'CloseSoftwareInputPanel' member
         # E1101:9267,0:Class 'QEvent' has no 'RequestSoftwareInputPanel' member
+        if not g.app.debug_app: return
         c = self.c
         e = QtCore.QEvent
         assert isinstance(event,QtCore.QEvent)
@@ -9307,7 +9306,14 @@ class leoQtEventFilter(QtCore.QObject):
             c.frame.log and c.frame.log.logCtrl and c.frame.log.logCtrl.widget,
         )
         w = QtGui.QApplication.focusWidget()
-        if w is None:
+        if g.app.debug_widgets: # verbose:
+            for d in (ignore_d,focus_d,line_edit_ignore_d,none_ignore_d):
+                t = d.get(et)
+                if t: break
+            else:
+                t = et
+            g.trace('%20s %s' % (t,w.__class__))
+        elif w is None:
             if et not in none_ignore_d and et not in ignore_d:
                 t = focus_d.get(et) or et
                 g.trace('None %s' % (t))

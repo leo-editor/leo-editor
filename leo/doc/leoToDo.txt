@@ -18,6 +18,7 @@
 
 Next:
 - Remove g.trace switches.  Nobody ever uses them.
+- Add Alt-Ctrl commands to Search menu.
 - Add focus-to-x commands, where x is a *temporary* log pane, like completions, commands, etc.
 - (Maybe) Add helpful @button nodes to leoSettings.leo.
 - Revise help-for-find-commands
