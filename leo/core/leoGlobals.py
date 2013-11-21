@@ -5300,7 +5300,7 @@ def executeScript (name):
     if theFile:
         theFile.close()
 #@+node:tbrown.20130411121812.28336: *3* g.expand_css_constants
-def expand_css_constants(c, sheet, font_size_delta=0):
+def expand_css_constants(c, sheet, font_size_delta=None):
     
     constants = find_constants_defined(sheet)
     
@@ -5311,7 +5311,7 @@ def expand_css_constants(c, sheet, font_size_delta=0):
     # adjust @font-size-body by font_size_delta
     # easily extendable to @font-size-*
     fsb = c.config.getString("font-size-body")
-    if font_size_delta and fsb:
+    if font_size_delta and (fsb is not None):
         size = fsb.replace("px", "")
         size = min(250, max(1, int(size) + font_size_delta))
         

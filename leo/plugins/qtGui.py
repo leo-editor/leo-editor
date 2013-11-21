@@ -2837,13 +2837,11 @@ class DynamicWindow(QtGui.QMainWindow):
         # g.trace('vert',vert)
 
     #@+node:ekr.20110605121601.18175: *4* setStyleSheets & helper (DynamicWindow)
-    styleSheet_inited = False
-
     def setStyleSheets(self):
 
         trace = False
         c = self.leo_c
-
+        
         sheet = c.config.getData('qt-gui-plugin-style-sheet')
         if sheet:
             if '\n' in sheet[0]:
@@ -4352,7 +4350,7 @@ class leoQtFrame (leoFrame.leoFrame):
 
             self.put('')
             self.update()
-            c.frame.top.setStyleSheets()
+            #X c.frame.top.setStyleSheets()
         #@+node:ekr.20110605121601.18260: *5* clear, get & put/1
         def clear (self):
             self.put('')
