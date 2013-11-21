@@ -5554,6 +5554,10 @@ Changed add_border and remove_border in qtGui.py
 .. @+node:ekr.20131120193808.16326: *3* Allow comments after @data setting-name
 Changed ParserBaseClass.parseHeadline so it ignores everything after @data
 name.
+.. @+node:ekr.20131120193808.17513: *3* Allow comment lines in @item nodes
+The first line is significant.  All others are comments.
+
+The fix was to ParserBaseClass.doItems.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.

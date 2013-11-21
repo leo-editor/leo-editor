@@ -6,16 +6,41 @@
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 
-Thursday: Create screencast about settings.
-Announce that Ctrl-F now bound to start-search.  You may want to change myLeoSettigns.leo.
+- Announce that Ctrl-F now bound to start-search.
+  You may have to change myLeoSettigns.leo.
+  
+- Create screencast about settings.
 
-Easy:
-- Only the first line of body text in an @menu node should be significant.
-- Revise help-for-find-commands
+** toggle-debug-mode
+
+- Make sure to capture search string, even if do ctrl-g, etc.
+- Don't put unknown ctrl keys in minibuffer (suppress ctrl-shift-r)
 
 Next:
-- Addfocus to x, where x is a *temporary* log pane, like completions, commands, etc.
+- Remove g.trace switches.  Nobody ever uses them.
+- Add focus-to-x commands, where x is a *temporary* log pane, like completions, commands, etc.
 - (Maybe) Add helpful @button nodes to leoSettings.leo.
+- Revise help-for-find-commands
+* More screenshots!
+.. @+node:ekr.20131121050226.16328: *3* settings vid
+open leoSettings.leo.
+open myLeoSettings.leo.
+
+Concentrate on:
+    - visual settings.
+    - keyboard shortcuts.
+
+print-settings, print-bindings, print-commands.
+
+Trick: use small, easily/quickly started, file to test settings.
+    Demo: put console *behind* window.
+.. @+node:ekr.20131121050226.16327: *3* reload command?
+**Not** essential.
+
+Ideas:
+- Don't reload any files!
+- Only reprocess leoSettings.leo or myLeoSettings.leo if they are actually open.
+- Change LoadManager to handle a reload flag.
 .. @+node:ekr.20131117054619.16683: *3* new_find
 @language rest
 
@@ -85,10 +110,6 @@ different font sizes, coloring schemes, plugins, etc.
 .. @+node:ekr.20131116212505.16665: *3* Screencasts
 ** Send note to Dave Winer when they are ready.
 ** Announcements to comp.lang.python & SourceForge when they are ready.
-
-Links to screencasts on Leo's home page.
-    Download to YouTube.
-    Download to leoeditor.com? (Ask Speed first).
     
 ** Common tasks like changing settings, importing files and file structures
 etc. shouldn't eat up all the time people are willing to invest in trying

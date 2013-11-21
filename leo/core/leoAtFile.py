@@ -127,7 +127,6 @@ class atFile:
 
         # **Warning**: all these ivars must **also** be inited in initCommonIvars.
         self.c = c
-        self.debug = False
         self.fileCommands = c.fileCommands
         self.errors = 0 # Make sure at.error() works even when not inited.
 

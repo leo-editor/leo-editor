@@ -8745,17 +8745,18 @@ class leoQtEventFilter(QtCore.QObject):
         verbose = False
         traceEvent = False # True: call self.traceEvent.
         traceKey = (True or g.trace_masterKeyHandler)
+        traceWidget = True
         c = self.c ; k = c.k
         eventType = event.type()
         ev = QtCore.QEvent
         gui = g.app.gui
         aList = []
-
+        # Widget traces work regardless of the trace switch.
+        if traceWidget:
+            self.traceWidget(event)
         kinds = [ev.ShortcutOverride,ev.KeyPress,ev.KeyRelease]
-
         # Hack: QLineEdit generates ev.KeyRelease only on Windows,Ubuntu
         lineEditKeyKinds = [ev.KeyPress,ev.KeyRelease]
-
         # Important:
         # QLineEdit: ignore all key events except keyRelease events.
         # QTextEdit: ignore all key events except keyPress events.
@@ -8768,7 +8769,6 @@ class leoQtEventFilter(QtCore.QObject):
                 eventType == ev.KeyPress)
         else:
             self.keyIsActive = False
-
         if eventType == ev.WindowActivate:
             gui.onActivateEvent(event,c,obj,self.tag)
             override = False ; tkKey = None
@@ -8804,7 +8804,6 @@ class leoQtEventFilter(QtCore.QObject):
                     g.app.gui.add_border(c,obj)
                 elif eventType == ev.FocusOut:
                     g.app.gui.remove_border(c,obj)
-
         if self.keyIsActive:
             shortcut = self.toStroke(tkKey,ch) # ch is unused.
             if override:
@@ -9138,37 +9137,34 @@ class leoQtEventFilter(QtCore.QObject):
 
         mods = [b for a,b in table if (modifiers & a)]
         return mods
-    #@+node:ekr.20110605121601.18548: *3* traceEvent
+    #@+node:ekr.20110605121601.18548: *3* traceEvent (leoQtEventFilter)
     def traceEvent (self,obj,event,tkKey,override):
 
         if g.unitTesting: return
-
+        # http://qt-project.org/doc/qt-4.8/qevent.html#properties
         traceFocus = False
         traceKey   = True
         traceLayout = False
         traceMouse = False
-
         c,e = self.c,QtCore.QEvent
         eventType = event.type()
-
         show = []
-
         ignore = [
             e.MetaCall, # 43
             e.Timer, # 1
             e.ToolTip, # 110
         ]
-
         focus_events = (
-            (e.Enter,'enter'),
-            (e.Leave,'leave'),
-            (e.FocusIn,'focus-in'),
-            (e.FocusOut,'focus-out'),
+            (e.Enter,'enter'), # 10
+            (e.Leave,'leave'), # 11
+            (e.FocusIn,'focus-in'), # 8
+            (e.FocusOut,'focus-out'), # 9
             (e.Hide,'hide'), # 18
             (e.HideToParent, 'hide-to-parent'), # 27
             (e.HoverEnter, 'hover-enter'), # 127
             (e.HoverLeave,'hover-leave'), # 128
             (e.HoverMove,'hover-move'), # 129
+            # (e.LeaveEditFocus,'leave-edit-focus'), # 151
             (e.Show,'show'), # 17
             (e.ShowToParent,'show-to-parent'), # 26
             (e.WindowActivate,'window-activate'), # 24
@@ -9177,9 +9173,10 @@ class leoQtEventFilter(QtCore.QObject):
             (e.WindowDeactivate,'window-deactivate'), # 25
         )
         key_events = (
-            (e.KeyPress,'key-press'),
-            (e.KeyRelease,'key-release'),
-            (e.ShortcutOverride,'shortcut-override'),
+            (e.KeyPress,'key-press'), # 6
+            (e.KeyRelease,'key-release'), # 7
+            (e.Shortcut,'shortcut'), # 117
+            (e.ShortcutOverride,'shortcut-override'), # 51
         )
         layout_events = (
             (e.ChildPolished,'child-polished'), # 69
@@ -9188,7 +9185,7 @@ class leoQtEventFilter(QtCore.QObject):
             (e.ChildAdded,'child-added'), # 68
             (e.DynamicPropertyChange,'dynamic-property-change'), # 170
             (e.FontChange,'font-change'),# 97
-            (e.LayoutRequest,'layout-request'),
+            (e.LayoutRequest,'layout-request'), # 76
             (e.Move,'move'), # 13 widget's position changed.
             (e.PaletteChange,'palette-change'),# 39
             (e.ParentChange,'parent-change'), # 21
@@ -9207,30 +9204,123 @@ class leoQtEventFilter(QtCore.QObject):
             (e.MouseButtonRelease,'mouse-release'), # 3
             (e.Wheel,'mouse-wheel'), # 31
         )
-
         option_table = (
             (traceFocus,focus_events),
             (traceKey,key_events),
             (traceLayout,layout_events),
             (traceMouse,mouse_events),
         )
-
         for option,table in option_table:
             if option:
                 show.extend(table)
             else:
                 for n,tag in table:
                     ignore.append(n)
-
         for val,kind in show:
             if eventType == val:
                 g.trace(
                     '%5s %18s in-state: %5s key: %s override: %s: obj: %s' % (
                     self.tag,kind,repr(c.k and c.k.inState()),tkKey,override,obj))
                 return
-
         if eventType not in ignore:
             g.trace('%3s:%s obj:%s' % (eventType,'unknown',obj))
+    #@+node:ekr.20131121050226.16331: *3* traceWidget (leoQtEventFilter)
+    def traceWidget(self,event):
+        '''Show unexpected events in unusual widgets.'''
+        # pylint: disable=E1101
+        # E1101:9240,0:Class 'QEvent' has no 'CloseSoftwareInputPanel' member
+        # E1101:9267,0:Class 'QEvent' has no 'RequestSoftwareInputPanel' member
+        c = self.c
+        e = QtCore.QEvent
+        assert isinstance(event,QtCore.QEvent)
+        et = event.type()
+        # http://qt-project.org/doc/qt-4.8/qevent.html#properties
+        ignore_d = {
+            e.ChildAdded:'child-added', # 68
+            e.ChildPolished:'child-polished', # 69
+            e.ChildRemoved:'child-removed', # 71
+            e.Close:'close', # 19
+            e.CloseSoftwareInputPanel:'close-software-input-panel', # 200
+            178:'contents-rect-change', # 178
+            # e.DeferredDelete:'deferred-delete', # 52 (let's trace this)
+            e.DynamicPropertyChange:'dynamic-property-change', # 170
+            e.FocusOut:'focus-out', # 9 (We don't care if we are leaving an unknown widget)
+            e.FontChange:'font-change',# 97
+            e.Hide:'hide', # 18
+            e.HideToParent: 'hide-to-parent', # 27
+            e.HoverEnter: 'hover-enter', # 127
+            e.HoverLeave:'hover-leave', # 128
+            e.HoverMove:'hover-move', # 129
+            e.KeyPress:'key-press', # 6
+            e.KeyRelease:'key-release', # 7
+            e.LayoutRequest:'layout-request', # 76
+            e.Leave:'leave', # 11 (We don't care if we are leaving an unknown widget)
+            # e.LeaveEditFocus:'leave-edit-focus', # 151
+            e.MetaCall:'meta-call', # 43
+            e.Move:'move', # 13 widget's position changed.
+            e.MouseButtonPress:'mouse-button-press', # 2
+            e.MouseButtonRelease:'mouse-button-release', # 3
+            e.MouseButtonDblClick:'mouse-button-double-click', # 4
+            e.MouseMove:'mouse-move', # 5
+            e.Paint:'paint', # 12
+            e.PaletteChange:'palette-change', # 39
+            e.ParentChange:'parent-change', # 21
+            e.Polish:'polish', # 75
+            e.PolishRequest:'polish-request', # 74
+            e.RequestSoftwareInputPanel:'request-software-input-panel', # 199
+            e.Resize:'resize', # 14
+            e.ShortcutOverride:'shortcut-override', # 51
+            e.Show:'show', # 17
+            e.ShowToParent:'show-to-parent', # 26
+            e.StyleChange:'style-change', # 100
+            e.StatusTip:'status-tip', # 112
+            e.Timer:'timer', # 1
+            e.ToolTip:'tool-tip', # 110
+            e.WindowBlocked:'window-blocked', # 103
+            e.WindowUnblocked:'window-unblocked', # 104
+            e.ZOrderChange:'z-order-change', # 126
+        }
+        focus_d = {
+            e.DeferredDelete:'deferred-delete', # 52
+            e.Enter:'enter', # 10
+            e.FocusIn:'focus-in', # 8
+            e.WindowActivate:'window-activate', # 24
+            e.WindowDeactivate:'window-deactivate', # 25
+        }
+        line_edit_ignore_d = {
+            e.Enter:'enter', # 10 (mouse over)
+            e.Leave:'leave', # 11 (mouse over)
+            e.FocusOut:'focus-out', # 9
+            e.WindowActivate:'window-activate', # 24
+            e.WindowDeactivate:'window-deactivate', # 25
+        }
+        none_ignore_d = {
+            e.Enter:'enter', # 10 (mouse over)
+            e.Leave:'leave', # 11 (mouse over)
+            e.FocusOut:'focus-out', # 9
+            e.WindowActivate:'window-activate', # 24
+        }
+        table = (
+            c.frame.miniBufferWidget and c.frame.miniBufferWidget.widget,
+            c.frame.body.bodyCtrl and c.frame.body.bodyCtrl.widget,
+            c.frame.tree and c.frame.tree.treeWidget,
+            c.frame.log and c.frame.log.logCtrl and c.frame.log.logCtrl.widget,
+        )
+        w = QtGui.QApplication.focusWidget()
+        if w is None:
+            if et not in none_ignore_d and et not in ignore_d:
+                t = focus_d.get(et) or et
+                g.trace('None %s' % (t))
+        elif w not in table:
+            if isinstance(w,QtGui.QPushButton):
+                pass
+            elif isinstance(w,QtGui.QLineEdit):
+                if et not in ignore_d and et not in line_edit_ignore_d:
+                    t = focus_d.get(et) or et
+                    g.trace('%20s %s' % (t,w.__class__))
+            elif et not in ignore_d:
+                t = focus_d.get(et) or et
+                g.trace('%20s %s' % (t,w.__class__))
     #@-others
 #@+node:ekr.20110605121601.18550: ** Syntax coloring
 #@+node:ekr.20110605121601.18551: *3* leoQtColorizer

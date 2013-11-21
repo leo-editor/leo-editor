@@ -1481,7 +1481,7 @@ class debugCommandsClass (baseEditCommandsClass):
         return {
 
             # debugging.
-            'debug':        self.debug,
+            'debug':        self.invoke_debugger,
             'pdb':          self.pdb,
             'print-focus':  self.printFocus,
 
@@ -1514,8 +1514,8 @@ class debugCommandsClass (baseEditCommandsClass):
         """Run Python's Gargabe Collector."""
 
         g.collectGarbage()
-    #@+node:ekr.20060519003651: *3* debug & helper
-    def debug (self,event=None):
+    #@+node:ekr.20060519003651: *3* invoke_debugger & helper
+    def invoke_debugger (self,event=None):
 
         '''Start an external debugger in another process to debug a script.
         The script is the presently selected text or then entire tree's script.'''
