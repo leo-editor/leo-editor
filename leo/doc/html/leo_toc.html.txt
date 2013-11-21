@@ -27,6 +27,7 @@ Leo's Documentation Page
 .. toctree::
    :maxdepth: 2
 
+   screencasts
    Tutorial <tutorial>
    Users Guide <usersguide>
    leoandotherprograms

@@ -2617,8 +2617,9 @@ find-character                              = None ### = Alt-P
 find-character-extend-selection             = None ### = Alt-Shift-P
 
 # To start finds and changes...
-search-with-present-options         = Ctrl-f
-set-replace-string                  = None ### Ctrl-Shift-r
+start-search                        = Ctrl-f
+search-with-present-options         = None # Ctrl-f
+set-replace-string                  = None # Ctrl-Shift-r
 find-tab-hide                       = None
 find-tab-open                       = None
 

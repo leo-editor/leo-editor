@@ -162,7 +162,8 @@
 <v t="ekr.20101112045055.5064" descendentVnodeUnknownAttributes="7d7100285503302e3171017d710255097374725f6174696d657103550c313337363431323739362e3071047355013071057d71066803550c313337363431323932332e307107735503302e3071087d71096803550c313337363431323932372e30710a73752e"><vh>@file plugin_catalog.py</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
 <v t="ekr.20131005214621.16088"><vh>Home page</vh>
-<v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
+<v t="ekr.20100808060203.4273"
+expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20131008041326.16065"><vh>Links page</vh>
 <v t="ekr.20131030184445.16582"><vh>@rst html/leoLinks.html </vh></v>
@@ -172,6 +173,9 @@
 <v t="ekr.20090811090022.14452"><vh>Windows screen shots</vh></v>
 <v t="ekr.20090811090022.14453"><vh>Linux screen shots</vh></v>
 </v>
+</v>
+<v t="ekr.20131120115900.16327"><vh>Screencasts</vh>
+<v t="ekr.20131120115900.16329"><vh>@rst html/screencasts.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
 <v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028550b302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473550b302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473550b302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473550b302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
@@ -22739,6 +22743,49 @@ As another example, when starting the vim-mode project I created a .leo
 file containing @bool vim-mode = True. By opening this file I test vim mode
 without interfering with my normal work flow.
 
+</t>
+<t tx="ekr.20131120115900.16327"></t>
+<t tx="ekr.20131120115900.16329">################
+Videos about Leo
+################
+
+.. |br| raw:: html
+
+   &lt;br /&gt;
+
+This page links to videos about Leo.  **Important notes**:
+
+- Videos hosted at screencast.com look a bit clearer than YouTube videos, |br|
+  but they may not always be available due to bandwidth limits.
+- screencast.com viewers: click the "Full Size" button. |br|
+- YouTube viewers: select top quality in the video settings. |br|
+  YouTube videos typically become clearer after a few seconds.
+
+.. _`Using Leo's Find Pane (screencast.com)`: http://www.screencast.com/t/fkHH0uwmRAMQ
+.. _`Using Leo's Find Pane (YouTube)`: https://www.youtube.com/watch?v=N5vRTGdA4Aw
+
+.. _`Using Leo's minibuffer (screencast.com)`: http://www.screencast.com/t/tEQ7brI4n6
+.. _`Using Leo's minibuffer (YouTube)`: https://www.youtube.com/watch?v=dEaGOi6hVpo
+
+.. _`Using clones to speed work flow (screencast.com)`: http://www.screencast.com/t/l8W9H5G8zB
+.. _`Using clones to speed work flow (YouTube)`: https://www.youtube.com/watch?v=DsHEHNLKi2o
+
+Videos at screencast.com:
+
+- `Basic: Using Leo's Find pane &lt;http://www.screencast.com/t/fkHH0uwmRAMQ&gt;`_
+- `Basic: Using Leo's minibuffer &lt;http://www.screencast.com/t/tEQ7brI4n6&gt;`_
+- `Intermediate: Using clones to speed your work flow &lt;http://www.screencast.com/t/l8W9H5G8zB&gt;`_
+
+YouTube videos:
+
+- `Basic: Using Leo's Find pane &lt;https://www.youtube.com/watch?v=N5vRTGdA4Aw&gt;`_
+- `Basic: Using Leo's minibuffer &lt;https://www.youtube.com/watch?v=dEaGOi6hVpo&gt;`_
+- `Intermediate: Using clones to speed your work flow &lt;https://www.youtube.com/watch?v=DsHEHNLKi2o&gt;`_
+- `Ville Vianio's introduction to Leo &lt;http://www.youtube.com/watch?v=Zu6J-J0qFi0&gt;`_
+
+Other videos about Leo:
+
+- `Terry Brown talks introduces his bookmarks plugin &lt;https://vimeo.com/77720098&gt;`_
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few

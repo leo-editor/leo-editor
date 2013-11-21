@@ -6,23 +6,16 @@
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 
-Today:
-- Put links to screencasts on Leo's home page.
+Thursday: Create screencast about settings.
+Announce that Ctrl-F now bound to start-search.  You may want to change myLeoSettigns.leo.
+
+Easy:
+- Only the first line of body text in an @menu node should be significant.
 - Revise help-for-find-commands
-- Add open-irc-leo command:
-    # Works.
-    import webbrowser
-    webbrowser.open("http://webchat.freenode.net/?channels=%23leo&uio=d4")
 
 Next:
-- Need focus to x, where x is a *temporary* log pane, like completions, commands, etc.
-- Only the first line of body text in an @menu node should be significant.
-- Does Leo allow comments after @data setting-name?
-- Add helpful @button nodes to leoSettings.leo?
-
-
-
-
+- Addfocus to x, where x is a *temporary* log pane, like completions, commands, etc.
+- (Maybe) Add helpful @button nodes to leoSettings.leo.
 .. @+node:ekr.20131117054619.16683: *3* new_find
 @language rest
 
