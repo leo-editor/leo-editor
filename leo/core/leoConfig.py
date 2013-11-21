@@ -244,6 +244,7 @@ class ParserBaseClass:
     def doData (self,p,kind,name,val):
 
         # New in Leo 4.11: do not strip lines.
+        # g.trace('kind',kind,'name',name,'val',val)
         c = self.c
         data = [z for z in g.splitLines(p.b) if not z.startswith('#')]
         self.set(p,kind,name,data)
@@ -888,25 +889,33 @@ class ParserBaseClass:
                 d[fontKind] = name,val # Used only by doFont.
     #@+node:ekr.20041119205148: *4* parseHeadline
     def parseHeadline (self,s):
-
-        """Parse a headline of the form @kind:name=val
-        Return (kind,name,val)."""
-
+        """
+        Parse a headline of the form @kind:name=val
+        Return (kind,name,val).
+        Leo 4.11.1: Ignore everything after @data name.
+        """
         kind = name = val = None
-
         if g.match(s,0,'@'):
             i = g.skip_id(s,1,chars='-')
+            i = g.skip_ws(s,i)
             kind = s[1:i].strip()
             if kind:
                 # name is everything up to '='
-                j = s.find('=',i)
-                if j == -1:
-                    name = s[i:].strip()
+                if kind == 'data':
+                    # i = g.skip_ws(s,i)
+                    j = s.find(' ',i)
+                    if j == -1:
+                        name = s[i:].strip()
+                    else:
+                        name = s[i:j].strip()
                 else:
-                    name = s[i:j].strip()
-                    # val is everything after the '='
-                    val = s[j+1:].strip()
-
+                    j = s.find('=',i)
+                    if j == -1:
+                        name = s[i:].strip()
+                    else:
+                        name = s[i:j].strip()
+                        # val is everything after the '='
+                        val = s[j+1:].strip()
         # g.trace("%50s %10s %s" %(name,kind,val))
         return kind,name,val
     #@+node:ekr.20070411101643.2: *4* parseOpenWith & helper

@@ -7,10 +7,10 @@
 @language rest
 
 Thursday: Create screencast about settings.
+Announce that Ctrl-F now bound to start-search.  You may want to change myLeoSettigns.leo.
 
 Easy:
 - Only the first line of body text in an @menu node should be significant.
-- Does Leo allow comments after @data setting-name?
 - Revise help-for-find-commands
 
 Next:
