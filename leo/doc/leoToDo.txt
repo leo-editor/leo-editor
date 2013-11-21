@@ -6,9 +6,10 @@
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 
-First:
-* upload the other videos to YouTube.
-* Create screencast about settings.
+** Change screencast to video.
+    - And add other videos about Leo.
+
+Thursday: Create screencast about settings.
 
 Easy:
 - Only the first line of body text in an @menu node should be significant.

@@ -162,7 +162,8 @@
 <v t="ekr.20101112045055.5064" descendentVnodeUnknownAttributes="7d7100285503302e3171017d710255097374725f6174696d657103550c313337363431323739362e3071047355013071057d71066803550c313337363431323932332e307107735503302e3071087d71096803550c313337363431323932372e30710a73752e"><vh>@file plugin_catalog.py</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
 <v t="ekr.20131005214621.16088"><vh>Home page</vh>
-<v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
+<v t="ekr.20100808060203.4273"
+expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20131008041326.16065"><vh>Links page</vh>
 <v t="ekr.20131030184445.16582"><vh>@rst html/leoLinks.html </vh></v>
@@ -22760,21 +22761,26 @@ This page links to screencasts describing Leo.  **Important notes**:
 - YouTube viewers: be sure to select top quality in the video settings. |br|
   YouTube videos typically become much clearer after a few seconds.
 
-.. _`Using clones to speed work flow (screencast.com)`: http://www.screencast.com/t/l8W9H5G8zB
+.. _`Using Leo's Find Pane (screencast.com)`: http://www.screencast.com/t/fkHH0uwmRAMQ
+.. _`Using Leo's Find Pane (YouTube)`: https://www.youtube.com/watch?v=N5vRTGdA4Aw
 
-.. _`The Find Pane (screencast.com)`: http://www.screencast.com/t/fkHH0uwmRAMQ
-.. _`The Find Pane (YouTube)`: https://www.youtube.com/watch?v=N5vRTGdA4Aw
-.. _`Using the minibuffer (screencast.com)`: http://www.screencast.com/t/tEQ7brI4n6
+.. _`Using Leo's minibuffer (screencast.com)`: http://www.screencast.com/t/tEQ7brI4n6
+.. _`Using Leo's minibuffer (YouTube)`: https://www.youtube.com/watch?v=dEaGOi6hVpo
+
+.. _`Using clones to speed work flow (screencast.com)`: http://www.screencast.com/t/l8W9H5G8zB
+.. _`Using clones to speed work flow (YouTube)`: https://www.youtube.com/watch?v=DsHEHNLKi2o
 
 screencast.com screencasts:
 
-- `Basic: The Find pane &lt;http://www.screencast.com/t/fkHH0uwmRAMQ&gt;`_ |br|
-- `Basic: Using the minibuffer &lt;http://www.screencast.com/t/tEQ7brI4n6&gt;`_ |br|
-- `Intermediate: Using clones to speed work flow &lt;http://www.screencast.com/t/l8W9H5G8zB&gt;`_ |br|
+- `Basic: Using Leo's Find pane &lt;http://www.screencast.com/t/fkHH0uwmRAMQ&gt;`_
+- `Basic: Using Leo's minibuffer &lt;http://www.screencast.com/t/tEQ7brI4n6&gt;`_
+- `Intermediate: Using clones to speed your work flow &lt;http://www.screencast.com/t/l8W9H5G8zB&gt;`_
 
 YouTube screencasts:
 
-- `Basic: The Find pane &lt;https://www.youtube.com/watch?v=N5vRTGdA4Aw&gt;`_
+- `Basic: Using Leo's Find pane &lt;https://www.youtube.com/watch?v=N5vRTGdA4Aw&gt;`_
+- `Basic: Using Leo's minibuffer &lt;https://www.youtube.com/watch?v=dEaGOi6hVpo&gt;`_
+- `Intermediate: Using clones to speed your work flow &lt;https://www.youtube.com/watch?v=DsHEHNLKi2o&gt;`_
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
