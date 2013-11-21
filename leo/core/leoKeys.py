@@ -3366,11 +3366,7 @@ class keyHandlerClass:
         k = self ; w = k.w
         if not w: return
 
-        # w.setBackgroundColor(self.minibuffer_background_color) # 'lightblue')
-
-        w.setBothColors(
-            self.minibuffer_background_color,
-            self.minibuffer_foreground_color)
+        w.setStyleClass('')  # normal state, not warning or error
 
         if label is not None:
             k.setLabel(label,protect)
@@ -3380,7 +3376,7 @@ class keyHandlerClass:
         k = self ; w = self.w
         if not w: return
 
-        w.setBackgroundColor(self.minibuffer_warning_color) # 'lightgrey')
+        w.setStyleClass( 'minibuffer_warning')
 
         if label is not None:
             k.setLabel(label)
@@ -3392,9 +3388,7 @@ class keyHandlerClass:
         k = self ; w = self.w
         if not w: return
 
-        w.setBothColors(
-            self.minibuffer_warning_color,
-            self.minibuffer_error_color)
+        w.setStyleClass('minibuffer_error')
 
         if label is not None:
             k.setLabel(label,protect)

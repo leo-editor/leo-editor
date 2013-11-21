@@ -1858,6 +1858,16 @@ class leoQtMinibuffer (leoQLineEditWidget):
     def setBothColors(self,background_color,foreground_color):
         self.widget.setStyleSheet('background-color:%s; color: %s' % (
             background_color,foreground_color))
+            
+    def setStyleClass(self,style_class):
+        self.widget.setProperty('style_class', style_class)
+        # to get the appearance to change because of a property
+        # change, unlike a focus or hover change, we need to
+        # re-apply the stylesheet.  But re-applying at the top level
+        # is too CPU hungry, so apply just to this widget instead.
+        # It may lag a bit when the style's edited, but the new top
+        # level sheet will get pushed down quite frequently.
+        self.widget.setStyleSheet(self.c.frame.top.styleSheet())
 #@-others
 #@-<< define text widget classes >>
 
