@@ -595,7 +595,11 @@ class ParserBaseClass:
                         else:
                             kind = tag
                             head = itemName
-                            body = p.b
+                            # body = p.b
+                            # 4.11.1: Only the first body line is significant.
+                            # This allows following comment lines.
+                            lines = [z for z in g.splitLines(p.b) if z.strip()]
+                            body = lines[0] if lines else ''
                             aList.append((kind,head,body),)
                             p.moveToThreadNext()
                             break
