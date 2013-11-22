@@ -5365,7 +5365,7 @@ def expand_css_constants(c, sheet, font_size_delta=None):
         passes -= 1
         to_do = find_constants_referenced(sheet)
     
-    if not passes and todo:
+    if not passes: ### and todo:
         g.es("To many iterations of substitution")
         
     sheet = sheet.replace('\\\n', '')  # join lines ending in \
