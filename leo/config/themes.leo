@@ -17,7 +17,7 @@
 <v t="tbrown.20131122094200.3830"><vh>@string color_theme = leo_dark_0</vh></v>
 <v t="tbrown.20131122094200.3831"><vh>@bool color_theme_is_dark = True</vh></v>
 <v t="tbrown.20131122094200.3832"><vh>@bk config 2013-11-20 12:14:30</vh></v>
-<v t="tbrown.20131122094200.3833" a="E"><vh>Settings for theme</vh>
+<v t="tbrown.20131122094200.3833"><vh>Settings for theme</vh>
 <v t="tbrown.20131122094200.3834"><vh>definitions</vh>
 <v t="tbrown.20131122094200.3835"><vh>@color solarized-base03 = #002b36</vh></v>
 <v t="tbrown.20131122094200.3836"><vh>@color solarized-base02 = #073642</vh></v>
@@ -76,8 +76,8 @@
 <v t="tbrown.20131122094200.3885"><vh>@string bg-gradient-hover = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @solarized-base00, stop:0.4 @solarized-base0, stop:0.6 @solarized-base0, stop:0.9 @solarized-base00)</vh></v>
 </v>
 </v>
-<v t="tbrown.20131122094200.3886" a="E"><vh>stylesheet &amp; source</vh>
-<v t="tbrown.20131122094200.3887" a="E"><vh>Color styles</vh>
+<v t="tbrown.20131122094200.3886"><vh>stylesheet &amp; source</vh>
+<v t="tbrown.20131122094200.3887"><vh>Color styles</vh>
 <v t="tbrown.20131122094200.3888"><vh>base</vh></v>
 <v t="tbrown.20131122094200.3889"><vh>body editor</vh></v>
 <v t="tbrown.20131122094200.3890"><vh>tree</vh></v>
@@ -111,9 +111,9 @@
 <v t="tbrown.20131122094200.3916"><vh>@@data qt-gui-plugin-style-sheet</vh></v>
 <v t="tbrown.20131122094200.3917"><vh>@data qt-gui-plugin-style-sheet</vh></v>
 </v>
-<v t="tbrown.20131122094200.3918" a="E"><vh>Solarized colorizing settings</vh>
+<v t="tbrown.20131122094200.3918"><vh>Solarized colorizing settings</vh>
 <v t="tbrown.20131122094200.3919"><vh>Solarized colors (Reference)</vh></v>
-<v t="tbrown.20131122094200.3920" a="E"><vh>Default colors, used if no language-specific color are in effect</vh>
+<v t="tbrown.20131122094200.3920"><vh>Default colors, used if no language-specific color are in effect</vh>
 <v t="tbrown.20131122094200.3921"><vh>@color blank_color = grey</vh></v>
 <v t="tbrown.20131122094200.3922"><vh>@color tab_color = red</vh></v>
 <v t="tbrown.20131122094200.3923"><vh>@color label_color = red</vh></v>
@@ -134,7 +134,7 @@
 </v>
 </v>
 <v t="tbrown.20131122094200.3938"><vh>@color plain null color = #6c71c4</vh></v>
-<v t="tbrown.20131122094200.3939" a="E"><vh>Body pane colors</vh>
+<v t="tbrown.20131122094200.3939"><vh>Body pane colors</vh>
 <v t="tbrown.20131122094200.3940"><vh>@@color body_text_background_color = #002b36</vh></v>
 <v t="tbrown.20131122094200.3941"><vh>@@color unselected_body_bg_color = #002b36</vh></v>
 <v t="tbrown.20131122094200.3942"><vh>@@color unselected_body_fg_color = #839496</vh></v>
@@ -142,7 +142,7 @@
 <v t="tbrown.20131122094200.3944"><vh>@@color insert_mode_bg_color = #002b36</vh></v>
 <v t="tbrown.20131122094200.3945"><vh>@@color insert_mode_fg_color = #839496</vh></v>
 </v>
-<v t="tbrown.20131122094200.3946" a="E"><vh>Outline pane colors</vh>
+<v t="tbrown.20131122094200.3946"><vh>Outline pane colors</vh>
 <v t="tbrown.20131122094200.3947"><vh>@@color headline_text_unselected_background_color = #ffffff</vh></v>
 <v t="tbrown.20131122094200.3948"><vh>@@color headline_text_unselected_foreground_color = None</vh></v>
 <v t="tbrown.20131122094200.3949"><vh>@@color headline_text_selected_background_color = #586e75</vh></v>
@@ -153,12 +153,13 @@
 <v t="tbrown.20131122094200.3954"><vh>@@color headline_text_editing_selection_background_color = None</vh></v>
 <v t="tbrown.20131122094200.3955"><vh>@@color outline_pane_background_color = #ffffff</vh></v>
 </v>
-<v t="tbrown.20131122094200.3956" a="E"><vh>Log pane colors</vh>
+<v t="tbrown.20131122094200.3956"><vh>Log pane colors</vh>
 <v t="tbrown.20131122094200.3957"><vh>@@color log_pane_background_color = #002b36</vh></v>
 <v t="tbrown.20131122094200.3958"><vh>@@color log_pane_Find_tab_background_color = #d6c7d3</vh></v>
 <v t="tbrown.20131122094200.3959"><vh>@@color log_pane_Spell_tab_background_color = MistyRose1</vh></v>
 </v>
 <v t="tbrown.20131122094200.3960"><vh>@color url_color = #6c71c4</vh></v>
+<v t="tbrown.20131122110356.3387"><vh>@button reload-styles</vh></v>
 </v>
 <v t="tbrown.20131122094200.3612"><vh>leo_dark theme 1</vh>
 <v t="tbrown.20131122094200.3613"><vh>README</vh></v>
@@ -4191,5 +4192,37 @@ LightSteelBlue1 # Good for testing.</t>
 #c6d3d7
 #ffffec # Same as outline.</t>
 <t tx="tbrown.20131122094200.3960"></t>
+<t tx="tbrown.20131122110356.3387"># this @button script should be included in any file containing @settings
+# and being used to set styles related to appearance
+
+# remember where we are
+current_v = c.p.v
+
+if c.font_size_delta:
+    # doesn't make a lot of sense to edit font size settings while
+    # font zooming is in effect
+    g.es("NOTE: font size adjustment currently %+d"%c.font_size_delta)
+
+# first, rebuild the stylesheet template from the tree, if
+# the stylesheet source is in tree form, .e.g. dark themes, currently the
+# default light theme uses a single @data qt-gui-plugin-style-sheet node
+nd = g.findNodeAnywhere(c, '@settings')
+if nd:
+    nd = g.findNodeInTree(c, nd, 'stylesheet &amp; source')
+if nd:
+    c.selectPosition(nd)  # needs to be the selected node
+    exec(g.findTestScript(c,'stylesheet &amp; source', where='@settings'))
+    # this executes the node `nd`, finding it a second time
+
+# then, reload settings from this file
+shortcuts, settings = g.app.loadManager.createSettingsDicts(c, True)
+c.config.settingsDict.update(settings)
+
+# apply the stylesheet
+c.frame.top.setStyleSheets()
+
+# go back where we started
+c.selectPosition(c.vnode2position(current_v))
+</t>
 </tnodes>
 </leo_file>
