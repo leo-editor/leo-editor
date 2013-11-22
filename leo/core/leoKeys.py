@@ -2809,7 +2809,7 @@ class keyHandlerClass:
         '''
 
         k = self ; c = k.c
-        trace = (False or g.trace_masterCommand) and not g.unitTesting
+        trace = False and not g.unitTesting
         traceGC = False
         if traceGC: g.printNewObjects('masterCom 1')
         if event: c.check_event(event)
@@ -2937,8 +2937,8 @@ class keyHandlerClass:
 
         '''This is the handler for almost all key bindings.'''
 
-        trace = (False or g.trace_masterKeyHandler) and not g.app.unitTesting
-        traceGC = g.trace_masterKeyHandlerGC and not g.app.unitTesting
+        trace = False and not g.app.unitTesting
+        traceGC = False and not g.app.unitTesting
         verbose = True
         k,c = self,self.c
         c.check_event(event)
@@ -3153,7 +3153,7 @@ class keyHandlerClass:
     def handleMiniBindings (self,event,state,stroke):
 
         k = self ; c = k.c
-        trace = (False or g.trace_masterKeyHandler) and not g.app.unitTesting
+        trace = False and not g.app.unitTesting
         # Special case for bindings handled in k.getArg:
         assert g.isStroke(stroke),repr(stroke)
         if state in ('getArg','full-command'):

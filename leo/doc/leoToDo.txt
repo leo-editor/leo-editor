@@ -8,8 +8,14 @@
 .. @+node:ekr.20131117054619.16683: *3* new_find
 @language rest
 
+- Remove g.trace_xxx switches.  Nobody ever uses them.
+    (done) trace_masterCommand
+    (done) trace_masterKeyHandler
+    (done) trace_masterKeyHandlerGC
+    (done) trace_gc
+
 Code cleanup:
-- Remove g.trace switches.  Nobody ever uses them.
+
 - Don't use leoFind as baseclass for spelling class!
 - Search strings, not widgets.
 * move dw.createFindTab into leoFind class(!)

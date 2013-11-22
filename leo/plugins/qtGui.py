@@ -8760,10 +8760,10 @@ class leoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20110605121601.18540: *3* eventFilter
     def eventFilter(self, obj, event):
 
-        trace = (False or g.trace_masterKeyHandler) and not g.unitTesting
+        trace = False and not g.unitTesting
         verbose = False
         traceEvent = False # True: call self.traceEvent.
-        traceKey = (True or g.trace_masterKeyHandler)
+        traceKey = True
         c = self.c ; k = c.k
         eventType = event.type()
         ev = QtCore.QEvent

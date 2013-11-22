@@ -50,13 +50,9 @@ trace_see = False
 # Switches to trace the garbage collector.
 trace_gc = False           
 trace_gc_calls = False    
-trace_gc_calls = False 
 trace_gc_verbose = False
 trace_gc_inited = False
 
-trace_masterCommand = False
-trace_masterKeyHandler = False
-trace_masterKeyHandlerGC = False
 trace_minibuffer = False
 trace_modes = False
 
