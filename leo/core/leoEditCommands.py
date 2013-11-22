@@ -9663,25 +9663,13 @@ class registerCommandsClass (baseEditCommandsClass):
 #@+node:ekr.20050920084036.257: *3* class searchCommandsClass
 class searchCommandsClass (baseEditCommandsClass):
 
-    '''Implements many kinds of searches.'''
+    '''Delegates all searches to leoFind.py.'''
+    
+    if 0: # Not needed.
+        def __init__ (self,c):
+            baseEditCommandsClass.__init__(self,c)
 
     #@+others
-    #@+node:ekr.20050920084036.258: *4*  ctor (searchCommandsClass)
-    def __init__ (self,c):
-
-        # g.trace('searchCommandsClass')
-        baseEditCommandsClass.__init__(self,c)
-            # init the base class.
-            # sets self.c
-        self.findTabHandler = None
-        self.minibufferFindHandler = None
-        self.inited = False
-        # For isearch commands.
-        self.ifinder = None
-        self.stack = [] # Entries are (p,sel)
-        self.ignoreCase = None
-        self.forward = None
-        self.regexp = None
     #@+node:ekr.20050920084036.259: *4* getPublicCommands (searchCommandsClass)
     def getPublicCommands (self):
         
@@ -9730,7 +9718,7 @@ class searchCommandsClass (baseEditCommandsClass):
         'word-search-backward':           find.wordSearchBackward,
         }
     #@-others
-#@+node:ekr.20051025071455: ** Spell classes
+#@+node:ekr.20051025071455: ** Spell classes (leoEditCommands)
 #@+others
 #@+node:ekr.20051025071455.1: *3* class spellCommandsClass
 class spellCommandsClass (baseEditCommandsClass):

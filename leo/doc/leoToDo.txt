@@ -21,14 +21,12 @@ Bug Fixes:
 - F2 doesn't work when only searching in headlines.
 
 Easy improvements:
-
 ** Ctrl-F puts selected text into the search box.
 ** Smart search: clear ignore case if the search text has at least one uppercase letter.
 - find-all and change-all never wrap.
 - Allow replace for an empty text selection.
 
 Other improvements:
-
 - Put "x" not found search message somewhere else.
 - Make sure to capture search string, even if do ctrl-g, etc.
 - Don't put unknown ctrl keys in minibuffer (suppress ctrl-shift-r)
