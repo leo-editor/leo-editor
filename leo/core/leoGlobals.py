@@ -5311,11 +5311,19 @@ def expand_css_constants(c, sheet, font_size_delta=None):
     # adjust @font-size-body by font_size_delta
     # easily extendable to @font-size-*
     fsb = c.config.getString("font-size-body")
+    passes = 10
+    while passes and fsb.startswith('@'):
+        key = g.app.config.canonicalizeSettingName(fsb[1:])
+        fsb = c.config.settingsDict.get(key)
+        if fsb:
+            fsb = fsb.val
+        passes -= 1
     if font_size_delta and (fsb is not None):
-        size = fsb.replace("px", "")
+        size = ''.join(i for i in fsb if i in '01234567890.')
+        units = ''.join(i for i in fsb if i not in '01234567890.')
         size = min(250, max(1, int(size) + font_size_delta))
         
-        constants["@font-size-body"] = "%spx" % size
+        constants["@font-size-body"] = "%s%s" % (size, units)
 
     passes = 10
     to_do = find_constants_referenced(sheet)
