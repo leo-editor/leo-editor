@@ -22693,32 +22693,33 @@ This page links to videos about Leo.  **Important notes**:
 - screencast.com viewers: click the "Full Size" button. |br|
 - YouTube viewers: select top quality in the video settings. |br|
   YouTube videos typically become clearer after a few seconds.
+  
+**Potential screencasters**: please read these
+`tips for screencast authors &lt;http://leoeditor.com/FAQ.html#how-to-make-a-screencast&gt;`_.
 
-.. _`Using Leo's Find Pane (screencast.com)`: http://www.screencast.com/t/fkHH0uwmRAMQ
-.. _`Using Leo's Find Pane (YouTube)`: https://www.youtube.com/watch?v=N5vRTGdA4Aw
+.. list-table::
+   :widths: 30 10 10
+   :header-rows: 1
 
-.. _`Using Leo's minibuffer (screencast.com)`: http://www.screencast.com/t/tEQ7brI4n6
-.. _`Using Leo's minibuffer (YouTube)`: https://www.youtube.com/watch?v=dEaGOi6hVpo
+   * - Video Title
+     - Screencast
+     - YouTube
+   * - Basic: Using Leo’s Find pane
+     - `hi-res &lt;http://www.screencast.com/t/O7915mYD3&gt;`__
+     - `regular &lt;https://www.youtube.com/watch?v=K5mmlnSOkLM&gt;`__
+   * - Basic: Using Leo’s minibuffer
+     - `hi-res &lt;http://www.screencast.com/t/tEQ7brI4n6&gt;`__
+     - `regular &lt;https://www.youtube.com/watch?v=dEaGOi6hVpo&gt;`__
+   * - Intermediate: Using clones to speed your work flow
+     - `hi-res &lt;http://www.screencast.com/t/l8W9H5G8zB&gt;`__
+     - `regular &lt;https://www.youtube.com/watch?v=DsHEHNLKi2o&gt;`__
+   * - Ville Vianio’s introduction to Leo
+     -
+     - `regular &lt;http://www.youtube.com/watch?v=Zu6J-J0qFi0&gt;`__
+   * - Terry Brown introduces his bookmarks plugin
+     -
+     - `regular &lt;https://vimeo.com/77720098&gt;`__
 
-.. _`Using clones to speed work flow (screencast.com)`: http://www.screencast.com/t/l8W9H5G8zB
-.. _`Using clones to speed work flow (YouTube)`: https://www.youtube.com/watch?v=DsHEHNLKi2o
-
-Videos at screencast.com:
-
-- `Basic: Using Leo's Find pane &lt;http://www.screencast.com/t/fkHH0uwmRAMQ&gt;`_
-- `Basic: Using Leo's minibuffer &lt;http://www.screencast.com/t/tEQ7brI4n6&gt;`_
-- `Intermediate: Using clones to speed your work flow &lt;http://www.screencast.com/t/l8W9H5G8zB&gt;`_
-
-YouTube videos:
-
-- `Basic: Using Leo's Find pane &lt;https://www.youtube.com/watch?v=N5vRTGdA4Aw&gt;`_
-- `Basic: Using Leo's minibuffer &lt;https://www.youtube.com/watch?v=dEaGOi6hVpo&gt;`_
-- `Intermediate: Using clones to speed your work flow &lt;https://www.youtube.com/watch?v=DsHEHNLKi2o&gt;`_
-- `Ville Vianio's introduction to Leo &lt;http://www.youtube.com/watch?v=Zu6J-J0qFi0&gt;`_
-
-Other videos about Leo:
-
-- `Terry Brown talks introduces his bookmarks plugin &lt;https://vimeo.com/77720098&gt;`_
 </t>
 <t tx="ekr.20131122055946.16388">The following radio buttons appear in the Find pane:
 

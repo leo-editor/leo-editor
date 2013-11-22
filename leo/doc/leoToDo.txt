@@ -6,267 +6,36 @@
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 
-- Put "how to make a screencast" in the tips section.
-
-- Cut the Alt-x section from the Find screencast.
-.. @+node:ekr.20131121090013.17098: *3* How to make a screencast
-@language rest
-
-Making screencasts is a lot easier than you probably think.
-
-Here are some tips to get you started quickly.
-
-
-
-
-
-
-
-
-
-
-.. @+node:ekr.20131122055946.16389: *4* Use a script to open your app
-The primary purpose of this script is to open your app at a fixed,
-unchanging size. This is surprisingly important:
-
-- It ensures that the window will always render to pixels in the same way.
-- It makes it easier to splice in new video to an existing video.
-- It makes it easier to plan your video to ensure everything will appear as you expect.
-- It provides continuity when making a series of videos.
-
-Here is a script that I use when making Leo's screencasts::
-
-    python27 launchLeo.py --no-cache --gui=qttabs --window-size=682x1264 <list of .leo files> %*​
-    
-This *particular* --window-size causes Camtasia to create a window whose
-actual size is 720x1280, the nominal 720p resolution. It may prevent text
-blur. Or not. I do know that Leo's screencasts look great at 720p.
-.. @+node:ekr.20131122055946.16390: *4* Debug your workflow with short videos
-Make sure that you can actually upload *excellent quality* videos before
-doing anything else. This step is crucial. If you skip this step, all of
-your initial recording an post-production work could be utterly wasted.
-
-Use *short* (10-second) test videos at this step. Their primary purpose
-verify that you can can get to the *end* of the production process
-successfully. You *are* going to make lots of mistakes here: using short
-videos helps you make these mistakes quickly.
-
-Don't even *think* about making longer videos until the answers to all the
-following questions are clearly "yes":
-
-- Is your camera working?
-- Is your microphone working?
-- Do you know how to record your voice and screen?
-- Can you log into YouTube or screencast.com?
-- Can you upload to YouTube or screencast.com?
-- Is the sound in your *uploaded* video great?
-- Do the pixels in your *uploaded* look great?
-
-This last item is particularly important. Just because pixels look good in
-your video editor is no guarantee that they will look good when uploaded.
-
-You are ready to try your first "real" take *only* when you can upload a
-video that looks and sounds great.
-.. @+node:ekr.20131122055946.16391: *4* Emulate the screencast.com tutorials
-Before rushing right and making your first video, I recommend watching the
-tutorial screencasts at screencast.com:
-http://www.techsmith.com/tutorial-camtasia-8.html
-
-I recommend watching the tutorials, focusing on how the presentations
-themselves are organized. Watch them until it feels natural to emulate
-their style and presentation.
-
-If you will be using Camtasia, you will also want to watch the tutorials
-to learn how Camtasia works.  But this is a secondary consideration.
-.. @+node:ekr.20131122055946.16392: *4* Record your first real take
-Now it's time to go beyond test videos. Even now, though, I recommend
-keeping your first efforts short: one minute or so. Again, this saves time.
-You'll ending up throwing away two or three anyway ;-)
-
-Bring up your app using you demo script and run through your presentation.
-
-Here's the **most important tip**: As you narrate your video, audio flubs
-are inevitable, but they don't matter at all *provided** that you *realize*
-that you have just flubbed a word or phrase. 
-
-When you flub a line, don't panic! Just *pause*, regroup, and repeat the
-phrase until you get it right. **Pausing is essential**: it simplifies
-inserting and deleting sound bites during post production.
-
-You'll relax once you realize that flubs don't matter and that pausing
-makes post-production easier. Once you relax, getting a good take will
-suddenly become easier.
-
-Correcting flubs *as soon as they happen* is absolutely essential. Don't
-even *think* about fixing audio flubs in post-production. It simply can't
-be done. Instead of spending 20 minutes trying (and failing) to correct a
-flub in post production, it is much faster and better to take 20 seconds
-during your take to correct the flub.
-
-Similar remarks apply to video, but in my experience it's much easier to
-get the video right. If you do flub the video, it will be much easier if
-you just do a complete retake. With Camtasia, you can separate the audio
-and video tracks, but usually that won't work, especially if there is audio
-of key clicks.
-
-By retaking audio flubs as they happen, I find it easy to work without a
-script. It feels a lot more natural to me than reading a script. YMMV. When
-I get stuck, I just pause. Or just start over. Otoh, it wouldn't be that
-hard to read a script. Just *pause* before and after each phrase. Never
-rush your audio!
-
-In short, the key Aha is: insert (audio) pauses *everywhere* as needed.
-It's easy to edit them out. It's virtually impossible to edit in the middle
-of words, even with the world's best audio editor.
-.. @+node:ekr.20131122055946.16393: *4* Edit your raw take
-Post production should be easy provided that you have corrected all audio
-flubs as they happen. This keeps the audio and video in synch. Just edit
-out flubs and reduce overly-long pauses.
-
-I won't discuss production details here because they depend on the editor
-you are using.
-
-Do a new take if you don't have clean audio. Depending on the complexity of
-your video, it may be possible to splice a partial take in the middle or
-end of your video. Similarly, it may be possible to splice in a new take to
-add material you didn't cover in your first take.
-
-One final word of advice. When editing your video, settle for "good
-enough". Perfectionism is not your friend.
-.. @+node:ekr.20131121090013.17105: *4* Summary
-Making a screencast is a lot easier than you think :-)
-
-
-- Create a script that will open your app at a fixed, optimal, size.
-
-- Emulate the style and form of screencast.com tutorials.
-
-- Verify the *entire* production process with short test videos.
-
-  Before making longer videos, make *sure* that the test videos look and
-  sound great *when they have been uploaded*.
-  
-- When doing a take, flubs don't matter, *provided* you correct them
-  *during the take*.
-
-- The only way to fix flubs in post-production is to splice in new takes.
-
-.. @+node:ekr.20131116212505.16665: *3* Screencasts
-Topics:
-
-- Settings: focus on visual settings.
-    @menu
-    leo-x-pt.leo files.
-- Import files.  Show active-path plugin, recursive import.
-
-Leo's help commands.
-Auto-completion.
-Viewrendered, A0.
-Viewrendered, test.leo examples: @svg, @html, @movie, etc.
-Arrow keys.
-Intro to Leo.
-Tips and techniques:
-    - Small test .leo files: useful for settings.
-Scripting:
-    Introduction to Leo's code base.
-        500,000 lines of code made easy.
-    ** Create a helper outline, illustrating each point:
-        print('c:'+c)
-    ** @button
-    @test
-    c, g, p: commanders, generators, p.b, p.h etc.
-Redo the Find command screencast:
-    - Show the new Search menu.
-    - Ctrl-G hides the Find pane.
-    - Show how to use the minibuffer to discover the toggle commands:
-        <Alt-X>tog<tab>f<tab>   or
-        <Alt-X>set<tab>f<tab>
-        
-
-When ready to release:
-- Note to Dave Winer.
-- Announce to comp.lang.python.
-- Announce to SourceForge.
-
-.. @+node:ekr.20131117043223.16676: *4* Using Leo *is* easy
-​Well, I don't think the Leo Aha is all that hard to get, despite perhaps
-being a bit difficult to describe. Of course, my opinion is not quite
-reliable on this subject ;-)
-
-Still, I think three or four tutorials could make a big difference. The
-first tutorial, about clones and work flow, is *one* reason I would never
-willingly program without Leo.
-
-Another ​reason is that leoPy.leo contains at least 500,000 lines of code,
-all easily accessible. In particular, the rule (of thumb) that helper
-methods should be children of the method that calls them instantly reveals
-that programs are outlines in disguise. Once you have a way of seeing that
-fact *at all times*, one can never go back to the flat, myopic way of
-seeing. It's really that simple.
-
-And then there is c, g, and p, including especially Leo's iterators and p.h
-and p.b and p.u. Really, this is **not** all that hard.
-
-And finally, there is @others. I created it within the first hour of
-prototyping Leo in the MORE outliner. It has remained unchanged all these
-years because it is, fundamentally, a very simple idea.
-
-In short, I have hopes that 3 or 4 screencasts will demonstrate that anyone
-can use Leo.
-.. @+node:ekr.20131116123026.16661: *4* Example
-# For the Find screencast.  It could be improved so the differences between nodes is more apparent.
-.. @+node:ekr.20131116123026.16662: *5* spam
-DEF spam():
-    pass
-.. @+node:ekr.20131116123026.16663: *5* eggs
-def eggs():
-    pass
-.. @+node:ekr.20131116212505.16666: *4* Introduction to scripting
-@language python
-.. @+node:ekr.20131116212505.16668: *5* Ctrl-B (execute-script)
-# Ctrl-B executes the Python code in the presently-selected body pane.
-g.es('hello world')
-
-.. @+node:ekr.20131116212505.16669: *5* Ctrl-B on selected text
-print('hi')
-print('there')
-.. @+node:ekr.20131116212505.16667: *5* g
-# g is a Python module containing global utility functions and classes.
-# g.es prints its arguments to Leo's log pane.
-g.es(g.es)
-# g is a large module:
-g.es(len(list(dir(g))))
-.. @+node:ekr.20131121050226.16328: *4* settings vid
-open leoSettings.leo.
-open myLeoSettings.leo.
-
-Concentrate on:
-    - visual settings.
-    - keyboard shortcuts.
-
-print-settings, print-bindings, print-commands.
-
-Trick: use small, easily/quickly started, file to test settings.
-    Demo: put console *behind* window.
+Wait for Terry to finish.
+- Regularize + and - in @menu nodes in leoSettings.leo 
 .. @+node:ekr.20131117054619.16683: *3* new_find
 @language rest
 
-- Put "x" not found search message somewhere else.
-- Ctrl-F puts selected text into the search box.
-- Smart search: clear ignore case if the search text has at least one uppercase letter.
+Code cleanup:
+- Remove g.trace switches.  Nobody ever uses them.
+- Don't use leoFind as baseclass for spelling class!
+- Search strings, not widgets.
 * move dw.createFindTab into leoFind class(!)
     - Just define dw, and use dw methods to create the actual widgets.
     - No need for qt imports.
+    
+Bug Fixes:
+- Stateless finds.
 - Create save/restore_isearch_vars methods using isearch_save_d.
 - F2 doesn't work when only searching in headlines.
+
+Easy improvements:
+
+** Ctrl-F puts selected text into the search box.
+** Smart search: clear ignore case if the search text has at least one uppercase letter.
 - find-all and change-all never wrap.
-- Allow replace for an empty selection.
-- Don't use leoFind as baseclass for spelling class!
+- Allow replace for an empty text selection.
+
+Other improvements:
+
+- Put "x" not found search message somewhere else.
 - Make sure to capture search string, even if do ctrl-g, etc.
 - Don't put unknown ctrl keys in minibuffer (suppress ctrl-shift-r)
-
-Stateless finds.
-- Search strings, not widgets.
 
 @language python
 .. @+node:ekr.20131118113639.17705: *4* Done
@@ -310,17 +79,12 @@ Changed methods:
 * Added find_generation ivar to vnode class.
 .. @+node:ekr.20131118113639.17704: *4* << global leoFind switch >>
 stateless_find = True # True, use stateless finds.
-.. @+node:ekr.20131120054058.16280: *4* Gallery of screen shots
-
-different font sizes, coloring schemes, plugins, etc.
 .. @+node:ekr.20131121211048.16378: *3* Next
-- Regularize + and - in @menu nodes in leoSettings.leo 
-- Remove g.trace switches.  Nobody ever uses them.
-- Add Alt-Ctrl commands to Search menu.
+- Change the term 'minibuffer' ???
 - Add focus-to-x commands, where x is a *temporary* log pane, like completions, commands, etc.
 - (Maybe) Add helpful @button nodes to leoSettings.leo.
 - Revise help-for-find-commands
-* More screenshots!
+* More screenshots! Different font sizes, coloring schemes, plugins, etc.
 * Review Leo's text tutorials.
 .. @+node:ekr.20131121090013.17108: *4* Import pane, similar to the Find pane
 Very important.
@@ -390,6 +154,100 @@ of course, must includ Leo 's zip introduction
 
 so sorry for my chaos image, Hope Video is u tiny happy game for X'mas
 - BUT notice, the Video need finished before 2013.11.30
+.. @+node:ekr.20131116212505.16665: *3* Screencasts
+Topics:
+
+- Settings: focus on visual settings.
+    @menu
+    leo-x-pt.leo files.
+- Import files.  Show active-path plugin, recursive import.
+
+Leo's help commands.
+Auto-completion.
+Viewrendered, A0. test.leo examples: @svg, @html, @movie, etc.
+Arrow keys.
+Intro to Leo.
+Tips and techniques:
+    - Small test .leo files: useful for settings.
+Scripting:
+    Introduction to Leo's code base.
+        500,000 lines of code made easy.
+    ** Create a helper outline, illustrating each point:
+        print('c:'+c)
+    ** @button
+    @test
+    c, g, p: commanders, generators, p.b, p.h etc.
+Redo the Find command screencast:
+    - Show the new Search menu.
+    - Ctrl-G hides the Find pane.
+    - Show how to use the minibuffer to discover the toggle commands:
+        <Alt-X>tog<tab>f<tab>   or
+        <Alt-X>set<tab>f<tab>
+
+When ready to release:
+- Note to Dave Winer.
+- Announce to comp.lang.python & SourceForge.
+
+.. @+node:ekr.20131117043223.16676: *4* Using Leo *is* easy
+​Well, I don't think the Leo Aha is all that hard to get, despite perhaps
+being a bit difficult to describe. Of course, my opinion is not quite
+reliable on this subject ;-)
+
+Still, I think three or four tutorials could make a big difference. The
+first tutorial, about clones and work flow, is *one* reason I would never
+willingly program without Leo.
+
+Another ​reason is that leoPy.leo contains at least 500,000 lines of code,
+all easily accessible. In particular, the rule (of thumb) that helper
+methods should be children of the method that calls them instantly reveals
+that programs are outlines in disguise. Once you have a way of seeing that
+fact *at all times*, one can never go back to the flat, myopic way of
+seeing. It's really that simple.
+
+And then there is c, g, and p, including especially Leo's iterators and p.h
+and p.b and p.u. Really, this is **not** all that hard.
+
+And finally, there is @others. I created it within the first hour of
+prototyping Leo in the MORE outliner. It has remained unchanged all these
+years because it is, fundamentally, a very simple idea.
+
+In short, I have hopes that 3 or 4 screencasts will demonstrate that anyone
+can use Leo.
+.. @+node:ekr.20131116123026.16661: *4* Example
+# For the Find screencast.  It could be improved so the differences between nodes is more apparent.
+.. @+node:ekr.20131116123026.16662: *5* spam
+DEF spam():
+    pass
+.. @+node:ekr.20131116123026.16663: *5* eggs
+def eggs():
+    pass
+.. @+node:ekr.20131116212505.16666: *4* Introduction to scripting
+@language python
+.. @+node:ekr.20131116212505.16668: *5* Ctrl-B (execute-script)
+# Ctrl-B executes the Python code in the presently-selected body pane.
+g.es('hello world')
+
+.. @+node:ekr.20131116212505.16669: *5* Ctrl-B on selected text
+print('hi')
+print('there')
+.. @+node:ekr.20131116212505.16667: *5* g
+# g is a Python module containing global utility functions and classes.
+# g.es prints its arguments to Leo's log pane.
+g.es(g.es)
+# g is a large module:
+g.es(len(list(dir(g))))
+.. @+node:ekr.20131121050226.16328: *4* settings vid
+open leoSettings.leo.
+open myLeoSettings.leo.
+
+Concentrate on:
+    - visual settings.
+    - keyboard shortcuts.
+
+print-settings, print-bindings, print-commands.
+
+Trick: use small, easily/quickly started, file to test settings.
+    Demo: put console *behind* window.
 .. @+node:ekr.20131105020211.18058: ** Important
 .. @+node:ekr.20131101080215.16488: *3* * Outreach to magazine editors
 ===== Steve Litt

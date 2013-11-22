@@ -5602,6 +5602,7 @@ It must be possible, but perhaps it is not worth it.
 
 The solution was simply to remove the keyboard hints from the Find pane!
 
+.. @+node:ekr.20131122055946.16414: *3* Added Alt-Ctrl commands to Search menu
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
