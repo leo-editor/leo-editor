@@ -94,7 +94,7 @@
 <v t="ekr.20041120155431.2"><vh>\@type type-name: script: script-name</vh></v>
 </v>
 <v t="ekr.20061011082224"><vh>About myLeoSettings.leo</vh></v>
-<v t="ekr.20041119034357.1"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
 <v t="ekr.20130924110246.13745"><vh>@bool scripting-abbreviations = False</vh></v>
@@ -1149,16 +1149,47 @@
 <v t="ekr.20060904211808.1"><vh>@string zodb_storage_file = c:\prog\zopeTemp\leo.fs</vh></v>
 </v>
 </v>
-<v t="ekr.20131119143342.18879"><vh>Qt Gui (appearance)</vh>
+<v t="ekr.20131119143342.18879" a="E"><vh>Qt Gui (appearance)</vh>
+<v t="tbrown.20131122091143.23828"><vh>Color definitions</vh>
+<v t="tbrown.20131122091143.23830"><vh>@color MistyRose1 = #FFE4E1</vh></v>
+<v t="tbrown.20131122091143.23831"><vh>@color LightSteelBlue1 = #CAE1FF</vh></v>
+<v t="tbrown.20131122091143.23832"><vh>@color LightBlue = #ADD8E6</vh></v>
+</v>
+<v t="tbrown.20131122091143.23829" a="E"><vh>Colors</vh>
+<v t="tbrown.20131122094200.2523"><vh>@color text-foreground = black</vh></v>
+<v t="tbrown.20131122094200.2524"><vh>@color text-foreground-body = @text-foreground</vh></v>
+<v t="tbrown.20131122094200.2526"><vh>@color text-foreground-tree = @text-foreground</vh></v>
+<v t="tbrown.20131122094200.2528"><vh>@color text-foreground-log = @text-foreground</vh></v>
+<v t="tbrown.20131122104251.2537"><vh>@color minibuffer-background-color = lightblue</vh></v>
+<v t="tbrown.20131122104251.2538"><vh>@color minibuffer-error-color = red</vh></v>
+<v t="tbrown.20131122104251.2539"><vh>@color minibuffer-foreground-color = black</vh></v>
+<v t="tbrown.20131122104251.2540"><vh>@color minibuffer-warning-color = lightgrey</vh></v>
+<v t="tbrown.20131122091143.23833"><vh>@color run-script-btn-bg = @MistyRose1</vh></v>
+<v t="tbrown.20131122091143.23834"><vh>@color debug-script-btn-bg = @MistyRose1</vh></v>
+<v t="tbrown.20131122091143.23835"><vh>@color script-button-button-btn-bg = #ffffcc</vh></v>
+<v t="tbrown.20131122091143.23836"><vh>@color script-button-btn-bg = @MistyRose1</vh></v>
+<v t="tbrown.20131122091143.23837"><vh>@color generic-button-btn-bg = @LightSteelBlue1</vh></v>
+<v t="tbrown.20131122091143.23838"><vh>@color quick-move-btn-bg = @LightSteelBlue1</vh></v>
+<v t="tbrown.20131122091143.23839"><vh>@color interact-btn-bg = @LightBlue</vh></v>
+<v t="tbrown.20131122091143.23840"><vh>@color at-button-btn-bg = @LightSteelBlue1</vh></v>
+</v>
+<v t="tbrown.20131122094200.2511"><vh>Fonts</vh>
+<v t="tbrown.20131122094200.2520"><vh>@string font-family = Droid Sans Mono, DejaVu Sans Mono</vh></v>
+<v t="tbrown.20131122094200.2518"><vh>@string font-size = 12pt</vh></v>
+<v t="tbrown.20131122094200.2512"><vh>@string font-size-body = @font-size</vh></v>
+<v t="tbrown.20131122094200.2514"><vh>@string font-size-tree = @font-size</vh></v>
+<v t="tbrown.20131122094200.2517"><vh>@string font-size-log = @font-size</vh></v>
+</v>
 <v t="ekr.20131115092802.18224"><vh>@data qt-gui-plugin-style-sheet</vh></v>
-<v t="ekr.20081023060109.13"><vh>@int qt-rich-text-zoom-in = 10</vh></v>
 <v t="ekr.20100507153425.8304"><vh>@string qt-toolbar-location=top</vh></v>
 <v t="ekr.20081018053140.11"><vh>For developers only</vh>
+<v t="tbrown.20131122094200.2515"><vh>@int qt-rich-text-zoom-in = 10</vh></v>
 <v t="ekr.20081023060109.14"><vh>@bool qt-use-scintilla = False</vh></v>
 <v t="ekr.20081022181056.10"><vh>@data qt-scintilla-styles</vh></v>
 <v t="ekr.20081020075840.10"><vh>@int qt-scintilla-zoom-in = 6</vh></v>
 <v t="leohag.20081204085551.13"><vh>@string qt-ui-file-name = qt_main.ui</vh></v>
 </v>
+<v t="tbrown.20131122091143.22659"><vh>@button reload-styles</vh></v>
 </v>
 <v t="ekr.20110611092035.16481"><vh>Scripting</vh>
 <v t="ekr.20041119041019"><vh>@bool redirect_execute_script_output_to_log_pane = False</vh></v>
@@ -4374,8 +4405,6 @@ This allows you to increase the font size.</t>
  green, UnclosedString
  green, Decorator
  blue,  Keyword</t>
-<t tx="ekr.20081023060109.13">Argument to QSciScintilla.zoomIn method.
-This allows you to increase the font size.</t>
 <t tx="ekr.20081023060109.14"></t>
 <t tx="ekr.20081216090156.5">The escape string that Leo inserts to represent underindented lines.
 
@@ -5562,23 +5591,9 @@ abbrevCommandsClass pastes the outline into the present outline, uses the pasted
 outline to discover tree-valued abbreviations, and then *deletes* the tree.
 
 </t>
-<t tx="ekr.20131115092802.18224">/* Disable this to continually test leoSettings.leo */
+<t tx="ekr.20131115092802.18224">/* Documentation of Qt stylesheets at http://doc.trolltech.com/4.2/stylesheet.html */
 
-/* From leo/config/leo12-10pt.leo */
-
-/* Documentation of Qt stylesheets at http://doc.trolltech.com/4.2/stylesheet.html */
-
-/* constants - *parsed from this comment*
-
-   needed for zoom in / out
-   
-   @font-size-body = 12pt
-   
-   *color names*
-   @MistyRose1 = #FFE4E1
-   @LightSteelBlue1 = #CAE1FF
-   @LightBlue = #ADD8E6
-
+/* 
    Buttons may be styled by name:
       QPushButton#&lt;button text&gt;-button { &lt;style&gt; }
    or by kind:
@@ -5594,16 +5609,6 @@ outline to discover tree-valued abbreviations, and then *deletes* the tree.
    'at-button' (created from @button nodes)
    Search 'button_kind' below for button styling examples.
    
-   *button background colors*
-   @run-script-btn-bg = @MistyRose1
-   @debug-script-btn-bg = @MistyRose1
-   @script-button-button-btn-bg = #ffffcc
-   @script-button-btn-bg = @MistyRose1
-   @generic-button-btn-bg = @LightSteelBlue1
-   @quick-move-btn-bg = @LightSteelBlue1
-   @interact-btn-bg = @LightBlue
-   @at-button-btn-bg = @LightSteelBlue1
-       
 */
 
 /* Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords */
@@ -5624,28 +5629,28 @@ QWidget#findTab {
 }
 
 QLabel#findHeading {
-    font-family: DejaVu Sans Mono;
+    font-family: @font-family;
     font-size: 10pt;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal,italic,oblique */
 }
 
 QLabel#findLabel {
-    font-family: DejaVu Sans Mono;
+    font-family: @font-family;
     font-size: 10pt;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal,italic,oblique */
 }
 
 QLabel#changeLabel {
-    font-family: DejaVu Sans Mono;
+    font-family: @font-family;
     font-size: 10pt;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal,italic,oblique */
 }
 
 QLabel#findHelp {
-    font-family: DejaVu Sans Mono;
+    font-family: @font-family;
     font-size: 10pt;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal,italic,oblique */
@@ -5687,12 +5692,13 @@ QSplitter {
 
 QTreeWidget {
     /* These apply to the selected item, but not to editing items.*/
+    color: @text-foreground-tree;
     background-color: #ffffec; /* Leo's traditional tree color */
     selection-color: black; /* was white */
     selection-background-color: lightgrey;
     /* font-family: SansSerif; */
-    font-family: DejaVu Sans Mono;
-    font-size: 12pt;
+    font-family: @font-family;
+    font-size: @font-size-tree;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal, italic,oblique */
     show-decoration-selected: 1 /* 1: select entire row */
@@ -5703,8 +5709,8 @@ QTreeWidget QLineEdit {
     background-color: cornsilk;
     selection-color: white;
     selection-background-color: blue;
-    font-family: DejaVu Sans Mono;
-    font-size: 12pt;
+    font-family: @font-family;
+    font-size: @font-size-tree;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal, italic,oblique */
 }
@@ -5712,11 +5718,12 @@ QTreeWidget QLineEdit {
 /* The log panes */
 QTextEdit {
     background-color: white; /* #f2fdff; */
+    color: @text-foreground-log;
     selection-color: white;
     selection-background-color: blue;
     /* font-family: Courier New; */
-    font-family: DejaVu Sans Mono;
-    font-size: 12pt;
+    font-family: @font-family;
+    font-size: @font-size-log;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal, italic,oblique */
 }
@@ -5724,9 +5731,10 @@ QTextEdit {
 /* The body pane */
 QTextEdit#richTextEdit {
     background-color: white; /* #fdf5f5; A kind of pink. */
+    color: @text-foreground-body;
     selection-color: white;
     selection-background-color: lightgrey;
-    font-family: DejaVu Sans Mono;
+    font-family: @font-family;
     /* font-family: Courier New; */
     font-size: @font-size-body;
     font-weight: normal; /* normal,bold,100,..,900 */
@@ -5736,7 +5744,7 @@ QTextEdit#richTextEdit {
 /* Editor labels */
 QLineEdit#editorLabel {
     background-color: #ffffec;
-    font-family: DejaVu Sans Mono;
+    font-family: @font-family;
     font-size: 10pt;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal,italic,oblique */
@@ -5744,13 +5752,13 @@ QLineEdit#editorLabel {
     margin: 2px;
 }
 
-/* The text "Minibuffer" in the minibuffer aread.
+/* The text "Minibuffer" in the minibuffer area.
 
 Do not overide QLabel directly.  It is used for dialog text.
 */
 
 QLabel#minibufferLabel {
-    font-family: DejaVu Sans Mono;
+    font-family: @font-family;
     font-size: 10pt;
     font-weight: normal;
     font-style: normal;
@@ -5758,7 +5766,7 @@ QLabel#minibufferLabel {
 
 /* 
 QLabel {
-    font-family: DejaVu Sans Mono;
+    font-family: @font-family;
     font-size: 10pt;
     font-weight: normal;
     font-style: normal;
@@ -5779,10 +5787,26 @@ following settings, with defaults as shown::
     @color minibuffer-foreground-color = black
     @color minibuffer-warning-color = lightgrey
 */
+
+QLineEdit#lineEdit {
+    color: @minibuffer_foreground_color;
+    background-color: @minibuffer_background_color;
+}
+
+QLineEdit#lineEdit[style_class ~= 'minibuffer_warning'] {
+    background-color: @minibuffer_warning_color;
+}
+
+QLineEdit#lineEdit[style_class ~= 'minibuffer_error'] {
+    color: @minibuffer_error_color;
+    background-color: @minibuffer_warning_color;
+}
+
+
 QLineEdit#lineEdit {
     selection-color: white;
     selection-background-color: lightgrey;
-    font-family: DejaVu Sans Mono;
+    font-family: @font-family;
     font-size: 10pt;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal,italic,oblique */
@@ -5826,7 +5850,7 @@ QPushButton#script-button-button {
 
 QPlainTextEdit#screencastcaption {
     background-color: yellow;
-    font-family: DejaVu Sans Mono; /* Times New Roman; */
+    font-family: @font-family; /* Times New Roman; */
     font-size: 18pt;
     font-weight: normal; /* normal,bold,100,..,900 */
     font-style: normal; /* normal,italic,oblique */
@@ -5849,7 +5873,7 @@ QTextEdit:focus#log-widget, LeoQTreeWidget:focus#treeWidget, QTextEdit:focus#ric
 <t tx="ekr.20131117053425.19894"></t>
 <t tx="ekr.20131119060731.22451"></t>
 <t tx="ekr.20131119060731.22454"></t>
-<t tx="ekr.20131119143342.18879">These customize the Qt Gui.</t>
+<t tx="ekr.20131119143342.18879">This is the "default" theme.</t>
 <t tx="ekr.20131119143342.20107">True: start-find command puts focus in minibuffer.
 False: start-find commands puts focus in Find panel.</t>
 <t tx="ekr.20131119143342.20108"></t>
@@ -6230,6 +6254,89 @@ The string must be only two integers, separated by spaces and or commas.
 Dev. note: this setting is new (201309) and can't be replaced by the
 stylesheet, the other settings in this group should probably be handled
 by the stylesheet and could be considered for removal.</t>
+<t tx="tbrown.20131122091143.22659"># this @button script should be included in any file containing @settings
+# and being used to set styles related to appearance
+
+# remember where we are
+current_v = c.p.v
+
+if c.font_size_delta:
+    # doesn't make a lot of sense to edit font size settings while
+    # font zooming is in effect
+    g.es("NOTE: font size adjustment currently %+d"%c.font_size_delta)
+
+# first, rebuild the stylesheet template from the tree, if
+# the stylesheet source is in tree form, .e.g. dark themes, currently the
+# default light theme uses a single @data qt-gui-plugin-style-sheet node
+nd = g.findNodeAnywhere(c, '@settings')
+if nd:
+    nd = g.findNodeInTree(c, nd, 'stylesheet &amp; source')
+if nd:
+    c.selectPosition(nd)  # needs to be the selected node
+    exec(g.findTestScript(c,'stylesheet &amp; source', where='@settings'))
+    # this executes the node `nd`, finding it a second time
+
+# then, reload settings from this file
+shortcuts, settings = g.app.loadManager.createSettingsDicts(c, True)
+c.config.settingsDict.update(settings)
+
+# apply the stylesheet
+c.frame.top.setStyleSheets()
+
+# go back where we started
+c.selectPosition(c.vnode2position(current_v))
+</t>
+<t tx="tbrown.20131122091143.23828">These are definitions of colors not defined by default, so
+you can refer to "solarized-red" as "@solarized-red" instead
+of "#dc322f".  You probably don't need to touch these, although
+you could add new color names of your own.</t>
+<t tx="tbrown.20131122091143.23829">Here you can edit the colors by Leo, just edit the
+node headings, and click the reload-style button.
+
+Examples:
+    
+    @color text-foreground = white
+    
+    @color text-foreground = #ffffff
+    
+    @color text-foreground = @solarized-red
+
+Most common color names are recognized.  The #RRGGBB format works, and
+you can use reference to @settings defined elsehere, starting with an
+'@', e.g. @solarized-red if a color called @solarized-red is defined
+by a setting somewhere else.
+
+Config. menu entry: Styles / Colors
+</t>
+<t tx="tbrown.20131122091143.23830"></t>
+<t tx="tbrown.20131122091143.23831"></t>
+<t tx="tbrown.20131122091143.23832"></t>
+<t tx="tbrown.20131122091143.23833"></t>
+<t tx="tbrown.20131122091143.23834"></t>
+<t tx="tbrown.20131122091143.23835"></t>
+<t tx="tbrown.20131122091143.23836"></t>
+<t tx="tbrown.20131122091143.23837"></t>
+<t tx="tbrown.20131122091143.23838"></t>
+<t tx="tbrown.20131122091143.23839"></t>
+<t tx="tbrown.20131122091143.23840"></t>
+<t tx="tbrown.20131122094200.2511">You can change all font sizes at once by changing @font-size, or set -body,
+-tree and -log settings to individual 'XXpt' values.</t>
+<t tx="tbrown.20131122094200.2512">This setting must exists for Ctrl-mousewheel font zooming to work.</t>
+<t tx="tbrown.20131122094200.2514"></t>
+<t tx="tbrown.20131122094200.2515">See /mnt/usr1/usr1/home/tbrown/Package/leo/bzr/leo.repo/top_style/leo/core/LeoPyRef.leo#Code--&gt;Qt gui--&gt;@file ../plugins/qtGui.py--&gt; &lt;&lt; define text widget classes &gt;&gt;--&gt; &lt;&lt; define leoQTextEditWidget class &gt;&gt;--&gt;Birth (leoQTextEditWidget)--&gt;setConfig
+
+apparently this only works when there's no stylesheet, so probably not at all now.</t>
+<t tx="tbrown.20131122094200.2517"></t>
+<t tx="tbrown.20131122094200.2518">Size for primary text windows.</t>
+<t tx="tbrown.20131122094200.2520">test text</t>
+<t tx="tbrown.20131122094200.2523"></t>
+<t tx="tbrown.20131122094200.2524"></t>
+<t tx="tbrown.20131122094200.2526"></t>
+<t tx="tbrown.20131122094200.2528">Doesn't work just at the moment.</t>
+<t tx="tbrown.20131122104251.2537"></t>
+<t tx="tbrown.20131122104251.2538"></t>
+<t tx="tbrown.20131122104251.2539"></t>
+<t tx="tbrown.20131122104251.2540"></t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 # cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,
