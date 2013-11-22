@@ -1858,6 +1858,16 @@ class leoQtMinibuffer (leoQLineEditWidget):
     def setBothColors(self,background_color,foreground_color):
         self.widget.setStyleSheet('background-color:%s; color: %s' % (
             background_color,foreground_color))
+            
+    def setStyleClass(self,style_class):
+        self.widget.setProperty('style_class', style_class)
+        # to get the appearance to change because of a property
+        # change, unlike a focus or hover change, we need to
+        # re-apply the stylesheet.  But re-applying at the top level
+        # is too CPU hungry, so apply just to this widget instead.
+        # It may lag a bit when the style's edited, but the new top
+        # level sheet will get pushed down quite frequently.
+        self.widget.setStyleSheet(self.c.frame.top.styleSheet())
 #@-others
 #@-<< define text widget classes >>
 
@@ -1904,7 +1914,7 @@ def zoom_in(event=None, delta=1):
 
     c = event['c']
     c.font_size_delta += delta
-    ss = g.expand_css_constants(c.active_stylesheet, c.font_size_delta)
+    ss = g.expand_css_constants(c, c.active_stylesheet, c.font_size_delta)
     c.frame.body.bodyCtrl.widget.setStyleSheet(ss)
     
 @g.command("zoom-out")
@@ -2841,13 +2851,11 @@ class DynamicWindow(QtGui.QMainWindow):
         # g.trace('vert',vert)
 
     #@+node:ekr.20110605121601.18175: *4* setStyleSheets & helper (DynamicWindow)
-    styleSheet_inited = False
-
     def setStyleSheets(self):
 
         trace = False
         c = self.leo_c
-
+        
         sheet = c.config.getData('qt-gui-plugin-style-sheet')
         if sheet:
             if '\n' in sheet[0]:
@@ -2858,7 +2866,7 @@ class DynamicWindow(QtGui.QMainWindow):
             # store *before* expanding, so later expansions get new zoom
             c.active_stylesheet = sheet
             
-            sheet = g.expand_css_constants(sheet, c.font_size_delta)
+            sheet = g.expand_css_constants(c, sheet, c.font_size_delta)
             
             if trace: g.trace(len(sheet))
             w = self.leo_ui
@@ -3163,7 +3171,7 @@ class LeoBaseTabWidget (QtGui.QTabWidget):
             else:
                 sheet = '\n'.join(sheet)
             c.active_stylesheet = sheet
-            sheet = g.expand_css_constants(sheet, c.font_size_delta)
+            sheet = g.expand_css_constants(c, sheet, c.font_size_delta)
             w.setStyleSheet(sheet)
         else:
             main = g.app.gui.frameFactory.masterFrame
@@ -4363,7 +4371,7 @@ class leoQtFrame (leoFrame.leoFrame):
 
             self.put('')
             self.update()
-            c.frame.top.setStyleSheets()
+            #X c.frame.top.setStyleSheets()
         #@+node:ekr.20110605121601.18260: *5* clear, get & put/1
         def clear (self):
             self.put('')

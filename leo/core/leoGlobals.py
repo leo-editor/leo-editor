@@ -5300,26 +5300,72 @@ def executeScript (name):
     if theFile:
         theFile.close()
 #@+node:tbrown.20130411121812.28336: *3* g.expand_css_constants
-def expand_css_constants(sheet, font_size_delta=0):
+def expand_css_constants(c, sheet, font_size_delta=None):
     
     constants = find_constants_defined(sheet)
     
+    whine = None
+    # whine at the user if they use old style style-sheet comment 
+    # definition, but only once
+    
     # adjust @font-size-body by font_size_delta
     # easily extendable to @font-size-*
-    if font_size_delta and "@font-size-body" in constants:
-        size = constants["@font-size-body"].replace("px", "")
+    fsb = c.config.getString("font-size-body")
+    if font_size_delta and (fsb is not None):
+        size = fsb.replace("px", "")
         size = min(250, max(1, int(size) + font_size_delta))
         
         constants["@font-size-body"] = "%spx" % size
+
+    passes = 10
+    to_do = find_constants_referenced(sheet)
+    changed = True
+    while passes and to_do and changed:
+        changed = False
+        to_do.sort(key=len, reverse=True)
+        for const in to_do:
+            
+            value = None
+            if const in constants:
+                value = constants[const]
+                if const not in (
+                    # ignore these special case Ctrl-mousewheel resize items
+                    '@font-size-body', '@font-size-tree', 
+                    '@font-size-log') and not whine:
+                    whine = ("'%s' from style-sheet comment definition, "
+                        "please use regular @string / @color type @settings."
+                        % const)
+                    g.es(whine)
+                    print(whine)
+            else:
+                key = g.app.config.canonicalizeSettingName(const[1:])  # without '@'
+                value = c.config.settingsDict.get(key)
+                if value is not None:
+                    value = str(value.val)
+
+            if value:      
+                sheet = re.sub(
+                    const+"(?![-A-Za-z0-9_])",  
+                    # don't replace shorter constants occuring in larger
+                    value,
+                    sheet
+                )
+                changed = True
+            else:
+                pass
+                # tricky, might be an undefined identifier, but
+                # might also be a @foo in a /* comment */, where it's harmless
+                # so rely on whoever calls .setStyleSheet() to do the
+                # right thing.
+            
+        passes -= 1
+        to_do = find_constants_referenced(sheet)
     
-    for const in constants:
-        sheet = re.sub(
-            const+"(?![-A-Za-z0-9_])",  
-            # don't replace shorter constants occuring in larger
-            constants[const],
-            sheet
-        )
+    if not passes and todo:
+        g.es("To many iterations of substitution")
         
+    sheet = sheet.replace('\\\n', '')  # join lines ending in \
+
     return sheet
 #@+node:ekr.20040331083824.1: *3* g.fileLikeObject
 # Note: we could use StringIo for this.
@@ -5390,8 +5436,14 @@ class fileLikeObject:
     #@-others
 #@+node:tbrown.20130411121812.28335: *3* g.find_constants_defined
 def find_constants_defined(text):
-    """find_constants - Return a dict of constants defined in the supplied text,
-    constants match::
+    """find_constants - Return a dict of constants defined in the supplied text.
+    
+    NOTE: this supports a legacy way of specifying @<identifiers>, regular
+    @string and @color settings should be used instead, so calling this
+    wouldn't be needed.  expand_css_constants() issues a warning when
+    @<identifiers> are found in the output of this method.
+    
+    Constants match::
     
         ^\s*(@[A-Za-z_][-A-Za-z0-9_]*)\s*=\s*(.*)$
         i.e.
@@ -5427,6 +5479,18 @@ def find_constants_defined(text):
         print("Ten levels of recursion processing styles, abandoned.")
         g.es("Ten levels of recursion processing styles, abandoned.")
     return ans
+#@+node:tbrown.20131120093739.27085: *3* g.find_constants_referenced
+def find_constants_referenced(text):
+    """find_constants - Return a list of constants referenced in the supplied text,
+    constants match::
+    
+        @[A-Za-z_][-A-Za-z0-9_]*
+        i.e. @foo_1-5
+
+    :Parameters:
+    - `text`: text to search
+    """
+    return re.findall(r"@[A-Za-z_][-A-Za-z0-9_]*", text)
 #@+node:ekr.20031218072017.3126: *3* g.funcToMethod
 #@+at The following is taken from page 188 of the Python Cookbook.
 # 
