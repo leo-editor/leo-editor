@@ -11,7 +11,8 @@ import re
 
 #@+<< global leoFind switch >>
 #@+node:ekr.20131118113639.17704: ** << global leoFind switch >>
-stateless_find = True # True, use stateless finds.
+stateless = False
+    # True, use stateless finds and strings instead of widgets.
 #@-<< global leoFind switch >>
 #@+<< Theory of operation of find/change >>
 #@+node:ekr.20031218072017.2414: ** << Theory of operation of find/change >>
@@ -32,10 +33,7 @@ stateless_find = True # True, use stateless finds.
 #    text in headline or body text, those changes will affect the next
 #    invocation of any Find or Change command. Failure to follow this
 #    principle caused all kinds of problems earlier versions.
-#    
-#    There is one exception to this rule: we must remember where
-#    interactive wrapped searches start.
-#    
+# 
 #    This principle simplifies the code because most ivars do not
 #    persist. However, each command must ensure that the Leo window is
 #    left in a state suitable for restarting the incremental
@@ -73,62 +71,59 @@ stateless_find = True # True, use stateless finds.
 
 #@+others
 #@+node:ekr.20070105092022.1: ** class searchWidget (to be eliminated)
-### (to be deleted)
-class searchWidget:
+if stateless:
+    pass
+else:
+    class searchWidget:
+        '''A class to simulating a hidden Tk Text widget.'''
+        def __init__ (self,*args,**keys):
+            # g.trace ('searchWidget',g.callers())
+            self.s = ''    # The widget text
+            self.i = 0     # The insert point
+            self.sel = 0,0 # The selection range
+        def __repr__(self):
+            return 'searchWidget id: %s' % (id(self))
 
-    '''A class to simulating a hidden Tk Text widget.'''
+        #@+others
+        #@+node:ekr.20070105093138: *3* getters
+        def getAllText (self):          return self.s
+        def getInsertPoint (self):      return self.i       # Returns Python index.
+        def getSelectionRange(self):    return self.sel     # Returns Python indices.
 
-    def __repr__(self):
-        return 'searchWidget id: %s' % (id(self))
+        #@+node:ekr.20070105102419: *3* setters (leoFind)
+        def delete(self,i,j=None):
+            i = self.toPythonIndex(i)
+            if j is None: j = i + 1
+            else: j = self.toPythonIndex(j)
+            self.s = self.s[:i] + self.s[j:]
+            # Bug fix: 2011/11/13: Significant in external tests.
+            self.i = i
+            self.sel = i,i
 
-    #@+others
-    #@+node:ekr.20070105092438: *3* ctor (searchWidget)
-    def __init__ (self,*args,**keys):
+        def insert(self,i,s):
+            if not s: return
+            i = self.toPythonIndex(i)
+            self.s = self.s[:i] + s + self.s[i:]
+            self.i = i
+            self.sel = i,i
 
-        # g.trace ('searchWidget',g.callers())
+        def setAllText (self,s):
+            self.s = s
+            self.i = 0
+            self.sel = 0,0
 
-        self.s = ''    # The widget text
-        self.i = 0     # The insert point
-        self.sel = 0,0 # The selection range
-    #@+node:ekr.20070105093138: *3* getters
-    def getAllText (self):          return self.s
-    def getInsertPoint (self):      return self.i       # Returns Python index.
-    def getSelectionRange(self):    return self.sel     # Returns Python indices.
+        def setInsertPoint (self,i):
+            self.i = i
 
-    #@+node:ekr.20070105102419: *3* setters (leoFind)
-    def delete(self,i,j=None):
-        i = self.toPythonIndex(i)
-        if j is None: j = i + 1
-        else: j = self.toPythonIndex(j)
-        self.s = self.s[:i] + self.s[j:]
-        # Bug fix: 2011/11/13: Significant in external tests.
-        self.i = i
-        self.sel = i,i
+        def setSelectionRange (self,i,j,insert=None):
+            self.sel = self.toPythonIndex(i),self.toPythonIndex(j)
+            if insert is not None:
+                self.i = self.toPythonIndex(insert)
+        #@+node:ekr.20070105092022.4: *3* toPythonIndex (leoFind)
+        def toPythonIndex (self,i):
 
-    def insert(self,i,s):
-        if not s: return
-        i = self.toPythonIndex(i)
-        self.s = self.s[:i] + s + self.s[i:]
-        self.i = i
-        self.sel = i,i
-
-    def setAllText (self,s):
-        self.s = s
-        self.i = 0
-        self.sel = 0,0
-
-    def setInsertPoint (self,i):
-        self.i = i
-
-    def setSelectionRange (self,i,j,insert=None):
-        self.sel = self.toPythonIndex(i),self.toPythonIndex(j)
-        if insert is not None:
-            self.i = self.toPythonIndex(insert)
-    #@+node:ekr.20070105092022.4: *3* toPythonIndex (leoFind)
-    def toPythonIndex (self,i):
-
-        return g.toPythonIndex(self.s,i)
-    #@-others
+            return g.toPythonIndex(self.s,i)
+        #@-others
 #@+node:ekr.20061212084717: ** class leoFind (leoFind.py)
 class leoFind:
 
@@ -140,7 +135,6 @@ class leoFind:
     def __init__ (self,c):
         # g.trace('(leoFind)',c.shortFileName(),id(self),g.callers())
         self.c = c
-        self.clone_find_all = None
         self.errors = 0
         self.expert_mode = False # set in finishCreate.
         self.ftm = None
@@ -173,7 +167,11 @@ class leoFind:
         # Widget ivars.
         self.change_ctrl = None
         self.find_ctrl = None
-        self.s_ctrl = searchWidget() # The search text for this search.
+        if stateless:
+            self.s = ''
+        else:
+            self.s_ctrl = searchWidget()
+                # The search text for this search.
         # Status ivars.
         self.backwardAttempts = 0
         self.wrapPosition = None
@@ -183,8 +181,8 @@ class leoFind:
         self.unstick = False
         self.re_obj = None
         # Ivars containing internal state...
-        self.clone_find_all = False
-        self.clone_find_all_flattened = False
+        ### self.clone_find_all = False
+        ### self.clone_find_all_flattened = False
         self.p = None # The position being searched.  Never saved between searches!
         self.in_headline = False # True: searching headline text.
         self.wrapping = False # True: wrapping is enabled.
@@ -738,11 +736,17 @@ class leoFind:
         c.widgetWantsFocusNow(self.w)
         self.p = c.p.copy()
         if findAll:
-            self.minibufferFindAll()
+            ### self.clone_find_all = False
+            ### self.clone_find_all_flattened = False
+            self.findAll()
         elif cloneFindAll:
-            self.minibufferCloneFindAll()
+            ### self.clone_find_all = True
+            ### self.clone_find_all_flattened = False
+            self.findAll(clone_find_all=True)
         elif cloneFindAllFlattened:
-            self.minibufferCloneFindAll()
+            ### self.clone_find_all = True
+            ### self.clone_find_all_flattened = True
+            self.findAll(clone_find_all=True,clone_find_all_flattened=True)
         else:
             # This handles the reverse option.
             self.findNextCommand()
@@ -1022,18 +1026,30 @@ class leoFind:
     def batchChange (self,pos1,pos2):
 
         c = self.c ; u = c.undoer
-        p = self.p ; w = self.s_ctrl
+        p = self.p
+        
+        if stateless:
+            pass
+        else:
+            w = self.s_ctrl
         # Replace the selection with self.change_text
         if pos1 > pos2: pos1,pos2=pos2,pos1
-        s = w.getAllText()
+        if stateless:
+            s = self.s
+        else:
+            s = w.getAllText()
         if pos1 != pos2: w.delete(pos1,pos2)
         w.insert(pos1,self.change_text)
         # Update the selection.
-        insert=g.choose(self.reverse,pos1,pos1+len(self.change_text))
-        w.setSelectionRange(insert,insert)
-        w.setInsertPoint(insert)
-        # Update the node
-        s = w.getAllText() # Used below.
+        if stateless:
+            ####
+            pass # To do
+        else:
+            insert=g.choose(self.reverse,pos1,pos1+len(self.change_text))
+            w.setSelectionRange(insert,insert)
+            w.setInsertPoint(insert)
+            # Update the node
+            s = w.getAllText() # Used below.
         if self.in_headline:
             #@+<< change headline >>
             #@+node:ekr.20031218072017.2294: *5* << change headline >>
@@ -1133,12 +1149,16 @@ class leoFind:
                 change_text = self.makeRegexSubs(change_text,groups)
         # change_text = change_text.replace('\\n','\n').replace('\\t','\t')
         change_text = self.replaceBackSlashes(change_text)
-
-        for w2 in (w,self.s_ctrl):
-            if start != end: w2.delete(start,end)
-            w2.insert(start,change_text)
-            w2.setInsertPoint(g.choose(self.reverse,start,start+len(change_text)))
-
+        if stateless:
+            ####
+            for s in ():
+                pass
+        else:
+            for w2 in (w,self.s_ctrl):
+                if start != end: w2.delete(start,end)
+                w2.insert(start,change_text)
+                w2.setInsertPoint(g.choose(self.reverse,start,start+len(change_text)))
+        
         # Update the selection for the next match.
         w.setSelectionRange(start,start+len(change_text))
         c.widgetWantsFocus(w)
@@ -1187,37 +1207,41 @@ class leoFind:
         if self.changeSelection():
             self.findNext(False) # don't reinitialize
     #@+node:ekr.20031218072017.3073: *4* find.findAll & helper
-    def findAll(self):
+    def findAll(self,clone_find_all=False,clone_find_all_flattened=False):
         trace = False and not g.unitTesting
         c = self.c ; w = self.s_ctrl ; u = c.undoer
-        undoType = ('Clone Find All Flattened'
-            if self.clone_find_all_flattened else 'Clone Find All')
+        if clone_find_all_flattened:
+            undoType = 'Clone Find All Flattened'
+        elif clone_find_all:
+            undoType = 'Clone Find All'
+        else:
+            undoType = 'Find All'
         if not self.checkArgs():
             return
         self.initInHeadline()
-        if self.clone_find_all:
+        if clone_find_all:
             self.p = None # Restore will select the root position.
         data = self.save()
         self.initBatchCommands()
         skip = {} # Nodes that should be skipped.
             # Keys are vnodes, values not important.
         count,found = 0,None
-        if trace: g.trace(self.clone_find_all_flattened,self.p and self.p.h)
+        if trace: g.trace(clone_find_all_flattened,self.p and self.p.h)
         while 1:
             pos, newpos = self.findNextMatch() # sets self.p.
             if not self.p: self.p = c.p.copy()
             if pos is None: break
-            if self.clone_find_all and self.p.v in skip:
+            if clone_find_all and self.p.v in skip:
                 continue
             count += 1
             s = w.getAllText()
             i,j = g.getLine(s,pos)
             line = s[i:j]
-            if self.clone_find_all:
+            if clone_find_all:
                 if not skip:
                     undoData = u.beforeInsertNode(c.p)
                     found = self.createCloneFindAllNode()
-                if self.clone_find_all_flattened:
+                if clone_find_all_flattened:
                     skip[self.p.v] = True
                 else:
                     # Don't look at the node or it's descendants.
@@ -1228,7 +1252,7 @@ class leoFind:
                 p2.moveToLastChildOf(found)
             else:
                 self.printLine(line,allFlag=True)
-        if self.clone_find_all and skip:
+        if clone_find_all and skip:
             u.afterInsertNode(found,undoType,undoData,dirtyVnodeList=[])
             c.selectPosition(found)
             c.setChanged(True)
