@@ -10,7 +10,7 @@ Modelled after Emacs and Vim commands.'''
 #@+<< imports >>
 #@+node:ekr.20050710151017: ** << imports >> (leoEditCommands)
 import leo.core.leoGlobals as g
-import leo.core.leoFind as leoFind
+# import leo.core.leoFind as leoFind
 import difflib   
 docutils = g.importExtension('docutils',pluginName='leoEditCommands.py')
 try:

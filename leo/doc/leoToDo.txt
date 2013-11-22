@@ -8,12 +8,12 @@
 .. @+node:ekr.20131117054619.16683: *3* new_find
 @language rest
 
-Code cleanup:
-- Don't use leoFind as baseclass for spelling class!
+* clone-find-all doesn't work.
+
 - Search strings, not widgets.
-* move dw.createFindTab into leoFind class(!)
-    - Just define dw, and use dw methods to create the actual widgets.
-    - No need for qt imports.
+
+- Remove s_ctrl var.
+- Don't support wrapping???
     
 Bug Fixes:
 - Stateless finds.
@@ -30,12 +30,17 @@ Other improvements:
 - Put "x" not found search message somewhere else.
 - Make sure to capture search string, even if do ctrl-g, etc.
 - Don't put unknown ctrl keys in minibuffer (suppress ctrl-shift-r)
+- (Possible, not important) move dw.createFindTab into leoFind class(!)
+    - Just define dw, and use dw methods to create the actual widgets.
+    - No need for qt imports.
+
 
 @language python
 .. @+node:ekr.20131118113639.17705: *4* Done
 @language rest
 
 Important classes & methods:
+- spellTabHandler (in leoEditcommands.py) is no longer a subclass of leoFind class.
 - dw.createFindTab & helpers
 - class FindTabManager
 - class EventWrapper
@@ -71,8 +76,6 @@ Changed methods:
 - dw.createFindTab adds find buttons and calls.
 - dw.createFindTab creates the FindTabManager and calls ftm.init_widgets.
 * Added find_generation ivar to vnode class.
-.. @+node:ekr.20131118113639.17704: *4* << global leoFind switch >>
-stateless_find = True # True, use stateless finds.
 .. @+node:ekr.20131121211048.16378: *3* Next
 - Change the term 'minibuffer' ???
 - Add focus-to-x commands, where x is a *temporary* log pane, like completions, commands, etc.
