@@ -63,13 +63,15 @@ class LeoApp:
 
         # Debugging & statistics...
         self.count = 0                  # General purpose debugging count.
-        self.debug = False              # Enable debugging. (Can be slow.)
-        self.debugSwitch = 0            # 0: Brief; 1: Full.
+        self.debug_app = False          # True: Enable debugging (of widgets)
+        self.debug_widgets = False      # True: enable verbose tracing of widgets.
+        self.debugSwitch = 0            # For g.es_exception: 0: Brief; 1: Full.
         self.disable_redraw = False     # True: disable all redraws.
         self.disableSave = False        # May be set by plugins.
         self.positions = 0              # The number of positions generated.
         self.scanErrors = 0             # The number of errors seen by g.scanError.
         self.statsDict = {}             # dict used by g.stat, g.clear_stats, g.print_stats.
+        self.validate_outline = False   # True: enables c.validate_outline. (slow)
 
         # Error messages...
         self.atPathInBodyWarning = None # Set by get_directives_dict.

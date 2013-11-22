@@ -949,7 +949,6 @@ class leoFind:
         '''Toggle the 'Wrap Around' checkbox in the Find tab.'''
         return self.toggleOption('wrap')
     def toggleOption(self,checkbox_name):
-        # g.trace(checkbox_name)
         self.ftm.toggle_checkbox(checkbox_name)
     #@+node:ekr.20131117164142.17019: *4* leoFind.setFindScope...
     def setFindScopeEveryWhere (self,event=None):

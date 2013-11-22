@@ -4471,13 +4471,10 @@ class Commands (object):
     def validateOutline (self,event=None):
 
         c = self
-
-        if not g.app.debug:
+        if not g.app.validate_outline:
             return True
-
         root = c.rootPosition()
         parent = c.nullPosition()
-
         if root:
             return root.validateOutlineWithParent(parent)
         else:

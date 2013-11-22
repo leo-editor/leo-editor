@@ -162,8 +162,7 @@
 <v t="ekr.20101112045055.5064" descendentVnodeUnknownAttributes="7d7100285503302e3171017d710255097374725f6174696d657103550c313337363431323739362e3071047355013071057d71066803550c313337363431323932332e307107735503302e3071087d71096803550c313337363431323932372e30710a73752e"><vh>@file plugin_catalog.py</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
 <v t="ekr.20131005214621.16088"><vh>Home page</vh>
-<v t="ekr.20100808060203.4273"
-expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
+<v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20131008041326.16065"><vh>Links page</vh>
 <v t="ekr.20131030184445.16582"><vh>@rst html/leoLinks.html </vh></v>
@@ -291,9 +290,16 @@ expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
 <v t="ekr.20120229094652.15137"><vh>What's the recommended way to upgrade Leo?</vh></v>
 </v>
 <v t="ekr.20050830115714.118"><vh>Tips and techniques</vh>
+<v t="ekr.20131122055946.16401"><vh>How to make a screencast</vh>
+<v t="ekr.20131122055946.16402"><vh>Use a script to open your app</vh></v>
+<v t="ekr.20131122055946.16403"><vh>Debug your workflow with short videos</vh></v>
+<v t="ekr.20131122055946.16404"><vh>Emulate the screencast.com tutorials</vh></v>
+<v t="ekr.20131122055946.16405"><vh>Record your first real take</vh></v>
+<v t="ekr.20131122055946.16406"><vh>Edit your raw take</vh></v>
+<v t="ekr.20131122055946.16407"><vh>Summary</vh></v>
+</v>
 <v t="ekr.20050830115714.113"><vh>How can I create a template .leo file?</vh></v>
 <v t="ekr.20050830115714.120"><vh>How can I display graphics in Leo?</vh></v>
-<v t="ekr.20070622185234"><vh>How can I do a simple find and replace?</vh></v>
 <v t="ekr.20050830115714.74"><vh>How can I import many files at once?</vh></v>
 <v t="ekr.20120229094652.15099"><vh>How can I make commonly-used scripts widely accessible?</vh></v>
 <v t="ekr.20120229094652.15124"><vh>How can I restore focus without using the mouse</vh></v>
@@ -639,14 +645,11 @@ expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
 <v t="EKR.20040524104904.116"><vh>Converting leading blanks and tabs in body text</vh></v>
 <v t="EKR.20040524104904.117"><vh>Executing Python scripts in body text</vh></v>
 <v t="EKR.20040524104904.118"><vh>Finding and replacing text</vh>
-<v t="ekr.20120319065417.8792"><vh>Overview</vh></v>
 <v t="ekr.20120319065417.8790"><vh>Basic searches</vh></v>
-<v t="ekr.20120319065417.8791"><vh>find-all, clone-find-all &amp; clone-find-all-flattened</vh></v>
-<v t="ekr.20120319065417.8797"><vh>Replace commands</vh></v>
 <v t="ekr.20120319065417.8798"><vh>Incremental find commands</vh></v>
-<v t="ekr.20120319065417.8794"><vh>Commands that set find options</vh></v>
 <v t="ekr.20120319065417.8795"><vh>Word search and regex search commands</vh></v>
-<v t="ekr.20120319065417.8788"><vh>Find settings</vh></v>
+<v t="ekr.20120319065417.8788"><vh>Check boxes and their commands</vh></v>
+<v t="ekr.20131122055946.16388"><vh>Radio buttons and their commands</vh></v>
 </v>
 <v t="EKR.20040524104904.134"><vh>Go To Line Number</vh></v>
 <v t="EKR.20040524104904.136"><vh>Inserting the date and time</vh></v>
@@ -3747,7 +3750,7 @@ This is Leo's Frequently Asked Questions document.
 .. index:: FAQ
 
 .. contents::
-    :depth: 3
+    :depth: 4
 </t>
 <t tx="ekr.20050830115714.1"></t>
 <t tx="ekr.20050830115714.10">The encoding used in the file being imported doesn't match the encoding in effect for Leo.
@@ -6965,39 +6968,6 @@ See the following sections for details.
 <t tx="ekr.20070610174018">This section contains settings for this file.
 
 It also contains other information of little interest to most Leo users.</t>
-<t tx="ekr.20070622185234">The 'official' way to start a replace command is::
-
-    &lt;Ctrl-shift-r&gt;find-pattern&lt;return&gt;replace-text&lt;return&gt;
-
-But suppose you with start with::
-
-    &lt;ctrl-f&gt;find-pattern
-
-and then realize you want to do a replace instead of a find.
-No problem.  The following also works::
-
-    &lt;Ctrl-f&gt;find-pattern&lt;Ctrl-shift-r&gt;replace-text&lt;return&gt;
-
-In other words, you can think of `&lt;ctrl-f&gt;` as meaning 'show the find dialog'.
-
-**Important**: Once you have started a find (or find &amp; replace), you can
-
-1. Repeat the find operation using F3 (find-next) or
-2. Replace the selection with the replace-text using Ctrl-= (replace) or
-3. Replace the selection and find again using Ctrl-- (replace-then-find).
-
-There is another trick you should know. After typing `&lt;ctrl-f&gt;` or
-`&lt;shift-ctrl-r&gt;` you can use `&lt;alt-ctrl&gt;` keys to set or clear find
-options. For example::
-
-    &lt;ctrl-f&gt;&lt;alt-ctrl-w&gt;&lt;find-pattern&gt;&lt;return&gt;
-
-That is, `&lt;ctrl-f&gt;` shows the find dialog,
-`&lt;alt-ctrl-w&gt;` toggles the Whole Word checkbox and
-`&lt;return&gt;` starts the search.
-You can type the `&lt;alt-ctrl&gt;` keys anytime after `&lt;ctrl-f&gt;` (or `&lt;shift-ctrl-r&gt;`) and before `&lt;return&gt;`. 
-You can also type multiple `&lt;alt-ctrl-keys&gt;` to toggle multiple checkboxes.
-</t>
 <t tx="ekr.20070622212132">::
 
     activate-cmds-menu
@@ -13994,8 +13964,7 @@ situation.
 Here is the workflow I use to develop Leo. The intention is to help
 present and potential developers use Leo effectively.
 
-Overview
-========
+Overview:
 
 - Develop in an outline containing all of Leo's source files. Close this outline
   rarely: this keeps the code I am using stable while I'm hacking the code.
@@ -14006,8 +13975,7 @@ Overview
 
 These two points are covered in a bit more detail in `This FAQ entry`_.
 
-Additional tips
-===============
+Additional tips:
 
 A. Avoid using the mouse whenever possible. For example, use alt-tab to switch
 between windows.
@@ -14049,8 +14017,7 @@ E. For thousand of example of my programming style, see leoPy.leo and
    of using clones to create view nodes. I typically delete the clones in the
    views shortly before a release.
 
-Writing documentation
-=====================
+Writing documentation:
 
 - Use postings as pre-writing for documentation.
 
@@ -14063,8 +14030,7 @@ Writing documentation
 - Use the vr command to debug reStructuredText documentation. The viewrendered
    pane updates as you type. This makes Leo a killer app for rST.
    
-Administrative tips
-===================
+Administrative tips:
 
 - Never rely on memory.
 
@@ -14076,8 +14042,7 @@ Administrative tips
    
    This keeps to-do lists short, which keeps energy high.
 
-Tips for using bzr
-==================
+Tips for using bzr:
 
 I use the following batch files related to bzr::
 
@@ -15546,24 +15511,27 @@ something like::
 
     g.app.my_script_w = w
 </t>
-<t tx="ekr.20120319065417.8788">The following check boxes options appear in the search dialog and control
-the operations of the find and change commands.
+<t tx="ekr.20120319065417.8788">The following check boxes options appear in the Find pane:
 
 Ignore Case
     When checked, the Find and Change commands ignore the case of
     alphabetic characters when determining matches.
+    Alt+Ctrl+I (toggle-find-ignore-case-option) toggles this checkbox.
 
 Mark Changes
     When checked, the Change command marks all headlines whose headline or
     body text are changed by the command.
+    Alt+Ctrl+C (toggle-find-mark-changes-option) toggles this checkbox.
 
 Mark Matches
     When checked, the Find and Change commands mark all headlines in which
     a match is found with the pattern.
+    Alt+Ctrl+F (toggle-find-mark-finds-option) toggles this checkbox.
 
 Pattern Match
     When checked, the Find and Change commands treat several characters
     specially in the find pattern.
+    Alt+Ctrl+X (toggle-find-regex-option) toggles this checkbox.
 
     - '*'  matches any sequence of zero or more characters.
     - '.'  matches any single character.
@@ -15579,96 +15547,61 @@ Examples::
 
 Search Body Text
     When checked, the Find and Change commands search body text.
+    Alt+Ctrl+B (toggle-find-in-body-option) toggles this checkbox.
 
 Search Headline Text
     When checked, the Find and Change commands search headline text.
-
-Suboutline Only
-    When checked, the Find and Change commands search only the currently
-    selected headline and its offspring.
+    Alt+Ctrl+H (toggle-find-in-headline-option) toggles this checkbox.
 
 Whole Word
-    When checked, the find pattern must match an entire word. Words consist
+    When selected, the find pattern must match an entire word. Words consist
     of an alphabetic character or underscore, followed by zero or more
     alphabetic characters, numbers or underscores.
+    Alt+Ctrl+W (toggle-find-word-option) toggles this checkbox.
 
 Wrap Around
     When checked, the Find and Change commands continues at the top of the
     file when the command reaches the bottom of the file. For reverse
     searches, the find or change command continues at the bottom of the
     file when the command reaches the top of the file.
+    Alt+Ctrl+A (toggle-find-wrap-around-option) toggles this checkbox.
+    
 </t>
-<t tx="ekr.20120319065417.8790">The ``search-with-present-options`` (Ctrl-F) command prompts for a
+<t tx="ekr.20120319065417.8790">The ``start-search`` (Ctrl-F) command prompts for a
 search string. Typing the &lt;Return&gt; key puts the search string in the
 Find tab and executes a search based on all the settings in the Find
-tab. This is a recommended default search command. The ``find-next``
-(F3) command continues a search started with
+tab. Type Tab to enter replacement text.
+
+The ``find-next`` (F3) command continues a search started with
 ``search-with-present-options``. The ``find-previous`` (F2) commands
-searches backwards using the present search options.
-
-To search and replace, type &lt;Ctrl-F&gt;, followed by the search pattern,
-followed by the ``replace-string`` (Ctrl-Shift-R) command, followed by
-the replacement pattern, and finally a &lt;Return&gt; to start the search.
-</t>
-<t tx="ekr.20120319065417.8791">The ``find-all`` command prints all matches in the log pane. The
-``clone-find-all`` command searches the outline and creates a new root node
-called Found: *&lt;your search pattern&gt;*. This node contains clones of the
-found nodes. The ``clone-find-all-flattened`` commands includes all found
-nodes, even if they are also children of previously found nodes.
-</t>
-<t tx="ekr.20120319065417.8792">Leo supports a wide array of commands for searching and replacing
-text. The typical way to find text is with the
-``search-with-present-options`` (Ctrl-F). Focus moves to the
-minibuffer. Type the search pattern, followed by a &lt;Return&gt;. To search
-and replace, type &lt;Ctrl-F&gt;, followed by the search pattern, followed
-by ``replace-string`` (Ctrl-Shift-R) command, followed by the
-replacement pattern, and finally a &lt;Return&gt; to start the search.
-
-The following sections discuss all of Leo's find and change commands.
-**Important**: The radio buttons in the Find tab (Entire Outline,
-Suboutline Only and Node only) control how much of the outline is
-affected by Leo's find and change commands.
-</t>
-<t tx="ekr.20120319065417.8794">Several commands toggle the checkboxes and radio buttons in the Find tab,
-and thus affect the operation of the search-with-present-options command.
-You may bind these commands to keys or toggle these options in a mode.
-These commands toggle checkboxes::
-
-    Alt+Ctrl+I  toggle-find-ignore-case-option
-    Alt+Ctrl+B  toggle-find-in-body-option
-    Alt+Ctrl+H  toggle-find-in-headline-option
-    Alt+Ctrl+C  toggle-find-mark-changes-option
-    Alt+Ctrl+F  toggle-find-mark-finds-option
-    Alt+Ctrl+X  toggle-find-regex-option
-    Alt+Ctrl+W  toggle-find-word-option
-    Alt+Ctrl+A  toggle-find-wrap-around-option
-
-These commands set radio buttons::
-
-    Alt+Ctrl+E  set-find-everywhere
-    Alt+Ctrl+N  set-find-node-only
-    Alt+Ctrl+S  set-find-suboutline-only
-</t>
-<t tx="ekr.20120319065417.8795">The following commands set an option in the Find tab, then work
-exactly like the ``search-with-present-options`` command. The
-``search-backward`` and ``search-forward`` commands set the 'Whole
-Word' checkbox to False. The ``word-search-backward`` and
-``word-search-forward`` set the 'Whole Word' checkbox to True. The
-``re-search-forward`` and ``re-search-backward`` set the 'Regexp'
-checkbox to True.
-</t>
-<t tx="ekr.20120319065417.8797">The ``replace-string`` (Ctrl-Shift-R) command prompts for a search string.
-Type &lt;Return&gt; to end the search string. The command will then prompt for
-the replacement string. Typing a second &lt;Return&gt; key will place both
-strings in the Find tab and executes a **find** command, that is,
-search-with-present-options.
-
+searches backwards using the present search options. 
 The ``replace`` (Ctrl-=) command replaces the selected text with the
 'change' text in the Find tab. The ``replace-then-find`` (Ctrl--)
 command replaces the selected text with the 'change' text in the Find
 tab, then executes the find command again. These commands can simulate
-any kind of query-replace command. The ``replace-all`` command changes
-all occurrences of the 'find' text with the 'change' text.
+any kind of query-replace command.
+
+The ``find-all`` command prints all matches in the log pane. The
+``replace-all`` command changes all occurrences of the 'find' text
+with the 'change' text.
+
+The ``clone-find-all`` command searches the outline and creates a new
+root node called Found: *&lt;your search pattern&gt;*. This node contains
+clones of the found nodes. The ``clone-find-all-flattened`` commands
+includes all found nodes, even if they are also children of previously
+found nodes.
+</t>
+<t tx="ekr.20120319065417.8795">The following commands set an option in the Find tab, then work
+exactly like the ``start-search`` command.
+
+- The ``search-backward`` and ``search-forward`` commands set the
+  'Whole Word' checkbox to False.
+
+- The ``word-search-backward`` and ``word-search-forward`` set the
+  'Whole Word' checkbox to True.
+
+- The ``re-search-forward`` and ``re-search-backward`` set the
+  'Regexp' checkbox to True.
 </t>
 <t tx="ekr.20120319065417.8798">Incremental find commands move through the text as you type individual
 characters. Typing &lt;BackSpace&gt; backtracks the search. To repeat an
@@ -22786,6 +22719,158 @@ YouTube videos:
 Other videos about Leo:
 
 - `Terry Brown talks introduces his bookmarks plugin &lt;https://vimeo.com/77720098&gt;`_
+</t>
+<t tx="ekr.20131122055946.16388">The following radio buttons appear in the Find pane:
+
+Entire Outline
+    When selected, Find commands search the entire outline.
+    Alt+Ctrl+E (set-find-everywhere) sets this radio button.
+
+Node Only
+    When selected, Find commands search only the selected node.
+    Alt+Ctrl+N (set-find-node-only) sets this radio button
+    
+Suboutline Only
+    When selected, the Find and Change commands search only the currently
+    selected headline and its offspring.
+    Alt+Ctrl+S (set-find-suboutline-only) sets this radio button.
+</t>
+<t tx="ekr.20131122055946.16401">Making screencasts is a lot easier than you probably think.
+
+Here are some tips to get you started quickly.
+
+
+
+
+
+
+
+</t>
+<t tx="ekr.20131122055946.16402">The primary purpose of this script is to open your app at a fixed,
+unchanging size. This is surprisingly important:
+
+- It ensures that the window will always render to pixels in the same way.
+- It makes it easier to splice in new video to an existing video.
+- It makes it easier to plan your video to ensure everything will appear as you expect.
+- It provides continuity when making a series of videos.
+
+Here is a script that I use when making Leo's screencasts::
+
+    python27 launchLeo.py --no-cache --gui=qttabs
+    --window-size=682x1264 &lt;list of .leo files&gt; %*​
+    
+This *particular* --window-size causes Camtasia to create a window whose
+actual size is 720x1280, the nominal 720p resolution. It may prevent text
+blur. Or not. I do know that Leo's screencasts look great at 720p.</t>
+<t tx="ekr.20131122055946.16403">Make sure that you can actually upload *excellent quality* videos before
+doing anything else. This step is crucial. If you skip this step, all of
+your initial recording an post-production work could be utterly wasted.
+
+Use *short* (10-second) test videos at this step. Their primary purpose
+verify that you can can get to the *end* of the production process
+successfully. You *are* going to make lots of mistakes here: using short
+videos helps you make these mistakes quickly.
+
+Don't even *think* about making longer videos until the answers to all the
+following questions are clearly "yes":
+
+- Is your camera working?
+- Is your microphone working?
+- Do you know how to record your voice and screen?
+- Can you log into YouTube or screencast.com?
+- Can you upload to YouTube or screencast.com?
+- Is the sound in your *uploaded* video great?
+- Do the pixels in your *uploaded* look great?
+
+This last item is particularly important. Just because pixels look good in
+your video editor is no guarantee that they will look good when uploaded.
+
+You are ready to try your first "real" take *only* when you can upload a
+video that looks and sounds great.
+</t>
+<t tx="ekr.20131122055946.16404">Before rushing right out and making your first video, I recommend
+watching the tutorial screencasts at screencast.com:
+http://www.techsmith.com/tutorial-camtasia-8.html
+
+Watch the tutorials to see how the presentations themselves are
+organized. Watch them until it feels natural to emulate their style.
+
+If you will be using Camtasia, you will also want to watch the tutorials
+to learn how Camtasia works.  But this is a secondary consideration.
+</t>
+<t tx="ekr.20131122055946.16405">Now it's time to go beyond test videos. Even now, though, I recommend
+keeping your first efforts short: one minute or so. Again, this saves time.
+You'll ending up throwing away two or three anyway ;-)
+
+Bring up your app using you demo script and run through your presentation.
+
+Here's the **most important tip**: As you narrate your video, audio flubs
+are inevitable, but they don't matter at all *provided* that you *realize*
+that you have just flubbed a word or phrase. 
+
+When you flub a line, don't panic! Just *pause*, regroup, and repeat the
+phrase until you get it right. *Pausing is essential*: it simplifies
+inserting and deleting sound bites during post production.
+
+You'll relax once you realize that flubs don't matter and that pausing
+makes post-production easier. Once you relax, getting a good take will
+suddenly become easier.
+
+Correcting flubs *as soon as they happen* is absolutely essential. Don't
+even *think* about fixing audio flubs in post-production. It simply can't
+be done. Instead of spending 20 minutes trying (and failing) to correct a
+flub in post production, it is much faster and better to take 20 seconds
+during your take to correct the flub.
+
+Similar remarks apply to video, but in my experience it's much easier to
+get the video right. If you do flub the video, it will be much easier if
+you just do a complete retake. With Camtasia, you can separate the audio
+and video tracks, but usually that won't work, especially if there is audio
+of key clicks.
+
+By retaking audio flubs as they happen, I find it easy to work without a
+script. It feels more natural to me than reading a script. YMMV. When
+I get stuck, I just pause. Or just start over. Otoh, it wouldn't be that
+hard to read a script. Just *pause* before and after each phrase. Never
+rush your audio!
+
+In short, the key Aha is: insert (audio) pauses *everywhere* as needed.
+It's easy to edit them out. It's virtually impossible to edit in the middle
+of words, even with the world's best audio editor.
+</t>
+<t tx="ekr.20131122055946.16406">Post production should be easy provided that you have corrected all audio
+flubs as they happen. This keeps the audio and video in synch. Just edit
+out flubs and reduce overly-long pauses.
+
+I won't discuss production details here because they depend on the editor
+you are using.
+
+Do a new take if you don't have clean audio. Depending on the complexity of
+your video, it may be possible to splice a partial take in the middle or
+end of your video. Similarly, it may be possible to splice in a new take to
+add material you didn't cover in your first take.
+
+One final word of advice. When editing your video, settle for "good
+enough". Perfectionism is not your friend.
+</t>
+<t tx="ekr.20131122055946.16407">Making a screencast is a lot easier than you think :-)
+
+
+- Create a script that will open your app at a fixed, optimal, size.
+
+- Emulate the style and form of screencast.com tutorials.
+
+- Verify the *entire* production process with short test videos.
+
+  Before making longer videos, make *sure* that the test videos look and
+  sound great *when they have been uploaded*.
+  
+- When doing a take, flubs don't matter, *provided* you correct them
+  *during the take*.  Use pauses.  Make haste slowly!
+
+- Splice in new takes during post-production to fix flubs and add new
+  material.
+
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few

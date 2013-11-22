@@ -5542,12 +5542,60 @@ What I did:
   These flags disable unwanted actions when expanding tree abbreviations.
 
 @language python
+.. @+node:ekr.20131121115406.16356: *3* ** Added new Find tab
 .. @+node:ekr.20131116122602.16664: *3* Got focus border working again
 Changed add_border and remove_border in qtGui.py
 .. @+node:ekr.20131120115900.16325: *3* Added join-irc-leo command
 .. @+node:ekr.20131120193808.16326: *3* Allow comments after @data setting-name
 Changed ParserBaseClass.parseHeadline so it ignores everything after @data
 name.
+.. @+node:ekr.20131120193808.17513: *3* Allow comment lines in @item nodes
+The first line is significant.  All others are comments.
+
+The fix was to ParserBaseClass.doItems.
+.. @+node:ekr.20131121050226.16330: *3* Improved debugging capabilities
+Disambiguated various debug switches.
+
+The master debug switches are now::
+    
+    g.app.debug_app
+    g.app.debug_widgets
+
+Added leoQtEventFilter.traceWidget.
+
+Added toggle-debug button in my copy of leoPy.leo.
+.. @+node:ekr.20131115120119.17434: *3* Improved tab pane
+@language rest
+
+What I did:
+    
+- Created LeoBaseTabWidget, containing most of the code of LeoTabbedTopLevel.
+- LeoTabbedTopLevel derives from this new class.
+    
+- leoQtLog.__init__ now calls tw.setMovable(True).
+  This allows Log pane tabs to be rearranged.
+  
+- Changed dw.createTabWidget. The changes have as yet no effect:
+
+    def createTabWidget (self,parent,name,hPolicy=None,vPolicy=None):
+    
+        # w = LeoBaseTabWidget(parent)
+        w = QtGui.QTabWidget(parent)
+        tb = w.tabBar()
+        # tb.setTabsClosable(True)
+        self.setSizePolicy(w,kind1=hPolicy,kind2=vPolicy)
+        self.setName(w,name)
+        return w
+.. @+node:ekr.20131121115406.16357: *3* Fixed greedy checkbox bug
+@language rest
+
+When the Find pane is active, Alt-x toggles the regex check box, etc.
+
+There is no obvious way to disable the widget when the pane is deactivated.
+It must be possible, but perhaps it is not worth it.
+
+The solution was simply to remove the keyboard hints from the Find pane!
+
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.

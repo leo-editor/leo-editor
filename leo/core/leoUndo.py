@@ -60,7 +60,7 @@ class undoer:
     def __init__ (self,c):
 
         self.c = c
-        self.debug = False # True: enable debugging code in new undo scheme.
+        self.debug_undoer = False # True: enable debugging code in new undo scheme.
         self.debug_print = False # True: enable print statements in debug code.
 
         self.granularity = c.config.getString('undo_granularity')
@@ -71,7 +71,7 @@ class undoer:
 
         self.max_undo_stack_size = c.config.getInt('max_undo_stack_size') or 0
 
-        # Statistics comparing old and new ways (only if self.debug is on).
+        # Statistics comparing old and new ways (only if self.debug_undoer is on).
         self.new_mem = 0
         self.old_mem = 0
 
@@ -1266,7 +1266,7 @@ class undoer:
         # The "given" texts for the undo and redo routines are simply p.b.
         #@@c
 
-        if u.debug:
+        if u.debug_undoer:
             # Remember the complete text for comparisons...
             u.oldText = oldText
             u.newText = newText
