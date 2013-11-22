@@ -7414,9 +7414,10 @@ class helpCommandsClass (baseEditCommandsClass):
 
         s = '''\
 
-        ++++++++++++++++++++
         About the Minibuffer
-        ++++++++++++++++++++
+        --------------------
+
+        Alt-0 (vr-toggle) hides this help message.
 
         The mini-buffer is intended to be like the Emacs buffer:
 
@@ -7446,7 +7447,11 @@ class helpCommandsClass (baseEditCommandsClass):
         k = self.k
         #@+<< define s >>
         #@+node:ekr.20130412180825.10342: *4* << define s >> (help-for-command)
-        s = '''
+        #@@language rest
+
+        s = '''\
+
+        Alt-0 (vr-toggle) hides this help message.
 
         Type the name of the command, followed by Return.
 
@@ -7575,9 +7580,10 @@ class helpCommandsClass (baseEditCommandsClass):
 
         s = '''\
 
-        +++++++++++++++++++
         About Abbreviations
-        +++++++++++++++++++
+        -------------------
+
+        Alt-0 (vr-toggle) hides this help message.
 
         Leo optionally expands abbreviations as you type.
 
@@ -7639,9 +7645,11 @@ class helpCommandsClass (baseEditCommandsClass):
         #@@language rest
 
         s = '''
-        +++++++++++++++++++++++++++++++++
+
         About Autocompletion and Calltips
-        +++++++++++++++++++++++++++++++++
+        ---------------------------------
+
+        Alt-0 (vr-toggle) hides this help message.
 
         This documentation describes both
         autocompletion and calltips.
@@ -7755,9 +7763,11 @@ class helpCommandsClass (baseEditCommandsClass):
         #@@language rest
 
         s = '''
-        ++++++++++++++++++
+
         About Key Bindings
-        ++++++++++++++++++
+        ------------------
+
+        Alt-0 (vr-toggle) hides this help message.
 
         A shortcut specification has the form:
 
@@ -7836,9 +7846,13 @@ class helpCommandsClass (baseEditCommandsClass):
 
         #@+<< define rst_s >>
         #@+node:ekr.20130412173637.10330: *4* << define rst_s >> (F1)
+        #@@language rest
+
         rst_s = '''
 
         **Welcome to Leo's help system.**
+
+        Alt-0 (vr-toggle) hides this help message.
 
         To learn about ``<Alt-X>`` commands, type::
             
@@ -7872,9 +7886,11 @@ class helpCommandsClass (baseEditCommandsClass):
         #@@language rest
 
         s = '''
-        ++++++++++++++++++++++++
+
         About Debugging Commands
-        ++++++++++++++++++++++++
+        ------------------------
+
+        Alt-0 (vr-toggle) hides this help message.
 
         The following commands are useful for debugging::
 
@@ -7906,11 +7922,12 @@ class helpCommandsClass (baseEditCommandsClass):
         #@+node:ekr.20131029061413.17095: *4* << define s >> (helpForDynamicAbbreviations)
         #@@language rest
 
-        s = '''\
+        s = '''
 
-        +++++++++++++++++++++++++++
         About Dynamic Abbreviations
-        +++++++++++++++++++++++++++
+        ---------------------------
+
+        Alt-0 (vr-toggle) hides this help message.
 
         .. Description taken from http://www.emacswiki.org/emacs/DynamicAbbreviations
 
@@ -7955,40 +7972,52 @@ class helpCommandsClass (baseEditCommandsClass):
 
         s = '''
 
-        .. |br| raw:: html
-
-           <br />
-
         Finding & replacing text
         ------------------------
 
-        **Ctrl-F** (start-search) shows the Find Tab.
+        Alt-0 (vr-toggle) hides this help message.
 
-        Enter the Find text, and (optionally) the Replace text.
+        **Ctrl-F** (start-search) shows the Find pane
+        and puts focus in the find box.
 
-        Click one of the buttons.
+        Enter the find text and the replacement text if desired::
 
-        When Leo selects the found text. Then:
+            Tab switches focus from widget to widget.
+            Return executes the find-next command.
 
-        - Ctrl-minus (replace-then-find) replaces the selected text.
-        - F3 (find-next) continues searching without making a replacement.
-        - F2 (find-previous) continues the search in reverse.
-        - Ctrl-G (keyboard-quit) ends the search.
+        When Leo selects the found text you can do::
+
+            Ctrl-equal (replace)
+            Ctrl-minus (replace-then-find)
+            F3 (find-next)
+            F2 (find-previous)
+            Ctrl-G (keyboard-quit)
+            anything else :-)
+
+        You can Leo's commands toggle check boxes and radio buttons.
+        These commands are listed in the Search menu.
+
+        You can execute these commands (and see their key bindings)
+        using the minibuffer::
+
+            <Alt-X>tog<tab>f<tab>   or
+            <Alt-X>set<tab>f<tab>
 
         Incremental searching
         ---------------------
 
-        **Alt-S** starts an incremental search. |br|
-        **Alt-R** starts a reverse incremental search.
+        Incremental search is done only from the minibuffer::
 
-        Any characters you type extend the search. |br|
-        **Backspace** retracts the search. 
+            Alt-S (isearch forward)
+            Alt-R (isearch backward)
+            BackSpace retracts the search
+            All other characters extend the search
 
-        During an incremental search:
-            **Enter** or **Ctrl-G** stops the search. |br|
-            **Alt-S** finds the search string again. |br|
-            **Alt-R** does the same during a reverse search.
+        During an incremental search::
 
+            Enter or Ctrl-G stops the search.
+            Alt-S finds the search string again.
+            Alt-R ditto for reverse searches.
         '''
         #@-<< define s >>
         self.c.putHelpFor(s)
@@ -8002,17 +8031,16 @@ class helpCommandsClass (baseEditCommandsClass):
         #@@language rest
 
         # Using raw string is essential.
-        s = r'''\
 
-        .. _`regular expressions`: http://docs.python.org/library/re.html
-        .. _`quick reference`:     http://rgruet.free.fr/PQR26/PQR2.6.html
+        s = r'''
 
-        +++++++++++++++++++++++++++
-        About Regular expressions
-        +++++++++++++++++++++++++++
+        About regular expressions
+        -------------------------
 
-        Leo supports Python's regular expressionsin find patterns.
-        Here is a quick reference::
+        Alt-0 (vr-toggle) hides this help message.
+
+        Python's regular expressions, http://docs.python.org/library/re.html,
+        are valid in find patterns::
 
             .               Matches any character (including newline if DOTALL flag specified).
             ^               Matches start of the string (of every line in MULTILINE mode).
@@ -8061,8 +8089,6 @@ class helpCommandsClass (baseEditCommandsClass):
             \w              Any alphaNumeric char (depends on LOCALE flag).
             \W              Any non-alphaNumeric char (depends on LOCALE flag).
             \Z              Matches only at the end of the string.
-
-        For complete details, see: http://docs.python.org/library/re.html
 
         '''
         #@-<< define s >>

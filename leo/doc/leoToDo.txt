@@ -6,126 +6,25 @@
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 
-- Announce that Ctrl-F now bound to start-search.
-  You may have to change myLeoSettigns.leo.
+Announce about Find pane:
+    Ctrl-F now bound to start-search.
+    You may have to change myLeoSettigns.leo.
   
 - Remove mention of Ctrl-Shift-R from the docs.
 
-Improve Find pane:
-    - Put "x" not found search message somewhere else.
-    - Ctrl-F puts selected text into the search box.
-    - Smart search: clear ignore case if the search text has at least one uppercase letter.
-  
-- Create screencast about settings.
+- Finish help-for-find-command.
 
-** toggle-debug-mode
-
-- Make sure to capture search string, even if do ctrl-g, etc.
-- Don't put unknown ctrl keys in minibuffer (suppress ctrl-shift-r)
-
-** Video for Zoom Quiet
-
-Next:
-- Regularize + and - in @menu nodes in leoSettings.leo 
-- Remove g.trace switches.  Nobody ever uses them.
-- Add Alt-Ctrl commands to Search menu.
-- Add focus-to-x commands, where x is a *temporary* log pane, like completions, commands, etc.
-- (Maybe) Add helpful @button nodes to leoSettings.leo.
-- Revise help-for-find-commands
-* More screenshots!
-.. @+node:ekr.20131121211048.16378: *3* Ideas
-.. @+node:ekr.20131121090013.17108: *4* Import pane, similar to the Find pane
-Very important.
-
-ActivePath is an alternative.  Has rclick interface.
-.. @+node:ekr.20131121050226.16327: *4* reload command?
-**Not** essential.
-
-Ideas:
-- Don't reload any files!
-- Only reprocess leoSettings.leo or myLeoSettings.leo if they are actually open.
-- Change LoadManager to handle a reload flag.
-.. @+node:ekr.20131117054619.16683: *3* new_find
-@language rest
-
-* move dw.createFindTab into leoFind class(!)
-    - Just define dw, and use dw methods to create the actual widgets.
-    - No need for qt imports.
-- Create save/restore_isearch_vars methods using isearch_save_d.
-- F2 doesn't work when only searching in headlines.
-- find-all and change-all never wrap.
-- Allow replace for an empty selection.
-- Don't use leoFind as baseclass for spelling class!
-
-Stateless finds.
-- Search strings, not widgets.
-
-@language python
-.. @+node:ekr.20131118113639.17705: *4* Done
-@language rest
-
-Important classes & methods:
-- dw.createFindTab & helpers
-- class FindTabManager
-- class EventWrapper
-
-What I did:
-- Added support for Alt-Ctrl keys.
-- start-find selects all text in findbox.
-- Removed eventFilter ivar
-- All defaults work in the Find pane, except the Alt-Ctrl bindings.
-  The user can just use the standard Alt-bindings to set checkboxes and radio buttons.
-- Add shortcuts to button names.
-- Honor Ctrl-G, F2, F3, Ctrl-- & Ctrl-+ from any widget in the find pane.
-- Create help button in the Find pane.
-- dw code now sets ftm ivars, not dw ivars.
-- Added tab easter egg to searchWithPresentOptions.
-- Removed all clones and dead code from leoSettings.leo.
-  (Improved introductory comments.)
-- Createf leo/config/exampleSettings.leo.
-- fc.minibuffer_mode replaces fc.expert_mode.
-- start-find command
-- test set-replace-string.
-- Protect self.p everywhere.
-- Don't hide find pane during searches.
-- Init widgets from c.config.
-- Clicking widgets should set leoFind ivars.
-- Toggle commands should toggle widgets.
-- Move search classes from leoEditCommands.py to leoFind.py
-
-Changed methods:
-- c.initObjects now creates leoFind object.
-- c.finishCreate does: self.findCommands = leoFind.leoFind(c)
-- Added the FindTabManager (ftm)
-- dw.createFindTab adds find buttons and calls.
-- dw.createFindTab creates the FindTabManager and calls ftm.init_widgets.
-* Added find_generation ivar to vnode class.
-.. @+node:ekr.20131118113639.17704: *4* << global leoFind switch >>
-stateless_find = True # True, use stateless finds.
-.. @+node:ekr.20131120054058.16280: *4* Gallery of screen shots
-
-different font sizes, coloring schemes, plugins, etc.
-.. @+node:ekr.20131120054058.16279: *3* Create github repo (call Speed)
-.. @+node:ekr.20131119195900.18522: *3* vim-mode
-- Do all common vim commands:
-    - Leave arrow keys and control keys unchanged.
-    - Focus plain-key normal-mode commands: a,i,d,c,x,s.
-    - Use minibuffer for find command (save find/change strings for dot).
+- Put the "How to make a screencast" in the Tips section of the FAQ.
+  Link to it from the screenshots page.
+  Make a post explaining why a screencast would be limp.
 .. @+node:ekr.20131116212505.16665: *3* Screencasts
-** Send note to Dave Winer when they are ready.
-** Announcements to comp.lang.python & SourceForge when they are ready.
+Topics:
 
-Most important:
-- Import files.  Show active-path plugin, recursive import.
-    
-** Common tasks like changing settings, importing files and file structures
-etc. shouldn't eat up all the time people are willing to invest in trying
-out a new product.
-
-** Review Leo's text tutorials.
-Using settings.
+- Settings: focus on visual settings.
     @menu
     leo-x-pt.leo files.
+- Import files.  Show active-path plugin, recursive import.
+
 Leo's help commands.
 Auto-completion.
 Viewrendered, A0.
@@ -134,7 +33,6 @@ Arrow keys.
 Intro to Leo.
 Tips and techniques:
     - Small test .leo files: useful for settings.
-
 Scripting:
     Introduction to Leo's code base.
         500,000 lines of code made easy.
@@ -143,6 +41,12 @@ Scripting:
     ** @button
     @test
     c, g, p: commanders, generators, p.b, p.h etc.
+
+When ready to release:
+- Note to Dave Winer.
+- Announce to comp.lang.python.
+- Announce to SourceForge.
+
 .. @+node:ekr.20131117043223.16676: *4* Using Leo *is* easy
 ​Well, I don't think the Leo Aha is all that hard to get, despite perhaps
 being a bit difficult to describe. Of course, my opinion is not quite
@@ -203,7 +107,92 @@ print-settings, print-bindings, print-commands.
 
 Trick: use small, easily/quickly started, file to test settings.
     Demo: put console *behind* window.
-.. @+node:ekr.20131119060731.20106: *3* Use vim-like bindings to move the cursor?
+.. @+node:ekr.20131117054619.16683: *3* new_find
+@language rest
+
+- Put "x" not found search message somewhere else.
+- Ctrl-F puts selected text into the search box.
+- Smart search: clear ignore case if the search text has at least one uppercase letter.
+* move dw.createFindTab into leoFind class(!)
+    - Just define dw, and use dw methods to create the actual widgets.
+    - No need for qt imports.
+- Create save/restore_isearch_vars methods using isearch_save_d.
+- F2 doesn't work when only searching in headlines.
+- find-all and change-all never wrap.
+- Allow replace for an empty selection.
+- Don't use leoFind as baseclass for spelling class!
+- Make sure to capture search string, even if do ctrl-g, etc.
+- Don't put unknown ctrl keys in minibuffer (suppress ctrl-shift-r)
+
+Stateless finds.
+- Search strings, not widgets.
+
+@language python
+.. @+node:ekr.20131118113639.17705: *4* Done
+@language rest
+
+Important classes & methods:
+- dw.createFindTab & helpers
+- class FindTabManager
+- class EventWrapper
+
+What I did:
+- Added support for Alt-Ctrl keys.
+- start-find selects all text in findbox.
+- Removed eventFilter ivar
+- All defaults work in the Find pane, except the Alt-Ctrl bindings.
+  The user can just use the standard Alt-bindings to set checkboxes and radio buttons.
+- Add shortcuts to button names.
+- Honor Ctrl-G, F2, F3, Ctrl-- & Ctrl-+ from any widget in the find pane.
+- Create help button in the Find pane.
+- dw code now sets ftm ivars, not dw ivars.
+- Added tab easter egg to searchWithPresentOptions.
+- Removed all clones and dead code from leoSettings.leo.
+  (Improved introductory comments.)
+- Createf leo/config/exampleSettings.leo.
+- fc.minibuffer_mode replaces fc.expert_mode.
+- start-find command
+- test set-replace-string.
+- Protect self.p everywhere.
+- Don't hide find pane during searches.
+- Init widgets from c.config.
+- Clicking widgets should set leoFind ivars.
+- Toggle commands should toggle widgets.
+- Move search classes from leoEditCommands.py to leoFind.py
+
+Changed methods:
+- c.initObjects now creates leoFind object.
+- c.finishCreate does: self.findCommands = leoFind.leoFind(c)
+- Added the FindTabManager (ftm)
+- dw.createFindTab adds find buttons and calls.
+- dw.createFindTab creates the FindTabManager and calls ftm.init_widgets.
+* Added find_generation ivar to vnode class.
+.. @+node:ekr.20131118113639.17704: *4* << global leoFind switch >>
+stateless_find = True # True, use stateless finds.
+.. @+node:ekr.20131120054058.16280: *4* Gallery of screen shots
+
+different font sizes, coloring schemes, plugins, etc.
+.. @+node:ekr.20131121211048.16378: *3* Next
+- Regularize + and - in @menu nodes in leoSettings.leo 
+- Remove g.trace switches.  Nobody ever uses them.
+- Add Alt-Ctrl commands to Search menu.
+- Add focus-to-x commands, where x is a *temporary* log pane, like completions, commands, etc.
+- (Maybe) Add helpful @button nodes to leoSettings.leo.
+- Revise help-for-find-commands
+* More screenshots!
+* Review Leo's text tutorials.
+.. @+node:ekr.20131121090013.17108: *4* Import pane, similar to the Find pane
+Very important.
+
+ActivePath is an alternative.  Has rclick interface.
+.. @+node:ekr.20131121050226.16327: *4* reload command?
+**Not** essential.
+
+Ideas:
+- Don't reload any files!
+- Only reprocess leoSettings.leo or myLeoSettings.leo if they are actually open.
+- Change LoadManager to handle a reload flag.
+.. @+node:ekr.20131119060731.20106: *4* Use vim-like bindings to move the cursor?
 @language rest
 
 After all these years of preaching about not using the mouse, I still use
@@ -225,7 +214,7 @@ Naturally, Vim bindings come to mind. There are several possibilities:
    cursor, extending text, or not, in an *easily* switchable way.
 
 3. Something else :-)
-.. @+node:ekr.20131119060731.20107: *3* Put @button nodes in the template myLeoSettings.leo
+.. @+node:ekr.20131119060731.20107: *4* Put @button nodes in the template myLeoSettings.leo
 We could use @button nodes to munge settings. Naturally, this should be
 done in myLeoSettings.leo.
 
@@ -237,46 +226,12 @@ leo/config.
 
 This template file could have all the @button nodes we could want. It's an
 easy, flexible plan.
-.. @+node:ekr.20130411023826.16595: *3* << define s >> (help-for-find-commands)
-@language rest
-
-s = '''
-
-.. |br| raw:: html
-
-   <br />
-
-Finding & replacing text
-------------------------
-
-**Ctrl-F** (start-search) shows the Find Tab.
-
-Enter the Find text, and (optionally) the Replace text.
-
-Click one of the buttons.
-
-When Leo selects the found text. Then:
-
-- Ctrl-minus (replace-then-find) replaces the selected text.
-- F3 (find-next) continues searching without making a replacement.
-- F2 (find-previous) continues the search in reverse.
-- Ctrl-G (keyboard-quit) ends the search.
-
-Incremental searching
----------------------
-
-**Alt-S** starts an incremental search. |br|
-**Alt-R** starts a reverse incremental search.
-
-Any characters you type extend the search. |br|
-**Backspace** retracts the search. 
-
-During an incremental search:
-    **Enter** or **Ctrl-G** stops the search. |br|
-    **Alt-S** finds the search string again. |br|
-    **Alt-R** does the same during a reverse search.
-
-'''
+.. @+node:ekr.20131120054058.16279: *4* Create github repo (call Speed)
+.. @+node:ekr.20131119195900.18522: *4* vim-mode
+- Do all common vim commands:
+    - Leave arrow keys and control keys unchanged.
+    - Focus plain-key normal-mode commands: a,i,d,c,x,s.
+    - Use minibuffer for find command (save find/change strings for dot).
 .. @+node:ekr.20131121090013.17098: *3* How to make a screencast
 @language rest
 
@@ -333,6 +288,84 @@ words, even with the world's best audio editor.
 HTH. I'll use these as some kind of documentation. Actually, now that I
 write this, some kind of screencast *would* be possible. It will have a lot
 of pauses :-)
+.. @+node:ekr.20131121090013.17099: *4* How to make a screencast (script)
+@language rest
+
+.. @+node:ekr.20131121130048.16375: *5* Introduction
+This is an unusual screencast.
+
+If focuses on things that never become part of a completed video.
+
+It leaves in some (not all!) flubs that I made, as examples.
+
+It's a complement to the screencast.com tutorials.
+.. @+node:ekr.20131121090013.17101: *5* Look at the tutorials at screencast.com
+These are superb examples of screencasts.
+
+Emulate them as much as possible.
+.. @+node:ekr.20131121090013.17100: *5* Create a demo script
+A fixed size may avoid dithering pixels.
+
+demo.bat:
+
+python27 launchLeo.py --no-cache --gui=qttabs --window-size=682x1264 <list of .leo files> %*​
+
+A fixed size is good for continuity: you can splice in video later.
+
+A fixed size helps plan your video.
+
+.. @+node:ekr.20131121090013.17102: *5* Start with *short* test videos
+Create 10 second videos.
+
+Focus on the *end* of the production process:
+
+- Can you upload to YouTube or screencast.com?
+- Is the sound ok?
+- Do the pixels look great?
+    
+Don't waste time with longer vids until all answers are yes!
+.. @+node:ekr.20131121090013.17107: *5* Create a "real" take
+Now it's time to get a "real" take.
+
+Keep it pretty short: maybe one minute.
+
+You'll throw away two or three anyway ;-)
+.. @+node:ekr.20131121115406.16358: *5* Clean audio is a must
+A clean audio take is essential.
+
+Don't even *think* about fixing audio flubs in post production.
+
+Happily, during your take:
+
+    *Pauses don't matter*
+
+    *Flubs don't matter*
+    
+But you *must* recognize when you've made a flub!
+.. @+node:ekr.20131121130048.16374: *5* Fixing flubs
+When you flub a line, don't panic!
+
+Pause, regroup, and repeat the phrase until you get it right.
+
+You'll relax once you realize that flubs and pauses don't matter.
+
+Once you relax, you can make up your script as you go along!
+.. @+node:ekr.20131121090013.17106: *5* Post production
+Do a complete new take if you don't have clean audio.
+
+Focus on good enough.  Perfectionism is not your friend.
+.. @+node:ekr.20131121090013.17105: *5* Summary
+Making a screencast is a lot easier than you think :-)
+
+Emulate the screencast.com tutorials.
+
+Verify the *entire* production process with 10-second tests.
+
+Expect to lots of mistakes at first.  Make them short!
+
+Flubs don't matter, *provided* you correct them *during the take*.
+
+
 .. @+node:ekr.20131121090013.17095: *3* Zoom Quiet video
 @language rest
 
@@ -350,84 +383,6 @@ of course, must includ Leo 's zip introduction
 
 so sorry for my chaos image, Hope Video is u tiny happy game for X'mas
 - BUT notice, the Video need finished before 2013.11.30
-.. @+node:ekr.20131121090013.17099: *3* How to make a screencast (script)
-@language rest
-
-.. @+node:ekr.20131121130048.16375: *4* Introduction
-This is an unusual screencast.
-
-If focuses on things that never become part of a completed video.
-
-It leaves in some (not all!) flubs that I made, as examples.
-
-It's a complement to the screencast.com tutorials.
-.. @+node:ekr.20131121090013.17101: *4* Look at the tutorials at screencast.com
-These are superb examples of screencasts.
-
-Emulate them as much as possible.
-.. @+node:ekr.20131121090013.17100: *4* Create a demo script
-A fixed size may avoid dithering pixels.
-
-demo.bat:
-
-python27 launchLeo.py --no-cache --gui=qttabs --window-size=682x1264 <list of .leo files> %*​
-
-A fixed size is good for continuity: you can splice in video later.
-
-A fixed size helps plan your video.
-
-.. @+node:ekr.20131121090013.17102: *4* Start with *short* test videos
-Create 10 second videos.
-
-Focus on the *end* of the production process:
-
-- Can you upload to YouTube or screencast.com?
-- Is the sound ok?
-- Do the pixels look great?
-    
-Don't waste time with longer vids until all answers are yes!
-.. @+node:ekr.20131121090013.17107: *4* Create a "real" take
-Now it's time to get a "real" take.
-
-Keep it pretty short: maybe one minute.
-
-You'll throw away two or three anyway ;-)
-.. @+node:ekr.20131121115406.16358: *4* Clean audio is a must
-A clean audio take is essential.
-
-Don't even *think* about fixing audio flubs in post production.
-
-Happily, during your take:
-
-    *Pauses don't matter*
-
-    *Flubs don't matter*
-    
-But you *must* recognize when you've made a flub!
-.. @+node:ekr.20131121130048.16374: *4* Fixing flubs
-When you flub a line, don't panic!
-
-Pause, regroup, and repeat the phrase until you get it right.
-
-You'll relax once you realize that flubs and pauses don't matter.
-
-Once you relax, you can make up your script as you go along!
-.. @+node:ekr.20131121090013.17106: *4* Post production
-Do a complete new take if you don't have clean audio.
-
-Focus on good enough.  Perfectionism is not your friend.
-.. @+node:ekr.20131121090013.17105: *4* Summary
-Making a screencast is a lot easier than you think :-)
-
-Emulate the screencast.com tutorials.
-
-Verify the *entire* production process with 10-second tests.
-
-Expect to lots of mistakes at first.  Make them short!
-
-Flubs don't matter, *provided* you correct them *during the take*.
-
-
 .. @+node:ekr.20131105020211.18058: ** Important
 .. @+node:ekr.20131101080215.16488: *3* * Outreach to magazine editors
 ===== Steve Litt

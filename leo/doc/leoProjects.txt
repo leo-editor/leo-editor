@@ -5592,6 +5592,16 @@ What I did:
         self.setSizePolicy(w,kind1=hPolicy,kind2=vPolicy)
         self.setName(w,name)
         return w
+.. @+node:ekr.20131121115406.16357: *3* Fixed greedy checkbox bug
+@language rest
+
+When the Find pane is active, Alt-x toggles the regex check box, etc.
+
+There is no obvious way to disable the widget when the pane is deactivated.
+It must be possible, but perhaps it is not worth it.
+
+The solution was simply to remove the keyboard hints from the Find pane!
+
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
