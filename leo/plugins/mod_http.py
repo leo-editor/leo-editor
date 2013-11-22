@@ -33,7 +33,7 @@ characters will look strange.
 Can also be used for bookmarking directly from the browser to Leo. To do this,
 add a bookmark to the browser with the following URL / Location::
     
-    javascript:w=window;if(w.content){w=w.content}; d=w.document; w.open('http://localhost:8130/_/add/bkmk/?&name=' + escape(d.title) + '&selection=' + escape(window.getSelection()) + '&url=' + escape(w.location.href),%22_blank%22,%22toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=yes, copyhistory=no, width=800, height=300, status=no%22);void(0)
+    javascript:w=window; d=w.document; ln=[];if(w.location.href.indexOf('one-tab')>-1){el=d.querySelectorAll('a');for (i in el){ln.push({url:el[i].href,txt:el[i].innerHTML});};};w.open('http://localhost:8130/_/add/bkmk/?&name=' + escape(d.title) + '&selection=' + escape(window.getSelection()) + '&ln=' + escape(JSON.stringify(ln)) + '&url=' + escape(w.location.href),"_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=yes, copyhistory=no, width=800, height=300, status=no");void(0);
     
 and edit the port (8130 in the example above) to match the port you're using for
 mod_http.
@@ -50,6 +50,13 @@ to place them in the `Incoming` node in the `@bookmarks` node in the
 The headline is preceeded with '@url ' *unless* the ``bookmarks`` plugin is
 loaded. If the ``bookmarks`` plugin is loaded the bookmark will have to be moved
 to a ``@bookmarks`` tree to be useful.
+
+**Note**: there is special support for Chrome's OneTab extension as a mechanism
+for saving all tabs open. Click the OneTab button to get a list of tabs, then
+click the "Share all as web page" link to show the list on www.one-tab.com.
+Bookmark as usual as described above. You can then delete the shared list with
+the "Delete this shared page" button. The Leo node created will have a child
+node for each of the listed tabs.
 
 The browser may or may not be able to close the bookmark form window for you,
 depending on settings - set ``dom.allow_scripts_to_close_windows`` to true in
@@ -77,6 +84,7 @@ import leo.core.leoGlobals as g
 import asynchat
 import asyncore
 import cgi
+import json
 
 if g.isPython3:
     import http.server
@@ -884,6 +892,11 @@ class LeoActions:
         name = query.get('name', ['NO TITLE'])[0]
         url = query['url'][0]
         
+        one_tab_links = []
+        if 'www.one-tab.com' in url.lower():
+            one_tab_links = query.get('ln', [''])[0]
+            one_tab_links = json.loads(one_tab_links)
+
         c = None  # outline for bookmarks
         previous = None  # previous bookmark for adding selections
         parent = None  # parent node for new bookmarks
@@ -962,10 +975,19 @@ class LeoActions:
             selection = query.get('selection', [''])[0]
             if selection:
                 selection = '\n\n"""\n'+selection+'\n"""'
+                
+            tags = query.get('tags', [''])[0]
             
+            if one_tab_links:
+                if tags:
+                    tags += ', OneTabList'
+                else:
+                    tags = 'OneTabList'
+                self.get_one_tab(one_tab_links, nd)
+
             nd.b = "%s\n\nTags: %s\n\n%s\n\nCollected: %s%s\n\n%s" % (
                 url, 
-                query.get('tags', [''])[0],
+                tags,
                 query.get('_name', [''])[0],
                 time.strftime("%c"),
                 selection,
@@ -989,6 +1011,7 @@ class LeoActions:
     <input type='hidden' name='_form' value='1'/>
     <input type='hidden' name='_name' value=%s/>
     <input type='hidden' name='selection' value=%s/>
+    <input type='hidden' name='ln' value=%s/>
     <table>
     <tr><th>Tags:</th><td><input id='tags' name='tags' size='60'/>(comma sep.)</td></tr>
     <tr><th>Title:</th><td><input name='name' value=%s size='60'/></td></tr>
@@ -999,10 +1022,32 @@ class LeoActions:
     </form>
     </body></html>""" % (quoteattr(name), 
                   quoteattr(query.get('selection', [''])[0]), 
+                  quoteattr(json.dumps(one_tab_links)),
                   quoteattr(name), 
                   quoteattr(url)))
 
         return f
+    #@+node:tbrown.20131122091143.54044: *3* get_one_tab
+    def get_one_tab(self, links, nd):
+        """get_one_tab - Add child bookmarks from OneTab chrome extension
+
+        :Parameters:
+        - `links`: list of {'txt':, 'url':} dicts
+        - `nd`: node under which to put child nodes
+        """
+
+        for link in links:
+            if 'url' in link and 'www.one-tab.com' not in link['url'].lower():
+                nnd = nd.insertAsLastChild()
+                nnd.h = link['txt']
+                nnd.b = "%s\n\nTags: %s\n\n%s\n\nCollected: %s%s\n\n%s" % (
+                    link['url'], 
+                    'OneTabTab',
+                    link['txt'],
+                    time.strftime("%c"),
+                    '',
+                    '',
+                )
     #@+node:tbrown.20111002082827.18325: *3* add_bookmark_selection
     def add_bookmark_selection(self, node, text):
         '''Insert the selected text into the bookmark node,
