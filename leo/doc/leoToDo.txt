@@ -5,9 +5,6 @@
 .. @+all
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
-
-Wait for Terry to finish.
-- Regularize + and - in @menu nodes in leoSettings.leo 
 .. @+node:ekr.20131117054619.16683: *3* new_find
 @language rest
 
