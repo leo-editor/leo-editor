@@ -16,120 +16,140 @@ Making screencasts is a lot easier than you probably think.
 
 Here are some tips to get you started quickly.
 
-1. Make it easy to open the app that you are demoing at a fixed size.
 
-This is surprisingly important:
+
+
+
+
+
+
+
+
+.. @+node:ekr.20131122055946.16389: *4* Use a script to open your app
+The primary purpose of this script is to open your app at a fixed,
+unchanging size. This is surprisingly important:
 
 - It ensures that the window will always render to pixels in the same way.
 - It makes it easier to splice in new video to an existing video.
 - It makes it easier to plan your video to ensure everything will appear as you expect.
-- It provides continuity when making a series of vides.
+- It provides continuity when making a series of videos.
 
 Here is a script that I use when making Leo's screencasts::
 
     python27 launchLeo.py --no-cache --gui=qttabs --window-size=682x1264 <list of .leo files> %*​
     
-This **particular** --window-size causes Camtasia to create a window whose
+This *particular* --window-size causes Camtasia to create a window whose
 actual size is 720x1280, the nominal 720p resolution. It may prevent text
 blur. Or not. I do know that Leo's screencasts look great at 720p.
+.. @+node:ekr.20131122055946.16390: *4* Debug your workflow with short videos
+Make sure that you can actually upload *excellent quality* videos before
+doing anything else. This step is crucial. If you skip this step, all of
+your initial recording an post-production work could be utterly wasted.
 
-2. Get your production workflow handled **before** making any long videos.
+Use *short* (10-second) test videos at this step. Their primary purpose
+verify that you can can get to the *end* of the production process
+successfully. You *are* going to make lots of mistakes here: using short
+videos helps you make these mistakes quickly.
 
-Imo, this tip is absolutely crucial.
+Don't even *think* about making longer videos until the answers to all the
+following questions are clearly "yes":
 
-Create 10 second videos.
-
-Focus on the *end* of the production process:
-
+- Is your camera working?
+- Is your microphone working?
+- Do you know how to record your voice and screen?
+- Can you log into YouTube or screencast.com?
 - Can you upload to YouTube or screencast.com?
-- Is the sound ok?
-- Do the pixels look great?
-    
-Don't waste time with longer vids until all answers are yes!
+- Is the sound in your *uploaded* video great?
+- Do the pixels in your *uploaded* look great?
 
+This last item is particularly important. Just because pixels look good in
+your video editor is no guarantee that they will look good when uploaded.
 
+You are ready to try your first "real" take *only* when you can upload a
+video that looks and sounds great.
+.. @+node:ekr.20131122055946.16391: *4* Emulate the screencast.com tutorials
+Before rushing right and making your first video, I recommend watching the
+tutorial screencasts at screencast.com:
+http://www.techsmith.com/tutorial-camtasia-8.html
 
-2. When you record, remember that **it doesn't matter** if you flub audio.
-   The only thing that matters is that you **realize** that you have done
-   so. Just **pause**, and retake the audio as many times as you need.
+I recommend watching the tutorials, focusing on how the presentations
+themselves are organized. Watch them until it feels natural to emulate
+their style and presentation.
 
-The main thing: you can *not* fix audio flubs later: you *must* have a
-clean take of everything you want to say.
+If you will be using Camtasia, you will also want to watch the tutorials
+to learn how Camtasia works.  But this is a secondary consideration.
+.. @+node:ekr.20131122055946.16392: *4* Record your first real take
+Now it's time to go beyond test videos. Even now, though, I recommend
+keeping your first efforts short: one minute or so. Again, this saves time.
+You'll ending up throwing away two or three anyway ;-)
 
-3. Similar remarks apply to video, but in my experience it's much easier to
-   get the video right. If you do flub the video, it will be much easier if
-   you just retake the audio at the same time, so it's in synch with the
-   video. With Camtasia, you can separate the audio and video tracks, but
-   usually that won't work, especially if there is audio of key clicks.
+Bring up your app using you demo script and run through your presentation.
 
-4. Contrary to what the Camtasia tutorials imply, I find it better to work
-   without a script. It feels a lot more natural to me. When I get stuck, I
-   just pause. Or just start over. Otoh, it wouldn't be that hard to read a
-   script. Just *pause* before and after each phrase. Never rush your
-   audio!
+Here's the **most important tip**: As you narrate your video, audio flubs
+are inevitable, but they don't matter at all *provided** that you *realize*
+that you have just flubbed a word or phrase. 
 
-In short, the key Aha: insert (audio) pauses *everywhere* as needed. It's
-easy to edit them out. It's virtually impossible to edit in the middle of
-words, even with the world's best audio editor.
+When you flub a line, don't panic! Just *pause*, regroup, and repeat the
+phrase until you get it right. **Pausing is essential**: it simplifies
+inserting and deleting sound bites during post production.
 
-HTH. I'll use these as some kind of documentation. Actually, now that I
-write this, some kind of screencast *would* be possible. It will have a lot
-of pauses :-)
-.. @+node:ekr.20131121090013.17102: *4* Start with *short* test videos
-Create 10 second videos.
+You'll relax once you realize that flubs don't matter and that pausing
+makes post-production easier. Once you relax, getting a good take will
+suddenly become easier.
 
-Focus on the *end* of the production process:
+Correcting flubs *as soon as they happen* is absolutely essential. Don't
+even *think* about fixing audio flubs in post-production. It simply can't
+be done. Instead of spending 20 minutes trying (and failing) to correct a
+flub in post production, it is much faster and better to take 20 seconds
+during your take to correct the flub.
 
-- Can you upload to YouTube or screencast.com?
-- Is the sound ok?
-- Do the pixels look great?
-    
-Don't waste time with longer vids until all answers are yes!
-.. @+node:ekr.20131121090013.17101: *4* Look at the tutorials at screencast.com
-These are superb examples of screencasts.
+Similar remarks apply to video, but in my experience it's much easier to
+get the video right. If you do flub the video, it will be much easier if
+you just do a complete retake. With Camtasia, you can separate the audio
+and video tracks, but usually that won't work, especially if there is audio
+of key clicks.
 
-Emulate them as much as possible.
-.. @+node:ekr.20131121090013.17107: *4* Create a "real" take
-Now it's time to get a "real" take.
+By retaking audio flubs as they happen, I find it easy to work without a
+script. It feels a lot more natural to me than reading a script. YMMV. When
+I get stuck, I just pause. Or just start over. Otoh, it wouldn't be that
+hard to read a script. Just *pause* before and after each phrase. Never
+rush your audio!
 
-Keep it pretty short: maybe one minute.
+In short, the key Aha is: insert (audio) pauses *everywhere* as needed.
+It's easy to edit them out. It's virtually impossible to edit in the middle
+of words, even with the world's best audio editor.
+.. @+node:ekr.20131122055946.16393: *4* Edit your raw take
+Post production should be easy provided that you have corrected all audio
+flubs as they happen. This keeps the audio and video in synch. Just edit
+out flubs and reduce overly-long pauses.
 
-You'll throw away two or three anyway ;-)
-.. @+node:ekr.20131121115406.16358: *4* Clean audio is a must
-A clean audio take is essential.
+I won't discuss production details here because they depend on the editor
+you are using.
 
-Don't even *think* about fixing audio flubs in post production.
+Do a new take if you don't have clean audio. Depending on the complexity of
+your video, it may be possible to splice a partial take in the middle or
+end of your video. Similarly, it may be possible to splice in a new take to
+add material you didn't cover in your first take.
 
-Happily, during your take:
-
-    *Pauses don't matter*
-
-    *Flubs don't matter*
-    
-But you *must* recognize when you've made a flub!
-.. @+node:ekr.20131121130048.16374: *4* Fixing flubs
-When you flub a line, don't panic!
-
-Pause, regroup, and repeat the phrase until you get it right.
-
-You'll relax once you realize that flubs and pauses don't matter.
-
-Once you relax, you can make up your script as you go along!
-.. @+node:ekr.20131121090013.17106: *4* Post production
-Do a complete new take if you don't have clean audio.
-
-Focus on good enough.  Perfectionism is not your friend.
+One final word of advice. When editing your video, settle for "good
+enough". Perfectionism is not your friend.
 .. @+node:ekr.20131121090013.17105: *4* Summary
 Making a screencast is a lot easier than you think :-)
 
-Emulate the screencast.com tutorials.
 
-Verify the *entire* production process with 10-second tests.
+- Create a script that will open your app at a fixed, optimal, size.
 
-Expect to lots of mistakes at first.  Make them short!
+- Emulate the style and form of screencast.com tutorials.
 
-Flubs don't matter, *provided* you correct them *during the take*.
+- Verify the *entire* production process with short test videos.
 
+  Before making longer videos, make *sure* that the test videos look and
+  sound great *when they have been uploaded*.
+  
+- When doing a take, flubs don't matter, *provided* you correct them
+  *during the take*.
+
+- The only way to fix flubs in post-production is to splice in new takes.
 
 .. @+node:ekr.20131116212505.16665: *3* Screencasts
 Topics:
