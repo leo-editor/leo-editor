@@ -432,11 +432,10 @@
 <v t="ekr.20070925144534.107"><vh>@item toggle-invisibles</vh></v>
 <v t="ekr.20070925144534.108"><vh>@item open-leoSettings-leo</vh></v>
 </v>
-<v t="ekr.20131117052950.18283"><vh>@menu &amp;Search</vh>
+<v t="ekr.20131117052950.18283"><vh>@menu Search</vh>
 <v t="ekr.20131117052950.18285"><vh>@item *help-for-find-commands</vh></v>
-<v t="ekr.20131117053425.19893"><vh>@item -</vh></v>
 <v t="ekr.20131119060731.22451"><vh>@item *start-search</vh></v>
-<v t="ekr.20070925144534.83"><vh>@item find-tab-hide</vh></v>
+<v t="ekr.20070925144534.83"><vh>@@@item find-tab-hide</vh></v>
 <v t="ekr.20131119060731.22454"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.86"><vh>@item *find-&amp;next</vh></v>
 <v t="ekr.20070925144534.87"><vh>@item *find-&amp;prev</vh></v>
@@ -446,7 +445,18 @@
 <v t="ekr.20070925144534.89"><vh>@item *find-&amp;all</vh></v>
 <v t="ekr.20070925144534.90"><vh>@item *clone-fi&amp;nd-all</vh></v>
 <v t="ekr.20070925144534.91"><vh>@item *replace-a&amp;ll</vh></v>
+<v t="ekr.20131121211048.17576"><vh>@item -</vh></v>
+<v t="ekr.20131121211048.17566"><vh>@item toggle-find-ignore-case-option</vh></v>
+<v t="ekr.20131121211048.17568"><vh>@item toggle-find-mark-changes-option</vh></v>
+<v t="ekr.20131121211048.17569"><vh>@item toggle-find-mark-finds-option</vh></v>
+<v t="ekr.20131121211048.17570"><vh>@item toggle-find-regex-option</vh></v>
+<v t="ekr.20131121211048.17571"><vh>@item toggle-find-word-option</vh></v>
+<v t="ekr.20131121211048.17572"><vh>@item toggle-find-wrap-around-option</vh></v>
 <v t="ekr.20070925144534.92"><vh>@item -</vh></v>
+<v t="ekr.20131121211048.17573"><vh>@item set-find-everywhere</vh></v>
+<v t="ekr.20131121211048.17567"><vh>@item set-find-node-only</vh></v>
+<v t="ekr.20131121211048.17575"><vh>@item set-find-suboutline-only</vh></v>
+<v t="ekr.20131121211048.17577"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.93"><vh>@item *&amp;find-character</vh></v>
 <v t="ekr.20070925144534.94"><vh>@item find-character-extend-&amp;selection</vh></v>
 <v t="ekr.20070925144534.95"><vh>@item backward-find-character</vh></v>
@@ -459,6 +469,7 @@
 <v t="ekr.20070925144534.102"><vh>@item -</vh></v>
 <v t="ekr.20070925144534.103"><vh>@@item *&amp;query-replace</vh></v>
 <v t="ekr.20070925144534.104"><vh>@@item *q&amp;uery-replace-regex</vh></v>
+<v t="ekr.20131121211048.17574"><vh>Proper names</vh></v>
 </v>
 <v t="ekr.20070925144534.109"><vh>@menu &amp;Outline</vh>
 <v t="ekr.20070925144534.110"><vh>@item *c&amp;ut-node</vh></v>
@@ -5835,7 +5846,6 @@ QTextEdit:focus#log-widget, LeoQTreeWidget:focus#treeWidget, QTextEdit:focus#ric
 </t>
 <t tx="ekr.20131117052950.18283"></t>
 <t tx="ekr.20131117052950.18285"></t>
-<t tx="ekr.20131117053425.19893"></t>
 <t tx="ekr.20131117053425.19894"></t>
 <t tx="ekr.20131119060731.22451"></t>
 <t tx="ekr.20131119060731.22454"></t>
@@ -5843,6 +5853,25 @@ QTextEdit:focus#log-widget, LeoQTreeWidget:focus#treeWidget, QTextEdit:focus#ric
 <t tx="ekr.20131119143342.20107">True: start-find command puts focus in minibuffer.
 False: start-find commands puts focus in Find panel.</t>
 <t tx="ekr.20131119143342.20108"></t>
+<t tx="ekr.20131121211048.17566">Toggle &amp;Ignore Case
+
+
+
+
+</t>
+<t tx="ekr.20131121211048.17567">Find In &amp;Node</t>
+<t tx="ekr.20131121211048.17568">Toggle Mark &amp;Changes</t>
+<t tx="ekr.20131121211048.17569">Toggle Mark &amp;Finds</t>
+<t tx="ekr.20131121211048.17570">Toggle Regular E&amp;xpression</t>
+<t tx="ekr.20131121211048.17571">Toggle &amp;Whole Word</t>
+<t tx="ekr.20131121211048.17572">Toggle Wrap &amp;Around</t>
+<t tx="ekr.20131121211048.17573">Find &amp;Everywhere</t>
+<t tx="ekr.20131121211048.17574">Alt+Ctrl+E set-find-everywhere
+Alt+Ctrl+N set-find-node-only
+Alt+Ctrl+S set-find-suboutline-only</t>
+<t tx="ekr.20131121211048.17575">Find In &amp;Suboutline</t>
+<t tx="ekr.20131121211048.17576"></t>
+<t tx="ekr.20131121211048.17577"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>

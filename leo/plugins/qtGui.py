@@ -2520,6 +2520,8 @@ class DynamicWindow(QtGui.QMainWindow):
             'rb':  dw.createRadioButton,
         }
         table = (
+            # Note: the Ampersands create Alt bindings when the log pane is enable.
+            # The QShortcut class is the workaround.
             # First row.
             ('box', 'Whole &Word',      0,0),
             ('rb',  '&Entire Outline',  0,1),
@@ -2544,6 +2546,8 @@ class DynamicWindow(QtGui.QMainWindow):
             name = mungeName(kind,label)
             func = d.get(kind)
             assert func
+            # Fix the greedy checkbox bug:
+            label = label.replace('&','')
             w = func(parent,name,label)
             grid.addWidget(w,row+row2,col)
             # The the checkbox ivars in dw and ftm classes.
@@ -2615,7 +2619,7 @@ class DynamicWindow(QtGui.QMainWindow):
         return row
     #@+node:ekr.20131118172620.16891: *7* dw.override_events
     def override_events(self):
-        
+
         c,dw = self.leo_c,self
         fc = c.findCommands
         ftm = fc.ftm
@@ -2675,7 +2679,7 @@ class DynamicWindow(QtGui.QMainWindow):
             #@+node:ekr.20131118172620.16894: *9* keyPress
             def keyPress(self,event):
                 
-                trace = False
+                trace = True
                 s = g.u(event.text())
                 if 0: # This doesn't work.
                     eat = isinstance(self.w,(QtGui.QCheckBox,QtGui.QRadioButton))
@@ -3022,12 +3026,19 @@ class FindTabManager:
             # The setting name is also the name of the leoFind ivar.
             assert hasattr(find,setting_name),setting_name
             setattr(find,setting_name,val)
-            if val: w.toggle()
+            if val:
+                w.toggle()
             def check_box_callback(n,setting_name=setting_name,w=w):
+                # The focus has already change when this gets called.
+                # focus_w = QtGui.QApplication.focusWidget()
+                # g.trace(setting_name,val,focus_w,g.callers())
                 val = w.isChecked()
-                # g.trace(setting_name,val)
                 assert hasattr(find,setting_name),setting_name
                 setattr(find,setting_name,val)
+                ########## Too kludgy: we must use an accurate setting.
+                ########## It would be good to have an "about to change" signal.
+                ########## Put focus in minibuffer if minibuffer find is in effect.
+                c.bodyWantsFocusNow()
             QtCore.QObject.connect(w,QtCore.SIGNAL("stateChanged(int)"),
                 check_box_callback)
         # Radio buttons
@@ -3046,7 +3057,7 @@ class FindTabManager:
                 w.toggle()
             def radio_button_callback(n,ivar=ivar,setting_name=setting_name,w=w):
                 val = w.isChecked()
-                # g.trace(setting_name,ivar,val)
+                # g.trace(setting_name,ivar,val,g.callers())
                 if ivar:
                     assert hasattr(find,ivar),ivar
                     setattr(find,ivar,val)

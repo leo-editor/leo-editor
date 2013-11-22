@@ -9,6 +9,13 @@
 - Announce that Ctrl-F now bound to start-search.
   You may have to change myLeoSettigns.leo.
   
+- Remove mention of Ctrl-Shift-R from the docs.
+
+Improve Find pane:
+    - Put "x" not found search message somewhere else.
+    - Ctrl-F puts selected text into the search box.
+    - Smart search: clear ignore case if the search text has at least one uppercase letter.
+  
 - Create screencast about settings.
 
 ** toggle-debug-mode
@@ -16,26 +23,22 @@
 - Make sure to capture search string, even if do ctrl-g, etc.
 - Don't put unknown ctrl keys in minibuffer (suppress ctrl-shift-r)
 
+** Video for Zoom Quiet
+
 Next:
+- Regularize + and - in @menu nodes in leoSettings.leo 
 - Remove g.trace switches.  Nobody ever uses them.
 - Add Alt-Ctrl commands to Search menu.
 - Add focus-to-x commands, where x is a *temporary* log pane, like completions, commands, etc.
 - (Maybe) Add helpful @button nodes to leoSettings.leo.
 - Revise help-for-find-commands
 * More screenshots!
-.. @+node:ekr.20131121050226.16328: *3* settings vid
-open leoSettings.leo.
-open myLeoSettings.leo.
+.. @+node:ekr.20131121211048.16378: *3* Ideas
+.. @+node:ekr.20131121090013.17108: *4* Import pane, similar to the Find pane
+Very important.
 
-Concentrate on:
-    - visual settings.
-    - keyboard shortcuts.
-
-print-settings, print-bindings, print-commands.
-
-Trick: use small, easily/quickly started, file to test settings.
-    Demo: put console *behind* window.
-.. @+node:ekr.20131121050226.16327: *3* reload command?
+ActivePath is an alternative.  Has rclick interface.
+.. @+node:ekr.20131121050226.16327: *4* reload command?
 **Not** essential.
 
 Ideas:
@@ -99,7 +102,7 @@ Changed methods:
 * Added find_generation ivar to vnode class.
 .. @+node:ekr.20131118113639.17704: *4* << global leoFind switch >>
 stateless_find = True # True, use stateless finds.
-.. @+node:ekr.20131120054058.16280: *3* Gallery of screen shots
+.. @+node:ekr.20131120054058.16280: *4* Gallery of screen shots
 
 different font sizes, coloring schemes, plugins, etc.
 .. @+node:ekr.20131120054058.16279: *3* Create github repo (call Speed)
@@ -111,6 +114,9 @@ different font sizes, coloring schemes, plugins, etc.
 .. @+node:ekr.20131116212505.16665: *3* Screencasts
 ** Send note to Dave Winer when they are ready.
 ** Announcements to comp.lang.python & SourceForge when they are ready.
+
+Most important:
+- Import files.  Show active-path plugin, recursive import.
     
 ** Common tasks like changing settings, importing files and file structures
 etc. shouldn't eat up all the time people are willing to invest in trying
@@ -185,28 +191,18 @@ print('there')
 g.es(g.es)
 # g is a large module:
 g.es(len(list(dir(g))))
-.. @+node:ekr.20131115120119.17434: *3* Improve tab pane?
-@language rest
+.. @+node:ekr.20131121050226.16328: *4* settings vid
+open leoSettings.leo.
+open myLeoSettings.leo.
 
-What I did:
-    
-- Created LeoBaseTabWidget, containing most of the code of LeoTabbedTopLevel.
-- LeoTabbedTopLevel derives from this new class.
-    
-- leoQtLog.__init__ now calls tw.setMovable(True).
-  This allows Log pane tabs to be rearranged.
-  
-- Changed dw.createTabWidget. The changes have as yet no effect:
+Concentrate on:
+    - visual settings.
+    - keyboard shortcuts.
 
-    def createTabWidget (self,parent,name,hPolicy=None,vPolicy=None):
-    
-        # w = LeoBaseTabWidget(parent)
-        w = QtGui.QTabWidget(parent)
-        tb = w.tabBar()
-        # tb.setTabsClosable(True)
-        self.setSizePolicy(w,kind1=hPolicy,kind2=vPolicy)
-        self.setName(w,name)
-        return w
+print-settings, print-bindings, print-commands.
+
+Trick: use small, easily/quickly started, file to test settings.
+    Demo: put console *behind* window.
 .. @+node:ekr.20131119060731.20106: *3* Use vim-like bindings to move the cursor?
 @language rest
 
@@ -281,6 +277,157 @@ During an incremental search:
     **Alt-R** does the same during a reverse search.
 
 '''
+.. @+node:ekr.20131121090013.17098: *3* How to make a screencast
+@language rest
+
+On Thu, Nov 21, 2013 at 7:20 AM, <dufriz@gmail.com> wrote:
+
+Edward, this idea just occurred to me: if you made a (short) video tutorial
+on how to create screencasts, other people may be tempted to contribute
+their own video tutorials.
+
+​Yes, I've been tempted to do this.
+
+Technically it's a bit weird, because all the important Aha's get edited
+out of the result!!
+
+Here are the key points. As you will see, they involve what happens
+*before* you start editing, so how do you show them?
+
+1. Set up a script which opens your subject in a fixed, optimal, size.​
+ 
+​For me, this is demo.bat:
+
+python27 launchLeo.py --no-cache --gui=qttabs
+--window-size=682x1264 <list of .leo files> %*​
+
+The main thing is that the window size results in an *actual* window size
+of 720x1280 as Camtasia sees it. I think this important.
+
+Having a demo script also makes it possible to patch in additional material
+when (not if) I forget something.
+
+2. When you record, remember that **it doesn't matter** if you flub audio.
+   The only thing that matters is that you **realize** that you have done
+   so. Just **pause**, and retake the audio as many times as you need.
+
+The main thing: you can *not* fix audio flubs later: you *must* have a
+clean take of everything you want to say.
+
+3. Similar remarks apply to video, but in my experience it's much easier to
+   get the video right. If you do flub the video, it will be much easier if
+   you just retake the audio at the same time, so it's in synch with the
+   video. With Camtasia, you can separate the audio and video tracks, but
+   usually that won't work, especially if there is audio of key clicks.
+
+4. Contrary to what the Camtasia tutorials imply, I find it better to work
+   without a script. It feels a lot more natural to me. When I get stuck, I
+   just pause. Or just start over. Otoh, it wouldn't be that hard to read a
+   script. Just *pause* before and after each phrase. Never rush your
+   audio!
+
+In short, the key Aha: insert (audio) pauses *everywhere* as needed. It's
+easy to edit them out. It's virtually impossible to edit in the middle of
+words, even with the world's best audio editor.
+
+HTH. I'll use these as some kind of documentation. Actually, now that I
+write this, some kind of screencast *would* be possible. It will have a lot
+of pauses :-)
+.. @+node:ekr.20131121090013.17095: *3* Zoom Quiet video
+@language rest
+
+http://mail.google.com/mail/u/0/#inbox/142267093d39d75e
+
+- so for me after reated ur life story
+- i can not stop hope u play a litter piano ?!
+- and paint one paint for China, include u image for China?
+- or writer down u Chinese name usage writing brush: 令德华
++ Ream means 令, just one Chinese family name
++ Edward in Chinese is 爱德华,  means "love morality China"
++ so merge them is 令德华 , just one right Chinese name ;-)
+
+of course, must includ Leo 's zip introduction
+
+so sorry for my chaos image, Hope Video is u tiny happy game for X'mas
+- BUT notice, the Video need finished before 2013.11.30
+.. @+node:ekr.20131121090013.17099: *3* How to make a screencast (script)
+@language rest
+
+.. @+node:ekr.20131121130048.16375: *4* Introduction
+This is an unusual screencast.
+
+If focuses on things that never become part of a completed video.
+
+It leaves in some (not all!) flubs that I made, as examples.
+
+It's a complement to the screencast.com tutorials.
+.. @+node:ekr.20131121090013.17101: *4* Look at the tutorials at screencast.com
+These are superb examples of screencasts.
+
+Emulate them as much as possible.
+.. @+node:ekr.20131121090013.17100: *4* Create a demo script
+A fixed size may avoid dithering pixels.
+
+demo.bat:
+
+python27 launchLeo.py --no-cache --gui=qttabs --window-size=682x1264 <list of .leo files> %*​
+
+A fixed size is good for continuity: you can splice in video later.
+
+A fixed size helps plan your video.
+
+.. @+node:ekr.20131121090013.17102: *4* Start with *short* test videos
+Create 10 second videos.
+
+Focus on the *end* of the production process:
+
+- Can you upload to YouTube or screencast.com?
+- Is the sound ok?
+- Do the pixels look great?
+    
+Don't waste time with longer vids until all answers are yes!
+.. @+node:ekr.20131121090013.17107: *4* Create a "real" take
+Now it's time to get a "real" take.
+
+Keep it pretty short: maybe one minute.
+
+You'll throw away two or three anyway ;-)
+.. @+node:ekr.20131121115406.16358: *4* Clean audio is a must
+A clean audio take is essential.
+
+Don't even *think* about fixing audio flubs in post production.
+
+Happily, during your take:
+
+    *Pauses don't matter*
+
+    *Flubs don't matter*
+    
+But you *must* recognize when you've made a flub!
+.. @+node:ekr.20131121130048.16374: *4* Fixing flubs
+When you flub a line, don't panic!
+
+Pause, regroup, and repeat the phrase until you get it right.
+
+You'll relax once you realize that flubs and pauses don't matter.
+
+Once you relax, you can make up your script as you go along!
+.. @+node:ekr.20131121090013.17106: *4* Post production
+Do a complete new take if you don't have clean audio.
+
+Focus on good enough.  Perfectionism is not your friend.
+.. @+node:ekr.20131121090013.17105: *4* Summary
+Making a screencast is a lot easier than you think :-)
+
+Emulate the screencast.com tutorials.
+
+Verify the *entire* production process with 10-second tests.
+
+Expect to lots of mistakes at first.  Make them short!
+
+Flubs don't matter, *provided* you correct them *during the take*.
+
+
 .. @+node:ekr.20131105020211.18058: ** Important
 .. @+node:ekr.20131101080215.16488: *3* * Outreach to magazine editors
 ===== Steve Litt
@@ -4573,431 +4720,6 @@ a bit of time, I am not very familiar with python.
 
 Leo doesn't understand .jsp.  @shadow should refuse to work for unknown languages.
 .. @+node:ekr.20111123095018.13632: *4* Fix bug: expand Find tab as needed for bigger fonts
-.. @+node:ekr.20110605121601.18326: *5* createTab (leoQtLog)
-def createTab (self,tabName,createText=True,widget=None,wrap='none'):
-    """
-    Create a new tab in tab widget
-    if widget is None, Create a QTextBrowser,
-    suitable for log functionality.
-    """
-    trace = False and not g.unitTesting
-    c = self.c
-    if trace: g.trace(tabName,widget and g.app.gui.widget_name(widget) or '<no widget>')
-    if widget is None:
-        widget = LeoQTextBrowser(parent=None,c=c,wrapper=self)
-            # widget is subclass of QTextBrowser.
-        contents = leoQTextEditWidget(widget=widget,name='log',c=c)
-            # contents a wrapper.
-        widget.leo_log_wrapper = contents
-            # Inject an ivar into the QTextBrowser that points to the wrapper.
-        if trace: g.trace('** creating',tabName,'self.widget',contents,'wrapper',widget)
-        option = QtGui.QTextOption
-        widget.setWordWrapMode(option.WordWrap if self.wrap else option.NoWrap)
-        widget.setReadOnly(False) # Allow edits.
-        self.logDict[tabName] = widget
-        if tabName == 'Log':
-            self.widget = contents # widget is an alias for logCtrl.
-            widget.setObjectName('log-widget')
-        # Set binding on all log pane widgets.
-        if newFilter:
-            g.app.gui.setFilter(c,widget,self,tag='log')
-        else:
-            theFilter = leoQtEventFilter(c,w=self,tag='log')
-            self.eventFilters.append(theFilter) # Needed!
-            widget.installEventFilter(theFilter)
-        # A bad hack.  Set the standard bindings in the Find and Spell tabs here.
-        if tabName == 'Log':
-            assert c.frame.top.__class__.__name__ == 'DynamicWindow'
-            find_widget = c.frame.top.leo_find_widget
-            # 2011/11/21: A hack: add an event filter.
-            if newFilter:
-                g.app.gui.setFilter(c,find_widget,widget,'find-widget')
-            else:
-                find_widget.leo_event_filter = leoQtEventFilter(c,w=widget,tag='find-widget')
-                find_widget.installEventFilter(find_widget.leo_event_filter)
-            if trace: g.trace('** Adding event filter for Find',find_widget)
-            # 2011/11/21: A hack: make the find_widget an official log widget.
-            self.contentsDict['Find']=find_widget
-            # 2013/09/20:
-            if hasattr(c.frame.top,'leo_spell_widget'):
-                spell_widget = c.frame.top.leo_spell_widget
-                if trace: g.trace('** Adding event filter for Spell',find_widget)
-                if newFilter:
-                    g.app.gui.setFilter(c,spell_widget,widget,'spell-widget')
-                else:
-                    spell_widget.leo_event_filter = leoQtEventFilter(c,w=widget,tag='spell-widget')
-                    spell_widget.installEventFilter(spell_widget.leo_event_filter)
-        self.contentsDict[tabName] = widget
-        self.tabWidget.addTab(widget,tabName)
-    else:
-        contents = widget
-            # Unlike text widgets, contents is the actual widget.
-        widget.leo_log_wrapper = contents
-            # The leo_log_wrapper is the widget itself.
-        if trace: g.trace('** using',tabName,widget)
-        if newFilter:
-            g.app.gui.setFilter(c,widget,contents,'tabWidget')
-        else:
-            theFilter = leoQtEventFilter(c,w=contents,tag='tabWidget')
-            self.eventFilters.append(theFilter) # Needed!
-            widget.installEventFilter(theFilter)
-        self.contentsDict[tabName] = contents
-        self.tabWidget.addTab(contents,tabName)
-    return contents
-.. @+node:ekr.20110605121601.18166: *5* dw.createFindTab & helpers
-def createFindTab (self,parent,tab_widget):
-    # g.trace('***(DynamicWindow)***',g.callers())
-    c,dw = self.leo_c,self
-    fc = c.findCommands
-    assert not fc.ftm
-    fc.ftm = ftm = FindTabManager(c)
-    assert c.findCommands
-    grid = self.create_find_grid(parent)
-    row = 0 # The index for the present row.
-    row = dw.create_find_header(grid,parent,row)
-    row = dw.create_find_findbox(grid,parent,row)
-    row = dw.create_find_replacebox(grid,parent,row)
-    max_row2 = 1
-    max_row2 = dw.create_find_checkboxes(grid,parent,max_row2,row)
-    row = dw.create_find_buttons(grid,parent,max_row2,row)
-    row = dw.create_help_row(grid,parent,row)
-    dw.override_events()
-    # Last row: Widgets that take all additional vertical space.
-    w = QtGui.QWidget()
-    grid.addWidget(w,row,0)
-    grid.addWidget(w,row,1)
-    grid.addWidget(w,row,2)
-    grid.setRowStretch(row,100)
-    # Official ivars (in addition to checkbox ivars).
-    self.leo_find_widget = tab_widget # A scrollArea.
-    ftm.init_widgets()
-.. @+node:ekr.20131118152731.16847: *6* dw.create_find_grid
-def create_find_grid(self,parent):
-    grid = self.createGrid(parent,'findGrid',margin=10,spacing=10)
-    grid.setColumnStretch(0,100)
-    grid.setColumnStretch(1,100)
-    grid.setColumnStretch(2,10)
-    grid.setColumnMinimumWidth(1,75)
-    grid.setColumnMinimumWidth(2,175)
-    grid.setColumnMinimumWidth(3,50)
-    return grid
-.. @+node:ekr.20131118152731.16849: *6* dw.create_find_header
-def create_find_header(self,grid,parent,row):
-    if False:
-        dw = self
-        lab1 = dw.createLabel(parent,'findHeading','Find/Change Settings...')
-        grid.addWidget(lab1,row,0,1,2,QtCore.Qt.AlignLeft)
-            # AlignHCenter
-        row += 1
-    return row
-.. @+node:ekr.20131118152731.16848: *6* dw.create_find_findbox
-def create_find_findbox(self,grid,parent,row):
-    '''Create the Find: label and text area.'''
-    c,dw = self.leo_c,self
-    fc = c.findCommands
-    ftm = fc.ftm
-    assert ftm.find_findbox is None
-    ftm.find_findbox = w = dw.createLineEdit(parent,'findPattern',disabled=fc.expert_mode)
-    lab2 = self.createLabel(parent,'findLabel','Find:')
-    grid.addWidget(lab2,row,0)
-    grid.addWidget(w,row,1,1,2)
-    row += 1
-    return row
-.. @+node:ekr.20131118152731.16850: *6* dw.create_find_replacebox
-def create_find_replacebox(self,grid,parent,row):
-    '''Create the Replace: label and text area.'''
-    c,dw = self.leo_c,self
-    fc = c.findCommands
-    ftm = fc.ftm
-    assert ftm.find_replacebox is None
-    ftm.find_replacebox = w = dw.createLineEdit(parent,'findChange',disabled=fc.expert_mode)
-    lab3 = dw.createLabel(parent,'changeLabel','Replace:') # Leo 4.11.1.
-    grid.addWidget(lab3,row,0)
-    grid.addWidget(w,row,1,1,2)
-    row += 1
-    return row
-.. @+node:ekr.20131118152731.16851: *6* dw.create_find_checkboxes
-def create_find_checkboxes(self,grid,parent,max_row2,row):
-    '''Create check boxes and radio buttons.'''
-    c,dw = self.leo_c,self
-    fc = c.findCommands
-    ftm = fc.ftm
-    def mungeName(kind,label):
-        # The returned value is the namve of an ivar.
-        kind = 'checkBox' if kind == 'box' else 'radioButton'
-        name = label.replace(' ','').replace('&','')
-        return '%s%s' % (kind,name)
-    # Rows for check boxes, radio buttons & execution buttons...
-    d = {
-        'box': dw.createCheckBox,
-        'rb':  dw.createRadioButton,
-    }
-    table = (
-        # First row.
-        ('box', 'Whole &Word',      0,0),
-        ('rb',  '&Entire Outline',  0,1),
-        # Second row.
-        ('box', '&Ignore Case',     1,0),
-        ('rb',  '&Suboutline Only', 1,1),
-        # Third row.
-        ('box', 'Wrap &Around',     2,0),
-        ('rb',  '&Node Only',       2,1),
-        # Fourth row.
-        ('box', 'Rege&xp',          3,0),
-        ('box', 'Search &Headline', 3,1),
-        # Fifth row.
-        ('box', 'Mark &Finds',      4,0),
-        ('box', 'Search &Body',     4,1),
-        # Sixth row.
-        ('box', 'Mark &Changes',    5,0),
-        # a,b,c,e,f,h,i,n,rs,w
-    )
-    for kind,label,row2,col in table:
-        max_row2 = max(max_row2,row2)
-        name = mungeName(kind,label)
-        func = d.get(kind)
-        assert func
-        w = func(parent,name,label)
-        grid.addWidget(w,row+row2,col)
-        # The the checkbox ivars in dw and ftm classes.
-        assert getattr(ftm,name) is None
-        setattr(ftm,name,w)
-    return max_row2
-    
-.. @+node:ekr.20131118152731.16852: *6* dw.create_find_buttons
-def create_find_buttons(self,grid,parent,max_row2,row):
-    c,dw = self.leo_c,self
-    k = c.k
-    ftm = c.findCommands.ftm
-    def mungeName(label):
-        kind = 'push-button'
-        name = label.replace(' ','').replace('&','')
-        return '%s%s' % (kind,name)
-    # Create Buttons in column 2 (Leo 4.11.1.)
-    table = (
-        (0,2,'findNextCommand','Find Next','find-next'),
-        (1,2,'findPrevCommand','Find Previous','find-prev'),
-        (2,2,'findAll','Find All','find-all'),
-        (3,2,'changeCommand', 'Replace','replace'),
-        (4,2,'changeThenFind','Replace Then Find','replace-then-find'),
-        (5,2,'changeAll','Replace All','replace-all'),
-        # (6,2,'helpForFindCommands','Help','help-for-find-commands'),
-    )
-    # findTabHandler does not exist yet.
-    for row2,col,func_name,label,cmd_name in table:
-        def find_tab_button_callback(c=c,func_name=func_name):
-            # h will exist when the Find Tab is open.
-            fc = c.findCommands
-            func = getattr(fc,func_name,None)
-            if func: func()
-            else: g.trace('* does not exist:',func_name)
-        name = mungeName(label)
-        # Prepend the shortcut if it exists:
-        stroke = k.getShortcutForCommandName(cmd_name)
-        if stroke:
-            label = '%s:  %s' % (label,k.prettyPrintKey(stroke))
-        if 1: # Not bad.
-            w = dw.createButton(parent,name,label)
-            grid.addWidget(w,row+row2,col)
-        else:
-            # grid.addLayout(layout,row+row2,col)
-            # layout = dw.createHLayout(frame,name='button_layout',margin=0,spacing=0)
-            # frame.setLayout(layout)
-            frame = dw.createFrame(parent,name='button:%s' % label)
-            w = dw.createButton(frame,name,label)
-            grid.addWidget(frame,row+row2,col)
-        # Connect the button with the command.
-        QtCore.QObject.connect(w,QtCore.SIGNAL("clicked()"),
-            find_tab_button_callback)
-        # Set the ivar.
-        ivar = '%s-%s' % (cmd_name,'button')
-        ivar = ivar.replace('-','_')
-        assert getattr(ftm,ivar) is None
-        setattr(ftm,ivar,w)
-    row += max_row2
-    row += 2
-    return row
-.. @+node:ekr.20131118152731.16853: *6* dw.create_help_row
-def create_help_row(self,grid,parent,row):
-    # Help row.
-    if False:
-        w = self.createLabel(parent,
-            'findHelp','For help: <alt-x>help-for-find-commands<return>')
-        grid.addWidget(w,row,0,1,3)
-        row += 1
-    return row
-.. @+node:ekr.20131118172620.16891: *6* dw.override_events
-def override_events(self):
-    
-    c,dw = self.leo_c,self
-    fc = c.findCommands
-    ftm = fc.ftm
-    # Define class EventWrapper.
-    @others
-    EventWrapper(c,w=ftm.find_findbox,next_w=ftm.find_replacebox,func=fc.findNextCommand)
-    EventWrapper(c,w=ftm.find_replacebox,next_w=ftm.find_next_button,func=fc.findNextCommand)
-    table = (
-        ('findNextCommand','find-next'),
-        ('findPrevCommand','find-prev'),
-        ('findAll','find-all'),
-        ('changeCommand','replace'),
-        ('changeThenFind','replace-then-find'),
-        ('changeAll','replace-all'),
-    )
-    for func_name,cmd_name in table:
-        ivar = '%s-%s' % (cmd_name,'button')
-        ivar = ivar.replace('-','_')
-        w = getattr(ftm,ivar,None)
-        func = getattr(fc,func_name,None)
-        if w and func:
-            # g.trace(cmd_name,ivar,bool(w),func and func.__name__)
-            next_w = ftm.checkBoxWholeWord if cmd_name == 'replace-all' else None
-            EventWrapper(c,w=w,next_w=next_w,func=func)
-        else:
-            g.trace('**oops**')
-    # Finally, checkBoxMarkChanges goes back to ftm.find_findBox.
-    EventWrapper(c,w=ftm.checkBoxMarkChanges,next_w=ftm.find_findbox,func=None)
-.. @+node:ekr.20131118172620.16892: *7* class EventWrapper
-class EventWrapper:
-
-    @others
-    
-.. @+node:ekr.20131119204029.18406: *8* ctor
-def __init__(self,c,w,next_w,func):
-    self.c = c
-    self.d = self.create_d() # Keys: strokes; values: command-names.
-    self.w = w
-    self.next_w = next_w
-    self.eventFilter = leoQtEventFilter(c,w,'EventWrapper')
-    self.func = func
-    self.oldEvent = w.event
-    w.event = self.wrapper
-.. @+node:ekr.20131120054058.16281: *8* create_d
-def create_d(self):
-    '''Create self.d dictionary.'''
-    c = self.c
-    d = {}
-    table = (
-        'toggle-find-ignore-case-option',
-        'toggle-find-in-body-option',
-        'toggle-find-in-headline-option',
-        'toggle-find-mark-changes-option',
-        'toggle-find-mark-finds-option',
-        'toggle-find-regex-option',
-        'toggle-find-word-option',
-        'toggle-find-wrap-around-option',
-    )
-    for cmd_name in table:
-        stroke = c.k.getShortcutForCommandName(cmd_name)
-        if not stroke: g.trace('missing',cmd_name) #,repr(stroke and stroke.s)
-        if stroke:
-            d[stroke.s] = cmd_name
-    return d
-.. @+node:ekr.20131118172620.16893: *8* wrapper
-def wrapper(self,event):
-    
-    trace = False
-    e = QtCore.QEvent
-    type_ = event.type()
-    # Must intercept KeyPress for events that generate FocusOut!
-    if type_ == e.KeyPress:
-        return self.keyPress(event)
-    elif type_ == e.KeyRelease:
-        return self.keyRelease(event)
-    elif trace and  type_ not in (12,170):
-        # (5,10,11,12,110,127,128,129,170):
-        # http://qt-project.org/doc/qt-4.8/qevent.html#Type-enum
-        g.trace(type_)
-    return self.oldEvent(event)
-.. @+node:ekr.20131118172620.16894: *8* keyPress
-def keyPress(self,event):
-    
-    trace = False
-    s = g.u(event.text())
-    if 0: # This doesn't work.
-        eat = isinstance(self.w,(QtGui.QCheckBox,QtGui.QRadioButton))
-        g.trace('eat',eat,w)
-        if eat and s in ('\n','\r'):
-            return True
-    out = s in ('\t','\r','\n')
-    if trace: g.trace(out,repr(s))
-    if out:
-        # Move focus to next widget.
-        if s == '\t':
-            if self.next_w:
-                if trace: g.trace('tab widget',self.next_w)
-                self.next_w.setFocus(QtCore.Qt.TabFocusReason)
-            else:
-                # Do the normal processing.
-                return self.oldEvent(event)
-        elif self.func:
-            if trace: g.trace('return func',self.func.__name__)
-            self.func()
-        return True
-    else:
-        ef = self.eventFilter
-        tkKey,ch,ignore = ef.toTkKey(event)
-        stroke = ef.toStroke(tkKey,ch) # ch not used.
-        cmd_name = self.d.get(stroke)
-        if cmd_name:
-            # g.trace(cmd_name,s,tkKey,stroke,
-            self.c.k.simulateCommand(cmd_name)
-            return True
-        else:
-            # Do the normal processing.
-            return self.oldEvent(event)
-.. @+node:ekr.20131118172620.16895: *8* keyRelease
-def keyRelease(self,event):
-    return self.oldEvent(event)
-.. @+node:ekr.20110605121601.18156: *5* dw.createGrid
-def createGrid (self,parent,name,margin=0,spacing=0):
-
-    w = QtGui.QGridLayout(parent)
-    w.setMargin(margin)
-    w.setSpacing(spacing)
-    self.setName(w,name)
-    return w
-.. @+node:ekr.20110605121601.18145: *5* dw.createLogPane & helper
-def createLogPane (self,parent):
-
-    # Create widgets.
-    logFrame = self.createFrame(parent,'logFrame',
-        vPolicy = QtGui.QSizePolicy.Minimum)
-    innerFrame = self.createFrame(logFrame,'logInnerFrame',
-        hPolicy=QtGui.QSizePolicy.Preferred,
-        vPolicy=QtGui.QSizePolicy.Expanding)
-    tabWidget = self.createTabWidget(innerFrame,'logTabWidget')
-    # Pack.
-    innerGrid = self.createGrid(innerFrame,'logInnerGrid')
-    innerGrid.addWidget(tabWidget, 0, 0, 1, 1)
-    outerGrid = self.createGrid(logFrame,'logGrid')
-    outerGrid.addWidget(innerFrame, 0, 0, 1, 1)
-    # Embed the Find tab in a QScrollArea.
-    findScrollArea = QtGui.QScrollArea()
-    findScrollArea.setObjectName('findScrollArea')
-    # Find tab.
-    findTab = QtGui.QWidget()
-    findTab.setObjectName('findTab')
-    tabWidget.addTab(findScrollArea,'Find')
-    if 1: # Do this later, in leoFind.finishCreate
-        self.findScrollArea = findScrollArea
-        self.findTab = findTab
-    else:
-        self.createFindTab(findTab,findScrollArea)
-        findScrollArea.setWidget(findTab)
-    # Spell tab.
-    spellTab = QtGui.QWidget()
-    spellTab.setObjectName('spellTab')
-    tabWidget.addTab(spellTab,'Spell')
-    self.createSpellTab(spellTab)
-    tabWidget.setCurrentIndex(1)
-    # Official ivars
-    self.tabWidget = tabWidget # Used by leoQtLog.
-.. @+node:ekr.20131118172620.16858: *6* dw.finishCreateLogPane
-def finishCreateLogPane(self):
-    '''It's useful to create this late, because c.config is now valid.'''
-    self.createFindTab(self.findTab,self.findScrollArea)
-    self.findScrollArea.setWidget(self.findTab)
 .. @+node:ekr.20111010162047.15678: *4* Fix bug: Imports to @file should put @first/@last directives in root node
 Especially:
     - Shebang line.
