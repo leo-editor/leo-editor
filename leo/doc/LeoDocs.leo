@@ -290,6 +290,14 @@
 <v t="ekr.20120229094652.15137"><vh>What's the recommended way to upgrade Leo?</vh></v>
 </v>
 <v t="ekr.20050830115714.118"><vh>Tips and techniques</vh>
+<v t="ekr.20131122055946.16401"><vh>How to make a screencast</vh>
+<v t="ekr.20131122055946.16402"><vh>Use a script to open your app</vh></v>
+<v t="ekr.20131122055946.16403"><vh>Debug your workflow with short videos</vh></v>
+<v t="ekr.20131122055946.16404"><vh>Emulate the screencast.com tutorials</vh></v>
+<v t="ekr.20131122055946.16405"><vh>Record your first real take</vh></v>
+<v t="ekr.20131122055946.16406"><vh>Edit your raw take</vh></v>
+<v t="ekr.20131122055946.16407"><vh>Summary</vh></v>
+</v>
 <v t="ekr.20050830115714.113"><vh>How can I create a template .leo file?</vh></v>
 <v t="ekr.20050830115714.120"><vh>How can I display graphics in Leo?</vh></v>
 <v t="ekr.20050830115714.74"><vh>How can I import many files at once?</vh></v>
@@ -3742,7 +3750,7 @@ This is Leo's Frequently Asked Questions document.
 .. index:: FAQ
 
 .. contents::
-    :depth: 3
+    :depth: 4
 </t>
 <t tx="ekr.20050830115714.1"></t>
 <t tx="ekr.20050830115714.10">The encoding used in the file being imported doesn't match the encoding in effect for Leo.
@@ -13956,8 +13964,7 @@ situation.
 Here is the workflow I use to develop Leo. The intention is to help
 present and potential developers use Leo effectively.
 
-Overview
-========
+Overview:
 
 - Develop in an outline containing all of Leo's source files. Close this outline
   rarely: this keeps the code I am using stable while I'm hacking the code.
@@ -13968,8 +13975,7 @@ Overview
 
 These two points are covered in a bit more detail in `This FAQ entry`_.
 
-Additional tips
-===============
+Additional tips:
 
 A. Avoid using the mouse whenever possible. For example, use alt-tab to switch
 between windows.
@@ -14011,8 +14017,7 @@ E. For thousand of example of my programming style, see leoPy.leo and
    of using clones to create view nodes. I typically delete the clones in the
    views shortly before a release.
 
-Writing documentation
-=====================
+Writing documentation:
 
 - Use postings as pre-writing for documentation.
 
@@ -14025,8 +14030,7 @@ Writing documentation
 - Use the vr command to debug reStructuredText documentation. The viewrendered
    pane updates as you type. This makes Leo a killer app for rST.
    
-Administrative tips
-===================
+Administrative tips:
 
 - Never rely on memory.
 
@@ -14038,8 +14042,7 @@ Administrative tips
    
    This keeps to-do lists short, which keeps energy high.
 
-Tips for using bzr
-==================
+Tips for using bzr:
 
 I use the following batch files related to bzr::
 
@@ -22731,6 +22734,143 @@ Suboutline Only
     When selected, the Find and Change commands search only the currently
     selected headline and its offspring.
     Alt+Ctrl+S (set-find-suboutline-only) sets this radio button.
+</t>
+<t tx="ekr.20131122055946.16401">Making screencasts is a lot easier than you probably think.
+
+Here are some tips to get you started quickly.
+
+
+
+
+
+
+
+</t>
+<t tx="ekr.20131122055946.16402">The primary purpose of this script is to open your app at a fixed,
+unchanging size. This is surprisingly important:
+
+- It ensures that the window will always render to pixels in the same way.
+- It makes it easier to splice in new video to an existing video.
+- It makes it easier to plan your video to ensure everything will appear as you expect.
+- It provides continuity when making a series of videos.
+
+Here is a script that I use when making Leo's screencasts::
+
+    python27 launchLeo.py --no-cache --gui=qttabs
+    --window-size=682x1264 &lt;list of .leo files&gt; %*​
+    
+This *particular* --window-size causes Camtasia to create a window whose
+actual size is 720x1280, the nominal 720p resolution. It may prevent text
+blur. Or not. I do know that Leo's screencasts look great at 720p.</t>
+<t tx="ekr.20131122055946.16403">Make sure that you can actually upload *excellent quality* videos before
+doing anything else. This step is crucial. If you skip this step, all of
+your initial recording an post-production work could be utterly wasted.
+
+Use *short* (10-second) test videos at this step. Their primary purpose
+verify that you can can get to the *end* of the production process
+successfully. You *are* going to make lots of mistakes here: using short
+videos helps you make these mistakes quickly.
+
+Don't even *think* about making longer videos until the answers to all the
+following questions are clearly "yes":
+
+- Is your camera working?
+- Is your microphone working?
+- Do you know how to record your voice and screen?
+- Can you log into YouTube or screencast.com?
+- Can you upload to YouTube or screencast.com?
+- Is the sound in your *uploaded* video great?
+- Do the pixels in your *uploaded* look great?
+
+This last item is particularly important. Just because pixels look good in
+your video editor is no guarantee that they will look good when uploaded.
+
+You are ready to try your first "real" take *only* when you can upload a
+video that looks and sounds great.
+</t>
+<t tx="ekr.20131122055946.16404">Before rushing right out and making your first video, I recommend
+watching the tutorial screencasts at screencast.com:
+http://www.techsmith.com/tutorial-camtasia-8.html
+
+Watch the tutorials to see how the presentations themselves are
+organized. Watch them until it feels natural to emulate their style.
+
+If you will be using Camtasia, you will also want to watch the tutorials
+to learn how Camtasia works.  But this is a secondary consideration.
+</t>
+<t tx="ekr.20131122055946.16405">Now it's time to go beyond test videos. Even now, though, I recommend
+keeping your first efforts short: one minute or so. Again, this saves time.
+You'll ending up throwing away two or three anyway ;-)
+
+Bring up your app using you demo script and run through your presentation.
+
+Here's the **most important tip**: As you narrate your video, audio flubs
+are inevitable, but they don't matter at all *provided* that you *realize*
+that you have just flubbed a word or phrase. 
+
+When you flub a line, don't panic! Just *pause*, regroup, and repeat the
+phrase until you get it right. *Pausing is essential*: it simplifies
+inserting and deleting sound bites during post production.
+
+You'll relax once you realize that flubs don't matter and that pausing
+makes post-production easier. Once you relax, getting a good take will
+suddenly become easier.
+
+Correcting flubs *as soon as they happen* is absolutely essential. Don't
+even *think* about fixing audio flubs in post-production. It simply can't
+be done. Instead of spending 20 minutes trying (and failing) to correct a
+flub in post production, it is much faster and better to take 20 seconds
+during your take to correct the flub.
+
+Similar remarks apply to video, but in my experience it's much easier to
+get the video right. If you do flub the video, it will be much easier if
+you just do a complete retake. With Camtasia, you can separate the audio
+and video tracks, but usually that won't work, especially if there is audio
+of key clicks.
+
+By retaking audio flubs as they happen, I find it easy to work without a
+script. It feels more natural to me than reading a script. YMMV. When
+I get stuck, I just pause. Or just start over. Otoh, it wouldn't be that
+hard to read a script. Just *pause* before and after each phrase. Never
+rush your audio!
+
+In short, the key Aha is: insert (audio) pauses *everywhere* as needed.
+It's easy to edit them out. It's virtually impossible to edit in the middle
+of words, even with the world's best audio editor.
+</t>
+<t tx="ekr.20131122055946.16406">Post production should be easy provided that you have corrected all audio
+flubs as they happen. This keeps the audio and video in synch. Just edit
+out flubs and reduce overly-long pauses.
+
+I won't discuss production details here because they depend on the editor
+you are using.
+
+Do a new take if you don't have clean audio. Depending on the complexity of
+your video, it may be possible to splice a partial take in the middle or
+end of your video. Similarly, it may be possible to splice in a new take to
+add material you didn't cover in your first take.
+
+One final word of advice. When editing your video, settle for "good
+enough". Perfectionism is not your friend.
+</t>
+<t tx="ekr.20131122055946.16407">Making a screencast is a lot easier than you think :-)
+
+
+- Create a script that will open your app at a fixed, optimal, size.
+
+- Emulate the style and form of screencast.com tutorials.
+
+- Verify the *entire* production process with short test videos.
+
+  Before making longer videos, make *sure* that the test videos look and
+  sound great *when they have been uploaded*.
+  
+- When doing a take, flubs don't matter, *provided* you correct them
+  *during the take*.  Use pauses.  Make haste slowly!
+
+- Splice in new takes during post-production to fix flubs and add new
+  material.
+
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
