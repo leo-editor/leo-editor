@@ -6,17 +6,131 @@
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 
-Announce about Find pane:
-    Ctrl-F now bound to start-search.
-    You may have to change myLeoSettigns.leo.
-  
-- Remove mention of Ctrl-Shift-R from the docs.
+- Put "how to make a screencast" in the tips section.
 
-- Finish help-for-find-command.
+- Cut the Alt-x section from the Find screencast.
+.. @+node:ekr.20131121090013.17098: *3* How to make a screencast
+@language rest
 
-- Put the "How to make a screencast" in the Tips section of the FAQ.
-  Link to it from the screenshots page.
-  Make a post explaining why a screencast would be limp.
+Making screencasts is a lot easier than you probably think.
+
+Here are some tips to get you started quickly.
+
+1. Make it easy to open the app that you are demoing at a fixed size.
+
+This is surprisingly important:
+
+- It ensures that the window will always render to pixels in the same way.
+- It makes it easier to splice in new video to an existing video.
+- It makes it easier to plan your video to ensure everything will appear as you expect.
+- It provides continuity when making a series of vides.
+
+Here is a script that I use when making Leo's screencasts::
+
+    python27 launchLeo.py --no-cache --gui=qttabs --window-size=682x1264 <list of .leo files> %*​
+    
+This **particular** --window-size causes Camtasia to create a window whose
+actual size is 720x1280, the nominal 720p resolution. It may prevent text
+blur. Or not. I do know that Leo's screencasts look great at 720p.
+
+2. Get your production workflow handled **before** making any long videos.
+
+Imo, this tip is absolutely crucial.
+
+Create 10 second videos.
+
+Focus on the *end* of the production process:
+
+- Can you upload to YouTube or screencast.com?
+- Is the sound ok?
+- Do the pixels look great?
+    
+Don't waste time with longer vids until all answers are yes!
+
+
+
+2. When you record, remember that **it doesn't matter** if you flub audio.
+   The only thing that matters is that you **realize** that you have done
+   so. Just **pause**, and retake the audio as many times as you need.
+
+The main thing: you can *not* fix audio flubs later: you *must* have a
+clean take of everything you want to say.
+
+3. Similar remarks apply to video, but in my experience it's much easier to
+   get the video right. If you do flub the video, it will be much easier if
+   you just retake the audio at the same time, so it's in synch with the
+   video. With Camtasia, you can separate the audio and video tracks, but
+   usually that won't work, especially if there is audio of key clicks.
+
+4. Contrary to what the Camtasia tutorials imply, I find it better to work
+   without a script. It feels a lot more natural to me. When I get stuck, I
+   just pause. Or just start over. Otoh, it wouldn't be that hard to read a
+   script. Just *pause* before and after each phrase. Never rush your
+   audio!
+
+In short, the key Aha: insert (audio) pauses *everywhere* as needed. It's
+easy to edit them out. It's virtually impossible to edit in the middle of
+words, even with the world's best audio editor.
+
+HTH. I'll use these as some kind of documentation. Actually, now that I
+write this, some kind of screencast *would* be possible. It will have a lot
+of pauses :-)
+.. @+node:ekr.20131121090013.17102: *4* Start with *short* test videos
+Create 10 second videos.
+
+Focus on the *end* of the production process:
+
+- Can you upload to YouTube or screencast.com?
+- Is the sound ok?
+- Do the pixels look great?
+    
+Don't waste time with longer vids until all answers are yes!
+.. @+node:ekr.20131121090013.17101: *4* Look at the tutorials at screencast.com
+These are superb examples of screencasts.
+
+Emulate them as much as possible.
+.. @+node:ekr.20131121090013.17107: *4* Create a "real" take
+Now it's time to get a "real" take.
+
+Keep it pretty short: maybe one minute.
+
+You'll throw away two or three anyway ;-)
+.. @+node:ekr.20131121115406.16358: *4* Clean audio is a must
+A clean audio take is essential.
+
+Don't even *think* about fixing audio flubs in post production.
+
+Happily, during your take:
+
+    *Pauses don't matter*
+
+    *Flubs don't matter*
+    
+But you *must* recognize when you've made a flub!
+.. @+node:ekr.20131121130048.16374: *4* Fixing flubs
+When you flub a line, don't panic!
+
+Pause, regroup, and repeat the phrase until you get it right.
+
+You'll relax once you realize that flubs and pauses don't matter.
+
+Once you relax, you can make up your script as you go along!
+.. @+node:ekr.20131121090013.17106: *4* Post production
+Do a complete new take if you don't have clean audio.
+
+Focus on good enough.  Perfectionism is not your friend.
+.. @+node:ekr.20131121090013.17105: *4* Summary
+Making a screencast is a lot easier than you think :-)
+
+Emulate the screencast.com tutorials.
+
+Verify the *entire* production process with 10-second tests.
+
+Expect to lots of mistakes at first.  Make them short!
+
+Flubs don't matter, *provided* you correct them *during the take*.
+
+
 .. @+node:ekr.20131116212505.16665: *3* Screencasts
 Topics:
 
@@ -41,6 +155,13 @@ Scripting:
     ** @button
     @test
     c, g, p: commanders, generators, p.b, p.h etc.
+Redo the Find command screencast:
+    - Show the new Search menu.
+    - Ctrl-G hides the Find pane.
+    - Show how to use the minibuffer to discover the toggle commands:
+        <Alt-X>tog<tab>f<tab>   or
+        <Alt-X>set<tab>f<tab>
+        
 
 When ready to release:
 - Note to Dave Winer.
@@ -232,140 +353,6 @@ easy, flexible plan.
     - Leave arrow keys and control keys unchanged.
     - Focus plain-key normal-mode commands: a,i,d,c,x,s.
     - Use minibuffer for find command (save find/change strings for dot).
-.. @+node:ekr.20131121090013.17098: *3* How to make a screencast
-@language rest
-
-On Thu, Nov 21, 2013 at 7:20 AM, <dufriz@gmail.com> wrote:
-
-Edward, this idea just occurred to me: if you made a (short) video tutorial
-on how to create screencasts, other people may be tempted to contribute
-their own video tutorials.
-
-​Yes, I've been tempted to do this.
-
-Technically it's a bit weird, because all the important Aha's get edited
-out of the result!!
-
-Here are the key points. As you will see, they involve what happens
-*before* you start editing, so how do you show them?
-
-1. Set up a script which opens your subject in a fixed, optimal, size.​
- 
-​For me, this is demo.bat:
-
-python27 launchLeo.py --no-cache --gui=qttabs
---window-size=682x1264 <list of .leo files> %*​
-
-The main thing is that the window size results in an *actual* window size
-of 720x1280 as Camtasia sees it. I think this important.
-
-Having a demo script also makes it possible to patch in additional material
-when (not if) I forget something.
-
-2. When you record, remember that **it doesn't matter** if you flub audio.
-   The only thing that matters is that you **realize** that you have done
-   so. Just **pause**, and retake the audio as many times as you need.
-
-The main thing: you can *not* fix audio flubs later: you *must* have a
-clean take of everything you want to say.
-
-3. Similar remarks apply to video, but in my experience it's much easier to
-   get the video right. If you do flub the video, it will be much easier if
-   you just retake the audio at the same time, so it's in synch with the
-   video. With Camtasia, you can separate the audio and video tracks, but
-   usually that won't work, especially if there is audio of key clicks.
-
-4. Contrary to what the Camtasia tutorials imply, I find it better to work
-   without a script. It feels a lot more natural to me. When I get stuck, I
-   just pause. Or just start over. Otoh, it wouldn't be that hard to read a
-   script. Just *pause* before and after each phrase. Never rush your
-   audio!
-
-In short, the key Aha: insert (audio) pauses *everywhere* as needed. It's
-easy to edit them out. It's virtually impossible to edit in the middle of
-words, even with the world's best audio editor.
-
-HTH. I'll use these as some kind of documentation. Actually, now that I
-write this, some kind of screencast *would* be possible. It will have a lot
-of pauses :-)
-.. @+node:ekr.20131121090013.17099: *4* How to make a screencast (script)
-@language rest
-
-.. @+node:ekr.20131121130048.16375: *5* Introduction
-This is an unusual screencast.
-
-If focuses on things that never become part of a completed video.
-
-It leaves in some (not all!) flubs that I made, as examples.
-
-It's a complement to the screencast.com tutorials.
-.. @+node:ekr.20131121090013.17101: *5* Look at the tutorials at screencast.com
-These are superb examples of screencasts.
-
-Emulate them as much as possible.
-.. @+node:ekr.20131121090013.17100: *5* Create a demo script
-A fixed size may avoid dithering pixels.
-
-demo.bat:
-
-python27 launchLeo.py --no-cache --gui=qttabs --window-size=682x1264 <list of .leo files> %*​
-
-A fixed size is good for continuity: you can splice in video later.
-
-A fixed size helps plan your video.
-
-.. @+node:ekr.20131121090013.17102: *5* Start with *short* test videos
-Create 10 second videos.
-
-Focus on the *end* of the production process:
-
-- Can you upload to YouTube or screencast.com?
-- Is the sound ok?
-- Do the pixels look great?
-    
-Don't waste time with longer vids until all answers are yes!
-.. @+node:ekr.20131121090013.17107: *5* Create a "real" take
-Now it's time to get a "real" take.
-
-Keep it pretty short: maybe one minute.
-
-You'll throw away two or three anyway ;-)
-.. @+node:ekr.20131121115406.16358: *5* Clean audio is a must
-A clean audio take is essential.
-
-Don't even *think* about fixing audio flubs in post production.
-
-Happily, during your take:
-
-    *Pauses don't matter*
-
-    *Flubs don't matter*
-    
-But you *must* recognize when you've made a flub!
-.. @+node:ekr.20131121130048.16374: *5* Fixing flubs
-When you flub a line, don't panic!
-
-Pause, regroup, and repeat the phrase until you get it right.
-
-You'll relax once you realize that flubs and pauses don't matter.
-
-Once you relax, you can make up your script as you go along!
-.. @+node:ekr.20131121090013.17106: *5* Post production
-Do a complete new take if you don't have clean audio.
-
-Focus on good enough.  Perfectionism is not your friend.
-.. @+node:ekr.20131121090013.17105: *5* Summary
-Making a screencast is a lot easier than you think :-)
-
-Emulate the screencast.com tutorials.
-
-Verify the *entire* production process with 10-second tests.
-
-Expect to lots of mistakes at first.  Make them short!
-
-Flubs don't matter, *provided* you correct them *during the take*.
-
-
 .. @+node:ekr.20131121090013.17095: *3* Zoom Quiet video
 @language rest
 

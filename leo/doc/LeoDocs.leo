@@ -162,8 +162,7 @@
 <v t="ekr.20101112045055.5064" descendentVnodeUnknownAttributes="7d7100285503302e3171017d710255097374725f6174696d657103550c313337363431323739362e3071047355013071057d71066803550c313337363431323932332e307107735503302e3071087d71096803550c313337363431323932372e30710a73752e"><vh>@file plugin_catalog.py</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
 <v t="ekr.20131005214621.16088"><vh>Home page</vh>
-<v t="ekr.20100808060203.4273"
-expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
+<v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20131008041326.16065"><vh>Links page</vh>
 <v t="ekr.20131030184445.16582"><vh>@rst html/leoLinks.html </vh></v>
@@ -293,7 +292,6 @@ expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
 <v t="ekr.20050830115714.118"><vh>Tips and techniques</vh>
 <v t="ekr.20050830115714.113"><vh>How can I create a template .leo file?</vh></v>
 <v t="ekr.20050830115714.120"><vh>How can I display graphics in Leo?</vh></v>
-<v t="ekr.20070622185234"><vh>How can I do a simple find and replace?</vh></v>
 <v t="ekr.20050830115714.74"><vh>How can I import many files at once?</vh></v>
 <v t="ekr.20120229094652.15099"><vh>How can I make commonly-used scripts widely accessible?</vh></v>
 <v t="ekr.20120229094652.15124"><vh>How can I restore focus without using the mouse</vh></v>
@@ -639,14 +637,11 @@ expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
 <v t="EKR.20040524104904.116"><vh>Converting leading blanks and tabs in body text</vh></v>
 <v t="EKR.20040524104904.117"><vh>Executing Python scripts in body text</vh></v>
 <v t="EKR.20040524104904.118"><vh>Finding and replacing text</vh>
-<v t="ekr.20120319065417.8792"><vh>Overview</vh></v>
 <v t="ekr.20120319065417.8790"><vh>Basic searches</vh></v>
-<v t="ekr.20120319065417.8791"><vh>find-all, clone-find-all &amp; clone-find-all-flattened</vh></v>
-<v t="ekr.20120319065417.8797"><vh>Replace commands</vh></v>
 <v t="ekr.20120319065417.8798"><vh>Incremental find commands</vh></v>
-<v t="ekr.20120319065417.8794"><vh>Commands that set find options</vh></v>
 <v t="ekr.20120319065417.8795"><vh>Word search and regex search commands</vh></v>
-<v t="ekr.20120319065417.8788"><vh>Find settings</vh></v>
+<v t="ekr.20120319065417.8788"><vh>Check boxes and their commands</vh></v>
+<v t="ekr.20131122055946.16388"><vh>Radio buttons and their commands</vh></v>
 </v>
 <v t="EKR.20040524104904.134"><vh>Go To Line Number</vh></v>
 <v t="EKR.20040524104904.136"><vh>Inserting the date and time</vh></v>
@@ -6965,39 +6960,6 @@ See the following sections for details.
 <t tx="ekr.20070610174018">This section contains settings for this file.
 
 It also contains other information of little interest to most Leo users.</t>
-<t tx="ekr.20070622185234">The 'official' way to start a replace command is::
-
-    &lt;Ctrl-shift-r&gt;find-pattern&lt;return&gt;replace-text&lt;return&gt;
-
-But suppose you with start with::
-
-    &lt;ctrl-f&gt;find-pattern
-
-and then realize you want to do a replace instead of a find.
-No problem.  The following also works::
-
-    &lt;Ctrl-f&gt;find-pattern&lt;Ctrl-shift-r&gt;replace-text&lt;return&gt;
-
-In other words, you can think of `&lt;ctrl-f&gt;` as meaning 'show the find dialog'.
-
-**Important**: Once you have started a find (or find &amp; replace), you can
-
-1. Repeat the find operation using F3 (find-next) or
-2. Replace the selection with the replace-text using Ctrl-= (replace) or
-3. Replace the selection and find again using Ctrl-- (replace-then-find).
-
-There is another trick you should know. After typing `&lt;ctrl-f&gt;` or
-`&lt;shift-ctrl-r&gt;` you can use `&lt;alt-ctrl&gt;` keys to set or clear find
-options. For example::
-
-    &lt;ctrl-f&gt;&lt;alt-ctrl-w&gt;&lt;find-pattern&gt;&lt;return&gt;
-
-That is, `&lt;ctrl-f&gt;` shows the find dialog,
-`&lt;alt-ctrl-w&gt;` toggles the Whole Word checkbox and
-`&lt;return&gt;` starts the search.
-You can type the `&lt;alt-ctrl&gt;` keys anytime after `&lt;ctrl-f&gt;` (or `&lt;shift-ctrl-r&gt;`) and before `&lt;return&gt;`. 
-You can also type multiple `&lt;alt-ctrl-keys&gt;` to toggle multiple checkboxes.
-</t>
 <t tx="ekr.20070622212132">::
 
     activate-cmds-menu
@@ -15546,24 +15508,27 @@ something like::
 
     g.app.my_script_w = w
 </t>
-<t tx="ekr.20120319065417.8788">The following check boxes options appear in the search dialog and control
-the operations of the find and change commands.
+<t tx="ekr.20120319065417.8788">The following check boxes options appear in the Find pane:
 
 Ignore Case
     When checked, the Find and Change commands ignore the case of
     alphabetic characters when determining matches.
+    Alt+Ctrl+I (toggle-find-ignore-case-option) toggles this checkbox.
 
 Mark Changes
     When checked, the Change command marks all headlines whose headline or
     body text are changed by the command.
+    Alt+Ctrl+C (toggle-find-mark-changes-option) toggles this checkbox.
 
 Mark Matches
     When checked, the Find and Change commands mark all headlines in which
     a match is found with the pattern.
+    Alt+Ctrl+F (toggle-find-mark-finds-option) toggles this checkbox.
 
 Pattern Match
     When checked, the Find and Change commands treat several characters
     specially in the find pattern.
+    Alt+Ctrl+X (toggle-find-regex-option) toggles this checkbox.
 
     - '*'  matches any sequence of zero or more characters.
     - '.'  matches any single character.
@@ -15579,96 +15544,61 @@ Examples::
 
 Search Body Text
     When checked, the Find and Change commands search body text.
+    Alt+Ctrl+B (toggle-find-in-body-option) toggles this checkbox.
 
 Search Headline Text
     When checked, the Find and Change commands search headline text.
-
-Suboutline Only
-    When checked, the Find and Change commands search only the currently
-    selected headline and its offspring.
+    Alt+Ctrl+H (toggle-find-in-headline-option) toggles this checkbox.
 
 Whole Word
-    When checked, the find pattern must match an entire word. Words consist
+    When selected, the find pattern must match an entire word. Words consist
     of an alphabetic character or underscore, followed by zero or more
     alphabetic characters, numbers or underscores.
+    Alt+Ctrl+W (toggle-find-word-option) toggles this checkbox.
 
 Wrap Around
     When checked, the Find and Change commands continues at the top of the
     file when the command reaches the bottom of the file. For reverse
     searches, the find or change command continues at the bottom of the
     file when the command reaches the top of the file.
+    Alt+Ctrl+A (toggle-find-wrap-around-option) toggles this checkbox.
+    
 </t>
-<t tx="ekr.20120319065417.8790">The ``search-with-present-options`` (Ctrl-F) command prompts for a
+<t tx="ekr.20120319065417.8790">The ``start-search`` (Ctrl-F) command prompts for a
 search string. Typing the &lt;Return&gt; key puts the search string in the
 Find tab and executes a search based on all the settings in the Find
-tab. This is a recommended default search command. The ``find-next``
-(F3) command continues a search started with
+tab. Type Tab to enter replacement text.
+
+The ``find-next`` (F3) command continues a search started with
 ``search-with-present-options``. The ``find-previous`` (F2) commands
-searches backwards using the present search options.
-
-To search and replace, type &lt;Ctrl-F&gt;, followed by the search pattern,
-followed by the ``replace-string`` (Ctrl-Shift-R) command, followed by
-the replacement pattern, and finally a &lt;Return&gt; to start the search.
-</t>
-<t tx="ekr.20120319065417.8791">The ``find-all`` command prints all matches in the log pane. The
-``clone-find-all`` command searches the outline and creates a new root node
-called Found: *&lt;your search pattern&gt;*. This node contains clones of the
-found nodes. The ``clone-find-all-flattened`` commands includes all found
-nodes, even if they are also children of previously found nodes.
-</t>
-<t tx="ekr.20120319065417.8792">Leo supports a wide array of commands for searching and replacing
-text. The typical way to find text is with the
-``search-with-present-options`` (Ctrl-F). Focus moves to the
-minibuffer. Type the search pattern, followed by a &lt;Return&gt;. To search
-and replace, type &lt;Ctrl-F&gt;, followed by the search pattern, followed
-by ``replace-string`` (Ctrl-Shift-R) command, followed by the
-replacement pattern, and finally a &lt;Return&gt; to start the search.
-
-The following sections discuss all of Leo's find and change commands.
-**Important**: The radio buttons in the Find tab (Entire Outline,
-Suboutline Only and Node only) control how much of the outline is
-affected by Leo's find and change commands.
-</t>
-<t tx="ekr.20120319065417.8794">Several commands toggle the checkboxes and radio buttons in the Find tab,
-and thus affect the operation of the search-with-present-options command.
-You may bind these commands to keys or toggle these options in a mode.
-These commands toggle checkboxes::
-
-    Alt+Ctrl+I  toggle-find-ignore-case-option
-    Alt+Ctrl+B  toggle-find-in-body-option
-    Alt+Ctrl+H  toggle-find-in-headline-option
-    Alt+Ctrl+C  toggle-find-mark-changes-option
-    Alt+Ctrl+F  toggle-find-mark-finds-option
-    Alt+Ctrl+X  toggle-find-regex-option
-    Alt+Ctrl+W  toggle-find-word-option
-    Alt+Ctrl+A  toggle-find-wrap-around-option
-
-These commands set radio buttons::
-
-    Alt+Ctrl+E  set-find-everywhere
-    Alt+Ctrl+N  set-find-node-only
-    Alt+Ctrl+S  set-find-suboutline-only
-</t>
-<t tx="ekr.20120319065417.8795">The following commands set an option in the Find tab, then work
-exactly like the ``search-with-present-options`` command. The
-``search-backward`` and ``search-forward`` commands set the 'Whole
-Word' checkbox to False. The ``word-search-backward`` and
-``word-search-forward`` set the 'Whole Word' checkbox to True. The
-``re-search-forward`` and ``re-search-backward`` set the 'Regexp'
-checkbox to True.
-</t>
-<t tx="ekr.20120319065417.8797">The ``replace-string`` (Ctrl-Shift-R) command prompts for a search string.
-Type &lt;Return&gt; to end the search string. The command will then prompt for
-the replacement string. Typing a second &lt;Return&gt; key will place both
-strings in the Find tab and executes a **find** command, that is,
-search-with-present-options.
-
+searches backwards using the present search options. 
 The ``replace`` (Ctrl-=) command replaces the selected text with the
 'change' text in the Find tab. The ``replace-then-find`` (Ctrl--)
 command replaces the selected text with the 'change' text in the Find
 tab, then executes the find command again. These commands can simulate
-any kind of query-replace command. The ``replace-all`` command changes
-all occurrences of the 'find' text with the 'change' text.
+any kind of query-replace command.
+
+The ``find-all`` command prints all matches in the log pane. The
+``replace-all`` command changes all occurrences of the 'find' text
+with the 'change' text.
+
+The ``clone-find-all`` command searches the outline and creates a new
+root node called Found: *&lt;your search pattern&gt;*. This node contains
+clones of the found nodes. The ``clone-find-all-flattened`` commands
+includes all found nodes, even if they are also children of previously
+found nodes.
+</t>
+<t tx="ekr.20120319065417.8795">The following commands set an option in the Find tab, then work
+exactly like the ``start-search`` command.
+
+- The ``search-backward`` and ``search-forward`` commands set the
+  'Whole Word' checkbox to False.
+
+- The ``word-search-backward`` and ``word-search-forward`` set the
+  'Whole Word' checkbox to True.
+
+- The ``re-search-forward`` and ``re-search-backward`` set the
+  'Regexp' checkbox to True.
 </t>
 <t tx="ekr.20120319065417.8798">Incremental find commands move through the text as you type individual
 characters. Typing &lt;BackSpace&gt; backtracks the search. To repeat an
@@ -22786,6 +22716,21 @@ YouTube videos:
 Other videos about Leo:
 
 - `Terry Brown talks introduces his bookmarks plugin &lt;https://vimeo.com/77720098&gt;`_
+</t>
+<t tx="ekr.20131122055946.16388">The following radio buttons appear in the Find pane:
+
+Entire Outline
+    When selected, Find commands search the entire outline.
+    Alt+Ctrl+E (set-find-everywhere) sets this radio button.
+
+Node Only
+    When selected, Find commands search only the selected node.
+    Alt+Ctrl+N (set-find-node-only) sets this radio button
+    
+Suboutline Only
+    When selected, the Find and Change commands search only the currently
+    selected headline and its offspring.
+    Alt+Ctrl+S (set-find-suboutline-only) sets this radio button.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
