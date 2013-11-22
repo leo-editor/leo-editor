@@ -9807,8 +9807,8 @@ class spellCommandsClass (baseEditCommandsClass):
         else:
             self.openSpellTab()
     #@-others
-#@+node:ekr.20051025071455.18: *3* class spellTabHandler (leoFind.leoFind)
-class spellTabHandler (leoFind.leoFind):
+#@+node:ekr.20051025071455.18: *3* class spellTabHandler
+class spellTabHandler:
 
     """A class to create and manage Leo's Spell Check dialog."""
 
@@ -9816,10 +9816,7 @@ class spellTabHandler (leoFind.leoFind):
     #@+node:ekr.20051025071455.19: *4* Birth & death
     #@+node:ekr.20051025071455.20: *5* spellTabHandler.__init__
     def __init__(self,c,tabName):
-
         """Ctor for the Leo Spelling dialog."""
-
-        leoFind.leoFind.__init__(self,c) # Call the base ctor.
         self.c = c
         self.body = c.frame.body
         self.currentWord = None
@@ -9829,7 +9826,6 @@ class spellTabHandler (leoFind.leoFind):
             # Must have a parent frame even though it is not packed.
         if enchant:
             self.spellController = EnchantClass(c)
-            # self.controller = self.spellController 
             self.tab = g.app.gui.createSpellTab(c,self,tabName)
             self.loaded = True
         else:
@@ -9840,24 +9836,18 @@ class spellTabHandler (leoFind.leoFind):
     #@+node:ekr.20051025071455.37: *5* add (spellTab)
     def add(self,event=None):
         """Add the selected suggestion to the dictionary."""
-        
-        # Bug fix: 2013/05/22.
         if self.loaded:
             w = self.currentWord
             if w:
                 self.spellController.add(w)
-                # self.dictionary[w] = 0
                 self.tab.onFindButton()
     #@+node:ekr.20051025071455.38: *5* change (spellTab)
     def change(self,event=None):
         """Make the selected change to the text"""
-        
-        # Bug fix: 2013/05/22.
         if not self.loaded:
             return
-
-        c = self.c ; body = self.body ; w = body.bodyCtrl
-
+        c = self.c
+        w = c.frame.body.bodyCtrl
         selection = self.tab.getSuggestion()
         if selection:
             # Use getattr to keep pylint happy.
@@ -9877,7 +9867,6 @@ class spellTabHandler (leoFind.leoFind):
                 c.invalidateFocus()
                 c.bodyWantsFocus()
                 return True
-
         # The focus must never leave the body pane.
         c.invalidateFocus()
         c.bodyWantsFocus()
@@ -9885,25 +9874,19 @@ class spellTabHandler (leoFind.leoFind):
     #@+node:ekr.20051025071455.40: *5* find & helpers
     def find (self,event=None):
         """Find the next unknown word."""
-        
-        # Bug fix: 2013/05/22.
         if not self.loaded:
             return
-
-        c = self.c ; body = c.frame.body ; w = body.bodyCtrl
-
+        c = self.c
+        w = c.frame.body.bodyCtrl
         # Reload the work pane from the present node.
         s = w.getAllText().rstrip()
         self.workCtrl.delete(0,"end")
         self.workCtrl.insert("end",s)
-
         # Reset the insertion point of the work widget.
         ins = w.getInsertPoint()
         self.workCtrl.setInsertPoint(ins)
-
         alts, word = self.findNextMisspelledWord()
         self.currentWord = word # Need to remember this for 'add' and 'ignore'
-
         if alts:
             # Save the selection range.
             ins = w.getInsertPoint()
@@ -9922,7 +9905,6 @@ class spellTabHandler (leoFind.leoFind):
     #@+node:ekr.20051025071455.45: *6* findNextMisspelledWord
     def findNextMisspelledWord(self):
         """Find the next unknown word."""
-
         trace = False and not g.unitTesting
         c = self.c ; p = c.p
         w = c.frame.body.bodyCtrl
@@ -9960,7 +9942,6 @@ class spellTabHandler (leoFind.leoFind):
     #@+node:ekr.20051025071455.47: *6* findNextWord (spellTab)
     def findNextWord(self,p):
         """Scan for the next word, leaving the result in the work widget"""
-
         trace = False and not g.unitTesting
         c = self.c ; p = p.copy()
         while 1:
@@ -9992,7 +9973,6 @@ class spellTabHandler (leoFind.leoFind):
                     c.widgetWantsFocusNow(w)
                     w.setSelectionRange(0,0,insert=0)
                 if trace: g.trace(0,0,'-->',p.h)
-
         return None,None,None,None
     #@+node:ekr.20051025121408: *5* hide
     def hide (self,event=None):
@@ -10000,10 +9980,7 @@ class spellTabHandler (leoFind.leoFind):
         self.c.frame.log.selectTab('Log')
     #@+node:ekr.20051025071455.41: *5* ignore
     def ignore(self,event=None):
-
         """Ignore the incorrect word for the duration of this spell check session."""
-        
-        # Bug fix: 2013/05/22.
         if self.loaded:
             w = self.currentWord
             if w:
