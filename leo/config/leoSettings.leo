@@ -94,7 +94,7 @@
 <v t="ekr.20041120155431.2"><vh>\@type type-name: script: script-name</vh></v>
 </v>
 <v t="ekr.20061011082224"><vh>About myLeoSettings.leo</vh></v>
-<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
+<v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
 <v t="ekr.20130924110246.13745"><vh>@bool scripting-abbreviations = False</vh></v>
@@ -1149,13 +1149,13 @@
 <v t="ekr.20060904211808.1"><vh>@string zodb_storage_file = c:\prog\zopeTemp\leo.fs</vh></v>
 </v>
 </v>
-<v t="ekr.20131119143342.18879" a="E"><vh>Qt Gui (appearance)</vh>
+<v t="ekr.20131119143342.18879"><vh>Qt Gui (appearance)</vh>
 <v t="tbrown.20131122091143.23828"><vh>Color definitions</vh>
 <v t="tbrown.20131122091143.23830"><vh>@color MistyRose1 = #FFE4E1</vh></v>
 <v t="tbrown.20131122091143.23831"><vh>@color LightSteelBlue1 = #CAE1FF</vh></v>
 <v t="tbrown.20131122091143.23832"><vh>@color LightBlue = #ADD8E6</vh></v>
 </v>
-<v t="tbrown.20131122091143.23829" a="E"><vh>Colors</vh>
+<v t="tbrown.20131122091143.23829"><vh>Colors</vh>
 <v t="tbrown.20131122094200.2523"><vh>@color text-foreground = black</vh></v>
 <v t="tbrown.20131122094200.2524"><vh>@color text-foreground-body = @text-foreground</vh></v>
 <v t="tbrown.20131122094200.2526"><vh>@color text-foreground-tree = @text-foreground</vh></v>
@@ -1379,6 +1379,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20060603215208"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -2829,8 +2830,8 @@ move-past-close-extend-selection    = None
 # previous-line                     = Ctrl-P
 # previous-line-extend-selection    = Ctrl-Shift-P
 select-all                          = Ctrl-a</t>
-<t tx="ekr.20060925060533.2">contract-pane       = Alt+Ctrl+-
-expand-pane         = Alt+Ctrl-=
+<t tx="ekr.20060925060533.2">contract-pane       = Alt-Ctrl--
+expand-pane         = Alt-Ctrl-=
 focus-to-body       = Alt-d
 focus-to-tree       = Alt-t
 toggle-active-pane  = Ctrl-t
@@ -2900,18 +2901,18 @@ unindent-region                     = Shift-tab
 yank                                = Ctrl-Y
 yank-pop                            = Alt-Y
 zap-to-character                    = Alt-z</t>
-<t tx="ekr.20060925061845">close-window                = Ctrl-F4   # (was Alt-F4) Fixes bug 824087: Alt+F4 is not the same as Alt+F, c
+<t tx="ekr.20060925061845">close-window                = Ctrl-F4   # (was Alt-F4) Fixes bug 824087: Alt-F4 is not the same as Alt-F, c
 exit-leo                    = Ctrl-q
 new                         = Ctrl-n    # Ctrl-n conflicts with next-line.
 open-outline                = Ctrl-o
 save-file                   = Ctrl-s
 write-at-file-nodes         = Shift-Ctrl-W
-write-dirty-at-file-nodes   = Shift+Ctrl+Q
+write-dirty-at-file-nodes   = Shift-Ctrl-Q
 </t>
 <t tx="ekr.20060925061845.1">auto-complete-force         = Ctrl-space
 auto-complete               = period
 debug                       = None
-execute-script              = Ctrl+B
+execute-script              = Ctrl-B
 redo                        = Shift-Ctrl-Z
 
 dabbrev-completion  = Alt-Ctrl-slash
