@@ -10373,5 +10373,131 @@ def eventFilter(self,obj,event):
     return True
 
         
+.. @+node:ekr.20131122162143.16455: *3* Script: isSearchableWidget
+g.cls()
+# Determine whether the focus widget supports the high-level interface.
+import leo.plugins.qtGui as qtGui
+import leo.core.leoFrame as leoFrame # For HighLevelInterface.
+import PyQt4.QtGui as QtGui
+if 0:
+    c.logWantsFocusNow()
+elif 1: # Edit a headline
+    c.editHeadline(p)
+    # c.redraw()
+body_w = c.frame.body.bodyCtrl.widget
+w = QtGui.QApplication.focusWidget()
+print('Focus','isBodyCtrl',w == body_w,w)
+tree = c.frame.tree
+while w:
+    # isText = g.app.gui.isTextWidget(w)
+    if isinstance(w,QtGui.QLineEdit):
+        wrapper = tree.getWrapper(w,item=None)
+        if isinstance(wrapper,qtGui.leoQtBaseTextWidget):
+            print('QLineEdit has wrapper',w,wrapper)
+        else:
+            print('QLineEdit: NO wrapper',w)
+            # wrapper = tree.headlineWrapper(c,item=None,name='find-head-wrapper',widget=w)
+            # print('QLineEdit NEW wrapper',w,wrapper)
+        break
+    elif isinstance(w,QtGui.QTextEdit):
+        wrapper = getattr(w,'leo_wrapper',None)
+        if wrapper:
+            if isinstance(wrapper,qtGui.leoQtBaseTextWidget):
+                print('QTextEdit has text wrapper',w,wrapper)
+            elif isinstance(wrapper,qtGui.leoQtLog):
+                logCtrl = wrapper.widget # same as wrapper.logCtrl
+                print('QtTextEdit has log wrapper',w,logCtrl)
+            else:
+                print('unknown wrapper',wrapper)
+        else:
+            wrapper = qtGui.leoQTextEditWidget(w,'find-wrapper',c=c)
+            print('QTextEdit NEW wrapper',w,wrapper)
+        break
+    print('Fail',w)
+    wrapper = False
+    if hasattr(w,'parent'):
+        w = w.parent()
+    else:
+        print('no parent',w)
+        break
+if wrapper:
+    print('is searchable (has wrapper)',w,wrapper)
+    # Make sure wrapper supports the high-level interface.
+    print('high level?',isinstance(wrapper,leoFrame.HighLevelInterface))
+    table = (
+        'insert',
+        'getAllText',
+        'setAllText',
+        'setInsertPoint',
+        'setSelectionRange',
+    )
+    for ivar in table:
+        print(bool(getattr(wrapper,ivar,None)),ivar)
+.. @+node:ekr.20031218072017.3081: *3* find.selectNextPosition (OLD)
+def selectNextPosition(self):
+    '''
+    Select the next position to be searched or None.
+    On entry: self.in_headline indicates the widget just searched.
+    On exit:  self.in_headline indicates the widget to be searched.
+    '''
+    trace = False and not g.unitTesting
+    # **Important**: p.copy not needed: the find code never calls p.moveToX.
+    c = self.c
+    p = self.p ### or c.p.copy() ### It is ok to return None!
+    # Start suboutline only searches.
+    if self.suboutline_only and not self.onlyPosition:
+        # p.copy not needed because the find code never calls p.moveToX.
+        # Furthermore, p might be None, so p.copy() would be wrong!
+        self.onlyPosition = p 
+    # Start wrapped searches.
+    if self.wrapping and not self.wrapPosition:
+        assert(self.wrapPos != None)
+        # p.copy not needed because the find code never calls p.moveToX.
+        # Furthermore, p might be None, so p.copy() would be wrong!
+        self.wrapPosition = p
+    if self.in_headline and self.search_body:
+        # just switch to body pane.
+        self.in_headline = False
+        self.initNextText()
+        if trace: g.trace('switching to body',g.callers(5))
+        return p
+    if self.reverse: p = p.threadBack()
+    else:            p = p.threadNext()
+    # if trace: g.trace(p and p.h or 'None')
+    # New in 4.3: restrict searches to hoisted area.
+    # End searches outside hoisted area.
+    if c.hoistStack:
+        if not p:
+            if self.wrapping:
+                g.warning('wrap disabled in hoisted outlines')
+            return None
+        bunch = c.hoistStack[-1]
+        if not bunch.p.isAncestorOf(p):
+            g.warning('found match outside of hoisted outline')
+            return None
+    # Wrap if needed.
+    if not p and self.wrapping and not self.suboutline_only:
+        p = c.rootPosition()
+        if self.reverse:
+            # Set search_v to the last node of the tree.
+            while p and p.next():
+                p = p.next()
+            if p: p = p.lastNode()
+    # End wrapped searches.
+    if self.wrapping and p and p == self.wrapPosition:
+        if trace: g.trace("ending wrapped search")
+        p = None ; self.resetWrap()
+    # End suboutline only searches.
+    if (self.suboutline_only and self.onlyPosition and p and
+        (p == self.onlyPosition or not self.onlyPosition.isAncestorOf(p))):
+        # g.trace("end outline-only")
+        p = None ; self.onlyPosition = None
+    # p.copy not needed because the find code never calls p.moveToX.
+    # Furthermore, p might be None, so p.copy() would be wrong!
+    self.p = p # used in initNextText().
+    if p: # select p and set the search point within p.
+        self.in_headline = self.search_headline
+        self.initNextText()
+    return p
 .. @-all
 .. @-leo

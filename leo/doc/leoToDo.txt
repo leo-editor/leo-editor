@@ -8,19 +8,21 @@
 .. @+node:ekr.20131117054619.16683: *3* new_find
 @language rest
 
-* clone-find-all doesn't work.
+First:
+* How do state vars get set/reset?
+- What happens when focus is in body, but only headline-searching is enabled?
+- Can we avoid copying positions?
+* Create unit tests.
+    - Check all bug reports.
+    - Make sure F2 works when only searching in headlines.
+    - Test outline-only, node-only, wrap.
+    - Test isearch (forward & backward)
 
-- Search strings, not widgets.
-
-- Remove s_ctrl var.
-- Don't support wrapping???
-    
 Bug Fixes:
-- Stateless finds.
 - Create save/restore_isearch_vars methods using isearch_save_d.
-- F2 doesn't work when only searching in headlines.
 
 Easy improvements:
+- How much does find-all really search.  Does it use the visited bit?
 ** Ctrl-F puts selected text into the search box.
 ** Smart search: clear ignore case if the search text has at least one uppercase letter.
 - find-all and change-all never wrap.
@@ -33,7 +35,6 @@ Other improvements:
 - (Possible, not important) move dw.createFindTab into leoFind class(!)
     - Just define dw, and use dw methods to create the actual widgets.
     - No need for qt imports.
-
 
 @language python
 .. @+node:ekr.20131118113639.17705: *4* Done
@@ -76,6 +77,26 @@ Changed methods:
 - dw.createFindTab adds find buttons and calls.
 - dw.createFindTab creates the FindTabManager and calls ftm.init_widgets.
 * Added find_generation ivar to vnode class.
+.. @+node:ekr.20131123071505.16462: *4* Crash in undoer
+redoGroup oops: expecting bunch.items.  bunch.kind = typing
+redoGroup Bunch...
+dirtyVnodeList: [<pos 192439856 childIndex: 9 lvl: 0 key: 65845296:9 find.generalSearchHelper (Must init!!)>]
+kind: typing
+leading: 10
+newMiddleLines: [u'        self.setup_command() ### ']
+newNewlines: 1
+newSel: (276, 276)
+newText: None
+oldMiddleLines: [u'        self.setup_command()']
+oldNewlines: 1
+oldSel: (271, 271)
+oldText: None
+p: <pos 192438800 childIndex: 9 lvl: 0 key: 65845296:9 find.generalSearchHelper (Must init!!)>
+redoHelper: <bound method undoer.redoTyping of <leo.core.leoUndo.undoer instance at 0x03FF4198>>
+trailing: 9
+undoHelper: <bound method undoer.undoTyping of <leo.core.leoUndo.undoer instance at 0x03FF4198>>
+undoType: Typing
+yview: 0
 .. @+node:ekr.20131121211048.16378: *3* Next
 - Change the term 'minibuffer' ???
 - Add focus-to-x commands, where x is a *temporary* log pane, like completions, commands, etc.

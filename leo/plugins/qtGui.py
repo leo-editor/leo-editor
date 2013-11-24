@@ -86,20 +86,15 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
 
         for attr in ('leo_c','leo_wrapper',):
             assert not hasattr(QtGui.QTextBrowser,attr),attr
-
         self.leo_c = c
         self.leo_wrapper = wrapper
         self.htmlFlag = True
-
         QtGui.QTextBrowser.__init__(self,parent)
-
         # This event handler is the easy way to keep track of the vertical scroll position.
         self.leo_vsb = vsb = self.verticalScrollBar()
         vsb.connect(vsb,QtCore.SIGNAL("valueChanged(int)"),
             self.onSliderChanged)
-
         # g.trace('(LeoQTextBrowser)',repr(self.leo_wrapper))
-
         # For QCompleter
         self.leo_q_completer = None
         self.leo_options = None
@@ -8100,14 +8095,14 @@ class leoQtGui(leoGui.leoGui):
             # c.endEditing()
             g.doHook('deactivate',c=c,p=c.p,v=c.p,event=event)
     #@+node:ekr.20110605121601.18508: *4* Focus (qtGui)
-    def get_focus(self,c=None):
+    def get_focus(self,c=None,raw=False):
 
         """Returns the widget that has focus."""
 
         trace = False and not g.unitTesting
         app = QtGui.QApplication
         w = app.focusWidget()
-        if w and isinstance(w,LeoQTextBrowser):
+        if w and not raw and isinstance(w,LeoQTextBrowser):
             has_w = hasattr(w,'leo_wrapper') and w.leo_wrapper
             if has_w:
                 if trace: g.trace(w)
@@ -8397,7 +8392,6 @@ class leoQtGui(leoGui.leoGui):
         )
 
         # g.trace(val,w)
-
         return val
 
     #@+node:ekr.20110605121601.18528: *4* makeScriptButton (to do)
