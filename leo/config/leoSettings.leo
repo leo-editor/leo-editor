@@ -1025,6 +1025,7 @@
 </v>
 <v t="ekr.20111003085631.15488"><vh>mod_http plugin</vh>
 <v t="ekr.20111003085631.15489"><vh>@bool http_active = True</vh></v>
+<v t="btheado.20131124162237.2493"><vh>@string http_ip = 127.0.0.1</vh></v>
 <v t="ekr.20111003085631.15490"><vh>@int http_port = 8130</vh></v>
 <v t="ekr.20111003104518.15499"><vh>@@string http_bookmark_unl = Bookmarks</vh></v>
 </v>
@@ -1424,6 +1425,7 @@ The following integer values are supported:
 3 = Patterns that did not match
 4 = Code debugging messages
 </t>
+<t tx="btheado.20131124162237.2493"></t>
 <t tx="edward.20081129091117.12">horizontal: body pane to the right
 vertical: body pane on the botton
 </t>

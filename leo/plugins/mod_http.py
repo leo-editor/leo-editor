@@ -9,9 +9,9 @@ Use this plugin is as follows:
 1. Start Leo with the plugin enabled. You will see a purple message that says
    something like::
 
-    "http serving enabled on port 8080, version 0.91"
+    "http serving enabled at 127.0.0.1:8130, version 0.91"
 
-2. Start a web browser, and enter the following url: http://localhost:8080/
+2. Start a web browser, and enter the following url: http://localhost:8130/
 
 You will see a a "top" level page containing one link for every open .leo file.
 Start clicking :-)
@@ -23,8 +23,16 @@ To enable this plugin put this into your file::
 
     @settings
         @bool http_active = True
-        @int  http_port = 8080
+        @string http_ip = 127.0.0.1
+        @int  http_port = 8130
         @string rst_http_attributename = 'rst_http_attribute'
+
+**Note**: IP address 127.0.0.1 is accessible by all users logged into your
+local machine. That means while Leo and mod_http is running anyone logged into
+your machine will be able to browse all your leo outlines and add bookmarks.
+
+**Note**: If you want all other network accessbile machines to have access
+to your mod_http instance, then use @string http_ip = 0.0.0.0.
 
 **Note**: the browser_encoding constant (defined in the top node of this file)
 must match the character encoding used in the browser. If it does not, non-ascii
@@ -145,6 +153,7 @@ sockets_to_close = []
 class config:
     http_active = False
     http_timeout = 0
+    http_ip = '127.0.0.1'
     http_port = 8080
     rst2_http_attributename = 'rst_http_attribute'
 #@-<< config >>
@@ -160,16 +169,16 @@ def init ():
         if config.http_active:
             
             try:
-                s=Server('',config.http_port,RequestHandler)
-            except socket.error:
-                g.es("mod_http port already in use")
+                s=Server(config.http_ip,config.http_port,RequestHandler)
+            except socket.error as e:
+                g.es("mod_http server initialization failed (%s:%s): %s" % (config.http_ip, config.http_port, e))
                 return False
                     
             asyncore.read = a_read
             g.registerHandler("idle", plugin_wrapper)
     
-            g.es("http serving enabled on port %s, version %s" % (
-                config.http_port, __version__), color="purple")
+            g.es("http serving enabled at %s:%s, version %s" % (
+                config.http_ip, config.http_port, __version__), color="purple")
         
     g.plugin_signon(__name__)
 
@@ -1241,6 +1250,11 @@ def getGlobalConfiguration():
     newtimeout = g.app.config.getInt("http_timeout")
     if newtimeout is not None:
         config.http_timeout = newtimeout  / 1000.0
+    
+    # ip.
+    newip = g.app.config.getString("http_ip") 
+    if newip:
+        config.http_ip = newip
     
     # port.
     newport = g.app.config.getInt("http_port") 
