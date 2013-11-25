@@ -1926,7 +1926,6 @@ class vnode (baseVnode):
         self.context = context # The context containing context.hiddenRootNode.
             # Required so we can compute top-level siblings.
             # It is named .context rather than .c to emphasize its limited usage.
-        self.find_generation = None # Leo 4.11.1: for wrapped finds.
         self.insertSpot = None # Location of previous insert point.
         self.scrollBarSpot = None # Previous value of scrollbar position.
         self.selectionLength = 0 # The length of the selected body text.

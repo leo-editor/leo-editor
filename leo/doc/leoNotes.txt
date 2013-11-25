@@ -10499,5 +10499,37 @@ def selectNextPosition(self):
         self.in_headline = self.search_headline
         self.initNextText()
     return p
+.. @+node:ekr.20131124060912.17210: *3* find.setReplaceString (OLD: Shift-Ctrl-R)
+def setReplaceString (self,event):
+
+    trace = False and not g.unitTesting
+    k = self.k ; tag = 'replace-string' ; state = k.getState(tag)
+    prompt = 'Replace ' + 'Regex' if self.pattern_match else 'String'
+    if trace: g.trace(state)
+    if state == 0:
+        self.setupArgs(forward=None,regexp=None,word=None)
+        prefix = '%s: ' % prompt
+        self.stateZeroHelper(event,tag,prefix,self.setReplaceString)
+    rlif state == 1:
+        self._sString = k.arg
+        self.updateFindList(k.arg)
+        s = '%s: %s With: ' % (prompt,self._sString)
+        k.setLabelBlue(s,protect=True)
+        self.addChangeStringToLabel()
+        k.getArg(event,'replace-string',2,self.setReplaceString,completion=False,prefix=s)
+    elif state == 2:
+        self.updateChangeList(k.arg)
+        self.lastStateHelper()
+        self.generalChangeHelper(self._sString,k.arg)
+.. @+node:EKR.20040503070514: *3* find.handleUserClick (no longer used)
+def handleUserClick (self,p):
+
+    """Reset suboutline-only search when the user clicks a headline."""
+
+    try:
+        if self.c and self.suboutline_only:
+            # g.trace(p)
+            self.onlyPosition = p.copy()
+    except: pass
 .. @-all
 .. @-leo

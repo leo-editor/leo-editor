@@ -5,12 +5,17 @@
 .. @+all
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
+
+Find css stuff that renders xml as Leo outine.
 .. @+node:ekr.20131117054619.16683: *3* new_find
 @language rest
 
+* Revise theory of operation.
+
 First:
 * How do state vars get set/reset?
-- What happens when focus is in body, but only headline-searching is enabled?
+- Hitting Ctrl-G (or Shift-Ctrl-R) shouldn't lose data:
+  (Remember each keystroke)
 - Can we avoid copying positions?
 * Create unit tests.
     - Check all bug reports.
@@ -97,6 +102,80 @@ trailing: 9
 undoHelper: <bound method undoer.undoTyping of <leo.core.leoUndo.undoer instance at 0x03FF4198>>
 undoType: Typing
 yview: 0
+.. @+node:ekr.20131124060334.16468: *4* Find-related bugs
+@language rest
+.. @+node:ekr.20131124060334.16469: *5* Bug 1228458: Inconsistency between Find-forward and Find-backward
+https://bugs.launchpad.net/leo-editor/+bug/1228458
+
+In a Leo-Editor file containing exactly one node, there is no way to search
+the headline.
+
+Suggested fix: Backward search should search the body and then the headline.
+.. @+node:ekr.20131124060912.16474: *5* Bug 1228312: Find tab selected in log pane disables Minibuffer
+https://bugs.launchpad.net/leo-editor/+bug/1228312
+
+When the find tab is selected in the log pane, Alt-X complements the Regexp
+flag--instead of enabling use of the Minibuffer. It doesn't matter where
+focus is. Focus can be in the outline pane or body pane, Alt-X still just
+complements the Regexp flag.
+
+Fixed at rev 6351.
+
+This was the so-called "greedy checkbox bug".
+.. @+node:ekr.20131124060912.16475: *5* Bug 1228457: Beginning find at the current node's body cursor when that cursor is not displayed
+https://bugs.launchpad.net/leo-editor/+bug/1228457
+
+Every node has a current cursor position. Suppose the user changes nodes by
+clicking on a node in the outline pane and then starts a Find. The focus is
+in the outline pane. The body cursor is not displayed. The user has no idea
+where in the body the search begins. The user is all too likely to think
+that the whole body is searched.
+
+Suggestion: If the body cursor is not displayed (i.e., the focus is not in
+the body), then always begin Find-forward at the beginning of the body and
+always begin Find-backward at the end of the body.
+
+If the focus is in the body of the currently selected node, then Find
+should begin at the cursor. This is what everyone expects based on other
+editors.
+.. @+node:ekr.20131124060912.16476: *5* Bug 1228452: Documentation bug: "Entire Outline" "Subroutine Only" and "Node Only" are a set
+https://bugs.launchpad.net/leo-editor/+bug/1228452
+
+The documentation shown by help-for-find-commands says:
+
+The Find Tab shows the present settings.
+Underlined characters are keyboard hints:
+Alt-Ctrl-W toggles the Whole Word checkbox, and so on.
+
+This is seriously misleading and unhelpful when it comes to "Entire
+Outline" "Subroutine Only" and "Node Only". They are a set. Exactly one
+must be on at any one time. So Alt-Ctrl-? can only be used to toggle an off
+to on with the side-effect of toggling the one that was previously on to
+off.
+.. @+node:ekr.20131124060912.16477: *5* Bug 1228713: Find-backward skips headlines under some conditions
+https://bugs.launchpad.net/leo-editor/+bug/1228713
+
+If a headline is open for editing when Find-backwards is initiated or
+continued, the headline is NOT searched, the search skips to the node body
+and then to the previous node (if any).
+
+This problem with Find-backwards is particularly serious because every time
+Find-backwards or Find-forward finds a string in a headline it opens the
+headline for editing, then continuing by hitting F2 skips the rest of the
+headline.
+
+This bug also affects "Replace backwards".
+
+Corollary to this bug:
+
+Find-forward finds any number of instances in one headline, but
+Find-backward only finds the rightmost instance in the headline.
+----
+
+Find-forward searches from the current cursor position in the currently
+open-for-edit entity (either headline or body). Find-backward searches from
+the current cursor position only if the currently open-for-edit entity is a
+body. This is a serious lack of consistency.
 .. @+node:ekr.20131121211048.16378: *3* Next
 - Change the term 'minibuffer' ???
 - Add focus-to-x commands, where x is a *temporary* log pane, like completions, commands, etc.
