@@ -7,6 +7,15 @@
 @language rest
 
 Find css stuff that renders xml as Leo outine.
+
+* Add link to video on Leo's video page.
+    https://groups.google.com/forum/#!topic/leo-editor/6l6oEAnG_H8
+    Fidel N <fidelperez@gmail.com> Hey, this is my first screencast ever.
+    Just tell me if its clear enough or I should repeat it making more
+    emphasis in any of the steps.
+    http://www.youtube.com/watch?v=9AvbL_0JEMw&feature=youtu.be
+    
+* Add docstrings for all commands in leoSessions.py.
 .. @+node:ekr.20131117054619.16683: *3* new_find
 @language rest
 

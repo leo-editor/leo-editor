@@ -1380,7 +1380,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20060603215208"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -5594,7 +5593,7 @@ abbrevCommandsClass pastes the outline into the present outline, uses the pasted
 outline to discover tree-valued abbreviations, and then *deletes* the tree.
 
 </t>
-<t tx="ekr.20131115092802.18224">/* Documentation of Qt stylesheets at http://doc.trolltech.com/4.2/stylesheet.html */
+<t tx="ekr.20131115092802.18224">/* Documentation of Qt stylesheets at http://qt-project.org/doc/qt-4.8/stylesheet.html */
 
 /* 
    Buttons may be styled by name:

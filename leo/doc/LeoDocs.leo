@@ -1311,6 +1311,8 @@
 <v t="ekr.20131105110107.17046"><vh>Investigated install problem</vh></v>
 </v>
 </v>
+<v t="ekr.20131125072316.16632"><vh>**Remove Tk references</vh></v>
+<v t="ekr.20131125072316.16633"><vh>**Post scripts for each video</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -22873,6 +22875,8 @@ enough". Perfectionism is not your friend.
   material.
 
 </t>
+<t tx="ekr.20131125072316.16632"></t>
+<t tx="ekr.20131125072316.16633"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
