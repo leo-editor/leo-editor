@@ -45,13 +45,13 @@ def new_hook(tag, keywords):
     root = c.rootPosition()
     d = root.v.u
     timestamp = get_timestamp_now()
-    d['str_ctime'] = d['str_mtime'] = d['str_atime'] = timestamp 
+    d['str_ctime'] = d['str_mtime'] = d['str_atime'] = timestamp
 
 #@+node:ekr.20130808211520.15898: ** create_node_hook
 def create_node_hook(tag, keywords):
     '''Hooked to <create-node> = set all 3 timestamps to now
     '''
-    
+
     timestamp = get_timestamp_now()
     d = keywords['p'].v.u
     d['str_ctime'] = d['str_mtime'] = d['str_atime'] = timestamp
@@ -61,11 +61,13 @@ def select1_hook(tag, keywords):
     '''Hooked to select1, which fires when focus changes
     Always sets str_atime to now, sets str_mtime if node body has changed
     '''
-    
+
     prev = keywords['old_p'].v
     current = keywords['new_p'].v
     now = get_timestamp_now()
     current.u['str_atime'] = now
+    if prev is None:
+        return
     if prev.isDirty():
         #g.es('prev is dirty', color='green')
         if hasattr(prev, 'prev_body'):
