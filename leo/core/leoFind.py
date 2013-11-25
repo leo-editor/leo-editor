@@ -123,7 +123,7 @@ class leoFind:
 
     #@+others
     #@+node:ekr.20131117164142.17021: *3* leoFind.birth
-    #@+node:ekr.20031218072017.3053: *4* leoFind.__init__ & helpers
+    #@+node:ekr.20031218072017.3053: *4* find.__init__ & helpers
     def __init__ (self,c):
         # g.trace('(leoFind)',c.shortFileName(),id(self),g.callers())
         self.c = c
@@ -133,9 +133,7 @@ class leoFind:
             # Created by dw.createFindTab.
         self.frame = None
         self.k = k = c.k
-        assert k
-        self.generation = 0 # Incremented on wrapped searches.
-        self.trace = False
+        self.re_obj = None
         # Options ivars: set by FindTabManager.init.
         self.batch = None
         self.ignore_case = None
@@ -159,22 +157,21 @@ class leoFind:
         # Widget ivars.
         self.change_ctrl = None
         self.find_ctrl = None
-        self.s_ctrl = searchWidget()
-                # The search text for this search.
+        self.s_ctrl = searchWidget() # For searches.
         self.find_text = ""
         self.change_text = ""
         # Status ivars.
-        self.backwardAttempts = 0
-        self.onlyPosition = None
-        self.unstick = False
-        self.re_obj = None
+        
+        
         # Ivars containing internal state...
         self.p = None # The position being searched.  Never saved between searches!
         self.in_headline = False # True: searching headline text.
-        self.wrapping = False # True: wrapping is enabled.
-        # wrapPosition must be reset when the find pattern changes.
-        self.wrapPosition = None # The start of wrapped searches: persists between calls.
+        # For suboutline-only
         self.onlyPosition = None # The starting node for suboutline-only searches.
+        # For wrapped searches.
+        self.wrapping = False # True: wrapping is enabled.
+            # This must be different from self.wrap, which is set by the checkbox.
+        self.wrapPosition = None # The start of wrapped searches: persists between calls.
         self.wrapPos = None # The starting position of the wrapped search: persists between calls.
     #@+node:ekr.20131117164142.17022: *4* leoFind.finishCreate
     def finishCreate(self):
@@ -188,36 +185,36 @@ class leoFind:
         dw = c.frame.top
         if dw: dw.finishCreateLogPane()
     #@+node:ekr.20060123065756.1: *3* leoFind.Buttons (immediate execution)
-    #@+node:ekr.20031218072017.3057: *4* changeAllButton
+    #@+node:ekr.20031218072017.3057: *4* find.changeAllButton
     def changeAllButton(self,event=None):
         '''Handle Replace All button.'''
         c = self.c
         self.setup_button()
         c.clearAllVisited() # For context reporting.
         self.changeAll()
-    #@+node:ekr.20031218072017.3056: *4* changeButton
+    #@+node:ekr.20031218072017.3056: *4* find.changeButton
     def changeButton(self,event=None):
         '''Handle Change button.'''
         self.setup_button()
         self.change()
-    #@+node:ekr.20031218072017.3058: *4* changeThenFindButton
+    #@+node:ekr.20031218072017.3058: *4* find.changeThenFindButton
     def changeThenFindButton(self,event=None):
         '''Handle Change, Then Find button.'''
         self.setup_button()
         self.changeThenFind()
-    #@+node:ekr.20031218072017.3060: *4* findAllButton
+    #@+node:ekr.20031218072017.3060: *4* find.findAllButton
     def findAllButton(self,event=None):
         '''Handle Find All button.'''
         c = self.c
         self.setup_button()
         ### c.clearAllVisited()
         self.findAll()
-    #@+node:ekr.20031218072017.3059: *4* findButton
+    #@+node:ekr.20031218072017.3059: *4* find.findButton
     def findButton(self,event=None):
         '''Handle pressing the "Find" button in the find panel.'''
         self.setup_button()
         self.findNext()
-    #@+node:ekr.20131117054619.16688: *4* findPreviousButton (new in 4.11.1)
+    #@+node:ekr.20131117054619.16688: *4* find.findPreviousButton (new in 4.11.1)
     def findPreviousButton(self,event=None):
         '''Handle the Find Previous button.'''
         self.setup_button()
@@ -226,7 +223,7 @@ class leoFind:
             self.findNext()
         finally:
             self.reverse = not self.reverse
-    #@+node:ekr.20031218072017.3065: *4* setup_button
+    #@+node:ekr.20031218072017.3065: *4* find.setup_button
     def setup_button(self):
         '''Init a search started by a button in the Find panel.'''
         c = self.c
@@ -1249,6 +1246,7 @@ class leoFind:
 
         if not self.checkArgs():
             return
+        # initFlag is False for change-then-find.
         if initFlag:
             self.initInHeadline()
             data = self.save()
@@ -1273,6 +1271,7 @@ class leoFind:
         '''
         trace = False and not g.unitTesting
         c = self.c ; p = self.p
+        assert p == c.p
         if trace: g.trace('entry','p',p and p.h,
             'search_headline',self.search_headline,
             'search_body',self.search_body)
@@ -1284,7 +1283,6 @@ class leoFind:
             return None, None
         self.errors = 0
         attempts = 0
-        self.backwardAttempts = 0
         if self.pattern_match:
             ok = self.precompilePattern()
             if not ok: return None,None
@@ -1313,7 +1311,7 @@ class leoFind:
                 if p: # Found another node: select the proper pane.
                     self.in_headline = self.firstSearchPane()
                     self.initNextText()
-        if trace: g.trace('attempts',attempts,'backwardAttempts',self.backwardAttempts)
+        if trace: g.trace('attempts',attempts)
         return None, None
     #@+node:ekr.20131123071505.16468: *5* find.doWrap
     def doWrap(self):
@@ -1347,7 +1345,7 @@ class leoFind:
             g.trace('can not happen: no search enabled')
             return False # search the body.
     #@+node:ekr.20131123132043.16477: *5* find.initNextText
-    def initNextText(self,ins=None):
+    def initNextText(self,ins=None,start_over=False):
         '''
         Init s_ctrl when a search fails. On entry:
         - self.in_headline indicates what text to use.
@@ -1364,13 +1362,17 @@ class leoFind:
             tree.killEditing()
         if self.reverse:
             i,j = w.sel
-            if ins is None:
+            if start_over:
+                ins = None #
+            elif ins is None:
                 if i is not None and j is not None and i != j:
                     ins = min(i,j)
             elif ins in (i,j):
                 ins = min(i,j)
             else:
                 pass # leave ins alone.
+        elif start_over:
+            ins = None
         elif ins is None:
             ins = 0
         self.init_s_ctrl(s,ins)
@@ -1420,11 +1422,11 @@ class leoFind:
             return True
         if self.suboutline_only:
             if self.onlyPosition:
-                if not self.onlyPosition.isAncestorOf(p):
+                if p != self.onlyPosition and not self.onlyPosition.isAncestorOf(p):
                     if trace: g.trace('outside suboutline-only',p.h)
                     return True
             else:
-                g.trace('No onlyPosition!',p.h)
+                g.trace('Can not happen: onlyPosition!',p.h)
                 return True
         if c.hoistStack:
             bunch = c.hoistStack[-1]
@@ -1456,20 +1458,12 @@ class leoFind:
     def shouldStayInNode (self,p):
         '''Return True if the find should simply switch panes.'''
         # Errors here cause the find command to fail badly.
-
-        # Always switch if searching is *not* enabled for this pane.
-        if self.in_headline and not self.search_headline:
-            return True
-        if not self.in_headline and not self.search_body:
-            return True
-        # Now we know we are searching the correct pane.
-        # There is no danger of looping if we simply switch panes.
-        if self.reverse:
-            # Backward searches search bodies first, then headlines.
-            return not self.in_headline
-        else:
-            # Forward searches search headlines first, then bodies.
-            return self.in_headline
+        
+        # Switch only if a) searching both panes and b) this is the first pane:
+        return (
+            self.search_headline and self.search_body and
+            ((self.reverse and not self.in_headline) or
+             (not self.reverse and self.in_headline)))
     #@+node:ekr.20031218072017.3076: *4* find.resetWrap
     def resetWrap (self,event=None):
 
@@ -1588,31 +1582,25 @@ class leoFind:
     #@@c
     def backwardsHelper (self,s,i,j,pattern,nocase,word):
 
-        debug = False and not g.unitTesting
+        trace = False and not g.unitTesting
         if nocase:
             s = s.lower()
             pattern = pattern.lower()
                 # Bug fix: 10/5/06: At last the bug is found!
-        ### i,j = j,i ### This was in search()
         pattern = self.replaceBackSlashes(pattern)
         n = len(pattern)
         if i < 0 or i > len(s) or j < 0 or j > len(s):
             g.trace('bad index: i = %s, j = %s' % (i,j))
             i = 0 ; j = len(s)
-        if debug and (s and i == 0 and j == 0):
+        if trace and (s and i == 0 and j == 0):
             g.trace('two zero indices')
-        self.backwardAttempts += 1
         # short circuit the search: helps debugging.
         if s.find(pattern) == -1:
-            if debug:
-                self.debugCount += 1
-                if self.debugCount < 50:
-                    g.trace(i,j,'len(s)',len(s),self.p.h)
             return -1,-1
         if word:
             while 1:
                 k = s.rfind(pattern,i,j)
-                if debug: g.trace('**word** %3s %3s %5s -> %s %s' % (
+                if trace: g.trace('**word** %3s %3s %5s -> %s %s' % (
                     i,j,g.choose(j==len(s),'(end)',''),k,self.p.h))
                 if k == -1: return -1, -1
                 if self.matchWord(s,k,pattern):
@@ -1621,7 +1609,7 @@ class leoFind:
                     j = max(0,k-1)
         else:
             k = s.rfind(pattern,i,j)
-            if debug: g.trace('%3s %3s %5s -> %s %s' % (
+            if trace: g.trace('%3s %3s %5s -> %s %s' % (
                 i,j,g.choose(j==len(s),'(end)',''),k,self.p.h))
             if k == -1:
                 return -1, -1
@@ -1630,7 +1618,7 @@ class leoFind:
     #@+node:ekr.20060526093531: *6* plainHelper
     def plainHelper (self,s,i,j,pattern,nocase,word):
         '''Do a plain search.'''
-        trace = self.trace
+        trace = False and not g.unitTesting
         if trace: g.trace(i,j,repr(s[i:i+20]))
         if nocase:
             s = s.lower() ; pattern = pattern.lower()
@@ -1658,7 +1646,7 @@ class leoFind:
     #@+node:ekr.20060526140744.1: *6* matchWord
     def matchWord(self,s,i,pattern):
         '''Do a whole-word search.'''
-        trace = self.trace
+        trace = False and not g.unitTesting
         pattern = self.replaceBackSlashes(pattern)
         if not s or not pattern or not g.match(s,i,pattern):
             if trace: g.trace('empty')
@@ -1695,7 +1683,6 @@ class leoFind:
                 else:
                     i += 1 # Skip the escaped character.
             i += 1
-        if self.trace: g.trace(repr(s))
         return s
     #@+node:ekr.20131117164142.17006: *4* find.setupArgs
     def setupArgs (self,forward=False,regexp=False,word=False):
@@ -1717,16 +1704,6 @@ class leoFind:
             g.es("empty find patttern")
             val = False
         return val
-    #@+node:EKR.20040503070514: *4* find.handleUserClick
-    def handleUserClick (self,p):
-
-        """Reset suboutline-only search when the user clicks a headline."""
-
-        try:
-            if self.c and self.suboutline_only:
-                # g.trace(p)
-                self.onlyPosition = p.copy()
-        except: pass
     #@+node:ekr.20031218072017.3084: *4* find.initBatchCommands (sets in_headline)
     def initBatchCommands (self):
         '''Init for find-all and replace-all commands.'''
@@ -1746,7 +1723,7 @@ class leoFind:
             assert self.p
         # Set the insert point.
         self.initBatchText()
-    #@+node:ekr.20031218072017.3085: *4* find.initBatchText & init_s_ctrl
+    #@+node:ekr.20031218072017.3085: *4* find.initBatchText
     def initBatchText(self,ins=None):
         '''Init s_ctrl from self.p and ins at the beginning of a search.'''
         c = self.c
@@ -1756,11 +1733,12 @@ class leoFind:
         s = p.h if self.in_headline else p.b
         self.init_s_ctrl(s,ins)
 
+    #@+node:ekr.20131124171815.16629: *4* find.init_s_ctrl
     def init_s_ctrl (self,s,ins):
         '''Init the contents of s_ctrl from s and ins.'''
         w = self.s_ctrl
         w.setAllText(s)
-        if ins is None: # Defensive.
+        if ins is None: # A flag telling us to search all of w.
             ins = len(s) if self.reverse else 0
         w.setInsertPoint(ins)
     #@+node:ekr.20031218072017.3086: *4* find.initInHeadline
@@ -1773,43 +1751,40 @@ class leoFind:
         trace = False
         c = self.c
         p = self.p or c.p.copy()
-        # Do not change this without extensive testing!
         # Fix bug 1228458: Inconsistency between Find-forward and Find-backward.
         if self.search_headline and self.search_body:
-            # Get the *raw* focus.
             focus = g.app.gui.get_focus(raw=True)
-            if trace: g.trace('body?',focus == c.frame.body.bodyCtrl.widget,focus)
-            if focus == c.frame.body.bodyCtrl:
-                # Search the body first, if possible.
-                self.in_headline = self.search_body
-            elif self.reverse:
-                # Search the body first, if possible.
-                self.in_headline = self.search_body
-            else:
-                # Search the headline first, if possible.
-                self.in_headline = self.search_headline
+            inBody = focus == c.frame.body.bodyCtrl.widget
+            if trace: g.trace('inBody',inBody,focus)
+            # We have no choice: we *must* search the present widget!
+            self.in_headline = not inBody
         else:
             self.in_headline = self.search_headline
     #@+node:ekr.20031218072017.3087: *4* find.initInteractiveCommands
     def initInteractiveCommands(self):
 
         c = self.c
-        p = self.p or c.p.copy()
+        p = self.p = c.p # *Always* start with the present node.
         bodyCtrl = c.frame.body and c.frame.body.bodyCtrl
-        w = g.choose(self.in_headline,c.edit_widget(p),bodyCtrl)
-        if not w:
-            self.in_headline = False
-            w = bodyCtrl
-        if not w: return
-        self.errors = 0
+        headCtrl = c.edit_widget(p)
+        # w is the real widget.  It may not exist for headlines.
+        w = headCtrl if self.in_headline else bodyCtrl
         # We only use the insert point, *never* the selection range.
-        ins = w.getInsertPoint()
-        # g.trace('ins',ins)
-        self.debugCount = 0
+        # None is a signal to self.initNextText()
+        ins = w.getInsertPoint() if w else None
+        self.errors = 0
         self.initNextText(ins=ins)
-        c.widgetWantsFocus(w)
-        self.wrapping = self.wrap
-        if self.wrap and self.wrapPosition == None:
+        if w: c.widgetWantsFocus(w)
+        # Init suboutline-only:
+        if self.suboutline_only and not self.onlyPosition:
+            self.onlyPosition = p.copy()
+        # Wrap does not apply to limited searches.
+        if (self.wrap and
+            not self.node_only and
+            not self.suboutline_only
+            and self.wrapPosition == None
+        ):
+            self.wrapping = True
             self.wrapPos = ins
             # Do not set self.wrapPosition here: that must be done after the first search.
     #@+node:ekr.20031218072017.3088: *4* find.printLine
