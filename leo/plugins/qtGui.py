@@ -2684,7 +2684,7 @@ class DynamicWindow(QtGui.QMainWindow):
             #@+node:ekr.20131118172620.16894: *9* keyPress
             def keyPress(self,event):
                 
-                trace = True
+                trace = False
                 s = g.u(event.text())
                 if 0: # This doesn't work.
                     eat = isinstance(self.w,(QtGui.QCheckBox,QtGui.QRadioButton))
@@ -2934,6 +2934,7 @@ class FindTabManager:
     def __init__ (self,c):
         # g.trace('(FindTabManager)',c.shortFileName(),g.callers())
         self.c = c
+        self.entry_focus = None # The widget that had focus before find-pane entered.
         # Find/change text boxes.
         self.find_findbox = None
         self.find_replacebox = None
@@ -2980,17 +2981,29 @@ class FindTabManager:
         w.insert(s)
         
     setChangeText = setReplaceText
-    #@+node:ekr.20131119185305.16478: *4* ftm.clear_focus & init_focus
+    #@+node:ekr.20131119185305.16478: *4* ftm.clear_focus & init_focus & set_entry_focus
     def clear_focus(self):
-        
+
+        self.entry_focus = None
         self.find_findbox.clearFocus()
 
     def init_focus(self):
 
+        self.set_entry_focus()
         w = self.find_findbox
         w.setFocus()
         s = g.u(w.text())
         w.setSelection(0,len(s))
+        
+    def set_entry_focus(self):
+        # Remember the widget that had focus, changing headline widgets
+        # to the tree pane widget.  Headline widgets can disappear!
+        c = self.c
+        w = g.app.gui.get_focus(raw=True)
+        if w != c.frame.body.bodyCtrl.widget:
+            w = c.frame.tree.treeWidget
+        self.entry_focus = w
+        # g.trace(w,g.app.gui.widget_name(w))
     #@+node:ekr.20131117120458.16789: *4* ftm.init_widgets
     def init_widgets(self):
         '''
@@ -8096,9 +8109,9 @@ class leoQtGui(leoGui.leoGui):
             g.doHook('deactivate',c=c,p=c.p,v=c.p,event=event)
     #@+node:ekr.20110605121601.18508: *4* Focus (qtGui)
     def get_focus(self,c=None,raw=False):
-
         """Returns the widget that has focus."""
-
+        # pylint: disable=w0221
+        # Arguments number differs from overridden method.
         trace = False and not g.unitTesting
         app = QtGui.QApplication
         w = app.focusWidget()
