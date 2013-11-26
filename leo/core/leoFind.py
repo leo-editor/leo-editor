@@ -304,6 +304,7 @@ class leoFind:
 
         if 0: # We _must_ retain the editing status for incremental searches!
             self.c.endEditing()
+        # Fix bug 
         self.update_ivars()
     #@+node:ekr.20131119060731.22452: *4* find.startSearch (4.11.1)
     def startSearch(self,event):
@@ -844,6 +845,8 @@ class leoFind:
         state = k.getState(tag)
         if trace: g.trace('state',state,k.getArgEscapeFlag)
         if state == 0:
+            # Remember the entry focus, just as when using the find pane.
+            self.ftm.set_entry_focus()
             self.setupArgs(forward=None,regexp=None,word=None)
             self.stateZeroHelper(
                 event,tag,'Search: ',self.searchWithPresentOptions,
@@ -1303,14 +1306,14 @@ class leoFind:
             if self.shouldStayInNode(p):
                 # Switching panes is possible.  Do so.
                 self.in_headline = not self.in_headline
-                self.initNextText()
+                self.initNextText() ### Should set ins.
             else:
                 # Switch to the next/prev node, if possible.
                 attempts += 1
                 p = self.p = self.nextNodeAfterFail(p)
                 if p: # Found another node: select the proper pane.
                     self.in_headline = self.firstSearchPane()
-                    self.initNextText()
+                    self.initNextText() ###
         if trace: g.trace('attempts',attempts)
         return None, None
     #@+node:ekr.20131123071505.16468: *5* find.doWrap
@@ -1345,7 +1348,7 @@ class leoFind:
             g.trace('can not happen: no search enabled')
             return False # search the body.
     #@+node:ekr.20131123132043.16477: *5* find.initNextText
-    def initNextText(self,ins=None,start_over=False):
+    def initNextText(self,ins=None):
         '''
         Init s_ctrl when a search fails. On entry:
         - self.in_headline indicates what text to use.
@@ -1362,17 +1365,13 @@ class leoFind:
             tree.killEditing()
         if self.reverse:
             i,j = w.sel
-            if start_over:
-                ins = None #
-            elif ins is None:
+            if ins is None:
                 if i is not None and j is not None and i != j:
                     ins = min(i,j)
             elif ins in (i,j):
                 ins = min(i,j)
             else:
                 pass # leave ins alone.
-        elif start_over:
-            ins = None
         elif ins is None:
             ins = 0
         self.init_s_ctrl(s,ins)
@@ -1741,7 +1740,7 @@ class leoFind:
         if ins is None: # A flag telling us to search all of w.
             ins = len(s) if self.reverse else 0
         w.setInsertPoint(ins)
-    #@+node:ekr.20031218072017.3086: *4* find.initInHeadline
+    #@+node:ekr.20031218072017.3086: *4* find.initInHeadline & helper
     def initInHeadline (self):
         '''
         Select the first pane to search for incremental searches and changes.
@@ -1753,16 +1752,34 @@ class leoFind:
         p = self.p or c.p.copy()
         # Fix bug 1228458: Inconsistency between Find-forward and Find-backward.
         if self.search_headline and self.search_body:
-            focus = g.app.gui.get_focus(raw=True)
-            inBody = focus == c.frame.body.bodyCtrl.widget
-            if trace: g.trace('inBody',inBody,focus)
             # We have no choice: we *must* search the present widget!
-            self.in_headline = not inBody
+            self.in_headline = self.focusInTree()
         else:
             self.in_headline = self.search_headline
+    #@+node:ekr.20131126085250.16651: *5* find.focusInTree
+    def focusInTree(self):
+        '''Return True is the focus widget w is anywhere in the tree pane.
+        
+        Note: the focus may be in the find pane.
+        '''
+        c = self.c
+        ftm = self.ftm
+        w = ftm.entry_focus or g.app.gui.get_focus(raw=True)
+        ftm.entry_focus = None # Only use this focus widget once!
+        w_name = w and g.app.gui.widget_name(w) or ''
+        # Easy case: focus in body.
+        if w == c.frame.body.bodyCtrl:
+            val = False
+        elif w == c.frame.tree.treeWidget:
+            val = True
+        else:
+            val = w_name.startswith('head')
+        # g.trace(val,w,w_name)
+        return val
     #@+node:ekr.20031218072017.3087: *4* find.initInteractiveCommands
     def initInteractiveCommands(self):
 
+        trace = True and not g.unitTesting
         c = self.c
         p = self.p = c.p # *Always* start with the present node.
         bodyCtrl = c.frame.body and c.frame.body.bodyCtrl
@@ -1772,6 +1789,7 @@ class leoFind:
         # We only use the insert point, *never* the selection range.
         # None is a signal to self.initNextText()
         ins = w.getInsertPoint() if w else None
+        # g.trace('inHead',self.in_headline,ins,w)
         self.errors = 0
         self.initNextText(ins=ins)
         if w: c.widgetWantsFocus(w)

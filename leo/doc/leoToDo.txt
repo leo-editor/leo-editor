@@ -6,6 +6,8 @@
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 
+* Start ZoomQuiet video
+
 Find css stuff that renders xml as Leo outine.
 
 * Add link to video on Leo's video page.
@@ -16,10 +18,47 @@ Find css stuff that renders xml as Leo outine.
     http://www.youtube.com/watch?v=9AvbL_0JEMw&feature=youtu.be
     
 * Add docstrings for all commands in leoSessions.py.
+.. @+node:ekr.20131125143156.16655: *3* monologue
+@language rest
+
+initInteractiveCommand: called whenever you hit F2, F3, etc.
+Previously, it did something really stupid: it moved to the body if it couldn't find an edit widget for the headline
+Now, it *stays* in the headline, and sets ins to None, indicating that searching should start at the start
+This is the simpest thing possible, given that Leo does not save insert points for headlines
+In short: initInteractiveCommands now *always* starts in the presently selected widget...
+provided that searching is enabled for that widget.
+
+So, imo, initInteractiveCommands now does what it absolutely must do:
+it starts searching in the *proper* pane with the current insert point.
+
+There has been real improvement in one method: shouldStayInNode
+This is a crucial method.  Get it wrong and F2 could loops between the *same* node's head and body
+*Finally* I saw the light.  The comment tells all.  Here it is:
+# Switch [panes in the same node] only if a) searching both panes and b) this is the first pane:
+There is *no way* this can ever change.
+So simple in retrospect, so difficult to see.
+
+So now, the question is...
+Where *exactly* is the insert point when we switch panes?
+Note:  when a search switches panes or nodes, it is because the search has just failed in a pane
+So the search goes to the next pane.
+Imo, the *only* reasonable thing to do in that case is start from
+the beginning of the pane for forward searches, and the end for backward searches.
+Starting in the middle just *must* be wrong.
+But the empty (None) argument to initNextText accomplishes that.
+In short, all seems very simple and very correct.
 .. @+node:ekr.20131117054619.16683: *3* new_find
 @language rest
 
 * Revise theory of operation.
+* Reset wrap & onlyPosition when the find pattern changes:
+    
+    The find command must reset several state variables whenever
+
+    a) The find pattern changes or
+    b) a limited (node-only, suboutline-only) search completes or
+    c) a wrapped search completes.
+    d) Whenever any radio button (find scope) changes.
 
 First:
 * How do state vars get set/reset?
