@@ -8,6 +8,8 @@
 
 * Start ZoomQuiet video
 
+- Fix the last Find nits: reset search ivars as needed.
+
 Find css stuff that renders xml as Leo outine.
 
 * Add link to video on Leo's video page.
