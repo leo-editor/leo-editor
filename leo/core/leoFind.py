@@ -160,9 +160,7 @@ class leoFind:
         self.s_ctrl = searchWidget() # For searches.
         self.find_text = ""
         self.change_text = ""
-        # Status ivars.
-        
-        
+        self.radioButtonsChanged = False # Set by ftm.radio_button_callback
         # Ivars containing internal state...
         self.p = None # The position being searched.  Never saved between searches!
         self.in_headline = False # True: searching headline text.
@@ -392,14 +390,14 @@ class leoFind:
         self.startIncremental(event,'isearch-with-present-options',
             forward=None,ignoreCase=None,regexp=None)
     #@+node:ekr.20131117164142.16946: *3* leoFind.Isearch utils
-    #@+node:ekr.20131117164142.16947: *4* find.abortSearch
+    #@+node:ekr.20131117164142.16947: *4* find.abortSearch (incremental)
     def abortSearch (self):
         '''Restore the original position and selection.'''
         c = self.c ; k = self.k
         w = c.frame.body.bodyCtrl
         k.clearState()
         k.resetLabel()
-        p,i,j,in_headline = self.stack[0] ### Huh?
+        p,i,j,in_headline = self.stack[0]
         self.in_headline = in_headline
         c.selectPosition(p)
         c.redraw_after_select(p)
@@ -1274,7 +1272,6 @@ class leoFind:
         '''
         trace = False and not g.unitTesting
         c = self.c ; p = self.p
-        assert p == c.p
         if trace: g.trace('entry','p',p and p.h,
             'search_headline',self.search_headline,
             'search_body',self.search_body)
@@ -1306,14 +1303,14 @@ class leoFind:
             if self.shouldStayInNode(p):
                 # Switching panes is possible.  Do so.
                 self.in_headline = not self.in_headline
-                self.initNextText() ### Should set ins.
+                self.initNextText()
             else:
                 # Switch to the next/prev node, if possible.
                 attempts += 1
                 p = self.p = self.nextNodeAfterFail(p)
                 if p: # Found another node: select the proper pane.
                     self.in_headline = self.firstSearchPane()
-                    self.initNextText() ###
+                    self.initNextText()
         if trace: g.trace('attempts',attempts)
         return None, None
     #@+node:ekr.20131123071505.16468: *5* find.doWrap
@@ -1383,9 +1380,9 @@ class leoFind:
         # Wrapping is disabled by any limitation of screen or search.
         wrap = (self.wrapping and not self.node_only and 
             not self.suboutline_only and not c.hoistStack)
-        if wrap and not not self.wrapPosition:
-            assert(self.wrapPos != None)
-            self.wrapPosition = p ### Copy needed if we use p.moveToThread...
+        if wrap and not self.wrapPosition:
+            self.wrapPosition = p.copy()
+            self.wrapPos = 0 if self.reverse else len(p.b)
         ### Use p.moveToThread...??
         # Move to the next position.
         p = p.threadBack() if self.reverse else p.threadNext()
@@ -1703,6 +1700,14 @@ class leoFind:
             g.es("empty find patttern")
             val = False
         return val
+    #@+node:ekr.20131124171815.16629: *4* find.init_s_ctrl
+    def init_s_ctrl (self,s,ins):
+        '''Init the contents of s_ctrl from s and ins.'''
+        w = self.s_ctrl
+        w.setAllText(s)
+        if ins is None: # A flag telling us to search all of w.
+            ins = len(s) if self.reverse else 0
+        w.setInsertPoint(ins)
     #@+node:ekr.20031218072017.3084: *4* find.initBatchCommands (sets in_headline)
     def initBatchCommands (self):
         '''Init for find-all and replace-all commands.'''
@@ -1731,15 +1736,6 @@ class leoFind:
         p = self.p or c.p.copy()
         s = p.h if self.in_headline else p.b
         self.init_s_ctrl(s,ins)
-
-    #@+node:ekr.20131124171815.16629: *4* find.init_s_ctrl
-    def init_s_ctrl (self,s,ins):
-        '''Init the contents of s_ctrl from s and ins.'''
-        w = self.s_ctrl
-        w.setAllText(s)
-        if ins is None: # A flag telling us to search all of w.
-            ins = len(s) if self.reverse else 0
-        w.setInsertPoint(ins)
     #@+node:ekr.20031218072017.3086: *4* find.initInHeadline & helper
     def initInHeadline (self):
         '''
@@ -1793,6 +1789,8 @@ class leoFind:
         self.errors = 0
         self.initNextText(ins=ins)
         if w: c.widgetWantsFocus(w)
+        
+        
         # Init suboutline-only:
         if self.suboutline_only and not self.onlyPosition:
             self.onlyPosition = p.copy()
@@ -1821,14 +1819,24 @@ class leoFind:
             self.p.setVisited()
         else:
             g.es('',line)
+    #@+node:ekr.20131126174039.16719: *4* find.reset_state_ivars
+    def reset_state_ivars(self):
+        '''Reset ivars related to suboutline-only and wrapped searches.'''
+        self.onlyPosition = None
+        self.wrapping = False
+        self.wrapPosition = None
+        self.wrapPos = None
     #@+node:ekr.20031218072017.3089: *4* find.restore
     def restore (self,data):
-        '''Restore the screen after a search fails.'''
+        '''Restore the screen and clear state after a search fails.'''
         c = self.c
         in_headline,p,w,insert,start,end = data
+        if 0: # Don't do this here.
+            # Reset ivars related to suboutline-only and wrapped searches.
+            self.reset_state_ivars()
         c.frame.bringToFront() # Needed on the Mac
         # Don't try to reedit headline.
-        if p and c.positionExists(p): ### 2013/11/22.
+        if p and c.positionExists(p): # 2013/11/22.
             c.selectPosition(p)
         else:
             c.selectPosition(c.rootPosition()) # New in Leo 4.5.
@@ -1897,7 +1905,7 @@ class leoFind:
         trace = False and not g.unitTesting
         c = self.c
         self.p = c.p.copy()
-        ftm = self.ftm    
+        ftm = self.ftm
         # The caller is responsible for removing most trailing cruft.
         # Among other things, this allows Leo to search for a single trailing space.
         s = ftm.getFindText()
@@ -1905,10 +1913,10 @@ class leoFind:
         if trace: g.trace('find',repr(s),self.find_ctrl)
         if s and s[-1] in ('\r','\n'):
             s = s[:-1]
-        # clear wrap_pos if the find_text changes.
-        if s != self.find_text:
-            # g.trace('clearing self.wrap_pos')
-            self.wrapPosition = None
+        if self.radioButtonsChanged or s != self.find_text:
+            self.radioButtonsChanged = False
+            # Reset ivars related to suboutline-only and wrapped searches.
+            self.reset_state_ivars()
         self.find_text = s
         # Get replacement text.
         s = ftm.getReplaceText()

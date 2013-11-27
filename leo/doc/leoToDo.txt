@@ -8,7 +8,7 @@
 
 * Start ZoomQuiet video
 
-- Fix the last Find nits: reset search ivars as needed.
+- Better background color for tree-edit widgets
 
 Find css stuff that renders xml as Leo outine.
 
@@ -20,7 +20,29 @@ Find css stuff that renders xml as Leo outine.
     http://www.youtube.com/watch?v=9AvbL_0JEMw&feature=youtu.be
     
 * Add docstrings for all commands in leoSessions.py.
-.. @+node:ekr.20131125143156.16655: *3* monologue
+.. @+node:ekr.20131121090013.17095: *3* Zoom Quiet video
+@language rest
+
+so can u make a litter video :
+- to say hallo for Chinese Leo user
+- and instruction Leo's grown up
+- and show some Leo working case?
+
+http://mail.google.com/mail/u/0/#inbox/142267093d39d75e
+
+- so for me after reated ur life story
+- i can not stop hope u play a litter piano ?!
+- and paint one paint for China, include u image for China?
+- or writer down u Chinese name usage writing brush: 令德华
++ Ream means 令, just one Chinese family name
++ Edward in Chinese is 爱德华,  means "love morality China"
++ so merge them is 令德华 , just one right Chinese name ;-)
+
+of course, must includ Leo 's zip introduction
+
+so sorry for my chaos image, Hope Video is u tiny happy game for X'mas
+- BUT notice, the Video need finished before 2013.11.30
+.. @+node:ekr.20131125143156.16655: *3* monologue (theory of operation for find)
 @language rest
 
 initInteractiveCommand: called whenever you hit F2, F3, etc.
@@ -51,6 +73,10 @@ But the empty (None) argument to initNextText accomplishes that.
 In short, all seems very simple and very correct.
 .. @+node:ekr.20131117054619.16683: *3* new_find
 @language rest
+
+* Remove all asserts.
+
+** UNIT TESTS
 
 * Revise theory of operation.
 * Reset wrap & onlyPosition when the find pattern changes:
@@ -284,23 +310,6 @@ easy, flexible plan.
     - Leave arrow keys and control keys unchanged.
     - Focus plain-key normal-mode commands: a,i,d,c,x,s.
     - Use minibuffer for find command (save find/change strings for dot).
-.. @+node:ekr.20131121090013.17095: *3* Zoom Quiet video
-@language rest
-
-http://mail.google.com/mail/u/0/#inbox/142267093d39d75e
-
-- so for me after reated ur life story
-- i can not stop hope u play a litter piano ?!
-- and paint one paint for China, include u image for China?
-- or writer down u Chinese name usage writing brush: 令德华
-+ Ream means 令, just one Chinese family name
-+ Edward in Chinese is 爱德华,  means "love morality China"
-+ so merge them is 令德华 , just one right Chinese name ;-)
-
-of course, must includ Leo 's zip introduction
-
-so sorry for my chaos image, Hope Video is u tiny happy game for X'mas
-- BUT notice, the Video need finished before 2013.11.30
 .. @+node:ekr.20131116212505.16665: *3* Screencasts
 Topics:
 

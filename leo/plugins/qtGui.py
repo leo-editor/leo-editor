@@ -2516,8 +2516,8 @@ class DynamicWindow(QtGui.QMainWindow):
         ftm = fc.ftm
         def mungeName(kind,label):
             # The returned value is the namve of an ivar.
-            kind = 'checkBox' if kind == 'box' else 'radioButton'
-            name = label.replace(' ','').replace('&','')
+            kind = 'check_box_' if kind == 'box' else 'radio_button_'
+            name = label.replace(' ','_').replace('&','').lower()
             return '%s%s' % (kind,name)
         # Rows for check boxes, radio buttons & execution buttons...
         d = {
@@ -2528,22 +2528,22 @@ class DynamicWindow(QtGui.QMainWindow):
             # Note: the Ampersands create Alt bindings when the log pane is enable.
             # The QShortcut class is the workaround.
             # First row.
-            ('box', 'Whole &Word',      0,0),
-            ('rb',  '&Entire Outline',  0,1),
+            ('box', 'whole &Word',      0,0),
+            ('rb',  '&Entire outline',  0,1),
             # Second row.
-            ('box', '&Ignore Case',     1,0),
-            ('rb',  '&Suboutline Only', 1,1),
+            ('box', '&Ignore case',     1,0),
+            ('rb',  '&Suboutline only', 1,1),
             # Third row.
-            ('box', 'Wrap &Around',     2,0),
-            ('rb',  '&Node Only',       2,1),
+            ('box', 'wrap &Around',     2,0),
+            ('rb',  '&Node only',       2,1),
             # Fourth row.
-            ('box', 'Rege&xp',          3,0),
-            ('box', 'Search &Headline', 3,1),
+            ('box', 'rege&Xp',          3,0),
+            ('box', 'search &Headline', 3,1),
             # Fifth row.
-            ('box', 'Mark &Finds',      4,0),
-            ('box', 'Search &Body',     4,1),
+            ('box', 'mark &Finds',      4,0),
+            ('box', 'search &Body',     4,1),
             # Sixth row.
-            ('box', 'Mark &Changes',    5,0),
+            ('box', 'mark &Changes',    5,0),
             # a,b,c,e,f,h,i,n,rs,w
         )
         for kind,label,row2,col in table:
@@ -2741,12 +2741,12 @@ class DynamicWindow(QtGui.QMainWindow):
             func = getattr(fc,func_name,None)
             if w and func:
                 # g.trace(cmd_name,ivar,bool(w),func and func.__name__)
-                next_w = ftm.checkBoxWholeWord if cmd_name == 'replace-all' else None
+                next_w = ftm.check_box_whole_word if cmd_name == 'replace-all' else None
                 EventWrapper(c,w=w,next_w=next_w,func=func)
             else:
                 g.trace('**oops**')
         # Finally, checkBoxMarkChanges goes back to ftm.find_findBox.
-        EventWrapper(c,w=ftm.checkBoxMarkChanges,next_w=ftm.find_findbox,func=None)
+        EventWrapper(c,w=ftm.check_box_mark_changes,next_w=ftm.find_findbox,func=None)
     #@+node:ekr.20110605121601.18168: *5* dw.utils
     #@+node:ekr.20110605121601.18169: *6* dw.setName
     def setName (self,widget,name):
@@ -2939,18 +2939,18 @@ class FindTabManager:
         self.find_findbox = None
         self.find_replacebox = None
         # Check boxes.
-        self.checkBoxIgnoreCase = None
-        self.checkBoxMarkChanges = None
-        self.checkBoxMarkFinds = None
-        self.checkBoxRegexp = None
-        self.checkBoxSearchBody = None
-        self.checkBoxSearchHeadline = None
-        self.checkBoxWholeWord = None
-        self.checkBoxWrapAround = None
+        self.check_box_ignore_case = None
+        self.check_box_mark_changes = None
+        self.check_box_mark_finds = None
+        self.check_box_regexp = None
+        self.check_box_search_body = None
+        self.check_box_search_headline = None
+        self.check_box_whole_word = None
+        self.check_box_wrap_around = None
         # Radio buttons
-        self.radioButtonEntireOutline = None
-        self.radioButtonNodeOnly = None
-        self.radioButtonSuboutlineOnly = None
+        self.radio_button_entire_outline = None
+        self.radio_button_node_only = None
+        self.radio_button_suboutline_only = None
         # Push buttons
         self.find_next_button = None
         self.find_prev_button = None
@@ -3004,7 +3004,7 @@ class FindTabManager:
             w = c.frame.tree.treeWidget
         self.entry_focus = w
         # g.trace(w,g.app.gui.widget_name(w))
-    #@+node:ekr.20131117120458.16789: *4* ftm.init_widgets
+    #@+node:ekr.20131117120458.16789: *4* ftm.init_widgets (creates callbacks)
     def init_widgets(self):
         '''
         Init widgets and ivars from c.config settings.
@@ -3028,14 +3028,14 @@ class FindTabManager:
                 w.setSelection(0,len(s))
         # Check boxes.
         table = (
-            ('ignore_case',     self.checkBoxIgnoreCase),
-            ('mark_changes',    self.checkBoxMarkChanges),
-            ('mark_finds',      self.checkBoxMarkFinds),
-            ('pattern_match',   self.checkBoxRegexp),
-            ('search_body',     self.checkBoxSearchBody),
-            ('search_headline', self.checkBoxSearchHeadline),
-            ('whole_word',      self.checkBoxWholeWord),
-            ('wrap',            self.checkBoxWrapAround),
+            ('ignore_case',     self.check_box_ignore_case),
+            ('mark_changes',    self.check_box_mark_changes),
+            ('mark_finds',      self.check_box_mark_finds),
+            ('pattern_match',   self.check_box_regexp),
+            ('search_body',     self.check_box_search_body),
+            ('search_headline', self.check_box_search_headline),
+            ('whole_word',      self.check_box_whole_word),
+            ('wrap',            self.check_box_wrap_around),
         )
         for setting_name,w in table:
             val = c.config.getBool(setting_name,default=False)
@@ -3059,9 +3059,9 @@ class FindTabManager:
                 check_box_callback)
         # Radio buttons
         table = (
-            ('node_only',       'node_only',        self.radioButtonNodeOnly),
-            ('entire_outline',  None,               self.radioButtonEntireOutline),
-            ('suboutline_only', 'suboutline_only',  self.radioButtonSuboutlineOnly),
+            ('node_only',       'node_only',        self.radio_button_node_only),
+            ('entire_outline',  None,               self.radio_button_entire_outline),
+            ('suboutline_only', 'suboutline_only',  self.radio_button_suboutline_only),
         )
         for setting_name,ivar,w in table:
             val = c.config.getBool(setting_name,default=False)
@@ -3073,6 +3073,7 @@ class FindTabManager:
                 w.toggle()
             def radio_button_callback(n,ivar=ivar,setting_name=setting_name,w=w):
                 val = w.isChecked()
+                find.radioButtonsChanged = True
                 # g.trace(setting_name,ivar,val,g.callers())
                 if ivar:
                     assert hasattr(find,ivar),ivar
@@ -3081,7 +3082,7 @@ class FindTabManager:
                 radio_button_callback)
         # Ensure one radio button is set.
         if not find.node_only and not find.suboutline_only:
-            w = self.radioButtonEntireOutline
+            w = self.radio_button_entire_outline
             w.toggle()
     #@+node:ekr.20131117120458.16792: *4* ftm.set_radio_button
     def set_radio_button(self,name):
@@ -3089,9 +3090,9 @@ class FindTabManager:
         
         d = {
             # Name is not an ivar. Set by find.setFindScope... commands.
-            'node-only': self.radioButtonNodeOnly,
-            'entire-outline': self.radioButtonEntireOutline,
-            'suboutline-only': self.radioButtonSuboutlineOnly,
+            'node-only': self.radio_button_node_only,
+            'entire-outline': self.radio_button_entire_outline,
+            'suboutline-only': self.radio_button_suboutline_only,
         }
         w = d.get(name)
         assert w
@@ -3103,14 +3104,14 @@ class FindTabManager:
         '''Toggle the value of the checkbox whose name is given.'''
         find = self.c.findCommands
         d = {
-            'ignore_case':     self.checkBoxIgnoreCase,
-            'mark_changes':    self.checkBoxMarkChanges,
-            'mark_finds':      self.checkBoxMarkFinds,
-            'pattern_match':   self.checkBoxRegexp,
-            'search_body':     self.checkBoxSearchBody,
-            'search_headline': self.checkBoxSearchHeadline,
-            'whole_word':      self.checkBoxWholeWord,
-            'wrap':            self.checkBoxWrapAround,
+            'ignore_case':     self.check_box_ignore_case,
+            'mark_changes':    self.check_box_mark_changes,
+            'mark_finds':      self.check_box_mark_finds,
+            'pattern_match':   self.check_box_regexp,
+            'search_body':     self.check_box_search_body,
+            'search_headline': self.check_box_search_headline,
+            'whole_word':      self.check_box_whole_word,
+            'wrap':            self.check_box_wrap_around,
         }
         w = d.get(checkbox_name)
         assert w
