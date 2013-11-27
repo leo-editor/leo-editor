@@ -10492,65 +10492,76 @@ class jEditColorizer:
                 mode = g.importFromPath (language,path)
             else:
                 mode = None
-            if mode:
-                # A hack to give modes/forth.py access to c.
-                if hasattr(mode,'pre_init_mode'):
-                    mode.pre_init_mode(self.c)
-            else:
-                # Create a dummy bunch to limit recursion.
-                self.modes [rulesetName] = self.modeBunch = g.Bunch(
-                    attributesDict  = {},
-                    defaultColor    = None,
-                    keywordsDict    = {},
-                    language        = 'unknown-language',
-                    mode            = mode,
-                    properties      = {},
-                    rulesDict       = {},
-                    rulesetName     = rulesetName,
-                    word_chars      = self.word_chars, # 2011/05/21
-                )
-                if trace: g.trace('***** No colorizer file: %s.py' % language)
-                self.rulesetName = rulesetName
-                self.language_name = 'unknown-language'
-                return False
-            self.colorizer.language = language
-            self.rulesetName = rulesetName
-            self.properties = hasattr(mode,'properties') and mode.properties or {}
-            self.keywordsDict = hasattr(mode,'keywordsDictDict') and mode.keywordsDictDict.get(rulesetName,{}) or {}
-            self.setKeywords()
-            self.attributesDict = hasattr(mode,'attributesDictDict') and mode.attributesDictDict.get(rulesetName) or {}
-            # if trace: g.trace(rulesetName,self.attributesDict)
-            self.setModeAttributes()
-            self.rulesDict = hasattr(mode,'rulesDictDict') and mode.rulesDictDict.get(rulesetName) or {}
-            # if trace: g.trace(self.rulesDict)
-            self.addLeoRules(self.rulesDict)
-            self.defaultColor = 'null'
-            self.mode = mode
+            return self.init_mode_from_module(name,mode)
+    #@+node:btheado.20131124162237.16303: *6* init_mode_from_module
+    def init_mode_from_module (self,name,mode):
+
+        '''Name may be a language name or a delegate name.
+           Mode is a python module or class containing all
+           coloring rule attributes for the mode.
+        '''
+
+        trace = False and not g.unitTesting
+        language,rulesetName = self.nameToRulesetName(name)
+        if mode:
+            # A hack to give modes/forth.py access to c.
+            if hasattr(mode,'pre_init_mode'):
+                mode.pre_init_mode(self.c)
+        else:
+            # Create a dummy bunch to limit recursion.
             self.modes [rulesetName] = self.modeBunch = g.Bunch(
-                attributesDict  = self.attributesDict,
-                defaultColor    = self.defaultColor,
-                keywordsDict    = self.keywordsDict,
-                language        = self.colorizer.language,
-                mode            = self.mode,
-                properties      = self.properties,
-                rulesDict       = self.rulesDict,
-                rulesetName     = self.rulesetName,
+                attributesDict  = {},
+                defaultColor    = None,
+                keywordsDict    = {},
+                language        = 'unknown-language',
+                mode            = mode,
+                properties      = {},
+                rulesDict       = {},
+                rulesetName     = rulesetName,
                 word_chars      = self.word_chars, # 2011/05/21
             )
-            # Do this after 'officially' initing the mode, to limit recursion.
-            self.addImportedRules(mode,self.rulesDict,rulesetName)
-            self.updateDelimsTables()
-            initialDelegate = self.properties.get('initialModeDelegate')
-            if initialDelegate:
-                if trace: g.trace('initialDelegate',initialDelegate)
-                # Replace the original mode by the delegate mode.
-                self.init_mode(initialDelegate)
-                language2,rulesetName2 = self.nameToRulesetName(initialDelegate)
-                self.modes[rulesetName] = self.modes.get(rulesetName2)
-                self.language_name = language2  # 2011/05/30
-            else:
-                self.language_name = language  # 2011/05/30
-            return True
+            if trace: g.trace('***** No colorizer file: %s.py' % language)
+            self.rulesetName = rulesetName
+            self.language_name = 'unknown-language'
+            return False
+        self.colorizer.language = language
+        self.rulesetName = rulesetName
+        self.properties = hasattr(mode,'properties') and mode.properties or {}
+        self.keywordsDict = hasattr(mode,'keywordsDictDict') and mode.keywordsDictDict.get(rulesetName,{}) or {}
+        self.setKeywords()
+        self.attributesDict = hasattr(mode,'attributesDictDict') and mode.attributesDictDict.get(rulesetName) or {}
+        # if trace: g.trace(rulesetName,self.attributesDict)
+        self.setModeAttributes()
+        self.rulesDict = hasattr(mode,'rulesDictDict') and mode.rulesDictDict.get(rulesetName) or {}
+        # if trace: g.trace(self.rulesDict)
+        self.addLeoRules(self.rulesDict)
+        self.defaultColor = 'null'
+        self.mode = mode
+        self.modes [rulesetName] = self.modeBunch = g.Bunch(
+            attributesDict  = self.attributesDict,
+            defaultColor    = self.defaultColor,
+            keywordsDict    = self.keywordsDict,
+            language        = self.colorizer.language,
+            mode            = self.mode,
+            properties      = self.properties,
+            rulesDict       = self.rulesDict,
+            rulesetName     = self.rulesetName,
+            word_chars      = self.word_chars, # 2011/05/21
+        )
+        # Do this after 'officially' initing the mode, to limit recursion.
+        self.addImportedRules(mode,self.rulesDict,rulesetName)
+        self.updateDelimsTables()
+        initialDelegate = self.properties.get('initialModeDelegate')
+        if initialDelegate:
+            if trace: g.trace('initialDelegate',initialDelegate)
+            # Replace the original mode by the delegate mode.
+            self.init_mode(initialDelegate)
+            language2,rulesetName2 = self.nameToRulesetName(initialDelegate)
+            self.modes[rulesetName] = self.modes.get(rulesetName2)
+            self.language_name = language2  # 2011/05/30
+        else:
+            self.language_name = language  # 2011/05/30
+        return True
     #@+node:ekr.20110605121601.18582: *6* nameToRulesetName
     def nameToRulesetName (self,name):
 
