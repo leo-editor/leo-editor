@@ -3,8 +3,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
+	<global_window_position top="107" left="306" height="682" width="1264"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -6967,7 +6967,7 @@ See the following sections for details.
 - Removed all gui-dependent code from Leo's core.
 - The__wx_gui plugin is now functional.
 </t>
-<t tx="ekr.20070610174018">This section contains settings for this file.
+<t tx="ekr.20070610174018" str_leo_pos="3">This section contains settings for this file.
 
 It also contains other information of little interest to most Leo users.</t>
 <t tx="ekr.20070622212132">::

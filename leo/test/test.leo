@@ -3,7 +3,7 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.38" body_secondary_ratio="0.69">
+<globals body_outline_ratio="0.45" body_secondary_ratio="0.69">
 	<global_window_position top="127" left="550" height="861" width="1185"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -676,6 +676,11 @@
 <v t="ekr.20120311074029.2736"><vh>@url file://c:/users/edreamleo/ekr.html</vh></v>
 <v t="ekr.20120320072350.2731"><vh>@url ../doc/LeoDocs.leo#Leo 4.10 Release notes</vh></v>
 </v>
+<v t="ekr.20120925105035.3146"><vh>vpos probe</vh></v>
+<v t="ekr.20120928085003.3150"><vh>Test g.error, g.warning, g.note</vh></v>
+<v t="ekr.20120925073640.3143"><vh>&lt;&lt; docstring &gt;&gt; (scrolling test)</vh></v>
+<v t="ekr.20121005071615.3175"><vh>test g.importFromPath</vh></v>
+</v>
 <v t="ekr.20110320203616.2489"><vh>viewrendered examples</vh>
 <v t="ekr.20110320203616.2491"><vh>rst test</vh></v>
 <v t="ekr.20110320203616.2492"><vh>docstring test</vh></v>
@@ -690,12 +695,8 @@
 <v t="ekr.20101014040509.2314"><vh>@url mail</vh></v>
 <v t="ekr.20110321213439.2493"><vh>@graphics-script</vh></v>
 </v>
-<v t="ekr.20120925105035.3146"><vh>vpos probe</vh></v>
-<v t="ekr.20120928085003.3150"><vh>Test g.error, g.warning, g.note</vh></v>
-<v t="ekr.20120925073640.3143"><vh>&lt;&lt; docstring &gt;&gt; (scrolling test)</vh></v>
-<v t="ekr.20121005071615.3175"><vh>test g.importFromPath</vh></v>
 </v>
-</v>
+<v t="ekr.20131128115544.3332"><vh>recent</vh>
 <v t="ekr.20120923110028.3131"><vh>Screencasts</vh>
 <v t="ekr.20120914093811.2824"><vh>@command start next screencast @key=alt-9</vh></v>
 <v t="ekr.20120914183137.2850"><vh>@screencast the parts of the screen</vh>
@@ -1094,6 +1095,8 @@
 </v>
 <v t="ekr.20121011100948.4582"></v>
 <v t="ekr.20121011195530.3405"><vh>pyv8</vh></v>
+</v>
+<v t="ekr.20131128115544.3333"><vh>display xml as Leo outlines using css</vh>
 <v t="ekr.20131106150237.3641"><vh>@button display css</vh>
 <v t="ekr.20131106150237.3642"><vh>&lt;&lt; define css &gt;&gt;</vh></v>
 <v t="ekr.20131106192510.3643"><vh>css utils</vh></v>
@@ -1108,6 +1111,79 @@
 </v>
 <v t="ekr.20131106150237.3648" a="M"></v>
 <v t="ekr.20131106145203.3636"><vh>@html display</vh></v>
+</v>
+<v t="ekr.20131128115544.3506"><vh>PyConChina2013 script</vh>
+<v t="ekr.20131128115544.3507"><vh>1. Any node may contain a script</vh>
+<v t="ekr.20131128115544.3508"><vh>Example: Hello world</vh></v>
+</v>
+<v t="ekr.20131128115544.3509"><vh>2. Outlines build scripts</vh>
+<v t="ekr.20131128115544.3510"><vh>Example: recursive import script</vh>
+<v t="ekr.20131128115544.3511"><vh>&lt;&lt; imports &amp; constants &gt;&gt;</vh></v>
+<v t="ekr.20131128115544.3512"><vh>class ImportController</vh>
+<v t="ekr.20131128115544.3513"><vh>Pass 1: import_dir</vh></v>
+<v t="ekr.20131128115544.3514"><vh>Pass 2: clean_all &amp; helper</vh>
+<v t="ekr.20131128115544.3515"><vh>clean &amp; helpers</vh>
+<v t="ekr.20131128115544.3516"><vh>clean_blank_lines</vh></v>
+<v t="ekr.20131128115544.3517"><vh>merge_comment_nodes</vh></v>
+<v t="ekr.20131128115544.3518"><vh>merge_extra_nodes</vh></v>
+<v t="ekr.20131128115544.3519"><vh>move_decorator_lines</vh></v>
+<v t="ekr.20131128115544.3520"><vh>move_doc_string</vh></v>
+<v t="ekr.20131128115544.3521"><vh>move_shebang_line</vh></v>
+<v t="ekr.20131128115544.3522"><vh>rename_decls</vh></v>
+</v>
+</v>
+<v t="ekr.20131128115544.3523"><vh>Pass 3: post_process &amp; helpers</vh>
+<v t="ekr.20131128115544.3524"><vh>clear_dirty_bits</vh></v>
+<v t="ekr.20131128115544.3525"><vh>dump_headlines</vh></v>
+<v t="ekr.20131128115544.3526"><vh>fix_back_slashes</vh></v>
+<v t="ekr.20131128115544.3527"><vh>minimize_headlines</vh></v>
+<v t="ekr.20131128115544.3528"><vh>remove_empty_nodes</vh></v>
+<v t="ekr.20131128115544.3529"><vh>munge_at_file (not used)</vh></v>
+</v>
+<v t="ekr.20131128115544.3530"><vh>run</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20131128115544.3531"><vh>3. Outlines build external files</vh>
+<v t="ekr.20131128115544.3532"><vh>@file leoFind.py</vh></v>
+</v>
+<v t="ekr.20131128115544.3649"><vh>4. Headlines define types.  Types define context</vh>
+<v t="ekr.20131128115544.3650"><vh>Example 1: @settings contain all settings</vh>
+<v t="ekr.20131128115544.3651"><vh>@settings</vh>
+<v t="ekr.20131128115544.3652"><vh>@shortcuts</vh></v>
+<v t="ekr.20131128115544.3653"><vh>@button toggle-debug</vh></v>
+<v t="ekr.20131128115544.3654"><vh>vim settings</vh>
+<v t="ekr.20131128115544.3655"><vh>@@@data vim-control-character-commands</vh></v>
+<v t="ekr.20131128115544.3656"><vh>@data vim-command-tails</vh></v>
+<v t="ekr.20131128115544.3657"><vh>@data vim-commands</vh></v>
+<v t="ekr.20131128115544.3658"><vh>@data vim-motions</vh></v>
+<v t="ekr.20131128115544.3659"><vh>@data vim-motion-tails</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20131128115544.3660"><vh>Example 2: @test</vh>
+<v t="ekr.20131128115544.3661"><vh>@test fail</vh></v>
+<v t="ekr.20131128115544.3662"><vh>The result (in the console)</vh></v>
+<v t="ekr.20131128115544.3663"><vh>@test c, g &amp; p</vh></v>
+<v t="ekr.20131128115544.3664"><vh>The result</vh></v>
+</v>
+<v t="ekr.20131128115544.3665"><vh>Example 3: @button</vh>
+<v t="ekr.20131128115544.3666"><vh>@button print-headline</vh></v>
+</v>
+<v t="ekr.20131128115544.3667"><vh>Example 4: outline abbreviations</vh></v>
+<v t="ekr.20131128115544.3668"><vh>Example 5: rendering types</vh>
+<v t="ekr.20131128115544.3669"><vh>@movie Gayane Ballet music</vh></v>
+<v t="ekr.20131128115544.3670"><vh>rst test</vh></v>
+<v t="ekr.20131128115544.3671"><vh>@image splash screen</vh></v>
+<v t="ekr.20131128115544.3672"><vh>Leo's home page</vh></v>
+<v t="ekr.20131128115544.3673"><vh>@html Leo's home page</vh></v>
+<v t="ekr.20131128115544.3674"><vh>@url Leo's home page</vh></v>
+<v t="ekr.20131128115544.3675"><vh>@svg bubbles.svg</vh></v>
+<v t="ekr.20131128115544.3676"><vh>@svg bubbles sources</vh></v>
+</v>
+</v>
+<v t="ekr.20131128115544.3677"><vh>There is much more</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1408,7 +1484,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="8,1"></t>
+<t tx="ekr.20070416075121" str_leo_pos="5"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -12661,6 +12737,1847 @@ def icon(s):
 def selector(n):
     table = ((8,'dirty'),(4,'clone'),(2,'mark'),(1,'body'))
     return '-'.join([s for (n2,s) in table if n &amp; n2]) or 'leaf'
+</t>
+<t tx="ekr.20131128115544.3332"></t>
+<t tx="ekr.20131128115544.3333"></t>
+<t tx="ekr.20131128115544.3506">@language rest
+
+This screencast is intended primarily for Python programmers.
+
+It shows how to use Leo outlines for programming.
+
+The outline you see is the Leo file I use to develop Leo itself.
+
+It contains over 1 million lines of Python code and all of Leo's documentation.
+
+Here is a *brief* overview of Leo's programming features...
+</t>
+<t tx="ekr.20131128115544.3507">Ctrl-B (execute-script) executes the text of any node (or tree) as a Python script.
+
+No special markup needed!
+</t>
+<t tx="ekr.20131128115544.3508"># execute-script predefines g, c, and p.
+# These variables give access to all outline data
+# and all of Leo's own source code.
+
+g.es('hello world!')
+g.es('hello world!',color='red')
+    # g.es sends its output to Leo's log pane.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@language python
+</t>
+<t tx="ekr.20131128115544.3509">You can build scripts from outlines, not just single nodes.
+
+Simple markup defines (&lt;&lt; whatever &gt;&gt; and @others) tells Leo how to build the script.
+
+For details, see: http://leoeditor.com/tutorial-programming.html#programming-with-leo.
+</t>
+<t tx="ekr.20131128115544.3510">'''Recursively import all python files in a given directory.'''
+&lt;&lt; imports &amp; contstants &gt;&gt;
+@others
+if g.os_path_exists(theDir):
+    ImportController().run(c,p,theDir,theTypes)
+    c.redraw()
+else:
+    print('Does not exist: %s' % (theDir))
+
+
+
+
+
+
+
+
+
+
+@language python
+</t>
+<t tx="ekr.20131128115544.3511">import os
+import time
+
+safe_at_file = True # True: create @@file nodes instead of @file nodes.
+theTypes = ('.ts',)
+theDir = r'C:\prog\typescript-fe3bc0bfce1f\src\compiler'</t>
+<t tx="ekr.20131128115544.3512">class ImportController():
+    @others
+</t>
+<t tx="ekr.20131128115544.3513">def import_dir(self,c,root,theDir,theTypes):
+
+    g.es("dir: " + theDir,color="blue")
+    dirs,files,files2 = [],os.listdir(theDir),[]
+    for f in files:
+        path = g.os_path_join(theDir,f)
+        if g.os_path_isfile(path):
+            name, ext = g.os_path_splitext(f)
+            if not theTypes or ext in theTypes:
+                files2.append(path)
+        else: # elif recursive:
+            dirs.append(path)
+    if files2 or dirs:
+        child = root.insertAsLastChild()
+        child.h = theDir
+        c.selectPosition(child,enableRedrawFlag=False)
+    if files2:
+        # files2 = [files2[0]] ### Just import one file.
+        c.importCommands.importFilesCommand(files2,'@file',redrawFlag=False) # '@auto' causes problems.
+    if dirs:
+        for theDir in sorted(dirs):
+            prefix = theDir
+            self.import_dir(c,child,theDir,theTypes)
+</t>
+<t tx="ekr.20131128115544.3514">def clean_all (self,c,p):
+    
+    for p in p.self_and_subtree():
+        if p.h.startswith('@file') or p.h.startswith('@@file'):
+            self.clean(c,p)
+</t>
+<t tx="ekr.20131128115544.3515">def clean(self,c,p):
+    '''
+    - Move a shebang line from the first child to the root.
+    - Move a leading docstring in the first child to the root.
+    - Use a section reference for declarations.
+    - Remove leading and trailing blank lines from all nodes.
+    - Merge a node containing nothing but comments with the next node.
+    - Merge a node containing no class or def lines with the previous node.
+    '''
+    root = p.copy()
+    for tag in ('@@file','@file'):
+        if p.h.startswith(tag):
+            p.h = p.h[len(tag):].strip()
+            break
+    self.move_shebang_line(c,root)
+    self.move_doc_string(c,root)
+    self.rename_decls(c,root)
+    for p in root.self_and_subtree():
+        self.clean_blank_lines(c,p)
+    for p in root.subtree():
+        self.merge_comment_nodes(c,p)
+    for p in root.subtree():
+        self.merge_extra_nodes(c,p)
+    for p in root.subtree():
+        self.move_decorator_lines(c,p)
+</t>
+<t tx="ekr.20131128115544.3516">def clean_blank_lines(self,c,p):
+    '''Remove leading and trailing blank lines from all nodes.'''
+    s = p.b
+    if not s.strip():
+        return
+    result = g.splitLines(s)
+    for i in 0,-1:
+        while result:
+            if result[i].strip():
+                break
+            else:
+                del result[i]
+    s = ''.join(result)
+    if not s.endswith('\n'): s = s + '\n'
+    if s != p.b:
+        p.b = s
+</t>
+<t tx="ekr.20131128115544.3517">def merge_comment_nodes(self,c,p):
+    '''Merge a node containing nothing but comments with the next node.'''
+    h = p.h
+    if p.hasChildren() or not h.strip().startswith('#'):
+        return
+    p2 = p.next()
+    if p2:
+        b = p.b.lstrip()
+        b = b + ('\n' if b.endswith('\n') else '\n\n')
+        p2.b = b + p2.b
+        p.doDelete(p2)
+</t>
+<t tx="ekr.20131128115544.3518">def merge_extra_nodes(self,c,p):
+    '''Merge a node containing no class or def lines with the previous node'''
+    s = p.b
+    if p.hasChildren() or p.h.strip().startswith('&lt;&lt;') or not s.strip():
+        return
+    for s2 in g.splitLines(s):
+        if s2.strip().startswith('class') or s2.strip().startswith('def'):
+            return
+    p2 = p.back()
+    if p2:
+        nl = '\n' if s.endswith('\n') else '\n\n'
+        p2.b = p2.b + nl + s
+        h = p.h
+        p.doDelete(p2)
+</t>
+<t tx="ekr.20131128115544.3519">def move_decorator_lines (self,c,p):
+    '''Move trailing decorator lines to the next node.'''
+    trace = False
+    p2 = p.next()
+    if not p2: return False
+    
+    lines = g.splitLines(p.b)
+    n = len(lines) -1
+    while n &gt;= 0:
+        s = lines[n]
+        if s.startswith('@'):
+            i = g.skip_id(s,1,chars='-')
+            word = s[1:i]
+            if word in g.globalDirectiveList:
+                break
+            else:
+                n -= 1
+        else:
+            break
+    head = ''.join(lines[:n+1])
+    tail = ''.join(lines[n+1:])
+    if not tail: return False
+    assert head.endswith('\n')
+    assert p.b == head+tail
+    if trace:
+        if tail not in seen:
+            seen.append(tail)
+            g.trace(tail.strip())
+    if 1:
+        nl = '' if tail.endswith('\n') else '\n'
+        p.b = head
+        p2.b = tail+nl+p2.b
+        
+    return True</t>
+<t tx="ekr.20131128115544.3520">def move_doc_string(self,c,root):
+    '''Move a leading docstring in the first child to the root node.'''
+    # To do: copy comments before docstring
+    p = root.firstChild()
+    s = p and p.b or ''
+    if not s: return
+    result = []
+    for s2 in g.splitLines(s):
+        delim = None
+        s3 = s2.strip()
+        if not s3:
+            result.append(s2)
+        elif s3.startswith('#'):
+            result.append(s2)
+        elif s3.startswith('"""'):
+            delim = '"""'
+            break
+        elif s3.startswith("'''"):
+            delim = "'''"
+            break
+        else:
+            break
+    if not delim:
+        comments = ''.join(result)
+        if comments:
+            nl = '\n\n' if root.b.strip() else ''
+            if root.b.startswith('@first #!'):
+                lines = g.splitLines(root.b)
+                root.b = lines[0] + '\n' + comments + nl + ''.join(lines[1:])
+            else:
+                root.b = comments + nl + root.b
+            p.b = s[len(comments):]
+        return
+    i = s.find(delim)
+    assert i &gt; -1
+    i = s.find(delim,i+3)
+    if i == -1:
+        return
+    doc = s[:i+3]
+    p.b = s[i+3:].lstrip()
+    # Move docstring to front of root.b, but after any shebang line.
+    nl = '\n\n' if root.b.strip() else ''
+    if root.b.startswith('@first #!'):
+        lines = g.splitLines(root.b)
+        root.b = lines[0] + '\n' + doc + nl + ''.join(lines[1:])
+    else:
+        root.b = doc + nl + root.b
+</t>
+<t tx="ekr.20131128115544.3521">def move_shebang_line (self,c,root):
+    '''Move a shebang line from the first child to the root.'''
+    p = root.firstChild()
+    s = p and p.b or ''
+    if not s.startswith('#!'):
+        return 
+    lines = g.splitLines(s)
+    nl = '\n\n' if root.b.strip() else ''
+    root.b = '@first ' + lines[0] + nl + root.b
+    p.b = ''.join(lines[1:])
+</t>
+<t tx="ekr.20131128115544.3522">def rename_decls (self,c,root):
+    '''Use a section reference for declarations.'''
+    p = root.firstChild()
+    h = p and p.h or ''
+    tag = 'declarations'
+    if not h.endswith(tag):
+        return
+    if not p.b.strip():
+        return # The blank node will be deleted.
+    name = h[:-len(tag)].strip()
+    decls = g.angleBrackets(tag)
+    p.h = '%s (%s)' % (decls,name)
+    i = root.b.find('@others')
+    if i == -1:
+        g.trace('can not happen')
+    else:
+        nl = '' if i == 0 else '\n'
+        root.b = root.b[:i] + nl + decls + '\n' + root.b[i:]
+</t>
+<t tx="ekr.20131128115544.3523">def post_process (self,c,p,prefix,theTypes):
+    '''
+    Traverse p's tree, replacing all nodes that start with prefix by the
+    smallest equivalent @path or @file node.
+    '''
+    assert p
+    root = p.copy()
+    self.fix_back_slashes(root.copy())
+    prefix = prefix.replace('\\','/')
+    self.remove_empty_nodes(c,root.copy())
+    self.minimize_headlines(c,root.copy().firstChild(),prefix,theTypes)
+    self.clear_dirty_bits(c,root.copy())
+</t>
+<t tx="ekr.20131128115544.3524">def clear_dirty_bits (self,c,p):
+    
+    c.setChanged(False)
+    for p in p.self_and_subtree():
+        p.clearDirty()
+</t>
+<t tx="ekr.20131128115544.3525">def dump_headlines (self,p):
+    '''Show all headlines.'''
+    for p in p.self_and_subtree():
+        print(p.h)
+</t>
+<t tx="ekr.20131128115544.3526">def fix_back_slashes (self,p):
+    '''Convert backslash to slash in all headlines.'''
+    for p in p.self_and_subtree():
+        s = p.h.replace('\\','/')
+        if s != p.h:
+            p.h = s
+</t>
+<t tx="ekr.20131128115544.3527">def minimize_headlines (self,c,p,prefix,theTypes):
+    '''Create @path nodes to minimize the paths required in descendant nodes.'''
+    trace = False
+    # This could only happen during testing.
+    if p.h.startswith('@'):
+        g.trace('** skipping: %s' % (p.h))
+        return
+    h2 = p.h[len(prefix):].strip()
+    ends_with_ext = any([h2.endswith(z) for z in theTypes])
+    if p.h == prefix:
+        if trace: g.trace('@path %s' % (p.h))
+        p.h = '@path %s' % (p.h)
+        for p in p.children():
+            self.minimize_headlines(c,p,prefix,theTypes)
+    elif h2.find('/') &lt;= 0 and ends_with_ext:
+            if h2.startswith('/'): h2 = h2[1:]
+            if safe_at_file:
+                if trace: g.trace('@@file %s' % (h2))
+                p.h = '@@file %s' % (h2)
+            else:
+                if trace: g.trace('@file %s' % (h2))
+                p.h = '@file %s' % (h2)
+            # We never scan the children of @file nodes.
+    else:
+        if h2.startswith('/'): h2 = h2[1:]
+        if trace:
+            print('')
+            g.trace('@path [%s/]%s' % (prefix,h2))
+        p.h = '@path %s' % (h2)
+        prefix2 = prefix if prefix.endswith('/') else prefix + '/'
+        prefix2 = prefix2 + h2
+        for p in p.children():
+            self.minimize_headlines(c,p,prefix2,theTypes)
+</t>
+<t tx="ekr.20131128115544.3528">def remove_empty_nodes (self,c,p):
+    '''Eponymous.'''
+    root = p.copy()
+    # Restart the scan once a node is deleted.
+    changed = True
+    while changed:
+        changed = False
+        for p in root.self_and_subtree():
+            if not p.b and not p.hasChildren():
+                # g.trace('** deleting',p.h)
+                p.doDelete()
+                c.selectPosition(root)
+                changed = True
+                break
+                
+</t>
+<t tx="ekr.20131128115544.3529"># def munge_at_file (self,c,p):
+    
+    # for p in p.self_and_subtree():
+        # if p.h.startswith('@@file'):
+            # p.h = p.h[1:]
+            # s = p.b
+            # i = s.find('@tabwidth -4\n')
+            # if i &gt; 0:
+                # i = g.skip_line(s,i)
+                # p.b = s[:i] + '@others\n' + s[i:]
+            # else:
+                # g.trace('@tabwidth not found')
+</t>
+<t tx="ekr.20131128115544.3530">def run (self,c,p,theDir,theTypes):
+    '''Import all the .py files in theDir.'''
+    try:
+        t1 = time.time()
+        p1 = p.copy()
+        g.app.disable_redraw = True
+        bunch = c.undoer.beforeChangeTree(p1)
+        assert p == c.p
+        root = p.insertAfter()
+        # root.h = '@path %s' % (theDir)
+        root.h = 'imported files'
+        prefix = theDir
+        self.import_dir(c,root.copy(),theDir,theTypes)
+        n = 0
+        for p in root.self_and_subtree():
+            n += 1
+        self.clean_all(c,root.copy())
+        self.post_process(c,root.copy(),theDir,theTypes)
+        c.undoer.afterChangeTree(p1,'recursive-import',bunch)
+    finally:
+        g.app.disable_redraw = False
+        root.contract()
+        c.redraw(root)
+    t2 = time.time()
+    g.trace('imported %s nodes in %2.2f sec' % (n,t2-t1))
+</t>
+<t tx="ekr.20131128115544.3531">leoFind.py is one of the source files in Leo's core.
+
+It is built from an outline just as before.
+ </t>
+<t tx="ekr.20131128115544.3649">The previous examples show that *outline structure is visible everywhere*.
+
+Less obviously, but more importantly: *outlines create user-defined contexts and types*.
+
+Scripts and programs can use those contexts in new and creative ways.
+
+By convention, headlines starting with @ denote new types/contexts.
+
+Leo defines many types. You can easily define your own.
+</t>
+<t tx="ekr.20131128115544.3650">@int, @string, @font, @data and similar nodes define user settings.
+
+These nodes have no effect outside @settings trees.</t>
+<t tx="ekr.20131128115544.3651">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@language python
+</t>
+<t tx="ekr.20131128115544.3652"># Standard bindings...
+# run-selected-unit-tests-externally = Alt-4 
+# run-marked-unit-tests-externally = Alt-5
+# run-marked-unit-tests-locally = Alt-6
+run-selected-unit-tests-locally = Alt-4
+do-nothing = Alt-5
+run-marked-unit-tests-locally = Alt-6
+</t>
+<t tx="ekr.20131128115544.3653"># Toggle the settings.
+g.app.debug_app = not g.app.debug_app
+g.app.debug_widgets = not g.app.debug_widgets
+# Report the new settings.
+print('g.app.debug_app: %s' % g.app.debug_app)
+print('g.app.debug_widgets: %s' % g.app.debug_widgets)
+
+
+
+
+
+
+
+
+
+
+
+
+
+@language python
+</t>
+<t tx="ekr.20131128115544.3654">@nocolor
+
+For testing, these are loaded "by hand" so that reloading this file is not
+needed.
+</t>
+<t tx="ekr.20131128115544.3655"># Not yet...
+
+    &lt;BS&gt;        delete the character in front of the cursor
+N   &lt;Del&gt;       delete N characters under and after the cursor
+    &lt;Del&gt;       delete the character under the cursor
+    &lt;Del&gt;       while entering a count: delete last character
+    &lt;Down&gt;      recall newer command-line that starts with current command
+    &lt;Esc&gt;       abandon command-line (if 'wildchar' is &lt;Esc&gt;, type it twice)
+    &lt;Left&gt;      (motion) cursor left
+    &lt;Right&gt;     (motion) cursor right
+    &lt;S-Down&gt;    recall newer command-line from history
+    &lt;S-Left&gt;    (motion) cursor one word left
+    &lt;S-Right&gt;   (motion) cursor one word right
+    &lt;S-Up&gt;      recall older command-line from history
+    &lt;Up&gt;        recall older command-line that starts with current command
+
+N   CTRL-^                  Edit alternate file N (equivalent to ":e #N").
+N   CTRL-A                  add N to the number at or after the cursor
+N   CTRL-B                  window N pages Backwards (upwards)
+    CTRL-B                  (motion?) cursor to beginning of command-line
+    CTRL-BREAK              MS-DOS: during searches: interrupt the search
+    CTRL-C                  during searches: interrupt the search
+N   CTRL-D                  window N lines Downwards (default: 1/2 window)
+N   CTRL-E                  window N lines downwards (default: 1)
+    CTRL-E                  (motion?) cursor to end of command-line
+N   CTRL-F                  (motion) window N pages Forwards (downwards)
+    CTRL-G                  show current file name (with path) and cursor position
+N   CTRL-I                  (motion) go to Nth newer position in jump list
+    CTRL-K {char1} {char2}  enter digraph
+    CTRL-L                  Clear and redraw the screen.
+N   CTRL-O                  (motion) go to Nth older position in jump list
+N   CTRL-R                  redo last N undone changes
+    CTRL-R &lt;0-9a-z"%:-&gt;     insert contents of register &lt;0-9a-z"%:-&gt;
+N   CTRL-T                  (motion) Jump back from Nth older tag in tag list
+N   CTRL-U                  window N lines Upwards (default: 1/2 window)
+    CTRL-U                  remove all characters
+    CTRL-V                  highlight blockwise or stop highlighting
+    CTRL-V                  start highlighting blockwise   }  highlighted text
+    CTRL-V {char}           insert {char} literally
+    CTRL-V {number}         enter decimal value of character (up to three digits)
+    CTRL-W                  delete the word in front of the cursor
+    CTRL-W +                Increase current window height
+    CTRL-W -                Decrease current window height
+    CTRL-W =                Make all windows equal height
+    CTRL-W CTRL-W           Move cursor to window below (wrap)
+    CTRL-W CTRL-^           Split window and edit alternate file
+    CTRL-W R                Rotate windows upwards
+    CTRL-W W                Move cursor to window above (wrap)
+    CTRL-W ]                Split window and jump to tag under cursor
+    CTRL-W _                Set current window height (default: very high)
+    CTRL-W b                Move cursor to bottom window
+    CTRL-W c  or :cl[ose]   Make buffer hidden and close window
+    CTRL-W f                Split window and edit file name under the cursor
+    CTRL-W j                Move cursor to window below
+    CTRL-W k                Move cursor to window above
+    CTRL-W n  or :new       Create new empty window
+    CTRL-W o  or :on[ly]    Make current window only one on the screen
+    CTRL-W p                Move cursor to previous active window
+    CTRL-W q  or :q[uit]    Quit editing and close window
+    CTRL-W r                Rotate windows downwards
+    CTRL-W s                Split window into two parts
+    CTRL-W t                Move cursor to top window
+    CTRL-W x                Exchange current window with next one
+N   CTRL-X                  subtract N from the number at or after the cursor
+N   CTRL-Y                  window N lines upwards (default: 1)
+    CTRL-Z                  Same as ":stop!"
+    CTRL-]                  Jump to the tag under cursor, unless changes have been made
+</t>
+<t tx="ekr.20131128115544.3656">char F
+char T
+char f
+char r
+char t
+letter m
+letter q
+motion &lt;
+motion &gt;
+motion c
+motion d
+motion g
+motion y
+pattern /
+pattern ?
+register @
+</t>
+<t tx="ekr.20131128115544.3657"># http://tnerual.eriogerg.free.fr/vimqrc.html
+vim_0 0
+vim_tilda ~
+vim_plus +
+vim_underscore _
+vim_minus -
+vim_comma ,
+vim_dot .
+vim_semicolon ;
+vim_lparen (
+vim_rparen )
+vim_lcurly {
+vim_rcurly }
+vim_vertical |
+vim_backtick `
+vim_dollar $
+vim_caret ^
+vim_percent %
+vim_langle &lt;
+vim_langle &lt;&lt;
+vim_rangle &gt;
+vim_rangle &gt;&gt;
+vim_pound #
+vim_star *
+vim_slash /\\n
+vim_slash /
+vim_question ?\\n
+vim_question ?
+vim_at @
+vim_at @@
+vim_dquote "
+vim_lsquare [#
+vim_lsquare [(
+vim_lsquare [*
+vim_lsquare [[
+vim_lsquare []
+vim_lsquare [p
+vim_lsquare [{
+vim_rsquare ]#
+vim_rsquare ])
+vim_rsquare ]*
+vim_rsquare ][
+vim_rsquare ]]
+vim_rsquare ]p
+vim_rsquare ]}
+vim_A A
+vim_B B
+vim_C C
+vim_D D
+vim_E E
+vim_F F
+vim_G G
+vim_H H
+vim_I I
+vim_J J
+vim_K K
+vim_M M
+vim_L L
+vim_N N
+vim_O O
+vim_P P
+vim_R R
+vim_S S
+vim_T T
+vim_U U
+vim_V V
+vim_W W
+vim_X X
+vim_Y Y
+vim_Z ZQ
+vim_Z ZZ
+vim_a a
+vim_b b
+vim_c c
+vim_d dd
+vim_d d
+vim_g g~
+vim_g g^
+vim_g g#
+vim_g g$
+vim_g g*
+vim_g g0
+vim_g gD
+vim_g gE
+vim_g gI
+vim_g gU
+vim_g ga
+vim_g gd
+vim_g ge
+vim_g gf
+vim_g gg
+vim_g gj
+vim_g gk
+vim_g gq
+vim_g gs
+vim_g gu
+vim_g gv
+vim_h h
+vim_i i
+vim_j j
+vim_k k
+vim_l l
+vim_n n
+vim_m m
+vim_o o
+vim_p p
+vim_q q
+vim_r r
+vim_s s
+vim_t t
+vim_u u
+vim_v v
+vim_w w
+vim_x x
+vim_y y
+vim_y yy
+vim_z z-
+vim_z z.
+vim_z z&lt;CR&gt;
+vim_z zb
+vim_z zh
+vim_z zl
+vim_z zt
+vim_z zz
+</t>
+<t tx="ekr.20131128115544.3658"># CR
+# Ctrl-End
+# Ctrl-Home
+# Ctrl-Left
+# Ctrl-M
+# Ctrl-N
+# Ctrl-P
+# Ctrl-Right
+# End
+# Home
+# Shift-Left
+# Shift-Right
+
+( 	
+)
+{
+}
+[[
+[]
+][
+]]
+$
+^	
++
+,
+-
+;
+_
+0
+B
+E
+F
+G
+T
+W
+b
+e
+f
+g$
+g^
+g0
+gE
+# gEnd
+# gHome	
+ge
+gg
+h
+j
+k
+t
+w
+</t>
+<t tx="ekr.20131128115544.3659">char F
+char T
+char f
+char t
+</t>
+<t tx="ekr.20131128115544.3660">@test nodes define unit tests.
+
+No need to subclass unittest.UnitTest!</t>
+<t tx="ekr.20131128115544.3661">assert False
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@language python
+</t>
+<t tx="ekr.20131128115544.3662">======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test nodes define unit tests
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\core\leoTest.py", line 413, in runTest
+    execfile(scriptFile,d)
+  File "C:\leo.repo\trunk\leo\test\scriptFile.py", line 3, in &lt;module&gt;
+    assert False
+AssertionError
+
+----------------------------------------------------------------------
+Ran 1 test in 0.007s
+
+
+
+
+
+
+@nocolor-node
+</t>
+<t tx="ekr.20131128115544.3663"># Test that c, g &amp; p are predefined in unit tests.
+
+import leo.core.leoCommands as leoCommands
+import leo.core.leoGlobals as leoGlobals
+import leo.core.leoNodes as leoNodes
+
+assert g == leoGlobals
+assert isinstance(c,leoCommands.Commands),c
+assert isinstance(p,leoNodes.position)
+
+
+
+
+
+
+
+
+
+@language python
+</t>
+<t tx="ekr.20131128115544.3664">.
+----------------------------------------------------------------------
+Ran 1 test in 0.007s
+
+OK
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@nocolor-node
+</t>
+<t tx="ekr.20131128115544.3665">@button nodes define commands.
+
+You can apply these commands to *particular* trees.
+
+</t>
+<t tx="ekr.20131128115544.3666">g.es(len(p.b),p.h)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@language python
+</t>
+<t tx="ekr.20131128115544.3667">@language rest
+
+You definine abbreviations in @data nodes in @settings trees.
+
+Most abbriations end with ";;" so they don't trigger unexpectedly.
+
+The file;; abbreviation inserts an entire outline:
+
+file;</t>
+<t tx="ekr.20131128115544.3668">Alt-0 (vr-toggle) shows and hides the **viewrendered pane**.
+
+This pane renders the body text in the selected node.
+</t>
+<t tx="ekr.20131128115544.3669">C:\Users\edreamleo\Documents\Music\2001- A Space Odyssey [Rhino]\06 Gayane Ballet Suite.mp3</t>
+<t tx="ekr.20131128115544.3670">@language rest
+.. This is a reStructedText comment.
+.. This pane is colored as reStructedText
+.. The vr pane shows the rendered output.
+.. The rendering changes as you type.
+
+#######
+Title
+#######
+
+This is **bold** and *italics*
+
+Section
+=======
+
+- Bullet list
+- Another item
+- Third item.</t>
+<t tx="ekr.20131128115544.3671">../Icons/SplashScreen.ico
+
+</t>
+<t tx="ekr.20131128115544.3672">@language html
+
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;!-- This is Leo's home page --&gt;
+&lt;!--@+leo-ver=5-thin--&gt;
+&lt;!--@+node:ekr.20100808060203.4273: * @file html/index.html--&gt;
+&lt;!--@@first--&gt;
+&lt;!--@@first--&gt;
+&lt;!--@@first--&gt;
+
+&lt;!--@@language html--&gt;
+&lt;!--@@tabwidth -2--&gt;
+
+&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+&lt;head&gt;
+    &lt;!--@+&lt;&lt; head &gt;&gt;--&gt;
+    &lt;!--@+node:ekr.20100808060203.4274: ** &lt;&lt; head &gt;&gt; (home page)--&gt;
+    &lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+
+    &lt;title&gt;Leo's Home Page&lt;/title&gt;
+    &lt;link rel="stylesheet" href="_static/default.css" type="text/css" /&gt;
+    &lt;link rel="stylesheet" href="_static/pygments.css" type="text/css" /&gt;
+
+    &lt;!-- scale screen-shot to fit parent container --&gt;
+    &lt;style type="text/css"&gt;
+    img { max-width:100%; max-height:100%; }
+    &lt;/style&gt;
+
+    &lt;!--
+    &lt;script type="text/javascript"&gt;
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '4.11',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    &lt;/script&gt;
+    --&gt;
+    &lt;!--@+&lt;&lt; flattr head &gt;&gt;--&gt;
+    &lt;!--@+node:ekr.20110518101739.18155: *3* &lt;&lt; flattr head &gt;&gt;--&gt;
+    &lt;script type="text/javascript"&gt;
+    /* &lt;![CDATA[ */
+        (function() {
+            var s = document.createElement('script'), t = document.getElementsByTagName('script')[0];
+            s.type = 'text/javascript';
+            s.async = true;
+            s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+            t.parentNode.insertBefore(s, t);
+        })();
+    /* ]]&gt; */
+    &lt;/script&gt;
+    &lt;!--@-&lt;&lt; flattr head &gt;&gt;--&gt;
+
+    &lt;!--@+&lt;&lt; feed2js stylesheet &gt;&gt;--&gt;
+    &lt;!--@+node:ekr.20111028195854.16608: *3* &lt;&lt; feed2js stylesheet &gt;&gt;--&gt;
+    &lt;style type="text/css" media="all"&gt;
+
+    &lt;!-- See: http://feed2js.org/index.php?s=style --&gt;
+
+    .rss_box {
+        width:   0px;
+        padding: 0px;
+        border:  0px solid white;
+        margin:  0px;
+    }
+
+    .rss_title {
+        visibility:hidden;
+        line-height: 0px;
+    }
+
+    .rss_items {
+        font-size: 80%;
+    }
+
+    &lt;/style&gt;
+    &lt;!--@-&lt;&lt; feed2js stylesheet &gt;&gt;--&gt;
+
+    &lt;!-- &lt;script type="text/javascript" src="_static/jquery.js"&gt;&lt;/script&gt;--&gt;
+    &lt;!-- &lt;script type="text/javascript" src="_static/doctools.js"&gt;&lt;/script&gt;--&gt;
+    &lt;link rel="top" title="Leo 4.11 documentation" href="index.html" /&gt;
+    &lt;link rel="Users Guide" title="Leo&amp;#8217;s Users Guide" href="leo_toc.html" /&gt;
+    &lt;!-- &lt;link rel="prev" title="Using LeoÃ¢â‚¬â„¢s Commands" href="commands.html" /&gt;--&gt; 
+    &lt;!--@-&lt;&lt; head &gt;&gt;--&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;!--@+&lt;&lt; div top nav &gt;&gt;--&gt;
+  &lt;!--@+node:ekr.20100808060203.4276: ** &lt;&lt; div top nav &gt;&gt;--&gt;
+  &lt;div class="related"&gt;
+    &lt;h3&gt;Navigation&lt;/h3&gt;
+    &lt;ul&gt;
+      &lt;li class="right" style="margin-right: 10px"&gt;
+        &lt;a href="genindex.html" title="General Index"
+           accesskey="I"&gt;index&lt;/a&gt;&lt;/li&gt;
+      &lt;li class="right" &gt;
+        &lt;a href="glossary.html" title="Glossary"
+           accesskey="G"&gt;glossary&lt;/a&gt; |&lt;/li&gt;
+      &lt;li class="right" &gt;
+        &lt;a href="leo_toc.html" title="Users Guide"
+           accesskey="N"&gt;contents&lt;/a&gt; |&lt;/li&gt;
+      &lt;li&gt;&lt;a href="leo_toc.html"&gt;Leo 4.11 documentation&lt;/a&gt;&lt;/li&gt;
+      &lt;!--  &amp;raquo; --&gt;
+    &lt;/ul&gt;
+  &lt;/div&gt;
+  &lt;!--@-&lt;&lt; div top nav &gt;&gt;--&gt;
+  &lt;div class="document"&gt;
+    &lt;div class="documentwrapper"&gt;
+      &lt;div class="bodywrapper"&gt;
+        &lt;div class="body"&gt;
+          &lt;!--@+&lt;&lt; div main section &gt;&gt;--&gt;
+          &lt;!--@+node:ekr.20100808060203.4286: ** &lt;&lt; div main section &gt;&gt; (home page)--&gt;
+          &lt;div class="section" id="Leo&amp;#8217;s Home page"&gt;
+
+              &lt;h1&gt;Leo&amp;#8217;s Home Page&lt;/h1&gt;
+              &lt;!--@+&lt;&lt; Leo is... &gt;&gt;--&gt;
+              &lt;!--@+node:ekr.20111019104425.15904: *3* &lt;&lt; Leo is... &gt;&gt;--&gt;
+              &lt;p&gt;&lt;blockquote&gt;
+                "Leo is a revolutionary step in the right direction for programming."&amp;#8213;Brian Takita
+              &lt;/blockquote&gt;
+
+              &lt;blockquote&gt; "Leo is the best IDE that I have had the pleasure to use. It
+              has totally changed not only the way that I program, but also the way that
+              I store and organize all of the information that I need for the job that I
+              do."&amp;#8213;Ian Mulvany
+              &lt;/blockquote&gt;
+
+              &lt;blockquote&gt;
+              "When first I opened Leo, it was out of curiosity. But having used it, I'll
+              never go back. They'll have to pry Leo out of my cold, dead fingers!"&amp;#8213;Travers A. Hough
+              &lt;/blockquote&gt;
+              &lt;p&gt;
+              Leo is a
+              &lt;a href="https://en.wikipedia.org/wiki/Personal_information_manager"&gt;PIM&lt;/a&gt;, 
+              &lt;a href="https://en.wikipedia.org/wiki/Integrated_development_environment"&gt;IDE&lt;/a&gt;
+              and outliner that
+              &lt;strong&gt;accelerates the work flow&lt;/strong&gt;
+              of programmers, authors and web designers.
+              Leo's unique features &lt;strong&gt;organize data in a revolutionary way&lt;/strong&gt;:
+              &lt;li&gt;
+                Leo outlines are views on an underlying
+                &lt;a href="https://en.wikipedia.org/wiki/Directed_acyclic_graph"&gt;graph&lt;/a&gt;.
+              &lt;li&gt;
+                Outline nodes can reside in &lt;strong&gt;many&lt;/strong&gt; places within a single outline.&lt;/li&gt;
+              &lt;li&gt;
+                Leo is fully scriptable in &lt;a HREF="http://www.python.org/"&gt;Python&lt;/a&gt;.&lt;/li&gt;
+              &lt;li&gt;
+                Leo scripts have full access to Leo's source code and all outline data.&lt;/li&gt;
+              &lt;li&gt;
+                &lt;a href="http://leoeditor.com/tutorial-programming.html"&gt;Outline-oriented markup&lt;/a&gt; generates
+                &lt;a href="http://leoeditor.com/tutorial-basics.html#creating-external-files-with-file-and-all"&gt;external files&lt;/a&gt;
+                from outlines.&lt;/li&gt;
+              &lt;/p&gt;
+              &lt;p&gt;
+                &lt;a href="http://leoeditor.com/preliminaries.html#preface"&gt;
+                  &lt;strong&gt;Learn why Leo is special&lt;/strong&gt;&lt;/a&gt;.
+                &lt;br&gt;
+                &lt;a href="http://leoeditor.com/tutorial.html"&gt;
+                  &lt;strong&gt;Learn about Leo in two hours&lt;/strong&gt;&lt;/a&gt;.
+              &lt;/p&gt;
+              &lt;p&gt;
+              Furthermore:
+              &lt;/p&gt;
+              &lt;li&gt;
+              Leo is &lt;a href="http://www.opensource.org/"&gt;&lt;i&gt;Open Software&lt;/i&gt;&lt;/a&gt;,
+              written in pure &lt;a HREF="http://www.python.org/"&gt;Python&lt;/a&gt;.
+              &lt;li&gt;
+              Leo a &lt;a HREF="http://www.riverbankcomputing.co.uk/software/pyqt/intro"&gt;PyQt&lt;/a&gt;
+              app that runs on Linux, Windows and MacOS.&lt;/li&gt;
+              &lt;li&gt;
+              Leo works well with &lt;a href="http://www.gnu.org/software/emacs/"&gt;emacs&lt;/a&gt;,
+                &lt;a href="http://www.xemacs.org/"&gt;xemacs&lt;/a&gt;,
+                &lt;a href="http://www.vim.org/"&gt;vim&lt;/a&gt;, and
+                &lt;a href="http://ipython.org/"&gt;ipython&lt;/a&gt;.&lt;/li&gt;
+              &lt;/p&gt;
+              &lt;!--@-&lt;&lt; Leo is... &gt;&gt;--&gt;
+              &lt;!--@+&lt;&lt; Leo Google group &amp; postcard &gt;&gt;--&gt;
+              &lt;!--@+node:ekr.20131005151401.16117: *3* &lt;&lt; Leo Google group &amp; postcard &gt;&gt;--&gt;
+              &lt;p&gt;
+              &lt;strong&gt;We welcome your questions and comments!&lt;/strong&gt;
+              &lt;br&gt;
+              Ask us anything at the medium traffic
+              &lt;a href="http://groups.google.com/group/leo-editor"&gt;&lt;strong&gt;leo-editor Google Group&lt;/strong&gt;&lt;/a&gt;.
+              &lt;br&gt;
+              If you use Leo, please
+              &lt;a href="mailto:edreamleo@gmail.com?Subject=About%20Leo" target="_top"&gt;
+                &lt;strong&gt;send us a postcard&lt;/strong&gt;&lt;/a&gt;, telling how you use Leo. Thanks!
+              &lt;/p&gt;
+
+              &lt;!--
+              &lt;p&gt;Here are the most recent discussions...&lt;/p&gt;
+              &lt;script language="JavaScript"
+                src="http://itde.vccs.edu/rss2js/feed2js.php?src=http%3A%2F%2Fgroups.google.com%2Fgroup%2Fleo-editor%2Ffeed%2Frss_v2_0_msgs.xml&amp;chan=title&amp;num=5&amp;desc=0&amp;date=y&amp;targ=y"
+                type="text/javascript"&gt;
+              &lt;/script&gt;
+              --&gt;
+              &lt;!--@-&lt;&lt; Leo Google group &amp; postcard &gt;&gt;--&gt;
+              &lt;!--@+&lt;&lt; screenshot &gt;&gt;--&gt;
+              &lt;!--@+node:ekr.20130924043646.21624: *3* &lt;&lt; screenshot &gt;&gt;--&gt;
+              &lt;p&gt;Here is a slightly reduced screenshot of Leo's main window:&lt;/p&gt;
+
+              &lt;!-- height/width taken from basics1.html --&gt;
+              &lt;img class="screenshot"
+                  src="screen-shots/render-svg-sources.png"
+                  width="791.2px" height="692.8px" 
+                  alt="ScreenShot"/&gt;
+              &lt;!--@-&lt;&lt; screenshot &gt;&gt;--&gt;
+          &lt;/div&gt;
+          &lt;!--@-&lt;&lt; div main section &gt;&gt;--&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;!--@+&lt;&lt; sidebar &gt;&gt;--&gt;
+    &lt;!--@+node:ekr.20100808060203.4282: ** &lt;&lt; sidebar &gt;&gt; (home page)--&gt;
+    &lt;div class="sphinxsidebar"&gt;
+        &lt;div class="sphinxsidebarwrapper"&gt;
+            &lt;!--@+&lt;&lt; sidebar contents &gt;&gt;--&gt;
+            &lt;!--@+node:ekr.20100808060203.4283: *3* &lt;&lt; sidebar contents &gt;&gt; (home page)--&gt;
+            &lt;!--@@language html--&gt;
+
+            &lt;p class="logo"&gt;&lt;a href="leo_toc.html"&gt;
+              &lt;img class="logo" src="_static/Leo4-80-border.jpg" alt="Logo"/&gt;&lt;/a&gt;
+            &lt;/p&gt;
+
+            &lt;p&gt;
+              &lt;a class="reference external" href="leo_toc.html"&gt;Table of contents&lt;/a&gt;: click the lion!
+            &lt;/p&gt;
+            &lt;p&gt;
+            &lt;form&gt;
+              &lt;!-- background-color:skyblue3 --&gt;
+              &lt;!-- border-style:solid;border-color:#87CEEB --&gt;
+              &lt;input type="button"
+                style="background-color:#6CA6CD;"
+                value="Download Leo"
+                onClick="window.location.href='http://leoeditor.com/download.html'"&gt;
+            &lt;/form&gt;
+            &lt;/p&gt;
+
+            &lt;a class="reference external" href="http://leoeditor.com/screencasts.html"&gt;
+              Videos about Leo&lt;/a&gt;&lt;br&gt;
+
+            &lt;!---
+            &lt;a href="http://www.youtube.com/watch?v=Zu6J-J0qFi0"&gt;
+              Introductory video&lt;/a&gt;&lt;br&gt;
+            &lt;a href="https://vimeo.com/77720098 "&gt;
+              Bookmarks plugin video&lt;/a&gt;&lt;br&gt;
+            --&gt;
+              
+            &lt;a class="reference external" href="tutorial.html"&gt;
+              Leo's Tutorial&lt;/a&gt;&lt;br&gt;
+
+            &lt;a class="reference external" href="http://leoeditor.com/leo_toc.html"&gt;
+              Leo's Documentation&lt;/a&gt;&lt;br&gt;
+              
+            &lt;a class="reference external" href="http:screen-shots.html"&gt;
+              Screen shots of Leo&lt;/a&gt;&lt;br&gt;
+              
+            &lt;a class="reference external" href="testimonials.html"&gt;
+              Quotes from Leo&amp;#8217;s Users&lt;/a&gt;&lt;br&gt;
+              
+            &lt;a class="reference external" href="slides.html"&gt;
+              Tutorial Slide Shows&lt;/a&gt;&lt;br&gt;
+              
+            &lt;a class="reference external" href="http://webchat.freenode.net/?channels=%23leo&amp;uio=d4"&gt;
+              #leo IRC&lt;/a&gt;&lt;br&gt;
+
+            &lt;a class="reference external" href="http://groups.google.com/group/leo-editor"&gt;
+              leo-editor: Google Groups&lt;/a&gt;&lt;br&gt;
+              
+            &lt;a class="reference external" href="http://launchpad.net/leo-editor"&gt;
+              leo-editor: Launchpad&lt;/a&gt;&lt;br&gt;
+              
+            &lt;a class="reference external" href="http://leo.zwiki.org"&gt;
+              Leo&amp;#8217;s Wiki&lt;/a&gt;&lt;br&gt;
+              
+            &lt;a class="reference external" href="http://leo-editor.readthedocs.org/en/latest/"&gt;
+              Leo&amp;#8217;s API documentation&lt;/a&gt;&lt;br&gt;
+              
+            &lt;a class="reference external" href="http://www.mind-mapping.org/"&gt;
+              Mind Mapping&lt;/a&gt;&lt;br&gt;
+
+            &lt;a class="reference external" href="leoLinks.html"&gt;
+              More links...&lt;/a&gt;&lt;br&gt;
+              
+            &lt;/p&gt;
+            &lt;p&gt;
+            &lt;div id="searchbox" style=""&gt;
+              &lt;h3&gt;Quick search&lt;/h3&gt;
+              &lt;form class="search" method="get" action="search.html"&gt;
+                &lt;input type="text" name="q"&gt;
+                &lt;input type="submit" value="Go"&gt;
+                &lt;input type="hidden" value="yes" name="check_keywords"&gt;
+                &lt;input type="hidden" value="default" name="area"&gt;
+              &lt;/form&gt;
+              &lt;p class="searchtip" style="font-size: 90%"&gt;
+                Enter search terms or a module, class or function name.
+              &lt;/p&gt;
+            &lt;/div&gt;
+            &lt;/p&gt;
+
+            &lt;p&gt;Leo: Leonine Editor with Outlines&lt;/p&gt;
+
+            &lt;p&gt;Written by &lt;a HREF="ekr.html"&gt;Edward K. Ream&lt;/a&gt;
+            &lt;!--@+&lt;&lt; flattr icon &gt;&gt;--&gt;
+            &lt;!--@+node:ekr.20110518101739.18154: *4* &lt;&lt; flattr icon &gt;&gt;--&gt;
+            &lt;a class="FlattrButton" style="display:none;" rev="flattr;button:compact;"
+            href="http://leoeditor.com"&gt;&lt;/a&gt;
+            &lt;noscript&gt;
+            &lt;a href="http://flattr.com/thing/410073/Leo" target="_blank"&gt;
+            &lt;img src="http://api.flattr.com/button/flattr-badge-large.png"
+            alt="Flattr this" title="Flattr this" border="0" /&gt;
+            &lt;/a&gt;
+            &lt;/noscript&gt;
+            &lt;!--@-&lt;&lt; flattr icon &gt;&gt;--&gt;
+            &lt;/p&gt;
+            &lt;!--@-&lt;&lt; sidebar contents &gt;&gt;--&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;!--@-&lt;&lt; sidebar &gt;&gt;--&gt;
+    &lt;div class="clearer"&gt;&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;!--@+&lt;&lt; div bottom nav &gt;&gt;--&gt;
+  &lt;!--@+node:ekr.20100808060203.4277: ** &lt;&lt; div bottom nav &gt;&gt;--&gt;
+  &lt;div class="related"&gt;
+    &lt;h3&gt;Navigation&lt;/h3&gt;
+    &lt;ul&gt;
+      &lt;li class="right" style="margin-right: 10px"&gt;
+        &lt;a href="genindex.html" title="General Index"
+           &gt;index&lt;/a&gt;&lt;/li&gt;
+      &lt;li class="right" &gt;
+        &lt;a href="glossary.html" title="Glossary"
+           accesskey="G"&gt;glossary&lt;/a&gt; |&lt;/li&gt;
+      &lt;li class="right" &gt;
+        &lt;a href="leo_toc.html" title="Users Guide"
+           &gt;contents&lt;/a&gt; |&lt;/li&gt;
+
+      &lt;li&gt;&lt;a href="leo_toc.html"&gt;Leo 4.11 documentation&lt;/a&gt;&lt;/li&gt; 
+    &lt;/ul&gt;
+  &lt;/div&gt;
+  &lt;!--@-&lt;&lt; div bottom nav &gt;&gt;--&gt;
+  &lt;!--@+&lt;&lt; div footer &gt;&gt;--&gt;
+  &lt;!--@+node:ekr.20100808060203.4278: ** &lt;&lt; div footer &gt;&gt;--&gt;
+  &lt;div class="footer"&gt;
+    &amp;copy; Copyright 2001-2013, Edward K. Ream.
+    Last updated on November 6, 2013.
+    Created using &lt;a href="http://sphinx.pocoo.org/"&gt;Sphinx&lt;/a&gt; 1.1.
+  &lt;/div&gt;
+  &lt;!--@-&lt;&lt; div footer &gt;&gt;--&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+&lt;!--@-leo--&gt;
+</t>
+<t tx="ekr.20131128115544.3673">@language html
+
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;!-- This is Leo's home page --&gt;
+&lt;!--@+leo-ver=5-thin--&gt;
+&lt;!--@+node:ekr.20100808060203.4273: * @file html/index.html--&gt;
+&lt;!--@@first--&gt;
+&lt;!--@@first--&gt;
+&lt;!--@@first--&gt;
+
+&lt;!--@@language html--&gt;
+&lt;!--@@tabwidth -2--&gt;
+
+&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+&lt;head&gt;
+    &lt;!--@+&lt;&lt; head &gt;&gt;--&gt;
+    &lt;!--@+node:ekr.20100808060203.4274: ** &lt;&lt; head &gt;&gt; (home page)--&gt;
+    &lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+
+    &lt;title&gt;Leo's Home Page&lt;/title&gt;
+    &lt;link rel="stylesheet" href="_static/default.css" type="text/css" /&gt;
+    &lt;link rel="stylesheet" href="_static/pygments.css" type="text/css" /&gt;
+
+    &lt;!-- scale screen-shot to fit parent container --&gt;
+    &lt;style type="text/css"&gt;
+    img { max-width:100%; max-height:100%; }
+    &lt;/style&gt;
+
+    &lt;!--
+    &lt;script type="text/javascript"&gt;
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '4.11',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    &lt;/script&gt;
+    --&gt;
+    &lt;!--@+&lt;&lt; flattr head &gt;&gt;--&gt;
+    &lt;!--@+node:ekr.20110518101739.18155: *3* &lt;&lt; flattr head &gt;&gt;--&gt;
+    &lt;script type="text/javascript"&gt;
+    /* &lt;![CDATA[ */
+        (function() {
+            var s = document.createElement('script'), t = document.getElementsByTagName('script')[0];
+            s.type = 'text/javascript';
+            s.async = true;
+            s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+            t.parentNode.insertBefore(s, t);
+        })();
+    /* ]]&gt; */
+    &lt;/script&gt;
+    &lt;!--@-&lt;&lt; flattr head &gt;&gt;--&gt;
+
+    &lt;!--@+&lt;&lt; feed2js stylesheet &gt;&gt;--&gt;
+    &lt;!--@+node:ekr.20111028195854.16608: *3* &lt;&lt; feed2js stylesheet &gt;&gt;--&gt;
+    &lt;style type="text/css" media="all"&gt;
+
+    &lt;!-- See: http://feed2js.org/index.php?s=style --&gt;
+
+    .rss_box {
+        width:   0px;
+        padding: 0px;
+        border:  0px solid white;
+        margin:  0px;
+    }
+
+    .rss_title {
+        visibility:hidden;
+        line-height: 0px;
+    }
+
+    .rss_items {
+        font-size: 80%;
+    }
+
+    &lt;/style&gt;
+    &lt;!--@-&lt;&lt; feed2js stylesheet &gt;&gt;--&gt;
+
+    &lt;!-- &lt;script type="text/javascript" src="_static/jquery.js"&gt;&lt;/script&gt;--&gt;
+    &lt;!-- &lt;script type="text/javascript" src="_static/doctools.js"&gt;&lt;/script&gt;--&gt;
+    &lt;link rel="top" title="Leo 4.11 documentation" href="index.html" /&gt;
+    &lt;link rel="Users Guide" title="Leo&amp;#8217;s Users Guide" href="leo_toc.html" /&gt;
+    &lt;!-- &lt;link rel="prev" title="Using LeoÃ¢â‚¬â„¢s Commands" href="commands.html" /&gt;--&gt; 
+    &lt;!--@-&lt;&lt; head &gt;&gt;--&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;!--@+&lt;&lt; div top nav &gt;&gt;--&gt;
+  &lt;!--@+node:ekr.20100808060203.4276: ** &lt;&lt; div top nav &gt;&gt;--&gt;
+  &lt;div class="related"&gt;
+    &lt;h3&gt;Navigation&lt;/h3&gt;
+    &lt;ul&gt;
+      &lt;li class="right" style="margin-right: 10px"&gt;
+        &lt;a href="genindex.html" title="General Index"
+           accesskey="I"&gt;index&lt;/a&gt;&lt;/li&gt;
+      &lt;li class="right" &gt;
+        &lt;a href="glossary.html" title="Glossary"
+           accesskey="G"&gt;glossary&lt;/a&gt; |&lt;/li&gt;
+      &lt;li class="right" &gt;
+        &lt;a href="leo_toc.html" title="Users Guide"
+           accesskey="N"&gt;contents&lt;/a&gt; |&lt;/li&gt;
+      &lt;li&gt;&lt;a href="leo_toc.html"&gt;Leo 4.11 documentation&lt;/a&gt;&lt;/li&gt;
+      &lt;!--  &amp;raquo; --&gt;
+    &lt;/ul&gt;
+  &lt;/div&gt;
+  &lt;!--@-&lt;&lt; div top nav &gt;&gt;--&gt;
+  &lt;div class="document"&gt;
+    &lt;div class="documentwrapper"&gt;
+      &lt;div class="bodywrapper"&gt;
+        &lt;div class="body"&gt;
+          &lt;!--@+&lt;&lt; div main section &gt;&gt;--&gt;
+          &lt;!--@+node:ekr.20100808060203.4286: ** &lt;&lt; div main section &gt;&gt; (home page)--&gt;
+          &lt;div class="section" id="Leo&amp;#8217;s Home page"&gt;
+
+              &lt;h1&gt;Leo&amp;#8217;s Home Page&lt;/h1&gt;
+              &lt;!--@+&lt;&lt; Leo is... &gt;&gt;--&gt;
+              &lt;!--@+node:ekr.20111019104425.15904: *3* &lt;&lt; Leo is... &gt;&gt;--&gt;
+              &lt;p&gt;&lt;blockquote&gt;
+                "Leo is a revolutionary step in the right direction for programming."&amp;#8213;Brian Takita
+              &lt;/blockquote&gt;
+
+              &lt;blockquote&gt; "Leo is the best IDE that I have had the pleasure to use. It
+              has totally changed not only the way that I program, but also the way that
+              I store and organize all of the information that I need for the job that I
+              do."&amp;#8213;Ian Mulvany
+              &lt;/blockquote&gt;
+
+              &lt;blockquote&gt;
+              "When first I opened Leo, it was out of curiosity. But having used it, I'll
+              never go back. They'll have to pry Leo out of my cold, dead fingers!"&amp;#8213;Travers A. Hough
+              &lt;/blockquote&gt;
+              &lt;p&gt;
+              Leo is a
+              &lt;a href="https://en.wikipedia.org/wiki/Personal_information_manager"&gt;PIM&lt;/a&gt;, 
+              &lt;a href="https://en.wikipedia.org/wiki/Integrated_development_environment"&gt;IDE&lt;/a&gt;
+              and outliner that
+              &lt;strong&gt;accelerates the work flow&lt;/strong&gt;
+              of programmers, authors and web designers.
+              Leo's unique features &lt;strong&gt;organize data in a revolutionary way&lt;/strong&gt;:
+              &lt;li&gt;
+                Leo outlines are views on an underlying
+                &lt;a href="https://en.wikipedia.org/wiki/Directed_acyclic_graph"&gt;graph&lt;/a&gt;.
+              &lt;li&gt;
+                Outline nodes can reside in &lt;strong&gt;many&lt;/strong&gt; places within a single outline.&lt;/li&gt;
+              &lt;li&gt;
+                Leo is fully scriptable in &lt;a HREF="http://www.python.org/"&gt;Python&lt;/a&gt;.&lt;/li&gt;
+              &lt;li&gt;
+                Leo scripts have full access to Leo's source code and all outline data.&lt;/li&gt;
+              &lt;li&gt;
+                &lt;a href="http://leoeditor.com/tutorial-programming.html"&gt;Outline-oriented markup&lt;/a&gt; generates
+                &lt;a href="http://leoeditor.com/tutorial-basics.html#creating-external-files-with-file-and-all"&gt;external files&lt;/a&gt;
+                from outlines.&lt;/li&gt;
+              &lt;/p&gt;
+              &lt;p&gt;
+                &lt;a href="http://leoeditor.com/preliminaries.html#preface"&gt;
+                  &lt;strong&gt;Learn why Leo is special&lt;/strong&gt;&lt;/a&gt;.
+                &lt;br&gt;
+                &lt;a href="http://leoeditor.com/tutorial.html"&gt;
+                  &lt;strong&gt;Learn about Leo in two hours&lt;/strong&gt;&lt;/a&gt;.
+              &lt;/p&gt;
+              &lt;p&gt;
+              Furthermore:
+              &lt;/p&gt;
+              &lt;li&gt;
+              Leo is &lt;a href="http://www.opensource.org/"&gt;&lt;i&gt;Open Software&lt;/i&gt;&lt;/a&gt;,
+              written in pure &lt;a HREF="http://www.python.org/"&gt;Python&lt;/a&gt;.
+              &lt;li&gt;
+              Leo a &lt;a HREF="http://www.riverbankcomputing.co.uk/software/pyqt/intro"&gt;PyQt&lt;/a&gt;
+              app that runs on Linux, Windows and MacOS.&lt;/li&gt;
+              &lt;li&gt;
+              Leo works well with &lt;a href="http://www.gnu.org/software/emacs/"&gt;emacs&lt;/a&gt;,
+                &lt;a href="http://www.xemacs.org/"&gt;xemacs&lt;/a&gt;,
+                &lt;a href="http://www.vim.org/"&gt;vim&lt;/a&gt;, and
+                &lt;a href="http://ipython.org/"&gt;ipython&lt;/a&gt;.&lt;/li&gt;
+              &lt;/p&gt;
+              &lt;!--@-&lt;&lt; Leo is... &gt;&gt;--&gt;
+              &lt;!--@+&lt;&lt; Leo Google group &amp; postcard &gt;&gt;--&gt;
+              &lt;!--@+node:ekr.20131005151401.16117: *3* &lt;&lt; Leo Google group &amp; postcard &gt;&gt;--&gt;
+              &lt;p&gt;
+              &lt;strong&gt;We welcome your questions and comments!&lt;/strong&gt;
+              &lt;br&gt;
+              Ask us anything at the medium traffic
+              &lt;a href="http://groups.google.com/group/leo-editor"&gt;&lt;strong&gt;leo-editor Google Group&lt;/strong&gt;&lt;/a&gt;.
+              &lt;br&gt;
+              If you use Leo, please
+              &lt;a href="mailto:edreamleo@gmail.com?Subject=About%20Leo" target="_top"&gt;
+                &lt;strong&gt;send us a postcard&lt;/strong&gt;&lt;/a&gt;, telling how you use Leo. Thanks!
+              &lt;/p&gt;
+
+              &lt;!--
+              &lt;p&gt;Here are the most recent discussions...&lt;/p&gt;
+              &lt;script language="JavaScript"
+                src="http://itde.vccs.edu/rss2js/feed2js.php?src=http%3A%2F%2Fgroups.google.com%2Fgroup%2Fleo-editor%2Ffeed%2Frss_v2_0_msgs.xml&amp;chan=title&amp;num=5&amp;desc=0&amp;date=y&amp;targ=y"
+                type="text/javascript"&gt;
+              &lt;/script&gt;
+              --&gt;
+              &lt;!--@-&lt;&lt; Leo Google group &amp; postcard &gt;&gt;--&gt;
+              &lt;!--@+&lt;&lt; screenshot &gt;&gt;--&gt;
+              &lt;!--@+node:ekr.20130924043646.21624: *3* &lt;&lt; screenshot &gt;&gt;--&gt;
+              &lt;p&gt;Here is a slightly reduced screenshot of Leo's main window:&lt;/p&gt;
+
+              &lt;!-- height/width taken from basics1.html --&gt;
+              &lt;img class="screenshot"
+                  src="screen-shots/render-svg-sources.png"
+                  width="791.2px" height="692.8px" 
+                  alt="ScreenShot"/&gt;
+              &lt;!--@-&lt;&lt; screenshot &gt;&gt;--&gt;
+          &lt;/div&gt;
+          &lt;!--@-&lt;&lt; div main section &gt;&gt;--&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;!--@+&lt;&lt; sidebar &gt;&gt;--&gt;
+    &lt;!--@+node:ekr.20100808060203.4282: ** &lt;&lt; sidebar &gt;&gt; (home page)--&gt;
+    &lt;div class="sphinxsidebar"&gt;
+        &lt;div class="sphinxsidebarwrapper"&gt;
+            &lt;!--@+&lt;&lt; sidebar contents &gt;&gt;--&gt;
+            &lt;!--@+node:ekr.20100808060203.4283: *3* &lt;&lt; sidebar contents &gt;&gt; (home page)--&gt;
+            &lt;!--@@language html--&gt;
+
+            &lt;p class="logo"&gt;&lt;a href="leo_toc.html"&gt;
+              &lt;img class="logo" src="_static/Leo4-80-border.jpg" alt="Logo"/&gt;&lt;/a&gt;
+            &lt;/p&gt;
+
+            &lt;p&gt;
+              &lt;a class="reference external" href="leo_toc.html"&gt;Table of contents&lt;/a&gt;: click the lion!
+            &lt;/p&gt;
+            &lt;p&gt;
+            &lt;form&gt;
+              &lt;!-- background-color:skyblue3 --&gt;
+              &lt;!-- border-style:solid;border-color:#87CEEB --&gt;
+              &lt;input type="button"
+                style="background-color:#6CA6CD;"
+                value="Download Leo"
+                onClick="window.location.href='http://leoeditor.com/download.html'"&gt;
+            &lt;/form&gt;
+            &lt;/p&gt;
+
+            &lt;a class="reference external" href="http://leoeditor.com/screencasts.html"&gt;
+              Videos about Leo&lt;/a&gt;&lt;br&gt;
+
+            &lt;!---
+            &lt;a href="http://www.youtube.com/watch?v=Zu6J-J0qFi0"&gt;
+              Introductory video&lt;/a&gt;&lt;br&gt;
+            &lt;a href="https://vimeo.com/77720098 "&gt;
+              Bookmarks plugin video&lt;/a&gt;&lt;br&gt;
+            --&gt;
+              
+            &lt;a class="reference external" href="tutorial.html"&gt;
+              Leo's Tutorial&lt;/a&gt;&lt;br&gt;
+
+            &lt;a class="reference external" href="http://leoeditor.com/leo_toc.html"&gt;
+              Leo's Documentation&lt;/a&gt;&lt;br&gt;
+              
+            &lt;a class="reference external" href="http:screen-shots.html"&gt;
+              Screen shots of Leo&lt;/a&gt;&lt;br&gt;
+              
+            &lt;a class="reference external" href="testimonials.html"&gt;
+              Quotes from Leo&amp;#8217;s Users&lt;/a&gt;&lt;br&gt;
+              
+            &lt;a class="reference external" href="slides.html"&gt;
+              Tutorial Slide Shows&lt;/a&gt;&lt;br&gt;
+              
+            &lt;a class="reference external" href="http://webchat.freenode.net/?channels=%23leo&amp;uio=d4"&gt;
+              #leo IRC&lt;/a&gt;&lt;br&gt;
+
+            &lt;a class="reference external" href="http://groups.google.com/group/leo-editor"&gt;
+              leo-editor: Google Groups&lt;/a&gt;&lt;br&gt;
+              
+            &lt;a class="reference external" href="http://launchpad.net/leo-editor"&gt;
+              leo-editor: Launchpad&lt;/a&gt;&lt;br&gt;
+              
+            &lt;a class="reference external" href="http://leo.zwiki.org"&gt;
+              Leo&amp;#8217;s Wiki&lt;/a&gt;&lt;br&gt;
+              
+            &lt;a class="reference external" href="http://leo-editor.readthedocs.org/en/latest/"&gt;
+              Leo&amp;#8217;s API documentation&lt;/a&gt;&lt;br&gt;
+              
+            &lt;a class="reference external" href="http://www.mind-mapping.org/"&gt;
+              Mind Mapping&lt;/a&gt;&lt;br&gt;
+
+            &lt;a class="reference external" href="leoLinks.html"&gt;
+              More links...&lt;/a&gt;&lt;br&gt;
+              
+            &lt;/p&gt;
+            &lt;p&gt;
+            &lt;div id="searchbox" style=""&gt;
+              &lt;h3&gt;Quick search&lt;/h3&gt;
+              &lt;form class="search" method="get" action="search.html"&gt;
+                &lt;input type="text" name="q"&gt;
+                &lt;input type="submit" value="Go"&gt;
+                &lt;input type="hidden" value="yes" name="check_keywords"&gt;
+                &lt;input type="hidden" value="default" name="area"&gt;
+              &lt;/form&gt;
+              &lt;p class="searchtip" style="font-size: 90%"&gt;
+                Enter search terms or a module, class or function name.
+              &lt;/p&gt;
+            &lt;/div&gt;
+            &lt;/p&gt;
+
+            &lt;p&gt;Leo: Leonine Editor with Outlines&lt;/p&gt;
+
+            &lt;p&gt;Written by &lt;a HREF="ekr.html"&gt;Edward K. Ream&lt;/a&gt;
+            &lt;!--@+&lt;&lt; flattr icon &gt;&gt;--&gt;
+            &lt;!--@+node:ekr.20110518101739.18154: *4* &lt;&lt; flattr icon &gt;&gt;--&gt;
+            &lt;a class="FlattrButton" style="display:none;" rev="flattr;button:compact;"
+            href="http://leoeditor.com"&gt;&lt;/a&gt;
+            &lt;noscript&gt;
+            &lt;a href="http://flattr.com/thing/410073/Leo" target="_blank"&gt;
+            &lt;img src="http://api.flattr.com/button/flattr-badge-large.png"
+            alt="Flattr this" title="Flattr this" border="0" /&gt;
+            &lt;/a&gt;
+            &lt;/noscript&gt;
+            &lt;!--@-&lt;&lt; flattr icon &gt;&gt;--&gt;
+            &lt;/p&gt;
+            &lt;!--@-&lt;&lt; sidebar contents &gt;&gt;--&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;!--@-&lt;&lt; sidebar &gt;&gt;--&gt;
+    &lt;div class="clearer"&gt;&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;!--@+&lt;&lt; div bottom nav &gt;&gt;--&gt;
+  &lt;!--@+node:ekr.20100808060203.4277: ** &lt;&lt; div bottom nav &gt;&gt;--&gt;
+  &lt;div class="related"&gt;
+    &lt;h3&gt;Navigation&lt;/h3&gt;
+    &lt;ul&gt;
+      &lt;li class="right" style="margin-right: 10px"&gt;
+        &lt;a href="genindex.html" title="General Index"
+           &gt;index&lt;/a&gt;&lt;/li&gt;
+      &lt;li class="right" &gt;
+        &lt;a href="glossary.html" title="Glossary"
+           accesskey="G"&gt;glossary&lt;/a&gt; |&lt;/li&gt;
+      &lt;li class="right" &gt;
+        &lt;a href="leo_toc.html" title="Users Guide"
+           &gt;contents&lt;/a&gt; |&lt;/li&gt;
+
+      &lt;li&gt;&lt;a href="leo_toc.html"&gt;Leo 4.11 documentation&lt;/a&gt;&lt;/li&gt; 
+    &lt;/ul&gt;
+  &lt;/div&gt;
+  &lt;!--@-&lt;&lt; div bottom nav &gt;&gt;--&gt;
+  &lt;!--@+&lt;&lt; div footer &gt;&gt;--&gt;
+  &lt;!--@+node:ekr.20100808060203.4278: ** &lt;&lt; div footer &gt;&gt;--&gt;
+  &lt;div class="footer"&gt;
+    &amp;copy; Copyright 2001-2013, Edward K. Ream.
+    Last updated on November 6, 2013.
+    Created using &lt;a href="http://sphinx.pocoo.org/"&gt;Sphinx&lt;/a&gt; 1.1.
+  &lt;/div&gt;
+  &lt;!--@-&lt;&lt; div footer &gt;&gt;--&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+&lt;!--@-leo--&gt;
+</t>
+<t tx="ekr.20131128115544.3674">http://leoeditor.com/ 
+
+# Ctrl-clicking this URL opens it in your browser.</t>
+<t tx="ekr.20131128115544.3675">../Icons/bubbles.svg
+</t>
+<t tx="ekr.20131128115544.3676">@language xml
+
+&lt;?xml version="1.0" standalone="no"?&gt;
+&lt;!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd"&gt;
+&lt;svg width="20cm" height="15cm" viewBox="0 0 800 600"
+     xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlik/"
+     baseProfile="tiny" version="1.2"&gt;
+   &lt;title&gt;Spheres&lt;/title&gt;
+   &lt;desc&gt;Semi-transparent bubbles on a colored background.&lt;/desc&gt;
+     &lt;defs&gt;
+       &lt;!-- Create radial gradients for each bubble. --&gt;
+       &lt;radialGradient id="blueBubble" gradientUnits="userSpaceOnUse"
+                       cx="0" cy="0" r="100" fx="-50" fy="-50"&gt;
+         &lt;stop offset="0%" stop-color="white" stop-opacity="1" /&gt;
+         &lt;stop offset="25%" stop-color="#cdcdff" stop-opacity=".65" /&gt;
+         &lt;stop offset="100%" stop-color="#cdaacd" stop-opacity=".75" /&gt;
+       &lt;/radialGradient&gt;
+       &lt;radialGradient id="redBubble" gradientUnits="userSpaceOnUse"
+                       cx="0" cy="0" r="100" fx="-50" fy="-50"&gt;
+         &lt;stop offset="0%" stop-color="white" stop-opacity="1" /&gt;
+         &lt;stop offset="25%" stop-color="#ffcdcd" stop-opacity=".65" /&gt;
+         &lt;stop offset="100%" stop-color="#bbbb99" stop-opacity=".75" /&gt;
+       &lt;/radialGradient&gt;
+       &lt;radialGradient id="greenBubble" gradientUnits="userSpaceOnUse"
+                       cx="0" cy="0" r="100" fx="-50" fy="-50"&gt;
+         &lt;stop offset="0%" stop-color="white" stop-opacity="1" /&gt;
+         &lt;stop offset="25%" stop-color="#cdffcd" stop-opacity=".65" /&gt;
+         &lt;stop offset="100%" stop-color="#99aaaa" stop-opacity=".75" /&gt;
+       &lt;/radialGradient&gt;
+       &lt;radialGradient id="yellowBubble" gradientUnits="userSpaceOnUse"
+                       cx="0" cy="0" r="100" fx="-50" fy="-50"&gt;
+         &lt;stop offset="0%" stop-color="white" stop-opacity="1" /&gt;
+         &lt;stop offset="25%" stop-color="#ffffcd" stop-opacity=".65" /&gt;
+         &lt;stop offset="100%" stop-color="#bbbbaa" stop-opacity=".75" /&gt;
+       &lt;/radialGradient&gt;
+       &lt;radialGradient id="background" gradientUnits="userSpaceOnUse"
+                       cx="0" cy="0" r="400" fx="250" fy="250"&gt;
+         &lt;stop offset="0%" stop-color="#ffffee" /&gt;
+         &lt;stop offset="100%" stop-color="#ccccaa" /&gt;
+       &lt;/radialGradient&gt;
+       &lt;linearGradient id="surface" gradientUnits="userSpaceOnUse"
+                       x1="-100" y1="200" x2="400" y2="200"&gt;
+         &lt;stop offset="0%" stop-color="#ffffcc" /&gt;
+         &lt;stop offset="100%" stop-color="#bbbb88" /&gt;
+       &lt;/linearGradient&gt;
+
+       &lt;!-- Create radial gradients for each circle to make them look like
+            spheres. --&gt;
+       &lt;radialGradient id="blueSphere" gradientUnits="userSpaceOnUse"
+                       cx="0" cy="0" r="100" fx="-50" fy="-50"&gt;
+         &lt;stop offset="0%" stop-color="white" /&gt;
+         &lt;stop offset="75%" stop-color="blue" /&gt;
+         &lt;stop offset="100%" stop-color="#222244" /&gt;
+       &lt;/radialGradient&gt;
+       &lt;radialGradient id="redSphere" gradientUnits="userSpaceOnUse"
+                       cx="0" cy="0" r="100" fx="-50" fy="-50"&gt;
+         &lt;stop offset="0%" stop-color="white" /&gt;
+         &lt;stop offset="75%" stop-color="red" /&gt;
+         &lt;stop offset="100%" stop-color="#442222" /&gt;
+       &lt;/radialGradient&gt;
+       &lt;radialGradient id="greenSphere" gradientUnits="userSpaceOnUse"
+                       cx="0" cy="0" r="100" fx="-50" fy="-50"&gt;
+         &lt;stop offset="0%" stop-color="white" /&gt;
+         &lt;stop offset="75%" stop-color="green" /&gt;
+         &lt;stop offset="100%" stop-color="#113311" /&gt;
+       &lt;/radialGradient&gt;
+       &lt;radialGradient id="yellowSphere" gradientUnits="userSpaceOnUse"
+                       cx="0" cy="0" r="100" fx="-50" fy="-50"&gt;
+         &lt;stop offset="0%" stop-color="white" /&gt;
+         &lt;stop offset="75%" stop-color="yellow" /&gt;
+         &lt;stop offset="100%" stop-color="#444422" /&gt;
+       &lt;/radialGradient&gt;
+       &lt;radialGradient id="shadowGrad" gradientUnits="userSpaceOnUse"
+                       cx="0" cy="0" r="100" fx="-50" fy="50"&gt;
+         &lt;stop offset="0%" stop-color="black" stop-opacity="1.0" /&gt;
+         &lt;stop offset="100%" stop-color="black" stop-opacity="0.0" /&gt;
+       &lt;/radialGradient&gt;
+
+       &lt;!-- Define a shadow for each sphere. --&gt;
+       &lt;circle id="shadow" fill="url(#shadowGrad)" cx="0" cy="0" r="100" /&gt;
+       &lt;g id="bubble"&gt;
+         &lt;circle fill="black" cx="0" cy="0" r="50" /&gt;
+         &lt;circle fill="#a6ce39" cx="0" cy="0" r="33" /&gt;
+         &lt;path fill="black" d="M 37,50 L 50,37 L 12,-1 L 22,-11 L 10,-24 L -24,10
+                               L -11,22 L -1,12 Z" /&gt;
+         &lt;circle cx="0" cy="0" r="100" /&gt;
+       &lt;/g&gt;
+     &lt;/defs&gt;
+   &lt;g&gt;
+     &lt;rect fill="url(#background)" x="0" y="0" width="800" height="600" /&gt;
+   &lt;/g&gt;
+
+   &lt;g transform="translate(200,700)"&gt;
+     &lt;use xlink:href="#bubble" fill="url(#blueBubble)" /&gt;
+     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
+         values="0,0; 0,-800" begin="1s" dur="10s" fill="freeze" repeatCount="indefinite" /&gt;
+   &lt;/g&gt;
+   &lt;g transform="translate(315,700)"&gt;
+     &lt;g transform="scale(0.5,0.5)"&gt;
+       &lt;use xlink:href="#bubble" fill="url(#redBubble)" /&gt;
+     &lt;/g&gt;
+     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
+         values="0,0; 0,-800" begin="3s" dur="7s" fill="freeze" repeatCount="indefinite" /&gt;
+   &lt;/g&gt;
+   &lt;g transform="translate(80,700)"&gt;
+     &lt;g transform="scale(0.65,0.65)"&gt;
+       &lt;use xlink:href="#bubble" fill="url(#greenBubble)" /&gt;
+     &lt;/g&gt;
+     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
+         values="0,0; 0,-800" begin="5s" dur="9s" fill="freeze" repeatCount="indefinite" /&gt;
+   &lt;/g&gt;
+   &lt;g transform="translate(255,700)"&gt;
+     &lt;g transform="scale(0.3,0.3)"&gt;
+       &lt;use xlink:href="#bubble" fill="url(#yellowBubble)" /&gt;
+     &lt;/g&gt;
+     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
+         values="0,0; 0,-800" begin="2s" dur="6s" fill="freeze" repeatCount="indefinite" /&gt;
+   &lt;/g&gt;
+   &lt;g transform="translate(565,700)"&gt;
+     &lt;g transform="scale(0.4,0.4)"&gt;
+       &lt;use xlink:href="#bubble" fill="url(#blueBubble)" /&gt;
+     &lt;/g&gt;
+     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
+         values="0,0; 0,-800" begin="4s" dur="8s" fill="freeze" repeatCount="indefinite" /&gt;
+   &lt;/g&gt;
+   &lt;g transform="translate(715,700)"&gt;
+     &lt;g transform="scale(0.6,0.6)"&gt;
+       &lt;use xlink:href="#bubble" fill="url(#redBubble)" /&gt;
+     &lt;/g&gt;
+     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
+         values="0,0; 0,-800" begin="1s" dur="4s" fill="freeze" repeatCount="indefinite" /&gt;
+   &lt;/g&gt;
+   &lt;g transform="translate(645,700)"&gt;
+     &lt;g transform="scale(0.375,0.375)"&gt;
+       &lt;use xlink:href="#bubble" fill="url(#greenBubble)" /&gt;
+     &lt;/g&gt;
+     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
+         values="0,0; 0,-800" begin="0s" dur="11s" fill="freeze" repeatCount="indefinite" /&gt;
+   &lt;/g&gt;
+   &lt;g transform="translate(555,700)"&gt;
+     &lt;g transform="scale(0.9,0.9)"&gt;
+       &lt;use xlink:href="#bubble" fill="url(#yellowBubble)" /&gt;
+     &lt;/g&gt;
+     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
+         values="0,0; 0,-800" begin="3s" dur="7.5s" fill="freeze" repeatCount="indefinite" /&gt;
+   &lt;/g&gt;
+
+   &lt;g transform="translate(360,700)"&gt;
+     &lt;g transform="scale(0.5,0.5)"&gt;
+       &lt;use xlink:href="#bubble" fill="url(#blueBubble)" /&gt;
+     &lt;/g&gt;
+     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
+         values="0,0; 0,-800" begin="3s" dur="6s" fill="freeze" repeatCount="indefinite" /&gt;
+   &lt;/g&gt;
+   &lt;g transform="translate(215,700)"&gt;
+     &lt;g transform="scale(0.45,0.45)"&gt;
+       &lt;use xlink:href="#bubble" fill="url(#redBubble)" /&gt;
+     &lt;/g&gt;
+     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
+         values="0,0; 0,-800" begin="5.5s" dur="7s" fill="freeze" repeatCount="indefinite" /&gt;
+   &lt;/g&gt;
+   &lt;g transform="translate(420,700)"&gt;
+     &lt;g transform="scale(0.75,0.75)"&gt;
+       &lt;use xlink:href="#bubble" fill="url(#greenBubble)" /&gt;
+     &lt;/g&gt;
+     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
+         values="0,0; 0,-800" begin="1s" dur="9s" fill="freeze" repeatCount="indefinite" /&gt;
+   &lt;/g&gt;
+   &lt;g transform="translate(815,700)"&gt;
+     &lt;g transform="scale(0.6,0.6)"&gt;
+       &lt;use xlink:href="#bubble" fill="url(#yellowBubble)" /&gt;
+     &lt;/g&gt;
+     &lt;animateTransform attributeName="transform" type="translate" additive="sum"
+         values="0,0; 0,-800" begin="2s" dur="9.5s" fill="freeze" repeatCount="indefinite" /&gt;
+   &lt;/g&gt;
+
+   &lt;g transform="translate(225,375)" &gt;
+     &lt;g transform="scale(1.0,0.5)" &gt;
+       &lt;path d="M 0 0 L 350 0 L 450 450 L -100 450 z"
+             fill="url(#surface)" stroke="none" /&gt;
+     &lt;/g&gt;
+   &lt;/g&gt;
+     &lt;g transform="translate(200,0)" &gt;
+     &lt;g transform="translate(200,490) scale(2.0,1.0) rotate(45)" &gt;
+       &lt;rect fill="#a6ce39" x="-69" y="-69" width="138" height="138" /&gt;
+       &lt;circle fill="black" cx="0" cy="0" r="50" /&gt;
+       &lt;circle fill="#a6ce39" cx="0" cy="0" r="33" /&gt;
+       &lt;path fill="black" d="M 37,50 L 50,37 L 12,-1 L 22,-11 L 10,-24 L -24,10
+                             L -11,22 L -1,12 Z" /&gt;
+       &lt;animateTransform attributeName="transform"  type="rotate" additive="sum" values="0; 360"
+                  begin="0s" dur="10s" fill="freeze" repeatCount="indefinite" /&gt;
+     &lt;/g&gt;
+     &lt;g transform="translate(200,375)"&gt;
+       &lt;use xlink:href="#shadow" transform="translate(25,55) scale(1.0,0.5)" /&gt;
+       &lt;circle fill="url(#blueSphere)" cx="0" cy="0" r="100" /&gt;
+     &lt;/g&gt;
+     &lt;g transform="translate(315,440)"&gt;
+       &lt;g transform="scale(0.5,0.5)"&gt;
+         &lt;use xlink:href="#shadow" transform="translate(25,55) scale(1.0,0.5)" /&gt;
+         &lt;circle fill="url(#redSphere)" cx="0" cy="0" r="100" /&gt;
+       &lt;/g&gt;
+     &lt;/g&gt;
+     &lt;g transform="translate(80,475)"&gt;
+       &lt;g transform="scale(0.65,0.65)"&gt;
+         &lt;use xlink:href="#shadow" transform="translate(25,55) scale(1.0,0.5)" /&gt;
+         &lt;circle fill="url(#greenSphere)" cx="0" cy="0" r="100" /&gt;
+       &lt;/g&gt;
+     &lt;/g&gt;
+     &lt;g transform="translate(255,525)"&gt;
+       &lt;g transform="scale(0.3,0.3)"&gt;
+         &lt;use xlink:href="#shadow" transform="translate(25,55) scale(1.0,0.5)" /&gt;
+         &lt;circle fill="url(#yellowSphere)" cx="0" cy="0" r="100" /&gt;
+       &lt;/g&gt;
+     &lt;/g&gt;
+   &lt;/g&gt;
+&lt;/svg&gt;</t>
+<t tx="ekr.20131128115544.3677">There is so much more to Leo, but I've run out of time.
+
+I haven't even discussed clones, one of Leo's most useful features.
+
+A video about clones: http://www.screencast.com/t/l8W9H5G8zB
+
+Thanks for listening, and have a great time at PyConChina 2013!
+
+Contact me any time: edreamleo@gmail.com
+
 </t>
 </tnodes>
 </leo_file>

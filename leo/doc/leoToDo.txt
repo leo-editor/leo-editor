@@ -6,11 +6,10 @@
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 
-* Start ZoomQuiet video
-
 - Better background color for tree-edit widgets
 
 Find css stuff that renders xml as Leo outine.
+    It's in test.leo: @html display
 
 * Add link to video on Leo's video page.
     https://groups.google.com/forum/#!topic/leo-editor/6l6oEAnG_H8
@@ -20,8 +19,10 @@ Find css stuff that renders xml as Leo outine.
     http://www.youtube.com/watch?v=9AvbL_0JEMw&feature=youtu.be
     
 * Add docstrings for all commands in leoSessions.py.
-.. @+node:ekr.20131121090013.17095: *3* Zoom Quiet video
+.. @+node:ekr.20131121090013.17095: *3* Zoom Quiet 周琦 video
 @language rest
+
+Zoom.Quiet: my real name is 周琦, as spell Zhou Qi
 
 so can u make a litter video :
 - to say hallo for Chinese Leo user
@@ -42,6 +43,9 @@ of course, must includ Leo 's zip introduction
 
 so sorry for my chaos image, Hope Video is u tiny happy game for X'mas
 - BUT notice, the Video need finished before 2013.11.30
+.. @+node:ekr.20131127091927.16729: *4* test my new setting
+enabled = c.config.getBool('my-new-plugin-enabled',default=False)
+g.es(enabled)
 .. @+node:ekr.20131125143156.16655: *3* monologue (theory of operation for find)
 @language rest
 
