@@ -207,7 +207,7 @@ class NestedSplitterHandle(QtGui.QSplitterHandle):
         x = pos.x()
         y = pos.y()
         rect = QtCore.QRect(x-5, y-5, x+5, y+5)
-        QtGui.QToolTip.showText(pos, tip, None, rect)
+        QtGui.QToolTip.showText(pos, tip, action.parentWidget(), rect)
     #@+node:ekr.20110605121601.17965: *3* splitter_menu
     def splitter_menu(self, pos):
         """build the context menu for NestedSplitter"""

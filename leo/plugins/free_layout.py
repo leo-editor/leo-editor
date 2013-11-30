@@ -2,7 +2,11 @@
 #@+node:ekr.20120419093256.10048: * @file ../plugins/free_layout.py
 #@+<< docstring >>
 #@+node:ekr.20110319161401.14467: ** << docstring >>
-"""Adds flexible panel layout through context menus on the handles between panels.
+"""
+Free layout
+===========
+
+Adds flexible panel layout through context menus on the handles between panels.
 
 Uses NestedSplitter, a more intelligent QSplitter, from leo.plugins.nested_splitter
 
@@ -343,7 +347,10 @@ class FreeLayoutController:
             ans.append({'Load layout': [(k, '_fl_load_layout:'+k) for k in d]})
             ans.append({'Delete layout': [(k, '_fl_delete_layout:'+k) for k in d]})
             ans.append(('Forget layout', '_fl_forget_layout:'))
-            ans.append(('Restore layout', '_fl_restore_layout:'))
+            ans.append(('Restore initial layout', '_fl_restore_layout:'))
+            
+        ans.append(('Restore default layout', '_fl_restore_default:'))
+        ans.append(('Help for this menu', '_fl_help:'))
 
         return ans
     #@+node:tbrown.20110628083641.11732: *3* ns_do_context
@@ -351,6 +358,18 @@ class FreeLayoutController:
 
         if id_.startswith('_fl_embed_layout'):
             self.embed()
+            return True
+
+        if id_.startswith('_fl_restore_default'):
+            self.get_top_splitter().load_layout(
+                {'content': [{'content': ['_leo_pane:outlineFrame',
+                 '_leo_pane:logFrame'], 'orientation': 1, 'sizes': 
+                 [509, 275]}, '_leo_pane:bodyFrame'], 
+                 'orientation': 2, 'sizes': [216, 216]})
+            
+        if id_.startswith('_fl_help'):
+            self.c.putHelpFor(__doc__)
+            # g.handleUrl("http://leoeditor.com/")
             return True
 
         if id_ == '_fl_save_layout':
