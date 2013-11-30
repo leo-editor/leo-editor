@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:peckj.20131104080650.8049: * @file nodewatch.py
+#@+node:peckj.20131130132659.5964: * @file nodewatch.py
 #@@language python
 #@@tabwidth -4
 
@@ -74,13 +74,14 @@ Run all @settings->@nodewatch nodes in the outline, and update the nodewatch GUI
 '''
 #@-<< docstring >>
 
-__version__ = '0.2'
+__version__ = '0.3'
 #@+<< version history >>
 #@+node:peckj.20131101132841.6446: ** << version history >>
 #@+at
 # 
 # Version 0.1 - initial release
 # Version 0.2 - a few bug fixes, same basic behavior
+# Version 0.3 - fix a small focus issue -- by forcing every itemClicked signal to do 'the right thing'
 # 
 #@@c
 #@-<< version history >>
@@ -176,6 +177,9 @@ class LeoNodewatchWidget(QtGui.QWidget):
     def registerCallbacks(self):
         self.connect(self.listWidget, 
             QtCore.SIGNAL("itemSelectionChanged()"), 
+            self.item_selected)
+        self.connect(self.listWidget,
+            QtCore.SIGNAL("itemClicked(QListWidgetItem *)"),
             self.item_selected)
         self.connect(self.comboBox,
             QtCore.SIGNAL("currentIndexChanged(QString)"),
