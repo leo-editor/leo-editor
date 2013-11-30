@@ -173,6 +173,7 @@ class NestedSplitterHandle(QtGui.QSplitterHandle):
         self.connect(self,
             Qt.SIGNAL('customContextMenuRequested(QPoint)'),
             self.splitter_menu)
+
     #@+node:ekr.20110605121601.17963: *3* __repr__
     def __repr__ (self):
 
@@ -180,12 +181,33 @@ class NestedSplitterHandle(QtGui.QSplitterHandle):
 
     __str__ = __repr__
     #@+node:ekr.20110605121601.17964: *3* add_item
-    def add_item (self,func,menu,name):
+    def add_item (self,func,menu,name,tooltip=None):
         """helper for splitter_menu menu building"""
         act = QtGui.QAction(name, self)
         act.setObjectName(name.lower().replace(' ','-'))
         act.connect(act, Qt.SIGNAL('triggered()'),func)
+        if tooltip:
+            act.setToolTip(tooltip)
         menu.addAction(act)
+    #@+node:tbrown.20131130134908.27340: *3* show_tip
+    def show_tip(self, action):
+        """show_tip - show a tooltip, calculate the box in which
+        the pointer must stay for the tip to remain visible
+
+        :Parameters:
+        - `self`: this handle
+        - `action`: action triggering event to display
+        """
+
+        if action.toolTip() == action.text():
+            tip = ""
+        else:
+            tip = action.toolTip()
+        pos = QtGui.QCursor.pos()
+        x = pos.x()
+        y = pos.y()
+        rect = QtCore.QRect(x-5, y-5, x+5, y+5)
+        QtGui.QToolTip.showText(pos, tip, None, rect)
     #@+node:ekr.20110605121601.17965: *3* splitter_menu
     def splitter_menu(self, pos):
         """build the context menu for NestedSplitter"""
@@ -216,11 +238,23 @@ class NestedSplitterHandle(QtGui.QSplitterHandle):
             widget[i].setStyleSheet(sheet[-1]+"\nborder: 2px solid %s;"%color[i])
 
         menu = QtGui.QMenu()
+        menu.hovered.connect(self.show_tip)
+        def pl(n):
+            return 's' if n > 1 else ''
+        def di(s):
+            return {
+                'Above': 'above',
+                'Below': 'below',
+                'Left': 'left of',
+                'Right': 'right of',
+            }[s]
+                
 
         # Insert.
         def insert_callback(index=index):
             splitter.insert(index)
-        self.add_item(insert_callback,menu,'Insert')
+        self.add_item(insert_callback,menu,'Insert',
+            "Insert an empty pane here")
 
         # Remove, +0/-1 reversed, we need to test the one that remains
 
@@ -243,13 +277,20 @@ class NestedSplitterHandle(QtGui.QSplitterHandle):
             ):
                 def remove_callback(i=i,index=index):
                     splitter.remove(index,i)
-                self.add_item(remove_callback,menu,'Remove %d %s' % (count[i], lr[i]))
+                self.add_item(remove_callback,menu,
+                    'Remove %d %s' % (count[i], lr[i]),
+                    "Remove the %s pane%s %s here" % 
+                    (count[i], pl(count[i]), di(lr[i])))
 
         # Swap.
         def swap_callback(index=index):
             splitter.swap(index)
         self.add_item(swap_callback,menu,
-            "Swap %d %s %d %s" % (count[0], lr[0], count[1], lr[1]))
+            "Swap %d %s %d %s" % (count[0], lr[0], count[1], lr[1]),
+            "Swap the %d pane%s %s here with the %d pane%s %s here" % 
+            (count[0], pl(count[0]), di(lr[0]), 
+             count[1], pl(count[1]), di(lr[1]))
+            )
 
         # Split: only if not already split.
         for i in 0,1:
