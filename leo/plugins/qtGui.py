@@ -2851,25 +2851,33 @@ class DynamicWindow(QtGui.QMainWindow):
         trace = False
         c = self.leo_c
         
-        sheet = c.config.getData('qt-gui-plugin-style-sheet')
-        if sheet:
-            if '\n' in sheet[0]:
-                sheet = ''.join(sheet)
-            else:
-                sheet = '\n'.join(sheet)
-            
-            # store *before* expanding, so later expansions get new zoom
-            c.active_stylesheet = sheet
-            
-            sheet = g.expand_css_constants(c, sheet, c.font_size_delta)
-            
-            if trace: g.trace(len(sheet))
-            w = self.leo_ui
-            if g.app.qt_use_tabs:
-                w = g.app.gui.frameFactory.masterFrame
-            a = w.setStyleSheet(sheet or self.default_sheet())
-        else:
+        sheets = []
+        for name in 'qt-gui-plugin-style-sheet', 'qt-gui-user-style-sheet':
+            sheet = c.config.getData(name)
+            if sheet:
+                if '\n' in sheet[0]:
+                    sheet = ''.join(sheet)
+                else:
+                    sheet = '\n'.join(sheet)
+            if sheet.strip():
+                sheets.append(sheet)
+
+        if not sheets:
             if trace: g.trace('no style sheet')
+            return
+        
+        sheet = "\n".join(sheets)
+
+        # store *before* expanding, so later expansions get new zoom
+        c.active_stylesheet = sheet
+        
+        sheet = g.expand_css_constants(c, sheet, c.font_size_delta)
+        
+        if trace: g.trace(len(sheet))
+        w = self.leo_ui
+        if g.app.qt_use_tabs:
+            w = g.app.gui.frameFactory.masterFrame
+        a = w.setStyleSheet(sheet or self.default_sheet())
     #@+node:ekr.20110605121601.18176: *5* defaultStyleSheet
     def defaultStyleSheet (self):
 
