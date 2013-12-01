@@ -2859,7 +2859,7 @@ class DynamicWindow(QtGui.QMainWindow):
                     sheet = ''.join(sheet)
                 else:
                     sheet = '\n'.join(sheet)
-            if sheet.strip():
+            if sheet and sheet.strip():
                 sheets.append(sheet)
 
         if not sheets:
