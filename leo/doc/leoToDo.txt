@@ -3,10 +3,17 @@
 .. @@language rest # override the default .txt coloring.
 
 .. @+all
+.. @+node:ekr.20131201221421.16829: ** For December
+Complete video tutorials covering all text tutorials.
+Finish find work.
+Finish vim work.
+Start playing with @shadow improvements.
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 
 - Better background color for tree-edit widgets
+
+- Change viewrendered commands to preview-.
 
 Find css stuff that renders xml as Leo outine.
     It's in test.leo: @html display
@@ -19,33 +26,100 @@ Find css stuff that renders xml as Leo outine.
     http://www.youtube.com/watch?v=9AvbL_0JEMw&feature=youtu.be
     
 * Add docstrings for all commands in leoSessions.py.
-.. @+node:ekr.20131121090013.17095: *3* Zoom Quiet 周琦 video
-@language rest
+.. @+node:ekr.20131116212505.16665: *3* Screencasts
+Topics:
 
-Zoom.Quiet: my real name is 周琦, as spell Zhou Qi
+- Settings: focus on visual settings.
+    @menu
+    leo-x-pt.leo files.
+- Import files.  Show active-path plugin, recursive import.
 
-so can u make a litter video :
-- to say hallo for Chinese Leo user
-- and instruction Leo's grown up
-- and show some Leo working case?
+Leo's help commands.
+Auto-completion.
+Viewrendered, A0. test.leo examples: @svg, @html, @movie, etc.
+Arrow keys.
+Intro to Leo.
+Tips and techniques:
+    - Small test .leo files: useful for settings.
+Scripting:
+    Introduction to Leo's code base.
+        500,000 lines of code made easy.
+    ** Create a helper outline, illustrating each point:
+        print('c:'+c)
+    ** @button
+    @test
+    c, g, p: commanders, generators, p.b, p.h etc.
+Redo the Find command screencast:
+    - Show the new Search menu.
+    - Ctrl-G hides the Find pane.
+    - Show how to use the minibuffer to discover the toggle commands:
+        <Alt-X>tog<tab>f<tab>   or
+        <Alt-X>set<tab>f<tab>
 
-http://mail.google.com/mail/u/0/#inbox/142267093d39d75e
+When ready to release:
+- Note to Dave Winer.
+- Announce to comp.lang.python & SourceForge.
 
-- so for me after reated ur life story
-- i can not stop hope u play a litter piano ?!
-- and paint one paint for China, include u image for China?
-- or writer down u Chinese name usage writing brush: 令德华
-+ Ream means 令, just one Chinese family name
-+ Edward in Chinese is 爱德华,  means "love morality China"
-+ so merge them is 令德华 , just one right Chinese name ;-)
+.. @+node:ekr.20131117043223.16676: *4* Using Leo *is* easy
+​Well, I don't think the Leo Aha is all that hard to get, despite perhaps
+being a bit difficult to describe. Of course, my opinion is not quite
+reliable on this subject ;-)
 
-of course, must includ Leo 's zip introduction
+Still, I think three or four tutorials could make a big difference. The
+first tutorial, about clones and work flow, is *one* reason I would never
+willingly program without Leo.
 
-so sorry for my chaos image, Hope Video is u tiny happy game for X'mas
-- BUT notice, the Video need finished before 2013.11.30
-.. @+node:ekr.20131127091927.16729: *4* test my new setting
-enabled = c.config.getBool('my-new-plugin-enabled',default=False)
-g.es(enabled)
+Another ​reason is that leoPy.leo contains at least 500,000 lines of code,
+all easily accessible. In particular, the rule (of thumb) that helper
+methods should be children of the method that calls them instantly reveals
+that programs are outlines in disguise. Once you have a way of seeing that
+fact *at all times*, one can never go back to the flat, myopic way of
+seeing. It's really that simple.
+
+And then there is c, g, and p, including especially Leo's iterators and p.h
+and p.b and p.u. Really, this is **not** all that hard.
+
+And finally, there is @others. I created it within the first hour of
+prototyping Leo in the MORE outliner. It has remained unchanged all these
+years because it is, fundamentally, a very simple idea.
+
+In short, I have hopes that 3 or 4 screencasts will demonstrate that anyone
+can use Leo.
+.. @+node:ekr.20131116123026.16661: *4* Example
+# For the Find screencast.  It could be improved so the differences between nodes is more apparent.
+.. @+node:ekr.20131116123026.16662: *5* spam
+DEF spam():
+    pass
+.. @+node:ekr.20131116123026.16663: *5* eggs
+def eggs():
+    pass
+.. @+node:ekr.20131116212505.16666: *4* Introduction to scripting
+@language python
+.. @+node:ekr.20131116212505.16668: *5* Ctrl-B (execute-script)
+# Ctrl-B executes the Python code in the presently-selected body pane.
+g.es('hello world')
+
+.. @+node:ekr.20131116212505.16669: *5* Ctrl-B on selected text
+print('hi')
+print('there')
+.. @+node:ekr.20131116212505.16667: *5* g
+# g is a Python module containing global utility functions and classes.
+# g.es prints its arguments to Leo's log pane.
+g.es(g.es)
+# g is a large module:
+g.es(len(list(dir(g))))
+.. @+node:ekr.20131121050226.16328: *4* settings vid
+open leoSettings.leo.
+open myLeoSettings.leo.
+
+Concentrate on:
+    - visual settings.
+    - keyboard shortcuts.
+
+print-settings, print-bindings, print-commands.
+
+Trick: use small, easily/quickly started, file to test settings.
+    Demo: put console *behind* window.
 .. @+node:ekr.20131125143156.16655: *3* monologue (theory of operation for find)
 @language rest
 
@@ -314,100 +388,6 @@ easy, flexible plan.
     - Leave arrow keys and control keys unchanged.
     - Focus plain-key normal-mode commands: a,i,d,c,x,s.
     - Use minibuffer for find command (save find/change strings for dot).
-.. @+node:ekr.20131116212505.16665: *3* Screencasts
-Topics:
-
-- Settings: focus on visual settings.
-    @menu
-    leo-x-pt.leo files.
-- Import files.  Show active-path plugin, recursive import.
-
-Leo's help commands.
-Auto-completion.
-Viewrendered, A0. test.leo examples: @svg, @html, @movie, etc.
-Arrow keys.
-Intro to Leo.
-Tips and techniques:
-    - Small test .leo files: useful for settings.
-Scripting:
-    Introduction to Leo's code base.
-        500,000 lines of code made easy.
-    ** Create a helper outline, illustrating each point:
-        print('c:'+c)
-    ** @button
-    @test
-    c, g, p: commanders, generators, p.b, p.h etc.
-Redo the Find command screencast:
-    - Show the new Search menu.
-    - Ctrl-G hides the Find pane.
-    - Show how to use the minibuffer to discover the toggle commands:
-        <Alt-X>tog<tab>f<tab>   or
-        <Alt-X>set<tab>f<tab>
-
-When ready to release:
-- Note to Dave Winer.
-- Announce to comp.lang.python & SourceForge.
-
-.. @+node:ekr.20131117043223.16676: *4* Using Leo *is* easy
-​Well, I don't think the Leo Aha is all that hard to get, despite perhaps
-being a bit difficult to describe. Of course, my opinion is not quite
-reliable on this subject ;-)
-
-Still, I think three or four tutorials could make a big difference. The
-first tutorial, about clones and work flow, is *one* reason I would never
-willingly program without Leo.
-
-Another ​reason is that leoPy.leo contains at least 500,000 lines of code,
-all easily accessible. In particular, the rule (of thumb) that helper
-methods should be children of the method that calls them instantly reveals
-that programs are outlines in disguise. Once you have a way of seeing that
-fact *at all times*, one can never go back to the flat, myopic way of
-seeing. It's really that simple.
-
-And then there is c, g, and p, including especially Leo's iterators and p.h
-and p.b and p.u. Really, this is **not** all that hard.
-
-And finally, there is @others. I created it within the first hour of
-prototyping Leo in the MORE outliner. It has remained unchanged all these
-years because it is, fundamentally, a very simple idea.
-
-In short, I have hopes that 3 or 4 screencasts will demonstrate that anyone
-can use Leo.
-.. @+node:ekr.20131116123026.16661: *4* Example
-# For the Find screencast.  It could be improved so the differences between nodes is more apparent.
-.. @+node:ekr.20131116123026.16662: *5* spam
-DEF spam():
-    pass
-.. @+node:ekr.20131116123026.16663: *5* eggs
-def eggs():
-    pass
-.. @+node:ekr.20131116212505.16666: *4* Introduction to scripting
-@language python
-.. @+node:ekr.20131116212505.16668: *5* Ctrl-B (execute-script)
-# Ctrl-B executes the Python code in the presently-selected body pane.
-g.es('hello world')
-
-.. @+node:ekr.20131116212505.16669: *5* Ctrl-B on selected text
-print('hi')
-print('there')
-.. @+node:ekr.20131116212505.16667: *5* g
-# g is a Python module containing global utility functions and classes.
-# g.es prints its arguments to Leo's log pane.
-g.es(g.es)
-# g is a large module:
-g.es(len(list(dir(g))))
-.. @+node:ekr.20131121050226.16328: *4* settings vid
-open leoSettings.leo.
-open myLeoSettings.leo.
-
-Concentrate on:
-    - visual settings.
-    - keyboard shortcuts.
-
-print-settings, print-bindings, print-commands.
-
-Trick: use small, easily/quickly started, file to test settings.
-    Demo: put console *behind* window.
 .. @+node:ekr.20131105020211.18058: ** Important
 .. @+node:ekr.20131101080215.16488: *3* * Outreach to magazine editors
 ===== Steve Litt

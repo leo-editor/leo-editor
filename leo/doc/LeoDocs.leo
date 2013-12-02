@@ -4,7 +4,7 @@
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
-	<global_window_position top="107" left="306" height="682" width="1264"/>
+	<global_window_position top="63" left="354" height="682" width="1264"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -297,6 +297,7 @@
 <v t="ekr.20131122055946.16405"><vh>Record your first real take</vh></v>
 <v t="ekr.20131122055946.16406"><vh>Edit your raw take</vh></v>
 <v t="ekr.20131122055946.16407"><vh>Summary</vh></v>
+<v t="ekr.20131129061821.16884"><vh>Additional tips</vh></v>
 </v>
 <v t="ekr.20050830115714.113"><vh>How can I create a template .leo file?</vh></v>
 <v t="ekr.20050830115714.120"><vh>How can I display graphics in Leo?</vh></v>
@@ -6967,7 +6968,7 @@ See the following sections for details.
 - Removed all gui-dependent code from Leo's core.
 - The__wx_gui plugin is now functional.
 </t>
-<t tx="ekr.20070610174018" str_leo_pos="3">This section contains settings for this file.
+<t tx="ekr.20070610174018" str_leo_pos="3,3,0,6,0,6">This section contains settings for this file.
 
 It also contains other information of little interest to most Leo users.</t>
 <t tx="ekr.20070622212132">::
@@ -22858,7 +22859,6 @@ enough". Perfectionism is not your friend.
 </t>
 <t tx="ekr.20131122055946.16407">Making a screencast is a lot easier than you think :-)
 
-
 - Create a script that will open your app at a fixed, optimal, size.
 
 - Emulate the style and form of screencast.com tutorials.
@@ -22877,6 +22877,19 @@ enough". Perfectionism is not your friend.
 </t>
 <t tx="ekr.20131125072316.16632"></t>
 <t tx="ekr.20131125072316.16633"></t>
+<t tx="ekr.20131129061821.16884">Here are some more tips I've learned from experience:
+
+1. Redo audio tests and video tests every time you start a new
+   session. It's amazing how hum can creep into recordings.
+
+2. The most important step in post production is to get the pacing so
+   it feels right. Beware of editing out pauses. Make sure you give
+   your viewers time to see what you are doing, and to see what you
+   have done.
+   
+3. Don't waste time on callouts or captions until the audio and video
+   work together at a relaxed pace. It's almost as hard to correct
+   pacing mistakes as it is to correct audio flubs.</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
