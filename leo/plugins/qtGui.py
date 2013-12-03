@@ -6695,7 +6695,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         w = self.treeWidget
         w.repaint()
         w.resizeColumnToContents(0) # 2009/12/22
-    #@+node:ekr.20110605121601.18409: *5* Icons (qtTree)
+    #@+node:ekr.20110605121601.18409: *5* Icons (leoQtTree)
     #@+node:ekr.20110605121601.18410: *6* drawIcon
     def drawIcon (self,p):
 
@@ -6765,7 +6765,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         # g.trace(id(icon))
         if item:
             item.setIcon(0,icon)
-    #@+node:ekr.20110605121601.18414: *5* Items
+    #@+node:ekr.20110605121601.18414: *5* Items (leoQtTree)
     #@+node:ekr.20110605121601.18415: *6* childIndexOfItem
     def childIndexOfItem (self,item):
 

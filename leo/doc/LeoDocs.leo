@@ -3,8 +3,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
-	<global_window_position top="63" left="354" height="682" width="1264"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -173,7 +173,7 @@
 <v t="ekr.20090811090022.14453"><vh>Linux screen shots</vh></v>
 </v>
 </v>
-<v t="ekr.20131120115900.16327"><vh>Screencasts</vh>
+<v t="ekr.20131120115900.16327"><vh>Videos</vh>
 <v t="ekr.20131120115900.16329"><vh>@rst html/screencasts.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
@@ -1313,7 +1313,6 @@
 </v>
 </v>
 <v t="ekr.20131125072316.16632"><vh>**Remove Tk references</vh></v>
-<v t="ekr.20131125072316.16633"><vh>**Post scripts for each video</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -6968,7 +6967,7 @@ See the following sections for details.
 - Removed all gui-dependent code from Leo's core.
 - The__wx_gui plugin is now functional.
 </t>
-<t tx="ekr.20070610174018" str_leo_pos="3,3,0,6,0,6">This section contains settings for this file.
+<t tx="ekr.20070610174018">This section contains settings for this file.
 
 It also contains other information of little interest to most Leo users.</t>
 <t tx="ekr.20070622212132">::
@@ -22722,6 +22721,9 @@ This page links to videos about Leo.  **Important notes**:
    * - Terry Brown introduces his bookmarks plugin
      -
      - `regular &lt;https://vimeo.com/77720098&gt;`__
+   * - Fidel Perez tells how to use the mod_http plugin
+     -
+     - `regular &lt;http://www.youtube.com/watch?v=9AvbL_0JEMw&amp;feature=youtu.be&gt;`__
 
 </t>
 <t tx="ekr.20131122055946.16388">The following radio buttons appear in the Find pane:
@@ -22876,7 +22878,6 @@ enough". Perfectionism is not your friend.
 
 </t>
 <t tx="ekr.20131125072316.16632"></t>
-<t tx="ekr.20131125072316.16633"></t>
 <t tx="ekr.20131129061821.16884">Here are some more tips I've learned from experience:
 
 1. Redo audio tests and video tests every time you start a new
