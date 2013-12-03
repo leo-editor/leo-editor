@@ -916,24 +916,14 @@ class LeoActions:
         # g.trace(path)
 
         if path:
-            # EKR
-            i = path.find('#')
-            if i > -1:
-                path = path[:i].strip()
-                unl = path[i+1:].strip()
-            else:
-                path = path
-                unl = ''
-            
-            parsed = urlparse.urlparse(path) # self.bookmark_unl) # EKR
+            parsed = urlparse.urlparse(path)
             leo_path = os.path.expanduser(parsed.path)
             
             c = g.openWithFileName(leo_path,old_c=None)
 
             if c:
-                g.es_print("Opened '%s' for bookmarks"% path) # self.bookmark_unl)
+                g.es_print("Opened '%s' for bookmarks"% path)
 
-                parsed = urlparse.urlparse(unl) # self.bookmark_unl) # EKR
                 if parsed.fragment:
                     g.recursiveUNLSearch(parsed.fragment.split("-->"),c)
                 parent = c.currentPosition()
