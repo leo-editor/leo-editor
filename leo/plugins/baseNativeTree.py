@@ -571,11 +571,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             self.selecting = True
 
             e,wrapper = self.createTreeEditorForItem(item)
-            if e:
-                wrapper.setEditorColors(
-                    c.k.insert_mode_bg_color,
-                    c.k.insert_mode_fg_color)
-            else:
+            if not e:
                 g.trace('*** no e')
 
             p = self.item2position(item)
@@ -827,14 +823,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         if trace: g.trace('p: %s e: %s' % (p and p.h,e))
         if e:
             # A nice hack: just set the focus request.
-            c.requestedFocusWidget = e
-            
-            # following lines were added by Vitalije 2013/11/16
-            # copied from onItemDoubleClicked (nativeTree)
-            wrapper.setEditorColors(
-                    c.k.insert_mode_bg_color,
-                    c.k.insert_mode_fg_color)
-            
+            c.requestedFocusWidget = e       
 
         # 2012/09/27.
         g.app.gui.add_border(c,c.frame.tree.treeWidget)
