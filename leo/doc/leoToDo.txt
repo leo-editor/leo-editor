@@ -10,22 +10,6 @@ Finish vim work.
 Start playing with @shadow improvements.
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
-
-- Better background color for tree-edit widgets
-
-- Change viewrendered commands to preview-.
-
-Find css stuff that renders xml as Leo outine.
-    It's in test.leo: @html display
-
-* Add link to video on Leo's video page.
-    https://groups.google.com/forum/#!topic/leo-editor/6l6oEAnG_H8
-    Fidel N <fidelperez@gmail.com> Hey, this is my first screencast ever.
-    Just tell me if its clear enough or I should repeat it making more
-    emphasis in any of the steps.
-    http://www.youtube.com/watch?v=9AvbL_0JEMw&feature=youtu.be
-    
-* Add docstrings for all commands in leoSessions.py.
 .. @+node:ekr.20131116212505.16665: *3* Screencasts
 Topics:
 
@@ -120,35 +104,6 @@ print-settings, print-bindings, print-commands.
 
 Trick: use small, easily/quickly started, file to test settings.
     Demo: put console *behind* window.
-.. @+node:ekr.20131125143156.16655: *3* monologue (theory of operation for find)
-@language rest
-
-initInteractiveCommand: called whenever you hit F2, F3, etc.
-Previously, it did something really stupid: it moved to the body if it couldn't find an edit widget for the headline
-Now, it *stays* in the headline, and sets ins to None, indicating that searching should start at the start
-This is the simpest thing possible, given that Leo does not save insert points for headlines
-In short: initInteractiveCommands now *always* starts in the presently selected widget...
-provided that searching is enabled for that widget.
-
-So, imo, initInteractiveCommands now does what it absolutely must do:
-it starts searching in the *proper* pane with the current insert point.
-
-There has been real improvement in one method: shouldStayInNode
-This is a crucial method.  Get it wrong and F2 could loops between the *same* node's head and body
-*Finally* I saw the light.  The comment tells all.  Here it is:
-# Switch [panes in the same node] only if a) searching both panes and b) this is the first pane:
-There is *no way* this can ever change.
-So simple in retrospect, so difficult to see.
-
-So now, the question is...
-Where *exactly* is the insert point when we switch panes?
-Note:  when a search switches panes or nodes, it is because the search has just failed in a pane
-So the search goes to the next pane.
-Imo, the *only* reasonable thing to do in that case is start from
-the beginning of the pane for forward searches, and the end for backward searches.
-Starting in the middle just *must* be wrong.
-But the empty (None) argument to initNextText accomplishes that.
-In short, all seems very simple and very correct.
 .. @+node:ekr.20131117054619.16683: *3* new_find
 @language rest
 
@@ -331,12 +286,18 @@ open-for-edit entity (either headline or body). Find-backward searches from
 the current cursor position only if the currently open-for-edit entity is a
 body. This is a serious lack of consistency.
 .. @+node:ekr.20131121211048.16378: *3* Next
+- Change viewrendered commands to preview-.
+* Add docstrings for all commands in leoSessions.py.
 - Change the term 'minibuffer' ???
 - Add focus-to-x commands, where x is a *temporary* log pane, like completions, commands, etc.
 - (Maybe) Add helpful @button nodes to leoSettings.leo.
 - Revise help-for-find-commands
 * More screenshots! Different font sizes, coloring schemes, plugins, etc.
 * Review Leo's text tutorials.
+- Settings menu:
+    - Rename leoSettings.leo -> global settings.
+    - Rename myLeoSettings.leo -> local settings.
+    - Add per-file settings: selects @settings node of c.
 .. @+node:ekr.20131121090013.17108: *4* Import pane, similar to the Find pane
 Very important.
 

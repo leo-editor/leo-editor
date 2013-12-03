@@ -1774,7 +1774,10 @@ class leoFind:
         return val
     #@+node:ekr.20031218072017.3087: *4* find.initInteractiveCommands
     def initInteractiveCommands(self):
-
+        '''
+        Init an interactive command. *Always* start in the presently selected
+        widget, provided that searching is enabled for that widget.
+        '''
         trace = True and not g.unitTesting
         c = self.c
         p = self.p = c.p # *Always* start with the present node.
@@ -1789,8 +1792,6 @@ class leoFind:
         self.errors = 0
         self.initNextText(ins=ins)
         if w: c.widgetWantsFocus(w)
-        
-        
         # Init suboutline-only:
         if self.suboutline_only and not self.onlyPosition:
             self.onlyPosition = p.copy()
