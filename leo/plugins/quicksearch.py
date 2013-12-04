@@ -41,6 +41,10 @@ This plugin defines the following commands that can be bound to keys:
   Lists all nodes in reversed gnx order, basically newest to oldest, creation wise,
   not modification wise.
 
+- find-quick-changed:
+  Lists all nodes that are changed (aka "dirty") since last save.  Handy when
+  you want to see why a file's marked as changed.
+
 - history:
   Lists nodes from c.nodeHistory.
     
@@ -162,6 +166,10 @@ def install_qt_quicksearch_tab(c):
         c.frame.log.selectTab('Nav')
         wdg.scon.doNodeHistory()
 
+    def show_dirty(event):
+        c.frame.log.selectTab('Nav')
+        wdg.scon.doChanged()
+
     def timeline(event):
         c.frame.log.selectTab('Nav')
         wdg.scon.doTimeline()
@@ -176,6 +184,8 @@ def install_qt_quicksearch_tab(c):
         'find-quick-test-failures', None,show_unittest_failures)
     c.k.registerCommand(
         'find-quick-timeline', None, timeline)
+    c.k.registerCommand(
+        'find-quick-changed', None, show_dirty)
     c.k.registerCommand(
         'history', None, nodehistory)
 
@@ -501,6 +511,13 @@ class QuickSearchController:
         timeline.sort(key=lambda x: x.gnx, reverse=True)
         self.clear()
         self.addHeadlineMatches(timeline)
+    #@+node:tbrown.20131204085704.57542: *3* doChanged
+    def doChanged(self):
+
+        c = self.c
+        changed = [p.copy() for p in c.all_unique_positions() if p.isDirty()]
+        self.clear()
+        self.addHeadlineMatches(changed)
     #@+node:ekr.20111015194452.15692: *3* doSearch
     def doSearch(self, pat):
 
