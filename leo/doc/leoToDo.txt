@@ -10,12 +10,19 @@ Finish vim work.
 Start playing with @shadow improvements.
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
+
+Watch blender design vids:
+
+https://www.youtube.com/watch?v=6aIA2LaB2Iw
+http://www.youtube.com/watch?v=yIedljapuz0
+http://www.youtube.com/watch?v=UWacQrEcMHk
 .. @+node:ekr.20131116212505.16665: *3* Screencasts
 Topics:
 
 - Settings: focus on visual settings.
     @menu
     leo-x-pt.leo files.
+    - Small test .leo files: useful for settings.
 - Import files.  Show active-path plugin, recursive import.
 
 Leo's help commands.
@@ -23,8 +30,7 @@ Auto-completion.
 Viewrendered, A0. test.leo examples: @svg, @html, @movie, etc.
 Arrow keys.
 Intro to Leo.
-Tips and techniques:
-    - Small test .leo files: useful for settings.
+
 Scripting:
     Introduction to Leo's code base.
         500,000 lines of code made easy.
@@ -33,6 +39,7 @@ Scripting:
     ** @button
     @test
     c, g, p: commanders, generators, p.b, p.h etc.
+    
 Redo the Find command screencast:
     - Show the new Search menu.
     - Ctrl-G hides the Find pane.
@@ -108,29 +115,22 @@ Trick: use small, easily/quickly started, file to test settings.
 @language rest
 
 * Remove all asserts.
-
-** UNIT TESTS
-
-* Revise theory of operation.
-* Reset wrap & onlyPosition when the find pattern changes:
-    
-    The find command must reset several state variables whenever
-
-    a) The find pattern changes or
-    b) a limited (node-only, suboutline-only) search completes or
-    c) a wrapped search completes.
-    d) Whenever any radio button (find scope) changes.
-
-First:
-* How do state vars get set/reset?
-- Hitting Ctrl-G (or Shift-Ctrl-R) shouldn't lose data:
-  (Remember each keystroke)
-- Can we avoid copying positions?
 * Create unit tests.
     - Check all bug reports.
     - Make sure F2 works when only searching in headlines.
     - Test outline-only, node-only, wrap.
     - Test isearch (forward & backward)
+* Revise theory of operation.
+* Reset wrap & onlyPosition when the find pattern changes:
+    The find command must reset several state variables whenever
+    a) The find pattern changes or
+    b) a limited (node-only, suboutline-only) search completes or
+    c) a wrapped search completes.
+    d) Whenever any radio button (find scope) changes.
+
+- Hitting Ctrl-G (or Shift-Ctrl-R) shouldn't lose data:
+  (Remember each keystroke)
+- Can we avoid copying positions?
 
 Bug Fixes:
 - Create save/restore_isearch_vars methods using isearch_save_d.
@@ -298,6 +298,34 @@ body. This is a serious lack of consistency.
     - Rename leoSettings.leo -> global settings.
     - Rename myLeoSettings.leo -> local settings.
     - Add per-file settings: selects @settings node of c.
+.. @+node:ekr.20131205091824.16320: *4* Experiment with @shadow
+https://groups.google.com/d/msg/leo-editor/eU6ucaeo_i4/QRGhNRL0T90J
+
+- Leo's sentinels are the biggest barrier to more widespread adoption of Leo.  Not documentation.  Not anything else.
+- @bool use_at_shadow_everywhere would allow us to test @shadow everywhere without changing .leo files.
+- @shadow could benefit by using Leo's existing caching mechanism.
+- Some (relatively simple!) way must be found to allow @shadow to guess correctly most of the time.
+
+Recent thoughts:
+
+1. Iirc, @shadow uses more verbose old-style sentinels. Leo's new-style
+   sentinels are provably the simplest thing that could possibly work. It's
+   likely that adapting the @shadow algorithm to use new-style sentinels
+   may have advantages. It's worth investigating.
+
+2. The acid test of @shadow is how well it does, in fact, guess the
+   location of inserted lines. An Aha: Leo's bzr log provides the ultimate
+   test bed. We "mine" the bzr log for diffs. These diffs include
+   sentinels, so they show the *optimal* operation of @shadow. Stripping
+   sentinels from the "incoming" diffs provides the input to the @shadow
+   algorithm. We can then compare the output of @shadow with the actual
+   diffs. In other words, the contents of the bzr log provide the
+   foundation for a huge unit test.
+
+3. Given the importance of @shadow, any reasonable amount of work that
+   improves its performance (making hard guesses) is justified. The present
+   idea is to add features to the code that will clarify the operation of
+   the algorithm and allow for experimentation in heuristic inferences.
 .. @+node:ekr.20131121090013.17108: *4* Import pane, similar to the Find pane
 Very important.
 
@@ -349,6 +377,48 @@ easy, flexible plan.
     - Leave arrow keys and control keys unchanged.
     - Focus plain-key normal-mode commands: a,i,d,c,x,s.
     - Use minibuffer for find command (save find/change strings for dot).
+.. @+node:ekr.20131105020211.18059: *4* Per-node expansions!
+https://groups.google.com/forum/#!topic/leo-editor/Wd0NtBLEZZk
+
+The idea is store "ephemeral" or position-related data **in vnodes*. This
+is a completely new idea in Leo's history!
+
+Suppose every vnode contains a new ivar: v.expandedPositions, a list of
+(copies of) positions at which v is to be expanded. This would work as
+follows:
+
+1. Contracting a node at position p clears p.v.expandedPositions. The happy
+   side effects is that contracting any clone will contract them all.
+
+2. Expanding a node at position appends p.copy() to p.v.expandedPositions,
+   and purges any no-longer-existing positions from that list.
+
+3. Leo's drawing code will call c.shouldBeExpanded(p) (instead of
+p.isExpanded()) to determine whether to expand the outline node at position
+p.
+
+As always, changing outline structure will invalidate positions. Because
+c.p and all it's ancestors are always expanded, the worst that can happen
+when an outline changes is that some positions that *aren't* the present
+position will contract unexpectedly. Most such contraction will occur off
+screen.
+
+Note: We could add v ivars for other kinds of data, such as marks, but
+that's not going to happen. I think this trick is appropriate only in very
+special circumstances. Furthermore, vnodes should be as small as possible.
+.. @+node:ekr.20131017174814.17480: *5* c.shouldBeExpanded
+@language python
+
+def shouldBeExpanded(self,p):
+    c,root,v = self,self.rootPosition(),p.v
+    if p == c.p or p.isAncestorOf(c.p):
+        return True
+    if v.isExpanded():
+        v.expandedList = [p2 for p2 in v.expandedList if c.positionExists(p2,root=root)]
+        for p2 in v.expandedList:
+            if p == p2:
+                return True
+    return False
 .. @+node:ekr.20131105020211.18058: ** Important
 .. @+node:ekr.20131101080215.16488: *3* * Outreach to magazine editors
 ===== Steve Litt
@@ -391,48 +461,6 @@ One more thing: Start publicizing different ways people use Leo.
 Encourage them to write in with their unique uses, and publicize them.
 I bet people are doing things with Leo you never dreamed of, and some
 of those things might be the itch some journalist wants to scratch.
-.. @+node:ekr.20131105020211.18059: *3* Per-node expansions!
-https://groups.google.com/forum/#!topic/leo-editor/Wd0NtBLEZZk
-
-The idea is store "ephemeral" or position-related data **in vnodes*. This
-is a completely new idea in Leo's history!
-
-Suppose every vnode contains a new ivar: v.expandedPositions, a list of
-(copies of) positions at which v is to be expanded. This would work as
-follows:
-
-1. Contracting a node at position p clears p.v.expandedPositions. The happy
-   side effects is that contracting any clone will contract them all.
-
-2. Expanding a node at position appends p.copy() to p.v.expandedPositions,
-   and purges any no-longer-existing positions from that list.
-
-3. Leo's drawing code will call c.shouldBeExpanded(p) (instead of
-p.isExpanded()) to determine whether to expand the outline node at position
-p.
-
-As always, changing outline structure will invalidate positions. Because
-c.p and all it's ancestors are always expanded, the worst that can happen
-when an outline changes is that some positions that *aren't* the present
-position will contract unexpectedly. Most such contraction will occur off
-screen.
-
-Note: We could add v ivars for other kinds of data, such as marks, but
-that's not going to happen. I think this trick is appropriate only in very
-special circumstances. Furthermore, vnodes should be as small as possible.
-.. @+node:ekr.20131017174814.17480: *4* c.shouldBeExpanded
-@language python
-
-def shouldBeExpanded(self,p):
-    c,root,v = self,self.rootPosition(),p.v
-    if p == c.p or p.isAncestorOf(c.p):
-        return True
-    if v.isExpanded():
-        v.expandedList = [p2 for p2 in v.expandedList if c.positionExists(p2,root=root)]
-        for p2 in v.expandedList:
-            if p == p2:
-                return True
-    return False
 .. @+node:ekr.20131030082936.17512: *3* Can't fix (yet) bug 1090950: refresh from disk - cut node ressurection
 https://bugs.launchpad.net/leo-editor/+bug/1090950
 
