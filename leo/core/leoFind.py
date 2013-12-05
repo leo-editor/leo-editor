@@ -1453,13 +1453,17 @@ class leoFind:
     #@+node:ekr.20131124060912.16472: *5* find.shouldStayInNode
     def shouldStayInNode (self,p):
         '''Return True if the find should simply switch panes.'''
-        # Errors here cause the find command to fail badly.
         
-        # Switch only if a) searching both panes and b) this is the first pane:
+        # Errors here cause the find command to fail badly.
+        # Switch only if:
+        #   a) searching both panes and,
+        #   b) this is the first pane of the pair.
+        # There is *no way* this can ever change.
+        # So simple in retrospect, so difficult to see.
         return (
-            self.search_headline and self.search_body and
-            ((self.reverse and not self.in_headline) or
-             (not self.reverse and self.in_headline)))
+            self.search_headline and self.search_body and (
+                (self.reverse and not self.in_headline) or
+                (not self.reverse and self.in_headline)))
     #@+node:ekr.20031218072017.3076: *4* find.resetWrap
     def resetWrap (self,event=None):
 
@@ -1775,8 +1779,12 @@ class leoFind:
     #@+node:ekr.20031218072017.3087: *4* find.initInteractiveCommands
     def initInteractiveCommands(self):
         '''
-        Init an interactive command. *Always* start in the presently selected
-        widget, provided that searching is enabled for that widget.
+        Init an interactive command.  This is tricky!
+        
+        *Always* start in the presently selected widget, provided that
+        searching is enabled for that widget. Always start at the present
+        insert point for the body pane. For headlines, start at beginning or
+        end of the headline text.
         '''
         trace = True and not g.unitTesting
         c = self.c
