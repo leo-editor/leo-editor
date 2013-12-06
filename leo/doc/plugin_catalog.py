@@ -9,7 +9,7 @@ Extract plugin status and docs. from docstrings
 
 :last_update: 20100301
 :plugin_status: inital development
-:gui: qt and tk
+:gui: qt
 :maintainer: terry_n_brown@yahoo.com
 
 Generate merged documentation from plugins (or any .py files).
@@ -38,7 +38,7 @@ TODO
 
  - Design encoding of plugin status in rst docstring
 
-   - interface (qt/tk/both)
+   - interface (qt)
    - maintained / working / old / broken
    - maintainer
 

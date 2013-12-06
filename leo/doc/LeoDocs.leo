@@ -1312,8 +1312,6 @@
 <v t="ekr.20131105110107.17046"><vh>Investigated install problem</vh></v>
 </v>
 </v>
-<v t="ekr.20131125072316.16632"><vh>**Remove Tk references</vh></v>
-<v t="ekr.20131206064113.16327"><vh>Fix doc bug</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -3408,7 +3406,6 @@ to web pages with their outlining capability intact.
 2. Easy to add features since is programmed in Python and open source. Maybe
 your average user can't start hacking on it, but a surprising amount can be
 tacked on...
-.. by flipping through the Tk manual.
 3. Free, opensource, multi-platform
 4. Leo is scriptable with Python. It should be possible to build a Tickler
 into Leo using Python scripting, for example.
@@ -7667,7 +7664,7 @@ The idea is that script A running in Leo (i.e. in a regular GUI Leo session)
 calls script B through subprocess.Popen(), script B uses LeoBridge to do
 something (parse unloaded Leo files), and returns the result to script A.
 Passing the result back via the clipboard seemed like a possibility, but
-XWindows / tcl/tk clipboard madness being what it is, that didn't seem to work.
+XWindows clipboard madness being what it is, that didn't seem to work.
 
 First trick, calling script B from script A::
 
@@ -22878,7 +22875,6 @@ enough". Perfectionism is not your friend.
   material.
 
 </t>
-<t tx="ekr.20131125072316.16632"></t>
 <t tx="ekr.20131129061821.16884">Here are some more tips I've learned from experience:
 
 1. Redo audio tests and video tests every time you start a new
@@ -22892,21 +22888,6 @@ enough". Perfectionism is not your friend.
 3. Don't waste time on callouts or captions until the audio and video
    work together at a relaxed pace. It's almost as hard to correct
    pacing mistakes as it is to correct audio flubs.</t>
-<t tx="ekr.20131206064113.16327">I discovered Leo not long time ago and now I'm learning the basics.
-I think there is a mistake in the page:
-
-http://leoeditor.com/tutorial-basics.html
-
-"Up-arrow (goto-prev-visible) selects the next visible outline node.
-Down-arrow (goto-next-visible) selects the previous visible outline node."
-
-Perhaps it should be:
-
-"Up-arrow (goto-prev-visible) selects the previous visible outline node.
-Down-arrow (goto-next-visible) selects the next visible outline node."
-
-Thanks for this great tool!
-</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
