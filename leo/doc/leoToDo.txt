@@ -21,10 +21,16 @@ Watch IPython vid:
 
 Some notes here on notebook and javascript:
 http://jakevdp.github.io/blog/2013/06/01/ipython-notebook-javascript-python-communication/
+.. @+node:ekr.20131206094237.16333: *3* Advice for microphones
+@language rest
 
-Fix doc problem:
+Tips for smoother audio.
 
-While navigating Leo documentation, I found out there is no way to come back to Leo main page.
+- Use (headset?) mic with about 1-inch "bulb".
+- Put the mic as far from the mouth as possible.
+- Turn mic volume as loud as possible, then turn down until no red is visible.
+- Use "pop filter" (a piece of cloth).
+- Enable volume leveling and noise removal in Camtasia.
 
 .. @+node:ekr.20131116212505.16665: *3* Screencasts
 Topics:
@@ -309,7 +315,8 @@ body. This is a serious lack of consistency.
     - Rename myLeoSettings.leo -> local settings.
     - Add per-file settings: selects @settings node of c.
 .. @+node:ekr.20131205091824.16320: *4* Experiment with @shadow
-https://groups.google.com/d/msg/leo-editor/eU6ucaeo_i4/QRGhNRL0T90J
+Thread: https://groups.google.com/d/msg/leo-editor/eU6ucaeo_i4/QRGhNRL0T90J
+Post: https://groups.google.com/d/msg/leo-editor/eU6ucaeo_i4/w4FOILRP6ooJ
 
 - Leo's sentinels are the biggest barrier to more widespread adoption of Leo.  Not documentation.  Not anything else.
 - @bool use_at_shadow_everywhere would allow us to test @shadow everywhere without changing .leo files.
@@ -336,6 +343,16 @@ Recent thoughts:
    improves its performance (making hard guesses) is justified. The present
    idea is to add features to the code that will clarify the operation of
    the algorithm and allow for experimentation in heuristic inferences.
+   
+Addendum: https://groups.google.com/d/msg/leo-editor/eU6ucaeo_i4/BcSjRsEm9VUJ
+
+4. If we move to @shadow everywhere, there must be a way to share the
+   actual outline structure that any particular person may be using.
+
+This is what sentinels do so well at present. The solution will be to
+"package" all the private files (containing sentinels). I think of this as
+the "zipped option", though the name isn't perfect because the package
+probably won't be a .zip file (although perhaps it could be).
 .. @+node:ekr.20131121090013.17108: *4* Import pane, similar to the Find pane
 Very important.
 

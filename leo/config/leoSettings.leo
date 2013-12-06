@@ -970,7 +970,7 @@
 </v>
 </v>
 <v t="ville.20091008201813.3909"><vh>Qt context menu</vh>
-<v t="ville.20091008201813.3911"><vh>@@data contextmenu_commands</vh></v>
+<v t="ville.20091008201813.3911"><vh>@data contextmenu_commands</vh></v>
 </v>
 <v t="ekr.20070411101857"><vh>Open With menu</vh>
 <v t="ekr.20070411101857.1"><vh>@openwith Idle = Alt+Shift+Ctrl+I</vh></v>
@@ -6351,7 +6351,10 @@ a single @data contextmenu_commands node. </t>
 
 # stickynote Create a sticky note
 # read-at-file-nodes Read in file nodes
-</t>
+
+copy-node Copy Node
+cut-node Cut Node
+paste-node Paste Node</t>
 <t tx="vitalije.20100306144625.8944"></t>
 <t tx="vitalije.20100306144625.8945"></t>
 <t tx="vitalije.20100306144625.8946"># Time between saves in seconds</t>
