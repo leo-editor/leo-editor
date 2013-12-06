@@ -16,6 +16,16 @@ Watch blender design vids:
 https://www.youtube.com/watch?v=6aIA2LaB2Iw
 http://www.youtube.com/watch?v=yIedljapuz0
 http://www.youtube.com/watch?v=UWacQrEcMHk
+
+Watch IPython vid:
+
+Some notes here on notebook and javascript:
+http://jakevdp.github.io/blog/2013/06/01/ipython-notebook-javascript-python-communication/
+
+Fix doc problem:
+
+While navigating Leo documentation, I found out there is no way to come back to Leo main page.
+
 .. @+node:ekr.20131116212505.16665: *3* Screencasts
 Topics:
 
@@ -419,6 +429,77 @@ def shouldBeExpanded(self,p):
             if p == p2:
                 return True
     return False
+.. @+node:ekr.20131206064113.16325: *4* Fix new IPython bug
+The c property makes no sense.  Maybe the best solution is to get rid of it and change the docs.
+.. @+node:ekr.20130930062914.16002: *5* class LeoNameSpace
+class LeoNameSpace(object):
+    
+    '''An interface class passed to IPython that provides easy
+    access to "g" and all commanders.
+    
+    A convenience property, "c" provides access to the first
+    commander in g.app.windowList.
+    '''
+
+    def __init__ (self):
+        '''LeoNameSpace ctor.'''
+        self.commander = None
+            # The commander returned by the c property.
+        self.commanders_list = []
+            # The list of commanders returned by the commanders property.
+        self.g = g
+        self.update()
+
+    @others
+    
+.. @+node:ekr.20130930062914.16006: *6* LeoNS.c property
+def __get_c(self):
+    '''Return the designated commander, or the only open commander.'''
+    self.update()
+    if self.commander and self.commander in self.commanders_list:
+        return self.commander
+    elif len(self.commanders_list) == 1:
+        return self.commanders_list[0]
+    else:
+        return None
+
+def __set_c(self,c):
+    '''Designate the commander to be returned by the getter.'''
+    self.update()
+    if c in self.commanders_list:
+        self.commander = c
+    else:
+        g.trace(g.callers())
+        raise ValueError(c)
+
+c = property(
+    __get_c, __set_c,
+    doc = "LeoNameSpace c property")
+.. @+node:edward.20130930125732.11822: *6* LeoNS.commanders property
+def __get_commanders(self):
+    '''Return the designated commander, or the only open commander.'''
+    self.update()
+    return self.commanders_list
+
+commanders = property(
+    __get_commanders, None,
+    doc = "LeoNameSpace commanders property (read-only)")
+.. @+node:ekr.20130930062914.16009: *6* LeoNS.find_c
+def find_c(self,path):
+    '''Return the commander associated with path, or None.'''
+    g = self.g
+    self.update()
+    path = g.os_path_normcase(path)
+    short_path = g.shortFileName(path)
+    for c in self.commanders_list:
+        fn = g.os_path_normcase(c.fileName())
+        short_fn = g.shortFileName(fn)
+        if fn == path or short_fn == short_path:
+            return c
+.. @+node:ekr.20130930062914.16003: *6* LeoNS.update
+def update (self):
+    '''Update the list of available commanders.'''
+    self.commanders_list = [frame.c for frame in g.app.windowList]
 .. @+node:ekr.20131105020211.18058: ** Important
 .. @+node:ekr.20131101080215.16488: *3* * Outreach to magazine editors
 ===== Steve Litt

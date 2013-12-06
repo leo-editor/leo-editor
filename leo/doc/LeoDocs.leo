@@ -1313,6 +1313,7 @@
 </v>
 </v>
 <v t="ekr.20131125072316.16632"><vh>**Remove Tk references</vh></v>
+<v t="ekr.20131206064113.16327"><vh>Fix doc bug</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -16451,8 +16452,8 @@ When focus is in the outline pane, *plain* arrows keys change the selected node:
 - Right-arrow (expand-and-go-right) expands a node or selects its first child.
 - Left-arrow (contract-or-go-left) contracts a node if its children are visible,
   and selects the node's parent otherwise. 
-- Up-arrow (goto-prev-visible) selects the next *visible* outline node.
-- Down-arrow (goto-next-visible) selects the previous *visible* outline node.
+- Up-arrow (goto-prev-visible) selects the previous *visible* outline node.
+- Down-arrow (goto-next-visible) selects the next *visible* outline node.
   
 When focus is in the outline pane, Shift-arrow keys move the selected node
 in the direction of the arrow, if possible.
@@ -22891,6 +22892,21 @@ enough". Perfectionism is not your friend.
 3. Don't waste time on callouts or captions until the audio and video
    work together at a relaxed pace. It's almost as hard to correct
    pacing mistakes as it is to correct audio flubs.</t>
+<t tx="ekr.20131206064113.16327">I discovered Leo not long time ago and now I'm learning the basics.
+I think there is a mistake in the page:
+
+http://leoeditor.com/tutorial-basics.html
+
+"Up-arrow (goto-prev-visible) selects the next visible outline node.
+Down-arrow (goto-next-visible) selects the previous visible outline node."
+
+Perhaps it should be:
+
+"Up-arrow (goto-prev-visible) selects the previous visible outline node.
+Down-arrow (goto-next-visible) selects the next visible outline node."
+
+Thanks for this great tool!
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
