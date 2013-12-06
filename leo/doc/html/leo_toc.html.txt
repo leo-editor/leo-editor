@@ -9,6 +9,10 @@
 Leo's Documentation Page
 ========================
 
+.. _`Leo's home page`: http://leoeditor.com/
+
+`Leo's home page`_.
+
 .. toctree::
    :maxdepth: 2
    
@@ -46,8 +50,6 @@ Leo's Documentation Page
 
    slides
    leoLinks
-
-.. _`Leo's home page`: http://leoeditor.com/
 
 `Leo's home page`_.
 

@@ -7930,11 +7930,11 @@ Branch type "Hosted" and fill in descriptive details about the branch. After
 that, go to the branch home page from Code tab again, and copy-paste the push
 command line to terminal. For example, for branch::
 
- https://code.launchpad.net/~leo-editor-team/leo-editor/mod_rclick
+ https://code.launchpad.net/~leo-editor-team/leo-editor/my_branch
 
 The push command is::
 
- bzr push bzr+ssh://my_name@bazaar.launchpad.net/~leo-editor-team/leo-editor/mod_rclick
+ bzr push bzr+ssh://my_name@bazaar.launchpad.net/~leo-editor-team/leo-editor/my_branch
 
 You may wish to add --remember command line option to bzr push, to direct all
 future pushes to that location. Then, you only need to execute 'bzr push'.
@@ -8506,7 +8506,7 @@ present, the following character is underlined in the name. If the command
 name in an @item node is just a hyphen (-), the item represents a menu
 separator.
 
-@popup *&lt;widget-name&gt;* creates a popup menu for use by the rClick plugin.
+@popup *&lt;widget-name&gt;* creates a popup menu for use by the contextmenu.py plugin.
 The children of this node should be @menu and @item nodes, used as with
 @menus.
 </t>
@@ -10717,11 +10717,11 @@ select Branch type "Hosted" and fill in descriptive details about the branch.
 After that, go to the branch home page from Code tab again, and copy-paste the
 push command line to terminal. For example, for branch::
 
-    https://code.launchpad.net/~leo-editor-team/leo-editor/mod_rclick
+    https://code.launchpad.net/~leo-editor-team/leo-editor/my_branch
 
 The push command is::
 
-    bzr push bzr+ssh://my_name@bazaar.launchpad.net/~leo-editor-team/leo-editor/mod_rclick    
+    bzr push bzr+ssh://my_name@bazaar.launchpad.net/~leo-editor-team/leo-editor/my_branch 
 
 You may wish to add --remember command line option to bzr push, to direct all
 future pushes to that location. Then, you only need to execute bzr push.
@@ -11653,7 +11653,6 @@ in your plugins::
 And call this in your plugin *once*::
 
     g.tree_popup_handlers.append(nextclone_rclick)
-
 </t>
 <t tx="ekr.20101113063552.9403">Adds "Back" and "Forward" buttons (Qt only).
 
@@ -13375,8 +13374,7 @@ click on any URL launches it in default browser.
 
 URL regex:  (http|https|file|ftp)://[^\s'"]+[\w=/]
 
-Related plugins:  color_markup.py; rClick.py
-
+Related plugin:  contextmenu.py
 </t>
 <t tx="ekr.20101113063552.9486">Lets the user to associate text with a specific node.
 
