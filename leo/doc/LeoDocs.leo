@@ -16213,7 +16213,10 @@ the namespace, and do calculations based on that data. Having this data be
 accessible to the ipython instance makes it convenient to interact and poke
 around with the same data.
 </t>
-<t tx="ekr.20131001100335.15938">Ctrl-F (search-with-present-options) shows the Find Tab and puts the focus
+<t tx="ekr.20131001100335.15938">This section explains how to use Leo's standard search/replace commands. |br|
+**Note**: you can also use the Nav Tab (in the Log pane) to search for text. 
+
+Ctrl-F (start-search) shows the Find Tab and puts the focus
 in the minibuffer. |br|
 **Important**: the Find tab just shows you the status of search and replace
 operations. |br|
@@ -16230,7 +16233,7 @@ Start the find by typing &lt;Return&gt;.
 But suppose you want to replace "def" with "foo", instead of just finding
 "foo".
 
-Before typing &lt;Return&gt; type Shift-Ctrl-R. The minibuffer prompts for the
+Before typing &lt;Return&gt; type &lt;Tab&gt;. The minibuffer prompts for the
 replacement string. Notice that the status area now shows “def” as the Find
 string.
 
@@ -17333,6 +17336,17 @@ name.
 .. _`ask for help`:         https://groups.google.com/forum/#!forum/leo-editor
 .. _`programming tutorial`: tutorial-programming.html
 .. _`Using @auto nodes`:    tutorial-programming.html#using-auto-nodes
+.. _`plugins section`:      tutorial-basics.html#plugins
+
+.. _`Leo plugins`:      plugins.html
+.. _`bookmarks.py`:     plugins.html#bookmarks-py
+.. _`contextmenu.py`:   plugins.html#contextmenu-py
+.. _`mod_scripting.py`: plugins.html#mod-scripting-py
+.. _`quicksearch.py`:   plugins.html#quicksearch-py
+.. _`todo.py`:          plugins.html#todo-py
+.. _`valuespace.py`:    plugins.html#valuespace-py
+.. _`viewrendered.py`:  plugins.html#viewrendered-py
+
 </t>
 <t tx="ekr.20131008041326.16222">.. |---| unicode:: U+02015 .. for quotes
    :trim:
@@ -17685,19 +17699,10 @@ It's even possible to define a context in which abbreviation scripts execute.
 
 See leoSettings.leo for full details.
 </t>
-<t tx="ekr.20131009100732.19038">.. _`Plugins`:          plugins.html
-.. _`bookmarks.py`:     plugins.html#bookmarks-py
-.. _`contextmenu.py`:   plugins.html#contextmenu-py
-.. _`mod_scripting.py`: plugins.html#mod-scripting-py
-.. _`quicksearch.py`:   plugins.html#quicksearch-py
-.. _`todo.py`:          plugins.html#todo-py
-.. _`valuespace.py`:    plugins.html#valuespace-py
-.. _`viewrendered.py`:  plugins.html#viewrendered-py
-
-.. index::
+<t tx="ekr.20131009100732.19038">.. index::
     pair: Plugins; Tutorial
 
-`Plugins`_ are Python programs that extend what Leo can do.
+`Leo plugins`_ are Python programs that extend what Leo can do.
 
 Plugins reside in the leo/plugins folder.
 

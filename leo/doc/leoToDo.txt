@@ -11,6 +11,13 @@ Start playing with @shadow improvements.
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 
+Study org-babel
+http://orgmode.org/worg/org-contrib/babel/intro.html
+
+#+begin_src language org-switches
+,body
+#+end_src
+
 Watch blender design vids:
 
 https://www.youtube.com/watch?v=6aIA2LaB2Iw
