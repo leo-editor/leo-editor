@@ -6354,7 +6354,8 @@ a single @data contextmenu_commands node. </t>
 
 copy-node Copy Node
 cut-node Cut Node
-paste-node Paste Node</t>
+paste-node Paste Node
+paste-retaining-clones Paste Node As Clone</t>
 <t tx="vitalije.20100306144625.8944"></t>
 <t tx="vitalije.20100306144625.8945"></t>
 <t tx="vitalije.20100306144625.8946"># Time between saves in seconds</t>
