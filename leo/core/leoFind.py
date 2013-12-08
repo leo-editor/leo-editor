@@ -205,7 +205,6 @@ class leoFind:
         '''Handle Find All button.'''
         c = self.c
         self.setup_button()
-        ### c.clearAllVisited()
         self.findAll()
     #@+node:ekr.20031218072017.3059: *4* find.findButton
     def findButton(self,event=None):
@@ -272,8 +271,6 @@ class leoFind:
             self.findNext()
         finally:
             self.reverse = not self.reverse
-        
-    ### findPreviousCommand = findPrevCommand
     #@+node:ekr.20131119204029.16479: *4* find.helpForFindCommands
     def helpForFindCommands(self,event=None):
         '''Called from Find panel.  Redirect.'''
@@ -1321,7 +1318,6 @@ class leoFind:
             p = c.rootPosition()
             while p and p.hasNext():
                 p = p.next()
-                assert p
             p = p.lastNode()
             return p
         else:
@@ -1383,7 +1379,6 @@ class leoFind:
         if wrap and not self.wrapPosition:
             self.wrapPosition = p.copy()
             self.wrapPos = 0 if self.reverse else len(p.b)
-        ### Use p.moveToThread...??
         # Move to the next position.
         p = p.threadBack() if self.reverse else p.threadNext()
         # Check it.
@@ -1392,7 +1387,6 @@ class leoFind:
             return None
         if not p and wrap:
             p = self.doWrap()
-            assert p
         if not p:
             if trace: g.trace('end of search')
             return None
@@ -1728,7 +1722,6 @@ class leoFind:
                     p = p.next()
                 p = p.lastNode()
             self.p = p
-            assert self.p
         # Set the insert point.
         self.initBatchText()
     #@+node:ekr.20031218072017.3085: *4* find.initBatchText
@@ -1904,7 +1897,7 @@ class leoFind:
             if showState:
                 c.k.showStateAndMode(w)
             c.bodyWantsFocusNow()
-            assert w.getAllText() == p.b.replace('\r','')
+            # assert w.getAllText() == p.b.replace('\r','')
             w.setSelectionRange(pos,newpos,insert=insert)
             c.outerUpdate()
         return w # Support for isearch.
