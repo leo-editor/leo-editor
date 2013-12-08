@@ -2043,7 +2043,8 @@ KP_0, KP_1, KP_2, KP_3, KP_4, KP_5, KP_6, KP_7, KP_8, KP_9</t>
 #c6d3d7
 #ffffec # Same as outline.</t>
 <t tx="ekr.20051025084017">Leo's spell checker requires PyEnchant to be installed.
-See: http://www.rfk.id.au/software/pyenchant/tutorial.html#installation</t>
+See: http://pythonhosted.org/pyenchant/tutorial.html#installing-pyenchant
+</t>
 <t tx="ekr.20051027175030">True: When typing an opening bracket '(','[' or '{', immediately type the
 corresponding closing bracket.  To move past the closing bracket, just type it.</t>
 <t tx="ekr.20051101160257">A shortcut specification has the form:
@@ -4502,9 +4503,9 @@ If &gt; 0, only nodes whose body text are smaller than this limit are colorized.
 <t tx="ekr.20100313080341.8371"></t>
 <t tx="ekr.20100507153425.8304">Valid values are top,bottom,left,right</t>
 <t tx="ekr.20100904095239.8440">The language code for Enchant.
-
-See http://www.rfk.id.au/software/pyenchant/tutorial.html#installation-dicts
-for information about supported languages.</t>
+For information about supported languages, see:
+http://pythonhosted.org/pyenchant/tutorial.html#adding-language-dictionaries
+</t>
 <t tx="ekr.20100904095239.8441">Defaults to leo/plugins/spellpyx.txt</t>
 <t tx="ekr.20100904134301.11000"></t>
 <t tx="ekr.20100904134301.11002"># Comments lines (lines starting with '#') are ignored.
