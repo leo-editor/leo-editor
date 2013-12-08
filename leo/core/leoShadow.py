@@ -308,7 +308,7 @@ class shadowController:
                 else:
                     # g.trace('put line',repr(line))
                     writer.put(line,tag='copy sent %s:%s' % (start,limit))
-    #@+node:ekr.20080708094444.38: *4* x.propagate_changed_lines
+    #@+node:ekr.20080708094444.38: *4* x.propagate_changed_lines (main algorithm)
     def propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=None):
 
         '''Propagate changes from 'new_public_lines' to 'old_private_lines.
