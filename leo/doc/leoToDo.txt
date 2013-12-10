@@ -10,6 +10,12 @@ Finish vim work.
 Start playing with @shadow improvements.
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
+
+- Finish design vids.
+- Ctrl-A in the minibuffer selects too much (when finding?)
+- preview-show-hide, etc.
+
+- Focus on unit tests.
 .. @+node:ekr.20131117054619.16683: *3* * Finish Find
 @language rest
 
@@ -20,19 +26,18 @@ Start playing with @shadow improvements.
     c) a wrapped search completes.
     d) Whenever any radio button (find scope) changes.
 
-First:
+- Create unit tests.
+    - Check all bug reports.
+    - Test outline-only, node-only, wrap.
+    - Test isearch (forward & backward)
 * Revise theory of operation.
 - Add @bool find_all_from_present_position = True
 * Ctrl-F puts selected text into the search box.
 - Make sure to capture search string, even if do ctrl-g, etc.
 ** Smart search: clear ignore case if the search text has at least one uppercase letter.
-- find-all and change-all never wrap.
+- find-all and change-all never wrap.=
 
-Later:
-- Create unit tests.
-    - Check all bug reports.
-    - Test outline-only, node-only, wrap.
-    - Test isearch (forward & backward)
+Maybe:
 - Put "not found" message somewhere else.
 - Don't put unknown ctrl keys in minibuffer (suppress ctrl-shift-r)
 
@@ -555,6 +560,8 @@ self.check_the_final_output(
     marker              = marker)
 .. @+node:ekr.20131206064113.16325: *3* Fix new IPython bug
 The c property makes no sense.  Maybe the best solution is to get rid of it and change the docs.
+
+http://leoeditor.com/IPythonBridge.html
 .. @+node:ekr.20130930062914.16002: *4* class LeoNameSpace
 class LeoNameSpace(object):
     
@@ -704,20 +711,243 @@ def shouldBeExpanded(self,p):
                 return True
     return False
 .. @+node:ekr.20131207054442.16334: *3* Study
-Watch blender design vids:
-
-https://www.youtube.com/watch?v=6aIA2LaB2Iw
-http://www.youtube.com/watch?v=yIedljapuz0
-http://www.youtube.com/watch?v=UWacQrEcMHk
-
-Watch IPython vid:
-
-Some notes here on notebook and javascript:
+Some notes here on notebook and javascript (text):
 http://jakevdp.github.io/blog/2013/06/01/ipython-notebook-javascript-python-communication/
+.. @+node:ekr.20131208135507.16366: *3* Improving blender
+@language rest
 
-An interesting look at the new paradigms in editing:
-http://www.technologyreview.com/review/520246/as-we-may-type/
+Blender design vids:
 
+Improving Blender 1: Oct 3: 26 minutes http://youtu.be/xYiiD-p2q80
+Improving Blender 2: Oct 3: 32 minutes http://youtu.be/yIedljapuz0
+The proposal: 19 minutes Oct 16 https://www.youtube.com/watch?v=UWacQrEcMHk
+Reactions: Oct 25: 48 minutes https://www.youtube.com/watch?v=6aIA2LaB2Iw
+.. @+node:ekr.20131208135507.16367: *4* Part 1
+Part 1: http://youtu.be/xYiiD-p2q80
+
+All design rules are based on human psychology.
+
+Most quotes from Designing with the mind in mind.
+
+1. (5:50) Consistency.
+
+The more consistent the operation of different functions,
+the less users have to learn.
+The consistency of an interactive system stronly affects how quickly users
+progress from *slow operation*, to automatic, *faster operation*.
+(Recent example, using standard keys to boldface text.)
+In an inconsistent system, users cannot predict how its different functions work,
+so they must learn each one anew, which slows their learning of the overall
+system and keeps their use of it a controlled, attention-consuming process.
+  
+2.  (12:13) Familiarity. (The tap the turns the wrong way.  Confusion, frustration, anger.
+  
+People learn from their experiences constantly, often without awareness
+that they are doing it.
+Even when people know they could solve a problem or perform a calculation
+if they put *effort* into it sometimes they *don't do it* because they
+don't consider the *potential reward* worth the effort.
+If you're not going to use an existing convention, you need to be sure that
+what you're replacing it with either 
+a) is so clear and self explanatory that there's no learning curve
+ (so it's as good as a convention) or
+b) adds so much value that it's worth the small learning curve.
+If you're going to innovate, you have to *understand* the value of what
+you're replacing and many designers tend tu underestimate just how
+much *value* conventions provide.
+
+3. Recognition over recall.
+
+A widely used heuristic for evaluating user interfaces.
+The relative ease with which we can *recognize* things rather than *recall*
+them is the basis [of guis].
+At the very least, designers should avoid developing systems that burden
+*long term memory*. Yet that is *exactly* what many interactive systems do.
+Make it easy for users to switch to faster paths *after* they have gained experience.
+The slower paths for *newcomers* should show users faster paths if there are any.
+The best interfaces provide two ways to perform an action:
+icons (menus??) for beginners, shortcuts for veterans.
+We as designers really *don't* want our software's users to have to keep
+thinking about their *keystroke-level actions* as they work,
+and users don't want to have to think about them either.
+If a software application hides its functionality and requires its
+users to recall what to do, *some percentage of users will fail*.
+If the software has a lot of users,that...adds up to a *significant number*.
+Obvious solution is a toolbar (for newbies)
+  
+4.  Error prevention. (Don't touch the hot stove).
+
+Most interactive systems have far more functionality than most users
+will every try.  One reason for this is fear of being *burned*.
+.. @+node:ekr.20131208135507.16368: *4* Part 2
+Part 2: http://youtu.be/yIedljapuz0
+
+5. Responsiveness
+
+An interactive system's responsiveness is the most important factor
+in determining *user satisfaction*.
+Informing the user that actions were received and that the software
+is now busy performing the task.
+There are *psychological* issues involved.
+The human mind is geared to see cause and effect. (Kick the soccer ball).
+Systems that display poor responsiveness do not meet human time deadlines.
+They don't keep up with users.
+These problems impede users' productivity and *frustrate and annoy them*.
+Button clicked: 0.1 sec.
+If no response to a click in 0.1 sec, users will assume they *missed and click again*.
+Drag: 0.1 sec.
+If an object the user is dragging or resizing lags more than 0.1 sec
+behind the user's pointer movements,
+*users will have trouble placing or resizing the object as desired*.
+When your system cannot update its display fast enough to meet
+this hand-eye-coordination deadline, provide *lightweight simulated feedback*
+until the goal is clear and then apply the real operation.
+Frame rate and precision is more important than pretty visuals.
+Busy: must display busy icon after 1.0 sec.
+Software should display a *busy indicator* for any action that blocks
+further user actions while it is executing, even if the function
+normally executes quickly (< 0.1 sec).
+Progress bar: for anything taking more than a few seconds.
+Greatly increase the *perceived* responiseness of an app.
+Provide some indication of how long operations will take.
+Free the user to do other things while waiting.
+*Provide a cancel button*.
+Poor responsiveness:
+- Time-consuming oeprations that block other activity and can't be aborted.
+- Providing no clue how long lengthy operations will take.
+- Those deadlines are psychological time constants, *wired into us*...
+  They are *not* arbitrary targets that we can adjust at will...
+- If an interactive system does not meet these deadlines the
+  users will consider its responsiveness to be poor.
+
+6. Recovery from mistakes.
+
+Help users recognize, diagnose and recover from errors.
+People need to feel that they can try things without damaging the
+system or jeopardizing their data.
+Crashing: autosave.
+What was the app without undo?? GitHub?
+    
+7. Simplicity. (Appearance)
+
+- Heirarchy. (car panel).
+    The larger the number of people who use a function,
+    the more *visible* the function should be.
+    Make functions that many people need highly visible.
+    By contrast, functionality that few people will use,
+    especially when those few people are highly trained,
+    can be hidden (in details panels, right-click menus & key combinations)
+    Minimize the number and complexity of settings.
+    Don't expect people to optimize combinations of many interacting settings
+    or parameters.  **People are really bad at that**.
+    [Leo must be usable out of the box].
+    Fits law: some buttons should be bigger than others.
+
+- Structure.
+    The human mind is wired to see structure in shapes, figures & objects.
+    Gestalt principles: proximity, similarity, continuity, closure,
+    symmetry, figure/gournd and common fate.
+    Proximity: Objects that are near each other...appear grouped,
+    while those farther appart do not.
+    Similarity: objects that look similar, *appear grouped*,
+    all other things being equal.
+
+- Design. (Making things clearly visible)
+    Text readability:  Recommended font size is 16 px.
+    The new size irritates you in the beginning.
+    Don't worry, that's normal.
+    However, once you've gotten used to it, you will not
+    want to go back to the 'standard' small sizes.
+
+- Vocabulary.
+    - Avoid jargon:
+        Don't force your users to learn a whole new vocabulary.
+        Familiar words are easier to understand because they
+        can be recognized automaticlly.  [preview tab]
+        Why did they name it that?
+        When readers, even skilled ones, encounter jargon,
+        their automatic reading processes probably won't recoginize it.
+        Tell users *explicitly and exacly* what they need to know.
+        - *Don't* expect them to deduce information.
+        - *Don't* require them to figure things out by a process of elimination.
+    - Say less:
+        Many software interfaces present *too much text*,
+        requiring users to read more than is necessary.
+        [This is LP's problem:  too many comments].
+        Software designers often justify lengthy instructions by arguing:
+        we need all that text to explain clearly to users what to do.
+        Just by being there, all the extra words suggest that you may
+        actually have to read them to understand what is going on.
+
+8. Goal oriented (The most important)
+
+We focus on our *goals* and pay little attention to our tools.
+When people are doing a task--trying to accomplish a goal--
+most of their attention if focused on the goals and data related to that task.
+Normally, people devote *very little attention* to the tools they are using
+to perform a task.
+This tendency of people to notice only things on a computer display
+that *match their goal* and the literal thinking that they exhibit when
+performing a taks on a computer has been called,
+*"following the scent of information toward the goal"*.
+Most software design guidelines state that software apps...
+*should not call attention to themselves*.
+They should fade into the background and allow users to
+*focus on their own goals*.
+Cognitive psychologists call the gap between what a user wants
+and the operations that the tool provides the *"gulf of execution"*.
+To do that, the designers need to *understand the goals* that users
+are likely to have at each decision point in a task,
+and ensure that each choice point in the software provides
+options for each important user goal, and *clearly indicates* which
+option *leads to which goal*.
+The most import scene is what users see when they first open the software.
+From its first screen (or home page) software should so users the way to their goals.
+[Problem for Leo: how do I create an external file?]
+Provide clear paths, including *initial steps* for the user goals
+that the software is intended to support.
+.. @+node:ekr.20131208135507.16369: *4* The proposal
+https://www.youtube.com/watch?v=UWacQrEcMHk
+
+Why:
+- Blender has changed.
+- Restricting developement.
+- Not task oriented. (Applies to Leo).
+  When people have to refocus their attention on their tools,
+  it is pulled away from the details of their task.
+  This shift increase the chances of users losing track of what
+  they were doing or exactly where they were doing it.
+  
+The proposal:
+Tabs:
+    Tabs are a way to give each task its own work area.
+    Since everyone has a wide-screen monitor, we can actually fit a whole
+    lot more functionality lenghtwhise than we can vertically.
+    Tabs are one of the very few cases where using a physical
+    metaphor in a user interface actually works.  They're so visually distinctive
+    they're hard to overlook.
+    As interface ideas go, they're clearly a product of genius.
+Drop-down menus:
+    Hides seldom-used features.
+Sidebar.
+    - Notifications (Leo's log pane)
+    - Info box: (Leo's status area)
+    - Properties box (Leo's status area)
+    - Layers.
+    - History panel (improved undo).
+    ** Could change depending on task.
+New toolbar:
+    - 4x smaller.
+    
+.. @+node:ekr.20131208135507.16370: *4* Conclusions about Leo
+Bottom line:
+1. Leo may have visual problems, but vim and Emacs have more problems.
+2. Leo *must* show people how to create an external file!
+
+Create user buttons by default:
+
+- Create external file:  (same as file;; !)
+    - Create section
 .. @+node:ekr.20131105020211.18058: ** Important
 .. @+node:ekr.20131101080215.16488: *3* * Outreach to magazine editors
 ===== Steve Litt

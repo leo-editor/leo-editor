@@ -10688,7 +10688,6 @@ print('\nEnd of leoFileCommands tests.')
 #@+node:ekr.20051107115231.29: *4* @@test Find keeps focus in body & shows selected text
 import leo.core.leoEditCommands as leoEditCommands
 s = 'foo' ; bodyCtrl = c.frame.body.bodyCtrl
-
 c.searchCommands.openFindTab()
 h = c.searchCommands.findTabHandler
 w = h.find_ctrl
@@ -10698,8 +10697,6 @@ bodyCtrl.setInsertPoint(0)
 c.searchCommands.findTabFindNext()
 w = c.get_focus()
 wName = g.app.gui.widget_name(w)
-
-# in wxPython w != bodyCtrl (it's a proxy)
 assert 'body' in wName, 'focus: %s = %s, expected %s = %s' % (
     w,wName,bodyCtrl,g.app.gui.widget_name(bodyCtrl))
 #@+node:ekr.20060130151716.3: *4* @test minbuffer find commands
@@ -10722,10 +10719,8 @@ table = (
     'set-find-node-only',
     'set-find-suboutline-only',
 )
-
 # show-find-tab-options     = Ctrl-o
 # show-find-options         = o
-
 for command in table:
     c.k.simulateCommand(command)
 #@+node:ekr.20060130151716.4: *4* @test show-find-options
@@ -10743,7 +10738,6 @@ table = (
     'toggle-find-word-option',
     'toggle-find-wrap-around-option',
 )
-
 for command in table:
     c.k.simulateCommand(command)
     c.k.simulateCommand(command)

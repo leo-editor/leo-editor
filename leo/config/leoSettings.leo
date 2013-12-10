@@ -1082,7 +1082,7 @@
 <v t="ekr.20131009050634.17656"><vh>@bool rst3_call_docutils = True</vh></v>
 <v t="ekr.20080916092417.1"><vh>@string rst3_default_encoding = uTf-8</vh></v>
 <v t="ekr.20071213061811"><vh>@bool rst3_number_code_lines = True</vh></v>
-<v t="ekr.20071213061811.1"><vh>@string rst3_underline_characters = #=+*^~"'`-:&gt;&lt;_</vh></v>
+<v t="ekr.20071213061811.1"><vh>@string rst3_underline_characters = #=+*^~`-:&gt;&lt;_</vh></v>
 <v t="ekr.20071213061811.2"><vh>@bool rst3_verbose = True</vh></v>
 <v t="ekr.20071213061811.3"><vh>@bool rst3_write_intermediate_file = True</vh></v>
 </v>
