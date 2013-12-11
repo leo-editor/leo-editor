@@ -298,6 +298,7 @@
 <v t="ekr.20131122055946.16406"><vh>Edit your raw take</vh></v>
 <v t="ekr.20131122055946.16407"><vh>Summary</vh></v>
 <v t="ekr.20131129061821.16884"><vh>Additional tips</vh></v>
+<v t="ekr.20131211054925.16388"><vh>Tips for improving audio</vh></v>
 </v>
 <v t="ekr.20050830115714.113"><vh>How can I create a template .leo file?</vh></v>
 <v t="ekr.20050830115714.120"><vh>How can I display graphics in Leo?</vh></v>
@@ -22891,6 +22892,22 @@ enough". Perfectionism is not your friend.
 3. Don't waste time on callouts or captions until the audio and video
    work together at a relaxed pace. It's almost as hard to correct
    pacing mistakes as it is to correct audio flubs.</t>
+<t tx="ekr.20131211054925.16388">1. Enable volume leveling and noise removal in Camtasia. This tip, all
+   by itself, makes a big difference.
+
+2. Use a better microphone, preferably one with about a 1-inch diaphram.
+   This is the kind of microphone that Andrew Price uses.
+   The Audio-technica AT2020 USB is relatively inexpensive.
+  
+3. Use "pop filter" with the microphone. This is a cloth or (better) a
+   metal screen that is placed in front of the microphone. It smooths
+   the sound.
+  
+4. Adjust the sound level for maximum volume without distortion: With
+   the microphone about a foot from your mouth, turn the volume as
+   loud as possible, then turn down until no red is visible in the
+   meter.
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.

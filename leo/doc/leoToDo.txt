@@ -11,11 +11,113 @@ Start playing with @shadow improvements.
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 
-- Finish design vids.
+* Video tutorials
 - Ctrl-A in the minibuffer selects too much (when finding?)
 - preview-show-hide, etc.
-
 - Focus on unit tests.
+.. @+node:ekr.20131116212505.16665: *3* * Video tutorials
+@language rest
+
+When ready to release:
+
+- Note to Dave Winer.
+- Announce to comp.lang.python & SourceForge.
+
+.. @+node:ekr.20131211054925.16385: *4* - Intro to Leo
+Introduce Leo's two main features.
+.. @+node:ekr.20131211054925.16380: *4* - Creating external files
+.. @+node:ekr.20131208103040.16346: *4* - Arrow keys
+.. @+node:ekr.20131208103040.16350: *4* - Find command?
+- Ctrl-G hides the Find pane.
+
+- Show how to use the minibuffer to discover the toggle commands:
+    <Alt-X>tog<tab>f<tab>   or
+    <Alt-X>set<tab>f<tab>
+.. @+node:ekr.20131116123026.16661: *5* Example
+# For the Find screencast.  It could be improved so the differences between nodes is more apparent.
+.. @+node:ekr.20131116123026.16662: *6* spam
+DEF spam():
+    pass
+.. @+node:ekr.20131116123026.16663: *6* eggs
+def eggs():
+    pass
+.. @+node:ekr.20131116212505.16666: *4* - Introduction to scripting
+@language rest
+
+Scripting:
+    Introduction to Leo's code base.
+        500,000 lines of code made easy.
+    ** Create a helper outline, illustrating each point:
+        print('c:'+c)
+    ** @button
+    @test
+    c, g, p: commanders, generators, p.b, p.h etc.
+    
+@language python
+.. @+node:ekr.20131116212505.16668: *5* Ctrl-B (execute-script)
+# Ctrl-B executes the Python code in the presently-selected body pane.
+g.es('hello world')
+
+.. @+node:ekr.20131116212505.16669: *5* Ctrl-B on selected text
+print('hi')
+print('there')
+.. @+node:ekr.20131116212505.16667: *5* g
+# g is a Python module containing global utility functions and classes.
+# g.es prints its arguments to Leo's log pane.
+g.es(g.es)
+# g is a large module:
+g.es(len(list(dir(g))))
+.. @+node:ekr.20131208103040.16342: *4* - settings
+- focus on visual settings.
+@menu
+leo-x-pt.leo files.
+- Small test .leo files: useful for settings.
+.. @+node:ekr.20131121050226.16328: *5* settings vid
+open leoSettings.leo.
+open myLeoSettings.leo.
+
+Concentrate on:
+    - visual settings.
+    - keyboard shortcuts.
+
+print-settings, print-bindings, print-commands.
+
+Trick: use small, easily/quickly started, file to test settings.
+    Demo: put console *behind* window.
+.. @+node:ekr.20131208103040.16343: *4* - Leo's help commands
+.. @+node:ekr.20131208103040.16344: *4* - Auto-completion
+.. @+node:ekr.20131208103040.16345: *4* - Preview pane
+A0. test.leo examples: @svg, @html, @movie, etc.
+.. @+node:ekr.20131208103040.16349: *4* - Import files
+Show active-path plugin, recursive import.
+.. @+node:ekr.20131117043223.16676: *4* Using Leo *is* easy
+​Well, I don't think the Leo Aha is all that hard to get, despite perhaps
+being a bit difficult to describe. Of course, my opinion is not quite
+reliable on this subject ;-)
+
+Still, I think three or four tutorials could make a big difference. The
+first tutorial, about clones and work flow, is *one* reason I would never
+willingly program without Leo.
+
+Another ​reason is that leoPy.leo contains at least 500,000 lines of code,
+all easily accessible. In particular, the rule (of thumb) that helper
+methods should be children of the method that calls them instantly reveals
+that programs are outlines in disguise. Once you have a way of seeing that
+fact *at all times*, one can never go back to the flat, myopic way of
+seeing. It's really that simple.
+
+And then there is c, g, and p, including especially Leo's iterators and p.h
+and p.b and p.u. Really, this is **not** all that hard.
+
+And finally, there is @others. I created it within the first hour of
+prototyping Leo in the MORE outliner. It has remained unchanged all these
+years because it is, fundamentally, a very simple idea.
+
+In short, I have hopes that 3 or 4 screencasts will demonstrate that anyone
+can use Leo.
+.. @+node:ekr.20131211054925.16384: *3* improve file;; macro
+1. Does not create @file (or @@file) in headline
+2. <|pattern|> not found in headlines
 .. @+node:ekr.20131117054619.16683: *3* * Finish Find
 @language rest
 
@@ -179,111 +281,6 @@ body. This is a serious lack of consistency.
 .. @+node:ekr.20131207054442.16335: *4* check isearch
 * unit tests?
 - Create save/restore_isearch_vars methods using isearch_save_d.
-.. @+node:ekr.20131116212505.16665: *3* * Screencasts
-When ready to release:
-
-- Note to Dave Winer.
-- Announce to comp.lang.python & SourceForge.
-
-.. @+node:ekr.20131208103040.16346: *4* - Arrow keys
-.. @+node:ekr.20131208103040.16350: *4* - Find command?
-- Ctrl-G hides the Find pane.
-
-- Show how to use the minibuffer to discover the toggle commands:
-    <Alt-X>tog<tab>f<tab>   or
-    <Alt-X>set<tab>f<tab>
-.. @+node:ekr.20131116123026.16661: *5* Example
-# For the Find screencast.  It could be improved so the differences between nodes is more apparent.
-.. @+node:ekr.20131116123026.16662: *6* spam
-DEF spam():
-    pass
-.. @+node:ekr.20131116123026.16663: *6* eggs
-def eggs():
-    pass
-.. @+node:ekr.20131116212505.16666: *4* - Introduction to scripting
-@language rest
-
-Scripting:
-    Introduction to Leo's code base.
-        500,000 lines of code made easy.
-    ** Create a helper outline, illustrating each point:
-        print('c:'+c)
-    ** @button
-    @test
-    c, g, p: commanders, generators, p.b, p.h etc.
-    
-@language python
-.. @+node:ekr.20131116212505.16668: *5* Ctrl-B (execute-script)
-# Ctrl-B executes the Python code in the presently-selected body pane.
-g.es('hello world')
-
-.. @+node:ekr.20131116212505.16669: *5* Ctrl-B on selected text
-print('hi')
-print('there')
-.. @+node:ekr.20131116212505.16667: *5* g
-# g is a Python module containing global utility functions and classes.
-# g.es prints its arguments to Leo's log pane.
-g.es(g.es)
-# g is a large module:
-g.es(len(list(dir(g))))
-.. @+node:ekr.20131208103040.16342: *4* - settings
-- focus on visual settings.
-@menu
-leo-x-pt.leo files.
-- Small test .leo files: useful for settings.
-.. @+node:ekr.20131121050226.16328: *5* settings vid
-open leoSettings.leo.
-open myLeoSettings.leo.
-
-Concentrate on:
-    - visual settings.
-    - keyboard shortcuts.
-
-print-settings, print-bindings, print-commands.
-
-Trick: use small, easily/quickly started, file to test settings.
-    Demo: put console *behind* window.
-.. @+node:ekr.20131208103040.16343: *4* - Leo's help commands
-.. @+node:ekr.20131208103040.16344: *4* - Auto-completion
-.. @+node:ekr.20131208103040.16345: *4* - Preview pane
-A0. test.leo examples: @svg, @html, @movie, etc.
-.. @+node:ekr.20131208103040.16349: *4* - Import files
-Show active-path plugin, recursive import.
-.. @+node:ekr.20131206094237.16333: *4* Advice for microphones
-@language rest
-
-Tips for smoother audio.
-
-- Use a mic with about 1-inch "bulb".
-- Put the mic as far from the mouth as possible.
-- Turn mic volume as loud as possible, then turn down until no red is visible.
-- Use "pop filter" (a piece of cloth).
-- Enable volume leveling and noise removal in Camtasia.
-.. @+node:ekr.20131117043223.16676: *4* Using Leo *is* easy
-​Well, I don't think the Leo Aha is all that hard to get, despite perhaps
-being a bit difficult to describe. Of course, my opinion is not quite
-reliable on this subject ;-)
-
-Still, I think three or four tutorials could make a big difference. The
-first tutorial, about clones and work flow, is *one* reason I would never
-willingly program without Leo.
-
-Another ​reason is that leoPy.leo contains at least 500,000 lines of code,
-all easily accessible. In particular, the rule (of thumb) that helper
-methods should be children of the method that calls them instantly reveals
-that programs are outlines in disguise. Once you have a way of seeing that
-fact *at all times*, one can never go back to the flat, myopic way of
-seeing. It's really that simple.
-
-And then there is c, g, and p, including especially Leo's iterators and p.h
-and p.b and p.u. Really, this is **not** all that hard.
-
-And finally, there is @others. I created it within the first hour of
-prototyping Leo in the MORE outliner. It has remained unchanged all these
-years because it is, fundamentally, a very simple idea.
-
-In short, I have hopes that 3 or 4 screencasts will demonstrate that anyone
-can use Leo.
 .. @+node:ekr.20131119195900.18522: *3* * vim-mode
 - Do all common vim commands
 - Leave arrow keys and control keys unchanged.
@@ -713,7 +710,9 @@ def shouldBeExpanded(self,p):
 .. @+node:ekr.20131207054442.16334: *3* Study
 Some notes here on notebook and javascript (text):
 http://jakevdp.github.io/blog/2013/06/01/ipython-notebook-javascript-python-communication/
-.. @+node:ekr.20131208135507.16366: *3* Improving blender
+
+Look at Xiki screencasts: http://xiki.org/screencasts/
+.. @+node:ekr.20131208135507.16366: *4* UI Design notes
 @language rest
 
 Blender design vids:
@@ -722,7 +721,7 @@ Improving Blender 1: Oct 3: 26 minutes http://youtu.be/xYiiD-p2q80
 Improving Blender 2: Oct 3: 32 minutes http://youtu.be/yIedljapuz0
 The proposal: 19 minutes Oct 16 https://www.youtube.com/watch?v=UWacQrEcMHk
 Reactions: Oct 25: 48 minutes https://www.youtube.com/watch?v=6aIA2LaB2Iw
-.. @+node:ekr.20131208135507.16367: *4* Part 1
+.. @+node:ekr.20131208135507.16367: *5* Part 1
 Part 1: http://youtu.be/xYiiD-p2q80
 
 All design rules are based on human psychology.
@@ -740,49 +739,81 @@ In an inconsistent system, users cannot predict how its different functions work
 so they must learn each one anew, which slows their learning of the overall
 system and keeps their use of it a controlled, attention-consuming process.
   
-2.  (12:13) Familiarity. (The tap the turns the wrong way.  Confusion, frustration, anger.
+2.  (12:13) Familiarity.
+
+(The tap the turns the wrong way.  Confusion, frustration, anger.)
   
 People learn from their experiences constantly, often without awareness
 that they are doing it.
-Even when people know they could solve a problem or perform a calculation
+
+Even when people know they *could* solve a problem or perform a calculation
 if they put *effort* into it sometimes they *don't do it* because they
 don't consider the *potential reward* worth the effort.
+
 If you're not going to use an existing convention, you need to be sure that
 what you're replacing it with either 
 a) is so clear and self explanatory that there's no learning curve
  (so it's as good as a convention) or
 b) adds so much value that it's worth the small learning curve.
+
 If you're going to innovate, you have to *understand* the value of what
 you're replacing and many designers tend tu underestimate just how
 much *value* conventions provide.
 
-3. Recognition over recall.
+Comments:
+
+- We could review keystrokes for newbies, to ensure they are as standard as possible.
+- Clones and @file and section references are also unfamiliar.
+
+3. Recognition over recall (16:32)
 
 A widely used heuristic for evaluating user interfaces.
 The relative ease with which we can *recognize* things rather than *recall*
 them is the basis [of guis].
+
+We recognize shapes and faces at extremely fast speeds.
+
+This may be Leo's most important strength.
+How many times have I said that I don't remember the details of Leo's million-line
+code base?  I don't need to *remember* the details because I can *recognize* where
+relevant code is from the shape of Leo's outlines.
+
 At the very least, designers should avoid developing systems that burden
 *long term memory*. Yet that is *exactly* what many interactive systems do.
+
 Make it easy for users to switch to faster paths *after* they have gained experience.
 The slower paths for *newcomers* should show users faster paths if there are any.
+
+Leo's minibuffer is, in fact, a key component of this strategy.
+It's standard in Emacs, and imo Leo improves on Emacs by showing keyboard shortcuts.
+
 The best interfaces provide two ways to perform an action:
-icons (menus??) for beginners, shortcuts for veterans.
+icons for beginners, shortcuts for veterans.
+
+[Leo's menus are, imo, sufficient.]
+
 We as designers really *don't* want our software's users to have to keep
 thinking about their *keystroke-level actions* as they work,
 and users don't want to have to think about them either.
+
+I think Leo is pretty good here.
+
 If a software application hides its functionality and requires its
 users to recall what to do, *some percentage of users will fail*.
 If the software has a lot of users,that...adds up to a *significant number*.
-Obvious solution is a toolbar (for newbies)
+Obvious solution is a toolbar (for newbies).
+
+I think @file and @others are the biggest problems for Leo in this regard,
+not keystrokes.  I could be wrong.
   
-4.  Error prevention. (Don't touch the hot stove).
+4.  Error prevention. (20:42) (Don't touch the hot stove).
 
 Most interactive systems have far more functionality than most users
 will every try.  One reason for this is fear of being *burned*.
-.. @+node:ekr.20131208135507.16368: *4* Part 2
+.. @+node:ekr.20131208135507.16368: *5* Part 2
 Part 2: http://youtu.be/yIedljapuz0
 
-5. Responsiveness
+5. Responsiveness (1:14)
 
 An interactive system's responsiveness is the most important factor
 in determining *user satisfaction*.
@@ -820,7 +851,7 @@ Poor responsiveness:
 - If an interactive system does not meet these deadlines the
   users will consider its responsiveness to be poor.
 
-6. Recovery from mistakes.
+6. Recovery from mistakes. (8:14)
 
 Help users recognize, diagnose and recover from errors.
 People need to feel that they can try things without damaging the
@@ -828,7 +859,7 @@ system or jeopardizing their data.
 Crashing: autosave.
 What was the app without undo?? GitHub?
     
-7. Simplicity. (Appearance)
+7. Simplicity. (Appearance) (12:17)
 
 - Heirarchy. (car panel).
     The larger the number of people who use a function,
@@ -906,7 +937,7 @@ From its first screen (or home page) software should so users the way to their g
 [Problem for Leo: how do I create an external file?]
 Provide clear paths, including *initial steps* for the user goals
 that the software is intended to support.
-.. @+node:ekr.20131208135507.16369: *4* The proposal
+.. @+node:ekr.20131208135507.16369: *5* The proposal
 https://www.youtube.com/watch?v=UWacQrEcMHk
 
 Why:
@@ -939,7 +970,7 @@ Sidebar.
 New toolbar:
     - 4x smaller.
     
-.. @+node:ekr.20131208135507.16370: *4* Conclusions about Leo
+.. @+node:ekr.20131208135507.16370: *5* Conclusions about Leo
 Bottom line:
 1. Leo may have visual problems, but vim and Emacs have more problems.
 2. Leo *must* show people how to create an external file!
@@ -948,6 +979,113 @@ Create user buttons by default:
 
 - Create external file:  (same as file;; !)
     - Create section
+.. @+node:ekr.20131210061413.16374: *4* Key ideas from the Blender vids
+@language rest
+
+To summarize the detailed study of Andrew Price's great videos:
+
+By far the most important Aha that comes from the videos is that new users
+to Leo are unlikely to be able to do Leo's most basic tasks without help
+from the tutorials or the web:
+
+- Creating external files containing computer text.
+- Creating useful scripts that act on outlines.
+
+Imo, tutorials will always be needed, but buttons may provide much needed
+hints/scents/breadcrumbs.
+
+Furthermore, Leo's documentation (and ui) should make as clear as possible
+what these main tasks are!
+.. @+node:ekr.20131210061413.16375: *5* 1-4
+1: Consistency
+
+I see no big opportunity for improvement. A toolbar might improve
+matters, or just confuse newbies more.
+  
+2: Familiarity
+
+Users must be shown how to use @file and @others.  See #8.
+
+Kent: Design alt-x ? so that provides breadcrumbs to all of Leo's features.
+
+3: Recognition over recall
+
+This is one of Leo's primary strengths.
+
+@file and @others are the big problem:
+
+- Newbie buttons, as previously discussed.
+- A new help-for-creating-program-files command.
+- A new entry in the Help menu (and a newbie button) that will open Leo's *video* tutorials.
+
+In effect, each Leo headline is like a command line!
+
+Jacob: I recommend playing around with the ACME editor, and noting how it
+uses 'taglines' (essentially headlines with a different name).
+
+4: Error prevention
+
+Two bugs involving refresh-from-disk may have the most potential for
+burning users:
+
+1090950 refresh from disk - cut node resurrection
+https://bugs.launchpad.net/leo-editor/+bug/1090950
+
+1259127 'Refresh from disk' problem with @auto
+https://bugs.launchpad.net/leo-editor/+bug/1259127
+
+The problems with clone conflicts have caused consternation in the past.
+Perhaps they even merit a video.
+.. @+node:ekr.20131210061413.16376: *5* 5-8
+5. Responsiveness
+
+The main "time limits" for a response are:
+
+- Button clicks: 0.1 sec.
+- Drags: 0.1 sec.
+- Long operations:
+    - A busy icon after about 1 second; a progress bar after about 3 seconds.
+    - Long operations should provide a cancel button.
+
+Failure to meet these time limits frustrate and annoy users.
+QQQ
+
+This is a topic I've not consciously considered before. Nevertheless, Leo
+does well here, with some (minor) deviations from the guidelines:
+
+- When loading lots of files, Leo displays progress in the log pane, rather
+  than with a progress indicator or cursor.
+
+- The recursive import command is one of Leo's most time-consuming
+  features. I've put a review of this command with regard to responsiveness
+  on the list. There used to be a bug where a dialog was brought up
+  repeatedly after creating lots of @auto nodes. I think this bug has been
+  fixed.
+
+- The make-sphinx button in LeoDocs.leo can take a long time. This is not
+  really a problem because the console displays the progress of Sphinx's
+  make command.
+   
+6. Recovery from mistakes
+
+There can be problems with @auto. The workaround is that inserts @ignore in
+cases where the result would not be *exactly* the same as the original.
+This isn't great, but I know of no way to make import always be perfect.
+
+Leo has an autosave plugin, so it is possible to recover automatically from crashes. 
+
+
+8: Goal oriented (25:59)
+
+Problem:
+
+There is no "scent" that tells a newbie how to create an external file!
+There is no indication that this is one of Leo's primary tasks!
+
+Solution:
+
+- Add a button (with corresponding command) to create an external file.
+- Add a button for importing files or directories.
 .. @+node:ekr.20131105020211.18058: ** Important
 .. @+node:ekr.20131101080215.16488: *3* * Outreach to magazine editors
 ===== Steve Litt
