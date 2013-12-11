@@ -509,7 +509,7 @@ class ViewRenderedController(QtGui.QWidget):
         self.inited = False
         self.gs = None # For @graphics-script: a QGraphicsScene 
         self.gv = None # For @graphics-script: a QGraphicsView
-        self.kind = 'rst' # in self.dispatch_dict.keys()
+        #self.kind = 'rst' # in self.dispatch_dict.keys()
         self.length = 0 # The length of previous p.b.
         self.locked = False
         self.scrollbar_pos_dict = {} # Keys are vnodes, values are positions.
@@ -820,29 +820,23 @@ class ViewRenderedController(QtGui.QWidget):
         pc = self ; c = pc.c ;  p = c.p
         s = s.strip().strip('"""').strip("'''").strip()
         isHtml = s.startswith('<') and not s.startswith('<<')
-        
         if trace: g.trace('isHtml',isHtml)
         
         # Do this regardless of whether we show the widget or not.
         w = pc.ensure_text_widget()
         assert pc.w
-        
         if s:
-            pc.show()
-        else:
-            if pc.auto_hide:
-                pass  # needs review
-                # pc.hide()
-            return
-        
-        if got_markdown and not isHtml:
+            pc.show()    
+        if not got_markdown:
+            isHtml = True
+            s = '<pre>\n%s</pre>' % s
+        if not isHtml:
             # Not html: convert to html.
             path = g.scanAllAtPathDirectives(c,p) or c.getNodePath(p)
             if not os.path.isdir(path):
                 path = os.path.dirname(path)
             if os.path.isdir(path):
                 os.chdir(path)
-
             try:
                 msg = '' # The error message from docutils.
                 if pc.title:
@@ -860,7 +854,6 @@ class ViewRenderedController(QtGui.QWidget):
                     s = 'MD error:\n%s\n\n%s' % (msg,s)
 
         sb = w.verticalScrollBar()
-
         if sb:
             d = pc.scrollbar_pos_dict
             if pc.node_changed:
@@ -870,14 +863,12 @@ class ViewRenderedController(QtGui.QWidget):
             else:
                 # Save the scrollbars
                 d[p.v] = pos = sb.sliderPosition()
-
-        if pc.kind in ('big','rst','html', 'md'):
+        if pc.default_kind in ('big','rst','html', 'md'):
             w.setHtml(s)
-            if pc.kind == 'big':
+            if pc.default_kind == 'big':
                 w.zoomIn(4) # Doesn't work.
         else:
-            w.setPlainText(s)
-            
+            w.setPlainText(s) 
         if sb and pos:
             # Restore the scrollbars
             sb.setSliderPosition(pos)
@@ -982,9 +973,9 @@ class ViewRenderedController(QtGui.QWidget):
                 # Save the scrollbars
                 d[p.v] = pos = sb.sliderPosition()
 
-        if pc.kind in ('big','rst','html', 'md'):
+        if pc.default_kind in ('big','rst','html', 'md'):
             w.setHtml(s)
-            if pc.kind == 'big':
+            if pc.default_kind == 'big':
                 w.zoomIn(4) # Doesn't work.
         else:
             w.setPlainText(s)
@@ -1092,7 +1083,7 @@ class ViewRenderedController(QtGui.QWidget):
                 
         # To do: look at ancestors, or uA's.
 
-        return pc.kind # The default.
+        return pc.default_kind # The default.
     #@+node:ekr.20110320233639.5776: *5* get_fn
     def get_fn (self,s,tag):
         
