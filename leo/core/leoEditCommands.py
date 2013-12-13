@@ -5943,14 +5943,16 @@ class editCommandsClass (baseEditCommandsClass):
 
         '''Select all text.'''
 
-        c = self.c 
+        c,k = self.c,self.c.k
         w = self.editWidget(event)
-        isTextWidget = w and g.app.gui.isTextWidget(w)
-        if 0:
-            wname = (w and c.widget_name(w)) or '<no widget>'
-            g.trace(isTextWidget,wname,w)
-        if w and isTextWidget:
-            return w.selectAllText()
+        if not w: return
+        # Bug fix 2013/12/13: Special case the minibuffer.
+        if w == k.w:
+            k.selectAll()
+        else:
+            isTextWidget = g.app.gui.isTextWidget(w)
+            if w and isTextWidget:
+                return w.selectAllText()
     #@+node:ekr.20050920084036.131: *4* sentences & helpers
     def backSentence (self,event):
         '''Move the cursor to the previous sentence.'''

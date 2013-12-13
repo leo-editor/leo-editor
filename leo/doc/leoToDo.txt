@@ -15,8 +15,7 @@ Start playing with @shadow improvements.
 @language rest
 
 - Improve help-for commands
-- Change viewrendered commands to preview-.
-- Ctrl-A in the minibuffer selects too much (when finding & with full-command)
+- Change vr- commands to preview-.
 .. @+node:ekr.20131213063329.16402: *4* Improve help-for commands
 - Add help-for-external-files command.
 - Add help-for-scripting command.

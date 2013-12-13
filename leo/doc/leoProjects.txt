@@ -2157,6 +2157,8 @@ Cmds menu:
 
 File menu:
 Now contains items that open various .leo files.
+.. @+node:ekr.20131213152614.16471: *3* Fixed bug re Ctrl-A in minibuffer
+It used to select the minibuffer label, which messed up following logic.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
