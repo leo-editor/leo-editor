@@ -2135,15 +2135,28 @@ If the ``bookmarks`` plugin is loaded the bookmark will have to be moved to a ``
 
 The browser may or may not be able to close the bookmark form window for you, depending on settings - set ``dom.allow_scripts_to_close_windows`` to true
 in ``about:config`` in Firefox.
-.. @+node:ekr.20131213063329.16403: *3* Reorganize menus
-- Added per-file settings: selects @settings node of c.
-- Moved open-leo-plugins & print-plugins-info commands to Plugins menu.
-    This required new code in plugins_menu.py: add_menu_from_settings.
-- Put only help stuff in help menu.
-- Created new Settings menu.
-    - Renamed leoSettings.leo -> global settings.
-    - Renamed myLeoSettings.leo -> local settings.
-- Created Settings & Help submenus of Cmds menu.
+.. @+node:ekr.20131213063329.16403: *3* Reorganized menus
+Rev 6406 contains a substantial reorg of menus, with the aim
+of having the Help menu in particular be more useful.
+
+Help menu:
+- Contains only help-related items.
+- Contains more items that link to Leo's web site.
+
+Settings menu (a new menu):
+- Open Global Settings opens leoSettings.leo.
+- Open Personal Settings opens myLeoSettings.leo.
+- Open Local settings selects the @settings node in the local .leo file, if it exists.
+
+Plugins menu:
+- Changed plugins_menu.py plugin so it honors items in @menu Plugins.
+
+Cmds menu:
+- Improved Settings submenu and added & Help submenu.
+- Open Python Shell (was in Windows menu) now part of Cmds:Debug menu.
+
+File menu:
+Now contains items that open various .leo files.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
