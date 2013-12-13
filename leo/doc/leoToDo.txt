@@ -11,20 +11,93 @@ Start playing with @shadow improvements.
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 
-* Video tutorials
-- Ctrl-A in the minibuffer selects too much (when finding?)
-- preview-show-hide, etc.
-- Focus on unit tests.
+.. @+node:ekr.20131213063329.16422: *3* Today
+@language rest
+
+- Do post production on short intro.
+- Improve online help.
+- Reorganize menus.
+- Ctrl-A in the minibuffer selects too much (when finding & with full-command)
+.. @+node:ekr.20131213063329.16402: *4* - Improve online help
+- Add help-for-external-files command.
+- Add help-for-scripting command.
+- Revise help-for-find-commands
+- (Maybe) Add helpful @button nodes to leoSettings.leo.
+- Review Leo's text tutorials.
+.. @+node:ekr.20131213063329.16403: *4* - Reorganize menus
+- Put only help stuff in help menu.
+- Move open-settings-files & print-commands a a new Settings menu.
+    - Settings menu:
+        - Rename leoSettings.leo -> global settings.
+        - Rename myLeoSettings.leo -> local settings.
+        - Add per-file settings: selects @settings node of c.
+- Move open-leo-plugins command to Plugins menu.
+- Create Settings submenu of Cmds menu.
+- Add open-help-files entries to Help submenu of Cmds menu.
+- Change viewrendered commands to preview-.
 .. @+node:ekr.20131116212505.16665: *3* * Video tutorials
 @language rest
 
 When ready to release:
 
+Intro to Leo: https://www.youtube.com/watch?v=nlQO21eopzM
+
 - Note to Dave Winer.
 - Announce to comp.lang.python & SourceForge.
+.. @+node:ekr.20131211054925.16385: *4* - Introduction to Leo
+@language rest
 
-.. @+node:ekr.20131211054925.16385: *4* - Intro to Leo
-Introduce Leo's two main features.
+This screencast is a *brief* introduction to Leo.
+
+Other video tutorials will cover all of Leo's features in more detail.
+.. @+node:ekr.20131211054925.16391: *5* Leo has standard outline operations
+Leo looks like an ordinary outlining program.
+
+The headline describes the contents of an outline node.
+
+The body pane shows contents (body text) of the selected node.
+
+You can insert, move, delete, copy and paste nodes.
+.. @+node:ekr.20131211054925.16392: *5* Leo has three unique features
+.. @+node:ekr.20131211054925.16389: *6* Leo outlines can create files
+@file nodes create **external files** from outlines.
+
+External files are files on your file system.
+
+Leo outlines work much like project files in an IDE.
+.. @+node:ekr.20131211054925.16390: *6* Leo outlines are scriptable
+- Every outline node can contain a Python script.
+
+- Leo scripts have *easy* access to all data
+  *in the outline in which the script resides*.
+  
+Example:
+
+    g.es(p.h)
+.. @+node:ekr.20131211054925.16393: *6* Nodes can be cloned
+Nodes may appear many times within the same outline.
+
+A change to one clone affects all the other clones of that node.
+.. @+node:ekr.20131212054637.16399: *7* Node A
+This is node A.
+.. @+node:ekr.20131212054637.16400: *8* Node B
+This is node B.
+.. @+node:ekr.20131212054637.16400: *8* Node B
+This is node B.
+.. @+node:ekr.20131212054637.16399: *7* Node A
+This is node A.
+.. @+node:ekr.20131212054637.16400: *8* Node B
+This is node B.
+.. @+node:ekr.20131212054637.16400: *8* Node B
+This is node B.
+.. @+node:ekr.20131211054925.16394: *5* Summary
+1. Leo looks like an ordinary outliner program.
+
+2. Leo really is an IDE.
+
+3. Leo scripts have full, easy access to all outline data.
+
+4. Nodes may be cloned.
 .. @+node:ekr.20131211054925.16380: *4* - Creating external files
 .. @+node:ekr.20131208103040.16346: *4* - Arrow keys
 .. @+node:ekr.20131208103040.16350: *4* - Find command?
@@ -115,10 +188,16 @@ years because it is, fundamentally, a very simple idea.
 
 In short, I have hopes that 3 or 4 screencasts will demonstrate that anyone
 can use Leo.
-.. @+node:ekr.20131211054925.16384: *3* improve file;; macro
+.. @+node:ekr.20131212204147.16400: *3* * Improve @auto
+@language rest
+
+* Write post-@auto pass that restors clone links.
+
+Is any filler between nodes an organizer node??
+.. @+node:ekr.20131211054925.16384: *3* - improve file;; macro
 1. Does not create @file (or @@file) in headline
 2. <|pattern|> not found in headlines
-.. @+node:ekr.20131117054619.16683: *3* * Finish Find
+.. @+node:ekr.20131117054619.16683: *3* - Finish Find
 @language rest
 
 * (Done??) Reset wrap & onlyPosition when the find pattern changes:
@@ -308,253 +387,6 @@ Naturally, Vim bindings come to mind. There are several possibilities:
    cursor, extending text, or not, in an *easily* switchable way.
 
 3. Something else :-)
-.. @+node:ekr.20131205091824.16320: *3* * Experiment with @shadow
-Thread: https://groups.google.com/d/msg/leo-editor/eU6ucaeo_i4/QRGhNRL0T90J
-Post: https://groups.google.com/d/msg/leo-editor/eU6ucaeo_i4/w4FOILRP6ooJ
-
-- Leo's sentinels are the biggest barrier to more widespread adoption of Leo.  Not documentation.  Not anything else.
-- @bool use_at_shadow_everywhere would allow us to test @shadow everywhere without changing .leo files.
-- @shadow could benefit by using Leo's existing caching mechanism.
-- Some (relatively simple!) way must be found to allow @shadow to guess correctly most of the time.
-
-Recent thoughts:
-
-1. Iirc, @shadow uses more verbose old-style sentinels. Leo's new-style
-   sentinels are provably the simplest thing that could possibly work. It's
-   likely that adapting the @shadow algorithm to use new-style sentinels
-   may have advantages. It's worth investigating.
-
-2. The acid test of @shadow is how well it does, in fact, guess the
-   location of inserted lines. An Aha: Leo's bzr log provides the ultimate
-   test bed. We "mine" the bzr log for diffs. These diffs include
-   sentinels, so they show the *optimal* operation of @shadow. Stripping
-   sentinels from the "incoming" diffs provides the input to the @shadow
-   algorithm. We can then compare the output of @shadow with the actual
-   diffs. In other words, the contents of the bzr log provide the
-   foundation for a huge unit test.
-
-3. Given the importance of @shadow, any reasonable amount of work that
-   improves its performance (making hard guesses) is justified. The present
-   idea is to add features to the code that will clarify the operation of
-   the algorithm and allow for experimentation in heuristic inferences.
-   
-Addendum: https://groups.google.com/d/msg/leo-editor/eU6ucaeo_i4/BcSjRsEm9VUJ
-
-4. If we move to @shadow everywhere, there must be a way to share the
-   actual outline structure that any particular person may be using.
-
-This is what sentinels do so well at present. The solution will be to
-"package" all the private files (containing sentinels). I think of this as
-the "zipped option", though the name isn't perfect because the package
-probably won't be a .zip file (although perhaps it could be).
-.. @+node:ekr.20131208115707.16364: *4* x.propagate_changed_lines (main algorithm) (COPY)
-@language python
-
-def COPY_propagate_changed_lines(self,new_public_lines,old_private_lines,marker,p=None):
-
-    '''Propagate changes from 'new_public_lines' to 'old_private_lines.
-
-    We compare the old and new public lines, create diffs and
-    propagate the diffs to the new private lines, copying sentinels as well.
-
-    We have two invariants:
-    1. We *never* delete any sentinels.
-       New at 2010/01/07: Replacements preserve sentinel locations.
-    2. Insertions that happen at the boundary between nodes will be put at
-       the end of a node.  However, insertions must always be done within sentinels.
-    '''
-
-    trace = False and g.unitTesting
-    verbose = True
-    x = self
-    # mapping tells which line of old_private_lines each line of old_public_lines comes from.
-    old_public_lines, mapping = self.strip_sentinels_with_map(old_private_lines,marker)
-
-    << init vars >>
-    << define print_tags >>
-
-    delim1,delim2 = marker.getDelims()
-    sm = difflib.SequenceMatcher(None,old_public_lines,new_public_lines)
-    prev_old_j = 0 ; prev_new_j = 0
-
-    for tag,old_i,old_j,new_i,new_j in sm.get_opcodes():
-
-        << About this loop >>
-
-        # Verify that SequenceMatcher never leaves gaps.
-        if old_i != prev_old_j: # assert old_i == prev_old_j
-            x.error('can not happen: gap in old: %s %s' % (old_i,prev_old_j))
-        if new_i != prev_new_j: # assert new_i == prev_new_j
-            x.error('can not happen: gap in new: %s %s' % (new_i,prev_new_j))
-
-        << Handle the opcode >>
-
-        # Remember the ends of the previous tag ranges.
-        prev_old_j = old_j
-        prev_new_j = new_j
-
-    # Copy all unwritten sentinels.
-    self.copy_sentinels(
-        old_private_lines_rdr,
-        new_private_lines_wtr,
-        marker,
-        limit = old_private_lines_rdr.size())
-
-    # Get the result.
-    result = new_private_lines_wtr.getlines()
-    if 1:
-        << do final correctness check>>
-    return result
-.. @+node:ekr.20131208115707.16365: *5* << init vars >>
-new_private_lines_wtr = self.sourcewriter(self)
-# collects the contents of the new file.
-
-new_public_lines_rdr = self.sourcereader(self,new_public_lines)
-    # Contains the changed source code.
-
-old_public_lines_rdr = self.sourcereader(self,old_public_lines)
-    # this is compared to new_public_lines_rdr to find out the changes.
-
-old_private_lines_rdr = self.sourcereader(self,old_private_lines) # lines_with_sentinels)
-    # This is the file which is currently produced by Leo, with sentinels.
-
-# Check that all ranges returned by get_opcodes() are contiguous
-old_old_j, old_i2_modified_lines = -1,-1
-
-tag = old_i = old_j = new_i = new_j = None
-.. @+node:ekr.20131208115707.16366: *5* << define print_tags >>
-def print_tags(tag, old_i, old_j, new_i, new_j, message):
-
-    sep1 = '=' * 10 ; sep2 = '-' * 20
-
-    g.pr('\n',sep1,message,sep1,p and p.h)
-
-    g.pr('\n%s: old[%s:%s] new[%s:%s]' % (tag,old_i,old_j,new_i,new_j))
-
-    g.pr('\n',sep2)
-
-    table = (
-        (old_private_lines_rdr,'old private lines'),
-        (old_public_lines_rdr,'old public lines'),
-        (new_public_lines_rdr,'new public lines'),
-        (new_private_lines_wtr,'new private lines'),
-    )
-
-    for f,tag in table:
-        f.dump(tag)
-        g.pr(sep2)
-
-
-.. @+node:ekr.20131208115707.16367: *5* << about this loop >>
-@nocolor-node
-
-@ This loop writes all output lines using a single writer:
-new_private_lines_wtr.
-
-The output lines come from two, and *only* two readers:
-
-1. old_private_lines_rdr delivers the complete original sources. All
-   sentinels and unchanged regular lines come from this reader.
-
-2. new_public_lines_rdr delivers the new, changed sources. All inserted or
-   replacement text comes from this reader.
-
-Each time through the loop, the following are true:
-
-- old_i is the index into old_public_lines of the start of the present
-  SequenceMatcher opcode.
-
-- mapping[old_i] is the index into old_private_lines of the start of
-  the same opcode.
-
-At the start of the loop, the call to copy_sentinels effectively skips
-(deletes) all previously unwritten non-sentinel lines in
-old_private_lines_rdr whose index is less than mapping[old_i].
-
-As a result, the opcode handlers do not need to delete elements from
-the old_private_lines_rdr explicitly. This explains why opcode
-handlers for the 'insert' and 'delete' opcodes are identical.
-.. @+node:ekr.20131208115707.16368: *5* << Handle the opcode >>
-# Do not copy sentinels if a) we are inserting and b) limit is at the end of the old_private_lines.
-# In this special case, we must do the insert before the sentinels.
-limit=mapping[old_i]
-
-if trace: g.trace('tag',tag,'old_i',old_i,'limit',limit)
-
-if tag == 'equal':
-    # Copy sentinels up to the limit = mapping[old_i]
-    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
-
-    # Copy all lines (including sentinels) from the old private file to the new private file.
-    start = old_private_lines_rdr.index() # Only used for tag.
-    while old_private_lines_rdr.index() <= mapping[old_j-1]:
-        line = old_private_lines_rdr.get()
-        new_private_lines_wtr.put(line,tag='%s %s:%s' % (
-            tag,start,mapping[old_j-1]))
-
-    # Ignore all new lines up to new_j: the same lines (with sentinels) have just been written.
-    new_public_lines_rdr.sync(new_j)
-
-elif tag == 'insert':
-    if limit < old_private_lines_rdr.size():
-        self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
-    # All unwritten lines from old_private_lines_rdr up to mapping[old_i] have already been ignored.
-    # Copy lines from new_public_lines_rdr up to new_j.
-    start = new_public_lines_rdr.index() # Only used for tag.
-    while new_public_lines_rdr.index() < new_j:
-        line = new_public_lines_rdr.get()
-        if marker.isSentinel(line):
-            new_private_lines_wtr.put(
-                '%s@verbatim%s\n' % (delim1,delim2),
-                tag='%s %s:%s' % ('new sent',start,new_j))
-        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
-
-elif tag == 'replace':
-    # This case is new: it was the same as the 'insert' case.
-    start = old_private_lines_rdr.index() # Only used for tag.
-    while (
-        old_private_lines_rdr.index() <= mapping[old_j-1]
-        and new_public_lines_rdr.index() <  new_j
-            # 2010/10/22: the replacement lines can be shorter.
-    ):
-        old_line = old_private_lines_rdr.get()
-        if marker.isSentinel(old_line):
-            # Important: this should work for @verbatim sentinels
-            # because the next line will also be replaced.
-            new_private_lines_wtr.put(old_line,tag='%s %s:%s' % (
-                'replace: copy sentinel',start,new_j))
-        else:
-            new_line = new_public_lines_rdr.get()
-            new_private_lines_wtr.put(new_line,tag='%s %s:%s' % (
-                'replace: new line',start,new_j))
-
-    # 2010/10/22: The replacement lines can be longer: same as 'insert' code above.
-    while new_public_lines_rdr.index() < new_j:
-        line = new_public_lines_rdr.get()
-        if marker.isSentinel(line):
-            new_private_lines_wtr.put(
-                '%s@verbatim%s\n' % (delim1,delim2),
-                tag='%s %s:%s' % ('new sent',start,new_j))
-        new_private_lines_wtr.put(line,tag='%s %s:%s' % (tag,start,new_j))
-
-elif tag=='delete':
-    # Copy sentinels up to the limit = mapping[old_i]
-    self.copy_sentinels(old_private_lines_rdr,new_private_lines_wtr,marker,limit=limit)
-    # Leave new_public_lines_rdr unchanged.
-
-else: g.trace('can not happen: unknown difflib.SequenceMather tag: %s' % repr(tag))
-
-if trace and verbose:
-    print_tags(tag, old_i, old_j, new_i, new_j, "After tag")
-.. @+node:ekr.20131208115707.16369: *5* << do final correctness check >>
-t_sourcelines, t_sentinel_lines = self.separate_sentinels(
-    new_private_lines_wtr.lines, marker)
-
-self.check_the_final_output(
-    new_private_lines   = result,
-    new_public_lines    = new_public_lines,
-    sentinel_lines      = t_sentinel_lines,
-    marker              = marker)
 .. @+node:ekr.20131206064113.16325: *3* Fix new IPython bug
 The c property makes no sense.  Maybe the best solution is to get rid of it and change the docs.
 
@@ -629,43 +461,7 @@ def update (self):
     '''Update the list of available commanders.'''
     self.commanders_list = [frame.c for frame in g.app.windowList]
 .. @+node:ekr.20131120054058.16279: *3* Create github repo (call Speed)
-.. @+node:ekr.20131121211048.16378: *3* Next
-- Change viewrendered commands to preview-.
-* Add docstrings for all commands in leoSessions.py.
-- Change the term 'minibuffer' ???
-- Add focus-to-x commands, where x is a *temporary* log pane, like completions, commands, etc.
-- (Maybe) Add helpful @button nodes to leoSettings.leo.
-- Revise help-for-find-commands
-* More screenshots! Different font sizes, coloring schemes, plugins, etc.
-* Review Leo's text tutorials.
-- Settings menu:
-    - Rename leoSettings.leo -> global settings.
-    - Rename myLeoSettings.leo -> local settings.
-    - Add per-file settings: selects @settings node of c.
-.. @+node:ekr.20131119060731.20107: *4* * Put @button nodes in the template myLeoSettings.leo
-We could use @button nodes to munge settings. Naturally, this should be
-done in myLeoSettings.leo.
-
-This meshes well with the wishlist bug of creating myLeoSettings.leo
-automatically if it does not exist.
-
-This default myLeoSettings.leo file would be a copy of a template file in
-leo/config.
-
-This template file could have all the @button nodes we could want. It's an
-easy, flexible plan.
-.. @+node:ekr.20131121090013.17108: *4* Import pane, similar to the Find pane
-Very important.
-
-ActivePath is an alternative.  Has rclick interface.
-.. @+node:ekr.20131121050226.16327: *4* reload command?
-**Not** essential.
-
-Ideas:
-- Don't reload any files!
-- Only reprocess leoSettings.leo or myLeoSettings.leo if they are actually open.
-- Change LoadManager to handle a reload flag.
-.. @+node:ekr.20131105020211.18059: *4* Per-node expansions!
+.. @+node:ekr.20131105020211.18059: *3* * Per-node expansions!
 https://groups.google.com/forum/#!topic/leo-editor/Wd0NtBLEZZk
 
 The idea is store "ephemeral" or position-related data **in vnodes*. This
@@ -694,7 +490,7 @@ screen.
 Note: We could add v ivars for other kinds of data, such as marks, but
 that's not going to happen. I think this trick is appropriate only in very
 special circumstances. Furthermore, vnodes should be as small as possible.
-.. @+node:ekr.20131017174814.17480: *5* c.shouldBeExpanded
+.. @+node:ekr.20131017174814.17480: *4* c.shouldBeExpanded
 @language python
 
 def shouldBeExpanded(self,p):
@@ -707,385 +503,33 @@ def shouldBeExpanded(self,p):
             if p == p2:
                 return True
     return False
-.. @+node:ekr.20131207054442.16334: *3* Study
-Some notes here on notebook and javascript (text):
-http://jakevdp.github.io/blog/2013/06/01/ipython-notebook-javascript-python-communication/
-
-Look at Xiki screencasts: http://xiki.org/screencasts/
-.. @+node:ekr.20131208135507.16366: *4* UI Design notes
-@language rest
-
-Blender design vids:
-
-Improving Blender 1: Oct 3: 26 minutes http://youtu.be/xYiiD-p2q80
-Improving Blender 2: Oct 3: 32 minutes http://youtu.be/yIedljapuz0
-The proposal: 19 minutes Oct 16 https://www.youtube.com/watch?v=UWacQrEcMHk
-Reactions: Oct 25: 48 minutes https://www.youtube.com/watch?v=6aIA2LaB2Iw
-.. @+node:ekr.20131208135507.16367: *5* Part 1
-Part 1: http://youtu.be/xYiiD-p2q80
-
-All design rules are based on human psychology.
-
-Most quotes from Designing with the mind in mind.
-
-1. (5:50) Consistency.
-
-The more consistent the operation of different functions,
-the less users have to learn.
-The consistency of an interactive system stronly affects how quickly users
-progress from *slow operation*, to automatic, *faster operation*.
-(Recent example, using standard keys to boldface text.)
-In an inconsistent system, users cannot predict how its different functions work,
-so they must learn each one anew, which slows their learning of the overall
-system and keeps their use of it a controlled, attention-consuming process.
-  
-2.  (12:13) Familiarity.
-
-(The tap the turns the wrong way.  Confusion, frustration, anger.)
-  
-People learn from their experiences constantly, often without awareness
-that they are doing it.
-
-Even when people know they *could* solve a problem or perform a calculation
-if they put *effort* into it sometimes they *don't do it* because they
-don't consider the *potential reward* worth the effort.
-
-If you're not going to use an existing convention, you need to be sure that
-what you're replacing it with either 
-a) is so clear and self explanatory that there's no learning curve
- (so it's as good as a convention) or
-b) adds so much value that it's worth the small learning curve.
-
-If you're going to innovate, you have to *understand* the value of what
-you're replacing and many designers tend tu underestimate just how
-much *value* conventions provide.
-
-Comments:
-
-- We could review keystrokes for newbies, to ensure they are as standard as possible.
-- Clones and @file and section references are also unfamiliar.
-
-3. Recognition over recall (16:32)
-
-A widely used heuristic for evaluating user interfaces.
-The relative ease with which we can *recognize* things rather than *recall*
-them is the basis [of guis].
-
-We recognize shapes and faces at extremely fast speeds.
-
-This may be Leo's most important strength.
-How many times have I said that I don't remember the details of Leo's million-line
-code base?  I don't need to *remember* the details because I can *recognize* where
-relevant code is from the shape of Leo's outlines.
-
-At the very least, designers should avoid developing systems that burden
-*long term memory*. Yet that is *exactly* what many interactive systems do.
-
-Make it easy for users to switch to faster paths *after* they have gained experience.
-The slower paths for *newcomers* should show users faster paths if there are any.
-
-Leo's minibuffer is, in fact, a key component of this strategy.
-It's standard in Emacs, and imo Leo improves on Emacs by showing keyboard shortcuts.
-
-The best interfaces provide two ways to perform an action:
-icons for beginners, shortcuts for veterans.
-
-[Leo's menus are, imo, sufficient.]
-
-We as designers really *don't* want our software's users to have to keep
-thinking about their *keystroke-level actions* as they work,
-and users don't want to have to think about them either.
-
-I think Leo is pretty good here.
-
-If a software application hides its functionality and requires its
-users to recall what to do, *some percentage of users will fail*.
-If the software has a lot of users,that...adds up to a *significant number*.
-Obvious solution is a toolbar (for newbies).
-
-I think @file and @others are the biggest problems for Leo in this regard,
-not keystrokes.  I could be wrong.
-  
-4.  Error prevention. (20:42) (Don't touch the hot stove).
-
-Most interactive systems have far more functionality than most users
-will every try.  One reason for this is fear of being *burned*.
-.. @+node:ekr.20131208135507.16368: *5* Part 2
-Part 2: http://youtu.be/yIedljapuz0
-
-5. Responsiveness (1:14)
-
-An interactive system's responsiveness is the most important factor
-in determining *user satisfaction*.
-Informing the user that actions were received and that the software
-is now busy performing the task.
-There are *psychological* issues involved.
-The human mind is geared to see cause and effect. (Kick the soccer ball).
-Systems that display poor responsiveness do not meet human time deadlines.
-They don't keep up with users.
-These problems impede users' productivity and *frustrate and annoy them*.
-Button clicked: 0.1 sec.
-If no response to a click in 0.1 sec, users will assume they *missed and click again*.
-Drag: 0.1 sec.
-If an object the user is dragging or resizing lags more than 0.1 sec
-behind the user's pointer movements,
-*users will have trouble placing or resizing the object as desired*.
-When your system cannot update its display fast enough to meet
-this hand-eye-coordination deadline, provide *lightweight simulated feedback*
-until the goal is clear and then apply the real operation.
-Frame rate and precision is more important than pretty visuals.
-Busy: must display busy icon after 1.0 sec.
-Software should display a *busy indicator* for any action that blocks
-further user actions while it is executing, even if the function
-normally executes quickly (< 0.1 sec).
-Progress bar: for anything taking more than a few seconds.
-Greatly increase the *perceived* responiseness of an app.
-Provide some indication of how long operations will take.
-Free the user to do other things while waiting.
-*Provide a cancel button*.
-Poor responsiveness:
-- Time-consuming oeprations that block other activity and can't be aborted.
-- Providing no clue how long lengthy operations will take.
-- Those deadlines are psychological time constants, *wired into us*...
-  They are *not* arbitrary targets that we can adjust at will...
-- If an interactive system does not meet these deadlines the
-  users will consider its responsiveness to be poor.
-
-6. Recovery from mistakes. (8:14)
-
-Help users recognize, diagnose and recover from errors.
-People need to feel that they can try things without damaging the
-system or jeopardizing their data.
-Crashing: autosave.
-What was the app without undo?? GitHub?
-    
-7. Simplicity. (Appearance) (12:17)
-
-- Heirarchy. (car panel).
-    The larger the number of people who use a function,
-    the more *visible* the function should be.
-    Make functions that many people need highly visible.
-    By contrast, functionality that few people will use,
-    especially when those few people are highly trained,
-    can be hidden (in details panels, right-click menus & key combinations)
-    Minimize the number and complexity of settings.
-    Don't expect people to optimize combinations of many interacting settings
-    or parameters.  **People are really bad at that**.
-    [Leo must be usable out of the box].
-    Fits law: some buttons should be bigger than others.
-
-- Structure.
-    The human mind is wired to see structure in shapes, figures & objects.
-    Gestalt principles: proximity, similarity, continuity, closure,
-    symmetry, figure/gournd and common fate.
-    Proximity: Objects that are near each other...appear grouped,
-    while those farther appart do not.
-    Similarity: objects that look similar, *appear grouped*,
-    all other things being equal.
-
-- Design. (Making things clearly visible)
-    Text readability:  Recommended font size is 16 px.
-    The new size irritates you in the beginning.
-    Don't worry, that's normal.
-    However, once you've gotten used to it, you will not
-    want to go back to the 'standard' small sizes.
-
-- Vocabulary.
-    - Avoid jargon:
-        Don't force your users to learn a whole new vocabulary.
-        Familiar words are easier to understand because they
-        can be recognized automaticlly.  [preview tab]
-        Why did they name it that?
-        When readers, even skilled ones, encounter jargon,
-        their automatic reading processes probably won't recoginize it.
-        Tell users *explicitly and exacly* what they need to know.
-        - *Don't* expect them to deduce information.
-        - *Don't* require them to figure things out by a process of elimination.
-    - Say less:
-        Many software interfaces present *too much text*,
-        requiring users to read more than is necessary.
-        [This is LP's problem:  too many comments].
-        Software designers often justify lengthy instructions by arguing:
-        we need all that text to explain clearly to users what to do.
-        Just by being there, all the extra words suggest that you may
-        actually have to read them to understand what is going on.
-
-8. Goal oriented (The most important)
-
-We focus on our *goals* and pay little attention to our tools.
-When people are doing a task--trying to accomplish a goal--
-most of their attention if focused on the goals and data related to that task.
-Normally, people devote *very little attention* to the tools they are using
-to perform a task.
-This tendency of people to notice only things on a computer display
-that *match their goal* and the literal thinking that they exhibit when
-performing a taks on a computer has been called,
-*"following the scent of information toward the goal"*.
-Most software design guidelines state that software apps...
-*should not call attention to themselves*.
-They should fade into the background and allow users to
-*focus on their own goals*.
-Cognitive psychologists call the gap between what a user wants
-and the operations that the tool provides the *"gulf of execution"*.
-To do that, the designers need to *understand the goals* that users
-are likely to have at each decision point in a task,
-and ensure that each choice point in the software provides
-options for each important user goal, and *clearly indicates* which
-option *leads to which goal*.
-The most import scene is what users see when they first open the software.
-From its first screen (or home page) software should so users the way to their goals.
-[Problem for Leo: how do I create an external file?]
-Provide clear paths, including *initial steps* for the user goals
-that the software is intended to support.
-.. @+node:ekr.20131208135507.16369: *5* The proposal
-https://www.youtube.com/watch?v=UWacQrEcMHk
-
-Why:
-- Blender has changed.
-- Restricting developement.
-- Not task oriented. (Applies to Leo).
-  When people have to refocus their attention on their tools,
-  it is pulled away from the details of their task.
-  This shift increase the chances of users losing track of what
-  they were doing or exactly where they were doing it.
-  
-The proposal:
-Tabs:
-    Tabs are a way to give each task its own work area.
-    Since everyone has a wide-screen monitor, we can actually fit a whole
-    lot more functionality lenghtwhise than we can vertically.
-    Tabs are one of the very few cases where using a physical
-    metaphor in a user interface actually works.  They're so visually distinctive
-    they're hard to overlook.
-    As interface ideas go, they're clearly a product of genius.
-Drop-down menus:
-    Hides seldom-used features.
-Sidebar.
-    - Notifications (Leo's log pane)
-    - Info box: (Leo's status area)
-    - Properties box (Leo's status area)
-    - Layers.
-    - History panel (improved undo).
-    ** Could change depending on task.
-New toolbar:
-    - 4x smaller.
-    
-.. @+node:ekr.20131208135507.16370: *5* Conclusions about Leo
-Bottom line:
-1. Leo may have visual problems, but vim and Emacs have more problems.
-2. Leo *must* show people how to create an external file!
-
-Create user buttons by default:
-
-- Create external file:  (same as file;; !)
-    - Create section
-.. @+node:ekr.20131210061413.16374: *4* Key ideas from the Blender vids
-@language rest
-
-To summarize the detailed study of Andrew Price's great videos:
-
-By far the most important Aha that comes from the videos is that new users
-to Leo are unlikely to be able to do Leo's most basic tasks without help
-from the tutorials or the web:
-
-- Creating external files containing computer text.
-- Creating useful scripts that act on outlines.
-
-Imo, tutorials will always be needed, but buttons may provide much needed
-hints/scents/breadcrumbs.
-
-Furthermore, Leo's documentation (and ui) should make as clear as possible
-what these main tasks are!
-.. @+node:ekr.20131210061413.16375: *5* 1-4
-1: Consistency
-
-I see no big opportunity for improvement. A toolbar might improve
-matters, or just confuse newbies more.
-  
-2: Familiarity
-
-Users must be shown how to use @file and @others.  See #8.
-
-Kent: Design alt-x ? so that provides breadcrumbs to all of Leo's features.
-
-3: Recognition over recall
-
-This is one of Leo's primary strengths.
-
-@file and @others are the big problem:
-
-- Newbie buttons, as previously discussed.
-- A new help-for-creating-program-files command.
-- A new entry in the Help menu (and a newbie button) that will open Leo's *video* tutorials.
-
-In effect, each Leo headline is like a command line!
-
-Jacob: I recommend playing around with the ACME editor, and noting how it
-uses 'taglines' (essentially headlines with a different name).
-
-4: Error prevention
-
-Two bugs involving refresh-from-disk may have the most potential for
-burning users:
-
-1090950 refresh from disk - cut node resurrection
-https://bugs.launchpad.net/leo-editor/+bug/1090950
-
-1259127 'Refresh from disk' problem with @auto
-https://bugs.launchpad.net/leo-editor/+bug/1259127
-
-The problems with clone conflicts have caused consternation in the past.
-Perhaps they even merit a video.
-.. @+node:ekr.20131210061413.16376: *5* 5-8
-5. Responsiveness
-
-The main "time limits" for a response are:
-
-- Button clicks: 0.1 sec.
-- Drags: 0.1 sec.
-- Long operations:
-    - A busy icon after about 1 second; a progress bar after about 3 seconds.
-    - Long operations should provide a cancel button.
-
-Failure to meet these time limits frustrate and annoy users.
-QQQ
-
-This is a topic I've not consciously considered before. Nevertheless, Leo
-does well here, with some (minor) deviations from the guidelines:
-
-- When loading lots of files, Leo displays progress in the log pane, rather
-  than with a progress indicator or cursor.
-
-- The recursive import command is one of Leo's most time-consuming
-  features. I've put a review of this command with regard to responsiveness
-  on the list. There used to be a bug where a dialog was brought up
-  repeatedly after creating lots of @auto nodes. I think this bug has been
-  fixed.
-
-- The make-sphinx button in LeoDocs.leo can take a long time. This is not
-  really a problem because the console displays the progress of Sphinx's
-  make command.
-   
-6. Recovery from mistakes
-
-There can be problems with @auto. The workaround is that inserts @ignore in
-cases where the result would not be *exactly* the same as the original.
-This isn't great, but I know of no way to make import always be perfect.
-
-Leo has an autosave plugin, so it is possible to recover automatically from crashes. 
-
-
-8: Goal oriented (25:59)
-
-Problem:
-
-There is no "scent" that tells a newbie how to create an external file!
-There is no indication that this is one of Leo's primary tasks!
-
-Solution:
-
-- Add a button (with corresponding command) to create an external file.
-- Add a button for importing files or directories.
+.. @+node:ekr.20131121211048.16378: *3* Next
+* Add docstrings for all commands in leoSessions.py.
+- Add focus-to-x commands, where x is a *temporary* log pane, like completions, commands, etc.
+* More screenshots! Different font sizes, coloring schemes, plugins, etc.
+.. @+node:ekr.20131119060731.20107: *4* * Put @button nodes in the template myLeoSettings.leo
+We could use @button nodes to munge settings. Naturally, this should be
+done in myLeoSettings.leo.
+
+This meshes well with the wishlist bug of creating myLeoSettings.leo
+automatically if it does not exist.
+
+This default myLeoSettings.leo file would be a copy of a template file in
+leo/config.
+
+This template file could have all the @button nodes we could want. It's an
+easy, flexible plan.
+.. @+node:ekr.20131121090013.17108: *4* Import pane, similar to the Find pane
+Very important.
+
+ActivePath is an alternative.  Has rclick interface.
+.. @+node:ekr.20131121050226.16327: *4* reload command?
+**Not** essential.
+
+Ideas:
+- Don't reload any files!
+- Only reprocess leoSettings.leo or myLeoSettings.leo if they are actually open.
+- Change LoadManager to handle a reload flag.
 .. @+node:ekr.20131105020211.18058: ** Important
 .. @+node:ekr.20131101080215.16488: *3* * Outreach to magazine editors
 ===== Steve Litt
