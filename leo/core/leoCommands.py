@@ -6846,7 +6846,7 @@ class Commands (object):
             os.spawnv(os.P_NOWAIT, sys.executable, args)
         else: # Use a pristine environment.
             os.spawnve(os.P_NOWAIT, sys.executable, args, os.environ)
-    #@+node:ekr.20031218072017.2938: *4* Help Menu
+    #@+node:ekr.20031218072017.2938: *4* Help Menu (commands)
     #@+node:ekr.20031218072017.2939: *5* about (version number & date)
     def about (self,event=None):
 
@@ -6864,6 +6864,50 @@ class Commands (object):
         url = "http://leoeditor.com/"
         email = "edreamleo@gmail.com"
         g.app.gui.runAboutLeoDialog(c,version,theCopyright,url,email)
+    #@+node:ekr.20031218072017.2940: *5* leoDocumentation
+    def leoDocumentation (self,event=None):
+        '''Open LeoDocs.leo in a new Leo window.'''
+        c = self
+        name = "LeoDocs.leo"
+        fileName = g.os_path_join(g.app.loadDir,"..","doc",name)
+        # Bug fix: 2012/04/09: only call g.openWithFileName if the file exists.
+        if g.os_path_exists(fileName):
+            c2 = g.openWithFileName(fileName,old_c=c)
+            if c2: return
+        g.es("not found:",name)
+    #@+node:ekr.20031218072017.2941: *5* leoHome
+    def leoHome (self,event=None):
+        '''Open Leo's Home page in a web browser.'''
+        import webbrowser
+        url = "http://leoeditor.com/"
+        try:
+            webbrowser.open_new(url)
+        except:
+            g.es("not found:",url)
+    #@+node:ekr.20090628075121.5994: *5* leoQuickStart
+    def leoQuickStart (self,event=None):
+
+        '''Open quickstart.leo in a new Leo window.'''
+
+        c = self ; name = "quickstart.leo"
+
+        fileName = g.os_path_join(g.app.loadDir,"..","doc",name)
+        # Bug fix: 2012/04/09: only call g.openWithFileName if the file exists.
+        if g.os_path_exists(fileName):
+            c2 = g.openWithFileName(fileName,old_c=c)
+            if c2: return
+
+        g.es("not found:",name)
+    #@+node:ekr.20131213072223.19532: *5* selectAtSettingsNode
+    def selectAtSettingsNode (self,event=None):
+        '''Select the @settings node, if there is one.'''
+        c = self
+        p = c.config.settingsRoot()
+        if p:
+            c.selectPosition(p)
+            c.redraw()
+        else:
+            g.es('no local @settings tree.')
     #@+node:ekr.20131028155339.17096: *5* openCheatSheet
     def openCheatSheet(self,event=None,redraw=True):
         '''Open leo/doc/cheatSheet.leo'''
@@ -6881,7 +6925,29 @@ class Commands (object):
         else:
             g.es('file not found: %s' % fn)
             return None
-    #@+node:ekr.20031218072017.2943: *5* openLeoSettings and openMyLeoSettings
+    #@+node:ekr.20050130152008: *5* openLeoPlugins
+    def openLeoPlugins (self,event=None):
+        '''Open leoPlugins.leo in a new Leo window.'''
+        c = self
+        for name in ('leoPlugins.leo','leoPluginsRef.leo'):
+            fileName = g.os_path_join(g.app.loadDir,"..","plugins",name)
+            # Bug fix: 2012/04/09: only call g.openWithFileName if the file exists.
+            if g.os_path_exists(fileName):
+                c2 = g.openWithFileName(fileName,old_c=c)
+                if c2: return
+        g.es('not found:', ', '.join(names))
+    #@+node:ekr.20061018094539: *5* openLeoScripts
+    def openLeoScripts (self,event=None):
+        '''Open scripts.leo.'''
+        c = self
+        fileName = g.os_path_join(g.app.loadDir,'..','scripts','scripts.leo')
+
+        # Bug fix: 2012/04/09: only call g.openWithFileName if the file exists.
+        if g.os_path_exists(fileName):
+            c2 = g.openWithFileName(fileName,old_c=c)
+            if c2: return
+        g.es('not found:',fileName)
+    #@+node:ekr.20031218072017.2943: *5* openLeoSettings & openMyLeoSettings
     def openLeoSettings (self,event=None):
         '''Open leoSettings.leo in a new Leo window.'''
         self.openSettingsHelper('leoSettings.leo')
@@ -6914,99 +6980,42 @@ class Commands (object):
                 ok = bool(c2)
             if not ok:
                 g.es('',name,"not found in",configDir,"\nor",homeLeoDir)
-    #@+node:ekr.20061018094539: *5* openLeoScripts
-    def openLeoScripts (self,event=None):
-
-        '''Open scripts.leo.'''
-
-        c = self
-        fileName = g.os_path_join(g.app.loadDir,'..','scripts','scripts.leo')
-
-        # Bug fix: 2012/04/09: only call g.openWithFileName if the file exists.
-        if g.os_path_exists(fileName):
-            c2 = g.openWithFileName(fileName,old_c=c)
-            if c2: return
-
-        g.es('not found:',fileName)
-    #@+node:ekr.20031218072017.2940: *5* leoDocumentation
-    def leoDocumentation (self,event=None):
-
-        '''Open LeoDocs.leo in a new Leo window.'''
-
-        c = self ; name = "LeoDocs.leo"
-
-        fileName = g.os_path_join(g.app.loadDir,"..","doc",name)
-        # Bug fix: 2012/04/09: only call g.openWithFileName if the file exists.
-        if g.os_path_exists(fileName):
-            c2 = g.openWithFileName(fileName,old_c=c)
-            if c2: return
-
-        g.es("not found:",name)
-    #@+node:ekr.20031218072017.2941: *5* leoHome
-    def leoHome (self,event=None):
-
-        '''Open Leo's Home page in a web browser.'''
-
+    #@+node:ekr.20131213072223.19441: *5* openLeoTOC
+    def openLeoTOC (self,event=None):
+        '''Open Leo's tutorials page in a web browser.'''
         import webbrowser
-
-        url = "http://leoeditor.com/"
+        url = "http://leoeditor.com/leo_toc.html"
         try:
             webbrowser.open_new(url)
         except:
             g.es("not found:",url)
-    #@+node:ekr.20050130152008: *5* openLeoPlugins
-    def openLeoPlugins (self,event=None):
-
-        '''Open leoPlugins.leo in a new Leo window.'''
-
-        names =  ('leoPlugins.leo','leoPluginsRef.leo')
-
-        c = self ; name = "leoPlugins.leo"
-
-        for name in names:
-            fileName = g.os_path_join(g.app.loadDir,"..","plugins",name)
-            # Bug fix: 2012/04/09: only call g.openWithFileName if the file exists.
-            if g.os_path_exists(fileName):
-                c2 = g.openWithFileName(fileName,old_c=c)
-                if c2: return
-
-        g.es('not found:', ', '.join(names))
-    #@+node:ekr.20090628075121.5994: *5* leoQuickStart
-    def leoQuickStart (self,event=None):
-
-        '''Open quickstart.leo in a new Leo window.'''
-
-        c = self ; name = "quickstart.leo"
-
-        fileName = g.os_path_join(g.app.loadDir,"..","doc",name)
-        # Bug fix: 2012/04/09: only call g.openWithFileName if the file exists.
-        if g.os_path_exists(fileName):
-            c2 = g.openWithFileName(fileName,old_c=c)
-            if c2: return
-
-        g.es("not found:",name)
-    #@+node:ekr.20031218072017.2942: *5* leoTutorial (version number)
-    def leoTutorial (self,event=None):
-
-        '''Open Leo's online tutorial in a web browser.'''
-
+    #@+node:ekr.20131213072223.19435: *5* openLeoTutorials
+    def openLeoTutorials (self,event=None):
+        '''Open Leo's tutorials page in a web browser.'''
         import webbrowser
-
-        if 1: # new url
-            url = "http://www.3dtree.com/ev/e/sbooks/leo/sbframetoc_ie.htm"
-        else:
-            url = "http://www.evisa.com/e/sbooks/leo/sbframetoc_ie.htm"
+        url = "http://leoeditor.com/tutorial.html"
         try:
             webbrowser.open_new(url)
         except:
             g.es("not found:",url)
-    #@+node:ekr.20060613082924: *5* leoUsersGuide
-    def leoUsersGuide (self,event=None):
-
+    #@+node:ekr.20060613082924: *5* openLeoUsersGuide
+    def openLeoUsersGuide (self,event=None):
         '''Open Leo's users guide in a web browser.'''
-
-        url = 'http://leoeditor.com/leo_toc.html'
-        g.handleUrl(url)
+        import webbrowser
+        url = "http://leoeditor.com/usersguide.html"
+        try:
+            webbrowser.open_new(url)
+        except:
+            g.es("not found:",url)
+    #@+node:ekr.20131213072223.19437: *5* openLeoVideos
+    def openLeoVideos (self,event=None):
+        '''Open Leo's videos page in a web browser.'''
+        import webbrowser
+        url = "http://leoeditor.com/screencasts.html"
+        try:
+            webbrowser.open_new(url)
+        except:
+            g.es("not found:",url)
     #@+node:ekr.20110402084740.14490: *4* c.goToNext/PrevHistory
     def goToNextHistory (self,event=None):
         '''Go to the next node in the history list.'''

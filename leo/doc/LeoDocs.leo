@@ -22703,37 +22703,53 @@ This page links to videos about Leo.  **Important notes**:
 `tips for screencast authors &lt;http://leoeditor.com/FAQ.html#how-to-make-a-screencast&gt;`_.
 
 .. list-table::
-   :widths: 30 10 10
+   :widths: 10 30 10 10
    :header-rows: 1
 
-   * - Video Title
+   * - Level
+     - Title
      - Screencast
      - YouTube
-   * - Intro: A Brief Introduction to Leo
-     - Soon
-     - Soon
-   * - Intro: Leo for Programmers
+   * - Intro
+     - A Brief Introduction to Leo
+     - `hi-res &lt;http://www.screencast.com/t/xDZAOqfsAhPZ&gt;`__
+     - `regular &lt;http://www.youtube.com/watch?v=tuM8MvI9g6k&gt;`__
+   * - Intro
+     - Leo for Programmers
      - `hi-res &lt;http://www.screencast.com/t/lgR6lMhWK&gt;`__
      - `regular &lt;http://www.youtube.com/watch?v=WkUbJAuFfI4&gt;`__
-   * - Basic: Using Leo’s Find pane
-     - `hi-res &lt;http://www.screencast.com/t/O7915mYD3&gt;`__
-     - `regular &lt;https://www.youtube.com/watch?v=K5mmlnSOkLM&gt;`__
-   * - Basic: Using Leo’s minibuffer
-     - `hi-res &lt;http://www.screencast.com/t/tEQ7brI4n6&gt;`__
-     - `regular &lt;https://www.youtube.com/watch?v=dEaGOi6hVpo&gt;`__
-   * - Intermediate: Using clones to speed your work flow
-     - `hi-res &lt;http://www.screencast.com/t/l8W9H5G8zB&gt;`__
-     - `regular &lt;https://www.youtube.com/watch?v=DsHEHNLKi2o&gt;`__
-   * - Ville Vianio’s introduction to Leo
+   * - Intro
+     - Ville Vianio introduces Leo
      -
      - `regular &lt;http://www.youtube.com/watch?v=Zu6J-J0qFi0&gt;`__
-   * - Terry Brown introduces his bookmarks plugin
+   * - Basic
+     - Using Leo’s Find pane
+     - `hi-res &lt;http://www.screencast.com/t/O7915mYD3&gt;`__
+     - `regular &lt;https://www.youtube.com/watch?v=K5mmlnSOkLM&gt;`__
+   * - Basic
+     - Using Leo’s minibuffer
+     - `hi-res &lt;http://www.screencast.com/t/tEQ7brI4n6&gt;`__
+     - `regular &lt;https://www.youtube.com/watch?v=dEaGOi6hVpo&gt;`__
+   * - Intermediate
+     - Using abbreviations
+     -
+     - `regular &lt;http://www.youtube.com/watch?v=WRoiXO53Aac&gt;`__
+   * - Intermediate
+     - Using clones to speed your work flow
+     - `hi-res &lt;http://www.screencast.com/t/l8W9H5G8zB&gt;`__
+     - `regular &lt;https://www.youtube.com/watch?v=DsHEHNLKi2o&gt;`__
+   * - Plugin
+     - Terry Brown demos bookmarks.py
      -
      - `regular &lt;https://vimeo.com/77720098&gt;`__
-   * - Fidel Perez tells how to use the mod_http plugin
+   * - Plugin
+     - Fidel Perez demos mod_http.py
      -
      - `regular &lt;http://www.youtube.com/watch?v=9AvbL_0JEMw&amp;feature=youtu.be&gt;`__
-
+   * - Plugin
+     - mod_ftp.py
+     -
+     - `regular &lt;http://www.youtube.com/watch?v=bnj0NQuljQo&gt;`__
 </t>
 <t tx="ekr.20131122055946.16388">The following radio buttons appear in the Find pane:
 

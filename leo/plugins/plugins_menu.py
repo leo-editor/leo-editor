@@ -135,12 +135,11 @@ def addPluginMenuItem (p,c):
         table = ((plugin_name,None,p.about),)
         if trace: g.trace(plugin_name)
         c.frame.menu.createMenuEntries(PluginDatabase.getMenu(p),table,dynamicMenu=True)
-#@+node:EKR.20040517080555.23: *3* createPluginsMenu
+#@+node:EKR.20040517080555.23: *3* createPluginsMenu & helper
 def createPluginsMenu (tag,keywords):
-
+    '''Create the plugins menu: calld from create-optional-menus hook.'''
     c = keywords.get("c")
     if not c: return
-
     pc = g.app.pluginsController
     lmd = pc.loadedModules
     if lmd:
@@ -150,14 +149,37 @@ def createPluginsMenu (tag,keywords):
         impModSpecList.sort(key=key)
         plgObList = [PlugIn(lmd[impModSpec], c) for impModSpec in impModSpecList]
         c.pluginsMenu = pluginMenu = c.frame.menu.createNewMenu("&Plugins")
+        # 2013/12/13: Add any items in @menu plugins
+        add_menu_from_settings(c)
         PluginDatabase.setMenu("Default", pluginMenu)
         # Add group menus
         for group_name in PluginDatabase.getGroups():
             PluginDatabase.setMenu(group_name,
                 c.frame.menu.createNewMenu(group_name, "&Plugins"))
-
         for plgObj in plgObList:
             addPluginMenuItem(plgObj, c)
+#@+node:ekr.20131213072223.19531: *4* add_menu_from_settings
+def add_menu_from_settings(c):
+    # Add any items in @menu plugins
+    aList = c.config.getMenusList()
+    for z in aList:
+        kind,val,val2 = z
+        if kind.startswith('@menu'):
+            name = kind[len('@menu'):].strip().strip('&')
+            if name.lower() == 'plugins':
+                table = []
+                for kind2,val21,val22 in val:
+                    if kind2 == '@item':
+                        # Similar to createMenuFromConfigList.
+                        name = str(val21) # Item names must always be ascii.
+                        if val21:
+                            # Translated names can be unicode.
+                            table.append((val21,name),)
+                        else:
+                            table.append(name)
+                if table:
+                    c.frame.menu.createMenuEntries(c.pluginsMenu,table)
+                return
 #@+node:ekr.20070302175530: *3* init
 def init ():
     if g.app.unitTesting: return None

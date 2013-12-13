@@ -2135,6 +2135,15 @@ If the ``bookmarks`` plugin is loaded the bookmark will have to be moved to a ``
 
 The browser may or may not be able to close the bookmark form window for you, depending on settings - set ``dom.allow_scripts_to_close_windows`` to true
 in ``about:config`` in Firefox.
+.. @+node:ekr.20131213063329.16403: *3* Reorganize menus
+- Added per-file settings: selects @settings node of c.
+- Moved open-leo-plugins & print-plugins-info commands to Plugins menu.
+    This required new code in plugins_menu.py: add_menu_from_settings.
+- Put only help stuff in help menu.
+- Created new Settings menu.
+    - Renamed leoSettings.leo -> global settings.
+    - Renamed myLeoSettings.leo -> local settings.
+- Created Settings & Help submenus of Cmds menu.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.

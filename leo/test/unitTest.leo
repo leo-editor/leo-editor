@@ -158,17 +158,6 @@
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e382e3671017d71025808000000616e6e6f7461746571037d7104735508302e372e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e372e31342e3671097d710a5808000000616e6e6f74617465710b7d710c735508302e372e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
-<v t="ekr.20131208135930.3925"><vh>New @shadow tests</vh></v>
-<v t="ekr.20131208135930.3926"><vh>New search/replace tests</vh>
-<v t="ekr.20071113193527"><vh>leoFind</vh>
-<v t="ekr.20051107115231.29"><vh>@@test Find keeps focus in body &amp; shows selected text</vh></v>
-<v t="ekr.20060130151716.3"><vh>@test minbuffer find commands</vh></v>
-<v t="ekr.20060130151716.2"><vh>@test set find mode commands</vh></v>
-<v t="ekr.20060130151716.4"><vh>@test show-find-options</vh></v>
-<v t="ekr.20060130151716.1"><vh>@test toggle find options commands</vh></v>
-<v t="ekr.20071113202153"><vh>@test zz restore the screen</vh></v>
-</v>
-</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -434,63 +423,6 @@ It also includes a trace back, but for AssertionErrors, it does not seem to offe
 assert('Spam' == 'Ham')</t>
 <t tx="ekr.20051012104957"></t>
 <t tx="ekr.20051013162226"></t>
-<t tx="ekr.20051107115231.29">import leo.core.leoEditCommands as leoEditCommands
-s = 'foo' ; bodyCtrl = c.frame.body.bodyCtrl
-c.searchCommands.openFindTab()
-h = c.searchCommands.findTabHandler
-w = h.find_ctrl
-w.setAllText(s)
-c.bodyWantsFocus()
-bodyCtrl.setInsertPoint(0)
-c.searchCommands.findTabFindNext()
-w = c.get_focus()
-wName = g.app.gui.widget_name(w)
-assert 'body' in wName, 'focus: %s = %s, expected %s = %s' % (
-    w,wName,bodyCtrl,g.app.gui.widget_name(bodyCtrl))
-</t>
-<t tx="ekr.20060130151716.1">table = (
-    # 'toggle-find-clone-find-all-option',
-    'toggle-find-ignore-case-option',
-    'toggle-find-in-body-option',
-    'toggle-find-in-headline-option',
-    'toggle-find-mark-changes-option',
-    'toggle-find-mark-finds-option',
-    'toggle-find-regex-option',
-    # 'toggle-find-reverse-option',
-    'toggle-find-word-option',
-    'toggle-find-wrap-around-option',
-)
-for command in table:
-    c.k.simulateCommand(command)
-    c.k.simulateCommand(command)
-
-</t>
-<t tx="ekr.20060130151716.2">table = (
-    'set-find-everywhere',
-    'set-find-node-only',
-    'set-find-suboutline-only',
-)
-# show-find-tab-options     = Ctrl-o
-# show-find-options         = o
-for command in table:
-    c.k.simulateCommand(command)
-</t>
-<t tx="ekr.20060130151716.3">table = (
-    're-search-forward',
-    're-search-backward',
-    'search-forward',
-    'search-backward',
-    'word-search-forward',
-    'word-search-backward',
-)
-
-for command in table:
-    # This is not a full test.  We must use keyboardQuit here!
-    c.k.simulateCommand(command)
-    c.k.keyboardQuit(None)
-</t>
-<t tx="ekr.20060130151716.4">c.k.simulateCommand('show-find-options')
-</t>
 <t tx="ekr.20070113145100"># Not part of cvs distributions, but needed for two unit tests.
 
 dir = g.os_path_join(g.app.loadDir,'..','test','unittest',g.u('chinese\u8116folder'),encoding='utf-8')
@@ -641,7 +573,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="10,0"></t>
+<t tx="ekr.20070417092935" str_leo_pos="8"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -670,16 +602,6 @@ print('\n----- Only in leoPy.leo')
 for h in sorted(d2.keys()):
     if not d1.get(h):
         print(h)</t>
-<t tx="ekr.20071113193527"># 4 failures with Alt-5
-</t>
-<t tx="ekr.20071113202153"># This is **not** a real unit test.
-# It simply restores the screen to a more convenient state.
-
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
-
-# print('\nEnd of leoFind tests.')
-</t>
 <t tx="ekr.20071113203234"></t>
 <t tx="ekr.20080324133327.2">True: allow linux-like pastes using a mouse's middle button.
 
@@ -1308,7 +1230,5 @@ char T
 char f
 char t
 </t>
-<t tx="ekr.20131208135930.3925"></t>
-<t tx="ekr.20131208135930.3926"></t>
 </tnodes>
 </leo_file>

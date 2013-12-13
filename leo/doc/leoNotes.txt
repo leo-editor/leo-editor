@@ -8838,6 +8838,61 @@ http://technet.microsoft.com/en-us/sysinternals/bb896645.aspx?PHPSESSID=d926
 http://www.codeproject.com/Articles/36538/Windows-7-Tricks-and-Keyboard-Shortcuts.aspx
 
 @language rest
+.. @+node:ekr.20131213072223.16396: ** Old screencast scripts
+.. @+node:ekr.20131211054925.16385: *3* - Introduction to Leo
+@language rest
+
+This screencast is a *brief* introduction to Leo.
+
+Other video tutorials will cover all of Leo's features in more detail.
+.. @+node:ekr.20131211054925.16391: *4* Leo has standard outline operations
+Leo looks like an ordinary outlining program.
+
+The headline describes the contents of an outline node.
+
+The body pane shows contents (body text) of the selected node.
+
+You can insert, move, delete, copy and paste nodes.
+.. @+node:ekr.20131211054925.16392: *4* Leo has three unique features
+.. @+node:ekr.20131211054925.16389: *5* Leo outlines can create files
+@file nodes create **external files** from outlines.
+
+External files are files on your file system.
+
+Leo outlines work much like project files in an IDE.
+.. @+node:ekr.20131211054925.16390: *5* Leo outlines are scriptable
+- Every outline node can contain a Python script.
+
+- Leo scripts have *easy* access to all data
+  *in the outline in which the script resides*.
+  
+Example:
+
+    g.es(p.h)
+.. @+node:ekr.20131211054925.16393: *5* Nodes can be cloned
+Nodes may appear many times within the same outline.
+
+A change to one clone affects all the other clones of that node.
+.. @+node:ekr.20131212054637.16399: *6* Node A
+This is node A.
+.. @+node:ekr.20131212054637.16400: *7* Node B
+This is node B.
+.. @+node:ekr.20131212054637.16400: *7* Node B
+This is node B.
+.. @+node:ekr.20131212054637.16399: *6* Node A
+This is node A.
+.. @+node:ekr.20131212054637.16400: *7* Node B
+This is node B.
+.. @+node:ekr.20131212054637.16400: *7* Node B
+This is node B.
+.. @+node:ekr.20131211054925.16394: *4* Summary
+1. Leo looks like an ordinary outliner program.
+
+2. Leo really is an IDE.
+
+3. Leo scripts have full, easy access to all outline data.
+
+4. Nodes may be cloned.
 .. @+node:ekr.20031218072017.434: ** Unused code
 @ignore
 @language python
@@ -10353,5 +10408,20 @@ if wrapper:
     )
     for ivar in table:
         print(bool(getattr(wrapper,ivar,None)),ivar)
+.. @+node:ekr.20031218072017.2942: *3* leoTutorial (version number)
+def leoTutorial (self,event=None):
+
+    '''Open Leo's online tutorial in a web browser.'''
+
+    import webbrowser
+
+    if 1: # new url
+        url = "http://www.3dtree.com/ev/e/sbooks/leo/sbframetoc_ie.htm"
+    else:
+        url = "http://www.evisa.com/e/sbooks/leo/sbframetoc_ie.htm"
+    try:
+        webbrowser.open_new(url)
+    except:
+        g.es("not found:",url)
 .. @-all
 .. @-leo
