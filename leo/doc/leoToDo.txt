@@ -14,15 +14,11 @@ Start playing with @shadow improvements.
 .. @+node:ekr.20131213063329.16422: *3* Today
 @language rest
 
-- Improve help-for commands
-- Change vr- commands to preview-.
-.. @+node:ekr.20131213063329.16402: *4* Improve help-for commands
-- Add help-for-external-files command.
-- Add help-for-scripting command.
-- Revise help-for-find-commands
+Improve help-for commands (Add links to text tutorials):
 
-- (Maybe) Add helpful @button nodes to leoSettings.leo.
-- (Maybe) Review Leo's text tutorials.
+- Add help-for-external-files command.
+    - Review Leo's text tutorials.
+- Add help-for-scripting command.
 .. @+node:ekr.20131213072223.16397: *3* * Video tutorials
 @language rest
 

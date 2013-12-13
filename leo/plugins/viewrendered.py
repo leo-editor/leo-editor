@@ -302,6 +302,10 @@ def show_scrolled_message(tag, kw):
     vr.update(tag='show-scrolled-message',keywords={'c':c,'force':True,'s':s})
     return True
 #@+node:ekr.20110320120020.14490: ** Commands
+#@+node:ekr.20131213163822.16471: *3* synonyms for vr commands
+@g.command('preview') # vr-toggle command.
+def preview(event):
+    toggle_rendering_pane(event)
 #@+node:tbrown.20100318101414.5998: *3* g.command('vr')
 @g.command('vr')
 def viewrendered(event):
@@ -331,6 +335,9 @@ def viewrendered(event):
             vr.setWindowTitle("Rendered View")
             vr.resize(600, 600)
             vr.show()
+    def at_idle(c=c):
+        c.bodyWantsFocusNow()
+    QtCore.QTimer.singleShot(0,at_idle)
     return vr
 #@+node:ekr.20130413061407.10362: *3* g.command('vr-contract')
 @g.command('vr-contract')
