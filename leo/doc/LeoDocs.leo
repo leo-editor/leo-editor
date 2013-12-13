@@ -1313,6 +1313,7 @@
 <v t="ekr.20131105110107.17046"><vh>Investigated install problem</vh></v>
 </v>
 </v>
+<v t="ekr.20131120115900.16329"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -22708,6 +22709,12 @@ This page links to videos about Leo.  **Important notes**:
    * - Video Title
      - Screencast
      - YouTube
+   * - Intro: A Brief Introduction to Leo
+     - Soon
+     - Soon
+   * - Intro: Leo for Programmers
+     - `hi-res &lt;http://www.screencast.com/t/lgR6lMhWK&gt;`__
+     - `regular &lt;http://www.youtube.com/watch?v=WkUbJAuFfI4&gt;`__
    * - Basic: Using Leo’s Find pane
      - `hi-res &lt;http://www.screencast.com/t/O7915mYD3&gt;`__
      - `regular &lt;https://www.youtube.com/watch?v=K5mmlnSOkLM&gt;`__
