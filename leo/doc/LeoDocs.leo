@@ -1313,7 +1313,6 @@
 <v t="ekr.20131105110107.17046"><vh>Investigated install problem</vh></v>
 </v>
 </v>
-<v t="ekr.20131120115900.16329"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -16251,23 +16250,26 @@ You may type any command.  The following are most useful:
 </t>
 <t tx="ekr.20131001100335.15940">.. index::
     pair: leoSettings.leo; Tutorial
+    pair: Global Settings; Tutorial
     pair: myLeoSettings.leo; Tutorial
+    pair: Personal Settings; Tutorial
+    pair: Local Settings; Tutorial
     pair: Configuration file; Tutorial
 
 Leo has a flexible (perhaps *too* flexible) configuration system. It's best
 to use this flexibility in a restricted way as follows:
 
-1. The file leo/config/leoSettings.leo contains Leo's default settings.
+1. The file leo/config/leoSettings.leo contains Leo's default **global settings**.
    Don't change this file unless you are one of Leo's developers.
    
-2. The file ~/myLeoSettings.leo contains your personal settings. Leo will
+2. The file ~/myLeoSettings.leo contains your **personal settings**. Leo will
    not create this file automatically: you should create it yourself.
    Settings in myLeoSettings.leo override (or add to) the default settings
    in leoSettings.leo.
    
-3. Any other .leo file may also contain settings. Such settings apply only
-   to that file and override all other settings. It's best to use such
-   settings sparingly.
+3. Any other .leo file may also contain **local settings**. Local
+   settings apply only to that file and override all other settings.
+   It's best to use local settings sparingly.
    
 As a result, settings may vary from one Leo file to another. This can be
 confusing. These two commands can help:
@@ -16293,7 +16295,6 @@ leoSettings.leo:
 - The node "About this file" explains about settings.
 - The node "Candidates for settings in myLeoSettings.leo" highlights the
   settings you are most likely to want to customize.
-
 </t>
 <t tx="ekr.20131001100335.15942">Give differences between Leo and Emacs, Vim &amp; IPython.</t>
 <t tx="ekr.20131001100335.15943">- Leo has shamelessly stolen all of Emacs's most important features: long

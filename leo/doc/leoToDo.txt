@@ -11,14 +11,92 @@ Start playing with @shadow improvements.
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 
-.. @+node:ekr.20131213063329.16422: *3* Today
+.. @+node:ekr.20131213063329.16422: *3* Add help-for commands
 @language rest
+    
+The tutorial doesn't say that @file creates source files!
 
-Improve help-for commands (Add links to text tutorials):
+** Use the text tutorial as a base, not the cheat sheet.
 
-- Add help-for-external-files command.
+1. Add help-for-creating-external-files.
     - Review Leo's text tutorials.
-- Add help-for-scripting command.
+    - Add link to text tutorials.
+    
+2. Add help-for-scripting.
+    - Add link to text tutorials.
+.. @+node:ekr.20131206064113.16325: *3* Fix new IPython bug
+The c property makes no sense.  Maybe the best solution is to get rid of it and change the docs.
+
+http://leoeditor.com/IPythonBridge.html
+.. @+node:ekr.20130930062914.16002: *4* class LeoNameSpace
+class LeoNameSpace(object):
+    
+    '''An interface class passed to IPython that provides easy
+    access to "g" and all commanders.
+    
+    A convenience property, "c" provides access to the first
+    commander in g.app.windowList.
+    '''
+
+    def __init__ (self):
+        '''LeoNameSpace ctor.'''
+        self.commander = None
+            # The commander returned by the c property.
+        self.commanders_list = []
+            # The list of commanders returned by the commanders property.
+        self.g = g
+        self.update()
+
+    @others
+    
+.. @+node:ekr.20130930062914.16006: *5* LeoNS.c property
+def __get_c(self):
+    '''Return the designated commander, or the only open commander.'''
+    self.update()
+    if self.commander and self.commander in self.commanders_list:
+        return self.commander
+    elif len(self.commanders_list) == 1:
+        return self.commanders_list[0]
+    else:
+        return None
+
+def __set_c(self,c):
+    '''Designate the commander to be returned by the getter.'''
+    self.update()
+    if c in self.commanders_list:
+        self.commander = c
+    else:
+        g.trace(g.callers())
+        raise ValueError(c)
+
+c = property(
+    __get_c, __set_c,
+    doc = "LeoNameSpace c property")
+.. @+node:edward.20130930125732.11822: *5* LeoNS.commanders property
+def __get_commanders(self):
+    '''Return the designated commander, or the only open commander.'''
+    self.update()
+    return self.commanders_list
+
+commanders = property(
+    __get_commanders, None,
+    doc = "LeoNameSpace commanders property (read-only)")
+.. @+node:ekr.20130930062914.16009: *5* LeoNS.find_c
+def find_c(self,path):
+    '''Return the commander associated with path, or None.'''
+    g = self.g
+    self.update()
+    path = g.os_path_normcase(path)
+    short_path = g.shortFileName(path)
+    for c in self.commanders_list:
+        fn = g.os_path_normcase(c.fileName())
+        short_fn = g.shortFileName(fn)
+        if fn == path or short_fn == short_path:
+            return c
+.. @+node:ekr.20130930062914.16003: *5* LeoNS.update
+def update (self):
+    '''Update the list of available commanders.'''
+    self.commanders_list = [frame.c for frame in g.app.windowList]
 .. @+node:ekr.20131213072223.16397: *3* * Video tutorials
 @language rest
 
@@ -138,80 +216,6 @@ Naturally, Vim bindings come to mind. There are several possibilities:
    cursor, extending text, or not, in an *easily* switchable way.
 
 3. Something else :-)
-.. @+node:ekr.20131206064113.16325: *3* Fix new IPython bug
-The c property makes no sense.  Maybe the best solution is to get rid of it and change the docs.
-
-http://leoeditor.com/IPythonBridge.html
-.. @+node:ekr.20130930062914.16002: *4* class LeoNameSpace
-class LeoNameSpace(object):
-    
-    '''An interface class passed to IPython that provides easy
-    access to "g" and all commanders.
-    
-    A convenience property, "c" provides access to the first
-    commander in g.app.windowList.
-    '''
-
-    def __init__ (self):
-        '''LeoNameSpace ctor.'''
-        self.commander = None
-            # The commander returned by the c property.
-        self.commanders_list = []
-            # The list of commanders returned by the commanders property.
-        self.g = g
-        self.update()
-
-    @others
-    
-.. @+node:ekr.20130930062914.16006: *5* LeoNS.c property
-def __get_c(self):
-    '''Return the designated commander, or the only open commander.'''
-    self.update()
-    if self.commander and self.commander in self.commanders_list:
-        return self.commander
-    elif len(self.commanders_list) == 1:
-        return self.commanders_list[0]
-    else:
-        return None
-
-def __set_c(self,c):
-    '''Designate the commander to be returned by the getter.'''
-    self.update()
-    if c in self.commanders_list:
-        self.commander = c
-    else:
-        g.trace(g.callers())
-        raise ValueError(c)
-
-c = property(
-    __get_c, __set_c,
-    doc = "LeoNameSpace c property")
-.. @+node:edward.20130930125732.11822: *5* LeoNS.commanders property
-def __get_commanders(self):
-    '''Return the designated commander, or the only open commander.'''
-    self.update()
-    return self.commanders_list
-
-commanders = property(
-    __get_commanders, None,
-    doc = "LeoNameSpace commanders property (read-only)")
-.. @+node:ekr.20130930062914.16009: *5* LeoNS.find_c
-def find_c(self,path):
-    '''Return the commander associated with path, or None.'''
-    g = self.g
-    self.update()
-    path = g.os_path_normcase(path)
-    short_path = g.shortFileName(path)
-    for c in self.commanders_list:
-        fn = g.os_path_normcase(c.fileName())
-        short_fn = g.shortFileName(fn)
-        if fn == path or short_fn == short_path:
-            return c
-.. @+node:ekr.20130930062914.16003: *5* LeoNS.update
-def update (self):
-    '''Update the list of available commanders.'''
-    self.commanders_list = [frame.c for frame in g.app.windowList]
-.. @+node:ekr.20131120054058.16279: *3* Create github repo (call Speed)
 .. @+node:ekr.20131105020211.18059: *3* * Per-node expansions!
 https://groups.google.com/forum/#!topic/leo-editor/Wd0NtBLEZZk
 
@@ -254,6 +258,7 @@ def shouldBeExpanded(self,p):
             if p == p2:
                 return True
     return False
+.. @+node:ekr.20131120054058.16279: *3* Create github repo (call Speed)
 .. @+node:ekr.20131121211048.16378: *3* Next
 * Add docstrings for all commands in leoSessions.py.
 - Add focus-to-x commands, where x is a *temporary* log pane, like completions, commands, etc.

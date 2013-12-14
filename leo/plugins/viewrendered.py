@@ -302,9 +302,10 @@ def show_scrolled_message(tag, kw):
     vr.update(tag='show-scrolled-message',keywords={'c':c,'force':True,'s':s})
     return True
 #@+node:ekr.20110320120020.14490: ** Commands
-#@+node:ekr.20131213163822.16471: *3* synonyms for vr commands
-@g.command('preview') # vr-toggle command.
+#@+node:ekr.20131213163822.16471: *3* g.command('preview') 
+@g.command('preview')
 def preview(event):
+    '''A synonym for the vr-toggle command.'''
     toggle_rendering_pane(event)
 #@+node:tbrown.20100318101414.5998: *3* g.command('vr')
 @g.command('vr')
