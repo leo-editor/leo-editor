@@ -135,6 +135,7 @@ def cmd_mark_as_target(c):
     bookmarks-use-other-outline should be used after this command
     """
     g._bookmarks_target = c.p.get_UNL()
+    g._bookmarks_target_v = c.p.v
     g.es("Node noted - now use\nbookmarks-use-other-outline\nin the "
         "outline you want to\nstore bookmarks in this node")
 
@@ -147,7 +148,11 @@ def cmd_use_other_outline(c):
         return
     c.db['_leo_bookmarks_show'] = g._bookmarks_target
     
-    # cmd_show(c)
+    bmd = BookMarkDisplay(c, g._bookmarks_target_v)
+    
+    splitter = c.free_layout.get_top_splitter()
+    if splitter:
+        splitter.add_adjacent(bmd.w, 'bodyFrame', 'above')
 #@+node:tbrown.20110712100955.18924: ** class BookMarkDisplay
 class BookMarkDisplay:
     
