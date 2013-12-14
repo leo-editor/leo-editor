@@ -2205,7 +2205,7 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None):
     """try and move to unl in the commander c
 
     NOTE: maxdepth is max depth seen in recursion so far, not a limit on
-          how fast we will recurse.  So it should default to 0 (zero).
+          how far we will recurse.  So it should default to 0 (zero).
     """
 
     if g.unitTesting:
