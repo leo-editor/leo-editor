@@ -1315,8 +1315,6 @@
 <v t="ekr.20131105110107.17046"><vh>Investigated install problem</vh></v>
 </v>
 </v>
-<v t="ekr.20040403171740"></v>
-<v t="ekr.20131008041326.16245"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -22961,7 +22959,7 @@ Examples::
     
 A single Leo outline may contain many @file nodes. As a result, Leo
 outlines function much like project files in other IDE's (Integrated
-Developement Environments).
+Development Environments).
 
 Within an @file tree, simple text markup (discussed next) tells Leo how
 to create the external file from the @file node and its descendants.

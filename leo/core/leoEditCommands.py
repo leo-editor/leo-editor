@@ -7875,7 +7875,7 @@ class helpCommandsClass (baseEditCommandsClass):
             
         A single Leo outline may contain many @file nodes. As a result, Leo
         outlines function much like project files in other IDE's (Integrated
-        developement environments).
+        development environments).
 
         Within an @file tree, simple text markup (discussed next) tells Leo how
         to create the external file from the @file node and its descendants.
@@ -8318,7 +8318,7 @@ class helpCommandsClass (baseEditCommandsClass):
         A position represents the state of a traversal of an outline.
         Because of clones, the same vnode may appear multiple times during a traversal.
 
-        Properties of the postion class::
+        Properties of the position class::
 
             p.b: same as p.v.b.
             p.h: same as p.v.h.
