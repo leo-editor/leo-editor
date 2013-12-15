@@ -2159,6 +2159,8 @@ File menu:
 Now contains items that open various .leo files.
 .. @+node:ekr.20131213152614.16471: *3* Fixed bug re Ctrl-A in minibuffer
 It used to select the minibuffer label, which messed up following logic.
+.. @+node:ekr.20131213063329.16422: *3* Added two new help-for commands
+Added help-for-creating-external-files and help-for-scripting.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
