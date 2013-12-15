@@ -7851,6 +7851,38 @@ class helpCommandsClass (baseEditCommandsClass):
         Creating External Files
         -------------------------
 
+        \@<file> nodes create external files::
+
+            @asis <filename>    
+            @auto <filename>    
+            @edit <filename>
+            @file <filename>
+            @nosent <filename>  
+            @shadow <filename>
+            
+        For full details, see Leo's Directives reference: http://leoeditor.com/directives.html
+            
+        **Section names** have the form::
+
+            \<\< any text, except double closing angle brackets \>\>
+            
+        **Section-definition nodes** have headlines starting with a section name.
+
+        Leo performs **expansions** for all @<file> nodes except @asis.
+
+        Expansion of @all:
+
+        - Leo replaces @all by the *unexpanded* body text of *all* nodes.
+
+        Expansion of section names and @others:
+
+        - Leo replaces section names in body text by the *expanded*
+          text of the corresponding section definition node.
+          
+        - Leo replaces @others with the *expanded* text of all nodes
+          that *aren't* section-definition nodes.
+
+
         '''
         #@-<< define s >>
         self.c.putHelpFor(s)

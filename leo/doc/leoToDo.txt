@@ -24,6 +24,875 @@ The tutorial doesn't say that @file creates source files!
     
 2. Add help-for-scripting.
     - Add link to text tutorials.
+.. @+node:ekr.20060205164707: *4* helpCommandsClass
+class helpCommandsClass (baseEditCommandsClass):
+
+    '''A class to load files into buffers and save buffers to files.'''
+
+    @others
+.. @+node:ekr.20060205165501: *5* getPublicCommands (helpCommands)
+def getPublicCommands (self):
+
+    return {
+    'help':                             self.help,
+    'help-for-abbreviations':           self.helpForAbbreviations,
+    'help-for-autocompletion':          self.helpForAutocompletion,
+    'help-for-bindings':                self.helpForBindings,
+    'help-for-command':                 self.helpForCommand,
+    'help-for-creating-external-files': self.helpForCreatingExternalFiles,
+    'help-for-debugging-commands':      self.helpForDebuggingCommands,
+    'help-for-dynamic-abbreviations':   self.helpForDynamicAbbreviations,
+    'help-for-find-commands':           self.helpForFindCommands,
+    'help-for-minibuffer':              self.helpForMinibuffer,
+    'help-for-python':                  self.pythonHelp,
+    'help-for-regular-expressions':     self.helpForRegularExpressions,
+    'help-for-scripting':               self.helpForScripting,
+    'print-settings':                   self.printSettings,
+    }
+.. @+node:ekr.20130412173637.10333: *5* help
+def help (self,event=None):
+
+    '''Prints and introduction to Leo's help system.'''
+
+    << define rst_s >>
+    self.c.putHelpFor(rst_s)
+.. @+node:ekr.20130412173637.10330: *6* << define rst_s >> (F1)
+@language rest
+
+rst_s = '''
+
+**Welcome to Leo's help system.**
+
+Alt-0 (vr-toggle) hides this help message.
+
+To learn about ``<Alt-X>`` commands, type::
+    
+    <Alt-X>help-for-minibuffer<Enter>
+    
+To get a list of help topics, type::
+    
+    <Alt-X>help-<tab>
+    
+For Leo commands (tab completion allowed), type::
+    
+    <Alt-X>help-for-command<Enter>
+    <a Leo command name><Enter>
+    
+To use Python's help system, type::
+    
+    <Alt-X>help-for-python<Enter>
+    <a python symbol><Enter>
+
+'''
+.. @+node:ekr.20100901080826.5850: *5* helpForAbbreviations
+def helpForAbbreviations (self,event=None):
+    '''Prints a discussion of abbreviations.'''
+    << define s >>
+    self.c.putHelpFor(s)
+.. @+node:ekr.20110530082209.18251: *6* << define s >> (helpForAbbreviations)
+@language rest
+
+s = '''\
+
+About Abbreviations
+-------------------
+
+Alt-0 (vr-toggle) hides this help message.
+
+Leo optionally expands abbreviations as you type.
+
+Abbreviations typically end with something like ";;" so they won't trigger
+by accident.
+
+You define abbreviations in @data abbreviations nodes or @data
+global-abbreviations nodes. None come predefined, but leoSettings.leo
+contains example abbreviations in the node::
+
+    @@data abbreviations examples
+
+Abbreviations can simply be shortcuts::
+
+    ncn;;=@nocolor
+    
+Abbreviations can span multiple lines. Continued lines start with \\:, like
+this::
+
+    form;;=<form action="main_submit" method="get" accept-charset="utf-8">
+    \:<p><input type="submit" value="Continue &rarr;"></p>
+    \:</form>\n
+
+Abbreviations can define templates in which <\|a-field-name\|> denotes a field
+to be filled in::
+
+    input;;=<input type="text/submit/hidden/button"
+    \:name="<|name|>"
+    \:value="" id="<|id|>">\n
+
+Typing ",," after inserting a template selects the next field.
+
+Abbreviations can execute **abbreviation scripts**, delimited by {\|{ and
+}\|}::
+
+    date;;={|{import time ; x=time.asctime()}|}
+    ts;;={|{import time ; x=time.strftime("%Y%m%d%H%M%S")}|}
+    
+For example, typing ts;; gives::
+
+    20131009171117
+    
+It's even possible to define a context in which abbreviation scripts execute.
+
+See leoSettings.leo for full details.
+
+'''
+.. @+node:ekr.20060226131603.1: *5* helpForAutocompletion
+def helpForAutocompletion (self,event=None):
+
+    '''Prints a discussion of autocompletion.'''
+
+    << define s >>
+
+    self.c.putHelpFor(s)
+.. @+node:ekr.20110530082209.18252: *6* << define s >> (helpForAutocompletion)
+# @pagewidth 40
+@language rest
+
+s = '''
+
+About Autocompletion and Calltips
+---------------------------------
+
+Alt-0 (vr-toggle) hides this help message.
+
+This documentation describes both
+autocompletion and calltips.
+
+Typing a period when @language python is
+in effect starts autocompletion. Typing
+'(' during autocompletion shows the
+calltip. Typing Return or Control-g
+(keyboard-quit) exits autocompletion or
+calltips.
+
+Autocompletion
+==============
+
+Autocompletion shows what may follow a
+period in code. For example, after
+typing g. Leo will show a list of all
+the global functions in leoGlobals.py.
+Autocompletion works much like tab
+completion in the minibuffer. Unlike the
+minibuffer, the presently selected
+completion appears directly in the body
+pane.
+
+A leading period brings up 'Autocomplete
+Modules'. (The period goes away.) You
+can also get any module by typing its
+name. If more than 25 items would appear
+in the Autocompleter tab, Leo shows only
+the valid starting characters. At this
+point, typing an exclamation mark shows
+the complete list. Thereafter, typing
+further exclamation marks toggles
+between full and abbreviated modes.
+
+If x is a list 'x.!' shows all its
+elements, and if x is a Python
+dictionary, 'x.!' shows list(x.keys()).
+For example, 'sys.modules.!' Again,
+further exclamation marks toggles
+between full and abbreviated modes.
+
+During autocompletion, typing a question
+mark shows the docstring for the object.
+For example: 'g.app?' shows the
+docstring for g.app. This doesn't work
+(yet) directly for Python globals, but
+'__builtin__.f?' does. Example:
+'__builtin__.pow?' shows the docstring
+for pow.
+
+Autocompletion works in the Find tab;
+you can use <Tab> to cycle through the
+choices. The 'Completion' tab appears
+while you are doing this; the Find tab
+reappears once the completion is
+finished.
+
+Calltips
+========
+
+Calltips appear after you type an open
+parenthesis in code. Calltips shows the
+expected arguments to a function or
+method. Calltips work for any Python
+function or method, including Python's
+global function. Examples:
+
+a) g.toUnicode(
+   gives:
+   g.toUnicode(s,encoding, reportErrors=False
+
+b) c.widgetWantsFocusNow
+   gives:
+   c.widgetWantsFocusNow(w
+
+c) reduce(
+   gives:
+   reduce(function, sequence[,initial]) -> value
+
+The calltips appear directly in the text
+and the argument list is highlighted so
+you can just type to replace it. The
+calltips appear also in the status line
+for reference after you have started to
+replace the args.
+
+Options
+=======
+
+Both autocompletion and calltips are
+initially enabled or disabled by the
+enable_autocompleter_initially and
+enable_calltips_initially settings in
+leoSettings.leo. You may enable or
+disable these features at any time with
+these commands: enable-autocompleter,
+enable-calltips, disable-autocompleter
+and disable-calltips. '''
+.. @+node:ekr.20060205170335: *5* helpForBindings
+def helpForBindings (self,event=None):
+
+    '''Prints a discussion of keyboard bindings.'''
+
+    << define s >>
+
+    self.c.putHelpFor(s)
+.. @+node:ekr.20110530082209.18253: *6* << define s >> (helpForBindings)
+# @pagewidth 40
+@language rest
+
+s = '''
+
+About Key Bindings
+------------------
+
+Alt-0 (vr-toggle) hides this help message.
+
+A shortcut specification has the form:
+
+command-name = shortcutSpecifier
+
+or
+
+command-name ! pane = shortcutSpecifier
+
+The first form creates a binding for all
+panes except the minibuffer. The second
+form creates a binding for one or more
+panes. The possible values for 'pane'
+are:
+
+====    ===============
+pane    bound panes
+====    ===============
+all     body,log,tree
+body    body
+log     log
+mini    minibuffer
+text    body,log
+tree    tree
+====    ===============
+
+You may use None as the specifier.
+Otherwise, a shortcut specifier consists
+of a head followed by a tail. The head
+may be empty, or may be a concatenation
+of the following: (All entries in each
+row are equivalent)::
+
+    Shift+ Shift-
+    Alt+ or Alt-
+    Control+, Control-, Ctrl+ or Ctrl-
+
+Notes:
+
+1. The case of plain letters is significant:
+   a is not A.
+
+2. The Shift- (or Shift+) prefix can be
+   applied *only* to letters or
+   multi-letter tails. Leo will ignore
+   (with a warning) the shift prefix
+   applied to other single letters,
+   e.g., Ctrl-Shift-(
+
+3. The case of letters prefixed by
+   Ctrl-, Alt-, Key- or Shift- is *not*
+   significant.
+
+The following table illustrates these
+rules. In each row, the first entry is
+the key (for k.bindingsDict) and the
+other entries are equivalents that the
+user may specify in leoSettings.leo::
+
+    a, Key-a, Key-A
+    A, Shift-A
+    Alt-a, Alt-A
+    Alt-A, Alt-Shift-a, Alt-Shift-A
+    Ctrl-a, Ctrl-A
+    Ctrl-A, Ctrl-Shift-a, Ctrl-Shift-A
+    !, Key-!,Key-exclam,exclam
+
+'''
+.. @+node:ekr.20060417203717: *5* helpForCommand & helpers
+def helpForCommand (self,event):
+
+    '''Prompts for a command name and prints the help message for that command.'''
+
+    k = self.k
+    << define s >>
+    self.c.putHelpFor(s)
+    k.fullCommand(event,help=True,helpHandler=self.helpForCommandFinisher)
+
+.. @+node:ekr.20130412180825.10342: *6* << define s >> (help-for-command)
+@language rest
+
+s = '''\
+
+Alt-0 (vr-toggle) hides this help message.
+
+Type the name of the command, followed by Return.
+
+'''
+
+.. @+node:ekr.20120521114035.9870: *6* getBindingsForCommand
+def getBindingsForCommand(self,commandName):
+
+    c = self.c ; k = c.k
+    data = [] ; n1 = 4 ; n2 = 20
+    d = k.bindingsDict
+    for stroke in sorted(d):
+        assert g.isStroke(stroke),repr(stroke)
+        aList = d.get(stroke,[])
+        for si in aList:
+            assert g.isShortcutInfo(si),si
+            if si.commandName == commandName:
+                pane = g.choose(si.pane=='all','',' %s:' % (si.pane))
+                s1 = pane
+                s2 = k.prettyPrintKey(stroke)
+                s3 = si.commandName
+                n1 = max(n1,len(s1))
+                n2 = max(n2,len(s2))
+                data.append((s1,s2,s3),)
+
+    data.sort(key=lambda x: x[1])
+    return ','.join(['%s %s' % (s1,s2) for s1,s2,s3 in data]).strip()
+.. @+node:ekr.20120521114035.9871: *6* helpForCommandFinisher
+def helpForCommandFinisher (self,commandName):
+
+    c = self.c ; s = None
+
+    if commandName and commandName.startswith('help-for-'):
+        # Execute the command itself.
+        c.k.simulateCommand(commandName)
+    else:
+        if commandName:
+            bindings = self.getBindingsForCommand(commandName)
+            func = c.commandsDict.get(commandName)
+            s = g.getDocStringForFunction(func)
+            if s:
+                s = self.replaceBindingPatterns(s)
+            else:
+                s = 'no docstring available'
+
+            # Create the title.
+            s2 = '%s (%s)' % (commandName,bindings) if bindings else commandName
+            underline = '+' * len(s2)
+            # title = '%s\n%s\n%s\n\n' % (underline,s2,underline)
+            title = '%s\n%s\n\n' % (s2,underline)
+
+            # Fixes bug 618570:
+            s = title + ''.join([
+                g.choose(line.strip(),line.lstrip(),'\n')
+                    for line in g.splitLines(s)])
+        else:
+            << set s to about help-for-command >>
+
+        c.putHelpFor(s) # calls g.adjustTripleString.
+.. @+node:ekr.20120521114035.9872: *7* << set s to about help-for-command >>
+s = '''\
+
+++++++++++++++++++++++++
+About Leo's help command
+++++++++++++++++++++++++
+
+Invoke Leo's help-for-command as follows::
+
+    <F1>
+    <Alt-X>help-for-command<return>
+
+Next, type the name of one of Leo's commands.
+You can use tab completion.  Examples::
+
+    <F1><tab>           shows all commands.
+    <F1>help-for<tab>   shows all help-for- commands.
+
+Here are the help-for commands::
+
+    help-for-abbreviations
+    help-for-autocompletion
+    help-for-bindings
+    help-for-command
+    help-for-debugging-commands
+    help-for-dynamic-abbreviations
+    help-for-find-commands
+    help-for-minibuffer
+    help-for-python
+    help-for-regular-expressions
+
+'''
+.. @+node:ekr.20120524151127.9886: *6* replaceBindingPatterns
+def replaceBindingPatterns (self,s):
+
+    '''For each instance of the pattern !<command-name>! is s,
+    replace the pattern by the key binding for command-name.'''
+
+    c = self.c
+    pattern = re.compile('!<(.*)>!')
+    while True:
+        m = pattern.search(s,0)
+        if m is None: break
+        name = m.group(1)
+        junk,aList = c.config.getShortcut(name)
+        for si in aList:
+            if si.pane == 'all':
+                key = c.k.prettyPrintKey(si.stroke.s)
+                break
+        else: key = '<Alt-X>%s<Return>' % name
+        s = s[:m.start()] + key + s[m.end():]
+    return s
+
+.. @+node:ekr.20131213163822.16472: *5* helpForCreatingExternalFiles
+def helpForCreatingExternalFiles(self,event=None):
+    '''Prints a discussion of creating external files.'''
+    << define s >>
+    self.c.putHelpFor(s)
+.. @+node:ekr.20131213163822.16477: *6* << define s >> (helpForCreatingExternalFiles)
+# @pagewidth 40
+@language rest
+
+s = '''
+
+Creating External Files
+-------------------------
+
+\@<file> nodes create external files::
+
+    @asis <filename>    
+    @auto <filename>    
+    @edit <filename>
+    @file <filename>
+    @nosent <filename>  
+    @shadow <filename>
+    
+For full details, see Leo's Directives reference: http://leoeditor.com/directives.html
+    
+**Section names** have the form::
+
+    \<\< any text, except double closing angle brackets \>\>
+    
+**Section-definition nodes** have headlines starting with a section name.
+
+Leo performs **expansions** for all @<file> nodes except @asis.
+
+Expansion of @all:
+
+- Leo replaces @all by the *unexpanded* body text of *all* nodes.
+
+Expansion of section names and @others:
+
+- Leo replaces section names in body text by the *expanded*
+  text of the corresponding section definition node.
+  
+- Leo replaces @others with the *expanded* text of all nodes
+  that *aren't* section-definition nodes.
+
+
+'''
+.. @+node:ekr.20070501092655: *5* helpForDebuggingCommands
+def helpForDebuggingCommands (self,event=None):
+
+    '''Prints a discussion of of Leo's debugging commands.'''
+
+    << define s >>
+
+    self.c.putHelpFor(s)
+.. @+node:ekr.20070501092655.1: *6* << define s >> (helpForDebuggingCommands)
+# @pagewidth 40
+@language rest
+
+s = '''
+
+About Debugging Commands
+------------------------
+
+Alt-0 (vr-toggle) hides this help message.
+
+The following commands are useful for debugging::
+
+    collect-garbage:   Invoke the garbage collector.
+    debug:             Start an external debugger in another process.
+    disable-gc-trace:  Disable tracing of the garbage collector.
+    dump-all-objects:  Print a summary of all existing Python objects.
+    dump-new-objects:  Print a summary of all newly-created Python objects.
+    enable-gc-trace:   Enable tracing of the garbage collector.
+    free-tree-widgets: Free all widgets used in Leo's outline pane.
+    print-focus:       Print information about the requested focus.
+    print-stats:       Print statistics about existing Python objects.
+    print-gc-summary:  Print a brief summary of all Python objects.
+    run-unit-tests:    Run unit tests in the presently selected tree.
+    verbose-dump-objects: Print a more verbose listing of all existing Python objects.
+
+Leo also has many debugging settings that enable and disable traces.
+For details, see the node: @settings-->Debugging in leoSettings.leo.
+'''
+.. @+node:ekr.20131029061413.17094: *5* helpForDynamicAbbreviations
+def helpForDynamicAbbreviations (self,event=None):
+
+    '''Prints a discussion of abbreviations.'''
+
+    << define s >>
+
+    self.c.putHelpFor(s)
+.. @+node:ekr.20131029061413.17095: *6* << define s >> (helpForDynamicAbbreviations)
+@language rest
+
+s = '''
+
+About Dynamic Abbreviations
+---------------------------
+
+Alt-0 (vr-toggle) hides this help message.
+
+.. Description taken from http://www.emacswiki.org/emacs/DynamicAbbreviations
+
+A dynamic abbreviation (dabbrev) is like a normal abbreviation except:
+
+- You do not have to define it(!)
+- You expand it with Alt-/ (dabbrev-expand) or Alt-Ctrl-/ (dabbrev-completion)
+
+For example, suppose the text aLongIvarName appears anywhere in the
+outline. To type this name again type::
+
+    aLong<Alt-/>
+
+You will see a list of possible completions in the log pane.
+
+Alt-Ctrl-/ (dabbrev-completion) inserts the longest prefix of all
+completions immediately.  For instance, suppose the following appear in text::
+
+    aVeryLongIvarName
+    aVeryLongMethodName
+    
+Typing::
+
+    aVery<Alt-Ctrl-/>
+    
+will immediately extend the typing to::
+
+    aVeryLong
+
+'''
+.. @+node:ekr.20060205170335.1: *5* helpForFindCommands
+def helpForFindCommands (self, event=None):
+
+    '''Prints a discussion of of Leo's find commands.'''
+
+    << define s >>
+    self.c.putHelpFor(s)
+.. @+node:ekr.20130411023826.16595: *6* << define s >> (help-for-find-commands)
+@language rest
+
+s = '''
+
+Finding & replacing text
+------------------------
+
+Alt-0 (vr-toggle) hides this help message.
+
+**Ctrl-F** (start-search) shows the Find pane
+and puts focus in the find box.
+
+Enter the find text and the replacement text if desired::
+
+    Tab switches focus from widget to widget.
+    Return executes the find-next command.
+
+When Leo selects the found text you can do::
+
+    Ctrl-equal (replace)
+    Ctrl-minus (replace-then-find)
+    F3 (find-next)
+    F2 (find-previous)
+    Ctrl-G (keyboard-quit)
+    anything else :-)
+
+You can Leo's commands toggle check boxes and radio buttons.
+These commands are listed in the Search menu.
+
+You can execute these commands (and see their key bindings)
+using the minibuffer::
+
+    <Alt-X>tog<tab>f<tab>   or
+    <Alt-X>set<tab>f<tab>
+
+Incremental searching
+---------------------
+
+Incremental search is done only from the minibuffer::
+
+    Alt-S (isearch forward)
+    Alt-R (isearch backward)
+    BackSpace retracts the search
+    All other characters extend the search
+
+During an incremental search::
+
+    Enter or Ctrl-G stops the search.
+    Alt-S finds the search string again.
+    Alt-R ditto for reverse searches.
+'''
+.. @+node:ekr.20051014170754: *5* helpForMinibuffer
+def helpForMinibuffer (self,event=None):
+
+    '''Print a messages telling you how to get started with Leo.'''
+
+    # A bug in Leo: triple quotes puts indentation before each line.
+    c = self.c    
+    << define s >>
+    c.putHelpFor(s)
+.. @+node:ekr.20120522024827.9899: *6* << define s >> (helpForMinibuffer)
+@language rest
+
+s = '''\
+
+About the Minibuffer
+--------------------
+
+Alt-0 (vr-toggle) hides this help message.
+
+The mini-buffer is intended to be like the Emacs buffer:
+
+full-command: (default shortcut: Alt-x) Puts the focus in the minibuffer. Type a
+full command name, then hit <Return> to execute the command. Tab completion
+works, but not yet for file names.
+
+quick-command-mode (default shortcut: Alt-x). Like Emacs Control-C. This mode is
+defined in leoSettings.leo. It is useful for commonly-used commands.
+
+universal-argument (default shortcut: Alt-u). Like Emacs Ctrl-u. Adds a repeat
+count for later command. Ctrl-u 999 a adds 999 a's. Many features remain
+unfinished.
+
+keyboard-quit (default shortcut: Ctrl-g) Exits any minibuffer mode and puts
+the focus in the body pane.
+
+Use the help-for-command command to see documentation for a particular command.
+'''
+.. @+node:ekr.20120522024827.9897: *5* helpForRegularExpressions
+def helpForRegularExpressions (self, event=None):
+
+    '''Prints a discussion of of Leo's find commands.'''
+
+    << define s >>
+
+    self.c.putHelpFor(s)
+.. @+node:ekr.20120522024827.9898: *6* << define s >> (helpForRegularExpressions)
+@language rest
+
+# Using raw string is essential.
+
+s = r'''
+
+About regular expressions
+-------------------------
+
+Alt-0 (vr-toggle) hides this help message.
+
+Python's regular expressions, http://docs.python.org/library/re.html,
+are valid in find patterns::
+
+    .               Matches any character (including newline if DOTALL flag specified).
+    ^               Matches start of the string (of every line in MULTILINE mode).
+    $               Matches end of the string (of every line in MULTILINE mode).
+    *               0 or more of preceding regular expression (as many as possible).
+    +               1 or more of preceding regular expression (as many as possible).
+    ?               0 or 1 occurrence of preceding regular expression.
+    *?, +?, ??      Same as *, + and ? but matches as few characters as possible.
+    {m,n}           Matches from m to n repetitions of preceding RE.
+    {m,n}?          Same as {m,n}, but attempting to match as few repetitions as possible.
+    [ ]             Defines character set: e.g. '[a-zA-Z]' to match all letters (see also \w \S).
+    [^ ]            Defines complemented character set: matches if char is NOT in set.
+    \               Escapes special chars '*?+&$|()' and introduces special sequences (see below).
+                    If not using a raw string, write as '\\' in the pattern string.
+    \\              Matches a literal '\'.
+    |               Specifies alternative: 'foo|bar' matches 'foo' or 'bar'.
+    (...)           Matches any RE inside (), and delimits a group.
+    (?:...)         Mathces RE inside (), but doesn't delimit a group.
+    (?P<name>...)   Matches any RE inside (), and delimits a named group.
+                    r'(?P<id>[a-zA-Z_]\w*)' defines a group named id.
+    (?P=name)       Matches whatever text was matched by the earlier group named name.
+    (?=...)         Matches if ... matches next, but doesn't consume any of the string
+                    'Isaac (?=Asimov)' matches 'Isaac' only if followed by 'Asimov'.
+    (?!...)         Matches if ... doesn't match next. Negative of (?=...).
+    (?<=...)        Matches if the current position in the string is preceded by a match
+                    for ... that ends at the current position.
+                    This is called a positive lookbehind assertion.
+    (?<!...)        Matches if the current position in the string is not preceded by a match for ...
+                    This is called a negative lookbehind assertion.
+    (?(group)A|B)   Group is either a numeric group ID or a group name defined with (?Pgroup...)
+                    earlier in the expression.
+                    If the specified group matched, the regular expression pattern A will be tested
+                    against the string; if the group didn't match, the pattern B will be used instead.
+    (?#...)         A comment; ignored.
+    (?letters)      Each letter is in 'ilmsux' and sets the corresponding flag.
+                    re.I, re.L, re.M, re.S, re.U, re.X.
+    \number         Matches content of the group of the same number.     
+    \A              Matches only at the start of the string.
+    \b              Empty str at beginning or end of word:
+                    '\bis\b' matches 'is', but not 'his'.
+    \B              Empty str NOT at beginning or end of word.
+    \d              Any decimal digit:          [0-9]
+    \D              Any non-decimal digit char  [^0-9]).
+    \s              Any whitespace char         [ \t\n\r\f\v]
+    \S              Any non-whitespace char     [^ \t\n\r\f\v]
+    \w              Any alphaNumeric char (depends on LOCALE flag).
+    \W              Any non-alphaNumeric char (depends on LOCALE flag).
+    \Z              Matches only at the end of the string.
+
+'''
+.. @+node:ekr.20131213163822.16473: *5* helpForScripting
+def helpForScripting(self,event=None):
+    '''Prints a discussion of Leo scripting.'''
+    << define s >>
+    self.c.putHelpFor(s)
+.. @+node:ekr.20131213163822.16475: *6* << define s >> (helpForScripting)
+# @pagewidth 40
+@language rest
+
+s = '''
+
+Summary of Leo Scripting
+-------------------------
+
+'''
+.. @+node:ekr.20070418074444: *5* printSettings
+def printSettings (self,event=None):
+
+    '''Prints the value of every setting, except key bindings and commands and open-with tables.
+    The following shows where the active setting came from:
+
+    -     leoSettings.leo,
+    - [D] default settings.
+    - [F] indicates the file being loaded,
+    - [M] myLeoSettings.leo,
+
+    '''
+
+    self.c.config.printSettings()
+.. @+node:ekr.20060602154458: *5* pythonHelp
+def pythonHelp (self,event=None):
+
+    '''Prompt for a arg for Python's help function, and put it to the log pane.'''
+
+    c = self.c ; k = c.k ; tag = 'python-help' ; state = k.getState(tag)
+
+    if state == 0:
+        c.minibufferWantsFocus()
+        k.setLabelBlue('Python help: ',protect=True)
+        k.getArg(event,tag,1,self.pythonHelp)
+    else:
+        k.clearState()
+        k.resetLabel()
+        s = k.arg.strip()
+        if s:
+            # Capture the output of Python's help command.
+            old = sys.stdout
+            try:
+                sys.stdout = stdout = g.fileLikeObject()
+                help(str(s))
+                s2 = stdout.read()
+            finally:
+                sys.stdout = old
+            # Send it to the vr pane as a <pre> block
+            s2 = '<pre>' + s2 + '</pre>'
+            c.putHelpFor(s2)
+.. @+node:ekr.20131213163822.16473: *4* helpForScripting
+def helpForScripting(self,event=None):
+    '''Prints a discussion of Leo scripting.'''
+    << define s >>
+    self.c.putHelpFor(s)
+.. @+node:ekr.20131213163822.16475: *5* << define s >> (helpForScripting)
+# @pagewidth 40
+@language rest
+
+s = '''
+
+Summary of Leo Scripting
+-------------------------
+
+'''
+.. @+node:ekr.20131213163822.16472: *4* helpForCreatingExternalFiles
+def helpForCreatingExternalFiles(self,event=None):
+    '''Prints a discussion of creating external files.'''
+    << define s >>
+    self.c.putHelpFor(s)
+.. @+node:ekr.20131213163822.16477: *5* << define s >> (helpForCreatingExternalFiles)
+# @pagewidth 40
+@language rest
+
+s = '''
+
+Creating External Files
+-------------------------
+
+\@<file> nodes create external files::
+
+    @asis <filename>    
+    @auto <filename>    
+    @edit <filename>
+    @file <filename>
+    @nosent <filename>  
+    @shadow <filename>
+    
+For full details, see Leo's Directives reference: http://leoeditor.com/directives.html
+    
+**Section names** have the form::
+
+    \<\< any text, except double closing angle brackets \>\>
+    
+**Section-definition nodes** have headlines starting with a section name.
+
+Leo performs **expansions** for all @<file> nodes except @asis.
+
+Expansion of @all:
+
+- Leo replaces @all by the *unexpanded* body text of *all* nodes.
+
+Expansion of section names and @others:
+
+- Leo replaces section names in body text by the *expanded*
+  text of the corresponding section definition node.
+  
+- Leo replaces @others with the *expanded* text of all nodes
+  that *aren't* section-definition nodes.
+
+
+'''
 .. @+node:ekr.20131206064113.16325: *3* Fix new IPython bug
 The c property makes no sense.  Maybe the best solution is to get rid of it and change the docs.
 

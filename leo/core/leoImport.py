@@ -846,7 +846,7 @@ class leoImportCommands (scanUtility):
     def createOutline (self,fileName,parent,
         atAuto=False,atShadow=False,s=None,ext=None
     ):
-
+        '''Create an outline by importing a file or string.'''
         c = self.c ; u = c.undoer
         w = c.frame.body
         at = c.atFileCommands
@@ -1850,6 +1850,8 @@ class baseScannerClass (scanUtility):
         '''
 
         # Note: running full checks on all unit tests is slow.
+        if g.app.suppressImportChecks:
+            return True
         if (g.unitTesting or self.fullChecks) and self.treeType in (None,'@file'):
             return self.checkTrialWrite()
         else:
@@ -1869,12 +1871,11 @@ class baseScannerClass (scanUtility):
         return ok
     #@+node:ekr.20070703122141.104: *4* checkTrialWrite (calls scanAndCompare)
     def checkTrialWrite (self,s1=None,s2=None):
-
         '''Return True if a trial write produces the original file.'''
-
         # s1 and s2 are for unit testing.
         trace = False
         c,at=self.c,self.c.atFileCommands
+        if trace: g.trace(s1 and len(s1),s2 and len(s2))
         if s1 is None and s2 is None:
             if self.isRst:
                 outputFile = StringIO()
