@@ -290,6 +290,7 @@ def show_scrolled_message(tag, kw):
     if g.unitTesting:
         return # This just slows the unit tests.
     c = kw.get('c')
+    flags = kw.get('flags') or 'rst'
     vr = viewrendered(event=kw)
     title = kw.get('short_title','').strip()
     vr.setWindowTitle(title)
@@ -299,10 +300,10 @@ def show_scrolled_message(tag, kw):
         '',
         kw.get('msg')
     ])
-    vr.update(tag='show-scrolled-message',keywords={'c':c,'force':True,'s':s})
+    vr.update(tag='show-scrolled-message',keywords={'c':c,'force':True,'s':s,'flags':flags})
     return True
 #@+node:ekr.20110320120020.14490: ** Commands
-#@+node:ekr.20131213163822.16471: *3* g.command('preview') 
+#@+node:ekr.20131213163822.16471: *3* g.command('preview')
 @g.command('preview')
 def preview(event):
     '''A synonym for the vr-toggle command.'''
@@ -642,7 +643,7 @@ class ViewRenderedController(QtGui.QWidget):
             s = keywords.get('s') if 's' in keywords else p.b
             s = pc.remove_directives(s)
             # Dispatch based on the computed kind.
-            kind = pc.get_kind(p)
+            kind = keywords.get('flags') if 'flags' in keywords else pc.get_kind(p)
             f = pc.dispatch_dict.get(kind)
             if f:
                 if trace: g.trace(f.__name__)
