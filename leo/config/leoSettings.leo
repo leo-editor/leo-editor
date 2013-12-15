@@ -486,6 +486,14 @@
 <v t="ekr.20131213135427.21958"><vh>@item *print-c&amp;ommands</vh></v>
 <v t="ekr.20131213135427.21959"><vh>@item *print-&amp;plugins-info</vh></v>
 <v t="ekr.20131213135427.21960"><vh>@item *print-&amp;settings</vh></v>
+<v t="ekr.20131215083347.18154"><vh>@item -</vh></v>
+<v t="ekr.20131213135427.22289"><vh>@item toggle-a&amp;utocompleter</vh></v>
+<v t="ekr.20131213135427.22290"><vh>@item toggle-call&amp;tips</vh></v>
+<v t="ekr.20131213135427.22291"><vh>@item toggle-&amp;extend-mode</vh></v>
+<v t="ekr.20131213135427.22292"><vh>@item toggle-input-&amp;state</vh></v>
+<v t="ekr.20131213135427.22293"><vh>@item toggle-in&amp;visibles</vh></v>
+<v t="ekr.20131213135427.22294"><vh>@item toggle-split-&amp;direction</vh></v>
+<v t="ekr.20131213135427.22295"><vh>@item toggle-s&amp;parse-move</vh></v>
 </v>
 <v t="ekr.20131213135427.21961"><vh>@menu &amp;Outline</vh>
 <v t="ekr.20131213135427.21962"><vh>@item *c&amp;ut-node</vh></v>
@@ -700,30 +708,6 @@
 <v t="ekr.20131213135427.22153"><vh>@item file-&amp;open-by-name</vh></v>
 <v t="ekr.20131213135427.22154"><vh>@item file-&amp;save</vh></v>
 </v>
-<v t="ekr.20131213135427.22155"><vh>@menu &amp;Focus</vh>
-<v t="ekr.20131213135427.22156"><vh>@item &amp;cycle-all-focus</vh></v>
-<v t="ekr.20131213135427.22157"><vh>@item focus-to-&amp;body</vh></v>
-<v t="ekr.20131213135427.22158"><vh>@item focus-to-&amp;log</vh></v>
-<v t="ekr.20131213135427.22159"><vh>@item focus-to-&amp;minibuffer</vh></v>
-<v t="ekr.20131213135427.22160"><vh>@item focus-to-&amp;tree</vh></v>
-</v>
-<v t="ekr.20131213135427.22161"><vh>@menu &amp;Help Commands</vh>
-<v t="ekr.20131213135427.22162"><vh>@item about-leo</vh></v>
-<v t="ekr.20131213135427.22163"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22164"><vh>@item open-online-home</vh></v>
-<v t="ekr.20131213135427.22165"><vh>@item open-online-toc</vh></v>
-<v t="ekr.20131213135427.22166"><vh>@item open-users-guide</vh></v>
-<v t="ekr.20131213135427.22167"><vh>@item open-online-tutorials</vh></v>
-<v t="ekr.20131213135427.22168"><vh>@item open-online-videos</vh></v>
-<v t="ekr.20131213135427.22169"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22170"><vh>@item *help</vh></v>
-<v t="ekr.20131213135427.22171"><vh>@item *help-for-autocompletion</vh></v>
-<v t="ekr.20131213135427.22172"><vh>@item *help-for-&amp;bindings</vh></v>
-<v t="ekr.20131213135427.22173"><vh>@item *help-for-&amp;command</vh></v>
-<v t="ekr.20131213135427.22174"><vh>@item *help-for-&amp;debugging-commands</vh></v>
-<v t="ekr.20131213135427.22175"><vh>@item *help-for-&amp;find-commands</vh></v>
-<v t="ekr.20131213135427.22176"><vh>@item *help-for-&amp;minibuffer</vh></v>
-</v>
 <v t="ekr.20131213135427.22177"><vh>@menu &amp;Icons</vh>
 <v t="ekr.20131213135427.22178"><vh>@item delete-&amp;first-icon</vh></v>
 <v t="ekr.20131213135427.22179"><vh>@item delete-&amp;last-icon</vh></v>
@@ -806,14 +790,6 @@
 <v t="ekr.20131213135427.22248"><vh>@item scroll-up-line</vh></v>
 <v t="ekr.20131213135427.22249"><vh>@item scroll-&amp;up-page</vh></v>
 </v>
-<v t="ekr.20131213135427.22250"><vh>@menu Settings Commands</vh>
-<v t="ekr.20131213135427.22251"><vh>@item open-leoSettings-leo</vh></v>
-<v t="ekr.20131213135427.22252"><vh>@item open-myLeoSettings-leo</vh></v>
-<v t="ekr.20131213135427.22253"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22254"><vh>@item *print-&amp;settings</vh></v>
-<v t="ekr.20131213135427.22255"><vh>@item *pri&amp;nt-bindings</vh></v>
-<v t="ekr.20131213135427.22256"><vh>@item *print-c&amp;ommands</vh></v>
-</v>
 <v t="ekr.20131213135427.22257"><vh>@menu Shell</vh>
 <v t="ekr.20131213135427.22258"><vh>@item shell-command</vh></v>
 <v t="ekr.20131213135427.22259"><vh>@item shell-command-on-region</vh></v>
@@ -847,25 +823,6 @@
 <v t="ekr.20131213135427.22285"><vh>@item sort-colu&amp;mns</vh></v>
 <v t="ekr.20131213135427.22286"><vh>@item sort-&amp;fields</vh></v>
 <v t="ekr.20131213135427.22287"><vh>@item &amp;sort-lines</vh></v>
-</v>
-<v t="ekr.20131213135427.22288"><vh>@menu Toggle Settings</vh>
-<v t="ekr.20131213135427.22289"><vh>@item toggle-a&amp;utocompleter</vh></v>
-<v t="ekr.20131213135427.22290"><vh>@item toggle-call&amp;tips</vh></v>
-<v t="ekr.20131213135427.22291"><vh>@item toggle-&amp;extend-mode</vh></v>
-<v t="ekr.20131213135427.22292"><vh>@item toggle-input-&amp;state</vh></v>
-<v t="ekr.20131213135427.22293"><vh>@item toggle-in&amp;visibles</vh></v>
-<v t="ekr.20131213135427.22294"><vh>@item toggle-split-&amp;direction</vh></v>
-<v t="ekr.20131213135427.22295"><vh>@item toggle-s&amp;parse-move</vh></v>
-<v t="ekr.20131213135427.22296"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22297"><vh>@item toggle-find-&amp;ignore-case-option</vh></v>
-<v t="ekr.20131213135427.22298"><vh>@item toggle-find-in-&amp;body-option</vh></v>
-<v t="ekr.20131213135427.22299"><vh>@item toggle-find-in-&amp;headline-option</vh></v>
-<v t="ekr.20131213135427.22300"><vh>@item toggle-find-mark-&amp;changes-option</vh></v>
-<v t="ekr.20131213135427.22301"><vh>@item toggle-find-mark-&amp;finds-option</vh></v>
-<v t="ekr.20131213135427.22302"><vh>@item toggle-find-rege&amp;x-option</vh></v>
-<v t="ekr.20131213135427.22303"><vh>@@item toggle-find-&amp;reverse-option</vh></v>
-<v t="ekr.20131213135427.22304"><vh>@item toggle-find-&amp;word-option</vh></v>
-<v t="ekr.20131213135427.22305"><vh>@item toggle-find-wrap-&amp;around-option</vh></v>
 </v>
 <v t="ekr.20131213135427.22306"><vh>@menu &amp;Yank And Kill</vh>
 <v t="ekr.20131213135427.22307"><vh>@item &amp;buffer-kill</vh></v>
@@ -906,6 +863,12 @@
 <v t="ekr.20131213135427.22340"><vh>@item *&amp;resize-to-screen</vh></v>
 <v t="ekr.20131213135427.22341"><vh>@item *&amp;cascade-windows</vh></v>
 <v t="ekr.20131213135427.22342"><vh>@item *&amp;minimize-all</vh></v>
+<v t="ekr.20131213135427.22155"><vh>@item -</vh></v>
+<v t="ekr.20131213135427.22156"><vh>@item &amp;cycle-all-focus</vh></v>
+<v t="ekr.20131213135427.22157"><vh>@item focus-to-&amp;body</vh></v>
+<v t="ekr.20131213135427.22158"><vh>@item focus-to-&amp;log</vh></v>
+<v t="ekr.20131213135427.22159"><vh>@item focus-to-&amp;minibuffer</vh></v>
+<v t="ekr.20131213135427.22160"><vh>@item focus-to-&amp;tree</vh></v>
 </v>
 <v t="ekr.20131213135427.22343"><vh>@menu &amp;Help</vh>
 <v t="ekr.20131213135427.22344"><vh>@item about-leo</vh></v>
@@ -925,9 +888,11 @@
 <v t="ekr.20131213135427.22358"><vh>@item *help-for-autocompletion</vh></v>
 <v t="ekr.20131213135427.22359"><vh>@item *help-for-&amp;bindings</vh></v>
 <v t="ekr.20131213135427.22360"><vh>@item *help-for-&amp;command</vh></v>
+<v t="ekr.20131215083347.18147"><vh>@item *help-for-creating-&amp;external-files</vh></v>
 <v t="ekr.20131213135427.22361"><vh>@item *help-for-&amp;debugging-commands</vh></v>
 <v t="ekr.20131213135427.22362"><vh>@item *help-for-&amp;find-commands</vh></v>
 <v t="ekr.20131213135427.22363"><vh>@item *help-for-&amp;minibuffer</vh></v>
+<v t="ekr.20131215083347.18148"><vh>@item *help-for-&amp;scripting</vh></v>
 </v>
 </v>
 <v t="ekr.20080515053412.3"><vh>@popup_menus</vh>
@@ -5748,22 +5713,6 @@ Alt+Ctrl+S set-find-suboutline-only</t>
 <t tx="ekr.20131213135427.22158"></t>
 <t tx="ekr.20131213135427.22159"></t>
 <t tx="ekr.20131213135427.22160"></t>
-<t tx="ekr.20131213135427.22161"></t>
-<t tx="ekr.20131213135427.22162">&amp;About Leo</t>
-<t tx="ekr.20131213135427.22163"></t>
-<t tx="ekr.20131213135427.22164">Open &amp;Home Page</t>
-<t tx="ekr.20131213135427.22165">Open Table of &amp;Contents</t>
-<t tx="ekr.20131213135427.22166">Open &amp;Users Guide</t>
-<t tx="ekr.20131213135427.22167">Open Text &amp;Tutorials</t>
-<t tx="ekr.20131213135427.22168">Open &amp;Video Tutorials</t>
-<t tx="ekr.20131213135427.22169"></t>
-<t tx="ekr.20131213135427.22170"></t>
-<t tx="ekr.20131213135427.22171"></t>
-<t tx="ekr.20131213135427.22172"></t>
-<t tx="ekr.20131213135427.22173"></t>
-<t tx="ekr.20131213135427.22174"></t>
-<t tx="ekr.20131213135427.22175"></t>
-<t tx="ekr.20131213135427.22176"></t>
 <t tx="ekr.20131213135427.22177"></t>
 <t tx="ekr.20131213135427.22178"></t>
 <t tx="ekr.20131213135427.22179"></t>
@@ -5837,13 +5786,6 @@ Alt+Ctrl+S set-find-suboutline-only</t>
 <t tx="ekr.20131213135427.22247"></t>
 <t tx="ekr.20131213135427.22248"></t>
 <t tx="ekr.20131213135427.22249"></t>
-<t tx="ekr.20131213135427.22250"></t>
-<t tx="ekr.20131213135427.22251">Open Global Settings</t>
-<t tx="ekr.20131213135427.22252">Open Local Settings</t>
-<t tx="ekr.20131213135427.22253"></t>
-<t tx="ekr.20131213135427.22254"></t>
-<t tx="ekr.20131213135427.22255"></t>
-<t tx="ekr.20131213135427.22256"></t>
 <t tx="ekr.20131213135427.22257"></t>
 <t tx="ekr.20131213135427.22258"></t>
 <t tx="ekr.20131213135427.22259"></t>
@@ -5875,7 +5817,6 @@ Alt+Ctrl+S set-find-suboutline-only</t>
 <t tx="ekr.20131213135427.22285"></t>
 <t tx="ekr.20131213135427.22286"></t>
 <t tx="ekr.20131213135427.22287"></t>
-<t tx="ekr.20131213135427.22288"># accel: a,b,c,d,e,f,h,i,m,p,r,s,t,u,v,w,x</t>
 <t tx="ekr.20131213135427.22289"></t>
 <t tx="ekr.20131213135427.22290"></t>
 <t tx="ekr.20131213135427.22291"></t>
@@ -5883,16 +5824,6 @@ Alt+Ctrl+S set-find-suboutline-only</t>
 <t tx="ekr.20131213135427.22293"></t>
 <t tx="ekr.20131213135427.22294"></t>
 <t tx="ekr.20131213135427.22295"></t>
-<t tx="ekr.20131213135427.22296"></t>
-<t tx="ekr.20131213135427.22297"></t>
-<t tx="ekr.20131213135427.22298"></t>
-<t tx="ekr.20131213135427.22299"></t>
-<t tx="ekr.20131213135427.22300"></t>
-<t tx="ekr.20131213135427.22301"></t>
-<t tx="ekr.20131213135427.22302"></t>
-<t tx="ekr.20131213135427.22303"></t>
-<t tx="ekr.20131213135427.22304"></t>
-<t tx="ekr.20131213135427.22305"></t>
 <t tx="ekr.20131213135427.22306"></t>
 <t tx="ekr.20131213135427.22307"></t>
 <t tx="ekr.20131213135427.22308"></t>
@@ -5951,6 +5882,9 @@ Alt+Ctrl+S set-find-suboutline-only</t>
 <t tx="ekr.20131213135427.22361"></t>
 <t tx="ekr.20131213135427.22362"></t>
 <t tx="ekr.20131213135427.22363"></t>
+<t tx="ekr.20131215083347.18147"></t>
+<t tx="ekr.20131215083347.18148"></t>
+<t tx="ekr.20131215083347.18154"></t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>

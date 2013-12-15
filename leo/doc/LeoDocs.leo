@@ -401,7 +401,8 @@
 </v>
 <v t="ekr.20131008041326.16245"><vh>@rst html\tutorial-programming.html</vh>
 <v t="ekr.20131008041326.16252"><vh>@rst-no-head links &amp; markup</vh></v>
-<v t="ekr.20131003040744.18222" a="O"><vh>Creating source code with @others</vh></v>
+<v t="ekr.20131215083347.16903"><vh>Overview</vh></v>
+<v t="ekr.20131003040744.18222" a="O"><vh>Basic markup</vh></v>
 <v t="ekr.20131008041326.16054"><vh>Using @first and @last</vh></v>
 <v t="ekr.20131008041326.16055"><vh>Using @path</vh></v>
 <v t="ekr.20131016021541.16894"><vh>Using @edit nodes</vh></v>
@@ -410,6 +411,7 @@
 </v>
 <v t="ekr.20040403171740"><vh>@rst html\tutorial-scripting.html</vh>
 <v t="ekr.20050812134441.1"><vh>@rst-no-head markup &amp; links</vh></v>
+<v t="ekr.20131215083347.16902"><vh>Overview</vh></v>
 <v t="ekr.20131013060803.16852"><vh>Hello world</vh></v>
 <v t="ekr.20070120075236"><vh>Predefined symbols: c, g and p</vh></v>
 <v t="ekr.20131014053720.16810"><vh>Vnodes</vh></v>
@@ -1313,6 +1315,8 @@
 <v t="ekr.20131105110107.17046"><vh>Investigated install problem</vh></v>
 </v>
 </v>
+<v t="ekr.20040403171740"></v>
+<v t="ekr.20131008041326.16245"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -16582,9 +16586,9 @@ the `Using @auto nodes`_ part of Leo's `programming tutorial`_.
     pair: Expansion; Tutorial
     pair: Markup; Tutorial
     pair: @others; Tutorial
-
-The @others directive, and markup called section references (see below),
-tell Leo how to create external files.
+    
+Simple markup,the @others directive, and section references, tell Leo how
+to create external files.
 
 Before going into terminology and explanations, let's look at a
 step-by-step example:
@@ -16903,7 +16907,7 @@ Leo's Cheat Sheet
 .. contents::
     :depth: 4
 </t>
-<t tx="ekr.20131007143750.16074">This sections lists the ivars, properties, functions and methods most
+<t tx="ekr.20131007143750.16074">This section lists the ivars, properties, functions and methods most
 commonly used in Leo scripts.
 
 **Very important**: use Alt-1 (toggle-autocompleter) and Alt-2
@@ -22932,6 +22936,42 @@ enough". Perfectionism is not your friend.
    loud as possible, then turn down until no red is visible in the
    meter.
 </t>
+<t tx="ekr.20131215083347.16902">Any Leo node may contain a Python script.
+
+Ctrl-B (execute-script) executes the body text of the presently selected node.
+
+execute-script creates the script using @others and section references: |br|
+**you can create complex scripts from a node and its descendants.**
+
+As discussed below, execute-script predefines three variables: c, g and p. |br|
+Using these variables, scripts may easy do any of the following:
+
+- Gain access to all data contained in any Leo outline.
+- Traverse the data in any outline.
+- Use utility classes and function in the leo.core.leoGlobals module.
+- Execute any code in Leo's own code base.
+</t>
+<t tx="ekr.20131215083347.16903">Leo creates **external files** (files on your file system) from
+**@file nodes** and *all the descendants* of the @file node.
+Examples::
+
+    @file spam.py
+    @file ../foo.c
+    @file ~/bar.py
+    
+A single Leo outline may contain many @file nodes. As a result, Leo
+outlines function much like project files in other IDE's (Integrated
+Developement Environments).
+
+Within an @file tree, simple text markup (discussed next) tells Leo how
+to create the external file from the @file node and its descendants.
+   
+**Note**: Other kinds of nodes (not discussed here) can also create
+external files::
+
+    @nosent x.py
+    @shadow y.py
+    @auto z.py</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.

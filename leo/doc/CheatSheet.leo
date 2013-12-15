@@ -269,7 +269,7 @@ Expansion of section names and @others:
 - Leo replaces @others with the *expanded* text of all nodes
   that *aren't* section-definition nodes.
 </t>
-<t tx="ekr.20131019184243.16694">This sections lists the ivars, properties, functions and methods most
+<t tx="ekr.20131019184243.16694">This section lists the ivars, properties, functions and methods most
 commonly used in Leo scripts.
 
 **Very important**: use Alt-1 (toggle-autocompleter) and Alt-2

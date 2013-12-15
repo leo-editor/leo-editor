@@ -14,16 +14,11 @@ Start playing with @shadow improvements.
 .. @+node:ekr.20131213063329.16422: *3* Add help-for commands
 @language rest
     
-The tutorial doesn't say that @file creates source files!
+Add help-for-creating-external-files:
 
-** Use the text tutorial as a base, not the cheat sheet.
-
-1. Add help-for-creating-external-files.
-    - Review Leo's text tutorials.
-    - Add link to text tutorials.
-    
-2. Add help-for-scripting.
-    - Add link to text tutorials.
+- The tutorial doesn't say that @file creates source files!
+- Review Leo's text tutorials.
+- Add link to text tutorials.
 .. @+node:ekr.20060205164707: *4* helpCommandsClass
 class helpCommandsClass (baseEditCommandsClass):
 
@@ -480,9 +475,9 @@ def replaceBindingPatterns (self,s):
 def helpForCreatingExternalFiles(self,event=None):
     '''Prints a discussion of creating external files.'''
     << define s >>
+    s = s.replace('\\','')
     self.c.putHelpFor(s)
 .. @+node:ekr.20131213163822.16477: *6* << define s >> (helpForCreatingExternalFiles)
-# @pagewidth 40
 @language rest
 
 s = '''
@@ -490,37 +485,124 @@ s = '''
 Creating External Files
 -------------------------
 
-\@<file> nodes create external files::
+This help discusses only @file nodes.
+For other ways of creating external files, see::
 
-    @asis <filename>    
-    @auto <filename>    
-    @edit <filename>
-    @file <filename>
-    @nosent <filename>  
-    @shadow <filename>
+    http://leoeditor.com/tutorial-programming.html or
+    http://leoeditor.com/directives.html
+
+Leo creates external files in an unusual way.
+Please fee free to ask for help::
+
+    https://groups.google.com/forum/#!forum/leo-editor or
+    http://webchat.freenode.net/?channels=%23leo&uio=d4
+
+Overview
+========
+
+Leo creates **external files** (files on your file system) from
+**@file nodes** and *all the descendants* of the @file node.
+Examples::
+
+    @file spam.py
+    @file ../foo.c
+    @file ~/bar.py
     
-For full details, see Leo's Directives reference: http://leoeditor.com/directives.html
-    
-**Section names** have the form::
+A single Leo outline may contain many @file nodes. As a result, Leo
+outlines function much like project files in other IDE's (Integrated
+developement environments).
 
-    \<\< any text, except double closing angle brackets \>\>
-    
-**Section-definition nodes** have headlines starting with a section name.
+Within an @file tree, simple text markup (discussed next) tells Leo how
+to create the external file from the @file node and its descendants.
 
-Leo performs **expansions** for all @<file> nodes except @asis.
+Markup
+======
+   
+Section references and the \\@all and \\@others directives tell
+Leo how to create external files.
 
-Expansion of @all:
+- A **section name** is any text of the form::
 
-- Leo replaces @all by the *unexpanded* body text of *all* nodes.
+    <\\< any text >\\> (>> must not appear in "any text".)
 
-Expansion of section names and @others:
+- A **section definition node** is any node whose headline starts with a section name.
 
-- Leo replaces section names in body text by the *expanded*
-  text of the corresponding section definition node.
-  
-- Leo replaces @others with the *expanded* text of all nodes
-  that *aren't* section-definition nodes.
+- A **section reference** is a section name that appears in body text.
 
+Leo creates external files containing \\@others directives by writing the
+*expansion* of the @file node. The **expansion** of *any* node is the
+node's body text after making these text **substitutions**:
+
+- Leo replaces \\@all by the *unexpanded* body text of *all* nodes.
+
+- Leo replaces \\@others with the *expansion* of all descendant nodes
+  **except** section definition nodes. That's how \\@others got its name.
+
+- Leo replaces section references by the *expansion* of the body text of
+  the corresponding section definition node.
+   
+Whitespace is significant before \\@others and section references. Leo adds
+the leading whitespace appearing before each \\@others directive or section
+reference to every line of their expansion. As a result, Leo can generate
+external files even for Python.  The following cute trick works::
+
+    if 1:
+        <\\< a section >\\>
+    if 0:
+        \\@others
+
+**Notes**:
+
+- Any node may contain a single \\@others directive. No node may contain more
+  than one \@others directive.
+
+- Nodes that *aren't* section definition nodes are included in the expansion
+  of the *nearest* ancestor node containing an @others directive.
+
+**Example 1**: The body of the @file node for a typical Python module will
+look something like::
+
+    '\\''A docstring.'\\''
+    <\\< imports >\\>
+    \@others
+    if __name__ == '__main__':
+        main()
+        
+**Example 2**:  Here is a typical Python class definition in Leo::
+
+    class MyClass:
+        '\\''A docstring.'\\''
+        \@others
+        
+\@first and @last
+=================
+
+The @first directive forces lines to appear before the first sentinel of a
+external file. For example::
+
+    @first #! /usr/bin/env python
+    @first # -*- coding: utf-8 -*-
+
+Similarly, @last forces lines to appear after the last sentinel.
+
+\\@path
+=======
+
+Rather than specifying long paths in @file nodes, you can specify a path in
+an ancestor @path node.
+
+For example, suppose three nodes have the following headlines::
+
+    @path a
+        @path b
+            @file c/d.py
+
+The @file node creates the file a/b/c/d.py
+
+Within @path and @<file> paths, {{exp}} gets evaluated with the following
+predefined symbols: c, g, p, os and sys.  For example::
+
+    @file {{os.path.abspath(os.curdir)}}/abc.py
 
 '''
 .. @+node:ekr.20070501092655: *5* helpForDebuggingCommands
@@ -781,13 +863,215 @@ def helpForScripting(self,event=None):
     << define s >>
     self.c.putHelpFor(s)
 .. @+node:ekr.20131213163822.16475: *6* << define s >> (helpForScripting)
-# @pagewidth 40
 @language rest
 
 s = '''
 
 Summary of Leo Scripting
 -------------------------
+
+Overview
+========
+
+Any Leo node may contain a Python script.
+
+Ctrl-B (execute-script) executes the body text of the presently selected node.
+
+execute-script creates the script using @others and section references:
+**you can create complex scripts from a node and its descendants.**
+
+As discussed below, execute-script predefines three variables: c, g and p.
+Using these variables, scripts may easy do any of the following:
+
+- Gain access to all data contained in any Leo outline.
+- Traverse the data in any outline.
+- Use utility classes and function in the leo.core.leoGlobals module.
+- Execute any code in Leo's own code base.
+
+*Tip*: use Alt-1 (toggle-autocompleter) and Alt-2 (toggle-calltips) as aids to memory and to speed typing.
+
+Predefined symbols
+==================
+
+The execute-script command predefines three variables::
+
+    c: The commander of the present outline.
+    g: The leo.core.leoGlobals module.
+    p: The presently selected position, c.p.
+    
+@test scripts predefine all the above, plus::
+
+    self: The instance of unittest.TestCase
+    
+Commands class
+==============
+    
+A commander is an instance of the Commands class in leo.core.leoCommands.
+A commander represents all outline data and most of Leo's source code.
+Here are the most important ivars of the Commands class::
+
+    c.frame         c's outer frame, a leoFrame instance.
+    c.user_dict     a temporary dict for use of scripts and plugins.
+    c.redraw()
+    c.positionExists(p)
+
+Here is a partial list of the **official ivars** of any leoFrame f::
+
+    f.c                     is the frame’s commander.
+    f.body                  is a leoBody instance.
+    f.body.bodyCtl          is a leoQTextEditWidget instance.
+    f.body.bodyCtrl.widget  is a LeoQTextBrowser(QTextBrowser) instance.
+    f.log                   is a leoLog instance.
+    f.tree                  is a leoQtTree instance.
+    f.tree.treeWidget       is a LeoQTreeWidget (a QTreeWidget) instance.
+    
+vnode class
+===========
+
+All data in Leo outlines resides in vnodes.
+All clones of the same node share the same vnode.
+Here are the most important ivars and properties of the vnode class::
+
+    v.b: v's body text.
+    v.h: v's headline text.
+    v.u: v.unknownAttributes, a persistent Python dictionary.
+    
+v.u (uA's or unknownAttributes or userAttributes) allow plugins or scripts
+to associate persistent data with vnodes. For details see the section about
+userAttributes in the Customizing Leo chapter.
+
+position class
+==============
+
+A position represents the state of a traversal of an outline.
+Because of clones, the same vnode may appear multiple times during a traversal.
+
+Properties of the postion class::
+
+    p.b: same as p.v.b.
+    p.h: same as p.v.h.
+    p.u: same as p.v.u.
+
+Getter methods of the position class::
+
+    p.back()
+    p.children()
+    p.firstChild()
+    p.hasBack()
+    p.hasChildren()
+    p.hasNext()
+    p.hasParent()
+    p.hasThreadBack()
+    p.hasThreadNext()
+    p.isAncestorOf(p2)
+    p.isAnyAtFileNode()
+    p.isAt...Node()
+    p.isCloned()
+    p.isDirty()
+    p.isExpanded()
+    p.isMarked()
+    p.isRoot()
+    p.isVisible()
+    p.lastChild()
+    p.level()
+    p.next()
+    p.nodeAfterTree()
+    p.nthChild()
+    p.numberOfChildren()
+    p.parent()
+    p.parents()
+    p.threadBack()
+    p.threadNext()
+    p.visBack()
+    p.visNext()
+    
+Setter methods of the position class::
+
+    p.setDirty()
+    p.setMarked()
+
+Methods that operate on nodes::
+
+    p.clone()
+    p.contract()
+    p.doDelete(new_position)
+    p.expand()
+    p.insertAfter()
+    p.insertAsNthChild(n)
+    p.insertBefore()
+    p.moveAfter(p2)
+    p.moveToFirstChildOf(parent,n)
+    p.moveToLastChildOf(parent,n)
+    p.moveToNthChildOf(parent,n)
+    p.moveToRoot(oldRoot=None)
+        # oldRoot **must** be the old root position if it exists.
+
+The following position methods move positions *themselves*: they change the
+node to which a position refers. They do *not* change outline structure in
+any way! Use these when generators are not flexible enough::
+
+    p.moveToBack()
+    p.moveToFirstChild()
+    p.moveToLastChild()
+    p.moveToLastNode()
+    p.moveToNext()
+    p.moveToNodeAfterTree(p2)
+    p.moveToNthChild(n)) 
+    p.moveToParent()
+    p.moveToThreadBack()
+    p.moveToThreadNext()
+    p.moveToVisBack(c)
+    p.moveToVisNext(c)
+
+Generators
+==========
+
+The following Python generators return positions::
+
+    c.all_positions()
+    c.all_unique_positions()
+    p.children()
+    p.parents()
+    p.self_and_parents()
+    p.self_and_siblings()
+    p.following_siblings()
+    p.subtree()
+    p.self_and_subtree()
+    
+The leo.core.leoGlobals module
+==============================
+
+**g vars**::
+
+    g.app
+    g.app.gui
+    g.app.windowlist
+    g.unitTesting
+    g.user_dict  # a temporary dict for use of scripts and plugins.
+    
+**g decorator**::
+
+    @g.command(command-name)
+    
+**g functions** (the most interesting: there are many more in leoGlobals.py)::
+    
+    g.angleBrackets()
+    g.app.commanders()
+    g.app.gui.guiName()
+    g.es(*args,**keys)
+    g.es_print(*args,**keys)
+    g.es_exception()
+    g.getScript(c,p,
+        useSelectedText=True,
+        forcePythonSentinels=True,
+        useSentinels=True)
+    g.openWithFileName(fileName,old_c=None,gui=None)
+    g.os_path_... # Wrappers for os.path methods.
+    g.pdb(message='')
+    g.toEncodedString(s,encoding='utf-8',reportErrors=False)
+    g.toUnicode(s, encoding='utf-8',reportErrors=False)
+    g.trace(*args,**keys)
+    g.warning(*args,**keys)
 
 '''
 .. @+node:ekr.20070418074444: *5* printSettings
@@ -837,7 +1121,6 @@ def helpForScripting(self,event=None):
     << define s >>
     self.c.putHelpFor(s)
 .. @+node:ekr.20131213163822.16475: *5* << define s >> (helpForScripting)
-# @pagewidth 40
 @language rest
 
 s = '''
@@ -845,14 +1128,217 @@ s = '''
 Summary of Leo Scripting
 -------------------------
 
+Overview
+========
+
+Any Leo node may contain a Python script.
+
+Ctrl-B (execute-script) executes the body text of the presently selected node.
+
+execute-script creates the script using @others and section references:
+**you can create complex scripts from a node and its descendants.**
+
+As discussed below, execute-script predefines three variables: c, g and p.
+Using these variables, scripts may easy do any of the following:
+
+- Gain access to all data contained in any Leo outline.
+- Traverse the data in any outline.
+- Use utility classes and function in the leo.core.leoGlobals module.
+- Execute any code in Leo's own code base.
+
+*Tip*: use Alt-1 (toggle-autocompleter) and Alt-2 (toggle-calltips) as aids to memory and to speed typing.
+
+Predefined symbols
+==================
+
+The execute-script command predefines three variables::
+
+    c: The commander of the present outline.
+    g: The leo.core.leoGlobals module.
+    p: The presently selected position, c.p.
+    
+@test scripts predefine all the above, plus::
+
+    self: The instance of unittest.TestCase
+    
+Commands class
+==============
+    
+A commander is an instance of the Commands class in leo.core.leoCommands.
+A commander represents all outline data and most of Leo's source code.
+Here are the most important ivars of the Commands class::
+
+    c.frame         c's outer frame, a leoFrame instance.
+    c.user_dict     a temporary dict for use of scripts and plugins.
+    c.redraw()
+    c.positionExists(p)
+
+Here is a partial list of the **official ivars** of any leoFrame f::
+
+    f.c                     is the frame’s commander.
+    f.body                  is a leoBody instance.
+    f.body.bodyCtl          is a leoQTextEditWidget instance.
+    f.body.bodyCtrl.widget  is a LeoQTextBrowser(QTextBrowser) instance.
+    f.log                   is a leoLog instance.
+    f.tree                  is a leoQtTree instance.
+    f.tree.treeWidget       is a LeoQTreeWidget (a QTreeWidget) instance.
+    
+vnode class
+===========
+
+All data in Leo outlines resides in vnodes.
+All clones of the same node share the same vnode.
+Here are the most important ivars and properties of the vnode class::
+
+    v.b: v's body text.
+    v.h: v's headline text.
+    v.u: v.unknownAttributes, a persistent Python dictionary.
+    
+v.u (uA's or unknownAttributes or userAttributes) allow plugins or scripts
+to associate persistent data with vnodes. For details see the section about
+userAttributes in the Customizing Leo chapter.
+
+position class
+==============
+
+A position represents the state of a traversal of an outline.
+Because of clones, the same vnode may appear multiple times during a traversal.
+
+Properties of the postion class::
+
+    p.b: same as p.v.b.
+    p.h: same as p.v.h.
+    p.u: same as p.v.u.
+
+Getter methods of the position class::
+
+    p.back()
+    p.children()
+    p.firstChild()
+    p.hasBack()
+    p.hasChildren()
+    p.hasNext()
+    p.hasParent()
+    p.hasThreadBack()
+    p.hasThreadNext()
+    p.isAncestorOf(p2)
+    p.isAnyAtFileNode()
+    p.isAt...Node()
+    p.isCloned()
+    p.isDirty()
+    p.isExpanded()
+    p.isMarked()
+    p.isRoot()
+    p.isVisible()
+    p.lastChild()
+    p.level()
+    p.next()
+    p.nodeAfterTree()
+    p.nthChild()
+    p.numberOfChildren()
+    p.parent()
+    p.parents()
+    p.threadBack()
+    p.threadNext()
+    p.visBack()
+    p.visNext()
+    
+Setter methods of the position class::
+
+    p.setDirty()
+    p.setMarked()
+
+Methods that operate on nodes::
+
+    p.clone()
+    p.contract()
+    p.doDelete(new_position)
+    p.expand()
+    p.insertAfter()
+    p.insertAsNthChild(n)
+    p.insertBefore()
+    p.moveAfter(p2)
+    p.moveToFirstChildOf(parent,n)
+    p.moveToLastChildOf(parent,n)
+    p.moveToNthChildOf(parent,n)
+    p.moveToRoot(oldRoot=None)
+        # oldRoot **must** be the old root position if it exists.
+
+The following position methods move positions *themselves*: they change the
+node to which a position refers. They do *not* change outline structure in
+any way! Use these when generators are not flexible enough::
+
+    p.moveToBack()
+    p.moveToFirstChild()
+    p.moveToLastChild()
+    p.moveToLastNode()
+    p.moveToNext()
+    p.moveToNodeAfterTree(p2)
+    p.moveToNthChild(n)) 
+    p.moveToParent()
+    p.moveToThreadBack()
+    p.moveToThreadNext()
+    p.moveToVisBack(c)
+    p.moveToVisNext(c)
+
+Generators
+==========
+
+The following Python generators return positions::
+
+    c.all_positions()
+    c.all_unique_positions()
+    p.children()
+    p.parents()
+    p.self_and_parents()
+    p.self_and_siblings()
+    p.following_siblings()
+    p.subtree()
+    p.self_and_subtree()
+    
+The leo.core.leoGlobals module
+==============================
+
+**g vars**::
+
+    g.app
+    g.app.gui
+    g.app.windowlist
+    g.unitTesting
+    g.user_dict  # a temporary dict for use of scripts and plugins.
+    
+**g decorator**::
+
+    @g.command(command-name)
+    
+**g functions** (the most interesting: there are many more in leoGlobals.py)::
+    
+    g.angleBrackets()
+    g.app.commanders()
+    g.app.gui.guiName()
+    g.es(*args,**keys)
+    g.es_print(*args,**keys)
+    g.es_exception()
+    g.getScript(c,p,
+        useSelectedText=True,
+        forcePythonSentinels=True,
+        useSentinels=True)
+    g.openWithFileName(fileName,old_c=None,gui=None)
+    g.os_path_... # Wrappers for os.path methods.
+    g.pdb(message='')
+    g.toEncodedString(s,encoding='utf-8',reportErrors=False)
+    g.toUnicode(s, encoding='utf-8',reportErrors=False)
+    g.trace(*args,**keys)
+    g.warning(*args,**keys)
+
 '''
 .. @+node:ekr.20131213163822.16472: *4* helpForCreatingExternalFiles
 def helpForCreatingExternalFiles(self,event=None):
     '''Prints a discussion of creating external files.'''
     << define s >>
+    s = s.replace('\\','')
     self.c.putHelpFor(s)
 .. @+node:ekr.20131213163822.16477: *5* << define s >> (helpForCreatingExternalFiles)
-# @pagewidth 40
 @language rest
 
 s = '''
@@ -860,37 +1346,124 @@ s = '''
 Creating External Files
 -------------------------
 
-\@<file> nodes create external files::
+This help discusses only @file nodes.
+For other ways of creating external files, see::
 
-    @asis <filename>    
-    @auto <filename>    
-    @edit <filename>
-    @file <filename>
-    @nosent <filename>  
-    @shadow <filename>
+    http://leoeditor.com/tutorial-programming.html or
+    http://leoeditor.com/directives.html
+
+Leo creates external files in an unusual way.
+Please fee free to ask for help::
+
+    https://groups.google.com/forum/#!forum/leo-editor or
+    http://webchat.freenode.net/?channels=%23leo&uio=d4
+
+Overview
+========
+
+Leo creates **external files** (files on your file system) from
+**@file nodes** and *all the descendants* of the @file node.
+Examples::
+
+    @file spam.py
+    @file ../foo.c
+    @file ~/bar.py
     
-For full details, see Leo's Directives reference: http://leoeditor.com/directives.html
-    
-**Section names** have the form::
+A single Leo outline may contain many @file nodes. As a result, Leo
+outlines function much like project files in other IDE's (Integrated
+developement environments).
 
-    \<\< any text, except double closing angle brackets \>\>
-    
-**Section-definition nodes** have headlines starting with a section name.
+Within an @file tree, simple text markup (discussed next) tells Leo how
+to create the external file from the @file node and its descendants.
 
-Leo performs **expansions** for all @<file> nodes except @asis.
+Markup
+======
+   
+Section references and the \\@all and \\@others directives tell
+Leo how to create external files.
 
-Expansion of @all:
+- A **section name** is any text of the form::
 
-- Leo replaces @all by the *unexpanded* body text of *all* nodes.
+    <\\< any text >\\> (>> must not appear in "any text".)
 
-Expansion of section names and @others:
+- A **section definition node** is any node whose headline starts with a section name.
 
-- Leo replaces section names in body text by the *expanded*
-  text of the corresponding section definition node.
-  
-- Leo replaces @others with the *expanded* text of all nodes
-  that *aren't* section-definition nodes.
+- A **section reference** is a section name that appears in body text.
 
+Leo creates external files containing \\@others directives by writing the
+*expansion* of the @file node. The **expansion** of *any* node is the
+node's body text after making these text **substitutions**:
+
+- Leo replaces \\@all by the *unexpanded* body text of *all* nodes.
+
+- Leo replaces \\@others with the *expansion* of all descendant nodes
+  **except** section definition nodes. That's how \\@others got its name.
+
+- Leo replaces section references by the *expansion* of the body text of
+  the corresponding section definition node.
+   
+Whitespace is significant before \\@others and section references. Leo adds
+the leading whitespace appearing before each \\@others directive or section
+reference to every line of their expansion. As a result, Leo can generate
+external files even for Python.  The following cute trick works::
+
+    if 1:
+        <\\< a section >\\>
+    if 0:
+        \\@others
+
+**Notes**:
+
+- Any node may contain a single \\@others directive. No node may contain more
+  than one \@others directive.
+
+- Nodes that *aren't* section definition nodes are included in the expansion
+  of the *nearest* ancestor node containing an @others directive.
+
+**Example 1**: The body of the @file node for a typical Python module will
+look something like::
+
+    '\\''A docstring.'\\''
+    <\\< imports >\\>
+    \@others
+    if __name__ == '__main__':
+        main()
+        
+**Example 2**:  Here is a typical Python class definition in Leo::
+
+    class MyClass:
+        '\\''A docstring.'\\''
+        \@others
+        
+\@first and @last
+=================
+
+The @first directive forces lines to appear before the first sentinel of a
+external file. For example::
+
+    @first #! /usr/bin/env python
+    @first # -*- coding: utf-8 -*-
+
+Similarly, @last forces lines to appear after the last sentinel.
+
+\\@path
+=======
+
+Rather than specifying long paths in @file nodes, you can specify a path in
+an ancestor @path node.
+
+For example, suppose three nodes have the following headlines::
+
+    @path a
+        @path b
+            @file c/d.py
+
+The @file node creates the file a/b/c/d.py
+
+Within @path and @<file> paths, {{exp}} gets evaluated with the following
+predefined symbols: c, g, p, os and sys.  For example::
+
+    @file {{os.path.abspath(os.curdir)}}/abc.py
 
 '''
 .. @+node:ekr.20131206064113.16325: *3* Fix new IPython bug
