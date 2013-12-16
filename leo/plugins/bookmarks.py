@@ -83,7 +83,7 @@ def init():
         
         # temporary until double-click is bindable in user settings
         if g.app.config.getBool('bookmarks-grab-dblclick'):
-            g.registerHandler('icondclick1', lambda t,k: open_bookmark(k))
+            g.registerHandler('icondclick1', lambda t,k: cmd_open_bookmark(k['c']))
         
     else:
         g.es_print("Requires Qt GUI")
@@ -167,10 +167,7 @@ class BookMarkDisplay:
             self.v = v
         
         self.already = -1  # used to indicate existing link when same link added again
-        
-        # if hasattr(c, 'free_layout') and hasattr(c.free_layout, 'get_top_splitter'):
-            # Second hasattr temporary until free_layout merges with trunk
-            
+           
         self.w = QtGui.QWidget()
         
         self.dark = c.config.getBool("color_theme_is_dark")
@@ -320,8 +317,8 @@ class BookMarkDisplay:
         for nd in self.v.children:
             if nd.b.strip() == url.strip():
                 p1 = nd.context.vnode2position(nd)
-                self.c.deletePositionsInList([p1])
-                self.c.redraw()
+                nd.context.deletePositionsInList([p1])
+                nd.context.redraw()
                 break
         
         return None  # do not stop processing the select1 hook
@@ -365,7 +362,8 @@ class BookMarkDisplay:
             nd = self.v.context.vnode2position(self.v)
             nd.expand()
             
-        self.c.selectPosition(nd)
+        nd.v.context.selectPosition(nd)
+        nd.v.context.bringToFront()
         
         return None  # do not stop processing the select1 hook
     #@+node:tbrown.20130222093439.30273: *3* add_bookmark
@@ -420,7 +418,7 @@ class BookMarkDisplay:
         nd = self.v.context.vnode2position(self.v).insertAsNthChild(idx)
         nd.h = new_anchor[0]
         nd.b = new_anchor[1]
-        self.c.redraw()
+        nd.v.context.redraw()
             
         self.current_list = new_list
         
@@ -464,6 +462,10 @@ class BookMarkDisplayProvider:
                 else:  # use UNL lookup
                     file_, UNL = gnx.split('#', 1)
                     other_c = g.openWithFileName(file_, old_c=c)
+                    if other_c != c:
+                        c.bringToFront()
+                        g.es("NOTE: bookmarks for this outline\nare in a different outline:\n  '%s'"%file_)
+                    
                     ok, depth, other_p = g.recursiveUNLFind(UNL.split('-->'), other_c)
                     if ok:
                         v = other_p.v
