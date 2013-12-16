@@ -41,6 +41,30 @@ The free_layout Action button context menu will also allow you to add one of
 these bookmark panes, and they will be saved and loaded again if the layout is
 saved and loaded.
 
+Commands
+--------
+
+bookmarks-open-bookmark
+  Open the bookmark in the current node, checking that this node has
+  a parent with ``@bookmarks`` in the title first.
+bookmarks-open-node
+  Open the bookmark / url in the current node.
+bookmarks-show
+  Mark the current node as the bookmark list for the current
+  outline, and open a pane[*]_ listing any bookmarks the current node contains.
+bookmarks-mark-as-target
+  Mark this node as a bookmark container - does nothing unless followed by
+  ``bookmarks-use-other-outline``.
+bookmarks-use-other-outline
+  Use the node identified with ``bookmarks-mark-as-target``, **which may
+  be in another outline**, as the source of bookmarks for this outline.
+  Open a pane[*]_ listing any bookmarks that node contains.
+  
+.. [*] If you already have a bookmark pane open, these command will open a
+second one.  Just close or ignore the first one, it will be gone next time
+the outline is opened.
+
+
 '''
 #@-<< docstring >>
 
