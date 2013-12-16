@@ -6,6 +6,186 @@
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 
+.. @+node:ekr.20131215185140.16437: *3* Experiment with new @auto
+.. @+node:ekr.20131215185140.16435: *4* @@button test-@auto
+@language python
+'''Compare results of @file & @auto.'''
+g.cls()
+import time
+ic = c.importCommands
+@others
+# Strip the sentinels.
+fn = g.os_path_finalize_join(g.app.loadDir,'leoApp.py')
+assert g.os_path_exists(fn),fn
+s = ic.removeSentinelsCommand([fn],toString=True)
+# Import s to an outline.
+p.contract() # So p.insertAfter works properly.
+parent = p.insertAfter()
+parent.h = '@@auto leoApp.py'
+t1 = time.clock()
+g.app.suppressImportChecks = False
+    # Checks add only about 20% to the import time:
+    # With check: 0.8 sec.  Without checks: 0.6 sec.
+p2 = ic.createOutline(fn,parent,atAuto=True,s=s,ext=None)
+assert p2
+print('import time: %s' % g.timeSince(t1))
+c.redraw()
+# Compare outlines.
+if 1:
+    p1 = g.findNodeAnywhere(c,'@@file leoApp.py')
+    assert p1
+    compare(p1,p2)
+.. @+node:ekr.20131215185140.16436: *5* compare
+def compare(p1,p2):
+    '''Compare p1 (@file) to p2 (@@auto).'''
+    p1.moveToThreadNext()
+    p2.moveToThreadNext()
+    while p1:
+        if not p2:
+            return g.trace('p2 finished early')
+        if p1.b.strip():
+            if p1.h != p2.h and not p1.h.endswith(p2.h):
+                g.trace('headline: %s != %s' % (p1.h,p2.h))
+            b1,b2 = p1.b.strip(),p2.b.strip()
+            n1,n2 = len(b1),len(b2)
+            if b1 != b2 and abs(n1-n2) > 1:
+                g.trace('body: %s(%s) != %s(%s)' % (p1.h,n1,p2.h,n2))
+            p1.moveToThreadNext()
+            p2.moveToThreadNext()
+        else:
+            # Assume it is an organizer node.
+            p1.moveToThreadNext()
+    if p2:
+        g.trace('p1 finished early')
+.. @+node:ekr.20131215185140.16442: *4* @button @auto-read
+'''Prototype new @auto read'''
+g.cls()
+c.save()
+create_outline = False
+import time
+ic = c.importCommands
+@others
+# Strip the sentinels.
+fn = g.os_path_finalize_join(g.app.loadDir,'leoApp.py')
+assert g.os_path_exists(fn),fn
+s = ic.removeSentinelsCommand([fn],toString=True)
+if create_outline:
+    p.contract() # So p.insertAfter works properly.
+    parent = p.insertAfter()
+    parent.h = '@@auto leoApp.py'
+else:
+    parent = None
+t1 = time.clock()
+x = ReadController()
+p2 = x.read(s,parent)
+print('import time: %s' % g.timeSince(t1))
+if create_outline:
+    c.redraw()
+.. @+node:ekr.20131215185140.16443: *5* class ReadController
+class ReadController:
+    @others
+.. @+node:ekr.20131215185140.16444: *6* ctor
+def __init__(self):
+    
+    self.level = 0 # The present indentation level.
+    self.tab_width = None
+.. @+node:ekr.20131215185140.16691: *6* check_indent
+def check_indent(self,lines):
+    '''Check indentation for consistency.'''
+    w = self.tab_width
+    if w is None:
+        g.trace('tab_width is None')
+        return False
+    bad = ' ' if w < 0 else '\t'
+    kind = 'space' if bad == ' ' else 'tab'
+    for s in lines:
+        i = g.skip_ws(s,0)
+        if i > 0 and i < len(s) and s[i] != '#' and bad in s[:i]:
+            g.trace('unexpected %s in %s' % (kind,repr(s)))
+            return False
+            # Doesn't work because of strings.
+            # if (i % w) != 0:
+                # g.trace('uneven spaces: %s' % repr(s))
+                # return False
+    return True
+    
+.. @+node:ekr.20131215185140.16690: *6* find_indent
+def find_indent(self,lines):
+    '''Set self.tab_width to the indentation of the first non-comment line.'''
+    trace = False and not g.unitTesting
+    for s in lines:
+        i = g.skip_ws(s,0)
+        if i > 0 and i < len(s) and s[i] != '#':
+            ws = s[:i]
+            assert s[i] not in ' \t'
+            if ' ' in ws and '\t' in ws:
+                g.trace('intermixed tabs and spaces')
+                self.tab_width = 4
+            elif '\t' in ws:
+                self.tab_width = - len(ws)
+            else:
+                self.tab_width = len(ws)
+            break
+    else:
+        g.trace('use default tab_width')
+        self.tab_width = 4
+    if trace: g.trace('tab_width:', self.tab_width)
+.. @+node:ekr.20131215185140.16692: *6* parse
+def parse (self,lines):
+    '''Parse lines into an outline.'''
+    block = [] # The lines being accumulated in the present block.
+    stack = [('root',0,[]),] # (kind,aList)
+        # len(stack) is the outline level
+    n_classes,n_functions,n_lines,n_methods = 0,0,0,0
+    indent = 0
+    w = 1 if self.tab_width < 1 else self.tab_width
+    for n,s in enumerate(lines):
+        n_lines += 1
+        i = g.skip_ws(s,0)
+        if g.match_word(s,i,'class'):
+            n_classes += 1
+            stack.append(('class',self.level,[]),)
+            indent += w
+        elif g.match_word(s,i,'def'):
+            old_kind,old_level,old_block = stack[-1]
+            if old_kind == 'class':
+                n_methods += 1
+            else:
+                n_functions += 1
+            stack.append(('def',self.level,[]),)
+            indent += w
+        elif i < len(s) and s[i] == '#':
+            block.append(s) # Append comments to current block.
+        elif i > indent:
+            # Still in the block.
+            block.append(s)
+        elif len(stack) > 1:
+            # End a block.  It's not the outer block.
+            old_kind,old_level,old_block = stack.pop()
+            ### What to do with the block??
+            indent -= w ### Wrong: we may exit multiple levels.
+            block = []
+        else:
+            block.append(s)
+    g.trace('lines: %s classes: %s methods: %s functions: %s' % (
+        n_lines,n_classes,n_methods,n_functions))
+    return None # not ready yet.
+.. @+node:ekr.20131215185140.16445: *6* read
+def read(self,s,parent):
+    '''Create an outline from a python file without sentinels.'''
+    lines = g.splitLines(s.replace('\r',''))
+    self.find_indent(lines)
+    self.check_indent(lines) # 0.016 sec for leoApp.py
+    p = self.parse(lines)
+    return p
+        
+        
+    
+.. @+node:ekr.20131215185140.16689: *6* skipString
+def skipString (self,s,i):
+
+    # Returns len(s) on unterminated string.
+    return g.skip_python_string(s,i,verbose=False)
 .. @+node:ekr.20131206064113.16325: *3* Fix new IPython bug
 The c property makes no sense.  Maybe the best solution is to get rid of it and change the docs.
 
