@@ -89,6 +89,26 @@ def __init__(self):
     
     self.level = 0 # The present indentation level.
     self.tab_width = None
+.. @+node:ekr.20131215204314.16726: *6* check_for_string
+def check_for_string(self,s,i):
+    '''Find the string delim in effect at the end of the line.'''
+    # This must be fast and accurate.
+    delim = None
+    if s.find('"',i) == -1 and s.find("'",i) == -1:
+        return delim
+    while i < len(s):
+        ch = s[i]
+        if delim:
+            if g.match(s,i,delim):
+                delim = None
+        elif ch == '#':
+            return delim
+        elif ch == '"':
+            delim = '"""' if g.match(s,i,'"""') else '"'
+        elif ch == "'":
+            delim = "'''" if g.match(s,i,"'''") else "'"
+        i += 1
+    return delim
 .. @+node:ekr.20131215185140.16691: *6* check_indent
 def check_indent(self,lines):
     '''Check indentation for consistency.'''
@@ -133,15 +153,38 @@ def find_indent(self,lines):
 .. @+node:ekr.20131215185140.16692: *6* parse
 def parse (self,lines):
     '''Parse lines into an outline.'''
+    trace = False
     block = [] # The lines being accumulated in the present block.
-    stack = [('root',0,[]),] # (kind,aList)
-        # len(stack) is the outline level
-    n_classes,n_functions,n_lines,n_methods = 0,0,0,0
+    stack = [('root',0,[]),] # (kind,level,block): len(stack) is the outline level
+    n_classes,n_functions,n_lines,n_methods,n_multi_line_quotes = 0,0,0,0,0
+    in_string,string_delim = False,None
     indent = 0
     w = 1 if self.tab_width < 1 else self.tab_width
     for n,s in enumerate(lines):
         n_lines += 1
         i = g.skip_ws(s,0)
+        # Handle leading comments.
+        if i < len(s) and s[i] == '#':
+            block.append(s)
+            continue
+        # See whether a string begins or ends.
+        if in_string:
+            i2 = s.find(string_delim,i)
+            if i2 > -1:
+                if trace: g.trace('-string:',s.strip())
+                # Check for *another* string following the end of the first.
+                string_delim = self.check_for_string(s,i2+len(string_delim))
+                in_string = bool(string_delim)
+                if in_string: n_multi_line_quotes += 1
+        else:
+            string_delim = self.check_for_string(s,i)
+            in_string = bool(string_delim)
+            if in_string: n_multi_line_quotes += 1
+        # Strings never change anything.
+        if in_string:
+            if trace: g.trace(' string:',s.strip())
+            block.append(s)
+            continue
         if g.match_word(s,i,'class'):
             n_classes += 1
             stack.append(('class',self.level,[]),)
@@ -169,6 +212,7 @@ def parse (self,lines):
             block.append(s)
     g.trace('lines: %s classes: %s methods: %s functions: %s' % (
         n_lines,n_classes,n_methods,n_functions))
+    g.trace('multi-line quotes',n_multi_line_quotes)
     return None # not ready yet.
 .. @+node:ekr.20131215185140.16445: *6* read
 def read(self,s,parent):
