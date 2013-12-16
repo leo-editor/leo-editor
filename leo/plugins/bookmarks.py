@@ -108,7 +108,7 @@ def cmd_open_bookmark(c):
             bookmark = True
             break
     if bookmark:
-        open_node(c)
+        cmd_open_node(c)
            
 def cmd_open_node(c):
     
@@ -375,7 +375,7 @@ class BookMarkDisplay:
             url = None
             
         if not url:
-            url = '#'+self.c.p.get_UNL(with_file=False)
+            url = self.c.p.get_UNL(with_proto=True)
             
         # check it's not already present
         try:
