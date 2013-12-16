@@ -83,7 +83,7 @@ def init():
         
         # temporary until double-click is bindable in user settings
         if g.app.config.getBool('bookmarks-grab-dblclick'):
-            g.registerHandler('icondclick1', lambda t,k: open_bookmark(k))
+            g.registerHandler('icondclick1', lambda t,k: cmd_open_bookmark(k['c']))
         
     else:
         g.es_print("Requires Qt GUI")
@@ -96,23 +96,10 @@ def onCreate(tag, keys):
     
     c = keys.get('c')
     
-    if 1: # New code.
-        assert c.free_layout
-        BookMarkDisplayProvider(c)
-    else: # Old code.
-        if hasattr(c, "free_layout"):
-            m = g.loadOnePlugin('free_layout.py',verbose=True)
-            assert m
-            if not c.free_layout:
-                m.FreeLayoutController(c)
-            assert c.free_layout
-            assert hasattr(c.free_layout,'get_top_splitter')
-            BookMarkDisplayProvider(c)
+    BookMarkDisplayProvider(c)
 #@+node:tbrown.20120319161800.21489: ** bookmarks-open-*
-@g.command('bookmarks-open-bookmark')
-def open_bookmark(event):
+def cmd_open_bookmark(c):
 
-    c = event.get('c')
     if not c: return
     p = c.p
     bookmark = False
@@ -121,28 +108,49 @@ def open_bookmark(event):
             bookmark = True
             break
     if bookmark:
-        open_node(event)
+        cmd_open_node(c)
            
-@g.command('bookmarks-open-node')
-def open_node(event):
+def cmd_open_node(c):
     
-    c = event.get('c')
     if not c: return
     p = c.p
     url = g.getUrlFromNode(p)
     if url:
         # No need to handle url hooks here.
         g.handleUrl(url,c=c,p=p)
-#@+node:tbrown.20110712100955.39215: ** g.command('bookmarks-show')
-@g.command('bookmarks-show')
-def bookmarks_show(event):
+#@+node:tbrown.20110712100955.39215: ** bookmarks-show
+def cmd_show(c):
     
     if not use_qt: return 
     
-    bmd = BookMarkDisplay(event['c'])
+    bmd = BookMarkDisplay(c)
     
     # Careful: we could be unit testing.
     splitter = bmd.c.free_layout.get_top_splitter()
+    if splitter:
+        splitter.add_adjacent(bmd.w, 'bodyFrame', 'above')
+#@+node:tbrown.20131214112218.36871: ** bookmarks-mark
+def cmd_mark_as_target(c):
+    """Mark current node as Bookmarks list for use by another file,
+    bookmarks-use-other-outline should be used after this command
+    """
+    g._bookmarks_target = c.p.get_UNL()
+    g._bookmarks_target_v = c.p.v
+    g.es("Node noted - now use\nbookmarks-use-other-outline\nin the "
+        "outline you want to\nstore bookmarks in this node")
+
+def cmd_use_other_outline(c):
+    """Set bookmarks for this outline from a list (node) in
+    a different outline
+    """
+    if not hasattr(g, '_bookmarks_target') or not g._bookmarks_target:
+        g.es("Use bookmarks-mark-as-target first")
+        return
+    c.db['_leo_bookmarks_show'] = g._bookmarks_target
+    
+    bmd = BookMarkDisplay(c, g._bookmarks_target_v)
+    
+    splitter = c.free_layout.get_top_splitter()
     if splitter:
         splitter.add_adjacent(bmd.w, 'bodyFrame', 'above')
 #@+node:tbrown.20110712100955.18924: ** class BookMarkDisplay
@@ -153,20 +161,21 @@ class BookMarkDisplay:
     def __init__(self, c, v=None):
         
         self.c = c
-        self.v = v if v is not None else c.p.v
+        if v is None:
+            v = self.v = c.p.v
+        else:
+            self.v = v
         
         self.already = -1  # used to indicate existing link when same link added again
-        
-        # if hasattr(c, 'free_layout') and hasattr(c.free_layout, 'get_top_splitter'):
-            # Second hasattr temporary until free_layout merges with trunk
-            
+           
         self.w = QtGui.QWidget()
         
         self.dark = c.config.getBool("color_theme_is_dark")
         
         # stuff for pane persistence
         self.w._ns_id = '_leo_bookmarks_show:'
-        c.db['_leo_bookmarks_show'] = str(self.v.gnx)
+        # v might not be in this outline
+        c.db['_leo_bookmarks_show'] = v.context.vnode2position(v).get_UNL()
             
         # else:
             # c.frame.log.createTab(c.p.h[:10])
@@ -197,7 +206,8 @@ class BookMarkDisplay:
     #@+node:tbrown.20110712100955.39216: *3* get_list
     def get_list(self):
         
-        p = self.c.vnode2position(self.v)
+        # v might not be in this outline
+        p = self.v.context.vnode2position(self.v)
         if not p:
             return
         
@@ -227,7 +237,7 @@ class BookMarkDisplay:
     #@+node:tbrown.20110712100955.39217: *3* show_list
     def show_list(self, links):
         
-        p = self.c.vnode2position(self.v)
+        p = self.v.context.vnode2position(self.v)
         if not p:
             return
         w = self.w
@@ -306,9 +316,9 @@ class BookMarkDisplay:
             
         for nd in self.v.children:
             if nd.b.strip() == url.strip():
-                p1 = self.c.vnode2position(nd)
-                self.c.deletePositionsInList([p1])
-                self.c.redraw()
+                p1 = nd.context.vnode2position(nd)
+                nd.context.deletePositionsInList([p1])
+                nd.context.redraw()
                 break
         
         return None  # do not stop processing the select1 hook
@@ -345,14 +355,15 @@ class BookMarkDisplay:
         if url:
             
             idx = [i[1] for i in self.current_list].index(url)
-            nd = self.c.vnode2position(self.v.children[idx])
+            nd = self.v.context.vnode2position(self.v.children[idx])
             
         else:
             
-            nd = self.c.vnode2position(self.v)
+            nd = self.v.context.vnode2position(self.v)
             nd.expand()
             
-        self.c.selectPosition(nd)
+        nd.v.context.selectPosition(nd)
+        nd.v.context.bringToFront()
         
         return None  # do not stop processing the select1 hook
     #@+node:tbrown.20130222093439.30273: *3* add_bookmark
@@ -364,7 +375,7 @@ class BookMarkDisplay:
             url = None
             
         if not url:
-            url = '#'+self.c.p.get_UNL(with_file=False)
+            url = self.c.p.get_UNL(with_proto=True)
             
         # check it's not already present
         try:
@@ -404,10 +415,10 @@ class BookMarkDisplay:
             new_list.append(new_anchor)
             
         idx = new_list.index(new_anchor)
-        nd = self.c.vnode2position(self.v).insertAsNthChild(idx)
+        nd = self.v.context.vnode2position(self.v).insertAsNthChild(idx)
         nd.h = new_anchor[0]
         nd.b = new_anchor[1]
-        self.c.redraw()
+        nd.v.context.redraw()
             
         self.current_list = new_list
         
@@ -443,10 +454,23 @@ class BookMarkDisplayProvider:
                 gnx = id_.split(':')[1]
                 if not gnx and '_leo_bookmarks_show' in c.db:
                     gnx = c.db['_leo_bookmarks_show']
+                # first try old style local gnx lookup
                 for i in c.all_nodes():
                     if str(i.gnx) == gnx:
                         v = i
                         break
+                else:  # use UNL lookup
+                    file_, UNL = gnx.split('#', 1)
+                    other_c = g.openWithFileName(file_, old_c=c)
+                    if other_c != c:
+                        c.bringToFront()
+                        g.es("NOTE: bookmarks for this outline\nare in a different outline:\n  '%s'"%file_)
+                    
+                    ok, depth, other_p = g.recursiveUNLFind(UNL.split('-->'), other_c)
+                    if ok:
+                        v = other_p.v
+                    else:
+                        g.es("Couldn't find '%s'"%gnx)
                     
             if v is None:
                 v = c.p.v
