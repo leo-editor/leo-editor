@@ -22942,7 +22942,7 @@ execute-script creates the script using @others and section references: |br|
 **you can create complex scripts from a node and its descendants.**
 
 As discussed below, execute-script predefines three variables: c, g and p. |br|
-Using these variables, scripts may easy do any of the following:
+Using these variables, scripts may easily do any of the following:
 
 - Gain access to all data contained in any Leo outline.
 - Traverse the data in any outline.
