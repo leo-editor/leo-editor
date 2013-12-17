@@ -61,9 +61,8 @@ bookmarks-use-other-outline
   Open a pane[*]_ listing any bookmarks that node contains.
   
 .. [*] If you already have a bookmark pane open, these command will open a
-second one.  Just close or ignore the first one, it will be gone next time
-the outline is opened.
-
+       second one.  Just close or ignore the first one, it will be gone next
+       time the outline is opened.
 
 '''
 #@-<< docstring >>
