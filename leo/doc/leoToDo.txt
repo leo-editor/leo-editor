@@ -59,40 +59,58 @@ def compare(p1,p2):
         g.trace('p1 finished early')
 .. @+node:ekr.20131215185140.16442: *4* @button @auto-read
 '''Prototype new @auto read'''
-# To do:
-# * It may be better to accumulate body text in lists until the very end.
-# * Make sure multiple @others can neve be generated.
+@
+To do:
+* Fix the obvious problems with leoApp.py.
+* Clean the result.
+* It may be better to accumulate body text in lists until the very end.
+* Make sure multiple @others can neve be generated.
+* Handle (underindented) comments before defs & classes.
+@c
+
 g.cls()
 import time
 c.save()
 @others
-main(c)
+main(c,small=True)
 .. @+node:ekr.20131217051915.17261: *5* main
-def main(c):
+def main(c,small):
     '''Main test method.'''
+    import leo.core.leoImport as leoImport
+    ic = c.importCommands
     # Delete all children of target
     target = g.findNodeAnywhere(c,'target')
     assert target
     while target.hasChildren():
         target.firstChild().doDelete()
     # Strip the sentinels.
-    if 0: # Use a small test outline.
+    if small: # Use a small test outline.
         fn = 'test @auto'
         test = g.findNodeAnywhere(c,fn)
         assert test
         s = g.getScript(c,test,useSentinels=False)
-        # print(s)
+        print(s)
     else: # Use a real Leo file: 0.26 sec for leoApp.py.
         fn = g.os_path_finalize_join(g.app.loadDir,'leoApp.py')
         assert g.os_path_exists(fn),fn
-        s = c.importCommands.removeSentinelsCommand([fn],toString=True)
+        s = ic.removeSentinelsCommand([fn],toString=True)
+        print(''.join(g.splitLines(s)[:30]))
     parent = target.insertAsLastChild()
     parent.h = '@@auto test'
-    t1 = time.clock()
     try:
         x = ReadController(c)
-        p2 = x.read(s,parent)
-        print('%s import time: %s' % (g.shortFileName(fn),g.timeSince(t1)))
+        t1 = time.clock()
+        x.read(s,parent)
+        scan_time = g.timeSince(t1)
+        s2 = g.getScript(c,parent,useSentinels=False)
+        scanner = leoImport.baseScannerClass(ic,
+            atAuto=True,language='python',alternate_language=None)
+        scanner.root = parent.copy()
+        t2 = time.clock()
+        ok = scanner.checkTrialWrite(s,s2)
+        check_time = g.timeSince(t2)
+        print('check: %s check time: %s' % (ok,check_time))
+        print('%s import time: %s' % (g.shortFileName(fn),scan_time))
     finally:
         # c.selectPosition(parent)
         c.redraw()
@@ -123,7 +141,7 @@ def dump(self,verbose=False):
 .. @+node:ekr.20131216142225.16719: *6* clean
 def clean(self,p):
     '''Clean the tree rooted at p.'''
-    g.trace(p)
+    g.trace(p and p.h)
 .. @+node:ekr.20131215185140.16444: *6* ctor
 def __init__(self,c):
     '''Ctor for the ReadController class.'''
@@ -172,6 +190,8 @@ def parse (self,lines,root):
             self.pop_blocks(i,stack)
             d = self.new_context('def',i,s,stack)
         elif i > d.indent: # Still in the block.
+            d.block.append(s)
+        elif len(stack) == 1:
             d.block.append(s)
         else: # Change blocks.
             d = self.pop_blocks(i,stack)
@@ -279,7 +299,7 @@ def read(self,s,parent):
     self.find_indent(lines)
     self.check_indent(lines) # 0.016 sec for leoApp.py
     p = self.parse(lines,parent)
-    self.clean(p)
+    self.clean(parent)
     return p
 .. @+node:ekr.20131215185140.16691: *7* check_indent
 def check_indent(self,lines):
