@@ -60,8 +60,8 @@ def compare(p1,p2):
 .. @+node:ekr.20131215185140.16442: *4* @button @auto-read
 '''Prototype new @auto read'''
 # To do:
-# - Insert @others.
-# - Handle last text.
+# * It may be better to accumulate body text in lists until the very end.
+# * Make sure multiple @others can neve be generated.
 g.cls()
 import time
 c.save()
@@ -172,10 +172,9 @@ def parse (self,lines,root):
             else: n_functions += 1
             self.pop_blocks(i,stack)
             d = self.new_context('def',i,s,stack)
-        elif i > d.indent:
-            # Still in the block.
+        elif i > d.indent: # Still in the block.
             d.block.append(s)
-        else:
+        else: # Change blocks.
             d = self.pop_blocks(i,stack)
             d.block.append(s)
     # End last blocks.
@@ -206,21 +205,13 @@ def check_for_string(self,s,i):
     return delim
 .. @+node:ekr.20131215213712.16731: *7* create_ref
 def create_ref(self,i,s,stack):
-    '''Create an @other directive or section ref in block.'''
-    trace = False and not g.unitTesting
-    if len(stack) == 1:
-        d = stack[-1]
-        # Append @others to the outer block.
-        d.block.append('@others\n')
-        if trace: g.trace('in:',d.p.h,'for:',s.strip(),'\n',d.block,'\n')
-    else:
-        # Append @others to the previous block.
-        d = stack[-2]
-        others = ' '*i + '@others\n'
-            # This is correct: we'll adjust node indentation later.
-        if others not in d.block:
-            d.block.append(others)
-        if trace: g.trace('in:',d.p.h,'for:',s.strip(),'\n',d.block,'\n')
+    '''Create an @others directive or section ref in block.'''
+    d = stack[-1] if len(stack) == 1 else stack[-2]
+    others = ' '*i + '@others\n'
+        # Correct: we'll adjust node indentation later.
+    if others not in d.block:
+        d.block.append(others)
+    # g.trace('in:',d.p.h,'for:',s.strip(),'\n',d.block,'\n')
 .. @+node:ekr.20131217051915.16878: *7* end_block
 def end_block(self,d):
     '''Update the body text of the present block.'''
