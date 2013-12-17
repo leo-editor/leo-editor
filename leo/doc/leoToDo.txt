@@ -61,47 +61,86 @@ def compare(p1,p2):
 '''Prototype new @auto read'''
 g.cls()
 c.save()
-create_outline = False
 import time
 ic = c.importCommands
 @others
+# Delete all children of target
+target = g.findNodeAnywhere(c,'target')
+assert target
+while target.hasChildren():
+    target.firstChild().doDelete()
 # Strip the sentinels.
-fn = g.os_path_finalize_join(g.app.loadDir,'leoApp.py')
-assert g.os_path_exists(fn),fn
-s = ic.removeSentinelsCommand([fn],toString=True)
-if create_outline:
-    p.contract() # So p.insertAfter works properly.
-    parent = p.insertAfter()
-    parent.h = '@@auto leoApp.py'
-else:
-    parent = None
+if 0: # Use a small test outline.
+    test = g.findNodeAnywhere(c,'test @auto')
+    assert test
+    s = g.getScript(c,test,useSentinels=False)
+    # print(s)
+else: # Use a real Leo file.
+    fn = g.os_path_finalize_join(g.app.loadDir,'leoApp.py')
+    assert g.os_path_exists(fn),fn
+    s = ic.removeSentinelsCommand([fn],toString=True)
+parent = target.insertAsLastChild()
+parent.h = '@@auto test'
 t1 = time.clock()
-x = ReadController(c)
-p2 = x.read(s,parent)
-print('import time: %s' % g.timeSince(t1))
-if create_outline:
+try:
+    x = ReadController(c)
+    p2 = x.read(s,parent)
+    print('import time: %s' % g.timeSince(t1))
+finally:
+    c.selectPosition(parent)
     c.redraw()
 .. @+node:ekr.20131215185140.16443: *5* class ReadController
 class ReadController:
     @others
+.. @+node:ekr.20131216142225.17505: *6* class Data
+class Data:
+    @others
+.. @+node:ekr.20131216142225.17506: *7* __init__
+def __init__(self,kind,block,indent,parent):
+    self.block = block
+    self.kind = kind
+    self.indent = indent
+    self.parent = parent
+    
+.. @+node:ekr.20131216142225.17508: *7* __str__
+def __str__(self):
+    return self.dump(verbose=True)
+__repr__ = __str__
+.. @+node:ekr.20131216142225.17507: *7* dump
+def dump(self,verbose=False):
+    s = '%5s indent: %2s parent: %s' % (self.kind,self.indent,self.parent.h)
+    if verbose:
+        return s + ' block: [%s]' % ';'.join([z.rstrip() for z in self.block])
+    else:
+        return s
 .. @+node:ekr.20131215185140.16444: *6* ctor
 def __init__(self,c):
     '''Ctor for the ReadController class.'''
     self.c = c
     self.n_multi_line_quotes = 0    
-    self.tab_width = None
+    self.tab_width = None # For checking only.
+.. @+node:ekr.20131216142225.16719: *6* clean
+def clean(self,p):
+    '''Clean the tree rooted at p.'''
+    g.trace(p)
+.. @+node:ekr.20131216142225.17603: *6* dump_stack
+def dump_stack(self,stack):
+    return '[%s]' % ','.join(['%s:%s' % (z.indent,z.parent.h) for z in stack])
 .. @+node:ekr.20131215185140.16692: *6* parse & helpers
-def parse (self,lines):
+def parse (self,lines,parent):
     '''Parse lines into an outline.'''
-    trace = True and not g.unitTesting
+    trace = False and not g.unitTesting
     block = [] # The lines being accumulated in the present block.
-    stack = [('root',0,[]),] # (kind,indent,block): len(stack) is the outline level
+    indent = 0
+    stack = [self.Data('root',[],indent,parent)]
+        # len(stack) is the outline level
+        # Invariant: indent == stack[-1].indent.
     n_classes,n_functions,n_lines,n_methods,self.n_multi_line_quotes = 0,0,0,0,0
     string_delim = None # In a string if not None.
-    indent = 0 # The indentation of the present block.
     for s in lines:
         n_lines += 1
         i = g.skip_ws(s,0)
+        if trace: g.trace('i: %2s indent: %2s %s' % (i,indent,s.rstrip()))
         # Ignore blank lines or leading comments.
         ignore = i == len(s) or s[i] in '#\n'
         # Compute the string delimiter in effect at the end of this line.
@@ -110,24 +149,30 @@ def parse (self,lines):
             string_delim = self.update_string_delim(i,s,string_delim)
         # A case statement...
         if ignore or old_string_delim:
+            if trace: g.trace('ignore: %s' % (s.rstrip()))
             block.append(s)
         elif g.match_word(s,i,'class'):
             n_classes += 1
-            block = self.end_blocks(block,i,indent,s,stack)
-            stack.append(('class',i,block),)
+            self.do_class(block,i,indent,s,stack)
+            block = [s]
             indent = i
+            assert indent == stack[-1].indent
         elif g.match_word(s,i,'def'):
             if self.is_method(stack): n_methods += 1
             else: n_functions += 1
-            block = self.end_blocks(block,i,indent,s,stack)
-            stack.append(('def',i,block),)
+            self.do_def(block,i,indent,s,stack)
+            block = [s]
             indent = i
+            assert indent == stack[-1].indent
         elif i > indent:
             # Still in the block.
             block.append(s)
+        elif i == indent:
+            block.append(s)
         else:
-            block = self.end_blocks(block,i,indent,s,stack)
-            indent = i
+            self.end_blocks(block,i,indent,s,stack)
+            block.append(s) ### Wrong
+            indent = stack[-1].indent
     if trace: g.trace('lines: %s classes: %s methods: %s functions: %s multi-line quotes: %s' % (
         n_lines,n_classes,n_methods,n_functions,self.n_multi_line_quotes))
     return None # not ready yet.
@@ -151,16 +196,77 @@ def check_for_string(self,s,i):
             delim = "'''" if g.match(s,i,"'''") else "'"
         i += 1
     return delim
+.. @+node:ekr.20131215213712.16731: *7* create_ref (revise)
+def create_ref(self,block,i,indent,s,stack):
+    '''Create an @other directive or section ref in the enclosing block.'''
+    trace = False and not g.unitTesting
+    d = stack[-1]
+    if trace: g.trace(s.rstrip())
+    if d.kind == 'class':
+        last_line = d.block and d.block[-1]
+        others = ' '*i + '@others'
+        if last_line != others: ### Just a prototype.
+            d.block.append(others)
+        if trace: g.trace(''.join(d.block))
+.. @+node:ekr.20131216142225.16717: *7* do_class
+def do_class(self,block,i,indent,s,stack):
+    '''Handle a class line.'''
+    trace = False and not g.unitTesting
+    if trace: g.trace('   ',i,indent,self.dump_stack(stack),s.rstrip())
+    assert indent == stack[-1].indent
+    if i > indent:
+        # Only need a reference.
+        self.create_ref(block,i,indent,s,stack)
+    else:
+        # End one or more blocks.
+        self.end_blocks(block,i,indent,s,stack)
+    # Create the new node as the last child of the parent.
+    d = stack[-1]
+    p = d.parent.insertAsLastChild()
+    p.h = self.headline(s,i)
+    stack.append(self.Data('class',block,i,p))
+    if trace: g.trace('returns',self.dump_stack(stack))
+.. @+node:ekr.20131216142225.16718: *7* do_def
+def do_def (self,block,i,indent,s,stack):
+    '''Handle a def line.'''
+    trace = False and not g.unitTesting
+    assert indent == stack[-1].indent
+    if trace: g.trace('     ',i,indent,self.dump_stack(stack),s.rstrip())
+    if i > indent:
+        # Only need a reference.
+        self.create_ref(block,i,indent,s,stack)
+    else:
+        # End one or more blocks.
+        self.end_blocks(block,i,indent,s,stack)
+    # Create the new node as the last child of the parent.
+    d = stack[-1]
+    p = d.parent.insertAsLastChild()
+    p.h = self.headline(s,i)
+    stack.append(self.Data('def',block,i,p))
+    if trace: g.trace('  returns',self.dump_stack(stack))
 .. @+node:ekr.20131215213712.16728: *7* end_blocks
 def end_blocks(self,block,i,indent,s,stack):
-    '''End all blocks whose indentation is greater than i.'''
+    '''End all blocks whose indentation is >= i.'''
     trace = False and not g.unitTesting
-    old_kind,old_indent,old_block = stack[-1]
-    if trace: g.trace('%4s %2s %s' % (old_kind,old_indent,s.rstrip()))
-    while i < indent and len(stack) > 1:
-        old_kind,old_level,old_block = stack.pop()
-    block = [s]
-    return block ### Correct ???
+    assert indent == stack[-1].indent
+    n = len(stack)
+    while i <= stack[-1].indent and len(stack) > 1:
+        d = stack.pop()
+    if trace and len(stack) != n:
+        g.trace('     ',self.dump_stack(stack))
+.. @+node:ekr.20131215213712.16937: *7* headline
+def headline (self,s,i):
+    '''Return the headline to be given to line s.'''
+    j = g.skip_id(s,i)
+    kind = s[i:j]
+    if kind == 'class':
+        # Return the entire class line.except the trailing ':'.
+        return s[i:].rstrip().strip(':')
+    else:
+        # Return just the function/method name.
+        i = g.skip_ws(s,j)
+        j = g.skip_id(s,i)
+        return s[i:j]
 .. @+node:ekr.20131215213712.16730: *7* is_method (To do)
 def is_method (self,stack):
     '''Return True if a def line is a method.'''
@@ -189,11 +295,9 @@ def read(self,s,parent):
     lines = g.splitLines(s.replace('\r',''))
     self.find_indent(lines)
     self.check_indent(lines) # 0.016 sec for leoApp.py
-    p = self.parse(lines)
+    p = self.parse(lines,parent)
+    self.clean(p)
     return p
-        
-        
-    
 .. @+node:ekr.20131215185140.16691: *7* check_indent
 def check_indent(self,lines):
     '''Check indentation for consistency.'''
