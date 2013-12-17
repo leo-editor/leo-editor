@@ -76,12 +76,12 @@ def main(c):
     while target.hasChildren():
         target.firstChild().doDelete()
     # Strip the sentinels.
-    if 1: # Use a small test outline.
+    if 0: # Use a small test outline.
         fn = 'test @auto'
         test = g.findNodeAnywhere(c,fn)
         assert test
         s = g.getScript(c,test,useSentinels=False)
-        print(s)
+        # print(s)
     else: # Use a real Leo file: 0.26 sec for leoApp.py.
         fn = g.os_path_finalize_join(g.app.loadDir,'leoApp.py')
         assert g.os_path_exists(fn),fn
@@ -143,8 +143,8 @@ def dump_stack(self,stack):
 .. @+node:ekr.20131215185140.16692: *6* parse & helpers
 def parse (self,lines,root):
     '''Parse lines into an outline.'''
-    trace = False and not g.unitTesting
-    n_classes,n_functions,n_lines,n_methods,self.n_multi_line_quotes = 0,0,0,0,0
+    trace = True and not g.unitTesting
+    n_classes,n_defs,n_lines,self.n_multi_line_quotes = 0,0,0,0
     string_delim = None # In a string if not None.
     # Key invariant: d == stack[-1]
     d = self.Data('root',[],0,root)
@@ -152,7 +152,7 @@ def parse (self,lines,root):
     for s in lines:
         n_lines += 1
         i = g.skip_ws(s,0)
-        if trace: g.trace('i: %2s indent: %2s %s' % (i,d.indent,s.rstrip()))
+        # if trace: g.trace('i: %2s indent: %2s %s' % (i,d.indent,s.rstrip()))
         # Ignore blank lines or leading comments.
         ignore = i == len(s) or s[i] in '#\n'
         # Compute the string delimiter in effect at the end of this line.
@@ -161,15 +161,14 @@ def parse (self,lines,root):
             string_delim = self.update_string_delim(i,s,string_delim)
         # A case statement...
         if ignore or old_string_delim:
-            if trace: g.trace('ignore: %s' % (s.rstrip()))
+            # if trace: g.trace('ignore: %s' % (s.rstrip()))
             d.block.append(s)
         elif g.match_word(s,i,'class'):
             n_classes += 1
             self.pop_blocks(i,stack)
             d = self.new_context('class',i,s,stack)
         elif g.match_word(s,i,'def'):
-            if self.is_method(stack): n_methods += 1
-            else: n_functions += 1
+            n_defs += 1
             self.pop_blocks(i,stack)
             d = self.new_context('def',i,s,stack)
         elif i > d.indent: # Still in the block.
@@ -180,8 +179,8 @@ def parse (self,lines,root):
     # End last blocks.
     self.end_block(d)
     self.pop_blocks(0,stack)
-    if trace: g.trace('lines: %s classes: %s methods: %s functions: %s multi-line quotes: %s' % (
-        n_lines,n_classes,n_methods,n_functions,self.n_multi_line_quotes))
+    if trace: g.trace('lines: %s classes: %s defs: %s multi-line quotes: %s' % (
+        n_lines,n_classes,n_defs,self.n_multi_line_quotes))
     
 .. @+node:ekr.20131215204314.16726: *7* check_for_string
 def check_for_string(self,s,i):
@@ -232,10 +231,6 @@ def headline (self,s,i):
         i = g.skip_ws(s,j)
         j = g.skip_id(s,i)
         return s[i:j]
-.. @+node:ekr.20131215213712.16730: *7* is_method (To do)
-def is_method (self,stack):
-    '''Return True if a def line is a method.'''
-    return True ###
 .. @+node:ekr.20131217051915.17292: *7* new_context
 def new_context(self,kind,i,s,stack):
     '''Handle class or def line'''
