@@ -72,7 +72,7 @@ g.cls()
 import time
 c.save()
 @others
-main(c,small=False)
+main(c,small=True)
 .. @+node:ekr.20131217051915.17261: *5* main
 def main(c,small):
     '''Main test method.'''
@@ -147,9 +147,14 @@ def clean(self,root):
         if lines:
             i = g.skip_ws(lines[0],0)
             if i > 0:
-                head = [z[i:] for z in lines if z[:i].isspace()]
+                head = []
+                for s in lines:
+                    if s[:i].isspace():
+                        head.append(s[i:])
+                    else: break
                 p.b = ''.join(tail+head)
-                tail = [z for z in lines if not z[:i].isspace()]
+                n = len(head)
+                tail = lines[n:] if n < len(lines) else []
             else:
                 p.b = ''.join(tail+lines)
                 tail = []
