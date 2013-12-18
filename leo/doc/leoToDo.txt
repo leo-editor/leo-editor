@@ -6,58 +6,245 @@
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 
-.. @+node:ekr.20131215185140.16437: *3* Experiment with new @auto
-.. @+node:ekr.20131215185140.16435: *4* @@button test-@auto
+* Merge extensions & external folders.
+.. @+node:ekr.20131206064113.16325: *3* Fix new IPython bug
+The c property makes no sense.  Maybe the best solution is to get rid of it and change the docs.
+
+http://leoeditor.com/IPythonBridge.html
+.. @+node:ekr.20130930062914.16002: *4* class LeoNameSpace
+class LeoNameSpace(object):
+    
+    '''An interface class passed to IPython that provides easy
+    access to "g" and all commanders.
+    
+    A convenience property, "c" provides access to the first
+    commander in g.app.windowList.
+    '''
+
+    def __init__ (self):
+        '''LeoNameSpace ctor.'''
+        self.commander = None
+            # The commander returned by the c property.
+        self.commanders_list = []
+            # The list of commanders returned by the commanders property.
+        self.g = g
+        self.update()
+
+    @others
+    
+.. @+node:ekr.20130930062914.16006: *5* LeoNS.c property
+def __get_c(self):
+    '''Return the designated commander, or the only open commander.'''
+    self.update()
+    if self.commander and self.commander in self.commanders_list:
+        return self.commander
+    elif len(self.commanders_list) == 1:
+        return self.commanders_list[0]
+    else:
+        return None
+
+def __set_c(self,c):
+    '''Designate the commander to be returned by the getter.'''
+    self.update()
+    if c in self.commanders_list:
+        self.commander = c
+    else:
+        g.trace(g.callers())
+        raise ValueError(c)
+
+c = property(
+    __get_c, __set_c,
+    doc = "LeoNameSpace c property")
+.. @+node:edward.20130930125732.11822: *5* LeoNS.commanders property
+def __get_commanders(self):
+    '''Return the designated commander, or the only open commander.'''
+    self.update()
+    return self.commanders_list
+
+commanders = property(
+    __get_commanders, None,
+    doc = "LeoNameSpace commanders property (read-only)")
+.. @+node:ekr.20130930062914.16009: *5* LeoNS.find_c
+def find_c(self,path):
+    '''Return the commander associated with path, or None.'''
+    g = self.g
+    self.update()
+    path = g.os_path_normcase(path)
+    short_path = g.shortFileName(path)
+    for c in self.commanders_list:
+        fn = g.os_path_normcase(c.fileName())
+        short_fn = g.shortFileName(fn)
+        if fn == path or short_fn == short_path:
+            return c
+.. @+node:ekr.20130930062914.16003: *5* LeoNS.update
+def update (self):
+    '''Update the list of available commanders.'''
+    self.commanders_list = [frame.c for frame in g.app.windowList]
+.. @+node:ekr.20131213072223.16397: *3* * Video tutorials
+@language rest
+
+3 or 4 screencasts will demonstrate that anyone can use Leo.
+
+When ready to release:
+
+Intro to Leo: https://www.youtube.com/watch?v=nlQO21eopzM
+
+- Note to Dave Winer.
+- Announce to comp.lang.python & SourceForge.
+
+.. @+node:ekr.20131208103040.16346: *4* - Basic: Navigating the outline
+.. @+node:ekr.20131211054925.16380: *4* - Basic: Creating external files (URGENT)
+Using Leo *is* easy.
+
+The rule (of thumb) that helper methods should be children of the method
+that calls them instantly reveals that programs are outlines in disguise.
+Once you have a way of seeing that fact *at all times*, one can never go
+back to the flat, myopic way of seeing. It's really that simple.
+
+And finally, there is @others. I created it within the first hour of
+prototyping Leo in the MORE outliner. It has remained unchanged all these
+years because it is, fundamentally, a very simple idea.
+
+.. @+node:ekr.20131208103040.16342: *4* - Basic: Settings (URGENT)
+- focus on visual settings.
+@menu
+leo-x-pt.leo files.
+- Small test .leo files: useful for settings.
+.. @+node:ekr.20131121050226.16328: *5* settings vid
+open leoSettings.leo.
+open myLeoSettings.leo.
+
+Concentrate on:
+    - visual settings.
+    - keyboard shortcuts.
+
+print-settings, print-bindings, print-commands.
+
+Trick: use small, easily/quickly started, file to test settings.
+    Demo: put console *behind* window.
+.. @+node:ekr.20131208103040.16343: *4* - Basic: Getting help
+.. @+node:ekr.20131116212505.16666: *4* - Intermediate: More about scripting
+@language rest
+
+c, g, p: commanders, generators, p.b, p.h etc.
+
+@button (already covered)
+@test (already covered)
+    
 @language python
-'''Compare results of @file & @auto.'''
-g.cls()
-import time
-ic = c.importCommands
-@others
-# Strip the sentinels.
-fn = g.os_path_finalize_join(g.app.loadDir,'leoApp.py')
-assert g.os_path_exists(fn),fn
-s = ic.removeSentinelsCommand([fn],toString=True)
-# Import s to an outline.
-p.contract() # So p.insertAfter works properly.
-parent = p.insertAfter()
-parent.h = '@@auto leoApp.py'
-t1 = time.clock()
-g.app.suppressImportChecks = False
-    # Checks add only about 20% to the import time:
-    # With check: 0.8 sec.  Without checks: 0.6 sec.
-p2 = ic.createOutline(fn,parent,atAuto=True,s=s,ext=None)
-assert p2
-print('import time: %s' % g.timeSince(t1))
-c.redraw()
-# Compare outlines.
-if 1:
-    p1 = g.findNodeAnywhere(c,'@@file leoApp.py')
-    assert p1
-    compare(p1,p2)
-.. @+node:ekr.20131215185140.16436: *5* compare
-def compare(p1,p2):
-    '''Compare p1 (@file) to p2 (@@auto).'''
-    p1.moveToThreadNext()
-    p2.moveToThreadNext()
-    while p1:
-        if not p2:
-            return g.trace('p2 finished early')
-        if p1.b.strip():
-            if p1.h != p2.h and not p1.h.endswith(p2.h):
-                g.trace('headline: %s != %s' % (p1.h,p2.h))
-            b1,b2 = p1.b.strip(),p2.b.strip()
-            n1,n2 = len(b1),len(b2)
-            if b1 != b2 and abs(n1-n2) > 1:
-                g.trace('body: %s(%s) != %s(%s)' % (p1.h,n1,p2.h,n2))
-            p1.moveToThreadNext()
-            p2.moveToThreadNext()
-        else:
-            # Assume it is an organizer node.
-            p1.moveToThreadNext()
-    if p2:
-        g.trace('p1 finished early')
-.. @+node:ekr.20131215185140.16442: *4* @button @auto-read
+.. @+node:ekr.20131116212505.16668: *5* Ctrl-B (execute-script)
+# Ctrl-B executes the Python code in the presently-selected body pane.
+g.es('hello world')
+
+.. @+node:ekr.20131116212505.16669: *5* Ctrl-B on selected text
+print('hi')
+print('there')
+.. @+node:ekr.20131116212505.16667: *5* g
+# g is a Python module containing global utility functions and classes.
+# g.es prints its arguments to Leo's log pane.
+g.es(g.es)
+# g is a large module:
+g.es(len(list(dir(g))))
+.. @+node:ekr.20131208103040.16349: *4* - Intermediate: Importing files (URGENT)
+recursive import.  Where is it?
+active-path plugin, 
+.. @+node:ekr.20131208103040.16344: *4* - Intermediate: Auto-completion
+.. @+node:ekr.20131208103040.16350: *4* - Find command (needed?)
+- Ctrl-G hides the Find pane.
+
+- Show how to use the minibuffer to discover the toggle commands:
+    <Alt-X>tog<tab>f<tab>   or
+    <Alt-X>set<tab>f<tab>
+.. @+node:ekr.20131116123026.16661: *5* Example
+# For the Find screencast.  It could be improved so the differences between nodes is more apparent.
+.. @+node:ekr.20131116123026.16662: *6* spam
+DEF spam():
+    pass
+.. @+node:ekr.20131116123026.16663: *6* eggs
+def eggs():
+    pass
+.. @+node:ekr.20131212204147.16400: *3* * Improve @auto
+@language rest
+
+* Write post-@auto pass that restors clone links.
+
+Is any filler between nodes an organizer node??
+.. @+node:ekr.20131211054925.16384: *3* - improve file;; macro
+1. Does not create @file (or @@file) in headline
+2. <|pattern|> not found in headlines
+.. @+node:ekr.20131119195900.18522: *3* * vim-mode
+- Do all common vim commands
+- Leave arrow keys and control keys unchanged.
+- Focus plain-key normal-mode commands: a,i,d,c,x,s.
+- Use minibuffer for find command (save find/change strings for dot).
+.. @+node:ekr.20131119060731.20106: *4* Use vim-like bindings to move the cursor?
+@language rest
+
+After all these years of preaching about not using the mouse, I still use
+the mouse when I get impatient. Indeed, it seems unbearably slow to select
+text without the mouse.
+
+I actually never use Alt-S because it never does quite what I want. But
+it's close!
+
+What I want is a *really easy* way of making plain keys move the cursor
+and/or select text.
+
+Naturally, Vim bindings come to mind. There are several possibilities:
+
+1. Just use vim-mode when it becomes available. Some may think it's the
+   best way. But perhaps we don't have to go whole hog.
+
+2. Create a vim-like minibuffer handler that makes it easy to move the
+   cursor, extending text, or not, in an *easily* switchable way.
+
+3. Something else :-)
+.. @+node:ekr.20131105020211.18059: *3* * Per-node expansions!
+https://groups.google.com/forum/#!topic/leo-editor/Wd0NtBLEZZk
+
+The idea is store "ephemeral" or position-related data **in vnodes*. This
+is a completely new idea in Leo's history!
+
+Suppose every vnode contains a new ivar: v.expandedPositions, a list of
+(copies of) positions at which v is to be expanded. This would work as
+follows:
+
+1. Contracting a node at position p clears p.v.expandedPositions. The happy
+   side effects is that contracting any clone will contract them all.
+
+2. Expanding a node at position appends p.copy() to p.v.expandedPositions,
+   and purges any no-longer-existing positions from that list.
+
+3. Leo's drawing code will call c.shouldBeExpanded(p) (instead of
+p.isExpanded()) to determine whether to expand the outline node at position
+p.
+
+As always, changing outline structure will invalidate positions. Because
+c.p and all it's ancestors are always expanded, the worst that can happen
+when an outline changes is that some positions that *aren't* the present
+position will contract unexpectedly. Most such contraction will occur off
+screen.
+
+Note: We could add v ivars for other kinds of data, such as marks, but
+that's not going to happen. I think this trick is appropriate only in very
+special circumstances. Furthermore, vnodes should be as small as possible.
+.. @+node:ekr.20131017174814.17480: *4* c.shouldBeExpanded
+@language python
+
+def shouldBeExpanded(self,p):
+    c,root,v = self,self.rootPosition(),p.v
+    if p == c.p or p.isAncestorOf(c.p):
+        return True
+    if v.isExpanded():
+        v.expandedList = [p2 for p2 in v.expandedList if c.positionExists(p2,root=root)]
+        for p2 in v.expandedList:
+            if p == p2:
+                return True
+    return False
+.. @+node:ekr.20131120054058.16279: *3* Create github repo (call Speed)
+.. @+node:ekr.20131215185140.16437: *3* Experiment with new @auto
+.. @+node:ekr.20131215185140.16442: *4* @@button @auto-read
+@language python
 '''Prototype new @auto read'''
 @
 To do:
@@ -385,241 +572,52 @@ def find_indent(self,lines):
         g.trace('use default tab_width')
         self.tab_width = 4
     if trace: g.trace('tab_width:', self.tab_width)
-.. @+node:ekr.20131206064113.16325: *3* Fix new IPython bug
-The c property makes no sense.  Maybe the best solution is to get rid of it and change the docs.
-
-http://leoeditor.com/IPythonBridge.html
-.. @+node:ekr.20130930062914.16002: *4* class LeoNameSpace
-class LeoNameSpace(object):
-    
-    '''An interface class passed to IPython that provides easy
-    access to "g" and all commanders.
-    
-    A convenience property, "c" provides access to the first
-    commander in g.app.windowList.
-    '''
-
-    def __init__ (self):
-        '''LeoNameSpace ctor.'''
-        self.commander = None
-            # The commander returned by the c property.
-        self.commanders_list = []
-            # The list of commanders returned by the commanders property.
-        self.g = g
-        self.update()
-
+.. @+node:ekr.20131217204236.17200: *4* test @auto
+# -*- coding: utf-8 -*-
+'''Single-line docstring'''
+import sys
+@others
+# outer.
+if __name__ == '__main__':
+    main()
+# end
+.. @+node:ekr.20131217204236.17201: *5* f1
+def f1():
+    pass
+f2 = f1 # Should go with this node.
+.. @+node:ekr.20131217204236.17202: *5* class Class1
+class Class1:
     @others
-    
-.. @+node:ekr.20130930062914.16006: *5* LeoNS.c property
-def __get_c(self):
-    '''Return the designated commander, or the only open commander.'''
-    self.update()
-    if self.commander and self.commander in self.commanders_list:
-        return self.commander
-    elif len(self.commanders_list) == 1:
-        return self.commanders_list[0]
-    else:
-        return None
+.. @+node:ekr.20131217204236.17203: *6* method11
+def method11(self):
 
-def __set_c(self,c):
-    '''Designate the commander to be returned by the getter.'''
-    self.update()
-    if c in self.commanders_list:
-        self.commander = c
-    else:
-        g.trace(g.callers())
-        raise ValueError(c)
-
-c = property(
-    __get_c, __set_c,
-    doc = "LeoNameSpace c property")
-.. @+node:edward.20130930125732.11822: *5* LeoNS.commanders property
-def __get_commanders(self):
-    '''Return the designated commander, or the only open commander.'''
-    self.update()
-    return self.commanders_list
-
-commanders = property(
-    __get_commanders, None,
-    doc = "LeoNameSpace commanders property (read-only)")
-.. @+node:ekr.20130930062914.16009: *5* LeoNS.find_c
-def find_c(self,path):
-    '''Return the commander associated with path, or None.'''
-    g = self.g
-    self.update()
-    path = g.os_path_normcase(path)
-    short_path = g.shortFileName(path)
-    for c in self.commanders_list:
-        fn = g.os_path_normcase(c.fileName())
-        short_fn = g.shortFileName(fn)
-        if fn == path or short_fn == short_path:
-            return c
-.. @+node:ekr.20130930062914.16003: *5* LeoNS.update
-def update (self):
-    '''Update the list of available commanders.'''
-    self.commanders_list = [frame.c for frame in g.app.windowList]
-.. @+node:ekr.20131213072223.16397: *3* * Video tutorials
-@language rest
-
-3 or 4 screencasts will demonstrate that anyone can use Leo.
-
-When ready to release:
-
-Intro to Leo: https://www.youtube.com/watch?v=nlQO21eopzM
-
-- Note to Dave Winer.
-- Announce to comp.lang.python & SourceForge.
-
-.. @+node:ekr.20131208103040.16346: *4* - Basic: Navigating the outline
-.. @+node:ekr.20131211054925.16380: *4* - Basic: Creating external files (URGENT)
-Using Leo *is* easy.
-
-The rule (of thumb) that helper methods should be children of the method
-that calls them instantly reveals that programs are outlines in disguise.
-Once you have a way of seeing that fact *at all times*, one can never go
-back to the flat, myopic way of seeing. It's really that simple.
-
-And finally, there is @others. I created it within the first hour of
-prototyping Leo in the MORE outliner. It has remained unchanged all these
-years because it is, fundamentally, a very simple idea.
-
-.. @+node:ekr.20131208103040.16342: *4* - Basic: Settings (URGENT)
-- focus on visual settings.
-@menu
-leo-x-pt.leo files.
-- Small test .leo files: useful for settings.
-.. @+node:ekr.20131121050226.16328: *5* settings vid
-open leoSettings.leo.
-open myLeoSettings.leo.
-
-Concentrate on:
-    - visual settings.
-    - keyboard shortcuts.
-
-print-settings, print-bindings, print-commands.
-
-Trick: use small, easily/quickly started, file to test settings.
-    Demo: put console *behind* window.
-.. @+node:ekr.20131208103040.16343: *4* - Basic: Getting help
-.. @+node:ekr.20131116212505.16666: *4* - Intermediate: More about scripting
-@language rest
-
-c, g, p: commanders, generators, p.b, p.h etc.
-
-@button (already covered)
-@test (already covered)
-    
-@language python
-.. @+node:ekr.20131116212505.16668: *5* Ctrl-B (execute-script)
-# Ctrl-B executes the Python code in the presently-selected body pane.
-g.es('hello world')
-
-.. @+node:ekr.20131116212505.16669: *5* Ctrl-B on selected text
-print('hi')
-print('there')
-.. @+node:ekr.20131116212505.16667: *5* g
-# g is a Python module containing global utility functions and classes.
-# g.es prints its arguments to Leo's log pane.
-g.es(g.es)
-# g is a large module:
-g.es(len(list(dir(g))))
-.. @+node:ekr.20131208103040.16349: *4* - Intermediate: Importing files (URGENT)
-recursive import.  Where is it?
-active-path plugin, 
-.. @+node:ekr.20131208103040.16344: *4* - Intermediate: Auto-completion
-.. @+node:ekr.20131208103040.16350: *4* - Find command (needed?)
-- Ctrl-G hides the Find pane.
-
-- Show how to use the minibuffer to discover the toggle commands:
-    <Alt-X>tog<tab>f<tab>   or
-    <Alt-X>set<tab>f<tab>
-.. @+node:ekr.20131116123026.16661: *5* Example
-# For the Find screencast.  It could be improved so the differences between nodes is more apparent.
-.. @+node:ekr.20131116123026.16662: *6* spam
-DEF spam():
     pass
-.. @+node:ekr.20131116123026.16663: *6* eggs
-def eggs():
+.. @+node:ekr.20131217204236.17204: *6* method12
+def method12(self):
     pass
-.. @+node:ekr.20131212204147.16400: *3* * Improve @auto
-@language rest
-
-* Write post-@auto pass that restors clone links.
-
-Is any filler between nodes an organizer node??
-.. @+node:ekr.20131211054925.16384: *3* - improve file;; macro
-1. Does not create @file (or @@file) in headline
-2. <|pattern|> not found in headlines
-.. @+node:ekr.20131119195900.18522: *3* * vim-mode
-- Do all common vim commands
-- Leave arrow keys and control keys unchanged.
-- Focus plain-key normal-mode commands: a,i,d,c,x,s.
-- Use minibuffer for find command (save find/change strings for dot).
-.. @+node:ekr.20131119060731.20106: *4* Use vim-like bindings to move the cursor?
-@language rest
-
-After all these years of preaching about not using the mouse, I still use
-the mouse when I get impatient. Indeed, it seems unbearably slow to select
-text without the mouse.
-
-I actually never use Alt-S because it never does quite what I want. But
-it's close!
-
-What I want is a *really easy* way of making plain keys move the cursor
-and/or select text.
-
-Naturally, Vim bindings come to mind. There are several possibilities:
-
-1. Just use vim-mode when it becomes available. Some may think it's the
-   best way. But perhaps we don't have to go whole hog.
-
-2. Create a vim-like minibuffer handler that makes it easy to move the
-   cursor, extending text, or not, in an *easily* switchable way.
-
-3. Something else :-)
-.. @+node:ekr.20131105020211.18059: *3* * Per-node expansions!
-https://groups.google.com/forum/#!topic/leo-editor/Wd0NtBLEZZk
-
-The idea is store "ephemeral" or position-related data **in vnodes*. This
-is a completely new idea in Leo's history!
-
-Suppose every vnode contains a new ivar: v.expandedPositions, a list of
-(copies of) positions at which v is to be expanded. This would work as
-follows:
-
-1. Contracting a node at position p clears p.v.expandedPositions. The happy
-   side effects is that contracting any clone will contract them all.
-
-2. Expanding a node at position appends p.copy() to p.v.expandedPositions,
-   and purges any no-longer-existing positions from that list.
-
-3. Leo's drawing code will call c.shouldBeExpanded(p) (instead of
-p.isExpanded()) to determine whether to expand the outline node at position
-p.
-
-As always, changing outline structure will invalidate positions. Because
-c.p and all it's ancestors are always expanded, the worst that can happen
-when an outline changes is that some positions that *aren't* the present
-position will contract unexpectedly. Most such contraction will occur off
-screen.
-
-Note: We could add v ivars for other kinds of data, such as marks, but
-that's not going to happen. I think this trick is appropriate only in very
-special circumstances. Furthermore, vnodes should be as small as possible.
-.. @+node:ekr.20131017174814.17480: *4* c.shouldBeExpanded
-@language python
-
-def shouldBeExpanded(self,p):
-    c,root,v = self,self.rootPosition(),p.v
-    if p == c.p or p.isAncestorOf(c.p):
-        return True
-    if v.isExpanded():
-        v.expandedList = [p2 for p2 in v.expandedList if c.positionExists(p2,root=root)]
-        for p2 in v.expandedList:
-            if p == p2:
-                return True
-    return False
-.. @+node:ekr.20131120054058.16279: *3* Create github repo (call Speed)
+.. @+node:ekr.20131217204236.17205: *5* class Class2
+class Class2:
+    @others
+.. @+node:ekr.20131217204236.17206: *6* method21
+def method21(self):
+    # A comment
+    @others
+    g.trace()
+.. @+node:ekr.20131217204236.17207: *7* def1
+def def1():
+    pass
+.. @+node:ekr.20131217204236.17208: *6* method12
+def method12(self):
+    pass
+.. @+node:ekr.20131217204236.17209: *5* main
+# Comment for main.
+# Second comment for main.
+  # Strange comment.
+    # Stranger comment.
+def main():
+    pass
+main2 = main
+.. @+node:ekr.20131218065355.17076: *4* target
 .. @+node:ekr.20131121211048.16378: ** Next
 * Add docstrings for all commands in leoSessions.py.
 - Add focus-to-x commands, where x is a *temporary* log pane, like completions, commands, etc.
