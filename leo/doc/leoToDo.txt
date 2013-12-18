@@ -72,7 +72,7 @@ g.cls()
 import time
 c.save()
 @others
-main(c,small=True)
+main(c,small=False)
 .. @+node:ekr.20131217051915.17261: *5* main
 def main(c,small):
     '''Main test method.'''
@@ -94,7 +94,7 @@ def main(c,small):
         fn = g.os_path_finalize_join(g.app.loadDir,'leoApp.py')
         assert g.os_path_exists(fn),fn
         s = ic.removeSentinelsCommand([fn],toString=True)
-        print(''.join(g.splitLines(s)[:30]))
+        # print(''.join(g.splitLines(s)[:30]))
     parent = target.insertAsLastChild()
     parent.h = '@@auto test'
     try:
@@ -109,6 +109,8 @@ def main(c,small):
         t2 = time.clock()
         ok = scanner.checkTrialWrite(s,s2)
         check_time = g.timeSince(t2)
+        if small and not ok:
+            print(s2)
         print('check: %s check time: %s' % (ok,check_time))
         print('%s import time: %s' % (g.shortFileName(fn),scan_time))
     finally:
@@ -133,7 +135,7 @@ def __str__(self):
 __repr__ = __str__
 .. @+node:ekr.20131216142225.17507: *7* dump
 def dump(self,verbose=False):
-    s = '%5s indent: %2s parent: %s' % (self.kind,self.indent,self.parent.h)
+    s = '%5s indent: %2s p: %s' % (self.kind,self.indent,self.p.h)
     if verbose:
         return s + ' block: [%s]' % ';'.join([z.rstrip() for z in self.block])
     else:
@@ -141,20 +143,37 @@ def dump(self,verbose=False):
 .. @+node:ekr.20131216142225.16719: *6* clean
 def clean(self,root):
     '''Clean the tree with the given root.'''
-    tail = [] # Underindented lines to be added to the next node.
+    tail = [] # Trailing underindented lines to be added to the next node.
+    last = root.lastNode()
     for p in root.self_and_subtree():
         lines = g.splitLines(p.b)
         if lines:
             i = g.skip_ws(lines[0],0)
+            # g.trace(i,p.h,'\n',p.b)
             if i > 0:
                 head = []
                 for s in lines:
-                    if s[:i].isspace():
+                    if s[:i].isspace() and s[i:]:
                         head.append(s[i:])
+                    elif s.isspace():
+                        head.append(s)
                     else: break
                 p.b = ''.join(tail+head)
+                # Move all trailing underindented lines to the next node.
                 n = len(head)
                 tail = lines[n:] if n < len(lines) else []
+            elif p == last:
+                # Special case the last node:
+                # Move all last lines without indentation to the root.
+                head = [lines[0]]
+                for s in lines[1:]:
+                    if s[0].isspace():
+                        head.append(s)
+                    else: break
+                p.b = ''.join(tail+head)
+                if len(head) < len(lines):
+                    root.b = root.b + ''.join(lines[n:])
+                tail = []
             else:
                 p.b = ''.join(tail+lines)
                 tail = []
@@ -186,9 +205,10 @@ def parse (self,lines,root):
     for s in lines:
         n_lines += 1
         i = g.skip_ws(s,0)
-        # if trace: g.trace('i: %2s indent: %2s %s' % (i,d.indent,s.rstrip()))
+        # if trace: g.trace('i: %2s indent: %2s %s %s' % (
+           # i,d.indent,s.rstrip(),self.dump_stack(stack)))
         # Ignore blank lines or leading comments.
-        ignore = i == len(s) or s[i] in '#\n'
+        ignore = s[i] in '#\n'
         # Compute the string delimiter in effect at the end of this line.
         old_string_delim = string_delim
         if not ignore:
@@ -207,14 +227,21 @@ def parse (self,lines,root):
             d = self.new_context('def',i,s,stack)
         elif i > d.indent: # Still in the block.
             d.block.append(s)
+        elif len(stack) > 1 and i == d.indent:
+            # Keep all trailing code lines with the block.
+            d.block.append(s)
         elif len(stack) == 1:
             d.block.append(s)
         else: # Change blocks.
             d = self.pop_blocks(i,stack)
             d.block.append(s)
     # End last blocks.
+    if len(stack) > 1:
+        # self.end_block(d)
+        self.pop_blocks(0,stack)
+    # Make sure to finish the top level.
+    d = stack[0]
     self.end_block(d)
-    self.pop_blocks(0,stack)
     if trace: g.trace('lines: %s classes: %s defs: %s multi-line quotes: %s' % (
         n_lines,n_classes,n_defs,self.n_multi_line_quotes))
     
@@ -254,6 +281,7 @@ def end_block(self,d):
         d.p.b = d.p.b + ''.join(d.block)
         d.block = []
         # g.trace(d.p.h,'\n',self.dump_body(d.p.b),'\n')
+        # g.trace(d.p.h,'\n',d.p.b)
 .. @+node:ekr.20131215213712.16937: *7* headline
 def headline (self,s,i):
     '''Return the headline to be given to line s.'''
