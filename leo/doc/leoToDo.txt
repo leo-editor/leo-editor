@@ -61,18 +61,14 @@ def compare(p1,p2):
 '''Prototype new @auto read'''
 @
 To do:
-* Fix the obvious problems with leoApp.py.
-* Clean the result.
-* It may be better to accumulate body text in lists until the very end.
-* Make sure multiple @others can neve be generated.
-* Handle (underindented) comments before defs & classes.
+* Make sure multiple @others can never be generated.
 @c
 
 g.cls()
 import time
 c.save()
 @others
-main(c,small=False)
+main(c,small=True)
 .. @+node:ekr.20131217051915.17261: *5* main
 def main(c,small):
     '''Main test method.'''
@@ -149,7 +145,6 @@ def clean(self,root):
         lines = g.splitLines(p.b)
         if lines:
             i = g.skip_ws(lines[0],0)
-            # g.trace(i,p.h,'\n',p.b)
             if i > 0:
                 head = []
                 for s in lines:
@@ -164,14 +159,23 @@ def clean(self,root):
                 tail = lines[n:] if n < len(lines) else []
             elif p == last:
                 # Special case the last node:
-                # Move all last lines without indentation to the root.
+                # Keep underindented following lines in the node...
                 head = [lines[0]]
                 for s in lines[1:]:
                     if s[0].isspace():
                         head.append(s)
                     else: break
+                # But move the first underindented comment line and
+                # all following lines to the root node.
+                n = len(head)
+                for s in lines[n:]:
+                    if s.startswith('#'):
+                        break
+                    else:
+                        head.append(s)
                 p.b = ''.join(tail+head)
-                if len(head) < len(lines):
+                n = len(head)
+                if n < len(lines):
                     root.b = root.b + ''.join(lines[n:])
                 tail = []
             else:
@@ -199,14 +203,12 @@ def parse (self,lines,root):
     trace = True and not g.unitTesting
     n_classes,n_defs,n_lines,self.n_multi_line_quotes = 0,0,0,0
     string_delim = None # In a string if not None.
-    # Key invariant: d == stack[-1]
+    # Loop invariant: d is the Data object at the top of the stack.
     d = self.Data('root',[],0,root)
     stack = [d]
     for s in lines:
         n_lines += 1
         i = g.skip_ws(s,0)
-        # if trace: g.trace('i: %2s indent: %2s %s %s' % (
-           # i,d.indent,s.rstrip(),self.dump_stack(stack)))
         # Ignore blank lines or leading comments.
         ignore = s[i] in '#\n'
         # Compute the string delimiter in effect at the end of this line.
@@ -215,7 +217,6 @@ def parse (self,lines,root):
             string_delim = self.update_string_delim(i,s,string_delim)
         # A case statement...
         if ignore or old_string_delim:
-            # if trace: g.trace('ignore: %s' % (s.rstrip()))
             d.block.append(s)
         elif g.match_word(s,i,'class'):
             n_classes += 1
@@ -237,14 +238,12 @@ def parse (self,lines,root):
             d.block.append(s)
     # End last blocks.
     if len(stack) > 1:
-        # self.end_block(d)
         self.pop_blocks(0,stack)
-    # Make sure to finish the top level.
+    assert len(stack) == 1
     d = stack[0]
     self.end_block(d)
     if trace: g.trace('lines: %s classes: %s defs: %s multi-line quotes: %s' % (
         n_lines,n_classes,n_defs,self.n_multi_line_quotes))
-    
 .. @+node:ekr.20131215204314.16726: *7* check_for_string
 def check_for_string(self,s,i):
     '''Find the string delim in effect at the end of the line.'''
