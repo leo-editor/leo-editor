@@ -2247,7 +2247,7 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None):
                 if maxdepth < depth+1:
                     maxdepth = depth+1
                     maxp = i.copy()
-                found, maxdepth, maxp = g.recursiveUNLSearch(unlList, c, depth+1, i, maxdepth, maxp)
+                found, maxdepth, maxp = g.recursiveUNLFind(unlList, c, depth+1, i, maxdepth, maxp)
                 if found:
                     return found, maxdepth, maxp
                 # else keep looking through nds
