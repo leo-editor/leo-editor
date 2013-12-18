@@ -72,7 +72,7 @@ g.cls()
 import time
 c.save()
 @others
-main(c,small=True)
+main(c,small=False)
 .. @+node:ekr.20131217051915.17261: *5* main
 def main(c,small):
     '''Main test method.'''
@@ -139,9 +139,20 @@ def dump(self,verbose=False):
     else:
         return s
 .. @+node:ekr.20131216142225.16719: *6* clean
-def clean(self,p):
-    '''Clean the tree rooted at p.'''
-    g.trace(p and p.h)
+def clean(self,root):
+    '''Clean the tree with the given root.'''
+    tail = [] # Underindented lines to be added to the next node.
+    for p in root.self_and_subtree():
+        lines = g.splitLines(p.b)
+        if lines:
+            i = g.skip_ws(lines[0],0)
+            if i > 0:
+                head = [z[i:] for z in lines if z[:i].isspace()]
+                p.b = ''.join(tail+head)
+                tail = [z for z in lines if not z[:i].isspace()]
+            else:
+                p.b = ''.join(tail+lines)
+                tail = []
 .. @+node:ekr.20131215185140.16444: *6* ctor
 def __init__(self,c):
     '''Ctor for the ReadController class.'''
