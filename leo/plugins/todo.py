@@ -900,6 +900,12 @@ class todoController:
         else:
             toggle.setCheckState(Qt.Checked)
             self.setat(v, field, val.toPyDate())
+        
+        if (field == 'nextworkdate' and 
+            (not self.getat(v, 'duedate') or
+             str(self.getat(v, 'duedate')) < str(self.getat(v, 'nextworkdate'))
+             )):
+            self.setat(v, 'duedate', val.toPyDate())
 
         self.updateUI()  # if change was made to date with offset selector
         self.loadIcons(p)
