@@ -92,7 +92,12 @@ Intro to Leo: https://www.youtube.com/watch?v=nlQO21eopzM
 - Note to Dave Winer.
 - Announce to comp.lang.python & SourceForge.
 
-.. @+node:ekr.20131208103040.16346: *4* - Basic: Navigating the outline
+.. @+node:ekr.20131218112431.16502: *4* - Basic: Basic Leo operations
+Inserting, deleting, cloning, copying pasting.
+
+Editing headlines.
+
+Moving between panes: Enter, arrow keys, alt-arrow keys.
 .. @+node:ekr.20131211054925.16380: *4* - Basic: Creating external files (URGENT)
 Using Leo *is* easy.
 
@@ -581,6 +586,7 @@ import sys
 if __name__ == '__main__':
     main()
 # end
+@language python
 .. @+node:ekr.20131217204236.17201: *5* f1
 def f1():
     pass
@@ -618,6 +624,85 @@ def main():
     pass
 main2 = main
 .. @+node:ekr.20131218065355.17076: *4* target
+.. @+node:ekr.20131218112431.16504: *4* @button relink @auto
+@language python
+@others
+g.cls()
+if c.isChanged():
+    c.save()
+test = g.findNodeAnywhere(c,'test relink @auto')
+assert test
+Relinker(c,test).run()
+print('done')
+.. @+node:ekr.20131218165949.16516: *5* class Relinker
+class Relinker:
+    
+    def __init__(self,c,root):
+        self.c = c
+        self.d = {}
+            # Simulate the @auto database.
+            # Key are headlines for clones; values are unl's.
+        self.pasted = None
+        self.root = root.copy()
+        
+    @others
+.. @+node:ekr.20131218165949.16597: *6* run & helpers
+def run(self):
+    '''Run the test.'''
+    self.save()
+        # Create self.d from clones in self.test outline.
+    self.load()
+        # Copy self.test outline to self.pasted.
+    self.relink()
+        # Relink clone links in self.pasted using self.d.
+    self.clean()
+        # Delete self.pasted outline.
+
+.. @+node:ekr.20131218165949.16548: *7* clean
+def clean(self):
+    c = self.c
+    if self.pasted:
+        self.pasted.doDelete(newNode=self.root)
+        c.selectPosition(self.root)
+        c.redraw()
+        c.setChanged(False)
+            
+.. @+node:ekr.20131218165949.16517: *7* load
+def load(self):
+    '''Paste a copy of the test outline after the test outline.'''
+    c = self.c
+    c.selectPosition(self.root.copy())
+    s = c.fileCommands.putLeoOutline()
+    self.pasted = p = c.pasteOutline(self,redrawFlag=False,s=s,undoFlag=False)
+    p.h = self.root.h
+    c.redraw()
+.. @+node:ekr.20131218165949.16535: *7* relink
+def relink(self):
+    '''Relink all unlinked clones.'''
+    d = self.d
+    # Find original cloned nodes.
+    for key in sorted(d.keys()):
+        g.trace(key,d.get(key))
+.. @+node:ekr.20131218165949.16519: *7* save
+def save(self):
+    '''Simulate a save operation on an @auto file.'''
+    self.d = d = {}
+    for p in self.root.self_and_subtree():
+        if p.isCloned():
+            d[p.h] = self.unl(p)
+    if 0:
+        for key in sorted(d.keys()):
+            g.trace('p.h:',key,'unl:',d.get(key))
+.. @+node:ekr.20131218165949.16521: *6* unl
+def unl (self,p):
+    '''Return the unl for p.'''
+    return '-->'.join(reversed([p.h for p in p.self_and_parents()]))
+.. @+node:ekr.20131218165949.16515: *5* clones
+
+.. @+node:ekr.20131218165949.16512: *6* clone 1
+# clone 1 text.
+.. @+node:ekr.20131218165949.16514: *6* clone 2
+# clone 2 text.
 .. @+node:ekr.20131121211048.16378: ** Next
 * Add docstrings for all commands in leoSessions.py.
 - Add focus-to-x commands, where x is a *temporary* log pane, like completions, commands, etc.

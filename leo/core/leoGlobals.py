@@ -2200,7 +2200,7 @@ def readlineForceUnixNewline(f,fileName=None):
     if len(s) >= 2 and s[-2] == "\r" and s[-1] == "\n":
         s = s[0:-2] + "\n"
     return s
-#@+node:tbrown.20110219154422.37469: *3* g.recursiveUNLSearch
+#@+node:tbrown.20110219154422.37469: *3* g.recursiveUNLSearch/Find
 def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None):
     """try and move to unl in the commander c
 
