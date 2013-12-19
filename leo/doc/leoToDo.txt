@@ -646,7 +646,46 @@ class Relinker:
         self.root = root.copy()
         
     @others
-.. @+node:ekr.20131218165949.16597: *6* run & helpers
+.. @+node:ekr.20131218165949.16548: *6* clean
+def clean(self):
+    c = self.c
+    if self.pasted:
+        self.pasted.doDelete(newNode=self.root)
+        c.selectPosition(self.root)
+        c.redraw()
+        c.setChanged(False)
+            
+.. @+node:ekr.20131218165949.16517: *6* load
+def load(self):
+    '''Paste a copy of the test outline after the test outline.'''
+    c = self.c
+    c.selectPosition(self.root.copy())
+    s = c.fileCommands.putLeoOutline()
+    self.pasted = p = c.pasteOutline(self,redrawFlag=False,s=s,undoFlag=False)
+    p.h = self.root.h
+    c.redraw()
+.. @+node:ekr.20131218165949.16535: *6* relink
+def relink(self):
+    '''Relink all unlinked clones.'''
+    ### It looks like we need a way of replacing
+    ### a vnode with another (cloned) vnode.
+    # Easy way:
+    # - Make another clone.
+    # - Move it after the non-cloned node.
+    # - Delete the non-cloned node.
+    c,d = self.c,self.d
+    # Find original cloned nodes.
+    for key in sorted(d.keys()):
+        unl = d.get(key)
+        found,junk,p = g.recursiveUNLSearch(unl.split('-->'),c)
+        if found:
+            g.trace('found: %s unl: %s' % (p.h,unl))
+            ### In a "real" read none of the newly-read nodes would be cloned.
+            assert p.isCloned(),p.h
+        else:
+            g.trace('not found: unl: %s' (unl))
+
+.. @+node:ekr.20131218165949.16597: *6* run
 def run(self):
     '''Run the test.'''
     self.save()
@@ -658,32 +697,7 @@ def run(self):
     self.clean()
         # Delete self.pasted outline.
 
-.. @+node:ekr.20131218165949.16548: *7* clean
-def clean(self):
-    c = self.c
-    if self.pasted:
-        self.pasted.doDelete(newNode=self.root)
-        c.selectPosition(self.root)
-        c.redraw()
-        c.setChanged(False)
-            
-.. @+node:ekr.20131218165949.16517: *7* load
-def load(self):
-    '''Paste a copy of the test outline after the test outline.'''
-    c = self.c
-    c.selectPosition(self.root.copy())
-    s = c.fileCommands.putLeoOutline()
-    self.pasted = p = c.pasteOutline(self,redrawFlag=False,s=s,undoFlag=False)
-    p.h = self.root.h
-    c.redraw()
-.. @+node:ekr.20131218165949.16535: *7* relink
-def relink(self):
-    '''Relink all unlinked clones.'''
-    d = self.d
-    # Find original cloned nodes.
-    for key in sorted(d.keys()):
-        g.trace(key,d.get(key))
-.. @+node:ekr.20131218165949.16519: *7* save
+.. @+node:ekr.20131218165949.16519: *6* save
 def save(self):
     '''Simulate a save operation on an @auto file.'''
     self.d = d = {}
