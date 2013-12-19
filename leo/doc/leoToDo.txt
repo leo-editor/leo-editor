@@ -6,13 +6,16 @@
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 
+* Merge extensions & external folders.
+
+Urgent: Basic Leo operations tutorial.
+
+Urgent: Settings tutorial.
+.. @+node:ekr.20131219102947.16570: *3* Release 4.11.1
 Leo 4.11.1:
 - Necessary for tutorials.
 - Disable my bindings for tutorials.
 - Make sure Insert/Delete work in outline pane.
-- Merge extensions & external folders.
-
-Urgent: Basic Leo operations tutorial.
 .. @+node:ekr.20131213072223.16397: *3* * Video tutorials
 @language rest
 
