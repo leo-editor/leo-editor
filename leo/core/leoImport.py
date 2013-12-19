@@ -4642,14 +4642,13 @@ class NewPythonScanner (baseScannerClass):
         return '[%s]' % ','.join(['%s:%s' % (z.indent,z.p.h) for z in stack])
     #@+node:ekr.20131219090550.16563: *4* scan & helpers
     def scan (self,s,root):
-        lines = g.splitLines(s)
         '''Parse lines into an outline.'''
         trace = True and not g.unitTesting
         string_delim = None # In a string if not None.
         # Loop invariant: d is the Data object at the top of the stack.
         d = self.Data('root',[],0,root)
         stack = [d]
-        for s in lines:
+        for s in g.splitLines(s):
             i = g.skip_ws(s,0)
             # Ignore blank lines or leading comments.
             ignore = s[i] in '#\n'
