@@ -6,8 +6,6 @@
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 
-* Merge extensions & external folders.
-
 Urgent: Basic Leo operations tutorial.
 
 Urgent: Settings tutorial.
@@ -28,24 +26,6 @@ Intro to Leo: https://www.youtube.com/watch?v=nlQO21eopzM
 - Note to Dave Winer.
 - Announce to comp.lang.python & SourceForge.
 
-.. @+node:ekr.20131218112431.16502: *4* - Basic: Basic Leo operations
-Inserting, deleting, cloning, copying pasting.
-
-Editing headlines.
-
-Moving between panes: Enter, arrow keys, alt-arrow keys.
-.. @+node:ekr.20131211054925.16380: *4* - Basic: Creating external files (URGENT)
-Using Leo *is* easy.
-
-The rule (of thumb) that helper methods should be children of the method
-that calls them instantly reveals that programs are outlines in disguise.
-Once you have a way of seeing that fact *at all times*, one can never go
-back to the flat, myopic way of seeing. It's really that simple.
-
-And finally, there is @others. I created it within the first hour of
-prototyping Leo in the MORE outliner. It has remained unchanged all these
-years because it is, fundamentally, a very simple idea.
-
 .. @+node:ekr.20131208103040.16342: *4* - Basic: Settings (URGENT)
 - focus on visual settings.
 @menu
@@ -63,6 +43,18 @@ print-settings, print-bindings, print-commands.
 
 Trick: use small, easily/quickly started, file to test settings.
     Demo: put console *behind* window.
+.. @+node:ekr.20131211054925.16380: *4* - Basic: Creating external files (URGENT)
+Using Leo *is* easy.
+
+The rule (of thumb) that helper methods should be children of the method
+that calls them instantly reveals that programs are outlines in disguise.
+Once you have a way of seeing that fact *at all times*, one can never go
+back to the flat, myopic way of seeing. It's really that simple.
+
+And finally, there is @others. I created it within the first hour of
+prototyping Leo in the MORE outliner. It has remained unchanged all these
+years because it is, fundamentally, a very simple idea.
+
 .. @+node:ekr.20131208103040.16343: *4* - Basic: Getting help
 .. @+node:ekr.20131116212505.16666: *4* - Intermediate: More about scripting
 @language rest
@@ -104,6 +96,7 @@ DEF spam():
 .. @+node:ekr.20131116123026.16663: *6* eggs
 def eggs():
     pass
+.. @+node:ekr.20131219102947.16571: *3* I got bit by the cloned-headline not updated bug
 .. @+node:ekr.20131219090550.16533: *3* Fold new importer into leoImport.py
 @language python
 
