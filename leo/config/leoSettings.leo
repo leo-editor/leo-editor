@@ -4,7 +4,7 @@
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
-	<global_window_position top="71" left="266" height="682" width="1264"/>
+	<global_window_position top="77" left="375" height="682" width="1264"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -1268,7 +1268,6 @@
 <v t="ekr.20100107060708.6390"><vh>@bool qt-tree-multiple-selection = True</vh></v>
 <v t="ekr.20110601103939.19339"><vh>@bool single_click_auto_edits_headline = False</vh></v>
 <v t="ekr.20061007211759"><vh>@bool sparse_move_outline_left = True</vh></v>
-<v t="ekr.20060926160657"><vh>@bool stayInTreeAfterEditHeadline = False</vh></v>
 <v t="ekr.20060122105527.7"><vh>@bool stayInTreeAfterSelect = True</vh></v>
 <v t="ekr.20061002115414.1"><vh>@float outline_nav_extend_delay = 2.0</vh></v>
 </v>
@@ -1372,7 +1371,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20060603215208"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -2929,10 +2927,6 @@ toggle-autocompleter        = Alt-1
 toggle-calltips             = Alt-2
 toggle-extend-mode          = Alt-3
 undo                        = Ctrl-Z</t>
-<t tx="ekr.20060926160657">True: Focus moves to outline pane after editing a headline.
-
-False: (legacy operation) Focus moves to body pane after editing a headline.
-       </t>
 <t tx="ekr.20060926161207.1"></t>
 <t tx="ekr.20060926161207.2">@nocolor
 
@@ -3304,7 +3298,7 @@ False: Chapter tabs do not appear.</t>
 #propagate-key-event = Alt-W
 </t>
 <t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
-<t tx="ekr.20070622214401" str_leo_pos="4,17">@nocolor-node
+<t tx="ekr.20070622214401" str_leo_pos="3">@nocolor-node
 
 Please don't change this node and its descendants; they are for Leo's
 developers.
@@ -3704,9 +3698,6 @@ recommend it, or something like it, for when using vim-like bindings:
 
 It's a soft pink that contrasts nicely with the soft yellow color gets shown in
 the body pane when the body pane does *not* have focus.
-
-- *Important*: the new default setting for @bool stayInTreeAfterEditHeadline is False.
-  This allows the &lt;Return&gt; key to switch into the body pane anywhere in the outline.
 
 - vim-like bindings are defined in leoSettings.leo in the node:
 

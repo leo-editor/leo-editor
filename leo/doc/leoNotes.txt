@@ -10423,5 +10423,13 @@ def leoTutorial (self,event=None):
         webbrowser.open_new(url)
     except:
         g.es("not found:",url)
+.. @+node:ekr.20131219152407.17363: *3* c.treeEditFocusHelper
+def treeEditFocusHelper (self):
+    c = self
+    if c.stayInTreeAfterEdit:
+        c.treeWantsFocus()
+    else:
+        c.bodyWantsFocus()
+
 .. @-all
 .. @-leo

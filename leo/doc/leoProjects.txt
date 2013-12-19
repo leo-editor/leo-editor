@@ -2161,6 +2161,15 @@ Now contains items that open various .leo files.
 It used to select the minibuffer label, which messed up following logic.
 .. @+node:ekr.20131213063329.16422: *3* Added two new help-for commands
 Added help-for-creating-external-files and help-for-scripting.
+.. @+node:ekr.20131219152407.16578: *3* Changed frame.endEditLabelCommand
+It now always stays in the tree pane when you hit return to
+end editing.
+
+This will be more natural to newbies, and allows plain arrow
+keys to traverse the tree more easily.
+
+Also, c.treeEditFocusHelper no longer exists, and the @bool
+stayInTreeAfterEditHeadline setting no longer exists.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.

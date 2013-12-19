@@ -1421,17 +1421,19 @@ class leoFrame:
         c.redraw(p)
     #@+node:ekr.20031218072017.3982: *5* frame.endEditLabelCommand
     def endEditLabelCommand (self,event=None,p=None):
-
         '''End editing of a headline and move focus to the body pane.'''
-
         frame = self ; c = frame.c ; k = c.k
         if g.app.batchMode:
             c.notValidInBatchMode("End Edit Headline")
         else:
-            c.endEditing()
-            c.treeEditFocusHelper()
-
-            if k and not c.stayInTreeAfterEdit:
+            w = c.get_focus()
+            w_name = g.app.gui.widget_name(w)
+            if w_name.startswith('head'):
+                c.endEditing()
+                c.treeWantsFocus()
+            else:
+                # c.endEditing()
+                c.bodyWantsFocus()
                 k.setDefaultInputState()
                 # Recolor the *body* text, **not** the headline.
                 k.showStateAndMode(w=c.frame.body.bodyCtrl)

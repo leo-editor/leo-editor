@@ -472,7 +472,7 @@ class Commands (object):
         c.sparse_find               = getBool('collapse_nodes_during_finds')
         c.sparce_spell              = getBool('collapse_nodes_while_spelling')
         c.stayInTreeAfterSelect     = getBool('stayInTreeAfterSelect')
-        c.stayInTreeAfterEdit       = getBool('stayInTreeAfterEditHeadline')
+        # c.stayInTreeAfterEdit       = getBool('stayInTreeAfterEditHeadline')
         c.smart_tab                 = getBool('smart_tab')
             # Note: there is also a smart_auto_indent setting.
         c.tab_width                 = getInt('tab_width') or -4
@@ -6777,17 +6777,8 @@ class Commands (object):
         c.treeSelectHelper(p)
     #@+node:ekr.20070417112650: *6* utils
     #@+node:ekr.20070226121510: *7*  c.xFocusHelper
-    def treeEditFocusHelper (self):
-        c = self
-
-        if c.stayInTreeAfterEdit:
-            c.treeWantsFocus()
-        else:
-            c.bodyWantsFocus()
-
     def treeFocusHelper (self):
         c = self
-
         if c.stayInTreeAfterSelect:
             c.treeWantsFocus()
         else:
@@ -6929,7 +6920,8 @@ class Commands (object):
     def openLeoPlugins (self,event=None):
         '''Open leoPlugins.leo in a new Leo window.'''
         c = self
-        for name in ('leoPlugins.leo','leoPluginsRef.leo'):
+        names = ('leoPlugins.leo','leoPluginsRef.leo',) # Used in error message.
+        for name in names:
             fileName = g.os_path_join(g.app.loadDir,"..","plugins",name)
             # Bug fix: 2012/04/09: only call g.openWithFileName if the file exists.
             if g.os_path_exists(fileName):
