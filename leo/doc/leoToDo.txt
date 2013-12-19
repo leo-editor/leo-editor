@@ -13,8 +13,6 @@ Leo 4.11.1:
 - Merge extensions & external folders.
 
 Urgent: Basic Leo operations tutorial.
-
-* Don't add @button nodes more than once!
 .. @+node:ekr.20131213072223.16397: *3* * Video tutorials
 @language rest
 

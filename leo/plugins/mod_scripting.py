@@ -246,41 +246,49 @@ class scriptingController:
         self.createCommonButtons()
         self.createCommonCommands()
         # Last, scan for user-defined nodes.
-        # 2011/10/20: honor @ignore here.
-        # for p in c.all_positions():
         p = c.rootPosition()
+        seen = []
         while p:
+            # Honor @ignore here.
             if p.isAtIgnoreNode():
                 p.moveToNodeAfterTree()
+            elif p.v in seen:
+                p.moveToThreadNext()
             else:
-                if self.atButtonNodes and match(p,'@button'): 
+                if self.atButtonNodes and match(p,'@button'):
+                    seen.append(p.v)
                     self.handleAtButtonNode(p)
                 # 2013/11/13 Jake Peck:
-                # @rclick nodes create minibuffer commands
+                # @rclick nodes create minibuffer commands.
                 elif self.atRclickNodes and match(p,'@rclick'):
+                    seen.append(p.v)
                     self.handleAtRclickNode(p)
                 elif self.atCommandsNodes and match(p,'@command'):
+                    seen.append(p.v)
                     self.handleAtCommandNode(p)
                 elif self.atPluginNodes and match(p,'@plugin'):
+                    seen.append(p.v)
                     self.handleAtPluginNode(p)
                 elif self.atScriptNodes and match(p,'@script'):
+                    seen.append(p.v)
                     self.handleAtScriptNode(p)
                 p.moveToThreadNext()
     #@+node:ekr.20080312071248.1: *4* createCommonButtons & helper
     def createCommonButtons (self):
-
+        '''Handle all global @button nodes.'''
         trace = False and not g.app.unitTesting and not g.app.batchMode
         c = self.c
-
         if trace: g.trace(c.shortFileName())
-
         buttons = c.config.getButtons()
         if buttons:
+            seen = []
             for z in buttons:
                 p,script = z
-                h = p.h
-                if trace: g.trace('global @button',h)
-                self.handleAtButtonSetting(h,script)
+                if p.v not in seen:
+                    seen.append(p.v)
+                    h = p.h
+                    if trace: g.trace('global @button',h)
+                    self.handleAtButtonSetting(h,script)
     #@+node:ekr.20070926084600: *5* handleAtButtonSetting & helper
     def handleAtButtonSetting (self,h,script):
 
@@ -353,27 +361,25 @@ class scriptingController:
             c.frame.bodyWantsFocus()
     #@+node:ekr.20080312071248.2: *4* createCommonCommands (mod_scripting)
     def createCommonCommands (self):
-
+        '''Handle all global @command nodes.'''
         c = self.c ; k = c.k
-
         # trace = True and not g.app.unitTesting # and not g.app.batchMode
         aList = c.config.getCommands()
         if aList:
+            seen = []
             for z in aList:
                 p,script = z
-                h = p.h
-                args = self.getArgs(h)
-        
-                def commonCommandCallback (event=None,script=script):
-                    c.executeScript(args=args,script=script,silent=True)
-                    
-                self.registerTwoCommands(h,func=commonCommandCallback,
-                    pane='all',tag='global @command')
+                if p.v not in seen:
+                    seen.append(p.v)
+                    h = p.h
+                    args = self.getArgs(h)
+                    def commonCommandCallback (event=None,script=script):
+                        c.executeScript(args=args,script=script,silent=True)
+                    self.registerTwoCommands(h,func=commonCommandCallback,
+                        pane='all',tag='global @command')
     #@+node:ekr.20060328125248.20: *4* createRunScriptIconButton 'run-script' & callback
     def createRunScriptIconButton (self):
-
         '''Create the 'run-script' button and the run-script command.'''
-
         self.createIconButton(
             text='run-script',
             command = self.runScriptCommand,
@@ -396,9 +402,7 @@ class scriptingController:
             c.frame.bodyWantsFocus()
     #@+node:ekr.20060522105937: *4* createDebugIconButton 'debug-script' & callback
     def createDebugIconButton (self):
-
         '''Create the 'debug-script' button and the debug-script command.'''
-
         self.createIconButton(
             text='debug-script',
             command=self.runDebugScriptCommand,
@@ -468,9 +472,7 @@ class scriptingController:
         c.frame.bodyWantsFocus()
     #@+node:ekr.20060328125248.22: *4* createScriptButtonIconButton 'script-button' & callback
     def createScriptButtonIconButton (self):
-
         '''Create the 'script-button' button and the script-button command.'''
-
         self.createIconButton(
             text='script-button',
             command = self.addScriptButtonCommand,
