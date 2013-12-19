@@ -12,16 +12,9 @@ Leo 4.11.1:
 - Make sure Insert/Delete work in outline pane.
 - Merge extensions & external folders.
 
-Merge new (Python) importer into code:
-- Use compile-time switch?  Should it be part of 4.11.1?
-- Who does the whitespace check?
-- Can be done before doing the relinking stuff.
-
 Urgent: Basic Leo operations tutorial.
 
-p.linkToClone:
-- swithces p.v.
-- probably updates p.parents.
+* Don't add @button nodes more than once!
 .. @+node:ekr.20131213072223.16397: *3* * Video tutorials
 @language rest
 
@@ -111,6 +104,10 @@ DEF spam():
 def eggs():
     pass
 .. @+node:ekr.20131219090550.16533: *3* Fold new importer into leoImport.py
+@language python
+
+# unitTest.leo fails to import an @auto node properly when it loads:
+# A trailing comment is not added.
 .. @+node:ekr.20070707072749: *4* run (baseScannerClass)
 def run (self,s,parent):
     '''The common top-level code for all scanners.'''
@@ -810,9 +807,14 @@ def main():
     pass
 main2 = main
 .. @+node:ekr.20131218065355.17076: *4* target
-.. @+node:ekr.20131218112431.16504: *4* @button relink @auto
+.. @+node:ekr.20131218112431.16504: *4* @@button relink @auto
 @language python
 @others
+@
+p.linkToClone:
+- swithces p.v.
+- probably updates p.parents.
+@c
 g.cls()
 if c.isChanged():
     c.save()
