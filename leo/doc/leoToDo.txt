@@ -6,7 +6,22 @@
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 
-* Merge extensions & external folders.
+Leo 4.11.1:
+- Necessary for tutorials.
+- Disable my bindings for tutorials.
+- Make sure Insert/Delete work in outline pane.
+- Merge extensions & external folders.
+
+Merge new (Python) importer into code:
+- Use compile-time switch?  Should it be part of 4.11.1?
+- Who does the whitespace check?
+- Can be done before doing the relinking stuff.
+
+Urgent: Basic Leo operations tutorial.
+
+p.linkToClone:
+- swithces p.v.
+- probably updates p.parents.
 .. @+node:ekr.20131206064113.16325: *3* Fix new IPython bug
 The c property makes no sense.  Maybe the best solution is to get rid of it and change the docs.
 
@@ -716,6 +731,16 @@ def unl (self,p):
 .. @+node:ekr.20131218165949.16512: *6* clone 1
 # clone 1 text.
 .. @+node:ekr.20131218165949.16514: *6* clone 2
+# clone 2 text.
+.. @+node:ekr.20131218165949.16510: *4* test relink @auto
+.. @+node:ekr.20131218165949.16520: *5* organizer node
+.. @+node:ekr.20131218165949.16511: *6* node 1
+node 1 text.
+.. @+node:ekr.20131218165949.16512: *6* clone 1
+# clone 1 text.
+.. @+node:ekr.20131218165949.16513: *5* node 2
+node 2 text.
+.. @+node:ekr.20131218165949.16514: *5* clone 2
 # clone 2 text.
 .. @+node:ekr.20131121211048.16378: ** Next
 * Add docstrings for all commands in leoSessions.py.

@@ -4,6 +4,7 @@
 #@@first
     # Required so non-ascii characters will be valid in unit tests.
 
+new_python_importer = False
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
@@ -1554,9 +1555,11 @@ class leoImportCommands (scanUtility):
         scanner.run(s,parent)
     #@+node:ekr.20070703122141.99: *4* scanPythonText
     def scanPythonText (self,s,parent,atAuto=False):
-
-        scanner = pythonScanner(importCommands=self,atAuto=atAuto)
-
+        '''Scan python text.'''
+        if new_python_importer:
+            scanner = NewPythonScanner(importCommands=self,atAuto=atAuto)
+        else:
+            scanner = pythonScanner(importCommands=self,atAuto=atAuto)
         scanner.run(s,parent)
     #@+node:ekr.20090501095634.48: *4* scanRstText
     def scanRstText (self,s,parent,atAuto=False):
@@ -3286,48 +3289,35 @@ class baseScannerClass (scanUtility):
         return result
     #@+node:ekr.20070707072749: *3* run (baseScannerClass)
     def run (self,s,parent):
-
+        '''The common top-level code for all scanners.'''
         c = self.c
         self.root = root = parent.copy()
         self.file_s = s
         self.tab_width = self.importCommands.getTabWidth(p=root)
-        # g.trace('tab_width',self.tab_width)
         # Create the ws equivalent to one tab.
-        if self.tab_width < 0:
-            self.tab_ws = ' '*abs(self.tab_width)
-        else:
-            self.tab_ws = '\t'
-
+        self.tab_ws = ' '*abs(self.tab_width) if self.tab_width < 0 else '\t'
         # Init the error/status info.
         self.errors = 0
         self.errorLines = []
         self.mismatchWarningGiven = False
         changed = c.isChanged()
-
-        # Use @verbatim to escape section references.
-        # 2011/12/14: @auto never supports section references.
+        # Use @verbatim to escape section references (but not for @auto).
         if self.escapeSectionRefs and not self.atAuto: 
             s = self.escapeFalseSectionReferences(s)
-
         # Check for intermixed blanks and tabs.
         if self.strict or self.atAutoWarnsAboutLeadingWhitespace:
             if not self.isRst:
                 self.checkBlanksAndTabs(s)
-
-        # Regularize leading whitespace for strict languages only.
+        # Regularize leading whitespace (strict languages only).
         if self.strict: s = self.regularizeWhitespace(s) 
-
-        # Generate the nodes, including directive and section references.
+        # Generate the nodes, including directives and section references.
         self.scan(s,parent)
-
         # Check the generated nodes.
         # Return True if the result is equivalent to the original file.
         ok = self.errors == 0 and self.check(s,parent)
         g.app.unitTestDict ['result'] = ok
-
         # Insert an @ignore directive if there were any serious problems.
         if not ok: self.insertIgnoreDirective(parent)
-
         if self.atAuto and ok:
             for p in root.self_and_subtree():
                 p.clearDirty()
