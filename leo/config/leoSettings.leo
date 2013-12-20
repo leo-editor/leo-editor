@@ -3,8 +3,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
-	<global_window_position top="77" left="375" height="682" width="1264"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -2861,7 +2861,7 @@ extract-names               = Shift-Ctrl-N
 goto-next-clone             = Alt-N
 insert-child                = Ctrl-Insert
 insert-node                 = Ctrl-I
-insert-node                 = Insert
+insert-node                 !tree = Insert
 insert-node                 = Shift-Insert
 mark                        = Ctrl-M
 move-outline-down           = Ctrl-D
@@ -2874,11 +2874,11 @@ promote                     = Ctrl-[</t>
 <t tx="ekr.20060925060533.4">add-comments                        = Ctrl-parenleft
 backward-delete-char                = BackSpace
 backward-delete-char                = Shift-BackSpace
+backward-delete-char                !text = Delete
 backward-delete-word                = Ctrl-BackSpace
 backward-kill-word                  = Alt-BackSpace
 copy-text                           = Ctrl-c        # Conflicts with Emacs ctrl-c
 cut-text                            = Ctrl-x
-delete-char                         !text = Delete
 delete-char                         = Shift-Delete
 delete-comments                     = Ctrl-parenright
 # delete-comments                   = Shift-Ctrl-0 # Set elsewhere.
@@ -3298,7 +3298,7 @@ False: Chapter tabs do not appear.</t>
 #propagate-key-event = Alt-W
 </t>
 <t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
-<t tx="ekr.20070622214401" str_leo_pos="3">@nocolor-node
+<t tx="ekr.20070622214401">@nocolor-node
 
 Please don't change this node and its descendants; they are for Leo's
 developers.
@@ -3604,7 +3604,7 @@ do-nothing  = Ctrl-UpArrow
 end-edit-headline           ! tree = Return # Escape is also possible.
 # end-edit-headline           ! tree = Escape # May interfere with dismissing dialogs.
 insert-newline              ! body = Return
-# enter-newline-insert-mode ! body = Return
+insert-newline              ! text = Insert
 
 back-char                   ! text = LtArrow
 forward-char                ! text = RtArrow
