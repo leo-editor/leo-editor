@@ -14409,9 +14409,9 @@ if 1:
     v2.h = 'insertAsNthChild(1)'
 p.expand()
 c.redraw()
-#@+node:ekr.20130706072629.4958: *5* insertAsFirstChild
-#@+node:ekr.20130706072629.4960: *5* insertAsNthChild(1)
-#@+node:ekr.20130706072629.4959: *5* insertAsLastChild
+#@+node:ekr.20131220083358.3987: *5* insertAsFirstChild
+#@+node:ekr.20131220083358.3989: *5* insertAsNthChild(1)
+#@+node:ekr.20131220083358.3988: *5* insertAsLastChild
 #@+node:ekr.20080310073711.1: *4* @test nodeIndices.toString(None) allocates a new index
 gnx = g.app.nodeIndices.toString(None)
 assert(gnx not in (None,'None'))
@@ -14420,6 +14420,30 @@ assert(len(gnx) > 1)
 # This hack is needed only for tkinter gui.
 if g.app.gui.guiName() == 'tkinter':
     p.OnHyperLinkControlClick(event=None)
+#@+node:ekr.20131220083358.3982: *4* @test p._relinkAsCloneOf
+u = c.undoer
+p1 = g.findNodeInTree(c,p,'a')
+p2 = g.findNodeInTree(c,p,'b')
+assert p1 and p2
+assert not p1.isCloned()
+assert not p2.isCloned()
+bunch = u.beforeChangeTree(p)
+p1._relinkAsCloneOf(p2)
+u.afterChangeTree(p,'relink-clone',bunch)
+assert p.firstChild().isCloned()
+assert p.firstChild().next().isCloned()
+c.redraw()
+u.undo()
+c.redraw()
+p1 = g.findNodeInTree(c,p,'a')
+p2 = g.findNodeInTree(c,p,'b')
+assert not p1.isCloned()
+assert not p2.isCloned()
+assert p1 and p2
+u.clearUndoState()
+#@+node:ekr.20131220083358.3983: *5* a
+#@+node:ekr.20131220083358.3984: *5* b
+b text.
 #@+node:ekr.20100131180007.5369: *4* @test p.adjustPositionBeforeUnlink
 table = (
     '1',

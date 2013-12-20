@@ -3,9 +3,7 @@
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
-
 use_zodb = False
-
 #@+<< imports >>
 #@+node:ekr.20060904165452.1: ** << imports >> (leoNodes)
 import leo.core.leoGlobals as g
@@ -33,7 +31,6 @@ else:
 
 
 #@-<< imports >>
-
 #@+others
 #@+node:ekr.20031218072017.1991: ** class nodeIndices
 # Indices are Python dicts containing 'id','loc','time' and 'n' keys.
@@ -1684,23 +1681,6 @@ class position (object):
         child = p.v
         child._addLink(n,parent_v,adjust=adjust)
 
-    #@+node:ekr.20080416161551.212: *4* p._parentVnode
-    def _parentVnode (self):
-
-        '''Return the parent vnode.
-        Return the hiddenRootNode if there is no other parent.'''
-
-        p = self
-
-        if p.v:
-            data = p.stack and p.stack[-1]
-            if data:
-                v, junk = data
-                return v
-            else:
-                return p.v.context.hiddenRootNode
-        else:
-            return None
     #@+node:ekr.20080416161551.216: *4* p._linkAsRoot
     def _linkAsRoot (self,oldRoot):
 
@@ -1720,6 +1700,40 @@ class position (object):
         if not oldRoot: parent_v.children = []
         child._addLink(0,parent_v)
         return p
+    #@+node:ekr.20080416161551.212: *4* p._parentVnode
+    def _parentVnode (self):
+
+        '''Return the parent vnode.
+        Return the hiddenRootNode if there is no other parent.'''
+
+        p = self
+
+        if p.v:
+            data = p.stack and p.stack[-1]
+            if data:
+                v, junk = data
+                return v
+            else:
+                return p.v.context.hiddenRootNode
+        else:
+            return None
+    #@+node:ekr.20131219220412.16582: *4* p._relinkAsCloneOf
+    def _relinkAsCloneOf(self,p2):
+        '''A low-level method to replace p.v by a p2.v.'''
+        p = self
+        v,v2 = p.v,p2.v
+        parent_v = p._parentVnode()
+        if not parent_v:
+            g.internalError('no parent_v',p)
+            return
+        if parent_v.children[p._childIndex] == v:
+            parent_v.children[p._childIndex] = v2
+            v2.parents.append(parent_v)
+            p.v = p2.v
+        else:
+            g.internalError(
+                'parent_v.children[childIndex] != v',
+                p,parent_v.children,childIndex,v)
     #@+node:ekr.20080416161551.217: *4* p._unlink
     def _unlink (self):
 
