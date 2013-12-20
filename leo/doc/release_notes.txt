@@ -21636,7 +21636,7 @@ The entries here override the entries in @data qt-gui-plugin-style-sheet
 
 This is a *major* improvement: you don't have to copy/paste @data
 qt-gui-plugin-style-sheet. Just put your particular overrides in
-@data qt-gui-plugin-style-sheet. At long last, you can see just what you
+@data qt-gui-user-style-sheet. At long last, you can see just what you
 changed.
 #@+node:ekr.20131220065609.16635: *4* Fixed bugs
 #@+node:ekr.20131220065609.16622: *5* Allow comments after @data setting-name
