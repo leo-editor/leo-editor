@@ -476,7 +476,7 @@
 <v t="ekr.20131213135427.21949"><vh>@@item *q&amp;uery-replace-regex</vh></v>
 <v t="ekr.20131213135427.21950"><vh>Proper names</vh></v>
 </v>
-<v t="ekr.20131213135427.21951"><vh>@menu &amp;Settings</vh>
+<v t="ekr.20131213135427.21951"><vh>@menu Settings</vh>
 <v t="ekr.20131213135427.21952"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21953"><vh>@item open-leoSettings-leo</vh></v>
 <v t="ekr.20131213135427.21954"><vh>@item open-myLeoSettings-leo</vh></v>
