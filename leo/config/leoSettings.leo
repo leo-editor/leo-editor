@@ -1267,7 +1267,7 @@
 <v t="tbrown.20110212091818.20118"><vh>@bool inter_outline_drag_moves = False</vh></v>
 <v t="ekr.20100107060708.6390"><vh>@bool qt-tree-multiple-selection = True</vh></v>
 <v t="ekr.20110601103939.19339"><vh>@bool single_click_auto_edits_headline = False</vh></v>
-<v t="ekr.20061007211759"><vh>@bool sparse_move_outline_left = True</vh></v>
+<v t="ekr.20061007211759"><vh>@bool sparse_move_outline_left = False</vh></v>
 <v t="ekr.20060122105527.7"><vh>@bool stayInTreeAfterSelect = True</vh></v>
 <v t="ekr.20061002115414.1"><vh>@float outline_nav_extend_delay = 2.0</vh></v>
 </v>
@@ -2974,7 +2974,8 @@ search fails, so in practice everything works well without thinking about what
 is happening.
 </t>
 <t tx="ekr.20061003173413"></t>
-<t tx="ekr.20061007211759">True: collapse the parent of the moved node when moving a node left.</t>
+<t tx="ekr.20061007211759">True: collapse the parent of the moved node when moving a node left.
+</t>
 <t tx="ekr.20061009190510">True: update .leoRecentFiles.txt, creating it if if does not exist.
 False: don't update .leoRecentFiles and don't create it.</t>
 <t tx="ekr.20061010111324">True: (legacy) Select all headline text when editing a headline.

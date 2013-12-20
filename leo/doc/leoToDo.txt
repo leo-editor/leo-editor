@@ -10,23 +10,15 @@ Urgent: Basic Leo operations tutorial.
 
 Urgent: Settings tutorial.
 .. @+node:ekr.20131219102947.16570: *3* Release 4.11.1
-Leo 4.11.1:
-- Necessary for tutorials.
-- Disable my bindings for tutorials.
-- Make sure Insert/Delete work in outline pane.
 .. @+node:ekr.20131213072223.16397: *3* * Video tutorials
 @language rest
 
-3 or 4 screencasts will demonstrate that anyone can use Leo.
-
 When ready to release:
-
-Intro to Leo: https://www.youtube.com/watch?v=nlQO21eopzM
 
 - Note to Dave Winer.
 - Announce to comp.lang.python & SourceForge.
 
-.. @+node:ekr.20131208103040.16342: *4* - Basic: Settings (URGENT)
+.. @+node:ekr.20131208103040.16342: *4* - Basic: Settings (urgent)
 - focus on visual settings.
 @menu
 leo-x-pt.leo files.
@@ -96,7 +88,6 @@ DEF spam():
 .. @+node:ekr.20131116123026.16663: *6* eggs
 def eggs():
     pass
-.. @+node:ekr.20131219102947.16571: *3* I got bit by the cloned-headline not updated bug
 .. @+node:ekr.20131219090550.16533: *3* Fold new importer into leoImport.py
 @language python
 
@@ -908,6 +899,39 @@ node 1 text.
 node 2 text.
 .. @+node:ekr.20131218165949.16514: *5* clone 2
 # clone 2 text.
+.. @+node:ekr.20131219220412.16582: *4* p._relinkAsCloneOf
+def _relinkAsCloneOf(self,p2):
+    '''A low-level method to replace p.v by a p2.v.'''
+    p = self
+    v,v2 = p.v,p2.v
+    parent_v = p._parentVnode()
+    if not parent_v:
+        g.internalError('no parent_v',p)
+        return
+    if parent_v.children[p._childIndex] == v:
+        parent_v.children[p._childIndex] = v2
+        v2.parents.append(parent_v)
+        p.v = p2.v
+    else:
+        g.internalError(
+            'parent_v.children[childIndex] != v',
+            p,parent_v.children,childIndex,v)
+.. @+node:ekr.20131214182408.16963: *4* script copy
+g.cls()
+p2 = g.findNodeAnywhere(c,'@file leoApp.py')
+print(p2)
+fn = g.os_path_finalize_join(g.app.loadDir,'leoApp.py')
+print(g.os_path_exists(fn),fn)
+names = [fn]
+# Strip the sentinels.
+s = c.importCommands.removeSentinelsCommand(names,toString=True)
+print(len(s))
+# Import s to an outline.
+parent = p.insertAfter()
+parent.h = '@@auto leoApp.py'
+p4 = c.importCommands.createOutline(fn,parent,atAuto=True,s=s,ext=None)
+c.redraw()
+# Compare outlines.
 .. @+node:ekr.20131206064113.16325: *3* Fix new IPython bug
 The c property makes no sense.  Maybe the best solution is to get rid of it and change the docs.
 
@@ -1054,200 +1078,6 @@ def shouldBeExpanded(self,p):
                 return True
     return False
 .. @+node:ekr.20131120054058.16279: *3* Create github repo (call Speed)
-.. @+node:ekr.20131121211048.16378: ** Next
-* Add docstrings for all commands in leoSessions.py.
-- Add focus-to-x commands, where x is a *temporary* log pane, like completions, commands, etc.
-* More screenshots! Different font sizes, coloring schemes, plugins, etc.
-.. @+node:ekr.20131119060731.20107: *3* * Put @button nodes in the template myLeoSettings.leo
-We could use @button nodes to munge settings. Naturally, this should be
-done in myLeoSettings.leo.
-
-This meshes well with the wishlist bug of creating myLeoSettings.leo
-automatically if it does not exist.
-
-This default myLeoSettings.leo file would be a copy of a template file in
-leo/config.
-
-This template file could have all the @button nodes we could want. It's an
-easy, flexible plan.
-.. @+node:ekr.20131121090013.17108: *3* Import pane, similar to the Find pane
-Very important.
-
-ActivePath is an alternative.  Has rclick interface.
-.. @+node:ekr.20131121050226.16327: *3* reload command?
-**Not** essential.
-
-Ideas:
-- Don't reload any files!
-- Only reprocess leoSettings.leo or myLeoSettings.leo if they are actually open.
-- Change LoadManager to handle a reload flag.
-.. @+node:ekr.20131117054619.16683: *3* Improve Find
-@language rest
-
-New check boxes:
-    - Find-All starts at selected node.
-    - Ignore duplicates.
-
-* (Done??) Reset wrap & onlyPosition when the find pattern changes:
-    The find command must reset several state variables whenever
-    a) The find pattern changes or
-    b) a limited (node-only, suboutline-only) search completes or
-    c) a wrapped search completes.
-    d) Whenever any radio button (find scope) changes.
-
-- Create unit tests.
-    - Check all bug reports.
-    - Test outline-only, node-only, wrap.
-    - Test isearch (forward & backward)
-* Revise theory of operation.
-- Add @bool find_all_from_present_position = True
-* Ctrl-F puts selected text into the search box.
-- Make sure to capture search string, even if do ctrl-g, etc.
-** Smart search: clear ignore case if the search text has at least one uppercase letter.
-- find-all and change-all never wrap.=
-
-Maybe:
-- Put "not found" message somewhere else.
-- Don't put unknown ctrl keys in minibuffer (suppress ctrl-shift-r)
-
-@language python
-.. @+node:ekr.20131118113639.17705: *4* Done
-@language rest
-
-Important classes & methods:
-- spellTabHandler (in leoEditcommands.py) is no longer a subclass of leoFind class.
-- dw.createFindTab & helpers
-- class FindTabManager
-- class EventWrapper
-
-What I did:
-- Added support for Alt-Ctrl keys.
-- start-find selects all text in findbox.
-- Removed eventFilter ivar
-- All defaults work in the Find pane, except the Alt-Ctrl bindings.
-  The user can just use the standard Alt-bindings to set checkboxes and radio buttons.
-- Add shortcuts to button names.
-- Honor Ctrl-G, F2, F3, Ctrl-- & Ctrl-+ from any widget in the find pane.
-- Create help button in the Find pane.
-- dw code now sets ftm ivars, not dw ivars.
-- Added tab easter egg to searchWithPresentOptions.
-- Removed all clones and dead code from leoSettings.leo.
-  (Improved introductory comments.)
-- Createf leo/config/exampleSettings.leo.
-- fc.minibuffer_mode replaces fc.expert_mode.
-- start-find command
-- test set-replace-string.
-- Protect self.p everywhere.
-- Don't hide find pane during searches.
-- Init widgets from c.config.
-- Clicking widgets should set leoFind ivars.
-- Toggle commands should toggle widgets.
-- Move search classes from leoEditCommands.py to leoFind.py
-
-Changed methods:
-- c.initObjects now creates leoFind object.
-- c.finishCreate does: self.findCommands = leoFind.leoFind(c)
-- Added the FindTabManager (ftm)
-- dw.createFindTab adds find buttons and calls.
-- dw.createFindTab creates the FindTabManager and calls ftm.init_widgets.
-* Added find_generation ivar to vnode class.
-.. @+node:ekr.20131123071505.16462: *4* Crash in undoer
-redoGroup oops: expecting bunch.items.  bunch.kind = typing
-redoGroup Bunch...
-dirtyVnodeList: [<pos 192439856 childIndex: 9 lvl: 0 key: 65845296:9 find.generalSearchHelper (Must init!!)>]
-kind: typing
-leading: 10
-newMiddleLines: [u'        self.setup_command() ### ']
-newNewlines: 1
-newSel: (276, 276)
-newText: None
-oldMiddleLines: [u'        self.setup_command()']
-oldNewlines: 1
-oldSel: (271, 271)
-oldText: None
-p: <pos 192438800 childIndex: 9 lvl: 0 key: 65845296:9 find.generalSearchHelper (Must init!!)>
-redoHelper: <bound method undoer.redoTyping of <leo.core.leoUndo.undoer instance at 0x03FF4198>>
-trailing: 9
-undoHelper: <bound method undoer.undoTyping of <leo.core.leoUndo.undoer instance at 0x03FF4198>>
-undoType: Typing
-yview: 0
-.. @+node:ekr.20131124060334.16468: *4* Find-related bugs
-@language rest
-.. @+node:ekr.20131124060334.16469: *5* Bug 1228458: Inconsistency between Find-forward and Find-backward
-https://bugs.launchpad.net/leo-editor/+bug/1228458
-
-In a Leo-Editor file containing exactly one node, there is no way to search
-the headline.
-
-Suggested fix: Backward search should search the body and then the headline.
-.. @+node:ekr.20131124060912.16474: *5* Bug 1228312: Find tab selected in log pane disables Minibuffer
-https://bugs.launchpad.net/leo-editor/+bug/1228312
-
-When the find tab is selected in the log pane, Alt-X complements the Regexp
-flag--instead of enabling use of the Minibuffer. It doesn't matter where
-focus is. Focus can be in the outline pane or body pane, Alt-X still just
-complements the Regexp flag.
-
-Fixed at rev 6351.
-
-This was the so-called "greedy checkbox bug".
-.. @+node:ekr.20131124060912.16475: *5* Bug 1228457: Beginning find at the current node's body cursor when that cursor is not displayed
-https://bugs.launchpad.net/leo-editor/+bug/1228457
-
-Every node has a current cursor position. Suppose the user changes nodes by
-clicking on a node in the outline pane and then starts a Find. The focus is
-in the outline pane. The body cursor is not displayed. The user has no idea
-where in the body the search begins. The user is all too likely to think
-that the whole body is searched.
-
-Suggestion: If the body cursor is not displayed (i.e., the focus is not in
-the body), then always begin Find-forward at the beginning of the body and
-always begin Find-backward at the end of the body.
-
-If the focus is in the body of the currently selected node, then Find
-should begin at the cursor. This is what everyone expects based on other
-editors.
-.. @+node:ekr.20131124060912.16476: *5* Bug 1228452: Documentation bug: "Entire Outline" "Subroutine Only" and "Node Only" are a set
-https://bugs.launchpad.net/leo-editor/+bug/1228452
-
-The documentation shown by help-for-find-commands says:
-
-The Find Tab shows the present settings.
-Underlined characters are keyboard hints:
-Alt-Ctrl-W toggles the Whole Word checkbox, and so on.
-
-This is seriously misleading and unhelpful when it comes to "Entire
-Outline" "Subroutine Only" and "Node Only". They are a set. Exactly one
-must be on at any one time. So Alt-Ctrl-? can only be used to toggle an off
-to on with the side-effect of toggling the one that was previously on to
-off.
-.. @+node:ekr.20131124060912.16477: *5* Bug 1228713: Find-backward skips headlines under some conditions
-https://bugs.launchpad.net/leo-editor/+bug/1228713
-
-If a headline is open for editing when Find-backwards is initiated or
-continued, the headline is NOT searched, the search skips to the node body
-and then to the previous node (if any).
-
-This problem with Find-backwards is particularly serious because every time
-Find-backwards or Find-forward finds a string in a headline it opens the
-headline for editing, then continuing by hitting F2 skips the rest of the
-headline.
-
-This bug also affects "Replace backwards".
-
-Corollary to this bug:
-
-Find-forward finds any number of instances in one headline, but
-Find-backward only finds the rightmost instance in the headline.
-----
-
-Find-forward searches from the current cursor position in the currently
-open-for-edit entity (either headline or body). Find-backward searches from
-the current cursor position only if the currently open-for-edit entity is a
-body. This is a serious lack of consistency.
-.. @+node:ekr.20131207054442.16335: *4* check isearch
-* unit tests?
-- Create save/restore_isearch_vars methods using isearch_save_d.
 .. @+node:ekr.20131105020211.18058: ** Important
 .. @+node:ekr.20131101080215.16488: *3* * Outreach to magazine editors
 ===== Steve Litt
@@ -1298,7 +1128,7 @@ https://groups.google.com/forum/#!topic/leo-editor/nIl3ud7Tbig
 
 
 .. @+node:ekr.20130926053913.11569: *3* leoRope.py
-.. @+node:ekr.20131102044158.16568: ** For 4.11.1
+.. @+node:ekr.20131102044158.16568: ** For 4.11.2
 .. @+node:ekr.20131101080215.16490: *3* * Fix option-key bug on Mac
 @language rest
 
@@ -1619,6 +1449,203 @@ There is no quick fix for this.  Probably a new command is needed.
 .. @+node:ekr.20131103054650.16527: *3* fill-region & format-body can hang
 .. @+node:ekr.20131025044901.17146: *3* Clone-to-last-node
 # Don't change selected node!
+.. @+node:ekr.20131219102947.16571: *3* Weird clone bug
+I got bit by the cloned-headline not updated bug
+.. @+node:ekr.20131121211048.16378: *3* More screenshots!
+Different font sizes, coloring schemes, plugins, etc.
+.. @+node:ekr.20131220065609.16590: *3* Add docstrings for all commands in leoSessions.py.
+.. @+node:ekr.20131220065609.16591: *3* Add focus-to-x commands
+Add focus-to-x commands, where x is a *temporary* log pane, like completions, commands, etc.
+.. @+node:ekr.20131119060731.20107: *3* * Put @button nodes in the template myLeoSettings.leo
+We could use @button nodes to munge settings. Naturally, this should be
+done in myLeoSettings.leo.
+
+This meshes well with the wishlist bug of creating myLeoSettings.leo
+automatically if it does not exist.
+
+This default myLeoSettings.leo file would be a copy of a template file in
+leo/config.
+
+This template file could have all the @button nodes we could want. It's an
+easy, flexible plan.
+.. @+node:ekr.20131121090013.17108: *3* Import pane, similar to the Find pane
+Very important.
+
+ActivePath is an alternative.  Has rclick interface.
+.. @+node:ekr.20131121050226.16327: *3* reload command?
+**Not** essential.
+
+Ideas:
+- Don't reload any files!
+- Only reprocess leoSettings.leo or myLeoSettings.leo if they are actually open.
+- Change LoadManager to handle a reload flag.
+.. @+node:ekr.20131117054619.16683: *3* Improve Find
+@language rest
+
+New check boxes:
+    - Find-All starts at selected node.
+    - Ignore duplicates.
+
+* (Done??) Reset wrap & onlyPosition when the find pattern changes:
+    The find command must reset several state variables whenever
+    a) The find pattern changes or
+    b) a limited (node-only, suboutline-only) search completes or
+    c) a wrapped search completes.
+    d) Whenever any radio button (find scope) changes.
+
+- Create unit tests.
+    - Check all bug reports.
+    - Test outline-only, node-only, wrap.
+    - Test isearch (forward & backward)
+* Revise theory of operation.
+- Add @bool find_all_from_present_position = True
+* Ctrl-F puts selected text into the search box.
+- Make sure to capture search string, even if do ctrl-g, etc.
+** Smart search: clear ignore case if the search text has at least one uppercase letter.
+- find-all and change-all never wrap.=
+
+Maybe:
+- Put "not found" message somewhere else.
+- Don't put unknown ctrl keys in minibuffer (suppress ctrl-shift-r)
+
+@language python
+.. @+node:ekr.20131118113639.17705: *4* Done
+@language rest
+
+Important classes & methods:
+- spellTabHandler (in leoEditcommands.py) is no longer a subclass of leoFind class.
+- dw.createFindTab & helpers
+- class FindTabManager
+- class EventWrapper
+
+What I did:
+- Added support for Alt-Ctrl keys.
+- start-find selects all text in findbox.
+- Removed eventFilter ivar
+- All defaults work in the Find pane, except the Alt-Ctrl bindings.
+  The user can just use the standard Alt-bindings to set checkboxes and radio buttons.
+- Add shortcuts to button names.
+- Honor Ctrl-G, F2, F3, Ctrl-- & Ctrl-+ from any widget in the find pane.
+- Create help button in the Find pane.
+- dw code now sets ftm ivars, not dw ivars.
+- Added tab easter egg to searchWithPresentOptions.
+- Removed all clones and dead code from leoSettings.leo.
+  (Improved introductory comments.)
+- Createf leo/config/exampleSettings.leo.
+- fc.minibuffer_mode replaces fc.expert_mode.
+- start-find command
+- test set-replace-string.
+- Protect self.p everywhere.
+- Don't hide find pane during searches.
+- Init widgets from c.config.
+- Clicking widgets should set leoFind ivars.
+- Toggle commands should toggle widgets.
+- Move search classes from leoEditCommands.py to leoFind.py
+
+Changed methods:
+- c.initObjects now creates leoFind object.
+- c.finishCreate does: self.findCommands = leoFind.leoFind(c)
+- Added the FindTabManager (ftm)
+- dw.createFindTab adds find buttons and calls.
+- dw.createFindTab creates the FindTabManager and calls ftm.init_widgets.
+* Added find_generation ivar to vnode class.
+.. @+node:ekr.20131123071505.16462: *4* Crash in undoer
+redoGroup oops: expecting bunch.items.  bunch.kind = typing
+redoGroup Bunch...
+dirtyVnodeList: [<pos 192439856 childIndex: 9 lvl: 0 key: 65845296:9 find.generalSearchHelper (Must init!!)>]
+kind: typing
+leading: 10
+newMiddleLines: [u'        self.setup_command() ### ']
+newNewlines: 1
+newSel: (276, 276)
+newText: None
+oldMiddleLines: [u'        self.setup_command()']
+oldNewlines: 1
+oldSel: (271, 271)
+oldText: None
+p: <pos 192438800 childIndex: 9 lvl: 0 key: 65845296:9 find.generalSearchHelper (Must init!!)>
+redoHelper: <bound method undoer.redoTyping of <leo.core.leoUndo.undoer instance at 0x03FF4198>>
+trailing: 9
+undoHelper: <bound method undoer.undoTyping of <leo.core.leoUndo.undoer instance at 0x03FF4198>>
+undoType: Typing
+yview: 0
+.. @+node:ekr.20131124060334.16468: *4* Find-related bugs
+@language rest
+.. @+node:ekr.20131124060334.16469: *5* Bug 1228458: Inconsistency between Find-forward and Find-backward
+https://bugs.launchpad.net/leo-editor/+bug/1228458
+
+In a Leo-Editor file containing exactly one node, there is no way to search
+the headline.
+
+Suggested fix: Backward search should search the body and then the headline.
+.. @+node:ekr.20131124060912.16474: *5* Bug 1228312: Find tab selected in log pane disables Minibuffer
+https://bugs.launchpad.net/leo-editor/+bug/1228312
+
+When the find tab is selected in the log pane, Alt-X complements the Regexp
+flag--instead of enabling use of the Minibuffer. It doesn't matter where
+focus is. Focus can be in the outline pane or body pane, Alt-X still just
+complements the Regexp flag.
+
+Fixed at rev 6351.
+
+This was the so-called "greedy checkbox bug".
+.. @+node:ekr.20131124060912.16475: *5* Bug 1228457: Beginning find at the current node's body cursor when that cursor is not displayed
+https://bugs.launchpad.net/leo-editor/+bug/1228457
+
+Every node has a current cursor position. Suppose the user changes nodes by
+clicking on a node in the outline pane and then starts a Find. The focus is
+in the outline pane. The body cursor is not displayed. The user has no idea
+where in the body the search begins. The user is all too likely to think
+that the whole body is searched.
+
+Suggestion: If the body cursor is not displayed (i.e., the focus is not in
+the body), then always begin Find-forward at the beginning of the body and
+always begin Find-backward at the end of the body.
+
+If the focus is in the body of the currently selected node, then Find
+should begin at the cursor. This is what everyone expects based on other
+editors.
+.. @+node:ekr.20131124060912.16476: *5* Bug 1228452: Documentation bug: "Entire Outline" "Subroutine Only" and "Node Only" are a set
+https://bugs.launchpad.net/leo-editor/+bug/1228452
+
+The documentation shown by help-for-find-commands says:
+
+The Find Tab shows the present settings.
+Underlined characters are keyboard hints:
+Alt-Ctrl-W toggles the Whole Word checkbox, and so on.
+
+This is seriously misleading and unhelpful when it comes to "Entire
+Outline" "Subroutine Only" and "Node Only". They are a set. Exactly one
+must be on at any one time. So Alt-Ctrl-? can only be used to toggle an off
+to on with the side-effect of toggling the one that was previously on to
+off.
+.. @+node:ekr.20131124060912.16477: *5* Bug 1228713: Find-backward skips headlines under some conditions
+https://bugs.launchpad.net/leo-editor/+bug/1228713
+
+If a headline is open for editing when Find-backwards is initiated or
+continued, the headline is NOT searched, the search skips to the node body
+and then to the previous node (if any).
+
+This problem with Find-backwards is particularly serious because every time
+Find-backwards or Find-forward finds a string in a headline it opens the
+headline for editing, then continuing by hitting F2 skips the rest of the
+headline.
+
+This bug also affects "Replace backwards".
+
+Corollary to this bug:
+
+Find-forward finds any number of instances in one headline, but
+Find-backward only finds the rightmost instance in the headline.
+----
+
+Find-forward searches from the current cursor position in the currently
+open-for-edit entity (either headline or body). Find-backward searches from
+the current cursor position only if the currently open-for-edit entity is a
+body. This is a serious lack of consistency.
+.. @+node:ekr.20131207054442.16335: *4* check isearch
+* unit tests?
+- Create save/restore_isearch_vars methods using isearch_save_d.
 .. @+node:ekr.20130803125244.17100: ** Docs & marketing
 .. @+node:ekr.20131029095615.17089: *3* A cool tricks section
 .. @+node:ekr.20130909111702.13058: *3* Allow paypal donations to Leo
