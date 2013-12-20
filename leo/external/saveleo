@@ -1,0 +1,61 @@
+#!/usr/bin/python
+import os
+import readline  # just importing this makes raw_input() work better
+import sys
+import time
+
+# here's an "example" of how to make this work if leo isn't on
+# the Python path :-)
+sys.path.append("/home/tbrown/Package/leo/bzr/leo.repo/trunk")
+
+# look for lproto
+try:
+    from leo.external import lproto
+except ImportError:
+    print("""Could not import `lproto` from `leo.external`,
+try `PYTHONPATH=/some/path/to/folder_containing_leo_folder %s`""" % sys.argv[0])
+    exit()
+
+do_all = '-a' in sys.argv
+quit = '-q' in sys.argv
+sys.argv = [i for i in sys.argv if i not in ('-a', '-q')]
+
+addr = open(os.path.expanduser('~/.leo/leoserv_sockname')).read()
+pc = lproto.LProtoClient(addr)
+
+# get list of commanders
+pc.send("""
+out = open("/tmp/clist", 'w')
+for n,c in enumerate(g.app.commanders()):
+    out.write("%d: %s %s\\n"%(n,c.fileName(), 'changed' if c.isChanged() else 'unchanged'))
+out.close()
+""")
+
+time.sleep(1)  # wait for file to close - presumably pc.send()
+               # is asynchronous
+
+# show list of commander and ask which to save
+count = 0
+for line in open("/tmp/clist"):
+    print line.strip()
+    count += 1
+save = list(range(count))
+if not do_all:
+    isave = raw_input("Numbers to save, blank for all, - for none: ")
+    if isave.strip():
+        if isave .strip() == '-':
+            save = []
+        else:
+            save = [int(i) for i in isave.replace(',', ' ').split()]
+
+# save and maybe quit
+pc.send("""
+for i in %s:
+    c = g.app.commanders()[i]
+    print("saving %%s" %% c.fileName())
+    c.save()
+    print("done")
+if %s:
+    print("quitting")
+    g.app.onQuit()
+""" % (repr(save), repr(quit)))
