@@ -1733,7 +1733,7 @@ class position (object):
         else:
             g.internalError(
                 'parent_v.children[childIndex] != v',
-                p,parent_v.children,childIndex,v)
+                p,parent_v.children,p._childIndex,v)
     #@+node:ekr.20080416161551.217: *4* p._unlink
     def _unlink (self):
 

@@ -915,7 +915,7 @@ def _relinkAsCloneOf(self,p2):
     else:
         g.internalError(
             'parent_v.children[childIndex] != v',
-            p,parent_v.children,childIndex,v)
+            p,parent_v.children,p._childIndex,v)
 .. @+node:ekr.20131214182408.16963: *4* script copy
 g.cls()
 p2 = g.findNodeAnywhere(c,'@file leoApp.py')
