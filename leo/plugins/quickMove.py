@@ -56,6 +56,33 @@ You can right click on any of these buttons to access their context menu:
     comes from the `mod_scripting` plugin, and just
     removes the button for the rest of the current session.
 
+Commands
+
+These two commands allow keyboard driven quickmove operations:
+    
+``quickmove_keyboard_popup``
+    Show a keyboard (arrow key) friendly menu of quick move
+    actions.  Set the current node as the target for the selected action.
+``quickmove_keyboard_action``
+    Perform the action selected with ``quickmove_keyboard_popup``, moving
+    the current node to the target, or whatever the selected action was.
+
+These commands are available for binding, they do the same thing as the
+corresponding tree context menu item, if your using buttons you might as
+well use the context menu::
+    
+    quickmove_bookmark_to_first_child
+    quickmove_bookmark_to_last_child
+    quickmove_clone_to_first_child
+    quickmove_clone_to_last_child
+    quickmove_copy_to_first_child
+    quickmove_copy_to_last_child
+    quickmove_jump_to
+    quickmove_link_from
+    quickmove_link_to
+    quickmove_move_to_first_child
+    quickmove_move_to_last_child
+    
 Set Parent Notes
   `Set Parent` doesn't allow you to do anything with `quickMove` you couldn't
   do with a long strip of separate buttons, but it collects quickMove buttons
@@ -230,8 +257,15 @@ class quickMove(object):
                 # tried to use g.command() but global commands all use the same c
                 # so register only at the c level, not g level
                 # g.command(cmdname)(func)
-                c.k.registerCommand(cmdname, shortcut = None, func = lambda e:func(),
-                    pane='all',verbose=False)        
+                c.k.registerCommand(cmdname, shortcut=None, func=lambda e:func(),
+                    pane='all',verbose=False)
+                    
+        c.k.registerCommand('quickmove_keyboard_popup', shortcut=None, 
+            func=lambda e:self.keyboard_popup(), pane='all',verbose=False)
+        c.k.registerCommand('quickmove_keyboard_action', shortcut=None, 
+            func=lambda e:self.keyboard_action(), pane='all',verbose=False)
+            
+        self.keyboard_target = None
                 
         self.c = c
 
@@ -399,9 +433,9 @@ class quickMove(object):
         g.es('Removing buttons - reload to apply')
         if 'quickMove' in v.u:
             del v.u['quickMove']
-    #@+node:tbrown.20091207102637.11494: *3* popup
+    #@+node:tbrown.20091207102637.11494: *3* context menu popup
     def popup(self, c, p, menu):
-        """make popup menu entry"""
+        """make popup menu entry for tree context menu"""
 
         if c != self.c:
             return  # wrong commander
@@ -471,6 +505,40 @@ class quickMove(object):
         for name,dummy,command in self.local_imps:
             a = pathmenu.addAction(name)
             a.connect(a, QtCore.SIGNAL("triggered()"), command)
+    #@+node:tbrown.20131219205216.30229: *3* keyboard_popup, action
+    def keyboard_popup(self):
+        """Assign a quick move action with the current node
+        as a target, to be triggered with quickmove_keyboard_action
+        """
+        c = self.c
+        menu = QtGui.QMenu(c.frame.top)
+        
+        cmds = {}
+        
+        for name, first_last, long, short in quickMove.flavors:
+            if first_last:
+                todo = [(True, 'first'), (False, 'last')]
+            else:
+                todo = [(None, '')]
+            for ftrue, which in todo:
+                if which:
+                    which = " "+which.title()+" Child"
+                k = "Set as "+long+" "+short+which+' target'
+                cmds[k] = {'first': ftrue, 'type': name}
+                menu.addAction(k)
+                
+        pos = c.frame.top.window().frameGeometry().center()
+        action = menu.exec_(pos)
+        if action is None:
+            return
+        k = str(action.text())   
+        g.es(k)
+        self.keyboard_target = quickMoveButton(
+            self, c.p.v, cmds[k]['first'], type_=cmds[k]['type'])
+        
+    def keyboard_action(self):
+
+        self.keyboard_target.moveCurrentNodeToTarget()
     #@+node:tbrown.20120621072000.19675: *3* do_wrap
     def do_wrap(self, cb, name):
         """Call a callback and store it in the list of recent actions
