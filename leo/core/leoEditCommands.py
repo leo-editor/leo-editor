@@ -8106,7 +8106,7 @@ class helpCommandsClass (baseEditCommandsClass):
 
         Incremental search is done only from the minibuffer::
 
-            Alt-S (isearch forward)
+            Alt-I (isearch forward)
             Alt-R (isearch backward)
             BackSpace retracts the search
             All other characters extend the search

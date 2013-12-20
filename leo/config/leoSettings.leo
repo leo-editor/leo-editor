@@ -437,7 +437,7 @@
 <v t="ekr.20131213135427.21911"><vh>@item *&amp;execute-script</vh></v>
 <v t="ekr.20131213135427.21912"><vh>@item toggle-invisibles</vh></v>
 </v>
-<v t="ekr.20131213135427.21913"><vh>@menu &amp;Find</vh>
+<v t="ekr.20131213135427.21913"><vh>@menu &amp;Search</vh>
 <v t="ekr.20131213135427.21914"><vh>@item *help-for-find-commands</vh></v>
 <v t="ekr.20131213135427.21915"><vh>@item *start-search</vh></v>
 <v t="ekr.20131213135427.21916"><vh>@@@item find-tab-hide</vh></v>
@@ -476,7 +476,7 @@
 <v t="ekr.20131213135427.21949"><vh>@@item *q&amp;uery-replace-regex</vh></v>
 <v t="ekr.20131213135427.21950"><vh>Proper names</vh></v>
 </v>
-<v t="ekr.20131213135427.21951"><vh>@menu &amp;Options</vh>
+<v t="ekr.20131213135427.21951"><vh>@menu &amp;Settings</vh>
 <v t="ekr.20131213135427.21952"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21953"><vh>@item open-leoSettings-leo</vh></v>
 <v t="ekr.20131213135427.21954"><vh>@item open-myLeoSettings-leo</vh></v>
@@ -1371,8 +1371,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20070613133747"></v>
-<v t="ekr.20070925144552"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -2664,7 +2662,7 @@ find-tab-open                       = None
 clone-find-all                      = None
 isearch-backward                    = Alt-R
 isearch-backward-regexp             = None
-isearch-forward                     = Alt-S
+isearch-forward                     = Alt-I # Alt-S conflicts with &amp;Search and &amp;Settings menus.
 isearch-forward-regexp              = None
 # isearch-with-present-options      = Alt-i
 # query-replace                       = None
@@ -3294,11 +3292,11 @@ False: Leo leaves body text alone when writing @nosent trees.</t>
 False: Chapter tabs do not appear.</t>
 <t tx="ekr.20070613133747">#propagate-key-event = Alt-C # For Cmds menu.
 #propagate-key-event = Alt-E # For Edit menu.
-#propagate-key-event = Alt-F # For File menu (and Find?) menu.
+#propagate-key-event = Alt-F # For File menu.
 #propagate-key-event = Alt-H # For Help menu.
 #propagate-key-event = Alt-P # For Plugins menu.
 #propagate-key-event = Alt-O # For Options menu.
-#propagate-key-event = Alt-S # Alt-S is already used...
+#propagate-key-event = Alt-S # For Search and Settings menus.
 #propagate-key-event = Alt-W # For Window menu.
 </t>
 <t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
@@ -3418,8 +3416,8 @@ rst3_show_headline_prefix =    @rst-head</t>
 Comments lines starting with '#' are ignored.</t>
 <t tx="ekr.20080204124255"># For testing only.
 
-start-ipython           = Alt-Shift-i
-push-to-ipython         = Alt-i
+start-ipython           = Alt-Ctrl-Shift-i
+push-to-ipython         = Alt-Shift-i # Alt-i is now bind to isearch-forward.
 </t>
 <t tx="ekr.20080212084020">The encoding used for files imported by @auto if no @encoding directive is in effect.
 Default is UTF-8 (case not important).</t>
