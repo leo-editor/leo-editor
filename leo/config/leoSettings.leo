@@ -2874,12 +2874,12 @@ promote                     = Ctrl-[</t>
 <t tx="ekr.20060925060533.4">add-comments                        = Ctrl-parenleft
 backward-delete-char                = BackSpace
 backward-delete-char                = Shift-BackSpace
-backward-delete-char                !text = Delete
 backward-delete-word                = Ctrl-BackSpace
 backward-kill-word                  = Alt-BackSpace
 copy-text                           = Ctrl-c        # Conflicts with Emacs ctrl-c
 cut-text                            = Ctrl-x
 delete-char                         = Shift-Delete
+delete-char                         !text = Delete
 delete-comments                     = Ctrl-parenright
 # delete-comments                   = Shift-Ctrl-0 # Set elsewhere.
 delete-word                         = Ctrl-Delete

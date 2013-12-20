@@ -19732,10 +19732,13 @@ stayInTreeAfterEditHeadline setting no longer exists.
 - Added a new Settings menu.
 
 - Improved the Search menu.</t>
-<t tx="ekr.20131220065609.17422">The entries here override the entries in @data qt-gui-style-sheet.
+<t tx="ekr.20131220065609.17422">The entries here override the entries in @data qt-gui-plugin-style-sheet
 
-This is a *major* improvement, because it is now clear what your personal
-overrides are.</t>
+This is a *major* improvement: you don't have to copy/paste @data
+qt-gui-plugin-style-sheet. Just put your particular overrides in
+@data qt-gui-plugin-style-sheet. At long last, you can see just what you
+changed.
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
