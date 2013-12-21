@@ -6,9 +6,6 @@
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 
-- help-for-keys command in help menu.
-- Silent basic-operations video?  Make script?
-
 Post: Principle: docs are important, but Leo should be useable without them.
 
 Done:

@@ -21597,23 +21597,12 @@ Download:  http://sourceforge.net/projects/leo/files/
 Bzr:       http://code.launchpad.net/leo-editor/
 Quotes:    http://leoeditor.com/testimonials.html
 #@+node:ekr.20131220065609.16634: *4* Leo is now easier to use
+#@+node:ekr.20131221065129.16525: *5* Added more intuitive key bindings
+- When editing a headline, the Return key leaves focus in the tree.
+- When focus is in the outline pane, the Insert key inserts a node.
+- When focus is in the outline pane, the Delete and BackSpace keys deletes node.
 #@+node:ekr.20131220065609.16619: *5* Improved the Find tab
-#@+node:ekr.20131220065609.16638: *5* Improved menus
-- Improved and simplified the Help menu.
-    - Added help-for-creating-external-files
-    - Added help-for-scripting.
-
-- Added a new Settings menu.
-
-- Improved the Search menu.
-#@+node:ekr.20131220065609.16628: *5* Simplified leoSettings.leo
-Eliminated clones from this file: all settings are defined in exactly one
-place.
-#@+node:ekr.20131220065609.16621: *5* Added join-leo-irc command
-#@+node:ekr.20131220065609.16630: *5* Reorganized menus
-Rev 6406 contains a substantial reorg of menus, with the aim
-of having the Help menu in particular be more useful.
-
+#@+node:ekr.20131220065609.16638: *5* Improved & reorganized menus
 Help menu:
 - Contains only help-related items.
 - Contains more items that link to Leo's web site.
@@ -21631,7 +21620,11 @@ Cmds menu:
 - Open Python Shell (was in Windows menu) now part of Cmds:Debug menu.
 
 File menu:
-Now contains items that open various .leo files.
+- Now contains items that open various .leo files.
+#@+node:ekr.20131220065609.16628: *5* Simplified leoSettings.leo
+Eliminated clones from this file: all settings are defined in exactly one
+place.
+#@+node:ekr.20131220065609.16621: *5* Added join-leo-irc command
 #@+node:ekr.20131220065609.17422: *5* Added @data qt-gui-user-style-sheet
 The entries here override the entries in @data qt-gui-plugin-style-sheet
 
@@ -21639,6 +21632,8 @@ This is a *major* improvement: you don't have to copy/paste @data
 qt-gui-plugin-style-sheet. Just put your particular overrides in
 @data qt-gui-user-style-sheet. At long last, you can see just what you
 changed.
+#@+node:ekr.20131221065129.16526: *5* Improved the print-bindigs command
+All menu shortcuts are shown as bound to the menu-shortcut command.
 #@+node:ekr.20131220065609.16635: *4* Fixed bugs
 #@+node:ekr.20131220065609.16622: *5* Allow comments after @data setting-name
 Changed ParserBaseClass.parseHeadline so it ignores everything after @data
@@ -21740,6 +21735,25 @@ What I did:
 
 @language python
 #@+node:ekr.20131220065609.16637: *4* Plugins
+- The new nodewatch.py plugin creates a scriptable jump-list of nodes with a UI pane.
+  It is an alternative to clones/bookmarks/backlinks/UNLs.
+  
+- Fixed bug in viewrendered.py: '@string view-rendered-default-kind' is now
+  functional. Setting it to 'md' makes vr default to trying markdown
+  rendering without the need for the ugly '@md' in the headline. vr is
+  still smart enough to default to rst for Leo's various help-for commands,
+  as well as anything that uses c.putHelpFor.
+  
+- The booksmarks.py plugin (rev 6420) now supports cross-file bookmarks.
+  
+- Improved quickfind.py plugin (rev 6390).
+  
+- Improved quickmove.py plugin (rev 6446).
+
+- Improved todo.py plugin (rev 6433).
+
+- The scripting.py now creates commands from @rclick nodes, but only if
+  @bool scripting-at-rclick-nodes is True.
 #@+node:ekr.20131220065609.16629: *5* Added web-oriented bookmarks to mod_http plugin
 Can also be used for bookmarking directly from the browser to Leo.  To
 do this, add a bookmark to the browser with the following URL / Location:

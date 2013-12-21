@@ -1087,17 +1087,18 @@
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
 <v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d7100285509302e302e312e302e3071017d710255097374725f6174696d657103550c313337363431323837322e30710473550b302e302e332e312e312e3371057d71066803550c313337363431323838392e30710773550c302e302e31322e302e302e3771087d710958090000007374725f6174696d65710a550c313337363431323238302e30710b735510302e302e31322e302e302e372e302e31710c7d710d58090000007374725f6174696d65710e550c313337363431323238382e30710f73550b302e302e332e302e322e3371107d71116803550c313337363431323838382e30711273752e"
-expanded="ekr.20131220065609.16634,"><vh>@file release_notes.txt</vh></v>
+expanded="ekr.20131220065609.16637,"><vh>@file release_notes.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20131220065609.16614"><vh>4.11.1 Release notes</vh>
 <v t="ekr.20131220065609.16634"><vh>Leo is now easier to use</vh>
+<v t="ekr.20131221065129.16525"><vh>Added more intuitive key bindings</vh></v>
 <v t="ekr.20131220065609.16619"><vh>Improved the Find tab</vh></v>
-<v t="ekr.20131220065609.16638"><vh>Improved menus</vh></v>
+<v t="ekr.20131220065609.16638"><vh>Improved &amp; reorganized menus</vh></v>
 <v t="ekr.20131220065609.16628"><vh>Simplified leoSettings.leo</vh></v>
 <v t="ekr.20131220065609.16621"><vh>Added join-leo-irc command</vh></v>
-<v t="ekr.20131220065609.16630"><vh>Reorganized menus</vh></v>
 <v t="ekr.20131220065609.17422"><vh>Added @data qt-gui-user-style-sheet</vh></v>
+<v t="ekr.20131221065129.16526"><vh>Improved the print-bindigs command</vh></v>
 </v>
 <v t="ekr.20131220065609.16635"><vh>Fixed bugs</vh>
 <v t="ekr.20131220065609.16622"><vh>Allow comments after @data setting-name</vh></v>
@@ -19690,10 +19691,40 @@ If the ``bookmarks`` plugin is loaded the bookmark will have to be moved to a ``
 The browser may or may not be able to close the bookmark form window for you, depending on settings - set ``dom.allow_scripts_to_close_windows`` to true
 in ``about:config`` in Firefox.
 </t>
-<t tx="ekr.20131220065609.16630">Rev 6406 contains a substantial reorg of menus, with the aim
-of having the Help menu in particular be more useful.
+<t tx="ekr.20131220065609.16631">It used to select the minibuffer label, which messed up following logic.
+</t>
+<t tx="ekr.20131220065609.16633">It now always stays in the tree pane when you hit return to
+end editing.
 
-Help menu:
+This will be more natural to newbies, and allows plain arrow
+keys to traverse the tree more easily.
+
+Also, c.treeEditFocusHelper no longer exists, and the @bool
+stayInTreeAfterEditHeadline setting no longer exists.
+</t>
+<t tx="ekr.20131220065609.16634"></t>
+<t tx="ekr.20131220065609.16635"></t>
+<t tx="ekr.20131220065609.16636"></t>
+<t tx="ekr.20131220065609.16637">- The new nodewatch.py plugin creates a scriptable jump-list of nodes with a UI pane.
+  It is an alternative to clones/bookmarks/backlinks/UNLs.
+  
+- Fixed bug in viewrendered.py: '@string view-rendered-default-kind' is now
+  functional. Setting it to 'md' makes vr default to trying markdown
+  rendering without the need for the ugly '@md' in the headline. vr is
+  still smart enough to default to rst for Leo's various help-for commands,
+  as well as anything that uses c.putHelpFor.
+  
+- The booksmarks.py plugin (rev 6420) now supports cross-file bookmarks.
+  
+- Improved quickfind.py plugin (rev 6390).
+  
+- Improved quickmove.py plugin (rev 6446).
+
+- Improved todo.py plugin (rev 6433).
+
+- The scripting.py now creates commands from @rclick nodes, but only if
+  @bool scripting-at-rclick-nodes is True.</t>
+<t tx="ekr.20131220065609.16638">Help menu:
 - Contains only help-related items.
 - Contains more items that link to Leo's web site.
 
@@ -19710,30 +19741,7 @@ Cmds menu:
 - Open Python Shell (was in Windows menu) now part of Cmds:Debug menu.
 
 File menu:
-Now contains items that open various .leo files.
-</t>
-<t tx="ekr.20131220065609.16631">It used to select the minibuffer label, which messed up following logic.
-</t>
-<t tx="ekr.20131220065609.16633">It now always stays in the tree pane when you hit return to
-end editing.
-
-This will be more natural to newbies, and allows plain arrow
-keys to traverse the tree more easily.
-
-Also, c.treeEditFocusHelper no longer exists, and the @bool
-stayInTreeAfterEditHeadline setting no longer exists.
-</t>
-<t tx="ekr.20131220065609.16634"></t>
-<t tx="ekr.20131220065609.16635"></t>
-<t tx="ekr.20131220065609.16636"></t>
-<t tx="ekr.20131220065609.16637"></t>
-<t tx="ekr.20131220065609.16638">- Improved and simplified the Help menu.
-    - Added help-for-creating-external-files
-    - Added help-for-scripting.
-
-- Added a new Settings menu.
-
-- Improved the Search menu.
+- Now contains items that open various .leo files.
 </t>
 <t tx="ekr.20131220065609.17422">The entries here override the entries in @data qt-gui-plugin-style-sheet
 
@@ -19741,6 +19749,12 @@ This is a *major* improvement: you don't have to copy/paste @data
 qt-gui-plugin-style-sheet. Just put your particular overrides in
 @data qt-gui-user-style-sheet. At long last, you can see just what you
 changed.
+</t>
+<t tx="ekr.20131221065129.16525">- When editing a headline, the Return key leaves focus in the tree.
+- When focus is in the outline pane, the Insert key inserts a node.
+- When focus is in the outline pane, the Delete and BackSpace keys deletes node.
+</t>
+<t tx="ekr.20131221065129.16526">All menu shortcuts are shown as bound to the menu-shortcut command.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
