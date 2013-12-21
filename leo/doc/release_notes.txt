@@ -21579,6 +21579,7 @@ The highlights of Leo 4.11.1:
 -----------------------------
 
 - New video tutorials: http://leoeditor.com/screencasts.html
+- Added join-leo-irc command: a good way to get help.
 - The Find Tab is easier to understand and use.
 - Simplified and reorganized global settings in leoSetting.leo.
 - Reorganized menus, including a new Settings menu.
@@ -21608,7 +21609,7 @@ Quotes:    http://leoeditor.com/testimonials.html
 #@+node:ekr.20131220065609.16628: *5* Simplified leoSettings.leo
 Eliminated clones from this file: all settings are defined in exactly one
 place.
-#@+node:ekr.20131220065609.16621: *5* Added join-irc-leo command
+#@+node:ekr.20131220065609.16621: *5* Added join-leo-irc command
 #@+node:ekr.20131220065609.16630: *5* Reorganized menus
 Rev 6406 contains a substantial reorg of menus, with the aim
 of having the Help menu in particular be more useful.

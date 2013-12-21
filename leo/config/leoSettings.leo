@@ -1371,6 +1371,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20060603215208"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -2850,6 +2851,7 @@ cut-node                    = Shift-Ctrl-x
 contract-all                = Alt--
 edit-headline               = Ctrl-h
 delete-node                 !tree = Delete
+delete-node                 !tree = BackSpace
 demote                      = Ctrl-}
 demote                      = Ctrl-]
 expand-next-level           = None
@@ -2872,7 +2874,7 @@ paste-node                  = Shift-Ctrl-V
 promote                     = Ctrl-{
 promote                     = Ctrl-[</t>
 <t tx="ekr.20060925060533.4">add-comments                        = Ctrl-parenleft
-backward-delete-char                = BackSpace
+backward-delete-char                !text = BackSpace
 backward-delete-char                = Shift-BackSpace
 backward-delete-word                = Ctrl-BackSpace
 backward-kill-word                  = Alt-BackSpace
@@ -3290,14 +3292,15 @@ False: Leo leaves body text alone when writing @nosent trees.</t>
 <t tx="ekr.20070531103454"></t>
 <t tx="ekr.20070604075218">True:  Chapter tabs appear in the outline pane.
 False: Chapter tabs do not appear.</t>
-<t tx="ekr.20070613133747">#propagate-key-event = Alt-C # For Cmds menu.
-#propagate-key-event = Alt-E # For Edit menu.
-#propagate-key-event = Alt-F # For File menu.
-#propagate-key-event = Alt-H # For Help menu.
-#propagate-key-event = Alt-P # For Plugins menu.
-#propagate-key-event = Alt-O # For Options menu.
-#propagate-key-event = Alt-S # For Search and Settings menus.
-#propagate-key-event = Alt-W # For Window menu.
+<t tx="ekr.20070613133747"># These commands do nothing except serve as placeholders for the print-bindings command.
+menu-shortcut = Alt-C # Cmds menu.
+menu-shortcut = Alt-E # Edit menu.
+menu-shortcut = Alt-F # File menu.
+menu-shortcut = Alt-H # Help menu.
+menu-shortcut = Alt-O # Outline menu.
+menu-shortcut = Alt-P # Plugins menu.
+menu-shortcut = Alt-S # Search and Settings menus.
+menu-shortcut = Alt-W # Window menu.
 </t>
 <t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
 <t tx="ekr.20070622214401">@nocolor-node

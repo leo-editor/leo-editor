@@ -3,11 +3,14 @@
 #@+node:ekr.20031218072017.3206: * @file leoImport.py
 #@@first
     # Required so non-ascii characters will be valid in unit tests.
-new_python_importer = False
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
 #@@encoding utf-8
+#@+<< global switch >>
+#@+node:ekr.20131220110418.17557: ** << global switch >> (leoImport.py)
+new_python_importer = False
+#@-<< global switch >>
 #@+<< how to write a new importer >>
 #@+node:ekr.20100728074713.5840: ** << how to write a new importer >>
 #@@nocolor-node

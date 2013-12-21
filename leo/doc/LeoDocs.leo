@@ -1087,7 +1087,7 @@
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
 <v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d7100285509302e302e312e302e3071017d710255097374725f6174696d657103550c313337363431323837322e30710473550b302e302e332e312e312e3371057d71066803550c313337363431323838392e30710773550c302e302e31322e302e302e3771087d710958090000007374725f6174696d65710a550c313337363431323238302e30710b735510302e302e31322e302e302e372e302e31710c7d710d58090000007374725f6174696d65710e550c313337363431323238382e30710f73550b302e302e332e302e322e3371107d71116803550c313337363431323838382e30711273752e"
-expanded="ekr.20131220065609.16614,ekr.20131220065609.16634,"><vh>@file release_notes.txt</vh></v>
+expanded="ekr.20131220065609.16634,"><vh>@file release_notes.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20131220065609.16614"><vh>4.11.1 Release notes</vh>
@@ -1095,7 +1095,7 @@ expanded="ekr.20131220065609.16614,ekr.20131220065609.16634,"><vh>@file release_
 <v t="ekr.20131220065609.16619"><vh>Improved the Find tab</vh></v>
 <v t="ekr.20131220065609.16638"><vh>Improved menus</vh></v>
 <v t="ekr.20131220065609.16628"><vh>Simplified leoSettings.leo</vh></v>
-<v t="ekr.20131220065609.16621"><vh>Added join-irc-leo command</vh></v>
+<v t="ekr.20131220065609.16621"><vh>Added join-leo-irc command</vh></v>
 <v t="ekr.20131220065609.16630"><vh>Reorganized menus</vh></v>
 <v t="ekr.20131220065609.17422"><vh>Added @data qt-gui-user-style-sheet</vh></v>
 </v>
@@ -19558,6 +19558,7 @@ The highlights of Leo 4.11.1:
 -----------------------------
 
 - New video tutorials: http://leoeditor.com/screencasts.html
+- Added join-leo-irc command: a good way to get help.
 - The Find Tab is easier to understand and use.
 - Simplified and reorganized global settings in leoSetting.leo.
 - Reorganized menus, including a new Settings menu.
