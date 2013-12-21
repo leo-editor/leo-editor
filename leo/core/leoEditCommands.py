@@ -8517,6 +8517,7 @@ class keyHandlerCommandsClass (baseEditCommandsClass):
                 'exit-named-mode':          k.exitNamedMode,
                 'full-command':             k.fullCommand, # For menu.
                 # 'hide-mini-buffer':         k.hideMinibuffer,
+                'menu-shortcut':            self.menuShortcutPlaceHolder,
                 'mode-help':                k.modeHelp,
                 'negative-argument':        k.negativeArgument,
                 'number-command':           k.numberCommand,
@@ -8533,7 +8534,6 @@ class keyHandlerCommandsClass (baseEditCommandsClass):
                 'print-bindings':           k.printBindings,
                 'print-buttons':            k.printButtons,
                 'print-commands':           k.printCommands,
-                # 'propagate-key-event':      k.propagateKeyEvent,
                 'repeat-complex-command':   k.repeatComplexCommand,
                 # 'scan-for-autocompleter':   k.autoCompleter.scan,
                 'set-command-state':        k.setCommandState,
@@ -8550,6 +8550,11 @@ class keyHandlerCommandsClass (baseEditCommandsClass):
             }
         else:
             return {}
+    #@+node:ekr.20131221055224.17570: *3* def menuShortcutPlaceHolder
+    g.command('menu-shortcut')
+    def menuShortcutPlaceHolder(self,event=None):
+        '''This will never be called.
+        It serves as a placeholder for the print-bindings command.'''
     #@-others
 #@+node:ekr.20050920084036.174: ** killBufferCommandsClass
 class killBufferCommandsClass (baseEditCommandsClass):
