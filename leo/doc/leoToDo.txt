@@ -7,6 +7,8 @@
 @language rest
 
 Post: Principle: docs are important, but Leo should be useable without them.
+
+* Annoying bug.  Ctrl-Shift-P still doesn't handle bullet lists properly.
 .. @+node:ekr.20131219102947.16570: *3* Release 4.11.1
 Don't release 4.11.1 until I am *sure* all bindings & help are correct.
 .. @+node:ekr.20131213072223.16397: *3* * Video tutorials
@@ -17,54 +19,65 @@ When ready to release:
 - Note to Dave Winer.
 - Announce to comp.lang.python & SourceForge.
 
-.. @+node:ekr.20131221065129.16519: *4* Basic Leo operations script
+.. @+node:ekr.20131221065129.16519: *4* Basic Leo operations
 @language rest
+@pagewidth 40
 
 .. @+node:ekr.20131221065129.16522: *5* Basic focus operations
-The presently selected pane has a blue border.
-We say that the selected pane **has focus**.
+The presently selected pane has a blue
+border. We say that the selected pane
+**has focus**.
 
 Regardless of what pane has focus:
 
 - Alt-T puts selects the outline pane.
 - Alt-D puts selects the body pane.
-- Alt-Arrow key select another outline node and put focus in the outline pane.
+- Alt-Arrow key select another outline
+  node and put focus in the outline pane.
 
 A handy shortcut:
 
-- When the outline pane has focus, the Return puts focus in the body pane.
+- When the outline pane has focus,
+  Return puts focus in the body pane.
 .. @+node:ekr.20131221065129.16524: *5* Basic outline operations
 When focus is in the outline pane:
 
 - The Insert key inserts a new node.
   Type the headline text followed by Return.
-- The Delete key or the BackSpace key deletes the selected node.
+- The Delete key or the BackSpace key
+  deletes the selected node.
 - Plain Arrow keys select nodes.
 - Shift-Arrow keys move nodes.
 
 The following commands work regardless of focus.
-Except as noted, these commands put the focus in the outline pane.
 
-- Ctrl-Z undoes the last operation.  Ctrl-Shift-Z redoes the last operation.
+- Ctrl-Z undoes the last operation.
+- Ctrl-Shift-Z redoes the last operation.
 - Ctrl-I inserts a new node.
-- Ctrl-H edits the headline of the selected node, putting the focus in the headline.
-- Ctrl-Shift-C copies the selected node, leaving the focus unchanged.
+- Ctrl-H edits the headline.
+- Ctrl-Shift-C copies the selected node,
+  leaving the focus unchanged.
 - Ctrl-Shift-X deletes (cuts) the node.
 - Ctrl-Shift-V copies a previously copied or cut node.
 - Alt-Arrow keys select nodes, as in Windows explorer.
 - Alt-Shift-Arrow keys move nodes.
 - Ctrl-U, Ctrl-D, Ctrl-L and Ctrl-R move nodes up, down, left and right.
 .. @+node:ekr.20131221065129.16520: *5* Basic text operations
-When focus is in the body pane, most keys work as with most text editors:
+When focus is in the body pane, most keys work as usual:
 
-- The Return key inserts a newline.
-- Arrow keys move the cursor one character at a time.
+- Return inserts a newline.
+- Arrow keys move the cursor by characters.
 - Ctrl-Arrow keys move the cursor by words.
-- Shift-arrow keys extend the selection.
-- Shift-Ctrl-Arrow keys extend the selection by words.
-- Home and End keys move the cursor to the start and end of a line.
-- Shift-Home and Shift-End keys extend the cursor to the star or end of the line.
-- Ctrl-Home and Ctrl-End keys move the cursor to the start and end of the body text.
+- Home and End move the cursor to the start/end of a line.
+- PageUp and Page-Down move the cursor by pages.
+- Ctrl-Home and Ctrl-End move the cursor to the start/end of the body text.
+
+- Adding the Shift modifier to any of these keys extends the selection.
+- Shift Arrow keys.
+- Shift-Ctrl-Arrow keys.
+- Shift-PageUp and Shift-PageDown.
+- Shift-Home and Shift-End.
+- Shift-Ctrl-Home and Shift-Ctrl-End.
 .. @+node:ekr.20131208103040.16342: *4* - Basic: Settings (urgent)
 - focus on visual settings.
 @menu
@@ -1171,6 +1184,17 @@ def clean(self,root):
             else:
                 p.b = ''.join(tail+lines)
                 tail = []
+.. @+node:ekr.20131221082758.16368: *3* Key/focus problems
+@language rest
+
+Log pane doesn't have blue border.
+Alt-T and Alt-D don't work in log pane. (Ctrl-G does).
+
+It now seems to work!
+
+Related code: Border (qtGui), eventFilter.
+
+@language python
 .. @+node:ekr.20131105020211.18058: ** Important
 .. @+node:ekr.20131101080215.16488: *3* * Outreach to magazine editors
 ===== Steve Litt
