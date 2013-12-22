@@ -20622,15 +20622,10 @@ else:
 #@+node:ekr.20110610082755.3362: *3*  qtGui.py
 #@+node:ekr.20100131171342.5503: *4* @test c.vnode2position
 trace = False
-
 if trace: print('=' * 20)
-
 for p in c.all_positions():
-
     p2 = c.vnode2position(p.v)
-
     if trace: print(p2.level(), p2.headString())
-
     # We can *not* assert that p == p2, only that
     # p2.v == p.v and c.positionExists(p2)
     assert p2
@@ -20638,39 +20633,34 @@ for p in c.all_positions():
     assert c.positionExists(p2),'does not exist: %s' % p2
 #@+node:ekr.20100131171342.5504: *4* @test position2Item
 tree = c.frame.tree
-
 # position2item does not exist when running unit tests dynamically.
 if hasattr(tree,'position2item'):
-    
     c.redraw()
     p = c.rootPosition()
     while p:
         item = tree.position2item(p)
         v = tree.item2vnode(item)
-        assert v == p.v, 'item2: %s, p.v: %s' % (item,p.v)
+        if v: # New test needed with per-clone expansions.
+            assert v == p.v, 'item2: %s, p.v: %s' % (item,p.v)
         p.moveToVisNext(c)
-#@+node:ekr.20100131171342.5505: *4* @test item2position
+#@+node:ekr.20100131171342.5505: *4* @@test item2position
+# This test is no longer valid because of per-position node expansions.
 def test_sibs(parent_p,parent_item):
-
     trace = False
     tree = c.frame.tree
     sib_items = tree.childItems(parent_item)
     sibs = [z.copy() for z in parent_p.self_and_siblings_iter()]
-
     assert len(sib_items) == len(sibs),(
         'child_items: %s, children: %s' % (
             g.listToString(sib_items),g.listToString(sibs)))
-
     for item,p in zip(sib_items,sibs):
         p2 = tree.item2position(item)
         if trace: print (id(item),p2 and p2.headString() or not p2 and '**None**')
         assert p == p2, 'item: %s, p: %s, p2: %s' % (id(item),p,p2)
-
         # Recursively test.
         child = p.firstChild()
         if child.isVisible(c):
             test_sibs(child,parent_item=item)
-
 if hasattr(c.frame.tree,'item2position'):
     c.redraw()
     test_sibs(c.rootPosition(),None)

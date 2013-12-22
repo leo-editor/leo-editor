@@ -114,26 +114,20 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         self.stayInTree     = c.config.getBool('stayInTreeAfterSelect')
         self.use_chapters   = c.config.getBool('use_chapters')
     #@+node:ekr.20110605121601.17872: ** Drawing... (nativeTree)
-    #@+node:ekr.20110605121601.17873: *3* full_redraw & helpers
-    # forceDraw not used. It is used in the Tk code.
-
+    #@+node:ekr.20110605121601.17873: *3* full_redraw & helpers (nativeTree)
     def full_redraw (self,p=None,scroll=True,forceDraw=False):
-
-        '''Redraw all visible nodes of the tree.
-
-        Preserve the vertical scrolling unless scroll is True.'''
-
+        '''
+        Redraw all visible nodes of the tree.
+        Preserve the vertical scrolling unless scroll is True.
+        '''
         trace = False and not g.app.unitTesting
         verbose = False
         c = self.c
-
         if g.app.disable_redraw:
             if trace: g.trace('*** disabled',g.callers())
             return
-
         if self.busy():
             return g.trace('*** full_redraw: busy!',g.callers())
-
         if p is None:
             p = c.currentPosition()
         elif c.hoistStack and len(c.hoistStack) == 1 and p.h.startswith('@chapter') and p.hasChildren():
@@ -145,7 +139,6 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             c.setCurrentPosition(p)
         else:
             c.setCurrentPosition(p)
-
         self.redrawCount += 1
         if trace: t1 = g.getTime()
         self.initData()
@@ -155,33 +148,28 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             self.drawTopTree(p)
         finally:
             self.redrawing = False
-
         self.setItemForCurrentPosition(scroll=scroll)
         c.requestRedrawFlag= False
-
         if trace:
             theTime = g.timeSince(t1)
             g.trace('*** %s: scroll %5s drew %3s nodes in %s' % (
                 self.redrawCount,scroll,self.nodeDrawCount,theTime),g.callers())
-
         return p # Return the position, which may have changed.
 
     # Compatibility
     redraw = full_redraw 
     redraw_now = full_redraw
-    #@+node:ekr.20110605121601.17874: *4* drawChildren
+    #@+node:ekr.20110605121601.17874: *4* drawChildren (nativeTree)
     def drawChildren (self,p,parent_item):
-
+        '''Draw the children of p if they should be expanded.'''
+        c = self.c
         trace = False and not g.unitTesting
-
         if trace: g.trace('children? %5s expanded? %5s %s' % (
             p.hasChildren(),p.isExpanded(),p.h))
-
         if not p:
             return g.trace('can not happen: no p')
-
         if p.hasChildren():
-            if p.isExpanded():
+            if c.shouldBeExpanded(p): ## p.isExpanded():
                 self.expandItem(parent_item)
                 child = p.firstChild()
                 while child:
@@ -198,28 +186,23 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             self.contractItem(parent_item)
     #@+node:ekr.20110605121601.17875: *4* drawNode
     def drawNode (self,p,parent_item):
-
+        '''Draw the node p.'''
         trace = False
         c = self.c 
         self.nodeDrawCount += 1
-
         # Allocate the item.
         item = self.createTreeItem(p,parent_item) 
-
         # Do this now, so self.isValidItem will be true in setItemIcon.
         self.rememberItem(p,item)
-
         # Set the headline and maybe the icon.
         self.setItemText(item,p.h)
         if p:
             self.drawItemIcon(p,item)
-
         if trace: g.trace(self.traceItem(item))
-
         return item
     #@+node:ekr.20110605121601.17876: *4* drawTopTree
     def drawTopTree (self,p):
-
+        '''Draw the tree rooted at p.'''
         trace = False and not g.unitTesting
         c = self.c
         hPos,vPos = self.getScroll()
@@ -241,21 +224,17 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             while p:
                 self.drawTree(p)
                 p.moveToNext()
-
         # This method always retains previous scroll position.
         self.setHScroll(hPos)
         self.setVScroll(vPos)
-
         self.repaint()
     #@+node:ekr.20110605121601.17877: *4* drawTree
     def drawTree (self,p,parent_item=None):
         
         if g.app.gui.isNullGui:
             return
-
         # Draw the (visible) parent node.
         item = self.drawNode(p,parent_item)
-
         # Draw all the visible children.
         self.drawChildren(p,parent_item=item)
     #@+node:ekr.20110605121601.17878: *4* initData

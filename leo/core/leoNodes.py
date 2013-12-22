@@ -737,25 +737,36 @@ class position (object):
         return p.txtOffset         
     #@+node:ekr.20040305222924: *3* p.Setters
     #@+node:ekr.20040306220634: *4* p.Vnode proxies
+    #@+node:ekr.20131222112420.16371: *5* p.Expansion bit
+    def contract (self):
+        '''Contract p.v and clear p.v.expandedPositions list.'''
+        self.v.contract()
+        
+    def expand(self):
+        p = self
+        v = self.v
+        for p2 in v.expandedPositions:
+            if p.v == p2.v:
+                # g.trace('found',p.h)
+                break
+        else:
+            # g.trace('adding',p.h)
+            v.expandedPositions.append(p.copy())
+        self.v.expand()
+
     #@+node:ekr.20040306220634.9: *5* p.Status bits
     # Clone bits are no longer used.
     # Dirty bits are handled carefully by the position class.
-
-    def clearMarked  (self): return self.v.clearMarked()
-    def clearOrphan  (self): return self.v.clearOrphan()
-    def clearVisited (self): return self.v.clearVisited()
-
-    def contract (self): return self.v.contract()
-    def expand   (self): return self.v.expand()
-
-    def initExpandedBit    (self): return self.v.initExpandedBit()
-    def initMarkedBit      (self): return self.v.initMarkedBit()
-    def initStatus (self, status): return self.v.initStatus(status)
-
-    def setMarked   (self): return self.v.setMarked()
-    def setOrphan   (self): return self.v.setOrphan()
-    def setSelected (self): return self.v.setSelected()
-    def setVisited  (self): return self.v.setVisited()
+    def clearMarked (self):     return self.v.clearMarked()
+    def clearOrphan (self):     return self.v.clearOrphan()
+    def clearVisited(self):     return self.v.clearVisited()
+    def initExpandedBit (self): return self.v.initExpandedBit()
+    def initMarkedBit(self):    return self.v.initMarkedBit()
+    def initStatus(self, status): return self.v.initStatus(status)
+    def setMarked(self):        return self.v.setMarked()
+    def setOrphan(self):        return self.v.setOrphan()
+    def setSelected(self):  return self.v.setSelected()
+    def setVisited(self):   return self.v.setVisited()
     #@+node:ekr.20040306220634.8: *5* p.computeIcon & p.setIcon
     def computeIcon (self):
 
@@ -1494,9 +1505,7 @@ class position (object):
         return p
     #@+node:ekr.20080416161551.210: *4* p.moveToVisBack
     def moveToVisBack (self,c):
-
         """Move a position to the position of the previous visible node."""
-
         trace = False and not g.unitTesting
         verbose = True
         p = self ; limit,limitIsVisible = c.visLimit()
@@ -1509,17 +1518,12 @@ class position (object):
             if trace: g.trace(
                 'back',back,'hasChildren',bool(back and back.hasChildren()),
                 'isExpanded',bool(back and back.isExpanded()))
-
-            if back and back.hasChildren() and back.isExpanded():
+            if back and back.hasChildren() and c.shouldBeExpanded(back):
                 p.moveToThreadBack()
             elif back:
                 p.moveToBack()
             else:
                 p.moveToParent() # Same as p.moveToThreadBack()
-            # if back and (not back.hasChildren() or not back.isExpanded()):
-                # p.moveToBack()
-            # else:
-                # p.moveToThreadBack()
             if trace: g.trace(p.parent(),p)
             if p:
                 if trace and verbose: g.trace('**p',p)
@@ -1531,7 +1535,6 @@ class position (object):
                     if trace and verbose: g.trace('isVisible',p)
                     return p
         else:
-            # assert not p.
             return p
     #@+node:ekr.20090715145956.6166: *5* checkVisBackLimit
     def checkVisBackLimit (self,limit,limitIsVisible,p):
@@ -1558,22 +1561,22 @@ class position (object):
             return False,None
     #@+node:ekr.20080416161551.211: *4* p.moveToVisNext
     def moveToVisNext (self,c):
-
         """Move a position to the position of the next visible node."""
-
         trace = False and not g.unitTesting
         p = self
         limit,limitIsVisible = c.visLimit()
         while p:
             if trace: g.trace('1',p.h)
-            # Short-circuit if possible.
-            if p.hasNext() and p.hasChildren() and p.isExpanded():
-                p.moveToFirstChild()
+            if p.hasChildren():
+                if c.shouldBeExpanded(p):
+                    p.moveToFirstChild()
+                else:
+                    p.moveToNodeAfterTree()
             elif p.hasNext():
                 p.moveToNext()
             else:
                 p.moveToThreadNext()
-            if trace: g.trace('2',p.h)
+            if trace: g.trace('2',p and p.h)
             if p:
                 done,val = self.checkVisNextLimit(limit,p)
                 if done: return val
@@ -1916,6 +1919,7 @@ class vnode (baseVnode):
         self.context = context # The context containing context.hiddenRootNode.
             # Required so we can compute top-level siblings.
             # It is named .context rather than .c to emphasize its limited usage.
+        self.expandedPositions = [] # Positions that should be expanded.
         self.insertSpot = None # Location of previous insert point.
         self.scrollBarSpot = None # Previous value of scrollbar position.
         self.selectionLength = 0 # The length of the selected body text.
@@ -2322,22 +2326,20 @@ class vnode (baseVnode):
         self.statusBits &= ~ self.visitedBit
     #@+node:ekr.20031218072017.3395: *5* v.contract & expand & initExpandedBit
     def contract(self):
-
+        '''Contract the node.'''
         # if self.context.p.v == self: g.trace(self,g.callers(4))
         # if self.isExpanded(): g.trace(self,g.callers())
-
+        self.expandedPositions = []
         self.statusBits &= ~ self.expandedBit
 
     def expand(self):
-
+        '''Expand the node.'''
         # g.trace(self,g.callers(4))
-
         self.statusBits |= self.expandedBit
 
     def initExpandedBit (self):
-
+        '''Init self.statusBits.'''
         # g.trace(self._headString)
-
         self.statusBits |= self.expandedBit
     #@+node:ekr.20031218072017.3396: *5* v.initStatus
     def initStatus (self, status):

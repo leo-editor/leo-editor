@@ -2018,6 +2018,43 @@ def getVimArg(self,event,specialStroke=None,specialFunc=None):
             # ring bell?
             if trace: g.trace('invalid char') ###
         c.bodyWantsFocus()
+.. @+node:ekr.20131105020211.18059: ** Added per-node expansions!
+@language rest
+https://groups.google.com/forum/#!topic/leo-editor/Wd0NtBLEZZk
+
+What I did:
+    
+- Added v.expandedPositions ivar.
+- v.contract clears expandedPositions.
+- p.expand adds p to p.v.expandedPositions.
+- Added c.shouldBeExpanded().
+- baseNativeTree.drawchildren calls c.shouldBeExpanded(p) instead of p.isExpanded().
+
+@language python
+.. @+node:ekr.20131222112420.16373: *3* Notes
+@language rest
+
+The idea is store "ephemeral" or position-related data **in vnodes*. This
+is a completely new idea in Leo's history!
+
+Suppose every vnode contains a new ivar: v.expandedPositions, a list of
+(copies of) positions at which v is to be expanded. This would work as
+follows:
+
+1. Contracting a node at position p clears p.v.expandedPositions. The happy
+   side effects is that contracting any clone will contract them all.
+
+2. Expanding a node at position appends p.copy() to p.v.expandedPositions,
+   and purges any no-longer-existing positions from that list.
+
+3. nativeTree.drawChildren will expand nodes using c.shouldBeExpanded(p) instead of
+   p.isExpanded(p).
+
+As always, changing outline structure will invalidate positions. Because
+c.p and all it's ancestors are always expanded, the worst that can happen
+when an outline changes is that some positions that *aren't* the present
+position will contract unexpectedly. Most such contraction will occur off
+screen.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.

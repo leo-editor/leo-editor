@@ -7254,7 +7254,6 @@ class Commands (object):
     #@+node:ekr.20090110073010.1: *5* c.redraw
     def redraw (self,p=None,setFocus=False):
         '''Redraw the screen immediately.'''
-
         trace = False and not g.unitTesting
         c = self
         if not p: p = c.p or c.rootPosition()
@@ -7895,27 +7894,22 @@ class Commands (object):
         return leoNodes.position(None)
     #@+node:ekr.20040307104131.3: *5* c.positionExists
     def positionExists(self,p,root=None):
-
         """Return True if a position exists in c's tree"""
-
         trace = False and not g.unitTesting
-        verbose = False
+        verbose = True
         c = self ; p = p.copy()
-
-        def report(i,children,v,tag=''):
-            if trace and verbose:
-                if i < 0 or i >= len(children):
-                    g.trace('bad i: %s, children: %s' % (
-                        i,len(children))) # ,g.callers(12))
-                elif children[i] != v:
-                    g.trace('v mismatch: children[i]: %s, v: %s' % (
-                        children[i] and children[i].h,v.h)) # ,g.callers(12))
-
+        # def report(i,children,v,tag=''):
+            # if trace and verbose:
+                # if i < 0 or i >= len(children):
+                    # g.trace('bad i: %s, children: %s' % (
+                        # i,len(children))) # ,g.callers(12))
+                # elif children[i] != v:
+                    # g.trace('v mismatch: children[i]: %s, v: %s' % (
+                        # children[i] and children[i].h,v.h)) # ,g.callers(12))
         # This code must be fast.
         root1 = root
         if not root:
             root = c.rootPosition()
-
         while p:
             if p == root:
                 return True
@@ -7925,19 +7919,22 @@ class Commands (object):
                 p.moveToParent()
                 children = p.v.children
                 # Major bug fix: 2009/1/2 and 2009/1/5
-                report(i,children,old_v)
+                # report(i,children,old_v)
                 if i < 0 or i >= len(children) or children[i] != old_v:
+                    if trace: g.trace('bad childIndex',i,p)
                     return False
             elif root1:
                 # Major bug fix: 2012/03/08: Do *not* expand the search!
+                if trace: g.trace('no parent',p)
                 return False
             else:
                 # A top-level position, check from hidden root vnode.
                 i = p._childIndex
                 children = c.hiddenRootNode.children
-                report(i,children,p.v)
-                return 0 <= i < len(children) and children[i] == p.v
-
+                # report(i,children,p.v)
+                result = 0 <= i < len(children) and children[i] == p.v
+                if trace and not result: g.trace('bad top childIndex',i,p)
+                return result
         if trace: g.trace('no v found')
         return False
     #@+node:ekr.20040803140033.2: *5* c.rootPosition
@@ -7965,6 +7962,31 @@ class Commands (object):
     # For compatibiility with old scripts.
     rootVnode = rootPosition
     findRootPosition = rootPosition
+    #@+node:ekr.20131017174814.17480: *5* c.shouldBeExpanded
+    def shouldBeExpanded(self,p):
+        '''Return True if the node at position p should be expanded.'''
+        trace = False and not g.unitTesting
+        c,root,v = self,self.rootPosition(),p.v
+        if not p.isCloned():
+            return p.isExpanded() # Same as before.
+        if p.isAncestorOf(c.p):
+            return True
+        if p.hasChildren() and p.isExpanded():
+            # Expanding/contracting nodes does *not* invalidate positions!
+            ### There is some problem with c.positionExists().
+            # result = []
+            # for z in v.expandedPositions:
+                # if c.positionExists(z.copy()):
+                    # result.append(p.copy())
+                # else:
+                    # g.trace('does not exist',p)
+            # v.expandedPositions = result
+            for p2 in v.expandedPositions:
+                if p == p2:
+                    if trace: g.trace('in list',p.h)
+                    return True
+        if trace: g.trace('not in list',p.h,v.expandedPositions)
+        return False
     #@+node:ekr.20070609122713: *5* c.visLimit
     def visLimit (self):
 
@@ -7980,33 +8002,6 @@ class Commands (object):
             return p,limitIsVisible
         else:
             return None,None
-    #@+node:ekr.20090107113956.1: *5* c.vnode2position
-    def vnode2position (self,v):
-
-        '''Given a vnode v, construct a valid position p such that p.v = v.
-        '''
-
-        c = self
-        context = v.context # v's commander.
-        assert (c == context)
-        stack = []
-        while v.parents:
-            parent = v.parents[0]
-            if v in parent.children:
-                n = parent.children.index(v)
-            else:
-                return None
-            stack.insert(0,(v,n),)
-            v = parent
-
-        # v.parents includes the hidden root node.
-        if not stack:
-            # a vnode not in the tree
-            return c.nullPosition()
-        v,n = stack.pop()
-        p = leoNodes.position(v,n,stack)
-        return p
-
     #@+node:tbrown.20091206142842.10296: *5* c.vnode2allPositions
     def vnode2allPositions (self,v):
 
@@ -8038,6 +8033,33 @@ class Commands (object):
                 p = leoNodes.position(v,n,stack)
                 positions.append(p)
         return positions
+    #@+node:ekr.20090107113956.1: *5* c.vnode2position
+    def vnode2position (self,v):
+
+        '''Given a vnode v, construct a valid position p such that p.v = v.
+        '''
+
+        c = self
+        context = v.context # v's commander.
+        assert (c == context)
+        stack = []
+        while v.parents:
+            parent = v.parents[0]
+            if v in parent.children:
+                n = parent.children.index(v)
+            else:
+                return None
+            stack.insert(0,(v,n),)
+            v = parent
+
+        # v.parents includes the hidden root node.
+        if not stack:
+            # a vnode not in the tree
+            return c.nullPosition()
+        v,n = stack.pop()
+        p = leoNodes.position(v,n,stack)
+        return p
+
     #@+node:ekr.20060906211747.1: *4* Setters
     #@+node:ekr.20040315032503: *5* c.appendStringToBody
     def appendStringToBody (self,p,s):

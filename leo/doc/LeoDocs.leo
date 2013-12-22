@@ -1086,8 +1086,7 @@
 </v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d7100285509302e302e312e302e3071017d710255097374725f6174696d657103550c313337363431323837322e30710473550b302e302e332e312e312e3371057d71066803550c313337363431323838392e30710773550c302e302e31322e302e302e3771087d710958090000007374725f6174696d65710a550c313337363431323238302e30710b735510302e302e31322e302e302e372e302e31710c7d710d58090000007374725f6174696d65710e550c313337363431323238382e30710f73550b302e302e332e302e322e3371107d71116803550c313337363431323838382e30711273752e"
-expanded="ekr.20131220065609.16637,"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d7100285509302e302e312e302e3071017d710255097374725f6174696d657103550c313337363431323837322e30710473550b302e302e332e312e312e3371057d71066803550c313337363431323838392e30710773550c302e302e31322e302e302e3771087d710958090000007374725f6174696d65710a550c313337363431323238302e30710b735510302e302e31322e302e302e372e302e31710c7d710d58090000007374725f6174696d65710e550c313337363431323238382e30710f73550b302e302e332e302e322e3371107d71116803550c313337363431323838382e30711273752e"><vh>@file release_notes.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20131220065609.16614"><vh>4.11.1 Release notes</vh>
@@ -1099,6 +1098,7 @@ expanded="ekr.20131220065609.16637,"><vh>@file release_notes.txt</vh></v>
 <v t="ekr.20131220065609.16621"><vh>Added join-leo-irc command</vh></v>
 <v t="ekr.20131220065609.17422"><vh>Added @data qt-gui-user-style-sheet</vh></v>
 <v t="ekr.20131221065129.16526"><vh>Improved the print-bindigs command</vh></v>
+<v t="ekr.20131222112420.16374"><vh>Added per-node expansions of cloned nodes</vh></v>
 </v>
 <v t="ekr.20131220065609.16635"><vh>Fixed bugs</vh>
 <v t="ekr.20131220065609.16622"><vh>Allow comments after @data setting-name</vh></v>
@@ -19565,6 +19565,7 @@ The highlights of Leo 4.11.1:
 - Reorganized menus, including a new Settings menu.
 - Added @data qt-gui-user-style-sheet
 - More untuitive bindings for Return, Insert and Delete keys.
+- Per-node expansions of cloned nodes.
 
 Links:
 ------
@@ -19756,6 +19757,7 @@ changed.
 </t>
 <t tx="ekr.20131221065129.16526">All menu shortcuts are shown as bound to the menu-shortcut command.
 </t>
+<t tx="ekr.20131222112420.16374">This should be more intuitive for newcomers.</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.

@@ -21585,6 +21585,7 @@ The highlights of Leo 4.11.1:
 - Reorganized menus, including a new Settings menu.
 - Added @data qt-gui-user-style-sheet
 - More untuitive bindings for Return, Insert and Delete keys.
+- Per-node expansions of cloned nodes.
 
 Links:
 ------
@@ -21634,6 +21635,8 @@ qt-gui-plugin-style-sheet. Just put your particular overrides in
 changed.
 #@+node:ekr.20131221065129.16526: *5* Improved the print-bindigs command
 All menu shortcuts are shown as bound to the menu-shortcut command.
+#@+node:ekr.20131222112420.16374: *5* Added per-node expansions of cloned nodes
+This should be more intuitive for newcomers.
 #@+node:ekr.20131220065609.16635: *4* Fixed bugs
 #@+node:ekr.20131220065609.16622: *5* Allow comments after @data setting-name
 Changed ParserBaseClass.parseHeadline so it ignores everything after @data
