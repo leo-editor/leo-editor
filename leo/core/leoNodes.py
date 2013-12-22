@@ -617,48 +617,23 @@ class position (object):
         '''Return True if p is visible in c's outline.'''
         trace = False and not g.unitTesting
         p = self
-        if 1: ### New code.
-            def visible(p):
-                for parent in p.parents():
-                    if not c.shouldBeExpanded(parent):
-                        if trace: g.trace('fail',parent)
-                        return False
-                return True
-            if c.hoistStack:
-                root = c.hoistStack[-1].p
-                return root.isAncestorOf(p) and visible(p)
-            else:
-                for root in c.rootPosition().self_and_siblings():
-                    if root == p or root.isAncestorOf(p):
-                        return visible(p)
-                if trace: g.trace('no ancestor',p)
-                return False
-        else:
-            limit,limitIsVisible = c.visLimit()
-            limit_v = limit and limit.v or None
-            if p.v == limit_v:
-                if trace: g.trace('*** at limit','limitIsVisible',limitIsVisible,p.h)
-                return limitIsVisible
-            # It's much easier with a full stack.
-            n = len(p.stack)-1
-            while n >= 0:
-                progress = n
-                # v,n = p.vParentWithStack(v,p.stack,n)
-                v,junk = p.stack[n]
-                if v == limit_v:  # We are at a descendant of limit.
-                    if trace: g.trace('*** descendant of limit',
-                        'limitIsVisible',limitIsVisible,
-                        'limit.isExpanded()',limit.isExpanded(),'v',v)
-                    if limitIsVisible:
-                        return limit.isExpanded()
-                    else: # Ignore the expansion state of @chapter nodes.
-                        return True
-                if not v.isExpanded():
-                    if trace: g.trace('*** non-limit parent is not expanded:',v._headString,p.h)
+      
+        def visible(p):
+            for parent in p.parents():
+                if not c.shouldBeExpanded(parent):
+                    if trace: g.trace('fail',parent)
                     return False
-                n -= 1
-                assert progress > n
             return True
+
+        if c.hoistStack:
+            root = c.hoistStack[-1].p
+            return root.isAncestorOf(p) and visible(p)
+        else:
+            for root in c.rootPosition().self_and_siblings():
+                if root == p or root.isAncestorOf(p):
+                    return visible(p)
+            if trace: g.trace('no ancestor',p)
+            return False
     #@+node:ekr.20080416161551.197: *4* p.level & simpleLevel
     def level (self):
 
@@ -1543,7 +1518,7 @@ class position (object):
                 'back',back,'hasChildren',bool(back and back.hasChildren()),
                 'isExpanded',bool(back and back.isExpanded()))
             # g.trace(back,back and back.v.expandedPositions)
-            if back and back.hasChildren() and back.isExpanded(): ### c.shouldBeExpanded(p):
+            if back and back.hasChildren() and back.isExpanded():
                 p.moveToThreadBack()
             elif back:
                 p.moveToBack()
@@ -1595,7 +1570,7 @@ class position (object):
         while p:
             if trace: g.trace('1',p.h)
             if p.hasChildren():
-                if p.isExpanded(): ### c.shouldBeExpanded(p):
+                if p.isExpanded():
                     p.moveToFirstChild()
                 else:
                     p.moveToNodeAfterTree()

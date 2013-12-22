@@ -169,7 +169,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         if not p:
             return g.trace('can not happen: no p')
         if p.hasChildren():
-            if c.shouldBeExpanded(p): ## p.isExpanded():
+            if p.isExpanded():
                 self.expandItem(parent_item)
                 child = p.firstChild()
                 while child:

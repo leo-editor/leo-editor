@@ -2023,17 +2023,15 @@ def getVimArg(self,event,specialStroke=None,specialFunc=None):
 https://groups.google.com/forum/#!topic/leo-editor/Wd0NtBLEZZk
 
 What I did:
-    
+
 - Added v.expandedPositions ivar.
-- v.contract clears expandedPositions.
-- p.expand adds p to p.v.expandedPositions.
-- Added c.shouldBeExpanded().
-- baseNativeTree.drawchildren calls c.shouldBeExpanded(p) instead of p.isExpanded().
-
-@language python
+- Wrote c.shouldBeExpanded.
+- p.isExpanded calls c.shouldBeExpanded if p is a clone.
+  This is important: it means that most code does not have to be aware of c.shouldBeExpanded.
+- p.expand & p.contract maintain p.v.expandedPositions list.
+- Rewrote & simplified p.isVisible.
+- Left c.positionExists and p.isAncestorOf unchanged.
 .. @+node:ekr.20131222112420.16373: *3* Notes
-@language rest
-
 The idea is store "ephemeral" or position-related data **in vnodes*. This
 is a completely new idea in Leo's history!
 
