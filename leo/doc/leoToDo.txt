@@ -14,141 +14,140 @@
 - vim mode
 
 .. @+node:ekr.20131222135125.16360: *3* * per-clone expansions
-.. @+node:ekr.20031218072017.3395: *4* v.contract & expand & initExpandedBit
-def contract(self):
-    '''Contract the node.'''
-    # if self.context.p.v == self: g.trace(self,g.callers(4))
-    # if self.isExpanded(): g.trace(self,g.callers())
-    self.expandedPositions = []
-    self.statusBits &= ~ self.expandedBit
+@language python
+.. @+node:ekr.20040930064232.1: *4* expandNodeAnd/OrGoToFirstChild
+def expandNodeAndGoToFirstChild (self,event=None):
 
-def expand(self):
-    '''Expand the node.'''
-    # g.trace(self,g.callers(4))
-    self.statusBits |= self.expandedBit
+    """If a node has children, expand it if needed and go to the first child."""
 
-def initExpandedBit (self):
-    '''Init self.statusBits.'''
-    # g.trace(self._headString)
-    self.statusBits |= self.expandedBit
+    c = self ; p = c.p
+
+    if p.hasChildren():
+        if p.isExpanded():
+            c.selectPosition(p.firstChild())
+        else:
+            c.expandNode()
+            # Fix bug 930726
+            # expandNodeAndGoToFirstChild only expands or only goes to first child .
+            c.selectPosition(p.firstChild())
+
+    c.treeFocusHelper()
+
+def expandNodeOrGoToFirstChild (self,event=None):
+
+    """Simulate the Right Arrow Key in folder of Windows Explorer."""
+
+    c = self ; p = c.p
+    if p.hasChildren():
+        if not p.isExpanded():
+            c.expandNode() # Calls redraw_after_expand.
+        else:
+            c.redraw_after_expand(p.firstChild(),setFocus=True)
+.. @+node:ekr.20070609122713: *4* c.visLimit
+def visLimit (self):
+
+    '''Return the topmost visible node.
+    This is affected by chapters and hoists.'''
+
+    c = self ; cc = c.chapterController
+
+    if c.hoistStack:
+        bunch = c.hoistStack[-1]
+        p = bunch.p
+        limitIsVisible = not cc or not p.h.startswith('@chapter')
+        return p,limitIsVisible
+    else:
+        return None,None
 .. @+node:ekr.20131222112420.16371: *4* p.Expansion bit
 def contract (self):
     '''Contract p.v and clear p.v.expandedPositions list.'''
-    self.v.contract()
-    
+    p,v = self,self.v
+    v.expandedPositions = [z for z in v.expandedPositions if z != p]
+    # g.trace(len(v.expandedPositions),p.h)
+    v.contract()
+
 def expand(self):
     p = self
     v = self.v
     for p2 in v.expandedPositions:
-        if p.v == p2.v:
-            # g.trace('found',p.h)
+        if p == p2:
             break
     else:
-        # g.trace('adding',p.h)
         v.expandedPositions.append(p.copy())
-    self.v.expand()
-
+    # g.trace(len(v.expandedPositions),p.h)
+    v.expand()
+    
+def isExpanded(self):
+    p = self
+    if p.isCloned():
+        c = p.v.context
+        return c.shouldBeExpanded(p)
+    else:
+        return p.v.isExpanded()
 .. @+node:ekr.20131017174814.17480: *4* c.shouldBeExpanded
 def shouldBeExpanded(self,p):
     '''Return True if the node at position p should be expanded.'''
     trace = False and not g.unitTesting
     c,root,v = self,self.rootPosition(),p.v
     if not p.isCloned():
-        return p.isExpanded() # Same as before.
+        # Do not call p.isExpanded here! It calls this method.
+        return p.v.isExpanded()
     if p.isAncestorOf(c.p):
         return True
-    if p.hasChildren() and p.isExpanded():
-        # Expanding/contracting nodes does *not* invalidate positions!
-        ### There is some problem with c.positionExists().
-        # result = []
-        # for z in v.expandedPositions:
-            # if c.positionExists(z.copy()):
-                # result.append(p.copy())
-            # else:
-                # g.trace('does not exist',p)
-        # v.expandedPositions = result
+    if p.hasChildren():
         for p2 in v.expandedPositions:
             if p == p2:
-                if trace: g.trace('in list',p.h)
+                if trace: g.trace('in list',len(v.expandedPositions),p.h)
                 return True
-    if trace: g.trace('not in list',p.h,v.expandedPositions)
-    return False
-.. @+node:ekr.20040307104131.3: *4* c.positionExists
-def positionExists(self,p,root=None):
-    """Return True if a position exists in c's tree"""
-    trace = False and not g.unitTesting
-    verbose = True
-    c = self ; p = p.copy()
-    # def report(i,children,v,tag=''):
-        # if trace and verbose:
-            # if i < 0 or i >= len(children):
-                # g.trace('bad i: %s, children: %s' % (
-                    # i,len(children))) # ,g.callers(12))
-            # elif children[i] != v:
-                # g.trace('v mismatch: children[i]: %s, v: %s' % (
-                    # children[i] and children[i].h,v.h)) # ,g.callers(12))
-    # This code must be fast.
-    root1 = root
-    if not root:
-        root = c.rootPosition()
-    while p:
-        if p == root:
-            return True
-        if p.hasParent():
-            old_v = p.v
-            i = p._childIndex
-            p.moveToParent()
-            children = p.v.children
-            # Major bug fix: 2009/1/2 and 2009/1/5
-            # report(i,children,old_v)
-            if i < 0 or i >= len(children) or children[i] != old_v:
-                if trace: g.trace('bad childIndex',i,p)
-                return False
-        elif root1:
-            # Major bug fix: 2012/03/08: Do *not* expand the search!
-            if trace: g.trace('no parent',p)
-            return False
-        else:
-            # A top-level position, check from hidden root vnode.
-            i = p._childIndex
-            children = c.hiddenRootNode.children
-            # report(i,children,p.v)
-            result = 0 <= i < len(children) and children[i] == p.v
-            if trace and not result: g.trace('bad top childIndex',i,p)
-            return result
-    if trace: g.trace('no v found')
+    if trace: g.trace('not in list',len(v.expandedPositions),p.h)
     return False
 .. @+node:ekr.20080416161551.196: *4* p.isVisible
 def isVisible (self,c):
-
-    p = self ; trace = False
-    limit,limitIsVisible = c.visLimit()
-    limit_v = limit and limit.v or None
-    if p.v == limit_v:
-        if trace: g.trace('*** at limit','limitIsVisible',limitIsVisible,p.h)
-        return limitIsVisible
-
-    # It's much easier with a full stack.
-    n = len(p.stack)-1
-    while n >= 0:
-        progress = n
-        # v,n = p.vParentWithStack(v,p.stack,n)
-        v,junk = p.stack[n]
-        if v == limit_v:  # We are at a descendant of limit.
-            if trace: g.trace('*** descendant of limit',
-                'limitIsVisible',limitIsVisible,
-                'limit.isExpanded()',limit.isExpanded(),'v',v)
-            if limitIsVisible:
-                return limit.isExpanded()
-            else: # Ignore the expansion state of @chapter nodes.
-                return True
-        if not v.isExpanded():
-            if trace: g.trace('*** non-limit parent is not expanded:',v._headString,p.h)
+    '''Return True if p is visible in c's outline.'''
+    trace = False and not g.unitTesting
+    p = self
+    if 1: ### New code.
+        def visible(p):
+            for parent in p.parents():
+                if not c.shouldBeExpanded(parent):
+                    if trace: g.trace('fail',parent)
+                    return False
+            return True
+        if c.hoistStack:
+            root = c.hoistStack[-1].p
+            return root.isAncestorOf(p) and visible(p)
+        else:
+            for root in c.rootPosition().self_and_siblings():
+                if root == p or root.isAncestorOf(p):
+                    return visible(p)
+            if trace: g.trace('no ancestor',p)
             return False
-        n -= 1
-        assert progress > n
-
-    return True
+    else:
+        limit,limitIsVisible = c.visLimit()
+        limit_v = limit and limit.v or None
+        if p.v == limit_v:
+            if trace: g.trace('*** at limit','limitIsVisible',limitIsVisible,p.h)
+            return limitIsVisible
+        # It's much easier with a full stack.
+        n = len(p.stack)-1
+        while n >= 0:
+            progress = n
+            # v,n = p.vParentWithStack(v,p.stack,n)
+            v,junk = p.stack[n]
+            if v == limit_v:  # We are at a descendant of limit.
+                if trace: g.trace('*** descendant of limit',
+                    'limitIsVisible',limitIsVisible,
+                    'limit.isExpanded()',limit.isExpanded(),'v',v)
+                if limitIsVisible:
+                    return limit.isExpanded()
+                else: # Ignore the expansion state of @chapter nodes.
+                    return True
+            if not v.isExpanded():
+                if trace: g.trace('*** non-limit parent is not expanded:',v._headString,p.h)
+                return False
+            n -= 1
+            assert progress > n
+        return True
 .. @+node:ekr.20080416161551.210: *4* p.moveToVisBack
 def moveToVisBack (self,c):
     """Move a position to the position of the previous visible node."""
@@ -164,7 +163,8 @@ def moveToVisBack (self,c):
         if trace: g.trace(
             'back',back,'hasChildren',bool(back and back.hasChildren()),
             'isExpanded',bool(back and back.isExpanded()))
-        if back and back.hasChildren() and c.shouldBeExpanded(back):
+        # g.trace(back,back and back.v.expandedPositions)
+        if back and back.hasChildren() and back.isExpanded(): ### c.shouldBeExpanded(p):
             p.moveToThreadBack()
         elif back:
             p.moveToBack()
@@ -180,6 +180,8 @@ def moveToVisBack (self,c):
             if p.isVisible(c):
                 if trace and verbose: g.trace('isVisible',p)
                 return p
+            else:
+                if trace and verbose: g.trace('**** not visible',p)
     else:
         return p
 .. @+node:ekr.20090715145956.6166: *5* checkVisBackLimit
@@ -214,7 +216,7 @@ def moveToVisNext (self,c):
     while p:
         if trace: g.trace('1',p.h)
         if p.hasChildren():
-            if c.shouldBeExpanded(p):
+            if p.isExpanded(): ### c.shouldBeExpanded(p):
                 p.moveToFirstChild()
             else:
                 p.moveToNodeAfterTree()

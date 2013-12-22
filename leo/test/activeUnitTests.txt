@@ -14241,13 +14241,13 @@ for v in c.all_unique_nodes():
 child = p.insertAsLastChild()
 assert c.positionExists(child)
 child.doDelete()
-assert not c.positionExists(child)
+assert not c.positionExists(child),'fail 1'
 
 # also check the same on root level
 child = c.rootPosition().insertAfter()
 assert c.positionExists(child)
 child.doDelete()
-assert not c.positionExists(child)
+assert not c.positionExists(child),'fail 2'
 #@+node:ekr.20120212130242.4704: *5* newHeadline
 #@+node:ekr.20090102062037.2: *4* @test c.positionExists for all nodes
 for p in c.all_positions():
@@ -14409,9 +14409,9 @@ if 1:
     v2.h = 'insertAsNthChild(1)'
 p.expand()
 c.redraw()
-#@+node:ekr.20131220083358.3987: *5* insertAsFirstChild
-#@+node:ekr.20131220083358.3989: *5* insertAsNthChild(1)
-#@+node:ekr.20131220083358.3988: *5* insertAsLastChild
+#@+node:ekr.20131222161536.4098: *5* insertAsFirstChild
+#@+node:ekr.20131222161536.4100: *5* insertAsNthChild(1)
+#@+node:ekr.20131222161536.4099: *5* insertAsLastChild
 #@+node:ekr.20080310073711.1: *4* @test nodeIndices.toString(None) allocates a new index
 gnx = g.app.nodeIndices.toString(None)
 assert(gnx not in (None,'None'))

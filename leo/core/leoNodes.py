@@ -453,7 +453,7 @@ class position (object):
         return self.v.cleanHeadString()
     #@+node:ekr.20040306214401: *5* p.Status bits
     def isDirty     (self): return self.v.isDirty()
-    def isExpanded  (self): return self.v.isExpanded()
+    ### def isExpanded  (self): return self.v.isExpanded()
     def isMarked    (self): return self.v.isMarked()
     def isOrphan    (self): return self.v.isOrphan()
     def isSelected  (self): return self.v.isSelected()
@@ -593,14 +593,13 @@ class position (object):
         return c.rootPosition()
     #@+node:ekr.20080416161551.194: *4* p.isAncestorOf
     def isAncestorOf (self, p2):
-
-        p = self ; v = p.v
-
+        '''Return True if p is an ancestor of p2.'''
+        p,v = self,self.v
+        c = v.context
         for z in p2.stack:
-            v2,junk = z
-            if v2 == v:
+            parent,junk = z
+            if parent == v:
                 return True
-
         return False
     #@+node:ekr.20040306215056: *4* p.isCloned
     def isCloned (self):
@@ -615,35 +614,51 @@ class position (object):
         return not p.hasParent() and not p.hasBack()
     #@+node:ekr.20080416161551.196: *4* p.isVisible
     def isVisible (self,c):
-
-        p = self ; trace = False
-        limit,limitIsVisible = c.visLimit()
-        limit_v = limit and limit.v or None
-        if p.v == limit_v:
-            if trace: g.trace('*** at limit','limitIsVisible',limitIsVisible,p.h)
-            return limitIsVisible
-
-        # It's much easier with a full stack.
-        n = len(p.stack)-1
-        while n >= 0:
-            progress = n
-            # v,n = p.vParentWithStack(v,p.stack,n)
-            v,junk = p.stack[n]
-            if v == limit_v:  # We are at a descendant of limit.
-                if trace: g.trace('*** descendant of limit',
-                    'limitIsVisible',limitIsVisible,
-                    'limit.isExpanded()',limit.isExpanded(),'v',v)
-                if limitIsVisible:
-                    return limit.isExpanded()
-                else: # Ignore the expansion state of @chapter nodes.
-                    return True
-            if not v.isExpanded():
-                if trace: g.trace('*** non-limit parent is not expanded:',v._headString,p.h)
+        '''Return True if p is visible in c's outline.'''
+        trace = False and not g.unitTesting
+        p = self
+        if 1: ### New code.
+            def visible(p):
+                for parent in p.parents():
+                    if not c.shouldBeExpanded(parent):
+                        if trace: g.trace('fail',parent)
+                        return False
+                return True
+            if c.hoistStack:
+                root = c.hoistStack[-1].p
+                return root.isAncestorOf(p) and visible(p)
+            else:
+                for root in c.rootPosition().self_and_siblings():
+                    if root == p or root.isAncestorOf(p):
+                        return visible(p)
+                if trace: g.trace('no ancestor',p)
                 return False
-            n -= 1
-            assert progress > n
-
-        return True
+        else:
+            limit,limitIsVisible = c.visLimit()
+            limit_v = limit and limit.v or None
+            if p.v == limit_v:
+                if trace: g.trace('*** at limit','limitIsVisible',limitIsVisible,p.h)
+                return limitIsVisible
+            # It's much easier with a full stack.
+            n = len(p.stack)-1
+            while n >= 0:
+                progress = n
+                # v,n = p.vParentWithStack(v,p.stack,n)
+                v,junk = p.stack[n]
+                if v == limit_v:  # We are at a descendant of limit.
+                    if trace: g.trace('*** descendant of limit',
+                        'limitIsVisible',limitIsVisible,
+                        'limit.isExpanded()',limit.isExpanded(),'v',v)
+                    if limitIsVisible:
+                        return limit.isExpanded()
+                    else: # Ignore the expansion state of @chapter nodes.
+                        return True
+                if not v.isExpanded():
+                    if trace: g.trace('*** non-limit parent is not expanded:',v._headString,p.h)
+                    return False
+                n -= 1
+                assert progress > n
+            return True
     #@+node:ekr.20080416161551.197: *4* p.level & simpleLevel
     def level (self):
 
@@ -740,20 +755,29 @@ class position (object):
     #@+node:ekr.20131222112420.16371: *5* p.Expansion bit
     def contract (self):
         '''Contract p.v and clear p.v.expandedPositions list.'''
-        self.v.contract()
-        
+        p,v = self,self.v
+        v.expandedPositions = [z for z in v.expandedPositions if z != p]
+        # g.trace(len(v.expandedPositions),p.h)
+        v.contract()
+
     def expand(self):
         p = self
         v = self.v
         for p2 in v.expandedPositions:
-            if p.v == p2.v:
-                # g.trace('found',p.h)
+            if p == p2:
                 break
         else:
-            # g.trace('adding',p.h)
             v.expandedPositions.append(p.copy())
-        self.v.expand()
-
+        # g.trace(len(v.expandedPositions),p.h)
+        v.expand()
+        
+    def isExpanded(self):
+        p = self
+        if p.isCloned():
+            c = p.v.context
+            return c.shouldBeExpanded(p)
+        else:
+            return p.v.isExpanded()
     #@+node:ekr.20040306220634.9: *5* p.Status bits
     # Clone bits are no longer used.
     # Dirty bits are handled carefully by the position class.
@@ -1518,7 +1542,8 @@ class position (object):
             if trace: g.trace(
                 'back',back,'hasChildren',bool(back and back.hasChildren()),
                 'isExpanded',bool(back and back.isExpanded()))
-            if back and back.hasChildren() and c.shouldBeExpanded(back):
+            # g.trace(back,back and back.v.expandedPositions)
+            if back and back.hasChildren() and back.isExpanded(): ### c.shouldBeExpanded(p):
                 p.moveToThreadBack()
             elif back:
                 p.moveToBack()
@@ -1534,6 +1559,8 @@ class position (object):
                 if p.isVisible(c):
                     if trace and verbose: g.trace('isVisible',p)
                     return p
+                else:
+                    if trace and verbose: g.trace('**** not visible',p)
         else:
             return p
     #@+node:ekr.20090715145956.6166: *5* checkVisBackLimit
@@ -1568,7 +1595,7 @@ class position (object):
         while p:
             if trace: g.trace('1',p.h)
             if p.hasChildren():
-                if c.shouldBeExpanded(p):
+                if p.isExpanded(): ### c.shouldBeExpanded(p):
                     p.moveToFirstChild()
                 else:
                     p.moveToNodeAfterTree()
@@ -2329,7 +2356,6 @@ class vnode (baseVnode):
         '''Contract the node.'''
         # if self.context.p.v == self: g.trace(self,g.callers(4))
         # if self.isExpanded(): g.trace(self,g.callers())
-        self.expandedPositions = []
         self.statusBits &= ~ self.expandedBit
 
     def expand(self):

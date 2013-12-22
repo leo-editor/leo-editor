@@ -7895,17 +7895,18 @@ class Commands (object):
     #@+node:ekr.20040307104131.3: *5* c.positionExists
     def positionExists(self,p,root=None):
         """Return True if a position exists in c's tree"""
+        # Important: do not call p.isAncestorOf here.
         trace = False and not g.unitTesting
         verbose = True
         c = self ; p = p.copy()
-        # def report(i,children,v,tag=''):
-            # if trace and verbose:
-                # if i < 0 or i >= len(children):
-                    # g.trace('bad i: %s, children: %s' % (
-                        # i,len(children))) # ,g.callers(12))
-                # elif children[i] != v:
-                    # g.trace('v mismatch: children[i]: %s, v: %s' % (
-                        # children[i] and children[i].h,v.h)) # ,g.callers(12))
+        def report(i,children,v,tag=''):
+            if trace and verbose:
+                if i < 0 or i >= len(children):
+                    g.trace('bad i: %s, children: %s' % (
+                        i,len(children))) # ,g.callers(12))
+                elif children[i] != v:
+                    g.trace('v mismatch: children[i]: %s, v: %s' % (
+                        children[i] and children[i].h,v.h)) # ,g.callers(12))
         # This code must be fast.
         root1 = root
         if not root:
@@ -7968,24 +7969,16 @@ class Commands (object):
         trace = False and not g.unitTesting
         c,root,v = self,self.rootPosition(),p.v
         if not p.isCloned():
-            return p.isExpanded() # Same as before.
+            # Do not call p.isExpanded here! It calls this method.
+            return p.v.isExpanded()
         if p.isAncestorOf(c.p):
             return True
-        if p.hasChildren() and p.isExpanded():
-            # Expanding/contracting nodes does *not* invalidate positions!
-            ### There is some problem with c.positionExists().
-            # result = []
-            # for z in v.expandedPositions:
-                # if c.positionExists(z.copy()):
-                    # result.append(p.copy())
-                # else:
-                    # g.trace('does not exist',p)
-            # v.expandedPositions = result
+        if p.hasChildren():
             for p2 in v.expandedPositions:
                 if p == p2:
-                    if trace: g.trace('in list',p.h)
+                    if trace: g.trace('in list',len(v.expandedPositions),p.h)
                     return True
-        if trace: g.trace('not in list',p.h,v.expandedPositions)
+        if trace: g.trace('not in list',len(v.expandedPositions),p.h)
         return False
     #@+node:ekr.20070609122713: *5* c.visLimit
     def visLimit (self):
