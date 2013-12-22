@@ -4001,11 +4001,11 @@ class Commands (object):
     #@+node:ekr.20101118113953.5843: *7* rp_wrap_all_lines
     def rp_wrap_all_lines (self,indents,leading_ws,lines,pageWidth):
 
-        '''compute the result of wrapping all lines.'''
+        '''Compute the result of wrapping all lines.'''
         c = self
         trailingNL = lines and lines[-1].endswith('\n')
         lines = [g.choose(z.endswith('\n'),z[:-1],z) for z in lines]
-        if len(lines) > 1:
+        if len(lines) > 0: # Bug fix: 2013/12/22.
             s = lines[0]
             if c.startsParagraph(s):
                 # Adjust indents[1]
@@ -4021,15 +4021,11 @@ class Commands (object):
                         i = 2
                 elif s[0] == '-':
                     i = 1
-                if i > 0:
-                    i = g.skip_ws(s,i+1)
-                    # Never decrease indentation.
-                    if i > indents[1]:
-                        indents[1] = i
-                        leading_ws[1] = ' '*i
-                    # g.trace('indents[1]',indents[1])
-                else:
-                    g.trace('can not happen')
+                # Never decrease indentation.
+                i = g.skip_ws(s,i+1)
+                if i > indents[1]:
+                    indents[1] = i
+                    leading_ws[1] = ' '*i
         # Wrap the lines, decreasing the page width by indent.
         result = g.wrap_lines(lines,
             pageWidth-indents[1],
