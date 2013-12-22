@@ -5,10 +5,6 @@
 .. @+all
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
-
-Post: Principle: docs are important, but Leo should be useable without them.
-
-* Annoying bug.  Ctrl-Shift-P still doesn't handle bullet lists properly.
 .. @+node:ekr.20131219102947.16570: *3* Release 4.11.1
 Don't release 4.11.1 until I am *sure* all bindings & help are correct.
 .. @+node:ekr.20131213072223.16397: *3* * Video tutorials
