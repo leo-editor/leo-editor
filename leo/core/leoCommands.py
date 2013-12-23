@@ -7898,69 +7898,25 @@ class Commands (object):
         # Important: do not call p.isAncestorOf here.
         trace = False and not g.unitTesting
         c = self
-        if 1: # New code
-            if not p:
-                return False
-            p1 = p.copy()
-            p = p.copy()
+        if not p:
+            return False
+        if root and p == root:
+            return True
+        p = p.copy()
+        while p.hasParent():
+            old_n,old_v = p._childIndex,p.v
+            p.moveToParent()
             if root and p == root:
                 return True
-            while p.hasParent():
-                old_n,old_v = p._childIndex,p.v
-                p.moveToParent()
-                if root and p == root:
-                    return True
-                elif not old_v.isNthChildOf(old_n,p.v):
-                    if trace: g.trace('fail 1',p1)
-                    return False
-            if root:
-                exists = p == root
-            else:
-                exists = p.v.isNthChildOf(p._childIndex,c.hiddenRootNode)
-            if trace and not exists: g.trace('fail 2',p1)
-            return exists
+            elif not old_v.isNthChildOf(old_n,p.v):
+                if trace: g.trace('fail 1',p)
+                return False
+        if root:
+            exists = p == root
         else:
-            verbose = False
-            def report(i,children,v,tag=''):
-                if trace and verbose:
-                    if i < 0 or i >= len(children):
-                        g.trace('bad i: %s, children: %s' % (
-                            i,len(children))) # ,g.callers(12))
-                    elif children[i] != v:
-                        g.trace('v mismatch: children[i]: %s, v: %s' % (
-                            children[i] and children[i].h,v.h)) # ,g.callers(12))
-            # This code must be fast.
-            p = p.copy()
-            root1 = root
-            if not root:
-                root = c.rootPosition()
-            while p:
-                if p == root:
-                    return True
-                if p.hasParent():
-                    old_v = p.v
-                    i = p._childIndex
-                    p.moveToParent()
-                    children = p.v.children
-                    # Major bug fix: 2009/1/2 and 2009/1/5
-                    # report(i,children,old_v)
-                    if i < 0 or i >= len(children) or children[i] != old_v:
-                        if trace: g.trace('bad childIndex',i,p)
-                        return False
-                elif root1:
-                    # Major bug fix: 2012/03/08: Do *not* expand the search!
-                    if trace: g.trace('no parent',p)
-                    return False
-                else:
-                    # A top-level position, check from hidden root vnode.
-                    i = p._childIndex
-                    children = c.hiddenRootNode.children
-                    # report(i,children,p.v)
-                    result = 0 <= i < len(children) and children[i] == p.v
-                    if trace and not result: g.trace('bad top childIndex',i,p)
-                    return result
-            if trace: g.trace('no v found')
-            return False
+            exists = p.v.isNthChildOf(p._childIndex,c.hiddenRootNode)
+        if trace and not exists: g.trace('fail 2',p)
+        return exists
     #@+node:ekr.20040803140033.2: *5* c.rootPosition
     _rootCount = 0
 
