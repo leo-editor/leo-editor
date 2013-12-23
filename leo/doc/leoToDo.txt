@@ -6,13 +6,82 @@
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 
-* Fix problem with c.positionExists.
-- More thorough testing of the new expansion scheme.
+- Release 4.11.1
+    - Fix IPython code/docs first.
+    - Create files automatically.
+.. @+node:ekr.20131206064113.16325: *3* Fix new IPython bug
+The c property makes no sense.  Maybe the best solution is to get rid of it and change the docs.
 
-- Release 4.11.1.
-- Complete @auto work
-- vim mode
+http://leoeditor.com/IPythonBridge.html
+.. @+node:ekr.20130930062914.16002: *4* class LeoNameSpace
+class LeoNameSpace(object):
+    
+    '''An interface class passed to IPython that provides easy
+    access to "g" and all commanders.
+    
+    A convenience property, "c" provides access to the first
+    commander in g.app.windowList.
+    '''
 
+    def __init__ (self):
+        '''LeoNameSpace ctor.'''
+        self.commander = None
+            # The commander returned by the c property.
+        self.commanders_list = []
+            # The list of commanders returned by the commanders property.
+        self.g = g
+        self.update()
+
+    @others
+    
+.. @+node:ekr.20130930062914.16006: *5* LeoNS.c property
+def __get_c(self):
+    '''Return the designated commander, or the only open commander.'''
+    self.update()
+    if self.commander and self.commander in self.commanders_list:
+        return self.commander
+    elif len(self.commanders_list) == 1:
+        return self.commanders_list[0]
+    else:
+        return None
+
+def __set_c(self,c):
+    '''Designate the commander to be returned by the getter.'''
+    self.update()
+    if c in self.commanders_list:
+        self.commander = c
+    else:
+        g.trace(g.callers())
+        raise ValueError(c)
+
+c = property(
+    __get_c, __set_c,
+    doc = "LeoNameSpace c property")
+.. @+node:edward.20130930125732.11822: *5* LeoNS.commanders property
+def __get_commanders(self):
+    '''Return the designated commander, or the only open commander.'''
+    self.update()
+    return self.commanders_list
+
+commanders = property(
+    __get_commanders, None,
+    doc = "LeoNameSpace commanders property (read-only)")
+.. @+node:ekr.20130930062914.16009: *5* LeoNS.find_c
+def find_c(self,path):
+    '''Return the commander associated with path, or None.'''
+    g = self.g
+    self.update()
+    path = g.os_path_normcase(path)
+    short_path = g.shortFileName(path)
+    for c in self.commanders_list:
+        fn = g.os_path_normcase(c.fileName())
+        short_fn = g.shortFileName(fn)
+        if fn == path or short_fn == short_path:
+            return c
+.. @+node:ekr.20130930062914.16003: *5* LeoNS.update
+def update (self):
+    '''Update the list of available commanders.'''
+    self.commanders_list = [frame.c for frame in g.app.windowList]
 .. @+node:ekr.20131215185140.16437: *3* * new @auto
 .. @+node:ekr.20131219090550.16533: *4* Code
 @language python
@@ -933,79 +1002,6 @@ Naturally, Vim bindings come to mind. There are several possibilities:
    cursor, extending text, or not, in an *easily* switchable way.
 
 3. Something else :-)
-.. @+node:ekr.20131206064113.16325: *3* Fix new IPython bug
-The c property makes no sense.  Maybe the best solution is to get rid of it and change the docs.
-
-http://leoeditor.com/IPythonBridge.html
-.. @+node:ekr.20130930062914.16002: *4* class LeoNameSpace
-class LeoNameSpace(object):
-    
-    '''An interface class passed to IPython that provides easy
-    access to "g" and all commanders.
-    
-    A convenience property, "c" provides access to the first
-    commander in g.app.windowList.
-    '''
-
-    def __init__ (self):
-        '''LeoNameSpace ctor.'''
-        self.commander = None
-            # The commander returned by the c property.
-        self.commanders_list = []
-            # The list of commanders returned by the commanders property.
-        self.g = g
-        self.update()
-
-    @others
-    
-.. @+node:ekr.20130930062914.16006: *5* LeoNS.c property
-def __get_c(self):
-    '''Return the designated commander, or the only open commander.'''
-    self.update()
-    if self.commander and self.commander in self.commanders_list:
-        return self.commander
-    elif len(self.commanders_list) == 1:
-        return self.commanders_list[0]
-    else:
-        return None
-
-def __set_c(self,c):
-    '''Designate the commander to be returned by the getter.'''
-    self.update()
-    if c in self.commanders_list:
-        self.commander = c
-    else:
-        g.trace(g.callers())
-        raise ValueError(c)
-
-c = property(
-    __get_c, __set_c,
-    doc = "LeoNameSpace c property")
-.. @+node:edward.20130930125732.11822: *5* LeoNS.commanders property
-def __get_commanders(self):
-    '''Return the designated commander, or the only open commander.'''
-    self.update()
-    return self.commanders_list
-
-commanders = property(
-    __get_commanders, None,
-    doc = "LeoNameSpace commanders property (read-only)")
-.. @+node:ekr.20130930062914.16009: *5* LeoNS.find_c
-def find_c(self,path):
-    '''Return the commander associated with path, or None.'''
-    g = self.g
-    self.update()
-    path = g.os_path_normcase(path)
-    short_path = g.shortFileName(path)
-    for c in self.commanders_list:
-        fn = g.os_path_normcase(c.fileName())
-        short_fn = g.shortFileName(fn)
-        if fn == path or short_fn == short_path:
-            return c
-.. @+node:ekr.20130930062914.16003: *5* LeoNS.update
-def update (self):
-    '''Update the list of available commanders.'''
-    self.commanders_list = [frame.c for frame in g.app.windowList]
 .. @+node:ekr.20131211054925.16384: *3* improve file;; macro
 1. Does not create @file (or @@file) in headline
 2. <|pattern|> not found in headlines

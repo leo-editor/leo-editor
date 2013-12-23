@@ -540,7 +540,7 @@ class position (object):
             return ("%s#%s" % (self.v.context.fileName(), UNL))
         else:
             return UNL
-    #@+node:ekr.20080416161551.192: *4* p.hasX
+    #@+node:ekr.20080416161551.192: *4* p.hasBack/Next/Parent/ThreadBack
     def hasBack(self):
         p = self
         return p.v and p._childIndex > 0
@@ -558,11 +558,12 @@ class position (object):
 
     def hasParent(self):
         p = self
-        return p.v and len(p.stack) > 0
+        return p.v and p.stack
 
     def hasThreadBack(self):
         p = self
-        return p.hasParent() or p.hasBack() # Much cheaper than computing the actual value.
+        return p.hasParent() or p.hasBack()
+            # Much cheaper than computing the actual value.
     #@+node:ekr.20080416161551.193: *5* hasThreadNext (the only complex hasX method)
     def hasThreadNext (self):
 
@@ -596,6 +597,8 @@ class position (object):
         '''Return True if p is an ancestor of p2.'''
         p,v = self,self.v
         c = v.context
+        if not c.positionExists(p2):
+            return False
         for z in p2.stack:
             parent,junk = z
             if parent == v:
@@ -1455,16 +1458,12 @@ class position (object):
         return p
     #@+node:ekr.20080416161551.207: *4* p.moveToParent
     def moveToParent (self):
-
         """Move a position to its parent position."""
-
         p = self
-
         if p.v and p.stack:
             p.v,p._childIndex = p.stack.pop()
         else:
             p.v = None
-
         return p
     #@+node:ekr.20080416161551.208: *4* p.moveToThreadBack
     def moveToThreadBack (self):
@@ -2198,6 +2197,12 @@ class vnode (baseVnode):
             return s
         else:
             return g.toEncodedString(s,"ascii") # Replaces non-ascii characters by '?'
+    #@+node:ekr.20131223064351.16351: *4* v.isNthChildOf
+    def isNthChildOf(self,n,parent_v):
+        '''Return True if v is the n'th child of parent_v.'''
+        v = self
+        children = parent_v and parent_v.children
+        return children and 0 <= n < len(children) and children[n] == v
     #@+node:ekr.20031218072017.3367: *4* v.Status Bits
     #@+node:ekr.20031218072017.3368: *5* v.isCloned
     def isCloned (self):

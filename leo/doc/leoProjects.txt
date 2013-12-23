@@ -2053,6 +2053,10 @@ c.p and all it's ancestors are always expanded, the worst that can happen
 when an outline changes is that some positions that *aren't* the present
 position will contract unexpectedly. Most such contraction will occur off
 screen.
+.. @+node:ekr.20131223064351.16352: ** Improved p.isAncestorOf and c.positionExists
+- Added test for c.positionExists to p.isAncestorOf.
+- Added v.isNthChildOf
+- Rewrote c.positionsExists using v.isNthChildOf
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.

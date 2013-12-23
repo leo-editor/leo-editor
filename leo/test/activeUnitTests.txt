@@ -2276,11 +2276,9 @@ cc = c.chapterController
 if cc and not g.app.isExternalUnitTest:
     chaptersNode = cc.findChaptersNode()
     assert chaptersNode
-    
     chapterNode = (
         cc.findChapterNode('aaa') or
         cc.createChapterByName('aaa',p=None))
-    
     cc.selectChapterByName('aaa',chaptersNode)
     cc.removeChapterByName('aaa')
     c.undoer.undo()
@@ -2292,11 +2290,9 @@ cc = c.chapterController
 if cc and not g.app.isExternalUnitTest:
     chaptersNode = cc.findChaptersNode()
     assert chaptersNode
-    
     chapterNode = (
         cc.findChapterNode('aaa') or
         cc.createChapterByName('aaa',p=None))
-        
     try:
         cc.selectChapterByName('aaa',chaptersNode)
         cc.renameChapterByName('bbb')
@@ -2311,26 +2307,21 @@ cc = c.chapterController
 if cc and not g.app.isExternalUnitTest:
     chaptersNode = cc.findChaptersNode()
     assert chaptersNode,'fail 0'
-    
     chapterNode = (
         cc.findChapterNode('aaa') or
         cc.createChapterByName('aaa',p=None))
-        
     table = (
         ('node a',cc.moveNodeToChapterHelper),
         ('node b',cc.copyNodeToChapterHelper),
         ('node c',cc.cloneNodeToChapterHelper),
     )
-        
     # Initialze 
     while p.hasChildren():
         p.firstChild().doDelete(newNode=None)
-    
     for h,unused_f in table:
         p2 = p.insertAsLastChild()
         p2.h = h
         p2.b = '# %s' % h
-    
     try:
         cc.selectChapterByName('aaa')
         for h,f in table:
@@ -2360,21 +2351,17 @@ if cc and not g.app.isExternalUnitTest:
 cc = c.chapterController
 if cc and not g.app.isExternalUnitTest:
     root = p.copy()
-    
     # Init the children
     while p.hasChildren():
         p.firstChild().doDelete(newNode=None)
-    
     child = p.insertAsNthChild(0)
     # c.setHeadString(child,'child') # Force the headline to update.
     child.h = 'child'
     child.b = '# child'
-    
     # Kill the chapter so the test will not fail if run twice.
     chapter = cc.chaptersDict.get('new-chapter')
     if chapter:
         cc.removeChapterByName('new-chapter')
-    
     try:
         c.selectPosition(child)
         c.chapterController.createChapterByName(
