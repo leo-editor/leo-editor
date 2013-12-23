@@ -6716,34 +6716,32 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         return self.getCompositeIconImage(p,val)
     #@+node:ekr.20110605121601.18412: *7* getCompositeIconImage
     def getCompositeIconImage(self,p,val):
-
+        '''Get the icon at position p.'''
         trace = False and not g.unitTesting
         userIcons = self.c.editCommands.getIconList(p)
-        
         # don't take this shortcut - not theme aware, see getImageImage()
         # which is called below - TNB 20130313
         # if not userIcons:
         #     # if trace: g.trace('no userIcons')
         #     return self.getStatusIconImage(p)
-
         hash = [i['file'] for i in userIcons if i['where'] == 'beforeIcon']
         hash.append(str(val))
         hash.extend([i['file'] for i in userIcons if i['where'] == 'beforeHeadline'])
         hash = ':'.join(hash)
-
         if hash in g.app.gui.iconimages:
             icon = g.app.gui.iconimages[hash]
             if trace: g.trace('cached %s' % (icon))
             return icon
-
         images = [g.app.gui.getImageImage(i['file']) for i in userIcons
                  if i['where'] == 'beforeIcon']
         images.append(g.app.gui.getImageImage("box%02d.GIF" % val))
         images.extend([g.app.gui.getImageImage(i['file']) for i in userIcons
                       if i['where'] == 'beforeHeadline'])
+        images = [z for z in images if z] # 2013/12/23: Remove missing images.
+        if not images:
+            return None
         width = sum([i.width() for i in images])
         height = max([i.height() for i in images])
-
         pix = QtGui.QPixmap(width,height)
         pix.fill(QtGui.QColor(None))  # transparent fill, default it random noise
         pix.setAlphaChannel(pix)
@@ -6753,7 +6751,6 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
             painter.drawPixmap(x,(height-i.height())//2,i)
             x += i.width()
         painter.end()
-
         icon = QtGui.QIcon(pix)
         g.app.gui.iconimages[hash] = icon
         if trace: g.trace('new %s' % (icon))

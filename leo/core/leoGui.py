@@ -316,16 +316,14 @@ class leoGui:
     #@-others
 #@+node:ekr.20031218072017.2223: ** class nullGui (leoGui)
 class nullGui(leoGui):
-
     """Null gui class."""
-
     #@+others
     #@+node:ekr.20031218072017.2224: *3* Birth & death (nullGui)
     #@+node:ekr.20031218072017.2225: *4*  nullGui.__init__
     def __init__ (self,guiName='nullGui'):
-
-        leoGui.__init__ (self,guiName) # init the base class.
-
+        '''ctor for the nullGui class.'''
+        leoGui.__init__ (self,guiName)
+            # init the base class.
         self.clipboardContents = ''
         self.theDict = {}
         self.focusWidget = None
@@ -379,7 +377,9 @@ class nullGui(leoGui):
         pass
     def finishCreate (self):
         pass
-    def getIconImage (self, name):
+    def getIconImage (self,name):
+        return None
+    def getImageImage (self,name):
         return None
     def getTreeImage(self,c,path):
         return None
@@ -478,31 +478,24 @@ class nullScriptingControllerClass:
 
 #@+node:ekr.20031218072017.3742: ** class unitTestGui (nullGui)
 class unitTestGui(nullGui):
-
     '''A gui class for use by unit tests.'''
-
     # Presently used only by the import/export unit tests.
-
     #@+others
     #@+node:ekr.20031218072017.3743: *3*  ctor (unitTestGui)
     def __init__ (self,theDict=None,trace=False):
-
+        '''ctor for the unitTestGui class.'''
         self.oldGui = g.app.gui
-
         # Init the base class
         nullGui.__init__ (self,"unitTestGui")
-
         # Use the same kind of widgets as the old gui.
         self.bodyTextWidget = self.oldGui.bodyTextWidget
         self.plainTextWidget = self.oldGui.plainTextWidget
-
         if theDict is None: theDict = {}
         self.theDict = theDict
         self.trace = trace
         g.app.gui = self
 
     def destroySelf (self):
-
         g.app.gui = self.oldGui
     #@+node:ekr.20071128094234.1: *3* createSpellTab
     def createSpellTab(self,c,spellHandler,tabName):

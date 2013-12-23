@@ -2060,6 +2060,10 @@ class baseScannerClass (scanUtility):
 
         # g.trace('**',bad_i1,bad_i2,g.callers())
         trace = False # This causes traces for *non-failing* unit tests.
+        if False and len(lines1) < 100:
+            g.trace('lines1...\n',''.join(lines1),'\n')
+            g.trace('lines2...\n',''.join(lines2),'\n')
+            return
         kind = g.choose(self.atAuto,'@auto','import command')
         n1,n2 = len(lines1),len(lines2)
         s1 = '%s did not import %s perfectly\n' % (
@@ -4592,7 +4596,6 @@ class pythonScanner (baseScannerClass):
         return g.skip_python_string(s,i,verbose=False)
     #@-others
 #@+node:ekr.20131219090550.16554: *3* class NewPythonScanner
-### Doesn't handle trailing comment properly.
 class NewPythonScanner (baseScannerClass):
     '''A line-oriented scanner for Python.'''
     #@+others
@@ -4602,12 +4605,12 @@ class NewPythonScanner (baseScannerClass):
         # Init the base class.
         baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='python')
         self.strict = True
+        self.lineCommentDelim = '#'
+        self.ignoreBlankLines = False # was True
         ### Set the parser delims.
         if 0:
-            self.lineCommentDelim = '#'
             self.classTags = ['class',]
             self.functionTags = ['def',]
-            self.ignoreBlankLines = True
             self.blockDelim1 = self.blockDelim2 = None
                 # Suppress the check for the block delim.
                 # The check is done in skipSigTail.
@@ -4821,6 +4824,9 @@ class NewPythonScanner (baseScannerClass):
                 else:
                     p.b = ''.join(tail+lines)
                     tail = []
+        if tail:
+            root.b = root.b + ''.join(tail)
+
     #@-others
 #@+node:ekr.20090501095634.41: *3* class rstScanner
 class rstScanner (baseScannerClass):

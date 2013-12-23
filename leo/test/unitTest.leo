@@ -158,6 +158,10 @@
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e382e3671017d71025808000000616e6e6f7461746571037d7104735508302e372e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e372e31342e3671097d710a5808000000616e6e6f74617465710b7d710c735508302e372e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
+<v t="ekr.20131223174018.5005"><vh>Tests that fail with the new python importer</vh>
+<v t="ekr.20090529141856.4758"><vh>@test scanPythonText: leoImportNosent.py</vh></v>
+<v t="ekr.20090529141856.4744"><vh>@test overindented def 3</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -620,6 +624,45 @@ Important: this may cause crashes on some platforms.
 #
 #
 #
+</t>
+<t tx="ekr.20090529141856.4744">@tabwidth -4
+    # Required when running unit tests externally.
+
+# This caused PyParse.py not to be imported properly.
+
+s = '''\
+
+import re
+
+if 0: # Causes the 'overindent'
+   if 0:   # for throwaway debugging output
+      def dump(*stuff):
+        sys.__stdout__.write(" ".join(map(str, stuff)) + "\n")
+
+for ch in "({[":
+   _tran[ord(ch)] = '('
+
+class testClass1:
+    pass
+# '''
+
+c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20090529141856.4758">@encoding utf-8
+    # leoImport.py uses unicode characters, so *this* test must have the directive above.
+
+@tabwidth -4
+    # Required when running unit tests externally.
+
+fileName = g.os_path_abspath(g.os_path_join(g.app.loadDir,'leoImport.py'))
+
+f = open(fileName)
+s = f.read()
+f.close()
+
+g.app.unitTestDict['testingLeoImport.py'] = True
+
+c.importCommands.pythonUnitTest(p,s=None,fileName=fileName,showTree=False)
 </t>
 <t tx="ekr.20090704085350.5028">@language python
 @others</t>
@@ -1230,5 +1273,6 @@ char T
 char f
 char t
 </t>
+<t tx="ekr.20131223174018.5005"></t>
 </tnodes>
 </leo_file>
