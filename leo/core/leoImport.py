@@ -1660,8 +1660,8 @@ class leoImportCommands (scanUtility):
     def phpUnitTest(self,p,fileName=None,s=None,showTree=False):
         return self.scannerUnitTest (p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.php')
 
-    def pythonUnitTest(self,p,fileName=None,s=None,showTree=False):
-        return self.scannerUnitTest (p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.py')
+    def pythonUnitTest(self,p,atAuto=False,fileName=None,s=None,showTree=False):
+        return self.scannerUnitTest (p,atAuto=atAuto,fileName=fileName,s=s,showTree=showTree,ext='.py')
 
     def rstUnitTest(self,p,fileName=None,s=None,showTree=False):
         if docutils:
@@ -1769,6 +1769,7 @@ class baseScannerClass (scanUtility):
         self.codeEnd = None
             # The character after the last character of the class, method or function.
             # An error will be given if this is not a newline.
+        self.compare_tokens = True
         self.encoding = ic.encoding
         self.errors = 0
         ic.errors = 0
@@ -1788,6 +1789,7 @@ class baseScannerClass (scanUtility):
         self.methodName = ic.methodName # x, as in < < x methods > > =
         self.methodsSeen = False
         self.mismatchWarningGiven = False
+        self.new_auto = False 
         self.output_newline = ic.output_newline
             # = c.config.getBool('output_newline')
         self.output_indent = 0 # The minimum indentation presently in effect.
@@ -1873,7 +1875,7 @@ class baseScannerClass (scanUtility):
             g.error('line:',repr(line))
 
         return ok
-    #@+node:ekr.20070703122141.104: *4* checkTrialWrite (calls scanAndCompare)
+    #@+node:ekr.20070703122141.104: *4* checkTrialWrite
     def checkTrialWrite (self,s1=None,s2=None):
         '''Return True if a trial write produces the original file.'''
         # s1 and s2 are for unit testing.
@@ -1885,11 +1887,23 @@ class baseScannerClass (scanUtility):
                 outputFile = StringIO()
                 c.rstCommands.writeAtAutoFile(self.root,self.fileName,outputFile,trialWrite=True)
                 s1,s2 = self.file_s,outputFile.getvalue()
-            elif self.atAuto: # 2011/12/14: Special case for @auto.
+            elif self.new_auto:
+                # 2013/12/24: *Do* write section references if new_auto is True.
+                at.atAuto = False # Allow section refs.
+                at.write(self.root,
+                    nosentinels=True, ### Works, but we want to write "light" sentinels.
+                    perfectImportFlag=False, # Allow section refs.
+                    scriptWrite=False,
+                    thinFile=False,
+                    toString=True,
+                )
+                s1,s2 = self.file_s, at.stringOutput
+            elif self.atAuto:
+                # 2011/12/14: Special case for @auto.
                 at.writeOneAtAutoNode(self.root,toString=True,force=True)
                 s1,s2 = self.file_s,at.stringOutput
             else:
-                # 2011/11/09: We must write sentinels in s2 to handle @others correctly.
+                # *Do* write sentinels in s2 to handle @others correctly.
                 # But we should not handle section references.
                 at.write(self.root,
                     nosentinels=False,
@@ -1914,14 +1928,14 @@ class baseScannerClass (scanUtility):
         if not s1.endswith('\n'): s1 = s1 + '\n'
         if not s2.endswith('\n'): s2 = s2 + '\n'
         if s1 == s2: return True
-        if self.ignoreBlankLines or self.ignoreLeadingWs:
+        if self.ignoreBlankLines or self.ignoreLeadingWs or not self.compare_tokens:
             lines1 = g.splitLines(s1)
             lines2 = g.splitLines(s2)
             lines1 = self.adjustTestLines(lines1)
             lines2 = self.adjustTestLines(lines2)
             s1 = ''.join(lines1)
             s2 = ''.join(lines2)
-        if 1: # Token-based comparison.
+        if self.compare_tokens: # Token-based comparison.
             bad_i1,bad_i2,ok = self.scanAndCompare(s1,s2)
             if ok: return ok
         else: # Line-based comparison: can not possibly work for html.
@@ -1936,27 +1950,24 @@ class baseScannerClass (scanUtility):
         if g.app.unitTesting:
             d = g.app.unitTestDict
             ok = d.get('expectedMismatchLine') == bad_i1
-                # was d.get('actualMismatchLine')
             if not ok: d['fail'] = g.callers()
         if trace or not ok:
             lines1 = g.splitLines(s1)
             lines2 = g.splitLines(s2)
             self.reportMismatch(lines1,lines2,bad_i1,bad_i2)
         return ok
-    #@+node:ekr.20070730093735: *4* compareHelper & helpers (not used when tokenizing)
+    #@+node:ekr.20070730093735: *4* compareHelper & helpers
     def compareHelper (self,lines1,lines2,i,strict):
-
-        '''Compare lines1[i] and lines2[i].
-        strict is True if leading whitespace is very significant.'''
-
+        '''
+        Compare lines1[i] and lines2[i] on a line-by-line basis.
+        strict is True if leading whitespace is very significant.
+        '''
         def pr(*args,**keys): #compareHelper
             g.blue(*args,**keys)
-
         def pr_mismatch(i,line1,line2):
             g.es_print('first mismatched line at line',str(i+1))
             g.es_print('original line: ',line1)
             g.es_print('generated line:',line2)
-
         d = g.app.unitTestDict
         expectedMismatch = g.app.unitTesting and d.get('expectedMismatchLine')
         enableWarning = not self.mismatchWarningGiven and self.atAutoWarnsAboutLeadingWhitespace
@@ -4595,7 +4606,7 @@ class pythonScanner (baseScannerClass):
         # Returns len(s) on unterminated string.
         return g.skip_python_string(s,i,verbose=False)
     #@-others
-#@+node:ekr.20131219090550.16554: *3* class NewPythonScanner
+#@+node:ekr.20131219090550.16554: *3* class NewPythonScanner (baseScannerClass)
 class NewPythonScanner (baseScannerClass):
     '''A line-oriented scanner for Python.'''
     #@+others
@@ -4603,23 +4614,21 @@ class NewPythonScanner (baseScannerClass):
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
-        baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='python')
-        self.strict = True
-        self.lineCommentDelim = '#'
+        baseScannerClass.__init__(self,importCommands,
+            atAuto=atAuto,
+            language='python')
+        self.compare_tokens = False
         self.ignoreBlankLines = False # was True
-        ### Set the parser delims.
-        if 0:
-            self.classTags = ['class',]
-            self.functionTags = ['def',]
-            self.blockDelim1 = self.blockDelim2 = None
-                # Suppress the check for the block delim.
-                # The check is done in skipSigTail.
+        self.lineCommentDelim = '#'
+        self.new_auto = True
+        self.strict = True
     #@+node:ekr.20131219090550.16555: *4* class Data
     class Data:
         #@+others
         #@+node:ekr.20131219090550.16556: *5* __init__
         def __init__(self,kind,block,indent,p):
             self.block = block
+            self.has_others = False
             self.kind = kind
             self.indent = indent
             self.p = p
@@ -4711,12 +4720,19 @@ class NewPythonScanner (baseScannerClass):
             i += 1
         return delim
     #@+node:ekr.20131219090550.16565: *5* create_ref
-    def create_ref(self,i,s,stack):
+    def create_ref(self,i,p,s,stack):
         '''Create an @others directive or section ref in block.'''
         d = stack[-1] if len(stack) == 1 else stack[-2]
         others = ' '*i + '@others\n'
-            # Correct: we'll adjust node indentation later.
-        if others not in d.block:
+        if d.has_others:
+            if others in d.block:
+                pass # The previous @others should do.
+            else:
+                ref = p.h = g.angleBrackets(p.h)
+                d.block.append(ref)
+        else:
+            d.has_others = True
+                # Correct: we'll adjust node indentation later.
             d.block.append(others)
         # g.trace('in:',d.p.h,'for:',s.strip(),'\n',d.block,'\n')
     #@+node:ekr.20131219090550.16566: *5* end_block
@@ -4750,7 +4766,7 @@ class NewPythonScanner (baseScannerClass):
         p.h = self.headline(s,i)
         d = self.Data(kind,[s],i,p)
         stack.append(d)
-        self.create_ref(i,s,stack)
+        self.create_ref(i,p,s,stack)
         if trace: g.trace('returns',self.dump_stack(stack))
         return d
       

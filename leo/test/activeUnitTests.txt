@@ -12943,24 +12943,19 @@ c.importCommands.pythonUnitTest(p,s=s,showTree=False)
     # Required when running unit tests externally.
 
 # This caused PyParse.py not to be imported properly.
-
-s = '''\
-
+s = r'''
 import re
-
 if 0: # Causes the 'overindent'
    if 0:   # for throwaway debugging output
       def dump(*stuff):
         sys.__stdout__.write(" ".join(map(str, stuff)) + "\n")
-
 for ch in "({[":
    _tran[ord(ch)] = '('
-
 class testClass1:
     pass
-# '''
-
+'''
 c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+
 #@+node:ekr.20090529141856.4745: *6* @test python bad class test
 @tabwidth -4
     # Required when running unit tests externally.

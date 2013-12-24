@@ -3,19 +3,11 @@
 #@+node:ekr.20041005105605.1: * @file leoAtFile.py
 #@@first
     # Needed because of unicode characters in tests.
-
 """Classes to read and write @file nodes."""
-
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 60
-
 allow_cloned_sibs = True # True: allow cloned siblings in @file nodes.
-# new_write = True # True: new write code: convert to unicode only once.
-# new_read = True # True: read the entire file at once, and set at.read_lines.
-use_stringio = False # True: use cstringio instead of g.fileLikeObject. 
-    # or base g.fileLikeObject on cstringio.
-
 #@+<< imports >>
 #@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile)
 import leo.core.leoGlobals as g
@@ -24,16 +16,10 @@ import os
 import sys
 import time
 #@-<< imports >>
-
 class atFile:
-
-    """The class implementing the atFile subcommander."""
-
+    """A class implementing the legacy atFile subcommander."""
     #@+<< define class constants >>
-    #@+node:ekr.20041005105605.5: ** << define class constants >>
-    # These constants must be global to this module
-    # because they are shared by several classes.
-
+    #@+node:ekr.20131224053735.16380: ** << define class constants >>
     # The kind of at_directives.
     noDirective     =  1 # not an at-directive.
     allDirective    =  2 # at-all (4.2)
@@ -89,24 +75,19 @@ class atFile:
     #@+<< define sentinelDict >>
     #@+node:ekr.20041005105605.6: ** << define sentinelDict >>
     sentinelDict = {
-
         # Unpaired sentinels: 3.x and 4.x.
         "@comment" : startComment,
         "@delims" :  startDelims,
         "@verbatim": startVerbatim,
-
         # Unpaired sentinels: 3.x only.
         "@verbatimAfterRef": startVerbatimAfterRef,
-
         # Unpaired sentinels: 4.x only.
         "@afterref" : startAfterRef,
         "@clone"    : startClone,
         "@nl"       : startNl,
         "@nonl"     : startNonl,
-
         # Paired sentinels: 3.x only.
         "@+body":   startBody,   "@-body":   endBody,
-
         # Paired sentinels: 3.x and 4.x.
         "@+all":    startAll,    "@-all":    endAll,
         "@+at":     startAt,     "@-at":     endAt,
@@ -117,7 +98,6 @@ class atFile:
         "@+others": startOthers, "@-others": endOthers,
     }
     #@-<< define sentinelDict >>
-
     #@+others
     #@+node:ekr.20041005105605.7: ** at.Birth & init
     #@+node:ekr.20041005105605.8: *3*  atFile.ctor
@@ -840,7 +820,7 @@ class atFile:
                 p.moveToThreadNext()
     #@+node:ekr.20070909100252: *4* at.readOneAtAutoNode
     def readOneAtAutoNode (self,fileName,p):
-
+        '''Read an @auto file into p.'''
         at,c,ic = self,self.c,self.c.importCommands
         oldChanged = c.isChanged()
         at.default_directory = g.setDefaultDirectory(c,p,importing=True)
@@ -3329,11 +3309,10 @@ class atFile:
                 g.es("no @auto nodes in the selected tree")
     #@+node:ekr.20070806141607: *5* at.writeOneAtAutoNode
     def writeOneAtAutoNode(self,p,toString,force):
-
-        '''Write p, an @auto node.
-
-        File indices *must* have already been assigned.'''
-
+        '''
+        Write p, an @auto node.
+        File indices *must* have already been assigned.
+        '''
         at = self ; c = at.c ; root = p.copy()
         fileName = p.atAutoNodeName()
         if not fileName and not toString:
@@ -3658,11 +3637,8 @@ class atFile:
     # New in 4.3: must be inited before calling this method.
     # New in 4.3 b2: support for writing from a string.
 
-    def writeOpenFile(self,root,
-        nosentinels=False,toString=False,fromString=''):
-
+    def writeOpenFile(self,root,nosentinels=False,toString=False,fromString=''):
         """Do all writes except asis writes."""
-
         at = self
         s = g.choose(fromString,fromString,root.v.b)
         root.clearAllVisitedInTree()
@@ -5721,4 +5697,5 @@ class atFile:
         if read_only:
             g.error("read only:",fn)
     #@-others
+
 #@-leo
