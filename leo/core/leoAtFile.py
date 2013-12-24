@@ -3636,7 +3636,6 @@ class atFile:
     #@+node:ekr.20041005105605.157: *4* at.writeOpenFile
     # New in 4.3: must be inited before calling this method.
     # New in 4.3 b2: support for writing from a string.
-
     def writeOpenFile(self,root,nosentinels=False,toString=False,fromString=''):
         """Do all writes except asis writes."""
         at = self
@@ -3644,8 +3643,7 @@ class atFile:
         root.clearAllVisitedInTree()
         at.putAtFirstLines(s)
         at.putOpenLeoSentinel("@+leo-ver=%s" % (5 if at.writeVersion5 else 4))
-            # g.choose(at.writeVersion5,5,4)))
-                # Use version 4 for @shadow, verion 5 otherwise.
+            # Use version 4 for @shadow, verion 5 otherwise.
         at.putInitialComment()
         at.putOpenNodeSentinel(root)
         at.putBody(root,fromString=fromString)
@@ -3683,19 +3681,17 @@ class atFile:
     # oneNodeOnly is no longer used, but it might be used in the future?
 
     def putBody(self,p,oneNodeOnly=False,fromString=''):
-
-        '''Generate the body enclosed in sentinel lines.
-        Return True if the body contains an @others line.'''
-
+        '''
+        Generate the body enclosed in sentinel lines.
+        Return True if the body contains an @others line.
+        '''
         trace = False and not g.unitTesting
         at = self
         at_comment_seen,at_delims_seen,at_warning_given=False,False,False
             # 2011/05/25: warn if a node contains both @comment and @delims.
         has_at_others = False
-
         # New in 4.3 b2: get s from fromString if possible.
         s = g.choose(fromString,fromString,p.b)
-
         p.v.setVisited()
         if trace: g.trace('visit',p.h)
             # Make sure v is never expanded again.
@@ -3703,7 +3699,6 @@ class atFile:
         if not at.thinFile:
             p.v.setWriteBit() # Mark the vnode to be written.
         if not at.thinFile and not s: return
-
         inCode = True
         #@+<< Make sure all lines end in a newline >>
         #@+node:ekr.20041005105605.162: *5* << Make sure all lines end in a newline >>
@@ -3734,8 +3729,7 @@ class atFile:
             kind = at.directiveKind4(s,i)
             #@+<< handle line at s[i] >>
             #@+node:ekr.20041005105605.163: *5* << handle line at s[i] >> (putBody)
-            if trace: g.trace(repr(s[i:next_i]))
-
+            if trace: g.trace(repr(s[i:next_i]),g.callers())
             if kind == at.noDirective:
                 if not oneNodeOnly:
                     if inCode:
@@ -3828,7 +3822,6 @@ class atFile:
             i = next_i
         if not inCode:
             at.putEndDocLine()
-
         if not trailingNewlineFlag:
             if at.writeVersion5:
                 if at.sentinels:
@@ -3841,7 +3834,6 @@ class atFile:
                 elif at.atAuto and not at.atEdit:
                     # Ensure all @auto nodes end in a newline!
                     at.onl()
-
         return has_at_others # 2013/01/19: for new @others logic.
     #@+node:ekr.20041005105605.164: *4* writing code lines...
     #@+node:ekr.20041005105605.165: *5* @all
@@ -4066,83 +4058,68 @@ class atFile:
             g.trace('Can not happen: completely empty line')
 
     #@+node:ekr.20041005105605.175: *5* putRefLine & allies
+    #@+node:ekr.20131224085853.16443: *6* at.findReference
+    def findReference(self,name,p):
+        '''Find a reference to name.  Raise an error if not found.'''
+        at,c = self,self.c
+        ref = g.findReference(c,name,p)
+        if not ref and not g.unitTesting:
+            at.writeError(
+                "undefined section: %s\n\treferenced from: %s" % (name,p.h))
+        return ref
     #@+node:ekr.20041005105605.176: *6* putRefLine
     def putRefLine(self,s,i,n1,n2,p):
-
         """Put a line containing one or more references."""
-
         at = self
-
         # Compute delta only once.
         delta = self.putRefAt(s,i,n1,n2,p,delta=None)
         if delta is None: return # 11/23/03
-
         while 1:
             i = n2 + 2
             hasRef,n1,n2 = at.findSectionName(s,i)
             if hasRef:
                 self.putAfterMiddleRef(s,i,n1,delta)
                 self.putRefAt(s,n1,n1,n2,p,delta)
-            else:
-                break
-
+            else: break
         self.putAfterLastRef(s,i,delta)
     #@+node:ekr.20041005105605.177: *6* putRefAt
     def putRefAt (self,s,i,n1,n2,p,delta):
-
         """Put a reference at s[n1:n2+2] from p."""
-
-        at = self ; c = at.c ; name = s[n1:n2+2]
-
-        ref = g.findReference(c,name,p)
-        if not ref:
-            if not g.unitTesting:
-                at.writeError(
-                    "undefined section: %s\n\treferenced from: %s" %
-                        ( name,p.h))
-            return None
-
+        at,c = self,self.c
+        name = s[n1:n2+2]
+        ref = at.findReference(name,p)
+        if not ref: return
         # Expand the ref.
         if not delta:
             junk,delta = g.skip_leading_ws_with_indent(s,i,at.tab_width)
-
         at.putLeadInSentinel(s,i,n1,delta)
-
         inBetween = []
         if at.thinFile: # @+-middle used only in thin files.
             parent = ref.parent()
             while parent != p:
                 inBetween.append(parent)
                 parent = parent.parent()
-
         at.indent += delta
-
         lws = at.leadingWs or ''
         if at.writeVersion5:
             at.putSentinel("@+" + name)
         else:
             at.putSentinel("@" + lws + name)
-
         if inBetween:
             # Bug fix: reverse the +middle sentinels, not the -middle sentinels.
             inBetween.reverse()
             for p2 in inBetween:
                 at.putOpenNodeSentinel(p2,middle=True)
-
         at.putOpenNodeSentinel(ref)
         at.putBody(ref)
         at.putCloseNodeSentinel(ref)
-
         if inBetween:
             inBetween.reverse()
             for p2 in inBetween:
                 at.putCloseNodeSentinel(p2,middle=True)
-
         if at.writeVersion5:
             at.putSentinel("@-" + name)
-
         at.indent -= delta
-
         return delta
     #@+node:ekr.20041005105605.178: *6* putAfterLastRef
     def putAfterLastRef (self,s,start,delta):

@@ -7946,19 +7946,22 @@ class Commands (object):
     def shouldBeExpanded(self,p):
         '''Return True if the node at position p should be expanded.'''
         trace = False and not g.unitTesting
-        c,root,v = self,self.rootPosition(),p.v
-        if not p.isCloned():
-            # Do not call p.isExpanded here! It calls this method.
+        if 1: ### Disable the new logic.
             return p.v.isExpanded()
-        if p.isAncestorOf(c.p):
-            return True
-        if p.hasChildren():
-            for p2 in v.expandedPositions:
-                if p == p2:
-                    if trace: g.trace('in list',len(v.expandedPositions),p.h)
-                    return True
-        if trace: g.trace('not in list',len(v.expandedPositions),p.h)
-        return False
+        else: 
+            c,root,v = self,self.rootPosition(),p.v
+            if not p.isCloned():
+                # Do not call p.isExpanded here! It calls this method.
+                return p.v.isExpanded()
+            if p.isAncestorOf(c.p):
+                return True
+            if p.hasChildren():
+                for p2 in v.expandedPositions:
+                    if p == p2:
+                        if trace: g.trace('in list',len(v.expandedPositions),p.h)
+                        return True
+            if trace: g.trace('not in list',len(v.expandedPositions),p.h)
+            return False
     #@+node:ekr.20070609122713: *5* c.visLimit
     def visLimit (self):
 

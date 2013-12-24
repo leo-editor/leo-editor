@@ -19,29 +19,26 @@ isPython3 = sys.version_info >= (3,0,0)
 trace_startup = False
     # These traces use print instead of g.trace so that
     # the traces can add class info the method name.
-    
 new_modes = False
     # True: use ModeController and ModeInfo classes.
-if new_modes: print('***** new_modes')
-
+if new_modes:
+    print('***** new_modes')
 new_keys = False
     # This project hardly seems urgent.
     # True: Qt input methods produce a **user setting**, not a stroke.
-if new_keys: print('***** new_keys')
+if new_keys:
+    print('***** new_keys')
 
 # Debugging options...
-
 enableDB = True
     # Don't even think about eliminating this constant:
     # it is needed for debugging.
-
 no_scroll = False
     # True: disable all calls to w.setYScrollPosition.
 no_see = False
     # True: disable all calls to w.see and w.seeInsertPoint.
 
 # Tracing options...
-
 trace_scroll = False
     # Trace calls to get/setYScrollPosition
 trace_see = False
