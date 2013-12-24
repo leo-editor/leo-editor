@@ -115,7 +115,7 @@ def getRecentCoreList():
     return (
         # 'runLeo',
         # 'leoApp',
-        # 'leoAtFile',
+        'leoAtFile',
         # 'leoBridge',
         # 'leoCache',
         # 'leoChapters',

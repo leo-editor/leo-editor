@@ -7,10 +7,6 @@
 #@@tabwidth -4
 #@@pagewidth 70
 #@@encoding utf-8
-#@+<< global switch >>
-#@+node:ekr.20131220110418.17557: ** << global switch >> (leoImport.py)
-new_python_importer = False
-#@-<< global switch >>
 #@+<< how to write a new importer >>
 #@+node:ekr.20100728074713.5840: ** << how to write a new importer >>
 #@@nocolor-node
@@ -1557,7 +1553,7 @@ class leoImportCommands (scanUtility):
     #@+node:ekr.20070703122141.99: *4* scanPythonText
     def scanPythonText (self,s,parent,atAuto=False):
         '''Scan python text.'''
-        if new_python_importer:
+        if 0:
             scanner = NewPythonScanner(importCommands=self,atAuto=atAuto)
         else:
             scanner = pythonScanner(importCommands=self,atAuto=atAuto)
@@ -1789,7 +1785,6 @@ class baseScannerClass (scanUtility):
         self.methodName = ic.methodName # x, as in < < x methods > > =
         self.methodsSeen = False
         self.mismatchWarningGiven = False
-        self.new_auto = False 
         self.output_newline = ic.output_newline
             # = c.config.getBool('output_newline')
         self.output_indent = 0 # The minimum indentation presently in effect.
@@ -1887,19 +1882,8 @@ class baseScannerClass (scanUtility):
                 outputFile = StringIO()
                 c.rstCommands.writeAtAutoFile(self.root,self.fileName,outputFile,trialWrite=True)
                 s1,s2 = self.file_s,outputFile.getvalue()
-            elif self.new_auto:
-                # 2013/12/24: *Do* write section references if new_auto is True.
-                at.atAuto = False # Allow section refs.
-                at.write(self.root,
-                    nosentinels=True, ### Works, but we want to write "light" sentinels.
-                    perfectImportFlag=False, # Allow section refs.
-                    scriptWrite=False,
-                    thinFile=False,
-                    toString=True,
-                )
-                s1,s2 = self.file_s, at.stringOutput
             elif self.atAuto:
-                # 2011/12/14: Special case for @auto.
+                # Special case for @auto.
                 at.writeOneAtAutoNode(self.root,toString=True,force=True)
                 s1,s2 = self.file_s,at.stringOutput
             else:
@@ -4620,7 +4604,6 @@ class NewPythonScanner (baseScannerClass):
         self.compare_tokens = False
         self.ignoreBlankLines = False # was True
         self.lineCommentDelim = '#'
-        self.new_auto = True
         self.strict = True
     #@+node:ekr.20131219090550.16555: *4* class Data
     class Data:
