@@ -22,7 +22,7 @@ Alt-End when the last top-level node was a clone caused all clones to expand.
 
 The fix was in p.isAncestorOf.
 
-Also, changed p.all_unique_positions() to p.all_positions() in places where.
+Also, changed p.all_unique_positions() to p.all_positions() in places where p.contract was called.
 
 I started this project by doing a clone-find-all for isExpanded.
 
