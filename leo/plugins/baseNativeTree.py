@@ -164,12 +164,13 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         '''Draw the children of p if they should be expanded.'''
         c = self.c
         trace = False and not g.unitTesting
-        if trace: g.trace('children? %5s expanded? %5s %s' % (
-            p.hasChildren(),p.isExpanded(),p.h))
+        # if trace: g.trace('children: %5s expanded: %5s %s childIndex: %s' % (
+            # p.hasChildren(),p.isExpanded(),p.h,p._childIndex))
         if not p:
             return g.trace('can not happen: no p')
         if p.hasChildren():
             if p.isExpanded():
+                if trace: g.trace('expanded',p,p._childIndex)
                 self.expandItem(parent_item)
                 child = p.firstChild()
                 while child:

@@ -1241,7 +1241,7 @@ class leoFind:
         return found
     #@+node:ekr.20031218072017.3074: *4* find.findNext
     def findNext(self,initFlag=True):
-
+        '''Find the next instance of the pattern.'''
         if not self.checkArgs():
             return
         # initFlag is False for change-then-find.
@@ -1268,10 +1268,14 @@ class leoFind:
         set_first_batch_search.
         '''
         trace = False and not g.unitTesting
+        verbose = False
         c = self.c ; p = self.p
-        if trace: g.trace('entry','p',p and p.h,
-            'search_headline',self.search_headline,
-            'search_body',self.search_body)
+        if trace:
+            g.trace('*** entry','p',p,'\n',
+                'search_headline',self.search_headline,
+                'search_body',self.search_body)
+            for parent in p.parents():
+                print(parent)
         if not self.search_headline and not self.search_body:
             if trace: g.trace('nothing to search')
             return None, None
@@ -1288,13 +1292,13 @@ class leoFind:
             if self.errors:
                 g.trace('find errors')
                 break # Abort the search.
-            if trace: g.trace('pos: %s p: % head: %s' % (pos,p.h,self.in_headline))
+            if trace and verbose: g.trace('pos: %s p: %s head: %s' % (pos,p.h,self.in_headline))
             if pos is not None:
                 # Success.
                 if self.mark_finds:
                     p.setMarked()
                     c.frame.tree.drawIcon(p) # redraw only the icon.
-                if trace: g.trace('success',pos,newpos)
+                if trace: g.trace('success',pos,newpos,p)
                 return pos, newpos
             # Searching the pane failed: switch to another pane or node.
             if self.shouldStayInNode(p):
@@ -1308,7 +1312,7 @@ class leoFind:
                 if p: # Found another node: select the proper pane.
                     self.in_headline = self.firstSearchPane()
                     self.initNextText()
-        if trace: g.trace('attempts',attempts)
+        if trace: g.trace('failed after %s attempts' % attempts)
         return None, None
     #@+node:ekr.20131123071505.16468: *5* find.doWrap
     def doWrap(self):
@@ -1367,6 +1371,7 @@ class leoFind:
                 pass # leave ins alone.
         elif ins is None:
             ins = 0
+        if trace: g.trace(ins,s)
         self.init_s_ctrl(s,ins)
     #@+node:ekr.20131123132043.16476: *5* find.nextNodeAfterFail & helper (use p.moveTo...?)
     def nextNodeAfterFail(self,p):
@@ -1383,7 +1388,7 @@ class leoFind:
         p = p.threadBack() if self.reverse else p.threadNext()
         # Check it.
         if p and self.outsideSearchRange(p):
-            if trace: g.trace('outside search range',p.h)
+            if trace: g.trace('outside search range',p)
             return None
         if not p and wrap:
             p = self.doWrap()
@@ -1391,10 +1396,10 @@ class leoFind:
             if trace: g.trace('end of search')
             return None
         if wrap and p == self.wrapPosition:
-            if trace: g.trace('end of wrapped search',p.h)
+            if trace: g.trace('end of wrapped search',p)
             return None
         else:
-            if trace: g.trace('found',p.h)
+            if trace: g.trace('found',p)
             return p
     #@+node:ekr.20131123071505.16465: *6* find.outsideSearchRange
     def outsideSearchRange(self,p):
@@ -1475,7 +1480,7 @@ class leoFind:
         w = self.s_ctrl
         index = w.getInsertPoint()
         s = w.getAllText()
-        if trace: g.trace(index,repr(s[index:index+20]))
+        if trace: g.trace(index,repr(s[index-10:index+10]))
         stopindex = g.choose(self.reverse,0,len(s))
         pos,newpos = self.searchHelper(s,index,stopindex,self.find_text)
         if trace: g.trace('pos,newpos',pos,newpos)
@@ -1874,13 +1879,15 @@ class leoFind:
         '''Display the result of a successful find operation.'''
         trace = False and not g.unitTesting
         c = self.c
-        p = self.p or c.p.copy()
+        self.p = p = self.p or c.p.copy() # 2013/12/25
         # Set state vars.
         # Ensure progress in backwards searches.
         insert = g.choose(self.reverse,min(pos,newpos),max(pos,newpos))
         if self.wrap and not self.wrapPosition:
             self.wrapPosition = self.p
-        if trace: g.trace('in_headline',self.in_headline)
+        if trace: g.trace('in_headline',self.in_headline,p)
+        if c.sparse_find:
+            c.expandOnlyAncestorsOfNode(p=p) # 2013/12/25
         if self.in_headline:
             c.endEditing()
             selection = pos,newpos,insert

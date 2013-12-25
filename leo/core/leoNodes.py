@@ -453,7 +453,6 @@ class position (object):
         return self.v.cleanHeadString()
     #@+node:ekr.20040306214401: *5* p.Status bits
     def isDirty     (self): return self.v.isDirty()
-    ### def isExpanded  (self): return self.v.isExpanded()
     def isMarked    (self): return self.v.isMarked()
     def isOrphan    (self): return self.v.isOrphan()
     def isSelected  (self): return self.v.isSelected()
@@ -594,14 +593,16 @@ class position (object):
         return c.rootPosition()
     #@+node:ekr.20080416161551.194: *4* p.isAncestorOf
     def isAncestorOf (self, p2):
-        '''Return True if p is an ancestor of p2.'''
-        p,v = self,self.v
-        c = v.context
+        '''Return True if p is one of the direct ancestors of p2.'''
+        p = self
+        c = p.v.context
         if not c.positionExists(p2):
             return False
         for z in p2.stack:
-            parent,junk = z
-            if parent == v:
+            # 2013/12/25: bug fix: test childIndices.
+            # This is required for the new per-position expansion scheme.
+            parent_v,parent_childIndex = z
+            if parent_v == p.v and parent_childIndex == p._childIndex:
                 return True
         return False
     #@+node:ekr.20040306215056: *4* p.isCloned
@@ -615,7 +616,7 @@ class position (object):
         p = self
 
         return not p.hasParent() and not p.hasBack()
-    #@+node:ekr.20080416161551.196: *4* p.isVisible
+    #@+node:ekr.20080416161551.196: *4* p.isVisible (slow)
     def isVisible (self,c):
         '''Return True if p is visible in c's outline.'''
         trace = False and not g.unitTesting
@@ -730,23 +731,25 @@ class position (object):
         return p.txtOffset         
     #@+node:ekr.20040305222924: *3* p.Setters
     #@+node:ekr.20040306220634: *4* p.Vnode proxies
-    #@+node:ekr.20131222112420.16371: *5* p.Expansion bit
+    #@+node:ekr.20131222112420.16371: *5* p.contract/expand/isExpanded
     def contract (self):
         '''Contract p.v and clear p.v.expandedPositions list.'''
         p,v = self,self.v
         v.expandedPositions = [z for z in v.expandedPositions if z != p]
-        # g.trace(len(v.expandedPositions),p.h)
+        # g.trace(len(v.expandedPositions),p.h,p._childIndex)
         v.contract()
 
     def expand(self):
+        trace = False and not g.unitTesting
         p = self
         v = self.v
+        v.expandedPositions = [z for z in v.expandedPositions if z != p]
         for p2 in v.expandedPositions:
             if p == p2:
                 break
         else:
             v.expandedPositions.append(p.copy())
-        # g.trace(len(v.expandedPositions),p.h)
+        if trace: g.trace(len(v.expandedPositions),p.h,p._childIndex,v.expandedPositions)
         v.expand()
         
     def isExpanded(self):
@@ -1505,18 +1508,18 @@ class position (object):
     def moveToVisBack (self,c):
         """Move a position to the position of the previous visible node."""
         trace = False and not g.unitTesting
-        verbose = True
-        p = self ; limit,limitIsVisible = c.visLimit()
+        verbose = False
+        p = self
+        limit,limitIsVisible = c.visLimit()
         if trace and verbose:
             g.trace(p,'limit',limit,'limitIsVisible',limitIsVisible)
-        if trace: g.trace('***entry','parent',p.parent(),'p',p,g.callers(5))
+        if trace: g.trace('***entry','parent',p.parent(),'p',p)
         while p:
             # Short-circuit if possible.
             back = p.back()
             if trace: g.trace(
                 'back',back,'hasChildren',bool(back and back.hasChildren()),
                 'isExpanded',bool(back and back.isExpanded()))
-            # g.trace(back,back and back.v.expandedPositions)
             if back and back.hasChildren() and back.isExpanded():
                 p.moveToThreadBack()
             elif back:
@@ -1525,17 +1528,17 @@ class position (object):
                 p.moveToParent() # Same as p.moveToThreadBack()
             if trace: g.trace(p.parent(),p)
             if p:
-                if trace and verbose: g.trace('**p',p)
                 done,val = self.checkVisBackLimit(limit,limitIsVisible,p)
                 if done:
                     if trace and verbose: g.trace('done',p)
-                    return val
+                    return p # 2013/12/24: bug fix.
                 if p.isVisible(c):
                     if trace and verbose: g.trace('isVisible',p)
                     return p
                 else:
                     if trace and verbose: g.trace('**** not visible',p)
         else:
+            if trace: g.trace('*** return None ***')
             return p
     #@+node:ekr.20090715145956.6166: *5* checkVisBackLimit
     def checkVisBackLimit (self,limit,limitIsVisible,p):
@@ -2212,12 +2215,6 @@ class vnode (baseVnode):
     def isDirty (self):
 
         return (self.statusBits & self.dirtyBit) != 0
-    #@+node:ekr.20031218072017.3370: *5* v.isExpanded
-    def isExpanded (self):
-
-        # g.trace( ( self.statusBits & self.expandedBit ) != 0, g.callers())
-
-        return ( self.statusBits & self.expandedBit ) != 0
     #@+node:ekr.20031218072017.3371: *5* v.isMarked
     def isMarked (self):
 
@@ -2331,22 +2328,24 @@ class vnode (baseVnode):
     def clearVisited (self):
 
         self.statusBits &= ~ self.visitedBit
-    #@+node:ekr.20031218072017.3395: *5* v.contract & expand & initExpandedBit
+    #@+node:ekr.20031218072017.3395: *5* v.contract/expand/initExpandedBit/isExpanded
     def contract(self):
         '''Contract the node.'''
-        # if self.context.p.v == self: g.trace(self,g.callers(4))
-        # if self.isExpanded(): g.trace(self,g.callers())
         self.statusBits &= ~ self.expandedBit
 
     def expand(self):
         '''Expand the node.'''
-        # g.trace(self,g.callers(4))
+        # trace = False and not g.unitTesting
+        # if trace: g.trace('vnode',g.callers())
         self.statusBits |= self.expandedBit
 
     def initExpandedBit (self):
         '''Init self.statusBits.'''
-        # g.trace(self._headString)
         self.statusBits |= self.expandedBit
+        
+    def isExpanded (self):
+        '''Return True if the vnode expansion bit is set.'''
+        return (self.statusBits & self.expandedBit) != 0
     #@+node:ekr.20031218072017.3396: *5* v.initStatus
     def initStatus (self, status):
 

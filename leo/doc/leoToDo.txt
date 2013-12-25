@@ -6,12 +6,452 @@
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 
+- Start using bookmarks instead of clones.
+
+- Improve p.isVisible: its algorithm is poor.
+
 - Release 4.11.1
     - Fix IPython code/docs first.
     - Create files automatically.
 
 - Look at Eclipse # @name.
-.. @+node:ekr.20131224124822.16717: *3* Fix problems with clone-expansion
+.. @+node:ekr.20131224124822.16717: *3* Fixed problems with clone-expansion
+@language rest
+
+Alt-End when the last top-level node was a clone caused all clones to expand.
+
+The fix was in p.isAncestorOf.
+
+Also, changed p.all_unique_positions() to p.all_positions() in places where.
+
+I started this project by doing a clone-find-all for isExpanded.
+
+@language python
+.. @+node:ekr.20131225042715.16428: *4* expand/contract/move
+.. @+node:ekr.20110605121601.17898: *5* onItemExpanded (nativeTree)
+def onItemExpanded (self,item):
+
+    '''Handle and tree-expansion event.'''
+
+    trace = False
+    verbose = False
+
+    if self.busy(): return
+
+    c = self.c
+    if trace: g.trace(self.traceItem(item))
+    p = self.item2position(item)
+
+    if p:
+        # Important: do not set lockouts here.
+        # Only methods that actually generate events should set lockouts.
+        if not p.isExpanded():
+            p.expand()
+            self.select(p) # Calls before/afterSelectHint.
+            # Important: setting scroll=False here has no effect
+            # when a keystroke causes the expansion, but is a
+            # *big* improvement when clicking the outline.
+            self.full_redraw(scroll=False)
+        else:
+            self.select(p)
+    else:
+        self.error('no p')
+
+    c.outerUpdate()
+.. @+node:ekr.20110605121601.17952: *5* updateVisibleIcons (nativeTree)
+def updateVisibleIcons (self,p):
+
+    '''Update the icon for p and the icons
+    for all visible descendants of p.'''
+
+    self.updateIcon(p,force=True)
+
+    if p.hasChildren() and p.isExpanded():
+        for child in p.children():
+            self.updateVisibleIcons(child)
+.. @+node:ekr.20040930064232: *5* contractNodeOrGoToParent
+def contractNodeOrGoToParent (self,event=None):
+
+    """Simulate the left Arrow Key in folder of Windows Explorer."""
+
+    c = self ; p = c.p
+
+    parent = p.parent()
+    redraw = False
+
+    if p.hasChildren() and p.isExpanded():
+        c.contractNode()
+
+    elif parent and parent.isVisible(c):
+        # New in Leo 4.9.1: contract all children first.
+        if c.collapse_on_lt_arrow:
+            for child in parent.children():
+                if child.isExpanded():
+                    child.contract()
+                    redraw = True
+        c.goToParent()
+
+    # This is a bit off-putting.
+    # elif not parent and not c.hoistStack:
+        # p = c.rootPosition()
+        # while p:
+            # if p.isExpanded():
+                # p.contract()
+                # redraw = True
+            # p.moveToNext()
+
+    if redraw:
+        c.redraw()
+.. @+node:ekr.20040930064232.1: *5* expandNodeAnd/OrGoToFirstChild
+def expandNodeAndGoToFirstChild (self,event=None):
+
+    """If a node has children, expand it if needed and go to the first child."""
+
+    c = self ; p = c.p
+
+    if p.hasChildren():
+        if p.isExpanded():
+            c.selectPosition(p.firstChild())
+        else:
+            c.expandNode()
+            # Fix bug 930726
+            # expandNodeAndGoToFirstChild only expands or only goes to first child .
+            c.selectPosition(p.firstChild())
+
+    c.treeFocusHelper()
+
+def expandNodeOrGoToFirstChild (self,event=None):
+
+    """Simulate the Right Arrow Key in folder of Windows Explorer."""
+
+    c = self ; p = c.p
+    if p.hasChildren():
+        if not p.isExpanded():
+            c.expandNode() # Calls redraw_after_expand.
+        else:
+            c.redraw_after_expand(p.firstChild(),setFocus=True)
+.. @+node:ekr.20080416161551.211: *5* p.moveToVisNext
+def moveToVisNext (self,c):
+    """Move a position to the position of the next visible node."""
+    trace = False and not g.unitTesting
+    p = self
+    limit,limitIsVisible = c.visLimit()
+    while p:
+        if trace: g.trace('1',p.h)
+        if p.hasChildren():
+            if p.isExpanded():
+                p.moveToFirstChild()
+            else:
+                p.moveToNodeAfterTree()
+        elif p.hasNext():
+            p.moveToNext()
+        else:
+            p.moveToThreadNext()
+        if trace: g.trace('2',p and p.h)
+        if p:
+            done,val = self.checkVisNextLimit(limit,p)
+            if done: return val
+            if p.isVisible(c):
+                return p.copy()
+    else:
+        return p
+.. @+node:ekr.20090715145956.6167: *6* checkVisNextLimit
+def checkVisNextLimit (self,limit,p):
+
+    '''Return done, return-val'''
+
+    trace = False and not g.unitTesting
+
+    if limit:
+        # Unlike moveToVisBack, being at the limit does not terminate.
+        if limit == p:
+            return False, None
+        elif limit.isAncestorOf(p):
+            return False,None
+        else:
+            if trace: g.trace('outside limit tree')
+            return True,None
+    else:
+        return False,None
+.. @+node:ekr.20080416161551.210: *5* p.moveToVisBack
+def moveToVisBack (self,c):
+    """Move a position to the position of the previous visible node."""
+    trace = False and not g.unitTesting
+    verbose = False
+    p = self
+    limit,limitIsVisible = c.visLimit()
+    if trace and verbose:
+        g.trace(p,'limit',limit,'limitIsVisible',limitIsVisible)
+    if trace: g.trace('***entry','parent',p.parent(),'p',p)
+    while p:
+        # Short-circuit if possible.
+        back = p.back()
+        if trace: g.trace(
+            'back',back,'hasChildren',bool(back and back.hasChildren()),
+            'isExpanded',bool(back and back.isExpanded()))
+        if back and back.hasChildren() and back.isExpanded():
+            p.moveToThreadBack()
+        elif back:
+            p.moveToBack()
+        else:
+            p.moveToParent() # Same as p.moveToThreadBack()
+        if trace: g.trace(p.parent(),p)
+        if p:
+            done,val = self.checkVisBackLimit(limit,limitIsVisible,p)
+            if done:
+                if trace and verbose: g.trace('done',p)
+                return p # 2013/12/24: bug fix.
+            if p.isVisible(c):
+                if trace and verbose: g.trace('isVisible',p)
+                return p
+            else:
+                if trace and verbose: g.trace('**** not visible',p)
+    else:
+        if trace: g.trace('*** return None ***')
+        return p
+.. @+node:ekr.20090715145956.6166: *6* checkVisBackLimit
+def checkVisBackLimit (self,limit,limitIsVisible,p):
+
+    '''Return done, return-val'''
+
+    trace = False and not g.unitTesting
+    c = p.v.context
+
+    if limit:
+        if limit == p:
+            if trace: g.trace('at limit',p)
+            if limitIsVisible and p.isVisible(c):
+                return True,p
+            else:
+                return True,None
+            #return True,g.choose(limitIsVisible and p.isVisible(c),p,None)
+        elif limit.isAncestorOf(p):
+            return False,None
+        else:
+            if trace: g.trace('outside limit tree',limit,p)
+            return True,None
+    else:
+        return False,None
+.. @+node:ekr.20131225042715.16427: *4* Added traces
+.. @+node:ekr.20131017174814.17480: *5* c.shouldBeExpanded
+def shouldBeExpanded(self,p):
+    '''Return True if the node at position p should be expanded.'''
+    trace = False and not g.unitTesting
+    c,v = self,p.v
+    # Always clear non-existent positions.
+    v.expandedPositions = [z for z in v.expandedPositions if c.positionExists(z)]
+    if not p.isCloned():
+        # Do not call p.isExpanded here! It calls this method.
+        if trace: g.trace('not cloned',p.v.isExpanded(),p.h,p._childIndex)
+        return p.v.isExpanded()
+    if p.isAncestorOf(c.p):
+        if trace: g.trace('is ancestor of c.p',p.h,p._childIndex)
+        return True
+    if p.hasChildren():
+        for p2 in v.expandedPositions:
+            if p == p2:
+                if trace: g.trace('in list',len(v.expandedPositions),p.h,p._childIndex)
+                return True
+    if trace: g.trace('not in list',len(v.expandedPositions),p.h,p._childIndex)
+    return False
+.. @+node:ekr.20110605121601.17874: *5* drawChildren (nativeTree)
+def drawChildren (self,p,parent_item):
+    '''Draw the children of p if they should be expanded.'''
+    c = self.c
+    trace = False and not g.unitTesting
+    # if trace: g.trace('children: %5s expanded: %5s %s childIndex: %s' % (
+        # p.hasChildren(),p.isExpanded(),p.h,p._childIndex))
+    if not p:
+        return g.trace('can not happen: no p')
+    if p.hasChildren():
+        if p.isExpanded():
+            if trace: g.trace('expanded',p,p._childIndex)
+            self.expandItem(parent_item)
+            child = p.firstChild()
+            while child:
+                self.drawTree(child,parent_item)
+                child.moveToNext()
+        else:
+            # Draw the hidden children.
+            child = p.firstChild()
+            while child:
+                self.drawNode(child,parent_item)
+                child.moveToNext()
+            self.contractItem(parent_item)
+    else:
+        self.contractItem(parent_item)
+.. @+node:ekr.20131222112420.16371: *5* p.contract/expand/isExpanded
+def contract (self):
+    '''Contract p.v and clear p.v.expandedPositions list.'''
+    p,v = self,self.v
+    v.expandedPositions = [z for z in v.expandedPositions if z != p]
+    # g.trace(len(v.expandedPositions),p.h,p._childIndex)
+    v.contract()
+
+def expand(self):
+    trace = False and not g.unitTesting
+    p = self
+    v = self.v
+    v.expandedPositions = [z for z in v.expandedPositions if z != p]
+    for p2 in v.expandedPositions:
+        if p == p2:
+            break
+    else:
+        v.expandedPositions.append(p.copy())
+    if trace: g.trace(len(v.expandedPositions),p.h,p._childIndex,v.expandedPositions)
+    v.expand()
+    
+def isExpanded(self):
+    p = self
+    if p.isCloned():
+        c = p.v.context
+        return c.shouldBeExpanded(p)
+    else:
+        return p.v.isExpanded()
+.. @+node:ekr.20031218072017.3395: *5* v.contract/expand/initExpandedBit/isExpanded
+def contract(self):
+    '''Contract the node.'''
+    self.statusBits &= ~ self.expandedBit
+
+def expand(self):
+    '''Expand the node.'''
+    # trace = False and not g.unitTesting
+    # if trace: g.trace('vnode',g.callers())
+    self.statusBits |= self.expandedBit
+
+def initExpandedBit (self):
+    '''Init self.statusBits.'''
+    self.statusBits |= self.expandedBit
+    
+def isExpanded (self):
+    '''Return True if the vnode expansion bit is set.'''
+    return (self.statusBits & self.expandedBit) != 0
+.. @+node:ekr.20131225042715.16426: *4* Changed/reverted
+.. @+node:ekr.20031218072017.2901: *5* c.contractNode
+def contractNode (self,event=None):
+    '''Contract the presently selected node.'''
+    c = self ; p = c.p
+    p.contract()
+    if p.isCloned():
+        c.redraw() # A full redraw is necessary to handle clones.
+    else:
+        c.redraw_after_contract(p=p,setFocus=True)
+.. @+node:ekr.20040803072955.143: *5* c.expandAllAncestors
+def expandAllAncestors (self,p):
+    '''
+    Expand all ancestors without redrawing.
+    Return a flag telling whether a redraw is needed.
+    '''
+    # c = self
+    trace = False and not g.unitTesting
+    redraw_flag = False
+    for p in p.parents():
+        if not p.v.isExpanded():
+            if trace: g.trace('call p.v.expand and p.expand',p.h,p._childIndex)
+            p.v.expand()
+            p.expand()
+            redraw_flag = True
+        elif p.isExpanded():
+            if trace: g.trace('call p.v.expand',p.h,p._childIndex)
+            p.v.expand()
+        else:
+            if trace: g.trace('call p.expand',p.h,p._childIndex)
+            p.expand()
+            redraw_flag = True
+    if trace: g.trace(redraw_flag,repr(p and p.h),g.callers())
+    return redraw_flag
+.. @+node:ekr.20031218072017.2907: *5* c.expandNode
+def expandNode (self,event=None):
+
+    '''Expand the presently selected node.'''
+
+    trace = False and not g.unitTesting
+    c = self ; p = c.p
+    p.expand()
+    if p.isCloned():
+        if trace: g.trace('***redraw')
+        c.redraw() # Bug fix: 2009/10/03.
+    else:
+        c.redraw_after_expand(p,setFocus=True)
+
+.. @+node:ekr.20031218072017.2956: *5* canContractAllHeadlines
+def canContractAllHeadlines (self):
+    '''Contract all nodes in the tree.'''
+    c = self
+    for p in c.all_positions(): # was c.all_unique_positions()
+        if p.isExpanded():
+            return True
+    return False
+.. @+node:ekr.20031218072017.2962: *5* canExpandAllHeadlines
+def canExpandAllHeadlines (self):
+    '''Return True if the Expand All Nodes menu item should be enabled.'''
+    c = self
+    for p in c.all_positions(): # was c.all_unique_positions()
+        if not p.isExpanded():
+            return True
+    return False
+.. @+node:ekr.20060928062431: *5* expandOnlyAncestorsOfNode
+def expandOnlyAncestorsOfNode (self,event=None,p=None):
+
+    '''Contract all nodes in the outline.'''
+    trace = False and not g.unitTesting
+    c = self
+    level = 1
+    if p: c.selectPosition(p) # 2013/12/25
+    root = c.p
+    if trace: g.trace(root.h)
+    for p in c.all_unique_positions():
+        p.v.expandedPositions = []
+        p.v.contract()
+    for p in root.parents():
+        if trace: g.trace('call p.expand',p.h,p._childIndex)
+        p.expand()
+        level += 1
+    c.redraw(setFocus=True)
+    c.expansionLevel = level # Reset expansion level.
+.. @+node:ekr.20080416161551.194: *5* p.isAncestorOf
+def isAncestorOf (self, p2):
+    '''Return True if p is one of the direct ancestors of p2.'''
+    p = self
+    c = p.v.context
+    if not c.positionExists(p2):
+        return False
+    for z in p2.stack:
+        # 2013/12/25: bug fix: test childIndices.
+        # This is required for the new per-position expansion scheme.
+        parent_v,parent_childIndex = z
+        if parent_v == p.v and parent_childIndex == p._childIndex:
+            return True
+    return False
+.. @+node:ekr.20090306060344.2: *5* selectChapterByNameHelper
+def selectChapterByNameHelper (self,chapter,collapse=True):
+
+    trace = False and not g.unitTesting
+    cc,c = self,self.c
+    if trace:
+        g.trace('old: %s, new: %s' % (
+            cc.selectedChapter and cc.selectedChapter.name,
+            chapter and chapter.name))
+    if chapter == cc.selectedChapter:
+        if trace: g.trace('already selected')
+        return
+    if cc.selectedChapter:
+        cc.selectedChapter.unselect()
+    p = chapter.p
+    if p and not c.positionExists(p):
+        if trace: g.trace('*** switching to root node for',chapter.name)
+        chapter.p = chapter.findRootNode()
+    chapter.select()
+    c.setCurrentPosition(chapter.p)
+    cc.selectedChapter = chapter
+    # Clean up, but not initially.
+    if collapse and chapter.name == 'main':
+        for p in c.all_positions():
+            # Compare vnodes, not positions.
+            if p.v != c.p.v:
+                p.contract()
+    # New in Leo 4.6 b2: *do* call c.redraw.
+    c.redraw()
 .. @+node:ekr.20131206064113.16325: *3* Fix new IPython bug
 The c property makes no sense.  Maybe the best solution is to get rid of it and change the docs.
 

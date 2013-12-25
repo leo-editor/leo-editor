@@ -460,14 +460,13 @@ class chapterController:
         p = chapter.p
         if p and not c.positionExists(p):
             if trace: g.trace('*** switching to root node for',chapter.name)
-            ### p = c.rootPosition()
             chapter.p = chapter.findRootNode()
         chapter.select()
         c.setCurrentPosition(chapter.p)
         cc.selectedChapter = chapter
         # Clean up, but not initially.
         if collapse and chapter.name == 'main':
-            for p in c.all_unique_positions():
+            for p in c.all_positions():
                 # Compare vnodes, not positions.
                 if p.v != c.p.v:
                     p.contract()

@@ -5618,7 +5618,7 @@ class Commands (object):
 
         c = self
 
-        for p in c.all_unique_positions():
+        for p in c.all_positions(): ### c.all_unique_positions():
             p.contract()
         # Select the topmost ancestor of the presently selected node.
         p = c.p
@@ -5655,15 +5655,11 @@ class Commands (object):
             else:
                 for p2 in child.self_and_subtree():
                     p2.contract()
-    #@+node:ekr.20031218072017.2901: *7* contractNode
+    #@+node:ekr.20031218072017.2901: *7* c.contractNode
     def contractNode (self,event=None):
-
         '''Contract the presently selected node.'''
-
         c = self ; p = c.p
-
         p.contract()
-
         if p.isCloned():
             c.redraw() # A full redraw is necessary to handle clones.
         else:
@@ -5795,16 +5791,14 @@ class Commands (object):
             c.expansionNode = v
 
         self.expandToLevel(c.expansionLevel + 1)
-    #@+node:ekr.20031218072017.2907: *7* expandNode
+    #@+node:ekr.20031218072017.2907: *7* c.expandNode
     def expandNode (self,event=None):
 
         '''Expand the presently selected node.'''
 
         trace = False and not g.unitTesting
         c = self ; p = c.p
-
         p.expand()
-
         if p.isCloned():
             if trace: g.trace('***redraw')
             c.redraw() # Bug fix: 2009/10/03.
@@ -5840,20 +5834,23 @@ class Commands (object):
             else:
                 c.redraw_after_expand(p.firstChild(),setFocus=True)
     #@+node:ekr.20060928062431: *7* expandOnlyAncestorsOfNode
-    def expandOnlyAncestorsOfNode (self,event=None):
+    def expandOnlyAncestorsOfNode (self,event=None,p=None):
 
         '''Contract all nodes in the outline.'''
-
-        c = self ; level = 1
-
+        trace = False and not g.unitTesting
+        c = self
+        level = 1
+        if p: c.selectPosition(p) # 2013/12/25
+        root = c.p
+        if trace: g.trace(root.h)
         for p in c.all_unique_positions():
-            p.contract()
-        for p in c.p.parents():
+            p.v.expandedPositions = []
+            p.v.contract()
+        for p in root.parents():
+            if trace: g.trace('call p.expand',p.h,p._childIndex)
             p.expand()
             level += 1
-
         c.redraw(setFocus=True)
-
         c.expansionLevel = level # Reset expansion level.
     #@+node:ekr.20031218072017.2908: *7* expandPrevLevel
     def expandPrevLevel (self,event=None):
@@ -7189,19 +7186,26 @@ class Commands (object):
     BringToFront = bringToFront # Compatibility with old scripts
     #@+node:ekr.20040803072955.143: *4* c.expandAllAncestors
     def expandAllAncestors (self,p):
-
-        '''Expand all ancestors without redrawing.
-
-        Return a flag telling whether a redraw is needed.'''
-
+        '''
+        Expand all ancestors without redrawing.
+        Return a flag telling whether a redraw is needed.
+        '''
         # c = self
         trace = False and not g.unitTesting
         redraw_flag = False
         for p in p.parents():
-            if not p.isExpanded():
+            if not p.v.isExpanded():
+                if trace: g.trace('call p.v.expand and p.expand',p.h,p._childIndex)
+                p.v.expand()
                 p.expand()
                 redraw_flag = True
-
+            elif p.isExpanded():
+                if trace: g.trace('call p.v.expand',p.h,p._childIndex)
+                p.v.expand()
+            else:
+                if trace: g.trace('call p.expand',p.h,p._childIndex)
+                p.expand()
+                redraw_flag = True
         if trace: g.trace(redraw_flag,repr(p and p.h),g.callers())
         return redraw_flag
     #@+node:ekr.20080514131122.9: *4* c.get/request/set_focus
@@ -7456,13 +7460,11 @@ class Commands (object):
             return True
     #@+node:ekr.20031218072017.2956: *4* canContractAllHeadlines
     def canContractAllHeadlines (self):
-
+        '''Contract all nodes in the tree.'''
         c = self
-
-        for p in c.all_unique_positions():
+        for p in c.all_positions(): # was c.all_unique_positions()
             if p.isExpanded():
                 return True
-
         return False
     #@+node:ekr.20031218072017.2957: *4* canContractAllSubheads
     def canContractAllSubheads (self):
@@ -7508,13 +7510,11 @@ class Commands (object):
         return c.p.hasNext()
     #@+node:ekr.20031218072017.2962: *4* canExpandAllHeadlines
     def canExpandAllHeadlines (self):
-
+        '''Return True if the Expand All Nodes menu item should be enabled.'''
         c = self
-
-        for p in c.all_unique_positions():
+        for p in c.all_positions(): # was c.all_unique_positions()
             if not p.isExpanded():
                 return True
-
         return False
     #@+node:ekr.20031218072017.2963: *4* canExpandAllSubheads
     def canExpandAllSubheads (self):
@@ -7946,30 +7946,30 @@ class Commands (object):
     def shouldBeExpanded(self,p):
         '''Return True if the node at position p should be expanded.'''
         trace = False and not g.unitTesting
-        if 1: ### Disable the new logic.
+        c,v = self,p.v
+        # Always clear non-existent positions.
+        v.expandedPositions = [z for z in v.expandedPositions if c.positionExists(z)]
+        if not p.isCloned():
+            # Do not call p.isExpanded here! It calls this method.
+            if trace: g.trace('not cloned',p.v.isExpanded(),p.h,p._childIndex)
             return p.v.isExpanded()
-        else: 
-            c,root,v = self,self.rootPosition(),p.v
-            if not p.isCloned():
-                # Do not call p.isExpanded here! It calls this method.
-                return p.v.isExpanded()
-            if p.isAncestorOf(c.p):
-                return True
-            if p.hasChildren():
-                for p2 in v.expandedPositions:
-                    if p == p2:
-                        if trace: g.trace('in list',len(v.expandedPositions),p.h)
-                        return True
-            if trace: g.trace('not in list',len(v.expandedPositions),p.h)
-            return False
+        if p.isAncestorOf(c.p):
+            if trace: g.trace('is ancestor of c.p',p.h,p._childIndex)
+            return True
+        if p.hasChildren():
+            for p2 in v.expandedPositions:
+                if p == p2:
+                    if trace: g.trace('in list',len(v.expandedPositions),p.h,p._childIndex)
+                    return True
+        if trace: g.trace('not in list',len(v.expandedPositions),p.h,p._childIndex)
+        return False
     #@+node:ekr.20070609122713: *5* c.visLimit
     def visLimit (self):
-
-        '''Return the topmost visible node.
-        This is affected by chapters and hoists.'''
-
+        '''
+        Return the topmost visible node.
+        This is affected by chapters and hoists.
+        '''
         c = self ; cc = c.chapterController
-
         if c.hoistStack:
             bunch = c.hoistStack[-1]
             p = bunch.p
