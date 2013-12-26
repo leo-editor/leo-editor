@@ -340,7 +340,6 @@ class BookMarkDisplay:
                         self.current = nd
                         break
 
-                url = str(url.toString())
                 # g.trace(url,te)
                 # if QtCore.Qt.ShiftModifier & te.modifiers():
                     # sep = '\\' if '\\' in url else '/'
