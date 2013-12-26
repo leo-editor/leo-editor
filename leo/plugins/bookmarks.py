@@ -178,7 +178,7 @@ def cmd_use_other_outline(c):
         splitter.add_adjacent(bmd.w, 'bodyFrame', 'above')
 #@+node:tbrown.20110712100955.18924: ** class BookMarkDisplay
 class BookMarkDisplay:
-    
+    """Manage a pane showing bookmarks"""
     #@+others
     #@+node:tbrown.20110712100955.18926: *3* __init__
     def __init__(self, c, v=None):
@@ -228,6 +228,7 @@ class BookMarkDisplay:
         return x
     #@+node:tbrown.20110712100955.39216: *3* get_list
     def get_list(self):
+        """Return list of *unique* urls, uniqueness may need dropping."""
         
         # v might not be in this outline
         p = self.v.context.vnode2position(self.v)
@@ -249,6 +250,8 @@ class BookMarkDisplay:
                 url = p.b.split('\n', 1)[0]
             else:
                 url = g.getUrlFromNode(p)
+                
+            url = url.replace(' ', '%20')
             
             h = strip(p.h)
             data = (h,url)
@@ -286,6 +289,7 @@ class BookMarkDisplay:
         te.mousePressEvent = capture_modifiers
         
         def anchorClicked(url, c=self.c, p=p, te=te, owner=self):
+            
             if (QtCore.Qt.AltModifier | QtCore.Qt.ControlModifier) == te.modifiers:
                 owner.update_bookmark(str(url.toString()))
                 return
@@ -331,6 +335,8 @@ class BookMarkDisplay:
     #@+node:tbrown.20130222093439.30271: *3* delete_bookmark
     def delete_bookmark(self, url):
         
+        url = url.replace(' ', '%20')
+        
         l = [i for i in self.get_list() if i[1] != url]
 
         if l != self.current_list:
@@ -342,13 +348,14 @@ class BookMarkDisplay:
                 p1 = nd.context.vnode2position(nd)
                 nd.context.deletePositionsInList([p1])
                 nd.context.redraw()
+                nd.context.setChanged(True)
                 break
         
         return None  # do not stop processing the select1 hook
     #@+node:tbrown.20130601104424.55363: *3* update_bookmark
     def update_bookmark(self, old_url):
         
-        new_url = '#'+self.c.p.get_UNL(with_file=False)
+        new_url = self.c.p.get_UNL(with_file=True, with_proto=True)
         
         # COPIED from add_bookmark
         # check it's not already present
@@ -360,12 +367,13 @@ class BookMarkDisplay:
             g.es("Bookmark for this node already present")
             return self.show_list(self.current_list)
         
-        index = [i[1] for i in self.current_list].index(old_url)
+        index = [i[1] for i in self.current_list].index(old_url.replace(' ', '%20'))
         
         if index < 0:  # can't happen
             return
         
         self.v.children[index].b = new_url
+        self.v.context.setChanged(True)
         
         g.es("Bookmark '%s' updated to current node" % self.v.children[index].h)
         
@@ -376,7 +384,7 @@ class BookMarkDisplay:
         url = str(te.anchorAt(pos))
         
         if url:
-            
+            url = url.replace(' ', '%20')
             idx = [i[1] for i in self.current_list].index(url)
             nd = self.v.context.vnode2position(self.v.children[idx])
             
@@ -393,6 +401,8 @@ class BookMarkDisplay:
     def add_bookmark(self, te, pos):
         
         url = g.getUrlFromNode(self.c.p)
+        if url:
+            url = url.replace(' ', '%20')
         if not url or '//' not in url:
             # first line starting with '#' is misinterpreted as url
             url = None
