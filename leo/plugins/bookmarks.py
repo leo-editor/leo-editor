@@ -334,7 +334,7 @@ class BookMarkDisplay:
             else:  # go to bookmark
                 
                 # update current bookmark
-                url = url.replace(' ', '%20').strip()
+                url = str(url.toString()).replace(' ', '%20').strip()
                 for nd in self.v.children:
                     if nd.b.strip() == url:
                         self.current = nd
