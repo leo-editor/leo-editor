@@ -131,6 +131,8 @@ def cmd_open_bookmark(c):
             bookmark = True
             break
     if bookmark:
+        if hasattr(c, '_bookmarks'):
+            c._bookmarks.current = p.v
         cmd_open_node(c)
            
 def cmd_open_node(c):
@@ -152,6 +154,30 @@ def cmd_show(c):
     splitter = bmd.c.free_layout.get_top_splitter()
     if splitter:
         splitter.add_adjacent(bmd.w, 'bodyFrame', 'above')
+#@+node:tbrown.20131226095537.26309: ** bookmarks-switch
+def cmd_switch(c):
+    """switch between bookmarks and previous position in outline"""
+    if not hasattr(c, '_bookmarks'):
+        g.es("Bookmarks not active for this outline")
+        return
+    if c.p.v == c._bookmarks.current:
+        ov = c._bookmarks.previous
+    else:
+        ov = c._bookmarks.current
+        c._bookmarks.previous = c.p.v
+        
+    if not ov:
+        g.es("No alternate position known")
+        return
+        
+    oc = ov.context
+    op = oc.vnode2position(ov)
+    if not oc.positionExists(op):
+        g.es("No alternate position known")
+        return
+    oc.selectPosition(op)
+    oc.redraw()
+    oc.bringToFront()
 #@+node:tbrown.20131214112218.36871: ** bookmarks-mark
 def cmd_mark_as_target(c):
     """Mark current node as Bookmarks list for use by another file,
@@ -184,10 +210,17 @@ class BookMarkDisplay:
     def __init__(self, c, v=None):
         
         self.c = c
+        c._bookmarks = self
+        
+        # self.v - where the bookmarks for c are kept, may not be in c
         if v is None:
             v = self.v = c.p.v
         else:
             self.v = v
+        
+        # current (last used) bookmark
+        self.current = self.v.children[0] if self.v.children else self.v
+        self.previous = None  # position in outline, for outline / bookmarks switch
         
         self.already = -1  # used to indicate existing link when same link added again
            
@@ -299,6 +332,14 @@ class BookMarkDisplay:
             if QtCore.Qt.ControlModifier == te.modifiers:
                 owner.delete_bookmark(str(url.toString()))
             else:  # go to bookmark
+                
+                # update current bookmark
+                url = url.replace(' ', '%20').strip()
+                for nd in self.v.children:
+                    if nd.b.strip() == url:
+                        self.current = nd
+                        break
+
                 url = str(url.toString())
                 # g.trace(url,te)
                 # if QtCore.Qt.ShiftModifier & te.modifiers():
@@ -322,6 +363,7 @@ class BookMarkDisplay:
         te.setHtml(html)
     #@+node:tbrown.20110712100955.39218: *3* update
     def update(self, tag, keywords):
+        """re-show the current list of bookmarks, if it's changed"""
         
         if keywords['c'] is not self.c:
             return
