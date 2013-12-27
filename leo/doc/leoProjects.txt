@@ -2071,28 +2071,17 @@ I started this project by doing a clone-find-all for isExpanded.
 
 @language python
 .. @+node:ekr.20131225061403.16378: *3* Fixed bug 1264350
-# The original code is correct.  The "fix" at rev 6472 was wrong.
-# Added a unit test.
-.. @+node:ekr.20131227145019.16469: *4* bug report
 @language rest
 
 Up-arrow on the first node in a chapter switches to another chapter 
 https://bugs.launchpad.net/leo-editor/+bug/1264350
 
-This bug was introduced in rev 6472: it's not present in 6471.
+Solution:
 
-Steps to reproduce:
-
-1.) Open the attached .leo file (chapter-test.leo)
-2.) Switch to chapter 'Chapter 3'
-3.) Navigate to the top node
-4.) Press Up-Arrow twice --> You'll switch to a different chapter.
-
-Expected behavior:
-
-Remain in the same chapter, as in revs 6471 and prior.
-
-Also effects hoists.
+1. The "fix" at rev 6472 was wrong: The original code was correct.
+2. Added a unit test.
+.. @+node:ekr.20131225045014.16398: *3* Fixed problem with 1-character reverse searches!
+The problem was an off-by-one test in regexHelper.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.

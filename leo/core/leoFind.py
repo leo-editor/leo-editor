@@ -1542,8 +1542,8 @@ class leoFind:
         if not re_obj:
             g.trace('can not happen: no re_obj')
             return -1,-1
-        ### Huh?
-        if backwards: # Scan to the last match.  We must use search here.
+        if backwards:
+            # Scan to the last match using search here.
             last_mo = None ; i = 0
             while i < len(s):
                 mo = re_obj.search(s,i,j)
@@ -1556,7 +1556,8 @@ class leoFind:
         if trace: g.trace('backwards',backwards,'pattern',pattern,
             i,j,'s[i:j]',repr(s[i:j]),
             'mo.start/end',mo and mo.start(),mo and mo.end())
-        while mo and 0 <= i < len(s):
+        while mo and 0 <= i <= len(s):
+            # Bug fix: 2013/12/27: must be 0 <= i <= len(s)
             if mo.start() == mo.end():
                 if backwards:
                     # Search backward using match instead of search.
