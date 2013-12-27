@@ -14711,6 +14711,18 @@ finally:
     c.redraw(p)
 #@+node:ekr.20111210104652.3959: *5* child
 #@+node:ekr.20120212130242.4755: *5* test
+#@+node:ekr.20131227150324.3983: *4* @test p.moveToVisBack in a chapter
+# Verify a fix for bug https://bugs.launchpad.net/leo-editor/+bug/1264350
+aaa1 = g.findNodeAnywhere(c,'@chapter aaa')
+assert aaa1
+try:
+    c.chapterController.selectChapterByName('aaa',collapse=True,create=False)
+    aaa = c.p
+    assert aaa.h == 'aaa node 1',repr(aaa)
+    p2 = p.moveToVisBack(c)
+    assert p2 is None,p2
+finally:
+    c.chapterController.selectChapterByName('main',collapse=True,create=False)
 #@+node:ekr.20040802071519: *4* @test p.setBodyString
 # Tests that c.setBodyString works immediately.
 h = p.h

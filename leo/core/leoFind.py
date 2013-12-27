@@ -1523,7 +1523,7 @@ class leoFind:
         regexp=self.pattern_match
         word=self.whole_word
         if backwards: i,j = j,i
-        if trace: g.trace(i,j,repr(s[min(i,j):max(i,j)]))
+        if trace: g.trace('entry',i,j,repr(s[min(i,j):max(i,j)]))
         if not s[i:j] or not pattern:
             if trace: g.trace('empty',i,j,'len(s)',len(s),'pattern',pattern)
             return -1,-1
@@ -1537,22 +1537,25 @@ class leoFind:
         return pos,newpos
     #@+node:ekr.20060526092203: *6* regexHelper
     def regexHelper (self,s,i,j,pattern,backwards,nocase):
+        trace = False and not g.unitTesting
         re_obj = self.re_obj # Use the pre-compiled object
         if not re_obj:
             g.trace('can not happen: no re_obj')
             return -1,-1
+        ### Huh?
         if backwards: # Scan to the last match.  We must use search here.
             last_mo = None ; i = 0
             while i < len(s):
                 mo = re_obj.search(s,i,j)
                 if not mo: break
-                i += 1 ; last_mo = mo
+                i += 1
+                last_mo = mo
             mo = last_mo
         else:
             mo = re_obj.search(s,i,j)
-        if 0:
-            g.trace('i',i,'j',j,'s[i:j]',repr(s[i:j]),
-                'mo.start',mo and mo.start(),'mo.end',mo and mo.end())
+        if trace: g.trace('backwards',backwards,'pattern',pattern,
+            i,j,'s[i:j]',repr(s[i:j]),
+            'mo.start/end',mo and mo.start(),mo and mo.end())
         while mo and 0 <= i < len(s):
             if mo.start() == mo.end():
                 if backwards:
@@ -1784,7 +1787,7 @@ class leoFind:
         insert point for the body pane. For headlines, start at beginning or
         end of the headline text.
         '''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self.c
         p = self.p = c.p # *Always* start with the present node.
         bodyCtrl = c.frame.body and c.frame.body.bodyCtrl
