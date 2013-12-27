@@ -202,6 +202,91 @@ def cmd_use_other_outline(c):
     splitter = c.free_layout.get_top_splitter()
     if splitter:
         splitter.add_adjacent(bmd.w, 'bodyFrame', 'above')
+#@+node:tbrown.20131227100801.23857: ** FlowLayout
+class FlowLayout(QtGui.QLayout):
+    """from http://ftp.ics.uci.edu/pub/centos0/ics-custom-build/BUILD/PyQt-x11-gpl-4.7.2/examples/layouts/flowlayout.py"""
+    def __init__(self, parent=None, margin=0, spacing=-1):
+        super(FlowLayout, self).__init__(parent)
+
+        if parent is not None:
+            self.setMargin(margin)
+
+        self.setSpacing(spacing)
+
+        self.itemList = []
+
+    def __del__(self):
+        item = self.takeAt(0)
+        while item:
+            item = self.takeAt(0)
+
+    def addItem(self, item):
+        self.itemList.append(item)
+
+    def count(self):
+        return len(self.itemList)
+
+    def itemAt(self, index):
+        if index >= 0 and index < len(self.itemList):
+            return self.itemList[index]
+
+        return None
+
+    def takeAt(self, index):
+        if index >= 0 and index < len(self.itemList):
+            return self.itemList.pop(index)
+
+        return None
+
+    def expandingDirections(self):
+        return QtCore.Qt.Orientations(QtCore.Qt.Orientation(0))
+
+    def hasHeightForWidth(self):
+        return True
+
+    def heightForWidth(self, width):
+        height = self.doLayout(QtCore.QRect(0, 0, width, 0), True)
+        return height
+
+    def setGeometry(self, rect):
+        super(FlowLayout, self).setGeometry(rect)
+        self.doLayout(rect, False)
+
+    def sizeHint(self):
+        return self.minimumSize()
+
+    def minimumSize(self):
+        size = QtCore.QSize()
+
+        for item in self.itemList:
+            size = size.expandedTo(item.minimumSize())
+
+        size += QtCore.QSize(2 * self.margin(), 2 * self.margin())
+        return size
+
+    def doLayout(self, rect, testOnly):
+        x = rect.x()
+        y = rect.y()
+        lineHeight = 0
+
+        for item in self.itemList:
+            wid = item.widget()
+            spaceX = self.spacing() + wid.style().layoutSpacing(QtGui.QSizePolicy.PushButton, QtGui.QSizePolicy.PushButton, QtCore.Qt.Horizontal)
+            spaceY = self.spacing() + wid.style().layoutSpacing(QtGui.QSizePolicy.PushButton, QtGui.QSizePolicy.PushButton, QtCore.Qt.Vertical)
+            nextX = x + item.sizeHint().width() + spaceX
+            if nextX - spaceX > rect.right() and lineHeight > 0:
+                x = rect.x()
+                y = y + lineHeight + spaceY
+                nextX = x + item.sizeHint().width() + spaceX
+                lineHeight = 0
+
+            if not testOnly:
+                item.setGeometry(QtCore.QRect(QtCore.QPoint(x, y), item.sizeHint()))
+
+            x = nextX
+            lineHeight = max(lineHeight, item.sizeHint().height())
+
+        return y + lineHeight - rect.y()
 #@+node:tbrown.20110712100955.18924: ** class BookMarkDisplay
 class BookMarkDisplay:
     """Manage a pane showing bookmarks"""
@@ -250,6 +335,17 @@ class BookMarkDisplay:
         self.show_list(self.current_list)
         
         g.registerHandler('select1', self.update)
+    #@+node:tbrown.20131227100801.23859: *3* clicked
+    def clicked(self, event, url, but):
+        """clicked - handle a button being clicked
+
+        :Parameters:
+        - `event`: QPushButton event
+        - `url`: url associated with button
+        - `but`: button widget
+        """
+
+        print url
     #@+node:tbrown.20110712100955.18925: *3* color
     def color(self, text, dark=False):
         """make a consistent light background color for text"""
@@ -261,6 +357,21 @@ class BookMarkDisplay:
         x = tuple([int(x[2*i:2*i+2], 16)//4+add for i in range(3)])
         x = '%02x%02x%02x' % x
         return x
+    #@+node:tbrown.20131227100801.23856: *3* find_node
+    def find_node(self, url):
+        """find_node - Return position which is a bookmark for url, or None
+
+        :Parameters:
+        - `url`: url to find
+        """
+        url = url.strip().replace(' ', '%20')
+        p = self.v.context.vnode2position(self.v)
+        for node in p.subtree():
+            if node.b.split('\n', 1)[0].strip().replace(' ', '%20') == url:
+                break
+        else:
+            return None
+        return node
     #@+node:tbrown.20110712100955.39216: *3* get_list
     def get_list(self):
         """Return list of lists of headlines and urls
@@ -308,8 +419,39 @@ class BookMarkDisplay:
         recurse_bm(p, result)
 
         return result
-    #@+node:tbrown.20110712100955.39217: *3* show_list
+    #@+node:tbrown.20131227100801.23858: *3* show_list
     def show_list(self, links):
+        """show_list - update pane with buttons
+
+        :Parameters:
+        - `links`: links to show
+        """
+
+        p = self.v.context.vnode2position(self.v)
+        if not p:
+            return
+            
+        w = self.w
+        for i in range(w.layout().count()-1, -1, -1):
+            w.layout().removeItem(w.layout().itemAt(i))
+            
+        top = QtGui.QWidget()
+        w.layout().addWidget(top)
+
+        layout = FlowLayout()
+        layout.setSpacing(5)
+        top.setLayout(layout)
+        for head, url, children in links:
+            but = QtGui.QPushButton(head)
+            but.setStyleSheet(
+                "margin: 0; padding: 1; background: #%s" % 
+                self.color(head, dark=self.dark))
+            but.setToolTip(url)
+            but.clicked.connect(lambda event, url=url, but=but: 
+                self.clicked(event, url, but))
+            layout.addWidget(but)
+    #@+node:tbrown.20110712100955.39217: *3* show_list_old
+    def show_list_old(self, links):
         
         p = self.v.context.vnode2position(self.v)
         if not p:
