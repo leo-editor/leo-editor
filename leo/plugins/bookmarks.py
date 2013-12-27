@@ -349,7 +349,15 @@ class BookMarkDisplay:
         - `bookmarks`: bookmarks in this pane
         """
 
-        print event
+        v = bookmarks[0].v.parents[0]
+        c = v.context
+        p = c.vnode2position(v)
+        nd = p.insertAsNthChild(0)
+        new_url = self.c.p.get_UNL(with_file=True, with_proto=True)
+        nd.b = new_url
+        nd.h = self.c.p.h
+        c.redraw()
+        self.show_list(self.get_list())
     #@+node:tbrown.20131227100801.23859: *3* button_clicked
     def button_clicked(self, event, bm, but):
         """button_clicked - handle a button being clicked
@@ -373,6 +381,10 @@ class BookMarkDisplay:
         # Ctrl => delete the bookmark
         if mods == QtCore.Qt.ControlModifier:
             self.delete_bookmark(bm)
+            return
+        # Shift => add child bookmark
+        if mods == QtCore.Qt.ShiftModifier:
+            self.add_child_bookmark(bm)
             return
             
         # otherwise, look up the bookmark
@@ -465,8 +477,8 @@ class BookMarkDisplay:
             return
             
         w = self.w
-        for i in range(w.layout().count()-1, -1, -1):
-            w.layout().removeItem(w.layout().itemAt(i))
+        while w.layout().takeAt(0):
+            pass
             
         w.setStyleSheet("""
         #show_bookmarks QPushButton { margin: 0; padding: 1; }
@@ -477,12 +489,19 @@ class BookMarkDisplay:
             
         todo = [links]
         
+        policy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed)
+        policy.setVerticalStretch(0)
+        # policy.setHorizontalStretch(0)
+        w.setSizePolicy(policy)
+        
         while todo:
             
             links = todo.pop(0)
         
             top = QtGui.QWidget()
-            top.mouseReleaseEvent = lambda event: self.background_clicked(event, links)
+            top.mouseReleaseEvent = (lambda event, links=links:
+                self.background_clicked(event, links))
+            # top.setSizePolicy(policy)
             
             w.layout().addWidget(top)
         
@@ -510,6 +529,7 @@ class BookMarkDisplay:
                 style_sheet = ("background: #%s;" % 
                     self.color(bm.head, dark=self.dark))
                 but.setStyleSheet(style_sheet)
+                but.setSizePolicy(policy)
                     
                 classes = []
                 if bm.v == self.current:
@@ -631,6 +651,22 @@ class BookMarkDisplay:
         p = c.vnode2position(bm.v)
         c.selectPosition(p)
         c.bringToFront()
+    #@+node:tbrown.20131227100801.40521: *3* add_child_bookmark
+    def add_child_bookmark(self, bm):
+        """add_child_bookmark - Add a child bookmark
+
+        :Parameters:
+        - `bm`: bookmark to which to add a child
+        """
+
+        c = bm.v.context
+        p = c.vnode2position(bm.v)
+        new_url = self.c.p.get_UNL(with_file=True, with_proto=True)
+        nd = p.insertAsNthChild(0)
+        nd.b = new_url
+        nd.h = self.c.p.h
+        c.redraw()
+        self.show_list(self.get_list())
     #@+node:tbrown.20130222093439.30273: *3* add_bookmark
     def add_bookmark(self, te, pos):
         
