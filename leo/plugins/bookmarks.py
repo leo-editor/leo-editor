@@ -222,6 +222,8 @@ class BookMarkDisplay:
         self.current = self.v.children[0] if self.v.children else self.v
         self.previous = None  # position in outline, for outline / bookmarks switch
         
+        self.levels = 0  # parent levels to show in hierarchical display
+        
         self.already = -1  # used to indicate existing link when same link added again
            
         self.w = QtGui.QWidget()
@@ -261,36 +263,49 @@ class BookMarkDisplay:
         return x
     #@+node:tbrown.20110712100955.39216: *3* get_list
     def get_list(self):
-        """Return list of *unique* urls, uniqueness may need dropping."""
+        """Return list of lists of headlines and urls
+        
+        [(heading, url, [children...]), ...]
+        """
         
         # v might not be in this outline
         p = self.v.context.vnode2position(self.v)
         if not p:
             return
         
-        # return [(i.h, i.b.split('\n', 1)[0])
-                # for i in p.subtree()]
-                
         def strip(s):
             if s.startswith('@url'):
                 s = s[4:]
             return s.strip()
 
-        result,urls = [],[]
-        for p in p.subtree():
-            if p.b and p.b[0] == '#':
-                # prevent node url ending with name of file which exists being confused
-                url = p.b.split('\n', 1)[0]
-            else:
-                url = g.getUrlFromNode(p)
+        result = []
+
+        def recurse_bm(node, result):
+        
+            for p in node.children():
                 
-            url = url.replace(' ', '%20')
-            
-            h = strip(p.h)
-            data = (h,url)
-            if url and data not in result and url not in urls:
+                if p.b and p.b[0] == '#':
+                    # prevent node url ending with name of 
+                    # file which exists being confused
+                    url = p.b.split('\n', 1)[0]
+                else:
+                    url = g.getUrlFromNode(p)
+                    
+                if url:
+                    url = url.replace(' ', '%20')
+                h = strip(p.h)
+                
+                children = []
+                data = (h,url,children)
+                
                 result.append(data)
-                urls.append(url)
+                
+                if self.levels == 0:  # non-hierarchical
+                    recurse_bm(p, result)
+                else:
+                    recurse_bm(p, children)
+
+        recurse_bm(p, result)
 
         return result
     #@+node:tbrown.20110712100955.39217: *3* show_list
@@ -350,7 +365,7 @@ class BookMarkDisplay:
         te.connect(te, QtCore.SIGNAL("anchorClicked(const QUrl &)"), anchorClicked)
         html = []
         for idx, name_link in enumerate(links):
-            name, link = name_link
+            name, link, children = name_link
             html.append("<a title='%s' href='%s' style='background: #%s; color: #%s; text-decoration: none;'>%s</a>"
                 % (link, link, 
                    self.color(name, dark=self.dark) if self.already != idx else "ff0000", 
@@ -395,6 +410,7 @@ class BookMarkDisplay:
         return None  # do not stop processing the select1 hook
     #@+node:tbrown.20130601104424.55363: *3* update_bookmark
     def update_bookmark(self, old_url):
+        """Update *EXISTING* bookmark to current node"""
         
         new_url = self.c.p.get_UNL(with_file=True, with_proto=True)
         
