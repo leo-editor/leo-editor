@@ -78,6 +78,8 @@ __version__ = "0.1"
 #@-<< version history >>
 #@+<< imports >>
 #@+node:tbrown.20070322113635.3: ** << imports >>
+from collections import namedtuple
+
 import leo.core.leoGlobals as g
 
 use_qt = False
@@ -290,6 +292,9 @@ class FlowLayout(QtGui.QLayout):
 #@+node:tbrown.20110712100955.18924: ** class BookMarkDisplay
 class BookMarkDisplay:
     """Manage a pane showing bookmarks"""
+    
+    Bookmark = namedtuple('Bookmark', 'head url ancestors siblings children v')
+    
     #@+others
     #@+node:tbrown.20110712100955.18926: *3* __init__
     def __init__(self, c, v=None):
@@ -307,7 +312,7 @@ class BookMarkDisplay:
         self.current = self.v.children[0] if self.v.children else self.v
         self.previous = None  # position in outline, for outline / bookmarks switch
         
-        self.levels = 0  # parent levels to show in hierarchical display
+        self.levels = 5  # parent levels to show in hierarchical display
         
         self.already = -1  # used to indicate existing link when same link added again
            
@@ -335,17 +340,46 @@ class BookMarkDisplay:
         self.show_list(self.current_list)
         
         g.registerHandler('select1', self.update)
-    #@+node:tbrown.20131227100801.23859: *3* clicked
-    def clicked(self, event, url, but):
-        """clicked - handle a button being clicked
+    #@+node:tbrown.20131227100801.30379: *3* background_clicked
+    def background_clicked(self, event, bookmarks):
+        """background_clicked - Handle a background click in a bookmark pane
+
+        :Parameters:
+        - `event`: click event
+        - `bookmarks`: bookmarks in this pane
+        """
+
+        print event
+    #@+node:tbrown.20131227100801.23859: *3* button_clicked
+    def button_clicked(self, event, bm, but):
+        """button_clicked - handle a button being clicked
 
         :Parameters:
         - `event`: QPushButton event
-        - `url`: url associated with button
+        - `bm`: Bookmark associated with button
         - `but`: button widget
         """
-
-        print url
+        
+        mods = event.modifiers()
+        
+        # Alt-Ctrl => update bookmark to point to current node
+        if mods == (QtCore.Qt.AltModifier | QtCore.Qt.ControlModifier):
+            self.update_bookmark(bm)
+            return
+        # Alt => edit the bookmark in the outline
+        if mods == QtCore.Qt.AltModifier:
+            self.edit_bookmark(bm)
+            return
+        # Ctrl => delete the bookmark
+        if mods == QtCore.Qt.ControlModifier:
+            self.delete_bookmark(bm)
+            return
+            
+        # otherwise, look up the bookmark
+        self.current = bm.v        
+        # in case something we didn't see changed the bookmarks
+        self.show_list(self.get_list())
+        g.handleUrl(bm.url, c=self.c)
     #@+node:tbrown.20110712100955.18925: *3* color
     def color(self, text, dark=False):
         """make a consistent light background color for text"""
@@ -374,9 +408,7 @@ class BookMarkDisplay:
         return node
     #@+node:tbrown.20110712100955.39216: *3* get_list
     def get_list(self):
-        """Return list of lists of headlines and urls
-        
-        [(heading, url, [children...]), ...]
+        """Return list of Bookmarks
         """
         
         # v might not be in this outline
@@ -391,7 +423,7 @@ class BookMarkDisplay:
 
         result = []
 
-        def recurse_bm(node, result):
+        def recurse_bm(node, result, ancestors=[]):
         
             for p in node.children():
                 
@@ -407,14 +439,15 @@ class BookMarkDisplay:
                 h = strip(p.h)
                 
                 children = []
-                data = (h,url,children)
+                bm = self.Bookmark(
+                    h, url, ancestors, result, children, p.v)
                 
-                result.append(data)
+                result.append(bm)
                 
                 if self.levels == 0:  # non-hierarchical
                     recurse_bm(p, result)
                 else:
-                    recurse_bm(p, children)
+                    recurse_bm(p, children, ancestors=ancestors+[bm])
 
         recurse_bm(p, result)
 
@@ -424,7 +457,7 @@ class BookMarkDisplay:
         """show_list - update pane with buttons
 
         :Parameters:
-        - `links`: links to show
+        - `links`: Bookmarks to show
         """
 
         p = self.v.context.vnode2position(self.v)
@@ -435,21 +468,59 @@ class BookMarkDisplay:
         for i in range(w.layout().count()-1, -1, -1):
             w.layout().removeItem(w.layout().itemAt(i))
             
-        top = QtGui.QWidget()
-        w.layout().addWidget(top)
+        w.setStyleSheet("""
+        #show_bookmarks QPushButton { margin: 0; padding: 1; }
+        QPushButton[style_class~='bookmark_current'] { font-weight: bold; color: orange; }
+        QPushButton[style_class~='bookmark_expanded'] { font-weight: bold; }
+        QPushButton[style_class~='bookmark_children'] { text-decoration: underline; }
+        """)
+            
+        todo = [links]
+        
+        while todo:
+            
+            links = todo.pop(0)
+        
+            top = QtGui.QWidget()
+            top.mouseReleaseEvent = lambda event: self.background_clicked(event, links)
+            
+            w.layout().addWidget(top)
+        
+            layout = FlowLayout()
+            layout.setSpacing(5)
+            top.setLayout(layout)
+            for bm in links:
+                
+                but = QtGui.QPushButton(bm.head)
 
-        layout = FlowLayout()
-        layout.setSpacing(5)
-        top.setLayout(layout)
-        for head, url, children in links:
-            but = QtGui.QPushButton(head)
-            but.setStyleSheet(
-                "margin: 0; padding: 1; background: #%s" % 
-                self.color(head, dark=self.dark))
-            but.setToolTip(url)
-            but.clicked.connect(lambda event, url=url, but=but: 
-                self.clicked(event, url, but))
-            layout.addWidget(but)
+                but.setToolTip(bm.url)
+                but.mouseReleaseEvent = (lambda event, bm=bm, but=but: 
+                    self.button_clicked(event, bm, but))
+                layout.addWidget(but)
+                
+                showing = False
+                if bm.children:
+                    nd = self.current
+                    while nd != bm.v and nd.parents:
+                        nd = nd.parents[0]
+                    if nd == bm.v:
+                        showing = True
+                        todo.append(bm.children)
+                        
+                style_sheet = ("background: #%s;" % 
+                    self.color(bm.head, dark=self.dark))
+                but.setStyleSheet(style_sheet)
+                    
+                classes = []
+                if bm.v == self.current:
+                    classes += ['bookmark_current']
+                if showing:
+                    classes += ['bookmark_expanded']
+                if bm.children:
+                    classes += ['bookmark_children']
+                but.setProperty('style_class', ' '.join(classes))
+                    
+                
     #@+node:tbrown.20110712100955.39217: *3* show_list_old
     def show_list_old(self, links):
         
@@ -519,83 +590,47 @@ class BookMarkDisplay:
         te.setHtml(html)
     #@+node:tbrown.20110712100955.39218: *3* update
     def update(self, tag, keywords):
-        """re-show the current list of bookmarks, if it's changed"""
+        """re-show the current list of bookmarks"""
         
         if keywords['c'] is not self.c:
             return
 
-        l = self.get_list()
-        if l != self.current_list:
-            self.current_list = l
-            self.show_list(self.current_list)
+        self.show_list(self.get_list())
         
         return None  # do not stop processing the select1 hook
     #@+node:tbrown.20130222093439.30271: *3* delete_bookmark
-    def delete_bookmark(self, url):
+    def delete_bookmark(self, bm):
         
-        url = url.replace(' ', '%20')
+        c = bm.v.context
+        p = c.vnode2position(bm.v)
+        u = c.undoer
+        if p.hasVisBack(c): newNode = p.visBack(c)
+        else: newNode = p.next()
+        dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
         
-        l = [i for i in self.get_list() if i[1] != url]
+        undoData = u.beforeDeleteNode(p)
+        p.doDelete(newNode)
+        c.setChanged(True)
+        u.afterDeleteNode(newNode, "Bookmark deletion", undoData, 
+            dirtyVnodeList=dirtyVnodeList)
+        c.redraw()
 
-        if l != self.current_list:
-            self.current_list = l
-            self.show_list(self.current_list)
-            
-        for nd in self.v.children:
-            if nd.b.strip() == url.strip():
-                p1 = nd.context.vnode2position(nd)
-                nd.context.deletePositionsInList([p1])
-                nd.context.redraw()
-                nd.context.setChanged(True)
-                break
-        
-        return None  # do not stop processing the select1 hook
+        self.show_list(self.get_list())
     #@+node:tbrown.20130601104424.55363: *3* update_bookmark
-    def update_bookmark(self, old_url):
+    def update_bookmark(self, bm):
         """Update *EXISTING* bookmark to current node"""
         
         new_url = self.c.p.get_UNL(with_file=True, with_proto=True)
-        
-        # COPIED from add_bookmark
-        # check it's not already present
-        try:
-            self.already = [i[1] for i in self.current_list].index(new_url)
-        except ValueError:
-            self.already = -1
-        if self.already != -1:
-            g.es("Bookmark for this node already present")
-            return self.show_list(self.current_list)
-        
-        index = [i[1] for i in self.current_list].index(old_url.replace(' ', '%20'))
-        
-        if index < 0:  # can't happen
-            return
-        
-        self.v.children[index].b = new_url
-        self.v.context.setChanged(True)
-        
-        g.es("Bookmark '%s' updated to current node" % self.v.children[index].h)
-        
-        return None  # do not stop processing the select1 hook
+        bm.v.b = new_url
+        bm.v.context.redraw()
+        self.show_list(self.get_list())
     #@+node:tbrown.20130222093439.30275: *3* edit_bookmark
-    def edit_bookmark(self, te, pos):
-        
-        url = str(te.anchorAt(pos))
-        
-        if url:
-            url = url.replace(' ', '%20')
-            idx = [i[1] for i in self.current_list].index(url)
-            nd = self.v.context.vnode2position(self.v.children[idx])
-            
-        else:
-            
-            nd = self.v.context.vnode2position(self.v)
-            nd.expand()
-            
-        nd.v.context.selectPosition(nd)
-        nd.v.context.bringToFront()
-        
-        return None  # do not stop processing the select1 hook
+    def edit_bookmark(self, bm):
+
+        c = bm.v.context
+        p = c.vnode2position(bm.v)
+        c.selectPosition(p)
+        c.bringToFront()
     #@+node:tbrown.20130222093439.30273: *3* add_bookmark
     def add_bookmark(self, te, pos):
         
