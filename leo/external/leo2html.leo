@@ -2,9 +2,15 @@
 <!-- Created by Leo (http://leoeditor.com/leo_toc.html) -->
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
-<leo_header file_format="2"/>
+<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
+	<global_log_window_position top="0" left="0" height="0" width="0"/>
+</globals>
+<preferences/>
+<find_panel_settings/>
 <vnodes>
-<v t="ekr.20131223123155.1734"><vh>Speed Ream's leo2html.leo</vh>
+<v t="ekr.20131223123155.1734" a="E"><vh>Speed Ream's leo2html.leo</vh>
 <v t="dsr.20131205110138.1387"><vh>scripts</vh>
 <v t="dsr.20131219141031.2779"><vh>@button example1</vh>
 <v t="dsr.20131219235522.2808"><vh>Define classes</vh>
@@ -19,8 +25,7 @@
 <v t="dsr.20131219141031.2786"><vh>process</vh></v>
 <v t="dsr.20131219141031.2789"><vh>add_tag</vh></v>
 <v t="dsr.20131219141031.2792"><vh>process_level</vh></v>
-<v t="ekr.20131222175517.1719"><vh>&lt;&lt; to_html docstring 
-&gt;&gt;</vh></v>
+<v t="ekr.20131222175517.1719"><vh>&lt;&lt;to_html docstring&gt;&gt;</vh></v>
 </v>
 </v>
 <v t="dsr.20131219141031.2787"><vh>doit</vh></v>
@@ -133,7 +138,7 @@ g.es("")
 g.es("Ending Script: " + ME)
 </t>
 <t tx="dsr.20131219141031.2781">class to_html(object):
-    &lt;&lt; to_html docstring &gt;&gt;
+    &lt;&lt;to_html docstring&gt;&gt;
     @others
 </t>
 <t tx="dsr.20131219141031.2782">def __init__(self, node_name, indent=" "):
