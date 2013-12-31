@@ -162,11 +162,19 @@ def cmd_switch(c):
     if not hasattr(c, '_bookmarks'):
         g.es("Bookmarks not active for this outline")
         return
-    if c.p.v == c._bookmarks.current:
-        ov = c._bookmarks.previous
+    bm = c._bookmarks
+    if bm.current is None:  
+        # startup condition, this is not done in __init__ because that
+        # would lead to premature highlighting of the 'current' bookmark
+        if bm.v.children:
+            bm.current = bm.v.children[0]  # first bookmark
+        else:
+            bm.current = bm.v  # bookmark node itself
+    if c.p.v == bm.current:
+        ov = bm.previous
     else:
-        ov = c._bookmarks.current
-        c._bookmarks.previous = c.p.v
+        ov = bm.current
+        bm.previous = c.p.v
         
     if not ov:
         g.es("No alternate position known")
@@ -308,8 +316,8 @@ class BookMarkDisplay:
         else:
             self.v = v
         
-        # current (last used) bookmark
-        self.current = self.v.children[0] if self.v.children else self.v
+        
+        self.current = None  # current (last used) bookmark
         self.previous = None  # position in outline, for outline / bookmarks switch
         
         self.levels = 5  # parent levels to show in hierarchical display
@@ -349,7 +357,10 @@ class BookMarkDisplay:
         - `bookmarks`: bookmarks in this pane
         """
 
-        v = bookmarks[0].v.parents[0]
+        if bookmarks:
+            v = bookmarks[0].v.parents[0]  # node containing bookmarks
+        else:
+            v = self.v  # top of bookmarks tree
         c = v.context
         p = c.vnode2position(v)
         nd = p.insertAsNthChild(0)
@@ -519,7 +530,7 @@ class BookMarkDisplay:
                 layout.addWidget(but)
                 
                 showing = False
-                if bm.children:
+                if bm.children and self.current:
                     nd = self.current
                     while nd != bm.v and nd.parents:
                         nd = nd.parents[0]
