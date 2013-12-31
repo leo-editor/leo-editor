@@ -233,6 +233,11 @@ class FlowLayout(QtGui.QLayout):
     def addItem(self, item):
         self.itemList.append(item)
 
+    def insertWidget(self, index, item):
+        x = QtGui.QWidgetItem(item)
+        # item.setParent(x)
+        # self.itemList.insert(index, x)
+
     def count(self):
         return len(self.itemList)
 
@@ -320,7 +325,8 @@ class BookMarkDisplay:
         self.current = None  # current (last used) bookmark
         self.previous = None  # position in outline, for outline / bookmarks switch
         
-        self.levels = 5  # parent levels to show in hierarchical display
+        self.levels = 1  # levels to show in hierarchical display
+        self.second = False  # second click of current bookmark?
         
         self.already = -1  # used to indicate existing link when same link added again
            
@@ -370,7 +376,7 @@ class BookMarkDisplay:
         c.redraw()
         self.show_list(self.get_list())
     #@+node:tbrown.20131227100801.23859: *3* button_clicked
-    def button_clicked(self, event, bm, but):
+    def button_clicked(self, event, bm, but, up=False):
         """button_clicked - handle a button being clicked
 
         :Parameters:
@@ -399,6 +405,7 @@ class BookMarkDisplay:
             return
             
         # otherwise, look up the bookmark
+        self.second = not up and self.current == bm.v   
         self.current = bm.v        
         # in case something we didn't see changed the bookmarks
         self.show_list(self.get_list())
@@ -503,6 +510,8 @@ class BookMarkDisplay:
         """)
             
         todo = [links]
+        current_level = 1
+        showing_chain = []
         
         while todo:
             
@@ -543,11 +552,36 @@ class BookMarkDisplay:
                 classes = []
                 if bm.v == self.current:
                     classes += ['bookmark_current']
+                    current_level = self.w.layout().count()
                 if showing:
                     classes += ['bookmark_expanded']
+                    showing_chain += [bm]
                 if bm.children:
                     classes += ['bookmark_children']
                 but.setProperty('style_class', ' '.join(classes))
+        
+        print
+        print self.levels
+        # print current_level
+        print self.w.layout().count()
+        if self.levels:  # drop excess levels
+            to_show = self.levels
+            # if self.w.layout().count() > current_level:
+            #    to_show += 1
+            if (not self.second and 
+                self.levels == 1 and 
+                current_level < self.w.layout().count()):
+                self.w.layout().takeAt(self.w.layout().count()-1).widget().deleteLater()
+            while self.w.layout().count() > to_show:
+                next_row = self.w.layout().itemAt(1).widget().layout()
+                but = QtGui.QPushButton('^')
+                bm = showing_chain.pop(0)
+                but.mouseReleaseEvent = (lambda event, bm=bm, but=but: 
+                    self.button_clicked(event, bm, but, up=True))
+                next_row.addWidget(but)
+                # rotate to start of layout, FlowLayout() has no insertWidget()
+                next_row.itemList[:] = next_row.itemList[-1:] + next_row.itemList[:-1]
+                self.w.layout().takeAt(0).widget().deleteLater()
                 
         w.layout().addStretch()
      
