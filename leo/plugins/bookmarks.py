@@ -491,7 +491,8 @@ class BookMarkDisplay:
         
         cull = w.layout().takeAt(0)
         while cull:
-            cull.widget().deleteLater()
+            if cull.widget():
+                cull.widget().deleteLater()
             cull = w.layout().takeAt(0)        
             
         w.setStyleSheet("""
@@ -503,21 +504,14 @@ class BookMarkDisplay:
             
         todo = [links]
         
-        policy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed)
-        policy.setVerticalStretch(0)
-        # policy.setHorizontalStretch(0)
-        w.setSizePolicy(policy)
-        
         while todo:
             
             links = todo.pop(0)
         
-            top = QtGui.QWidget(w)
-            top.setObjectName('TEST')
+            top = QtGui.QWidget()
             top.mouseReleaseEvent = (lambda event, links=links:
                 self.background_clicked(event, links))
-            # top.setSizePolicy(policy)
-            
+
             w.layout().addWidget(top)
         
             layout = FlowLayout()
@@ -545,8 +539,7 @@ class BookMarkDisplay:
                 style_sheet = ("background: #%s;" % 
                     self.color(bm.head, dark=self.dark))
                 but.setStyleSheet(style_sheet)
-                but.setSizePolicy(policy)
-                    
+            
                 classes = []
                 if bm.v == self.current:
                     classes += ['bookmark_current']
@@ -555,6 +548,8 @@ class BookMarkDisplay:
                 if bm.children:
                     classes += ['bookmark_children']
                 but.setProperty('style_class', ' '.join(classes))
+                
+        w.layout().addStretch()
      
     #@+node:tbrown.20110712100955.39217: *3* show_list_old
     def show_list_old(self, links):
