@@ -512,7 +512,8 @@ class BookMarkDisplay:
                 
                 but = QtGui.QPushButton(bm.head)
 
-                but.setToolTip(bm.url)
+                if bm.url:
+                    but.setToolTip(bm.url)
                 but.mouseReleaseEvent = (lambda event, bm=bm, but=but: 
                     self.button_clicked(event, bm, but))
                 layout.addWidget(but)
