@@ -8,7 +8,7 @@
 #@@language python
 #@@tabwidth -4
 #@+<< imports >>
-#@+node:ekr.20131230090121.16506: ** << imports >> (leoView.py)
+#@+node:ekr.20131230090121.16506: ** << imports >> (leoViews.py)
 import leo.core.leoGlobals as g
 #@-<< imports >>
 #@+others
@@ -29,11 +29,6 @@ class ViewController:
     The body text of @organizer and @clones consists of unl's, one per line.
     '''
     #@-<< docstring >>
-    #@+<< to do >>
-    #@+node:ekr.20131230090121.16521: *3*  << to do >>
-    #@+at
-    # To do:
-    #@-<< to do >>
     #@+others
     #@+node:ekr.20131230090121.16509: *3*  vc.ctor
     def __init__ (self,c):
@@ -47,6 +42,11 @@ class ViewController:
         Update all @organizer and @clones trees in the @views tree, creating
         them as needed.
         '''
+        c = self.c
+        for p in c.all_unique_positions():
+            if self.is_at_auto_node:
+                self.update_before_write_at_auto_file(p)
+        self.clean_nodes()
     #@+node:ekr.20131230090121.16511: *4* vc.update_before_write_at_auto_file
     def update_before_write_at_auto_file(self):
         '''
@@ -56,9 +56,14 @@ class ViewController:
     #@+node:ekr.20131230090121.16512: *4* vc.update_after_read_leo_file
     def update_after_read_leo_file(self):
         '''
-        Recreate all organizer nodes and clones for all @auto nodes using the
-        corresponding @organizer and @clones.
+        Recreate all organizer nodes and clone links for all @auto nodes using
+        the corresponding @organizer and @clones nodes.
         '''
+        c = self.c
+        for p in c.all_unique_positions():
+            if self.is_at_auto_node(p):
+                self.update_after_read_at_auto_file(p)
+        self.clean_nodes()
     #@+node:ekr.20131230090121.16513: *4* vc.update_after_read_at_auto_file
     def update_after_read_at_auto_file(self):
         '''
@@ -114,6 +119,13 @@ class ViewController:
             c.selectPosition(p)
             c.redraw()
         return p
+    #@+node:ekr.20131230090121.16524: *4* vc.is_at_auto_node (to do)
+    def is_at_auto_node(self,p):
+        '''Return True if p is an @auto node that can be managed by this class.'''
+        if not p.isAtAutoNode():
+            return False
+        ### Make further checks.
+        return True
     #@+node:ekr.20131230090121.16523: *4* vc.unl_for_node (to do)
     def unl_for_node(self,p):
         '''Return the unl corresponding to the given position.'''
