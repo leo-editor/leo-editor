@@ -7,9 +7,11 @@
 @language rest
 
 Release 4.11.1
+    - Create myLeoSettings and workbook automatically if they do not exist.
+    - Add templates to help menu?
+
+For 4.11.2:
     - Fix IPython code/docs.
-    - Create myLeoSettings.leo automatically.
-    - Review wish-list bugs.
 
 - Look at Eclipse # @name.
 
