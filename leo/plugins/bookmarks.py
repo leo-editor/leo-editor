@@ -488,8 +488,11 @@ class BookMarkDisplay:
             return
             
         w = self.w
-        while w.layout().takeAt(0):
-            pass
+        
+        cull = w.layout().takeAt(0)
+        while cull:
+            cull.widget().deleteLater()
+            cull = w.layout().takeAt(0)        
             
         w.setStyleSheet("""
         #show_bookmarks QPushButton { margin: 0; padding: 1; }
@@ -509,7 +512,8 @@ class BookMarkDisplay:
             
             links = todo.pop(0)
         
-            top = QtGui.QWidget()
+            top = QtGui.QWidget(w)
+            top.setObjectName('TEST')
             top.mouseReleaseEvent = (lambda event, links=links:
                 self.background_clicked(event, links))
             # top.setSizePolicy(policy)
@@ -551,8 +555,7 @@ class BookMarkDisplay:
                 if bm.children:
                     classes += ['bookmark_children']
                 but.setProperty('style_class', ' '.join(classes))
-                    
-                
+     
     #@+node:tbrown.20110712100955.39217: *3* show_list_old
     def show_list_old(self, links):
         
