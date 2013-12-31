@@ -324,7 +324,8 @@ class BookMarkDisplay:
         self.current = None  # current (last used) bookmark
         self.previous = None  # position in outline, for outline / bookmarks switch
         
-        self.levels = 1  # levels to show in hierarchical display
+        self.levels = c.config.getInt('bookmarks-levels') or 1
+        # levels to show in hierarchical display
         self.second = False  # second click of current bookmark?
         
         self.already = -1  # used to indicate existing link when same link added again
@@ -373,6 +374,7 @@ class BookMarkDisplay:
         nd.b = new_url
         nd.h = self.c.p.h
         c.redraw()
+        self.current = nd.v
         self.show_list(self.get_list())
     #@+node:tbrown.20131227100801.23859: *3* button_clicked
     def button_clicked(self, event, bm, but, up=False):
@@ -407,7 +409,7 @@ class BookMarkDisplay:
         self.second = not up and self.current == bm.v   
         self.current = bm.v        
         # in case something we didn't see changed the bookmarks
-        self.show_list(self.get_list())
+        self.show_list(self.get_list(), up=up)
         if bm.url:
             g.handleUrl(bm.url, c=self.c)
     #@+node:tbrown.20110712100955.18925: *3* color
@@ -483,7 +485,7 @@ class BookMarkDisplay:
 
         return result
     #@+node:tbrown.20131227100801.23858: *3* show_list
-    def show_list(self, links):
+    def show_list(self, links, up=False):
         """show_list - update pane with buttons
 
         :Parameters:
@@ -511,6 +513,7 @@ class BookMarkDisplay:
             
         todo = [links]
         current_level = 1
+        current_url = None
         showing_chain = []
         
         while todo:
@@ -553,6 +556,7 @@ class BookMarkDisplay:
                 if bm.v == self.current:
                     classes += ['bookmark_current']
                     current_level = self.w.layout().count()
+                    current_url = bm.url
                 if showing:
                     classes += ['bookmark_expanded']
                     showing_chain += [bm]
@@ -561,14 +565,20 @@ class BookMarkDisplay:
                 but.setProperty('style_class', ' '.join(classes))
         
         if self.levels:  # drop excess levels
-            to_show = self.levels
-            # if self.w.layout().count() > current_level:
-            #    to_show += 1
-            if (not self.second and 
-                self.levels == 1 and 
-                current_level < self.w.layout().count()):
+            if ((   
+                    not self.second and 
+                    current_url and
+                    current_url.strip() and
+                    self.levels == 1 
+                 or
+                    up
+                ) and 
+                  current_level < self.w.layout().count() and
+                  self.levels < self.w.layout().count()
+                ):
+                # hide last line, of children, if none are current
                 self.w.layout().takeAt(self.w.layout().count()-1).widget().deleteLater()
-            while self.w.layout().count() > to_show:
+            while self.w.layout().count() > self.levels:
                 next_row = self.w.layout().itemAt(1).widget().layout()
                 but = QtGui.QPushButton('^')
                 bm = showing_chain.pop(0)
@@ -706,6 +716,7 @@ class BookMarkDisplay:
         nd.b = new_url
         nd.h = self.c.p.h
         c.redraw()
+        self.current = nd.v
         self.show_list(self.get_list())
     #@+node:tbrown.20130222093439.30273: *3* add_bookmark
     def add_bookmark(self, te, pos):
