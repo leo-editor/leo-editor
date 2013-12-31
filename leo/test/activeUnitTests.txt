@@ -20311,6 +20311,52 @@ c.contractParent()
 g.app.unitTestDict['restoreSelectedNode']=False
 
 print('\nEnd of leoUndo tests.')
+#@+node:ekr.20131231093529.3984: *3* leoViews.py
+# Revise when c.viewsController ivar exists.
+#@+node:ekr.20131231093529.3985: *4* @test vc.unl
+import leo.core.leoViews as leoViews
+vc = leoViews.ViewController(c)
+unl = vc.unl(p)
+assert unl.endswith('-->'+p.h),repr(unl)
+#@+node:ekr.20131231102205.4009: *4* @test vc.is_organizer_node
+import leo.core.leoViews as leoViews
+vc = leoViews.ViewController(c)
+for child in p.children():
+    expected = child.h.strip().endswith('True')
+    got = vc.is_organizer_node(child,child)
+    assert expected == got,'expected: %s in: %s body...\n%s' % (
+        expected,child.h,child.b)
+#@+node:ekr.20131231102205.4010: *5* test python True
+@language python
+
+# An organizer node
+
+# Another line.
+#@+node:ekr.20131231102205.4011: *5* test python 2
+@language python
+
+def spam():
+    pass
+#@+node:ekr.20131231102205.4012: *5* test html True
+@language html
+
+<!-- comment -->
+
+<!-- comment
+continued comment
+-->
+
+#@+node:ekr.20131231102205.4013: *5* test html 2
+@language html
+
+<!-- comment -->
+
+<p> oops </p>
+
+<!-- comment
+continued comment
+-->
+
 #@+node:ekr.20131111160618.4261: *3* leoVim
 #@+node:ekr.20131111162157.4276: *4* Unused
 #@+node:ekr.20131111162157.4270: *5* @@test command regex

@@ -4,7 +4,7 @@
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.49" body_secondary_ratio="0.68">
-	<global_window_position top="90" left="367" height="1001" width="1227"/>
+	<global_window_position top="52" left="252" height="1001" width="1227"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -157,6 +157,15 @@
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e382e3671017d71025808000000616e6e6f7461746571037d7104735508302e372e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e372e31342e3671097d710a5808000000616e6e6f74617465710b7d710c735508302e372e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
+</v>
+<v t="ekr.20131231093529.3984"><vh>leoViews.py</vh>
+<v t="ekr.20131231093529.3985"><vh>@test vc.unl</vh></v>
+<v t="ekr.20131231102205.4009"><vh>@test vc.is_organizer_node</vh>
+<v t="ekr.20131231102205.4010"><vh>test python True</vh></v>
+<v t="ekr.20131231102205.4011"><vh>test python 2</vh></v>
+<v t="ekr.20131231102205.4012"><vh>test html True</vh></v>
+<v t="ekr.20131231102205.4013"><vh>test html 2</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -573,7 +582,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="8"></t>
+<t tx="ekr.20070417092935" str_leo_pos="9"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1229,6 +1238,52 @@ w
 char T
 char f
 char t
+</t>
+<t tx="ekr.20131231093529.3984"># Revise when c.viewsController ivar exists.
+</t>
+<t tx="ekr.20131231093529.3985">import leo.core.leoViews as leoViews
+vc = leoViews.ViewController(c)
+unl = vc.unl(p)
+assert unl.endswith('--&gt;'+p.h),repr(unl)
+</t>
+<t tx="ekr.20131231102205.4009">import leo.core.leoViews as leoViews
+vc = leoViews.ViewController(c)
+for child in p.children():
+    expected = child.h.strip().endswith('True')
+    got = vc.is_organizer_node(child,child)
+    assert expected == got,'expected: %s in: %s body...\n%s' % (
+        expected,child.h,child.b)
+</t>
+<t tx="ekr.20131231102205.4010">@language python
+
+# An organizer node
+
+# Another line.
+</t>
+<t tx="ekr.20131231102205.4011">@language python
+
+def spam():
+    pass
+</t>
+<t tx="ekr.20131231102205.4012">@language html
+
+&lt;!-- comment --&gt;
+
+&lt;!-- comment
+continued comment
+--&gt;
+
+</t>
+<t tx="ekr.20131231102205.4013">@language html
+
+&lt;!-- comment --&gt;
+
+&lt;p&gt; oops &lt;/p&gt;
+
+&lt;!-- comment
+continued comment
+--&gt;
+
 </t>
 </tnodes>
 </leo_file>
