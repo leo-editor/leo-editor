@@ -321,7 +321,6 @@ class BookMarkDisplay:
         else:
             self.v = v
         
-        
         self.current = None  # current (last used) bookmark
         self.previous = None  # position in outline, for outline / bookmarks switch
         
@@ -409,7 +408,8 @@ class BookMarkDisplay:
         self.current = bm.v        
         # in case something we didn't see changed the bookmarks
         self.show_list(self.get_list())
-        g.handleUrl(bm.url, c=self.c)
+        if bm.url:
+            g.handleUrl(bm.url, c=self.c)
     #@+node:tbrown.20110712100955.18925: *3* color
     def color(self, text, dark=False):
         """make a consistent light background color for text"""
@@ -560,10 +560,6 @@ class BookMarkDisplay:
                     classes += ['bookmark_children']
                 but.setProperty('style_class', ' '.join(classes))
         
-        print
-        print self.levels
-        # print current_level
-        print self.w.layout().count()
         if self.levels:  # drop excess levels
             to_show = self.levels
             # if self.w.layout().count() > current_level:
