@@ -159,28 +159,28 @@
 <v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e382e3671017d71025808000000616e6e6f7461746571037d7104735508302e372e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e372e31342e3671097d710a5808000000616e6e6f74617465710b7d710c735508302e372e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20131231093529.3984"><vh>leoViews.py</vh>
-<v t="ekr.20140101071946.4016"><vh>@test vc.unl</vh></v>
-<v t="ekr.20140101071946.4017"><vh>@test vc.is_organizer_node</vh>
-<v t="ekr.20140101071946.4018"><vh>test python True</vh></v>
-<v t="ekr.20140101071946.4019"><vh>test python 2</vh></v>
-<v t="ekr.20140101071946.4020"><vh>test html True</vh></v>
-<v t="ekr.20140101071946.4021"><vh>test html 2</vh></v>
+<v t="ekr.20140101091357.4043"><vh>@test vc.unl</vh></v>
+<v t="ekr.20140101091357.4044"><vh>@test vc.is_organizer_node</vh>
+<v t="ekr.20140101091357.4045"><vh>test python True</vh></v>
+<v t="ekr.20140101091357.4046"><vh>test python 2</vh></v>
+<v t="ekr.20140101091357.4047"><vh>test html True</vh></v>
+<v t="ekr.20140101091357.4048"><vh>test html 2</vh></v>
 </v>
-<v t="ekr.20140101071946.4022"><vh>@test vc.find_views_node</vh></v>
-<v t="ekr.20140101071946.4023"><vh>@test vc.find_unl_node</vh>
-<v t="ekr.20140101071946.4024"><vh>node1</vh>
-<v t="ekr.20140101071946.4025"><vh>child11</vh></v>
-<v t="ekr.20140101071946.4026"><vh>child12</vh></v>
+<v t="ekr.20140101091357.4049"><vh>@test vc.find_views_node</vh></v>
+<v t="ekr.20140101091357.4050"><vh>@test vc.find_unl_node</vh>
+<v t="ekr.20140101091357.4051"><vh>node1</vh>
+<v t="ekr.20140101091357.4052"><vh>child11</vh></v>
+<v t="ekr.20140101091357.4053"><vh>child12</vh></v>
 </v>
-<v t="ekr.20140101071946.4027"><vh>node2</vh>
-<v t="ekr.20140101071946.4028"><vh>child21</vh></v>
-<v t="ekr.20140101071946.4029"><vh>child22</vh></v>
+<v t="ekr.20140101091357.4054"><vh>node2</vh>
+<v t="ekr.20140101091357.4055"><vh>child21</vh></v>
+<v t="ekr.20140101091357.4056"><vh>child22</vh></v>
 </v>
 </v>
-<v t="ekr.20140101080930.4018"><vh>@test vc.create_clone_links</vh>
-<v t="ekr.20140101080930.4019"><vh>@clones</vh></v>
-<v t="ekr.20140101080930.4020"><vh>node1</vh></v>
-<v t="ekr.20140101080930.4021"><vh>root</vh></v>
+<v t="ekr.20140101091357.4057"><vh>@test vc.create_clone_links</vh>
+<v t="ekr.20140101091357.4058"><vh>@clones</vh></v>
+<v t="ekr.20140101091357.4059"><vh>node1</vh></v>
+<v t="ekr.20140101091357.4060"><vh>root</vh></v>
 </v>
 </v>
 </vnodes>
@@ -598,7 +598,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="9,4"></t>
+<t tx="ekr.20070417092935" str_leo_pos="9"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1257,31 +1257,29 @@ char t
 </t>
 <t tx="ekr.20131231093529.3984"># Revise when c.viewsController ivar exists.
 </t>
-<t tx="ekr.20140101071946.4016">import leo.core.leoViews as leoViews
-vc = leoViews.ViewController(c)
+<t tx="ekr.20140101091357.4043">vc = c.viewController
 unl = vc.unl(p)
 assert unl.endswith('--&gt;'+p.h),repr(unl)
 </t>
-<t tx="ekr.20140101071946.4017">import leo.core.leoViews as leoViews
-vc = leoViews.ViewController(c)
+<t tx="ekr.20140101091357.4044">vc = c.viewController
 for child in p.children():
     expected = child.h.strip().endswith('True')
     got = vc.is_organizer_node(child,child)
     assert expected == got,'expected: %s in: %s body...\n%s' % (
         expected,child.h,child.b)
 </t>
-<t tx="ekr.20140101071946.4018">@language python
+<t tx="ekr.20140101091357.4045">@language python
 
 # An organizer node
 
 # Another line.
 </t>
-<t tx="ekr.20140101071946.4019">@language python
+<t tx="ekr.20140101091357.4046">@language python
 
 def spam():
     pass
 </t>
-<t tx="ekr.20140101071946.4020">@language html
+<t tx="ekr.20140101091357.4047">@language html
 
 &lt;!-- comment --&gt;
 
@@ -1290,7 +1288,7 @@ continued comment
 --&gt;
 
 </t>
-<t tx="ekr.20140101071946.4021">@language html
+<t tx="ekr.20140101091357.4048">@language html
 
 &lt;!-- comment --&gt;
 
@@ -1301,20 +1299,17 @@ continued comment
 --&gt;
 
 </t>
-<t tx="ekr.20140101071946.4022">import leo.core.leoViews as leoViews
+<t tx="ekr.20140101091357.4049">vc = c.viewController
 tag = '@views'
 assert not g.findNodeAnywhere(c,tag)
-vc = leoViews.ViewController(c)
 views = vc.has_views_node()
 assert not views
 views = vc.find_views_node()
 assert views
 views.doDelete()
 c.redraw()
-assert not g.findNodeAnywhere(c,tag)
-</t>
-<t tx="ekr.20140101071946.4023">import leo.core.leoViews as leoViews
-vc = leoViews.ViewController(c)
+assert not g.findNodeAnywhere(c,tag)</t>
+<t tx="ekr.20140101091357.4050">vc = c.viewController
 parent = p.copy()
 node1 = p.firstChild()
 node2 = node1.next()
@@ -1341,14 +1336,13 @@ for unl,expected in table:
     assert got == expected,'unl: %s expected: %s got: %s' % (
         unl,expected and expected.h,got and got.h)
 </t>
-<t tx="ekr.20140101071946.4024"></t>
-<t tx="ekr.20140101071946.4025"></t>
-<t tx="ekr.20140101071946.4026"></t>
-<t tx="ekr.20140101071946.4027"></t>
-<t tx="ekr.20140101071946.4028"></t>
-<t tx="ekr.20140101071946.4029"></t>
-<t tx="ekr.20140101080930.4018">import leo.core.leoViews as leoViews
-vc = leoViews.ViewController(c)
+<t tx="ekr.20140101091357.4051"></t>
+<t tx="ekr.20140101091357.4052"></t>
+<t tx="ekr.20140101091357.4053"></t>
+<t tx="ekr.20140101091357.4054"></t>
+<t tx="ekr.20140101091357.4055"></t>
+<t tx="ekr.20140101091357.4056"></t>
+<t tx="ekr.20140101091357.4057">vc = c.viewController
 clones = g.findNodeInTree(c,p,'@clones')
 root = g.findNodeInTree(c,p,'root')
 new_node1 = root.insertAsLastChild()
@@ -1364,10 +1358,10 @@ finally:
         root.firstChild().doDelete()
     c.redraw()
 </t>
-<t tx="ekr.20140101080930.4019">gnx: ekr.20140101080226.1886
+<t tx="ekr.20140101091357.4058">gnx: ekr.20140101091223.1884
 unl: node1
 </t>
-<t tx="ekr.20140101080930.4020"></t>
-<t tx="ekr.20140101080930.4021"></t>
+<t tx="ekr.20140101091357.4059"></t>
+<t tx="ekr.20140101091357.4060"></t>
 </tnodes>
 </leo_file>

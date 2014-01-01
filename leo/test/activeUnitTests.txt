@@ -20313,31 +20313,29 @@ g.app.unitTestDict['restoreSelectedNode']=False
 print('\nEnd of leoUndo tests.')
 #@+node:ekr.20131231093529.3984: *3* leoViews.py
 # Revise when c.viewsController ivar exists.
-#@+node:ekr.20140101071946.4016: *4* @test vc.unl
-import leo.core.leoViews as leoViews
-vc = leoViews.ViewController(c)
+#@+node:ekr.20140101091357.4043: *4* @test vc.unl
+vc = c.viewController
 unl = vc.unl(p)
 assert unl.endswith('-->'+p.h),repr(unl)
-#@+node:ekr.20140101071946.4017: *4* @test vc.is_organizer_node
-import leo.core.leoViews as leoViews
-vc = leoViews.ViewController(c)
+#@+node:ekr.20140101091357.4044: *4* @test vc.is_organizer_node
+vc = c.viewController
 for child in p.children():
     expected = child.h.strip().endswith('True')
     got = vc.is_organizer_node(child,child)
     assert expected == got,'expected: %s in: %s body...\n%s' % (
         expected,child.h,child.b)
-#@+node:ekr.20140101071946.4018: *5* test python True
+#@+node:ekr.20140101091357.4045: *5* test python True
 @language python
 
 # An organizer node
 
 # Another line.
-#@+node:ekr.20140101071946.4019: *5* test python 2
+#@+node:ekr.20140101091357.4046: *5* test python 2
 @language python
 
 def spam():
     pass
-#@+node:ekr.20140101071946.4020: *5* test html True
+#@+node:ekr.20140101091357.4047: *5* test html True
 @language html
 
 <!-- comment -->
@@ -20346,7 +20344,7 @@ def spam():
 continued comment
 -->
 
-#@+node:ekr.20140101071946.4021: *5* test html 2
+#@+node:ekr.20140101091357.4048: *5* test html 2
 @language html
 
 <!-- comment -->
@@ -20357,11 +20355,10 @@ continued comment
 continued comment
 -->
 
-#@+node:ekr.20140101071946.4022: *4* @test vc.find_views_node
-import leo.core.leoViews as leoViews
+#@+node:ekr.20140101091357.4049: *4* @test vc.find_views_node
+vc = c.viewController
 tag = '@views'
 assert not g.findNodeAnywhere(c,tag)
-vc = leoViews.ViewController(c)
 views = vc.has_views_node()
 assert not views
 views = vc.find_views_node()
@@ -20369,9 +20366,8 @@ assert views
 views.doDelete()
 c.redraw()
 assert not g.findNodeAnywhere(c,tag)
-#@+node:ekr.20140101071946.4023: *4* @test vc.find_unl_node
-import leo.core.leoViews as leoViews
-vc = leoViews.ViewController(c)
+#@+node:ekr.20140101091357.4050: *4* @test vc.find_unl_node
+vc = c.viewController
 parent = p.copy()
 node1 = p.firstChild()
 node2 = node1.next()
@@ -20397,15 +20393,14 @@ for unl,expected in table:
     got = vc.find_unl_node(parent,unl)
     assert got == expected,'unl: %s expected: %s got: %s' % (
         unl,expected and expected.h,got and got.h)
-#@+node:ekr.20140101071946.4024: *5* node1
-#@+node:ekr.20140101071946.4025: *6* child11
-#@+node:ekr.20140101071946.4026: *6* child12
-#@+node:ekr.20140101071946.4027: *5* node2
-#@+node:ekr.20140101071946.4028: *6* child21
-#@+node:ekr.20140101071946.4029: *6* child22
-#@+node:ekr.20140101080930.4018: *4* @test vc.create_clone_links
-import leo.core.leoViews as leoViews
-vc = leoViews.ViewController(c)
+#@+node:ekr.20140101091357.4051: *5* node1
+#@+node:ekr.20140101091357.4052: *6* child11
+#@+node:ekr.20140101091357.4053: *6* child12
+#@+node:ekr.20140101091357.4054: *5* node2
+#@+node:ekr.20140101091357.4055: *6* child21
+#@+node:ekr.20140101091357.4056: *6* child22
+#@+node:ekr.20140101091357.4057: *4* @test vc.create_clone_links
+vc = c.viewController
 clones = g.findNodeInTree(c,p,'@clones')
 root = g.findNodeInTree(c,p,'root')
 new_node1 = root.insertAsLastChild()
@@ -20420,11 +20415,11 @@ finally:
     while root.hasChildren():
         root.firstChild().doDelete()
     c.redraw()
-#@+node:ekr.20140101080930.4019: *5* @clones
-gnx: ekr.20140101080226.1886
+#@+node:ekr.20140101091357.4058: *5* @clones
+gnx: ekr.20140101091223.1884
 unl: node1
-#@+node:ekr.20140101080930.4020: *5* node1
-#@+node:ekr.20140101080930.4021: *5* root
+#@+node:ekr.20140101091357.4059: *5* node1
+#@+node:ekr.20140101091357.4060: *5* root
 #@+node:ekr.20131111160618.4261: *3* leoVim
 #@+node:ekr.20131111162157.4276: *4* Unused
 #@+node:ekr.20131111162157.4270: *5* @@test command regex
