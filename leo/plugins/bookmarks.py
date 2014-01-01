@@ -698,9 +698,12 @@ class BookMarkDisplay:
     def edit_bookmark(self, bm):
 
         c = bm.v.context
+        self.current = bm.v
+        self.second = False
         p = c.vnode2position(bm.v)
         c.selectPosition(p)
         c.bringToFront()
+        
     #@+node:tbrown.20131227100801.40521: *3* add_child_bookmark
     def add_child_bookmark(self, bm):
         """add_child_bookmark - Add a child bookmark
