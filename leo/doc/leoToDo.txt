@@ -6,22 +6,31 @@
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 
-1. New users, when experimenting with Leo, will basically use the buttons
-  they use in Office/Openoffice, since those are the most widely available
-  data edition tools (Control copy, paste, cut, arrows, enter, delete,
-  etc).
+Release 4.11.1
+    - Create myLeoSettings and workbook automatically if they do not exist.
+    - Add templates to help menu?
 
-2. Bind Ctrl-Arrow keys to outline move operations, regardless of focus.
-
-- Improve p.isVisible: its algorithm is poor.
-
-- Release 4.11.1
-    - Fix IPython code/docs first.
-    - Create files automatically.
+For 4.11.2:
+    - Fix IPython code/docs.
 
 - Look at Eclipse # @name.
+
+- Improve p.isVisible: its algorithm is poor.
 .. @+node:ekr.20131225061403.16375: *3* Support @bookmark-view and @auto-view
+@nocolor-node
+
 - Choosing bookmarks-show with a large tree selected kills performance.
+- view-pack will create sorted list of unl's.
+- view-unpack will sort list of unl's.
+.. @+node:ekr.20131225061403.16377: *4* g.command(view-pack)
+@g.command('view-pack')
+def viewPack(event):
+    c = event.get('c')
+    if not c: return
+    result = [g.unl(p) for p in c.p.self_and_subtree()]
+    # What to do about c.p.b and c.p.h?
+.. @+node:ekr.20131225045014.16398: *3* Fixed problem with 1-character reverse searches!
+The problem was an off-by-one test in regexHelper.
 .. @+node:ekr.20131206064113.16325: *3* Fix new IPython bug
 The c property makes no sense.  Maybe the best solution is to get rid of it and change the docs.
 

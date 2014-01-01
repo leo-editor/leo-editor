@@ -468,6 +468,15 @@ def getOutputNewline (c=None,name=None):
     if g.isPython3:
         s = str(s)
     return s
+#@+node:ekr.20131230090121.16528: *4* g.isDirective
+def isDirective(s):
+    '''Return True if s startswith a directive.'''
+    if s and s[0] == '@':
+        i = g.skip_ws(s,1)
+        j = g.skip_c_id(s,i)
+        return s[i:j] in g.globalDirectiveList
+    else:
+        return False
 #@+node:ekr.20080827175609.52: *4* g.scanAtCommentAndLanguageDirectives
 def scanAtCommentAndAtLanguageDirectives(aList):
 

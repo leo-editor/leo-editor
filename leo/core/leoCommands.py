@@ -127,9 +127,7 @@ class Commands (object):
         return title
     #@+node:ekr.20120217070122.10473: *5* c.initCommandIvars
     def initCommandIvars(self):
-
         '''Init ivars used while executing a command.'''
-
         self.commandsDict = {}
         self.disableCommandsMessage = ''
             # The presence of this message disables all commands.
@@ -143,21 +141,15 @@ class Commands (object):
             # Set by g.openWithFileName.
         self.outlineToNowebDefaultFileName = "noweb.nw"
             # For Outline To Noweb dialog.
-
         # For tangle/untangle
         self.tangle_errors = 0
-
-
         # Default Tangle options
         self.use_header_flag = False
         self.output_doc_flag = False
-
-
         # For hoist/dehoist commands.
         self.hoistStack = []
             # Stack of nodes to be root of drawn tree.
             # Affects drawing routines and find commands.
-
         # For outline navigation.
         self.navPrefix = g.u('') # Must always be a string.
         self.navTime = None
@@ -312,6 +304,7 @@ class Commands (object):
         import leo.core.leoTangle as leoTangle
         import leo.core.leoTest as leoTest
         import leo.core.leoUndo as leoUndo
+        import leo.core.leoViews as leoViews
         import leo.core.leoVim as leoVim
         self.keyHandler = self.k = leoKeys.keyHandlerClass(c)
         self.chapterController  = leoChapters.chapterController(c)
@@ -323,6 +316,7 @@ class Commands (object):
         self.rstCommands        = leoRst.rstCommands(c)
         self.tangleCommands     = leoTangle.tangleCommands(c)
         self.testManager        = leoTest.TestManager(c)
+        self.viewController     = leoViews.ViewController(c)
         self.vimCommands        = leoVim.VimCommands(c)
         self.editCommandsManager = leoEditCommands.EditCommandsManager(c)
         self.editCommandsManager.createEditCommanders()
@@ -339,16 +333,13 @@ class Commands (object):
     __str__ = __repr__
     #@+node:ekr.20050920093543: *4* c.finishCreate & helper
     def finishCreate (self):
-
-        '''Finish creating the commander and all sub-objects.
-
-        This is the last step in the startup process.'''
-
-        # trace = (False or g.trace_startup) and not g.unitTesting
-        # if trace: print('c.finishCreate')
+        '''
+        Finish creating the commander and all sub-objects.
+        This is the last step in the startup process.
+        '''
+        # print('c.finishCreate')
         c = self
         k = c.k
-        # p = c.p
         assert c.gui
         assert k
         c.frame.finishCreate()
@@ -369,7 +360,6 @@ class Commands (object):
         c.frame.log.finishCreate()
         c.undoer.clearUndoState()
             # Menus must exist at this point.
-
         # Do not call chapterController.finishCreate here:
         # It must be called after the first real redraw.
         c.bodyWantsFocus()

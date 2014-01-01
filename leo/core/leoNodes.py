@@ -1531,7 +1531,7 @@ class position (object):
                 done,val = self.checkVisBackLimit(limit,limitIsVisible,p)
                 if done:
                     if trace and verbose: g.trace('done',p)
-                    return p # 2013/12/24: bug fix.
+                    return val # A position or None
                 if p.isVisible(c):
                     if trace and verbose: g.trace('isVisible',p)
                     return p
