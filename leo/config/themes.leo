@@ -11,13 +11,13 @@
 <find_panel_settings/>
 <vnodes>
 <v t="tbrown.20131122094200.3532"><vh>README</vh></v>
-<v t="tbrown.20131201090459.28141"><vh>leo_dark theme 0</vh>
+<v t="tbrown.20131201090459.28141" a="E"><vh>leo_dark theme 0</vh>
 <v t="tbrown.20131201090459.28142"><vh>README</vh></v>
 <v t="tbrown.20131201090459.28143"><vh>README - theme developers</vh></v>
 <v t="tbrown.20131201090459.28144"><vh>@string color_theme = leo_dark_0</vh></v>
 <v t="tbrown.20131201090459.28145"><vh>@bool color_theme_is_dark = True</vh></v>
 <v t="tbrown.20131201090459.28146"><vh>@bk config 2013-11-20 12:14:30</vh></v>
-<v t="tbrown.20131201090459.28147"><vh>Settings for theme</vh>
+<v t="tbrown.20131201090459.28147" a="E"><vh>Settings for theme</vh>
 <v t="tbrown.20131201090459.28148"><vh>definitions</vh>
 <v t="tbrown.20131201090459.28149"><vh>@color solarized-base03 = #002b36</vh></v>
 <v t="tbrown.20131201090459.28150"><vh>@color solarized-base02 = #073642</vh></v>
@@ -75,8 +75,13 @@
 <v t="tbrown.20131201090459.28198"><vh>@string bg-gradient = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @text-background-bright, stop:0.4 @text-background, stop:0.6 @text-background, stop:0.9 @text-background-bright)</vh></v>
 <v t="tbrown.20131201090459.28199"><vh>@string bg-gradient-hover = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @solarized-base00, stop:0.4 @solarized-base0, stop:0.6 @solarized-base0, stop:0.9 @solarized-base00)</vh></v>
 </v>
+<v t="tbrown.20140101133500.23151" a="E"><vh>Plugins</vh>
+<v t="tbrown.20140101133500.23152" a="E"><vh>bookmarks</vh>
+<v t="tbrown.20140101133500.23154"><vh>@color bookmarks_current_color = @solarized-orange</vh></v>
 </v>
-<v t="tbrown.20131201090459.28200"><vh>stylesheet &amp; source</vh>
+</v>
+</v>
+<v t="tbrown.20131201090459.28200" a="E"><vh>stylesheet &amp; source</vh>
 <v t="tbrown.20131201090459.28201"><vh>Color styles</vh>
 <v t="tbrown.20131201090459.28202"><vh>base</vh></v>
 <v t="tbrown.20131201090459.28203"><vh>body editor</vh></v>
@@ -103,8 +108,11 @@
 <v t="tbrown.20131201090459.28223"><vh>log</vh></v>
 <v t="tbrown.20131201090459.28224"><vh>mini-buffer &amp; status</vh></v>
 </v>
+<v t="tbrown.20140101133500.23149" a="E"><vh>Plugin styles</vh>
+<v t="tbrown.20140101133500.23150"><vh>bookmarks</vh></v>
+</v>
 <v t="tbrown.20131201090459.28225"><vh>@ignore Spare parts</vh></v>
-<v t="tbrown.20131201090459.28226"><vh>@data qt-gui-plugin-style-sheet</vh></v>
+<v t="tbrown.20140101213756.23161"><vh>@data qt-gui-plugin-style-sheet</vh></v>
 </v>
 <v t="tbrown.20131201090459.28227"><vh>Solarized colorizing settings</vh>
 <v t="tbrown.20131201090459.28228"><vh>Solarized colors (Reference)</vh></v>
@@ -2043,7 +2051,7 @@ than none, below.  'solid' works.</t>
 
 cp = g.findNodeInTree(
     c,
-    g.findNodeAnywhere(c, '@settings'),
+    g.findNodeAnywhere(c, 'leo_dark theme 0'),
     'stylesheet &amp; source',
 )
 #X cp = c.p
@@ -2370,13 +2378,217 @@ XXQMenuBar {
 }
 
 *[name~='preview'] { color: green; }</t>
-<t tx="tbrown.20131201090459.28226">/*
+<t tx="tbrown.20131201090459.28227">Use these settings to get something like the solarized colors.</t>
+<t tx="tbrown.20131201090459.28228">base03    #002b36  8/4 brblack  234 #1c1c1c 15 -12 -12   0  43  54 193 100  21
+base02    #073642  0/4 black    235 #262626 20 -12 -12   7  54  66 192  90  26
+base01    #586e75 10/7 brgreen  240 #585858 45 -07 -07  88 110 117 194  25  46
+base00    #657b83 11/7 bryellow 241 #626262 50 -07 -07 101 123 131 195  23  51
+base0     #839496 12/6 brblue   244 #808080 60 -06 -03 131 148 150 186  13  59
+base1     #93a1a1 14/4 brcyan   245 #8a8a8a 65 -05 -02 147 161 161 180   9  63
+base2     #eee8d5  7/7 white    254 #e4e4e4 92 -00  10 238 232 213  44  11  93
+base3     #fdf6e3 15/7 brwhite  230 #ffffd7 97  00  10 253 246 227  44  10  99
+
+# These can be used as usual, in *both* light and dark
+
+yellow    #b58900  3/3 yellow   136 #af8700 60  10  65 181 137   0  45 100  71
+orange    #cb4b16  9/3 brred    166 #d75f00 50  50  55 203  75  22  18  89  80
+red       #dc322f  1/1 red      160 #d70000 50  65  45 220  50  47   1  79  86
+magenta   #d33682  5/5 magenta  125 #af005f 50  65 -05 211  54 130 331  74  83
+violet    #6c71c4 13/5 brmagenta 61 #5f5faf 50  15 -45 108 113 196 237  45  77
+blue      #268bd2  4/4 blue      33 #0087ff 55 -10 -45  38 139 210 205  82  82
+cyan      #2aa198  6/6 cyan      37 #00afaf 60 -35 -05  42 161 152 175  74  63
+green     #859900  2/2 green     64 #5f8700 60 -20  65 133 153   0  68 100  60
+
+Dark
+====
+
+    base1 optional emphasized content (keywords)
+  * base0 default (body text)
+    
+    base01 comments
+    base02 background highlights (selected background)
+  * base03 background
+    
+Light
+=====
+
+    base01 optional emphasized content (keywords)
+  * base00 default (body text)
+    base1 comments
+    base2 background highlights (selected background)
+  * base3 background
+</t>
+<t tx="tbrown.20131201090459.28229"></t>
+<t tx="tbrown.20131201090459.28230"></t>
+<t tx="tbrown.20131201090459.28231"></t>
+<t tx="tbrown.20131201090459.28232"></t>
+<t tx="tbrown.20131201090459.28233">was blue
+
+Solarized blue      #268bd2</t>
+<t tx="tbrown.20131201090459.28234">was blue
+
+Solarized blue      #268bd2</t>
+<t tx="tbrown.20131201090459.28235">was blue
+
+Solarized blue      #268bd2</t>
+<t tx="tbrown.20131201090459.28236">was blue
+
+Solarized blue      #268bd2</t>
+<t tx="tbrown.20131201090459.28237">was #00aa00 (Idle comment green)
+
+Solarize green      #859900
+Solarized cyan      #2aa198
+Solarized violet    #6c71c4
+Solarized orange    #cb4b16</t>
+<t tx="tbrown.20131201090459.28238"></t>
+<t tx="tbrown.20131201090459.28239"></t>
+<t tx="tbrown.20131201090459.28240"></t>
+<t tx="tbrown.20131201090459.28241">was black</t>
+<t tx="tbrown.20131201090459.28242">was firebrick3
+
+Solarized colors:
+    
+magenta   #d33682
+
+Dark comments   base01
+Light comments  base1 comments
+</t>
+<t tx="tbrown.20131201090459.28243"></t>
+<t tx="tbrown.20131201090459.28244"></t>
+<t tx="tbrown.20131201090459.28245"></t>
+<t tx="tbrown.20131201090459.28246"></t>
+<t tx="tbrown.20131201090459.28247"></t>
+<t tx="tbrown.20131201090459.28248"></t>
+<t tx="tbrown.20131201090459.28249">Background color of body text.  This setting *is* used in the QtGui.
+
+#ffecea
+
+Note: this setting can be overridden by the x_mode_bg_color settings.</t>
+<t tx="tbrown.20131201090459.28250">#f9f0f4 light pink
+#fbfdfd very light blue
+
+For some reason, colors in the text widget do not match the colors in the canvas widget.</t>
+<t tx="tbrown.20131201090459.28251"></t>
+<t tx="tbrown.20131201090459.28252">Foreground color of body text.  This setting *is* used in the QtGui.
+
+Note: this setting can be overridden by the x_mode_fg_color settings.</t>
+<t tx="tbrown.20131201090459.28253">Overrides body_text_background_color.
+
+#fdf5f5 A light pink.
+#f0fde1 A light green.
+#f9e6dd A light orange.</t>
+<t tx="tbrown.20131201090459.28254">Overrides body_text_foreground_color.</t>
+<t tx="tbrown.20131201090459.28255"></t>
+<t tx="tbrown.20131201090459.28256">Background color of unselected headline text.
+
+LavenderBlush1</t>
+<t tx="tbrown.20131201090459.28257">Foreground color of unselected headline text.</t>
+<t tx="tbrown.20131201090459.28258">Background color of selected headline text that is not being edited.
+
+LavenderBlush2</t>
+<t tx="tbrown.20131201090459.28259">Foreground color of selected headline text that is not being edited.
+
+DodgerBlue4</t>
+<t tx="tbrown.20131201090459.28260">Background color of unselected headline text in a headline that is being edited.
+
+Foreground color must also be specified for either setting to take effect.</t>
+<t tx="tbrown.20131201090459.28261">Foreground color of unselected headline text in a headline that is being edited.
+
+Background color must also be specified for either setting to take effect.</t>
+<t tx="tbrown.20131201090459.28262">Foreground color of selected text headline text in a headline that is being edited.
+
+Background must also be specified for either setting to take effect.</t>
+<t tx="tbrown.20131201090459.28263">Background color of selected text headline text in a headline that is being edited.
+
+Foreground must also be specified for either setting to take effect.</t>
+<t tx="tbrown.20131201090459.28264">Background color of outline pane itself.
+
+LavenderBlush1
+#ffffe1 # a little too yellow.
+#ffffec
+LightSteelBlue1 # Good for testing.</t>
+<t tx="tbrown.20131201090459.28265"></t>
+<t tx="tbrown.20131201090459.28266">LightYellow1
+
+#f2fdff</t>
+<t tx="tbrown.20131201090459.28267">#d6c7d3
+#d2cad0
+#c6d3d7</t>
+<t tx="tbrown.20131201090459.28268">#d6c7d3
+#d2cad0
+#c6d3d7
+#ffffec # Same as outline.</t>
+<t tx="tbrown.20131201090459.28269"></t>
+<t tx="tbrown.20131201090459.28270"># this @button script should be included in any file containing @settings
+# and being used to set styles related to appearance
+
+# remember where we are
+current_v = c.p.v
+
+if c.font_size_delta:
+    # doesn't make a lot of sense to edit font size settings while
+    # font zooming is in effect
+    g.es("NOTE: font size adjustment currently %+d"%c.font_size_delta)
+
+# first, rebuild the stylesheet template from the tree, if
+# the stylesheet source is in tree form, .e.g. dark themes, currently the
+# default light theme uses a single @data qt-gui-plugin-style-sheet node
+nd = g.findNodeAnywhere(c, '@settings')
+if nd:
+    nd = g.findNodeInTree(c, nd, 'stylesheet &amp; source')
+if nd:
+    c.selectPosition(nd)  # needs to be the selected node
+    exec(g.findTestScript(c,'stylesheet &amp; source', where='@settings'))
+    # this executes the node `nd`, finding it a second time
+
+# then, reload settings from this file
+shortcuts, settings = g.app.loadManager.createSettingsDicts(c, True)
+c.config.settingsDict.update(settings)
+
+# apply the stylesheet
+c.frame.top.setStyleSheets()
+
+# go back where we started
+c.selectPosition(c.vnode2position(current_v))
+</t>
+<t tx="tbrown.20140101133500.23149"></t>
+<t tx="tbrown.20140101133500.23150">/* bookmarks plugin styling */
+#show_bookmarks QPushButton { 
+    margin: 0; padding: 1; border: none;
+    font-size: @bookmarks_base_size;
+    color: @bookmarks_base_color;
+    font-weight: @bookmarks_base_weight;
+    text-decoration: @bookmarks_base_decoration;
+}
+QPushButton[style_class~='bookmark_current'] {
+    font-size: @bookmarks_current_size;
+    color: @bookmarks_current_color;
+    font-weight: @bookmarks_current_weight;
+    text-decoration: @bookmarks_current_decoration;
+}
+QPushButton[style_class~='bookmark_expanded'] {
+    font-size: @bookmarks_expanded_size;
+    color: @bookmarks_expanded_color;
+    font-weight: @bookmarks_expanded_weight;
+    text-decoration: @bookmarks_expanded_decoration;
+}
+QPushButton[style_class~='bookmark_children'] {
+    font-size: @bookmarks_children_size;
+    color: @bookmarks_children_color;
+    font-weight: @bookmarks_children_weight;
+    text-decoration: @bookmarks_children_decoration;
+}
+</t>
+<t tx="tbrown.20140101133500.23151"></t>
+<t tx="tbrown.20140101133500.23152"></t>
+<t tx="tbrown.20140101133500.23154"></t>
+<t tx="tbrown.20140101213756.23161">/*
   DON'T EDIT THIS, EDIT THE OTHER NODES UNDER 'stylesheet &amp; source'
   AND RECREATE THIS BY SELECTING 'stylesheet &amp; source' AND USING CTRL-B
 
   AUTOMATICALLY GENERATED FROM:
-  file:///home/tbrown/.leo/myLeoSettings.leo#@settings--&gt;leo_dark%20theme%200--&gt;stylesheet%20&amp;%20source
-  2013-12-01 14:00
+  file:///mnt/usr1/usr1/home/tbrown/Package/leo/bzr/leo.repo/trunk/leo/config/themes.leo#leo_dark%20theme%200--&gt;stylesheet%20&amp;%20source
+  2014-01-01 21:40
 */
 
 /*### Color styles ##########################################################*/
@@ -2615,179 +2827,37 @@ QLineEdit#status2 {
     border-style: solid;
 }
 
-</t>
-<t tx="tbrown.20131201090459.28227">Use these settings to get something like the solarized colors.</t>
-<t tx="tbrown.20131201090459.28228">base03    #002b36  8/4 brblack  234 #1c1c1c 15 -12 -12   0  43  54 193 100  21
-base02    #073642  0/4 black    235 #262626 20 -12 -12   7  54  66 192  90  26
-base01    #586e75 10/7 brgreen  240 #585858 45 -07 -07  88 110 117 194  25  46
-base00    #657b83 11/7 bryellow 241 #626262 50 -07 -07 101 123 131 195  23  51
-base0     #839496 12/6 brblue   244 #808080 60 -06 -03 131 148 150 186  13  59
-base1     #93a1a1 14/4 brcyan   245 #8a8a8a 65 -05 -02 147 161 161 180   9  63
-base2     #eee8d5  7/7 white    254 #e4e4e4 92 -00  10 238 232 213  44  11  93
-base3     #fdf6e3 15/7 brwhite  230 #ffffd7 97  00  10 253 246 227  44  10  99
+/*### Plugin styles #########################################################*/
 
-# These can be used as usual, in *both* light and dark
 
-yellow    #b58900  3/3 yellow   136 #af8700 60  10  65 181 137   0  45 100  71
-orange    #cb4b16  9/3 brred    166 #d75f00 50  50  55 203  75  22  18  89  80
-red       #dc322f  1/1 red      160 #d70000 50  65  45 220  50  47   1  79  86
-magenta   #d33682  5/5 magenta  125 #af005f 50  65 -05 211  54 130 331  74  83
-violet    #6c71c4 13/5 brmagenta 61 #5f5faf 50  15 -45 108 113 196 237  45  77
-blue      #268bd2  4/4 blue      33 #0087ff 55 -10 -45  38 139 210 205  82  82
-cyan      #2aa198  6/6 cyan      37 #00afaf 60 -35 -05  42 161 152 175  74  63
-green     #859900  2/2 green     64 #5f8700 60 -20  65 133 153   0  68 100  60
+/*### Plugin styles--&gt;bookmarks #############################################*/
+/* bookmarks plugin styling */
+#show_bookmarks QPushButton { 
+    margin: 0; padding: 1; border: none;
+    font-size: @bookmarks_base_size;
+    color: @bookmarks_base_color;
+    font-weight: @bookmarks_base_weight;
+    text-decoration: @bookmarks_base_decoration;
+}
+QPushButton[style_class~='bookmark_current'] {
+    font-size: @bookmarks_current_size;
+    color: @bookmarks_current_color;
+    font-weight: @bookmarks_current_weight;
+    text-decoration: @bookmarks_current_decoration;
+}
+QPushButton[style_class~='bookmark_expanded'] {
+    font-size: @bookmarks_expanded_size;
+    color: @bookmarks_expanded_color;
+    font-weight: @bookmarks_expanded_weight;
+    text-decoration: @bookmarks_expanded_decoration;
+}
+QPushButton[style_class~='bookmark_children'] {
+    font-size: @bookmarks_children_size;
+    color: @bookmarks_children_color;
+    font-weight: @bookmarks_children_weight;
+    text-decoration: @bookmarks_children_decoration;
+}
 
-Dark
-====
-
-    base1 optional emphasized content (keywords)
-  * base0 default (body text)
-    
-    base01 comments
-    base02 background highlights (selected background)
-  * base03 background
-    
-Light
-=====
-
-    base01 optional emphasized content (keywords)
-  * base00 default (body text)
-    base1 comments
-    base2 background highlights (selected background)
-  * base3 background
-</t>
-<t tx="tbrown.20131201090459.28229"></t>
-<t tx="tbrown.20131201090459.28230"></t>
-<t tx="tbrown.20131201090459.28231"></t>
-<t tx="tbrown.20131201090459.28232"></t>
-<t tx="tbrown.20131201090459.28233">was blue
-
-Solarized blue      #268bd2</t>
-<t tx="tbrown.20131201090459.28234">was blue
-
-Solarized blue      #268bd2</t>
-<t tx="tbrown.20131201090459.28235">was blue
-
-Solarized blue      #268bd2</t>
-<t tx="tbrown.20131201090459.28236">was blue
-
-Solarized blue      #268bd2</t>
-<t tx="tbrown.20131201090459.28237">was #00aa00 (Idle comment green)
-
-Solarize green      #859900
-Solarized cyan      #2aa198
-Solarized violet    #6c71c4
-Solarized orange    #cb4b16</t>
-<t tx="tbrown.20131201090459.28238"></t>
-<t tx="tbrown.20131201090459.28239"></t>
-<t tx="tbrown.20131201090459.28240"></t>
-<t tx="tbrown.20131201090459.28241">was black</t>
-<t tx="tbrown.20131201090459.28242">was firebrick3
-
-Solarized colors:
-    
-magenta   #d33682
-
-Dark comments   base01
-Light comments  base1 comments
-</t>
-<t tx="tbrown.20131201090459.28243"></t>
-<t tx="tbrown.20131201090459.28244"></t>
-<t tx="tbrown.20131201090459.28245"></t>
-<t tx="tbrown.20131201090459.28246"></t>
-<t tx="tbrown.20131201090459.28247"></t>
-<t tx="tbrown.20131201090459.28248"></t>
-<t tx="tbrown.20131201090459.28249">Background color of body text.  This setting *is* used in the QtGui.
-
-#ffecea
-
-Note: this setting can be overridden by the x_mode_bg_color settings.</t>
-<t tx="tbrown.20131201090459.28250">#f9f0f4 light pink
-#fbfdfd very light blue
-
-For some reason, colors in the text widget do not match the colors in the canvas widget.</t>
-<t tx="tbrown.20131201090459.28251"></t>
-<t tx="tbrown.20131201090459.28252">Foreground color of body text.  This setting *is* used in the QtGui.
-
-Note: this setting can be overridden by the x_mode_fg_color settings.</t>
-<t tx="tbrown.20131201090459.28253">Overrides body_text_background_color.
-
-#fdf5f5 A light pink.
-#f0fde1 A light green.
-#f9e6dd A light orange.</t>
-<t tx="tbrown.20131201090459.28254">Overrides body_text_foreground_color.</t>
-<t tx="tbrown.20131201090459.28255"></t>
-<t tx="tbrown.20131201090459.28256">Background color of unselected headline text.
-
-LavenderBlush1</t>
-<t tx="tbrown.20131201090459.28257">Foreground color of unselected headline text.</t>
-<t tx="tbrown.20131201090459.28258">Background color of selected headline text that is not being edited.
-
-LavenderBlush2</t>
-<t tx="tbrown.20131201090459.28259">Foreground color of selected headline text that is not being edited.
-
-DodgerBlue4</t>
-<t tx="tbrown.20131201090459.28260">Background color of unselected headline text in a headline that is being edited.
-
-Foreground color must also be specified for either setting to take effect.</t>
-<t tx="tbrown.20131201090459.28261">Foreground color of unselected headline text in a headline that is being edited.
-
-Background color must also be specified for either setting to take effect.</t>
-<t tx="tbrown.20131201090459.28262">Foreground color of selected text headline text in a headline that is being edited.
-
-Background must also be specified for either setting to take effect.</t>
-<t tx="tbrown.20131201090459.28263">Background color of selected text headline text in a headline that is being edited.
-
-Foreground must also be specified for either setting to take effect.</t>
-<t tx="tbrown.20131201090459.28264">Background color of outline pane itself.
-
-LavenderBlush1
-#ffffe1 # a little too yellow.
-#ffffec
-LightSteelBlue1 # Good for testing.</t>
-<t tx="tbrown.20131201090459.28265"></t>
-<t tx="tbrown.20131201090459.28266">LightYellow1
-
-#f2fdff</t>
-<t tx="tbrown.20131201090459.28267">#d6c7d3
-#d2cad0
-#c6d3d7</t>
-<t tx="tbrown.20131201090459.28268">#d6c7d3
-#d2cad0
-#c6d3d7
-#ffffec # Same as outline.</t>
-<t tx="tbrown.20131201090459.28269"></t>
-<t tx="tbrown.20131201090459.28270"># this @button script should be included in any file containing @settings
-# and being used to set styles related to appearance
-
-# remember where we are
-current_v = c.p.v
-
-if c.font_size_delta:
-    # doesn't make a lot of sense to edit font size settings while
-    # font zooming is in effect
-    g.es("NOTE: font size adjustment currently %+d"%c.font_size_delta)
-
-# first, rebuild the stylesheet template from the tree, if
-# the stylesheet source is in tree form, .e.g. dark themes, currently the
-# default light theme uses a single @data qt-gui-plugin-style-sheet node
-nd = g.findNodeAnywhere(c, '@settings')
-if nd:
-    nd = g.findNodeInTree(c, nd, 'stylesheet &amp; source')
-if nd:
-    c.selectPosition(nd)  # needs to be the selected node
-    exec(g.findTestScript(c,'stylesheet &amp; source', where='@settings'))
-    # this executes the node `nd`, finding it a second time
-
-# then, reload settings from this file
-shortcuts, settings = g.app.loadManager.createSettingsDicts(c, True)
-c.config.settingsDict.update(settings)
-
-# apply the stylesheet
-c.frame.top.setStyleSheets()
-
-# go back where we started
-c.selectPosition(c.vnode2position(current_v))
 </t>
 </tnodes>
 </leo_file>

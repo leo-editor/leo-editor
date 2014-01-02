@@ -610,9 +610,9 @@ class quickMove(object):
 
         g.es('Moved to parent')
     #@+node:tbrown.20110914094319.18255: *3* to_other
-    def to_other(self, c2, op=None, cut=False):
-        """Copy/Move(cut == True) p from self.c to c2 at quickmove node op,
-        or top of outline if op == None.  c2 may be self.c.
+    def to_other(self, c2, cut=False):
+        """Copy/Move(cut == True) p from self.c to c2 at quickmove node,
+        or top of outline.  c2 may be self.c., *OR AN UNL* - see unl_to_pos()
         """
 
         p = self.c.p
@@ -644,14 +644,19 @@ class quickMove(object):
         self.c.bringToFront(c2=self.c)
         self.c.redraw()  # must come second to keep focus
     #@+node:tbrown.20120104084659.21948: *3* bookmark_other
-    def bookmark_other(self, c2, op=None):
-        """Bookmark p from self.c to c2 at quickmove node op,
-        or top of outline if op == None.  c2 may be self.c.
+    def bookmark_other(self, c2):
+        """Bookmark p from self.c to c2 at quickmove node,
+        or c.db['_leo_bookmarks_show'] or top of
+        outline.  c2 may be self.c, *OR AN UNL* - see unl_to_pos()
         """
         
         p = self.c.p
         
         p_v = p.v  # p may be invalid by the time we want to use it
+        
+        if isinstance(c2, self.c.__class__):  # i.e. an outline
+            if '_leo_bookmarks_show' in c2.db:
+                c2 = c2.db['_leo_bookmarks_show']
         
         c2, nd = self.unl_to_pos(c2, p, bookmark=True)
         

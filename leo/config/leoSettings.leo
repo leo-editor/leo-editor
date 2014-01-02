@@ -94,7 +94,7 @@
 <v t="ekr.20041120155431.2"><vh>\@type type-name: script: script-name</vh></v>
 </v>
 <v t="ekr.20061011082224"><vh>About myLeoSettings.leo</vh></v>
-<v t="ekr.20041119034357.1"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
 <v t="ekr.20130924110246.13745"><vh>@bool scripting-abbreviations = False</vh></v>
@@ -1011,7 +1011,7 @@
 <v t="ekr.20060807103220.10"><vh>@bool datenodes_year_node_omit_saturdays = True</vh></v>
 <v t="ekr.20060807103220.11"><vh>@bool datenodes_year_node_omit_sundays = True</vh></v>
 </v>
-<v t="ekr.20100907092300.6957"><vh>Inkscape options</vh>
+<v t="ekr.20100907092300.6957" a="E"><vh>Inkscape options</vh>
 <v t="ekr.20100907092300.6958"><vh>@string inkscape-template = ../docs/inkscape-template.svg</vh></v>
 <v t="ekr.20100907092300.6959"><vh>@string inkscape-bin = "c:\Program Files (x86)\Inkscape\inkscape.exe"</vh></v>
 </v>
@@ -1142,7 +1142,7 @@
 <v t="ekr.20060904211808.1"><vh>@string zodb_storage_file = c:\prog\zopeTemp\leo.fs</vh></v>
 </v>
 </v>
-<v t="ekr.20131119143342.18879"><vh>Qt Gui (appearance)</vh>
+<v t="ekr.20131119143342.18879" a="E"><vh>Qt Gui (appearance)</vh>
 <v t="tbrown.20131122091143.23828"><vh>Color definitions</vh>
 <v t="tbrown.20131122091143.23830"><vh>@color MistyRose1 = #FFE4E1</vh></v>
 <v t="tbrown.20131122091143.23831"><vh>@color LightSteelBlue1 = #CAE1FF</vh></v>
@@ -1172,6 +1172,27 @@
 <v t="tbrown.20131122094200.2512"><vh>@string font-size-body = @font-size</vh></v>
 <v t="tbrown.20131122094200.2514"><vh>@string font-size-tree = @font-size</vh></v>
 <v t="tbrown.20131122094200.2517"><vh>@string font-size-log = @font-size</vh></v>
+</v>
+<v t="tbrown.20140101093550.22678" a="E"><vh>Plugins</vh>
+<v t="tbrown.20140101093550.22679" a="E"><vh>bookmarks</vh>
+<v t="tbrown.20140101093550.25173"><vh>@string bookmarks_font_size = 10pt;</vh></v>
+<v t="tbrown.20140101093550.25165"><vh>@string bookmarks_base_size = @bookmarks_font_size</vh></v>
+<v t="tbrown.20140101093550.25136"><vh>@color bookmarks_base_color = @text-foreground</vh></v>
+<v t="tbrown.20140101093550.25138"><vh>@string bookmarks_base_weight = regular</vh></v>
+<v t="tbrown.20140101093550.25140"><vh>@string bookmarks_base_decoration = none</vh></v>
+<v t="tbrown.20140101093550.25167"><vh>@string bookmarks_current_size = @bookmarks_font_size</vh></v>
+<v t="tbrown.20140101093550.25146"><vh>@color bookmarks_current_color = blue</vh></v>
+<v t="tbrown.20140101093550.25147"><vh>@string bookmarks_current_weight = bold</vh></v>
+<v t="tbrown.20140101093550.25148"><vh>@string bookmarks_current_decoration = auto</vh></v>
+<v t="tbrown.20140101093550.25169"><vh>@string bookmarks_expanded_size = @bookmarks_font_size</vh></v>
+<v t="tbrown.20140101093550.25154"><vh>@color bookmarks_expanded_color = @text-foreground</vh></v>
+<v t="tbrown.20140101093550.25155"><vh>@string bookmarks_expanded_weight = bold</vh></v>
+<v t="tbrown.20140101093550.25156"><vh>@string bookmarks_expanded_decoration = underline</vh></v>
+<v t="tbrown.20140101093550.25171"><vh>@string bookmarks_children_size = @bookmarks_font_size</vh></v>
+<v t="tbrown.20140101093550.25162"><vh>@color bookmarks_children_color = @text-foreground</vh></v>
+<v t="tbrown.20140101093550.25163"><vh>@string bookmarks_children_weight = regular</vh></v>
+<v t="tbrown.20140101093550.25164"><vh>@string bookmarks_children_decoration = underline</vh></v>
+</v>
 </v>
 <v t="ekr.20131115092802.18224"><vh>@data qt-gui-plugin-style-sheet</vh></v>
 <v t="ekr.20100507153425.8304"><vh>@string qt-toolbar-location=top</vh></v>
@@ -5362,6 +5383,34 @@ QTextEdit:focus#log-widget, LeoQTreeWidget:focus#treeWidget, QTextEdit:focus#ric
   border-width: @focused-border-width; 
   border-color: @focused-border-focus-color; 
 }
+
+/* bookmarks plugin styling */
+#show_bookmarks QPushButton { 
+    margin: 0; padding: 1; border: none;
+    font-size: @bookmarks_base_size;
+    color: @bookmarks_base_color;
+    font-weight: @bookmarks_base_weight;
+    text-decoration: @bookmarks_base_decoration;
+}
+QPushButton[style_class~='bookmark_current'] {
+    font-size: @bookmarks_current_size;
+    color: @bookmarks_current_color;
+    font-weight: @bookmarks_current_weight;
+    text-decoration: @bookmarks_current_decoration;
+}
+QPushButton[style_class~='bookmark_expanded'] {
+    font-size: @bookmarks_expanded_size;
+    color: @bookmarks_expanded_color;
+    font-weight: @bookmarks_expanded_weight;
+    text-decoration: @bookmarks_expanded_decoration;
+}
+QPushButton[style_class~='bookmark_children'] {
+    font-size: @bookmarks_children_size;
+    color: @bookmarks_children_color;
+    font-weight: @bookmarks_children_weight;
+    text-decoration: @bookmarks_children_decoration;
+}
+
 </t>
 <t tx="ekr.20131119143342.18879">This is the "default" theme.</t>
 <t tx="ekr.20131119143342.20107">True: start-find command puts focus in minibuffer.
@@ -6324,6 +6373,36 @@ apparently this only works when there's no stylesheet, so probably not at all no
 <t tx="tbrown.20131122104251.2538"></t>
 <t tx="tbrown.20131122104251.2539"></t>
 <t tx="tbrown.20131122104251.2540"></t>
+<t tx="tbrown.20140101093550.22678"></t>
+<t tx="tbrown.20140101093550.22679">Style settings for the bookmarks plugin, these control
+font size / weight / foreground / underline in four different
+cases:
+
+base
+  General settings
+current
+  Style for the 'current' bookmark
+expanded
+  Style for a bookmark whose children are shown
+children
+  Style for a bookmark which has children</t>
+<t tx="tbrown.20140101093550.25136"></t>
+<t tx="tbrown.20140101093550.25138">bold or regular</t>
+<t tx="tbrown.20140101093550.25140">none or underline</t>
+<t tx="tbrown.20140101093550.25146"></t>
+<t tx="tbrown.20140101093550.25147">bold or regular</t>
+<t tx="tbrown.20140101093550.25148">none or underline</t>
+<t tx="tbrown.20140101093550.25154"></t>
+<t tx="tbrown.20140101093550.25155">bold or regular</t>
+<t tx="tbrown.20140101093550.25156">none or underline</t>
+<t tx="tbrown.20140101093550.25162"></t>
+<t tx="tbrown.20140101093550.25163">bold or regular</t>
+<t tx="tbrown.20140101093550.25164">none or underline</t>
+<t tx="tbrown.20140101093550.25165"></t>
+<t tx="tbrown.20140101093550.25167"></t>
+<t tx="tbrown.20140101093550.25169"></t>
+<t tx="tbrown.20140101093550.25171"></t>
+<t tx="tbrown.20140101093550.25173"></t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 # cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,
