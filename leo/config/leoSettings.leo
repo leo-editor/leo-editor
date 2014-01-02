@@ -5388,7 +5388,7 @@ QTextEdit:focus#log-widget, LeoQTreeWidget:focus#treeWidget, QTextEdit:focus#ric
 }
 
 /* bookmarks plugin styling */
-#show_bookmarks QPushButton { 
+QWidget#show_bookmarks QPushButton { 
     margin: 0; padding: 1; border: none;
     font-size: @bookmarks_base_size;
     color: @bookmarks_base_color;

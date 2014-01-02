@@ -11,13 +11,13 @@
 <find_panel_settings/>
 <vnodes>
 <v t="tbrown.20131122094200.3532"><vh>README</vh></v>
-<v t="tbrown.20131201090459.28141" a="E"><vh>leo_dark theme 0</vh>
+<v t="tbrown.20131201090459.28141"><vh>leo_dark theme 0</vh>
 <v t="tbrown.20131201090459.28142"><vh>README</vh></v>
 <v t="tbrown.20131201090459.28143"><vh>README - theme developers</vh></v>
 <v t="tbrown.20131201090459.28144"><vh>@string color_theme = leo_dark_0</vh></v>
 <v t="tbrown.20131201090459.28145"><vh>@bool color_theme_is_dark = True</vh></v>
 <v t="tbrown.20131201090459.28146"><vh>@bk config 2013-11-20 12:14:30</vh></v>
-<v t="tbrown.20131201090459.28147" a="E"><vh>Settings for theme</vh>
+<v t="tbrown.20131201090459.28147"><vh>Settings for theme</vh>
 <v t="tbrown.20131201090459.28148"><vh>definitions</vh>
 <v t="tbrown.20131201090459.28149"><vh>@color solarized-base03 = #002b36</vh></v>
 <v t="tbrown.20131201090459.28150"><vh>@color solarized-base02 = #073642</vh></v>
@@ -75,13 +75,13 @@
 <v t="tbrown.20131201090459.28198"><vh>@string bg-gradient = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @text-background-bright, stop:0.4 @text-background, stop:0.6 @text-background, stop:0.9 @text-background-bright)</vh></v>
 <v t="tbrown.20131201090459.28199"><vh>@string bg-gradient-hover = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @solarized-base00, stop:0.4 @solarized-base0, stop:0.6 @solarized-base0, stop:0.9 @solarized-base00)</vh></v>
 </v>
-<v t="tbrown.20140101133500.23151" a="E"><vh>Plugins</vh>
-<v t="tbrown.20140101133500.23152" a="E"><vh>bookmarks</vh>
+<v t="tbrown.20140101133500.23151"><vh>Plugins</vh>
+<v t="tbrown.20140101133500.23152"><vh>bookmarks</vh>
 <v t="tbrown.20140101133500.23154"><vh>@color bookmarks_current_color = @solarized-orange</vh></v>
 </v>
 </v>
 </v>
-<v t="tbrown.20131201090459.28200" a="E"><vh>stylesheet &amp; source</vh>
+<v t="tbrown.20131201090459.28200"><vh>stylesheet &amp; source</vh>
 <v t="tbrown.20131201090459.28201"><vh>Color styles</vh>
 <v t="tbrown.20131201090459.28202"><vh>base</vh></v>
 <v t="tbrown.20131201090459.28203"><vh>body editor</vh></v>
@@ -108,7 +108,7 @@
 <v t="tbrown.20131201090459.28223"><vh>log</vh></v>
 <v t="tbrown.20131201090459.28224"><vh>mini-buffer &amp; status</vh></v>
 </v>
-<v t="tbrown.20140101133500.23149" a="E"><vh>Plugin styles</vh>
+<v t="tbrown.20140101133500.23149"><vh>Plugin styles</vh>
 <v t="tbrown.20140101133500.23150"><vh>bookmarks</vh></v>
 </v>
 <v t="tbrown.20131201090459.28225"><vh>@ignore Spare parts</vh></v>
@@ -2553,7 +2553,7 @@ c.selectPosition(c.vnode2position(current_v))
 </t>
 <t tx="tbrown.20140101133500.23149"></t>
 <t tx="tbrown.20140101133500.23150">/* bookmarks plugin styling */
-#show_bookmarks QPushButton { 
+QWidget#show_bookmarks QPushButton { 
     margin: 0; padding: 1; border: none;
     font-size: @bookmarks_base_size;
     color: @bookmarks_base_color;
