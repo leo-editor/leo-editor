@@ -2,18 +2,27 @@
 #@+node:tbrown.20070322113635: * @file bookmarks.py
 #@+<< docstring >>
 #@+node:tbrown.20070322113635.1: ** << docstring >>
-''' Open bookmarks in a list, and show bookmarks in a pane.
+''' Manage bookmarks in a list, and show bookmarks in a pane.
 
-Adds the ``bookmarks-open-bookmark`` command which opens the bookmark in the
-selected node **if** the node has an ancestor which contains ``@bookmarks``
-in its heading.  Useful for binding to double-click.
+This plugin has two bookmark related functions.  It manages nodes that
+contain bookmarks, and can also display those nodes in a special
+bookmarks pane / panel / subwindow.
 
-Also ``bookmarks-open-node``, like ``bookmarks-open-bookmark`` but without
-the ancestor requirement.
+General bookmark commands
+-------------------------
 
+``bookmarks-open-bookmark`` opens the bookmark in the selected node **if** the
+  node has an ancestor which contains ``@bookmarks`` in its heading.
+``bookmarks-open-node``, like ``bookmarks-open-bookmark`` but without
+  the ancestor requirement.
+  
 *Note:* bookmarks treats file urls missing the ``file://`` part as urls,
 which deviates from Leo's behavior elsewhere.  It also recognizes local UNLs
 like ``#ToDo-->Critical`` as urls.
+
+Bookmarks pane commands
+-----------------------
+
 
 The ``bookmarks-show`` command will add a tab or pane (if free_layout is enabled)
 showing the bookmarks **in the current subtree** with unique colors. You can
@@ -188,6 +197,50 @@ def cmd_switch(c):
     oc.selectPosition(op)
     oc.redraw()
     oc.bringToFront()
+#@+node:tbrown.20140101093550.25175: ** bookmarks-bookmark-*
+def cmd_bookmark(c, child=False):
+    """bookmark current node"""
+    if not hasattr(c, '_bookmarks'):
+        g.es("Bookmarks not active for this outline")
+        return
+    bm = c._bookmarks
+    if bm.current is None:  # first use
+        bm.current = bm.v
+    if bm.current == bm.v:  # first use or other conditions
+        container = bm.v
+    else:
+        if child:
+            container = bm.current
+        else:
+            container = bm.current.parents[0]
+    
+    bc = container.context
+    bp = bc.vnode2position(container)
+    nd = bp.insertAsNthChild(0)
+    nd.h = c.p.h
+    nd.b = c.p.get_UNL(with_proto=True)
+    
+    bm.current = nd.v
+    bm.show_list(bm.get_list())
+
+def cmd_bookmark_child(c):
+    """bookmark current node as child of current bookmark"""
+    cmd_bookmark(c, child=True)
+#@+node:tbrown.20140101093550.25176: ** bookmarks-level-*
+def cmd_level_increase(c, delta=1):
+    """increase levels, number of rows shown, for bookmarks"""
+    if not hasattr(c, '_bookmarks'):
+        g.es("Bookmarks not active for this outline")
+        return
+    bm = c._bookmarks
+    if bm.levels + delta >= 0:
+        bm.levels += delta
+    g.es("Showing %d levels" % bm.levels)
+    bm.show_list(bm.get_list())
+    
+def cmd_level_decrease(c):
+    """decrease levels, number of rows shown, for bookmarks"""
+    cmd_level_increase(c, delta=-1)
 #@+node:tbrown.20131214112218.36871: ** bookmarks-mark
 def cmd_mark_as_target(c):
     """Mark current node as Bookmarks list for use by another file,
@@ -504,14 +557,14 @@ class BookMarkDisplay:
                 cull.widget().deleteLater()
             cull = w.layout().takeAt(0)        
             
-        w.setStyleSheet("""
-        #show_bookmarks QPushButton { margin: 0; padding: 1; }
-        QPushButton[style_class~='bookmark_current'] { font-weight: bold; color: orange; }
-        QPushButton[style_class~='bookmark_expanded'] { font-weight: bold; }
-        QPushButton[style_class~='bookmark_children'] { text-decoration: underline; }
-        """)
+        #X w.setStyleSheet("""
+        #X #show_bookmarks QPushButton { margin: 0; padding: 1; }
+        #X QPushButton[style_class~='bookmark_current'] { font-weight: bold; color: orange; }
+        #X QPushButton[style_class~='bookmark_expanded'] { font-weight: bold; }
+        #X QPushButton[style_class~='bookmark_children'] { text-decoration: underline; }
+        #X """)
             
-        todo = [links]
+        todo = [links or []]  # empty list to create container to click in to add first
         current_level = 1
         current_url = None
         showing_chain = []
@@ -523,6 +576,7 @@ class BookMarkDisplay:
             top = QtGui.QWidget()
             top.mouseReleaseEvent = (lambda event, links=links:
                 self.background_clicked(event, links))
+            top.setMinimumSize(10,8)  # so there's something to click when empty
 
             w.layout().addWidget(top)
         
