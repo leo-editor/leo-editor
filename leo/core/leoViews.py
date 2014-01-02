@@ -69,10 +69,10 @@ class ViewController:
                 if self.is_cloned_outside_parent_tree(p)]
         if reps:
             changed = True
+            bunch = u.beforeChangeTree(root)
             c.setChanged(True)
             # Prepend a unl: line for each cloned child.
             unls = ['unl: %s\n' % (self.unl(p)) for p in reps]
-            bunch = u.beforeChangeTree(root)
             root.b = ''.join(unls) + root.b
             # Delete all child clones in the reps list.
             v_reps = set([p.v for p in reps])
