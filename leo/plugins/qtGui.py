@@ -2853,7 +2853,8 @@ class DynamicWindow(QtGui.QMainWindow):
         
         sheets = []
         for name in 'qt-gui-plugin-style-sheet', 'qt-gui-user-style-sheet':
-            sheet = c.config.getData(name)
+            sheet = c.config.getData(name, strip_comments=False)
+            # don't strip `#selector_name { ...` type syntax
             if sheet:
                 if '\n' in sheet[0]:
                     sheet = ''.join(sheet)
