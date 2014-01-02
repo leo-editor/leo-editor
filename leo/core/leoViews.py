@@ -113,7 +113,7 @@ class ViewController:
             c.undoer.afterChangeTree(root,'view-unpack',bunch)
             c.redraw()
         return changed
-    #@+node:ekr.20131230090121.16510: *4* vc.update_before_write_leo_file
+    #@+node:ekr.20131230090121.16510: *4* vc.update_before_write_leo_file (remove?)
     def update_before_write_leo_file(self):
         '''Do pre-write processing for all @auto trees.'''
         c = self.c
@@ -142,7 +142,7 @@ class ViewController:
         if organizer_unls:
             organizers = self.find_organizers_node(unl)
             organizers.b = '\n'.join(sorted(organizer_unls))
-    #@+node:ekr.20131230090121.16512: *4* vc.update_after_read_leo_file
+    #@+node:ekr.20131230090121.16512: *4* vc.update_after_read_leo_file (remove?)
     def update_after_read_leo_file(self):
         '''Do after-read processing for all @auto trees.'''
         c = self.c
@@ -163,7 +163,7 @@ class ViewController:
         if clones:
             self.create_clone_links(clones,p)
     #@+node:ekr.20131230090121.16515: *3* vc.Helpers
-    #@+node:ekr.20131230090121.16522: *4* vc.clean_nodes (to do)
+    #@+node:ekr.20131230090121.16522: *4* vc.clean_nodes (to to)
     def clean_nodes(self):
         '''Delete @auto-view nodes with no corresponding @auto nodes.'''
         c = self.c
@@ -222,7 +222,20 @@ class ViewController:
             return False
     #@+node:ekr.20131230090121.16532: *4* vc.create_organizer_nodes (to do)
     def create_organizer_nodes(organizers,root):
-        '''Create organizer nodes for all the unl's in organizers.b.'''
+        '''Create an organizer node for each relative unl in organizers.b.'''
+        # Find the leading unl: lines.
+        i,lines,tag = 0,g.splitLines(root.b),'unl:'
+        for s in lines:
+            if s.startswith(tag): i += 1
+            else: break
+        if i == 0:
+            return
+        unls = list(set([s[len(tag):].strip() for s in lines[:i]]))
+        for unl in unls:
+            p = self.find_relative_unl_node(root,unl)
+            g.trace(unl,p and p.h or 'None')
+
+        
     #@+node:ekr.20140102052259.16397: *4* vc.create_view_node
     def create_view_node(self,root):
         '''
@@ -238,12 +251,12 @@ class ViewController:
         p = root.clone()
         p.moveToLastChildOf(views)
         return p
-    #@+node:ekr.20140102052259.16402: *4* vc.find_absolute_unl_node (test)
+    #@+node:ekr.20140102052259.16402: *4* vc.find_absolute_unl_node
     def find_absolute_unl_node(self,unl):
         '''Return a node matching the given absolute unl.'''
         aList = unl.split('-->')
         if aList:
-            first,rest = aList[0],aList[1:]
+            first,rest = aList[0],'-->'.join(aList[1:])
             for parent in self.c.rootPosition().self_and_siblings():
                 if parent.h.strip() == first.strip():
                     if rest:
@@ -251,12 +264,13 @@ class ViewController:
                     else:
                         return parent
         return None
-    #@+node:ekr.20131230090121.16520: *4* vc.find_at_auto_view_node (test)
+    #@+node:ekr.20131230090121.16520: *4* vc.find_at_auto_view_node (revise)
     def find_at_auto_view_node (self,unl):
         '''
         Return the @auto-view node for the @auto node with the given unl.
         Create the node if it does not exist.
         '''
+        ### The headline should be shorter; the body pane should indicate gnx, not unl.
         c = self.c
         views = self.find_views_node()
         h = '@auto-view ' + unl
@@ -289,7 +303,7 @@ class ViewController:
             if p.v.gnx == gnx:
                 return p
         return None
-    #@+node:ekr.20131230090121.16518: *4* vc.find_organizers_node (test)
+    #@+node:ekr.20131230090121.16518: *4* vc.find_organizers_node (revise)
     def find_organizers_node(self,unl):
         '''
         Find the @organizers node for the @auto node with the given unl,
@@ -304,7 +318,7 @@ class ViewController:
             organizers = auto_view.insertAsLastChild()
             organizers.h = h
         return organizers
-    #@+node:ekr.20131230090121.16544: *4* vc.find_representative_node (test)
+    #@+node:ekr.20131230090121.16544: *4* vc.find_representative_node
     def find_representative_node (self,root,target):
         '''
         root is an @auto node. target is a clone node within root's tree.
@@ -336,7 +350,7 @@ class ViewController:
             else:
                 p.moveToThreadNext()
         return None
-    #@+node:ekr.20131230090121.16539: *4* vc.find_relative_unl_node (pass)
+    #@+node:ekr.20131230090121.16539: *4* vc.find_relative_unl_node
     def find_relative_unl_node(self,parent,unl):
         '''
         Return the node in parent's subtree matching the given unl.
@@ -397,7 +411,7 @@ class ViewController:
     #@+node:ekr.20131230090121.16524: *4* vc.is_at_auto_node (test)
     def is_at_auto_node(self,p):
         '''Return True if p is an @auto node.'''
-        return g.match_word(p.h,0,'@auto')
+        return g.match_word(p.h,0,'@auto') and not g.match(p.h,0,'@auto-')
             # Does not match @auto-rst, etc.
     #@+node:ekr.20140102052259.16398: *4* vc.is_cloned_outside_parent_tree
     def is_cloned_outside_parent_tree(self,p):

@@ -8445,8 +8445,8 @@ Scripts can get or change the context of the body as follows::
     ~/.leo/workbook.leo
 
 - Added escapes for underindented lines. The escape is specified by the @string
-  underindent-escape-string setting. By default, this escape is \- If a line
-  starts with \-N, Leo will write the line with N fewer spaces than expected.
+  underindent-escape-string setting. By default, this escape is \\- If a line
+  starts with \\-N, Leo will write the line with N fewer spaces than expected.
 
 - Leo now warns when attempting to write a file that has been changed outside of
   Leo. This prevents bzr reversions.
