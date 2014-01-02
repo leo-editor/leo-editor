@@ -36,6 +36,57 @@ class ViewController:
         self.c = c
         self.views_node = None
     #@+node:ekr.20131230090121.16514: *3* vc.Entry points
+    #@+node:ekr.20140102052259.16394: *4* vc.pack
+    def pack(self):
+        '''
+        Convert c.p to a packed @view node, replacing all cloned children of
+        c.p by unl lines in c.p.b.
+        Return True if the outline has, in fact, been changed.
+        '''
+        c,root = self.c,self.c.p
+        # Create an @view node as a clone of the @views node.
+        changed = self.create_view_node(root)
+        # Create a list of clones that have a representative node
+        # that exists outside of the root tree.
+        reps = [self.find_representative_node(root,p)
+            for p in root.children()
+                if self.is_cloned_outside_parent_tree(p)]
+        v_reps = list(set([p.v for p in reps]))
+        if reps:
+            changed = True
+            # Prepend a unl: line for each cloned child.
+            unls = ['unl: %s\n' % (self.unl(p)) for p in reps]
+            root.b = ''.join(unls) + root.b
+            # Delete all child clones in the safe list.
+            while True:
+                for child in root.children():
+                    if child.v in v_reps:
+                        child.doDelete()
+                        break
+                else: break
+        return changed
+    #@+node:ekr.20140102052259.16395: *4* vc.unpack
+    def unpack(self):
+        '''
+        Unpack nodes corresponding to leading unl lines in c.p to child clones.
+        Return True if the outline has, in fact, been changed.
+        '''
+        c,root = self.c,self.c.p
+        # Find the leading unl: lines.
+        i,lines,tag = 0,g.splitLines(root.b),'unl:'
+        for s in lines:
+            if s.startswith(tag): i += 1
+            else: break
+        if i > 0:
+            # Restore the body
+            root.b = ''.join(lines[i:])
+            # Create clones for each unique unl.
+            unls = list(set([s[len(tag):].strip() for s in lines[:i]]))
+            for unl in unls:
+                p = self.find_absolute_unl_node(unl)
+                if p: p.clone().moveToLastChildOf(root)
+                else: g.trace('not found: %s' % (unl))
+        return i > 0
     #@+node:ekr.20131230090121.16510: *4* vc.update_before_write_leo_file
     def update_before_write_leo_file(self):
         '''Do pre-write processing for all @auto trees.'''
@@ -44,21 +95,21 @@ class ViewController:
             if self.is_at_auto_node:
                 self.update_before_write_at_auto_file(p)
         self.clean_nodes()
-    #@+node:ekr.20131230090121.16511: *4* vc.update_before_write_at_auto_file (test)
-    def update_before_write_at_auto_file(self,p):
+    #@+node:ekr.20131230090121.16511: *4* vc.update_before_write_at_auto_file
+    def update_before_write_at_auto_file(self,root):
         '''
         Update the @organizer and @clones nodes in the @auto-view node for a
         single @auto node, creating the @organizer or @clones nodes as needed.
         '''
-        root = p.copy()
-        unl = self.unl(p)
+        root = root.copy()
+        unl = self.unl(root)
         clone_unls = set()
         organizer_unls = set()
-        for p in p.subtree():
+        for p in root.subtree():
             if p.isCloned():
-                clone_unls.add(self.unl(p))
+                clone_unls.add(self.relative_unl(p,root))
             if self.is_organizer_node(p,root):
-                organizer_unls.add(self.unl(p))
+                organizer_unls.add(self.relative_unl(p,root))
         if clone_unls:
             clones = self.find_clones_node(unl)
             clones.b = '\n'.join(sorted(clone_unls))
@@ -97,18 +148,15 @@ class ViewController:
             if self.is_at_auto_node(p)]
         nodes = [p for p in c.all_positions()
             if self.is_at_auto_node(p)]
-    #@+node:ekr.20131230090121.16526: *4* vc.comment_delims (pass)
+    #@+node:ekr.20131230090121.16526: *4* vc.comment_delims
     def comment_delims(self,p):
         '''Return the comment delimiter in effect at p, an @auto node.'''
         c = self.c
         d = g.get_directives_dict(p)
-        s = d.get('language')
-        if s:
-            language,single,start,end = g.set_language(s,0)
-            return single,start,end
-        else:
-            return None,None,None
-    #@+node:ekr.20131230090121.16533: *4* vc.create_clone_links & helper (pass)
+        s = d.get('language') or c.target_language
+        language,single,start,end = g.set_language(s,0)
+        return single,start,end
+    #@+node:ekr.20131230090121.16533: *4* vc.create_clone_links & helper
     def create_clone_links(self,clones,root):
         '''
         Recreate clone links from an @clones node.
@@ -132,7 +180,7 @@ class ViewController:
         clone of the node outside the @auto tree with the given gnx.
         '''
         trace = False and not g.unitTesting
-        p1 = self.find_unl_node(root,unl)
+        p1 = self.find_relative_unl_node(root,unl)
         p2 = self.find_gnx_node(gnx)
         if p1 and p2:
             if trace: g.trace('relink',gnx,p2.h,'->',p1.h)
@@ -149,6 +197,39 @@ class ViewController:
     #@+node:ekr.20131230090121.16532: *4* vc.create_organizer_nodes (to do)
     def create_organizer_nodes(organizers,root):
         '''Create organizer nodes for all the unl's in organizers.b.'''
+    #@+node:ekr.20140102052259.16397: *4* vc.create_view_node
+    def create_view_node(self,p):
+        '''
+        Create a clone of p as a child of the @views node.
+        Return True if self.c has, in fact, changed.
+        '''
+        c,changed = self.c,False
+        # Prepend @view if need.
+        if not p.h.strip().startswith('@'):
+            changed = True
+            p.h = '@view ' + p.h.strip()
+        # Create a cloned child of the @views node if it doesn't exist.
+        views = self.find_views_node()
+        for child in views.children():
+            if child.v == c.p.v:
+                break
+        else:
+            changed = True
+            p.clone().moveToLastChildOf(views)
+        return changed
+    #@+node:ekr.20140102052259.16402: *4* vc.find_absolute_unl_node (test)
+    def find_absolute_unl_node(self,unl):
+        '''Return a node matching the given absolute unl.'''
+        aList = unl.split('-->')
+        if aList:
+            first,rest = aList[0],aList[1:]
+            for parent in self.c.rootPosition().self_and_siblings():
+                if parent.h.strip() == first.strip():
+                    if rest:
+                        return self.find_relative_unl_node(parent,rest)
+                    else:
+                        return parent
+        return None
     #@+node:ekr.20131230090121.16520: *4* vc.find_at_auto_view_node (test)
     def find_at_auto_view_node (self,unl):
         '''
@@ -164,7 +245,7 @@ class ViewController:
             p.h = h
         return p
         
-    #@+node:ekr.20131230090121.16516: *4* vc.find_clones_node (test)
+    #@+node:ekr.20131230090121.16516: *4* vc.find_clones_node
     def find_clones_node(self,unl):
         '''
         Find the @clones node for an @auto node with the given unl,
@@ -178,7 +259,7 @@ class ViewController:
             clones = auto_view.insertAsLastChild()
             clones.h = h
         return clones
-    #@+node:ekr.20131230090121.16547: *4* vc.find_gnx_node (pass)
+    #@+node:ekr.20131230090121.16547: *4* vc.find_gnx_node
     def find_gnx_node(self,gnx):
         '''Return the first position having the given gnx.'''
         # This is part of the read logic, so newly-imported
@@ -208,33 +289,36 @@ class ViewController:
         root is an @auto node. target is a clone node within root's tree.
         Return a node *outside* of root's tree that is cloned to target,
         preferring nodes outside any @<file> tree.
+        Never return any node in any @views tree.
         '''
-        # This is part of the write logic.
         v = target.v
         # Pass 1: accept only nodes outside any @file tree.
         p = self.c.rootPosition()
         while p:
-            if p.isAnyAtFileNode():
+            if p.h.startswith('@views'):
+                p.moveToNodeAfterTree()
+            elif p.isAnyAtFileNode():
                 p.moveToNodeAfterTree()
             elif p.v == v:
                 return p
             else:
                 p.moveToThreadNext()
-        
         # Pass 2: accept any node outside the root tree.
         p = self.c.rootPosition()
         while p:
-            if p == root:
+            if p.h.startswith('@views'):
+                p.moveToNodeAfterTree()
+            elif p == root:
                 p.moveToNodeAfterTree()
             elif p.v == v:
                 return p
             else:
                 p.moveToThreadNext()
         return None
-    #@+node:ekr.20131230090121.16539: *4* vc.find_unl_node (pass)
-    def find_unl_node(self,parent,unl):
+    #@+node:ekr.20131230090121.16539: *4* vc.find_relative_unl_node (pass)
+    def find_relative_unl_node(self,parent,unl):
         '''
-        Return the node in p's subtree matching the given unl.
+        Return the node in parent's subtree matching the given unl.
         The unl is relative to the parent position.
         '''
         trace = False and not g.unitTesting
@@ -294,6 +378,10 @@ class ViewController:
         '''Return True if p is an @auto node.'''
         return g.match_word(p.h,0,'@auto')
             # Does not match @auto-rst, etc.
+    #@+node:ekr.20140102052259.16398: *4* vc.is_cloned_outside_parent_tree
+    def is_cloned_outside_parent_tree(self,p):
+        '''Return True if a clone of p exists outside the tree of p.parent().'''
+        return len(list(set(p.v.parents))) > 1
     #@+node:ekr.20131230090121.16525: *4* vc.is_organizer_node
     def is_organizer_node(self,p,root):
         '''
@@ -303,6 +391,8 @@ class ViewController:
         '''
         single,start,end = self.comment_delims(root)
         assert single or start and end,'bad delims: %r %r %r' % (single,start,end)
+        if not p.hasChildren():
+            return False
         if single:
             for s in g.splitLines(p.b):
                 s = s.strip()
@@ -353,5 +443,34 @@ class ViewController:
         '''Return the unl corresponding to the given position.'''
         return '-->'.join(reversed([p.h for p in p.self_and_parents()]))
     #@-others
+#@+node:ekr.20140102051335.16506: ** vc.Commands
+#@+node:ekr.20140102052259.16399: *3* view-pack command
+@g.command('view-pack')
+def view_pack_command(event):
+    c = event.get('c')
+    if c:
+        vc = c.viewController
+        if vc:
+            p = c.p
+            bunch = c.undoer.beforeChangeTree(p)
+            changed = vc.pack()
+            if changed:
+                c.setChanged(True)
+                c.undoer.afterChangeTree(p,'view-pack',bunch)
+                c.redraw()
+#@+node:ekr.20140102052259.16400: *3* view_unpack command
+@g.command('view-unpack')
+def view_pack_command(event):
+    c = event.get('c')
+    if c:
+        vc = c.viewController
+        if vc:
+            p = c.p
+            bunch = c.undoer.beforeChangeTree(p)
+            changed = vc.unpack()
+            if changed:
+                c.setChanged(True)
+                c.undoer.afterChangeTree(p,'view-unpack',bunch)
+                c.redraw()
 #@-others
 #@-leo
