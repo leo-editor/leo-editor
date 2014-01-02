@@ -75,7 +75,7 @@ class ViewController:
             bunch = u.beforeChangeTree(root)
             root.b = ''.join(unls) + root.b
             # Delete all child clones in the reps list.
-            v_reps = list(set([p.v for p in reps]))
+            v_reps = set([p.v for p in reps])
             while True:
                 for child in root.children():
                     if child.v in v_reps:
