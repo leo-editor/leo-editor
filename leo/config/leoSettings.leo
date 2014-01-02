@@ -998,6 +998,9 @@
 <v t="tbrown.20110430104941.30247"><vh>backlink</vh>
 <v t="tbrown.20110430104941.30250"><vh>@int backlink_name_levels = 0</vh></v>
 </v>
+<v t="tbrown.20140102100730.27777"><vh>bookmarks</vh>
+<v t="tbrown.20140102100730.27778"><vh>@int bookmarks_levels = 1</vh></v>
+</v>
 <v t="ekr.20060807103220"><vh>datenodes plugin</vh>
 <v t="ekr.20060807103220.1"><vh>@string datenodes_body_text = To do...</vh></v>
 <v t="ekr.20060807103220.2"><vh>@string datenodes_day_node_headline = %Y-%m-%d</vh></v>
@@ -1011,7 +1014,7 @@
 <v t="ekr.20060807103220.10"><vh>@bool datenodes_year_node_omit_saturdays = True</vh></v>
 <v t="ekr.20060807103220.11"><vh>@bool datenodes_year_node_omit_sundays = True</vh></v>
 </v>
-<v t="ekr.20100907092300.6957" a="E"><vh>Inkscape options</vh>
+<v t="ekr.20100907092300.6957"><vh>Inkscape options</vh>
 <v t="ekr.20100907092300.6958"><vh>@string inkscape-template = ../docs/inkscape-template.svg</vh></v>
 <v t="ekr.20100907092300.6959"><vh>@string inkscape-bin = "c:\Program Files (x86)\Inkscape\inkscape.exe"</vh></v>
 </v>
@@ -1142,7 +1145,7 @@
 <v t="ekr.20060904211808.1"><vh>@string zodb_storage_file = c:\prog\zopeTemp\leo.fs</vh></v>
 </v>
 </v>
-<v t="ekr.20131119143342.18879" a="E"><vh>Qt Gui (appearance)</vh>
+<v t="ekr.20131119143342.18879"><vh>Qt Gui (appearance)</vh>
 <v t="tbrown.20131122091143.23828"><vh>Color definitions</vh>
 <v t="tbrown.20131122091143.23830"><vh>@color MistyRose1 = #FFE4E1</vh></v>
 <v t="tbrown.20131122091143.23831"><vh>@color LightSteelBlue1 = #CAE1FF</vh></v>
@@ -1173,8 +1176,8 @@
 <v t="tbrown.20131122094200.2514"><vh>@string font-size-tree = @font-size</vh></v>
 <v t="tbrown.20131122094200.2517"><vh>@string font-size-log = @font-size</vh></v>
 </v>
-<v t="tbrown.20140101093550.22678" a="E"><vh>Plugins</vh>
-<v t="tbrown.20140101093550.22679" a="E"><vh>bookmarks</vh>
+<v t="tbrown.20140101093550.22678"><vh>Plugins</vh>
+<v t="tbrown.20140101093550.22679"><vh>bookmarks</vh>
 <v t="tbrown.20140101093550.25173"><vh>@string bookmarks_font_size = 10pt;</vh></v>
 <v t="tbrown.20140101093550.25165"><vh>@string bookmarks_base_size = @bookmarks_font_size</vh></v>
 <v t="tbrown.20140101093550.25136"><vh>@color bookmarks_base_color = @text-foreground</vh></v>
@@ -6403,6 +6406,10 @@ children
 <t tx="tbrown.20140101093550.25169"></t>
 <t tx="tbrown.20140101093550.25171"></t>
 <t tx="tbrown.20140101093550.25173"></t>
+<t tx="tbrown.20140102100730.27777"></t>
+<t tx="tbrown.20140102100730.27778">Number of levels (rows) of hieararchical bookmarks to show.  0 (zero)
+collapse hieracrch and show all bookmarks.  1 or more sets max. levels
+displayed at once, see bookmarks plugin docs.</t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 # cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,
