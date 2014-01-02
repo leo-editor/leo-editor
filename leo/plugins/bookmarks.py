@@ -380,6 +380,7 @@ class BookMarkDisplay:
         self.levels = c.config.getInt('bookmarks-levels') or 1
         # levels to show in hierarchical display
         self.second = False  # second click of current bookmark?
+        self.upwards = False  # moving upwards through hierarchy
         
         self.already = -1  # used to indicate existing link when same link added again
            
@@ -459,11 +460,12 @@ class BookMarkDisplay:
             return
             
         # otherwise, look up the bookmark
+        self.upwards = up
         self.second = not up and self.current == bm.v   
         self.current = bm.v        
         # in case something we didn't see changed the bookmarks
         self.show_list(self.get_list(), up=up)
-        if bm.url:
+        if bm.url and not up:
             g.handleUrl(bm.url, c=self.c)
     #@+node:tbrown.20110712100955.18925: *3* color
     def color(self, text, dark=False):
@@ -625,14 +627,17 @@ class BookMarkDisplay:
                     current_url.strip() and
                     self.levels == 1 
                  or
-                    up
+                    up or self.upwards
                 ) and 
                   current_level < self.w.layout().count() and
                   self.levels < self.w.layout().count()
                 ):
                 # hide last line, of children, if none are current
                 self.w.layout().takeAt(self.w.layout().count()-1).widget().deleteLater()
+                
             while self.w.layout().count() > self.levels:
+                
+                # add an up button to the second row...
                 next_row = self.w.layout().itemAt(1).widget().layout()
                 but = QtGui.QPushButton('^')
                 bm = showing_chain.pop(0)
@@ -641,6 +646,8 @@ class BookMarkDisplay:
                 next_row.addWidget(but)
                 # rotate to start of layout, FlowLayout() has no insertWidget()
                 next_row.itemList[:] = next_row.itemList[-1:] + next_row.itemList[:-1]
+                
+                # ...then delete the first
                 self.w.layout().takeAt(0).widget().deleteLater()
                 
         w.layout().addStretch()
