@@ -11,11 +11,37 @@ bookmarks pane / panel / subwindow.
 General bookmark commands
 -------------------------
 
-``bookmarks-open-bookmark`` opens the bookmark in the selected node **if** the
+**bookmarks-open-bookmark** opens the bookmark in the selected node **if** the
   node has an ancestor which contains ``@bookmarks`` in its heading.
-``bookmarks-open-node``, like ``bookmarks-open-bookmark`` but without
+**bookmarks-open-node**, like ``bookmarks-open-bookmark`` but without
   the ancestor requirement.
+**bookmarks-switch**
+  move between your working position in the outline, and the current
+  bookmark, in the outline.  This is the keyboard friendly no extra pane
+  alternative to the mouse based bookmark pane navigation described below.
+**bookmarks-bookmark**
+  Add the current node as a bookmark at the current level in the
+  bookmarks tree.  Another keyboard friendly alternative.
+**bookmarks-bookmark-child**
+  Add the current node as a child of the current bookmark, if there is
+  a current bookmark.  Another keyboard friendly alternative.
   
+Cross file bookmark commands
+----------------------------
+
+These commands let you have personal bookmarks in a .leo file you're
+sharing with others.  E.g. you can store your personal bookmarks for the
+shared ``LeoPyRef.leo`` Leo development outline in ``~/.leo/workbook.leo``.
+
+**bookmarks-mark-as-target**
+  Mark a node in outline A as being the container for
+  bookmarks in another outline, outline B.
+**bookmarks-use-other-outline**
+  Specify that this outline, outline B, should store its bookmarks
+  in the marked node in outline A.  This also adds a bookmark display
+  pane (described below), but you can ignore it, it won't persist unless
+  you save the layout.
+
 *Note:* bookmarks treats file urls missing the ``file://`` part as urls,
 which deviates from Leo's behavior elsewhere.  It also recognizes local UNLs
 like ``#ToDo-->Critical`` as urls.
@@ -23,10 +49,10 @@ like ``#ToDo-->Critical`` as urls.
 Bookmarks pane commands
 -----------------------
 
-
-The ``bookmarks-show`` command will add a tab or pane (if free_layout is enabled)
-showing the bookmarks **in the current subtree** with unique colors. You can
-very quickly jump around between nodes in a file using this. 
+**bookmarks-show** 
+  Add a pane showing the bookmarks **in the current subtree**
+  with unique colors. You can very quickly jump around between nodes in a file
+  using this.
 
 Nodes can be added and removed from the display with the following mouse actions:
     
@@ -43,35 +69,69 @@ Nodes can be added and removed from the display with the following mouse actions
     Update clicked bookmark to point to current node.
 **alt-left-click on background**
     Edit bookmark list.
-    
+**shift-left-click on bookmark**
+    Add the current node as a *child* of the clicked bookmark,
+    and display the clicked bookmarks children.
+
+The ``@setting`` ``@int bookmarks-levels = 1`` sets the number of levels of
+hierarchy shown in the bookmarks pane. By default, the @setting @int
+bookmarks_levels = 1 will limit the bookmarks shown to one level, so given these
+bookmarks::
+
+  A
+  B
+     B1
+     B2
+  C
+
+you'd just see A B C, with B underlined, indicating it has
+children, and when you click B, one of two things happens.
+
+With bookmarks_levels = 1 (the default) the effect of clicking on B
+depends on whether or not B is itself a bookmark (contains an URL)
+or just an organizer node (no body).
+
+If it's just an organizer node, clicking it immediately shows its
+children.  If it contains an URL itself, the first click makes Leo
+navigate to that URL, a subsequent click shows the children.
+
+Note that this first click / second click behavior only applies with
+@int bookmarks_levels = 1.
+
+With @int bookmarks_levels = 2 or more, you'll initially see::
+
+  A B C 
+
+with B underlined, and clicking on B will immediately show its children, so you see::
+
+  A B C 
+  B1 B2
+
+and, if B contains an URL, navigate to the URL
+
+With @int bookmarks_levels = 0, the original behavior is used,
+hierarchy is ignored, and you see::
+
+  A B B1 B2 C
+
+all the time.
+
+**bookmarks-level-decrease**
+  Temporarily decrease the value of the the ``@int bookmarks-levels``
+  setting.
+**bookmarks-level-increase**
+  Temporarily increase the value of the the ``@int bookmarks-levels``
+  setting.
+
+Other notes
+-----------
+
 The ``quickMove.py`` plugin also provides actions for adding nodes to a bookmark list.
 
 The free_layout Action button context menu will also allow you to add one of
 these bookmark panes, and they will be saved and loaded again if the layout is
 saved and loaded.
 
-Commands
---------
-
-bookmarks-open-bookmark
-  Open the bookmark in the current node, checking that this node has
-  a parent with ``@bookmarks`` in the title first.
-bookmarks-open-node
-  Open the bookmark / url in the current node.
-bookmarks-show
-  Mark the current node as the bookmark list for the current
-  outline, and open a pane[*]_ listing any bookmarks the current node contains.
-bookmarks-mark-as-target
-  Mark this node as a bookmark container - does nothing unless followed by
-  ``bookmarks-use-other-outline``.
-bookmarks-use-other-outline
-  Use the node identified with ``bookmarks-mark-as-target``, **which may
-  be in another outline**, as the source of bookmarks for this outline.
-  Open a pane[*]_ listing any bookmarks that node contains.
-  
-.. [*] If you already have a bookmark pane open, these command will open a
-       second one.  Just close or ignore the first one, it will be gone next
-       time the outline is opened.
 
 '''
 #@-<< docstring >>
@@ -416,11 +476,18 @@ class BookMarkDisplay:
         - `event`: click event
         - `bookmarks`: bookmarks in this pane
         """
-
+        
         if bookmarks:
             v = bookmarks[0].v.parents[0]  # node containing bookmarks
         else:
             v = self.v  # top of bookmarks tree
+        
+        # Alt => edit bookmarks in the outline
+        mods = event.modifiers()
+        if mods == QtCore.Qt.AltModifier:
+            self.edit_bookmark(None, v=v)
+            return
+        
         c = v.context
         p = c.vnode2position(v)
         nd = p.insertAsNthChild(0)
@@ -756,15 +823,17 @@ class BookMarkDisplay:
         bm.v.context.redraw()
         self.show_list(self.get_list())
     #@+node:tbrown.20130222093439.30275: *3* edit_bookmark
-    def edit_bookmark(self, bm):
+    def edit_bookmark(self, bm, v=None):
 
-        c = bm.v.context
-        self.current = bm.v
+        if v is None:
+            v = bm.v
+            
+        c = v.context
+        self.current = v
         self.second = False
-        p = c.vnode2position(bm.v)
+        p = c.vnode2position(v)
         c.selectPosition(p)
         c.bringToFront()
-        
     #@+node:tbrown.20131227100801.40521: *3* add_child_bookmark
     def add_child_bookmark(self, bm):
         """add_child_bookmark - Add a child bookmark
