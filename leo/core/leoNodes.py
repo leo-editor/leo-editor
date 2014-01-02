@@ -1153,6 +1153,12 @@ class position (object):
         '''
         c = self.v.context
         return c.createNodeHierarchy(heads, parent=self, forcecreate=forcecreate)
+    #@+node:ekr.20131230090121.16552: *4* p.deleteAllChildren
+    def deleteAllChildren(self):
+        '''Delete all children of the receiver.'''
+        p = self
+        while p.hasChildren():
+            p.firstChild().doDelete()
     #@+node:ekr.20040303175026.2: *4* p.doDelete
     #@+at This is the main delete routine.
     # It deletes the receiver's entire tree from the screen.
