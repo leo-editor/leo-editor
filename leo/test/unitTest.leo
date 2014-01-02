@@ -625,7 +625,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="9"></t>
+<t tx="ekr.20070417092935" str_leo_pos="8"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1284,7 +1284,8 @@ char t
 </t>
 <t tx="ekr.20131231093529.3984"># Revise when c.viewsController ivar exists.
 </t>
-<t tx="ekr.20140102115036.4060">vc = c.viewController</t>
+<t tx="ekr.20140102115036.4060">vc = c.viewController
+</t>
 <t tx="ekr.20140102115036.4061">vc = c.viewController
 clones = g.findNodeInTree(c,p,'@clones')
 root = g.findNodeInTree(c,p,'root')
@@ -1306,7 +1307,8 @@ unl: node1
 </t>
 <t tx="ekr.20140102115036.4063"></t>
 <t tx="ekr.20140102115036.4064"></t>
-<t tx="ekr.20140102115036.4065">vc = c.viewController</t>
+<t tx="ekr.20140102115036.4065">vc = c.viewController
+</t>
 <t tx="ekr.20140102115036.4066">vc = c.viewController
 root = c.rootPosition().insertAfter()
 root.h = 'root'
@@ -1325,7 +1327,8 @@ try:
 finally:
     root.doDelete()
     c.selectPosition(p)
-    c.redraw()</t>
+    c.redraw()
+</t>
 <t tx="ekr.20140102115036.4067">vc = c.viewController
 p = vc.has_views_node()
 # To do when tested code has been revised.
@@ -1333,7 +1336,8 @@ p = vc.has_views_node()
 # auto_view = self.find_at_auto_view_node(unl)
 </t>
 <t tx="ekr.20140102115036.4068">vc = c.viewController
-views = vc.find_views_node</t>
+views = vc.find_views_node
+</t>
 <t tx="ekr.20140102115036.4069">vc = c.viewController
 parent = p.copy()
 node1 = p.firstChild()
@@ -1367,7 +1371,8 @@ for unl,expected in table:
 <t tx="ekr.20140102115036.4073"></t>
 <t tx="ekr.20140102115036.4074"></t>
 <t tx="ekr.20140102115036.4075"></t>
-<t tx="ekr.20140102115036.4076">vc = c.viewController</t>
+<t tx="ekr.20140102115036.4076">vc = c.viewController
+</t>
 <t tx="ekr.20140102115036.4077">vc = c.viewController
 tag = '@views'
 views = g.findNodeAnywhere(c,tag)
@@ -1380,7 +1385,8 @@ views = vc.find_views_node()
 assert views
 views.doDelete()
 c.redraw()
-assert not g.findNodeAnywhere(c,tag)</t>
+assert not g.findNodeAnywhere(c,tag)
+</t>
 <t tx="ekr.20140102115036.4078">vc = c.viewController
 p.deleteAllChildren()
 auto = p.insertAsLastChild()
@@ -1392,7 +1398,8 @@ try:
     assert not vc.is_at_auto_node(auto2)
 finally:
     p.deleteAllChildren()
-    c.redraw()</t>
+    c.redraw()
+</t>
 <t tx="ekr.20140102115036.4079">vc = c.viewController
 redraw_flag = False
 for child in p.children():
@@ -1407,7 +1414,8 @@ for child in p.children():
     assert expected == got,'expected: %s in: %s body...\n%s' % (
         expected,child.h,child.b)
 if redraw_flag:
-    c.redraw()</t>
+    c.redraw()
+</t>
 <t tx="ekr.20140102115036.4080">@language python
 
 # An organizer node
@@ -1454,12 +1462,15 @@ views = g.findNodeAnywhere(c,'@views')
 if views:
     views.deleteAllChildren()
     c.redraw()
-vc.update_before_write_at_auto_file(root)</t>
+vc.update_before_write_at_auto_file(root)
+</t>
 <t tx="ekr.20140102115036.4090"></t>
 <t tx="ekr.20140102115036.4092"></t>
 <t tx="ekr.20140102115036.4093"></t>
 <t tx="ekr.20140102115036.4094"></t>
-<t tx="ekr.20140102115036.4095">vc = c.viewController</t>
-<t tx="ekr.20140102115036.4096">vc = c.viewController</t>
+<t tx="ekr.20140102115036.4095">vc = c.viewController
+</t>
+<t tx="ekr.20140102115036.4096">vc = c.viewController
+</t>
 </tnodes>
 </leo_file>

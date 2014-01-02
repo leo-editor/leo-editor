@@ -128,7 +128,7 @@ class ViewController:
         single @auto node, creating the @organizer or @clones nodes as needed.
         '''
         root = root.copy()
-        unl = self.unl(root)
+        unl = self.unl(root) ########### Should be a gnx.
         clone_unls = set()
         organizer_unls = set()
         for p in root.subtree():

@@ -244,9 +244,9 @@ class ParserBaseClass:
     def doData (self,p,kind,name,val):
 
         # New in Leo 4.11: do not strip lines.
-        # g.trace('kind',kind,'name',name,'val',val)
-        c = self.c
-        data = [z for z in g.splitLines(p.b) if not z.startswith('#')]
+        # New in Leo 4.12.1: strip *nothing* here.
+        # data = [z for z in g.splitLines(p.b) if not z.startswith('#')]
+        data = g.splitLines(p.b)
         self.set(p,kind,name,data)
     #@+node:ekr.20131114051702.16545: *4* doOutlineData & helper (new in Leo 4.11.1)
     def doOutlineData (self,p,kind,name,val):
@@ -1554,11 +1554,16 @@ class GlobalConfigManager:
 
         return g.app.config.atCommonCommandsList
     #@+node:ekr.20071214140900.1: *4* gcm.getData & getOutlineData
-    def getData (self,setting):
-
+    def getData (self,setting,strip_comments=True,strip_data=True):
         '''Return a list of non-comment strings in the body text of @data setting.'''
-
-        return self.get(setting,"data")
+        data = self.get(setting,"data")
+        # New in Leo 4.12.1: add two keyword arguments, with legacy defaults.
+        if data and strip_comments:
+            data = [z for z in data if not z.startswith('#')]
+        if data and strip_data:
+            data = [z.strip() for z in data if z.strip()]
+        ### return self.get(setting,"data")
+        return data
         
     def getOutlineData (self,setting):
 
@@ -1935,12 +1940,13 @@ class LocalConfigManager:
 
         return self.get(setting,"color")
     #@+node:ekr.20120215072959.12527: *5* c.config.getData
-    def getData (self,setting,strip_data=True):
-
+    def getData (self,setting,strip_comments=True,strip_data=True):
         '''Return a list of non-comment strings in the body text of @data setting.'''
-
         data =  self.get(setting,"data")
         # New in Leo 4.11: parser.doData strips only comments now.
+        # New in Leo 4.12: parser.doData strips *nothing*.
+        if data and strip_comments:
+            data = [z for z in data if not z.startswith('#')]
         if data and strip_data:
             data = [z.strip() for z in data if z.strip()]
         return data
