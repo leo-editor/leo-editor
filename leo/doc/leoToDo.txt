@@ -6,6 +6,10 @@
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 
+Fix view-pack/unpack:
+    - Use gnx's where appropriate, not unl's.
+    - Be more careful about finding representative nodes.
+
 Release 4.11.1
     - Create myLeoSettings and workbook automatically if they do not exist.
     - Add templates to help menu?
