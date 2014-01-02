@@ -39,45 +39,68 @@ class ViewController:
     #@+node:ekr.20140102052259.16394: *4* vc.pack
     def pack(self):
         '''
-        Convert c.p to a packed @view node, replacing all cloned children of
-        c.p by unl lines in c.p.b.
-        Return True if the outline has, in fact, been changed.
+        Undoably convert c.p to a packed @view node, replacing all cloned
+        children of c.p by unl lines in c.p.b.
         '''
-        c,root = self.c,self.c.p
+        c,root,u = self.c,self.c.p,self.c.undoer
+        # Create an undo group to handle changes to root and @views nodes.
+        u.beforeChangeGroup(root,'view-pack')
+        if not self.has_views_node():
+            changed = True
+            bunch = u.beforeInsertNode(c.rootPosition())
+            views = self.find_views_node()
+            u.afterInsertNode(views,'create-views-node',bunch)
+        # Prepend @view if need.
+        if not root.h.strip().startswith('@'):
+            changed = True
+            bunch = u.beforeChangeNodeContents(root)
+            root.h = '@view ' + root.h.strip()
+            u.afterChangeNodeContents(root,'view-pack-update-headline',bunch)
         # Create an @view node as a clone of the @views node.
-        changed = self.create_view_node(root)
+        bunch = u.beforeInsertNode(c.rootPosition())
+        new_clone = self.create_view_node(root)
+        if new_clone:
+            changed = True
+            u.afterInsertNode(new_clone,'create-view-node',bunch)
         # Create a list of clones that have a representative node
-        # that exists outside of the root tree.
+        # outside of the root's tree.
         reps = [self.find_representative_node(root,p)
             for p in root.children()
                 if self.is_cloned_outside_parent_tree(p)]
-        v_reps = list(set([p.v for p in reps]))
         if reps:
             changed = True
+            c.setChanged(True)
             # Prepend a unl: line for each cloned child.
             unls = ['unl: %s\n' % (self.unl(p)) for p in reps]
+            bunch = u.beforeChangeTree(root)
             root.b = ''.join(unls) + root.b
-            # Delete all child clones in the safe list.
+            # Delete all child clones in the reps list.
+            v_reps = list(set([p.v for p in reps]))
             while True:
                 for child in root.children():
                     if child.v in v_reps:
                         child.doDelete()
                         break
                 else: break
-        return changed
+            u.afterChangeTree(root,'view-pack-tree',bunch)
+        if changed:
+            u.afterChangeGroup(root,'view-pack')
+            c.redraw()
     #@+node:ekr.20140102052259.16395: *4* vc.unpack
     def unpack(self):
         '''
-        Unpack nodes corresponding to leading unl lines in c.p to child clones.
+        Undoably unpack nodes corresponding to leading unl lines in c.p to child clones.
         Return True if the outline has, in fact, been changed.
         '''
-        c,root = self.c,self.c.p
+        c,root,u = self.c,self.c.p,self.c.undoer
         # Find the leading unl: lines.
         i,lines,tag = 0,g.splitLines(root.b),'unl:'
         for s in lines:
             if s.startswith(tag): i += 1
             else: break
-        if i > 0:
+        changed = i > 0
+        if changed:
+            bunch = u.beforeChangeTree(root)
             # Restore the body
             root.b = ''.join(lines[i:])
             # Create clones for each unique unl.
@@ -86,7 +109,10 @@ class ViewController:
                 p = self.find_absolute_unl_node(unl)
                 if p: p.clone().moveToLastChildOf(root)
                 else: g.trace('not found: %s' % (unl))
-        return i > 0
+            c.setChanged(True)
+            c.undoer.afterChangeTree(root,'view-unpack',bunch)
+            c.redraw()
+        return changed
     #@+node:ekr.20131230090121.16510: *4* vc.update_before_write_leo_file
     def update_before_write_leo_file(self):
         '''Do pre-write processing for all @auto trees.'''
@@ -198,25 +224,20 @@ class ViewController:
     def create_organizer_nodes(organizers,root):
         '''Create organizer nodes for all the unl's in organizers.b.'''
     #@+node:ekr.20140102052259.16397: *4* vc.create_view_node
-    def create_view_node(self,p):
+    def create_view_node(self,root):
         '''
-        Create a clone of p as a child of the @views node.
-        Return True if self.c has, in fact, changed.
+        Create a clone of root as a child of the @views node.
+        Return the *newly* cloned node, or None if it already exists.
         '''
-        c,changed = self.c,False
-        # Prepend @view if need.
-        if not p.h.strip().startswith('@'):
-            changed = True
-            p.h = '@view ' + p.h.strip()
+        c = self.c
         # Create a cloned child of the @views node if it doesn't exist.
         views = self.find_views_node()
-        for child in views.children():
-            if child.v == c.p.v:
-                break
-        else:
-            changed = True
-            p.clone().moveToLastChildOf(views)
-        return changed
+        for p in views.children():
+            if p.v == c.p.v:
+                return None
+        p = root.clone()
+        p.moveToLastChildOf(views)
+        return p
     #@+node:ekr.20140102052259.16402: *4* vc.find_absolute_unl_node (test)
     def find_absolute_unl_node(self,unl):
         '''Return a node matching the given absolute unl.'''
@@ -444,33 +465,16 @@ class ViewController:
         return '-->'.join(reversed([p.h for p in p.self_and_parents()]))
     #@-others
 #@+node:ekr.20140102051335.16506: ** vc.Commands
-#@+node:ekr.20140102052259.16399: *3* view-pack command
 @g.command('view-pack')
 def view_pack_command(event):
     c = event.get('c')
-    if c:
-        vc = c.viewController
-        if vc:
-            p = c.p
-            bunch = c.undoer.beforeChangeTree(p)
-            changed = vc.pack()
-            if changed:
-                c.setChanged(True)
-                c.undoer.afterChangeTree(p,'view-pack',bunch)
-                c.redraw()
-#@+node:ekr.20140102052259.16400: *3* view_unpack command
+    if c and c.viewController:
+        c.viewController.pack()
+
 @g.command('view-unpack')
-def view_pack_command(event):
+def view_unpack_command(event):
     c = event.get('c')
-    if c:
-        vc = c.viewController
-        if vc:
-            p = c.p
-            bunch = c.undoer.beforeChangeTree(p)
-            changed = vc.unpack()
-            if changed:
-                c.setChanged(True)
-                c.undoer.afterChangeTree(p,'view-unpack',bunch)
-                c.redraw()
+    if c and c.viewController:
+        c.viewController.unpack()
 #@-others
 #@-leo
