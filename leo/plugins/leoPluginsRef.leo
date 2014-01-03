@@ -36,7 +36,7 @@
 <v t="ekr.20100909111553.5588"><vh>@mark-for-unit-tests</vh></v>
 </v>
 <v t="ekr.20080707101341.1"><vh>@file ../modes/forth.py</vh></v>
-<v t="edream.110203113231.618"><vh>Plugins</vh>
+<v t="edream.110203113231.618" a="E"><vh>Plugins</vh>
 <v t="EKR.20040517090508"><vh>  Enable plugins using @enabled-plugins nodes</vh></v>
 <v t="ekr.20050303051035"><vh>  Templates</vh>
 <v t="ekr.20041114102139"><vh>Notes for plugin writers</vh></v>
@@ -169,9 +169,10 @@
 <v t="ekr.20130927050813.13031"><vh>Obsolete</vh>
 <v t="ekr.20080201143145"><vh>@file ./obsolete/ipython.py</vh></v>
 </v>
-<v t="ekr.20041001210557"><vh>Scripting</vh>
+<v t="ekr.20041001210557" a="E"><vh>Scripting</vh>
 <v t="tbrown.20100226095909.12777"><vh>@file leoscreen.py</vh></v>
-<v t="ekr.20060328125248"><vh>@file mod_scripting.py</vh></v>
+<v t="ekr.20060328125248" a="E"
+expanded="ekr.20060328125248.6,ekr.20061014075212,"><vh>@file mod_scripting.py</vh></v>
 <v t="edream.110203113231.925"><vh>@file script_io_to_body.py</vh></v>
 </v>
 <v t="ekr.20120309073937.9878"><vh>Searching</vh>

@@ -831,14 +831,14 @@ class scriptingController:
             h = h[len(tag):].strip()
 
         for tag in ('@key','@args','@color',):
-            i = s.find(tag)
+            i = h.find(tag)
             if i > -1:
-                j = s.find('@',i+1)
+                j = h.find('@',i+1)
                 if i < j:
-                    s = s[:i] + s[j+1:]
+                    h = h[:i] + h[j+1:]
                 else:
-                    s = s[:i]
-                s = s.strip()
+                    h = h[:i]
+                h = h.strip()
         #i = h.find('@key')
         #if i > -1:
         #    buttonText = h[:i].strip()
