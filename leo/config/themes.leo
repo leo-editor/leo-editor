@@ -16,7 +16,6 @@
 <v t="tbrown.20131201090459.28143"><vh>README - theme developers</vh></v>
 <v t="tbrown.20131201090459.28144"><vh>@string color_theme = leo_dark_0</vh></v>
 <v t="tbrown.20131201090459.28145"><vh>@bool color_theme_is_dark = True</vh></v>
-<v t="tbrown.20131201090459.28146"><vh>@bk config 2013-11-20 12:14:30</vh></v>
 <v t="tbrown.20131201090459.28147"><vh>Settings for theme</vh>
 <v t="tbrown.20131201090459.28148"><vh>definitions</vh>
 <v t="tbrown.20131201090459.28149"><vh>@color solarized-base03 = #002b36</vh></v>
@@ -78,6 +77,8 @@
 <v t="tbrown.20140101133500.23151"><vh>Plugins</vh>
 <v t="tbrown.20140101133500.23152"><vh>bookmarks</vh>
 <v t="tbrown.20140101133500.23154"><vh>@color bookmarks_current_color = @solarized-orange</vh></v>
+<v t="tbrown.20140102185420.30354"><vh>@color bookmarks_expanded_color = auto</vh></v>
+<v t="tbrown.20140102185420.30356"><vh>@color bookmarks_children_color = auto</vh></v>
 </v>
 </v>
 </v>
@@ -112,7 +113,7 @@
 <v t="tbrown.20140101133500.23150"><vh>bookmarks</vh></v>
 </v>
 <v t="tbrown.20131201090459.28225"><vh>@ignore Spare parts</vh></v>
-<v t="tbrown.20140101213756.23161"><vh>@data qt-gui-plugin-style-sheet</vh></v>
+<v t="tbrown.20140102185420.30906"><vh>@data qt-gui-plugin-style-sheet</vh></v>
 </v>
 <v t="tbrown.20131201090459.28227"><vh>Solarized colorizing settings</vh>
 <v t="tbrown.20131201090459.28228"><vh>Solarized colors (Reference)</vh></v>
@@ -1923,44 +1924,6 @@ optionally, some icons. Icons go in &lt;theme_dir&gt;/Icons.</t>
 <t tx="tbrown.20131201090459.28144">Name of the theme, used to find icon files</t>
 <t tx="tbrown.20131201090459.28145">Set to true for dark themes, so bookmarks.py can generate
 random background colors which are appropriate etc.</t>
-<t tx="tbrown.20131201090459.28146"># backup 2013-11-20 12:14:30 - config
-# file:///home/tbrown/.leo/myLeoSettings.leo#@settings--&gt;leo_dark%20theme%200%20settings--&gt;config
-
-LyoKClRoaXMgKmNvbW1lbnQqIGlzIHBhcnNlZCB0byBleHRyYWN0IGNvbnN0YW50cyAobW
-Fjcm9zKSBkZWZpbmVkIGJlbG93LgoKY29uc3RhbnRzOgoKTmFtZXMgZm9yIHNvbGFyaXpl
-ZCBjb2xvcnMKCkBzb2xhcml6ZWQtYmFzZTAzID0gIzAwMmIzNgpAc29sYXJpemVkLWJhc2
-UwMiA9ICMwNzM2NDIKQHNvbGFyaXplZC1iYXNlMDEgPSAjNTg2ZTc1CkBzb2xhcml6ZWQt
-YmFzZTAwID0gIzY1N2I4MwpAc29sYXJpemVkLWJhc2UwID0gIzgzOTQ5NgpAc29sYXJpem
-VkLWJhc2UxID0gIzkzYTFhMQpAc29sYXJpemVkLWJhc2UyID0gI2VlZThkNQpAc29sYXJp
-emVkLWJhc2UzID0gI2ZkZjZlMwpAc29sYXJpemVkLXllbGxvdyA9ICNiNTg5MDAKQHNvbG
-FyaXplZC1vcmFuZ2UgPSAjY2I0YjE2CkBzb2xhcml6ZWQtcmVkID0gI2RjMzIyZgpAc29s
-YXJpemVkLW1hZ2VudGEgPSAjZDMzNjgyCkBzb2xhcml6ZWQtdmlvbGV0ID0gIzZjNzFjNA
-pAc29sYXJpemVkLWJsdWUgPSAjMjY4YmQyCkBzb2xhcml6ZWQtY3lhbiA9ICMyYWExOTgK
-QHNvbGFyaXplZC1ncmVlbiA9ICM4NTk5MDAKCkB0ZXh0LWZvcmVncm91bmQgPSBAc29sYX
-JpemVkLWJhc2UwCkB0ZXh0LWZvcmVncm91bmQtYnJpZ2h0ID0gQHNvbGFyaXplZC1iYXNl
-MgpAdGV4dC1iYWNrZ3JvdW5kID0gQHNvbGFyaXplZC1iYXNlMDMKQHRleHQtYmFja2dyb3
-VuZC1icmlnaHQgPSBAc29sYXJpemVkLWJhc2UwMgpAc3BsaXR0ZXItYmcgPSBAc29sYXJp
-emVkLWJhc2UwMQpAc3BsaXR0ZXItaG92ZXItYmcgPSBAc29sYXJpemVkLXZpb2xldApAYn
-V0dG9uLWhvdmVyLWJnID0gQHNvbGFyaXplZC1iYXNlMDEKQGJ1dHRvbi1ob3Zlci1mZyA9
-IEBzb2xhcml6ZWQtYmFzZTAzCgpAYmctZ3JhZGllbnQgPSBxbGluZWFyZ3JhZGllbnQoIH
-gxOjAgeTE6MCwgeDI6MCB5MjoxLCBzdG9wOjAuMSBAdGV4dC1iYWNrZ3JvdW5kLWJyaWdo
-dCwgc3RvcDowLjQgQHRleHQtYmFja2dyb3VuZCwgc3RvcDowLjYgQHRleHQtYmFja2dyb3
-VuZCwgc3RvcDowLjkgQHRleHQtYmFja2dyb3VuZC1icmlnaHQpCkBiZy1ncmFkaWVudC1o
-b3ZlciA9IHFsaW5lYXJncmFkaWVudCggeDE6MCB5MTowLCB4MjowIHkyOjEsIHN0b3A6MC
-4xIEBzb2xhcml6ZWQtYmFzZTAwLCBzdG9wOjAuNCBAc29sYXJpemVkLWJhc2UwLCBzdG9w
-OjAuNiBAc29sYXJpemVkLWJhc2UwLCBzdG9wOjAuOSBAc29sYXJpemVkLWJhc2UwMCkKCk
-Bmb250LWZhbWlseSA9IERyb2lkIFNhbnMgTW9ubywgRGVqYVZ1IFNhbnMgTW9ubwpAZm9u
-dC1mYW1pbHktdHJlZSA9IEBmb250LWZhbWlseQpAZm9udC1mYW1pbHktYm9keSA9IEBmb2
-50LWZhbWlseQpAZm9udC1mYW1pbHktbG9nID0gQGZvbnQtZmFtaWx5CkBmb250LXNpemUt
-Ym9keSA9IDE4cHgKCk5vdGUsIGZvciB0aGVzZSB0byB3b3JrLCB5b3UgbmVlZCB0byBhIG
-5vZGUKICBAYm9vbCB1c2VfZm9jdXNfYm9yZGVyID0gRmFsc2UKdW5kZXIgeW91ciBAc2V0
-dGluZ3Mgbm9kZSB0byB0dXJuIG9mZiBub24tc3R5bGVzaGVldCBiYXNlZCBib3JkZXIKaG
-lnaGxpZ2h0aW5nLiAgQWxzbywgc2V0IEBmb2N1c2VkLWJvcmRlci1zdHlsZSB0byBzb21l
-dGhpbmcgb3RoZXIKdGhhbiBub25lLCBiZWxvdy4gICdzb2xpZCcgd29ya3MuCgpAZm9jdX
-NlZC1ib3JkZXItc3R5bGUgPSBub25lCkBmb2N1c2VkLWJvcmRlci13aWR0aCA9IDNweApA
-Zm9jdXNlZC1ib3JkZXItZm9jdXMtY29sb3IgPSBjeWFuCkBmb2N1c2VkLWJvcmRlci1ob3
-Zlci1jb2xvciA9IHJlZApAZm9jdXNlZC1ib3JkZXItdW5mb2N1cy1jb2xvciA9IHdoaXRl
-Cg==</t>
 <t tx="tbrown.20131201090459.28147">@nocolor
 </t>
 <t tx="tbrown.20131201090459.28148">These are definitions of colors not defined by default, so
@@ -2582,13 +2545,15 @@ QPushButton[style_class~='bookmark_children'] {
 <t tx="tbrown.20140101133500.23151"></t>
 <t tx="tbrown.20140101133500.23152"></t>
 <t tx="tbrown.20140101133500.23154"></t>
-<t tx="tbrown.20140101213756.23161">/*
+<t tx="tbrown.20140102185420.30354"></t>
+<t tx="tbrown.20140102185420.30356"></t>
+<t tx="tbrown.20140102185420.30906">/*
   DON'T EDIT THIS, EDIT THE OTHER NODES UNDER 'stylesheet &amp; source'
   AND RECREATE THIS BY SELECTING 'stylesheet &amp; source' AND USING CTRL-B
 
   AUTOMATICALLY GENERATED FROM:
   file:///mnt/usr1/usr1/home/tbrown/Package/leo/bzr/leo.repo/trunk/leo/config/themes.leo#leo_dark%20theme%200--&gt;stylesheet%20&amp;%20source
-  2014-01-01 21:40
+  2014-01-02 19:04
 */
 
 /*### Color styles ##########################################################*/
@@ -2832,7 +2797,7 @@ QLineEdit#status2 {
 
 /*### Plugin styles--&gt;bookmarks #############################################*/
 /* bookmarks plugin styling */
-#show_bookmarks QPushButton { 
+QWidget#show_bookmarks QPushButton { 
     margin: 0; padding: 1; border: none;
     font-size: @bookmarks_base_size;
     color: @bookmarks_base_color;
