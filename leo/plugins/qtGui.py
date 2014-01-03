@@ -2661,7 +2661,7 @@ class DynamicWindow(QtGui.QMainWindow):
                 )
                 for cmd_name in table:
                     stroke = c.k.getShortcutForCommandName(cmd_name)
-                    if not stroke: g.trace('missing',cmd_name) #,repr(stroke and stroke.s)
+                    # if not stroke: g.trace('missing',cmd_name)
                     if stroke:
                         d[stroke.s] = cmd_name
                 return d
