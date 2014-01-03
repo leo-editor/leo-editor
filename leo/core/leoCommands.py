@@ -8126,28 +8126,24 @@ class Commands (object):
     _currentCount = 0
 
     def setCurrentPosition (self,p):
-
-        """Set the presently selected position. For internal use only.
-
-        Client code should use c.selectPosition instead."""
-
+        """
+        Set the presently selected position. For internal use only.
+        Client code should use c.selectPosition instead.
+        """
         trace = False and not g.unitTesting
+        verbose = False
         c = self
-
-        if trace:
+        if trace and verbose:
             c._currentCount += 1
             g.trace(c._currentCount,p)
-
         if p and not c.positionExists(p): # 2011/02/25:
             c._currentPosition = c.rootPosition()
-            if trace: trace('Invalid position: %s, root: %s' % (
+            if trace: g.trace('Invalid position: %s, root: %s' % (
                 repr(p and p.h),
                 repr(c._currentPosition and c._currentPosition.h)),
                 g.callers())
-
             # Don't kill unit tests for this kind of problem.
             return
-
         if p:
             # Important: p.equal requires c._currentPosition to be non-None.
             if c._currentPosition and p == c._currentPosition:
@@ -8300,9 +8296,7 @@ class Commands (object):
             # k.showStateAndMode(w=c.frame.body.bodyCtrl)
     #@+node:ekr.20031218072017.2997: *4* c.selectPosition
     def selectPosition(self,p,enableRedrawFlag=True):
-
         """Select a new position."""
-
         trace = False and not g.unitTesting
         c = self ; cc = c.chapterController
         if cc:
