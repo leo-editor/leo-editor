@@ -278,7 +278,7 @@ def cmd_bookmark(c, child=False):
     bp = bc.vnode2position(container)
     nd = bp.insertAsNthChild(0)
     nd.h = c.p.h
-    nd.b = c.p.get_UNL(with_proto=True)
+    nd.b = bm.get_unl()
     
     bm.current = nd.v
     bm.show_list(bm.get_list())
@@ -491,7 +491,7 @@ class BookMarkDisplay:
         c = v.context
         p = c.vnode2position(v)
         nd = p.insertAsNthChild(0)
-        new_url = self.c.p.get_UNL(with_file=True, with_proto=True)
+        new_url = self.get_unl()
         nd.b = new_url
         nd.h = self.c.p.h
         c.redraw()
@@ -606,6 +606,23 @@ class BookMarkDisplay:
         recurse_bm(p, result)
 
         return result
+    #@+node:tbrown.20140103082018.24102: *3* get_unl
+    def get_unl(self, p=None):
+        """get_unl - Return a UNL which is local (with_file=False)
+        if self.c == self.v.context, otherwise includes the file path.
+
+        :Parameters:
+        - `p`: position to use instead of self.c.p
+        """
+
+        p = p or self.c.p
+        c = p.v.context  # just in case it's not self.c
+        if self.v.context == c:
+            # local
+            return "#"+p.get_UNL(with_file=False, with_proto=False)
+        else:
+            # not local
+            return p.get_UNL(with_file=True, with_proto=True)
     #@+node:tbrown.20131227100801.23858: *3* show_list
     def show_list(self, links, up=False):
         """show_list - update pane with buttons
@@ -719,73 +736,6 @@ class BookMarkDisplay:
                 
         w.layout().addStretch()
      
-    #@+node:tbrown.20110712100955.39217: *3* show_list_old
-    def show_list_old(self, links):
-        
-        p = self.v.context.vnode2position(self.v)
-        if not p:
-            return
-        w = self.w
-        for i in range(w.layout().count()-1, -1, -1):
-            w.layout().removeItem(w.layout().itemAt(i))
-        te = QtGui.QTextBrowser()
-        w.layout().addWidget(te)
-        te.setReadOnly(True)
-        te.setOpenLinks(False)
-        
-        def capture_modifiers(event, te=te, prev=te.mousePressEvent, owner=self):
-            te.modifiers = event.modifiers()
-            te.pos = event.pos()
-            if not te.anchorAt(event.pos()):  # clicked body, not anchor
-                if event.modifiers() == QtCore.Qt.AltModifier:
-                    owner.edit_bookmark(te, event.pos())
-                    return
-                if int(te.modifiers) == 0:
-                    owner.add_bookmark(te, event.pos())
-                    return
-            return prev(event)
-        
-        te.mousePressEvent = capture_modifiers
-        
-        def anchorClicked(url, c=self.c, p=p, te=te, owner=self):
-            
-            if (QtCore.Qt.AltModifier | QtCore.Qt.ControlModifier) == te.modifiers:
-                owner.update_bookmark(str(url.toString()))
-                return
-            if QtCore.Qt.AltModifier == te.modifiers:
-                owner.edit_bookmark(te, te.pos)
-                return
-            if QtCore.Qt.ControlModifier == te.modifiers:
-                owner.delete_bookmark(str(url.toString()))
-            else:  # go to bookmark
-                
-                # update current bookmark
-                url = str(url.toString()).replace(' ', '%20').strip()
-                for nd in self.v.children:
-                    if nd.b.strip() == url:
-                        self.current = nd
-                        break
-
-                # g.trace(url,te)
-                # if QtCore.Qt.ShiftModifier & te.modifiers():
-                    # sep = '\\' if '\\' in url else '/'
-                    # url = sep.join(url.split(sep)[:-1])
-                self.show_list(self.current_list)  # to clear red highlight of double added url
-                g.handleUrl(url,c=c,p=p)
-        
-        te.connect(te, QtCore.SIGNAL("anchorClicked(const QUrl &)"), anchorClicked)
-        html = []
-        for idx, name_link in enumerate(links):
-            name, link, children = name_link
-            html.append("<a title='%s' href='%s' style='background: #%s; color: #%s; text-decoration: none;'>%s</a>"
-                % (link, link, 
-                   self.color(name, dark=self.dark) if self.already != idx else "ff0000", 
-                   '073642' if not self.dark else '839496',
-                        # FIXME, hardcoded, from solarized
-                   name.replace(' ', '&nbsp;')))
-        self.already = -1  # clear error condition
-        html = '\n'.join(html)
-        te.setHtml(html)
     #@+node:tbrown.20110712100955.39218: *3* update
     def update(self, tag, keywords):
         """re-show the current list of bookmarks"""
@@ -818,7 +768,7 @@ class BookMarkDisplay:
     def update_bookmark(self, bm):
         """Update *EXISTING* bookmark to current node"""
         
-        new_url = self.c.p.get_UNL(with_file=True, with_proto=True)
+        new_url = self.get_unl()
         bm.v.b = new_url
         bm.v.context.redraw()
         self.show_list(self.get_list())
@@ -844,74 +794,13 @@ class BookMarkDisplay:
 
         c = bm.v.context
         p = c.vnode2position(bm.v)
-        new_url = self.c.p.get_UNL(with_file=True, with_proto=True)
+        new_url = self.get_unl()
         nd = p.insertAsNthChild(0)
         nd.b = new_url
         nd.h = self.c.p.h
         c.redraw()
         self.current = nd.v
         self.show_list(self.get_list())
-    #@+node:tbrown.20130222093439.30273: *3* add_bookmark
-    def add_bookmark(self, te, pos):
-        
-        url = g.getUrlFromNode(self.c.p)
-        if url:
-            url = url.replace(' ', '%20')
-        if not url or '//' not in url:
-            # first line starting with '#' is misinterpreted as url
-            url = None
-            
-        if not url:
-            url = self.c.p.get_UNL(with_proto=True)
-            
-        # check it's not already present
-        try:
-            self.already = [i[1] for i in self.current_list].index(url)
-        except ValueError:
-            self.already = -1
-            
-        if self.already != -1:
-            g.es("Bookmark for this node already present")
-            return self.show_list(self.current_list)
-        
-        prev = str(te.anchorAt(QtCore.QPoint(pos.x()-12, pos.y())))
-        next = str(te.anchorAt(QtCore.QPoint(pos.x()+12, pos.y())))
-        
-        new_list = []
-        placed = False
-        
-        h = self.c.p.anyAtFileNodeName() or self.c.p.h
-        while h and h[0] == '@':
-            h = h[1:]
-        
-        new_anchor = h, url
-
-        for anchor in self.current_list:
-            
-            if not placed and anchor[1] == next:
-                placed = True
-                new_list.append(new_anchor)
-            
-            new_list.append(anchor)
-            
-            if not placed and anchor[1] == prev:
-                placed = True
-                new_list.append(new_anchor)
-                
-        if not placed:
-            new_list.append(new_anchor)
-            
-        idx = new_list.index(new_anchor)
-        nd = self.v.context.vnode2position(self.v).insertAsNthChild(idx)
-        nd.h = new_anchor[0]
-        nd.b = new_anchor[1]
-        nd.v.context.redraw()
-            
-        self.current_list = new_list
-        
-        self.show_list(self.current_list)
-        
-        return None  # do not stop processing the select1 hook
     #@-others
 #@+node:tbrown.20110712121053.19746: ** class BookMarkDisplayProvider
 class BookMarkDisplayProvider:
