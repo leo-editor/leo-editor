@@ -41,6 +41,7 @@ The cleaned name of an @button node is the headline text of the button with:
 - Leading @button or @command removed,
 - @key and all following text removed,
 - @args and all following text removed,
+- @color and all following text removed,
 - all non-alphanumeric characters converted to a single '-' characters.
 
 Thus, cleaning headline text converts it to a valid minibuffer command name.
@@ -117,6 +118,17 @@ For example:
 @button test-args @args = a,b,c
 
 will set sys.argv to [u'a',u'b',u'c']
+
+You can set the background color of buttons created by @button nodes by using @color:
+    
+@button name @color=color
+
+For example:
+    
+@button my button @key=Ctrl+Alt+1 @color=white @args=a,b,c
+
+This creates a button named 'my-button', with a color of white, a keyboard shortcut
+of Ctrl+Alt+1, and sets sys.argv to [u,'a',u'b',u'c'] within the context of the script.
 
 """
 #@-<< docstring >>
@@ -498,7 +510,10 @@ class scriptingController:
 
         An optional @key=shortcut defines a shortcut that is bound to the button's script.
         The @key=shortcut does not appear in the button's name, but
-        it *does* appear in the statutus line shown when the mouse moves over the button.'''
+        it *does* appear in the statutus line shown when the mouse moves over the button.
+        
+        An optional @color=colorname defines a color for the button's background.  It does
+        not appear in the status line nor the button name.'''
 
         trace = False and not g.app.unitTesting and not g.app.batchMode
         c = self.c ; h = p.h
@@ -614,12 +629,12 @@ class scriptingController:
         if minimal:
             return s.lower()
 
-        for tag in ('@key','@args',):
+        for tag in ('@key','@args','@color',):
             i = s.find(tag)
             if i > -1:
                 j = s.find('@',i+1)
                 if i < j:
-                    s = s[:i] + s[j+1:]
+                    s = s[:i] + s[j:]
                 else:
                     s = s[:i]
                 s = s.strip()
@@ -648,7 +663,8 @@ class scriptingController:
         buttonText = self.cleanButtonText(h,minimal=True)
         # We must define the callback *after* defining b,
         # so set both command and shortcut to None here.
-        b = self.createIconButton(text=h,command=None,statusLine=statusLine,kind=kind)
+        bg = self.getColor(h)
+        b = self.createIconButton(text=h,command=None,statusLine=statusLine,kind=kind,bg=bg)
         if not b:
             return None
         # Now that b is defined we can define the callback.
@@ -785,19 +801,26 @@ class scriptingController:
         return None
     #@+node:ekr.20080813064908.4: *4* getArgs
     def getArgs (self,h):
-
-        args = [] ; tag = '@args'
+        args = []
+        tag = '@args'
+        
         i = h.find(tag)
         if i > -1:
             j = g.skip_ws(h,i+len(tag))
             # 2011/10/16: Make '=' sign optional.
             if g.match(h,j,'='): j += 1
-            s = h[j+1:].strip()
+            if 0: 
+                s = h[j+1:].strip()
+            else: # new logic 1/3/2014 Jake Peck
+                k = h.find('@', j+1)
+                if k == -1: k == len(h)
+                s = h[j:k].strip()
             args = s.split(',')
             args = [z.strip() for z in args]
+            # g.trace('args',repr(args))
 
-        # g.trace('args',repr(args))
         return args
+            
     #@+node:ekr.20060328125248.15: *4* getButtonText
     def getButtonText(self,h):
 
@@ -807,28 +830,59 @@ class scriptingController:
         if g.match_word(h,0,tag):
             h = h[len(tag):].strip()
 
-        i = h.find('@key')
-        if i > -1:
-            buttonText = h[:i].strip()
+        for tag in ('@key','@args','@color',):
+            i = s.find(tag)
+            if i > -1:
+                j = s.find('@',i+1)
+                if i < j:
+                    s = s[:i] + s[j+1:]
+                else:
+                    s = s[:i]
+                s = s.strip()
+        #i = h.find('@key')
+        #if i > -1:
+        #    buttonText = h[:i].strip()
 
         else:
             buttonText = h
 
         fullButtonText = buttonText
         return buttonText
+    #@+node:peckj.20140103101946.10404: *4* getColor
+    def getColor(self,h):
+
+        '''Returns the background color from the given headline string'''
+
+        color = None
+        tag = '@color'
+        
+        i = h.find(tag)
+        if i > -1:
+            j = g.skip_ws(h,i+len(tag))
+            if g.match(h,j,'='): j += 1
+            k = h.find('@', j+1)
+            if k == -1: k = len(h)
+            color = h[j:k].strip()
+        return color
     #@+node:ekr.20060328125248.16: *4* getShortcut
     def getShortcut(self,h):
 
         '''Returns the keyboard shortcut from the given headline string'''
 
         shortcut = None
+        tag = '@key'
+        
         i = h.find('@key')
-
         if i > -1:
             j = g.skip_ws(h,i+len('@key'))
             if g.match(h,j,'='): j += 1
-            shortcut = h[j:].strip()
-
+            if 0:
+                shortcut = h[j:].strip()
+            else: # new logic 1/3/2014 Jake Peck
+                k = h.find('@', j+1)
+                if k == -1: k = len(h)
+                shortcut = h[j:k].strip()
+                
         return shortcut
     #@+node:ekr.20120301114648.9932: *4* registerTwoCommands
     def registerTwoCommands(self,h,func,pane,tag):
