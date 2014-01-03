@@ -124,23 +124,20 @@ class ViewController:
     #@+node:ekr.20131230090121.16511: *4* vc.update_before_write_at_auto_file
     def update_before_write_at_auto_file(self,root):
         '''
-        Update the @organizer and @clones nodes in the @auto-view node for a
-        single @auto node, creating the @organizer or @clones nodes as needed.
+        Update the @organizer and @clones nodes in the @auto-view node for
+        root, an @auto node. Create the @organizer or @clones nodes as needed.
         '''
-        root = root.copy()
-        unl = self.unl(root) ########### Should be a gnx.
-        clone_unls = set()
-        organizer_unls = set()
+        clone_unls,organizer_unls = set(),set()
         for p in root.subtree():
             if p.isCloned():
                 clone_unls.add(self.relative_unl(p,root))
             if self.is_organizer_node(p,root):
                 organizer_unls.add(self.relative_unl(p,root))
         if clone_unls:
-            clones = self.find_clones_node(unl)
+            clones = self.find_clones_node(root)
             clones.b = '\n'.join(sorted(clone_unls))
         if organizer_unls:
-            organizers = self.find_organizers_node(unl)
+            organizers = self.find_organizers_node(root)
             organizers.b = '\n'.join(sorted(organizer_unls))
     #@+node:ekr.20131230090121.16512: *4* vc.update_after_read_leo_file (remove?)
     def update_after_read_leo_file(self):
@@ -251,7 +248,9 @@ class ViewController:
         p = root.clone()
         p.moveToLastChildOf(views)
         return p
-    #@+node:ekr.20140102052259.16402: *4* vc.find_absolute_unl_node
+    #@+node:ekr.20140103062103.16442: *4* vc.find...
+    # The find node command create the node if not found.
+    #@+node:ekr.20140102052259.16402: *5* vc.find_absolute_unl_node
     def find_absolute_unl_node(self,unl):
         '''Return a node matching the given absolute unl.'''
         aList = unl.split('-->')
@@ -264,37 +263,40 @@ class ViewController:
                     else:
                         return parent
         return None
-    #@+node:ekr.20131230090121.16520: *4* vc.find_at_auto_view_node (revise)
-    def find_at_auto_view_node (self,unl):
+    #@+node:ekr.20131230090121.16520: *5* vc.find_at_auto_view_node
+    def find_at_auto_view_node (self,root):
         '''
-        Return the @auto-view node for the @auto node with the given unl.
+        Return the @auto-view node for root, an @auto node.
         Create the node if it does not exist.
         '''
-        ### The headline should be shorter; the body pane should indicate gnx, not unl.
-        c = self.c
         views = self.find_views_node()
-        h = '@auto-view ' + unl
-        p = g.findNodeInTree(c,views,h)
-        if not p:
+        assert root.isAtAutoNode()
+        h = '@auto-view:' + root.h[len('@auto'):].strip()
+        gnx = 'gnx: %s\n' % root.v.gnx
+        # Find a direct child of views with matching headline and body.
+        for p in views.children():
+            if p.h == h and p.b == gnx:
+                break
+        else:
             p = views.insertAsLastChild()
-            p.h = h
+            p.b,p.h = gnx,h
         return p
         
-    #@+node:ekr.20131230090121.16516: *4* vc.find_clones_node
-    def find_clones_node(self,unl):
+    #@+node:ekr.20131230090121.16516: *5* vc.find_clones_node
+    def find_clones_node(self,root):
         '''
-        Find the @clones node for an @auto node with the given unl,
-        creating the @clones node if it does not exist.
+        Find the @clones node for root, an @auto node.
+        Create the @clones node if it does not exist.
         '''
         c = self.c
         h = '@clones'
-        auto_view = self.find_at_auto_view_node(unl)
+        auto_view = self.find_at_auto_view_node(root)
         clones = g.findNodeInTree(c,auto_view,h)
         if not clones:
             clones = auto_view.insertAsLastChild()
             clones.h = h
         return clones
-    #@+node:ekr.20131230090121.16547: *4* vc.find_gnx_node
+    #@+node:ekr.20131230090121.16547: *5* vc.find_gnx_node
     def find_gnx_node(self,gnx):
         '''Return the first position having the given gnx.'''
         # This is part of the read logic, so newly-imported
@@ -303,54 +305,57 @@ class ViewController:
             if p.v.gnx == gnx:
                 return p
         return None
-    #@+node:ekr.20131230090121.16518: *4* vc.find_organizers_node (revise)
-    def find_organizers_node(self,unl):
+    #@+node:ekr.20131230090121.16518: *5* vc.find_organizers_node
+    def find_organizers_node(self,root):
         '''
-        Find the @organizers node for the @auto node with the given unl,
-        creating the @organizers node if it doesn't exist.
+        Find the @organizers node for root, and @auto node.
+        Create the @organizers node if it doesn't exist.
         '''
         c = self.c
         h = '@organizers'
-        auto_view = self.find_at_auto_view_node(unl)
+        auto_view = self.find_at_auto_view_node(root)
         assert auto_view
         organizers = g.findNodeInTree(c,auto_view,h)
         if not organizers:
             organizers = auto_view.insertAsLastChild()
             organizers.h = h
         return organizers
-    #@+node:ekr.20131230090121.16544: *4* vc.find_representative_node
+    #@+node:ekr.20131230090121.16544: *5* vc.find_representative_node
     def find_representative_node (self,root,target):
         '''
-        root is an @auto node. target is a clone node within root's tree.
+        root is an @auto node. target is a clones node within root's tree.
         Return a node *outside* of root's tree that is cloned to target,
         preferring nodes outside any @<file> tree.
-        Never return any node in any @views tree.
+        Never return any node in any @views or @view tree.
         '''
+        trace = False and not g.unitTesting
         v = target.v
         # Pass 1: accept only nodes outside any @file tree.
         p = self.c.rootPosition()
         while p:
-            if p.h.startswith('@views'):
+            if p.h.startswith('@view'):
                 p.moveToNodeAfterTree()
             elif p.isAnyAtFileNode():
                 p.moveToNodeAfterTree()
             elif p.v == v:
+                if trace: g.trace('success 1:',p,p.parent())
                 return p
             else:
                 p.moveToThreadNext()
         # Pass 2: accept any node outside the root tree.
         p = self.c.rootPosition()
         while p:
-            if p.h.startswith('@views'):
+            if p.h.startswith('@view'):
                 p.moveToNodeAfterTree()
             elif p == root:
                 p.moveToNodeAfterTree()
             elif p.v == v:
+                if trace: g.trace('success 2:',p,p.parent())
                 return p
             else:
                 p.moveToThreadNext()
         return None
-    #@+node:ekr.20131230090121.16539: *4* vc.find_relative_unl_node
+    #@+node:ekr.20131230090121.16539: *5* vc.find_relative_unl_node
     def find_relative_unl_node(self,parent,unl):
         '''
         Return the node in parent's subtree matching the given unl.
@@ -368,7 +373,7 @@ class ViewController:
                 return None
         if trace: g.trace('success',p)
         return p
-    #@+node:ekr.20131230090121.16519: *4* vc.find_views_node
+    #@+node:ekr.20131230090121.16519: *5* vc.find_views_node
     def find_views_node(self):
         '''
         Find the first @views node in the outline.
@@ -384,7 +389,9 @@ class ViewController:
             c.selectPosition(p)
             c.redraw()
         return p
-    #@+node:ekr.20131230090121.16529: *4* vc.has_clones_node
+    #@+node:ekr.20140103062103.16443: *4* vc.has...
+    # The find_xxx commands return None if the node does not exist.
+    #@+node:ekr.20131230090121.16529: *5* vc.has_clones_node
     def has_clones_node(self,unl):
         '''
         Find the @clones node for an @auto node with the given unl.
@@ -394,7 +401,7 @@ class ViewController:
         auto_view = self.find_at_auto_view_node(unl)
         assert auto_view
         return g.findNodeInTree(c,auto_view,'@clones')
-    #@+node:ekr.20131230090121.16531: *4* vc.has_organizers_node
+    #@+node:ekr.20131230090121.16531: *5* vc.has_organizers_node
     def has_organizers_node(self,unl):
         '''
         Find the @organizers node for an @auto node with the given unl.
@@ -404,11 +411,11 @@ class ViewController:
         auto_view = self.find_at_auto_view_node(unl)
         assert auto_view
         return g.findNodeInTree(c,auto_view,'@organizers')
-    #@+node:ekr.20131230090121.16535: *4* vc.has_views_node
+    #@+node:ekr.20131230090121.16535: *5* vc.has_views_node
     def has_views_node(self):
         '''Return the @views or None if it does not exist.'''
         return g.findNodeAnywhere(self.c,'@views')
-    #@+node:ekr.20131230090121.16524: *4* vc.is_at_auto_node (test)
+    #@+node:ekr.20131230090121.16524: *4* vc.is_at_auto_node
     def is_at_auto_node(self,p):
         '''Return True if p is an @auto node.'''
         return g.match_word(p.h,0,'@auto') and not g.match(p.h,0,'@auto-')
