@@ -42,14 +42,16 @@ class ViewController:
         Undoably convert c.p to a packed @view node, replacing all cloned
         children of c.p by unl lines in c.p.b.
         '''
-        c,root,u = self.c,self.c.p,self.c.undoer
-        # Create an undo group to handle changes to root and @views nodes.
-        u.beforeChangeGroup(root,'view-pack')
+        c,u = self.c,self.c.undoer
+        changed = False
+        root = c.p
         if not self.has_views_node():
-            changed = True
-            bunch = u.beforeInsertNode(c.rootPosition())
-            views = self.find_views_node()
-            u.afterInsertNode(views,'create-views-node',bunch)
+            # This is required so we don't change positions.
+            g.es('Please create @views node before packing or unpacking nodes')
+            return
+        # Create an undo group to handle changes to root and @views nodes.
+        # Important: creating the @views node does *not* invalidate any positions.'''
+        u.beforeChangeGroup(root,'view-pack')
         # Prepend @view if need.
         if not root.h.strip().startswith('@'):
             changed = True
@@ -67,6 +69,7 @@ class ViewController:
         reps = [self.find_representative_node(root,p)
             for p in root.children()
                 if self.is_cloned_outside_parent_tree(p)]
+        reps = [z for z in reps if z is not None]
         if reps:
             changed = True
             bunch = u.beforeChangeTree(root)
@@ -85,6 +88,7 @@ class ViewController:
             u.afterChangeTree(root,'view-pack-tree',bunch)
         if changed:
             u.afterChangeGroup(root,'view-pack')
+            c.selectPosition(root)
             c.redraw()
     #@+node:ekr.20140102052259.16395: *4* vc.unpack
     def unpack(self):
@@ -329,7 +333,8 @@ class ViewController:
         Never return any node in any @views or @view tree.
         '''
         trace = False and not g.unitTesting
-        v = target.v
+        assert target
+        assert root
         # Pass 1: accept only nodes outside any @file tree.
         p = self.c.rootPosition()
         while p:
@@ -337,7 +342,7 @@ class ViewController:
                 p.moveToNodeAfterTree()
             elif p.isAnyAtFileNode():
                 p.moveToNodeAfterTree()
-            elif p.v == v:
+            elif p.v == target.v:
                 if trace: g.trace('success 1:',p,p.parent())
                 return p
             else:
@@ -349,11 +354,12 @@ class ViewController:
                 p.moveToNodeAfterTree()
             elif p == root:
                 p.moveToNodeAfterTree()
-            elif p.v == v:
+            elif p.v == target.v:
                 if trace: g.trace('success 2:',p,p.parent())
                 return p
             else:
                 p.moveToThreadNext()
+        g.trace('no representative node for:',target,'parent:',target.parent())
         return None
     #@+node:ekr.20131230090121.16539: *5* vc.find_relative_unl_node
     def find_relative_unl_node(self,parent,unl):

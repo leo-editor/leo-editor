@@ -20313,9 +20313,9 @@ g.app.unitTestDict['restoreSelectedNode']=False
 print('\nEnd of leoUndo tests.')
 #@+node:ekr.20131231093529.3984: *3* leoViews.py
 # Revise when c.viewsController ivar exists.
-#@+node:ekr.20140103075627.4125: *4* @test vc.clean_nodes (To do later)
+#@+node:ekr.20140103102956.4141: *4* @test vc.clean_nodes (To do later)
 vc = c.viewController
-#@+node:ekr.20140103075627.4126: *4* @test vc.create_clone_links
+#@+node:ekr.20140103102956.4142: *4* @test vc.create_clone_links
 vc = c.viewController
 clones = g.findNodeInTree(c,p,'@clones')
 root = g.findNodeInTree(c,p,'root')
@@ -20328,15 +20328,14 @@ try:
     ok = vc.create_clone_links(clones,root)
     assert ok
 finally:
-    while root.hasChildren():
-        root.firstChild().doDelete()
+    root.deleteAllChildren()
     c.redraw()
-#@+node:ekr.20140103075627.4127: *5* @clones
-gnx: ekr.20140103070517.1960
+#@+node:ekr.20140103102956.4143: *5* @clones
+gnx: ekr.20140103075353.1959
 unl: node1
-#@+node:ekr.20140103075627.4128: *5* node1
-#@+node:ekr.20140103075627.4129: *5* root
-#@+node:ekr.20140103075627.4130: *4* @test vc.find_absolute_unl_node
+#@+node:ekr.20140103102956.4144: *5* node1
+#@+node:ekr.20140103102956.4145: *5* root
+#@+node:ekr.20140103102956.4146: *4* @test vc.find_absolute_unl_node
 vc = c.viewController
 root = c.rootPosition().insertAfter()
 root.h = 'root'
@@ -20356,7 +20355,7 @@ finally:
     root.doDelete()
     c.selectPosition(p)
     c.redraw()
-#@+node:ekr.20140103075627.4131: *4* @test vc.find_relative_unl_node
+#@+node:ekr.20140103102956.4147: *4* @test vc.find_relative_unl_node
 vc = c.viewController
 parent = p.copy()
 node1 = p.firstChild()
@@ -20383,13 +20382,13 @@ for unl,expected in table:
     got = vc.find_relative_unl_node(parent,unl)
     assert got == expected,'unl: %s expected: %s got: %s' % (
         unl,expected and expected.h,got and got.h)
-#@+node:ekr.20140103075627.4132: *5* node1
-#@+node:ekr.20140103075627.4133: *6* child11
-#@+node:ekr.20140103075627.4134: *6* child12
-#@+node:ekr.20140103075627.4135: *5* node2
-#@+node:ekr.20140103075627.4136: *6* child21
-#@+node:ekr.20140103075627.4137: *6* child22
-#@+node:ekr.20140103075627.4138: *4* @test vc.find_representative_node (To do first)
+#@+node:ekr.20140103102956.4148: *5* node1
+#@+node:ekr.20140103102956.4149: *6* child11
+#@+node:ekr.20140103102956.4150: *6* child12
+#@+node:ekr.20140103102956.4151: *5* node2
+#@+node:ekr.20140103102956.4152: *6* child21
+#@+node:ekr.20140103102956.4153: *6* child22
+#@+node:ekr.20140103102956.4154: *4* @test vc.find_representative_node
 vc = c.viewController
 root = g.findNodeInTree(c,p,'root')
 assert root
@@ -20404,30 +20403,29 @@ try:
     # Careful: cloning this test can cause problems.
     oops = '\n  rep: %s\nparent:%s\nclone: %s\nparent:%s\ninner: %s\nparent: %s' % (
         rep,rep.parent(),clone,clone.parent(),inner_clone,inner_clone.parent())
-    if p.isCloned():
+    if True: ### p.isCloned():
         assert rep.v == clone.v and rep.parent().v == clone.parent().v,oops
     else:
         assert rep == clone
-        
 finally:
     root.h = 'root' # root must not be an @auto node.
     c.redraw()
-#@+node:ekr.20140103075627.4139: *5* root
-#@+node:ekr.20140103075627.4141: *6* clone
-#@+node:ekr.20140103075627.4141: *5* clone
-#@+node:ekr.20140103075627.4142: *4* @test vc.find_views/clones/organizers_node
+#@+node:ekr.20140103102956.4155: *5* root
+#@+node:ekr.20140103102956.4157: *6* clone
+#@+node:ekr.20140103102956.4157: *5* clone
+#@+node:ekr.20140103102956.4158: *4* @test vc.find_views/clones/organizers_node
 # Also a test of find_views_node, find_organizers_node and find_clones_node.
 vc = c.viewController
 root = g.findNodeInTree(c,p,'root')
 assert root
 views = g.findNodeAnywhere(c,'@views')
+assert views,'1'
 if views:
-    views.doDelete(p)
-    views = None
+    views.deleteAllChildren()
 try:
     root.h = '@auto root' # root must look like an @auto node.
     views = vc.find_views_node()
-    assert views
+    assert views,'2'
     views2 = vc.find_views_node()
     assert views2 == views
     assert vc.find_clones_node(root)
@@ -20435,34 +20433,27 @@ try:
 finally:
     root.h = 'root' # Make sure root is *not* an @auto node.
     if True and views:
-        views.doDelete()
+        views.deleteAllChildren()
         c.selectPosition(p)
     c.redraw()
-#@+node:ekr.20140103075627.4143: *5* root
-#@+node:ekr.20140103075627.4144: *6* aClass
+#@+node:ekr.20140103102956.4159: *5* root
+#@+node:ekr.20140103102956.4160: *6* aClass
 class aClass:
     @others
-#@+node:ekr.20140103075627.4148: *7* clone
-#@+node:ekr.20140103075627.4146: *6* organizer node
-#@+node:ekr.20140103075627.4147: *7* child2
+#@+node:ekr.20140103102956.4164: *7* clone
+#@+node:ekr.20140103102956.4162: *6* organizer node
+#@+node:ekr.20140103102956.4163: *7* child2
 def spam():
     pass
-#@+node:ekr.20140103075627.4148: *5* clone
-#@+node:ekr.20140103075627.4149: *4* @test vc.find_views_node
+#@+node:ekr.20140103102956.4164: *5* clone
+#@+node:ekr.20140103102956.4165: *4* @test vc.find_views_node
 vc = c.viewController
 tag = '@views'
 views = g.findNodeAnywhere(c,tag)
-views2 = vc.has_views_node()
-assert views == views2
-if views:
-    views.doDelete()
-    c.selectPosition(p)
-views = vc.find_views_node()
 assert views
-views.doDelete()
-c.redraw()
-assert not g.findNodeAnywhere(c,tag)
-#@+node:ekr.20140103075627.4150: *4* @test vc.is_at_auto_node
+views2 = vc.has_views_node()
+assert views == views2,(views,views2)
+#@+node:ekr.20140103102956.4166: *4* @test vc.is_at_auto_node
 vc = c.viewController
 p.deleteAllChildren()
 auto = p.insertAsLastChild()
@@ -20475,7 +20466,7 @@ try:
 finally:
     p.deleteAllChildren()
     c.redraw()
-#@+node:ekr.20140103075627.4151: *4* @test vc.is_organizer_node
+#@+node:ekr.20140103102956.4167: *4* @test vc.is_organizer_node
 vc = c.viewController
 redraw_flag = False
 for child in p.children():
@@ -20491,20 +20482,20 @@ for child in p.children():
         expected,child.h,child.b)
 if redraw_flag:
     c.redraw()
-#@+node:ekr.20140103075627.4152: *5* test python True
+#@+node:ekr.20140103102956.4168: *5* test python True
 @language python
 
 # An organizer node
 
 # Another line.
-#@+node:ekr.20140103075627.4153: *6* child
-#@+node:ekr.20140103075627.4154: *5* test python 2
+#@+node:ekr.20140103102956.4169: *6* child
+#@+node:ekr.20140103102956.4170: *5* test python 2
 @language python
 
 def spam():
     pass
-#@+node:ekr.20140103075627.4155: *6* child
-#@+node:ekr.20140103075627.4156: *5* test html True
+#@+node:ekr.20140103102956.4171: *6* child
+#@+node:ekr.20140103102956.4172: *5* test html True
 @language html
 
 <!-- comment -->
@@ -20513,8 +20504,8 @@ def spam():
 continued comment
 -->
 
-#@+node:ekr.20140103075627.4157: *6* child
-#@+node:ekr.20140103075627.4158: *5* test html 2
+#@+node:ekr.20140103102956.4173: *6* child
+#@+node:ekr.20140103102956.4174: *5* test html 2
 @language html
 
 <!-- comment -->
@@ -20525,19 +20516,18 @@ continued comment
 continued comment
 -->
 
-#@+node:ekr.20140103075627.4159: *6* child
-#@+node:ekr.20140103075627.4160: *4* @test vc.unl
+#@+node:ekr.20140103102956.4175: *6* child
+#@+node:ekr.20140103102956.4176: *4* @test vc.unl
 vc = c.viewController
 unl = vc.unl(p)
 assert unl.endswith('-->'+p.h),repr(unl)
-#@+node:ekr.20140103075627.4161: *4* @test vc.update_before_write_at_auto_file
+#@+node:ekr.20140103102956.4177: *4* @test vc.update_before_write_at_auto_file
 vc = c.viewController
 root = g.findNodeInTree(c,p,'root')
 assert root
 views = g.findNodeAnywhere(c,'@views')
 if views:
-    views.doDelete(p)
-    views = None
+    views.deleteAllChildren()
 try:
     root.h = '@auto root' # root must look like an @auto node.
     vc.update_before_write_at_auto_file(root)
@@ -20552,25 +20542,46 @@ try:
 finally:
     root.h = 'root' # Make sure root is *not* an @auto node.
     if True and views:
-        views.doDelete()
-        c.selectPosition(p)
+        views.deleteAllChildren()
     c.redraw()
-#@+node:ekr.20140103075627.4162: *5* root
-#@+node:ekr.20140103075627.4163: *6* aClass
+#@+node:ekr.20140103102956.4178: *5* root
+#@+node:ekr.20140103102956.4179: *6* aClass
 class aClass:
     @others
-#@+node:ekr.20140103075627.4167: *7* clone
-#@+node:ekr.20140103075627.4165: *6* organizer node
-#@+node:ekr.20140103075627.4166: *7* child2
+#@+node:ekr.20140103102956.4183: *7* clone
+#@+node:ekr.20140103102956.4181: *6* organizer node
+#@+node:ekr.20140103102956.4182: *7* child2
 def spam():
     pass
-#@+node:ekr.20140103075627.4167: *5* clone
-#@+node:ekr.20140103075627.4168: *4* @test view-pack & view_unpack
+#@+node:ekr.20140103102956.4183: *5* clone
+#@+node:ekr.20140103102956.4184: *4* @test view-pack & view_unpack
 vc = c.viewController
-#@+node:ekr.20140103075627.4172: *5* clone
-#@+node:ekr.20140103075627.4170: *5* @view test
-#@+node:ekr.20140103075627.4171: *6* not a clone
-#@+node:ekr.20140103075627.4172: *6* clone
+views = g.findNodeAnywhere(c,'@views')
+assert views
+views.deleteAllChildren()
+view = g.findNodeInTree(c,p,'@view test')
+assert view
+assert c.positionExists(view)
+try:
+    c.selectPosition(view)
+    v_b = view.b
+    vc.pack()
+    assert c.p.v == view.v
+    vc.unpack()
+    assert view.b == v_b,view.b
+    assert view.lastChild().isCloned()
+finally:
+    views.deleteAllChildren()
+    c.undoer.clearUndoState()
+    c.redraw()
+#@+node:ekr.20140103102956.4188: *5* clone
+clone body
+#@+node:ekr.20140103102956.4186: *5* @view test
+view body
+#@+node:ekr.20140103102956.4187: *6* not a clone
+not a clone text
+#@+node:ekr.20140103102956.4188: *6* clone
+clone body
 #@+node:ekr.20131111160618.4261: *3* leoVim
 #@+node:ekr.20131111162157.4276: *4* Unused
 #@+node:ekr.20131111162157.4270: *5* @@test command regex
