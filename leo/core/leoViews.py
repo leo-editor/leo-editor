@@ -45,13 +45,16 @@ class ViewController:
         c,u = self.c,self.c.undoer
         changed = False
         root = c.p
-        if not self.has_views_node():
-            # This is required so we don't change positions.
-            g.es('Please create @views node before packing or unpacking nodes')
-            return
         # Create an undo group to handle changes to root and @views nodes.
         # Important: creating the @views node does *not* invalidate any positions.'''
         u.beforeChangeGroup(root,'view-pack')
+        if not self.has_views_node():
+            changed = True
+            bunch = u.beforeInsertNode(c.rootPosition())
+            views = self.find_views_node()
+                # Creates the @views node as the *last* top-level node
+                # so that no positions become invalid as a result.
+            u.afterInsertNode(views,'create-views-node',bunch)
         # Prepend @view if need.
         if not root.h.strip().startswith('@'):
             changed = True
@@ -383,17 +386,19 @@ class ViewController:
     def find_views_node(self):
         '''
         Find the first @views node in the outline.
-        Create the node if it does not exist.
+        If it does not exist, create it as the *last* top-level node,
+        so that no existing positions become invalid.
         '''
         c = self.c
         p = g.findNodeAnywhere(c,'@views')
         if not p:
-            root = c.rootPosition()
-            p = root.insertAfter()
+            last = c.rootPosition()
+            while last.hasNext():
+                last.moveToNext()
+            p = last.insertAfter()
             p.h = '@views'
-            p.moveToRoot(oldRoot=root)
-            c.selectPosition(p)
-            c.redraw()
+            # c.selectPosition(p)
+            # c.redraw()
         return p
     #@+node:ekr.20140103062103.16443: *4* vc.has...
     # The find_xxx commands return None if the node does not exist.
