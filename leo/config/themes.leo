@@ -74,11 +74,9 @@
 <v t="tbrown.20131201090459.28198"><vh>@string bg-gradient = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @text-background-bright, stop:0.4 @text-background, stop:0.6 @text-background, stop:0.9 @text-background-bright)</vh></v>
 <v t="tbrown.20131201090459.28199"><vh>@string bg-gradient-hover = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @solarized-base00, stop:0.4 @solarized-base0, stop:0.6 @solarized-base0, stop:0.9 @solarized-base00)</vh></v>
 </v>
-<v t="tbrown.20140101133500.23151"><vh>Plugins</vh>
-<v t="tbrown.20140101133500.23152"><vh>bookmarks</vh>
+<v t="tbrown.20140101133500.23151" a="E"><vh>Plugins</vh>
+<v t="tbrown.20140101133500.23152" a="E"><vh>bookmarks</vh>
 <v t="tbrown.20140101133500.23154"><vh>@color bookmarks_current_color = @solarized-orange</vh></v>
-<v t="tbrown.20140102185420.30354"><vh>@color bookmarks_expanded_color = auto</vh></v>
-<v t="tbrown.20140102185420.30356"><vh>@color bookmarks_children_color = auto</vh></v>
 </v>
 </v>
 </v>
@@ -113,7 +111,7 @@
 <v t="tbrown.20140101133500.23150"><vh>bookmarks</vh></v>
 </v>
 <v t="tbrown.20131201090459.28225"><vh>@ignore Spare parts</vh></v>
-<v t="tbrown.20140102185420.30906"><vh>@data qt-gui-plugin-style-sheet</vh></v>
+<v t="tbrown.20140102185420.35134"><vh>@data qt-gui-plugin-style-sheet</vh></v>
 </v>
 <v t="tbrown.20131201090459.28227"><vh>Solarized colorizing settings</vh>
 <v t="tbrown.20131201090459.28228"><vh>Solarized colors (Reference)</vh></v>
@@ -2516,44 +2514,42 @@ c.selectPosition(c.vnode2position(current_v))
 </t>
 <t tx="tbrown.20140101133500.23149"></t>
 <t tx="tbrown.20140101133500.23150">/* bookmarks plugin styling */
-QWidget#show_bookmarks QPushButton { 
+#show_bookmarks QPushButton { 
     margin: 0; padding: 1; border: none;
     font-size: @bookmarks_base_size;
     color: @bookmarks_base_color;
     font-weight: @bookmarks_base_weight;
     text-decoration: @bookmarks_base_decoration;
 }
-QPushButton[style_class~='bookmark_current'] {
-    font-size: @bookmarks_current_size;
-    color: @bookmarks_current_color;
-    font-weight: @bookmarks_current_weight;
-    text-decoration: @bookmarks_current_decoration;
-}
-QPushButton[style_class~='bookmark_expanded'] {
-    font-size: @bookmarks_expanded_size;
-    color: @bookmarks_expanded_color;
-    font-weight: @bookmarks_expanded_weight;
-    text-decoration: @bookmarks_expanded_decoration;
-}
-QPushButton[style_class~='bookmark_children'] {
+#show_bookmarks QPushButton[style_class~='bookmark_children'] {
     font-size: @bookmarks_children_size;
     color: @bookmarks_children_color;
     font-weight: @bookmarks_children_weight;
     text-decoration: @bookmarks_children_decoration;
 }
+#show_bookmarks QPushButton[style_class~='bookmark_expanded'] {
+    font-size: @bookmarks_expanded_size;
+    color: @bookmarks_expanded_color;
+    font-weight: @bookmarks_expanded_weight;
+    text-decoration: @bookmarks_expanded_decoration;
+}
+#show_bookmarks QPushButton[style_class~='bookmark_current'] {
+    font-size: @bookmarks_current_size;
+    color: @bookmarks_current_color;
+    font-weight: @bookmarks_current_weight;
+    text-decoration: @bookmarks_current_decoration;
+}
 </t>
 <t tx="tbrown.20140101133500.23151"></t>
 <t tx="tbrown.20140101133500.23152"></t>
 <t tx="tbrown.20140101133500.23154"></t>
-<t tx="tbrown.20140102185420.30354"></t>
-<t tx="tbrown.20140102185420.30356"></t>
-<t tx="tbrown.20140102185420.30906">/*
+<t tx="tbrown.20140102185420.35134">/*
   DON'T EDIT THIS, EDIT THE OTHER NODES UNDER 'stylesheet &amp; source'
   AND RECREATE THIS BY SELECTING 'stylesheet &amp; source' AND USING CTRL-B
 
   AUTOMATICALLY GENERATED FROM:
   file:///mnt/usr1/usr1/home/tbrown/Package/leo/bzr/leo.repo/trunk/leo/config/themes.leo#leo_dark%20theme%200--&gt;stylesheet%20&amp;%20source
-  2014-01-02 19:04
+  2014-01-02 22:02
 */
 
 /*### Color styles ##########################################################*/
@@ -2797,30 +2793,30 @@ QLineEdit#status2 {
 
 /*### Plugin styles--&gt;bookmarks #############################################*/
 /* bookmarks plugin styling */
-QWidget#show_bookmarks QPushButton { 
+#show_bookmarks QPushButton { 
     margin: 0; padding: 1; border: none;
     font-size: @bookmarks_base_size;
     color: @bookmarks_base_color;
     font-weight: @bookmarks_base_weight;
     text-decoration: @bookmarks_base_decoration;
 }
-QPushButton[style_class~='bookmark_current'] {
-    font-size: @bookmarks_current_size;
-    color: @bookmarks_current_color;
-    font-weight: @bookmarks_current_weight;
-    text-decoration: @bookmarks_current_decoration;
+#show_bookmarks QPushButton[style_class~='bookmark_children'] {
+    font-size: @bookmarks_children_size;
+    color: @bookmarks_children_color;
+    font-weight: @bookmarks_children_weight;
+    text-decoration: @bookmarks_children_decoration;
 }
-QPushButton[style_class~='bookmark_expanded'] {
+#show_bookmarks QPushButton[style_class~='bookmark_expanded'] {
     font-size: @bookmarks_expanded_size;
     color: @bookmarks_expanded_color;
     font-weight: @bookmarks_expanded_weight;
     text-decoration: @bookmarks_expanded_decoration;
 }
-QPushButton[style_class~='bookmark_children'] {
-    font-size: @bookmarks_children_size;
-    color: @bookmarks_children_color;
-    font-weight: @bookmarks_children_weight;
-    text-decoration: @bookmarks_children_decoration;
+#show_bookmarks QPushButton[style_class~='bookmark_current'] {
+    font-size: @bookmarks_current_size;
+    color: @bookmarks_current_color;
+    font-weight: @bookmarks_current_weight;
+    text-decoration: @bookmarks_current_decoration;
 }
 
 </t>

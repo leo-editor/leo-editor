@@ -1178,7 +1178,7 @@
 </v>
 <v t="tbrown.20140101093550.22678" a="E"><vh>Plugins</vh>
 <v t="tbrown.20140101093550.22679" a="E"><vh>bookmarks</vh>
-<v t="tbrown.20140101093550.25173"><vh>@string bookmarks_font_size = 10pt</vh></v>
+<v t="tbrown.20140101093550.25173"><vh>@string bookmarks_font_size = 11pt</vh></v>
 <v t="tbrown.20140101093550.25165"><vh>@string bookmarks_base_size = @bookmarks_font_size</vh></v>
 <v t="tbrown.20140101093550.25136"><vh>@color bookmarks_base_color = @text-foreground</vh></v>
 <v t="tbrown.20140101093550.25138"><vh>@string bookmarks_base_weight = regular</vh></v>
@@ -1278,7 +1278,7 @@
 <v t="ekr.20090724102842.2492"><vh>@int qt_max_colorized_chars = 0</vh></v>
 </v>
 </v>
-<v t="ekr.20110611092035.16463" a="E"><vh>Tree operation</vh>
+<v t="ekr.20110611092035.16463"><vh>Tree operation</vh>
 <v t="ekr.20041119050749.3"><vh>@bool allow_clone_drags = False</vh></v>
 <v t="nh910.20110621123823.3423"><vh>@bool collapse_nodes_after_move = True</vh></v>
 <v t="ekr.20060930085532"><vh>@bool collapse_nodes_during_finds = True</vh></v>
@@ -5388,32 +5388,31 @@ QTextEdit:focus#log-widget, LeoQTreeWidget:focus#treeWidget, QTextEdit:focus#ric
 }
 
 /* bookmarks plugin styling */
-QWidget#show_bookmarks QPushButton { 
+#show_bookmarks QPushButton { 
     margin: 0; padding: 1; border: none;
     font-size: @bookmarks_base_size;
     color: @bookmarks_base_color;
     font-weight: @bookmarks_base_weight;
     text-decoration: @bookmarks_base_decoration;
 }
-QPushButton[style_class~='bookmark_current'] {
-    font-size: @bookmarks_current_size;
-    color: @bookmarks_current_color;
-    font-weight: @bookmarks_current_weight;
-    text-decoration: @bookmarks_current_decoration;
-}
-QPushButton[style_class~='bookmark_expanded'] {
-    font-size: @bookmarks_expanded_size;
-    color: @bookmarks_expanded_color;
-    font-weight: @bookmarks_expanded_weight;
-    text-decoration: @bookmarks_expanded_decoration;
-}
-QPushButton[style_class~='bookmark_children'] {
+#show_bookmarks QPushButton[style_class~='bookmark_children'] {
     font-size: @bookmarks_children_size;
     color: @bookmarks_children_color;
     font-weight: @bookmarks_children_weight;
     text-decoration: @bookmarks_children_decoration;
 }
-
+#show_bookmarks QPushButton[style_class~='bookmark_expanded'] {
+    font-size: @bookmarks_expanded_size;
+    color: @bookmarks_expanded_color;
+    font-weight: @bookmarks_expanded_weight;
+    text-decoration: @bookmarks_expanded_decoration;
+}
+#show_bookmarks QPushButton[style_class~='bookmark_current'] {
+    font-size: @bookmarks_current_size;
+    color: @bookmarks_current_color;
+    font-weight: @bookmarks_current_weight;
+    text-decoration: @bookmarks_current_decoration;
+}
 </t>
 <t tx="ekr.20131119143342.18879">This is the "default" theme.</t>
 <t tx="ekr.20131119143342.20107">True: start-find command puts focus in minibuffer.
