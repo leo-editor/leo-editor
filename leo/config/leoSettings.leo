@@ -977,7 +977,7 @@
 <v t="ekr.20110611092035.16492"><vh>Mouse</vh>
 <v t="ekr.20080324105006.6"><vh>@bool allow_middle_button_paste = False</vh></v>
 </v>
-<v t="ekr.20051123100536" a="E"><vh>Plugins</vh>
+<v t="ekr.20051123100536"><vh>Plugins</vh>
 <v t="ekr.20041119034357.13"><vh>@bool use_plugins = True</vh></v>
 <v t="ekr.20071113084330"><vh>@bool warn_when_plugins_fail_to_load = True</vh></v>
 <v t="ekr.20070224073109.1"><vh>@enabled-plugins</vh></v>
@@ -1145,7 +1145,7 @@
 <v t="ekr.20060904211808.1"><vh>@string zodb_storage_file = c:\prog\zopeTemp\leo.fs</vh></v>
 </v>
 </v>
-<v t="ekr.20131119143342.18879" a="E"><vh>Qt Gui (appearance)</vh>
+<v t="ekr.20131119143342.18879"><vh>Qt Gui (appearance)</vh>
 <v t="tbrown.20131122091143.23828"><vh>Color definitions</vh>
 <v t="tbrown.20131122091143.23830"><vh>@color MistyRose1 = #FFE4E1</vh></v>
 <v t="tbrown.20131122091143.23831"><vh>@color LightSteelBlue1 = #CAE1FF</vh></v>
@@ -1176,8 +1176,8 @@
 <v t="tbrown.20131122094200.2514"><vh>@string font-size-tree = @font-size</vh></v>
 <v t="tbrown.20131122094200.2517"><vh>@string font-size-log = @font-size</vh></v>
 </v>
-<v t="tbrown.20140101093550.22678" a="E"><vh>Plugins</vh>
-<v t="tbrown.20140101093550.22679" a="E"><vh>bookmarks</vh>
+<v t="tbrown.20140101093550.22678"><vh>Plugins</vh>
+<v t="tbrown.20140101093550.22679"><vh>bookmarks</vh>
 <v t="tbrown.20140101093550.25173"><vh>@string bookmarks_font_size = 11pt</vh></v>
 <v t="tbrown.20140101093550.25165"><vh>@string bookmarks_base_size = @bookmarks_font_size</vh></v>
 <v t="tbrown.20140101093550.25136"><vh>@color bookmarks_base_color = @text-foreground</vh></v>
@@ -1188,11 +1188,11 @@
 <v t="tbrown.20140101093550.25147"><vh>@string bookmarks_current_weight = bold</vh></v>
 <v t="tbrown.20140101093550.25148"><vh>@string bookmarks_current_decoration = ignore</vh></v>
 <v t="tbrown.20140101093550.25169"><vh>@string bookmarks_expanded_size = ignore</vh></v>
-<v t="tbrown.20140101093550.25154"><vh>@color bookmarks_expanded_color = ignore</vh></v>
+<v t="tbrown.20140101093550.25154"><vh>@color bookmarks_expanded_color = @text-foreground</vh></v>
 <v t="tbrown.20140101093550.25155"><vh>@string bookmarks_expanded_weight = bold</vh></v>
 <v t="tbrown.20140101093550.25156"><vh>@string bookmarks_expanded_decoration = underline</vh></v>
 <v t="tbrown.20140101093550.25171"><vh>@string bookmarks_children_size = ignore</vh></v>
-<v t="tbrown.20140101093550.25162"><vh>@color bookmarks_children_color = ignore</vh></v>
+<v t="tbrown.20140101093550.25162"><vh>@color bookmarks_children_color = @text-foreground</vh></v>
 <v t="tbrown.20140101093550.25163"><vh>@string bookmarks_children_weight = ignore</vh></v>
 <v t="tbrown.20140101093550.25164"><vh>@string bookmarks_children_decoration = underline</vh></v>
 </v>
@@ -6391,6 +6391,8 @@ children
   
 `ignore` is not a valid setting, so Qt ignores it, which
 is useful for attributes you don't want to affect.
+
+NOTE: this is still in flux - `ignore` seems to be `black` for colors
 
 Given:
 
