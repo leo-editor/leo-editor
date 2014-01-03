@@ -94,7 +94,7 @@
 <v t="ekr.20041120155431.2"><vh>\@type type-name: script: script-name</vh></v>
 </v>
 <v t="ekr.20061011082224"><vh>About myLeoSettings.leo</vh></v>
-<v t="ekr.20041119034357.1"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
 <v t="ekr.20130924110246.13745"><vh>@bool scripting-abbreviations = False</vh></v>
@@ -1183,17 +1183,17 @@
 <v t="tbrown.20140101093550.25136"><vh>@color bookmarks_base_color = @text-foreground</vh></v>
 <v t="tbrown.20140101093550.25138"><vh>@string bookmarks_base_weight = regular</vh></v>
 <v t="tbrown.20140101093550.25140"><vh>@string bookmarks_base_decoration = none</vh></v>
-<v t="tbrown.20140101093550.25167"><vh>@string bookmarks_current_size = @bookmarks_font_size</vh></v>
+<v t="tbrown.20140101093550.25167"><vh>@string bookmarks_current_size = ignore</vh></v>
 <v t="tbrown.20140101093550.25146"><vh>@color bookmarks_current_color = blue</vh></v>
 <v t="tbrown.20140101093550.25147"><vh>@string bookmarks_current_weight = bold</vh></v>
-<v t="tbrown.20140101093550.25148"><vh>@string bookmarks_current_decoration = none</vh></v>
-<v t="tbrown.20140101093550.25169"><vh>@string bookmarks_expanded_size = @bookmarks_font_size</vh></v>
-<v t="tbrown.20140101093550.25154"><vh>@color bookmarks_expanded_color = @text-foreground</vh></v>
+<v t="tbrown.20140101093550.25148"><vh>@string bookmarks_current_decoration = ignore</vh></v>
+<v t="tbrown.20140101093550.25169"><vh>@string bookmarks_expanded_size = ignore</vh></v>
+<v t="tbrown.20140101093550.25154"><vh>@color bookmarks_expanded_color = ignore</vh></v>
 <v t="tbrown.20140101093550.25155"><vh>@string bookmarks_expanded_weight = bold</vh></v>
 <v t="tbrown.20140101093550.25156"><vh>@string bookmarks_expanded_decoration = underline</vh></v>
-<v t="tbrown.20140101093550.25171"><vh>@string bookmarks_children_size = @bookmarks_font_size</vh></v>
-<v t="tbrown.20140101093550.25162"><vh>@color bookmarks_children_color = @text-foreground</vh></v>
-<v t="tbrown.20140101093550.25163"><vh>@string bookmarks_children_weight = regular</vh></v>
+<v t="tbrown.20140101093550.25171"><vh>@string bookmarks_children_size = ignore</vh></v>
+<v t="tbrown.20140101093550.25162"><vh>@color bookmarks_children_color = ignore</vh></v>
+<v t="tbrown.20140101093550.25163"><vh>@string bookmarks_children_weight = ignore</vh></v>
 <v t="tbrown.20140101093550.25164"><vh>@string bookmarks_children_decoration = underline</vh></v>
 </v>
 </v>
@@ -6387,7 +6387,37 @@ current
 expanded
   Style for a bookmark whose children are shown
 children
-  Style for a bookmark which has children</t>
+  Style for a bookmark which has children
+  
+`ignore` is not a valid setting, so Qt ignores it, which
+is useful for attributes you don't want to affect.
+
+Given:
+
+    bookmarks_current
+      weight=bold
+      decoration=none
+    bookmarks_children
+      weight=normal
+      decoration=underline
+    
+whichever occurs last in the stylesheet will win, but with:
+
+    bookmarks_current
+      weight=bold
+      decoration=ignore
+    bookmarks_children
+      weight=ignore
+      decoration=underline
+
+you get what you want, the combination of the two, because
+`ignore` is ignored (because its invalid).
+
+Why not just leave the attributes you don't want to alter
+out of the stylesheet?  Because we want the user to be able
+to change only the @settings, and not need to edit the
+stylesheet.
+</t>
 <t tx="tbrown.20140101093550.25136"></t>
 <t tx="tbrown.20140101093550.25138">bold or regular</t>
 <t tx="tbrown.20140101093550.25140">none or underline</t>
