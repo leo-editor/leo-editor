@@ -20319,22 +20319,25 @@ vc = c.viewController
 vc = c.viewController
 clones = g.findNodeInTree(c,p,'@clones')
 root = g.findNodeInTree(c,p,'root')
+node1 = g.findNodeInTree(c,p,'node1')
+assert clones and root and node1
+root.deleteAllChildren()
 new_node1 = root.insertAsLastChild()
 new_node1.h = 'node1'
-assert clones and root
-node1 = g.findNodeInTree(c,p,'node1')
 clones.b = 'gnx: %s\nunl: %s\n' % (node1.v.gnx,'node1')
 try:
     ok = vc.create_clone_links(clones,root)
     assert ok
+    # Important: p._relinkAsCloneOf leaves new_node1 unchanged,
+    # but new_node1 should not be used.
 finally:
-    root.deleteAllChildren()
     c.redraw()
 #@+node:ekr.20140103102956.4143: *5* @clones
-gnx: ekr.20140103075353.1959
+gnx: ekr.20140104125100.4097
 unl: node1
-#@+node:ekr.20140103102956.4144: *5* node1
+#@+node:ekr.20140104125320.4105: *5* node1
 #@+node:ekr.20140103102956.4145: *5* root
+#@+node:ekr.20140104125320.4105: *6* node1
 #@+node:ekr.20140103102956.4146: *4* @test vc.find_absolute_unl_node
 vc = c.viewController
 root = c.rootPosition().insertAfter()
@@ -20432,9 +20435,8 @@ try:
     assert vc.find_organizers_node(root)
 finally:
     root.h = 'root' # Make sure root is *not* an @auto node.
-    if True and views:
-        views.deleteAllChildren()
-        c.selectPosition(p)
+    # views.deleteAllChildren()
+    c.selectPosition(p)
     c.redraw()
 #@+node:ekr.20140103102956.4159: *5* root
 #@+node:ekr.20140103102956.4160: *6* aClass
@@ -20464,7 +20466,7 @@ try:
     assert vc.is_at_auto_node(auto)
     assert not vc.is_at_auto_node(auto2)
 finally:
-    p.deleteAllChildren()
+    # p.deleteAllChildren()
     c.redraw()
 #@+node:ekr.20140103102956.4167: *4* @test vc.is_organizer_node
 vc = c.viewController
@@ -20526,8 +20528,7 @@ vc = c.viewController
 root = g.findNodeInTree(c,p,'root')
 assert root
 views = g.findNodeAnywhere(c,'@views')
-if views:
-    views.deleteAllChildren()
+if views: views.deleteAllChildren()
 try:
     root.h = '@auto root' # root must look like an @auto node.
     vc.update_before_write_at_auto_file(root)
@@ -20538,11 +20539,9 @@ try:
     assert clones.b == 'aClass-->clone',clones.b
     organizers = g.findNodeInTree(c,views,'@organizers')
     assert organizers
-    assert organizers.b == 'organizer node',organizers.b
 finally:
     root.h = 'root' # Make sure root is *not* an @auto node.
-    if True and views:
-        views.deleteAllChildren()
+    # if views: sviews.deleteAllChildren()
     c.redraw()
 #@+node:ekr.20140103102956.4178: *5* root
 #@+node:ekr.20140103102956.4179: *6* aClass
@@ -20571,7 +20570,7 @@ try:
     assert view.b == v_b,view.b
     assert view.lastChild().isCloned()
 finally:
-    views.deleteAllChildren()
+    # views.deleteAllChildren()
     c.undoer.clearUndoState()
     c.redraw()
 #@+node:ekr.20140103102956.4188: *5* clone

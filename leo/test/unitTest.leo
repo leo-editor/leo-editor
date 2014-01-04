@@ -4,7 +4,7 @@
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.49" body_secondary_ratio="0.68">
-	<global_window_position top="52" left="252" height="1001" width="1227"/>
+	<global_window_position top="55" left="618" height="1001" width="1227"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -156,6 +156,7 @@
 <v t="ekr.20101220161557.6013"><vh>Slow and unused tests</vh>
 <v t="ekr.20101220161557.6014"><vh>@file inactiveTests.txt</vh></v>
 </v>
+<v t="ekr.20140103103143.4095"></v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e382e3671017d71025808000000616e6e6f7461746571037d7104735508302e372e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e372e31342e3671097d710a5808000000616e6e6f74617465710b7d710c735508302e372e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
@@ -163,8 +164,10 @@
 <v t="ekr.20140103102956.4141"><vh>@test vc.clean_nodes (To do later)</vh></v>
 <v t="ekr.20140103102956.4142"><vh>@test vc.create_clone_links</vh>
 <v t="ekr.20140103102956.4143"><vh>@clones</vh></v>
-<v t="ekr.20140103102956.4144"><vh>node1</vh></v>
-<v t="ekr.20140103102956.4145"><vh>root</vh></v>
+<v t="ekr.20140104125320.4105"><vh>node1</vh></v>
+<v t="ekr.20140103102956.4145"><vh>root</vh>
+<v t="ekr.20140104125320.4105"></v>
+</v>
 </v>
 <v t="ekr.20140103102956.4146"><vh>@test vc.find_absolute_unl_node</vh></v>
 <v t="ekr.20140103102956.4147"><vh>@test vc.find_relative_unl_node</vh>
@@ -645,7 +648,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="8"></t>
+<t tx="ekr.20070417092935" str_leo_pos="10"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1309,22 +1312,23 @@ char t
 <t tx="ekr.20140103102956.4142">vc = c.viewController
 clones = g.findNodeInTree(c,p,'@clones')
 root = g.findNodeInTree(c,p,'root')
+node1 = g.findNodeInTree(c,p,'node1')
+assert clones and root and node1
+root.deleteAllChildren()
 new_node1 = root.insertAsLastChild()
 new_node1.h = 'node1'
-assert clones and root
-node1 = g.findNodeInTree(c,p,'node1')
 clones.b = 'gnx: %s\nunl: %s\n' % (node1.v.gnx,'node1')
 try:
     ok = vc.create_clone_links(clones,root)
     assert ok
+    # Important: p._relinkAsCloneOf leaves new_node1 unchanged,
+    # but new_node1 should not be used.
 finally:
-    root.deleteAllChildren()
     c.redraw()
 </t>
-<t tx="ekr.20140103102956.4143">gnx: ekr.20140103075353.1959
+<t tx="ekr.20140103102956.4143">gnx: ekr.20140104125100.4097
 unl: node1
 </t>
-<t tx="ekr.20140103102956.4144"></t>
 <t tx="ekr.20140103102956.4145"></t>
 <t tx="ekr.20140103102956.4146">vc = c.viewController
 root = c.rootPosition().insertAfter()
@@ -1421,9 +1425,8 @@ try:
     assert vc.find_organizers_node(root)
 finally:
     root.h = 'root' # Make sure root is *not* an @auto node.
-    if True and views:
-        views.deleteAllChildren()
-        c.selectPosition(p)
+    # views.deleteAllChildren()
+    c.selectPosition(p)
     c.redraw()
 </t>
 <t tx="ekr.20140103102956.4159"></t>
@@ -1452,7 +1455,7 @@ try:
     assert vc.is_at_auto_node(auto)
     assert not vc.is_at_auto_node(auto2)
 finally:
-    p.deleteAllChildren()
+    # p.deleteAllChildren()
     c.redraw()
 </t>
 <t tx="ekr.20140103102956.4167">vc = c.viewController
@@ -1514,8 +1517,7 @@ assert unl.endswith('--&gt;'+p.h),repr(unl)
 root = g.findNodeInTree(c,p,'root')
 assert root
 views = g.findNodeAnywhere(c,'@views')
-if views:
-    views.deleteAllChildren()
+if views: views.deleteAllChildren()
 try:
     root.h = '@auto root' # root must look like an @auto node.
     vc.update_before_write_at_auto_file(root)
@@ -1526,11 +1528,9 @@ try:
     assert clones.b == 'aClass--&gt;clone',clones.b
     organizers = g.findNodeInTree(c,views,'@organizers')
     assert organizers
-    assert organizers.b == 'organizer node',organizers.b
 finally:
     root.h = 'root' # Make sure root is *not* an @auto node.
-    if True and views:
-        views.deleteAllChildren()
+    # if views: sviews.deleteAllChildren()
     c.redraw()
 </t>
 <t tx="ekr.20140103102956.4178"></t>
@@ -1558,7 +1558,7 @@ try:
     assert view.b == v_b,view.b
     assert view.lastChild().isCloned()
 finally:
-    views.deleteAllChildren()
+    # views.deleteAllChildren()
     c.undoer.clearUndoState()
     c.redraw()
 </t>
@@ -1569,5 +1569,6 @@ finally:
 <t tx="ekr.20140103102956.4188">clone body
 </t>
 <t tx="ekr.20140103103143.4095"></t>
+<t tx="ekr.20140104125320.4105"></t>
 </tnodes>
 </leo_file>

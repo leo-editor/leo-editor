@@ -479,16 +479,15 @@ class abbrevCommandsClass (baseEditCommandsClass):
         self.tree_abbrevs_d = d
     #@+node:ekr.20050920084036.15: *4* getPublicCommands & getStateCommands
     def getPublicCommands (self):
-
+        '''Return a dict: keys are command names and whose values are methods.'''
         return {
-
+            # Reload.
+            # 'reload-abbreviations': self.reloadAbbreviations,
             # Non-prefixed commands.
             'toggle-abbrev-mode':   self.toggleAbbrevMode,
-
             # Dynamic...
             'dabbrev-completion':   self.dynamicCompletion,
             'dabbrev-expands':      self.dynamicExpansion,
-
             # Static...
             'abbrev-add-global':        self.addAbbreviation,
             # 'abbrev-expand-region':   self.regionalExpandAbbrev,
@@ -498,6 +497,9 @@ class abbrevCommandsClass (baseEditCommandsClass):
             'abbrev-read':              self.readAbbreviations,
             'abbrev-write':             self.writeAbbreviations,
         }
+    #@+node:ekr.20140104063158.17234: *4* reloadAbbreviations
+    def reloadAbbreviations(self):
+        '''Reload all abbreviations from all files.'''
     #@+node:ekr.20050920084036.27: *3* expandAbbrev & helpers (entry point)
     def expandAbbrev (self,event,stroke):
         '''

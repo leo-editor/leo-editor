@@ -241,7 +241,7 @@ class ViewController:
             else:
                 g.trace('unexpected parent:',parent)
         
-    #@+node:ekr.20140104112957.16587: *6* vc.create_one_organizer_node (TO DO)
+    #@+node:ekr.20140104112957.16587: *6* vc.create_organizer_nodes_helper (TO DO)
     def create_organizer_nodes_helper(self,children,parent,parent_unl):
         '''
         Create the organizer node with the given children,

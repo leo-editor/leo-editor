@@ -7888,7 +7888,7 @@ class Commands (object):
         # Important: do not call p.isAncestorOf here.
         trace = False and not g.unitTesting
         c = self
-        if not p:
+        if not p or not p.v:
             return False
         if root and p == root:
             return True

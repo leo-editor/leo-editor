@@ -1582,7 +1582,7 @@ class LoadManager:
                 return letter
         else:
             return 'D' if kind.find('mode') == -1 else '@'
-    #@+node:ekr.20120223062418.10421: *4* lm.computeLocalSettings (where the crash happened)
+    #@+node:ekr.20120223062418.10421: *4* lm.computeLocalSettings
     def computeLocalSettings (self,c,settings_d,shortcuts_d,localFlag):
 
         '''Merge the settings dicts from c's outline into *new copies of*
@@ -1607,7 +1607,7 @@ class LoadManager:
             shortcuts_d = lm.mergeShortcutsDicts(c,shortcuts_d,shortcuts_d2)
 
         return settings_d,shortcuts_d
-    #@+node:ekr.20121126202114.3: *4* lm.createDefaultSettingsDicts (New)
+    #@+node:ekr.20121126202114.3: *4* lm.createDefaultSettingsDicts
     def createDefaultSettingsDicts(self):
 
         '''Create lm.globalSettingsDict & lm.globalShortcutsDict.'''
@@ -1821,7 +1821,7 @@ class LoadManager:
         c.openDirectory = frame.openDirectory = g.os_path_dirname(fn)
         g.app.gui = oldGui
         return ok and c or None
-    #@+node:ekr.20120213081706.10382: *4* lm.readGlobalSettingsFiles (changed)
+    #@+node:ekr.20120213081706.10382: *4* lm.readGlobalSettingsFiles
     def readGlobalSettingsFiles (self):
 
         '''Read leoSettings.leo and myLeoSettings.leo using a null gui.'''

@@ -1742,7 +1742,8 @@ class position (object):
         if parent_v.children[p._childIndex] == v:
             parent_v.children[p._childIndex] = v2
             v2.parents.append(parent_v)
-            p.v = p2.v
+            # p.v no longer truly exists.
+            # p.v = p2.v
         else:
             g.internalError(
                 'parent_v.children[childIndex] != v',
