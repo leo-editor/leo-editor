@@ -134,18 +134,26 @@ class ViewController:
         Update the @organizer and @clones nodes in the @auto-view node for
         root, an @auto node. Create the @organizer or @clones nodes as needed.
         '''
-        clone_unls,organizer_unls = set(),set()
+        clone_unls = set()
+        d = {} # Keys are headlines, values are tuples: (p,unl)
         for p in root.subtree():
             if p.isCloned():
                 clone_unls.add(self.relative_unl(p,root))
             if self.is_organizer_node(p,root):
-                organizer_unls.add(self.relative_unl(p,root))
+                d [p.key()] = p.copy()
         if clone_unls:
             clones = self.find_clones_node(root)
             clones.b = '\n'.join(sorted(clone_unls))
-        if organizer_unls:
+        if d:
             organizers = self.find_organizers_node(root)
-            organizers.b = '\n'.join(sorted(organizer_unls))
+            for key in d.keys():
+                p = d.get(key)
+                organizer = organizers.insertAsLastChild()
+                organizer.h = '@organizer: %s' % p.h
+                # There is no need to include the unl of the organizer node.
+                # It is implicit in all the child unl's.
+                organizer.b = '\n'.join(['unl: ' + self.relative_unl(child,root)
+                    for child in p.children()])
     #@+node:ekr.20131230090121.16512: *4* vc.update_after_read_leo_file (remove?)
     def update_after_read_leo_file(self):
         '''Do after-read processing for all @auto trees.'''
@@ -167,7 +175,27 @@ class ViewController:
         clones = self.has_clones_node(p)
         if clones:
             self.create_clone_links(clones,p)
-    #@+node:ekr.20131230090121.16533: *5* vc.create_clone_links & helper
+    #@+node:ekr.20131230090121.16545: *5* vc.create_clone_link
+    def create_clone_link(self,gnx,root,unl):
+        '''
+        Replace the node in the @auto tree with the given unl by a
+        clone of the node outside the @auto tree with the given gnx.
+        '''
+        trace = False and not g.unitTesting
+        p1 = self.find_relative_unl_node(root,unl)
+        p2 = self.find_gnx_node(gnx)
+        if p1 and p2:
+            if trace: g.trace('relink',gnx,p2.h,'->',p1.h)
+            if p1.b == p2.b:
+                p2._relinkAsCloneOf(p1)
+                return True
+            else:
+                g.es('body text mismatch in relinked node',p1.h)
+                return False
+        else:
+            if trace: g.trace('relink failed',gnx,root.h,unl)
+            return False
+    #@+node:ekr.20131230090121.16533: *5* vc.create_clone_links
     def create_clone_links(self,clones,root):
         '''
         Recreate clone links from an @clones node.
@@ -184,43 +212,54 @@ class ViewController:
         else:
             g.trace('bad @clones contents',gnxs,unls)
             return False
-    #@+node:ekr.20131230090121.16545: *6* vc.create_clone_link
-    def create_clone_link(self,gnx,root,unl):
+    #@+node:ekr.20131230090121.16532: *5* vc.create_organizer_nodes & helper
+    def create_organizer_nodes(self,organizers,root):
         '''
-        Replace the node in the @auto tree with the given unl by a
-        clone of the node outside the @auto tree with the given gnx.
+        organizers is an @organizers node.
+        organizers.b is a list of relative unl's.
+        Create an organizer node in root's tree for each unl in organizers.b.
         '''
-        trace = False and not g.unitTesting
-        p1 = self.find_relative_unl_node(root,unl)
-        p2 = self.find_gnx_node(gnx)
-        if p1 and p2:
-            if trace: g.trace('relink',gnx,p2.h,'->',p1.h)
-            if p1.b == p2.b:
-                p2._relinkAsCloneOf(p1)
-                return True
-            else:
-                ### What to do about this?
-                g.es('body text mismatch in relinked node',p1.h)
-                return False
-        else:
-            if trace: g.trace('relink failed',gnx,root.h,unl)
-            return False
-    #@+node:ekr.20131230090121.16532: *5* vc.create_organizer_nodes (to do)
-    def create_organizer_nodes(organizers,root):
-        '''Create an organizer node for each relative unl in organizers.b.'''
         # Find the leading unl: lines.
-        i,lines,tag = 0,g.splitLines(root.b),'unl:'
-        for s in lines:
-            if s.startswith(tag): i += 1
-            else: break
-        if i == 0:
-            return
-        unls = list(set([s[len(tag):].strip() for s in lines[:i]]))
-        for unl in unls:
-            p = self.find_relative_unl_node(root,unl)
-            g.trace(unl,p and p.h or 'None')
-
+        tag = 'unl:'
+        for parent in organizers.children():
+            if parent.h.startswith('@organizer'):
+                found = []
+                unls = [s[len(tag):].strip() for s in g.splitLines(parent.b)
+                    if s.startswith(tag)]
+                g.trace(unls)
+                for unl in list(set(unls)):
+                    # Delete the penultimate part of the unl, which refers
+                    # to the organizer node that has not yet been inserted.
+                    aList = unl.split('-->')
+                    unl = '-->'.join(aList[:-2] + aList[-1:])
+                    p = self.find_relative_unl_node(root,unl)
+                    if p: found.append(p.copy())
+                if found:
+                    aList = unls[0].split('-->')
+                    parent_unl = '-->'.join(aList[:-1])
+                    self.create_organizer_nodes_helper(found,parent,parent_unl)
+            else:
+                g.trace('unexpected parent:',parent)
         
+    #@+node:ekr.20140104112957.16587: *6* vc.create_one_organizer_node (TO DO)
+    def create_organizer_nodes_helper(self,children,parent,parent_unl):
+        '''
+        Create the organizer node with the given children,
+        preserving the sibling order of the children as much as possible.
+        '''
+        h = parent.h[len('@organizer:'):].strip()
+        g.trace('headline',h,'parent_unl',parent_unl,'len(children)',len(children))
+        ########## To do: preserve sibling order in children.
+
+    #@+node:ekr.20131230090121.16547: *5* vc.find_gnx_node
+    def find_gnx_node(self,gnx):
+        '''Return the first position having the given gnx.'''
+        # This is part of the read logic, so newly-imported
+        # nodes will never have the given gnx.
+        for p in self.c.all_unique_positions():
+            if p.v.gnx == gnx:
+                return p
+        return None
     #@+node:ekr.20131230090121.16515: *3* vc.Helpers
     #@+node:ekr.20140103105930.16448: *4* vc.at_auto_view_body and match_at_auto_body
     def at_auto_view_body(self,p):
@@ -339,6 +378,7 @@ class ViewController:
         The unl is relative to the parent position.
         '''
         trace = False and not g.unitTesting
+        if trace: g.trace('parent',parent.h,'unl',unl)
         p = parent
         for s in unl.split('-->'):
             for child in p.children():
