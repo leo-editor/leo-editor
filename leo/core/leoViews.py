@@ -291,17 +291,29 @@ class ViewController:
     def match_at_auto_body(self,p,auto_view):
         '''Return True if any line of auto_view.b matches the expected gnx line.'''
         return p.b == 'gnx: %s\n' % auto_view.v.gnx
-    #@+node:ekr.20131230090121.16522: *4* vc.clean_nodes (to to)
+    #@+node:ekr.20131230090121.16522: *4* vc.clean_nodes (test)
     def clean_nodes(self):
         '''Delete @auto-view nodes with no corresponding @auto nodes.'''
         c = self.c
         views = self.has_views_node()
         if not views:
             return
-        unls = [self.unl(p) for p in c.all_positions()
-            if self.is_at_auto_node(p)]
-        nodes = [p for p in c.all_positions()
-            if self.is_at_auto_node(p)]
+        # Remember the gnx of all @auto nodes.
+        d = {}
+        for p in c.all_unique_positions():
+            if self.is_at_auto_node(p):
+                d[p.v.gnx] = True
+        # Remember all unused @auto-view nodes.
+        delete = []
+        for child in views.children():
+            s = child.b and g.splitlines(child.b)
+            gnx = s[len('gnx'):].strip()
+            if gnx not in d:
+                g.trace(child.h,gnx)
+                delete.append(child.copy())
+        for p in reversed(delete):
+            p.doDelete()
+        c.selectPosition(views)
     #@+node:ekr.20131230090121.16526: *4* vc.comment_delims
     def comment_delims(self,p):
         '''Return the comment delimiter in effect at p, an @auto node.'''

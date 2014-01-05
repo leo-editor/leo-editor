@@ -3313,7 +3313,8 @@ class atFile:
         Write p, an @auto node.
         File indices *must* have already been assigned.
         '''
-        at = self ; c = at.c ; root = p.copy()
+        at,c = self,self.c
+        root = p.copy()
         fileName = p.atAutoNodeName()
         if not fileName and not toString:
             return False
@@ -3334,6 +3335,8 @@ class atFile:
             atAuto=True,
             nosentinels=True,thinFile=False,scriptWrite=False,
             toString=toString)
+        ###
+        ### c.viewController.update_before_write_at_auto_file(root)
         ok = at.openFileForWriting (root,fileName=fileName,toString=toString)
         if ok:
             isAtAutoOtl = root.isAtAutoOtlNode() # For traces.
