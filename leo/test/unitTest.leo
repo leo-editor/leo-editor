@@ -169,6 +169,26 @@
 <v t="ekr.20140104125320.4105"></v>
 </v>
 </v>
+<v t="ekr.20140104205530.4110"><vh>@test vc.create_organizer_node</vh>
+<v t="ekr.20140104205530.4111"><vh>root_before</vh>
+<v t="ekr.20140104205530.4112"><vh>aClass</vh>
+<v t="ekr.20140104205530.4113"><vh>spam</vh></v>
+<v t="ekr.20140104205530.4114"><vh>organizer node</vh>
+<v t="ekr.20140104205530.4115"><vh>child1</vh></v>
+<v t="ekr.20140104205530.4116"><vh>child2</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20140104205530.4117"><vh>root_after</vh>
+<v t="ekr.20140104205530.4118"><vh>aClass</vh>
+<v t="ekr.20140104205530.4119"><vh>spam</vh></v>
+<v t="ekr.20140104205530.4120"><vh>organizer node</vh>
+<v t="ekr.20140104205530.4121"><vh>child1</vh></v>
+<v t="ekr.20140104205530.4122"><vh>child2</vh></v>
+</v>
+</v>
+</v>
+</v>
 <v t="ekr.20140103102956.4146"><vh>@test vc.find_absolute_unl_node</vh></v>
 <v t="ekr.20140103102956.4147"><vh>@test vc.find_relative_unl_node</vh>
 <v t="ekr.20140103102956.4148"><vh>node1</vh>
@@ -648,7 +668,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="10"></t>
+<t tx="ekr.20070417092935" str_leo_pos="10,2"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1570,5 +1590,47 @@ finally:
 </t>
 <t tx="ekr.20140103103143.4095"></t>
 <t tx="ekr.20140104125320.4105"></t>
+<t tx="ekr.20140104205530.4110">vc = c.viewController
+views = g.findNodeAnywhere(c,'@views')
+if views:
+    views.deleteAllChildren()
+root_before = g.findNodeInTree(c,p,'root_before')
+assert root_before
+root_after = g.findNodeInTree(c,p,'root_after')
+assert root_after
+try:
+    # The roots must look like @auto nodes.
+    root_before.h = '@auto root_before'
+    root_after.h = '@auto root_after' 
+    vc.update_before_write_at_auto_file(root_before)
+    organizers = vc.has_organizers_node(root_before)
+    assert organizers
+    vc.create_organizer_nodes(organizers,root_after)
+finally:
+     # Make sure the roots are *not* @auto nodes.
+    root_before.h = 'root_before'
+    root_after.h = 'root_after'
+    if False and views:
+        views.deleteAllChildren()
+    c.redraw()
+</t>
+<t tx="ekr.20140104205530.4111">@others</t>
+<t tx="ekr.20140104205530.4112">class aClass:
+    @others</t>
+<t tx="ekr.20140104205530.4113">def spam():
+    pass</t>
+<t tx="ekr.20140104205530.4114"></t>
+<t tx="ekr.20140104205530.4115"></t>
+<t tx="ekr.20140104205530.4116">def spam():
+    pass</t>
+<t tx="ekr.20140104205530.4117">@others</t>
+<t tx="ekr.20140104205530.4118">class aClass:
+    @others</t>
+<t tx="ekr.20140104205530.4119">def spam():
+    pass</t>
+<t tx="ekr.20140104205530.4120"></t>
+<t tx="ekr.20140104205530.4121"></t>
+<t tx="ekr.20140104205530.4122">def spam():
+    pass</t>
 </tnodes>
 </leo_file>

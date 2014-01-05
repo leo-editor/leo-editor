@@ -20338,6 +20338,56 @@ unl: node1
 #@+node:ekr.20140104125320.4105: *5* node1
 #@+node:ekr.20140103102956.4145: *5* root
 #@+node:ekr.20140104125320.4105: *6* node1
+#@+node:ekr.20140104205530.4110: *4* @test vc.create_organizer_node
+vc = c.viewController
+views = g.findNodeAnywhere(c,'@views')
+if views:
+    views.deleteAllChildren()
+root_before = g.findNodeInTree(c,p,'root_before')
+assert root_before
+root_after = g.findNodeInTree(c,p,'root_after')
+assert root_after
+try:
+    # The roots must look like @auto nodes.
+    root_before.h = '@auto root_before'
+    root_after.h = '@auto root_after' 
+    vc.update_before_write_at_auto_file(root_before)
+    organizers = vc.has_organizers_node(root_before)
+    assert organizers
+    vc.create_organizer_nodes(organizers,root_after)
+finally:
+     # Make sure the roots are *not* @auto nodes.
+    root_before.h = 'root_before'
+    root_after.h = 'root_after'
+    if False and views:
+        views.deleteAllChildren()
+    c.redraw()
+#@+node:ekr.20140104205530.4111: *5* root_before
+@others
+#@+node:ekr.20140104205530.4112: *6* aClass
+class aClass:
+    @others
+#@+node:ekr.20140104205530.4113: *7* spam
+def spam():
+    pass
+#@+node:ekr.20140104205530.4114: *7* organizer node
+#@+node:ekr.20140104205530.4115: *8* child1
+#@+node:ekr.20140104205530.4116: *8* child2
+def spam():
+    pass
+#@+node:ekr.20140104205530.4117: *5* root_after
+@others
+#@+node:ekr.20140104205530.4118: *6* aClass
+class aClass:
+    @others
+#@+node:ekr.20140104205530.4119: *7* spam
+def spam():
+    pass
+#@+node:ekr.20140104205530.4120: *7* organizer node
+#@+node:ekr.20140104205530.4121: *8* child1
+#@+node:ekr.20140104205530.4122: *8* child2
+def spam():
+    pass
 #@+node:ekr.20140103102956.4146: *4* @test vc.find_absolute_unl_node
 vc = c.viewController
 root = c.rootPosition().insertAfter()

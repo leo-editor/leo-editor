@@ -221,12 +221,11 @@ class ViewController:
         '''
         # Find the leading unl: lines.
         tag = 'unl:'
-        for parent in organizers.children():
-            if parent.h.startswith('@organizer'):
+        for organizer in organizers.children():
+            if organizer.h.startswith('@organizer'):
                 found = []
-                unls = [s[len(tag):].strip() for s in g.splitLines(parent.b)
+                unls = [s[len(tag):].strip() for s in g.splitLines(organizer.b)
                     if s.startswith(tag)]
-                g.trace(unls)
                 for unl in list(set(unls)):
                     # Delete the penultimate part of the unl, which refers
                     # to the organizer node that has not yet been inserted.
@@ -235,22 +234,47 @@ class ViewController:
                     p = self.find_relative_unl_node(root,unl)
                     if p: found.append(p.copy())
                 if found:
-                    aList = unls[0].split('-->')
-                    parent_unl = '-->'.join(aList[:-1])
-                    self.create_organizer_nodes_helper(found,parent,parent_unl)
+                    # aList = unls[0].split('-->')
+                    # organizer_unl = '-->'.join(aList[:-1])
+                    self.create_organizer_nodes_helper(found,organizer)
             else:
-                g.trace('unexpected parent:',parent)
-        
-    #@+node:ekr.20140104112957.16587: *6* vc.create_organizer_nodes_helper (TO DO)
-    def create_organizer_nodes_helper(self,children,parent,parent_unl):
+                g.trace('unexpected organizer:',organizer)
+    #@+node:ekr.20140104112957.16587: *6* vc.create_organizer_nodes_helper (test)
+    def create_organizer_nodes_helper(self,children,at_organizer):
         '''
-        Create the organizer node with the given children,
-        preserving the sibling order of the children as much as possible.
+        Create the organizer node with the given children.
+        The order of the children is the *old* order;
+        it's important to use the *new* (imported) order instead.
         '''
-        h = parent.h[len('@organizer:'):].strip()
-        g.trace('headline',h,'parent_unl',parent_unl,'len(children)',len(children))
-        ########## To do: preserve sibling order in children.
-
+        # Sort children into result using the order of imported children.
+        assert children
+        parent = children[0].parent()
+        extra,result = [],[]
+        for child in parent.children():
+            for child2 in children:
+                if child == child2:
+                    result.append(child.copy())
+                    children.remove(child)
+                    break
+            else:
+                # To keep the file unchanged, the organizer node must
+                # organize extra nodes.
+                extra.append(child.copy())
+        if 0:
+            g.trace('parent',parent.h,'children',[p.h for p in children])
+            g.trace('result',[p.h for p in result])
+            g.trace('extra',[p.h for p in extra])
+        ### This may need more work.
+        # Insert the organizer as the last child.
+        # This preserves positions *and* ensures that extra nodes occur
+        # in roughly the proper places.
+        organizer = parent.insertAsLastChild()
+        organizer.h = at_organizer.h[len('@organizer:'):].strip()
+        # Demote all result nodes in reverse order so positions remain stable.
+        for child in reversed(result):
+            child.moveToFirstChildOf(organizer)
+        # Optional: report extra nodes.
+        for p in extra: g.trace('extra node',p.h)
     #@+node:ekr.20131230090121.16547: *5* vc.find_gnx_node
     def find_gnx_node(self,gnx):
         '''Return the first position having the given gnx.'''
