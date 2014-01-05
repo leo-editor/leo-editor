@@ -280,15 +280,6 @@ class ViewController:
         # Move the organizer node if it is not already the n'th child.
         if organizer.childIndex() != n:
             organizer.moveToNthChildOf(parent,n)
-    #@+node:ekr.20131230090121.16547: *5* vc.find_gnx_node
-    def find_gnx_node(self,gnx):
-        '''Return the first position having the given gnx.'''
-        # This is part of the read logic, so newly-imported
-        # nodes will never have the given gnx.
-        for p in self.c.all_unique_positions():
-            if p.v.gnx == gnx:
-                return p
-        return None
     #@+node:ekr.20131230090121.16515: *3* vc.Helpers
     #@+node:ekr.20140103105930.16448: *4* vc.at_auto_view_body and match_at_auto_body
     def at_auto_view_body(self,p):
