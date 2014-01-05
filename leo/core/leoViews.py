@@ -239,7 +239,7 @@ class ViewController:
                     self.create_organizer_nodes_helper(found,organizer)
             else:
                 g.trace('unexpected organizer:',organizer)
-    #@+node:ekr.20140104112957.16587: *6* vc.create_organizer_nodes_helper (test)
+    #@+node:ekr.20140104112957.16587: *6* vc.create_organizer_nodes_helper
     def create_organizer_nodes_helper(self,children,at_organizer):
         '''
         Create the organizer node with the given children.
@@ -257,24 +257,29 @@ class ViewController:
                     children.remove(child)
                     break
             else:
-                # To keep the file unchanged, the organizer node must
-                # organize extra nodes.
-                extra.append(child.copy())
+                # The organizer node must organize extra nodes that lie
+                # between the first and last organized nodes.
+                if result:
+                    result.append(child.copy())
+                    extra.append(child.copy())
+            if not children: break # Don't drag in following nodes.
         if 0:
             g.trace('parent',parent.h,'children',[p.h for p in children])
             g.trace('result',[p.h for p in result])
             g.trace('extra',[p.h for p in extra])
-        ### This may need more work.
-        # Insert the organizer as the last child.
-        # This preserves positions *and* ensures that extra nodes occur
-        # in roughly the proper places.
+        # Insert the organizer as the last child to preserve positions.
+        # Later, we'll move the organizer to the n'th child of it's parent.
+        n = result[0].childIndex() if result else 0
         organizer = parent.insertAsLastChild()
         organizer.h = at_organizer.h[len('@organizer:'):].strip()
         # Demote all result nodes in reverse order so positions remain stable.
         for child in reversed(result):
             child.moveToFirstChildOf(organizer)
         # Optional: report extra nodes.
-        for p in extra: g.trace('extra node',p.h)
+        # for p in extra: g.trace('extra node',p.h)
+        # Move the organizer node if it is not already the n'th child.
+        if organizer.childIndex() != n:
+            organizer.moveToNthChildOf(parent,n)
     #@+node:ekr.20131230090121.16547: *5* vc.find_gnx_node
     def find_gnx_node(self,gnx):
         '''Return the first position having the given gnx.'''

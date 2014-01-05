@@ -6,7 +6,9 @@
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 
-reload-abbreviations and reload-key-bindings commands.
+It's annoying to have to reload Leo to use a new abbreviation:
+    reload-abbreviations and reload-key-bindings commands.
+        Use regex replace to replace settings ivars with @property defs.
 
 Release 4.11.1
     - Create myLeoSettings and workbook automatically if they do not exist.
