@@ -127,8 +127,7 @@ class ViewController:
         root, an @auto node. Create the @organizer or @clones nodes as needed.
         '''
         c = self.c
-        clone_data = []
-        d = {} # Keys are headlines, values are tuples: (p,unl)
+        clone_data,organizers_data = [],[]
         for p in root.subtree():
             if p.isCloned():
                 rep = self.find_representative_node(root,p)
@@ -137,27 +136,22 @@ class ViewController:
                     gnx = rep.v.gnx
                     clone_data.append((gnx,unl),)
             if self.is_organizer_node(p,root):
-                d [p.key()] = p.copy()
+                organizers_data.append(p.copy())
         if clone_data:
             at_clones = self.find_clones_node(root)
-            result = []
-            for data in clone_data:
-                gnx,unl = data
-                result.append('gnx: %s\nunl: %s\n' % (gnx,unl))
-            at_clones.b = ''.join(result)
-            # at_clones.b = '\n'.join(sorted(clone_unls))
-        if d:
+            at_clones.b = ''.join(['gnx: %s\nunl: %s\n' % (z[0],z[1])
+                for z in clone_data])
+        if organizers_data:
             organizers = self.find_organizers_node(root)
             organizers.deleteAllChildren()
-            for key in d.keys():
-                p = d.get(key)
+            for p in organizers_data:
                 organizer = organizers.insertAsLastChild()
                 organizer.h = '@organizer: %s' % p.h
-                # There is no need to include the unl of the organizer node.
-                # It is implicit in all the child unl's.
+                # The organizer node's unl is implicit in each child's unl.
                 organizer.b = '\n'.join(['unl: ' + self.relative_unl(child,root)
-                    for child in p.children()])
-        if clone_data or d:
+                    for child in p.children()
+                        if not self.is_organizer_node(child,root)])
+        if clone_data or organizers_data:
             c.redraw()
     #@+node:ekr.20131230090121.16513: *4* vc.update_after_read_at_auto_file & helpers
     def update_after_read_at_auto_file(self,p):
@@ -480,7 +474,7 @@ class ViewController:
             # c.redraw()
         return p
     #@+node:ekr.20140103062103.16443: *4* vc.has...
-    # The find_xxx commands return None if the node does not exist.
+    # The has_xxx commands return None if the node does not exist.
     #@+node:ekr.20140103105930.16447: *5* vc.has_at_auto_view_node
     def has_at_auto_view_node(self,root):
         '''
