@@ -20333,12 +20333,12 @@ try:
 finally:
     c.redraw()
 #@+node:ekr.20140103102956.4143: *5* @clones
-gnx: ekr.20140104125100.4097
+gnx: ekr.20140105185509.4229
 unl: node1
-#@+node:ekr.20140104125320.4105: *5* node1
+#@+node:ekr.20140105190809.4151: *5* node1
 #@+node:ekr.20140103102956.4145: *5* root
-#@+node:ekr.20140104125320.4105: *6* node1
-#@+node:ekr.20140104205530.4110: *4* @test vc.create_organizer_node
+#@+node:ekr.20140105190809.4151: *6* node1
+#@+node:ekr.20140105185509.4140: *4* @test vc.create_organizer_node
 vc = c.viewController
 views = g.findNodeAnywhere(c,'@views')
 if views:
@@ -20347,6 +20347,8 @@ root_before = g.findNodeInTree(c,p,'root_before')
 assert root_before
 root_after = g.findNodeInTree(c,p,'root_after')
 assert root_after
+root_restore = g.findNodeInTree(c,p,'root_restore')
+assert root_restore
 try:
     # The roots must look like @auto nodes.
     root_before.h = '@auto root_before'
@@ -20359,35 +20361,63 @@ finally:
      # Make sure the roots are *not* @auto nodes.
     root_before.h = 'root_before'
     root_after.h = 'root_after'
-    if False and views:
-        views.deleteAllChildren()
+    # Replace root_after by a copy of root_restore.
+    # This ensures that the unit test can be run more than once.
+    root_after.doDelete()
+    c.selectPosition(root_restore)
+    c.copyOutline()
+    c.selectPosition(root_before)
+    c.pasteOutline()
+    assert c.p.h == 'root_restore'
+    c.p.h = 'root_after'
+    
     c.redraw()
-#@+node:ekr.20140104205530.4111: *5* root_before
+#@+node:ekr.20140105190941.4170: *5* root_restore
 @others
-#@+node:ekr.20140104205530.4112: *6* aClass
+#@+node:ekr.20140105190941.4171: *6* aClass
 class aClass:
     @others
-#@+node:ekr.20140104205530.4113: *7* spam
+#@+node:ekr.20140105190941.4172: *7* before organizer
 def spam():
     pass
-#@+node:ekr.20140104205530.4114: *7* organizer node
-#@+node:ekr.20140104205530.4115: *8* child1
-#@+node:ekr.20140104205530.4116: *8* child2
+#@+node:ekr.20140105190941.4173: *7* extra 1
+#@+node:ekr.20140105190941.4174: *7* child1
+#@+node:ekr.20140105190941.4175: *7* extra 2
+#@+node:ekr.20140105190941.4176: *7* child2
 def spam():
     pass
-#@+node:ekr.20140104205530.4117: *5* root_after
+#@+node:ekr.20140105190941.4177: *7* extra 3
+#@+node:ekr.20140105190941.4178: *7* after organizer
+#@+node:ekr.20140105185509.4141: *5* root_before
 @others
-#@+node:ekr.20140104205530.4118: *6* aClass
+#@+node:ekr.20140105185509.4142: *6* aClass
 class aClass:
     @others
-#@+node:ekr.20140104205530.4119: *7* spam
+#@+node:ekr.20140105185509.4143: *7* before organizer
 def spam():
     pass
-#@+node:ekr.20140104205530.4120: *7* organizer node
-#@+node:ekr.20140104205530.4121: *8* child1
-#@+node:ekr.20140104205530.4122: *8* child2
+#@+node:ekr.20140105185509.4144: *7* organizer node
+#@+node:ekr.20140105185509.4145: *8* child1
+#@+node:ekr.20140105185509.4146: *8* child2
 def spam():
     pass
+#@+node:ekr.20140105185509.4147: *7* after organizer
+#@+node:ekr.20140105190941.4258: *5* root_after
+@others
+#@+node:ekr.20140105190941.4259: *6* aClass
+class aClass:
+    @others
+#@+node:ekr.20140105190941.4260: *7* before organizer
+def spam():
+    pass
+#@+node:ekr.20140105190941.4261: *7* extra 1
+#@+node:ekr.20140105190941.4262: *7* child1
+#@+node:ekr.20140105190941.4263: *7* extra 2
+#@+node:ekr.20140105190941.4264: *7* child2
+def spam():
+    pass
+#@+node:ekr.20140105190941.4265: *7* extra 3
+#@+node:ekr.20140105190941.4266: *7* after organizer
 #@+node:ekr.20140103102956.4146: *4* @test vc.find_absolute_unl_node
 vc = c.viewController
 root = c.rootPosition().insertAfter()
@@ -20505,6 +20535,57 @@ views = g.findNodeAnywhere(c,tag)
 assert views
 views2 = vc.has_views_node()
 assert views == views2,(views,views2)
+#@+node:ekr.20140105185509.4198: *4* @test vc.has_*_node
+# Test vc.has_at_auto_view_node, vc.has_clones_node and vc.has_organizers_node.
+vc = c.viewController
+views = g.findNodeAnywhere(c,'@views')
+if views:
+    assert vc.has_views_node()
+    views.deleteAllChildren()
+else:
+    assert not vc.has_views_node()
+    views = vc.find_views_node()
+assert views
+root = g.findNodeInTree(c,p,'root')
+assert root
+try:
+    root.h = '@auto root' # root must look like an @auto node.
+    vc.update_before_write_at_auto_file(root)
+    auto_view = g.findNodeInTree(c,views,'@auto-view:root')
+    assert auto_view
+    auto_view2 = vc.has_at_auto_view_node(root)
+    assert auto_view2
+    assert auto_view2 == auto_view,(auto_view,auto_view2)
+    clones = g.findNodeInTree(c,auto_view,'@clones')
+    assert clones
+    clones2 = vc.has_clones_node(root)
+    assert clones2
+    assert clones2 == clones
+    organizers = g.findNodeInTree(c,auto_view,'@organizers')
+    assert organizers
+    organizers2 = vc.has_organizers_node(root)
+    assert organizers2
+    assert organizers2 == organizers
+finally:
+    root.h = 'root' # Make sure root is *not* an @auto node.
+    if False and views:
+        views.deleteAllChildren()
+    c.redraw()
+#@+node:ekr.20140105185509.4199: *5* root
+@others
+#@+node:ekr.20140105185509.4200: *6* aClass
+class aClass:
+    @others
+#@+node:ekr.20140105185509.4204: *7* spam
+def spam():
+    pass
+#@+node:ekr.20140105185509.4202: *7* organizer node
+#@+node:ekr.20140105185509.4203: *8* child2
+def spam():
+    pass
+#@+node:ekr.20140105185509.4204: *6* spam
+def spam():
+    pass
 #@+node:ekr.20140103102956.4166: *4* @test vc.is_at_auto_node
 vc = c.viewController
 p.deleteAllChildren()
@@ -20518,6 +20599,8 @@ try:
 finally:
     # p.deleteAllChildren()
     c.redraw()
+#@+node:ekr.20140105185509.4244: *5* @auto test.py
+#@+node:ekr.20140105185509.4245: *5* @auto-rst test2.py
 #@+node:ekr.20140103102956.4167: *4* @test vc.is_organizer_node
 vc = c.viewController
 redraw_flag = False
@@ -20573,12 +20656,13 @@ continued comment
 vc = c.viewController
 unl = vc.unl(p)
 assert unl.endswith('-->'+p.h),repr(unl)
-#@+node:ekr.20140103102956.4177: *4* @test vc.update_before_write_at_auto_file
+#@+node:ekr.20140105185509.4181: *4* @test vc.update_before_write_at_auto_file
 vc = c.viewController
 root = g.findNodeInTree(c,p,'root')
 assert root
 views = g.findNodeAnywhere(c,'@views')
-if views: views.deleteAllChildren()
+if views:
+    views.deleteAllChildren()
 try:
     root.h = '@auto root' # root must look like an @auto node.
     vc.update_before_write_at_auto_file(root)
@@ -20587,22 +20671,27 @@ try:
     clones = g.findNodeInTree(c,views,'@clones')
     assert clones
     assert clones.b == 'aClass-->clone',clones.b
-    organizers = g.findNodeInTree(c,views,'@organizers')
-    assert organizers
+    organizer = g.findNodeInTree(c,views,'@organizer: organizer node')
+    assert organizer
+    s1 = 'unl: organizer node-->child1'
+    s2 = 'unl: organizer node-->child2'
+    assert organizer.b == '\n'.join([s1,s2]),organizer.b
 finally:
     root.h = 'root' # Make sure root is *not* an @auto node.
-    # if views: sviews.deleteAllChildren()
+    if False and views:
+        views.deleteAllChildren()
     c.redraw()
-#@+node:ekr.20140103102956.4178: *5* root
-#@+node:ekr.20140103102956.4179: *6* aClass
+#@+node:ekr.20140105185509.4182: *5* root
+#@+node:ekr.20140105185509.4183: *6* aClass
 class aClass:
     @others
-#@+node:ekr.20140103102956.4183: *7* clone
-#@+node:ekr.20140103102956.4181: *6* organizer node
-#@+node:ekr.20140103102956.4182: *7* child2
+#@+node:ekr.20140105185509.4187: *7* clone
+#@+node:ekr.20140105185509.4185: *6* organizer node
+#@+node:ekr.20140105185509.4216: *7* child1
+#@+node:ekr.20140105185509.4186: *7* child2
 def spam():
     pass
-#@+node:ekr.20140103102956.4183: *5* clone
+#@+node:ekr.20140105185509.4187: *5* clone
 #@+node:ekr.20140103102956.4184: *4* @test view-pack & view_unpack
 vc = c.viewController
 views = g.findNodeAnywhere(c,'@views')
