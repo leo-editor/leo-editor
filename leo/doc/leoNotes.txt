@@ -12697,5 +12697,22 @@ def initWriteIvars(self,root,targetFileName,
         if hasattr(at.root.v,'tnodeList'):
             delattr(at.root.v,'tnodeList')
         at.root.v._p_changed = True
+.. @+node:ekr.20140105055318.16672: *3* ViewController unused
+.. @+node:ekr.20131230090121.16510: *4* vc.update_before_write_leo_file
+def update_before_write_leo_file(self):
+    '''Do pre-write processing for all @auto trees.'''
+    c = self.c
+    for p in c.all_unique_positions():
+        if self.is_at_auto_node:
+            self.update_before_write_at_auto_file(p)
+    self.clean_nodes()
+.. @+node:ekr.20131230090121.16512: *4* vc.update_after_read_leo_file
+def update_after_read_leo_file(self):
+    '''Do after-read processing for all @auto trees.'''
+    c = self.c
+    for p in c.all_unique_positions():
+        if self.is_at_auto_node(p):
+            self.update_after_read_at_auto_file(p)
+    self.clean_nodes()
 .. @-all
 .. @-leo

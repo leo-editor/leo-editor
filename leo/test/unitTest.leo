@@ -11,13 +11,7 @@
 <find_panel_settings/>
 <vnodes>
 <v t="ekr.20070417092935"><vh>Startup</vh>
-<v t="ekr.20140103103143.4095"><vh>@views</vh>
-<v t="ekr.20140105190941.4245"><vh>@auto-view:root_before</vh>
-<v t="ekr.20140105190941.4246"><vh>@organizers</vh>
-<v t="ekr.20140105190941.4247"><vh>@organizer: organizer node</vh></v>
-</v>
-</v>
-</v>
+<v t="ekr.20140103103143.4095"><vh>@views</vh></v>
 <v t="ekr.20101220161557.6011"><vh>@file unitTestStartup.txt</vh></v>
 <v t="ekr.20041121151002"><vh>@settings</vh>
 <v t="ekr.20110521073115.3494"><vh>colorizer colors</vh>
@@ -289,6 +283,7 @@ marks="ekr.20140105185509.4140,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 </v>
 </v>
+<v t="ekr.20140103102956.4142"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -704,7 +699,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="10"></t>
+<t tx="ekr.20070417092935" str_leo_pos="9"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1744,11 +1739,6 @@ finally:
 </t>
 <t tx="ekr.20140105190941.4177"></t>
 <t tx="ekr.20140105190941.4178"></t>
-<t tx="ekr.20140105190941.4245">gnx: ekr.20140105185509.4141
-</t>
-<t tx="ekr.20140105190941.4246"></t>
-<t tx="ekr.20140105190941.4247">unl: aClass--&gt;organizer node--&gt;child1
-unl: aClass--&gt;organizer node--&gt;child2</t>
 <t tx="ekr.20140105190941.4258">@others
 </t>
 <t tx="ekr.20140105190941.4259">class aClass:

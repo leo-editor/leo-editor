@@ -7,6 +7,7 @@
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 60
+new_auto = False # True: enable calls to c.viewController.
 allow_cloned_sibs = True # True: allow cloned siblings in @file nodes.
 #@+<< imports >>
 #@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile)
@@ -850,6 +851,9 @@ class atFile:
             if 0:
                 g.es_print('reading entire file into @auto node.')
                 at.readOneAtEditNode(fileName,p)
+        else:
+            if new_auto:
+                c.viewController.update_after_read_at_auto_file(p)
         if ic.errors or not g.os_path_exists(fileName):
             p.clearDirty()
             c.setChanged(oldChanged)
@@ -3335,8 +3339,8 @@ class atFile:
             atAuto=True,
             nosentinels=True,thinFile=False,scriptWrite=False,
             toString=toString)
-        ###
-        ### c.viewController.update_before_write_at_auto_file(root)
+        if new_auto:
+            c.viewController.update_before_write_at_auto_file(root)
         ok = at.openFileForWriting (root,fileName=fileName,toString=toString)
         if ok:
             isAtAutoOtl = root.isAtAutoOtlNode() # For traces.

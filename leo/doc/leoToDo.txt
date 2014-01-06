@@ -20,6 +20,15 @@ For 4.11.2:
 - Look at Eclipse # @name.
 
 - Improve p.isVisible: its algorithm is poor.
+.. @+node:ekr.20140104063158.16447: *3* Finish @auto-view logic
+@nocolor-node
+
+What I did:
+- Connected view code to @auto read/write code.
+- Must delete all "@organizer:" nodes before creating new ones.
+      
+Later or never:
+- Migrate leading comments from first child to organizer.
 .. @+node:ekr.20140104063158.16448: *3* reload-abbreviations and reload-key-bindings commands
 .. @+node:ekr.20120209051836.10242: *4* class LoadManager
 class LoadManager:

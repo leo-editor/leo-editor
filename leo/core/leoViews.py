@@ -120,32 +120,35 @@ class ViewController:
             c.undoer.afterChangeTree(root,'view-unpack',bunch)
             c.redraw()
         return changed
-    #@+node:ekr.20131230090121.16510: *4* vc.update_before_write_leo_file (remove?)
-    def update_before_write_leo_file(self):
-        '''Do pre-write processing for all @auto trees.'''
-        c = self.c
-        for p in c.all_unique_positions():
-            if self.is_at_auto_node:
-                self.update_before_write_at_auto_file(p)
-        self.clean_nodes()
     #@+node:ekr.20131230090121.16511: *4* vc.update_before_write_at_auto_file
     def update_before_write_at_auto_file(self,root):
         '''
         Update the @organizer and @clones nodes in the @auto-view node for
         root, an @auto node. Create the @organizer or @clones nodes as needed.
         '''
-        clone_unls = set()
+        c = self.c
+        clone_data = []
         d = {} # Keys are headlines, values are tuples: (p,unl)
         for p in root.subtree():
             if p.isCloned():
-                clone_unls.add(self.relative_unl(p,root))
+                rep = self.find_representative_node(root,p)
+                if rep:
+                    unl = self.relative_unl(p,root)
+                    gnx = rep.v.gnx
+                    clone_data.append((gnx,unl),)
             if self.is_organizer_node(p,root):
                 d [p.key()] = p.copy()
-        if clone_unls:
-            clones = self.find_clones_node(root)
-            clones.b = '\n'.join(sorted(clone_unls))
+        if clone_data:
+            at_clones = self.find_clones_node(root)
+            result = []
+            for data in clone_data:
+                gnx,unl = data
+                result.append('gnx: %s\nunl: %s\n' % (gnx,unl))
+            at_clones.b = ''.join(result)
+            # at_clones.b = '\n'.join(sorted(clone_unls))
         if d:
             organizers = self.find_organizers_node(root)
+            organizers.deleteAllChildren()
             for key in d.keys():
                 p = d.get(key)
                 organizer = organizers.insertAsLastChild()
@@ -154,14 +157,8 @@ class ViewController:
                 # It is implicit in all the child unl's.
                 organizer.b = '\n'.join(['unl: ' + self.relative_unl(child,root)
                     for child in p.children()])
-    #@+node:ekr.20131230090121.16512: *4* vc.update_after_read_leo_file (remove?)
-    def update_after_read_leo_file(self):
-        '''Do after-read processing for all @auto trees.'''
-        c = self.c
-        for p in c.all_unique_positions():
-            if self.is_at_auto_node(p):
-                self.update_after_read_at_auto_file(p)
-        self.clean_nodes()
+        if clone_data or d:
+            c.redraw()
     #@+node:ekr.20131230090121.16513: *4* vc.update_after_read_at_auto_file & helpers
     def update_after_read_at_auto_file(self,p):
         '''
@@ -175,6 +172,8 @@ class ViewController:
         clones = self.has_clones_node(p)
         if clones:
             self.create_clone_links(clones,p)
+        # g.trace('clones',clones and clones.h)
+        # g.trace('organizers',organizers and organizers.h)
     #@+node:ekr.20131230090121.16545: *5* vc.create_clone_link
     def create_clone_link(self,gnx,root,unl):
         '''
@@ -204,6 +203,7 @@ class ViewController:
         lines = g.splitLines(clones.b)
         gnxs = [s[4:].strip() for s in lines if s.startswith('gnx:')]
         unls = [s[4:].strip() for s in lines if s.startswith('unl:')]
+        # g.trace('clones.b',clones.b)
         if len(gnxs) == len(unls):
             ok = True
             for gnx,unl in zip(gnxs,unls):
@@ -222,7 +222,7 @@ class ViewController:
         # Find the leading unl: lines.
         tag = 'unl:'
         for organizer in organizers.children():
-            if organizer.h.startswith('@organizer'):
+            if organizer.h.startswith('@organizer:'):
                 found = []
                 unls = [s[len(tag):].strip() for s in g.splitLines(organizer.b)
                     if s.startswith(tag)]
@@ -233,6 +233,7 @@ class ViewController:
                     unl = '-->'.join(aList[:-2] + aList[-1:])
                     p = self.find_relative_unl_node(root,unl)
                     if p: found.append(p.copy())
+                    else: g.trace('not found',root.h,unl)
                 if found:
                     # aList = unls[0].split('-->')
                     # organizer_unl = '-->'.join(aList[:-1])
@@ -280,6 +281,7 @@ class ViewController:
         # Move the organizer node if it is not already the n'th child.
         if organizer.childIndex() != n:
             organizer.moveToNthChildOf(parent,n)
+        # g.trace('*** created %s ***' % organizer.h)
     #@+node:ekr.20131230090121.16515: *3* vc.Helpers
     #@+node:ekr.20140103105930.16448: *4* vc.at_auto_view_body and match_at_auto_body
     def at_auto_view_body(self,p):
