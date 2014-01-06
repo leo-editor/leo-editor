@@ -6,29 +6,21 @@
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 
-It's annoying to have to reload Leo to use a new abbreviation:
+** Finish @auto-view:
+- Migrate leading comments from preceding child to organizer.
+
+Reload settings:
     reload-abbreviations and reload-key-bindings commands.
         Use regex replace to replace settings ivars with @property defs.
 
-Release 4.11.1
+Release 4.11.1 (or 5.0?):
     - Create myLeoSettings and workbook automatically if they do not exist.
     - Add templates to help menu?
-
-For 4.11.2:
     - Fix IPython code/docs.
+    - Improve p.isVisible: its algorithm is poor.
 
 - Look at Eclipse # @name.
 
-- Improve p.isVisible: its algorithm is poor.
-.. @+node:ekr.20140104063158.16447: *3* Finish @auto-view logic
-@nocolor-node
-
-What I did:
-- Connected view code to @auto read/write code.
-- Must delete all "@organizer:" nodes before creating new ones.
-      
-Later or never:
-- Migrate leading comments from first child to organizer.
 .. @+node:ekr.20140104063158.16448: *3* reload-abbreviations and reload-key-bindings commands
 .. @+node:ekr.20120209051836.10242: *4* class LoadManager
 class LoadManager:
