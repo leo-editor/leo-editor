@@ -7863,6 +7863,14 @@ class Commands (object):
     def isChanged (self):
 
         return self.changed
+    #@+node:ekr.20140106215321.16676: *5* c.lastTopLevel (new)
+    def lastTopLevel(self):
+        '''Return the last top-level position in the outline.'''
+        c = self
+        p = c.rootPosition()
+        while p.hasNext():
+            p.moveToNext()
+        return p
     #@+node:ekr.20031218072017.4146: *5* c.lastVisible
     def lastVisible(self):
 

@@ -834,6 +834,9 @@ class atFile:
         at.rememberReadPath(fileName,p)
         s,ok,fileKey = c.cacher.readFile(fileName,p)
         if ok:
+            # Even if the file is in the cache, the @views node may be different.
+            if new_auto:
+                c.viewController.update_after_read_at_auto_file(p)
             g.doHook('after-auto',c=c,p=p)
                 # call after-auto callbacks
                 # 2011/09/30: added call to g.doHook here.

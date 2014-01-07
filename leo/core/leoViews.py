@@ -12,6 +12,19 @@
 import leo.core.leoGlobals as g
 #@-<< imports >>
 #@+others
+#@+node:ekr.20140106215321.16672: ** class OrganizerData
+class OrganizerData:
+    '''A class containing all data for a particular organizer node.'''
+    def __init__ (self,h,unl,unls):
+        self.childIndex = None # The childIndex of the final location of this organizer.
+        self.h = h
+        self.p = None # The organizer node itself.
+        self.parent = None # The parent node of the final location of this organizer.
+        self.source_unl = None
+        self.unl = unl
+        self.unls = unls
+            # The unls contained in the organizer node.
+            # Does these need to be stripped of organizer parts?
 #@+node:ekr.20131230090121.16508: ** class ViewController
 class ViewController:
     #@+<< docstring >>
@@ -35,8 +48,11 @@ class ViewController:
         '''Ctor for ViewController class.'''
         self.c = c
         self.views_node = None
+        self.organizer_data_list = []
+        self.organizer_unls = []
+        self.temp_node = None
     #@+node:ekr.20131230090121.16514: *3* vc.Entry points
-    #@+node:ekr.20140102052259.16394: *4* vc.pack
+    #@+node:ekr.20140102052259.16394: *4* vc.pack & helper
     def pack(self):
         '''
         Undoably convert c.p to a packed @view node, replacing all cloned
@@ -93,6 +109,21 @@ class ViewController:
             u.afterChangeGroup(root,'view-pack')
             c.selectPosition(root)
             c.redraw()
+    #@+node:ekr.20140102052259.16397: *5* vc.create_view_node
+    def create_view_node(self,root):
+        '''
+        Create a clone of root as a child of the @views node.
+        Return the *newly* cloned node, or None if it already exists.
+        '''
+        c = self.c
+        # Create a cloned child of the @views node if it doesn't exist.
+        views = self.find_views_node()
+        for p in views.children():
+            if p.v == c.p.v:
+                return None
+        p = root.clone()
+        p.moveToLastChildOf(views)
+        return p
     #@+node:ekr.20140102052259.16395: *4* vc.unpack
     def unpack(self):
         '''
@@ -149,15 +180,15 @@ class ViewController:
                 organizer.h = '@organizer: %s' % p.h
                 # The organizer node's unl is implicit in each child's unl.
                 organizer.b = '\n'.join(['unl: ' + self.relative_unl(child,root)
-                    for child in p.children()
-                        if not self.is_organizer_node(child,root)])
+                    for child in p.children()])
+                        ### if not self.is_organizer_node(child,root)]) ###
         if clone_data or organizers_data:
             c.redraw()
     #@+node:ekr.20131230090121.16513: *4* vc.update_after_read_at_auto_file & helpers
     def update_after_read_at_auto_file(self,p):
         '''
-        Recreate all organizer nodes and clones for a single @auto node using
-        the corresponding @organizer and @clones.
+        Recreate all organizer nodes and clones for a single @auto node
+        using the corresponding @organizer: and @clones nodes.
         '''
         assert self.is_at_auto_node(p),p
         organizers = self.has_organizers_node(p)
@@ -206,35 +237,80 @@ class ViewController:
         else:
             g.trace('bad @clones contents',gnxs,unls)
             return False
-    #@+node:ekr.20131230090121.16532: *5* vc.create_organizer_nodes & helper
-    def create_organizer_nodes(self,organizers,root):
+    #@+node:ekr.20131230090121.16532: *5* vc.create_organizer_nodes & helpers
+    def create_organizer_nodes(self,at_organizers,root):
         '''
-        organizers is an @organizers node.
-        organizers.b is a list of relative unl's.
-        Create an organizer node in root's tree for each unl in organizers.b.
+        root is an @auto node. Create an organizer node in root's tree for each
+        child @organizer: node of the given @organizers node.
         '''
-        # Find the leading unl: lines.
-        tag = 'unl:'
-        for organizer in organizers.children():
-            if organizer.h.startswith('@organizer:'):
-                found = []
-                unls = [s[len(tag):].strip() for s in g.splitLines(organizer.b)
-                    if s.startswith(tag)]
-                for unl in list(set(unls)):
-                    # Delete the penultimate part of the unl, which refers
-                    # to the organizer node that has not yet been inserted.
-                    aList = unl.split('-->')
-                    unl = '-->'.join(aList[:-2] + aList[-1:])
-                    p = self.find_relative_unl_node(root,unl)
-                    if p: found.append(p.copy())
-                    else: g.trace('not found',root.h,unl)
-                if found:
-                    # aList = unls[0].split('-->')
-                    # organizer_unl = '-->'.join(aList[:-1])
-                    self.create_organizer_nodes_helper(found,organizer)
-            else:
-                g.trace('unexpected organizer:',organizer)
-    #@+node:ekr.20140104112957.16587: *6* vc.create_organizer_nodes_helper
+        c = self.c
+        # Create the OrganizerData objects and corresponding ivars of this class.
+        self.create_organizer_data(at_organizers)
+        # Create the organizer nodes in a temporary location so positions remain valid.
+        self.create_actual_organizer_nodes()
+        # Demote organized nodes to be children of the organizer nodes.
+        self.demote_organized_nodes(at_organizers,root)
+        # Move organizer nodes to their final locations.
+        self.move_organizer_nodes()
+        # Move comments in organized nodes to organizer nodes.
+        self.move_comments(root)
+        c.selectPosition(root)
+        c.redraw()
+    #@+node:ekr.20140106215321.16674: *6* vc.create_organizer_data
+    def create_organizer_data(self,at_organizers):
+        '''Create OrganizerData nodes for all @organizer: nodes in the given @organizers node.'''
+        tag = '@organizer:'
+        for at_organizer in at_organizers.children():
+            h = at_organizer.h
+            if h.startswith(tag):
+                unls = self.get_at_organizer_unls(at_organizer)
+                if unls:
+                    organizer_unl = self.drop_unl_tail(unls[0])
+                    h = h[len(tag):].strip()
+                    data = OrganizerData(h,organizer_unl,unls)
+                    self.organizer_data_list.append(data)
+                    self.organizer_unls.append(organizer_unl)
+                else:
+                    g.trace('no unls:',at_organizer.h)
+        # Now that self.organizer_unls is complete, compute the source unls.
+        for data in self.organizer_data_list:
+            data.source_unl = self.source_unl(self.organizer_unls,data.unl)
+    #@+node:ekr.20140106215321.16675: *6* vc.create_actual_organizer_nodes
+    def create_actual_organizer_nodes(self):
+        '''
+        Create all organizer nodes as children of a temp node that leaves all
+        positions unchanged.
+        '''
+        c = self.c
+        last = c.lastTopLevel()
+        temp = self.temp_node = last.insertAfter()
+        temp.h = 'ViewController.temp_node'
+        for data in self.organizer_data_list:
+            data.p = temp.insertAsLastChild()
+            data.p.h = data.h
+    #@+node:ekr.20140106215321.16677: *6* vc.demote_organized_nodes & helpers (to do)
+    def demote_organized_nodes(self,at_organizers,root):
+        '''Demote organized nodes to be children of organizer nodes.'''
+        g.trace('not ready')
+        # return ###
+        # for at_organizer in at_organizers.children():
+            # if at_organizer.h.startswith('@organizer:'):
+                # found = []
+                # unls = get_unls(at_organizer)
+                # organizer_unl = self.drop_unl_tail(unls[0])
+                # # organizer_p = organizer_d.get(organizer_unl)
+                # # assert organizer_p,organizer_unl
+                # for unl in unls:
+                    # if unl in organizer_unls:
+                        # pass # The node has alredy been created.
+                    # else:
+                        # raw_unl = self.drop_all_organizers_in_unl(organizer_unls,unl)
+                        # p = self.find_relative_unl_node(root,raw_unl)
+                        # if p: found.append(p.copy())
+                        # else: g.trace('not found',unl)
+                # if found:
+                    # p = self.demote_helper(found,at_organizer)
+    #@+node:ekr.20140104112957.16587: *7* vc.demote_helper (to do)
     def create_organizer_nodes_helper(self,children,at_organizer):
         '''
         Create the organizer node with the given children.
@@ -257,25 +333,57 @@ class ViewController:
                 if result:
                     result.append(child.copy())
                     extra.append(child.copy())
-            if not children: break # Don't drag in following nodes.
-        if 0:
-            g.trace('parent',parent.h,'children',[p.h for p in children])
-            g.trace('result',[p.h for p in result])
-            g.trace('extra',[p.h for p in extra])
-        # Insert the organizer as the last child to preserve positions.
-        # Later, we'll move the organizer to the n'th child of it's parent.
+            if not children:
+                break # Don't organize the following nodes.
         n = result[0].childIndex() if result else 0
-        organizer = parent.insertAsLastChild()
-        organizer.h = at_organizer.h[len('@organizer:'):].strip()
+        if 1: ### Old code.
+            # Insert the organizer as the last child to preserve positions.
+            # Later, we'll move the organizer to the n'th child of it's parent.
+            organizer_p = parent.insertAsLastChild()
+            organizer_p.h = at_organizer.h[len('@organizer:'):].strip()
         # Demote all result nodes in reverse order so positions remain stable.
         for child in reversed(result):
-            child.moveToFirstChildOf(organizer)
-        # Optional: report extra nodes.
-        # for p in extra: g.trace('extra node',p.h)
+            child.moveToFirstChildOf(organizer_p)
         # Move the organizer node if it is not already the n'th child.
-        if organizer.childIndex() != n:
-            organizer.moveToNthChildOf(parent,n)
-        # g.trace('*** created %s ***' % organizer.h)
+        if organizer_p.childIndex() != n:
+            organizer_p.moveToNthChildOf(parent,n)
+    #@+node:ekr.20140106215321.16678: *6* vc.move_organizer_nodes
+    def move_organizer_nodes(self):
+        '''Move organizer nodes to their final location and delete the temp node.'''
+        # The organizer_data_list is in outline order: reversing it guarantees
+        # that all positions remain valid when used.
+        c = self.c
+        for data in reversed(self.organizer_data_list):
+            if data.p and data.parent:
+                data.p.moveToNthChildOf(data.parent,data.childIndex)
+            else:
+                g.trace('not ready yet')
+                return
+        self.temp_node.doDelete()
+    #@+node:ekr.20140106215321.16679: *6* vc.move_comments & helper
+    def move_comments(self,root):
+        '''Move comments from organizer nodes to organizer nodes.'''
+        c = self.c
+        if 0: ### Not ready yet.
+            to_be_deleted = []
+            for data in self.organizer_data_list:
+                p2 = self.migrate_organizer_node_comments(data.p,root)
+                if p2: to_be_deleted.append(p2)
+            g.trace('to_be_deleted',[p.h for p in to_be_deleted])
+            c.deletePositionsInList(to_be_deleted)
+    #@+node:ekr.20140105055318.16753: *7* v.migrate_organizer_node_comments
+    def migrate_organizer_node_comments(self,p,root):
+        '''
+        p is an organizer node. Let back be p.back(). If back contains nothing
+        but comments, move back.b to p.b and return back, indicating that back
+        is to deleted later.
+        '''
+        back = p.back()
+        if back and not back.hasChildren() and self.is_comment_node(back,root):
+            if back.b: p.b = p.b + back.b
+            return back
+        else:
+            return None
     #@+node:ekr.20131230090121.16515: *3* vc.Helpers
     #@+node:ekr.20140103105930.16448: *4* vc.at_auto_view_body and match_at_auto_body
     def at_auto_view_body(self,p):
@@ -287,7 +395,7 @@ class ViewController:
     def match_at_auto_body(self,p,auto_view):
         '''Return True if any line of auto_view.b matches the expected gnx line.'''
         return p.b == 'gnx: %s\n' % auto_view.v.gnx
-    #@+node:ekr.20131230090121.16522: *4* vc.clean_nodes (test)
+    #@+node:ekr.20131230090121.16522: *4* vc.clean_nodes (not used)
     def clean_nodes(self):
         '''Delete @auto-view nodes with no corresponding @auto nodes.'''
         c = self.c
@@ -318,21 +426,6 @@ class ViewController:
         s = d.get('language') or c.target_language
         language,single,start,end = g.set_language(s,0)
         return single,start,end
-    #@+node:ekr.20140102052259.16397: *4* vc.create_view_node
-    def create_view_node(self,root):
-        '''
-        Create a clone of root as a child of the @views node.
-        Return the *newly* cloned node, or None if it already exists.
-        '''
-        c = self.c
-        # Create a cloned child of the @views node if it doesn't exist.
-        views = self.find_views_node()
-        for p in views.children():
-            if p.v == c.p.v:
-                return None
-        p = root.clone()
-        p.moveToLastChildOf(views)
-        return p
     #@+node:ekr.20140103062103.16442: *4* vc.find...
     # The find node command create the node if not found.
     #@+node:ekr.20140102052259.16402: *5* vc.find_absolute_unl_node
@@ -348,7 +441,7 @@ class ViewController:
                     else:
                         return parent
         return None
-    #@+node:ekr.20131230090121.16520: *5* vc.find_at_auto_view_node
+    #@+node:ekr.20131230090121.16520: *5* vc.find_at_auto_view_node & helper
     def find_at_auto_view_node (self,root):
         '''
         Return the @auto-view node for root, an @auto node.
@@ -405,8 +498,7 @@ class ViewController:
         Return the node in parent's subtree matching the given unl.
         The unl is relative to the parent position.
         '''
-        trace = False and not g.unitTesting
-        if trace: g.trace('parent',parent.h,'unl',unl)
+        trace = False #  and not g.unitTesting
         p = parent
         for s in unl.split('-->'):
             for child in p.children():
@@ -414,7 +506,7 @@ class ViewController:
                     p = child
                     break
             else:
-                if trace: g.trace('failure',s)
+                if trace: g.trace('failure','parent',parent.h,'unl:',unl)
                 return None
         if trace: g.trace('success',p)
         return p
@@ -510,26 +602,21 @@ class ViewController:
     def has_views_node(self):
         '''Return the @views or None if it does not exist.'''
         return g.findNodeAnywhere(self.c,'@views')
-    #@+node:ekr.20131230090121.16524: *4* vc.is_at_auto_node
+    #@+node:ekr.20140105055318.16755: *4* v.is...
+    #@+node:ekr.20131230090121.16524: *5* vc.is_at_auto_node
     def is_at_auto_node(self,p):
         '''Return True if p is an @auto node.'''
         return g.match_word(p.h,0,'@auto') and not g.match(p.h,0,'@auto-')
             # Does not match @auto-rst, etc.
-    #@+node:ekr.20140102052259.16398: *4* vc.is_cloned_outside_parent_tree
+    #@+node:ekr.20140102052259.16398: *5* vc.is_cloned_outside_parent_tree
     def is_cloned_outside_parent_tree(self,p):
         '''Return True if a clone of p exists outside the tree of p.parent().'''
         return len(list(set(p.v.parents))) > 1
-    #@+node:ekr.20131230090121.16525: *4* vc.is_organizer_node
-    def is_organizer_node(self,p,root):
-        '''
-        Return True if p is an organizer node in the @auto tree whose root is
-        given. Organizer nodes have bodies that consist of nothing but blank or
-        comment lines.
-        '''
+    #@+node:ekr.20140105055318.16754: *5* vc.is_comment_node
+    def is_comment_node(self,p,root):
+        '''Return True if p.b contains nothing but comments or blank lines.'''
         single,start,end = self.comment_delims(root)
         assert single or start and end,'bad delims: %r %r %r' % (single,start,end)
-        if not p.hasChildren():
-            return False
         if single:
             for s in g.splitLines(p.b):
                 s = s.strip()
@@ -565,7 +652,40 @@ class ViewController:
                     return False
             # All lines pass.
             return True
-    #@+node:ekr.20131230090121.16541: *4* vc.relative_unl
+    #@+node:ekr.20131230090121.16525: *5* vc.is_organizer_node
+    def is_organizer_node(self,p,root):
+        '''
+        Return True if p is an organizer node in the given @auto tree.
+        '''
+        return p.hasChildren() and self.is_comment_node(p,root)
+    #@+node:ekr.20140105055318.16760: *4* v.unls...
+    #@+node:ekr.20140105055318.16762: *5* vc.drop_all_organizers_in_unl
+    def drop_all_organizers_in_unl(self,organizer_unls,unl):
+        '''Drop all organizer unl's in unl, recreating the imported url.'''
+        def key(s):
+            return s.count('-->')
+        for s in reversed(sorted(organizer_unls,key=key)):
+            if unl.startswith(s):
+                s2 = self.drop_unl_tail(s)
+                unl = s2 + unl[len(s):]
+        return unl
+    #@+node:ekr.20140105055318.16761: *5* vc.drop_unl_tail & vc.drop_unl_parent
+    def drop_unl_tail(self,unl):
+        '''Drop the last part of the unl.'''
+        return '-->'.join(unl.split('-->')[:-1])
+
+    def drop_unl_parent(self,unl):
+        '''Drop the penultimate part of the unl.'''
+        aList = unl.split('-->')
+        return '-->'.join(aList[:-2] + aList[-1:])
+    #@+node:ekr.20140106215321.16673: *5* vc.get_at_organizer_unls
+    def get_at_organizer_unls(self,p):
+        '''Return the unl: lines in an @organizer: node.'''
+        return [s[len('unl:'):].strip()
+            for s in g.splitLines(p.b)
+                if s.startswith('unl:')]
+
+    #@+node:ekr.20131230090121.16541: *5* vc.relative_unl & unl
     def relative_unl(self,p,root):
         '''Return the unl of p relative to the root position.'''
         result = []
@@ -575,10 +695,15 @@ class ViewController:
             else:
                 result.append(p.h)
         return '-->'.join(reversed(result))
-    #@+node:ekr.20131230090121.16523: *4* vc.unl
+
     def unl(self,p):
         '''Return the unl corresponding to the given position.'''
         return '-->'.join(reversed([p.h for p in p.self_and_parents()]))
+    #@+node:ekr.20140106215321.16680: *5* vc.source_unl
+    def source_unl(self,organizer_unls,organizer_unl):
+        '''Return the unl of the source node for the given organizer_unl.'''
+        return self.drop_unl_tail(
+            self.drop_all_organizers_in_unl(organizer_unls,organizer_unl))
     #@-others
 #@+node:ekr.20140102051335.16506: ** vc.Commands
 @g.command('view-pack')
