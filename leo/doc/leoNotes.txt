@@ -12714,5 +12714,33 @@ def update_after_read_leo_file(self):
         if self.is_at_auto_node(p):
             self.update_after_read_at_auto_file(p)
     self.clean_nodes()
+.. @+node:ekr.20140106215321.16684: *4* OLDvc.demote_helper
+def OLDdemote_helper(self,children,organizer):
+    '''
+    Demote the nodes in aList to be children of the organizer node.
+    The order of the children is the *old* order;
+    it's important to use the *new* (imported) order instead.
+    '''
+    # Sort children into result using the order of imported children.
+    assert children
+    parent = children[0].parent()
+    extra,result = [],[]
+    for child in parent.children():
+        for child2 in children:
+            if child == child2:
+                result.append(child.copy())
+                children.remove(child)
+                break
+        else:
+            # The organizer node must organize extra nodes that lie
+            # between the first and last organized nodes.
+            if result:
+                result.append(child.copy())
+                extra.append(child.copy())
+        if not children:
+            break # Don't organize the following nodes.
+    # Demote all result nodes in reverse order so positions remain stable.
+    for child in reversed(result):
+        child.moveToFirstChildOf(organizer)
 .. @-all
 .. @-leo

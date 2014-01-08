@@ -11,7 +11,13 @@
 <find_panel_settings/>
 <vnodes>
 <v t="ekr.20070417092935"><vh>Startup</vh>
-<v t="ekr.20140103103143.4095"><vh>@views</vh></v>
+<v t="ekr.20140103103143.4095"><vh>@views</vh>
+<v t="ekr.20140108102644.4302"><vh>@auto-view:root_before</vh>
+<v t="ekr.20140108102644.4303"><vh>@organizers</vh>
+<v t="ekr.20140108102644.4304"><vh>@organizer: organizer node</vh></v>
+</v>
+</v>
+</v>
 <v t="ekr.20101220161557.6011"><vh>@file unitTestStartup.txt</vh></v>
 <v t="ekr.20041121151002"><vh>@settings</vh>
 <v t="ekr.20110521073115.3494"><vh>colorizer colors</vh>
@@ -161,16 +167,15 @@
 </v>
 <v t="ekr.20140103103143.4095"></v>
 <v t="ekr.20131231093529.3984"><vh>leoViews.py</vh>
-<v t="ekr.20140106094713.4176"><vh>@test vc.drop_all_organizers_in_unl</vh></v>
 <v t="ekr.20140105222052.4170"><vh>@test vc.clean_nodes (to do)</vh>
 <v t="ekr.20140105222052.4171"><vh>root1</vh></v>
 <v t="ekr.20140105222052.4172"><vh>root2</vh></v>
 </v>
 <v t="ekr.20140103102956.4142"><vh>@test vc.create_clone_links</vh>
 <v t="ekr.20140103102956.4143"><vh>@clones</vh></v>
-<v t="ekr.20140105222328.4167"><vh>node1</vh></v>
+<v t="ekr.20140108101433.4233"><vh>node1</vh></v>
 <v t="ekr.20140103102956.4145"><vh>root</vh>
-<v t="ekr.20140105222328.4167"></v>
+<v t="ekr.20140108101433.4233"></v>
 </v>
 </v>
 <v t="ekr.20140105185509.4140"><vh>@test vc.create_organizer_node</vh>
@@ -195,46 +200,19 @@
 <v t="ekr.20140105185509.4147"><vh>after organizer</vh></v>
 </v>
 </v>
-<v t="ekr.20140105222328.4181"><vh>root_after</vh>
-<v t="ekr.20140105222328.4182"><vh>aClass</vh>
-<v t="ekr.20140105222328.4183"><vh>before organizer</vh></v>
-<v t="ekr.20140105222328.4184"><vh>extra 1</vh></v>
-<v t="ekr.20140105222328.4185"><vh>child1</vh></v>
-<v t="ekr.20140105222328.4186"><vh>extra 2</vh></v>
-<v t="ekr.20140105222328.4187"><vh>child2</vh></v>
-<v t="ekr.20140105222328.4188"><vh>extra 3</vh></v>
-<v t="ekr.20140105222328.4189"><vh>after organizer</vh></v>
+<v t="ekr.20140108102644.4316"><vh>root_after</vh>
+<v t="ekr.20140108102644.4317"><vh>aClass</vh>
+<v t="ekr.20140108102644.4318"><vh>before organizer</vh></v>
+<v t="ekr.20140108102644.4319"><vh>extra 1</vh></v>
+<v t="ekr.20140108102644.4320"><vh>child1</vh></v>
+<v t="ekr.20140108102644.4321"><vh>extra 2</vh></v>
+<v t="ekr.20140108102644.4322"><vh>child2</vh></v>
+<v t="ekr.20140108102644.4323"><vh>extra 3</vh></v>
+<v t="ekr.20140108102644.4324"><vh>after organizer</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20140106135225.4203"><vh>@test vc.create_organizer_node (nested organizers)</vh>
-<v t="ekr.20140106135225.4204"><vh>root_restore</vh>
-<v t="ekr.20140106135225.4285"><vh>aClass</vh>
-<v t="ekr.20140106135225.4286"><vh>before</vh></v>
-<v t="ekr.20140106135225.4289"><vh>child11</vh></v>
-<v t="ekr.20140106135225.4290"><vh>child12</vh></v>
-<v t="ekr.20140106135225.4292"><vh>child21</vh></v>
-<v t="ekr.20140106135225.4293"><vh>child22</vh></v>
-<v t="ekr.20140106135225.4294"><vh>after</vh></v>
-</v>
-</v>
-<v t="ekr.20140106135225.4213"><vh>root_before</vh>
-<v t="ekr.20140106135225.4214"><vh>aClass</vh>
-<v t="ekr.20140106135225.4215"><vh>before</vh></v>
-<v t="ekr.20140106135225.4216"><vh>organizer node</vh>
-<v t="ekr.20140106135225.4229"><vh>inner org1</vh>
-<v t="ekr.20140106135225.4217"><vh>child11</vh></v>
-<v t="ekr.20140106135225.4218"><vh>child12</vh></v>
-</v>
-<v t="ekr.20140106135225.4233"><vh>inner org2</vh>
-<v t="ekr.20140106135225.4234"><vh>child21</vh></v>
-<v t="ekr.20140106135225.4235"><vh>child22</vh></v>
-</v>
-</v>
-<v t="ekr.20140106135225.4219"><vh>after</vh></v>
-</v>
-</v>
-</v>
+<v t="ekr.20140106094713.4176"><vh>@test vc.drop_all_organizers_in_unl</vh></v>
 <v t="ekr.20140103102956.4146"><vh>@test vc.find_absolute_unl_node</vh></v>
 <v t="ekr.20140103102956.4147"><vh>@test vc.find_relative_unl_node</vh>
 <v t="ekr.20140103102956.4148"><vh>node1</vh>
@@ -267,13 +245,13 @@
 <v t="ekr.20140105185509.4198"><vh>@test vc.has_*_node</vh>
 <v t="ekr.20140105185509.4199"><vh>root</vh>
 <v t="ekr.20140105185509.4200"><vh>aClass</vh>
-<v t="ekr.20140105185509.4204"><vh>spam</vh></v>
+<v t="ekr.20140105185509.4204"><vh>clone-test</vh></v>
 <v t="ekr.20140105185509.4202"><vh>organizer node</vh>
 <v t="ekr.20140105185509.4203"><vh>child2</vh></v>
 </v>
 </v>
-<v t="ekr.20140105185509.4204"></v>
 </v>
+<v t="ekr.20140105185509.4204"></v>
 </v>
 <v t="ekr.20140103102956.4166"><vh>@test vc.is_at_auto_node</vh></v>
 <v t="ekr.20140103102956.4167"><vh>@test vc.is_organizer_node</vh>
@@ -311,7 +289,40 @@
 </v>
 </v>
 </v>
-<v t="ekr.20140106135225.4203"></v>
+<v t="ekr.20140106135225.4203"><vh>@test vc.create_organizer_node (nested organizers)</vh>
+<v t="ekr.20140106135225.4204"><vh>root_restore</vh>
+<v t="ekr.20140106135225.4285"><vh>aClass</vh>
+<v t="ekr.20140106135225.4286"><vh>before</vh></v>
+<v t="ekr.20140106135225.4289"><vh>child11</vh></v>
+<v t="ekr.20140106135225.4290"><vh>child12</vh></v>
+<v t="ekr.20140106135225.4292"><vh>child21</vh></v>
+<v t="ekr.20140106135225.4293"><vh>child22</vh></v>
+<v t="ekr.20140106135225.4294"><vh>after</vh></v>
+</v>
+</v>
+<v t="ekr.20140106135225.4213"><vh>root_before</vh>
+<v t="ekr.20140106135225.4214"><vh>aClass</vh>
+<v t="ekr.20140106135225.4215"><vh>before</vh></v>
+<v t="ekr.20140106135225.4216"><vh>organizer node</vh>
+<v t="ekr.20140106135225.4229"><vh>inner org1</vh>
+<v t="ekr.20140106135225.4217"><vh>child11</vh></v>
+<v t="ekr.20140106135225.4218"><vh>child12</vh></v>
+</v>
+<v t="ekr.20140106135225.4233"><vh>inner org2</vh>
+<v t="ekr.20140106135225.4234"><vh>child21</vh></v>
+<v t="ekr.20140106135225.4235"><vh>child22</vh></v>
+</v>
+</v>
+<v t="ekr.20140106135225.4219"><vh>after</vh></v>
+</v>
+</v>
+<v t="ekr.20140108102644.4262"><vh>root_after</vh>
+<v t="ekr.20140108102644.4263"><vh>aClass</vh>
+<v t="ekr.20140108102644.4264"><vh>before</vh></v>
+<v t="ekr.20140108102644.4269"><vh>after</vh></v>
+</v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -727,7 +738,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="11"></t>
+<t tx="ekr.20070417092935" str_leo_pos="8"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1402,7 +1413,7 @@ try:
 finally:
     c.redraw()
 </t>
-<t tx="ekr.20140103102956.4143">gnx: ekr.20140105190809.4151
+<t tx="ekr.20140103102956.4143">gnx: ekr.20140108095850.4234
 unl: node1
 </t>
 <t tx="ekr.20140103102956.4145"></t>
@@ -1648,7 +1659,6 @@ finally:
     c.pasteOutline()
     assert c.p.h == 'root_restore'
     c.p.h = 'root_after'
-    
     c.redraw()
 </t>
 <t tx="ekr.20140105185509.4141">@others
@@ -1711,6 +1721,10 @@ else:
 assert views
 root = g.findNodeInTree(c,p,'root')
 assert root
+# The representative of clone_test node must appear outside of root's tree.
+clone_test = g.findNodeInTree(c,p,'clone-test')
+assert clone_test
+assert clone_test.v == root.next().v,(clone_test.v,root.next().v)
 try:
     root.h = '@auto root' # root must look like an @auto node.
     vc.update_before_write_at_auto_file(root)
@@ -1731,8 +1745,6 @@ try:
     assert organizers2 == organizers
 finally:
     root.h = 'root' # Make sure root is *not* an @auto node.
-    if False and views:
-        views.deleteAllChildren()
     c.redraw()
 </t>
 <t tx="ekr.20140105185509.4199">@others
@@ -1744,7 +1756,7 @@ finally:
 <t tx="ekr.20140105185509.4203">def spam():
     pass
 </t>
-<t tx="ekr.20140105185509.4204">def spam():
+<t tx="ekr.20140105185509.4204">def clone_test():
     pass
 </t>
 <t tx="ekr.20140105185509.4216"></t>
@@ -1778,23 +1790,6 @@ finally:
 </t>
 <t tx="ekr.20140105222052.4171"></t>
 <t tx="ekr.20140105222052.4172"></t>
-<t tx="ekr.20140105222328.4167"></t>
-<t tx="ekr.20140105222328.4181">@others
-</t>
-<t tx="ekr.20140105222328.4182">class aClass:
-    @others
-</t>
-<t tx="ekr.20140105222328.4183">def spam():
-    pass
-</t>
-<t tx="ekr.20140105222328.4184"></t>
-<t tx="ekr.20140105222328.4185"></t>
-<t tx="ekr.20140105222328.4186"></t>
-<t tx="ekr.20140105222328.4187">def spam():
-    pass
-</t>
-<t tx="ekr.20140105222328.4188"></t>
-<t tx="ekr.20140105222328.4189"></t>
 <t tx="ekr.20140106094713.4176">vc = c.viewController
 organizer_unls = [
     'a--&gt;O1',
@@ -1890,5 +1885,38 @@ finally:
 <t tx="ekr.20140106135225.4294">def spam_after(self):
     pass
 </t>
+<t tx="ekr.20140108101433.4233"></t>
+<t tx="ekr.20140108102644.4262">@others
+</t>
+<t tx="ekr.20140108102644.4263">class aClass:
+    @others
+</t>
+<t tx="ekr.20140108102644.4264">def spam_before(self):
+    pass
+</t>
+<t tx="ekr.20140108102644.4269">def spam_after(self):
+    pass
+</t>
+<t tx="ekr.20140108102644.4302">gnx: ekr.20140105185509.4141
+</t>
+<t tx="ekr.20140108102644.4303"></t>
+<t tx="ekr.20140108102644.4304">unl: aClass--&gt;organizer node--&gt;child1
+unl: aClass--&gt;organizer node--&gt;child2</t>
+<t tx="ekr.20140108102644.4316">@others
+</t>
+<t tx="ekr.20140108102644.4317">class aClass:
+    @others
+</t>
+<t tx="ekr.20140108102644.4318">def spam():
+    pass
+</t>
+<t tx="ekr.20140108102644.4319"></t>
+<t tx="ekr.20140108102644.4320"></t>
+<t tx="ekr.20140108102644.4321"></t>
+<t tx="ekr.20140108102644.4322">def spam():
+    pass
+</t>
+<t tx="ekr.20140108102644.4323"></t>
+<t tx="ekr.20140108102644.4324"></t>
 </tnodes>
 </leo_file>
