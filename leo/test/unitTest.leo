@@ -311,45 +311,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20140106094713.4176"></v>
-<v t="ekr.20140106142526.4311"><vh>@test vc.create_organizer_node (nested organizers) COPY</vh>
-<v t="ekr.20140106142526.4312"><vh>root_restore</vh>
-<v t="ekr.20140106142526.4313"><vh>aClass</vh>
-<v t="ekr.20140106142526.4314"><vh>before</vh></v>
-<v t="ekr.20140106142526.4315"><vh>child11</vh></v>
-<v t="ekr.20140106142526.4316"><vh>child12</vh></v>
-<v t="ekr.20140106142526.4317"><vh>child21</vh></v>
-<v t="ekr.20140106142526.4318"><vh>child22</vh></v>
-<v t="ekr.20140106142526.4319"><vh>after</vh></v>
-</v>
-</v>
-<v t="ekr.20140106142526.4320"><vh>root_before</vh>
-<v t="ekr.20140106142526.4321"><vh>aClass</vh>
-<v t="ekr.20140106142526.4322"><vh>before</vh></v>
-<v t="ekr.20140106142526.4323"><vh>organizer node</vh>
-<v t="ekr.20140106142526.4324"><vh>inner org1</vh>
-<v t="ekr.20140106142526.4325"><vh>child11</vh></v>
-<v t="ekr.20140106142526.4326"><vh>child12</vh></v>
-</v>
-<v t="ekr.20140106142526.4327"><vh>inner org2</vh>
-<v t="ekr.20140106142526.4328"><vh>child21</vh></v>
-<v t="ekr.20140106142526.4329"><vh>child22</vh></v>
-</v>
-</v>
-<v t="ekr.20140106142526.4330"><vh>after</vh></v>
-</v>
-</v>
-<v t="ekr.20140106142526.4331"><vh>root_after</vh>
-<v t="ekr.20140106142526.4332"><vh>aClass</vh>
-<v t="ekr.20140106142526.4333"><vh>before</vh></v>
-<v t="ekr.20140106142526.4334"><vh>child11</vh></v>
-<v t="ekr.20140106142526.4335"><vh>child12</vh></v>
-<v t="ekr.20140106142526.4336"><vh>child21</vh></v>
-<v t="ekr.20140106142526.4337"><vh>child22</vh></v>
-<v t="ekr.20140106142526.4338"><vh>after</vh></v>
-</v>
-</v>
-</v>
 <v t="ekr.20140106135225.4203"></v>
 </vnodes>
 <tnodes>
@@ -766,7 +727,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="8"></t>
+<t tx="ekr.20070417092935" str_leo_pos="11"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1927,107 +1888,6 @@ finally:
     pass
 </t>
 <t tx="ekr.20140106135225.4294">def spam_after(self):
-    pass
-</t>
-<t tx="ekr.20140106142526.4311">vc = c.viewController
-views = g.findNodeAnywhere(c,'@views')
-if views: views.deleteAllChildren()
-root_before  = g.findNodeInTree(c,p,'root_before')
-root_restore = g.findNodeInTree(c,p,'root_restore')
-assert root_before,root_restore
-# Create root_after from root_restore.
-root_after   = g.findNodeInTree(c,p,'root_after')
-if root_after: root_after.doDelete()
-c.selectPosition(root_restore)
-c.copyOutline()
-c.selectPosition(root_before)
-c.pasteOutline()
-# The roots must look like @auto nodes.
-root_after = c.p
-assert root_after.h == 'root_restore',root_after.h
-root_before.h = '@auto root_before'
-root_after.h = '@auto root_after' 
-try:
-    vc.update_before_write_at_auto_file(root_before)
-    organizers = vc.has_organizers_node(root_before)
-    assert organizers
-    vc.create_organizer_nodes(organizers,root_after)
-finally:
-     # Make sure the roots are *not* @auto nodes.
-    root_before.h = 'root_before'
-    root_after.h = 'root_after'
-    c.redraw()
-</t>
-<t tx="ekr.20140106142526.4312">@others
-</t>
-<t tx="ekr.20140106142526.4313">class aClass:
-    @others
-</t>
-<t tx="ekr.20140106142526.4314">def spam_before(self):
-    pass
-</t>
-<t tx="ekr.20140106142526.4315">def spam11(self):
-    pass
-</t>
-<t tx="ekr.20140106142526.4316">def spam12(self):
-    pass
-</t>
-<t tx="ekr.20140106142526.4317">def spam21(self):
-    pass
-</t>
-<t tx="ekr.20140106142526.4318">def spam22(self):
-    pass
-</t>
-<t tx="ekr.20140106142526.4319">def spam_after(self):
-    pass
-</t>
-<t tx="ekr.20140106142526.4320">@others
-</t>
-<t tx="ekr.20140106142526.4321">class aClass:
-    @others
-</t>
-<t tx="ekr.20140106142526.4322">def spam_before(self):
-    pass
-</t>
-<t tx="ekr.20140106142526.4323"></t>
-<t tx="ekr.20140106142526.4324"></t>
-<t tx="ekr.20140106142526.4325">def spam11(self):
-    pass
-</t>
-<t tx="ekr.20140106142526.4326">def spam12(self):
-    pass
-</t>
-<t tx="ekr.20140106142526.4327"></t>
-<t tx="ekr.20140106142526.4328">def spam21(self):
-    pass
-</t>
-<t tx="ekr.20140106142526.4329">def spam22(self):
-    pass
-</t>
-<t tx="ekr.20140106142526.4330">def spam_after(self):
-    pass
-</t>
-<t tx="ekr.20140106142526.4331">@others
-</t>
-<t tx="ekr.20140106142526.4332">class aClass:
-    @others
-</t>
-<t tx="ekr.20140106142526.4333">def spam_before(self):
-    pass
-</t>
-<t tx="ekr.20140106142526.4334">def spam11(self):
-    pass
-</t>
-<t tx="ekr.20140106142526.4335">def spam12(self):
-    pass
-</t>
-<t tx="ekr.20140106142526.4336">def spam21(self):
-    pass
-</t>
-<t tx="ekr.20140106142526.4337">def spam22(self):
-    pass
-</t>
-<t tx="ekr.20140106142526.4338">def spam_after(self):
     pass
 </t>
 </tnodes>
