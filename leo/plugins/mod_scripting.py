@@ -813,7 +813,7 @@ class scriptingController:
                 s = h[j+1:].strip()
             else: # new logic 1/3/2014 Jake Peck
                 k = h.find('@', j+1)
-                if k == -1: k == len(h)
+                if k == -1: k = len(h)
                 s = h[j:k].strip()
             args = s.split(',')
             args = [z.strip() for z in args]
