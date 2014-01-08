@@ -660,6 +660,8 @@ class BookMarkDisplay:
             links = todo.pop(0)
         
             top = QtGui.QWidget()
+            # pylint: disable=E0202
+            # pylint bug, fix released: http://www.logilab.org/ticket/89092
             top.mouseReleaseEvent = (lambda event, links=links:
                 self.background_clicked(event, links))
             top.setMinimumSize(10,8)  # so there's something to click when empty
