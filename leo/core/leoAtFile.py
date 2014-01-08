@@ -7,8 +7,13 @@
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 60
-new_auto = False # True: enable calls to c.viewController.
-allow_cloned_sibs = True # True: allow cloned siblings in @file nodes.
+#@+<< atFile switches >>
+#@+node:ekr.20140108081031.16613: ** << atFile switches >>
+new_auto = False
+    # True: enable calls to c.viewController.
+allow_cloned_sibs = True
+    # True: allow cloned siblings in @file nodes.
+#@-<< atFile switches >>
 #@+<< imports >>
 #@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile)
 import leo.core.leoGlobals as g
