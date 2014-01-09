@@ -351,10 +351,10 @@ class ViewController:
     #@+node:ekr.20140104112957.16587: *7* vc.demote_helper & helpers
     def demote_helper(self,data,root):
         '''
-        Demote nodes for all OrganizerData instances having the same source as
-        the given instance.
+        The main line of the @auto-view algorithm: demote nodes for all
+        OrganizerData instances having the same source as the given instance.
         '''
-        trace = False # and not g.unitTesting
+        trace = True # and not g.unitTesting
         if trace: g.trace('=====',root and root.h or '*no root*',
             data and data.parent and data.parent.h or '*no data.parent*')
         # Find and mark as visited all OrganizerData instances having the same source as data.
@@ -367,16 +367,17 @@ class ViewController:
         # The main line: move children of data.parent to organizer nodes.
         active = None # The organizer node that is presently accumulating nodes.
         demote_pending = [] # Lists of pending demotions.
-        def add(active,child):
-            if trace: g.trace('active',active,
-                'active.p',active.p and active.p.h,
-                'child',child and child.h)
+        def add(active,child,tag=''):
+            if trace: g.trace(tag,# 'active',active,
+                'active.p:',active.p and active.p.h,
+                'child:',child and child.h)
             self.global_moved_node_list.append((active.p,child.copy()),)
         def pending(active,child):
-            if trace: g.trace('active',active,
-                'active.p',active.p and active.p.h,
-                'child',child and child.h)
-            demote_pending.append((active.p,child.copy()),)
+            if trace: g.trace(# 'active',active,
+                'active.p:',active.p and active.p.h,
+                'child:',child and child.h)
+            # Important: add() will push active.p, not active.
+            demote_pending.append((active,child.copy()),)
         n = 0 # The number of *unorganized* preceding nodes.
         for child in data.parent.children():
             # Find the organizer (if any) that organizes child.
@@ -386,8 +387,9 @@ class ViewController:
                     if p == child:
                         found = d ; break
                 if found: break
-            if trace: g.trace('-----',child.h,'found:',found and found.h,
-                'active',active and active.h)
+            if trace: g.trace('-----',child.h,
+                'found:',found and found.h,
+                'active:',active and active.h)
             if found is None:
                 if active:
                     pending(active,child)
@@ -397,13 +399,11 @@ class ViewController:
                     demote_pending = []
             elif found == active:
                 # Pending nodes *will* be organized.
-                if trace:
-                    for z,d in demote_pending: g.trace('extra',z.h)
                 for data in demote_pending:
-                    active,child = data
-                    add(active,child)
+                    active2,child2 = data
+                    add(active2,child2,'found==active:pending')
                 demote_pending = []
-                add(active,child)
+                add(active,child,'found==active')
             else: # found != active.
                 # Pending nodes will *not* be organized.
                 n += len(demote_pending)
@@ -411,13 +411,9 @@ class ViewController:
                 active,n = self.switch_active_organizer(active,child,data,data_list,found,n)
                 if active:
                     # switch_active_organizer bumps n only for bare organizer nodes.
-                    add(active,child)
+                    add(active,child,'found!=active')
         if active:
             active.closed = True
-        ### Demote all result nodes in reverse order so positions remain stable.
-        ### for p,data in reversed(demote):
-        ###    assert data.p
-        ###    p.moveToFirstChildOf(data.p)
     #@+node:ekr.20140108081031.16611: *8* vc.compute_organized_positions
     def compute_organized_positions(self,data,root):
         '''Compute all the positions by the given OrganizerData instance.'''
@@ -477,7 +473,7 @@ class ViewController:
         Return found, unless it has already been terminated.
         Set the found.childIndex.
         '''
-        trace = False # and not g.unitTesting
+        trace = True # and not g.unitTesting
         if active:
             active.closed = True
         assert found
@@ -496,6 +492,9 @@ class ViewController:
                 # Just add it to the global moved list(!)
                 parent = active.organizer_parent.p
                 self.global_moved_node_list.append((parent,active.p),)
+                if trace: g.trace('active',active,
+                    'active.p',active.p and active.p.h,
+                    'child',child and child.h)
                 return active,n
             else:
                 # The organizer node is a child of an *ordinary* node.
@@ -507,10 +506,13 @@ class ViewController:
     def move_nodes(self):
         '''Move nodes to their final location and delete the temp node.'''
         c = self.c
+        import leo.core.leoNodes as leoNodes
         # Move nodes into organizers, in reversed order to preserve positions.
         for parent,p in reversed(self.global_moved_node_list):
+            assert isinstance(parent,leoNodes.position),parent
+            assert isinstance(p,leoNodes.position),p
             g.trace(parent.h,p.h)
-            ### p.moveToLastChildOf(parent.p)
+            p.moveToLastChildOf(parent)
         # Move all bare organizers.
         # A: For each parent, sort nodes on n.
         g.trace('===== moving bare nodes =====')
