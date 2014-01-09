@@ -741,7 +741,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="10"></t>
+<t tx="ekr.20070417092935" str_leo_pos="10,5"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1453,6 +1453,7 @@ child22 = child21.next()
 assert child21 and child22
 table = (
     # ('node1',node1),
+    ('',parent), # This special case is important.
     ('node1--&gt;child11',child11),
     ('node1--&gt;child12',child12),
     ('node2',node2),
