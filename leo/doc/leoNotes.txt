@@ -12742,5 +12742,26 @@ def OLDdemote_helper(self,children,organizer):
     # Demote all result nodes in reverse order so positions remain stable.
     for child in reversed(result):
         child.moveToFirstChildOf(organizer)
+.. @+node:ekr.20140109061205.16619: *4* OLDmove_organizer_nodes
+def OLDmove_organizer_nodes(self):
+    '''Move organizer nodes to their final location and delete the temp node.'''
+    c = self.c
+    ok = True
+    ### May have to rewrite...
+    # Reversing organizer_data_list preserves all positions.
+    for d in reversed(self.organizer_data_list):
+        assert d.parent,d
+        if d.organizer_parent:
+            # The organizer node is a child of *another* organizer node.
+            parent = d.organizer_parent.p
+            n = d.organizer_parent.childIndex
+        else:
+            # The organizer is a child of an *ordinary* node.
+            parent = d.parent
+            n = d.childIndex
+        assert d.p and parent,(d.p,parent)
+        d.p.moveToNthChildOf(parent,n)
+        g.trace('move',d.p.h,'to child',n,'of',parent.h)
+    self.temp_node.doDelete()
 .. @-all
 .. @-leo

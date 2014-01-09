@@ -69,15 +69,20 @@ class ViewController:
     '''
     #@-<< docstring >>
     #@+others
-    #@+node:ekr.20131230090121.16509: *3*  vc.ctor
+    #@+node:ekr.20131230090121.16509: *3*  vc.ctor & vc.init
     def __init__ (self,c):
         '''Ctor for ViewController class.'''
         self.c = c
-        self.views_node = None
+        self.init()
+        
+    def init(self):
+        self.global_bare_organizer_node_list = []
+        self.global_moved_node_list = []
         self.organizer_data_list = []
         self.organizer_unls = []
-        self.root_data = None
+        ### self.root_data = None
         self.temp_node = None
+        self.views_node = None
     #@+node:ekr.20131230090121.16514: *3* vc.Entry points
     #@+node:ekr.20140102052259.16394: *4* vc.pack & helper
     def pack(self):
@@ -86,6 +91,7 @@ class ViewController:
         children of c.p by unl lines in c.p.b.
         '''
         c,u = self.c,self.c.undoer
+        self.init()
         changed = False
         root = c.p
         # Create an undo group to handle changes to root and @views nodes.
@@ -158,6 +164,7 @@ class ViewController:
         Return True if the outline has, in fact, been changed.
         '''
         c,root,u = self.c,self.c.p,self.c.undoer
+        self.init()
         # Find the leading unl: lines.
         i,lines,tag = 0,g.splitLines(root.b),'unl:'
         for s in lines:
@@ -185,6 +192,7 @@ class ViewController:
         root, an @auto node. Create the @organizer or @clones nodes as needed.
         '''
         c = self.c
+        self.init()
         clone_data,organizers_data = [],[]
         for p in root.subtree():
             if p.isCloned():
@@ -219,6 +227,7 @@ class ViewController:
         '''
         assert self.is_at_auto_node(p),p
         organizers = self.has_organizers_node(p)
+        self.init()
         if organizers:
             self.create_organizer_nodes(organizers,p)
         clones = self.has_clones_node(p)
@@ -277,8 +286,8 @@ class ViewController:
         self.create_actual_organizer_nodes()
         # Demote organized nodes to be children of the organizer nodes.
         self.demote_organized_nodes(root)
-        # Move organizer nodes to their final locations.
-        self.move_organizer_nodes()
+        # Move nodes to their final locations.
+        self.move_nodes()
         # Move comments in organized nodes to organizer nodes.
         self.move_comments(root)
         c.selectPosition(root)
@@ -293,8 +302,8 @@ class ViewController:
         tag = '@organizer:'
         # Important: we must completely reinit all data here.
         self.organizer_data_list = []
-        self.root_data = OrganizerData('**root_data**',unl='',unls=[])
-        self.root_data.p = root.copy()
+        ### self.root_data = OrganizerData('**root_data**',unl='',unls=[])
+        ### self.root_data.p = root.copy()
         for at_organizer in at_organizers.children():
             h = at_organizer.h
             if h.startswith(tag):
@@ -357,9 +366,18 @@ class ViewController:
         self.compute_tree_structure(data_list,root)
         # The main line: move children of data.parent to organizer nodes.
         active = None # The organizer node that is presently accumulating nodes.
-        demote = [] # Tuples (p,data)
         demote_pending = [] # Lists of pending demotions.
-        n = 0 # The present child index of this node.
+        def add(active,child):
+            if trace: g.trace('active',active,
+                'active.p',active.p and active.p.h,
+                'child',child and child.h)
+            self.global_moved_node_list.append((active.p,child.copy()),)
+        def pending(active,child):
+            if trace: g.trace('active',active,
+                'active.p',active.p and active.p.h,
+                'child',child and child.h)
+            demote_pending.append((active.p,child.copy()),)
+        n = 0 # The number of *unorganized* preceding nodes.
         for child in data.parent.children():
             # Find the organizer (if any) that organizes child.
             found = None
@@ -368,39 +386,38 @@ class ViewController:
                     if p == child:
                         found = d ; break
                 if found: break
-            if trace: g.trace('-----',child.h,
-                'found:',found and found.h,
+            if trace: g.trace('-----',child.h,'found:',found and found.h,
                 'active',active and active.h)
             if found is None:
                 if active:
-                    demote_pending.append((child.copy(),active),)
-                    if trace: g.trace('add to pending',child.h)
+                    pending(active,child)
                 else:
-                    ### self.root_data.number_of_children += 1 # For child.
-                    ### self.root_data.number_of_children += len(demote_pending)
+                    # Pending nodes will *not* be organized.
                     n += 1 + len(demote_pending) # Add 1 for the child.
                     demote_pending = []
             elif found == active:
+                # Pending nodes *will* be organized.
                 if trace:
                     for z,d in demote_pending: g.trace('extra',z.h)
-                demote.extend(demote_pending)
+                for data in demote_pending:
+                    active,child = data
+                    add(active,child)
                 demote_pending = []
-                demote.append((child.copy(),active),)
-                if trace: g.trace('add',child.h,active.h)
-            else:
-                ### self.root_data.number_of_children += len(demote_pending)
+                add(active,child)
+            else: # found != active.
+                # Pending nodes will *not* be organized.
                 n += len(demote_pending)
-                demote_pending = [] # Don't add these nodes.
-                active = self.switch_active_organizer(active,child,data,data_list,found,n)
+                demote_pending = []
+                active,n = self.switch_active_organizer(active,child,data,data_list,found,n)
                 if active:
-                    demote.append((child.copy(),active),)
-                    if trace: g.trace('add',child.h,active.h)
+                    # switch_active_organizer bumps n only for bare organizer nodes.
+                    add(active,child)
         if active:
             active.closed = True
-        # Demote all result nodes in reverse order so positions remain stable.
-        for p,data in reversed(demote):
-            assert data.p
-            p.moveToFirstChildOf(data.p)
+        ### Demote all result nodes in reverse order so positions remain stable.
+        ### for p,data in reversed(demote):
+        ###    assert data.p
+        ###    p.moveToFirstChildOf(data.p)
     #@+node:ekr.20140108081031.16611: *8* vc.compute_organized_positions
     def compute_organized_positions(self,data,root):
         '''Compute all the positions by the given OrganizerData instance.'''
@@ -454,7 +471,7 @@ class ViewController:
         for z in aList:
             z.visited = True
         return aList
-    #@+node:ekr.20140106215321.16685: *8* vc.switch_active_organizer
+    #@+node:ekr.20140106215321.16685: *8* vc.switch_active_organizer (test)
     def switch_active_organizer(self,active,child,data,data_list,found,n):
         '''Terminate the active organizer and start the found organizer.
         Return found, unless it has already been terminated.
@@ -466,46 +483,56 @@ class ViewController:
         assert found
         if found.closed:
             g.trace('Already exited',found.h)
-            return None
+            return None,n
         active = found
         if active.moved:
             g.trace('****already moved***',active.h)
+            return active,n
         else:
             active.moved = True
+            assert active.p,active.h
             if active.organizer_parent:
                 # The organizer node is a child of *another* organizer node.
+                # Just add it to the global moved list(!)
                 parent = active.organizer_parent.p
-                n = active.organizer_parent.number_of_children
-                active.organizer_parent.number_of_children += 1
+                self.global_moved_node_list.append((parent,active.p),)
+                return active,n
             else:
-                # The organizer node is a child of an *ordinary* node, the root node.
+                # The organizer node is a child of an *ordinary* node.
                 parent = active.parent
-                ### active.childIndex += 1
-            active.childIndex = n ###
-            g.trace('move',active.p and active.p.h,'to child',n,'of',
-                parent and parent.h or '***no parent***') 
-        return active
-    #@+node:ekr.20140106215321.16678: *6* vc.move_organizer_nodes (revise)
-    def move_organizer_nodes(self):
-        '''Move organizer nodes to their final location and delete the temp node.'''
+                g.trace('move bare',active.p and active.p.h,'to child',n,'of',
+                    parent and parent.h or '***no parent***') 
+            return active,n+1
+    #@+node:ekr.20140106215321.16678: *6* vc.move_nodes (test)
+    def move_nodes(self):
+        '''Move nodes to their final location and delete the temp node.'''
         c = self.c
-        ok = True
-        ### May have to rewrite...
-        # Reversing organizer_data_list preserves all positions.
-        for d in reversed(self.organizer_data_list):
-            assert d.parent,d
-            if d.organizer_parent:
-                # The organizer node is a child of *another* organizer node.
-                parent = d.organizer_parent.p
-                n = d.organizer_parent.childIndex
-            else:
-                # The organizer is a child of an *ordinary* node.
-                parent = d.parent
-                n = d.childIndex
-            assert d.p and parent,(d.p,parent)
-            d.p.moveToNthChildOf(parent,n)
-            g.trace('move',d.p.h,'to child',n,'of',parent.h)
-        self.temp_node.doDelete()
+        # Move nodes into organizers, in reversed order to preserve positions.
+        for parent,p in reversed(self.global_moved_node_list):
+            g.trace(parent.h,p.h)
+            ### p.moveToLastChildOf(parent.p)
+        # Move all bare organizers.
+        # A: For each parent, sort nodes on n.
+        g.trace('===== moving bare nodes =====')
+        d = {} # Keys are vnodes, values are lists of tuples (n,parent,p)
+        for parent,p,n in self.global_bare_organizer_node_list:
+            key = parent.v
+            aList = d.get(key,[])
+            if (n,parent,p) not in aList:
+                aList.append((n,parent,p),)
+                d[key] = aList
+        # B: For each parent, add nodes in childIndex order.
+        def key_func(obj):
+            return obj[0]
+        for key in d.keys():
+            aList = d.get(key)
+            alist.sort(key=key_func)
+            for data in aList:
+                n,parent,p = data
+                g.trace(n,parent,p)
+                ### p.moveToNthChildOf(parent.p,n)
+        # Delete the temp_node.
+        ### self.temp_node.doDelete()
     #@+node:ekr.20140106215321.16679: *6* vc.move_comments & helper
     def move_comments(self,root):
         '''Move comments from organizer nodes to organizer nodes.'''
