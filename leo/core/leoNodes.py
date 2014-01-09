@@ -343,21 +343,20 @@ class position (object):
         p = self
         if p.v:
             p.v.dump() # Don't print a label
-    #@+node:ekr.20080416161551.191: *4* p.key
+    #@+node:ekr.20080416161551.191: *4* p.key & p.sort_key
     def key (self):
-
         p = self
-
         # For unified nodes we must include a complete key,
         # so we can distinguish between clones.
         result = []
         for z in p.stack:
             v,childIndex = z
             result.append('%s:%s' % (id(v),childIndex))
-
         result.append('%s:%s' % (id(p.v),p._childIndex))
-
         return '.'.join(result)
+
+    def sort_key(self,p):
+        return [int(s.split(':')[1]) for s in p.key().split('.')]
     #@+node:ekr.20090128083459.74: *3* p.Properties
     #@+node:ekr.20090128083459.75: *4* p.b property
     def __get_b(self):
