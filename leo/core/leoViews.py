@@ -354,7 +354,7 @@ class ViewController:
         The main line of the @auto-view algorithm: demote nodes for all
         OrganizerData instances having the same source as the given instance.
         '''
-        trace = True # and not g.unitTesting
+        trace = False # and not g.unitTesting
         if trace: g.trace('=====',root and root.h or '*no root*',
             data and data.parent and data.parent.h or '*no data.parent*')
         # Find and mark as visited all OrganizerData instances having the same source as data.
@@ -498,13 +498,16 @@ class ViewController:
                 return active,n
             else:
                 # The organizer node is a child of an *ordinary* node.
+                p = active.p
                 parent = active.parent
+                self.global_bare_organizer_node_list.append((parent,p,n),)
                 g.trace('move bare',active.p and active.p.h,'to child',n,'of',
-                    parent and parent.h or '***no parent***') 
+                    parent and parent.h or '***no parent***')
             return active,n+1
     #@+node:ekr.20140106215321.16678: *6* vc.move_nodes (test)
     def move_nodes(self):
         '''Move nodes to their final location and delete the temp node.'''
+        trace = True # and not g.unitTesting
         c = self.c
         import leo.core.leoNodes as leoNodes
         # Move nodes into organizers, in reversed order to preserve positions.
@@ -515,7 +518,8 @@ class ViewController:
             p.moveToLastChildOf(parent)
         # Move all bare organizers.
         # A: For each parent, sort nodes on n.
-        g.trace('===== moving bare nodes =====')
+        if trace: g.trace('===== moving bare nodes =====')
+        # g.trace(['%s:%s' % (parent.h,p.h) for parent,p,n in self.global_bare_organizer_node_list])
         d = {} # Keys are vnodes, values are lists of tuples (n,parent,p)
         for parent,p,n in self.global_bare_organizer_node_list:
             key = parent.v
@@ -530,8 +534,11 @@ class ViewController:
             aList = d.get(key)
             for data in sorted(aList,key=key_func):
                 n,parent,p = data
-                g.trace(n,parent,p)
-                ### p.moveToNthChildOf(parent.p,n)
+                n2 = parent.numberOfChildren()
+                if trace: g.trace(n,parent.h,p.h,n2)
+                #### All bare organizer nodes must be in their own private cell.
+                # p.moveToNthChildOf(parent,n)
+                # assert parent.numberOfChildren() == n2+1
         # Delete the temp_node.
         ### self.temp_node.doDelete()
     #@+node:ekr.20140106215321.16679: *6* vc.move_comments & helper
