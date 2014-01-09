@@ -1120,6 +1120,7 @@
 <v t="ekr.20131220065609.16629"><vh>Added web-oriented bookmarks to mod_http plugin</vh></v>
 </v>
 </v>
+<v t="ekr.20140109160326.16626"><vh>Prewriting for theory of operation for @auto-view</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -19758,6 +19759,121 @@ changed.
 <t tx="ekr.20131221065129.16526">All menu shortcuts are shown as bound to the menu-shortcut command.
 </t>
 <t tx="ekr.20131222112420.16374">This should be more intuitive for newcomers.</t>
+<t tx="ekr.20140109160326.16626">@language rest
+
+For the last week the standing joke has been that the work will take about
+another two hours :-) Early this morning I fixed several bugs that were
+confusing matters significantly.
+
+The only remaining problems involve computing the child indices of moved
+nodes. That is, we have to move nodes so they end up in the proper sibling
+order.
+
+===== Two new Aha's, and a new distinction
+
+Two major new Aha's have appeared.  As often happens, they were the result of a new distinction:
+
+  **Nested** organizer nodes will become children of *other* organizer nodes.
+
+  **Bare** organizer nodes will become children of *ordinary* nodes.
+
+Aha 1: We don't have to compute child indices for nodes moved to children
+of organizer nodes!
+
+We simply put them on a list (in imported outline order) of tuples
+(parent,moved_node). There will be only *one* such list, say
+vc.global_moved_node_list.
+
+When the time comes to do the actual moves, we do the following:
+
+- Reverse the global list, thereby guaranteeing that positions that appear
+   later in the reversed list remain valid.
+- Insert each item on the list as the *last* child of the parent
+   (organizer) node.
+
+That's all!
+
+Using a global list was hard to see, because typically such schemes don't
+work in recursive environments. But the @auto-view algorithms are *not*
+recursive. Each @organizer: node is handled separately, in a completely
+linear fashion, by vc.demote_helper, the true main line of the code.
+
+Aha 2:  We can treat *nested* organizer nodes just as we treat ordinary nodes!
+
+vc.switch_active_organizer (the code that handles the entry into an
+organizer node) will simply add another entry (parent,organizer_node) to
+the global move list.
+
+===== Moving bare organizer nodes.
+
+Now that moving most nodes has become trivial, the only remaining task is
+to *safely* move bare organizers. This task has two parts:
+
+1. Determine the proper child index of *bare* organizer nodes.
+
+This will be done in the main line: vc.demote_helper will maintain a count
+n of imported nodes that *haven't* been assigned to organizer nodes. This
+count must also be incremented to include bare organizer nodes the will be
+inserted later. It's just a bit tricky, but there are only a few cases to
+get right. Once it works, it will work forever.
+
+There will be another global list, say vc.global_bare_organizer_node_list,
+containing tuples (parent,bare_organizer,n). vc.switch_active_organizer
+will add entries to this list, but *only* for bare organizer nodes.
+
+Here is how to insert bare organizer nodes in their proper places (as
+children of an *ordinary* parent node).
+
+2. Actually move the bare organizer nodes.
+
+Note that the children of bare organizer nodes will appear
+vc.global_moved_node_list. Note also that each (ordinary) parent node may
+contain several bare organizer nodes. Here is how to get the job done
+safely:
+
+- For each parent, create a new per-parent list, containing all entries of
+  the global list with that parent.
+- Sort each per-parent list using n as the key.
+- Move the nodes in each per-parent list to their destinations, in sorted
+  order.
+
+At first glace, this seems entirely bogus. How are we to ensure that
+positions stay valid?
+
+Unlike for ordinary nodes, we can't process bare organizer nodes in reverse
+outline order: we have to handle them in the *new* sibling order, that is,
+sorted by n. In other words, it won't work to move them to the last child
+of their parent! Nor can we move nodes to any arbitrary sibling position:
+we must move nodes with smaller child indices before moving nodes with
+larger child indices.
+
+Happily, there are at least two solutions to this problem:
+
+1. The setup code could place each organizer node in a separate **holding
+   cell**. Moving the bare organizer out of a holding cell to its final
+   resting place affects no other holding cells, and no other organizer
+   node.
+
+2. The setup code could create "floating" positions for bare organizer
+   nodes. These positions would be moved (recreated) using special -purpose
+   low-level code.
+
+The first is good enough for now.
+
+===== Summary
+
+The notion of bare organizer node has eliminated a nest of confusions and
+complications in the code.
+
+Not having to track most child indices is a major collapse in complexity.
+Indeed, the code that moves nodes to their final destinations will have no
+"if" statements at all. It doesn't get any more solid than that.
+
+The @auto-view algorithms are vital to Leo's future. As if by magic, they
+should be able to reliably recreate outline structure from altered @auto
+files. These new algorithms are as important as any of the code in
+leoNodes.py. They are easily more important than the @shadow algorithm.
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.

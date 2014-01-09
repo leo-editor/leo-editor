@@ -166,6 +166,7 @@
 </v>
 <v t="ekr.20140103103143.4095"></v>
 <v t="ekr.20131231093529.3984"><vh>leoViews.py</vh>
+<v t="ekr.20140109162112.4219"><vh>@test p.sort_key</vh></v>
 <v t="ekr.20140105222052.4170"><vh>@test vc.clean_nodes (to do)</vh>
 <v t="ekr.20140105222052.4171"><vh>root1</vh></v>
 <v t="ekr.20140105222052.4172"><vh>root2</vh></v>
@@ -734,7 +735,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="11"></t>
+<t tx="ekr.20070417092935" str_leo_pos="10"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1912,5 +1913,14 @@ finally:
 </t>
 <t tx="ekr.20140109130017.4253"></t>
 <t tx="ekr.20140109130017.4254"></t>
+<t tx="ekr.20140109162112.4219">aList = [p.copy() for p in c.all_positions()]
+aList2 = sorted(reversed(aList),key=p.sort_key)
+i = 0
+for p in aList2:
+    p2 = aList[i]
+    i += 1
+    assert p == p2,'\n%s:%s\n%s:%s' % (
+        p.sort_key(),p.h,p2.sort_key(),p2.h)
+</t>
 </tnodes>
 </leo_file>
