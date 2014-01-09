@@ -526,8 +526,7 @@ class ViewController:
             return obj[0]
         for key in d.keys():
             aList = d.get(key)
-            alist.sort(key=key_func)
-            for data in aList:
+            for data in sorted(aList,key=key_func):
                 n,parent,p = data
                 g.trace(n,parent,p)
                 ### p.moveToNthChildOf(parent.p,n)
