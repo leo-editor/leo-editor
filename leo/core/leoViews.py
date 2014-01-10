@@ -5,6 +5,8 @@
 
 '''Support for @views trees and related operations.'''
 
+# Started 2013/12/31.
+
 #@@language python
 #@@tabwidth -4
 #@+<< imports >>
@@ -29,6 +31,8 @@ class OrganizerData:
             # The list of positions organized by this organizer node.
         self.organizer_children = []
             # The organizer nodes that will become children of this organizer node.
+        self.organizer_descendants = []
+            # The organizer nodes that will become descendants of this organizer node.
         self.organizer_parent = None
             # The organizer node (if any) that will become the parent of this organizer node.
             # It *is* valid for this to be None!
@@ -236,10 +240,10 @@ class ViewController:
         clones = self.has_clones_node(p)
         if clones:
             self.create_clone_links(clones,p)
-        if trace:
+        n = len(self.global_moved_node_list)
+        if trace and n > 0:
             self.print_stats()
             t2 = time.clock()-t1
-            n = len(self.global_moved_node_list)
             g.es('rearraned: %s' % (p.h),color='blue')
             g.es('moved %s nodes in %4.3f sec' % (n,t2),color='blue')
             g.trace('@auto-view moved %s nodes in %4.3f sec for' % (n,t2),p.h,noname=True)
@@ -443,7 +447,7 @@ class ViewController:
         if trace:
             g.trace('data',data.h,'\nraw_unls',raw_unls,
                 '\norganized_nodes',[z.h for z in data.organized_nodes])
-    #@+node:ekr.20140108081031.16612: *8* vc.compute_tree_structure (to do: descendant lists)
+    #@+node:ekr.20140108081031.16612: *8* vc.compute_tree_structure & helper
     def compute_tree_structure(self,data_list,root):
         '''
         Set the organizer_parent and organizer_children ivars for each entry in
@@ -458,10 +462,32 @@ class ViewController:
                     d2 = data_list[i]
                     if trace: g.trace('found organizer unl:',d.h,'==>',d2.h)
                     d.organizer_children.append(d2)
+                    d.organizer_descendants.append(d2)
                     d2.organizer_parent = d
         # create_organizer_data now ensures d.parent is set.
         for d in data_list:
             assert d.parent,d.h
+        # Extend the descendant lists.
+        for data in data_list:
+            self.compute_descendants(data)
+    #@+node:ekr.20140109214515.16633: *9* vc.compute_descendants
+    def compute_descendants(self,data,level=0):
+        '''Compute all the descendant OrganizerData nodes of data.'''
+        trace = False # and not g.unitTesting
+        # if trace: g.trace('level',level,data.h)
+        changed = True
+        while changed:
+            changed = False
+            for d in data.organizer_descendants:
+                self.compute_descendants(d,level+1)
+                for d2 in d.organizer_descendants:
+                    if d2 not in data.organizer_descendants:
+                        changed = True
+                        data.organizer_descendants.append(d2)
+                        # if trace: g.trace(data.h,'add:',d2.h)
+                        break
+        if trace and level == 0:
+            g.trace(data.h,[z.h for z in data.organizer_descendants])
     #@+node:ekr.20140108081031.16610: *8* vc.find_all_organizer_nodes
     def find_all_organizer_nodes(self,data):
         '''
