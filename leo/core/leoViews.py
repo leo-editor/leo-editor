@@ -76,6 +76,7 @@ class ViewController:
     def init(self):
         self.global_bare_organizer_node_list = []
         self.global_moved_node_list = []
+        self.n_nodes_scanned = 0
         self.organizer_data_list = []
         self.organizer_unls = []
         self.temp_node = None
@@ -227,11 +228,13 @@ class ViewController:
         g.es('rearranging: %s',p.h,color='blue')
         organizers = self.has_organizers_node(p)
         self.init()
+        self.root = p.copy()
         if organizers:
             self.create_organizer_nodes(organizers,p)
         clones = self.has_clones_node(p)
         if clones:
             self.create_clone_links(clones,p)
+        self.print_stats()
         # g.trace('clones',clones and clones.h)
         # g.trace('organizers',organizers and organizers.h)
     #@+node:ekr.20131230090121.16545: *5* vc.create_clone_link
@@ -291,7 +294,7 @@ class ViewController:
         self.move_comments(root)
         c.selectPosition(root)
         c.redraw()
-    #@+node:ekr.20140106215321.16674: *6* vc.create_organizer_data (ensures d.parent)
+    #@+node:ekr.20140106215321.16674: *6* vc.create_organizer_data (ensures data.p)
     def create_organizer_data(self,at_organizers,root):
         '''
         Create OrganizerData nodes for all @organizer: nodes
@@ -383,6 +386,7 @@ class ViewController:
             demote_pending.append((active,child.copy()),)
         n = 0 # The number of *unorganized* preceding nodes.
         for child in data.parent.children():
+            self.n_nodes_scanned += 1
             # Find the organizer (if any) that organizes child.
             found = None
             for d in data_list:
@@ -433,7 +437,7 @@ class ViewController:
         if trace:
             g.trace('data',data.h,'\nraw_unls',raw_unls,
                 '\norganized_nodes',[z.h for z in data.organized_nodes])
-    #@+node:ekr.20140108081031.16612: *8* vc.compute_tree_structure
+    #@+node:ekr.20140108081031.16612: *8* vc.compute_tree_structure (to do: descendant lists)
     def compute_tree_structure(self,data_list,root):
         '''
         Set the organizer_parent and organizer_children ivars for each entry in
@@ -449,11 +453,9 @@ class ViewController:
                     if trace: g.trace('found organizer unl:',d.h,'==>',d2.h)
                     d.organizer_children.append(d2)
                     d2.organizer_parent = d
-        # If there is no organizer parent, the organizer node will be
-        # the child of an *ordinary* node, namely d.parent.
+        # create_organizer_data now ensures d.parent is set.
         for d in data_list:
             assert d.parent,d.h
-                # create_organizer_data now ensures d.parent is set.
     #@+node:ekr.20140108081031.16610: *8* vc.find_all_organizer_nodes
     def find_all_organizer_nodes(self,data):
         '''
@@ -617,6 +619,16 @@ class ViewController:
         s = d.get('language') or c.target_language
         language,single,start,end = g.set_language(s,0)
         return single,start,end
+    #@+node:ekr.20140109214515.16631: *4* vc.print_stats
+    def print_stats(self):
+        '''Print important stats.'''
+        trace = True and not g.unitTesting
+        if trace:
+            g.trace(self.root and self.root.h or 'No root')
+            g.trace('scanned: %3s' % self.n_nodes_scanned)
+            g.trace('moved:   %3s' % (
+                len( self.global_bare_organizer_node_list) +
+                len(self.global_moved_node_list)))
     #@+node:ekr.20140103062103.16442: *4* vc.find...
     # The find node command create the node if not found.
     #@+node:ekr.20140102052259.16402: *5* vc.find_absolute_unl_node

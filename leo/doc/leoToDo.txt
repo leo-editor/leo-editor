@@ -21,6 +21,8 @@ Release 4.11.1 (or 5.0?):
 
 - Look at Eclipse # @name.
 .. @+node:ekr.20140109214515.16629: *3* Finish @auto-view
+@language rest
+
 Fix problems with child indices:
 - Add organizer_descendants field.
 - Don't close an organizer when entering descendant organizer.
@@ -29,6 +31,7 @@ Fix problems with child indices:
     - Create clear_pending helper function?
 
 Later:
+- Remove asserts: make sure this code *never* crashes.
 - Migrate leading comments from preceding child to organizer.
 - The write code should munge unls/headlines to match what importers will create.
 .. @+node:ekr.20140104063158.16448: *3* reload-abbreviations and reload-key-bindings commands
