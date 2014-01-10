@@ -12698,6 +12698,8 @@ def initWriteIvars(self,root,targetFileName,
             delattr(at.root.v,'tnodeList')
         at.root.v._p_changed = True
 .. @+node:ekr.20140105055318.16672: *3* ViewController unused
+### self.root_data = OrganizerData('**root_data**',unl='',unls=[])
+### self.root_data.p = root.copy()
 .. @+node:ekr.20131230090121.16510: *4* vc.update_before_write_leo_file
 def update_before_write_leo_file(self):
     '''Do pre-write processing for all @auto trees.'''
