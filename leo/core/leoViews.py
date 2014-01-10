@@ -10,6 +10,7 @@
 #@+<< imports >>
 #@+node:ekr.20131230090121.16506: ** << imports >> (leoViews.py)
 import leo.core.leoGlobals as g
+import time
 #@-<< imports >>
 #@+others
 #@+node:ekr.20140106215321.16672: ** class OrganizerData
@@ -224,8 +225,9 @@ class ViewController:
         Recreate all organizer nodes and clones for a single @auto node
         using the corresponding @organizer: and @clones nodes.
         '''
+        trace = True # Generally useful.
+        t1 = time.clock()
         assert self.is_at_auto_node(p),p
-        g.es('rearranging: %s',p.h,color='blue')
         organizers = self.has_organizers_node(p)
         self.init()
         self.root = p.copy()
@@ -234,9 +236,13 @@ class ViewController:
         clones = self.has_clones_node(p)
         if clones:
             self.create_clone_links(clones,p)
-        self.print_stats()
-        # g.trace('clones',clones and clones.h)
-        # g.trace('organizers',organizers and organizers.h)
+        if trace:
+            self.print_stats()
+            t2 = time.clock()-t1
+            n = len(self.global_moved_node_list)
+            g.es('rearraned: %s' % (p.h),color='blue')
+            g.es('moved %s nodes in %4.3f sec' % (n,t2),color='blue')
+            g.trace('@auto-view moved: %s nodes in %4.3f sec' % (n,t2),p.h,noname=True)
     #@+node:ekr.20131230090121.16545: *5* vc.create_clone_link
     def create_clone_link(self,gnx,root,unl):
         '''
@@ -622,7 +628,7 @@ class ViewController:
     #@+node:ekr.20140109214515.16631: *4* vc.print_stats
     def print_stats(self):
         '''Print important stats.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         if trace:
             g.trace(self.root and self.root.h or 'No root')
             g.trace('scanned: %3s' % self.n_nodes_scanned)

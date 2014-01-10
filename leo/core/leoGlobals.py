@@ -3119,38 +3119,38 @@ def pr(*args,**keys):
             app.printWaiting.append(s2)
 #@+node:ekr.20031218072017.2317: *3* g.trace
 def trace (*args,**keys):
-
+    '''Print a tracing message.'''
     # Don't use g here: in standalone mode g is a nullObject!
-
     # Compute the effective args.
-    d = {'align':0,'before':'','newline':True,'caller_level':1}
+    d = {'align':0,'before':'','newline':True,'caller_level':1,'noname':False}
     d = doKeywordArgs(keys,d)
     newline = d.get('newline')
     align = d.get('align',0)
     caller_level = d.get('caller_level',1)
-
+    noname = d.get('noname')
     # Compute the caller name.
-    try: # get the function name from the call stack.
-        f1 = sys._getframe(caller_level) # The stack frame, one level up.
-        code1 = f1.f_code # The code object
-        name = code1.co_name # The code name
-    except Exception:
-        name = g.shortFileName(__file__)
-    if name == '<module>':
-        name = g.shortFileName(__file__)
-    if name.endswith('.pyc'):
-        name = name[:-1]
-
+    if noname:
+        name = ''
+    else:
+        try: # get the function name from the call stack.
+            f1 = sys._getframe(caller_level) # The stack frame, one level up.
+            code1 = f1.f_code # The code object
+            name = code1.co_name # The code name
+        except Exception:
+            name = g.shortFileName(__file__)
+        if name == '<module>':
+            name = g.shortFileName(__file__)
+        if name.endswith('.pyc'):
+            name = name[:-1]
     # Pad the caller name.
     if align != 0 and len(name) < abs(align):
         pad = ' ' * (abs(align) - len(name))
         if align > 0: name = name + pad
         else:         name = pad + name
-
     # Munge *args into s.
     # print ('g.trace:args...')
     # for z in args: print (g.isString(z),repr(z))
-    result = [name]
+    result = [name] if name else []
     for arg in args:
         if isString(arg):
             pass
@@ -3162,7 +3162,6 @@ def trace (*args,**keys):
             result.append(" " + arg)
         else:
             result.append(arg)
-
     s = d.get('before')+''.join(result)
     pr(s,newline=newline)
 #@+node:ekr.20080220111323: *3* g.translateArgs

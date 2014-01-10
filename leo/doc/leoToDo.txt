@@ -8,7 +8,6 @@
 
 ** Finish @auto-view (See child)
 
-
 Reload settings:
     reload-abbreviations and reload-key-bindings commands.
         Use regex replace to replace settings ivars with @property defs.
@@ -31,6 +30,7 @@ Fix problems with child indices:
     - Create clear_pending helper function?
 
 Later:
+- Redo the perfect import check using a second trial write.
 - Remove asserts: make sure this code *never* crashes.
 - Migrate leading comments from preceding child to organizer.
 - The write code should munge unls/headlines to match what importers will create.

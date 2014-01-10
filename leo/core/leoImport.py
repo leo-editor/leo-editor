@@ -1874,7 +1874,10 @@ class baseScannerClass (scanUtility):
     def checkTrialWrite (self,s1=None,s2=None):
         '''Return True if a trial write produces the original file.'''
         # s1 and s2 are for unit testing.
-        trace = False
+        trace = False and not g.unitTesting
+        trace_time = False and not g.unitTesting
+        if trace_time:
+            t1 = time.clock()
         c,at=self.c,self.c.atFileCommands
         if trace: g.trace(s1 and len(s1),s2 and len(s2))
         if s1 is None and s2 is None:
@@ -1911,7 +1914,9 @@ class baseScannerClass (scanUtility):
         s2 = s2.replace('\r','')
         if not s1.endswith('\n'): s1 = s1 + '\n'
         if not s2.endswith('\n'): s2 = s2 + '\n'
-        if s1 == s2: return True
+        if s1 == s2:
+            if trace_time: g.trace(g.timeSince(t1))
+            return True
         if self.ignoreBlankLines or self.ignoreLeadingWs or not self.compare_tokens:
             lines1 = g.splitLines(s1)
             lines2 = g.splitLines(s2)
@@ -1921,7 +1926,9 @@ class baseScannerClass (scanUtility):
             s2 = ''.join(lines2)
         if self.compare_tokens: # Token-based comparison.
             bad_i1,bad_i2,ok = self.scanAndCompare(s1,s2)
-            if ok: return ok
+            if ok:
+                if trace_time: g.trace(g.timeSince(t1))
+                return ok
         else: # Line-based comparison: can not possibly work for html.
             n1,n2 = len(lines1), len(lines2)
             ok = True ; bad_i1,bad_i2 = 0,0
@@ -1939,6 +1946,7 @@ class baseScannerClass (scanUtility):
             lines1 = g.splitLines(s1)
             lines2 = g.splitLines(s2)
             self.reportMismatch(lines1,lines2,bad_i1,bad_i2)
+        if trace_time: g.trace(g.timeSince(t1))
         return ok
     #@+node:ekr.20070730093735: *4* compareHelper & helpers
     def compareHelper (self,lines1,lines2,i,strict):
