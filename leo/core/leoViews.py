@@ -224,6 +224,7 @@ class ViewController:
         using the corresponding @organizer: and @clones nodes.
         '''
         assert self.is_at_auto_node(p),p
+        g.es('rearranging: %s',p.h,color='blue')
         organizers = self.has_organizers_node(p)
         self.init()
         if organizers:
@@ -357,10 +358,12 @@ class ViewController:
         verbose = False
         if trace: g.trace('=====',root and root.h or '*no root*',
             data and data.parent and data.parent.h or '*no data.parent*')
-        # Find and mark as visited all OrganizerData instances having the same source as data.
+        # Find all OrganizerData instances having the same source as data.
         data_list = self.find_all_organizer_nodes(data)
+        assert data in data_list,data_list
         # Compute the list of positions of nodes organized by each OrganizerData instance.
         for d in data_list:
+            d.visited = True
             self.compute_organized_positions(d,root)
         # Compute the parent/child relationships for all organizer nodes.
         self.compute_tree_structure(data_list,root)
@@ -416,7 +419,7 @@ class ViewController:
             active.closed = True
     #@+node:ekr.20140108081031.16611: *8* vc.compute_organized_positions
     def compute_organized_positions(self,data,root):
-        '''Compute all the positions by the given OrganizerData instance.'''
+        '''Compute all the positions organized by the given OrganizerData instance.'''
         trace = False # and not g.unitTesting
         raw_unls = [self.drop_all_organizers_in_unl(self.organizer_unls,unl)
             for unl in data.unls]
@@ -455,7 +458,7 @@ class ViewController:
     def find_all_organizer_nodes(self,data):
         '''
         Return the list of all OrganizerData instances organizing the same
-        imported source node as data and set each visited bit.
+        imported source node as data.
         '''
         # Compute the list.
         aList = [z for z in self.organizer_data_list
@@ -471,9 +474,6 @@ class ViewController:
         # Check that all visited bits are clear.
         assert all([not z.visited for z in aList]),[
             z for z in aList if z.visited]
-        # Set all visited bits.
-        for z in aList:
-            z.visited = True
         return aList
     #@+node:ekr.20140106215321.16685: *8* vc.switch_active_organizer
     def switch_active_organizer(self,active,child,data,data_list,found,n):
@@ -516,9 +516,16 @@ class ViewController:
         '''Move nodes to their final location and delete the temp node.'''
         trace = True and not g.unitTesting
         c = self.c
+        # Sort global_moved_node_list into *imported* outline order.
+        # demote_helper visits organizers in the *original* outline order,
+        # but the *imported* outline order might be different.
+        def key(data):
+            parent,p = data
+            return p.sort_key(p)
+        sorted_list = sorted(self.global_moved_node_list,key=key)
         # Move nodes into organizers, in reversed order to preserve positions.
         import leo.core.leoNodes as leoNodes
-        for parent,p in reversed(self.global_moved_node_list):
+        for parent,p in reversed(sorted_list):
             assert isinstance(parent,leoNodes.position),parent
             assert isinstance(p,leoNodes.position),p
             p.moveToLastChildOf(parent)
@@ -543,8 +550,7 @@ class ViewController:
                 if trace: g.trace(n,parent.h,p.h,n2)
                 p.moveToNthChildOf(parent,n)
         # Delete the temp_node.
-        if not trace:
-            self.temp_node.doDelete()
+        self.temp_node.doDelete()
     #@+node:ekr.20140106215321.16679: *6* vc.move_comments & helper
     def move_comments(self,root):
         '''Move comments from organizer nodes to organizer nodes.'''

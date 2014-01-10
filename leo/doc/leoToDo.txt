@@ -6,10 +6,8 @@
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 
-** Finish @auto-view:
-- Do bare organizers have the correct parent?
-- Migrate leading comments from preceding child to organizer.
-- The write code should munge unls to match what importers will do
+** Finish @auto-view (See child)
+
 
 Reload settings:
     reload-abbreviations and reload-key-bindings commands.
@@ -22,6 +20,17 @@ Release 4.11.1 (or 5.0?):
     - Improve p.isVisible: its algorithm is poor.
 
 - Look at Eclipse # @name.
+.. @+node:ekr.20140109214515.16629: *3* Finish @auto-view
+Fix problems with child indices:
+- Add organizer_descendants field.
+- Don't close an organizer when entering descendant organizer.
+- Do open **intermediate** organizers when opening a descendant organizer.
+- Make sure to clear pending list when opening a descendant organizer.
+    - Create clear_pending helper function?
+
+Later:
+- Migrate leading comments from preceding child to organizer.
+- The write code should munge unls/headlines to match what importers will create.
 .. @+node:ekr.20140104063158.16448: *3* reload-abbreviations and reload-key-bindings commands
 .. @+node:ekr.20120209051836.10242: *4* class LoadManager
 class LoadManager:

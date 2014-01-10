@@ -1120,7 +1120,9 @@
 <v t="ekr.20131220065609.16629"><vh>Added web-oriented bookmarks to mod_http plugin</vh></v>
 </v>
 </v>
-<v t="ekr.20140109160326.16626"><vh>Prewriting for theory of operation for @auto-view</vh></v>
+<v t="ekr.20140109160326.16626"><vh>Prewriting for theory of operation for @auto-view</vh>
+<v t="ekr.20140109214515.16628"><vh>More</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -19873,6 +19875,116 @@ The @auto-view algorithms are vital to Leo's future. As if by magic, they
 should be able to reliably recreate outline structure from altered @auto
 files. These new algorithms are as important as any of the code in
 leoNodes.py. They are easily more important than the @shadow algorithm.
+</t>
+<t tx="ekr.20140109214515.16628">This post will be pre-writing for further documentation. It contains
+important insights for both users and developers.
+
+The symptom of the bugs is that *non-bare* organizer nodes are not placed
+in correct sibling order. As you recall, the value of n in the main line,
+demote_helper, matters only for *bare* organizer nodes. So the proximate
+cause of the problem is that pending nodes aren't entered on the global
+node list before entering the organizers.
+
+As we shall see below, the more fundamental problem is that the code does
+not fully account for the outline relationships between organizer nodes. As
+a result, the existing code does not always open and close organizer nodes
+properly. (An organizer node is open when it may accumulated organized
+nodes; an organizer node is closed when it can no longer accumulate
+organized nodes without changing the order of the nodes in the @auto file.)
+
+Two examples will illustrate the subtleties, and will lead naturally to a
+new distinction, that of an **intermediate organizer** node.
+
+Let's start with an easy case.  Suppose the organizer structure is:
+
+  - @auto x.py
+    - leading nodes
+    - organizer A
+       - node 1
+       - organizer B
+           - node 2
+       - organizer C
+       - node 3
+    - organizer D
+
+Clearly, the children of organizer A should be: node1, organizer B,
+organizer C and node 3. That is, we must *not* close organizer A just
+because we have entered organizer B or organizer C. Otoh, we *must* close
+organizer A when we see organizer D.
+
+The rule is clear: we must close an organizer whenever we see another
+organizer that is not a descendant organizer.
+
+The existing code creates parent/child data for OrganizerData instances.  It will be straightforward to add descendant relationships.
+
+Let's consider another case:
+
+- @auto x.py
+    - leading nodes
+    - organizer A
+       - organizer B
+         - organizer C
+           - node 1
+ 
+Here, organizer B is an **intermediate organizer** node. That is, it occurs
+"between" organizers A and C.
+
+Adding node 1 to the global node list should open organizer B, but the
+present code does not. The present code opens an organizer node only when
+adding a node to the organizer, but this example shows that organizer B
+must be added to the global node list *before* any node is added to it.
+Failure to do so results in organizer B being put in the wrong place.
+
+===== Organizer relationships are stable!
+
+As I was thinking about the outline relationships between organizer nodes,
+I began to worry that minor changes to the imported @auto file might break
+those relationships. In fact, the reverse is true: the relationships
+between organizer nodes are *independent* of the @auto file!
+
+The reason is simple: those relationships are created by the unl's in
+@organizer: nodes in the .leo file. Furthermore, reorganizing the *outline*
+will automatically update the unls in the @organizer nodes (in the @views
+node) when the outline is saved. Thus, the *relationships* between
+organizer nodes can never be broken by changes to the @auto node! This is
+really important for users to know.
+
+And there is more good news. Changing the contents of the @auto files can
+indeed change the contents of organizer nodes, but the only way to totally
+invalidate an organizer node is to change the *structural* relationships of
+data in the @auto file. This almost never happens!
+
+For example, if aClass is defined at the top level of the @auto file, then
+the only way to invalidate the organizers that contain aClass or its
+members is to move aClass so it is not a top-level node. But Leo's
+importers will put aClass at the top level unless it becomes a nested class
+in some other class! To repeat, this kind massive change to the context of
+a class, function or method almost never happens.
+
+In short, the links between unls (in @organizer: nodes) and imported
+classes, methods and functions almost never break! This is truly great
+news.
+
+===== Summary
+
+The following bugs will be easy to fix today:
+
+- demote_helper must keep organizer nodes open when handling descendant
+  organizer nodes.
+- demote_helper must open all intermediate organizer nodes when opening
+  descendant organizer nodes.
+- The unit tests must be sure to test intermediate nodes.
+
+The following insights are important for users (and maintainers) to know:
+
+- Changing an @auto file does not change the relationships between its
+  organizer nodes in any way.
+- Saving an outline automatically updates the relationships between
+  organizer nodes.
+- Unl's are much more stable than one might suppose: the *only* way to
+  "break" organizer nodes is to change the fundamental relationships of
+  classes, methods or functions in the imported @auto file. This almost
+  *never* happens.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
