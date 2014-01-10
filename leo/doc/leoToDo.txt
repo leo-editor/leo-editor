@@ -7,7 +7,9 @@
 @language rest
 
 ** Finish @auto-view:
+- Do bare organizers have the correct parent?
 - Migrate leading comments from preceding child to organizer.
+- The write code should munge unls to match what importers will do
 
 Reload settings:
     reload-abbreviations and reload-key-bindings commands.

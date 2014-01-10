@@ -24,8 +24,6 @@ class OrganizerData:
             # The headline of this organizer node).
         self.moved = False
             # True: the organizer node has already been moved.
-        self.n_unorganized_nodes = 0
-            # The number of unorganized nodes preceding this node (for childIndex).
         self.organized_nodes = []
             # The list of positions organized by this organizer node.
         self.organizer_children = []
@@ -216,7 +214,8 @@ class ViewController:
                 organizer.b = '\n'.join(['unl: ' + self.relative_unl(child,root)
                     for child in p.children()])
         if clone_data or organizers_data:
-            g.es('updated @views node')
+            if not g.unitTesting:
+                g.es('updated @views node')
             c.redraw()
     #@+node:ekr.20131230090121.16513: *4* vc.update_after_read_at_auto_file & helpers
     def update_after_read_at_auto_file(self,p):
@@ -354,7 +353,7 @@ class ViewController:
         The main line of the @auto-view algorithm: demote nodes for all
         OrganizerData instances having the same source as the given instance.
         '''
-        trace = True # and not g.unitTesting
+        trace = False # and not g.unitTesting
         verbose = False
         if trace: g.trace('=====',root and root.h or '*no root*',
             data and data.parent and data.parent.h or '*no data.parent*')
@@ -418,13 +417,16 @@ class ViewController:
     #@+node:ekr.20140108081031.16611: *8* vc.compute_organized_positions
     def compute_organized_positions(self,data,root):
         '''Compute all the positions by the given OrganizerData instance.'''
-        trace = False and not g.unitTesting
+        trace = False # and not g.unitTesting
         raw_unls = [self.drop_all_organizers_in_unl(self.organizer_unls,unl)
             for unl in data.unls]
         for raw_unl in list(set(raw_unls)):
+            if raw_unl.startswith('-->'): # A crucial special case
+                raw_unl = raw_unl[3:] ### This could go somewhere else...
+                # g.trace('**** special case *****',raw_unl)
             p = self.find_relative_unl_node(root,raw_unl)
             if p: data.organized_nodes.append(p.copy())
-            elif trace: g.trace('not found',raw_unl)
+            else: g.trace('*** not found:',raw_unl,root.h)
         if trace:
             g.trace('data',data.h,'\nraw_unls',raw_unls,
                 '\norganized_nodes',[z.h for z in data.organized_nodes])
@@ -458,6 +460,11 @@ class ViewController:
         # Compute the list.
         aList = [z for z in self.organizer_data_list
             if z.source_unl == data.source_unl]
+        # if not data.source_unl:
+            # g.trace('data.source_unl:',repr(data.source_unl))
+            # g.trace('[source_unl]:',[z.source_unl for z in self.organizer_data_list])
+            # g.trace('data.parent.h',data.parent.h)
+            # g.trace('[data.parent.h]:',[z.parent.h for z in self.organizer_data_list])
         # Check that all parents match.
         assert all([z.parent == data.parent for z in aList]),[
             z for z in aList if z.parent != data.parent]
@@ -474,41 +481,40 @@ class ViewController:
         Return found, unless it has already been terminated.
         Set the found.childIndex.
         '''
-        trace = True # and not g.unitTesting
+        trace = False # and not g.unitTesting
         if active:
             active.closed = True
         assert found
-        if found.closed:
+        if False and found.closed: #########
             g.trace('Already exited',found.h)
             return None,n
         active = found
-        if active.moved:
-            g.trace('****already moved***',active.h)
-            return active,n
-        else:
-            active.moved = True
-            assert active.p,active.h
-            if active.organizer_parent:
-                # The organizer node is a child of *another* organizer node.
-                # Just add it to the global moved list(!)
-                parent = active.organizer_parent.p
+        assert active.p,active.h
+        if active.organizer_parent:
+            # The organizer node is a child of *another* organizer node.
+            # Just add it to the global moved list(!)
+            parent = active.organizer_parent.p
+            if not active.moved:
+                active.moved = True
                 self.global_moved_node_list.append((parent,active.p),)
                 if trace: g.trace(# 'active',active,
                     'active.p',active.p and active.p.h,
                     'child',child and child.h)
-                return active,n
-            else:
-                # The organizer node is a child of an *ordinary* node.
-                p = active.p
-                parent = active.parent
+            return active,n
+        else:
+            # The organizer node is a child of an *ordinary* node.
+            p = active.p
+            parent = active.parent
+            if not active.moved:
+                active.moved = True
                 self.global_bare_organizer_node_list.append((parent,p,n),)
                 if trace: g.trace('move bare:',active.p and active.p.h,'to child',n,'of',
                     parent and parent.h or '***no parent***')
-            return active,n+1
+        return active,n+1
     #@+node:ekr.20140106215321.16678: *6* vc.move_nodes
     def move_nodes(self):
         '''Move nodes to their final location and delete the temp node.'''
-        trace = True # and not g.unitTesting
+        trace = True and not g.unitTesting
         c = self.c
         # Move nodes into organizers, in reversed order to preserve positions.
         import leo.core.leoNodes as leoNodes
