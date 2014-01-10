@@ -242,7 +242,7 @@ class ViewController:
             n = len(self.global_moved_node_list)
             g.es('rearraned: %s' % (p.h),color='blue')
             g.es('moved %s nodes in %4.3f sec' % (n,t2),color='blue')
-            g.trace('@auto-view moved: %s nodes in %4.3f sec' % (n,t2),p.h,noname=True)
+            g.trace('@auto-view moved %s nodes in %4.3f sec for' % (n,t2),p.h,noname=True)
     #@+node:ekr.20131230090121.16545: *5* vc.create_clone_link
     def create_clone_link(self,gnx,root,unl):
         '''
