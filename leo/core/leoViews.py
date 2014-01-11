@@ -86,7 +86,9 @@ class ViewController:
         self.n_nodes_scanned = 0
         self.organizer_data_list = []
         self.organizer_unls = []
+        self.root = None
         self.temp_node = None
+        self.trail_write_1 = None # The trial write on entry.
         self.views_node = None
     #@+node:ekr.20131230090121.16514: *3* vc.Entry points
     #@+node:ekr.20140102052259.16394: *4* vc.pack & helper
@@ -226,7 +228,7 @@ class ViewController:
                 g.es('updated @views node')
             c.redraw()
     #@+node:ekr.20131230090121.16513: *4* vc.update_after_read_at_auto_file & helpers
-    def update_after_read_at_auto_file(self,p):
+    def update_after_read_at_auto_file(self,root):
         '''
         Recreate all organizer nodes and clones for a single @auto node
         using the corresponding @organizer: and @clones nodes.
@@ -234,24 +236,44 @@ class ViewController:
         trace = True # Generally useful.
         c = self.c
         t1 = time.clock()
-        assert self.is_at_auto_node(p),p
+        assert self.is_at_auto_node(root),root
         old_changed = c.isChanged()
-        organizers = self.has_organizers_node(p)
+        fn = g.os_path_finalize(root.atAutoNodeName())
+        if g.os_path_exists(fn):
+            self.trial_write_1 = self.trial_write(fn,root)
+        organizers = self.has_organizers_node(root)
         self.init()
-        self.root = p.copy()
+        self.root = root.copy()
         if organizers:
-            self.create_organizer_nodes(organizers,p)
-        clones = self.has_clones_node(p)
+            self.create_organizer_nodes(organizers,root)
+        clones = self.has_clones_node(root)
         if clones:
-            self.create_clone_links(clones,p)
+            self.create_clone_links(clones,root)
         n = len(self.global_moved_node_list)
-        c.setChanged(old_changed)
+        fn = g.os_path_finalize(root.atAutoNodeName())
+        if g.os_path_exists(fn):
+            ok = self.check(fn,root)
+        else:
+            ok = True # Don't bother.
+        c.setChanged(old_changed if ok else True)
         if trace and n > 0:
             self.print_stats()
             t2 = time.clock()-t1
-            g.es('rearraned: %s' % (p.h),color='blue')
+            g.es('rearraned: %s' % (root.h),color='blue')
             g.es('moved %s nodes in %4.3f sec' % (n,t2),color='blue')
-            g.trace('@auto-view moved %s nodes in %4.3f sec for' % (n,t2),p.h,noname=True)
+            g.trace('@auto-view moved %s nodes in %4.3f sec for' % (
+                n,t2),root.h,noname=True)
+    #@+node:ekr.20140109214515.16643: *5* vc.check
+    def check (self,fn,root):
+        '''
+        Compare a trial write with the self.trail_write_1.
+        Unlike the perfect-import checks done by the importer,
+        we expecct an *exact* match, regardless of language.
+        '''
+        ok = self.trial_write_1 == self.trial_write(fn,root)
+        if not ok:
+            g.trace('perfect import check failed!',root.h,color='red')
+        return ok
     #@+node:ekr.20131230090121.16545: *5* vc.create_clone_link
     def create_clone_link(self,gnx,root,unl):
         '''
@@ -598,6 +620,18 @@ class ViewController:
                     'move %20s to child %2s of %-20s with %s children' % (
                         p.h,n,parent.h,n2))
                 p.moveToNthChildOf(parent,n)
+    #@+node:ekr.20140109214515.16644: *5* vc.trial_write
+    def trial_write(self,fn,root):
+        '''return a trial write of the file with the given name.'''
+        # Compute the encoding.
+        c = self.c
+        d = c.scanAllDirectives(root)
+        encoding = d.get("encoding")
+        if not (encoding and g.isValidEncoding(encoding)):
+            encoding = c.config.default_at_auto_file_encoding
+        # Read the file into s.
+        s,e = g.readFileIntoString(fn,encoding=encoding)
+        return s
     #@+node:ekr.20131230090121.16515: *3* vc.Helpers
     #@+node:ekr.20140103105930.16448: *4* vc.at_auto_view_body and match_at_auto_body
     def at_auto_view_body(self,p):
