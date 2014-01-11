@@ -294,6 +294,8 @@ class ViewController:
         child @organizer: node of the given @organizers node.
         '''
         c = self.c
+        # Merge comment nodes with the next node.
+        self.pre_move_comments(root)
         # Create the OrganizerData objects and corresponding ivars of this class.
         self.create_organizer_data(at_organizers,root)
         # Create the organizer nodes in a temporary location so positions remain valid.
@@ -302,8 +304,8 @@ class ViewController:
         self.demote_organized_nodes(root)
         # Move nodes to their final locations.
         self.move_nodes()
-        # Move comments in organized nodes to organizer nodes.
-        self.move_comments(root)
+        # Move merged comments to parent organizer nodes.
+        self.post_move_comments(root)
         c.selectPosition(root)
         c.redraw()
     #@+node:ekr.20140106215321.16674: *6* vc.create_organizer_data (ensures data.p)
@@ -546,7 +548,7 @@ class ViewController:
                 if trace: g.trace('move bare:',active.p and active.p.h,'to child',n,'of',
                     parent and parent.h or '***no parent***')
         return active,n+1
-    #@+node:ekr.20140106215321.16678: *6* vc.move_nodes
+    #@+node:ekr.20140106215321.16678: *6* vc.move_nodes & helpers
     def move_nodes(self):
         '''Move nodes to their final location and delete the temp node.'''
         self.move_nodes_to_organizers()
@@ -555,7 +557,7 @@ class ViewController:
     #@+node:ekr.20140109214515.16636: *7* vc.move_nodes_to_organizers
     def move_nodes_to_organizers(self):
         '''Move all nodes in the global_moved_node_list.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         # Sort global_moved_node_list into *imported* outline order.
         # demote_helper visits organizers in the *original* outline order,
         # but the *imported* outline order might be different.
@@ -565,7 +567,7 @@ class ViewController:
         sorted_list = sorted(self.global_moved_node_list,key=key)
         if trace: # A highly useful trace!
             g.trace('sorted_list...\n%s' % (
-                '\n'.join(['%20s %s' % (parent.h,p.h) for parent,p in sorted_list])))
+                '\n'.join(['%40s %s' % (parent.h,p.h) for parent,p in sorted_list])))
         # Move nodes in reversed order to preserve positions.
         for parent,p in reversed(sorted_list):
             p.moveToFirstChildOf(parent)
@@ -573,7 +575,7 @@ class ViewController:
     def move_bare_organizers(self):
         '''Move all nodes in global_bare_organizer_node_list.'''
         # For each parent, sort nodes on n.
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         d = {} # Keys are vnodes, values are lists of tuples (n,parent,p)
         for parent,p,n in self.global_bare_organizer_node_list:
             key = parent.v
@@ -593,30 +595,6 @@ class ViewController:
                     'move %20s to child %2s of %-20s with %s children' % (
                         p.h,n,parent.h,n2))
                 p.moveToNthChildOf(parent,n)
-    #@+node:ekr.20140106215321.16679: *6* vc.move_comments & helper
-    def move_comments(self,root):
-        '''Move comments from organizer nodes to organizer nodes.'''
-        c = self.c
-        if 0: ### Not ready yet.
-            to_be_deleted = []
-            for data in self.organizer_data_list:
-                p2 = self.migrate_organizer_node_comments(data.p,root)
-                if p2: to_be_deleted.append(p2)
-            g.trace('to_be_deleted',[p.h for p in to_be_deleted])
-            c.deletePositionsInList(to_be_deleted)
-    #@+node:ekr.20140105055318.16753: *7* v.migrate_organizer_node_comments
-    def migrate_organizer_node_comments(self,p,root):
-        '''
-        p is an organizer node. Let back be p.back(). If back contains nothing
-        but comments, move back.b to p.b and return back, indicating that back
-        is to deleted later.
-        '''
-        back = p.back()
-        if back and not back.hasChildren() and self.is_comment_node(back,root):
-            if back.b: p.b = p.b + back.b
-            return back
-        else:
-            return None
     #@+node:ekr.20131230090121.16515: *3* vc.Helpers
     #@+node:ekr.20140103105930.16448: *4* vc.at_auto_view_body and match_at_auto_body
     def at_auto_view_body(self,p):
@@ -651,7 +629,8 @@ class ViewController:
         for p in reversed(delete):
             p.doDelete()
         c.selectPosition(views)
-    #@+node:ekr.20131230090121.16526: *4* vc.comment_delims
+    #@+node:ekr.20140109214515.16640: *4* vc.comments...
+    #@+node:ekr.20131230090121.16526: *5* vc.comment_delims
     def comment_delims(self,p):
         '''Return the comment delimiter in effect at p, an @auto node.'''
         c = self.c
@@ -659,6 +638,100 @@ class ViewController:
         s = d.get('language') or c.target_language
         language,single,start,end = g.set_language(s,0)
         return single,start,end
+    #@+node:ekr.20140109214515.16641: *5* vc.delete_leading_comments
+    def delete_leading_comments(self,delims,p):
+        '''
+        Scan for leading comments from p and return them.
+        At present, this only works for single-line comments.
+        '''
+        single,start,end = delims
+        if single:
+            lines = g.splitLines(p.b)
+            result = []
+            for s in lines:
+                if s.strip().startswith(single):
+                    result.append(s)
+                else: break
+            if result:
+                p.b = ''.join(lines[len(result):])
+                # g.trace('len(result)',len(result),p.h)
+                return ''.join(result)
+        return None
+    #@+node:ekr.20140105055318.16754: *5* vc.is_comment_node
+    def is_comment_node(self,p,root,delims=None):
+        '''Return True if p.b contains nothing but comments or blank lines.'''
+        if not delims:
+            delims = self.comment_delims(root)
+        single,start,end = delims
+        assert single or start and end,'bad delims: %r %r %r' % (single,start,end)
+        if single:
+            for s in g.splitLines(p.b):
+                s = s.strip()
+                if s and not s.startswith(single) and not g.isDirective(s):
+                    return False
+            else:
+                return True
+        else:
+            def check_comment(s):
+                done,in_comment = False,True
+                i = s.find(end)
+                if i > -1:
+                    tail = s[i+len(end):].strip()
+                    if tail: done = True
+                    else: in_comment = False
+                return done,in_comment
+            
+            done,in_comment = False,False
+            for s in g.splitLines(p.b):
+                s = s.strip()
+                if not s:
+                    pass
+                elif in_comment:
+                    done,in_comment = check_comment(s)
+                elif g.isDirective(s):
+                    pass
+                elif s.startswith(start):
+                    done,in_comment = check_comment(s[len(start):])
+                else:
+                    # g.trace('fail 1: %r %r %r...\n%s' % (single,start,end,s)
+                    return False
+                if done:
+                    return False
+            # All lines pass.
+            return True
+    #@+node:ekr.20140109214515.16642: *5* vc.is_comment_organizer_node
+    # def is_comment_organizer_node(self,p,root):
+        # '''
+        # Return True if p is an organizer node in the given @auto tree.
+        # '''
+        # return p.hasChildren() and self.is_comment_node(p,root)
+    #@+node:ekr.20140109214515.16639: *5* vc.post_move_comments
+    def post_move_comments(self,root):
+        '''Move comments from the start of nodes to their parent organizer node.'''
+        c = self.c
+        delims = self.comment_delims(root)
+        for p in root.subtree():
+            if p.hasChildren() and not p.b:
+                s = self.delete_leading_comments(delims,p.firstChild())
+                if s:
+                    p.b = s
+                    # g.trace(p.h)
+    #@+node:ekr.20140106215321.16679: *5* vc.pre_move_comments
+    def pre_move_comments(self,root):
+        '''
+        Move comments from comment nodes to the next node.
+        This must be done before any other processing.
+        '''
+        c = self.c
+        delims = self.comment_delims(root)
+        aList = []
+        for p in root.subtree():
+            if p.hasNext() and self.is_comment_node(p,root,delims=delims):
+                aList.append(p.copy())
+                next = p.next()
+                if p.b: next.b = p.b + next.b
+        # g.trace([z.h for z in aList])
+        c.deletePositionsInList(aList)
     #@+node:ekr.20140109214515.16631: *4* vc.print_stats
     def print_stats(self):
         '''Print important stats.'''
@@ -858,53 +931,7 @@ class ViewController:
     def is_cloned_outside_parent_tree(self,p):
         '''Return True if a clone of p exists outside the tree of p.parent().'''
         return len(list(set(p.v.parents))) > 1
-    #@+node:ekr.20140105055318.16754: *5* vc.is_comment_node
-    def is_comment_node(self,p,root):
-        '''Return True if p.b contains nothing but comments or blank lines.'''
-        single,start,end = self.comment_delims(root)
-        assert single or start and end,'bad delims: %r %r %r' % (single,start,end)
-        if single:
-            for s in g.splitLines(p.b):
-                s = s.strip()
-                if s and not s.startswith(single) and not g.isDirective(s):
-                    return False
-            else:
-                return True
-        else:
-            def check_comment(s):
-                done,in_comment = False,True
-                i = s.find(end)
-                if i > -1:
-                    tail = s[i+len(end):].strip()
-                    if tail: done = True
-                    else: in_comment = False
-                return done,in_comment
-            
-            done,in_comment = False,False
-            for s in g.splitLines(p.b):
-                s = s.strip()
-                if not s:
-                    pass
-                elif in_comment:
-                    done,in_comment = check_comment(s)
-                elif g.isDirective(s):
-                    pass
-                elif s.startswith(start):
-                    done,in_comment = check_comment(s[len(start):])
-                else:
-                    # g.trace('fail 1: %r %r %r...\n%s' % (single,start,end,s)
-                    return False
-                if done:
-                    return False
-            # All lines pass.
-            return True
-    #@+node:ekr.20131230090121.16525: *5* vc.is_organizer_node & is_comment_organizer_node
-    # def is_comment_organizer_node(self,p,root):
-        # '''
-        # Return True if p is an organizer node in the given @auto tree.
-        # '''
-        # return p.hasChildren() and self.is_comment_node(p,root)
-        
+    #@+node:ekr.20131230090121.16525: *5* vc.is_organizer_node
     def is_organizer_node(self,p,root):
         '''
         Return True if p is an organizer node in the given @auto tree.

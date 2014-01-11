@@ -131,7 +131,7 @@ def getRecentCoreList():
         # 'leoIPython',
         # 'leoKeys',
         # 'leoMenu',
-        'leoNodes',
+        # 'leoNodes',
         # 'leoPlugins',
         # 'leoRst',
         # 'leoSessions',
