@@ -3321,7 +3321,7 @@ class atFile:
             else:
                 g.es("no @auto nodes in the selected tree")
     #@+node:ekr.20070806141607: *5* at.writeOneAtAutoNode
-    def writeOneAtAutoNode(self,p,toString,force):
+    def writeOneAtAutoNode(self,p,toString,force,trialWrite=False):
         '''
         Write p, an @auto node.
         File indices *must* have already been assigned.
@@ -3349,7 +3349,8 @@ class atFile:
             nosentinels=True,thinFile=False,scriptWrite=False,
             toString=toString)
         if new_auto:
-            c.viewController.update_before_write_at_auto_file(root)
+            if not trialWrite:
+                c.viewController.update_before_write_at_auto_file(root)
         ok = at.openFileForWriting (root,fileName=fileName,toString=toString)
         if ok:
             isAtAutoOtl = root.isAtAutoOtlNode() # For traces.

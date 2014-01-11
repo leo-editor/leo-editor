@@ -1887,7 +1887,7 @@ class baseScannerClass (scanUtility):
                 s1,s2 = self.file_s,outputFile.getvalue()
             elif self.atAuto:
                 # Special case for @auto.
-                at.writeOneAtAutoNode(self.root,toString=True,force=True)
+                at.writeOneAtAutoNode(self.root,toString=True,force=True,trialWrite=True)
                 s1,s2 = self.file_s,at.stringOutput
             else:
                 # *Do* write sentinels in s2 to handle @others correctly.

@@ -23,6 +23,8 @@ class OrganizerData:
             # The ultimate childIndex this organizer node.
         self.closed = False
             # True if this organizer node no longer accepts new nodes.
+        self.exists = False
+            # True if this organizer was created by @existing-organizer:
         self.h = h
             # The headline of this organizer node).
         self.moved = False
@@ -192,38 +194,53 @@ class ViewController:
             c.undoer.afterChangeTree(root,'view-unpack',bunch)
             c.redraw()
         return changed
-    #@+node:ekr.20131230090121.16511: *4* vc.update_before_write_at_auto_file
+    #@+node:ekr.20131230090121.16511: *4* vc.update_before_write_at_auto_file (test)
     def update_before_write_at_auto_file(self,root):
         '''
         Update the @organizer and @clones nodes in the @auto-view node for
         root, an @auto node. Create the @organizer or @clones nodes as needed.
+        This *must not* be called for trial writes.
         '''
+        trace = False and not g.unitTesting
         c = self.c
         self.init()
-        clone_data,organizers_data = [],[]
+        clone_list,organizers_list,existing_organizers_list = [],[],[]
         for p in root.subtree():
             if p.isCloned():
                 rep = self.find_representative_node(root,p)
                 if rep:
                     unl = self.relative_unl(p,root)
                     gnx = rep.v.gnx
-                    clone_data.append((gnx,unl),)
+                    clone_list.append((gnx,unl),)
             if self.is_organizer_node(p,root):
-                organizers_data.append(p.copy())
-        if clone_data:
+                if trace: g.trace('organizer',p.h)
+                organizers_list.append(p.copy())
+            elif p not in organizers_list and p.hasChildren():
+                if trace: g.trace('existing',p.h)
+                existing_organizers_list.append(p.copy())
+        if clone_list:
             at_clones = self.find_clones_node(root)
             at_clones.b = ''.join(['gnx: %s\nunl: %s\n' % (z[0],z[1])
-                for z in clone_data])
-        if organizers_data:
+                for z in clone_list])
+        if organizers_list or existing_organizers_list:
             organizers = self.find_organizers_node(root)
             organizers.deleteAllChildren()
-            for p in organizers_data:
+        if organizers_list:
+            for p in organizers_list:
+                # g.trace('organizer',p.h)
                 organizer = organizers.insertAsLastChild()
                 organizer.h = '@organizer: %s' % p.h
                 # The organizer node's unl is implicit in each child's unl.
                 organizer.b = '\n'.join(['unl: ' + self.relative_unl(child,root)
                     for child in p.children()])
-        if clone_data or organizers_data:
+        if existing_organizers_list:
+            for p in existing_organizers_list:
+                organizer = organizers.insertAsLastChild()
+                organizer.h = '@existing-organizer: %s' % p.h
+                # The organizer node's unl is implicit in each child's unl.
+                organizer.b = '\n'.join(['unl: ' + self.relative_unl(child,root)
+                    for child in p.children()])
+        if clone_list or organizers_list or existing_organizers_list:
             if not g.unitTesting:
                 g.es('updated @views node')
             c.redraw()
