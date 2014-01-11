@@ -232,8 +232,10 @@ class ViewController:
         using the corresponding @organizer: and @clones nodes.
         '''
         trace = True # Generally useful.
+        c = self.c
         t1 = time.clock()
         assert self.is_at_auto_node(p),p
+        old_changed = c.isChanged()
         organizers = self.has_organizers_node(p)
         self.init()
         self.root = p.copy()
@@ -243,6 +245,7 @@ class ViewController:
         if clones:
             self.create_clone_links(clones,p)
         n = len(self.global_moved_node_list)
+        c.setChanged(old_changed)
         if trace and n > 0:
             self.print_stats()
             t2 = time.clock()-t1
@@ -732,6 +735,7 @@ class ViewController:
                 if p.b: next.b = p.b + next.b
         # g.trace([z.h for z in aList])
         c.deletePositionsInList(aList)
+            # This sets c.changed.
     #@+node:ekr.20140109214515.16631: *4* vc.print_stats
     def print_stats(self):
         '''Print important stats.'''
