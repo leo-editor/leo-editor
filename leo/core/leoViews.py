@@ -27,6 +27,8 @@ class OrganizerData:
             # The headline of this organizer node).
         self.moved = False
             # True: the organizer node has already been moved.
+        self.opened = False
+            # True: the organizer node has been opened (placed on a global list).
         self.organized_nodes = []
             # The list of positions organized by this organizer node.
         self.organizer_children = []
@@ -443,7 +445,7 @@ class ViewController:
                 # g.trace('**** special case *****',raw_unl)
             p = self.find_relative_unl_node(root,raw_unl)
             if p: data.organized_nodes.append(p.copy())
-            else: g.trace('*** not found:',raw_unl,root.h)
+            else: g.trace('**not found:',raw_unl) ### ,root.h)
         if trace:
             g.trace('data',data.h,'\nraw_unls',raw_unls,
                 '\norganized_nodes',[z.h for z in data.organized_nodes])
@@ -474,7 +476,6 @@ class ViewController:
     def compute_descendants(self,data,level=0):
         '''Compute all the descendant OrganizerData nodes of data.'''
         trace = False # and not g.unitTesting
-        # if trace: g.trace('level',level,data.h)
         changed = True
         while changed:
             changed = False
@@ -511,16 +512,16 @@ class ViewController:
         return aList
     #@+node:ekr.20140106215321.16685: *8* vc.switch_active_organizer
     def switch_active_organizer(self,active,child,data,data_list,found,n):
-        '''Terminate the active organizer and start the found organizer.
+        '''Pause or close the active organizer and (re)start the found organizer.
         Return found, unless it has already been terminated.
-        Set the found.childIndex.
         '''
         trace = False # and not g.unitTesting
-        if active:
+        if active and found not in active.organizer_descendants:
+            if trace: g.trace('close:',active.h)
             active.closed = True
         assert found
-        if False and found.closed: #########
-            g.trace('Already exited',found.h)
+        if found.closed:
+            if trace: g.trace('*closed*',found.h)
             return None,n
         active = found
         assert active.p,active.h
@@ -548,8 +549,13 @@ class ViewController:
     #@+node:ekr.20140106215321.16678: *6* vc.move_nodes
     def move_nodes(self):
         '''Move nodes to their final location and delete the temp node.'''
+        self.move_nodes_to_organizers()
+        self.move_bare_organizers()
+        self.temp_node.doDelete()
+    #@+node:ekr.20140109214515.16636: *7* vc.move_nodes_to_organizers
+    def move_nodes_to_organizers(self):
+        '''Move all nodes in the global_moved_node_list.'''
         trace = True and not g.unitTesting
-        c = self.c
         # Sort global_moved_node_list into *imported* outline order.
         # demote_helper visits organizers in the *original* outline order,
         # but the *imported* outline order might be different.
@@ -557,15 +563,17 @@ class ViewController:
             parent,p = data
             return p.sort_key(p)
         sorted_list = sorted(self.global_moved_node_list,key=key)
-        # Move nodes into organizers, in reversed order to preserve positions.
-        import leo.core.leoNodes as leoNodes
+        if trace: # A highly useful trace!
+            g.trace('sorted_list...\n%s' % (
+                '\n'.join(['%20s %s' % (parent.h,p.h) for parent,p in sorted_list])))
+        # Move nodes in reversed order to preserve positions.
         for parent,p in reversed(sorted_list):
-            assert isinstance(parent,leoNodes.position),parent
-            assert isinstance(p,leoNodes.position),p
-            p.moveToLastChildOf(parent)
-        # Move all bare organizers.
-        # A: For each parent, sort nodes on n.
-        if trace: g.trace('===== moving bare nodes =====')
+            p.moveToFirstChildOf(parent)
+    #@+node:ekr.20140109214515.16637: *7* vc.move_bare_organizers
+    def move_bare_organizers(self):
+        '''Move all nodes in global_bare_organizer_node_list.'''
+        # For each parent, sort nodes on n.
+        trace = True and not g.unitTesting
         d = {} # Keys are vnodes, values are lists of tuples (n,parent,p)
         for parent,p,n in self.global_bare_organizer_node_list:
             key = parent.v
@@ -573,7 +581,7 @@ class ViewController:
             if (n,parent,p) not in aList:
                 aList.append((n,parent,p),)
                 d[key] = aList
-        # B: For each parent, add nodes in childIndex order.
+        # For each parent, add nodes in childIndex order.
         def key_func(obj):
             return obj[0]
         for key in d.keys():
@@ -581,10 +589,10 @@ class ViewController:
             for data in sorted(aList,key=key_func):
                 n,parent,p = data
                 n2 = parent.numberOfChildren()
-                if trace: g.trace(n,parent.h,p.h,n2)
+                if trace: g.trace(
+                    'move %20s to child %2s of %-20s with %s children' % (
+                        p.h,n,parent.h,n2))
                 p.moveToNthChildOf(parent,n)
-        # Delete the temp_node.
-        self.temp_node.doDelete()
     #@+node:ekr.20140106215321.16679: *6* vc.move_comments & helper
     def move_comments(self,root):
         '''Move comments from organizer nodes to organizer nodes.'''
@@ -890,12 +898,19 @@ class ViewController:
                     return False
             # All lines pass.
             return True
-    #@+node:ekr.20131230090121.16525: *5* vc.is_organizer_node
+    #@+node:ekr.20131230090121.16525: *5* vc.is_organizer_node & is_comment_organizer_node
+    # def is_comment_organizer_node(self,p,root):
+        # '''
+        # Return True if p is an organizer node in the given @auto tree.
+        # '''
+        # return p.hasChildren() and self.is_comment_node(p,root)
+        
     def is_organizer_node(self,p,root):
         '''
         Return True if p is an organizer node in the given @auto tree.
         '''
         return p.hasChildren() and self.is_comment_node(p,root)
+
     #@+node:ekr.20140105055318.16760: *4* v.unls...
     #@+node:ekr.20140105055318.16762: *5* vc.drop_all_organizers_in_unl
     def drop_all_organizers_in_unl(self,organizer_unls,unl):

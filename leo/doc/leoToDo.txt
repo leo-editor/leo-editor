@@ -23,11 +23,15 @@ Release 4.11.1 (or 5.0?):
 @language rest
 
 Fix problems with child indices:
-- Add organizer_descendants field.
-- Don't close an organizer when entering descendant organizer.
+
 - Do open **intermediate** organizers when opening a descendant organizer.
 - Make sure to clear pending list when opening a descendant organizer.
     - Create clear_pending helper function?
+    
+*** Any node can have children!
+    - Use @parent to specify such *already-existing* organizer nodes.
+- (Done) Add organizer_descendants field.
+- (Done) Don't close an organizer when entering descendant organizer.
 
 Later:
 - Redo the perfect import check using a second trial write.
