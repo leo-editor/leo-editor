@@ -194,7 +194,7 @@ class ViewController:
             c.undoer.afterChangeTree(root,'view-unpack',bunch)
             c.redraw()
         return changed
-    #@+node:ekr.20131230090121.16511: *4* vc.update_before_write_at_auto_file (test)
+    #@+node:ekr.20131230090121.16511: *4* vc.update_before_write_at_auto_file
     def update_before_write_at_auto_file(self,root):
         '''
         Update the @organizer and @clones nodes in the @auto-view node for
@@ -687,6 +687,16 @@ class ViewController:
         for p in reversed(delete):
             p.doDelete()
         c.selectPosition(views)
+    #@+node:ekr.20140109214515.16631: *4* vc.print_stats
+    def print_stats(self):
+        '''Print important stats.'''
+        trace = False and not g.unitTesting
+        if trace:
+            g.trace(self.root and self.root.h or 'No root')
+            g.trace('scanned: %3s' % self.n_nodes_scanned)
+            g.trace('moved:   %3s' % (
+                len( self.global_bare_organizer_node_list) +
+                len(self.global_moved_node_list)))
     #@+node:ekr.20140109214515.16640: *4* vc.comments...
     #@+node:ekr.20131230090121.16526: *5* vc.comment_delims
     def comment_delims(self,p):
@@ -791,18 +801,8 @@ class ViewController:
         # g.trace([z.h for z in aList])
         c.deletePositionsInList(aList)
             # This sets c.changed.
-    #@+node:ekr.20140109214515.16631: *4* vc.print_stats
-    def print_stats(self):
-        '''Print important stats.'''
-        trace = False and not g.unitTesting
-        if trace:
-            g.trace(self.root and self.root.h or 'No root')
-            g.trace('scanned: %3s' % self.n_nodes_scanned)
-            g.trace('moved:   %3s' % (
-                len( self.global_bare_organizer_node_list) +
-                len(self.global_moved_node_list)))
     #@+node:ekr.20140103062103.16442: *4* vc.find...
-    # The find node command create the node if not found.
+    # The find commands create the node if not found.
     #@+node:ekr.20140102052259.16402: *5* vc.find_absolute_unl_node
     def find_absolute_unl_node(self,unl):
         '''Return a node matching the given absolute unl.'''
@@ -944,7 +944,7 @@ class ViewController:
             # c.redraw()
         return p
     #@+node:ekr.20140103062103.16443: *4* vc.has...
-    # The has_xxx commands return None if the node does not exist.
+    # The has commands return None if the node does not exist.
     #@+node:ekr.20140103105930.16447: *5* vc.has_at_auto_view_node
     def has_at_auto_view_node(self,root):
         '''

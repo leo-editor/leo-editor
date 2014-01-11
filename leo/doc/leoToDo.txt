@@ -8,11 +8,15 @@
 
 ** Finish @auto-view (See child)
 
+A new Leo sprint?
+An Emacs gui?
+
 Reload settings:
     reload-abbreviations and reload-key-bindings commands.
         Use regex replace to replace settings ivars with @property defs.
 
 Release 4.11.1 (or 5.0?):
+    - Move to github as part of 5.0.
     - Create myLeoSettings and workbook automatically if they do not exist.
     - Add templates to help menu?
     - Fix IPython code/docs.
@@ -22,14 +26,49 @@ Release 4.11.1 (or 5.0?):
 .. @+node:ekr.20140109214515.16629: *3* To do: @auto-view
 @language rest
 
-- Test intermediate organizers:
+1. Test intermediate organizers:
     - Open all intermediate organizers when opening a descendant organizer.
+    
+2. Simplify startup
+    - Create organizer node for startup code.
+    - Init only once.
+    - Cache value of @views node? (to make searching for headlines faster).
+    - What happens if vc.check fails?
+
+- Create vc.initial_existing_organizer_node_list, to suppress unnecessary @existing-organizers nodes.
+    vc.update_before_write_at_auto_file should check this list.
+
+- vc.clean/restore_headlines: restores headlines to their imported version.
+    - A warning about changed headlines is enough.
+        - The user should make the needed changes explicitly.
+        - What happens if p.b changes.  Sha1 hash?
+    - The importer has *already* reported the "correct headline".
+    - Use gnx's to keep track of headlines.
 
 - Support @existing-organizer: nodes
+    
+Docs & posts:
+- Move new posts to documentation.
+- Use @file at_views.txt to exchange data.
+- Yet another distinction: organizer nodes created by the importer.
+    - Those should *not* create @existing-organizer nodes.
+    - vc.initial_existing_organizer_nodes_list will keep track of those nodes.
+- The new code is worthy of being called 5.0:
+    - It's some of the most important & interesting work ever done for Leo.
+    - It could never have been done in Emacs org mode.
+    - Thanks to all who inspired it.
+    - Unlike @shadow, the new @auto work relates directly to outlines.
+      (The difficulties are outline-related).
+    - It's amazing that the before and after trial writes are *exactly* the same.
+- Still need @file for unit tests & other special purposes.
+- How to convert @file to @auto:
+    - Convert section references by hand.
+    - Don't create nodes with non-standard headlines.
+    - The write code will warn about nodes whose headline don't match their initial imported values.
 
 Later:
-- Remove asserts: make sure this code *never* crashes.
 - The write code should munge unls/headlines to match what importers will create.
+- Remove asserts: make sure this code *never* crashes.
 .. @+node:ekr.20140104063158.16448: *3* reload-abbreviations and reload-key-bindings commands
 .. @+node:ekr.20120209051836.10242: *4* class LoadManager
 class LoadManager:
