@@ -270,8 +270,12 @@ class ViewController:
         Unlike the perfect-import checks done by the importer,
         we expecct an *exact* match, regardless of language.
         '''
-        ok = self.trial_write_1 == self.trial_write(fn,root)
-        if not ok:
+        trace = False and not g.unitTesting
+        trail_write_2 = self.trial_write(fn,root)
+        ok = self.trial_write_1 == trail_write_2
+        if ok:
+            if trace: g.trace(len(self.trial_write_1),len(trail_write_2))
+        else:
             g.trace('perfect import check failed!',root.h,color='red')
         return ok
     #@+node:ekr.20131230090121.16545: *5* vc.create_clone_link
