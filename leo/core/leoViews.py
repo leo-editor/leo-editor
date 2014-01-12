@@ -19,42 +19,22 @@ import time
 class OrganizerData:
     '''A class containing all data for a particular organizer node.'''
     def __init__ (self,h,unl,unls):
-        self.childIndex = 0
-            # The ultimate childIndex this organizer node.
-        self.closed = False
-            # True if this organizer node no longer accepts new nodes.
-        self.exists = False
-            # True if this organizer was created by @existing-organizer:
-        self.h = h
-            # The headline of this organizer node).
-        self.moved = False
-            # True: the organizer node has already been moved.
-        self.opened = False
-            # True: the organizer node has been opened (placed on a global list).
-        self.organized_nodes = []
-            # The list of positions organized by this organizer node.
-        self.organizer_children = []
-            # The organizer nodes that will become children of this organizer node.
-        self.organizer_descendants = []
-            # The organizer nodes that will become descendants of this organizer node.
-        self.organizer_parent = None
-            # The organizer node (if any) that will become the parent of this organizer node.
-            # It *is* valid for this to be None!
-        self.number_of_children = 0
-            # The number of children that have been "virtually" moved to this node.
-        self.p = None
-            # The position of this organizer node.
-        self.parent = None
-            # The original parent node of all nodes organized by this organizer node.
-            # If organizer_parent is None, this will be the parent of the organizer node.
-        self.source_unl = None
-            # The unl of self.parent.
-        self.unl = unl
-            # The unl of the organizer node itself.
-        self.unls = unls
-            # The unls contained in this organizer node.
-        self.visited = False
-            # True: demote_helper has already handled this organizer node.
+        self.child_ods = [] # The child od nodes of this od node.
+        self.closed = False # True: this od node no longer accepts new child od nodes.
+        self.descendant_ods = [] # The descendant od nodes of this od node.
+        self.exists = False # True: this od was created by @existing-organizer:
+        self.h = h # The headline of this od node.
+        self.moved = False # True: the od node has been moved to a global move list.
+        self.opened = False # True: the od node has been opened.
+        self.organized_nodes = [] # The list of positions organized by this od node.
+        self.parent_od = None # The parent od node of this od node. (None is valid.)
+        self.p = None # The position of this od node.
+        self.parent = None # The original parent position of all nodes organized by this od node.
+            # If parent_od is None, this will be the parent position of the od node.
+        self.source_unl = None # The unl of self.parent.
+        self.unl = unl # The unl of this od node.
+        self.unls = unls # The unls contained in this od node.
+        self.visited = False # True: demote_helper has already handled this od node.
     def __repr__(self):
         return 'OrganizerData: %s' % (self.h or '<no headline>')
     __str__ = __repr__
@@ -93,6 +73,20 @@ class ViewController:
         self.trail_write_1 = None # The trial write on entry.
         self.views_node = None
     #@+node:ekr.20131230090121.16514: *3* vc.Entry points
+    #@+node:ekr.20140109214515.16648: *4* vc.compare_trees (for testing) (DO TRIAL WRITES HERE)
+    def compare_trees(self,root1,root2):
+        '''Compare the subtrees whose roots are given.'''
+        g.trace('Compare:',root1.h,root2.h)
+        p2 = root2.copy().moveToThreadNext()
+        for p1 in root1.subtree():
+            if p1.h == p2.h:
+                g.trace('ok:',p1.h)
+            else:
+                
+                g.trace('Fail: %s != %s' % (p1.h,p2.h))
+                return False
+            p2.moveToThreadNext()
+        return True
     #@+node:ekr.20140102052259.16394: *4* vc.pack & helper
     def pack(self):
         '''
@@ -354,7 +348,7 @@ class ViewController:
         self.post_move_comments(root)
         c.selectPosition(root)
         c.redraw()
-    #@+node:ekr.20140106215321.16674: *6* vc.create_organizer_data (ensures data.p)
+    #@+node:ekr.20140106215321.16674: *6* vc.create_organizer_data (ensures od.p)
     def create_organizer_data(self,at_organizers,root):
         '''
         Create OrganizerData nodes for all @organizer: nodes
@@ -371,23 +365,23 @@ class ViewController:
                 if unls:
                     organizer_unl = self.drop_unl_tail(unls[0])
                     h = h[len(tag):].strip()
-                    data = OrganizerData(h,organizer_unl,unls)
-                    self.organizer_data_list.append(data)
+                    od = OrganizerData(h,organizer_unl,unls)
+                    self.organizer_data_list.append(od)
                     self.organizer_unls.append(organizer_unl)
                 else:
                     g.trace('no unls:',at_organizer.h)
         # Now that self.organizer_unls is complete, compute the source unls.
-        for data in self.organizer_data_list:
-            data.source_unl = self.source_unl(self.organizer_unls,data.unl)
-            data.parent = self.find_relative_unl_node(root,data.source_unl)
-            if not data.parent:
-                g.trace('***no data.parent: use root','unl:',repr(data.unl),
-                    'source_unl:',repr(data.source_unl),'\nunls:',data.unls)
-                data.parent = root
+        for od in self.organizer_data_list:
+            od.source_unl = self.source_unl(self.organizer_unls,od.unl)
+            od.parent = self.find_relative_unl_node(root,od.source_unl)
+            if not od.parent:
+                g.trace('***no od.parent: use root','unl:',repr(od.unl),
+                    'source_unl:',repr(od.source_unl),'\nunls:',od.unls)
+                od.parent = root
             if trace: g.trace(
-                'unl:',data.unl,
-                'source:',data.source_unl,
-                'parent:',data.parent and data.parent.h)
+                'unl:',od.unl,
+                'source:',od.source_unl,
+                'parent:',od.parent and od.parent.h)
     #@+node:ekr.20140106215321.16675: *6* vc.create_actual_organizer_nodes
     def create_actual_organizer_nodes(self):
         '''
@@ -399,38 +393,38 @@ class ViewController:
         last = c.lastTopLevel()
         temp = self.temp_node = last.insertAfter()
         temp.h = 'ViewController.temp_node'
-        for data in self.organizer_data_list:
+        for od in self.organizer_data_list:
             holding_cell = temp.insertAsLastChild()
-            holding_cell.h = 'holding cell for ' + data.h
-            data.p = holding_cell.insertAsLastChild()
-            data.p.h = data.h
+            holding_cell.h = 'holding cell for ' + od.h
+            od.p = holding_cell.insertAsLastChild()
+            od.p.h = od.h
     #@+node:ekr.20140106215321.16677: *6* vc.demote_organized_nodes & helpers
     def demote_organized_nodes(self,root):
         '''Demote organized nodes to be children of organizer nodes.'''
-        for data in self.organizer_data_list:
-            if not data.visited:
-                self.demote_helper(data,root)
-                    # Sets data.visited for all relevant OrganzierData instances.
+        for od in self.organizer_data_list:
+            if not od.visited:
+                self.demote_helper(od,root)
+                    # Sets od.visited for all relevant OrganzierData instances.
     #@+node:ekr.20140104112957.16587: *7* vc.demote_helper & helpers
-    def demote_helper(self,data,root):
+    def demote_helper(self,od,root):
         '''
         The main line of the @auto-view algorithm: demote nodes for all
-        OrganizerData instances having the same source as the given instance.
+        OrganizerData instances having the same source as the given od instance.
         '''
         trace = False # and not g.unitTesting
         verbose = False
         if trace: g.trace('=====',root and root.h or '*no root*',
-            data and data.parent and data.parent.h or '*no data.parent*')
-        # Find all OrganizerData instances having the same source as data.
-        data_list = self.find_all_organizer_nodes(data)
-        assert data in data_list,data_list
+            od and od.parent and od.parent.h or '*no od.parent*')
+        # Find all OrganizerData instances having the same source as od.
+        data_list = self.find_all_organizer_nodes(od)
+        assert od in data_list,data_list
         # Compute the list of positions of nodes organized by each OrganizerData instance.
         for d in data_list:
             d.visited = True
             self.compute_organized_positions(d,root)
         # Compute the parent/child relationships for all organizer nodes.
         self.compute_tree_structure(data_list,root)
-        # The main line: move children of data.parent to organizer nodes.
+        # The main line: move children of od.parent to organizer nodes.
         active = None # The organizer node that is presently accumulating nodes.
         demote_pending = [] # Lists of pending demotions.
         def add(active,child,tag=''):
@@ -445,7 +439,7 @@ class ViewController:
             # Important: add() will push active.p, not active.
             demote_pending.append((active,child.copy()),)
         n = 0 # The number of *unorganized* preceding nodes.
-        for child in data.parent.children():
+        for child in od.parent.children():
             self.n_nodes_scanned += 1
             # Find the organizer (if any) that organizes child.
             found = None
@@ -466,8 +460,8 @@ class ViewController:
                     demote_pending = []
             elif found == active:
                 # Pending nodes *will* be organized.
-                for data in demote_pending:
-                    active2,child2 = data
+                for od in demote_pending:
+                    active2,child2 = od
                     add(active2,child2,'found==active:pending')
                 demote_pending = []
                 add(active,child,'found==active')
@@ -475,32 +469,32 @@ class ViewController:
                 # Pending nodes will *not* be organized.
                 n += len(demote_pending)
                 demote_pending = []
-                active,n = self.switch_active_organizer(active,child,data,data_list,found,n)
+                active,n = self.switch_active_organizer(active,found,n)
                 if active:
                     # switch_active_organizer bumps n only for bare organizer nodes.
                     add(active,child,'found!=active')
         if active:
             active.closed = True
     #@+node:ekr.20140108081031.16611: *8* vc.compute_organized_positions
-    def compute_organized_positions(self,data,root):
+    def compute_organized_positions(self,od,root):
         '''Compute all the positions organized by the given OrganizerData instance.'''
         trace = False # and not g.unitTesting
         raw_unls = [self.drop_all_organizers_in_unl(self.organizer_unls,unl)
-            for unl in data.unls]
+            for unl in od.unls]
         for raw_unl in list(set(raw_unls)):
             if raw_unl.startswith('-->'): # A crucial special case
                 raw_unl = raw_unl[3:] ### This could go somewhere else...
                 # g.trace('**** special case *****',raw_unl)
             p = self.find_relative_unl_node(root,raw_unl)
-            if p: data.organized_nodes.append(p.copy())
+            if p: od.organized_nodes.append(p.copy())
             else: g.trace('**not found:',raw_unl) ### ,root.h)
         if trace:
-            g.trace('data',data.h,'\nraw_unls',raw_unls,
-                '\norganized_nodes',[z.h for z in data.organized_nodes])
+            g.trace('od',od.h,'\nraw_unls',raw_unls,
+                '\norganized_nodes',[z.h for z in od.organized_nodes])
     #@+node:ekr.20140108081031.16612: *8* vc.compute_tree_structure & helper
     def compute_tree_structure(self,data_list,root):
         '''
-        Set the organizer_parent and organizer_children ivars for each entry in
+        Set the parent_od and child_ods ivars for each entry in
         data_list.
         '''
         trace = False # and not g.unitTesting
@@ -511,60 +505,68 @@ class ViewController:
                     i = organizer_unls.index(unl)
                     d2 = data_list[i]
                     if trace: g.trace('found organizer unl:',d.h,'==>',d2.h)
-                    d.organizer_children.append(d2)
-                    d.organizer_descendants.append(d2)
-                    d2.organizer_parent = d
+                    d.child_ods.append(d2)
+                    d.descendant_ods.append(d2)
+                    d2.parent_od = d
         # create_organizer_data now ensures d.parent is set.
         for d in data_list:
             assert d.parent,d.h
         # Extend the descendant lists.
-        for data in data_list:
-            self.compute_descendants(data)
+        for od in data_list:
+            self.compute_descendants(od)
+        # Trace results:
+        if trace:
+            for od in data_list:
+                g.trace('od: %s\nchildren: %s\ndescendants: %s' % (
+                    od.h,[z.h for z in od.child_ods],
+                    [z.h for z in od.descendant_ods]))
     #@+node:ekr.20140109214515.16633: *9* vc.compute_descendants
-    def compute_descendants(self,data,level=0):
-        '''Compute all the descendant OrganizerData nodes of data.'''
+    def compute_descendants(self,od,level=0):
+        '''Compute all the descendant OrganizerData nodes of od.'''
         trace = False # and not g.unitTesting
         changed = True
         while changed:
             changed = False
-            for d in data.organizer_descendants:
+            for d in od.descendant_ods:
                 self.compute_descendants(d,level+1)
-                for d2 in d.organizer_descendants:
-                    if d2 not in data.organizer_descendants:
+                for d2 in d.descendant_ods:
+                    if d2 not in od.descendant_ods:
                         changed = True
-                        data.organizer_descendants.append(d2)
-                        # if trace: g.trace(data.h,'add:',d2.h)
+                        od.descendant_ods.append(d2)
+                        # if trace: g.trace(od.h,'add:',d2.h)
                         break
         if trace and level == 0:
-            g.trace(data.h,[z.h for z in data.organizer_descendants])
+            g.trace(od.h,[z.h for z in od.descendant_ods])
     #@+node:ekr.20140108081031.16610: *8* vc.find_all_organizer_nodes
-    def find_all_organizer_nodes(self,data):
+    def find_all_organizer_nodes(self,od):
         '''
         Return the list of all OrganizerData instances organizing the same
-        imported source node as data.
+        imported source node as od.
         '''
         # Compute the list.
         aList = [z for z in self.organizer_data_list
-            if z.source_unl == data.source_unl]
-        # if not data.source_unl:
-            # g.trace('data.source_unl:',repr(data.source_unl))
+            if z.source_unl == od.source_unl]
+        # if not od.source_unl:
+            # g.trace('od.source_unl:',repr(od.source_unl))
             # g.trace('[source_unl]:',[z.source_unl for z in self.organizer_data_list])
-            # g.trace('data.parent.h',data.parent.h)
-            # g.trace('[data.parent.h]:',[z.parent.h for z in self.organizer_data_list])
+            # g.trace('od.parent.h',od.parent.h)
+            # g.trace('[od.parent.h]:',[z.parent.h for z in self.organizer_data_list])
         # Check that all parents match.
-        assert all([z.parent == data.parent for z in aList]),[
-            z for z in aList if z.parent != data.parent]
+        assert all([z.parent == od.parent for z in aList]),[
+            z for z in aList if z.parent != od.parent]
         # Check that all visited bits are clear.
         assert all([not z.visited for z in aList]),[
             z for z in aList if z.visited]
         return aList
     #@+node:ekr.20140106215321.16685: *8* vc.switch_active_organizer
-    def switch_active_organizer(self,active,child,data,data_list,found,n):
-        '''Pause or close the active organizer and (re)start the found organizer.
-        Return found, unless it has already been terminated.
+    def switch_active_organizer(self,active,found,n):
+        '''
+        Pause or close the active od and (re)start the found od.
+        Return found, unless it has been closed.
+        Update n as appropriate.
         '''
         trace = False # and not g.unitTesting
-        if active and found not in active.organizer_descendants:
+        if active and found not in active.descendant_ods:
             if trace: g.trace('close:',active.h)
             active.closed = True
         assert found
@@ -572,28 +574,45 @@ class ViewController:
             if trace: g.trace('*closed*',found.h)
             return None,n
         active = found
+        active.opened = True
         assert active.p,active.h
-        if active.organizer_parent:
-            # The organizer node is a child of *another* organizer node.
-            # Just add it to the global moved list(!)
-            parent = active.organizer_parent.p
-            if not active.moved:
-                active.moved = True
-                self.global_moved_node_list.append((parent,active.p),)
-                if trace: g.trace(# 'active',active,
-                    'active.p',active.p and active.p.h,
-                    'child',child and child.h)
-            return active,n
+        if active.moved:
+            g.trace('already moved',active.h)
+            return None,n
         else:
-            # The organizer node is a child of an *ordinary* node.
-            p = active.p
-            parent = active.parent
-            if not active.moved:
-                active.moved = True
-                self.global_bare_organizer_node_list.append((parent,p,n),)
-                if trace: g.trace('move bare:',active.p and active.p.h,'to child',n,'of',
-                    parent and parent.h or '***no parent***')
-        return active,n+1
+            self.add_intermediate_organizer_nodes(active,n)
+            active.moved = True
+            n = self.add_organizer_node(active,n)
+            return active,n
+     
+    #@+node:ekr.20140109214515.16646: *8* vc.add_organizer_node
+    def add_organizer_node (self,d,n):
+        '''Add d (an OrganizerData instance) to the appropriate move list.'''
+        trace = False # and not g.unitTesting
+        if d.parent_od:
+            # Not a bare organizer: a child of another organizer node.
+            self.global_moved_node_list.append((d.parent_od.p,d.p),)
+            if trace: g.trace('parent: %s p: %s' % (
+                d.parent_od.p.h,d.p.h))
+            return n
+        else:
+            # A bare organizer ndoe: a child of an *ordinary* node.
+            self.global_bare_organizer_node_list.append((d.parent,d.p,n),)
+            if trace: g.trace('bare: parent: %s parent: %s n: %s' % (
+                d.parent and d.parent.h,d.p and d.p.h,n))
+            return n+1
+    #@+node:ekr.20140109214515.16647: *8* vc.add_intermediate_organizer_nodes
+    def add_intermediate_organizer_nodes(self,d,n):
+        '''Add all intermediate organizer nodes.'''
+        trace = True # and not g.unitTesting
+        parent = d.parent_od
+        while parent:
+            if trace: g.trace('opened: %5s closed: %5s moved: %5s node: %s' % (
+                parent.opened,parent.closed,parent.moved,parent and parent.h))
+            if not parent.opened:
+                parent.opened = True
+                self.add_organizer_node(parent,n=0) #####
+            parent = parent.parent_od
     #@+node:ekr.20140106215321.16678: *6* vc.move_nodes & helpers
     def move_nodes(self):
         '''Move nodes to their final location and delete the temp node.'''
@@ -603,12 +622,12 @@ class ViewController:
     #@+node:ekr.20140109214515.16636: *7* vc.move_nodes_to_organizers
     def move_nodes_to_organizers(self):
         '''Move all nodes in the global_moved_node_list.'''
-        trace = False and not g.unitTesting
+        trace = False # and not g.unitTesting
         # Sort global_moved_node_list into *imported* outline order.
         # demote_helper visits organizers in the *original* outline order,
         # but the *imported* outline order might be different.
-        def key(data):
-            parent,p = data
+        def key(od):
+            parent,p = od
             return p.sort_key(p)
         sorted_list = sorted(self.global_moved_node_list,key=key)
         if trace: # A highly useful trace!
@@ -621,7 +640,7 @@ class ViewController:
     def move_bare_organizers(self):
         '''Move all nodes in global_bare_organizer_node_list.'''
         # For each parent, sort nodes on n.
-        trace = False and not g.unitTesting
+        trace = False # and not g.unitTesting
         d = {} # Keys are vnodes, values are lists of tuples (n,parent,p)
         for parent,p,n in self.global_bare_organizer_node_list:
             key = parent.v
@@ -634,8 +653,8 @@ class ViewController:
             return obj[0]
         for key in d.keys():
             aList = d.get(key)
-            for data in sorted(aList,key=key_func):
-                n,parent,p = data
+            for od in sorted(aList,key=key_func):
+                n,parent,p = od
                 n2 = parent.numberOfChildren()
                 if trace: g.trace(
                     'move %20s to child %2s of %-20s with %s children' % (
@@ -643,16 +662,8 @@ class ViewController:
                 p.moveToNthChildOf(parent,n)
     #@+node:ekr.20140109214515.16644: *5* vc.trial_write
     def trial_write(self,fn,root):
-        '''return a trial write of the file with the given name.'''
-        # Compute the encoding.
-        c = self.c
-        d = c.scanAllDirectives(root)
-        encoding = d.get("encoding")
-        if not (encoding and g.isValidEncoding(encoding)):
-            encoding = c.config.default_at_auto_file_encoding
-        # Read the file into s.
-        s,e = g.readFileIntoString(fn,encoding=encoding)
-        return s
+        '''return a trial write of outline whose root is given.'''
+        return ''.join([p.b for p in root.self_and_subtree()])
     #@+node:ekr.20131230090121.16515: *3* vc.Helpers
     #@+node:ekr.20140103105930.16448: *4* vc.at_auto_view_body and match_at_auto_body
     def at_auto_view_body(self,p):

@@ -12765,5 +12765,17 @@ def OLDmove_organizer_nodes(self):
         d.p.moveToNthChildOf(parent,n)
         g.trace('move',d.p.h,'to child',n,'of',parent.h)
     self.temp_node.doDelete()
+.. @+node:ekr.20140109214515.16650: *4* vc.trial_write
+def OLDtrial_write(self,fn,root):
+    '''return a trial write of outline whose root is given.'''
+    # Compute the encoding.
+    c = self.c
+    d = c.scanAllDirectives(root)
+    encoding = d.get("encoding")
+    if not (encoding and g.isValidEncoding(encoding)):
+        encoding = c.config.default_at_auto_file_encoding
+    # Read the file into s.
+    s,e = g.readFileIntoString(fn,encoding=encoding)
+    return s
 .. @-all
 .. @-leo
