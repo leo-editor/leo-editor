@@ -26,23 +26,22 @@ Release 4.11.1 (or 5.0?):
 .. @+node:ekr.20140109214515.16629: *3* To do: @auto-view
 @language rest
 
-- Move new posts to documentation.
-
 * Init od link fields only once.
     - Create organizer node for startup code.
+    - Use recursive O(N) algorithm in vc.compute_descendants.
     
 * Open all intermediate organizers when opening a descendant organizer.
-    
-- What happens if vc.check fails?
 
-- Create vc.initial_existing_organizer_node_list, to suppress unnecessary @existing-organizers nodes.
-    vc.update_before_write_at_auto_file should check this list.
+- test vc.check. What happens if it fails?
 
 - Warn about changed headlines.
     - Create a vc.headlines_dict: keys are vnodes, values are headlines.
 
+Later
 - Support @existing-organizer: nodes
-
+    - Create vc.initial_existing_organizer_node_list.
+      (to suppress unnecessary @existing-organizers nodes)
+    - vc.update_before_write_at_auto_file should check this list.
 - Remove asserts: make sure this code *never* crashes.
 .. @+node:ekr.20140109214515.16651: *4* docs & posts
 - Use @file at_views.txt to exchange data.

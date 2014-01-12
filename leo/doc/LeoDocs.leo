@@ -1121,7 +1121,14 @@
 </v>
 </v>
 <v t="ekr.20140109160326.16626"><vh>Prewriting for theory of operation for @auto-view</vh>
-<v t="ekr.20140109214515.16628"><vh>More</vh></v>
+<v t="ekr.20140112112622.16651"><vh>Distinction: bare and nested organizers</vh></v>
+<v t="ekr.20140112112622.16656"><vh>Two Ahas re nested organizers</vh></v>
+<v t="ekr.20140112112622.16658"><vh>Moving bare organizers</vh></v>
+<v t="ekr.20140109214515.16628"><vh>Intermediate organizers</vh></v>
+<v t="ekr.20140112112622.16654"><vh>Aha: organizers relationships are stable</vh></v>
+<v t="ekr.20140112112622.16655"><vh>Summary</vh></v>
+<v t="ekr.20140112112622.16652"><vh>Headines are important</vh></v>
+<v t="ekr.20140112112622.16653"><vh>Existing organizer nodes</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -19763,121 +19770,9 @@ changed.
 <t tx="ekr.20131222112420.16374">This should be more intuitive for newcomers.</t>
 <t tx="ekr.20140109160326.16626">@language rest
 
-For the last week the standing joke has been that the work will take about
-another two hours :-) Early this morning I fixed several bugs that were
-confusing matters significantly.
 
-The only remaining problems involve computing the child indices of moved
-nodes. That is, we have to move nodes so they end up in the proper sibling
-order.
-
-===== Two new Aha's, and a new distinction
-
-Two major new Aha's have appeared.  As often happens, they were the result of a new distinction:
-
-  **Nested** organizer nodes will become children of *other* organizer nodes.
-
-  **Bare** organizer nodes will become children of *ordinary* nodes.
-
-Aha 1: We don't have to compute child indices for nodes moved to children
-of organizer nodes!
-
-We simply put them on a list (in imported outline order) of tuples
-(parent,moved_node). There will be only *one* such list, say
-vc.global_moved_node_list.
-
-When the time comes to do the actual moves, we do the following:
-
-- Reverse the global list, thereby guaranteeing that positions that appear
-   later in the reversed list remain valid.
-- Insert each item on the list as the *last* child of the parent
-   (organizer) node.
-
-That's all!
-
-Using a global list was hard to see, because typically such schemes don't
-work in recursive environments. But the @auto-view algorithms are *not*
-recursive. Each @organizer: node is handled separately, in a completely
-linear fashion, by vc.demote_helper, the true main line of the code.
-
-Aha 2:  We can treat *nested* organizer nodes just as we treat ordinary nodes!
-
-vc.switch_active_organizer (the code that handles the entry into an
-organizer node) will simply add another entry (parent,organizer_node) to
-the global move list.
-
-===== Moving bare organizer nodes.
-
-Now that moving most nodes has become trivial, the only remaining task is
-to *safely* move bare organizers. This task has two parts:
-
-1. Determine the proper child index of *bare* organizer nodes.
-
-This will be done in the main line: vc.demote_helper will maintain a count
-n of imported nodes that *haven't* been assigned to organizer nodes. This
-count must also be incremented to include bare organizer nodes the will be
-inserted later. It's just a bit tricky, but there are only a few cases to
-get right. Once it works, it will work forever.
-
-There will be another global list, say vc.global_bare_organizer_node_list,
-containing tuples (parent,bare_organizer,n). vc.switch_active_organizer
-will add entries to this list, but *only* for bare organizer nodes.
-
-Here is how to insert bare organizer nodes in their proper places (as
-children of an *ordinary* parent node).
-
-2. Actually move the bare organizer nodes.
-
-Note that the children of bare organizer nodes will appear
-vc.global_moved_node_list. Note also that each (ordinary) parent node may
-contain several bare organizer nodes. Here is how to get the job done
-safely:
-
-- For each parent, create a new per-parent list, containing all entries of
-  the global list with that parent.
-- Sort each per-parent list using n as the key.
-- Move the nodes in each per-parent list to their destinations, in sorted
-  order.
-
-At first glace, this seems entirely bogus. How are we to ensure that
-positions stay valid?
-
-Unlike for ordinary nodes, we can't process bare organizer nodes in reverse
-outline order: we have to handle them in the *new* sibling order, that is,
-sorted by n. In other words, it won't work to move them to the last child
-of their parent! Nor can we move nodes to any arbitrary sibling position:
-we must move nodes with smaller child indices before moving nodes with
-larger child indices.
-
-Happily, there are at least two solutions to this problem:
-
-1. The setup code could place each organizer node in a separate **holding
-   cell**. Moving the bare organizer out of a holding cell to its final
-   resting place affects no other holding cells, and no other organizer
-   node.
-
-2. The setup code could create "floating" positions for bare organizer
-   nodes. These positions would be moved (recreated) using special -purpose
-   low-level code.
-
-The first is good enough for now.
-
-===== Summary
-
-The notion of bare organizer node has eliminated a nest of confusions and
-complications in the code.
-
-Not having to track most child indices is a major collapse in complexity.
-Indeed, the code that moves nodes to their final destinations will have no
-"if" statements at all. It doesn't get any more solid than that.
-
-The @auto-view algorithms are vital to Leo's future. As if by magic, they
-should be able to reliably recreate outline structure from altered @auto
-files. These new algorithms are as important as any of the code in
-leoNodes.py. They are easily more important than the @shadow algorithm.
 </t>
-<t tx="ekr.20140109214515.16628">This post will be pre-writing for further documentation. It contains
-important insights for both users and developers.
+<t tx="ekr.20140109214515.16628">This post contains important insights for both users and developers.
 
 The symptom of the bugs is that *non-bare* organizer nodes are not placed
 in correct sibling order. As you recall, the value of n in the main line,
@@ -19915,7 +19810,8 @@ organizer A when we see organizer D.
 The rule is clear: we must close an organizer whenever we see another
 organizer that is not a descendant organizer.
 
-The existing code creates parent/child data for OrganizerData instances.  It will be straightforward to add descendant relationships.
+The existing code creates parent/child data for OrganizerData instances. It
+will be straightforward to add descendant relationships.
 
 Let's consider another case:
 
@@ -19934,10 +19830,70 @@ present code does not. The present code opens an organizer node only when
 adding a node to the organizer, but this example shows that organizer B
 must be added to the global node list *before* any node is added to it.
 Failure to do so results in organizer B being put in the wrong place.
+</t>
+<t tx="ekr.20140112112622.16651">Two major new Aha's have appeared. As often happens, they were the result
+of a new distinction:
 
-===== Organizer relationships are stable!
+  **Nested** organizer nodes will become children of *other* organizer nodes.
 
-As I was thinking about the outline relationships between organizer nodes,
+  **Bare** organizer nodes will become children of *ordinary* nodes.
+</t>
+<t tx="ekr.20140112112622.16652">Headlines matter The unls will break if the headlines produced by *the
+importer* don't match those unls. There are two cases to consider:
+
+A. Section references. At present, Leo will abort the writing of an @auto
+    tree that contains section references. Instead, Leo could write the
+    expansion of the section reference. In practice, changing section
+    definition nodes to ordinary nodes by hand isn't a big deal, but it
+    would be nice for Leo to do that for the user.
+
+B. Headlines for classes, methods and functions.
+
+This is the important case. Most of my headlines look like x.y (z), where x
+is some kind of indication of the class and y is the actual class, method
+or function name and z is a optional comment. When converting from @file to
+@auto *all* of the organizers will break unless the headline becomes just
+"y".
+
+Perhaps the best solution is to ask the importer what name it will give to
+the node. Yes, this involves parsing the contents of the node. It will
+likely require a new interface method of the baseScannerClass.</t>
+<t tx="ekr.20140112112622.16653">There are *two* kinds of organizer nodes:
+
+- those that do *not* exist in the imported outline (these now work).
+- those that *do* exist in the imported outline.
+
+For example, I usually put the helpers of method X as children of X. There
+is *no way* for the read logic to recreate such nodes at present, because
+the parent/child relationships are do not exist in the @auto file. So X is
+an organizer node!
+
+Happily, it should be relatively straightforward to support **existing
+organizers**:
+
+1. The write code will represent existing organizers with
+    @existing-organizer: nodes rather than @organizer: nodes. As with
+    @organizer: nodes, the headline will contain the headline of the
+    organizer node; the body will be a list of unls.
+
+The write code can easily discover existing organizers: they are nodes with
+children that contain something other than comments and blank lines.
+
+2. The read code will create OrganizerData entries for @existing-organizer
+   nodes just as with @organizer: nodes. A new ivar, data.existing, will
+   distinguish between @organizer: and @existing-organizer nodes. These new
+   entries will be members of a new global list of all organizer nodes.
+
+The goal will be to confine tests of data.existing to the setup code. That
+way, all the hard code will continue to work as is. We shall see whether
+this is possible.
+
+3. The code that munges unls will drop unls for a data object only if
+   data.existing is False. This may be more tricky than it sounds. In any
+   case, this is the fundamental reason why @existing-organizer: nodes
+   *must* exist.
+</t>
+<t tx="ekr.20140112112622.16654">As I was thinking about the outline relationships between organizer nodes,
 I began to worry that minor changes to the imported @auto file might break
 those relationships. In fact, the reverse is true: the relationships
 between organizer nodes are *independent* of the @auto file!
@@ -19964,18 +19920,8 @@ a class, function or method almost never happens.
 In short, the links between unls (in @organizer: nodes) and imported
 classes, methods and functions almost never break! This is truly great
 news.
-
-===== Summary
-
-The following bugs will be easy to fix today:
-
-- demote_helper must keep organizer nodes open when handling descendant
-  organizer nodes.
-- demote_helper must open all intermediate organizer nodes when opening
-  descendant organizer nodes.
-- The unit tests must be sure to test intermediate nodes.
-
-The following insights are important for users (and maintainers) to know:
+</t>
+<t tx="ekr.20140112112622.16655">The following insights are important for users (and maintainers) to know:
 
 - Changing an @auto file does not change the relationships between its
   organizer nodes in any way.
@@ -19985,6 +19931,91 @@ The following insights are important for users (and maintainers) to know:
   "break" organizer nodes is to change the fundamental relationships of
   classes, methods or functions in the imported @auto file. This almost
   *never* happens.
+</t>
+<t tx="ekr.20140112112622.16656">Aha 1: We don't have to compute child indices for nodes moved to children
+of organizer nodes!
+
+We simply put them on a list (in imported outline order) of tuples
+(parent,moved_node). There will be only *one* such list, say
+vc.global_moved_node_list.
+
+When the time comes to do the actual moves, we do the following:
+
+- Reverse the global list, thereby guaranteeing that positions that appear
+   later in the reversed list remain valid.
+- Insert each item on the list as the *last* child of the parent
+   (organizer) node.
+   
+​There is a small, easily corrected, hole in this argument. It assumes that
+positions appear in the list in outline order. That's usually so, but not
+always. Indeed, @organizer: nodes *are* written in outline order, as are
+their contents, but rearrangements in the imported outline could
+conceivably mean that the nodes corresponding to @organizer nodes would not
+be handled in the *new* outline order. This is easily remedied: just sort
+the list in (imported) outline order before reversing it
+
+That's all!
+
+Using a global list was hard to see, because typically such schemes don't
+work in recursive environments. But the @auto-view algorithms are *not*
+recursive. Each @organizer: node is handled separately, in a completely
+linear fashion, by vc.demote_helper, the true main line of the code.
+
+Aha 2:  We can treat *nested* organizer nodes just as we treat ordinary nodes!
+
+vc.switch_active_organizer (the code that handles the entry into an
+organizer node) will simply add another entry (parent,organizer_node) to
+the global move list.
+
+Not having to track most child indices is a major collapse in complexity.
+Indeed, the code that moves nodes to their final destinations will have no
+"if" statements at all. It doesn't get any more solid than that.
+</t>
+<t tx="ekr.20140112112622.16658">===== Moving bare organizer nodes.
+
+Now that moving most nodes has become trivial, the only remaining task is
+to *safely* move bare organizers. This task has two parts:
+
+1. Determine the proper child index of *bare* organizer nodes.
+
+This will be done in the main line: vc.demote_helper will maintain a count
+n of imported nodes that *haven't* been assigned to organizer nodes. This
+count must also be incremented to include bare organizer nodes the will be
+inserted later. It's just a bit tricky, but there are only a few cases to
+get right. Once it works, it will work forever.
+
+There will be another global list, say vc.global_bare_organizer_node_list,
+containing tuples (parent,bare_organizer,n). vc.switch_active_organizer
+will add entries to this list, but *only* for bare organizer nodes.
+
+2. Actually move the bare organizer nodes.
+
+The children of bare organizer nodes will appear vc.global_moved_node_list.
+Each (ordinary) parent node may contain several bare organizer nodes. Here
+is how to get the job done safely:
+
+- For each parent, create a new per-parent list, containing all entries of
+  the global list with that parent.
+- Sort each per-parent list using n as the key.
+- Move the nodes in each per-parent list to their destinations, in sorted
+  order.
+
+At first glace, this seems entirely bogus. How are we to ensure that
+positions stay valid?
+
+Unlike for ordinary nodes, we can't process bare organizer nodes in reverse
+outline order: we have to handle them in the *new* sibling order, that is,
+sorted by n. In other words, it won't work to move them to the last child
+of their parent! Nor can we move nodes to any arbitrary sibling position:
+we must move nodes with smaller child indices before moving nodes with
+larger child indices.
+
+To solve this problem, the setup code places each organizer node in a
+separate **holding cell**. Moving the bare organizer out of a holding cell
+to its final resting place affects no other holding cells, and no other
+organizer node.
+
+
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
