@@ -27,10 +27,10 @@ Release 4.11.1 (or 5.0?):
 @language rest
 
 * Init od link fields only once.
-    - Create organizer node for startup code.
-    - Use recursive O(N) algorithm in vc.compute_descendants.
+
+- Use recursive O(N) algorithm in vc.compute_descendants.
     
-* Open all intermediate organizers when opening a descendant organizer.
+* Open all intermediate ods when opening a descendant od.
 
 Later:
 - Warn about changed headlines.
