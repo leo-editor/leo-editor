@@ -73,12 +73,15 @@ class ViewController:
         self.trail_write_1 = None # The trial write on entry.
         self.views_node = None
     #@+node:ekr.20131230090121.16514: *3* vc.Entry points
-    #@+node:ekr.20140109214515.16648: *4* vc.dump_test_trees
+    #@+node:ekr.20140109214515.16648: *4* vc.compare_test_trees
     def compare_test_trees(self,root1,root2):
         '''
         Compare the subtrees whose roots are given.
         This is called only from unit tests.
         '''
+        s1,s2 = self.trial_write(root1),self.trial_write(root2)
+        if s1 == s2:
+            return True
         g.trace('Compare:',root1.h,root2.h)
         p2 = root2.copy().moveToThreadNext()
         for p1 in root1.subtree():
@@ -88,7 +91,7 @@ class ViewController:
                 g.trace('Fail: %s != %s' % (p1.h,p2.h))
                 return False
             p2.moveToThreadNext()
-        return True
+        return False
     #@+node:ekr.20140102052259.16394: *4* vc.pack & helper
     def pack(self):
         '''

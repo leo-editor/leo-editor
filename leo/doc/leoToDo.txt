@@ -32,12 +32,9 @@ Release 4.11.1 (or 5.0?):
     
 * Open all intermediate organizers when opening a descendant organizer.
 
-- test vc.check. What happens if it fails?
-
+Later:
 - Warn about changed headlines.
     - Create a vc.headlines_dict: keys are vnodes, values are headlines.
-
-Later
 - Support @existing-organizer: nodes
     - Create vc.initial_existing_organizer_node_list.
       (to suppress unnecessary @existing-organizers nodes)

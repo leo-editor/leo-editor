@@ -9,7 +9,7 @@
 #@@pagewidth 60
 #@+<< atFile switches >>
 #@+node:ekr.20140108081031.16613: ** << atFile switches >>
-new_auto = True
+new_auto = False
     # True: enable calls to c.viewController.
 print('==== new_auto: %s' % new_auto)
 allow_cloned_sibs = True
