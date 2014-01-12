@@ -73,16 +73,18 @@ class ViewController:
         self.trail_write_1 = None # The trial write on entry.
         self.views_node = None
     #@+node:ekr.20131230090121.16514: *3* vc.Entry points
-    #@+node:ekr.20140109214515.16648: *4* vc.compare_trees (for testing) (DO TRIAL WRITES HERE)
-    def compare_trees(self,root1,root2):
-        '''Compare the subtrees whose roots are given.'''
+    #@+node:ekr.20140109214515.16648: *4* vc.dump_test_trees
+    def compare_test_trees(self,root1,root2):
+        '''
+        Compare the subtrees whose roots are given.
+        This is called only from unit tests.
+        '''
         g.trace('Compare:',root1.h,root2.h)
         p2 = root2.copy().moveToThreadNext()
         for p1 in root1.subtree():
             if p1.h == p2.h:
                 g.trace('ok:',p1.h)
             else:
-                
                 g.trace('Fail: %s != %s' % (p1.h,p2.h))
                 return False
             p2.moveToThreadNext()
@@ -248,10 +250,9 @@ class ViewController:
         c = self.c
         t1 = time.clock()
         assert self.is_at_auto_node(root),root
+        # fn = g.os_path_finalize(root.atAutoNodeName())
         old_changed = c.isChanged()
-        fn = g.os_path_finalize(root.atAutoNodeName())
-        if g.os_path_exists(fn):
-            self.trial_write_1 = self.trial_write(fn,root)
+        self.trial_write_1 = self.trial_write(root)
         organizers = self.has_organizers_node(root)
         self.init()
         self.root = root.copy()
@@ -261,11 +262,7 @@ class ViewController:
         if clones:
             self.create_clone_links(clones,root)
         n = len(self.global_moved_node_list)
-        fn = g.os_path_finalize(root.atAutoNodeName())
-        if g.os_path_exists(fn):
-            ok = self.check(fn,root)
-        else:
-            ok = True # Don't bother.
+        ok = self.check(root)
         c.setChanged(old_changed if ok else True)
         if trace and n > 0:
             self.print_stats()
@@ -275,14 +272,14 @@ class ViewController:
             g.trace('@auto-view moved %s nodes in %4.3f sec for' % (
                 n,t2),root.h,noname=True)
     #@+node:ekr.20140109214515.16643: *5* vc.check
-    def check (self,fn,root):
+    def check (self,root):
         '''
-        Compare a trial write with the self.trail_write_1.
+        Compare a trial write or root with the self.trail_write_1.
         Unlike the perfect-import checks done by the importer,
         we expecct an *exact* match, regardless of language.
         '''
         trace = False and not g.unitTesting
-        trail_write_2 = self.trial_write(fn,root)
+        trail_write_2 = self.trial_write(root)
         ok = self.trial_write_1 == trail_write_2
         if ok:
             if trace: g.trace(len(self.trial_write_1),len(trail_write_2))
@@ -661,9 +658,11 @@ class ViewController:
                         p.h,n,parent.h,n2))
                 p.moveToNthChildOf(parent,n)
     #@+node:ekr.20140109214515.16644: *5* vc.trial_write
-    def trial_write(self,fn,root):
+    def trial_write(self,root):
         '''return a trial write of outline whose root is given.'''
-        return ''.join([p.b for p in root.self_and_subtree()])
+        s = ''.join([p.b for p in root.self_and_subtree()])
+        g.trace('len(s):',len(s),g.callers(2))
+        return s
     #@+node:ekr.20131230090121.16515: *3* vc.Helpers
     #@+node:ekr.20140103105930.16448: *4* vc.at_auto_view_body and match_at_auto_body
     def at_auto_view_body(self,p):

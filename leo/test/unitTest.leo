@@ -12,14 +12,10 @@
 <vnodes>
 <v t="ekr.20070417092935"><vh>Startup</vh>
 <v t="ekr.20140103103143.4095"><vh>@views</vh>
-<v t="ekr.20140112111343.4764"><vh>@auto-view:root_before</vh>
-<v t="ekr.20140112111343.4765"><vh>@organizers</vh>
-<v t="ekr.20140112111343.4766"><vh>@organizer: organizer node</vh></v>
-<v t="ekr.20140112111343.4767"><vh>@organizer: inner org1</vh></v>
-<v t="ekr.20140112111343.4768"><vh>@organizer: inner org2</vh></v>
-<v t="ekr.20140112111343.4769"><vh>@organizer: last organizer</vh></v>
-<v t="ekr.20140112111343.4770"><vh>@organizer: top-level</vh></v>
-<v t="ekr.20140112111343.4771"><vh>@existing-organizer: aClass</vh></v>
+<v t="ekr.20140112115849.4660"><vh>@auto-view:root_before</vh>
+<v t="ekr.20140112115849.4661"><vh>@organizers</vh>
+<v t="ekr.20140112115849.4662"><vh>@organizer: organizer node</vh></v>
+<v t="ekr.20140112115849.4663"><vh>@existing-organizer: aClass</vh></v>
 </v>
 </v>
 </v>
@@ -180,109 +176,9 @@
 </v>
 <v t="ekr.20140103102956.4142"><vh>@test vc.create_clone_links</vh>
 <v t="ekr.20140103102956.4143"><vh>@clones</vh></v>
-<v t="ekr.20140112111343.4606"><vh>node1</vh></v>
+<v t="ekr.20140112115849.4554"><vh>node1</vh></v>
 <v t="ekr.20140103102956.4145"><vh>root</vh>
-<v t="ekr.20140112111343.4606"></v>
-</v>
-</v>
-<v t="ekr.20140105185509.4140"><vh>@test vc.create_organizer_node</vh>
-<v t="ekr.20140105190941.4170"><vh>root_restore</vh>
-<v t="ekr.20140105190941.4171"><vh>aClass</vh>
-<v t="ekr.20140105190941.4172"><vh>before</vh></v>
-<v t="ekr.20140105190941.4173"><vh>extra1</vh></v>
-<v t="ekr.20140105190941.4174"><vh>child1</vh></v>
-<v t="ekr.20140105190941.4175"><vh>extra2</vh></v>
-<v t="ekr.20140105190941.4176"><vh>child2</vh></v>
-<v t="ekr.20140105190941.4177"><vh>extra3</vh></v>
-<v t="ekr.20140105190941.4178"><vh>after</vh></v>
-</v>
-</v>
-<v t="ekr.20140105185509.4141"><vh>root_before</vh>
-<v t="ekr.20140105185509.4142"><vh>aClass</vh>
-<v t="ekr.20140105185509.4143"><vh>before</vh></v>
-<v t="ekr.20140105185509.4144"><vh>organizer node</vh>
-<v t="ekr.20140105185509.4145"><vh>child1</vh></v>
-<v t="ekr.20140105185509.4146"><vh>child2</vh></v>
-</v>
-<v t="ekr.20140105185509.4147"><vh>after</vh></v>
-</v>
-</v>
-<v t="ekr.20140112111343.4616"><vh>root_after</vh>
-<v t="ekr.20140112111343.4617"><vh>aClass</vh>
-<v t="ekr.20140112111343.4618"><vh>before</vh></v>
-<v t="ekr.20140112111343.4619"><vh>extra1</vh></v>
-<v t="ekr.20140112111343.4631"><vh>organizer node</vh>
-<v t="ekr.20140112111343.4620"><vh>child1</vh></v>
-<v t="ekr.20140112111343.4621"><vh>extra2</vh></v>
-<v t="ekr.20140112111343.4622"><vh>child2</vh></v>
-</v>
-<v t="ekr.20140112111343.4623"><vh>extra3</vh></v>
-<v t="ekr.20140112111343.4624"><vh>after</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20140106135225.4203"><vh>@test vc.create_organizer_node (nested organizers)</vh>
-<v t="ekr.20140106135225.4204"><vh>root_restore</vh>
-<v t="ekr.20140106135225.4285"><vh>aClass</vh>
-<v t="ekr.20140106135225.4286"><vh>before</vh></v>
-<v t="ekr.20140106135225.4289"><vh>child11</vh></v>
-<v t="ekr.20140106135225.4290"><vh>child12</vh></v>
-<v t="ekr.20140108143431.4248"><vh>middle</vh></v>
-<v t="ekr.20140106135225.4292"><vh>child21</vh></v>
-<v t="ekr.20140106135225.4293"><vh>child22</vh></v>
-<v t="ekr.20140106135225.4294"><vh>after</vh></v>
-<v t="ekr.20140109035139.4277"><vh>last1</vh></v>
-</v>
-<v t="ekr.20140109180433.4248"><vh>top1</vh></v>
-<v t="ekr.20140109180433.4249"><vh>top2</vh></v>
-</v>
-<v t="ekr.20140106135225.4213"><vh>root_before</vh>
-<v t="ekr.20140106135225.4214"><vh>aClass</vh>
-<v t="ekr.20140106135225.4215"><vh>before</vh></v>
-<v t="ekr.20140106135225.4216"><vh>organizer node</vh>
-<v t="ekr.20140106135225.4229"><vh>inner org1</vh>
-<v t="ekr.20140106135225.4217"><vh>child11</vh></v>
-<v t="ekr.20140106135225.4218"><vh>child12</vh></v>
-</v>
-<v t="ekr.20140108143431.4249"><vh>middle</vh></v>
-<v t="ekr.20140106135225.4233"><vh>inner org2</vh>
-<v t="ekr.20140106135225.4234"><vh>child21</vh></v>
-<v t="ekr.20140106135225.4235"><vh>child22</vh></v>
-</v>
-</v>
-<v t="ekr.20140106135225.4219"><vh>after</vh></v>
-<v t="ekr.20140109035139.4274"><vh>last organizer</vh>
-<v t="ekr.20140109035139.4276"><vh>last1</vh></v>
-</v>
-</v>
-<v t="ekr.20140109180433.4253"><vh>top-level</vh>
-<v t="ekr.20140109180433.4254"><vh>top1</vh></v>
-<v t="ekr.20140109180433.4255"><vh>top2</vh></v>
-</v>
-</v>
-<v t="ekr.20140112111343.4644"><vh>root_after</vh>
-<v t="ekr.20140112111343.4645"><vh>aClass</vh>
-<v t="ekr.20140112111343.4646"><vh>before</vh></v>
-<v t="ekr.20140112111343.4666"><vh>organizer node</vh>
-<v t="ekr.20140112111343.4649"><vh>middle</vh></v>
-<v t="ekr.20140112111343.4668"><vh>inner org1</vh>
-<v t="ekr.20140112111343.4647"><vh>child11</vh></v>
-<v t="ekr.20140112111343.4648"><vh>child12</vh></v>
-</v>
-<v t="ekr.20140112111343.4670"><vh>inner org2</vh>
-<v t="ekr.20140112111343.4650"><vh>child21</vh></v>
-<v t="ekr.20140112111343.4651"><vh>child22</vh></v>
-</v>
-</v>
-<v t="ekr.20140112111343.4652"><vh>after</vh></v>
-<v t="ekr.20140112111343.4672"><vh>last organizer</vh>
-<v t="ekr.20140112111343.4653"><vh>last1</vh></v>
-</v>
-</v>
-<v t="ekr.20140112111343.4674"><vh>top-level</vh>
-<v t="ekr.20140112111343.4654"><vh>top1</vh></v>
-<v t="ekr.20140112111343.4655"><vh>top2</vh></v>
-</v>
+<v t="ekr.20140112115849.4554"></v>
 </v>
 </v>
 <v t="ekr.20140106094713.4176"><vh>@test vc.drop_all_organizers_in_unl</vh></v>
@@ -362,67 +258,103 @@
 </v>
 </v>
 </v>
-<v t="ekr.20140111164124.4414"><vh>@test vc.create_organizer_node (intermediate organizers)</vh>
-<v t="ekr.20140111164124.4415"><vh>root_restore</vh>
-<v t="ekr.20140111164124.4416"><vh>aClass</vh>
-<v t="ekr.20140111164124.4417"><vh>before</vh></v>
-<v t="ekr.20140111164124.4418"><vh>child11</vh></v>
-<v t="ekr.20140111164124.4419"><vh>child12</vh></v>
-<v t="ekr.20140111164124.4420"><vh>middle</vh></v>
-<v t="ekr.20140111164124.4421"><vh>child21</vh></v>
-<v t="ekr.20140111164124.4422"><vh>child22</vh></v>
-<v t="ekr.20140111164124.4423"><vh>after</vh></v>
-<v t="ekr.20140111164124.4424"><vh>last1</vh></v>
+<v t="ekr.20140106135225.4203"><vh>@test vc.create_organizer_node (nested organizers) (fails)</vh>
+<v t="ekr.20140106135225.4204"><vh>root_restore</vh>
+<v t="ekr.20140106135225.4285"><vh>aClass</vh>
+<v t="ekr.20140106135225.4286"><vh>before</vh></v>
+<v t="ekr.20140106135225.4289"><vh>child11</vh></v>
+<v t="ekr.20140106135225.4290"><vh>child12</vh></v>
+<v t="ekr.20140108143431.4248"><vh>middle</vh></v>
+<v t="ekr.20140106135225.4292"><vh>child21</vh></v>
+<v t="ekr.20140106135225.4293"><vh>child22</vh></v>
+<v t="ekr.20140106135225.4294"><vh>after</vh></v>
+<v t="ekr.20140109035139.4277"><vh>last1</vh></v>
 </v>
-<v t="ekr.20140111164124.4425"><vh>top1</vh></v>
-<v t="ekr.20140111164124.4426"><vh>top2</vh></v>
+<v t="ekr.20140109180433.4248"><vh>top1</vh></v>
+<v t="ekr.20140109180433.4249"><vh>top2</vh></v>
 </v>
-<v t="ekr.20140111164124.4427"><vh>root_before</vh>
-<v t="ekr.20140111164124.4428"><vh>aClass</vh>
-<v t="ekr.20140111164124.4429"><vh>before</vh></v>
-<v t="ekr.20140111164124.4430"><vh>organizer node</vh>
-<v t="ekr.20140111164124.4431"><vh>inner org1</vh>
-<v t="ekr.20140111164124.4432"><vh>child11</vh></v>
-<v t="ekr.20140111164124.4433"><vh>child12</vh></v>
+<v t="ekr.20140106135225.4213"><vh>root_before</vh>
+<v t="ekr.20140106135225.4214"><vh>aClass</vh>
+<v t="ekr.20140106135225.4215"><vh>before</vh></v>
+<v t="ekr.20140106135225.4216"><vh>organizer node</vh>
+<v t="ekr.20140106135225.4229"><vh>inner org1</vh>
+<v t="ekr.20140106135225.4217"><vh>child11</vh></v>
+<v t="ekr.20140106135225.4218"><vh>child12</vh></v>
 </v>
-<v t="ekr.20140111164124.4434"><vh>middle</vh></v>
-<v t="ekr.20140111164124.4435"><vh>inner org2</vh>
-<v t="ekr.20140111164124.4436"><vh>child21</vh></v>
-<v t="ekr.20140111164124.4437"><vh>child22</vh></v>
-</v>
-</v>
-<v t="ekr.20140111164124.4438"><vh>after</vh></v>
-<v t="ekr.20140111164124.4439"><vh>last organizer</vh>
-<v t="ekr.20140111164124.4440"><vh>last1</vh></v>
+<v t="ekr.20140108143431.4249"><vh>middle</vh></v>
+<v t="ekr.20140106135225.4233"><vh>inner org2</vh>
+<v t="ekr.20140106135225.4234"><vh>child21</vh></v>
+<v t="ekr.20140106135225.4235"><vh>child22</vh></v>
 </v>
 </v>
-<v t="ekr.20140111164124.4441"><vh>top-level</vh>
-<v t="ekr.20140111164124.4442"><vh>top1</vh></v>
-<v t="ekr.20140111164124.4443"><vh>top2</vh></v>
+<v t="ekr.20140106135225.4219"><vh>after</vh></v>
+<v t="ekr.20140109035139.4274"><vh>last organizer</vh>
+<v t="ekr.20140109035139.4276"><vh>last1</vh></v>
 </v>
 </v>
-<v t="ekr.20140112111343.4752"><vh>root_after</vh>
-<v t="ekr.20140112111343.4753"><vh>aClass</vh>
-<v t="ekr.20140112111343.4754"><vh>before</vh></v>
-<v t="ekr.20140112111343.4774"><vh>organizer node</vh>
-<v t="ekr.20140112111343.4757"><vh>middle</vh></v>
-<v t="ekr.20140112111343.4776"><vh>inner org1</vh>
-<v t="ekr.20140112111343.4755"><vh>child11</vh></v>
-<v t="ekr.20140112111343.4756"><vh>child12</vh></v>
-</v>
-<v t="ekr.20140112111343.4778"><vh>inner org2</vh>
-<v t="ekr.20140112111343.4758"><vh>child21</vh></v>
-<v t="ekr.20140112111343.4759"><vh>child22</vh></v>
+<v t="ekr.20140109180433.4253"><vh>top-level</vh>
+<v t="ekr.20140109180433.4254"><vh>top1</vh></v>
+<v t="ekr.20140109180433.4255"><vh>top2</vh></v>
 </v>
 </v>
-<v t="ekr.20140112111343.4760"><vh>after</vh></v>
-<v t="ekr.20140112111343.4780"><vh>last organizer</vh>
-<v t="ekr.20140112111343.4761"><vh>last1</vh></v>
+<v t="ekr.20140112115849.4592"><vh>root_after</vh>
+<v t="ekr.20140112115849.4593"><vh>aClass</vh>
+<v t="ekr.20140112115849.4594"><vh>before</vh></v>
+<v t="ekr.20140112115849.4614"><vh>organizer node</vh>
+<v t="ekr.20140112115849.4597"><vh>middle</vh></v>
+<v t="ekr.20140112115849.4616"><vh>inner org1</vh>
+<v t="ekr.20140112115849.4595"><vh>child11</vh></v>
+<v t="ekr.20140112115849.4596"><vh>child12</vh></v>
+</v>
+<v t="ekr.20140112115849.4618"><vh>inner org2</vh>
+<v t="ekr.20140112115849.4598"><vh>child21</vh></v>
+<v t="ekr.20140112115849.4599"><vh>child22</vh></v>
 </v>
 </v>
-<v t="ekr.20140112111343.4782"><vh>top-level</vh>
-<v t="ekr.20140112111343.4762"><vh>top1</vh></v>
-<v t="ekr.20140112111343.4763"><vh>top2</vh></v>
+<v t="ekr.20140112115849.4600"><vh>after</vh></v>
+<v t="ekr.20140112115849.4620"><vh>last organizer</vh>
+<v t="ekr.20140112115849.4601"><vh>last1</vh></v>
+</v>
+</v>
+<v t="ekr.20140112115849.4622"><vh>top-level</vh>
+<v t="ekr.20140112115849.4602"><vh>top1</vh></v>
+<v t="ekr.20140112115849.4603"><vh>top2</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20140105185509.4140"><vh>@test vc.create_organizer_node (fails)</vh>
+<v t="ekr.20140105190941.4170"><vh>root_restore</vh>
+<v t="ekr.20140105190941.4171"><vh>aClass</vh>
+<v t="ekr.20140105190941.4172"><vh>before</vh></v>
+<v t="ekr.20140105190941.4173"><vh>extra1</vh></v>
+<v t="ekr.20140105190941.4174"><vh>child1</vh></v>
+<v t="ekr.20140105190941.4175"><vh>extra2</vh></v>
+<v t="ekr.20140105190941.4176"><vh>child2</vh></v>
+<v t="ekr.20140105190941.4177"><vh>extra3</vh></v>
+<v t="ekr.20140105190941.4178"><vh>after</vh></v>
+</v>
+</v>
+<v t="ekr.20140105185509.4141"><vh>root_before</vh>
+<v t="ekr.20140105185509.4142"><vh>aClass</vh>
+<v t="ekr.20140105185509.4143"><vh>before</vh></v>
+<v t="ekr.20140105185509.4144"><vh>organizer node</vh>
+<v t="ekr.20140105185509.4145"><vh>child1</vh></v>
+<v t="ekr.20140105185509.4146"><vh>child2</vh></v>
+</v>
+<v t="ekr.20140105185509.4147"><vh>after</vh></v>
+</v>
+</v>
+<v t="ekr.20140112115849.4651"><vh>root_after</vh>
+<v t="ekr.20140112115849.4652"><vh>aClass</vh>
+<v t="ekr.20140112115849.4653"><vh>before</vh></v>
+<v t="ekr.20140112115849.4654"><vh>extra1</vh></v>
+<v t="ekr.20140112115849.4666"><vh>organizer node</vh>
+<v t="ekr.20140112115849.4655"><vh>child1</vh></v>
+<v t="ekr.20140112115849.4656"><vh>extra2</vh></v>
+<v t="ekr.20140112115849.4657"><vh>child2</vh></v>
+</v>
+<v t="ekr.20140112115849.4658"><vh>extra3</vh></v>
+<v t="ekr.20140112115849.4659"><vh>after</vh></v>
 </v>
 </v>
 </v>
@@ -467,19 +399,83 @@
 <v t="ekr.20140110141116.4367"><vh>top2</vh></v>
 </v>
 </v>
-<v t="ekr.20140112111343.4706"><vh>root_after</vh>
-<v t="ekr.20140112111343.4707"><vh>aClass</vh>
-<v t="ekr.20140112111343.4708"><vh>before</vh></v>
-<v t="ekr.20140112111343.4709"><vh>child11</vh></v>
-<v t="ekr.20140112111343.4710"><vh>child12</vh></v>
-<v t="ekr.20140112111343.4711"><vh>middle</vh></v>
-<v t="ekr.20140112111343.4712"><vh>child21</vh></v>
-<v t="ekr.20140112111343.4713"><vh>child22</vh></v>
-<v t="ekr.20140112111343.4714"><vh>after</vh></v>
-<v t="ekr.20140112111343.4715"><vh>last1</vh></v>
+<v t="ekr.20140112115849.4520"><vh>root_after</vh>
+<v t="ekr.20140112115849.4521"><vh>aClass</vh>
+<v t="ekr.20140112115849.4522"><vh>before</vh></v>
+<v t="ekr.20140112115849.4523"><vh>child11</vh></v>
+<v t="ekr.20140112115849.4524"><vh>child12</vh></v>
+<v t="ekr.20140112115849.4525"><vh>middle</vh></v>
+<v t="ekr.20140112115849.4526"><vh>child21</vh></v>
+<v t="ekr.20140112115849.4527"><vh>child22</vh></v>
+<v t="ekr.20140112115849.4528"><vh>after</vh></v>
+<v t="ekr.20140112115849.4529"><vh>last1</vh></v>
 </v>
-<v t="ekr.20140112111343.4716"><vh>top1</vh></v>
-<v t="ekr.20140112111343.4717"><vh>top2</vh></v>
+<v t="ekr.20140112115849.4530"><vh>top1</vh></v>
+<v t="ekr.20140112115849.4531"><vh>top2</vh></v>
+</v>
+</v>
+<v t="ekr.20140111164124.4414"><vh>@test vc.create_organizer_node (intermediate organizers) (Fails)</vh>
+<v t="ekr.20140111164124.4415"><vh>root_restore</vh>
+<v t="ekr.20140111164124.4416"><vh>aClass</vh>
+<v t="ekr.20140111164124.4417"><vh>before</vh></v>
+<v t="ekr.20140111164124.4418"><vh>child11</vh></v>
+<v t="ekr.20140111164124.4419"><vh>child12</vh></v>
+<v t="ekr.20140111164124.4420"><vh>middle</vh></v>
+<v t="ekr.20140111164124.4421"><vh>child21</vh></v>
+<v t="ekr.20140111164124.4422"><vh>child22</vh></v>
+<v t="ekr.20140111164124.4423"><vh>after</vh></v>
+<v t="ekr.20140111164124.4424"><vh>last1</vh></v>
+</v>
+<v t="ekr.20140111164124.4425"><vh>top1</vh></v>
+<v t="ekr.20140111164124.4426"><vh>top2</vh></v>
+</v>
+<v t="ekr.20140111164124.4427"><vh>root_before</vh>
+<v t="ekr.20140111164124.4428"><vh>aClass</vh>
+<v t="ekr.20140111164124.4429"><vh>before</vh></v>
+<v t="ekr.20140111164124.4430"><vh>organizer node</vh>
+<v t="ekr.20140111164124.4431"><vh>inner org1</vh>
+<v t="ekr.20140111164124.4432"><vh>child11</vh></v>
+<v t="ekr.20140111164124.4433"><vh>child12</vh></v>
+</v>
+<v t="ekr.20140111164124.4434"><vh>middle</vh></v>
+<v t="ekr.20140111164124.4435"><vh>inner org2</vh>
+<v t="ekr.20140111164124.4436"><vh>child21</vh></v>
+<v t="ekr.20140111164124.4437"><vh>child22</vh></v>
+</v>
+</v>
+<v t="ekr.20140111164124.4438"><vh>after</vh></v>
+<v t="ekr.20140111164124.4439"><vh>last organizer</vh>
+<v t="ekr.20140111164124.4440"><vh>last1</vh></v>
+</v>
+</v>
+<v t="ekr.20140111164124.4441"><vh>top-level</vh>
+<v t="ekr.20140111164124.4442"><vh>top1</vh></v>
+<v t="ekr.20140111164124.4443"><vh>top2</vh></v>
+</v>
+</v>
+<v t="ekr.20140112115849.4477"><vh>root_after</vh>
+<v t="ekr.20140112115849.4478"><vh>aClass</vh>
+<v t="ekr.20140112115849.4479"><vh>before</vh></v>
+<v t="ekr.20140112115849.4499"><vh>organizer node</vh>
+<v t="ekr.20140112115849.4482"><vh>middle</vh></v>
+<v t="ekr.20140112115849.4501"><vh>inner org1</vh>
+<v t="ekr.20140112115849.4480"><vh>child11</vh></v>
+<v t="ekr.20140112115849.4481"><vh>child12</vh></v>
+</v>
+<v t="ekr.20140112115849.4503"><vh>inner org2</vh>
+<v t="ekr.20140112115849.4483"><vh>child21</vh></v>
+<v t="ekr.20140112115849.4484"><vh>child22</vh></v>
+</v>
+</v>
+<v t="ekr.20140112115849.4485"><vh>after</vh></v>
+<v t="ekr.20140112115849.4505"><vh>last organizer</vh>
+<v t="ekr.20140112115849.4486"><vh>last1</vh></v>
+</v>
+</v>
+<v t="ekr.20140112115849.4507"><vh>top-level</vh>
+<v t="ekr.20140112115849.4487"><vh>top1</vh></v>
+<v t="ekr.20140112115849.4488"><vh>top2</vh></v>
+</v>
 </v>
 </v>
 </vnodes>
@@ -1572,7 +1568,7 @@ try:
 finally:
     c.redraw()
 </t>
-<t tx="ekr.20140103102956.4143">gnx: ekr.20140112111343.4518
+<t tx="ekr.20140103102956.4143">gnx: ekr.20140112111343.4606
 unl: node1
 </t>
 <t tx="ekr.20140103102956.4145"></t>
@@ -1811,7 +1807,7 @@ try:
     organizers = vc.has_organizers_node(root_before)
     assert organizers
     vc.create_organizer_nodes(organizers,root_after)
-    ### assert vc.compare_trees(root_before,root_after)
+    assert vc.compare_test_trees(root_before,root_after)
 finally:
      # Make sure the roots are *not* @auto nodes.
     root_before.h = 'root_before'
@@ -2009,7 +2005,7 @@ try:
     at_organizers = vc.has_organizers_node(root_before)
     assert at_organizers
     vc.create_organizer_nodes(at_organizers,root_after)
-    ### assert vc.compare_trees(root_before,root_after)
+    assert vc.compare_trees(root_before,root_after)
 finally:
      # Make sure the roots are *not* @auto nodes.
     root_before.h = 'root_before'
@@ -2242,7 +2238,7 @@ try:
     at_organizers = vc.has_organizers_node(root_before)
     assert at_organizers
     vc.create_organizer_nodes(at_organizers,root_after)
-    ### assert vc.compare_trees(root_before,root_after)
+    assert vc.compare_test_trees(root_before,root_after)
 finally:
      # Make sure the roots are *not* @auto nodes.
     root_before.h = 'root_before'
@@ -2317,150 +2313,141 @@ finally:
     pass</t>
 <t tx="ekr.20140111164124.4443">def spam_top2():
     pass</t>
-<t tx="ekr.20140112111343.4606"></t>
-<t tx="ekr.20140112111343.4616">@others
+<t tx="ekr.20140112115849.4477">@others
 </t>
-<t tx="ekr.20140112111343.4617">class aClass:
+<t tx="ekr.20140112115849.4478">class aClass:
     @others
 </t>
-<t tx="ekr.20140112111343.4618">def before():
+<t tx="ekr.20140112115849.4479">def spam_before(self):
     pass
 </t>
-<t tx="ekr.20140112111343.4619">def extra1():
+<t tx="ekr.20140112115849.4480">def spam11(self):
+    pass
+</t>
+<t tx="ekr.20140112115849.4481">def spam12(self):
+    pass
+</t>
+<t tx="ekr.20140112115849.4482">def middle_spam():
     pass</t>
-<t tx="ekr.20140112111343.4620">def child1():
+<t tx="ekr.20140112115849.4483">def spam21(self):
     pass
 </t>
-<t tx="ekr.20140112111343.4621">def extra2():
+<t tx="ekr.20140112115849.4484">def spam22(self):
+    pass
+</t>
+<t tx="ekr.20140112115849.4485">def spam_after(self):
+    pass
+</t>
+<t tx="ekr.20140112115849.4486">def spam_last1():
     pass</t>
-<t tx="ekr.20140112111343.4622">def child2():
-    pass
-</t>
-<t tx="ekr.20140112111343.4623">def extra3():
+<t tx="ekr.20140112115849.4487">def spam_top1():
     pass</t>
-<t tx="ekr.20140112111343.4624">def after():
-    pass
+<t tx="ekr.20140112115849.4488">def spam_top2():
+    pass</t>
+<t tx="ekr.20140112115849.4499"></t>
+<t tx="ekr.20140112115849.4501"></t>
+<t tx="ekr.20140112115849.4503"></t>
+<t tx="ekr.20140112115849.4505"></t>
+<t tx="ekr.20140112115849.4507"></t>
+<t tx="ekr.20140112115849.4520">@others
 </t>
-<t tx="ekr.20140112111343.4631"></t>
-<t tx="ekr.20140112111343.4644">@others
-</t>
-<t tx="ekr.20140112111343.4645">class aClass:
+<t tx="ekr.20140112115849.4521">class aClass:
     @others
 </t>
-<t tx="ekr.20140112111343.4646">def spam_before(self):
+<t tx="ekr.20140112115849.4522">def spam_before(self):
     pass
 </t>
-<t tx="ekr.20140112111343.4647">def spam11(self):
+<t tx="ekr.20140112115849.4523">def spam11(self):
     pass
 </t>
-<t tx="ekr.20140112111343.4648">def spam12(self):
+<t tx="ekr.20140112115849.4524">def spam12(self):
     pass
 </t>
-<t tx="ekr.20140112111343.4649">def middle_spam():
+<t tx="ekr.20140112115849.4525">def middle_spam():
     pass</t>
-<t tx="ekr.20140112111343.4650">def spam21(self):
+<t tx="ekr.20140112115849.4526">def spam21(self):
     pass
 </t>
-<t tx="ekr.20140112111343.4651">def spam22(self):
+<t tx="ekr.20140112115849.4527">def spam22(self):
     pass
 </t>
-<t tx="ekr.20140112111343.4652">def spam_after(self):
+<t tx="ekr.20140112115849.4528">def spam_after(self):
     pass
 </t>
-<t tx="ekr.20140112111343.4653">def spam_last1():
+<t tx="ekr.20140112115849.4529">def spam_last1():
     pass</t>
-<t tx="ekr.20140112111343.4654">def spam_top1():
+<t tx="ekr.20140112115849.4530">def spam_top1():
     pass</t>
-<t tx="ekr.20140112111343.4655">def spam_top2():
+<t tx="ekr.20140112115849.4531">def spam_top2():
     pass</t>
-<t tx="ekr.20140112111343.4666"></t>
-<t tx="ekr.20140112111343.4668"></t>
-<t tx="ekr.20140112111343.4670"></t>
-<t tx="ekr.20140112111343.4672"></t>
-<t tx="ekr.20140112111343.4674"></t>
-<t tx="ekr.20140112111343.4706">@others
+<t tx="ekr.20140112115849.4554"></t>
+<t tx="ekr.20140112115849.4592">@others
 </t>
-<t tx="ekr.20140112111343.4707">class aClass:
+<t tx="ekr.20140112115849.4593">class aClass:
     @others
 </t>
-<t tx="ekr.20140112111343.4708">def spam_before(self):
+<t tx="ekr.20140112115849.4594">def spam_before(self):
     pass
 </t>
-<t tx="ekr.20140112111343.4709">def spam11(self):
+<t tx="ekr.20140112115849.4595">def spam11(self):
     pass
 </t>
-<t tx="ekr.20140112111343.4710">def spam12(self):
+<t tx="ekr.20140112115849.4596">def spam12(self):
     pass
 </t>
-<t tx="ekr.20140112111343.4711">def middle_spam():
+<t tx="ekr.20140112115849.4597">def middle_spam():
     pass</t>
-<t tx="ekr.20140112111343.4712">def spam21(self):
+<t tx="ekr.20140112115849.4598">def spam21(self):
     pass
 </t>
-<t tx="ekr.20140112111343.4713">def spam22(self):
+<t tx="ekr.20140112115849.4599">def spam22(self):
     pass
 </t>
-<t tx="ekr.20140112111343.4714">def spam_after(self):
+<t tx="ekr.20140112115849.4600">def spam_after(self):
     pass
 </t>
-<t tx="ekr.20140112111343.4715">def spam_last1():
+<t tx="ekr.20140112115849.4601">def spam_last1():
     pass</t>
-<t tx="ekr.20140112111343.4716">def spam_top1():
+<t tx="ekr.20140112115849.4602">def spam_top1():
     pass</t>
-<t tx="ekr.20140112111343.4717">def spam_top2():
+<t tx="ekr.20140112115849.4603">def spam_top2():
     pass</t>
-<t tx="ekr.20140112111343.4752">@others
+<t tx="ekr.20140112115849.4614"></t>
+<t tx="ekr.20140112115849.4616"></t>
+<t tx="ekr.20140112115849.4618"></t>
+<t tx="ekr.20140112115849.4620"></t>
+<t tx="ekr.20140112115849.4622"></t>
+<t tx="ekr.20140112115849.4651">@others
 </t>
-<t tx="ekr.20140112111343.4753">class aClass:
+<t tx="ekr.20140112115849.4652">class aClass:
     @others
 </t>
-<t tx="ekr.20140112111343.4754">def spam_before(self):
+<t tx="ekr.20140112115849.4653">def before():
     pass
 </t>
-<t tx="ekr.20140112111343.4755">def spam11(self):
-    pass
-</t>
-<t tx="ekr.20140112111343.4756">def spam12(self):
-    pass
-</t>
-<t tx="ekr.20140112111343.4757">def middle_spam():
+<t tx="ekr.20140112115849.4654">def extra1():
     pass</t>
-<t tx="ekr.20140112111343.4758">def spam21(self):
+<t tx="ekr.20140112115849.4655">def child1():
     pass
 </t>
-<t tx="ekr.20140112111343.4759">def spam22(self):
+<t tx="ekr.20140112115849.4656">def extra2():
+    pass</t>
+<t tx="ekr.20140112115849.4657">def child2():
     pass
 </t>
-<t tx="ekr.20140112111343.4760">def spam_after(self):
+<t tx="ekr.20140112115849.4658">def extra3():
+    pass</t>
+<t tx="ekr.20140112115849.4659">def after():
     pass
 </t>
-<t tx="ekr.20140112111343.4761">def spam_last1():
-    pass</t>
-<t tx="ekr.20140112111343.4762">def spam_top1():
-    pass</t>
-<t tx="ekr.20140112111343.4763">def spam_top2():
-    pass</t>
-<t tx="ekr.20140112111343.4764">gnx: ekr.20140111164124.4427
+<t tx="ekr.20140112115849.4660">gnx: ekr.20140105185509.4141
 </t>
-<t tx="ekr.20140112111343.4765"></t>
-<t tx="ekr.20140112111343.4766">unl: aClass--&gt;organizer node--&gt;inner org1
-unl: aClass--&gt;organizer node--&gt;middle
-unl: aClass--&gt;organizer node--&gt;inner org2</t>
-<t tx="ekr.20140112111343.4767">unl: aClass--&gt;organizer node--&gt;inner org1--&gt;child11
-unl: aClass--&gt;organizer node--&gt;inner org1--&gt;child12</t>
-<t tx="ekr.20140112111343.4768">unl: aClass--&gt;organizer node--&gt;inner org2--&gt;child21
-unl: aClass--&gt;organizer node--&gt;inner org2--&gt;child22</t>
-<t tx="ekr.20140112111343.4769">unl: aClass--&gt;last organizer--&gt;last1</t>
-<t tx="ekr.20140112111343.4770">unl: top-level--&gt;top1
-unl: top-level--&gt;top2</t>
-<t tx="ekr.20140112111343.4771">unl: aClass--&gt;before
+<t tx="ekr.20140112115849.4661"></t>
+<t tx="ekr.20140112115849.4662">unl: aClass--&gt;organizer node--&gt;child1
+unl: aClass--&gt;organizer node--&gt;child2</t>
+<t tx="ekr.20140112115849.4663">unl: aClass--&gt;before
 unl: aClass--&gt;organizer node
-unl: aClass--&gt;after
-unl: aClass--&gt;last organizer</t>
-<t tx="ekr.20140112111343.4774"></t>
-<t tx="ekr.20140112111343.4776"></t>
-<t tx="ekr.20140112111343.4778"></t>
-<t tx="ekr.20140112111343.4780"></t>
-<t tx="ekr.20140112111343.4782"></t>
+unl: aClass--&gt;after</t>
+<t tx="ekr.20140112115849.4666"></t>
 </tnodes>
 </leo_file>
