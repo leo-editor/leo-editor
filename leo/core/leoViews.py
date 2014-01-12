@@ -1008,7 +1008,15 @@ class ViewController:
         return False
     #@+node:ekr.20140109214515.16644: *5* vc.trial_write
     def trial_write(self,root):
-        '''return a trial write of outline whose root is given.'''
+        '''
+        Return a trial write of outline whose root is given.
+        
+        **Important**: the @auto import and write code end all nodes with
+        newlines. Because no imported nodes are empty, the code below is
+        *exactly* equivalent to the @auto write code as far as trailing
+        newlines are concerned. Furthermore, we can treat Leo directives as
+        ordinary text here.
+        '''
         s = ''.join([p.b for p in root.self_and_subtree()])
         g.trace('len(s):',len(s),g.callers(2))
         return s
