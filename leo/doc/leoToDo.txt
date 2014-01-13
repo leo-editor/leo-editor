@@ -25,10 +25,10 @@ Release 4.11.1 (or 5.0?):
 - Look at Eclipse # @name.
 .. @+node:ekr.20140109214515.16629: *3* To do: @auto-view
 @language rest
-    
-- Warn about changed headlines.
-    - Read init code creates a vc.headlines_dict: keys are vnodes, values are headlines.
-    - Write code warns if non-organizer node isn't in dict.
+
+* A summary post.
+
+- Make sure extra nodes are inserted properly.
 
 - Support @existing-organizer: nodes
     - Create vc.initial_existing_organizer_node_list.
@@ -36,6 +36,11 @@ Release 4.11.1 (or 5.0?):
     - vc.update_before_write_at_auto_file should check this list.
     - Note: we *can* create holding cells for existing organizer nodes,
       because the importer does *not* create any children for them!
+      
+- Warn about changed headlines.
+    - Read init code creates a vc.headlines_dict: keys are vnodes, values are headlines.
+    - Write code warns if non-organizer node isn't in dict.
+
 .. @+node:ekr.20140112112622.16664: *4* later
 - Better tests for vc.add_intermediate_organizer_nodes
 - Create unit test for vc.copy_tree_to_last_child_of

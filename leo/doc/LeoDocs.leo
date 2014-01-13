@@ -1129,6 +1129,10 @@
 <v t="ekr.20140112112622.16655"><vh>Summary</vh></v>
 <v t="ekr.20140112112622.16652"><vh>Headines are important</vh></v>
 <v t="ekr.20140112112622.16653"><vh>Existing organizer nodes</vh></v>
+<v t="ekr.20140113101423.16678"><vh>Fixing move_nodes_to_organizers </vh></v>
+<v t="ekr.20140113101423.16679"><vh>Supporting @existing-organizers</vh></v>
+<v t="ekr.20140113101423.16680"><vh>Supporting custom headlines (@headlines)</vh></v>
+<v t="ekr.20140113101423.16681"><vh>Automatic conversion of @file to @auto</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -20016,6 +20020,73 @@ to its final resting place affects no other holding cells, and no other
 organizer node.
 
 
+</t>
+<t tx="ekr.20140113101423.16678">@language rest
+
+After several hours staring at traces, I realized that *all* the problems
+were in vc.move_nodes_to_organizers. That is, vc.global_moved_node_list,
+the global move node list, was completely correct! This was not obvious,
+because that trace in vc.move_nodes_to_organizers reported the *sorted*
+version of the global move list. Bad idea: it was the sorting itself that
+was causing all the problems!
+
+Recall that I thought sorting the list was required to keep positions
+unchanged until they are moved. But an hour or so of experimentation (at
+3am) convinced me that there is *no way* to move items from sorted lists
+into the correct positions.
+
+After a few minutes of noodling, the solution finally appeared. Rather than
+*moving* nodes by moving positions, the *only* way that leaves
+to-be-considered positions intact is to *copy* all the nodes of a
+position's tree to the correct place. Eureka! A new method,
+vc.copy_tree_to_last_child_of does the actual copying. A final phase in
+vc.move_nodes_to_organizers deletes all positions in reverse outline order.
+So yes, sorting *is* essential, but only at the very end.
+
+Note: these difficulties do not apply to bare organizer nodes, because each
+is placed in its own holding cell. But it's not possible to create holding
+cells for non-bare organizers.
+
+</t>
+<t tx="ekr.20140113101423.16679">Recall that *existing* organizer nodes are organizer nodes that the
+importer will have created. Last night, after everything worked, I
+reconsidered the design of existing organizer nodes in the light of the new
+code. I wondered whether the existing code would correctly move such nodes
+into their correct final positions.
+
+The short answer is yes, because the importer will *not* have created any
+children for existing organizer nodes. That being so, everything is
+*exactly* as it is for organizer nodes, except that demote_helper and its
+helpers never need to create the organizer. Some complications may arise,
+but I expect them all to be minor.
+</t>
+<t tx="ekr.20140113101423.16680">In a previous post I wrote the new @auto write code could just warn if a
+headline has changed since the @auto file was read. Wrong! It would be
+*unbearable* to have to lose custom headlines. The new code must save and
+restore headlines that don't match the **standard headlines**, the
+headlines that the importer will give the node the *next* time the importer
+reads the @auto file.
+
+A new @headlines node (a child of the @auto-view node for the @auto file)
+will contain the required data. It will contain pairs of lines, much like
+@clones::
+
+    unl: &lt;a unl&gt;
+    head: &lt;the custom headline&gt;
+
+The unls in the @headlines node must use standard headlines! The "links"
+created by @headlines node will break if the body text of a node changes so
+as to change its standard headline. That is, @headlines links will break
+when class, method or function names change.
+
+To combat such breakage, whenever the body text of a node changes the code
+that writes the @headlines node should *recompute* the unl using a
+to-be-written convenience method in leoImport.py. The convenience method
+will return the new standard headline.
+</t>
+<t tx="ekr.20140113101423.16681">When converting an @file node to @auto *every* body text must be considered
+changed. All unls in the @headlines node must be set using the headline
+that the importer will create for the corresponding node.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
