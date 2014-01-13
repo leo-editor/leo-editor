@@ -250,8 +250,8 @@ class ViewController:
             self.print_stats()
             t2 = time.clock()-t1
             g.es('rearraned: %s' % (root.h),color='blue')
-            g.es('moved %s nodes in %4.3f sec' % (n,t2),color='blue')
-            g.trace('@auto-view moved %s nodes in %4.3f sec for' % (
+            g.es('moved %s nodes in %4.2f sec.' % (n,t2))
+            g.trace('@auto-view moved %s nodes in %4.2f sec. for' % (
                 n,t2),root.h,noname=True)
     #@+node:ekr.20140109214515.16643: *5* vc.check
     def check (self,root):
@@ -327,34 +327,6 @@ class ViewController:
         self.post_move_comments(root)
         c.selectPosition(root)
         c.redraw()
-    #@+node:ekr.20140109214515.16647: *6* vc.add_intermediate_organizer_nodes
-    def add_intermediate_organizer_nodes(self,d,n):
-        '''Add all intermediate organizer nodes.'''
-        trace = True # and not g.unitTesting
-        parent = d.parent_od
-        while parent:
-            if trace: g.trace('opened: %5s closed: %5s moved: %5s node: %s' % (
-                parent.opened,parent.closed,parent.moved,parent and parent.h))
-            if not parent.opened:
-                parent.opened = True
-                self.add_organizer_node(parent,n=0) #####
-            parent = parent.parent_od
-    #@+node:ekr.20140109214515.16646: *6* vc.add_organizer_node
-    def add_organizer_node (self,d,n):
-        '''Add d (an OrganizerData instance) to the appropriate move list.'''
-        trace = False # and not g.unitTesting
-        if d.parent_od:
-            # Not a bare organizer: a child of another organizer node.
-            self.global_moved_node_list.append((d.parent_od.p,d.p),)
-            if trace: g.trace('parent: %s p: %s' % (
-                d.parent_od.p.h,d.p.h))
-            return n
-        else:
-            # A bare organizer ndoe: a child of an *ordinary* node.
-            self.global_bare_organizer_node_list.append((d.parent,d.p,n),)
-            if trace: g.trace('bare: parent: %s parent: %s n: %s' % (
-                d.parent and d.parent.h,d.p and d.p.h,n))
-            return n+1
     #@+node:ekr.20140106215321.16677: *6* vc.demote_organized_nodes
     def demote_organized_nodes(self,root):
         '''Demote organized nodes to be children of organizer nodes.'''
@@ -371,7 +343,7 @@ class ViewController:
     #@+node:ekr.20140109214515.16636: *7* vc.move_nodes_to_organizers
     def move_nodes_to_organizers(self):
         '''Move all nodes in the global_moved_node_list.'''
-        trace = False # and not g.unitTesting
+        trace = True # and not g.unitTesting
         # Sort global_moved_node_list into *imported* outline order.
         # demote_helper visits organizers in the *original* outline order,
         # but the *imported* outline order might be different.
@@ -389,7 +361,7 @@ class ViewController:
     def move_bare_organizers(self):
         '''Move all nodes in global_bare_organizer_node_list.'''
         # For each parent, sort nodes on n.
-        trace = False # and not g.unitTesting
+        trace = True # and not g.unitTesting
         d = {} # Keys are vnodes, values are lists of tuples (n,parent,p)
         for parent,p,n in self.global_bare_organizer_node_list:
             key = parent.v
@@ -409,34 +381,7 @@ class ViewController:
                     'move %20s to child %2s of %-20s with %s children' % (
                         p.h,n,parent.h,n2))
                 p.moveToNthChildOf(parent,n)
-    #@+node:ekr.20140106215321.16685: *6* vc.switch_active_organizer
-    def switch_active_organizer(self,active,found,n):
-        '''
-        Pause or close the active od and (re)start the found od.
-        Return found, unless it has been closed.
-        Update n as appropriate.
-        '''
-        trace = False # and not g.unitTesting
-        if active and found not in active.descendants:
-            if trace: g.trace('close:',active.h)
-            active.closed = True
-        assert found
-        if found.closed:
-            if trace: g.trace('*closed*',found.h)
-            return None,n
-        active = found
-        active.opened = True
-        assert active.p,active.h
-        if active.moved:
-            g.trace('already moved',active.h)
-            return None,n
-        else:
-            self.add_intermediate_organizer_nodes(active,n)
-            active.moved = True
-            n = self.add_organizer_node(active,n)
-            return active,n
-     
-    #@+node:ekr.20140104112957.16587: *5* vc.demote_helper (main line)
+    #@+node:ekr.20140104112957.16587: *5* vc.demote_helper (main line) & helper
     def demote_helper(self,od,root):
         '''
         The main line of the @auto-view algorithm: demote nodes for all
@@ -506,6 +451,61 @@ class ViewController:
                     add(active,child,'found!=active')
         if active:
             active.closed = True
+    #@+node:ekr.20140106215321.16685: *6* vc.switch_active_organizer & helpers
+    def switch_active_organizer(self,active,found,n):
+        '''
+        Pause or close the active od and (re)start the found od.
+        Return found, unless it has been closed.
+        Update n as appropriate.
+        '''
+        trace = True # and not g.unitTesting
+        if active and found not in active.descendants:
+            if trace: g.trace('close:',active.h)
+            active.closed = True
+        assert found
+        if found.closed:
+            if trace: g.trace('*closed*',found.h)
+            return None,n
+        active = found
+        active.opened = True
+        assert active.p,active.h
+        if active.moved:
+            g.trace('already moved',active.h)
+            return None,n
+        else:
+            self.add_intermediate_organizer_nodes(active,n)
+            active.moved = True
+            n = self.add_organizer_node(active,n)
+            return active,n
+     
+    #@+node:ekr.20140109214515.16647: *7* vc.add_intermediate_organizer_nodes
+    def add_intermediate_organizer_nodes(self,d,n):
+        '''Add all intermediate organizer nodes.'''
+        trace = True # and not g.unitTesting
+        parent = d.parent_od
+        while parent:
+            if trace: g.trace('opened: %5s closed: %5s moved: %5s node: %s' % (
+                parent.opened,parent.closed,parent.moved,parent and parent.h))
+            if not parent.opened:
+                parent.opened = True
+                self.add_organizer_node(parent,n=0) #####
+            parent = parent.parent_od
+    #@+node:ekr.20140109214515.16646: *7* vc.add_organizer_node
+    def add_organizer_node (self,d,n):
+        '''Add d (an OrganizerData instance) to the appropriate move list.'''
+        trace = False # and not g.unitTesting
+        if d.parent_od:
+            # Not a bare organizer: a child of another organizer node.
+            self.global_moved_node_list.append((d.parent_od.p,d.p),)
+            if trace: g.trace('parent: %s p: %s' % (
+                d.parent_od.p.h,d.p.h))
+            return n
+        else:
+            # A bare organizer ndoe: a child of an *ordinary* node.
+            self.global_bare_organizer_node_list.append((d.parent,d.p,n),)
+            if trace: g.trace('bare: parent: %s parent: %s n: %s' % (
+                d.parent and d.parent.h,d.p and d.p.h,n))
+            return n+1
     #@+node:ekr.20140112112622.16659: *4* Init code for reads
     #@+node:ekr.20140109214515.16633: *5* vc.compute_descendants
     def compute_descendants(self,od,level=0,result=None):
