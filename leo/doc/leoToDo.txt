@@ -25,19 +25,14 @@ Release 4.11.1 (or 5.0?):
 - Look at Eclipse # @name.
 .. @+node:ekr.20140109214515.16629: *3* To do: @auto-view
 @language rest
-
-* Init od link fields only once.
-
-- Use recursive O(N) algorithm in vc.compute_descendants.
     
 * Open all intermediate ods when opening a descendant od.
     - As a test, add such organizers to ~/leoViews.py.
     
+Later:
 - Create unit test for vc.trial_write.
     - The acid test is whether comments can be moved without
       changing the @auto file.  It appears that this is so.
-
-Later:
 - Warn about changed headlines.
     - Create a vc.headlines_dict: keys are vnodes, values are headlines.
 - Support @existing-organizer: nodes

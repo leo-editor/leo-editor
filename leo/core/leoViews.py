@@ -230,11 +230,9 @@ class ViewController:
         Recreate all organizer nodes and clones for a single @auto node
         using the corresponding @organizer: and @clones nodes.
         '''
-        trace = True # Generally useful.
         c = self.c
         t1 = time.clock()
         assert self.is_at_auto_node(root),root
-        # fn = g.os_path_finalize(root.atAutoNodeName())
         old_changed = c.isChanged()
         self.trial_write_1 = self.trial_write(root)
         organizers = self.has_organizers_node(root)
@@ -248,7 +246,7 @@ class ViewController:
         n = len(self.global_moved_node_list)
         ok = self.check(root)
         c.setChanged(old_changed if ok else True)
-        if trace and n > 0:
+        if n > 0:
             self.print_stats()
             t2 = time.clock()-t1
             g.es('rearraned: %s' % (root.h),color='blue')
@@ -529,7 +527,7 @@ class ViewController:
             return od.descendants
     #@+node:ekr.20140108081031.16611: *5* vc.compute_organized_positions
     def compute_organized_positions(self,od,root):
-        '''Compute all the positions organized by the given OrganizerData instance.'''
+        '''Compute all the positions organized by od.'''
         trace = False # and not g.unitTesting
         raw_unls = [self.drop_all_organizers_in_unl(self.organizer_unls,unl)
             for unl in od.unls]
@@ -631,11 +629,6 @@ class ViewController:
         # Compute the list.
         aList = [z for z in self.organizer_data_list
             if z.source_unl == od.source_unl]
-        # if not od.source_unl:
-            # g.trace('od.source_unl:',repr(od.source_unl))
-            # g.trace('[source_unl]:',[z.source_unl for z in self.organizer_data_list])
-            # g.trace('od.parent.h',od.parent.h)
-            # g.trace('[od.parent.h]:',[z.parent.h for z in self.organizer_data_list])
         # Check that all parents match.
         assert all([z.parent == od.parent for z in aList]),[
             z for z in aList if z.parent != od.parent]
@@ -1019,7 +1012,7 @@ class ViewController:
         ordinary text here.
         '''
         s = ''.join([p.b for p in root.self_and_subtree()])
-        g.trace('len(s):',len(s),g.callers(2))
+        # g.trace('len(s):',len(s),g.callers(2))
         return s
     #@+node:ekr.20140105055318.16760: *4* vc.unls...
     #@+node:ekr.20140105055318.16762: *5* vc.drop_all_organizers_in_unl
