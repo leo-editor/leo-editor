@@ -169,9 +169,9 @@
 <v t="ekr.20130927050813.13031"><vh>Obsolete</vh>
 <v t="ekr.20080201143145"><vh>@file ./obsolete/ipython.py</vh></v>
 </v>
-<v t="ekr.20041001210557" a="E"><vh>Scripting</vh>
+<v t="ekr.20041001210557"><vh>Scripting</vh>
 <v t="tbrown.20100226095909.12777"><vh>@file leoscreen.py</vh></v>
-<v t="ekr.20060328125248" a="E"
+<v t="ekr.20060328125248"
 expanded="ekr.20060328125248.6,ekr.20061014075212,"><vh>@file mod_scripting.py</vh></v>
 <v t="edream.110203113231.925"><vh>@file script_io_to_body.py</vh></v>
 </v>
@@ -199,9 +199,10 @@ expanded="ekr.20060328125248.6,ekr.20061014075212,"><vh>@file mod_scripting.py</
 <v t="ekr.20050306081349"><vh>Text formatting</vh>
 <v t="timo.20050213160555"><vh>@file bibtex.py</vh></v>
 <v t="ekr.20070119094733.1"><vh>@file dtest.py</vh></v>
+<v t="ville.20110409151021.5699"><vh>@file jinjarender.py</vh></v>
 <v t="danr7.20060902215215.1"><vh>@file leo_to_html.py</vh></v>
 <v t="danr7.20060902083957"><vh>@file leo_to_rtf.py</vh></v>
-<v t="ville.20110409151021.5699"><vh>@file jinjarender.py</vh></v>
+<v t="peckj.20140113150237.7083"><vh>@file nodediff.py</vh></v>
 <v t="tbrown.20130813134319.11942"><vh>@file richtext.py</vh></v>
 <v t="ekr.20050817132814"><vh>rst3</vh>
 <v t="ekr.20090704103932.5160"><vh>@file leo_pdf.py</vh></v>

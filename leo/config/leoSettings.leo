@@ -1031,6 +1031,9 @@
 <v t="TL.20090225102340.34"><vh>@bool nodeActions_save_atFile_nodes = False</vh></v>
 <v t="TL.20090303191843.1"><vh>@int nodeActions_message_level = 1</vh></v>
 </v>
+<v t="peckj.20140113150237.4603"><vh>nodediff plugin</vh>
+<v t="peckj.20140113150237.4604"><vh>@string node-diff-style = compare</vh></v>
+</v>
 <v t="peckj.20131101143409.5814"><vh>nodewatch plugin</vh>
 <v t="peckj.20131101143409.5816"><vh>@bool nodewatch_autoexecute_scripts = False</vh></v>
 </v>
@@ -5971,6 +5974,8 @@ If True, all @settings-&gt;@nodewatch nodes in the current outline are executed 
 
 True: create minibuffer commands for each @rclick node.
 Default False.</t>
+<t tx="peckj.20140113150237.4603"></t>
+<t tx="peckj.20140113150237.4604">One of 'compare', 'ndiff', or 'unified_diff'.  See the nodediff.py docstring for more info.</t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename
 as its heading, and the two (or more) paths as its entries.  This is easier to
