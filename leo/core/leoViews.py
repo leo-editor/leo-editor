@@ -372,7 +372,7 @@ class ViewController:
                     p.moveToLastChildOf(parent)
                 else:
                     if trace and trace_moves: g.trace('copying',p.h)
-                    self.copyTreeToLastChildOf(p,parent)
+                    self.copy_tree_to_last_child_of(p,parent)
         # Finally, delete all the non-organizer nodes, in reverse outline order.
         def key(od):
             parent,p = od
@@ -406,15 +406,15 @@ class ViewController:
                     'move %20s to child %2s of %-20s with %s children' % (
                         p.h,n,parent.h,n2))
                 p.moveToNthChildOf(parent,n)
-    #@+node:ekr.20140112112622.16663: *7* copyTreeToLastChildOf
-    def copyTreeToLastChildOf(self,p,parent):
+    #@+node:ekr.20140112112622.16663: *7* vc.copy_tree_to_last_child_of
+    def copy_tree_to_last_child_of(self,p,parent):
         '''Copy p's tree to the last child of parent.'''
         root = parent.insertAsLastChild()
         root.b,root.h = p.b,p.h
         root.v.u = copy.deepcopy(p.v.u)
         for child in p.children():
             child2 = root.insertAsLastChild()
-            self.copyTreeToLastChildOf(child,child2)
+            self.copy_tree_to_last_child_of(child,child2)
     #@+node:ekr.20140104112957.16587: *5* vc.demote_helper (main line) & helper
     def demote_helper(self,od,root):
         '''
