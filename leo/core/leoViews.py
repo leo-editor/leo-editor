@@ -509,7 +509,7 @@ class ViewController:
         if active:
             active.closed = True
     #@+node:ekr.20140112112622.16659: *4* Init code for reads
-    #@+node:ekr.20140109214515.16633: *5* vc.compute_descendants (use a recursive algorithm?)
+    #@+node:ekr.20140109214515.16633: *5* vc.compute_descendants
     def compute_descendants(self,od,level=0,result=None):
         '''Compute the descendant od nodes of od.'''
         trace = False # and not g.unitTesting
@@ -565,6 +565,7 @@ class ViewController:
         # Extend the descendant lists.
         for od in data_list:
             self.compute_descendants(od)
+            assert od.descendants is not None
         # Trace results:
         if trace:
             for od in data_list:
