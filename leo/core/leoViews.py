@@ -353,7 +353,7 @@ class ViewController:
         sorted_list = sorted(self.global_moved_node_list,key=key)
         if trace: # A highly useful trace!
             g.trace('sorted_list...\n%s' % (
-                '\n'.join(['%40s %s' % (parent.h,p.h) for parent,p in sorted_list])))
+                '\n'.join(['%40s ==> %s' % (parent.h,p.h) for parent,p in sorted_list])))
         # Move nodes in reversed order to preserve positions.
         for parent,p in reversed(sorted_list):
             p.moveToFirstChildOf(parent)
@@ -387,8 +387,10 @@ class ViewController:
         The main line of the @auto-view algorithm: demote nodes for all
         OrganizerData instances having the same source as the given od instance.
         '''
-        trace = False # and not g.unitTesting
-        verbose = False
+        trace = True # and not g.unitTesting
+        trace_add = True
+        trace_loop = True
+        trace_pending = True
         if trace: g.trace('=====',root and root.h or '*no root*',
             od and od.parent and od.parent.h or '*no od.parent*')
         # Find all OrganizerData instances having the same source as od.
@@ -404,12 +406,12 @@ class ViewController:
         active = None # The organizer node that is presently accumulating nodes.
         demote_pending = [] # Lists of pending demotions.
         def add(active,child,tag=''):
-            if trace and verbose: g.trace(tag,# 'active',active,
+            if trace and trace_add: g.trace(tag,# 'active',active,
                 'active.p:',active.p and active.p.h,
                 'child:',child and child.h)
             self.global_moved_node_list.append((active.p,child.copy()),)
         def pending(active,child):
-            if trace and verbose: g.trace(# 'active',active,
+            if trace and trace_pending: g.trace(# 'active',active,
                 'active.p:',active.p and active.p.h,
                 'child:',child and child.h)
             # Important: add() will push active.p, not active.
@@ -424,7 +426,7 @@ class ViewController:
                     if p == child:
                         found = d ; break
                 if found: break
-            if trace and verbose: g.trace('-----',child.h,
+            if trace and trace_loop: g.trace('----- child:',child.h,
                 'found:',found and found.h,
                 'active:',active and active.h)
             if found is None:
@@ -506,6 +508,16 @@ class ViewController:
             if trace: g.trace('bare: parent: %s parent: %s n: %s' % (
                 d.parent and d.parent.h,d.p and d.p.h,n))
             return n+1
+    #@+node:ekr.20140109214515.16631: *5* vc.print_stats
+    def print_stats(self):
+        '''Print important stats.'''
+        trace = False and not g.unitTesting
+        if trace:
+            g.trace(self.root and self.root.h or 'No root')
+            g.trace('scanned: %3s' % self.n_nodes_scanned)
+            g.trace('moved:   %3s' % (
+                len( self.global_bare_organizer_node_list) +
+                len(self.global_moved_node_list)))
     #@+node:ekr.20140112112622.16659: *4* Init code for reads
     #@+node:ekr.20140109214515.16633: *5* vc.compute_descendants
     def compute_descendants(self,od,level=0,result=None):
@@ -670,16 +682,6 @@ class ViewController:
         for p in reversed(delete):
             p.doDelete()
         c.selectPosition(views)
-    #@+node:ekr.20140109214515.16631: *4* vc.print_stats
-    def print_stats(self):
-        '''Print important stats.'''
-        trace = False and not g.unitTesting
-        if trace:
-            g.trace(self.root and self.root.h or 'No root')
-            g.trace('scanned: %3s' % self.n_nodes_scanned)
-            g.trace('moved:   %3s' % (
-                len( self.global_bare_organizer_node_list) +
-                len(self.global_moved_node_list)))
     #@+node:ekr.20140109214515.16640: *4* vc.comments...
     #@+node:ekr.20131230090121.16526: *5* vc.comment_delims
     def comment_delims(self,p):
@@ -994,10 +996,10 @@ class ViewController:
         p2 = root2.copy().moveToThreadNext()
         for p1 in root1.subtree():
             if p1.h == p2.h:
-                g.trace('ok:',p1.h)
+                g.trace('Match:',p1.h)
             else:
                 g.trace('Fail: %s != %s' % (p1.h,p2.h))
-                return False
+                break
             p2.moveToThreadNext()
         return False
     #@+node:ekr.20140109214515.16644: *5* vc.trial_write
