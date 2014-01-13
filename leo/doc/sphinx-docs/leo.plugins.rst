@@ -588,6 +588,14 @@ plugins Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`nodediff` Module
+----------------------
+
+.. automodule:: leo.plugins.nodediff
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`nodewatch` Module
 -----------------------
 
