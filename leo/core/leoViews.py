@@ -19,9 +19,9 @@ import time
 class OrganizerData:
     '''A class containing all data for a particular organizer node.'''
     def __init__ (self,h,unl,unls):
-        self.child_ods = [] # The child od nodes of this od node.
+        self.children = [] # The direct child od nodes of this od node.
         self.closed = False # True: this od node no longer accepts new child od nodes.
-        self.descendant_ods = [] # The descendant od nodes of this od node.
+        self.descendants = None # The descendant od nodes of this od node.
         self.exists = False # True: this od was created by @existing-organizer:
         self.h = h # The headline of this od node.
         self.moved = False # True: the od node has been moved to a global move list.
@@ -419,7 +419,7 @@ class ViewController:
         Update n as appropriate.
         '''
         trace = False # and not g.unitTesting
-        if active and found not in active.descendant_ods:
+        if active and found not in active.descendants:
             if trace: g.trace('close:',active.h)
             active.closed = True
         assert found
@@ -509,73 +509,24 @@ class ViewController:
         if active:
             active.closed = True
     #@+node:ekr.20140112112622.16659: *4* Init code for reads
-    #@+node:ekr.20140108081031.16610: *5* vc.find_all_organizer_nodes
-    def find_all_organizer_nodes(self,od):
-        '''
-        Return the list of all OrganizerData instances organizing the same
-        imported source node as od.
-        '''
-        # Compute the list.
-        aList = [z for z in self.organizer_data_list
-            if z.source_unl == od.source_unl]
-        # if not od.source_unl:
-            # g.trace('od.source_unl:',repr(od.source_unl))
-            # g.trace('[source_unl]:',[z.source_unl for z in self.organizer_data_list])
-            # g.trace('od.parent.h',od.parent.h)
-            # g.trace('[od.parent.h]:',[z.parent.h for z in self.organizer_data_list])
-        # Check that all parents match.
-        assert all([z.parent == od.parent for z in aList]),[
-            z for z in aList if z.parent != od.parent]
-        # Check that all visited bits are clear.
-        assert all([not z.visited for z in aList]),[
-            z for z in aList if z.visited]
-        return aList
-    #@+node:ekr.20140108081031.16612: *5* vc.compute_tree_structure & helper
-    def compute_tree_structure(self,data_list,root):
-        '''
-        Set the parent_od and child_ods ivars for each entry in
-        data_list.
-        '''
+    #@+node:ekr.20140109214515.16633: *5* vc.compute_descendants (use a recursive algorithm?)
+    def compute_descendants(self,od,level=0,result=None):
+        '''Compute the descendant od nodes of od.'''
         trace = False # and not g.unitTesting
-        organizer_unls = [d.unl for d in data_list]
-        for d in data_list:
-            for unl in d.unls:
-                if unl in organizer_unls:
-                    i = organizer_unls.index(unl)
-                    d2 = data_list[i]
-                    if trace: g.trace('found organizer unl:',d.h,'==>',d2.h)
-                    d.child_ods.append(d2)
-                    d.descendant_ods.append(d2)
-                    d2.parent_od = d
-        # create_organizer_data now ensures d.parent is set.
-        for d in data_list:
-            assert d.parent,d.h
-        # Extend the descendant lists.
-        for od in data_list:
-            self.compute_descendants(od)
-        # Trace results:
-        if trace:
-            for od in data_list:
-                g.trace('od: %s\nchildren: %s\ndescendants: %s' % (
-                    od.h,[z.h for z in od.child_ods],
-                    [z.h for z in od.descendant_ods]))
-    #@+node:ekr.20140109214515.16633: *6* vc.compute_descendants
-    def compute_descendants(self,od,level=0):
-        '''Compute all the descendant OrganizerData nodes of od.'''
-        trace = False # and not g.unitTesting
-        changed = True
-        while changed:
-            changed = False
-            for d in od.descendant_ods:
-                self.compute_descendants(d,level+1)
-                for d2 in d.descendant_ods:
-                    if d2 not in od.descendant_ods:
-                        changed = True
-                        od.descendant_ods.append(d2)
-                        # if trace: g.trace(od.h,'add:',d2.h)
-                        break
-        if trace and level == 0:
-            g.trace(od.h,[z.h for z in od.descendant_ods])
+        if level == 0:
+            result = []
+        if od.descendants is None:
+            for child in od.children:
+                result.append(child)
+                result.extend(self.compute_descendants(child,level+1,result))
+                result = list(set(result))
+            if level == 0:
+                od.descendants = result
+                if trace: g.trace(od.h,[z.h for z in result])
+            return result
+        else:
+            if trace: g.trace('cached',od.h,[z.h for z in od.descendants])
+            return od.descendants
     #@+node:ekr.20140108081031.16611: *5* vc.compute_organized_positions
     def compute_organized_positions(self,od,root):
         '''Compute all the positions organized by the given OrganizerData instance.'''
@@ -592,6 +543,34 @@ class ViewController:
         if trace:
             g.trace('od',od.h,'\nraw_unls',raw_unls,
                 '\norganized_nodes',[z.h for z in od.organized_nodes])
+    #@+node:ekr.20140108081031.16612: *5* vc.compute_tree_structure
+    def compute_tree_structure(self,data_list,root):
+        '''
+        Set the parent_od and children ivars for each entry in
+        data_list.
+        '''
+        trace = False # and not g.unitTesting
+        organizer_unls = [d.unl for d in data_list]
+        for d in data_list:
+            for unl in d.unls:
+                if unl in organizer_unls:
+                    i = organizer_unls.index(unl)
+                    d2 = data_list[i]
+                    if trace: g.trace('found organizer unl:',d.h,'==>',d2.h)
+                    d.children.append(d2)
+                    d2.parent_od = d
+        # create_organizer_data now ensures d.parent is set.
+        for d in data_list:
+            assert d.parent,d.h
+        # Extend the descendant lists.
+        for od in data_list:
+            self.compute_descendants(od)
+        # Trace results:
+        if trace:
+            for od in data_list:
+                g.trace('od: %s\nchildren: %s\ndescendants: %s' % (
+                    od.h,[z.h for z in od.children],
+                    [z.h for z in od.descendants]))
     #@+node:ekr.20140106215321.16675: *5* vc.create_actual_organizer_nodes
     def create_actual_organizer_nodes(self):
         '''
@@ -642,6 +621,27 @@ class ViewController:
                 'unl:',od.unl,
                 'source:',od.source_unl,
                 'parent:',od.parent and od.parent.h)
+    #@+node:ekr.20140108081031.16610: *5* vc.find_all_organizer_nodes
+    def find_all_organizer_nodes(self,od):
+        '''
+        Return the list of all OrganizerData instances organizing the same
+        imported source node as od.
+        '''
+        # Compute the list.
+        aList = [z for z in self.organizer_data_list
+            if z.source_unl == od.source_unl]
+        # if not od.source_unl:
+            # g.trace('od.source_unl:',repr(od.source_unl))
+            # g.trace('[source_unl]:',[z.source_unl for z in self.organizer_data_list])
+            # g.trace('od.parent.h',od.parent.h)
+            # g.trace('[od.parent.h]:',[z.parent.h for z in self.organizer_data_list])
+        # Check that all parents match.
+        assert all([z.parent == od.parent for z in aList]),[
+            z for z in aList if z.parent != od.parent]
+        # Check that all visited bits are clear.
+        assert all([not z.visited for z in aList]),[
+            z for z in aList if z.visited]
+        return aList
     #@+node:ekr.20131230090121.16515: *3* vc.Helpers
     #@+node:ekr.20140103105930.16448: *4* vc.at_auto_view_body and match_at_auto_body
     def at_auto_view_body(self,p):

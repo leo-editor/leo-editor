@@ -31,6 +31,11 @@ Release 4.11.1 (or 5.0?):
 - Use recursive O(N) algorithm in vc.compute_descendants.
     
 * Open all intermediate ods when opening a descendant od.
+    - As a test, add such organizers to ~/leoViews.py.
+    
+- Create unit test for vc.trial_write.
+    - The acid test is whether comments can be moved without
+      changing the @auto file.  It appears that this is so.
 
 Later:
 - Warn about changed headlines.
@@ -41,6 +46,21 @@ Later:
     - vc.update_before_write_at_auto_file should check this list.
 - Remove asserts: make sure this code *never* crashes.
 .. @+node:ekr.20140109214515.16651: *4* docs & posts
+- Post: An answer to Terry's question.
+    - Terry asked: 
+        does [the new code need to support existing @auto nodes, or would
+        it not be safer, at least initially, to have it use a different
+        directive, and leave the existing @auto behavior in place?
+
+    - importers & @auto write ensure newlines at end of nonempty body text.
+    - This is precisely what is neede for the new work.
+    - For example, moving comments would not be possible otherwise!
+    - As a result, vc.trail_write can return just:
+    
+        ''.join([p.b for p in root.self_and_subtree()])
+        
+      (For purposes of verification, we can treat Leo directives as plain text.)
+
 - Use @file at_views.txt to exchange data.
   (Still need @file for unit tests & other special purposes.)
 
