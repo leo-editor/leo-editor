@@ -1133,6 +1133,7 @@
 <v t="ekr.20140113101423.16679"><vh>Supporting @existing-organizers</vh></v>
 <v t="ekr.20140113101423.16680"><vh>Supporting custom headlines (@headlines)</vh></v>
 <v t="ekr.20140113101423.16681"><vh>Automatic conversion of @file to @auto</vh></v>
+<v t="ekr.20140113101423.16682"><vh>Why the new code is solid</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -20087,6 +20088,45 @@ will return the new standard headline.
 <t tx="ekr.20140113101423.16681">When converting an @file node to @auto *every* body text must be considered
 changed. All unls in the @headlines node must be set using the headline
 that the importer will create for the corresponding node.
+</t>
+<t tx="ekr.20140113101423.16682">​1. The hard part of the code involves moving nodes.
+
+vc.global_moved_node_list is the backbone of the entire algorithm.
+vc.demote_helper and its helpers add items to the list. vc.move_nodes and
+its helpers remove items from the list. Very few significant "if"
+statements exist:
+
+Both vc.demote_helper and vc.move_nodes_to_organizers (the hard part of
+vc.move_nodes) are straightforward. Very few if statements exist:
+
+- The "main switch" in demote_helper is likely already correct and will
+  have only localized consequences
+
+- The single "if" statement in vc.move_nodes_to_organizers (the hard part
+  of vc.move_nodes) reflects the fundamental distinction: nodes that must
+  be copied vs. nodes that can be moved immediately.
+
+2. Newly-installed traces make it clear what is happening.
+
+This is surprisingly important. If bugs exist, it will be easy to recreate
+them using unit tests that show, in compact, easy-to-understand dumps,
+exactly what is happening.
+
+3. Everything is easy after nodes have been moved.
+
+Just for example, remembering nodes initial (standard) headlines is easy:
+just create a dict whose keys are *vnodes* and whose values are the
+standard headlines. A node's vnode does not change when the node moves, so
+complications in the node-moving algorithm have *no* effect.
+
+In short, only the node-moving algorithm (on both "sides" of the global
+move list) has any potential for nasty bugs. The vast majority of those
+bugs are gone, and will be easily fixed if any remain. Everything else is
+completely routine bookkeeping.
+
+4. Minimizing "if" statements.
+
+I've worked hard to make all code as simple as possible.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few

@@ -26,7 +26,7 @@ Release 4.11.1 (or 5.0?):
 .. @+node:ekr.20140109214515.16629: *3* To do: @auto-view
 @language rest
 
-* A summary post.
+- Look at new plugin for diffing nodes.
 
 - Make sure extra nodes are inserted properly.
 
@@ -48,37 +48,6 @@ Release 4.11.1 (or 5.0?):
     - The acid test is whether comments can be moved without
       changing the @auto file.  It appears that this is so.
 - Remove asserts: make sure this code *never* crashes.
-.. @+node:ekr.20140109214515.16651: *4* docs & posts
-- Post: An answer to Terry's question.
-    - Terry asked: 
-        does [the new code need to support existing @auto nodes, or would
-        it not be safer, at least initially, to have it use a different
-        directive, and leave the existing @auto behavior in place?
-
-    - importers & @auto write ensure newlines at end of nonempty body text.
-    - This is precisely what is neede for the new work.
-    - For example, moving comments would not be possible otherwise!
-    - As a result, vc.trail_write can return just:
-    
-        ''.join([p.b for p in root.self_and_subtree()])
-        
-      (For purposes of verification, we can treat Leo directives as plain text.)
-
-- Use @file at_views.txt to exchange data.
-  (Still need @file for unit tests & other special purposes.)
-
-- The new code is worthy of being called 5.0:
-    - It's some of the most important & interesting work ever done for Leo.
-    - It could never have been done in Emacs org mode.
-    - Thanks to all who inspired it.
-    - Unlike @shadow, the new @auto work relates directly to outlines.
-      (The difficulties are outline-related).
-    - It's amazing that the before and after trial writes are *exactly* the same.
-
-- How to convert @file to @auto:
-    - Convert section references by hand.
-    - Don't create nodes with non-standard headlines.
-    - The write code will warn about nodes whose headline don't match their initial imported values.
 .. @+node:ekr.20140104063158.16448: *3* reload-abbreviations and reload-key-bindings commands
 .. @+node:ekr.20120209051836.10242: *4* class LoadManager
 class LoadManager:

@@ -233,20 +233,25 @@ class ViewController:
         '''
         c = self.c
         t1 = time.clock()
-        assert self.is_at_auto_node(root),root
+        if not self.is_at_auto_node(root):
+            return # Not an error: it might be and @auto-rst node.
         old_changed = c.isChanged()
-        self.trial_write_1 = self.trial_write(root)
-        organizers = self.has_organizers_node(root)
-        self.init()
-        self.root = root.copy()
-        if organizers:
-            self.create_organizer_nodes(organizers,root)
-        clones = self.has_clones_node(root)
-        if clones:
-            self.create_clone_links(clones,root)
-        n = len(self.global_moved_node_list)
-        ok = self.check(root)
-        c.setChanged(old_changed if ok else True)
+        try:
+            self.trial_write_1 = self.trial_write(root)
+            organizers = self.has_organizers_node(root)
+            self.init()
+            self.root = root.copy()
+            if organizers:
+                self.create_organizer_nodes(organizers,root)
+            clones = self.has_clones_node(root)
+            if clones:
+                self.create_clone_links(clones,root)
+            n = len(self.global_moved_node_list)
+            ok = self.check(root)
+            c.setChanged(old_changed if ok else True)
+        except Exception:
+            g.es_exception()
+            n = 0
         if n > 0:
             self.print_stats()
             t2 = time.clock()-t1
