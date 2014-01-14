@@ -213,7 +213,6 @@ class scriptingController:
         kind = c.config.getString('debugger_kind') or 'idle'
         self.buttonsDict = {} # Keys are buttons, values are button names (strings).
         self.debuggerKind = kind.lower()
-
         self.atButtonNodes = getBool('scripting-at-button-nodes')
             # True: adds a button for every @button node.
         self.atCommandsNodes = getBool('scripting-at-commands-nodes')
@@ -224,6 +223,12 @@ class scriptingController:
             # True: dynamically loads plugins in @plugins nodes when a window is created.
         self.atScriptNodes = getBool('scripting-at-script-nodes')
             # True: dynamically executes script in @script nodes when a window is created.  DANGEROUS!
+        if self.atScriptNodes and c.config.isLocalSetting('scripting-at-script-nodes','bool'):
+            g.es('Security warning! Ignoring...',color='red')
+            g.es('@bool scripting-at-script-nodes = True',color='red')
+            g.es('This setting can be True only in')
+            g.es('leoSettings.leo or myLeoSettings.leo')
+            self.atScriptNodes = False
         self.createDebugButton = getBool('scripting-create-debug-button')
             # True: create Debug Script button.
         self.createRunScriptButton = getBool('scripting-create-run-script-button')

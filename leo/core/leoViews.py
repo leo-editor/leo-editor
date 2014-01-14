@@ -66,6 +66,8 @@ class ViewController:
     def init(self):
         self.global_bare_organizer_node_list = []
         self.global_moved_node_list = []
+        self.initial_existing_organizers_list = []
+            # The list of nodes that have children on entry, such as class nodes.
         self.n_nodes_scanned = 0
         self.organizer_data_list = []
         self.organizer_unls = []
@@ -182,10 +184,10 @@ class ViewController:
         root, an @auto node. Create the @organizer or @clones nodes as needed.
         This *must not* be called for trial writes.
         '''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         c = self.c
-        self.init()
         clone_list,organizers_list,existing_organizers_list = [],[],[]
+        # g.trace('initial existing',[v.h for v in self.initial_existing_organizers_list])
         for p in root.subtree():
             if p.isCloned():
                 rep = self.find_representative_node(root,p)
@@ -193,16 +195,21 @@ class ViewController:
                     unl = self.relative_unl(p,root)
                     gnx = rep.v.gnx
                     clone_list.append((gnx,unl),)
-            if self.is_organizer_node(p,root):
+            if p.v in self.initial_existing_organizers_list:
+                # The node had children created by the importer.
+                if trace: g.trace('ignore initial existing',p.h)
+            elif self.is_organizer_node(p,root):
+                # p.hasChildren and p.b is empty, except for comments.
                 if trace: g.trace('organizer',p.h)
                 organizers_list.append(p.copy())
-            elif p not in organizers_list and p.hasChildren():
+            elif p.hasChildren():
                 if trace: g.trace('existing',p.h)
                 existing_organizers_list.append(p.copy())
         if clone_list:
             at_clones = self.find_clones_node(root)
             at_clones.b = ''.join(['gnx: %s\nunl: %s\n' % (z[0],z[1])
                 for z in clone_list])
+        # Clear all children of the @auto-view node.
         if organizers_list or existing_organizers_list:
             organizers = self.find_organizers_node(root)
             organizers.deleteAllChildren()
@@ -322,6 +329,8 @@ class ViewController:
         # Merge comment nodes with the next node.
         self.pre_move_comments(root)
         # Create the OrganizerData objects and corresponding ivars of this class.
+        self.find_existing_organizer_nodes(root)
+        # Put all nodes with children on self.initial_existing_organizer_node_list
         self.create_organizer_data(at_organizers,root)
         # Create the organizer nodes in a temporary location so positions remain valid.
         self.create_actual_organizer_nodes()
@@ -588,7 +597,7 @@ class ViewController:
                 # g.trace('**** special case *****',raw_unl)
             p = self.find_relative_unl_node(root,raw_unl)
             if p: od.organized_nodes.append(p.copy())
-            else: g.trace('**not found:',raw_unl) ### ,root.h)
+            else: g.trace('**not found:',raw_unl)
         if trace:
             g.trace('od',od.h,'\nraw_unls',raw_unls,
                 '\norganized_nodes',[z.h for z in od.organized_nodes])
@@ -687,6 +696,18 @@ class ViewController:
         assert all([not z.visited for z in aList]),[
             z for z in aList if z.visited]
         return aList
+    #@+node:ekr.20140113181306.16690: *5* vc.find_existing_organizer_nodes
+    def find_existing_organizer_nodes(self,root):
+        '''
+        Put the vnode of all imported nodes with children on
+        self.initial_existing_organizers_list.
+        '''
+        aList = []
+        for p in root.subtree():
+            if p.hasChildren():
+                aList.append(p.v)
+        self.initial_existing_organizers_list = list(set(aList))
+        g.trace([z.h for z in self.initial_existing_organizers_list])
     #@+node:ekr.20131230090121.16515: *3* vc.Helpers
     #@+node:ekr.20140103105930.16448: *4* vc.at_auto_view_body and match_at_auto_body
     def at_auto_view_body(self,p):

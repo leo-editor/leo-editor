@@ -1135,6 +1135,7 @@
 <v t="ekr.20140113101423.16681"><vh>Automatic conversion of @file to @auto</vh></v>
 <v t="ekr.20140113101423.16682"><vh>Why the new code is solid</vh></v>
 </v>
+<v t="ekr.20140113190949.16690"><vh>Document dependencies (revise)</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -20127,6 +20128,32 @@ completely routine bookkeeping.
 4. Minimizing "if" statements.
 
 I've worked hard to make all code as simple as possible.
+</t>
+<t tx="ekr.20140113190949.16690">Leo's minimal dependencies are:
+
+* Python 2.6 (and later) or 3.0 (and later)
+* PyQt4 (not 5!)
+* Docutils (no minimal version known)
+* Sphinx (no minimal version known) 
+
+Sphinx is not required if one has docutils. Neither is required if you
+aren't going to use viewrendered or the rST commands, though vr/rst are
+tightly bound to the core, so I think you'll need at least docutils. I was
+running Leo for several months without Sphinx, though, so this is not a
+requirement.
+
+* What is needed for syntax high-lighting ? 
+
+PyQT and Leo handle this.
+
+* What is needed for spell-checking ? 
+
+PyEnchant: http://pythonhosted.org/pyenchant/download.html
+
+The list above is the bare minimum. Many plugins require their own modules,
+which are documented in their docstrings. For example, viewrendered
+requires 'markdown' if one wishes to use markdown rendering, but it is
+optional. rss.py will not function without 'feedparser'. Etc.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few

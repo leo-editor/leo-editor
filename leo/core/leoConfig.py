@@ -1797,22 +1797,43 @@ class LocalConfigManager:
             setattr(self,ivarName,val)
             setattr(c,ivarName,val)
     #@+node:ekr.20120215072959.12471: *3* c.config.Getters
-    #@+node:ekr.20120215072959.12543: *4* c.config.Getters: redirect to g.app.config
-    def getButtons (self):
-        '''Return a list of tuples (x,y) for common @button nodes.'''
-        return g.app.config.atCommonButtonsList # unusual.
+    #@+node:ekr.20041123092357: *4* c.config.findSettingsPosition & helper
+    # This was not used prior to Leo 4.5.
 
-    def getCommands (self):
-        '''Return the list of tuples (headline,script) for common @command nodes.'''
-        return g.app.config.atCommonCommandsList # unusual.
+    def findSettingsPosition (self,setting):
 
-    def getEnabledPlugins (self):
-        '''Return the body text of the @enabled-plugins node.'''
-        return g.app.config.enabledPluginsString # unusual.
+        """Return the position for the setting in the @settings tree for c."""
 
-    def getRecentFiles (self):
-        '''Return the list of recently opened files.'''
-        return g.app.config.getRecentFiles() # unusual
+        munge = g.app.config.munge
+        c = self.c
+
+        root = self.settingsRoot()
+        if not root:
+            return c.nullPosition()
+
+        setting = munge(setting)
+
+        for p in root.subtree():
+            #BJ munge will return None if a headstring is empty
+            h = munge(p.h) or ''
+            if h.startswith(setting):
+                return p.copy()
+
+        return c.nullPosition()
+    #@+node:ekr.20041120074536: *5* c.config.settingsRoot
+    def settingsRoot (self):
+
+        '''Return the position of the @settings tree.'''
+
+        # g.trace(c,c.rootPosition())
+
+        c = self.c
+
+        for p in c.all_unique_positions():
+            if p.h.rstrip() == "@settings":
+                return p.copy()
+        else:
+            return c.nullPosition()
     #@+node:ekr.20120215072959.12515: *4* c.config.Getters
     #@@nocolor-node
 
@@ -2110,6 +2131,40 @@ class LocalConfigManager:
         '''Return the value of @string setting.'''
 
         return self.get(setting,"string")
+    #@+node:ekr.20120215072959.12543: *4* c.config.Getters: redirect to g.app.config
+    def getButtons (self):
+        '''Return a list of tuples (x,y) for common @button nodes.'''
+        return g.app.config.atCommonButtonsList # unusual.
+
+    def getCommands (self):
+        '''Return the list of tuples (headline,script) for common @command nodes.'''
+        return g.app.config.atCommonCommandsList # unusual.
+
+    def getEnabledPlugins (self):
+        '''Return the body text of the @enabled-plugins node.'''
+        return g.app.config.enabledPluginsString # unusual.
+
+    def getRecentFiles (self):
+        '''Return the list of recently opened files.'''
+        return g.app.config.getRecentFiles() # unusual
+    #@+node:ekr.20140114145953.16691: *4* c.config.isLocalSetting
+    def isLocalSetting(self,setting,kind):
+        '''Return True if the indicated setting comes from a local .leo file.'''
+        # g.trace('setting',setting,'kind',kind)
+        if not kind or kind in ('shortcut','shortcuts','openwithtable'):
+            return False
+        key = g.app.config.munge(setting)
+        if key is None:
+            return False
+        gs = self.settingsDict.get(key)
+        if not gs:
+            return False
+        assert g.isGeneralSetting(gs),gs
+        path = gs.path.lower()
+        for fn in ('myLeoSettings.leo','leoSettings.leo'):
+            if path.endswith(fn.lower()):
+                return False
+        return True
     #@+node:ekr.20120224140548.10528: *4* c.exists (new)
     def exists (self,c,setting,kind):
 
@@ -2120,43 +2175,6 @@ class LocalConfigManager:
             junk,found = self.getValFromDict(d,setting,kind)
             if found: return True
         return False
-    #@+node:ekr.20041123092357: *4* c.config.findSettingsPosition & helper
-    # This was not used prior to Leo 4.5.
-
-    def findSettingsPosition (self,setting):
-
-        """Return the position for the setting in the @settings tree for c."""
-
-        munge = g.app.config.munge
-        c = self.c
-
-        root = self.settingsRoot()
-        if not root:
-            return c.nullPosition()
-
-        setting = munge(setting)
-
-        for p in root.subtree():
-            #BJ munge will return None if a headstring is empty
-            h = munge(p.h) or ''
-            if h.startswith(setting):
-                return p.copy()
-
-        return c.nullPosition()
-    #@+node:ekr.20041120074536: *5* c.config.settingsRoot
-    def settingsRoot (self):
-
-        '''Return the position of the @settings tree.'''
-
-        # g.trace(c,c.rootPosition())
-
-        c = self.c
-
-        for p in c.all_unique_positions():
-            if p.h.rstrip() == "@settings":
-                return p.copy()
-        else:
-            return c.nullPosition()
     #@+node:ekr.20070418073400: *3* c.config.printSettings
     def printSettings (self):
 

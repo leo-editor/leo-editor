@@ -11,6 +11,8 @@
 A new Leo sprint?
 An Emacs gui?
 
+leo.core.qt module to handle Qt5?
+
 Reload settings:
     reload-abbreviations and reload-key-bindings commands.
         Use regex replace to replace settings ivars with @property defs.
@@ -26,8 +28,6 @@ Release 4.11.1 (or 5.0?):
 .. @+node:ekr.20140109214515.16629: *3* To do: @auto-view
 @language rest
 
-- Look at new plugin for diffing nodes.
-
 - Make sure extra nodes are inserted properly.
 
 - Support @existing-organizer: nodes
@@ -41,13 +41,14 @@ Release 4.11.1 (or 5.0?):
     - Read init code creates a vc.headlines_dict: keys are vnodes, values are headlines.
     - Write code warns if non-organizer node isn't in dict.
 
-.. @+node:ekr.20140112112622.16664: *4* later
+.. @+node:ekr.20140112112622.16664: *4* later: tests
 - Better tests for vc.add_intermediate_organizer_nodes
+
 - Create unit test for vc.copy_tree_to_last_child_of
+
 - Create unit test for vc.trial_write.
     - The acid test is whether comments can be moved without
       changing the @auto file.  It appears that this is so.
-- Remove asserts: make sure this code *never* crashes.
 .. @+node:ekr.20140104063158.16448: *3* reload-abbreviations and reload-key-bindings commands
 .. @+node:ekr.20120209051836.10242: *4* class LoadManager
 class LoadManager:
