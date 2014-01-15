@@ -74,7 +74,7 @@ Run all @settings->@nodewatch nodes in the outline, and update the nodewatch GUI
 '''
 #@-<< docstring >>
 
-__version__ = '0.3'
+__version__ = '0.4'
 #@+<< version history >>
 #@+node:peckj.20131101132841.6446: ** << version history >>
 #@+at
@@ -82,6 +82,7 @@ __version__ = '0.3'
 # Version 0.1 - initial release
 # Version 0.2 - a few bug fixes, same basic behavior
 # Version 0.3 - fix a small focus issue -- by forcing every itemClicked signal to do 'the right thing'
+# Version 0.4 - security fix -- @bool nodewatch_autoexecute_scripts only valid in non-local contexts
 # 
 #@@c
 #@-<< version history >>
