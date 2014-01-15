@@ -74,7 +74,7 @@ Run all @settings->@nodewatch nodes in the outline, and update the nodewatch GUI
 '''
 #@-<< docstring >>
 
-__version__ = '0.3'
+__version__ = '0.4'
 #@+<< version history >>
 #@+node:peckj.20131101132841.6446: ** << version history >>
 #@+at
@@ -82,6 +82,7 @@ __version__ = '0.3'
 # Version 0.1 - initial release
 # Version 0.2 - a few bug fixes, same basic behavior
 # Version 0.3 - fix a small focus issue -- by forcing every itemClicked signal to do 'the right thing'
+# Version 0.4 - security fix -- @bool nodewatch_autoexecute_scripts only valid in non-local contexts
 # 
 #@@c
 #@-<< version history >>
@@ -143,6 +144,12 @@ class LeoNodewatchWidget(QtGui.QWidget):
         self.initUI()
         self.registerCallbacks()
         autoexecute_nodewatch_nodes = c.config.getBool('nodewatch_autoexecute_scripts', default=False)
+        if autoexecute_nodewatch_nodes and c.config.isLocalSetting('nodewatch_autoexecute_scripts', 'bool'):
+            g.es('Security warning! Ignoring...',color='red')
+            g.es('@bool nodewatch_autoexecute_scripts = True',color='red')
+            g.es('This setting can be True only in')
+            g.es('leoSettings.leo or myLeoSettings.leo')
+            autoexecute_nodewatch_nodes = False
         if autoexecute_nodewatch_nodes:
             self.update_all()
     #@+node:peckj.20131101132841.6462: *3* initialization
