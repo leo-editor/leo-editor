@@ -652,7 +652,7 @@ class ViewController:
         The main line of the @auto-view algorithm: demote nodes for all
         OrganizerData instances having the same source as the given od instance.
         '''
-        trace = False # and not g.unitTesting
+        trace = True # and not g.unitTesting
         trace_add = True
         trace_loop = True
         trace_pending = True
@@ -667,44 +667,47 @@ class ViewController:
         assert od in od_list,(od_list,od_list)
         if trace:
             if od.parent: assert hasattr(od.parent,'v'),od.parent
-            g.trace('=====',
-                '\n  od:',od.h,
+            g.trace('===== exists:',od.exists,'od:',od.h,
                 '\n  parent (pos):',od.parent and od.parent.h,
                 '\n  parent_od:',od.parent_od and od.parent_od.h or 'None',
                 '\n  ods:',[z.h for z in od_list])
         # The main line: move children of od.parent to organizer nodes.
         active = None # The organizer node that is presently accumulating nodes.
         demote_pending = [] # Lists of pending demotions.
-        def add(active,child,tag=''):
+        def add(active,node,tag=''):
             if trace and trace_add: g.trace(tag,# 'active',active,
                 'active.p:',active.p and active.p.h,
-                'child:',child and child.h)
-            self.global_moved_node_list.append((active.p,child.copy()),)
-        def pending(active,child):
+                'node:',node and node.h)
+            self.global_moved_node_list.append((active.p,node.copy()),)
+        def pending(active,node):
             if trace and trace_pending: g.trace(# 'active',active,
                 'active.p:',active.p and active.p.h,
-                'child:',child and child.h)
+                'node:',node and node.h)
             # Important: add() will push active.p, not active.
-            demote_pending.append((active,child.copy()),)
+            demote_pending.append((active,node.copy()),)
         n = 0 # The number of *unorganized* preceding nodes.
-        for child in od.parent.children():
+        if od.exists:
+            iter_,tag = od.parent.following_siblings,'sib'
+        else:
+            iter_,tag = od.parent.children,'child'
+        for node in iter_():
             self.n_nodes_scanned += 1
-            # Find the organizer (if any) that organizes child.
+            # Find the organizer (if any) that organizes node.
             found = None
             for od in od_list:
                 for p in od.organized_nodes:
-                    if p == child:
+                    if p == node:
                         found = od ; break
                 if found: break
             if trace and trace_loop: g.trace(
-                '----- child: %-20s found: %-20s active: %s' % (
-                    child.h,found and found.h,active and active.h))
+                '----- %s: %-20s found: %-20s active: %s' % (
+                    tag,node.h,found and found.h,active and active.h))
             if found is None:
                 if active:
-                    pending(active,child)
+                    pending(active,node)
                 else:
                     # Pending nodes will *not* be organized.
-                    n += 1 + len(demote_pending) # Add 1 for the child.
+                    n += 1 + len(demote_pending) # Add 1 for the node.
                     demote_pending = []
             elif found == active:
                 # Pending nodes *will* be organized.
@@ -712,7 +715,7 @@ class ViewController:
                     active2,child2 = od
                     add(active2,child2,'found==active:pending')
                 demote_pending = []
-                add(active,child,'found==active')
+                add(active,node,'found==active')
             else: # found != active.
                 # Pending nodes will *not* be organized.
                 n += len(demote_pending)
@@ -720,7 +723,7 @@ class ViewController:
                 active,n = self.switch_active_organizer(active,found,n)
                 if active:
                     # switch_active_organizer bumps n only for bare organizer nodes.
-                    add(active,child,'found!=active')
+                    add(active,node,'found!=active')
         if active:
             active.closed = True
     #@+node:ekr.20140108081031.16610: *6* vc.find_all_organizer_nodes
@@ -741,7 +744,7 @@ class ViewController:
         Return found, unless it has been closed.
         Update n as appropriate.
         '''
-        trace = False # and not g.unitTesting
+        trace = True # and not g.unitTesting
         if active and found not in active.descendants:
             if trace: g.trace('***** close:',active.h)
             active.closed = True
@@ -764,7 +767,7 @@ class ViewController:
     #@+node:ekr.20140109214515.16647: *7* vc.add_intermediate_organizer_nodes (reverse order?)
     def add_intermediate_organizer_nodes(self,od,n):
         '''Add all intermediate od nodes.'''
-        trace = False # and not g.unitTesting
+        trace = True # and not g.unitTesting
         parent = od.parent_od
         while parent:
             if trace: g.trace('opened: %5s closed: %5s moved: %5s node: %s' % (
@@ -777,7 +780,7 @@ class ViewController:
     #@+node:ekr.20140109214515.16646: *7* vc.add_organizer_node
     def add_organizer_node (self,od,n):
         '''Add od to the appropriate move list.'''
-        trace = False # and not g.unitTesting
+        trace = True # and not g.unitTesting
         if od.parent_od:
             # Not a bare organizer: a child of another organizer node.
             self.global_moved_node_list.append((od.parent_od.p,od.p),)
