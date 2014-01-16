@@ -387,15 +387,19 @@ class ViewController:
         '''Compute all the positions organized by od.'''
         trace = False # and not g.unitTesting
         organizer_unls = self.organizer_unls
-        ### if od.exists:
+        if False and od.exists:
+            # Causes existing unit tests to fail.
             ### g.trace('******append to organizer unls',od.unl)
-            ### organizer_unls.append(od.unl)
+            organizer_unls.append(od.unl)
         raw_unls = [self.drop_all_organizers_in_unl(organizer_unls,unl)
             for unl in od.unls]
         for raw_unl in list(set(raw_unls)):
             p = self.find_relative_unl_node(root,raw_unl)
             if p: od.organized_nodes.append(p.copy())
-            else: g.trace('===== not found:',od.h,raw_unl)
+            else: g.trace('===== not found',
+                '\n  od:',od.h,
+                '\n  exists:',od.exists,
+                '\n  raw_unl:',raw_unl)
                 # '\n','\n'.join(sorted(organizer_unls)))
         if trace:
             g.trace('od',od.h,'\nraw_unls',raw_unls,
@@ -422,7 +426,7 @@ class ViewController:
         Create OrganizerData nodes for all @organizer: nodes
         in the given @organizers node.
         '''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         tag1 = '@organizer:'
         tag2 = '@existing-organizer:'
         # Important: we must completely reinit all data here.
