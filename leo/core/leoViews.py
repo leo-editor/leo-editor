@@ -362,13 +362,13 @@ class ViewController:
     #@+node:ekr.20140106215321.16678: *6* vc.move_nodes & helpers
     def move_nodes(self):
         '''Move nodes to their final location and delete the temp node.'''
-        self.move_nodes_to_organizers()
-        self.move_bare_organizers()
+        trace = False # and not g.unitTesting
+        self.move_nodes_to_organizers(trace)
+        self.move_bare_organizers(trace)
         self.temp_node.doDelete()
     #@+node:ekr.20140109214515.16636: *7* vc.move_nodes_to_organizers
-    def move_nodes_to_organizers(self):
+    def move_nodes_to_organizers(self,trace):
         '''Move all nodes in the global_moved_node_list.'''
-        trace = True # and not g.unitTesting
         trace_moves = True
         trace_deletes = True
         if trace: # A highly useful trace!
@@ -411,10 +411,9 @@ class ViewController:
                 if trace and trace_deletes: g.trace('deleting',p.h)
                 p.doDelete()
     #@+node:ekr.20140109214515.16637: *7* vc.move_bare_organizers
-    def move_bare_organizers(self):
+    def move_bare_organizers(self,trace):
         '''Move all nodes in global_bare_organizer_node_list.'''
         # For each parent, sort nodes on n.
-        trace = True # and not g.unitTesting
         d = {} # Keys are vnodes, values are lists of tuples (n,parent,p)
         existing_organizers = [od.p for od in self.existing_organizer_data_list]
         g.trace('existing organizers',[p.h for p in existing_organizers])
@@ -461,10 +460,10 @@ class ViewController:
             return
         if trace:
             if od.parent: assert hasattr(od.parent,'v'),od.parent
-            g.trace('===== od: %-20s parent: %-25s parent_od: %s' % (
-                od.h,
-                od.parent and od.parent.h or 'None',
-                od.parent_od and od.parent_od.h or 'None'))
+            g.trace('=====',
+                '\n  od:',od.h,
+                '\n  parent (pos):',od.parent and od.parent.h,
+                '\n  parent_od:',od.parent_od and od.parent_od.h or 'None')
         # Find all OrganizerData instances having the same source as od.
         data_list = self.find_all_organizer_nodes(od)
         assert od in data_list,data_list
@@ -648,7 +647,7 @@ class ViewController:
         Create OrganizerData nodes for all @organizer: nodes
         in the given @organizers node.
         '''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         tag1 = '@organizer:'
         tag2 = '@existing-organizer:'
         # Important: we must completely reinit all data here.
@@ -680,9 +679,9 @@ class ViewController:
                     'source_unl:',repr(od.source_unl),'\nunls:',od.unls)
                 od.parent = root
             if trace: g.trace(
-                'unl:',od.unl,
-                'source:',od.source_unl,
-                'parent:',od.parent and od.parent.h)
+                '\n  unl:',od.unl,
+                '\n  source (unl):',od.source_unl or repr(''),
+                '\n  parent (pos):',od.parent and od.parent.h)
         for od in self.existing_organizer_data_list:
             od.exists = True
             # g.trace('***organizers','\n'.join(sorted(self.organizer_unls)))
@@ -706,7 +705,7 @@ class ViewController:
                 if unl in organizer_unls:
                     i = organizer_unls.index(unl)
                     d2 = organizers[i]
-                    if trace: g.trace('found organizer unl:',od.h,'==>',d2.h)
+                    # if trace: g.trace('found organizer unl:',od.h,'==>',d2.h)
                     od.children.append(d2)
                     d2.parent_od = od
         # create_organizer_data now ensures od.parent is set.
@@ -719,9 +718,17 @@ class ViewController:
         # Trace results:
         if trace:
             for od in organizers:
-                g.trace('od: %s\nchildren: %s\ndescendants: %s' % (
-                    od.h,[z.h for z in od.children],
-                    [z.h for z in od.descendants]))
+                def tail(head,unl):
+                    return str(unl[len(head):]) if unl.startswith(head) else str(unl)
+                g.trace(
+                    '\n  od:',od.h,
+                    '\n  unl:',od.unl,
+                    '\n  unls:', [tail(od.unl,z) for z in od.unls],
+                        # od.unls if len(od.unls) < 3 else '\n'+'\n'.join(od.unls),
+                    '\n  source (unl):',od.source_unl or repr(''),
+                    '\n  parent (pos):', od.parent.h,
+                    '\n  children:',[z.h for z in od.children],
+                    '\n  descendants:',[str(z.h) for z in od.descendants])
     #@+node:ekr.20140108081031.16610: *5* vc.find_all_organizer_nodes
     def find_all_organizer_nodes(self,od):
         '''
@@ -733,8 +740,14 @@ class ViewController:
         all_organizers = self.all_organizers_list ###
         aList = [z for z in all_organizers if z.source_unl == od.source_unl]
         # Check that all parents match.
-        assert all([z.parent == od.parent for z in aList]),'parent mismatch: %s' % [
-            z.h for z in aList if z.parent != od.parent]
+        for od2 in aList:
+            if od.parent != od2.parent: g.trace('=====',
+                '\nparent mismatch.  source_unl:',repr(od.source_unl),
+                '\n  od:  %-20s exists: %-5s parent (pos): %s' % (
+                    od.h,od.exists,od.parent and od.parent.h),
+                '\n  od2: %-20s exists: %-5s parent (pos): %s' % (
+                    od2.h,od2.exists,od2.parent and od2.parent.h))
+        assert all([od2.parent == od.parent for od2 in aList])
         # Check that all visited bits are clear.
         assert all([not z.visited for z in aList]),'already visited: %s' % [
             z for z in aList if z.visited]
@@ -745,12 +758,13 @@ class ViewController:
         Put the vnode of all imported nodes with children on
         self.imported_organizers_list.
         '''
+        trace = False # and not g.unitTesting
         aList = []
         for p in root.subtree():
             if p.hasChildren():
                 aList.append(p.v)
         self.imported_organizers_list = list(set(aList))
-        g.trace([z.h for z in self.imported_organizers_list])
+        if trace: g.trace([z.h for z in self.imported_organizers_list])
     #@+node:ekr.20131230090121.16515: *3* vc.Helpers
     #@+node:ekr.20140103105930.16448: *4* vc.at_auto_view_body and match_at_auto_body
     def at_auto_view_body(self,p):
