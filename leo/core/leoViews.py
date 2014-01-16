@@ -287,7 +287,7 @@ class ViewController:
         if ok:
             if trace: g.trace(len(self.trial_write_1),len(trail_write_2))
         else:
-            g.trace('perfect import check failed!',root.h,color='red')
+            g.es_print('perfect import check failed!',root.h,color='red')
         return ok
     #@+node:ekr.20131230090121.16545: *5* vc.create_clone_link
     def create_clone_link(self,gnx,root,unl):
@@ -368,7 +368,7 @@ class ViewController:
     #@+node:ekr.20140109214515.16636: *7* vc.move_nodes_to_organizers
     def move_nodes_to_organizers(self):
         '''Move all nodes in the global_moved_node_list.'''
-        trace = False # and not g.unitTesting
+        trace = True # and not g.unitTesting
         trace_moves = True
         trace_deletes = True
         if trace: # A highly useful trace!
@@ -620,9 +620,6 @@ class ViewController:
         raw_unls = [self.drop_all_organizers_in_unl(organizer_unls,unl)
             for unl in od.unls]
         for raw_unl in list(set(raw_unls)):
-            ### if raw_unl.startswith('-->'): # A crucial special case
-            ###   raw_unl = raw_unl[3:] ### This could go somewhere else...
-                # g.trace('**** special case *****',raw_unl)
             p = self.find_relative_unl_node(root,raw_unl)
             if p: od.organized_nodes.append(p.copy())
             else: g.trace('===== not found:',od.h,raw_unl,'\n','\n'.join(sorted(organizer_unls)))
@@ -1132,7 +1129,6 @@ class ViewController:
             if unl.startswith(s):
                 s2 = self.drop_unl_tail(s)
                 unl = s2 + unl[len(s):]
-        ###return unl
         return unl[3:] if unl.startswith('-->') else unl
     #@+node:ekr.20140105055318.16761: *5* vc.drop_unl_tail & vc.drop_unl_parent
     def drop_unl_tail(self,unl):

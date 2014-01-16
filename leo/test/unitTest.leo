@@ -479,6 +479,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20140106094713.4176"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -894,7 +895,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="8"></t>
+<t tx="ekr.20070417092935" str_leo_pos="12"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1970,8 +1971,10 @@ organizer_unls = [
     'a--&gt;O1--&gt;O2',
     'a--&gt;O3',
     'a--&gt;O3--&gt;b--&gt;O4',
+    'z',
 ]
 table = (
+    ('z--&gt;x','x'), # Test of dropping a leading --&gt;.
     ('a--&gt;O1--&gt;unl1','a--&gt;unl1'),
     ('a--&gt;O1--&gt;O2--&gt;unl2','a--&gt;unl2'),
     ('a--&gt;O3--&gt;unl3','a--&gt;unl3'),
