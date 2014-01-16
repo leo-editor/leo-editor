@@ -12777,5 +12777,33 @@ def OLDtrial_write(self,fn,root):
     # Read the file into s.
     s,e = g.readFileIntoString(fn,encoding=encoding)
     return s
+.. @+node:ekr.20140115180051.16708: *4* OLDvc.find_all_organizer_nodes
+def find_all_organizer_nodes(self,od):
+    '''
+    Return the list of all OrganizerData instances organizing the same
+    imported source node as od.
+    '''
+    if 1:
+        # Because of existing organizers, we can't compare source_unl's.
+        # Instead just create the list using the od.parent field.
+        aList = [z for z in self.all_organizers_list if z.parent == od.parent]
+        # g.trace([z.h for z in aList])
+        return aList
+    else:
+        all_organizers = self.all_organizers_list
+        aList = [z for z in all_organizers if z.source_unl == od.source_unl]
+        # Check that all parents match.
+        for od2 in aList:
+            if od.parent != od2.parent: g.trace('=====',
+                '\nparent mismatch.  source_unl:',repr(od.source_unl),
+                '\n  od:  %-20s exists: %-5s parent (pos): %s' % (
+                    od.h,od.exists,od.parent and od.parent.h),
+                '\n  od2: %-20s exists: %-5s parent (pos): %s' % (
+                    od2.h,od2.exists,od2.parent and od2.parent.h))
+        assert all([od2.parent == od.parent for od2 in aList])
+        # Check that all visited bits are clear.
+        assert all([not z.visited for z in aList]),'already visited: %s' % [
+            z for z in aList if z.visited]
+        return aList
 .. @-all
 .. @-leo
