@@ -64,6 +64,10 @@ class ViewController:
         self.init()
         
     def init(self):
+        '''
+        Init all ivars of this class.
+        Unit tests may call this method to ensure that this class is re-inited properly.
+        '''
         self.all_organizers_list = []
             # List of all od nodes.
         self.existing_organizer_data_list = []
@@ -72,6 +76,12 @@ class ViewController:
             # List of organizers that have no parent organizer node.
             # This list excludes existing organizer nodes.
         self.global_moved_node_list = []
+            # A list of (parent,child) tuples for all nodes to be moved to non-bare organizers.
+            # **Important**: Nodes are moved in the order they appear in this list:
+            # the tuples contain no childIndex component!
+            # This list is the "backbone" of this class:
+            # - The front end (demote_helper and its helpers) adds items to this list.
+            # - The back end (move_nodes and its helpers) moves nodes according to this list.
         self.imported_organizers_list = []
             # The list of nodes that have children on entry, such as class nodes.
         self.n_nodes_scanned = 0
@@ -79,10 +89,15 @@ class ViewController:
         self.organizer_data_list = []
             # List of od instances corresponding to @organizer: nodes.
         self.organizer_unls = []
+            # The list of od.unl for all od instances in self.organizer_data_list.
         self.root = None
+            # The position of the @auto node.
         self.temp_node = None
-        self.trail_write_1 = None # The trial write on entry.
+            # The parent position of all holding cells.
+        self.trail_write_1 = None
+            # The trial write on entry.
         self.views_node = None
+            # The position of the @views node.
     #@+node:ekr.20131230090121.16514: *3* vc.Entry points
     #@+node:ekr.20140102052259.16394: *4* vc.pack & helper
     def pack(self):
@@ -414,13 +429,9 @@ class ViewController:
                     '\n  exists:',od.exists,'raw_unl:',raw_unl,
                     '\n  raw_unls:',dump(raw_unls))
         if trace:
-            if verbose:
-                g.trace('===== organized nodes od:',od.h,
-                    '\n  organized_nodes:',
-                    dump([p.h for p in od.organized_nodes]))
-            else:
-                g.trace('od:',od.h,'organized_nodes:',
-                    dump([p.h for p in od.organized_nodes]))
+            header = '===== organized nodes od:' if verbose else 'od:'
+            g.trace(header,od.h,'\n  organized_nodes:',
+                dump([p.h for p in od.organized_nodes]))
     #@+node:ekr.20140106215321.16675: *7* vc.create_actual_organizer_nodes
     def create_actual_organizer_nodes(self):
         '''
@@ -552,7 +563,7 @@ class ViewController:
     #@+node:ekr.20140106215321.16678: *6* vc.move_nodes & helpers
     def move_nodes(self):
         '''Move nodes to their final location and delete the temp node.'''
-        trace = False # and not g.unitTesting
+        trace = True # and not g.unitTesting
         self.move_nodes_to_organizers(trace)
         self.move_bare_organizers(trace)
         self.temp_node.doDelete()
