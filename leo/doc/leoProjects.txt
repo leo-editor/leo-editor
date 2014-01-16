@@ -2082,6 +2082,9 @@ Solution:
 2. Added a unit test.
 .. @+node:ekr.20131225045014.16398: *3* Fixed problem with 1-character reverse searches!
 The problem was an off-by-one test in regexHelper.
+.. @+node:ekr.20140114145953.16692: *3* Added c.config.isLocalSetting
+.. @+node:ekr.20140114145953.16693: *3* Fixed important security hole in mod_scripting plugin 
+It does not allow @bool scripting-at-script-nodes = True in local .leo files.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.

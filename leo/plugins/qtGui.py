@@ -5983,7 +5983,7 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         self.setAcceptDrops(True)
         enable_drag = c.config.getBool('enable-tree-dragging')
         # g.trace(enable_drag,c)
-        self.setDragEnabled(enable_drag)
+        self.setDragEnabled(bool(enable_drag)) # EKR.
         self.c = c
         self.trace = False
 

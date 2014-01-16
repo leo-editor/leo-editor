@@ -6,12 +6,14 @@
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 
+- The mod_scripting plugin must require the leo-startup-scripting environment variable to be True.
+
 ** Finish @auto-view (See child)
 
 A new Leo sprint?
 An Emacs gui?
-
 leo.core.qt module to handle Qt5?
+    Must convert QtGui to QtWidgets.
 
 Reload settings:
     reload-abbreviations and reload-key-bindings commands.
@@ -49,6 +51,24 @@ Release 4.11.1 (or 5.0?):
 - Create unit test for vc.trial_write.
     - The acid test is whether comments can be moved without
       changing the @auto file.  It appears that this is so.
+.. @+node:ekr.20140115052524.16699: *3* Allow clones *anywhere* in @file nodes
+​https://groups.google.com/d/msg/leo-editor/YjJdWjNSM9o/SDL7Nb__OUcJ
+
+There is a way to allow clones *anywhere* in @file nodes and simplify Leo's
+read code in the process! This will be one of the defining features of Leo
+5.0.
+
+The idea is for the read code to treat *all* nodes exactly the same
+initially, regardless of whether they should actually be clones of each
+other. A post-pass would then "unify" all vnodes having the same gnx.
+
+Why, oh, why, did I never think of doing this? It will be *so* much simpler
+than the present code!​ And it will be just as fast, maybe even faster.
+Another example of generality arising from simplicity...
+
+I can tell you why I *did* think of doing this now: the new @auto read
+logic uses a new p._relinkAsCloneOf method, exactly what the @file read
+post pass will use!
 .. @+node:ekr.20140104063158.16448: *3* reload-abbreviations and reload-key-bindings commands
 .. @+node:ekr.20120209051836.10242: *4* class LoadManager
 class LoadManager:
