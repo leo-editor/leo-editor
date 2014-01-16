@@ -32,11 +32,16 @@ Release 4.11.1 (or 5.0?):
 
 - Support @existing-organizer: nodes
     - Create holding cells for existing organizers?
-      Possible: the importer no children for them.
+        - It's possible: the importer no children for them.
       
 - Warn about changed headlines.
     - Read init code creates a vc.headlines_dict: keys are vnodes, values are headlines.
     - Write code warns if non-organizer node isn't in dict.
+
+- At the end:
+    - Use full trial write for comparisons.
+    - Revert the outline if the trial write fails.
+    - Tests (see child)
 .. @+node:ekr.20140112112622.16664: *4* later: tests
 - Better tests for vc.add_intermediate_organizer_nodes
 
