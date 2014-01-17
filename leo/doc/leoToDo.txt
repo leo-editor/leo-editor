@@ -29,9 +29,6 @@ Release 4.11.1 (or 5.0?):
 - Look at Eclipse # @name.
 .. @+node:ekr.20140109214515.16629: *3* To do: @auto-view
 @language rest
-
-- Support @existing-organizer: nodes
-    - Create holding cells for existing organizers?
     
 - vc.trial_write_kind ivar: unified handling of trial writes & their dumps.
       

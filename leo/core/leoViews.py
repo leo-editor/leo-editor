@@ -283,7 +283,8 @@ class ViewController:
         except Exception:
             g.es_exception()
             n = 0
-        if n > 0:
+            ok = False
+        if ok and n > 0:
             self.print_stats()
             t2 = time.clock()-t1
             g.es('rearraned: %s' % (root.h),color='blue')
@@ -301,9 +302,12 @@ class ViewController:
         trial1 = self.trial_write_1
         trial2 = self.trial_write(root)
         if trial1 != trial2:
-            g.es_print('perfect import check failed!',root.h,color='red')
+            g.pr('')
+            g.es_print('perfect import check failed for:',color='red')
+            g.es_print(root.h,color='red')
             if trace:
                 self.compare_trial_writes(trial1,trial2)
+                g.pr('')
         return trial1 == trial2
     #@+node:ekr.20131230090121.16545: *5* vc.create_clone_link
     def create_clone_link(self,gnx,root,unl):
