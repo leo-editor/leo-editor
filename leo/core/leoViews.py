@@ -302,7 +302,7 @@ class ViewController:
         trial1 = self.trial_write_1
         trial2 = self.trial_write(root)
         if trial1 != trial2:
-            g.pr('')
+            g.pr('') # Don't use print: it does not appear with the traces.
             g.es_print('perfect import check failed for:',color='red')
             g.es_print(root.h,color='red')
             if trace:
@@ -596,19 +596,29 @@ class ViewController:
         # Move *copies* of non-organizer nodes to each organizer.
         organizers = list(d.keys())
         existing_organizers = [z.p.copy() for z in self.existing_organizer_data_list]
+        moved_existing_organizers = {}
         for parent in organizers:
             aList = d.get(parent)
             if trace and trace_moves: g.trace('===== moving/copying children of:',parent.h)
             for p in aList:
                 if p in existing_organizers:
-                    if trace and trace_moves: g.trace('copying existing organizer:',p.h)
-                    self.copy_tree_to_last_child_of(p,parent)
+                    if trace and trace_moves:
+                        g.trace('copying existing organizer:',p.h)
+                        g.trace('children',[z.h for z in p.children()])
+                    copy = self.copy_tree_to_last_child_of(p,parent)
+                    moved_existing_organizers[p.v] = copy
                 elif p in organizers:
                     if trace and trace_moves: g.trace('moving organizer:',p.h)
                     p.moveToLastChildOf(parent)
                 else:
-                    if trace and trace_moves: g.trace('copying:',p.h)
-                    self.copy_tree_to_last_child_of(p,parent)
+                    parent2 = moved_existing_organizers.get(parent.v)
+                    if parent2:
+                        if trace and trace_moves:
+                            g.trace('copying:',p.h,'to relocated parent')
+                        self.copy_tree_to_last_child_of(p,parent2)
+                    else:
+                        if trace and trace_moves: g.trace('copying:',p.h)
+                        self.copy_tree_to_last_child_of(p,parent)
         # Finally, delete all the non-organizer nodes, in reverse outline order.
         def sort_key(od):
             parent,p = od
@@ -616,8 +626,11 @@ class ViewController:
         sorted_list = sorted(self.global_moved_node_list,key=sort_key)
         if trace and trace_deletes: g.trace('===== deleting nodes in reverse outline order...')
         for parent,p in reversed(sorted_list):
-            if p not in organizers:
-                if trace and trace_deletes: g.trace('deleting:',p.h)
+            if p.v in moved_existing_organizers:
+                if trace and trace_deletes: g.trace('deleting moved existing organizer:',p.h)
+                p.doDelete()
+            elif p not in organizers:
+                if trace and trace_deletes: g.trace('deleting non-organizer:',p.h)
                 p.doDelete()
     #@+node:ekr.20140109214515.16637: *7* vc.move_bare_organizers
     def move_bare_organizers(self,trace):
@@ -653,7 +666,9 @@ class ViewController:
         root.v.u = copy.deepcopy(p.v.u)
         for child in p.children():
             child2 = root.insertAsLastChild()
+            child2.h = child.h
             self.copy_tree_to_last_child_of(child,child2)
+        return root
     #@+node:ekr.20140104112957.16587: *5* vc.demote_helper (main line) & helpers
     def demote_helper(self,od,root):
         '''
