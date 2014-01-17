@@ -596,7 +596,7 @@ class ViewController:
         # Move *copies* of non-organizer nodes to each organizer.
         organizers = list(d.keys())
         existing_organizers = [z.p.copy() for z in self.existing_organizer_data_list]
-        moved_existing_organizers = {}
+        moved_existing_organizers = {} # Keys are vnodes, values are positions.
         for parent in organizers:
             aList = d.get(parent)
             if trace and trace_moves: g.trace('===== moving/copying children of:',parent.h)
@@ -613,8 +613,7 @@ class ViewController:
                 else:
                     parent2 = moved_existing_organizers.get(parent.v)
                     if parent2:
-                        if trace and trace_moves:
-                            g.trace('copying:',p.h,'to relocated parent')
+                        if trace and trace_moves: g.trace('copying to relocated parent:',p.h)
                         self.copy_tree_to_last_child_of(p,parent2)
                     else:
                         if trace and trace_moves: g.trace('copying:',p.h)
@@ -665,9 +664,7 @@ class ViewController:
         root.b,root.h = p.b,p.h
         root.v.u = copy.deepcopy(p.v.u)
         for child in p.children():
-            child2 = root.insertAsLastChild()
-            child2.h = child.h
-            self.copy_tree_to_last_child_of(child,child2)
+            self.copy_tree_to_last_child_of(child,root)
         return root
     #@+node:ekr.20140104112957.16587: *5* vc.demote_helper (main line) & helpers
     def demote_helper(self,od,root):
