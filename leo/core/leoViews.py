@@ -207,7 +207,7 @@ class ViewController:
         root, an @auto node. Create the @organizer or @clones nodes as needed.
         This *must not* be called for trial writes.
         '''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self.c
         clone_list,organizers_list,existing_organizers_list = [],[],[]
         if trace: g.trace('imported existing',[v.h for v in self.imported_organizers_list])
@@ -425,7 +425,8 @@ class ViewController:
                 '\n  organizer_unls:',dump(self.organizer_unls),
                 '\n  raw_unls:',dump(raw_unls))
         for raw_unl in list(set(raw_unls)):
-            p = self.find_relative_unl_node(root,raw_unl)
+            existing = [z for z in self.existing_organizer_data_list if z != od] #####
+            p = self.find_relative_unl_node(root,raw_unl,existing=existing)
             if p:
                 od.organized_nodes.append(p.copy())
             else:
@@ -499,9 +500,11 @@ class ViewController:
             # g.trace('***organizers','\n'.join(sorted(self.organizer_unls)))
             assert od.unl not in self.organizer_unls
             od.source_unl = self.source_unl(self.organizer_unls,od.unl)
-            od.p = self.find_relative_unl_node(root,od.source_unl)
-            assert od.p,od.unl
-            assert od.p.h == od.h,(od.p.h,od.h)
+            existing = [z for z in self.existing_organizer_data_list if z != od]
+            od.p = self.find_relative_unl_node(root,od.source_unl,existing=existing)
+            assert od.p,(od.source_unl,[z.h for z in self.existing_organizer_data_list])
+                ################## Failing for nested existing organizers.
+            assert od.p.h == od.h,(od.p.h,od.h)  
             od.parent = od.p # Here, od.parent represents the "source" p.
             if trace: g.trace(
                 '\n  exists:',od.exists,
@@ -574,8 +577,8 @@ class ViewController:
     #@+node:ekr.20140109214515.16636: *7* vc.move_nodes_to_organizers
     def move_nodes_to_organizers(self,trace):
         '''Move all nodes in the global_moved_node_list.'''
-        trace_moves = True
-        trace_deletes = True
+        trace_moves = False
+        trace_deletes = False
         trace_dict = False
         if trace: # A highly useful trace!
             g.trace('unsorted_list...\n%s' % (
@@ -637,7 +640,7 @@ class ViewController:
         # For each parent, sort nodes on n.
         d = {} # Keys are vnodes, values are lists of tuples (n,parent,p)
         existing_organizers = [od.p for od in self.existing_organizer_data_list]
-        if trace: g.trace('existing organizers',[p.h for p in existing_organizers])
+        if trace: g.trace('ignoring existing organizers',[p.h for p in existing_organizers])
         for parent,p,n in self.global_bare_organizer_node_list:
             if p not in existing_organizers:
                 key = parent.v
@@ -1034,26 +1037,37 @@ class ViewController:
             organizers = auto_view.insertAsLastChild()
             organizers.h = h
         return organizers
-    #@+node:ekr.20131230090121.16539: *5* vc.find_relative_unl_node
-    def find_relative_unl_node(self,parent,unl):
+    #@+node:ekr.20131230090121.16539: *5* vc.find_relative_unl_node (revised)
+    def find_relative_unl_node(self,parent,unl,existing=None):
         '''
         Return the node in parent's subtree matching the given unl.
         The unl is relative to the parent position.
         '''
+        # This is called from several places.
         trace = False # and not g.unitTesting
         p = parent
         if not unl:
-            if trace: g.trace('empty unl. return parent:',parent)
+            if trace: g.trace('empty unl. return parent:',parent.h)
             return parent
-        for s in unl.split('-->'):
+        if existing:
+            drop = [z.h for z in existing]
+            unls = [z for z in unl.split('-->') if z not in drop]
+        else:
+            drop = []
+            unls = unl.split('-->')
+        for s in unls:
             for child in p.children():
                 if child.h == s:
                     p = child
                     break
             else:
-                if trace: g.trace('failure','parent',parent.h,'unl:',unl)
+                if True or trace: g.trace('===== failure:','parent',parent.h,
+                    '\n  callers:',g.callers(2),
+                    '\n  unl:',unl,
+                    '\n  drop:',self.dump_list(drop) if drop else '[]'
+                    '\n  stripped:',self.dump_list(unls))
                 return None
-        if trace: g.trace('success',p)
+        if trace: g.trace('success',p.h)
         return p
     #@+node:ekr.20131230090121.16544: *5* vc.find_representative_node
     def find_representative_node (self,root,target):
