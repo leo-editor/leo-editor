@@ -74,7 +74,7 @@ Run all @settings->@nodewatch nodes in the outline, and update the nodewatch GUI
 '''
 #@-<< docstring >>
 
-__version__ = '0.4'
+__version__ = '0.5'
 #@+<< version history >>
 #@+node:peckj.20131101132841.6446: ** << version history >>
 #@+at
@@ -83,6 +83,7 @@ __version__ = '0.4'
 # Version 0.2 - a few bug fixes, same basic behavior
 # Version 0.3 - fix a small focus issue -- by forcing every itemClicked signal to do 'the right thing'
 # Version 0.4 - security fix -- @bool nodewatch_autoexecute_scripts only valid in non-local contexts
+# Version 0.5 - added 'Total: N items' label to bottom of nodewatch pane
 # 
 #@@c
 #@-<< version history >>
@@ -158,14 +159,27 @@ class LeoNodewatchWidget(QtGui.QWidget):
         # create GUI components
         ## this code is atrocious... don't look too closely
         self.setObjectName("LeoNodewatchWidget")
+        
+        # verticalLayout_2: contains
+        # verticalLayout
         self.verticalLayout_2 = QtGui.QVBoxLayout(self)
         self.verticalLayout_2.setContentsMargins(0,1,0,1)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
+        
+        # horizontalLayout: contains
+        # "Refresh" button
+        # comboBox
         self.horizontalLayout = QtGui.QHBoxLayout()
         self.horizontalLayout.setContentsMargins(0,0,0,0)
         self.horizontalLayout.setObjectName("horizontalLayout")
+        
+        # verticalLayout: contains
+        # horizontalLayout
+        # listWidget
+        # label
         self.verticalLayout = QtGui.QVBoxLayout()
         self.verticalLayout.setObjectName("verticalLayout")
+        
         self.comboBox = QtGui.QComboBox(self)
         self.comboBox.setObjectName("comboBox")
         self.horizontalLayout.addWidget(self.comboBox)
@@ -178,6 +192,10 @@ class LeoNodewatchWidget(QtGui.QWidget):
         self.listWidget = QtGui.QListWidget(self)
         self.listWidget.setObjectName("listWidget")
         self.verticalLayout.addWidget(self.listWidget)
+        self.label = QtGui.QLabel(self)
+        self.label.setObjectName("label")
+        self.label.setText("Total: 0 items")
+        self.verticalLayout.addWidget(self.label)
         self.verticalLayout_2.addLayout(self.verticalLayout)
         QtCore.QMetaObject.connectSlotsByName(self)
     #@+node:peckj.20131101132841.6457: *4* registerCallbacks
@@ -221,6 +239,9 @@ class LeoNodewatchWidget(QtGui.QWidget):
         self.listWidget.clear()
         for n in self.c.theNodewatchController.watchlists.get(key, []):
             self.listWidget.addItem(n[1].h)
+        count = self.listWidget.count()
+        self.label.clear()
+        self.label.setText("Total: %s items" % count)
     #@+node:peckj.20131101132841.6458: *4* update_all
     def update_all(self,event=None):
         ''' updates the nodewatch GUI by running all valid @nodewatch nodes '''
