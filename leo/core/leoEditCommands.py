@@ -10109,6 +10109,11 @@ class spellCommandsClass (baseEditCommandsClass):
             'spell-change-then-find':   self.changeThenFind,
             'spell-ignore':             self.ignore,
             'hide-spell-tab':           self.hide,
+            
+            # these are for spell as you type, not the spell tab
+            'spell-as-you-type-toggle': self.as_you_type_toggle,
+            'spell-as-you-type-next':   self.as_you_type_next,
+            'spell-as-you-type-undo':   self.as_you_type_undo,        
         }
     #@+node:ekr.20051025080633: *4* openSpellTab
     def openSpellTab (self,event=None):
@@ -10126,6 +10131,12 @@ class spellCommandsClass (baseEditCommandsClass):
         # Bug fix: 2013/05/22.
         if not self.handler.loaded:
             log.deleteTab(tabName,force=True)
+
+        # spell as you type stuff
+        self.suggestions = []
+        self.suggestions_idx = None
+        self.word = None
+        self.spell_as_you_type = False
     #@+node:ekr.20051025080420.1: *4* commands...(spellCommandsClass)
     # Just open the Spell tab if it has never been opened.
     # For minibuffer commands, we must also force the Spell tab to be visible.
@@ -10171,6 +10182,116 @@ class spellCommandsClass (baseEditCommandsClass):
             self.handler.ignore()
         else:
             self.openSpellTab()
+    #@+node:tbrown.20140117115926.30765: *4* as_you_type_* commands
+    #@+node:tbrown.20140117115926.30766: *5* as_you_type_toggle
+    def as_you_type_toggle(self, event):
+        """as_you_type_toggle - toggle spell as you type
+
+        :Parameters:
+        - `event`: event triggering toggle, not useful
+        """
+
+        c = self.c
+        if self.spell_as_you_type:
+            self.spell_as_you_type = False
+            g.unregisterHandler('bodykey2', self.as_you_type_onkey)
+            g.es("Spell as you type disabled")
+            return
+        
+        self.spell_as_you_type = True
+        g.registerHandler('bodykey2', self.as_you_type_onkey)
+        g.es("Spell as you type enabled")
+    #@+node:tbrown.20140117115926.30768: *5* as_you_type_next
+    def as_you_type_next(self, event):
+        """as_you_type_next - cycle word behind cursor to next suggestion
+
+        :Parameters:
+        - `event`: triggering key event
+        """
+
+        if not self.suggestions:
+            g.es('[no suggestions]')
+            return
+        word = self.suggestions[self.suggestion_idx]
+        self.suggestion_idx = (self.suggestion_idx + 1) % len(self.suggestions)
+        self.as_you_type_replace(word)
+        
+    #@+node:tbrown.20140117115926.30770: *5* as_you_type_undo
+    def as_you_type_undo(self, event):
+        """as_you_type_undo - replace word behind cursor with word
+        user typed before it started cycling suggestions
+
+        :Parameters:
+        - `event`: triggering event
+        """
+
+        if not self.word:
+            g.es('[no previous word]')
+            return
+        self.as_you_type_replace(self.word)
+    #@+node:tbrown.20140117115926.30771: *5* as_you_type_onkey
+    def as_you_type_onkey(self, tag, kwargs):
+        """as_you_type_onkey - handle a keystroke in the body when
+        spell as you type is active
+
+        :Parameters:
+        - `tag`: hook tag
+        - `kwargs`: hook arguments
+        """
+
+        if kwargs['c'] != self.c:
+            return
+
+        if kwargs['ch'] not in '\'",.:) \n\t':
+            return
+            
+        c = self.c
+            
+        txt = c.frame.body.getAllText()
+        i = c.frame.body.getInsertPoint()
+        word = txt[:i].rsplit(None, 1)[-1]
+        word = ''.join(i if i.isalpha() else ' ' for i in word).split()
+        if not word:
+            return
+        word = word[-1]
+        ec = c.spellCommands.handler.spellController
+        suggests = ec.processWord(word)
+        if suggests:
+            g.es(' '.join(suggests[:5]) +
+                 ('...' if len(suggests) > 5 else ''),
+                 color='red')
+        elif suggests is not None:
+            g.es('[no suggestions]')
+        self.suggestions = suggests
+        self.suggestion_idx = 0
+        self.word = word
+    #@+node:tbrown.20140117133522.32004: *5* as_you_type_replace
+    def as_you_type_replace(self, word):
+        """as_you_type_replace - replace the word behind the cursor
+        with `word`
+
+        :Parameters:
+        - `word`: word to use as replacement
+        """
+
+        c = self.c
+        txt = c.frame.body.getAllText()
+        j = i = c.frame.body.getInsertPoint()
+        i -= 1
+        while i and not txt[i].isalpha():
+            i -= 1
+        xtra = j - i
+        j = i+1
+        while i and txt[i].isalpha():
+            i -= 1
+        if i or (txt and not txt[0].isalpha()):
+            i += 1
+        txt = txt[:i]+word+txt[j:]
+        c.frame.body.setAllText(txt)
+        c.frame.body.setInsertPoint(
+            i+len(word)+xtra-1
+        )
+        c.bodyWantsFocusNow()
     #@-others
 #@+node:ekr.20051025071455.18: *3* class spellTabHandler
 class spellTabHandler:
