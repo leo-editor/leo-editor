@@ -32,7 +32,8 @@ Release 4.11.1 (or 5.0?):
 
 - Support @existing-organizer: nodes
     - Create holding cells for existing organizers?
-        - It's possible: the importer no children for them.
+    
+- vc.trial_write_kind ivar: unified handling of trial writes & their dumps.
       
 - Warn about changed headlines.
     - Read init code creates a vc.headlines_dict: keys are vnodes, values are headlines.

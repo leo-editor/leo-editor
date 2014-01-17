@@ -297,14 +297,14 @@ class ViewController:
         Unlike the perfect-import checks done by the importer,
         we expecct an *exact* match, regardless of language.
         '''
-        trace = False and not g.unitTesting
-        trail_write_2 = self.trial_write(root)
-        ok = self.trial_write_1 == trail_write_2
-        if ok:
-            if trace: g.trace(len(self.trial_write_1),len(trail_write_2))
-        else:
+        trace = True # and not g.unitTesting
+        trial1 = self.trial_write_1
+        trial2 = self.trial_write(root)
+        if trial1 != trial2:
             g.es_print('perfect import check failed!',root.h,color='red')
-        return ok
+            if trace:
+                self.compare_trial_writes(trial1,trial2)
+        return trial1 == trial2
     #@+node:ekr.20131230090121.16545: *5* vc.create_clone_link
     def create_clone_link(self,gnx,root,unl):
         '''
@@ -401,7 +401,7 @@ class ViewController:
     #@+node:ekr.20140108081031.16611: *7* vc.compute_organized_positions
     def compute_organized_positions(self,od,root):
         '''Compute all the positions organized by od.'''
-        trace = True # and not g.unitTesting
+        trace = False # and not g.unitTesting
         verbose = False
         dump = self.dump_list
         organizer_unls = self.organizer_unls
@@ -570,8 +570,9 @@ class ViewController:
     #@+node:ekr.20140109214515.16636: *7* vc.move_nodes_to_organizers
     def move_nodes_to_organizers(self,trace):
         '''Move all nodes in the global_moved_node_list.'''
-        trace_moves = False
-        trace_deletes = False
+        trace_moves = True
+        trace_deletes = True
+        trace_dict = False
         if trace: # A highly useful trace!
             g.trace('unsorted_list...\n%s' % (
                 '\n'.join(['%40s ==> %s' % (parent.h,p.h)
@@ -582,16 +583,18 @@ class ViewController:
             aList = d.get(parent,[])
             aList.append(p)
             d[parent] = aList
-        if False and trace:
+        if trace and trace_dict:
+            # g.trace('d...',sorted([z.h for z in d.keys()]))
             g.trace('d{}...')
             for key in sorted(d.keys()):
-                g.trace(key.h,[z.h for z in d.get(key)])
+                aList = [z.h for z in d.get(key)]
+                g.trace('%-20s %s' % (key.h,self.dump_list(aList,indent=29)))
         # Move *copies* of non-organizer nodes to each organizer.
         organizers = list(d.keys())
         existing_organizers = [z.p.copy() for z in self.existing_organizer_data_list]
         for parent in organizers:
             aList = d.get(parent)
-            if trace and trace_moves: g.trace('===== moving children of',parent.h)
+            if trace and trace_moves: g.trace('===== moving/copying children of:',parent.h)
             for p in aList:
                 if p in existing_organizers:
                     if trace and trace_moves: g.trace('copying existing organizer:',p.h)
@@ -607,6 +610,7 @@ class ViewController:
             parent,p = od
             return p.sort_key(p)
         sorted_list = sorted(self.global_moved_node_list,key=sort_key)
+        if trace and trace_deletes: g.trace('===== deleting nodes in reverse outline order...')
         for parent,p in reversed(sorted_list):
             if p not in organizers:
                 if trace and trace_deletes: g.trace('deleting:',p.h)
@@ -652,7 +656,7 @@ class ViewController:
         The main line of the @auto-view algorithm: demote nodes for all
         OrganizerData instances having the same source as the given od instance.
         '''
-        trace = True # and not g.unitTesting
+        trace = False # and not g.unitTesting
         trace_add = True
         trace_loop = True
         trace_pending = True
@@ -744,7 +748,7 @@ class ViewController:
         Return found, unless it has been closed.
         Update n as appropriate.
         '''
-        trace = True # and not g.unitTesting
+        trace = False # and not g.unitTesting
         if active and found not in active.descendants:
             if trace: g.trace('***** close:',active.h)
             active.closed = True
@@ -780,17 +784,24 @@ class ViewController:
     #@+node:ekr.20140109214515.16646: *7* vc.add_organizer_node
     def add_organizer_node (self,od,n):
         '''Add od to the appropriate move list.'''
-        trace = True # and not g.unitTesting
+        trace = False # and not g.unitTesting
         if od.parent_od:
             # Not a bare organizer: a child of another organizer node.
-            self.global_moved_node_list.append((od.parent_od.p,od.p),)
-            if trace: g.trace('***** %s parent: %s' % (
-                od.p.h,od.parent_od.p.h,))
+            # If this is an existing organizer, it's *position* may have
+            # been moved without active.moved being set.
+            data = od.parent_od.p,od.p
+            if data in self.global_moved_node_list:
+                if trace: g.trace('**** already in list: setting moved bit.',od.h)
+                od.moved = True
+            else:
+                self.global_moved_node_list.append(data)
+                if trace: g.trace('***** non-bare: %s parent: %s' % (
+                    od.p.h,od.parent_od.p.h,))
             return n
         else:
             # A bare organizer node: a child of an *ordinary* node.
             self.global_bare_organizer_node_list.append((od.parent,od.p,n),)
-            if trace: g.trace('***** bare %s parent: %s n: %s' % (
+            if trace: g.trace('***** bare: %s parent: %s n: %s' % (
                 od.p and od.p.h,od.parent and od.parent.h,n))
             return n+1
     #@+node:ekr.20140109214515.16631: *5* vc.print_stats
@@ -1157,6 +1168,28 @@ class ViewController:
                 break
             p2.moveToThreadNext()
         return False
+    #@+node:ekr.20140115215931.16710: *5* vc.compare_trial_writes
+    def compare_trial_writes(self,s1,s2):
+        '''
+        Compare the two strings, the results of trial writes.
+        Stop the comparison after the first mismatch.
+        '''
+        trace_matches = False
+        full_compare = False
+        lines1,lines2 = g.splitLines(s1),g.splitLines(s2)
+        i,n1,n2 = 0,len(lines1),len(lines2)
+        while i < n1 and i < n2:
+            s1,s2 = lines1[i].rstrip(),lines2[i].rstrip()
+            i += 1
+            if s1 == s2:
+                if trace_matches: g.trace('Match:',s1)
+            else:
+                g.trace('Fail: %s != %s' % (s1,s2))
+                if not full_compare: return
+        if i < n1:
+            g.trace('Extra line 1:',lines1[i])
+        if i < n2:
+            g.trace('Extra line 2:',lines2[i])
     #@+node:ekr.20140115215931.16707: *5* vc.dump_list
     def dump_list(self,aList,indent=4):
         '''Dump a list, one item per line.'''
@@ -1173,8 +1206,14 @@ class ViewController:
         newlines are concerned. Furthermore, we can treat Leo directives as
         ordinary text here.
         '''
-        s = ''.join([p.b for p in root.self_and_subtree()])
-        # g.trace('len(s):',len(s),g.callers(2))
+        brief = True
+        if brief:
+            # Compare headlines, ignoring nodes without body text and comment nodes.
+            # Yes, it's kludgy, but it's handy during development.
+            s = '\n'.join([p.h for p in root.self_and_subtree()
+                if p.b and not p.h.startswith('#')])
+        else:
+            s = ''.join([p.b for p in root.self_and_subtree()])
         return s
     #@+node:ekr.20140105055318.16760: *4* vc.unls...
     #@+node:ekr.20140105055318.16762: *5* vc.drop_all_organizers_in_unl
