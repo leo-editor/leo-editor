@@ -12805,5 +12805,173 @@ def find_all_organizer_nodes(self,od):
         assert all([not z.visited for z in aList]),'already visited: %s' % [
             z for z in aList if z.visited]
         return aList
+.. @+node:ekr.20140117131738.16712: *4* OLDvc.demote_helper (main line) & helpers
+def demote_helper(self,od,root):
+    '''
+    The main line of the @auto-view algorithm: demote nodes for all
+    OrganizerData instances having the same source as the given od instance.
+    '''
+    trace = True # and not g.unitTesting
+    trace_add = False
+    trace_loop = True
+    trace_pending = False
+    if od.visited:
+        # if trace: g.trace('visited',od.h)
+        return
+    # Find all OrganizerData instances having the same source as od.
+    od_list = self.find_all_organizer_nodes(od)
+    # Mark them all as visited.
+    for od in od_list:
+        od.visited = True
+    assert od in od_list,(od_list,od_list)
+    if trace:
+        if od.parent: assert hasattr(od.parent,'v'),od.parent
+        g.trace('===== exists:',od.exists,'od:',od.h,
+            '\n  parent (pos):',od.parent and od.parent.h,
+            '\n  parent_od:',od.parent_od and od.parent_od.h or 'None',
+            '\n  ods:',[z.h for z in od_list])
+    # The main line: move children of od.parent to organizer nodes.
+    active = None # The organizer node that is presently accumulating nodes.
+    demote_pending = [] # Lists of pending demotions.
+    def add(active,node,tag=''):
+        if trace and trace_add: g.trace(tag,# 'active',active,
+            'active.p:',active.p and active.p.h,
+            'node:',node and node.h)
+        self.global_moved_node_list.append((active.p,node.copy()),)
+    def pending(active,node):
+        if trace and trace_pending: g.trace(# 'active',active,
+            'active.p:',active.p and active.p.h,
+            'node:',node and node.h)
+        # Important: add() will push active.p, not active.
+        demote_pending.append((active,node.copy()),)
+    n = 0 # The number of *unorganized* preceding nodes.
+    if od.exists:
+        iter_,tag = od.parent.following_siblings,'sib'
+    else:
+        iter_,tag = od.parent.children,'child'
+    for node in iter_():
+        self.n_nodes_scanned += 1
+        found = None
+        # Yet another special case for existing organizer nodes.
+        ### if node.exists:
+            
+        # Find the organizer (if any) that organizes node.
+        for od in od_list:
+            for p in od.organized_nodes:
+                if p == node:
+                    found = od ; break
+            if found: break
+        if trace and trace_loop: g.trace(
+            '----- %s: %-30s found: %-20s active: %s' % (
+                tag,node.h[:30],found and found.h[:20],active and active.h[:20]))
+        if found is None:
+            if active:
+                pending(active,node)
+            else:
+                # Pending nodes will *not* be organized.
+                n += 1 + len(demote_pending) # Add 1 for the node.
+                demote_pending = []
+        elif found == active:
+            # Pending nodes *will* be organized.
+            for od in demote_pending:
+                active2,child2 = od
+                add(active2,child2,'found==active:pending')
+            demote_pending = []
+            add(active,node,'found==active')
+        else: # found != active.
+            # Pending nodes will *not* be organized.
+            n += len(demote_pending)
+            demote_pending = []
+            active,n = self.switch_active_organizer(active,found,n)
+            if active:
+                # switch_active_organizer bumps n only for bare organizer nodes.
+                add(active,node,'found!=active')
+    if active:
+        active.closed = True
+.. @+node:ekr.20140117131738.16713: *5* vc.find_all_organizer_nodes (***revise)
+def find_all_organizer_nodes(self,od):
+    '''
+    Return all OrganizerData instances organizing the same imported source
+    node as od.
+    '''
+    # Because of existing organizers, we can't compare source_unl's.
+    # Instead just create the list using the od.parent field.
+    aList = [z for z in self.all_organizers_list if z.parent == od.parent]
+    # g.trace([z.h for z in aList])
+    return aList
+
+    ### What to do about existing organizers??????
+    ### Their parents are themselve, but they should be on the list
+    ### if they are organized by another organizer!!!
+.. @+node:ekr.20140117131738.16714: *5* vc.switch_active_organizer & helpers
+def switch_active_organizer(self,active,found,n):
+    '''
+    Pause or close the active od and (re)start the found od.
+    Return found, unless it has been closed.
+    Update n as appropriate.
+    '''
+    trace = False # and not g.unitTesting
+    if active and found not in active.descendants:
+        if trace: g.trace('***** close:',active.h)
+        active.closed = True
+    assert found
+    if found.closed:
+        if trace: g.trace('*closed*',found.h)
+        return None,n
+    active = found
+    active.opened = True
+    assert active.p,active.h
+    if active.moved:
+        if trace: g.trace('already moved',active.h)
+        return active,n # Not an error: stay in active!
+    else:
+        self.add_intermediate_organizer_nodes(active,n)
+        active.moved = True
+        n = self.add_organizer_node(active,n)
+        return active,n
+ 
+.. @+node:ekr.20140117131738.16715: *6* vc.add_intermediate_organizer_nodes (reverse order?)
+def add_intermediate_organizer_nodes(self,od,n):
+    '''Add all intermediate od nodes.'''
+    trace = True # and not g.unitTesting
+    parent = od.parent_od
+    while parent:
+        if trace: g.trace('opened: %5s closed: %5s moved: %5s node: %s' % (
+            parent.opened,parent.closed,parent.moved,parent and parent.h))
+        if not parent.opened:
+            parent.opened = True
+            self.add_organizer_node(parent,n=0)
+                ### To do: testing.
+        parent = parent.parent_od
+.. @+node:ekr.20140117131738.16716: *6* vc.add_organizer_node
+def add_organizer_node (self,od,n):
+    '''Add od to the appropriate move list.'''
+    trace = False # and not g.unitTesting
+    if od.parent_od:
+        # Not a bare organizer: a child of another organizer node.
+        # If this is an existing organizer, it's *position* may have
+        # been moved without active.moved being set.
+        data = od.parent_od.p,od.p
+        if data in self.global_moved_node_list:
+            if trace: g.trace('**** already in list: setting moved bit.',od.h)
+            od.moved = True
+        else:
+            self.global_moved_node_list.append(data)
+            if trace: g.trace('***** non-bare: %s parent: %s' % (
+                od.p.h,od.parent_od.p.h,))
+        return n
+    else:
+        # A bare organizer node: a child of an *ordinary* node.
+        self.global_bare_organizer_node_list.append((od.parent,od.p,n),)
+        if trace: g.trace('***** bare: %s parent: %s n: %s' % (
+            od.p and od.p.h,od.parent and od.parent.h,n))
+        return n+1
+.. @+node:ekr.20140106215321.16677: *4* vc.demote_organized_nodes (no longer used)
+def demote_organized_nodes(self,root):
+    '''Demote organized nodes to be children of organizer nodes.'''
+    for od in self.organizer_data_list:
+        self.demote_helper(od,root)
+    for od in self.existing_organizer_data_list:
+        self.demote_helper(od,root)
 .. @-all
 .. @-leo
