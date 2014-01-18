@@ -173,46 +173,36 @@ class position (object):
     #@+node:ekr.20040228094013: *3*  p.ctor & other special methods...
     #@+node:ekr.20080416161551.190: *4*  p.__init__
     def __init__ (self,v,childIndex=0,stack=None,trace=False):
-
         '''Create a new position with the given childIndex and parent stack.'''
-
         # To support ZODB the code must set v._p_changed = 1
         # whenever any mutable vnode object changes.
-
         self._childIndex = childIndex
         self.v = v
-
         # New in Leo 4.5: stack entries are tuples (v,childIndex).
         if stack:
             self.stack = stack[:] # Creating a copy here is safest and best.
         else:
             self.stack = []
-
         g.app.positions += 1
-
         self.txtOffset = None # see self.textOffset()
     #@+node:ekr.20080920052058.3: *4* p.__eq__ & __ne__
     def __eq__(self,p2):
-
-        """Return True if two postions are equivalent."""
-
+        """Return True if two positions are equivalent."""
         p1 = self
-
         # Don't use g.trace: it might call p.__eq__ or p.__ne__.
-        # print ('p.__eq__: %s %s' % (
-            # p1 and p1.v and p1.h,p2 and p2.v and p2.h))
-
+        # print ('p.__eq__: %s %s' % (p1 and p1.v and p1.h,p2 and p2.v and p2.h))
         if p2 is None or p2.v is None:
+            # print('p1.v is None',p1.v is None)
             return p1.v is None
         else:
-            return ( p1.v == p2.v and
+            # val = p1.v == p2.v and p1._childIndex == p2._childIndex and p1.stack == p2.stack
+            # print('p.__eq__',val,p1.v and p1.v.h,p2.v and p2.v.h)
+            return (p1.v == p2.v and
                 p1._childIndex == p2._childIndex and
-                p1.stack == p2.stack )
+                p1.stack == p2.stack)
 
     def __ne__(self,p2):
-
         """Return True if two postions are not equivalent."""
-
         return not self.__eq__(p2) # For possible use in Python 2.x.
     #@+node:ekr.20091210082012.6230: *4* p.__ge__ & __le__& __lt__
     def __ge__ (self,other):
@@ -273,22 +263,15 @@ class position (object):
     #@@c
 
     if g.isPython3:
-
         def __bool__ ( self):
-
             """Return True if a position is valid."""
-
             # Tracing this appears to cause unbounded prints.
             # print("__bool__",self.v and self.v.cleanHeadString())
-
             return self.v is not None
 
     else:
-
         def __nonzero__ ( self):
-
             """Return True if a position is valid."""
-
             return self.v is not None
     #@+node:ekr.20040301205720: *4* p.__str__ and p.__repr__
     def __str__ (self):
@@ -343,7 +326,7 @@ class position (object):
         p = self
         if p.v:
             p.v.dump() # Don't print a label
-    #@+node:ekr.20080416161551.191: *4* p.key & p.sort_key
+    #@+node:ekr.20080416161551.191: *4* p.key & p.sort_key & __hash__
     def key (self):
         p = self
         # For unified nodes we must include a complete key,
@@ -357,6 +340,10 @@ class position (object):
 
     def sort_key(self,p):
         return [int(s.split(':')[1]) for s in p.key().split('.')]
+
+    # This has makes positions hashable, at long long last.
+    def __hash__(self):
+        return 42
     #@+node:ekr.20090128083459.74: *3* p.Properties
     #@+node:ekr.20090128083459.75: *4* p.b property
     def __get_b(self):
