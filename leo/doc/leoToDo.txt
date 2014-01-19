@@ -32,6 +32,8 @@ Release 4.11.1 (or 5.0?):
 
 * Move recent posts to LeoDocs.leo.
 
+- vc.organized_nodes is not used at present.
+
 - Fix all unit tests.
     
 - vc.trial_write_kind ivar: unified handling of trial writes & their dumps.

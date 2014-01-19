@@ -4,7 +4,7 @@
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.65" body_secondary_ratio="0.80">
-	<global_window_position top="60" left="501" height="1001" width="1065"/>
+	<global_window_position top="56" left="234" height="1001" width="1065"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -243,7 +243,7 @@
 </v>
 <v t="ekr.20140106094713.4176"><vh>@test vc.drop_all_organizers_in_unl</vh></v>
 <v t="ekr.20140103102956.4146"><vh>@test vc.find_absolute_unl_node</vh></v>
-<v t="ekr.20140103102956.4147"><vh>@test vc.find_relative_unl_node</vh>
+<v t="ekr.20140103102956.4147"><vh>@test vc.find_position_for_relative_unl</vh>
 <v t="ekr.20140103102956.4148"><vh>node1</vh>
 <v t="ekr.20140103102956.4149"><vh>child11</vh></v>
 <v t="ekr.20140103102956.4150"><vh>child12</vh></v>
@@ -1618,7 +1618,7 @@ table = (
     ('node3--&gt;childx',None),
 )
 for unl,expected in table:
-    got = vc.find_relative_unl_node(parent,unl)
+    got = vc.find_position_for_relative_unl(parent,unl)
     assert got == expected,'unl: %s expected: %s got: %s' % (
         unl,expected and expected.h,got and got.h)
 </t>

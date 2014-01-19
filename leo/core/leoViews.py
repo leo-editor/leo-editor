@@ -447,10 +447,8 @@ class ViewController:
                 '\n  parent (pos):',od.parent.h)
         for od in self.existing_ods:
             od.exists = True
-            # g.trace('***organizers','\n'.join(sorted(self.organizer_unls)))
             assert od.unl not in self.organizer_unls
             od.source_unl = self.source_unl(self.organizer_unls,od.unl)
-            ### existing = [z for z in self.existing_ods if z != od]
             od.p = self.find_position_for_relative_unl(root,od.source_unl)
             od.anchor = od.p
             assert od.p,(od.source_unl,[z.h for z in self.existing_ods])
@@ -481,7 +479,7 @@ class ViewController:
     #@+node:ekr.20140108081031.16612: *7* 4: vc.create_tree_structure & helper
     def create_tree_structure(self,root):
         '''Set od.parent_od, od.children & od.descendants for all ods.'''
-        trace = False # and not g.unitTesting
+        trace = False and not g.unitTesting
         # if trace: g.trace([z.h for z in data_list],g.callers())
         organizer_unls = [od.unl for od in self.all_ods]
         for od in self.all_ods:
@@ -492,27 +490,23 @@ class ViewController:
                     # if trace: g.trace('found organizer unl:',od.h,'==>',d2.h)
                     od.children.append(d2)
                     d2.parent_od = od
-        ### This must happen later????
-        ### # create_organizer_data now ensures od.parent is set.
-        ### for od in self.all_ods:
-        ###     assert od.parent,od.h
+        # create_organizer_data now ensures od.parent is set.
+        for od in self.all_ods:
+            assert od.parent,od.h
         # Extend the descendant lists.
         for od in self.all_ods:
             self.compute_descendants(od)
             assert od.descendants is not None
-        # Trace results:
         if trace:
+            def tail(head,unl):
+                return str(unl[len(head):]) if unl.startswith(head) else str(unl)
             for od in self.all_ods:
-                def tail(head,unl):
-                    return str(unl[len(head):]) if unl.startswith(head) else str(unl)
                 g.trace(
                     '\n  od:',od.h,
                     '\n  unl:',od.unl,
                     '\n  unls:', [tail(od.unl,z) for z in od.unls],
-                        # od.unls if len(od.unls) < 3 else '\n'+'\n'.join(od.unls),
                     '\n  source (unl):',od.source_unl or repr(''),
-                    ### Set later??
-                    ### '\n  parent (pos):', od.parent.h,
+                    '\n  parent (pos):', od.parent.h,
                     '\n  children:',[z.h for z in od.children],
                     '\n  descendants:',[str(z.h) for z in od.descendants])
     #@+node:ekr.20140109214515.16633: *8* vc.compute_descendants
@@ -533,54 +527,18 @@ class ViewController:
         else:
             if trace: g.trace('cached',od.h,[z.h for z in od.descendants])
             return od.descendants
-    #@+node:ekr.20140115180051.16706: *7* 5: vc.compute_all_organized_positions & helper
+    #@+node:ekr.20140115180051.16706: *7* 5: vc.compute_all_organized_positions
     def compute_all_organized_positions(self,root):
         '''Compute the list of positions organized by every od.'''
+        trace = True and not g.unitTesting
         for od in self.all_ods:
-            self.compute_organized_positions(od,root)
-    #@+node:ekr.20140108081031.16611: *8* vc.compute_organized_positions
-    def compute_organized_positions(self,od,root):
-        '''Compute all the positions organized by od.'''
-        trace = False # and not g.unitTesting
-        for unl in od.unls:
-            p = self.find_position_for_relative_unl(root,unl)
-            if p:
-                od.organized_nodes.append(p.copy())
-            elif trace:
-                g.trace('===== od not found:',od.h,'exists',od.exists,'unl:',unl)
-        
-        # trace_failure = False
-        # verbose = True
-        # dump = self.dump_list
-        # organizer_unls = self.organizer_unls
-        # raw_unls = [self.drop_all_organizers_in_unl(organizer_unls,unl)
-            # for unl in od.unls]
-        # if od.exists:
-            # # drop the penultimate part of each unl.
-            # before = raw_unls[:]
-            # raw_unls = [self.drop_unl_parent(z) for z in raw_unls]
-            # if trace and verbose:
-                # g.trace('dropped unls of existing organizer. od:',od.unl,
-                    # '\n  organizer_unls:',dump(self.organizer_unls),
-                    # '\n  raw_unls (before):',dump(before),
-                    # '\n  raw_unls (after):',dump(raw_unls))
-        # elif trace and verbose:
-            # g.trace('unls of organizer. od:',od.unl,
-                # '\n  organizer_unls:',dump(self.organizer_unls),
-                # '\n  raw_unls:',dump(raw_unls))
-        # for raw_unl in list(set(raw_unls)):
-            # existing = [z for z in self.existing_ods if z != od] ###
-            # p = self.find_position_for_relative_unl(root,raw_unl,existing=existing)
-            # if p:
-                # od.organized_nodes.append(p.copy())
-            # elif trace_failure:
-                # g.trace('===== od not found:',od.h,'exists',od.exists,'unl:',raw_unl)
-                    # # '\n  exists:',od.exists,'raw_unl:',raw_unl,
-                    # # '\n  raw_unls:',dump(raw_unls))
-        # if trace:
-            # header = '===== organized nodes od:' if verbose else 'od:'
-            # g.trace(header,od.h,'\n  organized_nodes:',
-                # dump([p.h for p in od.organized_nodes]))
+            for unl in od.unls:
+                p = self.find_position_for_relative_unl(root,unl)
+                if p:
+                    od.organized_nodes.append(p.copy())
+                elif trace:
+                    g.trace('===== unl not found in od:',
+                        od.h,'exists',od.exists,'unl:',unl)
     #@+node:ekr.20140117131738.16727: *7* 6: vc.create_anchors_d
     def create_anchors_d (self):
         '''
@@ -591,11 +549,10 @@ class ViewController:
         d = {}
         for od in self.all_ods:
             # Compute the anchor if it does not yet exists.
-            if 1: # Valid now that p.__hash__ exists.
-                key = od.anchor
-            else:
-                key = '.'.join([str(z) for z in od.anchor.sort_key(od.anchor)])
-                key = '%s (%s)' % (key,od.anchor.h)
+            # Valid now that p.__hash__ exists.
+            key = od.anchor
+            # key = '.'.join([str(z) for z in od.anchor.sort_key(od.anchor)])
+            # key = '%s (%s)' % (key,od.anchor.h)
             aList = d.get(key,[])
             # g.trace(od.h,od.anchor.h,key,aList)
             aList.append(od)
@@ -603,7 +560,6 @@ class ViewController:
         if trace:
             for key in sorted(d.keys()):
                 g.trace('%s [%s]' % (key.h,','.join(z.h for z in d.get(key))))
-                    # self.dump_list([z.h for z in d.get(key)]))
         self.anchors_d = d
     #@+node:ekr.20140106215321.16678: *6* vc.move_nodes & helpers
     def move_nodes(self):
@@ -1059,9 +1015,11 @@ class ViewController:
                 drop.append(s)
         if found:
             if trace and trace_success:
-                g.trace('unl found:',unl,'at:',p.h,'drop',drop)
-        elif trace:
-            g.trace('===== unl not found:',unl,'parent',parent.h,'drop',drop)
+                g.trace('found unl:',unl,'parent:',p.h,'drop',drop)
+        else:
+            # For now, always trace failures, except in unit tests.
+            if not g.unitTesting or trace:
+                g.trace('===== unl not found:',unl,'parent:',p.h,'drop',drop)
         return p if found else None
     #@+node:ekr.20131230090121.16544: *5* vc.find_representative_node
     def find_representative_node (self,root,target):
