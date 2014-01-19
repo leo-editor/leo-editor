@@ -343,7 +343,7 @@ class position (object):
 
     # This has makes positions hashable, at long long last.
     def __hash__(self):
-        return 42
+        return sum([z[1] for z in self.stack])
     #@+node:ekr.20090128083459.74: *3* p.Properties
     #@+node:ekr.20090128083459.75: *4* p.b property
     def __get_b(self):
