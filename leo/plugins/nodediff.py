@@ -41,6 +41,21 @@ diff-subtree
 Runs a diff on the children of the currently selected node.  Only works if the
 selected node has exactly two children.
 
+diff-saved
+----------
+Runs a diff on the current node and the same node in the .leo file on disk,
+i.e. changes in the node since last save.  **This does not work** for
+derived @<files> (@auto, @edit, etc.), only nodes which are part of the
+Leo outline itself.
+
+diff-vcs
+----------
+Runs a diff on the current node and the same node in the most recent commit of
+the .leo file to a VCS like git or bzr (currently only git and bzr supported),
+i.e. changes in the node since last commit.  **This does not work** for
+derived @<files> (@auto, @edit, etc.), only nodes which are part of the
+Leo outline itself.
+
 Common Usage
 ============
 For those who don't use marked nodes for much else, the 'diff-marked' option
@@ -80,6 +95,11 @@ __version__ = '0.1'
 #@+node:peckj.20140113131037.5794: ** << imports >>
 import leo.core.leoGlobals as g
 import difflib
+
+# for VCS diff
+import subprocess
+from cStringIO import StringIO
+from leo.external import leosax
 #@-<< imports >>
 
 #@+others
@@ -128,6 +148,8 @@ class NodeDiffController:
         c.k.registerCommand('diff-marked',shortcut=None,func=self.run_diff_on_marked)
         c.k.registerCommand('diff-selected',shortcut=None,func=self.run_diff_on_selected)
         c.k.registerCommand('diff-subtree',shortcut=None,func=self.run_diff_on_subtree)
+        c.k.registerCommand('diff-saved',shortcut=None,func=self.run_diff_on_saved)
+        c.k.registerCommand('diff-vcs',shortcut=None,func=self.run_diff_on_vcs)
     #@+node:peckj.20140113131037.5802: *3* getters
     #@+node:peckj.20140113131037.5799: *4* get_selection
     def get_selection(self):
@@ -233,6 +255,97 @@ class NodeDiffController:
             g.es('nodediff.py: Make sure that the selected node has exactly two children.', color='red')
             return
         self.run_appropriate_diff(ns)
+    #@+node:tbrown.20140118145024.25546: *4* run_diff_on_saved
+    def run_diff_on_saved(self, event=None):
+        """run_diff_on_saved - compare current node content to saved
+        content
+
+        :Parameters:
+        - `event`: Leo event
+        """
+
+        c = self.c
+        
+        gnx = c.p.gnx
+        
+        tree = leosax.get_leo_data(c.fileName())
+        for node in tree.flat():
+            if node.gnx == gnx:
+                break
+        else:
+            g.es("Node (gnx) not found in saved file")
+            return
+
+        node.b = ''.join(node.b)
+        self.run_appropriate_diff([node, c.p])
+    #@+node:tbrown.20140118145024.25562: *4* run_diff_on_vcs
+    def run_diff_on_vcs(self, event=None):
+        """run_diff_on_vcs - try and check out the previous version of the Leo
+        file and compare a node with the same gnx in that file with the
+        current node
+
+        :Parameters:
+        - `event`: Leo event
+        """
+
+        c = self.c
+        
+        dir_, filename = g.os_path_split(c.fileName())
+        relative_path = []  # path from top of repo. to .leo file
+        
+        mode = None  # mode is which VCS to use
+        # given A=/a/b/c/d/e, B=file.leo adjust to A=/a/b/c, B=d/e/file.leo
+        # so that A is the path to the repo. and B the path in the repo. to
+        # the .leo file
+        path = dir_
+        while not mode:
+            for vcs in 'git', 'bzr':
+                if g.os_path_exists(g.os_path_join(path, '.'+vcs)):
+                    mode = vcs
+                    break
+            else:
+                path, subpath = g.os_path_split(path)
+                if not subpath:
+                    break
+                relative_path[0:0] = [subpath]
+                
+        if not mode:
+            g.es("No supported VCS found in '%s'"%dir_)
+            return
+        
+        gnx = c.p.gnx
+        
+        if mode == 'git':
+            cmd = [
+                'git',
+                '--work-tree=%s' % path,
+                'show',
+                'HEAD:%s' % g.os_path_join( *(relative_path + [filename]) ),
+            ]
+
+        if mode == 'bzr':
+            cmd = [
+                'bzr', 'cat',
+                '--revision=revno:-1',
+                c.fileName(),  # path,
+                # g.os_path_join( *(relative_path + [filename]) ),
+            ]
+            
+        cmd = subprocess.Popen(
+            cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        data, err = cmd.communicate()
+
+        aFile = StringIO(data)
+        tree = leosax.get_leo_data(aFile)
+        for node in tree.flat():
+            if node.gnx == gnx:
+                break
+        else:
+            g.es("Node (gnx) not found in previous version")
+            return
+
+        node.b = ''.join(node.b)
+        self.run_appropriate_diff([node, c.p])
     #@-others
 #@-others
 #@-leo
