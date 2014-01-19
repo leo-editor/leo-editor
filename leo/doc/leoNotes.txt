@@ -12973,5 +12973,92 @@ def demote_organized_nodes(self,root):
         self.demote_helper(od,root)
     for od in self.existing_organizer_data_list:
         self.demote_helper(od,root)
+.. @+node:ekr.20140108081031.16610: *4* vc.find_all_organizer_nodes (not used)
+def find_all_organizer_nodes(self,od):
+    '''
+    Return all OrganizerData instances organizing the same imported source
+    node as od.
+    '''
+    # Because of existing organizers, we can't compare source_unl's.
+    # Instead just create the list using the od.parent field.
+    aList = [z for z in self.all_organizers_list if z.parent == od.parent]
+    # g.trace([z.h for z in aList])
+    return aList
+.. @+node:ekr.20140109214515.16647: *4* vc.add_intermediate_organizer_nodes (not used)
+def add_intermediate_organizer_nodes(self,od,n):
+    '''Add all intermediate od nodes.'''
+    trace = False # and not g.unitTesting
+    parent = od.parent_od
+    while parent:
+        if trace: g.trace('opened: %5s closed: %5s moved: %5s node: %s' % (
+            parent.opened,parent.closed,parent.moved,parent and parent.h))
+        if not parent.opened:
+            parent.opened = True
+            self.add_organizer_node(parent,n=0)
+                ### To do: testing.
+        parent = parent.parent_od
+.. @+node:ekr.20140106215321.16685: *4* vc.switch_active_organizer (not used)
+def switch_active_organizer(self,active,found,n):
+    '''
+    Pause or close the active od and (re)start the found od.
+    Return found, unless it has been closed.
+    Update n as appropriate.
+    '''
+    trace = False # and not g.unitTesting
+    if active and found not in active.descendants:
+        if trace: g.trace('***** close:',active.h)
+        active.closed = True
+    assert found
+    if found.closed:
+        if trace: g.trace('*closed*',found.h)
+        return None,n
+    active = found
+    active.opened = True
+    assert active.p,active.h
+    if active.moved:
+        if trace: g.trace('already moved',active.h)
+        return active,n # Not an error: stay in active!
+    else:
+        self.add_intermediate_organizer_nodes(active,n)
+        active.moved = True
+        n = self.add_organizer_node(active,n)
+        return active,n
+ 
+.. @+node:ekr.20140118174453.16733: *4* vc.OLDcompute_organized_positions
+def OLD compute_organized_positions(self,od,root):
+    '''Compute all the positions organized by od.'''
+    trace = False # and not g.unitTesting
+    trace_failure = False
+    verbose = True
+    dump = self.dump_list
+    organizer_unls = self.organizer_unls
+    raw_unls = [self.drop_all_organizers_in_unl(organizer_unls,unl)
+        for unl in od.unls]
+    if od.exists:
+        # drop the penultimate part of each unl.
+        before = raw_unls[:]
+        raw_unls = [self.drop_unl_parent(z) for z in raw_unls]
+        if trace and verbose:
+            g.trace('dropped unls of existing organizer. od:',od.unl,
+                '\n  organizer_unls:',dump(self.organizer_unls),
+                '\n  raw_unls (before):',dump(before),
+                '\n  raw_unls (after):',dump(raw_unls))
+    elif trace and verbose:
+        g.trace('unls of organizer. od:',od.unl,
+            '\n  organizer_unls:',dump(self.organizer_unls),
+            '\n  raw_unls:',dump(raw_unls))
+    for raw_unl in list(set(raw_unls)):
+        existing = [z for z in self.existing_organizer_data_list if z != od] ###
+        p = self.find_relative_unl_node(root,raw_unl,existing=existing)
+        if p:
+            od.organized_nodes.append(p.copy())
+        elif trace_failure:
+            g.trace('===== od not found:',od.h,'exists',od.exists,'unl:',raw_unl)
+                # '\n  exists:',od.exists,'raw_unl:',raw_unl,
+                # '\n  raw_unls:',dump(raw_unls))
+    if trace:
+        header = '===== organized nodes od:' if verbose else 'od:'
+        g.trace(header,od.h,'\n  organized_nodes:',
+            dump([p.h for p in od.organized_nodes]))
 .. @-all
 .. @-leo
