@@ -545,8 +545,9 @@ class ViewController:
         Create self.anchors_d.
         Keys are positions, values are lists of ods having that anchor.
         '''
-        trace = False # and not g.unitTesting
+        trace = True # and not g.unitTesting
         d = {}
+        if trace: g.trace('all_ods',[z.h for z in self.all_ods])
         for od in self.all_ods:
             # Compute the anchor if it does not yet exists.
             # Valid now that p.__hash__ exists.
@@ -677,7 +678,7 @@ class ViewController:
         and placing itms on the global moved nodes list.
         '''
         trace = True # and not g.unitTesting
-        trace_loop = False
+        trace_loop = True
         active = None # The active od.
         self.pending_list = [] # Lists of pending demotions.
         n = 0
@@ -715,7 +716,7 @@ class ViewController:
     #@+node:ekr.20140117131738.16717: *6* vc.add
     def add(self,active,node,tag):
         '''Add an item to the global moved node list.'''
-        trace = False # and not g.unitTesting
+        trace = True # and not g.unitTesting
         if trace: g.trace(tag,
             'active.p:',active.p and active.p.h,
             'node:',node and node.h)
@@ -724,10 +725,7 @@ class ViewController:
     def add_organizer_node (self,od,n):
         '''Add od to the appropriate move list.'''
         trace = True # and not g.unitTesting
-        if od.p == od.anchor:
-            if trace: g.trace('***** existing organizer: do not move:',od.h)
-            return n
-        elif od.parent_od:
+        if od.parent_od:
             # Not a bare organizer: a child of another organizer node.
             # If this is an existing organizer, it's *position* may have
             # been moved without active.moved being set.
@@ -739,6 +737,9 @@ class ViewController:
                 self.global_moved_node_list.append(data)
                 if trace: g.trace('***** non-bare: %s parent: %s' % (
                     od.p.h,od.parent_od.p.h,))
+            return n
+        elif od.p == od.anchor:
+            if trace: g.trace('***** existing organizer: do not move:',od.h)
             return n
         else:
             # A bare organizer node: a child of an *ordinary* node.
@@ -757,7 +758,10 @@ class ViewController:
     #@+node:ekr.20140117131738.16723: *6* vc.enter_organizers
     def enter_organizers(self,p,n):
         '''Enter all organizers whose anchors are p.'''
+        trace = True and not g.unitTesting
         anchors = self.anchors_d.get(p,[])
+        if anchors:
+            g.trace(p.h,[z.h for z in anchors])
         od = None
         for od in reversed(anchors):
             n = self.add_organizer_node(od,0)
