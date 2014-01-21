@@ -8177,7 +8177,7 @@ https://bugs.launchpad.net/leo-editor/+bug/nnn
 https://bugs.launchpad.net/leo-editor/+bug/914221
 
 Summary of a *long* discussion: this may be a docutils issue, and does not seem easy to fix.
-.. @+node:ekr.20130805080841.21380: *5* 1222947 Javascript importer doesn't handle common idiom (Hard)
+.. @+node:ekr.20130805080841.21380: *5* Fix javascript import bug
 @language javascript
 
 https://groups.google.com/forum/#!topic/leo-editor/dmC8iIKlF7g

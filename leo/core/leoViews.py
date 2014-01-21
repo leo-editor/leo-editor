@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:ekr.20131230090121.16504: * @file leoViews.py
+#@+node:ekr.20140120101345.10255: * @file leoViews.py
 #@@first
 
 '''Support for @views trees and related operations.'''
@@ -213,11 +213,12 @@ class ViewController:
         root, an @auto node. Create the @organizer or @clones nodes as needed.
         This *must not* be called for trial writes.
         '''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         verbose = False
         c = self.c
         clone_list,organizers_list,existing_organizers_list = [],[],[]
-        if trace and verbose: g.trace('imported existing',[v.h for v in self.imported_organizers_list])
+        if trace and verbose: g.trace('imported existing',
+            [v.h for v in self.imported_organizers_list])
         for p in root.subtree():
             if p.isCloned():
                 rep = self.find_representative_node(root,p)
@@ -354,7 +355,7 @@ class ViewController:
         else:
             g.trace('bad @clones contents',gnxs,unls)
             return False
-    #@+node:ekr.20131230090121.16532: *5* vc.create_organizer_nodes & helpers
+    #@+node:ekr.20131230090121.16532: *5* vc.create_organizer_nodes
     def create_organizer_nodes(self,at_organizers,root):
         '''
         root is an @auto node. Create an organizer node in root's tree for each
@@ -373,7 +374,18 @@ class ViewController:
             # Move merged comments to parent organizer nodes.
         c.selectPosition(root)
         c.redraw()
-    #@+node:ekr.20140115180051.16709: *6* vc.precompute_all_data & helpers
+    #@+node:ekr.20140109214515.16631: *5* vc.print_stats
+    def print_stats(self):
+        '''Print important stats.'''
+        trace = False and not g.unitTesting
+        if trace:
+            g.trace(self.root and self.root.h or 'No root')
+            g.trace('scanned: %3s' % self.n_nodes_scanned)
+            g.trace('moved:   %3s' % (
+                len( self.global_bare_organizer_node_list) +
+                len(self.global_moved_node_list)))
+    #@+node:ekr.20140120105910.10488: *3* vc.Main Lines
+    #@+node:ekr.20140115180051.16709: *4* vc.precompute_all_data & helpers
     def precompute_all_data(self,at_organizers,root):
         '''Precompute all data needed to reorganize nodes.'''
         self.find_imported_organizer_nodes(root)
@@ -388,7 +400,7 @@ class ViewController:
             # Compute the positions organized by each organizer.
         self.create_anchors_d()
             # Create the dictionary that associates positions with ods.
-    #@+node:ekr.20140113181306.16690: *7* 1: vc.find_imported_organizer_nodes
+    #@+node:ekr.20140113181306.16690: *5* 1: vc.find_imported_organizer_nodes
     def find_imported_organizer_nodes(self,root):
         '''
         Put the vnode of all imported nodes with children on
@@ -401,13 +413,13 @@ class ViewController:
                 aList.append(p.v)
         self.imported_organizers_list = list(set(aList))
         if trace: g.trace([z.h for z in self.imported_organizers_list])
-    #@+node:ekr.20140106215321.16674: *7* 2: vc.create_organizer_data (od.p & od.parent)
+    #@+node:ekr.20140106215321.16674: *5* 2: vc.create_organizer_data (od.p & od.parent)
     def create_organizer_data(self,at_organizers,root):
         '''
         Create OrganizerData nodes for all @organizer: nodes
         in the given @organizers node.
         '''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         tag1 = '@organizer:'
         tag2 = '@existing-organizer:'
         # Important: we must completely reinit all data here.
@@ -435,11 +447,10 @@ class ViewController:
             od.source_unl = self.source_unl(self.organizer_unls,od.unl)
             od.parent = self.find_position_for_relative_unl(root,od.source_unl)
             od.anchor = od.parent
-            oops = not bool(od.parent)
-            if not od.parent:
-                g.trace('***no od.parent: using root',root.h)
-                od.parent = root
-            if trace or oops: g.trace(
+            # if not od.parent:
+                # g.trace('***no od.parent: using root',root.h)
+                # od.parent = root
+            if trace: g.trace(
                 '\n  exists:',od.exists,
                 '\n  unl:',od.unl,
                 '\n  source (unl):',od.source_unl or repr(''),
@@ -460,7 +471,7 @@ class ViewController:
                 '\n  source (unl):',od.source_unl or repr(''),
                 '\n  anchor (pos):',od.anchor.h,
                 '\n  parent (pos):',od.parent.h)
-    #@+node:ekr.20140106215321.16675: *7* 3: vc.create_actual_organizer_nodes
+    #@+node:ekr.20140106215321.16675: *5* 3: vc.create_actual_organizer_nodes
     def create_actual_organizer_nodes(self):
         '''
         Create all organizer nodes as children of holding cells. These holding
@@ -476,7 +487,7 @@ class ViewController:
             holding_cell.h = 'holding cell for ' + od.h
             od.p = holding_cell.insertAsLastChild()
             od.p.h = od.h
-    #@+node:ekr.20140108081031.16612: *7* 4: vc.create_tree_structure & helper
+    #@+node:ekr.20140108081031.16612: *5* 4: vc.create_tree_structure & helper
     def create_tree_structure(self,root):
         '''Set od.parent_od, od.children & od.descendants for all ods.'''
         trace = False and not g.unitTesting
@@ -509,7 +520,7 @@ class ViewController:
                     '\n  parent (pos):', od.parent.h,
                     '\n  children:',[z.h for z in od.children],
                     '\n  descendants:',[str(z.h) for z in od.descendants])
-    #@+node:ekr.20140109214515.16633: *8* vc.compute_descendants
+    #@+node:ekr.20140109214515.16633: *6* vc.compute_descendants
     def compute_descendants(self,od,level=0,result=None):
         '''Compute the descendant od nodes of od.'''
         trace = False # and not g.unitTesting
@@ -527,7 +538,7 @@ class ViewController:
         else:
             if trace: g.trace('cached',od.h,[z.h for z in od.descendants])
             return od.descendants
-    #@+node:ekr.20140115180051.16706: *7* 5: vc.compute_all_organized_positions
+    #@+node:ekr.20140115180051.16706: *5* 5: vc.compute_all_organized_positions
     def compute_all_organized_positions(self,root):
         '''Compute the list of positions organized by every od.'''
         trace = True and not g.unitTesting
@@ -536,10 +547,10 @@ class ViewController:
                 p = self.find_position_for_relative_unl(root,unl)
                 if p:
                     od.organized_nodes.append(p.copy())
-                elif trace:
-                    g.trace('===== unl not found in od:',
-                        od.h,'exists',od.exists,'unl:',unl)
-    #@+node:ekr.20140117131738.16727: *7* 6: vc.create_anchors_d
+                if trace: g.trace('exists:',od.exists,
+                    'od:',od,'unl:',unl,
+                    'p:',p and p.h or '===== None')
+    #@+node:ekr.20140117131738.16727: *5* 6: vc.create_anchors_d
     def create_anchors_d (self):
         '''
         Create self.anchors_d.
@@ -560,16 +571,147 @@ class ViewController:
             d[key] = aList
         if trace:
             for key in sorted(d.keys()):
-                g.trace('%s [%s]' % (key.h,','.join(z.h for z in d.get(key))))
+                g.trace('od.anchor: %s ods: [%s]' % (key.h,','.join(z.h for z in d.get(key))))
         self.anchors_d = d
-    #@+node:ekr.20140106215321.16678: *6* vc.move_nodes & helpers
+    #@+node:ekr.20140104112957.16587: *4* vc.demote & helpers
+    def demote(self,root):
+        '''
+        The main line of the @auto-view algorithm.
+        Traverse root's entire treee, simulating the addition of organizer nodes
+        and placing itms on the global moved nodes list.
+        '''
+        trace = True # and not g.unitTesting
+        trace_loop = True
+        active = None # The active od.
+        self.pending_list = [] # Lists of pending demotions.
+        n = 0
+        for p in root.subtree():
+            parent = p.parent()
+            if trace and trace_loop: g.trace('=====\np:',p.h,'parent:',parent.h)
+            self.n_nodes_scanned += 1
+            self.terminate_organizers(active,parent)
+            found = self.find_organizer(parent,p)
+            if found:
+                n = self.enter_organizers(found,n)
+            if trace and trace_loop:
+                g.trace('active:',active and active.h or 'None',
+                    'n:',n,'found:',found and found.h or 'None')
+            # The main case statement...
+            if found is None and active:
+                self.add_to_pending(active,p)
+            elif found is None and not active:
+                # Pending nodes will *not* be organized.
+                n += 1 + len(self.pending_list) # Add 1 for the node.
+                self.pending_list = []
+            elif found and found == active:
+                # Pending nodes *will* be organized.
+                for z in self.pending_list:
+                    active2,child2 = z
+                    self.add(active2,child2,'found==active:pending')
+                self.pending_list = []
+                self.add(active,p,'found==active')
+            elif found and found != active:
+                # Pending nodes will *not* be organized.
+                n += len(self.pending_list)
+                self.pending_list = []
+                ### active,n = self.switch_active_organizer(active,found,n)
+                    # switch_active_organizer bumps n only for bare organizer nodes.
+                active = found
+                self.add(active,p,'found!=active')
+            else: assert False,'can not happen'
+        # Terminate the active organizer.
+        if active:
+            self.terminate_organizers(active,root)
+    #@+node:ekr.20140117131738.16717: *5* vc.add
+    def add(self,active,node,tag):
+        '''Add an item to the global moved node list.'''
+        trace = True # and not g.unitTesting
+        if trace: g.trace(tag,
+            'active.p:',active.p and active.p.h,
+            'node:',node and node.h)
+        self.global_moved_node_list.append((active.p,node.copy()),)
+    #@+node:ekr.20140109214515.16646: *5* vc.add_organizer_node
+    def add_organizer_node (self,od,n):
+        '''Add od to the appropriate move list.'''
+        trace = True # and not g.unitTesting
+        if od.parent_od:
+            # Not a bare organizer: a child of another organizer node.
+            # If this is an existing organizer, it's *position* may have
+            # been moved without active.moved being set.
+            data = od.parent_od.p,od.p
+            if data in self.global_moved_node_list:
+                if trace: g.trace('**** already in list: setting moved bit.',od.h)
+                od.moved = True
+            else:
+                self.global_moved_node_list.append(data)
+                if trace: g.trace('***** non-bare: %s parent: %s' % (
+                    od.p.h,od.parent_od.p.h,))
+            return n
+        elif od.p == od.anchor:
+            if trace: g.trace('***** existing organizer: do not move:',od.h)
+            return n
+        else:
+            bare_list = [p for parent,p,n in self.global_bare_organizer_node_list]
+            if od.p in bare_list:
+                if trace: g.trace('**** already in list: setting moved bit.',od.h)
+                od.moved = True
+                return n
+            else:
+                # A bare organizer node: a child of an *ordinary* node.
+                data = od.parent,od.p,n
+                self.global_bare_organizer_node_list.append(data)
+                if trace: g.trace('***** bare: %s parent: %s n: %s' % (
+                    od.p and od.p.h,od.parent and od.parent.h,n))
+                return n+1
+    #@+node:ekr.20140117131738.16719: *5* vc.add_to_pending
+    def add_to_pending(self,active,p):
+        trace = True # and not g.unitTesting
+        if trace: g.trace(
+            'active.p:',active.p and active.p.h,
+            'p:',p and p.h)
+        # Important: add() will push active.p, not active.
+        self.pending_list.append((active,p.copy()),)
+    #@+node:ekr.20140117131738.16723: *5* vc.enter_organizers (works!?!)
+    def enter_organizers(self,od,n):
+        '''Enter all organizers whose anchors are p.'''
+        trace = True and not g.unitTesting
+        ods = []
+        while od:
+            ods.append(od)
+            od = od.parent_od
+        if ods:
+            for od in reversed(ods):
+                n = self.add_organizer_node(od,n)
+        return n
+    #@+node:ekr.20140120105910.10490: *5* vc.find_organizer
+    def find_organizer(self,parent,p):
+        '''Return the organizer that organizers p, if any.'''
+        trace = True # and not g.unitTesting
+        anchor = parent
+        ods = self.anchors_d.get(anchor,[])
+        for od in ods:
+            if p in od.organized_nodes:
+                if trace: g.trace('found:',od.h,'for',p.h)
+                return od
+        return None
+    #@+node:ekr.20140117131738.16724: *5* vc.terminate_organizers
+    def terminate_organizers(self,active,p):
+        '''Terminate all organizers whose anchors are not ancestors of p.'''
+        trace = True # and not g.unitTesting
+        od = active
+        while od and od.anchor != p and od.anchor.isAncestorOf(p):
+            if not od.closed:
+                if trace: g.trace('closing',od.h)
+                od.closed = True
+            od = od.parent_od
+    #@+node:ekr.20140106215321.16678: *4* vc.move_nodes & helpers
     def move_nodes(self):
         '''Move nodes to their final location and delete the temp node.'''
         trace = True # and not g.unitTesting
         self.move_nodes_to_organizers(trace)
         self.move_bare_organizers(trace)
         self.temp_node.doDelete()
-    #@+node:ekr.20140109214515.16636: *7* vc.move_nodes_to_organizers
+    #@+node:ekr.20140109214515.16636: *5* vc.move_nodes_to_organizers
     def move_nodes_to_organizers(self,trace):
         '''Move all nodes in the global_moved_node_list.'''
         trace_moves = True
@@ -632,13 +774,13 @@ class ViewController:
             elif p not in organizers:
                 if trace and trace_deletes: g.trace('deleting non-organizer:',p.h)
                 p.doDelete()
-    #@+node:ekr.20140109214515.16637: *7* vc.move_bare_organizers
+    #@+node:ekr.20140109214515.16637: *5* vc.move_bare_organizers
     def move_bare_organizers(self,trace):
         '''Move all nodes in global_bare_organizer_node_list.'''
         # For each parent, sort nodes on n.
         d = {} # Keys are vnodes, values are lists of tuples (n,parent,p)
         existing_organizers = [od.p for od in self.existing_ods]
-        if trace: g.trace('ignoring existing organizers',[p.h for p in existing_organizers])
+        if trace: g.trace('ignoring existing organizers:',[p.h for p in existing_organizers])
         for parent,p,n in self.global_bare_organizer_node_list:
             if p not in existing_organizers:
                 key = parent.v
@@ -655,10 +797,10 @@ class ViewController:
                 n,parent,p = od
                 n2 = parent.numberOfChildren()
                 if trace: g.trace(
-                    'move %20s to child %2s of %-20s with %s children' % (
+                    'move: %-20s to child %2s of %-20s with %s children' % (
                         p.h,n,parent.h,n2))
                 p.moveToNthChildOf(parent,n)
-    #@+node:ekr.20140112112622.16663: *7* vc.copy_tree_to_last_child_of
+    #@+node:ekr.20140112112622.16663: *5* vc.copy_tree_to_last_child_of
     def copy_tree_to_last_child_of(self,p,parent):
         '''Copy p's tree to the last child of parent.'''
         assert p != parent,(p,parent)
@@ -670,122 +812,6 @@ class ViewController:
         for child in p.children():
             self.copy_tree_to_last_child_of(child,root)
         return root
-    #@+node:ekr.20140104112957.16587: *5* vc.demote & helpers
-    def demote(self,root):
-        '''
-        The main line of the @auto-view algorithm.
-        Traverse root's entire treee, simulating the addition of organizer nodes
-        and placing itms on the global moved nodes list.
-        '''
-        trace = True # and not g.unitTesting
-        trace_loop = True
-        active = None # The active od.
-        self.pending_list = [] # Lists of pending demotions.
-        n = 0
-        for p in root.subtree():
-            if trace and trace_loop: g.trace(p.h)
-            self.n_nodes_scanned += 1
-            self.terminate_organizers(active,p)
-            found,n = self.enter_organizers(p,n)
-            # The main case statement...
-            if found is None and active:
-                self.add_to_pending(active,p)
-            elif found is None and not active:
-                # Pending nodes will *not* be organized.
-                n += 1 + len(self.pending_list) # Add 1 for the node.
-                self.pending_list = []
-            elif found and found == active:
-                # Pending nodes *will* be organized.
-                for z in self.pending_list:
-                    active2,child2 = z
-                    self.add(active2,child2,'found==active:pending')
-                self.pending_list = []
-                self.add(active,p,'found==active')
-            elif found and found != active:
-                # Pending nodes will *not* be organized.
-                n += len(self.pending_list)
-                self.pending_list = []
-                ### active,n = self.switch_active_organizer(active,found,n)
-                    # switch_active_organizer bumps n only for bare organizer nodes.
-                if active:
-                    self.add(active,p,'found!=active')
-            else: assert False,'can not happen'
-        # Terminate the active organizer.
-        if active:
-            self.terminate_organizers(active,root)
-    #@+node:ekr.20140117131738.16717: *6* vc.add
-    def add(self,active,node,tag):
-        '''Add an item to the global moved node list.'''
-        trace = True # and not g.unitTesting
-        if trace: g.trace(tag,
-            'active.p:',active.p and active.p.h,
-            'node:',node and node.h)
-        self.global_moved_node_list.append((active.p,node.copy()),)
-    #@+node:ekr.20140109214515.16646: *6* vc.add_organizer_node
-    def add_organizer_node (self,od,n):
-        '''Add od to the appropriate move list.'''
-        trace = True # and not g.unitTesting
-        if od.parent_od:
-            # Not a bare organizer: a child of another organizer node.
-            # If this is an existing organizer, it's *position* may have
-            # been moved without active.moved being set.
-            data = od.parent_od.p,od.p
-            if data in self.global_moved_node_list:
-                if trace: g.trace('**** already in list: setting moved bit.',od.h)
-                od.moved = True
-            else:
-                self.global_moved_node_list.append(data)
-                if trace: g.trace('***** non-bare: %s parent: %s' % (
-                    od.p.h,od.parent_od.p.h,))
-            return n
-        elif od.p == od.anchor:
-            if trace: g.trace('***** existing organizer: do not move:',od.h)
-            return n
-        else:
-            # A bare organizer node: a child of an *ordinary* node.
-            self.global_bare_organizer_node_list.append((od.parent,od.p,n),)
-            if trace: g.trace('***** bare: %s parent: %s n: %s' % (
-                od.p and od.p.h,od.parent and od.parent.h,n))
-            return n+1
-    #@+node:ekr.20140117131738.16719: *6* vc.add_to_pending
-    def add_to_pending(self,active,p):
-        trace = False and not g.unitTesting
-        if trace: g.trace(
-            'active.p:',active.p and active.p.h,
-            'p:',p and p.h)
-        # Important: add() will push active.p, not active.
-        self.pending_list.append((active,p.copy()),)
-    #@+node:ekr.20140117131738.16723: *6* vc.enter_organizers
-    def enter_organizers(self,p,n):
-        '''Enter all organizers whose anchors are p.'''
-        trace = True and not g.unitTesting
-        anchors = self.anchors_d.get(p,[])
-        if anchors:
-            g.trace(p.h,[z.h for z in anchors])
-        od = None
-        for od in reversed(anchors):
-            n = self.add_organizer_node(od,0)
-        return od,n
-    #@+node:ekr.20140117131738.16724: *6* vc.terminate_organizers
-    def terminate_organizers(self,active,p):
-        '''Terminate all organizers whose anchors are not ancestors of p.'''
-        trace = True # and not g.unitTesting
-        od = active
-        while od and od.anchor != p and od.anchor.isAncestorOf(p):
-            if not od.closed:
-                if trace: g.trace('closing',od.h)
-                od.closed = True
-            od = od.parent_od
-    #@+node:ekr.20140109214515.16631: *5* vc.print_stats
-    def print_stats(self):
-        '''Print important stats.'''
-        trace = False and not g.unitTesting
-        if trace:
-            g.trace(self.root and self.root.h or 'No root')
-            g.trace('scanned: %3s' % self.n_nodes_scanned)
-            g.trace('moved:   %3s' % (
-                len( self.global_bare_organizer_node_list) +
-                len(self.global_moved_node_list)))
     #@+node:ekr.20131230090121.16515: *3* vc.Helpers
     #@+node:ekr.20140103105930.16448: *4* vc.at_auto_view_body and match_at_auto_body
     def at_auto_view_body(self,p):
@@ -998,14 +1024,15 @@ class ViewController:
         '''
         # This is called from several places.
         trace = True and not g.unitTesting
-        trace_loop = False
-        trace_success = False
+        trace_loop = True
+        trace_success = True
         if not unl:
             if trace and trace_success:
                 g.trace('return parent for empty unl:',parent.h)
             return parent
         # The new, simpler way: drop components of the unl automatically.
         drop,p = [],parent # for debugging.
+        if trace: g.trace('p:',p.h,'unl:',unl)
         for s in unl.split('-->'):
             found = False # The last part must match.
             for child in p.children():
@@ -1014,6 +1041,8 @@ class ViewController:
                     found = True
                     if trace and trace_loop: g.trace('match:',s)
                     break
+                else:
+                    if trace and trace_loop: g.trace('no match:',child.h)
             else:
                 if trace and trace_loop: g.trace('drop:',s)
                 drop.append(s)
