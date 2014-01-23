@@ -74,6 +74,8 @@ class ViewController:
             # List of all od nodes.
         self.anchors_d = {}
             # Keys are anchoring positions, values are sorted lists of ods.
+        self.anchor_offset_d = {}
+            # Keys are anchoring positions, values are ints.
         self.existing_ods = []
             # List of od instances corresponding to @existing-organizer: nodes.
         self.global_bare_organizer_node_list = []
@@ -96,6 +98,8 @@ class ViewController:
             # The list of od.unl for all od instances in self.organizer_ods.
         self.root = None
             # The position of the @auto node.
+        self.pending = []
+            # The list of nodes pending to be added to an organizer.
         self.stack = []
             # The stack containing real and virtual parent nodes during the main loop.
         self.temp_node = None
@@ -583,55 +587,73 @@ class ViewController:
         trace = True # and not g.unitTesting
         trace_loop = True
         active = None # The active od.
-        self.pending_list = [] # Lists of pending demotions.
-        n = 0
+        self.pending = [] # Lists of pending demotions.
+        ### n = 0
+        d = self.anchor_offset_d # For traces.
         for p in root.subtree():
             parent = p.parent()
-            if trace and trace_loop: g.trace('=====\np:',p.h,'parent:',parent.h)
+            if trace and trace_loop: g.trace(
+                '=====\np:',p.h,
+                'childIndex',p.childIndex(),
+                '\nparent:',parent.h,
+                'parent:offset',d.get(parent,0))
             self.n_nodes_scanned += 1
             self.terminate_organizers(active,parent)
             found = self.find_organizer(parent,p)
             if found:
-                n = self.enter_organizers(found,n)
+                ### n = self.enter_organizers(found,n)
+                self.enter_organizers(found,p)
             if trace and trace_loop:
-                g.trace('active:',active and active.h or 'None',
-                    'n:',n,'found:',found and found.h or 'None')
+                g.trace(
+                    'active:',active and active.h or 'None',
+                    ### 'n:',n,
+                    'found:',found and found.h or 'None')
             # The main case statement...
             if found is None and active:
                 self.add_to_pending(active,p)
             elif found is None and not active:
                 # Pending nodes will *not* be organized.
-                n += 1 + len(self.pending_list) # Add 1 for the node.
-                self.pending_list = []
+                ### n += 1 + len(self.pending) # Add 1 for the node.
+                self.pending = []
             elif found and found == active:
                 # Pending nodes *will* be organized.
-                for z in self.pending_list:
+                for z in self.pending:
                     active2,child2 = z
                     self.add(active2,child2,'found==active:pending')
-                self.pending_list = []
+                self.pending = []
                 self.add(active,p,'found==active')
             elif found and found != active:
                 # Pending nodes will *not* be organized.
-                n += len(self.pending_list)
-                self.pending_list = []
+                ### n += len(self.pending)
+                self.pending = []
                 ### active,n = self.switch_active_organizer(active,found,n)
                     # switch_active_organizer bumps n only for bare organizer nodes.
                 active = found
                 self.add(active,p,'found!=active')
             else: assert False,'can not happen'
         # Terminate the active organizer.
-        if active:
-            self.terminate_organizers(active,root)
-    #@+node:ekr.20140117131738.16717: *5* vc.add
-    def add(self,active,node,tag):
-        '''Add an item to the global moved node list.'''
+        ### if active: self.terminate_organizers(active,root)
+    #@+node:ekr.20140117131738.16717: *5* vc.add (revise)
+    def add(self,active,p,tag):
+        '''
+        Add p, and existing (imported) node to the global moved node list.
+        Subtract 1 from the vc.anchor_offset_d entry for p.parent().
+        '''
         trace = True # and not g.unitTesting
+        
+        self.global_moved_node_list.append((active.p,p.copy()),)
+        # Subtract 1 from the vc.anchor_offset_d entry for p.parent().
+        key = p.parent()
+        d = self.anchor_offset_d
+        n = d.get(key,0)-1
+        d[key] = n
         if trace: g.trace(tag,
-            'active.p:',active.p and active.p.h,
-            'node:',node and node.h)
-        self.global_moved_node_list.append((active.p,node.copy()),)
-    #@+node:ekr.20140109214515.16646: *5* vc.add_organizer_node
-    def add_organizer_node (self,od,n):
+            '\nactive.p:',active.p and active.p.h,
+            'p:',p and p.h,
+            '\nanchor:',key and key.h,
+            'anchor:offset',n)
+    #@+node:ekr.20140109214515.16646: *5* vc.add_organizer_node (revise)
+    def add_organizer_node (self,od,p): ### n
         '''Add od to the appropriate move list.'''
         trace = True # and not g.unitTesting
         if od.parent_od:
@@ -646,23 +668,36 @@ class ViewController:
                 self.global_moved_node_list.append(data)
                 if trace: g.trace('***** non-bare: %s parent: %s' % (
                     od.p.h,od.parent_od.p.h,))
-            return n
+            ### return n
         elif od.p == od.anchor:
             if trace: g.trace('***** existing organizer: do not move:',od.h)
-            return n
+            ### return n
         else:
             bare_list = [p for parent,p,n in self.global_bare_organizer_node_list]
             if od.p in bare_list:
                 if trace: g.trace('**** already in list: setting moved bit.',od.h)
                 od.moved = True
-                return n
+                ### return n
             else:
                 # A bare organizer node: a child of an *ordinary* node.
-                data = od.parent,od.p,n
+                # Compute the effective child index.
+                anchor = p.parent()
+                d = self.anchor_offset_d
+                n0 = d.get(anchor,0)
+                d[anchor] = n0 + 1
+                childIndex = p.childIndex()
+                n = childIndex + n0
+                assert n >= 0,(anchor,n)
+                data = anchor,od.p,n
                 self.global_bare_organizer_node_list.append(data)
-                if trace: g.trace('***** bare: %s parent: %s n: %s' % (
-                    od.p and od.p.h,od.parent and od.parent.h,n))
-                return n+1
+                if trace: g.trace(
+                    '\n========== bare od.h:',od.h,
+                    '\np:',p and p.h or 'None!',
+                    '\nod.parent:', od.parent and od.parent.h or 'None',
+                    '\nanchor:', anchor and anchor.h or 'None!',
+                    'anchor:offset:',n0,
+                    'childIndex:',childIndex)
+                ### return n+1
     #@+node:ekr.20140117131738.16719: *5* vc.add_to_pending
     def add_to_pending(self,active,p):
         trace = True # and not g.unitTesting
@@ -670,19 +705,19 @@ class ViewController:
             'active.p:',active.p and active.p.h,
             'p:',p and p.h)
         # Important: add() will push active.p, not active.
-        self.pending_list.append((active,p.copy()),)
+        self.pending.append((active,p.copy()),)
     #@+node:ekr.20140117131738.16723: *5* vc.enter_organizers (works!?!)
-    def enter_organizers(self,od,n):
+    def enter_organizers(self,od,p): ### n
         '''Enter all organizers whose anchors are p.'''
-        trace = True and not g.unitTesting
         ods = []
         while od:
             ods.append(od)
             od = od.parent_od
         if ods:
             for od in reversed(ods):
-                n = self.add_organizer_node(od,n)
-        return n
+                ### n = self.add_organizer_node(od,n)
+                self.add_organizer_node(od,p)  
+        ### return n
     #@+node:ekr.20140120105910.10490: *5* vc.find_organizer
     def find_organizer(self,parent,p):
         '''Return the organizer that organizers p, if any.'''
@@ -738,7 +773,7 @@ class ViewController:
         existing_organizers = [z.p.copy() for z in self.existing_ods]
         moved_existing_organizers = {} # Keys are vnodes, values are positions.
         for parent in organizers:
-            aList = d.get(parent)
+            aList = d.get(parent,[])
             if trace and trace_moves: g.trace('===== moving/copying children of:',parent.h)
             for p in aList:
                 if p in existing_organizers:
@@ -777,28 +812,32 @@ class ViewController:
     #@+node:ekr.20140109214515.16637: *5* vc.move_bare_organizers
     def move_bare_organizers(self,trace):
         '''Move all nodes in global_bare_organizer_node_list.'''
+        trace = True # and not g.unitTesting
         # For each parent, sort nodes on n.
         d = {} # Keys are vnodes, values are lists of tuples (n,parent,p)
         existing_organizers = [od.p for od in self.existing_ods]
-        if trace: g.trace('ignoring existing organizers:',[p.h for p in existing_organizers])
+        if trace: g.trace('ignoring existing organizers:',
+            [p.h for p in existing_organizers])
         for parent,p,n in self.global_bare_organizer_node_list:
             if p not in existing_organizers:
                 key = parent.v
                 aList = d.get(key,[])
-                if (n,parent,p) not in aList:
-                    aList.append((n,parent,p),)
+                if (parent,p,n) not in aList:
+                    aList.append((parent,p,n),)
                     d[key] = aList
         # For each parent, add nodes in childIndex order.
         def key_func(obj):
             return obj[0]
         for key in d.keys():
             aList = d.get(key)
-            for od in sorted(aList,key=key_func):
-                n,parent,p = od
+            for data in sorted(aList,key=key_func):
+                parent,p,n = data
                 n2 = parent.numberOfChildren()
                 if trace: g.trace(
-                    'move: %-20s to child %2s of %-20s with %s children' % (
-                        p.h,n,parent.h,n2))
+                    'move: %-20s:' % (p.h),
+                    'to child %2s:' % (n),
+                    'of %-20s:' % (parent.h),
+                    'with',n2,'children')
                 p.moveToNthChildOf(parent,n)
     #@+node:ekr.20140112112622.16663: *5* vc.copy_tree_to_last_child_of
     def copy_tree_to_last_child_of(self,p,parent):
@@ -1024,15 +1063,15 @@ class ViewController:
         '''
         # This is called from several places.
         trace = True and not g.unitTesting
-        trace_loop = True
-        trace_success = True
+        trace_loop = False
+        trace_success = False
         if not unl:
             if trace and trace_success:
                 g.trace('return parent for empty unl:',parent.h)
             return parent
         # The new, simpler way: drop components of the unl automatically.
         drop,p = [],parent # for debugging.
-        if trace: g.trace('p:',p.h,'unl:',unl)
+        # if trace: g.trace('p:',p.h,'unl:',unl)
         for s in unl.split('-->'):
             found = False # The last part must match.
             for child in p.children():
