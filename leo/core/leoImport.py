@@ -1838,7 +1838,7 @@ class baseScannerClass (scanUtility):
             # For example, ';' and '=' in C.
         self.strict = False # True if leading whitespace is very significant.
         self.warnAboutUnderindentedLines = True
-    #@+node:ekr.20070808115837: *3* Checking (baseScannerClass)
+    #@+node:ekr.20070808115837: *3* Checking
     #@+node:ekr.20070703122141.102: *4* check
     def check (self,unused_s,unused_parent):
 
@@ -2014,7 +2014,7 @@ class baseScannerClass (scanUtility):
                 self.warning('mismatch in leading whitespace')
                 pr_mismatch(i,line1,line2)
             return messageKind in ('comment','warning') # Only errors are invalid.
-    #@+node:ekr.20091227115606.6468: *5* adjustTestLines (baseScannerClass)
+    #@+node:ekr.20091227115606.6468: *5* adjustTestLines
     def adjustTestLines(self,lines):
 
         '''Ignore newlines.
@@ -2089,7 +2089,7 @@ class baseScannerClass (scanUtility):
         if trace or not g.unitTesting:
             g.blue('\n'.join(aList))
         return False
-    #@+node:ekr.20111101052702.16721: *4* scanAndCompare & helpers (calls tokenize)
+    #@+node:ekr.20111101052702.16721: *4* scanAndCompare & helpers
     def scanAndCompare (self,s1,s2):
 
         '''Tokenize both s1 and s2, then perform a token-based comparison.
@@ -3019,7 +3019,7 @@ class baseScannerClass (scanUtility):
         '''Skip a parenthisized list, that might contain strings or comments.'''
 
         return self.skipBlock(s,i,delim1='(',delim2=')')
-    #@+node:ekr.20070707073627.2: *5* skipString (baseScannerClass)
+    #@+node:ekr.20070707073627.2: *5* skipString
     def skipString (self,s,i):
 
         # Returns len(s) on unterminated string.
@@ -3256,7 +3256,7 @@ class baseScannerClass (scanUtility):
             i += 1
         return i,s[j:i]
 
-    #@+node:ekr.20111030155153.16703: *4* tokenize (baseScannerClass)
+    #@+node:ekr.20111030155153.16703: *4* tokenize
     def tokenize (self,s):
 
         '''Tokenize string s and return a list of tokens (kind,value,line_number)
