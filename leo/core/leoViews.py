@@ -220,6 +220,7 @@ class ViewController:
         trace = True and not g.unitTesting
         c = self.c
         changed = False
+        t1 = time.clock()
         # Create lists of cloned and organizer nodes.
         clones,existing_organizers,organizers = self.find_special_nodes(root)
         # Delete all children of the @auto-view node for this @auto node.
@@ -253,13 +254,28 @@ class ViewController:
         # Create the single @headlines node.
         self.create_at_headlines(root)
         if changed and not g.unitTesting:
-            g.es_print('updated @views node')
+            g.es_print('updated @views node in %4.2f sec.' % (
+                time.clock()-t1))
         if changed:
             c.redraw()
     #@+node:ekr.20140123132424.10471: *5* vc.create_at_headlines
     def create_at_headlines(self,root):
         '''Create the @headlines node for root, an @auto file.'''
-        g.trace(root.h)
+        c = self.c
+        result = []
+        for p in root.subtree():
+            h = getattr(p.v,'imported_headline',None)
+            if h is not None and p.h != h:
+                # g.trace('custom:',p.h,'imported:',h)
+                unl = self.relative_unl(p,root)
+                aList = unl.split('-->')
+                aList[-1] = h
+                unl = '-->'.join(aList)
+                result.append('imported unl: %s\nhead: %s\n' % (
+                    unl,p.h))
+        if result:
+            p = self.find_at_headlines_node(root)
+            p.b = ''.join(result)
     #@+node:ekr.20140123132424.10472: *5* vc.find_special_nodes
     def find_special_nodes(self,root):
         '''
@@ -311,6 +327,8 @@ class ViewController:
                 self.create_clone_links(at_clones,root)
             n = len(self.global_moved_node_list)
             ok = self.check(root)
+            if ok:
+                self.update_headlines_after_read(root)
             c.setChanged(old_changed if ok else False)
                 ### To do: revert if not ok.
         except Exception:
@@ -324,6 +342,8 @@ class ViewController:
             g.es('moved %s nodes in %4.2f sec.' % (n,t2))
             g.trace('@auto-view moved %s nodes in %4.2f sec. for' % (
                 n,t2),root.h,noname=True)
+        c.selectPosition(root)
+        c.redraw()
     #@+node:ekr.20140109214515.16643: *5* vc.check
     def check (self,root):
         '''
@@ -380,7 +400,7 @@ class ViewController:
         else:
             g.trace('bad @clones contents',gnxs,unls)
             return False
-    #@+node:ekr.20131230090121.16532: *5* vc.create_organizer_nodes
+    #@+node:ekr.20131230090121.16532: *5* vc.create_organizer_nodes & helpers
     def create_organizer_nodes(self,at_organizers,root):
         '''
         root is an @auto node. Create an organizer node in root's tree for each
@@ -397,8 +417,59 @@ class ViewController:
             # Move nodes on self.global_moved_node_list to their final locations.
         self.post_move_comments(root)
             # Move merged comments to parent organizer nodes.
-        c.selectPosition(root)
-        c.redraw()
+    #@+node:ekr.20140109214515.16639: *6* vc.post_move_comments
+    def post_move_comments(self,root):
+        '''Move comments from the start of nodes to their parent organizer node.'''
+        c = self.c
+        delims = self.comment_delims(root)
+        for p in root.subtree():
+            if p.hasChildren() and not p.b:
+                s = self.delete_leading_comments(delims,p.firstChild())
+                if s:
+                    p.b = s
+                    # g.trace(p.h)
+    #@+node:ekr.20140106215321.16679: *6* vc.pre_move_comments
+    def pre_move_comments(self,root):
+        '''
+        Move comments from comment nodes to the next node.
+        This must be done before any other processing.
+        '''
+        c = self.c
+        delims = self.comment_delims(root)
+        aList = []
+        for p in root.subtree():
+            if p.hasNext() and self.is_comment_node(p,root,delims=delims):
+                aList.append(p.copy())
+                next = p.next()
+                if p.b: next.b = p.b + next.b
+        # g.trace([z.h for z in aList])
+        c.deletePositionsInList(aList)
+            # This sets c.changed.
+    #@+node:ekr.20140124111748.10635: *5* vc.update_headlines_after_read
+    def update_headlines_after_read(self,root):
+        '''Handle custom headlines for all imported nodes.'''
+        trace = False and not g.unitTesting
+        # Remember the original imported headlines.
+        ivar = 'imported_headline'
+        for p in root.subtree():
+            if not hasattr(p.v,ivar):
+                setattr(p.v,ivar,p.h)
+        # Update headlines from @headlines nodes.
+        at_headlines = self.has_at_headlines_node(root)
+        tag1,tag2 = 'imported unl: ','head: '
+        n1,n2 = len(tag1),len(tag2)
+        if at_headlines:
+            lines = g.splitLines(at_headlines.b)
+            unls  = [s[n1:].strip() for s in lines if s.startswith(tag1)]
+            heads = [s[n2:].strip() for s in lines if s.startswith(tag2)]
+        if len(unls) == len(heads):
+            for unl,head in zip(unls,heads):
+                p = self.find_position_for_relative_unl(root,unl)
+                if p:
+                    if trace: g.trace('unl:',unl,p.h,'==>',head)
+                    p.h = head
+        else:
+            g.trace('bad @headlines body',at_headlines.b)
     #@+node:ekr.20140109214515.16631: *5* vc.print_stats
     def print_stats(self):
         '''Print important stats.'''
@@ -970,34 +1041,6 @@ class ViewController:
         # Return True if p is an organizer node in the given @auto tree.
         # '''
         # return p.hasChildren() and self.is_comment_node(p,root)
-    #@+node:ekr.20140109214515.16639: *5* vc.post_move_comments
-    def post_move_comments(self,root):
-        '''Move comments from the start of nodes to their parent organizer node.'''
-        c = self.c
-        delims = self.comment_delims(root)
-        for p in root.subtree():
-            if p.hasChildren() and not p.b:
-                s = self.delete_leading_comments(delims,p.firstChild())
-                if s:
-                    p.b = s
-                    # g.trace(p.h)
-    #@+node:ekr.20140106215321.16679: *5* vc.pre_move_comments
-    def pre_move_comments(self,root):
-        '''
-        Move comments from comment nodes to the next node.
-        This must be done before any other processing.
-        '''
-        c = self.c
-        delims = self.comment_delims(root)
-        aList = []
-        for p in root.subtree():
-            if p.hasNext() and self.is_comment_node(p,root,delims=delims):
-                aList.append(p.copy())
-                next = p.next()
-                if p.b: next.b = p.b + next.b
-        # g.trace([z.h for z in aList])
-        c.deletePositionsInList(aList)
-            # This sets c.changed.
     #@+node:ekr.20140103062103.16442: *4* vc.find...
     # The find commands create the node if not found.
     #@+node:ekr.20140102052259.16402: *5* vc.find_absolute_unl_node
@@ -1035,11 +1078,25 @@ class ViewController:
         c = self.c
         h = '@clones'
         auto_view = self.find_at_auto_view_node(root)
-        clones = g.findNodeInTree(c,auto_view,h)
-        if not clones:
-            clones = auto_view.insertAsLastChild()
-            clones.h = h
-        return clones
+        p = g.findNodeInTree(c,auto_view,h)
+        if not p:
+            p = auto_view.insertAsLastChild()
+            p.h = h
+        return p
+    #@+node:ekr.20140123132424.10474: *5* vc.find_at_headlines_node
+    def find_at_headlines_node(self,root):
+        '''
+        Find the @headlines node for root, an @auto node.
+        Create the @headlines node if it does not exist.
+        '''
+        c = self.c
+        h = '@headlines'
+        auto_view = self.find_at_auto_view_node(root)
+        p = g.findNodeInTree(c,auto_view,h)
+        if not p:
+            p = auto_view.insertAsLastChild()
+            p.h = h
+        return p
     #@+node:ekr.20131230090121.16518: *5* vc.find_at_organizers_node
     def find_at_organizers_node(self,root):
         '''
@@ -1049,12 +1106,11 @@ class ViewController:
         c = self.c
         h = '@organizers'
         auto_view = self.find_at_auto_view_node(root)
-        assert auto_view
-        organizers = g.findNodeInTree(c,auto_view,h)
-        if not organizers:
-            organizers = auto_view.insertAsLastChild()
-            organizers.h = h
-        return organizers
+        p = g.findNodeInTree(c,auto_view,h)
+        if not p:
+            p = auto_view.insertAsLastChild()
+            p.h = h
+        return p
     #@+node:ekr.20131230090121.16519: *5* vc.find_at_views_node
     def find_at_views_node(self):
         '''
@@ -1180,16 +1236,24 @@ class ViewController:
         Find the @clones node for an @auto node with the given unl.
         Return None if it does not exist.
         '''
-        auto_view = self.has_at_auto_view_node(root)
-        return g.findNodeInTree(self.c,auto_view,'@clones') if auto_view else None
+        p = self.has_at_auto_view_node(root)
+        return p and g.findNodeInTree(self.c,p,'@clones')
+    #@+node:ekr.20140124111748.10637: *5* vc.has_at_headlines_node
+    def has_at_headlines_node(self,root):
+        '''
+        Find the @clones node for an @auto node with the given unl.
+        Return None if it does not exist.
+        '''
+        p = self.has_at_auto_view_node(root)
+        return p and g.findNodeInTree(self.c,p,'@headlines')
     #@+node:ekr.20131230090121.16531: *5* vc.has_at_organizers_node
     def has_at_organizers_node(self,root):
         '''
         Find the @organizers node for root, an @auto node.
         Return None if it does not exist.
         '''
-        auto_view = self.has_at_auto_view_node(root)
-        return g.findNodeInTree(self.c,auto_view,'@organizers') if auto_view else None
+        p = self.has_at_auto_view_node(root)
+        return p and g.findNodeInTree(self.c,p,'@organizers')
     #@+node:ekr.20131230090121.16535: *5* vc.has_at_views_node
     def has_at_views_node(self):
         '''Return the @views or None if it does not exist.'''
