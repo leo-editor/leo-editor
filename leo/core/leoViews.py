@@ -249,7 +249,9 @@ class ViewController:
         # Create one @existing-organizer node for each existing organizer.
         for p in existing_organizers:
             at_organizer = at_organizers.insertAsLastChild()
-            at_organizer.h = '@existing-organizer: %s' % p.h
+            h = getattr(p.v,self.headline_ivar,p.h) ###
+            if trace and h != p.h: g.trace(p.h,'==>',h)
+            at_organizer.h = '@existing-organizer: %s' % h ### p.h
             # The organizer node's unl is implicit in each child's unl.
             at_organizer.b = '\n'.join([
                 'unl: '+self.relative_unl(z,root) for z in p.children()])
@@ -559,7 +561,9 @@ class ViewController:
                     ivar = 'imported_headline'
                     for p in root.subtree():
                         if not hasattr(p.v,ivar):
-                            setattr(p.v,ivar,scanner.headlineForNode(fn,p))
+                            h = scanner.headlineForNode(fn,p)
+                            setattr(p.v,ivar,h)
+                            if h != p.h: g.trace(p.h,'==>',h)
             #@+node:ekr.20140125071842.10479: *6* strip_sentinels
             def strip_sentinels(self):
                 '''Write the file to a string without headlines or sentinels.'''
@@ -577,7 +581,6 @@ class ViewController:
             ConvertController(c,root).run()
         else:
             g.es_print('not an @file node:',root.h)
-
     #@+node:ekr.20140120105910.10488: *3* vc.Main Lines
     #@+node:ekr.20140115180051.16709: *4* vc.precompute_all_data & helpers
     def precompute_all_data(self,at_organizers,root):
@@ -656,7 +659,8 @@ class ViewController:
             od.source_unl = self.source_unl(self.organizer_unls,od.unl)
             od.p = self.find_position_for_relative_unl(root,od.source_unl)
             od.anchor = od.p
-            assert od.p,(od.source_unl,[z.h for z in self.existing_ods])
+            assert od.p,'\nod: %s\nod.source: %s\nexisting_ods:\n%s' % (
+                od.h,od.source_unl,'\n'.join(sorted([z.h for z in self.existing_ods])))
             assert od.p.h == od.h,(od.p.h,od.h)  
             od.parent = od.p # Here, od.parent represents the "source" p.
             if trace: g.trace(
@@ -1254,7 +1258,7 @@ class ViewController:
             if p.v.gnx == gnx:
                 return p
         return None
-    #@+node:ekr.20131230090121.16539: *5* vc.find_position_for_relative_unl
+    #@+node:ekr.20131230090121.16539: *5* vc.find_position_for_relative_unl (must backtrack)
     def find_position_for_relative_unl(self,parent,unl):
         '''
         Return the node in parent's subtree matching the given unl.
@@ -1495,12 +1499,16 @@ class ViewController:
             if p == root:
                 break
             else:
-                result.append(p.h)
+                h = getattr(p.v,self.headline_ivar,p.h)
+                result.append(h)
         return '-->'.join(reversed(result))
 
     def unl(self,p):
         '''Return the unl corresponding to the given position.'''
-        return '-->'.join(reversed([p.h for p in p.self_and_parents()]))
+        return '-->'.join(reversed([
+            getattr(p.v,self.headline_ivar,p.h)
+                for p in p.self_and_parents()]))
+        # return '-->'.join(reversed([p.h for p in p.self_and_parents()]))
     #@+node:ekr.20140106215321.16680: *5* vc.source_unl
     def source_unl(self,organizer_unls,organizer_unl):
         '''Return the unl of the source node for the given organizer_unl.'''

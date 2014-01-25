@@ -2681,7 +2681,7 @@ class baseScannerClass (scanUtility):
     #@+node:ekr.20140125141655.10472: *3* headlineForNode (baseScannerClass)
     def headlineForNode(self,fn,p):
         '''Return the expected imported headline for p.b'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         # From scan: parse the decls.s
         s = p.b
         if self.hasDecls:
