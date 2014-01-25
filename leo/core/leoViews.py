@@ -462,6 +462,8 @@ class ViewController:
             lines = g.splitLines(at_headlines.b)
             unls  = [s[n1:].strip() for s in lines if s.startswith(tag1)]
             heads = [s[n2:].strip() for s in lines if s.startswith(tag2)]
+        else:
+            unls,heads = [],[]
         if len(unls) == len(heads):
             for unl,head in zip(unls,heads):
                 p = self.find_position_for_relative_unl(root,unl)
