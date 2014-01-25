@@ -549,7 +549,10 @@ class ViewController:
                 ext = '.'+g.app.language_extension_dict.get(language)
                 aClass = ic.classDispatchDict.get(ext)
                 scanner = aClass(importCommands=ic,atAuto=True)
-                fn = root.h.replace('\\','/') # 2011/11/25
+                # Duplicate the fn logic from ic.createOutline.
+                theDir = g.setDefaultDirectory(c,root,importing=True)
+                fn = c.os_path_finalize_join(theDir,root.h)
+                fn = root.h.replace('\\','/')
                 junk,fn = g.os_path_split(fn)
                 fn,junk = g.os_path_splitext(fn)
                 if aClass and hasattr(scanner,'headlineForNode'):
