@@ -63,6 +63,7 @@ class ViewController:
     def __init__ (self,c):
         '''Ctor for ViewController class.'''
         self.c = c
+        self.headline_ivar = 'imported_headline'
         self.init()
         
     def init(self):
@@ -522,6 +523,8 @@ class ViewController:
                 '''Convert an @file tree to @auto tree.'''
                 c = self.c
                 root,vc = self.root,c.viewController
+                # Set v.imported_headline for all nodes.
+                self.set_expected_imported_headlines(root)
                 # Create the appropriate @auto-view node.
                 at_auto_view = vc.update_before_write_at_auto_file(root)
                 # Write the @file node as if it were an @auto node.
@@ -537,6 +540,23 @@ class ViewController:
                 if p:
                     c.selectPosition(p)
                 c.redraw()
+            #@+node:ekr.20140125141655.10476: *6* set_expected_imported_headlines
+            def set_expected_imported_headlines(self,root):
+                '''set v.imported_headline for all nodes.'''
+                c = self.c
+                ic = self.c.importCommands
+                language = g.scanForAtLanguage(c,root) 
+                ext = '.'+g.app.language_extension_dict.get(language)
+                aClass = ic.classDispatchDict.get(ext)
+                scanner = aClass(importCommands=ic,atAuto=True)
+                fn = root.h.replace('\\','/') # 2011/11/25
+                junk,fn = g.os_path_split(fn)
+                fn,junk = g.os_path_splitext(fn)
+                if aClass and hasattr(scanner,'headlineForNode'):
+                    ivar = 'imported_headline'
+                    for p in root.subtree():
+                        if not hasattr(p.v,ivar):
+                            setattr(p.v,ivar,scanner.headlineForNode(fn,p))
             #@+node:ekr.20140125071842.10479: *6* strip_sentinels
             def strip_sentinels(self):
                 '''Write the file to a string without headlines or sentinels.'''

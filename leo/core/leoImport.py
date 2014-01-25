@@ -141,7 +141,7 @@ class scanUtility:
 class leoImportCommands (scanUtility):
 
     #@+others
-    #@+node:ekr.20031218072017.3207: *3* import.__init__ & helper
+    #@+node:ekr.20031218072017.3207: *3* import.__init__ & helpers
     def __init__ (self,c):
 
         self.c = c
@@ -160,7 +160,41 @@ class leoImportCommands (scanUtility):
         self.web_st = [] # noweb symbol table.
 
         self.createImportDispatchDict()
-    #@+node:ekr.20080825131124.3: *4* createImportDispatchDict
+        self.createClassDispatchDict()
+    #@+node:ekr.20140125141655.10473: *4* ic.createClassDispatchDict
+    def createClassDispatchDict(self):
+        '''
+        Create a dict whose keys are file extensions and whose values are the
+        corresponding subclass of baseScannerClass.
+        ''' 
+        self.classDispatchDict = {
+            '.c':       cScanner,
+            '.h':       cScanner,
+            '.h++':     cScanner,
+            '.cc':      cScanner,
+            '.c++':     cScanner,
+            '.cpp':     cScanner,
+            '.cxx':     cScanner,
+            '.cfg':     iniScanner,
+            '.cs':      cSharpScanner,
+            '.el':      elispScanner,
+            '.htm':     htmlScanner,
+            '.html':    htmlScanner,
+            '.ini':     iniScanner,
+            '.java':    javaScanner,
+            '.js':      JavaScriptScanner,
+            '.otl':     vimoutlinerScanner,
+            '.php':     phpScanner,
+            '.pas':     pascalScanner,
+            '.py':      pythonScanner,
+            '.pyw':     pythonScanner,
+            # '.txt':     rstScanner, # A reasonable default.
+            # '.rest':    rstScanner,
+            # '.rst':     rstScanner,
+            '.ts':      TypeScriptScanner,
+            '.xml':     xmlScanner,
+        }
+    #@+node:ekr.20080825131124.3: *4* ic.createImportDispatchDict
     def createImportDispatchDict (self):
 
         self.importDispatchDict = {
@@ -2644,6 +2678,47 @@ class baseScannerClass (scanUtility):
     def warning (self,s):
         if not g.unitTesting:
             g.warning('Warning:',s)
+    #@+node:ekr.20140125141655.10472: *3* headlineForNode (baseScannerClass)
+    def headlineForNode(self,fn,p):
+        '''Return the expected imported headline for p.b'''
+        trace = True and not g.unitTesting
+        # From scan: parse the decls.s
+        s = p.b
+        if self.hasDecls:
+            i = self.skipDecls(s,0,len(s),inClass=False)
+            decls = s[:i]
+            if decls:
+                val = '%s declarations' % fn
+                if trace and val != p.h: g.trace(p.h,'==>',val)
+                return val
+        # From scanHelper: look for the first def or class.
+        i = 0
+        while i < len(s):
+            progress = i
+            if s[i] in (' ','\t','\n'):
+                i += 1 # Prevent lookahead below, and speed up the scan.
+            elif self.startsComment(s,i):
+                i = self.skipComment(s,i)
+            elif self.startsString(s,i):
+                i = self.skipString(s,i)
+            elif self.startsClass(s,i):
+                val = 'class '+self.sigId
+                if trace and val != p.h: g.trace(p.h,'==>',val)
+                return val
+            elif self.startsFunction(s,i):
+                val = self.sigId
+                if trace and val != p.h: g.trace(p.h,'==>',val)
+                return val
+            elif self.startsId(s,i):
+                i = self.skipId(s,i)
+            elif g.match(s,i,self.outerBlockDelim1): # and kind == 'outer'
+                # Do this after testing for classes.
+                i = self.skipBlock(s,i,delim1=self.outerBlockDelim1,delim2=self.outerBlockDelim2)
+            else: i += 1
+            if progress >= i:
+                i = self.skipBlock(s,i,delim1=self.outerBlockDelim1,delim2=self.outerBlockDelim2)
+            assert progress < i,'i: %d, ch: %s' % (i,repr(s[i]))
+        return p.h
     #@+node:ekr.20070706084535.1: *3* Parsing
     #@+at Scan and skipDecls would typically not be overridden.
     #@+node:ekr.20071201072917: *4* adjustDefStart
@@ -3211,71 +3286,6 @@ class baseScannerClass (scanUtility):
     def startsString(self,s,i):
 
         return g.match(s,i,'"') or g.match(s,i,"'")
-    #@+node:ekr.20111103073536.16583: *3* Tokenizing (baseScannerClass)
-    #@+node:ekr.20111103073536.16586: *4* skip...Token (baseScannerClass)
-    def skipCommentToken (self,s,i):
-        j = self.skipComment(s,i)
-        return j,s[i:j]
-
-    def skipIdToken (self,s,i):
-        j = self.skipId(s,i)
-        return j,s[i:j]
-
-    def skipNewlineToken (self,s,i):
-        return i+1,'\n'
-
-    def skipOtherToken (self,s,i):
-        return i+1,s[i]
-
-    def skipStringToken(self,s,i):
-        j = self.skipString(s,i)
-        return j,s[i:j]
-
-    def skipWsToken(self,s,i):
-        j = i
-        while i < len(s) and s[i] != '\n' and s[i].isspace():
-            i += 1
-        return i,s[j:i]
-
-    #@+node:ekr.20111030155153.16703: *4* tokenize
-    def tokenize (self,s):
-
-        '''Tokenize string s and return a list of tokens (kind,value,line_number)
-
-        where kind is in ('comment,'id','nl','other','string','ws').
-
-        This is used only to verify the imported text.
-        '''
-
-        result,i,line_number = [],0,0
-        while i < len(s):
-            progress = j = i
-            ch = s[i]
-            if ch == '\n':
-                kind = 'nl'
-                i,val = self.skipNewlineToken(s,i)
-            elif ch in ' \t': # self.isSpace(s,i):
-                kind = 'ws'
-                i,val = self.skipWsToken(s,i)
-            elif self.startsComment(s,i):
-                kind = 'comment'
-                i,val = self.skipCommentToken(s,i)
-            elif self.startsString(s,i):
-                kind = 'string'
-                i,val = self.skipStringToken(s,i)
-            elif self.startsId(s,i):
-                kind = 'id'
-                i,val = self.skipIdToken(s,i)
-            else:
-                kind = 'other'
-                i,val = self.skipOtherToken(s,i)
-            assert progress < i and j == progress
-            if val:
-                result.append((kind,val,line_number),)
-            # Use the raw token, s[j:i] to count newlines, not the munged val.
-            line_number += s[j:i].count('\n')
-            # g.trace('%3s %7s %s' % (line_number,kind,repr(val[:20])))
-        return result
     #@+node:ekr.20070707072749: *3* run (baseScannerClass)
     def run (self,s,parent):
         '''The common top-level code for all scanners.'''
@@ -3361,6 +3371,71 @@ class baseScannerClass (scanUtility):
             self.report(message)
 
         return ''.join(result)
+    #@+node:ekr.20111103073536.16583: *3* Tokenizing (baseScannerClass)
+    #@+node:ekr.20111103073536.16586: *4* skip...Token (baseScannerClass)
+    def skipCommentToken (self,s,i):
+        j = self.skipComment(s,i)
+        return j,s[i:j]
+
+    def skipIdToken (self,s,i):
+        j = self.skipId(s,i)
+        return j,s[i:j]
+
+    def skipNewlineToken (self,s,i):
+        return i+1,'\n'
+
+    def skipOtherToken (self,s,i):
+        return i+1,s[i]
+
+    def skipStringToken(self,s,i):
+        j = self.skipString(s,i)
+        return j,s[i:j]
+
+    def skipWsToken(self,s,i):
+        j = i
+        while i < len(s) and s[i] != '\n' and s[i].isspace():
+            i += 1
+        return i,s[j:i]
+
+    #@+node:ekr.20111030155153.16703: *4* tokenize
+    def tokenize (self,s):
+
+        '''Tokenize string s and return a list of tokens (kind,value,line_number)
+
+        where kind is in ('comment,'id','nl','other','string','ws').
+
+        This is used only to verify the imported text.
+        '''
+
+        result,i,line_number = [],0,0
+        while i < len(s):
+            progress = j = i
+            ch = s[i]
+            if ch == '\n':
+                kind = 'nl'
+                i,val = self.skipNewlineToken(s,i)
+            elif ch in ' \t': # self.isSpace(s,i):
+                kind = 'ws'
+                i,val = self.skipWsToken(s,i)
+            elif self.startsComment(s,i):
+                kind = 'comment'
+                i,val = self.skipCommentToken(s,i)
+            elif self.startsString(s,i):
+                kind = 'string'
+                i,val = self.skipStringToken(s,i)
+            elif self.startsId(s,i):
+                kind = 'id'
+                i,val = self.skipIdToken(s,i)
+            else:
+                kind = 'other'
+                i,val = self.skipOtherToken(s,i)
+            assert progress < i and j == progress
+            if val:
+                result.append((kind,val,line_number),)
+            # Use the raw token, s[j:i] to count newlines, not the munged val.
+            line_number += s[j:i].count('\n')
+            # g.trace('%3s %7s %s' % (line_number,kind,repr(val[:20])))
+        return result
     #@-others
 #@-<< class baseScannerClass >>
 #@+others

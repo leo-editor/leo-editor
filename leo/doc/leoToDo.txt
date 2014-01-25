@@ -4039,7 +4039,7 @@ def get_user_types (self):
             for val in d.get(key):
                 print('  %s' % (val))
 
-.. @+node:ekr.20031218072017.3207: *5* import.__init__ & helper
+.. @+node:ekr.20031218072017.3207: *5* import.__init__ & helpers
 def __init__ (self,c):
 
     self.c = c
@@ -4058,7 +4058,41 @@ def __init__ (self,c):
     self.web_st = [] # noweb symbol table.
 
     self.createImportDispatchDict()
-.. @+node:ekr.20080825131124.3: *6* createImportDispatchDict
+    self.createClassDispatchDict()
+.. @+node:ekr.20140125141655.10473: *6* ic.createClassDispatchDict
+def createClassDispatchDict(self):
+    '''
+    Create a dict whose keys are file extensions and whose values are the
+    corresponding subclass of baseScannerClass.
+    ''' 
+    self.classDispatchDict = {
+        '.c':       cScanner,
+        '.h':       cScanner,
+        '.h++':     cScanner,
+        '.cc':      cScanner,
+        '.c++':     cScanner,
+        '.cpp':     cScanner,
+        '.cxx':     cScanner,
+        '.cfg':     iniScanner,
+        '.cs':      cSharpScanner,
+        '.el':      elispScanner,
+        '.htm':     htmlScanner,
+        '.html':    htmlScanner,
+        '.ini':     iniScanner,
+        '.java':    javaScanner,
+        '.js':      JavaScriptScanner,
+        '.otl':     vimoutlinerScanner,
+        '.php':     phpScanner,
+        '.pas':     pascalScanner,
+        '.py':      pythonScanner,
+        '.pyw':     pythonScanner,
+        # '.txt':     rstScanner, # A reasonable default.
+        # '.rest':    rstScanner,
+        # '.rst':     rstScanner,
+        '.ts':      TypeScriptScanner,
+        '.xml':     xmlScanner,
+    }
+.. @+node:ekr.20080825131124.3: *6* ic.createImportDispatchDict
 def createImportDispatchDict (self):
 
     self.importDispatchDict = {
