@@ -4079,7 +4079,7 @@ def createImportDispatchDict (self):
         '.ini':     self.scanIniText,
         '.java':    self.scanJavaText,
         '.js':      self.scanJavaScriptText,
-        '.otl':     self.scanVimoutlinterText,
+        '.otl':     self.scanVimoutlinerText,
         '.php':     self.scanPHPText,
         '.pas':     self.scanPascalText,
         '.py':      self.scanPythonText,

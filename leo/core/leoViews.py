@@ -222,7 +222,8 @@ class ViewController:
         changed = False
         t1 = time.clock()
         # Create lists of cloned and organizer nodes.
-        clones,existing_organizers,organizers = self.find_special_nodes(root)
+        clones,existing_organizers,organizers = \
+            self.find_special_nodes(root)
         # Delete all children of the @auto-view node for this @auto node.
         at_auto_view = self.find_at_auto_view_node(root)
         if at_auto_view.hasChildren():
@@ -258,13 +259,15 @@ class ViewController:
                 time.clock()-t1))
         if changed:
             c.redraw()
+        return at_auto_view # For at-file-to-at-auto command.
     #@+node:ekr.20140123132424.10471: *5* vc.create_at_headlines
     def create_at_headlines(self,root):
         '''Create the @headlines node for root, an @auto file.'''
         c = self.c
         result = []
+        ivar = 'imported_headline'
         for p in root.subtree():
-            h = getattr(p.v,'imported_headline',None)
+            h = getattr(p.v,ivar,None)
             if h is not None and p.h != h:
                 # g.trace('custom:',p.h,'imported:',h)
                 unl = self.relative_unl(p,root)
@@ -273,6 +276,7 @@ class ViewController:
                 unl = '-->'.join(aList)
                 result.append('imported unl: %s\nhead: %s\n' % (
                     unl,p.h))
+                delattr(p.v,ivar)
         if result:
             p = self.find_at_headlines_node(root)
             p.b = ''.join(result)
@@ -282,7 +286,8 @@ class ViewController:
         Scan root's tree, looking for organizer and cloned nodes.
         Exclude organizers on imported organizers list.
         '''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
+        verbose = False
         clones,existing_organizers,organizers = [],[],[]
         if trace: g.trace('imported existing',
             [v.h for v in self.imported_organizers_list])
@@ -335,7 +340,7 @@ class ViewController:
             g.es_exception()
             n = 0
             ok = False
-        if ok and n > 0:
+        if ok: #  and n > 0:
             self.print_stats()
             t2 = time.clock()-t1
             g.es('rearraned: %s' % (root.h),color='blue')
@@ -344,6 +349,7 @@ class ViewController:
                 n,t2),root.h,noname=True)
         c.selectPosition(root)
         c.redraw()
+        return ok
     #@+node:ekr.20140109214515.16643: *5* vc.check
     def check (self,root):
         '''
@@ -482,6 +488,68 @@ class ViewController:
             g.trace('moved:   %3s' % (
                 len( self.global_bare_organizer_node_list) +
                 len(self.global_moved_node_list)))
+    #@+node:ekr.20140125071842.10474: *4* vc.convert_at_file_to_at_auto
+    def convert_at_file_to_at_auto(self,root):
+        # Define class ConvertController.
+        #@+others
+        #@+node:ekr.20140125071842.10475: *5* class ConvertController
+        class ConvertController:
+            def __init__ (self,c,p):
+                self.c = c
+                self.root = p.copy()
+            #@+others
+            #@+node:ekr.20140125071842.10476: *6* create_at_auto_view_node
+            def create_at_auto_view_node(self):
+                '''Create the @auto-view tree from the @file node.'''
+                c,root = self.c,self.root
+                c.viewController.update_before_write_at_auto_file(root)
+            #@+node:ekr.20140125071842.10477: *6* import_from_string
+            def import_from_string(self,s):
+                '''Import from s into a temp outline.'''
+                c = self.c
+                ic = c.importCommands
+                root = self.root
+                language = g.scanForAtLanguage(c,root) 
+                ext = '.'+g.app.language_extension_dict.get(language)
+                scanner = ic.importDispatchDict.get(ext)
+                # g.trace(language,ext,scanner.__name__)
+                p = root.insertAfter()
+                ok = scanner(s,p,atAuto=True)
+                p.h = root.h.replace('@file','@auto' if ok else '@@auto')
+                return ok,p
+            #@+node:ekr.20140125071842.10478: *6* run
+            def run(self):
+                '''Convert an @file tree to @auto tree.'''
+                c = self.c
+                root,vc = self.root,c.viewController
+                # Create the appropriate @auto-view node.
+                at_auto_view = vc.update_before_write_at_auto_file(root)
+                # Write the @file node as if it were an @auto node.
+                s = self.strip_sentinels()
+                # Import the @auto string.
+                ok,p = self.import_from_string(s)
+                if ok:
+                    # Change at_auto_view.b so it matches p.gnx.
+                    at_auto_view.b = vc.at_auto_view_body(p)
+                    # Recreate the organizer nodes, headlines, etc.
+                    ok = vc.update_after_read_at_auto_file(p)
+                    if not ok: p.h = '@@' + p.h
+                if p:
+                    c.selectPosition(p)
+                c.redraw()
+            #@+node:ekr.20140125071842.10479: *6* strip_sentinels
+            def strip_sentinels(self):
+                '''Write the file to a string without headlines or sentinels.'''
+                trace = False and not g.unitTesting
+                at = self.c.atFileCommands
+                ok = at.writeOneAtAutoNode(self.root,
+                    toString=True,force=True,trialWrite=True)
+                s = at.stringOutput if ok else ''
+                if trace: g.trace('ok:',ok,'s:...\n'+s)
+                return s
+            #@-others
+        #@-others
+        ConvertController(self.c,root).run()
     #@+node:ekr.20140120105910.10488: *3* vc.Main Lines
     #@+node:ekr.20140115180051.16709: *4* vc.precompute_all_data & helpers
     def precompute_all_data(self,at_organizers,root):
@@ -679,7 +747,7 @@ class ViewController:
         and placing itms on the global moved nodes list.
         '''
         trace = False # and not g.unitTesting
-        trace_loop = False
+        trace_loop = True
         active = None # The active od.
         self.pending = [] # Lists of pending demotions.
         d = self.anchor_offset_d # For traces.
@@ -840,22 +908,28 @@ class ViewController:
         # Create a dictionary of each organizers children.
         d = {}
         for parent,p in self.global_moved_node_list:
-            aList = d.get(parent,[])
+            # This key must remain stable if parent moves.
+            key = parent
+            aList = d.get(key,[])
             aList.append(p)
-            d[parent] = aList
+            # g.trace(key,[z.h for z in aList])
+            d[key] = aList
         if trace and trace_dict:
             # g.trace('d...',sorted([z.h for z in d.keys()]))
             g.trace('d{}...')
             for key in sorted(d.keys()):
                 aList = [z.h for z in d.get(key)]
-                g.trace('%-20s %s' % (key.h,self.dump_list(aList,indent=29)))
+                g.trace('%s %-20s %s' % (id(key),key.h,self.dump_list(aList,indent=29)))
         # Move *copies* of non-organizer nodes to each organizer.
         organizers = list(d.keys())
         existing_organizers = [z.p.copy() for z in self.existing_ods]
         moved_existing_organizers = {} # Keys are vnodes, values are positions.
         for parent in organizers:
-            aList = d.get(parent,[])
-            if trace and trace_moves: g.trace('===== moving/copying children of:',parent.h)
+            key = parent
+            aList = d.get(key,[])
+            if trace and trace_moves:
+                g.trace('===== moving/copying children of:',
+                    key,[z.h for z in aList])
             for p in aList:
                 if p in existing_organizers:
                     if trace and trace_moves:
@@ -868,7 +942,14 @@ class ViewController:
                     moved_existing_organizers[p.v] = copy
                 elif p in organizers:
                     if trace and trace_moves: g.trace('moving organizer:',p.h)
+                    aList = d.get(p)
+                    if aList:
+                        if trace and trace_moves: g.trace('**** relocating aList',
+                            p.h,[z.h for z in aList])
+                        del d[p]
                     p.moveToLastChildOf(parent)
+                    if aList:
+                        d[p] = aList
                 else:
                     parent2 = moved_existing_organizers.get(parent.v)
                     if parent2:
@@ -882,13 +963,16 @@ class ViewController:
             parent,p = od
             return p.sort_key(p)
         sorted_list = sorted(self.global_moved_node_list,key=sort_key)
-        if trace and trace_deletes: g.trace('===== deleting nodes in reverse outline order...')
+        if trace and trace_deletes:
+            g.trace('===== deleting nodes in reverse outline order...')
         for parent,p in reversed(sorted_list):
             if p.v in moved_existing_organizers:
-                if trace and trace_deletes: g.trace('deleting moved existing organizer:',p.h)
+                if trace and trace_deletes:
+                    g.trace('deleting moved existing organizer:',p.h)
                 p.doDelete()
             elif p not in organizers:
-                if trace and trace_deletes: g.trace('deleting non-organizer:',p.h)
+                if trace and trace_deletes:
+                    g.trace('deleting non-organizer:',p.h)
                 p.doDelete()
     #@+node:ekr.20140109214515.16637: *5* vc.move_bare_organizers
     def move_bare_organizers(self,trace):
@@ -938,11 +1022,13 @@ class ViewController:
     def at_auto_view_body(self,p):
         '''Return the body text for the @auto-view node for p.'''
         # Note: the unl of p relative to p is simply p.h,
-        # so it is pointless to add that to @auto-view node.
+        # so it is pointless to add that to the @auto-view node.
         return 'gnx: %s\n' % p.v.gnx
-        
+
     def match_at_auto_body(self,p,auto_view):
         '''Return True if any line of auto_view.b matches the expected gnx line.'''
+        if 0: g.trace(p.b == 'gnx: %s\n' % auto_view.v.gnx,
+            g.shortFileName(p.h),auto_view.v.gnx,p.b.strip())
         return p.b == 'gnx: %s\n' % auto_view.v.gnx
     #@+node:ekr.20131230090121.16522: *4* vc.clean_nodes (not used)
     def clean_nodes(self):
@@ -1147,8 +1233,8 @@ class ViewController:
         The unl is relative to the parent position.
         '''
         # This is called from several places.
-        trace = True and not g.unitTesting
-        trace_loop = False
+        trace = False and not g.unitTesting
+        trace_loop = True
         trace_success = False
         if not unl:
             if trace and trace_success:
@@ -1174,9 +1260,7 @@ class ViewController:
             if trace and trace_success:
                 g.trace('found unl:',unl,'parent:',p.h,'drop',drop)
         else:
-            # For now, always trace failures, except in unit tests.
-            if not g.unitTesting or trace:
-                g.trace('===== unl not found:',unl,'parent:',p.h,'drop',drop)
+            if trace: g.trace('===== unl not found:',unl,'parent:',p.h,'drop',drop)
         return p if found else None
     #@+node:ekr.20131230090121.16544: *5* vc.find_representative_node
     def find_representative_node (self,root,target):
@@ -1224,7 +1308,7 @@ class ViewController:
         Return None if no such node exists.
         '''
         c = self.c
-        assert self.is_at_auto_node(root)
+        assert self.is_at_auto_node(root) or self.is_at_file_node(root),root
         views = g.findNodeAnywhere(c,'@views')
         if views:
             # Find a direct child of views with matching headline and body.
@@ -1261,11 +1345,15 @@ class ViewController:
         '''Return the @views or None if it does not exist.'''
         return g.findNodeAnywhere(self.c,'@views')
     #@+node:ekr.20140105055318.16755: *4* vc.is...
-    #@+node:ekr.20131230090121.16524: *5* vc.is_at_auto_node
+    #@+node:ekr.20131230090121.16524: *5* vc.is_at_auto/file_node
     def is_at_auto_node(self,p):
         '''Return True if p is an @auto node.'''
         return g.match_word(p.h,0,'@auto') and not g.match(p.h,0,'@auto-')
             # Does not match @auto-rst, etc.
+
+    def is_at_file_node(self,p):
+        '''Return True if p is an @file node.'''
+        return g.match_word(p.h,0,'@file')
     #@+node:ekr.20140102052259.16398: *5* vc.is_cloned_outside_parent_tree
     def is_cloned_outside_parent_tree(self,p):
         '''Return True if a clone of p exists outside the tree of p.parent().'''

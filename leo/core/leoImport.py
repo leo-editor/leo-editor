@@ -181,7 +181,7 @@ class leoImportCommands (scanUtility):
             '.ini':     self.scanIniText,
             '.java':    self.scanJavaText,
             '.js':      self.scanJavaScriptText,
-            '.otl':     self.scanVimoutlinterText,
+            '.otl':     self.scanVimoutlinerText,
             '.php':     self.scanPHPText,
             '.pas':     self.scanPascalText,
             '.py':      self.scanPythonText,
@@ -897,7 +897,7 @@ class leoImportCommands (scanUtility):
         if p.isAtAutoRstNode(): # @auto-rst is independent of file extension.
             func = self.scanRstText
         elif p.isAtAutoOtlNode():
-            func = self.scanVimoutlinterText
+            func = self.scanVimoutlinerText
         else:
             func = self.importDispatchDict.get(ext)
         if func and not c.config.getBool('suppress_import_parsing',default=False):
@@ -1476,51 +1476,42 @@ class leoImportCommands (scanUtility):
     #@+node:ekr.20071127175948.1: *3* Import scanners
     #@+node:edreamleo.20070710110153: *4* scanCText
     def scanCText (self,s,parent,atAuto=False):
-
+        '''Scan C text.'''
         scanner = cScanner(importCommands=self,atAuto=atAuto)
-
-        scanner.run(s,parent)
+        return scanner.run(s,parent)
     #@+node:ekr.20071008130845.1: *4* scanCSharpText
     def scanCSharpText (self,s,parent,atAuto=False):
-
+        '''Scan C# text.'''
         scanner = cSharpScanner(importCommands=self,atAuto=atAuto)
-
-        scanner.run(s,parent)
+        return scanner.run(s,parent)
     #@+node:ekr.20070711060107.1: *4* scanElispText
     def scanElispText (self,s,parent,atAuto=False):
-
+        '''Scan elisp text.'''
         scanner = elispScanner(importCommands=self,atAuto=atAuto)
-
-        scanner.run(s,parent)
+        return scanner.run(s,parent)
     #@+node:ekr.20111029055127.16618: *4* scanHtmlText
     def scanHtmlText (self,s,parent,atAuto=False):
-
-        # g.trace(atAuto,parent.h)
-
+        '''Scan HTML text.'''
         scanner = htmlScanner(importCommands=self,atAuto=atAuto)
-
-        scanner.run(s,parent)
+        return scanner.run(s,parent)
     #@+node:ekr.20100803231223.5808: *4* scanIniText
     def scanIniText (self,s,parent,atAuto=False):
-
+        '''Scan .ini text'''
         scanner = iniScanner(importCommands=self,atAuto=atAuto)
-
-        scanner.run(s,parent)
+        return scanner.run(s,parent)
     #@+node:edreamleo.20070710110114.2: *4* scanJavaText
     def scanJavaText (self,s,parent,atAuto=False):
-
+        '''Scan Java text'''
         scanner = javaScanner(importCommands=self,atAuto=atAuto)
-
-        scanner.run(s,parent)
+        return scanner.run(s,parent)
     #@+node:ekr.20071027111225.1: *4* scanJavaScriptText
     def scanJavaScriptText (self,s,parent,atAuto=False):
-
+        '''Scan JavaScript text'''
         scanner = JavaScriptScanner(importCommands=self,atAuto=atAuto)
-
-        scanner.run(s,parent)
+        return scanner.run(s,parent)
     #@+node:ekr.20101027055033.5967: *4* scanNSIText
     def scanNSIText (self,s,p,ext,atAuto=False):
-
+        '''Scan NSI text'''
         c = self.c
         changed = c.isChanged()
         # body = g.choose(atAuto,'','@ignore\n')
@@ -1529,7 +1520,6 @@ class leoImportCommands (scanUtility):
         # else:
             # language = self.languageForExtension(ext)
             # if language: body += '@language %s\n' % language
-
         assert self.rootLine == ''
         body = '@language ini\n\n'
         self.setBodyString(p,body+s)
@@ -1537,50 +1527,41 @@ class leoImportCommands (scanUtility):
             p.clearDirty()
             if not changed:
                 c.setChanged(False)
-
         g.app.unitTestDict = {'result':True}
+        return True
     #@+node:ekr.20070711104241.2: *4* scanPascalText
     def scanPascalText (self,s,parent,atAuto=False):
-
+        '''Scan Pascal text'''
         scanner = pascalScanner(importCommands=self,atAuto=atAuto)
-
-        scanner.run(s,parent)
+        return scanner.run(s,parent)
     #@+node:ekr.20070711090122: *4* scanPHPText
     def scanPHPText (self,s,parent,atAuto=False):
-
+        '''Scan PHP text.'''
         scanner = phpScanner(importCommands=self,atAuto=atAuto)
-        scanner.run(s,parent)
+        return scanner.run(s,parent)
     #@+node:ekr.20070703122141.99: *4* scanPythonText
     def scanPythonText (self,s,parent,atAuto=False):
-        '''Scan python text.'''
-        if 0:
-            scanner = NewPythonScanner(importCommands=self,atAuto=atAuto)
-        else:
-            scanner = pythonScanner(importCommands=self,atAuto=atAuto)
-        scanner.run(s,parent)
+        '''Scan Python text.'''
+        scanner = pythonScanner(importCommands=self,atAuto=atAuto)
+        return scanner.run(s,parent)
     #@+node:ekr.20090501095634.48: *4* scanRstText
     def scanRstText (self,s,parent,atAuto=False):
-
+        '''Scan reStructuredText.'''
         scanner = rstScanner(importCommands=self,atAuto=atAuto)
-
-        scanner.run(s,parent)
+        return scanner.run(s,parent)
     #@+node:ekr.20121011093316.10102: *4* scanTypeScriptText
     def scanTypeScriptText (self,s,parent,atAuto=False):
-
+        '''Scan TypeScript text.'''
         scanner = TypeScriptScanner(importCommands=self,atAuto=atAuto)
-
-        scanner.run(s,parent)
+        return scanner.run(s,parent)
     #@+node:ekr.20071214072145: *4* scanXmlText
     def scanXmlText (self,s,parent,atAuto=False):
-
-        # g.trace(atAuto,parent.h)
-
+        '''Scan xml text.'''
         scanner = xmlScanner(importCommands=self,atAuto=atAuto)
-
-        scanner.run(s,parent)
+        return scanner.run(s,parent)
     #@+node:ekr.20070713075352: *4* scanUnknownFileType (default scanner) & helper
     def scanUnknownFileType (self,s,p,ext,atAuto=False):
-
+        '''Scan the text of an unknown file type.'''
         c = self.c
         changed = c.isChanged()
         body = g.choose(atAuto,'','@ignore\n')
@@ -1596,6 +1577,7 @@ class leoImportCommands (scanUtility):
             if not changed:
                 c.setChanged(False)
         g.app.unitTestDict = {'result':True}
+        return True
     #@+node:ekr.20080811174246.1: *5* languageForExtension
     def languageForExtension (self,ext):
 
@@ -1620,12 +1602,11 @@ class leoImportCommands (scanUtility):
 
         # Return the language even if there is no colorizer mode for it.
         return language
-    #@+node:ekr.20120517155536.10124: *4* scanVimoutlinterText
-    def scanVimoutlinterText(self,s,parent,atAuto=False):
-
+    #@+node:ekr.20120517155536.10124: *4* scanVimoutlinerText
+    def scanVimoutlinerText(self,s,parent,atAuto=False):
+        '''Scan vim outliner text.'''
         scanner = vimoutlinerScanner(importCommands=self,atAuto=atAuto)
-
-        scanner.run(s,parent)
+        return scanner.run(s,parent)
     #@+node:ekr.20070713075450: *3* Unit tests (leoImport)
     # atAuto must be False for unit tests: otherwise the test gets wiped out.
 
@@ -3333,6 +3314,7 @@ class baseScannerClass (scanUtility):
         else:
             root.setDirty(setDescendentsDirty=False)
             c.setChanged(True)
+        return ok
     #@+node:ekr.20071110105107: *4* checkBlanksAndTabs
     def checkBlanksAndTabs(self,s):
 
