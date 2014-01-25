@@ -1524,7 +1524,7 @@ def view_unpack_command(event):
         c.viewController.unpack()
         
 @g.command('at-file-to-at-auto')
-def at_file_to_at_auto(event):
+def at_file_to_at_auto_command(event):
     c = event.get('c')
     if c and c.viewController:
         c.viewController.convert_at_file_to_at_auto(c.p)
