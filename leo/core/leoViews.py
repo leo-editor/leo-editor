@@ -287,7 +287,7 @@ class ViewController:
         Scan root's tree, looking for organizer and cloned nodes.
         Exclude organizers on imported organizers list.
         '''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         verbose = False
         clones,existing_organizers,organizers = [],[],[]
         if trace: g.trace('imported existing',
@@ -572,7 +572,12 @@ class ViewController:
                 return s
             #@-others
         #@-others
-        ConvertController(self.c,root).run()
+        c = self.c
+        if root.isAtFileNode():
+            ConvertController(c,root).run()
+        else:
+            g.es_print('not an @file node:',root.h)
+
     #@+node:ekr.20140120105910.10488: *3* vc.Main Lines
     #@+node:ekr.20140115180051.16709: *4* vc.precompute_all_data & helpers
     def precompute_all_data(self,at_organizers,root):
@@ -1517,5 +1522,11 @@ def view_unpack_command(event):
     c = event.get('c')
     if c and c.viewController:
         c.viewController.unpack()
+        
+@g.command('at-file-to-at-auto')
+def at_file_to_at_auto(event):
+    c = event.get('c')
+    if c and c.viewController:
+        c.viewController.convert_at_file_to_at_auto(c.p)
 #@-others
 #@-leo
