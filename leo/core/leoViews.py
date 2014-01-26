@@ -63,7 +63,7 @@ class ViewController:
     def __init__ (self,c):
         '''Ctor for ViewController class.'''
         self.c = c
-        self.headline_ivar = 'imported_headline'
+        self.headline_ivar = '_imported_headline'
         self.init()
         
     def init(self):
@@ -247,11 +247,12 @@ class ViewController:
             at_organizer.b = '\n'.join([
                 'unl: '+self.relative_unl(z,root) for z in p.children()])
         # Create one @existing-organizer node for each existing organizer.
+        ivar = self.headline_ivar
         for p in existing_organizers:
             at_organizer = at_organizers.insertAsLastChild()
-            h = getattr(p.v,self.headline_ivar,p.h) ###
-            if trace and h != p.h: g.trace(p.h,'==>',h)
-            at_organizer.h = '@existing-organizer: %s' % h ### p.h
+            h = getattr(p.v,ivar,p.h)
+            if trace and h != p.h: g.trace('==>',h) # p.h,'==>',h
+            at_organizer.h = '@existing-organizer: %s' % h
             # The organizer node's unl is implicit in each child's unl.
             at_organizer.b = '\n'.join([
                 'unl: '+self.relative_unl(z,root) for z in p.children()])
@@ -268,7 +269,7 @@ class ViewController:
         '''Create the @headlines node for root, an @auto file.'''
         c = self.c
         result = []
-        ivar = 'imported_headline'
+        ivar = self.headline_ivar
         for p in root.subtree():
             h = getattr(p.v,ivar,None)
             if h is not None and p.h != h:
@@ -459,7 +460,7 @@ class ViewController:
         '''Handle custom headlines for all imported nodes.'''
         trace = False and not g.unitTesting
         # Remember the original imported headlines.
-        ivar = 'imported_headline'
+        ivar = self.headline_ivar
         for p in root.subtree():
             if not hasattr(p.v,ivar):
                 setattr(p.v,ivar,p.h)
@@ -499,6 +500,7 @@ class ViewController:
         class ConvertController:
             def __init__ (self,c,p):
                 self.c = c
+                self.vc = c.viewController
                 self.root = p.copy()
             #@+others
             #@+node:ekr.20140125071842.10476: *6* create_at_auto_view_node
@@ -525,7 +527,7 @@ class ViewController:
                 '''Convert an @file tree to @auto tree.'''
                 c = self.c
                 root,vc = self.root,c.viewController
-                # Set v.imported_headline for all nodes.
+                # set the headline_ivar for all vnodes.
                 self.set_expected_imported_headlines(root)
                 # Create the appropriate @auto-view node.
                 at_auto_view = vc.update_before_write_at_auto_file(root)
@@ -544,7 +546,7 @@ class ViewController:
                 c.redraw()
             #@+node:ekr.20140125141655.10476: *6* set_expected_imported_headlines
             def set_expected_imported_headlines(self,root):
-                '''set v.imported_headline for all nodes.'''
+                '''Set the headline_ivar for all vnodes.'''
                 c = self.c
                 ic = self.c.importCommands
                 language = g.scanForAtLanguage(c,root) 
@@ -558,12 +560,12 @@ class ViewController:
                 junk,fn = g.os_path_split(fn)
                 fn,junk = g.os_path_splitext(fn)
                 if aClass and hasattr(scanner,'headlineForNode'):
-                    ivar = 'imported_headline'
+                    ivar = self.vc.headline_ivar
                     for p in root.subtree():
                         if not hasattr(p.v,ivar):
                             h = scanner.headlineForNode(fn,p)
                             setattr(p.v,ivar,h)
-                            if h != p.h: g.trace(p.h,'==>',h)
+                            if h != p.h: g.trace('==>',h) # p.h,'==>',h
             #@+node:ekr.20140125071842.10479: *6* strip_sentinels
             def strip_sentinels(self):
                 '''Write the file to a string without headlines or sentinels.'''
@@ -616,10 +618,18 @@ class ViewController:
         Create OrganizerData nodes for all @organizer: nodes
         in the given @organizers node.
         '''
-        trace = False # and not g.unitTesting
+        self.create_ods(at_organizers)
+        self.finish_create_organizers(root)
+        self.finish_create_existing_organizers(root)
+        for od in self.all_ods:
+            assert od.parent,(od.exists,od.h)
+        
+    #@+node:ekr.20140126044100.15449: *6* vc.create_ods
+    def create_ods(self,at_organizers):
+        '''Create all organizer nodes and the associated lists.'''
+        # Important: we must completely reinit all data here.
         tag1 = '@organizer:'
         tag2 = '@existing-organizer:'
-        # Important: we must completely reinit all data here.
         self.all_ods,self.existing_ods,self.organizer_ods = [],[],[]
         for at_organizer in at_organizers.children():
             h = at_organizer.h
@@ -630,6 +640,7 @@ class ViewController:
                         organizer_unl = self.drop_unl_tail(unls[0])
                         h = h[len(tag):].strip()
                         od = OrganizerData(h,organizer_unl,unls)
+                        g.trace('exists:',tag==tag2,od.h)
                         self.all_ods.append(od)
                         if tag == tag1:
                             self.organizer_ods.append(od)
@@ -638,37 +649,66 @@ class ViewController:
                             self.existing_ods.append(od)
                             # Do *not* append organizer_unl to the unl list.
                     else:
-                        g.trace('no unls:',at_organizer.h)
-        # Now that self.organizer_unls is complete, compute the source unls.
+                        g.trace('===== no unls:',at_organizer.h)
+    #@+node:ekr.20140126044100.15450: *6* vc.finish_create_organizers
+    def finish_create_organizers(self,root):
+        '''Finish creating all organizers.'''
+        trace = True # and not g.unitTesting
+        remove = []
         for od in self.organizer_ods:
             od.source_unl = self.source_unl(self.organizer_unls,od.unl)
             od.parent = self.find_position_for_relative_unl(root,od.source_unl)
-            od.anchor = od.parent
-            # if not od.parent:
-                # g.trace('***no od.parent: using root',root.h)
-                # od.parent = root
-            if trace: g.trace(
-                '\n  exists:',od.exists,
-                '\n  unl:',od.unl,
-                '\n  source (unl):',od.source_unl or repr(''),
-                '\n  anchor (pos):',od.anchor.h,
-                '\n  parent (pos):',od.parent.h)
+            if od.parent:
+                od.anchor = od.parent
+                if trace: g.trace(od.h,
+                    # '\n  exists:',od.exists,
+                    # '\n  unl:',od.unl,
+                    # '\n  source (unl):',od.source_unl or repr(''),
+                    # '\n  anchor (pos):',od.anchor.h,
+                    # '\n  parent (pos):',od.parent.h,
+                )
+            else:
+                # This is, most likely, a true error.
+                g.trace('===== removing od:',od.h)
+                remove.append(od)
+        # Remove the items last.
+        for od in remove:
+            self.organizer_ods.remove(od)
+            self.all_ods.remove(od)
+            assert od not in self.existing_ods
+            assert od not in self.all_ods
+    #@+node:ekr.20140126044100.15451: *6* vc.finish_create_existing_organizers
+    def finish_create_existing_organizers(self,root):
+        '''Finish creating existing organizer nodes.'''
+        trace = True # and not g.unitTesting
+        remove = []
         for od in self.existing_ods:
+            g.trace(od.h)
             od.exists = True
             assert od.unl not in self.organizer_unls
             od.source_unl = self.source_unl(self.organizer_unls,od.unl)
             od.p = self.find_position_for_relative_unl(root,od.source_unl)
-            od.anchor = od.p
-            assert od.p,'\nod: %s\nod.source: %s\nexisting_ods:\n%s' % (
-                od.h,od.source_unl,'\n'.join(sorted([z.h for z in self.existing_ods])))
-            assert od.p.h == od.h,(od.p.h,od.h)  
-            od.parent = od.p # Here, od.parent represents the "source" p.
-            if trace: g.trace(
-                '\n  exists:',od.exists,
-                '\n  unl:',od.unl,
-                '\n  source (unl):',od.source_unl or repr(''),
-                '\n  anchor (pos):',od.anchor.h,
-                '\n  parent (pos):',od.parent.h)
+            if od.p:
+                od.anchor = od.p
+                assert od.p.h == od.h,(od.p.h,od.h)  
+                od.parent = od.p # Here, od.parent represents the "source" p.
+                if trace: g.trace(od.h,
+                    # '\n  exists:',od.exists,
+                    # '\n  unl:',od.unl,
+                    # '\n  source (unl):',od.source_unl or repr(''),
+                    # '\n  anchor (pos):',od.anchor.h,
+                    # '\n  parent (pos):',od.parent.h,
+                )
+            else:
+                # This arises when the imported node name doesn't match.
+                g.trace('===== removing existing organizer:',od.h)
+                remove.append(od)
+        # Remove the items last.
+        for od in remove:
+            self.existing_ods.remove(od)
+            self.all_ods.remove(od)
+            assert od not in self.existing_ods
+            assert od not in self.all_ods
     #@+node:ekr.20140106215321.16675: *5* 3: vc.create_actual_organizer_nodes
     def create_actual_organizer_nodes(self):
         '''
@@ -690,7 +730,7 @@ class ViewController:
         '''Set od.parent_od, od.children & od.descendants for all ods.'''
         trace = False and not g.unitTesting
         # if trace: g.trace([z.h for z in data_list],g.callers())
-        organizer_unls = [od.unl for od in self.all_ods]
+        organizer_unls = [z.unl for z in self.all_ods]
         for od in self.all_ods:
             for unl in od.unls:
                 if unl in organizer_unls:
@@ -1258,7 +1298,7 @@ class ViewController:
             if p.v.gnx == gnx:
                 return p
         return None
-    #@+node:ekr.20131230090121.16539: *5* vc.find_position_for_relative_unl (must backtrack)
+    #@+node:ekr.20131230090121.16539: *5* vc.find_position_for_relative_unl
     def find_position_for_relative_unl(self,parent,unl):
         '''
         Return the node in parent's subtree matching the given unl.
@@ -1423,7 +1463,7 @@ class ViewController:
         Compare the two strings, the results of trial writes.
         Stop the comparison after the first mismatch.
         '''
-        trace_matches = False
+        trace_matches = True
         full_compare = False
         lines1,lines2 = g.splitLines(s1),g.splitLines(s2)
         i,n1,n2 = 0,len(lines1),len(lines2)
@@ -1495,11 +1535,12 @@ class ViewController:
     def relative_unl(self,p,root):
         '''Return the unl of p relative to the root position.'''
         result = []
+        ivar = self.headline_ivar
         for p in p.self_and_parents():
             if p == root:
                 break
             else:
-                h = getattr(p.v,self.headline_ivar,p.h)
+                h = getattr(p.v,ivar,p.h)
                 result.append(h)
         return '-->'.join(reversed(result))
 

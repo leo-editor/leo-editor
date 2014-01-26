@@ -1764,12 +1764,10 @@ class baseScannerClass (scanUtility):
     #@+others
     #@+node:ekr.20070703122141.66: *3*  ctor (baseScannerClass)
     def __init__ (self,importCommands,atAuto,language,alternate_language=None):
-
+        '''ctor for baseScannerClass.'''
         ic = importCommands
-
         self.atAuto = atAuto
         self.c = c = ic.c
-
         self.atAutoWarnsAboutLeadingWhitespace = c.config.getBool(
             'at_auto_warns_about_leading_whitespace')
         self.atAutoSeparateNonDefNodes = c.config.getBool(
@@ -1787,54 +1785,76 @@ class baseScannerClass (scanUtility):
         self.errorLines = []
         self.escapeSectionRefs = True
         self.extraIdChars = ''
-        self.fileName = ic.fileName # The original filename.
-        self.fileType = ic.fileType # The extension,  '.py', '.c', etc.
-        self.file_s = '' # The complete text to be parsed.
+        self.fileName = ic.fileName
+            # The original filename.
+        self.fileType = ic.fileType
+            # The extension,  '.py', '.c', etc.
+        self.file_s = ''
+            # The complete text to be parsed.
         self.fullChecks = c.config.getBool('full_import_checks')
-        self.functionSpelling = 'function' # for error message.
+        self.functionSpelling = 'function'
+            # for error message.
         self.importCommands = ic
-        self.indentRefFlag = None # None, True or False.
+        self.indentRefFlag = None
+            # None, True or False.
         self.isRst = False
-        self.language = language # The language used to set comment delims.
-        self.lastParent = None # The last generated parent node (used only by rstScanner).
-        self.methodName = ic.methodName # x, as in < < x methods > > =
+        self.language = language
+            # The language used to set comment delims.
+        self.lastParent = None
+            # The last generated parent node (used only by rstScanner).
+        self.methodName = ic.methodName
+            # x, as in < < x methods > > =
         self.methodsSeen = False
         self.mismatchWarningGiven = False
+        self.n_decls = 0
+            # For headLineForNode only. The number of decls seen.
         self.output_newline = ic.output_newline
             # = c.config.getBool('output_newline')
-        self.output_indent = 0 # The minimum indentation presently in effect.
-        self.root = None # The top-level node of the generated tree.
-        self.rootLine = ic.rootLine # '' or @root + self.fileName
-        self.sigEnd = None # The index of the end of the signature.
+        self.output_indent = 0
+            # The minimum indentation presently in effect.
+        self.root = None
+            # The top-level node of the generated tree.
+        self.rootLine = ic.rootLine
+            # '' or @root + self.fileName
+        self.sigEnd = None
+            # The index of the end of the signature.
         self.sigId = None
             # The identifier contained in the signature,
             # that is, the function or method name.
         self.sigStart = None
             # The start of the line containing the signature.
-            # An error will be given if something other than whitespace precedes the signature.
+            # An error will be given if something other
+            # than whitespace precedes the signature.
         self.startSigIndent = None
-        self.tab_width = None # Set in run: the tab width in effect in the c.currentPosition.
-        self.tab_ws = '' # Set in run: the whitespace equivalent to one tab.
-        self.trace = False or ic.trace # = c.config.getBool('trace_import')
-        self.treeType = ic.treeType # '@root' or '@file'
-        self.webType = ic.webType # 'cweb' or 'noweb'
-
+        self.tab_width = None
+            # Set in run: the tab width in effect in the c.currentPosition.
+        self.tab_ws = ''
+            # Set in run: the whitespace equivalent to one tab.
+        self.trace = False or ic.trace
+            # = c.config.getBool('trace_import')
+        self.treeType = ic.treeType
+            # '@root' or '@file'
+        self.webType = ic.webType
+            # 'cweb' or 'noweb'
         # Compute language ivars.
         delim1,junk,junk = g.set_delims_from_language(language)
         self.comment_delim = delim1
-
         # May be overridden in subclasses.
-        self.alternate_language = alternate_language # Optional: for @language.
-        self.anonymousClasses = [] # For Delphi Pascal interfaces.
+        self.alternate_language = alternate_language
+            # Optional: for @language.
+        self.anonymousClasses = []
+            # For Delphi Pascal interfaces.
         self.blockCommentDelim1 = None
         self.blockCommentDelim2 = None
         self.blockCommentDelim1_2 = None
         self.blockCommentDelim2_2 = None
         self.blockDelim1 = '{'
         self.blockDelim2 = '}'
-        self.blockDelim2Cruft = [] # Stuff that can follow .blockDelim2.
+        self.blockDelim2Cruft = []
+            # Stuff that can follow .blockDelim2.
         self.caseInsensitive = False
-        self.classTags = ['class',] # tags that start a tag.
+        self.classTags = ['class',]
+            # tags that start a tag.
         self.functionTags = []
         self.hasClasses = True
         self.hasDecls = True
@@ -1847,7 +1867,8 @@ class baseScannerClass (scanUtility):
         self.outerBlockDelim1 = None
         self.outerBlockDelim2 = None
         self.outerBlockEndsDecls = True
-        self.sigHeadExtraTokens = [] # Extra tokens valid in head of signature.
+        self.sigHeadExtraTokens = []
+            # Extra tokens valid in head of signature.
         self.sigFailTokens = []
             # A list of strings that abort a signature when seen in a tail.
             # For example, ';' and '=' in C.
@@ -2684,10 +2705,11 @@ class baseScannerClass (scanUtility):
         trace = False and not g.unitTesting
         # From scan: parse the decls.s
         s = p.b
-        if self.hasDecls:
+        if self.n_decls == 0 and self.hasDecls:
             i = self.skipDecls(s,0,len(s),inClass=False)
             decls = s[:i]
             if decls:
+                self.n_decls += 1
                 val = '%s declarations' % fn
                 if trace and val != p.h: g.trace(p.h,'==>',val)
                 return val
