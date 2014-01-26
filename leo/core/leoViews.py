@@ -218,7 +218,7 @@ class ViewController:
         @existing-organizer, @clones and @headlines nodes as needed.
         This *must not* be called for trial writes.
         '''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self.c
         changed = False
         t1 = time.clock()
@@ -500,6 +500,7 @@ class ViewController:
         class ConvertController:
             def __init__ (self,c,p):
                 self.c = c
+                # self.ic = c.importCommands
                 self.vc = c.viewController
                 self.root = p.copy()
             #@+others
@@ -547,6 +548,7 @@ class ViewController:
             #@+node:ekr.20140125141655.10476: *6* set_expected_imported_headlines
             def set_expected_imported_headlines(self,root):
                 '''Set the headline_ivar for all vnodes.'''
+                trace = False and not g.unitTesting
                 c = self.c
                 ic = self.c.importCommands
                 language = g.scanForAtLanguage(c,root) 
@@ -565,7 +567,8 @@ class ViewController:
                         if not hasattr(p.v,ivar):
                             h = scanner.headlineForNode(fn,p)
                             setattr(p.v,ivar,h)
-                            if h != p.h: g.trace('==>',h) # p.h,'==>',h
+                            if trace and h != p.h:
+                                g.trace('==>',h) # p.h,'==>',h
             #@+node:ekr.20140125071842.10479: *6* strip_sentinels
             def strip_sentinels(self):
                 '''Write the file to a string without headlines or sentinels.'''
@@ -615,8 +618,8 @@ class ViewController:
     #@+node:ekr.20140106215321.16674: *5* 2: vc.create_organizer_data (od.p & od.parent)
     def create_organizer_data(self,at_organizers,root):
         '''
-        Create OrganizerData nodes for all @organizer: nodes
-        in the given @organizers node.
+        Create OrganizerData nodes for all @organizer: and @existing-organizer:
+        nodes in the given @organizers node.
         '''
         self.create_ods(at_organizers)
         self.finish_create_organizers(root)
@@ -640,7 +643,6 @@ class ViewController:
                         organizer_unl = self.drop_unl_tail(unls[0])
                         h = h[len(tag):].strip()
                         od = OrganizerData(h,organizer_unl,unls)
-                        g.trace('exists:',tag==tag2,od.h)
                         self.all_ods.append(od)
                         if tag == tag1:
                             self.organizer_ods.append(od)
@@ -653,7 +655,7 @@ class ViewController:
     #@+node:ekr.20140126044100.15450: *6* vc.finish_create_organizers
     def finish_create_organizers(self,root):
         '''Finish creating all organizers.'''
-        trace = True # and not g.unitTesting
+        trace = False # and not g.unitTesting
         remove = []
         for od in self.organizer_ods:
             od.source_unl = self.source_unl(self.organizer_unls,od.unl)
@@ -680,10 +682,9 @@ class ViewController:
     #@+node:ekr.20140126044100.15451: *6* vc.finish_create_existing_organizers
     def finish_create_existing_organizers(self,root):
         '''Finish creating existing organizer nodes.'''
-        trace = True # and not g.unitTesting
+        trace = False # and not g.unitTesting
         remove = []
         for od in self.existing_ods:
-            g.trace(od.h)
             od.exists = True
             assert od.unl not in self.organizer_unls
             od.source_unl = self.source_unl(self.organizer_unls,od.unl)
@@ -969,9 +970,9 @@ class ViewController:
     #@+node:ekr.20140109214515.16636: *5* vc.move_nodes_to_organizers
     def move_nodes_to_organizers(self,trace):
         '''Move all nodes in the global_moved_node_list.'''
-        trace = False # and not g.unitTesting
+        trace = True # and not g.unitTesting
         trace_dict = False
-        trace_moves = False
+        trace_moves = True
         trace_deletes = False
         if trace: # A highly useful trace!
             g.trace('unsorted_list...\n%s' % (
@@ -997,11 +998,10 @@ class ViewController:
         existing_organizers = [z.p.copy() for z in self.existing_ods]
         moved_existing_organizers = {} # Keys are vnodes, values are positions.
         for parent in organizers:
-            key = parent
-            aList = d.get(key,[])
+            aList = d.get(parent,[])
             if trace and trace_moves:
                 g.trace('===== moving/copying children of:',
-                    key,[z.h for z in aList])
+                    parent.h,[z.h for z in aList])
             for p in aList:
                 if p in existing_organizers:
                     if trace and trace_moves:
@@ -1463,7 +1463,7 @@ class ViewController:
         Compare the two strings, the results of trial writes.
         Stop the comparison after the first mismatch.
         '''
-        trace_matches = True
+        trace_matches = False
         full_compare = False
         lines1,lines2 = g.splitLines(s1),g.splitLines(s2)
         i,n1,n2 = 0,len(lines1),len(lines2)
@@ -1484,7 +1484,7 @@ class ViewController:
         '''Dump a list, one item per line.'''
         lead = '\n' + ' '*indent
         return lead+lead.join(sorted(aList))
-    #@+node:ekr.20140109214515.16644: *5* vc.trial_write
+    #@+node:ekr.20140109214515.16644: *5* vc.trial_write (use read trial write)
     def trial_write(self,root):
         '''
         Return a trial write of outline whose root is given.
@@ -1495,7 +1495,7 @@ class ViewController:
         newlines are concerned. Furthermore, we can treat Leo directives as
         ordinary text here.
         '''
-        brief = True
+        brief = False
         if brief:
             # Compare headlines, ignoring nodes without body text and comment nodes.
             # Yes, it's kludgy, but it's handy during development.
