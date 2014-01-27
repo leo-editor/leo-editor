@@ -857,20 +857,26 @@ class ViewController:
     #@+node:ekr.20140117131738.16717: *5* vc.add
     def add(self,active,p,tag):
         '''
-        Add p, and existing (imported) node to the global moved node list.
+        Add p, an existing (imported) node to the global moved node list.
         Subtract 1 from the vc.anchor_offset_d entry for p.parent().
+        
+        Exception: do nothing if active.p == p.parent().
         '''
         trace = False # and not g.unitTesting
-        self.global_moved_node_list.append((active.p,p.copy()),)
-        # Subtract 1 from the vc.anchor_offset_d entry for p.parent().
-        d = self.anchor_offset_d
-        key = p.parent()
-        d[key] = n = d.get(key,0) - 1
-        if trace: g.trace(tag,
-            '\nactive.p:',active.p and active.p.h,
-            'p:',p and p.h,
-            '\nanchor:',key and key.h,
-            'anchor:offset',n)
+        if active.p == p.parent():
+            if True or trace: g.trace(
+                '===== do nothing.  active.p == p.parent(). p:',p.h,p.parent().h)
+        else:
+            self.global_moved_node_list.append((active.p,p.copy()),)
+            # Subtract 1 from the vc.anchor_offset_d entry for p.parent().
+            d = self.anchor_offset_d
+            key = p.parent()
+            d[key] = n = d.get(key,0) - 1
+            if trace: g.trace(tag,
+                '\nactive.p:',active.p and active.p.h,
+                'p:',p and p.h,
+                '\nanchor:',key and key.h,
+                'anchor:offset',n)
     #@+node:ekr.20140109214515.16646: *5* vc.add_organizer_node
     def add_organizer_node (self,od,p):
         '''
@@ -995,24 +1001,28 @@ class ViewController:
         for parent in organizers:
             aList = d.get(parent,[])
             if trace and trace_moves:
-                g.trace('===== moving/copying children of:',
-                    parent.h,[z.h for z in aList])
+                g.trace('===== moving/copying:',parent.h,
+                    'with %s children:',len(aList),
+                    '\n  '+'\n  '.join([z.h for z in aList]))
             for p in aList:
                 if p in existing_organizers:
                     if trace and trace_moves:
                         g.trace('copying existing organizer:',p.h)
-                        g.trace('children',[z.h for z in p.children()])
+                        g.trace('children:',
+                        '\n  '+'\n  '.join([z.h for z in p.children()]))
                     copy = self.copy_tree_to_last_child_of(p,parent)
                     old = moved_existing_organizers.get(p.v)
-                    if old:
+                    if old and trace_moves:
                         g.trace('*********** overwrite',p.h)
                     moved_existing_organizers[p.v] = copy
                 elif p in organizers:
-                    if trace and trace_moves: g.trace('moving organizer:',p.h)
+                    if trace and trace_moves:
+                        g.trace('moving organizer:',p.h)
                     aList = d.get(p)
                     if aList:
-                        if trace and trace_moves: g.trace('**** relocating aList',
-                            p.h,[z.h for z in aList])
+                        if trace and trace_moves: g.trace('**** relocating',
+                            p.h,'children:',
+                            '\n  '+'\n  '.join([z.h for z in p.children()]))
                         del d[p]
                     p.moveToLastChildOf(parent)
                     if aList:
@@ -1020,7 +1030,8 @@ class ViewController:
                 else:
                     parent2 = moved_existing_organizers.get(parent.v)
                     if parent2:
-                        if trace and trace_moves: g.trace('copying to relocated parent:',p.h)
+                        if trace and trace_moves:
+                            g.trace('***** copying to relocated parent:',p.h)
                         self.copy_tree_to_last_child_of(p,parent2)
                     else:
                         if trace and trace_moves: g.trace('copying:',p.h)
@@ -1458,7 +1469,7 @@ class ViewController:
         Compare the two strings, the results of trial writes.
         Stop the comparison after the first mismatch.
         '''
-        trace_matches = False
+        trace_matches = True
         full_compare = False
         lines1,lines2 = g.splitLines(s1),g.splitLines(s2)
         i,n1,n2 = 0,len(lines1),len(lines2)
