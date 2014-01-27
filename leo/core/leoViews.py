@@ -656,8 +656,8 @@ class ViewController:
     def finish_create_organizers(self,root):
         '''Finish creating all organizers.'''
         trace = False # and not g.unitTesting
-        remove = []
-        for od in self.organizer_ods:
+        # Careful: we may delete items from this list.
+        for od in self.organizer_ods[:]: 
             od.source_unl = self.source_unl(self.organizer_unls,od.unl)
             od.parent = self.find_position_for_relative_unl(root,od.source_unl)
             if od.parent:
@@ -672,19 +672,16 @@ class ViewController:
             else:
                 # This is, most likely, a true error.
                 g.trace('===== removing od:',od.h)
-                remove.append(od)
-        # Remove the items last.
-        for od in remove:
-            self.organizer_ods.remove(od)
-            self.all_ods.remove(od)
-            assert od not in self.existing_ods
-            assert od not in self.all_ods
+                self.organizer_ods.remove(od)
+                self.all_ods.remove(od)
+                assert od not in self.existing_ods
+                assert od not in self.all_ods
     #@+node:ekr.20140126044100.15451: *6* vc.finish_create_existing_organizers
     def finish_create_existing_organizers(self,root):
         '''Finish creating existing organizer nodes.'''
         trace = False # and not g.unitTesting
-        remove = []
-        for od in self.existing_ods:
+        # Careful: we may delete items from this list.
+        for od in self.existing_ods[:]:
             od.exists = True
             assert od.unl not in self.organizer_unls
             od.source_unl = self.source_unl(self.organizer_unls,od.unl)
@@ -703,13 +700,11 @@ class ViewController:
             else:
                 # This arises when the imported node name doesn't match.
                 g.trace('===== removing existing organizer:',od.h)
-                remove.append(od)
-        # Remove the items last.
-        for od in remove:
-            self.existing_ods.remove(od)
-            self.all_ods.remove(od)
-            assert od not in self.existing_ods
-            assert od not in self.all_ods
+                self.existing_ods.remove(od)
+                self.all_ods.remove(od)
+                assert od not in self.existing_ods
+                assert od not in self.all_ods
+
     #@+node:ekr.20140106215321.16675: *5* 3: vc.create_actual_organizer_nodes
     def create_actual_organizer_nodes(self):
         '''
