@@ -2,13 +2,11 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140120101345.10255: * @file leoViews.py
 #@@first
-
 '''Support for @views trees and related operations.'''
-
 # Started 2013/12/31.
-
 #@@language python
 #@@tabwidth -4
+from __future__ import print_function
 #@+<< imports >>
 #@+node:ekr.20131230090121.16506: ** << imports >> (leoViews.py)
 import leo.core.leoGlobals as g
@@ -597,9 +595,18 @@ class ViewController:
                 trace = False and not g.unitTesting
                 cc = self
                 at = cc.c.atFileCommands
-                ok = at.writeOneAtAutoNode(cc.root,
-                    toString=True,force=True,trialWrite=True)
-                s = at.stringOutput if ok else ''
+                # ok = at.writeOneAtAutoNode(cc.root,
+                    # toString=True,force=True,trialWrite=True)
+                at.errors = 0
+                at.write(cc.root,
+                    kind = '@file',
+                    nosentinels = True,
+                    perfectImportFlag = False,
+                    scriptWrite = False,
+                    thinFile = True,
+                    toString = True)
+                ok = at.errors == 0
+                s = at.stringOutput
                 if trace: g.trace('ok:',ok,'s:...\n'+s)
                 return s
             #@-others
@@ -920,7 +927,7 @@ class ViewController:
         Add od to the appropriate move list.
         p is the existing node that causes od to be added.
         '''
-        trace = False # and not g.unitTesting
+        trace = True # and not g.unitTesting
         vc = self
         if od.parent_od:
             # Not a bare organizer: a child of another organizer node.
