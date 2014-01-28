@@ -80,13 +80,6 @@ class ViewController:
         self.global_bare_organizer_node_list = []
             # List of organizers that have no parent organizer node.
             # This list excludes existing organizer nodes.
-        self.global_moved_node_list = []
-            # A list of (parent,child) tuples for all nodes to be moved to non-bare organizers.
-            # **Important**: Nodes are moved in the order they appear in this list:
-            # the tuples contain no childIndex component!
-            # This list is the "backbone" of this class:
-            # - The front end (demote and its helpers) adds items to this list.
-            # - The back end (move_nodes and its helpers) moves nodes according to this list.
         self.imported_organizers_list = []
             # The list of nodes that have children on entry, such as class nodes.
         self.n_nodes_scanned = 0
@@ -107,6 +100,14 @@ class ViewController:
             # The trial write on entry.
         self.views_node = None
             # The position of the @views node.
+        self.work_list = []
+            # A gloal list of (parent,child) tuples for all nodes that are
+            # to be moved to **non-existing** organizer nodes.
+            # **Important**: Nodes are moved in the order they appear in this list:
+            # the tuples contain no childIndex component!
+            # This list is the "backbone" of this class:
+            # - The front end (demote and its helpers) adds items to this list.
+            # - The back end (move_nodes and its helpers) moves nodes using this list.
     #@+node:ekr.20131230090121.16514: *3* vc.Entry points
     #@+node:ekr.20140102052259.16394: *4* vc.pack & helper
     def pack(self):
@@ -339,7 +340,7 @@ class ViewController:
             at_clones = vc.has_at_clones_node(root)
             if at_clones:
                 vc.create_clone_links(at_clones,root)
-            n = len(vc.global_moved_node_list)
+            n = len(vc.work_list)
             ok = vc.check(root)
             if ok:
                 vc.update_headlines_after_read(root)
@@ -431,9 +432,9 @@ class ViewController:
         vc.precompute_all_data(at_organizers,root)
             # Init all data required for reading.
         vc.demote(root)
-            # Traverse root's tree, adding nodes to vc.global_moved_node_list.
+            # Traverse root's tree, adding nodes to vc.work_list.
         vc.move_nodes()
-            # Move nodes on vc.global_moved_node_list to their final locations.
+            # Move nodes on vc.work_list to their final locations.
         vc.post_move_comments(root)
             # Move merged comments to parent organizer nodes.
     #@+node:ekr.20140109214515.16639: *6* vc.post_move_comments
@@ -504,7 +505,7 @@ class ViewController:
             g.trace('scanned: %3s' % vc.n_nodes_scanned)
             g.trace('moved:   %3s' % (
                 len( vc.global_bare_organizer_node_list) +
-                len(vc.global_moved_node_list)))
+                len(vc.work_list)))
     #@+node:ekr.20140125071842.10474: *4* vc.convert_at_file_to_at_auto
     def convert_at_file_to_at_auto(self,root):
         # Define class ConvertController.
@@ -911,7 +912,7 @@ class ViewController:
             if True or trace: g.trace(
                 '===== do nothing.  active.p == p.parent(). p:',p.h,p.parent().h)
         else:
-            vc.global_moved_node_list.append((active.p,p.copy()),)
+            vc.work_list.append((active.p,p.copy()),)
             # Subtract 1 from the vc.anchor_offset_d entry for p.parent().
             d = vc.anchor_offset_d
             key = p.parent()
@@ -934,11 +935,11 @@ class ViewController:
             # If this is an existing organizer, it's *position* may have
             # been moved without active.moved being set.
             data = od.parent_od.p,od.p
-            if data in vc.global_moved_node_list:
+            if data in vc.work_list:
                 if trace: g.trace('**** already in list: setting moved bit.',od.h)
                 od.moved = True
             else:
-                vc.global_moved_node_list.append(data)
+                vc.work_list.append(data)
                 if trace: g.trace('***** non-bare: %s parent: %s' % (
                     od.p.h,od.parent_od.p.h,))
         elif od.p == od.anchor:
@@ -1019,7 +1020,7 @@ class ViewController:
         vc.temp_node.doDelete()
     #@+node:ekr.20140109214515.16636: *5* vc.move_nodes_to_organizers
     def move_nodes_to_organizers(self,trace):
-        '''Move all nodes in the global_moved_node_list.'''
+        '''Move all nodes in the work_list.'''
         trace = True # and not g.unitTesting
         trace_dict = False
         trace_moves = True
@@ -1028,10 +1029,10 @@ class ViewController:
         if trace: # A highly useful trace!
             g.trace('unsorted_list...\n%s' % (
                 '\n'.join(['%40s ==> %s' % (parent.h,p.h)
-                    for parent,p in vc.global_moved_node_list])))
+                    for parent,p in vc.work_list])))
         # Create a dictionary of each organizers children.
         d = {}
-        for parent,p in vc.global_moved_node_list:
+        for parent,p in vc.work_list:
             # This key must remain stable if parent moves.
             key = parent
             aList = d.get(key,[])
@@ -1090,7 +1091,7 @@ class ViewController:
         def sort_key(od):
             parent,p = od
             return p.sort_key(p)
-        sorted_list = sorted(vc.global_moved_node_list,key=sort_key)
+        sorted_list = sorted(vc.work_list,key=sort_key)
         if trace and trace_deletes:
             g.trace('===== deleting nodes in reverse outline order...')
         for parent,p in reversed(sorted_list):
@@ -1560,7 +1561,7 @@ class ViewController:
         '''Dump a list, one item per line.'''
         lead = '\n' + ' '*indent
         return lead+lead.join(sorted(aList))
-    #@+node:ekr.20140109214515.16644: *5* vc.trial_write (use read trial write)
+    #@+node:ekr.20140109214515.16644: *5* vc.trial_write
     def trial_write(self,root):
         '''
         Return a trial write of outline whose root is given.
