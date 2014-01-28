@@ -1571,15 +1571,25 @@ class ViewController:
         newlines are concerned. Furthermore, we can treat Leo directives as
         ordinary text here.
         '''
-        brief = False
-        if brief:
-            # Compare headlines, ignoring nodes without body text and comment nodes.
-            # Yes, it's kludgy, but it's handy during development.
-            s = '\n'.join([p.h for p in root.self_and_subtree()
-                if p.b and not p.h.startswith('#')])
+        vc = self
+        if 1:
+            # Do a full trial write, exactly as will be done later.
+            at = vc.c.atFileCommands
+            ok = at.writeOneAtAutoNode(root,
+                toString=True,force=True,trialWrite=True)
+            if ok:
+                return at.stringOutput
+            else:
+                g.trace('===== can not happen')
+                return ''
+        elif 1:
+            # Concatenate all body text.  Close, but not exact.
+            return ''.join([p.b for p in root.self_and_subtree()])
         else:
-            s = ''.join([p.b for p in root.self_and_subtree()])
-        return s
+            # Compare headlines, ignoring nodes without body text and comment nodes.
+            # This was handy during early development.
+            return '\n'.join([p.h for p in root.self_and_subtree()
+                if p.b and not p.h.startswith('#')])
     #@+node:ekr.20140105055318.16760: *4* vc.unls...
     #@+node:ekr.20140105055318.16762: *5* vc.drop_all_organizers_in_unl
     def drop_all_organizers_in_unl(self,organizer_unls,unl):
