@@ -159,7 +159,7 @@
 <v t="ekr.20100805171546.4412"><vh>Web pages</vh>
 <v t="ville.20090609182215.5676"><vh>@auto-rst treecaching.txt</vh></v>
 <v t="ekr.20090428133936.2"><vh>@edit html\conf.py</vh></v>
-<v t="ekr.20101112045055.5064" descendentVnodeUnknownAttributes="7d7100285503302e3171017d710255097374725f6174696d657103550c313337363431323739362e3071047355013071057d71066803550c313337363431323932332e307107735503302e3071087d71096803550c313337363431323932372e30710a73752e"><vh>@file plugin_catalog.py</vh></v>
+<v t="ekr.20101112045055.5064" descendentVnodeUnknownAttributes="7d7100285803000000302e3171017d710258090000007374725f6174696d657103580c000000313337363431323739362e3071047358010000003071057d71066803580c000000313337363431323932332e307107735803000000302e3071087d71096803580c000000313337363431323932372e30710a73752e"><vh>@file plugin_catalog.py</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
 <v t="ekr.20131005214621.16088"><vh>Home page</vh>
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
@@ -177,7 +177,7 @@
 <v t="ekr.20131120115900.16329"><vh>@rst html/screencasts.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028550b302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473550b302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473550b302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473550b302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 <v t="ekr.20100821182153.4343"><vh>@rst html/slides.html</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
@@ -1086,7 +1086,7 @@
 </v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d7100285509302e302e312e302e3071017d710255097374725f6174696d657103550c313337363431323837322e30710473550b302e302e332e312e312e3371057d71066803550c313337363431323838392e30710773550c302e302e31322e302e302e3771087d710958090000007374725f6174696d65710a550c313337363431323238302e30710b735510302e302e31322e302e302e372e302e31710c7d710d58090000007374725f6174696d65710e550c313337363431323238382e30710f73550b302e302e332e302e322e3371107d71116803550c313337363431323838382e30711273752e"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d7100285809000000302e302e312e302e3071017d710258090000007374725f6174696d657103580c000000313337363431323837322e30710473580b000000302e302e332e312e312e3371057d71066803580c000000313337363431323838392e30710773580c000000302e302e31322e302e302e3771087d710958090000007374725f6174696d65710a580c000000313337363431323238302e30710b735810000000302e302e31322e302e302e372e302e31710c7d710d58090000007374725f6174696d65710e580c000000313337363431323238382e30710f73580b000000302e302e332e302e322e3371107d71116803580c000000313337363431323838382e30711273752e"><vh>@file release_notes.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20131220065609.16614"><vh>4.11.1 Release notes</vh>
@@ -1120,6 +1120,7 @@
 <v t="ekr.20131220065609.16629"><vh>Added web-oriented bookmarks to mod_http plugin</vh></v>
 </v>
 </v>
+<v t="ekr.20140113190949.16690"><vh>Document dependencies (revise)</vh></v>
 <v t="ekr.20140109160326.16626"><vh>Prewriting for theory of operation for @auto-view</vh>
 <v t="ekr.20140112112622.16651"><vh>Distinction: bare and nested organizers</vh></v>
 <v t="ekr.20140112112622.16656"><vh>Two Ahas re nested organizers</vh></v>
@@ -1134,8 +1135,8 @@
 <v t="ekr.20140113101423.16680"><vh>Supporting custom headlines (@headlines)</vh></v>
 <v t="ekr.20140113101423.16681"><vh>Automatic conversion of @file to @auto</vh></v>
 <v t="ekr.20140113101423.16682"><vh>Why the new code is solid</vh></v>
+<v t="ekr.20140127143108.15459"><vh>docstring for vc.demote (not necessarily correct)</vh></v>
 </v>
-<v t="ekr.20140113190949.16690"><vh>Document dependencies (revise)</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -20154,6 +20155,78 @@ The list above is the bare minimum. Many plugins require their own modules,
 which are documented in their docstrings. For example, viewrendered
 requires 'markdown' if one wishes to use markdown rendering, but it is
 optional. rss.py will not function without 'feedparser'. Etc.
+</t>
+<t tx="ekr.20140127143108.15459">@language rest
+
+'''
+The main line of the @auto-view algorithm. Traverse root's entire tree,
+placing items on the global work list.
+
+About the algorithm:
+
+Moving *any* kind of node to an *ordinary* (non-existing) organizer is
+easy: each node is moved to the last child of the organizer.
+
+Moving nodes to *existing* organizers requires exact housekeeping. This
+code must know at what child index to insert a node.
+
+Terminology:
+- p is the to-be-moved node.
+- a(p) is p's **anchor**, an existing node.  a(p) == p.parent(). 
+- o(p) be the *existing* organizer to which p will be moved as a child.  
+- d is the global **offset dict**, vc.anchor_offset_d.
+
+There are two cases to consider when moving a node p to an existing node:
+
+Existing organizer case 1: p is *any kind* of existing node (organizer or not).
+
+We insert p as the n'th child of o, where:
+
+    n = p.childIndex() + d.get(p.parent(),0)
+
+Existing organizer case 2: p is an non-existing node.
+
+p must be an organizer node (because it doesn't exist) and it must be a
+*bare* organizer node because o(p) is an existing organizer.
+
+Let p2 be the (existing) node that causes p to be inserted.
+
+We insert p as the n'th child of o(p), where:
+
+    n = p2.childIndex() + d.get(p2.parent(),0)
+
+The only remaining part of the puzzle is calculating the offsets, that is,
+the entries in d. The simplifying insights:
+
+Insight 1: We only calculate offsets for *existing* nodes.
+
+Insight 2: Because the organizer exists in this case,
+           the anchor is the existing organizer: a(p) == o(p)
+
+Insight 3. Only inserting or deleting nodes from existing node can change offsets.
+
+With these insights firmly in mind we can consider the following offset
+cases:
+
+Offset case 1: visiting existing children of existing organizers.
+
+By definition, the importer will create children of existing organizers.
+These nodes must *not* be moved: they are already in their correct spots!
+
+Offset case 2: adding a non-existing organizer node p to any existing (organizer) node o:
+
+This case adds one to d.get(o)
+
+Offset case 3: moving an existing node p to *any* organizer node, existing or not.
+
+This case subtracts one from d.get(p.parent())
+'''
+
+# Note: o may be:
+# - a bare (ordinary) organizer node,
+# - an ordinary organizer node,
+# - a bare existing organizer node
+# - an existing organizer node that is a child of another organizer node.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
