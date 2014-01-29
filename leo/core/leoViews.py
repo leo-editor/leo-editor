@@ -561,7 +561,14 @@ class ViewController:
                     at_auto_view.b = vc.at_auto_view_body(p)
                     # Recreate the organizer nodes, headlines, etc.
                     ok = vc.update_after_read_at_auto_file(p)
-                    if not ok: p.h = '@@' + p.h
+                    if not ok:
+                        p.h = '@@' + p.h
+                        g.trace('restoring original @auto file')
+                        ok,p = cc.import_from_string(s)
+                        if ok:
+                            p.h = '@@' + p.h + ' (restored)'
+                            if p.next():
+                                p.moveAfter(p.next())
                 if p:
                     c.selectPosition(p)
                 c.redraw()
@@ -1000,15 +1007,14 @@ class ViewController:
         trace = False # and not g.unitTesting
         vc = self
         d = vc.anchor_offset_d
-        key = anchor
-        n = d.get(key,0)
-        d[key] = n - 1
+        n = d.get(anchor,0)
+        d[anchor] = n - 1
         if trace: g.trace(n-1,anchor.h,'==>',p.h)
         return n
     #@+node:ekr.20140127143108.15461: *5* vc.anchor_incr
     def anchor_incr(self,anchor,p): # p is only for traces.
         '''
-        Decrement the anchor dict for the given anchor node.
+        Increment the anchor dict for the given anchor node.
         Return the *previous* value.
         '''
         trace = False # and not g.unitTesting
