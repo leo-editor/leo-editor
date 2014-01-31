@@ -542,7 +542,7 @@ class ViewController:
             #@+node:ekr.20140125071842.10478: *6* run
             def run(self):
                 '''Convert an @file tree to @auto tree.'''
-                trace_s = True
+                trace_s = False
                 cc = self
                 c = cc.c
                 root,vc = cc.root,c.viewController
@@ -863,7 +863,7 @@ class ViewController:
         The main line of the @auto-view algorithm. Traverse root's entire tree,
         placing items on the global work list.
         '''
-        trace = True # and not g.unitTesting
+        trace = False # and not g.unitTesting
         trace_loop = True
         vc = self
         active = None # The active od.
@@ -884,7 +884,9 @@ class ViewController:
             vc.terminate_organizers(active,parent)
             found = vc.find_organizer(parent,p)
             if found:
-                vc.enter_organizers(found,p)
+                pass ### vc.enter_organizers(found,p)
+            else:
+                pass ### vc.terminate_all_open_organizers()
             if trace and trace_loop:
                 g.trace(
                     'active:',active and active.h or 'None',
@@ -894,7 +896,7 @@ class ViewController:
                 vc.add_to_pending(active,p)
             elif found is None and not active:
                 # Pending nodes will *not* be organized.
-                vc.pending = []
+                vc.clear_pending(None,p)
             elif found and found == active:
                 # Pending nodes *will* be organized.
                 for z in vc.pending:
@@ -904,8 +906,9 @@ class ViewController:
                 vc.add(active,p,'found==active')
             elif found and found != active:
                 # Pending nodes will *not* be organized.
-                vc.pending = []
+                vc.clear_pending(found,p)
                 active = found
+                vc.enter_organizers(found,p)
                 vc.add(active,p,'found!=active')
             else: assert False,'can not happen'
     #@+node:ekr.20140117131738.16717: *5* vc.add
@@ -916,9 +919,10 @@ class ViewController:
         
         Exception: do *nothing* if p is a child of an existing organizer node.
         '''
-        trace = True # and not g.unitTesting
+        trace = False # and not g.unitTesting
         verbose = False
         vc = self
+        # g.trace(active,g.callers())
         if active.p == p.parent() and active.exists:
             if trace and verbose: g.trace('===== do nothing',active.h,p.h)
         else:
@@ -972,7 +976,7 @@ class ViewController:
     #@+node:ekr.20140127143108.15463: *5* vc.add_to_bare_list
     def add_to_bare_list(self,data,tag):
         '''Add data to the bare organizer list, with tracing.'''
-        trace = True # and not g.unitTesting
+        trace = False # and not g.unitTesting
         vc = self
         vc.global_bare_organizer_node_list.append(data)
         if trace:
@@ -984,15 +988,12 @@ class ViewController:
     def add_to_pending(self,active,p):
         trace = False # and not g.unitTesting
         vc = self
-        if trace: g.trace(
-            'active.p:',active.p and active.p.h,
-            'p:',p and p.h)
-        # Important: add() will push active.p, not active.
+        if trace: g.trace(active.p.h,'==>',p.h)
         vc.pending.append((active,p.copy()),)
     #@+node:ekr.20140127143108.15462: *5* vc.add_to_work_list
     def add_to_work_list(self,data,tag):
         '''Append the data to the work list, with tracing.'''
-        trace = True # and not g.unitTesting
+        trace = False # and not g.unitTesting
         vc = self
         vc.work_list.append(data)
         if trace:
@@ -1024,6 +1025,17 @@ class ViewController:
         d[anchor] = n + 1
         if trace: g.trace(n+1,anchor.h,'==>',p.h)
         return n
+    #@+node:ekr.20140129164001.16251: *5* vc.clear_pending
+    def clear_pending(self,active,p):
+        '''Clear the appropriate entries from the pending list.'''
+        trace = False # and not g.unitTesting
+        vc = self
+        if trace: g.trace('===== clear pending',len(vc.pending))
+        if False: # active and active.parent_od:
+            for data in vc.pending:
+                data = active.parent_od.p,data[1]
+                vc.add_to_work_list(data,'clear-pending-to-active')
+        vc.pending = []
     #@+node:ekr.20140117131738.16723: *5* vc.enter_organizers
     def enter_organizers(self,od,p):
         '''Enter all organizers whose anchors are p.'''
@@ -1035,7 +1047,6 @@ class ViewController:
         if ods:
             for od in reversed(ods):
                 vc.add_organizer_node(od,p)
-
     #@+node:ekr.20140120105910.10490: *5* vc.find_organizer
     def find_organizer(self,parent,p):
         '''Return the organizer that organizers p, if any.'''
@@ -1055,9 +1066,19 @@ class ViewController:
         od = active
         while od and od.anchor != p and od.anchor.isAncestorOf(p):
             if not od.closed:
-                if trace: g.trace('closing',od.h)
+                if trace: g.trace('===== closing',od.h)
                 od.closed = True
             od = od.parent_od
+    #@+node:ekr.20140129164001.16252: *5* vc.terminate_all_open_organizers
+    def terminate_all_open_organizers(self):
+        '''Terminate all open organizers.'''
+        trace = True # and not g.unitTesting
+        return ###
+        g.trace()
+        for od in self.all_ods:
+            if od.opened and not od.closed:
+                if trace: g.trace('===== closing',od.h)
+                od.closed = True
     #@+node:ekr.20140106215321.16678: *4* vc.move_nodes & helpers
     def move_nodes(self):
         '''Move nodes to their final location and delete the temp node.'''
@@ -1069,13 +1090,13 @@ class ViewController:
     #@+node:ekr.20140109214515.16636: *5* vc.move_nodes_to_organizers
     def move_nodes_to_organizers(self,trace):
         '''Move all nodes in the work_list.'''
-        trace = True # and not g.unitTesting
+        trace = False # and not g.unitTesting
         trace_dict = False
         trace_moves = False
         trace_deletes = False
         vc = self
         if trace: # A highly useful trace!
-            g.trace('unsorted_list...\n%s' % (
+            g.trace('\n\nunsorted_list...\n%s' % (
                 '\n'.join(['%40s ==> %s' % (parent.h,p.h)
                     for parent,p in vc.work_list])))
         # Create a dictionary of each organizers children.
@@ -1154,7 +1175,7 @@ class ViewController:
     #@+node:ekr.20140109214515.16637: *5* vc.move_bare_organizers
     def move_bare_organizers(self,trace):
         '''Move all nodes in global_bare_organizer_node_list.'''
-        trace = True # and not g.unitTesting
+        trace = False # and not g.unitTesting
         trace_data = True
         trace_move = False
         vc = self
@@ -1190,7 +1211,7 @@ class ViewController:
     def copy_tree_to_last_child_of(self,p,parent):
         '''Copy p's tree to the last child of parent.'''
         vc = self
-        assert p != parent,(p,parent)
+        assert p != parent,p
             # A failed assert leads to unbounded recursion.
         # print('copy_tree_to_last_child_of',p.h,parent.h)
         root = parent.insertAsLastChild()

@@ -12708,5 +12708,121 @@ def initWriteIvars(self,root,targetFileName,
         # Keys are file extensions, values are text scanners.
         # Text scanners must have the signature x(self,s,parent,atAuto=False)
     g.trace(language,ext,scanner.__name__)
+.. @+node:ekr.20140131101641.15494: *3* Unused import code
+.. @+node:ekr.20080825131124.3: *4* ic.createImportDispatchDict
+def createImportDispatchDict (self):
+
+    self.importDispatchDict = {
+        # Keys are file extensions, values are text scanners.
+        # Text scanners must have the signature scanSomeText(self,s,parent,atAuto=False)
+        '.c':       self.scanCText,
+        '.h':       self.scanCText,
+        '.h++':     self.scanCText,
+        '.cc':      self.scanCText,
+        '.c++':     self.scanCText,
+        '.cpp':     self.scanCText,
+        '.cxx':     self.scanCText,
+        '.cfg':     self.scanIniText,
+        '.cs':      self.scanCSharpText,
+        '.el':      self.scanElispText,
+        '.htm':     self.scanHtmlText,
+        '.html':    self.scanHtmlText,
+        '.ini':     self.scanIniText,
+        '.java':    self.scanJavaText,
+        '.js':      self.scanJavaScriptText,
+        '.otl':     self.scanVimoutlinerText,
+        '.php':     self.scanPHPText,
+        '.pas':     self.scanPascalText,
+        '.py':      self.scanPythonText,
+        '.pyw':     self.scanPythonText,
+        # '.txt':     self.scanRstText, # A reasonable default.
+        # '.rest':    self.scanRstText,
+        # '.rst':     self.scanRstText,
+        '.ts':      self.scanTypeScriptText,
+        '.xml':     self.scanXmlText,
+    }
+.. @+node:ekr.20140131101641.15493: *4*  unused import scanners
+if 0:
+    @others
+.. @+node:edreamleo.20070710110153: *5* scanCText
+def scanCText (self,s,parent,atAuto=False):
+    '''Scan C text.'''
+    scanner = cScanner(importCommands=self,atAuto=atAuto)
+    return scanner.run(s,parent)
+.. @+node:ekr.20071008130845.1: *5* scanCSharpText
+def scanCSharpText (self,s,parent,atAuto=False):
+    '''Scan C# text.'''
+    scanner = cSharpScanner(importCommands=self,atAuto=atAuto)
+    return scanner.run(s,parent)
+.. @+node:ekr.20070711060107.1: *5* scanElispText
+def scanElispText (self,s,parent,atAuto=False):
+    '''Scan elisp text.'''
+    scanner = elispScanner(importCommands=self,atAuto=atAuto)
+    return scanner.run(s,parent)
+.. @+node:ekr.20111029055127.16618: *5* scanHtmlText
+def scanHtmlText (self,s,parent,atAuto=False):
+    '''Scan HTML text.'''
+    scanner = htmlScanner(importCommands=self,atAuto=atAuto)
+    return scanner.run(s,parent)
+.. @+node:ekr.20100803231223.5808: *5* scanIniText
+def scanIniText (self,s,parent,atAuto=False):
+    '''Scan .ini text'''
+    scanner = iniScanner(importCommands=self,atAuto=atAuto)
+    return scanner.run(s,parent)
+.. @+node:edreamleo.20070710110114.2: *5* scanJavaText
+def scanJavaText (self,s,parent,atAuto=False):
+    '''Scan Java text'''
+    scanner = javaScanner(importCommands=self,atAuto=atAuto)
+    return scanner.run(s,parent)
+.. @+node:ekr.20071027111225.1: *5* scanJavaScriptText
+def scanJavaScriptText (self,s,parent,atAuto=False):
+    '''Scan JavaScript text'''
+    scanner = JavaScriptScanner(importCommands=self,atAuto=atAuto)
+    return scanner.run(s,parent)
+.. @+node:ekr.20101027055033.5967: *5* scanNSIText
+def scanNSIText (self,s,p,ext,atAuto=False):
+    '''Scan NSI text'''
+    c = self.c
+    changed = c.isChanged()
+    # body = g.choose(atAuto,'','@ignore\n')
+    # if ext in ('.html','.htm'):   body += '@language html\n'
+    # elif ext in ('.txt','.text'): body += '@nocolor\n'
+    # else:
+        # language = self.languageForExtension(ext)
+        # if language: body += '@language %s\n' % language
+    assert self.rootLine == ''
+    body = '@language ini\n\n'
+    self.setBodyString(p,body+s)
+    if atAuto:
+        p.clearDirty()
+        if not changed:
+            c.setChanged(False)
+    g.app.unitTestDict = {'result':True}
+    return True
+.. @+node:ekr.20070711104241.2: *5* scanPascalText
+def scanPascalText (self,s,parent,atAuto=False):
+    '''Scan Pascal text'''
+    scanner = pascalScanner(importCommands=self,atAuto=atAuto)
+    return scanner.run(s,parent)
+.. @+node:ekr.20070711090122: *5* scanPHPText
+def scanPHPText (self,s,parent,atAuto=False):
+    '''Scan PHP text.'''
+    scanner = phpScanner(importCommands=self,atAuto=atAuto)
+    return scanner.run(s,parent)
+.. @+node:ekr.20070703122141.99: *5* scanPythonText
+def scanPythonText (self,s,parent,atAuto=False):
+    '''Scan Python text.'''
+    scanner = pythonScanner(importCommands=self,atAuto=atAuto)
+    return scanner.run(s,parent)
+.. @+node:ekr.20121011093316.10102: *5* scanTypeScriptText
+def scanTypeScriptText (self,s,parent,atAuto=False):
+    '''Scan TypeScript text.'''
+    scanner = TypeScriptScanner(importCommands=self,atAuto=atAuto)
+    return scanner.run(s,parent)
+.. @+node:ekr.20071214072145: *5* scanXmlText
+def scanXmlText (self,s,parent,atAuto=False):
+    '''Scan xml text.'''
+    scanner = xmlScanner(importCommands=self,atAuto=atAuto)
+    return scanner.run(s,parent)
 .. @-all
 .. @-leo
