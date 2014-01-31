@@ -895,17 +895,13 @@ class leoImportCommands (scanUtility):
             self.rootLine = "@root-code "+self.fileName+'\n'
         else:
             self.rootLine = ''
-        if p.isAtAutoRstNode(): # @auto-rst is independent of file extension.
+        if p.isAtAutoRstNode():
+            # @auto-rst is independent of file extension.
             func = self.scanRstText
         elif p.isAtAutoOtlNode():
             func = self.scanVimoutlinerText
         else:
-            ### func = self.importDispatchDict.get(ext)
-            aClass = self.classDispatchDict.get(ext)
-            if aClass:
-                func = self.create_general_scanner(aClass,atAuto,p,s)
-            else:
-                func = None
+            func = self.create_general_scanner(atAuto,ext,p,s)
         if func and not c.config.getBool('suppress_import_parsing',default=False):
             s = s.replace('\r','')
             func(s,p,atAuto=atAuto)
@@ -1481,12 +1477,13 @@ class leoImportCommands (scanUtility):
         return result
     #@+node:ekr.20071127175948.1: *3* Import scanners
     #@+node:ekr.20140130172810.15471: *4* create_general_scanner
-    def create_general_scanner(self,aClass,atAuto,parent,s):
-        '''A factory returning a scanner function for the given class.'''
+    def create_general_scanner(self,atAuto,ext,parent,s):
+        '''A factory returning a scanner function for the given file extension.'''
+        aClass = self.classDispatchDict.get(ext)
         def general_scanner(s,parent,atAuto):
             scanner = aClass(importCommands=self,atAuto=atAuto)
             return scanner.run(s,parent)
-        return general_scanner
+        return general_scanner if aClass else None
     #@+node:ekr.20080811174246.1: *4* languageForExtension
     def languageForExtension (self,ext):
 
@@ -5716,11 +5713,7 @@ def parse_body_command(event):
     ext = g.app.language_extension_dict.get(language)
     if ext:
         if not ext.startswith('.'): ext = '.' + ext
-        aClass = self.classDispatchDict.get(ext)
-        if aClass:
-            func = self.create_general_scanner(aClass,atAuto,p,s)
-        else:
-            func = None
+        func = self.create_general_scanner(atAuto,ext,p,s)
         if func:
             bunch = c.undoer.beforeChangeTree(p)
             s = p.b
