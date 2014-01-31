@@ -143,7 +143,7 @@ class leoImportCommands (scanUtility):
     #@+others
     #@+node:ekr.20031218072017.3207: *3* import.__init__ & helpers
     def __init__ (self,c):
-
+        '''ctor for leoImportCommands class.'''
         self.c = c
         self.default_directory = None # For @path logic.
         self.encoding = 'utf-8'
@@ -158,8 +158,7 @@ class leoImportCommands (scanUtility):
         self.treeType = "@file" # None or "@file"
         self.webType = "@noweb" # "cweb" or "noweb"
         self.web_st = [] # noweb symbol table.
-
-        self.createImportDispatchDict()
+        # self.createImportDispatchDict()
         self.createClassDispatchDict()
     #@+node:ekr.20140125141655.10473: *4* ic.createClassDispatchDict
     def createClassDispatchDict(self):
@@ -193,38 +192,6 @@ class leoImportCommands (scanUtility):
             # '.rst':     rstScanner,
             '.ts':      TypeScriptScanner,
             '.xml':     xmlScanner,
-        }
-    #@+node:ekr.20080825131124.3: *4* ic.createImportDispatchDict
-    def createImportDispatchDict (self):
-
-        self.importDispatchDict = {
-            # Keys are file extensions, values are text scanners.
-            # Text scanners must have the signature scanSomeText(self,s,parent,atAuto=False)
-            '.c':       self.scanCText,
-            '.h':       self.scanCText,
-            '.h++':     self.scanCText,
-            '.cc':      self.scanCText,
-            '.c++':     self.scanCText,
-            '.cpp':     self.scanCText,
-            '.cxx':     self.scanCText,
-            '.cfg':     self.scanIniText,
-            '.cs':      self.scanCSharpText,
-            '.el':      self.scanElispText,
-            '.htm':     self.scanHtmlText,
-            '.html':    self.scanHtmlText,
-            '.ini':     self.scanIniText,
-            '.java':    self.scanJavaText,
-            '.js':      self.scanJavaScriptText,
-            '.otl':     self.scanVimoutlinerText,
-            '.php':     self.scanPHPText,
-            '.pas':     self.scanPascalText,
-            '.py':      self.scanPythonText,
-            '.pyw':     self.scanPythonText,
-            # '.txt':     self.scanRstText, # A reasonable default.
-            # '.rest':    self.scanRstText,
-            # '.rst':     self.scanRstText,
-            '.ts':      self.scanTypeScriptText,
-            '.xml':     self.scanXmlText,
         }
     #@+node:ekr.20031218072017.3289: *3* Export
     #@+node:ekr.20031218072017.3290: *4* ic.convertCodePartToWeb
@@ -933,7 +900,12 @@ class leoImportCommands (scanUtility):
         elif p.isAtAutoOtlNode():
             func = self.scanVimoutlinerText
         else:
-            func = self.importDispatchDict.get(ext)
+            ### func = self.importDispatchDict.get(ext)
+            aClass = self.classDispatchDict.get(ext)
+            if aClass:
+                func = self.create_general_scanner(aClass,atAuto,p,s)
+            else:
+                func = None
         if func and not c.config.getBool('suppress_import_parsing',default=False):
             s = s.replace('\r','')
             func(s,p,atAuto=atAuto)
@@ -1508,111 +1480,14 @@ class leoImportCommands (scanUtility):
                     # g.es("replacing",target,"with",s)
         return result
     #@+node:ekr.20071127175948.1: *3* Import scanners
-    #@+node:edreamleo.20070710110153: *4* scanCText
-    def scanCText (self,s,parent,atAuto=False):
-        '''Scan C text.'''
-        scanner = cScanner(importCommands=self,atAuto=atAuto)
-        return scanner.run(s,parent)
-    #@+node:ekr.20071008130845.1: *4* scanCSharpText
-    def scanCSharpText (self,s,parent,atAuto=False):
-        '''Scan C# text.'''
-        scanner = cSharpScanner(importCommands=self,atAuto=atAuto)
-        return scanner.run(s,parent)
-    #@+node:ekr.20070711060107.1: *4* scanElispText
-    def scanElispText (self,s,parent,atAuto=False):
-        '''Scan elisp text.'''
-        scanner = elispScanner(importCommands=self,atAuto=atAuto)
-        return scanner.run(s,parent)
-    #@+node:ekr.20111029055127.16618: *4* scanHtmlText
-    def scanHtmlText (self,s,parent,atAuto=False):
-        '''Scan HTML text.'''
-        scanner = htmlScanner(importCommands=self,atAuto=atAuto)
-        return scanner.run(s,parent)
-    #@+node:ekr.20100803231223.5808: *4* scanIniText
-    def scanIniText (self,s,parent,atAuto=False):
-        '''Scan .ini text'''
-        scanner = iniScanner(importCommands=self,atAuto=atAuto)
-        return scanner.run(s,parent)
-    #@+node:edreamleo.20070710110114.2: *4* scanJavaText
-    def scanJavaText (self,s,parent,atAuto=False):
-        '''Scan Java text'''
-        scanner = javaScanner(importCommands=self,atAuto=atAuto)
-        return scanner.run(s,parent)
-    #@+node:ekr.20071027111225.1: *4* scanJavaScriptText
-    def scanJavaScriptText (self,s,parent,atAuto=False):
-        '''Scan JavaScript text'''
-        scanner = JavaScriptScanner(importCommands=self,atAuto=atAuto)
-        return scanner.run(s,parent)
-    #@+node:ekr.20101027055033.5967: *4* scanNSIText
-    def scanNSIText (self,s,p,ext,atAuto=False):
-        '''Scan NSI text'''
-        c = self.c
-        changed = c.isChanged()
-        # body = g.choose(atAuto,'','@ignore\n')
-        # if ext in ('.html','.htm'):   body += '@language html\n'
-        # elif ext in ('.txt','.text'): body += '@nocolor\n'
-        # else:
-            # language = self.languageForExtension(ext)
-            # if language: body += '@language %s\n' % language
-        assert self.rootLine == ''
-        body = '@language ini\n\n'
-        self.setBodyString(p,body+s)
-        if atAuto:
-            p.clearDirty()
-            if not changed:
-                c.setChanged(False)
-        g.app.unitTestDict = {'result':True}
-        return True
-    #@+node:ekr.20070711104241.2: *4* scanPascalText
-    def scanPascalText (self,s,parent,atAuto=False):
-        '''Scan Pascal text'''
-        scanner = pascalScanner(importCommands=self,atAuto=atAuto)
-        return scanner.run(s,parent)
-    #@+node:ekr.20070711090122: *4* scanPHPText
-    def scanPHPText (self,s,parent,atAuto=False):
-        '''Scan PHP text.'''
-        scanner = phpScanner(importCommands=self,atAuto=atAuto)
-        return scanner.run(s,parent)
-    #@+node:ekr.20070703122141.99: *4* scanPythonText
-    def scanPythonText (self,s,parent,atAuto=False):
-        '''Scan Python text.'''
-        scanner = pythonScanner(importCommands=self,atAuto=atAuto)
-        return scanner.run(s,parent)
-    #@+node:ekr.20090501095634.48: *4* scanRstText
-    def scanRstText (self,s,parent,atAuto=False):
-        '''Scan reStructuredText.'''
-        scanner = rstScanner(importCommands=self,atAuto=atAuto)
-        return scanner.run(s,parent)
-    #@+node:ekr.20121011093316.10102: *4* scanTypeScriptText
-    def scanTypeScriptText (self,s,parent,atAuto=False):
-        '''Scan TypeScript text.'''
-        scanner = TypeScriptScanner(importCommands=self,atAuto=atAuto)
-        return scanner.run(s,parent)
-    #@+node:ekr.20071214072145: *4* scanXmlText
-    def scanXmlText (self,s,parent,atAuto=False):
-        '''Scan xml text.'''
-        scanner = xmlScanner(importCommands=self,atAuto=atAuto)
-        return scanner.run(s,parent)
-    #@+node:ekr.20070713075352: *4* scanUnknownFileType (default scanner) & helper
-    def scanUnknownFileType (self,s,p,ext,atAuto=False):
-        '''Scan the text of an unknown file type.'''
-        c = self.c
-        changed = c.isChanged()
-        body = g.choose(atAuto,'','@ignore\n')
-        if ext in ('.html','.htm'):   body += '@language html\n'
-        elif ext in ('.txt','.text'): body += '@nocolor\n'
-        else:
-            language = self.languageForExtension(ext)
-            if language: body += '@language %s\n' % language
-        self.setBodyString(p,body+self.rootLine+s)
-        if atAuto:
-            for p in p.self_and_subtree():
-                p.clearDirty()
-            if not changed:
-                c.setChanged(False)
-        g.app.unitTestDict = {'result':True}
-        return True
-    #@+node:ekr.20080811174246.1: *5* languageForExtension
+    #@+node:ekr.20140130172810.15471: *4* create_general_scanner
+    def create_general_scanner(self,aClass,atAuto,parent,s):
+        '''A factory returning a scanner function for the given class.'''
+        def general_scanner(s,parent,atAuto):
+            scanner = aClass(importCommands=self,atAuto=atAuto)
+            return scanner.run(s,parent)
+        return general_scanner
+    #@+node:ekr.20080811174246.1: *4* languageForExtension
     def languageForExtension (self,ext):
 
         '''Return the language corresponding to the extension ext.'''
@@ -1636,6 +1511,30 @@ class leoImportCommands (scanUtility):
 
         # Return the language even if there is no colorizer mode for it.
         return language
+    #@+node:ekr.20090501095634.48: *4* scanRstText
+    def scanRstText (self,s,parent,atAuto=False):
+        '''Scan reStructuredText.'''
+        scanner = rstScanner(importCommands=self,atAuto=atAuto)
+        return scanner.run(s,parent)
+    #@+node:ekr.20070713075352: *4* scanUnknownFileType (default scanner) & helper
+    def scanUnknownFileType (self,s,p,ext,atAuto=False):
+        '''Scan the text of an unknown file type.'''
+        c = self.c
+        changed = c.isChanged()
+        body = g.choose(atAuto,'','@ignore\n')
+        if ext in ('.html','.htm'):   body += '@language html\n'
+        elif ext in ('.txt','.text'): body += '@nocolor\n'
+        else:
+            language = self.languageForExtension(ext)
+            if language: body += '@language %s\n' % language
+        self.setBodyString(p,body+self.rootLine+s)
+        if atAuto:
+            for p in p.self_and_subtree():
+                p.clearDirty()
+            if not changed:
+                c.setChanged(False)
+        g.app.unitTestDict = {'result':True}
+        return True
     #@+node:ekr.20120517155536.10124: *4* scanVimoutlinerText
     def scanVimoutlinerText(self,s,parent,atAuto=False):
         '''Scan vim outliner text.'''
@@ -2705,7 +2604,7 @@ class baseScannerClass (scanUtility):
         trace = False and not g.unitTesting
         # From scan: parse the decls.s
         s = p.b
-        if self.n_decls == 0 and self.hasDecls:
+        if False: ### and self.n_decls == 0 and self.hasDecls:
             i = self.skipDecls(s,0,len(s),inClass=False)
             decls = s[:i]
             if decls:
@@ -5817,7 +5716,11 @@ def parse_body_command(event):
     ext = g.app.language_extension_dict.get(language)
     if ext:
         if not ext.startswith('.'): ext = '.' + ext
-        func = ic.importDispatchDict.get(ext)
+        aClass = self.classDispatchDict.get(ext)
+        if aClass:
+            func = self.create_general_scanner(aClass,atAuto,p,s)
+        else:
+            func = None
         if func:
             bunch = c.undoer.beforeChangeTree(p)
             s = p.b
