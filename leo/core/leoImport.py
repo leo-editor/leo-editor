@@ -901,10 +901,10 @@ class leoImportCommands (scanUtility):
         elif p.isAtAutoOtlNode():
             func = self.scanVimoutlinerText
         else:
-            func = self.create_general_scanner(atAuto,ext,p,s)
+            func = self.scanner_for_ext(atAuto,ext,p,s)
         if func and not c.config.getBool('suppress_import_parsing',default=False):
             s = s.replace('\r','')
-            func(s,p,atAuto=atAuto)
+            func(atAuto,p,s)
         else:
             # Just copy the file to the parent node.
             s = s.replace('\r','')
@@ -1476,14 +1476,14 @@ class leoImportCommands (scanUtility):
                     # g.es("replacing",target,"with",s)
         return result
     #@+node:ekr.20071127175948.1: *3* Import scanners
-    #@+node:ekr.20140130172810.15471: *4* create_general_scanner
-    def create_general_scanner(self,atAuto,ext,parent,s):
+    #@+node:ekr.20140130172810.15471: *4* scanner_for_ext
+    def scanner_for_ext(self,atAuto,ext,parent,s):
         '''A factory returning a scanner function for the given file extension.'''
         aClass = self.classDispatchDict.get(ext)
-        def general_scanner(s,parent,atAuto):
+        def scanner_for_class(atAuto,parent,s):
             scanner = aClass(importCommands=self,atAuto=atAuto)
             return scanner.run(s,parent)
-        return general_scanner if aClass else None
+        return scanner_for_class if aClass else None
     #@+node:ekr.20080811174246.1: *4* languageForExtension
     def languageForExtension (self,ext):
 
@@ -5703,22 +5703,23 @@ class htmlScanner (xmlScanner):
 #@+node:ekr.20120429125741.10057: *3* @g.command(parse-body)
 @g.command('parse-body')
 def parse_body_command(event):
-
+    '''The parse-body command.'''
     c = event.get('c')
     p = c and c.p
     if not c or not p: return
     ic = c.importCommands
     ic.tab_width = ic.getTabWidth()
+    atAuto = False
     language = g.scanForAtLanguage(c,p)
     ext = g.app.language_extension_dict.get(language)
     if ext:
         if not ext.startswith('.'): ext = '.' + ext
-        func = self.create_general_scanner(atAuto,ext,p,s)
+        func = self.scanner_for_ext(atAuto,ext,p,s)
         if func:
             bunch = c.undoer.beforeChangeTree(p)
             s = p.b
             p.b = ''
-            func(s,p,atAuto=False)
+            func(atAuto,p,s)
             bunch = c.undoer.afterChangeTree(p,'parse-body',bunch)
             c.validateOutline()
             p.expand()
