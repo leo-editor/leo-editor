@@ -901,10 +901,10 @@ class leoImportCommands (scanUtility):
         elif p.isAtAutoOtlNode():
             func = self.scanVimoutlinerText
         else:
-            func = self.scanner_for_ext(atAuto,ext,p,s)
+            func = self.scanner_for_ext(ext)
         if func and not c.config.getBool('suppress_import_parsing',default=False):
             s = s.replace('\r','')
-            func(atAuto,p,s)
+            func(atAuto=atAuto,parent=p,s=s)
         else:
             # Just copy the file to the parent node.
             s = s.replace('\r','')
@@ -1477,9 +1477,9 @@ class leoImportCommands (scanUtility):
         return result
     #@+node:ekr.20071127175948.1: *3* Import scanners
     #@+node:ekr.20140130172810.15471: *4* scanner_for_ext
-    def scanner_for_ext(self,atAuto,ext,parent,s):
+    def scanner_for_ext(self,ext):
         '''A factory returning a scanner function for the given file extension.'''
-        aClass = self.classDispatchDict.get(ext)
+        aClass = ext and self.classDispatchDict.get(ext)
         def scanner_for_class(atAuto,parent,s):
             scanner = aClass(importCommands=self,atAuto=atAuto)
             return scanner.run(s,parent)
@@ -5709,23 +5709,22 @@ def parse_body_command(event):
     if not c or not p: return
     ic = c.importCommands
     ic.tab_width = ic.getTabWidth()
-    atAuto = False
     language = g.scanForAtLanguage(c,p)
     ext = g.app.language_extension_dict.get(language)
-    if ext:
-        if not ext.startswith('.'): ext = '.' + ext
-        func = self.scanner_for_ext(atAuto,ext,p,s)
-        if func:
-            bunch = c.undoer.beforeChangeTree(p)
-            s = p.b
-            p.b = ''
-            func(atAuto,p,s)
-            bunch = c.undoer.afterChangeTree(p,'parse-body',bunch)
-            c.validateOutline()
-            p.expand()
-            c.redraw()
-            return
-    g.es_print('unknown language')
+    if ext and not ext.startswith('.'): ext = '.' + ext
+    func = ic.scanner_for_ext(ext)
+    if func:
+        bunch = c.undoer.beforeChangeTree(p)
+        s = p.b
+        p.b = ''
+        atAuto = False
+        func(atAuto,p,s)
+        bunch = c.undoer.afterChangeTree(p,'parse-body',bunch)
+        c.validateOutline()
+        p.expand()
+        c.redraw()
+    else:
+        g.es_print('unknown language')
 #@+node:ekr.20101103093942.5941: *3* @g.command(head-to-prev-node)
 @g.command('head-to-prev-node')
 def headToPrevNode(event):
