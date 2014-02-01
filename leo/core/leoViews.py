@@ -80,6 +80,8 @@ class ViewController:
         self.global_bare_organizer_node_list = []
             # List of organizers that have no parent organizer node.
             # This list excludes existing organizer nodes.
+        self.headlines_dict = {}
+            # Keys are vnodes; values are list of child headlines.
         self.imported_organizers_list = []
             # The list of nodes that have children on entry, such as class nodes.
         self.n_nodes_scanned = 0
@@ -225,6 +227,9 @@ class ViewController:
         c = vc.c
         changed = False
         t1 = time.clock()
+        # Ensure that all nodes of the tree are regularized.
+        vc.prepass(root)
+            # g.es_print('prepass failed!',color='red')
         # Create lists of cloned and organizer nodes.
         clones,existing_organizers,organizers = \
             vc.find_special_nodes(root)
@@ -324,37 +329,50 @@ class ViewController:
         Recreate all organizer nodes and clones for a single @auto node
         using the corresponding @organizer: and @clones nodes.
         '''
+        trace = True and not g.unitTesting
         vc = self
         c = vc.c
-        t1 = time.clock()
         if not vc.is_at_auto_node(root):
             return # Not an error: it might be and @auto-rst node.
         old_changed = c.isChanged()
         try:
             vc.init()
-            vc.trial_write_1 = vc.trial_write(root)
-            organizers = vc.has_at_organizers_node(root)
             vc.root = root.copy()
-            if organizers:
-                vc.create_organizer_nodes(organizers,root)
+            t1 = time.clock()
+            vc.trial_write_1 = vc.trial_write(root)
+            t2 = time.clock()
+            at_organizers = vc.has_at_organizers_node(root)
+            t3 = time.clock()
+            if at_organizers:
+                vc.create_organizer_nodes(at_organizers,root)
+            t4 = time.clock()
             at_clones = vc.has_at_clones_node(root)
             if at_clones:
                 vc.create_clone_links(at_clones,root)
+            t5 = time.clock()
             n = len(vc.work_list)
             ok = vc.check(root)
+            t6 = time.clock()
             if ok:
                 vc.update_headlines_after_read(root)
+            t7 = time.clock()
             c.setChanged(old_changed if ok else False)
                 ### To do: revert if not ok.
         except Exception:
             g.es_exception()
             n = 0
             ok = False
+        if trace: g.trace(
+            '\n  trial_write:                 %4.2f sec' % (t2-t1),
+            '\n  has_at_organizers_node:      %4.2f sec' % (t3-t2),
+            '\n  create_organizer_nodes:      %4.2f sec' % (t4-t3),
+            '\n  create_clone_links:          %4.2f sec' % (t5-t4),
+            '\n  check:                       %4.2f sec' % (t6-t5),
+            '\n  update_headlines_after_read: %4.2f sec' % (t7-t6))
         if ok: #  and n > 0:
             vc.print_stats()
-            t2 = time.clock()-t1
             g.es('rearraned: %s' % (root.h),color='blue')
-            g.es('moved %s nodes in %4.2f sec.' % (n,t2))
+            g.es('moved %s nodes in %4.2f sec.' % (n,t7-t1))
             g.trace('@auto-view moved %s nodes in %4.2f sec. for' % (
                 n,t2),root.h,noname=True)
         c.selectPosition(root)
@@ -412,6 +430,7 @@ class ViewController:
         unls = [s[4:].strip() for s in lines if s.startswith('unl:')]
         # g.trace('at_clones.b',at_clones.b)
         if len(gnxs) == len(unls):
+            vc.headlines_dict = {} # May be out of date.
             ok = True
             for gnx,unl in zip(gnxs,unls):
                 ok = ok and vc.create_clone_link(gnx,root,unl)
@@ -427,16 +446,29 @@ class ViewController:
         '''
         vc = self
         c = vc.c
+        trace = True and not g.unitTesting
+        t1 = time.clock()
         vc.pre_move_comments(root)
             # Merge comment nodes with the next node.
+        t2 = time.clock()
         vc.precompute_all_data(at_organizers,root)
             # Init all data required for reading.
+        t3 = time.clock()
         vc.demote(root)
             # Traverse root's tree, adding nodes to vc.work_list.
+        t4 = time.clock()
         vc.move_nodes()
             # Move nodes on vc.work_list to their final locations.
+        t5 = time.clock()
         vc.post_move_comments(root)
             # Move merged comments to parent organizer nodes.
+        t6 = time.clock()
+        if trace: g.trace(
+            '\n  pre_move_comments:   %4.2f sec' % (t2-t1),
+            '\n  precompute_all_data: %4.2f sec' % (t3-t2),
+            '\n  demote:              %4.2f sec' % (t4-t3),
+            '\n  move_nodes:          %4.2f sec' % (t5-t4),
+            '\n  post_move_comments:  %4.2f sec' % (t6-t5))
     #@+node:ekr.20140109214515.16639: *6* vc.post_move_comments
     def post_move_comments(self,root):
         '''Move comments from the start of nodes to their parent organizer node.'''
@@ -488,6 +520,7 @@ class ViewController:
         else:
             unls,heads = [],[]
         if len(unls) == len(heads):
+            vc.headlines_dict = {} # May be out of date.
             for unl,head in zip(unls,heads):
                 p = vc.find_position_for_relative_unl(root,unl)
                 if p:
@@ -518,28 +551,29 @@ class ViewController:
                 self.vc = c.viewController
                 self.root = p.copy()
             #@+others
-            #@+node:ekr.20140125071842.10476: *6* create_at_auto_view_node
+            #@+node:ekr.20140125071842.10476: *6* cc.create_at_auto_view_node
             def create_at_auto_view_node(self):
                 '''Create the @auto-view tree from the @file node.'''
                 cc = self
                 c,root = cc.c,cc.root
                 c.viewController.update_before_write_at_auto_file(root)
-            #@+node:ekr.20140125071842.10477: *6* import_from_string
+            #@+node:ekr.20140125071842.10477: *6* cc.import_from_string
             def import_from_string(self,s):
                 '''Import from s into a temp outline.'''
-                cc = self
+                cc = self # (ConvertController)
                 c = cc.c
                 ic = c.importCommands
                 root = cc.root
                 language = g.scanForAtLanguage(c,root) 
                 ext = '.'+g.app.language_extension_dict.get(language)
-                scanner = ic.importDispatchDict.get(ext)
+                ### scanner = ic.importDispatchDict.get(ext)
+                scanner = ic.scanner_for_ext(ext)
                 # g.trace(language,ext,scanner.__name__)
                 p = root.insertAfter()
-                ok = scanner(s,p,atAuto=True)
+                ok = scanner(atAuto=True,parent=p,s=s)
                 p.h = root.h.replace('@file','@auto' if ok else '@@auto')
                 return ok,p
-            #@+node:ekr.20140125071842.10478: *6* run
+            #@+node:ekr.20140125071842.10478: *6* cc.run
             def run(self):
                 '''Convert an @file tree to @auto tree.'''
                 trace_s = False
@@ -572,7 +606,7 @@ class ViewController:
                 if p:
                     c.selectPosition(p)
                 c.redraw()
-            #@+node:ekr.20140125141655.10476: *6* set_expected_imported_headlines
+            #@+node:ekr.20140125141655.10476: *6* cc.set_expected_imported_headlines
             def set_expected_imported_headlines(self,root):
                 '''Set the headline_ivar for all vnodes.'''
                 trace = False and not g.unitTesting
@@ -597,7 +631,7 @@ class ViewController:
                             setattr(p.v,ivar,h)
                             if trace and h != p.h:
                                 g.trace('==>',h) # p.h,'==>',h
-            #@+node:ekr.20140125071842.10479: *6* strip_sentinels
+            #@+node:ekr.20140125071842.10479: *6* cc.strip_sentinels
             def strip_sentinels(self):
                 '''Write the file to a string without headlines or sentinels.'''
                 trace = False and not g.unitTesting
@@ -626,22 +660,65 @@ class ViewController:
         else:
             g.es_print('not an @file node:',root.h)
     #@+node:ekr.20140120105910.10488: *3* vc.Main Lines
+    #@+node:ekr.20140131101641.15495: *4* vc.prepass & helper
+    def prepass(self,root):
+        '''Make sure root's tree has no hard-to-handle nodes.'''
+        vc = self
+        c = vc.c
+        ic = c.importCommands
+        ic.tab_width = ic.getTabWidth()
+        language = g.scanForAtLanguage(c,root)
+        ext = g.app.language_extension_dict.get(language)
+        if not ext: return
+        if not ext.startswith('.'): ext = '.' + ext
+        atAuto = True
+        scanner = ic.scanner_for_ext(ext)
+        for p in root.subtree():
+            vc.regularize_node(p,scanner)
+        # return c.validateOutline()
+    #@+node:ekr.20140131101641.15496: *5* regularize_node
+    def regularize_node(self,p,scanner):
+        '''Regularize node p so that it will not cause problems.'''
+        # g.trace(p.h)
+        if 0:
+            # bunch = c.undoer.beforeChangeTree(p)
+            s = p.b
+            p.b = ''
+            scanner(atAuto=True,parent=p,s=s)
+            # bunch = c.undoer.afterChangeTree(p,'parse-body',bunch)
     #@+node:ekr.20140115180051.16709: *4* vc.precompute_all_data & helpers
     def precompute_all_data(self,at_organizers,root):
         '''Precompute all data needed to reorganize nodes.'''
+        trace = True and not g.unitTesting
         vc = self
+        t1 = time.clock() 
         vc.find_imported_organizer_nodes(root)
             # Put all nodes with children on vc.imported_organizer_node_list
+        t2 = time.clock()
         vc.create_organizer_data(at_organizers,root)
-            # Create OrganizerData objects for all @organizer: and @existing-organizer: nodes.
+            # Create OrganizerData objects for all @organizer:
+            # and @existing-organizer: nodes.
+        t3 = time.clock()
         vc.create_actual_organizer_nodes()
             # Create the organizer nodes in holding cells so positions remain valid.
+        t4 = time.clock()
         vc.create_tree_structure(root)
             # Set od.parent_od, od.children & od.descendants for all ods.
+        t5 = time.clock()
         vc.compute_all_organized_positions(root)
             # Compute the positions organized by each organizer.
+            # ** Most of the time is spent here **.
+        t6 = time.clock()
         vc.create_anchors_d()
             # Create the dictionary that associates positions with ods.
+        t7 = time.clock()
+        if trace: g.trace(
+            '\n  find_imported_organizer_nodes:   %4.2f sec' % (t2-t1),
+            '\n  create_organizer_data:           %4.2f sec' % (t3-t2),
+            '\n  create_actual_organizer_nodes:   %4.2f sec' % (t4-t3),
+            '\n  create_tree_structure:           %4.2f sec' % (t5-t4),
+            '\n  compute_all_organized_positions: %4.2f sec' % (t6-t5),
+            '\n  create_anchors_d:                %4.2f sec' % (t7-t6))
     #@+node:ekr.20140113181306.16690: *5* 1: vc.find_imported_organizer_nodes
     def find_imported_organizer_nodes(self,root):
         '''
@@ -668,7 +745,6 @@ class ViewController:
         vc.finish_create_existing_organizers(root)
         for od in vc.all_ods:
             assert od.parent,(od.exists,od.h)
-        
     #@+node:ekr.20140126044100.15449: *6* vc.create_ods
     def create_ods(self,at_organizers):
         '''Create all organizer nodes and the associated lists.'''
@@ -820,19 +896,26 @@ class ViewController:
         else:
             if trace: g.trace('cached',od.h,[z.h for z in od.descendants])
             return od.descendants
-    #@+node:ekr.20140115180051.16706: *5* 5: vc.compute_all_organized_positions
+    #@+node:ekr.20140115180051.16706: *5* 5: vc.compute_all_organized_positions (bottleneck)
     def compute_all_organized_positions(self,root):
         '''Compute the list of positions organized by every od.'''
         trace = False and not g.unitTesting
         vc = self
         for od in vc.all_ods:
-            for unl in od.unls:
-                p = vc.find_position_for_relative_unl(root,unl)
-                if p:
-                    od.organized_nodes.append(p.copy())
-                if trace: g.trace('exists:',od.exists,
-                    'od:',od.h,'unl:',unl,
-                    'p:',p and p.h or '===== None')
+            if od.unls:
+                # Do a full search only for the first unl.
+                ### parent = vc.find_position_for_relative_unl(root,od.unls[0])
+                if True: ### parent:
+                    for unl in od.unls:
+                        p = vc.find_position_for_relative_unl(root,unl)
+                        ### p = vc.find_position_for_relative_unl(parent,vc.unl_tail(unl))
+                        if p:
+                            od.organized_nodes.append(p.copy())
+                        if trace: g.trace('exists:',od.exists,
+                            'od:',od.h,'unl:',unl,
+                            'p:',p and p.h or '===== None')
+                else:
+                    g.trace('fail',od.unls[0])
     #@+node:ekr.20140117131738.16727: *5* 6: vc.create_anchors_d
     def create_anchors_d (self):
         '''
@@ -1445,10 +1528,11 @@ class ViewController:
         Return the node in parent's subtree matching the given unl.
         The unl is relative to the parent position.
         '''
-        # This is called from several places.
-        trace = False and not g.unitTesting
+        # This is called from finish_create_organizers & compute_all_organized_positions.
+        trace = False # and not g.unitTesting
         trace_loop = True
         trace_success = False
+        vc = self
         if not unl:
             if trace and trace_success:
                 g.trace('return parent for empty unl:',parent.h)
@@ -1458,17 +1542,31 @@ class ViewController:
         # if trace: g.trace('p:',p.h,'unl:',unl)
         for s in unl.split('-->'):
             found = False # The last part must match.
-            for child in p.children():
-                if child.h == s:
-                    p = child
+            if 1:
+                # Create the list of children on the fly.
+                aList = vc.headlines_dict.get(p.v)
+                if aList is None:
+                    aList = [z.h for z in p.children()]
+                    vc.headlines_dict[p.v] = aList
+                try:
+                    n = aList.index(s)
+                    p = p.nthChild(n)
                     found = True
                     if trace and trace_loop: g.trace('match:',s)
-                    break
+                except ValueError: # s not in aList.
+                    if trace and trace_loop: g.trace('drop:',s)
+                    drop.append(s)
+            else: # old code.
+                for child in p.children():
+                    if child.h == s:
+                        p = child
+                        found = True
+                        if trace and trace_loop: g.trace('match:',s)
+                        break
+                    # elif trace and trace_loop: g.trace('no match:',child.h)
                 else:
-                    if trace and trace_loop: g.trace('no match:',child.h)
-            else:
-                if trace and trace_loop: g.trace('drop:',s)
-                drop.append(s)
+                    if trace and trace_loop: g.trace('drop:',s)
+                    drop.append(s)
         if found:
             if trace and trace_success:
                 g.trace('found unl:',unl,'parent:',p.h,'drop',drop)
