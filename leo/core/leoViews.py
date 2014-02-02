@@ -159,6 +159,11 @@ class ViewController:
                 cc.set_expected_imported_headlines(root)
                 # Delete all previous @auto-view nodes for this tree.
                 cc.delete_at_auto_view_nodes(root)
+                # Ensure that all nodes of the tree are regularized.
+                ok = vc.prepass(root)
+                if not ok:
+                    g.es_print('Can not convert',root.h,color='red')
+                    return
                 # Create the appropriate @auto-view node.
                 at_auto_view = vc.update_before_write_at_auto_file(root)
                 # Write the @file node as if it were an @auto node.
@@ -572,9 +577,6 @@ class ViewController:
         c = vc.c
         changed = False
         t1 = time.clock()
-        # Ensure that all nodes of the tree are regularized.
-        vc.prepass(root)
-            # g.es_print('prepass failed!',color='red')
         # Create lists of cloned and organizer nodes.
         clones,existing_organizers,organizers = \
             vc.find_special_nodes(root)
@@ -681,18 +683,23 @@ class ViewController:
         if not ext: return
         if not ext.startswith('.'): ext = '.' + ext
         scanner = ic.scanner_for_ext(ext)
+        ok = True
         if scanner:
             for p in root.subtree():
-                vc.regularize_node(p,scanner)
-            # return c.validateOutline()
+                ok2 = vc.regularize_node(p,scanner)
+                ok = ok and ok2
         else:
             g.trace('no scanner for',root.h)
-        
+        return scanner and ok
+
     #@+node:ekr.20140131101641.15496: *5* regularize_node
     def regularize_node(self,p,scanner):
         '''Regularize node p so that it will not cause problems.'''
-        # Careful: we can't the tree here!!
-        scanner(atAuto=True,parent=p,s=p.b,prepass=True)
+       
+        ok = scanner(atAuto=True,parent=p,s=p.b,prepass=True)
+        if not ok:
+            g.es_print('please regularize:',p.h)
+        return ok
     #@+node:ekr.20140115180051.16709: *4* vc.precompute_all_data & helpers
     def precompute_all_data(self,at_organizers,root):
         '''Precompute all data needed to reorganize nodes.'''

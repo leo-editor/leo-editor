@@ -2667,14 +2667,12 @@ class baseScannerClass (scanUtility):
     def prepass (self,s,parent):
         '''
         A prepass for the at-file-to-at-auto command.
-        Move additional functions/methods from class and def nodes.
+        Return False if parent should be split into pieces.
         '''
-        # Careful: We probably can't change the tree here!
-        g.trace('(baseScannerClass)',parent.h)
-        self.methodsSeen = False
         # From scanHelper...
-        i = 0
-        start = i ; putRef = False ; bodyIndent = None
+        delim1,delim2 = self.outerBlockDelim1,self.outerBlockDelim2
+        n,i = 0,0
+        ### start = i ; putRef = False ; bodyIndent = None
         while i < len(s):
             progress = i
             if s[i] in (' ','\t','\n'):
@@ -2683,28 +2681,34 @@ class baseScannerClass (scanUtility):
                 i = self.skipComment(s,i)
             elif self.startsString(s,i):
                 i = self.skipString(s,i)
-            elif self.startsClass(s,i):  # Sets sigStart,sigEnd & codeEnd ivars.
-                putRef = True
-                if bodyIndent is None: bodyIndent = self.getIndent(s,i)
-                end2 = self.codeEnd # putClass may change codeEnd ivar.
+            elif self.startsClass(s,i):
+                # g.trace('class',i,s[i:i+20])
+                i = self.codeEnd
+                n += 1
+                ### putRef = True
+                ### if bodyIndent is None: bodyIndent = self.getIndent(s,i)
+                ### end2 = self.codeEnd # putClass may change codeEnd ivar.
                 ### self.putClass(s,i,self.sigEnd,self.codeEnd,start,parent)
-                i = start = end2
-            elif self.startsFunction(s,i): # Sets sigStart,sigEnd & codeEnd ivars.
-                putRef = True
-                if bodyIndent is None: bodyIndent = self.getIndent(s,i)
+                ### i = start = end2
+            elif self.startsFunction(s,i):
+                # g.trace('func',i,s[i:i+20])
+                i = self.codeEnd
+                n += 1
+                ### putRef = True
+                ### if bodyIndent is None: bodyIndent = self.getIndent(s,i)
                 ### self.putFunction(s,self.sigStart,self.codeEnd,start,parent)
-                i = start = self.codeEnd
+                ### i = start = self.codeEnd
             elif self.startsId(s,i):
                 i = self.skipId(s,i)
-            elif g.match(s,i,self.outerBlockDelim1): ### and kind == 'outer':
+            elif g.match(s,i,delim1): ### and kind == 'outer':
                 # Do this after testing for classes.
                 # i1 = i # for debugging
-                i = self.skipBlock(s,i,delim1=self.outerBlockDelim1,delim2=self.outerBlockDelim2)
-                # Do *not* set start: we are just skipping the block.
+                i = self.skipBlock(s,i,delim1,delim2)
             else: i += 1
             if progress >= i:
-                i = self.skipBlock(s,i,delim1=self.outerBlockDelim1,delim2=self.outerBlockDelim2)
+                i = self.skipBlock(s,i,delim1,delim2)
             assert progress < i,'i: %d, ch: %s' % (i,repr(s[i]))
+        return n <= 1
 
         if 0: ### from scan.
             # Create the initial body text in the root.
@@ -3289,7 +3293,7 @@ class baseScannerClass (scanUtility):
         if self.strict: s = self.regularizeWhitespace(s) 
         # Generate the nodes, including directives and section references.
         if self.isPrepass:
-            self.prepass(s,parent)
+            return self.prepass(s,parent)
         else:
             self.scan(s,parent)
             if self.isPrepass: return
