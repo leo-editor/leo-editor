@@ -3092,6 +3092,8 @@ def __init__ (self,importCommands,atAuto,language,alternate_language=None):
     self.importCommands = ic
     self.indentRefFlag = None
         # None, True or False.
+    self.isPrepass = False
+        # True if we are running at-file-to-at-auto prepass.
     self.isRst = False
     self.language = language
         # The language used to set comment delims.

@@ -123,8 +123,8 @@ class ViewController:
                 self.vc = c.viewController
                 self.root = p.copy()
             #@+others
-            #@+node:ekr.20140202110830.17501: *6* cc.delete_at_auto_view_node
-            def delete_at_auto_view_node(self,root):
+            #@+node:ekr.20140202110830.17501: *6* cc.delete_at_auto_view_nodes
+            def delete_at_auto_view_nodes(self,root):
                 '''Delete all @auto-view nodes pertaining to root.'''
                 cc = self
                 vc = cc.vc
@@ -158,7 +158,7 @@ class ViewController:
                 # set the headline_ivar for all vnodes.
                 cc.set_expected_imported_headlines(root)
                 # Delete all previous @auto-view nodes for this tree.
-                cc.delete_at_auto_view_node(root)
+                cc.delete_at_auto_view_nodes(root)
                 # Create the appropriate @auto-view node.
                 at_auto_view = vc.update_before_write_at_auto_file(root)
                 # Write the @file node as if it were an @auto node.
@@ -680,21 +680,19 @@ class ViewController:
         ext = g.app.language_extension_dict.get(language)
         if not ext: return
         if not ext.startswith('.'): ext = '.' + ext
-        atAuto = True
         scanner = ic.scanner_for_ext(ext)
-        for p in root.subtree():
-            vc.regularize_node(p,scanner)
-        # return c.validateOutline()
+        if scanner:
+            for p in root.subtree():
+                vc.regularize_node(p,scanner)
+            # return c.validateOutline()
+        else:
+            g.trace('no scanner for',root.h)
+        
     #@+node:ekr.20140131101641.15496: *5* regularize_node
     def regularize_node(self,p,scanner):
         '''Regularize node p so that it will not cause problems.'''
-        # g.trace(p.h)
-        if 0:
-            # bunch = c.undoer.beforeChangeTree(p)
-            s = p.b
-            p.b = ''
-            scanner(atAuto=True,parent=p,s=s)
-            # bunch = c.undoer.afterChangeTree(p,'parse-body',bunch)
+        # Careful: we can't the tree here!!
+        scanner(atAuto=True,parent=p,s=p.b,prepass=True)
     #@+node:ekr.20140115180051.16709: *4* vc.precompute_all_data & helpers
     def precompute_all_data(self,at_organizers,root):
         '''Precompute all data needed to reorganize nodes.'''

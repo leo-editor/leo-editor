@@ -1480,9 +1480,9 @@ class leoImportCommands (scanUtility):
     def scanner_for_ext(self,ext):
         '''A factory returning a scanner function for the given file extension.'''
         aClass = ext and self.classDispatchDict.get(ext)
-        def scanner_for_class(atAuto,parent,s):
+        def scanner_for_class(atAuto,parent,s,prepass=False):
             scanner = aClass(importCommands=self,atAuto=atAuto)
-            return scanner.run(s,parent)
+            return scanner.run(s,parent,prepass)
         return scanner_for_class if aClass else None
     #@+node:ekr.20080811174246.1: *4* languageForExtension
     def languageForExtension (self,ext):
@@ -1693,6 +1693,8 @@ class baseScannerClass (scanUtility):
         self.importCommands = ic
         self.indentRefFlag = None
             # None, True or False.
+        self.isPrepass = False
+            # True if we are running at-file-to-at-auto prepass.
         self.isRst = False
         self.language = language
             # The language used to set comment delims.
@@ -2661,9 +2663,70 @@ class baseScannerClass (scanUtility):
         j,junk = g.getLine(s,i)
         junk,indent = g.skip_leading_ws_with_indent(s,j,self.tab_width)
         return indent
+    #@+node:ekr.20140202110830.17503: *4* prepass (baseScannerClass)
+    def prepass (self,s,parent):
+        '''
+        A prepass for the at-file-to-at-auto command.
+        Move additional functions/methods from class and def nodes.
+        '''
+        # Careful: We probably can't change the tree here!
+        g.trace('(baseScannerClass)',parent.h)
+        self.methodsSeen = False
+        # From scanHelper...
+        i = 0
+        start = i ; putRef = False ; bodyIndent = None
+        while i < len(s):
+            progress = i
+            if s[i] in (' ','\t','\n'):
+                i += 1 # Prevent lookahead below, and speed up the scan.
+            elif self.startsComment(s,i):
+                i = self.skipComment(s,i)
+            elif self.startsString(s,i):
+                i = self.skipString(s,i)
+            elif self.startsClass(s,i):  # Sets sigStart,sigEnd & codeEnd ivars.
+                putRef = True
+                if bodyIndent is None: bodyIndent = self.getIndent(s,i)
+                end2 = self.codeEnd # putClass may change codeEnd ivar.
+                ### self.putClass(s,i,self.sigEnd,self.codeEnd,start,parent)
+                i = start = end2
+            elif self.startsFunction(s,i): # Sets sigStart,sigEnd & codeEnd ivars.
+                putRef = True
+                if bodyIndent is None: bodyIndent = self.getIndent(s,i)
+                ### self.putFunction(s,self.sigStart,self.codeEnd,start,parent)
+                i = start = self.codeEnd
+            elif self.startsId(s,i):
+                i = self.skipId(s,i)
+            elif g.match(s,i,self.outerBlockDelim1): ### and kind == 'outer':
+                # Do this after testing for classes.
+                # i1 = i # for debugging
+                i = self.skipBlock(s,i,delim1=self.outerBlockDelim1,delim2=self.outerBlockDelim2)
+                # Do *not* set start: we are just skipping the block.
+            else: i += 1
+            if progress >= i:
+                i = self.skipBlock(s,i,delim1=self.outerBlockDelim1,delim2=self.outerBlockDelim2)
+            assert progress < i,'i: %d, ch: %s' % (i,repr(s[i]))
+
+        if 0: ### from scan.
+            # Create the initial body text in the root.
+            self.putRootText(parent)
+            # Parse the decls.
+            if self.hasDecls:
+                i = self.skipDecls(s,0,len(s),inClass=False)
+                decls = s[:i]
+            else:
+                i,decls = 0,''
+            # Create the decls node.
+            if decls: self.createDeclsNode(parent,decls)
+            # Scan the rest of the file.
+            start,junk,junk = self.scanHelper(s,i,end=len(s),parent=parent,kind='outer')
+            # Finish adding to the parent's body text.
+            self.addRef(parent)
+            if start < len(s):
+                self.appendStringToBody(parent,s[start:])
+            # Do any language-specific post-processing.
+            self.endGen(s)
     #@+node:ekr.20070706101600: *4* scan & scanHelper
     def scan (self,s,parent):
-
         '''A language independent scanner: it uses language-specific helpers.
 
         Create a child of self.root for:
@@ -2671,31 +2734,24 @@ class baseScannerClass (scanUtility):
         - Outer-level classes.
         - Outer-level functions.
         '''
-
         # Init the parser status ivars.
         self.methodsSeen = False
-
         # Create the initial body text in the root.
         self.putRootText(parent)
-
         # Parse the decls.
         if self.hasDecls:
             i = self.skipDecls(s,0,len(s),inClass=False)
             decls = s[:i]
         else:
             i,decls = 0,''
-
         # Create the decls node.
         if decls: self.createDeclsNode(parent,decls)
-
         # Scan the rest of the file.
         start,junk,junk = self.scanHelper(s,i,end=len(s),parent=parent,kind='outer')
-
         # Finish adding to the parent's body text.
         self.addRef(parent)
         if start < len(s):
             self.appendStringToBody(parent,s[start:])
-
         # Do any language-specific post-processing.
         self.endGen(s)
     #@+node:ekr.20071018084830: *5* scanHelper (baseScannerClass)
@@ -3205,8 +3261,12 @@ class baseScannerClass (scanUtility):
 
         return g.match(s,i,'"') or g.match(s,i,"'")
     #@+node:ekr.20070707072749: *3* run (baseScannerClass)
-    def run (self,s,parent):
+    def run (self,s,parent,prepass=False):
         '''The common top-level code for all scanners.'''
+        self.isPrepass = prepass
+        # if prepass:
+            # g.trace('prepass:',parent.h)
+            # return
         c = self.c
         self.root = root = parent.copy()
         self.file_s = s
@@ -3228,21 +3288,25 @@ class baseScannerClass (scanUtility):
         # Regularize leading whitespace (strict languages only).
         if self.strict: s = self.regularizeWhitespace(s) 
         # Generate the nodes, including directives and section references.
-        self.scan(s,parent)
-        # Check the generated nodes.
-        # Return True if the result is equivalent to the original file.
-        ok = self.errors == 0 and self.check(s,parent)
-        g.app.unitTestDict ['result'] = ok
-        # Insert an @ignore directive if there were any serious problems.
-        if not ok: self.insertIgnoreDirective(parent)
-        if self.atAuto and ok:
-            for p in root.self_and_subtree():
-                p.clearDirty()
-            c.setChanged(changed)
+        if self.isPrepass:
+            self.prepass(s,parent)
         else:
-            root.setDirty(setDescendentsDirty=False)
-            c.setChanged(True)
-        return ok
+            self.scan(s,parent)
+            if self.isPrepass: return
+            # Check the generated nodes.
+            # Return True if the result is equivalent to the original file.
+            ok = self.errors == 0 and self.check(s,parent)
+            g.app.unitTestDict ['result'] = ok
+            # Insert an @ignore directive if there were any serious problems.
+            if not ok: self.insertIgnoreDirective(parent)
+            if self.atAuto and ok:
+                for p in root.self_and_subtree():
+                    p.clearDirty()
+                c.setChanged(changed)
+            else:
+                root.setDirty(setDescendentsDirty=False)
+                c.setChanged(True)
+            return ok
     #@+node:ekr.20071110105107: *4* checkBlanksAndTabs
     def checkBlanksAndTabs(self,s):
 
