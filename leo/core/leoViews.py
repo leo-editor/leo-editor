@@ -362,13 +362,17 @@ class ViewController:
             g.es_exception()
             n = 0
             ok = False
-        if trace: g.trace(
-            '\n  trial_write:                 %4.2f sec' % (t2-t1),
-            # '\n  has_at_organizers_node:    %4.2f sec' % (t3-t2),
-            '\n  create_organizer_nodes:      %4.2f sec' % (t4-t3),
-            '\n  create_clone_links:          %4.2f sec' % (t5-t4),
-            '\n  check:                       %4.2f sec' % (t6-t5),
-            '\n  update_headlines_after_read: %4.2f sec' % (t7-t6))
+        if trace:
+            if t7-t1 > 0.5: g.trace(
+                '\n  trial_write:                 %4.2f sec' % (t2-t1),
+                # '\n  has_at_organizers_node:    %4.2f sec' % (t3-t2),
+                '\n  create_organizer_nodes:      %4.2f sec' % (t4-t3),
+                '\n  create_clone_links:          %4.2f sec' % (t5-t4),
+                '\n  check:                       %4.2f sec' % (t6-t5),
+                '\n  update_headlines_after_read: %4.2f sec' % (t7-t6),
+                '\n  total:                       %4.2f sec' % (t7-t1))
+                # '\n  file:',root.h)
+            # else: g.trace('total: %4.2f sec' % (t7-t1),root.h)
         if ok: #  and n > 0:
             vc.print_stats()
             g.es('rearraned: %s' % (root.h),color='blue')
@@ -551,12 +555,6 @@ class ViewController:
                 self.vc = c.viewController
                 self.root = p.copy()
             #@+others
-            #@+node:ekr.20140125071842.10476: *6* cc.create_at_auto_view_node
-            def create_at_auto_view_node(self):
-                '''Create the @auto-view tree from the @file node.'''
-                cc = self
-                c,root = cc.c,cc.root
-                c.viewController.update_before_write_at_auto_file(root)
             #@+node:ekr.20140125071842.10477: *6* cc.import_from_string
             def import_from_string(self,s):
                 '''Import from s into a temp outline.'''
