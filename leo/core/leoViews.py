@@ -111,6 +111,131 @@ class ViewController:
             # - The front end (demote and its helpers) adds items to this list.
             # - The back end (move_nodes and its helpers) moves nodes using this list.
     #@+node:ekr.20131230090121.16514: *3* vc.Entry points
+    #@+node:ekr.20140125071842.10474: *4* vc.convert_at_file_to_at_auto
+    def convert_at_file_to_at_auto(self,root):
+        # Define class ConvertController.
+        #@+others
+        #@+node:ekr.20140125071842.10475: *5* class ConvertController
+        class ConvertController:
+            def __init__ (self,c,p):
+                self.c = c
+                # self.ic = c.importCommands
+                self.vc = c.viewController
+                self.root = p.copy()
+            #@+others
+            #@+node:ekr.20140202110830.17501: *6* cc.delete_at_auto_view_node
+            def delete_at_auto_view_node(self,root):
+                '''Delete all @auto-view nodes pertaining to root.'''
+                cc = self
+                vc = cc.vc
+                while True:
+                    p = vc.has_at_auto_view_node(root)
+                    if not p: break
+                    p.doDelete()
+            #@+node:ekr.20140125071842.10477: *6* cc.import_from_string
+            def import_from_string(self,s):
+                '''Import from s into a temp outline.'''
+                cc = self # (ConvertController)
+                c = cc.c
+                ic = c.importCommands
+                root = cc.root
+                language = g.scanForAtLanguage(c,root) 
+                ext = '.'+g.app.language_extension_dict.get(language)
+                ### scanner = ic.importDispatchDict.get(ext)
+                scanner = ic.scanner_for_ext(ext)
+                # g.trace(language,ext,scanner.__name__)
+                p = root.insertAfter()
+                ok = scanner(atAuto=True,parent=p,s=s)
+                p.h = root.h.replace('@file','@auto' if ok else '@@auto')
+                return ok,p
+            #@+node:ekr.20140125071842.10478: *6* cc.run
+            def run(self):
+                '''Convert an @file tree to @auto tree.'''
+                trace_s = False
+                cc = self
+                c = cc.c
+                root,vc = cc.root,c.viewController
+                # set the headline_ivar for all vnodes.
+                cc.set_expected_imported_headlines(root)
+                # Delete all previous @auto-view nodes for this tree.
+                cc.delete_at_auto_view_node(root)
+                # Create the appropriate @auto-view node.
+                at_auto_view = vc.update_before_write_at_auto_file(root)
+                # Write the @file node as if it were an @auto node.
+                s = cc.strip_sentinels()
+                if trace_s:
+                    g.trace('source file...\n',s)
+                # Import the @auto string.
+                ok,p = cc.import_from_string(s)
+                if ok:
+                    # Change at_auto_view.b so it matches p.gnx.
+                    at_auto_view.b = vc.at_auto_view_body(p)
+                    # Recreate the organizer nodes, headlines, etc.
+                    ok = vc.update_after_read_at_auto_file(p)
+                    if not ok:
+                        p.h = '@@' + p.h
+                        g.trace('restoring original @auto file')
+                        ok,p = cc.import_from_string(s)
+                        if ok:
+                            p.h = '@@' + p.h + ' (restored)'
+                            if p.next():
+                                p.moveAfter(p.next())
+                if p:
+                    c.selectPosition(p)
+                c.redraw()
+            #@+node:ekr.20140125141655.10476: *6* cc.set_expected_imported_headlines
+            def set_expected_imported_headlines(self,root):
+                '''Set the headline_ivar for all vnodes.'''
+                trace = False and not g.unitTesting
+                cc = self
+                c = cc.c
+                ic = cc.c.importCommands
+                language = g.scanForAtLanguage(c,root) 
+                ext = '.'+g.app.language_extension_dict.get(language)
+                aClass = ic.classDispatchDict.get(ext)
+                scanner = aClass(importCommands=ic,atAuto=True)
+                # Duplicate the fn logic from ic.createOutline.
+                theDir = g.setDefaultDirectory(c,root,importing=True)
+                fn = c.os_path_finalize_join(theDir,root.h)
+                fn = root.h.replace('\\','/')
+                junk,fn = g.os_path_split(fn)
+                fn,junk = g.os_path_splitext(fn)
+                if aClass and hasattr(scanner,'headlineForNode'):
+                    ivar = cc.vc.headline_ivar
+                    for p in root.subtree():
+                        if not hasattr(p.v,ivar):
+                            h = scanner.headlineForNode(fn,p)
+                            setattr(p.v,ivar,h)
+                            if trace and h != p.h:
+                                g.trace('==>',h) # p.h,'==>',h
+            #@+node:ekr.20140125071842.10479: *6* cc.strip_sentinels
+            def strip_sentinels(self):
+                '''Write the file to a string without headlines or sentinels.'''
+                trace = False and not g.unitTesting
+                cc = self
+                at = cc.c.atFileCommands
+                # ok = at.writeOneAtAutoNode(cc.root,
+                    # toString=True,force=True,trialWrite=True)
+                at.errors = 0
+                at.write(cc.root,
+                    kind = '@file',
+                    nosentinels = True,
+                    perfectImportFlag = False,
+                    scriptWrite = False,
+                    thinFile = True,
+                    toString = True)
+                ok = at.errors == 0
+                s = at.stringOutput
+                if trace: g.trace('ok:',ok,'s:...\n'+s)
+                return s
+            #@-others
+        #@-others
+        vc = self
+        c = vc.c
+        if root.isAtFileNode():
+            ConvertController(c,root).run()
+        else:
+            g.es_print('not an @file node:',root.h)
     #@+node:ekr.20140102052259.16394: *4* vc.pack & helper
     def pack(self):
         '''
@@ -215,114 +340,6 @@ class ViewController:
             c.undoer.afterChangeTree(root,'view-unpack',bunch)
             c.redraw()
         return changed
-    #@+node:ekr.20131230090121.16511: *4* vc.update_before_write_at_auto_file & helpers
-    def update_before_write_at_auto_file(self,root):
-        '''
-        Update the @auto-view node for root, an @auto node. Create @organizer,
-        @existing-organizer, @clones and @headlines nodes as needed.
-        This *must not* be called for trial writes.
-        '''
-        trace = False and not g.unitTesting
-        vc = self
-        c = vc.c
-        changed = False
-        t1 = time.clock()
-        # Ensure that all nodes of the tree are regularized.
-        vc.prepass(root)
-            # g.es_print('prepass failed!',color='red')
-        # Create lists of cloned and organizer nodes.
-        clones,existing_organizers,organizers = \
-            vc.find_special_nodes(root)
-        # Delete all children of the @auto-view node for this @auto node.
-        at_auto_view = vc.find_at_auto_view_node(root)
-        if at_auto_view.hasChildren():
-            changed = True
-            at_auto_view.deleteAllChildren()
-        # Create the single @clones node.
-        if clones:
-            at_clones = vc.find_at_clones_node(root)
-            at_clones.b = ''.join(
-                ['gnx: %s\nunl: %s\n' % (z[0],z[1]) for z in clones])
-        # Create the single @organizers node.
-        if organizers or existing_organizers:
-            at_organizers = vc.find_at_organizers_node(root)
-        # Create one @organizers: node for each organizer node.
-        for p in organizers:
-            # g.trace('organizer',p.h)
-            at_organizer = at_organizers.insertAsLastChild()
-            at_organizer.h = '@organizer: %s' % p.h
-            # The organizer node's unl is implicit in each child's unl.
-            at_organizer.b = '\n'.join([
-                'unl: '+vc.relative_unl(z,root) for z in p.children()])
-        # Create one @existing-organizer node for each existing organizer.
-        ivar = vc.headline_ivar
-        for p in existing_organizers:
-            at_organizer = at_organizers.insertAsLastChild()
-            h = getattr(p.v,ivar,p.h)
-            if trace and h != p.h: g.trace('==>',h) # p.h,'==>',h
-            at_organizer.h = '@existing-organizer: %s' % h
-            # The organizer node's unl is implicit in each child's unl.
-            at_organizer.b = '\n'.join([
-                'unl: '+vc.relative_unl(z,root) for z in p.children()])
-        # Create the single @headlines node.
-        vc.create_at_headlines(root)
-        if changed and not g.unitTesting:
-            g.es_print('updated @views node in %4.2f sec.' % (
-                time.clock()-t1))
-        if changed:
-            c.redraw()
-        return at_auto_view # For at-file-to-at-auto command.
-    #@+node:ekr.20140123132424.10471: *5* vc.create_at_headlines
-    def create_at_headlines(self,root):
-        '''Create the @headlines node for root, an @auto file.'''
-        vc = self
-        c = vc.c
-        result = []
-        ivar = vc.headline_ivar
-        for p in root.subtree():
-            h = getattr(p.v,ivar,None)
-            if h is not None and p.h != h:
-                # g.trace('custom:',p.h,'imported:',h)
-                unl = vc.relative_unl(p,root)
-                aList = unl.split('-->')
-                aList[-1] = h
-                unl = '-->'.join(aList)
-                result.append('imported unl: %s\nhead: %s\n' % (
-                    unl,p.h))
-                delattr(p.v,ivar)
-        if result:
-            p = vc.find_at_headlines_node(root)
-            p.b = ''.join(result)
-    #@+node:ekr.20140123132424.10472: *5* vc.find_special_nodes
-    def find_special_nodes(self,root):
-        '''
-        Scan root's tree, looking for organizer and cloned nodes.
-        Exclude organizers on imported organizers list.
-        '''
-        trace = False and not g.unitTesting
-        verbose = False
-        vc = self
-        clones,existing_organizers,organizers = [],[],[]
-        if trace: g.trace('imported existing',
-            [v.h for v in vc.imported_organizers_list])
-        for p in root.subtree():
-            if p.isCloned():
-                rep = vc.find_representative_node(root,p)
-                if rep:
-                    unl = vc.relative_unl(p,root)
-                    gnx = rep.v.gnx
-                    clones.append((gnx,unl),)
-            if p.v in vc.imported_organizers_list:
-                # The node had children created by the importer.
-                if trace and verbose: g.trace('ignore imported existing',p.h)
-            elif vc.is_organizer_node(p,root):
-                # p.hasChildren and p.b is empty, except for comments.
-                if trace and verbose: g.trace('organizer',p.h)
-                organizers.append(p.copy())
-            elif p.hasChildren():
-                if trace and verbose: g.trace('existing',p.h)
-                existing_organizers.append(p.copy())
-        return clones,existing_organizers,organizers
     #@+node:ekr.20131230090121.16513: *4* vc.update_after_read_at_auto_file & helpers
     def update_after_read_at_auto_file(self,root):
         '''
@@ -543,120 +560,114 @@ class ViewController:
             g.trace('moved:   %3s' % (
                 len( vc.global_bare_organizer_node_list) +
                 len(vc.work_list)))
-    #@+node:ekr.20140125071842.10474: *4* vc.convert_at_file_to_at_auto
-    def convert_at_file_to_at_auto(self,root):
-        # Define class ConvertController.
-        #@+others
-        #@+node:ekr.20140125071842.10475: *5* class ConvertController
-        class ConvertController:
-            def __init__ (self,c,p):
-                self.c = c
-                # self.ic = c.importCommands
-                self.vc = c.viewController
-                self.root = p.copy()
-            #@+others
-            #@+node:ekr.20140125071842.10477: *6* cc.import_from_string
-            def import_from_string(self,s):
-                '''Import from s into a temp outline.'''
-                cc = self # (ConvertController)
-                c = cc.c
-                ic = c.importCommands
-                root = cc.root
-                language = g.scanForAtLanguage(c,root) 
-                ext = '.'+g.app.language_extension_dict.get(language)
-                ### scanner = ic.importDispatchDict.get(ext)
-                scanner = ic.scanner_for_ext(ext)
-                # g.trace(language,ext,scanner.__name__)
-                p = root.insertAfter()
-                ok = scanner(atAuto=True,parent=p,s=s)
-                p.h = root.h.replace('@file','@auto' if ok else '@@auto')
-                return ok,p
-            #@+node:ekr.20140125071842.10478: *6* cc.run
-            def run(self):
-                '''Convert an @file tree to @auto tree.'''
-                trace_s = False
-                cc = self
-                c = cc.c
-                root,vc = cc.root,c.viewController
-                # set the headline_ivar for all vnodes.
-                cc.set_expected_imported_headlines(root)
-                # Create the appropriate @auto-view node.
-                at_auto_view = vc.update_before_write_at_auto_file(root)
-                # Write the @file node as if it were an @auto node.
-                s = cc.strip_sentinels()
-                if trace_s:
-                    g.trace('source file...\n',s)
-                # Import the @auto string.
-                ok,p = cc.import_from_string(s)
-                if ok:
-                    # Change at_auto_view.b so it matches p.gnx.
-                    at_auto_view.b = vc.at_auto_view_body(p)
-                    # Recreate the organizer nodes, headlines, etc.
-                    ok = vc.update_after_read_at_auto_file(p)
-                    if not ok:
-                        p.h = '@@' + p.h
-                        g.trace('restoring original @auto file')
-                        ok,p = cc.import_from_string(s)
-                        if ok:
-                            p.h = '@@' + p.h + ' (restored)'
-                            if p.next():
-                                p.moveAfter(p.next())
-                if p:
-                    c.selectPosition(p)
-                c.redraw()
-            #@+node:ekr.20140125141655.10476: *6* cc.set_expected_imported_headlines
-            def set_expected_imported_headlines(self,root):
-                '''Set the headline_ivar for all vnodes.'''
-                trace = False and not g.unitTesting
-                cc = self
-                c = cc.c
-                ic = cc.c.importCommands
-                language = g.scanForAtLanguage(c,root) 
-                ext = '.'+g.app.language_extension_dict.get(language)
-                aClass = ic.classDispatchDict.get(ext)
-                scanner = aClass(importCommands=ic,atAuto=True)
-                # Duplicate the fn logic from ic.createOutline.
-                theDir = g.setDefaultDirectory(c,root,importing=True)
-                fn = c.os_path_finalize_join(theDir,root.h)
-                fn = root.h.replace('\\','/')
-                junk,fn = g.os_path_split(fn)
-                fn,junk = g.os_path_splitext(fn)
-                if aClass and hasattr(scanner,'headlineForNode'):
-                    ivar = cc.vc.headline_ivar
-                    for p in root.subtree():
-                        if not hasattr(p.v,ivar):
-                            h = scanner.headlineForNode(fn,p)
-                            setattr(p.v,ivar,h)
-                            if trace and h != p.h:
-                                g.trace('==>',h) # p.h,'==>',h
-            #@+node:ekr.20140125071842.10479: *6* cc.strip_sentinels
-            def strip_sentinels(self):
-                '''Write the file to a string without headlines or sentinels.'''
-                trace = False and not g.unitTesting
-                cc = self
-                at = cc.c.atFileCommands
-                # ok = at.writeOneAtAutoNode(cc.root,
-                    # toString=True,force=True,trialWrite=True)
-                at.errors = 0
-                at.write(cc.root,
-                    kind = '@file',
-                    nosentinels = True,
-                    perfectImportFlag = False,
-                    scriptWrite = False,
-                    thinFile = True,
-                    toString = True)
-                ok = at.errors == 0
-                s = at.stringOutput
-                if trace: g.trace('ok:',ok,'s:...\n'+s)
-                return s
-            #@-others
-        #@-others
+    #@+node:ekr.20131230090121.16511: *4* vc.update_before_write_at_auto_file & helpers
+    def update_before_write_at_auto_file(self,root):
+        '''
+        Update the @auto-view node for root, an @auto node. Create @organizer,
+        @existing-organizer, @clones and @headlines nodes as needed.
+        This *must not* be called for trial writes.
+        '''
+        trace = False and not g.unitTesting
         vc = self
         c = vc.c
-        if root.isAtFileNode():
-            ConvertController(c,root).run()
-        else:
-            g.es_print('not an @file node:',root.h)
+        changed = False
+        t1 = time.clock()
+        # Ensure that all nodes of the tree are regularized.
+        vc.prepass(root)
+            # g.es_print('prepass failed!',color='red')
+        # Create lists of cloned and organizer nodes.
+        clones,existing_organizers,organizers = \
+            vc.find_special_nodes(root)
+        # Delete all children of the @auto-view node for this @auto node.
+        at_auto_view = vc.find_at_auto_view_node(root)
+        if at_auto_view.hasChildren():
+            changed = True
+            at_auto_view.deleteAllChildren()
+        # Create the single @clones node.
+        if clones:
+            at_clones = vc.find_at_clones_node(root)
+            at_clones.b = ''.join(
+                ['gnx: %s\nunl: %s\n' % (z[0],z[1]) for z in clones])
+        # Create the single @organizers node.
+        if organizers or existing_organizers:
+            at_organizers = vc.find_at_organizers_node(root)
+        # Create one @organizers: node for each organizer node.
+        for p in organizers:
+            # g.trace('organizer',p.h)
+            at_organizer = at_organizers.insertAsLastChild()
+            at_organizer.h = '@organizer: %s' % p.h
+            # The organizer node's unl is implicit in each child's unl.
+            at_organizer.b = '\n'.join([
+                'unl: '+vc.relative_unl(z,root) for z in p.children()])
+        # Create one @existing-organizer node for each existing organizer.
+        ivar = vc.headline_ivar
+        for p in existing_organizers:
+            at_organizer = at_organizers.insertAsLastChild()
+            h = getattr(p.v,ivar,p.h)
+            if trace and h != p.h: g.trace('==>',h) # p.h,'==>',h
+            at_organizer.h = '@existing-organizer: %s' % h
+            # The organizer node's unl is implicit in each child's unl.
+            at_organizer.b = '\n'.join([
+                'unl: '+vc.relative_unl(z,root) for z in p.children()])
+        # Create the single @headlines node.
+        vc.create_at_headlines(root)
+        if changed and not g.unitTesting:
+            g.es_print('updated @views node in %4.2f sec.' % (
+                time.clock()-t1))
+        if changed:
+            c.redraw()
+        return at_auto_view # For at-file-to-at-auto command.
+    #@+node:ekr.20140123132424.10471: *5* vc.create_at_headlines
+    def create_at_headlines(self,root):
+        '''Create the @headlines node for root, an @auto file.'''
+        vc = self
+        c = vc.c
+        result = []
+        ivar = vc.headline_ivar
+        for p in root.subtree():
+            h = getattr(p.v,ivar,None)
+            if h is not None and p.h != h:
+                # g.trace('custom:',p.h,'imported:',h)
+                unl = vc.relative_unl(p,root)
+                aList = unl.split('-->')
+                aList[-1] = h
+                unl = '-->'.join(aList)
+                result.append('imported unl: %s\nhead: %s\n' % (
+                    unl,p.h))
+                delattr(p.v,ivar)
+        if result:
+            p = vc.find_at_headlines_node(root)
+            p.b = ''.join(result)
+    #@+node:ekr.20140123132424.10472: *5* vc.find_special_nodes
+    def find_special_nodes(self,root):
+        '''
+        Scan root's tree, looking for organizer and cloned nodes.
+        Exclude organizers on imported organizers list.
+        '''
+        trace = False and not g.unitTesting
+        verbose = False
+        vc = self
+        clones,existing_organizers,organizers = [],[],[]
+        if trace: g.trace('imported existing',
+            [v.h for v in vc.imported_organizers_list])
+        for p in root.subtree():
+            if p.isCloned():
+                rep = vc.find_representative_node(root,p)
+                if rep:
+                    unl = vc.relative_unl(p,root)
+                    gnx = rep.v.gnx
+                    clones.append((gnx,unl),)
+            if p.v in vc.imported_organizers_list:
+                # The node had children created by the importer.
+                if trace and verbose: g.trace('ignore imported existing',p.h)
+            elif vc.is_organizer_node(p,root):
+                # p.hasChildren and p.b is empty, except for comments.
+                if trace and verbose: g.trace('organizer',p.h)
+                organizers.append(p.copy())
+            elif p.hasChildren():
+                if trace and verbose: g.trace('existing',p.h)
+                existing_organizers.append(p.copy())
+        return clones,existing_organizers,organizers
     #@+node:ekr.20140120105910.10488: *3* vc.Main Lines
     #@+node:ekr.20140131101641.15495: *4* vc.prepass & helper
     def prepass(self,root):
