@@ -151,32 +151,46 @@ class ViewController:
             #@+node:ekr.20140125071842.10478: *6* cc.run
             def run(self):
                 '''Convert an @file tree to @auto tree.'''
+                trace = True and not g.unitTesting
                 trace_s = False
                 cc = self
                 c = cc.c
                 root,vc = cc.root,c.viewController
                 # set the headline_ivar for all vnodes.
+                t1 = time.clock()
                 cc.set_expected_imported_headlines(root)
+                t2 = time.clock()
                 # Delete all previous @auto-view nodes for this tree.
                 cc.delete_at_auto_view_nodes(root)
+                t3 = time.clock()
                 # Ensure that all nodes of the tree are regularized.
                 ok = vc.prepass(root)
+                t4 = time.clock()
                 if not ok:
                     g.es_print('Can not convert',root.h,color='red')
+                    if trace: g.trace(
+                        '\n  set_expected_imported_headlines: %4.2f sec' % (t2-t1),
+                        # '\n  delete_at_auto_view_nodes:     %4.2f sec' % (t3-t2),
+                        '\n  prepass:                         %4.2f sec' % (t4-t3),
+                        '\n  total:                           %4.2f sec' % (t4-t1))
                     return
                 # Create the appropriate @auto-view node.
                 at_auto_view = vc.update_before_write_at_auto_file(root)
+                t5 = time.clock()
                 # Write the @file node as if it were an @auto node.
                 s = cc.strip_sentinels()
-                if trace_s:
+                t6 = time.clock()
+                if trace and trace_s:
                     g.trace('source file...\n',s)
                 # Import the @auto string.
                 ok,p = cc.import_from_string(s)
+                t7 = time.clock()
                 if ok:
                     # Change at_auto_view.b so it matches p.gnx.
                     at_auto_view.b = vc.at_auto_view_body(p)
                     # Recreate the organizer nodes, headlines, etc.
                     ok = vc.update_after_read_at_auto_file(p)
+                    t8 = time.clock()
                     if not ok:
                         p.h = '@@' + p.h
                         g.trace('restoring original @auto file')
@@ -185,6 +199,19 @@ class ViewController:
                             p.h = '@@' + p.h + ' (restored)'
                             if p.next():
                                 p.moveAfter(p.next())
+                    t9 = time.clock()
+                else:
+                    t8 = t9 = time.clock()
+                if trace: g.trace(
+                    '\n  set_expected_imported_headlines: %4.2f sec' % (t2-t1),
+                    # '\n  delete_at_auto_view_nodes:     %4.2f sec' % (t3-t2),
+                    '\n  prepass:                         %4.2f sec' % (t4-t3),
+                    '\n  update_before_write_at_auto_file:%4.2f sec' % (t5-t4),
+                    '\n  strip_sentinels:                 %4.2f sec' % (t6-t5),
+                    '\n  import_from_string:              %4.2f sec' % (t7-t6),
+                    '\n  update_after_read_at_auto_file   %4.2f sec' % (t8-t7),
+                    '\n  import_from_string (restore)     %4.2f sec' % (t9-t8),
+                    '\n  total:                           %4.2f sec' % (t9-t1))
                 if p:
                     c.selectPosition(p)
                 c.redraw()
