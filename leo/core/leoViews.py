@@ -364,7 +364,7 @@ class ViewController:
             ok = False
         if trace: g.trace(
             '\n  trial_write:                 %4.2f sec' % (t2-t1),
-            '\n  has_at_organizers_node:      %4.2f sec' % (t3-t2),
+            # '\n  has_at_organizers_node:    %4.2f sec' % (t3-t2),
             '\n  create_organizer_nodes:      %4.2f sec' % (t4-t3),
             '\n  create_clone_links:          %4.2f sec' % (t5-t4),
             '\n  check:                       %4.2f sec' % (t6-t5),
@@ -446,7 +446,7 @@ class ViewController:
         '''
         vc = self
         c = vc.c
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         t1 = time.clock()
         vc.pre_move_comments(root)
             # Merge comment nodes with the next node.
@@ -689,7 +689,7 @@ class ViewController:
     #@+node:ekr.20140115180051.16709: *4* vc.precompute_all_data & helpers
     def precompute_all_data(self,at_organizers,root):
         '''Precompute all data needed to reorganize nodes.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         vc = self
         t1 = time.clock() 
         vc.find_imported_organizer_nodes(root)
@@ -1061,6 +1061,14 @@ class ViewController:
         '''Add data to the bare organizer list, with tracing.'''
         trace = False # and not g.unitTesting
         vc = self
+        # Prevent duplicagtes.
+        anchor,p,n = data
+        for data2 in vc.global_bare_organizer_node_list:
+            a2,p2,n2 = data2
+            if p == p2:
+                if trace: g.trace('ignore duplicate',
+                    'n:',n,anchor.h,'==>',p.h)
+                return
         vc.global_bare_organizer_node_list.append(data)
         if trace:
             anchor,p,n = data
@@ -1165,7 +1173,7 @@ class ViewController:
     #@+node:ekr.20140106215321.16678: *4* vc.move_nodes & helpers
     def move_nodes(self):
         '''Move nodes to their final location and delete the temp node.'''
-        trace = True # and not g.unitTesting
+        trace = False # and not g.unitTesting
         vc = self
         vc.move_nodes_to_organizers(trace)
         vc.move_bare_organizers(trace)
@@ -1260,7 +1268,7 @@ class ViewController:
         '''Move all nodes in global_bare_organizer_node_list.'''
         trace = False # and not g.unitTesting
         trace_data = True
-        trace_move = False
+        trace_move = True
         vc = self
         # For each parent, sort nodes on n.
         d = {} # Keys are vnodes, values are lists of tuples (n,parent,p)
