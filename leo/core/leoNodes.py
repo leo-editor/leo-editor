@@ -387,6 +387,17 @@ class position (object):
     gnx = property(
         __get_gnx, # __set_gnx,
         doc = "position gnx property")
+    #@+node:ekr.20140203082618.15486: *4* p.script property
+    def __get_script(self):
+        p = self
+        return g.getScript(p.v.context,p,
+            useSelectedText=False,# Always return the entire expansion.
+            forcePythonSentinels=True,
+            useSentinels=True)
+
+    script = property(
+        __get_script, # __set_script,
+        doc = "position script property")
     #@+node:ekr.20040306212636: *3* p.Getters
     #@+node:ekr.20040306210951: *4* p.vnode proxies
     #@+node:ekr.20040306211032: *5* p.Comparisons
