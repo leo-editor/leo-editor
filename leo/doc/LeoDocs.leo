@@ -2493,6 +2493,20 @@ Important files:
 Acknowledgements
 ################
 
+From one of my all-time favorite movie scenes, in My Cousin Vinney::
+
+    Mona Lisa Vito: So what's your problem?
+    Vinny Gambini: My problem is, I wanted to win my first case
+    without any help from anybody.
+    Mona Lisa: Well, I guess that plan's moot.
+    Vinny : Yeah.
+    Mona Lisa: You know, this could be a sign of things to come.
+    You win all your cases, but with somebody else's help, right?
+    You win case after case, and then afterwards you have to go up
+    to somebody and you have to say, "thank you."
+    [pause]
+    Oh my God, what a fucking nightmare! 
+
 Leo owes much of its visual design to MORE, possibly the most elegant
 computer program ever written. Leo's clone nodes are inspired by MORE.
 
