@@ -711,14 +711,33 @@ class ViewController:
         if not ext.startswith('.'): ext = '.' + ext
         scanner = ic.scanner_for_ext(ext)
         ok = True
+        parts_list = []
         if scanner:
+            # Pass 1: determine the nodes to be inserted.
             for p in root.subtree():
-                ok2 = vc.regularize_node(p,scanner)
-                ok = ok and ok2
+                ok2,parts = vc.regularize_node(p,scanner)
+                ok = ok and (ok2 or parts)
+                if not ok2 and parts:
+                    # The node can and should be split into sibling nodes.
+                    parts_list.append(parts)
+            # Pass 2: actually insert the nodes.
+            for parts in reversed(parts_list):
+                p0 = None
+                for part in reversed(parts):
+                    i1,i2,headline,p = part
+                    if p0 is None:
+                        p0 = p
+                    else:
+                        assert p == p0,(p,p0)
+                    s = p.b
+                    g.trace(p.h,'-->',headline)
+                    p2 = p.insertAfter()
+                    p2.b = s[i1:i2]
+                    p2.h = headline
+                p0.doDelete()
         else:
             g.trace('no scanner for',root.h)
         return scanner and ok
-
     #@+node:ekr.20140131101641.15496: *5* regularize_node
     def regularize_node(self,p,scanner):
         '''Regularize node p so that it will not cause problems.'''

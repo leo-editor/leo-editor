@@ -2663,16 +2663,20 @@ class baseScannerClass (scanUtility):
         j,junk = g.getLine(s,i)
         junk,indent = g.skip_leading_ws_with_indent(s,j,self.tab_width)
         return indent
-    #@+node:ekr.20140202110830.17503: *4* prepass (baseScannerClass)
-    def prepass (self,s,parent):
+    #@+node:ekr.20140202110830.17503: *4* prepass (baseScannerClass) & helper
+    def prepass (self,s,p):
         '''
         A prepass for the at-file-to-at-auto command.
-        Return False if parent should be split into pieces.
+        Return (ok,aList)
+        ok: False if p.b should be split two or more sibling nodes.
+        aList: a list of tuples (i,j,headline,p) indicating split nodes.
         '''
+        trace = True # and not g.unitTesting
         # From scanHelper...
         delim1,delim2 = self.outerBlockDelim1,self.outerBlockDelim2
-        n,i = 0,0
-        ### start = i ; putRef = False ; bodyIndent = None
+        p = p.copy()
+        classSeen,refSeen = False,False
+        i,n,parts,start = 0,0,[],0
         while i < len(s):
             progress = i
             if s[i] in (' ','\t','\n'):
@@ -2681,54 +2685,57 @@ class baseScannerClass (scanUtility):
                 i = self.skipComment(s,i)
             elif self.startsString(s,i):
                 i = self.skipString(s,i)
+            elif s[i:i+2] == '<<':
+                j = g.skip_line(s,i+2)
+                k = s.find('>>',i+2)
+                if -1 < k < j:
+                    g.trace(s[i:k+2])
+                    refSeen = True
+                    i = k+2
+                else:
+                    i += 2
             elif self.startsClass(s,i):
                 # g.trace('class',i,s[i:i+20])
-                i = self.codeEnd
+                # Extend the previous definition.
+                if n > 0 and start < i:
+                    i1,i2,id2,p2 = parts.pop()
+                    parts.append((i1,i,id2,p2),)
+                classSeen = True
+                start,i = i,self.codeEnd
+                parts.append((start,i,self.sigId,p),)
                 n += 1
-                ### putRef = True
-                ### if bodyIndent is None: bodyIndent = self.getIndent(s,i)
-                ### end2 = self.codeEnd # putClass may change codeEnd ivar.
-                ### self.putClass(s,i,self.sigEnd,self.codeEnd,start,parent)
-                ### i = start = end2
             elif self.startsFunction(s,i):
                 # g.trace('func',i,s[i:i+20])
-                i = self.codeEnd
+                # Extend the previous definition.
+                if n > 0 and start < i:
+                    i1,i2,id2,p2 = parts.pop()
+                    parts.append((i1,i,id2,p2),)
+                start,i = i,self.codeEnd
+                parts.append((start,i,self.sigId,p),)
                 n += 1
-                ### putRef = True
-                ### if bodyIndent is None: bodyIndent = self.getIndent(s,i)
-                ### self.putFunction(s,self.sigStart,self.codeEnd,start,parent)
-                ### i = start = self.codeEnd
             elif self.startsId(s,i):
                 i = self.skipId(s,i)
-            elif g.match(s,i,delim1): ### and kind == 'outer':
+            elif g.match(s,i,delim1):
                 # Do this after testing for classes.
-                # i1 = i # for debugging
                 i = self.skipBlock(s,i,delim1,delim2)
-            else: i += 1
+            else:
+                i += 1
             if progress >= i:
                 i = self.skipBlock(s,i,delim1,delim2)
             assert progress < i,'i: %d, ch: %s' % (i,repr(s[i]))
-        return n <= 1
-
-        if 0: ### from scan.
-            # Create the initial body text in the root.
-            self.putRootText(parent)
-            # Parse the decls.
-            if self.hasDecls:
-                i = self.skipDecls(s,0,len(s),inClass=False)
-                decls = s[:i]
-            else:
-                i,decls = 0,''
-            # Create the decls node.
-            if decls: self.createDeclsNode(parent,decls)
-            # Scan the rest of the file.
-            start,junk,junk = self.scanHelper(s,i,end=len(s),parent=parent,kind='outer')
-            # Finish adding to the parent's body text.
-            self.addRef(parent)
-            if start < len(s):
-                self.appendStringToBody(parent,s[start:])
-            # Do any language-specific post-processing.
-            self.endGen(s)
+        if n > 0 and start < i:
+            i1,i2,id2,p2 = parts.pop()
+            parts.append((i1,len(s),id2,p2),)
+        if n <= 1:
+            return True,[] # Only one definition.
+        elif p.hasChildren() or classSeen or refSeen:
+            # Can't split safely.
+            if trace: g.trace('can not split\n',''.join([
+                '\n----- %s\n%s\n' % (z[2],s[z[0]:z[1]]) for z in parts]))
+            return False,[]
+        else:
+            # Multiple defs, no children. Will split the node into children.
+            return False,parts
     #@+node:ekr.20070706101600: *4* scan & scanHelper
     def scan (self,s,parent):
         '''A language independent scanner: it uses language-specific helpers.
