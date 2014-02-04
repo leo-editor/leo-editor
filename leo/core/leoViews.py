@@ -1778,7 +1778,7 @@ class ViewController:
         Compare the two strings, the results of trial writes.
         Stop the comparison after the first mismatch.
         '''
-        trace_matches = True
+        trace_matches = False
         full_compare = False
         lines1,lines2 = g.splitLines(s1),g.splitLines(s2)
         i,n1,n2 = 0,len(lines1),len(lines2)
