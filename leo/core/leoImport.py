@@ -2726,7 +2726,7 @@ class baseScannerClass (scanUtility):
         if n > 0 and start < i:
             i1,i2,id2,p2 = parts.pop()
             parts.append((i1,len(s),id2,p2),)
-        if n <= 1:
+        if n <= 1 and not refSeen:
             return True,[] # Only one definition.
         elif p.hasChildren() or classSeen or refSeen:
             # Can't split safely.

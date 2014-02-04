@@ -710,17 +710,17 @@ class ViewController:
         if not ext: return
         if not ext.startswith('.'): ext = '.' + ext
         scanner = ic.scanner_for_ext(ext)
-        ok = True
-        parts_list = []
-        if scanner:
-            # Pass 1: determine the nodes to be inserted.
-            for p in root.subtree():
-                ok2,parts = vc.regularize_node(p,scanner)
-                ok = ok and (ok2 or parts)
-                if not ok2 and parts:
-                    # The node can and should be split into sibling nodes.
-                    parts_list.append(parts)
-            # Pass 2: actually insert the nodes.
+        if not scanner:
+             g.trace('no scanner for',root.h)
+             return True # Pretend all went well.
+        # Pass 1: determine the nodes to be inserted.
+        ok,parts_list = True,[]
+        for p in root.subtree():
+            ok2,parts = vc.regularize_node(p,scanner)
+            ok = ok and (ok2 or parts)
+            if parts: parts_list.append(parts)
+        # Pass 2: actually insert the nodes.
+        if ok:
             for parts in reversed(parts_list):
                 p0 = None
                 for part in reversed(parts):
@@ -735,17 +735,15 @@ class ViewController:
                     p2.b = s[i1:i2]
                     p2.h = headline
                 p0.doDelete()
-        else:
-            g.trace('no scanner for',root.h)
-        return scanner and ok
+        return ok
     #@+node:ekr.20140131101641.15496: *5* regularize_node
     def regularize_node(self,p,scanner):
         '''Regularize node p so that it will not cause problems.'''
        
-        ok = scanner(atAuto=True,parent=p,s=p.b,prepass=True)
-        if not ok:
+        ok,parts = scanner(atAuto=True,parent=p,s=p.b,prepass=True)
+        if not ok and not parts:
             g.es_print('please regularize:',p.h)
-        return ok
+        return ok,parts
     #@+node:ekr.20140115180051.16709: *4* vc.precompute_all_data & helpers
     def precompute_all_data(self,at_organizers,root):
         '''Precompute all data needed to reorganize nodes.'''
