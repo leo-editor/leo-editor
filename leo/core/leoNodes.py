@@ -393,7 +393,7 @@ class position (object):
         return g.getScript(p.v.context,p,
             useSelectedText=False,# Always return the entire expansion.
             forcePythonSentinels=True,
-            useSentinels=True)
+            useSentinels=False)
 
     script = property(
         __get_script, # __set_script,
