@@ -49,6 +49,7 @@ class LeoApp:
         self.enablePlugins = True       # True: run start1 hook to load plugins. --no-plugins
         self.gui = None                 # The gui class.
         self.guiArgName = None          # The gui name given in --gui option.
+        self.ipython_inited = False     # True if leoIpython.py imports succeeded.
         self.qt_use_tabs = False        # True: allow tabbed main window.
         self.restore_session = False    # True: restore session on startup.
         self.save_session = False       # True: save session on close.

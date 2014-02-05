@@ -18,10 +18,10 @@ versions that define the IPKernelApp class.
 #@@tabwidth -4
 
 #@+<< imports >>
-#@+node:ekr.20130930062914.15990: ** << imports >>
+#@+node:ekr.20130930062914.15990: ** << imports >> (leoIpython.py)
 import sys
 import leo.core.leoGlobals as g
-import_trace = False and not g.unitTesting
+import_trace = True and not g.unitTesting
 try:
     from IPython.lib.kernel import connect_qtconsole
     if import_trace: print('ok: IPython.lib.kernel import connect_qtconsole')
@@ -40,6 +40,7 @@ except ImportError:
     except ImportError:
         IPKernelApp = None
         print('leoIPython.py: can not import IPKernelApp')
+g.app.ipython_inited = IPKernelApp is not None
 #@-<< imports >>
 #@+others
 #@+node:ekr.20130930062914.15993: ** class InternalIPKernel

@@ -7548,9 +7548,7 @@ class leoQtGui(leoGui.leoGui):
     #@+node:ekr.20110605121601.18483: *5* runMainLoop & runWithIpythonKernel (qtGui)
     #@+node:ekr.20130930062914.16000: *6* qtGui.runMainLoop
     def runMainLoop(self):
-
         '''Start the Qt main loop.'''
-
         g.app.gui.dismiss_splash_screen()
         if self.script:
             log = g.app.log
@@ -7560,7 +7558,7 @@ class leoQtGui(leoGui.leoGui):
                 g.pr('End of batch script')
             else:
                 g.pr('no log, no commander for executeScript in qtGui.runMainLoop')
-        elif g.app.useIpython:
+        elif g.app.useIpython and g.app.ipython_inited:
             self.runWithIpythonKernel()
         else:
             # This can be alarming when using Python's -i option.                           
@@ -7568,9 +7566,9 @@ class leoQtGui(leoGui.leoGui):
     #@+node:ekr.20130930062914.16001: *6* qtGui.runWithIpythonKernel & helper
     def runWithIpythonKernel(self):
         '''Init Leo to run in an IPython shell.'''
-        import leo.core.leoIPython as leoIPython
-        if not leoIPython.IPKernelApp:
-            return # leoIPython.py gives an error message.
+        # import leo.core.leoIPython as leoIPython
+        # if not leoIPython.IPKernelApp:
+            # return # leoIPython.py gives an error message.
         try:
             g.app.ipk = ipk = leoIPython.InternalIPKernel()
             ipk.new_qt_console(event=None)
