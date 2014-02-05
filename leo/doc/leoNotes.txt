@@ -12824,5 +12824,16 @@ def scanXmlText (self,s,parent,atAuto=False):
     '''Scan xml text.'''
     scanner = xmlScanner(importCommands=self,atAuto=atAuto)
     return scanner.run(s,parent)
+.. @+node:ekr.20140109214515.16631: *4* vc.print_stats
+def print_stats(self):
+    '''Print important stats.'''
+    trace = False and not g.unitTesting
+    vc = self
+    if trace:
+        g.trace(vc.root and vc.root.h or 'No root')
+        g.trace('scanned: %3s' % vc.n_nodes_scanned)
+        g.trace('moved:   %3s' % (
+            len( vc.global_bare_organizer_node_list) +
+            len(vc.work_list)))
 .. @-all
 .. @-leo

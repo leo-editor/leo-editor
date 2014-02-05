@@ -2671,7 +2671,7 @@ class baseScannerClass (scanUtility):
         ok: False if p.b should be split two or more sibling nodes.
         aList: a list of tuples (i,j,headline,p) indicating split nodes.
         '''
-        trace = True # and not g.unitTesting
+        trace = False and not g.unitTesting
         # From scanHelper...
         delim1,delim2 = self.outerBlockDelim1,self.outerBlockDelim2
         p = p.copy()

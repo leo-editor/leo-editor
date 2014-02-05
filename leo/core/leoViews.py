@@ -422,9 +422,8 @@ class ViewController:
                 '\n  total:                       %4.2f sec' % (t7-t1))
                 # '\n  file:',root.h)
             # else: g.trace('total: %4.2f sec' % (t7-t1),root.h)
-        if ok: #  and n > 0:
-            vc.print_stats()
-            g.es('rearraned: %s' % (root.h),color='blue')
+        if ok and n > 0:
+            g.es('rearragned: %s' % (root.h),color='blue')
             g.es('moved %s nodes in %4.2f sec.' % (n,t7-t1))
             g.trace('@auto-view moved %s nodes in %4.2f sec. for' % (
                 n,t2),root.h,noname=True)
@@ -581,17 +580,6 @@ class ViewController:
                     p.h = head
         else:
             g.trace('bad @headlines body',at_headlines.b)
-    #@+node:ekr.20140109214515.16631: *5* vc.print_stats
-    def print_stats(self):
-        '''Print important stats.'''
-        trace = False and not g.unitTesting
-        vc = self
-        if trace:
-            g.trace(vc.root and vc.root.h or 'No root')
-            g.trace('scanned: %3s' % vc.n_nodes_scanned)
-            g.trace('moved:   %3s' % (
-                len( vc.global_bare_organizer_node_list) +
-                len(vc.work_list)))
     #@+node:ekr.20131230090121.16511: *4* vc.update_before_write_at_auto_file & helpers
     def update_before_write_at_auto_file(self,root):
         '''
