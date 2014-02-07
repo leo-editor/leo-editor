@@ -65,6 +65,8 @@ Nodes can be added and removed from the display with the following mouse actions
     Remove bookmark.
 **alt-left-click on bookmark**
     Edit clicked bookmark in bookmark list, to change link text.
+**alt-shift-left-click on bookmark**
+    Move around bookmark hierarchy without changing nodes, useful for filing
 **control-alt-left-click on bookmark**
     Update clicked bookmark to point to current node.
 **alt-left-click on background**
@@ -526,13 +528,16 @@ class BookMarkDisplay:
             self.add_child_bookmark(bm)
             return
             
+        # Alt-Shift => navigate in bookmarks without changing nodes
+        no_move = mods == (QtCore.Qt.AltModifier | QtCore.Qt.ShiftModifier)
+            
         # otherwise, look up the bookmark
         self.upwards = up
         self.second = not up and self.current == bm.v   
         self.current = bm.v        
         # in case something we didn't see changed the bookmarks
         self.show_list(self.get_list(), up=up)
-        if bm.url and not up:
+        if bm.url and not up and not no_move:
             g.handleUrl(bm.url, c=self.c)
     #@+node:tbrown.20110712100955.18925: *3* color
     def color(self, text, dark=False):
