@@ -277,7 +277,7 @@ def cmd_bookmark(c, child=False):
     bc = container.context
     bp = bc.vnode2position(container)
     nd = bp.insertAsNthChild(0)
-    nd.h = c.p.h
+    nd.h = bm.fix_text(c.p.h)
     nd.b = bm.get_unl()
     
     bm.current = nd.v
@@ -493,7 +493,7 @@ class BookMarkDisplay:
         nd = p.insertAsNthChild(0)
         new_url = self.get_unl()
         nd.b = new_url
-        nd.h = self.c.p.h
+        nd.h = self.fix_text(self.c.p.h)
         c.redraw()
         self.current = nd.v
         self.show_list(self.get_list())
@@ -560,6 +560,22 @@ class BookMarkDisplay:
         else:
             return None
         return node
+    #@+node:tbrown.20140206130031.25813: *3* fix_text
+    def fix_text(self, text):
+        """fix_text - Return text with any leading @<file> removed
+
+        :Parameters:
+        - `text`: text to fix
+        """
+        text = text.strip()
+        parts = text.split()
+        if parts[0][0] == '@':
+            if len(parts) > 1:
+                del parts[0]
+            elif len(parts[0]) > 1:
+                parts[0] = parts[0][1:]
+            return ' '.join(parts)
+        return text
     #@+node:tbrown.20110712100955.39216: *3* get_list
     def get_list(self):
         """Return list of Bookmarks
@@ -590,7 +606,7 @@ class BookMarkDisplay:
                     
                 if url:
                     url = url.replace(' ', '%20')
-                h = strip(p.h)
+                h = self.fix_text(p.h)
                 
                 children = []
                 bm = self.Bookmark(
@@ -799,7 +815,7 @@ class BookMarkDisplay:
         new_url = self.get_unl()
         nd = p.insertAsNthChild(0)
         nd.b = new_url
-        nd.h = self.c.p.h
+        nd.h = self.fix_text(self.c.p.h)
         c.redraw()
         self.current = nd.v
         self.show_list(self.get_list())
