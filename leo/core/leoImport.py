@@ -112,7 +112,7 @@ import time
 #@+<< class scanUtility >>
 #@+node:sps.20081112093624.1: ** << class scanUtility >>
 class scanUtility:
-
+    '''A class providing utility methods or other classes.'''
     #@+others
     #@+node:sps.20081111154528.5: *3* escapeFalseSectionReferences
     def escapeFalseSectionReferences(self,s):
@@ -136,8 +136,8 @@ class scanUtility:
         # return ''.join(result)
     #@-others
 #@-<< class scanUtility >>
-#@+<< class leoImportCommands >>
-#@+node:ekr.20071127175948: ** << class leoImportCommands >>
+#@+<< class leoImportCommands (scanUtility) >>
+#@+node:ekr.20071127175948: ** << class leoImportCommands (scanUtility) >>
 class leoImportCommands (scanUtility):
 
     #@+others
@@ -1476,13 +1476,21 @@ class leoImportCommands (scanUtility):
                     # g.es("replacing",target,"with",s)
         return result
     #@+node:ekr.20071127175948.1: *3* Import scanners
+    #@+node:ekr.20140205074001.16365: *4* body_parser_for_ext
+    def body_parser_for_ext(self,ext):
+        '''A factory returning a body parser function for the given file extension.'''
+        aClass = ext and self.classDispatchDict.get(ext)
+        def body_parser_for_class(parent,s):
+            obj = aClass(importCommands=self,atAuto=True)
+            return obj.run(s,parent,parse_body=True)
+        return body_parser_for_class if aClass else None
     #@+node:ekr.20140130172810.15471: *4* scanner_for_ext
     def scanner_for_ext(self,ext):
         '''A factory returning a scanner function for the given file extension.'''
         aClass = ext and self.classDispatchDict.get(ext)
         def scanner_for_class(atAuto,parent,s,prepass=False):
             scanner = aClass(importCommands=self,atAuto=atAuto)
-            return scanner.run(s,parent,prepass)
+            return scanner.run(s,parent,prepass=prepass)
         return scanner_for_class if aClass else None
     #@+node:ekr.20080811174246.1: *4* languageForExtension
     def languageForExtension (self,ext):
@@ -1649,9 +1657,9 @@ class leoImportCommands (scanUtility):
 
         return ok
     #@-others
-#@-<< class leoImportCommands >>
-#@+<< class baseScannerClass >>
-#@+node:ekr.20070703122141.65: ** << class baseScannerClass >>
+#@-<< class leoImportCommands (scanUtility) >>
+#@+<< class baseScannerClass (scanUtility) >>
+#@+node:ekr.20070703122141.65: ** << class baseScannerClass (scanUtility) >>
 class baseScannerClass (scanUtility):
 
     '''The base class for all import scanner classes.
@@ -2737,7 +2745,7 @@ class baseScannerClass (scanUtility):
             # Multiple defs, no children. Will split the node into children.
             return False,parts
     #@+node:ekr.20070706101600: *4* scan & scanHelper
-    def scan (self,s,parent):
+    def scan (self,s,parent,parse_body=False):
         '''A language independent scanner: it uses language-specific helpers.
 
         Create a child of self.root for:
@@ -2748,7 +2756,10 @@ class baseScannerClass (scanUtility):
         # Init the parser status ivars.
         self.methodsSeen = False
         # Create the initial body text in the root.
-        self.putRootText(parent)
+        if parse_body:
+            pass
+        else:
+            self.putRootText(parent)
         # Parse the decls.
         if self.hasDecls:
             i = self.skipDecls(s,0,len(s),inClass=False)
@@ -3272,12 +3283,9 @@ class baseScannerClass (scanUtility):
 
         return g.match(s,i,'"') or g.match(s,i,"'")
     #@+node:ekr.20070707072749: *3* run (baseScannerClass)
-    def run (self,s,parent,prepass=False):
+    def run (self,s,parent,parse_body=False,prepass=False):
         '''The common top-level code for all scanners.'''
         self.isPrepass = prepass
-        # if prepass:
-            # g.trace('prepass:',parent.h)
-            # return
         c = self.c
         self.root = root = parent.copy()
         self.file_s = s
@@ -3302,8 +3310,7 @@ class baseScannerClass (scanUtility):
         if self.isPrepass:
             return self.prepass(s,parent)
         else:
-            self.scan(s,parent)
-            if self.isPrepass: return
+            self.scan(s,parent,parse_body=parse_body)
             # Check the generated nodes.
             # Return True if the result is equivalent to the original file.
             ok = self.errors == 0 and self.check(s,parent)
@@ -3430,15 +3437,13 @@ class baseScannerClass (scanUtility):
             # g.trace('%3s %7s %s' % (line_number,kind,repr(val[:20])))
         return result
     #@-others
-#@-<< class baseScannerClass >>
+#@-<< class baseScannerClass (scanUtility) >>
+
 #@+others
 #@+node:ekr.20130823083943.12596: ** class recursiveImportController
-class recursiveImportController():
-    
+class recursiveImportController:
     '''Recursively import all python files in a directory and clean the result.'''
-    
     # There is no ctor.
-
     #@+others
     #@+node:ekr.20130823083943.12615: *3* ctor
     def __init__ (self,c,one_file=False,theTypes=None,safe_at_file=True,use_at_edit=False):
@@ -5780,26 +5785,8 @@ class htmlScanner (xmlScanner):
 def parse_body_command(event):
     '''The parse-body command.'''
     c = event.get('c')
-    p = c and c.p
-    if not c or not p: return
-    ic = c.importCommands
-    ic.tab_width = ic.getTabWidth()
-    language = g.scanForAtLanguage(c,p)
-    ext = g.app.language_extension_dict.get(language)
-    if ext and not ext.startswith('.'): ext = '.' + ext
-    func = ic.scanner_for_ext(ext)
-    if func:
-        bunch = c.undoer.beforeChangeTree(p)
-        s = p.b
-        p.b = ''
-        atAuto = False
-        func(atAuto,p,s)
-        bunch = c.undoer.afterChangeTree(p,'parse-body',bunch)
-        c.validateOutline()
-        p.expand()
-        c.redraw()
-    else:
-        g.es_print('unknown language')
+    if c and c.p:
+        c.importCommands.parseBody(c.p)
 #@+node:ekr.20101103093942.5941: *3* @g.command(head-to-prev-node)
 @g.command('head-to-prev-node')
 def headToPrevNode(event):

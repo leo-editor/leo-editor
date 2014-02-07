@@ -600,6 +600,13 @@
 </v>
 </v>
 </v>
+<v t="ekr.20140206132559.4567"><vh>@test parse-body (fails)</vh>
+<v t="ekr.20140206132559.4560"><vh>before</vh></v>
+<v t="ekr.20140206132559.4564"><vh>expected</vh>
+<v t="ekr.20140206132559.4565"><vh>__init__</vh></v>
+<v t="ekr.20140206132559.4566"><vh>spam</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1015,7 +1022,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="8"></t>
+<t tx="ekr.20070417092935" str_leo_pos="12"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -4669,6 +4676,34 @@ finally:
 </t>
 <t tx="ekr.20140202135935.4646">def child22(self):
     pass
+</t>
+<t tx="ekr.20140206132559.4560">class aClass:
+    def __init__(self):
+        pass
+    def spam(self):
+        pass
+bClass = aClass</t>
+<t tx="ekr.20140206132559.4564">class aClass:
+    @others
+bClass = aClass</t>
+<t tx="ekr.20140206132559.4565">def __init__(self):
+    pass
+</t>
+<t tx="ekr.20140206132559.4566">def spam(self):
+    pass
+</t>
+<t tx="ekr.20140206132559.4567">tm = c.testManager
+before   = g.findNodeInTree(c,p,'before')
+expected = g.findNodeInTree(c,p,'expecterd')
+assert before,expected
+try:
+    c.selectPosition(before)
+    c.importCommands.parseBody()
+    # compare tree.
+    tm.compareOutlines(before,expected,compareHeadlines=True,tag='',report=True)
+    c.undoer.undo()
+finally:
+    c.redraw()
 </t>
 </tnodes>
 </leo_file>
