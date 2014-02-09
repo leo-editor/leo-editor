@@ -204,12 +204,11 @@ def createTopologyList (c,root=None,useHeadlines=False):
         aList.append(g.createTopologyList(c,child,useHeadlines))
         child = child.next()
     return aList
-#@+node:ekr.20031218072017.3099: ** Commands & Directives
-#@+node:ekr.20031218072017.1380: *3* g.Directive utils...
+#@+node:ekr.20031218072017.1380: ** Directive utils...
 # New in Leo 4.6:
 # g.findAtTabWidthDirectives, g.findLanguageDirectives and
 # g.get_directives_dict use re module for faster searching.
-#@+node:EKR.20040504150046.4: *4* g.comment_delims_from_extension
+#@+node:EKR.20040504150046.4: *3* g.comment_delims_from_extension
 def comment_delims_from_extension(filename):
 
     """
@@ -242,7 +241,7 @@ def comment_delims_from_extension(filename):
         g.trace("unknown extension: %s, filename: %s, root: %s" % (
             repr(ext),repr(filename),repr(root)))
         return '','',''
-#@+node:ekr.20090214075058.8: *4* g.findAtTabWidthDirectives (must be fast)
+#@+node:ekr.20090214075058.8: *3* g.findAtTabWidthDirectives (must be fast)
 g_tabwidth_pat = re.compile(r'(^@tabwidth)',re.MULTILINE)
 
 def findTabWidthDirectives(c,p):
@@ -266,7 +265,7 @@ def findTabWidthDirectives(c,p):
                 junk,w = g.skip_long(s,j)
                 if w == 0: w = None
     return w
-#@+node:ekr.20090214075058.6: *4* g.findLanguageDirectives (must be fast)
+#@+node:ekr.20090214075058.6: *3* g.findLanguageDirectives (must be fast)
 g_language_pat = re.compile(r'(^@language)',re.MULTILINE)
 
 def findLanguageDirectives(c,p):
@@ -298,7 +297,7 @@ def findLanguageDirectives(c,p):
 
     if trace: g.trace(language)
     return language
-#@+node:ekr.20031218072017.1385: *4* g.findReference
+#@+node:ekr.20031218072017.1385: *3* g.findReference
 # Called from the syntax coloring method that colorizes section references.
 # Also called from write at.putRefAt.
 
@@ -326,7 +325,7 @@ def findReference(c,name,root):
 
     # g.trace("not found:",name,root)
     return c.nullPosition()
-#@+node:ekr.20090214075058.9: *4* g.get_directives_dict (must be fast)
+#@+node:ekr.20090214075058.9: *3* g.get_directives_dict (must be fast)
 # The caller passes [root_node] or None as the second arg.
 # This allows us to distinguish between None and [None].
 
@@ -390,7 +389,7 @@ def get_directives_dict(p,root=None):
     if trace and verbose:
         g.trace('%4d' % (len(p.h) + len(p.b)))
     return d
-#@+node:ekr.20090214075058.10: *5* compute_directives_re
+#@+node:ekr.20090214075058.10: *4* compute_directives_re
 def compute_directives_re ():
 
     '''Return an re pattern which will match all Leo directives.'''
@@ -407,7 +406,7 @@ def compute_directives_re ():
         aList.append(r'^\s@others\s')
 
     return '|'.join(aList)
-#@+node:ekr.20080827175609.1: *4* g.get_directives_dict_list (must be fast)
+#@+node:ekr.20080827175609.1: *3* g.get_directives_dict_list (must be fast)
 def get_directives_dict_list(p):
 
     """Scans p and all its ancestors for directives.
@@ -424,7 +423,7 @@ def get_directives_dict_list(p):
         # n = len(p1.h) + len(p1.b)
         # g.trace('%4d %s' % (n,g.timeSince(time1)))
     return result
-#@+node:ekr.20111010082822.15545: *4* g.getLanguageFromAncestorAtFileNode (New)
+#@+node:ekr.20111010082822.15545: *3* g.getLanguageFromAncestorAtFileNode (New)
 def getLanguageFromAncestorAtFileNode(p):
 
     '''Return the language in effect as determined
@@ -442,7 +441,7 @@ def getLanguageFromAncestorAtFileNode(p):
             return language
 
     return None
-#@+node:ekr.20031218072017.1386: *4* g.getOutputNewline
+#@+node:ekr.20031218072017.1386: *3* g.getOutputNewline
 def getOutputNewline (c=None,name=None):
 
     '''Convert the name of a line ending to the line ending itself.
@@ -468,7 +467,7 @@ def getOutputNewline (c=None,name=None):
     if g.isPython3:
         s = str(s)
     return s
-#@+node:ekr.20131230090121.16528: *4* g.isDirective
+#@+node:ekr.20131230090121.16528: *3* g.isDirective
 def isDirective(s):
     '''Return True if s startswith a directive.'''
     if s and s[0] == '@':
@@ -477,7 +476,7 @@ def isDirective(s):
         return s[i:j] in g.globalDirectiveList
     else:
         return False
-#@+node:ekr.20080827175609.52: *4* g.scanAtCommentAndLanguageDirectives
+#@+node:ekr.20080827175609.52: *3* g.scanAtCommentAndLanguageDirectives
 def scanAtCommentAndAtLanguageDirectives(aList):
 
     '''Scan aList for @comment and @language directives.
@@ -509,7 +508,7 @@ def scanAtCommentAndAtLanguageDirectives(aList):
 
     if trace: g.trace(repr(None))
     return None
-#@+node:ekr.20080827175609.32: *4* g.scanAtEncodingDirectives
+#@+node:ekr.20080827175609.32: *3* g.scanAtEncodingDirectives
 def scanAtEncodingDirectives(aList):
 
     '''Scan aList for @encoding directives.'''
@@ -523,7 +522,7 @@ def scanAtEncodingDirectives(aList):
             g.error("invalid @encoding:",encoding)
 
     return None
-#@+node:ekr.20080827175609.53: *4* g.scanAtHeaderDirectives
+#@+node:ekr.20080827175609.53: *3* g.scanAtHeaderDirectives
 def scanAtHeaderDirectives(aList):
 
     '''scan aList for @header and @noheader directives.'''
@@ -531,7 +530,7 @@ def scanAtHeaderDirectives(aList):
     for d in aList:
         if d.get('header') and d.get('noheader'):
             g.error("conflicting @header and @noheader directives")
-#@+node:ekr.20080827175609.33: *4* g.scanAtLineendingDirectives
+#@+node:ekr.20080827175609.33: *3* g.scanAtLineendingDirectives
 def scanAtLineendingDirectives(aList):
 
     '''Scan aList for @lineending directives.'''
@@ -546,7 +545,7 @@ def scanAtLineendingDirectives(aList):
             # g.error("invalid @lineending directive:",e)
 
     return None
-#@+node:ekr.20080827175609.34: *4* g.scanAtPagewidthDirectives
+#@+node:ekr.20080827175609.34: *3* g.scanAtPagewidthDirectives
 def scanAtPagewidthDirectives(aList,issue_error_flag=False):
 
     '''Scan aList for @pagewidth directives.'''
@@ -563,7 +562,7 @@ def scanAtPagewidthDirectives(aList,issue_error_flag=False):
                     g.error("ignoring @pagewidth",s)
 
     return None
-#@+node:ekr.20101022172109.6108: *4* g.scanAtPathDirectives scanAllAtPathDirectives
+#@+node:ekr.20101022172109.6108: *3* g.scanAtPathDirectives scanAllAtPathDirectives
 def scanAtPathDirectives(c,aList):
 
     path = c.scanAtPathDirectives(aList)
@@ -574,7 +573,7 @@ def scanAllAtPathDirectives(c,p):
     aList = g.get_directives_dict_list(p)
     path = c.scanAtPathDirectives(aList)
     return path
-#@+node:ekr.20100507084415.5760: *4* g.scanAtRootDirectives
+#@+node:ekr.20100507084415.5760: *3* g.scanAtRootDirectives
 def scanAtRootDirectives(aList):
 
     '''Scan aList for @root directives.'''
@@ -587,7 +586,7 @@ def scanAtRootDirectives(aList):
             return mode
 
     return None
-#@+node:ekr.20031218072017.3154: *4* g.scanAtRootOptions
+#@+node:ekr.20031218072017.3154: *3* g.scanAtRootOptions
 def scanAtRootOptions (s,i,err_flag=False):
 
     # The @root has been eaten when called from tangle.scanAllDirectives.
@@ -598,7 +597,7 @@ def scanAtRootOptions (s,i,err_flag=False):
     mode = None 
     while g.match(s,i,'-'):
         #@+<< scan another @root option >>
-        #@+node:ekr.20031218072017.3155: *5* << scan another @root option >>
+        #@+node:ekr.20031218072017.3155: *4* << scan another @root option >>
         i += 1 ; err = -1
 
         if g.match_word(s,i,"code"): # Just match the prefix.
@@ -627,7 +626,7 @@ def scanAtRootOptions (s,i,err_flag=False):
     # g.trace(mode,g.callers(3))
 
     return i,mode
-#@+node:ekr.20080827175609.37: *4* g.scanAtTabwidthDirectives & scanAllTabWidthDirectives
+#@+node:ekr.20080827175609.37: *3* g.scanAtTabwidthDirectives & scanAllTabWidthDirectives
 def scanAtTabwidthDirectives(aList,issue_error_flag=False):
 
     '''Scan aList for @tabwidth directives.'''
@@ -655,7 +654,7 @@ def scanAllAtTabWidthDirectives(c,p):
         ret = None
     # g.trace(ret,p and p.h,ret)
     return ret
-#@+node:ekr.20080831084419.4: *4* g.scanAtWrapDirectives & scanAllAtWrapDirectives
+#@+node:ekr.20080831084419.4: *3* g.scanAtWrapDirectives & scanAllAtWrapDirectives
 def scanAtWrapDirectives(aList,issue_error_flag=False):
 
     '''Scan aList for @wrap and @nowrap directives.'''
@@ -682,11 +681,11 @@ def scanAllAtWrapDirectives(c,p):
         ret = None
     # g.trace(ret,p.h)
     return ret
-#@+node:ekr.20080901195858.4: *4* g.scanDirectives  (for compatibility only)
+#@+node:ekr.20080901195858.4: *3* g.scanDirectives  (for compatibility only)
 def scanDirectives(c,p=None):
 
     return c.scanAllDirectives(p)
-#@+node:ekr.20040715155607: *4* g.scanForAtIgnore
+#@+node:ekr.20040715155607: *3* g.scanForAtIgnore
 def scanForAtIgnore(c,p):
 
     """Scan position p and its ancestors looking for @ignore directives."""
@@ -700,7 +699,7 @@ def scanForAtIgnore(c,p):
             return True
 
     return False
-#@+node:ekr.20040712084911.1: *4* g.scanForAtLanguage
+#@+node:ekr.20040712084911.1: *3* g.scanForAtLanguage
 def scanForAtLanguage(c,p):
 
     """Scan position p and p's ancestors looking only for @language and @ignore directives.
@@ -718,7 +717,7 @@ def scanForAtLanguage(c,p):
                 return language
 
     return c.target_language
-#@+node:ekr.20041123094807: *4* g.scanForAtSettings
+#@+node:ekr.20041123094807: *3* g.scanForAtSettings
 def scanForAtSettings(p):
 
     """Scan position p and its ancestors looking for @settings nodes."""
@@ -730,7 +729,7 @@ def scanForAtSettings(p):
             return True
 
     return False
-#@+node:ekr.20031218072017.1382: *4* g.set_delims_from_language
+#@+node:ekr.20031218072017.1382: *3* g.set_delims_from_language
 # Returns a tuple (single,start,end) of comment delims
 
 def set_delims_from_language(language):
@@ -750,7 +749,7 @@ def set_delims_from_language(language):
             return delim1,delim2,delim3
     else:
         return '','','' # Indicate that no change should be made
-#@+node:ekr.20031218072017.1383: *4* g.set_delims_from_string
+#@+node:ekr.20031218072017.1383: *3* g.set_delims_from_string
 def set_delims_from_string(s):
 
     """Returns (delim1, delim2, delim2), the delims following the @comment directive.
@@ -785,7 +784,7 @@ def set_delims_from_string(s):
             delims[i] = delims[i].replace("__",'\n').replace('_',' ')
 
     return delims[0], delims[1], delims[2]
-#@+node:ekr.20031218072017.1384: *4* g.set_language
+#@+node:ekr.20031218072017.1384: *3* g.set_language
 def set_language(s,i,issue_errors_flag=False):
 
     """Scan the @language directive that appears at s[i:].
@@ -813,7 +812,7 @@ def set_language(s,i,issue_errors_flag=False):
     if issue_errors_flag:
         g.es("ignoring:",g.get_line(s,i))
     return None, None, None, None,
-#@+node:ekr.20081001062423.9: *4* g.setDefaultDirectory & helper
+#@+node:ekr.20081001062423.9: *3* g.setDefaultDirectory & helper
 def setDefaultDirectory(c,p,importing=False):
 
     ''' Return a default directory by scanning @path directives.'''
@@ -846,7 +845,7 @@ def setDefaultDirectory(c,p,importing=False):
         g.warning("No absolute directory specified anywhere.")
 
     return path
-#@+node:ekr.20101022124309.6132: *5* g.checkOpenDirectory
+#@+node:ekr.20101022124309.6132: *4* g.checkOpenDirectory
 def checkOpenDirectory (c):
 
     if c.openDirectory != c.frame.openDirectory:
@@ -859,7 +858,7 @@ def checkOpenDirectory (c):
     if not g.os_path_isabs(c.openDirectory):
         g.error ('Error: relative c.openDirectory: %s' % (
             c.openDirectory))
-#@+node:ekr.20071109165315: *4* g.stripPathCruft
+#@+node:ekr.20071109165315: *3* g.stripPathCruft
 def stripPathCruft (path):
 
     '''Strip cruft from a path name.'''
@@ -4310,6 +4309,10 @@ def getScript (c,p,useSelectedText=True,forcePythonSentinels=True,useSentinels=T
         # Remove extra leading whitespace so the user may execute indented code.
         s = g.removeExtraLws(s,c.tab_width)
         if s.strip():
+            if not g.unitTesting:
+                aList = g.get_directives_dict_list(p)
+                encoding = scanAtEncodingDirectives(aList) or 'utf-8'
+                s = g.insertCodingLine(encoding,s)
             g.app.scriptDict["script1"]=s
             # Important: converts unicode to utf-8 encoded strings.
             script = at.writeFromString(p.copy(),s,
@@ -4395,6 +4398,23 @@ def initScriptFind(c,findHeadline,changeHeadline=None,firstNode=None,
         c.change_text = change_text
     c.frame.findPanel.init(c)
     c.showFindPanel()
+#@+node:ekr.20140209065845.16767: *3* g.insertCodingLine
+def insertCodingLine(encoding,script):
+    '''
+    Insert a coding line at the start of script s if no such line exists.
+    The coding line must start with @first because it will be passed to
+    at.writeFromString.
+    '''
+    if script:
+        tag = '@first # -*- coding:'
+        lines = g.splitLines(script)
+        for s in lines:
+            if s.startswith(tag):
+                break
+        else:
+            lines.insert(0,'%s %s -*-\n' % (tag,encoding))
+            script = ''.join(lines)
+    return script
 #@+node:ekr.20111115155710.9859: ** Tokenizing & parsing
 #@+node:ekr.20111115155710.9814: *3* g.python_tokenize
 def python_tokenize (s,line_numbers=True):
