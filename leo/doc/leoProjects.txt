@@ -2088,6 +2088,13 @@ It does not allow @bool scripting-at-script-nodes = True in local .leo files.
 .. @+node:ekr.20140205074001.16358: *3* Fixed a startup error involving --ipython
 Fixed a bug that caused Leo to exit during startup when
 --python given on the command line but IPython is not installed.
+.. @+node:ekr.20140209065845.16766: *3* Fixed unicode problem in the log pane
+
+@language rest
+
+Fixed bug: https://bugs.launchpad.net/leo-editor/+bug/1276236
+
+g.insertCodingLine adds coding line to start of all python scripts, except when unit testing.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
