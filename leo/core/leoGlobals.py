@@ -4286,7 +4286,7 @@ def findTopLevelNode(c,headline):
             return p.copy()
     return c.nullPosition()
 #@+node:EKR.20040614071102.1: *3* g.getScript
-def getScript (c,p,useSelectedText=True,forcePythonSentinels=True,useSentinels=True):
+def getScript (c,p,useSelectedText=True,forcePythonSentinels=True,useSentinels=True,forceEncoding=True):
 
     '''Return the expansion of the selected text of node p.
     Return the expansion of all of node p's body text if
@@ -4309,7 +4309,7 @@ def getScript (c,p,useSelectedText=True,forcePythonSentinels=True,useSentinels=T
         # Remove extra leading whitespace so the user may execute indented code.
         s = g.removeExtraLws(s,c.tab_width)
         if s.strip():
-            if not g.unitTesting:
+            if not g.unitTesting and forceEncoding:
                 aList = g.get_directives_dict_list(p)
                 encoding = scanAtEncodingDirectives(aList) or 'utf-8'
                 s = g.insertCodingLine(encoding,s)
@@ -4732,7 +4732,7 @@ def findTestScript(c,h,where=None,warn=True):
         p = g.findNodeAnywhere(c,h)
 
     if p:
-        return g.getScript(c,p)
+        return g.getScript(c,p,forceEncoding=False)
     else:
         if warn: g.trace('Not found',h)
         return None
