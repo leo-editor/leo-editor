@@ -11,8 +11,9 @@
 <find_panel_settings/>
 <vnodes>
 <v t="ekr.20051031040240"><vh>Startup</vh>
-<v t="ekr.20110607155823.16449"><vh>@@chapters</vh></v>
 <v t="ekr.20080412053100.5"><vh>@settings</vh>
+<v t="ekr.20131111060930.18010"><vh>@shortcuts</vh></v>
+<v t="ekr.20131121084830.16362"><vh>@button toggle-debug</vh></v>
 <v t="ekr.20131109170017.46980"><vh>vim settings</vh>
 <v t="ekr.20131109170017.46978"><vh>@@@data vim-control-character-commands</vh></v>
 <v t="ekr.20131109170017.41921"><vh>@data vim-command-tails</vh></v>
@@ -20,6 +21,9 @@
 <v t="ekr.20131109170017.46979"><vh>@data vim-motions</vh></v>
 <v t="ekr.20131109170017.46981"><vh>@data vim-motion-tails</vh></v>
 </v>
+</v>
+<v t="ekr.20140103105930.16446"><vh>@views</vh>
+<v t="ekr.20140102162014.16438"><vh>@view added strip_comments keyword arg to two config.getData methods</vh></v>
 </v>
 </v>
 <v t="EKR.20040430162943"><vh>Notes</vh>
@@ -55,8 +59,8 @@
 <v t="ekr.20080708094444.1"><vh>@file leoShadow.py</vh></v>
 <v t="ekr.20031218072017.3446"><vh>@file leoTangle.py</vh></v>
 <v t="ekr.20031218072017.3603"><vh>@file leoUndo.py</vh></v>
-<v t="ekr.20131109170017.16504"
-marks="ekr.20131111054309.16526,"><vh>@file leoVim.py</vh></v>
+<v t="ekr.20131230090121.16504"><vh>@file leoViews.py</vh></v>
+<v t="ekr.20131109170017.16504"><vh>@file leoVim.py</vh></v>
 </v>
 <v t="ekr.20031218072017.3625"><vh>Gui base classes</vh>
 <v t="ekr.20050721093241"><vh>&lt;&lt; about gui classes and gui plugins &gt;&gt;</vh></v>
@@ -107,7 +111,7 @@ marks="ekr.20131111054309.16526,"><vh>@file leoVim.py</vh></v>
 @pagewidth 70
 
 @ 
-This section contains all the source code of leo.py.
+This outline contains all of Leo's core source code.
 
 Leo's code uses the following conventions throughout:
 
@@ -219,15 +223,44 @@ returned by g.convertPythonIndexToRowCol is zero based, so the code
 that actually creates Tkinter indices from row/col must add 1 to the
 row.  Similar remarks apply when going in the reverse direction. 
 </t>
-<t tx="ekr.20051031040240"></t>
-<t tx="ekr.20080412053100.5"></t>
+<t tx="ekr.20051031040240">def relink(self):
+    '''Relink all unlinked clones.'''
+    d = self.d
+    # Find original cloned nodes.
+    for key in sorted(d.keys()):
+        g.trace(key,d.get(key))</t>
+<t tx="ekr.20080412053100.5">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@language python</t>
 <t tx="ekr.20080730161153.8"></t>
 <t tx="ekr.20090802181029.5988"></t>
 <t tx="ekr.20090802181029.5989"></t>
 <t tx="ekr.20100120072650.6088"></t>
 <t tx="ekr.20110605121601.17862"># These files are true plugins, but it is more convenient to put them here.</t>
 <t tx="ekr.20110605121601.18695"></t>
-<t tx="ekr.20110607155823.16449"></t>
 <t tx="ekr.20131109170017.41921">char F
 char T
 char f
@@ -239,10 +272,7 @@ motion &lt;
 motion &gt;
 motion c
 motion d
-motion gU
-motion gq
-motion gu
-motion g~
+motion g
 motion y
 pattern /
 pattern ?
@@ -269,7 +299,7 @@ vim_percent %
 vim_langle &lt;
 vim_langle &lt;&lt;
 vim_rangle &gt;
-vim_langle &gt;&gt;
+vim_rangle &gt;&gt;
 vim_pound #
 vim_star *
 vim_slash /\\n
@@ -439,7 +469,8 @@ N   CTRL-U                  window N lines Upwards (default: 1/2 window)
 N   CTRL-X                  subtract N from the number at or after the cursor
 N   CTRL-Y                  window N lines upwards (default: 1)
     CTRL-Z                  Same as ":stop!"
-    CTRL-]                  Jump to the tag under cursor, unless changes have been made</t>
+    CTRL-]                  Jump to the tag under cursor, unless changes have been made
+</t>
 <t tx="ekr.20131109170017.46979"># CR
 # Ctrl-End
 # Ctrl-Home
@@ -495,11 +526,47 @@ w
 <t tx="ekr.20131109170017.46980">@nocolor
 
 For testing, these are loaded "by hand" so that reloading this file is not
-needed.</t>
+needed.
+</t>
 <t tx="ekr.20131109170017.46981">char F
 char T
 char f
 char t
 </t>
+<t tx="ekr.20131111060930.18010"># Standard bindings...
+# run-selected-unit-tests-externally = Alt-4 
+# run-marked-unit-tests-externally = Alt-5
+# run-marked-unit-tests-locally = Alt-6
+run-selected-unit-tests-locally = Alt-4
+do-nothing = Alt-5
+run-marked-unit-tests-locally = Alt-6
+</t>
+<t tx="ekr.20131121084830.16362"># Toggle the settings.
+g.app.debug_app = not g.app.debug_app
+g.app.debug_widgets = not g.app.debug_widgets
+# Report the new settings.
+print('g.app.debug_app: %s' % g.app.debug_app)
+print('g.app.debug_widgets: %s' % g.app.debug_widgets)
+
+
+
+
+
+
+
+
+
+
+
+
+
+@language python
+</t>
+<t tx="ekr.20140102162014.16438">unl: Code--&gt;Core classes--&gt;@file leoConfig.py--&gt;class LocalConfigManager--&gt;c.config.Getters--&gt;c.config.Getters--&gt;c.config.getData
+unl: Code--&gt;Core classes--&gt;@file leoConfig.py--&gt;class GlobalConfigManager--&gt;gcm.Getters...--&gt;gcm.getData &amp; getOutlineData
+unl: Code--&gt;Core classes--&gt;@file leoConfig.py--&gt;&lt;&lt; class ParserBaseClass &gt;&gt;--&gt;kind handlers (ParserBaseClass)--&gt;doData
+@language rest
+The parser for @data nodes, doData, no longer strips *anything*.</t>
+<t tx="ekr.20140103105930.16446"></t>
 </tnodes>
 </leo_file>

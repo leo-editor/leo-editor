@@ -27,6 +27,7 @@ Release 4.11.1 (or 5.0?):
     - Improve p.isVisible: its algorithm is poor.
 
 - Look at Eclipse # @name.
+.. @+node:ekr.20140210083830.16770: *3* Move recent posts to LeoDocs.leo
 .. @+node:ekr.20140109214515.16629: *3* Finish @auto-view
 @language rest
 
