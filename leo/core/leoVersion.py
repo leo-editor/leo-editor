@@ -36,17 +36,33 @@ static_version = 6240
 static_date = "2013-11-06"
 version = "4.11 final"
 
+use_git = True # False = bzr
+
 theDir = os.path.dirname(__file__)
-path = os.path.join(theDir,'..','..','.bzr','branch','last-revision')
+
+if use_git:
+    path = os.path.join(theDir,'..','..','.git','HEAD')
+else:
+    path = os.path.join(theDir,'..','..','.bzr','branch','last-revision') 
+
 path = os.path.normpath(path)
 path = os.path.abspath(path)
 
-# First, try to get the version from the .bzr/branch/last-revision.
+# First, try to get the version from the .bzr/branch/last-revision or .git/HEAD
 if os.path.exists(path):
     if trace: print('leoVersion.py: %s' % (path))
     s = open(path,'r').read()
-    i = s.find(' ')
-    build = static_version if i == -1 else s[:i]
+    if not use_git:
+        i = s.find(' ')
+        build = static_version if i == -1 else s[:i]
+    else:
+        if trace: print('leoVersion.py: %s' % (s))
+        pointer = s.split()[1]
+        dirs = pointer.split('/')
+        branch = dirs[-1]
+        path = os.path.join(theDir, '..', '..', '.git', pointer)
+        s = open(path, 'r').read().strip()[0:8] # shorten the hash to a unique shortname
+        build = '%s (branch: %s)' % (s, branch)
     secs = os.path.getmtime(path)
     t = time.localtime(secs)
     date = time.strftime('%Y-%m-%d %H:%M:%S',t)
