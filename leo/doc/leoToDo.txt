@@ -27,33 +27,15 @@ Release 4.11.1 (or 5.0?):
     - Improve p.isVisible: its algorithm is poor.
 
 - Look at Eclipse # @name.
-.. @+node:ekr.20140109214515.16629: *3* To do: @auto-view
+.. @+node:ekr.20140109214515.16629: *3* Finish @auto-view
 @language rest
 
-* Move recent posts to LeoDocs.leo.
+- Move recent posts to LeoDocs.leo.
 
-- vc.organized_nodes is not used at present.
-
-- Fix all unit tests.
-    
-- vc.trial_write_kind ivar: unified handling of trial writes & their dumps.
-      
-- Warn about changed headlines.
-    - Read init code creates a vc.headlines_dict: keys are vnodes, values are headlines.
-    - Write code warns if non-organizer node isn't in dict.
-
-- At the end:
-    - Use full trial write for comparisons.
-    - Revert the outline if the trial write fails.
-    - Tests (see child)
-.. @+node:ekr.20140112112622.16664: *4* later: tests
-- Better tests for vc.add_intermediate_organizer_nodes
-
-- Create unit test for vc.copy_tree_to_last_child_of
-
-- Create unit test for vc.trial_write.
-    - The acid test is whether comments can be moved without
-      changing the @auto file.  It appears that this is so.
+- Improve importers:
+    - Importers should add interstitial code to preceding def.
+      (They shouldn't split nodes).
+    - Importers should add leading comments to nodes.
 .. @+node:ekr.20140115052524.16699: *3* Allow clones *anywhere* in @file nodes
 ​https://groups.google.com/d/msg/leo-editor/YjJdWjNSM9o/SDL7Nb__OUcJ
 
@@ -4062,7 +4044,7 @@ def get_user_types (self):
             for val in d.get(key):
                 print('  %s' % (val))
 
-.. @+node:ekr.20031218072017.3207: *5* import.__init__ & helpers
+.. @+node:ekr.20031218072017.3207: *5* import.__init__ & helper
 def __init__ (self,c):
     '''ctor for leoImportCommands class.'''
     self.c = c
@@ -4113,6 +4095,38 @@ def createClassDispatchDict(self):
         # '.rst':     rstScanner,
         '.ts':      TypeScriptScanner,
         '.xml':     xmlScanner,
+    }
+.. @+node:ekr.20080825131124.3: *6* createImportDispatchDict
+def createImportDispatchDict (self):
+
+    self.importDispatchDict = {
+        # Keys are file extensions, values are text scanners.
+        # Text scanners must have the signature scanSomeText(self,s,parent,atAuto=False)
+        '.c':       self.scanCText,
+        '.h':       self.scanCText,
+        '.h++':     self.scanCText,
+        '.cc':      self.scanCText,
+        '.c++':     self.scanCText,
+        '.cpp':     self.scanCText,
+        '.cxx':     self.scanCText,
+        '.cfg':     self.scanIniText,
+        '.cs':      self.scanCSharpText,
+        '.el':      self.scanElispText,
+        '.htm':     self.scanHtmlText,
+        '.html':    self.scanHtmlText,
+        '.ini':     self.scanIniText,
+        '.java':    self.scanJavaText,
+        '.js':      self.scanJavaScriptText,
+        '.otl':     self.scanVimoutlinerText,
+        '.php':     self.scanPHPText,
+        '.pas':     self.scanPascalText,
+        '.py':      self.scanPythonText,
+        '.pyw':     self.scanPythonText,
+        # '.txt':     self.scanRstText, # A reasonable default.
+        # '.rest':    self.scanRstText,
+        # '.rst':     self.scanRstText,
+        '.ts':      self.scanTypeScriptText,
+        '.xml':     self.scanXmlText,
     }
 .. @+node:ekr.20130924110246.13749: *5* init_settings
 def init_settings(self):
@@ -4383,8 +4397,6 @@ def viewPack(event):
     if not c: return
     result = [g.unl(p) for p in c.p.self_and_subtree()]
     # What to do about c.p.b and c.p.h?
-.. @+node:ekr.20131225045014.16398: *3* Fixed problem with 1-character reverse searches!
-The problem was an off-by-one test in regexHelper.
 .. @+node:ekr.20131206064113.16325: *3* Fix new IPython bug
 The c property makes no sense.  Maybe the best solution is to get rid of it and change the docs.
 
@@ -4459,6 +4471,8 @@ def update (self):
     '''Update the list of available commanders.'''
     self.commanders_list = [frame.c for frame in g.app.windowList]
 .. @+node:ekr.20131119195900.18522: *3* * vim-mode
+@language rest
+
 - Do all common vim commands
 - Leave arrow keys and control keys unchanged.
 - Focus plain-key normal-mode commands: a,i,d,c,x,s.
