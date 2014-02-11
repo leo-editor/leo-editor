@@ -61,7 +61,8 @@ if os.path.exists(path):
         dirs = pointer.split('/')
         branch = dirs[-1]
         path = os.path.join(theDir, '..', '..', '.git', pointer)
-        s = open(path, 'r').read().strip()[0:8] # shorten the hash to a unique shortname
+        s = open(path, 'r').read().strip()[0:12] # shorten the hash to a unique shortname 
+                                                 # (12 characters should be enough until the end of time, for Leo...)
         build = '%s (branch: %s)' % (s, branch)
     secs = os.path.getmtime(path)
     t = time.localtime(secs)
