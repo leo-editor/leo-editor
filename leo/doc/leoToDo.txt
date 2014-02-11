@@ -4062,7 +4062,6 @@ def __init__ (self,c):
     self.treeType = "@file" # None or "@file"
     self.webType = "@noweb" # "cweb" or "noweb"
     self.web_st = [] # noweb symbol table.
-    # self.createImportDispatchDict()
     self.createClassDispatchDict()
 .. @+node:ekr.20140125141655.10473: *6* ic.createClassDispatchDict
 def createClassDispatchDict(self):
@@ -4096,38 +4095,6 @@ def createClassDispatchDict(self):
         # '.rst':     rstScanner,
         '.ts':      TypeScriptScanner,
         '.xml':     xmlScanner,
-    }
-.. @+node:ekr.20080825131124.3: *6* createImportDispatchDict
-def createImportDispatchDict (self):
-
-    self.importDispatchDict = {
-        # Keys are file extensions, values are text scanners.
-        # Text scanners must have the signature scanSomeText(self,s,parent,atAuto=False)
-        '.c':       self.scanCText,
-        '.h':       self.scanCText,
-        '.h++':     self.scanCText,
-        '.cc':      self.scanCText,
-        '.c++':     self.scanCText,
-        '.cpp':     self.scanCText,
-        '.cxx':     self.scanCText,
-        '.cfg':     self.scanIniText,
-        '.cs':      self.scanCSharpText,
-        '.el':      self.scanElispText,
-        '.htm':     self.scanHtmlText,
-        '.html':    self.scanHtmlText,
-        '.ini':     self.scanIniText,
-        '.java':    self.scanJavaText,
-        '.js':      self.scanJavaScriptText,
-        '.otl':     self.scanVimoutlinerText,
-        '.php':     self.scanPHPText,
-        '.pas':     self.scanPascalText,
-        '.py':      self.scanPythonText,
-        '.pyw':     self.scanPythonText,
-        # '.txt':     self.scanRstText, # A reasonable default.
-        # '.rest':    self.scanRstText,
-        # '.rst':     self.scanRstText,
-        '.ts':      self.scanTypeScriptText,
-        '.xml':     self.scanXmlText,
     }
 .. @+node:ekr.20130924110246.13749: *5* init_settings
 def init_settings(self):

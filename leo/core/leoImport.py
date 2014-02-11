@@ -141,7 +141,7 @@ class scanUtility:
 class leoImportCommands (scanUtility):
 
     #@+others
-    #@+node:ekr.20031218072017.3207: *3* import.__init__ & helpers
+    #@+node:ekr.20031218072017.3207: *3* import.__init__ & helper
     def __init__ (self,c):
         '''ctor for leoImportCommands class.'''
         self.c = c
@@ -158,7 +158,6 @@ class leoImportCommands (scanUtility):
         self.treeType = "@file" # None or "@file"
         self.webType = "@noweb" # "cweb" or "noweb"
         self.web_st = [] # noweb symbol table.
-        # self.createImportDispatchDict()
         self.createClassDispatchDict()
     #@+node:ekr.20140125141655.10473: *4* ic.createClassDispatchDict
     def createClassDispatchDict(self):

@@ -12709,38 +12709,6 @@ def initWriteIvars(self,root,targetFileName,
         # Text scanners must have the signature x(self,s,parent,atAuto=False)
     g.trace(language,ext,scanner.__name__)
 .. @+node:ekr.20140131101641.15494: *3* Unused import code
-.. @+node:ekr.20080825131124.3: *4* ic.createImportDispatchDict
-def createImportDispatchDict (self):
-
-    self.importDispatchDict = {
-        # Keys are file extensions, values are text scanners.
-        # Text scanners must have the signature scanSomeText(self,s,parent,atAuto=False)
-        '.c':       self.scanCText,
-        '.h':       self.scanCText,
-        '.h++':     self.scanCText,
-        '.cc':      self.scanCText,
-        '.c++':     self.scanCText,
-        '.cpp':     self.scanCText,
-        '.cxx':     self.scanCText,
-        '.cfg':     self.scanIniText,
-        '.cs':      self.scanCSharpText,
-        '.el':      self.scanElispText,
-        '.htm':     self.scanHtmlText,
-        '.html':    self.scanHtmlText,
-        '.ini':     self.scanIniText,
-        '.java':    self.scanJavaText,
-        '.js':      self.scanJavaScriptText,
-        '.otl':     self.scanVimoutlinerText,
-        '.php':     self.scanPHPText,
-        '.pas':     self.scanPascalText,
-        '.py':      self.scanPythonText,
-        '.pyw':     self.scanPythonText,
-        # '.txt':     self.scanRstText, # A reasonable default.
-        # '.rest':    self.scanRstText,
-        # '.rst':     self.scanRstText,
-        '.ts':      self.scanTypeScriptText,
-        '.xml':     self.scanXmlText,
-    }
 .. @+node:ekr.20140131101641.15493: *4*  unused import scanners
 if 0:
     @others
@@ -12835,5 +12803,37 @@ def print_stats(self):
         g.trace('moved:   %3s' % (
             len( vc.global_bare_organizer_node_list) +
             len(vc.work_list)))
+.. @+node:ekr.20080825131124.3: *4* ic.createImportDispatchDict
+def createImportDispatchDict (self):
+
+    self.importDispatchDict = {
+        # Keys are file extensions, values are text scanners.
+        # Text scanners must have the signature scanSomeText(self,s,parent,atAuto=False)
+        '.c':       self.scanCText,
+        '.h':       self.scanCText,
+        '.h++':     self.scanCText,
+        '.cc':      self.scanCText,
+        '.c++':     self.scanCText,
+        '.cpp':     self.scanCText,
+        '.cxx':     self.scanCText,
+        '.cfg':     self.scanIniText,
+        '.cs':      self.scanCSharpText,
+        '.el':      self.scanElispText,
+        '.htm':     self.scanHtmlText,
+        '.html':    self.scanHtmlText,
+        '.ini':     self.scanIniText,
+        '.java':    self.scanJavaText,
+        '.js':      self.scanJavaScriptText,
+        '.otl':     self.scanVimoutlinerText,
+        '.php':     self.scanPHPText,
+        '.pas':     self.scanPascalText,
+        '.py':      self.scanPythonText,
+        '.pyw':     self.scanPythonText,
+        # '.txt':     self.scanRstText, # A reasonable default.
+        # '.rest':    self.scanRstText,
+        # '.rst':     self.scanRstText,
+        '.ts':      self.scanTypeScriptText,
+        '.xml':     self.scanXmlText,
+    }
 .. @-all
 .. @-leo

@@ -1280,17 +1280,6 @@ class ViewController:
             if od.opened and not od.closed:
                 if trace: g.trace('===== closing',od.h)
                 od.closed = True
-    #@+node:ekr.20140109214515.16631: *5* vc.print_stats
-    def print_stats(self):
-        '''Print important stats.'''
-        trace = False and not g.unitTesting
-        vc = self
-        if trace:
-            g.trace(vc.root and vc.root.h or 'No root')
-            g.trace('scanned: %3s' % vc.n_nodes_scanned)
-            g.trace('moved:   %3s' % (
-                len( vc.global_bare_organizer_node_list) +
-                len(vc.work_list)))
     #@+node:ekr.20140120105910.10488: *3* vc.Main Lines
     #@+node:ekr.20140131101641.15495: *4* vc.prepass & helper
     def prepass(self,root):
