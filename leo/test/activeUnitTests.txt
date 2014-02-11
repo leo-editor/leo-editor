@@ -9,7 +9,6 @@
 All support code should be placed as a child of this @mark-for-unit-test node
 so that it will be copied to dynamicUnitTest.leo when running tests externally.
 #@+node:ekr.20111113102936.4600: *3* Test headline abc
-AB
 #@+node:ekr.20120212130242.3980: *3* newHeadline
 #@+node:ekr.20090529141856.4700: *3* importTests
 @language plain
@@ -1607,6 +1606,8 @@ finally:
 @language python
 @tabwidth -4
 @others
+#@+node:ekr.20120228174052.3929: *4* Node 1
+# node 1 text A.
 #@+node:ekr.20111210175541.3957: *4* @test at.readOneAtShadowNode retains @shadow links clones
 # Important: the child of this node must be a clone of
 # the corresponding node in @shadow unittest/at-shadow-unlink-clones.py
@@ -7633,7 +7634,8 @@ line 2line 3
 c.testManager.runEditCommandTest(p)
 #@+node:ekr.20130918052416.4181: *7* work
 line 1
-line 2line 3
+# The next line contains two trailing blanks.
+line 3line 4
 #@+node:ekr.20130918052416.4182: *7* before sel=3.6,3.6
 line 1
 # The next line contains two trailing blanks.
@@ -14391,9 +14393,9 @@ if 1:
     v2.h = 'insertAsNthChild(1)'
 p.expand()
 c.redraw()
-#@+node:ekr.20131222161536.4098: *5* insertAsFirstChild
-#@+node:ekr.20131222161536.4100: *5* insertAsNthChild(1)
-#@+node:ekr.20131222161536.4099: *5* insertAsLastChild
+#@+node:ekr.20140211085929.5491: *5* insertAsFirstChild
+#@+node:ekr.20140211085929.5493: *5* insertAsNthChild(1)
+#@+node:ekr.20140211085929.5492: *5* insertAsLastChild
 #@+node:ekr.20080310073711.1: *4* @test nodeIndices.toString(None) allocates a new index
 gnx = g.app.nodeIndices.toString(None)
 assert(gnx not in (None,'None'))

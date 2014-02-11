@@ -7695,5 +7695,933 @@ if 0: # Print lines containing '='
         if z.find('=') > -1] # and not z.find('+=')>-1 and not z.find('-=')>-1]
     print(''.join(aList))
     
+#@+node:ekr.20131231093529.3984: ** @ignore leoViews.py
+#@+node:ekr.20140110141116.4267: *3* @@@test vc.create_tree_structure (rewrite)
+vc = c.viewController
+views = g.findNodeAnywhere(c,'@views')
+if views: views.deleteAllChildren()
+    # Start with a pristine @views tree.
+root_before  = g.findNodeInTree(c,p,'root_before')
+    # Root before: used to generate @auto-view tree.
+root_restore = g.findNodeInTree(c,p,'root_restore')
+    # Create root_after from root_restore.
+assert root_before,root_restore
+root_after  = g.findNodeInTree(c,p,'root_after')
+if root_after: root_after.doDelete()
+    # Root after: the results of the previous test.
+c.selectPosition(root_restore)
+c.copyOutline()
+c.selectPosition(root_before)
+c.pasteOutline()
+# The roots must look like @auto nodes.
+root_after = c.p
+assert root_after.h == 'root_restore',root_after.h
+root_before.h = '@auto root_before'
+root_after.h = '@auto root_after' 
+try:
+    vc.update_before_write_at_auto_file(root_before)
+    at_organizers = vc.has_at_organizers_node(root_before)
+    assert at_organizers
+    # Called by vc.create_organizer_nodes(organizers,root_after):
+    root = root_after
+    vc.create_organizer_data(at_organizers,root)
+    vc.create_actual_organizer_nodes()
+    vc.create_tree_structure(root)
+    # The body of demote_organized_nodes:
+    for od in vc.all_ods:
+        # Called by vc.update_helper.
+        od_list = vc.find_all_organizer_nodes(od)
+        assert od in od_list,od_list
+    d = {
+        'organizer node': ['intermediate node','inner org1','inner org2'],
+        'intermediate node': ['inner org1','inner org2'],
+    }
+    for od in vc.organizer_data_list:
+        aList = d.get(od.h,[])
+        aList2 = [z.h for z in od.descendants or []]
+        assert sorted(aList) == sorted(aList2),(aList,aList2)
+finally:
+    # Make sure the roots are *not* @auto nodes.
+    vc.temp_node.doDelete()
+    root_before.h = 'root_before'
+    root_after.h = 'root_after'
+    c.redraw()
+#@+node:ekr.20140110141116.4322: *4* root_restore
+@others
+#@+node:ekr.20140110141116.4323: *5* aClass
+class aClass:
+    @others
+#@+node:ekr.20140110141116.4324: *6* before
+def spam_before(self):
+    pass
+#@+node:ekr.20140110141116.4325: *6* child11
+def spam11(self):
+    pass
+#@+node:ekr.20140110141116.4326: *6* child12
+def spam12(self):
+    pass
+#@+node:ekr.20140110141116.4327: *6* middle
+def middle_spam():
+    pass
+#@+node:ekr.20140110141116.4328: *6* child21
+def spam21(self):
+    pass
+#@+node:ekr.20140110141116.4329: *6* child22
+def spam22(self):
+    pass
+#@+node:ekr.20140110141116.4330: *6* after
+def spam_after(self):
+    pass
+#@+node:ekr.20140110141116.4331: *6* last1
+def spam_last1():
+    pass
+#@+node:ekr.20140110141116.4332: *5* top1
+def spam_top1():
+    pass
+#@+node:ekr.20140110141116.4333: *5* top2
+def spam_top2():
+    pass
+#@+node:ekr.20140110141116.4351: *4* root_before
+@others
+#@+node:ekr.20140110141116.4352: *5* aClass
+class aClass:
+    @others
+#@+node:ekr.20140110141116.4353: *6* before
+def spam_before(self):
+    pass
+#@+node:ekr.20140110141116.4354: *6* organizer node
+#@+node:ekr.20140110141116.4368: *7* intermediate node
+#@+node:ekr.20140110141116.4355: *8* inner org1
+#@+node:ekr.20140110141116.4356: *9* child11
+def spam11(self):
+    pass
+#@+node:ekr.20140110141116.4357: *9* child12
+def spam12(self):
+    pass
+#@+node:ekr.20140110141116.4358: *8* middle
+def middle_spam():
+    pass
+#@+node:ekr.20140110141116.4359: *8* inner org2
+#@+node:ekr.20140110141116.4360: *9* child21
+def spam21(self):
+    pass
+#@+node:ekr.20140110141116.4361: *9* child22
+def spam22(self):
+    pass
+#@+node:ekr.20140110141116.4362: *6* after
+def spam_after(self):
+    pass
+#@+node:ekr.20140110141116.4363: *6* last organizer
+#@+node:ekr.20140110141116.4364: *7* last1
+def spam_last1():
+    pass
+#@+node:ekr.20140110141116.4365: *5* top-level
+#@+node:ekr.20140110141116.4366: *6* top1
+def spam_top1():
+    pass
+#@+node:ekr.20140110141116.4367: *6* top2
+def spam_top2():
+    pass
+#@+node:ekr.20140121160228.4834: *4* root_after
+@others
+#@+node:ekr.20140121160228.4835: *5* aClass
+class aClass:
+    @others
+#@+node:ekr.20140121160228.4836: *6* before
+def spam_before(self):
+    pass
+#@+node:ekr.20140121160228.4837: *6* child11
+def spam11(self):
+    pass
+#@+node:ekr.20140121160228.4838: *6* child12
+def spam12(self):
+    pass
+#@+node:ekr.20140121160228.4839: *6* middle
+def middle_spam():
+    pass
+#@+node:ekr.20140121160228.4840: *6* child21
+def spam21(self):
+    pass
+#@+node:ekr.20140121160228.4841: *6* child22
+def spam22(self):
+    pass
+#@+node:ekr.20140121160228.4842: *6* after
+def spam_after(self):
+    pass
+#@+node:ekr.20140121160228.4843: *6* last1
+def spam_last1():
+    pass
+#@+node:ekr.20140121160228.4844: *5* top1
+def spam_top1():
+    pass
+#@+node:ekr.20140121160228.4845: *5* top2
+def spam_top2():
+    pass
+#@+node:ekr.20140110044125.4362: *3* @test atFile.new_auto
+# To remind ourselves of the status of new_import.
+import leo.core.leoAtFile as atFile
+print('new_import: %s' % atFile.new_auto)
+#@+node:ekr.20140109162112.4219: *3* @test p.sort_key
+aList = [p.copy() for p in c.all_positions()]
+aList2 = sorted(reversed(aList),key=p.sort_key)
+i = 0
+for p in aList2:
+    p2 = aList[i]
+    i += 1
+    assert p == p2,'\n%s:%s\n%s:%s' % (
+        p.sort_key(p),p.h,p2.sort_key(p2),p2.h)
+#@+node:ekr.20140105222052.4170: *3* @test vc.clean_nodes (to do)
+vc = c.viewController
+views = g.findNodeAnywhere(c,'@views')
+assert views
+views.deleteAllChildren()
+views.b = None ####
+root1 = g.findNodeInTree(c,p,'root1')
+assert root1
+try:
+    root1.h = '@auto root1'
+finally:
+    root1.h = 'root1'
+#@+node:ekr.20140105222052.4171: *4* root1
+#@+node:ekr.20140105222052.4172: *4* root2
+#@+node:ekr.20140103102956.4142: *3* @test vc.create_clone_links
+vc = c.viewController
+clones = g.findNodeInTree(c,p,'@clones')
+root = g.findNodeInTree(c,p,'root')
+node1 = g.findNodeInTree(c,p,'node1')
+assert clones and root and node1
+root.deleteAllChildren()
+new_node1 = root.insertAsLastChild()
+new_node1.h = 'node1'
+clones.b = 'gnx: %s\nunl: %s\n' % (node1.v.gnx,'node1')
+try:
+    ok = vc.create_clone_links(clones,root)
+    assert ok
+    # Important: p._relinkAsCloneOf leaves new_node1 unchanged,
+    # but new_node1 should not be used.
+finally:
+    c.redraw()
+#@+node:ekr.20140103102956.4143: *4* @clones
+gnx: ekr.20140211085929.5552
+unl: node1
+#@+node:ekr.20140211090146.4438: *4* node1
+#@+node:ekr.20140103102956.4145: *4* root
+#@+node:ekr.20140211090146.4438: *5* node1
+#@+node:ekr.20140105185509.4140: *3* @test vc.create_organizer_node
+vc = c.viewController
+views = g.findNodeAnywhere(c,'@views')
+if views: views.deleteAllChildren()
+root_restore = g.findNodeInTree(c,p,'root_restore')
+assert root_restore
+root_before = g.findNodeInTree(c,p,'root_before')
+assert root_before
+root_after = g.findNodeInTree(c,p,'root_after')
+if root_after: root_after.doDelete()
+    # Root after: the results of the previous test.
+c.selectPosition(root_restore)
+c.copyOutline()
+c.selectPosition(root_before)
+c.pasteOutline()
+root_after = c.p
+try:
+    # The roots must look like @auto nodes.
+    root_before.h = '@auto root_before'
+    root_after.h = '@auto root_after'
+    vc.init() # Required.
+    vc.update_before_write_at_auto_file(root_before)
+    organizers = vc.has_at_organizers_node(root_before)
+    assert organizers
+    vc.create_organizer_nodes(organizers,root_after)
+    ok = vc.compare_test_trees(root_before,root_after)
+    assert ok,'\n\nexpected...\n%s\ngot...\n%s' % (
+        vc.trial_write(root_before),vc.trial_write(root_after))
+finally:
+     # Make sure the roots are *not* @auto nodes.
+    root_before.h = 'root_before'
+    root_after.h = 'root_after'
+    # Replace root_after by a copy of root_restore.
+    # This ensures that the unit test can be run more than once.
+    if 0:
+        root_after.doDelete()
+        c.selectPosition(root_restore)
+        c.copyOutline()
+        c.selectPosition(root_before)
+        c.pasteOutline()
+        assert c.p.h == 'root_restore'
+        c.p.h = 'root_after'
+        c.redraw()
+#@+node:ekr.20140105190941.4170: *4* root_restore
+@others
+#@+node:ekr.20140105190941.4171: *5* aClass
+class aClass:
+    @others
+#@+node:ekr.20140105190941.4172: *6* before
+def before():
+    pass
+#@+node:ekr.20140105190941.4174: *6* child1
+def child1():
+    pass
+#@+node:ekr.20140105190941.4175: *6* extra2
+def extra2():
+    pass
+#@+node:ekr.20140105190941.4176: *6* child2
+def child2():
+    pass
+#@+node:ekr.20140105190941.4178: *6* after
+def after():
+    pass
+#@+node:ekr.20140105185509.4141: *4* root_before
+@others
+#@+node:ekr.20140105185509.4142: *5* aClass
+class aClass:
+    @others
+#@+node:ekr.20140105185509.4143: *6* before
+def before():
+    pass
+#@+node:ekr.20140105185509.4144: *6* organizer node
+#@+node:ekr.20140105185509.4145: *7* child1
+def child1():
+    pass
+#@+node:ekr.20140113034711.4461: *7* extra2
+def extra2():
+    pass
+#@+node:ekr.20140105185509.4146: *7* child2
+def child2():
+    pass
+#@+node:ekr.20140105185509.4147: *6* after
+def after():
+    pass
+#@+node:ekr.20140211090146.4446: *4* root_after
+@others
+#@+node:ekr.20140211090146.4447: *5* aClass
+class aClass:
+    @others
+#@+node:ekr.20140211090146.4448: *6* before
+def before():
+    pass
+#@+node:ekr.20140211090146.4459: *6* organizer node
+#@+node:ekr.20140211090146.4460: *7* child1
+def child1():
+    pass
+#@+node:ekr.20140211090146.4461: *7* extra2
+def extra2():
+    pass
+#@+node:ekr.20140211090146.4462: *7* child2
+def child2():
+    pass
+#@+node:ekr.20140211090146.4452: *6* after
+def after():
+    pass
+#@+node:ekr.20140106094713.4176: *3* @test vc.drop_all_organizers_in_unl
+vc = c.viewController
+organizer_unls = [
+    'a-->O1',
+    'a-->O1-->O2',
+    'a-->O3',
+    'a-->O3-->b-->O4',
+    'z',
+]
+table = (
+    ('z-->x','x'), # Test of dropping a leading -->.
+    ('a-->O1-->unl1','a-->unl1'),
+    ('a-->O1-->O2-->unl2','a-->unl2'),
+    ('a-->O3-->unl3','a-->unl3'),
+    ('a-->O3-->b-->O4-->unl4','a-->b-->unl4'),
+)
+for unl,expected in table:
+    got = vc.drop_all_organizers_in_unl(organizer_unls,unl)
+    assert expected == got,'\nunl:      %s\nexpected: %s\ngot:      %s' % (unl,expected,got)
+#@+node:ekr.20140103102956.4146: *3* @test vc.find_absolute_unl_node
+vc = c.viewController
+root = c.rootPosition().insertAfter()
+root.h = 'root'
+child1 = root.insertAsLastChild()
+child1.h = 'child1'
+child2 = child1.insertAfter()
+child2.h = 'child2'
+child11 = child1.insertAsLastChild()
+child11.h = 'child11'
+try:
+    for unl in ('root','root-->child1','root-->child2','root-->child1-->child11'):
+        p = vc.find_absolute_unl_node(unl)
+        parts = unl.split('-->')
+        assert p,unl
+        assert p.h == parts[-1],p.h
+finally:
+    root.doDelete()
+    c.selectPosition(p)
+    c.redraw()
+#@+node:ekr.20140103102956.4165: *3* @test vc.find_at_views_node
+vc = c.viewController
+tag = '@views'
+views = g.findNodeAnywhere(c,tag)
+assert views
+views2 = vc.has_at_views_node()
+assert views == views2,(views,views2)
+#@+node:ekr.20140103102956.4147: *3* @test vc.find_position_for_relative_unl
+vc = c.viewController
+parent = p.copy()
+node1 = p.firstChild()
+node2 = node1.next()
+assert node1 and node2
+child11 = node1.firstChild()
+child12 = child11.next()
+assert child11 and child12
+child21 = node2.firstChild()
+child22 = child21.next()
+assert child21 and child22
+table = (
+    # ('node1',node1),
+    ('',parent), # This special case is important.
+    ('node1-->child11',child11),
+    ('node1-->child12',child12),
+    ('node2',node2),
+    ('node2-->child21',child21),
+    ('node2-->child22',child22),
+    ('node3',None),
+    ('node1-->childx',None),
+    ('node3-->childx',None),
+)
+for unl,expected in table:
+    got = vc.find_position_for_relative_unl(parent,unl)
+    assert got == expected,'unl: %s expected: %s got: %s' % (
+        unl,expected and expected.h,got and got.h)
+#@+node:ekr.20140103102956.4148: *4* node1
+#@+node:ekr.20140103102956.4149: *5* child11
+#@+node:ekr.20140103102956.4150: *5* child12
+#@+node:ekr.20140103102956.4151: *4* node2
+#@+node:ekr.20140103102956.4152: *5* child21
+#@+node:ekr.20140103102956.4153: *5* child22
+#@+node:ekr.20140103102956.4154: *3* @test vc.find_representative_node
+vc = c.viewController
+root = g.findNodeInTree(c,p,'root')
+assert root
+root.h = '@auto root'
+try:
+    clone = root.next()
+    assert clone and clone.h == 'clone'
+    inner_clone = root.firstChild()
+    assert inner_clone
+    assert clone.v == inner_clone.v
+    rep = vc.find_representative_node(root,inner_clone)
+    # Careful: cloning this test can cause problems.
+    oops = '\n  rep: %s\nparent:%s\nclone: %s\nparent:%s\ninner: %s\nparent: %s' % (
+        rep,rep.parent(),clone,clone.parent(),inner_clone,inner_clone.parent())
+    if True: ### p.isCloned():
+        assert rep.v == clone.v and rep.parent().v == clone.parent().v,oops
+    else:
+        assert rep == clone
+finally:
+    root.h = 'root' # root must not be an @auto node.
+    c.redraw()
+#@+node:ekr.20140103102956.4155: *4* root
+#@+node:ekr.20140103102956.4157: *5* clone
+#@+node:ekr.20140103102956.4157: *4* clone
+#@+node:ekr.20140103102956.4158: *3* @test vc.find_views/clones/organizers_node
+# Also a test of find_at_views_node, find_at_organizers_node and find_at_clones_node.
+vc = c.viewController
+root = g.findNodeInTree(c,p,'root')
+assert root
+views = g.findNodeAnywhere(c,'@views')
+assert views,'1'
+if views:
+    views.deleteAllChildren()
+try:
+    root.h = '@auto root' # root must look like an @auto node.
+    views = vc.find_at_views_node()
+    assert views,'2'
+    views2 = vc.find_at_views_node()
+    assert views2 == views
+    assert vc.find_at_clones_node(root)
+    assert vc.find_at_organizers_node(root)
+finally:
+    root.h = 'root' # Make sure root is *not* an @auto node.
+    # views.deleteAllChildren()
+    c.selectPosition(p)
+    c.redraw()
+#@+node:ekr.20140103102956.4159: *4* root
+#@+node:ekr.20140103102956.4160: *5* aClass
+class aClass:
+    @others
+#@+node:ekr.20140103102956.4164: *6* clone
+#@+node:ekr.20140103102956.4162: *5* organizer node
+#@+node:ekr.20140103102956.4163: *6* child2
+def spam():
+    pass
+#@+node:ekr.20140103102956.4164: *4* clone
+#@+node:ekr.20140105185509.4198: *3* @test vc.has_*_node
+# Test vc.has_at_auto_view_node, vc.has_at_clones_node and vc.has_at_organizers_node.
+vc = c.viewController
+views = g.findNodeAnywhere(c,'@views')
+if views:
+    assert vc.has_at_views_node()
+    views.deleteAllChildren()
+else:
+    assert not vc.has_at_views_node()
+    views = vc.find_at_views_node()
+assert views
+root = g.findNodeInTree(c,p,'root')
+assert root
+# The representative of clone_test node must appear outside of root's tree.
+clone_test = g.findNodeInTree(c,p,'clone-test')
+assert clone_test
+assert clone_test.v == root.next().v,(clone_test.v,root.next().v)
+try:
+    root.h = '@auto root' # root must look like an @auto node.
+    vc.update_before_write_at_auto_file(root)
+    auto_view = g.findNodeInTree(c,views,'@auto-view:root')
+    assert auto_view
+    auto_view2 = vc.has_at_auto_view_node(root)
+    assert auto_view2
+    assert auto_view2 == auto_view,(auto_view,auto_view2)
+    clones = g.findNodeInTree(c,auto_view,'@clones')
+    assert clones
+    clones2 = vc.has_at_clones_node(root)
+    assert clones2
+    assert clones2 == clones
+    organizers = g.findNodeInTree(c,auto_view,'@organizers')
+    assert organizers
+    organizers2 = vc.has_at_organizers_node(root)
+    assert organizers2
+    assert organizers2 == organizers
+finally:
+    root.h = 'root' # Make sure root is *not* an @auto node.
+    c.redraw()
+#@+node:ekr.20140105185509.4199: *4* root
+@others
+#@+node:ekr.20140105185509.4200: *5* aClass
+class aClass:
+    @others
+#@+node:ekr.20140105185509.4204: *6* clone-test
+def clone_test():
+    pass
+#@+node:ekr.20140105185509.4202: *6* organizer node
+#@+node:ekr.20140105185509.4203: *7* child2
+def spam():
+    pass
+#@+node:ekr.20140105185509.4204: *4* clone-test
+def clone_test():
+    pass
+#@+node:ekr.20140103102956.4166: *3* @test vc.is_at_auto_node
+vc = c.viewController
+p.deleteAllChildren()
+auto = p.insertAsLastChild()
+auto.h = '@auto test.py'
+auto2 = p.insertAsLastChild()
+auto2.h = '@auto-rst test2.py'
+try:
+    assert vc.is_at_auto_node(auto)
+    assert not vc.is_at_auto_node(auto2)
+finally:
+    # This is required.
+    p.deleteAllChildren()
+    c.redraw()
+#@+node:ekr.20140103102956.4167: *3* @test vc.is_organizer_node
+vc = c.viewController
+redraw_flag = False
+for child in p.children():
+    # Add a child so the test doesn't depend on that.
+    if not child.hasChildren():
+        child2 = child.insertAsLastChild()
+        child2.h = 'child'
+        redraw_flag = True
+        
+    expected = child.h.strip().endswith('True')
+    got = vc.is_organizer_node(child,child)
+    assert expected == got,'expected: %s in: %s body...\n%s' % (
+        expected,child.h,child.b)
+if redraw_flag:
+    c.redraw()
+#@+node:ekr.20140103102956.4168: *4* test python True
+@language python
+
+# An organizer node
+
+# Another line.
+#@+node:ekr.20140103102956.4169: *5* child
+#@+node:ekr.20140103102956.4170: *4* test python 2
+@language python
+
+def spam():
+    pass
+#@+node:ekr.20140103102956.4171: *5* child
+#@+node:ekr.20140103102956.4172: *4* test html True
+@language html
+
+<!-- comment -->
+
+<!-- comment
+continued comment
+-->
+
+#@+node:ekr.20140103102956.4173: *5* child
+#@+node:ekr.20140103102956.4174: *4* test html 2
+@language html
+
+<!-- comment -->
+
+<p> oops </p>
+
+<!-- comment
+continued comment
+-->
+
+#@+node:ekr.20140103102956.4175: *5* child
+#@+node:ekr.20140103102956.4176: *3* @test vc.unl
+vc = c.viewController
+unl = vc.unl(p)
+assert unl.endswith('-->'+p.h),repr(unl)
+#@+node:ekr.20140105185509.4181: *3* @test vc.update_before_write_at_auto_file
+vc = c.viewController
+root = g.findNodeInTree(c,p,'root')
+assert root
+views = g.findNodeAnywhere(c,'@views')
+if views:
+    views.deleteAllChildren()
+try:
+    root.h = '@auto root' # root must look like an @auto node.
+    vc.update_before_write_at_auto_file(root)
+    views = g.findNodeAnywhere(c,'@views')
+    assert views
+    clones = g.findNodeInTree(c,views,'@clones')
+    assert clones
+    assert clones.b.endswith('aClass-->clone\n'),repr(clones.b)
+    organizer = g.findNodeInTree(c,views,'@organizer: organizer node')
+    assert organizer
+    s1 = 'unl: organizer node-->child1'
+    s2 = 'unl: organizer node-->child2'
+    assert organizer.b == '\n'.join([s1,s2]),organizer.b
+finally:
+    root.h = 'root' # Make sure root is *not* an @auto node.
+    if False and views:
+        views.deleteAllChildren()
+    c.redraw()
+#@+node:ekr.20140105185509.4182: *4* root
+#@+node:ekr.20140105185509.4183: *5* aClass
+class aClass:
+    @others
+#@+node:ekr.20140105185509.4187: *6* clone
+#@+node:ekr.20140105185509.4185: *5* organizer node
+#@+node:ekr.20140105185509.4216: *6* child1
+#@+node:ekr.20140105185509.4186: *6* child2
+def spam():
+    pass
+#@+node:ekr.20140105185509.4187: *4* clone
+#@+node:ekr.20140103102956.4184: *3* @test view-pack & view_unpack
+vc = c.viewController
+views = g.findNodeAnywhere(c,'@views')
+assert views
+views.deleteAllChildren()
+view = g.findNodeInTree(c,p,'@view test')
+assert view
+assert c.positionExists(view)
+try:
+    c.selectPosition(view)
+    v_b = view.b
+    vc.pack()
+    assert c.p.v == view.v
+    vc.unpack()
+    assert view.b == v_b,view.b
+    assert view.lastChild().isCloned()
+finally:
+    # views.deleteAllChildren()
+    c.undoer.clearUndoState()
+    c.redraw()
+#@+node:ekr.20140103102956.4188: *4* clone
+clone body
+#@+node:ekr.20140103102956.4186: *4* @view test
+view body
+#@+node:ekr.20140103102956.4187: *5* not a clone
+not a clone text
+#@+node:ekr.20140103102956.4188: *5* clone
+clone body
+#@+node:ekr.20140106135225.4203: *3* @test vc.create_organizer_node (nested organizers)
+vc = c.viewController
+views = g.findNodeAnywhere(c,'@views')
+if views: views.deleteAllChildren()
+    # Start with a pristine @views tree.
+root_before  = g.findNodeInTree(c,p,'root_before')
+    # Root before: used to generate @auto-view tree.
+root_restore = g.findNodeInTree(c,p,'root_restore')
+    # Create root_after from root_restore.
+assert root_before,root_restore
+root_after  = g.findNodeInTree(c,p,'root_after')
+if root_after: root_after.doDelete()
+    # Root after: the results of the previous test.
+c.selectPosition(root_restore)
+c.copyOutline()
+c.selectPosition(root_before)
+c.pasteOutline()
+# The roots must look like @auto nodes.
+root_after = c.p
+assert root_after.h == 'root_restore',root_after.h
+root_before.h = '@auto root_before'
+root_after.h = '@auto root_after' 
+try:
+    vc.init() # Required.
+    vc.update_before_write_at_auto_file(root_before)
+    at_organizers = vc.has_at_organizers_node(root_before)
+    assert at_organizers
+    vc.create_organizer_nodes(at_organizers,root_after)
+    ok = vc.compare_test_trees(root_before,root_after)
+    assert ok,'\n\nexpected...\n%s\ngot...\n%s' % (
+        vc.trial_write(root_before),vc.trial_write(root_after))
+finally:
+     # Make sure the roots are *not* @auto nodes.
+    root_before.h = 'root_before'
+    root_after.h = 'root_after'
+    c.redraw()
+#@+node:ekr.20140106135225.4204: *4* root_restore
+@others
+#@+node:ekr.20140106135225.4285: *5* aClass
+class aClass:
+    @others
+#@+node:ekr.20140106135225.4286: *6* before
+def before(self):
+    pass
+#@+node:ekr.20140106135225.4289: *6* child11
+def child11(self):
+    pass
+#@+node:ekr.20140106135225.4290: *6* child12
+def child12(self):
+    pass
+#@+node:ekr.20140108143431.4248: *6* middle
+def middle():
+    pass
+#@+node:ekr.20140106135225.4292: *6* child21
+def child21(self):
+    pass
+#@+node:ekr.20140106135225.4293: *6* child22
+def child22(self):
+    pass
+#@+node:ekr.20140106135225.4294: *6* after
+def after(self):
+    pass
+#@+node:ekr.20140109035139.4277: *6* last1
+def last1():
+    pass
+#@+node:ekr.20140109180433.4248: *5* top1
+def top1():
+    pass
+#@+node:ekr.20140109180433.4249: *5* top2
+def top2():
+    pass
+#@+node:ekr.20140106135225.4213: *4* root_before
+@others
+#@+node:ekr.20140106135225.4214: *5* aClass
+class aClass:
+    @others
+#@+node:ekr.20140106135225.4215: *6* before
+def before(self):
+    pass
+#@+node:ekr.20140106135225.4216: *6* organizer node
+#@+node:ekr.20140106135225.4229: *7* inner org1
+#@+node:ekr.20140106135225.4217: *8* child11
+def child11(self):
+    pass
+#@+node:ekr.20140106135225.4218: *8* child12
+def child12(self):
+    pass
+#@+node:ekr.20140108143431.4249: *7* middle
+def middle():
+    pass
+#@+node:ekr.20140106135225.4233: *7* inner org2
+#@+node:ekr.20140106135225.4234: *8* child21
+def child21(self):
+    pass
+#@+node:ekr.20140106135225.4235: *8* child22
+def child22(self):
+    pass
+#@+node:ekr.20140106135225.4219: *6* after
+def after(self):
+    pass
+#@+node:ekr.20140109035139.4274: *6* last organizer
+#@+node:ekr.20140109035139.4276: *7* last1
+def last1():
+    pass
+#@+node:ekr.20140109180433.4253: *5* top-level
+#@+node:ekr.20140109180433.4254: *6* top1
+def top1():
+    pass
+#@+node:ekr.20140109180433.4255: *6* top2
+def top2():
+    pass
+#@+node:ekr.20140211090146.4494: *4* root_after
+@others
+#@+node:ekr.20140211090146.4495: *5* aClass
+class aClass:
+    @others
+#@+node:ekr.20140211090146.4496: *6* before
+def before(self):
+    pass
+#@+node:ekr.20140211090146.4516: *6* organizer node
+#@+node:ekr.20140211090146.4518: *7* inner org1
+#@+node:ekr.20140211090146.4526: *8* child11
+def child11(self):
+    pass
+#@+node:ekr.20140211090146.4527: *8* child12
+def child12(self):
+    pass
+#@+node:ekr.20140211090146.4525: *7* middle
+def middle():
+    pass
+#@+node:ekr.20140211090146.4520: *7* inner org2
+#@+node:ekr.20140211090146.4528: *8* child21
+def child21(self):
+    pass
+#@+node:ekr.20140211090146.4529: *8* child22
+def child22(self):
+    pass
+#@+node:ekr.20140211090146.4502: *6* after
+def after(self):
+    pass
+#@+node:ekr.20140211090146.4522: *6* last organizer
+#@+node:ekr.20140211090146.4530: *7* last1
+def last1():
+    pass
+#@+node:ekr.20140111164124.4414: *3* @test vc.create_organizer_node (intermediate organizers)
+vc = c.viewController
+views = g.findNodeAnywhere(c,'@views')
+if views: views.deleteAllChildren()
+    # Start with a pristine @views tree.
+root_before  = g.findNodeInTree(c,p,'root_before')
+    # Root before: used to generate @auto-view tree.
+root_restore = g.findNodeInTree(c,p,'root_restore')
+    # Create root_after from root_restore.
+assert root_before,root_restore
+root_after  = g.findNodeInTree(c,p,'root_after')
+if root_after: root_after.doDelete()
+    # Root after: the results of the previous test.
+c.selectPosition(root_restore)
+c.copyOutline()
+c.selectPosition(root_before)
+c.pasteOutline()
+# The roots must look like @auto nodes.
+root_after = c.p
+assert root_after.h == 'root_restore',root_after.h
+root_before.h = '@auto root_before'
+root_after.h = '@auto root_after' 
+try:
+    vc.init() # Required.
+    vc.update_before_write_at_auto_file(root_before)
+    at_organizers = vc.has_at_organizers_node(root_before)
+    assert at_organizers
+    vc.create_organizer_nodes(at_organizers,root_after)
+    ok = vc.compare_test_trees(root_before,root_after)
+    assert ok,'\n\nexpected...\n%s\ngot...\n%s' % (
+        vc.trial_write(root_before),vc.trial_write(root_after))
+finally:
+     # Make sure the roots are *not* @auto nodes.
+    root_before.h = 'root_before'
+    root_after.h = 'root_after'
+    c.redraw()
+#@+node:ekr.20140111164124.4415: *4* root_restore
+@others
+#@+node:ekr.20140111164124.4416: *5* aClass
+class aClass:
+    @others
+#@+node:ekr.20140111164124.4417: *6* before
+def before(self):
+    pass
+#@+node:ekr.20140111164124.4418: *6* child11
+def child11(self):
+    pass
+#@+node:ekr.20140111164124.4419: *6* child12
+def child12(self):
+    pass
+#@+node:ekr.20140111164124.4420: *6* middle
+def middle():
+    pass
+#@+node:ekr.20140111164124.4421: *6* child21
+def child21(self):
+    pass
+#@+node:ekr.20140111164124.4422: *6* child22
+def child22(self):
+    pass
+#@+node:ekr.20140111164124.4423: *6* after
+def after(self):
+    pass
+#@+node:ekr.20140111164124.4424: *6* last1
+def last1():
+    pass
+#@+node:ekr.20140111164124.4425: *5* top1
+def top1():
+    pass
+#@+node:ekr.20140111164124.4426: *5* top2
+def top2():
+    pass
+#@+node:ekr.20140111164124.4427: *4* root_before
+@others
+#@+node:ekr.20140111164124.4428: *5* aClass
+class aClass:
+    @others
+#@+node:ekr.20140111164124.4429: *6* before
+def before(self):
+    pass
+#@+node:ekr.20140111164124.4430: *6* organizer node
+#@+node:ekr.20140111164124.4431: *7* inner org1
+#@+node:ekr.20140111164124.4432: *8* child11
+def child11(self):
+    pass
+#@+node:ekr.20140111164124.4433: *8* child12
+def child12(self):
+    pass
+#@+node:ekr.20140111164124.4434: *7* middle
+def middle():
+    pass
+#@+node:ekr.20140111164124.4435: *7* inner org2
+#@+node:ekr.20140111164124.4436: *8* child21
+def child21(self):
+    pass
+#@+node:ekr.20140111164124.4437: *8* child22
+def child22(self):
+    pass
+#@+node:ekr.20140111164124.4438: *6* after
+def after(self):
+    pass
+#@+node:ekr.20140111164124.4439: *6* last organizer
+#@+node:ekr.20140111164124.4440: *7* last1
+def last1():
+    pass
+#@+node:ekr.20140111164124.4441: *5* top-level
+#@+node:ekr.20140111164124.4442: *6* top1
+def top1():
+    pass
+#@+node:ekr.20140111164124.4443: *6* top2
+def top2():
+    pass
+#@+node:ekr.20140211090146.4545: *4* root_after
+@others
+#@+node:ekr.20140211090146.4546: *5* aClass
+class aClass:
+    @others
+#@+node:ekr.20140211090146.4547: *6* before
+def before(self):
+    pass
+#@+node:ekr.20140211090146.4567: *6* organizer node
+#@+node:ekr.20140211090146.4569: *7* inner org1
+#@+node:ekr.20140211090146.4577: *8* child11
+def child11(self):
+    pass
+#@+node:ekr.20140211090146.4578: *8* child12
+def child12(self):
+    pass
+#@+node:ekr.20140211090146.4576: *7* middle
+def middle():
+    pass
+#@+node:ekr.20140211090146.4571: *7* inner org2
+#@+node:ekr.20140211090146.4579: *8* child21
+def child21(self):
+    pass
+#@+node:ekr.20140211090146.4580: *8* child22
+def child22(self):
+    pass
+#@+node:ekr.20140211090146.4553: *6* after
+def after(self):
+    pass
+#@+node:ekr.20140211090146.4573: *6* last organizer
+#@+node:ekr.20140211090146.4581: *7* last1
+def last1():
+    pass
 #@-all
 #@-leo
