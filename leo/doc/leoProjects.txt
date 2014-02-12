@@ -2095,6 +2095,21 @@ Fixed a bug that caused Leo to exit during startup when
 Fixed bug: https://bugs.launchpad.net/leo-editor/+bug/1276236
 
 g.insertCodingLine adds coding line to start of all python scripts, except when unit testing.
+.. @+node:ekr.20140212082408.16406: *3* Added spell-as-you-type commands
+Thanks to Terry Brown for these commands::
+
+spell-as-you-type-toggle
+  Enable / disable spell as you type mode.  When enabled, word ending
+  keystrokes will put a short list of suggestions in the log window, if
+  the word is unknown to the speller.  Only shows the first 5
+  suggestions, even if there are more.
+
+spell-as-you-type-next
+  Cycle the word behind (left of, for ltr languages) the cursor through
+  the full list of suggestions.
+
+spell-as-you-type-undo
+  Change the word behind (left of, for ltr languages) the cursor to
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.

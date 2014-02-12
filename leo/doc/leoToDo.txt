@@ -4460,7 +4460,6 @@ Naturally, Vim bindings come to mind. There are several possibilities:
 .. @+node:ekr.20131211054925.16384: *3* improve file;; macro
 1. Does not create @file (or @@file) in headline
 2. <|pattern|> not found in headlines
-.. @+node:ekr.20131120054058.16279: *3* Create github repo (call Speed)
 .. @+node:ekr.20131105020211.18058: ** Important
 .. @+node:ekr.20131101080215.16488: *3* * Outreach to magazine editors
 ===== Steve Litt
