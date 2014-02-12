@@ -27,15 +27,6 @@ Release 4.11.1 (or 5.0?):
     - Improve p.isVisible: its algorithm is poor.
 
 - Look at Eclipse # @name.
-.. @+node:ekr.20140109214515.16629: *3* Finish @auto-view
-@language rest
-
-- Move recent posts to LeoDocs.leo.
-
-- Improve importers:
-    - Importers should add interstitial code to preceding def.
-      (They shouldn't split nodes).
-    - Importers should add leading comments to nodes.
 .. @+node:ekr.20140115052524.16699: *3* Allow clones *anywhere* in @file nodes
 ​https://groups.google.com/d/msg/leo-editor/YjJdWjNSM9o/SDL7Nb__OUcJ
 
