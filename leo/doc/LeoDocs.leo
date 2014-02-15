@@ -240,7 +240,7 @@
 <v t="ekr.20131030184445.17286"><vh>Installing from sources (Linux)</vh></v>
 </v>
 <v t="ekr.20120229094652.15098"><vh>Installing Leo on MacOs 10.7 (Lion) and later</vh></v>
-<v t="ekr.20100817101952.4306"><vh>Contributing to Leo with bzr</vh></v>
+<v t="ekr.20100817101952.4306"><vh>Contributing to Leo with git</vh></v>
 </v>
 </v>
 <v t="ekr.20131008041326.16140"><vh>@rst html/running.html</vh>
@@ -267,8 +267,8 @@
 </v>
 <v t="ekr.20090212054250.5"><vh>Getting Leo</vh>
 <v t="ekr.20090212054250.6"><vh>Where can I get official releases of Leo?</vh></v>
-<v t="ekr.20080603124653.1"><vh>How do I use bzr to get the latest sources from Leo's launchpad site?</vh></v>
-<v t="ekr.20090212054250.7"><vh>How can I get recent bzr snapshots of Leo?</vh></v>
+<v t="ekr.20080603124653.1"><vh>How do I use git to get the latest sources from Leo's launchpad site?</vh></v>
+<v t="ekr.20090212054250.7"><vh>How can I get recent snapshots of Leo?</vh></v>
 </v>
 <v t="ekr.20070623145346"><vh>Installing Leo</vh>
 <v t="ekr.20090202191501.7"><vh>Leo's installer failed, what do I do?</vh></v>
@@ -309,7 +309,7 @@
 <v t="ekr.20050830115714.116"><vh>How can I show Leo files with Excel?</vh></v>
 <v t="ekr.20131115075142.16636"><vh>How can I test settings easily?</vh></v>
 <v t="ekr.20120229094652.15148"><vh>How can I use BibTeX citations from Leo?</vh></v>
-<v t="ekr.20130807203905.16526"><vh>How can I use bzr to check Leo's importers?</vh></v>
+<v t="ekr.20130807203905.16526"><vh>How can I use bzr/git to check Leo's importers?</vh></v>
 <v t="ekr.20050830120857"><vh>How can I use Leo to develop Leo itself?</vh></v>
 <v t="ekr.20050830115714.119"><vh>How can I use two copies of Leo to advantage?</vh></v>
 <v t="ekr.20080527063511.1"><vh>What is an easy way to profile code?</vh></v>
@@ -1121,6 +1121,15 @@
 </v>
 </v>
 <v t="ekr.20140113190949.16690"><vh>Document dependencies (revise)</vh></v>
+<v t="ekr.20140212082408.16408"><vh>bzr-&gt;git</vh>
+<v t="ekr.20131008041326.16092"></v>
+<v t="ekr.20050830120007"></v>
+<v t="ekr.20090212054250.5"></v>
+<v t="ekr.20110531155858.20559"></v>
+<v t="ekr.20101025080245.6084"></v>
+<v t="ekr.20130807203905.16526"></v>
+<v t="EKR.20040524104904.140"></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -1328,7 +1337,7 @@ There are four kinds of settings files:
 
 2. **Personal settings files**, named **myLeoSettings.leo**. They provide a way
    of ensuring that your customized settings are not altered when updating Leo
-   from bzr or while installing a new version of Leo. The myLeoSettings.leo acts
+   from git or while installing a new version of Leo. The myLeoSettings.leo acts
    much like Python's site-customize.py file. myLeoSettings.leo will never be
    part of any Leo distribution, and it will never exist in Leo's cvs
    repository. This solution is *much* better than trying to update
@@ -3731,7 +3740,7 @@ do than to describe!
 
 - The repository contains **reference** .leo files. These reference files should
   contain nothing but @file nodes. Reference files should change only when
-  new external files get added to the project. Leo's `bzr repository`_ and Leo
+  new external files get added to the project. Leo's `git repository`_ and Leo
   distributions contain the following reference files: LeoPyRef.leo,
   LeoPluginsRef.leo and leoGuiPluginsRef.leo. Developers should use
   local copies of reference files for their own work. For example, instead of
@@ -4030,7 +4039,8 @@ new_leo_file_encoding
 .. _decorator:          http://www.python.org/peps/pep-0318.html
 .. _docutils:           http://docutils.sourceforge.net/
 .. _unicode:            http://www.unicode.org/
-.. _`bzr repository`:   https//code.launchpad.net/leo-editor/
+.. .. _`bzr repository`:   https//code.launchpad.net/leo-editor/
+.. _`git repository`:   https://github.com/leo-editor/leo-editor
 
 .. ----- Relative links into Leo's documentation.
 
@@ -7726,46 +7736,41 @@ on top of the latest features and bug fixes. Running the development version is
 quite safe and easy, and it's also a requirement if you want to contribute to
 Leo.
 
-1. First, you need to get Bazaar (bzr) from http://bazaar-vcs.org. For windows
-   users we recommend the standalone installer - the python installer may have
-   problems pushing to Launchpad. Plain bzr installer only contains the command
-   line version, so you might want to augment that with a friendly GUI - qbzr is
-   recommended as it's the easiest one to install. It provides command like
-   'bzr qlog', 'bzr qannotate' etc.
+1. First, you need to get git from http://git-scm.com/.
 
 2. Get Leo from launchpad by doing::
 
-    bzr branch lp:leo-editor
+    git clone https://github.com/leo-editor/leo-editor.git
 
 And that's it! You can run the launchLeo script (in the top-level branch directory) directly.
-When you want to refresh the code with latest modifications from Launchpad, 'run bzr pull'.
+When you want to refresh the code with latest modifications from GitHub, 'run git pull'.
 
-If you make modifications to Leo (with the interest in sharing them with the Leo
-community), you can check them in to your local branch by doing 'bzr checkin'.
-Now, to actually request your changes to be merged to Leo trunk, you need a
-Launchpad account with RSA keys in place. There is showmedo video about how to
-accomplish this on Windows using puttygen and pageant at
-http://showmedo.com/videos/video?name=1510070&amp;fromSeriesID=151.
+..  If you make modifications to Leo (with the interest in sharing them with the Leo
+..  community), you can check them in to your local branch by doing 'bzr checkin'.
+..  Now, to actually request your changes to be merged to Leo trunk, you need a
+..  Launchpad account with RSA keys in place. There is showmedo video about how to
+..  accomplish this on Windows using puttygen and pageant at
+..  http://showmedo.com/videos/video?name=1510070&amp;fromSeriesID=151.
 
-After your Launchpad account is set up, go to
-https://launchpad.net/leo-editor, choose Code tab -&gt; Register Branch, select
-Branch type "Hosted" and fill in descriptive details about the branch. After
-that, go to the branch home page from Code tab again, and copy-paste the push
-command line to terminal. For example, for branch::
+..  After your Launchpad account is set up, go to
+..  https://launchpad.net/leo-editor, choose Code tab -&gt; Register Branch, select
+..  Branch type "Hosted" and fill in descriptive details about the branch. After
+..  that, go to the branch home page from Code tab again, and copy-paste the push
+..  command line to terminal. For example, for branch::
 
- https://code.launchpad.net/~leo-editor-team/leo-editor/my_branch
+ ..  https://code.launchpad.net/~leo-editor-team/leo-editor/my_branch
 
-The push command is::
+..  The push command is::
 
- bzr push bzr+ssh://my_name@bazaar.launchpad.net/~leo-editor-team/leo-editor/my_branch
+ ..  bzr push bzr+ssh://my_name@bazaar.launchpad.net/~leo-editor-team/leo-editor/my_branch
 
-You may wish to add --remember command line option to bzr push, to direct all
-future pushes to that location. Then, you only need to execute 'bzr push'.
+..  You may wish to add --remember command line option to bzr push, to direct all
+..  future pushes to that location. Then, you only need to execute 'bzr push'.
 
-After your branch is pushed, you can email the Leo mailing list and request it
-to be reviewed and merged to trunk.
+..  After your branch is pushed, you can email the Leo mailing list and request it
+..  to be reviewed and merged to trunk.
 
--- Ville M. Vainio - vivainio.googlepages.com
+..  -- Ville M. Vainio - vivainio.googlepages.com
 </t>
 <t tx="ekr.20080729064227.6">The timit button in unitTest.leo allows you to apply Python's timeit module.
 See http://docs.python.org/lib/module-timeit.html.
@@ -7831,7 +7836,7 @@ based *solely* on changes to public files.
 Leo writes private files to a subfolder of the folder containing the public file:
 by default this folder is called .leo_shadow.
 You can change the name of this folder using the @string shadow_subdir setting.
-Note that private files need not be known to source code control systems such as bzr or cvs.
+Note that private files need not be known to source code control systems such as bzr or git.
 
 That's *almost* all there is to it.  The following sections discuss important details:
 
@@ -7842,7 +7847,7 @@ That's *almost* all there is to it.  The following sections discuss important de
 <t tx="ekr.20080730212711.40">Suppose our @shadow tree is @shadow a.py. When Leo writes this tree it creates a
 public file, a.py, and a private file, .leo_shadow/xa.p (or just xa.p for
 short). Public files might can committed to a source code control system such as
-cvs or bzr. Private files should *not* be known to cvs or bzr.
+bzr or git. Private files should *not* be known to bzr or git.
 
 Now suppose a.py has been changed outside of Leo, say as the result of a bzr
 merge. The corresponding private file, xa.p, will *not* have been changed.
@@ -8392,7 +8397,8 @@ To load Leo's source, load leoPyRef.leo::
 <t tx="ekr.20090212054250.6">You can get the latest official releases of Leo at
 http://sourceforge.net/project/showfiles.php?group_id=3458&amp;package_id=29106
 
-However, if at all possible, it is better to use bzr to get the latest sources.  See the next entry.
+However, if at all possible, it is better to use git to get the latest
+sources. See the next entry.
 </t>
 <t tx="ekr.20090212054250.7">Daily snapshots are available at http://www.greygreen.org/leo/
 </t>
@@ -10469,11 +10475,9 @@ The code_mode and doc_only_mode options determine the mode as follows:
 
 .. _`latest stable release`: http://sourceforge.net/projects/leo/files/Leo/4.11%20final/
 .. _`SourceForge`: https://sourceforge.net
-.. _`Leo's snapshots page`:     http://www.greygreen.org/leo/
-.. _`nightly snapshot`:             http://www.greygreen.org/leo/
+.. _`Leo's snapshots page`: http://www.greygreen.org/leo/
+.. _`nightly snapshot`: http://www.greygreen.org/leo/
 .. _`Leo's latest sources`: https://code.launchpad.net/leo-editor/
-.. _`Launchpad`: https://code.launchpad.net/
-
 
 Leo's core code is always being improved and developed. Unit-testing
 ensures that the daily commits are as bug-free as possible. Almost all of
@@ -10497,15 +10501,15 @@ To summarize, you may get Leo in three ways:
    contains .zip archives of Leo's code from 1, 2, 5, 10, 30 and 90 days
    ago.
    
-3. Download `Leo's latest sources`_ from `Launchpad`_ using `bzr`_.
-   Installing bzr is non-trivial, but once set up this is the easiest way
-   to get the latest version of Leo's code.
+3. Download `Leo's latest sources`_ from `GitHub`_ using `git`_.
+   Installing git is easy, and once set up this is the easiest way
+   to get the latest version of Leo's code::
+   
+    git clone http://git-scm.com/
 </t>
-<t tx="ekr.20100817101952.4306">
-
-**Important**: This section tells how to set up bzr_ so that you can grab
-the latest bzr sources using ``bzr pull``. However, you can get a nightly
-snapshot of Leo's bzr repository (without installing bzr) from
+<t tx="ekr.20100817101952.4306">**Important**: This section tells how to set up git_ so that you can grab
+the latest sources using ``git clone``. However, you can get a nightly
+snapshot of Leo's git repository (without installing git) from
 http://www.greygreen.org/leo/
 
 Many users will want to track the development version of Leo, in order to stay
@@ -10513,44 +10517,38 @@ on top of the latest features and bug fixes. Running the development version is
 quite safe and easy, and it's also a requirement if you want to contribute to
 Leo.
 
-1. First, you need to get bzr_ (Bazaar) from http://bazaar-vcs.org. For windows
-   users we recommend the standalone installer; the python installer may have
-   problems pushing to Launchpad. Plain bzr installer only contains the command
-   line version, so you might want to augment that with a friendly GUI - qbzr is
-   recommended as it's the easiest one to install. It provides command like
-   bzr qlog, bzr qannotate etc.
-
+1. First, you need to get git from http://git-scm.com/.
 2. Get Leo from launchpad by doing::
 
-     bzr branch lp:leo-editor
+     git clone https://github.com/leo-editor/leo-editor.git
 
 And that's it! You can run leo/core/leo.py directly. When you want to refresh the
-code with latest modifications from Launchpad, run bzr pull.
+code with latest modifications from Launchpad, run git pull.
 
-If you make modifications to Leo (with the interest in sharing them with the Leo
-community), you can check them in to your local branch by doing bzr checkin.
-Now, to actually request your changes to be merged to Leo trunk, you need a
-Launchpad account with RSA keys in place. There is showmedo video about how to
-accomplish this in Windows using puttygen and pageant at
-http://showmedo.com/videos/video?name=1510070&amp;fromSeriesID=151.
+..  If you make modifications to Leo (with the interest in sharing them with the Leo
+..  community), you can check them in to your local branch by doing bzr checkin.
+..  Now, to actually request your changes to be merged to Leo trunk, you need a
+..  Launchpad account with RSA keys in place. There is showmedo video about how to
+..  accomplish this in Windows using puttygen and pageant at
+..  http://showmedo.com/videos/video?name=1510070&amp;fromSeriesID=151.
 
-After your Launchpad account is set up, go to
-https://launchpad.net/leo-editor, choose "Code" tab -&gt; Register Branch,
-select Branch type "Hosted" and fill in descriptive details about the branch.
-After that, go to the branch home page from Code tab again, and copy-paste the
-push command line to terminal. For example, for branch::
+..  After your Launchpad account is set up, go to
+..  https://launchpad.net/leo-editor, choose "Code" tab -&gt; Register Branch,
+..  select Branch type "Hosted" and fill in descriptive details about the branch.
+..  After that, go to the branch home page from Code tab again, and copy-paste the
+..  push command line to terminal. For example, for branch::
 
-    https://code.launchpad.net/~leo-editor-team/leo-editor/my_branch
+    ..  https://code.launchpad.net/~leo-editor-team/leo-editor/my_branch
 
-The push command is::
+..  The push command is::
 
-    bzr push bzr+ssh://my_name@bazaar.launchpad.net/~leo-editor-team/leo-editor/my_branch 
+    ..  bzr push bzr+ssh://my_name@bazaar.launchpad.net/~leo-editor-team/leo-editor/my_branch 
 
-You may wish to add --remember command line option to bzr push, to direct all
-future pushes to that location. Then, you only need to execute bzr push.
+..  You may wish to add --remember command line option to bzr push, to direct all
+..  future pushes to that location. Then, you only need to execute bzr push.
 
-After your branch is pushed, you can email the Leo mailing list and request it
-to be reviewed and merged to trunk.
+..  After your branch is pushed, you can email the Leo mailing list and request it
+..  to be reviewed and merged to trunk.
 </t>
 <t tx="ekr.20100821182153.4343">@ @rst-options
 call_docutils=False
@@ -13791,7 +13789,7 @@ Overview:
   rarely: this keeps the code I am using stable while I'm hacking the code.
 
 - Test in a *separate* .leo file, say test.leo. In fact, I often test in a
-  private file, ekr.leo, so that test.leo doesn't get continually updated on bzr
+  private file, ekr.leo, so that test.leo doesn't get continually updated on git
   with trivial changes.
 
 These two points are covered in a bit more detail in `This FAQ entry`_.
@@ -13863,29 +13861,28 @@ Administrative tips:
    
    This keeps to-do lists short, which keeps energy high.
 
-Tips for using bzr:
+Tips for using git:
 
 I use the following batch files related to bzr::
 
-    b:      short for bzr
-    b c:    short for bzr commit
-    bs:     short for bzr status
+    g:      short for git
+    gs:     short for bzr status
     tr:     short for cd &lt;path to trunk&gt;
     main:   short for cd &lt;path to copy of trunk&gt;
 
-The "main" (copy) of the trunk is purely for handling bzr conflicts.
+The "main" (copy) of the trunk is purely for handling git conflicts.
 If one happens I do this::
 
     main
-    b pull
-    b merge ../trunk
-    b c -m "my commit message"
-    b push
+    g pull
+    g merge ../trunk
+    g c -m "my commit message"
+    g push
 
 If the merge goes well (it usually does), I do this to resolve the conflict::
 
     tr
-    b pull
+    g pull
 </t>
 <t tx="ekr.20110531155858.20563">The following script will create a minimal Leo outline::
 
@@ -15078,9 +15075,9 @@ Downloading Leo
 .. _`SourceForge`: https://sourceforge.net
 .. _`Leo's snapshots page`: http://www.greygreen.org/leo/
 .. _`nightly snapshot`: http://www.greygreen.org/leo/
-.. _`Leo's latest sources`: https://code.launchpad.net/leo-editor/
-.. _`Launchpad`: https://code.launchpad.net/
-.. _`bzr`: http://bazaar.canonical.com/
+.. _`Leo's latest sources`: https://github.com/leo-editor/leo-editor
+.. _`GitHub`: https://github.com/leo-editor
+.. _`git`: http://git-scm.com/
 
 Leo's core code is always being improved and developed. Unit-testing
 ensures that the daily commits are as bug-free as possible. Almost all of
@@ -15103,8 +15100,10 @@ To summarize, you may get Leo in three ways:
    contains .zip archives of Leo's code from 1, 2, 5, 10, 30 and 90 days
    ago.
    
-3. Download `Leo's latest sources`_ from `Launchpad`_ using `bzr`_. Once
-   bzr is installed, getting the latest version of Leo is very easy.
+3. Download `Leo's latest sources`_ from `GitHub`_ using `git`_. Once
+   git is installed, getting the latest version of Leo is very easy::
+   
+    git clone https://github.com/leo-editor/leo-editor.git
 </t>
 <t tx="ekr.20120229094652.15098">.. .. http://groups.google.com/group/leo-editor/browse_thread/thread/92ae059cc5213ad3
 
@@ -16950,7 +16949,8 @@ Installing Leo
 .. _`Python`:               http://www.python.org
 .. _`Running Leo`:          running.html
 .. _`ask for help`:         https://groups.google.com/forum/#!forum/leo-editor
-.. _`bzr`:                  http://bazaar.canonical.com/
+.. _`git`:                  http://git-scm.com/
+.. _`GitHub`: https://github.com/leo-editor
 
 .. index:: Installing Leo
 
@@ -16980,7 +16980,6 @@ Advanced Topics
    :maxdepth: 1
 
    atShadow
-   design
    scripting-miscellany
    theory
    leonine-world
@@ -17045,7 +17044,7 @@ Here &lt;path-to-leo&gt; is the path to the directory *containing* the leo direc
 that is, the directory containing launchLeo.py.
 </t>
 <t tx="ekr.20131008041326.16152">The first time you start Leo, a dialog will ask you for a unique identifier. If
-you are using a source code control system such as bzr, use your bzr login name.
+you are using a source code control system such as git, use your git login name.
 Otherwise your initials will do.
 
 Leo stores this identifier in the file .leoID.txt. Leo attempts to create
@@ -19799,6 +19798,7 @@ which are documented in their docstrings. For example, viewrendered
 requires 'markdown' if one wishes to use markdown rendering, but it is
 optional. rss.py will not function without 'feedparser'. Etc.
 </t>
+<t tx="ekr.20140212082408.16408"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.

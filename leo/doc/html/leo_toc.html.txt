@@ -50,6 +50,7 @@ Leo's Documentation Page
 
    slides
    leoLinks
+   screen-shots
 
 `Leo's home page`_.
 
