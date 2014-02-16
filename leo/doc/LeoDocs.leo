@@ -164,21 +164,8 @@
 <v t="ekr.20131005214621.16088"><vh>Home page</vh>
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
-<v t="ekr.20131008041326.16065"><vh>Links page</vh>
-<v t="ekr.20131030184445.16582"><vh>@rst html/leoLinks.html </vh></v>
-</v>
-<v t="ekr.20090711120622.10446"><vh>Screen shots page</vh>
-<v t="ekr.20090711120622.10447"><vh>@rst html/screen-shots.html</vh>
-<v t="ekr.20090811090022.14452"><vh>Windows screen shots</vh></v>
-<v t="ekr.20090811090022.14453"><vh>Linux screen shots</vh></v>
-</v>
-</v>
-<v t="ekr.20131120115900.16327"><vh>Videos</vh>
-<v t="ekr.20131120115900.16329"><vh>@rst html/screencasts.html</vh></v>
-</v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
 <v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028550b302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473550b302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473550b302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473550b302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
-<v t="ekr.20100821182153.4343"><vh>@rst html/slides.html</vh></v>
 </v>
 <v t="ekr.20131005214621.16089"><vh>TOC</vh>
 <v t="ekr.20090428102353.1"><vh>@edit html\leo_toc.html.txt</vh></v>
@@ -186,6 +173,15 @@
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
 <v t="ekr.20040414161647"><vh>Leo's Documentation</vh>
+<v t="ekr.20140216125129.16666"><vh>Additonal web pages</vh>
+<v t="ekr.20131030184445.16582"><vh>@rst html/leoLinks.html </vh></v>
+<v t="ekr.20090711120622.10447"><vh>@rst html/screen-shots.html</vh>
+<v t="ekr.20090811090022.14452"><vh>Windows screen shots</vh></v>
+<v t="ekr.20090811090022.14453"><vh>Linux screen shots</vh></v>
+</v>
+<v t="ekr.20131120115900.16329"><vh>@rst html/screencasts.html</vh></v>
+<v t="ekr.20100821182153.4343"><vh>@rst html/slides.html</vh></v>
+</v>
 <v t="ekr.20131017094004.16739"><vh>How to...</vh>
 <v t="ekr.20090401113141.1"><vh>How to generate odt/rtf/pdf files</vh>
 <v t="ekr.20090620131445.5595"><vh>Post from ville</vh></v>
@@ -8695,7 +8691,6 @@ files that are shared with those who don't want to see sentinel comments.
 
 - @nosent is appropriate only for files that you alone modify.
 </t>
-<t tx="ekr.20090711120622.10446"></t>
 <t tx="ekr.20090711120622.10447">################
 Leo screen shots
 ################
@@ -16872,7 +16867,6 @@ create unit tests from the body text of @test nodes.
     
 For more details, see `Leo's unit-testing reference`_.
 </t>
-<t tx="ekr.20131008041326.16065"></t>
 <t tx="ekr.20131008041326.16066">Clones are nodes appearing multiple places in the outline.
 
     - Changes to one clone affect all other clones.
@@ -19273,7 +19267,6 @@ file containing @bool vim-mode = True. By opening this file I test vim mode
 without interfering with my normal work flow.
 
 </t>
-<t tx="ekr.20131120115900.16327"></t>
 <t tx="ekr.20131120115900.16329">################
 Videos about Leo
 ################
@@ -19799,6 +19792,7 @@ requires 'markdown' if one wishes to use markdown rendering, but it is
 optional. rss.py will not function without 'feedparser'. Etc.
 </t>
 <t tx="ekr.20140212082408.16408"></t>
+<t tx="ekr.20140216125129.16666"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.
