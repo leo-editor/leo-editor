@@ -5,7 +5,7 @@
 .. @+all
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
-
+.. @+node:ekr.20140215092923.16409: *3* Other
 - The mod_scripting plugin must require the leo-startup-scripting environment variable to be True.
 
 ** Finish @auto-view (See child)
@@ -4428,35 +4428,6 @@ def find_c(self,path):
 def update (self):
     '''Update the list of available commanders.'''
     self.commanders_list = [frame.c for frame in g.app.windowList]
-.. @+node:ekr.20131119195900.18522: *3* * vim-mode
-@language rest
-
-- Do all common vim commands
-- Leave arrow keys and control keys unchanged.
-- Focus plain-key normal-mode commands: a,i,d,c,x,s.
-- Use minibuffer for find command (save find/change strings for dot).
-.. @+node:ekr.20131119060731.20106: *4* Use vim-like bindings to move the cursor?
-@language rest
-
-After all these years of preaching about not using the mouse, I still use
-the mouse when I get impatient. Indeed, it seems unbearably slow to select
-text without the mouse.
-
-I actually never use Alt-S because it never does quite what I want. But
-it's close!
-
-What I want is a *really easy* way of making plain keys move the cursor
-and/or select text.
-
-Naturally, Vim bindings come to mind. There are several possibilities:
-
-1. Just use vim-mode when it becomes available. Some may think it's the
-   best way. But perhaps we don't have to go whole hog.
-
-2. Create a vim-like minibuffer handler that makes it easy to move the
-   cursor, extending text, or not, in an *easily* switchable way.
-
-3. Something else :-)
 .. @+node:ekr.20131211054925.16384: *3* improve file;; macro
 1. Does not create @file (or @@file) in headline
 2. <|pattern|> not found in headlines

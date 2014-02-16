@@ -18,7 +18,7 @@ isPython3 = sys.version_info >= (3,0,0)
 #@+node:ekr.20120212060348.10374: **  << global switches >> (leoGlobals.py)
 trace_startup = False
     # These traces use print instead of g.trace so that
-    # the traces can add class info the method name.
+    # the traces can add class info to the method name.
 new_modes = False
     # True: use ModeController and ModeInfo classes.
 if new_modes:

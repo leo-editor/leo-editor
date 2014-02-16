@@ -20,7 +20,7 @@ class VimCommands:
     A class that handles most aspects of vim simulation in Leo.
     
     - vr.create_dicts creates dictionaries from vim-related @data nodes.
-    - vr.create_dicst also creates a dispatch dictionary associating
+    - vr.create_dicts also creates a dispatch dictionary associating
       the first letter of each vim command with a vr method.
     - vr.scan uses those tables to parse a command into its components.
       vr.scan returns a status in ('oops','scan','done').

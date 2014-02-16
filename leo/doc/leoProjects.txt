@@ -4,9 +4,15 @@
 
 .. @+all
 .. @+node:ekr.20131111061547.16464: ** vim project
+.. @+node:ekr.20140215092923.16408: *3* To do
 @language rest
 
-To do: 
+To do:
+    
+- Do all common vim commands
+- Leave arrow keys and control keys unchanged.
+- Focus plain-key normal-mode commands: a,i,d,c,x,s.
+- Use minibuffer for find command (save find/change strings for dot?).
 
 - Document: use separate .leo file to test vim (ekr-vim.leo)
 - change vim-mode to vim-normal-mode, vim-insert-mode and vim-overwrite-mode.
@@ -18,6 +24,28 @@ To do:
 https://groups.google.com/forum/#!topic/leo-editor/OSe0_D5tmJQ
 
 http://stackoverflow.com/questions/7325052/can-someone-explain-to-me-why-the-dot-command-is-so-useful-in-vim
+.. @+node:ekr.20131119060731.20106: *3* Use vim-like bindings to move the cursor?
+@language rest
+
+After all these years of preaching about not using the mouse, I still use
+the mouse when I get impatient. Indeed, it seems unbearably slow to select
+text without the mouse.
+
+I actually never use Alt-S because it never does quite what I want. But
+it's close!
+
+What I want is a *really easy* way of making plain keys move the cursor
+and/or select text.
+
+Naturally, Vim bindings come to mind. There are several possibilities:
+
+1. Just use vim-mode when it becomes available. Some may think it's the
+   best way. But perhaps we don't have to go whole hog.
+
+2. Create a vim-like minibuffer handler that makes it easy to move the
+   cursor, extending text, or not, in an *easily* switchable way.
+
+3. Something else :-)
 .. @+node:ekr.20100113075303.6270: *3* Vim problems (from TL)
 # None of these is easily solvable in Leo's present environment.
 .. @+node:ekr.20100112051224.6239: *4* Displaying mode help
@@ -1252,7 +1280,7 @@ class VimCommands:
     A class that handles most aspects of vim simulation in Leo.
     
     - vr.create_dicts creates dictionaries from vim-related @data nodes.
-    - vr.create_dicst also creates a dispatch dictionary associating
+    - vr.create_dicts also creates a dispatch dictionary associating
       the first letter of each vim command with a vr method.
     - vr.scan uses those tables to parse a command into its components.
       vr.scan returns a status in ('oops','scan','done').
