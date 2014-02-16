@@ -46,10 +46,6 @@ leo/doc/html/*.html
 leo/doc/html/*.html.txt
 leo/doc/html/build
 leo/doc/html/_build
-leo/doc/html/_static
-leo/doc/html/screen-shots/*
-leo/doc/html/screen-shots/arrows/
-leo/doc/html/screen-shots/arrows/*
 
 leo/external/__pycache__/
 
