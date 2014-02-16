@@ -1605,7 +1605,7 @@ class keyHandlerClass:
     #@+node:ekr.20061031131434.81: *5* createInverseCommandsDict
     def createInverseCommandsDict (self):
 
-        '''Add entries to k.inverseCommandsDict using c.commandDict.
+        '''Add entries to k.inverseCommandsDict using c.commandsDict.
 
         c.commandsDict:        keys are command names, values are funcions f.
         k.inverseCommandsDict: keys are f.__name__, values are minibuffer command names.
@@ -1935,7 +1935,7 @@ class keyHandlerClass:
     #@+node:ekr.20061031131434.102: *4* k.makeBindingsFromCommandsDict & helper
     def makeBindingsFromCommandsDict (self):
 
-        '''Add bindings for all entries in c.commandDict.'''
+        '''Add bindings for all entries in c.commandsDict.'''
 
         trace = False and not g.unitTesting
         k = self ; c = k.c

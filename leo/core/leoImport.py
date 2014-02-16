@@ -4693,15 +4693,17 @@ class NewPythonScanner (baseScannerClass):
     #@+node:ekr.20131219090550.16561: *4* dump_body
     def dump_body(self,obj):
         '''Dump obj (a string or list) in a compact format.'''
-        if type(obj) == type([]):
-            return '[%s]' % ';'.join([z.rstrip() for z in obj])
-        else:
-            return '[%s]' % ';'.join([z.rstrip() for z in g.splitLines(obj)])
+        lines = obj if type(obj) == type([]) else g.splitLines(obj)
+        return '[%s]' % ';'.join([z.rstrip() for z in lines])
+        # if type(obj) == type([]):
+            # return '[%s]' % ';'.join([z.rstrip() for z in obj])
+        # else:
+            # return '[%s]' % ';'.join([z.rstrip() for z in g.splitLines(obj)])
     #@+node:ekr.20131219090550.16562: *4* dump_stack
     def dump_stack(self,stack):
         return '[%s]' % ','.join(['%s:%s' % (z.indent,z.p.h) for z in stack])
-    #@+node:ekr.20131219090550.16563: *4* scan & helpers
-    def scan (self,s,root):
+    #@+node:ekr.20131219090550.16563: *4* scan_lines & helpers
+    def scan_lines (self,s,root):
         '''Parse lines into an outline.'''
         trace = True and not g.unitTesting
         string_delim = None # In a string if not None.
@@ -4744,6 +4746,8 @@ class NewPythonScanner (baseScannerClass):
         d = stack[0]
         self.end_block(d)
         self.clean(root)
+
+    scan = scan_lines
     #@+node:ekr.20131219090550.16564: *5* check_for_string
     def check_for_string(self,s,i):
         '''Find the string delim in effect at the end of the line.'''
@@ -4814,7 +4818,6 @@ class NewPythonScanner (baseScannerClass):
         self.create_ref(i,p,s,stack)
         if trace: g.trace('returns',self.dump_stack(stack))
         return d
-      
     #@+node:ekr.20131219090550.16569: *5* pop_blocks
     def pop_blocks(self,i,stack):
         '''End all blocks whose indentation is >= i.'''
