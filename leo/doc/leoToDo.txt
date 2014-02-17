@@ -2053,28 +2053,25 @@ def getVimArg(self,event,specialStroke=None,specialFunc=None):
             if trace: g.trace('invalid char') ###
         c.bodyWantsFocus()
 .. @+node:ekr.20140216071333.16637: *3* Line-oriented @auto
+.. @+node:ekr.20140217065257.16658: *4* to do
 @language rest
 
-Especially, the JavaScript scanner.
-
-To do:
-    
 Create class LineScanner:
     - Uses new scan_lines scanner and helpers.
     
 - Use common scan_lines for Python and JavaScript
     (The present code is Python specific)
-
-@language python
-.. @+node:ekr.20131219090550.16554: *4* class NewPythonScanner (baseScannerClass)
-class NewPythonScanner (baseScannerClass):
+    
+- Create JavaScript scanner.
+.. @+node:ekr.20131219090550.16554: *4* class NewPythonScanner (BaseScanner)
+class NewPythonScanner (BaseScanner):
     '''A line-oriented scanner for Python.'''
     @others
 .. @+node:ekr.20131219090550.16575: *5*  __init__ (pythonScanner)
 def __init__ (self,importCommands,atAuto):
 
     # Init the base class.
-    baseScannerClass.__init__(self,importCommands,
+    BaseScanner.__init__(self,importCommands,
         atAuto=atAuto,
         language='python')
     self.compare_tokens = False
@@ -2307,14 +2304,14 @@ def clean(self,root):
 .. @+node:ekr.20071027111225.2: *4* class JavaScriptScanner
 # The syntax for patterns causes all kinds of problems...
 
-class JavaScriptScanner (baseScannerClass):
+class JavaScriptScanner (BaseScanner):
 
     @others
 .. @+node:ekr.20071027111225.3: *5* JavaScriptScanner.__init__
 def __init__ (self,importCommands,atAuto,language='javascript',alternate_language=None):
 
     # Init the base class.
-    baseScannerClass.__init__(self,importCommands,
+    BaseScanner.__init__(self,importCommands,
         atAuto=atAuto,
         language=language,
             # The language is used to set comment delims.
@@ -5408,9 +5405,9 @@ def __init__ (self,k):
     self.use_qcompleter = c.config.getBool('use_qcompleter',False)
         # True: show results in autocompleter tab.
         # False: show results in a QCompleter widget.
-.. @+node:ekr.20070703122141.66: *6*  ctor (baseScannerClass)
+.. @+node:ekr.20070703122141.66: *6*  ctor (BaseScanner)
 def __init__ (self,importCommands,atAuto,language,alternate_language=None):
-    '''ctor for baseScannerClass.'''
+    '''ctor for BaseScanner.'''
     ic = importCommands
     self.atAuto = atAuto
     self.c = c = ic.c
@@ -6435,7 +6432,7 @@ def __init__ (self,c):
 def createClassDispatchDict(self):
     '''
     Create a dict whose keys are file extensions and whose values are the
-    corresponding subclass of baseScannerClass.
+    corresponding subclass of BaseScanner.
     ''' 
     self.classDispatchDict = {
         '.c':       cScanner,

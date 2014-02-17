@@ -7726,7 +7726,11 @@ Leo.
 
 2. Get Leo from GitHub by doing::
 
-    git clone https://github.com/leo-editor/leo-editor.git
+        git clone https://github.com/leo-editor/leo-editor (http access)
+    
+   or::
+   
+        git clone git@github.com:leo-editor/leo-editor.git (ssh access)
 
 And that's it! You can run the launchLeo script (in the top-level branch directory) directly.
 When you want to refresh the code with latest modifications from GitHub, 'run git pull'.
@@ -10490,7 +10494,7 @@ To summarize, you may get Leo in three ways:
    Installing git is easy, and once set up this is the easiest way
    to get the latest version of Leo's code::
    
-        git clone http://git-scm.com/ (http access)
+        git clone https://github.com/leo-editor/leo-editor (http access)
     
    or::
    
@@ -10509,7 +10513,11 @@ Leo.
 1. First, you need to get git from http://git-scm.com/.
 2. Get Leo from GitHub by doing::
 
-     git clone https://github.com/leo-editor/leo-editor.git
+        git clone https://github.com/leo-editor/leo-editor (http access)
+    
+   or::
+   
+        git clone git@github.com:leo-editor/leo-editor.git (ssh access)
 
 And that's it! You can run leo/core/leo.py directly. When you want to refresh the
 code with latest modifications from GitHub, run git pull.
