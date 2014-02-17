@@ -138,7 +138,7 @@ import leo.core.leoGlobals as g
 import leo.core.leoColor as leoColor
 import leo.core.leoGui as leoGui
 
-import os
+# import os
 import string
 import sys
 #@-<< imports >>
@@ -222,24 +222,15 @@ class scriptingController:
         self.atPluginNodes = getBool('scripting-at-plugin-nodes')
             # True: dynamically loads plugins in @plugins nodes when a window is created.
         self.atScriptNodes = getBool('scripting-at-script-nodes')
-            # True: dynamically executes script in @script nodes when a window is created.  DANGEROUS!
-        # if self.atScriptNodes:
-            # enabled = os.environ.get('LEO_STARTUP_SCRIPTS') or 'false'
-            # if c.config.isLocalSetting('scripting-at-script-nodes','bool'):
-                # g.es('Security warning! Ignoring...',color='red')
-                # g.es('@bool scripting-at-script-nodes = True',color='red')
-                # g.es('This setting can be True only in')
-                # g.es('leoSettings.leo or myLeoSettings.leo')
-                # self.atScriptNodes = False
-            # elif not enabled.lower() in ('1','true','yes'):
-                # # g.trace('LEO_STARTUP_SCRIPTS:',repr(enabled))
-                # if 1: # This message is verbose, but important.
-                    # g.es('Security warning! Ignoring...',color='red')
-                    # g.es('@bool scripting-at-script-nodes = True',color='red')
-                    # g.es('(probably set in myLeoSettings.leo)')
-                    # g.es('The LEO_STARTUP_SCRIPTS')
-                    # g.es('environment variable must be True')
-                # self.atScriptNodes = False
+            # True: dynamically executes script in @script nodes when a window is created.
+            # DANGEROUS!
+        # Do not allow this setting to be changed in local (non-settings) .leo files.
+        if self.atScriptNodes and c.config.isLocalSetting('scripting-at-script-nodes','bool'):
+            g.es('Security warning! Ignoring...',color='red')
+            g.es('@bool scripting-at-script-nodes = True',color='red')
+            g.es('This setting can be True only in')
+            g.es('leoSettings.leo or myLeoSettings.leo')
+            self.atScriptNodes = False
         self.createDebugButton = getBool('scripting-create-debug-button')
             # True: create Debug Script button.
         self.createRunScriptButton = getBool('scripting-create-run-script-button')

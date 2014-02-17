@@ -5,6 +5,8 @@
 .. @+all
 .. @+node:ekr.20131114124839.16664: ** First
 .. @+node:ekr.20140215092923.16407: *3* git stuff
+@language rest
+
 Handle newlines: .gitattributes.
     Use "recommended" .gitattributes?
     
@@ -24,8 +26,6 @@ To do:
 - change vim-mode to vim-normal-mode, vim-insert-mode and vim-overwrite-mode.
 - vim_dot.
 - Simulate a box cursor by always selecting one character.
-
-@language python
 
 https://groups.google.com/forum/#!topic/leo-editor/OSe0_D5tmJQ
 
@@ -2395,8 +2395,10 @@ def skipNewline(self,s,i,kind):
         g.trace(s[i:],g.callers())
         return i
 .. @+node:ekr.20140216071333.16640: *3* Important features
+@language rest
 .. @+node:ekr.20140216071333.16642: *4* Improve @auto
 - Look at Eclipse # @name.
+- Allow section refs (if enabled by 
 .. @+node:ekr.20140216071333.16644: *4* leo.core.qt module to handle Qt5
 Must convert QtGui to QtWidgets.
 .. @+node:ekr.20140115052524.16699: *4* Allow clones *anywhere* in @file nodes
@@ -2420,6 +2422,8 @@ post pass will use!
 .. @+node:ekr.20140104063158.16448: *4* reload-abbreviations and reload-key-bindings commands
 reload-abbreviations and reload-key-bindings commands.
     Use regex replace to replace settings ivars with @property defs.
+
+@language python
 .. @+node:ekr.20120209051836.10242: *5* class LoadManager
 class LoadManager:
 
@@ -6733,9 +6737,6 @@ def viewPack(event):
 1. Does not create @file (or @@file) in headline
 2. <|pattern|> not found in headlines
 .. @+node:ekr.20131102044158.16568: ** For 4.11.2
-** (Done?) The mod_scripting plugin must require the leo-startup-scripting
-    environment variable to be True.
-
 - Create myLeoSettings and workbook automatically if they do not exist.
 - Add templates to help menu?
 - Fix IPython code/docs.
