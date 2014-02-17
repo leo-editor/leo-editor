@@ -17,10 +17,10 @@
 # of January 22, 2010.  Feel free to ask more questions there.
 # 
 # leoImport.py contains a set of "importers" all based on the
-# baseScannerClass class. You can define your own importer by creating a
+# BaseScanner class. You can define your own importer by creating a
 # subclass. With luck, your subclass might be very simple, as with class
-# cScanner. In other words, baseScannerClass is supposed to do almost
-# all the work.
+# cScanner. In other words, BaseScanner is supposed to do almost all the
+# work.
 # 
 # **Important**  As I write this, I realize that I remember very little
 # about the code, but I do remember its general organization and the
@@ -38,7 +38,7 @@
 # 
 # The parser thinks it is looking for classes, and within classes,
 # method definitions.  Your job is to tell the parser how to do this.
-# Let's look at the ctor for baseScannerClass for clues:
+# Let's look at the ctor for BaseScanner for clues:
 # 
 #     # May be overridden in subclasses.
 #     self.anonymousClasses = [] # For Delphi Pascal interfaces.
@@ -163,7 +163,7 @@ class leoImportCommands (scanUtility):
     def createClassDispatchDict(self):
         '''
         Create a dict whose keys are file extensions and whose values are the
-        corresponding subclass of baseScannerClass.
+        corresponding subclass of BaseScanner.
         ''' 
         self.classDispatchDict = {
             '.c':       cScanner,
@@ -1657,17 +1657,17 @@ class leoImportCommands (scanUtility):
         return ok
     #@-others
 #@-<< class leoImportCommands (scanUtility) >>
-#@+<< class baseScannerClass (scanUtility) >>
-#@+node:ekr.20070703122141.65: ** << class baseScannerClass (scanUtility) >>
-class baseScannerClass (scanUtility):
+#@+<< class BaseScanner (scanUtility) >>
+#@+node:ekr.20070703122141.65: ** << class BaseScanner (scanUtility) >>
+class BaseScanner (scanUtility):
 
     '''The base class for all import scanner classes.
     This class contains common utility methods.'''
 
     #@+others
-    #@+node:ekr.20070703122141.66: *3*  ctor (baseScannerClass)
+    #@+node:ekr.20070703122141.66: *3*  ctor (BaseScanner)
     def __init__ (self,importCommands,atAuto,language,alternate_language=None):
-        '''ctor for baseScannerClass.'''
+        '''ctor for BaseScanner.'''
         ic = importCommands
         self.atAuto = atAuto
         self.c = c = ic.c
@@ -1987,7 +1987,7 @@ class baseScannerClass (scanUtility):
             s2 == ch2 * n2)
 
         return val
-    #@+node:ekr.20111109151106.9782: *4* formatTokens (baseScannerClass)
+    #@+node:ekr.20111109151106.9782: *4* formatTokens (BaseScanner)
     def formatTokens(self,tokens):
 
         '''Format tokens for printing or dumping.'''
@@ -2166,7 +2166,7 @@ class baseScannerClass (scanUtility):
 
         if trace: g.trace('\nafter: ',result)
         return result
-    #@+node:ekr.20111109151106.9781: *4* stripTokens (baseScannerClass)
+    #@+node:ekr.20111109151106.9781: *4* stripTokens (BaseScanner)
     def stripTokens(self,tokens):
 
         '''Remove the line_number from all tokens.'''
@@ -2197,7 +2197,7 @@ class baseScannerClass (scanUtility):
         if self.treeType == '@root' and self.methodsSeen:
             self.appendStringToBody(parent,
                 g.angleBrackets(' ' + self.methodName + ' methods ') + '\n\n')
-    #@+node:ekr.20090122201952.6: *4* appendStringToBody & setBodyString (baseScannerClass)
+    #@+node:ekr.20090122201952.6: *4* appendStringToBody & setBodyString (BaseScanner)
     def appendStringToBody (self,p,s):
 
         '''Similar to c.appendStringToBody,
@@ -2211,7 +2211,7 @@ class baseScannerClass (scanUtility):
         but does not recolor the text or redraw the screen.'''
 
         return self.importCommands.setBodyString(p,s)
-    #@+node:ekr.20090512153903.5806: *4* computeBody (baseScannerClass)
+    #@+node:ekr.20090512153903.5806: *4* computeBody (BaseScanner)
     def computeBody (self,s,start,sigStart,codeEnd):
 
         trace = False
@@ -2259,7 +2259,7 @@ class baseScannerClass (scanUtility):
         # Create the node.
         return self.createHeadline(parent,prefix + body,headline)
 
-    #@+node:ekr.20070703122141.77: *4* createHeadline (baseScannerClass)
+    #@+node:ekr.20070703122141.77: *4* createHeadline (BaseScanner)
     def createHeadline (self,parent,body,headline):
 
         return self.importCommands.createHeadline(parent,body,headline)
@@ -2472,7 +2472,7 @@ class baseScannerClass (scanUtility):
         # Return the results.
         trailing = s[start:end]
         return putRef,bodyIndent,classDelim,decls,trailing
-    #@+node:ekr.20070707082432: *4* putFunction (baseScannerClass)
+    #@+node:ekr.20070707082432: *4* putFunction (BaseScanner)
     def putFunction (self,s,sigStart,codeEnd,start,parent):
 
         '''Create a node of parent for a function defintion.'''
@@ -2595,7 +2595,7 @@ class baseScannerClass (scanUtility):
             g.error('Error:',s)
 
     def oops (self):
-        g.pr('baseScannerClass oops: %s must be overridden in subclass' % g.callers())
+        g.pr('BaseScanner oops: %s must be overridden in subclass' % g.callers())
 
     def report (self,message):
         if self.strict: self.error(message)
@@ -2604,7 +2604,7 @@ class baseScannerClass (scanUtility):
     def warning (self,s):
         if not g.unitTesting:
             g.warning('Warning:',s)
-    #@+node:ekr.20140125141655.10472: *3* headlineForNode (baseScannerClass)
+    #@+node:ekr.20140125141655.10472: *3* headlineForNode (BaseScanner)
     def headlineForNode(self,fn,p):
         '''Return the expected imported headline for p.b'''
         trace = False and not g.unitTesting
@@ -2670,7 +2670,7 @@ class baseScannerClass (scanUtility):
         j,junk = g.getLine(s,i)
         junk,indent = g.skip_leading_ws_with_indent(s,j,self.tab_width)
         return indent
-    #@+node:ekr.20140202110830.17503: *4* prepass (baseScannerClass) & helper
+    #@+node:ekr.20140202110830.17503: *4* prepass (BaseScanner) & helper
     def prepass (self,s,p):
         '''
         A prepass for the at-file-to-at-auto command.
@@ -2743,7 +2743,7 @@ class baseScannerClass (scanUtility):
         else:
             # Multiple defs, no children. Will split the node into children.
             return False,parts
-    #@+node:ekr.20070706101600: *4* scan & scanHelper
+    #@+node:ekr.20070706101600: *4* BS.scan & scanHelper
     def scan (self,s,parent,parse_body=False):
         '''A language independent scanner: it uses language-specific helpers.
 
@@ -2775,11 +2775,9 @@ class baseScannerClass (scanUtility):
             self.appendStringToBody(parent,s[start:])
         # Do any language-specific post-processing.
         self.endGen(s)
-    #@+node:ekr.20071018084830: *5* scanHelper (baseScannerClass)
+    #@+node:ekr.20071018084830: *5* scanHelper (BaseScanner)
     def scanHelper(self,s,i,end,parent,kind):
-
         '''Common scanning code used by both scan and putClassHelper.'''
-
         # g.trace(g.callers())
         # g.trace('i',i,g.get_line(s,i))
         assert kind in ('class','outer')
@@ -2820,7 +2818,7 @@ class baseScannerClass (scanUtility):
             assert progress < i,'i: %d, ch: %s' % (i,repr(s[i]))
 
         return start,putRef,bodyIndent
-    #@+node:ekr.20111108111156.9785: *4* Parser skip methods (baseScannerClass)
+    #@+node:ekr.20111108111156.9785: *4* Parser skip methods (BaseScanner)
     #@+node:ekr.20111103073536.16599: *5* isSpace
     def isSpace(self,s,i):
 
@@ -2847,7 +2845,7 @@ class baseScannerClass (scanUtility):
             return start,False
         else:
             return i,True 
-    #@+node:ekr.20070707073859: *5* skipBlock (baseScannerClass)
+    #@+node:ekr.20070707073859: *5* skipBlock (BaseScanner)
     def skipBlock(self,s,i,delim1=None,delim2=None):
 
         '''Skip from the opening delim to *past* the matching closing delim.
@@ -2919,7 +2917,7 @@ class baseScannerClass (scanUtility):
         else:
             if trace: g.trace('** no block')
         return start+1 # 2012/04/04: Ensure progress in caller.
-    #@+node:ekr.20070712091019: *5* skipCodeBlock (baseScannerClass)
+    #@+node:ekr.20070712091019: *5* skipCodeBlock (BaseScanner)
     def skipCodeBlock (self,s,i,kind):
 
         '''Skip the code block in a function or class definition.'''
@@ -2973,13 +2971,12 @@ class baseScannerClass (scanUtility):
             return len(s)
         else:
             return k + len(delim2)
-    #@+node:ekr.20070707080042: *5* skipDecls (baseScannerClass)
+    #@+node:ekr.20070707080042: *5* skipDecls (BaseScanner)
     def skipDecls (self,s,i,end,inClass):
-
-        '''Skip everything until the start of the next class or function.
-
-        The decls *must* end in a newline.'''
-
+        '''
+        Skip everything until the start of the next class or function.
+        The decls *must* end in a newline.
+        '''
         trace = False or self.trace
         start = i ; prefix = None
         classOrFunc = False
@@ -3021,11 +3018,12 @@ class baseScannerClass (scanUtility):
                 if self.outerBlockEndsDecls:
                     break
                 else:
-                    i = self.skipBlock(s,i,delim1=self.outerBlockDelim1,delim2=self.outerBlockDelim2)
+                    i = self.skipBlock(s,i,
+                        delim1=self.outerBlockDelim1,
+                        delim2=self.outerBlockDelim2)
             else:
                 i += 1 ;  prefix = None
             assert(progress < i)
-
         if prefix is not None:
             i = g.find_line_start(s,prefix) # i = prefix
         decls = s[start:i]
@@ -3042,7 +3040,7 @@ class baseScannerClass (scanUtility):
     def skipId (self,s,i):
 
         return g.skip_id(s,i,chars=self.extraIdChars)
-    #@+node:ekr.20070730134936: *5* skipNewline (baseScannerClass)
+    #@+node:ekr.20070730134936: *5* skipNewline (BaseScanner)
     def skipNewline(self,s,i,kind):
 
         '''Skip whitespace and comments up to a newline, then skip the newline.
@@ -3079,7 +3077,7 @@ class baseScannerClass (scanUtility):
     def skipWs (self,s,i):
 
         return g.skip_ws(s,i)
-    #@+node:ekr.20070711132314: *4* startsClass/Function (baseClass) & helpers
+    #@+node:ekr.20070711132314: *4* BS.startsClass/Function & helpers
     # We don't expect to override this code, but subclasses may override the helpers.
 
     def startsClass (self,s,i):
@@ -3154,28 +3152,25 @@ class baseScannerClass (scanUtility):
                 i += 1
         if trace: g.trace('no block delim')
         return i,False
-    #@+node:ekr.20070712112008: *5* startsHelper (baseScannerClass)
+    #@+node:ekr.20070712112008: *5* startsHelper (BaseScanner)
     def startsHelper(self,s,i,kind,tags,tag=None):
         '''
         tags is a list of id's.  tag is a debugging tag.
         return True if s[i:] starts a class or function.
-        Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
-
+        Sets sigStart, sigEnd, sigId and codeEnd ivars.
+        '''
         trace = False or self.trace
         verbose = False # kind=='function'
         self.codeEnd = self.sigEnd = self.sigId = None
         self.sigStart = i
-
         # Underindented lines can happen in any language, not just Python.
         # The skipBlock method of the base class checks for such lines.
         self.startSigIndent = self.getLeadingIndent(s,i)
-
         # Get the tag that starts the class or function.
         j = g.skip_ws_and_nl(s,i)
         i = self.skipId(s,j)
         self.sigId = theId = s[j:i] # Set sigId ivar 'early' for error messages.
         if not theId: return False
-
         if tags:
             if self.caseInsensitive:
                 theId = theId.lower()
@@ -3184,9 +3179,7 @@ class baseScannerClass (scanUtility):
                     # g.trace('**** %s theId: %s not in tags: %s' % (kind,theId,tags))
                     g.trace('%8s: ignoring %s' % (kind,theId))
                 return False
-
         if trace and verbose: g.trace('kind',kind,'id',theId)
-
         # Get the class/function id.
         if kind == 'class' and self.sigId in self.anonymousClasses:
             # A hack for Delphi Pascal: interfaces have no id's.
@@ -3199,12 +3192,10 @@ class baseScannerClass (scanUtility):
             if not sigId:
                 if trace and verbose: g.trace('**no sigId',g.get_line(s,i))
                 return False
-
         if self.output_indent < self.startSigIndent:
             if trace: g.trace('**over-indent',sigId)
                 #,'output_indent',self.output_indent,'startSigIndent',self.startSigIndent)
             return False
-
         # Skip the argument list.
         i, ok = self.skipArgs(s,i,kind)
         if not ok:
@@ -3218,13 +3209,11 @@ class baseScannerClass (scanUtility):
             if trace and verbose: g.trace('no tail',g.get_line(s,i))
             return False
         sigEnd = i
-
         # A trick: make sure the signature ends in a newline,
         # even if it overlaps the start of the block.
         if not g.match(s,sigEnd,'\n') and not g.match(s,sigEnd-1,'\n'):
             if trace and verbose: g.trace('extending sigEnd')
             sigEnd = g.skip_line(s,sigEnd)
-
         if self.blockDelim1:
             i = g.skip_ws_and_nl(s,i)
             if kind == 'class' and self.sigId in self.anonymousClasses:
@@ -3232,31 +3221,26 @@ class baseScannerClass (scanUtility):
             elif not g.match(s,i,self.blockDelim1):
                 if trace and verbose: g.trace('no block',g.get_line(s,i))
                 return False
-
         i,ok = self.skipCodeBlock(s,i,kind)
         if not ok: return False
             # skipCodeBlock skips the trailing delim.
-
         # Success: set the ivars.
         self.sigStart = self.adjustDefStart(s,self.sigStart)
         self.codeEnd = i
         self.sigEnd = sigEnd
         self.sigId = sigId
         self.classId = classId
-
         # Note: backing up here is safe because
         # we won't back up past scan's 'start' point.
         # Thus, characters will never be output twice.
         k = self.sigStart
         if not g.match(s,k,'\n'):
             self.sigStart = g.find_line_start(s,k)
-
         # Issue this warning only if we have a real class or function.
         if 0: # wrong.
             if s[self.sigStart:k].strip():
                 self.error('%s definition does not start a line\n%s' % (
                     kind,g.get_line(s,k)))
-
         if trace:
             if verbose:
                 g.trace(kind,'returns:\n%s' % s[self.sigStart:i])
@@ -3264,7 +3248,7 @@ class baseScannerClass (scanUtility):
                 first_line = g.splitLines(s[self.sigStart:i])[0]
                 g.trace(kind,first_line.rstrip())
         return True
-    #@+node:ekr.20070711104014.1: *4* startsComment
+    #@+node:ekr.20070711104014.1: *4* BS.startsComment
     def startsComment (self,s,i):
 
         return (
@@ -3281,7 +3265,7 @@ class baseScannerClass (scanUtility):
     def startsString(self,s,i):
 
         return g.match(s,i,'"') or g.match(s,i,"'")
-    #@+node:ekr.20070707072749: *3* run (baseScannerClass)
+    #@+node:ekr.20070707072749: *3* run (BaseScanner)
     def run (self,s,parent,parse_body=False,prepass=False):
         '''The common top-level code for all scanners.'''
         self.isPrepass = prepass
@@ -3370,8 +3354,8 @@ class baseScannerClass (scanUtility):
             self.report(message)
 
         return ''.join(result)
-    #@+node:ekr.20111103073536.16583: *3* Tokenizing (baseScannerClass)
-    #@+node:ekr.20111103073536.16586: *4* skip...Token (baseScannerClass)
+    #@+node:ekr.20111103073536.16583: *3* Tokenizing (BaseScanner)
+    #@+node:ekr.20111103073536.16586: *4* skip...Token (BaseScanner)
     def skipCommentToken (self,s,i):
         j = self.skipComment(s,i)
         return j,s[i:j]
@@ -3436,9 +3420,207 @@ class baseScannerClass (scanUtility):
             # g.trace('%3s %7s %s' % (line_number,kind,repr(val[:20])))
         return result
     #@-others
-#@-<< class baseScannerClass (scanUtility) >>
+#@-<< class BaseScanner (scanUtility) >>
 
 #@+others
+#@+node:ekr.20140217065257.16659: ** class LineScanner (BaseScanner)
+class LineScanner(BaseScanner):
+    '''A class that only splits nodes at line boundaries.'''
+    #@+others
+    #@+node:ekr.20140217065257.16678: *3* LS.ctor
+    def __init__ (self,importCommands,atAuto,language,alternate_language=None):
+        self.string_delims = ['"',"'"]
+        BaseScanner.__init__(self,importCommands,atAuto,language,alternate_languag)
+    #@+node:ekr.20140217065257.16669: *3* LS.scan & helpers (Really a Python scanner)
+    def scan_lines (self,s,root):
+        '''Parse lines into an outline.'''
+        trace = True and not g.unitTesting
+        # Loop invariant: d is the Data object at the top of the stack.
+        string_delim = None # In a string if not None.
+        d = self.Data('root',[],0,root)
+        stack = [d]
+        for s in g.splitLines(s):
+            i = g.skip_ws(s,0) # To compute indent
+            # Compute the string delimiter in effect at the end of this line.
+            old_string_delim = string_delim
+            string_delim = check_for_string(s,i,string_delim)
+            # A case statement...
+            if old_string_delim:
+                # Never break a line after a string.
+                d.block.append(s)
+            elif g.match_word(s,i,'class'):
+                self.pop_blocks(i,stack)
+                d = self.new_context('class',i,s,stack)
+            elif g.match_word(s,i,'def'):
+                self.pop_blocks(i,stack)
+                d = self.new_context('def',i,s,stack)
+            elif i > d.indent: # Still in the block.
+                d.block.append(s)
+            elif len(stack) > 1 and i == d.indent:
+                # In a class or def.
+                # Keep all trailing code lines with the block.
+                d.block.append(s)
+            elif len(stack) == 1:
+                d.block.append(s)
+            else: # Change blocks.
+                d = self.pop_blocks(i,stack)
+                d.block.append(s)
+        # End last blocks.
+        if len(stack) > 1:
+            self.pop_blocks(0,stack)
+        assert len(stack) == 1
+        d = stack[0]
+        self.end_block(d)
+        self.clean(root)
+
+    scan = scan_lines
+    #@+node:ekr.20140217065257.16670: *4* check_for_string
+    def check_for_string(self,s,i,delim):
+        '''Find the string delim in effect at the end of the line.'''
+        # This must be fast and accurate.
+        # A quick shortcut:
+        if not delim and s.find('"',i) == -1 and s.find("'",i) == -1:
+            return None
+        while i < len(s):
+            ch = s[i]
+            if delim:
+                if g.match(s,i,delim):
+                    delim = None
+            elif ch == '#':
+                if delim:
+                    pass # Ignore '#' inside strings.
+                else:
+                    return None # The '#' terminates the line.
+            elif ch == '"':
+                delim = '"""' if g.match(s,i,'"""') else '"'
+            elif ch == "'":
+                delim = "'''" if g.match(s,i,"'''") else "'"
+            i += 1
+        return delim
+    #@+node:ekr.20140217065257.16671: *4* create_ref
+    def create_ref(self,i,p,s,stack):
+        '''Create an @others directive or section ref in block.'''
+        d = stack[-1] if len(stack) == 1 else stack[-2]
+        others = ' '*i + '@others\n'
+        if d.has_others:
+            if others in d.block:
+                pass # The previous @others should do.
+            else:
+                ref = p.h = g.angleBrackets(p.h)
+                d.block.append(ref)
+        else:
+            d.has_others = True
+                # Correct: we'll adjust node indentation later.
+            d.block.append(others)
+        # g.trace('in:',d.p.h,'for:',s.strip(),'\n',d.block,'\n')
+    #@+node:ekr.20140217065257.16672: *4* end_block
+    def end_block(self,d):
+        '''Update the body text of the present block.'''
+        if d.block:
+            d.p.b = d.p.b + ''.join(d.block)
+            d.block = []
+            # g.trace(d.p.h,'\n',self.dump_body(d.p.b),'\n')
+            # g.trace(d.p.h,'\n',d.p.b)
+    #@+node:ekr.20140217065257.16673: *4* headline
+    def headline (self,s,i):
+        '''Return the headline to be given to line s.'''
+        j = g.skip_id(s,i)
+        kind = s[i:j]
+        if kind == 'class':
+            # Return the entire class line.except the trailing ':'.
+            return s[i:].rstrip().strip(':')
+        else:
+            # Return just the function/method name.
+            i = g.skip_ws(s,j)
+            j = g.skip_id(s,i)
+            return s[i:j]
+    #@+node:ekr.20140217065257.16674: *4* new_context
+    def new_context(self,kind,i,s,stack):
+        '''Handle class or def line'''
+        trace = False and not g.unitTesting
+        # Create the new node as the last child of the parent.
+        d = stack[-1]
+        p = d.p.insertAsLastChild()
+        p.h = self.headline(s,i)
+        d = self.Data(kind,[s],i,p)
+        stack.append(d)
+        self.create_ref(i,p,s,stack)
+        if trace: g.trace('returns',self.dump_stack(stack))
+        return d
+    #@+node:ekr.20140217065257.16675: *4* pop_blocks
+    def pop_blocks(self,i,stack):
+        '''End all blocks whose indentation is >= i.'''
+        n = len(stack)
+        while i <= stack[-1].indent and len(stack) > 1:
+            d = stack.pop()
+            self.end_block(d)
+        # if len(stack) != n: g.trace(self.dump_stack(stack))
+        return stack[-1]
+    #@+node:ekr.20140217065257.16676: *4* update_string_delim (no longer used)
+    def update_string_delim(self,i,s,string_delim):
+        '''Return the string delim in effect at the end of line s.'''
+        trace = False and not g.unitTesting
+        old_string_delim = string_delim # For tracing.
+        if string_delim:
+            i2 = s.find(string_delim,i)
+            if i2 > -1:
+                # The end of the string.
+                if trace: g.trace('-string:',s.strip())
+                # Check for *another* string following the end of the first.
+                string_delim = self.check_for_string(s,i2+len(string_delim))
+        else:
+            string_delim = self.check_for_string(s,i)
+        if trace and old_string_delim: g.trace(' string:',s.strip())
+        return string_delim
+    #@+node:ekr.20140217065257.16677: *4* clean
+    def clean(self,root):
+        '''Clean the tree with the given root.'''
+        tail = [] # Trailing underindented lines to be added to the next node.
+        last = root.lastNode()
+        for p in root.self_and_subtree():
+            lines = g.splitLines(p.b)
+            if lines:
+                i = g.skip_ws(lines[0],0)
+                if i > 0:
+                    head = []
+                    for s in lines:
+                        if s[:i].isspace() and s[i:]:
+                            head.append(s[i:])
+                        elif s.isspace():
+                            head.append(s)
+                        else: break
+                    p.b = ''.join(tail+head)
+                    # Move all trailing underindented lines to the next node.
+                    n = len(head)
+                    tail = lines[n:] if n < len(lines) else []
+                elif p == last:
+                    # Special case the last node:
+                    # Keep underindented following lines in the node...
+                    head = [lines[0]]
+                    for s in lines[1:]:
+                        if s[0].isspace():
+                            head.append(s)
+                        else: break
+                    # But move the first underindented comment line and
+                    # all following lines to the root node.
+                    n = len(head)
+                    for s in lines[n:]:
+                        if s.startswith('#'):
+                            break
+                        else:
+                            head.append(s)
+                    p.b = ''.join(tail+head)
+                    n = len(head)
+                    if n < len(lines):
+                        root.b = root.b + ''.join(lines[n:])
+                    tail = []
+                else:
+                    p.b = ''.join(tail+lines)
+                    tail = []
+        if tail:
+            root.b = root.b + ''.join(tail)
+
+    #@-others
 #@+node:ekr.20130823083943.12596: ** class recursiveImportController
 class recursiveImportController:
     '''Recursively import all python files in a directory and clean the result.'''
@@ -3835,14 +4017,14 @@ class recursiveImportController:
         g.es('imported %s nodes in %2.2f sec' % (n,t2-t1))
     #@-others
 #@+node:ekr.20031218072017.3241: ** Scanner classes
-# All these classes are subclasses of baseScannerClass.
+# All these classes are subclasses of BaseScanner.
 #@+node:edreamleo.20070710093042: *3* class cScanner
-class cScanner (baseScannerClass):
+class cScanner (BaseScanner):
 
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
-        baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='c')
+        BaseScanner.__init__(self,importCommands,atAuto=atAuto,language='c')
 
         # Set the parser delims.
         self.blockCommentDelim1 = '/*'
@@ -3860,12 +4042,12 @@ class cScanner (baseScannerClass):
         self.sigHeadExtraTokens = ['*']
         self.sigFailTokens = [';','=']
 #@+node:ekr.20071008130845.2: *3* class cSharpScanner
-class cSharpScanner (baseScannerClass):
+class cSharpScanner (BaseScanner):
 
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
-        baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='c')
+        BaseScanner.__init__(self,importCommands,atAuto=atAuto,language='c')
 
         # Set the parser delims.
         self.blockCommentDelim1 = '/*'
@@ -3882,14 +4064,14 @@ class cSharpScanner (baseScannerClass):
         self.sigHeadExtraTokens = []
         self.sigFailTokens = [';','='] # Just like C.
 #@+node:ekr.20070711060113: *3* class elispScanner
-class elispScanner (baseScannerClass):
+class elispScanner (BaseScanner):
 
     #@+others
     #@+node:ekr.20070711060113.1: *4*  __init__ (elispScanner)
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
-        baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='lisp')
+        BaseScanner.__init__(self,importCommands,atAuto=atAuto,language='lisp')
 
         # Set the parser delims.
         self.atAutoWarnsAboutLeadingWhitespace = False # 2010/09/29.
@@ -3947,7 +4129,7 @@ class elispScanner (baseScannerClass):
     def skipBlock(self,s,i,delim1=None,delim2=None):
 
         # Call the base class
-        i = baseScannerClass.skipBlock(self,s,i,delim1,delim2)
+        i = BaseScanner.skipBlock(self,s,i,delim1,delim2)
 
         # Skip the closing parens of enclosing constructs.
         # This prevents the "does not end in a newline error.
@@ -3965,12 +4147,12 @@ class elispScanner (baseScannerClass):
             return g.skip_string(s,i,verbose=False)
     #@-others
 #@+node:ekr.20100803231223.5807: *3* class iniScanner
-class iniScanner (baseScannerClass):
+class iniScanner (BaseScanner):
 
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
-        baseScannerClass.__init__(self,
+        BaseScanner.__init__(self,
             importCommands,atAuto=atAuto,language='ini')
 
         # Override defaults defined in the base class.
@@ -4040,14 +4222,14 @@ class iniScanner (baseScannerClass):
             return False,None,i
     #@-others
 #@+node:edreamleo.20070710085115: *3* class javaScanner
-class javaScanner (baseScannerClass):
+class javaScanner (BaseScanner):
 
     #@+others
     #@+node:ekr.20071019171430: *4* javaScanner.__init__
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
-        baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='java')
+        BaseScanner.__init__(self,importCommands,atAuto=atAuto,language='java')
 
         # Set the parser delims.
         self.blockCommentDelim1 = '/*'
@@ -4079,14 +4261,14 @@ class javaScanner (baseScannerClass):
 #@+node:ekr.20071027111225.2: *3* class JavaScriptScanner
 # The syntax for patterns causes all kinds of problems...
 
-class JavaScriptScanner (baseScannerClass):
+class JavaScriptScanner (BaseScanner):
 
     #@+others
     #@+node:ekr.20071027111225.3: *4* JavaScriptScanner.__init__
     def __init__ (self,importCommands,atAuto,language='javascript',alternate_language=None):
 
         # Init the base class.
-        baseScannerClass.__init__(self,importCommands,
+        BaseScanner.__init__(self,importCommands,
             atAuto=atAuto,
             language=language,
                 # The language is used to set comment delims.
@@ -4168,7 +4350,7 @@ class JavaScriptScanner (baseScannerClass):
             return i
     #@-others
 #@+node:ekr.20070711104241.3: *3* class pascalScanner
-class pascalScanner (baseScannerClass):
+class pascalScanner (BaseScanner):
 
     #@+others
     #@+node:ekr.20080211065754: *4* skipArgs
@@ -4197,7 +4379,7 @@ class pascalScanner (baseScannerClass):
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
-        baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='pascal')
+        BaseScanner.__init__(self,importCommands,atAuto=atAuto,language='pascal')
 
         # Set the parser overrides.
         self.anonymousClasses = ['interface']
@@ -4354,14 +4536,14 @@ class pascalScanner (baseScannerClass):
         self.startSigIndent = oldStartSigIndent
     #@-others
 #@+node:ekr.20100219075946.5742: *3* class phpScanner
-class phpScanner (baseScannerClass):
+class phpScanner (BaseScanner):
 
     #@+others
     #@+node:ekr.20100219075946.5743: *4*  __init__(phpScanner)
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
-        baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='php')
+        BaseScanner.__init__(self,importCommands,atAuto=atAuto,language='php')
 
         # Set the parser delims.
         self.blockCommentDelim1 = '/*'
@@ -4415,14 +4597,14 @@ class phpScanner (baseScannerClass):
         return ids and ids[1]
     #@-others
 #@+node:ekr.20070703122141.100: *3* class pythonScanner
-class pythonScanner (baseScannerClass):
+class pythonScanner (BaseScanner):
 
     #@+others
     #@+node:ekr.20070703122141.101: *4*  __init__ (pythonScanner)
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
-        baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='python')
+        BaseScanner.__init__(self,importCommands,atAuto=atAuto,language='python')
 
         # Set the parser delims.
         self.lineCommentDelim = '#'
@@ -4652,15 +4834,15 @@ class pythonScanner (baseScannerClass):
         # Returns len(s) on unterminated string.
         return g.skip_python_string(s,i,verbose=False)
     #@-others
-#@+node:ekr.20131219090550.16554: *3* class NewPythonScanner (baseScannerClass)
-class NewPythonScanner (baseScannerClass):
+#@+node:ekr.20131219090550.16554: *3* class NewPythonScanner (BaseScanner)
+class NewPythonScanner (BaseScanner):
     '''A line-oriented scanner for Python.'''
     #@+others
     #@+node:ekr.20131219090550.16575: *4*  __init__ (pythonScanner)
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
-        baseScannerClass.__init__(self,importCommands,
+        BaseScanner.__init__(self,importCommands,
             atAuto=atAuto,
             language='python')
         self.compare_tokens = False
@@ -4893,14 +5075,14 @@ class NewPythonScanner (baseScannerClass):
 
     #@-others
 #@+node:ekr.20090501095634.41: *3* class rstScanner
-class rstScanner (baseScannerClass):
+class rstScanner (BaseScanner):
 
     #@+others
     #@+node:ekr.20090501095634.42: *4*  __init__ (rstScanner)
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
-        baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='rest')
+        BaseScanner.__init__(self,importCommands,atAuto=atAuto,language='rest')
 
         # Scanner overrides
         self.atAutoWarnsAboutLeadingWhitespace = True
@@ -5212,12 +5394,12 @@ class TypeScriptScanner (JavaScriptScanner):
             return ids and ids[-1]
     #@-others
 #@+node:ekr.20120517124200.9983: *3* class vimoutlinerScanner
-class vimoutlinerScanner(baseScannerClass):
+class vimoutlinerScanner(BaseScanner):
 
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
-        baseScannerClass.__init__(self,
+        BaseScanner.__init__(self,
             importCommands,atAuto=atAuto,language='plain')
                 # Use @language plain.
 
@@ -5230,7 +5412,7 @@ class vimoutlinerScanner(baseScannerClass):
 
     #@+others
     #@+node:ekr.20120519091649.10016: *4* scanHelper & helpers
-    # Override baseScannerClass.scanHelper.
+    # Override BaseScanner.scanHelper.
 
     def scanHelper(self,s,i,end,parent,kind):
 
@@ -5307,16 +5489,16 @@ class vimoutlinerScanner(baseScannerClass):
         self.parents.append(p)
     #@-others
 #@+node:ekr.20071214072145.1: *3* class xmlScanner & htmlScanner(xmlScanner)
-#@+<< class xmlScanner (baseScannerClass) >>
-#@+node:ekr.20111104032034.9866: *4* << class xmlScanner (baseScannerClass) >>
-class xmlScanner (baseScannerClass):
+#@+<< class xmlScanner (BaseScanner) >>
+#@+node:ekr.20111104032034.9866: *4* << class xmlScanner (BaseScanner) >>
+class xmlScanner (BaseScanner):
 
     #@+others
     #@+node:ekr.20071214072451: *5*  ctor_(xmlScanner)
     def __init__ (self,importCommands,atAuto,tags_setting='import_xml_tags'):
 
         # Init the base class.
-        baseScannerClass.__init__(self,importCommands,atAuto=atAuto,language='xml')
+        BaseScanner.__init__(self,importCommands,atAuto=atAuto,language='xml')
             # sets self.c
 
         # Set the parser delims.
@@ -5763,11 +5945,11 @@ class xmlScanner (baseScannerClass):
         '''Single quotes do *not* start strings in xml or html.'''
         
         # Fix bug 1208659: leo parsed the wrong line number of html file.
-        # Note: the compare failure was caused by using baseScannerClass.startsString.
+        # Note: the compare failure was caused by using BaseScanner.startsString.
         # The line number problem is a separate issue.
         return g.match(s,i,'"')
     #@-others
-#@-<< class xmlScanner (baseScannerClass) >>
+#@-<< class xmlScanner (BaseScanner) >>
 
 #@+<< class htmlScanner (xmlScanner) >>
 #@+node:ekr.20111104032034.9867: *4* << class htmlScanner (xmlScanner) >>
