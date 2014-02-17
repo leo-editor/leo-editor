@@ -11848,7 +11848,7 @@ suite = c.testManager.makeImportExportSuite("importTests",doImport=True)
 #@+node:ekr.20090529141856.4790: *4*  Test files
 import leo.core.leoImport as leoImport
 ic = c.importCommands
-runner = leoImport.baseScannerClass(ic,atAuto=True,language='python')
+runner = leoImport.BaseScanner(ic,atAuto=True,language='python')
 i = 0
 lines1 = ['abc',]
 lines2 = ['xyz',]
@@ -11867,7 +11867,7 @@ import leo.core.leoImport as leoImport
 import sys
 
 ic = c.importCommands
-runner = leoImport.baseScannerClass(ic,atAuto=True,language='python')
+runner = leoImport.BaseScanner(ic,atAuto=True,language='python')
 runner.root = p.copy()
 
 g.app.unitTestDict ['expectedMismatchLine'] = 0
@@ -13236,7 +13236,7 @@ c.importCommands.pythonUnitTest(p,s=None,fileName=fileName,showTree=False)
     # Required when running unit tests externally.
 
 s = '''\
-class baseScannerClass:
+class BaseScanner:
 
         """The base class for all import scanner classes."""
 
@@ -13258,7 +13258,7 @@ c.importCommands.pythonUnitTest(p,s=s,showTree=False)
     # Required when running unit tests externally.
 
 s = '''\
-class baseScannerClass:
+class BaseScanner:
     def containsUnderindentedComment(self):
         a = 2
     # A true underindented comment.
@@ -13275,7 +13275,7 @@ c.importCommands.pythonUnitTest(p,s=s,showTree=False)
     # Required when running unit tests externally.
 
 s = '''\
-class baseScannerClass:
+class BaseScanner:
     def containsUnderindentedComment(self):
         a = 2
     #
@@ -13567,7 +13567,7 @@ for ext in g.app.extension_dict.keys():
     if 0:
         if language is None:
             print('no language for ext=%s' % (ext))
-#@+node:ekr.20111228125719.3909: *4* @test ic.baseScannerClass.insertIgnoreDirective
+#@+node:ekr.20111228125719.3909: *4* @test ic.BaseScanner.insertIgnoreDirective
 import leo.core.leoImport as leoImport
 
 def setup(p):
@@ -13575,7 +13575,7 @@ def setup(p):
         p.firstChild().doDelete()
 
 importCommands = c.importCommands
-bic = leoImport.baseScannerClass(importCommands,atAuto=False,language='python')
+bic = leoImport.BaseScanner(importCommands,atAuto=False,language='python')
 
 try:
     setup(p)
@@ -13590,7 +13590,7 @@ finally:
 import leo.core.leoImport as leoImport
 
 ic = c.importCommands
-bs = leoImport.baseScannerClass(ic,atAuto=True,language='html')
+bs = leoImport.BaseScanner(ic,atAuto=True,language='html')
 
 << define tokens >>
 
