@@ -263,7 +263,7 @@
 </v>
 <v t="ekr.20090212054250.5"><vh>Getting Leo</vh>
 <v t="ekr.20090212054250.6"><vh>Where can I get official releases of Leo?</vh></v>
-<v t="ekr.20080603124653.1"><vh>How do I use git to get the latest sources from Leo's launchpad site?</vh></v>
+<v t="ekr.20080603124653.1"><vh>How do I use git to get the latest sources from Leo's GitHub site?</vh></v>
 <v t="ekr.20090212054250.7"><vh>How can I get recent snapshots of Leo?</vh></v>
 </v>
 <v t="ekr.20070623145346"><vh>Installing Leo</vh>
@@ -1117,15 +1117,6 @@
 </v>
 </v>
 <v t="ekr.20140113190949.16690"><vh>Document dependencies (revise)</vh></v>
-<v t="ekr.20140212082408.16408"><vh>bzr-&gt;git</vh>
-<v t="ekr.20131008041326.16092"></v>
-<v t="ekr.20050830120007"></v>
-<v t="ekr.20090212054250.5"></v>
-<v t="ekr.20110531155858.20559"></v>
-<v t="ekr.20101025080245.6084"></v>
-<v t="ekr.20130807203905.16526"></v>
-<v t="EKR.20040524104904.140"></v>
-</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.100"></t>
@@ -4035,7 +4026,6 @@ new_leo_file_encoding
 .. _decorator:          http://www.python.org/peps/pep-0318.html
 .. _docutils:           http://docutils.sourceforge.net/
 .. _unicode:            http://www.unicode.org/
-.. .. _`bzr repository`:   https//code.launchpad.net/leo-editor/
 .. _`git repository`:   https://github.com/leo-editor/leo-editor
 
 .. ----- Relative links into Leo's documentation.
@@ -7734,7 +7724,7 @@ Leo.
 
 1. First, you need to get git from http://git-scm.com/.
 
-2. Get Leo from launchpad by doing::
+2. Get Leo from GitHub by doing::
 
     git clone https://github.com/leo-editor/leo-editor.git
 
@@ -10472,7 +10462,7 @@ The code_mode and doc_only_mode options determine the mode as follows:
 .. _`SourceForge`: https://sourceforge.net
 .. _`Leo's snapshots page`: http://www.greygreen.org/leo/
 .. _`nightly snapshot`: http://www.greygreen.org/leo/
-.. _`Leo's latest sources`: https://code.launchpad.net/leo-editor/
+.. _`Leo's latest sources`: https://github.com/leo-editor/leo-editor
 
 Leo's core code is always being improved and developed. Unit-testing
 ensures that the daily commits are as bug-free as possible. Almost all of
@@ -10500,7 +10490,11 @@ To summarize, you may get Leo in three ways:
    Installing git is easy, and once set up this is the easiest way
    to get the latest version of Leo's code::
    
-    git clone http://git-scm.com/
+        git clone http://git-scm.com/ (http access)
+    
+   or::
+   
+        git clone git@github.com:leo-editor/leo-editor.git (ssh access)
 </t>
 <t tx="ekr.20100817101952.4306">**Important**: This section tells how to set up git_ so that you can grab
 the latest sources using ``git clone``. However, you can get a nightly
@@ -10513,12 +10507,12 @@ quite safe and easy, and it's also a requirement if you want to contribute to
 Leo.
 
 1. First, you need to get git from http://git-scm.com/.
-2. Get Leo from launchpad by doing::
+2. Get Leo from GitHub by doing::
 
      git clone https://github.com/leo-editor/leo-editor.git
 
 And that's it! You can run leo/core/leo.py directly. When you want to refresh the
-code with latest modifications from Launchpad, run git pull.
+code with latest modifications from GitHub, run git pull.
 
 ..  If you make modifications to Leo (with the interest in sharing them with the Leo
 ..  community), you can check them in to your local branch by doing bzr checkin.
@@ -15098,7 +15092,11 @@ To summarize, you may get Leo in three ways:
 3. Download `Leo's latest sources`_ from `GitHub`_ using `git`_. Once
    git is installed, getting the latest version of Leo is very easy::
    
-    git clone https://github.com/leo-editor/leo-editor.git
+        git clone https://github.com/leo-editor/leo-editor.git (http access)
+    
+   or::
+
+        git clone git@github.com:leo-editor/leo-editor.git (ssh access)
 </t>
 <t tx="ekr.20120229094652.15098">.. .. http://groups.google.com/group/leo-editor/browse_thread/thread/92ae059cc5213ad3
 
@@ -19791,7 +19789,6 @@ which are documented in their docstrings. For example, viewrendered
 requires 'markdown' if one wishes to use markdown rendering, but it is
 optional. rss.py will not function without 'feedparser'. Etc.
 </t>
-<t tx="ekr.20140212082408.16408"></t>
 <t tx="ekr.20140216125129.16666"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
