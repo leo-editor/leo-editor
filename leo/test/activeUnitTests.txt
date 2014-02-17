@@ -11195,21 +11195,18 @@ val = g.guessExternalEditor(c)
 assert val,'no val' # This can be different on different platforms.
 #@+node:ekr.20120307133953.3947: *4* @test g.handleUrl
 import sys
-
 if sys.platform.startswith('win'):
-
-    fn1 = r'file://C:\leo.repo\trunk\leo\doc\LeoDocs.leo#Leo 4.10 Release notes'
-    
+    fn1 = g.os_path_finalize_join(g.app.loadDir,'..','doc','LeoDocs.leo')
+    assert g.os_path_exists(fn1),fn1
+    url1 = 'file://' + fn1 + '#Leo 4.10 Release notes'
     table = (
         (r'file://C:/prog/test.sh',             ['os_startfile']),
         (r'file://C:/prog',                     ['os_startfile']),
         (r'http://writemonkey.com/index.php',   ['browser']),
-        (fn1,                                   ['g.openWithFileName']), # ,'g.recursiveUNLSearch']),
+        (url1,                                  ['g.openWithFileName']), # ,'g.recursiveUNLSearch']),
         (r'#-->Before 4.10 b1',                 ['g.recursiveUNLSearch']),
     )
-    
     for url,aList in table:
-        
         g.handleUrl(c=c,p=c.p,url=url)
         for kind in aList:
             assert g.app.unitTestDict.get(kind),'kind: %s url: %s' % (
@@ -21029,6 +21026,9 @@ controller = macros.paramClass(c)
 controller.parameterize()
     # Not much will happen because there are no children.
     # However, this does test recent changes.
+#@+node:ekr.20140217055617.4230: *3* @test c.theScriptingController.atScriptNodes
+# This must be true even though @bool scriptingatscriptnodes is True in this file.
+assert not c.theScriptingController.atScriptNodes
 #@+node:ekr.20111104214341.3835: *3* @test all plugins have top-level init method
 '''Ensure all plugins have top-level init method *without* importing them.'''
 

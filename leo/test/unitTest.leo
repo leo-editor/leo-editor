@@ -4,7 +4,7 @@
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.48" body_secondary_ratio="0.80">
-	<global_window_position top="31" left="223" height="1026" width="1176"/>
+	<global_window_position top="34" left="486" height="1026" width="1176"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -19,6 +19,7 @@
 <v t="ekr.20110521073115.3496"><vh>@@color keyword4_color = pink</vh></v>
 </v>
 <v t="ekr.20111026111009.3972"><vh>@data import_xml_tags</vh></v>
+<v t="ekr.20140217055617.4231"><vh>@bool scriptingatscriptnodes = True</vh></v>
 <v t="ekr.20080324133327.2"><vh>@bool allow_middle_button_paste = True</vh></v>
 <v t="ekr.20101009105124.6195"><vh>@bool put_expansion_bits_in_leo_files = False</vh></v>
 <v t="ekr.20051013162226"><vh>@bool test_setting = True</vh></v>
@@ -157,7 +158,7 @@
 <v t="ekr.20101220161557.6014"><vh>@file inactiveTests.txt</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e382e3671017d71025808000000616e6e6f7461746571037d7104735508302e372e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e372e31342e3671097d710a5808000000616e6e6f74617465710b7d710c735508302e372e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285805000000302e382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e372e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e372e31342e3671097d710a5808000000616e6e6f74617465710b7d710c735808000000302e372e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20140206132559.4567"><vh>@test parse-body (fails)</vh>
 <v t="ekr.20140206132559.4560"><vh>before</vh></v>
@@ -1267,5 +1268,6 @@ try:
 finally:
     c.redraw()
 </t>
+<t tx="ekr.20140217055617.4231"># For a unit test.</t>
 </tnodes>
 </leo_file>
