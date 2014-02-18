@@ -4286,7 +4286,7 @@ def findTopLevelNode(c,headline):
             return p.copy()
     return c.nullPosition()
 #@+node:EKR.20040614071102.1: *3* g.getScript
-def getScript (c,p,useSelectedText=True,forcePythonSentinels=True,useSentinels=True,forceEncoding=True):
+def getScript (c,p,useSelectedText=True,forcePythonSentinels=True,useSentinels=True):
 
     '''Return the expansion of the selected text of node p.
     Return the expansion of all of node p's body text if
@@ -4309,10 +4309,11 @@ def getScript (c,p,useSelectedText=True,forcePythonSentinels=True,useSentinels=T
         # Remove extra leading whitespace so the user may execute indented code.
         s = g.removeExtraLws(s,c.tab_width)
         if s.strip():
-            if not g.unitTesting and forceEncoding:
-                aList = g.get_directives_dict_list(p)
-                encoding = scanAtEncodingDirectives(aList) or 'utf-8'
-                s = g.insertCodingLine(encoding,s)
+            # This causes too many special cases.
+            # if not g.unitTesting and forceEncoding:
+                # aList = g.get_directives_dict_list(p)
+                # encoding = scanAtEncodingDirectives(aList) or 'utf-8'
+                # s = g.insertCodingLine(encoding,s)
             g.app.scriptDict["script1"]=s
             # Important: converts unicode to utf-8 encoded strings.
             script = at.writeFromString(p.copy(),s,
@@ -4732,7 +4733,7 @@ def findTestScript(c,h,where=None,warn=True):
         p = g.findNodeAnywhere(c,h)
 
     if p:
-        return g.getScript(c,p,forceEncoding=False)
+        return g.getScript(c,p)
     else:
         if warn: g.trace('Not found',h)
         return None
