@@ -99,6 +99,7 @@ spell-as-you-type-next
 
 spell-as-you-type-undo
   Change the word behind (left of, for ltr languages) the cursor to
+.. @+node:ekr.20140218040104.16759: *3* added p.nosentinels
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
