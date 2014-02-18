@@ -226,6 +226,7 @@
 <v t="ekr.20090529141856.4777"><vh>@test Javascript-2</vh></v>
 <v t="ekr.20090529141856.4778"><vh>@test Javascript-3</vh></v>
 <v t="ekr.20140218042220.4347"><vh>@test Javascript-4</vh></v>
+<v t="ekr.20140218151418.4353"><vh>@test Javascript-5</vh></v>
 </v>
 <v t="ekr.20121011094154.3906"><vh>TypeScript tests</vh>
 <v t="ekr.20121011094154.3911"><vh>@test TypeScript class</vh></v>
@@ -716,7 +717,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="8"></t>
+<t tx="ekr.20070417092935" str_leo_pos="10"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -3509,6 +3510,24 @@ s = '''
 g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.htmlUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20140218151418.4353">s = '''\
+var express = require('express');
+
+var app = express.createServer(express.logger());
+
+app.get('/', function(request, response) {
+response.send('Hello World!');
+});
+
+var port = process.env.PORT || 5000;
+app.listen(port, function() {
+console.log("Listening on " + port);
+});
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
 </t>
 </tnodes>
 </leo_file>
