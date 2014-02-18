@@ -2007,8 +2007,8 @@ class BaseScanner (scanUtility):
     def reportMismatch (self,lines1,lines2,bad_i1,bad_i2):
 
         # g.trace('**',bad_i1,bad_i2,g.callers())
-        trace = True # This causes traces for *non-failing* unit tests.
-        if True and len(lines1) < 100:
+        trace = False # This causes traces for *non-failing* unit tests.
+        if trace and False and len(lines1) < 100:
             g.trace('lines1...\n',''.join(lines1),'\n')
             g.trace('lines2...\n',''.join(lines2),'\n')
             return
@@ -4098,9 +4098,12 @@ class JavaScriptScanner (BaseScanner):
 
         For JavaScript this means ignoring newlines.
         '''
-        # g.trace(tokens)
-        return [(kind,val,line_number) for (kind,val,line_number) in tokens
-                if kind not in ('nl',)] # 'ws',
+        if 1: # Permissive: ignore added newlines.
+            return [(kind,val,line_number) for (kind,val,line_number) in tokens
+                    if kind not in ('nl',)] # 'ws',
+        else:
+            return tokens
+        
     #@+node:ekr.20071102150937: *4* startsString (JavaScriptScanner)
     def startsString(self,s,i):
         '''Return True if s[i:] starts a JavaScript string.'''
@@ -4161,9 +4164,11 @@ class JavaScriptScanner (BaseScanner):
         elif g.match(s,i,'\n'):
             return i+1
         else:
-            # This is a hack, but it does work in some cases.
-            # It may be better to allow inserted newlines.
-            # i = g.skip_line(s,i)
+            # A hack, but probably good enough in most cases.
+            while i < len(s) and s[i] in ' \t()};':
+                i += 1
+            if g.match(s,i,'\n'):
+                i += 1
             return i
     #@-others
 #@+node:ekr.20070711104241.3: *3* class pascalScanner
@@ -4654,6 +4659,7 @@ class pythonScanner (BaseScanner):
 #@+node:ekr.20131219090550.16554: *3* class NewPythonScanner (BaseScanner)
 class NewPythonScanner (BaseScanner):
     '''A line-oriented scanner for Python.'''
+    # Important: this probably will never be used.
     #@+others
     #@+node:ekr.20131219090550.16575: *4*  __init__ (pythonScanner)
     def __init__ (self,importCommands,atAuto):
@@ -4704,7 +4710,7 @@ class NewPythonScanner (BaseScanner):
     #@+node:ekr.20131219090550.16563: *4* scan_lines & helpers
     def scan_lines (self,s,root):
         '''Parse lines into an outline.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         string_delim = None # In a string if not None.
         # Loop invariant: d is the Data object at the top of the stack.
         d = self.Data('root',[],0,root)
