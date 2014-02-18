@@ -14744,6 +14744,7 @@ finally:
     c.chapterController.selectChapterByName('main',collapse=True,create=False)
 #@+node:ekr.20140218045755.4348: *4* @test p.nosentinels
 @language python
+@tabwidth -4
 
 def not_a_sentinel(x):
     pass
@@ -14751,7 +14752,8 @@ def not_a_sentinel(x):
 def spam():
     pass
 
-s1 = ''.join([z for z in p.b if not z.startswith('@language')])
+# s1 = ''.join([z for z in g.splitLines(p.b) if not z.startswith('@language')])
+s1 = ''.join(g.splitLines(p.b)[2:])
 s2 = p.nosentinels   
 assert s1 == s2,'expected:\n%s\ngot:\n%s' % (s1,s2)
 #@+node:ekr.20040802071519: *4* @test p.setBodyString

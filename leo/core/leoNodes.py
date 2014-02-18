@@ -400,11 +400,8 @@ class position (object):
         doc = "position property returning the script formed by p and its descendants")
     #@+node:ekr.20140218040104.16761: *4* p.nosentinels property
     def __get_nosentinels(self):
-        c,p = self.v.context,self
-        if c and c.importCommands:
-            return c.importCommands.removeSentinelLines(p.b,'@',None,None)
-        else:
-            return p.b
+        p = self
+        return ''.join([z for z in g.splitLines(p.b) if not g.isDirective(z)])
 
     nosentinels = property(
         __get_nosentinels, # __set_nosentinels

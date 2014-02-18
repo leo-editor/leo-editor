@@ -302,6 +302,7 @@
 </v>
 <v t="ekr.20090529141856.4774"></v>
 <v t="ekr.20140218042220.4347"></v>
+<v t="ekr.20140218045755.4348"><vh>@test p.nosentinels</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -717,7 +718,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="8"></t>
+<t tx="ekr.20070417092935" str_leo_pos="13"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -3499,6 +3500,20 @@ var c3 = (function () {
 
 g.app.unitTestDict ['expectedErrors'] = 0
 c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20140218045755.4348">@language python
+@tabwidth -4
+
+def not_a_sentinel(x):
+    pass
+@not_a_sentinel
+def spam():
+    pass
+
+# s1 = ''.join([z for z in g.splitLines(p.b) if not z.startswith('@language')])
+s1 = ''.join(g.splitLines(p.b)[2:])
+s2 = p.nosentinels   
+assert s1 == s2,'expected:\n%s\ngot:\n%s' % (s1,s2)
 </t>
 </tnodes>
 </leo_file>
