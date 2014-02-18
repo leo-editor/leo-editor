@@ -820,6 +820,14 @@ plugins Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`sftp` Module
+------------------
+
+.. automodule:: leo.plugins.sftp
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`slideshow` Module
 -----------------------
 
