@@ -1775,13 +1775,13 @@ class leoTree:
     #@+node:ekr.20040803072955.90: *4* head key handlers (leoTree)
     #@+node:ekr.20040803072955.91: *5* onHeadChanged (leoTree Not used: see nativeTree)
     # Tricky code: do not change without careful thought and testing.
-    # Important: This code *is* used.  See also, nativeTree.onHeadChanged.
-
+    # Important: This code *is* used by the leoBridge module.
+    # See also, nativeTree.onHeadChanged.
     def onHeadChanged (self,p,undoType='Typing',s=None,e=None): # e used in baseNativeTree.
-
-        '''Officially change a headline.
-        Set the old undo text to the previous revert point.'''
-
+        '''
+        Officially change a headline.
+        Set the old undo text to the previous revert point.
+        '''
         trace = False and not g.unitTesting
         c = self.c ; u = c.undoer
         w = self.edit_widget(p)
@@ -1840,7 +1840,7 @@ class leoTree:
                 dirtyVnodeList=dirtyVnodeList,inHead=True)
         if changed:
             c.redraw_after_head_changed()
-            c.treeEditFocusHelper()
+            # Fix bug 1280689: don't call the non-existent c.treeEditFocusHelper
         g.doHook("headkey2",c=c,p=p,v=p,ch=ch)
     #@+node:ekr.20040803072955.88: *5* onHeadlineKey
     def onHeadlineKey (self,event):

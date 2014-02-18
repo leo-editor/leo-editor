@@ -234,7 +234,7 @@ class leoGui:
     def get_window_info (self,window):
         """Return the window information."""
         self.oops()
-    #@+node:ekr.20070212145124: *5* getFullVersion
+    #@+node:ekr.20070212145124: *5* getFullVersion (leoGui)
     def getFullVersion (self,c=None):
 
         return 'leoGui: dummy version'
