@@ -1748,7 +1748,7 @@ class BaseScanner (scanUtility):
         # Compute language ivars.
         delim1,junk,junk = g.set_delims_from_language(language)
         self.comment_delim = delim1
-        # May be overridden in subclasses.
+        # May be overridden in subclasses...
         self.alternate_language = alternate_language
             # Optional: for @language.
         self.anonymousClasses = []
@@ -2007,8 +2007,8 @@ class BaseScanner (scanUtility):
     def reportMismatch (self,lines1,lines2,bad_i1,bad_i2):
 
         # g.trace('**',bad_i1,bad_i2,g.callers())
-        trace = False # This causes traces for *non-failing* unit tests.
-        if False and len(lines1) < 100:
+        trace = True # This causes traces for *non-failing* unit tests.
+        if True and len(lines1) < 100:
             g.trace('lines1...\n',''.join(lines1),'\n')
             g.trace('lines2...\n',''.join(lines2),'\n')
             return
@@ -2058,7 +2058,7 @@ class BaseScanner (scanUtility):
     #@+node:ekr.20111101092301.16729: *5* compareTokens
     def compareTokens(self,tokens1,tokens2):
 
-        trace = True and not g.unitTesting
+        trace = False # and not g.unitTesting
         verbose = False
         i,n1,n2 = 0,len(tokens1),len(tokens2)
         fail_n1,fail_n2 = -1,-1
@@ -4091,6 +4091,16 @@ class JavaScriptScanner (BaseScanner):
         self.classTags = []
         self.functionTags = ['function',]
         self.sigFailTokens = [';',]
+    #@+node:ekr.20140218053022.16734: *4* filterTokens (JavaScriptScanner)
+    def filterTokens (self,tokens):
+
+        '''Filter tokens as needed for correct comparisons.
+
+        For JavaScript this means ignoring newlines.
+        '''
+        # g.trace(tokens)
+        return [(kind,val,line_number) for (kind,val,line_number) in tokens
+                if kind not in ('nl',)] # 'ws',
     #@+node:ekr.20071102150937: *4* startsString (JavaScriptScanner)
     def startsString(self,s,i):
         '''Return True if s[i:] starts a JavaScript string.'''
@@ -4151,9 +4161,9 @@ class JavaScriptScanner (BaseScanner):
         elif g.match(s,i,'\n'):
             return i+1
         else:
-            # g.trace(s[i:],g.callers())
             # This is a hack, but it does work in some cases.
-            i = g.skip_line(s,i)
+            # It may be better to allow inserted newlines.
+            # i = g.skip_line(s,i)
             return i
     #@-others
 #@+node:ekr.20070711104241.3: *3* class pascalScanner

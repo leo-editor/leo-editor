@@ -12631,7 +12631,7 @@ function restart()
 g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20140218042220.4347: *6* @test Javascript-4 (fails)
+#@+node:ekr.20140218042220.4347: *6* @test Javascript-4
 s = '''\
 
 var c3 = (function () {
