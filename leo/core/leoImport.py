@@ -2923,9 +2923,7 @@ class BaseScanner (scanUtility):
         return start+1 # 2012/04/04: Ensure progress in caller.
     #@+node:ekr.20070712091019: *5* skipCodeBlock (BaseScanner)
     def skipCodeBlock (self,s,i,kind):
-
         '''Skip the code block in a function or class definition.'''
-
         trace = False
         start = i
         i = self.skipBlock(s,i,delim1=None,delim2=None)
@@ -3046,19 +3044,18 @@ class BaseScanner (scanUtility):
         return g.skip_id(s,i,chars=self.extraIdChars)
     #@+node:ekr.20070730134936: *5* skipNewline (BaseScanner)
     def skipNewline(self,s,i,kind):
-
-        '''Skip whitespace and comments up to a newline, then skip the newline.
-        Issue an error if no newline is found.'''
-
+        '''
+        Called by skipCodeBlock to terminate a function defintion.
+        Skip whitespace and comments up to a newline, then skip the newline.
+        Issue an error if no newline is found.
+        '''
         while i < len(s):
             i = self.skipWs(s,i)
             if self.startsComment(s,i):
                 i = self.skipComment(s,i)
             else: break
-
         if i >= len(s):
             return len(s)
-
         if g.match(s,i,'\n'):
             i += 1
         else:
@@ -3206,7 +3203,6 @@ class BaseScanner (scanUtility):
             if trace and verbose: g.trace('no args',g.get_line(s,i))
             return False
         i = g.skip_ws_and_nl(s,i)
-
         # Skip the tail of the signature
         i, ok = self.skipSigTail(s,i,kind)
         if not ok:
@@ -4141,7 +4137,9 @@ class JavaScriptScanner (BaseScanner):
     def skipNewline(self,s,i,kind):
         '''
         Skip whitespace and comments up to a newline, then skip the newline.
-        Unlike the base class, we do *not* issue an error if no newline is found.
+        Unlike the base class:
+        - we always skip to a newline, if any.
+        - we do *not* issue an error if no newline is found.
         '''
         while i < len(s):
             i = self.skipWs(s,i)
@@ -4153,7 +4151,9 @@ class JavaScriptScanner (BaseScanner):
         elif g.match(s,i,'\n'):
             return i+1
         else:
-            g.trace(s[i:],g.callers())
+            # g.trace(s[i:],g.callers())
+            # This is a hack, but it does work in some cases.
+            i = g.skip_line(s,i)
             return i
     #@-others
 #@+node:ekr.20070711104241.3: *3* class pascalScanner
