@@ -3213,6 +3213,7 @@ printing.py
 # script_io_to_body.py
 # scripts_menu.py
 # setHomeDirectory.py
+# sftp.py
 # slideshow.py
 # spydershell.py
 # startfile.py
