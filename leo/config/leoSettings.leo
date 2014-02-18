@@ -94,7 +94,7 @@
 <v t="ekr.20041120155431.2"><vh>\@type type-name: script: script-name</vh></v>
 </v>
 <v t="ekr.20061011082224"><vh>About myLeoSettings.leo</vh></v>
-<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
+<v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = False</vh></v>
 <v t="ekr.20130924110246.13745"><vh>@bool scripting-abbreviations = False</vh></v>
@@ -1132,6 +1132,9 @@
 <v t="ekr.20060930111325.7"><vh>@bool scripting-create-run-script-button = False</vh></v>
 <v t="ekr.20060930112030"><vh>@bool scripting-create-script-button-button = True</vh></v>
 <v t="ekr.20060930111325.1"><vh>@int scripting-max-button-size = 18</vh></v>
+</v>
+<v t="peckj.20140218151502.4819"><vh>sftp plugin</vh>
+<v t="peckj.20140218151502.4820"><vh>@bool sftp-cache-credentials = True</vh></v>
 </v>
 <v t="tbrown.20130310101647.34743"><vh>valuespace plugin</vh>
 <v t="tbrown.20130310101647.34744"><vh>@bool valuespace_vs_eval_redirect = True</vh></v>
@@ -5976,6 +5979,8 @@ True: create minibuffer commands for each @rclick node.
 Default False.</t>
 <t tx="peckj.20140113150237.4603"></t>
 <t tx="peckj.20140113150237.4604">One of 'compare', 'ndiff', or 'unified_diff'.  See the nodediff.py docstring for more info.</t>
+<t tx="peckj.20140218151502.4819"></t>
+<t tx="peckj.20140218151502.4820">Set to False to make sftp.py prompt you for credentials every time.</t>
 <t tx="tbrown.20081003103821.1">True: if the same file (basename) occurs more than once in the recent files
 list, i.e. on two different paths it will appear as a submenu with the basename
 as its heading, and the two (or more) paths as its entries.  This is easier to
