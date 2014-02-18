@@ -202,6 +202,7 @@
 <v t="ekr.20111107102431.3849"><vh>@@test html whitespace bug</vh></v>
 <v t="ekr.20111029112647.4101"><vh>@test html: lowercase tags</vh></v>
 <v t="ekr.20111109143012.3839"><vh>@test html: multiple tags on a line</vh></v>
+<v t="ekr.20140218122321.4349"><vh>@test html: multple node starts on a line</vh></v>
 <v t="ekr.20111102164107.3975"><vh>@test html: underindented comment</vh></v>
 <v t="ekr.20111029120441.3982"><vh>@test html: uppercase tags</vh></v>
 <v t="ekr.20111112103320.3849"><vh>@test html: improperly nested tags</vh></v>
@@ -300,7 +301,6 @@
 <v t="ekr.20111104114406.3834"><vh>&lt;&lt; define expected &gt;&gt;</vh></v>
 </v>
 </v>
-<v t="ekr.20090529141856.4774"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -3498,6 +3498,17 @@ var c3 = (function () {
 
 g.app.unitTestDict ['expectedErrors'] = 0
 c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
+</t>
+<t tx="ekr.20140218122321.4349">@language html
+
+s = '''
+&lt;!-- tags that start nodes: html,body,head,div,table,nodeA,nodeB --&gt;
+&lt;html&gt;&lt;head&gt;headline&lt;/head&gt;&lt;body&gt;body&lt;/body&gt;&lt;/html&gt;
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 </t>
 </tnodes>
 </leo_file>

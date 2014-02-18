@@ -12250,6 +12250,17 @@ s = '''
 g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.htmlUnitTest(p,s=s,showTree=False)
+#@+node:ekr.20140218122321.4349: *6* @test html: multple node starts on a line
+@language html
+
+s = '''
+<!-- tags that start nodes: html,body,head,div,table,nodeA,nodeB -->
+<html><head>headline</head><body>body</body></html>
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+
+c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20111102164107.3975: *6* @test html: underindented comment
 s = '''\
 

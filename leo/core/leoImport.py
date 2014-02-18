@@ -3161,7 +3161,7 @@ class BaseScanner (scanUtility):
         Sets sigStart, sigEnd, sigId and codeEnd ivars.
         '''
         trace = False or self.trace
-        verbose = False # kind=='function'
+        verbose = True # kind=='function'
         self.codeEnd = self.sigEnd = self.sigId = None
         self.sigStart = i
         # Underindented lines can happen in any language, not just Python.
@@ -3224,6 +3224,9 @@ class BaseScanner (scanUtility):
         i,ok = self.skipCodeBlock(s,i,kind)
         if not ok: return False
             # skipCodeBlock skips the trailing delim.
+        # This assert ensures that all class/function/method definitions end with a newline.
+        # It would be False for language like html/xml, but they override this method.
+        assert i > 0 and s[i-1] == '\n' or i == len(s)
         # Success: set the ivars.
         self.sigStart = self.adjustDefStart(s,self.sigStart)
         self.codeEnd = i
