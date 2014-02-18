@@ -524,7 +524,7 @@ class leoImportCommands (scanUtility):
         theFile.close()
     #@+node:ekr.20031218072017.3300: *4* ic.removeSentinelsCommand
     def removeSentinelsCommand (self,paths,toString=False):
-
+        
         c = self.c
 
         self.setEncoding()

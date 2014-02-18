@@ -127,11 +127,11 @@ def getRecentCoreList():
         # 'leoFrame',
         # 'leoGlobals',
         # 'leoGui',
-        # 'leoImport',
+        'leoImport',
         # 'leoIPython',
         # 'leoKeys',
         # 'leoMenu',
-        # 'leoNodes',
+        'leoNodes',
         # 'leoPlugins',
         # 'leoRst',
         # 'leoSessions',
@@ -139,7 +139,7 @@ def getRecentCoreList():
         # 'leoTangle',
         # 'leoTest',
         # 'leoUndo',
-        'leoViews',
+        # 'leoViews',
         # 'leoVim',
 )
 #@+node:ekr.20120528063627.10137: ** getRecentPluginsList

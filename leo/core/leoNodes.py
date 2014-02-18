@@ -347,12 +347,12 @@ class position (object):
     #@+node:ekr.20090128083459.74: *3* p.Properties
     #@+node:ekr.20090128083459.75: *4* p.b property
     def __get_b(self):
-
+        '''Return the body text of a position.'''
         p = self
         return p.bodyString()
 
     def __set_b(self,val):
-
+        '''Set the body text of a position.'''
         p = self ; c = p.v and p.v.context
         if c:
             c.setBodyString(p, val)
@@ -378,7 +378,7 @@ class position (object):
 
     h = property(
         __get_h, __set_h,
-        doc = "position headline string property")  
+        doc = "position property returning the headline string")  
     #@+node:ekr.20090215165030.3: *4* p.gnx property
     def __get_gnx(self):
         p = self
@@ -397,7 +397,18 @@ class position (object):
 
     script = property(
         __get_script, # __set_script,
-        doc = "position script property")
+        doc = "position property returning the script formed by p and its descendants")
+    #@+node:ekr.20140218040104.16761: *4* p.nosentinels property
+    def __get_nosentinels(self):
+        c,p = self.v.context,self
+        if c and c.importCommands:
+            return c.importCommands.removeSentinelLines(p.b,'@',None,None)
+        else:
+            return p.b
+
+    nosentinels = property(
+        __get_nosentinels, # __set_nosentinels
+        doc = "position property returning the body text without sentinels")
     #@+node:ekr.20040306212636: *3* p.Getters
     #@+node:ekr.20040306210951: *4* p.vnode proxies
     #@+node:ekr.20040306211032: *5* p.Comparisons
