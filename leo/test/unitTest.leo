@@ -224,6 +224,7 @@
 <v t="ekr.20090529141856.4776"><vh>@test Javascript-regex-1</vh></v>
 <v t="ekr.20090529141856.4777"><vh>@test Javascript-2</vh></v>
 <v t="ekr.20090529141856.4778"><vh>@test Javascript-3</vh></v>
+<v t="ekr.20140218042220.4347"><vh>@test Javascript-4 (fails)</vh></v>
 </v>
 <v t="ekr.20121011094154.3906"><vh>TypeScript tests</vh>
 <v t="ekr.20121011094154.3911"><vh>@test TypeScript class</vh></v>
@@ -299,6 +300,8 @@
 <v t="ekr.20111104114406.3834"><vh>&lt;&lt; define expected &gt;&gt;</vh></v>
 </v>
 </v>
+<v t="ekr.20090529141856.4774"></v>
+<v t="ekr.20140218042220.4347"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -714,7 +717,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="10"></t>
+<t tx="ekr.20070417092935" str_leo_pos="12"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -3477,5 +3480,25 @@ finally:
     c.redraw()
 </t>
 <t tx="ekr.20140217055617.4231"># For a unit test.</t>
+<t tx="ekr.20140218042220.4347">s = '''\
+
+var c3 = (function () {
+    "use strict";
+
+    // Globals
+    var c3 = { version: "0.0.1"   };
+
+    c3.someFunction = function () {
+        console.log("Just a demo...");
+    };
+
+    return c3;
+}());
+
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
+</t>
 </tnodes>
 </leo_file>

@@ -12631,6 +12631,26 @@ function restart()
 g.app.unitTestDict ['expectedErrors'] = 0
 
 c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
+#@+node:ekr.20140218042220.4347: *6* @test Javascript-4 (fails)
+s = '''\
+
+var c3 = (function () {
+    "use strict";
+
+    // Globals
+    var c3 = { version: "0.0.1"   };
+
+    c3.someFunction = function () {
+        console.log("Just a demo...");
+    };
+
+    return c3;
+}());
+
+'''
+
+g.app.unitTestDict ['expectedErrors'] = 0
+c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20121011094154.3906: *5* TypeScript tests
 @language python
 #@+node:ekr.20121011094154.3911: *6* @test TypeScript class
