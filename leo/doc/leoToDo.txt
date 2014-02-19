@@ -2052,13 +2052,8 @@ def getVimArg(self,event,specialStroke=None,specialFunc=None):
             # ring bell?
             if trace: g.trace('invalid char') ###
         c.bodyWantsFocus()
-.. @+node:ekr.20140216071333.16637: *3* new @auto code generation
-# Simplify code generation when new_gen is True in leoImport.py.
 .. @+node:ekr.20140216071333.16640: *3* Important features
 @language rest
-.. @+node:ekr.20140216071333.16642: *4* Improve @auto
-- Look at Eclipse # @name.
-- Allow section refs (if enabled by 
 .. @+node:ekr.20140216071333.16644: *4* leo.core.qt module to handle Qt5
 Must convert QtGui to QtWidgets.
 .. @+node:ekr.20140115052524.16699: *4* Allow clones *anywhere* in @file nodes

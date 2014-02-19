@@ -7,10 +7,6 @@
 #@@tabwidth -4
 #@@pagewidth 70
 #@@encoding utf-8
-#@+<< leoImport switches >>
-#@+node:ekr.20140218040104.16757: ** << leoImport switches >>
-new_gen = True
-#@-<< leoImport switches >>
 #@+<< how to write a new importer >>
 #@+node:ekr.20100728074713.5840: ** << how to write a new importer >>
 #@@nocolor-node
