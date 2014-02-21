@@ -10950,23 +10950,6 @@ def OLD_create_dispatch_d(self):
     'vim_z': self.vim_z,
     }
     return d
-.. @+node:ekr.20131111054309.16528: *4* vc.exec_
-def exec_(self,command,n1,n2,tail):
-    
-    trace = True and not g.unitTesting
-    d = self.commands_d.get(command,{})
-        # Keys are single letters.
-    command_name = d.get('command_name')
-    func = self.dispatch_d.get(command_name,self.oops)
-    # Set ivars describing the command.
-    self.command = command
-    self.func = func
-    self.n1 = n1
-    self.n2 = n2
-    self.tail = tail
-    if trace: self.trace_command()
-    for i in range(n1 or 1):
-        func()
 .. @+node:ekr.20131109170017.46983: *4* vc.create_dicts & helpers
 def create_dicts(self):
 
@@ -11125,9 +11108,234 @@ def getData(self,s):
             return []
     else:
         return c.config.getData(s) or []
+.. @+node:ekr.20131109170017.46984: *4* vc.dump
+def dump(self,name,d):
+    '''Dump a dictionary.'''
+    print('\nDump of %s' % name)
+    for key in sorted(d.keys()):
+        val = d.get(key)
+        if type(val) in (type([]),type((),)):
+            val = ' '.join([z for z in val if z])
+            print('%5s %s' % (key,val))
+        elif type(val) == type({}):
+            result = []
+            for key2 in sorted(val.keys()):
+                val2 = val.get(key2)
+                if type(val2) in (type([]),type((),)):
+                    # val2 = ','.join([repr(z) if z is None else z for z in val2])
+                    val2 = self.repr_list(val2)
+                pad = ' '*2
+                if val2:
+                    result.append('%s%s %s' % (pad,key2,val2))
+            val3 = '\n'.join(result)
+            if len(result) == 1:
+                print('%s %s' % (key,val3))
+            else:
+                print('%s\n%s' % (key,val3))
+        else:
+            print('%5s %s' % (key,val))
+.. @+node:ekr.20131111054309.16528: *4* vc.exec_
+def exec_(self,command,n1,n2,tail):
+    
+    trace = True and not g.unitTesting
+    d = self.commands_d.get(command,{})
+        # Keys are single letters.
+    command_name = d.get('command_name')
+    func = self.dispatch_d.get(command_name,self.oops)
+    # Set ivars describing the command.
+    self.command = command
+    self.func = func
+    self.n1 = n1
+    self.n2 = n2
+    self.tail = tail
+    if trace: self.trace_command()
+    for i in range(n1 or 1):
+        func()
+.. @+node:ekr.20131112061353.16543: *4* vc.match_motion_tails
+def match_motion_tails(self,tail,pattern,tails):
+    
+    trace = False
+    # Simpler than match_tails because the tail can have no motion pattern.
+    if pattern == 'motion':
+        g.trace('can not happen',pattern,tail)
+    if trace: g.trace('s: %s pattern: %s tails: [%s]' % (
+        tail,pattern or 'None',self.repr_list(tails)))
+    if tail:
+        if tail in tails:
+            status = 'done' # A complete match.  Pattern irrelevant.
+        else:
+            # First, see if tail is a prefix of any item of tails.
+            for item in tails:
+                if item is not None and item.startswith(tail):
+                    status = 'scan'
+                    break
+            else:
+                if None in tails:
+                    # Handle the None case. Match the tail against the pattern.
+                    status,junk,junk = self.scan_any_pattern(pattern,tail)
+                else:
+                    status = 'oops'
+    elif None in tails:
+        status = 'scan' if pattern else 'done'
+    else:
+        status = 'scan' if tails else 'oops'
+    assert status in ('done','oops','scan'),status
+    return status
+    
+.. @+node:ekr.20131112061353.16541: *4* vc.match_tails
+def match_tails(self,s,pattern,tails):
+    '''s is the tail of a command. See if it matches any tail in tails.'''
+    trace = False
+    n2,status,tail = None,'oops',None
+    if trace: g.trace('s: %s tails: [%s]' % (s or 'None',self.repr_list(tails)))
+    if s[1:] in tails:
+        if trace: g.trace('complete match: %s' % s)
+        return 'done',n2,s # A complete match.  Pattern irrelevant.
+    # See if any head string (longest first!) is a prefix of any tail.
+    i = len(s)
+    while i >= 0:
+        head = s[1:i]
+        i -= 1
+        for tail in tails:
+            if tail is not None and tail.startswith(head):
+                if trace: g.trace('prefix match: %s head: %s tail %s' % (
+                    s,head,tail))
+                motion = s[i+1:]
+                if motion:
+                    if None in tails and pattern:
+                        status,tail,n2 = self.scan_any_pattern(pattern,motion)
+                        if trace: g.trace('pattern match: %s %s head: %s tail: %s' % (
+                            s,status,head,tail))
+                        return status,n2,tail
+                    else:
+                        if trace: g.trace('**None not in tails**: %s head %s tail: %s' % (
+                            s,head,tail))
+                        return 'oops',n2,s
+                else:
+                    return 'scan',n2,s
+    # Handle the None case. Try to match any tail against the pattern.
+    if None in tails and pattern:
+        status,tail,n2 = self.scan_any_pattern(pattern,s[1:])
+        if trace: g.trace('pattern match: %s %s' % (status,s))
+        return status,n2,tail
+    else:
+        if trace: g.trace('no match: %s' % s)
+        return 'oops',n2,s
 .. @+node:ekr.20131112061353.16542: *4* vc.repr_list
 def repr_list(self,aList):
 
     return ','.join([repr(z) if z is None else z for z in aList])
+.. @+node:ekr.20131110050932.16533: *4* vc.scan & helpers
+def scan(self,s):
+    
+    trace = False ; verbose = True
+    n1,n2,tail,status = None,None,None,'oops'
+    i,n1 = self.scan_count(s)
+    full_command = s[i:]
+    if not full_command:
+        status = 'scan' # Still looking for the start of a command.
+        if trace: g.trace('s: %s status: %s (no command)' % (s,status))
+        return status,n1,full_command,n2,tail
+    tail = full_command[1:]
+    ch = command = full_command[0]
+    d = self.commands_d.get(ch)
+        # d is an innder dict.
+    if not d:
+        if trace: g.trace('s: %s status: %s (invalid command)' % (s,status))
+        return 'oops',n1,command,n2,tail
+    tails = d.get('tail_chars') or []
+        # A list of strings that can follow ch.
+        # May include None, in which case pattern may fire.
+    pattern = d.get('tail_pattern')
+    if trace and verbose: g.trace('command: %s pattern: %s tail: %s tails: [%s]' % (
+        command,pattern,repr(tail),self.repr_list(tails)))
+    if tail:
+        status,n2,tail = self.match_tails(full_command,pattern,tails)
+    elif None in tails and pattern:
+        status = 'scan'
+    else:
+        status = 'scan' if tails else 'done'
+    if trace: g.trace('s: %s status: %s n1: %s command: %s n2: %s tail: %s' % (
+        s,status,n1,command,n2,tail))
+    assert command is None or len(command) == 1
+        # Commands are single letters!
+    return status,n1,command,n2,tail
+.. @+node:ekr.20131110050932.16540: *5* vc.scan_count
+def scan_count(self,s):
+
+    # Zero is a command.  It does not start repeat counts.
+    if s and s[0].isdigit() and s[0] != '0':
+        i  = 0
+        while i < len(s) and s[i].isdigit():
+            i += 1
+        return i,int(s[:i])
+    else:
+        return 0,None
+.. @+node:ekr.20131112104359.16686: *5* vc.simulate_typing
+def simulate_typing (self,s):
+    '''Simulate typing of command s.
+    Return (status,head) for increasing prefixes of s, including s.
+    '''
+    
+    trace = False
+    i = 1
+    while i < len(s):
+        head = s[:i]
+        i += 1
+        if trace: g.trace('scan',s,head)
+        yield 'scan',head
+    if trace: g.trace('done',s)
+    yield 'done',s
+.. @+node:ekr.20131110050932.16559: *4* vc.scan_any_pattern
+def scan_any_pattern(self,pattern,s):
+    '''Scan s, looking for the indicated pattern.'''
+    trace = False
+    if trace: g.trace(pattern,s)
+    if pattern == 'motion':
+        status,n2,result = self.scan_motion(s)
+    elif s and len(s) == 1 and (
+        pattern == 'char' and s in self.chars or
+        pattern == 'letter' and s in self.letters or
+        pattern == 'register' and s in self.register_names
+    ):
+        n2,result,status = None,s,'done'
+    else:
+        n2,result,status = None,s,'oops'
+    if trace: g.trace(status,pattern,s,result,n2)
+    return status,result,n2
+.. @+node:ekr.20131110050932.16558: *4* vc.scan_motion
+def scan_motion(self,s):
+    
+    trace = False
+    i,n2 = self.scan_count(s)
+    motion = s[i:]
+    if motion:
+        ch = motion[:1]
+        tail = motion[1:]
+        d = self.motions_d.get(ch,{})
+            # motions_d: keys are single characters, values are inner dicts.
+        tails = d.get('tail_chars',[])
+        pattern = d.get('tail_pattern')
+        status = self.match_motion_tails(tail,pattern,tails)
+    else:
+        status = 'scan'
+    if trace: g.trace(status,n2,motion)
+    return status,n2,motion
+.. @+node:ekr.20131110050932.16501: *4* vc.split_arg_line
+def split_arg_line(self,s):
+    '''
+    Split line s into a head and tail.
+    The head is a python id; the tail is everything else.
+    '''
+    i = g.skip_id(s,0,chars='_')
+    head = s[:i]
+    tail = s[i:].strip()
+    return head,tail
+.. @+node:ekr.20131111061547.16462: *4* vc.trace_command
+def trace_command(self):
+    
+    func_name = self.func and self.func.__name__ or 'oops'
+    print('%s func: %s command: %r n1: %r n2: %r tail: %r' % (
+        g.callers(1),func_name,self.command,self.n1,self.n2,self.tail))
 .. @-all
 .. @-leo
