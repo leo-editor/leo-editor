@@ -167,6 +167,22 @@
 <v t="ekr.20140206132559.4566"><vh>spam</vh></v>
 </v>
 </v>
+<v t="ekr.20131111160618.4261"><vh>leoVim</vh>
+<v t="ekr.20131111162157.4276"><vh>Unused</vh>
+<v t="ekr.20131111162157.4270"><vh>@@test command regex</vh></v>
+<v t="ekr.20131111162157.4272"><vh>@@test motion regex</vh></v>
+<v t="ekr.20131111162157.4271"><vh>@@test vim motion</vh></v>
+</v>
+<v t="ekr.20131111155107.4239"><vh>@test h middle of line</vh>
+<v t="ekr.20131111155107.4240"><vh>work</vh></v>
+<v t="ekr.20131111155107.4241"><vh>before sel=1.5,1.5</vh></v>
+<v t="ekr.20131111155107.4242"><vh>after sel=1.4,1.4</vh></v>
+</v>
+<v t="ekr.20131111162157.4275"><vh>@test vr.exec_</vh></v>
+<v t="ekr.20131113071911.4281"><vh>@test vr.scan</vh>
+<v t="ekr.20131113071911.4282"><vh>&lt;&lt; define test tables &gt;&gt;</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -969,6 +985,15 @@ finally:
 </t>
 <t tx="ekr.20120229082711.3936"># node 2 text B.
 </t>
+<t tx="ekr.20131111155107.4239">c.testManager.runVimTest(p)
+
+</t>
+<t tx="ekr.20131111155107.4240">first line
+</t>
+<t tx="ekr.20131111155107.4241">first line
+</t>
+<t tx="ekr.20131111155107.4242">first line
+</t>
 <t tx="ekr.20131111155830.4249"></t>
 <t tx="ekr.20131111155830.4250"># Not yet...
 
@@ -1238,6 +1263,297 @@ w
 char T
 char f
 char t
+</t>
+<t tx="ekr.20131111160618.4261"></t>
+<t tx="ekr.20131111162157.4270">@language python
+# http://docs.python.org/2/library/re.html
+import re
+# g.cls()
+trace = False
+n =     r'(?P&lt;n&gt;[0-9]*)'    # Optional digits
+cmd =   r'(?P&lt;cmd&gt;[^0-9]+)' # Required: anything *except* digits.
+n2 =    r'(?P&lt;n2&gt;[0-9]*)'   # Optional digits
+cmd2 =  r'(?P&lt;cmd2&gt;[a-zA-Z]?)' # Optional letter.
+n_c = n+cmd+n2+cmd2
+tables = (
+    (n_c,('35N','N','2d2','d2d','gg',)),
+)
+for pat,aList in tables:
+    fields = re.findall('\(\?P&lt;([a-z_A-Z0-9]+)&gt;',pat)
+    if trace: print('pattern: %s\n fields: %s' % (pat,','.join(fields)))
+    for s in aList:
+        if trace: print('  %s' % s)
+        m = re.search(pat,s)
+        for field in fields:
+            try:
+                val = m.group(field)
+            except Exception:
+                g.es_exception()
+                val = None
+            if trace: print('    %7s %s' % (field,val or 'None'))
+</t>
+<t tx="ekr.20131111162157.4271">@language python
+# g.cls()
+
+# Unknown:
+# N   H  (motion?) go to the Nth line in the window, on the first non-blank
+# N   J  (motion?) join N-1 lines (delete newlines)
+# VIS J  (motion?) join the highlighted lines
+    # M  (motion?) go to the middle line in the window, on the first non-blank
+# N   L  (motion?) go to the Nth line from the bottom, on the first non-blank
+# o      (motion?) exchange cursor position with start of highlighting
+
+# Not used:
+# N %    goto line N percentage down in the file.
+#        N must be given, otherwise it is the % command.
+
+#   0    to first character in the line (also: &lt;Home&gt; key)
+#   ^    go to first non-blank character in the line
+#   %    find the next brace, bracket, comment,
+#        or "#if"/ "#else"/"#endif" in this line and go to its match
+# N +    down N lines, on the first non-blank character (also: CTRL-M and &lt;CR&gt;)
+# N _    down N-1 lines, on the first non-blank character
+# N -    up N lines, on the first non-blank character
+# N ,    repeat the last "f", "F", "t", or "T" N times in opposite direction
+# N ;    repeat the last "f", "F", "t", or "T" N times
+# N (    N sentences backward
+# N )    N sentences forward
+# N {    N paragraphs backward
+# N }    N paragraphs forward
+# N |    to column N (default: 1)
+# N $    go to the last character in the line (N-1 lines lower) (also: &lt;End&gt; key)
+# N #    search backward for the identifier under the cursor
+# N *    search forward  for the identifier under the cursor
+# N B    N blank-separated WORDS backward
+# N E    forward to the end of the Nth blank-separated WORD
+# N G    goto line N (default: last line), on the first non-blank character
+# N N    repeat last search, in opposite direction
+# N W    N blank-separated WORDS forward
+# N b    N words backward
+# N e    forward to the end of the Nth word
+# N h    left (also: CTRL-H, &lt;BS&gt;, or &lt;Left&gt; key)
+# N j    down N lines (also: CTRL-J, CTRL-N, &lt;NL&gt;, and &lt;Down&gt;)
+# N k    up N lines (also: CTRL-P and &lt;Up&gt;)
+# N l    right (also: &lt;Space&gt; or &lt;Right&gt; key)
+# N n    repeat last search
+# N w    N words forward
+single_char_motions = [ch for ch in '0^%_+-,;(){}|$#*BEGNWbehjklnw']
+# N [#   N times back to unclosed "#if" or "#else"
+# N [(   N times back to unclosed '('
+# N [*   N times back to start of comment "/*"
+# N [[   N sections backward, at start of section
+# N []   N sections backward, at end of section
+# N [{   N times back to unclosed '{'
+m1  = ['['+ ch for ch in '#(*[]{']
+# N ]#   N times forward to unclosed "#else" or "#endif"
+# N ])   N times forward to unclosed ')'
+# N ]*   N times forward to end of comment "*/"
+# N ][   N sections forward, at end of section
+# N ]]   N sections forward, at start of section
+# N ]}   N times forward to unclosed '}'
+m2 = [']'+ch for ch in '#)*[]}']
+#   gD   goto global declaration of identifier under the cursor
+#   gd   goto local declaration of identifier under the cursor
+# N g^   to first non-blank character in screen line (differs from "^" when lines wrap)
+# N g#   like "#", but also find partial matches
+# N g$   to last character in screen line (differs from "$" when lines wrap)
+# N g*   like "*", but also find partial matches
+# N g0   to first character in screen line (differs from "0" when lines wrap)
+# N gE   backward to the end of the Nth blank-separated WORD
+# N ge   backward to the end of the Nth word
+# N gg   goto line N (default: first line), on the first non-blank character
+# N gj   down N screen lines (differs from "j" when line wraps)
+# N gk   up N screen lines (differs from "k" when line wraps)
+m3 = ['g'+ch for ch in '^#$*0DEdegjk']
+# N /&lt;CR&gt;  repeat last search, in the forward direction
+m4 = ['/\\n',]
+# N F&lt;char&gt;  to the Nth occurrence of &lt;char&gt; to the left
+# N T&lt;char&gt;  till before the Nth occurrence of &lt;char&gt; to the left
+# N f&lt;char&gt;  to the Nth occurrence of &lt;char&gt; to the right
+# N t&lt;char&gt;  till before the Nth occurrence of &lt;char&gt; to the right
+char_motions = [ch for ch in 'FTft']
+multi_char_leadins = '/g[]'
+multi_char_motions = m1+m2+m3+m4
+print('\n'.join(single_char_motions))
+print('\n'.join(multi_char_motions))
+print('\n'.join(['%s&lt;char&gt;' % (ch) for ch in char_motions]))
+</t>
+<t tx="ekr.20131111162157.4272">@language python
+
+# http://docs.python.org/2/library/re.html
+import re
+# g.cls()
+
+def escape(ch):
+    return ch if ch.isalnum() else '\\%s' % ch
+# Not yet.
+# N /&lt;CR&gt; (motion) repeat last search, in the forward direction
+
+# 0 (motion) to first character in the line (also: &lt;Home&gt; key)
+# ^ (motion) go to first non-blank character in the line
+# % (motion) find the next brace, bracket, comment,
+#            or "#if"/ "#else"/"#endif" in this line and go to its match
+plain_motion_chars = '0^%'
+plain_motion =   '|'.join([escape(ch) for ch in plain_motion_chars])
+# N + (motion) down N lines, on the first non-blank character (also: CTRL-M and &lt;CR&gt;)
+# N _ (motion) down N-1 lines, on the first non-blank character
+# N - (motion) up N lines, on the first non-blank character
+# N , (motion) repeat the last "f", "F", "t", or "T" N times in opposite direction
+# N ; (motion) repeat the last "f", "F", "t", or "T" N times
+# N ( (motion) N sentences backward
+# N ) (motion) N sentences forward
+# N { (motion) N paragraphs backward
+# N } (motion) N paragraphs forward
+# N | (motion) to column N (default: 1)
+# N $ (motion) go to the last character in the line (N-1 lines lower) (also: &lt;End&gt; key)
+# N % (motion) goto line N percentage down in the file.  N must be given, otherwise it is the % command.
+# N # (motion) search backward for the identifier under the cursor
+# N * (motion) search forward for the identifier under the cursor
+n_motion_chars = '+_-,;(){}|$%#*'
+n_motion_alts = ' | '.join([escape(ch) for ch in n_motion_chars])
+# N [#  (motion) N times back to unclosed "#if" or "#else"
+# N [(  (motion) N times back to unclosed '('
+# N [*  (motion) N times back to start of comment "/*"
+# N [[  (motion) N sections backward, at start of section
+# N []  (motion) N sections backward, at end of section
+# N [{  (motion) N times back to unclosed '{'
+open_bracket_chars  = ['[%s' % (ch) for ch in '#(*[]{']
+# N ]#  (motion) N times forward to unclosed "#else" or "#endif"
+# N ])  (motion) N times forward to unclosed ')'
+# N ]*  (motion) N times forward to end of comment "*/"
+# N ][  (motion) N sections forward, at end of section
+# N ]]  (motion) N sections forward, at start of section
+# N ]}  (motion) N times forward to unclosed '}'
+close_bracket_chars = [']%s' % (ch) for ch in '#)*[]}']
+bracket_chars = open_bracket_chars + close_bracket_chars
+bracket_motion = ' | '.join(['%s%s' % (escape(s[0]),escape(s[1])) for s in bracket_chars])
+bracket_alts =      r'(?P&lt;bracket_alt&gt;%s)' % (bracket_motion)
+# print(bracket_alts)
+# gD (motion) goto global declaration of identifier under the cursor
+# gd (motion) goto local declaration of identifier under the cursor
+g_bare_alts =   r'(?P&lt;bare_g_alts&gt;(gD|gd))'
+# N g^      (motion) to first non-blank character in screen line (differs from "^" when lines wrap)
+# N g#      (motion) like "#", but also find partial matches
+# N g$      (motion) to last character in screen line (differs from "$" when lines wrap)
+# N g*      (motion) like "*", but also find partial matches
+# N g0      (motion) to first character in screen line (differs from "0" when lines wrap)
+# N gE      (motion) backward to the end of the Nth blank-separated WORD
+# N ge      (motion) backward to the end of the Nth word
+# N gg      (motion) goto line N (default: first line), on the first non-blank character
+# N gj      (motion) down N screen lines (differs from "j" when line wraps)
+# N gk      (motion) up N screen lines (differs from "k" when line wraps)
+g_alt_chars =   ' | '.join([escape(ch) for ch in '^#$*0Eegjk'])
+g_alts =        r'(?P&lt;g_n&gt;[0-9]*)(?P&lt;g_alt&gt;g(%s))' % (g_alt_chars)
+g_motion = 'g(%s | %s)' % (g_bare_alts,g_alts)
+print(g_motion)
+</t>
+<t tx="ekr.20131111162157.4275">import leo.core.leoVim as leoVim
+if 0: # When running from leoPy.leo
+    import imp
+    imp.reload(leoVim)
+vc = leoVim.VimCommands(c)
+table = (
+    # 'gg','gk','#','dd','d3j',
+    'h', # works
+    # 'l', # works
+    # 'j', # Not yet.
+    # 'ggg',
+)
+for s in table:
+    status,n1,command,n2,motion = vc.scan(s)
+    # print('status',status,'command',command)
+    if status == 'done':
+        vc.exec_(command,n1,n2,motion)
+    else:
+        print('status: %s %s' % (status,s))
+        vc.command = s
+        vc.n1 = n1
+        vc.n2 = n2
+        vc.motion = motion
+        vc.oops()
+
+if g.unitTesting:
+    # Unit testing messes up the focus.
+    vc.runAtIdle(c.bodyWantsFocusNow)
+</t>
+<t tx="ekr.20131111162157.4276"></t>
+<t tx="ekr.20131113071911.4281">import leo.core.leoVim as leoVim
+if 0: # When running from leoPy.leo
+    import imp
+    imp.reload(leoVim)
+import time
+trace = False
+trace_time = False
+&lt;&lt; define test tables &gt;&gt;
+vc = leoVim.VimCommands(c)
+test_table = (
+    ('done',complete_table),
+    ('scan',incomplete_table),
+    ('oops',error_table),
+)
+if trace_time: t1 = time.clock()
+n = 0
+for i in range(1):
+    for expected,table in test_table:
+        for s in table:
+            if table == complete_table:
+                command = s
+                for expected,command2 in vc.simulate_typing(command):
+                    status,n1,command3,n2,motion = vc.scan(command2)
+                    n += 1
+                    if trace:
+                        err = '   ' if status == expected else '***'
+                        print('%s%s %s' % (err,status,command2))
+                    else:
+                        assert status == expected,'expected %s, got %s command: %s' % (
+                        expected,status,command2)
+            else:
+                for prefix in ('','1023456789'):
+                    command = prefix + s
+                    status,n1,command2,n2,motion = vc.scan(command)
+                    n += 1
+                    if trace:
+                        err = '   ' if status == expected else '***'
+                        print('%s%s %s' % (err,status,command))
+                    else:
+                        assert status == expected,'expected %s, got %s command: %s' % (
+                        expected,status,command)
+if trace_time:
+    delta = time.clock()-t1
+    print("%s %6.6f sec." % (n,delta/n))
+
+</t>
+<t tx="ekr.20131113071911.4282"># To do: handle d2d, 2dd, etc.
+if 0: # Individual test:
+    complete_table = ('ta',)
+        # Note: gu is complete, so gu[] is an invalid test.
+    incomplete_table = () # 'd3','d4t','dt',
+    error_table = ()
+else:
+    complete_table = (
+        '0',
+        'N',
+        '#',
+        'gg','gk','dd',
+        'd3j',
+        '2dta', # d is not (yet) a motion
+        'dFb',
+        'gu',
+        'g[]',
+        'ta',
+        't!',
+    )
+    incomplete_table = (
+        'g',
+        '[',
+        ']',
+        '25',
+        'd3t',
+        'd3',
+    )
+    error_table = (
+        'gX','ZA',
+    )
 </t>
 <t tx="ekr.20140103103143.4095"></t>
 <t tx="ekr.20140206132559.4560">class aClass:

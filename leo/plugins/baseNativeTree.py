@@ -491,12 +491,11 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         c.outerUpdate()
     #@+node:ekr.20110605121601.17896: *3* onItemClicked (nativeTree)
     def onItemClicked (self,item,col,auto_edit=False):
-
+        '''Handle a click in a baseNativeTree widget item.'''
         # This is called after an item is selected.
-        trace = False and not g.unitTesting ; verbose = False
-
+        trace = False and not g.unitTesting
+        verbose = False
         if self.busy(): return
-
         c = self.c
         qt = QtCore.Qt
         # if trace: g.trace(self.traceItem(item),g.callers(4))
@@ -516,15 +515,12 @@ class baseNativeTreeWidget (leoFrame.leoTree):
                         c.frame.tree.OnIconCtrlClick(p) # Call the base class method.
                     g.doHook("iconctrlclick2",c=c,p=p,v=p,event=event)
                 else:
-                    if g.doHook("iconclick1",c=c,p=p,v=p,event=event) is None:
-                        pass
-                        # if c.positionExists(p): c.selectPosition(p) # 2011/03/07
-                        # c.frame.tree.OnIconDoubleClick(p) # Call the base class method.
-                    g.doHook("iconclick2",c=c,p=p,v=p,event=event)
+                    # 2014/02/21: generate headclick1/2 instead of iconclick1/2
+                    g.doHook("headclick1",c=c,p=p,v=p,event=event)
+                    g.doHook("headclick2",c=c,p=p,v=p,event=event)
             else:
                 auto_edit = None
                 g.trace('*** no p')
-
             # 2011/05/27: click here is like ctrl-g.
             c.k.keyboardQuit(setFocus=False)
             c.treeWantsFocus() # 2011/05/08: Focus must stay in the tree!
@@ -537,37 +533,29 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             self.selecting = False
     #@+node:ekr.20110605121601.17897: *3* onItemDoubleClicked (nativeTree)
     def onItemDoubleClicked (self,item,col):
-
+        '''Handle a double click in a baseNativeTree widget item.'''
         trace = False and not g.unitTesting
         verbose = False
-
         if self.busy(): return
-
         c = self.c
-
         if trace: g.trace(col,self.traceItem(item))
-
         try:
             self.selecting = True
-
             e,wrapper = self.createTreeEditorForItem(item)
             if not e:
                 g.trace('*** no e')
-
             p = self.item2position(item)
-
         # 2011/07/28: End the lockout here, not at the end.
         finally:
             self.selecting = False
-
         if p:
+            # 2014/02/21: generate headddlick1/2 instead of icondclick1/2.
             event = None
-            if g.doHook("icondclick1",c=c,p=p,v=p,event=event) is None:
+            if g.doHook("headdclick1",c=c,p=p,v=p,event=event) is None:
                 c.frame.tree.OnIconDoubleClick(p) # Call the base class method.
-            g.doHook("icondclick2",c=c,p=p,v=p,event=event)
+            g.doHook("headclick2",c=c,p=p,v=p,event=event)
         else:
             g.trace('*** no p')
-
         c.outerUpdate()
     #@+node:ekr.20110605121601.17898: *3* onItemExpanded (nativeTree)
     def onItemExpanded (self,item):
@@ -678,39 +666,6 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     def showPopupMenu (self,event):
 
         """Show a popup menu."""
-    #@+node:ekr.20110715053352.16519: ** Event wrappers ... (nativeTree)
-    # These are used by leoEditCommands.
-    #@+node:ekr.20110715053352.16518: *3* onDoubleClickHeadline (nativeTree)
-    def onDoubleClickHeadline (self,event,p):
-
-        c = self.c
-
-        try:
-            if not g.doHook("headdclick1",c=c,p=p,v=p,event=event):
-                self.editLabel(p,selectAll=True,selection=None)
-            g.doHook("headdclick2",c=c,p=p,v=p,event=event)
-        except:
-            g.es_event_exception("headdclick")
-    #@+node:ekr.20110715053352.16520: *3* onHeadlineClick (nativeTree)
-    def onHeadlineClick (self,event,p):
-
-        c = self.c
-
-        try:
-            g.doHook("headclick1",c=c,p=p,v=p,event=event)
-            g.doHook("headclick2",c=c,p=p,v=p,event=event)
-        except:
-            g.es_event_exception("headclick")
-    #@+node:ekr.20110715053352.16521: *3* onHeadlineRightClick (nativeTree)
-    def onHeadlineRightClick (self,event,p):
-
-        c = self.c
-
-        try:
-            g.doHook("headrclick1",c=c,p=p,v=p,event=event)
-            g.doHook("headrclick2",c=c,p=p,v=p,event=event)
-        except:
-            g.es_event_exception("headrclick")
     #@+node:ekr.20110605121601.17905: ** Selecting & editing... (nativeTree)
     #@+node:ekr.20110605121601.17906: *3* afterSelectHint (nativeTree)
     def afterSelectHint (self,p,old_p):
@@ -783,9 +738,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             return None
     #@+node:ekr.20110605121601.17909: *3* editLabel (nativeTree)
     def editLabel (self,p,selectAll=False,selection=None):
-
         """Start editing p's headline."""
-
         trace = False and not g.unitTesting
         if self.busy():
             if trace: g.trace('busy')
@@ -804,10 +757,8 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         if e:
             # A nice hack: just set the focus request.
             c.requestedFocusWidget = e       
-
         # 2012/09/27.
         g.app.gui.add_border(c,c.frame.tree.treeWidget)
-
         return e,wrapper # 2011/02/12
     #@+node:ekr.20110605121601.17910: *3* editPosition (nativeTree)
     def editPosition(self):
@@ -823,7 +774,6 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         End editing of the presently-selected headline.'''
 
         c = self.c ; p = c.currentPosition()
-
         self.onHeadChanged(p)
     #@+node:ekr.20110605121601.17912: *3* onHeadChanged (nativeTree)
     # Tricky code: do not change without careful thought and testing.

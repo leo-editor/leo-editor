@@ -471,17 +471,14 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
     #@+node:ekr.20110605121601.18024: *4*  Birth
     #@+node:ekr.20110605121601.18025: *5* ctor (leoQtBaseTextWidget)
     def __init__ (self,widget,name='leoQtBaseTextWidget',c=None):
-
+        '''The ctor for the leoQtBaseTextWidget class.'''
         self.widget = widget
         self.c = c or self.widget.leo_c
-
-        # g.trace('leoQtBaseTextWidget',name,self.widget)
-
+        # g.trace('(leoQtBaseTextWidget)',name,self.widget,g.callers(2))
         # Init the base class.
         leoFrame.baseTextWidget.__init__(
             self,c,baseClassName='leoQtBaseTextWidget',
             name=name,widget=widget,)
-
         # Init ivars.
         self.changingText = False # A lockout for onTextChanged.
         self.tags = {}
@@ -489,9 +486,8 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         self.configDict = {} # Keys are tags, values are colors (names or values).
         self.configUnderlineDict = {} # Keys are tags, values are True
         self.useScintilla = False # This is used!
-
-        if not c: return # Can happen.
-
+        if not c:
+            return # Can happen.
         if name in ('body','rendering-pane-wrapper') or name.startswith('head'):
             # g.trace('hooking up qt events',name)
             # Hook up qt events.
@@ -500,14 +496,11 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
             else:
                 self.ev_filter = leoQtEventFilter(c,w=self,tag=name)
                 self.widget.installEventFilter(self.ev_filter)
-
         if name == 'body':
             self.widget.connect(self.widget,
                 QtCore.SIGNAL("textChanged()"),self.onTextChanged)
-
             self.widget.connect(self.widget,
                 QtCore.SIGNAL("cursorPositionChanged()"),self.onCursorPositionChanged)
-
         if name in ('body','log'):
             # Monkey patch the event handler.
             #@+<< define mouseReleaseEvent >>
@@ -552,7 +545,6 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
                 c.k.keyboardQuit(setFocus=False)
             #@-<< define mouseReleaseEvent >>
             self.widget.mouseReleaseEvent = mouseReleaseEvent
-
         self.injectIvars(c)
     #@+node:ekr.20110605121601.18027: *5* injectIvars (leoQtBaseTextWidget)
     def injectIvars (self,name='1',parentFrame=None):
@@ -1638,7 +1630,7 @@ class leoQScintillaWidget (leoQtBaseTextWidget):
             self.setInsertPoint(i)
             w.SendScintilla(w.SCI_SETANCHOR,j)
     #@-others
-#@+node:ekr.20110605121601.18116: *3* class leoQtHeadlineWidget
+#@+node:ekr.20110605121601.18116: *3* class leoQtHeadlineWidget (leoQtBaseTextWidget)
 class leoQtHeadlineWidget (leoQtBaseTextWidget):
     '''A wrapper class for QLineEdit widgets in QTreeWidget's.
 
@@ -1648,11 +1640,12 @@ class leoQtHeadlineWidget (leoQtBaseTextWidget):
     #@+others
     #@+node:ekr.20110605121601.18117: *4* Birth (leoQtHeadlineWidget)
     def __init__ (self,c,item,name,widget):
-
-        # g.trace('(leoQtHeadlineWidget)',item,widget)
-
+        '''The ctor for the leoQtHeadlineWidget class.'''
+        #g.trace('(leoQtHeadlineWidget)',item,widget)
         # Init the base class.
+        assert isinstance(widget,QtGui.QLineEdit),widget
         leoQtBaseTextWidget.__init__(self,widget,name,c)
+        # Set ivars.
         self.item=item
         self.permanent = False # Warn the minibuffer that we can go away.
         self.badFocusColors = []
@@ -6929,22 +6922,18 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         return e
     #@+node:ekr.20110605121601.18428: *6* getWrapper (leoQtTree)
     def getWrapper (self,e,item):
-
         '''Return headlineWrapper that wraps e (a QLineEdit).'''
-
         trace = False and not g.unitTesting
-        verbose = True
         c = self.c
-
         if e:
             wrapper = self.editWidgetsDict.get(e)
             if wrapper:
-                if trace and verbose: g.trace('old wrapper',e,wrapper)
+                pass # g.trace('old wrapper',e,wrapper)
             else:
                 if item:
                     # 2011/02/12: item can be None.
                     wrapper = self.headlineWrapper(c,item,name='head',widget=e)
-                    if trace: g.trace('new wrapper',e,wrapper,g.callers())
+                    if trace: g.trace('new wrapper',e,wrapper)
                     self.editWidgetsDict[e] = wrapper
                 else:
                     if trace: g.trace('no item and no wrapper',
