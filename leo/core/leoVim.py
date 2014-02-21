@@ -241,30 +241,30 @@ class VimCommands:
         'vim_X': oops,
         'vim_Y': oops,
         'vim_Z': oops,
-        'vim_a': oops,
-        'vim_b': oops,
-        'vim_c': oops,
+        'vim_a': self.vim_a,
+        'vim_b': self.vim_b,
+        'vim_c': self.vim_c,
         'vim_d': self.vim_d,
-        'vim_g': oops,
+        'vim_g': self.vim_g,
         'vim_h': self.vim_h,
-        'vim_i': oops,
+        'vim_i': self.vim_i,
         'vim_j': self.vim_j,
         'vim_k': self.vim_k,
         'vim_l': self.vim_l,
-        'vim_n': oops,
+        'vim_n': self.vim_n,
         'vim_m': self.vim_m,
-        'vim_o': oops,
-        'vim_p': oops,
-        'vim_q': oops,
-        'vim_r': oops,
-        'vim_s': oops,
-        'vim_t': oops,
-        'vim_u': oops,
-        'vim_v': oops,
-        'vim_w': oops,
-        'vim_x': oops,
-        'vim_y': oops,
-        'vim_z': oops,
+        'vim_o': self.vim_o,
+        'vim_p': self.vim_p,
+        'vim_q': self.vim_q,
+        'vim_r': self.vim_r,
+        'vim_s': self.vim_s,
+        'vim_t': self.vim_t,
+        'vim_u': self.vim_u,
+        'vim_v': self.vim_v,
+        'vim_w': self.vim_w,
+        'vim_x': self.vim_x,
+        'vim_y': self.vim_y,
+        'vim_z': self.vim_z,
         }
         return d
     #@+node:ekr.20131109170017.46985: *5* getData
@@ -335,7 +335,7 @@ class VimCommands:
     #@+node:ekr.20131111054309.16528: *4* vc.exec_
     def exec_(self,command,n1,n2,tail):
         
-        trace = False
+        trace = True and not g.unitTesting
         d = self.commands_d.get(command,{})
             # Keys are single letters.
         command_name = d.get('command_name')
@@ -551,50 +551,167 @@ class VimCommands:
         print('%s func: %s command: %r n1: %r n2: %r tail: %r' % (
             g.callers(1),func_name,self.command,self.n1,self.n2,self.tail))
     #@+node:ekr.20131111061547.16467: *3* vc.commands
-    #@+node:ekr.20131111061547.16468: *4* vim_h/j/k/l
-    #@+node:ekr.20131111171616.16498: *5* vim_d
-    def vim_d(self):
-        
+    #@+node:ekr.20140220134748.16614: *4* vim_a/i/o Enter insert mode
+    def vim_a(self):
+        '''N a append text after the cursor'''
         g.trace(self.command,self.tail)
-    #@+node:ekr.20131111061547.18012: *5* vim_h
+        
+    def vim_i(self):
+        '''N i insert text before the cursor'''
+        g.trace(self.command,self.tail)
+
+    def vim_o(self):
+        '''N o open a new line below the current line (Append N times).'''
+        g.trace(self.command,self.tail)
+    #@+node:ekr.20131111171616.16496: *4* vim_at
+    def vim_at(self):
+        '''xxx.'''
+        g.trace(self.command,self.tail)
+    #@+node:ekr.20140220134748.16618: *4* vim_b/e/w word moves
+    # N b N words backward
+    # N e forward to the end of the Nth word
+    # N w N words forward
+
+    def vim_b(self):
+        '''xxx.'''
+        g.trace(self.command,self.tail)
+
+    def vim_e(self):
+        '''xxx.'''
+        g.trace(self.command,self.tail)
+        
+    def vim_w(self):
+        '''xxx.'''
+        g.trace(self.command,self.tail)
+
+    #@+node:ekr.20140220134748.16619: *4* vim_c/s change
+    def vim_c(self):
+        '''
+        N   cc        change N lines
+        N   c{motion} change the text that is moved over with {motion}
+        VIS c         change the highlighted text
+        '''
+        g.trace(self.command,self.tail)
+        
+    def vim_s(self):
+        '''N s change N characters'''
+        g.trace(self.command,self.tail)
+    #@+node:ekr.20131111171616.16498: *4* vim_d
+    def vim_d(self):
+        '''
+        VIS d         delete the highlighted text
+        dd        delete N lines
+        d{motion} delete the text that is moved over with {motion}
+        '''
+        g.trace(self.command,self.tail)
+    #@+node:ekr.20131111105746.16544: *4* vim_dot
+    def vim_dot(self):
+        '''Repeat the last command.'''
+        g.trace(self.command,self.tail)
+    #@+node:ekr.20140220134748.16620: *4* vim_f/t
+    def vim_f(self):
+        '''N f<char> move to the Nth occurrence of <char> to the right.'''
+        g.trace(self.command,self.tail)
+        
+    def vim_t(self):
+        '''N t<char> move before the Nth occurrence of <char> to the right.'''
+        g.trace(self.command,self.tail)
+    #@+node:ekr.20140220134748.16621: *4* vim_g
+    # N   ge    backward to the end of the Nth word
+    # N   gg    goto line N (default: first line), on the first non-blank character
+        # gv    start highlighting on previous visual area
+    def vim_g(self):
+        '''Go...'''
+        g.trace(self.command,self.tail)
+    #@+node:ekr.20131111061547.16468: *4* vim_h/l char moves
     def vim_h(self):
-        '''Move cursor left.'''
+        '''Move cursor left N chars.'''
         if self.extend:
             self.c.editCommands.backCharacterExtendSelection(self.event)
         else:
             self.c.editCommands.backCharacter(self.event)
-    #@+node:ekr.20131111061547.18013: *5* vim_j
-    def vim_j(self):
-        '''Move cursor down.'''
-        if self.extend:
-            self.c.editCommands.nextLineExtendSelection(self.event)
-        else:
-            self.c.editCommands.nextLine(self.event)
-    #@+node:ekr.20131111061547.18014: *5* vim_k
-    def vim_k(self):
-        '''Move cursor up.'''
-        if self.extend:
-            self.c.editCommands.prevLineExtendSelection(self.event)
-        else:
-            self.c.editCommands.prevLine(self.event)
-    #@+node:ekr.20131111061547.18015: *5* vim_l
+
     def vim_l(self):
-        '''Move cursor right.'''
+        '''Move cursor right N chars.'''
         if self.extend:
             self.c.editCommands.forwardCharacterExtendSelection(self.event)
         else:
             self.c.editCommands.forwardCharacter(self.event)
-    #@+node:ekr.20131111105746.16544: *4* vim_dot
-    def vim_dot(self):
-        
-        g.trace()
-    #@+node:ekr.20131111171616.16496: *4* vim_at
-    def vim_at(self):
-        
-        g.trace(self.command,self.tail)
+    #@+node:ekr.20140220134748.16617: *4* vim_j/k line moves
+    def vim_j(self):
+        '''Move cursor down N lines.'''
+        if self.extend:
+            self.c.editCommands.nextLineExtendSelection(self.event)
+        else:
+            self.c.editCommands.nextLine(self.event)
+
+    def vim_k(self):
+        '''Move cursor up N lines.'''
+        if self.extend:
+            self.c.editCommands.prevLineExtendSelection(self.event)
+        else:
+            self.c.editCommands.prevLine(self.event)
     #@+node:ekr.20131111171616.16497: *4* vim_m
     def vim_m(self):
+        '''m<a-zA-Z> mark current position with mark.'''
+        g.trace(self.command,self.tail)
+    #@+node:ekr.20140220134748.16622: *4* vim_p
+    # N p put a register after the cursor position (N times)
+    def vim_p(self):
+        '''xxx.'''
+        g.trace(self.command,self.tail)
+    #@+node:ekr.20140220134748.16623: *4* vim_q
+    def vim_q(self):
+        '''
+        q       stop recording
+        q<A-Z>  record typed characters, appended to register <a-z>
+        q<a-z>  record typed characters into register <a-z>
+        '''
+        g.trace(self.command,self.tail)
+    #@+node:ekr.20140220134748.16624: *4* vim_r
+    def vim_r(self):
+        '''N r <char> replace N characters with <char>'''
+        g.trace(self.command,self.tail)
+    #@+node:ekr.20140220134748.16625: *4* vim_slash/n
+    def vim_n(self):
+        '''N n repeat last search.'''
+        g.trace(self.command,self.tail)
         
+    def vim_slash(self):
+        '''Begin a search.'''
+        g.trace(self.command,self.tail)
+
+    #@+node:ekr.20140220134748.16626: *4* vim_u & vim_redo
+    def vim_u(self):
+        '''N u undo last N changes.'''
+        g.trace(self.command,self.tail)
+
+    def vim_redo(self):
+        '''N Ctrl-R redo last N changes'''
+        g.trace(self.command,self.tail)
+    #@+node:ekr.20140220134748.16627: *4* vim_v
+    def vim_v(self):
+        '''v start/stop highlighting.'''
+        g.trace(self.command,self.tail)
+    #@+node:ekr.20140220134748.16629: *4* vim_x
+    def vim_x(self):
+        '''N x delete N characters under and after the cursor.'''
+        g.trace(self.command,self.tail)
+    #@+node:ekr.20140220134748.16630: *4* vim_y
+    def vim_y(self):
+        '''
+        N   yy          yank N lines 
+        N   y{motion}   yank the text moved over with {motion} 
+        VIS y           yank the highlighted text
+        '''
+        g.trace(self.command,self.tail)
+    #@+node:ekr.20140220134748.16631: *4* vim_z
+    def vim_z(self):
+        '''
+        z- or zb    redraw, current line at bottom of window
+        z. or zz    redraw, current line at center of window
+        z<CR> or zt redraw, current line at top of window
+        '''
         g.trace(self.command,self.tail)
     #@-others
 #@-others
