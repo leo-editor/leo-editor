@@ -22,19 +22,21 @@ class VimCommands:
     def __init__(self,c):
 
         self.c = c
+        self.ch = None
         self.chars = [ch for ch in string.printable if 32 <= ord(ch) < 128]
         self.dispatch_dict = self.create_dispatch_d()
         self.dot = '' # The previous command in normal mode.
         self.event = None # The event for the current key.
         self.extend = False # True: extending selection.
-        self.n = None # The repeat count.
+        self.n = None # The accumulating repeat count.
+        self.next_func = None # The continuation of a multi-character command.
         self.register_d = {} # Keys are letters; values are strings.
         self.register_names = string.ascii_letters
+        self.repeat_count = 1 # The final repeat count.
+        self.repeat_chars = []
         self.state = 'normal' # in ('normal','insert')
         self.w = None # The present widget.
             # c.frame.body and c.frame.body.bodyCtrl # A QTextBrowser.
-
-        
     #@+node:ekr.20131111061547.16460: *4* create_dispatch_d
     def create_dispatch_d(self):
         d = {
@@ -66,8 +68,18 @@ class VimCommands:
         '~': None,
         '_': None,
         '|': None,
-        # Letters and digits.
-        '0': None,
+        # Digits.
+        '0': self.vim_0,
+        '1': self.vim_number,
+        '2': self.vim_number,
+        '3': self.vim_number,
+        '4': self.vim_number,
+        '5': self.vim_number,
+        '6': self.vim_number,
+        '7': self.vim_number,
+        '8': self.vim_number,
+        '9': self.vim_number,
+        # Letters.
         'A': None,
         'B': None,
         'C': None,
@@ -127,26 +139,69 @@ class VimCommands:
         '''
         if QtCore:
             QtCore.QTimer.singleShot(0,aFunc)
-    #@+node:ekr.20140221085636.16685: *3* vc.doKey
-    def doKey(self,event):
-        '''Handle the next key in vim mode.'''
+    #@+node:ekr.20140221085636.16685: *3* vc.do_key
+    def do_key(self,event):
+        '''
+        Handle the next key in vim mode.
+        Return True if this method handle's the key.
+        '''
         trace = True and not g.unitTesting
         vc = self
         c = self.c
-        ch = char = event and event.char or ''
+        self.ch = ch = char = event and event.char or ''
         self.event = event
-        stroke = event and event.stroke or None
+        stroke = event and event.stroke and event.stroke.s
+        if self.next_func:
+            self.next_func()
+            return True
+        # Handle repeat counts.
+        if self.do_repeat_count(ch):
+            return True
+        # Dispatch the proper handler.
         func = vc.dispatch_dict.get(ch)
-        # First handle repeat count (set self.n)
         if func:
-            if trace: g.trace(stroke.s,func.__name__)
-            # For now, each handler handles the repeat count.
-            func()
+            if trace: g.trace(stroke,'n:',vc.n,func.__name__)
+            # Call the function vc.n times.
+            assert vc.n > 0
+            for z in range(vc.n):
+                func()
+            return True # The character has been handled.
+        else:
+            # Let Leo Handle non-plain keys.
+            if trace and c.k.isPlainKey: g.trace('no function for',stroke)
+            return c.k.isPlainKey(ch)
+    #@+node:ekr.20140221125741.16605: *3* vc.do_motion
+    def do_motion(self,ch):
+        '''Move the cursor to the indicated spot.'''
+    #@+node:ekr.20140221085636.16693: *3* vc.do_repeat_count
+    def do_repeat_count(self,ch):
+        '''
+        Start, update or stop a repeat count, depending on ch.
+        Return True if ch is part of a repeat count.
+        '''
+        vc = self
+        if vc.repeat_chars:
+            if ch in '0123456789':
+                vc.repeat_chars.append(ch)
+                return True
+            else:
+                vc.n = int(''.join(vc.repeat_chars))
+                vc.repeat_chars = []
+                return False 
+        elif ch in '123456789':
+            # A leading zero does *not* start a repeat count.
+            assert not vc.repeat_chars
+            vc.repeat_chars.append(ch)
             return True
         else:
-            g.trace('no function for',stroke)
-            return c.k.isPlainKey(ch)
+            vc.n = 1
+            return False
+       
     #@+node:ekr.20131111061547.16467: *3* vc.commands
+    #@+node:ekr.20140221085636.16691: *4* vim_0
+    def vim_0(self):
+        '''Handle zero, either the '0' command or a later part of a repeat count.'''
+        g.trace()
     #@+node:ekr.20140220134748.16614: *4* vim_a/i/o Enter insert mode
     def vim_a(self):
         '''N a append text after the cursor'''
@@ -199,7 +254,12 @@ class VimCommands:
         dd        delete N lines
         d{motion} delete the text that is moved over with {motion}
         '''
-        g.trace()
+        self.next_func = self.vim_d2
+
+    def vim_d2(self):
+        '''Handle the character after a d.'''
+        self.next_func = None
+        g.trace(self.ch,self.n)
     #@+node:ekr.20131111105746.16544: *4* vim_dot
     def vim_dot(self):
         '''Repeat the last command.'''
@@ -250,6 +310,10 @@ class VimCommands:
     #@+node:ekr.20131111171616.16497: *4* vim_m
     def vim_m(self):
         '''m<a-zA-Z> mark current position with mark.'''
+        g.trace()
+    #@+node:ekr.20140221085636.16692: *4* vim_number
+    def vim_number(self):
+        '''Handle a non-zero number, typically a repeat count.'''
         g.trace()
     #@+node:ekr.20140220134748.16622: *4* vim_p
     # N p put a register after the cursor position (N times)
