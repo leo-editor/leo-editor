@@ -10786,202 +10786,348 @@ if wrapper:
     )
     for ivar in table:
         print(bool(getattr(wrapper,ivar,None)),ivar)
-.. @+node:ekr.20140217065257.16659: *3* class LineScanner (BaseScanner)
-class LineScanner(BaseScanner):
-    '''A class that only splits nodes at line boundaries.'''
-    @others
-.. @+node:ekr.20140217065257.16678: *4* LS.ctor
-def __init__ (self,importCommands,atAuto,language,alternate_language=None):
-    self.string_delims = ['"',"'"]
-    BaseScanner.__init__(self,importCommands,atAuto,language,alternate_languag)
-.. @+node:ekr.20140217065257.16669: *4* LS.scan & helpers (Really a Python scanner)
-def scan_lines (self,s,root):
-    '''Parse lines into an outline.'''
-    trace = True and not g.unitTesting
-    # Loop invariant: d is the Data object at the top of the stack.
-    string_delim = None # In a string if not None.
-    d = self.Data('root',[],0,root)
-    stack = [d]
-    for s in g.splitLines(s):
-        i = g.skip_ws(s,0) # To compute indent
-        # Compute the string delimiter in effect at the end of this line.
-        old_string_delim = string_delim
-        string_delim = check_for_string(s,i,string_delim)
-        # A case statement...
-        if old_string_delim:
-            # Never break a line after a string.
-            d.block.append(s)
-        elif g.match_word(s,i,'class'):
-            self.pop_blocks(i,stack)
-            d = self.new_context('class',i,s,stack)
-        elif g.match_word(s,i,'def'):
-            self.pop_blocks(i,stack)
-            d = self.new_context('def',i,s,stack)
-        elif i > d.indent: # Still in the block.
-            d.block.append(s)
-        elif len(stack) > 1 and i == d.indent:
-            # In a class or def.
-            # Keep all trailing code lines with the block.
-            d.block.append(s)
-        elif len(stack) == 1:
-            d.block.append(s)
-        else: # Change blocks.
-            d = self.pop_blocks(i,stack)
-            d.block.append(s)
-    # End last blocks.
-    if len(stack) > 1:
-        self.pop_blocks(0,stack)
-    assert len(stack) == 1
-    d = stack[0]
-    self.end_block(d)
-    self.clean(root)
-
-scan = scan_lines
-.. @+node:ekr.20140217065257.16670: *5* check_for_string
-def check_for_string(self,s,i,delim):
-    '''Find the string delim in effect at the end of the line.'''
-    # This must be fast and accurate.
-    # A quick shortcut:
-    if not delim and s.find('"',i) == -1 and s.find("'",i) == -1:
-        return None
-    while i < len(s):
-        ch = s[i]
-        if delim:
-            if g.match(s,i,delim):
-                delim = None
-        elif ch == '#':
-            if delim:
-                pass # Ignore '#' inside strings.
-            else:
-                return None # The '#' terminates the line.
-        elif ch == '"':
-            delim = '"""' if g.match(s,i,'"""') else '"'
-        elif ch == "'":
-            delim = "'''" if g.match(s,i,"'''") else "'"
-        i += 1
-    return delim
-.. @+node:ekr.20140217065257.16671: *5* create_ref
-def create_ref(self,i,p,s,stack):
-    '''Create an @others directive or section ref in block.'''
-    d = stack[-1] if len(stack) == 1 else stack[-2]
-    others = ' '*i + '@others\n'
-    if d.has_others:
-        if others in d.block:
-            pass # The previous @others should do.
-        else:
-            ref = p.h = g.angleBrackets(p.h)
-            d.block.append(ref)
+.. @+node:ekr.20140221085636.16686: *3* Unused vim code (do not delete)
+.. @+node:ekr.20131112152450.16537: *4* k.getVimArg (no longer used)
+def getVimArg(self,event,specialStroke=None,specialFunc=None):
+    '''Handle all keys in the minibuffer when c.vim_mode is True.'''
+    trace = True # and not g.unitTesting
+    verbose = False
+    k,c = self,self.c
+    vr = c.vimCommands
+    prompt = 'Normal Mode: '
+    
+    recording = c.macroCommands.recordingMacro
+    state = k.getState('vim-mode')
+    if trace: g.trace('**',k.getLabel(),state)
+    c.check_event(event)
+    ch = char = event and event.char or ''
+    stroke = event and event.stroke or None
+    if trace: g.trace('state',state,char) # 'recording',recording,
+    # if recording:
+        # c.macroCommands.startRecordingMacro(event)
+    # if state > 0:
+        # k.setLossage(char,stroke)
+    if state == 0:
+        k.mb_event = event # Save the full event for later.
+        k.setState('vim-mode',1,handler=k.getVimArg)
+        k.setLabelBlue('%s' % (prompt),protect=True)
+        # Init mb_ ivars. This prevents problems with an initial backspace.
+        k.mb_prompt = k.mb_tabListPrefix = k.mb_prefix = prompt
+        k.mb_tabList = [] ; k.mb_tabListIndex = -1
+        k.mb_help = None ### help
+        k.mb_helpHandler = None ### helpHandler
+    # Unlike fullCommand, we *do* have a key.
+    elif char == 'Ins' or k.isFKey(char):
+        pass
+    elif char == 'Escape':
+        k.keyboardQuit()
+    elif char in ('\n','Return'):
+        if trace and verbose: g.trace('***Return')
+        c.frame.log.deleteTab('Completion')
+        k.callAltXFunction(k.mb_event)
+        # if k.mb_help:
+            # s = k.getLabel()
+            # commandName = s[len(helpPrompt):].strip()
+            # k.clearState()
+            # k.resetLabel()
+            # if k.mb_helpHandler: k.mb_helpHandler(commandName)
+        # else:
+            # k.callAltXFunction(k.mb_event)
+    # elif char in ('\t','Tab'):
+        # if trace and verbose: g.trace('***Tab')
+        # k.doTabCompletion(list(c.commandsDict.keys()),allow_empty_completion=True)
+        # c.minibufferWantsFocus()
+    elif char in ('\b','BackSpace'):
+        if trace and verbose: g.trace('***BackSpace')
+        k.doBackSpace(list(c.commandsDict.keys()))
+    elif k.ignore_unbound_non_ascii_keys and len(ch) > 1:
+        if trace: g.trace('non-ascii')
+        if specialStroke:
+            g.trace(specialStroke)
+            specialFunc()
     else:
-        d.has_others = True
-            # Correct: we'll adjust node indentation later.
-        d.block.append(others)
-    # g.trace('in:',d.p.h,'for:',s.strip(),'\n',d.block,'\n')
-.. @+node:ekr.20140217065257.16672: *5* end_block
-def end_block(self,d):
-    '''Update the body text of the present block.'''
-    if d.block:
-        d.p.b = d.p.b + ''.join(d.block)
-        d.block = []
-        # g.trace(d.p.h,'\n',self.dump_body(d.p.b),'\n')
-        # g.trace(d.p.h,'\n',d.p.b)
-.. @+node:ekr.20140217065257.16673: *5* headline
-def headline (self,s,i):
-    '''Return the headline to be given to line s.'''
-    j = g.skip_id(s,i)
-    kind = s[i:j]
-    if kind == 'class':
-        # Return the entire class line.except the trailing ':'.
-        return s[i:].rstrip().strip(':')
-    else:
-        # Return just the function/method name.
-        i = g.skip_ws(s,j)
-        j = g.skip_id(s,i)
-        return s[i:j]
-.. @+node:ekr.20140217065257.16674: *5* new_context
-def new_context(self,kind,i,s,stack):
-    '''Handle class or def line'''
-    trace = False and not g.unitTesting
-    # Create the new node as the last child of the parent.
-    d = stack[-1]
-    p = d.p.insertAsLastChild()
-    p.h = self.headline(s,i)
-    d = self.Data(kind,[s],i,p)
-    stack.append(d)
-    self.create_ref(i,p,s,stack)
-    if trace: g.trace('returns',self.dump_stack(stack))
+        # Clear the list, any other character besides tab indicates that a new prefix is in effect.
+        k.mb_tabList = []
+        k.updateLabel(event)
+        k.mb_tabListPrefix = k.getLabel()
+        if trace: g.trace('new prefix',k.mb_tabListPrefix)
+    # Examine each keystroke to see if we have a complete command.
+    if state != 0:
+        command = k.getLabel(ignorePrompt=True)
+        status,n1,command2,n2,tail = vr.scan(command)
+        if trace: g.trace('status: %s %s command: %s n1: %s n2: %s tail: %s' % (
+            status,command,command2,n1,n2,tail))
+        if status == 'done':
+            k.resetLabel()
+            k.setLabelBlue('%s' % (prompt),protect=True)
+            vr.exec_(command2,n1,n2,tail)
+        elif status == 'oops':
+            # ring bell?
+            if trace: g.trace('invalid char') ###
+        c.bodyWantsFocus()
+.. @+node:ekr.20140221085636.16688: *4* OLD_create_dispatch_d
+def OLD_create_dispatch_d(self):
+    oops = self.oops
+    d = {
+    # brackets.
+    'vim_lcurly':   oops,
+    'vim_lparen':   oops,
+    'vim_lsquare':  oops,
+    'vim_rcurly':   oops,
+    'vim_rparen':   oops,
+    'vim_rsquare':  oops,
+    # Special chars.
+    'vim_at':       self.vim_at,
+    'vim_backtick': oops,
+    'vim_caret':    oops,
+    'vim_comma':    oops,
+    'vim_dollar':   oops,
+    'vim_dot':      oops,
+    'vim_dquote':   oops,
+    'vim_langle':   oops,
+    'vim_minus':    oops,
+    'vim_percent':  oops,
+    'vim_plus':     oops,
+    'vim_pound':    oops,
+    'vim_question': oops,
+    'vim_rangle':   oops,
+    'vim_semicolon': oops,
+    'vim_slash':    oops,
+    'vim_star':     oops,
+    'vim_tilda':    oops,
+    'vim_underscore': oops,
+    'vim_vertical': oops,
+    # Letters and digits.
+    'vim_0': oops,
+    'vim_A': oops,
+    'vim_B': oops,
+    'vim_C': oops,
+    'vim_D': oops,
+    'vim_E': oops,
+    'vim_F': oops,
+    'vim_G': oops,
+    'vim_H': oops,
+    'vim_I': oops,
+    'vim_J': oops,
+    'vim_K': oops,
+    'vim_M': oops,
+    'vim_L': oops,
+    'vim_N': oops,
+    'vim_O': oops,
+    'vim_P': oops,
+    'vim_R': oops,
+    'vim_S': oops,
+    'vim_T': oops,
+    'vim_U': oops,
+    'vim_V': oops,
+    'vim_W': oops,
+    'vim_X': oops,
+    'vim_Y': oops,
+    'vim_Z': oops,
+    'vim_a': self.vim_a,
+    'vim_b': self.vim_b,
+    'vim_c': self.vim_c,
+    'vim_d': self.vim_d,
+    'vim_g': self.vim_g,
+    'vim_h': self.vim_h,
+    'vim_i': self.vim_i,
+    'vim_j': self.vim_j,
+    'vim_k': self.vim_k,
+    'vim_l': self.vim_l,
+    'vim_n': self.vim_n,
+    'vim_m': self.vim_m,
+    'vim_o': self.vim_o,
+    'vim_p': self.vim_p,
+    'vim_q': self.vim_q,
+    'vim_r': self.vim_r,
+    'vim_s': self.vim_s,
+    'vim_t': self.vim_t,
+    'vim_u': self.vim_u,
+    'vim_v': self.vim_v,
+    'vim_w': self.vim_w,
+    'vim_x': self.vim_x,
+    'vim_y': self.vim_y,
+    'vim_z': self.vim_z,
+    }
     return d
-.. @+node:ekr.20140217065257.16675: *5* pop_blocks
-def pop_blocks(self,i,stack):
-    '''End all blocks whose indentation is >= i.'''
-    n = len(stack)
-    while i <= stack[-1].indent and len(stack) > 1:
-        d = stack.pop()
-        self.end_block(d)
-    # if len(stack) != n: g.trace(self.dump_stack(stack))
-    return stack[-1]
-.. @+node:ekr.20140217065257.16676: *5* update_string_delim (no longer used)
-def update_string_delim(self,i,s,string_delim):
-    '''Return the string delim in effect at the end of line s.'''
-    trace = False and not g.unitTesting
-    old_string_delim = string_delim # For tracing.
-    if string_delim:
-        i2 = s.find(string_delim,i)
-        if i2 > -1:
-            # The end of the string.
-            if trace: g.trace('-string:',s.strip())
-            # Check for *another* string following the end of the first.
-            string_delim = self.check_for_string(s,i2+len(string_delim))
-    else:
-        string_delim = self.check_for_string(s,i)
-    if trace and old_string_delim: g.trace(' string:',s.strip())
-    return string_delim
-.. @+node:ekr.20140217065257.16677: *5* clean
-def clean(self,root):
-    '''Clean the tree with the given root.'''
-    tail = [] # Trailing underindented lines to be added to the next node.
-    last = root.lastNode()
-    for p in root.self_and_subtree():
-        lines = g.splitLines(p.b)
-        if lines:
-            i = g.skip_ws(lines[0],0)
-            if i > 0:
-                head = []
-                for s in lines:
-                    if s[:i].isspace() and s[i:]:
-                        head.append(s[i:])
-                    elif s.isspace():
-                        head.append(s)
-                    else: break
-                p.b = ''.join(tail+head)
-                # Move all trailing underindented lines to the next node.
-                n = len(head)
-                tail = lines[n:] if n < len(lines) else []
-            elif p == last:
-                # Special case the last node:
-                # Keep underindented following lines in the node...
-                head = [lines[0]]
-                for s in lines[1:]:
-                    if s[0].isspace():
-                        head.append(s)
-                    else: break
-                # But move the first underindented comment line and
-                # all following lines to the root node.
-                n = len(head)
-                for s in lines[n:]:
-                    if s.startswith('#'):
-                        break
-                    else:
-                        head.append(s)
-                p.b = ''.join(tail+head)
-                n = len(head)
-                if n < len(lines):
-                    root.b = root.b + ''.join(lines[n:])
-                tail = []
-            else:
-                p.b = ''.join(tail+lines)
-                tail = []
-    if tail:
-        root.b = root.b + ''.join(tail)
+.. @+node:ekr.20131111054309.16528: *4* vc.exec_
+def exec_(self,command,n1,n2,tail):
+    
+    trace = True and not g.unitTesting
+    d = self.commands_d.get(command,{})
+        # Keys are single letters.
+    command_name = d.get('command_name')
+    func = self.dispatch_d.get(command_name,self.oops)
+    # Set ivars describing the command.
+    self.command = command
+    self.func = func
+    self.n1 = n1
+    self.n2 = n2
+    self.tail = tail
+    if trace: self.trace_command()
+    for i in range(n1 or 1):
+        func()
+.. @+node:ekr.20131109170017.46983: *4* vc.create_dicts & helpers
+def create_dicts(self):
 
+    dump = False
+    # Compute tails first.
+    self.command_tails_d = self.create_command_tails_d(dump)
+    self.motion_tails_d  = self.create_motion_tails_d(dump)
+    # Then motions.
+    self.motions_d = self.create_motions_d(dump)
+    # Then commands.
+    self.commands_d = self.create_commands_d(dump)
+    # Can be done any time.
+    self.dispatch_d = self.create_dispatch_d()
+    # Check dict contents.
+    self.check_dicts()
+    # Check ivars.
+    for ivar in (
+        'command_tails_d','commands_d',
+        'dispatch_d',
+        'motion_tails_d','motions_d',
+    ):
+        assert hasattr(self,ivar),ivar
+
+    
+.. @+node:ekr.20131110050932.16536: *5* check_dicts
+def check_dicts(self):
+    
+    # Check user settings.
+    d = self.commands_d
+    for key in sorted(d.keys()):
+        d2 = d.get(key)
+        ch = d2.get('ch')
+        pattern = d2.get('tail_pattern')
+        aList = d2.get('tail_chars')
+        if aList and len(aList) > 1 and None in aList and not pattern:
+            g.trace('ambiguous entry for %s: %s' % (ch,d2))
+.. @+node:ekr.20131110050932.16529: *5* create_command_tails_d
+def create_command_tails_d(self,dump):
+
+    # @data vim-command-tails
+    d = {}
+    data = self.getData('vim-command-tails')
+    for s in data:
+        kind,command = self.split_arg_line(s)
+        if command:
+            ch = command[0] # Keys are single characters.
+            if kind in self.tail_kinds:
+                d[ch] = kind
+            else:
+                g.trace('bad kind: %s' % s)
+        else:
+            g.trace('bad command: %s' % s)
+    if False or dump: self.dump('command_tails_d',d)
+    return d
+.. @+node:ekr.20131110050932.16532: *5* create_commands_d
+def create_commands_d(self,dump):
+    
+    # @data vim-commands
+    trace = False
+    d = {} # Keys are single characters, values are inner dicts.
+    data = self.getData('vim-commands')
+    for s in data:
+        func,command = self.split_arg_line(s)
+        command = command.strip()
+        if command:
+            # 1. Get the inner dict.
+            ch = command[0]
+            tail = command[1:] or None
+            d2 = d.get(ch,{})
+            if d2:
+                assert d2.get('ch') == ch
+            else:
+                d2['ch']=ch
+            # if ch == '#': g.pdb()
+            # Remember the command name
+            d2['command_name'] = func
+            # Append the tail (including None) to d2['tail_chars']
+            aList = d2.get('tail_chars',[])
+            if tail is not None:
+                if tail in aList:
+                    g.trace('duplicate command tail: %s' % tail)
+                else:
+                    aList.append(tail)
+            # Set d2['tail_pattern'] and append None to aList if there is a pattern.
+            pattern = self.command_tails_d.get(ch)
+            if pattern:
+                d2['tail_pattern'] = pattern
+                if not None in aList:
+                    aList.append(None)
+            d2['tail_chars']=aList
+            d[ch] = d2
+        else:
+            g.trace('missing command chars: %s' % (s))
+    if trace or dump: self.dump('command_d',d)
+    return d
+.. @+node:ekr.20131110050932.16530: *5* create_motion_tails_d
+def create_motion_tails_d(self,dump):
+
+    # @data vim-motion-tails
+    d = {}
+    data = self.getData('vim-motion-tails')
+    for s in data:
+        kind,command = self.split_arg_line(s)
+        command = command.strip()
+        if command:
+            ch = command[0] # Keys are single characters.
+            if kind in self.tail_kinds:
+                d[ch] = kind
+            else:
+                g.trace('bad kind: %s' % s)
+        else:
+            g.trace('bad command: %s' % s)
+    if False or dump: self.dump('motion_tails_d',d)
+    return d
+.. @+node:ekr.20131110050932.16531: *5* create_motions_d
+def create_motions_d(self,dump):
+    
+    # @data vim-motions
+    d = {} # Keys are single characters, values are inner dicts.
+    data = self.getData('vim-motions')
+    for command in data:
+        command = command.strip()
+        ch = command[:1]
+        tail = command[1:] or None
+        d2 = d.get(ch,{})
+        if d2:
+            assert d2.get('ch') == ch
+        else:
+            d2['ch']=ch
+        aList = d2.get('tail_chars',[])
+        if tail in aList:
+            g.trace('duplicate motion tail: %s' % tail)
+        else:
+            aList.append(tail)
+            d2['tail_chars']=aList
+         # Also set d2['tail_pattern'] if tail is None.
+        if tail is None:
+            if d2.get('tail_pattern'):
+                g.trace('duplicate entry for %r' % (ch))
+            else:
+                d2['tail_pattern'] = self.motion_tails_d.get(ch,'')
+        d[ch] = d2
+    if False or dump: self.dump('motions_d',d)
+    return d
+.. @+node:ekr.20131109170017.46985: *5* getData
+def getData(self,s):
+    
+    trace = False and not g.unitTesting
+    c = self.c
+    if 0: # Good for testing: can change the @data node on the fly.
+        p = g.findNodeAnywhere(c,'@data %s' % s)
+        if p:
+            return [s for s in g.splitLines(p.b) if s.strip() and not s.startswith('#')]
+        else:
+            if trace: g.trace('not found: %s' % s)
+            return []
+    else:
+        return c.config.getData(s) or []
+.. @+node:ekr.20131112061353.16542: *4* vc.repr_list
+def repr_list(self,aList):
+
+    return ','.join([repr(z) if z is None else z for z in aList])
 .. @-all
 .. @-leo

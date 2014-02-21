@@ -2012,8 +2012,6 @@ class keyHandlerClass:
         trace = False and not g.unitTesting
         verbose = True
         k = self ; c = k.c
-        if c.vim_mode:
-            return k.getVimArg(event)
         recording = c.macroCommands.recordingMacro
         state = k.getState('full-command')
         helpPrompt = 'Help for command: '
@@ -2524,86 +2522,6 @@ class keyHandlerClass:
             k.mb_tabList = []
             k.updateLabel(event)
             k.mb_tabListPrefix = k.getLabel()
-    #@+node:ekr.20131112152450.16537: *4* k.getVimArg
-    def getVimArg(self,event,specialStroke=None,specialFunc=None):
-        '''Handle all keys in the minibuffer when c.vim_mode is True.'''
-        ### help=False,
-        ### helpHandler=None
-        trace = False # and not g.unitTesting
-        verbose = False
-        k,c = self,self.c
-        k = self ; c = k.c
-        vr = c.vimCommands
-        prompt = 'Normal Mode: ' ###
-        recording = c.macroCommands.recordingMacro
-        state = k.getState('vim-mode')
-        if trace: g.trace('**',k.getLabel(),state)
-        c.check_event(event)
-        ch = char = event and event.char or ''
-        stroke = event and event.stroke or None
-        if trace: g.trace('state',state,char) # 'recording',recording,
-        # if recording:
-            # c.macroCommands.startRecordingMacro(event)
-        # if state > 0:
-            # k.setLossage(char,stroke)
-        if state == 0:
-            k.mb_event = event # Save the full event for later.
-            k.setState('vim-mode',1,handler=k.getVimArg)
-            k.setLabelBlue('%s' % (prompt),protect=True)
-            # Init mb_ ivars. This prevents problems with an initial backspace.
-            k.mb_prompt = k.mb_tabListPrefix = k.mb_prefix = prompt
-            k.mb_tabList = [] ; k.mb_tabListIndex = -1
-            k.mb_help = None ### help
-            k.mb_helpHandler = None ### helpHandler
-        # Unlike fullCommand, we *do* have a key.
-        elif char == 'Ins' or k.isFKey(char):
-            pass
-        elif char == 'Escape':
-            k.keyboardQuit()
-        elif char in ('\n','Return'):
-            if trace and verbose: g.trace('***Return')
-            c.frame.log.deleteTab('Completion')
-            k.callAltXFunction(k.mb_event)
-            # if k.mb_help:
-                # s = k.getLabel()
-                # commandName = s[len(helpPrompt):].strip()
-                # k.clearState()
-                # k.resetLabel()
-                # if k.mb_helpHandler: k.mb_helpHandler(commandName)
-            # else:
-                # k.callAltXFunction(k.mb_event)
-        # elif char in ('\t','Tab'):
-            # if trace and verbose: g.trace('***Tab')
-            # k.doTabCompletion(list(c.commandsDict.keys()),allow_empty_completion=True)
-            # c.minibufferWantsFocus()
-        elif char in ('\b','BackSpace'):
-            if trace and verbose: g.trace('***BackSpace')
-            k.doBackSpace(list(c.commandsDict.keys()))
-        elif k.ignore_unbound_non_ascii_keys and len(ch) > 1:
-            if trace: g.trace('non-ascii')
-            if specialStroke:
-                g.trace(specialStroke)
-                specialFunc()
-        else:
-            # Clear the list, any other character besides tab indicates that a new prefix is in effect.
-            k.mb_tabList = []
-            k.updateLabel(event)
-            k.mb_tabListPrefix = k.getLabel()
-            if trace: g.trace('new prefix',k.mb_tabListPrefix)
-        # Examine each keystroke to see if we have a complete command.
-        if state != 0:
-            command = k.getLabel(ignorePrompt=True)
-            status,n1,command2,n2,tail = vr.scan(command)
-            if trace: g.trace('status: %s %s command: %s n1: %s n2: %s tail: %s' % (
-                status,command,command2,n1,n2,tail))
-            if status == 'done':
-                k.resetLabel()
-                k.setLabelBlue('%s' % (prompt),protect=True)
-                vr.exec_(command2,n1,n2,tail)
-            elif status == 'oops':
-                # ring bell?
-                if trace: g.trace('invalid char') ###
-            c.bodyWantsFocus()
     #@+node:ekr.20061031131434.130: *4* k.keyboardQuit
     def keyboardQuit (self,event=None,setFocus=True,mouseClick=False):
 
@@ -2934,9 +2852,7 @@ class keyHandlerClass:
     master_key_count = 0
 
     def masterKeyHandler (self,event):
-
-        '''This is the handler for almost all key bindings.'''
-
+        '''The master key handler for almost all key bindings.'''
         trace = False and not g.app.unitTesting
         traceGC = False and not g.app.unitTesting
         verbose = True
@@ -2964,14 +2880,12 @@ class keyHandlerClass:
         assert g.isStrokeOrNone(stroke)
         if char in special_keys:
             if trace and verbose: g.trace('char',char)
-            return None
-
+            return
         if traceGC: g.printNewObjects('masterKey 1')
         if trace and verbose: g.trace('stroke:',repr(stroke),'char:',
             repr(event and event.char),
             'ch:',repr(event and event.char),
             'state',state,'state2',k.unboundKeyAction)
-
         # Handle keyboard-quit first.
         if k.abortAllModesKey and stroke == k.abortAllModesKey:
             if hasattr(c,'screenCastController') and c.screenCastController:
@@ -2982,13 +2896,14 @@ class keyHandlerClass:
                 k.masterCommand(commandName='keyboard-quit',
                     event=event,func=k.keyboardQuit,stroke=stroke)
             return
+        if c.vim_mode and c.vimCommands:
+            ok = c.vimCommands.doKey(event)
+            if ok: return
         if k.inState():
             if trace: g.trace('   state %-15s %s' % (state,stroke))
             done = k.doMode(event,state,stroke)
             if done: return
-
         if traceGC: g.printNewObjects('masterKey 2')
-
         # 2011/02/08: An important simplification.
         if isPlain and k.unboundKeyAction != 'command':
             if self.isAutoCompleteChar(stroke):
@@ -2997,7 +2912,6 @@ class keyHandlerClass:
                 if trace: g.trace('inserted %-10s (insert/overwrite mode)' % (stroke))
                 k.handleUnboundKeys(event,char,stroke)
                 return
-
         # 2011/02/08: Use getPandBindings for *all* keys.
         si = k.getPaneBinding(stroke,w)
         if si:
@@ -4374,7 +4288,7 @@ class keyHandlerClass:
         # k.showStateAndMode()
     #@+node:ekr.20061031131434.192: *4* k.showStateAndMode
     def showStateAndMode(self,w=None,prompt=None,setFocus=True):
-
+        '''Show the state and mode at the start of the minibuffer.'''
         trace = False and not g.unitTesting
         k = self ; c = k.c
         state = k.unboundKeyAction
@@ -4384,26 +4298,20 @@ class keyHandlerClass:
         if not w:
             w = g.app.gui.get_focus(c)
             if not w: return
-
         isText = g.app.gui.isTextWidget(w)
-
         # This fixes a problem with the tk gui plugin.
         if mode and mode.lower().startswith('isearch'):
             return
-
         wname = g.app.gui.widget_name(w).lower()
-
-        # 2011/02/12: get the wrapper for the headline widget.
+        # Get the wrapper for the headline widget.
         if wname.startswith('head'):
             if hasattr(c.frame.tree,'getWrapper'):
                 if hasattr(w,'widget'): w2 = w.widget
                 else: w2 = w
                 w = c.frame.tree.getWrapper(w2,item=None)
                 isText = bool(w) # A benign hack.
-
         if trace: g.trace('state: %s, text?: %s, w: %s' % (
             state,isText,w))
-
         if mode:
             if mode in ('getArg','getFileName','full-command'):
                 s = None
@@ -4418,9 +4326,7 @@ class keyHandlerClass:
             s = '%s State' % state.capitalize()
             if c.editCommands.extendMode:
                 s = s + ' (Extend Mode)'
-
         if trace: g.trace('w',w,'s',s)
-
         if s:
             k.setLabelBlue(label=s,protect=True)
         if w and isText:

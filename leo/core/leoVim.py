@@ -16,295 +16,114 @@ import PyQt4.QtCore as QtCore
 #@+others
 #@+node:ekr.20131113045621.16547: ** class VimCommands
 class VimCommands:
-    '''
-    A class that handles most aspects of vim simulation in Leo.
-    
-    - vr.create_dicts creates dictionaries from vim-related @data nodes.
-    - vr.create_dicts also creates a dispatch dictionary associating
-      the first letter of each vim command with a vr method.
-    - vr.scan uses those tables to parse a command into its components.
-      vr.scan returns a status in ('oops','scan','done').
-    - vr.exec_ executes a completed command.
-    
-    k.getVimArg accumulates vim commands while status is 'scan'
-    (ignoring characters when status is 'oops') and calls vr.exec_
-    when status is 'done'.
-    '''
-
+    '''A class that handles vim simulation in Leo.'''
     #@+others
-    #@+node:ekr.20131111105746.16545: *3*  vc.Birth
-    #@+node:ekr.20131109170017.16507: *4* vc.ctor
+    #@+node:ekr.20131109170017.16507: *3* vc.ctor & helpers
     def __init__(self,c):
 
-        self.init_ivars(c)
-        self.create_dicts()
-    #@+node:ekr.20131109170017.46983: *4* vc.create_dicts & helpers
-    def create_dicts(self):
-
-        dump = False
-        # Compute tails first.
-        self.command_tails_d = self.create_command_tails_d(dump)
-        self.motion_tails_d  = self.create_motion_tails_d(dump)
-        # Then motions.
-        self.motions_d = self.create_motions_d(dump)
-        # Then commands.
-        self.commands_d = self.create_commands_d(dump)
-        # Can be done any time.
-        self.dispatch_d = self.create_dispatch_d()
-        # Check dict contents.
-        self.check_dicts()
-        # Check ivars.
-        for ivar in (
-            'command_tails_d','commands_d',
-            'dispatch_d',
-            'motion_tails_d','motions_d',
-        ):
-            assert hasattr(self,ivar),ivar
-
-        
-    #@+node:ekr.20131110050932.16536: *5* check_dicts
-    def check_dicts(self):
-        
-        # Check user settings.
-        d = self.commands_d
-        for key in sorted(d.keys()):
-            d2 = d.get(key)
-            ch = d2.get('ch')
-            pattern = d2.get('tail_pattern')
-            aList = d2.get('tail_chars')
-            if aList and len(aList) > 1 and None in aList and not pattern:
-                g.trace('ambiguous entry for %s: %s' % (ch,d2))
-    #@+node:ekr.20131110050932.16529: *5* create_command_tails_d
-    def create_command_tails_d(self,dump):
-
-        # @data vim-command-tails
-        d = {}
-        data = self.getData('vim-command-tails')
-        for s in data:
-            kind,command = self.split_arg_line(s)
-            if command:
-                ch = command[0] # Keys are single characters.
-                if kind in self.tail_kinds:
-                    d[ch] = kind
-                else:
-                    g.trace('bad kind: %s' % s)
-            else:
-                g.trace('bad command: %s' % s)
-        if False or dump: self.dump('command_tails_d',d)
-        return d
-    #@+node:ekr.20131110050932.16532: *5* create_commands_d
-    def create_commands_d(self,dump):
-        
-        # @data vim-commands
-        trace = False
-        d = {} # Keys are single characters, values are inner dicts.
-        data = self.getData('vim-commands')
-        for s in data:
-            func,command = self.split_arg_line(s)
-            command = command.strip()
-            if command:
-                # 1. Get the inner dict.
-                ch = command[0]
-                tail = command[1:] or None
-                d2 = d.get(ch,{})
-                if d2:
-                    assert d2.get('ch') == ch
-                else:
-                    d2['ch']=ch
-                # if ch == '#': g.pdb()
-                # Remember the command name
-                d2['command_name'] = func
-                # Append the tail (including None) to d2['tail_chars']
-                aList = d2.get('tail_chars',[])
-                if tail is not None:
-                    if tail in aList:
-                        g.trace('duplicate command tail: %s' % tail)
-                    else:
-                        aList.append(tail)
-                # Set d2['tail_pattern'] and append None to aList if there is a pattern.
-                pattern = self.command_tails_d.get(ch)
-                if pattern:
-                    d2['tail_pattern'] = pattern
-                    if not None in aList:
-                        aList.append(None)
-                d2['tail_chars']=aList
-                d[ch] = d2
-            else:
-                g.trace('missing command chars: %s' % (s))
-        if trace or dump: self.dump('command_d',d)
-        return d
-    #@+node:ekr.20131110050932.16530: *5* create_motion_tails_d
-    def create_motion_tails_d(self,dump):
-
-        # @data vim-motion-tails
-        d = {}
-        data = self.getData('vim-motion-tails')
-        for s in data:
-            kind,command = self.split_arg_line(s)
-            command = command.strip()
-            if command:
-                ch = command[0] # Keys are single characters.
-                if kind in self.tail_kinds:
-                    d[ch] = kind
-                else:
-                    g.trace('bad kind: %s' % s)
-            else:
-                g.trace('bad command: %s' % s)
-        if False or dump: self.dump('motion_tails_d',d)
-        return d
-    #@+node:ekr.20131110050932.16531: *5* create_motions_d
-    def create_motions_d(self,dump):
-        
-        # @data vim-motions
-        d = {} # Keys are single characters, values are inner dicts.
-        data = self.getData('vim-motions')
-        for command in data:
-            command = command.strip()
-            ch = command[:1]
-            tail = command[1:] or None
-            d2 = d.get(ch,{})
-            if d2:
-                assert d2.get('ch') == ch
-            else:
-                d2['ch']=ch
-            aList = d2.get('tail_chars',[])
-            if tail in aList:
-                g.trace('duplicate motion tail: %s' % tail)
-            else:
-                aList.append(tail)
-                d2['tail_chars']=aList
-             # Also set d2['tail_pattern'] if tail is None.
-            if tail is None:
-                if d2.get('tail_pattern'):
-                    g.trace('duplicate entry for %r' % (ch))
-                else:
-                    d2['tail_pattern'] = self.motion_tails_d.get(ch,'')
-            d[ch] = d2
-        if False or dump: self.dump('motions_d',d)
-        return d
-    #@+node:ekr.20131111061547.16460: *5* create_dispatch_d
-    def create_dispatch_d(self):
-        oops = self.oops
-        d = {
-        # brackets.
-        'vim_lcurly':   oops,
-        'vim_lparen':   oops,
-        'vim_lsquare':  oops,
-        'vim_rcurly':   oops,
-        'vim_rparen':   oops,
-        'vim_rsquare':  oops,
-        # Special chars.
-        'vim_at':       self.vim_at,
-        'vim_backtick': oops,
-        'vim_caret':    oops,
-        'vim_comma':    oops,
-        'vim_dollar':   oops,
-        'vim_dot':      oops,
-        'vim_dquote':   oops,
-        'vim_langle':   oops,
-        'vim_minus':    oops,
-        'vim_percent':  oops,
-        'vim_plus':     oops,
-        'vim_pound':    oops,
-        'vim_question': oops,
-        'vim_rangle':   oops,
-        'vim_semicolon': oops,
-        'vim_slash':    oops,
-        'vim_star':     oops,
-        'vim_tilda':    oops,
-        'vim_underscore': oops,
-        'vim_vertical': oops,
-        # Letters and digits.
-        'vim_0': oops,
-        'vim_A': oops,
-        'vim_B': oops,
-        'vim_C': oops,
-        'vim_D': oops,
-        'vim_E': oops,
-        'vim_F': oops,
-        'vim_G': oops,
-        'vim_H': oops,
-        'vim_I': oops,
-        'vim_J': oops,
-        'vim_K': oops,
-        'vim_M': oops,
-        'vim_L': oops,
-        'vim_N': oops,
-        'vim_O': oops,
-        'vim_P': oops,
-        'vim_R': oops,
-        'vim_S': oops,
-        'vim_T': oops,
-        'vim_U': oops,
-        'vim_V': oops,
-        'vim_W': oops,
-        'vim_X': oops,
-        'vim_Y': oops,
-        'vim_Z': oops,
-        'vim_a': self.vim_a,
-        'vim_b': self.vim_b,
-        'vim_c': self.vim_c,
-        'vim_d': self.vim_d,
-        'vim_g': self.vim_g,
-        'vim_h': self.vim_h,
-        'vim_i': self.vim_i,
-        'vim_j': self.vim_j,
-        'vim_k': self.vim_k,
-        'vim_l': self.vim_l,
-        'vim_n': self.vim_n,
-        'vim_m': self.vim_m,
-        'vim_o': self.vim_o,
-        'vim_p': self.vim_p,
-        'vim_q': self.vim_q,
-        'vim_r': self.vim_r,
-        'vim_s': self.vim_s,
-        'vim_t': self.vim_t,
-        'vim_u': self.vim_u,
-        'vim_v': self.vim_v,
-        'vim_w': self.vim_w,
-        'vim_x': self.vim_x,
-        'vim_y': self.vim_y,
-        'vim_z': self.vim_z,
-        }
-        return d
-    #@+node:ekr.20131109170017.46985: *5* getData
-    def getData(self,s):
-        
-        trace = False and not g.unitTesting
-        c = self.c
-        if 0: # Good for testing: can change the @data node on the fly.
-            p = g.findNodeAnywhere(c,'@data %s' % s)
-            if p:
-                return [s for s in g.splitLines(p.b) if s.strip() and not s.startswith('#')]
-            else:
-                if trace: g.trace('not found: %s' % s)
-                return []
-        else:
-            return c.config.getData(s) or []
-    #@+node:ekr.20131111105746.16547: *4* vc.init_ivars
-    def init_ivars(self,c):
-        
+        # Internal ivars...
         self.c = c
-        # Internal ivars.
-        self.event = None
-        self.w = c.frame.body and c.frame.body.bodyCtrl # A QTextBrowser.
-        # Ivars describing command syntax.
         self.chars = [ch for ch in string.printable if 32 <= ord(ch) < 128]
-        # g.trace(''.join(self.chars))
+        self.command = None
+        self.dispatch_dict = self.create_dispatch_d()
+        self.event = None
+        self.func = None
         self.letters = string.ascii_letters
-        self.motion_kinds = ['char','letter','register'] # selectors in @data vim-*-tails.
+        self.n1 = None
+        self.n2 = None
         self.register_names = string.ascii_letters
-        self.tail_kinds = ['char','letter','motion','pattern','register',]
+        self.state = 'normal' # in ('normal','insert')
+        self.tail = None
+        self.w = c.frame.body and c.frame.body.bodyCtrl # A QTextBrowser.
         # Ivars accessible via commands.
         self.dot = '' # The previous command in normal mode.
         self.extend = False # True: extending selection.
         self.register_d = {} # Keys are letters; values are strings.
-        # Status isvars set by self.exec_
-        self.command = None
-        self.func = None
-        self.tail = None
-        self.n1 = None
-        self.n2 = None
+    #@+node:ekr.20131111061547.16460: *4* create_dispatch_d
+    def create_dispatch_d(self):
+        oops = self.oops
+        d = {
+        # brackets.
+        '{': oops,
+        '(': oops,
+        '[': oops,
+        '}': oops,
+        ')': oops,
+        ']': oops,
+        # Special chars.
+        '@': self.vim_at,
+        '`': oops,
+        '^': oops,
+        ',': oops,
+        '$': oops,
+        '.': oops,
+        '"': oops,
+        '<': oops,
+        '-': oops,
+        '%': oops,
+        '+': oops,
+        '#': oops,
+        '?': oops,
+        '>': oops,
+        ';': oops,
+        '/': oops,
+        '*': oops,
+        '~': oops,
+        '_': oops,
+        '|': oops,
+        # Letters and digits.
+        '0': oops,
+        'A': oops,
+        'B': oops,
+        'C': oops,
+        'D': oops,
+        'E': oops,
+        'F': oops,
+        'G': oops,
+        'H': oops,
+        'I': oops,
+        'J': oops,
+        'K': oops,
+        'L': oops,
+        'M': oops,
+        'N': oops,
+        'O': oops,
+        'P': oops,
+        'R': oops,
+        'S': oops,
+        'T': oops,
+        'U': oops,
+        'V': oops,
+        'W': oops,
+        'X': oops,
+        'Y': oops,
+        'Z': oops,
+        'a': self.vim_a,
+        'b': self.vim_b,
+        'c': self.vim_c,
+        'd': self.vim_d,
+        'g': self.vim_g,
+        'h': self.vim_h,
+        'i': self.vim_i,
+        'j': self.vim_j,
+        'k': self.vim_k,
+        'l': self.vim_l,
+        'n': self.vim_n,
+        'm': self.vim_m,
+        'o': self.vim_o,
+        'p': self.vim_p,
+        'q': self.vim_q,
+        'r': self.vim_r,
+        's': self.vim_s,
+        't': self.vim_t,
+        'u': self.vim_u,
+        'v': self.vim_v,
+        'w': self.vim_w,
+        'x': self.vim_x,
+        'y': self.vim_y,
+        'z': self.vim_z,
+        }
+        return d
     #@+node:ekr.20131111105746.16546: *3*  vc.helpers
     #@+node:ekr.20131109170017.46984: *4* vc.dump
     def dump(self,name,d):
@@ -332,32 +151,11 @@ class VimCommands:
                     print('%s\n%s' % (key,val3))
             else:
                 print('%5s %s' % (key,val))
-    #@+node:ekr.20131111054309.16528: *4* vc.exec_
-    def exec_(self,command,n1,n2,tail):
-        
-        trace = True and not g.unitTesting
-        d = self.commands_d.get(command,{})
-            # Keys are single letters.
-        command_name = d.get('command_name')
-        func = self.dispatch_d.get(command_name,self.oops)
-        # Set ivars describing the command.
-        self.command = command
-        self.func = func
-        self.n1 = n1
-        self.n2 = n2
-        self.tail = tail
-        if trace: self.trace_command()
-        for i in range(n1 or 1):
-            func()
     #@+node:ekr.20131111061547.16461: *4* vc.oops
     def oops(self):
         
         self.trace_command()
         
-    #@+node:ekr.20131112061353.16542: *4* vc.repr_list
-    def repr_list(self,aList):
-
-        return ','.join([repr(z) if z is None else z for z in aList])
     #@+node:ekr.20131111061547.18011: *4* vc.runAtIdle
     # For testing: ensure that this always gets called.
 
@@ -550,6 +348,37 @@ class VimCommands:
         func_name = self.func and self.func.__name__ or 'oops'
         print('%s func: %s command: %r n1: %r n2: %r tail: %r' % (
             g.callers(1),func_name,self.command,self.n1,self.n2,self.tail))
+    #@+node:ekr.20140221085636.16685: *3* vc.doKey
+    def doKey(self,event):
+        '''Handle the next key in vim mode.'''
+        trace = True and not g.unitTesting
+        vc = self
+        c = self.c
+        ch = char = event and event.char or ''
+        stroke = event and event.stroke or None
+        func = vc.dispatch_dict.get(ch)
+        # First handle numbers.
+        if trace: g.trace(ch,stroke.s,func and func.__name__)
+        if func:
+            func()
+            return True
+        else:
+            return c.k.isPlainKey(ch)
+           
+        ### d = self.commands_d.get(command,{})
+            # Keys are single letters.
+        ### command_name = d.get('command_name')
+        ### func = self.dispatch_d.get(command_name,self.oops)
+        
+        # Set ivars describing the command.
+        self.command = command
+        self.func = func
+        self.n1 = n1
+        self.n2 = n2
+        self.tail = tail
+        if trace: self.trace_command()
+        for i in range(n1 or 1):
+            func()
     #@+node:ekr.20131111061547.16467: *3* vc.commands
     #@+node:ekr.20140220134748.16614: *4* vim_a/i/o Enter insert mode
     def vim_a(self):
