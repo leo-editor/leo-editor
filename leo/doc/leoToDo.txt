@@ -16,13 +16,21 @@ What to do abouit bzr-manifest?
 @language rest
 
 To do:
+    
+- Accumulate all present keystrokes in command list.
+- vc.is_motion(ch)
+    
+- Set vim-normal mode initially.
+- Put present keys in status area (or minibuffer?)
 
 - Show intermediate typing in the status area.
 - How to undo multi-character commands like gg, dd, etc.? DEL works in vim.
 - Handle cursor-motion suffices, like d2j and c3h
 - Handle visual mode stuff.
-- Set vim-normal mode initially.
+
 - Simulate a box cursor by always selecting one character.
+
+@language python
 .. @+node:ekr.20140218130540.18726: *4* Notes
 @language rest
 
@@ -1504,6 +1512,64 @@ Automatic execution of commands on certain events.
 :wv[iminfo]! [file]             write info to viminfo file [file]
 :x[it][!] [file]                like ":wq" but write only when changes have been made
 :xall[!]  or :wqall[!]          Write all changed buffers and exit
+.. @+node:ekr.20140221190714.16611: *5* Key examples
+@language rest
+
+Simple: N not significant
+0 ^ $ n N o O p q
+f<char> t<char> F<char> T<char>
+
+Unusual: N applied at end of operation.
+
+5a 5i 5A 5o (pretty much the same)
+5. (5 replaces previous repeat count)
+
+Typical:
+
+2b 5w 5e 3C 3D 5h 5l 5k 5j 5J 5r<char>
+
+Compound (repeat & motion or visual)
+
+2d3j 2c3j
+
+g go 
+    N   ge  (motion) backward to the end of the Nth word
+    N   gg  (motion) goto line N (default: first line), on the first non-blank character
+        gv  start highlighting on previous visual area
+    *** extensions ***
+    gV  start highlighting at end of previous visual area.
+    gft  focus-to-tree
+    gfb  focus-to-body
+    gfl  focus-to-log
+    gfs  focus-to-spell-tab
+G goto-line-number:
+    *** extensions ***
+
+I insert text before the first non-blank in the line (N times)
+
+s change N chars
+u undo
+v start/stop visual mode
+w word forward
+x delete N chars under cursor.
+y yank
+Y yank N lines
+z redraw: zb, zz, zt.
+ZQ  Same as ":q!".
+ZZ  Same as ":x".
+
+Less important:
+
+, backward repeat last f,F,t,T motion
+; repeat last f,F,t,T motion
+( sentences backward
+) sentences forward
+{ paragraphs backward
+} paragraphs forward
+[x  go back...
+]x  go...
+- up line to first non-blank char
++ down line to first non-blank char
 .. @+node:ekr.20140219070357.16610: *4* Tests
 Dot.
 
@@ -1590,7 +1656,7 @@ def masterKeyHandler (self,event):
                 event=event,func=k.keyboardQuit,stroke=stroke)
         return
     if c.vim_mode and c.vimCommands:
-        ok = c.vimCommands.doKey(event)
+        ok = c.vimCommands.do_key(event)
         if ok: return
     if k.inState():
         if trace: g.trace('   state %-15s %s' % (state,stroke))

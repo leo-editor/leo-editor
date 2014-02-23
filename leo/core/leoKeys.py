@@ -2897,7 +2897,7 @@ class keyHandlerClass:
                     event=event,func=k.keyboardQuit,stroke=stroke)
             return
         if c.vim_mode and c.vimCommands:
-            ok = c.vimCommands.doKey(event)
+            ok = c.vimCommands.do_key(event)
             if ok: return
         if k.inState():
             if trace: g.trace('   state %-15s %s' % (state,stroke))
