@@ -44,6 +44,7 @@ import sys
 # import tempfile
 import platform
 import time
+from collections import defaultdict
 
 # if g.isPython3:
     # import urllib.request as urllib
@@ -1901,8 +1902,8 @@ def zoom_in(event=None, delta=1):
     """
 
     c = event['c']
-    c.font_size_delta += delta
-    ss = g.expand_css_constants(c, c.active_stylesheet, c.font_size_delta)
+    c._style_deltas['font-size-body'] += delta
+    ss = g.expand_css_constants(c, c.active_stylesheet)
     c.frame.body.bodyCtrl.widget.setStyleSheet(ss)
     
 @g.command("zoom-out")
@@ -1949,7 +1950,7 @@ class DynamicWindow(QtGui.QMainWindow):
         self.leo_master = None # Set in construct.
         self.leo_menubar = None # Set in createMenuBar.
         self.leo_ui = None # Set in construct.
-        c.font_size_delta = 0  # for adjusting font sizes dynamically
+        c._style_deltas = defaultdict(lambda: 0) # for adjusting styles dynamically
         # g.trace('(DynamicWindow)',g.listToString(dir(self),sort=True))
     #@+node:ekr.20110605121601.18140: *4* dw.closeEvent
     def closeEvent (self,event):
@@ -2864,8 +2865,8 @@ class DynamicWindow(QtGui.QMainWindow):
 
         # store *before* expanding, so later expansions get new zoom
         c.active_stylesheet = sheet
-        
-        sheet = g.expand_css_constants(c, sheet, c.font_size_delta)
+
+        sheet = g.expand_css_constants(c, sheet)
         
         if trace: g.trace(len(sheet))
         w = self.leo_ui
@@ -3182,7 +3183,7 @@ class LeoBaseTabWidget (QtGui.QTabWidget):
             else:
                 sheet = '\n'.join(sheet)
             c.active_stylesheet = sheet
-            sheet = g.expand_css_constants(c, sheet, c.font_size_delta)
+            sheet = g.expand_css_constants(c, sheet)
             w.setStyleSheet(sheet)
         else:
             main = g.app.gui.frameFactory.masterFrame

@@ -5330,22 +5330,28 @@ def expand_css_constants(c, sheet, font_size_delta=None):
     # whine at the user if they use old style style-sheet comment 
     # definition, but only once
     
-    # adjust @font-size-body by font_size_delta
-    # easily extendable to @font-size-*
-    fsb = c.config.getString("font-size-body")
-    passes = 10
-    while passes and fsb.startswith('@'):
-        key = g.app.config.canonicalizeSettingName(fsb[1:])
-        fsb = c.config.settingsDict.get(key)
-        if fsb:
-            fsb = fsb.val
-        passes -= 1
-    if font_size_delta and (fsb is not None):
-        size = ''.join(i for i in fsb if i in '01234567890.')
-        units = ''.join(i for i in fsb if i not in '01234567890.')
-        size = min(250, max(1, int(size) + font_size_delta))
+    deltas = c._style_deltas
+    
+    # legacy
+    if font_size_delta:
+        deltas['font-size-body'] = font_size_delta
         
-        constants["@font-size-body"] = "%s%s" % (size, units)
+    for delta in c._style_deltas:
+        # adjust @font-size-body by font_size_delta
+        # easily extendable to @font-size-*
+        val = c.config.getString(delta)
+        passes = 10
+        while passes and val.startswith('@'):
+            key = g.app.config.canonicalizeSettingName(val[1:])
+            val = c.config.settingsDict.get(key)
+            if val:
+                val = val.val
+            passes -= 1
+        if deltas[delta] and (val is not None):
+            size = ''.join(i for i in val if i in '01234567890.')
+            units = ''.join(i for i in val if i not in '01234567890.')
+            size = min(250, max(1, int(size) + deltas[delta]))
+            constants["@"+delta] = "%s%s" % (size, units)
 
     passes = 10
     to_do = find_constants_referenced(sheet)
@@ -5358,10 +5364,7 @@ def expand_css_constants(c, sheet, font_size_delta=None):
             value = None
             if const in constants:
                 value = constants[const]
-                if const not in (
-                    # ignore these special case Ctrl-mousewheel resize items
-                    '@font-size-body', '@font-size-tree', 
-                    '@font-size-log') and not whine:
+                if const[1:] not in deltas and not whine:
                     whine = ("'%s' from style-sheet comment definition, "
                         "please use regular @string / @color type @settings."
                         % const)

@@ -11,7 +11,7 @@
 <find_panel_settings/>
 <vnodes>
 <v t="tbrown.20131122094200.3532"><vh>README</vh></v>
-<v t="tbrown.20131201090459.28141"><vh>leo_dark theme 0</vh>
+<v t="tbrown.20131201090459.28141" a="E"><vh>leo_dark theme 0</vh>
 <v t="tbrown.20131201090459.28142"><vh>README</vh></v>
 <v t="tbrown.20131201090459.28143"><vh>README - theme developers</vh></v>
 <v t="tbrown.20131201090459.28144"><vh>@string color_theme = leo_dark_0</vh></v>
@@ -163,7 +163,7 @@
 <v t="tbrown.20131201090459.28269"><vh>@color url_color = #6c71c4</vh></v>
 <v t="tbrown.20131201090459.28270"><vh>@button reload-styles</vh></v>
 </v>
-<v t="tbrown.20131122094200.3612"><vh>leo_dark theme 1</vh>
+<v t="tbrown.20131122094200.3612" a="E"><vh>leo_dark theme 1</vh>
 <v t="tbrown.20131122094200.3613"><vh>README</vh></v>
 <v t="tbrown.20131122094200.3614"><vh>@string color_theme = leo_dark_0</vh></v>
 <v t="tbrown.20131122094200.3615"><vh>@bool color_theme_is_dark = True</vh></v>
@@ -2573,11 +2573,6 @@ LightSteelBlue1 # Good for testing.</t>
 
 # remember where we are
 current_v = c.p.v
-
-if c.font_size_delta:
-    # doesn't make a lot of sense to edit font size settings while
-    # font zooming is in effect
-    g.es("NOTE: font size adjustment currently %+d"%c.font_size_delta)
 
 # first, rebuild the stylesheet template from the tree, if
 # the stylesheet source is in tree form, .e.g. dark themes, currently the
