@@ -15,19 +15,15 @@ What to do abouit bzr-manifest?
 .. @+node:ekr.20131111061547.16464: *3* vim project
 @language rest
 
+Bug: word-only screws up regex searches.
+
 To do:
-    
-- Accumulate all present keystrokes in command list.
-- vc.is_motion(ch)
-    
-- Set vim-normal mode initially.
-- Put present keys in status area (or minibuffer?)
+** Fix visual mode.
+- Separate dicts for motions & terminators.
+    - This is better separation of concerns.
 
-- Show intermediate typing in the status area.
-- How to undo multi-character commands like gg, dd, etc.? DEL works in vim.
-- Handle cursor-motion suffices, like d2j and c3h
-- Handle visual mode stuff.
-
+Later:
+* Review dot example.  Is /x/y/ needed?  Can we just use Leo's find command?
 - Simulate a box cursor by always selecting one character.
 
 @language python

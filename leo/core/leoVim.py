@@ -22,12 +22,15 @@ class VimCommands:
     def __init__(self,c):
 
         self.c = c
+        self.ch = None
         self.chars = [ch for ch in string.printable if 32 <= ord(ch) < 128]
-        self.command_list = [] # List of command characters.
+        self.continue_flag = None # True if mode handler didn't handle the incoming char.
+        self.dot_list = [] # List of characters for the dot command.
         self.dispatch_dict = self.create_normal_dispatch_d()
         self.dot = '' # The previous command in normal mode.
         self.event = None # The event for the current key.
         self.extend = False # True: extending selection.
+        self.insert_widget = None # The widget in effect at the start of an insert operation.
         self.n = None # The accumulating repeat count.
         self.next_func = None # The continuation of a multi-character command.
         self.register_d = {} # Keys are letters; values are strings.
@@ -36,6 +39,7 @@ class VimCommands:
         self.state = 'normal' # in ('normal','insert')
         self.stroke = None # The incoming stroke.
         self.vis_dispatch_dict = self.create_vis_dispatch_d()
+        self.vis_widget = None # The widget in effect at the start of visual mode.
         self.w = None # The present widget.
             # c.frame.body and c.frame.body.bodyCtrl # A QTextBrowser.
     #@+node:ekr.20131111061547.16460: *4* create_normal_dispatch_d
@@ -44,6 +48,7 @@ class VimCommands:
         Return the dispatch dict for normal mode.
         Keys are strokes, values are methods.
         '''
+        vc = self
         d = {
         # brackets.
         '{': None,
@@ -74,23 +79,23 @@ class VimCommands:
         '_': None,
         '|': None,
         # Digits.
-        '0': self.vim_0,
-        '1': self.vim_digits,
-        '2': self.vim_digits,
-        '3': self.vim_digits,
-        '4': self.vim_digits,
-        '5': self.vim_digits,
-        '6': self.vim_digits,
-        '7': self.vim_digits,
-        '8': self.vim_digits,
-        '9': self.vim_digits,
-        # Upperscase letters. ### To do.
+        '0': vc.vim_0,
+        '1': vc.vim_digits,
+        '2': vc.vim_digits,
+        '3': vc.vim_digits,
+        '4': vc.vim_digits,
+        '5': vc.vim_digits,
+        '6': vc.vim_digits,
+        '7': vc.vim_digits,
+        '8': vc.vim_digits,
+        '9': vc.vim_digits,
+        # Upperscase letters.
         'A': None,
         'B': None,
         'C': None,
         'D': None,
         'E': None,
-        'F': None,
+        'F': vc.vim_F,
         'G': None,
         'H': None,
         'I': None,
@@ -99,11 +104,11 @@ class VimCommands:
         'L': None,
         'M': None,
         'N': None,
-        'O': None,
+        'O': vc.vim_O,
         'P': None,
         'R': None,
         'S': None,
-        'T': None,
+        'T': vc.vim_T,
         'U': None,
         'V': None,
         'W': None,
@@ -111,33 +116,35 @@ class VimCommands:
         'Y': None,
         'Z': None,
         # Lowercase letters...
-        'a': self.vim_a,
-        'b': self.vim_b,
-        'c': self.vim_c,
-        'd': self.vim_d,
-        'g': self.vim_g,
-        'h': self.vim_h,
-        'i': self.vim_i,
-        'j': self.vim_j,
-        'k': self.vim_k,
-        'l': self.vim_l,
-        'n': self.vim_n,
-        'm': self.vim_m,
-        'o': self.vim_o,
-        'p': self.vim_p,
-        'q': self.vim_q,
-        'r': self.vim_r,
-        's': self.vim_s,
-        't': self.vim_t,
-        'u': self.vim_u,
-        'v': self.vim_v,
-        'w': self.vim_w,
-        'x': self.vim_x,
-        'y': self.vim_y,
-        'z': self.vim_z,
+        'a': vc.vim_a,
+        'b': vc.vim_b,
+        'c': vc.vim_c,
+        'd': vc.vim_d,
+        'e': vc.vim_e,
+        'f': vc.vim_f,
+        'g': vc.vim_g,
+        'h': vc.vim_h,
+        'i': vc.vim_i,
+        'j': vc.vim_j,
+        'k': vc.vim_k,
+        'l': vc.vim_l,
+        'm': vc.vim_m,
+        'n': vc.vim_n,
+        'o': vc.vim_o,
+        'p': vc.vim_p,
+        'q': vc.vim_q,
+        'r': vc.vim_r,
+        's': vc.vim_s,
+        't': vc.vim_t,
+        'u': vc.vim_u,
+        'v': vc.vim_v,
+        'w': vc.vim_w,
+        'x': vc.vim_x,
+        'y': vc.vim_y,
+        'z': vc.vim_z,
         }
         return d
-    #@+node:ekr.20140222064735.16630: *4* create_vis_d
+    #@+node:ekr.20140222064735.16630: *4* create_vis_dispatch_d
     def create_vis_dispatch_d (self):
         '''
         Create a dispatch dict for visual mode.
@@ -152,8 +159,11 @@ class VimCommands:
         'Right': vc.vis_l,
         'Up':    vc.vis_k,
         'space': vc.vis_l,
+        # Other synonyms...
+        'Ctrl+Left': vc.vis_b,
+        'Ctrl+Right': vc.vis_w,
         # Terminating commands...
-        'Escape': vc.vis_v,
+        'Escape': vc.vis_escape,
         'J': vc.vis_J,
         'c': vc.vis_c,
         'd': vc.vis_d,
@@ -168,8 +178,9 @@ class VimCommands:
         'f': vc.vis_f,
         'h': vc.vis_h,
         'j': vc.vis_j,
-        'k': vc.vis_l,
-        'l': vc.vis_n,
+        'k': vc.vis_k,
+        'l': vc.vis_l,
+        'n': vc.vis_n,
         't': vc.vis_t,
         'w': vc.vis_w,
         }
@@ -182,49 +193,39 @@ class VimCommands:
         '''
         if QtCore:
             QtCore.QTimer.singleShot(0,aFunc)
-    #@+node:ekr.20140221085636.16685: *3* vc.do_key & helpers
+    #@+node:ekr.20140222064735.16682: *3* vc.Dispatchers
+    #@+node:ekr.20140221085636.16685: *4* vc.do_key & helpers
     def do_key(self,event):
         '''
         Handle the next key in vim mode by dispatching a handler.
         Handlers are responsible for completely handling a key, including
-        updating vc.repeat_list and vc.command_list
+        updating vc.repeat_list and vc.dot_list
         Return True if this method has handled the key.
         '''
         trace = False and not g.unitTesting
         vc = self
         c = self.c
-        ch = char = event and event.char or ''
-        self.event = event
+        vc.ch = ch = event and event.char or ''
+        vc.event = event
         vc.stroke = stroke = event and event.stroke and event.stroke.s
-        g.trace(stroke)
+        vc.continue_flag = False
         # Dispatch an internal state handler if one is active.
         if vc.next_func:
-            # State handlers return None or (next_func,done).
-            val = vc.next_func()
-            if val is None:
-                self.done() # The command is finished.
+            vc.next_func = vc.next_func()
+            if not vc.continue_flag:
+                if not vc.next_func:
+                    self.done() # The command is finished:
                 self.show_status()
                 return True
-            else:
-                vc.next_func,done = val
-                if done and not vc.next_func:
-                    self.done() # The command is finished:
-                if done:
-                    self.show_status()
-                    return True
         # Handle normal mode command by dispatching the proper handler.
         func = vc.dispatch_dict.get(stroke)
         if func:
             if trace: g.trace(stroke,'n:',vc.n,func.__name__)
             if vc.n is None: vc.n = 1
-            val = func()
-            ### The done flag is never used here.
-            if val is None:
-                vc.next_func = None
+            vc.next_func = func()
+            if vc.next_func:
+                vc.dot_list.append(stroke)
             else:
-                vc.command_list.append(stroke)
-                vc.next_func,done = val
-            if not vc.next_func:
                 self.done() # The command is finished.
             vc.show_status()
             return True # The character has been handled.
@@ -233,102 +234,283 @@ class VimCommands:
             # Never add the key to the command list.
             if trace: g.trace('ignore',stroke)
             return c.k.isPlainKey(ch)
-    #@+node:ekr.20140222064735.16631: *4* vc.done
+    #@+node:ekr.20140222064735.16631: *5* vc.done
     def done(self):
         '''Init ivars at the end of a command.'''
+        # g.trace('*****')
         vc = self
-        vc.command_list = []
+        vc.dot_list = []
         vc.n = None
         vc.next_func = None
         vc.repeat_list = []
-    #@+node:ekr.20140221125741.16605: *4* vc.do_motion (to do)
-    def do_motion(self,ch):
-        '''Move the cursor to the indicated spot.'''
-    #@+node:ekr.20140221085636.16693: *4* vc.do_repeat_count (revise)
-    def do_repeat_count(self,stroke):
+    #@+node:ekr.20140222064735.16615: *5* vc.show_status (revise)
+    def show_status(self):
+        '''Show the status (the state and the contents of vc.dot_list)'''
+        vc = self
+        g.trace(''.join(vc.dot_list) or vc.state)
+    #@+node:ekr.20140222064735.16683: *4* vc.do_visual_mode
+    def do_visual_mode(self):
         '''
-        Start, update or stop a repeat count, depending on ch.
-        Return True if ch is part of a repeat count.
+        Handle visual mode.
+        Called from vc.do_key, so vc.event, vc.ch and vc.stroke are valid.
         '''
+        ### Maybe: separate dicts for motions & terminators.
+        vc = self
+        g.trace(vc.stroke)
+        if vc.vis_widget != vc.event.w:
+            g.trace('widget changed')
+            return None
+        func = vc.vis_dispatch_dict.get(vc.stroke)
+        if func:
+            return func()
+        else:
+            # Ignore all other characters.
+            g.trace('not in dict',vc.stroke)
+            vc.continue_flag = True
+            return vc.do_visual_mode
+    #@+node:ekr.20140222064735.16691: *4* vc.do_insert_mode
+    def do_insert_mode(self):
+        '''Handle keys in insert mode.'''
+        vc = self
+        n = vc.insert_n
+        vc.state = 'insert'
+        w = vc.event.w
+        g.trace('n',n,vc.stroke)
+        if w != vc.insert_widget:
+            g.trace('widget changed')
+            return None
+        if vc.stroke == 'Escape':
+            if n > 1:
+                s  = w.getAllText()
+                i1 = vc.insert_i
+                i2 = w.getInsertPoint()
+                s2 = s[i1:i2]
+                g.trace('s2',repr(s))
+                for z in range(n-1):
+                    w.insert(i2,s2)
+                    i2 = w.getInsertPoint()
+            vc.state = 'normal'
+            return None
+        elif vc.stroke == 'BackSpace':
+            i = w.getInsertPoint()
+            if i > 0: w.delete(i-1,i)
+            return vc.do_insert_mode
+        else:
+            i = w.getInsertPoint()
+            w.insert(i,vc.ch)
+            return vc.do_insert_mode
+    #@+node:ekr.20131111061547.16467: *3* vc.commands
+    #@+node:ekr.20140222064735.16635: *4* To do: motion non-letters
+    #@@nocolor-node
+    #@+at
+    # 
+    # First:
+    # 
+    #     0               (motion) to first character in the line (also: <Home> key)
+    # N   $               (motion) go to the last character in the line (N-1 lines lower) (also: <End> key)
+    #     ^               (motion) go to first non-blank character in the line
+    # N   ,               (motion) repeat the last "f", "F", "t", or "T" N times in opposite direction
+    # N   ;               (motion) repeat the last "f", "F", "t", or "T" N times
+    # N   /<CR>                       (motion) repeat last search, in the forward direction
+    # N   /{pattern}[/[offset]]<CR>   (motion) search forward for the Nth occurrence of {pattern}
+    # N   ?<CR>                       (motion) repeat last search, in the backward direction
+    # N   ?{pattern}[?[offset]]<CR>   (motion) search backward for the Nth occurrence of {pattern}
+    # 
+    # Later or never:
+    #     
+    # N   CTRL-I          (motion) go to Nth newer position in jump list
+    # N   CTRL-O          (motion) go to Nth older position in jump list
+    # N   CTRL-T          (motion) Jump back from Nth older tag in tag list
+    #     
+    # N   +               (motion) down N lines, on the first non-blank character (also: CTRL-M and <CR>)
+    # N   _               (motion) down N-1 lines, on the first non-blank character
+    # N   -               (motion) up N lines, on the first non-blank character
+    # 
+    # N   (               (motion) N sentences backward
+    # N   )               (motion) N sentences forward
+    # N   {               (motion) N paragraphs backward
+    # N   }               (motion) N paragraphs forward
+    # N   |               (motion) to column N (default: 1)
+    #     `"              (motion) go to the position when last editing this file
+    #     '<a-zA-Z0-9[]'"<>>  (motion) same as `, but on the first non-blank in the line
+    #     `<              (motion) go to the start of the (previous) Visual area
+    #     `<0-9>          (motion) go to the position where Vim was last exited
+    #     `<A-Z>          (motion) go to mark <A-Z> in any file
+    #     `<a-z>          (motion) go to mark <a-z> within current file
+    #     `>              (motion) go to the end of the (previous) Visual area
+    #     `[              (motion) go to the start of the previously operated or put text
+    #     `]              (motion) go to the end of the previously operated or put text
+    #     ``              (motion) go to the position before the last jump
+    # 
+    # N   %       (motion) goto line N percentage down in the file.  N must be given, otherwise it is the % command.
+    #     %       (motion) find the next brace, bracket, comment, or "#if"/ "#else"/"#endif" in this line and go to its match
+    # 
+    # N   #       (motion) search backward for the identifier under the cursor
+    # N   *       (motion) search forward for the identifier under the cursor
+    # 
+    # N   [#      (motion) N times back to unclosed "#if" or "#else"
+    # N   [(      (motion) N times back to unclosed '('
+    # N   [*      (motion) N times back to start of comment "/*"
+    # N   [[      (motion) N sections backward, at start of section
+    # N   []      (motion) N sections backward, at end of section
+    # N   [p      (motion?) like P, but adjust indent to current line
+    # N   [{      (motion) N times back to unclosed '{'
+    # N   ]#      (motion) N times forward to unclosed "#else" or "#endif"
+    # N   ])      (motion) N times forward to unclosed ')'
+    # N   ]*      (motion) N times forward to end of comment "*/"
+    # N   ][      (motion) N sections forward, at end of section
+    # N   ]]      (motion) N sections forward, at start of section
+    # N   ]p      (motion?) like p, but adjust indent to current line
+    # N   ]}      (motion) N times forward to unclosed '}'
+    #@+node:ekr.20140222064735.16653: *5* vis_0
+    #@+node:ekr.20140222064735.16654: *5* vis_plus
+    #@+node:ekr.20140222064735.16655: *5* vis_minus
+    #@+node:ekr.20140222064735.16649: *5* vis_ctrl_end
+    #@+node:ekr.20140222064735.16646: *5* vis_ctrl_home
+    #@+node:ekr.20140222064735.16643: *5* vis_ctrl_left
+    #@+node:ekr.20140222064735.16644: *5* vis_ctrl_right
+    #@+node:ekr.20140222064735.16652: *5* vis_down
+    #@+node:ekr.20140222064735.16648: *5* vis_end
+    #@+node:ekr.20140222064735.16650: *5* vis_esc
+    #@+node:ekr.20140222064735.16645: *5* vis_home
+    #@+node:ekr.20140222064735.16641: *5* vis_left
+    #@+node:ekr.20140222064735.16642: *5* vis_right
+    #@+node:ekr.20140222064735.16651: *5* vis_up
+    #@+node:ekr.20140222064735.16634: *4* normal mode
+    #@+node:ekr.20140221085636.16691: *5* vim_0
+    def vim_0(self):
+        '''Handle zero, either the '0' command or part of a repeat count.'''
         vc = self
         if vc.repeat_list:
-            if ch in '0123456789':
-                vc.repeat_list.append(stroke)
-                return True
-            else:
-                vc.n = int(''.join(vc.repeat_list))
-                return False 
-        elif ch in '123456789':
-            # A leading zero does *not* start a repeat count.
-            vc.repeat_list.append(stroke)
-            return True
+            vc.vim_digits()
         else:
-            vc.n = 1
-            return False
-    #@+node:ekr.20140222064735.16615: *4* vc.show_status (revise)
-    def show_status(self):
-        '''Show the status (the state and the contents of vc.command_list)'''
-        vc = self
-        g.trace(''.join(vc.command_list))
-    #@+node:ekr.20131111061547.16467: *3* vc.commands
-    #@+node:ekr.20140222064735.16634: *4* normal mode letters
-    #@+node:ekr.20140220134748.16614: *5* vim_a
+            # Move to start of line.
+            vc.c.editCommands.backToHome(vc.event)
+    #@+node:ekr.20140220134748.16614: *5* vim_a (to do)
     def vim_a(self):
         '''Append text after the cursor N times.'''
-        return self.vim_a2,True
-        
-    def vim_a2(self):
         vc = self
-        g.trace(vc.n,vc.stroke)
+        vc.insert_widget = w = vc.event.w
+        vc.insert_i = i = w.getInsertPoint()
+        vc.insert_n = vc.n
+        g.trace('n',vc.n,'i')
+        return vc.do_insert_mode
     #@+node:ekr.20140220134748.16618: *5* vim_b
     def vim_b(self):
         '''N words backward.'''
         vc = self
-        g.trace()
-    #@+node:ekr.20140220134748.16619: *5* vim_c
+        for z in range(vc.n):
+            vc.c.editCommands.moveWordHelper(vc.event,extend=False,forward=False)
+    #@+node:ekr.20140222064735.16633: *5* vim_backspace
+    def vim_backspace(self):
+        '''Handle a backspace while accumulating a command.'''
+        vc = self
+        vc.dot_list = vc.dot_list[:-1]
+        vc.repeat_list = vc.repeat_list[:-1]
+    #@+node:ekr.20140220134748.16619: *5* vim_c (to do)
     def vim_c(self):
         '''
         N   cc        change N lines
         N   c{motion} change the text that is moved over with {motion}
         VIS c         change the highlighted text
         '''
-        return self.vim_c2,True
+        return self.vim_c2
         
     def vim_c2(self):
         vc = self
         g.trace(vc.stroke)
-    #@+node:ekr.20131111171616.16498: *5* vim_d
+    #@+node:ekr.20131111171616.16498: *5* vim_d (to do)
     def vim_d(self):
         '''
         VIS d     delete the highlighted text
         dd        delete N lines
         d{motion} delete the text that is moved over with {motion}
         '''
-        return self.vim_d2,True
+        return self.vim_d2
 
     def vim_d2(self):
         vc = self
         g.trace(vc.n,vc.stroke)
-    #@+node:ekr.20140222064735.16623: *5* vim_e
+    #@+node:ekr.20140222064735.16629: *5* vim_digits
+    def vim_digits(self):
+        '''Handle a digits that starts a repeat count.'''
+        vc = self
+        assert not vc.repeat_list
+        vc.repeat_list.append(vc.stroke)
+        return self.vim_digits_2
+            
+    def vim_digits_2(self):
+        vc = self
+        if vc.stroke in '0123456789':
+            vc.dot_list.append(vc.stroke)
+            vc.repeat_list.append(vc.stroke)
+            return self.vim_digits_2
+        else:
+            vc.n = int(''.join(vc.repeat_list))
+            vc.repeat_list = []
+            vc.continue_flag = True
+            return None
+    #@+node:ekr.20131111105746.16544: *5* vim_dot (to do)
+    def vim_dot(self):
+        '''Repeat the last command.'''
+        g.trace()
+    #@+node:ekr.20140222064735.16623: *5* vim_e (to do)
     def vim_e(self):
         '''Forward to the end of the Nth word.'''
         vc = self
         g.trace(vc.n)
+    #@+node:ekr.20140222064735.16632: *5* vim_esc
+    def vim_esc(self):
+        '''Handle ESC while accumulating a normal mode command.'''
+        self.done()
+    #@+node:ekr.20140222064735.16687: *5* vim_F
+    def vim_F(self):
+        '''Back to the Nth occurrence of <char>.'''
+        return self.vim_F2
+
+    def vim_F2(self):
+        vc = self
+        ec = vc.c.editCommands
+        w = vc.event.w
+        s = w.getAllText()
+        if not s: return
+        i = i1 = w.getInsertPoint()
+        for n in range(vc.n):
+            i -= 1
+            while i >= 0 and s[i] != vc.ch:
+                i -= 1
+        if i >= 0 and s[i] == vc.ch:
+            # g.trace(i1-i,vc.ch)
+            for z in range(i1-i):
+                ec.backCharacter(vc.event)
     #@+node:ekr.20140220134748.16620: *5* vim_f
     def vim_f(self):
-        '''move to the Nth occurrence of <char> to the right.'''
-        return self.vim_f2,True
-        
+        '''move past the Nth occurrence of <char>.'''
+        return self.vim_f2
+
     def vim_f2(self):
         vc = self
-        g.trace(vc.n,vc.stroke)
-    #@+node:ekr.20140220134748.16621: *5* vim_g
+        ec = vc.c.editCommands
+        w = vc.event.w
+        s = w.getAllText()
+        if not s: return
+        i = i1 = w.getInsertPoint()
+        for n in range(vc.n):
+            while i < len(s) and s[i] != vc.ch:
+                i += 1
+            i += 1
+        i -= 1
+        if i < len(s) and s[i] == vc.ch:
+            # g.trace(i-i1+1,vc.ch)
+            for z in range(i-i1+1):
+                ec.forwardCharacter(vc.event)
+    #@+node:ekr.20140220134748.16621: *5* vim_g (to do)
     # N   ge    backward to the end of the Nth word
     # N   gg    goto line N (default: first line), on the first non-blank character
         # gv    start highlighting on previous visual area
     def vim_g(self):
         '''Go...'''
-        return self.vim_g2,True
+        return self.vim_g2
         
     def vim_g2(self):
         vc = self
@@ -339,14 +521,15 @@ class VimCommands:
         vc = self
         vc.c.editCommands.backCharacter(vc.event)
 
-    #@+node:ekr.20140222064735.16618: *5* vim_i
+    #@+node:ekr.20140222064735.16618: *5* vim_i (to do)
     def vim_i(self):
         '''Insert text before the cursor N times.'''
-        return self.vim_i2,True
-        
-    def vim_i2(self):
         vc = self
-        g.trace(vc.n,vc.stroke)
+        vc.insert_widget = w = vc.event.w
+        vc.insert_i = i = w.getInsertPoint()
+        vc.insert_n = vc.n
+        g.trace('n',vc.n,'i')
+        return vc.do_insert_mode
     #@+node:ekr.20140220134748.16617: *5* vim_j
     def vim_j(self):
         '''Cursor down N lines.'''
@@ -362,33 +545,43 @@ class VimCommands:
         '''Cursor right N chars.'''
         vc = self
         vc.c.editCommands.forwardCharacter(vc.event)
-    #@+node:ekr.20131111171616.16497: *5* vim_m
+    #@+node:ekr.20131111171616.16497: *5* vim_m (to do)
     def vim_m(self):
         '''m<a-zA-Z> mark current position with mark.'''
-        return self.vim_m2,True
+        return self.vim_m2
         
     def vim_m2(self):
         vc = self
         g.trace(vc.stroke)
 
-    #@+node:ekr.20140220134748.16625: *5* vim_n
+    #@+node:ekr.20140220134748.16625: *5* vim_n (to do)
     def vim_n(self):
         '''Repeat last search N times.'''
         vc = self
         g.trace(vc.n)
-    #@+node:ekr.20140222064735.16619: *5* vim_o
+    #@+node:ekr.20140222064735.16692: *5* vim_O (to do)
+    def vim_O(self):
+        '''Open a new line above the current line N times.'''
+        vc = self
+        vc.insert_widget = w = vc.event.w
+        vc.insert_i = i = w.getInsertPoint()
+        vc.insert_n = vc.n
+        g.trace('n',vc.n,'i')
+        return vc.do_insert_mode
+    #@+node:ekr.20140222064735.16619: *5* vim_o (to do)
     def vim_o(self):
         '''Open a new line below the current line N times.'''
-        return self.vim_o2,True
-        
-    def vim_o2(self):
         vc = self
-        g.trace(vc.n,vc.stroke)
-    #@+node:ekr.20140220134748.16622: *5* vim_p
+        vc.insert_widget = w = vc.event.w
+        vc.insert_i = i = w.getInsertPoint()
+        vc.insert_n = vc.n
+        g.trace('n',vc.n,'i')
+        return vc.do_insert_mode
+    #@+node:ekr.20140220134748.16622: *5* vim_p (to do)
     # N p put a register after the cursor position (N times)
     def vim_p(self):
         '''Put a register after the cursor position N times.'''
-        return self.vim_p2,True
+        return self.vim_p2
         
     def vim_p2(self):
         vc = self
@@ -400,164 +593,161 @@ class VimCommands:
         q<A-Z>  record typed characters, appended to register <a-z>
         q<a-z>  record typed characters into register <a-z>
         '''
-        return self.vim_q2,True
+        return self.vim_q2
         
     def vim_q2(self):
         vc = self
         g.trace(vc.stroke)
         letters = string.ascii_letters
 
-    #@+node:ekr.20140220134748.16624: *5* vim_r
+    #@+node:ekr.20140220134748.16624: *5* vim_r (to do)
     def vim_r(self):
         '''Replace next N characters with <char>'''
-        return self.vim_r2,True
+        return self.vim_r2
         
     def vim_r2(self):
         vc = self
         g.trace(vc.n,vc.stroke)
-    #@+node:ekr.20140222064735.16626: *5* vim_s
+    #@+node:ekr.20140222064735.16625: *5* vim_redo (to do)
+    def vim_redo(self):
+        '''N Ctrl-R redo last N changes'''
+        g.trace()
+    #@+node:ekr.20140222064735.16626: *5* vim_s (to do)
     def vim_s(self):
         '''Change N characters'''
-        return self.vim_s2,True
+        return self.vim_s2
         
     def vim_s2(self):
         vc = self
         g.trace(vc.n,vc.stroke)
+    #@+node:ekr.20140222064735.16622: *5* vim_slash (to do)
+    def vim_slash(self):
+        '''Begin a search.'''
+        g.trace()
     #@+node:ekr.20140222064735.16620: *5* vim_t
     def vim_t(self):
         '''Move before the Nth occurrence of <char> to the right.'''
-        return self.vim_t2,True
+        return self.vim_t2
         
     def vim_t2(self):
         vc = self
-        g.trace(vc.n,vc.stroke)
-    #@+node:ekr.20140220134748.16626: *5* vim_u
+        ec = vc.c.editCommands
+        w = vc.event.w
+        s = w.getAllText()
+        if not s: return
+        i = i1 = w.getInsertPoint()
+        for n in range(vc.n):
+            i += 1
+            while i < len(s) and s[i] != vc.ch:
+                i += 1
+        if i < len(s) and s[i] == vc.ch:
+            # g.trace(i-i1+1,vc.ch)
+            for z in range(i-i1):
+                ec.forwardCharacter(vc.event)
+    #@+node:ekr.20140222064735.16686: *5* vim_T (test)
+    def vim_T(self):
+        '''Back before the Nth occurrence of <char>.'''
+        return self.vim_T2
+
+    def vim_T2(self):
+        vc = self
+        ec = vc.c.editCommands
+        w = vc.event.w
+        s = w.getAllText()
+        if not s: return
+        i = i1 = w.getInsertPoint()
+        if i > 0 and s[i-1] == vc.ch:
+            i -= 1 # ensure progess.
+        for n in range(vc.n):
+            i -= 1
+            while i >= 0 and s[i] != vc.ch:
+                i -= 1
+        if i >= 0 and s[i] == vc.ch:
+            # g.trace(i1-i-1,vc.ch)
+            for z in range(i1-i-1):
+                ec.backCharacter(vc.event)
+    #@+node:ekr.20140220134748.16626: *5* vim_u (to do)
     def vim_u(self):
         '''U undo last N changes.'''
         vc = self
         g.trace(vc.n)
-    #@+node:ekr.20140220134748.16627: *5* vim_v (revise)
+    #@+node:ekr.20140220134748.16627: *5* vim_v
     def vim_v(self):
         '''Start highlighting.'''
-        return self.vim_v2,True
-        
-    def vim_v2(self):
-        '''Handle visual mode.'''
         vc = self
-        g.trace(vc.stroke)
-        func = vc.vis_dispatch_dict.get(vc.stroke)
-        if func:
-            func()
-            return self.vim_v2,True
-        else:
-            g.trace('not in dict',vc.stroke)
-            return None,False # Not done.
+        vc.vis_widget = vc.event.w
+        return vc.do_visual_mode
     #@+node:ekr.20140222064735.16624: *5* vim_w
     def vim_w(self):
         '''N words forward.'''
-        g.trace(self.n)
-    #@+node:ekr.20140220134748.16629: *5* vim_x
+        vc = self
+        for z in range(vc.n):
+            vc.c.editCommands.moveWordHelper(vc.event,extend=False,forward=True)
+    #@+node:ekr.20140220134748.16629: *5* vim_x (to do)
     def vim_x(self):
         '''Delete N characters under and after the cursor.'''
         vc = self
         g.trace(vc.n)
-    #@+node:ekr.20140220134748.16630: *5* vim_y
+    #@+node:ekr.20140220134748.16630: *5* vim_y (to do)
     def vim_y(self):
         '''
         N   yy          yank N lines 
         N   y{motion}   yank the text moved over with {motion} 
         VIS y           yank the highlighted text
         '''
-        return self.vim_y2,True
+        return self.vim_y2
         
     def vim_y2(self):
         vc = self
         g.trace(vc.n,vc.stroke)
-    #@+node:ekr.20140220134748.16631: *5* vim_z
+    #@+node:ekr.20140220134748.16631: *5* vim_z (to do)
     def vim_z(self):
         '''
         zb redraw current line at bottom of window
         zz redraw current line at center of window
         zt redraw current line at top of window
         '''
-        return self.vim_z2,True
-        
+        return self.vim_z2
+
     def vim_z2(self):
+        vc = self
         g.trace(vc.stroke)
-    #@+node:ekr.20140222064735.16621: *4* normal mode non-letters
-    #@+node:ekr.20140221085636.16691: *5* vim_0
-    def vim_0(self):
-        '''Handle zero, either the '0' command or part of a repeat count.'''
-        if vc.repeat_list:
-            vim_digits('0')
-        else:
-            # Move to start of line.
-            pass
-    #@+node:ekr.20140222064735.16633: *5* vim_backspace
-    def vim_backspace(self):
-        '''Handle a backspace while accumulating a command.'''
-        vc = self
-        vc.command_list = vc.command_list[:-1]
-        vc.repeat_list = vc.repeat_list[:-1]
-    #@+node:ekr.20140222064735.16629: *5* vim_digits
-    def vim_digits(self):
-        '''Handle a digits that starts a repeat count.'''
-        vc = self
-        assert not vc.repeat_list
-        vc.repeat_list.append(vc.stroke)
-        return self.vim_digits_2,True
-            
-    def vim_digits_2(self):
-        if vc.stroke in '0123456789':
-            vc.command_list.append(vc.stroke)
-            vc.repeat_list.append(vc.stroke)
-            return self.vim_digits_2,True
-        else:
-            vc.n = int(''.join(vc.repeat_list))
-            vc.repeat_list = []
-            return None,False # Not done. Handle the stroke in normal mode.
-    #@+node:ekr.20131111105746.16544: *5* vim_dot
-    def vim_dot(self):
-        '''Repeat the last command.'''
-        g.trace()
-    #@+node:ekr.20140222064735.16632: *5* vim_esc
-    def vim_esc(self):
-        '''Handle ESC while accumulating a normal mode command.'''
-        self.done()
-    #@+node:ekr.20140222064735.16625: *5* vim_redo
-    def vim_redo(self):
-        '''N Ctrl-R redo last N changes'''
-        g.trace()
-    #@+node:ekr.20140222064735.16622: *5* vim_slash
-    def vim_slash(self):
-        '''Begin a search.'''
-        g.trace()
     #@+node:ekr.20140222064735.16647: *4* vis terminators
 
+    #@+node:ekr.20140222064735.16684: *5* vis_escape
+    def vis_escape(self):
+        '''Handle Escape in visual mode.'''
+        return None # Just end the mode.
     #@+node:ekr.20140222064735.16661: *5* vis_J
     def vis_J(self):
         '''Join the highlighted lines.'''
+        vc = self
         g.trace()
     #@+node:ekr.20140222064735.16656: *5* vis_c
     def vis_c(self):
         '''Change the highlighted text.'''
+        vc = self
         g.trace()
     #@+node:ekr.20140222064735.16657: *5* vis_d
     def vis_d(self):
         '''Delete the highlighted text.'''
+        vc = self
         g.trace()
     #@+node:ekr.20140222064735.16659: *5* vis_u
     def vis_u(self):
         '''Make highlighted text lowercase.'''
+        vc = self
         g.trace()
     #@+node:ekr.20140222064735.16681: *5* vis_v
     def vis_v(self):
         '''End visual mode.'''
-        return None,True
+        return None
     #@+node:ekr.20140222064735.16660: *5* vis_y
     def vis_y(self):
         '''Yank the highlighted text.'''
+        vc = self
         g.trace()
+        return None
     #@+node:ekr.20140222064735.16658: *4* vis motion
     #@@nocolor-node
     #@+at
@@ -580,51 +770,141 @@ class VimCommands:
     # N   gg              (motion) goto line N (default: first line), on the first non-blank character
     # N   gj              (motion) down N screen lines (differs from "j" when line wraps)
     # N   gk              (motion) up N screen lines (differs from "k" when line wraps)
-    #@+node:ekr.20140222064735.16663: *5* vis_F
-    def vis_F(self):
-        '''Back to the Nth occurrence of <char>.'''
-    #@+node:ekr.20140222064735.16664: *5* vis_T
-    def vis_T(self):
-        '''Back before the Nth occurrence of <char>.'''
+    #@+node:ekr.20140222064735.16688: *5* vis_0 (to do)
     #@+node:ekr.20140222064735.16636: *5* vis_b
     def vis_b(self):
         '''Back N words.'''
+        vc = self
+        vc.c.editCommands.moveWordHelper(vc.event,extend=True,forward=False)
+        return vc.do_visual_mode
+    #@+node:ekr.20140222064735.16689: *5* vis_caret (to do)
+    #@+node:ekr.20140222064735.16690: *5* vis_dollar (to do)
 
-    #@+node:ekr.20140222064735.16665: *5* vis_e
+    #@+node:ekr.20140222064735.16665: *5* vis_e (to do)
     def vis_e(self):
         '''To the end of the Nth word.'''
+        vc = self
+        return vc.do_visual_mode
+    #@+node:ekr.20140222064735.16663: *5* vis_F
+    def vis_F(self):
+        '''Back to the Nth occurrence of <char>.'''
+        vc = self
+        return vc.vis_F2
+        
+    def vis_F2(self):
+        vc = self
+        ec = vc.c.editCommands
+        w = vc.vis_widget
+        s = w.getAllText()
+        i = i1 = w.getInsertPoint()
+        for n in range(vc.n):
+            i -= 1
+            while i >= 0 and s[i] != vc.ch:
+                i -= 1
+        if i >= 0 and s[i] == vc.ch:
+            g.trace(i1-i,vc.ch)
+            for z in range(i1-i):
+                ec.backCharacterExtendSelection(vc.event)
+        return vc.do_visual_mode
     #@+node:ekr.20140222064735.16666: *5* vis_f
     def vis_f(self):
         '''To the Nth occurrence of <char>.'''
+        vc = self
+        return vc.vis_f2
+        
+    def vis_f2(self):
+        vc = self
+        ec = vc.c.editCommands
+        w = vc.vis_widget
+        s = w.getAllText()
+        i = i1 = w.getInsertPoint()
+        for n in range(vc.n):
+            while i < len(s) and s[i] != vc.ch:
+                i += 1
+            i += 1
+        i -= 1
+        if i < len(s) and s[i] == vc.ch:
+            for z in range(i-i1+1):
+                ec.forwardCharacterExtendSelection(vc.event)
+        return vc.do_visual_mode
     #@+node:ekr.20140222064735.16667: *5* vis_h
     def vis_h(self):
         '''One character left (also: Left).'''
-        c,vc = self.c,self
-        c.editCommands.backCharacterExtendSelection(vc.event)
+        vc = self
+        vc.c.editCommands.backCharacterExtendSelection(vc.event)
+        return vc.do_visual_mode
     #@+node:ekr.20140222064735.16668: *5* vis_j
     def vis_j(self):
         '''Down N lines (also: Return, and Down).'''
         vc = self
         vc.c.editCommands.nextLineExtendSelection(vc.event)
+        return vc.do_visual_mode
     #@+node:ekr.20140222064735.16669: *5* vis_k
     def vis_k(self):
         '''Up N lines (also Up)'''
         vc = self
         vc.c.editCommands.prevLineExtendSelection(vc.event)
+        return vc.do_visual_mode
     #@+node:ekr.20140222064735.16670: *5* vis_l
     def vis_l(self):
         '''Right one char(also: space or Right key)'''
         vc = self
         vc.c.editCommands.forwardCharacterExtendSelection(vc.event)
-    #@+node:ekr.20140222064735.16671: *5* vis_n (valid?)
+        return vc.do_visual_mode
+    #@+node:ekr.20140222064735.16671: *5* vis_n (to do)
     def vis_n(self):
         '''Repeat last search.'''
+        vc = self
+        return vc.do_visual_mode
+    #@+node:ekr.20140222064735.16664: *5* vis_T
+    def vis_T(self):
+        '''Back before the Nth occurrence of <char>.'''
+        vc = self
+        return vc.vis_T2
+        
+    def vis_T2(self):
+        vc = self
+        ec = vc.c.editCommands
+        w = vc.vis_widget
+        s = w.getAllText()
+        i = i1 = w.getInsertPoint()
+        if i > 0 and s[i-1] == vc.ch:
+            i -= 1 # ensure progess.
+        for n in range(vc.n):
+            i -= 1
+            while i >= 0 and s[i] != vc.ch:
+                i -= 1
+        if i >= 0 and s[i] == vc.ch:
+            g.trace(i1-i-1,vc.ch)
+            for z in range(i1-i-1):
+                ec.backCharacterExtendSelection(vc.event)
+        return vc.do_visual_mode
     #@+node:ekr.20140222064735.16672: *5* vis_t
     def vis_t(self):
         '''Till before the Nth occurrence of <char>.'''
+        vc = self
+        return vc.vis_t2
+        
+    def vis_t2(self):
+        vc = self
+        ec = vc.c.editCommands
+        w = vc.vis_widget
+        s = w.getAllText()
+        i = i1 = w.getInsertPoint()
+        for n in range(vc.n):
+            i += 1
+            while i < len(s) and s[i] != vc.ch:
+                i += 1
+        if i < len(s) and s[i] == vc.ch:
+            for z in range(i-i1):
+                ec.forwardCharacterExtendSelection(vc.event)
+        return vc.do_visual_mode
     #@+node:ekr.20140222064735.16673: *5* vis_w
     def vis_w(self):
         '''N words forward.'''
+        vc = self
+        vc.c.editCommands.moveWordHelper(vc.event,extend=True,forward=True)
+        return vc.do_visual_mode
     #@-others
 #@-others
 #@-leo
