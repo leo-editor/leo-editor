@@ -18,9 +18,8 @@ What to do abouit bzr-manifest?
 Bug: word-only screws up regex searches.
 
 To do:
-** Fix visual mode.
-- Separate dicts for motions & terminators.
-    - This is better separation of concerns.
+- Allow backspace in normal mode.
+- ':' operation.
 
 Later:
 * Review dot example.  Is /x/y/ needed?  Can we just use Leo's find command?

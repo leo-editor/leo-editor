@@ -27,9 +27,12 @@ class VimCommands:
         self.continue_flag = None # True if mode handler didn't handle the incoming char.
         self.dot_list = [] # List of characters for the dot command.
         self.dispatch_dict = self.create_normal_dispatch_d()
-        self.dot = '' # The previous command in normal mode.
+        self.dot_list = '' # The previous command in normal mode.
         self.event = None # The event for the current key.
         self.extend = False # True: extending selection.
+        self.insert_ch = None # The character leading into insert mode.
+        self.insert_i = None # The offset into the text at the start of insert mode.
+        self.insert_n = None # The repeat count in effect at the start of insert mode.
         self.insert_widget = None # The widget in effect at the start of an insert operation.
         self.n = None # The accumulating repeat count.
         self.next_func = None # The continuation of a multi-character command.
@@ -89,7 +92,7 @@ class VimCommands:
         '7': vc.vim_digits,
         '8': vc.vim_digits,
         '9': vc.vim_digits,
-        # Upperscase letters.
+        # Uppercase letters.
         'A': None,
         'B': None,
         'C': None,
@@ -234,6 +237,11 @@ class VimCommands:
             # Never add the key to the command list.
             if trace: g.trace('ignore',stroke)
             return c.k.isPlainKey(ch)
+    #@+node:ekr.20140222064735.16700: *5* vc.beep
+    def beep(self):
+        '''Indicate an ignored character.'''
+        vc = self
+        g.trace(vc.stroke)
     #@+node:ekr.20140222064735.16631: *5* vc.done
     def done(self):
         '''Init ivars at the end of a command.'''
@@ -289,16 +297,23 @@ class VimCommands:
                 for z in range(n-1):
                     w.insert(i2,s2)
                     i2 = w.getInsertPoint()
+            ### Set vc.dot_list.
             vc.state = 'normal'
             return None
         elif vc.stroke == 'BackSpace':
             i = w.getInsertPoint()
             if i > 0: w.delete(i-1,i)
             return vc.do_insert_mode
-        else:
+        elif len(vc.stroke) == 1:
             i = w.getInsertPoint()
             w.insert(i,vc.ch)
             return vc.do_insert_mode
+        else:
+            vc.beep()
+            return vc.do_insert_mode
+    #@+node:ekr.20140222064735.16701: *4* vc.do_motion
+    def do_motion(self):
+        
     #@+node:ekr.20131111061547.16467: *3* vc.commands
     #@+node:ekr.20140222064735.16635: *4* To do: motion non-letters
     #@@nocolor-node
@@ -363,8 +378,6 @@ class VimCommands:
     # N   ]p      (motion?) like p, but adjust indent to current line
     # N   ]}      (motion) N times forward to unclosed '}'
     #@+node:ekr.20140222064735.16653: *5* vis_0
-    #@+node:ekr.20140222064735.16654: *5* vis_plus
-    #@+node:ekr.20140222064735.16655: *5* vis_minus
     #@+node:ekr.20140222064735.16649: *5* vis_ctrl_end
     #@+node:ekr.20140222064735.16646: *5* vis_ctrl_home
     #@+node:ekr.20140222064735.16643: *5* vis_ctrl_left
@@ -374,6 +387,8 @@ class VimCommands:
     #@+node:ekr.20140222064735.16650: *5* vis_esc
     #@+node:ekr.20140222064735.16645: *5* vis_home
     #@+node:ekr.20140222064735.16641: *5* vis_left
+    #@+node:ekr.20140222064735.16655: *5* vis_minus
+    #@+node:ekr.20140222064735.16654: *5* vis_plus
     #@+node:ekr.20140222064735.16642: *5* vis_right
     #@+node:ekr.20140222064735.16651: *5* vis_up
     #@+node:ekr.20140222064735.16634: *4* normal mode
@@ -386,14 +401,17 @@ class VimCommands:
         else:
             # Move to start of line.
             vc.c.editCommands.backToHome(vc.event)
-    #@+node:ekr.20140220134748.16614: *5* vim_a (to do)
+    #@+node:ekr.20140220134748.16614: *5* vim_a
     def vim_a(self):
         '''Append text after the cursor N times.'''
         vc = self
-        vc.insert_widget = w = vc.event.w
-        vc.insert_i = i = w.getInsertPoint()
+        w = vc.event.w
+        i = w.getInsertPoint()
+        w.setInsertPoint(i+1)
+        vc.insert_ch = vc.ch
+        vc.insert_i = w.getInsertPoint()
         vc.insert_n = vc.n
-        g.trace('n',vc.n,'i')
+        vc.insert_widget = w
         return vc.do_insert_mode
     #@+node:ekr.20140220134748.16618: *5* vim_b
     def vim_b(self):
@@ -426,7 +444,8 @@ class VimCommands:
         dd        delete N lines
         d{motion} delete the text that is moved over with {motion}
         '''
-        return self.vim_d2
+        vc = self
+        return vc.vim_d2
 
     def vim_d2(self):
         vc = self
@@ -454,7 +473,7 @@ class VimCommands:
     def vim_dot(self):
         '''Repeat the last command.'''
         g.trace()
-    #@+node:ekr.20140222064735.16623: *5* vim_e (to do)
+    #@+node:ekr.20140222064735.16623: *5* vim_e (to do) ****
     def vim_e(self):
         '''Forward to the end of the Nth word.'''
         vc = self
@@ -521,14 +540,16 @@ class VimCommands:
         vc = self
         vc.c.editCommands.backCharacter(vc.event)
 
-    #@+node:ekr.20140222064735.16618: *5* vim_i (to do)
+    #@+node:ekr.20140222064735.16618: *5* vim_i 
     def vim_i(self):
         '''Insert text before the cursor N times.'''
         vc = self
-        vc.insert_widget = w = vc.event.w
-        vc.insert_i = i = w.getInsertPoint()
+        w = vc.event.w
+        i = w.getInsertPoint()
+        vc.insert_ch = vc.ch
+        vc.insert_i = u
         vc.insert_n = vc.n
-        g.trace('n',vc.n,'i')
+        vc.insert_widget = w
         return vc.do_insert_mode
     #@+node:ekr.20140220134748.16617: *5* vim_j
     def vim_j(self):
@@ -559,23 +580,35 @@ class VimCommands:
         '''Repeat last search N times.'''
         vc = self
         g.trace(vc.n)
-    #@+node:ekr.20140222064735.16692: *5* vim_O (to do)
+    #@+node:ekr.20140222064735.16692: *5* vim_O
     def vim_O(self):
         '''Open a new line above the current line N times.'''
         vc = self
-        vc.insert_widget = w = vc.event.w
-        vc.insert_i = i = w.getInsertPoint()
+        w = vc.event.w
+        s = w.getAllText()
+        i = w.getInsertPoint()
+        i = g.find_line_start(s,i)
+        w.setInsertPoint(max(0,i-1))
+        i = w.getInsertPoint()
+        w.insert(i,'\n')
+        vc.insert_ch = vc.ch
+        vc.insert_i = i
         vc.insert_n = vc.n
-        g.trace('n',vc.n,'i')
+        vc.insert_widget = w
         return vc.do_insert_mode
-    #@+node:ekr.20140222064735.16619: *5* vim_o (to do)
+    #@+node:ekr.20140222064735.16619: *5* vim_o
     def vim_o(self):
         '''Open a new line below the current line N times.'''
         vc = self
-        vc.insert_widget = w = vc.event.w
-        vc.insert_i = i = w.getInsertPoint()
+        w = vc.event.w
+        s = w.getAllText()
+        i = w.getInsertPoint()
+        i = g.skip_line(s,i)
+        w.insert(i,'\n')
+        w.setInsertPoint(i)
+        vc.insert_i = i
         vc.insert_n = vc.n
-        g.trace('n',vc.n,'i')
+        vc.insert_widget = w
         return vc.do_insert_mode
     #@+node:ekr.20140220134748.16622: *5* vim_p (to do)
     # N p put a register after the cursor position (N times)
@@ -644,7 +677,7 @@ class VimCommands:
             # g.trace(i-i1+1,vc.ch)
             for z in range(i-i1):
                 ec.forwardCharacter(vc.event)
-    #@+node:ekr.20140222064735.16686: *5* vim_T (test)
+    #@+node:ekr.20140222064735.16686: *5* vim_T
     def vim_T(self):
         '''Back before the Nth occurrence of <char>.'''
         return self.vim_T2
