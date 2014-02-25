@@ -48,14 +48,10 @@ class VimCommands:
             # True: extending selection.
         self.in_motion = False
             # True if parsing an *inner* motion, the 2j in d2j.
-        self.motion_ch = None
-            # The character leading into a motion.
         self.motion_func = None
             # The handler to execute after executing an inner motion.
         self.motion_i = None
             # The offset into the text at the start of a motion.
-        self.motion_n = None
-            # The repeat count in effect at the start of a motion.
         self.n = 1
             # The repeat count.
         self.next_func = None
@@ -370,7 +366,7 @@ class VimCommands:
         updating vc.repeat_list and vc.dot_list
         Return True if this method has handled the key.
         '''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         # Set up the state ivars.
         c,vc = self.c,self
         vc.ch = ch = event and event.char or ''
@@ -401,7 +397,7 @@ class VimCommands:
     #@+node:ekr.20140222064735.16711: *5* vc.do_inner_motion
     def do_inner_motion(self):
         '''Handle a character when vc.in_motion is True.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         vc = self
         stroke = vc.stroke
         func = vc.motion_dispatch_dict.get(stroke)
@@ -436,11 +432,9 @@ class VimCommands:
                 i1 = vc.command_i
                 i2 = w.getInsertPoint()
                 s2 = s[i1:i2]
-                g.trace('s2',repr(s))
                 for z in range(n-1):
                     w.insert(i2,s2)
                     i2 = w.getInsertPoint()
-            ### Set vc.dot_list.
             vc.state = 'normal'
             vc.done()
             return None
@@ -453,12 +447,14 @@ class VimCommands:
             w.insert(i,vc.ch)
             return vc.do_insert_mode
         else:
-            vc.beep()
-            return vc.do_insert_mode
+            # vc.beep()
+            # return vc.do_insert_mode
+            vc.done()
+            return None
     #@+node:ekr.20140222064735.16712: *5* vc.do_outer_command
     def do_outer_command(self):
         '''Handle an outer normal mode command.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c,vc = self.c,self
         stroke = vc.stroke
         func = vc.dispatch_dict.get(stroke)
@@ -480,11 +476,11 @@ class VimCommands:
         Handle visual mode.
         Called from vc.do_key, so vc.event, vc.ch and vc.stroke are valid.
         '''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         vc = self
         stroke = vc.stroke
         if vc.vis_mode_w != vc.event.w:
-            g.trace('widget changed')
+            if trace: g.trace('widget changed')
             vc.done()
             return None
         func = vc.vis_dispatch_dict.get(stroke)
@@ -494,7 +490,8 @@ class VimCommands:
             return func()
         else:
             # Ignore all other characters.
-            g.trace('ignore',stroke)
+            if trace: g.trace('ignore',stroke)
+            vc.beep()
             return vc.do_visual_mode
     #@+node:ekr.20140222064735.16631: *4* vc.done
     def done(self):
@@ -655,7 +652,7 @@ class VimCommands:
     def vim_c2(self):
         vc = self
         g.trace(vc.stroke)
-    #@+node:ekr.20131111171616.16498: *5* vim_d (test)
+    #@+node:ekr.20131111171616.16498: *5* vim_d
     def vim_d(self):
         '''
         dd        delete N lines
@@ -681,7 +678,7 @@ class VimCommands:
         w = vc.command_w
         if w == vc.event.w:
             i1,i2 = vc.motion_i,w.getInsertPoint()
-            g.trace(i1,i2,w.getAllText()[i1:i2])
+            # g.trace(i1,i2,w.getAllText()[i1:i2])
             w.delete(i1,i2)
         else:
             g.trace('w changed')

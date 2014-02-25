@@ -18,7 +18,8 @@ What to do abouit bzr-manifest?
 Bug: word-only screws up regex searches.
 
 To do:
-- Allow backspace in normal mode.
+*** Set nodes dirty.
+- Test Ctrl-S in all modes.
 - ':' operation.
 
 Later:
