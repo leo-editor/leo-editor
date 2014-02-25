@@ -10786,7 +10786,7 @@ if wrapper:
     )
     for ivar in table:
         print(bool(getattr(wrapper,ivar,None)),ivar)
-.. @+node:ekr.20140221085636.16686: *3* Unused vim code (do not delete)
+.. @+node:ekr.20140222064735.16714: *3* Unused vim user args code (do not delete)
 .. @+node:ekr.20131112152450.16537: *4* k.getVimArg (no longer used)
 def getVimArg(self,event,specialStroke=None,specialFunc=None):
     '''Handle all keys in the minibuffer when c.vim_mode is True.'''
@@ -11337,26 +11337,5 @@ def trace_command(self):
     func_name = self.func and self.func.__name__ or 'oops'
     print('%s func: %s command: %r n1: %r n2: %r tail: %r' % (
         g.callers(1),func_name,self.command,self.n1,self.n2,self.tail))
-.. @+node:ekr.20140221085636.16693: *4* vc.do_repeat_count (no longer used)
-def do_repeat_count(self,stroke):
-    '''
-    Start, update or stop a repeat count, depending on ch.
-    Return True if ch is part of a repeat count.
-    '''
-    vc = self
-    if vc.repeat_list:
-        if ch in '0123456789':
-            vc.repeat_list.append(stroke)
-            return True
-        else:
-            vc.n = int(''.join(vc.repeat_list))
-            return False 
-    elif ch in '123456789':
-        # A leading zero does *not* start a repeat count.
-        vc.repeat_list.append(stroke)
-        return True
-    else:
-        vc.n = 1
-        return False
 .. @-all
 .. @-leo

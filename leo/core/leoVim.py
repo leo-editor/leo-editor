@@ -20,31 +20,166 @@ class VimCommands:
     #@+others
     #@+node:ekr.20131109170017.16507: *3* vc.ctor & helper
     def __init__(self,c):
-
+        '''The ctor for the VimCommands class.'''
+        # Constants...
+        self.chars = [ch for ch in string.printable if 32 <= ord(ch) < 128]
+            # List of printable characters
+        self.register_names = string.ascii_letters
+            # List of register names.
+        # Ivars...
         self.c = c
         self.ch = None
-        self.chars = [ch for ch in string.printable if 32 <= ord(ch) < 128]
-        self.continue_flag = None # True if mode handler didn't handle the incoming char.
-        self.dot_list = [] # List of characters for the dot command.
+            # The incoming character.
+        self.command_ch = None
+            # The character leading into a (insert) command.
+        self.command_i = None
+            # The offset into the text at the start of a command.
+        self.command_n = None
+            # The repeat count in effect at the start of a command.
+        self.command_w = None
+            # The widget in effect at the start of a command.
+        self.continue_flag = None
+            # True if inner mode handler didn't handle the incoming char.
+        self.dot_list = []
+            # List of characters for the dot command.
+        self.event = None
+            # The event for the current key.
+        self.extend = False
+            # True: extending selection.
+        self.in_motion = False
+            # True if parsing an *inner* motion, the 2j in d2j.
+        self.motion_ch = None
+            # The character leading into a motion.
+        self.motion_func = None
+            # The handler to execute after executing an inner motion.
+        self.motion_i = None
+            # The offset into the text at the start of a motion.
+        self.motion_n = None
+            # The repeat count in effect at the start of a motion.
+        self.n = 1
+            # The repeat count.
+        self.next_func = None
+            # The continuation of a multi-character command.
+        self.register_d = {}
+            # Keys are letters; values are strings.
+        self.repeat_list = []
+            # The characters of the current repeat count.
+        self.state = 'normal'
+            # in ('normal','insert')
+        self.stroke = None
+            # The incoming stroke.
+        self.vis_mode_i = None
+            # The insertion point at the start of visual mode.
+        self.vis_mode_w = None
+            # The widget in effect at the start of visual mode.
+        self.w = None
+            # The present widget: c.frame.body.bodyCtrl is a QTextBrowser.
+        # Dispatch dicts...
         self.dispatch_dict = self.create_normal_dispatch_d()
-        self.dot_list = '' # The previous command in normal mode.
-        self.event = None # The event for the current key.
-        self.extend = False # True: extending selection.
-        self.insert_ch = None # The character leading into insert mode.
-        self.insert_i = None # The offset into the text at the start of insert mode.
-        self.insert_n = None # The repeat count in effect at the start of insert mode.
-        self.insert_widget = None # The widget in effect at the start of an insert operation.
-        self.n = None # The accumulating repeat count.
-        self.next_func = None # The continuation of a multi-character command.
-        self.register_d = {} # Keys are letters; values are strings.
-        self.register_names = string.ascii_letters
-        self.repeat_list = [] # The characters of the current repeat count.
-        self.state = 'normal' # in ('normal','insert')
-        self.stroke = None # The incoming stroke.
+        self.motion_dispatch_dict = self.create_motion_dispatch_d()
         self.vis_dispatch_dict = self.create_vis_dispatch_d()
-        self.vis_widget = None # The widget in effect at the start of visual mode.
-        self.w = None # The present widget.
-            # c.frame.body and c.frame.body.bodyCtrl # A QTextBrowser.
+    #@+node:ekr.20140222064735.16702: *4* create_motion_dispatch_d
+    def create_motion_dispatch_d(self):
+        '''
+        Return the dispatch dict for motions.
+        Keys are strokes, values are methods.
+        '''
+        vc = self
+        d = {
+        # brackets.
+        '{': None,
+        '(': None,
+        '[': None,
+        '}': None,
+        ')': None,
+        ']': None,
+        # Special chars.
+        # '@': None,
+        '`': None,
+        '^': None,
+        ',': None,
+        '$': None,
+        '.': None,
+        # '"': None,
+        '<': None,
+        '-': None,
+        '%': None,
+        '+': None,
+        '#': None,
+        '?': None,
+        '>': None,
+        ';': None,
+        '/': None,
+        '*': None,
+        '~': None,
+        '_': None,
+        '|': None,
+        # Digits.
+        '0': vc.vim_0,
+        # '1': vc.motion_digits,
+        # '2': vc.motion_digits,
+        # '3': vc.motion_digits,
+        # '4': vc.motion_digits,
+        # '5': vc.motion_digits,
+        # '6': vc.motion_digits,
+        # '7': vc.motion_digits,
+        # '8': vc.motion_digits,
+        # '9': vc.motion_digits,
+        # Uppercase letters.
+        'A': None,
+        'B': None,
+        'C': None,
+        'D': None,
+        'E': None,
+        'F': vc.vim_F,
+        'G': None,
+        'H': None,
+        'I': None,
+        'J': None,
+        'K': None,
+        'L': None,
+        'M': None,
+        'N': None,
+        'O': vc.vim_O,
+        'P': None,
+        'R': None,
+        'S': None,
+        'T': vc.vim_T,
+        'U': None,
+        'V': None,
+        'W': None,
+        'X': None,
+        'Y': None,
+        'Z': None,
+        # Lowercase letters...
+        # 'a': vc.vim_a,
+        'b': vc.vim_b,
+        # 'c': vc.vim_c,
+        # 'd': vc.vim_d,
+        'e': vc.vim_e,
+        # 'f': vc.vim_f,
+        # 'g': vc.vim_g,
+        'h': vc.vim_h,
+        # 'i': vc.vim_i,
+        'j': vc.vim_j,
+        'k': vc.vim_k,
+        'l': vc.vim_l,
+        # 'm': vc.vim_m,
+        # 'n': vc.vim_n,
+        # 'o': vc.vim_o,
+        # 'p': vc.vim_p,
+        # 'q': vc.vim_q,
+        # 'r': vc.vim_r,
+        # 's': vc.vim_s,
+        't': vc.vim_t,
+        # 'u': vc.vim_u,
+        # 'v': vc.vim_v,
+        # 'w': vc.vim_w,
+        # 'x': vc.vim_x,
+        # 'y': vc.vim_y,
+        # 'z': vc.vim_z,
+        }
+        return d
     #@+node:ekr.20131111061547.16460: *4* create_normal_dispatch_d
     def create_normal_dispatch_d(self):
         '''
@@ -196,8 +331,38 @@ class VimCommands:
         '''
         if QtCore:
             QtCore.QTimer.singleShot(0,aFunc)
-    #@+node:ekr.20140222064735.16682: *3* vc.Dispatchers
-    #@+node:ekr.20140221085636.16685: *4* vc.do_key & helpers
+    #@+node:ekr.20140222064735.16682: *3* vc.Dispatchers & helpers
+    #@+node:ekr.20140222064735.16700: *4* vc.beep
+    def beep(self):
+        '''Indicate an ignored character.'''
+        vc = self
+        g.trace(vc.stroke)
+    #@+node:ekr.20140222064735.16709: *4* vc.begin_insert_mode
+    def begin_insert_mode(self,i=None):
+        '''Common code for beginning insert mode.'''
+        vc = self
+        w = vc.event.w
+        vc.command_ch = vc.ch
+        vc.command_i = w.getInsertPoint() if i is None else i
+        vc.command_n = vc.n
+        vc.command_w = w
+        return vc.do_insert_mode
+    #@+node:ekr.20140222064735.16706: *4* vc.begin_motion
+    def begin_motion(self,motion_func):
+        '''Start an inner motion.'''
+        vc = self
+        w = vc.event.w
+        vc.command_w = w
+        vc.in_motion = True
+        vc.motion_func = motion_func
+        vc.motion_i = w.getInsertPoint()
+        vc.n = 1
+        if vc.stroke in '123456789':
+            return vc.vim_digits()
+        else:
+            vc.continue_flag = True
+            return None
+    #@+node:ekr.20140221085636.16685: *4* vc.do_key & dispatch helpers
     def do_key(self,event):
         '''
         Handle the next key in vim mode by dispatching a handler.
@@ -205,92 +370,70 @@ class VimCommands:
         updating vc.repeat_list and vc.dot_list
         Return True if this method has handled the key.
         '''
-        trace = False and not g.unitTesting
-        vc = self
-        c = self.c
+        trace = True and not g.unitTesting
+        # Set up the state ivars.
+        c,vc = self.c,self
         vc.ch = ch = event and event.char or ''
         vc.event = event
         vc.stroke = stroke = event and event.stroke and event.stroke.s
         vc.continue_flag = False
+        # Handle Esc first.
+        if stroke == 'Escape':
+            vc.done()
+            vc.show_status()
+            return True
         # Dispatch an internal state handler if one is active.
         if vc.next_func:
             vc.next_func = vc.next_func()
+            if trace: g.trace(
+                'continue_flag',vc.continue_flag,
+                'next_func',vc.next_func and vc.next_func.__name__)
             if not vc.continue_flag:
-                if not vc.next_func:
+                if not vc.next_func and not vc.in_motion:
                     self.done() # The command is finished:
                 self.show_status()
                 return True
-        # Handle normal mode command by dispatching the proper handler.
-        func = vc.dispatch_dict.get(stroke)
+        # Now dispatch either an inner motion or an outer command.
+        if vc.in_motion:
+            return vc.do_inner_motion()
+        else:
+            return vc.do_outer_command()
+    #@+node:ekr.20140222064735.16711: *5* vc.do_inner_motion
+    def do_inner_motion(self):
+        '''Handle a character when vc.in_motion is True.'''
+        trace = True and not g.unitTesting
+        vc = self
+        stroke = vc.stroke
+        func = vc.motion_dispatch_dict.get(stroke)
         if func:
             if trace: g.trace(stroke,'n:',vc.n,func.__name__)
-            if vc.n is None: vc.n = 1
             vc.next_func = func()
-            if vc.next_func:
-                vc.dot_list.append(stroke)
-            else:
-                self.done() # The command is finished.
-            vc.show_status()
-            return True # The character has been handled.
+            if not vc.next_func:
+                func2 = vc.motion_func
+                vc.motion_func = None
+                func2()
+                self.done()
+            self.show_status()
         else:
-            # Let Leo handle non-plain keys.
-            # Never add the key to the command list.
             if trace: g.trace('ignore',stroke)
-            return c.k.isPlainKey(ch)
-    #@+node:ekr.20140222064735.16700: *5* vc.beep
-    def beep(self):
-        '''Indicate an ignored character.'''
-        vc = self
-        g.trace(vc.stroke)
-    #@+node:ekr.20140222064735.16631: *5* vc.done
-    def done(self):
-        '''Init ivars at the end of a command.'''
-        # g.trace('*****')
-        vc = self
-        vc.dot_list = []
-        vc.n = None
-        vc.next_func = None
-        vc.repeat_list = []
-    #@+node:ekr.20140222064735.16615: *5* vc.show_status (revise)
-    def show_status(self):
-        '''Show the status (the state and the contents of vc.dot_list)'''
-        vc = self
-        g.trace(''.join(vc.dot_list) or vc.state)
-    #@+node:ekr.20140222064735.16683: *4* vc.do_visual_mode
-    def do_visual_mode(self):
-        '''
-        Handle visual mode.
-        Called from vc.do_key, so vc.event, vc.ch and vc.stroke are valid.
-        '''
-        ### Maybe: separate dicts for motions & terminators.
-        vc = self
-        g.trace(vc.stroke)
-        if vc.vis_widget != vc.event.w:
-            g.trace('widget changed')
-            return None
-        func = vc.vis_dispatch_dict.get(vc.stroke)
-        if func:
-            return func()
-        else:
-            # Ignore all other characters.
-            g.trace('not in dict',vc.stroke)
-            vc.continue_flag = True
-            return vc.do_visual_mode
-    #@+node:ekr.20140222064735.16691: *4* vc.do_insert_mode
+            vc.beep()
+        return True
+    #@+node:ekr.20140222064735.16691: *5* vc.do_insert_mode
     def do_insert_mode(self):
         '''Handle keys in insert mode.'''
         vc = self
-        n = vc.insert_n
+        c = vc.c
+        n = vc.command_n
         vc.state = 'insert'
         w = vc.event.w
         g.trace('n',n,vc.stroke)
-        if w != vc.insert_widget:
+        if w != vc.command_w:
             g.trace('widget changed')
             return None
         if vc.stroke == 'Escape':
             if n > 1:
                 s  = w.getAllText()
-                i1 = vc.insert_i
+                i1 = vc.command_i
                 i2 = w.getInsertPoint()
                 s2 = s[i1:i2]
                 g.trace('s2',repr(s))
@@ -299,23 +442,102 @@ class VimCommands:
                     i2 = w.getInsertPoint()
             ### Set vc.dot_list.
             vc.state = 'normal'
+            vc.done()
             return None
         elif vc.stroke == 'BackSpace':
             i = w.getInsertPoint()
             if i > 0: w.delete(i-1,i)
             return vc.do_insert_mode
-        elif len(vc.stroke) == 1:
+        elif vc.ch == '\n' or c.k.isPlainKey(vc.stroke):
             i = w.getInsertPoint()
             w.insert(i,vc.ch)
             return vc.do_insert_mode
         else:
             vc.beep()
             return vc.do_insert_mode
-    #@+node:ekr.20140222064735.16701: *4* vc.do_motion
-    def do_motion(self):
-        
+    #@+node:ekr.20140222064735.16712: *5* vc.do_outer_command
+    def do_outer_command(self):
+        '''Handle an outer normal mode command.'''
+        trace = True and not g.unitTesting
+        c,vc = self.c,self
+        stroke = vc.stroke
+        func = vc.dispatch_dict.get(stroke)
+        if func:
+            if trace: g.trace(stroke,'n:',vc.n,func.__name__)
+            vc.next_func = func()
+            if not vc.next_func:
+                self.done() # The command is finished.
+            vc.show_status()
+            return True # The character has been handled.
+        else:
+            # Let Leo handle non-plain keys.
+            # Never add the key to the command list.
+            if trace: g.trace('ignore',stroke)
+            return c.k.isPlainKey(vc.ch)
+    #@+node:ekr.20140222064735.16683: *5* vc.do_visual_mode
+    def do_visual_mode(self):
+        '''
+        Handle visual mode.
+        Called from vc.do_key, so vc.event, vc.ch and vc.stroke are valid.
+        '''
+        trace = True and not g.unitTesting
+        vc = self
+        stroke = vc.stroke
+        if vc.vis_mode_w != vc.event.w:
+            g.trace('widget changed')
+            vc.done()
+            return None
+        func = vc.vis_dispatch_dict.get(stroke)
+        if func:
+            # vis_ motion methods return vc.do_visual_mode.
+            # vis_ terminating methods return None.
+            return func()
+        else:
+            # Ignore all other characters.
+            g.trace('ignore',stroke)
+            return vc.do_visual_mode
+    #@+node:ekr.20140222064735.16631: *4* vc.done
+    def done(self):
+        '''Init ivars at the end of a command.'''
+        # g.trace('*****')
+        vc = self
+        vc.dot_list = []
+        vc.in_motion = False
+        vc.motion_func = None
+        vc.n = 1
+        vc.next_func = None
+        vc.repeat_list = []
+        vc.state = 'normal'
+
+    #@+node:ekr.20140222064735.16615: *4* vc.show_status (revise)
+    def show_status(self):
+        '''Show the status (the state and the contents of vc.dot_list)'''
+        vc = self
+        g.trace(''.join(vc.dot_list) or vc.state)
+    #@+node:ekr.20140222064735.16629: *4* vc.vim_digits
+    def vim_digits(self):
+        '''Handle a digits that starts an outer repeat count.'''
+        vc = self
+        g.trace(vc.stroke)
+        assert not vc.repeat_list
+        vc.repeat_list.append(vc.stroke)
+        return self.vim_digits_2
+            
+    def vim_digits_2(self):
+        vc = self
+        g.trace(vc.stroke)
+        if vc.stroke in '0123456789':
+            vc.dot_list.append(vc.stroke)
+            vc.repeat_list.append(vc.stroke)
+            return self.vim_digits_2
+        else:
+            vc.n = int(''.join(vc.repeat_list))
+            vc.repeat_list = []
+            vc.next_func = None
+            vc.continue_flag = True
+            return None
     #@+node:ekr.20131111061547.16467: *3* vc.commands
-    #@+node:ekr.20140222064735.16635: *4* To do: motion non-letters
+    #@+node:ekr.20140222064735.16635: *4* motion non-letters (to do)
     #@@nocolor-node
     #@+at
     # 
@@ -408,11 +630,7 @@ class VimCommands:
         w = vc.event.w
         i = w.getInsertPoint()
         w.setInsertPoint(i+1)
-        vc.insert_ch = vc.ch
-        vc.insert_i = w.getInsertPoint()
-        vc.insert_n = vc.n
-        vc.insert_widget = w
-        return vc.do_insert_mode
+        return vc.begin_insert_mode()
     #@+node:ekr.20140220134748.16618: *5* vim_b
     def vim_b(self):
         '''N words backward.'''
@@ -437,38 +655,36 @@ class VimCommands:
     def vim_c2(self):
         vc = self
         g.trace(vc.stroke)
-    #@+node:ekr.20131111171616.16498: *5* vim_d (to do)
+    #@+node:ekr.20131111171616.16498: *5* vim_d (test)
     def vim_d(self):
         '''
-        VIS d     delete the highlighted text
         dd        delete N lines
         d{motion} delete the text that is moved over with {motion}
         '''
-        vc = self
-        return vc.vim_d2
-
+        return self.vim_d2
+        
     def vim_d2(self):
         vc = self
-        g.trace(vc.n,vc.stroke)
-    #@+node:ekr.20140222064735.16629: *5* vim_digits
-    def vim_digits(self):
-        '''Handle a digits that starts a repeat count.'''
-        vc = self
-        assert not vc.repeat_list
-        vc.repeat_list.append(vc.stroke)
-        return self.vim_digits_2
-            
-    def vim_digits_2(self):
-        vc = self
-        if vc.stroke in '0123456789':
-            vc.dot_list.append(vc.stroke)
-            vc.repeat_list.append(vc.stroke)
-            return self.vim_digits_2
-        else:
-            vc.n = int(''.join(vc.repeat_list))
-            vc.repeat_list = []
-            vc.continue_flag = True
+        if vc.stroke == 'd':
+            w = vc.command_w
+            s = w.getAllText()
+            for z in range(vc.n):
+                i = w.getInsertPoint()
+                i,j = g.getLine(s,i)
+                w.delete(i,j)
             return None
+        else:
+            return vc.begin_motion(vc.vim_d3)
+
+    def vim_d3(self):
+        vc = self
+        w = vc.command_w
+        if w == vc.event.w:
+            i1,i2 = vc.motion_i,w.getInsertPoint()
+            g.trace(i1,i2,w.getAllText()[i1:i2])
+            w.delete(i1,i2)
+        else:
+            g.trace('w changed')
     #@+node:ekr.20131111105746.16544: *5* vim_dot (to do)
     def vim_dot(self):
         '''Repeat the last command.'''
@@ -538,34 +754,32 @@ class VimCommands:
     def vim_h(self):
         '''Left N chars.'''
         vc = self
-        vc.c.editCommands.backCharacter(vc.event)
+        for z in range(vc.n):
+            vc.c.editCommands.backCharacter(vc.event)
 
     #@+node:ekr.20140222064735.16618: *5* vim_i 
     def vim_i(self):
         '''Insert text before the cursor N times.'''
-        vc = self
-        w = vc.event.w
-        i = w.getInsertPoint()
-        vc.insert_ch = vc.ch
-        vc.insert_i = u
-        vc.insert_n = vc.n
-        vc.insert_widget = w
-        return vc.do_insert_mode
+        return self.begin_insert_mode()
+       
     #@+node:ekr.20140220134748.16617: *5* vim_j
     def vim_j(self):
         '''Cursor down N lines.'''
         vc = self
-        vc.c.editCommands.nextLine(vc.event)
+        for z in range(vc.n):
+            vc.c.editCommands.nextLine(vc.event)
     #@+node:ekr.20140222064735.16628: *5* vim_k
     def vim_k(self):
         '''Cursor up N lines.'''
         vc = self
-        vc.c.editCommands.prevLine(vc.event)
+        for z in range(vc.n):
+            vc.c.editCommands.prevLine(vc.event)
     #@+node:ekr.20140222064735.16627: *5* vim_l
     def vim_l(self):
         '''Cursor right N chars.'''
         vc = self
-        vc.c.editCommands.forwardCharacter(vc.event)
+        for z in range(vc.n):
+            vc.c.editCommands.forwardCharacter(vc.event)
     #@+node:ekr.20131111171616.16497: *5* vim_m (to do)
     def vim_m(self):
         '''m<a-zA-Z> mark current position with mark.'''
@@ -588,14 +802,10 @@ class VimCommands:
         s = w.getAllText()
         i = w.getInsertPoint()
         i = g.find_line_start(s,i)
-        w.setInsertPoint(max(0,i-1))
-        i = w.getInsertPoint()
-        w.insert(i,'\n')
-        vc.insert_ch = vc.ch
-        vc.insert_i = i
-        vc.insert_n = vc.n
-        vc.insert_widget = w
-        return vc.do_insert_mode
+        # if i > 0: w.setInsertPoint(i-1)
+        # i = w.getInsertPoint()
+        w.insert(max(0,i-1),'\n')
+        return vc.begin_insert_mode()
     #@+node:ekr.20140222064735.16619: *5* vim_o
     def vim_o(self):
         '''Open a new line below the current line N times.'''
@@ -605,11 +815,8 @@ class VimCommands:
         i = w.getInsertPoint()
         i = g.skip_line(s,i)
         w.insert(i,'\n')
-        w.setInsertPoint(i)
-        vc.insert_i = i
-        vc.insert_n = vc.n
-        vc.insert_widget = w
-        return vc.do_insert_mode
+        return vc.begin_insert_mode()
+
     #@+node:ekr.20140220134748.16622: *5* vim_p (to do)
     # N p put a register after the cursor position (N times)
     def vim_p(self):
@@ -706,9 +913,11 @@ class VimCommands:
         g.trace(vc.n)
     #@+node:ekr.20140220134748.16627: *5* vim_v
     def vim_v(self):
-        '''Start highlighting.'''
+        '''Start visual mode.'''
         vc = self
-        vc.vis_widget = vc.event.w
+        vc.vis_mode_w = w = vc.event.w
+        vc.vis_mode_i = w.getInsertPoint()
+        vc.state = 'visual'
         return vc.do_visual_mode
     #@+node:ekr.20140222064735.16624: *5* vim_w
     def vim_w(self):
@@ -763,9 +972,16 @@ class VimCommands:
         g.trace()
     #@+node:ekr.20140222064735.16657: *5* vis_d
     def vis_d(self):
-        '''Delete the highlighted text.'''
+        '''Delete the highlighted text and terminate visual mode.'''
         vc = self
-        g.trace()
+        w  = vc.vis_mode_w
+        if w == vc.event.w:
+            i1 = vc.vis_mode_i
+            i2 = w.getInsertPoint()
+            w.delete(i1,i2)
+        else:
+            g.trace('widget changed')
+        vc.done()
     #@+node:ekr.20140222064735.16659: *5* vis_u
     def vis_u(self):
         '''Make highlighted text lowercase.'''
@@ -827,7 +1043,7 @@ class VimCommands:
     def vis_F2(self):
         vc = self
         ec = vc.c.editCommands
-        w = vc.vis_widget
+        w = vc.vis_mode_w
         s = w.getAllText()
         i = i1 = w.getInsertPoint()
         for n in range(vc.n):
@@ -848,7 +1064,7 @@ class VimCommands:
     def vis_f2(self):
         vc = self
         ec = vc.c.editCommands
-        w = vc.vis_widget
+        w = vc.vis_mode_w
         s = w.getAllText()
         i = i1 = w.getInsertPoint()
         for n in range(vc.n):
@@ -898,7 +1114,7 @@ class VimCommands:
     def vis_T2(self):
         vc = self
         ec = vc.c.editCommands
-        w = vc.vis_widget
+        w = vc.vis_mode_w
         s = w.getAllText()
         i = i1 = w.getInsertPoint()
         if i > 0 and s[i-1] == vc.ch:
@@ -921,7 +1137,7 @@ class VimCommands:
     def vis_t2(self):
         vc = self
         ec = vc.c.editCommands
-        w = vc.vis_widget
+        w = vc.vis_mode_w
         s = w.getAllText()
         i = i1 = w.getInsertPoint()
         for n in range(vc.n):
