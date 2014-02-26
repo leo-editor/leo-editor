@@ -1,7 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140225222704.16748: * @file viewrendered2.py
 #@+<< docstring >>
-#@+node:tbrown.20100318101414.5991: ** << docstring >>
+#@+node:ekr.20140226074510.4187: ** << docstring >>
 '''
 
 Creates a window for *live* rendering of reSTructuredText, markdown text,
@@ -180,7 +180,7 @@ Jacob Peck added markdown support to this plugin.
 __version__ = '1.0'
 
 #@+<< imports >>
-#@+node:tbrown.20100318101414.5993: ** << imports >>
+#@+node:ekr.20140226074510.4188: ** << imports >>
 import leo.core.leoGlobals as g
 from PyQt4 import QtCore, QtGui, QtSvg, QtWebKit
 import leo.plugins.qtGui as qtGui
@@ -227,7 +227,7 @@ except ImportError:
 #@-<< imports >>
 
 #@+<< define stylesheet >>
-#@+node:ekr.20110317024548.14377: ** << define stylesheet >>
+#@+node:ekr.20140226074510.4189: ** << define stylesheet >>
 stickynote_stylesheet = """
 /* The body pane */
 QPlainTextEdit {
@@ -848,14 +848,14 @@ saving functions of the browser.""")
         webbrowser.open(pathname, new=0, autoraise=True)
 
 #@+others
-#@+node:ekr.20110320120020.14491: ** Top-level
-#@+node:tbrown.20100318101414.5994: *3* decorate_window
+#@+node:ekr.20140226074510.4190: ** Top-level
+#@+node:ekr.20140226074510.4191: *3* decorate_window
 def decorate_window(w):
     
     w.setStyleSheet(stickynote_stylesheet)
     w.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))    
     w.resize(600, 300)
-#@+node:tbrown.20100318101414.5995: *3* init
+#@+node:ekr.20140226074510.4192: *3* init
 def init():
     
     g.plugin_signon(__name__)
@@ -865,7 +865,7 @@ def init():
     g.registerHandler('scrolledMessage', show_scrolled_message)
 
     return True
-#@+node:ekr.20110317024548.14376: *3* onCreate
+#@+node:ekr.20140226074510.4193: *3* onCreate
 def onCreate(tag, keys):
     
     c = keys.get('c')
@@ -873,7 +873,7 @@ def onCreate(tag, keys):
         ViewRenderedProvider(c)
     
     return
-#@+node:tbrown.20110629132207.8984: *3* show_scrolled_message
+#@+node:ekr.20140226074510.4194: *3* show_scrolled_message
 def show_scrolled_message(tag, kw):
 
     if g.unitTesting:
@@ -890,13 +890,13 @@ def show_scrolled_message(tag, kw):
     ])
     vr.update(tag='show-scrolled-message',keywords={'c':c,'force':True,'s':s})
     return True
-#@+node:ekr.20110320120020.14490: ** Commands
-#@+node:ekr.20131213163822.16471: *3* g.command('preview')
+#@+node:ekr.20140226074510.4195: ** Commands
+#@+node:ekr.20140226074510.4196: *3* g.command('preview')
 @g.command('preview')
 def preview(event):
     '''A synonym for the vr-toggle command.'''
     toggle_rendering_pane(event)
-#@+node:tbrown.20100318101414.5998: *3* g.command('vr')
+#@+node:ekr.20140226074510.4197: *3* g.command('vr')
 @g.command('vr')
 def viewrendered(event):
     """Open render view for commander"""
@@ -926,7 +926,7 @@ def viewrendered(event):
             vr.resize(600, 600)
             vr.show()
     return vr
-#@+node:ekr.20130413061407.10362: *3* g.command('vr-contract')
+#@+node:ekr.20140226074510.4198: *3* g.command('vr-contract')
 @g.command('vr-contract')
 def contract_rendering_pane(event):
     
@@ -940,7 +940,7 @@ def contract_rendering_pane(event):
         else:
             # Just open the pane.
             viewrendered(event)
-#@+node:ekr.20130413061407.10361: *3* g.command('vr-expand')
+#@+node:ekr.20140226074510.4199: *3* g.command('vr-expand')
 @g.command('vr-expand')
 def expand_rendering_pane(event):
     
@@ -953,7 +953,7 @@ def expand_rendering_pane(event):
             vr = viewrendered(event)
         if vr:
             vr.expand()
-#@+node:ekr.20110917103917.3639: *3* g.command('vr-hide')
+#@+node:ekr.20140226074510.4200: *3* g.command('vr-hide')
 @g.command('vr-hide')
 def hide_rendering_pane(event):
     
@@ -978,7 +978,7 @@ def hide_rendering_pane(event):
             
 # Compatibility
 close_rendering_pane = hide_rendering_pane
-#@+node:ekr.20110321072702.14507: *3* g.command('vr-lock')
+#@+node:ekr.20140226074510.4201: *3* g.command('vr-lock')
 @g.command('vr-lock')
 def lock_rendering_pane(event):
     
@@ -989,7 +989,7 @@ def lock_rendering_pane(event):
         vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
         if vr and not vr.locked:
             vr.lock()
-#@+node:ekr.20110320233639.5777: *3* g.command('vr-pause-play')
+#@+node:ekr.20140226074510.4202: *3* g.command('vr-pause-play')
 @g.command('vr-pause-play')
 def pause_play_movie(event):
     
@@ -1006,7 +1006,7 @@ def pause_play_movie(event):
                 vp.pause()
             else:
                 vp.play()
-#@+node:ekr.20110317080650.14386: *3* g.command('vr-show')
+#@+node:ekr.20140226074510.4203: *3* g.command('vr-show')
 @g.command('vr-show')
 def show_rendering_pane(event):
     
@@ -1019,7 +1019,7 @@ def show_rendering_pane(event):
             pass # hide_rendering_pane(event)
         else:
             viewrendered(event)
-#@+node:ekr.20131001100335.16606: *3* g.command('vr-toggle')
+#@+node:ekr.20140226074510.4204: *3* g.command('vr-toggle')
 @g.command('vr-toggle')
 def toggle_rendering_pane(event):
     
@@ -1032,7 +1032,7 @@ def toggle_rendering_pane(event):
             hide_rendering_pane(event)
         else:
             viewrendered(event)
-#@+node:ekr.20130412180825.10345: *3* g.command('vr-unlock')
+#@+node:ekr.20140226074510.4205: *3* g.command('vr-unlock')
 @g.command('vr-unlock')
 def unlock_rendering_pane(event):
     
@@ -1043,7 +1043,7 @@ def unlock_rendering_pane(event):
         vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
         if vr and vr.locked:
             vr.unlock()
-#@+node:ekr.20110321151523.14464: *3* g.command('vr-update')
+#@+node:ekr.20140226074510.4206: *3* g.command('vr-update')
 @g.command('vr-update')
 def update_rendering_pane (event):
     
@@ -1056,10 +1056,10 @@ def update_rendering_pane (event):
             vr = viewrendered(event)
         if vr:
             vr.update(tag='view',keywords={'c':c,'force':True})
-#@+node:tbrown.20110629084915.35149: ** class ViewRenderedProvider
+#@+node:ekr.20140226074510.4207: ** class ViewRenderedProvider
 class ViewRenderedProvider:
     #@+others
-    #@+node:tbrown.20110629084915.35154: *3* __init__
+    #@+node:ekr.20140226074510.4208: *3* __init__
     def __init__(self, c):
         self.c = c
         # Careful: we may be unit testing.
@@ -1067,10 +1067,10 @@ class ViewRenderedProvider:
             splitter = c.free_layout.get_top_splitter()
             if splitter:
                 splitter.register_provider(self)
-    #@+node:tbrown.20110629084915.35150: *3* ns_provides
+    #@+node:ekr.20140226074510.4209: *3* ns_provides
     def ns_provides(self):
         return[('Viewrendered', '_leo_viewrendered')]
-    #@+node:tbrown.20110629084915.35151: *3* ns_provide
+    #@+node:ekr.20140226074510.4210: *3* ns_provide
     def ns_provide(self, id_):
         
         global controllers
@@ -1081,13 +1081,13 @@ class ViewRenderedProvider:
             # return ViewRenderedController(self.c)
             return vr
     #@-others
-#@+node:ekr.20110317024548.14375: ** class ViewRenderedController (QWidget)
+#@+node:ekr.20140226074510.4211: ** class ViewRenderedController (QWidget)
 class ViewRenderedController(QtGui.QWidget):
     
     '''A class to control rendering in a rendering pane.'''
 
     #@+others
-    #@+node:ekr.20110317080650.14380: *3* ctor & helpers
+    #@+node:ekr.20140226074510.4212: *3* ctor & helpers
     def __init__ (self, c, parent=None):
         
         QtGui.QWidget.__init__(self, parent)
@@ -1136,7 +1136,7 @@ class ViewRenderedController(QtGui.QWidget):
         self.showcode = True
         self.execcode = False
         self.restoutput = False
-    #@+node:ekr.20110320120020.14478: *4* create_dispatch_dict
+    #@+node:ekr.20140226074510.4213: *4* create_dispatch_dict
     def create_dispatch_dict (self):
         
         pc = self
@@ -1153,12 +1153,12 @@ class ViewRenderedController(QtGui.QWidget):
             'svg':          pc.update_svg,
             'url':          pc.update_url,
         }
-    #@+node:tbrown.20110621120042.22676: *3* closeEvent
+    #@+node:ekr.20140226074510.4214: *3* closeEvent
     def closeEvent(self, event):
         
         self.deactivate()
 
-    #@+node:ekr.20130413061407.10363: *3* contract & expand
+    #@+node:ekr.20140226074510.4215: *3* contract & expand
     def contract(self):
         self.change_size(-100)
 
@@ -1178,7 +1178,7 @@ class ViewRenderedController(QtGui.QWidget):
                 else:
                     sizes[j] = max(0,sizes[j]-int(delta/(n-1)))
             splitter.setSizes(sizes)
-    #@+node:ekr.20110317080650.14381: *3* activate (creates idle-time hook)
+    #@+node:ekr.20140226074510.4216: *3* activate (creates idle-time hook)
     def activate (self):
         
         pc = self
@@ -1194,7 +1194,7 @@ class ViewRenderedController(QtGui.QWidget):
         # Enable the idle-time hook if it has not already been enabled.
         if not g.app.idleTimeHook:
             g.enableIdleTimeHook(idleTimeDelay=1000)
-    #@+node:ekr.20110317080650.14382: *3* deactivate
+    #@+node:ekr.20140226074510.4217: *3* deactivate
     def deactivate (self):
         
         pc = self
@@ -1203,7 +1203,7 @@ class ViewRenderedController(QtGui.QWidget):
         g.unregisterHandler('select2',pc.update)
         g.unregisterHandler('idle',pc.update)
         pc.active = False
-    #@+node:ekr.20110321072702.14508: *3* lock/unlock
+    #@+node:ekr.20140226074510.4218: *3* lock/unlock
     def lock (self):
         g.note('rendering pane locked')
         self.locked = True
@@ -1211,14 +1211,14 @@ class ViewRenderedController(QtGui.QWidget):
     def unlock (self):
         g.note('rendering pane unlocked')
         self.locked = False
-    #@+node:ekr.20110319143920.14466: *3* underline
+    #@+node:ekr.20140226074510.4219: *3* underline
     def underline (self,s):
         
         ch = '#'
         n = max(4,len(g.toEncodedString(s,reportErrors=False)))
         # return '%s\n%s\n%s\n\n' % (ch*n,s,ch*n)
         return '%s\n%s\n\n' % (s,ch*n)
-    #@+node:ekr.20101112195628.5426: *3* update & helpers
+    #@+node:ekr.20140226074510.4220: *3* update & helpers
     # Must have this signature: called by leoPlugins.callTagHandler.
 
     def update(self,tag,keywords):
@@ -1273,7 +1273,7 @@ class ViewRenderedController(QtGui.QWidget):
             
             # Will be called at idle time.
             # if trace: g.trace('no update')
-    #@+node:ekr.20110320120020.14486: *4* embed_widget & helper
+    #@+node:ekr.20140226074510.4221: *4* embed_widget & helper
     def embed_widget (self,w,delete_callback=None):
         
         '''Embed widget w in the free_layout splitter.'''
@@ -1303,7 +1303,7 @@ class ViewRenderedController(QtGui.QWidget):
             w.setWordWrapMode(QtGui.QTextOption.WrapAtWordBoundaryOrAnywhere)
               
         return
-    #@+node:ekr.20110321072702.14510: *5* setBackgroundColor
+    #@+node:ekr.20140226074510.4222: *5* setBackgroundColor
     def setBackgroundColor (self,colorName,name,w):
         
         pc = self
@@ -1320,7 +1320,7 @@ class ViewRenderedController(QtGui.QWidget):
         elif colorName not in pc.badColors:
             pc.badColors.append(colorName)
             g.warning('invalid body background color: %s' % (colorName))
-    #@+node:ekr.20110320120020.14476: *4* must_update
+    #@+node:ekr.20140226074510.4223: *4* must_update
     def must_update (self,keywords):
         
         '''Return True if we must update the rendering pane.'''
@@ -1349,7 +1349,7 @@ class ViewRenderedController(QtGui.QWidget):
         # This will be called at idle time.
         # if trace: g.trace('no change')
         return False
-    #@+node:ekr.20110321151523.14463: *4* update_graphics_script
+    #@+node:ekr.20140226074510.4224: *4* update_graphics_script
     def update_graphics_script (self,s,keywords):
         
         pc = self ; c = pc.c
@@ -1384,7 +1384,7 @@ class ViewRenderedController(QtGui.QWidget):
         c.executeScript(
             script=s,
             namespace={'gs':pc.gs,'gv':pc.gv})
-    #@+node:ekr.20110321005148.14534: *4* update_html
+    #@+node:ekr.20140226074510.4225: *4* update_html
     def update_html (self,s,keywords):
         
         pc = self
@@ -1399,7 +1399,7 @@ class ViewRenderedController(QtGui.QWidget):
         w.setHtml(s)
         #print 'Debug printing: before w.load(...leo.html)'
         #w.load('file:///M:/leo/info/leo.html')
-    #@+node:ekr.20110320120020.14482: *4* update_image
+    #@+node:ekr.20140226074510.4226: *4* update_image
     def update_image (self,s,keywords):
         
         pc = self
@@ -1431,7 +1431,7 @@ class ViewRenderedController(QtGui.QWidget):
         w.setHtml(template)
         w.setReadOnly(True)
         
-    #@+node:peckj.20130207132858.3671: *4* update_md
+    #@+node:ekr.20140226074510.4227: *4* update_md
     def update_md (self,s,keywords):
         
         trace = False and not g.unitTesting
@@ -1490,7 +1490,7 @@ class ViewRenderedController(QtGui.QWidget):
         if sb and pos:
             # Restore the scrollbars
             sb.setSliderPosition(pos)
-    #@+node:ekr.20110320120020.14481: *4* update_movie
+    #@+node:ekr.20140226074510.4228: *4* update_movie
     def update_movie (self,s,keywords):
         
         # pylint: disable=E1103
@@ -1534,14 +1534,14 @@ class ViewRenderedController(QtGui.QWidget):
         vp = pc.vp
         vp.load(phonon.MediaSource(path))
         vp.play()
-    #@+node:ekr.20110320120020.14484: *4* update_networkx
+    #@+node:ekr.20140226074510.4229: *4* update_networkx
     def update_networkx (self,s,keywords):
         
         pc = self
         w = pc.ensure_text_widget()
         w.setPlainText('') # 'Networkx: len: %s' % (len(s)))
         pc.show()
-    #@+node:ekr.20110320120020.14477: *4* update_rst
+    #@+node:ekr.20140226074510.4230: *4* update_rst
     def update_rst (self,s,keywords):
         # Do this regardless of whether we show the widget or not.
         #w = pc.ensure_text_widget()
@@ -1560,7 +1560,7 @@ class ViewRenderedController(QtGui.QWidget):
         #        if sb and pos:
         #            # Restore the scrollbars
         #            sb.setSliderPosition(pos)
-    #@+node:ekr.20110320120020.14479: *4* update_svg
+    #@+node:ekr.20140226074510.4231: *4* update_svg
     # http://doc.trolltech.com/4.4/qtsvg.html 
     # http://doc.trolltech.com/4.4/painting-svgviewer.html
 
@@ -1588,7 +1588,7 @@ class ViewRenderedController(QtGui.QWidget):
                 pc.show()
                 w.load(path)
                 w.show()
-    #@+node:ekr.20110321005148.14537: *4* update_url
+    #@+node:ekr.20140226074510.4232: *4* update_url
     def update_url (self,s,keywords):
         
         pc = self
@@ -1609,8 +1609,8 @@ class ViewRenderedController(QtGui.QWidget):
         # w.setReadOnly(False)
         # w.setHtml(s)
         # w.setReadOnly(True)
-    #@+node:ekr.20110322031455.5765: *4* utils for update helpers...
-    #@+node:ekr.20110322031455.5764: *5* ensure_text_widget
+    #@+node:ekr.20140226074510.4233: *4* utils for update helpers...
+    #@+node:ekr.20140226074510.4234: *5* ensure_text_widget
     def ensure_text_widget (self):
         
         '''Swap a text widget into the rendering pane if necessary.'''
@@ -1645,7 +1645,7 @@ class ViewRenderedController(QtGui.QWidget):
             return pc.w
         else:
             return pc.w
-    #@+node:ekr.20110320120020.14483: *5* get_kind
+    #@+node:ekr.20140226074510.4235: *5* get_kind
     def get_kind(self,p):
         
         '''Return the proper rendering kind for node p.'''
@@ -1661,7 +1661,7 @@ class ViewRenderedController(QtGui.QWidget):
         # To do: look at ancestors, or uA's.
 
         return pc.default_kind # The default.
-    #@+node:ekr.20110320233639.5776: *5* get_fn
+    #@+node:ekr.20140226074510.4236: *5* get_fn
     def get_fn (self,s,tag):
         
         pc = self
@@ -1688,19 +1688,19 @@ class ViewRenderedController(QtGui.QWidget):
 
         ok = g.os_path_exists(fn)
         return ok,fn
-    #@+node:ekr.20110321005148.14536: *5* get_url
+    #@+node:ekr.20140226074510.4237: *5* get_url
     def get_url (self,s,tag):
         
         p = self.c.p
         url = s or p.h[len(tag):]
         url = url.strip()
         return url
-    #@+node:ekr.20110322031455.5763: *5* must_change_widget
+    #@+node:ekr.20140226074510.4238: *5* must_change_widget
     def must_change_widget (self,widget_class):
         
         pc = self
         return not pc.w or pc.w.__class__ != widget_class
-    #@+node:ekr.20110320120020.14485: *5* remove_directives
+    #@+node:ekr.20140226074510.4239: *5* remove_directives
     def remove_directives (self,s):
         
         lines = g.splitLines(s)
