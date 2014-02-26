@@ -366,7 +366,7 @@ class VimCommands:
         updating vc.repeat_list and vc.dot_list
         Return True if this method has handled the key.
         '''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         # Set up the state ivars.
         c,vc = self.c,self
         vc.ch = ch = event and event.char or ''
@@ -456,7 +456,7 @@ class VimCommands:
     #@+node:ekr.20140222064735.16712: *5* vc.do_outer_command
     def do_outer_command(self):
         '''Handle an outer normal mode command.'''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         c,vc = self.c,self
         stroke = vc.stroke
         func = vc.dispatch_dict.get(stroke)
@@ -471,7 +471,7 @@ class VimCommands:
             # Let Leo handle non-plain keys.
             # Never add the key to the command list.
             if trace: g.trace('ignore',stroke)
-            return c.k.isPlainKey(vc.ch)
+            return c.k.isPlainKey(vc.stroke)
     #@+node:ekr.20140222064735.16683: *5* vc.do_visual_mode
     def do_visual_mode(self):
         '''
