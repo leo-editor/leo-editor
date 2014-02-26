@@ -472,7 +472,6 @@ class WebViewPlus(QtGui.QWidget):
     #@+node:ekr.20140226075611.16793: *3* ctor (WebViewPlus)
     def __init__(self, pc):
         super(WebViewPlus, self).__init__()
-        #trace = False and not g.unitTesting
         # Store references to ViewRenderedController instance
         self.pc = pc
         self.c = c = pc.c
@@ -480,17 +479,16 @@ class WebViewPlus(QtGui.QWidget):
         self.last_node = self.c.p
         self.pr = None
         self.app = QtCore.QCoreApplication.instance()
+        self.html = ''
         # Timer for delayed rendering (to allow smooth tree navigation)
         self.timer = QtCore.QTimer()
         self.timer.setSingleShot(True)
         self.timer.setInterval(1100)  # just longer than the 1000ms interval of calls from update_rst
         self.timer.timeout.connect(self.render)
-
         # QWebView parts, including progress bar
         self.view = QtWebKit.QWebView()
         mf = self.view.page().mainFrame()
         mf.contentsSizeChanged.connect(self.restore_scroll_position)
-        
         # ToolBar parts
         self.export_button = QtGui.QPushButton('Export')
         self.export_button.clicked.connect(self.export)
@@ -498,7 +496,6 @@ class WebViewPlus(QtGui.QWidget):
         self.toolbar.setIconSize(QtCore.QSize(16,16))
         for a in (QtWebKit.QWebPage.Back, QtWebKit.QWebPage.Forward):
             self.toolbar.addAction(self.view.pageAction(a))
-        ###
         self.toolbar.setToolTip(self.tooltip_text(
             """
             Toolbar:
@@ -512,7 +509,6 @@ class WebViewPlus(QtGui.QWidget):
             Ctl-+  Zoom in
             Ctl--  Zoom out
             Ctl-=  Zoom to original size"""))
-
         # Handle reload separately since this is used to re-render everything
         self.reload_action = self.view.pageAction(QtWebKit.QWebPage.Reload)
         self.reload_action.triggered.connect(self.render)
@@ -522,7 +518,6 @@ class WebViewPlus(QtGui.QWidget):
         self.toolbutton = QtGui.QToolButton()
         self.toolbutton.setText('Options')
         self.toolbutton.setPopupMode(QtGui.QToolButton.InstantPopup)
-        ###
         self.toolbutton.setToolTip(self.tooltip_text(
             """
             Options:
@@ -581,7 +576,6 @@ class WebViewPlus(QtGui.QWidget):
         # Create the 'Export' toolbutton
         self.export_button = QtGui.QToolButton()
         self.export_button.setPopupMode(QtGui.QToolButton.InstantPopup)
-        ###
         self.export_button.setToolTip(self.tooltip_text(
             """
             Show this in the default web-browser.
@@ -591,13 +585,11 @@ class WebViewPlus(QtGui.QWidget):
         self.toolbar.addWidget(self.export_button)
         self.export_button.clicked.connect(self.export)
         self.export_button.setText('Export')
-
         #self.toolbar.addSeparator()
         # Setting visibility in toolbar is tricky, must be done throug QAction
         # http://www.qtcentre.org/threads/32437-remove-Widget-from-QToolBar
         self.pbar_action = self.toolbar.addWidget(self.pbar)
         self.pbar_action.setVisible(False)
-        
         # Document title in toolbar
         #self.toolbar.addSeparator()
         #        spacer = QtGui.QWidget() 
@@ -618,7 +610,6 @@ class WebViewPlus(QtGui.QWidget):
         spacer = QtGui.QWidget() 
         spacer.setMinimumWidth(5) 
         self.toolbar.addWidget(spacer)
-        
         # Layouts
         vlayout = QtGui.QVBoxLayout()
         vlayout.setContentsMargins(0,0,0,0)  # Remove the default 11px margins
@@ -639,7 +630,6 @@ class WebViewPlus(QtGui.QWidget):
         #self.toolbar.setToolButtonStyle(Qt.ToolButtonTextOnly)
         # Set up other widget states
         self.rendering = False
-        
         # Get Leo settings related to docutils.  Using 'or' trick for defaults
         #---------------------------------------------------------------------
         # defaults ...
@@ -686,7 +676,6 @@ class WebViewPlus(QtGui.QWidget):
         # Misc other internal settings
         # Mark of the Web (for IE) to allow sensible security options
         #getConfig(gc.getBool, 'include_MOTW', True, setvar=self.MOTW)  
-        
         self.docutils_settings = ds  # save these for docutils use
     #@+node:ekr.20140226075611.16794: *3* state_change
     def state_change(self, checked):
