@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20100318101414.5990: * @file viewrendered.py
+#@+node:ekr.20140225222704.16748: * @file viewrendered2.py
 #@+<< docstring >>
 #@+node:tbrown.20100318101414.5991: ** << docstring >>
 '''
@@ -539,7 +539,7 @@ saving functions of the browser.""")
         """Process the reST for a node, defaulting to node's entire tree.
         
         Any code blocks found (designated by @language python) will be
-        executed in order found as the tree is walked.  No << >> ordering
+        executed in order found as the tree is walked.  No <\< >\> ordering
         directives are heeded.  Output directed to stdout and stderr are
         included in the reST source.  If self.showcode is True, then
         the execution output is included in a '::' block.  If false, then
@@ -891,6 +891,11 @@ def show_scrolled_message(tag, kw):
     vr.update(tag='show-scrolled-message',keywords={'c':c,'force':True,'s':s})
     return True
 #@+node:ekr.20110320120020.14490: ** Commands
+#@+node:ekr.20131213163822.16471: *3* g.command('preview')
+@g.command('preview')
+def preview(event):
+    '''A synonym for the vr-toggle command.'''
+    toggle_rendering_pane(event)
 #@+node:tbrown.20100318101414.5998: *3* g.command('vr')
 @g.command('vr')
 def viewrendered(event):
@@ -1253,19 +1258,19 @@ class ViewRenderedController(QtGui.QWidget):
                 if sb:
                     pc.scrollbar_pos_dict[p.v] = sb.sliderPosition()
             # Saving scroll position for QWebView used in new html_class
-#            elif w.__class__ == pc.html_class:
-#                # The widge may no longer exist.
-#                mf = None
-#                try:
-#                    mf = w.view.page().mainFrame()
-#                except Exception:
-#                    g.es_exception()
-#                    pc.deactivate()
-#                if mf:
-#                    pos = mf.scrollBarValue(QtCore.Qt.Vertical)
-#                    pc.scrollbar_pos_dict[p.v] = pos
-#                    print 'saved1 scroll pos', pos
-
+            #            elif w.__class__ == pc.html_class:
+            #                # The widge may no longer exist.
+            #                mf = None
+            #                try:
+            #                    mf = w.view.page().mainFrame()
+            #                except Exception:
+            #                    g.es_exception()
+            #                    pc.deactivate()
+            #                if mf:
+            #                    pos = mf.scrollBarValue(QtCore.Qt.Vertical)
+            #                    pc.scrollbar_pos_dict[p.v] = pos
+            #                    print 'saved1 scroll pos', pos
+            
             # Will be called at idle time.
             # if trace: g.trace('no update')
     #@+node:ekr.20110320120020.14486: *4* embed_widget & helper
@@ -1390,7 +1395,6 @@ class ViewRenderedController(QtGui.QWidget):
             assert (w == pc.w)
         else:
             w = pc.w
-
         pc.show()
         w.setHtml(s)
         #print 'Debug printing: before w.load(...leo.html)'
@@ -1538,7 +1542,6 @@ class ViewRenderedController(QtGui.QWidget):
         w.setPlainText('') # 'Networkx: len: %s' % (len(s)))
         pc.show()
     #@+node:ekr.20110320120020.14477: *4* update_rst
-        
     def update_rst (self,s,keywords):
         # Do this regardless of whether we show the widget or not.
         #w = pc.ensure_text_widget()
@@ -1550,18 +1553,16 @@ class ViewRenderedController(QtGui.QWidget):
             assert (w == pc.w)
         else:
             w = pc.w
-    
         #assert pc.w
         #if s:
         #    pc.show()
         w.render_rst(s, keywords)
-    #        if sb and pos:
-    #            # Restore the scrollbars
-    #            sb.setSliderPosition(pos)
-        #@+node:ekr.20110320120020.14479: *4* update_svg
-        # http://doc.trolltech.com/4.4/qtsvg.html 
-        # http://doc.trolltech.com/4.4/painting-svgviewer.html
-        
+        #        if sb and pos:
+        #            # Restore the scrollbars
+        #            sb.setSliderPosition(pos)
+    #@+node:ekr.20110320120020.14479: *4* update_svg
+    # http://doc.trolltech.com/4.4/qtsvg.html 
+    # http://doc.trolltech.com/4.4/painting-svgviewer.html
 
     def update_svg (self,s,keywords):
 
@@ -1573,7 +1574,6 @@ class ViewRenderedController(QtGui.QWidget):
             assert (w == pc.w)
         else:
             w = pc.w
-        
         if s.strip().startswith('<'):
             # Assume it is the svg (xml) source.
             s = g.adjustTripleString(s,pc.c.tab_width).strip() # Sensitive to leading blank lines.
