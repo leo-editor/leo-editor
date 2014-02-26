@@ -18,8 +18,13 @@ What to do abouit bzr-manifest?
 Bug: word-only screws up regex searches.
 
 First:
-** Allow Ctrl-S in all modes.
+* Fix the widget mess.
+    - All commands must set vc.command_w.
+    - Define vc.check_w.
 * Maintain command_list.
+    - What about cursor-moving control characters?
+    - What about commands that switch nodes?
+* undo (in vc.done) should report the spelling of the command.
 - ':' operation.
 
 Later:
@@ -27,7 +32,7 @@ Later:
 - Simulate a box cursor by always selecting one character.
 
 @language python
-.. @+node:ekr.20140218130540.18726: *4* Notes
+.. @+node:ekr.20140218130540.18726: *4* vim notes (do not delete)
 @language rest
 
 - Document: use separate .leo file to test vim (ekr-vim.leo)

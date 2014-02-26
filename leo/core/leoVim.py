@@ -417,7 +417,7 @@ class VimCommands:
     #@+node:ekr.20140222064735.16691: *5* vc.do_insert_mode
     def do_insert_mode(self):
         '''Handle keys in insert mode.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         vc = self
         c = vc.c
         n = vc.command_n
@@ -456,7 +456,7 @@ class VimCommands:
     #@+node:ekr.20140222064735.16712: *5* vc.do_outer_command
     def do_outer_command(self):
         '''Handle an outer normal mode command.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c,vc = self.c,self
         stroke = vc.stroke
         func = vc.dispatch_dict.get(stroke)
@@ -495,13 +495,13 @@ class VimCommands:
             if trace: g.trace('ignore',stroke)
             vc.beep()
             return vc.do_visual_mode
-    #@+node:ekr.20140222064735.16631: *4* vc.done
+    #@+node:ekr.20140222064735.16631: *4* vc.done (handles undo)
     def done(self):
         '''Init ivars at the end of a command.'''
-        trace = True and not g.unitTesting
         c,vc = self.c,self
-        w = vc.command_w
+        w = vc.command_w or vc.event.w
         name = c.widget_name(w)
+        g.trace(name)
         if name.startswith('body'):
             # Similar to selfInsertCommand.
             oldSel = w.getSelectionRange()
@@ -509,7 +509,6 @@ class VimCommands:
             newText = w.getAllText()
             ### set undoType to the command spelling.
             if newText != oldText:
-                if trace: g.trace()
                 c.frame.body.onBodyChanged(undoType='Typing',
                     oldSel=oldSel,oldText=oldText,oldYview=None)
         # Clear everything.
@@ -678,7 +677,7 @@ class VimCommands:
     def vim_d2(self):
         vc = self
         if vc.stroke == 'd':
-            w = vc.command_w
+            w = vc.event.w
             s = w.getAllText()
             for z in range(vc.n):
                 i = w.getInsertPoint()
@@ -693,7 +692,6 @@ class VimCommands:
         w = vc.command_w
         if w == vc.event.w:
             i1,i2 = vc.motion_i,w.getInsertPoint()
-            # g.trace(i1,i2,w.getAllText()[i1:i2])
             w.delete(i1,i2)
         else:
             g.trace('w changed')
