@@ -61,7 +61,7 @@ class VimCommands:
         self.repeat_list = []
             # The characters of the current repeat count.
         self.state = 'normal'
-            # in ('normal','insert')
+            # in ('normal','insert','visual',)
         self.stroke = None
             # The incoming stroke.
         self.vis_mode_i = None
@@ -373,11 +373,6 @@ class VimCommands:
         vc.event = event
         vc.stroke = stroke = event and event.stroke and event.stroke.s
         vc.continue_flag = False
-        # Handle Esc first.
-        if stroke == 'Escape':
-            vc.done()
-            vc.show_status()
-            return True
         # Dispatch an internal state handler if one is active.
         if vc.next_func:
             vc.next_func = vc.next_func()
@@ -389,6 +384,11 @@ class VimCommands:
                     self.done() # The command is finished:
                 self.show_status()
                 return True
+        # Handle Esc only after internal modes.
+        if stroke == 'Escape':
+            vc.done()
+            vc.show_status()
+            return True
         # Now dispatch either an inner motion or an outer command.
         if vc.in_motion:
             return vc.do_inner_motion()
@@ -417,12 +417,13 @@ class VimCommands:
     #@+node:ekr.20140222064735.16691: *5* vc.do_insert_mode
     def do_insert_mode(self):
         '''Handle keys in insert mode.'''
+        trace = True and not g.unitTesting
         vc = self
         c = vc.c
         n = vc.command_n
         vc.state = 'insert'
         w = vc.event.w
-        g.trace('n',n,vc.stroke)
+        if trace: g.trace(n,vc.stroke)
         if w != vc.command_w:
             g.trace('widget changed')
             return None
@@ -432,6 +433,7 @@ class VimCommands:
                 i1 = vc.command_i
                 i2 = w.getInsertPoint()
                 s2 = s[i1:i2]
+                if trace: g.trace(n,s2)
                 for z in range(n-1):
                     w.insert(i2,s2)
                     i2 = w.getInsertPoint()
@@ -496,8 +498,21 @@ class VimCommands:
     #@+node:ekr.20140222064735.16631: *4* vc.done
     def done(self):
         '''Init ivars at the end of a command.'''
-        # g.trace('*****')
-        vc = self
+        trace = True and not g.unitTesting
+        c,vc = self.c,self
+        w = vc.command_w
+        name = c.widget_name(w)
+        if name.startswith('body'):
+            # Similar to selfInsertCommand.
+            oldSel = w.getSelectionRange()
+            oldText = c.p.b
+            newText = w.getAllText()
+            ### set undoType to the command spelling.
+            if newText != oldText:
+                if trace: g.trace()
+                c.frame.body.onBodyChanged(undoType='Typing',
+                    oldSel=oldSel,oldText=oldText,oldYview=None)
+        # Clear everything.
         vc.dot_list = []
         vc.in_motion = False
         vc.motion_func = None
@@ -505,30 +520,30 @@ class VimCommands:
         vc.next_func = None
         vc.repeat_list = []
         vc.state = 'normal'
-
-    #@+node:ekr.20140222064735.16615: *4* vc.show_status (revise)
+    #@+node:ekr.20140222064735.16615: *4* vc.show_status
     def show_status(self):
         '''Show the status (the state and the contents of vc.dot_list)'''
         vc = self
-        g.trace(''.join(vc.dot_list) or vc.state)
+        s = '%s: %s' % (vc.state.capitalize(),''.join(vc.dot_list))
+        vc.c.k.setLabelBlue(label=s,protect=True)
     #@+node:ekr.20140222064735.16629: *4* vc.vim_digits
     def vim_digits(self):
         '''Handle a digits that starts an outer repeat count.'''
         vc = self
-        g.trace(vc.stroke)
+        # g.trace(vc.stroke)
         assert not vc.repeat_list
         vc.repeat_list.append(vc.stroke)
         return self.vim_digits_2
             
     def vim_digits_2(self):
         vc = self
-        g.trace(vc.stroke)
         if vc.stroke in '0123456789':
             vc.dot_list.append(vc.stroke)
             vc.repeat_list.append(vc.stroke)
             return self.vim_digits_2
         else:
             vc.n = int(''.join(vc.repeat_list))
+            g.trace(vc.n)
             vc.repeat_list = []
             vc.next_func = None
             vc.continue_flag = True
