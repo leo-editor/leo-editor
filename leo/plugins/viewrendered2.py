@@ -1069,11 +1069,10 @@ class WebViewPlus(QtGui.QWidget):
     def tooltip_text(self,s):
         '''Return the reformatted tooltip text corresponding to the triple string s.'''
         lines = g.splitLines(s)
-        if not lines:
-            return s
-        i = 0 if lines[0].strip() else 1
-        s = ''.join(lines[i:])
-        s = g.adjustTripleString(s,self.c.tab_width)
+        if lines:
+            i = 0 if lines[0].strip() else 1
+            s = ''.join(lines[i:])
+            s = g.adjustTripleString(s,self.c.tab_width)
         return s
     #@-others
     
