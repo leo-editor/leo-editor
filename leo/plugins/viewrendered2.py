@@ -183,11 +183,14 @@ __version__ = '1.1' # EKR: Move class WebViewPlus into it's own subtree.
 #@+node:ekr.20140226074510.4188: ** << imports >>
 import leo.core.leoGlobals as g
 from PyQt4 import QtCore, QtGui, QtSvg, QtWebKit
+from PyQt4.QtCore import QUrl
 import leo.plugins.qtGui as qtGui
 g.assertUi('qt')
 import os
+import sys
+from StringIO import StringIO
+import traceback
 
-# docutils = g.importExtension('docutils',pluginName='viewrendered.py',verbose=False)
 try:
     import docutils
     import docutils.core
@@ -205,6 +208,7 @@ if docutils:
         got_docutils = False
         g.es_exception()
 else:
+    g.es_print('viewrendered2.py: docutils not found',color='red')
     got_docutils = False
 
 ## markdown support, non-vital
@@ -243,7 +247,6 @@ QPlainTextEdit {
 #@-<< define stylesheet >>
 
 #@+at
-# 
 # To do:
 # 
 # - Use the free_layout rotate-all command in Leo's toggle-split-direction command.
@@ -475,11 +478,12 @@ class WebViewPlus(QtGui.QWidget):
         # Store references to ViewRenderedController instance
         self.pc = pc
         self.c = c = pc.c
+        self.html = '' # For communication with export().
+        self.s = ''
         # Store current node position
         self.last_node = self.c.p
         self.pr = None
         self.app = QtCore.QCoreApplication.instance()
-        self.html = ''
         # Timer for delayed rendering (to allow smooth tree navigation)
         self.timer = QtCore.QTimer()
         self.timer.setSingleShot(True)
@@ -681,159 +685,6 @@ class WebViewPlus(QtGui.QWidget):
     def state_change(self, checked):
         """A wrapper for 'render' to re-render on all QAction state changes."""
         self.render()
-    #@+node:ekr.20140226075611.16795: *3* underline2
-    def underline2(self, p):
-        """Use the given string and convert it to an reST headline for display
-        The most unused underline characters are used here, so as not to clash
-        with headings used in the reST.  These characters must not be used for
-        underlining in nodes.
-        
-        Note that the full range of valid characters defined for reST is ::
-            
-            ! " # $ % & ' ( ) * + , - . / : ; < = > ? @ [ \ ] ^ _ ` { | } ~
-        
-        and the recommended ones are::
-            
-            = - ` : . ' " ~ ^ _ * + #
-        """
-        # Use relatively unused underline characters, cater for many levels
-        ch = """><:_`*+"';/{|}()$%&@#"""[p.level()-self.reflevel]
-        n = max(4,len(g.toEncodedString(p.h,reportErrors=False)))
-        # return '%s\n%s\n%s\n\n' % (ch*n,s,ch*n)
-        return '%s\n%s\n\n' % (p.h,ch*n)
-
-    #@+node:ekr.20140226075611.16796: *3* process_directives
-    def process_directives(self, s, d):
-        """s is string to process, d is dictionary of directives at the node."""
-        lang = d['language']
-        codeflag = ( lang not in ['rest', ''] )
-        lines = g.splitLines(s)
-        result = []
-        code = ''
-        if codeflag and self.showcode:  result.append('\n\n.. code:: '+lang+'\n\n')
-        for s in lines:
-            if s.startswith('@'):
-                i = g.skip_id(s,1)
-                word = s[1:i]
-                # Add capability to detect mid-node language directives (not really that useful).
-                # Probably better to just use a code directive.  "execute-script" is not possible.
-                # If removing, ensure "if word in g.globalDirectiveList:  continue" is retained
-                # to stop directive being put into the reST output.
-                if word=='language' and not codeflag:  # only if not already code
-                    lang = s[i:].strip()
-                    codeflag = lang in ['python']
-                    if codeflag:
-                        if self.verbose:
-                            g.es('New code section within node:',lang)
-                        if self.showcode:
-                            result.append('\n\n.. code:: '+lang+'\n\n')
-                    else:  result.append('\n\n')
-                    continue
-                elif word in g.globalDirectiveList:  continue
-            if codeflag:
-                if self.showcode:  result.append('    ' + s)  # 4 space indent on each line
-                code += s  # accumulate code lines for execution
-            else:
-                result.append(s)
-        return ''.join(result), code
-    #@+node:ekr.20140226075611.16797: *3* process_nodes
-    def process_nodes(self, p, tree=True):
-        """Process the reST for a node, defaulting to node's entire tree.
-        
-        Any code blocks found (designated by @language python) will be
-        executed in order found as the tree is walked.  No <\< >\> ordering
-        directives are heeded.  Output directed to stdout and stderr are
-        included in the reST source.  If self.showcode is True, then
-        the execution output is included in a '::' block.  If false, then
-        the output is assumed to be valid reST and included in the reST
-        source.
-        """
-        import traceback
-        # Set an empty scope for optional python code execution.
-        # This holds the "globals" between individual code snippets.
-        scope = {'g': g}
-        
-        def exec_code(code):
-            """Execute the code, capturing the output in stdout and stderr."""
-            import sys
-            from StringIO import StringIO
-            
-            saveout = sys.stdout  # save stdout
-            saveerr = sys.stderr
-            sys.stdout = bufferout = StringIO()
-            sys.stderr = buffererr = StringIO()
-            # Protect against exceptions within exec
-            try:
-                # scope is defined in the calling method
-                exec code in scope
-            except:
-                #print Exception, err
-                #print sys.exc_info()[1]
-                print >> buffererr, traceback.format_exc()
-                buffererr.flush()  # otherwise exception info appears too late
-                g.es('Viewrendered traceback:\n', sys.exc_info()[1])
-            # Restore stdout, stderr
-            sys.stdout = saveout  # was sys.__stdout__
-            sys.stderr = saveerr  # restore stderr
-            return bufferout.getvalue(), buffererr.getvalue()
-            
-        def format_output(s, prefix='::'):
-            """Formats the multi-line string 's' into a reST literal block."""
-            out = '\n\n'+prefix+'\n\n'
-            lines = g.splitLines(s)
-            for line in lines:  out += '    ' + line
-            return out + '\n'
-            
-        # get current directives (to determine language: rest or python)
-        d = self.c.scanAllDirectives(p)
-        if self.verbose:  g.es(p.h, ': ', d['language'])  # lang of node
-        self.reflevel = p.level()  # store the reference node level for header formatting
-        result = []
-        # Process root node
-        result.append(self.underline2(p))
-        s, code = self.process_directives(p.b, d)
-        result.append(s)
-        result.append('\n\n')  # seems to need an empty line on end to allow bullet lists to display properly.
-        if code and self.execcode:
-            s, err = exec_code(code)  # execute code found in a node, append to reST
-            if not self.restoutput and s.strip():  s = format_output(s)  # if some non-reST to print
-            result.append(s)  # append, whether plain or reST output
-            if err:  err = format_output(err, prefix='**Error**::')      
-            result.append(err)
-        # Process tree under root node
-        if tree:
-            numnodes = sum(1 for j in p.subtree())  # count of nodes for progressbar
-            i = 0  # progress counter
-            for p2 in p.subtree():
-                d = self.c.scanAllDirectives(p2)
-                if self.verbose:
-                    g.es(p2.h, ': ', d['language'])  # lang for each node rendered
-                if d['language']=='rest' or self.showcode:  result.append(self.underline2(p2))
-                s, code = self.process_directives(p2.b, d)
-                result.append(s)
-                result.append('\n\n')  # seems to need an empty line on end to allow bullet lists to display properly.
-                if code and self.execcode:
-                    s, err = exec_code(code)  # execute code found in a node, append to reST
-                    if not self.restoutput and s.strip():  s = format_output(s)
-                    result.append(s)
-                    if err:  err = format_output(err, prefix='**Error**::')      
-                    result.append(err)
-                # Arrange for 50% at end of tree processing
-                i += 1
-                if not self.auto:  self.pbar.setValue(i * 50 / numnodes)
-                self.app.processEvents()
-        s = '\n'.join(result)
-        if self.verbose:  # write out the final assembled reST file
-            filename = 'leo.rst'
-            path = d.get('path')
-            pathname = g.os_path_finalize_join(path,filename)
-            # Render constructed reST string
-            #s = self.html_render(s)
-            f = file(pathname,'wb')
-            f.write(s.encode('utf8'))
-            f.close()
-        return s
-        
     #@+node:ekr.20140226075611.16798: *3* getUIconfig
     def getUIconfig(self):
         """Get the rendering configuration from the GUI controls."""
@@ -858,14 +709,9 @@ class WebViewPlus(QtGui.QWidget):
     def render_rst(self, s, keywords):
         """Generate the reST and render it in this pane."""
         self.getUIconfig()
-        if 's' in keywords:
-            self.s = keywords.get('s')
-        else:  self.s = None
-        #self.s = s  # Save 's' in case rendering only with plain text
-        if not self.auto:  return  # if not auto updating, then don't render yet
-        #self.timer.stop()
-        self.timer.start()  # Timer already set to call self.render
-        
+        self.s = keywords.get('s') if 's' in keywords else ''
+        if self.auto:
+            self.timer.start()
     #@+node:ekr.20140226075611.16800: *3* lock
     def lock(self):
         """Implement node lock (triggered by "Lock node" action)."""
@@ -878,154 +724,277 @@ class WebViewPlus(QtGui.QWidget):
         else:  self.render()  # Render again since root node may have changed now
         # Add an icon or marker to node currently locked?
 
-    #@+node:ekr.20140226075611.16801: *3* render
+    #@+node:ekr.20140226075611.16801: *3* render & helpers
     def render(self):
         """Re-render the existing string, but probably with new configuration."""
         if self.rendering:
-            self.timer.start()  # Don't forget to do this last render request   
-            return  # if already rendering, don't execute
-        self.rendering = True
-        s = self.s  # more abbreviated access to 's'
-        # Need to get the UI config again, in case directly called by control
-        self.getUIconfig()
-        
-        pc = self.pc ; c = pc.c ; p = c.p
-        #s = s.strip().strip('"""').strip("'''").strip()
-        #isHtml = s.startswith('<') and not s.startswith('<<')
-        isHtml = False
-        #if trace: g.trace('isHtml',isHtml,p.h)          
-
-        if not got_docutils:
-            isHtml = True
-            s = '<pre>\n%s</pre>' % s
-        if not isHtml:
-            # Not html: convert to html.
-            path = g.scanAllAtPathDirectives(c,p) or c.getNodePath(p)
-            if not os.path.isdir(path):
-                path = os.path.dirname(path)
-            if os.path.isdir(path):
-                os.chdir(path)
-            
-            # has current node changed?
-            #if self.last_node.v.gnx != p.v.gnx:  node_changed = True
-            # Shortcut reference to mainFrame
-            mf = self.view.page().mainFrame()
-            
-
-            # Need to save position of last node before rendering
-            ps = mf.scrollBarValue(QtCore.Qt.Vertical)
-            pc.scrollbar_pos_dict[self.last_node.v] = ps
-            # print 'position saved:', ps
-            # Which node should be rendered?
-            if self.lock_mode:
-                self.pr = self.plock  # use locked node for position to be rendered
-            else:
-                # use new current node, whether changed or not.
-                self.pr = self.c.p  # use current node
-            self.last_node = self.pr.copy()  # Store this node as last node rendered
-            
-            # Set the node header in the toolbar
-            if self.s:  self.title.setText('')
-            else:  self.title.setText('<b>'+self.pr.h+'</b>')
-            
-            if not self.auto:  
-                self.pbar.setValue(0)
-                self.pbar_action.setVisible(True)
-            if not s:
-                s = self.process_nodes(self.pr, tree=self.tree)
-            
-            if not self.auto:  
-                self.pbar.setValue(50)
-            
-            #if not self.auto:  self.pbar.setValue(50)
-            
-            
-            # There doesn't seem to be a way to put processEvents into docutils
-            # so can only do it here.
-            self.app.processEvents()
-                        
+            # if already rendering, don't execute
+            self.timer.start()  # Don't forget to do this last render request
+        else:
             try:
-                msg = '' # The error message from docutils.
-
-                # Call docutils to get the string.
-                args = { 'stylesheet_path' : '',#'./css/leo_vr.css',  # path for css files
-                         'halt_level' : 6,  # raise halt level to still attempt to render
-                         'report_level' : 5, #5,  # heading level errors, remove rather than error in output
-                         'math_output' : 'mathjax',  # use MathJax for rendering equations
-                         'smart_quotes' : True,  # ??allows --,---,... to dashes etc., nice quotes
-                         'embed_stylesheet' : True,  # include stylesheet into a self-contained html
-                         'xml_declaration' : False,  # remove declaration to allow import/paste into Word
-                                                    # (otherwise Word complains about "DTD prohibited")
-                                                     # Note than False works, "no" doesn't.
-                         #'ditaa_dir': '.',  # DiTAA executable directory
-                         }
-                args = self.docutils_settings  # set to settings obtained from Leo outlines
-                if self.slideshow:
-                    self.html = publish_string(s,writer_name='s5_html', settings_overrides=args)
-                else:
-                    self.html = publish_string(s,writer_name='html', settings_overrides=args)
-                self.html = g.toUnicode(self.html) # 2011/03/15
-                #show = True
-            except SystemMessage as sm:
-                # g.trace(sm,sm.args)
-                msg = sm.args[0]
-                if 'SEVERE' in msg or 'FATAL' in msg:
-                    s = 'RST error:\n%s\n\n%s' % (msg,s)
-
+                self.rendering = True
+                self.render_helper()
+            finally:
+                # No longer rendering, OK to receive another rendering call
+                self.rendering = False
+    #@+node:ekr.20140226075611.16797: *4* process_nodes & helpers
+    def process_nodes(self,p,tree=True):
+        """
+        Process the reST for a node, defaulting to node's entire tree.
+        
+        Any code blocks found (designated by @language python) will be executed
+        in order found as the tree is walked. No section references are heeded.
+        Output directed to stdout and stderr are included in the reST source.
+        If self.showcode is True, then the execution output is included in a
+        '::' block. Otherwise the output is assumed to be valid reST and
+        included in the reST source.
+        """
+        c = self.c
+        root = p.copy()
+        self.reflevel = p.level() # for self.underline2().
+        result = []
+        self.do_node(root,result)
+        if tree:
+            # Process tree under root node, with progress counter.
+            # Arrange for 50% at end of tree processing.
+            i,numnodes = 0,sum(1 for j in p.subtree())
+            for p in root.subtree():
+                self.do_node(p,result)
+                if not self.auto:
+                    i += 1
+                    self.pbar.setValue(i * 50 / numnodes)
+                self.app.processEvents()
+        s = '\n'.join(result)
+        if self.verbose:
+            # write out the final assembled reST file to leo.rst.
+            filename = 'leo.rst'
+            d = c.scanAllDirectives(root)
+            path = d.get('path')
+            pathname = g.os_path_finalize_join(path,filename)
+            # Render constructed reST string
+            # s = self.html_render(s)
+            f = file(pathname,'wb')
+            f.write(s.encode('utf8'))
+            f.close()
+        return s
+    #@+node:ekr.20140226125539.16824: *5* do_node
+    def do_node(self,p,result):
+        '''Handle one node.'''
+        c = self.c
+        result.append(self.underline2(p))
+        d = c.scanAllDirectives(p)
+        if self.verbose:
+            g.trace(d.get('language') or 'None',':',p.h)
+        s,code = self.process_directives(p.b,d)
+        result.append(s)
+        result.append('\n\n')
+            # Add an empty line so bullet lists display properly.
+        if code and self.execcode:
+            s,err = self.exec_code(code)
+                # execute code found in a node, append to reST
+            if not self.restoutput and s.strip():
+                s = self.format_output(s)  # if some non-reST to print
+            result.append(s) # append, whether plain or reST output
+            if err:
+                err = self.format_output(err, prefix='**Error**::')      
+                result.append(err)
+    #@+node:ekr.20140226125539.16822: *5* exec_code
+    def exec_code(self,code):
+        """Execute the code, capturing the output in stdout and stderr."""
+        trace = True and not g.unitTesting
+        if trace: g.trace('\n',code)
+        c = self.c
+        saveout = sys.stdout  # save stdout
+        saveerr = sys.stderr
+        sys.stdout = bufferout = StringIO()
+        sys.stderr = buffererr = StringIO()
+        # Protect against exceptions within exec
+        try:
+            scope = {'c':c,'g': g,'p':c.p} # EKR: predefine c & p.
+            exec code in scope
+        except Exception:
+            #print Exception, err
+            #print sys.exc_info()[1]
+            print >> buffererr, traceback.format_exc()
+            buffererr.flush()  # otherwise exception info appears too late
+            g.es('Viewrendered traceback:\n', sys.exc_info()[1])
+        # Restore stdout, stderr
+        sys.stdout = saveout  # was sys.__stdout__
+        sys.stderr = saveerr  # restore stderr
+        return bufferout.getvalue(), buffererr.getvalue()
+    #@+node:ekr.20140226125539.16823: *5* format_output
+    def format_output(self,s, prefix='::'):
+        """Formats the multi-line string 's' into a reST literal block."""
+        out = '\n\n'+prefix+'\n\n'
+        lines = g.splitLines(s)
+        for line in lines:
+            out += '    ' + line
+        return out + '\n'
+    #@+node:ekr.20140226075611.16796: *5* process_directives
+    def process_directives(self, s, d):
+        """s is string to process, d is dictionary of directives at the node."""
+        trace = True and not g.unitTesting
+        lang = d.get('language') or 'python' # EKR.
+        codeflag = lang != 'rest' # EKR
+        lines = g.splitLines(s)
+        result = []
+        code = ''
+        if codeflag and self.showcode:
+            result.append('\n\n.. code:: '+lang+'\n\n')
+        for s in lines:
+            if s.startswith('@'):
+                i = g.skip_id(s,1)
+                word = s[1:i]
+                # Add capability to detect mid-node language directives (not really that useful).
+                # Probably better to just use a code directive.  "execute-script" is not possible.
+                # If removing, ensure "if word in g.globalDirectiveList:  continue" is retained
+                # to stop directive being put into the reST output.
+                if word=='language' and not codeflag:  # only if not already code
+                    lang = s[i:].strip()
+                    codeflag = lang in ['python',]
+                    if codeflag:
+                        if self.verbose:
+                            g.es('New code section within node:',lang)
+                        if self.showcode:
+                            result.append('\n\n.. code:: '+lang+'\n\n')
+                    else:
+                        result.append('\n\n')
+                    continue
+                elif word in g.globalDirectiveList:  continue
+            if codeflag:
+                if self.showcode:  result.append('    ' + s)  # 4 space indent on each line
+                code += s  # accumulate code lines for execution
+            else:
+                result.append(s)
+        result = ''.join(result)
+        if trace: g.trace('result:\n',result,'\ncode:',code)
+        return result, code
+    #@+node:ekr.20140226075611.16795: *5* underline2
+    def underline2(self, p):
+        """
+        Use the given string and convert it to an reST headline for display
+        The most unused underline characters are used here, so as not to clash
+        with headings used in the reST.  These characters must not be used for
+        underlining in nodes.
+        
+        Note that the full range of valid characters defined for reST is ::
+            
+            ! " # $ % & ' ( ) * + , - . / : ; < = > ? @ [ \ ] ^ _ ` { | } ~
+        
+        and the recommended ones are::
+            
+            = - ` : . ' " ~ ^ _ * + #
+        """
+        # Use relatively unused underline characters, cater for many levels
+        ch = """><:_`*+"';/{|}()$%&@#"""[p.level()-self.reflevel]
+        n = max(4,len(g.toEncodedString(p.h,reportErrors=False)))
+        return '%s\n%s\n\n' % (p.h,ch*n)
+    #@+node:ekr.20140226125539.16825: *4* render_helper
+    def render_helper(self):
+        '''Rendinging helper: self.rendering is True.'''
+        c,p,pc = self.c,self.c.p,self.pc
+        self.getUIconfig()
+            # Get the UI config again, in case directly called by control.
+        if got_docutils:
+            self.html = html = self.to_html(p)
+        else:
+            self.html = html = '<pre>\n%s</pre>' % self.s
         self.app.processEvents()
         # TODO: I think this path should be set when scanning directives!
         d = self.c.scanAllDirectives(p)
         # Put temporary or output files in location given by path directives
         self.path = d['path']
-        
         if pc.default_kind in ('big','rst','html', 'md'):
-            from PyQt4.QtCore import QUrl
-            #g.es(os.getcwd())
-
             # Trial of rendering to file and have QWebView load this without blocking
             ext = 'html'
             # Write the output file
             pathname = g.os_path_finalize_join(self.path,'leo.' + ext)
             f = file(pathname,'wb')
-            f.write(self.html.encode('utf8'))
+            f.write(html.encode('utf8'))
             f.close()
             # render
             self.view.setUrl(QUrl.fromLocalFile(pathname))
-
-            #self.view.setHtml(self.html, baseUrl = QUrl(self.path))
-        
+            #self.view.setHtml(html, baseUrl = QUrl(self.path))
             # PMM
             # Write the output file 
             #pathname = "M:/leo/info/leo.html"
             #f = file(pathname,'wb')
-            #f.write(s.encode('utf8'))
+            #f.write(self.s.encode('utf8'))
             #f.close()
             #w.load(QUrl("M:/leo/info/leo.html"))
-            
-            #            if pc.default_kind == 'big':
-            #                w.zoomIn(4) # Doesn't work.
         else:
-            self.view.setPlainText(self.html)
-            
+            self.view.setPlainText(html) 
         if not self.auto:  
             self.pbar.setValue(100)
             self.app.processEvents()
             self.pbar_action.setVisible(False)
-            
-        #        sb = w.verticalScrollBar()
-        #        if sb:
-        #            d = pc.scrollbar_pos_dict
-        #            if pc.node_changed:
-        #                # Set the scrollbar.
-        #                pos = d.get(p.v,sb.sliderPosition())
-        #                sb.setSliderPosition(pos)
-        #            else:
-        #                # Save the scrollbars
-        #                d[p.v] = pos = sb.sliderPosition()
-        
-        # No longer rendering, OK to receive another rendering call
-        self.rendering = False
-        
+    #@+node:ekr.20140226125539.16826: *4* to_html
+    def to_html(self,p):
+        '''Convert p.b to html using docutils.'''
+        c,pc = self.c,self.pc
+        mf = self.view.page().mainFrame()
+        path = g.scanAllAtPathDirectives(c,p) or c.getNodePath(p)
+        if not os.path.isdir(path):
+            path = os.path.dirname(path)
+        if os.path.isdir(path):
+            os.chdir(path)
+        # Need to save position of last node before rendering
+        ps = mf.scrollBarValue(QtCore.Qt.Vertical)
+        pc.scrollbar_pos_dict[self.last_node.v] = ps
+        # Which node should be rendered?
+        if self.lock_mode:
+            # use locked node for position to be rendered.
+            self.pr = self.plock  
+        else:
+            # use new current node, whether changed or not.
+            self.pr = c.p  # use current node
+        self.last_node = self.pr.copy() 
+            # Store this node as last node rendered
+        # Set the node header in the toolbar.
+        self.title.setText('' if self.s else '<b>'+self.pr.h+'</b>')
+        if not self.auto:  
+            self.pbar.setValue(0)
+            self.pbar_action.setVisible(True)
+        html = self.process_nodes(self.pr,tree=self.tree)
+        if not self.auto:  
+            self.pbar.setValue(50)
+        self.app.processEvents()
+            # Apparently this can't be done in docutils.       
+        try:
+            msg = '' # The error message from docutils.
+            # Call docutils to get the string.
+            if 0:
+                args = {
+                'stylesheet_path' : '',
+                    #'./css/leo_vr.css',  # path for css files
+                'halt_level' : 6,
+                    # raise halt level to still attempt to render
+                'report_level' : 5,
+                    # heading level errors, remove rather than error in output
+                'math_output' : 'mathjax',
+                    # use MathJax for rendering equations
+                'smart_quotes' : True,
+                    # ??allows --,---,... to dashes etc., nice quotes
+                'embed_stylesheet' : True,
+                    # include stylesheet into a self-contained html
+                'xml_declaration' : False,
+                    # remove declaration to allow import/paste into Word
+                    # (otherwise Word complains about "DTD prohibited")
+                 #'ditaa_dir': '.',  # DiTAA executable directory
+                }
+            else:
+                args = self.docutils_settings
+                    # set to settings obtained from Leo outlines
+            html = publish_string(html,
+                writer_name='s5_html' if self.slideshow else 'html',
+                settings_overrides=args)
+            return g.toUnicode(html)
+        except SystemMessage as sm:
+            msg = sm.args[0]
+            if 'SEVERE' in msg or 'FATAL' in msg:
+                return 'RST error:\n%s\n\n%s' % (msg,html)
+            else:
+                return html
     #@+node:ekr.20140226075611.16802: *3* restore_scroll_position
     def restore_scroll_position(self):
         # Restore scroll bar position for (possibly) new node
@@ -1064,7 +1033,6 @@ class WebViewPlus(QtGui.QWidget):
             s = g.adjustTripleString(s,self.c.tab_width)
         return s
     #@-others
-    
 #@+node:ekr.20140226074510.4207: ** class ViewRenderedProvider
 class ViewRenderedProvider:
     #@+others
