@@ -472,26 +472,28 @@ def update_rendering_pane (event):
 #@+node:ekr.20140226075611.16792: ** class WebViewPlus (QWidget)
 class WebViewPlus(QtGui.QWidget):
     #@+others
-    #@+node:ekr.20140226075611.16793: *3* ctor (WebViewPlus)
+    #@+node:ekr.20140226075611.16793: *3* ctor (WebViewPlus) & helpers
     def __init__(self, pc):
         super(WebViewPlus, self).__init__()
-        # Store references to ViewRenderedController instance
-        self.pc = pc
-        self.c = c = pc.c
-        self.html = '' # For communication with export().
-        self.s = ''
-        # Store current node position
-        self.last_node = self.c.p
-        self.pr = None
         self.app = QtCore.QCoreApplication.instance()
-        # Timer for delayed rendering (to allow smooth tree navigation)
-        self.timer = QtCore.QTimer()
-        self.timer.setSingleShot(True)
-        self.timer.setInterval(1100)  # just longer than the 1000ms interval of calls from update_rst
-        self.timer.timeout.connect(self.render)
-        # QWebView parts, including progress bar
-        self.view = QtWebKit.QWebView()
-        mf = self.view.page().mainFrame()
+        self.c = c = pc.c
+        self.docutils_settings = None # Set below.
+        self.html = '' # For communication with export().
+        self.last_node = c.p
+        self.pc = pc
+        self.pr = None
+        self.rendering = False
+        self.s = ''
+        self.timer = self.init_timer()
+        self.view = self.init_view()
+        # Must be done after calling init_view.
+        self.docutils_settings = self.init_config()
+    #@+node:ekr.20140227055626.16842: *4* init_view
+    def init_view(self):
+        '''Init the vr pane.'''
+            # QWebView parts, including progress bar
+        view = QtWebKit.QWebView()
+        mf = view.page().mainFrame()
         mf.contentsSizeChanged.connect(self.restore_scroll_position)
         # ToolBar parts
         self.export_button = QtGui.QPushButton('Export')
@@ -499,7 +501,7 @@ class WebViewPlus(QtGui.QWidget):
         self.toolbar = QtGui.QToolBar()
         self.toolbar.setIconSize(QtCore.QSize(16,16))
         for a in (QtWebKit.QWebPage.Back, QtWebKit.QWebPage.Forward):
-            self.toolbar.addAction(self.view.pageAction(a))
+            self.toolbar.addAction(view.pageAction(a))
         self.toolbar.setToolTip(self.tooltip_text(
             """
             Toolbar:
@@ -514,7 +516,7 @@ class WebViewPlus(QtGui.QWidget):
             Ctl--  Zoom out
             Ctl-=  Zoom to original size"""))
         # Handle reload separately since this is used to re-render everything
-        self.reload_action = self.view.pageAction(QtWebKit.QWebPage.Reload)
+        self.reload_action = view.pageAction(QtWebKit.QWebPage.Reload)
         self.reload_action.triggered.connect(self.render)
         self.toolbar.addAction(self.reload_action)
         #self.reload_action.clicked.connect(self.render)
@@ -618,22 +620,22 @@ class WebViewPlus(QtGui.QWidget):
         vlayout = QtGui.QVBoxLayout()
         vlayout.setContentsMargins(0,0,0,0)  # Remove the default 11px margins
         vlayout.addWidget(self.toolbar)
-        vlayout.addWidget(self.view)
+        vlayout.addWidget(view)
         self.setLayout(vlayout)
         # Key shortcuts - zoom
-        self.view.setZoomFactor(1.0)  # smallish panes demand small zoom
-        self.zoomIn = QtGui.QShortcut("Ctrl++", self, activated = lambda: self.view.setZoomFactor(self.view.zoomFactor()+.2))
-        self.zoomOut = QtGui.QShortcut("Ctrl+-", self, activated = lambda: self.view.setZoomFactor(self.view.zoomFactor()-.2))
-        self.zoomOne = QtGui.QShortcut("Ctrl+0", self, activated = lambda: self.view.setZoomFactor(0.8))
+        view.setZoomFactor(1.0)  # smallish panes demand small zoom
+        self.zoomIn = QtGui.QShortcut("Ctrl++", self, activated = lambda: view.setZoomFactor(view.zoomFactor()+.2))
+        self.zoomOut = QtGui.QShortcut("Ctrl+-", self, activated = lambda: view.setZoomFactor(view.zoomFactor()-.2))
+        self.zoomOne = QtGui.QShortcut("Ctrl+0", self, activated = lambda: view.setZoomFactor(0.8))
         # Some QWebView settings
         # setMaximumPagesInCache setting prevents caching of images etc.
-        self.view.settings().setAttribute(QtWebKit.QWebSettings.PluginsEnabled,True)
+        view.settings().setAttribute(QtWebKit.QWebSettings.PluginsEnabled,True)
         # Prevent caching, especially of images
-        self.view.settings().setMaximumPagesInCache(0)
-        self.view.settings().setObjectCacheCapacities(0, 0, 0)
+        view.settings().setMaximumPagesInCache(0)
+        view.settings().setObjectCacheCapacities(0, 0, 0)
         #self.toolbar.setToolButtonStyle(Qt.ToolButtonTextOnly)
         # Set up other widget states
-        self.rendering = False
+        
         # Get Leo settings related to docutils.  Using 'or' trick for defaults
         #---------------------------------------------------------------------
         # defaults ...
@@ -643,10 +645,13 @@ class WebViewPlus(QtGui.QWidget):
         #'math_output' : 'mathjax',  # use MathJax for rendering equations
         #'smart_quotes' : True,  # ??allows --,---,... to dashes etc., nice quotes
         #'embed_stylesheet' : True,  # include stylesheet into a self-contained html
-        #'xml_declaration' : False,  # remove declaration to allow import/paste into Word 
+        #'xml_declaration' : False,  # remove declaration to allow import/paste into Word
+        return view
+    #@+node:ekr.20140227055626.16843: *4* init_config
+    def init_config(self):
+        '''Init docutils settings.'''
         ds = {}
         gc = self.c.config
-        
         def getConfig(getfun, name, default, setfun=None, setvar=None):
             """Make a shorthand way to get and store a setting with defaults"""
             r = getfun('vr_'+name)  # keep docutils name but prefix
@@ -659,7 +664,6 @@ class WebViewPlus(QtGui.QWidget):
             else:  # settings held in dict (for docutils use)
                 if r:  ds[name] = r
                 else:  ds[name] = default
-        
         # Do docutils config (note that the vr_ prefix is omitted)
         getConfig(gc.getString, 'stylesheet_path', '')
         getConfig(gc.getInt, 'halt_level', 6)
@@ -679,16 +683,35 @@ class WebViewPlus(QtGui.QWidget):
         getConfig(gc.getBool, 'rest_code_output', False, self.reST_code_action.setChecked)
         # Misc other internal settings
         # Mark of the Web (for IE) to allow sensible security options
-        #getConfig(gc.getBool, 'include_MOTW', True, setvar=self.MOTW)  
-        self.docutils_settings = ds  # save these for docutils use
-    #@+node:ekr.20140226075611.16794: *3* state_change
+        #getConfig(gc.getBool, 'include_MOTW', True, setvar=self.MOTW)
+        return ds
+
+    #@+node:ekr.20140227055626.16844: *4* init_timer
+    def init_timer(self):
+        '''Init the timer for delayed rendering (to allow smooth tree navigation).'''
+        timer = QtCore.QTimer()
+        timer.setSingleShot(True)
+        timer.setInterval(1100)
+            # just longer than the 1000ms interval of calls from update_rst
+        timer.timeout.connect(self.render)
+        return timer
+    #@+node:ekr.20140226081920.16816: *4* tooltip_text
+    def tooltip_text(self,s):
+        '''Return the reformatted tooltip text corresponding to the triple string s.'''
+        lines = g.splitLines(s)
+        if lines:
+            i = 0 if lines[0].strip() else 1
+            s = ''.join(lines[i:])
+            s = g.adjustTripleString(s,self.c.tab_width)
+        return s
+    #@+node:ekr.20140227055626.16845: *3* gui stuff
+    #@+node:ekr.20140226075611.16794: *4* state_change
     def state_change(self, checked):
         """A wrapper for 'render' to re-render on all QAction state changes."""
         self.render()
-    #@+node:ekr.20140226075611.16798: *3* getUIconfig
+    #@+node:ekr.20140226075611.16798: *4* getUIconfig
     def getUIconfig(self):
         """Get the rendering configuration from the GUI controls."""
-        
         # Pull internal configuration options from GUI
         self.verbose = self.verbose_mode_action.isChecked()
         #self.output = 'html'
@@ -704,7 +727,19 @@ class WebViewPlus(QtGui.QWidget):
         
         self.showcode = self.visible_code_action.isChecked()
         self.restoutput = self.reST_code_action.isChecked()
-
+    #@+node:ekr.20140226075611.16800: *4* lock
+    def lock(self):
+        """Implement node lock (triggered by "Lock node" action)."""
+        # Lock "action" has been triggered, so state will have changed.
+        if self.lock_mode_action.isChecked():  # Just become active
+            self.plock = self.pc.c.p.copy()  # make a copy of node position
+            if self.pr:
+                self.pc.scrollbar_pos_dict[self.pr.v] = self.view.page().\
+                    mainFrame().scrollBarValue(QtCore.Qt.Vertical)
+        else:
+            self.render()
+                # Render again since root node may have changed now
+        # Add an icon or marker to node currently locked?
     #@+node:ekr.20140226075611.16799: *3* render_rst
     def render_rst(self, s, keywords):
         """Generate the reST and render it in this pane."""
@@ -712,18 +747,6 @@ class WebViewPlus(QtGui.QWidget):
         self.s = keywords.get('s') if 's' in keywords else ''
         if self.auto:
             self.timer.start()
-    #@+node:ekr.20140226075611.16800: *3* lock
-    def lock(self):
-        """Implement node lock (triggered by "Lock node" action)."""
-        # Lock "action" has been triggered, so state will have changed.
-        if self.lock_mode_action.isChecked():  # Just become active
-            self.plock = self.pc.c.p.copy()  # make a copy of node position
-            if self.pr:
-                self.pc.scrollbar_pos_dict[self.pr.v] = self.view.page(). \
-                            mainFrame().scrollBarValue(QtCore.Qt.Vertical)
-        else:  self.render()  # Render again since root node may have changed now
-        # Add an icon or marker to node currently locked?
-
     #@+node:ekr.20140226075611.16801: *3* render & helpers
     def render(self):
         """Re-render the existing string, but probably with new configuration."""
@@ -1060,15 +1083,6 @@ class WebViewPlus(QtGui.QWidget):
         f.write(self.html.encode('utf8'))
         f.close()
         webbrowser.open(pathname, new=0, autoraise=True)
-    #@+node:ekr.20140226081920.16816: *3* tooltip_text
-    def tooltip_text(self,s):
-        '''Return the reformatted tooltip text corresponding to the triple string s.'''
-        lines = g.splitLines(s)
-        if lines:
-            i = 0 if lines[0].strip() else 1
-            s = ''.join(lines[i:])
-            s = g.adjustTripleString(s,self.c.tab_width)
-        return s
     #@+node:ekr.20140226075611.16801: *3* render & helpers
     def render(self):
         """Re-render the existing string, but probably with new configuration."""
