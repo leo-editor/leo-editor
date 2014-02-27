@@ -199,14 +199,8 @@ __version__ = '1.1' # EKR: Move class WebViewPlus into it's own subtree.
 #@+<< imports >>
 #@+node:ekr.20140226074510.4188: ** << imports >>
 import leo.core.leoGlobals as g
-from PyQt4 import QtCore, QtGui, QtSvg, QtWebKit
-from PyQt4.QtCore import QUrl
 import leo.plugins.qtGui as qtGui
 g.assertUi('qt')
-import os
-import sys
-from StringIO import StringIO
-import traceback
 
 try:
     import docutils
@@ -234,17 +228,25 @@ try:
     got_markdown = True
 except ImportError:
     got_markdown = False
-    
+
+try:
+    import pygments
+except ImportError:
+    pygments = None
+   
+# PyQt... 
+from PyQt4 import QtCore, QtGui, QtSvg, QtWebKit
+from PyQt4.QtCore import QUrl
 try:
     import PyQt4.phonon as phonon
     phonon = phonon.Phonon
 except ImportError:
     phonon = None
 
-#import PyQt4.QtCore as QtCore
-#import PyQt4.QtGui as QtGui
-#import PyQt4.QtSvg as QtSvg
-#import PyQt4.QtWebKit as QtWebKit
+import os
+from StringIO import StringIO
+import sys
+import traceback
 #@-<< imports >>
 #@+<< define stylesheet >>
 #@+node:ekr.20140226074510.4189: ** << define stylesheet >>
@@ -904,10 +906,8 @@ class WebViewPlus(QtGui.QWidget):
         return s
     #@+node:ekr.20140227055626.16838: *7* code_directive
     def code_directive(self,lang):
-        '''Return an reST code directive or an reST block.'''
-        
-        if True: ### has_pygments:
-            # Peter Mills's original code.
+        '''Return an reST block or code directive.'''
+        if pygments:
             # See code in initCodeBlock for complications.
             return '\n\n.. code:: '+lang+'\n\n'
         else:
@@ -1202,10 +1202,8 @@ class WebViewPlus(QtGui.QWidget):
         return s
     #@+node:ekr.20140227055626.16838: *7* code_directive
     def code_directive(self,lang):
-        '''Return an reST code directive or an reST block.'''
-        
-        if True: ### has_pygments:
-            # Peter Mills's original code.
+        '''Return an reST block or code directive.'''
+        if pygments:
             # See code in initCodeBlock for complications.
             return '\n\n.. code:: '+lang+'\n\n'
         else:
