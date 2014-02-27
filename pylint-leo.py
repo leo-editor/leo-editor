@@ -156,6 +156,7 @@ def getRecentPluginsList ():
         # 'plugins_menu',
         # 'screencast',
         # 'viewrendered',
+        'viewrendered2',
     )
 #@+node:ekr.20100221142603.5643: ** getTkPass
 def getTkPass():

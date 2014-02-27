@@ -913,26 +913,11 @@ class WebViewPlus(QtGui.QWidget):
         else:
             return '\n\n::\n\n'
     #@+node:ekr.20140227055626.16841: *7* initCodeBlockString (from leoRst, for reference)
-    def initCodeBlockString(self,p):
-
-        trace = False and not g.unitTesting
-        c = self.c
-        # if trace: os.system('cls')
-        d = c.scanAllDirectives(p)
-        language = d.get('language')
-        if language is None: language = 'python'
-        else: language = language.lower()
-        syntax = SilverCity is not None
-
-        if trace: g.trace('language',language,'language.title()',language.title(),p.h)
-
+    def initCodeBlockString(self,p,language):
+        '''Reference code illustrating the complications of code blocks.'''
         # Note: lines that end with '\n\n' are a signal to handleCodeMode.
-        s = self.getOption('code_block_string')
-        if s:
-            self.code_block_string = s.replace('\\n','\n')
-        elif syntax and language in ('python','ruby','perl','c'):
-            self.code_block_string = '**code**:\n\n.. code-block:: %s\n\n' % (
-                language.title())
+        if pygments and language in ('python','ruby','perl','c'):
+            self.code_block_string = '**code**:\n\n.. code-block:: %s\n\n' % language
         else:
             self.code_block_string = '**code**:\n\n.. class:: code\n..\n\n::\n\n'
     #@+node:ekr.20140226125539.16824: *7* process_one_node
@@ -1052,6 +1037,7 @@ class WebViewPlus(QtGui.QWidget):
     #@+node:ekr.20140227055626.16839: *7* write_rst
     def write_rst(self,root,s):
         '''Write s, the final assembled reST text, to leo.rst.'''
+        c = self.c
         filename = 'leo.rst'
         d = c.scanAllDirectives(root)
         path = d.get('path')
@@ -1073,290 +1059,6 @@ class WebViewPlus(QtGui.QWidget):
         f.write(self.html.encode('utf8'))
         f.close()
         webbrowser.open(pathname,new=0,autoraise=True)
-    #@+node:ekr.20140226075611.16801: *3* render & helpers
-    def render(self):
-        """Re-render the existing string, but probably with new configuration."""
-        if self.rendering:
-            # if already rendering, don't execute
-            self.timer.start()  # Don't forget to do this last render request
-        else:
-            try:
-                self.rendering = True
-                self.render_helper()
-            finally:
-                # No longer rendering, OK to receive another rendering call
-                self.rendering = False
-    #@+node:ekr.20140226125539.16825: *4* render_helper & helper
-    def render_helper(self):
-        '''Rendinging helper: self.rendering is True.'''
-        c,p,pc = self.c,self.c.p,self.pc
-        self.getUIconfig()
-            # Get the UI config again, in case directly called by control.
-        if got_docutils:
-            self.html = html = self.to_html(p)
-        else:
-            self.html = html = '<pre>\n%s</pre>' % self.s
-        self.app.processEvents()
-        # TODO: I think this path should be set when scanning directives!
-        d = self.c.scanAllDirectives(p)
-        # Put temporary or output files in location given by path directives
-        self.path = d['path']
-        if pc.default_kind in ('big','rst','html', 'md'):
-            # Trial of rendering to file and have QWebView load this without blocking
-            ext = 'html'
-            # Write the output file
-            pathname = g.os_path_finalize_join(self.path,'leo.' + ext)
-            f = file(pathname,'wb')
-            f.write(html.encode('utf8'))
-            f.close()
-            # render
-            self.view.setUrl(QUrl.fromLocalFile(pathname))
-            #self.view.setHtml(html, baseUrl = QUrl(self.path))
-            # PMM
-            # Write the output file 
-            #pathname = "M:/leo/info/leo.html"
-            #f = file(pathname,'wb')
-            #f.write(self.s.encode('utf8'))
-            #f.close()
-            #w.load(QUrl("M:/leo/info/leo.html"))
-        else:
-            self.view.setPlainText(html) 
-        if not self.auto:  
-            self.pbar.setValue(100)
-            self.app.processEvents()
-            self.pbar_action.setVisible(False)
-    #@+node:ekr.20140226125539.16826: *5* to_html & helper
-    def to_html(self,p):
-        '''Convert p.b to html using docutils.'''
-        c,pc = self.c,self.pc
-        mf = self.view.page().mainFrame()
-        path = g.scanAllAtPathDirectives(c,p) or c.getNodePath(p)
-        if not os.path.isdir(path):
-            path = os.path.dirname(path)
-        if os.path.isdir(path):
-            os.chdir(path)
-        # Need to save position of last node before rendering
-        ps = mf.scrollBarValue(QtCore.Qt.Vertical)
-        pc.scrollbar_pos_dict[self.last_node.v] = ps
-        # Which node should be rendered?
-        if self.lock_mode:
-            # use locked node for position to be rendered.
-            self.pr = self.plock  
-        else:
-            # use new current node, whether changed or not.
-            self.pr = c.p  # use current node
-        self.last_node = self.pr.copy() 
-            # Store this node as last node rendered
-        # Set the node header in the toolbar.
-        self.title.setText('' if self.s else '<b>'+self.pr.h+'</b>')
-        if not self.auto:  
-            self.pbar.setValue(0)
-            self.pbar_action.setVisible(True)
-        # Handle all the nodes in the tree.
-        html = self.process_nodes(self.pr,tree=self.tree)
-        if not self.auto:  
-            self.pbar.setValue(50)
-        self.app.processEvents()
-            # Apparently this can't be done in docutils.       
-        try:
-            # Call docutils to get the string.
-            html = publish_string(html,
-                writer_name='s5_html' if self.slideshow else 'html',
-                settings_overrides=self.docutils_settings)
-            return g.toUnicode(html)
-        except SystemMessage as sm:
-            msg = sm.args[0]
-            if 'SEVERE' in msg or 'FATAL' in msg:
-                return 'RST error:\n%s\n\n%s' % (msg,html)
-            else:
-                return html
-    #@+node:ekr.20140226075611.16797: *6* process_nodes & helpers
-    def process_nodes(self,p,tree=True):
-        """
-        Process the reST for a node, defaulting to node's entire tree.
-        
-        Any code blocks found (designated by @language python) will be executed
-        in order found as the tree is walked. No section references are heeded.
-        Output directed to stdout and stderr are included in the reST source.
-        If self.showcode is True, then the execution output is included in a
-        '::' block. Otherwise the output is assumed to be valid reST and
-        included in the reST source.
-        """
-        c = self.c
-        root = p.copy()
-        self.reflevel = p.level() # for self.underline2().
-        result = []
-        self.process_one_node(root,result)
-        if tree:
-            # Create a progress counter showing 50% at end of tree processing.
-            i,numnodes = 0,sum(1 for j in p.subtree())
-            for p in root.subtree():
-                self.process_one_node(p,result)
-                if not self.auto:
-                    i += 1
-                    self.pbar.setValue(i * 50 / numnodes)
-                self.app.processEvents()
-        s = '\n'.join(result)
-        if self.verbose:
-            self.write_rst(root,s)
-        return s
-    #@+node:ekr.20140227055626.16838: *7* code_directive
-    def code_directive(self,lang):
-        '''Return an reST block or code directive.'''
-        if pygments:
-            # See code in initCodeBlock for complications.
-            return '\n\n.. code:: '+lang+'\n\n'
-        else:
-            return '\n\n::\n\n'
-    #@+node:ekr.20140227055626.16841: *7* initCodeBlockString (from leoRst, for reference)
-    def initCodeBlockString(self,p):
-
-        trace = False and not g.unitTesting
-        c = self.c
-        # if trace: os.system('cls')
-        d = c.scanAllDirectives(p)
-        language = d.get('language')
-        if language is None: language = 'python'
-        else: language = language.lower()
-        syntax = SilverCity is not None
-
-        if trace: g.trace('language',language,'language.title()',language.title(),p.h)
-
-        # Note: lines that end with '\n\n' are a signal to handleCodeMode.
-        s = self.getOption('code_block_string')
-        if s:
-            self.code_block_string = s.replace('\\n','\n')
-        elif syntax and language in ('python','ruby','perl','c'):
-            self.code_block_string = '**code**:\n\n.. code-block:: %s\n\n' % (
-                language.title())
-        else:
-            self.code_block_string = '**code**:\n\n.. class:: code\n..\n\n::\n\n'
-    #@+node:ekr.20140226125539.16824: *7* process_one_node
-    def process_one_node(self,p,result):
-        '''Handle one node.'''
-        c = self.c
-        result.append(self.underline2(p))
-        d = c.scanAllDirectives(p)
-        if self.verbose:
-            g.trace(d.get('language') or 'None',':',p.h)
-        s,code = self.process_directives(p.b,d)
-        result.append(s)
-        result.append('\n\n')
-            # Add an empty line so bullet lists display properly.
-        if code and self.execcode:
-            s,err = self.exec_code(code)
-                # execute code found in a node, append to reST
-            if not self.restoutput and s.strip():
-                s = self.format_output(s)  # if some non-reST to print
-            result.append(s) # append, whether plain or reST output
-            if err:
-                err = self.format_output(err, prefix='**Error**::')      
-                result.append(err)
-    #@+node:ekr.20140226125539.16822: *7* exec_code
-    def exec_code(self,code):
-        """Execute the code, capturing the output in stdout and stderr."""
-        trace = True and not g.unitTesting
-        if trace: g.trace('\n',code)
-        c = self.c
-        saveout = sys.stdout  # save stdout
-        saveerr = sys.stderr
-        sys.stdout = bufferout = StringIO()
-        sys.stderr = buffererr = StringIO()
-        # Protect against exceptions within exec
-        try:
-            scope = {'c':c,'g': g,'p':c.p} # EKR: predefine c & p.
-            exec code in scope
-        except Exception:
-            #print Exception, err
-            #print sys.exc_info()[1]
-            print >> buffererr, traceback.format_exc()
-            buffererr.flush()  # otherwise exception info appears too late
-            g.es('Viewrendered traceback:\n', sys.exc_info()[1])
-        # Restore stdout, stderr
-        sys.stdout = saveout  # was sys.__stdout__
-        sys.stderr = saveerr  # restore stderr
-        return bufferout.getvalue(), buffererr.getvalue()
-    #@+node:ekr.20140226125539.16823: *7* format_output
-    def format_output(self,s, prefix='::'):
-        """Formats the multi-line string 's' into a reST literal block."""
-        out = '\n\n'+prefix+'\n\n'
-        lines = g.splitLines(s)
-        for line in lines:
-            out += '    ' + line
-        return out + '\n'
-    #@+node:ekr.20140226075611.16796: *7* process_directives
-    def process_directives(self, s, d):
-        """s is string to process, d is dictionary of directives at the node."""
-        trace = False and not g.unitTesting
-        lang = d.get('language') or 'python' # EKR.
-        codeflag = lang != 'rest' # EKR
-        lines = g.splitLines(s)
-        result = []
-        code = ''
-        if codeflag and self.showcode:
-            result.append(self.code_directive(lang)) # EKR
-        for s in lines:
-            if s.startswith('@'):
-                i = g.skip_id(s,1)
-                word = s[1:i]
-                # Add capability to detect mid-node language directives (not really that useful).
-                # Probably better to just use a code directive.  "execute-script" is not possible.
-                # If removing, ensure "if word in g.globalDirectiveList:  continue" is retained
-                # to stop directive being put into the reST output.
-                if word=='language' and not codeflag:  # only if not already code
-                    lang = s[i:].strip()
-                    codeflag = lang in ['python',]
-                    if codeflag:
-                        if self.verbose:
-                            g.es('New code section within node:',lang)
-                        if self.showcode:
-                            result.append(self.code_directive(lang)) # EKR
-                    else:
-                        result.append('\n\n')
-                    continue
-                elif word in g.globalDirectiveList:
-                    continue
-            if codeflag:
-                if self.showcode:
-                    result.append('    ' + s)  # 4 space indent on each line
-                code += s  # accumulate code lines for execution
-            else:
-                result.append(s)
-        result = ''.join(result)
-        if trace: g.trace('result:\n',result) # ,'\ncode:',code)
-        return result, code
-    #@+node:ekr.20140226075611.16795: *7* underline2
-    def underline2(self, p):
-        """
-        Use the given string and convert it to an reST headline for display
-        The most unused underline characters are used here, so as not to clash
-        with headings used in the reST.  These characters must not be used for
-        underlining in nodes.
-        
-        Note that the full range of valid characters defined for reST is ::
-            
-            ! " # $ % & ' ( ) * + , - . / : ; < = > ? @ [ \ ] ^ _ ` { | } ~
-        
-        and the recommended ones are::
-            
-            = - ` : . ' " ~ ^ _ * + #
-        """
-        # Use relatively unused underline characters, cater for many levels
-        ch = """><:_`*+"';/{|}()$%&@#"""[p.level()-self.reflevel]
-        n = max(4,len(g.toEncodedString(p.h,reportErrors=False)))
-        return '%s\n%s\n\n' % (p.h,ch*n)
-    #@+node:ekr.20140227055626.16839: *7* write_rst
-    def write_rst(self,root,s):
-        '''Write s, the final assembled reST text, to leo.rst.'''
-        filename = 'leo.rst'
-        d = c.scanAllDirectives(root)
-        path = d.get('path')
-        pathname = g.os_path_finalize_join(path,filename)
-        # Render constructed reST string
-        # s = self.html_render(s)
-        f = file(pathname,'wb')
-        f.write(s.encode('utf8'))
-        f.close()
     #@-others
 #@+node:ekr.20140226074510.4207: ** class ViewRenderedProvider
 class ViewRenderedProvider:
@@ -1846,9 +1548,9 @@ class ViewRenderedController(QtGui.QWidget):
     #@+node:ekr.20140226074510.4230: *4* update_rst
     def update_rst (self,s,keywords):
         # Do this regardless of whether we show the widget or not.
-        #w = pc.ensure_text_widget()
+        # w = pc.ensure_text_widget()
         # PMM - test forcing qwebview in
-        pc = self ; #c = pc.c
+        pc = self
         if pc.must_change_widget(pc.html_class):
             w = pc.html_class(pc)
             pc.embed_widget(w)
