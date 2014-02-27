@@ -1072,7 +1072,7 @@ class WebViewPlus(QtGui.QWidget):
         f = file(pathname,'wb')
         f.write(self.html.encode('utf8'))
         f.close()
-        webbrowser.open(pathname,new=0, utoraise=True)
+        webbrowser.open(pathname,new=0,autoraise=True)
     #@+node:ekr.20140226075611.16801: *3* render & helpers
     def render(self):
         """Re-render the existing string, but probably with new configuration."""
