@@ -146,14 +146,13 @@ contain a filename.  If relative, the filename is resolved relative to Leo's loa
 Settings
 ========
 
-- ``@color rendering-pane-background-color = white``
-  The background color the rendering pane when rendering text.
-
+The following settings are the same as in the viewrendered.py plugin:
+    
 - ``@bool view-rendered-auto-create = False``
   When True, show the rendering pane when Leo opens an outline.
-  
-- ``@bool view-rendered-auto-hide = False``
-  When True, hide the rendering pane for text-only renderings.
+
+- ``@color rendering-pane-background-color = white``
+  The background color the rendering pane when rendering text.
 
 - ``@string view-rendered-default-kind = rst``
   The default kind of rendering.  One of (big,rst,md,html)
@@ -162,17 +161,35 @@ Settings
   A comma-delineated list of markdown extensions to use.
   Suitable extensions can be seen here: 
   http://pythonhosted.org/Markdown/extensions/index.html
+  
+The following settings are new in the viewrendered2.py plugin:
+
+These settings directly override the corresponiding docutils settings:
+  
+- ``@string vr-stylesheet-path``
+- ``@int vr-halt-level = 6``
+- ``@string vr-math-output = mathjax``
+- ``@bool vr-smart-quotes = True``
+- ``@bool vr-embed_stylesheet = True``
+- ``@bool vr-xml-declaration', False``
+
+The following settings override viewrendered2.py internal settings:
+
+- ``@bool vr-verbose = False``
+- ``@bool vr-tree_mode = False``
+- ``@bool vr-auto_update = True``
+- ``@bool vr-lock_node = False``
+- ``@bool vr-slideshow = False``
+- ``@bool vr-visible_code = True``
+- ``@bool vr-execute_code = False``
+- ``@bool vr-rest_code_output = False``
 
 Acknowledgments
 ================
 
-Terry Brown created this initial version of this plugin,
-and the free_layout and NestedSplitter plugins used by viewrendered.
+Peter Mills created this plugin, based on the viewrendered.py plugin.
 
-Edward K. Ream generalized this plugin and added communication
-and coordination between the free_layout, NestedSplitter and viewrendered plugins.
-
-Jacob Peck added markdown support to this plugin.
+See the viewrendered.py plugin for additional acknowledgments.
 
 '''
 #@-<< docstring >>
@@ -666,12 +683,12 @@ class WebViewPlus(QtGui.QWidget):
                 else:  ds[name] = default
         # Do docutils config (note that the vr_ prefix is omitted)
         getConfig(gc.getString, 'stylesheet_path', '')
-        getConfig(gc.getInt, 'halt_level', 6)
-        getConfig(gc.getInt, 'report_level', 5)
+        getConfig(gc.getInt,    'halt_level', 6)
+        getConfig(gc.getInt,    'report_level', 5)
         getConfig(gc.getString, 'math_output', 'mathjax')
-        getConfig(gc.getBool, 'smart_quotes', True)
-        getConfig(gc.getBool, 'embed_stylesheet', True)
-        getConfig(gc.getBool, 'xml_declaration', False)
+        getConfig(gc.getBool,   'smart_quotes', True)
+        getConfig(gc.getBool,   'embed_stylesheet', True)
+        getConfig(gc.getBool,   'xml_declaration', False)
         # Do VR2 init values
         getConfig(gc.getBool, 'verbose', False, self.verbose_mode_action.setChecked)
         getConfig(gc.getBool, 'tree_mode', False, self.tree_mode_action.setChecked)
@@ -685,7 +702,6 @@ class WebViewPlus(QtGui.QWidget):
         # Mark of the Web (for IE) to allow sensible security options
         #getConfig(gc.getBool, 'include_MOTW', True, setvar=self.MOTW)
         return ds
-
     #@+node:ekr.20140227055626.16844: *4* init_timer
     def init_timer(self):
         '''Init the timer for delayed rendering (to allow smooth tree navigation).'''
@@ -845,33 +861,10 @@ class WebViewPlus(QtGui.QWidget):
         self.app.processEvents()
             # Apparently this can't be done in docutils.       
         try:
-            msg = '' # The error message from docutils.
             # Call docutils to get the string.
-            if 0:
-                args = {
-                'stylesheet_path' : '',
-                    #'./css/leo_vr.css',  # path for css files
-                'halt_level' : 6,
-                    # raise halt level to still attempt to render
-                'report_level' : 5,
-                    # heading level errors, remove rather than error in output
-                'math_output' : 'mathjax',
-                    # use MathJax for rendering equations
-                'smart_quotes' : True,
-                    # ??allows --,---,... to dashes etc., nice quotes
-                'embed_stylesheet' : True,
-                    # include stylesheet into a self-contained html
-                'xml_declaration' : False,
-                    # remove declaration to allow import/paste into Word
-                    # (otherwise Word complains about "DTD prohibited")
-                 #'ditaa_dir': '.',  # DiTAA executable directory
-                }
-            else:
-                args = self.docutils_settings
-                    # set to settings obtained from Leo outlines
             html = publish_string(html,
                 writer_name='s5_html' if self.slideshow else 'html',
-                settings_overrides=args)
+                settings_overrides=self.docutils_settings)
             return g.toUnicode(html)
         except SystemMessage as sm:
             msg = sm.args[0]
@@ -1025,7 +1018,8 @@ class WebViewPlus(QtGui.QWidget):
                     else:
                         result.append('\n\n')
                     continue
-                elif word in g.globalDirectiveList:  continue
+                elif word in g.globalDirectiveList:
+                    continue
             if codeflag:
                 if self.showcode:
                     result.append('    ' + s)  # 4 space indent on each line
@@ -1165,33 +1159,10 @@ class WebViewPlus(QtGui.QWidget):
         self.app.processEvents()
             # Apparently this can't be done in docutils.       
         try:
-            msg = '' # The error message from docutils.
             # Call docutils to get the string.
-            if 0:
-                args = {
-                'stylesheet_path' : '',
-                    #'./css/leo_vr.css',  # path for css files
-                'halt_level' : 6,
-                    # raise halt level to still attempt to render
-                'report_level' : 5,
-                    # heading level errors, remove rather than error in output
-                'math_output' : 'mathjax',
-                    # use MathJax for rendering equations
-                'smart_quotes' : True,
-                    # ??allows --,---,... to dashes etc., nice quotes
-                'embed_stylesheet' : True,
-                    # include stylesheet into a self-contained html
-                'xml_declaration' : False,
-                    # remove declaration to allow import/paste into Word
-                    # (otherwise Word complains about "DTD prohibited")
-                 #'ditaa_dir': '.',  # DiTAA executable directory
-                }
-            else:
-                args = self.docutils_settings
-                    # set to settings obtained from Leo outlines
             html = publish_string(html,
                 writer_name='s5_html' if self.slideshow else 'html',
-                settings_overrides=args)
+                settings_overrides=self.docutils_settings)
             return g.toUnicode(html)
         except SystemMessage as sm:
             msg = sm.args[0]
@@ -1345,7 +1316,8 @@ class WebViewPlus(QtGui.QWidget):
                     else:
                         result.append('\n\n')
                     continue
-                elif word in g.globalDirectiveList:  continue
+                elif word in g.globalDirectiveList:
+                    continue
             if codeflag:
                 if self.showcode:
                     result.append('    ' + s)  # 4 space indent on each line
