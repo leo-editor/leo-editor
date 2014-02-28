@@ -244,7 +244,12 @@ except ImportError:
     phonon = None
 
 import os
-from StringIO import StringIO
+
+if g.isPython3:
+    from io import StringIO
+else:
+    from StringIO import StringIO
+
 import sys
 import traceback
 #@-<< imports >>
@@ -810,7 +815,7 @@ class WebViewPlus(QtGui.QWidget):
             ext = 'html'
             # Write the output file
             pathname = g.os_path_finalize_join(self.path,'leo.' + ext)
-            f = file(pathname,'wb')
+            f = open(pathname,'wb')
             f.write(html.encode('utf8'))
             f.close()
             # render
@@ -890,12 +895,13 @@ class WebViewPlus(QtGui.QWidget):
         root = p.copy()
         self.reflevel = p.level() # for self.underline2().
         result = []
-        self.process_one_node(root,result)
+        environment = {'c':c,'g': g,'p':c.p} # EKR: predefine c & p.
+        self.process_one_node(root,result,environment)
         if tree:
             # Create a progress counter showing 50% at end of tree processing.
             i,numnodes = 0,sum(1 for j in p.subtree())
             for p in root.subtree():
-                self.process_one_node(p,result)
+                self.process_one_node(p,result,environment)
                 if not self.auto:
                     i += 1
                     self.pbar.setValue(i * 50 / numnodes)
@@ -921,7 +927,7 @@ class WebViewPlus(QtGui.QWidget):
         else:
             self.code_block_string = '**code**:\n\n.. class:: code\n..\n\n::\n\n'
     #@+node:ekr.20140226125539.16824: *7* process_one_node
-    def process_one_node(self,p,result):
+    def process_one_node(self,p,result,environment):
         '''Handle one node.'''
         c = self.c
         result.append(self.underline2(p))
@@ -933,7 +939,7 @@ class WebViewPlus(QtGui.QWidget):
         result.append('\n\n')
             # Add an empty line so bullet lists display properly.
         if code and self.execcode:
-            s,err = self.exec_code(code)
+            s,err = self.exec_code(code,environment)
                 # execute code found in a node, append to reST
             if not self.restoutput and s.strip():
                 s = self.format_output(s)  # if some non-reST to print
@@ -942,7 +948,7 @@ class WebViewPlus(QtGui.QWidget):
                 err = self.format_output(err, prefix='**Error**::')      
                 result.append(err)
     #@+node:ekr.20140226125539.16822: *7* exec_code
-    def exec_code(self,code):
+    def exec_code(self,code,environment):
         """Execute the code, capturing the output in stdout and stderr."""
         trace = True and not g.unitTesting
         if trace: g.trace('\n',code)
@@ -953,8 +959,7 @@ class WebViewPlus(QtGui.QWidget):
         sys.stderr = buffererr = StringIO()
         # Protect against exceptions within exec
         try:
-            scope = {'c':c,'g': g,'p':c.p} # EKR: predefine c & p.
-            exec code in scope
+            exec(code,environment)
         except Exception:
             #print Exception, err
             #print sys.exc_info()[1]
@@ -1055,7 +1060,7 @@ class WebViewPlus(QtGui.QWidget):
         need not write the file again as is presently the case."""
         import webbrowser
         pathname = g.os_path_finalize_join(self.path,'leo.html')
-        f = file(pathname,'wb')
+        f = open(pathname,'wb')
         f.write(self.html.encode('utf8'))
         f.close()
         webbrowser.open(pathname,new=0,autoraise=True)
