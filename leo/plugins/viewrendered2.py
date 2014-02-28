@@ -503,6 +503,7 @@ class WebViewPlus(QtGui.QWidget):
         self.pr = None
         self.rendering = False
         self.s = ''
+        self.default_kind = c.config.getString('view-rendered-default-kind') or 'rst'
         self.timer = self.init_timer()
         self.view = self.init_view()
         # Must be done after calling init_view.
@@ -711,7 +712,10 @@ class WebViewPlus(QtGui.QWidget):
         timer.setSingleShot(True)
         timer.setInterval(1100)
             # just longer than the 1000ms interval of calls from update_rst
-        timer.timeout.connect(self.render)
+        if self.default_kind == 'md':
+            timer.timeout.connect(self.md_render)
+        else:
+            timer.timeout.connect(self.render)
         return timer
     #@+node:ekr.20140226081920.16816: *4* tooltip_text
     def tooltip_text(self,s):
@@ -751,12 +755,22 @@ class WebViewPlus(QtGui.QWidget):
                 self.pc.scrollbar_pos_dict[self.pr.v] = self.view.page().\
                     mainFrame().scrollBarValue(QtCore.Qt.Vertical)
         else:
-            self.render()
+            if self.default_kind == 'md':
+                self.md_render()
+            else:
+                self.render()
                 # Render again since root node may have changed now
         # Add an icon or marker to node currently locked?
     #@+node:ekr.20140226075611.16799: *4* render_rst
     def render_rst(self, s, keywords):
         """Generate the reST and render it in this pane."""
+        self.getUIconfig()
+        self.s = keywords.get('s') if 's' in keywords else ''
+        if self.auto:
+            self.timer.start()
+    #@+node:peckj.20140228095134.6379: *4* render_md
+    def render_md(self, s, keywords):
+        """Generate the markdown and render it in this pane."""
         self.getUIconfig()
         self.s = keywords.get('s') if 's' in keywords else ''
         if self.auto:
@@ -776,8 +790,11 @@ class WebViewPlus(QtGui.QWidget):
     #@+node:ekr.20140226075611.16794: *4* state_change
     def state_change(self, checked):
         """A wrapper for 'render' to re-render on all QAction state changes."""
-        self.render()
-    #@+node:ekr.20140226075611.16801: *3* render & helpers
+        if self.default_kind == 'md':
+            self.md_render()
+        else:
+            self.render()
+    #@+node:ekr.20140226075611.16801: *3* render & helpers (reST)
     def render(self):
         """Re-render the existing string, but probably with new configuration."""
         if self.rendering:
@@ -1043,6 +1060,254 @@ class WebViewPlus(QtGui.QWidget):
         path = d.get('path')
         pathname = g.os_path_finalize_join(path,filename)
         # Render constructed reST string
+        # s = self.html_render(s)
+        f = file(pathname,'wb')
+        f.write(s.encode('utf8'))
+        f.close()
+    #@+node:peckj.20140228100832.6391: *3* md_render & helpers (md)
+    def md_render(self):
+        """Re-render the existing string, but probably with new configuration."""
+        if self.rendering:
+            # if already rendering, don't execute
+            self.timer.start()  # Don't forget to do this last render request
+        else:
+            try:
+                self.rendering = True
+                self.md_render_helper()
+            finally:
+                # No longer rendering, OK to receive another rendering call
+                self.rendering = False
+    #@+node:peckj.20140228100832.6392: *4* md_render_helper & helper
+    def md_render_helper(self):
+        '''Rendinging helper: self.rendering is True.'''
+        c,p,pc = self.c,self.c.p,self.pc
+        self.getUIconfig()
+            # Get the UI config again, in case directly called by control.
+        if got_markdown:
+            self.html = html = self.md_to_html(p)
+        else:
+            self.html = html = '<pre>\n%s</pre>' % self.s
+        self.app.processEvents()
+        # TODO: I think this path should be set when scanning directives!
+        d = self.c.scanAllDirectives(p)
+        # Put temporary or output files in location given by path directives
+        self.path = d['path']
+        
+        if pc.default_kind in ('big','rst','html', 'md'):
+            # Trial of rendering to file and have QWebView load this without blocking
+            ext = 'html'
+            # Write the output file
+            pathname = g.os_path_finalize_join(self.path,'leo.' + ext)
+            f = file(pathname,'wb')
+            f.write(html.encode('utf8'))
+            f.close()
+            # render        
+            self.view.setUrl(QUrl.fromLocalFile(pathname))
+        else:
+            self.view.setPlainText(html) 
+        if not self.auto:  
+            self.pbar.setValue(100)
+            self.app.processEvents()
+            self.pbar_action.setVisible(False)
+    #@+node:peckj.20140228100832.6393: *5* md_to_html & helper
+    def md_to_html(self,p):
+        '''Convert p.b to html using markdown.'''
+        c,pc = self.c,self.pc
+        mf = self.view.page().mainFrame()
+        path = g.scanAllAtPathDirectives(c,p) or c.getNodePath(p)
+        if not os.path.isdir(path):
+            path = os.path.dirname(path)
+        if os.path.isdir(path):
+            os.chdir(path)
+        # Need to save position of last node before rendering
+        ps = mf.scrollBarValue(QtCore.Qt.Vertical)
+        pc.scrollbar_pos_dict[self.last_node.v] = ps
+        # Which node should be rendered?
+        if self.lock_mode:
+            # use locked node for position to be rendered.
+            self.pr = self.plock  
+        else:
+            # use new current node, whether changed or not.
+            self.pr = c.p  # use current node
+        self.last_node = self.pr.copy() 
+            # Store this node as last node rendered
+        # Set the node header in the toolbar.
+        self.title.setText('' if self.s else '<b>'+self.pr.h+'</b>')
+        if not self.auto:  
+            self.pbar.setValue(0)
+            self.pbar_action.setVisible(True)
+        # Handle all the nodes in the tree.
+        html = self.md_process_nodes(self.pr,tree=self.tree)
+        if not self.auto:  
+            self.pbar.setValue(50)
+        self.app.processEvents()
+            # Apparently this can't be done in docutils.       
+        try:
+            # Call markdown to get the string.
+            mdext = c.config.getString('view-rendered-md-extensions') or 'extra'
+            mdext = [x.strip() for x in mdext.split(',')]
+            if pygments:
+                mdext.append('codehilite')
+            html = markdown(html, mdext)
+            return g.toUnicode(html)
+
+        except Exception as e:
+            print e
+            return 'Markdown error... %s' % e
+
+    #@+node:peckj.20140228100832.6394: *6* md_process_nodes & helpers
+    def md_process_nodes(self,p,tree=True):
+        """
+        Process the markdown for a node, defaulting to node's entire tree.
+        
+        Any code blocks found (designated by @language python) will be executed
+        in order found as the tree is walked. No section references are heeded.
+        Output directed to stdout and stderr are included in the md source.
+        If self.showcode is True, then the execution output is included in a
+        '```' block. Otherwise the output is assumed to be valid markdown and
+        included in the md source.
+        """
+        c = self.c
+        root = p.copy()
+        self.reflevel = p.level() # for self.underline2().
+        result = []
+        self.md_process_one_node(root,result)
+        if tree:
+            # Create a progress counter showing 50% at end of tree processing.
+            i,numnodes = 0,sum(1 for j in p.subtree())
+            for p in root.subtree():
+                self.md_process_one_node(p,result)
+                if not self.auto:
+                    i += 1
+                    self.pbar.setValue(i * 50 / numnodes)
+                self.app.processEvents()
+        s = '\n'.join(result)
+        if self.verbose:
+            self.md_write_md(root,s)
+        return s
+    #@+node:peckj.20140228100832.6395: *7* md_code_directive
+    def md_code_directive(self,lang):
+        '''Return a markdown block or code directive.'''
+        if pygments:
+            d = '\n    :::' + lang
+            return d
+        else:
+            return '\n'
+    #@+node:peckj.20140228100832.6397: *7* md_process_one_node
+    def md_process_one_node(self,p,result):
+        '''Handle one node.'''
+        c = self.c
+        result.append(self.md_underline2(p))
+        d = c.scanAllDirectives(p)
+        if self.verbose:
+            g.trace(d.get('language') or 'None',':',p.h)
+        s,code = self.md_process_directives(p.b,d)
+        result.append(s)
+        result.append('\n\n')
+            # Add an empty line so bullet lists display properly.
+        if code and self.execcode:
+            s,err = self.md_exec_code(code)
+                # execute code found in a node, append to md
+            if not self.restoutput and s.strip():
+                s = self.md_format_output(s)  # if some non-md to print
+            result.append(s) # append, whether plain or md output
+            if err:
+                err = self.md_format_output(err, prefix='**Error**:')      
+                result.append(err)
+    #@+node:peckj.20140228100832.6398: *7* md_exec_code
+    def md_exec_code(self,code):
+        """Execute the code, capturing the output in stdout and stderr."""
+        trace = True and not g.unitTesting
+        if trace: g.trace('\n',code)
+        c = self.c
+        saveout = sys.stdout  # save stdout
+        saveerr = sys.stderr
+        sys.stdout = bufferout = StringIO()
+        sys.stderr = buffererr = StringIO()
+        # Protect against exceptions within exec
+        try:
+            scope = {'c':c,'g': g,'p':c.p} # EKR: predefine c & p.
+            exec code in scope
+        except Exception:
+            #print Exception, err
+            #print sys.exc_info()[1]
+            print >> buffererr, traceback.format_exc()
+            buffererr.flush()  # otherwise exception info appears too late
+            g.es('Viewrendered traceback:\n', sys.exc_info()[1])
+        # Restore stdout, stderr
+        sys.stdout = saveout  # was sys.__stdout__
+        sys.stderr = saveerr  # restore stderr
+        return bufferout.getvalue(), buffererr.getvalue()
+    #@+node:peckj.20140228100832.6399: *7* md_format_output
+    def md_format_output(self,s, prefix='```'):
+        """Formats the multi-line string 's' into a md literal block."""
+        out = '\n\n'+prefix+'\n\n'
+        lines = g.splitLines(s)
+        for line in lines:
+            out += '    ' + line
+        return out + '\n```\n'
+    #@+node:peckj.20140228100832.6400: *7* md_process_directives
+    def md_process_directives(self, s, d):
+        """s is string to process, d is dictionary of directives at the node."""
+        trace = False and not g.unitTesting
+        lang = d.get('language') or 'python' # EKR.
+        codeflag = lang != 'md' # EKR
+        lines = g.splitLines(s)
+        result = []
+        code = ''
+        if codeflag and self.showcode:
+            result.append(self.md_code_directive(lang)) # EKR
+        for s in lines:
+            if s.startswith('@'):
+                i = g.skip_id(s,1)
+                word = s[1:i]
+                # Add capability to detect mid-node language directives (not really that useful).
+                # Probably better to just use a code directive.  "execute-script" is not possible.
+                # If removing, ensure "if word in g.globalDirectiveList:  continue" is retained
+                # to stop directive being put into the reST output.
+                if word=='language' and not codeflag:  # only if not already code
+                    lang = s[i:].strip()
+                    codeflag = lang in ['python',]
+                    if codeflag:
+                        if self.verbose:
+                            g.es('New code section within node:',lang)
+                        if self.showcode:
+                            result.append(self.md_code_directive(lang)) # EKR
+                    else:
+                        result.append('\n\n')
+                    continue
+                elif word in g.globalDirectiveList:
+                    continue
+            if codeflag:
+                if self.showcode:
+                    result.append('    ' + s)  # 4 space indent on each line
+                code += s  # accumulate code lines for execution
+            else:
+                result.append(s)
+        result = ''.join(result)
+        if trace: g.trace('result:\n',result) # ,'\ncode:',code)
+        return result, code
+    #@+node:peckj.20140228100832.6401: *7* md_underline2
+    def md_underline2(self, p):
+        print 'md_underline2'
+        """
+        Use the given string and convert it to a markdown headline for display
+        """
+        # Use relatively unused underline characters, cater for many levels
+        l = p.level()-self.reflevel+1
+        ch = '#' * l
+        ch += ' ' + p.h
+        return ch
+    #@+node:peckj.20140228100832.6402: *7* md_write_md
+    def md_write_md(self,root,s):
+        '''Write s, the final assembled md text, to leo.md.'''
+        print 'md_write_md'
+        c = self.c
+        filename = 'leo.md'
+        d = c.scanAllDirectives(root)
+        path = d.get('path')
+        pathname = g.os_path_finalize_join(path,filename)
+        # Render constructed md string
         # s = self.html_render(s)
         f = file(pathname,'wb')
         f.write(s.encode('utf8'))
@@ -1437,63 +1702,83 @@ class ViewRenderedController(QtGui.QWidget):
         
     #@+node:ekr.20140226074510.4227: *4* update_md
     def update_md (self,s,keywords):
-        
-        trace = False and not g.unitTesting
-        pc = self ; c = pc.c ;  p = c.p
-        s = s.strip().strip('"""').strip("'''").strip()
-        isHtml = s.startswith('<') and not s.startswith('<<')
-        if trace: g.trace('isHtml',isHtml)
-        
         # Do this regardless of whether we show the widget or not.
-        w = pc.ensure_text_widget()
-        assert pc.w
-        if s:
-            pc.show()    
-        if not got_markdown:
-            isHtml = True
-            s = '<pre>\n%s</pre>' % s
-        if not isHtml:
-            # Not html: convert to html.
-            path = g.scanAllAtPathDirectives(c,p) or c.getNodePath(p)
-            if not os.path.isdir(path):
-                path = os.path.dirname(path)
-            if os.path.isdir(path):
-                os.chdir(path)
-            try:
-                msg = '' # The error message from docutils.
-                if pc.title:
-                    s = pc.underline(pc.title) + s
-                    pc.title = None
-                mdext = c.config.getString('view-rendered-md-extensions') or 'extra'
-                mdext = [x.strip() for x in mdext.split(',')]
-                s = markdown(s, mdext)
-                s = g.toUnicode(s) # 2011/03/15
-                #show = True
-            except SystemMessage as sm:
-                # g.trace(sm,sm.args)
-                msg = sm.args[0]
-                if 'SEVERE' in msg or 'FATAL' in msg:
-                    s = 'MD error:\n%s\n\n%s' % (msg,s)
-
-        sb = w.verticalScrollBar()
-        if sb:
-            d = pc.scrollbar_pos_dict
-            if pc.node_changed:
-                # Set the scrollbar.
-                pos = d.get(p.v,sb.sliderPosition())
-                sb.setSliderPosition(pos)
-            else:
-                # Save the scrollbars
-                d[p.v] = pos = sb.sliderPosition()
-        if pc.default_kind in ('big','rst','html', 'md'):
-            w.setHtml(s)
-            if pc.default_kind == 'big':
-                w.zoomIn(4) # Doesn't work.
+        # w = pc.ensure_text_widget()
+        # PMM - test forcing qwebview in
+        pc = self
+        if pc.must_change_widget(pc.html_class):
+            w = pc.html_class(pc)
+            pc.embed_widget(w)
+            assert (w == pc.w)
         else:
-            w.setPlainText(s) 
-        if sb and pos:
-            # Restore the scrollbars
-            sb.setSliderPosition(pos)
+            w = pc.w
+        #assert pc.w
+        #if s:
+        #    pc.show()
+        w.render_md(s, keywords)
+        #        if sb and pos:
+        #            # Restore the scrollbars
+        #            sb.setSliderPosition(pos)
+
+    #@+at
+    # def update_md (self,s,keywords):
+    #     
+    #     trace = False and not g.unitTesting
+    #     pc = self ; c = pc.c ;  p = c.p
+    #     s = s.strip().strip('"""').strip("'''").strip()
+    #     isHtml = s.startswith('<') and not s.startswith('<<')
+    #     if trace: g.trace('isHtml',isHtml)
+    #     
+    #     # Do this regardless of whether we show the widget or not.
+    #     w = pc.ensure_text_widget()
+    #     assert pc.w
+    #     if s:
+    #         pc.show()    
+    #     if not got_markdown:
+    #         isHtml = True
+    #         s = '<pre>\n%s</pre>' % s
+    #     if not isHtml:
+    #         # Not html: convert to html.
+    #         path = g.scanAllAtPathDirectives(c,p) or c.getNodePath(p)
+    #         if not os.path.isdir(path):
+    #             path = os.path.dirname(path)
+    #         if os.path.isdir(path):
+    #             os.chdir(path)
+    #         try:
+    #             msg = '' # The error message from docutils.
+    #             if pc.title:
+    #                 s = pc.underline(pc.title) + s
+    #                 pc.title = None
+    #             mdext = c.config.getString('view-rendered-md-extensions') or 'extra'
+    #             mdext = [x.strip() for x in mdext.split(',')]
+    #             s = markdown(s, mdext)
+    #             s = g.toUnicode(s) # 2011/03/15
+    #             #show = True
+    #         except SystemMessage as sm:
+    #             # g.trace(sm,sm.args)
+    #             msg = sm.args[0]
+    #             if 'SEVERE' in msg or 'FATAL' in msg:
+    #                 s = 'MD error:\n%s\n\n%s' % (msg,s)
+    # 
+    #     sb = w.verticalScrollBar()
+    #     if sb:
+    #         d = pc.scrollbar_pos_dict
+    #         if pc.node_changed:
+    #             # Set the scrollbar.
+    #             pos = d.get(p.v,sb.sliderPosition())
+    #             sb.setSliderPosition(pos)
+    #         else:
+    #             # Save the scrollbars
+    #             d[p.v] = pos = sb.sliderPosition()
+    #     if pc.default_kind in ('big','rst','html', 'md'):
+    #         w.setHtml(s)
+    #         if pc.default_kind == 'big':
+    #             w.zoomIn(4) # Doesn't work.
+    #     else:
+    #         w.setPlainText(s) 
+    #     if sb and pos:
+    #         # Restore the scrollbars
+    #         sb.setSliderPosition(pos)
     #@+node:ekr.20140226074510.4228: *4* update_movie
     def update_movie (self,s,keywords):
         
