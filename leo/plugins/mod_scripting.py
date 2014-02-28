@@ -588,8 +588,15 @@ class scriptingController:
 
         # Get the name of the module.
         theFile = h[len(tag):].strip()
-        if theFile[-3:] == ".py":
-            theFile = theFile[:-3]
+        
+        # The following two lines break g.loadOnePlugin
+        #if theFile[-3:] == ".py":
+        #    theFile = theFile[:-3]
+        
+        # in fact, I believe the opposite behavior is intended: add .py if it doesn't exist
+        if theFile[-3:] != ".py":
+            theFile = theFile + ".py"
+        
         theFile = g.toUnicode(theFile)
 
         if not self.atPluginNodes:
