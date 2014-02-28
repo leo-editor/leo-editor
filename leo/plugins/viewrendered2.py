@@ -505,6 +505,7 @@ class WebViewPlus(QtGui.QWidget):
         self.html = '' # For communication with export().
         self.last_node = c.p
         self.pc = pc
+        self.plockmode = None
         self.pr = None
         self.rendering = False
         self.s = ''
