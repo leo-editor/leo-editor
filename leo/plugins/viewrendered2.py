@@ -508,7 +508,6 @@ class WebViewPlus(QtGui.QWidget):
         self.pr = None
         self.rendering = False
         self.s = ''
-        self.default_kind = c.config.getString('view-rendered-default-kind') or 'rst'
         self.timer = self.init_timer()
         self.view = self.init_view()
         # Must be done after calling init_view.
@@ -542,7 +541,7 @@ class WebViewPlus(QtGui.QWidget):
             Ctl-=  Zoom to original size"""))
         # Handle reload separately since this is used to re-render everything
         self.reload_action = view.pageAction(QtWebKit.QWebPage.Reload)
-        self.reload_action.triggered.connect(self.render)
+        self.reload_action.triggered.connect(self.render_delegate)
         self.toolbar.addAction(self.reload_action)
         #self.reload_action.clicked.connect(self.render)
         # Create the "Mode" toolbutton
@@ -594,7 +593,7 @@ class WebViewPlus(QtGui.QWidget):
         self.execute_code_action = QtGui.QAction('Execute code', self,
                                          checkable=True, triggered=self.state_change)
         menu.addAction(self.execute_code_action)
-        self.reST_code_action = QtGui.QAction('Code outputs reST', self,
+        self.reST_code_action = QtGui.QAction('Code outputs reST/md', self,
                                          checkable=True, triggered=self.state_change)
         menu.addAction(self.reST_code_action)
 
@@ -717,11 +716,17 @@ class WebViewPlus(QtGui.QWidget):
         timer.setSingleShot(True)
         timer.setInterval(1100)
             # just longer than the 1000ms interval of calls from update_rst
-        if self.default_kind == 'md':
-            timer.timeout.connect(self.md_render)
-        else:
-            timer.timeout.connect(self.render)
+        timer.timeout.connect(self.render_delegate)
         return timer
+    #@+node:peckj.20140228114948.6397: *4* get_mode
+    def get_mode(self):
+        if self.lock_mode_action.isChecked():
+            return self.plockmode
+            
+        default = self.pc.default_kind
+        if self.c.p.h.startswith('@rst'): return 'rst'
+        if self.c.p.h.startswith('@md'): return 'md'
+        return default
     #@+node:ekr.20140226081920.16816: *4* tooltip_text
     def tooltip_text(self,s):
         '''Return the reformatted tooltip text corresponding to the triple string s.'''
@@ -756,14 +761,12 @@ class WebViewPlus(QtGui.QWidget):
         # Lock "action" has been triggered, so state will have changed.
         if self.lock_mode_action.isChecked():  # Just become active
             self.plock = self.pc.c.p.copy()  # make a copy of node position
+            self.plockmode = self.get_mode() # make a copy of the current node
             if self.pr:
                 self.pc.scrollbar_pos_dict[self.pr.v] = self.view.page().\
                     mainFrame().scrollBarValue(QtCore.Qt.Vertical)
         else:
-            if self.default_kind == 'md':
-                self.md_render()
-            else:
-                self.render()
+            self.render_delegate()
                 # Render again since root node may have changed now
         # Add an icon or marker to node currently locked?
     #@+node:ekr.20140226075611.16799: *4* render_rst
@@ -795,7 +798,10 @@ class WebViewPlus(QtGui.QWidget):
     #@+node:ekr.20140226075611.16794: *4* state_change
     def state_change(self, checked):
         """A wrapper for 'render' to re-render on all QAction state changes."""
-        if self.default_kind == 'md':
+        self.render_delegate()
+    #@+node:peckj.20140228114948.6398: *3* render_delegate
+    def render_delegate(self):
+        if self.get_mode() == 'md':
             self.md_render()
         else:
             self.render()
@@ -1064,7 +1070,7 @@ class WebViewPlus(QtGui.QWidget):
         pathname = g.os_path_finalize_join(path,filename)
         # Render constructed reST string
         # s = self.html_render(s)
-        f = file(pathname,'wb')
+        f = open(pathname,'wb')
         f.write(s.encode('utf8'))
         f.close()
     #@+node:peckj.20140228100832.6391: *3* md_render & helpers (md)
@@ -1101,7 +1107,7 @@ class WebViewPlus(QtGui.QWidget):
             ext = 'html'
             # Write the output file
             pathname = g.os_path_finalize_join(self.path,'leo.' + ext)
-            f = file(pathname,'wb')
+            f = open(pathname,'wb')
             f.write(html.encode('utf8'))
             f.close()
             # render        
@@ -1174,12 +1180,13 @@ class WebViewPlus(QtGui.QWidget):
         root = p.copy()
         self.reflevel = p.level() # for self.underline2().
         result = []
-        self.md_process_one_node(root,result)
+        environment = {'c': c, 'g': g, 'p': c.p}
+        self.md_process_one_node(root,result,environment)
         if tree:
             # Create a progress counter showing 50% at end of tree processing.
             i,numnodes = 0,sum(1 for j in p.subtree())
             for p in root.subtree():
-                self.md_process_one_node(p,result)
+                self.md_process_one_node(p,result,environment)
                 if not self.auto:
                     i += 1
                     self.pbar.setValue(i * 50 / numnodes)
@@ -1197,7 +1204,7 @@ class WebViewPlus(QtGui.QWidget):
         else:
             return '\n'
     #@+node:peckj.20140228100832.6397: *7* md_process_one_node
-    def md_process_one_node(self,p,result):
+    def md_process_one_node(self,p,result,environment):
         '''Handle one node.'''
         c = self.c
         result.append(self.md_underline2(p))
@@ -1209,7 +1216,7 @@ class WebViewPlus(QtGui.QWidget):
         result.append('\n\n')
             # Add an empty line so bullet lists display properly.
         if code and self.execcode:
-            s,err = self.md_exec_code(code)
+            s,err = self.md_exec_code(code,environment)
                 # execute code found in a node, append to md
             if not self.restoutput and s.strip():
                 s = self.md_format_output(s)  # if some non-md to print
@@ -1218,7 +1225,7 @@ class WebViewPlus(QtGui.QWidget):
                 err = self.md_format_output(err, prefix='**Error**:')      
                 result.append(err)
     #@+node:peckj.20140228100832.6398: *7* md_exec_code
-    def md_exec_code(self,code):
+    def md_exec_code(self,code,environment):
         """Execute the code, capturing the output in stdout and stderr."""
         trace = True and not g.unitTesting
         if trace: g.trace('\n',code)
@@ -1229,14 +1236,12 @@ class WebViewPlus(QtGui.QWidget):
         sys.stderr = buffererr = StringIO()
         # Protect against exceptions within exec
         try:
-            scope = {'c':c,'g': g,'p':c.p} # EKR: predefine c & p.
-            exec code in scope
+            exec(code,environment)
         except Exception:
-            #print Exception, err
-            #print sys.exc_info()[1]
             print >> buffererr, traceback.format_exc()
             buffererr.flush()  # otherwise exception info appears too late
-            g.es('Viewrendered traceback:\n', sys.exc_info()[1])
+            g.es('Viewrendered2 exception')
+            g.es_exception()
         # Restore stdout, stderr
         sys.stdout = saveout  # was sys.__stdout__
         sys.stderr = saveerr  # restore stderr
@@ -1292,7 +1297,6 @@ class WebViewPlus(QtGui.QWidget):
         return result, code
     #@+node:peckj.20140228100832.6401: *7* md_underline2
     def md_underline2(self, p):
-        print 'md_underline2'
         """
         Use the given string and convert it to a markdown headline for display
         """
@@ -1304,7 +1308,6 @@ class WebViewPlus(QtGui.QWidget):
     #@+node:peckj.20140228100832.6402: *7* md_write_md
     def md_write_md(self,root,s):
         '''Write s, the final assembled md text, to leo.md.'''
-        print 'md_write_md'
         c = self.c
         filename = 'leo.md'
         d = c.scanAllDirectives(root)
@@ -1312,7 +1315,7 @@ class WebViewPlus(QtGui.QWidget):
         pathname = g.os_path_finalize_join(path,filename)
         # Render constructed md string
         # s = self.html_render(s)
-        f = file(pathname,'wb')
+        f = open(pathname,'wb')
         f.write(s.encode('utf8'))
         f.close()
     #@+node:ekr.20140226075611.16803: *3* export
