@@ -98,7 +98,13 @@ import difflib
 
 # for VCS diff
 import subprocess
-from cStringIO import StringIO
+
+try:
+    from cStringIO import StringIO
+except:
+    # python 3
+    from io import StringIO
+
 from leo.external import leosax
 #@-<< imports >>
 
