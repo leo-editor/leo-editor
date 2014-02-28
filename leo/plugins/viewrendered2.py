@@ -564,45 +564,27 @@ class WebViewPlus(QtGui.QWidget):
         self.pbar = QtGui.QProgressBar()
         self.pbar.setMaximumWidth(120)
         menu = QtGui.QMenu()
-        self.tree_mode_action = QtGui.QAction('Whole tree', self,
-                                         checkable=True, triggered=self.state_change)
-        #self.tree_mode_action.setChecked(False)
-        menu.addAction(self.tree_mode_action)
-        self.verbose_mode_action = QtGui.QAction('Verbose logging', self,
-                                         checkable=True, triggered=self.state_change)
-        menu.addAction(self.verbose_mode_action)
-        self.auto_mode_action = QtGui.QAction('Auto-update', self,
-                                         checkable=True, triggered=self.state_change)
-        menu.addAction(self.auto_mode_action)
-        #self.auto_mode_action.setChecked(True)
-        self.lock_mode_action = QtGui.QAction('Lock to node', self,
-                                         checkable=True, triggered=self.lock)
-        menu.addAction(self.lock_mode_action)
+        def action(label):
+            action = QtGui.QAction(label,self,checkable=True,triggered=self.state_change)
+            menu.addAction(action)
+            return action
+        self.tree_mode_action = action('Whole tree')
+        self.verbose_mode_action = action('Verbose logging')
+        self.auto_mode_action = action('Auto-update')
+        self.lock_mode_action = action('Lock to node')
         # Add an s5 option
-        self.slideshow_mode_action = QtGui.QAction('Show as slideshow', self,
-                                         checkable=True, triggered=self.state_change)
-        menu.addAction(self.slideshow_mode_action)
-        #self.s5_mode_action = QtGui.QAction('s5 slideshow', self,
-        #                                 checkable=True, triggered=self.lock)
-        #menu.addAction(self.lock_mode_action)
+        self.slideshow_mode_action = action('Show as slideshow')
+        #self.s5_mode_action = action('s5 slideshow')
         menu.addSeparator()  # Separate render mode and code options
-        self.visible_code_action = QtGui.QAction('Visible code', self,
-                                         checkable=True, triggered=self.state_change)
-        #self.visible_code_action.setChecked(True)
-        menu.addAction(self.visible_code_action)
-        self.execute_code_action = QtGui.QAction('Execute code', self,
-                                         checkable=True, triggered=self.state_change)
-        menu.addAction(self.execute_code_action)
-        self.reST_code_action = QtGui.QAction('Code outputs reST/md', self,
-                                         checkable=True, triggered=self.state_change)
-        menu.addAction(self.reST_code_action)
-
-        # radio button checkables example at http://stackoverflow.com/questions/10368947/how-to-make-qmenu-item-checkable-pyqt4-python
+        self.visible_code_action = action('Visible code')
+        self.execute_code_action = action('Execute code')
+        self.reST_code_action = action('Code outputs reST/md')
+        # radio button checkables example at
+        # http://stackoverflow.com/questions/10368947/how-to-make-qmenu-item-checkable-pyqt4-python
         self.toolbutton.setMenu(menu)
         # Remaining toolbar items
-        #self.toolbar.addSeparator()
-        #self.toolbar.addWidget(self.export_button)
-        
+            #self.toolbar.addSeparator()
+            #self.toolbar.addWidget(self.export_button)
         # Create the 'Export' toolbutton
         self.export_button = QtGui.QToolButton()
         self.export_button.setPopupMode(QtGui.QToolButton.InstantPopup)
@@ -659,17 +641,6 @@ class WebViewPlus(QtGui.QWidget):
         view.settings().setObjectCacheCapacities(0, 0, 0)
         #self.toolbar.setToolButtonStyle(Qt.ToolButtonTextOnly)
         # Set up other widget states
-        
-        # Get Leo settings related to docutils.  Using 'or' trick for defaults
-        #---------------------------------------------------------------------
-        # defaults ...
-        #'stylesheet_path' : './css/leo_vr.css',  # path for css files
-        #'halt_level' : 6,  # raise halt level to still attempt to render
-        #'report_level' : 5, #5,  # heading level errors, remove rather than error in output
-        #'math_output' : 'mathjax',  # use MathJax for rendering equations
-        #'smart_quotes' : True,  # ??allows --,---,... to dashes etc., nice quotes
-        #'embed_stylesheet' : True,  # include stylesheet into a self-contained html
-        #'xml_declaration' : False,  # remove declaration to allow import/paste into Word
         return view
     #@+node:ekr.20140227055626.16843: *4* init_config
     def init_config(self):
@@ -805,7 +776,7 @@ class WebViewPlus(QtGui.QWidget):
             self.md_render()
         else:
             self.render()
-    #@+node:ekr.20140226075611.16801: *3* render & helpers (reST)
+    #@+node:ekr.20140226075611.16801: *3* render & helpers
     def render(self):
         """Re-render the existing string, but probably with new configuration."""
         if self.rendering:
