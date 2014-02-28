@@ -950,8 +950,6 @@ class WebViewPlus(QtGui.QWidget):
     #@+node:ekr.20140226125539.16822: *7* exec_code
     def exec_code(self,code,environment):
         """Execute the code, capturing the output in stdout and stderr."""
-        trace = True and not g.unitTesting
-        if trace: g.trace('\n',code)
         c = self.c
         saveout = sys.stdout  # save stdout
         saveerr = sys.stderr
@@ -961,11 +959,11 @@ class WebViewPlus(QtGui.QWidget):
         try:
             exec(code,environment)
         except Exception:
-            #print Exception, err
-            #print sys.exc_info()[1]
             print >> buffererr, traceback.format_exc()
             buffererr.flush()  # otherwise exception info appears too late
-            g.es('Viewrendered traceback:\n', sys.exc_info()[1])
+            # g.es('Viewrendered traceback:\n', sys.exc_info()[1])
+            g.es('Viewrendered2 exception')
+            g.es_exception()
         # Restore stdout, stderr
         sys.stdout = saveout  # was sys.__stdout__
         sys.stderr = saveerr  # restore stderr
