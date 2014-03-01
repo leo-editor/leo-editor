@@ -1131,9 +1131,8 @@ class WebViewPlus(QtGui.QWidget):
                 mdext.append('codehilite')
             html = markdown(html, mdext)
             return g.toUnicode(html)
-
         except Exception as e:
-            print e
+            print(e)
             return 'Markdown error... %s' % e
 
     #@+node:peckj.20140228100832.6394: *6* md_process_nodes & helpers
