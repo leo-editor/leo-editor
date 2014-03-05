@@ -535,6 +535,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
                 if name == 'body':
                     c.p.v.insertSpot = c.frame.body.getInsertPoint()
                     if trace: g.trace(c.p.v.insertSpot)
+                g.doHook("bodyclick2",c=c,p=c.p,v=c.p)                    
 
                 # 2011/05/28: Do *not* change the focus!
                 # This would rip focus away from tab panes.
