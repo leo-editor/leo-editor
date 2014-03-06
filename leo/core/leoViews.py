@@ -2105,6 +2105,8 @@ class ViewController:
         vc = self
         aList = unl.split('-->')
         if aList:
+            if len(aList[0].split("#"))>1:
+                aList[0]="".join(aList[0].split("#")[1:])
             first,rest = aList[0],'-->'.join(aList[1:])
             for parent in vc.c.rootPosition().self_and_siblings():
                 if parent.h.strip() == first.strip():
