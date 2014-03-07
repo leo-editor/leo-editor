@@ -525,10 +525,21 @@ class position (object):
            with_proto=False - include 'file://'
         """
 
-        UNL = '-->'.join(reversed([
-            i.h.replace('-->', '--%3E')
-            for i in self.self_and_parents()
-        ]))  
+        aList = []
+        
+        for i in self.self_and_parents():
+            i = i.copy()
+            count = 0
+            ind = 0
+            p = i.copy()
+            while p.hasBack():
+                ind = ind+1
+                p = p.back().copy()
+                if i.h == p.h:
+                    count = count+1
+            aList.append(i.h.replace('-->', '--%3E')+"["+str(ind)+"]"+"["+str(count)+"]")
+                
+        UNL = '-->'.join(reversed(aList))
 
         if with_proto:
             return ("file://%s#%s" % (self.v.context.fileName(), UNL)).replace(' ', '%20')
