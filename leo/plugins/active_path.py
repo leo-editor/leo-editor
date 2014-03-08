@@ -40,6 +40,7 @@ There are commands on the Plugins active_path submenu:
 - purge vanished (recursive) - remove *entries*
 - update recursive - recursive load of directories, use with caution on large
   file systems
+- pick dir - select a folder interactively to make a new top level @path node
 
 If you want to use an input other than double clicking a node's status-iconbox
 set active_path_event to a value like 'iconrclick1' or 'iconclick1'.
@@ -670,6 +671,24 @@ def deleteDescendents(p, cond, dtor=None, descendAnyway=False, _culls=0):
                 child.doDelete()
     return _culls
 
+#@+node:tbrown.20140308075026.27803: ** cmd_PickDir
+def cmd_PickDir(c):
+    """cmd_PickDir - Show user a folder picker to create
+    a new top level @path node
+
+    :Parameters:
+    - `c`: outline
+    """
+
+    dir_ = g.app.gui.runOpenDirectoryDialog("Pick a folder", "Pick a folder")
+    
+    if not dir_:
+        g.es("No folder selected")
+        return
+    
+    nd = c.p.insertAfter()
+    nd.h = "@path %s" % dir_
+    c.redraw()
 #@+node:tbrown.20080619080950.14: ** testing
 #@+node:tbrown.20080619080950.15: *3* makeTestHierachy
 files="""
