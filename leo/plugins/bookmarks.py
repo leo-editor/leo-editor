@@ -179,7 +179,7 @@ def init():
         
         # temporary until double-click is bindable in user settings
         if g.app.config.getBool('bookmarks-grab-dblclick'):
-            g.registerHandler('icondclick1', lambda t,k: cmd_open_bookmark(k['c']))
+            g.registerHandler('headdclick1', lambda t,k: cmd_open_bookmark(k['c']))
         
     else:
         g.es_print("Requires Qt GUI")
