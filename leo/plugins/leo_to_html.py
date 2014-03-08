@@ -68,6 +68,14 @@ The following commands are the same as above except only the current node is con
 
 **Properties**
 
+.. note::
+    
+    As of Mar. 2014 regular Leo @string settings starting with
+    `leo_to_html_` are checked first, before the ``.ini`` file.
+    E.g. ``@string leo_to_html_flagjustheadlines = No`` has the
+    same effect as ``flagjustheadlines = No`` in the ``.ini``, and
+    takes precedence.
+
 There are several settings that can appear in the leo_to_html.ini properties
 file in leo's plugins folder or be set via the Plugins > leo_to_html >
 Properties... menu. These are:
@@ -546,7 +554,12 @@ class Leo_to_HTML(object):
         """Load configuration from a .ini file."""
 
         def config(s):
-            s = configParser.get("Main", s)
+            
+            ss = self.c.config.getString("leo_to_html_%s"%s)
+            if ss is None:
+                s = configParser.get("Main", s)
+            else:
+                s = ss
             if not s: s = ''
             return s.strip()
 
