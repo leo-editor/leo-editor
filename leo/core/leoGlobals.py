@@ -2240,10 +2240,11 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None):
         # drop empty parts so "-->node name" works
     else:
         nds = p.children()
-
+    import re
+    pos_pattern = re.compile(r':(\d+),?(\d+)?$')
     for i in nds:
 
-        if unlList[depth] == i.h:
+        if re.sub(pos_pattern,"",unlList[depth]) == i.h:
 
             if depth+1 == len(unlList):  # found it
                 #X moveToP(c, i)
