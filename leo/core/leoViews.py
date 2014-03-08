@@ -2102,16 +2102,27 @@ class ViewController:
     #@+node:ekr.20140102052259.16402: *5* vc.find_absolute_unl_node
     def find_absolute_unl_node(self,unl):
         '''Return a node matching the given absolute unl.'''
+        import re
+        pos_pattern = re.compile(r':(\d+),?(\d+)?$')
         vc = self
         aList = unl.split('-->')
         if aList:
             first,rest = aList[0],'-->'.join(aList[1:])
+            count = 0
+            pos = re.findall(pos_pattern,first)
+            nth_sib,pos = pos[0] if pos else (0,0)
+            pos = int(pos) if pos else 0
+            nth_sib = int(nth_sib)
+            first = re.sub(pos_pattern,"",first)
             for parent in vc.c.rootPosition().self_and_siblings():
                 if parent.h.strip() == first.strip():
-                    if rest:
-                        return vc.find_position_for_relative_unl(parent,rest)
-                    else:
-                        return parent
+                    if pos == count:
+                        if rest:
+                            return vc.find_position_for_relative_unl(parent,rest)
+                        else:
+                            return parent
+                    count = count+1
+            #Here we could find and return the nth_sib if an exact header match was not found
         return None
     #@+node:ekr.20131230090121.16520: *5* vc.find_at_auto_view_node & helper
     def find_at_auto_view_node (self,root):
@@ -2200,6 +2211,8 @@ class ViewController:
         # The new, simpler way: drop components of the unl automatically.
         drop,p = [],parent # for debugging.
         # if trace: g.trace('p:',p.h,'unl:',unl)
+        import re
+        pos_pattern = re.compile(r':(\d+),?(\d+)?$')
         for s in unl.split('-->'):
             found = False # The last part must match.
             if 1:
@@ -2209,9 +2222,19 @@ class ViewController:
                     aList = [z.h for z in p.children()]
                     vc.headlines_dict[p.v] = aList
                 try:
-                    n = aList.index(s)
-                    p = p.nthChild(n)
-                    found = True
+                    pos = re.findall(pos_pattern,s)
+                    nth_sib,pos = pos[0] if pos else (0,0)
+                    pos = int(pos) if pos else 0
+                    nth_sib = int(nth_sib)
+                    s = re.sub(pos_pattern,"",s)
+                    indices = [i for i, x in enumerate(aList) if x == s]
+                    if len(indices)>pos:
+                        n = indices[pos]
+                        p = p.nthChild(n)
+                        found = True
+                    else:
+                        #Here we could return the nth_sib so that the closest position to the UNL will be given,even if headers dont match
+                        pass
                     if trace and trace_loop: g.trace('match:',s)
                 except ValueError: # s not in aList.
                     if trace and trace_loop: g.trace('drop:',s)
