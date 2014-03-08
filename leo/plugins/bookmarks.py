@@ -792,6 +792,10 @@ class BookMarkDisplay:
         """Update *EXISTING* bookmark to current node"""
         
         new_url = self.get_unl()
+        if bm.v.b == new_url:
+            g.es("Bookmark unchanged")
+        else:
+            g.es("Bookmark updated")
         bm.v.b = new_url
         bm.v.context.redraw()
         self.show_list(self.get_list())
