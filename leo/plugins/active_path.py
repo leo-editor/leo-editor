@@ -680,7 +680,24 @@ def cmd_PickDir(c):
     - `c`: outline
     """
 
+    p = c.p
+    aList = g.get_directives_dict_list(p)
+    path = c.scanAtPathDirectives(aList)
+    if p.h.startswith('@'):  # see if it's a @<file> node of some sort
+        nodepath = p.h.split(None, 1)[-1]
+        nodepath = g.os_path_join(path, nodepath)
+        if not g.os_path_isdir(nodepath):  # remove filename
+            nodepath = g.os_path_dirname(nodepath)
+        if g.os_path_isdir(nodepath):  # append if it's a directory
+            path = nodepath
+
+    ocwd = os.getcwd()
+    try:
+        os.chdir(path)
+    except OSError:
+        g.es("Couldn't find path %s"%path)
     dir_ = g.app.gui.runOpenDirectoryDialog("Pick a folder", "Pick a folder")
+    os.chdir(ocwd)
     
     if not dir_:
         g.es("No folder selected")
