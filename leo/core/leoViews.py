@@ -2113,7 +2113,7 @@ class ViewController:
             nth_sib,pos = pos[0] if pos else (0,0)
             pos = int(pos) if pos else 0
             nth_sib = int(nth_sib)
-            first = re.sub(pos_pattern,"",first)
+            first = re.sub(pos_pattern,"",first).replace('--%3E','-->')
             for parent in vc.c.rootPosition().self_and_siblings():
                 if parent.h.strip() == first.strip():
                     if pos == count:
@@ -2226,7 +2226,7 @@ class ViewController:
                     nth_sib,pos = pos[0] if pos else (0,0)
                     pos = int(pos) if pos else 0
                     nth_sib = int(nth_sib)
-                    s = re.sub(pos_pattern,"",s)
+                    s = re.sub(pos_pattern,"",s).replace('--%3E','-->')
                     indices = [i for i, x in enumerate(aList) if x == s]
                     if len(indices)>pos:
                         n = indices[pos]

@@ -528,7 +528,7 @@ class position (object):
     hasVisBack = visBack
     hasVisNext = visNext
     #@+node:tbrown.20111010104549.26758: *4* p.get_UNL
-    def get_UNL(self, with_file=True, with_proto=False, with_index=False):
+    def get_UNL(self, with_file=True, with_proto=False, with_index=True):
         """with_file=True - include path to Leo file
            with_proto=False - include 'file://'
         """
