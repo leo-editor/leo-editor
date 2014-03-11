@@ -2205,8 +2205,8 @@ def readlineForceUnixNewline(f,fileName=None):
     if len(s) >= 2 and s[-2] == "\r" and s[-1] == "\n":
         s = s[0:-2] + "\n"
     return s
-#@+node:tbrown.20110219154422.37469: *3* g.recursiveUNLSearch/Find
-def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None):
+#@+node:tbrown.20110219154422.37469: *3* Arm g.recursiveUNLSearch/Find
+def XrecursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None):
     """try and move to unl in the commander c
 
     NOTE: maxdepth is max depth seen in recursion so far, not a limit on
@@ -2230,7 +2230,7 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None):
 
     return found, maxdepth, maxp
 
-def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None):
+def XrecursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None):
     """Internal part of recursiveUNLSearch which doesn't change the
     selected position or call c.frame.bringToFront()"""
 
@@ -2281,6 +2281,97 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None):
 
     if depth == 0 and maxp:  # inexact match
         #X moveToP(c, maxp)
+        g.es('Partial UNL match')
+
+    return False, maxdepth, maxp
+#@+node:tbrown.20140311095634.15188: *3* g.recursiveUNLSearch/Find
+def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
+                       return_pos=False):
+    """try and move to unl in the commander c
+
+    NOTE: maxdepth is max depth seen in recursion so far, not a limit on
+          how far we will recurse.  So it should default to 0 (zero).
+    """
+
+    if g.unitTesting:
+        g.app.unitTestDict['g.recursiveUNLSearch']=True
+        return True, maxdepth, maxp
+
+    def moveToP(c, p):
+        c.expandAllAncestors(p)
+        c.selectPosition(p)
+        c.redraw()
+        c.frame.bringToFront()
+
+    found, maxdepth, maxp = recursiveUNLFind(unlList, c, depth, p, maxdepth, maxp,
+                                             return_pos=return_pos)
+
+    if maxp:
+        moveToP(c, maxp)
+
+    return found, maxdepth, maxp
+
+def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
+                     return_pos=False):
+    """Internal part of recursiveUNLSearch which doesn't change the
+    selected position or call c.frame.bringToFront()"""
+
+    if depth == 0:
+        nds = c.rootPosition().self_and_siblings()
+        unlList = [i.replace('--%3E', '-->') for i in unlList if i.strip()]
+        # drop empty parts so "-->node name" works
+    else:
+        nds = p.children()
+        
+    nds = [i.copy() for i in nds]
+    heads = [i.h for i in nds]
+
+    # work out order in which to try nodes
+    
+    import re
+    pos_pattern = re.compile(r':(\d+),?(\d+)?$')
+    target = unlList[depth]
+    pos = re.findall(pos_pattern, target)
+    if pos:
+        nth_sib,pos = pos[0]
+        pos = int(pos) if pos else 0
+        nth_sib = int(nth_sib)
+        target = re.sub(pos_pattern, "", target).replace('--%3E','-->')
+        
+        order = []
+        # First we try the nth node with same header
+        if pos < len(heads) and heads[pos] == target:
+            order.append(pos)
+        # The position based, if requested
+        if return_pos and nth_sib < len(heads):
+            g.es('pos')
+            order.append(nth_sib)
+        # Then we try *all* other nodes with same header
+        order += [n for n,s in enumerate(heads)
+                  if n not in order and s == target]        
+    else:
+        order = range(len(nds))
+        target = target.replace('--%3E','-->')
+        nth_sib = None  # if called with return_pos=True on old UNL
+
+    for ndi in order:
+        nd = nds[ndi]
+
+        if target == nd.h or (return_pos and ndi == nth_sib):
+
+            if depth+1 == len(unlList):  # found it
+                return True, maxdepth, nd
+            else:
+                if maxdepth < depth+1:
+                    maxdepth = depth+1
+                    maxp = nd.copy()
+                found, maxdepth, maxp = g.recursiveUNLFind(unlList, c, depth+1, nd, 
+                    maxdepth, maxp, return_pos=return_pos)
+                if found:
+                    return found, maxdepth, maxp
+                # else keep looking through nds
+
+    if depth == 0 and maxp:  # inexact match
         g.es('Partial UNL match')
 
     return False, maxdepth, maxp
