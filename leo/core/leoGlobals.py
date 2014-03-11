@@ -2286,7 +2286,7 @@ def XrecursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None):
     return False, maxdepth, maxp
 #@+node:tbrown.20140311095634.15188: *3* g.recursiveUNLSearch/Find
 def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
-                       return_pos=False):
+                       soft_idx=False):
     """try and move to unl in the commander c
 
     NOTE: maxdepth is max depth seen in recursion so far, not a limit on
@@ -2304,7 +2304,7 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
         c.frame.bringToFront()
 
     found, maxdepth, maxp = recursiveUNLFind(unlList, c, depth, p, maxdepth, maxp,
-                                             return_pos=return_pos)
+                                             soft_idx=soft_idx)
 
     if maxp:
         moveToP(c, maxp)
@@ -2312,7 +2312,7 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
     return found, maxdepth, maxp
 
 def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
-                     return_pos=False):
+                     soft_idx=False):
     """Internal part of recursiveUNLSearch which doesn't change the
     selected position or call c.frame.bringToFront()"""
 
@@ -2333,18 +2333,18 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
     target = unlList[depth]
     pos = re.findall(pos_pattern, target)
     if pos:
-        nth_sib,pos = pos[0]
-        pos = int(pos) if pos else 0
+        use_soft_idx = True  # ok to use soft_idx
+        nth_sib,nth_same = pos[0]
+        nth_same = int(nth_same) if nth_same else 0
         nth_sib = int(nth_sib)
         target = re.sub(pos_pattern, "", target).replace('--%3E','-->')
         
         order = []
         # First we try the nth node with same header
-        if pos < len(heads) and heads[pos] == target:
-            order.append(pos)
-        # The position based, if requested
-        if return_pos and nth_sib < len(heads):
-            g.es('pos')
+        if nth_same < len(heads) and heads[nth_same] == target:
+            order.append(nth_same)
+        # Then position based, if requested
+        if soft_idx and nth_sib < len(heads):
             order.append(nth_sib)
         # Then we try *all* other nodes with same header
         order += [n for n,s in enumerate(heads)
@@ -2352,12 +2352,13 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
     else:
         order = range(len(nds))
         target = target.replace('--%3E','-->')
-        nth_sib = None  # if called with return_pos=True on old UNL
+        use_soft_idx = False  # not ok to use soft_idx
+        # note, the above also fixes calling with soft_idx=True and an old UNL
 
     for ndi in order:
         nd = nds[ndi]
 
-        if target == nd.h or (return_pos and ndi == nth_sib):
+        if target == nd.h or (use_soft_idx and soft_idx and ndi == nth_sib):
 
             if depth+1 == len(unlList):  # found it
                 return True, maxdepth, nd
@@ -2366,7 +2367,7 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
                     maxdepth = depth+1
                     maxp = nd.copy()
                 found, maxdepth, maxp = g.recursiveUNLFind(unlList, c, depth+1, nd, 
-                    maxdepth, maxp, return_pos=return_pos)
+                    maxdepth, maxp, soft_idx=soft_idx)
                 if found:
                     return found, maxdepth, maxp
                 # else keep looking through nds
