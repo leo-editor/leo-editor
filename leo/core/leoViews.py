@@ -2100,8 +2100,12 @@ class ViewController:
     #@+node:ekr.20140103062103.16442: *4* vc.find...
     # The find commands create the node if not found.
     #@+node:ekr.20140102052259.16402: *5* vc.find_absolute_unl_node
-    def find_absolute_unl_node(self,unl):
-        '''Return a node matching the given absolute unl.'''
+    def find_absolute_unl_node(self,unl,return_pos=False,find_similar=False):
+        '''Return a node matching the given absolute unl.
+        return_pos: If True, when the node is not found, it will return the closest position to the original.
+        find_similar: If True, when the node is not found, it will search for the longest tail that matches our UNL within the tree and return it.
+        If return_pos and find_similar are both True, it will return the position,and if the position doesnt exist, the most similar match.
+        '''
         import re
         pos_pattern = re.compile(r':(\d+),?(\d+)?$')
         vc = self
@@ -2118,7 +2122,7 @@ class ViewController:
                 if parent.h.strip() == first.strip():
                     if pos == count:
                         if rest:
-                            return vc.find_position_for_relative_unl(parent,rest)
+                            return vc.find_position_for_relative_unl(parent,rest,return_pos=return_pos,find_similar=find_similar)
                         else:
                             return parent
                     count = count+1
@@ -2194,10 +2198,13 @@ class ViewController:
             p.h = h
         return p
     #@+node:ekr.20131230090121.16539: *5* vc.find_position_for_relative_unl
-    def find_position_for_relative_unl(self,parent,unl):
+    def find_position_for_relative_unl(self,parent,unl,return_pos=False,find_similar=False):
         '''
         Return the node in parent's subtree matching the given unl.
         The unl is relative to the parent position.
+        return_pos: If True, when the node is not found, it will return the closest position to the original.
+        find_similar: If True, when the node is not found, it will search for the longest tail that matches our UNL within the tree and return it.
+        If return_pos and find_similar are both True, it will return the position,and if the position doesnt exist, the most similar match.
         '''
         # This is called from finish_create_organizers & compute_all_organized_positions.
         trace = False # and not g.unitTesting
@@ -2229,11 +2236,21 @@ class ViewController:
                     s = re.sub(pos_pattern,"",s).replace('--%3E','-->')
                     indices = [i for i, x in enumerate(aList) if x == s]
                     if len(indices)>pos:
+                        #First we try the nth node with same header
                         n = indices[pos]
                         p = p.nthChild(n)
                         found = True
+                    elif len(indices)>0:
+                        #Then we try any node with same header
+                        n = indices[-1]
+                        p = p.nthChild(n)
+                        found = True
+                    elif len(aList)>nth_sib and return_pos:
+                        #Then we go for the child index if return_pos is true
+                        n = nth_sib
+                        p = p.nthChild(n)
+                        found = True
                     else:
-                        #Here we could return the nth_sib so that the closest position to the UNL will be given,even if headers dont match
                         pass
                     if trace and trace_loop: g.trace('match:',s)
                 except ValueError: # s not in aList.
@@ -2250,6 +2267,25 @@ class ViewController:
                 else:
                     if trace and trace_loop: g.trace('drop:',s)
                     drop.append(s)
+        if not found and find_similar:
+            aList = []
+            for p in vc.c.all_unique_positions():
+                if p.h.replace('--%3E','-->') in unl:
+                    aList.append((p.copy(),p.get_UNL(False,False,True)))
+            unl_list = [re.sub(pos_pattern,"",x).replace('--%3E','-->') for x in unl.split('-->')]
+            for iter_unl in aList:
+                maxcount = 0
+                count = 0
+                compare_list = unl_list[:]
+                for header in reversed(iter_unl[1].split('-->')):
+                    if re.sub(pos_pattern,"",header).replace('--%3E','-->') == compare_list[-1]:
+                        count = count+1
+                        compare_list.pop(-1)
+                    else:
+                        break
+                if count > maxcount:
+                    p = iter_unl[0]
+                    found = True
         if found:
             if trace and trace_success:
                 g.trace('found unl:',unl,'parent:',p.h,'drop',drop)
