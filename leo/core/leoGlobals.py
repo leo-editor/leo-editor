@@ -2209,6 +2209,8 @@ def readlineForceUnixNewline(f,fileName=None):
 def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
                        soft_idx=False, hard_idx=False):
     """try and move to unl in the commander c
+    
+    All parameters passed on to recursiveUNLFind(), see that for docs.
 
     NOTE: maxdepth is max depth seen in recursion so far, not a limit on
           how far we will recurse.  So it should default to 0 (zero).
@@ -2234,8 +2236,24 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
 
 def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
                      soft_idx=False, hard_idx=False):
-    """Internal part of recursiveUNLSearch which doesn't change the
-    selected position or call c.frame.bringToFront()"""
+    """
+    Internal part of recursiveUNLSearch which doesn't change the
+    selected position or call c.frame.bringToFront()
+                             
+    NOTE: maxdepth is max depth seen in recursion so far, not a limit on
+          how far we will recurse.  So it should default to 0 (zero).
+
+    - `unlList`: list of 'headline', 'headline:N', or 'headline:N,M'
+      elements, where N is the node's position index and M the zero based
+      count of like named nodes, eg. 'foo:2', 'foo:4,1', 'foo:12,3'
+    - `c`: outline
+    - `soft_idx`: use index when matching name not found
+    - `hard_idx`: use only indexes, ignore node names
+    - `depth`: part of recursion, don't set explicitly
+    - `p`: part of recursion, don't set explicitly
+    - `maxdepth`: part of recursion, don't set explicitly
+    - `maxp`: part of recursion, don't set explicitly
+    """
 
     if depth == 0:
         nds = c.rootPosition().self_and_siblings()
