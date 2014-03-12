@@ -1598,6 +1598,53 @@ reload-abbreviations and reload-key-bindings commands.
     Use regex replace to replace settings ivars with @property defs.
 
 @language python
+.. @+node:ekr.20140312052111.16811: *5* Notes
+@language rest
+
+https://groups.google.com/forum/#!topic/leo-editor/gEktoPf6aVc
+
+    I've put adding new reload-abbreviations and reload-key-bindings
+    commands on the list of things to do asap. These are non-trivial
+    commands, but they should have been ​done ​ years ago. I'll see what I
+    can do in the next day or so.
+
+
+​Updating the configuration tables in leoConfig.py is straightforward, a​s
+it turns out. Naturally, there are complications, all involved cached
+settings, in one forma or another.
+
+1. The easy cases: use properties.
+
+There are about 60 or 70 places in the code where config settings are
+stored in an ivar. Usually for readability, not for speed.
+
+The solution (tested) is simple: rather than do:
+
+    self.setting_ivar = c.config.getX('a-setting-name')
+
+Leo could define a property:
+
+    @property
+    def setting_ivar(self):
+        return c.config.getX('a-setting-name')
+
+No other changes required. The existing code will test self.setting_ivar
+exactly as before, but now any recent changes to the setting will have
+effect.
+
+I'll make these changes using a script.
+
+2. The harder cases: use a reload_setting method in the affected classes.
+
+Several subcommanders create tables on startup using config settings.
+c.abbrevCommands is one such subcommander.
+
+These classes should have a reload_settings method, called whenever
+settings are dynamically reloaded.
+
+Key bindings are the hardest case: the tables for key bindings are
+mind-bogglingly complex. k.reload_settings would be a piece of work, but in
+theory it should be possible.
 .. @+node:ekr.20120209051836.10242: *5* class LoadManager
 class LoadManager:
 
