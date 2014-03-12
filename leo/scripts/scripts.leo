@@ -109,6 +109,7 @@
 <v t="ekr.20130810093044.16949"><vh>Tool for diffing Leo files</vh>
 <v t="ekr.20130810093044.16950"><vh>Re: Tool for diffing Leo files</vh></v>
 </v>
+<v t="ekr.20140312052111.19343"><vh>Set line height (Qt 4.8 and above)</vh></v>
 </v>
 <v t="ekr.20130810093044.16951"><vh>By EKR</vh>
 <v t="ekr.20121220111212.13257"><vh>@button write-unit-tests</vh>
@@ -2560,6 +2561,27 @@ for p in p.subtree():
 for z in sorted(seen):
     print(z)
 print('**done')</t>
+<t tx="ekr.20140312052111.19343"># As of Qt 4.8, the following script can be executed to set line spacing
+# to 190% for the given outline for the current session.
+
+from PyQt4 import QtGui,QtCore,QtGlobal
+
+def hook(tag, kwds, c=c):
+  if kwds['c'] != c:
+      return
+  bodyWidget = c.frame.body.bodyCtrl.widget
+  doc = bodyWidget.document()
+  for i in range(doc.blockCount()):
+      block = doc.findBlockByNumber(i)
+      curs = QtGui.QTextCursor(block)
+      fmt = block.blockFormat()
+      fmt.setLineHeight(190, QtGui.QTextBlockFormat.ProportionalHeight)
+      curs.setBlockFormat(fmt)
+
+if True: # Doesn't work: QtCore.QT_VERSION &gt;= QtGlobal.QT_VERSION_CHECK(4,8,0):
+    g.registerHandler("select3", hook)
+else:
+    g.es('this script requires Qt 4.8 or above')</t>
 <t tx="maphew.20130612230051.2793">Scripts only of interest when on Microsoft Windows platform.</t>
 </tnodes>
 </leo_file>
