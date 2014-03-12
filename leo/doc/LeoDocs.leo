@@ -2383,6 +2383,10 @@ scripting: autocompletion, @button and @test.
 This chapter is intended for those fairly comfortable with Python
 scripting. If you are not, please study the excellent `Python Tutorial`_.
 
+.. _`informal scripting tutorial`: http://blog.suspended-chord.info/2014/01/28/intro-to-leo-scripting/
+
+As an alternative to this chapter, Jacob Peck has written a more `informal scripting tutorial`_.
+
 .. contents::
     :depth: 3
 </t>
@@ -19136,6 +19140,7 @@ More Leo Resources
 .. _`2012 PyOhio talk`:     http://www.youtube.com/watch?v=JgJ89ekGj-s
 
 .. _`slashdot article`:     http://leoeditor.com/testimonials.html#speed-ream-s-slashdot-article
+.. _`scripting tutorial`:   http://blog.suspended-chord.info/2014/01/28/intro-to-leo-scripting/
 .. _`wikipedia page`:       http://en.wikipedia.org/wiki/Leo_(editor)
 .. _`literate programming`: http://www.literateprogramming.com/
 .. _`Leo's resource page`:  http://www.jserv.com/jk_orr/xml/leo.htm
@@ -19153,6 +19158,8 @@ Videos:
 More resources:
 
 - Speed Ream's `slashdot article`_ about Leo.
+
+- Jacob Peck's `scripting tutorial`_.
 
 - Leo's `wikipedia page`_.
 

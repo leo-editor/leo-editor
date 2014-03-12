@@ -274,7 +274,9 @@ commonly used in Leo scripts.
 
 **Very important**: use Alt-1 (toggle-autocompleter) and Alt-2
 (toggle-calltips) to recreate these lists as you type.
-</t>
+
+As an alternative to this chapter, Jacob Peck has written a more informal scripting tutorial:
+http://blog.suspended-chord.info/2014/01/28/intro-to-leo-scripting/</t>
 <t tx="ekr.20131019184243.16695">execute-script predefines::
 
     c: The commander of the present outline.
