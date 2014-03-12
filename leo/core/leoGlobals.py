@@ -2260,7 +2260,31 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None):
     if depth == 0 and maxp:  # inexact match
         #X moveToP(c, maxp)
         g.es('Partial UNL match')
-
+    if soft_idx and depth +2 < len(unlList):
+        aList = []
+        for p in c.all_unique_positions():
+            if any([p.h.replace('--%3E','-->') in unl for unl in unlList]):
+                aList.append((p.copy(),p.get_UNL(False,False,True)))
+        # unl_list = [re.sub(pos_pattern,"",x).replace('--%3E','-->') for x in unl.split('-->')]
+        maxcount = 0
+        singleMatch = True
+        for iter_unl in aList:
+            count = 0
+            compare_list = unlList[:]
+            for header in reversed(iter_unl[1].split('-->')):
+                if re.sub(pos_pattern,"",header).replace('--%3E','-->') == compare_list[-1]:
+                    count = count+1
+                    compare_list.pop(-1)
+                else:
+                    break
+            if count > maxcount:
+                p = iter_unl[0]
+                singleMatch = True
+            elif count == maxcount:
+                singleMatch = False
+        if maxcount and singleMatch == True:
+            maxp = p
+            maxdepth = p.level()
     return False, maxdepth, maxp
 #@+node:ekr.20031218072017.3124: *3* g.sanitize_filename
 def sanitize_filename(s):
