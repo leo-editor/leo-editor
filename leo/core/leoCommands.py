@@ -730,14 +730,13 @@ class Commands (object):
         return parent # actually the last created/found position
     #@+node:ekr.20100802121531.5804: *3* c.deletePositionsInList
     def deletePositionsInList (self,aList,callback=None):
-
-        '''Delete all vnodes corresponding to the positions in aList.
+        '''
+        Delete all vnodes corresponding to the positions in aList.
         If a callback is given, the callback is called for every node in the list.
         
         The callback takes one explicit argument, p. As usual, the callback can bind
         values using keyword arguments.
         '''
-        
         trace = False and not g.unitTesting
         c = self
         # Verify all positions *before* altering the tree.
@@ -747,22 +746,30 @@ class Commands (object):
                 aList2.append(p.copy())
             else:
                 g.trace('invalid position',p)
-        # Delete p.v, **if possible** for all positions p in aList2.
+        # Delete p.v for all positions p in reversed(sorted(aList2)).
         if callback:
-            for p in aList2:
+            for p in reversed(sorted(aList2)):
                 callback(p)
         else:
-            for p in aList2:
-                v = p.v
-                parent_v = p.stack[-1][0] if p.stack else c.hiddenRootNode
-                # import leo.core.leoNodes as leoNodes
-                # assert isinstance(parent_v,leoNodes.vnode),parent_v
-                if v in parent_v.children:
-                    childIndex = parent_v.children.index(v)
-                    if trace: g.trace('deleting',parent_v,childIndex,v)
-                    v._cutLink(childIndex,parent_v)
+            for p in reversed(sorted(aList2)):
+                if c.positionExists(p):
+                    v = p.v
+                    parent_v = p.stack[-1][0] if p.stack else c.hiddenRootNode
+                    if v in parent_v.children:
+                        childIndex = parent_v.children.index(v)
+                        if trace: g.trace('deleting',parent_v,childIndex,v)
+                        v._cutLink(childIndex,parent_v)
+                    else:
+                        if trace: g.trace('already deleted',parent_v,v)
                 else:
-                    if trace: g.trace('already deleted',parent_v,v)
+                    if trace: g.trace('can not happen',p and p.h)
+        # Bug fix 2014/03/13: Make sure c.hiddenRootNode always has at least one child.
+        if not c.hiddenRootNode.children:
+            v = leoNodes.vnode(context=c)
+            v._addLink(childIndex=0,parent_v=c.hiddenRootNode,adjust=False)
+            if trace: g.trace('new root',v)
+        c.selectPosition(c.rootPosition())
+        c.redraw()
     #@+node:ekr.20080901124540.1: *3* c.Directive scanning
     # These are all new in Leo 4.5.1.
     #@+node:ekr.20080827175609.39: *4* c.scanAllDirectives

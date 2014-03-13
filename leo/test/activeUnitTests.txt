@@ -2135,9 +2135,9 @@ if 1:
     assert r,'r'
     r1 = r.firstChild()
     r2 = r1.next()
-    r3 = r2.next()
-    test(r1,'child2','r1')
-    test(r2,'child31','r2')
+    # r3 = r2.next()
+    test(r1,'child31','r1')
+    test(r2,'child2','r2')
     # assert root.numberOfChildren() == 3,'root.n'
 if 1:
     delete_r()

@@ -2558,14 +2558,12 @@ class vnode (baseVnode):
     def _cutLink (self,childIndex,parent_v):
         '''Adjust links after cutting a link to v.'''
         v = self
-
         parent_v.childrenModified()    
         assert parent_v.children[childIndex]==v
         del parent_v.children[childIndex]
         v.parents.remove(parent_v)
         v._p_changed = 1
         parent_v._p_changed = 1
-
         # If v has no more parents, we adjust all
         # the parent links in the descendant tree.
         # This handles clones properly when deleting a tree.

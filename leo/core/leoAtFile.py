@@ -668,7 +668,7 @@ class atFile:
             p.setHeadString(tag)
         p.expand()
         return p
-    #@+node:ekr.20100803073751.5818: *6* defineResurrectedNodeCallback **
+    #@+node:ekr.20100803073751.5818: *6* defineResurrectedNodeCallback
     def defineResurrectedNodeCallback (self,r,root):
         '''Define a callback that moves node p as r's last child.'''
         
