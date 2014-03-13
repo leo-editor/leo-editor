@@ -285,6 +285,156 @@ controllers = {}
     # Keys are c.hash(): values are PluginControllers
 
 #@+others
+#@+node:ekr.20140226125539.16818: ** viewrendered2 notes
+#@@language rest
+#@+at
+# 
+# Posts:
+# - https://groups.google.com/forum/#!topic/leo-editor/BDzmytlSegw viewrendered2 plugin
+# - https://groups.google.com/forum/#!topic/leo-editor/l7jzwNxGN_U Working on the VR2 plugin
+# - http://mail.google.com/mail/u/0/#search/label%3Aleo+viewrendered2/14478384d1662417
+#     Re: viewrendered2 plugin - Manual and support files
+# 
+# - Every render exports leo.html in the local directory.
+# 
+# - You can simply cut and paste from the VR2 pane to your word processor etc.
+# 
+# - You can also use the export button to push it to your browser, from which
+#   you can save in (typically many formats).
+#   
+# - Google "restructuredtext screen shots"
+# 
+#@+node:ekr.20140226125539.16819: *3* Intro post
+#@@nocolor-node
+#@+at
+# 
+# https://groups.google.com/forum/#!topic/leo-editor/BDzmytlSegw
+# 
+# Why a better viewrendered plugin?
+# ---------------------------------
+# 
+# I like to use reStructuredText (reST) for all of my note-taking, idea
+# development, project and task management and automation of desktop
+# activities (e.g. initiating a backup). You could say it is the control
+# centre of my daily activities, including calculating and showing dashboards
+# of where I am and where I'm going.
+# 
+# This means I need a tool which seamlessly shows me the full-fidelity
+# browser-rendered version of what I am writing and be able to print my notes
+# for meetings, cut and paste nicely formatted output to my office e-mails
+# and documents, as well as show some of the material as a slideshow.
+# 
+# The existing *viewrendered* plugin couldn't seem to do what I needed. I
+# created the viewrendered2 (VR2) plugin that rendered, on demand, to my
+# normal web browser. This worked well, but I really thought live rendering
+# like "viewrendered" would be better, and for that I needed close control
+# over scroll positions etc. that I couldn't get with an external browser. So
+# the plugin became much more complex as I merged it with the existing
+# viewrendered plugin, but was ultimately more powerful and useful to me.
+# 
+# Objectives
+# ----------
+# 
+# * Show a "full" html representation of any reST node or tree, without an
+#   @rst root node, including more features than the existing viewrendered plugin:
+# 
+#   - proper html layout
+#   - math (mathjax, etc.)
+#   - clickable URLs
+#   - clickable hyperlinks within the page (e.g. TOC)
+#   - good quality zoom
+#   - cut and paste html with ctl-C
+#   - s5 slideshows
+#   - javascript
+#   - svg images
+#   - configurable css
+# 
+# * Allow showing of node tree rather than just the current node.  This can give
+#   a better overview perspective of the tree contents.
+# 
+# * Be able to lock the rendering on the root node of a tree, to view the effect
+#   editing a sub-node within the larger html document.
+# 
+# * Provide proper rendering of any combination of node types in a tree, so long as
+#   they have been properly designated by @language directives (i.e. reST, text,
+#   code, css, ...).
+# 
+# * Allow viewing (and printing) of an entire source file from an @file type root node.
+# 
+# * Be able to *export* any of these renderings to a full web-browser to take advantage
+#   of the large rendering window (especially for slideshows, as well as printing, saving output.
+#   
+# * Be able to integrate automatically executed code nodes intermingled with
+#   reST nodes to provide an automatic calculation-based "Notebook" or "Report"
+#   type output.
+# 
+# * Don't increase the dependencies of Leo.
+# 
+# Implementation
+# ----------------------
+# VR2 is implemented mostly as an ~600 line expansion of the update_rst method in the viewrendered.py plugin.  The text-oriented class used for rendering in VR1 has been replaced by the QWebView class which provides the full rendering functionality of a real web-browser.  To make this flexible, a toolbar has been attached to the top with a few controls.
+# 
+# Because I wanted to retain compatibility with VR1, I created the viewrendered2.py plugin, but retained all the class naming which occurred within VR1.  This means that it remains compatible with the existing mechanisms (like free_layout) of showing and creating panes for VR1.  I tried this with an expectation that it would fail, but it appears to work without any unintended side-effects.
+# 
+# Tooltips have been added where Qt allows, with the philosophy that a user shouldn't need a manual to use this pane.
+# 
+# VR2 has been used a lot under Windows 7 and a little under Ubuntu 13.10.
+# 
+# Issues / Limitations
+# ----------------------------
+# I use VR2 every few minutes every working day.  However, VR2 is likely to still have a lot of rough edges and, in particular, bugs that show up with different work flows or css folder layouts etc.  In fact, VR2 is still a work in progress and therefore still being fiddled with, so bugs creep in regularly.
+# 
+# But overall, my perception of its deficiencies are:
+# 
+# * Does not handle reST headings within the node bodies well (sometimes very slow
+#   render, blocking Leo).
+# 
+#   - VR2 attempts to reconcile reST headings that originate from explicit
+#     headings within the nodes against reST headings that are automatically
+#     generated by the node hierarchy.  In many cases, this is impossible,
+#     resulting in many errors which drastically slows down rendering.
+#   - Recommend not using headings within the nodes themselves, leaving the node
+#     hierarchy to do this automatically.
+# 
+# * If the node triggers one of the special viewrendered node header types  (@md,
+#   @image, @movie, @html) VR2 simply defaults to the old handlers for those
+#   types.  This means it jumps back to whatever pane type VR1 uses, so the
+#   features of VR2 disappear.  I suspect that VR2 could incorporate these types
+#   into the new version and retain these new features.  I should look at that.
+#     
+# * Doesn't integrate with rst3 plugin, especially honouring @others etc.
+#   There are some conflicts in objectives, so this may never be fully resolved.
+#   It would probably make sense for rst3 settings to get used for VR2 as well,
+#   along with additional VR2 specific settings.  Currently, VR2 has its own
+#   @settings-style settings.  The rst3 code is not used.
+#   
+# * For slideshow purposes, a patch to docutils s5_writer is required to be able
+#   to handle an arbitrary hierarchy of nodes (forces all headings to start a new
+#   slide).  Otherwise, only the 2nd level nodes (from the root) force a new slide.
+#   
+# * The integration of VR2 code into the existing viewrendered plugin code is
+#   rudimentary.  I took the shortcut of not trying to understand this code well
+#   and confining my integration to the rst rendering only.  Better integration
+#   would be a good future step.
+# 
+# With the plugin being able to execute javascript etc. there may be some form
+# of security issue, but I can't see it myself (given that Leo can execute
+# arbitrary python code anyway).  Any thoughts?
+# 
+# Future?
+# -----------
+# * Expand the export button if pandoc is installed, adding optional
+#   output formats such as docx, odt, plus additional slideshow formats. 
+# * Use new reST functionality to replace other media viewrendered methods
+#   for images, svg, movies, etc.
+# * Integrate better with rst3?
+# 
+# Conclusion
+# ----------------
+# * I've attached the source as well as a bunch of screenshots.  Feel free to try out the source by putting viewrendered2 into your @enabled-plugins instead of the usual viewrendered.  I'd be interested in whether it works or not - expect bugs to show up!
+# * I'm looking for feedback on whether this appears useful to others and not just me.  If so, it should probably be polished a bit more before being used widely.  Perhaps greater understanding of the existing viewrendered plugin operation would help me here.
+# 
+# Feedback is welcome.
 #@+node:ekr.20140226074510.4190: ** Top-level
 #@+node:ekr.20140226074510.4191: *3* decorate_window
 def decorate_window(w):
