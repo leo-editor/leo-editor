@@ -4,6 +4,149 @@
 
 .. @+all
 .. @+node:ekr.20131114124839.16664: ** First
+.. @+node:ekr.20140313100328.16825: *3* fix leoGlobals bug (waiting for answer)
+# I'm not sure the patch is correct.  I'm waiting for a reply.
+.. @+node:ekr.20140313100328.16826: *4* report
+@language rest
+
+Reinhard Engel reinhard.engel.de@googlemail.com
+
+There seems to be a subtle bug in leoGlobals.py:
+
+In the 'globalDirectiveList', the directive 'command' is missing. This
+seems not to cause problems, because of the way 'aList' in
+'compute_directives_re' is constructed. Then in 'get_directives_dict' the
+directive is silently skipped.
+
+The following pattern in 'compute_directives_re' solves this problem:
+
+@language python
+
+aList = [x for x in globalDirectiveList if z != 'others']
+aList.sort(lambda a,b: len(b)-len(a))
+    # Sort by length, longest first
+pat = "^@(%s)(?=( |\t|\n)+)" % "|".join(aList)
+.. @+node:ekr.20140313100328.16827: *4* test
+aList = ['b','abc','ab','aba']
+aList.sort(lambda a,b: len(b)-len(a))
+g.es(aList)
+.. @+node:ekr.20090214075058.10: *4* compute_directives_re
+def compute_directives_re ():
+
+    '''Return an re pattern which will match all Leo directives.'''
+
+    global globalDirectiveList
+
+    aList = ['^@%s' % z for z in globalDirectiveList
+                if z != 'others']
+
+    if 0: # 2010/02/01
+        # The code never uses this, and this regex is broken
+        # because it can confuse g.get_directives_dict.
+        # @others can have leading whitespace.
+        aList.append(r'^\s@others\s')
+
+    return '|'.join(aList)
+.. @+node:EKR.20040610094819: *4* << define globalDirectiveList >>
+# Visible externally so plugins may add to the list of directives.
+
+globalDirectiveList = [
+
+    # *** Longer prefixes must appear before shorter.
+    'all',
+    'colorcache', # 2012/10/03.
+    'code','color', 'comment','c',
+    'delims','doc','encoding','end_raw',
+    'first','header','ignore','killcolor',
+    'language','last','lineending',
+    'markup', # Make this an official directive,
+    'nocolor-node','nocolor','noheader','nowrap',
+    'others','pagewidth','path','quiet',
+    'raw','root-code','root-doc','root','silent',
+    'tabwidth', 'terse',
+    'unit','verbose', 'wrap',
+]
+.. @+node:ekr.20090214075058.9: *4* g.get_directives_dict (must be fast)
+# The caller passes [root_node] or None as the second arg.
+# This allows us to distinguish between None and [None].
+
+g_noweb_root = re.compile('<'+'<'+'*'+'>'+'>'+'=',re.MULTILINE)
+
+def get_directives_dict(p,root=None):
+    """
+    Scan p for @directives found in globalDirectiveList.
+
+    Returns a dict containing the stripped remainder of the line
+    following the first occurrence of each recognized directive
+    """
+    trace = False and not g.unitTesting
+    verbose = False
+    if trace: g.trace('*'*20,p.h)
+    if root: root_node = root[0]
+    d = {}
+    # Do this every time so plugins can add directives.
+    pat = g.compute_directives_re()
+    directives_pat = re.compile(pat,re.MULTILINE)
+    # The headline has higher precedence because it is more visible.
+    for kind,s in (('head',p.h),('body',p.b)):
+        anIter = directives_pat.finditer(s)
+        for m in anIter:
+            word = m.group(0)[1:] # Omit the @
+            i = m.start(0)
+            if word.strip() not in d:
+                j = i + 1 + len(word)
+                k = g.skip_line(s,j)
+                val = s[j:k].strip()
+                if j < len(s) and s[j] not in (' ','\t','\n'):
+                    # g.es_print('invalid character after directive',s[max(0,i-1):k-1])
+                    # if trace:g.trace(word,repr(val),s[i:i+20])
+                    pass # Not a valid directive: just ignore it.
+                else:
+                    directive_word = word.strip()
+                    if directive_word == 'language':
+                        d[directive_word] = val
+                    else:
+                        if directive_word in ('root-doc', 'root-code'):
+                            d['root'] = val # in addition to optioned version
+                        d[directive_word] = val
+                    # g.trace(kind,directive_word,val)
+                    if trace: g.trace(word.strip(),kind,repr(val))
+                    # A special case for @path in the body text of @<file> nodes.
+                    # Don't give an actual warning: just set some flags.
+                    if kind == 'body' and word.strip() == 'path' and p.isAnyAtFileNode():
+                        g.app.atPathInBodyWarning = p.h
+                        d['@path_in_body'] = p.h
+                        if trace: g.trace('@path in body',p.h)
+
+    if root:
+        anIter = g_noweb_root.finditer(p.b)
+        for m in anIter:
+            if root_node:
+                d["root"]=0 # value not immportant
+            else:
+                g.es('%s= may only occur in a topmost node (i.e., without a parent)' % (
+                    g.angleBrackets('*')))
+            break
+    if trace and verbose:
+        g.trace('%4d' % (len(p.h) + len(p.b)))
+    return d
+.. @+node:ekr.20090214075058.10: *5* compute_directives_re
+def compute_directives_re ():
+
+    '''Return an re pattern which will match all Leo directives.'''
+
+    global globalDirectiveList
+
+    aList = ['^@%s' % z for z in globalDirectiveList
+                if z != 'others']
+
+    if 0: # 2010/02/01
+        # The code never uses this, and this regex is broken
+        # because it can confuse g.get_directives_dict.
+        # @others can have leading whitespace.
+        aList.append(r'^\s@others\s')
+
+    return '|'.join(aList)
 .. @+node:ekr.20140218130540.18727: *3* improve parse-body
 .. @+node:ekr.20140215092923.16407: *3* git stuff
 @language rest
@@ -4574,6 +4717,11 @@ def viewPack(event):
 .. @+node:ekr.20131211054925.16384: *4* improve file;; macro
 1. Does not create @file (or @@file) in headline
 2. <|pattern|> not found in headlines
+.. @+node:ekr.20140306114536.16869: *3* Handle multiple selections
+@language rest
+
+They work from the rclick menu, but not from the minibuffer.
+    - Should hanlde clone and delete and move, at least.
 .. @+node:ekr.20131102044158.16568: ** For 4.11.2
 - Create myLeoSettings and workbook automatically if they do not exist.
 - Add templates to help menu?
