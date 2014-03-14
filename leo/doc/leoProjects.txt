@@ -100,6 +100,17 @@ spell-as-you-type-next
 spell-as-you-type-undo
   Change the word behind (left of, for ltr languages) the cursor to
 .. @+node:ekr.20140218040104.16759: *3* added p.nosentinels
+.. @+node:ekr.20140313100328.16828: *3* Fixed serious c.deletePositionsInList bug
+@nocolor-node
+
+https://groups.google.com/forum/#!topic/leo-editor/Uoa7ifVV_Aw
+
+I selected ALL nodes, and deleted them. (I think I used the context menu
+delete) Then the outline window was red, could not insert any nodes, could
+not Undo. Todd. Had to abandon the outline and start again.
+
+# Breaks Leo HARD:
+# c.deletePositionsInList(c.all_positions())
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
