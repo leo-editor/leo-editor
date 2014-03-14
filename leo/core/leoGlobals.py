@@ -2240,22 +2240,44 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None):
         # drop empty parts so "-->node name" works
     else:
         nds = p.children()
+        
+    import re
+    pos_pattern = re.compile(r':(\d+),?(\d+)?$')
+    s = unlList[depth]
+    pos = re.findall(pos_pattern,s)
+    nth_sib,pos = pos[0] if pos else (0,0)
+    pos = int(pos) if pos else 0
+    nth_sib = int(nth_sib)
+    s = re.sub(pos_pattern,"",s).replace('--%3E','-->')
+    indices = [i for i, x in enumerate([p.h for p in nds]) if x == s]
+    aux_found = False
+    if len(indices)>pos:
+        #First we try the nth node with same header
+        n = indices[pos]
+        p = p.nthChild(n)
+        aux_found = True
+    elif len(indices)>0:
+        #Then we try any node with same header
+        n = indices[-1]
+        p = p.nthChild(n)
+        aux_found = True
+    elif len(aList)>nth_sib and return_pos:
+        #Then we go for the child index if return_pos is true
+        n = nth_sib
+        p = p.nthChild(n)
+        aux_found = True
 
-    for i in nds:
-
-        if unlList[depth] == i.h:
-
-            if depth+1 == len(unlList):  # found it
-                #X moveToP(c, i)
-                return True, maxdepth, i
-            else:
-                if maxdepth < depth+1:
-                    maxdepth = depth+1
-                    maxp = i.copy()
-                found, maxdepth, maxp = g.recursiveUNLFind(unlList, c, depth+1, i, maxdepth, maxp)
-                if found:
-                    return found, maxdepth, maxp
-                # else keep looking through nds
+    if aux_found:
+        if depth+1 == len(unlList):  # found it
+            #X moveToP(c, i)
+            return True, maxdepth, p
+        else:
+            if maxdepth < depth+1:
+                maxdepth = depth+1
+                maxp = p.copy()
+            found, maxdepth, maxp = g.recursiveUNLFind(unlList, c, depth+1, p, maxdepth, maxp)
+            if found:
+                return found, maxdepth, maxp
 
     if depth == 0 and maxp:  # inexact match
         #X moveToP(c, maxp)
