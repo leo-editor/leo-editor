@@ -341,15 +341,16 @@ class PlugIn:
 
         # 2011/10/20: runScrolledMessageDialog looks for a scrolledmessage hook.
         # Don't do it here.
-        g.app.gui.runScrolledMessageDialog(
-            c=c,
-            flags='rst',
-            label="Version: " + self.version,
-            msg=msg,
-            name='leo_system',
-            short_title = self.name,
-            title="About Plugin ( " + self.name + " )",
-        )
+        # g.app.gui.runScrolledMessageDialog(
+            # c=c,
+            # flags='rst',
+            # label="Version: " + self.version,
+            # msg=msg,
+            # name='leo_system',
+            # short_title = self.name,
+            # title="About Plugin ( " + self.name + " )",
+        # )
+        c.putHelpFor(msg,short_title=self.name)
     #@+node:pap.20050317183526: *3* getNiceName
     def getNiceName(self, name):
         """Return a nice version of the plugin name

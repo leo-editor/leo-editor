@@ -475,7 +475,7 @@ def show_scrolled_message(tag, kw):
         '',
         kw.get('msg')
     ])
-    vr.update(tag='show-scrolled-message',keywords={'c':c,'force':True,'s':s})
+    vr.update(tag='show-scrolled-message',keywords={'c':c,'force':True,'s':s,'kind':'rst','show-scrolled-message':True})
     return True
 #@+node:ekr.20140226074510.4195: ** Commands
 #@+node:ekr.20140226074510.4196: *3* g.command('preview')
@@ -896,15 +896,53 @@ class WebViewPlus(QtGui.QWidget):
         """Generate the reST and render it in this pane."""
         self.getUIconfig()
         self.s = keywords.get('s') if 's' in keywords else ''
-        if self.auto:
+        show_scrolled_message = keywords.get('show-scrolled-message', False)
+        if show_scrolled_message:
+            c = self.c
+            html = publish_string(s, writer_name='html', settings_overrides=self.docutils_settings)
+            html = g.toUnicode(html)
+            self.html = html
+            self.path = c.getNodePath(c.rootPosition())
+            ext = 'html'
+            pathname = g.os_path_finalize_join(self.path,'leo.' + ext)
+            f = open(pathname,'wb')
+            f.write(html.encode('utf8'))
+            f.close()
+            self.view.setUrl(QUrl.fromLocalFile(pathname))
+            return   
+        if self.auto: 
             self.timer.start()
     #@+node:peckj.20140228095134.6379: *4* render_md
     def render_md(self, s, keywords):
         """Generate the markdown and render it in this pane."""
         self.getUIconfig()
         self.s = keywords.get('s') if 's' in keywords else ''
-        if self.auto:
+        show_scrolled_message = keywords.get('show-scrolled-message', False)
+        if show_scrolled_message:
+            c = self.c
+            mdext = c.config.getString('view-rendered-md-extensions') or 'extra'
+            mdext = [x.strip() for x in mdext.split(',')]
+            if pygments:
+                mdext.append('codehilite')
+            html = markdown(html, mdext)
+            html = g.toUnicode(html)
+            self.html = html
+            self.path = c.getNodePath(c.rootPosition())
+            ext = 'html'
+            pathname = g.os_path_finalize_join(self.path,'leo.' + ext)
+            f = open(pathname,'wb')
+            f.write(html.encode('utf8'))
+            f.close()
+            self.view.setUrl(QUrl.fromLocalFile(pathname))
+            return   
+        if self.auto: 
             self.timer.start()
+
+    #@+at
+    #     self.getUIconfig()
+    #     self.s = keywords.get('s') if 's' in keywords else ''
+    #     if self.auto:
+    #         self.timer.start()
     #@+node:ekr.20140226075611.16802: *4* restore_scroll_position
     def restore_scroll_position(self):
         # Restore scroll bar position for (possibly) new node
@@ -1633,7 +1671,9 @@ class ViewRenderedController(QtGui.QWidget):
             s = keywords.get('s') if 's' in keywords else p.b
             s = pc.remove_directives(s)
             # Dispatch based on the computed kind.
-            kind = pc.get_kind(p)
+            kind = keywords.get('kind', None)
+            if kind is None:
+                kind = pc.get_kind(p)
             f = pc.dispatch_dict.get(kind)
             if f:
                 if trace: g.trace(f.__name__)

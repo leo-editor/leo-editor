@@ -8032,7 +8032,7 @@ class leoQtGui(leoGui.leoGui):
             pc = g.app.pluginsController
             # 2011/10/20: load viewrendered (and call vr.onCreate)
             # *only* if not already loaded.
-            if not pc.isLoaded('viewrendered.py'):
+            if not pc.isLoaded('viewrendered.py') and not pc.isLoaded('viewrendered2.py'):
                 vr = pc.loadOnePlugin('viewrendered.py')
                 if vr:
                     g.blue('viewrendered plugin loaded.')

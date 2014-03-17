@@ -1147,7 +1147,7 @@ class Commands (object):
         __get_p, # No setter.
         doc = "commander current position property")
     #@+node:ekr.20110530082209.18250: *3* c.putHelpFor
-    def putHelpFor(self,s):
+    def putHelpFor(self,s,short_title=''):
 
         c = self
         s = g.adjustTripleString(s.rstrip(),c.tab_width)
@@ -1155,7 +1155,10 @@ class Commands (object):
             pass # how to do selective replace??
 
         pc = g.app.pluginsController
-        vr = pc.loadOnePlugin('viewrendered.py')
+        if pc.isLoaded('viewrendered2.py'):
+            vr = pc.loadOnePlugin('viewrendered2.py')
+        else:
+            vr = pc.loadOnePlugin('viewrendered.py')
         assert vr # For unit testing.
         if vr:
             kw = {
@@ -1164,7 +1167,7 @@ class Commands (object):
                 'label':'',
                 'msg':s,
                 'name':'Apropos',
-                'short_title':'',
+                'short_title':short_title,
                 'title':''}
             vr.show_scrolled_message(tag='Apropos',kw=kw)
             c.bodyWantsFocus()
