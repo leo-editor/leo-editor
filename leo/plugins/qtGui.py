@@ -4372,7 +4372,7 @@ class leoQtFrame (leoFrame.leoFrame):
                 else:
                     c.status_line_unl_mode = 'original'
                 verbose = c.status_line_unl_mode=='canonical'
-                w2.setText(c.p.get_UNL(with_proto=verbose))
+                w2.setText(c.p.get_UNL(with_proto=verbose, with_index=verbose))
 
             def add_item(event, w2=w2):
                 menu = w2.createStandardContextMenu()
