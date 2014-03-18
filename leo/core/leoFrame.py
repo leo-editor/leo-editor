@@ -2107,7 +2107,7 @@ class leoTree:
         # what UNL.py used to do
         c.frame.clearStatusLine()
         verbose = getattr(c, 'status_line_unl_mode', '') == 'canonical'
-        c.frame.putStatusLine(p.get_UNL(with_proto=verbose))
+        c.frame.putStatusLine(p.get_UNL(with_proto=verbose, with_index=verbose))
         if call_event_handlers: # 2011/11/06
             g.doHook("select2",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
             g.doHook("select3",c=c,new_p=p,old_p=old_p,new_v=p,old_v=old_p)
