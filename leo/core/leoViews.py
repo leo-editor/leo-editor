@@ -2100,18 +2100,31 @@ class ViewController:
     #@+node:ekr.20140103062103.16442: *4* vc.find...
     # The find commands create the node if not found.
     #@+node:ekr.20140102052259.16402: *5* vc.find_absolute_unl_node
-    def find_absolute_unl_node(self,unl):
-        '''Return a node matching the given absolute unl.'''
+    def find_absolute_unl_node(self,unl,priority_header=False):
+        '''Return a node matching the given absolute unl.
+        If priority_header == True and the node is not found, it will return the longest matching UNL starting from the tail
+        '''
+        import re
+        pos_pattern = re.compile(r':(\d+),?(\d+)?$')
         vc = self
         aList = unl.split('-->')
         if aList:
             first,rest = aList[0],'-->'.join(aList[1:])
+            count = 0
+            pos = re.findall(pos_pattern,first)
+            nth_sib,pos = pos[0] if pos else (0,0)
+            pos = int(pos) if pos else 0
+            nth_sib = int(nth_sib)
+            first = re.sub(pos_pattern,"",first).replace('--%3E','-->')
             for parent in vc.c.rootPosition().self_and_siblings():
                 if parent.h.strip() == first.strip():
-                    if rest:
-                        return vc.find_position_for_relative_unl(parent,rest)
-                    else:
-                        return parent
+                    if pos == count:
+                        if rest:
+                            return vc.find_position_for_relative_unl(parent,rest,priority_header=priority_header)
+                        else:
+                            return parent
+                    count = count+1
+            #Here we could find and return the nth_sib if an exact header match was not found
         return None
     #@+node:ekr.20131230090121.16520: *5* vc.find_at_auto_view_node & helper
     def find_at_auto_view_node (self,root):
@@ -2183,10 +2196,11 @@ class ViewController:
             p.h = h
         return p
     #@+node:ekr.20131230090121.16539: *5* vc.find_position_for_relative_unl
-    def find_position_for_relative_unl(self,parent,unl):
+    def find_position_for_relative_unl(self,parent,unl,priority_header=False):
         '''
         Return the node in parent's subtree matching the given unl.
         The unl is relative to the parent position.
+        If priority_header == True and the node is not found, it will return the longest matching UNL starting from the tail
         '''
         # This is called from finish_create_organizers & compute_all_organized_positions.
         trace = False # and not g.unitTesting
@@ -2200,6 +2214,8 @@ class ViewController:
         # The new, simpler way: drop components of the unl automatically.
         drop,p = [],parent # for debugging.
         # if trace: g.trace('p:',p.h,'unl:',unl)
+        import re
+        pos_pattern = re.compile(r':(\d+),?(\d+)?$')
         for s in unl.split('-->'):
             found = False # The last part must match.
             if 1:
@@ -2209,9 +2225,33 @@ class ViewController:
                     aList = [z.h for z in p.children()]
                     vc.headlines_dict[p.v] = aList
                 try:
-                    n = aList.index(s)
-                    p = p.nthChild(n)
-                    found = True
+                    pos = re.findall(pos_pattern,s)
+                    nth_sib,pos = pos[0] if pos else (0,0)
+                    pos = int(pos) if pos else 0
+                    nth_sib = int(nth_sib)
+                    s = re.sub(pos_pattern,"",s).replace('--%3E','-->')
+                    indices = [i for i, x in enumerate(aList) if x == s]
+                    if len(indices)>pos:
+                        #First we try the nth node with same header
+                        n = indices[pos]
+                        p = p.nthChild(n)
+                        found = True
+                    elif len(indices)>0:
+                        #Then we try any node with same header
+                        n = indices[-1]
+                        p = p.nthChild(n)
+                        found = True
+                    elif not priority_header:
+                        #Then we go for the child index if return_pos is true
+                        if len(aList)>nth_sib:
+                            n = nth_sib
+                        else:
+                            n = len(aList)-1
+                        if n>-1:
+                            p = p.nthChild(n)
+                        else:
+                            g.es('Partial UNL match: Referenced level is higher than '+str(p.level()))
+                        found = True
                     if trace and trace_loop: g.trace('match:',s)
                 except ValueError: # s not in aList.
                     if trace and trace_loop: g.trace('drop:',s)
@@ -2227,6 +2267,25 @@ class ViewController:
                 else:
                     if trace and trace_loop: g.trace('drop:',s)
                     drop.append(s)
+        if not found and priority_header:
+            aList = []
+            for p in vc.c.all_unique_positions():
+                if p.h.replace('--%3E','-->') in unl:
+                    aList.append((p.copy(),p.get_UNL(False,False,True)))
+            unl_list = [re.sub(pos_pattern,"",x).replace('--%3E','-->') for x in unl.split('-->')]
+            for iter_unl in aList:
+                maxcount = 0
+                count = 0
+                compare_list = unl_list[:]
+                for header in reversed(iter_unl[1].split('-->')):
+                    if re.sub(pos_pattern,"",header).replace('--%3E','-->') == compare_list[-1]:
+                        count = count+1
+                        compare_list.pop(-1)
+                    else:
+                        break
+                if count > maxcount:
+                    p = iter_unl[0]
+                    found = True
         if found:
             if trace and trace_success:
                 g.trace('found unl:',unl,'parent:',p.h,'drop',drop)
