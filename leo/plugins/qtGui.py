@@ -3189,17 +3189,7 @@ class LeoBaseTabWidget (QtGui.QTabWidget):
         else:
             main = g.app.gui.frameFactory.masterFrame
             w.setStyleSheet(main.styleSheet())
-            
-        def reattach(event, w=w, name=name, tabManager=self):
-            tabManager.detached = [i for i in tabManager.detached
-                                   if i[1] != w]
-            w.closeEvent = w.defaultClose
-            tabManager.addTab(w, name)
-            tabManager.factory.leoFrames[w] = w.leo_c.frame
-            event.ignore()
 
-        w.defaultClose = w.closeEvent
-        w.closeEvent = reattach
         if platform.system() == 'Windows':
             w.move(20, 20)  # Windows (XP and 7) conspire to place the windows title bar off screen
             
