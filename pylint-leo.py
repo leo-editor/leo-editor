@@ -203,91 +203,96 @@ def run(theDir,fn,rpython=False):
         if True and scope == 'stc-test':
             import leo.core.leoGlobals as g
             print('pylint-leo.py: enabling Sherlock traces')
+            print('patterns contained in plyint-leo.py')
             sherlock = g.SherlockTracer(show_return=True,verbose=True, # verbose: show filenames.
                 patterns=[ 
                 #@+<< Sherlock patterns for pylint >>
                 #@+node:ekr.20130111060235.10182: *3* << Sherlock patterns for pylint >>
-                # Enable everything.
-                '+.*',
-
-                # Disable entire files.
-                # '-:.*\\lib\\.*', # Disables everything.
-
-                # Pylint files.
-                #'-:.*base.py',
-                #'-:.*bases.py',
-                '-:.*builder.py',
-                '-:.*__init__.py',
-                '-:.*format.py',
-                '-:.*interface.py', # implements
-                '-:.*rebuilder.py',
-                #'-:.*scoped_nodes',
-                # General library files.
-                '-:.*leoGlobals.py',
-                '-:.*codecs.py',
-                '-:.*config.py',
-                '-:.*configuration.py',
-                '-:.*ConfigParser.py',
-                '-:.*copy\.py',
-                '-:.*gettext.py',
-                '-:.*genericpath.py',
-                '-:.*graph.py',
-                '-:.*locale.py',
-                '-:.*optik_ext.py',
-                '-:.*optparse.py',
-                '-:.*os.py',
-                '-:.*ntpath.py',
-                '-:.*pickle.py',
-                '-:.*re.py',
-                '-:.*similar.py',
-                '-:.*shlex.py',
-                '-:.*sre_compile.py',
-                '-:.*sre_parse.py',
-                '-:.*string_escape.py',
-                '-:.*text.py',
-                '-:.*threading.py',
-                '-:.*tokenize.py',
-                '-:.*utils.py',
-
-                # Enable entire files.
-                # '+:.*base.py',
                 # '+:.*bases.py',
-                # '+:.*classes.py',
-                # '+:.*design_analysis.py',
-                # '+:.*format.py',
-                # '+:.*inference.py',
-                # '+:.*logging.py',
-                # '+:.*mixins.py',
-                # '+:.*newstyle.py',
-                # '+:.*node_classes.py',
-                # '+:.*protocols.py',
-                # '+:.*scoped_nodes.py',
-                # '+:.*typecheck.py',
-                # '+:.*variables.py',
+                '+:.*typecheck.py',
 
-                # Disable individual methods.
-                '-close', # __init__.py
-                '-collect_block_lines', '-\<genexpr\>','-.*option.*','-.*register_checker','-set_reporter', # lint.py
-                '-frame','-root','-scope', # scoped_nodes
-                '-register', # various files.
+                # Enable everything.
+                # # '+.*',
 
-                # '-abspath','-normpath','-isstring','-normalize',
-                # '-splitext','-_splitext','-splitdrive','-splitstrip',
-                # '-.*option.*','-get','-set_option',
-                # '-unquote','-convert','-interpolate','-_call_validator', # compile stuff.
-                # '-_compile.*','-compile_.*','-_code','-identifyfunction', # compile stuff.
-                # '-_parse.*','-set_parser','-set_conflict_handler',
-                # '-append','-match',
-                # '-isbasestring',
-                # '-save.*','-memoize','-put',
 
-                # '-persistent_id',
-                # '-__next',
-                # '-nodes_of_class',
-                # '-__.*',
-                # '-_check.*',
-                # '-_.*',
-                # '-load_.*',
+                # # Disable entire files.
+                # # '-:.*\\lib\\.*', # Disables everything.
+
+                # # Pylint files.
+                # #'-:.*base.py',
+                # #'-:.*bases.py',
+                # '-:.*builder.py',
+                # '-:.*__init__.py',
+                # '-:.*format.py',
+                # '-:.*interface.py', # implements
+                # '-:.*rebuilder.py',
+                # #'-:.*scoped_nodes',
+                # # General library files.
+                # '-:.*leoGlobals.py',
+                # '-:.*codecs.py',
+                # '-:.*config.py',
+                # '-:.*configuration.py',
+                # '-:.*ConfigParser.py',
+                # '-:.*copy\.py',
+                # '-:.*gettext.py',
+                # '-:.*genericpath.py',
+                # '-:.*graph.py',
+                # '-:.*locale.py',
+                # '-:.*optik_ext.py',
+                # '-:.*optparse.py',
+                # '-:.*os.py',
+                # '-:.*ntpath.py',
+                # '-:.*pickle.py',
+                # '-:.*re.py',
+                # '-:.*similar.py',
+                # '-:.*shlex.py',
+                # '-:.*sre_compile.py',
+                # '-:.*sre_parse.py',
+                # '-:.*string_escape.py',
+                # '-:.*text.py',
+                # '-:.*threading.py',
+                # '-:.*tokenize.py',
+                # '-:.*utils.py',
+
+                # # Enable entire files.
+                # # '+:.*base.py',
+                # # '+:.*bases.py',
+                # # '+:.*classes.py',
+                # # '+:.*design_analysis.py',
+                # # '+:.*format.py',
+                # # '+:.*inference.py',
+                # # '+:.*logging.py',
+                # # '+:.*mixins.py',
+                # # '+:.*newstyle.py',
+                # # '+:.*node_classes.py',
+                # # '+:.*protocols.py',
+                # # '+:.*scoped_nodes.py',
+                # # '+:.*typecheck.py',
+                # # '+:.*variables.py',
+
+                # # Disable individual methods.
+                # '-close', # __init__.py
+                # '-collect_block_lines', '-\<genexpr\>','-.*option.*','-.*register_checker','-set_reporter', # lint.py
+                # '-frame','-root','-scope', # scoped_nodes
+                # '-register', # various files.
+
+                # # '-abspath','-normpath','-isstring','-normalize',
+                # # '-splitext','-_splitext','-splitdrive','-splitstrip',
+                # # '-.*option.*','-get','-set_option',
+                # # '-unquote','-convert','-interpolate','-_call_validator', # compile stuff.
+                # # '-_compile.*','-compile_.*','-_code','-identifyfunction', # compile stuff.
+                # # '-_parse.*','-set_parser','-set_conflict_handler',
+                # # '-append','-match',
+                # # '-isbasestring',
+                # # '-save.*','-memoize','-put',
+
+                # # '-persistent_id',
+                # # '-__next',
+                # # '-nodes_of_class',
+                # # '-__.*',
+                # # '-_check.*',
+                # # '-_.*',
+                # # '-load_.*',
                 #@-<< Sherlock patterns for pylint >>
                 #@afterref
  ])
@@ -403,7 +408,7 @@ from pylint import lint
     # Use the version of pylint in python26/Lib/site-packages.
     # Do the import *after* clearing the console.
 
-# print(lint)
+print(lint)
 
 for table,theDir in tables_table:
     for fn in table:
