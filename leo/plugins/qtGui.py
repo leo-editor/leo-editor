@@ -8678,16 +8678,12 @@ class QuickHeadlines:
         self.requested = True
 
     def update(self):
-
         g.trace("quickheadlines update")
         self.requested = False
         self.listWidget.clear()
         p = self.c.currentPosition()
         for n in p.children():
             self.listWidget.addItem(n.h)
-
-
-
 #@+node:ekr.20110605121601.18537: ** class leoQtEventFilter
 class leoQtEventFilter(QtCore.QObject):
 
@@ -9562,6 +9558,12 @@ class leoQtColorizer:
     #@+node:ekr.20110605121601.18561: *4* setHighlighter
     # Called *only* from leoTree.setBodyTextAfterSelect
 
+    def setHighlighter (self,p):
+
+        if self.enabled:
+            self.flag = self.updateSyntaxColorer(p)
+
+
     # def setHighlighter (self,p):
 
         # trace = False and not g.unitTesting
@@ -9579,10 +9581,6 @@ class leoQtColorizer:
         # if trace: g.trace('enabled: %s flag: %s %s' % (
             # self.enabled,self.flag,p.h),g.callers())
             
-    def setHighlighter (self,p):
-
-        if self.enabled:
-            self.flag = self.updateSyntaxColorer(p)
     #@+node:ekr.20110605121601.18562: *4* updateSyntaxColorer
     def updateSyntaxColorer (self,p):
 
