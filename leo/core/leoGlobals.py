@@ -927,13 +927,14 @@ def _callerName (n=1,files=False):
         return '' # "<no caller name>"
 #@+node:ekr.20121128031949.12605: *3* class SherlockTracer
 class SherlockTracer:
+    '''
+    A stand-alone tracer class with many of Sherlock's features.
 
-    '''A stand-alone tracer class with many of Sherlock's features.
-
-    This class should work in any environment in which it is possible
-    to import os and sys.
+    This class should work in any environment containing the os and sys modules.
     
-    The arguments in the pattern lists determine which functions get traced or which stats get printed.  Each pattern starts with "+", "-", "+:" or "-:", followed by a regular expression.
+    The arguments in the pattern lists determine which functions get traced
+    or which stats get printed. Each pattern starts with "+", "-", "+:" or
+    "-:", followed by a regular expression::
 
     "+x"  Enables tracing (or stats) for all functions/methods whose name
           matches the regular expression x.
@@ -957,11 +958,10 @@ class SherlockTracer:
     studying other people's code. This is a non-invasive method: no tracing
     code needs to be inserted anywhere.
     '''
-
     #@+others
     #@+node:ekr.20121128031949.12602: *4* __init__
     def __init__(self,patterns,dots=True,show_args=True,show_return=True,verbose=True):
-
+        '''SherlockTracer ctor.'''
         import re
         self.bad_patterns = []          # List of bad patterns.
         self.dots = dots                # True: print level dots.
@@ -979,17 +979,16 @@ class SherlockTracer:
             pass
     #@+node:ekr.20121128031949.12609: *4* dispatch
     def dispatch(self,frame,event,arg):
-
+        '''The dispatch method passed to sys.settrace.'''
         if event == 'call':
             self.do_call(frame,arg)
-
         elif event == 'return' and self.show_return:
             self.do_return(frame,arg)
-
+        # Queue this method up again.
         return self.dispatch
     #@+node:ekr.20121128031949.12603: *4* do_call & helper
     def do_call(self,frame,arg): # arg not used.
-
+        '''Trace through a function call.'''
         import os
         frame1 = frame
         code = frame.f_code
@@ -1018,7 +1017,7 @@ class SherlockTracer:
         self.stats[fn] = d
     #@+node:ekr.20130111185820.10194: *5* get_args
     def get_args(self,frame):
-
+        '''Return name=val for each arg in the function call.'''
         def show(item):
             if not item: return ''
             try:
@@ -1047,7 +1046,7 @@ class SherlockTracer:
         return ','.join(result)
     #@+node:ekr.20130109154743.10172: *4* do_return & helper
     def do_return(self,frame,arg): # arg not used.
-
+        '''Trace a return statement.'''
         import os
         code = frame.f_code
         fn = code.co_filename
@@ -1097,9 +1096,7 @@ class SherlockTracer:
         return ret
     #@+node:ekr.20121128111829.12185: *4* fn_is_enabled
     def fn_is_enabled (self,fn,patterns):
-
         '''Return True if tracing for fn is enabled.'''
-
         try:
             enabled = False
             for pattern in patterns:
@@ -1114,7 +1111,7 @@ class SherlockTracer:
             return False
     #@+node:ekr.20130112093655.10195: *4* get_full_name
     def get_full_name(self,locals_,name):
-
+        '''Return class_name::name if possible.'''
         full_name = name
         try:
             user_self = locals_ and locals_.get('self',None)
@@ -1125,9 +1122,7 @@ class SherlockTracer:
         return full_name
     #@+node:ekr.20121128111829.12183: *4* is_enabled
     def is_enabled (self,fn,name,patterns):
-
         '''Return True if tracing for name in fn is enabled.'''
-
         def oops(pattern):
             if pattern not in self.bad_patterns:
                 self.bad_patterns.append(pattern)
@@ -1151,12 +1146,11 @@ class SherlockTracer:
                 else: oops(pattern)
             except Exception:
                 oops(pattern)
-
         return enabled
 
     #@+node:ekr.20121128111829.12182: *4* print_stats
     def print_stats (self,patterns=None):
-
+        '''Print all accumulated statisitics.'''
         print('\nSherlock statistics')
         if not patterns: patterns = ['+.*','+:.*',]
         for fn in sorted(self.stats.keys()):
@@ -1172,30 +1166,23 @@ class SherlockTracer:
                 print('/'.join(parts[-2:]))
                 for key in result:
                     print('%4s %s' % (d.get(key),key))
-    #@+node:ekr.20121128031949.12614: *4* run
+    #@+node:ekr.20121128031949.12614: *4* run (calls dispatch)
     # Modified from pdb.Pdb.set_trace.
 
     def run(self,frame=None):
-
         '''Trace from the given frame or the caller's frame.'''
-
         import sys
-
         if frame is None:
             frame = sys._getframe().f_back
-
         # Compute self.n, the number of frames to ignore.
         self.n = 0
         while frame:
             frame = frame.f_back
             self.n += 1
-
         sys.settrace(self.dispatch)
     #@+node:ekr.20121128093229.12616: *4* stop
     def stop(self):
-
         '''Stop all tracing.'''
-
         import sys
         sys.settrace(None)
     #@-others
