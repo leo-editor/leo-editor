@@ -1069,7 +1069,7 @@ class SherlockTracer:
             elif isinstance(arg,(tuple,list)):
                 ret = '[%s]' % ','.join([self.show(z) for z in arg])
                 if len(ret) > 40:
-                    ret = '[\n%s]' % ('\n,'.join([show(z) for z in arg]))
+                    ret = '[\n%s]' % ('\n,'.join([self.show(z) for z in arg]))
             elif arg:
                 ret = self.show(arg)
                 if len(ret) > 40:
