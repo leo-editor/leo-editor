@@ -930,7 +930,7 @@ class SherlockTracer:
     '''
     A stand-alone tracer class with many of Sherlock's features.
 
-    This class should work in any environment containing the os and sys modules.
+    This class should work in any environment containing the re, os and sys modules.
     
     The arguments in the pattern lists determine which functions get traced
     or which stats get printed. Each pattern starts with "+", "-", "+:" or
@@ -962,13 +962,11 @@ class SherlockTracer:
     #@+node:ekr.20121128031949.12602: *4* __init__
     def __init__(self,patterns,dots=True,show_args=True,show_return=True,verbose=True):
         '''SherlockTracer ctor.'''
-        import re
         self.bad_patterns = []          # List of bad patterns.
         self.dots = dots                # True: print level dots.
         self.n = 0                      # The frame level on entry to run.
         self.stats = {}                 # Keys are full file names, values are dicts.
         self.patterns = patterns        # A list of regex patterns to match.
-        self.re = re                    # Import re only once.
         self.show_args = show_args      # True: show args for each function call.
         self.show_return = show_return  # True: show returns from each function.
         self.verbose = verbose          # True: print filename:func
@@ -997,7 +995,7 @@ class SherlockTracer:
         name = code.co_name
         full_name = self.get_full_name(locals_,name)
         if (
-            self.is_enabled(fn,name,self.patterns) and
+            ### self.is_enabled(fn,name,self.patterns) and
             self.is_enabled(fn,full_name,self.patterns)
         ):
             n = 0
@@ -1010,7 +1008,6 @@ class SherlockTracer:
             leadin = '+' if self.show_return else ''
             args = '(%s)' % self.get_args(frame1) if self.show_args else ''
             print('%s%s%s%s%s' % (path,dots,leadin,full_name,args))
-
         # Alwas update stats.
         d = self.stats.get(fn,{})
         d[full_name] = 1 + d.get(full_name,0)
@@ -1018,12 +1015,6 @@ class SherlockTracer:
     #@+node:ekr.20130111185820.10194: *5* get_args
     def get_args(self,frame):
         '''Return name=val for each arg in the function call.'''
-        def show(item):
-            if not item: return ''
-            try:
-                return item.__class__.__name__
-            except Exception:
-                return repr(item)
         code = frame.f_code
         locals_ = frame.f_locals
         name = code.co_name
@@ -1038,14 +1029,14 @@ class SherlockTracer:
                 arg = locals_.get(name,'*undefined*')
                 if arg:
                     if isinstance(arg,(list,tuple)):
-                        val = '[%s]' % ','.join([show(z) for z in arg if show(z)])
+                        val = '[%s]' % ','.join([self.show(z) for z in arg if self.show(z)])
                     else:
-                        val = show(arg)
+                        val = self.show(arg)
                     if val:
                         result.append('%s=%s' % (name,val))
         return ','.join(result)
     #@+node:ekr.20130109154743.10172: *4* do_return & helper
-    def do_return(self,frame,arg): # arg not used.
+    def do_return(self,frame,arg): # Arg *is* used below.
         '''Trace a return statement.'''
         import os
         code = frame.f_code
@@ -1054,7 +1045,7 @@ class SherlockTracer:
         name = code.co_name
         full_name = self.get_full_name(locals_,name)
         if (
-            self.is_enabled(fn,name,self.patterns) and
+            ### self.is_enabled(fn,name,self.patterns) and
             self.is_enabled(fn,full_name,self.patterns)
         ):
             n = 0
@@ -1067,44 +1058,44 @@ class SherlockTracer:
             print('%s%s-%s%s' % (path,dots,full_name,ret))
     #@+node:ekr.20130111120935.10192: *5* format_ret
     def format_ret(self,arg):
-
+        '''Format arg, the value returned by a "return" statement.'''
         try:
-            if isinstance(arg,(tuple,list)):
-                try:
-                    ret = ' -> [%s]' % ','.join([z.__class__.__name__ for z in arg])
-                except Exception:
-                    ret = ' -> [%s]' % ','.join([repr(z) for z in arg])
+            if isinstance(arg,types.GeneratorType):
+                # Important: tee destroys the original generator, so it can't be used here.
+                # import itertools
+                # arg,arg2 = itertools.tee(arg)
+                # return ' -> generator:%s' % [z for z in arg2] ### '<*generator*>'
+                ret = '<generator>'
+            elif isinstance(arg,(tuple,list)):
+                ret = '[%s]' % ','.join([self.show(z) for z in arg])
                 if len(ret) > 40:
-                    try:
-                        ret = ' -> [\n%s]' % ('\n,'.join([z.__class__.__name__ for z in arg]))
-                    except Exception:
-                        ret = ' -> [\n%s]' % ('\n,'.join([repr(z) for z in arg]))
+                    ret = '[\n%s]' % ('\n,'.join([show(z) for z in arg]))
             elif arg:
-                try:
-                    ret = ' -> %s' % arg.__class__.__name__
-                except Exception:
-                    ret = ' -> %r' % arg
+                ret = self.show(arg)
                 if len(ret) > 40:
-                    ret = ' ->\n    %r' % arg
+                    ret = '\n    %s' % ret
             else:
-                ret = ''
+                ret = '' if arg is None else repr(arg)
         except Exception:
             exctype, value = sys.exc_info()[:2]
             s = '<**exception: %s,%s arg: %r**>' % (exctype.__name__, value,arg)
             ret = ' ->\n    %s' % (s) if len(s) > 40 else ' -> %s' % (s)
-
-        return ret
+        return ' -> %s' % ret # if ret else ''
     #@+node:ekr.20121128111829.12185: *4* fn_is_enabled
     def fn_is_enabled (self,fn,patterns):
-        '''Return True if tracing for fn is enabled.'''
+        '''
+        Return True if tracing for fn is enabled.
+        Used only to enable *statistics* for fn.
+        '''
+        import re
         try:
             enabled = False
             for pattern in patterns:
                 if pattern.startswith('+:'):
-                    if self.re.match(pattern[2:],fn): 
+                    if re.match(pattern[2:],fn): 
                         enabled = True
                 elif pattern.startswith('-:'):
-                    if self.re.match(pattern[2:],fn):
+                    if re.match(pattern[2:],fn):
                         enabled = False
             return enabled
         except Exception:
@@ -1123,31 +1114,31 @@ class SherlockTracer:
     #@+node:ekr.20121128111829.12183: *4* is_enabled
     def is_enabled (self,fn,name,patterns):
         '''Return True if tracing for name in fn is enabled.'''
+        import re
         def oops(pattern):
             if pattern not in self.bad_patterns:
                 self.bad_patterns.append(pattern)
                 print('ignoring bad pattern: %s' % pattern)
 
-        enabled = False 
+        enabled = False
         for pattern in patterns:
             try:
                 if pattern.startswith('+:'):
-                    if self.re.match(pattern[2:],fn): 
+                    if re.match(pattern[2:],fn): 
                         enabled = True
                 elif pattern.startswith('-:'):
-                    if self.re.match(pattern[2:],fn):
+                    if re.match(pattern[2:],fn):
                         enabled = False
                 elif pattern.startswith('+'):
-                    if self.re.match(pattern[1:],name):
+                    if re.match(pattern[1:],name):
                         enabled = True
                 elif pattern.startswith('-'):
-                    if self.re.match(pattern[1:],name):
+                    if re.match(pattern[1:],name):
                         enabled = False
                 else: oops(pattern)
             except Exception:
                 oops(pattern)
         return enabled
-
     #@+node:ekr.20121128111829.12182: *4* print_stats
     def print_stats (self,patterns=None):
         '''Print all accumulated statisitics.'''
@@ -1172,6 +1163,7 @@ class SherlockTracer:
     def run(self,frame=None):
         '''Trace from the given frame or the caller's frame.'''
         import sys
+        print('Sherlock patterns:\n%s' % '\n'.join(self.patterns))
         if frame is None:
             frame = sys._getframe().f_back
         # Compute self.n, the number of frames to ignore.
@@ -1180,6 +1172,26 @@ class SherlockTracer:
             frame = frame.f_back
             self.n += 1
         sys.settrace(self.dispatch)
+    #@+node:ekr.20140322090829.16831: *4* show
+    def show(self,item):
+        '''return the best representation of item.'''
+        if not item:
+            return repr(item)
+        elif isinstance(item,dict):
+            return 'dict'
+        elif isinstance(item,str):
+            s = repr(item)
+            if len(s) <= 20:
+                return s
+            else:
+                return s[:17]+'...'
+        elif True:
+            return repr(item)
+        else:
+            try:
+                return item.__class__.__name__
+            except Exception:
+                return repr(item)
     #@+node:ekr.20121128093229.12616: *4* stop
     def stop(self):
         '''Stop all tracing.'''

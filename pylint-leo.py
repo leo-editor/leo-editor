@@ -209,7 +209,12 @@ def run(theDir,fn,rpython=False):
                 #@+<< Sherlock patterns for pylint >>
                 #@+node:ekr.20130111060235.10182: *3* << Sherlock patterns for pylint >>
                 # '+:.*bases.py',
+                '+PyLinter::add_message',
+                # '+.*visit_class',
+                '+BasicErrorChecker::visit_*',
                 '+:.*typecheck.py',
+                '+:.*inference.py',
+                # '+.*path_raise_wrapper',
 
                 # Enable everything.
                 # # '+.*',
