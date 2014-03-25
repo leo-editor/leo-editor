@@ -4947,10 +4947,12 @@ def handleUrl(url,c=None,p=None):
         if c and scheme in ('', 'file'):
             if not leo_path:
                 if '-->' in path:
-                    g.recursiveUNLSearch(unquote(path).split("-->"), c)
+                    g.recursiveUNLSearch(unquote(path).split("-->"), c,
+                                         soft_idx=True)
                     return
                 if not path and fragment:
-                    g.recursiveUNLSearch(unquote(fragment).split("-->"), c)
+                    g.recursiveUNLSearch(unquote(fragment).split("-->"), c,
+                                         soft_idx=True)
                     return
             # .leo file
             if leo_path.lower().endswith('.leo') and os.path.exists(leo_path):
