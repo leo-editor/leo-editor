@@ -57,13 +57,19 @@ if os.path.exists(path):
         build = static_version if i == -1 else s[:i]
     else:
         if trace: print('leoVersion.py: %s' % (s))
-        pointer = s.split()[1]
-        dirs = pointer.split('/')
-        branch = dirs[-1]
-        path = os.path.join(theDir, '..', '..', '.git', pointer)
-        s = open(path, 'r').read().strip()[0:12] # shorten the hash to a unique shortname 
+        if s.startswith('ref'):
+            # on a proper branch
+            pointer = s.split()[1]
+            dirs = pointer.split('/')
+            branch = dirs[-1]
+            path = os.path.join(theDir, '..', '..', '.git', pointer)
+            s = open(path, 'r').read().strip()[0:12] # shorten the hash to a unique shortname 
                                                  # (12 characters should be enough until the end of time, for Leo...)
-        build = '%s (branch: %s)' % (s, branch)
+            build = '%s (branch: %s)' % (s, branch)
+        else:
+            branch = 'None'
+            s = s[0:12]
+            build = '%s (branch: %s)' % (s, branch)
     secs = os.path.getmtime(path)
     t = time.localtime(secs)
     date = time.strftime('%Y-%m-%d %H:%M:%S',t)
