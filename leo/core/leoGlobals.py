@@ -966,16 +966,42 @@ class SherlockTracer:
         self.dots = dots                # True: print level dots.
         self.n = 0                      # The frame level on entry to run.
         self.stats = {}                 # Keys are full file names, values are dicts.
-        self.patterns = patterns        # A list of regex patterns to match.
+        self.patterns = None            # A list of regex patterns to match.
         self.pattern_stack = []
         self.show_args = show_args      # True: show args for each function call.
         self.show_return = show_return  # True: show returns from each function.
         self.verbose = verbose          # True: print filename:func
+        self.set_patterns(patterns)
         try:
             from PyQt4 import QtCore
             QtCore.pyqtRemoveInputHook()
         except Exception:
             pass
+    #@+node:ekr.20140326100337.16844: *4* __call__
+    def __call__(self,frame,event,arg):
+        '''Exists so that self.dispatch can return self.'''
+        return self.dispatch(frame,event,arg)
+    #@+node:ekr.20140326100337.16846: *4* bad_pattern
+    def bad_pattern(self,pattern):
+        '''Report a bad Sherlock pattern.'''
+        if pattern not in self.bad_patterns:
+            self.bad_patterns.append(pattern)
+            print('ignoring bad pattern: %s' % pattern)
+    #@+node:ekr.20140326100337.16847: *4* check_pattern
+    def check_pattern(self,pattern):
+        '''Give an error and return False for an invalid pattern.'''
+        try:
+            for prefix in ('+:','-:','+','-'):
+                if pattern.startswith(prefix):
+                    re.match(pattern[len(prefix):],'xyzzy')
+                    return True
+                    break
+            else:
+                self.bad_pattern(pattern)
+                return False
+        except Exception:
+            self.bad_pattern(pattern)
+            return False
     #@+node:ekr.20121128031949.12609: *4* dispatch
     def dispatch(self,frame,event,arg):
         '''The dispatch method passed to sys.settrace.'''
@@ -983,6 +1009,10 @@ class SherlockTracer:
             self.do_call(frame,arg)
         elif event == 'return' and self.show_return:
             self.do_return(frame,arg)
+        # elif event == 'push':
+            # self.push(arg)
+        # elif event == 'pop':
+            # self.pop()
         # Queue this method up again.
         return self.dispatch
     #@+node:ekr.20121128031949.12603: *4* do_call & helper
@@ -1090,7 +1120,7 @@ class SherlockTracer:
         '''
         import re
         try:
-            enabled = False
+            enabled,pattern = False,None
             for pattern in patterns:
                 if pattern.startswith('+:'):
                     if re.match(pattern[2:],fn): 
@@ -1100,6 +1130,7 @@ class SherlockTracer:
                         enabled = False
             return enabled
         except Exception:
+            self.bad_pattern(pattern)
             return False
     #@+node:ekr.20130112093655.10195: *4* get_full_name
     def get_full_name(self,locals_,name):
@@ -1116,11 +1147,6 @@ class SherlockTracer:
     def is_enabled (self,fn,name,patterns):
         '''Return True if tracing for name in fn is enabled.'''
         import re
-        def oops(pattern):
-            if pattern not in self.bad_patterns:
-                self.bad_patterns.append(pattern)
-                print('ignoring bad pattern: %s' % pattern)
-
         enabled = False
         for pattern in patterns:
             try:
@@ -1136,13 +1162,11 @@ class SherlockTracer:
                 elif pattern.startswith('-'):
                     if re.match(pattern[1:],name):
                         enabled = False
-                else: oops(pattern)
+                else:
+                    self.bad_pattern(pattern)
             except Exception:
-                oops(pattern)
+                self.bad_pattern(pattern)
         return enabled
-    #@+node:ekr.20140322090829.16835: *4* oops
-    def oops(self,message):
-        print('SherlockTracer: %s' % message)
     #@+node:ekr.20121128111829.12182: *4* print_stats
     def print_stats (self,patterns=None):
         '''Print all accumulated statisitics.'''
@@ -1161,13 +1185,13 @@ class SherlockTracer:
                 print('/'.join(parts[-2:]))
                 for key in result:
                     print('%4s %s' % (d.get(key),key))
-    #@+node:ekr.20121128031949.12614: *4* run (calls dispatch)
+    #@+node:ekr.20121128031949.12614: *4* run
     # Modified from pdb.Pdb.set_trace.
 
     def run(self,frame=None):
         '''Trace from the given frame or the caller's frame.'''
         import sys
-        print('Sherlock patterns:\n%s' % '\n'.join(self.patterns))
+        print('SherlockTracer.run:patterns:\n%s' % '\n'.join(self.patterns))
         if frame is None:
             frame = sys._getframe().f_back
         # Compute self.n, the number of frames to ignore.
@@ -1175,17 +1199,27 @@ class SherlockTracer:
         while frame:
             frame = frame.f_back
             self.n += 1
-        sys.settrace(self.dispatch)
+        # New: we return self to give easy access to push/pop methods.
+        sys.settrace(self)
     #@+node:ekr.20140322090829.16834: *4* push & pop
     def push(self,patterns):
+        '''Push the old patterns and set the new.'''
         self.pattern_stack.append(self.patterns)
-        self.patterns = patterns
+        self.set_patterns(patterns)
+        print('SherlockTracer.push: %s' % self.patterns)
         
     def pop(self):
+        '''Restore the pushed patterns.'''
         if self.pattern_stack:
             self.patterns = self.pattern_stack.pop()
+            print('SherlockTracer.pop: %s' % self.patterns)
         else:
-            self.oops('pop: pattern stack underflow')
+            print('SherlockTracer.pop: pattern stack underflow')
+
+    #@+node:ekr.20140326100337.16845: *4* set_patterns
+    def set_patterns(self,patterns):
+        '''Set the patterns in effect.'''
+        self.patterns = [z for z in patterns if self.check_pattern(z)]
     #@+node:ekr.20140322090829.16831: *4* show
     def show(self,item):
         '''return the best representation of item.'''
