@@ -967,6 +967,7 @@ class SherlockTracer:
         self.n = 0                      # The frame level on entry to run.
         self.stats = {}                 # Keys are full file names, values are dicts.
         self.patterns = patterns        # A list of regex patterns to match.
+        self.pattern_stack = []
         self.show_args = show_args      # True: show args for each function call.
         self.show_return = show_return  # True: show returns from each function.
         self.verbose = verbose          # True: print filename:func
@@ -1139,6 +1140,9 @@ class SherlockTracer:
             except Exception:
                 oops(pattern)
         return enabled
+    #@+node:ekr.20140322090829.16835: *4* oops
+    def oops(self,message):
+        print('SherlockTracer: %s' % message)
     #@+node:ekr.20121128111829.12182: *4* print_stats
     def print_stats (self,patterns=None):
         '''Print all accumulated statisitics.'''
@@ -1172,6 +1176,16 @@ class SherlockTracer:
             frame = frame.f_back
             self.n += 1
         sys.settrace(self.dispatch)
+    #@+node:ekr.20140322090829.16834: *4* push & pop
+    def push(self,patterns):
+        self.pattern_stack.append(self.patterns)
+        self.patterns = patterns
+        
+    def pop(self):
+        if self.pattern_stack:
+            self.patterns = self.pattern_stack.pop()
+        else:
+            self.oops('pop: pattern stack underflow')
     #@+node:ekr.20140322090829.16831: *4* show
     def show(self,item):
         '''return the best representation of item.'''
