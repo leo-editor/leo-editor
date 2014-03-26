@@ -60,53 +60,91 @@ disable-checker=DESIGN,SIMILARITIES,IMPORTS
 
 # Disable the message(s) with the given id(s).
 
-# C0111 Missing docstring
-# C0301 Line too long
-# C0311 Bad indentation
-# C0321 More than one statement on a single line
-# C0322 Operator not preceded by a space
-# C0323 Operator not followed by a space
-# C0324 Comma not followed by a space
-
-# F0401 Can not import module.
-
-# R0201 Method could be a function.
-# R0903 Too few public methods (0/1)
-
-# W0102 Dangerous default value [] as argument
-# W0104 Statement seems to have no effect
-# W0106 Unnecessary semicolon
-# W0107 Unnecessary pass statement
-# W0122 Use of the exec statement
-# W0141 Used builtin function 'map'
-# W0142 Used * or * magic*
-# W0201 Attribute defined outside __init__
-# W0212 Access to a protected member of a client class
-# W0231 __init__ method from base class is not called
-# W0232 Class has no __init__ method
-# W0401 Wildcard import (pychecker)
-# W0402 Uses of a deprecated module (like string)
-# W0404 Reimport <module>: let pychecker do this.
-# W0406 Module import itself
-# W0602 Using global for x but no assigment is done (leoEditCommands defines classList after all classes).
-# W0603 Using the global statement
-# W0612 Unused variable
-# W0613 Unused argument (sometimes used for debugging)
-# W0621 Redefining <name> from outer scope: especially __pychecker__
-# W0622 Redefining built-in
-# W0631 Using possibly undefined loop variable
-# W0702 No exception type specified
-# W0703 Catch "Exception"
-# W0704 Except doesn't do anything (Except: pass)
-# W1111 Assigning to a function call that only returns None
-
 # Disable some warnings
 
 # disable=W0142,R0201,C0111,C0321,C0322,C0323,C0324,W0404,W0703,W0704
 
 # Disable all common warnings
 
-disable=C0111,C0301,C0321,C0322,C0323,C0324,F0401,R0201,R0902,R0903,W0102,W0122,W0141,W0142,W0201,W0212,W0231,W0232,W0401,W0402,W0404,W0406,W0602,W0603,W0612,W0613,W0621,W0622,W0631,W0702,W0703,W0704,W1111
+# **NOT** Disabled:
+# C0311 Bad indentation
+# W0104 Statement seems to have no effect
+# W0106 Unnecessary semicolon
+# W0107 Unnecessary pass statement
+
+disable=
+   C0111,
+# C0111 Missing docstring
+   C0301,
+# C0301 Line too long
+   C0303,
+# C0303 Trailing whitespace
+   C0321,
+# C0321 More than one statement on a single line
+   C0322,
+# C0322 Operator not followed by a space
+   C0323,
+# C0323 Operator not preceded by a space
+   C0324,
+# C0324 Comma not followed by a space
+   C0325,
+# C0325 Unnecessary parens after print keyword
+   C1001,
+# C1001 Old-style class defined
+   F0401,
+# F0401 Can not import module.
+   R0201,
+# R0201 Method could be a function.
+   R0902,
+# R0902 Too many instance attributes
+   R0903,
+# R0903 Too few public methods (0/1)
+   W0102,
+# W0102 Dangerous default value [] as argument
+   W0122,
+# W0122 Use of the exec statement
+   W0141,
+# W0141 Used builtin function 'map'
+   W0142,
+# W0142 Used * or * magic*
+   W0201,
+# W0201 Attribute defined outside __init__
+   W0212,
+# W0212 Access to a protected member of a client class
+   W0231,
+# W0231 __init__ method from base class is not called
+   W0232,
+# W0232 Class has no __init__ method
+   W0401,
+# W0401 Wildcard import (pychecker)
+   W0402,
+# W0402 Uses of a deprecated module (like string)
+   W0404,
+# W0404 Reimport <module>: let pychecker do this.
+   W0406,
+# W0406 Module import itself
+   W0602,
+# W0602 Using global for x but no assigment is done (leoEditCommands defines classList after all classes).
+   W0603,
+# W0603 Using the global statement
+   W0612,
+# W0612 Unused variable
+   W0613,
+# W0613 Unused argument (sometimes used for debugging)
+   W0621,
+# W0621 Redefining <name> from outer scope: especially __pychecker__
+   W0622,
+# W0622 Redefining built-in
+   W0631,
+# W0631 Using possibly undefined loop variable
+   W0702,
+# W0702 No exception type specified
+   W0703,
+# W0703 Catch "Exception"
+   W0704,
+# W0704 Except doesn\'t do anything
+   W1111
+# W1111 Assigning to function call which only returns None
 
 [REPORTS]
 
@@ -305,8 +343,8 @@ max-locals=100
 max-returns=50
 
 # Maximum number of branch for function / method body
-###max-branchs=12
-max-branchs=100
+###max-branches=12
+max-branches=100
 
 # Maximum number of statements in function / method body
 ###max-statements=50

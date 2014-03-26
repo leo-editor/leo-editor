@@ -114,12 +114,12 @@ def getRecentCoreList():
 
     return (
         # 'runLeo',
-        # 'leoApp',
+        'leoApp',
         # 'leoAtFile',
         # 'leoBridge',
         # 'leoCache',
         # 'leoChapters',
-        'leoCommands',
+        # 'leoCommands',
         # 'leoConfig',
         # 'leoEditCommands',
         # 'leoFileCommands',
@@ -131,7 +131,7 @@ def getRecentCoreList():
         # 'leoIPython',
         # 'leoKeys',
         # 'leoMenu',
-        'leoNodes',
+        # 'leoNodes',
         # 'leoPlugins',
         # 'leoRst',
         # 'leoSessions',
@@ -140,7 +140,7 @@ def getRecentCoreList():
         # 'leoTest',
         # 'leoUndo',
         # 'leoViews',
-        'leoVim',
+        # 'leoVim',
 )
 #@+node:ekr.20120528063627.10137: ** getRecentPluginsList
 def getRecentPluginsList ():
@@ -156,7 +156,7 @@ def getRecentPluginsList ():
         # 'plugins_menu',
         # 'screencast',
         # 'viewrendered',
-        'viewrendered2',
+        # 'viewrendered2',
     )
 #@+node:ekr.20100221142603.5643: ** getTkPass
 def getTkPass():
