@@ -68,6 +68,7 @@ if os.path.exists(path):
             build = '%s (branch: %s)' % (s, branch)
         else:
             branch = 'None'
+            s = s[0:12]
             build = '%s (branch: %s)' % (s, branch)
     secs = os.path.getmtime(path)
     t = time.localtime(secs)
