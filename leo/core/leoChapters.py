@@ -624,20 +624,16 @@ class chapterController:
     def printChaptersTree(self,tag=''):
 
         cc = self ; c = cc.c
-
         chaptersNode = cc.findChaptersNode()
-
+        inTree = False
         for p in c.rootPosition().self_and_siblings():
             for p2 in p.self_and_subtree():
                 if p2 == chaptersNode:
                     inTree = True ; break
-        else:
-            inTree = False
-
+            if inTree:
+                break
         g.trace('-'*40)
-
         full = True
-
         if chaptersNode and full:
             g.pr('@chapters tree...','(in main tree: %s)' % inTree)
             for p in chaptersNode.self_and_subtree():
@@ -724,8 +720,7 @@ class chapterController:
                 theChapter = cc.chaptersDict.get(name)
                 if theChapter.positionIsInChapter(p):
                     return name
-        else:
-            return 'main'
+        return 'main'
     #@+node:ekr.20070610100031: *3* Undo
     #@+node:ekr.20070606075125: *4* afterCreateChapter
     def afterCreateChapter (self,bunch,p):

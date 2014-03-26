@@ -294,25 +294,22 @@ class cacher:
         return str_pos
     #@+node:ekr.20100208082353.5922: *4* getCachedWindowPositionDict
     def getCachedWindowPositionDict (self,fn):
-
+        '''Return a dict containing window positions.'''
         trace = False and not g.unitTesting
         c = self.c
-
         if not c:
             g.internalError('no commander')
             return {}
-
         globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
         key = self.fileKey(fn,globals_tag)
         data = self.db.get('window_position_%s' % (key))
-
+        # pylint: disable=unpacking-non-sequence
         if data:
             top,left,height,width = data
             top,left,height,width = int(top),int(left),int(height),int(width)
             d = {'top':top,'left':left,'height':height,'width':width}
         else:
             d = {}
-
         if trace: g.trace(fn,key,data)
         return d
     #@+node:ekr.20100208071151.5905: *4* readFile (cacher)

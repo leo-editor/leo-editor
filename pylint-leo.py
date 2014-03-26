@@ -44,6 +44,8 @@ def getCoreList():
         'leoTest',
         'leoUndo',
             # WO511: TODO 
+        'leoViews',
+           
     )
 #@+node:ekr.20120528063627.10138: ** getGuiPluginsList
 def getGuiPluginsList ():
@@ -111,14 +113,9 @@ def getPluginsList():
     )
 #@+node:ekr.20120225032124.17089: ** getRecentCoreList (pylint-leo.py)
 def getRecentCoreList():
-
+    
+    # To do: new bugs with pylint 1.1.0..
     return (
-        # 'runLeo',
-        'leoApp',
-        # 'leoAtFile',
-        # 'leoBridge',
-        # 'leoCache',
-        # 'leoChapters',
         # 'leoCommands',
         # 'leoConfig',
         # 'leoEditCommands',
@@ -126,33 +123,62 @@ def getRecentCoreList():
         # 'leoFind',
         # 'leoFrame',
         # 'leoGlobals',
-        # 'leoGui',
-        # 'leoImport',
         # 'leoIPython',
         # 'leoKeys',
-        # 'leoMenu',
         # 'leoNodes',
+        # 'leoShadow',
+        # 'leoUndo',
+    )
+
+
+    return (
+        # 'runLeo',
+        # 'leoApp',
+        # 'leoAtFile',
+        # 'leoBridge',
+        'leoCache',
+        'leoChapters',
+        'leoCommands',
+        'leoConfig',
+        'leoEditCommands',
+        'leoFileCommands',
+        'leoFind',
+        'leoFrame',
+        'leoGlobals',
+        # 'leoGui',
+        # 'leoImport',
+        'leoIPython',
+        'leoKeys',
+        # 'leoMenu',
+        'leoNodes',
         # 'leoPlugins',
         # 'leoRst',
         # 'leoSessions',
-        # 'leoShadow',
+        'leoShadow',
         # 'leoTangle',
         # 'leoTest',
-        # 'leoUndo',
-        # 'leoViews',
+        'leoUndo',
+        'leoViews',
         # 'leoVim',
 )
 #@+node:ekr.20120528063627.10137: ** getRecentPluginsList
 def getRecentPluginsList ():
+    
+    # To do: new bugs with pytlint 1.1.0
+    return (
+        # 'mod_scripting',
+        # 'nested_splitter',
+        # 'qtGui',
+    )
 
     return (
         # 'baseNativeTree',
         # 'contextmenu',
         # 'codewisecompleter',
         # 'internal_ipkernel.py',
-        # 'mod_scripting',
-        # 'nested_splitter',
-        # 'qtGui',
+        'mod_scripting',
+        'nested_splitter',
+        'qtGui',
         # 'plugins_menu',
         # 'screencast',
         # 'viewrendered',
