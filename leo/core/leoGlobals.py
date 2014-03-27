@@ -987,7 +987,7 @@ class SherlockTracer:
         '''Report a bad Sherlock pattern.'''
         if pattern not in self.bad_patterns:
             self.bad_patterns.append(pattern)
-            print('ignoring bad pattern: %s' % pattern)
+            print('\nignoring bad pattern: %s\n' % pattern)
     #@+node:ekr.20140326100337.16847: *4* check_pattern
     def check_pattern(self,pattern):
         '''Give an error and return False for an invalid pattern.'''

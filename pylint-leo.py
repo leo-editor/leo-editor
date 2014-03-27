@@ -2,9 +2,15 @@
 #@+node:ekr.20100221142603.5638: * @file ../../pylint-leo.py
 #@@language python
 
+# import these *after* clearing the screen.
+    # import astroid.bases
+    # from pylint import lint
+import leo.core.leoGlobals as g
 import optparse
 import os
 import sys
+import time
+
 #@+others
 #@+node:ekr.20100221142603.5640: ** getCoreList
 def getCoreList():
@@ -114,7 +120,7 @@ def getPluginsList():
 def getRecentCoreList():
     '''Return the list of core files processed by the -r option.'''
     return (
-        # 'runLeo',
+        'runLeo',
         # 'leoApp',
         # 'leoAtFile',
         # 'leoBridge',
@@ -179,40 +185,6 @@ def getTkPass():
         # 'templates','textnode','tkGui','toolbar',
         # 'xcc_nodes',
    )
-#@+node:ekr.20140327044434.16868: ** ekr_infer_stmts (monkey-patch for --tt option)
-# Replaces astroid.bases._infer_stmts.
-def ekr_infer_stmts(stmts, context, frame=None):
-    """return an iterator on statements inferred by each statement in <stmts>
-    """
-    import astroid.bases as bases
-    YES = bases.YES
-    stmt = None
-    infered = False
-    if context is not None:
-        name = context.lookupname
-        context = context.clone()
-    else:
-        name = None
-        context = InferenceContext()
-    result = []
-    for stmt in stmts:
-        if stmt is YES:
-            result.append(stmt) # yield stmt
-            infered = True
-            continue
-        context.lookupname = stmt._infer_name(frame, name)
-        try:
-            for infered in stmt.infer(context):
-                result.append(infered) # yield infered
-                infered = True
-        except UnresolvableName:
-            continue
-        except InferenceError:
-            result.append(YES) # yield YES
-            infered = True
-    if not infered:
-        raise InferenceError(str(stmt))
-    return result
 #@+node:ekr.20100221142603.5644: ** run (pylint-leo.py)
 # Important: I changed lint.py:Run.__init__ so pylint can handle more than one file.
 # From: sys.exit(self.linter.msg_status)
@@ -234,27 +206,30 @@ def run(theDir,fn,rpython=False):
     if os.path.exists(fn):
         print('pylint-leo.py: %s' % (fn))
         if scope == 'stc-test': # The --tt option.
-            import leo.core.leoGlobals as g
-            import astroid.bases as bases
-            bases._infer_stmts=ekr_infer_stmts
-            print('pylint-leo.py --tt: ***** monkey-patching bases._infer_stmts')
             print('pylint-leo.py --tt: enabling Sherlock traces')
             print('pylint-leo.py --tt: patterns contained in plyint-leo.py')
-            sherlock = g.SherlockTracer(show_return=True,verbose=True, # verbose: show filenames.
+            sherlock = g.SherlockTracer(show_return=True,
+                verbose=True, # verbose: show filenames.
                 patterns=[ 
                 #@+<< Sherlock patterns for pylint >>
                 #@+node:ekr.20130111060235.10182: *3* << Sherlock patterns for pylint >>
-                # '+:.*bases.py',
-                '+PyLinter::add_message',
-                # '+.*visit_class',
-                '+BasicErrorChecker::visit_*',
+                # Note:  A leading * is never valid: change to .*
+
+                '+TypeChecker::add_message',
+                    # '+.*add_message',
+                    # '+PyLinter::add_message',
+                    # '+TextReporter::add_message'
+                '-.*visit*',
+                    # '+.*visit_class',
+                    # '+Basic*::visit_*',
                 '+:.*typecheck.py',
                 '+:.*inference.py',
+
+                # '+:.*bases.py',
                 # '+.*path_raise_wrapper',
 
                 # Enable everything.
                 # # '+.*',
-
 
                 # # Disable entire files.
                 # # '-:.*\\lib\\.*', # Disables everything.
@@ -439,14 +414,20 @@ else:
 
 if tables_table and sys.platform.startswith('win'):
     if scope != 'file':
-        os.system('cls')
+        g.cls()
+        # os.system('cls')
 
+# Do these imports **after** clearing the screen.
+import astroid.bases
 from pylint import lint
     # Use the version of pylint in pythonN/Lib/site-packages.
-    # Do the import *after* clearing the console.
-print(lint)
+# print(lint)
 
+t1 = time.clock()
 for table,theDir in tables_table:
     for fn in table:
         run(theDir,fn)
+print('astroid.bases.ekr_infer_stmts_items: %s' %
+    astroid.bases.ekr_infer_stmts_items)
+print('time: %s' % g.timeSince(t1))
 #@-leo
