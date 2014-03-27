@@ -5,7 +5,6 @@
 import optparse
 import os
 import sys
-
 #@+others
 #@+node:ekr.20100221142603.5640: ** getCoreList
 def getCoreList():
@@ -180,18 +179,51 @@ def getTkPass():
         # 'templates','textnode','tkGui','toolbar',
         # 'xcc_nodes',
    )
+#@+node:ekr.20140327044434.16868: ** ekr_infer_stmts (monkey-patch for --tt option)
+# Replaces astroid.bases._infer_stmts.
+def ekr_infer_stmts(stmts, context, frame=None):
+    """return an iterator on statements inferred by each statement in <stmts>
+    """
+    import astroid.bases as bases
+    YES = bases.YES
+    stmt = None
+    infered = False
+    if context is not None:
+        name = context.lookupname
+        context = context.clone()
+    else:
+        name = None
+        context = InferenceContext()
+    result = []
+    for stmt in stmts:
+        if stmt is YES:
+            result.append(stmt) # yield stmt
+            infered = True
+            continue
+        context.lookupname = stmt._infer_name(frame, name)
+        try:
+            for infered in stmt.infer(context):
+                result.append(infered) # yield infered
+                infered = True
+        except UnresolvableName:
+            continue
+        except InferenceError:
+            result.append(YES) # yield YES
+            infered = True
+    if not infered:
+        raise InferenceError(str(stmt))
+    return result
 #@+node:ekr.20100221142603.5644: ** run (pylint-leo.py)
 # Important: I changed lint.py:Run.__init__ so pylint can handle more than one file.
 # From: sys.exit(self.linter.msg_status)
 # To:   print('EKR: exit status',self.linter.msg_status)
 
 def run(theDir,fn,rpython=False):
-
+    '''Run pylint on fn.'''
     fn = os.path.join('leo',theDir,fn)
     rc_fn = os.path.abspath(os.path.join('leo','test','pylint-leo-rc.txt'))
     assert os.path.exists(rc_fn)
     # print('run:scope:%s' % scope)
-
     args = ['--rcfile=%s' % (rc_fn)]
     args.append('--disable=I0011')
         # We never want to see the I0011 message: locally disabling n.
@@ -199,14 +231,15 @@ def run(theDir,fn,rpython=False):
     fn = os.path.abspath(fn)
     if not fn.endswith('.py'): fn = fn+'.py'
     args.append(fn)
-
     if os.path.exists(fn):
-        # print('pylint-leo.py: debug: %s %s' % (g_option_debug,fn))
         print('pylint-leo.py: %s' % (fn))
-        if True and scope == 'stc-test':
+        if scope == 'stc-test': # The --tt option.
             import leo.core.leoGlobals as g
-            print('pylint-leo.py: enabling Sherlock traces')
-            print('patterns contained in plyint-leo.py')
+            import astroid.bases as bases
+            bases._infer_stmts=ekr_infer_stmts
+            print('pylint-leo.py --tt: ***** monkey-patching bases._infer_stmts')
+            print('pylint-leo.py --tt: enabling Sherlock traces')
+            print('pylint-leo.py --tt: patterns contained in plyint-leo.py')
             sherlock = g.SherlockTracer(show_return=True,verbose=True, # verbose: show filenames.
                 patterns=[ 
                 #@+<< Sherlock patterns for pylint >>
@@ -306,8 +339,6 @@ def run(theDir,fn,rpython=False):
  ])
             sherlock.run()
             lint.Run(args)
-                # ,debug=g_option_debug) # New keyword arg.
-                # Maybe use logging option??
             sherlock.stop()
         else:
             lint.Run(args)
@@ -315,11 +346,8 @@ def run(theDir,fn,rpython=False):
         print('file not found:',fn)
 #@+node:ekr.20120307142211.9886: ** scanOptions
 def scanOptions():
-
     '''Handle all options, remove them from sys.argv.'''
-    
-    global g_option_fn,g_option_debug
-
+    global g_option_fn
     # This automatically implements the -h (--help) option.
     parser = optparse.OptionParser()
     add = parser.add_option
@@ -333,12 +361,9 @@ def scanOptions():
     #add('-s', action='store_true', help = 'suppressions')
     add('-t', action='store_true', help = 'static type checking')
     add('--tt',action='store_true', help = 'stc test')
-    add('--debug',action='store_true',help = 'debug mode')
 
     # Parse the options.
     options,args = parser.parse_args()
-    if options.debug:
-        g_option_debug = True
     if   options.a: return 'all'
     elif options.c: return 'core'
     elif options.e: return 'external'
@@ -355,9 +380,7 @@ def scanOptions():
     elif options.tt:return 'stc-test'
     else:           return 'all'
 #@-others
-
 g_option_fn = None
-g_option_debug = False
 scope = scanOptions()
 coreList            = getCoreList()
 externalList        = ('lproto',) # 'ipy_leo',
@@ -419,9 +442,8 @@ if tables_table and sys.platform.startswith('win'):
         os.system('cls')
 
 from pylint import lint
-    # Use the version of pylint in python26/Lib/site-packages.
+    # Use the version of pylint in pythonN/Lib/site-packages.
     # Do the import *after* clearing the console.
-
 print(lint)
 
 for table,theDir in tables_table:
