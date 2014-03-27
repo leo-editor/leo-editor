@@ -1003,32 +1003,25 @@ class SherlockTracer:
             return False
     #@+node:ekr.20121128031949.12609: *4* dispatch
     def dispatch(self,frame,event,arg):
-        '''The dispatch method passed to sys.settrace.'''
+        '''The dispatch method.'''
         if event == 'call':
             self.do_call(frame,arg)
         elif event == 'return' and self.show_return:
             self.do_return(frame,arg)
-        # elif event == 'push':
-            # self.push(arg)
-        # elif event == 'pop':
-            # self.pop()
-        # Queue this method up again.
-        return self.dispatch
+        # Queue the SherlockTracer instance again.
+        return self
     #@+node:ekr.20121128031949.12603: *4* do_call & helper
-    def do_call(self,frame,arg): # arg not used.
+    def do_call(self,frame,unused_arg):
         '''Trace through a function call.'''
         import os
         frame1 = frame
         code = frame.f_code
-        fn   = code.co_filename
+        fn = code.co_filename
         locals_ = frame.f_locals
         name = code.co_name
         full_name = self.get_full_name(locals_,name)
-        if (
-            ### self.is_enabled(fn,name,self.patterns) and
-            self.is_enabled(fn,full_name,self.patterns)
-        ):
-            n = 0
+        if self.is_enabled(fn,full_name,self.patterns):
+            n = 0 # The number of callers of this def.
             while frame:
                 frame = frame.f_back
                 n += 1
@@ -1038,7 +1031,7 @@ class SherlockTracer:
             leadin = '+' if self.show_return else ''
             args = '(%s)' % self.get_args(frame1) if self.show_args else ''
             print('%s%s%s%s%s' % (path,dots,leadin,full_name,args))
-        # Alwas update stats.
+        # Always update stats.
         d = self.stats.get(fn,{})
         d[full_name] = 1 + d.get(full_name,0)
         self.stats[fn] = d
@@ -1074,10 +1067,7 @@ class SherlockTracer:
         locals_ = frame.f_locals
         name = code.co_name
         full_name = self.get_full_name(locals_,name)
-        if (
-            ### self.is_enabled(fn,name,self.patterns) and
-            self.is_enabled(fn,full_name,self.patterns)
-        ):
+        if self.is_enabled(fn,full_name,self.patterns):
             n = 0
             while frame:
                 frame = frame.f_back
@@ -1198,7 +1188,7 @@ class SherlockTracer:
         while frame:
             frame = frame.f_back
             self.n += 1
-        # New: we return self to give easy access to push/pop methods.
+        # Pass self to sys.settrace to give easy access to all methods.
         sys.settrace(self)
     #@+node:ekr.20140322090829.16834: *4* push & pop
     def push(self,patterns):
