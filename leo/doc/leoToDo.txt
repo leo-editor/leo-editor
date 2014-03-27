@@ -2124,8 +2124,7 @@ def computeBindingLetter(self,kind):
     for letter,kind2 in table:
         if kind.lower().endswith(kind2.lower()):
             return letter
-    else:
-        return 'D' if kind.find('mode') == -1 else '@'
+    return 'D' if kind.find('mode') == -1 else '@'
 .. @+node:ekr.20120223062418.10421: *7* lm.computeLocalSettings
 def computeLocalSettings (self,c,settings_d,shortcuts_d,localFlag):
 
@@ -3615,8 +3614,7 @@ def computeBindingLetter(self,kind):
     for letter,kind2 in table:
         if kind.lower().endswith(kind2.lower()):
             return letter
-    else:
-        return 'D' if kind.find('mode') == -1 else '@'
+    return 'D' if kind.find('mode') == -1 else '@'
 .. @+node:ekr.20120223062418.10421: *6* lm.computeLocalSettings
 def computeLocalSettings (self,c,settings_d,shortcuts_d,localFlag):
 
@@ -15048,10 +15046,10 @@ the same line as the at-sign.
 # It doesn't seem easy.
 .. @+node:ekr.20110605121601.18422: *4* editLabelHelper (leoQtTree)
 def editLabelHelper (self,item,selectAll=False,selection=None):
-
-    '''Called by nativeTree.editLabel to do
-    gui-specific stuff.'''
-
+    '''
+    Called by nativeTree.editLabel to do
+    gui-specific stuff.
+    '''
     trace = False and not g.unitTesting
     w = self.treeWidget
     w.setCurrentItem(item)
@@ -15064,6 +15062,7 @@ def editLabelHelper (self,item,selectAll=False,selection=None):
         s = e.text() ; len_s = len(s)
         if s == 'newHeadline': selectAll=True
         if selection:
+            # pylint: disable=unpacking-non-sequence
             i,j,ins = selection
             start,n = i,abs(i-j)
                 # Not right for backward searches.

@@ -214,6 +214,8 @@ required-attributes=
 # not require a docstring
 no-docstring-rgx=__.*__
 
+
+
 # Regular expression which should only match correct module names
 # module-rgx=(([a-z_][a-z0-9_]*)|([a-zA-Z0-9]+))$
 module-rgx=[a-zA-Z][a-zA-Z0-9_]+$
@@ -237,6 +239,7 @@ method-rgx=[a-zA-Z_][a-zA-Z0-9_]*$
 # Regular expression which should only match correct instance attribute names
 #attr-rgx=[a-z_][a-z0-9_]{2,30}$
 attr-rgx=[a-zA-Z_][a-zA-Z0-9_]*$
+class-attribute-rgx=[a-zA-Z_][a-zA-Z0-9_]*$
 
 # Regular expression which should only match correct argument names
 #argument-rgx=[a-z_][a-z0-9_]{2,30}$

@@ -1579,8 +1579,7 @@ class LoadManager:
         for letter,kind2 in table:
             if kind.lower().endswith(kind2.lower()):
                 return letter
-        else:
-            return 'D' if kind.find('mode') == -1 else '@'
+        return 'D' if kind.find('mode') == -1 else '@'
     #@+node:ekr.20120223062418.10421: *4* lm.computeLocalSettings
     def computeLocalSettings (self,c,settings_d,shortcuts_d,localFlag):
 

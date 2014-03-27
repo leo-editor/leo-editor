@@ -973,6 +973,7 @@ class SherlockTracer:
         self.verbose = verbose          # True: print filename:func
         self.set_patterns(patterns)
         try:
+            from PyQt4 import QtGui # Work-around a pylint/pyqt issue.
             from PyQt4 import QtCore
             QtCore.pyqtRemoveInputHook()
         except Exception:
@@ -995,10 +996,8 @@ class SherlockTracer:
                 if pattern.startswith(prefix):
                     re.match(pattern[len(prefix):],'xyzzy')
                     return True
-                    break
-            else:
-                self.bad_pattern(pattern)
-                return False
+            self.bad_pattern(pattern)
+            return False
         except Exception:
             self.bad_pattern(pattern)
             return False
@@ -3654,6 +3653,7 @@ def scanError(s):
 # A quick and dirty sscanf.  Understands only %s and %d.
 
 def scanf (s,pat):
+    # pylint: disable=anomalous-backslash-in-string
     count = pat.count("%s") + pat.count("%d")
     pat = pat.replace("%s","(\S+)")
     pat = pat.replace("%d","(\d+)")
@@ -3837,6 +3837,7 @@ def skip_heredoc_string(s,i):
 
     j = i
     assert(g.match(s,i,"<<<"))
+    # pylint: disable=anomalous-backslash-in-string
     m = re.match("\<\<\<([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)", s[i:])
     if (None == m):
         i += 3
@@ -5601,7 +5602,7 @@ class fileLikeObject:
     #@-others
 #@+node:tbrown.20130411121812.28335: *3* g.find_constants_defined
 def find_constants_defined(text):
-    """find_constants - Return a dict of constants defined in the supplied text.
+    r"""find_constants - Return a dict of constants defined in the supplied text.
     
     NOTE: this supports a legacy way of specifying @<identifiers>, regular
     @string and @color settings should be used instead, so calling this

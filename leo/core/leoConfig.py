@@ -452,6 +452,7 @@ class ParserBaseClass:
             ans = self.patchMenuTree(g.app.config.menusList, targetPath)
             if ans:
                 if trace: g.es_print("Patching ("+mode+' '+source+") at "+targetPath)
+                # pylint: disable=unpacking-non-sequence
                 list_, idx = ans
                 if mode not in ('copy', 'cut'):
                     if source != 'clipboard':
@@ -1822,18 +1823,12 @@ class LocalConfigManager:
         return c.nullPosition()
     #@+node:ekr.20041120074536: *5* c.config.settingsRoot
     def settingsRoot (self):
-
         '''Return the position of the @settings tree.'''
-
-        # g.trace(c,c.rootPosition())
-
         c = self.c
-
         for p in c.all_unique_positions():
             if p.h.rstrip() == "@settings":
                 return p.copy()
-        else:
-            return c.nullPosition()
+        return c.nullPosition()
     #@+node:ekr.20120215072959.12515: *4* c.config.Getters
     #@@nocolor-node
 

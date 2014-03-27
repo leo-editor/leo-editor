@@ -1359,9 +1359,7 @@ class atFile:
             at.endSentinelLevelStack.append(len(at.thinNodeStack))
     #@+node:ekr.20041005105605.85: *6* at.readStartNode & helpers
     def readStartNode (self,s,i,middle=False):
-
         """Read an @+node or @+middle sentinel."""
-
         at = self
         gnx,headline,i,level,ok = at.parseNodeSentinel(s,i,middle)
         if not ok: return
@@ -1577,7 +1575,6 @@ class atFile:
     def parseNodeSentinel (self,s,i,middle):
 
         at = self
-
         if middle:
             assert g.match(s,i,"+middle:"),'missing +middle'
             i += 8
@@ -1585,14 +1582,14 @@ class atFile:
             if not g.match(s,i,'+node:'): g.trace(repr(s[i:i+40]),g.callers(5))
             assert g.match(s,i,"+node:"),'missing +node:'
             i += 6
-
         # Get the gnx and the headline.
         if at.thinFile:
             gnx,i,level,ok = at.parseThinNodeSentinel(s,i)
-            if not ok: return None,None,None,False
+            if not ok:
+                # Bug fix: 2014/03/26: return 5-tuple
+                return None,None,None,None,False
         else:
             gnx,level = None,None
-
         headline = at.getNodeHeadline(s,i)
         return gnx,headline,i,level,True
     #@+node:ekr.20100625085138.5955: *8* at.getNodeHeadline

@@ -540,9 +540,7 @@ class NestedSplitter(QtGui.QSplitter):
         """add a widget relative to another already present widget"""
 
         trace = False and g and not g.unitTesting
-
         horizontal,vertical = QtConst.Horizontal,QtConst.Vertical
-
         layout = self.top().get_layout()
 
         def hunter(layout, id_):
@@ -567,45 +565,35 @@ class NestedSplitter(QtGui.QSplitter):
 
         if l is None:
             return False
-
+        # pylint: disable=unpacking-non-sequence
         layout, pos = l
-
         orient = layout['orientation']
-
         if trace:
             print()
-            g.trace('widget_id: %s side: %s pos: %s orient: %s' % (widget_id,side,pos,orient))
+            g.trace('widget_id: %s side: %s pos: %s orient: %s' % (
+                widget_id,side,pos,orient))
             # g.trace('before layout...\n%s' % (self.layout_to_text(layout)))
-
-
         if (orient == horizontal and side in ('right-of','left-of') or
             orient == vertical   and side in ('above', 'below')
         ):
             # easy case, just insert the new thing, what, 
             # either side of old, in existng splitter
-            if trace:
-                g.trace('** use existing splitter: orient %s side: %s' % (orient,side))
-
+            if trace: g.trace(
+                '** use existing splitter: orient %s side: %s' % (orient,side))
             if side in ('right-of', 'below'):
                 pos += 1
-
             layout['splitter'].insert(pos, what)
-
         else:
-
             # hard case, need to replace old with a new splitter
-            if trace:
-                g.trace('** create splitter: orient %s side: %s' % (orient,side))
-
+            if trace: g.trace(
+                '** create splitter: orient %s side: %s' % (orient,side))
             if side in ('right-of', 'left-of'):
                 ns = NestedSplitter(orientation=horizontal,root=self.root)
             else:
                 ns = NestedSplitter(orientation=vertical,root=self.root)
-
             old = layout['content'][pos]
             if not isinstance(old, QtGui.QWidget):  # see get_layout()
                 old = layout['splitter']
-
             # put new thing, what, in new splitter, no impact on anything else
             ns.insert(0, what)
             # then swap the new splitter with the old content
@@ -613,10 +601,8 @@ class NestedSplitter(QtGui.QSplitter):
             # now put the old content in the new splitter,
             # doing this sooner would mess up the index (pos)
             ns.insert(0 if side in ('right-of','below') else 1, old)
-
         if trace:
             g.trace('after layout...\n%s' % (self.layout_to_text(layout)))
-
         return True
     #@+node:ekr.20110605121601.17972: *3* choice_menu
     def choice_menu(self, button, pos):
@@ -911,7 +897,6 @@ class NestedSplitter(QtGui.QSplitter):
         for k in self.root.holders:
             if hasattr(widget, k):
                 holder = self.root.holders[k]
-
                 if holder == 'TOP':
                     holder = other_top or self.top()
                 if hasattr(holder, "addTab"):
@@ -919,13 +904,11 @@ class NestedSplitter(QtGui.QSplitter):
                 else:
                     holder.addWidget(widget)
                 return True
+        if widget.close():
+            widget.setParent(None)
+            return True
         else:
-            if widget.close():
-                widget.setParent(None)
-                return True
-
-        return False
-
+            return False
     #@+node:ekr.20110605121601.17982: *3* replace_widget & replace_widget_at_index
     def replace_widget(self, old, new):
         "Swap the provided widgets in place"""
@@ -1020,19 +1003,16 @@ class NestedSplitter(QtGui.QSplitter):
     #@+node:ekr.20110605121601.17987: *3* swap_with_marked
     def swap_with_marked(self, index, side):
 
+        # pylint: disable=unpacking-non-sequence
         osplitter, oidx, oside, ow = self.root.marked
-
         idx = index+side-1
         # convert from handle index to widget index
         # 1 already subtracted from oside in mark()
         w = self.widget(idx)
-
         if self.invalid_swap(w, ow):
             return
-
         self.insertWidget(idx, ow)
         osplitter.insertWidget(oidx, w)
-
         self.root.marked = self, self.indexOf(ow), 0, ow
         self.equalize_sizes()
         osplitter.equalize_sizes()

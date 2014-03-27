@@ -1563,9 +1563,8 @@ class position (object):
                     return p
                 else:
                     if trace and verbose: g.trace('**** not visible',p)
-        else:
-            if trace: g.trace('*** return None ***')
-            return p
+        if trace: g.trace('*** return None ***')
+        return p
     #@+node:ekr.20090715145956.6166: *5* checkVisBackLimit
     def checkVisBackLimit (self,limit,limitIsVisible,p):
 
@@ -1612,8 +1611,7 @@ class position (object):
                 if done: return val
                 if p.isVisible(c):
                     return p.copy()
-        else:
-            return p
+        return p
     #@+node:ekr.20090715145956.6167: *5* checkVisNextLimit
     def checkVisNextLimit (self,limit,p):
 

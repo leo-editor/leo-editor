@@ -3820,25 +3820,20 @@ class leoQtBody (leoFrame.leoBody):
                 self.onFocusOut(w2)
     #@+node:ekr.20110605121601.18210: *6* ensurePositionExists (qtBody)
     def ensurePositionExists(self,w):
-
         '''Return True if w.leo_p exists or can be reconstituted.'''
-
         trace = False and not g.unitTesting
         c = self.c
-
         if c.positionExists(w.leo_p):
             return True
-        else:
-            if trace: g.trace('***** does not exist',w.leo_name)
-            for p2 in c.all_unique_positions():
-                if p2.v and p2.v == w.leo_p.v:
-                    if trace: g.trace(p2.h)
-                    w.leo_p = p2.copy()
-                    return True
-            else:
-                # This *can* happen when selecting a deleted node.
-                w.leo_p = c.p.copy()
-                return False
+        if trace: g.trace('***** does not exist',w.leo_name)
+        for p2 in c.all_unique_positions():
+            if p2.v and p2.v == w.leo_p.v:
+                if trace: g.trace(p2.h)
+                w.leo_p = p2.copy()
+                return True
+        # This *can* happen when selecting a deleted node.
+        w.leo_p = c.p.copy()
+        return False
     #@+node:ekr.20110605121601.18211: *6* injectIvars (qtBody)
     def injectIvars (self,parentFrame,name,p,wrapper):
 
@@ -5564,33 +5559,27 @@ class leoQtLog (leoFrame.leoLog):
 
         trace = False and not g.unitTesting
         c,w = self.c,self.tabWidget
-
         for i in range(w.count()):
             if tabName == w.tabText(i):
                 w.setCurrentIndex(i)
-
                 widget = w.widget(i)
-
                 # 2011/11/21: Set the .widget ivar only if there is a wrapper.
                 wrapper = hasattr(widget,'leo_log_wrapper') and widget.leo_log_wrapper
                 if wrapper:
                     self.widget = wrapper
                 if trace: g.trace(tabName,'widget',widget,'wrapper',wrapper)
-
                 # Do *not* set focus here!
                     # c.widgetWantsFocus(tab_widget)
-
                 if tabName == 'Spell':
                     # the base class uses this as a flag to see if
                     # the spell system needs initing
                     self.frameDict['Spell'] = widget
-
                 self.tabName = tabName # 2011/11/20
                 return True
-        else:
-            self.tabName = None # 2011/11/20
-            if trace: g.trace('** not found',tabName)
-            return False
+        # General case.
+        self.tabName = None # 2011/11/20
+        if trace: g.trace('** not found',tabName)
+        return False
     #@+node:ekr.20110605121601.18333: *4* leoQtLog color tab stuff
     def createColorPicker (self,tabName):
 
@@ -6851,10 +6840,10 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
         return item
     #@+node:ekr.20110605121601.18422: *6* editLabelHelper (leoQtTree)
     def editLabelHelper (self,item,selectAll=False,selection=None):
-
-        '''Called by nativeTree.editLabel to do
-        gui-specific stuff.'''
-
+        '''
+        Called by nativeTree.editLabel to do
+        gui-specific stuff.
+        '''
         trace = False and not g.unitTesting
         w = self.treeWidget
         w.setCurrentItem(item)
@@ -6867,6 +6856,7 @@ class leoQtTree (baseNativeTree.baseNativeTreeWidget):
             s = e.text() ; len_s = len(s)
             if s == 'newHeadline': selectAll=True
             if selection:
+                # pylint: disable=unpacking-non-sequence
                 i,j,ins = selection
                 start,n = i,abs(i-j)
                     # Not right for backward searches.
@@ -8223,10 +8213,9 @@ class leoQtGui(leoGui.leoGui):
                     if trace: g.trace('new',id(image),theDir,name)
                     return image
                 elif trace: g.trace('Directory not found',theDir)
-            else:
-                if trace: g.trace('Not found',name)
-                return None
-
+            # No image found.
+            if trace: g.trace('Not found',name)
+            return None
         except Exception:
             g.es_print("exception loading:",fullname)
             g.es_exception()
@@ -10872,11 +10861,9 @@ class jEditColorizer:
                 self.colorRangeWithTag(s,0,j,'leokeyword') # 'docpart')
                 self.clearState()
                 return j
-        else:
-            self.setRestart(self.restartDocPart)
-            self.colorRangeWithTag(s,0,len(s),'docpart')
-
-            return len(s)
+        self.setRestart(self.restartDocPart)
+        self.colorRangeWithTag(s,0,len(s),'docpart')
+        return len(s)
     #@+node:ekr.20110605121601.18604: *6* match_leo_keywords
     def match_leo_keywords(self,s,i):
 

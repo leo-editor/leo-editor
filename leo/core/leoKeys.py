@@ -755,10 +755,10 @@ class AutoCompleterClass:
             # Return the nearest enclosing class.
             for p in c.p.parents():
                 h = p.h
+                # pylint: disable=anomalous-backslash-in-string
                 m = re.search('class\s+(\w+)', h)
                 if m:
                     return 'class',[m.group(1)]
-
         if 1:
             aList = []
         else:
@@ -2443,6 +2443,7 @@ class keyHandlerClass:
         Enter the given return state when done.
         The prefix does not form the arg.  The prefix defaults to the k.getLabel().
         '''
+        # pylint: disable=unpacking-non-sequence
         trace = False and not g.app.unitTesting
         k = self ; c = k.c
         state = k.getState('getArg')
@@ -2966,11 +2967,12 @@ class keyHandlerClass:
                 return True
         # Second, honor general modes.
         # Handle vim mode.
-        if k.c.vim_mode and state in ('full-command','vim-mode'):
-            if trace: g.trace('vim-mode',state)
-            k.getVimArg(event)
-            return True
-        elif state == 'getArg':
+        ### if k.c.vim_mode and state in ('full-command','vim-mode'):
+            ### if trace: g.trace('vim-mode',state)
+            ### k.getVimArg(event)
+            ### return True
+        ### el
+        if state == 'getArg':
             k.getArg(event,stroke=stroke)
             return True
         elif state == 'getFileName':
@@ -3985,36 +3987,29 @@ class keyHandlerClass:
         return s.startswith('f') and len(s) <= 3 and s[1:].isdigit()
     #@+node:ekr.20061031131434.182: *4* k.isPlainKey
     def isPlainKey (self,stroke):
-
         '''Return true if the shortcut refers to a plain (non-Alt,non-Ctl) key.'''
-
         k = self
-        if not stroke: return False
-
+        if not stroke:
+            return False
         assert g.isString(stroke) or g.isStroke(stroke)
         shortcut = stroke.s if g.isStroke(stroke) else stroke
-
         # altgr combos (Alt+Ctrl) are always plain keys
         if shortcut.startswith('Alt+Ctrl+') and not self.enable_alt_ctrl_bindings:
             return True
-
         for z in ('Alt','Ctrl','Command','Meta'):
             if shortcut.find(z) != -1:            
                 return False
-        else:
-            # Careful, allow bare angle brackets for unit tests.
-            if shortcut.startswith('<') and shortcut.endswith('>'):
-                shortcut = shortcut[1:-1]
-
-            isPlain = (
-                len(shortcut) == 1 or
-                len(k.guiBindNamesInverseDict.get(shortcut,'')) == 1 or
-                # A hack: allow Return to be bound to command.
-                shortcut in ('Tab','\t')
-            )
-
-            # g.trace(isPlain,repr(shortcut))
-            return isPlain and not self.isFKey(shortcut)
+        # Careful, allow bare angle brackets for unit tests.
+        if shortcut.startswith('<') and shortcut.endswith('>'):
+            shortcut = shortcut[1:-1]
+        isPlain = (
+            len(shortcut) == 1 or
+            len(k.guiBindNamesInverseDict.get(shortcut,'')) == 1 or
+            # A hack: allow Return to be bound to command.
+            shortcut in ('Tab','\t')
+        )
+        # g.trace(isPlain,repr(shortcut))
+        return isPlain and not self.isFKey(shortcut)
     #@+node:ekr.20061031131434.191: *4* k.prettyPrintKey
     def prettyPrintKey (self,stroke,brief=False):
 

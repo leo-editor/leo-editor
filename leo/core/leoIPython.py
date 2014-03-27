@@ -22,6 +22,7 @@ versions that define the IPKernelApp class.
 import sys
 import leo.core.leoGlobals as g
 import_trace = True and not g.unitTesting
+# pylint: disable=no-name-in-module
 try:
     from IPython.lib.kernel import connect_qtconsole
     if import_trace: print('ok: IPython.lib.kernel import connect_qtconsole')

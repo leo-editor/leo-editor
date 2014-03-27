@@ -1150,8 +1150,7 @@ class rstCommands:
         for p in current.self_and_parents():
             if p.h.startswith('@rst'):
                 return self.processTree(p,ext=ext,toString=True,justOneFile=True)
-        else:
-            return self.processTree(current,ext=ext,toString=True,justOneFile=True)
+        return self.processTree(current,ext=ext,toString=True,justOneFile=True)
     #@+node:ekr.20090512153903.5803: *4* writeAtAutoFile
     def writeAtAutoFile (self,p,fileName,outputFile,trialWrite=False):
 
@@ -1221,8 +1220,7 @@ class rstCommands:
                 g.error('unsafe @auto-rst')
                 g.es('body text will be ignored in\n',p.h)
                 return False
-        else:
-            return True
+        return True
     #@+node:ekr.20090502071837.41: *3* Options
     #@+node:ekr.20090502071837.42: *4* createDefaultOptionsDict
     def createDefaultOptionsDict(self):
@@ -1350,7 +1348,9 @@ class rstCommands:
         # Get name.  Names may contain '-' and '_'.
         i = g.skip_id(s,0,chars='-_')
         name = s [:i]
-        if not name: return None
+        if not name:
+            # Bug fix: 2014/03/26: return 2-tuple.
+            return None,False
         j = g.skip_ws(s,i)
         if g.match(s,j,'='):
             val = s [j+1:].strip()

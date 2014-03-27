@@ -113,9 +113,14 @@ def getPluginsList():
     )
 #@+node:ekr.20120225032124.17089: ** getRecentCoreList (pylint-leo.py)
 def getRecentCoreList():
-    
-    # To do: new bugs with pylint 1.1.0..
+    '''Return the list of core files processed by the -r option.'''
     return (
+        # 'runLeo',
+        # 'leoApp',
+        # 'leoAtFile',
+        # 'leoBridge',
+        # 'leoCache',
+        # 'leoChapters',
         # 'leoCommands',
         # 'leoConfig',
         # 'leoEditCommands',
@@ -123,62 +128,33 @@ def getRecentCoreList():
         # 'leoFind',
         # 'leoFrame',
         # 'leoGlobals',
-        # 'leoIPython',
-        # 'leoKeys',
-        # 'leoNodes',
-        # 'leoShadow',
-        # 'leoUndo',
-    )
-
-
-    return (
-        # 'runLeo',
-        # 'leoApp',
-        # 'leoAtFile',
-        # 'leoBridge',
-        'leoCache',
-        'leoChapters',
-        'leoCommands',
-        'leoConfig',
-        'leoEditCommands',
-        'leoFileCommands',
-        'leoFind',
-        'leoFrame',
-        'leoGlobals',
         # 'leoGui',
         # 'leoImport',
-        'leoIPython',
-        'leoKeys',
+        # 'leoIPython',
+        # 'leoKeys',
         # 'leoMenu',
-        'leoNodes',
+        # 'leoNodes',
         # 'leoPlugins',
         # 'leoRst',
         # 'leoSessions',
-        'leoShadow',
+        # 'leoShadow',
         # 'leoTangle',
         # 'leoTest',
-        'leoUndo',
-        'leoViews',
+        # 'leoUndo',
+        # 'leoViews',
         # 'leoVim',
 )
 #@+node:ekr.20120528063627.10137: ** getRecentPluginsList
 def getRecentPluginsList ():
-    
-    # To do: new bugs with pytlint 1.1.0
-    return (
-        # 'mod_scripting',
-        # 'nested_splitter',
-        # 'qtGui',
-    )
 
     return (
         # 'baseNativeTree',
         # 'contextmenu',
         # 'codewisecompleter',
         # 'internal_ipkernel.py',
-        'mod_scripting',
-        'nested_splitter',
-        'qtGui',
+        # 'mod_scripting',
+        # 'nested_splitter',
+        # 'qtGui',
         # 'plugins_menu',
         # 'screencast',
         # 'viewrendered',
@@ -225,7 +201,8 @@ def run(theDir,fn,rpython=False):
     args.append(fn)
 
     if os.path.exists(fn):
-        print('pylint-leo.py: %s' % fn)
+        # print('pylint-leo.py: debug: %s %s' % (g_option_debug,fn))
+        print('pylint-leo.py: %s' % (fn))
         if True and scope == 'stc-test':
             import leo.core.leoGlobals as g
             print('pylint-leo.py: enabling Sherlock traces')
@@ -329,6 +306,8 @@ def run(theDir,fn,rpython=False):
  ])
             sherlock.run()
             lint.Run(args)
+                # ,debug=g_option_debug) # New keyword arg.
+                # Maybe use logging option??
             sherlock.stop()
         else:
             lint.Run(args)
@@ -339,7 +318,7 @@ def scanOptions():
 
     '''Handle all options, remove them from sys.argv.'''
     
-    global g_option_fn
+    global g_option_fn,g_option_debug
 
     # This automatically implements the -h (--help) option.
     parser = optparse.OptionParser()
@@ -354,9 +333,12 @@ def scanOptions():
     #add('-s', action='store_true', help = 'suppressions')
     add('-t', action='store_true', help = 'static type checking')
     add('--tt',action='store_true', help = 'stc test')
+    add('--debug',action='store_true',help = 'debug mode')
 
     # Parse the options.
     options,args = parser.parse_args()
+    if options.debug:
+        g_option_debug = True
     if   options.a: return 'all'
     elif options.c: return 'core'
     elif options.e: return 'external'
@@ -375,6 +357,7 @@ def scanOptions():
 #@-others
 
 g_option_fn = None
+g_option_debug = False
 scope = scanOptions()
 coreList            = getCoreList()
 externalList        = ('lproto',) # 'ipy_leo',

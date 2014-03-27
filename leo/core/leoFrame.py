@@ -787,11 +787,8 @@ class leoBody (HighLevelInterface):
                 w.leo_chapter = None
     #@+node:ekr.20070424084651: *6* ensurePositionExists (leoBody)
     def ensurePositionExists(self,w):
-
         '''Return True if w.leo_p exists or can be reconstituted.'''
-
         c = self.c
-
         if c.positionExists(w.leo_p):
             return True
         else:
@@ -800,10 +797,9 @@ class leoBody (HighLevelInterface):
                 if p2.v and p2.v == w.leo_v:
                     w.leo_p = p2.copy()
                     return True
-            else:
-                 # This *can* happen when selecting a deleted node.
-                w.leo_p = c.p
-                return False
+            # This *can* happen when selecting a deleted node.
+            w.leo_p = c.p
+            return False
     #@+node:ekr.20070424080640: *6* deactivateActiveEditor (leoBody)
     # Not used in Qt.
 

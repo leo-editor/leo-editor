@@ -670,15 +670,12 @@ class shadowController:
         return marker
     #@+node:ekr.20090529125512.6125: *5* x.findLeoLine
     def findLeoLine (self,lines):
-
         '''Return the @+leo line, or ''.'''
-
         for line in lines:
             i = line.find('@+leo')
             if i != -1:
                 return line
-        else:
-            return ''
+        return ''
     #@+node:ekr.20080708094444.9: *4* x.markerFromFileName
     def markerFromFileName (self,filename):
 

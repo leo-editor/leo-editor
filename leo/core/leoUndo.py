@@ -51,6 +51,8 @@
 
 import leo.core.leoGlobals as g
 
+# pylint: disable=unpacking-non-sequence
+
 #@+others
 #@+node:ekr.20031218072017.3605: ** class undoer
 class undoer:

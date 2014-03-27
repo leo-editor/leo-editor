@@ -1147,10 +1147,10 @@ class leoFind:
         return True
     #@+node:ekr.20060526201951: *5* makeRegexSubs
     def makeRegexSubs(self,s,groups):
-
-        '''Carefully substitute group[i-1] for \i strings in s.
-        The group strings may contain \i strings: they are *not* substituted.'''
-
+        r'''
+        Carefully substitute group[i-1] for \i strings in s.
+        The group strings may contain \i strings: they are *not* substituted.
+        '''
         digits = '123456789'
         result = [] ; n = len(s)
         i = j = 0 # s[i:j] is the text between \i markers.

@@ -1761,6 +1761,7 @@ class baseFileCommands:
         tnodes = {}
         for p in theIter:
             # Make *sure* the file index has the proper form.
+            # pylint: disable=unbalanced-tuple-unpacking
             try:
                 theId,t,n = p.v.fileIndex
             except ValueError:

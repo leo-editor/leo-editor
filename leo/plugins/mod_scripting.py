@@ -2,7 +2,7 @@
 #@+node:ekr.20060328125248: * @file mod_scripting.py
 #@+<< docstring >>
 #@+node:ekr.20060328125248.1: ** << docstring >>
-""" Creates script buttons and @button, @command, @plugin and @script
+r""" Creates script buttons and @button, @command, @plugin and @script
 nodes.
 
 This plugin puts buttons in the icon area. Depending on settings the plugin will
@@ -843,7 +843,6 @@ class scriptingController:
         tag = "@button"
         if g.match_word(h,0,tag):
             h = h[len(tag):].strip()
-
         for tag in ('@key','@args','@color',):
             i = h.find(tag)
             if i > -1:
@@ -853,14 +852,8 @@ class scriptingController:
                 else:
                     h = h[:i]
                 h = h.strip()
-        #i = h.find('@key')
-        #if i > -1:
-        #    buttonText = h[:i].strip()
-
-        else:
-            buttonText = h
-
-        fullButtonText = buttonText
+        buttonText = h
+        # fullButtonText = buttonText
         return buttonText
     #@+node:peckj.20140103101946.10404: *4* getColor
     def getColor(self,h):

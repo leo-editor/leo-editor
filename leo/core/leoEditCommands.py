@@ -1578,9 +1578,8 @@ class debugCommandsClass (baseEditCommandsClass):
                     return debugger
                 else:
                     g.warning('debugger does not exist:',debugger)
-        else:
-            g.es('no debugger found.')
-            return None
+        g.es('no debugger found.')
+        return None
     #@+node:ekr.20060202160523: *3* dumpAll/New/VerboseObjects
     def dumpAllObjects (self,event=None):
 
@@ -4080,6 +4079,7 @@ class editCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20050920084036.71: *4* _addPrefix
     def _addPrefix (self,ntxt):
 
+        # pylint: disable=deprecated-lambda
         ntxt = ntxt.split('.')
         ntxt = map(lambda a: self.fillPrefix+a,ntxt)
         ntxt = '.'.join(ntxt)
@@ -4263,6 +4263,7 @@ class editCommandsClass (baseEditCommandsClass):
         c = self.c
         path = c.os_path_finalize_join(iconDir,path)
         relPath = g.makePathRelativeTo(path,iconDir)
+        # pylint: disable=unpacking-non-sequence
         image,image_height = g.app.gui.getTreeImage(c,path)
         if not image:
             g.es('can not load image:',path)
@@ -5734,30 +5735,25 @@ class editCommandsClass (baseEditCommandsClass):
         '''Compute the word at the cursor. Select it if select arg is True.'''
 
         w = self.editWidget(event)
-        if not w: return
-
+        if not w:
+            return 0,0
         s = w.getAllText() ; n = len(s)
         i = w.getInsertPoint()
-
         if direction == 'forward':
             while i < n and not g.isWordChar(s[i]):
                 i += 1
         else:
             while 0 <= i < n and not g.isWordChar(s[i]):
                 i -= 1
-
         while 0 <= i < n and g.isWordChar(s[i]):
             i -= 1
         i += 1
         i1 = i
-
         # Move to the end of the word.
         while 0 <= i < n and g.isWordChar(s[i]):
             i += 1
-
         if select:
             w.setSelectionRange(i1,i)
-
         return i1,i
     #@+node:ekr.20050920084036.140: *4* movePastClose & helper
     def movePastClose (self,event):
@@ -6172,6 +6168,7 @@ class editCommandsClass (baseEditCommandsClass):
         s = w.getAllText() ; n = len(s)
         i = w.getInsertPoint()
 
+        # pylint: disable=anomalous-backslash-in-string
         alphanumeric_re = re.compile("\w")
         whitespace_re = re.compile("\s")
         simple_whitespace_re = re.compile("[ \t]")
@@ -6911,9 +6908,7 @@ class editCommandsClass (baseEditCommandsClass):
         trace = False and not g.unitTesting
         w = self.editWidget(event)
         if not w: return
-
         self.beginCommand(undoType='transpose-words')
-
         s = w.getAllText()
         i1,j1 = self.extendToWord(event,direction='back',select=False)
         s1 = s[i1:j1]
@@ -7384,9 +7379,8 @@ class editFileCommandsClass (baseEditCommandsClass):
     #@-others
 #@+node:ekr.20060205164707: ** helpCommandsClass
 class helpCommandsClass (baseEditCommandsClass):
-
     '''A class to load files into buffers and save buffers to files.'''
-
+    # pylint: disable=anomalous-backslash-in-string
     #@+others
     #@+node:ekr.20060205165501: *3* getPublicCommands (helpCommands)
     def getPublicCommands (self):
@@ -7843,6 +7837,7 @@ class helpCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20131213163822.16472: *3* helpForCreatingExternalFiles
     def helpForCreatingExternalFiles(self,event=None):
         '''Prints a discussion of creating external files.'''
+        
         #@+<< define s >>
         #@+node:ekr.20131213163822.16477: *4* << define s >> (helpForCreatingExternalFiles)
         #@@language rest
@@ -9618,7 +9613,8 @@ class rectangleCommandsClass (baseEditCommandsClass):
             c.bodyWantsFocus()
             w = self.w
             self.beginCommand('string-rectangle')
-            r1, r2, r3, r4 = self.stringRect
+            # pylint: disable=unpacking-non-sequence
+            r1,r2,r3,r4 = self.stringRect
             s = w.getAllText()
             for r in range(r1,r3+1):
                 i = g.convertRowColToPythonIndex(s,r-1,r2)

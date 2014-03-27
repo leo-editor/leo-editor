@@ -653,8 +653,7 @@ class runTestExternallyHelperClass:
         for tag in self.tags:
             if h.startswith(tag):
                 return True
-        else:
-            return False
+        return False
     #@+node:ekr.20090514072254.5746: *4* runUnitTestLeoFile (runTestExternallyHelperClass)
     def runUnitTestLeoFile (self,gui='qt',path='unitTest.leo',readSettings=True,silent=True):
 
@@ -1119,6 +1118,7 @@ class TestManager:
             sel = node.h[len(h):].strip()
             aList = [str(z) for z in sel.split(',')]
             sels.append(tuple(aList))
+        # pylint: disable=unbalanced-tuple-unpacking
         sel1,sel2 = sels
         c.selectPosition(work)
         c.setBodyString(work,before.b)
@@ -1318,6 +1318,7 @@ class TestManager:
             sel = node.h[len(h):].strip()
             aList = [str(z) for z in sel.split(',')]
             sels.append(tuple(aList))
+        # pylint: disable=unbalanced-tuple-unpacking
         sel1,sel2 = sels
         c.selectPosition(work)
         c.setBodyString(work,before.b)
