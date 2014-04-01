@@ -111,6 +111,22 @@ not Undo. Todd. Had to abandon the outline and start again.
 
 # Breaks Leo HARD:
 # c.deletePositionsInList(c.all_positions())
+.. @+node:ekr.20140401054342.16845: *3* Created g.run_pylint so pylint can run unmodified
+@language rest
+
+This runs pylint (with optional Sherlock tracing) in
+a separate process, thereby allowing Leo to run
+pylint unchanged.
+
+What I did:
+
+1. pylint-leo.py: run now runs the following command in a separate process::
+
+    <python> -c "import leo.core.leoGlobals as g; g.run_pylint(<args>)"
+    
+2. g.run_pylint uses Sherlock tracing if requested.
+
+    
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
