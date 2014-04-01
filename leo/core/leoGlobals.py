@@ -1653,7 +1653,7 @@ def pdb (message=''):
     if message:
         print(message)
     pdb.set_trace()
-#@+node:ekr.20031218072017.3128: *3* pause
+#@+node:ekr.20031218072017.3128: *3* g.pause
 def pause (s):
 
     g.pr(s)
@@ -1868,6 +1868,44 @@ def rawPrint(s):
     redirectStdOutObj.rawPrint(s)
 #@-others
 #@-<< define convenience methods for redirecting streams >>
+#@+node:ekr.20140401054342.16844: *3* g.run_pylint
+def run_pylint(fn,rc,
+    dots=True, # Show level dots in Sherlock traces.
+    patterns=None, # List of Sherlock trace patterns.
+    sherlock=False, # Enable Sherlock tracing.
+    show_return=True, # Show returns in Sherlock traces.
+    stats_patterns=None, # Patterns for Sherlock statistics.
+    verbose=True, # Show filenames in Sherlock traces.
+):
+    '''
+    Run pylint with the given args, with Sherlock tracing if requested.
+    Do not assume g.app exists.
+    '''
+    try:
+        from pylint import lint
+    except ImportError:
+        return g.trace('can not import pylint')
+    if not g.os_path_exists(fn):
+        return g.trace('does not exist:',fn)
+    if not g.os_path_exists(rc):
+        return g.trace('does not exist',rc)
+    args = ['--rcfile=%s' % (rc)]
+    args.append(fn)
+    if sherlock:
+        sherlock = g.SherlockTracer(
+                dots=dots,
+                show_return=show_return,
+                verbose=True, # verbose: show filenames.
+                patterns=patterns or [],
+            )
+        try:
+            sherlock.run()
+            lint.Run(args)
+        finally:
+            sherlock.stop()
+            sherlock.print_stats(patterns=stats_patterns or [])
+    else:
+        lint.Run(args)
 #@+node:ekr.20031218072017.3133: *3* Statistics
 #@+node:ekr.20031218072017.3134: *4* clear_stats
 def clear_stats():

@@ -3,7 +3,6 @@
 #@@language python
 
 # import these *after* clearing the screen.
-    # import astroid.bases
     # from pylint import lint
 import leo.core.leoGlobals as g
 import optparse
@@ -278,6 +277,15 @@ def getTable(scope):
 #@+node:ekr.20140331201252.16859: ** main
 def main(tables_table):
     
+    if tables_table and sys.platform.startswith('win'):
+        if False and scope != 'file':
+            g.cls()
+            # os.system('cls')
+
+    # Do these imports **after** clearing the screen.
+    from pylint import lint
+        # in pythonN/Lib/site-packages.
+    
     t1 = time.clock()
     for table,theDir in tables_table:
         for fn in table:
@@ -287,190 +295,184 @@ def main(tables_table):
             astroid.bases.ekr_infer_stmts_items)
     print('time: %s' % g.timeSince(t1))
 #@+node:ekr.20100221142603.5644: ** run (pylint-leo.py)
-# Important: I changed lint.py:Run.__init__ so pylint can handle more than one file.
-# From: sys.exit(self.linter.msg_status)
-# To:   print('EKR: exit status',self.linter.msg_status)
-
 def run(theDir,fn,rpython=False):
     '''Run pylint on fn.'''
     fn = os.path.join('leo',theDir,fn)
     rc_fn = os.path.abspath(os.path.join('leo','test','pylint-leo-rc.txt'))
-    assert os.path.exists(rc_fn)
     # print('run:scope:%s' % scope)
-    args = ['--rcfile=%s' % (rc_fn)]
-    args.append('--disable=I0011')
-        # We never want to see the I0011 message: locally disabling n.
-    # if rpython: args.append('--rpython-mode') # Probably does not exist.
     fn = os.path.abspath(fn)
     if not fn.endswith('.py'): fn = fn+'.py'
-    args.append(fn)
-    if os.path.exists(fn):
-        print('pylint-leo.py: %s' % (fn))
-        if scope == 'stc-test': # The --tt option.
-            s = open(fn).read()
-            print('pylint-leo.py --tt: enabling Sherlock traces')
-            print('pylint-leo.py --tt: patterns contained in plyint-leo.py')
-            print('pylint-leo.py: source:\n\n%s\n' % s)
-            sherlock = g.SherlockTracer(
-                dots=True,
-                show_return=True,
-                verbose=True, # verbose: show filenames.
-                patterns=[ 
-                #@+<< Sherlock patterns for pylint >>
-                #@+node:ekr.20130111060235.10182: *3* << Sherlock patterns for pylint >>
-                # Note:  A leading * is never valid: change to .*
-
-                #'+.*infer*',
-                    # '+.*infer_name',
-                    '+.*infer_stmts',
-
-                ###'+TypeChecker::add_message',
-                    # '+.*add_message',
-                    # '+PyLinter::add_message',
-                    # '+TextReporter::add_message'
-
-                # '+.*visit*',
-                    # '+TypeChecker::visit_getattr',
-                    # '+.*visit_class',
-                    # '+Basic*::visit_*',
-                    
-                # '+.*__init__',
-                    # '+Instance::__init__',
-                    # '+Class::__init__',
-                    # '+Module::__init__',
-                    # '+Function::__init__',
-
-                ###'+:.*typecheck.py',
-                ###'+:.*inference.py',
-                ###'+:.*variables.py',
-
-                ###### Old traces
-
-                # '+:.*bases.py',
-                # '+.*path_raise_wrapper',
-
-                # Enable everything.
-                # # '+.*',
-
-                # # Disable entire files.
-                # # '-:.*\\lib\\.*', # Disables everything.
-
-                # # Pylint files.
-                # #'-:.*base.py',
-                # #'-:.*bases.py',
-                # '-:.*builder.py',
-                # '-:.*__init__.py',
-                # '-:.*format.py',
-                # '-:.*interface.py', # implements
-                # '-:.*rebuilder.py',
-                # #'-:.*scoped_nodes',
-                # # General library files.
-                # '-:.*leoGlobals.py',
-                # '-:.*codecs.py',
-                # '-:.*config.py',
-                # '-:.*configuration.py',
-                # '-:.*ConfigParser.py',
-                # '-:.*copy\.py',
-                # '-:.*gettext.py',
-                # '-:.*genericpath.py',
-                # '-:.*graph.py',
-                # '-:.*locale.py',
-                # '-:.*optik_ext.py',
-                # '-:.*optparse.py',
-                # '-:.*os.py',
-                # '-:.*ntpath.py',
-                # '-:.*pickle.py',
-                # '-:.*re.py',
-                # '-:.*similar.py',
-                # '-:.*shlex.py',
-                # '-:.*sre_compile.py',
-                # '-:.*sre_parse.py',
-                # '-:.*string_escape.py',
-                # '-:.*text.py',
-                # '-:.*threading.py',
-                # '-:.*tokenize.py',
-                # '-:.*utils.py',
-
-                # # Enable entire files.
-                # # '+:.*base.py',
-                # # '+:.*bases.py',
-                # # '+:.*classes.py',
-                # # '+:.*design_analysis.py',
-                # # '+:.*format.py',
-                # # '+:.*inference.py',
-                # # '+:.*logging.py',
-                # # '+:.*mixins.py',
-                # # '+:.*newstyle.py',
-                # # '+:.*node_classes.py',
-                # # '+:.*protocols.py',
-                # # '+:.*scoped_nodes.py',
-                # # '+:.*typecheck.py',
-                # # '+:.*variables.py',
-
-                # # Disable individual methods.
-                # '-close', # __init__.py
-                # '-collect_block_lines', '-\<genexpr\>','-.*option.*','-.*register_checker','-set_reporter', # lint.py
-                # '-frame','-root','-scope', # scoped_nodes
-                # '-register', # various files.
-
-                # # '-abspath','-normpath','-isstring','-normalize',
-                # # '-splitext','-_splitext','-splitdrive','-splitstrip',
-                # # '-.*option.*','-get','-set_option',
-                # # '-unquote','-convert','-interpolate','-_call_validator', # compile stuff.
-                # # '-_compile.*','-compile_.*','-_code','-identifyfunction', # compile stuff.
-                # # '-_parse.*','-set_parser','-set_conflict_handler',
-                # # '-append','-match',
-                # # '-isbasestring',
-                # # '-save.*','-memoize','-put',
-
-                # # '-persistent_id',
-                # # '-__next',
-                # # '-nodes_of_class',
-                # # '-__.*',
-                # # '-_check.*',
-                # # '-_.*',
-                # # '-load_.*',
-                #@-<< Sherlock patterns for pylint >>
-                #@afterref
- ])
-            stats_patterns = [
-                #@+<< Sherlock stats patterns for pylint >>
-                #@+node:ekr.20140327164521.16846: *3* << Sherlock stats patterns for pylint >>
-                # '+.*__init__',
-                    # astroid.bases.py
-                    '+BoundMethod::__init__',
-                    '+InferenceContext::__init__',
-                    '+Instance::__init__',
-                    '+UnboundMethod::__init__',
-                    # astroid.node_classes.py
-                    '+Arguments::__init__',
-                    '+CallFunc::__init__',
-                    '+Const::__init__',
-                    # astroid.scoped_nods.py
-                    '+Class::__init__',
-                    '+Function::__init__',
-                    '+Module::__init__',
-                #@-<< Sherlock stats patterns for pylint >>
-            ]
-            try:
-                sherlock.run()
-                lint.Run(args)
-            finally:
-                sherlock.stop()
-                sherlock.print_stats(patterns=stats_patterns)
-        else:
-            if 1:
-                e = sys.executable
-                lint = "from pylint import lint"
-                rc = '--rcfile=%s' % rc_fn
-                args = "[r'%s',r'%s']" % (rc,fn)
-                commands = '%s -c "%s; lint.Run(args=%s)"' % (
-                    e,lint,args)
-                g.execute_shell_commands(commands)
-            else:
-                lint.Run(args)
-    else:
+    if not os.path.exists(rc_fn):
+        print('pylint rc file not found:',rc_fn)
+        return
+    if not os.path.exists(fn):
         print('file not found:',fn)
+        return
+    # Report the file name.
+    print('pylint-leo.py: %s' % (g.shortFileName(fn)))
+    # Create the required args.
+    args = "fn=r'%s',rc=r'%s'" % (fn,rc_fn)
+    if scope == 'stc-test': # The --tt option.
+        # Report that Sherlock is enabled.
+        print('pylint-leo.py --tt: enabling Sherlock traces')
+        print('pylint-leo.py --tt: patterns contained in plyint-leo.py')
+        # Report the source code.
+        s = open(fn).read()
+        print('pylint-leo.py: source:\n\n%s\n' % s)
+        # Add the optional Sherlock args.
+        dots = True
+        patterns=[ 
+        #@+<< Sherlock patterns for pylint >>
+        #@+node:ekr.20130111060235.10182: *3* << Sherlock patterns for pylint >>
+        # Note:  A leading * is never valid: change to .*
+
+        #'+.*infer*',
+            # '+.*infer_name',
+            '+.*infer_stmts',
+
+        ###'+TypeChecker::add_message',
+            # '+.*add_message',
+            # '+PyLinter::add_message',
+            # '+TextReporter::add_message'
+
+        # '+.*visit*',
+            # '+TypeChecker::visit_getattr',
+            # '+.*visit_class',
+            # '+Basic*::visit_*',
+            
+        # '+.*__init__',
+            # '+Instance::__init__',
+            # '+Class::__init__',
+            # '+Module::__init__',
+            # '+Function::__init__',
+
+        ###'+:.*typecheck.py',
+        ###'+:.*inference.py',
+        ###'+:.*variables.py',
+
+        ###### Old traces
+
+        # '+:.*bases.py',
+        # '+.*path_raise_wrapper',
+
+        # Enable everything.
+        # # '+.*',
+
+        # # Disable entire files.
+        # # '-:.*\\lib\\.*', # Disables everything.
+
+        # # Pylint files.
+        # #'-:.*base.py',
+        # #'-:.*bases.py',
+        # '-:.*builder.py',
+        # '-:.*__init__.py',
+        # '-:.*format.py',
+        # '-:.*interface.py', # implements
+        # '-:.*rebuilder.py',
+        # #'-:.*scoped_nodes',
+        # # General library files.
+        # '-:.*leoGlobals.py',
+        # '-:.*codecs.py',
+        # '-:.*config.py',
+        # '-:.*configuration.py',
+        # '-:.*ConfigParser.py',
+        # '-:.*copy\.py',
+        # '-:.*gettext.py',
+        # '-:.*genericpath.py',
+        # '-:.*graph.py',
+        # '-:.*locale.py',
+        # '-:.*optik_ext.py',
+        # '-:.*optparse.py',
+        # '-:.*os.py',
+        # '-:.*ntpath.py',
+        # '-:.*pickle.py',
+        # '-:.*re.py',
+        # '-:.*similar.py',
+        # '-:.*shlex.py',
+        # '-:.*sre_compile.py',
+        # '-:.*sre_parse.py',
+        # '-:.*string_escape.py',
+        # '-:.*text.py',
+        # '-:.*threading.py',
+        # '-:.*tokenize.py',
+        # '-:.*utils.py',
+
+        # # Enable entire files.
+        # # '+:.*base.py',
+        # # '+:.*bases.py',
+        # # '+:.*classes.py',
+        # # '+:.*design_analysis.py',
+        # # '+:.*format.py',
+        # # '+:.*inference.py',
+        # # '+:.*logging.py',
+        # # '+:.*mixins.py',
+        # # '+:.*newstyle.py',
+        # # '+:.*node_classes.py',
+        # # '+:.*protocols.py',
+        # # '+:.*scoped_nodes.py',
+        # # '+:.*typecheck.py',
+        # # '+:.*variables.py',
+
+        # # Disable individual methods.
+        # '-close', # __init__.py
+        # '-collect_block_lines', '-\<genexpr\>','-.*option.*','-.*register_checker','-set_reporter', # lint.py
+        # '-frame','-root','-scope', # scoped_nodes
+        # '-register', # various files.
+
+        # # '-abspath','-normpath','-isstring','-normalize',
+        # # '-splitext','-_splitext','-splitdrive','-splitstrip',
+        # # '-.*option.*','-get','-set_option',
+        # # '-unquote','-convert','-interpolate','-_call_validator', # compile stuff.
+        # # '-_compile.*','-compile_.*','-_code','-identifyfunction', # compile stuff.
+        # # '-_parse.*','-set_parser','-set_conflict_handler',
+        # # '-append','-match',
+        # # '-isbasestring',
+        # # '-save.*','-memoize','-put',
+
+        # # '-persistent_id',
+        # # '-__next',
+        # # '-nodes_of_class',
+        # # '-__.*',
+        # # '-_check.*',
+        # # '-_.*',
+        # # '-load_.*',
+        #@-<< Sherlock patterns for pylint >>
+        #@afterref
+ ]
+        show_return = True
+        stats_patterns = [ 
+        #@+<< Sherlock stats patterns for pylint >>
+        #@+node:ekr.20140327164521.16846: *3* << Sherlock stats patterns for pylint >>
+        # '+.*__init__',
+            # astroid.bases.py
+            '+BoundMethod::__init__',
+            '+InferenceContext::__init__',
+            '+Instance::__init__',
+            '+UnboundMethod::__init__',
+            # astroid.node_classes.py
+            '+Arguments::__init__',
+            '+CallFunc::__init__',
+            '+Const::__init__',
+            # astroid.scoped_nods.py
+            '+Class::__init__',
+            '+Function::__init__',
+            '+Module::__init__',
+        #@-<< Sherlock stats patterns for pylint >>
+        #@afterref
+ ]
+        verbose = True
+        args = args + ',' + ','.join([
+            'dots=%s' % (dots),
+            'patterns=%s' % (patterns),
+            'sherlock=True',
+            'show_return=%s' % (show_return),
+            'stats_patterns=%s' % (stats_patterns),
+            'verbose=%s' % (verbose)
+        ])
+    # Execute the command in a separate process.
+    command = '%s -c "%s; g.run_pylint(%s)"' % (
+        sys.executable,'import leo.core.leoGlobals as g', args)
+    g.execute_shell_commands(command)   
 #@+node:ekr.20120307142211.9886: ** scanOptions
 def scanOptions():
     '''Handle all options, remove them from sys.argv.'''
@@ -518,17 +520,6 @@ recentCoreList      = getRecentCoreList()
 recentPluginsList   = getRecentPluginsList()
 tkPass              = getTkPass()
 tables_table        = getTable(scope)
-
-if tables_table and sys.platform.startswith('win'):
-    if scope != 'file':
-        g.cls()
-        # os.system('cls')
-
-# Do these imports **after** clearing the screen.
-import astroid.bases
-from pylint import lint
-    # Use the version of pylint in pythonN/Lib/site-packages.
-# print(lint)
 
 main(tables_table)
 #@-leo
