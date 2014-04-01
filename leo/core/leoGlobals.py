@@ -1074,7 +1074,14 @@ class SherlockTracer:
                 n += 1
             dots = '.' * max(0,n-self.n) if self.dots else ''
             path = '%-20s' % (os.path.basename(fn)) if self.verbose else ''
-            ret = self.format_ret(arg)
+            if name and name == '__init__':
+                try:
+                    ret1 = locals_ and locals_.get('self',None)
+                    ret = self.format_ret(ret1)
+                except NameError:
+                    ret = '<%s>' % ret1.__class__.__name__
+            else:
+                ret = self.format_ret(arg)
             print('%s%s-%s%s' % (path,dots,full_name,ret))
     #@+node:ekr.20130111120935.10192: *5* format_ret
     def format_ret(self,arg):
@@ -1133,10 +1140,11 @@ class SherlockTracer:
             pass
         return full_name
     #@+node:ekr.20121128111829.12183: *4* is_enabled
-    def is_enabled (self,fn,name,patterns):
+    def is_enabled (self,fn,name,patterns=None):
         '''Return True if tracing for name in fn is enabled.'''
         import re
         enabled = False
+        if patterns is None: patterns = self.patterns
         for pattern in patterns:
             try:
                 if pattern.startswith('+:'):
@@ -1159,7 +1167,7 @@ class SherlockTracer:
     #@+node:ekr.20121128111829.12182: *4* print_stats
     def print_stats (self,patterns=None):
         '''Print all accumulated statisitics.'''
-        print('\nSherlock statistics')
+        print('\nSherlock statistics...')
         if not patterns: patterns = ['+.*','+:.*',]
         for fn in sorted(self.stats.keys()):
             d = self.stats.get(fn)
