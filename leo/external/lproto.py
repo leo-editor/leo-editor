@@ -13,7 +13,14 @@ Author: Ville M. Vainio <vivainio@gmail.com>
 #@+<< imports >>
 #@+node:ville.20091009234538.1373: ** << imports >>
 # todo move out qt dep
-from PyQt4 import QtCore, QtNetwork
+
+# pylint: disable=unused-import
+
+import PyQt4.QtGui
+    # This is required to work around pylint/qt problem.
+import PyQt4.QtCore as QtCore
+from PyQt4 import QtNetwork
+    
 import socket
 import struct
 
