@@ -73,6 +73,8 @@ disable-checker=DESIGN,SIMILARITIES,IMPORTS
 # W0107 Unnecessary pass statement
 
 disable=
+   I0011,
+# I0011 locally-disabled
    C0111,
 # C0111 Missing docstring
    C0301,

@@ -50,7 +50,6 @@ def getCoreList():
         'leoUndo',
             # WO511: TODO 
         'leoViews',
-           
     )
 #@+node:ekr.20120528063627.10138: ** getGuiPluginsList
 def getGuiPluginsList ():
@@ -121,7 +120,7 @@ def getRecentCoreList():
     '''Return the list of core files processed by the -r option.'''
     return (
         'runLeo',
-        # 'leoApp',
+        'leoApp',
         # 'leoAtFile',
         # 'leoBridge',
         # 'leoCache',
@@ -185,6 +184,108 @@ def getTkPass():
         # 'templates','textnode','tkGui','toolbar',
         # 'xcc_nodes',
    )
+#@+node:ekr.20140331201252.16861: ** getTable
+def getTable(scope):
+    
+    d = {
+        'all': (
+            (coreList,'core'),
+            # (guiPluginsList,'plugins'),
+            (pluginsList,'plugins'),
+            (externalList,'external'),
+        ),
+        'core': (
+            (coreList,'core'),
+            (guiPluginsList,'plugins'),
+            (externalList,'external'),
+        ),
+        'external': (
+            (externalList,'external'),
+        ),
+        'file': (
+            ([g_option_fn],'core'), # Default is a core file.
+        ),
+        'gui': (
+            (guiPluginsList,'plugins'),
+        ),
+        'plugins': (
+            (pluginsList,'plugins'),
+            # (passList,'plugins'),
+        ),
+        'recent': (
+            (recentCoreList,'core'),
+            (recentPluginsList,'plugins'),
+        ),
+        'stc': (
+            (['statictypechecking',],r'c:\leo.repo\static-type-checking'),
+        ),
+        'stc-test': (
+            (['pylint_test.py',],r'c:\leo.repo\static-type-checking\test\pylint'),
+        ),
+    }
+    tables_table = d.get(scope)
+    if not tables_table:
+        print('bad scope',scope)
+        tables_table = ()
+    return tables_table
+    
+    # if scope == 'all':
+        # tables_table = (
+            # (coreList,'core'),
+            # # (guiPluginsList,'plugins'),
+            # (pluginsList,'plugins'),
+            # (externalList,'external'),
+        # )
+    # elif scope == 'core':
+        # tables_table =  (
+            # (coreList,'core'),
+            # (guiPluginsList,'plugins'),
+            # (externalList,'external'),
+        # )
+    # elif scope == 'external':
+        # tables_table = (
+            # (externalList,'external'),
+        # )
+    # elif scope == 'file':
+        # tables_table = (
+            # ([g_option_fn],'core'), # Default is a core file.
+        # )
+    # elif scope == 'gui':
+        # tables_table = (
+            # (guiPluginsList,'plugins'),
+    # )
+    # elif scope == 'plugins':
+        # tables_table = (
+            # (pluginsList,'plugins'),
+            # # (passList,'plugins'),
+        # )
+    # elif scope == 'recent':
+        # tables_table = (
+            # (recentCoreList,'core'),
+            # (recentPluginsList,'plugins'),
+        # )
+    # elif scope == 'stc':
+        # tables_table = (
+            # (['statictypechecking',],r'c:\leo.repo\static-type-checking'),
+        # )
+    # elif scope == 'stc-test':
+        # tables_table = (
+            # (['pylint_test.py',],r'c:\leo.repo\static-type-checking\test\pylint'),
+        # )
+    # else:
+        # print('bad scope',scope)
+        # tables_table = ()
+#@+node:ekr.20140331201252.16859: ** main
+def main(tables_table):
+    
+    t1 = time.clock()
+    for table,theDir in tables_table:
+        for fn in table:
+            run(theDir,fn)
+    if 0:
+        print('astroid.bases.ekr_infer_stmts_items: %s' %
+            astroid.bases.ekr_infer_stmts_items)
+    print('time: %s' % g.timeSince(t1))
 #@+node:ekr.20100221142603.5644: ** run (pylint-leo.py)
 # Important: I changed lint.py:Run.__init__ so pylint can handle more than one file.
 # From: sys.exit(self.linter.msg_status)
@@ -206,24 +307,44 @@ def run(theDir,fn,rpython=False):
     if os.path.exists(fn):
         print('pylint-leo.py: %s' % (fn))
         if scope == 'stc-test': # The --tt option.
+            s = open(fn).read()
             print('pylint-leo.py --tt: enabling Sherlock traces')
             print('pylint-leo.py --tt: patterns contained in plyint-leo.py')
-            sherlock = g.SherlockTracer(show_return=True,
+            print('pylint-leo.py: source:\n\n%s\n' % s)
+            sherlock = g.SherlockTracer(
+                dots=True,
+                show_return=True,
                 verbose=True, # verbose: show filenames.
                 patterns=[ 
                 #@+<< Sherlock patterns for pylint >>
                 #@+node:ekr.20130111060235.10182: *3* << Sherlock patterns for pylint >>
                 # Note:  A leading * is never valid: change to .*
 
-                '+TypeChecker::add_message',
+                #'+.*infer*',
+                    # '+.*infer_name',
+                    '+.*infer_stmts',
+
+                ###'+TypeChecker::add_message',
                     # '+.*add_message',
                     # '+PyLinter::add_message',
                     # '+TextReporter::add_message'
-                '-.*visit*',
+
+                # '+.*visit*',
+                    # '+TypeChecker::visit_getattr',
                     # '+.*visit_class',
                     # '+Basic*::visit_*',
-                '+:.*typecheck.py',
-                '+:.*inference.py',
+                    
+                # '+.*__init__',
+                    # '+Instance::__init__',
+                    # '+Class::__init__',
+                    # '+Module::__init__',
+                    # '+Function::__init__',
+
+                ###'+:.*typecheck.py',
+                ###'+:.*inference.py',
+                ###'+:.*variables.py',
+
+                ###### Old traces
 
                 # '+:.*bases.py',
                 # '+.*path_raise_wrapper',
@@ -312,11 +433,42 @@ def run(theDir,fn,rpython=False):
                 #@-<< Sherlock patterns for pylint >>
                 #@afterref
  ])
-            sherlock.run()
-            lint.Run(args)
-            sherlock.stop()
+            stats_patterns = [
+                #@+<< Sherlock stats patterns for pylint >>
+                #@+node:ekr.20140327164521.16846: *3* << Sherlock stats patterns for pylint >>
+                # '+.*__init__',
+                    # astroid.bases.py
+                    '+BoundMethod::__init__',
+                    '+InferenceContext::__init__',
+                    '+Instance::__init__',
+                    '+UnboundMethod::__init__',
+                    # astroid.node_classes.py
+                    '+Arguments::__init__',
+                    '+CallFunc::__init__',
+                    '+Const::__init__',
+                    # astroid.scoped_nods.py
+                    '+Class::__init__',
+                    '+Function::__init__',
+                    '+Module::__init__',
+                #@-<< Sherlock stats patterns for pylint >>
+            ]
+            try:
+                sherlock.run()
+                lint.Run(args)
+            finally:
+                sherlock.stop()
+                sherlock.print_stats(patterns=stats_patterns)
         else:
-            lint.Run(args)
+            if 1:
+                e = sys.executable
+                lint = "from pylint import lint"
+                rc = '--rcfile=%s' % rc_fn
+                args = "[r'%s',r'%s']" % (rc,fn)
+                commands = '%s -c "%s; lint.Run(args=%s)"' % (
+                    e,lint,args)
+                g.execute_shell_commands(commands)
+            else:
+                lint.Run(args)
     else:
         print('file not found:',fn)
 #@+node:ekr.20120307142211.9886: ** scanOptions
@@ -365,52 +517,7 @@ pluginsList         = getPluginsList()
 recentCoreList      = getRecentCoreList()
 recentPluginsList   = getRecentPluginsList()
 tkPass              = getTkPass()
-if scope == 'all':
-    tables_table = (
-        (coreList,'core'),
-        # (guiPluginsList,'plugins'),
-        (pluginsList,'plugins'),
-        (externalList,'external'),
-    )
-elif scope == 'core':
-    tables_table =  (
-        (coreList,'core'),
-        (guiPluginsList,'plugins'),
-        (externalList,'external'),
-    )
-elif scope == 'external':
-    tables_table = (
-        (externalList,'external'),
-    )
-elif scope == 'file':
-    tables_table = (
-        ([g_option_fn],'core'), # Default is a core file.
-    )
-elif scope == 'gui':
-    tables_table = (
-        (guiPluginsList,'plugins'),
-)
-elif scope == 'plugins':
-    tables_table = (
-        (pluginsList,'plugins'),
-        # (passList,'plugins'),
-    )
-elif scope == 'recent':
-    tables_table = (
-        (recentCoreList,'core'),
-        (recentPluginsList,'plugins'),
-    )
-elif scope == 'stc':
-    tables_table = (
-        (['statictypechecking',],r'c:\leo.repo\static-type-checking'),
-    )
-elif scope == 'stc-test':
-    tables_table = (
-        (['pylint_test.py',],r'c:\leo.repo\static-type-checking\test\pylint'),
-    )
-else:
-    print('bad scope',scope)
-    tables_table = ()
+tables_table        = getTable(scope)
 
 if tables_table and sys.platform.startswith('win'):
     if scope != 'file':
@@ -423,11 +530,5 @@ from pylint import lint
     # Use the version of pylint in pythonN/Lib/site-packages.
 # print(lint)
 
-t1 = time.clock()
-for table,theDir in tables_table:
-    for fn in table:
-        run(theDir,fn)
-print('astroid.bases.ekr_infer_stmts_items: %s' %
-    astroid.bases.ekr_infer_stmts_items)
-print('time: %s' % g.timeSince(t1))
+main(tables_table)
 #@-leo
