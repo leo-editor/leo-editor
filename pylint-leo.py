@@ -311,7 +311,10 @@ def run(theDir,fn,rpython=False):
     # Report the file name.
     print('pylint-leo.py: %s' % (g.shortFileName(fn)))
     # Create the required args.
-    args = "fn=r'%s',rc=r'%s'" % (fn,rc_fn)
+    args = ','.join([
+        "fn=r'%s'" % (fn),
+        "rc=r'%s'" % (rc_fn),
+    ])
     if scope == 'stc-test': # The --tt option.
         # Report that Sherlock is enabled.
         print('pylint-leo.py --tt: enabling Sherlock traces')
@@ -467,11 +470,11 @@ def run(theDir,fn,rpython=False):
             'sherlock=True',
             'show_return=%s' % (show_return),
             'stats_patterns=%s' % (stats_patterns),
-            'verbose=%s' % (verbose)
+            'verbose=%s' % (verbose),
         ])
     # Execute the command in a separate process.
-    command = '%s -c "%s; g.run_pylint(%s)"' % (
-        sys.executable,'import leo.core.leoGlobals as g', args)
+    command = '%s -c "import leo.core.leoGlobals as g; g.run_pylint(%s)"' % (
+        sys.executable,args)
     g.execute_shell_commands(command)   
 #@+node:ekr.20120307142211.9886: ** scanOptions
 def scanOptions():
