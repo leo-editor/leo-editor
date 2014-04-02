@@ -4,8 +4,7 @@
 
 .. @+all
 .. @+node:ekr.20131114124839.16664: ** First
-.. @+node:ekr.20140313100328.16825: *3* fix leoGlobals bug (waiting for answer)
-# I'm not sure the patch is correct.  I'm waiting for a reply.
+.. @+node:ekr.20140313100328.16825: *3* fix leoGlobals bug 
 .. @+node:ekr.20140313100328.16826: *4* report
 @language rest
 
@@ -4720,6 +4719,19 @@ def viewPack(event):
 
 They work from the rclick menu, but not from the minibuffer.
     - Should hanlde clone and delete and move, at least.
+.. @+node:ekr.20140322090829.16832: *3* Sherlock to do: 
+@language rest
+
+* Improve traces for __init__:
+
+* Optionally print g.callers.
+
+* Distinguish between calls & returns.
+    ? Just print return trace if it immediate follows the call trace.
+    - Have a return-only trace list.
+
+? Allow stops at each trace: drop into pdb??
+
 .. @+node:ekr.20131102044158.16568: ** For 4.11.2
 - Create myLeoSettings and workbook automatically if they do not exist.
 - Add templates to help menu?

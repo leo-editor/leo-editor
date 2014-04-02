@@ -329,9 +329,11 @@ def run(theDir,fn,rpython=False):
         #@+node:ekr.20130111060235.10182: *3* << Sherlock patterns for pylint >>
         # Note:  A leading * is never valid: change to .*
 
-        #'+.*infer*',
+        '+.*infer*',
             # '+.*infer_name',
             '+.*infer_stmts',
+            
+        '+YES::__init__',
 
         ###'+TypeChecker::add_message',
             # '+.*add_message',

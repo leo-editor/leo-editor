@@ -964,12 +964,14 @@ class SherlockTracer:
         '''SherlockTracer ctor.'''
         self.bad_patterns = []          # List of bad patterns.
         self.dots = dots                # True: print level dots.
+        self.contents_d = {}            # Keys are file names, values are file lines.
         self.n = 0                      # The frame level on entry to run.
         self.stats = {}                 # Keys are full file names, values are dicts.
         self.patterns = None            # A list of regex patterns to match.
         self.pattern_stack = []
         self.show_args = show_args      # True: show args for each function call.
         self.show_return = show_return  # True: show returns from each function.
+        self.trace_lines = True         # True: trace lines in enabled functions.
         self.verbose = verbose          # True: print filename:func
         self.set_patterns(patterns)
         try:
@@ -1008,6 +1010,8 @@ class SherlockTracer:
             self.do_call(frame,arg)
         elif event == 'return' and self.show_return:
             self.do_return(frame,arg)
+        elif True and event == 'line' and self.trace_lines:
+            self.do_line(frame,arg)
         # Queue the SherlockTracer instance again.
         return self
     #@+node:ekr.20121128031949.12603: *4* do_call & helper
@@ -1058,6 +1062,29 @@ class SherlockTracer:
                     if val:
                         result.append('%s=%s' % (name,val))
         return ','.join(result)
+    #@+node:ekr.20140402060647.16845: *4* do_line
+    def do_line(self,frame,arg):
+        '''print each line of enabled functions.'''
+        code = frame.f_code
+        fn = code.co_filename
+        locals_ = frame.f_locals
+        name = code.co_name
+        full_name = self.get_full_name(locals_,name)
+        if self.is_enabled(fn,full_name,self.patterns):
+            n = frame.f_lineno-1 # Apparently, the first line is line 1.
+            d = self.contents_d
+            lines = d.get(fn)
+            if not lines:
+                s = open(fn).read()
+                lines = g.splitLines(s)
+                d[fn] = lines
+            line = lines[n].rstrip() if n < len(lines) else '<EOF>'
+            if 1:
+                # i = full_name.find('::')
+                # name = full_name if i == -1 else full_name[i+2:]
+                print('%3s %s' % (name,line))
+            else:
+                print('%s %s %s %s' % (g.shortFileName(fn),n,full_name,line))
     #@+node:ekr.20130109154743.10172: *4* do_return & helper
     def do_return(self,frame,arg): # Arg *is* used below.
         '''Trace a return statement.'''
