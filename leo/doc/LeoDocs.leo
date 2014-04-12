@@ -15097,7 +15097,7 @@ To summarize, you may get Leo in three ways:
 1. Download the `latest stable release`_ from `SourceForge`_. This release
    contains an executable installer. This release will usually be a bit out of date.
 
-2. Download `snapshots`_ from github. You can get the very latest development
+2. Download `snapshots`_ (see below) from github. You can get the very latest development
    version, or a version from from 1, 2, 5, 10, 30 or 90 days ago.
    
 3. Download `Leo's latest sources`_ from `GitHub`_ using `git`_. Once
