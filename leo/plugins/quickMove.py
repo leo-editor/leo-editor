@@ -701,7 +701,7 @@ class quickMove(object):
         if g.isString(c2):
             # c2 is an UNL indicating where to insert
             full_path = c2
-            path, unl = full_path.split('#')
+            path, unl = full_path.split('#', 1)
             c2 = g.openWithFileName(path, old_c=self.c)
             self.c.bringToFront(c2=self.c)
             found, maxdepth, maxp = g.recursiveUNLFind(unl.split('-->'), c2)
