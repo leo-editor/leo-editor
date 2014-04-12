@@ -221,7 +221,9 @@
 </v>
 <v t="ekr.20131008041326.16092"><vh>Installing &amp; running Leo</vh>
 <v t="ekr.20131015104133.16766"><vh>@rst html/getting-started.html</vh></v>
-<v t="ekr.20111127144911.5544"><vh>@rst html/download.html</vh></v>
+<v t="ekr.20111127144911.5544"><vh>@rst html/download.html</vh>
+<v t="tbrown.20140412113009.50227"><vh>Snapshots</vh></v>
+</v>
 <v t="ekr.20131008041326.16094"><vh>@rst html/installing.html</vh>
 <v t="ekr.20101125062332.5090"><vh>Installing packages</vh></v>
 <v t="ekr.20100817101952.4303"><vh>Installing Leo itself</vh>
@@ -15074,8 +15076,6 @@ Downloading Leo
 
 .. _`latest stable release`: https://sourceforge.net/projects/leo/files/Leo/4.11%20final/
 .. _`SourceForge`: https://sourceforge.net
-.. _`Leo's snapshots page`: http://www.greygreen.org/leo/
-.. _`nightly snapshot`: http://www.greygreen.org/leo/
 .. _`Leo's latest sources`: https://github.com/leo-editor/leo-editor
 .. _`GitHub`: https://github.com/leo-editor
 .. _`git`: http://git-scm.com/
@@ -15097,9 +15097,8 @@ To summarize, you may get Leo in three ways:
 1. Download the `latest stable release`_ from `SourceForge`_. This release
    contains an executable installer. This release will usually be a bit out of date.
 
-2. Download a `nightly snapshot`_ from `Leo's snapshots page`_. This page
-   contains .zip archives of Leo's code from 1, 2, 5, 10, 30 and 90 days
-   ago.
+2. Download `snapshots`_ from github. You can get the very latest development
+   version, or a version from from 1, 2, 5, 10, 30 or 90 days ago.
    
 3. Download `Leo's latest sources`_ from `GitHub`_ using `git`_. Once
    git is installed, getting the latest version of Leo is very easy::
@@ -19744,7 +19743,8 @@ stayInTreeAfterEditHeadline setting no longer exists.
 - Improved todo.py plugin (rev 6433).
 
 - The scripting.py now creates commands from @rclick nodes, but only if
-  @bool scripting-at-rclick-nodes is True.</t>
+  @bool scripting-at-rclick-nodes is True.
+</t>
 <t tx="ekr.20131220065609.16638">Help menu:
 - Contains only help-related items.
 - Contains more items that link to Leo's web site.
@@ -19777,7 +19777,8 @@ changed.
 </t>
 <t tx="ekr.20131221065129.16526">All menu shortcuts are shown as bound to the menu-shortcut command.
 </t>
-<t tx="ekr.20131222112420.16374">This should be more intuitive for newcomers.</t>
+<t tx="ekr.20131222112420.16374">This should be more intuitive for newcomers.
+</t>
 <t tx="ekr.20140113190949.16690">Leo's minimal dependencies are:
 
 * Python 2.6 (and later) or 3.0 (and later)
@@ -19865,6 +19866,24 @@ os.system('make latex')
 os.chdir('_build/latex')
 os.system('../../fixup.pl &lt; Leodocumentation.tex &gt; LeoDoc.tex')
 os.system('make LeoDoc.pdf')
+</t>
+<t tx="tbrown.20140412113009.50227">As of 2014 .zip snapshots can be downloaded directly from gitbub, no
+account required.  The downloaded file will have a name like::
+
+  leo-editor-50c070b715b9fec50c31be5853055a0ebc72cad5.zip
+
+where the ``50c0...cad5`` part is the ID or fingerprint of the version
+you've downloaded.  Except "Latest", which is just ``leo-editor-master.zip``.
+
+Here are some direct download links:
+
+  - `Latest &lt;https://github.com/leo-editor/leo-editor/archive/master.zip&gt;`_
+  - `1 day ago &lt;https://github.com/leo-editor/leo-editor/archive/master@{1%20day%20ago}.zip&gt;`_
+  - `2 days ago &lt;https://github.com/leo-editor/leo-editor/archive/master@{2%20days%20ago}.zip&gt;`_
+  - `5 days ago &lt;https://github.com/leo-editor/leo-editor/archive/master@{5%20days%20ago}.zip&gt;`_
+  - `10 days ago &lt;https://github.com/leo-editor/leo-editor/archive/master@{10%20days%20ago}.zip&gt;`_
+  - `30 days ago &lt;https://github.com/leo-editor/leo-editor/archive/master@{30%20days%20ago}.zip&gt;`_
+  - `90 days ago &lt;https://github.com/leo-editor/leo-editor/archive/master@{90%20days%20ago}.zip&gt;`_
 </t>
 <t tx="ville.20090705224948.5734">import os
 pos = c.find_h("Users Guide")[0]
