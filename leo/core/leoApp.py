@@ -751,13 +751,13 @@ class LeoApp:
                 ## regardless of whether or not the python architecture matches
                 ## the OS architecture (i.e. python 32-bit on windows 64-bit will return 64-bit)
                 v = platform.win32_ver()
-                release, build, sp, ptype = v
+                release, winbuild, sp, ptype = v
                 true_platform = os.environ['PROCESSOR_ARCHITECTURE']
                 try:
                     true_platform = os.environ['PROCESSOR_ARCHITEw6432']
                 except KeyError:
                     pass
-                sysVersion = 'Windows %s %s (build %s) %s' % (release, true_platform, build, sp) 
+                sysVersion = 'Windows %s %s (build %s) %s' % (release, true_platform, winbuild, sp) 
             except Exception:
                 pass
 
