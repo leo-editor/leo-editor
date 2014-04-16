@@ -452,7 +452,7 @@
      <item>
       <widget class="QPushButton" name="btnExport">
        <property name="toolTip">
-        <string>Add all nodes that are linked to nodes already in the graph.</string>
+        <string>Export the graph as a PNG.</string>
        </property>
        <property name="text">
         <string>Export</string>
