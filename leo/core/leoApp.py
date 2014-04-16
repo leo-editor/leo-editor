@@ -17,6 +17,7 @@ import string
 import sys
 import traceback
 import zipfile
+import platform
 
 if g.isPython3:
     import io
@@ -742,8 +743,21 @@ class LeoApp:
         if sys.platform.startswith('win'):
             sysVersion = 'Windows '
             try:
-                v = os.sys.getwindowsversion()
-                sysVersion += ', '.join([str(z) for z in v])
+                #v = os.sys.getwindowsversion()
+                #sysVersion += ', '.join([str(z) for z in v])
+                
+                ## peckj 20140416: determine true OS architecture
+                ## the following code should return the proper architecture
+                ## regardless of whether or not the python architecture matches
+                ## the OS architecture (i.e. python 32-bit on windows 64-bit will return 64-bit)
+                v = platform.win32_ver()
+                release, build, sp, ptype = v
+                true_platform = os.environ['PROCESSOR_ARCHITECTURE']
+                try:
+                    true_platform = os.environ['PROCESSOR_ARCHITEw6432']
+                except KeyError:
+                    pass
+                sysVersion = 'Windows %s %s (build %s) %s' % (release, true_platform, build, sp) 
             except Exception:
                 pass
 
