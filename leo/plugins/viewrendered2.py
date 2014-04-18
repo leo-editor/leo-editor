@@ -818,6 +818,10 @@ class WebViewPlus(QtGui.QWidget):
         getConfig(gc.getBool,   'smart_quotes', True)
         getConfig(gc.getBool,   'embed_stylesheet', True)
         getConfig(gc.getBool,   'xml_declaration', False)
+        # Additional docutils values suggested by T P <wingusr@gmail.com>
+        getConfig(gc.getString, 'syntax_highlight', 'long')
+        getConfig(gc.getBool,   'no_compact_lists', False)
+        getConfig(gc.getBool,   'no_compact_field_lists', False)
         # Do VR2 init values
         getConfig(gc.getBool, 'verbose', False, self.verbose_mode_action.setChecked)
         getConfig(gc.getBool, 'tree_mode', False, self.tree_mode_action.setChecked)
