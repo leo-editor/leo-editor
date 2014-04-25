@@ -118,8 +118,8 @@ def getPluginsList():
 def getRecentCoreList():
     '''Return the list of core files processed by the -r option.'''
     return (
-        'runLeo',
-        'leoApp',
+        # 'runLeo',
+        # 'leoApp',
         # 'leoAtFile',
         # 'leoBridge',
         # 'leoCache',
@@ -128,7 +128,7 @@ def getRecentCoreList():
         # 'leoConfig',
         # 'leoEditCommands',
         # 'leoFileCommands',
-        # 'leoFind',
+        'leoFind',
         # 'leoFrame',
         # 'leoGlobals',
         # 'leoGui',
