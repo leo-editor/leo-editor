@@ -7,6 +7,7 @@
 #@@pagewidth 70
 
 import leo.core.leoGlobals as g
+import leo.core.leoNodes as leoNodes # 2014/04/24
 import re
 
 #@+<< Theory of operation of find/change >>
@@ -156,7 +157,6 @@ class leoFind:
         self.changeTextList = []
         # Widget ivars.
         self.change_ctrl = None
-        self.find_ctrl = None
         self.s_ctrl = searchWidget() # For searches.
         self.find_text = ""
         self.change_text = ""
@@ -716,7 +716,7 @@ class leoFind:
         else:
             # This handles the reverse option.
             self.findNextCommand()
-    #@+node:ekr.20131117164142.17000: *4* find.generalSearchHelper (Changed)
+    #@+node:ekr.20131117164142.17000: *4* find.generalSearchHelper
     def generalSearchHelper (self,pattern,
         cloneFindAll=False,
         cloneFindAllFlattened=False,
@@ -1190,14 +1190,19 @@ class leoFind:
         if not self.checkArgs():
             return
         self.initInHeadline()
-        if clone_find_all:
+        if clone_find_all or clone_find_all_flattened:
             self.p = None # Restore will select the root position.
         data = self.save()
         self.initBatchCommands()
         skip = {} # Nodes that should be skipped.
             # Keys are vnodes, values not important.
         count,found = 0,None
-        if trace: g.trace(clone_find_all_flattened,self.p and self.p.h)
+        if trace: g.trace(self.p and self.p.h)
+        # 2014/04/24: Init suboutline-only for clone-find-all commands
+        if clone_find_all or clone_find_all_flattened:
+            self.p = c.p.copy()
+            if self.suboutline_only:
+                self.onlyPosition = self.p.copy()
         while 1:
             pos, newpos = self.findNextMatch() # sets self.p.
             if not self.p: self.p = c.p.copy()
@@ -1208,10 +1213,11 @@ class leoFind:
             s = w.getAllText()
             i,j = g.getLine(s,pos)
             line = s[i:j]
-            if clone_find_all:
+            if clone_find_all or clone_find_all_flattened:
                 if not skip:
+                    # Nothing has been created yet.
                     undoData = u.beforeInsertNode(c.p)
-                    found = self.createCloneFindAllNode()
+                    found = self.createCloneFindAllNode(flattened = clone_find_all_flattened)
                 if clone_find_all_flattened:
                     skip[self.p.v] = True
                 else:
@@ -1223,22 +1229,34 @@ class leoFind:
                 p2.moveToLastChildOf(found)
             else:
                 self.printLine(line,allFlag=True)
-        if clone_find_all and skip:
+        if found and (clone_find_all or clone_find_all_flattened):
+            self.linkCloneFindAllNode(found)
             u.afterInsertNode(found,undoType,undoData,dirtyVnodeList=[])
             c.selectPosition(found)
             c.setChanged(True)
-        self.restore(data)
+        else:
+            self.restore(data)
         c.redraw()
         g.es("found",count,"matches")
     #@+node:ekr.20051113110735: *5* createCloneFindAllNode
-    def createCloneFindAllNode(self):
-
+    def createCloneFindAllNode(self,flattened):
+        '''Create a node, but do *not* link it into the outline yet.'''
         c = self.c
-        oldRoot = c.rootPosition()
-        found = oldRoot.insertAfter()
-        found.moveToRoot(oldRoot)
-        c.setHeadString(found,'Found: ' + self.find_text)
-        return found
+        # Don't link the node into the outline so that positions remain valid.
+        v = leoNodes.vnode(context=c)
+        p = leoNodes.position(v)
+        p.h = 'Found:%s %s' % (
+            ' (flattened)' if  flattened else '',
+            self.find_text)
+        return p
+    #@+node:ekr.20140424102007.16875: *5* linkCloneFindAllNode
+    def linkCloneFindAllNode(self,p):
+        '''Link p into the outline as the last top-level node.'''
+        c = self.c
+        top = c.rootPosition()
+        while top.hasNext():
+            top.moveToNext()
+        p._linkAfter(top)
     #@+node:ekr.20031218072017.3074: *4* find.findNext
     def findNext(self,initFlag=True):
         '''Find the next instance of the pattern.'''
@@ -1418,7 +1436,7 @@ class leoFind:
         if self.suboutline_only:
             if self.onlyPosition:
                 if p != self.onlyPosition and not self.onlyPosition.isAncestorOf(p):
-                    if trace: g.trace('outside suboutline-only',p.h)
+                    if trace: g.trace('outside suboutline-only',p.h,self.onlyPosition.h)
                     return True
             else:
                 g.trace('Can not happen: onlyPosition!',p.h)
@@ -1923,7 +1941,7 @@ class leoFind:
         # Among other things, this allows Leo to search for a single trailing space.
         s = ftm.getFindText()
         s = g.toUnicode(s)
-        if trace: g.trace('find',repr(s),self.find_ctrl)
+        if trace: g.trace('find',repr(s))
         if s and s[-1] in ('\r','\n'):
             s = s[:-1]
         if self.radioButtonsChanged or s != self.find_text:
