@@ -371,18 +371,34 @@ controllers = {}
 # * Don't increase the dependencies of Leo.
 # 
 # Implementation
-# ----------------------
-# VR2 is implemented mostly as an ~600 line expansion of the update_rst method in the viewrendered.py plugin.  The text-oriented class used for rendering in VR1 has been replaced by the QWebView class which provides the full rendering functionality of a real web-browser.  To make this flexible, a toolbar has been attached to the top with a few controls.
+# ---------------------- 
 # 
-# Because I wanted to retain compatibility with VR1, I created the viewrendered2.py plugin, but retained all the class naming which occurred within VR1.  This means that it remains compatible with the existing mechanisms (like free_layout) of showing and creating panes for VR1.  I tried this with an expectation that it would fail, but it appears to work without any unintended side-effects.
+# VR2 is implemented mostly as an ~600 line expansion of the update_rst
+# method in the viewrendered.py plugin. The text-oriented class used for
+# rendering in VR1 has been replaced by the QWebView class which provides the
+# full rendering functionality of a real web-browser. To make this flexible,
+# a toolbar has been attached to the top with a few controls.
 # 
-# Tooltips have been added where Qt allows, with the philosophy that a user shouldn't need a manual to use this pane.
+# Because I wanted to retain compatibility with VR1, I created the
+# viewrendered2.py plugin, but retained all the class naming which occurred
+# within VR1. This means that it remains compatible with the existing
+# mechanisms (like free_layout) of showing and creating panes for VR1. I
+# tried this with an expectation that it would fail, but it appears to work
+# without any unintended side-effects.
+# 
+# Tooltips have been added where Qt allows, with the philosophy that a user
+# shouldn't need a manual to use this pane.
 # 
 # VR2 has been used a lot under Windows 7 and a little under Ubuntu 13.10.
 # 
 # Issues / Limitations
 # ----------------------------
-# I use VR2 every few minutes every working day.  However, VR2 is likely to still have a lot of rough edges and, in particular, bugs that show up with different work flows or css folder layouts etc.  In fact, VR2 is still a work in progress and therefore still being fiddled with, so bugs creep in regularly.
+# 
+# I use VR2 every few minutes every working day. However, VR2 is likely to
+# still have a lot of rough edges and, in particular, bugs that show up with
+# different work flows or css folder layouts etc. In fact, VR2 is still a
+# work in progress and therefore still being fiddled with, so bugs creep in
+# regularly.
 # 
 # But overall, my perception of its deficiencies are:
 # 
@@ -992,11 +1008,15 @@ class WebViewPlus(QtGui.QWidget):
             self.html = html = self.to_html(p)
         else:
             self.html = html = '<pre>\n%s</pre>' % self.s
+        if 0:
+            g.cls()
+            g.trace(html)
         self.app.processEvents()
         # TODO: I think this path should be set when scanning directives!
         d = self.c.scanAllDirectives(p)
         # Put temporary or output files in location given by path directives
         self.path = d['path']
+        g.trace(pc.default_kind)
         if pc.default_kind in ('big','rst','html', 'md'):
             # Trial of rendering to file and have QWebView load this without blocking
             ext = 'html'
@@ -1101,6 +1121,7 @@ class WebViewPlus(QtGui.QWidget):
     def code_directive(self,lang):
         '''Return an reST block or code directive.'''
         if pygments:
+            g.trace('using pygments')
             # See code in initCodeBlock for complications.
             return '\n\n.. code:: '+lang+'\n\n'
         else:
