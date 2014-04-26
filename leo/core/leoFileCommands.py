@@ -116,7 +116,7 @@ if sys.platform != 'cli':
                 # Values are *lists* of saxNodeClass objects.
             self.level = 0
             self.node = None
-            self.nodeList = [] # List of saxNodeClass objects with the present vnode.
+            self.nodeList = [] # List of saxNodeClass objects with the present Vnode.
             self.nodeStack = []
             self.rootNode = None # a sax node.
             self.trace = False # True and g.unitTesting
@@ -421,7 +421,7 @@ if sys.platform != 'cli':
         #@+node:ekr.20060919110638.42: *6* tnodeAttributes
         def tnodeAttributes (self,attrs):
 
-            # The vnode must have a tx attribute to associate content
+            # The Vnode must have a tx attribute to associate content
             # with the proper node.
 
             trace = False and not g.unitTesting
@@ -455,7 +455,7 @@ if sys.platform != 'cli':
                         node.tnodeAttributes[name] = val
 
             # if not self.nodeList:
-                # self.error('Bad leo file: no tx attribute for vnode')
+                # self.error('Bad leo file: no tx attribute for Vnode')
         #@+node:ekr.20060919110638.43: *5* startVnode
         def startVnode (self,attrs):
 
@@ -671,7 +671,7 @@ class baseFileCommands:
         c.hiddenRootNode.children = children
         # Unlink v from the hidden root.
         v.parents.remove(c.hiddenRootNode)
-        p = leoNodes.position(v)
+        p = leoNodes.Position(v)
         # Important: we must not adjust links when linking v
         # into the outline.  The read code has already done that.
         if current.hasChildren() and current.isExpanded():
@@ -774,9 +774,9 @@ class baseFileCommands:
                 c.setRootVnode(v)
                 fc.rootVnode = v
             else:
-                v = leoNodes.vnode(context=c)
+                v = leoNodes.Vnode(context=c)
                 v.setHeadString('created root node')
-                p = leoNodes.position(v)
+                p = leoNodes.Position(v)
                 p._linkAsRoot(oldRoot=None)
                 fc.rootVnode = v
                 # c.setRootPosition()
@@ -1016,7 +1016,7 @@ class baseFileCommands:
                 elif verbose:
                     g.error(
                         'restoreDescendantAttributes: '
-                        'can not find vnode (duA): gnx = %s' % (gnx))
+                        'can not find Vnode (duA): gnx = %s' % (gnx))
 
         # New in Leo 4.5: keys are archivedPositions, values are attributes.
         for root_v,resultDict in self.descendentVnodeUaDictList:
@@ -1029,7 +1029,7 @@ class baseFileCommands:
                 elif verbose:
                     g.error(
                         'restoreDescendantAttributes: '
-                        'can not find vnode (duA): archivedPosition: %s, root_v: %s' % (
+                        'can not find Vnode (duA): archivedPosition: %s, root_v: %s' % (
                             key,root_v))
 
         marks = {} ; expanded = {}
@@ -1042,7 +1042,7 @@ class baseFileCommands:
             elif verbose:
                 g.error(
                     'restoreDescendantAttributes: '
-                    'can not find vnode (expanded): gnx = %s, tref: %s' % (gnx,tref))
+                    'can not find Vnode (expanded): gnx = %s, tref: %s' % (gnx,tref))
 
         for gnx in self.descendentMarksList:
             tref = self.canonicalTnodeIndex(gnx)
@@ -1051,7 +1051,7 @@ class baseFileCommands:
             elif verbose:
                 g.error(
                     'restoreDescendantAttributes: '
-                    'can not find vnode (marks): gnx = %s tref: %s' % (gnx,tref))
+                    'can not find Vnode (marks): gnx = %s tref: %s' % (gnx,tref))
 
         if marks or expanded:
             # g.trace('marks',len(marks),'expanded',len(expanded))
@@ -1134,7 +1134,7 @@ class baseFileCommands:
                     '***update\nold: %s\nnew: %s' % (v.b,b))
                 v.b = b 
         else:
-            v = leoNodes.vnode(context=c)
+            v = leoNodes.Vnode(context=c)
             v.setBodyString(b)
             v.setHeadString(h)
 
@@ -1372,7 +1372,7 @@ class baseFileCommands:
                         if trace: g.trace(tnx,v)
                         result.append(v)
                     else:
-                        g.trace('*** No vnode for %s' % tnx)
+                        g.trace('*** No Vnode for %s' % tnx)
                 if result:
                     p.v.tnodeList = result
                     # g.trace('*** tnodeList for',p.h,result)
@@ -1380,7 +1380,7 @@ class baseFileCommands:
     #@+node:ekr.20080805132422.3: *4* resolveArchivedPosition
     def resolveArchivedPosition(self,archivedPosition,root_v):
 
-        '''Return a vnode corresponding to the archived position relative to root node root_v.'''
+        '''Return a Vnode corresponding to the archived position relative to root node root_v.'''
 
         def oops (message):
             if not g.app.unitTesting:
@@ -1787,15 +1787,15 @@ class baseFileCommands:
                 if v.isWriteBit():
                     self.putTnode(v)
             else:
-                g.trace('can not happen: no vnode for',repr(index))
+                g.trace('can not happen: no Vnode for',repr(index))
                 # This prevents the file from being written.
-                raise BadLeoFile('no vnode for %s' % repr(index))
+                raise BadLeoFile('no Vnode for %s' % repr(index))
         #@-<< write only those tnodes that were referenced >>
         self.put("</tnodes>\n")
     #@+node:ekr.20031218072017.1863: *4* putVnode
     def putVnode (self,p,isIgnore=False):
 
-        """Write a <v> element corresponding to a vnode."""
+        """Write a <v> element corresponding to a Vnode."""
 
         fc = self ; c = fc.c ; v = p.v
         isAuto = p.isAtAutoNode() and p.atAutoNodeName().strip()
@@ -1819,13 +1819,13 @@ class baseFileCommands:
 
         # if p.h.startswith('@file'): g.trace('isOrphan',isOrphan,'forceWrite',forceWrite,p.h)
 
-        #@+<< Set gnx = vnode index >>
-        #@+node:ekr.20031218072017.1864: *5* << Set gnx = vnode index >>
+        #@+<< Set gnx = Vnode index >>
+        #@+node:ekr.20031218072017.1864: *5* << Set gnx = Vnode index >>
         gnx = g.app.nodeIndices.toString(v.fileIndex)
 
         if forceWrite or self.usingClipboard:
             v.setWriteBit() # 4.2: Indicate we wrote the body text.
-        #@-<< Set gnx = vnode index >>
+        #@-<< Set gnx = Vnode index >>
         attrs = []
         #@+<< Append attribute bits to attrs >>
         #@+node:ekr.20031218072017.1865: *5* << Append attribute bits to attrs >>
@@ -2312,7 +2312,7 @@ class baseFileCommands:
     #@+node:ekr.20080805071954.2: *3* fc.putDescendentVnodeUas
     def putDescendentVnodeUas (self,p):
 
-        '''Return the a uA field for descendent vnode attributes,
+        '''Return the a uA field for descendent Vnode attributes,
         suitable for reconstituting uA's for anonymous vnodes.'''
 
         trace = False

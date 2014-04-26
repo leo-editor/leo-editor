@@ -2168,11 +2168,11 @@ class htmlParserClass (linkAnchorParserClass):
 
         self.node_marker_stack = []
         # self.node_marker_stack.pop() returns True for a closing
-        # tag if the opening tag identified an anchor belonging to a vnode.
+        # tag if the opening tag identified an anchor belonging to a Vnode.
 
         self.node_code = []
             # Accumulated html code.
-            # Once the hmtl code is assigned a vnode, it is deleted here.
+            # Once the hmtl code is assigned a Vnode, it is deleted here.
 
         self.deleted_lines = 0 # Number of lines deleted in self.node_code
 

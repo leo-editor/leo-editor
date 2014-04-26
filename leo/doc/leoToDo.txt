@@ -6,7 +6,6 @@
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 .. @+node:ekr.20140426030229.16869: *3* prototype of sentinel files
-.. @+node:ekr.20140424102007.16877: *3* uppercase all class names
 .. @+node:ekr.20140313100328.16825: *3* * fix leoGlobals bug 
 see extract.py
 .. @+node:ekr.20140313100328.16826: *4* report
@@ -16127,7 +16126,7 @@ def putDescendentAttributes (self,p):
 .. @+node:ekr.20080805071954.2: *9* fc.putDescendentVnodeUas
 def putDescendentVnodeUas (self,p):
 
-    '''Return the a uA field for descendent vnode attributes,
+    '''Return the a uA field for descendent Vnode attributes,
     suitable for reconstituting uA's for anonymous vnodes.'''
 
     trace = False
@@ -16190,7 +16189,7 @@ def __set_u(self,val):
 
 u = property(
     __get_u, __set_u,
-    doc = "vnode unknownAttribute property")
+    doc = "Vnode unknownAttribute property")
 .. @+node:ekr.20101004092958.5914: *5* Write treepad scanner
 @ treepad.py is from the treepad website
 .. @+node:ekr.20101004092958.5939: *6* treepad.py

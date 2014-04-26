@@ -450,7 +450,7 @@ class opmlController:
         assert c.hiddenRootNode.children == children
         return children
     #@+node:ekr.20060914171659.2: *4* createChildren
-    # node is a nodeClass object, parent_v is a vnode.
+    # node is a nodeClass object, parent_v is a Vnode.
 
     def createChildren (self,c,node,parent_v):
 
@@ -474,7 +474,7 @@ class opmlController:
     def createVnode (self,c,node,v=None):
         
         if not v:
-            v = leoNodes.vnode(context=c)
+            v = leoNodes.Vnode(context=c)
             v.b,v.h = node.bodyString,node.headString
             
         if node.gnx:
@@ -595,7 +595,7 @@ class opmlController:
 
         # Pass two: create the outline from the sax nodes.
         children = self.createVnodes(c,dummyRoot)
-        p = leoNodes.position(v=children[0],childIndex=0,stack=None)
+        p = leoNodes.Position(v=children[0],childIndex=0,stack=None)
 
         # Check the outline.
         c.dumpOutline()
@@ -617,7 +617,7 @@ class opmlController:
     def createTnodesDict (self):
 
         ''' c.tnodesDict by from self.generated_gnxs
-        by converting vnode entries to tnodes.'''
+        by converting Vnode entries to tnodes.'''
 
         d = {}
 

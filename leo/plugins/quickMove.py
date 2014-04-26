@@ -825,7 +825,7 @@ class quickMoveButton:
         p2.expand()
         nxt = p.visNext(c) or p.visBack(c)
         nxt = nxt.v
-        # store a vnode instead of position as positions are too easily lost
+        # store a Vnode instead of position as positions are too easily lost
 
         if self.type_ == 'clone':
             p = p.clone()

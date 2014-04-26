@@ -972,7 +972,7 @@ class chapter:
             theIter = root.self_and_subtree
         for p in theIter():
             if p.v == p1.v:
-                if trace: g.trace('*** found vnode match',p1.h)
+                if trace: g.trace('*** found Vnode match',p1.h)
                 return p.copy()
         if trace: g.trace('*** not found',p1.h)
         return None

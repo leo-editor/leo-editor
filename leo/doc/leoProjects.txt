@@ -206,8 +206,8 @@ def createCloneFindAllNode(self,flattened):
     '''Create a node, but do *not* link it into the outline yet.'''
     c = self.c
     # Don't link the node into the outline so that positions remain valid.
-    v = leoNodes.vnode(context=c)
-    p = leoNodes.position(v)
+    v = leoNodes.Vnode(context=c)
+    p = leoNodes.Position(v)
     p.h = 'Found:%s %s' % (
         ' (flattened)' if  flattened else '',
         self.find_text)

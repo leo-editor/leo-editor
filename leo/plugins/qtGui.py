@@ -796,7 +796,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         newSel = w.getSelectionRange()
         newText = w.getAllText() # Converts to unicode.
 
-        # Get the previous values from the vnode.
+        # Get the previous values from the Vnode.
         oldText = p.b
         if oldText == newText:
             # This can happen as the result of undo.
@@ -812,7 +812,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         c.undoer.setUndoTypingParams(p,undoType,
             oldText=oldText,newText=newText,
             oldSel=oldSel,newSel=newSel,oldYview=oldYview)
-        # Update the vnode.
+        # Update the Vnode.
         p.v.setBodyString(newText)
         if True:
             p.v.insertSpot = newInsert
@@ -9772,7 +9772,7 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
 
         - bunch.aList: a list of bunch2 objects.
         - bunch.n: a block (line) number.
-        - bunch.v: the vnode.
+        - bunch.v: the Vnode.
             - bunch2.i: the index of the block.
             - bunch2.s: the contents of the block.
             - bunch2.ranges: a list of QTextLayout.FormatRange objects.
@@ -9888,7 +9888,7 @@ if PYTHON_COLORER:
 
             - bunch.aList: a list of bunch2 objects.
             - bunch.n: a block (line) number.
-            - bunch.v: the vnode.
+            - bunch.v: the Vnode.
                 - bunch2.i: the index of the block.
                 - bunch2.s: the contents of the block.
                 - bunch2.ranges: a list of QTextLayout.FormatRange objects.
@@ -10934,7 +10934,7 @@ class jEditColorizer:
                 if self.use_hyperlinks:
                     #@+<< set the hyperlink >>
                     #@+node:ekr.20110605121601.18606: *7* << set the hyperlink >>
-                    # Set the bindings to vnode callbacks.
+                    # Set the bindings to Vnode callbacks.
                     tagName = "hyper" + str(self.hyperCount)
                     self.hyperCount += 1
                     ref.tagName = tagName

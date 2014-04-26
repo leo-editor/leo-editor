@@ -738,7 +738,7 @@ class ViewController:
     #@+node:ekr.20140113181306.16690: *5* 1: vc.find_imported_organizer_nodes
     def find_imported_organizer_nodes(self,root):
         '''
-        Put the vnode of all imported nodes with children on
+        Put the Vnode of all imported nodes with children on
         vc.imported_organizers_list.
         '''
         trace = False # and not g.unitTesting

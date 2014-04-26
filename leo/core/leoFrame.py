@@ -19,7 +19,7 @@ import leo.core.leoNodes as leoNodes
 #@+node:ekr.20031218072017.2410: ** << About handling events >>
 #@+at Leo must handle events or commands that change the text in the outline
 # or body panes. We must ensure that headline and body text corresponds
-# to the vnode corresponding to presently selected outline, and vice
+# to the Vnode corresponding to presently selected outline, and vice
 # versa. For example, when the user selects a new headline in the
 # outline pane, we must ensure that:
 # 
@@ -30,7 +30,7 @@ import leo.core.leoNodes as leoNodes
 # Early versions of Leo attempted to satisfy these conditions when the user
 # switched outline nodes. Such attempts never worked well; there were too many
 # special cases. Later versions of Leo use a much more direct approach: every
-# keystroke in the body pane updates the presently selected vnode immediately.
+# keystroke in the body pane updates the presently selected Vnode immediately.
 # 
 # The leoTree class contains all the event handlers for the tree pane, and the
 # leoBody class contains the event handlers for the body pane. The following
@@ -1121,8 +1121,8 @@ class leoFrame:
 
         f = self ; c = f.c
 
-        v = leoNodes.vnode(context=c)
-        p = leoNodes.position(v)
+        v = leoNodes.Vnode(context=c)
+        p = leoNodes.Position(v)
         v.initHeadString("NewHeadline")
         # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
         p._linkAsRoot(oldRoot=None)
@@ -1913,7 +1913,7 @@ class leoTree:
 
         #@+<< define callbacks to be injected in the position class >>
         #@+node:ekr.20040803072955.22: *5* << define callbacks to be injected in the position class >>
-        # N.B. These vnode methods are entitled to know about details of the leoTkinterTree class.
+        # N.B. These Vnode methods are entitled to know about details of the leoTkinterTree class.
 
         #@+others
         #@+node:ekr.20040803072955.23: *6* OnHyperLinkControlClick

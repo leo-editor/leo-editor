@@ -277,8 +277,8 @@ class Commands (object):
         c = self
         if trace:
             print('g.initObjects %s %s' % (c.shortFileName(),g.app.gui))
-        self.hiddenRootNode = leoNodes.vnode(context=c)
-        self.hiddenRootNode.setHeadString('<hidden root vnode>')
+        self.hiddenRootNode = leoNodes.Vnode(context=c)
+        self.hiddenRootNode.setHeadString('<hidden root Vnode>')
         # Create the gui frame.
         title = c.computeWindowTitle(c.mFileName)
         if not g.app.initing:
@@ -765,7 +765,7 @@ class Commands (object):
                     if trace: g.trace('can not happen',p and p.h)
         # Bug fix 2014/03/13: Make sure c.hiddenRootNode always has at least one child.
         if not c.hiddenRootNode.children:
-            v = leoNodes.vnode(context=c)
+            v = leoNodes.Vnode(context=c)
             v._addLink(childIndex=0,parent_v=c.hiddenRootNode,adjust=False)
             if trace: g.trace('new root',v)
         c.selectPosition(c.rootPosition())
@@ -2828,7 +2828,7 @@ class Commands (object):
         #@+node:ekr.20100216141722.5628: *7* findVnode & helpers
         def findVnode (self,root,lines,n,ignoreSentinels):
 
-            '''Search the lines of a derived file containing sentinels for a vnode.
+            '''Search the lines of a derived file containing sentinels for a Vnode.
             return (vnodeName,gnx,offset,delim):
 
             vnodeName:  the name found in the previous @+body sentinel.
@@ -2866,8 +2866,8 @@ class Commands (object):
 
             '''
             Scan backwards from the line n, looking for an @-body line. When found,
-            get the vnode's name from that line and set p to the indicated vnode. This
-            will fail if vnode names have been changed, and that can't be helped.
+            get the Vnode's name from that line and set p to the indicated Vnode. This
+            will fail if Vnode names have been changed, and that can't be helped.
 
             We compute the offset of the requested line **within the found node**.
             '''
@@ -2934,7 +2934,7 @@ class Commands (object):
                 else:
                     i = len(s) # Force an error.
 
-            # old sentinels: vnode name is everything following the first or second':'
+            # old sentinels: Vnode name is everything following the first or second':'
             i = s.find(':',i)
             if i > -1:
                 vnodeName = s[i+1:].strip()
@@ -4491,7 +4491,7 @@ class Commands (object):
             if parent:
                 p = parent.firstChild()
             else:
-                p = leoNodes.position(parent_v.children[0])
+                p = leoNodes.Position(parent_v.children[0])
             while p and p.v != p_v:
                 p.moveToNext()
             p = p or parent
@@ -7897,7 +7897,7 @@ class Commands (object):
     def nullPosition (self):
 
         # c = self
-        return leoNodes.position(None)
+        return leoNodes.Position(None)
     #@+node:ekr.20040307104131.3: *5* c.positionExists
     def positionExists(self,p,root=None):
         """Return True if a position exists in c's tree"""
@@ -7941,7 +7941,7 @@ class Commands (object):
         # 2011/02/25: Compute the position directly.
         if c.hiddenRootNode.children:
             v = c.hiddenRootNode.children[0]
-            return leoNodes.position(v,childIndex=0,stack=None)
+            return leoNodes.Position(v,childIndex=0,stack=None)
         else:
             return c.nullPosition()
 
@@ -7986,7 +7986,7 @@ class Commands (object):
     #@+node:tbrown.20091206142842.10296: *5* c.vnode2allPositions
     def vnode2allPositions (self,v):
 
-        '''Given a vnode v, find all valid positions p such that p.v = v.
+        '''Given a Vnode v, find all valid positions p such that p.v = v.
 
         Not really all, just all for each of v's distinct immediate parents.
         '''
@@ -8011,13 +8011,13 @@ class Commands (object):
                 immediate = parent
             else:
                 v,n = stack.pop()
-                p = leoNodes.position(v,n,stack)
+                p = leoNodes.Position(v,n,stack)
                 positions.append(p)
         return positions
     #@+node:ekr.20090107113956.1: *5* c.vnode2position
     def vnode2position (self,v):
 
-        '''Given a vnode v, construct a valid position p such that p.v = v.
+        '''Given a Vnode v, construct a valid position p such that p.v = v.
         '''
 
         c = self
@@ -8035,10 +8035,10 @@ class Commands (object):
 
         # v.parents includes the hidden root node.
         if not stack:
-            # a vnode not in the tree
+            # a Vnode not in the tree
             return c.nullPosition()
         v,n = stack.pop()
-        p = leoNodes.position(v,n,stack)
+        p = leoNodes.Position(v,n,stack)
         return p
 
     #@+node:ekr.20060906211747.1: *4* Setters
@@ -8094,7 +8094,7 @@ class Commands (object):
             # This code destoys all tags, so we must recolor.
             c.recolor()
 
-        # Keep the body text in the vnode up-to-date.
+        # Keep the body text in the Vnode up-to-date.
         if v.b != s:
             v.setBodyString(s)
             v.setSelection(0,0)
