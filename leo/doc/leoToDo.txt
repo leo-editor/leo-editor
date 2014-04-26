@@ -6,7 +6,6 @@
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 .. @+node:ekr.20140426030229.16869: *3* prototype of sentinel files
-.. @+node:ekr.20140424102007.16876: *3* remove g.choose
 .. @+node:ekr.20140424102007.16877: *3* uppercase all class names
 .. @+node:ekr.20140313100328.16825: *3* * fix leoGlobals bug 
 see extract.py
@@ -4605,9 +4604,8 @@ def toggleAbbrevMode (self,event=None):
     k = self.k
     k.abbrevOn = not k.abbrevOn
     k.keyboardQuit()
-    # k.setLabel('Abbreviations are ' + g.choose(k.abbrevOn,'On','Off'))
     if not g.unitTesting and not g.app.batchMode:
-        g.es('Abbreviations are ' + g.choose(k.abbrevOn,'on','off'))
+        g.es('Abbreviations are ' + 'on' if k.abbrevOn else 'off')
 .. @+node:ekr.20050920084036.24: *7* writeAbbreviation
 def writeAbbreviations (self,event):
 

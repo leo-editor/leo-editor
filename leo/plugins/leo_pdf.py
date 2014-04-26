@@ -1184,7 +1184,7 @@ if docutils:
             nkeys.sort()
 
             g.pr('\n','-' * 30)
-            g.pr('dump of node %s\n' % (g.choose(tag,'(%s)' % tag,'')))
+            g.pr('dump of node %s\n' % ('(%s)' % tag if tag else ''))
 
             g.pr('class',node.__class__)
 

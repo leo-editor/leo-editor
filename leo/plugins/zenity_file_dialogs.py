@@ -101,7 +101,7 @@ def callZenity(title, multiple=False, save=False, test=False):
         print('\treturncode', ret)
 
     if ret:
-        trace and g.trace(g.choose(save,'save','open'), 'cancelled')
+        trace and g.trace('save' if save else 'open', 'cancelled')
         return ''
 
     if multiple:

@@ -360,7 +360,7 @@ class quickMove(object):
                 text,
                 command = mb.moveCurrentNodeToTarget,
                 statusLine = 'Move current node to %s child of %s' % (
-                    g.choose(first,'first','last'),v.h),
+                    'first' if first else 'last',v.h),
                 kind = "quick-move"
             )
 

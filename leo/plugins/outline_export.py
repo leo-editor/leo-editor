@@ -38,7 +38,7 @@ def newMoreHead (self,firstLevel,useVerticalBar=True):
             s = "\t"
     else:
         s = ""
-    s += g.choose(v.hasChildren(), "+ ", "- ")
+    s += "+ " if v.hasChildren() else "- "
     s += v.h
     return s
 #@+node:ekr.20100128073941.5376: ** onStart

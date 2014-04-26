@@ -679,7 +679,7 @@ class rstClass:
 
         '''Convert an option name to the equivalent ivar name.'''
 
-        i = g.choose(name.startswith('rst'),3,0)
+        i = 3 if name.startswith('rst') else 0
 
         while i < len(name) and name[i].isdigit():
             i += 1

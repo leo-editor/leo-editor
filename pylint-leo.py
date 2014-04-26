@@ -128,7 +128,7 @@ def getRecentCoreList():
         # 'leoConfig',
         # 'leoEditCommands',
         # 'leoFileCommands',
-        'leoFind',
+        # 'leoFind',
         # 'leoFrame',
         # 'leoGlobals',
         # 'leoGui',
@@ -143,7 +143,7 @@ def getRecentCoreList():
         # 'leoShadow',
         # 'leoTangle',
         # 'leoTest',
-        # 'leoUndo',
+        'leoUndo',
         # 'leoViews',
         # 'leoVim',
 )

@@ -1157,13 +1157,13 @@ class ScreenShotController(object):
 
         sc = self
         h = sc.get_option('screenshot_height')
-        return g.choose(h is None,sc.default_screenshot_height,h)
+        return sc.default_screenshot_height if h is None else h
 
     def get_screenshot_width (self):
 
         sc = self
         w = sc.get_option('screenshot_width')
-        return g.choose(w is None,sc.default_screenshot_width,w)
+        return sc.default_screenshot_width if w is None else w
     #@+node:ekr.20101009162803.5632: *5* get_slide_title
     def get_slide_title (self):
 
@@ -1198,8 +1198,7 @@ class ScreenShotController(object):
 
         sc = self
         val = sc.get_option('verbose')
-        return g.choose(val is None,
-            sc.default_verbose_flag,val)
+        return sc.default_verbose_flag if val is None else val
     #@+node:ekr.20100911044508.5618: *3* utilities
     #@+node:ekr.20100908110845.5594: *4* add_image_directive
     def add_image_directive (self):

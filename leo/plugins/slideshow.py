@@ -128,7 +128,7 @@ class slideshowController:
                 p = p.threadNext()
             elif h.startswith('@slideshow'):
                 self.select(p)
-                return g.es('At %s of slide show' % g.choose(oldSlide,'end','start'))
+                return g.es('At %s of slide show' % 'end' if oldSlide else 'start')
             elif g.match_word(h,0,'@ignore') or g.match_word(h,0,'@noslide'):
                 p = p.nodeAfterTree()
             else:
@@ -137,9 +137,7 @@ class slideshowController:
                 # return self.select(p)
             # else: p = p.threadNext()
         else:
-            return g.es(g.choose(self.slideShowRoot,
-                'At end of slide show',
-                'Not in any slide show'))
+            return g.es('At end of slide show' if self.slideShowRoot else 'Not in any slide show')
     #@+node:ekr.20060901142848: *3* nextSlideShow
     def nextSlideShow (self,event=None):
 

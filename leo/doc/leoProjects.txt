@@ -220,6 +220,8 @@ def linkCloneFindAllNode(self,p):
     while top.hasNext():
         top.moveToNext()
     p._linkAfter(top)
+.. @+node:ekr.20140426052603.18136: *3* Removed g.choose from Leo's core & plugins
+This function is deprecated: use Python's ternary operator instead.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.

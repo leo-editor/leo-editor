@@ -192,16 +192,16 @@ class myPrettyPrinter(leoCommands.Commands.prettyPrinter):
                 self.parenLevel += 1 ; self.lineParenLevel += 1
             elif val in ('=','==','+=','-=','!=','<=','>=','<','>','<>','*','**','+','&','|','/','//'):
                 # Add leading and trailing blank in outer mode.
-                s = g.choose(outer,' %s ','%s')
+                s = ' %s ' if outer else '%s'
                 self.put(s % val)
             elif val in ('^','~','{','['):
                 # Add leading blank in outer mode.
-                s = g.choose(outer,' %s','%s')
+                s = ' %s' if outer else '%s'
                 self.put(s % val)
                 if val == '[': self.squareBracketLevel += 1
             elif val in (',',':','}',']',')'):
                 # Add trailing blank in outer mode.
-                s = g.choose(outer,'%s ','%s')
+                s = '%s ' if outer else '%s'
                 self.put(s % val)
                 if val == ']': self.squareBracketLevel -= 1
                 if val == ')':
