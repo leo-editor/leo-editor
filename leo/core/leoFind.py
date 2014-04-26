@@ -970,9 +970,9 @@ class leoFind:
         # scope = self.getOption('radio-search-scope')
         # d = {'entire-outline':'all','suboutline-only':'tree','node-only':'node'}
         # scope = d.get(scope) or ''
-        head = g.choose(head,'head','')
-        body = g.choose(body,'body','')
-        sep = g.choose(head and body,'+','')
+        head = 'head' if head else ''
+        body = 'body' if body else ''
+        sep = '+' if head and body else ''
         frame.clearStatusLine()
         s = '%s%s%s %s  ' % (head,sep,body,scope)
         frame.putStatusLine(s,color='blue')
@@ -1021,7 +1021,7 @@ class leoFind:
         if pos1 != pos2: w.delete(pos1,pos2)
         w.insert(pos1,self.change_text)
         # Update the selection.
-        insert=g.choose(self.reverse,pos1,pos1+len(self.change_text))
+        insert=pos1 if self.reverse else pos1+len(self.change_text)
         w.setSelectionRange(insert,insert)
         w.setInsertPoint(insert)
         # Update the node
@@ -1100,7 +1100,7 @@ class leoFind:
 
         c = self.c ; p = self.p
         bodyCtrl = c.frame.body and c.frame.body.bodyCtrl
-        w = g.choose(self.in_headline,c.edit_widget(p),bodyCtrl)
+        w = c.edit_widget(p) if self.in_headline else bodyCtrl
         if not w:
             self.in_headline = False
             w = bodyCtrl
@@ -1499,7 +1499,7 @@ class leoFind:
         index = w.getInsertPoint()
         s = w.getAllText()
         if trace: g.trace(index,repr(s[index-10:index+10]))
-        stopindex = g.choose(self.reverse,0,len(s))
+        stopindex = 0 if self.reverse else len(s)
         pos,newpos = self.searchHelper(s,index,stopindex,self.find_text)
         if trace: g.trace('pos,newpos',pos,newpos)
         # Bug fix: 2013/11/23.
@@ -1839,7 +1839,7 @@ class leoFind:
         context = self.batch # "batch" now indicates context
         if allFlag and both and context:
             g.es('','-' * 20,'',self.p.h)
-            theType = g.choose(self.in_headline,"head: ","body: ")
+            theType = "head: " if self.in_headline else "body: "
             g.es('',theType + line)
         elif allFlag and context and not self.p.isVisited():
             # We only need to print the context once.
@@ -1904,7 +1904,7 @@ class leoFind:
         self.p = p = self.p or c.p.copy() # 2013/12/25
         # Set state vars.
         # Ensure progress in backwards searches.
-        insert = g.choose(self.reverse,min(pos,newpos),max(pos,newpos))
+        insert = min(pos,newpos) if self.reverse else max(pos,newpos)
         if self.wrap and not self.wrapPosition:
             self.wrapPosition = self.p
         if trace: g.trace('in_headline',self.in_headline,p)

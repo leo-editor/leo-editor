@@ -877,7 +877,7 @@ class leoBody (HighLevelInterface):
         w = self.bodyCtrl
         p = c.p
         insert = w.getInsertPoint()
-        ch = g.choose(insert==0,'',w.get(insert-1))
+        ch = '' if insert==0 else w.get(insert-1)
         ch = g.toUnicode(ch)
         newText = w.getAllText() # Note: getAllText converts to unicode.
         newSel = w.getSelectionRange()
@@ -1169,7 +1169,7 @@ class leoFrame:
         Return True if the user vetos the quit or save operation."""
 
         c = self.c
-        theType = g.choose(g.app.quitting, "quitting?", "closing?")
+        theType = "quitting?" if g.app.quitting else "closing?"
 
         # See if we are in quick edit/save mode.
         root = c.rootPosition()
@@ -1177,7 +1177,7 @@ class leoFrame:
         if quick_save:
             name = g.shortFileName(root.atEditNodeName())
         else:
-            name = g.choose(c.mFileName,c.mFileName,self.title)
+            name = c.mFileName if c.mFileName else self.title
         answer = g.app.gui.runAskYesNoCancelDialog(c,
             "Confirm",
             'Save changes to %s before %s' % (name,theType))

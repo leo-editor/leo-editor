@@ -1026,7 +1026,7 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         }
         kind = kind.lower()
         op = d.get(kind)
-        mode = g.choose(extend,tc.KeepAnchor,tc.MoveAnchor)
+        mode = tc.KeepAnchor if extend else tc.MoveAnchor
 
         if not op:
             return g.trace('can not happen: bad kind: %s' % kind)
@@ -1172,8 +1172,8 @@ class leoQTextEditWidget (leoQtBaseTextWidget):
         # g.trace(flashes,fg,bg)
         self.flashCount = flashes
         self.flashIndex = i
-        self.flashBg = g.choose(bg.lower()=='same',None,bg)
-        self.flashFg = g.choose(fg.lower()=='same',None,fg)
+        self.flashBg = None if bg.lower()=='same' else bg
+        self.flashFg = None if fg.lower()=='same' else fg
 
         addFlashCallback()
     #@+node:ekr.20110605121601.18081: *5* getAllText (leoQTextEditWidget)
@@ -2832,8 +2832,8 @@ class DynamicWindow(QtGui.QMainWindow):
         vert = orientation and orientation.lower().startswith('v')
         h,v = QtCore.Qt.Horizontal,QtCore.Qt.Vertical
 
-        orientation1 = g.choose(vert,h,v)
-        orientation2 = g.choose(vert,v,h)
+        orientation1 = h if vert else v
+        orientation2 = v if vert else h
 
         self.splitter.setOrientation(orientation1)
         self.splitter_2.setOrientation(orientation2)
@@ -5297,7 +5297,7 @@ class leoQtLog (leoFrame.leoLog):
             # The Qt.QTabWidget that holds all the tabs.
         # Fixes bug 917814: Switching Log Pane tabs is done incompletely.
         tw.connect(tw,QtCore.SIGNAL('currentChanged(int)'),self.onCurrentChanged)
-        self.wrap = g.choose(c.config.getBool('log_pane_wraps'),True,False)
+        self.wrap = True if c.config.getBool('log_pane_wraps') else False
         if 0: # Not needed to make onActivateEvent work.
             # Works only for .tabWidget, *not* the individual tabs!
             theFilter = leoQtEventFilter(c,w=tw,tag='tabWidget')
@@ -8436,7 +8436,7 @@ class leoQtGui(leoGui.leoGui):
             #@-<< bind the shortcut to executeScriptCallback >>
         #@+<< create press-buttonText-button command >>
         #@+node:ekr.20110605121601.18532: *5* << create press-buttonText-button command >>
-        aList = [g.choose(ch.isalnum(),ch,'-') for ch in buttonText]
+        aList = [ch if ch.isalnum() else '-' for ch in buttonText]
 
         buttonCommandName = ''.join(aList)
         buttonCommandName = buttonCommandName.replace('--','-')
@@ -8757,10 +8757,7 @@ class leoQtEventFilter(QtCore.QObject):
         if eventType in lineEditKeyKinds:
             p = c.currentPosition()
             isEditWidget = obj == c.frame.tree.edit_widget(p)
-            self.keyIsActive = g.choose(
-                isEditWidget,
-                eventType == ev.KeyRelease,
-                eventType == ev.KeyPress)
+            self.keyIsActive = eventType == ev.KeyRelease if isEditWidget else eventType == ev.KeyPress
         else:
             self.keyIsActive = False
         if eventType == ev.WindowActivate:
@@ -9503,7 +9500,7 @@ class leoQtColorizer:
                     self.rootMode = "doc"
                 else:
                     doc = c.config.at_root_bodies_start_in_doc_mode
-                    self.rootMode = g.choose(doc,"doc","code")
+                    self.rootMode = "doc" if doc else "code"
             #@-<< Test for @root, @root-doc or @root-code >>
         # 2011/05/28: If no language, get the language from any @<file> node.
         if self.language:
@@ -11629,7 +11626,7 @@ class jEditColorizer:
 
         if delegate:
             if trace:
-                s2 = g.choose(len(repr(s[i:j])) <= 20,repr(s[i:j]),repr(s[i:i+17-2]+'...'))
+                s2 = repr(s[i:j]) if len(repr(s[i:j])) <= 20 else repr(s[i:i+17-2]+'...')
                 g.trace('%25s %3s %3s %-20s %s' % (
                     ('%s.%s' % (delegate,tag)),i,j,s2,g.callers(2)))
             # self.setTag(tag,s,i,j) # 2011/05/31: Do the initial color.
@@ -11657,7 +11654,7 @@ class jEditColorizer:
             self.initModeFromBunch(bunch)
         elif not exclude_match:
             if trace:
-                s2 = g.choose(len(repr(s[i:j])) <= 20,repr(s[i:j]),repr(s[i:i+17-2]+'...'))
+                s2 = repr(s[i:j]) if len(repr(s[i:j])) <= 20 else repr(s[i:i+17-2]+'...')
                 g.trace('%25s %3s %3s %-20s %s' % (
                     ('%s.%s' % (self.language_name,tag)),i,j,s2,g.callers(2)))
             self.setTag(tag,s,i,j)

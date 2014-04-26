@@ -502,7 +502,7 @@ class leoMenu:
 
         try:        show = c.frame.body.getColorizer().showInvisibles
         except:     show = False
-        label = g.choose(show,"Hide In&visibles","Show In&visibles")
+        label = "Hide In&visibles" if show else "Show In&visibles"
 
         self.editMenuTop2Table = [
             '*&goto-global-line',

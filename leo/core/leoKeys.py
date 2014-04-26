@@ -288,7 +288,7 @@ class AutoCompleterClass:
         '''Show the autocompleter status.'''
         k = self.k
         if not g.unitTesting:
-            s = 'calltips %s' % g.choose(k.enable_calltips,'On','Off')
+            s = 'calltips %s' % 'On' if k.enable_calltips else 'Off'
             g.red(s)
     #@+node:ekr.20061031131434.16: *3* Helpers
     #@+node:ekr.20110512212836.14469: *4* exit
@@ -433,7 +433,7 @@ class AutoCompleterClass:
         elif ch == '!':
             # Toggle between verbose and brief listing.
             self.verbose = not self.verbose
-            kind = g.choose(self.verbose,'ON','OFF')
+            kind = 'ON' if self.verbose else 'OFF'
             c.frame.putStatusLine('verbose completions %s' % (
                 kind),color='red')
             self.compute_completion_list()
@@ -1019,7 +1019,7 @@ class AutoCompleterClass:
         '''Return aList with header removed from the start of each list item.'''
 
         return [
-            g.choose(z.startswith(header),z[len(header)+1:],z)
+            z[len(header)+1:] if z.startswith(header) else z
                 for z in tabList]
     #@+node:ekr.20110513104728.14454: *5* get_summary_list
     def get_summary_list (self,header,tabList):
@@ -2027,7 +2027,7 @@ class keyHandlerClass:
         if state == 0:
             k.mb_event = event # Save the full event for later.
             k.setState('full-command',1,handler=k.fullCommand)
-            prompt = g.choose(help,helpPrompt,k.altX_prompt)
+            prompt = helpPrompt if help else k.altX_prompt
             k.setLabelBlue('%s' % (prompt),protect=True)
             # Init mb_ ivars. This prevents problems with an initial backspace.
             k.mb_prompt = k.mb_tabListPrefix = k.mb_prefix = prompt
@@ -2422,11 +2422,11 @@ class keyHandlerClass:
         state = k.unboundKeyAction
 
         if default == 'insert':
-            state = g.choose(state=='insert','command','insert')
+            state = 'command' if state=='insert' else 'insert'
         elif default == 'overwrite':
-            state = g.choose(state=='overwrite','command','overwrite')
+            state = 'command' if state=='overwrite' else 'overwrite'
         else:
-            state = g.choose(state=='command','insert','command') # prefer insert to overwrite.
+            state = 'insert' if state=='command' else 'command' # prefer insert to overwrite.
 
         k.setInputState(state)
         k.showStateAndMode()
@@ -3507,7 +3507,7 @@ class keyHandlerClass:
         k = self
         d = k.modeBindingsDict
         k.inputModeName = modeName
-        w = g.choose(k.silentMode,k.modeWidget,k.w)
+        w = k.modeWidget if k.silentMode else k.w
         k.createModeBindings(modeName,d,w)
         if k.silentMode:
             k.showStateAndMode()
@@ -3618,7 +3618,7 @@ class keyHandlerClass:
                         return
 
             # Create bindings after we know whether we are in silent mode.
-            w = g.choose(k.silentMode,k.modeWidget,k.w)
+            w = k.modeWidget if k.silentMode else k.w
             k.createModeBindings(modeName,d,w)
             k.showStateAndMode(prompt=prompt)
     #@+node:ekr.20120208064440.10201: *4* k.NEWgeneralModeHandler (NEW MODES)
@@ -3895,7 +3895,7 @@ class keyHandlerClass:
 
         for path in k.mb_tabList:
             theDir,fileName = g.os_path_split(path)
-            s = g.choose(path.endswith('\\'),theDir,fileName)
+            s = theDir if path.endswith('\\') else fileName
             s = fileName or g.os_path_basename(theDir) + '\\'
             g.es('',s,tabName=tabName)
     #@+node:ekr.20110609161752.16459: *4* k.setLossage
@@ -4203,7 +4203,7 @@ class keyHandlerClass:
             else:
                 s = last.lower()
 
-        val = g.choose(len(s)==1,s,'')
+        val = s if len(s)==1 else ''
 
         if trace: g.trace(repr(stroke),repr(val)) # 'shift',shift,
         return val
@@ -4219,7 +4219,7 @@ class keyHandlerClass:
     def getState (self,kind):
 
         k = self
-        val = g.choose(k.state.kind == kind,k.state.n,0)
+        val = k.state.n if k.state.kind == kind else 0
         # g.trace(state,'returns',val)
         return val
     #@+node:ekr.20061031131434.195: *4* getStateHandler
