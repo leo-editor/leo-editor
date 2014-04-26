@@ -1145,10 +1145,10 @@ class GlobalConfigManager:
     # Ints and bools default to 0, floats to 0.0 and strings to "".
     #@@c
 
-    defaultBodyFontSize = g.choose(sys.platform=="win32",9,12)
-    defaultLogFontSize  = g.choose(sys.platform=="win32",8,12)
-    defaultMenuFontSize = g.choose(sys.platform=="win32",9,12)
-    defaultTreeFontSize = g.choose(sys.platform=="win32",9,12)
+    defaultBodyFontSize = 9 if sys.platform=="win32" else 12
+    defaultLogFontSize  = 8 if sys.platform=="win32" else 12
+    defaultMenuFontSize = 9 if sys.platform=="win32" else 12
+    defaultTreeFontSize = 9 if sys.platform=="win32" else 12
 
     defaultsDict = g.TypedDict(
         name='g.app.config.defaultsDict',
@@ -1416,7 +1416,7 @@ class GlobalConfigManager:
         for ch in ('-','_',' ','\n'):
             name = name.replace(ch,'')
 
-        return g.choose(name,name,None)
+        return name if name else None
 
     munge = canonicalizeSettingName
     #@+node:ekr.20051011105014: *4* gcm.exists
@@ -2194,7 +2194,7 @@ class LocalConfigManager:
         legend = g.adjustTripleString(legend,c.tab_width)
         result = []
         for name,val,c,letter in g.app.config.config_iter(c):
-            kind = g.choose(letter==' ','   ','[%s]' % (letter))
+            kind = '   ' if letter==' ' else '[%s]' % (letter)
             result.append('%s %s = %s\n' % (kind,name,val))
 
         # Use a single g.es statement.

@@ -1887,7 +1887,7 @@ class baseTangleCommands:
             if verbose_flag:
                 s += self.st_dump_node(section)
             else:
-                theType = g.choose(len(section.parts)>0,"  ","un")
+                theType = "  " if len(section.parts)>0 else "un"
                 s += ("\n" + theType + "defined:[" + section.name + "]")
             s += "\nsection delims: "+repr(section.delims)
         return s
@@ -2507,7 +2507,7 @@ class baseTangleCommands:
         #@+<< Skip the header line output by tangle >>
         #@+node:sps.20100622084732.12299: *5* << Skip the header line output by tangle >>
         if self.line_comment or self.comment:
-            line = g.choose(self.line_comment,self.line_comment,self.comment) + " Created by Leo from" 
+            line = self.line_comment if self.line_comment else self.comment + " Created by Leo from" 
             if g.match(s,i,line):
                 # Even a block comment will end on the first line.
                 i = g.skip_to_end_of_line(s,i)
@@ -2652,7 +2652,7 @@ class baseTangleCommands:
                             if self.is_sentinel_line(s,k):
                                 break
                             else:
-                                i = g.choose(k+1 <= len(s), k+1, len(s))
+                                i = k+1 if k+1 <= len(s) else len(s)
                         else:
                             i += 1
                 self.copy(s[j:i])
@@ -3137,7 +3137,7 @@ class baseTangleCommands:
         if i < len(s) and not g.is_nl(s,i):
             return false_data
         #@-<< Make sure the line ends with end_sentinel >>
-        kind = g.choose(end_flag,end_sentinel_line,start_sentinel_line)
+        kind = end_sentinel_line if end_flag else start_sentinel_line
         return True,i,kind,name,part,of,end,nl_flag
     #@+node:sps.20100625103124.16437: *4* parent_language_comment_settings
     # side effect: sets the values within lang_dict
@@ -3359,7 +3359,7 @@ class baseTangleCommands:
         d = {}
         for key,default,func in table:
             val = func(aList)
-            d[key] = g.choose(val is None,default,val)
+            d[key] = default if val is None else val
 
         lang_dict = {'language':None,'delims':None}
         self.parent_language_comment_settings(p,lang_dict)
@@ -3420,7 +3420,7 @@ class baseTangleCommands:
                     kind = bad_section_name # The warning has been given.
         elif g.match(s,i,"@ ") or g.match(s,i,"@\t") or g.match(s,i,"@\n"):
             # 10/30/02: Only @doc starts a noweb doc part in raw cweb mode.
-            kind = g.choose(self.raw_cweb_flag,plain_line,at_doc)
+            kind = plain_line if self.raw_cweb_flag else at_doc
         elif g.match(s,i,"@@"): kind = at_at
         elif i < len(s) and s[i] == '@': kind = at_other
         else: kind = plain_line
@@ -3432,7 +3432,7 @@ class baseTangleCommands:
 
             if g.match_word(s,i,"@c"):
                 # 10/30/02: Only @code starts a code section in raw cweb mode.
-                kind = g.choose(self.raw_cweb_flag,plain_line,at_code)
+                kind = plain_line if self.raw_cweb_flag else at_code
             else:
                 for name, theType in [
                     ("@chapter", at_chapter),

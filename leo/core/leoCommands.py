@@ -805,7 +805,7 @@ class Commands (object):
         d = {}
         for key,default,func in table:
             val = func(aList)
-            d[key] = g.choose(val is None,default,val)
+            d[key] = default if val is None else val
 
         # Post process: do *not* set commander ivars.
         lang_dict = d.get('lang-dict')
@@ -908,7 +908,7 @@ class Commands (object):
             elif 'root-doc' in d:
                 return 'doc'
             elif 'root' in d:
-                return g.choose(start_in_doc,'doc','code')
+                return 'doc' if start_in_doc else 'code'
 
         return None
     #@+node:ekr.20080922124033.5: *4* c.os_path_finalize and c.os_path_finalize_join
@@ -2443,7 +2443,7 @@ class Commands (object):
         c = self
         p = c.p.copy() # *Always* use c.p and pass c.p to script.
         c.setCurrentDirectoryFromContext(p)
-        d = g.choose(define_g,{'c':c,'g':g,'p':p},{})
+        d = {'c':c,'g':g,'p':p} if define_g else {}
         if define_name: d['__name__'] = define_name
         d['script_args'] = args or []
         if namespace: d.update(namespace)
@@ -2547,7 +2547,7 @@ class Commands (object):
     def toggleShowInvisibles (self,event=None):
         '''Toggle showing of invisible (whitespace) characters.'''
         c = self ; colorizer = c.frame.body.getColorizer()
-        val = g.choose(colorizer.showInvisibles,0,1)
+        val = 0 if colorizer.showInvisibles else 1
         c.showInvisiblesHelper(val)
 
     def showInvisiblesHelper (self,val):
@@ -3029,7 +3029,7 @@ class Commands (object):
             if isAtNoSent or isAtEdit:
                 # Write a virtual file containing sentinels.
                 at = c.atFileCommands
-                kind = g.choose(isAtNoSent,'@nosent','@edit')
+                kind = '@nosent' if isAtNoSent else '@edit'
                 at.write(root,kind=kind,nosentinels=False,toString=True)
                 lines = g.splitLines(at.stringOutput)
             else:
@@ -3205,7 +3205,7 @@ class Commands (object):
             if not forward and index <= 0:
                 # g.trace("not found")
                 return None
-            index += g.choose(forward,1,-1)
+            index += 1 if forward else -1
         return 0 # unreachable: keeps pychecker happy.
     # Test  (
     # ([(x){y}]))
@@ -4004,7 +4004,7 @@ class Commands (object):
         '''Compute the result of wrapping all lines.'''
         c = self
         trailingNL = lines and lines[-1].endswith('\n')
-        lines = [g.choose(z.endswith('\n'),z[:-1],z) for z in lines]
+        lines = [z[:-1] if z.endswith('\n') else z for z in lines]
         if len(lines) > 0: # Bug fix: 2013/12/22.
             s = lines[0]
             if c.startsParagraph(s):
@@ -4158,7 +4158,7 @@ class Commands (object):
         if s is None:
             s = g.app.gui.getTextFromClipboard()
         pasteAsClone = not reassignIndices
-        undoType = g.choose(reassignIndices,'Paste Node','Paste As Clone')
+        undoType = 'Paste Node' if reassignIndices else 'Paste As Clone'
         c.endEditing()
         if not s or not c.canPasteOutline(s):
             return # This should never happen.
@@ -4524,7 +4524,7 @@ class Commands (object):
 
         c.endEditing()
 
-        undoType = g.choose(sortChildren,'Sort Children','Sort Siblings')
+        undoType = 'Sort Children' if sortChildren else 'Sort Siblings'
         parent_v = p._parentVnode()
         parent = p.parent()
         oldChildren = parent_v.children[:]
@@ -5408,16 +5408,16 @@ class Commands (object):
                 self.parenLevel += 1 ; self.lineParenLevel += 1
             elif val in ('=','==','+=','-=','!=','<=','>=','<','>','<>','*','**','+','&','|','/','//'):
                 # Add leading and trailing blank in outer mode.
-                s = g.choose(outer,' %s ','%s')
+                s = ' %s ' if outer else '%s'
                 self.put(s % val)
             elif val in ('^','~','{','['):
                 # Add leading blank in outer mode.
-                s = g.choose(outer,' %s','%s')
+                s = ' %s' if outer else '%s'
                 self.put(s % val)
                 if val == '[': self.squareBracketLevel += 1
             elif val in (',',':','}',']',')'):
                 # Add trailing blank in outer mode.
-                s = g.choose(outer,'%s ','%s')
+                s = '%s ' if outer else '%s'
                 self.put(s % val)
                 if val == ']': self.squareBracketLevel -= 1
                 if val == ')':
@@ -6104,7 +6104,7 @@ class Commands (object):
         if not p: return
 
         c.endEditing()
-        undoType = g.choose(p.isMarked(),'Unmark','Mark')
+        undoType = 'Unmark' if p.isMarked() else 'Mark'
         bunch = u.beforeMark(p,undoType)
         if p.isMarked():
             c.clearMarked(p)
@@ -6170,7 +6170,7 @@ class Commands (object):
     def cantMoveMessage (self):
 
         c = self ; h = c.rootPosition().h
-        kind = g.choose(h.startswith('@chapter'),'chapter','hoist')
+        kind = 'chapter' if h.startswith('@chapter') else 'hoist'
         g.warning("can't move node out of",kind)
     #@+node:ekr.20031218072017.1767: *6* demote
     def demote (self,event=None):
@@ -7760,7 +7760,7 @@ class Commands (object):
 
             if c.ignored_at_file_nodes:
                 files = '\n'.join(sorted(c.ignored_at_file_nodes))
-                kind = g.choose(kind.startswith('read'),'read','written')
+                kind = 'read' if kind.startswith('read') else 'written'
                 g.app.gui.runAskOkDialog(c,
                     title='Not read',
                     message='The following were not %s because they contain @ignore:\n%s' % (kind,files))
@@ -8363,7 +8363,7 @@ class Commands (object):
         if not invisible: ch = ch.lower()
         found = False
         extend = self.navQuickKey()
-        attempts = g.choose(extend,(True,False),(False,))
+        attempts = (True,False) if extend else (False,)
         for extend2 in attempts:
             p = p1.copy()
             while 1:

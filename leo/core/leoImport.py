@@ -200,8 +200,8 @@ class leoImportCommands (scanUtility):
 
         # g.trace(g.get_line(s,i))
         c = self.c ; nl = self.output_newline
-        lb = g.choose(self.webType=="cweb","@<","<<")
-        rb = g.choose(self.webType=="cweb","@>",">>")
+        lb = "@<" if self.webType=="cweb" else "<<"
+        rb = "@>" if self.webType=="cweb" else ">>"
         h = v.headString().strip()
         #@+<< put v's headline ref in head_ref >>
         #@+node:ekr.20031218072017.3291: *5* << put v's headline ref in head_ref>>
@@ -275,7 +275,7 @@ class leoImportCommands (scanUtility):
             else:
                 if not head_ref:
                     if v == c.currentVnode():
-                        head_ref = g.choose(file_name,file_name,"*")
+                        head_ref = file_name if file_name else "*"
                     else:
                         head_ref = "@others"
 
@@ -309,7 +309,7 @@ class leoImportCommands (scanUtility):
             else:
                 if not head_ref:
                     if v == c.currentVnode():
-                        head_ref = g.choose(file_name,file_name,"*")
+                        head_ref = file_name if file_name else "*"
                     else:
                         head_ref = "@others"
 
@@ -340,7 +340,7 @@ class leoImportCommands (scanUtility):
             result += nl+"@"+nl+result2.strip()+nl+nl
         else:
             # All nodes should start with '@', even if the doc part is empty.
-            result += g.choose(self.webType=="cweb",nl+"@ ",nl+"@"+nl)
+            result += nl+"@ " if self.webType=="cweb" else nl+"@"+nl
         return i, result
     #@+node:ekr.20031218072017.3297: *4* ic.convertVnodeToWeb
     #@+at This code converts a vnode to noweb text as follows:
@@ -359,7 +359,7 @@ class leoImportCommands (scanUtility):
         startInCode = not c.config.at_root_bodies_start_in_doc_mode
         nl = self.output_newline
         s = v.b
-        lb = g.choose(self.webType=="cweb","@<","<<")
+        lb = "@<" if self.webType=="cweb" else "<<"
         i = 0 ; result = "" ; docSeen = False
         while i < len(s):
             progress = i
@@ -374,7 +374,7 @@ class leoImportCommands (scanUtility):
                 #@+node:ekr.20031218072017.3298: *5* << Supply a missing doc part >>
                 if not docSeen:
                     docSeen = True
-                    result += g.choose(self.webType=="cweb",nl+"@ ",nl+"@"+nl)
+                    result += nl+"@ " if self.webType=="cweb" else nl+"@"+nl
                 #@-<< Supply a missing doc part >>
                 i,result = self.convertCodePartToWeb(s,i,v,result)
             elif self.treeType == "@file" or startInCode:
@@ -382,7 +382,7 @@ class leoImportCommands (scanUtility):
                 #@+node:ekr.20031218072017.3298: *5* << Supply a missing doc part >>
                 if not docSeen:
                     docSeen = True
-                    result += g.choose(self.webType=="cweb",nl+"@ ",nl+"@"+nl)
+                    result += nl+"@ " if self.webType=="cweb" else nl+"@"+nl
                 #@-<< Supply a missing doc part >>
                 i,result = self.convertCodePartToWeb(s,i,v,result)
             else:
@@ -399,8 +399,8 @@ class leoImportCommands (scanUtility):
     def copyPart (self,s,i,result):
 
         # g.trace(g.get_line(s,i))
-        lb = g.choose(self.webType=="cweb","@<","<<")
-        rb = g.choose(self.webType=="cweb","@>",">>")
+        lb = "@<" if self.webType=="cweb" else "<<"
+        rb = "@>" if self.webType=="cweb" else ">>"
         theType = self.webType
         while i < len(s):
             progress = j = i # We should be at the start of a line here.
@@ -763,8 +763,8 @@ class leoImportCommands (scanUtility):
     def massageWebBody (self,s):
 
         theType = self.webType
-        lb = g.choose(theType=="cweb","@<","<<")
-        rb = g.choose(theType=="cweb","@>",">>")
+        lb = "@<" if theType=="cweb" else "<<"
+        rb = "@>" if theType=="cweb" else ">>"
         #@+<< Remove most newlines from @space and @* sections >>
         #@+node:ekr.20031218072017.3313: *5* << Remove most newlines from @space and @* sections >>
         i = 0
@@ -793,7 +793,7 @@ class leoImportCommands (scanUtility):
                 doc = doc.strip()
                 if doc and len(doc) > 0:
                     if doc == "@":
-                        doc = g.choose(self.webType=="cweb", "@ ","@\n")
+                        doc = "@ " if self.webType=="cweb" else "@\n"
                     else:
                         doc += "\n\n"
                     # g.trace("new doc:",doc)
@@ -938,7 +938,7 @@ class leoImportCommands (scanUtility):
                 p.moveToThreadNext()
 
         if not g.unitTesting:
-            message = g.choose(found,'finished','no @auto nodes in the selected tree')
+            message = 'finished' if found else 'no @auto nodes in the selected tree'
             g.blue(message)
         c.redraw()
 
@@ -1148,7 +1148,7 @@ class leoImportCommands (scanUtility):
         while g.match(s,i,'\t'):
             level += 1
             i += 1
-        plusFlag = g.choose(g.match(s,i,"+"),True,False)
+        plusFlag = True if g.match(s,i,"+") else False
         if g.match(s,i,"+ ") or g.match(s,i,"- "):
             return level, plusFlag
         else:
@@ -1267,7 +1267,7 @@ class leoImportCommands (scanUtility):
                 elif g.match(s,i,"@c") or g.match(s,i,"@p"):
                     # Look for a function def.
                     name = self.findFunctionDef(s,i+2)
-                    return g.choose(name,name,"outer function")
+                    return name if name else "outer function"
                 elif g.match(s,i,"@<"):
                     # Look for a section def.
                     # A small bug: the section def must end on this line.
@@ -1301,8 +1301,8 @@ class leoImportCommands (scanUtility):
     def scanWebFile (self,fileName,parent):
 
         theType = self.webType
-        lb = g.choose(theType=="cweb","@<","<<")
-        rb = g.choose(theType=="cweb","@>",">>")
+        lb = "@<" if theType=="cweb" else "<<"
+        rb = "@>" if theType=="cweb" else ">>"
 
         s,e = g.readFileIntoString(fileName)
         if s is None: return
@@ -1525,7 +1525,7 @@ class leoImportCommands (scanUtility):
         '''Scan the text of an unknown file type.'''
         c = self.c
         changed = c.isChanged()
-        body = g.choose(atAuto,'','@ignore\n')
+        body = '' if atAuto else '@ignore\n'
         if ext in ('.html','.htm'):   body += '@language html\n'
         elif ext in ('.txt','.text'): body += '@nocolor\n'
         else:
@@ -1613,7 +1613,7 @@ class leoImportCommands (scanUtility):
         }
         if not fileName: fileName = p.h
         if not s: s = self.removeSentinelsCommand([fileName],toString=True)
-        title = g.choose(h.startswith('@test'),h[5:],h)
+        title = h[5:] if h.startswith('@test') else h
 
         # Run the actual test.
         self.createOutline(title.strip(),p.copy(),atAuto=atAuto,s=s,ext=ext)
@@ -1928,12 +1928,10 @@ class BaseScanner (scanUtility):
             return True
         elif strict:
             s1,s2 = line1.lstrip(),line2.lstrip()
-            messageKind = g.choose(
-                s1 == s2 and self.startsComment(s1,0) and self.startsComment(s2,0),
-                'comment','error')
+            messageKind = 'comment' if s1 == s2 and self.startsComment(s1,0) and self.startsComment(s2,0) else 'error'
         else:
             s1,s2 = line1.lstrip(),line2.lstrip()
-            messageKind = g.choose(s1==s2,'warning','error')
+            messageKind = 'warning' if s1==s2 else 'error'
         if g.unitTesting:
             d ['actualMismatchLine'] = i+1
             ok = i+1 == expectedMismatch
@@ -2008,7 +2006,7 @@ class BaseScanner (scanUtility):
             g.trace('lines1...\n',''.join(lines1),'\n')
             g.trace('lines2...\n',''.join(lines2),'\n')
             return
-        kind = g.choose(self.atAuto,'@auto','import command')
+        kind = '@auto' if self.atAuto else 'import command'
         n1,n2 = len(lines1),len(lines2)
         s1 = '%s did not import %s perfectly\n' % (
             kind,self.root.h)
@@ -2856,8 +2854,8 @@ class BaseScanner (scanUtility):
         verbose = False
         if delim1 is None: delim1 = self.blockDelim1
         if delim2 is None: delim2 = self.blockDelim2
-        match1 = g.choose(len(delim1)==1,g.match,g.match_word)
-        match2 = g.choose(len(delim2)==1,g.match,g.match_word)
+        match1 = g.match if len(delim1)==1 else g.match_word
+        match2 = g.match if len(delim2)==1 else g.match_word
         assert match1(s,i,delim1)
         level,start,startIndent = 0,i,self.startSigIndent
         if trace and verbose:
@@ -3348,7 +3346,7 @@ class BaseScanner (scanUtility):
                 result.append(s)
 
         if changed:
-            action = g.choose(self.tab_width < 0,'tabs converted to blanks','blanks converted to tabs')
+            action = 'tabs converted to blanks' if self.tab_width < 0 else 'blanks converted to tabs'
             message = 'inconsistent leading whitespace. %s' % action
             self.report(message)
 

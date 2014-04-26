@@ -319,7 +319,7 @@ class position (object):
     #@+node:ekr.20040310153624: *4* p.dump
     def dumpLink (self,link):
 
-        return g.choose(link,link,"<none>")
+        return link if link else "<none>"
 
     def dump (self,label=""):
 
@@ -947,7 +947,7 @@ class position (object):
 
         p = self
         level = self.level() - firstLevel
-        plusMinus = g.choose(p.hasChildren(), "+", "-")
+        plusMinus = "+" if p.hasChildren() else "-"
 
         return "%s%s %s" % ('\t'*level,plusMinus,p.h)
     #@+node:ekr.20040315023430.3: *4* p.moreBody
@@ -1961,7 +1961,7 @@ class vnode (baseVnode):
     __str__ = __repr__
     #@+node:ekr.20040312145256: *4* v.dump
     def dumpLink (self,link):
-        return g.choose(link,link,"<none>")
+        return link if link else "<none>"
 
     def dump (self,label=""):
 
@@ -2077,31 +2077,31 @@ class vnode (baseVnode):
         return h and h[0] == '@' and self.anyAtFileNodeName()
     #@+node:ekr.20040325073709: *4* isAt...FileNode (vnode)
     def isAtAutoNode (self):
-        return g.choose(self.atAutoNodeName(),True,False)
+        return True if self.atAutoNodeName() else False
 
     def isAtAutoOtlNode (self):
-        return g.choose(self.atAutoOtlNodeName(),True,False)
+        return True if self.atAutoOtlNodeName() else False
 
     def isAtAutoRstNode (self):
-        return g.choose(self.atAutoRstNodeName(),True,False)
+        return True if self.atAutoRstNodeName() else False
 
     def isAtEditNode (self):
-        return g.choose(self.atEditNodeName(),True,False)
+        return True if self.atEditNodeName() else False
 
     def isAtFileNode (self):
-        return g.choose(self.atFileNodeName(),True,False)
+        return True if self.atFileNodeName() else False
 
     def isAtNoSentinelsFileNode (self):
-        return g.choose(self.atNoSentinelsFileNodeName(),True,False)
+        return True if self.atNoSentinelsFileNodeName() else False
 
     def isAtSilentFileNode (self): # @file-asis
-        return g.choose(self.atSilentFileNodeName(),True,False)
+        return True if self.atSilentFileNodeName() else False
 
     def isAtShadowFileNode (self):
-        return g.choose(self.atShadowFileNodeName(),True,False)
+        return True if self.atShadowFileNodeName() else False
 
     def isAtThinFileNode (self):
-        return g.choose(self.atThinFileNodeName(),True,False)
+        return True if self.atThinFileNodeName() else False
 
     # New names, less confusing:
     isAtNoSentFileNode = isAtNoSentinelsFileNode

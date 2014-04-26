@@ -263,7 +263,7 @@ class cacher:
         if not c:
             return g.internalError('no commander')
 
-        globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
+        globals_tag = 'leo3k.globals' if g.isPython3 else 'leo2k.globals'
         # globals_tag = g.toEncodedString(globals_tag,'ascii')
 
         key = self.fileKey(c.mFileName,globals_tag)
@@ -284,7 +284,7 @@ class cacher:
         if not c:
             return g.internalError('no commander')
 
-        globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
+        globals_tag = 'leo3k.globals' if g.isPython3 else 'leo2k.globals'
         # globals_tag = g.toEncodedString(globals_tag,'ascii')
 
         key = self.fileKey(c.mFileName,globals_tag)
@@ -300,7 +300,7 @@ class cacher:
         if not c:
             g.internalError('no commander')
             return {}
-        globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
+        globals_tag = 'leo3k.globals' if g.isPython3 else 'leo2k.globals'
         key = self.fileKey(fn,globals_tag)
         data = self.db.get('window_position_%s' % (key))
         # pylint: disable=unpacking-non-sequence
@@ -364,7 +364,7 @@ class cacher:
         if not c:
             return g.internalError('no commander')
 
-        globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
+        globals_tag = 'leo3k.globals' if g.isPython3 else 'leo2k.globals'
         key = self.fileKey(fn,globals_tag)
 
         if trace: g.trace(c.mFileName,key,g.callers(5))
@@ -389,7 +389,7 @@ class cacher:
         if not c:
             return g.internalError('no commander')
 
-        globals_tag = g.choose(g.isPython3,'leo3k.globals','leo2k.globals')
+        globals_tag = 'leo3k.globals' if g.isPython3 else 'leo2k.globals'
         # globals_tag = g.toEncodedString(globals_tag,'ascii')
 
         key = self.fileKey(c.mFileName,globals_tag)

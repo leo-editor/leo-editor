@@ -621,7 +621,7 @@ def scanAtRootOptions (s,i,err_flag=False):
 
     if mode == None:
         doc = app.config.at_root_bodies_start_in_doc_mode
-        mode = g.choose(doc,"doc","code")
+        mode = "doc" if doc else "code"
 
     # g.trace(mode,g.callers(3))
 
@@ -649,7 +649,7 @@ def scanAllAtTabWidthDirectives(c,p):
     if c and p:
         aList = g.get_directives_dict_list(p)
         val = g.scanAtTabwidthDirectives(aList)
-        ret = g.choose(val is None,c.tab_width,val)
+        ret = c.tab_width if val is None else val
     else:
         ret = None
     # g.trace(ret,p and p.h,ret)
@@ -676,7 +676,7 @@ def scanAllAtWrapDirectives(c,p):
         aList = g.get_directives_dict_list(p)
 
         val = g.scanAtWrapDirectives(aList)
-        ret = g.choose(val is None,default,val)
+        ret = default if val is None else val
     else:
         ret = None
     # g.trace(ret,p.h)
@@ -2026,7 +2026,7 @@ def create_temp_file (textMode=False):
     try:
         # fd is an handle to an open file as would be returned by os.open()
         fd,theFileName = tempfile.mkstemp(text=textMode)
-        mode = g.choose(textMode,'w','wb')
+        mode = 'w' if textMode else 'wb'
         theFile = os.fdopen(fd,mode)
     except Exception:
         g.error('unexpected exception in g.create_temp_file')
@@ -3042,8 +3042,8 @@ def actualColor(color):
     # g.trace(color,color2)
     return color2
 #@+node:ekr.20031218072017.3147: *3* g.choose (deprecated)
-def choose(cond, a, b): # warning: evaluates all arguments
-
+def choose(cond,a,b): # warning: evaluates all arguments
+    '''(Deprecated) simulate "a if cond else b"'''
     if cond: return a
     else: return b
 #@+node:ekr.20080821073134.2: *3* g.doKeywordArgs
@@ -4550,7 +4550,7 @@ def handleScriptException (c,p,script,script1):
     i = max(0,n-2)
     j = min(n+2,len(lines))
     while i < j:
-        ch = g.choose(i==n-1,'*',' ')
+        ch = '*' if i==n-1 else ' '
         s = "%s line %d: %s" % (ch,i+1,lines[i])
         g.es('',s,newline=False)
         i += 1

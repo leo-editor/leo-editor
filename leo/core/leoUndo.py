@@ -316,7 +316,7 @@ class undoer:
             # Update menu using old name.
             realLabel = frame.menu.getRealMenuName(name)
             if realLabel == name:
-                underline=g.choose(g.match(name,0,"Can't"),-1,0)
+                underline=-1 if g.match(name,0,"Can't") else 0
             else:
                 underline = realLabel.find("&")
             realLabel = realLabel.replace("&","")
@@ -338,7 +338,7 @@ class undoer:
             # Update menu using old name.
             realLabel = frame.menu.getRealMenuName(name)
             if realLabel == name:
-                underline=g.choose(g.match(name,0,"Can't"),-1,0)
+                underline=-1 if g.match(name,0,"Can't") else 0
             else:
                 underline = realLabel.find("&")
             realLabel = realLabel.replace("&","")
@@ -506,7 +506,7 @@ class undoer:
             return
 
         isOld = oldOrNew=='old'
-        marked = g.choose(isOld,u.oldMarked, u.newMarked)
+        marked = u.oldMarked if isOld else u.newMarked
 
         if marked:  c.setMarked(u.p)
         else:       c.clearMarked(u.p)
@@ -520,54 +520,45 @@ class undoer:
     #@+node:ekr.20050318085432.4: *4* afterX...
     #@+node:ekr.20050315134017.4: *5* afterChangeGroup
     def afterChangeGroup (self,p,undoType,reportFlag=False,dirtyVnodeList=[]):
-
         '''Create an undo node for general tree operations using d created by beforeChangeTree'''
-
-        u = self ; c = self.c ; w = c.frame.body.bodyCtrl
-        if u.redoing or u.undoing: return
-
+        u = self ; c = self.c
+        w = c.frame.body.bodyCtrl
+        if u.redoing or u.undoing:
+            return
         # g.trace('u.bead',u.bead,'len u.beads',len(u.beads))
-
         bunch = u.beads[u.bead]
+        if not u.beads:
+            g.trace('oops: empty undo stack.')
+            return
         if bunch.kind == 'beforeGroup':
             bunch.kind = 'afterGroup'
         else:
             g.trace('oops: expecting beforeGroup, got %s' % bunch.kind)
-
         # Set the types & helpers.
         bunch.kind = 'afterGroup'
         bunch.undoType = undoType
-
         # Set helper only for undo:
         # The bead pointer will point to an 'beforeGroup' bead for redo.
         bunch.undoHelper = u.undoGroup
         bunch.redoHelper = u.redoGroup
-
         bunch.dirtyVnodeList = dirtyVnodeList
-
         bunch.newP = p.copy()
         bunch.newSel = w.getSelectionRange()
-
         # Tells whether to report the number of separate changes undone/redone.
         bunch.reportFlag = reportFlag
-
         if 0:
             # Push the bunch.
             u.bead += 1
             u.beads[u.bead:] = [bunch]
-
         # Recalculate the menu labels.
         u.setUndoTypes()
-
         # g.trace(u.undoMenuLabel,u.redoMenuLabel)
     #@+node:ekr.20050315134017.2: *5* afterChangeNodeContents
     def afterChangeNodeContents (self,p,command,bunch,dirtyVnodeList=[],inHead=False):
-
         '''Create an undo node using d created by beforeChangeNode.'''
-
         u = self ; c = self.c ; w = c.frame.body.bodyCtrl
-        if u.redoing or u.undoing: return
-
+        if u.redoing or u.undoing:
+            return
         # Set the type & helpers.
         bunch.kind = 'node'
         bunch.undoType = command
@@ -925,29 +916,24 @@ class undoer:
     #@+node:ekr.20050318085432.3: *4* beforeX...
     #@+node:ekr.20050315134017.7: *5* beforeChangeGroup
     def beforeChangeGroup (self,p,command,verboseUndoGroup=True):
-
+        '''Prepare to undo a group of undoable operations.'''
         u = self
         bunch = u.createCommonBunch(p)
-
         # Set types.
         bunch.kind = 'beforeGroup'
         bunch.undoType = command
         bunch.verboseUndoGroup = verboseUndoGroup
-
         # Set helper only for redo:
         # The bead pointer will point to an 'afterGroup' bead for undo.
         bunch.undoHelper = u.undoGroup
         bunch.redoHelper = u.redoGroup
         bunch.items = []
-
         # Push the bunch.
         u.bead += 1
         u.beads[u.bead:] = [bunch]
     #@+node:ekr.20050315133212.2: *5* beforeChangeNodeContents
     def beforeChangeNodeContents (self,p,oldBody=None,oldHead=None,oldYScroll=None):
-
         '''Return data that gets passed to afterChangeNode'''
-
         u = self
         bunch = u.createCommonBunch(p)
         # g.trace('oldHead',oldHead,'p.h',p.h,p.v,g.callers())

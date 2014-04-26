@@ -231,7 +231,7 @@ class rstCommands:
 
         '''Convert an option name to the equivalent ivar name.'''
 
-        i = g.choose(name.startswith('rst'),3,0)
+        i = 3 if name.startswith('rst') else 0
 
         while i < len(name) and name[i].isdigit():
             i += 1
@@ -336,7 +336,7 @@ class rstCommands:
                 kind = '@rst-markup'
                 n = len('@ @rst-markup')
                 after = s[n:].strip()
-                part_lines = g.choose(after,[after],[])
+                part_lines = [after] if after else []
             elif s.startswith('@ @rst-option'):
                 if part_lines: parts.append((kind,part_lines[:]),)
                 kind,part_lines = '@rst-option',[s] # part_lines will be ignored.
@@ -345,9 +345,9 @@ class rstCommands:
                     if part_lines: parts.append((kind,part_lines[:]),)
                     kind = '@doc'
                     # Put only what follows @ or @doc
-                    n = g.choose(s.startswith('@doc'),4,1)
+                    n = 4 if s.startswith('@doc') else 1
                     after = s[n:].lstrip()
-                    part_lines = g.choose(after,[after],[])
+                    part_lines = [after] if after else []
                 else:
                     part_lines.append(s) # still in code mode.
             elif g.match_word(s,0,'@c') and kind != 'code':

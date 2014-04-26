@@ -1527,7 +1527,7 @@ class baseFileCommands:
 
         c = self.c
 
-        zipMark = g.choose(c.isZipped,'[zipped] ','')
+        zipMark = '[zipped] ' if c.isZipped else ''
 
         g.es("saved:","%s%s" % (zipMark,g.shortFileName(fileName)))
     #@+node:ekr.20050404190914.2: *3* deleteFileWithMessage (leoFileCommands)

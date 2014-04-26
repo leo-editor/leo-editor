@@ -2423,7 +2423,7 @@ class LoadManager:
                                 isDefault = d.get("default",False)
                                 underline = d.get("underline",0)
                                 command = d.get("command",None)
-                                bd = g.choose(isDefault,4,2)
+                                bd = 4 if isDefault else 2
 
                                 b = Tk.Button(f,width=6,text=text,bd=bd,
                                     underline=underline,command=command)

@@ -888,7 +888,7 @@ class atFile:
 
         s,e = g.readFileIntoString(fn,kind='@edit')
         if s is None: return
-        encoding = g.choose(e is None,'utf-8',e)
+        encoding = 'utf-8' if e is None else e
 
         # Delete all children.
         while p.hasChildren():
@@ -2092,7 +2092,7 @@ class atFile:
             j = i = g.skip_ws(s,i)
             while i < len(s) and not g.is_ws(s[i]) and not g.is_nl(s,i):
                 i += 1
-            end = g.choose(j<i,s[j:i],"")
+            end = s[j:i] if j<i else ""
             i2 = g.skip_ws(s,i)
             if end == at.endSentinelComment and (i2 >= len(s) or g.is_nl(s,i2)):
                 at.endSentinelComment = "" # Not really two params.
@@ -2758,7 +2758,7 @@ class atFile:
         tempList   = hasList and ''.join(v.tempBodyList) or ''
 
         # Compute the new text.
-        new = g.choose(at.readVersion5,tempList,''.join(at.out))
+        new = tempList if at.readVersion5 else ''.join(at.out)
         new = g.toUnicode(new)
         if trace: g.trace('%28s %s' % (v.h,repr(new)))
 
@@ -2849,7 +2849,7 @@ class atFile:
         tempList   = hasList and ''.join(v.tempBodyList) or ''
 
         # The old temp text is *always* in tempBodyString.
-        new = g.choose(at.readVersion5,tempList,''.join(at.out))
+        new = tempList if at.readVersion5 else ''.join(at.out)
         new = g.toUnicode(new)
         old = tempString or v.getBody()
             # v.getBody returns v._bodyString.
@@ -2988,8 +2988,7 @@ class atFile:
             at.outputFileName = None
             kind,at.outputFile = self.openForWrite(at.outputFileName,'wb')
             if not at.outputFile:
-                kind = g.choose(kind=='check',
-                    'did not overwrite','can not create')
+                kind = 'did not overwrite' if kind=='check' else 'can not create'
                 at.writeError("%s %s" % (kind,at.outputFileName))
                 return False
         except Exception:
@@ -3008,10 +3007,8 @@ class atFile:
             if c.fileName():
                 shadow_filename = x.shadowPathName(filename)
                 self.writing_to_shadow_directory = os.path.exists(shadow_filename)
-                open_file_name = g.choose(
-                    self.writing_to_shadow_directory,shadow_filename,filename)
-                self.shadow_filename = g.choose(
-                    self.writing_to_shadow_directory,shadow_filename,None)
+                open_file_name = shadow_filename if self.writing_to_shadow_directory else filename
+                self.shadow_filename = shadow_filename if self.writing_to_shadow_directory else None
             else:
                 self.writing_to_shadow_directory = False
                 open_file_name = filename
@@ -3341,7 +3338,7 @@ class atFile:
         at.rememberReadPath(fileName,root)
         # This code is similar to code in at.write.
         c.endEditing() # Capture the current headline.
-        at.targetFileName = g.choose(toString,"<string-file>",fileName)
+        at.targetFileName = "<string-file>" if toString else fileName
         at.initWriteIvars(root,at.targetFileName,
             atAuto=True,
             nosentinels=True,thinFile=False,scriptWrite=False,
@@ -3654,7 +3651,7 @@ class atFile:
     def writeOpenFile(self,root,nosentinels=False,toString=False,fromString=''):
         """Do all writes except asis writes."""
         at = self
-        s = g.choose(fromString,fromString,root.v.b)
+        s = fromString if fromString else root.v.b
         root.clearAllVisitedInTree()
         at.putAtFirstLines(s)
         at.putOpenLeoSentinel("@+leo-ver=%s" % (5 if at.writeVersion5 else 4))
@@ -3706,7 +3703,7 @@ class atFile:
             # 2011/05/25: warn if a node contains both @comment and @delims.
         has_at_others = False
         # New in 4.3 b2: get s from fromString if possible.
-        s = g.choose(fromString,fromString,p.b)
+        s = fromString if fromString else p.b
         p.v.setVisited()
         if trace: g.trace('visit',p.h)
             # Make sure v is never expanded again.
@@ -4279,7 +4276,7 @@ class atFile:
         if at.writeVersion5:
             pass # Never write @-doc or @-at sentinels.
         else:
-            sentinel = g.choose(at.docKind == at.docDirective,"@-doc","@-at")
+            sentinel = "@-doc" if at.docKind == at.docDirective else "@-at"
             at.putSentinel(sentinel)
     #@+node:ekr.20041005105605.186: *5* putPending (old only)
     def putPending (self,split):
@@ -4314,8 +4311,8 @@ class atFile:
 
         at = self ; at.docKind = kind
 
-        sentinel = g.choose(kind == at.docDirective,"@+doc","@+at")
-        directive = g.choose(kind == at.docDirective,"@doc","@")
+        sentinel = "@+doc" if kind == at.docDirective else "@+at"
+        directive = "@doc" if kind == at.docDirective else "@"
 
         if at.writeVersion5: # Put whatever follows the directive in the sentinel
             # Skip past the directive.
@@ -4712,7 +4709,7 @@ class atFile:
         # Rewritten 6/8/2005.
         if i+1 >= n or s[i+1] in (' ','\t','\n'):
             # Bare '@' not recognized in cweb mode.
-            return g.choose(at.language=="cweb",at.noDirective,at.atDirective)
+            return at.noDirective if at.language=="cweb" else at.atDirective
         if not s[i+1].isalpha():
             return at.noDirective # Bug fix: do NOT return miscDirective here!
         if at.language=="cweb" and g.match_word(s,i,'@c'):
@@ -4965,7 +4962,7 @@ class atFile:
                 j = i = g.skip_ws(s,i)
                 while i < len(s) and not g.is_ws(s[i]) and not g.is_nl(s,i):
                     i += 1
-                self.endSentinelComment = g.choose(j<i, s[j:i], "")
+                self.endSentinelComment = s[j:i] if j<i else ""
             else:
                 self.writeError("Bad @delims directive")
             #@-<< handle @delims >>
@@ -5538,7 +5535,7 @@ class atFile:
         d = {}
         for key,default,func in table:
             val = func(aList)
-            d[key] = g.choose(val is None,default,val)
+            d[key] = default if val is None else val
 
         if issuePathWarning and g.app.atPathInBodyWarning:
             g.error('warning: ignoring @path directive in',g.app.atPathInBodyWarning)

@@ -928,7 +928,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
                 val,tag = d.get(name)
                 val = val.replace('\n','\\n')
                 tag = tag or ''
-                tag = g.choose(tag,tag+': ','')
+                tag = tag+': ' if tag else ''
                 g.es('','%s%s=%s' % (tag,name,val))
         else:
             g.es('No present abbreviations')
@@ -4128,7 +4128,7 @@ class editCommandsClass (baseEditCommandsClass):
             extend = self.extend or self.extendMode
             ch = k.arg ; s = w.getAllText()
             ins = w.toPythonIndex(self.insert)
-            i = ins + g.choose(backward,-1,+1) # skip the present character.
+            i = ins + -1 if backward else +1 # skip the present character.
             if backward:
                 start = 0
                 j = s.rfind(ch,start,max(start,i)) # Skip the character at the cursor.
@@ -4557,7 +4557,7 @@ class editCommandsClass (baseEditCommandsClass):
         if add:
             result = [ch + line for line in lines]
         else:
-            result = [g.choose(line.startswith(ch),line[len(ch):],line) for line in lines]
+            result = [line[len(ch):] if line.startswith(ch) else line for line in lines]
         result = ''.join(result)
         # g.trace('add',add,'hasSelection',w.hasSelection(),'result',repr(result))
         if w.hasSelection():
@@ -5692,7 +5692,7 @@ class editCommandsClass (baseEditCommandsClass):
             i,j = w.getSelectionRange(sort=False)
             if i == j: return
             ins = w.getInsertPoint()
-            ins = g.choose(ins==i,j,i)
+            ins = j if ins==i else i
             w.setInsertPoint(ins)
             w.setSelectionRange(i,j,insert=None)
     #@+node:ekr.20061007082956: *4* extend-to-line
@@ -5860,9 +5860,7 @@ class editCommandsClass (baseEditCommandsClass):
             s = w.getAllText()
             lines = g.splitLines(s)
             row,col = g.convertPythonIndexToRowCol(s,ins)
-            row2 = g.choose(kind=='back',
-                max(0,row-linesPerPage),
-                min(row+linesPerPage,len(lines)-1))
+            row2 = max(0,row-linesPerPage) if kind=='back' else min(row+linesPerPage,len(lines)-1)
             if row == row2: return
             spot = g.convertRowColToPythonIndex(s,row2,col,lines=lines)
             if trace: g.trace('spot',spot,'row2',row2)
@@ -6770,7 +6768,7 @@ class editCommandsClass (baseEditCommandsClass):
         w = self.editWidget(event)
         if not self._chckSel(event): return
 
-        undoType = g.choose(reverse,'reverse-sort-lines','sort-lines')
+        undoType = 'reverse-sort-lines' if reverse else 'sort-lines'
         self.beginCommand(undoType=undoType)
         try:
             s = w.getAllText()
@@ -7738,7 +7736,7 @@ class helpCommandsClass (baseEditCommandsClass):
             for si in aList:
                 assert g.isShortcutInfo(si),si
                 if si.commandName == commandName:
-                    pane = g.choose(si.pane=='all','',' %s:' % (si.pane))
+                    pane = '' if si.pane=='all' else ' %s:' % (si.pane)
                     s1 = pane
                     s2 = k.prettyPrintKey(stroke)
                     s3 = si.commandName
@@ -8863,7 +8861,7 @@ class killBufferCommandsClass (baseEditCommandsClass):
         clip_text = self.getClipboard()
         if not g.app.globalKillBuffer and not clip_text: return
 
-        undoType = g.choose(pop,'yank-pop','yank')
+        undoType = 'yank-pop' if pop else 'yank'
         self.beginCommand(undoType=undoType)
         try:
             if not pop or self.lastYankP and self.lastYankP != current:

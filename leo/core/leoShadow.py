@@ -1050,7 +1050,7 @@ class shadowController:
             g.pr(title)
             # g.pr('self.i',self.i)
             for i, line in enumerate(self.lines):
-                marker = g.choose(i==self.i,'**','  ')
+                marker = '**' if i==self.i else '  '
                 g.pr("%s %3s:%s" % (marker, i, repr(line)),)
         #@-others
     #@+node:ekr.20080708094444.21: *3* class sourcewriter
