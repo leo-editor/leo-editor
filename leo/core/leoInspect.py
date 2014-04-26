@@ -4060,7 +4060,6 @@ class SymbolTableEntry(object):
         if self.name:
             n = self.st.max_name_length - len(self.name)
             pad = ' '*n
-            # unbound = g.choose(self.load_before_store_flag,': <unbound>','')
             unbound = ': <unbound>' if self.load_before_store_flag else ''
             if self.chains:
                 return '%s%s defined: %5s%s: %s' % (

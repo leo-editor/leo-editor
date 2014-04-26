@@ -492,17 +492,12 @@ class leoImportCommands (scanUtility):
         if not current: return
         self.setEncoding()
         self.webType = webType
-        # 10/14/02: support for output_newline setting.
-        # mode = c.config.output_newline
-        # mode = g.choose(mode=="platform",'w','wb')
         try:
-            # theFile = open(fileName,mode)
             theFile = open(fileName,'w')
         except IOError:
             g.warning("can not open",fileName)
             c.testManager.fail()
             return
-
         self.treeType = "@file"
         # Set self.treeType to @root if p or an ancestor is an @root node.
         for p in current.parents():
@@ -568,11 +563,7 @@ class leoImportCommands (scanUtility):
                 #@+<< Write s into newFileName >>
                 #@+node:ekr.20031218072017.1149: *5* << Write s into newFileName >> (remove-sentinels) (changed)
                 # Remove sentinels command.
-
                 try:
-                    # mode = c.config.output_newline
-                    # mode = g.choose(mode=="platform",'w','wb')
-                    # theFile = open(newFileName,mode)
                     theFile = open(newFileName,'w')
                     if not g.isPython3: # 2010/08/27
                         s = g.toEncodedString(s,self.encoding,reportErrors=True)
@@ -616,13 +607,6 @@ class leoImportCommands (scanUtility):
         #@+<< open filename to f, or return >>
         #@+node:ekr.20031218072017.1150: *5* << open filename to f, or return >> (weave)
         try:
-            # 10/14/02: support for output_newline setting.
-                # mode = c.config.output_newline
-                # mode = g.choose(mode=="platform",'w','wb')
-                # f = open(filename,mode)
-                # if not f: return
-
-            # 2010/08/27.
             if g.isPython3:
                 f = open(filename,'w',encoding=self.encoding)
             else:
@@ -4990,20 +4974,15 @@ class rstScanner (BaseScanner):
         return body1,body2
     #@+node:ekr.20090512080015.5797: *4* computeSectionLevel
     def computeSectionLevel (self,ch,kind):
-
         '''Return the section level of the underlining character ch.'''
-
-        # Can't use g.choose here.
         if kind == 'over':
             assert ch in self.underlines2
             level = 0
         else:
             level = 1 + self.underlines1.index(ch)
-
-        if False:
+        if 0:
             g.trace('level: %s kind: %s ch: %s under2: %s under1: %s' % (
                 level,kind,ch,self.underlines2,self.underlines1))
-
         return level
     #@+node:ekr.20090512153903.5810: *4* createDeclsNode
     def createDeclsNode (self,parent,s):
@@ -5751,7 +5730,7 @@ class xmlScanner (BaseScanner):
             assert progress < i
 
         if trace: g.trace('%sfound:%s\n%s\n\n*****end %s\n' % (
-            g.choose(found,'','not '),target_tag,s[start:i],target_tag))
+            '' if found else 'not ',target_tag,s[start:i],target_tag))
 
         return i,found
     #@+node:ekr.20111103073536.16595: *5* startsId (xmlScanner)

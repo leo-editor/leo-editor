@@ -583,7 +583,7 @@ class runTestExternallyHelperClass:
             self.createFileFromOutline(c2)
             t2 = time.time()
             if trace:
-                kind = g.choose(self.all,'all','selected')
+                kind = 'all' if self.all else 'selected'
                 print('created %s unit tests in %0.2fsec in %s' % (
                     kind,t2-t1,self.fileName))
                 g.blue('created %s unit tests' % (kind))
@@ -594,8 +594,8 @@ class runTestExternallyHelperClass:
             c.selectPosition(p.copy())
         else:
             g.es_print('no %s@test or @suite nodes in %s outline' % (
-                g.choose(self.marked,'marked ',''),
-                g.choose(self.all,'entire','selected')))
+                'marked ' if self.marked else '',
+                'entire' if self.all else 'selected'))
     #@+node:ekr.20070627135336.10: *4* createFileFromOutline (runTestExternallyHelperClass)
     def createFileFromOutline (self,c2):
 
@@ -776,8 +776,8 @@ class TestManager:
                     c.cacher.db[key] = archive
             else:
                 g.error('no %s@test or @suite nodes in %s outline' % (
-                    g.choose(marked,'marked ',''),
-                    g.choose(all,'entire','selected')))
+                    'marked ' if marked else '',
+                    'entire' if all else 'selected'))
         finally:
             c.setChanged(changed) # Restore changed state.
             if g.app.unitTestDict.get('restoreSelectedNode',True):
@@ -987,7 +987,7 @@ class TestManager:
             except ValueError:
                 g.pr('no doctests in %s' % module.__name__)
 
-        return g.choose(created,suite,None)
+        return suite if created else None
     #@+node:ekr.20051104075904.69: *4* TM.makeEditBodySuite
     def makeEditBodySuite(self,p):
 

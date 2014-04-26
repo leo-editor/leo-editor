@@ -264,7 +264,7 @@ def callers (n=4,count=0,excludeCaller=True,files=False):
     # The jython stack often has less than 8 entries,
     # so we must be careful to call g._callerName with smaller values of i first.
     result = []
-    i = g.choose(excludeCaller,3,2)
+    i = 3 if excludeCaller else 2
     while 1:
         s = g._callerName(i,files=files)
         if s:
@@ -274,7 +274,7 @@ def callers (n=4,count=0,excludeCaller=True,files=False):
 
     result.reverse()
     if count > 0: result = result[:count]
-    sep = g.choose(files,'\n',',')
+    sep = '\n' if files else ','
     return sep.join(result)
 #@+node:ekr.20110310093050.14297: *6* _callerName
 def _callerName (n=1,files=False):

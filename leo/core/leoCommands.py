@@ -372,7 +372,7 @@ class Commands (object):
         for key in sorted(c.commandsDict):
             command = c.commandsDict.get(key)
             print('%30s = %s' % (
-                key,g.choose(command,command.__name__,'<None>')))
+                key,command.__name__ if command else '<None>'))
         print('')
     #@+node:ekr.20041130173135: *4* c.hash
     # This is a bad idea.
@@ -594,7 +594,7 @@ class Commands (object):
             c.frame.tree.redraw_now(forceDraw=True)
         if c.requestRecolorFlag:
             aList.append('%srecolor' % (
-                g.choose(c.incrementalRecolorFlag,'','full ')))
+                '' if c.incrementalRecolorFlag else 'full '))
             # This should be the only call to c.recolor_now.
             c.recolor_now(incremental=c.incrementalRecolorFlag)
         if c.requestedFocusWidget:
@@ -2557,7 +2557,7 @@ class Commands (object):
 
          # It is much easier to change the menu name here than in the menu updater.
         menu = frame.menu.getMenu("Edit")
-        index = frame.menu.getMenuLabel(menu,g.choose(val,'Hide Invisibles','Show Invisibles'))
+        index = frame.menu.getMenuLabel(menu,'Hide Invisibles' if val else 'Show Invisibles')
         if index is None:
             if val: frame.menu.setMenuLabel(menu,"Show Invisibles","Hide Invisibles")
             else:   frame.menu.setMenuLabel(menu,"Hide Invisibles","Show Invisibles")
@@ -4662,8 +4662,6 @@ class Commands (object):
                 g.enl()
 
             if errors or verbose:
-                # color = g.choose(errors,'red','blue')
-                # g.es_print('',count,'nodes checked',errors,'errors',color=color)
                 if errors:
                     g.error('',count,'nodes checked',errors,'errors')
                 else:

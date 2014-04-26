@@ -5160,8 +5160,7 @@ class leoQtFrame (leoFrame.leoFrame):
         # Reorient the splitters.
         for w in (f.top.splitter,f.top.splitter_2):
             w.setOrientation(
-                g.choose(w.orientation() == QtCore.Qt.Horizontal,
-                    QtCore.Qt.Vertical,QtCore.Qt.Horizontal))
+                QtCore.Qt.Vertical if w.orientation() == QtCore.Qt.Horizontal else QtCore.Qt.Horizontal)
 
         # Fix bug 580328: toggleSplitDirection doesn't preserve existing ratio.
         if len(sizes1) == 2 and len(sizes2) == 2:
@@ -10652,7 +10651,7 @@ class jEditColorizer:
 
         valid = string.ascii_letters + string.digits + '_'
 
-        return ''.join([g.choose(ch in valid,ch.lower(),'_') for ch in s])
+        return ''.join([ch.lower() if ch in valid else '_' for ch in s])
     #@+node:ekr.20110605121601.18588: *5* setFontFromConfig (jeditColorizer)
     def setFontFromConfig (self):
 

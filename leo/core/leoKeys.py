@@ -281,7 +281,7 @@ class AutoCompleterClass:
         k = self.k
         if not g.unitTesting:
             s = 'autocompleter %s' % (
-                g.choose(k.enable_autocompleter,'On','Off'))
+                'On' if k.enable_autocompleter else 'Off')
             g.red(s)
 
     def showCalltipsStatus (self):
@@ -1010,7 +1010,7 @@ class AutoCompleterClass:
             # Update the tab name, creating the tab if necessary.
             c.widgetWantsFocus(self.w)
             c.frame.log.clearTab(self.tabName)
-            self.beginTabName(g.choose(header,header+'.',''))
+            self.beginTabName(header+'.' if header else '')
             s = '\n'.join(tabList)
             self.put('',s,tabName=self.tabName)
     #@+node:ekr.20110513104728.14453: *5* clean_completion_list
@@ -4718,25 +4718,8 @@ class ModeInfo:
 
         trace = False and not g.unitTesting
         c,k = self.c,self.c.k
-
-        ####
-        # d = g.app.config.modeCommandsDict.get('enter-'+modeName)
-        # if not d:
-            # self.badMode(modeName)
-            # return
-        # else:
-            # k.modeBindingsDict = d
-            # si = d.get('*command-prompt*')
-            # if si:
-                # prompt = si.kind # A kludge.
-            # else:
-                # prompt = modeName
-            # if trace: g.trace('modeName',modeName,prompt,'d.keys()',list(d.keys()))
-
         k.inputModeName = self.name
         k.silentMode = False
-
-        #### aList = d.get('*entry-commands*',[])
         for si in self.entryCommands:
             assert g.isShortcutInfo(si),si
             commandName = si.commandName
@@ -4748,12 +4731,9 @@ class ModeInfo:
             if commandName.startswith('enter-'):
                 if trace: g.trace('redirect to mode',commandName)
                 return
-
         # Create bindings after we know whether we are in silent mode.
-        # w = g.choose(k.silentMode,k.modeWidget,k.w)
         w = k.modeWidget if k.silentMode else k.w
         k.createModeBindings(self.name,self.d,w)
-        #### self.createModeBindings(w)
         k.showStateAndMode(prompt=self.name)
     #@-others
 

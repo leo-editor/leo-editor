@@ -1567,12 +1567,9 @@ class position (object):
         return p
     #@+node:ekr.20090715145956.6166: *5* checkVisBackLimit
     def checkVisBackLimit (self,limit,limitIsVisible,p):
-
         '''Return done, return-val'''
-
         trace = False and not g.unitTesting
         c = p.v.context
-
         if limit:
             if limit == p:
                 if trace: g.trace('at limit',p)
@@ -1580,7 +1577,6 @@ class position (object):
                     return True,p
                 else:
                     return True,None
-                #return True,g.choose(limitIsVisible and p.isVisible(c),p,None)
             elif limit.isAncestorOf(p):
                 return False,None
             else:

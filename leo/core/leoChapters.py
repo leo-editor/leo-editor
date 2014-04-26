@@ -966,9 +966,6 @@ class chapter:
         if strict:
             if trace: g.trace('strict test fails',p1.h)
             return None
-        ### theIter = g.choose(name=='main',
-            # self.c.all_unique_positions,
-            # root.self_and_subtree)
         if name == 'main':
             theIter = c.all_unique_positions
         else:

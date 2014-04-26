@@ -576,23 +576,18 @@ class undoer:
         u.pushBead(bunch)
     #@+node:ekr.20050315134017.3: *5* afterChangeTree
     def afterChangeTree (self,p,command,bunch):
-
         '''Create an undo node for general tree operations using d created by beforeChangeTree'''
-
         u = self ; c = self.c ; w = c.frame.body.bodyCtrl
         if u.redoing or u.undoing: return
-
         # Set the types & helpers.
         bunch.kind = 'tree'
         bunch.undoType = command
         bunch.undoHelper = u.undoTree
         bunch.redoHelper = u.redoTree
-
         # Set by beforeChangeTree: changed, oldSel, oldText, oldTree, p
         bunch.newSel = w.getSelectionRange()
         bunch.newText = w.getAllText()
         bunch.newTree = u.saveTree(p)
-
         u.pushBead(bunch)
     #@+node:ekr.20050424161505: *5* afterClearRecentFiles
     def afterClearRecentFiles (self,bunch):
@@ -612,30 +607,25 @@ class undoer:
     def afterCloneMarkedNodes (self,p):
 
         u = self ; c = u.c
-        if u.redoing or u.undoing: return
-
+        if u.redoing or u.undoing:
+            return
         bunch = u.createCommonBunch(p)
-
             # Sets
             # oldChanged = c.isChanged(),
             # oldDirty = p.isDirty(),
             # oldMarked = p.isMarked(),
             # oldSel = w and w.getSelectionRange() or None,
             # p = p.copy(),
-
         # Set types & helpers
         bunch.kind = 'clone-marked-nodes'
         bunch.undoType = 'clone-marked-nodes'
-
         # Set helpers
         bunch.undoHelper = u.undoCloneMarkedNodes
         bunch.redoHelper = u.redoCloneMarkedNodes
-
         bunch.newP = p.next()
         bunch.newChanged = c.isChanged()
         bunch.newDirty = p.isDirty()
         bunch.newMarked = p.isMarked()
-
         u.pushBead(bunch)
     #@+node:ekr.20050411193627.5: *5* afterCloneNode
     def afterCloneNode (self,p,command,bunch,dirtyVnodeList=[]):
@@ -944,15 +934,12 @@ class undoer:
     #@+node:ekr.20050315134017.6: *5* beforeChangeTree
     def beforeChangeTree (self,p):
 
-        # g.trace(p.h)
-
-        u = self ; c = u.c ; w = c.frame.body.bodyCtrl
-
+        u = self ; c = u.c
+        w = c.frame.body.bodyCtrl
         bunch = u.createCommonBunch(p)
         bunch.oldSel = w.getSelectionRange()
         bunch.oldText = w.getAllText()
         bunch.oldTree = u.saveTree(p)
-
         return bunch
     #@+node:ekr.20050424161505.1: *5* beforeClearRecentFiles
     def beforeClearRecentFiles (self):
@@ -2142,16 +2129,12 @@ class undoer:
         oldMidLines,newMidLines, # Lists of unmatched lines.
         oldNewlines,newNewlines, # Number of trailing newlines.
         tag="undo", # "undo" or "redo"
-        undoType=None):
-
+        undoType=None
+    ):
         '''Handle text undo and redo: converts _new_ text into _old_ text.'''
-
         # newNewlines is unused, but it has symmetry.
-
         trace = False and not g.unitTesting
-
         u = self ; c = u.c ; w = c.frame.body.bodyCtrl
-
         #@+<< Compute the result using p's body text >>
         #@+node:ekr.20061106105812.1: *5* << Compute the result using p's body text >>
         # Recreate the text using the present body text.
@@ -2180,7 +2163,7 @@ class undoer:
         #@-<< Compute the result using p's body text >>
         p.setBodyString(result)
         w.setAllText(result)
-        sel = g.choose(tag=='undo',u.oldSel,u.newSel)
+        sel = u.oldSel if tag == 'undo' else u.newSel
         if trace: g.trace(sel)
         if sel:
             i,j = sel

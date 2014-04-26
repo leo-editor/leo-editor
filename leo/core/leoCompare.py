@@ -211,7 +211,7 @@ class baseLeoCompare:
             if self.outputFileName:
                 self.openOutputFile()
             ok = self.outputFileName == None or self.outputFile
-            ok = g.choose(ok and ok != 0,1,0)
+            ok = 1 if ok and ok != 0 else 0
             if f1 and f2 and ok: # Don't compare if there is an error opening the output file.
                 self.compare_open_files(f1,f2,name1,name2)
         except:

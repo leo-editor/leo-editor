@@ -151,7 +151,7 @@ class baseEditCommandsClass:
     #@+node:ekr.20050920084036.6: *3* getWSString
     def getWSString (self,s):
 
-        return ''.join([g.choose(ch=='\t',ch,' ') for ch in s])
+        return ''.join([ch if ch=='\t' else ' ' for ch in s])
     #@+node:ekr.20050920084036.7: *3* oops
     def oops (self):
 
@@ -967,9 +967,8 @@ class abbrevCommandsClass (baseEditCommandsClass):
         k = self.k
         k.abbrevOn = not k.abbrevOn
         k.keyboardQuit()
-        # k.setLabel('Abbreviations are ' + g.choose(k.abbrevOn,'On','Off'))
         if not g.unitTesting and not g.app.batchMode:
-            g.es('Abbreviations are ' + g.choose(k.abbrevOn,'on','off'))
+            g.es('Abbreviations are ' + 'on' if k.abbrevOn else 'off')
     #@+node:ekr.20050920084036.24: *4* writeAbbreviation
     def writeAbbreviations (self,event):
 
@@ -4117,8 +4116,8 @@ class editCommandsClass (baseEditCommandsClass):
             self.extend = extend or self.extendMode # Bug fix: 2010/01/19
             self.insert = w.getInsertPoint()
             s = '%s character%s: ' % (
-                g.choose(backward,'Backward find','Find'),
-                g.choose(extend,' & extend',''))
+                'Backward find' if backward else 'Find',
+                ' & extend' if extend else '')
             k.setLabelBlue(s,protect=True)
             # Get the arg without touching the focus.
             k.getArg(event,tag,1,self.findCharacter,oneCharacter=True,useMinibuffer=False)
@@ -4162,7 +4161,7 @@ class editCommandsClass (baseEditCommandsClass):
             if not w: return
             self.oneLineFlag = oneLine
             k.setLabelBlue('Find word %sstarting with: ' % (
-                g.choose(oneLine,'in line ','')))
+                'in line ' if oneLine else ''))
             k.getArg(event,tag,1,self.findWord,oneCharacter=True)
         else:        
             ch = k.arg
@@ -4779,7 +4778,6 @@ class editCommandsClass (baseEditCommandsClass):
 
         w = self.editWidget(event)
         if not w: return
-        # undoType = g.choose(insertspace,'insert-space','delete-spaces')
         undoType = 'insert-space' if insertspace else 'delete-spaces'
         s = w.getAllText()
         ins = w.getInsertPoint()
@@ -5406,7 +5404,7 @@ class editCommandsClass (baseEditCommandsClass):
         # Reset the move spot if needed.
         if self.moveSpot is None or p.v != self.moveSpotNode:
             if trace: g.trace('no spot')
-            self.setMoveCol(w,g.choose(extend,ins,spot)) # sets self.moveSpot.
+            self.setMoveCol(w,ins if extend else spot) # sets self.moveSpot.
         elif extend:
             # 2011/05/20: Fix bug 622819
             # Ctrl-Shift movement is incorrect when there is an unexpected selection.
@@ -5673,7 +5671,7 @@ class editCommandsClass (baseEditCommandsClass):
 
         self.extendMode = val
         if not g.unitTesting:
-            # g.red('extend mode',g.choose(val,'on','off'))
+            # g.red('extend mode','on' if val else 'off'))
             c.k.showStateAndMode()
         c.widgetWantsFocusNow(w)
     #@+node:ekr.20050920084036.136: *4* exchangePointMark
@@ -5850,7 +5848,7 @@ class editCommandsClass (baseEditCommandsClass):
         if hasattr(w,'leoMoveCursorHelper'):
             extend = extend or self.extendMode
             w.leoMoveCursorHelper(
-                kind=g.choose(kind=='forward','page-down','page-up'),
+                kind='page-down' if kind=='forward' else 'page-up',
                 extend=extend,linesPerPage=linesPerPage)
             # w.seeInsertPoint()
             # c.frame.updateStatusLine()
@@ -6408,7 +6406,7 @@ class editCommandsClass (baseEditCommandsClass):
             else:         chars += 1
 
         k.setLabelGrey('Region has %s lines, %s character%s' % (
-            lines,chars,g.choose(chars==1,'','s')))
+            lines,chars,'' if chars==1 else 's'))
     #@+node:ekr.20060417183606: *4* moveLinesDown
     def moveLinesDown (self,event):
 
@@ -6533,15 +6531,12 @@ class editCommandsClass (baseEditCommandsClass):
     def caseHelper (self,event,way,undoType):
 
         w = self.editWidget(event)
-        if not w or not w.hasSelection(): return
-
+        if not w or not w.hasSelection():
+            return
         self.beginCommand(undoType=undoType)
-
         s = w.getAllText()
         i,j = w.getSelectionRange()
         ins = w.getInsertPoint()
-
-        # sel = g.choose(way=='low',s[i:j].lower(),s[i:j].upper())
         s2 = s[i:j]
         if way == 'low':
             sel = s2.lower()
@@ -6550,14 +6545,12 @@ class editCommandsClass (baseEditCommandsClass):
         else:
             assert way == 'toggle'
             sel = s2.swapcase()
-
         s2 = s[:i] + sel + s[j:]
         # g.trace('sel',repr(sel),'s2',repr(s2))
         changed = s2 != s
         if changed:
             w.setAllText(s2)
             w.setSelectionRange(i,j,insert=ins)
-
         self.endCommand(changed=changed,setLabel=True)
     #@-others
     #@+node:ekr.20060309060654: *3* scrolling...
@@ -7772,7 +7765,7 @@ class helpCommandsClass (baseEditCommandsClass):
 
                 # Fixes bug 618570:
                 s = title + ''.join([
-                    g.choose(line.strip(),line.lstrip(),'\n')
+                    line.lstrip() if line.strip() else '\n'
                         for line in g.splitLines(s)])
             else:
                 #@+<< set s to about help-for-command >>

@@ -584,9 +584,9 @@ class leoFind:
         self.inverseBindingDict = k.computeInverseBindingDict()
         self.iSearchStrokes = self.getStrokes(commandName)
         k.setLabelBlue('Isearch%s%s%s: ' % (
-                g.choose(self.isearch_forward,'',' Backward'),
-                g.choose(self.isearch_regexp,' Regexp',''),
-                g.choose(self.isearch_ignore_case,' NoCase',''),
+                '' if self.isearch_forward else ' Backward',
+                ' Regexp' if self.isearch_regexp else '',
+                ' NoCase' if self.isearch_ignore_case else '',
             ),protect=True)
         k.setState('isearch',1,handler=self.iSearchStateHandler)
         c.minibufferWantsFocus()
@@ -1128,7 +1128,7 @@ class leoFind:
         for w2 in (w,self.s_ctrl):
             if start != end: w2.delete(start,end)
             w2.insert(start,change_text)
-            w2.setInsertPoint(g.choose(self.reverse,start,start+len(change_text)))
+            w2.setInsertPoint(start if self.reverse else start+len(change_text))
         
         # Update the selection for the next match.
         w.setSelectionRange(start,start+len(change_text))
@@ -1622,7 +1622,7 @@ class leoFind:
             while 1:
                 k = s.rfind(pattern,i,j)
                 if trace: g.trace('**word** %3s %3s %5s -> %s %s' % (
-                    i,j,g.choose(j==len(s),'(end)',''),k,self.p.h))
+                    i,j,'(end)' if j==len(s) else '',k,self.p.h))
                 if k == -1: return -1, -1
                 if self.matchWord(s,k,pattern):
                     return k,k+n
@@ -1631,7 +1631,7 @@ class leoFind:
         else:
             k = s.rfind(pattern,i,j)
             if trace: g.trace('%3s %3s %5s -> %s %s' % (
-                i,j,g.choose(j==len(s),'(end)',''),k,self.p.h))
+                i,j,'(end)' if j==len(s) else '',k,self.p.h))
             if k == -1:
                 return -1, -1
             else:

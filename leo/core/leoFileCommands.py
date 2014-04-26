@@ -1627,12 +1627,12 @@ class baseFileCommands:
         #@+<< put the body/outline ratios >>
         #@+node:ekr.20031218072017.3038: *5* << put the body/outline ratios >>
         self.put(" body_outline_ratio=")
-        self.put_in_dquotes(g.choose(c.fixed or use_db,"0.5","%1.2f" % (
-            c.frame.ratio)))
+        self.put_in_dquotes("0.5" if c.fixed or use_db else "%1.2f" % (
+            c.frame.ratio))
 
         self.put(" body_secondary_ratio=")
-        self.put_in_dquotes(g.choose(c.fixed or use_db,"0.5","%1.2f" % (
-            c.frame.secondary_ratio)))
+        self.put_in_dquotes("0.5" if c.fixed or use_db else "%1.2f" % (
+            c.frame.secondary_ratio))
 
         if trace: g.trace('fixed or use_db',c.fixed or use_db,
             '%1.2f %1.2f' % (c.frame.ratio,c.frame.secondary_ratio))

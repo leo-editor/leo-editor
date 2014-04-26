@@ -1259,7 +1259,7 @@ class atFile:
         except AssertionError:
             junk, message, junk = sys.exc_info()
             at.error('scanText4: unexpected assertion failure in',
-                g.choose(at.fromString,'fromString',fileName),
+                'fromString' if at.fromString else fileName,
                 '\n',message)
             g.trace(g.callers(5))
             raise
@@ -2444,7 +2444,7 @@ class atFile:
 
         if trace:
             g.trace('%4s %25s %s' % (
-                g.choose(at.inCode,'code','doc'),at.v.h,repr(s)))
+                'code' if at.inCode else 'doc',at.v.h,repr(s)))
     #@+node:ekr.20050301105854: *4* at.copyAllTempBodyStringsToVnodes
     def copyAllTempBodyStringsToVnodes (self,root,thinFile):
 
@@ -4544,7 +4544,7 @@ class atFile:
         return ok
     #@+node:ekr.20090514111518.5666: *6* syntaxError (leoAtFile)
     def syntaxError(self,p,body):
-
+        '''Report a syntax error.'''
         g.error("Syntax error in: %s" % (p.h))
         typ,val,tb = sys.exc_info()
         message = hasattr(val,'message') and val.message
@@ -4557,7 +4557,7 @@ class atFile:
         i = val.lineno-1
         for j in range(max(0,i-3),min(i+3,len(lines)-1)):
             g.es_print('%5s:%s %s' % (
-                j,g.choose(j==i,'*',' '),lines[j].rstrip()))
+                j,'*' if j==i else ' ',lines[j].rstrip()))
             if j == i:
                 g.es_print(' '*(7+offset)+'^')
     #@+node:ekr.20090514111518.5665: *5* tabNannyNode (leoAtFile)
@@ -5271,12 +5271,8 @@ class atFile:
         at.errors += 1
 
     def printError (self,*args):
-
         '''Print an error message that may contain non-ascii characters.'''
-
         at = self
-        # keys = {'color': g.choose(at.errors,'blue','red')}
-        # g.es_print_error(*args,**keys)
         if at.errors:
             g.error(*args)
         else:
