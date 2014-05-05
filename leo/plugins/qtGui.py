@@ -7133,7 +7133,20 @@ class LeoTabbedTopLevel(LeoBaseTabWidget):
     """ Toplevel frame for tabbed ui """
     def __init__(self, *args, **kwargs):
         LeoBaseTabWidget.__init__(self,*args,**kwargs)
-    
+        ## middle click close on tabs -- JMP 20140505
+        tb = qtTabBarWrapper()
+        self.setTabBar(tb)
+#@+node:peckj.20140505102552.10377: *3* class qtTabBarWrapper (QTabBar)
+class qtTabBarWrapper(QtGui.QTabBar): 
+    def mouseReleaseEvent(self, event):
+        ## middle click close on tabs -- JMP 20140505
+        ## closes Launchpad bug: https://bugs.launchpad.net/leo-editor/+bug/1183528
+        ## Using this blogpost as a guide:
+        ## http://www.mikeyd.com.au/2011/03/12/adding-the-ability-to-close-a-tab-with-mouses-middle-button-to-qts-qtabwidget/
+        if event.button() == QtCore.Qt.MidButton:
+            self.tabCloseRequested.emit(self.tabAt(event.pos()))
+        super(QtGui.QTabBar,self).mouseReleaseEvent(event)
+
 #@+node:ekr.20110605121601.18458: *3* class qtMenuWrapper (QMenu,leoQtMenu)
 class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
 
