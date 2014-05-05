@@ -7005,18 +7005,7 @@ class Commands (object):
         # now create "myLeoSettings.leo"
         fileName = g.os_path_join(homeLeoDir,name) 
         
-        # this is insufficient, itended for nullGui?  
-        # Doesn't initialize outline fully, tabs etc.
-        # mls = g.app.newCommander(fileName=fileName)
-
-        # create outline, seems g.app.newCommander() should do this
-        mls = c.new()
-        mls.mFileName = fileName
-        mls.frame.createFirstTreeNode()
-        ttl = mls.computeWindowTitle(fileName)
-        mls.frame.setTitle(ttl)
-        if g.app.qt_use_tabs and hasattr(mls.frame,'top'):
-            mls.frame.top.leo_master.setTabName(mls,mls.mFileName)
+        mls = g.openWithFileName(fileName, old_c=c)
 
         # add content to outline
         nd = mls.rootPosition()
@@ -7043,10 +7032,6 @@ class Commands (object):
             "#\n"
             "#    some-command Shift-F5\n"
         )
-        
-        # FIXME required to get body text to show
-        mls.selectPosition(nd)
-        mls.selectPosition(mls.rootPosition())
         
         mls.redraw()
 
