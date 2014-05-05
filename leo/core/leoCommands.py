@@ -6938,8 +6938,15 @@ class Commands (object):
     def openMyLeoSettings (self,event=None):
         '''Open myLeoSettings.leo in a new Leo window.'''
         self.openSettingsHelper('myLeoSettings.leo')
+        
+    def openSettingsHelper(self, name):
+        """openLeoSettings - Return true if `name`d setting file
+        opened successfully.
 
-    def openSettingsHelper(self,name):
+        :Parameters:
+        - `name`: name of settings file to open
+        """
+
         c = self
         homeLeoDir = g.app.homeLeoDir
         loadDir = g.app.loadDir
@@ -6950,7 +6957,8 @@ class Commands (object):
         ok = g.os_path_exists(fileName)
         if ok:
             c2 = g.openWithFileName(fileName,old_c=c)
-            if c2: return
+            if c2: 
+                return True
 
         # Look in homeLeoDir second.
         if configDir == loadDir:
@@ -6961,8 +6969,89 @@ class Commands (object):
             if ok:
                 c2 = g.openWithFileName(fileName,old_c=c)
                 ok = bool(c2)
-            if not ok:
+            if ok:
+                return True
+            else:
                 g.es('',name,"not found in",configDir,"\nor",homeLeoDir)
+        
+        if name == "myLeoSettings.leo":
+            return self.createMyLeoSettings()
+            
+        return False
+        
+    def createMyLeoSettings(self):
+        """createMyLeoSettings - Return true if myLeoSettings.leo created ok
+        """
+
+        name = "myLeoSettings.leo"
+        c = self
+        homeLeoDir = g.app.homeLeoDir
+        loadDir = g.app.loadDir
+        configDir = g.app.globalConfigDir
+        
+        # check it doesn't already exist
+        for path in homeLeoDir, loadDir, configDir:
+            fileName = g.os_path_join(path, name)
+            if g.os_path_exists(fileName):
+                return False
+
+        # get '@enabled-plugins' from g.app.globalConfigDir
+        fileName = g.os_path_join(configDir, "leoSettings.leo")
+        leosettings = g.openWithFileName(fileName, old_c=c)
+        enabledplugins = g.findNodeAnywhere(leosettings, '@enabled-plugins')
+        enabledplugins = enabledplugins.b
+        leosettings.close()
+        
+        # now create "myLeoSettings.leo"
+        fileName = g.os_path_join(homeLeoDir,name) 
+        
+        # this is insufficient, itended for nullGui?  
+        # Doesn't initialize outline fully, tabs etc.
+        # mls = g.app.newCommander(fileName=fileName)
+
+        # create outline, seems g.app.newCommander() should do this
+        mls = c.new()
+        mls.mFileName = fileName
+        mls.frame.createFirstTreeNode()
+        ttl = mls.computeWindowTitle(fileName)
+        mls.frame.setTitle(ttl)
+        if g.app.qt_use_tabs and hasattr(mls.frame,'top'):
+            mls.frame.top.leo_master.setTabName(mls,mls.mFileName)
+
+        # add content to outline
+        nd = mls.rootPosition()
+        nd.h = "Settings README"
+        nd.b = (
+            "myLeoSettings.leo personal settings file created {time}\n\n"
+            "Only nodes that are descendants of the @settings node are read.\n\n"
+            "Only settings you need to modify should be in this file, do\n"
+            "not copy large parts of leoSettings.py here.\n\n"
+            "For more information see http://leoeditor.com/customizing.html"
+            "".format(time=time.asctime())
+        )
+        nd = nd.insertAfter()
+        nd.h = '@settings'
+        nd = nd.insertAsNthChild(0)
+        nd.h = '@enabled-plugins'
+        nd.b = enabledplugins
+        nd = nd.insertAfter()
+        nd.h = '@keys'
+        nd = nd.insertAsNthChild(0)
+        nd.h = '@shortcuts'
+        nd.b = (
+            "# You can define keyboard shortcuts here of the form:\n"
+            "#\n"
+            "#    some-command Shift-F5\n"
+        )
+        
+        # FIXME required to get body text to show
+        mls.selectPosition(nd)
+        mls.selectPosition(mls.rootPosition())
+        
+        mls.redraw()
+
+        return True
+        
     #@+node:ekr.20131213072223.19441: *5* openLeoTOC
     def openLeoTOC (self,event=None):
         '''Open Leo's tutorials page in a web browser.'''
