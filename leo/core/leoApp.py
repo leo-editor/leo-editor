@@ -261,6 +261,7 @@ class LeoApp:
             "jhtml"              : "<!-- -->",
             "jmk"                : "#",
             "jsp"                : "<%-- --%>",
+            "kivy"               : "#", # PeckJ 2014/05/05
             "kshell"             : "#", # Leo 4.5.1.
             "latex"              : "%",
             "lilypond"           : "% %{ %}",
@@ -428,6 +429,7 @@ class LeoApp:
             "jhtml"         : "jhtml",
             "jmk"           : "jmk",
             "jsp"           : "jsp",
+            "kivy"          : "kv", # PeckJ 2014/05/05
             "kshell"        : "ksh", # Leo 4.5.1.
             "latex"         : "tex", # 1/8/04
             "lilypond"      : "ly",
@@ -579,6 +581,7 @@ class LeoApp:
             "jsp":      "javaserverpage",
             # "jsp":      "jsp",
             "ksh":      "kshell", # Leo 4.5.1.
+            "kv":       "kivy", # PeckJ 2014/05/05
             "lua":      "lua", # ddm 13/02/06
             "ly":       "lilypond",
             "m":        "matlab", # EKR: 2011/10/21
