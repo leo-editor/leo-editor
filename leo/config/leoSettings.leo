@@ -1399,6 +1399,7 @@
 <v t="ekr.20041119034357.68"><vh>@string split_bar_relief = groove</vh></v>
 <v t="tbrown.20130916082438.55678"><vh>@string status_line_split_sizes = 1 2</vh></v>
 </v>
+<v t="tbrown.20140505094209.37266"><vh>@bool outline_tabs_show_close = True</vh></v>
 </v>
 </v>
 <v t="ekr.20060603215208"></v>
@@ -6452,6 +6453,9 @@ stylesheet.
 <t tx="tbrown.20140102100730.27778">Number of levels (rows) of hieararchical bookmarks to show.  0 (zero)
 collapse hieracrch and show all bookmarks.  1 or more sets max. levels
 displayed at once, see bookmarks plugin docs.</t>
+<t tx="tbrown.20140505094209.37266">Show close box (the 'X') on outlien tabs - they can be closed with
+Ctrl-W or middle mouse click, so this optionally hides the
+redundant 'X'</t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 # cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,

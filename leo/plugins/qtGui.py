@@ -7339,6 +7339,9 @@ class TabbedFrameFactory:
         # Work around the problem with missing dirty indicator
         # by always showing the tab.
         tabw.tabBar().setVisible(self.alwaysShowTabs or tabw.count() > 1)
+        
+        tabw.setTabsClosable(c.config.getBool('outline_tabs_show_close', True))
+        
         dw.show()
         tabw.show()
         return dw
