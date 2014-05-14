@@ -2418,7 +2418,7 @@ class Commands (object):
             g.app.log = log
             if script.strip():
                 # print('***executeScript***',c.frame.openDirectory)
-                sys.path.insert(0,g.toEncodedString(c.frame.openDirectory))
+                sys.path.insert(0,c.frame.openDirectory)
                 script += '\n' # Make sure we end the script properly.
                 try:
                     # We *always* execute the script with p = c.p.
