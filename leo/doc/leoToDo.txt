@@ -5,6 +5,26 @@
 .. @+all
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
+.. @+node:ekr.20140428090638.16879: *3* Fix find bugs
+https://bugs.launchpad.net/leo-editor/+bug/1228457
+Beginning find at the current node's body cursor when that cursor is not displayed 
+
+https://bugs.launchpad.net/leo-editor/+bug/1228458
+Inconsistency between Find-forward and Find-backward
+
+https://bugs.launchpad.net/leo-editor/+bug/1254864
+can't search from current cursor position downward in body text
+
+https://bugs.launchpad.net/leo-editor/+bug/1258373
+failed find focus fails
+
+https://bugs.launchpad.net/leo-editor/+bug/1254861
+ctrl-f doesn't ensure find input field visible
+.. @+node:ekr.20140427131738.16870: *3* Add support for qt5
+Unfortunately it is not possible to use both the PyQt4 and PyQt5 installers
+at the same time. If you wish to have both PyQt4 and PyQt5 installed at the
+same time you will need to build them yourself from the source packages.
+.. @+node:ekr.20140426105101.16868: *3* convert all class names to capitalized
 .. @+node:ekr.20140426030229.16869: *3* prototype of sentinel files
 .. @+node:ekr.20140313100328.16825: *3* * fix leoGlobals bug 
 see extract.py
