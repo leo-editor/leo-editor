@@ -1203,6 +1203,12 @@
 <v t="tbrown.20140101093550.25164"><vh>@string bookmarks_children_decoration = underline</vh></v>
 </v>
 </v>
+<v t="tbrown.20140514191846.42168"><vh>active frame border styles</vh>
+<v t="tbrown.20140514191846.42169"><vh>@string focused-border-style = solid</vh></v>
+<v t="tbrown.20140514191846.42170"><vh>@string focused-border-width = 1px</vh></v>
+<v t="tbrown.20140514191846.42171"><vh>@string focused-border-focus-color = red</vh></v>
+<v t="tbrown.20140514191846.42173"><vh>@string focused-border-unfocus-color = white</vh></v>
+</v>
 <v t="ekr.20131115092802.18224"><vh>@data qt-gui-plugin-style-sheet</vh></v>
 <v t="ekr.20100507153425.8304"><vh>@string qt-toolbar-location=top</vh></v>
 <v t="ekr.20081018053140.11"><vh>For developers only</vh>
@@ -1368,7 +1374,7 @@
 <v t="ekr.20060620085654"><vh>@string editor_orientation = horizontal</vh></v>
 </v>
 <v t="ekr.20111023095357.16693"><vh>Focus border settings</vh>
-<v t="ekr.20111023095357.16694"><vh>@@bool use_focus_border = True</vh></v>
+<v t="ekr.20111023095357.16694"><vh>@bool use_focus_border = False</vh></v>
 <v t="ekr.20111103073536.16580"><vh>@@bool use_body_focus_border = True</vh></v>
 <v t="ekr.20111023095357.16695"><vh>@@int focus_border_width = 1</vh></v>
 <v t="ekr.20111023095357.16696"><vh>@@color focus_border_color = blue</vh></v>
@@ -6456,6 +6462,15 @@ displayed at once, see bookmarks plugin docs.</t>
 <t tx="tbrown.20140505094209.37266">Show close box (the 'X') on outlien tabs - they can be closed with
 Ctrl-W or middle mouse click, so this optionally hides the
 redundant 'X'</t>
+<t tx="tbrown.20140514191846.42168">Note, for these to work, you need to a node
+  @bool use_focus_border = False
+under your @settings node to turn off non-stylesheet based border
+highlighting.  Also, set @focused-border-style to something other
+than none, below.  'solid' works.</t>
+<t tx="tbrown.20140514191846.42169"></t>
+<t tx="tbrown.20140514191846.42170"></t>
+<t tx="tbrown.20140514191846.42171"></t>
+<t tx="tbrown.20140514191846.42173"></t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 # cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,
