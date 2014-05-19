@@ -34,9 +34,9 @@ import leo.core.leoGlobals as g
 
 # g.assertUi('qt')
 
-from PyQt4 import QtCore, QtGui, Qt
+from PyQt4 import QtGui # Qt, QtCore, 
 
-from leo.plugins.nested_splitter import NestedSplitter, NestedSplitterChoice
+from leo.plugins.nested_splitter import NestedSplitter # , NestedSplitterChoice
 
 import json
 #@-<< imports >>
@@ -249,35 +249,40 @@ class FreeLayoutController:
         Useful if you want to temporarily switch to a different layout and then
         back, without having to remember the original layouts name.
         """
-
         c = self.c
-
+        d = g.app.db.get('ns_layouts', {})
         if c != keys.get('c'):
             return
-
         # g.trace(c.frame.title)
-
         layout = c.config.getData("free-layout-layout")
-
         if layout:
             layout = json.loads('\n'.join(layout))
-
-        if '_ns_layout' in c.db:
-            if not reloading: 
-                name = c.db['_ns_layout']
-                c.free_layout.original_layout = name
-            else:
+        name = c.db.get('_ns_layout')
+        if name:
+            # g.trace('Layout:',name,'reloading',reloading)
+            if reloading:
                 name = c.free_layout.original_layout
                 c.db['_ns_layout'] = name
-
+            else:
+                c.free_layout.original_layout = name
             if layout:
                 g.es("NOTE: embedded layout in @settings/@data free-layout-layout " \
                     "overrides saved layout "+name)
             else:
-                layout = g.app.db['ns_layouts'][name]
-
+                layout = d.get(name)
+        # EKR: Create commands that will load each layout.
+        if d:
+            for name in sorted(d.keys()):
+                def func(event,c=c,d=d,name=name):
+                    layout = d.get(name)
+                    if layout:
+                        c.free_layout.get_top_splitter().load_layout(layout)
+                    else:
+                        g.trace('no layout',name)
+                commandName = 'free-layout-load-%s' % name.strip().lower().replace(' ','-')
+                c.k.registerCommand(commandName,shortcut=None,func=func,wrap=True)
+        # Careful: we could be unit testing.
         if layout:
-            # Careful: we could be unit testing.
             splitter = c.free_layout.get_top_splitter()
             if splitter:
                 splitter.load_layout(layout)
