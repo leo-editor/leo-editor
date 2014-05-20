@@ -18,7 +18,6 @@ trace = False
 
 #@@language python
 #@@tabwidth -4
-
 #@+<< imports >>
 #@+node:ekr.20120109111947.9961: ** << imports >> (leoVersion)
 import os
@@ -31,31 +30,22 @@ if 0: # The bzr_version stuff just causes problems.
     except ImportError:
         bzr_version = None
 #@-<< imports >>
-
+use_git = True # False = bzr
 static_version = 6240
 static_date = "2013-11-06"
 version = "4.11 final"
-
-use_git = True # False = bzr
-
 theDir = os.path.dirname(__file__)
-
 if use_git:
     path = os.path.join(theDir,'..','..','.git','HEAD')
 else:
     path = os.path.join(theDir,'..','..','.bzr','branch','last-revision') 
-
 path = os.path.normpath(path)
 path = os.path.abspath(path)
-
 # First, try to get the version from the .bzr/branch/last-revision or .git/HEAD
 if os.path.exists(path):
     if trace: print('leoVersion.py: %s' % (path))
     s = open(path,'r').read()
-    if not use_git:
-        i = s.find(' ')
-        build = static_version if i == -1 else s[:i]
-    else:
+    if use_git:
         if trace: print('leoVersion.py: %s' % (s))
         if s.startswith('ref'):
             # on a proper branch
@@ -63,13 +53,17 @@ if os.path.exists(path):
             dirs = pointer.split('/')
             branch = dirs[-1]
             path = os.path.join(theDir, '..', '..', '.git', pointer)
-            s = open(path, 'r').read().strip()[0:12] # shorten the hash to a unique shortname 
-                                                 # (12 characters should be enough until the end of time, for Leo...)
+            s = open(path, 'r').read().strip()[0:12]
+                # shorten the hash to a unique shortname 
+                # (12 characters should be enough until the end of time, for Leo...)
             build = '%s (branch: %s)' % (s, branch)
         else:
             branch = 'None'
             s = s[0:12]
             build = '%s (branch: %s)' % (s, branch)
+    else:
+        i = s.find(' ')
+        build = static_version if i == -1 else s[:i]
     secs = os.path.getmtime(path)
     t = time.localtime(secs)
     date = time.strftime('%Y-%m-%d %H:%M:%S',t)
