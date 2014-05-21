@@ -9,7 +9,63 @@ import optparse
 import os
 import sys
 import time
+#@+<< pylint recent files >>
+#@+node:ekr.20140521095206.16729: ** << pylint recent files >>
+#@@language python
 
+#@+others
+#@+node:ekr.20120225032124.17089: *3* getRecentCoreList (pylint-leo.py)
+def getRecentCoreList():
+    '''Return the list of core files processed by the -r option.'''
+    return (
+        # 'runLeo',
+        # 'leoApp',
+        # 'leoAtFile',
+        # 'leoBridge',
+        # 'leoCache',
+        # 'leoChapters',
+        # 'leoCommands',
+        # 'leoConfig',
+        # 'leoEditCommands',
+        # 'leoFileCommands',
+        # 'leoFind',
+        # 'leoFrame',
+        'leoGlobals',
+        # 'leoGui',
+        # 'leoImport',
+        # 'leoIPython',
+        # 'leoKeys',
+        # 'leoMenu',
+        # 'leoNodes',
+        # 'leoPlugins',
+        # 'leoRst',
+        # 'leoSessions',
+        # 'leoShadow',
+        # 'leoTangle',
+        # 'leoTest',
+        # 'leoUndo',
+        # 'leoViews',
+        # 'leoVim',
+)
+#@+node:ekr.20120528063627.10137: *3* getRecentPluginsList
+def getRecentPluginsList ():
+
+    return (
+        # 'baseNativeTree',
+        # 'contextmenu',
+        # 'codewisecompleter',
+        # 'free_layout',
+        # 'internal_ipkernel',
+        # 'mod_scripting',
+        # 'nested_splitter',
+        'qtGui',
+        # 'plugins_menu',
+        # 'screencast',
+        # 'viewrendered',
+        # 'viewrendered2',
+    )
+#@-others
+#@-<< pylint recent files >>
 #@+others
 #@+node:ekr.20100221142603.5640: ** getCoreList
 def getCoreList():
@@ -113,55 +169,6 @@ def getPluginsList():
         'viewrendered.py',
             # Dangerous: PyQt4.phonon has no x member.
         'xemacs.py',
-    )
-#@+node:ekr.20120225032124.17089: ** getRecentCoreList (pylint-leo.py)
-def getRecentCoreList():
-    '''Return the list of core files processed by the -r option.'''
-    return (
-        # 'runLeo',
-        # 'leoApp',
-        # 'leoAtFile',
-        # 'leoBridge',
-        # 'leoCache',
-        # 'leoChapters',
-        # 'leoCommands',
-        # 'leoConfig',
-        # 'leoEditCommands',
-        # 'leoFileCommands',
-        # 'leoFind',
-        # 'leoFrame',
-        # 'leoGlobals',
-        # 'leoGui',
-        # 'leoImport',
-        # 'leoIPython',
-        # 'leoKeys',
-        # 'leoMenu',
-        'leoNodes',
-        # 'leoPlugins',
-        # 'leoRst',
-        # 'leoSessions',
-        # 'leoShadow',
-        # 'leoTangle',
-        # 'leoTest',
-        # 'leoUndo',
-        # 'leoViews',
-        # 'leoVim',
-)
-#@+node:ekr.20120528063627.10137: ** getRecentPluginsList
-def getRecentPluginsList ():
-
-    return (
-        # 'baseNativeTree',
-        # 'contextmenu',
-        # 'codewisecompleter',
-        # 'internal_ipkernel.py',
-        # 'mod_scripting',
-        # 'nested_splitter',
-        # 'qtGui',
-        # 'plugins_menu',
-        # 'screencast',
-        # 'viewrendered',
-        # 'viewrendered2',
     )
 #@+node:ekr.20100221142603.5643: ** getTkPass
 def getTkPass():

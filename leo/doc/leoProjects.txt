@@ -222,6 +222,26 @@ def linkCloneFindAllNode(self,p):
     p._linkAfter(top)
 .. @+node:ekr.20140426052603.18136: *3* Removed g.choose from Leo's core & plugins
 This function is deprecated: use Python's ternary operator instead.
+.. @+node:ekr.20140313100328.16825: *3* Fixed leoGlobals bug (per Reinhard Engle)
+@language rest
+
+Reinhard Engel reinhard.engel.de@googlemail.com
+
+There seems to be a subtle bug in leoGlobals.py:
+
+In the 'globalDirectiveList', the directive 'command' is missing. This
+seems not to cause problems, because of the way 'aList' in
+'compute_directives_re' is constructed. Then in 'get_directives_dict' the
+directive is silently skipped.
+
+The following pattern in 'compute_directives_re' solves this problem:
+
+@language python
+
+aList = [x for x in globalDirectiveList if z != 'others']
+aList.sort(lambda a,b: len(b)-len(a))
+    # Sort by length, longest first
+pat = "^@(%s)(?=( |\t|\n)+)" % "|".join(aList)
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
