@@ -395,17 +395,22 @@ def compute_directives_re ():
     '''Return an re pattern which will match all Leo directives.'''
 
     global globalDirectiveList
-
-    aList = ['^@%s' % z for z in globalDirectiveList
-                if z != 'others']
-
-    if 0: # 2010/02/01
-        # The code never uses this, and this regex is broken
-        # because it can confuse g.get_directives_dict.
-        # @others can have leading whitespace.
-        aList.append(r'^\s@others\s')
-
-    return '|'.join(aList)
+    
+    if 1:
+        # 2014/05/21: From Reinhard Engel reinhard.engel.de@googlemail.com.
+        aList = [z for z in globalDirectiveList if z != 'others']
+        aList.sort(lambda a,b: len(b)-len(a))
+            # Sort by length, longest first
+        return "^@(%s)(?=( |\t|\n)+)" % "|".join(aList)
+    else:
+        aList = ['^@%s' % z for z in globalDirectiveList
+                    if z != 'others']
+        if 0: # 2010/02/01
+            # The code never uses this, and this regex is broken
+            # because it can confuse g.get_directives_dict.
+            # @others can have leading whitespace.
+            aList.append(r'^\s@others\s')
+        return '|'.join(aList)
 #@+node:ekr.20080827175609.1: *3* g.get_directives_dict_list (must be fast)
 def get_directives_dict_list(p):
 
