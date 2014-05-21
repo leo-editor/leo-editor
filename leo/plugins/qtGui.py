@@ -7139,30 +7139,30 @@ class LeoTabbedTopLevel(LeoBaseTabWidget):
         self.setTabBar(tb)
 #@+node:peckj.20140505102552.10377: *3* class qtTabBarWrapper (QTabBar)
 class qtTabBarWrapper(QtGui.QTabBar): 
-     #@+others
-     #@+node:peckj.20140516114832.10108: *4* __init__
-     def __init__(self, parent=None):
-         super(qtTabBarWrapper, self).__init__(parent)
-         self.setMovable(True)
-     #@+node:peckj.20140516114832.10109: *4* mouseReleaseEvent
-     def mouseReleaseEvent(self, event):
-         ## middle click close on tabs -- JMP 20140505
-         ## closes Launchpad bug: https://bugs.launchpad.net/leo-editor/+bug/1183528
-         ## Using this blogpost as a guide:
-         ## http://www.mikeyd.com.au/2011/03/12/adding-the-ability-to-close-a-tab-with-mouses-middle-button-to-qts-qtabwidget/
-         if event.button() == QtCore.Qt.MidButton:
-             self.tabCloseRequested.emit(self.tabAt(event.pos()))
-         if event.button() == QtCore.Qt.LeftButton:
-             ## hackish bugfix -- draged tabs don't snap back into place
-             ## this forces a repaint on the first tab, which refreshes 
-             ## the whole tab bar
-             ## (for some reason, self.repaint(), self.update(), and 
-             ##  self.paintEvent() didn't work)
-             s = self.tabText(0)
-             self.setTabText(0, '')
-             self.setTabText(0, s)
-         super(QtGui.QTabBar,self).mouseReleaseEvent(event)
-     #@-others
+    #@+others
+    #@+node:peckj.20140516114832.10108: *4* __init__
+    def __init__(self, parent=None):
+        super(qtTabBarWrapper, self).__init__(parent)
+        self.setMovable(True)
+    #@+node:peckj.20140516114832.10109: *4* mouseReleaseEvent
+    def mouseReleaseEvent(self, event):
+        ## middle click close on tabs -- JMP 20140505
+        ## closes Launchpad bug: https://bugs.launchpad.net/leo-editor/+bug/1183528
+        ## Using this blogpost as a guide:
+        ## http://www.mikeyd.com.au/2011/03/12/adding-the-ability-to-close-a-tab-with-mouses-middle-button-to-qts-qtabwidget/
+        if event.button() == QtCore.Qt.MidButton:
+            self.tabCloseRequested.emit(self.tabAt(event.pos()))
+        if event.button() == QtCore.Qt.LeftButton:
+            ## hackish bugfix -- draged tabs don't snap back into place
+            ## this forces a repaint on the first tab, which refreshes 
+            ## the whole tab bar
+            ## (for some reason, self.repaint(), self.update(), and 
+            ##  self.paintEvent() didn't work)
+            s = self.tabText(0)
+            self.setTabText(0, '')
+            self.setTabText(0, s)
+        super(QtGui.QTabBar,self).mouseReleaseEvent(event)
+    #@-others
      
 #@+node:ekr.20110605121601.18458: *3* class qtMenuWrapper (QMenu,leoQtMenu)
 class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
