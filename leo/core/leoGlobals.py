@@ -391,16 +391,14 @@ def get_directives_dict(p,root=None):
     return d
 #@+node:ekr.20090214075058.10: *4* compute_directives_re
 def compute_directives_re ():
-
     '''Return an re pattern which will match all Leo directives.'''
-
     global globalDirectiveList
-    
     if 1:
-        # 2014/05/21: From Reinhard Engel reinhard.engel.de@googlemail.com.
-        aList = [z for z in globalDirectiveList if z != 'others']
-        aList.sort(lambda a,b: len(b)-len(a))
-            # Sort by length, longest first
+        # 2014/05/21: Per Reinhard Engel reinhard.engel.de@googlemail.com.
+        # Sort by length, longest first.
+        aList = sorted(
+            [z for z in globalDirectiveList if z != 'others'],
+            key=lambda a:len(a))
         return "^@(%s)(?=( |\t|\n)+)" % "|".join(aList)
     else:
         aList = ['^@%s' % z for z in globalDirectiveList
