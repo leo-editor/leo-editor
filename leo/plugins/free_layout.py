@@ -19,6 +19,8 @@ free-layout-load
     conventient keyboard shortcut target.
 free-layout-restore
     Use the layout this outline had when it was opened.
+free-layout-zoom
+    Zoom or unzoom the current pane
 
 """
 #@-<< docstring >>
@@ -462,7 +464,7 @@ class FreeLayoutController:
         c.redraw()
     #@-others
 #@+node:tbrown.20130403081644.25265: ** @g.command free-layout-restore
-@g.command('free_layout_restore')
+@g.command('free-layout-restore')
 def free_layout_restore(kwargs):
     """free_layout_restore - restore layout outline had when it was loaded
 
@@ -493,5 +495,16 @@ def free_layout_load(kwargs):
     c.db['_ns_layout'] = name
     layout = g.app.db['ns_layouts'][name]
     c.free_layout.get_top_splitter().load_layout(layout)
+#@+node:tbrown.20140522153032.32658: ** @g.command free-layout-zoom
+@g.command('free-layout-zoom')
+def free_layout_zoom(kwargs):
+    """free_layout_zoom - (un)zoom the current pane
+
+    :Parameters:
+    - `kwargs`: from command callback
+    """
+
+    c = kwargs['c']
+    c.free_layout.get_top_splitter().zoom_toggle()
 #@-others
 #@-leo

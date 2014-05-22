@@ -329,6 +329,14 @@ class NestedSplitterHandle(QtGui.QSplitterHandle):
             splitter.equalize_sizes(recurse=True)
         self.add_item(eq, menu, 'Equalize all')
 
+        # (un)zoom pane
+        def zoom(splitter=splitter.top()):
+            splitter.zoom_toggle()
+        self.add_item(
+            zoom, menu, 
+            ('Un' if splitter.root.zoomed else '')+'Zoom pane'
+        )
+
         # open window
         if splitter.top().parent().__class__ != NestedSplitterTopLevel:
             # don't open windows from windows, only from main splitter
@@ -1222,33 +1230,35 @@ class NestedSplitter(QtGui.QSplitter):
         if _depth == 1:
             return '\n'.join(_ans)
     #@+node:tbrown.20140522153032.32656: *3* zoom_toggle
-    def zoom_toggle(self, splitter=None, focused=None):
+    def zoom_toggle(self):
         """zoom_toggle - (Un)zoom current pane to be only expanded pane
         """
 
-        if splitter is None:
-            
-            focused = QtCore.QApplication.focusWidget()
-            if not focused and not self.root.zoomed:
-                return
-            self.zoom_toggle(self.top(), focused)
-            self.root.zoomed = not self.root.zoomed
+        if self.root.zoomed:
+            for ns in self.top().self_and_descendants():
+                ns.setSizes(ns._unzoom)
         else:
-            if self.root.zoomed:
-                pass
-            else:
-                self._unzoom = self.sizes()
-                if not self.contains(focused):
-                    return
-                for i in range(self.count()):
-                    w = self.widget(i)
-                    if (focused is w or 
-                        isinstance(w, NestedSplitter) and
-                        w.contains(focused)
-                       ): 
-                        sizes = [0] * len(self._unzoom)
-                        sizes[i] = sum(self._unzoom)
-                        self.setSizes(sizes)
+            focused = Qt.QApplication.focusWidget()
+            parents = []
+            parent = focused
+            while parent:
+                parents.append(parent)
+                parent = parent.parent()
+            if not focused:
+                g.es("Not zoomed, and no focus")
+            for ns in self.top().self_and_descendants():
+                
+                ns._unzoom = ns.sizes()
+
+                for i in range(ns.count()):
+                    w = ns.widget(i)
+                    if w in parents: 
+                        sizes = [0] * len(ns._unzoom)
+                        sizes[i] = sum(ns._unzoom)
+                        ns.setSizes(sizes)
+                        break
+                    
+        self.root.zoomed = not self.root.zoomed
     #@-others
 #@+node:ekr.20110605121601.17991: ** main
 def main():
