@@ -1236,7 +1236,9 @@ class NestedSplitter(QtGui.QSplitter):
 
         if self.root.zoomed:
             for ns in self.top().self_and_descendants():
-                ns.setSizes(ns._unzoom)
+                if hasattr(ns, '_unzoom'):
+                    # this splitter could have been added since
+                    ns.setSizes(ns._unzoom)
         else:
             focused = Qt.QApplication.focusWidget()
             parents = []
