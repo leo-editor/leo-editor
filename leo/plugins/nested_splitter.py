@@ -422,6 +422,7 @@ class NestedSplitter(QtGui.QSplitter):
                 root._main = self.parent()  # holder of the main splitter
                 # list of top level NestedSplitter windows opened from 'Open Window'
                 # splitter handle context menu
+                root.zoomed = False
 
         self.root = root
     #@+node:ekr.20110605121601.17968: *3* __repr__
@@ -1220,6 +1221,34 @@ class NestedSplitter(QtGui.QSplitter):
 
         if _depth == 1:
             return '\n'.join(_ans)
+    #@+node:tbrown.20140522153032.32656: *3* zoom_toggle
+    def zoom_toggle(self, splitter=None, focused=None):
+        """zoom_toggle - (Un)zoom current pane to be only expanded pane
+        """
+
+        if splitter is None:
+            
+            focused = QtCore.QApplication.focusWidget()
+            if not focused and not self.root.zoomed:
+                return
+            self.zoom_toggle(self.top(), focused)
+            self.root.zoomed = not self.root.zoomed
+        else:
+            if self.root.zoomed:
+                pass
+            else:
+                self._unzoom = self.sizes()
+                if not self.contains(focused):
+                    return
+                for i in range(self.count()):
+                    w = self.widget(i)
+                    if (focused is w or 
+                        isinstance(w, NestedSplitter) and
+                        w.contains(focused)
+                       ): 
+                        sizes = [0] * len(self._unzoom)
+                        sizes[i] = sum(self._unzoom)
+                        self.setSizes(sizes)
     #@-others
 #@+node:ekr.20110605121601.17991: ** main
 def main():
