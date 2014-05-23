@@ -134,6 +134,31 @@ The free_layout Action button context menu will also allow you to add one of
 these bookmark panes, and they will be saved and loaded again if the layout is
 saved and loaded.
 
+Bookmarks for tabbed body editors
++++++++++++++++++++++++++++++++++
+
+Create a new outline with the following nodes, as simple top level nodes::
+    
+    aardvarks
+    apples
+    autos
+    bats
+    bison
+    bunting
+    @bookmarks
+
+(pro-tip, with the paste_as_headlines plugin active, you can just copy the above and use `Edit -> Paste as headlines`, you'll need to promote them to top level again though).
+
+Select the ``@bookmarks`` node and then Alt-X `bookmarks-show`, which should create a new empty pane above the body pane.  Select the ``aardvarks`` node and click in the new empty pane, repeat
+for the ``bats`` node.
+
+Squish the new empty pane up so it's just high enough to hold the two bookmarks, or "tabs", and
+then right click a pane divider and save this layout as "Tabs" or whatever you want to call it.
+
+So now you have two tabs which jump between two nodes.  Click the ``aardvarks`` tab, then
+select the ``apples`` node.  Now shift-click the ``aardvarks`` tab.  Now you are entering sub tabs of the ``aardvarks`` tab.  You might want to repeat the ``aardvarks`` tab at this level, just select the node and click in the empty space in the bookmarks pane to repeat it here.  You could add ``autos`` at this level too.
+
+How the 'tabs' are displayed (one or more levels at once etc.) and how you edit them are described in the earlier parts of these docs.  For example at the top level the first time you click the ``aardvarks`` tab it just shows you the ``aardvarks`` node, it requires a second click to see its subtabs (aardvarks, apples, and autos), because the top level ``aardvarks`` tab is both a bookmark and an organizer node.  If you want it to be just and organizer node, alt-click it to edit the bookmark node itself, and delete the body text (UNL) there.
 
 '''
 #@-<< docstring >>
@@ -685,7 +710,15 @@ class BookMarkDisplay:
             # pylint bug, fix released: http://www.logilab.org/ticket/89092
             top.mouseReleaseEvent = (lambda event, links=links:
                 self.background_clicked(event, links))
-            top.setMinimumSize(10,8)  # so there's something to click when empty
+            top.setMinimumSize(10,10)  # so there's something to click when empty
+
+            size_policy = QtGui.QSizePolicy(\
+                QtGui.QSizePolicy.Expanding,      
+                QtGui.QSizePolicy.Expanding
+            )
+            size_policy.setHorizontalStretch(1)
+            size_policy.setVerticalStretch(1)
+            top.setSizePolicy(size_policy)
 
             w.layout().addWidget(top)
         
