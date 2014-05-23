@@ -396,6 +396,7 @@ def compute_directives_re ():
     if 1:
         # 2014/05/21: Per Reinhard Engel reinhard.engel.de@googlemail.com.
         # Sort by length, longest first.
+        # pylint: disable=unnecessary-lambda
         aList = sorted(
             [z for z in globalDirectiveList if z != 'others'],
             key=lambda a:len(a))

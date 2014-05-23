@@ -211,6 +211,7 @@ class node:
 class editBodyTestCase(unittest.TestCase):
 class importExportTestCase(unittest.TestCase):
 class runTestExternallyHelperClass:
+.. @+node:ekr.20140521095206.16728: ** Important
 .. @+node:ekr.20140402091953.16865: *3* add pylint commands
 @language rest
 
@@ -219,11 +220,6 @@ pylint-check-core    @data pylint-core-files
 pylint-check-custom  @data pylint-custom-files
 pylint-check-plugins @data pylint-plugins-files
 pylint-check-recent  @data pylint-recent-files
-.. @+node:ekr.20140218130540.18727: *3* improve parse-body
-.. @+node:ekr.20131211054925.16384: *3* improve file;; macro
-1. Does not create @file (or @@file) in headline
-2. <|pattern|> not found in headlines
-.. @+node:ekr.20140521095206.16728: ** Important
 .. @+node:ekr.20140402091953.16863: *3* Add rope to Leo
 # http://rope.sourceforge.net/library.html
 
@@ -267,6 +263,7 @@ What to do abouit bzr-manifest?
 
 They work from the rclick menu, but not from the minibuffer.
     - Should hanlde clone and delete and move, at least.
+.. @+node:ekr.20140218130540.18727: *3* improve parse-body
 .. @+node:ekr.20140520054818.17967: *3* Move Launchpad bugs to github
 https://groups.google.com/forum/#!topic/leo-editor/Bpc67qPNeJA
 
