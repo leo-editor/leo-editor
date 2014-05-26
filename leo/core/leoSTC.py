@@ -5407,7 +5407,7 @@ class Utils:
         import statictypechecking as stc
             # no need to reload stc.
 
-        u = stc.Utils()
+        u = Utils()
         aList = u.project_files(project_name)
         for fn in aList:
             # u.module(fn=fn)
@@ -6705,14 +6705,14 @@ class CacheTraverser(AstTraverser):
             self.level -= 1
     #@-others
 #@+node:ekr.20140526082700.18055: *3* class ChainPrinter (OpPatternFormatter)
-class ChainPrinter (stc.OpPatternFormatter):
+class ChainPrinter: ### (OpPatternFormatter):
     
     def __init__ (self,fn):
     
         self.d = {}
         self.top_attribute = True
     
-        stc.OpPatternFormatter.__init__ (self)
+        ### OpPatternFormatter.__init__ (self)
             # Init the base class.
 
     #@+others
@@ -7322,7 +7322,7 @@ class ModuleContext (Context):
     __str__ = __repr__        
 #@-others
 #@+node:ekr.20140526082700.18099: *3* class GeneralTest (StcTest)
-class GeneralTest (StcTest):
+class GeneralTest: ### (StcTest):
     
     '''A general test class.'''
     
