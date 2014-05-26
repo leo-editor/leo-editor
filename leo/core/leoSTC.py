@@ -2,7 +2,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140526082700.17153: * @file leoSTC.py
 #@@first
-
 '''
 Parsing/analysis classes.  Originally developed for:
 https://groups.google.com/forum/?fromgroups#!forum/python-static-type-checking
@@ -57,7 +56,7 @@ import ast
 import gc
 import glob
 # import imp
-if isPython3:
+if g.isPython3:
     import io
     StringIO = io.StringIO
 else:
@@ -65,7 +64,7 @@ else:
     StringIO = cStringIO.StringIO
 import os
 # import string
-import sys
+# import sys
 # import textwrap
 import time
 # import types
@@ -415,7 +414,7 @@ class AstBaseTraverser:
         #           | Expr(expr value)
         #           | Pass | Break | Continue
         # 
-        #           -- XXX Jython will be different
+        #           -- Jython will be different
         #           -- col_offset is the byte offset in the utf8 string the parser uses
         #           attributes (int lineno, int col_offset)
         # 
@@ -1304,7 +1303,7 @@ class AstFormatter(AstFullTraverser):
             node.attr) # Don't visit node.attr: it is always a string.
     #@+node:ekr.20140526082700.17251: *5* f.Bytes
     def do_Bytes(self,node): # Python 3.x only.
-        assert isPython3
+        assert g.isPython3
         return str(node.s)
         
     #@+node:ekr.20140526082700.17252: *5* f.Call & f.keyword
@@ -1768,7 +1767,7 @@ class AllStatementsTraverser(AstBaseTraverser):
         if isinstance(node,(ast.ClassDef,ast.FunctionDef,ast.Module)):
             for z in node.body:
                 self.visit(z)
-        elif isinstance(node,ast.Lamda):
+        elif isinstance(node,ast.Lambda):
             self.visit(node.body)
         else:
             g.trace(node)
@@ -1948,7 +1947,7 @@ class StatementTraverser(AstBaseTraverser):
         if isinstance(node,(ast.ClassDef,ast.FunctionDef,ast.Module)):
             for z in node.body:
                 self.visit(z)
-        elif isinstance(node,ast.Lamda):
+        elif isinstance(node,ast.Lambda):
             self.visit(node.body)
         else:
             g.trace(node)
@@ -2533,7 +2532,7 @@ class P1(AstFullTraverser):
                 pass
             else:
                 # Python 3.x.
-                g.trace('===============',u.format(node))
+                g.trace('===============',self.u.format(node))
                 ### assert isinstance(arg,ast.arg),arg
                 ### assert isinstance(arg,ast.arg),arg
                 ### self.define_name(node,arg.arg)
@@ -3078,29 +3077,30 @@ class TypeInferrer (AstFullTraverser):
         
         '''Return sorted(aList) with all duplicates removed.'''
         
-        return aList or []
-        
-        ti = self
         if 1:
-            # Good for debugging and traces.
-            result = []
-            for z in aList:
-                if z not in result:
-                    result.append(z)
-            
-            # An excellent check.
-            assert len(result) == len(list(set(aList))),aList
+            return aList or []
         else:
-            result = list(set(aList))
-       
-        # Strip out inference errors if there are real results.
-        result2 = ti.ignore_failures(result)
-        if result2:
-            ti.stats.n_clean_success += 1
-            return sorted(result2)
-        else:
-            ti.stats.n_clean_fail += 1
-            return sorted(result)
+            ti = self
+            if 1:
+                # Good for debugging and traces.
+                result = []
+                for z in aList:
+                    if z not in result:
+                        result.append(z)
+                
+                # An excellent check.
+                assert len(result) == len(list(set(aList))),aList
+            else:
+                result = list(set(aList))
+           
+            # Strip out inference errors if there are real results.
+            result2 = ti.ignore_failures(result)
+            if result2:
+                ti.stats.n_clean_success += 1
+                return sorted(result2)
+            else:
+                ti.stats.n_clean_fail += 1
+                return sorted(result)
     #@+node:ekr.20140526082700.17396: *3* ti.format
     def format(self,node):
         
@@ -3216,7 +3216,7 @@ class TypeInferrer (AstFullTraverser):
                     elif t1.cx.bases:
                         if trace_errors: g.trace('bases',
                             ti.format(node),ti.format(t1.cx.bases))
-                        pass ### Must check super classes.
+                        ### Must check super classes.
                         t = [Unknown_Type(node)]
                     else:
                         u.error('%20s has no %s member' % (ti.format(node),t1.cx.name))
@@ -4186,7 +4186,6 @@ class TypeInferrer (AstFullTraverser):
                 t = [] # Do **not** propagate a failure here!
         else:
             t = [ti.none_type]
-        t.extend(t0)
         if trace: g.trace(t,ti.format(node))
         return t
     #@+node:ekr.20140526082700.17449: *5* ti.With
@@ -4288,7 +4287,7 @@ class Utils:
                     result.append(statement)
             else:
                 # The assignments generator returns only Assign and AugAssign nodes.
-                assert False,kind
+                assert False
         # if result: # g.trace(target_name,','.join([u.format(z) for z in result]))
         return result
     #@+node:ekr.20140526082700.17457: *4* u.attributes
@@ -4462,8 +4461,7 @@ class Utils:
                 return parent
             else:
                 parent = parent.stc_parent
-        else:
-            return None
+        return None
     #@+node:ekr.20140526082700.17468: *3* u.compute_module_cx
     def compute_module_cx(self,node):
         '''Return the module context for the given node.'''
@@ -4473,8 +4471,7 @@ class Utils:
                 return parent
             else:
                 parent = parent.stc_parent
-        else:
-            assert False,node
+        assert False,node
     #@+node:ekr.20140526082700.17469: *3* u.compute_class_or_module_cx
     def compute_class_or_module_cx(self,node):
         '''Return the class or module context of node.'''
@@ -4484,8 +4481,7 @@ class Utils:
                 return parent
             else:
                 parent = parent.stc_parent
-        else:
-            assert False,node
+        assert False,node
     #@+node:ekr.20140526082700.17470: *3* u.compute_node_cx
     def compute_node_cx(self,node):
         '''Return the nearest enclosing context for the given node.'''
@@ -4495,8 +4491,7 @@ class Utils:
                 return parent
             else:
                 parent = parent.stc_parent
-        else:
-            assert False,node
+        assert False,node
     #@+node:ekr.20140526082700.17471: *3* u.compute_node_level
     def compute_node_level(self,node):
         
@@ -4943,12 +4938,9 @@ class Utils:
         return p
     #@+node:ekr.20140526082700.17499: *3* u.lookup
     def lookup(self,cx,key):
-        
         '''Return the symbol table for key, starting the search at node cx.'''
-
         trace = False and not g.app.runningAllUnitTests
         # contexts = ast.Module,ast.ClassDef,ast.FunctionDef,ast.Lambda
-        
         cx2 = cx
         while cx2:
             st = cx.stc_symbol_table
@@ -4956,16 +4948,15 @@ class Utils:
                 return st
             else:
                 cx2 = cx2.stc_context
-        ############################
+        ###
         assert False
         for d in (self.builtins_d,self.special_methods_d):
             if key in d.keys():
                 return d
-        else:
-            if trace:
-                g.trace('** (ScopeBinder) no definition for %20s in %s' % (
-                    key,self.u.format(cx)))
-            return None
+        if trace:
+            g.trace('** (ScopeBinder) no definition for %20s in %s' % (
+                key,self.format(cx)))
+        return None
     #@+node:ekr.20140526082700.17500: *3* u.module_name
     def module_name (self,fn):
         
@@ -5934,11 +5925,9 @@ class LocalStatementGenerator:
     #@-others
 
 #@-others
-
 # Unit tests are the main program, at present.
 # if __name__ == '__main__':
     # test()
-
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 60
