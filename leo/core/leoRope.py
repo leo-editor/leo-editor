@@ -2,15 +2,19 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140526082700.18440: * @file leoRope.py
 #@@first
+
 #@+<< leoRope imports >>
-#@+middle:ekr.20140526123310.17592: ** class RopeController
-#@+node:ekr.20140525065558.15807: *3* << leoRope imports >>
+#@+node:ekr.20140525065558.15807: ** << leoRope imports >>
 import leo.core.leoGlobals as g
 import glob
 import imp
-import rope
+import rope.base.project
+import rope.base.simplify
+import rope.refactor
 import time
-imp.reload(rope)
+imp.reload(rope.base.project)
+imp.reload(rope.base.simplify)
+imp.reload(rope.refactor)
 #@-<< leoRope imports >>
 #@+others
 #@+node:ekr.20140526123310.17592: ** class RopeController
@@ -62,6 +66,7 @@ class RopeController:
     #@-others
 #@+node:ekr.20140526123310.17593: ** test
 def test(c):
+    g.cls()
     t1 = time.clock()
     RopeController(c).run()
     print('done: %s sec.' % g.timeSince(t1))
