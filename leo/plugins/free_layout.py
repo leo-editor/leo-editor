@@ -463,6 +463,20 @@ class FreeLayoutController:
 
         c.redraw()
     #@-others
+#@+node:tbrown.20140524112944.32658: ** @g.command free-layout-context-menu
+@g.command('free-layout-context-menu')
+def free_layout_context_menu(kwargs):
+    """free_layout_context_menu - open free layout's context menu, using
+    the first divider of the top splitter for context, for now.
+
+    :Parameters:
+    - `kwargs`: from command callback
+    """
+    c = kwargs['c']
+    
+    splitter = c.free_layout.get_top_splitter()
+    handle = splitter.handle(1)
+    handle.splitter_menu(handle.rect().topLeft())
 #@+node:tbrown.20130403081644.25265: ** @g.command free-layout-restore
 @g.command('free-layout-restore')
 def free_layout_restore(kwargs):
