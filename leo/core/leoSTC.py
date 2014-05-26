@@ -105,287 +105,6 @@ import time
 #     
 #@-<< naming conventions >>
 #@+others
-#@+node:ekr.20140526082700.17157: **  top-level list functions (move to leoGlobals)
-#@+node:ekr.20140526082700.17572: *3* about string composition functions
-#@@nocolor-node
-#@+at
-# Here is a slightly modified version of the following post:
-# A beautiful pattern for composing large strings:
-# https://groups.google.com/d/msg/python-static-type-checking/kXoWIr8o9yc/743Ha4DdcAgJ
-# 
-# I have just "discovered" an absolutely gorgeous pattern for
-# creating results from large numbers of strings. A typical
-# use for this pattern is generating html files from data. I
-# stumbled upon this pattern while simplifying the
-# ReportTraverser class.
-# 
-# Guido and I discussed this issue in the thread, "A trivial
-# theorem kills an anti-pattern."
-# https://groups.google.com/forum/?fromgroups=#!topic/python-static-type-checking/9jsT1b89_gU
-# Here, I'd like to discuss a much better way to build up
-# results than using string.join. The new pattern minimizes
-# stress on the gc. It is also the most *beautiful* thing that
-# could possibly work.
-# 
-# Clearly, this is not a real discovery; it is simply new to
-# me. Judging from Guido's earlier remarks, it may new to him.
-# Having said that, it may seem trivial to some. Lisp-ers will
-# claim that it is the obvious thing to do in lisp :-) But as
-# I discuss below, the Python solution seems safer than
-# typical lisp solutions.
-# 
-# ===== The problem
-# 
-# The ReportTraverser class creates an html files from an AST tree.  Here is a typical visitor::
-#@@language python
-#     def do_BinOp(self,node):
-#         r = self
-#         op_name = r.op_name(node.op)
-#         r.span_start(op_name)
-#         r.visit(node.left)
-#         r.op(op_name,leading=True)
-#         r.visit(node.right)
-#         r.span_end()
-#         
-#@@language rest  
-# This looks very simple, and indeed it is. The main problem
-# is that the helpers, r.span_start, r.visit, r.op and
-# r.span_end, write results immediately to the output stream.
-# In practice, this is a bit clunky. Worse, knowing about the
-# output stream "pollutes" the code.
-# 
-# ===== The first iteration of the solution
-# 
-# In the first big revision, all visitors returned strings.  Like this::
-#@@language python
-#     def do_BinOp(self,node):
-#         r = self
-#         op_name = r.op_name(node.op)
-#         return ''.join([
-#             r.span_start(op_name),
-#                 r.visit(node.left),
-#                 r.op(op_name,leading=True),
-#                 r.visit(node.right),
-#             r.span_end(),
-#         ])
-#@@language rest
-# There are plusses and minuses to this code. The code can
-# indent list arguments to make the structure of the generated
-# html code clearer. Because everything is a string, the
-# behind-the-scenes helpers are simpler. But the
-# ''.join(aList) pattern is a bit clumsy. Worse, the code
-# maximally stresses the gc. None of the minuses are really
-# bad, but when simplifying code I never like to settle for
-# "two steps forward and one step back".
-# 
-# ===== The second iteration
-# 
-# The ''.join([...]) pattern that is used in so many places
-# inspired me to consider using lists to build up intermediate
-# results. The first Aha was to replace ''.join([...]) with
-# r.join(sep,[...]). r.join was intended to build up lists of
-# lists. After this large, complex list was produced, a new
-# r.write (eventually named g.flatten_list) method would produce the
-# output by "traversing" the lists of lists. Only r.write
-# knows about the output stream, so there is no pollution.
-# (Aside: g.flatten_list always yields strings; it doesn't know or care
-# how the strings are used.)
-# 
-# Here are r.join and r.write and the new version of
-# r.visit_list. In the interests of brevity, I'll show only
-# the final versions::
-#@@language python
-#     def visit_list(self,aList,sep=''):
-#         r = self
-#         if sep:
-#             return {'sep':sep,'aList':[r.visit(z) for z in aList]}
-#         else:
-#             return [r.visit(z) for z in aList]
-#     def join (self,aList,sep=''):
-#         if sep:
-#             return {'aList':aList,'sep':sep}
-#         else:
-#             return aList
-#     def write (self,f,obj):
-#         if isinstance(obj,{}.__class__):
-#             sep = obj.get('sep')
-#             assert g.isString(sep),sep
-#             aList = obj.get('aList')
-#             for i,item in enumerate(aList):
-#                 if sep and i > 0: f.write(sep)
-#                 self.write(f,item)
-#         elif isinstance(obj,(list,tuple)):
-#             for item in obj:
-#                 self.write(f,item)
-#         elif obj:
-#             assert g.isString(obj),obj.__class__.__name__
-#             f.write(obj)
-#@@language rest
-# There are several crucial things to understand about all these methods:
-# 
-# 1. The dicts make r.write robust. Dicts arise only from
-#    catenation operations, so there can be no confusion about
-#    what a list "really" means.
-# 
-# 2. Lists can contain *anything*, including dicts, other
-#    lists, None and strings. In particular, allowing None
-#    simplifies many visitors.
-# 
-# 3. Ironically, in this scheme it will *never* be correct to
-#    use string.join to create part of a list passed to
-#    r.join. The reason is straightforward: one or more of the
-#    arguments to string.join will be lists or dicts! For
-#    example, visitors might contain::
-#    
-#         ['(',r.visit(arg),')',...],
-#     
-#    never:
-#    
-#         ['(%s)' % r.visit(arg),...]
-# 
-# ===== The great collapse
-# 
-# After translating ''.join([...]) to r.join([...],''), I
-# suddenly realized that there were *no* calls to r.join with
-# a non-trivial sep. But that means that all the calls to
-# r.join([...],'') can be replaced by just [...]. Eureka!
-# rt.BoolOp becomes::
-#@@language python
-#     def do_BinOp(self,node):
-#         r = self
-#         op_name = r.op_name(node.op)
-#         return [
-#             r.span_start(op_name),
-#                 r.visit(node.left),
-#                 r.op(op_name,leading=True),
-#                 r.visit(node.right),
-#             r.span_end(),
-#         ]
-#@@language rest
-# The new pattern eliminates a huge amount of cruft, and
-# highlights the primary importance of lists. Let's look again
-# at the original code::
-#@@language python
-#     def do_BinOp(self,node):
-#         r = self
-#         op_name = r.op_name(node.op)
-#         r.span_start(op_name)
-#         r.visit(node.left)
-#         r.op(op_name,leading=True)
-#         r.visit(node.right)
-#         r.span_end()
-# 
-#@@language rest
-# The two versions look pretty much the same. The final
-# version looks better to me for at least two reasons:
-# a) indentation is more flexible,
-# b) the result is obviously a list.
-# But regardless of appearances, the second version is *much*
-# better than the first!
-# 
-# ===== Conclusions
-# 
-# Imo, this pattern was worth two very long days of work. It
-# has the following important virtues:
-# 
-# 1. It is safe: Lists always contain "real" data; dicts
-#    contain "control" data. This removes all possibility of
-#    confusion in r.write, or anywhere else. For the first
-#    time ever, I have complete confidence in lisp-like code.
-#    This is such an important point. Similar confusions about
-#    lists caused endless difficulties in my first Python
-#    script, c2py.
-# 
-# 2. It is general-purpose: Creating html files from complex
-#    data is only one possible application. The pattern shows
-#    how to build arbitrarily complex lists of lists safely
-#    and easily. Once the lists have been produced,
-#    g.flatten_list will create the result easily, whatever
-#    the list's complexity. Removing the dependence on the
-#    output stream makes the visitors much more general.
-# 
-# 3. It minimizes stress on the gc. Composing results with
-#    list operations creates no new strings; composing results
-#    with string operations creates exponentially larger
-#    strings. True, the added gc load often doesn't matter,
-#    but it is truly satisfying to minimize string creation so
-#    thoroughly.
-# 
-# The haiku summary: g.flatten_list is essence of this pattern.
-# Although simple, it is fantastically useful.
-#@+node:ekr.20140526082700.17158: *3* g.join_list
-def join_list (aList,indent='',leading='',sep='',trailing=''):
-    '''
-    Create a dict representing the concatenation of the
-    strings in aList, formatted per the keyword args.
-    See the HTMLReportTraverser class for many examples.
-    '''
-    if not aList:
-        # g.trace('None: indent:%s' % repr(indent))
-        return None
-    if 1: # These asserts are reasonable.
-        assert g.isString(indent),indent
-        assert g.isString(leading),leading
-        assert g.isString(sep),sep
-        assert g.isString(trailing),trailing
-    else: # This generality is not likely to be useful.
-        if leading and not g.isString(leading):
-            leading = list_to_string(leading)
-        if sep and not g.isString(sep):
-            sep = list_to_string(sep)
-        if trailing and not g.isString(trailing):
-            trailing = list_to_string(trailing)
-    if indent or leading or sep or trailing:
-        return {
-            '_join_list':True, # Indicate that join_list created this dict.
-            'aList':aList,
-            'indent':indent,'leading':leading,'sep':sep,'trailing':trailing,
-        }
-    else:
-        return aList
-#@+node:ekr.20140526082700.17159: *3* g.flatten_list
-def flatten_list (obj):
-    '''A generator yielding a flattened (concatenated) version of obj.'''
-    if isinstance(obj,{}.__class__) and obj.get('_join_list'):
-        # join_list created obj, and ensured that all args are strings.
-        indent   = obj.get('indent') or ''
-        leading  = obj.get('leading') or ''
-        sep      = obj.get('sep') or ''
-        trailing = obj.get('trailing') or ''
-        aList = obj.get('aList')
-        for i,item in enumerate(aList):
-            if leading: yield leading
-            for s in flatten_list(item):
-                if indent and s.startswith('\n'):
-                    yield '\n'+indent+s[1:]
-                else:
-                    yield s
-            if sep and i < len(aList)-1: yield sep
-            if trailing: yield trailing
-    elif isinstance(obj,(list,tuple)):
-        for obj2 in obj:
-            for s in flatten_list(obj2):
-                yield s
-    elif obj:
-        # assert g.isString(obj),obj.__class__.__name__
-        if g.isString(obj):
-            yield obj
-        else:
-            yield repr(obj) # Not likely to be useful.
-    else:
-        pass # Allow None and empty containers.
-#@+node:ekr.20140526082700.17160: *3* g.list_to_string
-def list_to_string(obj):
-    '''
-    Convert obj (a list of lists) to a single string.
-    
-    This function stresses the gc; it will usually be better to
-    work with the much smaller strings generated by flatten_list.
-
-    Use this function only in special circumstances, for example,
-    when it is known that the resulting string will be small.
-    '''
-    return ''.join([z for z in flatten_list(obj)])
 #@+node:ekr.20140526082700.17161: **  Base classes
 #@+node:ekr.20140526082700.17162: *3* .class AstBaseTraverser
 class AstBaseTraverser:
@@ -7451,8 +7170,8 @@ class HTMLReportTraverser (AstFullTraverser):
             if reach:
                 for item in reach:
                     aList.append(r.text('reach: %s' % r.u.format(item)))
-            result.append(join_list(aList,sep=', '))
-        return join_list(result,sep='; ')
+            result.append(g.join_list(aList,sep=', '))
+        return g.join_list(result,sep='; ')
     #@+node:ekr.20140526082700.18112: *6* NameTraverser(AstFullTraverser)
     class NameTraverser(AstFullTraverser):
         
@@ -7521,7 +7240,7 @@ class HTMLReportTraverser (AstFullTraverser):
         assert isinstance(aList,(list,tuple))
         return [
             div,
-            join_list(aList,indent='  '),
+            g.join_list(aList,indent='  '),
             '\n</div>'
         ]
     #@+node:ekr.20140526082700.18120: *5* rt.doc & helper (to do)
@@ -7617,7 +7336,7 @@ class HTMLReportTraverser (AstFullTraverser):
             span = '\n<span>'
         return [
             span,
-            join_list(aList,indent='  '),
+            g.join_list(aList,indent='  '),
             # '\n</span>',
             '</span>', # More compact
         ]
@@ -7633,7 +7352,7 @@ class HTMLReportTraverser (AstFullTraverser):
         r = self
         f = open(fn,"wb")
         try:
-            for s in flatten_list(r.report_file()):
+            for s in g.flatten_list(r.report_file()):
                 f.write(s)
         finally:
             f.close()
@@ -7656,7 +7375,7 @@ class HTMLReportTraverser (AstFullTraverser):
         fn = g.os_path_join(directory,"%s_interfaces.xhtml" % base_fn)
         f = open(fn,"wb")
         try:
-            for s in flatten_list(r.write_interfaces(m)):
+            for s in g.flatten_list(r.write_interfaces(m)):
                 f.write(s)
         finally:
             f.close()
@@ -7667,7 +7386,7 @@ class HTMLReportTraverser (AstFullTraverser):
         
         r = self
         all_interfaces,any_interfaces = [],[]
-        return join_list([
+        return g.join_list([
             r.html_header % {'css-fn':self.css_fn,'title':'Interfaces'},
             "<table cellspacing='5' cellpadding='5'>",
             "<thead>",
@@ -7698,7 +7417,7 @@ class HTMLReportTraverser (AstFullTraverser):
                     ",".join(sorted(names))),
                 "</tr>",
             ])
-        return join_list([
+        return g.join_list([
             "<tbody>",
             aList,
             '</tbody>',
@@ -7777,7 +7496,7 @@ class HTMLReportTraverser (AstFullTraverser):
         fn = g.os_path_join(directory,"%s_summary.xhtml" % base_fn)
         f = open(fn,"wb")
         try:
-            for s in flatten_list(r.summary(m)):
+            for s in g.flatten_list(r.summary(m)):
                 f.write(s)
         finally:
             f.close()
@@ -7787,7 +7506,7 @@ class HTMLReportTraverser (AstFullTraverser):
     def summary(self,m):
 
         r = self
-        return join_list([
+        return g.join_list([
             r.html_header % {
                 'css-fn':self.css_fn,
                 'title':'Module: %s' % m.full_name()},
@@ -7798,7 +7517,7 @@ class HTMLReportTraverser (AstFullTraverser):
     def write_classes(self,m):
 
         r = self
-        return m.classes() and join_list([
+        return m.classes() and g.join_list([
             "<table cellspacing='5' cellpadding='5'>",
             "<thead>",
             "<tr>",
@@ -7822,7 +7541,7 @@ class HTMLReportTraverser (AstFullTraverser):
                 # aList.append("<td class='summary-attr'>%s</td>" % r.text(attr.name))
         # else:
             # aList.append("<td class='summary-attr-absent'>None</td>")
-        instance_names = join_list(aList,sep=', ')
+        instance_names = g.join_list(aList,sep=', ')
 
         # The class attribute names in order.
         # attrs = [] ### obj.class_attributes().values()
@@ -7832,7 +7551,7 @@ class HTMLReportTraverser (AstFullTraverser):
                 # if attr.is_strict_constant():
                     # value = attr.get_value()
                     # if False: #### not isinstance(value,Const):
-                        # aList.append(join_list([
+                        # aList.append(g.join_list([
                             # "<td class='summary-class-attr' id='%s'>" % (r.attr(value.full_name())),
                             # r.object_name_ref(r.module,value,attr.name,classes="summary-ref"),
                             # "</td>",
@@ -7843,9 +7562,9 @@ class HTMLReportTraverser (AstFullTraverser):
                     # aList.append("<td class='summary-class-attr'>%s</td>" % r.text(attr.name))
         # else:
             # aList.append("<td class='summary-class-attr-absent'>None</td>")
-        # class_names = join_list(aList,sep='\n')
+        # class_names = g.join_list(aList,sep='\n')
             
-        return join_list([
+        return g.join_list([
             "<tbody class='class'>",
                 "<tr>",
                     "<th class='summary-class' id='%s' rowspan='2'>" % (
@@ -7884,7 +7603,7 @@ class HTMLReportTraverser (AstFullTraverser):
         
         r = self
         if sep:
-            return join_list([r.visit(z) for z in aList],sep=sep)
+            return g.join_list([r.visit(z) for z in aList],sep=sep)
         else:
             return [r.visit(z) for z in aList]
     #@+node:ekr.20140526082700.18145: *4* rt.visitors
@@ -7935,7 +7654,7 @@ class HTMLReportTraverser (AstFullTraverser):
                 pass ### result.append(r.assname(param,node))
             first = False
         result.append(")")
-        return join_list(result)
+        return g.join_list(result)
     #@+node:ekr.20140526082700.18148: *5* rt.Assert
     # Assert(expr test, expr? msg)
 
@@ -8029,7 +7748,7 @@ class HTMLReportTraverser (AstFullTraverser):
         r = self
         args = [r.visit(z) for z in node.args]
         args.append( # Calls rt.do_keyword.
-            join_list([r.visit(z) for z in node.keywords],sep=','))
+            g.join_list([r.visit(z) for z in node.keywords],sep=','))
         if node.starargs:
             args.append(['*',r.visit(node.starargs)])
         if node.kwargs:
@@ -8287,7 +8006,7 @@ class HTMLReportTraverser (AstFullTraverser):
         return [
             r.div('global nowrap',[
                 r.keyword("global"),
-                join_list(node.names,sep=','),
+                g.join_list(node.names,sep=','),
             ]),
         ]
     #@+node:ekr.20140526082700.18172: *5* rt.If
