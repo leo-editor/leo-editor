@@ -3,8 +3,7 @@
 #@+node:ekr.20140526082700.18440: * @file leoRope.py
 #@@first
 #@+<< leoRope imports >>
-#@+middle:ekr.20140526123310.17592: ** class RopeController
-#@+node:ekr.20140525065558.15807: *3* << leoRope imports >>
+#@+node:ekr.20140525065558.15807: ** << leoRope imports >>
 import leo.core.leoGlobals as g
 import glob
 import imp
@@ -43,7 +42,7 @@ class RopeController:
             changes = rope.refactor.rename.Rename(proj,m,offset).get_changes(tag2)
             g.trace(changes.get_description())
         else:
-            g.trace('not found',tag)
+            g.trace('not found',tag1)
         # prog.do(changes)
     #@+node:ekr.20140525065558.15812: *3* pep8_class_name
     def pep8_class_name(self,s):
