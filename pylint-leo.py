@@ -30,7 +30,7 @@ def getRecentCoreList():
         # 'leoFileCommands',
         # 'leoFind',
         # 'leoFrame',
-        'leoGlobals',
+        # 'leoGlobals',
         # 'leoGui',
         # 'leoImport',
         # 'leoIPython',
@@ -38,9 +38,11 @@ def getRecentCoreList():
         # 'leoMenu',
         # 'leoNodes',
         # 'leoPlugins',
+        'leoRope',
         # 'leoRst',
         # 'leoSessions',
         # 'leoShadow',
+        'leoSTC',
         # 'leoTangle',
         # 'leoTest',
         # 'leoUndo',
@@ -58,7 +60,7 @@ def getRecentPluginsList ():
         # 'internal_ipkernel',
         # 'mod_scripting',
         # 'nested_splitter',
-        'qtGui',
+        # 'qtGui',
         # 'plugins_menu',
         # 'screencast',
         # 'viewrendered',
@@ -97,9 +99,11 @@ def getCoreList():
             # W0108: Lambda may not be necessary (it is).
         'leoNodes',
         'leoPlugins',
+        'leoRope',
         'leoRst', 
         'leoSessions',
         'leoShadow',
+        'leoSTC',
         'leoTangle',
         'leoTest',
         'leoUndo',
@@ -301,6 +305,15 @@ def main(tables_table):
         print('astroid.bases.ekr_infer_stmts_items: %s' %
             astroid.bases.ekr_infer_stmts_items)
     print('time: %s' % g.timeSince(t1))
+#@+node:ekr.20140526142452.17594: ** report_version
+def report_version():
+    try:
+        from pylint import lint
+        rc_fn = os.path.abspath(os.path.join('leo','test','pylint-leo-rc.txt'))
+        rc_fn = rc_fn.replace('\\','/')
+        lint.Run(["--rcfile=%s" % (rc_fn),'--version',])
+    except ImportError:
+        g.trace('can not import pylint')
 #@+node:ekr.20100221142603.5644: ** run (pylint-leo.py)
 def run(theDir,fn,rpython=False):
     '''Run pylint on fn.'''
@@ -502,6 +515,7 @@ def scanOptions():
     #add('-s', action='store_true', help = 'suppressions')
     add('-t', action='store_true', help = 'static type checking')
     add('--tt',action='store_true', help = 'stc test')
+    add('-v',action='store_true',  help = 'report pylint version')
 
     # Parse the options.
     options,args = parser.parse_args()
@@ -519,6 +533,7 @@ def scanOptions():
     # elif options.s: return 'suppressions'
     elif options.t: return 'stc'
     elif options.tt:return 'stc-test'
+    elif options.v: return 'version'
     else:           return 'all'
 #@-others
 g_option_fn = None
@@ -531,7 +546,9 @@ pluginsList         = getPluginsList()
 recentCoreList      = getRecentCoreList()
 recentPluginsList   = getRecentPluginsList()
 tkPass              = getTkPass()
-tables_table        = getTable(scope)
-
-main(tables_table)
+if scope == 'version':
+    report_version()
+else:
+    tables_table = getTable(scope)
+    main(tables_table)
 #@-leo
