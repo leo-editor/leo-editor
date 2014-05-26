@@ -6,6 +6,7 @@
 #@+node:ekr.20140525065558.15807: ** << leoRope imports >>
 import leo.core.leoGlobals as g
 import rope.base.project as project
+import rope.base.simplify as simplify
 # import rope.refactor.rename
 import rope.refactor as refactor
 import glob
@@ -27,29 +28,16 @@ class RopeController:
     #@+node:ekr.20140525065558.15805: ** refactor
     def refactor(self):
         '''Perform refactorings.'''
-        # atFile -> AtFile
         proj = self.proj
         m = proj.get_resource(self.path('leoAtFile.py'))
         s = m.read()
+        # Important: get an offset in actual code.
+        s = simplify.real_code(s)
         tag1 = 'atFile'
         tag2 = self.pep8_class_name(tag1)
-        g.trace(tag1,'to',tag2)
-        # Find an offset that is not in a comment line.
-        i = 0
-        while i < len(s):
-            progress = i
-            # g.trace(m,len(s),s.find('\r'))
-            offset = s.find(tag1,i)
-            if offset == -1:
-                break
-            j1,j2 = g.getLine(s,offset)
-            if s[j1:j2].strip().startswith('#'):
-                i = j2
-            else:
-                break
-            assert progress < i
+        offset = s.find(tag1)
         if offset > -1:
-            changes = refactor.rename.Rename(proj,m,offset+1).get_changes(tag2)
+            changes = refactor.rename.Rename(proj,m,offset).get_changes(tag2)
             g.trace(changes.get_description())
         else:
             g.trace('not found',tag)
