@@ -47,7 +47,7 @@ class RopeController:
             changes = rope.refactor.rename.Rename(proj,m,offset).get_changes(tag2)
             g.trace(changes.get_description())
         else:
-            g.trace('not found',tag)
+            g.trace('not found',tag1)
         # prog.do(changes)
     #@+node:ekr.20140525065558.15812: *3* pep8_class_name
     def pep8_class_name(self,s):
