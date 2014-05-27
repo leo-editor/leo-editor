@@ -32,7 +32,6 @@ if trace:
 def check_class_names(defs_d,refs_d):
     aList = [
     'abbrevCommandsClass',
-    'abbrevCommandsClass',
     'anchor_htmlParserClass',
     'atFile',
     'atShadowTestCase',
@@ -56,11 +55,9 @@ def check_class_names(defs_d,refs_d):
     'debugCommandsClass',
     'def_node',
     'editBodyTestCase',
-    'editBodyTestCase',
     'editCommandsClass',
     'editFileCommandsClass',
     'elispScanner',
-    'emergencyDialog',
     'emergencyDialog',
     'fileCommands',
     'fileLikeObject',
@@ -69,7 +66,6 @@ def check_class_names(defs_d,refs_d):
     'helpCommandsClass',
     'htmlParserClass',
     'htmlScanner',
-    'importExportTestCase',
     'importExportTestCase',
     'iniScanner',
     'invalidPaste',
@@ -191,7 +187,7 @@ def report():
             n += 1
             # g.trace('multiple defs',s)
     return n
-#@+node:ekr.20140527125017.17958: *3* pep8_class_name
+#@+node:ekr.20140527125017.17958: *3* pep8_class_name (remove underscores)
 def pep8_class_name(s):
     '''Return the proper class name for s.'''
     assert s
