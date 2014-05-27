@@ -3,13 +3,11 @@
 .. @@language rest # override the default .txt coloring.
 
 .. @+all
-.. @+node:ekr.20131114124839.16664: ** First
-@language rest
-.. @+node:ekr.20140521095206.16729: *3* << pylint recent files >>
+.. @+node:ekr.20140521095206.16729: ** << pylint recent files >>
 @language python
 
 @others
-.. @+node:ekr.20120225032124.17089: *4* getRecentCoreList (pylint-leo.py)
+.. @+node:ekr.20120225032124.17089: *3* getRecentCoreList (pylint-leo.py)
 def getRecentCoreList():
     '''Return the list of core files processed by the -r option.'''
     return (
@@ -25,7 +23,7 @@ def getRecentCoreList():
         # 'leoFileCommands',
         # 'leoFind',
         # 'leoFrame',
-        'leoGlobals',
+        # 'leoGlobals',
         # 'leoGui',
         # 'leoImport',
         # 'leoIPython',
@@ -33,16 +31,18 @@ def getRecentCoreList():
         # 'leoMenu',
         # 'leoNodes',
         # 'leoPlugins',
+        'leoRope',
         # 'leoRst',
         # 'leoSessions',
         # 'leoShadow',
+        'leoSTC',
         # 'leoTangle',
         # 'leoTest',
         # 'leoUndo',
         # 'leoViews',
         # 'leoVim',
 )
-.. @+node:ekr.20120528063627.10137: *4* getRecentPluginsList
+.. @+node:ekr.20120528063627.10137: *3* getRecentPluginsList
 def getRecentPluginsList ():
 
     return (
@@ -53,12 +53,14 @@ def getRecentPluginsList ():
         # 'internal_ipkernel',
         # 'mod_scripting',
         # 'nested_splitter',
-        'qtGui',
+        # 'qtGui',
         # 'plugins_menu',
         # 'screencast',
         # 'viewrendered',
         # 'viewrendered2',
     )
+.. @+node:ekr.20131114124839.16664: ** First
+@language rest
 .. @+node:ekr.20140428090638.16879: *3* Fix find bugs
 https://bugs.launchpad.net/leo-editor/+bug/1228457
 Beginning find at the current node's body cursor when that cursor is not displayed 

@@ -45,9 +45,10 @@ flags = (
     'print',
     'report',
     # 'skip',
+    # 'stats',
 )
 files = [
-    # r'c:\leo.repo\leo-editor\leo\core\leoApp.py',
+    r'c:\leo.repo\leo-editor\leo\core\leoApp.py',
     # r'c:\leo.repo\leo-editor\leo\core\leoFileCommands.py',
 ] or u.project_files(project_name)
 if g.app.runningAllUnitTests and (len(files) > 1 or 'skip' in flags):
@@ -71,6 +72,8 @@ if 'print' in flags:
         len(sorted(refs_d.keys())),
         report(),
     ))
+    if 'stats' in flags:
+        dt.print_stats()
 #@-others
 #@@language python
 #@@tabwidth -4
