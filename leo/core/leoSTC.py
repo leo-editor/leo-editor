@@ -137,7 +137,6 @@ import time
 # ===== The problem
 # 
 # The ReportTraverser class creates an html files from an AST tree.  Here is a typical visitor::
-#@@language python
 #     def do_BinOp(self,node):
 #         r = self
 #         op_name = r.op_name(node.op)
@@ -147,7 +146,6 @@ import time
 #         r.visit(node.right)
 #         r.span_end()
 #         
-#@@language rest  
 # This looks very simple, and indeed it is. The main problem
 # is that the helpers, r.span_start, r.visit, r.op and
 # r.span_end, write results immediately to the output stream.
@@ -157,7 +155,6 @@ import time
 # ===== The first iteration of the solution
 # 
 # In the first big revision, all visitors returned strings.  Like this::
-#@@language python
 #     def do_BinOp(self,node):
 #         r = self
 #         op_name = r.op_name(node.op)
@@ -168,7 +165,6 @@ import time
 #                 r.visit(node.right),
 #             r.span_end(),
 #         ])
-#@@language rest
 # There are plusses and minuses to this code. The code can
 # indent list arguments to make the structure of the generated
 # html code clearer. Because everything is a string, the
@@ -194,7 +190,6 @@ import time
 # Here are r.join and r.write and the new version of
 # r.visit_list. In the interests of brevity, I'll show only
 # the final versions::
-#@@language python
 #     def visit_list(self,aList,sep=''):
 #         r = self
 #         if sep:
@@ -220,7 +215,6 @@ import time
 #         elif obj:
 #             assert g.isString(obj),obj.__class__.__name__
 #             f.write(obj)
-#@@language rest
 # There are several crucial things to understand about all these methods:
 # 
 # 1. The dicts make r.write robust. Dicts arise only from
@@ -250,7 +244,6 @@ import time
 # a non-trivial sep. But that means that all the calls to
 # r.join([...],'') can be replaced by just [...]. Eureka!
 # rt.BoolOp becomes::
-#@@language python
 #     def do_BinOp(self,node):
 #         r = self
 #         op_name = r.op_name(node.op)
@@ -261,11 +254,9 @@ import time
 #                 r.visit(node.right),
 #             r.span_end(),
 #         ]
-#@@language rest
 # The new pattern eliminates a huge amount of cruft, and
 # highlights the primary importance of lists. Let's look again
 # at the original code::
-#@@language python
 #     def do_BinOp(self,node):
 #         r = self
 #         op_name = r.op_name(node.op)
@@ -275,7 +266,6 @@ import time
 #         r.visit(node.right)
 #         r.span_end()
 # 
-#@@language rest
 # The two versions look pretty much the same. The final
 # version looks better to me for at least two reasons:
 # a) indentation is more flexible,
@@ -2478,6 +2468,254 @@ class BuildTables:
                 self.attrs_d[key] = d.get(key)
         # Is this useful?
         self.defined_attrs |= st.defined_attrs
+    #@-others
+#@+node:ekr.20140527071205.16687: ** class DataTraverser
+class DataTraverser(AstFullTraverser):
+    '''
+    Traversal to create global data dict d.
+    
+    Like P1, this class injects stc_parent and stc_context links.
+    Unlike P1, this class does not inject stc_symbol_table links.
+    '''
+    def __init__(self,d_defs,d_refs):
+        AstFullTraverser.__init__(self)
+        self.d_defs = d_defs
+        self.d_refs = d_refs
+        self.in_aug_assign = False
+            # A hack: True if visiting the target of an AugAssign node.
+        self.u = Utils()
+    def __call__(self,fn,node):
+        self.run(fn,node)
+    #@+others
+    #@+node:ekr.20140527071205.16688: *3* class Dummy_Node
+    class Dummy_Node:
+        '''A class containing only injected links.'''
+        def __init__(self):
+            self.stc_parent = None
+            self.stc_context = None
+
+    #@+node:ekr.20140527071205.16689: *3*  dt.run (entry point)
+    def run (self,fn,root):
+        '''Run the prepass: init, then visit the root.'''
+        # Init all ivars.
+        self.context = None
+        self.fn = fn
+        self.n_attributes = 0
+        self.n_contexts = 0
+        self.n_defined = 0
+        self.n_nodes = 0
+        self.parent = self.Dummy_Node()
+        self.visit(root)
+        # Undo references to Dummy_Node objects.
+        root.stc_parent = None
+        root.stc_context = None
+    #@+node:ekr.20140527071205.16690: *3*  dt.visit
+    def visit(self,node):
+        '''Inject node references in all nodes.'''
+        assert isinstance(node,ast.AST),node.__class__.__name__
+        self.n_nodes += 1
+        node.stc_context = self.context
+        node.stc_parent = self.parent
+        # Visit the children with the new parent.
+        self.parent = node
+        method = getattr(self,'do_' + node.__class__.__name__)
+        method(node)
+        # Restore the context & parent.
+        self.context = node.stc_context
+        self.parent = node.stc_parent
+    #@+node:ekr.20140527071205.16692: *3* dt.define_name
+    def define_name(self,cx,name):
+        '''Called when name is defined in the given context.'''
+        # Note: cx (an AST node) is hashable.
+        aSet = self.d_defs.get(name,set())
+        aSet.add(cx)
+        self.d_defs[name] = aSet
+    #@+node:ekr.20140527071205.16703: *3* dt.reference_name
+    def reference_name(self,cx,name):
+        '''Called whenever a name is referenced in the given context.'''
+        # Note: cx (an AST node) is hashable.
+        aSet = self.d_refs.get(name,set())
+        aSet.add(cx)
+        self.d_refs[name] = aSet
+    #@+node:ekr.20140527071205.16693: *3* dt.visitors
+    #@+node:ekr.20140527071205.16694: *4* dt.Attribute
+    # Attribute(expr value, identifier attr, expr_context ctx)
+
+    def do_Attribute(self,node):
+        
+        self.n_attributes += 1
+        self.visit(node.value)
+        cx = node.stc_context
+        name = node.attr
+        self.reference_name(cx,name)
+        if 0: # Old code
+            cx = node.stc_context
+            st = cx.stc_symbol_table
+            d = st.attrs_d
+            key = node.attr
+            val = node.value
+            # The following lines are expensive!
+            # For Leo dt: 2.0 sec -> 2.5 sec.
+            if d.has_key(key):
+                d.get(key).add(val)
+            else:
+                aSet = set()
+                aSet.add(val)
+                d[key] = aSet
+            # self.visit(node.ctx)
+            if isinstance(node.ctx,(ast.Param,ast.Store)):
+                st.defined_attrs.add(key)
+    #@+node:ekr.20140527071205.16695: *4* dt.AugAssign (sets in_aug_assign)
+    # AugAssign(expr target, operator op, expr value)
+
+    def do_AugAssign(self,node):
+        
+        # g.trace('FT',self.u.format(node),g.callers())
+        assert not self.in_aug_assign
+        try:
+            self.in_aug_assign = True
+            self.visit(node.target)
+        finally:
+            self.in_aug_assign = False
+        self.visit(node.value)
+    #@+node:ekr.20140527071205.16696: *4* dt.ClassDef
+    # ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
+
+    def do_ClassDef (self,node):
+
+        self.n_contexts += 1
+        parent_cx = self.context
+        assert parent_cx == node.stc_context
+        if 0: ### Old code
+            # Inject the symbol table for this node.
+            node.stc_symbol_table = SymbolTable(parent_cx)
+        # Define the function name itself in the enclosing context.
+        self.define_name(parent_cx,node.name)
+        # Visit the children in a new context.
+        self.context = node
+        for z in node.bases:
+            self.visit(z)
+        for z in node.body:
+            self.visit(z)
+        for z in node.decorator_list:
+            self.visit(z)
+        self.context = parent_cx
+    #@+node:ekr.20140527071205.16697: *4* dt.FunctionDef
+    # FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
+
+    def do_FunctionDef (self,node):
+        
+        self.n_contexts += 1
+        parent_cx = self.context
+        assert parent_cx == node.stc_context
+        if 0: ### old code
+            # Inject the symbol table for this node.
+            node.stc_symbol_table = SymbolTable(parent_cx)
+        # Define the function name itself in the enclosing context.
+        self.define_name(parent_cx,node.name)
+        # Visit the children in a new context.
+        self.context = node
+        self.visit(node.args)
+        for z in node.body:
+            self.visit(z)
+        for z in node.decorator_list:
+            self.visit(z)
+        self.context = parent_cx
+    #@+node:ekr.20140527071205.16698: *4* dt.Global
+    # Global(identifier* names)
+
+    def do_Global(self,node):
+        
+        cx = self.u.compute_module_cx(node)
+        ### assert hasattr(cx,'stc_symbol_table'),cx
+        node.stc_scope = cx
+        for name in node.names:
+            self.define_name(cx,name)
+    #@+node:ekr.20140527071205.16699: *4* dt.Import & ImportFrom
+    # Import(alias* names)
+    def do_Import(self,node):
+        self.alias_helper(node)
+                
+    # ImportFrom(identifier? module, alias* names, int? level)
+    def do_ImportFrom(self,node):
+        self.alias_helper(node)
+
+    # alias (identifier name, identifier? asname)
+    def alias_helper(self,node):
+        cx = node.stc_context
+        assert cx
+        for alias in node.names:
+            name = alias.asname if alias.asname else alias.name.split('.')[0]
+            # if alias.asname: g.trace('%s as %s' % (alias.name,alias.asname))
+            ### Here, we treat imports as *references*.
+            self.reference_name(cx,name)
+    #@+node:ekr.20140527071205.16700: *4* dt.Lambda
+    # Lambda(arguments args, expr body)
+
+    def do_Lambda(self,node):
+        
+        self.n_contexts += 1
+        parent_cx = self.context
+        assert parent_cx == node.stc_context
+        if 0: ### Old code
+            # Inject the symbol table for this node.
+            node.stc_symbol_table = SymbolTable(parent_cx)
+        # There is no lambda name.
+        # Handle the lambda args.
+        for arg in node.args.args:
+            if isinstance(arg,ast.Name):
+                # Python 2.x.
+                assert isinstance(arg.ctx,ast.Param),arg.ctx
+                # Define the arg in the lambda context.
+                self.define_name(node,arg.id)
+            elif isinstance(arg,ast.Tuple):
+                pass
+            else:
+                # Python 3.x.
+                g.trace('===============',self.u.format(node))
+                ### assert isinstance(arg,ast.arg),arg
+                ### assert isinstance(arg,ast.arg),arg
+                ### self.define_name(node,arg.arg)
+            arg.stc_scope = node
+        # Visit the children in the new context.
+        self.context = node
+        # self.visit(node.args)
+        self.visit(node.body)
+        self.context = parent_cx
+    #@+node:ekr.20140527071205.16701: *4* dt.Module
+    def do_Module (self,node):
+
+        self.n_contexts += 1
+        assert self.context is None
+        assert node.stc_context is None
+        if 0: ### old code
+            # Inject the symbol table for this node.
+            node.stc_symbol_table = SymbolTable(node)
+        # Visit the children in the new context.
+        self.context = node
+        for z in node.body:
+            self.visit(z)
+        self.context = None
+    #@+node:ekr.20140527071205.16702: *4* dt.Name
+    # Name(identifier id, expr_context ctx)
+
+    def do_Name(self,node):
+
+        # self.visit(node.ctx)
+        cx = node.stc_context
+        if isinstance(node.ctx,(ast.Param,ast.Store)):
+            # The scope is unambigously cx, **even for AugAssign**.
+            # If there is no binding, we will get an UnboundLocalError at run time.
+            # However, AugAssigns do not actually assign to the var.
+            ### assert hasattr(cx,'stc_symbol_table'),cx
+            if not self.in_aug_assign:
+                self.define_name(cx,node.id)
+            node.stc_scope = cx
+        else:
+            # ast.Store does *not* necessarily define the scope.
+            # For example, a += 1 generates a Store, but does not defined the symbol.
+            # Instead, only ast.Assign nodes really define a symbol.
+            node.stc_scope = None
     #@-others
 #@+node:ekr.20140526082700.17346: ** class P1
 class P1(AstFullTraverser):
@@ -5119,9 +5357,7 @@ class Utils:
         return dir_ or ''
     #@+node:ekr.20140526082700.17496: *3* u.get_source
     def get_source (self,fn):
-        
         '''Return the entire contents of the file whose name is given.'''
-        
         try:
             fn = g.toUnicode(fn)
             # g.trace(g.os_path_exists(fn),fn)
@@ -5223,6 +5459,8 @@ class Utils:
     def parse_file(self,fn):
         
         s = self.get_source(fn)
+        if not s:
+            g.trace('*** not found',fn)
         return ast.parse(s,filename=fn,mode='exec')
 
     def parse_string(self,fn,s):
