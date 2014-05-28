@@ -307,7 +307,7 @@ class Commands (object):
         import leo.core.leoViews as leoViews
         import leo.core.leoVim as leoVim
         self.keyHandler = self.k = leoKeys.keyHandlerClass(c)
-        self.chapterController  = leoChapters.chapterController(c)
+        self.chapterController  = leoChapters.ChapterController(c)
         self.shadowController   = leoShadow.shadowController(c)
         self.fileCommands       = leoFileCommands.fileCommands(c)
         self.findCommands       = leoFind.leoFind(c)
