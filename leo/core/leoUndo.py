@@ -376,7 +376,7 @@ class undoer:
     #@+node:EKR.20040530121329: *4* u.restoreTree & helpers
     def restoreTree (self,treeInfo):
 
-        """Use the tree info to restore all Vnode data,
+        """Use the tree info to restore all VNode data,
         including all links."""
 
         u = self
@@ -428,7 +428,7 @@ class undoer:
         # 
         # Instead of creating new nodes, the new code creates all information
         # needed to properly restore the vnodes and tnodes. It creates a list of
-        # tuples, on tuple for each Vnode in the tree. Each tuple has the form,
+        # tuples, on tuple for each VNode in the tree. Each tuple has the form,
         # 
         # (vnodeInfo, tnodeInfo)
         # 
@@ -458,7 +458,7 @@ class undoer:
     #@+node:ekr.20050415170737.1: *5* createVnodeUndoInfo
     def createVnodeUndoInfo (self,v):
 
-        """Create a bunch containing all info needed to recreate a Vnode for undo."""
+        """Create a bunch containing all info needed to recreate a VNode for undo."""
 
         bunch = g.Bunch(
             v = v,
@@ -474,7 +474,7 @@ class undoer:
     #@+node:ekr.20050415170812.1: *5* createTnodeUndoInfo
     def createTnodeUndoInfo (self,v):
 
-        """Create a bunch containing all info needed to recreate a Vnode."""
+        """Create a bunch containing all info needed to recreate a VNode."""
 
         bunch = g.Bunch(
             v = v,

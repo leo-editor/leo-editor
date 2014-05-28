@@ -1243,7 +1243,7 @@ class leoFind:
         '''Create a node, but do *not* link it into the outline yet.'''
         c = self.c
         # Don't link the node into the outline so that positions remain valid.
-        v = leoNodes.Vnode(context=c)
+        v = leoNodes.VNode(context=c)
         p = leoNodes.Position(v)
         p.h = 'Found:%s %s' % (
             ' (flattened)' if  flattened else '',

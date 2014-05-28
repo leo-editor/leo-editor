@@ -196,7 +196,7 @@ class part_node:
         self.name = name # Section or file name.
         self.code = code # The code text.
         self.doc = doc # The doc text.
-        self.is_dirty = is_dirty # True: Vnode for body text is dirty.
+        self.is_dirty = is_dirty # True: VNode for body text is dirty.
         self.is_root = is_root # True: name is a root name.
         self.delims = delims
         self.refs = []
@@ -733,7 +733,7 @@ class baseTangleCommands:
                 g.es("untangle complete")
     #@+node:ekr.20031218072017.3481: *4* untangleRoot (calls cleanup)
     #@+at
-    # This method untangles the derived files in a Vnode known to contain at
+    # This method untangles the derived files in a VNode known to contain at
     # least one @root directive. The work is done in three passes. The first
     # pass creates a TST from the Leo tree so that the next pass will know
     # what comment conventions to use; that pass is performed in
@@ -3313,7 +3313,7 @@ class baseTangleCommands:
     #@+node:ekr.20080923124254.16: *4* tangle.scanAllDirectives
     def scanAllDirectives(self,p):
 
-        """Scan Vnode p and p's ancestors looking for directives,
+        """Scan VNode p and p's ancestors looking for directives,
         setting corresponding tangle ivars and globals.
         """
 

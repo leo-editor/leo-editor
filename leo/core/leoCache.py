@@ -186,9 +186,9 @@ class cacher:
     #@+node:ekr.20100208071151.5911: *5* casher.fastAddLastChild
     # Similar to createThinChild4
     def fastAddLastChild(self,parent_v,gnxString):
-        '''Create new Vnode as last child of the receiver.
+        '''Create new VNode as last child of the receiver.
 
-        If the gnx exists already, create a clone instead of new Vnode.
+        If the gnx exists already, create a clone instead of new VNode.
         '''
 
         trace = False and not g.unitTesting
@@ -204,7 +204,7 @@ class cacher:
         if is_clone:
             pass
         else:
-            v = leoNodes.Vnode(context=c)
+            v = leoNodes.VNode(context=c)
             if gnxString:
                 gnx = indices.scanGnx(gnxString,0)
                 v.fileIndex = gnx

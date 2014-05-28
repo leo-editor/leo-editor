@@ -620,7 +620,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         This is *not* an event handler: it is called from other event handlers."""
 
-        # Note: "headrclick" hooks handled by Vnode callback routine.
+        # Note: "headrclick" hooks handled by VNode callback routine.
 
         if event != None:
             c = self.c

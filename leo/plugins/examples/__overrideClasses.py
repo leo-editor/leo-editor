@@ -21,7 +21,7 @@ def init():
         if 0:
             #@+<< override the LeoFrame class >>
             #@+node:edream.110203113231.917: *3* << override the LeoFrame class >>
-            class myLeoFrame(leoFrame.leoFrame):
+            class myLeoFrame(leoFrame.LeoFrame):
 
                 if 0:
                     def __init__(self,title=None):

@@ -195,7 +195,7 @@ class atFile:
         at.pending = []
         at.raw = False # True: in @raw mode
         at.root = None # The root (a position) of tree being read or written.
-        at.root_seen = False # True: root Vnode has been handled in this file.
+        at.root_seen = False # True: root VNode has been handled in this file.
         at.startSentinelComment = ""
         at.startSentinelComment = ""
         at.tab_width  = None
@@ -436,8 +436,8 @@ class atFile:
         s,e = g.readFileIntoString(fn)
         if s is None: return
 
-        # Create a dummy, unconnected, Vnode as the root.
-        root_v = leoNodes.Vnode(context=c)
+        # Create a dummy, unconnected, VNode as the root.
+        root_v = leoNodes.VNode(context=c)
         root = leoNodes.Position(root_v)
         # 2010/01/22: readOpenFiles now determines whether a file is thin or not.
         at.initReadIvars(root,fn)
@@ -682,7 +682,7 @@ class atFile:
             if 1: # new code: based on vnodes.
                 import leo.core.leoNodes as leoNodes
                 for parent_v in v.parents:
-                    assert isinstance(parent_v,leoNodes.Vnode),parent_v
+                    assert isinstance(parent_v,leoNodes.VNode),parent_v
                     if v in parent_v.children:
                         childIndex = parent_v.children.index(v)
                         if trace: g.trace('*moving*',parent_v,childIndex,v)
@@ -1102,7 +1102,7 @@ class atFile:
     #@+node:ekr.20041005105605.73: *4* at.findChild4
     def findChild4 (self,headline):
 
-        """Return the next Vnode in at.root.tnodeList.
+        """Return the next VNode in at.root.tnodeList.
         This is called only for **legacy** @file nodes"""
 
         # tnodeLists are used *only* when reading @file (not @thin) nodes.
@@ -1401,7 +1401,7 @@ class atFile:
             assert at.v == at.root.v or at.v.isVisited(),at.v.h
 
         at.v.setVisited()
-            # Indicate that the Vnode has been set in the external file.
+            # Indicate that the VNode has been set in the external file.
 
         if not at.readVersion5:
             at.endSentinelStack.append(at.endNode)
@@ -1471,7 +1471,7 @@ class atFile:
     #@+node:ekr.20130121075058.10245: *8* at.old_createThinChild4
     def old_createThinChild4 (self,gnxString,headline):
 
-        """Find or create a new *Vnode* whose parent (also a Vnode)
+        """Find or create a new *VNode* whose parent (also a VNode)
         is at.lastThinNode. This is called only for @thin trees."""
 
         trace = False and not g.unitTesting
@@ -1481,7 +1481,7 @@ class atFile:
         gnx = indices.scanGnx(gnxString,0)
         gnxDict = c.fileCommands.gnxDict
 
-        last = at.lastThinNode # A Vnode.
+        last = at.lastThinNode # A VNode.
         lastIndex = last.fileIndex
         if trace and verbose: g.trace("last %s, gnx %s %s" % (
             last and last.h,gnxString,headline))
@@ -1514,14 +1514,14 @@ class atFile:
 
         while copies > 0:
             copies -= 1
-            # Create the Vnode only if it does not already exist.
+            # Create the VNode only if it does not already exist.
             v = gnxDict.get(gnxString)
             if v:
                 if gnx != v.fileIndex:
                     g.internalError('v.fileIndex: %s gnx: %s' % (
                         v.fileIndex,gnx))
             else:
-                v = leoNodes.Vnode(context=c)
+                v = leoNodes.VNode(context=c)
                 v._headString = headline # Allowed use of v._headString.
                 v.fileIndex = gnx
                 gnxDict[gnxString] = v
@@ -1535,7 +1535,7 @@ class atFile:
     #@+node:ekr.20130121075058.10246: *8* at.new_createThinChild4
     def new_createThinChild4 (self,gnxString,headline,n,parent):
 
-        """Find or create a new *Vnode* whose parent (also a Vnode)
+        """Find or create a new *VNode* whose parent (also a VNode)
         is at.lastThinNode. This is called only for @thin trees."""
 
         trace = False and not g.unitTesting
@@ -1562,7 +1562,7 @@ class atFile:
                 g.internalError('v.fileIndex: %s gnx: %s' % (v.fileIndex,gnx_s))
                 return None
         else:
-            v = leoNodes.Vnode(context=c)
+            v = leoNodes.VNode(context=c)
             v._headString = headline # Allowed use of v._headString.
             v.fileIndex = gnx
             gnxDict[gnxString] = v
@@ -3709,7 +3709,7 @@ class atFile:
             # Make sure v is never expanded again.
             # Suppress orphans check.
         if not at.thinFile:
-            p.v.setWriteBit() # Mark the Vnode to be written.
+            p.v.setWriteBit() # Mark the VNode to be written.
         if not at.thinFile and not s: return
         inCode = True
         #@+<< Make sure all lines end in a newline >>
@@ -5601,7 +5601,7 @@ class atFile:
     #@+node:ekr.20041005105605.242: *3* at.scanForClonedSibs (reading & writing)
     def scanForClonedSibs (self,parent_v,v):
 
-        """Scan the siblings of Vnode v looking for clones of v.
+        """Scan the siblings of VNode v looking for clones of v.
         Return the number of cloned sibs and n where p is the n'th cloned sibling."""
 
         clonedSibs = 0 # The number of cloned siblings of p, including p.

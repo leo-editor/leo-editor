@@ -155,7 +155,7 @@ class nodeIndices (object):
 #@@killcolor
 #@+at
 # 
-# A position marks the spot in a tree traversal. A position p consists of a Vnode
+# A position marks the spot in a tree traversal. A position p consists of a VNode
 # p.v, a child index p._childIndex, and a stack of tuples (v,childIndex), one for
 # each ancestor **at the spot in tree traversal. Positions p has a unique set of
 # parents.
@@ -175,7 +175,7 @@ class Position (object):
     def __init__ (self,v,childIndex=0,stack=None,trace=False):
         '''Create a new position with the given childIndex and parent stack.'''
         # To support ZODB the code must set v._p_changed = 1
-        # whenever any mutable Vnode object changes.
+        # whenever any mutable VNode object changes.
         self._childIndex = childIndex
         self.v = v
         # New in Leo 4.5: stack entries are tuples (v,childIndex).
@@ -407,7 +407,7 @@ class Position (object):
         __get_nosentinels, # __set_nosentinels
         doc = "position property returning the body text without sentinels")
     #@+node:ekr.20040306212636: *3* p.Getters
-    #@+node:ekr.20040306210951: *4* p.Vnode proxies
+    #@+node:ekr.20040306210951: *4* p.VNode proxies
     #@+node:ekr.20040306211032: *5* p.Comparisons
     def anyAtFileNodeName         (self): return self.v.anyAtFileNodeName()
     def atAutoNodeName            (self): return self.v.atAutoNodeName()
@@ -488,7 +488,7 @@ class Position (object):
 
         p = self
         return len(p.v.children)
-    #@+node:ekr.20031218072017.915: *4* p.getX & Vnode compatibility traversal routines
+    #@+node:ekr.20031218072017.915: *4* p.getX & VNode compatibility traversal routines
     # These methods are useful abbreviations.
     # Warning: they make copies of positions, so they should be used _sparingly_
 
@@ -750,7 +750,7 @@ class Position (object):
 
         return p.txtOffset         
     #@+node:ekr.20040305222924: *3* p.Setters
-    #@+node:ekr.20040306220634: *4* p.Vnode proxies
+    #@+node:ekr.20040306220634: *4* p.VNode proxies
     #@+node:ekr.20131222112420.16371: *5* p.contract/expand/isExpanded
     def contract (self):
         '''Contract p.v and clear p.v.expandedPositions list.'''
@@ -921,7 +921,7 @@ class Position (object):
         return dirtyVnodeList
     #@+node:ekr.20040315023430: *3* p.File Conversion
     #@+at
-    # - convertTreeToString and moreHead can't be Vnode methods because they uses level().
+    # - convertTreeToString and moreHead can't be VNode methods because they uses level().
     # - moreBody could be anywhere: it may as well be a postion method.
     #@+node:ekr.20040315023430.1: *4* p.convertTreeToString
     def convertTreeToString (self):
@@ -1132,7 +1132,7 @@ class Position (object):
         Returns the newly created position."""
 
         p = self
-        p2 = p.copy() # Do *not* copy the Vnode!
+        p2 = p.copy() # Do *not* copy the VNode!
         p2._linkAfter(p) # This should "just work"
         return p2
     #@+node:ekr.20040303175026.9: *4* p.copyTreeAfter, copyTreeTo
@@ -1211,7 +1211,7 @@ class Position (object):
         p = self ; context = p.v.context
         p2 = self.copy()
 
-        p2.v = Vnode(context=context)
+        p2.v = VNode(context=context)
         p2.v.iconVal = 0
         p2._linkAfter(p)
 
@@ -1219,7 +1219,7 @@ class Position (object):
     #@+node:ekr.20040303175026.4: *4* p.insertAsLastChild
     def insertAsLastChild (self):
 
-        """Inserts a new Vnode as the last child of self.
+        """Inserts a new VNode as the last child of self.
 
         Returns the newly created position."""
 
@@ -1238,7 +1238,7 @@ class Position (object):
         p = self ; context = p.v.context
         p2 = self.copy()
 
-        p2.v = Vnode(context=context)
+        p2.v = VNode(context=context)
         p2.v.iconVal = 0
         p2._linkAsNthChild(p,n)
 
@@ -1730,7 +1730,7 @@ class Position (object):
     #@+node:ekr.20080416161551.212: *4* p._parentVnode
     def _parentVnode (self):
 
-        '''Return the parent Vnode.
+        '''Return the parent VNode.
         Return the hiddenRootNode if there is no other parent.'''
 
         p = self
@@ -1893,7 +1893,7 @@ class poslist(list):
         return res
 
     #@-others
-#@+node:ekr.20031218072017.3341: ** class Vnode
+#@+node:ekr.20031218072017.3341: ** class VNode
 if use_zodb and ZODB:
     class BaseVnode (ZODB.Persistence.Persistent):
         pass
@@ -1901,31 +1901,31 @@ else:
     class BaseVnode (object):
         pass
 
-class Vnode (BaseVnode):
-    #@+<< Vnode constants >>
-    #@+node:ekr.20031218072017.951: *3* << Vnode constants >>
+class VNode (BaseVnode):
+    #@+<< VNode constants >>
+    #@+node:ekr.20031218072017.951: *3* << VNode constants >>
     # Define the meaning of status bits in new vnodes.
 
     # Archived...
-    clonedBit   = 0x01 # True: Vnode has clone mark.
+    clonedBit   = 0x01 # True: VNode has clone mark.
     # unused      0x02
-    expandedBit = 0x04 # True: Vnode is expanded.
-    markedBit   = 0x08 # True: Vnode is marked
-    orphanBit   = 0x10 # True: Vnode saved in .leo file, not derived file.
-    selectedBit = 0x20 # True: Vnode is current Vnode.
-    topBit      = 0x40 # True: Vnode was top Vnode when saved.
+    expandedBit = 0x04 # True: VNode is expanded.
+    markedBit   = 0x08 # True: VNode is marked
+    orphanBit   = 0x10 # True: VNode saved in .leo file, not derived file.
+    selectedBit = 0x20 # True: VNode is current VNode.
+    topBit      = 0x40 # True: VNode was top VNode when saved.
 
     # Not archived...
     richTextBit = 0x080 # Determines whether we use <bt> or <btr> tags.
     visitedBit  = 0x100
     dirtyBit    = 0x200
     writeBit    = 0x400
-    #@-<< Vnode constants >>
+    #@-<< VNode constants >>
     #@+others
     #@+node:ekr.20031218072017.3342: *3* v.Birth & death
     #@+node:ekr.20031218072017.3344: *4* v.__init
     # To support ZODB, the code must set v._p_changed = 1 whenever
-    # v.unknownAttributes or any mutable Vnode object changes.
+    # v.unknownAttributes or any mutable VNode object changes.
 
     def __init__ (self,context):
 
@@ -1937,7 +1937,7 @@ class Vnode (BaseVnode):
         self.parents = [] # Unordered list of all parents of this node.
         # Other essential data...
         self.fileIndex = g.app.nodeIndices.getNewIndex()
-            # The immutable file index for this Vnode.
+            # The immutable file index for this VNode.
             # New in Leo 4.6 b2: allocate gnx (fileIndex) immediately.
         self.iconVal = 0 # The present value of the node's icon.
         self.statusBits = 0 # status bits
@@ -1953,7 +1953,7 @@ class Vnode (BaseVnode):
     #@+node:ekr.20031218072017.3345: *4* v.__repr__ & v.__str__
     def __repr__ (self):
 
-        return "<Vnode %d:'%s'>" % (id(self),self.cleanHeadString())
+        return "<VNode %d:'%s'>" % (id(self),self.cleanHeadString())
 
     __str__ = __repr__
     #@+node:ekr.20040312145256: *4* v.dump
@@ -2068,11 +2068,11 @@ class Vnode (BaseVnode):
         """Return True if v is any kind of @file or related node."""
 
         # This routine should be as fast as possible.
-        # It is called once for every Vnode when writing a file.
+        # It is called once for every VNode when writing a file.
 
         h = self.headString()
         return h and h[0] == '@' and self.anyAtFileNodeName()
-    #@+node:ekr.20040325073709: *4* isAt...FileNode (Vnode)
+    #@+node:ekr.20040325073709: *4* isAt...FileNode (VNode)
     def isAtAutoNode (self):
         return True if self.atAutoNodeName() else False
 
@@ -2188,16 +2188,16 @@ class Vnode (BaseVnode):
     #@+node:ekr.20040323100443: *4* v.directParents
     def directParents (self):
 
-        """(New in 4.2) Return a list of all direct parent vnodes of a Vnode.
+        """(New in 4.2) Return a list of all direct parent vnodes of a VNode.
 
-        This is NOT the same as the list of ancestors of the Vnode."""
+        This is NOT the same as the list of ancestors of the VNode."""
 
         v = self
         return v.parents
     #@+node:ekr.20080429053831.6: *4* v.hasBody
     def hasBody (self):
 
-        '''Return True if this Vnode contains body text.'''
+        '''Return True if this VNode contains body text.'''
 
         s = self._bodyString
 
@@ -2240,15 +2240,15 @@ class Vnode (BaseVnode):
     #@+node:ekr.20031218072017.3371: *5* v.isMarked
     def isMarked (self):
 
-        return ( self.statusBits & Vnode.markedBit ) != 0
+        return ( self.statusBits & VNode.markedBit ) != 0
     #@+node:ekr.20031218072017.3372: *5* v.isOrphan
     def isOrphan (self):
 
-        return ( self.statusBits & Vnode.orphanBit ) != 0
+        return ( self.statusBits & VNode.orphanBit ) != 0
     #@+node:ekr.20031218072017.3373: *5* v.isSelected
     def isSelected (self):
 
-        return ( self.statusBits & Vnode.selectedBit ) != 0
+        return ( self.statusBits & VNode.selectedBit ) != 0
     #@+node:ekr.20031218072017.3374: *5* v.isTopBitSet
     def isTopBitSet (self):
 
@@ -2256,7 +2256,7 @@ class Vnode (BaseVnode):
     #@+node:ekr.20031218072017.3376: *5* v.isVisited
     def isVisited (self):
 
-        return ( self.statusBits & Vnode.visitedBit ) != 0
+        return ( self.statusBits & VNode.visitedBit ) != 0
     #@+node:ekr.20080429053831.10: *5* v.isWriteBit
     def isWriteBit (self):
 
@@ -2295,7 +2295,7 @@ class Vnode (BaseVnode):
                         addedNodes.append(v2)
             newNodes = addedNodes[:]
 
-        # Remove the hidden Vnode.
+        # Remove the hidden VNode.
         if c.hiddenRootNode in nodes:
             if trace: g.trace('removing hidden root',c.hiddenRootNode)
             nodes.remove(c.hiddenRootNode)
@@ -2358,7 +2358,7 @@ class Vnode (BaseVnode):
     def expand(self):
         '''Expand the node.'''
         # trace = False and not g.unitTesting
-        # if trace: g.trace('Vnode',g.callers())
+        # if trace: g.trace('VNode',g.callers())
         self.statusBits |= self.expandedBit
 
     def initExpandedBit (self):
@@ -2366,7 +2366,7 @@ class Vnode (BaseVnode):
         self.statusBits |= self.expandedBit
         
     def isExpanded (self):
-        '''Return True if the Vnode expansion bit is set.'''
+        '''Return True if the VNode expansion bit is set.'''
         return (self.statusBits & self.expandedBit) != 0
     #@+node:ekr.20031218072017.3396: *5* v.initStatus
     def initStatus (self, status):
@@ -2522,7 +2522,7 @@ class Vnode (BaseVnode):
     def insertAsNthChild(self,n):
         v = self
         assert 0 <= n <= len(v.children)
-        v2 = Vnode(v.context)
+        v2 = VNode(v.context)
         v2._linkAsNthChild(v,n)
         assert v.children[n] == v2
         return v2
@@ -2595,7 +2595,7 @@ class Vnode (BaseVnode):
     #@+node:ekr.20031218072017.3425: *4* v._linkAsNthChild (used by 4.x read logic)
     def _linkAsNthChild (self,parent_v,n):
 
-        """Links self as the n'th child of Vnode pv"""
+        """Links self as the n'th child of VNode pv"""
 
         v = self # The child node.
         v._addLink(n,parent_v)
@@ -2613,7 +2613,7 @@ class Vnode (BaseVnode):
 
     b = property(
         __get_b, __set_b,
-        doc = "Vnode body string property")
+        doc = "VNode body string property")
     #@+node:ekr.20090130125002.1: *4* v.h property
     def __get_h(self):
 
@@ -2627,7 +2627,7 @@ class Vnode (BaseVnode):
 
     h = property(
         __get_h, __set_h,
-        doc = "Vnode headline string property")  
+        doc = "VNode headline string property")  
     #@+node:ekr.20090130114732.6: *4* v.u Property
     def __get_u(self):
         v = self
@@ -2647,7 +2647,7 @@ class Vnode (BaseVnode):
 
     u = property(
         __get_u, __set_u,
-        doc = "Vnode unknownAttribute property")
+        doc = "VNode unknownAttribute property")
     #@+node:ekr.20090215165030.1: *4* v.gnx Property
     def __get_gnx(self):
         v = self
@@ -2655,8 +2655,8 @@ class Vnode (BaseVnode):
 
     gnx = property(
         __get_gnx, # __set_gnx,
-        doc = "Vnode gnx property")
+        doc = "VNode gnx property")
     #@-others
-vnode = Vnode # compatibility.
+vnode = VNode # compatibility.
 #@-others
 #@-leo

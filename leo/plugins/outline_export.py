@@ -46,6 +46,6 @@ def onStart (tag,keywords):
 
     import leo.core.leoNodes as leoNodes
 
-    g.funcToMethod(newMoreHead,leoNodes.Vnode,"moreHead")
+    g.funcToMethod(newMoreHead,leoNodes.VNode,"moreHead")
 #@-others
 #@-leo

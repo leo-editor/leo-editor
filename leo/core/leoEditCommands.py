@@ -1718,7 +1718,7 @@ class editCommandsClass (baseEditCommandsClass):
         self.fillColumn = 0 # For line centering.
             # Set by the set-fill-column command.
             # If zero, @pagewidth value is used.
-        self.moveSpotNode = None # A Vnode.
+        self.moveSpotNode = None # A VNode.
         self.moveSpot = None # For retaining preferred column when moving up or down.
         self.moveCol = None # For retaining preferred column when moving up or down.
         self.sampleWidget = None # Created later.
@@ -4278,9 +4278,9 @@ class editCommandsClass (baseEditCommandsClass):
             'relPath': relPath,
             'where' : 'beforeHeadline',
             'yoffset' : yoffset, 'xoffset' : xoffset, 'xpad' : 1, # -2,
-            'on' : 'Vnode',
+            'on' : 'VNode',
         }
-        newEntry.update(kargs)  # may switch 'on' to 'Vnode'
+        newEntry.update(kargs)  # may switch 'on' to 'VNode'
         aList.append (newEntry)
         xoffset += 2
         return xoffset
@@ -4301,7 +4301,7 @@ class editCommandsClass (baseEditCommandsClass):
         if hasattr(p.v,'unknownAttributes'):
             if trace: g.trace(p.v.u)
             fromVnode = [dict(i) for i in p.v.u.get('icons',[])]
-            for i in fromVnode: i['on'] = 'Vnode'
+            for i in fromVnode: i['on'] = 'VNode'
 
         if trace and fromVnode: g.trace('fromVnode',fromVnode,p.h)
 
@@ -6990,7 +6990,7 @@ class editCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20110527105255.18387: *4* clearNodeUas & clearAllUas
     def clearNodeUas (self,event=None):
 
-        '''Clear the uA's in the selected Vnode.'''
+        '''Clear the uA's in the selected VNode.'''
 
         if self.c.p:
             self.c.p.v.u = {}
@@ -8270,12 +8270,12 @@ class helpCommandsClass (baseEditCommandsClass):
         A commander represents all outline data and most of Leo's source code.
         Here are the most important ivars of the Commands class::
 
-            c.frame         c's outer frame, a leoFrame instance.
+            c.frame         c's outer frame, a LeoFrame instance.
             c.user_dict     a temporary dict for use of scripts and plugins.
             c.redraw()
             c.positionExists(p)
 
-        Here is a partial list of the **official ivars** of any leoFrame f::
+        Here is a partial list of the **official ivars** of any LeoFrame f::
 
             f.c                     is the frame’s commander.
             f.body                  is a leoBody instance.
@@ -8285,12 +8285,12 @@ class helpCommandsClass (baseEditCommandsClass):
             f.tree                  is a leoQtTree instance.
             f.tree.treeWidget       is a LeoQTreeWidget (a QTreeWidget) instance.
             
-        Vnode class
+        VNode class
         ===========
 
         All data in Leo outlines resides in vnodes.
-        All clones of the same node share the same Vnode.
-        Here are the most important ivars and properties of the Vnode class::
+        All clones of the same node share the same VNode.
+        Here are the most important ivars and properties of the VNode class::
 
             v.b: v's body text.
             v.h: v's headline text.
@@ -8304,7 +8304,7 @@ class helpCommandsClass (baseEditCommandsClass):
         ==============
 
         A position represents the state of a traversal of an outline.
-        Because of clones, the same Vnode may appear multiple times during a traversal.
+        Because of clones, the same VNode may appear multiple times during a traversal.
 
         Properties of the position class::
 

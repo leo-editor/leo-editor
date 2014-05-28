@@ -796,7 +796,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         newSel = w.getSelectionRange()
         newText = w.getAllText() # Converts to unicode.
 
-        # Get the previous values from the Vnode.
+        # Get the previous values from the VNode.
         oldText = p.b
         if oldText == newText:
             # This can happen as the result of undo.
@@ -812,7 +812,7 @@ class leoQtBaseTextWidget (leoFrame.baseTextWidget):
         c.undoer.setUndoTypingParams(p,undoType,
             oldText=oldText,newText=newText,
             oldSel=oldSel,newSel=newSel,oldYview=oldYview)
-        # Update the Vnode.
+        # Update the VNode.
         p.v.setBodyString(newText)
         if True:
             p.v.insertSpot = newInsert
@@ -4153,7 +4153,7 @@ class leoQtBody (leoFrame.leoBody):
             c.frame.body.setEditorColors(bg,fg)
     #@-others
 #@+node:ekr.20110605121601.18245: *3* class leoQtFrame
-class leoQtFrame (leoFrame.leoFrame):
+class leoQtFrame (leoFrame.LeoFrame):
 
     """A class that represents a Leo window rendered in qt."""
 
@@ -4162,12 +4162,11 @@ class leoQtFrame (leoFrame.leoFrame):
     #@+node:ekr.20110605121601.18247: *5* __init__ (qtFrame)
     def __init__(self,c,title,gui):
 
-
         # Init the base class.
-        leoFrame.leoFrame.__init__(self,c,gui)
+        leoFrame.LeoFrame.__init__(self,c,gui)
 
         assert self.c == c
-        leoFrame.leoFrame.instances += 1 # Increment the class var.
+        leoFrame.LeoFrame.instances += 1 # Increment the class var.
 
         # Official ivars...
         self.iconBar = None
@@ -9796,7 +9795,7 @@ class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
 
         - bunch.aList: a list of bunch2 objects.
         - bunch.n: a block (line) number.
-        - bunch.v: the Vnode.
+        - bunch.v: the VNode.
             - bunch2.i: the index of the block.
             - bunch2.s: the contents of the block.
             - bunch2.ranges: a list of QTextLayout.FormatRange objects.
@@ -9912,7 +9911,7 @@ if PYTHON_COLORER:
 
             - bunch.aList: a list of bunch2 objects.
             - bunch.n: a block (line) number.
-            - bunch.v: the Vnode.
+            - bunch.v: the VNode.
                 - bunch2.i: the index of the block.
                 - bunch2.s: the contents of the block.
                 - bunch2.ranges: a list of QTextLayout.FormatRange objects.
@@ -10958,7 +10957,7 @@ class jEditColorizer:
                 if self.use_hyperlinks:
                     #@+<< set the hyperlink >>
                     #@+node:ekr.20110605121601.18606: *7* << set the hyperlink >>
-                    # Set the bindings to Vnode callbacks.
+                    # Set the bindings to VNode callbacks.
                     tagName = "hyper" + str(self.hyperCount)
                     self.hyperCount += 1
                     ref.tagName = tagName

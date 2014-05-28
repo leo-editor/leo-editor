@@ -450,7 +450,7 @@ class opmlController:
         assert c.hiddenRootNode.children == children
         return children
     #@+node:ekr.20060914171659.2: *4* createChildren
-    # node is a nodeClass object, parent_v is a Vnode.
+    # node is a nodeClass object, parent_v is a VNode.
 
     def createChildren (self,c,node,parent_v):
 
@@ -474,7 +474,7 @@ class opmlController:
     def createVnode (self,c,node,v=None):
         
         if not v:
-            v = leoNodes.Vnode(context=c)
+            v = leoNodes.VNode(context=c)
             v.b,v.h = node.bodyString,node.headString
             
         if node.gnx:
@@ -617,7 +617,7 @@ class opmlController:
     def createTnodesDict (self):
 
         ''' c.tnodesDict by from self.generated_gnxs
-        by converting Vnode entries to tnodes.'''
+        by converting VNode entries to tnodes.'''
 
         d = {}
 

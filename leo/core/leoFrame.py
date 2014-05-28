@@ -19,7 +19,7 @@ import leo.core.leoNodes as leoNodes
 #@+node:ekr.20031218072017.2410: ** << About handling events >>
 #@+at Leo must handle events or commands that change the text in the outline
 # or body panes. We must ensure that headline and body text corresponds
-# to the Vnode corresponding to presently selected outline, and vice
+# to the VNode corresponding to presently selected outline, and vice
 # versa. For example, when the user selects a new headline in the
 # outline pane, we must ensure that:
 # 
@@ -30,7 +30,7 @@ import leo.core.leoNodes as leoNodes
 # Early versions of Leo attempted to satisfy these conditions when the user
 # switched outline nodes. Such attempts never worked well; there were too many
 # special cases. Later versions of Leo use a much more direct approach: every
-# keystroke in the body pane updates the presently selected Vnode immediately.
+# keystroke in the body pane updates the presently selected VNode immediately.
 # 
 # The leoTree class contains all the event handlers for the tree pane, and the
 # leoBody class contains the event handlers for the body pane. The following
@@ -1072,15 +1072,15 @@ class leoBody (HighLevelInterface):
         dn = self.def_stack[-1] # Add the code at the top of the stack.
         dn.code += 'abc'
     #@-others
-#@+node:ekr.20031218072017.3678: ** class leoFrame
-class leoFrame:
+#@+node:ekr.20031218072017.3678: ** class LeoFrame
+class LeoFrame:
 
     """The base class for all Leo windows."""
 
     instances = 0
 
     #@+others
-    #@+node:ekr.20031218072017.3679: *3*   leoFrame.__init__
+    #@+node:ekr.20031218072017.3679: *3*   LeoFrame.__init__
     def __init__ (self,c,gui):
 
         self.c = c
@@ -1121,14 +1121,14 @@ class leoFrame:
 
         f = self ; c = f.c
 
-        v = leoNodes.Vnode(context=c)
+        v = leoNodes.VNode(context=c)
         p = leoNodes.Position(v)
         v.initHeadString("NewHeadline")
         # New in Leo 4.5: p.moveToRoot would be wrong: the node hasn't been linked yet.
         p._linkAsRoot(oldRoot=None)
         # c.setRootPosition() # New in 4.4.2.
     #@+node:ekr.20061109125528.1: *3* Must be defined in base class
-    #@+node:ekr.20031218072017.3689: *4* initialRatios (leoFrame)
+    #@+node:ekr.20031218072017.3689: *4* initialRatios (LeoFrame)
     def initialRatios (self):
 
         c = self.c
@@ -1160,8 +1160,8 @@ class leoFrame:
     #@+node:ekr.20031218072017.3691: *4* oops
     def oops(self):
 
-        g.pr("leoFrame oops:", g.callers(4), "should be overridden in subclass")
-    #@+node:ekr.20031218072017.3692: *4* promptForSave (leoFrame)
+        g.pr("LeoFrame oops:", g.callers(4), "should be overridden in subclass")
+    #@+node:ekr.20031218072017.3692: *4* promptForSave (LeoFrame)
     def promptForSave (self):
 
         """Prompt the user to save changes.
@@ -1288,8 +1288,8 @@ class leoFrame:
 
     def updateStatusLine(self):
         if self.statusLine: self.statusLine.update()
-    #@+node:ekr.20070130115927.4: *4* Cut/Copy/Paste (leoFrame)
-    #@+node:ekr.20070130115927.5: *5* copyText (leoFrame)
+    #@+node:ekr.20070130115927.4: *4* Cut/Copy/Paste (LeoFrame)
+    #@+node:ekr.20070130115927.5: *5* copyText (LeoFrame)
     def copyText (self,event=None):
 
         '''Copy the selected text from the widget to the clipboard.'''
@@ -1308,7 +1308,7 @@ class leoFrame:
             g.app.gui.replaceClipboardWith(s)
 
     OnCopyFromMenu = copyText
-    #@+node:ekr.20070130115927.6: *5* leoFrame.cutText
+    #@+node:ekr.20070130115927.6: *5* LeoFrame.cutText
     def cutText (self,event=None):
 
         '''Invoked from the mini-buffer and from shortcuts.'''
@@ -1340,7 +1340,7 @@ class leoFrame:
         else: pass
 
     OnCutFromMenu = cutText
-    #@+node:ekr.20070130115927.7: *5* leoFrame.pasteText
+    #@+node:ekr.20070130115927.7: *5* LeoFrame.pasteText
     def pasteText (self,event=None,middleButton=False):
 
         '''Paste the clipboard into a widget.
@@ -1397,8 +1397,8 @@ class leoFrame:
     def OnPaste (self,event=None):
 
         return self.pasteText(event=event,middleButton=True)
-    #@+node:ekr.20031218072017.3980: *4* Edit Menu... (leoFrame)
-    #@+node:ekr.20031218072017.3981: *5* abortEditLabelCommand (leoFrame)
+    #@+node:ekr.20031218072017.3980: *4* Edit Menu... (LeoFrame)
+    #@+node:ekr.20031218072017.3981: *5* abortEditLabelCommand (LeoFrame)
     def abortEditLabelCommand (self,event=None):
 
         '''End editing of a headline and revert to its previous value.'''
@@ -1459,7 +1459,7 @@ class leoFrame:
     def resizePanesToRatio (self,ratio,secondary_ratio):    self.oops()
     def setInitialWindowGeometry (self):                    self.oops()
     def setTopGeometry (self,w,h,x,y,adjustSize=True):      self.oops()
-    #@+node:ekr.20031218072017.3681: *4* Gui-dependent commands (leoFrame)
+    #@+node:ekr.20031218072017.3681: *4* Gui-dependent commands (LeoFrame)
     # In the Edit menu...
 
     def OnCopy  (self,event=None): self.oops()
@@ -1507,20 +1507,20 @@ class leoFrame:
     def lift (self):            self.oops()
 
     #@+node:ekr.20061109125528: *3* May be defined in subclasses
-    #@+node:ekr.20071027150501: *4* event handlers (leoFrame)
+    #@+node:ekr.20071027150501: *4* event handlers (LeoFrame)
     def OnBodyClick (self,event=None):
         pass
 
     def OnBodyRClick(self,event=None):
         pass
-    #@+node:ekr.20031218072017.3688: *4* getTitle & setTitle (leoFrame)
+    #@+node:ekr.20031218072017.3688: *4* getTitle & setTitle (LeoFrame)
     def getTitle (self):
         return self.title
 
     def setTitle (self,title):
-        # g.trace('**(leoFrame)',title)
+        # g.trace('**(LeoFrame)',title)
         self.title = title
-    #@+node:ekr.20081005065934.3: *4* initAfterLoad  & initCompleteHint (leoFrame)
+    #@+node:ekr.20081005065934.3: *4* initAfterLoad  & initCompleteHint (LeoFrame)
     def initAfterLoad (self):
 
         '''Provide offical hooks for late inits of components of Leo frames.'''
@@ -1535,12 +1535,12 @@ class leoFrame:
 
     def initCompleteHint (self):
         pass
-    #@+node:ekr.20031218072017.3687: *4* setTabWidth (leoFrame)
+    #@+node:ekr.20031218072017.3687: *4* setTabWidth (LeoFrame)
     def setTabWidth (self,w):
 
         # Subclasses may override this to affect drawing.
         self.tab_width = w
-    #@+node:ekr.20060206093313: *3* Focus (leoFrame)
+    #@+node:ekr.20060206093313: *3* Focus (LeoFrame)
     # For compatibility with old scripts.
     # Using the commander methods directly is recommended.
 
@@ -1913,7 +1913,7 @@ class leoTree:
 
         #@+<< define callbacks to be injected in the position class >>
         #@+node:ekr.20040803072955.22: *5* << define callbacks to be injected in the position class >>
-        # N.B. These Vnode methods are entitled to know about details of the leoTkinterTree class.
+        # N.B. These VNode methods are entitled to know about details of the leoTkinterTree class.
 
         #@+others
         #@+node:ekr.20040803072955.23: *6* OnHyperLinkControlClick
@@ -2300,7 +2300,7 @@ class nullColorizer:
         return None
     #@-others
 #@+node:ekr.20031218072017.2222: ** class nullFrame
-class nullFrame (leoFrame):
+class nullFrame (LeoFrame):
 
     """A null frame class for tests and batch execution."""
 
@@ -2310,7 +2310,7 @@ class nullFrame (leoFrame):
 
         # g.trace('nullFrame')
 
-        leoFrame.__init__(self,c,gui) # Init the base class.
+        LeoFrame.__init__(self,c,gui) # Init the base class.
 
         assert self.c
 

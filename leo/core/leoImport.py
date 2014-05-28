@@ -343,7 +343,7 @@ class leoImportCommands (scanUtility):
             result += nl+"@ " if self.webType=="cweb" else nl+"@"+nl
         return i, result
     #@+node:ekr.20031218072017.3297: *4* ic.convertVnodeToWeb
-    #@+at This code converts a Vnode to noweb text as follows:
+    #@+at This code converts a VNode to noweb text as follows:
     # 
     # Convert @doc to @
     # Convert @root or @code to < < name > >=, assuming the headline contains < < name > >
@@ -689,7 +689,7 @@ class leoImportCommands (scanUtility):
 
         # g.trace('*** parent: %s headline: %s' % (parent.h,headline))
 
-        # Create the Vnode.
+        # Create the VNode.
         p = parent.insertAsLastChild()
 
         body = g.u(body)
