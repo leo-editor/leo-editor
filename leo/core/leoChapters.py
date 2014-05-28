@@ -11,8 +11,8 @@ import leo.core.leoGlobals as g
 # To do later or never: Make body editors persistent. Create @body-editor node?
 
 #@+others
-#@+node:ekr.20070317085437: ** class chapterController
-class chapterController:
+#@+node:ekr.20070317085437: ** class ChapterController
+class ChapterController:
 
     '''A per-commander controller that manages chapters and related nodes.'''
 
@@ -45,7 +45,7 @@ class chapterController:
                 if not cc.tt:
                     cc.tt = c.frame.iconBar.createChaptersIcon()
         # Create the main chapter
-        cc.chaptersDict['main'] = chapter(c,cc,'main')
+        cc.chaptersDict['main'] = Chapter(c,cc,'main')
         tag = '@chapter'
         for p in c.all_unique_positions():
             h = p.h
@@ -56,7 +56,7 @@ class chapterController:
                     if cc.chaptersDict.get(tabName):
                         self.error('duplicate chapter name: %s' % tabName)
                     else:
-                        cc.chaptersDict[tabName] = chapter(c,cc,tabName)
+                        cc.chaptersDict[tabName] = Chapter(c,cc,tabName)
         # Always select the main chapter.
         # It can be alarming to open a small chapter in a large .leo file.
         cc.selectChapterByName('main',collapse=False)
@@ -225,7 +225,7 @@ class chapterController:
             root = cc.getChapterNode(name,p=p)
         else:
             return g.trace('Can not happen: bad undoType: %s' % undoType)
-        cc.chaptersDict[name] = chapter(c,cc,name)
+        cc.chaptersDict[name] = Chapter(c,cc,name)
         cc.selectChapterByName(name)
         cc.afterCreateChapter(bunch,c.p)
         return True
@@ -832,11 +832,11 @@ class chapterController:
 
         # Now recreate the chapter.
         name = u.newChapterName
-        cc.chaptersDict[name] = chapter(c,cc,name)
+        cc.chaptersDict[name] = Chapter(c,cc,name)
         cc.selectChapterByName(name)
     #@-others
-#@+node:ekr.20070317085708: ** class chapter
-class chapter:
+#@+node:ekr.20070317085708: ** class Chapter
+class Chapter:
 
     '''A class representing the non-gui data of a single chapter.'''
 
