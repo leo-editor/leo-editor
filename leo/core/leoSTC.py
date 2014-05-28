@@ -9590,10 +9590,17 @@ class DataTraverser(AstFullTraverser):
         self.context = node.stc_context
         self.parent = node.stc_parent
     #@+node:ekr.20140527071205.16692: *3* dt.define_name
-    def define_name(self,cx,name):
+    def define_name(self,cx,name,node):
         '''Called when name is defined in the given context.'''
         # Note: cx (an AST node) is hashable.
         aSet = self.d_defs.get(name,set())
+        if name == 'chapter':
+            # g.trace(node.__class__.__name__)
+            if isinstance(node,ast.Name):
+                g.trace(self.u.format(node.stc_parent))
+            else:
+                g.trace(self.u.format(node))
+        # Sets don't work all that well here.
         aSet.add(cx)
         self.d_defs[name] = aSet
     #@+node:ekr.20140527121225.17047: *3* dt.print_stats
@@ -9670,11 +9677,8 @@ class DataTraverser(AstFullTraverser):
         self.n_contexts += 1
         parent_cx = self.context
         assert parent_cx == node.stc_context
-        if 0: ### Old code
-            # Inject the symbol table for this node.
-            node.stc_symbol_table = SymbolTable(parent_cx)
         # Define the function name itself in the enclosing context.
-        self.define_name(parent_cx,node.name)
+        self.define_name(parent_cx,node.name,node)
         # Visit the children in a new context.
         self.context = node
         for z in node.bases:
@@ -9692,11 +9696,8 @@ class DataTraverser(AstFullTraverser):
         self.n_contexts += 1
         parent_cx = self.context
         assert parent_cx == node.stc_context
-        if 0: ### old code
-            # Inject the symbol table for this node.
-            node.stc_symbol_table = SymbolTable(parent_cx)
         # Define the function name itself in the enclosing context.
-        self.define_name(parent_cx,node.name)
+        self.define_name(parent_cx,node.name,node)
         # Visit the children in a new context.
         self.context = node
         self.visit(node.args)
@@ -9711,10 +9712,9 @@ class DataTraverser(AstFullTraverser):
     def do_Global(self,node):
         
         cx = self.u.compute_module_cx(node)
-        ### assert hasattr(cx,'stc_symbol_table'),cx
         node.stc_scope = cx
         for name in node.names:
-            self.define_name(cx,name)
+            self.define_name(cx,name,node)
     #@+node:ekr.20140527071205.16699: *4* dt.Import & ImportFrom
     # Import(alias* names)
     def do_Import(self,node):
@@ -9731,7 +9731,7 @@ class DataTraverser(AstFullTraverser):
         for alias in node.names:
             name = alias.asname if alias.asname else alias.name.split('.')[0]
             # if alias.asname: g.trace('%s as %s' % (alias.name,alias.asname))
-            ### Here, we treat imports as *references*.
+            # Here, we treat imports as *references*.
             self.reference_name(cx,name)
     #@+node:ekr.20140527071205.16700: *4* dt.Lambda
     # Lambda(arguments args, expr body)
@@ -9741,25 +9741,21 @@ class DataTraverser(AstFullTraverser):
         self.n_contexts += 1
         parent_cx = self.context
         assert parent_cx == node.stc_context
-        if 0: ### Old code
-            # Inject the symbol table for this node.
-            node.stc_symbol_table = SymbolTable(parent_cx)
-        # There is no lambda name.
         # Handle the lambda args.
         for arg in node.args.args:
             if isinstance(arg,ast.Name):
                 # Python 2.x.
                 assert isinstance(arg.ctx,ast.Param),arg.ctx
                 # Define the arg in the lambda context.
-                self.define_name(node,arg.id)
+                self.define_name(node,arg.id,node)
             elif isinstance(arg,ast.Tuple):
                 pass
             else:
                 # Python 3.x.
                 g.trace('===============',self.u.format(node))
-                ### assert isinstance(arg,ast.arg),arg
-                ### assert isinstance(arg,ast.arg),arg
-                ### self.define_name(node,arg.arg)
+                # assert isinstance(arg,ast.arg),arg
+                # assert isinstance(arg,ast.arg),arg
+                # self.define_name(node,arg.arg,node)
             arg.stc_scope = node
         # Visit the children in the new context.
         self.context = node
@@ -9772,9 +9768,6 @@ class DataTraverser(AstFullTraverser):
         self.n_contexts += 1
         assert self.context is None
         assert node.stc_context is None
-        if 0: ### old code
-            # Inject the symbol table for this node.
-            node.stc_symbol_table = SymbolTable(node)
         # Visit the children in the new context.
         self.context = node
         for z in node.body:
@@ -9791,9 +9784,8 @@ class DataTraverser(AstFullTraverser):
             # The scope is unambigously cx, **even for AugAssign**.
             # If there is no binding, we will get an UnboundLocalError at run time.
             # However, AugAssigns do not actually assign to the var.
-            ### assert hasattr(cx,'stc_symbol_table'),cx
             if not self.in_aug_assign:
-                self.define_name(cx,node.id)
+                self.define_name(cx,node.id,node)
             node.stc_scope = cx
         else:
             # ast.Store does *not* necessarily define the scope.
@@ -12035,9 +12027,18 @@ class Utils:
             if name.lower() == 'leo':
                 for exclude in ['__init__.py','format-code.py']:
                     files = [z for z in files if not z.endswith(exclude)]
-                fn = g.os_path_finalize_join(theDir,'..','plugins','qtGui.py')
-                if fn and g.os_path_exists(fn):
-                    files.append(fn)
+                # Add standard plugins files:
+                plugins = [
+                    'baseNativeTree.py',
+                    'free_layout.py',
+                    'nested_splitter.py',
+                    'qtframecommands.py',
+                    'qtGui.py',
+                ]
+                for plugin in plugins:
+                    fn = g.os_path_finalize_join(theDir,'..','plugins',plugin)
+                    if fn and g.os_path_exists(fn):
+                        files.append(fn)
             if g.app.runningAllUnitTests and len(files) > 1 and not force_all:
                 return [files[0]]
         if not files:

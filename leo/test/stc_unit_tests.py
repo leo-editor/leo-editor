@@ -61,7 +61,6 @@ def check_class_names(defs_d,refs_d):
     'emergencyDialog',
     'fileCommands',
     'fileLikeObject',
-    'forgivingParserClass',
     'goToLineNumber',
     'helpCommandsClass',
     'htmlParserClass',
@@ -133,7 +132,6 @@ def check_class_names(defs_d,refs_d):
     'qtSearchWidget',
     'qtStatusLineClass',
     'qtTabBarWrapper',
-    'queryReplaceCommandsClass',
     'readLinesClass',
     'rectangleCommandsClass',
     'recursiveImportController',
@@ -174,8 +172,15 @@ def check_class_names(defs_d,refs_d):
         aSet = defs_d.get(s2,set())
         if len(sorted(aSet)) > 1:
             g.trace('conflict',s,s2)
-    g.trace('undefined...\n  %s' % '\n  '.join(sorted(undefined)))
-    g.trace('ambiguous...\n  %s' % '\n  '.join(sorted(ambiguous)))
+    if undefined:
+        print('undefined...\n  %s' % '\n  '.join(sorted(undefined)))
+    if ambiguous:
+        print('ambiguous...\n')
+        for s in sorted(ambiguous):
+            aSet = defs_d.get(s,set())
+            # print('%20s %s' % (s,sorted(aSet)))
+            print('%3s %s' % (len(sorted(aSet)),s))
+    # g.trace('ambiguous...\n  %s' % '\n  '.join(sorted(ambiguous)))
 #@+node:ekr.20140527083058.16708: *3* report
 def report():
     '''Report ambiguous symbols.'''
@@ -187,13 +192,25 @@ def report():
             n += 1
             # g.trace('multiple defs',s)
     return n
-#@+node:ekr.20140527125017.17958: *3* pep8_class_name (remove underscores)
+#@+node:ekr.20140527125017.17958: *3* pep8_class_name
 def pep8_class_name(s):
     '''Return the proper class name for s.'''
     assert s
-    if s[0].islower():
-        s = s[0].upper()+s[1:]
-    return s
+    return ''.join([z.capitalize() for z in s.split('_')])
+   
+if 0: # Testing:
+    g.cls()
+    aList = (
+        '_',
+        '__',
+        '_abc',
+        'abc_',
+        'abc',
+        'abc_xyz',
+        'AbcPdQ',
+    )  
+    for s in aList:
+        print(pep8_class_name(s))
 #@-others
 project_name = 'leo'
 flags = (
