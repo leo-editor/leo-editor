@@ -9275,13 +9275,13 @@ This case subtracts one from d.get(p.parent())
 @ignore
 @language python
 @color
-.. @+node:ekr.20050920084036.207: *3* queryReplaceCommandsClass (limited to single node)
-class queryReplaceCommandsClass (baseEditCommandsClass):
+.. @+node:ekr.20050920084036.207: *3* QueryReplaceCommandsClass (limited to single node)
+class QueryReplaceCommandsClass (baseEditCommandsClass):
 
     '''A class to handle query replace commands.'''
 
     @others
-.. @+node:ekr.20050920084036.208: *4*  ctor & init (queryReplaceCommandsClass)
+.. @+node:ekr.20050920084036.208: *4*  ctor & init (QueryReplaceCommandsClass)
 def __init__ (self,c):
 
     baseEditCommandsClass.__init__(self,c) # init the base class.
@@ -9480,14 +9480,14 @@ def completeSelf (self):
         self.theObject = None
         self.clear()
         self.membersList = []
-.. @+node:ekr.20061031131434.60: *4* class forgivingParserClass (not used)
-class forgivingParserClass:
+.. @+node:ekr.20061031131434.60: *4* class ForgivingParserClass (not used)
+class ForgivingParserClass:
 
     '''A class to create a valid class instances from
     a class definition that may contain syntax errors.'''
 
     @others
-.. @+node:ekr.20061031131434.61: *5* ctor (forgivingParserClass)
+.. @+node:ekr.20061031131434.61: *5* ctor (ForgivingParserClass)
 def __init__ (self,c):
 
     self.c = c

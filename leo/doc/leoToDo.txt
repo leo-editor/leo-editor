@@ -77,9 +77,7 @@ failed find focus fails
 https://bugs.launchpad.net/leo-editor/+bug/1254861
 ctrl-f doesn't ensure find input field visible
 .. @+node:ekr.20140426105101.16868: *3* convert all class names to capitalized
-.. @+node:ekr.20140520054818.17968: *4* change 137 class names
-class queryReplaceCommandsClass (baseEditCommandsClass):
-class forgivingParserClass:
+.. @+node:ekr.20140520054818.17968: *4* change non-pep8 class names
 class classScannerClass:
 class editBodyTestCase(unittest.TestCase):
 class emergencyDialog:
