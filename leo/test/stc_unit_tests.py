@@ -378,7 +378,7 @@ class ReplaceController:
         for fn in self.files:
             s = self.files_d.get(fn)
             if s.count(new_name) > 0:
-                g.trace('already exists',new_name)
+                g.trace('****',new_name,'exists in',g.shortFileName(fn))
                 return False
         return True
             
@@ -406,7 +406,7 @@ class ReplaceController:
     #@+node:ekr.20140528102444.19377: *4* run
     def run(self,aList):
         self.load_files()
-        for s in aList:
+        for s in aList: # [2:3]:
             self.replace_class_name(s,g.pep8_class_name(s))
     #@-others
 #@-others
