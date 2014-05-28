@@ -10448,8 +10448,8 @@ Leo now contains support for translating messages sent to Leo's log:
 Eureka! I have just discovered an elegant solution to this problem!
 
 The Aha is this:  we can create a "base" timestamp just *once*, when
-the commander (i.e. the nodeIndices class) is created.  Thereafter,
-code that writes gnx's simply calls nodeIndices.getIndex if the node
+the commander (i.e. the NodeIndices class) is created.  Thereafter,
+code that writes gnx's simply calls NodeIndices.getIndex if the node
 doesn't already have an index (or if indices are being reassigned in a
 copied tree).
 
@@ -10473,7 +10473,7 @@ do-nothing assignFileIndices around for compatibility with old
 scripts.
 
 This is *so* important.  It eliminates forever a source of serious
-file write problems.  Furthermore, nodeIndices.getIndex becomes
+file write problems.  Furthermore, NodeIndices.getIndex becomes
 substantially simpler. Even though the code was short, it implied some
 very tricky assumptions.  Every time I read it I had to recreate why
 it worked.  Those mental gymnastics should disappear.

@@ -3832,15 +3832,15 @@ The copied trees must use different tnodes than the original."""
 def copyTree(self,root):
 
     c = self
-    # Create the root vnode.
-    result = v = leoNodes.vnode(c)
+    # Create the root VNode.
+    result = v = leoNodes.VNode(c)
     # Copy the headline and icon values v.copyNode(root,v)
     # Copy the rest of tree.
     v.copyTree(root,v)
     # Replace all tnodes in v by copies.
     assert(v.nodeAfterTree() == None)
     while v:
-        v = leoNodes.vnode(c)
+        v = leoNodes.VNode(c)
         v = v.threadNext()
     return result
 #@+node:ekr.20090615053403.4929: *4* @test colorizer r
@@ -14361,7 +14361,7 @@ assert(p.h=="File Conversion")
 p.convertTreeToString()
 #@+node:ekr.20040712101754.178: *5* File Conversion
 @
-- convertTreeToString and moreHead can't be vnode methods because they uses level().
+- convertTreeToString and moreHead can't be VNode methods because they uses level().
 - moreBody could be anywhere: it may as well be a postion method.
 #@+node:ekr.20040712101754.179: *6* moreHead
 def moreHead (self, firstLevel,useVerticalBar=False):
@@ -14843,7 +14843,7 @@ g.app.unitTestDict['restoreSelectedNode']=False
 
 print('\nEnd of leoNodes tests.')
 #@+node:ekr.20080501121449.1: *4* Fundamental node operations (undo operations fail)
-#@+node:ekr.20080423110627.2: *5* @test at most one vnode has str_leo_pos attribute
+#@+node:ekr.20080423110627.2: *5* @test at most one VNode has str_leo_pos attribute
 n = 0
 for v in c.all_unique_vnodes_iter():
     if hasattr(v,'unknownAttributes'):
