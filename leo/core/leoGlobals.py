@@ -2382,7 +2382,7 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
     order = []
     
     pos_pattern = re.compile(r':(\d+),?(\d+)?$')
-    target = unlList[depth]
+    target = pos_pattern.sub('', unlList[depth])
     pos = re.findall(pos_pattern, target)
     
     if pos:
