@@ -896,8 +896,12 @@ class BookMarkDisplayProvider:
                         v = i
                         break
                 else:  # use UNL lookup
-                    file_, UNL = gnx.split('#', 1)
-                    other_c = g.openWithFileName(file_, old_c=c)
+                    if '#' in gnx:
+                        file_, UNL = gnx.split('#', 1)
+                        other_c = g.openWithFileName(file_, old_c=c)
+                    else:
+                        file_, UNL = None, gnx
+                        other_c = c
                     if other_c != c:
                         c.bringToFront()
                         g.es("NOTE: bookmarks for this outline\nare in a different outline:\n  '%s'"%file_)
