@@ -31,7 +31,7 @@ def getRecentCoreList():
         # 'leoMenu',
         # 'leoNodes',
         # 'leoPlugins',
-        'leoRope',
+        # 'leoRope',
         # 'leoRst',
         # 'leoSessions',
         # 'leoShadow',
@@ -51,6 +51,7 @@ def getRecentPluginsList ():
         # 'codewisecompleter',
         # 'free_layout',
         # 'internal_ipkernel',
+        # 'leo_interface',
         # 'mod_scripting',
         # 'nested_splitter',
         # 'qtGui',
@@ -77,140 +78,6 @@ failed find focus fails
 https://bugs.launchpad.net/leo-editor/+bug/1254861
 ctrl-f doesn't ensure find input field visible
 .. @+node:ekr.20140426105101.16868: *3* convert all class names to capitalized
-.. @+node:ekr.20140520054818.17968: *4* change non-pep8 class names
-class classScannerClass:
-class editBodyTestCase(unittest.TestCase):
-class emergencyDialog:
-class abbrevCommandsClass (baseEditCommandsClass):
-class importExportTestCase(unittest.TestCase):
-class emergencyDialog:
-class atFile:
-class bridgeController:
-class cacher:
-class chapterController:
-class chapter:
-class goToLineNumber:
-class nodeHistory:
-class baseEditCommandsClass:
-class abbrevCommandsClass (baseEditCommandsClass):
-class bufferCommandsClass (baseEditCommandsClass):
-class chapterCommandsClass (baseEditCommandsClass):
-class controlCommandsClass (baseEditCommandsClass):
-class debugCommandsClass (baseEditCommandsClass):
-class editCommandsClass (baseEditCommandsClass):
-class editFileCommandsClass (baseEditCommandsClass):
-class helpCommandsClass (baseEditCommandsClass):
-class keyHandlerCommandsClass (baseEditCommandsClass):
-class killBufferCommandsClass (baseEditCommandsClass):
-class killBuffer_iter_class:
-class leoCommandsClass (baseEditCommandsClass):
-class macroCommandsClass (baseEditCommandsClass):
-class rectangleCommandsClass (baseEditCommandsClass):
-class registerCommandsClass (baseEditCommandsClass):
-class searchCommandsClass (baseEditCommandsClass):
-class spellCommandsClass (baseEditCommandsClass):
-class spellTabHandler:
-class baseFileCommands:
-class fileCommands (baseFileCommands):
-class invalidPaste(Exception):
-class saxContentHandler (xml.sax.saxutils.XMLGenerator):
-class saxNodeClass:
-class nullObject:
-class redirectClass:
-class command:
-class posList(list):
-class fileLikeObject:
-class readLinesClass:
-class scanUtility:
-class leoImportCommands (scanUtility):
-class recursiveImportController:
-class cScanner (BaseScanner):
-class cSharpScanner (BaseScanner):
-class elispScanner (BaseScanner):
-class iniScanner (BaseScanner):
-class javaScanner (BaseScanner):
-class pascalScanner (BaseScanner):
-class phpScanner (BaseScanner):
-class pythonScanner (BaseScanner):
-class rstScanner (BaseScanner):
-class vimoutlinerScanner(BaseScanner):
-class xmlScanner (BaseScanner):
-class htmlScanner (xmlScanner):
-class nodeIndices (object):
-class poslist(list):
-class baseLeoPlugin(object):
-class rstCommands:
-class linkAnchorParserClass (HTMLParser.HTMLParser):
-class htmlParserClass (linkAnchorParserClass):
-class anchor_htmlParserClass (linkAnchorParserClass):
-class link_htmlparserClass (linkAnchorParserClass):
-class shadowController:
-class atShadowTestCase (unittest.TestCase):
-class markerClass:
-class sourcereader:
-class sourcewriter:
-class tst_node:
-class part_node:
-class ust_node:
-class def_node:
-class root_attributes:
-class baseTangleCommands:
-class tangleCommands (baseTangleCommands):
-class undoer:
-class baseLeoCompare:
-class leoCompare (baseLeoCompare):
-class searchWidget:
-class leoFind:
-class baseTextWidget(object):
-class stringTextWidget (baseTextWidget):
-class leoBody (HighLevelInterface):
-class leoFrame:
-class leoLog (HighLevelInterface):
-class leoTree:
-class leoTreeTab:
-class nullBody (leoBody):
-class nullColorizer:
-class nullFrame (leoFrame):
-class nullIconBarClass:
-class nullLog (leoLog):
-class nullStatusLineClass:
-class nullTree (leoTree):
-class leoKeyEvent:
-class leoGui:
-class nullGui(leoGui):
-class nullScriptingControllerClass:
-class unitTestGui(nullGui):
-class keyHandlerClass:
-class leoMenu:
-class nullMenu(leoMenu):
-class baseNativeTreeWidget (leoFrame.leoTree):
-class leoQtBaseTextWidget (leoFrame.baseTextWidget):
-class leoQLineEditWidget (leoQtBaseTextWidget):
-class leoQTextEditWidget (leoQtBaseTextWidget):
-class leoQScintillaWidget (leoQtBaseTextWidget):
-class leoQtHeadlineWidget (leoQtBaseTextWidget):
-class leoQtMinibuffer (leoQLineEditWidget):
-class leoQtBody (leoFrame.leoBody):
-class leoQtFrame (leoFrame.leoFrame):
-class qtStatusLineClass:
-class qtIconBarClass:
-class leoQtLog (leoFrame.leoLog):
-class leoQtMenu (leoMenu.leoMenu):
-class leoQtSpellTab:
-class leoQtTree (baseNativeTree.baseNativeTreeWidget):
-class leoQtTreeTab:
-class qtTabBarWrapper(QtGui.QTabBar): 
-class qtMenuWrapper (QtGui.QMenu,leoQtMenu):
-class qtSearchWidget:
-class leoQtGui(leoGui.leoGui):
-class leoQtEventFilter(QtCore.QObject):
-class leoQtColorizer:
-class leoQtSyntaxHighlighter(QtGui.QSyntaxHighlighter):
-class jEditColorizer:
-class node:
-class editBodyTestCase(unittest.TestCase):
-class importExportTestCase(unittest.TestCase):
-class runTestExternallyHelperClass:
 .. @+node:ekr.20140521095206.16728: ** Important
 .. @+node:ekr.20140402091953.16865: *3* add pylint commands
 @language rest

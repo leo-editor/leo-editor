@@ -30,7 +30,14 @@ if trace:
 #@+others
 #@+node:ekr.20140527125017.17956: *3* check_class_names
 def check_class_names(defs_d,refs_d):
-    aList = [
+    aList = [ 
+    #@+<< non-pep8 class names >>
+    #@+node:ekr.20140528065727.17958: *4* << non-pep8 class names >>
+    # converted by hand:
+    # 'chapter',
+    # 'chapterController',
+    # 'command',
+    # 'node', # -> LeoNode in plugins/leo_interface.py.
     'abbrevCommandsClass',
     'anchor_htmlParserClass',
     'atFile',
@@ -47,10 +54,7 @@ def check_class_names(defs_d,refs_d):
     'cScanner',
     'cSharpScanner',
     'cacher',
-    'chapter',
     'chapterCommandsClass',
-    'chapterController',
-    'command',
     'controlCommandsClass',
     'debugCommandsClass',
     'def_node',
@@ -107,7 +111,6 @@ def check_class_names(defs_d,refs_d):
     'link_htmlparserClass',
     'macroCommandsClass',
     'markerClass',
-    'node',
     'nodeHistory',
     'nodeIndices',
     'nullBody',
@@ -159,6 +162,7 @@ def check_class_names(defs_d,refs_d):
     'ust_node',
     'vimoutlinerScanner',
     'xmlScanner',
+    #@-<< non-pep8 class names >>
     ]
     ambiguous,undefined = [],[]
     for s in aList:
@@ -168,7 +172,7 @@ def check_class_names(defs_d,refs_d):
             undefined.append(s)
         elif n > 1:
             ambiguous.append(s)
-        s2 = pep8_class_name(s)
+        s2 = g.pep8_class_name(s)
         aSet = defs_d.get(s2,set())
         if len(sorted(aSet)) > 1:
             g.trace('conflict',s,s2)
@@ -192,25 +196,6 @@ def report():
             n += 1
             # g.trace('multiple defs',s)
     return n
-#@+node:ekr.20140527125017.17958: *3* pep8_class_name
-def pep8_class_name(s):
-    '''Return the proper class name for s.'''
-    assert s
-    return ''.join([z.capitalize() for z in s.split('_')])
-   
-if 0: # Testing:
-    g.cls()
-    aList = (
-        '_',
-        '__',
-        '_abc',
-        'abc_',
-        'abc',
-        'abc_xyz',
-        'AbcPdQ',
-    )  
-    for s in aList:
-        print(pep8_class_name(s))
 #@-others
 project_name = 'leo'
 flags = (
