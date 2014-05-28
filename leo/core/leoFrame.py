@@ -1556,13 +1556,13 @@ class LeoFrame:
     def minibufferWantsFocus(self):
         return self.c.minibufferWantsFocus()
     #@-others
-#@+node:ekr.20031218072017.3694: ** class leoLog (HighLevelInterface)
-class leoLog (HighLevelInterface):
+#@+node:ekr.20031218072017.3694: ** class LeoLog (HighLevelInterface)
+class LeoLog (HighLevelInterface):
 
     """The base class for the log pane in Leo windows."""
 
     #@+others
-    #@+node:ekr.20031218072017.3695: *3*  ctor (leoLog)
+    #@+node:ekr.20031218072017.3695: *3*  ctor (LeoLog)
     def __init__ (self,frame,parentFrame):
 
         self.frame = frame
@@ -1598,7 +1598,7 @@ class leoLog (HighLevelInterface):
         self.selectTab(tabName,wrap=wrap)
         w = self.logCtrl
         if w: w.delete(0,'end')
-    #@+node:ekr.20070302094848.2: *4* createTab (leoLog)
+    #@+node:ekr.20070302094848.2: *4* createTab (LeoLog)
     def createTab (self,tabName,createText=True,widget=None,wrap='none'):
 
         if createText:
@@ -1611,7 +1611,7 @@ class leoLog (HighLevelInterface):
             self.frameDict [tabName] = tabName # tabFrame
 
 
-    #@+node:ekr.20070302094848.4: *4* cycleTabFocus (leoLog)
+    #@+node:ekr.20070302094848.4: *4* cycleTabFocus (LeoLog)
     def cycleTabFocus (self,event=None):
 
         '''Cycle keyboard focus between the tabs in the log pane.'''
@@ -1625,7 +1625,7 @@ class leoLog (HighLevelInterface):
             tabName = list(d.keys())[i]
             self.selectTab(tabName)
             return i
-    #@+node:ekr.20070302094848.5: *4* deleteTab (leoLog)
+    #@+node:ekr.20070302094848.5: *4* deleteTab (LeoLog)
     def deleteTab (self,tabName,force=False):
 
         c = self.c
@@ -1659,16 +1659,16 @@ class leoLog (HighLevelInterface):
 
         self.c.invalidateFocus()
         self.c.bodyWantsFocus()
-    #@+node:ekr.20111122080923.10184: *4* orderedTabNames (leoLog)
+    #@+node:ekr.20111122080923.10184: *4* orderedTabNames (LeoLog)
     def orderedTabNames (self,leoLog):
 
         return list(self.frameDict.values())
-    #@+node:ekr.20070302094848.9: *4* numberOfVisibleTabs (leoLog)
+    #@+node:ekr.20070302094848.9: *4* numberOfVisibleTabs (LeoLog)
     def numberOfVisibleTabs (self):
 
         return len([val for val in list(self.frameDict.values()) if val != None])
 
-    #@+node:ekr.20070302101304: *4* put & putnl (leoLog)
+    #@+node:ekr.20070302101304: *4* put & putnl (LeoLog)
     # All output to the log stream eventually comes here.
 
     def put (self,s,color=None,tabName='Log',from_redirect=False):
@@ -1679,7 +1679,7 @@ class leoLog (HighLevelInterface):
     #@+node:ekr.20070302094848.10: *4* renameTab
     def renameTab (self,oldName,newName):
         pass
-    #@+node:ekr.20070302094848.11: *4* selectTab (leoLog)
+    #@+node:ekr.20070302094848.11: *4* selectTab (LeoLog)
     def selectTab (self,tabName,createText=True,widget=None,wrap='none'):# widget unused.
         '''Create the tab if necessary and make it active.'''
         c = self.c
@@ -1697,10 +1697,10 @@ class leoLog (HighLevelInterface):
             # It is a cause of the 'sticky focus' problem.
             c.widgetWantsFocusNow(self.logCtrl)
         return tabFrame
-    #@+node:ekr.20031218072017.3700: *3* leoLog.oops
+    #@+node:ekr.20031218072017.3700: *3* LeoLog.oops
     def oops (self):
 
-        g.pr("leoLog oops:", g.callers(4), "should be overridden in subclass")
+        g.pr("LeoLog oops:", g.callers(4), "should be overridden in subclass")
     #@+node:ekr.20111115100829.9785: *3* log.logCtrl property
     def __get_logCtrl(self):
 
@@ -2454,8 +2454,8 @@ class nullIconBarClass:
     def show(self):
         pass
     #@-others
-#@+node:ekr.20031218072017.2232: ** class nullLog (leoLog)
-class nullLog (leoLog):
+#@+node:ekr.20031218072017.2232: ** class nullLog (LeoLog)
+class nullLog (LeoLog):
 
     # pylint: disable=R0923
     # Interface not implemented.
@@ -2466,12 +2466,12 @@ class nullLog (leoLog):
     def __init__ (self,frame=None,parentFrame=None):
 
         # Init the base class.
-        leoLog.__init__(self,frame,parentFrame)
+        LeoLog.__init__(self,frame,parentFrame)
 
         self.isNull = True
         self.logNumber = 0
         self.widget = self.createControl(parentFrame)
-            # self.logCtrl is now a property of the base leoLog class.
+            # self.logCtrl is now a property of the base LeoLog class.
     #@+node:ekr.20120216123546.10951: *4* finishCreate (nullLog)
     def finishCreate(self):
         pass

@@ -32,18 +32,18 @@ else:
 
 #@-<< imports >>
 #@+others
-#@+node:ekr.20031218072017.1991: ** class nodeIndices
+#@+node:ekr.20031218072017.1991: ** class NodeIndices
 # Indices are Python dicts containing 'id','loc','time' and 'n' keys.
 
-class nodeIndices (object):
+class NodeIndices (object):
 
     """A class to implement global node indices (gnx's)."""
 
     #@+others
-    #@+node:ekr.20031218072017.1992: *3* nodeIndices.__init__
+    #@+node:ekr.20031218072017.1992: *3* NodeIndices.__init__
     def __init__ (self,id):
 
-        """ctor for nodeIndices class"""
+        """ctor for NodeIndices class"""
 
         self.userId = id
         self.defaultId = id

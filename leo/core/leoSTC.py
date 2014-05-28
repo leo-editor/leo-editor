@@ -3589,7 +3589,7 @@ class DataTraverser(AstFullTraverser):
         '''Called when name is defined in the given context.'''
         # Note: cx (an AST node) is hashable.
         aSet = self.d_defs.get(name,set())
-        if False and name == 'chapter':
+        if False and name == 'xxx':
             # g.trace(node.__class__.__name__)
             if isinstance(node,ast.Name):
                 g.trace(self.u.format(node.stc_parent))
@@ -3726,7 +3726,8 @@ class DataTraverser(AstFullTraverser):
         for alias in node.names:
             name = alias.asname if alias.asname else alias.name.split('.')[0]
             # if alias.asname: g.trace('%s as %s' % (alias.name,alias.asname))
-            # Here, we treat imports as *references*.
+            # A hack: we treat imports as *references*.
+            # Otherwise, all imports will be "ambigous" with the real class definitions.
             self.reference_name(cx,name)
     #@+node:ekr.20140527071205.16700: *4* dt.Lambda
     # Lambda(arguments args, expr body)

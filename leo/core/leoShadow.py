@@ -46,8 +46,8 @@ import unittest
 #@@pagewidth 70
 
 #@+others
-#@+node:ekr.20080708094444.80: ** class shadowController
-class shadowController:
+#@+node:ekr.20080708094444.80: ** class ShadowController
+class ShadowController:
 
     '''A class to manage @shadow files'''
 

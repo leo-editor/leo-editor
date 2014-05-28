@@ -5269,8 +5269,8 @@ class leoQtFrame (leoFrame.LeoFrame):
     def update(self,*args,**keys):
         self.top.update()
     #@-others
-#@+node:ekr.20110605121601.18312: *3* class leoQtLog (leoLog)
-class leoQtLog (leoFrame.leoLog):
+#@+node:ekr.20110605121601.18312: *3* class leoQtLog (LeoLog)
+class leoQtLog (leoFrame.LeoLog):
 
     """A class that represents the log pane of a Qt window."""
 
@@ -5285,7 +5285,7 @@ class leoQtLog (leoFrame.leoLog):
         # g.trace('(leoQtLog)',frame,parentFrame)
 
         # Call the base class constructor and calls createControl.
-        leoFrame.leoLog.__init__(self,frame,parentFrame)
+        leoFrame.LeoLog.__init__(self,frame,parentFrame)
         self.c = c = frame.c # Also set in the base constructor, but we need it here.
         self.contentsDict = {} # Keys are tab names.  Values are widgets.
         self.eventFilters = [] # Apparently needed to make filters work!
@@ -5532,7 +5532,7 @@ class leoQtLog (leoFrame.leoLog):
 
         self.selectTab('Log')
     #@+node:ekr.20111122080923.10185: *5* orderedTabNames (leoQtLog)
-    def orderedTabNames (self,leoLog=None): # Unused: leoLog
+    def orderedTabNames (self,LeoLog=None): # Unused: LeoLog
 
         '''Return a list of tab names in the order in which they appear in the QTabbedWidget.'''
 
@@ -5546,7 +5546,7 @@ class leoQtLog (leoFrame.leoLog):
         return len([val for val in self.contentsDict.values() if val != None])
             # **Note**: the base-class version of this uses frameDict.
     #@+node:ekr.20110605121601.18331: *5* selectTab & helper (leoQtLog)
-    # createText is used by leoLog.selectTab.
+    # createText is used by LeoLog.selectTab.
     def selectTab (self,tabName,createText=True,widget=None,wrap='none'):
         '''Create the tab if necessary and make it active.'''
         if not self.selectHelper(tabName):

@@ -2063,7 +2063,7 @@ class LoadManager:
         # Create early classes *after* doing plugins.init()
         g.app.recentFilesManager = RecentFilesManager()
         g.app.config = leoConfig.GlobalConfigManager()
-        g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
+        g.app.nodeIndices = leoNodes.NodeIndices(g.app.leoID)
         g.app.sessionManager = leoSessions.SessionManager()
         # Complete the plugins class last.
         g.app.pluginsController.finishCreate()

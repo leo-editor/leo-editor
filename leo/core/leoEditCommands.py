@@ -8281,7 +8281,7 @@ class helpCommandsClass (baseEditCommandsClass):
             f.body                  is a leoBody instance.
             f.body.bodyCtl          is a leoQTextEditWidget instance.
             f.body.bodyCtrl.widget  is a LeoQTextBrowser(QTextBrowser) instance.
-            f.log                   is a leoLog instance.
+            f.log                   is a LeoLog instance.
             f.tree                  is a leoQtTree instance.
             f.tree.treeWidget       is a LeoQTreeWidget (a QTreeWidget) instance.
             

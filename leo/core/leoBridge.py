@@ -142,7 +142,7 @@ class bridgeController:
         g.app.loadManager.computeStandardDirectories()
         if not self.getLeoID(): return
         g.app.inBridge = True # Added 2007/10/21: support for g.getScript.
-        g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
+        g.app.nodeIndices = leoNodes.NodeIndices(g.app.leoID)
         g.app.config = leoConfig.GlobalConfigManager()
 
         if self.readSettings:
