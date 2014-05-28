@@ -2950,7 +2950,7 @@ def doHook(tag,*args,**keywords):
         g.app.idleTimeHook = False # Supress idle-time hook
         return None # No return value
 #@+node:ville.20090521164644.5924: *3* g.command (decorator for creating global commands)
-class command:
+class Command:
     """ Decorator to create global commands """
     def __init__(self, name, **kwargs):
         """ Registration for command 'name'
@@ -2972,7 +2972,8 @@ class command:
             g.error('@command decorator inside leoGlobals.py')
         return func
 
-
+def command(name,**kwargs):
+    return Command(name,**kwargs)
 #@+node:ville.20120502221057.7500: *3* g.childrenModifiedSet, g.contentModifiedSet
 childrenModifiedSet = set()
 contentModifiedSet = set()
@@ -3705,6 +3706,25 @@ def toUnicodeFileEncoding(path):
 
     # Yes, this is correct.  All os_path_x functions return Unicode strings.
     return g.toUnicode(path)
+#@+node:ekr.20140528065727.17961: ** Pep8 related
+#@+node:ekr.20140528065727.17963: *3* pep8_class_name
+def pep8_class_name(s):
+    '''Return the proper class name for s.'''
+    return ''.join([z.capitalize() for z in s.split('_')])
+   
+if 0: # Testing:
+    g.cls()
+    aList = (
+        '_',
+        '__',
+        '_abc',
+        'abc_',
+        'abc',
+        'abc_xyz',
+        'AbcPdQ',
+    )  
+    for s in aList:
+        print(pep8_class_name(s))
 #@+node:ekr.20031218072017.3151: ** Scanning... (leoGlobals.py)
 #@+node:ekr.20031218072017.3156: *3* scanError
 # It is dubious to bump the Tangle error count here, but it really doesn't hurt.
