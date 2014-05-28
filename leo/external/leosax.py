@@ -17,8 +17,8 @@ from xml.sax import parse
 from pickle import loads
 from binascii import unhexlify
 
-#@+node:ekr.20120519121124.9921: ** class node
-class node:
+#@+node:ekr.20120519121124.9921: ** class LeoNode
+class LeoNode:
     """Representation of a Leo node.  Root node has itself as parent.
 
     :IVariables:
@@ -110,7 +110,7 @@ class LeoReader(ContentHandler):
     def __init__(self, *args, **kwargs):
         """Set ivars"""
         ContentHandler.__init__(self, *args, **kwargs)
-        self.root = node()
+        self.root = LeoNode()
 
         self.root.h = 'ROOT'  
         # changes type from [] to str, done by endElement() for other vnodes
@@ -128,7 +128,7 @@ class LeoReader(ContentHandler):
         self.in_attrs = attrs
 
         if name == 'v':
-            nd = node()
+            nd = LeoNode()
             self.cur.children.append(nd)
             nd.parent = self.cur
             self.cur = nd
