@@ -38,11 +38,11 @@ def getRecentCoreList():
         # 'leoMenu',
         # 'leoNodes',
         # 'leoPlugins',
-        'leoRope',
+        # 'leoRope',
         # 'leoRst',
         # 'leoSessions',
         # 'leoShadow',
-        'leoSTC',
+        # 'leoSTC',
         # 'leoTangle',
         # 'leoTest',
         # 'leoUndo',
@@ -58,6 +58,7 @@ def getRecentPluginsList ():
         # 'codewisecompleter',
         # 'free_layout',
         # 'internal_ipkernel',
+        # 'leo_interface',
         # 'mod_scripting',
         # 'nested_splitter',
         # 'qtGui',
@@ -110,6 +111,14 @@ def getCoreList():
             # WO511: TODO 
         'leoViews',
     )
+#@+node:ekr.20140528065727.17960: ** getExternalList
+def getExternalList():
+    '''Return list of files in leo\external'''
+    return [
+        # 'ipy_leo',
+        'leosax',
+        'lproto',
+    ]
 #@+node:ekr.20120528063627.10138: ** getGuiPluginsList
 def getGuiPluginsList ():
 
@@ -539,7 +548,7 @@ def scanOptions():
 g_option_fn = None
 scope = scanOptions()
 coreList            = getCoreList()
-externalList        = ('lproto',) # 'ipy_leo',
+externalList        = getExternalList()
 guiPluginsList      = getGuiPluginsList()
 passList            = getPassList()
 pluginsList         = getPluginsList()
