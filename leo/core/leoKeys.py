@@ -1316,7 +1316,7 @@ class keyHandlerClass:
             'kill-sentence',
             'kill-region',
             'kill-region-save',
-            # queryReplaceCommandsClass
+            # QueryReplaceCommandsClass
             'query-replace',
             'query-replace-regex',
             # rectangleCommandsClass

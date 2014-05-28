@@ -257,7 +257,7 @@ class EditCommandsManager:
             ('killBufferCommands',  killBufferCommandsClass),
             ('leoCommands',         leoCommandsClass),
             ('macroCommands',       macroCommandsClass),
-            # ('queryReplaceCommands',queryReplaceCommandsClass),
+            # ('queryReplaceCommands',QueryReplaceCommandsClass),
             ('rectangleCommands',   rectangleCommandsClass),
             ('registerCommands',    registerCommandsClass),
             ('searchCommands',      searchCommandsClass),
