@@ -37,7 +37,11 @@ def check_class_names(defs_d,refs_d):
     # 'chapter',
     # 'chapterController',
     # 'command',
+    # 'leoFrame',
+    # 'leoLog',
     # 'node', # -> LeoNode in plugins/leo_interface.py.
+    # 'nodeIndices',
+    # 'shadowController',
     'abbrevCommandsClass',
     'anchor_htmlParserClass',
     'atFile',
@@ -82,11 +86,9 @@ def check_class_names(defs_d,refs_d):
     'leoCommandsClass',
     'leoCompare',
     'leoFind',
-    'leoFrame',
     'leoGui',
     'leoImportCommands',
     'leoKeyEvent',
-    'leoLog',
     'leoMenu',
     'leoQLineEditWidget',
     'leoQScintillaWidget',
@@ -112,7 +114,6 @@ def check_class_names(defs_d,refs_d):
     'macroCommandsClass',
     'markerClass',
     'nodeHistory',
-    'nodeIndices',
     'nullBody',
     'nullColorizer',
     'nullFrame',
@@ -149,7 +150,6 @@ def check_class_names(defs_d,refs_d):
     'scanUtility',
     'searchCommandsClass',
     'searchWidget',
-    'shadowController',
     'sourcereader',
     'sourcewriter',
     'spellCommandsClass',
@@ -176,15 +176,12 @@ def check_class_names(defs_d,refs_d):
         aSet = defs_d.get(s2,set())
         if len(sorted(aSet)) > 1:
             g.trace('conflict',s,s2)
-    if undefined:
-        print('undefined...\n  %s' % '\n  '.join(sorted(undefined)))
-    if ambiguous:
-        print('ambiguous...\n')
-        for s in sorted(ambiguous):
-            aSet = defs_d.get(s,set())
-            # print('%20s %s' % (s,sorted(aSet)))
-            print('%3s %s' % (len(sorted(aSet)),s))
-    # g.trace('ambiguous...\n  %s' % '\n  '.join(sorted(ambiguous)))
+    print('undefined...\n  %s' % '\n  '.join(sorted(undefined)))
+    print('ambiguous...\n')
+    for s in sorted(ambiguous):
+        aSet = defs_d.get(s,set())
+        # print('%20s %s' % (s,sorted(aSet)))
+        print('%3s %s' % (len(sorted(aSet)),s))
 #@+node:ekr.20140527083058.16708: *3* report
 def report():
     '''Report ambiguous symbols.'''
@@ -234,6 +231,187 @@ if 'print' in flags:
     ))
     if 'stats' in flags:
         dt.print_stats()
+#@+node:ekr.20140528102444.17997: ** @test replace class names
+'''Replace only unambiguously defined non-pep8 class names.'''
+aList = [
+#@+<< non-pep8 class names >>
+#@+node:ekr.20140528102444.19375: *3* << non-pep8 class names >>
+'abbrevCommandsClass',
+'anchor_htmlParserClass',
+'atFile',
+'atShadowTestCase',
+'baseEditCommandsClass',
+'baseFileCommands',
+'baseLeoCompare',
+'baseLeoPlugin',
+'baseNativeTreeWidget',
+'baseTangleCommands',
+'baseTextWidget',
+'bridgeController',
+'bufferCommandsClass',
+'cScanner',
+'cSharpScanner',
+'cacher',
+'chapterCommandsClass',
+'controlCommandsClass',
+'debugCommandsClass',
+'def_node',
+'editBodyTestCase',
+'editCommandsClass',
+'editFileCommandsClass',
+'elispScanner',
+'emergencyDialog',
+'fileCommands',
+'fileLikeObject',
+'goToLineNumber',
+'helpCommandsClass',
+'htmlParserClass',
+'htmlScanner',
+'importExportTestCase',
+'iniScanner',
+'invalidPaste',
+'jEditColorizer',
+'javaScanner',
+'keyHandlerClass',
+'keyHandlerCommandsClass',
+'killBufferCommandsClass',
+'killBuffer_iter_class',
+'leoBody',
+'leoCommandsClass',
+'leoCompare',
+'leoFind',
+'leoGui',
+'leoImportCommands',
+'leoKeyEvent',
+'leoMenu',
+'leoQLineEditWidget',
+'leoQScintillaWidget',
+'leoQTextEditWidget',
+'leoQtBaseTextWidget',
+'leoQtBody',
+'leoQtColorizer',
+'leoQtEventFilter',
+'leoQtFrame',
+'leoQtGui',
+'leoQtHeadlineWidget',
+'leoQtLog',
+'leoQtMenu',
+'leoQtMinibuffer',
+'leoQtSpellTab',
+'leoQtSyntaxHighlighter',
+'leoQtTree',
+'leoQtTreeTab',
+'leoTree',
+'leoTreeTab',
+'linkAnchorParserClass',
+'link_htmlparserClass',
+'macroCommandsClass',
+'markerClass',
+'nodeHistory',
+'nullBody',
+'nullColorizer',
+'nullFrame',
+'nullGui',
+'nullIconBarClass',
+'nullLog',
+'nullMenu',
+'nullObject',
+'nullScriptingControllerClass',
+'nullStatusLineClass',
+'nullTree',
+'part_node',
+'pascalScanner',
+'phpScanner',
+'posList',
+'poslist',
+'pythonScanner',
+'qtIconBarClass',
+'qtMenuWrapper',
+'qtSearchWidget',
+'qtStatusLineClass',
+'qtTabBarWrapper',
+'readLinesClass',
+'rectangleCommandsClass',
+'recursiveImportController',
+'redirectClass',
+'registerCommandsClass',
+'root_attributes',
+'rstCommands',
+'rstScanner',
+'runTestExternallyHelperClass',
+'saxContentHandler',
+'saxNodeClass',
+'scanUtility',
+'searchCommandsClass',
+'searchWidget',
+'sourcereader',
+'sourcewriter',
+'spellCommandsClass',
+'spellTabHandler',
+'stringTextWidget',
+'tangleCommands',
+'tst_node',
+'undoer',
+'unitTestGui',
+'ust_node',
+'vimoutlinerScanner',
+'xmlScanner',
+#@-<< non-pep8 class names >>
+]
+if 0: # not needed when @testsetup exists.
+    import leo.core.leoSTC as stc
+    import time
+    import imp
+    imp.reload(stc) # Takes about 0.003 sec.
+u = stc.Utils()
+#@+others
+#@+node:ekr.20140528102444.19376: *3* class ReplaceController
+class ReplaceController:
+    def __init__(self,c,files):
+        self.c = c
+        self.files_d = {} # Keys are full paths, values are file contents.
+        self.files = files
+    #@+others
+    #@+node:ekr.20140528102444.19379: *4* check_new_name
+    def check_new_name(self,new_name):
+        '''Verify that s is found nowhere in Leo.'''
+        for fn in self.files:
+            s = self.files_d.get(fn)
+            if s.count(new_name) > 0:
+                g.trace('already exists',new_name)
+                return False
+        return True
+            
+    #@+node:ekr.20140528102444.19380: *4* load_files
+    def load_files(self):
+        for fn in self.files:
+            assert g.os_path_exists(fn),fn
+            f = open(fn,'r')
+            s = f.read()
+            f.close()
+            self.files_d[fn] = s
+        
+    #@+node:ekr.20140528102444.19378: *4* replace_class_name
+    def replace_class_name(self,old_name,new_name):
+        assert old_name != new_name,old_name
+        if not self.check_new_name(new_name):
+            return
+        for fn in self.files:
+            s = self.files_d.get(fn)
+            i = s.count(old_name)
+            if i > 0:
+                self.files_d[fn] = s.replace(old_name,new_name)
+                print('%2s instances of %s in %s' % (
+                    i,old_name,g.shortFileName(fn)))
+    #@+node:ekr.20140528102444.19377: *4* run
+    def run(self,aList):
+        self.load_files()
+        for s in aList:
+            self.replace_class_name(s,g.pep8_class_name(s))
+    #@-others
+#@-others
+files = u.project_files('leo')
+ReplaceController(c,files).run(aList)
 #@-others
 #@@language python
 #@@tabwidth -4
