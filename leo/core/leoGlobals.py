@@ -3710,7 +3710,9 @@ def toUnicodeFileEncoding(path):
 #@+node:ekr.20140528065727.17963: *3* pep8_class_name
 def pep8_class_name(s):
     '''Return the proper class name for s.'''
-    return ''.join([z.capitalize() for z in s.split('_')])
+    # Warning: s.capitalize() does not work.
+    # It lower cases all but the first letter!
+    return ''.join([z[0].upper() + z[1:] for z in s.split('_') if z])
    
 if 0: # Testing:
     g.cls()
