@@ -87,8 +87,8 @@ class CommandChainDispatcher:
         Handy if the objects are not callable.
         """
         return iter(self.chain)
-#@+node:ekr.20100908125007.6009: ** class baseLeoPlugin
-class baseLeoPlugin(object):
+#@+node:ekr.20100908125007.6009: ** class BaseLeoPlugin
+class BaseLeoPlugin(object):
     #@+<<docstring>>
     #@+node:ekr.20100908125007.6010: *3* <<docstring>>
     """A Convenience class to simplify plugin authoring
@@ -128,7 +128,7 @@ class baseLeoPlugin(object):
     Configuration
     -------------
 
-    baseLeoPlugins has 3 *methods* for setting commands
+    BaseLeoPlugins has 3 *methods* for setting commands
 
     - setCommand::
 
@@ -160,11 +160,11 @@ class baseLeoPlugin(object):
 
     Contents of file ``<LeoDir>/plugins/hello.py``::
 
-        class Hello(baseLeoPlugin):
+        class Hello(BaseLeoPlugin):
             def __init__(self, tag, keywords):
 
                 # call parent __init__
-                baseLeoPlugin.__init__(self, tag, keywords)
+                BaseLeoPlugin.__init__(self, tag, keywords)
 
                 # if the plugin object defines only one command, 
                 # just give it a name. You can then create a button and menu entry
@@ -199,7 +199,7 @@ class baseLeoPlugin(object):
     """
     #@-<<docstring>>
     #@+others
-    #@+node:ekr.20100908125007.6012: *3* __init__ (baseLeoPlugin)
+    #@+node:ekr.20100908125007.6012: *3* __init__ (BaseLeoPlugin)
     def __init__(self, tag, keywords):
 
         """Set self.c to be the ``commander`` of the active node

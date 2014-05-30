@@ -139,7 +139,7 @@ class LeoApp:
         import leo.core.leoFrame as leoFrame
         import leo.core.leoGui as leoGui
         self.nullGui = leoGui.nullGui()
-        self.nullLog = leoFrame.nullLog()
+        self.NullLog = leoFrame.NullLog()
 
         #### To be moved to OpenWithManager.
 
@@ -169,10 +169,10 @@ class LeoApp:
         self.runningAllUnitTests = False    # True: we are running all unit tests (Only for local tests).
         self.suppressImportChecks = False   # True: suppress importCommands.check
         self.unitTestDict = {}          # For communication between unit tests and code.
-        self.unitTestGui = None         # A way to override the gui in external unit tests.
+        self.UnitTestGui = None         # A way to override the gui in external unit tests.
         self.unitTesting = False        # True if unit testing.
         self.unitTestMenusDict = {}
-            # Created in leoMenu.createMenuEntries for a unit test.
+            # Created in LeoMenu.createMenuEntries for a unit test.
             # keys are command names. values are sets of strokes.
 
         # Define all global data.        
@@ -2379,7 +2379,7 @@ class LoadManager:
                     import Tkinter as Tk
                     #@+<< define emergency dialog class >>
                     #@+node:ekr.20120219154958.10492: *5* << define emergency dialog class >>
-                    class emergencyDialog:
+                    class EmergencyDialog:
 
                         """A class that creates an Tkinter dialog with a single OK button."""
 
@@ -2480,7 +2480,7 @@ class LoadManager:
                             self.root.wait_window(self.top)
                         #@-others
                     #@-<< define emergency dialog class >>
-                    d = emergencyDialog(
+                    d = EmergencyDialog(
                         title='Python Version Error',
                         message=message)
                     d.run()

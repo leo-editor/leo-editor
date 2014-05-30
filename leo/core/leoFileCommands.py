@@ -53,7 +53,7 @@ class BadLeoFile(Exception):
     def __str__(self):
         return "Bad Leo File:" + self.message
 
-class invalidPaste(Exception):
+class InvalidPaste(Exception):
     pass
 #@-<< define exception classes >>
 
@@ -61,8 +61,8 @@ if sys.platform != 'cli':
     #@+<< define sax classes >>
     #@+node:ekr.20060919145406: ** << define sax classes >>
     #@+others
-    #@+node:ekr.20060919110638.19: *3* class saxContentHandler (XMLGenerator)
-    class saxContentHandler (xml.sax.saxutils.XMLGenerator):
+    #@+node:ekr.20060919110638.19: *3* class SaxContentHandler (XMLGenerator)
+    class SaxContentHandler (xml.sax.saxutils.XMLGenerator):
 
         '''A sax content handler class that reads Leo files.'''
 
@@ -113,10 +113,10 @@ if sys.platform != 'cli':
             self.errors = 0
             self.tnxToListDict = {}
                 # Keys are tnx's (strings)
-                # Values are *lists* of saxNodeClass objects.
+                # Values are *lists* of SaxNodeClass objects.
             self.level = 0
             self.node = None
-            self.nodeList = [] # List of saxNodeClass objects with the present VNode.
+            self.nodeList = [] # List of SaxNodeClass objects with the present VNode.
             self.nodeStack = []
             self.rootNode = None # a sax node.
             self.trace = False # True and g.unitTesting
@@ -465,10 +465,10 @@ if sys.platform != 'cli':
             if self.rootNode:
                 parent = self.node
             else:
-                self.rootNode = parent = saxNodeClass() # The dummy parent node.
+                self.rootNode = parent = SaxNodeClass() # The dummy parent node.
                 parent.headString = 'dummyNode'
 
-            self.node = saxNodeClass()
+            self.node = SaxNodeClass()
 
             parent.children.append(self.node)
             self.vnodeAttributes(attrs)
@@ -493,8 +493,8 @@ if sys.platform != 'cli':
                 else:
                     node.attributes[name] = val
         #@-others
-    #@+node:ekr.20060919110638.15: *3* class saxNodeClass
-    class saxNodeClass:
+    #@+node:ekr.20060919110638.15: *3* class SaxNodeClass
+    class SaxNodeClass:
 
         '''A class representing one <v> element.
 
@@ -528,7 +528,7 @@ if sys.platform != 'cli':
     #@-others
     #@-<< define sax classes >>
 
-class baseFileCommands:
+class BaseFileCommands:
     """A base class for the fileCommands subcommander."""
     #@+others
     #@+node:ekr.20090218115025.4: ** Birth (leoFileCommands)
@@ -1323,7 +1323,7 @@ class baseFileCommands:
                 parser.setFeature(xml.sax.handler.feature_external_pes,1)
                     # Include all external parameter entities
                     # Hopefully the parser can figure out the encoding from the <?xml> element.
-            handler = saxContentHandler(c,inputFileName,silent,inClipboard)
+            handler = SaxContentHandler(c,inputFileName,silent,inClipboard)
             parser.setContentHandler(handler)
             parser.parse(theFile) # expat does not support parseString
             # g.trace('parsing done')
@@ -1942,7 +1942,7 @@ class baseFileCommands:
         suitable for pasting to the clipboard.'''
 
         trace = False and not g.unitTesting
-        self.outputFile = g.fileLikeObject()
+        self.outputFile = g.FileLikeObject()
         self.usingClipboard = True
 
         self.putProlog()
@@ -2402,7 +2402,7 @@ class baseFileCommands:
         # g.trace('c.fixed',c.fixed)
     #@-others
 
-class fileCommands (baseFileCommands):
+class fileCommands (BaseFileCommands):
     """A class creating the fileCommands subcommander."""
     pass
 #@-leo

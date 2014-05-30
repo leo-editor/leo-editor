@@ -286,7 +286,7 @@ class Commands (object):
         self.frame = gui.createLeoFrame(c,title)
         assert self.frame
         assert self.frame.c == c
-        self.nodeHistory = nodeHistory(c)
+        self.NodeHistory = NodeHistory(c)
         self.initConfigSettings()
         c.setWindowPosition() # Do this after initing settings.
         # Break circular import dependencies by importing here.
@@ -306,14 +306,14 @@ class Commands (object):
         import leo.core.leoUndo as leoUndo
         import leo.core.leoViews as leoViews
         import leo.core.leoVim as leoVim
-        self.keyHandler = self.k = leoKeys.keyHandlerClass(c)
+        self.keyHandler = self.k = leoKeys.KeyHandlerClass(c)
         self.chapterController  = leoChapters.ChapterController(c)
         self.shadowController   = leoShadow.ShadowController(c)
         self.fileCommands       = leoFileCommands.fileCommands(c)
-        self.findCommands       = leoFind.leoFind(c)
+        self.findCommands       = leoFind.LeoFind(c)
         self.atFileCommands     = leoAtFile.atFile(c)
-        self.importCommands     = leoImport.leoImportCommands(c)
-        self.rstCommands        = leoRst.rstCommands(c)
+        self.importCommands     = leoImport.LeoImportCommands(c)
+        self.rstCommands        = leoRst.RstCommands(c)
         self.tangleCommands     = leoTangle.tangleCommands(c)
         self.testManager        = leoTest.TestManager(c)
         self.viewController     = leoViews.ViewController(c)
@@ -322,7 +322,7 @@ class Commands (object):
         self.editCommandsManager.createEditCommanders()
         self.cacher = leoCache.cacher(c)
         self.cacher.initFileDB(self.mFileName)
-        self.undoer = leoUndo.undoer(self)
+        self.undoer = leoUndo.Undoer(self)
         import leo.plugins.free_layout as free_layout
         self.free_layout = free_layout.FreeLayoutController(c)
     #@+node:ekr.20031218072017.2814: *4* c.__repr__ & __str__
@@ -1017,26 +1017,26 @@ class Commands (object):
             g.error('no such command: %s %s' % (commandName,g.callers()))
             return None
     #@+node:ekr.20091002083910.6106: *3* c.find...
-    #@+<< poslist doc >>
-    #@+node:bob.20101215134608.5898: *4* << poslist doc >>
+    #@+<< Poslist doc >>
+    #@+node:bob.20101215134608.5898: *4* << Poslist doc >>
     #@@nocolor-node
     #@+at 
     # List of positions 
     # 
-    # Functions find_h() and find_b() both return an instance of poslist.
+    # Functions find_h() and find_b() both return an instance of Poslist.
     # 
-    # Methods filter_h() and filter_b() refine a poslist.
+    # Methods filter_h() and filter_b() refine a Poslist.
     # 
-    # Method children() generates a new poslist by descending one level from
-    # all the nodes in a poslist.
+    # Method children() generates a new Poslist by descending one level from
+    # all the nodes in a Poslist.
     # 
-    # A chain of poslist method calls must begin with find_h() or find_b().
+    # A chain of Poslist method calls must begin with find_h() or find_b().
     # The rest of the chain can be any combination of filter_h(),
     # filter_b(), and children(). For example:
     # 
     #     pl = c.find_h('@file.*py').children().filter_h('class.*').filter_b('import (.*)')
     # 
-    # For each position, pos, in the poslist returned, find_h() and
+    # For each position, pos, in the Poslist returned, find_h() and
     # filter_h() set attribute pos.mo to the match object (see Python
     # Regular Expression documentation) for the pattern match.
     # 
@@ -1047,16 +1047,16 @@ class Commands (object):
     # set attribute pos.matchiter to an iterator that will return a match
     # object for each of the non-overlapping matches of the pattern in the
     # body of the node.
-    #@-<< poslist doc >>
+    #@-<< Poslist doc >>
     #@+node:ville.20090311190405.70: *4* c.find_h
     def find_h(self, regex, flags = re.IGNORECASE):
-        """ Return list (a poslist) of all nodes where zero or more characters at
+        """ Return list (a Poslist) of all nodes where zero or more characters at
         the beginning of the headline match regex
         """
 
         c = self
         pat = re.compile(regex, flags)
-        res = leoNodes.poslist()
+        res = leoNodes.Poslist()
         for p in c.all_positions():
             m = re.match(pat, p.h)
             if m:
@@ -1067,14 +1067,14 @@ class Commands (object):
 
     #@+node:ville.20090311200059.1: *4* c.find_b
     def find_b(self, regex, flags = re.IGNORECASE | re.MULTILINE):
-        """ Return list (a poslist) of all nodes whose body matches regex
+        """ Return list (a Poslist) of all nodes whose body matches regex
         one or more times.
 
         """
 
         c = self
         pat = re.compile(regex, flags)
-        res = leoNodes.poslist()
+        res = leoNodes.Poslist()
         for p in c.all_positions():
             m = re.finditer(pat, p.b)
             t1,t2 = itertools.tee(m,2)
@@ -1208,7 +1208,7 @@ class Commands (object):
             # Import all files in dir_ after c.p.
             try:
                 import leo.core.leoImport as leoImport
-                cc = leoImport.recursiveImportController(c,
+                cc = leoImport.RecursiveImportController(c,
                     one_file = one_file,
                     safe_at_file = safe_at_file,
                     theTypes = ['.py'] if theTypes is None else theTypes,
@@ -2528,7 +2528,7 @@ class Commands (object):
         c = self
 
         scriptData = {'p':p.copy(),'lines':g.splitLines(script)}
-        c.goToLineNumber(c).go(n=n,scriptData=scriptData)
+        c.GoToLineNumber(c).go(n=n,scriptData=scriptData)
     #@+node:ekr.20031218072017.2086: *6* c.preferences
     def preferences (self,event=None):
 
@@ -2605,8 +2605,8 @@ class Commands (object):
                 # c.config.getString('script_file_path'))
             path = None
         return path
-    #@+node:ekr.20100216141722.5620: *6* class goToLineNumber and helpers (commands)
-    class goToLineNumber:
+    #@+node:ekr.20100216141722.5620: *6* class GoToLineNumber and helpers (commands)
+    class GoToLineNumber:
 
         '''A class implementing goto-global-line.'''
 
@@ -4783,7 +4783,7 @@ class Commands (object):
 
         # c = self
         try:
-            readline = g.readLinesClass(body).next
+            readline = g.ReadLinesClass(body).next
             tabnanny.process_tokens(tokenize.generate_tokens(readline))
 
         except IndentationError:
@@ -5247,7 +5247,7 @@ class Commands (object):
             s = p.b
             if not s: return
 
-            readlines = g.readLinesClass(s).next
+            readlines = g.ReadLinesClass(s).next
 
             try:
                 self.clear()
@@ -6477,14 +6477,14 @@ class Commands (object):
 
         c = self
 
-        p = c.nodeHistory.goNext()
+        p = c.NodeHistory.goNext()
 
         if p:
-            c.nodeHistory.skipBeadUpdate = True
+            c.NodeHistory.skipBeadUpdate = True
             try:
                 c.selectPosition(p)
             finally:
-                c.nodeHistory.skipBeadUpdate = False
+                c.NodeHistory.skipBeadUpdate = False
                 c.redraw_after_select(p)
 
     #@+node:ekr.20031218072017.1627: *6* goPrevVisitedNode
@@ -6494,14 +6494,14 @@ class Commands (object):
 
         c = self
 
-        p = c.nodeHistory.goPrev()
+        p = c.NodeHistory.goPrev()
 
         if p:
-            c.nodeHistory.skipBeadUpdate = True
+            c.NodeHistory.skipBeadUpdate = True
             try:
                 c.selectPosition(p)
             finally:            
-                c.nodeHistory.skipBeadUpdate = False
+                c.NodeHistory.skipBeadUpdate = False
                 c.redraw_after_select(p)
     #@+node:ekr.20031218072017.2914: *6* goToFirstNode
     def goToFirstNode (self,event=None):
@@ -7078,12 +7078,12 @@ class Commands (object):
     def goToNextHistory (self,event=None):
         '''Go to the next node in the history list.'''
         c = self
-        c.nodeHistory.goNext()
+        c.NodeHistory.goNext()
 
     def goToPrevHistory (self,event=None):
         '''Go to the previous node in the history list.'''
         c = self
-        c.nodeHistory.goPrev()
+        c.NodeHistory.goPrev()
     #@+node:ekr.20131016084446.16724: *4* c.setComplexCommand
     def setComplexCommand(self,commandName):
         '''Make commandName the command to be executed by repeat-complex-command.'''
@@ -7341,7 +7341,7 @@ class Commands (object):
             c.frame.tree.select(p)
         # 2012/03/10: tree.redraw will change the position if p is a hoisted @chapter node.
         p2 = c.frame.tree.redraw(p)
-        # Be careful.  nullTree.redraw returns None.
+        # Be careful.  NullTree.redraw returns None.
         c.selectPosition(p2 or p)
         if trace: g.trace('setFocus',setFocus,p2 and p2.h or p and p.h)
         if setFocus: c.treeFocusHelper()
@@ -8508,7 +8508,7 @@ class Commands (object):
         return ''
     #@+node:ville.20090525205736.12325: *4* c.getSelectedPositions
     def getSelectedPositions(self):
-        """ Get list (poslist) of currently selected positions
+        """ Get list (Poslist) of currently selected positions
 
         So far only makes sense on qt gui (which supports multiselection)
         """
@@ -8573,13 +8573,13 @@ class Commands (object):
         # g.trace('%20s' % (timeStamp),fn)
 
     #@-others
-#@+node:ekr.20070615131604: ** class nodeHistory
-class nodeHistory:
+#@+node:ekr.20070615131604: ** class NodeHistory
+class NodeHistory:
 
     '''A class encapsulating knowledge of visited nodes.'''
 
     #@+others
-    #@+node:ekr.20070615131604.1: *3*  ctor (nodeHistory)
+    #@+node:ekr.20070615131604.1: *3*  ctor (NodeHistory)
     def __init__ (self,c):
 
         self.c = c
@@ -8587,7 +8587,7 @@ class nodeHistory:
             # a list of (position,chapter) tuples.
         self.beadPointer = -1
         self.skipBeadUpdate = False
-    #@+node:ekr.20070615134813: *3* goNext (nodeHistory)
+    #@+node:ekr.20070615134813: *3* goNext (NodeHistory)
     def goNext (self):
         '''Select the next node, if possible.'''
         if self.beadPointer + 1 < len(self.beadList):
@@ -8595,7 +8595,7 @@ class nodeHistory:
             p,chapter = self.beadList[self.beadPointer]
             # g.trace(self.beadPointer,p.h)
             self.select(p,chapter)
-    #@+node:ekr.20130915111638.11288: *3* goPrev (nodeHistory)
+    #@+node:ekr.20130915111638.11288: *3* goPrev (NodeHistory)
     def goPrev (self):
         '''Select the previously visited node, if possible.'''
         if self.beadPointer > 0:
@@ -8603,7 +8603,7 @@ class nodeHistory:
             p,chapter = self.beadList[self.beadPointer]
             # g.trace(self.beadPointer,p.h)
             self.select(p,chapter)
-    #@+node:ekr.20130915111638.11294: *3* select (nodeHistory)
+    #@+node:ekr.20130915111638.11294: *3* select (NodeHistory)
     def select (self,p,chapter):
         '''
         if p.v exists anywhere, select p in chapter p if possible.
@@ -8624,7 +8624,7 @@ class nodeHistory:
         else:
             self.beadList = [data for data in self.beadList if data[0].v != p.v]
             self.beadPointer = len(self.beadList)-1
-    #@+node:ville.20090724234020.14676: *3* update (nodeHistory)
+    #@+node:ville.20090724234020.14676: *3* update (NodeHistory)
     def update (self,p):
         '''Update the beadList.  Called from c.frame.tree.selectHelper.'''
         trace = False and not g.unitTesting

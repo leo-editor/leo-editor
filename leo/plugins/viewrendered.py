@@ -689,7 +689,7 @@ class ViewRenderedController(QtGui.QWidget):
             
             # Create the standard Leo bindings.
             wrapper_name = 'rendering-pane-wrapper'
-            wrapper = qtGui.leoQTextEditWidget(w,wrapper_name,c)
+            wrapper = qtGui.LeoQTextEditWidget(w,wrapper_name,c)
             w.leo_wrapper = wrapper
             c.k.completeAllBindingsForWidget(wrapper)
             w.setWordWrapMode(QtGui.QTextOption.WrapAtWordBoundaryOrAnywhere)

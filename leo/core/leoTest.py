@@ -11,7 +11,7 @@ Run the unit tests in test.leo using the Execute Script command.'''
 #@+node:ekr.20051104075904.1: ** << imports >> (leoTest)
 import leo.core.leoGlobals as g
 
-import leo.core.leoGui as leoGui # For unitTestGui.
+import leo.core.leoGui as leoGui # For UnitTestGui.
 
 import doctest
 import gc
@@ -272,7 +272,7 @@ class editBodyTestCase(unittest.TestCase):
         command()
 
         try:
-            # Don't call the undoer if we expect no change.
+            # Don't call the Undoer if we expect no change.
             if not tm.compareOutlines(self.before,self.after,compareHeadlines=False,report=False):
                 assert tm.compareOutlines(self.tempNode,self.after,compareHeadlines=False),'%s: before undo1' % commandName
                 c.undoer.undo()
@@ -505,14 +505,14 @@ class importExportTestCase(unittest.TestCase):
         self.fileName = fileName = g.os_path_finalize_join(g.app.loadDir,"..",fileName)
         if trace: g.trace('(importExportTestCase',fileName)
         
-        # Set the dict for unitTestGui, a subclass of nullGui.
+        # Set the dict for UnitTestGui, a subclass of nullGui.
         # nullGui.simulateDialog uses this dict to return values for dialogs.
         if self.doImport:
             theDict = {name: [fileName]}
         else:
             theDict = {name: fileName}
         self.oldGui = g.app.gui
-        self.gui = leoGui.unitTestGui(theDict,trace=False)
+        self.gui = leoGui.UnitTestGui(theDict,trace=False)
     #@+node:ekr.20051104075904.85: *3* shortDescription
     def shortDescription (self):
 
@@ -542,13 +542,13 @@ class importExportTestCase(unittest.TestCase):
         g.app.gui = self.oldGui
         c.selectPosition(self.old_p)
     #@-others
-#@+node:ekr.20070627140344: ** class runTestExternallyHelperClass
-class runTestExternallyHelperClass:
+#@+node:ekr.20070627140344: ** class RunTestExternallyHelperClass
+class RunTestExternallyHelperClass:
 
     '''A helper class to run tests externally.'''
 
     #@+others
-    #@+node:ekr.20070627140344.1: *3*  ctor: runTestExternallyHelperClass
+    #@+node:ekr.20070627140344.1: *3*  ctor: RunTestExternallyHelperClass
     def __init__(self,c,all,marked):
 
         self.c = c
@@ -588,7 +588,7 @@ class runTestExternallyHelperClass:
                     kind,t2-t1,self.fileName))
                 g.blue('created %s unit tests' % (kind))
             # 2010/09/09: allow a way to specify the gui.
-            gui = g.app.unitTestGui or 'nullGui'
+            gui = g.app.UnitTestGui or 'nullGui'
             self.runUnitTestLeoFile(gui=gui,
                 path='dynamicUnitTest.leo',silent=True)
             c.selectPosition(p.copy())
@@ -596,7 +596,7 @@ class runTestExternallyHelperClass:
             g.es_print('no %s@test or @suite nodes in %s outline' % (
                 'marked ' if self.marked else '',
                 'entire' if self.all else 'selected'))
-    #@+node:ekr.20070627135336.10: *4* createFileFromOutline (runTestExternallyHelperClass)
+    #@+node:ekr.20070627135336.10: *4* createFileFromOutline (RunTestExternallyHelperClass)
     def createFileFromOutline (self,c2):
 
         '''Write c's outline to test/dynamicUnitTest.leo.'''
@@ -607,7 +607,7 @@ class runTestExternallyHelperClass:
         c2.mFileName = path
         c2.fileCommands.save(path,silent=True)
         c2.close(new_c=self.c) # Bug fix: 2013/01/11: Retain previously-selected tab.
-    #@+node:ekr.20070627135336.9: *4* createOutline & helpers (runTestExternallyHelperClass)
+    #@+node:ekr.20070627135336.9: *4* createOutline & helpers (RunTestExternallyHelperClass)
     def createOutline (self,c2):
 
         '''Create a unit test ouline containing
@@ -654,7 +654,7 @@ class runTestExternallyHelperClass:
             if h.startswith(tag):
                 return True
         return False
-    #@+node:ekr.20090514072254.5746: *4* runUnitTestLeoFile (runTestExternallyHelperClass)
+    #@+node:ekr.20090514072254.5746: *4* runUnitTestLeoFile (RunTestExternallyHelperClass)
     def runUnitTestLeoFile (self,gui='qt',path='unitTest.leo',readSettings=True,silent=True):
 
         '''Run all unit tests in path (a .leo file) in a pristine environment.'''
@@ -910,7 +910,7 @@ class TestManager:
 
         # g.trace('all',all,'marked',marked)
 
-        runner = runTestExternallyHelperClass(c,all,marked)
+        runner = RunTestExternallyHelperClass(c,all,marked)
         runner.runTests()
 
         c.bodyWantsFocusNow()
@@ -1372,7 +1372,7 @@ class TestManager:
             return
 
         try:
-            readline = g.readLinesClass(s).next
+            readline = g.ReadLinesClass(s).next
             tabnanny.process_tokens(tokenize.generate_tokens(readline))
 
         except tokenize.TokenError as msg:

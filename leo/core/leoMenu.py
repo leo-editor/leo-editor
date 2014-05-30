@@ -12,13 +12,13 @@ import leo.core.leoGlobals as g
 import sys
 
 #@+others
-#@+node:ekr.20031218072017.3750: ** class leoMenu
-class leoMenu:
+#@+node:ekr.20031218072017.3750: ** class LeoMenu
+class LeoMenu:
 
     """The base class for all Leo menus."""
 
     #@+others
-    #@+node:ekr.20120124042346.12938: *3* leoMenu.Birth
+    #@+node:ekr.20120124042346.12938: *3* LeoMenu.Birth
     def __init__ (self,frame):
 
         self.c = frame.c
@@ -84,8 +84,8 @@ class leoMenu:
             'demote':               lambda: c.canDemote(),
 
             # Outline:Go To menu...
-            'goto-prev-history-node':   lambda: c.nodeHistory.canGoToPrevVisited(),
-            'goto-next-history-node':   lambda: c.nodeHistory.canGoToNextVisited(),
+            'goto-prev-history-node':   lambda: c.NodeHistory.canGoToPrevVisited(),
+            'goto-next-history-node':   lambda: c.NodeHistory.canGoToNextVisited(),
             'goto-prev-visible':        lambda: c.canSelectVisBack(),
             'goto-next-visible':        lambda: c.canSelectVisNext(),
             # These are too slow...
@@ -115,7 +115,7 @@ class leoMenu:
     #@+node:ekr.20031218072017.3775: *3* error and oops
     def oops (self):
 
-        g.pr("leoMenu oops:", g.callers(4), "should be overridden in subclass")
+        g.pr("LeoMenu oops:", g.callers(4), "should be overridden in subclass")
 
     def error (self,s):
 
@@ -326,7 +326,7 @@ class leoMenu:
         else:
             helpMenu = self.createNewMenu("&Help")
             self.createMenuEntries(helpMenu,self.helpMenuTable)
-    #@+node:ekr.20070926135612: *5* createMenusFromConfigList & helpers (leoMenu)
+    #@+node:ekr.20070926135612: *5* createMenusFromConfigList & helpers (LeoMenu)
     def createMenusFromConfigList (self,aList):
 
         '''Create menus from aList instead of 'hard coded' menus.
@@ -1113,7 +1113,7 @@ class leoMenu:
         '''Compute the old-style shortcut key for @shortcuts entries.'''
 
         return ''.join([ch for ch in s.strip().lower() if ch.isalnum()])
-    #@+node:ekr.20031218072017.1723: *4* createMenuEntries (leoMenu) & helpers
+    #@+node:ekr.20031218072017.1723: *4* createMenuEntries (LeoMenu) & helpers
     def createMenuEntries (self,menu,table,dynamicMenu=False):
 
         '''Create a menu entry from the table.
@@ -1301,7 +1301,7 @@ class leoMenu:
             g.es("exception creating",menuName,"menu")
             g.es_exception()
             return None
-    #@+node:ekr.20031218072017.4116: *4* createOpenWithMenuFromTable & helpers (leoMenu)
+    #@+node:ekr.20031218072017.4116: *4* createOpenWithMenuFromTable & helpers (LeoMenu)
     def createOpenWithMenuFromTable (self,table):
 
         '''table is a lists of dicts:
@@ -1356,7 +1356,7 @@ class leoMenu:
 
         for d in table:
             k.bindOpenWith(d)
-    #@+node:ekr.20051022043608.1: *5* createOpenWithMenuItemsFromTable & callback (leoMenu)
+    #@+node:ekr.20051022043608.1: *5* createOpenWithMenuItemsFromTable & callback (LeoMenu)
     def createOpenWithMenuItemsFromTable (self,menu,table):
 
         '''Create an entry in the Open with Menu from the table.
@@ -1388,7 +1388,7 @@ class leoMenu:
                     accelerator=accel,
                     command=callback,
                     underline=underline)
-    #@+node:ekr.20031218072017.4118: *6* defineOpenWithMenuCallback (leoMenu)
+    #@+node:ekr.20031218072017.4118: *6* defineOpenWithMenuCallback (LeoMenu)
     def defineOpenWithMenuCallback(self,d):
 
         # The first parameter must be event, and it must default to None.
@@ -1396,7 +1396,7 @@ class leoMenu:
             return self.c.openWith(d=d)
 
         return openWithMenuCallback
-    #@+node:tbrown.20080509212202.7: *4* deleteRecentFilesMenuItems (leoMenu)
+    #@+node:tbrown.20080509212202.7: *4* deleteRecentFilesMenuItems (LeoMenu)
     def deleteRecentFilesMenuItems(self,menu):
 
         """Delete recent file menu entries"""
@@ -1439,7 +1439,7 @@ class leoMenu:
                 return c.doCommand(command,label)
 
             return legacyMenuCallback
-    #@+node:ekr.20031218072017.3805: *4* deleteMenu (leoMenu)
+    #@+node:ekr.20031218072017.3805: *4* deleteMenu (LeoMenu)
     def deleteMenu (self,menuName):
 
         try:
@@ -1488,11 +1488,11 @@ class leoMenu:
         except:
             g.es("exception in","setRealMenuNamesFromTable")
             g.es_exception()
-    #@+node:ekr.20031218072017.3807: *4* getMenu, setMenu, destroyMenu (leoMenu)
+    #@+node:ekr.20031218072017.3807: *4* getMenu, setMenu, destroyMenu (LeoMenu)
     def getMenu (self,menuName):
 
         cmn = self.canonicalizeMenuName(menuName)
-        # if cmn == 'openwith': g.trace('leoMenu',g.dictToString(self.menus))
+        # if cmn == 'openwith': g.trace('LeoMenu',g.dictToString(self.menus))
         return self.menus.get(cmn)
 
     def setMenu (self,menuName,menu):
@@ -1563,23 +1563,23 @@ class leoMenu:
     def setMenuLabel (self,menu,name,label,underline=-1):
         self.oops()
     #@-others
-#@+node:ekr.20031218072017.3811: ** class nullMenu
-class nullMenu(leoMenu):
+#@+node:ekr.20031218072017.3811: ** class NullMenu
+class NullMenu(LeoMenu):
 
     """A null menu class for testing and batch execution."""
 
     #@+others
-    #@+node:ekr.20050104094308: *3* ctor (nullMenu)
+    #@+node:ekr.20050104094308: *3* ctor (NullMenu)
     def __init__ (self,frame):
 
         # Init the base class.
-        leoMenu.__init__(self,frame)
+        LeoMenu.__init__(self,frame)
 
         self.isNull = True
     #@+node:ekr.20050104094029: *3* oops
     def oops (self):
 
-        # g.trace("leoMenu", g.callers())
+        # g.trace("LeoMenu", g.callers())
         pass
     #@-others
 #@-others

@@ -5368,7 +5368,7 @@ print('\nEnd of leoConfig tests')
 oldGui = g.app.gui ; guis = [g.app.gui]
 
 import leo.core.leoGui as leoGui
-guis.append(leoGui.unitTestGui())
+guis.append(leoGui.UnitTestGui())
 
 for gui in guis:
     gui.runAboutLeoDialog(c,'version','copyright','url','email')
@@ -7783,7 +7783,7 @@ if not g.app.isExternalUnitTest:
     target = g.findNodeAnywhere(c,h)
     assert target,'no @auto node'
     
-    p,n,found = c.goToLineNumber(c).countLines(target,2)
+    p,n,found = c.GoToLineNumber(c).countLines(target,2)
     assert found,'not found'
     assert n == 1,'n: %s' % (n)
     assert p.h == 'at_auto_child',p.h
@@ -7794,7 +7794,7 @@ if not g.app.isExternalUnitTest:
     h = '@auto unittest/at-auto-line-number-test.py'
     root = g.findNodeAnywhere(c,h)
     assert root,'no root'
-    p,n,found = c.goToLineNumber(c).countLines(root,20)
+    p,n,found = c.GoToLineNumber(c).countLines(root,20)
     assert not found,'not found'
 #@+node:ekr.20110610122533.3391: *7* @test goto-global-line @auto 3
 # Not valid for external tests: uses @<file> node.
@@ -7805,7 +7805,7 @@ if not g.app.isExternalUnitTest:
     assert root1
     assert root1.isAnyAtFileNode()
     
-    fileName,lines,n,root = c.goToLineNumber(c).setup_file(n=3,p=root1)
+    fileName,lines,n,root = c.GoToLineNumber(c).setup_file(n=3,p=root1)
     assert fileName == h[6:],'fileName: %s' % (fileName)
     assert root == root1,'root: %s, root1: %s' % (root and root.h,root1 and root1.h)
     
@@ -7822,7 +7822,7 @@ if not g.app.isExternalUnitTest:
     assert root1.isAnyAtFileNode()
     
     scriptData = {'p':root1.copy(),'lines':['a','b','c']}
-    fileName,lines2,p2,root2 = c.goToLineNumber(c).setup_script(scriptData)
+    fileName,lines2,p2,root2 = c.GoToLineNumber(c).setup_script(scriptData)
     
     assert fileName == h[6:],'fileName'
     assert lines2 == scriptData.get('lines'),'lines'
@@ -7886,7 +7886,7 @@ if not g.app.isExternalUnitTest:
     f = open(path,'r') ; s = f.read() ; f.close()
     lines = g.splitLines(s) # The lines from the file.
     for n,node,index in table:
-        goto = c.goToLineNumber(c)
+        goto = c.GoToLineNumber(c)
         p2,n2,found = goto.countLines(root,n)
             # n, the argument to countLines, is 1-based
             # n2, the returned index into p2.b, is zero-based
@@ -7906,7 +7906,7 @@ if not g.app.isExternalUnitTest:
                 print('at line %s, index %s, node %s\ngot line %s\nexpected %s' % (
                     n,n2,p2.h,repr(lines2[n2].lstrip()),repr(lines[n].lstrip())))
             assert ok
-#@+node:ekr.20110610122533.3401: *7* @test goToLineNumber.findRoot 1
+#@+node:ekr.20110610122533.3401: *7* @test GoToLineNumber.findRoot 1
 # Not valid for external tests: uses @<file> node.
 if not g.app.isExternalUnitTest:
     
@@ -7917,7 +7917,7 @@ if not g.app.isExternalUnitTest:
     child = target.firstChild()
     assert child.h == 'at_auto_child','child.h'
     
-    p,found = c.goToLineNumber(c).findRoot(child)
+    p,found = c.GoToLineNumber(c).findRoot(child)
     
     assert p == target,'p' #p and p.h
     assert found,'not found'
@@ -7935,7 +7935,7 @@ if not g.app.isExternalUnitTest:
     assert gnx,'no gnx'
     
     delim = '#'
-    found = c.goToLineNumber(c).findGnx(delim,root,gnx,h)
+    found = c.GoToLineNumber(c).findGnx(delim,root,gnx,h)
     assert found,'not found'
 #@+node:ekr.20110610122533.3395: *7* @test goto-global-line @file 2
 # Not valid for external tests: uses @<file> node.
@@ -7947,13 +7947,13 @@ if not g.app.isExternalUnitTest:
     assert target,'no target'
     
     n = 2
-    fileName,lines,n,root = c.goToLineNumber(c).setup_file(n,p=target)
+    fileName,lines,n,root = c.GoToLineNumber(c).setup_file(n,p=target)
     assert fileName == h[6:]
     # print('lines\n%s' % g.listToString(lines))
     assert root == target
     
     ignoreSentinels = True
-    vnodeName,gnx,offset,delim = c.goToLineNumber(c).findVnode(root,lines,n,ignoreSentinels)
+    vnodeName,gnx,offset,delim = c.GoToLineNumber(c).findVnode(root,lines,n,ignoreSentinels)
     
     assert lines,'no lines'
     assert offset is not None,repr(offset)
@@ -7968,7 +7968,7 @@ if not g.app.isExternalUnitTest:
     assert root1
     assert root1.isAnyAtFileNode()
     
-    fileName,lines,n,root2 = c.goToLineNumber(c).setup_file(n=6,p=root1)
+    fileName,lines,n,root2 = c.GoToLineNumber(c).setup_file(n=6,p=root1)
     assert fileName == h[8:],'fileName'
     assert root2 == root1
     
@@ -7985,7 +7985,7 @@ if not g.app.isExternalUnitTest:
     assert root1
     assert root1.isAnyAtFileNode()
     
-    fileName,lines,n,root2 = c.goToLineNumber(c).setup_file(n=6,p=root1)
+    fileName,lines,n,root2 = c.GoToLineNumber(c).setup_file(n=6,p=root1)
     assert fileName == h[8:],'fileName'
     assert root2 == root1
     
@@ -7993,7 +7993,7 @@ if not g.app.isExternalUnitTest:
         print('root:%s, isRaw:%s, n:%s, len(lines): %s' % (
             root and root.h,isRaw,n,len(lines)))
 #@+node:ekr.20110610122533.3404: *6* @test goto_showResults not found
-c.goToLineNumber(c).showResults(
+c.GoToLineNumber(c).showResults(
     found=False,p=p,n=3,n2=3,lines=['a','b'])
 
 
@@ -10836,10 +10836,10 @@ log = c.frame.log
 name = log.__class__.__name__
 
 if g.app.isExternalUnitTest:
-    assert name == 'nullLog',name
+    assert name == 'NullLog',name
 else:
-    assert name == 'leoQtLog',name
-    assert log.widget.__class__.__name__ == 'leoQTextEditWidget' 
+    assert name == 'LeoQtLog',name
+    assert log.widget.__class__.__name__ == 'LeoQTextEditWidget' 
     assert not issubclass(log.widget.__class__,QtGui.QWidget.__class__)
         # leoQTextEditWidget us a poor name: it is not a Qt widget.
     assert log.widget.widget.__class__.__name__ == 'LeoQTextBrowser'
@@ -11685,7 +11685,7 @@ else:
     
     p1 = p.copy()
     
-    filter_obj = leoQtGui.leoQtEventFilter(c,w=w)
+    filter_obj = leoQtGui.LeoQtEventFilter(c,w=w)
     g.app.unitTestDict[p.h] = filter_obj # preserve a pointer to the filter.
     
     try:
@@ -11779,7 +11779,7 @@ else:
     w = c.frame.body.bodyCtrl.widget
     assert issubclass(w.__class__,QtGui.QTextEdit)
     
-    filter_obj = leoQtGui.leoQtEventFilter(c,w=w)
+    filter_obj = leoQtGui.LeoQtEventFilter(c,w=w)
     g.app.unitTestDict[p.h] = filter_obj # keep a pointer to the filter.
 
     # Create an Alt-7 key event.
@@ -13705,10 +13705,10 @@ try:
 finally:
     setup(p)
     c.redraw(p)
-#@+node:ekr.20111104112332.3954: *4* @test ic.htmlScanner.adjust_class_ref
+#@+node:ekr.20111104112332.3954: *4* @test ic.HtmlScanner.adjust_class_ref
 import leo.core.leoImport as leoImport
 ic = c.importCommands
-hs = leoImport.htmlScanner(importCommands=ic,atAuto=True)
+hs = leoImport.HtmlScanner(importCommands=ic,atAuto=True)
 
 s = '''
 <aTag>  @others
@@ -13721,10 +13721,10 @@ expected = '\n<aTag>\n@others\n</aTag>\n'
 result = hs.adjust_class_ref(s)
 assert result == expected,'expected...\n%s\ngot...\n%s' % (
     repr(expected),repr(result))
-#@+node:ekr.20111111074026.3972: *4* @test ic.htmlScanner.skipComment/Id/String
+#@+node:ekr.20111111074026.3972: *4* @test ic.HtmlScanner.skipComment/Id/String
 import leo.core.leoImport as leoImport
 ic = c.importCommands
-hs = leoImport.htmlScanner(importCommands=ic,atAuto=True)
+hs = leoImport.HtmlScanner(importCommands=ic,atAuto=True)
 
 table = (
     # Yes, both single and double quotes are valid in html.
@@ -13750,7 +13750,7 @@ for func,s,expected in table:
 import leo.core.leoImport as leoImport
 
 ic = c.importCommands
-scanner = leoImport.rstScanner(importCommands=ic,atAuto=True)
+scanner = leoImport.RstScanner(importCommands=ic,atAuto=True)
 scanner.root = p
 s1 = ["abc","xyz",]
 s2 = ["xyz",]
@@ -13761,10 +13761,10 @@ s1 = ["xyz",]
 s2 = ["abc","xyz",]
 
 scanner.reportMismatch(s1,s2,1,1)
-#@+node:ekr.20111105065243.3837: *4* @test ic.rstScanner.removeBlankLinesTokens (rst)
-# Important: at present only the rstScanner sets ignoreBlankLines == True
+#@+node:ekr.20111105065243.3837: *4* @test ic.RstScanner.removeBlankLinesTokens (rst)
+# Important: at present only the RstScanner sets ignoreBlankLines == True
 import leo.core.leoImport as leoImport
-sc = leoImport.rstScanner(c.importCommands,atAuto=False)
+sc = leoImport.RstScanner(c.importCommands,atAuto=False)
 
 assert sc.ignoreBlankLines,'fail0'
 
@@ -13809,10 +13809,10 @@ for s,expected in table:
     # C: Removing blank tokens from already-compressed tokens should have no effect.
     tokens4 = sc.removeBlankLinesTokens(tokens3)
     assert tokens4 == tokens3,'fail3'
-#@+node:ekr.20111104112332.3955: *4* @test ic.skip...Token (htmlScanner)
+#@+node:ekr.20111104112332.3955: *4* @test ic.skip...Token (HtmlScanner)
 import leo.core.leoImport as leoImport
 ic = c.importCommands
-scanner = leoImport.htmlScanner(importCommands=ic,atAuto=True)
+scanner = leoImport.HtmlScanner(importCommands=ic,atAuto=True)
 
 tails = (
     '<whatever>',
@@ -13881,10 +13881,10 @@ for f,s in table:
         assert i == len(s),'expected i==%s, got i==%s' % (len(s),i)
         assert result == expected,'expected...\n%s\ngot...\n%s' % (
             repr(expected),repr(result))
-#@+node:ekr.20111104114406.3833: *4* @test ic.tokenize (htmlScanner)
+#@+node:ekr.20111104114406.3833: *4* @test ic.tokenize (HtmlScanner)
 import leo.core.leoImport as leoImport
 ic = c.importCommands
-hs = leoImport.htmlScanner(importCommands=ic,atAuto=True)
+hs = leoImport.HtmlScanner(importCommands=ic,atAuto=True)
 
 s = '''
 <!-- a comment -->
@@ -19311,9 +19311,9 @@ trace = False ; vrbose = False
 for p in root.children_iter():
     h = p.h.strip()
     if h.startswith('@shadow-test-lax'):
-        test = x.atShadowTestCase(c,p,x,lax=True)
+        test = x.AtShadowTestCase(c,p,x,lax=True)
     elif h.startswith('@shadow-test'):
-        test = x.atShadowTestCase(c,p,x,lax=False)
+        test = x.AtShadowTestCase(c,p,x,lax=False)
     else:
         test = None
     if test:
@@ -19781,7 +19781,7 @@ node 1 line 2
 #@+node:ekr.20090529115704.4548: *8* node 2
 node 2 line 1
 node 2 line 2
-#@+node:ekr.20100131180007.5363: *4* @test class markerClass.getDelims
+#@+node:ekr.20100131180007.5363: *4* @test class MarkerClass.getDelims
 x = c.shadowController
 table = (
     ('python','#',''),
@@ -19791,12 +19791,12 @@ table = (
 )
 for language,delim1,delim2 in table:
     delims = g.set_delims_from_language(language)
-    marker = x.markerClass(delims)
+    marker = x.MarkerClass(delims)
     result = marker.getDelims()
     expected = delim1,delim2
     assert result==expected,'language %s expected %s got %s' % (
         language,expected,result)
-#@+node:ekr.20100131180007.5362: *4* @test class markerClass.isSentinel
+#@+node:ekr.20100131180007.5362: *4* @test class MarkerClass.isSentinel
 x = c.shadowController
 table = (
     ('python','abc',False),
@@ -19816,11 +19816,11 @@ table = (
 )
 for language,s,expected in table:
     delims = g.set_delims_from_language(language)
-    marker = x.markerClass(delims)
+    marker = x.MarkerClass(delims)
     result = marker.isSentinel(s)
     assert result==expected,'language %s s: %s expected %s got %s' % (
         language,s,expected,result)
-#@+node:ekr.20100131180007.5361: *4* @test class markerClass.isVerbatimSentinel
+#@+node:ekr.20100131180007.5361: *4* @test class MarkerClass.isVerbatimSentinel
 x = c.shadowController
 table = (
     ('python','abc',False),
@@ -19837,7 +19837,7 @@ table = (
 )
 for language,s,expected in table:
     delims = g.set_delims_from_language(language)
-    marker = x.markerClass(delims)
+    marker = x.MarkerClass(delims)
     result = marker.isVerbatimSentinel(s)
     assert result==expected,'language %s s: %s expected %s got %s' % (
         language,s,expected,result)

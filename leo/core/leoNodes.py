@@ -1804,28 +1804,28 @@ class Position (object):
             if g.app.unitTesting: assert False, 'bad child index: %s' % (n)
     #@-others
 position = Position # compatibility.
-#@+node:ville.20090311190405.68: ** class poslist
-class poslist(list):
-    #@+<< poslist doc >>
-    #@+node:bob.20101215134608.5898: *3* << poslist doc >>
+#@+node:ville.20090311190405.68: ** class Poslist
+class Poslist(list):
+    #@+<< Poslist doc >>
+    #@+node:bob.20101215134608.5898: *3* << Poslist doc >>
     #@@nocolor-node
     #@+at 
     # List of positions 
     # 
-    # Functions find_h() and find_b() both return an instance of poslist.
+    # Functions find_h() and find_b() both return an instance of Poslist.
     # 
-    # Methods filter_h() and filter_b() refine a poslist.
+    # Methods filter_h() and filter_b() refine a Poslist.
     # 
-    # Method children() generates a new poslist by descending one level from
-    # all the nodes in a poslist.
+    # Method children() generates a new Poslist by descending one level from
+    # all the nodes in a Poslist.
     # 
-    # A chain of poslist method calls must begin with find_h() or find_b().
+    # A chain of Poslist method calls must begin with find_h() or find_b().
     # The rest of the chain can be any combination of filter_h(),
     # filter_b(), and children(). For example:
     # 
     #     pl = c.find_h('@file.*py').children().filter_h('class.*').filter_b('import (.*)')
     # 
-    # For each position, pos, in the poslist returned, find_h() and
+    # For each position, pos, in the Poslist returned, find_h() and
     # filter_h() set attribute pos.mo to the match object (see Python
     # Regular Expression documentation) for the pattern match.
     # 
@@ -1836,30 +1836,30 @@ class poslist(list):
     # set attribute pos.matchiter to an iterator that will return a match
     # object for each of the non-overlapping matches of the pattern in the
     # body of the node.
-    #@-<< poslist doc >>
+    #@-<< Poslist doc >>
 
     #@+others
     #@+node:bob.20101215134608.5897: *3* children
     def children(self):
-        """ Return a poslist instance containing pointers to
-        all the immediate children of nodes in poslist self.
+        """ Return a Poslist instance containing pointers to
+        all the immediate children of nodes in Poslist self.
 
         """
 
-        res = poslist()
+        res = Poslist()
         for p in self:
             for child_p in p.children():
                 res.append(child_p.copy())            
         return res
     #@+node:ville.20090311190405.69: *3* filter_h
     def filter_h(self, regex, flags = re.IGNORECASE):
-        """ Find all the nodes in poslist self where zero or more characters at
+        """ Find all the nodes in Poslist self where zero or more characters at
         the beginning of the headline match regex
 
         """
 
         pat = re.compile(regex, flags)
-        res = poslist()
+        res = Poslist()
         for p in self:
             mo = re.match(pat, p.h)
             if mo:
@@ -1869,13 +1869,13 @@ class poslist(list):
         return res
     #@+node:ville.20090311195550.1: *3* filter_b
     def filter_b(self, regex, flags = re.IGNORECASE ):
-        """ Find all the nodes in poslist self where body matches regex
+        """ Find all the nodes in Poslist self where body matches regex
         one or more times.
 
         """
 
         pat = re.compile(regex, flags)
-        res = poslist()
+        res = Poslist()
         for p in self:
             m = re.finditer(pat, p.b)
             t1,t2 = itertools.tee(m,2)
@@ -2426,7 +2426,7 @@ class VNode (BaseVnode):
 
         pass # Compatibility routine for old scripts
     #@+node:ekr.20100303074003.5636: *4* v.restoreCursorAndScroll
-    # Called only by leoTree.selectHelper.
+    # Called only by LeoTree.selectHelper.
 
     def restoreCursorAndScroll (self):
 

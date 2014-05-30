@@ -178,7 +178,7 @@ def init ():
     if ok:
         sc = 'ScriptingControllerClass'
         if (not hasattr(g.app.gui, sc)
-            or getattr(g.app.gui, sc) is leoGui.nullScriptingControllerClass):
+            or getattr(g.app.gui, sc) is leoGui.NullScriptingControllerClass):
             setattr(g.app.gui, sc, scriptingController)
 
         # Note: call onCreate _after_ reading the .leo file.

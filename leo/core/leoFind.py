@@ -15,7 +15,7 @@ import re
 #@@nocolor-node
 #@+at
 # 
-# leoFind.py contains the gui-independant part of all of Leo's
+# LeoFind.py contains the gui-independant part of all of Leo's
 # find/change code.
 # 
 # Such code is tricky, which is why it should be gui-independent code!
@@ -69,7 +69,7 @@ import re
 #@+node:ekr.20070105092022.1: ** class searchWidget
 class searchWidget:
     '''A class to simulating high-level interface widget.'''
-    # This could be a stringTextWidget, but this code is simple and good.
+    # This could be a StringTextWidget, but this code is simple and good.
     def __init__ (self,*args,**keys):
         # g.trace ('searchWidget',g.callers())
         self.s = ''    # The widget text
@@ -83,7 +83,7 @@ class searchWidget:
     def getAllText (self):          return self.s
     def getInsertPoint (self):      return self.i       # Returns Python index.
     def getSelectionRange(self):    return self.sel     # Returns Python indices.
-    #@+node:ekr.20070105102419: *3* setters (leoFind)
+    #@+node:ekr.20070105102419: *3* setters (LeoFind)
     def delete(self,i,j=None):
         i = self.toPythonIndex(i)
         if j is None: j = i + 1
@@ -112,21 +112,21 @@ class searchWidget:
         self.sel = self.toPythonIndex(i),self.toPythonIndex(j)
         if insert is not None:
             self.i = self.toPythonIndex(insert)
-    #@+node:ekr.20070105092022.4: *3* toPythonIndex (leoFind)
+    #@+node:ekr.20070105092022.4: *3* toPythonIndex (LeoFind)
     def toPythonIndex (self,i):
 
         return g.toPythonIndex(self.s,i)
     #@-others
-#@+node:ekr.20061212084717: ** class leoFind (leoFind.py)
-class leoFind:
+#@+node:ekr.20061212084717: ** class LeoFind (LeoFind.py)
+class LeoFind:
 
     """The base class for Leo's Find commands."""
 
     #@+others
-    #@+node:ekr.20131117164142.17021: *3* leoFind.birth
+    #@+node:ekr.20131117164142.17021: *3* LeoFind.birth
     #@+node:ekr.20031218072017.3053: *4* find.__init__ & helpers
     def __init__ (self,c):
-        # g.trace('(leoFind)',c.shortFileName(),id(self),g.callers())
+        # g.trace('(LeoFind)',c.shortFileName(),id(self),g.callers())
         self.c = c
         self.errors = 0
         self.expert_mode = False # set in finishCreate.
@@ -171,7 +171,7 @@ class leoFind:
             # This must be different from self.wrap, which is set by the checkbox.
         self.wrapPosition = None # The start of wrapped searches: persists between calls.
         self.wrapPos = None # The starting position of the wrapped search: persists between calls.
-    #@+node:ekr.20131117164142.17022: *4* leoFind.finishCreate
+    #@+node:ekr.20131117164142.17022: *4* LeoFind.finishCreate
     def finishCreate(self):
         
         # New in 4.11.1.
@@ -182,7 +182,7 @@ class leoFind:
         # we can finish creating the Find pane.
         dw = c.frame.top
         if dw: dw.finishCreateLogPane()
-    #@+node:ekr.20060123065756.1: *3* leoFind.Buttons (immediate execution)
+    #@+node:ekr.20060123065756.1: *3* LeoFind.Buttons (immediate execution)
     #@+node:ekr.20031218072017.3057: *4* find.changeAllButton
     def changeAllButton(self,event=None):
         '''Handle Replace All button.'''
@@ -229,7 +229,7 @@ class leoFind:
         if 0: # We _must_ retain the editing status for incremental searches!
             c.endEditing()
         self.update_ivars()
-    #@+node:ekr.20031218072017.3055: *3* leoFind.Commands (immediate execution)
+    #@+node:ekr.20031218072017.3055: *3* LeoFind.Commands (immediate execution)
     #@+node:ekr.20031218072017.3061: *4* find.changeCommand
     def changeCommand(self,event=None):
         '''Handle replace command.'''
@@ -310,7 +310,7 @@ class leoFind:
         else:
             self.openFindTab(event)
             self.ftm.init_focus()
-    #@+node:ekr.20131117164142.16939: *3* leoFind.ISearch
+    #@+node:ekr.20131117164142.16939: *3* LeoFind.ISearch
     #@+node:ekr.20131117164142.16941: *4* find.isearchForward
     def isearchForward (self,event):
 
@@ -386,7 +386,7 @@ class leoFind:
 
         self.startIncremental(event,'isearch-with-present-options',
             forward=None,ignoreCase=None,regexp=None)
-    #@+node:ekr.20131117164142.16946: *3* leoFind.Isearch utils
+    #@+node:ekr.20131117164142.16946: *3* LeoFind.Isearch utils
     #@+node:ekr.20131117164142.16947: *4* find.abortSearch (incremental)
     def abortSearch (self):
         '''Restore the original position and selection.'''
@@ -590,7 +590,7 @@ class leoFind:
             ),protect=True)
         k.setState('isearch',1,handler=self.iSearchStateHandler)
         c.minibufferWantsFocus()
-    #@+node:ekr.20131117164142.17013: *3* leoFind.Minibuffer commands
+    #@+node:ekr.20131117164142.17013: *3* LeoFind.Minibuffer commands
     #@+node:ekr.20131117164142.17011: *4* find.minibufferCloneFindAll
     def minibufferCloneFindAll (self,event=None):
         c = self.c ; k = self.k ; tag = 'clone-find-all'
@@ -663,7 +663,7 @@ class leoFind:
             self.updateChangeList(k.arg)
             self.lastStateHelper()
             self.generalChangeHelper(self._sString,k.arg,changeAll=True)
-    #@+node:ekr.20131117164142.16983: *3* leoFind.Minibuffer utils
+    #@+node:ekr.20131117164142.16983: *3* LeoFind.Minibuffer utils
     #@+node:ekr.20131117164142.16992: *4* find.addChangeStringToLabel
     def addChangeStringToLabel (self,protect=True):
 
@@ -907,8 +907,8 @@ class leoFind:
         else:
             self.lastStateHelper()
             self.generalSearchHelper(k.arg)
-    #@+node:ekr.20131117164142.16915: *3* leoFind.Option commands
-    #@+node:ekr.20131117164142.16919: *4* leoFind.toggle checkbox commands
+    #@+node:ekr.20131117164142.16915: *3* LeoFind.Option commands
+    #@+node:ekr.20131117164142.16919: *4* LeoFind.toggle checkbox commands
     def toggleFindCollapesNodes(self,event):
         '''Toggle the 'Collapse Nodes' checkbox in the find tab.'''
         c = self.c
@@ -941,7 +941,7 @@ class leoFind:
         return self.toggleOption('wrap')
     def toggleOption(self,checkbox_name):
         self.ftm.toggle_checkbox(checkbox_name)
-    #@+node:ekr.20131117164142.17019: *4* leoFind.setFindScope...
+    #@+node:ekr.20131117164142.17019: *4* LeoFind.setFindScope...
     def setFindScopeEveryWhere (self,event=None):
         '''Set the 'Entire Outline' radio button in the Find tab.'''
         return self.setFindScope('entire-outline')
@@ -954,7 +954,7 @@ class leoFind:
     def setFindScope(self,where):
         '''Set the radio buttons to the given scope'''
         self.ftm.set_radio_button(where)
-    #@+node:ekr.20131117164142.16989: *4* leoFind.showFindOptions
+    #@+node:ekr.20131117164142.16989: *4* LeoFind.showFindOptions
     def showFindOptions (self,event=None):
         '''Show the present find options in the status line.'''
         frame = self.c.frame ; z = []
@@ -991,15 +991,15 @@ class leoFind:
             val = getattr(self,ivar)
             if val: z.append(s)
         frame.putStatusLine(' '.join(z))
-    #@+node:ekr.20131117164142.16990: *4* leoFind.setupChangePattern
+    #@+node:ekr.20131117164142.16990: *4* LeoFind.setupChangePattern
     def setupChangePattern (self,pattern):
 
         self.ftm.setChangeText(pattern)
-    #@+node:ekr.20131117164142.16991: *4* leoFind.setupSearchPattern
+    #@+node:ekr.20131117164142.16991: *4* LeoFind.setupSearchPattern
     def setupSearchPattern (self,pattern):
 
         self.ftm.setFindText(pattern)
-    #@+node:ekr.20031218072017.3067: *3* leoFind.Utils
+    #@+node:ekr.20031218072017.3067: *3* LeoFind.Utils
     #@+node:ekr.20031218072017.2293: *4* find.batchChange (sets start of replace-all group)
     #@+at This routine performs a single batch change operation, updating the
     # head or body string of p and leaving the result in s_ctrl. We update
@@ -1712,7 +1712,7 @@ class leoFind:
         if regexp  is not None: self.patern_match = True
         if word    is not None: self.whole_word = True
         self.showFindOptions()
-    #@+node:ekr.20031218072017.3082: *3* leoFind.Initing & finalizing
+    #@+node:ekr.20031218072017.3082: *3* LeoFind.Initing & finalizing
     #@+node:ekr.20031218072017.3083: *4* find.checkArgs
     def checkArgs (self):
 

@@ -5971,7 +5971,7 @@ class Utils:
         command = 'import statictypechecking as stc; stc.Utils().test_wrapper("%s")' % (
             project_name)
         cProfile.run(command,fn)
-        f = g.fileLikeObject()
+        f = g.FileLikeObject()
         ps = pstats.Stats(fn,stream=f)
         ps.strip_dirs()
         ps.sort_stats('time',) # 'calls','cumulative','time')
@@ -6086,7 +6086,7 @@ class Utils:
             table = (
                 "'",'"',
                 'aList','aList2','u','at',
-                'baseEditCommandsClass',
+                'BaseEditCommandsClass',
                 'c','c1','c2','ch','cc',
                 # 'c.frame',
                 # 'c.frame.body.bodyCtrl','c.frame.body.bodyCtrl.widget',
@@ -6106,9 +6106,9 @@ class Utils:
                 'tabnanny','time','timer','timeit','token','traceback','types',
                 'unittest','urllib','urlparse','xml',
                 'leoApp','leoBody','leoCache','leoColor','leoCommands','leoConfig',
-                'leoFind','leoFrame','leoGui','leoIPython','leoImport',
-                'leoLog','leoMenu','leoNodes','leoPlugins','leoRst',
-                'leoTangle','leoTest','leoTree',
+                'LeoFind','leoFrame','LeoGui','leoIPython','leoImport',
+                'leoLog','LeoMenu','leoNodes','leoPlugins','leoRst',
+                'leoTangle','leoTest','LeoTree',
             )
             print('\nAll attributes...')
             result = []

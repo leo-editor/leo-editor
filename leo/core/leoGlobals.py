@@ -155,19 +155,19 @@ globalDirectiveList = [
     'unit','verbose', 'wrap',
 ]
 #@-<< define globalDirectiveList >>
-#@+<< define the nullObject class >>
-#@+node:ekr.20090521175848.5881: ** << define the nullObject class >>
+#@+<< define the NullObject class >>
+#@+node:ekr.20090521175848.5881: ** << define the NullObject class >>
 # From the Python cookbook, recipe 5.23
 
-class nullObject:
+class NullObject:
 
     """An object that does nothing, and does it very well."""
 
     def __init__   (self,*args,**keys): pass
     def __call__   (self,*args,**keys): return self
     # def __len__    (self): return 0 # Debatable.
-    def __repr__   (self): return "nullObject"
-    def __str__    (self): return "nullObject"
+    def __repr__   (self): return "NullObject"
+    def __str__    (self): return "NullObject"
     if isPython3:
         def __bool__(self): return False
     else:
@@ -175,7 +175,10 @@ class nullObject:
     def __delattr__(self,attr):     return self
     def __getattr__(self,attr):     return self
     def __setattr__(self,attr,val): return self
-#@-<< define the nullObject class >>
+    
+nullObject = NullObject
+    # For compatibility
+#@-<< define the NullObject class >>
 tree_popup_handlers = [] # Set later.
 user_dict = {}
     # Non-persistent dictionary for free use by scripts and plugins.
@@ -1790,14 +1793,14 @@ def print_stack():
 
 printStack = print_stack
 #@+node:ekr.20031218072017.3121: *3* redirecting stderr and stdout to Leo's log pane
-class redirectClass:
+class RedirectClass:
 
     """A class to redirect stdout and stderr to Leo's log pane."""
 
-    #@+<< redirectClass methods >>
-    #@+node:ekr.20031218072017.1656: *4* << redirectClass methods >>
+    #@+<< RedirectClass methods >>
+    #@+node:ekr.20031218072017.1656: *4* << RedirectClass methods >>
     #@+others
-    #@+node:ekr.20041012082437: *5* redirectClass.__init__
+    #@+node:ekr.20041012082437: *5* RedirectClass.__init__
     def __init__ (self):
 
         self.old = None
@@ -1846,7 +1849,7 @@ class redirectClass:
         if self.old:
             if app.log:
                 if trace: self.old.write(
-                    'redirectClass: to log: %s\n' % repr(s))
+                    'RedirectClass: to log: %s\n' % repr(s))
                 app.log.put(s, from_redirect=True)
             else:
                 self.old.write(s +'\n')
@@ -1854,11 +1857,11 @@ class redirectClass:
             # Can happen when g.batchMode is True.
             g.pr(s)
     #@-others
-    #@-<< redirectClass methods >>
+    #@-<< RedirectClass methods >>
 
 # Create two redirection objects, one for each stream.
-redirectStdErrObj = redirectClass()
-redirectStdOutObj = redirectClass()
+redirectStdErrObj = RedirectClass()
+redirectStdOutObj = RedirectClass()
 
 #@+<< define convenience methods for redirecting streams >>
 #@+node:ekr.20031218072017.3122: *4* << define convenience methods for redirecting streams >>
@@ -3197,22 +3200,22 @@ def internalError (*args):
     g.error('\nInternal Leo error in',caller)
     g.es_print(*args)
     g.es_print('Called from',','.join(callers[:-1]))
-#@+node:ekr.20090128083459.82: *3* g.posList
-class posList(list):
-    #@+<< docstring for posList >>
-    #@+node:ekr.20090130114732.2: *4* << docstring for posList >>
+#@+node:ekr.20090128083459.82: *3* g.PosList
+class PosList(list):
+    #@+<< docstring for PosList >>
+    #@+node:ekr.20090130114732.2: *4* << docstring for PosList >>
     '''A subclass of list for creating and selecting lists of positions.
 
-        This is deprecated, use leoNodes.poslist instead!
+        This is deprecated, use leoNodes.Poslist instead!
 
-        aList = g.posList(c)
-            # Creates a posList containing all positions in c.
+        aList = g.PosList(c)
+            # Creates a PosList containing all positions in c.
 
-        aList = g.posList(c,aList2)
-            # Creates a posList from aList2.
+        aList = g.PosList(c,aList2)
+            # Creates a PosList from aList2.
 
         aList2 = aList.select(pattern,regex=False,removeClones=True)
-            # Creates a posList containing all positions p in aList
+            # Creates a PosList containing all positions p in aList
             # such that p.h matches the pattern.
             # The pattern is a regular expression if regex is True.
             # if removeClones is True, all positions p2 are removed
@@ -3222,7 +3225,7 @@ class posList(list):
             # Prints all positions in aList, sorted if sort is True.
             # Prints p.h, or repr(p) if verbose is True.
     '''
-    #@-<< docstring for posList >>
+    #@-<< docstring for PosList >>
     def __init__ (self,c,aList=None):
         self.c = c
         list.__init__(self) # Init the base class
@@ -3238,7 +3241,7 @@ class posList(list):
         else: return g.listToString([p.h for p in self],sort=sort)
 
     def select(self,pat,regex=False,removeClones=True):
-        '''Return a new posList containing all positions
+        '''Return a new PosList containing all positions
         in self that match the given pattern.'''
         c = self.c ; aList = []
         if regex:
@@ -3251,7 +3254,7 @@ class posList(list):
                     aList.append(p.copy())
         if removeClones:
             aList = self.removeClones(aList)
-        return posList(c,aList)
+        return PosList(c,aList)
 
     def removeClones(self,aList):
         seen = {} ; aList2 = []
@@ -3316,7 +3319,7 @@ def pr(*args,**keys):
 #@+node:ekr.20031218072017.2317: *3* g.trace
 def trace (*args,**keys):
     '''Print a tracing message.'''
-    # Don't use g here: in standalone mode g is a nullObject!
+    # Don't use g here: in standalone mode g is a NullObject!
     # Compute the effective args.
     d = {'align':0,'before':'','newline':True,'caller_level':1,'noname':False}
     d = doKeywordArgs(keys,d)
@@ -5737,7 +5740,7 @@ class Bunch (object):
         return self.__dict__.get(key,theDefault)
 
 bunch = Bunch
-#@+node:ekr.20031219074948.1: *3* class nullObject
+#@+node:ekr.20031219074948.1: *3* class NullObject
 # From the Python cookbook, recipe 5.23
 
 # This is now defined at the start of this file.
@@ -5893,20 +5896,20 @@ def expand_css_constants(c, sheet, font_size_delta=None):
     sheet = sheet.replace('\\\n', '')  # join lines ending in \
 
     return sheet
-#@+node:ekr.20040331083824.1: *3* g.fileLikeObject
+#@+node:ekr.20040331083824.1: *3* g.FileLikeObject
 # Note: we could use StringIo for this.
 
-class fileLikeObject:
+class FileLikeObject:
 
     """Define a file-like object for redirecting writes to a string.
 
     The caller is responsible for handling newlines correctly."""
 
     #@+others
-    #@+node:ekr.20050404151753: *4*  ctor (g.fileLikeObject)
+    #@+node:ekr.20050404151753: *4*  ctor (g.FileLikeObject)
     def __init__(self,encoding='utf-8',fromString=None):
 
-        # g.trace('g.fileLikeObject:__init__','fromString',fromString)
+        # g.trace('g.FileLikeObject:__init__','fromString',fromString)
 
         # New in 4.2.1: allow the file to be inited from string s.
 
@@ -5960,6 +5963,9 @@ class fileLikeObject:
 
             self.list.append(s)
     #@-others
+
+fileLikeObject = FileLikeObject
+    # For compatibility.
 #@+node:tbrown.20130411121812.28335: *3* g.find_constants_defined
 def find_constants_defined(text):
     r"""find_constants - Return a dict of constants defined in the supplied text.
@@ -6733,7 +6739,7 @@ def importFromPath (name,path,pluginName=None,verbose=False):
     return module
 #@+node:ekr.20040629162023: *3* readLines class and generator
 #@+node:EKR.20040612114220.3: *4* g.readLinesGenerator
-# This has been replaced by readLinesClass because
+# This has been replaced by ReadLinesClass because
 # yield is not valid in jython.
 
 # def readLinesGenerator(s):
@@ -6742,8 +6748,8 @@ def importFromPath (name,path,pluginName=None,verbose=False):
         # # g.trace(repr(line))
         # yield line
     # yield ''
-#@+node:EKR.20040612114220.4: *4* class readLinesClass
-class readLinesClass:
+#@+node:EKR.20040612114220.4: *4* class ReadLinesClass
+class ReadLinesClass:
 
     """A class whose next method provides a readline method for Python's tokenize module."""
 

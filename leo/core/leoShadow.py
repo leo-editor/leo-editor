@@ -331,16 +331,16 @@ class ShadowController:
 
         #@+<< init vars >>
         #@+node:ekr.20080708094444.40: *5* << init vars >>
-        new_private_lines_wtr = self.sourcewriter(self)
+        new_private_lines_wtr = self.Sourcewriter(self)
         # collects the contents of the new file.
 
-        new_public_lines_rdr = self.sourcereader(self,new_public_lines)
+        new_public_lines_rdr = self.Sourcereader(self,new_public_lines)
             # Contains the changed source code.
 
-        old_public_lines_rdr = self.sourcereader(self,old_public_lines)
+        old_public_lines_rdr = self.Sourcereader(self,old_public_lines)
             # this is compared to new_public_lines_rdr to find out the changes.
 
-        old_private_lines_rdr = self.sourcereader(self,old_private_lines) # lines_with_sentinels)
+        old_private_lines_rdr = self.Sourcereader(self,old_private_lines) # lines_with_sentinels)
             # This is the file which is currently produced by Leo, with sentinels.
 
         # Check that all ranges returned by get_opcodes() are contiguous
@@ -666,7 +666,7 @@ class ShadowController:
         if trace: g.trace('delim1 %s delim2 %s delim3 %s fn %s' % (
             delims[0],delims[1],delims[2], fn))
 
-        marker = x.markerClass(delims)
+        marker = x.MarkerClass(delims)
         return marker
     #@+node:ekr.20090529125512.6125: *5* x.findLeoLine
     def findLeoLine (self,lines):
@@ -688,7 +688,7 @@ class ShadowController:
             root, ext = os.path.splitext(root)
 
         delims = g.comment_delims_from_extension(filename)
-        marker = x.markerClass(delims)
+        marker = x.MarkerClass(delims)
         return marker
     #@+node:ekr.20080708094444.30: *4* x.push_filter_mapping
     def push_filter_mapping (self,lines, marker):
@@ -782,8 +782,8 @@ class ShadowController:
             except IOError:
                 g.es_exception()
                 g.es_print('can not open',fileName)
-    #@+node:ekr.20080709062932.2: *3* atShadowTestCase
-    class atShadowTestCase (unittest.TestCase):
+    #@+node:ekr.20080709062932.2: *3* AtShadowTestCase
+    class AtShadowTestCase (unittest.TestCase):
 
         '''Support @shadow-test nodes.
 
@@ -792,7 +792,7 @@ class ShadowController:
         '''
 
         #@+others
-        #@+node:ekr.20080709062932.6: *4* __init__ (atShadowTestCase)
+        #@+node:ekr.20080709062932.6: *4* __init__ (AtShadowTestCase)
         def __init__ (self,c,p,shadowController,lax,trace=False):
 
              # Init the base class.
@@ -805,11 +805,11 @@ class ShadowController:
 
             # Hard value for now.
             delims = '#','',''
-            self.marker = shadowController.markerClass(delims)
+            self.marker = shadowController.MarkerClass(delims)
 
             # For teardown...
             self.ok = True
-        #@+node:ekr.20080709062932.7: *4*  fail (atShadowTestCase)
+        #@+node:ekr.20080709062932.7: *4*  fail (AtShadowTestCase)
         def fail (self,msg=None):
 
             """Mark a unit test as having failed."""
@@ -903,7 +903,7 @@ class ShadowController:
 
             # No change is made to the outline.
             # self.c.redraw()
-        #@+node:ekr.20080709062932.10: *4* runTest (atShadowTestCase)
+        #@+node:ekr.20080709062932.10: *4* runTest (AtShadowTestCase)
         def runTest (self,define_g = True):
 
             x = self.shadowController
@@ -914,7 +914,7 @@ class ShadowController:
 
             if not self.lax and results != self.expected_private_lines:
 
-                # g.pr('%s\natShadowTestCase.runTest:failure\n%s' % ('*' * 40,p.h))
+                # g.pr('%s\nAtShadowTestCase.runTest:failure\n%s' % ('*' * 40,p.h))
                 g.pr(p.h)
 
                 for aList,tag in (
@@ -937,12 +937,12 @@ class ShadowController:
         #@-others
 
     #@+node:ekr.20090529061522.5727: *3* class marker
-    class markerClass:
+    class MarkerClass:
 
         '''A class representing comment delims in @shadow files.'''
 
         #@+others
-        #@+node:ekr.20090529061522.6257: *4* markerClass.ctor & repr
+        #@+node:ekr.20090529061522.6257: *4* MarkerClass.ctor & repr
         def __init__(self,delims):
 
             delim1,delim2,delim3 = delims
@@ -959,7 +959,7 @@ class ShadowController:
             else:
                 delims = '%s %s' % (self.delim2,self.delim2)
 
-            return '<markerClass: delims: %s>' % repr(delims)
+            return '<MarkerClass: delims: %s>' % repr(delims)
         #@+node:ekr.20090529061522.6258: *4* getDelims
         def getDelims(self):
 
@@ -984,8 +984,8 @@ class ShadowController:
             return self.isSentinel(s,suffix='verbatim')
         #@-others
 
-    #@+node:ekr.20080708094444.12: *3* class sourcereader
-    class sourcereader:
+    #@+node:ekr.20080708094444.12: *3* class Sourcereader
+    class Sourcereader:
         """
         A class to read lines sequentially.
 
@@ -1000,7 +1000,7 @@ class ShadowController:
         The line numbering starts from 0.
         """
         #@+others
-        #@+node:ekr.20080708094444.13: *4* __init__ (sourcereader)
+        #@+node:ekr.20080708094444.13: *4* __init__ (Sourcereader)
         def __init__ (self,shadowController,lines):
 
             self.lines = lines 
@@ -1041,7 +1041,7 @@ class ShadowController:
             return self.index>=self.length
         #@+node:ekr.20080708094444.19: *4* clone (not used)
         # def clone(self):
-            # sr = self.shadowController.sourcereader(shadowController,self.lines)
+            # sr = self.shadowController.Sourcereader(shadowController,self.lines)
             # sr.i = self.i
             # return sr
         #@+node:ekr.20080708094444.20: *4* dump
@@ -1053,15 +1053,15 @@ class ShadowController:
                 marker = '**' if i==self.i else '  '
                 g.pr("%s %3s:%s" % (marker, i, repr(line)),)
         #@-others
-    #@+node:ekr.20080708094444.21: *3* class sourcewriter
-    class sourcewriter:
+    #@+node:ekr.20080708094444.21: *3* class Sourcewriter
+    class Sourcewriter:
         """
         Convenience class to capture output to a file.
 
-        Similar to class sourcereader.
+        Similar to class Sourcereader.
         """
         #@+others
-        #@+node:ekr.20080708094444.22: *4* __init__ (sourcewriter)
+        #@+node:ekr.20080708094444.22: *4* __init__ (Sourcewriter)
         def __init__ (self,shadowController):
 
             self.i = 0

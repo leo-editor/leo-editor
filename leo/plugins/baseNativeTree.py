@@ -20,7 +20,7 @@ import PyQt4.QtGui as QtGui
 import PyQt4.QtCore as QtCore
 #@-<< imports >>
 
-class baseNativeTreeWidget (leoFrame.leoTree):
+class BaseNativeTreeWidget (leoFrame.LeoTree):
 
     """The base class for native tree widgets.
 
@@ -35,7 +35,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     def __init__(self,c,frame):
 
         # Init the base class.
-        leoFrame.leoTree.__init__(self,frame)
+        leoFrame.LeoTree.__init__(self,frame)
 
         # Components.
         self.c = c
@@ -74,7 +74,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
         self.editWidgetsDict = {} # keys are native edit widgets, values are wrappers.
 
         self.setConfigIvars()
-        self.setEditPosition(None) # Set positions returned by leoTree.editPosition()
+        self.setEditPosition(None) # Set positions returned by LeoTree.editPosition()
     #@+node:ekr.20110605121601.17866: *3* get_name (nativeTree)
     def getName (self):
 
@@ -349,7 +349,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
 
         trace = False and not g.unitTesting
 
-        if trace: g.trace('(leoQtTree) busy? %s %s' % (
+        if trace: g.trace('(LeoQtTree) busy? %s %s' % (
             self.busy(),p and p.h or '<no p>'),g.callers(4))
 
         # Prevent the selecting lockout from disabling the redraw.
@@ -607,7 +607,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
             # Only methods that actually generate events should set lockouts.
             if trace: g.trace(self.traceItem(item))
             self.select(p)
-                # This is a call to leoTree.select(!!)
+                # This is a call to LeoTree.select(!!)
                 # Calls before/afterSelectHint.
         else:
             self.error('no p for item: %s' % item)
@@ -769,7 +769,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     #@+node:ekr.20110605121601.17911: *3* endEditLabel (nativeTree)
     def endEditLabel (self):
 
-        '''Override leoTree.endEditLabel.
+        '''Override LeoTree.endEditLabel.
 
         End editing of the presently-selected headline.'''
 
@@ -922,7 +922,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     #@+node:ekr.20110605121601.17915: *3* getSelectedPositions (nativeTree)
     def getSelectedPositions(self):
         items = self.getSelectedItems()
-        pl = leoNodes.poslist(self.item2position(it) for it in items)
+        pl = leoNodes.Poslist(self.item2position(it) for it in items)
         return pl
     #@+node:ekr.20110605121601.17916: ** Widget-dependent helpers
     #@+node:ekr.20110605121601.17917: *3* Drawing
@@ -1214,7 +1214,7 @@ class baseNativeTreeWidget (leoFrame.leoTree):
     #@+node:ekr.20110605121601.17953: *3* oops
     def oops(self):
 
-        g.pr("leoTree oops: should be overridden in subclass",
+        g.pr("LeoTree oops: should be overridden in subclass",
             g.callers(4))
     #@-others
 #@-leo

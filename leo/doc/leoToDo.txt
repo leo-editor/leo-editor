@@ -35,7 +35,7 @@ def getRecentCoreList():
         # 'leoRst',
         # 'leoSessions',
         # 'leoShadow',
-        'leoSTC',
+        # 'leoSTC',
         # 'leoTangle',
         # 'leoTest',
         # 'leoUndo',
@@ -52,12 +52,12 @@ def getRecentPluginsList ():
         # 'free_layout',
         # 'internal_ipkernel',
         # 'leo_interface',
-        # 'mod_scripting',
+        'mod_scripting',
         # 'nested_splitter',
         # 'qtGui',
         # 'plugins_menu',
         # 'screencast',
-        # 'viewrendered',
+        'viewrendered',
         # 'viewrendered2',
     )
 .. @+node:ekr.20131114124839.16664: ** First
@@ -991,7 +991,7 @@ def initApp (self,verbose):
     # Create early classes *after* doing plugins.init()
     g.app.recentFilesManager = RecentFilesManager()
     g.app.config = leoConfig.GlobalConfigManager()
-    g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
+    g.app.nodeIndices = leoNodes.NodeIndices(g.app.leoID)
     g.app.sessionManager = leoSessions.SessionManager()
     # Complete the plugins class last.
     g.app.pluginsController.finishCreate()
@@ -1306,7 +1306,7 @@ http://python.org/download/
                 # g.app.gui does not exist yet.
                 import Tkinter as Tk
                 << define emergency dialog class >>
-                d = emergencyDialog(
+                d = EmergencyDialog(
                     title='Python Version Error',
                     message=message)
                 d.run()
@@ -1318,7 +1318,7 @@ http://python.org/download/
         traceback.print_exc()
         return 0
 .. @+node:ekr.20120219154958.10492: *7* << define emergency dialog class >>
-class emergencyDialog:
+class EmergencyDialog:
 
     """A class that creates an Tkinter dialog with a single OK button."""
 
@@ -1826,7 +1826,7 @@ def initApp (self,verbose):
     # Create early classes *after* doing plugins.init()
     g.app.recentFilesManager = RecentFilesManager()
     g.app.config = leoConfig.GlobalConfigManager()
-    g.app.nodeIndices = leoNodes.nodeIndices(g.app.leoID)
+    g.app.nodeIndices = leoNodes.NodeIndices(g.app.leoID)
     g.app.sessionManager = leoSessions.SessionManager()
     # Complete the plugins class last.
     g.app.pluginsController.finishCreate()
@@ -2318,7 +2318,7 @@ def traceShortcutsDict (self,d,verbose=False):
     else:
         print(d)
 .. @+node:ekr.20050920084036.13: *4* abbrevCommandsClass
-class abbrevCommandsClass (baseEditCommandsClass):
+class AbbrevCommandsClass (BaseEditCommandsClass):
 
     '''A class to handle user-defined abbreviations.
 
@@ -2329,7 +2329,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
 .. @+node:ekr.20100901080826.6003: *6* ctor (abbrevCommandsClass
 def __init__ (self,c):
 
-    baseEditCommandsClass.__init__(self,c)
+    BaseEditCommandsClass.__init__(self,c)
         # init the base class.
     # Set local ivars.
     self.abbrevs = {} # Keys are names, values are (abbrev,tag).
@@ -2347,7 +2347,7 @@ def __init__ (self,c):
 def finishCreate(self):
     
     c,k = self.c,self.c.k
-    baseEditCommandsClass.finishCreate(self)
+    BaseEditCommandsClass.finishCreate(self)
     self.init_settings()
     self.init_abbrev()
     self.init_tree_abbrev()
@@ -9523,14 +9523,14 @@ def setUp(self):
     self.fileName = fileName = g.os_path_finalize_join(g.app.loadDir,"..",fileName)
     if trace: g.trace('(importExportTestCase',fileName)
     
-    # Set the dict for unitTestGui, a subclass of nullGui.
+    # Set the dict for UnitTestGui, a subclass of nullGui.
     # nullGui.simulateDialog uses this dict to return values for dialogs.
     if self.doImport:
         theDict = {name: [fileName]}
     else:
         theDict = {name: fileName}
     self.oldGui = g.app.gui
-    self.gui = leoGui.unitTestGui(theDict,trace=False)
+    self.gui = leoGui.UnitTestGui(theDict,trace=False)
 .. @+node:ekr.20051104075904.85: *6* shortDescription
 def shortDescription (self):
 
@@ -17275,7 +17275,7 @@ toGuiIndex = toPythonIndex
 .. @+node:ekr.20111114102224.9945: *7* toPythonIndexRowCol (BaseTextWidget)
 def toPythonIndexRowCol(self,index):
 
-    # This works, but is much slower that the leoQTextEditWidget method.
+    # This works, but is much slower that the LeoQTextEditWidget method.
     s = self.getAllText()
     i = self.toPythonIndex(index)
     row,col = g.convertPythonIndexToRowCol(s,i)
@@ -17331,7 +17331,7 @@ def setYScrollPosition (self,i):
 def tag_configure (self,colorName,**keys):
     if self.widget: self.widget.tag_configure(colorName,**keys)
 .. @+node:ekr.20111114102224.9940: *6* other immutable methods (HighLevelInterface)
-# These all use leoGlobals functions or leoGui methods.
+# These all use leoGlobals functions or LeoGui methods.
 
 def clipboard_append(self,s):
     s1 = g.app.gui.getTextFromClipboard()

@@ -54,26 +54,26 @@ import leo.core.leoGlobals as g
 # pylint: disable=unpacking-non-sequence
 
 #@+others
-#@+node:ekr.20031218072017.3605: ** class undoer
-class undoer:
+#@+node:ekr.20031218072017.3605: ** class Undoer
+class Undoer:
     """A class that implements unlimited undo and redo."""
     #@+others
     #@+node:ekr.20031218072017.3606: *3* undo.__init__
     def __init__ (self,c):
 
         self.c = c
-        self.debug_undoer = False # True: enable debugging code in new undo scheme.
+        self.debug_Undoer = False # True: enable debugging code in new undo scheme.
         self.debug_print = False # True: enable print statements in debug code.
 
         self.granularity = c.config.getString('undo_granularity')
         if self.granularity: self.granularity = self.granularity.lower()
         if self.granularity not in ('node','line','word','char'):
             self.granularity = 'line'
-        # g.trace('undoer',self.granularity)
+        # g.trace('Undoer',self.granularity)
 
         self.max_undo_stack_size = c.config.getInt('max_undo_stack_size') or 0
 
-        # Statistics comparing old and new ways (only if self.debug_undoer is on).
+        # Statistics comparing old and new ways (only if self.debug_Undoer is on).
         self.new_mem = 0
         self.old_mem = 0
 
@@ -197,7 +197,7 @@ class undoer:
     #@+node:EKR.20040526150818: *4* getBead
     def getBead (self,n):
 
-        '''Set undoer ivars from the bunch at the top of the undo stack.'''
+        '''Set Undoer ivars from the bunch at the top of the undo stack.'''
 
         u = self
         if n < 0 or n >= len(u.beads):
@@ -1241,7 +1241,7 @@ class undoer:
         # The "given" texts for the undo and redo routines are simply p.b.
         #@@c
 
-        if u.debug_undoer:
+        if u.debug_Undoer:
             # Remember the complete text for comparisons...
             u.oldText = oldText
             u.newText = newText

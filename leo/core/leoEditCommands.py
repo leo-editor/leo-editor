@@ -10,7 +10,7 @@ Modelled after Emacs and Vim commands.'''
 #@+<< imports >>
 #@+node:ekr.20050710151017: ** << imports >> (leoEditCommands)
 import leo.core.leoGlobals as g
-# import leo.core.leoFind as leoFind
+# import leo.core.LeoFind as LeoFind
 import difflib   
 docutils = g.importExtension('docutils',pluginName='leoEditCommands.py')
 try:
@@ -27,14 +27,14 @@ import subprocess # Always exists in Python 2.6 and above.
 import sys
 #@-<< imports >>
 
-#@+<< define class baseEditCommandsClass >>
-#@+node:ekr.20050920084036.1: ** << define class baseEditCommandsClass >>
-class baseEditCommandsClass:
+#@+<< define class BaseEditCommandsClass >>
+#@+node:ekr.20050920084036.1: ** << define class BaseEditCommandsClass >>
+class BaseEditCommandsClass:
 
     '''The base class for all edit command classes'''
 
     #@+others
-    #@+node:ekr.20050920084036.2: *3*  Birth (baseEditCommandsClass)
+    #@+node:ekr.20050920084036.2: *3*  Birth (BaseEditCommandsClass)
     def __init__ (self,c):
 
         self.c = c
@@ -120,7 +120,7 @@ class baseEditCommandsClass:
                 k.setLabelGrey(label)
             else:
                 k.resetLabel()
-    #@+node:ekr.20061007105001: *3* editWidget (baseEditCommandsClass)
+    #@+node:ekr.20061007105001: *3* editWidget (BaseEditCommandsClass)
     def editWidget (self,event,forceFocus=True):
 
         trace = False and not g.unitTesting
@@ -155,7 +155,7 @@ class baseEditCommandsClass:
     #@+node:ekr.20050920084036.7: *3* oops
     def oops (self):
 
-        g.pr("baseEditCommandsClass oops:",
+        g.pr("BaseEditCommandsClass oops:",
             g.callers(),
             "must be overridden in subclass")
     #@+node:ekr.20050929161635: *3* Helpers
@@ -202,7 +202,7 @@ class baseEditCommandsClass:
 
         return self.k.keyboardQuit()
     #@-others
-#@-<< define class baseEditCommandsClass >>
+#@-<< define class BaseEditCommandsClass >>
 
 #@+others
 #@+node:ekr.20120315062642.9746: ** Module-level commands
@@ -245,23 +245,23 @@ class EditCommandsManager:
         self.c = c
 
         self.classesList = (
-            ('abbrevCommands',      abbrevCommandsClass),
+            ('abbrevCommands',      AbbrevCommandsClass),
             ('bufferCommands',      bufferCommandsClass),
             ('editCommands',        editCommandsClass),
-            ('chapterCommands',     chapterCommandsClass),
-            ('controlCommands',     controlCommandsClass),
-            ('debugCommands',       debugCommandsClass),
-            ('editFileCommands',    editFileCommandsClass),
-            ('helpCommands',        helpCommandsClass),
-            ('keyHandlerCommands',  keyHandlerCommandsClass),
-            ('killBufferCommands',  killBufferCommandsClass),
-            ('leoCommands',         leoCommandsClass),
-            ('macroCommands',       macroCommandsClass),
+            ('chapterCommands',     ChapterCommandsClass),
+            ('controlCommands',     ControlCommandsClass),
+            ('debugCommands',       DebugCommandsClass),
+            ('editFileCommands',    EditFileCommandsClass),
+            ('helpCommands',        HelpCommandsClass),
+            ('keyHandlerCommands',  KeyHandlerCommandsClass),
+            ('killBufferCommands',  KillBufferCommandsClass),
+            ('leoCommands',         LeoCommandsClass),
+            ('macroCommands',       MacroCommandsClass),
             # ('queryReplaceCommands',QueryReplaceCommandsClass),
-            ('rectangleCommands',   rectangleCommandsClass),
-            ('registerCommands',    registerCommandsClass),
-            ('searchCommands',      searchCommandsClass),
-            ('spellCommands',       spellCommandsClass),
+            ('rectangleCommands',   RectangleCommandsClass),
+            ('registerCommands',    RegisterCommandsClass),
+            ('searchCommands',      SearchCommandsClass),
+            ('spellCommands',       SpellCommandsClass),
         )
 
 
@@ -307,7 +307,7 @@ class EditCommandsManager:
             theInstance.init()
     #@-others
 #@+node:ekr.20050920084036.13: ** abbrevCommandsClass
-class abbrevCommandsClass (baseEditCommandsClass):
+class AbbrevCommandsClass (BaseEditCommandsClass):
 
     '''A class to handle user-defined abbreviations.
 
@@ -318,7 +318,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20100901080826.6003: *4* ctor (abbrevCommandsClass
     def __init__ (self,c):
 
-        baseEditCommandsClass.__init__(self,c)
+        BaseEditCommandsClass.__init__(self,c)
             # init the base class.
         # Set local ivars.
         self.abbrevs = {} # Keys are names, values are (abbrev,tag).
@@ -336,7 +336,7 @@ class abbrevCommandsClass (baseEditCommandsClass):
     def finishCreate(self):
         
         c,k = self.c,self.c.k
-        baseEditCommandsClass.finishCreate(self)
+        BaseEditCommandsClass.finishCreate(self)
         self.init_settings()
         self.init_abbrev()
         self.init_tree_abbrev()
@@ -1006,13 +1006,13 @@ class abbrevCommandsClass (baseEditCommandsClass):
 # The call to setBufferInteractionMethods calls the buffer configuration methods.
 #@@c
 
-class bufferCommandsClass (baseEditCommandsClass):
+class bufferCommandsClass (BaseEditCommandsClass):
 
     #@+others
     #@+node:ekr.20050920084036.32: *3*  ctor (bufferCommandsClass)
     def __init__ (self,c):
 
-        baseEditCommandsClass.__init__(self,c) # init the base class.
+        BaseEditCommandsClass.__init__(self,c) # init the base class.
 
         self.fromName = '' # Saved name from getBufferName.
         self.nameList = [] # [n: <headline>]
@@ -1274,17 +1274,17 @@ class bufferCommandsClass (baseEditCommandsClass):
             self.getBufferNameFinisher = None
             finisher(k.arg)
     #@-others
-#@+node:ekr.20070522085324: ** chapterCommandsClass
-class chapterCommandsClass (baseEditCommandsClass):
+#@+node:ekr.20070522085324: ** ChapterCommandsClass
+class ChapterCommandsClass (BaseEditCommandsClass):
 
     #@+others
-    #@+node:ekr.20070522085340: *3*  ctor (chapterCommandsClass)
+    #@+node:ekr.20070522085340: *3*  ctor (ChapterCommandsClass)
     def __init__ (self,c):
 
-        baseEditCommandsClass.__init__(self,c) # init the base class.
+        BaseEditCommandsClass.__init__(self,c) # init the base class.
 
         # c.chapterController does not exist yet.
-    #@+node:ekr.20070522085429: *3*  getPublicCommands (chapterCommandsClass)
+    #@+node:ekr.20070522085429: *3*  getPublicCommands (ChapterCommandsClass)
     def getPublicCommands (self):
 
         c = self.c ; cc = c.chapterController
@@ -1304,14 +1304,14 @@ class chapterCommandsClass (baseEditCommandsClass):
         else:
             return {}
     #@-others
-#@+node:ekr.20050920084036.150: ** controlCommandsClass
-class controlCommandsClass (baseEditCommandsClass):
+#@+node:ekr.20050920084036.150: ** ControlCommandsClass
+class ControlCommandsClass (BaseEditCommandsClass):
 
     #@+others
-    #@+node:ekr.20050920084036.151: *3*  ctor (controlCommandsClass)
+    #@+node:ekr.20050920084036.151: *3*  ctor (ControlCommandsClass)
     def __init__ (self,c):
 
-        baseEditCommandsClass.__init__(self,c) # init the base class.
+        BaseEditCommandsClass.__init__(self,c) # init the base class.
 
         self.payload = None
     #@+node:ekr.20050920084036.152: *3*  getPublicCommands
@@ -1468,14 +1468,14 @@ class controlCommandsClass (baseEditCommandsClass):
 
         self.suspend(event)
     #@-others
-#@+node:ekr.20060127162818.1: ** debugCommandsClass
-class debugCommandsClass (baseEditCommandsClass):
+#@+node:ekr.20060127162818.1: ** DebugCommandsClass
+class DebugCommandsClass (BaseEditCommandsClass):
 
     #@+others
-    #@+node:ekr.20060127162921: *3*  ctor (debugCommandsClass)
+    #@+node:ekr.20060127162921: *3*  ctor (DebugCommandsClass)
     def __init__ (self,c):
 
-        baseEditCommandsClass.__init__(self,c) # init the base class.
+        BaseEditCommandsClass.__init__(self,c) # init the base class.
     #@+node:ekr.20060127163325: *3*  getPublicCommands
     def getPublicCommands (self):
 
@@ -1701,7 +1701,7 @@ class debugCommandsClass (baseEditCommandsClass):
         self.c.testManager.runTestsExternally(all=False,marked=False)
     #@-others
 #@+node:ekr.20050920084036.53: ** editCommandsClass
-class editCommandsClass (baseEditCommandsClass):
+class editCommandsClass (BaseEditCommandsClass):
 
     '''Contains editing commands with little or no state.'''
 
@@ -1710,7 +1710,7 @@ class editCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20050920084036.54: *4*  ctor (editCommandsClass)
     def __init__ (self,c):
 
-        baseEditCommandsClass.__init__(self,c) # init the base class.
+        BaseEditCommandsClass.__init__(self,c) # init the base class.
 
         self.ccolumn = '0'   # For comment column functions.
         self.extendMode = False # True: all cursor move commands extend the selection.
@@ -3781,7 +3781,7 @@ class editCommandsClass (baseEditCommandsClass):
         '''Simulate a ctrl-click in the icon box of the presently selected node.'''
         c = self.c
         c.frame.tree.OnIconCtrlClick(c.p)
-            # Calls the base leoTree method.
+            # Calls the base LeoTree method.
 
     def clickIconBox (self,event=None):
         '''Simulate a click in the icon box of the presently selected node.'''
@@ -4226,7 +4226,7 @@ class editCommandsClass (baseEditCommandsClass):
             k.resetLabel()
             k.clearState()
             if n.isdigit():
-                c.goToLineNumber(c).go(n=int(n))
+                c.GoToLineNumber(c).go(n=int(n))
     #@+node:ekr.20050929124234: *4* gotoLine
     def gotoLine (self,event):
 
@@ -7054,17 +7054,17 @@ class editCommandsClass (baseEditCommandsClass):
             k.resetLabel()
             k.showStateAndMode()
     #@-others
-#@+node:ekr.20050920084036.161: ** editFileCommandsClass
-class editFileCommandsClass (baseEditCommandsClass):
+#@+node:ekr.20050920084036.161: ** EditFileCommandsClass
+class EditFileCommandsClass (BaseEditCommandsClass):
 
     '''A class to load files into buffers and save buffers to files.'''
 
     #@+others
-    #@+node:ekr.20050920084036.162: *3*  ctor (editFileCommandsClass)
+    #@+node:ekr.20050920084036.162: *3*  ctor (EditFileCommandsClass)
     def __init__ (self,c):
 
-        baseEditCommandsClass.__init__(self,c) # init the base class.
-    #@+node:ekr.20050920084036.163: *3*  getPublicCommands (editFileCommandsClass)
+        BaseEditCommandsClass.__init__(self,c) # init the base class.
+    #@+node:ekr.20050920084036.163: *3*  getPublicCommands (EditFileCommandsClass)
     def getPublicCommands (self):
 
         return {
@@ -7167,7 +7167,7 @@ class editFileCommandsClass (baseEditCommandsClass):
                     copy.moveToLastChildOf(parent)
                     for p2 in copy.self_and_subtree():
                         p2.v.context = c
-    #@+node:ekr.20070921070101: *4* createHiddenCommander (editFileCommandsClass)
+    #@+node:ekr.20070921070101: *4* createHiddenCommander (EditFileCommandsClass)
     def createHiddenCommander(self,fn):
 
         '''Read the file into a hidden commander (Similar to g.openWithFileName).'''
@@ -7368,8 +7368,8 @@ class editFileCommandsClass (baseEditCommandsClass):
         except IOError:
             g.es('can not create',fileName)
     #@-others
-#@+node:ekr.20060205164707: ** helpCommandsClass
-class helpCommandsClass (baseEditCommandsClass):
+#@+node:ekr.20060205164707: ** HelpCommandsClass
+class HelpCommandsClass (BaseEditCommandsClass):
     '''A class to load files into buffers and save buffers to files.'''
     # pylint: disable=anomalous-backslash-in-string
     #@+others
@@ -8279,10 +8279,10 @@ class helpCommandsClass (baseEditCommandsClass):
 
             f.c                     is the frame’s commander.
             f.body                  is a leoBody instance.
-            f.body.bodyCtl          is a leoQTextEditWidget instance.
+            f.body.bodyCtl          is a LeoQTextEditWidget instance.
             f.body.bodyCtrl.widget  is a LeoQTextBrowser(QTextBrowser) instance.
             f.log                   is a LeoLog instance.
-            f.tree                  is a leoQtTree instance.
+            f.tree                  is a LeoQtTree instance.
             f.tree.treeWidget       is a LeoQTreeWidget (a QTreeWidget) instance.
             
         VNode class
@@ -8469,7 +8469,7 @@ class helpCommandsClass (baseEditCommandsClass):
                 # Capture the output of Python's help command.
                 old = sys.stdout
                 try:
-                    sys.stdout = stdout = g.fileLikeObject()
+                    sys.stdout = stdout = g.FileLikeObject()
                     help(str(s))
                     s2 = stdout.read()
                 finally:
@@ -8478,17 +8478,17 @@ class helpCommandsClass (baseEditCommandsClass):
                 s2 = '<pre>' + s2 + '</pre>'
                 c.putHelpFor(s2)
     #@-others
-#@+node:ekr.20050920084036.171: ** keyHandlerCommandsClass (add docstrings)
-class keyHandlerCommandsClass (baseEditCommandsClass):
+#@+node:ekr.20050920084036.171: ** KeyHandlerCommandsClass (add docstrings)
+class KeyHandlerCommandsClass (BaseEditCommandsClass):
 
     '''User commands to access the keyHandler class.'''
 
     #@+others
-    #@+node:ekr.20050920084036.172: *3*  ctor (keyHandlerCommandsClass)
+    #@+node:ekr.20050920084036.172: *3*  ctor (KeyHandlerCommandsClass)
     def __init__ (self,c):
 
-        baseEditCommandsClass.__init__(self,c) # init the base class.
-    #@+node:ekr.20050920084036.173: *3* getPublicCommands (keyHandlerCommandsClass)
+        BaseEditCommandsClass.__init__(self,c) # init the base class.
+    #@+node:ekr.20050920084036.173: *3* getPublicCommands (KeyHandlerCommandsClass)
     def getPublicCommands (self):
 
         k = self.k
@@ -8544,16 +8544,16 @@ class keyHandlerCommandsClass (baseEditCommandsClass):
         '''This will never be called.
         It serves as a placeholder for the print-bindings command.'''
     #@-others
-#@+node:ekr.20050920084036.174: ** killBufferCommandsClass
-class killBufferCommandsClass (baseEditCommandsClass):
+#@+node:ekr.20050920084036.174: ** KillBufferCommandsClass
+class KillBufferCommandsClass (BaseEditCommandsClass):
 
     '''A class to manage the kill buffer.'''
 
     #@+others
-    #@+node:ekr.20050920084036.175: *3*  ctor & finishCreate (killBufferCommandsClass)
+    #@+node:ekr.20050920084036.175: *3*  ctor & finishCreate (KillBufferCommandsClass)
     def __init__ (self,c):
 
-        baseEditCommandsClass.__init__(self,c) # init the base class.
+        BaseEditCommandsClass.__init__(self,c) # init the base class.
 
         self.addWsToKillRing = c.config.getBool('add-ws-to-kill-ring')
         self.k = None
@@ -8567,7 +8567,7 @@ class killBufferCommandsClass (baseEditCommandsClass):
 
     def finishCreate (self):
 
-        baseEditCommandsClass.finishCreate(self)
+        BaseEditCommandsClass.finishCreate(self)
             # Call the base finishCreate.
             # This sets self.k
     #@+node:ekr.20050920084036.176: *3*  getPublicCommands
@@ -8664,7 +8664,7 @@ class killBufferCommandsClass (baseEditCommandsClass):
 
         return None
     #@+node:ekr.20050920084036.184: *3* iterateKillBuffer
-    class killBuffer_iter_class:
+    class KillBufferIterClass:
 
         """Returns a list of positions in a subtree, possibly including the root of the subtree."""
 
@@ -8708,7 +8708,7 @@ class killBufferCommandsClass (baseEditCommandsClass):
 
     def iterateKillBuffer (self):
 
-        return self.killBuffer_iter_class(self.c)
+        return self.KillBufferIterClass(self.c)
     #@+node:ekr.20050920084036.178: *3* kill
     def kill (self,event,frm,to,undoType=None):
 
@@ -8911,14 +8911,14 @@ class killBufferCommandsClass (baseEditCommandsClass):
             w.setInsertPoint(ins)
             self.endCommand(changed=True,setLabel=True)
     #@-others
-#@+node:ekr.20050920084036.186: ** leoCommandsClass (add docstrings)
-class leoCommandsClass (baseEditCommandsClass):
+#@+node:ekr.20050920084036.186: ** LeoCommandsClass (add docstrings)
+class LeoCommandsClass (BaseEditCommandsClass):
 
     #@+others
-    #@+node:ekr.20050920084036.187: *3*  ctor (leoCommandsClass)
+    #@+node:ekr.20050920084036.187: *3*  ctor (LeoCommandsClass)
     def __init__ (self,c):
 
-        baseEditCommandsClass.__init__(self,c) # init the base class.
+        BaseEditCommandsClass.__init__(self,c) # init the base class.
     #@+node:ekr.20050920084036.188: *3* leoCommands.getPublicCommands
     def getPublicCommands (self):
 
@@ -9130,17 +9130,17 @@ class leoCommandsClass (baseEditCommandsClass):
 
         return d2
     #@-others
-#@+node:ekr.20050920084036.190: ** macroCommandsClass
-class macroCommandsClass (baseEditCommandsClass):
+#@+node:ekr.20050920084036.190: ** MacroCommandsClass
+class MacroCommandsClass (BaseEditCommandsClass):
 
     '''A class for recording, playing back, saving and restoring keyboard macros.
     '''
 
     #@+others
-    #@+node:ekr.20050920084036.191: *3*  ctor (macroCommandsClass)
+    #@+node:ekr.20050920084036.191: *3*  ctor (MacroCommandsClass)
     def __init__ (self,c):
 
-        baseEditCommandsClass.__init__(self,c) # init the base class.
+        BaseEditCommandsClass.__init__(self,c) # init the base class.
 
         self.lastMacro = None
         self.macros = []
@@ -9415,21 +9415,21 @@ class macroCommandsClass (baseEditCommandsClass):
         else:
             g.trace('can not happen: no event')
     #@-others
-#@+node:ekr.20050920084036.221: ** rectangleCommandsClass
-class rectangleCommandsClass (baseEditCommandsClass):
+#@+node:ekr.20050920084036.221: ** RectangleCommandsClass
+class RectangleCommandsClass (BaseEditCommandsClass):
 
     #@+others
-    #@+node:ekr.20050920084036.222: *3*  Birth (rectangleCommandsClass)
+    #@+node:ekr.20050920084036.222: *3*  Birth (RectangleCommandsClass)
     def __init__ (self,c):
 
-        baseEditCommandsClass.__init__(self,c) # init the base class.
+        BaseEditCommandsClass.__init__(self,c) # init the base class.
 
         self.theKillRectangle = [] # Do not re-init this!
         self.stringRect = None
 
     def finishCreate(self):
 
-        baseEditCommandsClass.finishCreate(self)
+        BaseEditCommandsClass.finishCreate(self)
 
         self.commandsDict = {
             'c': ('clear-rectangle',    self.clearRectangle),
@@ -9463,7 +9463,7 @@ class rectangleCommandsClass (baseEditCommandsClass):
     #@+node:ekr.20051215103053: *3* beginCommand & beginCommandWithEvent (rectangle)
     def beginCommand (self,undoType='Typing'):
 
-        w = baseEditCommandsClass.beginCommand(self,undoType)
+        w = BaseEditCommandsClass.beginCommand(self,undoType)
         r1,r2,r3,r4 = self.getRectanglePoints(w)
         return w,r1,r2,r3,r4
 
@@ -9472,10 +9472,10 @@ class rectangleCommandsClass (baseEditCommandsClass):
 
         '''Do the common processing at the start of each command.'''
 
-        w = baseEditCommandsClass.beginCommandWithEvent(self,event,undoType)
+        w = BaseEditCommandsClass.beginCommandWithEvent(self,event,undoType)
         r1,r2,r3,r4 = self.getRectanglePoints(w)
         return w,r1,r2,r3,r4
-    #@+node:ekr.20050920084036.224: *3* Entries (rectangleCommandsClass)
+    #@+node:ekr.20050920084036.224: *3* Entries (RectangleCommandsClass)
     #@+node:ekr.20050920084036.225: *4* clearRectangle
     def clearRectangle (self,event):
 
@@ -9652,17 +9652,17 @@ class rectangleCommandsClass (baseEditCommandsClass):
         w.setSelectionRange(i,j,insert=j)
         self.endCommand()
     #@-others
-#@+node:ekr.20050920084036.234: ** registerCommandsClass
-class registerCommandsClass (baseEditCommandsClass):
+#@+node:ekr.20050920084036.234: ** RegisterCommandsClass
+class RegisterCommandsClass (BaseEditCommandsClass):
 
     '''A class to represent registers a-z and the corresponding Emacs commands.'''
 
     #@+others
     #@+node:ekr.20051004095209: *3* Birth
-    #@+node:ekr.20050920084036.235: *4*  Birth (registerCommandsClass)
+    #@+node:ekr.20050920084036.235: *4*  Birth (RegisterCommandsClass)
     def __init__ (self,c):
 
-        baseEditCommandsClass.__init__(self,c) # init the base class.
+        BaseEditCommandsClass.__init__(self,c) # init the base class.
         self.methodDict, self.helpDict = self.addRegisterItems()
 
         # Init these here to keep pylint happy.
@@ -9672,7 +9672,7 @@ class registerCommandsClass (baseEditCommandsClass):
 
     def finishCreate (self):
 
-        baseEditCommandsClass.finishCreate(self)
+        BaseEditCommandsClass.finishCreate(self)
             # finish the base class.
 
     def init (self):
@@ -10012,17 +10012,17 @@ class registerCommandsClass (baseEditCommandsClass):
         c.bodyWantsFocus()
     #@-others
 #@+node:ekr.20051023094009: ** Search classes (leoEditCommands)
-#@+node:ekr.20050920084036.257: *3* class searchCommandsClass
-class searchCommandsClass (baseEditCommandsClass):
+#@+node:ekr.20050920084036.257: *3* class SearchCommandsClass
+class SearchCommandsClass (BaseEditCommandsClass):
 
-    '''Delegates all searches to leoFind.py.'''
+    '''Delegates all searches to LeoFind.py.'''
     
     if 0: # Not needed.
         def __init__ (self,c):
-            baseEditCommandsClass.__init__(self,c)
+            BaseEditCommandsClass.__init__(self,c)
 
     #@+others
-    #@+node:ekr.20050920084036.259: *4* getPublicCommands (searchCommandsClass)
+    #@+node:ekr.20050920084036.259: *4* getPublicCommands (SearchCommandsClass)
     def getPublicCommands (self):
         
         find = self.c.findCommands
@@ -10072,21 +10072,21 @@ class searchCommandsClass (baseEditCommandsClass):
     #@-others
 #@+node:ekr.20051025071455: ** Spell classes (leoEditCommands)
 #@+others
-#@+node:ekr.20051025071455.1: *3* class spellCommandsClass
-class spellCommandsClass (baseEditCommandsClass):
+#@+node:ekr.20051025071455.1: *3* class SpellCommandsClass
+class SpellCommandsClass (BaseEditCommandsClass):
 
     '''Commands to support the Spell Tab.'''
 
     #@+others
-    #@+node:ekr.20051025080056: *4* ctor (spellCommandsClass)
+    #@+node:ekr.20051025080056: *4* ctor (SpellCommandsClass)
     def __init__ (self,c):
 
-        baseEditCommandsClass.__init__(self,c) # init the base class.
+        BaseEditCommandsClass.__init__(self,c) # init the base class.
 
         self.handler = None
 
         # All the work happens when we first open the frame.
-    #@+node:ekr.20051025080420: *4* getPublicCommands (searchCommandsClass)
+    #@+node:ekr.20051025080420: *4* getPublicCommands (SearchCommandsClass)
     def getPublicCommands (self):
 
         return {
@@ -10113,7 +10113,7 @@ class spellCommandsClass (baseEditCommandsClass):
             log.selectTab(tabName)
         else:
             log.selectTab(tabName)
-            self.handler = spellTabHandler(c,tabName)
+            self.handler = SpellTabHandler(c,tabName)
 
         # Bug fix: 2013/05/22.
         if not self.handler.loaded:
@@ -10124,10 +10124,10 @@ class spellCommandsClass (baseEditCommandsClass):
         self.suggestions_idx = None
         self.word = None
         self.spell_as_you_type = False
-    #@+node:ekr.20051025080420.1: *4* commands...(spellCommandsClass)
+    #@+node:ekr.20051025080420.1: *4* commands...(SpellCommandsClass)
     # Just open the Spell tab if it has never been opened.
     # For minibuffer commands, we must also force the Spell tab to be visible.
-    # self.handler is a spellTabHandler object (inited by openSpellTab)
+    # self.handler is a SpellTabHandler object (inited by openSpellTab)
 
     def find (self,event=None):
         '''Simulate pressing the 'Find' button in the Spell tab.'''
@@ -10281,14 +10281,14 @@ class spellCommandsClass (baseEditCommandsClass):
         )
         c.bodyWantsFocusNow()
     #@-others
-#@+node:ekr.20051025071455.18: *3* class spellTabHandler
-class spellTabHandler:
+#@+node:ekr.20051025071455.18: *3* class SpellTabHandler
+class SpellTabHandler:
 
     """A class to create and manage Leo's Spell Check dialog."""
 
     #@+others
     #@+node:ekr.20051025071455.19: *4* Birth & death
-    #@+node:ekr.20051025071455.20: *5* spellTabHandler.__init__
+    #@+node:ekr.20051025071455.20: *5* SpellTabHandler.__init__
     def __init__(self,c,tabName):
         """Ctor for the Leo Spelling dialog."""
         self.c = c

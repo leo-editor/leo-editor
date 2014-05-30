@@ -7448,7 +7448,7 @@ for s in sorted(d.keys()):
 #@+node:ekr.20130503061511.4137: ** @ignore from leoPy.leo
 import leo.core.leoImport as leoImport
 ic = c.importCommands
-hs = leoImport.htmlScanner(importCommands=ic,atAuto=True)
+hs = leoImport.HtmlScanner(importCommands=ic,atAuto=True)
 
 s1 = '''
 <table id="1"> <table id="2">
@@ -7553,10 +7553,10 @@ if showTree:
 <body class='bodystring'>
 <div id='bodydisplay'></div>
 </body>
-#@+node:ekr.20130503061511.4153: *3* @test htmlScanner.filterTokens
+#@+node:ekr.20130503061511.4153: *3* @test HtmlScanner.filterTokens
 import leo.core.leoImport as leoImport
 ic = c.importCommands
-hs = leoImport.htmlScanner(importCommands=ic,atAuto=True)
+hs = leoImport.HtmlScanner(importCommands=ic,atAuto=True)
 strip = hs.stripTokens
 dump  = hs.formatTokens
 

@@ -3187,7 +3187,7 @@ class InspectTraverser (AstTraverser):
 
         # Create an instance of AstFormatter.
         if 0: # A test of the overhead of string generation.
-            self.formatter = g.nullObject()
+            self.formatter = g.NullObject()
         else:
             self.formatter = AstFormatter(fn)
 

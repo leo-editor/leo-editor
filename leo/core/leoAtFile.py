@@ -343,7 +343,7 @@ class atFile:
                 at.encoding = encoding
                 # g.trace('scanned encoding',encoding)
         if toString:
-            at.outputFile = g.fileLikeObject()
+            at.outputFile = g.FileLikeObject()
             if g.app.unitTesting:
                 at.output_newline = '\n'
             # else: at.output_newline set in initCommonIvars.
@@ -460,7 +460,7 @@ class atFile:
             if at.atShadow:
                 return at.error(
                     'can not call at.read from string for @shadow files')
-            at.inputFile = g.fileLikeObject(fromString=fromString)
+            at.inputFile = g.FileLikeObject(fromString=fromString)
             fn = None
         else:
             fn = at.fullPath(at.root)
@@ -2939,7 +2939,7 @@ class atFile:
         if toString:
             at.shortFileName = g.shortFileName(fileName)
             at.outputFileName = "<string: %s>" % at.shortFileName
-            at.outputFile = g.fileLikeObject()
+            at.outputFile = g.FileLikeObject()
         else:
             ok = at.openFileForWritingHelper(fileName)
             # New in Leo 4.4.8: set dirty bit if there are errors.
@@ -3015,12 +3015,12 @@ class atFile:
             if self.writing_to_shadow_directory:
                 if trace: g.trace(filename,shadow_filename)
                 x.message('writing %s' % shadow_filename)
-                f = g.fileLikeObject()
+                f = g.FileLikeObject()
                 return 'shadow',f
             else:
                 ok = c.checkFileTimeStamp(at.targetFileName)
                 if ok:
-                    f = g.fileLikeObject()
+                    f = g.FileLikeObject()
                 else:
                     f = None
                 # return 'check',ok and open(open_file_name,wb)
@@ -3461,7 +3461,7 @@ class atFile:
             nosentinels=None, # set below.  Affects only error messages (sometimes).
             thinFile=True, # New in Leo 4.5 b2: private files are thin files.
             scriptWrite=False,
-            toString=False, # True: create a fileLikeObject.  This is done below.
+            toString=False, # True: create a FileLikeObject.  This is done below.
             forcePythonSentinels=True) # A hack to suppress an error message.
                 # The actual sentinels will be set below.
         # Bug fix: Leo 4.5.1: use x.markerFromFileName to force the delim to match
@@ -4566,7 +4566,7 @@ class atFile:
         import parser,tabnanny,tokenize
 
         try:
-            readline = g.readLinesClass(body).next
+            readline = g.ReadLinesClass(body).next
             tabnanny.process_tokens(tokenize.generate_tokens(readline))
         except parser.ParserError:
             junk, msg, junk = sys.exc_info()
@@ -4793,11 +4793,11 @@ class atFile:
         at = self
         at.shortFileName = g.shortFileName(fn)
         at.outputFileName = "<string: %s>" % at.shortFileName
-        at.outputFile = g.fileLikeObject(encoding=encoding)
+        at.outputFile = g.FileLikeObject(encoding=encoding)
         at.targetFileName = "<string-file>"
         return at.outputFile
     #@+node:ekr.20041005105605.201: *4* os and allies
-    # Note:  self.outputFile may be either a fileLikeObject or a real file.
+    # Note:  self.outputFile may be either a FileLikeObject or a real file.
     #@+node:ekr.20041005105605.202: *5* oblank, oblanks & otabs
     def oblank(self):
         self.os(' ')
@@ -4831,7 +4831,7 @@ class atFile:
         at = self
         tag = self.underindentEscapeString
         f = at.outputFile
-        assert isinstance(f,g.fileLikeObject),f
+        assert isinstance(f,g.FileLikeObject),f
         if s and f:
             try:
                 if s.startswith(tag):

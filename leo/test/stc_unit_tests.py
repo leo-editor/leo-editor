@@ -233,7 +233,7 @@ if 'print' in flags:
         dt.print_stats()
 #@+node:ekr.20140528102444.17997: ** @test replace class names
 '''Replace only unambiguously defined non-pep8 class names.'''
-replace = False # True: actually make the replacements.
+replace = True # True: actually make the replacements.
 aList = [
 #@+<< non-pep8 class names >>
 #@+node:ekr.20140528102444.19375: *3* << non-pep8 class names >>
@@ -426,7 +426,7 @@ class ReplaceController:
                     f.write(s)
                     f.close()
         else:
-            print('changed, not written: %s' % (
+            print('changed, not written:...\n%s' % (
                 '\n'.join(sorted(self.changed))))
     #@-others
 #@-others

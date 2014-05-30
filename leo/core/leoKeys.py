@@ -30,10 +30,10 @@ import time
 # 1. Code in leoKeys.py and in leoConfig.py converts user key settings to
 #    various Python **binding dictionaries** defined in leoKeys.py.
 #    
-# 2. An instance of leoQtEventFilter should be attached to all visible panes
+# 2. An instance of LeoQtEventFilter should be attached to all visible panes
 #    in Leo's main window. g.app.gui.setFilter does this.
 #    
-# 3. leoQtEventFilter.eventFilter calls k.masterKeyhandler for every
+# 3. LeoQtEventFilter.eventFilter calls k.masterKeyhandler for every
 #    keystroke. eventFilter passes only just the event argument to
 #    k.masterKeyHandler. The event arg gives both the widget in which the
 #    event occurs and the keystroke.
@@ -965,7 +965,7 @@ class AutoCompleterClass:
 
         table = (z.lower() for z in (
             'leoDocs.leo',
-            'leoGui.leo',       'leoGuiPluginsRef.leo',
+            'LeoGui.leo',       'LeoGuiPluginsRef.leo',
             'leoPlugins.leo',   'leoPluginsRef.leo',
             'leoPy.leo',        'leoPyRef.leo',
             'myLeoSettings.leo', 'leoSettings.leo',
@@ -1117,8 +1117,8 @@ class ContextSniffer:
 
         vars.append(klass)
     #@-others
-#@+node:ekr.20061031131434.74: ** class keyHandlerClass
-class keyHandlerClass:
+#@+node:ekr.20061031131434.74: ** class KeyHandlerClass
+class KeyHandlerClass:
 
     '''A class to support emacs-style commands.'''
 
@@ -1309,9 +1309,9 @@ class keyHandlerClass:
             'transpose-lines',
             'untabify',
             'upcase-region',
-            # keyHandlerCommandsClass
+            # KeyHandlerCommandsClass
             'repeat-complex-command',
-            # killBufferCommandsClass
+            # KillBufferCommandsClass
             'backward-kill-sentence',
             'kill-sentence',
             'kill-region',
@@ -1319,7 +1319,7 @@ class keyHandlerClass:
             # QueryReplaceCommandsClass
             'query-replace',
             'query-replace-regex',
-            # rectangleCommandsClass
+            # RectangleCommandsClass
             'clear-rectangle',
             'close-rectangle',
             'delete-rectangle',
@@ -1327,10 +1327,10 @@ class keyHandlerClass:
             'open-rectangle',
             'string-rectangle',
             'yank-rectangle',
-            # registerCommandsClass
+            # RegisterCommandsClass
             'jump-to-register',
             'point-to-register',
-            # searchCommandsClass
+            # SearchCommandsClass
             'change',
             'change-then-find',
             'find-next',
@@ -1422,7 +1422,7 @@ class keyHandlerClass:
             'transpose-chars',
             'transpose-words',
             'upcase-word',
-            # keyHandlerCommandsClass
+            # KeyHandlerCommandsClass
             # 'auto-complete',
             'negative-argument',
             'number-command',
@@ -1436,7 +1436,7 @@ class keyHandlerClass:
             'number-command-7',
             'number-command-8',
             'universal-argument',
-            # killBufferCommandsClass
+            # KillBufferCommandsClass
             'backward-kill-word',
             'kill-line',
             'kill-word',
@@ -1448,7 +1448,7 @@ class keyHandlerClass:
             'cut-text',
             'copy-text',
             'paste-text',
-            # macroCommandsClass
+            # MacroCommandsClass
             'call-last-kbd-macro',
             # search commands
             # 'replace-string', # A special case so Shift-Ctrl-r will work after Ctrl-f.
@@ -1465,7 +1465,7 @@ class keyHandlerClass:
             'toggle-find-reverse-option',
             'toggle-find-word-option',
             'toggle-find-wrap-around-option',
-            # registerCommandsClass
+            # RegisterCommandsClass
             'append-to-register',
             'copy-to-register',
             'insert-register',
@@ -4170,7 +4170,7 @@ class keyHandlerClass:
         for z in ('Alt','Ctrl','Command','Meta'):
             if s.find(z) != -1:            
                 return ''
-                # This is not accurate: leoQtEventFilter retains
+                # This is not accurate: LeoQtEventFilter retains
                 # the spelling of Alt-Ctrl keys because of the
                 # @bool enable_alt_ctrl_bindings setting.
 

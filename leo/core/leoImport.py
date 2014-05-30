@@ -19,7 +19,7 @@
 # leoImport.py contains a set of "importers" all based on the
 # BaseScanner class. You can define your own importer by creating a
 # subclass. With luck, your subclass might be very simple, as with class
-# cScanner. In other words, BaseScanner is supposed to do almost all the
+# CScanner. In other words, BaseScanner is supposed to do almost all the
 # work.
 # 
 # **Important**  As I write this, I realize that I remember very little
@@ -109,9 +109,9 @@ else:
     StringIO = StringIO.StringIO
 import time
 #@-<< imports >>
-#@+<< class scanUtility >>
-#@+node:sps.20081112093624.1: ** << class scanUtility >>
-class scanUtility:
+#@+<< class ScanUtility >>
+#@+node:sps.20081112093624.1: ** << class ScanUtility >>
+class ScanUtility:
     '''A class providing utility methods or other classes.'''
     #@+others
     #@+node:sps.20081111154528.5: *3* escapeFalseSectionReferences
@@ -135,15 +135,15 @@ class scanUtility:
                 # result.append(line)
         # return ''.join(result)
     #@-others
-#@-<< class scanUtility >>
-#@+<< class leoImportCommands (scanUtility) >>
-#@+node:ekr.20071127175948: ** << class leoImportCommands (scanUtility) >>
-class leoImportCommands (scanUtility):
+#@-<< class ScanUtility >>
+#@+<< class LeoImportCommands (ScanUtility) >>
+#@+node:ekr.20071127175948: ** << class LeoImportCommands (ScanUtility) >>
+class LeoImportCommands (ScanUtility):
 
     #@+others
     #@+node:ekr.20031218072017.3207: *3* import.__init__ & helper
     def __init__ (self,c):
-        '''ctor for leoImportCommands class.'''
+        '''ctor for LeoImportCommands class.'''
         self.c = c
         self.default_directory = None # For @path logic.
         self.encoding = 'utf-8'
@@ -166,31 +166,31 @@ class leoImportCommands (scanUtility):
         corresponding subclass of BaseScanner.
         ''' 
         self.classDispatchDict = {
-            '.c':       cScanner,
-            '.h':       cScanner,
-            '.h++':     cScanner,
-            '.cc':      cScanner,
-            '.c++':     cScanner,
-            '.cpp':     cScanner,
-            '.cxx':     cScanner,
-            '.cfg':     iniScanner,
-            '.cs':      cSharpScanner,
-            '.el':      elispScanner,
-            '.htm':     htmlScanner,
-            '.html':    htmlScanner,
-            '.ini':     iniScanner,
-            '.java':    javaScanner,
+            '.c':       CScanner,
+            '.h':       CScanner,
+            '.h++':     CScanner,
+            '.cc':      CScanner,
+            '.c++':     CScanner,
+            '.cpp':     CScanner,
+            '.cxx':     CScanner,
+            '.cfg':     IniScanner,
+            '.cs':      CSharpScanner,
+            '.el':      ElispScanner,
+            '.htm':     HtmlScanner,
+            '.html':    HtmlScanner,
+            '.ini':     IniScanner,
+            '.java':    JavaScanner,
             '.js':      JavaScriptScanner,
-            '.otl':     vimoutlinerScanner,
-            '.php':     phpScanner,
-            '.pas':     pascalScanner,
+            '.otl':     VimoutlinerScanner,
+            '.php':     PhpScanner,
+            '.pas':     PascalScanner,
             '.py':      pythonScanner,
             '.pyw':     pythonScanner,
-            # '.txt':     rstScanner, # A reasonable default.
-            # '.rest':    rstScanner,
-            # '.rst':     rstScanner,
+            # '.txt':     RstScanner, # A reasonable default.
+            # '.rest':    RstScanner,
+            # '.rst':     RstScanner,
             '.ts':      TypeScriptScanner,
-            '.xml':     xmlScanner,
+            '.xml':     XmlScanner,
         }
     #@+node:ekr.20031218072017.3289: *3* Export
     #@+node:ekr.20031218072017.3290: *4* ic.convertCodePartToWeb
@@ -1502,7 +1502,7 @@ class leoImportCommands (scanUtility):
     #@+node:ekr.20090501095634.48: *4* scanRstText
     def scanRstText (self,s,parent,atAuto=False):
         '''Scan reStructuredText.'''
-        scanner = rstScanner(importCommands=self,atAuto=atAuto)
+        scanner = RstScanner(importCommands=self,atAuto=atAuto)
         return scanner.run(s,parent)
     #@+node:ekr.20070713075352: *4* scanUnknownFileType (default scanner) & helper
     def scanUnknownFileType (self,s,p,ext,atAuto=False):
@@ -1526,7 +1526,7 @@ class leoImportCommands (scanUtility):
     #@+node:ekr.20120517155536.10124: *4* scanVimoutlinerText
     def scanVimoutlinerText(self,s,parent,atAuto=False):
         '''Scan vim outliner text.'''
-        scanner = vimoutlinerScanner(importCommands=self,atAuto=atAuto)
+        scanner = VimoutlinerScanner(importCommands=self,atAuto=atAuto)
         return scanner.run(s,parent)
     #@+node:ekr.20070713075450: *3* Unit tests (leoImport)
     # atAuto must be False for unit tests: otherwise the test gets wiped out.
@@ -1640,10 +1640,10 @@ class leoImportCommands (scanUtility):
 
         return ok
     #@-others
-#@-<< class leoImportCommands (scanUtility) >>
-#@+<< class BaseScanner (scanUtility) >>
-#@+node:ekr.20070703122141.65: ** << class BaseScanner (scanUtility) >>
-class BaseScanner (scanUtility):
+#@-<< class LeoImportCommands (ScanUtility) >>
+#@+<< class BaseScanner (ScanUtility) >>
+#@+node:ekr.20070703122141.65: ** << class BaseScanner (ScanUtility) >>
+class BaseScanner (ScanUtility):
 
     '''The base class for all import scanner classes.
     This class contains common utility methods.'''
@@ -1690,7 +1690,7 @@ class BaseScanner (scanUtility):
         self.language = language
             # The language used to set comment delims.
         self.lastParent = None
-            # The last generated parent node (used only by rstScanner).
+            # The last generated parent node (used only by RstScanner).
         self.methodName = ic.methodName
             # x, as in < < x methods > > =
         self.methodsSeen = False
@@ -2162,7 +2162,7 @@ class BaseScanner (scanUtility):
 
         '''Return the effective parent.
 
-        This is overridden by the rstScanner class.'''
+        This is overridden by the RstScanner class.'''
 
         return parent
     #@+node:ekr.20070707073044.1: *4* addRef
@@ -3401,11 +3401,11 @@ class BaseScanner (scanUtility):
             # g.trace('%3s %7s %s' % (line_number,kind,repr(val[:20])))
         return result
     #@-others
-#@-<< class BaseScanner (scanUtility) >>
+#@-<< class BaseScanner (ScanUtility) >>
 
 #@+others
-#@+node:ekr.20130823083943.12596: ** class recursiveImportController
-class recursiveImportController:
+#@+node:ekr.20130823083943.12596: ** class RecursiveImportController
+class RecursiveImportController:
     '''Recursively import all python files in a directory and clean the result.'''
     # There is no ctor.
     #@+others
@@ -3801,8 +3801,8 @@ class recursiveImportController:
     #@-others
 #@+node:ekr.20031218072017.3241: ** Scanner classes
 # All these classes are subclasses of BaseScanner.
-#@+node:edreamleo.20070710093042: *3* class cScanner
-class cScanner (BaseScanner):
+#@+node:edreamleo.20070710093042: *3* class CScanner
+class CScanner (BaseScanner):
 
     def __init__ (self,importCommands,atAuto):
 
@@ -3824,8 +3824,8 @@ class cScanner (BaseScanner):
         self.outerBlockEndsDecls = False # To handle extern statement.
         self.sigHeadExtraTokens = ['*']
         self.sigFailTokens = [';','=']
-#@+node:ekr.20071008130845.2: *3* class cSharpScanner
-class cSharpScanner (BaseScanner):
+#@+node:ekr.20071008130845.2: *3* class CSharpScanner
+class CSharpScanner (BaseScanner):
 
     def __init__ (self,importCommands,atAuto):
 
@@ -3846,11 +3846,11 @@ class cSharpScanner (BaseScanner):
         self.outerBlockDelim2 = '}'
         self.sigHeadExtraTokens = []
         self.sigFailTokens = [';','='] # Just like C.
-#@+node:ekr.20070711060113: *3* class elispScanner
-class elispScanner (BaseScanner):
+#@+node:ekr.20070711060113: *3* class ElispScanner
+class ElispScanner (BaseScanner):
 
     #@+others
-    #@+node:ekr.20070711060113.1: *4*  __init__ (elispScanner)
+    #@+node:ekr.20070711060113.1: *4*  __init__ (ElispScanner)
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
@@ -3868,7 +3868,7 @@ class elispScanner (BaseScanner):
         self.extraIdChars = '-'
         self.strict=False
 
-    #@+node:ekr.20070711060113.2: *4* Overrides (elispScanner)
+    #@+node:ekr.20070711060113.2: *4* Overrides (ElispScanner)
     # skipClass/Function/Signature are defined in the base class.
     #@+node:ekr.20070711060113.3: *5* startsClass/Function & skipSignature
     def startsClass (self,unused_s,unused_i):
@@ -3929,8 +3929,8 @@ class elispScanner (BaseScanner):
         else:
             return g.skip_string(s,i,verbose=False)
     #@-others
-#@+node:ekr.20100803231223.5807: *3* class iniScanner
-class iniScanner (BaseScanner):
+#@+node:ekr.20100803231223.5807: *3* class IniScanner
+class IniScanner (BaseScanner):
 
     def __init__ (self,importCommands,atAuto):
 
@@ -3949,7 +3949,7 @@ class iniScanner (BaseScanner):
         return False
 
     #@+others
-    #@+node:ekr.20100803231223.5810: *4* startsHelper (elispScanner)
+    #@+node:ekr.20100803231223.5810: *4* startsHelper (ElispScanner)
     def startsHelper(self,s,i,kind,tags,tag=None):
         '''return True if s[i:] starts section.
         Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
@@ -4004,11 +4004,11 @@ class iniScanner (BaseScanner):
         else:
             return False,None,i
     #@-others
-#@+node:edreamleo.20070710085115: *3* class javaScanner
-class javaScanner (BaseScanner):
+#@+node:edreamleo.20070710085115: *3* class JavaScanner
+class JavaScanner (BaseScanner):
 
     #@+others
-    #@+node:ekr.20071019171430: *4* javaScanner.__init__
+    #@+node:ekr.20071019171430: *4* JavaScanner.__init__
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
@@ -4023,7 +4023,7 @@ class javaScanner (BaseScanner):
         self.classTags = ['class','interface']
         self.functionTags = []
         self.sigFailTokens = [';','='] # Just like c.
-    #@+node:ekr.20071019170943: *4* javaScanner.getSigId
+    #@+node:ekr.20071019170943: *4* JavaScanner.getSigId
     def getSigId (self,ids):
 
         '''Return the signature's id.
@@ -4152,8 +4152,8 @@ class JavaScriptScanner (BaseScanner):
                 i += 1
             return i
     #@-others
-#@+node:ekr.20070711104241.3: *3* class pascalScanner
-class pascalScanner (BaseScanner):
+#@+node:ekr.20070711104241.3: *3* class PascalScanner
+class PascalScanner (BaseScanner):
 
     #@+others
     #@+node:ekr.20080211065754: *4* skipArgs
@@ -4178,7 +4178,7 @@ class pascalScanner (BaseScanner):
             return start,False
         else:
             return i,True 
-    #@+node:ekr.20080211065906: *4* ctor (pascalScanner)
+    #@+node:ekr.20080211065906: *4* ctor (PascalScanner)
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
@@ -4338,11 +4338,11 @@ class pascalScanner (BaseScanner):
         self.methodName = oldMethodName
         self.startSigIndent = oldStartSigIndent
     #@-others
-#@+node:ekr.20100219075946.5742: *3* class phpScanner
-class phpScanner (BaseScanner):
+#@+node:ekr.20100219075946.5742: *3* class PhpScanner
+class PhpScanner (BaseScanner):
 
     #@+others
-    #@+node:ekr.20100219075946.5743: *4*  __init__(phpScanner)
+    #@+node:ekr.20100219075946.5743: *4*  __init__(PhpScanner)
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
@@ -4878,11 +4878,11 @@ class NewPythonScanner (BaseScanner):
             root.b = root.b + ''.join(tail)
 
     #@-others
-#@+node:ekr.20090501095634.41: *3* class rstScanner
-class rstScanner (BaseScanner):
+#@+node:ekr.20090501095634.41: *3* class RstScanner
+class RstScanner (BaseScanner):
 
     #@+others
-    #@+node:ekr.20090501095634.42: *4*  __init__ (rstScanner)
+    #@+node:ekr.20090501095634.42: *4*  __init__ (RstScanner)
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
@@ -4952,7 +4952,7 @@ class rstScanner (BaseScanner):
         #self.lastSectionLevel = self.sectionLevel
         self.lastParent = parent.copy()
         return parent.copy()
-    #@+node:ekr.20091229090857.11694: *4* computeBody (rstScanner)
+    #@+node:ekr.20091229090857.11694: *4* computeBody (RstScanner)
     def computeBody (self,s,start,sigStart,codeEnd):
 
         trace = False and not g.unitTesting
@@ -5047,7 +5047,7 @@ class rstScanner (BaseScanner):
 
     def startsString (self,s,i):
         return False
-    #@+node:ekr.20090501095634.45: *4* startsHelper (rstScanner)
+    #@+node:ekr.20090501095634.45: *4* startsHelper (RstScanner)
     def startsHelper(self,s,i,kind,tags,tag=None):
 
         '''return True if s[i:] starts an rST section.
@@ -5192,8 +5192,8 @@ class TypeScriptScanner (JavaScriptScanner):
         else:
             return ids and ids[-1]
     #@-others
-#@+node:ekr.20120517124200.9983: *3* class vimoutlinerScanner
-class vimoutlinerScanner(BaseScanner):
+#@+node:ekr.20120517124200.9983: *3* class VimoutlinerScanner
+class VimoutlinerScanner(BaseScanner):
 
     def __init__ (self,importCommands,atAuto):
 
@@ -5287,13 +5287,13 @@ class vimoutlinerScanner(BaseScanner):
         self.parents = self.parents[:level+1]
         self.parents.append(p)
     #@-others
-#@+node:ekr.20071214072145.1: *3* class xmlScanner & htmlScanner(xmlScanner)
-#@+<< class xmlScanner (BaseScanner) >>
-#@+node:ekr.20111104032034.9866: *4* << class xmlScanner (BaseScanner) >>
-class xmlScanner (BaseScanner):
+#@+node:ekr.20071214072145.1: *3* class XmlScanner & HtmlScanner(XmlScanner)
+#@+<< class XmlScanner (BaseScanner) >>
+#@+node:ekr.20111104032034.9866: *4* << class XmlScanner (BaseScanner) >>
+class XmlScanner (BaseScanner):
 
     #@+others
-    #@+node:ekr.20071214072451: *5*  ctor_(xmlScanner)
+    #@+node:ekr.20071214072451: *5*  ctor_(XmlScanner)
     def __init__ (self,importCommands,atAuto,tags_setting='import_xml_tags'):
 
         # Init the base class.
@@ -5347,7 +5347,7 @@ class xmlScanner (BaseScanner):
             aList.extend(aList2)
             setattr(self,ivar,aList)
             if trace: g.trace(ivar,aList)
-    #@+node:ekr.20111104032034.9868: *5* adjust_class_ref (xmlScanner)
+    #@+node:ekr.20111104032034.9868: *5* adjust_class_ref (XmlScanner)
     def adjust_class_ref(self,s):
 
         '''Ensure that @others appears at the start of a line.'''
@@ -5370,7 +5370,7 @@ class xmlScanner (BaseScanner):
 
         if trace: g.trace('new',repr(s))
         return s
-    #@+node:ekr.20111108111156.9922: *5* adjustTestLines (xmlScanner)
+    #@+node:ekr.20111108111156.9922: *5* adjustTestLines (XmlScanner)
     def adjustTestLines(self,lines):
 
         '''A desparation measure to attempt reasonable comparisons.'''
@@ -5382,7 +5382,7 @@ class xmlScanner (BaseScanner):
         lines = [z.replace('@others','') for z in lines]
         # lines = [z.replace('>\n','>').replace('\n<','<') for z in lines]
         return lines
-    #@+node:ekr.20111108111156.9935: *5* filterTokens (xmlScanner)
+    #@+node:ekr.20111108111156.9935: *5* filterTokens (XmlScanner)
     def filterTokens (self,tokens):
 
         '''Filter tokens as needed for correct comparisons.
@@ -5453,14 +5453,14 @@ class xmlScanner (BaseScanner):
                     i += 1
                 assert progress < i
             return result
-    #@+node:ekr.20111103073536.16601: *5* isSpace (xmlScanner) (Use the base class now)
+    #@+node:ekr.20111103073536.16601: *5* isSpace (XmlScanner) (Use the base class now)
     # def isSpace(self,s,i):
 
         # '''Return true if s[i] is a tokenizer space.'''
 
         # # Unlike the base-class method, xml space tokens include newlines.
         # return i < len(s) and s[i].isspace()
-    #@+node:ekr.20111103073536.16590: *5* skip...Token (xmlScanner overrides)
+    #@+node:ekr.20111103073536.16590: *5* skip...Token (XmlScanner overrides)
     def skipCommentToken(self,s,i):
 
         '''Return comment lines with all leading/trailing whitespace removed.'''
@@ -5497,14 +5497,14 @@ class xmlScanner (BaseScanner):
             while i < len(s) and (self.isWordChar(s[i]) or s[i] in chars):
                 i += 1
             return i
-    #@+node:ekr.20120306130648.9852: *6* isWordChar (xmlScanner) To be replaced
+    #@+node:ekr.20120306130648.9852: *6* isWordChar (XmlScanner) To be replaced
     def isWordChar (self,ch):
 
         '''This allows only ascii tags.'''
 
         # Same as g.isWordChar. This is not correct.
         return ch and (ch.isalnum() or ch == '_')
-    #@+node:ekr.20091230062012.6239: *6* isWordChar1 (xmlScanner)
+    #@+node:ekr.20091230062012.6239: *6* isWordChar1 (XmlScanner)
     #@+at From www.w3.org/TR/2008/REC-xml-20081126/#NT-Name
     # 
     # NameStartChar    ::= ":" | [A-Z] | "_" | [a-z] |
@@ -5533,7 +5533,7 @@ class xmlScanner (BaseScanner):
                 return True
 
         return False
-    #@+node:ekr.20120306130648.9851: *6* isWordChar2 (xmlScanner)
+    #@+node:ekr.20120306130648.9851: *6* isWordChar2 (XmlScanner)
     #@+at From www.w3.org/TR/2008/REC-xml-20081126/#NT-Name
     # 
     # NameChar    ::= NameStartChar | "-" | "." | [0-9] | #xB7 |
@@ -5559,7 +5559,7 @@ class xmlScanner (BaseScanner):
                 return True
 
         return False
-    #@+node:ekr.20071214072924.4: *5* startsHelper & helpers (xmlScanner)
+    #@+node:ekr.20071214072924.4: *5* startsHelper & helpers (XmlScanner)
     def startsHelper(self,s,i,kind,tags,tag=None):
         '''return True if s[i:] starts a class or function.
         Sets sigStart, sigEnd, sigId and codeEnd ivars.'''
@@ -5653,7 +5653,7 @@ class xmlScanner (BaseScanner):
 
         if trace: g.trace(repr(s[self.sigStart:self.codeEnd]))
         return True
-    #@+node:ekr.20071214072924.3: *6* skipToEndOfTag (xmlScanner)
+    #@+node:ekr.20071214072924.3: *6* skipToEndOfTag (XmlScanner)
     def skipToEndOfTag(self,s,i,start):
 
         '''Skip to the end of an open tag.
@@ -5685,7 +5685,7 @@ class xmlScanner (BaseScanner):
 
         if trace: g.trace('ok',ok,repr(s[start:i]))
         return i,ok,complete
-    #@+node:ekr.20071214075117: *6* skipToMatchingTag (xmlScanner)
+    #@+node:ekr.20071214075117: *6* skipToMatchingTag (XmlScanner)
     def skipToMatchingTag (self,s,i,tag,tags,start):
 
         '''Skip the entire class definition. Return i,ok.
@@ -5733,12 +5733,12 @@ class xmlScanner (BaseScanner):
             '' if found else 'not ',target_tag,s[start:i],target_tag))
 
         return i,found
-    #@+node:ekr.20111103073536.16595: *5* startsId (xmlScanner)
+    #@+node:ekr.20111103073536.16595: *5* startsId (XmlScanner)
     def startsId(self,s,i):
 
         # Fix bug 501636: Leo's import code should support non-ascii xml tags.
         return i < len(s) and self.isWordChar1(s[i])
-    #@+node:ekr.20130918062408.17090: *5* startsString (xmlScanner)
+    #@+node:ekr.20130918062408.17090: *5* startsString (XmlScanner)
     def startsString(self,s,i):
             
         '''Single quotes do *not* start strings in xml or html.'''
@@ -5748,20 +5748,20 @@ class xmlScanner (BaseScanner):
         # The line number problem is a separate issue.
         return g.match(s,i,'"')
     #@-others
-#@-<< class xmlScanner (BaseScanner) >>
+#@-<< class XmlScanner (BaseScanner) >>
 
-#@+<< class htmlScanner (xmlScanner) >>
-#@+node:ekr.20111104032034.9867: *4* << class htmlScanner (xmlScanner) >>
-class htmlScanner (xmlScanner):
+#@+<< class HtmlScanner (XmlScanner) >>
+#@+node:ekr.20111104032034.9867: *4* << class HtmlScanner (XmlScanner) >>
+class HtmlScanner (XmlScanner):
 
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
-        xmlScanner.__init__(self,importCommands,atAuto,tags_setting='import_html_tags')
+        XmlScanner.__init__(self,importCommands,atAuto,tags_setting='import_html_tags')
 
     #@+others
     #@-others
-#@-<< class htmlScanner (xmlScanner) >>
+#@-<< class HtmlScanner (XmlScanner) >>
 #@+node:ekr.20101103093942.5938: ** Commands (leoImport)
 #@+node:ekr.20120429125741.10057: *3* @g.command(parse-body)
 @g.command('parse-body')

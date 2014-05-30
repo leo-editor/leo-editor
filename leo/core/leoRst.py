@@ -115,7 +115,7 @@ if docutils:
     docutils.parsers.rst.directives.register_directive('code-block',code_block)
 else:
     code_block.options = {}
-#@+node:ekr.20090502071837.33: ** class rstCommands
+#@+node:ekr.20090502071837.33: ** class RstCommands
 #@+at This plugin optionally stores information for the http plugin. Each node can
 # have one additional attribute, with the name rst_http_attributename, which is a
 # list. The first three elements are stack of tags, the rest is html code::
@@ -127,12 +127,12 @@ else:
 #     [<tag n-1 start>, <tag n-1 end>, <other stack elements>]
 #@@c
 
-class rstCommands:
+class RstCommands:
 
     '''A class to write rst markup in Leo outlines.'''
 
     #@+others
-    #@+node:ekr.20090502071837.34: *3*  Birth & init (rstCommands)
+    #@+node:ekr.20090502071837.34: *3*  Birth & init (RstCommands)
     #@+node:ekr.20090502071837.35: *4*  ctor (rstClass)
     def __init__ (self,c):
 
@@ -192,7 +192,7 @@ class rstCommands:
             'rst3': self.rst3, # Formerly write-restructured-text.
             'code-to-rst': self.code_to_rst_command,
         }
-    #@+node:ekr.20090511055302.5792: *4* finishCreate (rstCommands)
+    #@+node:ekr.20090511055302.5792: *4* finishCreate (RstCommands)
     def finishCreate(self):
 
         c = self.c
@@ -1172,7 +1172,7 @@ class rstCommands:
         finally:
             self.atAutoWrite = False
         return ok
-    #@+node:ekr.20090513073632.5733: *5* initAtAutoWrite (rstCommands)
+    #@+node:ekr.20090513073632.5733: *5* initAtAutoWrite (RstCommands)
     def initAtAutoWrite(self,p,fileName,outputFile):
 
         # Set up for a standard write.
@@ -1638,7 +1638,7 @@ class rstCommands:
                 # print >> bwm_file, "relocate_references(1): Position, attr:"
                 # pprint.pprint((p, attr), bwm_file)
                 # http_lines = attr [3:]
-            parser = link_htmlparserClass(self,p)
+            parser = LinkHtmlparserClass(self,p)
             for line in attr [3:]:
                 try:
                     parser.feed(line)
@@ -1682,7 +1682,7 @@ class rstCommands:
         for p1, attrs in self.http_attribute_iter(p):
             html = mod_http.reconstruct_html_from_attrs(attrs)
             # g.trace(pprint.pprint(html))
-            parser = anchor_htmlParserClass(self, p1)
+            parser = AnchorHtmlParserClass(self, p1)
             for line in html:
                 try:
                     parser.feed(line)
@@ -1705,7 +1705,7 @@ class rstCommands:
             attr = mod_http.get_http_attribute(p1)
             if attr:
                 yield (p1.copy(),attr)
-    #@+node:ekr.20090502071837.60: *4* init_write (rstCommands)
+    #@+node:ekr.20090502071837.60: *4* init_write (RstCommands)
     def init_write (self,p):
 
         self.initOptionsFromSettings() # Still needed.
@@ -2075,9 +2075,9 @@ class rstCommands:
 # done with the link_htmlParserClass.
 #@@c
 
-#@+<< class linkAnchorParserClass >>
-#@+node:ekr.20120219194520.10445: *3*  << class linkAnchorParserClass >>
-class linkAnchorParserClass (HTMLParser.HTMLParser):
+#@+<< class LinkAnchorParserClass >>
+#@+node:ekr.20120219194520.10445: *3*  << class LinkAnchorParserClass >>
+class LinkAnchorParserClass (HTMLParser.HTMLParser):
 
     '''
     A class to recognize anchors and links in HTML documents.
@@ -2136,9 +2136,9 @@ class linkAnchorParserClass (HTMLParser.HTMLParser):
             return d['id']
         return result
     #@-others
-#@-<< class linkAnchorParserClass >>
-#@+node:ekr.20120219194520.10450: *3* class htmlParserClass (linkAnchorParserClass)
-class htmlParserClass (linkAnchorParserClass):
+#@-<< class LinkAnchorParserClass >>
+#@+node:ekr.20120219194520.10450: *3* class htmlParserClass (LinkAnchorParserClass)
+class htmlParserClass (LinkAnchorParserClass):
 
     '''
     The responsibility of the html parser is:
@@ -2157,7 +2157,7 @@ class htmlParserClass (linkAnchorParserClass):
     #@+node:ekr.20120219194520.10451: *4* __init__
     def __init__ (self,rst):
 
-        linkAnchorParserClass.__init__(self,rst) # Init the base class.
+        LinkAnchorParserClass.__init__(self,rst) # Init the base class.
 
         self.stack = None
         # The stack contains lists of the form:
@@ -2254,8 +2254,8 @@ class htmlParserClass (linkAnchorParserClass):
 
         HTMLParser.HTMLParser.feed(self, line) # Call the base class's feed().
     #@-others
-#@+node:ekr.20120219194520.10456: *3* class anchor_htmlParserClass (linkAnchorParserClass)
-class anchor_htmlParserClass (linkAnchorParserClass):
+#@+node:ekr.20120219194520.10456: *3* class AnchorHtmlParserClass (LinkAnchorParserClass)
+class AnchorHtmlParserClass (LinkAnchorParserClass):
 
     '''
     This htmlparser does the first step of relocating: finding all the anchors within the html nodes.
@@ -2270,7 +2270,7 @@ class anchor_htmlParserClass (linkAnchorParserClass):
     #@+node:ekr.20120219194520.10457: *4*  __init__
     def __init__ (self,rst,p):
 
-        linkAnchorParserClass.__init__(self,rst)
+        LinkAnchorParserClass.__init__(self,rst)
 
         self.p = p.copy()
         self.anchor_map = rst.anchor_map
@@ -2298,8 +2298,8 @@ class anchor_htmlParserClass (linkAnchorParserClass):
                     if bwm_file: print >> bwm_file, "anchor(2):", value, self.p
                     self.anchor_map[value] = (self.current_file, self.p.copy())
     #@-others
-#@+node:ekr.20120219194520.10459: *3* class link_htmlParserClass (linkAnchorParserClass)
-class link_htmlparserClass (linkAnchorParserClass):
+#@+node:ekr.20120219194520.10459: *3* class link_htmlParserClass (LinkAnchorParserClass)
+class LinkHtmlparserClass (LinkAnchorParserClass):
 
     '''This html parser does the second step of relocating links:
     1. It scans the html code for links.
@@ -2311,7 +2311,7 @@ class link_htmlparserClass (linkAnchorParserClass):
     #@+node:ekr.20120219194520.10460: *4* __init__
     def __init__ (self,rst,p):
 
-        linkAnchorParserClass.__init__(self,rst)
+        LinkAnchorParserClass.__init__(self,rst)
 
         self.p = p.copy()
         self.anchor_map = rst.anchor_map

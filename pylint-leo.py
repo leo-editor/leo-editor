@@ -59,12 +59,12 @@ def getRecentPluginsList ():
         # 'free_layout',
         # 'internal_ipkernel',
         # 'leo_interface',
-        # 'mod_scripting',
+        'mod_scripting',
         # 'nested_splitter',
         # 'qtGui',
         # 'plugins_menu',
         # 'screencast',
-        # 'viewrendered',
+        'viewrendered',
         # 'viewrendered2',
     )
 #@-others
