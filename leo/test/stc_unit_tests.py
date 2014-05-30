@@ -233,6 +233,7 @@ if 'print' in flags:
         dt.print_stats()
 #@+node:ekr.20140528102444.17997: ** @test replace class names
 '''Replace only unambiguously defined non-pep8 class names.'''
+replace = False # True: actually make the replacements.
 aList = [
 #@+<< non-pep8 class names >>
 #@+node:ekr.20140528102444.19375: *3* << non-pep8 class names >>
@@ -367,11 +368,13 @@ u = stc.Utils()
 #@+others
 #@+node:ekr.20140528102444.19376: *3* class ReplaceController
 class ReplaceController:
+    #@+others
+    #@+node:ekr.20140530134300.17617: *4*  ctor
     def __init__(self,c,files):
         self.c = c
+        self.changed = set()
         self.files_d = {} # Keys are full paths, values are file contents.
         self.files = files
-    #@+others
     #@+node:ekr.20140528102444.19379: *4* check_new_name
     def check_new_name(self,new_name):
         '''Verify that s is found nowhere in Leo.'''
@@ -390,6 +393,7 @@ class ReplaceController:
             s = f.read()
             f.close()
             self.files_d[fn] = s
+            assert s,fn
         
     #@+node:ekr.20140528102444.19378: *4* replace_class_name
     def replace_class_name(self,old_name,new_name):
@@ -400,14 +404,30 @@ class ReplaceController:
             s = self.files_d.get(fn)
             i = s.count(old_name)
             if i > 0:
+                self.changed.add(fn)
                 self.files_d[fn] = s.replace(old_name,new_name)
                 print('%2s instances of %s in %s' % (
                     i,old_name,g.shortFileName(fn)))
     #@+node:ekr.20140528102444.19377: *4* run
     def run(self,aList):
         self.load_files()
-        for s in aList: # [2:3]:
+        for s in aList:
             self.replace_class_name(s,g.pep8_class_name(s))
+        self.write_files()
+    #@+node:ekr.20140530134300.17616: *4* write_files
+    def write_files(self):
+        '''Write all changed files.'''
+        if replace:
+            for fn in sorted(self.changed):
+                if replace:
+                    print('writing: %s' % fn)
+                    f = open(fn,'w')
+                    s = self.files_d.get(fn)
+                    f.write(s)
+                    f.close()
+        else:
+            print('changed, not written: %s' % (
+                '\n'.join(sorted(self.changed))))
     #@-others
 #@-others
 files = u.project_files('leo')
