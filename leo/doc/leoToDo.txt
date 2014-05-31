@@ -77,6 +77,7 @@ failed find focus fails
 
 https://bugs.launchpad.net/leo-editor/+bug/1254861
 ctrl-f doesn't ensure find input field visible
+.. @+node:ekr.20140531073052.16701: *3* find-all should use exising find pattern
 .. @+node:ekr.20140426105101.16868: *3* convert all class names to capitalized
 .. @+node:ekr.20140521095206.16728: ** Important
 .. @+node:ekr.20140402091953.16865: *3* add pylint commands
@@ -14299,10 +14300,6 @@ I started (before where the auto insertion takes place). That would be neat!
 
 @language python
 .. @+node:ekr.20111019104425.15861: *3* Scripts to write
-.. @+node:ekr.20110917104720.9418: *4* convert-names-to-pep8
-This requires real type inference!
-
-We can avoid this if there is only one global def or a name.
 .. @+node:ekr.20110918204546.6809: *4* convert-to-class
 .. @+node:ekr.20111018104244.15933: *4* Create documentation for commands/plugins
 @language rest

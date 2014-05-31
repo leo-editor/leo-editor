@@ -41,7 +41,7 @@ class RopeController:
         # Important: get an offset in actual code.
         s = rope.base.simplify.real_code(s)
         tag1 = 'atFile'
-        tag2 = self.pep8_class_name(tag1)
+        tag2 = g.pep8_class_name(tag1)
         offset = s.find(tag1)
         if offset > -1:
             changes = rope.refactor.rename.Rename(proj,m,offset).get_changes(tag2)
@@ -49,13 +49,6 @@ class RopeController:
         else:
             g.trace('not found',tag1)
         # prog.do(changes)
-    #@+node:ekr.20140525065558.15812: *3* pep8_class_name
-    def pep8_class_name(self,s):
-        '''Return the proper class name for s.'''
-        assert s
-        if s[0].islower():
-            s = s[0].upper()+s[1:]
-        return s
     #@+node:ekr.20140525065558.15810: *3* run
     def run(self):
         '''run the refactorings.'''

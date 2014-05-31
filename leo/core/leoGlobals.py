@@ -3710,7 +3710,7 @@ def toUnicodeFileEncoding(path):
     # Yes, this is correct.  All os_path_x functions return Unicode strings.
     return g.toUnicode(path)
 #@+node:ekr.20140528065727.17961: ** Pep8 related
-#@+node:ekr.20140528065727.17963: *3* pep8_class_name
+#@+node:ekr.20140528065727.17963: *3* g.pep8_class_name
 def pep8_class_name(s):
     '''Return the proper class name for s.'''
     # Warning: s.capitalize() does not work.
