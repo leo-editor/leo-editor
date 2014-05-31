@@ -235,7 +235,7 @@ if 'print' in flags:
         dt.print_stats()
 #@+node:ekr.20140528102444.17997: ** @test replace class names
 '''Replace only unambiguously defined non-pep8 class names.'''
-replace = True # True: actually make the replacements.
+replace = False # True: actually make the replacements.
 aList = [
 #@+<< non-pep8 class names >>
 #@+node:ekr.20140528102444.19375: *3* << non-pep8 class names >>
@@ -376,14 +376,15 @@ class ReplaceController:
         self.c = c
         self.changed = set()
         self.files_d = {} # Keys are full paths, values are file contents.
-        self.files = files
+        self.files = sorted(files) # List of full paths.
     #@+node:ekr.20140528102444.19379: *4* check_new_name
-    def check_new_name(self,new_name):
+    def check_new_name(self,old_name,new_name):
         '''Verify that s is found nowhere in Leo.'''
-        for fn in self.files:
+        for fn in sorted(self.files_d.keys()):
             s = self.files_d.get(fn)
-            if s.count(new_name) > 0:
-                g.trace('****',new_name,'exists in',g.shortFileName(fn))
+            if s.count(new_name) > 0 and s.count(old_name) > 0:
+                g.trace('%20s -> %20s exists in %s' % (
+                    old_name,new_name,g.shortFileName(fn)))
                 return False
         return True
             
@@ -400,7 +401,7 @@ class ReplaceController:
     #@+node:ekr.20140528102444.19378: *4* replace_class_name
     def replace_class_name(self,old_name,new_name):
         assert old_name != new_name,old_name
-        if not self.check_new_name(new_name):
+        if not self.check_new_name(old_name,new_name):
             return
         for fn in self.files:
             s = self.files_d.get(fn)
