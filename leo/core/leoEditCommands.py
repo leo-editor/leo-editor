@@ -2,11 +2,12 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20050710142719: * @file leoEditCommands.py
 #@@first
+'''
+Basic editor commands for Leo.
 
-'''Basic editor commands for Leo.
-
-Modelled after Emacs and Vim commands.'''
-
+Modelled after Emacs and Vim commands.
+'''
+# pylint: disable=eval-used
 #@+<< imports >>
 #@+node:ekr.20050710151017: ** << imports >> (leoEditCommands)
 import leo.core.leoGlobals as g
@@ -26,7 +27,6 @@ import string
 import subprocess # Always exists in Python 2.6 and above.
 import sys
 #@-<< imports >>
-
 #@+<< define class BaseEditCommandsClass >>
 #@+node:ekr.20050920084036.1: ** << define class BaseEditCommandsClass >>
 class BaseEditCommandsClass:
@@ -203,7 +203,6 @@ class BaseEditCommandsClass:
         return self.k.keyboardQuit()
     #@-others
 #@-<< define class BaseEditCommandsClass >>
-
 #@+others
 #@+node:ekr.20120315062642.9746: ** Module-level commands
 #@+node:ekr.20120315062642.9745: *3* ctrl-click-at-cursor
@@ -3942,11 +3941,8 @@ class editCommandsClass (BaseEditCommandsClass):
             k.updateLabel(event)
     #@+node:ekr.20050920084036.65: *3* evalExpression
     def evalExpression (self,event):
-
         '''Evaluate a Python Expression entered in the minibuffer.'''
-
         k = self.k ; state = k.getState('eval-expression')
-
         if state == 0:
             k.setLabelBlue('Eval: ',protect=True)
             k.getArg(event,'eval-expression',1,self.evalExpression)

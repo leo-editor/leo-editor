@@ -3003,17 +3003,14 @@ class RecentFilesManager:
                 dirCount[baseName]['dirs'].append(dirName)
 
         for name in rf.getRecentFiles()[:n]:
+            # pylint: disable=cell-var-from-loop
             if name.strip() == "":
                 continue  # happens with empty list/new file
-
             def recentFilesCallback (event=None,c=c,name=name):
                 c.openRecentFile(name)
-
             if groupedEntries:
                 dirName, baseName = g.os_path_split(name)
-
                 entry = dirCount[baseName]
-
                 if len(entry['dirs']) > 1 or rf_always:  # sub menus
                     if entry['entry'] is None:
                         entry['entry'] = menu.createNewMenu(baseName, "Recent Files...")
@@ -3023,7 +3020,6 @@ class RecentFilesManager:
                 else:  # single occurence, no submenu
                     c.add_command(recentFilesMenu,label=baseName,
                         command=recentFilesCallback,underline=0)
-
             else:  # original behavior
                 label = "%s %s" % (accel_ch[i],g.computeWindowTitle(name))
                 c.add_command(recentFilesMenu,label=label,

@@ -1,11 +1,10 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20061031131434: * @file leoKeys.py
 """Gui-independent keystroke handling for Leo.""" 
-
+# pylint: disable=eval-used
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
-
 #@+<< imports >>
 #@+node:ekr.20061031131434.1: ** << imports >> (leoKeys)
 import leo.core.leoGlobals as g
@@ -140,7 +139,6 @@ import time
 # (7) enter-x-command
 # (8) Keys are command names, values are lists of ShortcutInfo objects.
 #@-<< about key dicts >>
-
 #@+others
 #@+node:ekr.20061031131434.4: ** class AutoCompleterClass
 class AutoCompleterClass:
@@ -3345,25 +3343,24 @@ class KeyHandlerClass:
     #@+node:ekr.20120208064440.10190: *3* k.Modes (no change)
     #@+node:ekr.20061031131434.100: *4* k.addModeCommands (enterModeCallback)
     def addModeCommands (self):
-
-        '''Add commands created by @mode settings to c.commandsDict and k.inverseCommandsDict.'''
-
+        '''
+        Add commands created by @mode settings to c.commandsDict and
+        k.inverseCommandsDict.
+        '''
         trace = False and not g.unitTesting
-
         if trace: g.trace('(k)')
-
         k = self ; c = k.c
         d = g.app.config.modeCommandsDict # Keys are command names: enter-x-mode.
-
         # Create the callback functions and update c.commandsDict and k.inverseCommandsDict.
         for key in d.keys():
-
+            # pylint: disable=cell-var-from-loop
             def enterModeCallback (event=None,name=key):
                 k.enterNamedMode(event,name)
-
             c.commandsDict[key] = f = enterModeCallback
             k.inverseCommandsDict [f.__name__] = key
-            if trace: g.trace(f.__name__,key,'len(c.commandsDict.keys())',len(list(c.commandsDict.keys())))
+            if trace: g.trace(f.__name__,key,
+                'len(c.commandsDict.keys())',
+                len(list(c.commandsDict.keys())))
     #@+node:ekr.20061031131434.157: *4* k.badMode
     def badMode(self,modeName):
 

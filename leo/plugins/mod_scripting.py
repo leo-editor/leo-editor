@@ -387,6 +387,7 @@ class scriptingController:
         if aList:
             seen = []
             for z in aList:
+                # pylint: disable=cell-var-from-loop
                 p,script = z
                 if p.v not in seen:
                     seen.append(p.v)

@@ -3482,6 +3482,8 @@ class atFile:
             s = at.closeStringFile(theFile)
             data.append(s)
         # Set these new ivars for unit tests.
+        # data has exactly two elements.
+        # pylint: disable=unbalanced-tuple-unpacking
         at.public_s, at.private_s = data
         if g.app.unitTesting:
             exceptions = ('public_s','private_s','sentinels','stringOutput','outputContents')

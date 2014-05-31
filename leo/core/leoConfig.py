@@ -44,6 +44,7 @@ class ParserBaseClass:
     def __init__ (self,c,localFlag):
 
         self.c = c
+        self.clipBoard = []
         self.localFlag = localFlag
             # True if this is the .leo file being opened,
             # as opposed to myLeoSettings.leo or leoSettings.leo.

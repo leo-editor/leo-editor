@@ -2,16 +2,15 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20031218072017.3093: * @file leoGlobals.py
 #@@first
-
-'''Global constants, variables and utility functions used throughout Leo.
+'''
+Global constants, variables and utility functions used throughout Leo.
 
 Important: This module imports no other Leo module.
 '''
-
+# pylint: disable=eval-used
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
-
 import sys
 isPython3 = sys.version_info >= (3,0,0)
 #@+<< global switches >>
@@ -184,11 +183,9 @@ user_dict = {}
     # Non-persistent dictionary for free use by scripts and plugins.
 # g = None
 app = None # The singleton app object. Set by runLeo.py.
-
 # Global status vars.
 inScript = False # A synonym for app.inScript
 unitTesting = False # A synonym for app.unitTesting.
-
 #@+others
 #@+node:ekr.20031218072017.3095: ** Checking Leo Files...
 #@+node:ekr.20031218072017.822: *3* createTopologyList
@@ -7118,7 +7115,6 @@ def init_zodb (pathToZodbStorage,verbose=True):
         init_zodb_failed [pathToZodbStorage] = True
         return None
 #@-others
-
 # set g when the import is about to complete.
 g = sys.modules.get('leo.core.leoGlobals')
 assert g,sorted(sys.modules.keys())

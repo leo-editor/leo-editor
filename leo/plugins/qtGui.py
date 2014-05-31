@@ -2,16 +2,14 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20110605121601.18002: * @file ../plugins/qtGui.py
 #@@first
-
 '''qt gui plugin.'''
-
 PYTHON_COLORER = False
-
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 80
 
 # Define these to suppress pylint warnings...
+# pylint: disable=cell-var-from-loop
 __timing = None # For timing stats.
 __qh = None # For quick headlines.
 

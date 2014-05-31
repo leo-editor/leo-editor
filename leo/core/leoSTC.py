@@ -3898,7 +3898,7 @@ class HTMLReportTraverser (AstFullTraverser):
     def get_stc_attrs (self,node,all):
         
         r = self
-        nodes = r.NameTraverser(self.u).run(node) if all else [node]
+        nodes = r.NameTraverser().run(node) if all else [node]
         result = []
         for node in nodes:
             aList = []
