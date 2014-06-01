@@ -11879,7 +11879,7 @@ theObject,completionList = getExternalCompletions (self,s,p=None,language='pytho
 p is used only to get the language, or you can set the language by hand.
 
 @color
-#@+node:ekr.20090324085713.663: *6* Added g.posList
+#@+node:ekr.20090324085713.663: *6* Added g.PosList
 #@+node:ekr.20090324085713.666: *6* Better plugin info
 c.config.doEnabledPlugins sets g.app.config.enabledPluginsFileName
 #@+node:ekr.20090324085713.672: *6* Added properties to leoNodes.py
@@ -12605,7 +12605,7 @@ theObject,completionList = getExternalCompletions (self,s,p=None,language='pytho
 p is used only to get the language, or you can set the language by hand.
 
 @color
-#@+node:ekr.20090717084250.10875: *8* Added g.posList
+#@+node:ekr.20090717084250.10875: *8* Added g.PosList
 #@+node:ekr.20090717084250.10876: *8* Better plugin info
 c.config.doEnabledPlugins sets g.app.config.enabledPluginsFileName
 #@+node:ekr.20090717084250.10877: *8* Added properties to leoNodes.py
@@ -13035,7 +13035,7 @@ theObject,completionList = getExternalCompletions (self,s,p=None,language='pytho
 p is used only to get the language, or you can set the language by hand.
 
 @color
-#@+node:ekr.20090718092032.10472: *8* Added g.posList
+#@+node:ekr.20090718092032.10472: *8* Added g.PosList
 #@+node:ekr.20090718092032.10473: *8* Better plugin info
 c.config.doEnabledPlugins sets g.app.config.enabledPluginsFileName
 #@+node:ekr.20090718092032.10474: *8* Added properties to leoNodes.py

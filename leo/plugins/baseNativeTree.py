@@ -922,7 +922,7 @@ class BaseNativeTreeWidget (leoFrame.LeoTree):
     #@+node:ekr.20110605121601.17915: *3* getSelectedPositions (nativeTree)
     def getSelectedPositions(self):
         items = self.getSelectedItems()
-        pl = leoNodes.Poslist(self.item2position(it) for it in items)
+        pl = leoNodes.PosList(self.item2position(it) for it in items)
         return pl
     #@+node:ekr.20110605121601.17916: ** Widget-dependent helpers
     #@+node:ekr.20110605121601.17917: *3* Drawing
