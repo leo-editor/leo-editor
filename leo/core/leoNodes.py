@@ -1804,28 +1804,28 @@ class Position (object):
             if g.app.unitTesting: assert False, 'bad child index: %s' % (n)
     #@-others
 position = Position # compatibility.
-#@+node:ville.20090311190405.68: ** class Poslist
-class Poslist(list):
-    #@+<< Poslist doc >>
-    #@+node:bob.20101215134608.5898: *3* << Poslist doc >>
+#@+node:ville.20090311190405.68: ** class PosList (leoNodes.py)
+class PosList(list):
+    #@+<< PosList doc >>
+    #@+node:bob.20101215134608.5898: *3* << PosList doc >>
     #@@nocolor-node
     #@+at 
     # List of positions 
     # 
-    # Functions find_h() and find_b() both return an instance of Poslist.
+    # Functions find_h() and find_b() both return an instance of PosList.
     # 
-    # Methods filter_h() and filter_b() refine a Poslist.
+    # Methods filter_h() and filter_b() refine a PosList.
     # 
-    # Method children() generates a new Poslist by descending one level from
-    # all the nodes in a Poslist.
+    # Method children() generates a new PosList by descending one level from
+    # all the nodes in a PosList.
     # 
-    # A chain of Poslist method calls must begin with find_h() or find_b().
+    # A chain of PosList method calls must begin with find_h() or find_b().
     # The rest of the chain can be any combination of filter_h(),
     # filter_b(), and children(). For example:
     # 
     #     pl = c.find_h('@file.*py').children().filter_h('class.*').filter_b('import (.*)')
     # 
-    # For each position, pos, in the Poslist returned, find_h() and
+    # For each position, pos, in the PosList returned, find_h() and
     # filter_h() set attribute pos.mo to the match object (see Python
     # Regular Expression documentation) for the pattern match.
     # 
@@ -1836,30 +1836,27 @@ class Poslist(list):
     # set attribute pos.matchiter to an iterator that will return a match
     # object for each of the non-overlapping matches of the pattern in the
     # body of the node.
-    #@-<< Poslist doc >>
-
+    #@-<< PosList doc >>
     #@+others
     #@+node:bob.20101215134608.5897: *3* children
     def children(self):
-        """ Return a Poslist instance containing pointers to
-        all the immediate children of nodes in Poslist self.
-
+        """ Return a PosList instance containing pointers to
+        all the immediate children of nodes in PosList self.
         """
-
-        res = Poslist()
+        res = PosList()
         for p in self:
             for child_p in p.children():
                 res.append(child_p.copy())            
         return res
     #@+node:ville.20090311190405.69: *3* filter_h
     def filter_h(self, regex, flags = re.IGNORECASE):
-        """ Find all the nodes in Poslist self where zero or more characters at
+        """ Find all the nodes in PosList self where zero or more characters at
         the beginning of the headline match regex
 
         """
 
         pat = re.compile(regex, flags)
-        res = Poslist()
+        res = PosList()
         for p in self:
             mo = re.match(pat, p.h)
             if mo:
@@ -1869,13 +1866,13 @@ class Poslist(list):
         return res
     #@+node:ville.20090311195550.1: *3* filter_b
     def filter_b(self, regex, flags = re.IGNORECASE ):
-        """ Find all the nodes in Poslist self where body matches regex
+        """ Find all the nodes in PosList self where body matches regex
         one or more times.
 
         """
 
         pat = re.compile(regex, flags)
-        res = Poslist()
+        res = PosList()
         for p in self:
             m = re.finditer(pat, p.b)
             t1,t2 = itertools.tee(m,2)
@@ -1893,6 +1890,7 @@ class Poslist(list):
         return res
 
     #@-others
+Poslist = PosList # compatibility.
 #@+node:ekr.20031218072017.3341: ** class VNode
 if use_zodb and ZODB:
     class BaseVnode (ZODB.Persistence.Persistent):

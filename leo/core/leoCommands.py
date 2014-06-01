@@ -1017,26 +1017,26 @@ class Commands (object):
             g.error('no such command: %s %s' % (commandName,g.callers()))
             return None
     #@+node:ekr.20091002083910.6106: *3* c.find...
-    #@+<< Poslist doc >>
-    #@+node:bob.20101215134608.5898: *4* << Poslist doc >>
+    #@+<< PosList doc >>
+    #@+node:bob.20101215134608.5898: *4* << PosList doc >>
     #@@nocolor-node
     #@+at 
     # List of positions 
     # 
-    # Functions find_h() and find_b() both return an instance of Poslist.
+    # Functions find_h() and find_b() both return an instance of PosList.
     # 
-    # Methods filter_h() and filter_b() refine a Poslist.
+    # Methods filter_h() and filter_b() refine a PosList.
     # 
-    # Method children() generates a new Poslist by descending one level from
-    # all the nodes in a Poslist.
+    # Method children() generates a new PosList by descending one level from
+    # all the nodes in a PosList.
     # 
-    # A chain of Poslist method calls must begin with find_h() or find_b().
+    # A chain of PosList method calls must begin with find_h() or find_b().
     # The rest of the chain can be any combination of filter_h(),
     # filter_b(), and children(). For example:
     # 
     #     pl = c.find_h('@file.*py').children().filter_h('class.*').filter_b('import (.*)')
     # 
-    # For each position, pos, in the Poslist returned, find_h() and
+    # For each position, pos, in the PosList returned, find_h() and
     # filter_h() set attribute pos.mo to the match object (see Python
     # Regular Expression documentation) for the pattern match.
     # 
@@ -1047,16 +1047,16 @@ class Commands (object):
     # set attribute pos.matchiter to an iterator that will return a match
     # object for each of the non-overlapping matches of the pattern in the
     # body of the node.
-    #@-<< Poslist doc >>
+    #@-<< PosList doc >>
     #@+node:ville.20090311190405.70: *4* c.find_h
     def find_h(self, regex, flags = re.IGNORECASE):
-        """ Return list (a Poslist) of all nodes where zero or more characters at
+        """ Return list (a PosList) of all nodes where zero or more characters at
         the beginning of the headline match regex
         """
 
         c = self
         pat = re.compile(regex, flags)
-        res = leoNodes.Poslist()
+        res = leoNodes.PosList()
         for p in c.all_positions():
             m = re.match(pat, p.h)
             if m:
@@ -1067,14 +1067,14 @@ class Commands (object):
 
     #@+node:ville.20090311200059.1: *4* c.find_b
     def find_b(self, regex, flags = re.IGNORECASE | re.MULTILINE):
-        """ Return list (a Poslist) of all nodes whose body matches regex
+        """ Return list (a PosList) of all nodes whose body matches regex
         one or more times.
 
         """
 
         c = self
         pat = re.compile(regex, flags)
-        res = leoNodes.Poslist()
+        res = leoNodes.PosList()
         for p in c.all_positions():
             m = re.finditer(pat, p.b)
             t1,t2 = itertools.tee(m,2)
@@ -8508,7 +8508,7 @@ class Commands (object):
         return ''
     #@+node:ville.20090525205736.12325: *4* c.getSelectedPositions
     def getSelectedPositions(self):
-        """ Get list (Poslist) of currently selected positions
+        """ Get list (PosList) of currently selected positions
 
         So far only makes sense on qt gui (which supports multiselection)
         """
