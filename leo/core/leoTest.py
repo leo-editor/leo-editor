@@ -1839,7 +1839,7 @@ class TestManager:
     #@+node:ekr.20051104075904.38: *4* TM.writeNodeToNode
     def writeNodeToNode (self,c,input,output,sentinels=True):
 
-        """Do an atFile.write the input tree to the body text of the output node."""
+        """Do an AtFile.write the input tree to the body text of the output node."""
 
         s = self.writeNodeToString(c,input,sentinels)
 
@@ -1847,7 +1847,7 @@ class TestManager:
     #@+node:ekr.20051104075904.39: *4* TM.writeNodeToString
     def writeNodeToString (self,c,input,sentinels):
 
-        """Return an atFile.write of the input tree to a string."""
+        """Return an AtFile.write of the input tree to a string."""
 
         df = c.atFileCommands
         nodeIndices = g.app.nodeIndices

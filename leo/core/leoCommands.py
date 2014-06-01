@@ -311,7 +311,7 @@ class Commands (object):
         self.shadowController   = leoShadow.ShadowController(c)
         self.fileCommands       = leoFileCommands.fileCommands(c)
         self.findCommands       = leoFind.LeoFind(c)
-        self.atFileCommands     = leoAtFile.atFile(c)
+        self.atFileCommands     = leoAtFile.AtFile(c)
         self.importCommands     = leoImport.LeoImportCommands(c)
         self.rstCommands        = leoRst.RstCommands(c)
         self.tangleCommands     = leoTangle.tangleCommands(c)

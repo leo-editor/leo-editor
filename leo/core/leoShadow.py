@@ -105,7 +105,7 @@ class ShadowController:
     #@+node:ekr.20080712080505.3: *4* x.isSignificantPublicFile
     def isSignificantPublicFile (self,fn):
 
-        '''This tells the atFile.read logic whether to import a public file
+        '''This tells the AtFile.read logic whether to import a public file
         or use an existing public file.'''
 
         return (

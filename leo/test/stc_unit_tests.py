@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:ekr.20140527115626.17955: * @file ../test/stc_unit_tests.py
+#@+node:ekr.20140527083058.16707: * @file ../test/stc_unit_tests.py
 #@@first
 #@+others
 #@+node:ekr.20140527073639.16704: ** @testsetup
@@ -35,18 +35,10 @@ def check_class_names(defs_d,refs_d):
     #@+node:ekr.20140528065727.17958: *4* << non-pep8 class names >>
     # This list was created with find-all: ^class ([a-z]\w+)
     # It should test for underscores, but doesn't.
-    # converted by hand:
-    # 'chapter',
-    # 'chapterController',
-    # 'command',
-    # 'leoFrame',
-    # 'leoLog',
-    # 'node', # -> LeoNode in plugins/leo_interface.py.
-    # 'nodeIndices',
-    # 'shadowController',
+
     'abbrevCommandsClass',
     'anchor_htmlParserClass',
-    'atFile',
+    # 'atFile',
     'atShadowTestCase',
     'baseEditCommandsClass',
     'baseFileCommands',
@@ -240,7 +232,7 @@ aList = [
 #@+<< non-pep8 class names >>
 #@+node:ekr.20140528102444.19375: *3* << non-pep8 class names >>
 # These are the classes the "survived" the first run of this script.
-'atFile',
+# 'atFile',
 'cacher',
 'bridgeController',
 'bufferCommandsClass',

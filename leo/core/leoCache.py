@@ -131,7 +131,7 @@ class cacher:
             if c.cacher:
                 c.cacher.clearCache()
     #@+node:ekr.20100208071151.5907: *3* fileKey
-    # was atFile._contentHashFile
+    # was AtFile._contentHashFile
 
     def fileKey(self,s,content,requireEncodedString=False):
 
@@ -397,7 +397,7 @@ class cacher:
 
         if trace: g.trace(str_pos,key)
     #@+node:ekr.20100208071151.5903: *4* writeFile (cacher)
-    # Was atFile.writeCachedTree
+    # Was AtFile.writeCachedTree
 
     def writeFile(self,p,fileKey):
 

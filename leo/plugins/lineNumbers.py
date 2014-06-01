@@ -31,7 +31,7 @@ __version__ = "0.3"
 # 0.2 EKR:
 #     - Convert to new coding conventions.
 # 0.3 EKR:
-#     - Changed leoAtFile.newDerivedFile to leoAtFile.atFile when overriding methods.
+#     - Changed leoAtFile.newDerivedFile to leoAtFile.AtFile when overriding methods.
 #       This is required because of changes in 4.3 to Leo's core code.
 # 0.4 EKR:
 #     - Used named sections to emphasize the dangerous nature of this code.
@@ -44,7 +44,7 @@ def init():
     if ok:
         #@+<< override write methods >>
         #@+node:ekr.20040419105219.1: ** << override write methods >>
-        oldOpenNodeSentinel = leoAtFile.atFile.putOpenNodeSentinel
+        oldOpenNodeSentinel = leoAtFile.AtFile.putOpenNodeSentinel
 
         def putLineNumberDirective(self,v,inAtAll=False,inAtOthers=False,middle=False):
 
@@ -55,11 +55,11 @@ def init():
                 self.putSentinel(line)
 
         g.funcToMethod(putLineNumberDirective,	
-            leoAtFile.atFile,"putOpenNodeSentinel")
+            leoAtFile.AtFile,"putOpenNodeSentinel")
         #@-<< override write methods >>
         #@+<< override read methods >>
         #@+node:ekr.20040419105219.2: ** << override read methods >>
-        readNormalLine = leoAtFile.atFile.readNormalLine
+        readNormalLine = leoAtFile.AtFile.readNormalLine
 
         def skipLineNumberDirective(self, s, i):
 
@@ -69,7 +69,7 @@ def init():
                 readNormalLine(self,s,i)
 
         g.funcToMethod(skipLineNumberDirective,
-            leoAtFile.atFile,"readNormalLine")
+            leoAtFile.AtFile,"readNormalLine")
         #@-<< override read methods >>
         g.plugin_signon(__name__)
     return ok

@@ -100,8 +100,8 @@ def init ():
         g.globalDirectiveList.append('multipath')
         g.globalDirectiveList.append('multiprefix')
 
-        # Override all instances of leoAtFile.atFile.
-        at = leoAtFile.atFile
+        # Override all instances of leoAtFile.AtFile.
+        at = leoAtFile.AtFile
         global originalOpenFileForWriting ; originalOpenFileForWriting = at.openFileForWriting
         g.funcToMethod(decoratedOpenFileForWriting,at,name='openFileForWriting')
 

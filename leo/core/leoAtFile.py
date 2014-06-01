@@ -7,15 +7,15 @@
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 60
-#@+<< atFile switches >>
-#@+node:ekr.20140108081031.16613: ** << atFile switches >>
+#@+<< leoAtFile switches >>
+#@+node:ekr.20140108081031.16613: ** << leoAtFile switches >>
 new_auto = False
     # True: enable calls to c.viewController.
 if new_auto:
     print('==== new_auto: %s' % new_auto)
 allow_cloned_sibs = True
     # True: allow cloned siblings in @file nodes.
-#@-<< atFile switches >>
+#@-<< leoAtFile switches >>
 #@+<< imports >>
 #@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile)
 import leo.core.leoGlobals as g
@@ -24,8 +24,8 @@ import os
 import sys
 import time
 #@-<< imports >>
-class atFile:
-    """A class implementing the legacy atFile subcommander."""
+class AtFile:
+    """A class implementing the atFile subcommander."""
     #@+<< define class constants >>
     #@+node:ekr.20131224053735.16380: ** << define class constants >>
     # The kind of at_directives.
@@ -108,7 +108,7 @@ class atFile:
     #@-<< define sentinelDict >>
     #@+others
     #@+node:ekr.20041005105605.7: ** at.Birth & init
-    #@+node:ekr.20041005105605.8: *3*  atFile.ctor
+    #@+node:ekr.20041005105605.8: *3*  at.ctor
     # Note: g.getScript also call the at.__init__ and at.finishCreate().
 
     def __init__(self,c):
@@ -619,7 +619,7 @@ class atFile:
             if hasattr(v,"tempBodyList"):
                 delattr(v,"tempBodyList")
     #@+node:ekr.20100122130101.6174: *5* at.deleteTnodeList
-    def deleteTnodeList (self,p): # atFile method.
+    def deleteTnodeList (self,p): # AtFile method.
 
         '''Remove p's tnodeList.'''
 
@@ -1045,7 +1045,7 @@ class atFile:
         else:
             return True
     #@+node:ekr.20041005105605.117: *5* at.completeFirstDirective
-    # 14-SEP-2002 DTHEIN: added for use by atFile.read()
+    # 14-SEP-2002 DTHEIN: added for use by AtFile.read()
 
     # this function scans the lines in the list 'out' for @first directives
     # and appends the corresponding line from 'firstLines' to each @first 
@@ -1072,7 +1072,7 @@ class atFile:
             leadingLine = " " + firstLines[j]
             out[k] = tag + leadingLine.rstrip() ; j += 1
     #@+node:ekr.20041005105605.118: *5* at.completeLastDirectives
-    # 14-SEP-2002 DTHEIN: added for use by atFile.read()
+    # 14-SEP-2002 DTHEIN: added for use by AtFile.read()
 
     # this function scans the lines in the list 'out' for @last directives
     # and appends the corresponding line from 'lastLines' to each @last 
@@ -3931,7 +3931,7 @@ class atFile:
 
         parent_v = p._parentVnode()
 
-        if False: # 2010/01/23: This generates atFile errors about orphan nodes.
+        if False: # 2010/01/23: This generates AtFile errors about orphan nodes.
             clonedSibs,thisClonedSibIndex = at.scanForClonedSibs(parent_v,p.v)
             if clonedSibs > 1:
                 at.putSentinel("@clone %d" % (clonedSibs))
@@ -5065,7 +5065,7 @@ class atFile:
                 line = line.replace("@date",time.asctime())
                 if len(line)> 0:
                     self.putSentinel("@comment " + line)
-    #@+node:ekr.20080712150045.1: *4* replaceFileWithString (atFile)
+    #@+node:ekr.20080712150045.1: *4* at.replaceFileWithString
     def replaceFileWithString (self,fn,s):
 
         '''Replace the file with s if s is different from theFile's contents.
@@ -5111,7 +5111,7 @@ class atFile:
             at.error('unexpected exception writing file: %s' % (fn))
             g.es_exception()
             return False
-    #@+node:ekr.20041005105605.212: *4* replaceTargetFileIfDifferent (atFile)
+    #@+node:ekr.20041005105605.212: *4* at.replaceTargetFileIfDifferent
     def replaceTargetFileIfDifferent (self,root,ignoreBlankLines=False):
 
         '''Create target file as follows:
@@ -5287,12 +5287,12 @@ class atFile:
     #@+node:ekr.20050104131929: *3* at.file operations...
     #@+at The difference, if any, between these methods and the corresponding g.utils_x
     # functions is that these methods may call self.error.
-    #@+node:ekr.20050104131820: *4* chmod
+    #@+node:ekr.20050104131820: *4* at.chmod
     def chmod (self,fileName,mode):
 
         # Do _not_ call self.error here.
         return g.utils_chmod(fileName,mode)
-    #@+node:ekr.20130910100653.11323: *4* create (Leo 4.11)
+    #@+node:ekr.20130910100653.11323: *4* at.create
     def create(self,fn,s):
         
         '''Create a file whose contents are s.'''
@@ -5315,7 +5315,7 @@ class atFile:
             g.error('error writing',fn)
             g.es('not written:',fn)
         return bool(f)
-    #@+node:ekr.20050104131929.1: *4* atFile.rename
+    #@+node:ekr.20050104131929.1: *4* at.rename
     #@+<< about os.rename >>
     #@+node:ekr.20050104131929.2: *5* << about os.rename >>
     #@+at Here is the Python 2.4 documentation for rename (same as Python 2.3)
@@ -5360,7 +5360,7 @@ class atFile:
                     self.outputFileName,self.targetFileName))
                 g.es_exception()
             return False
-    #@+node:ekr.20050104132018: *4* atFile.remove
+    #@+node:ekr.20050104132018: *4* at.remove
     def remove (self,fileName,verbose=True):
 
         if not fileName:
@@ -5375,7 +5375,7 @@ class atFile:
                 g.es_exception()
                 g.trace(g.callers(5))
             return False
-    #@+node:ekr.20050104132026: *4* stat
+    #@+node:ekr.20050104132026: *4* at.stat
     def stat (self,fileName):
 
         '''Return the access mode of named file, removing any setuid, setgid, and sticky bits.'''
@@ -5494,7 +5494,7 @@ class atFile:
     ):
 
         '''Scan p and p's ancestors looking for directives,
-        setting corresponding atFile ivars.'''
+        setting corresponding AtFile ivars.'''
 
         trace = False and not g.unitTesting
         at = self ; c = self.c
@@ -5684,5 +5684,6 @@ class atFile:
         if read_only:
             g.error("read only:",fn)
     #@-others
+atFile = AtFile # compatibility
 
 #@-leo
