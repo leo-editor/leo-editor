@@ -464,7 +464,7 @@ class LeoQTextBrowser (QtGui.QTextBrowser):
 #@-<< define LeoQTextBrowser >>
 #@+<< define LeoQtBaseTextWidget class >>
 #@+node:ekr.20110605121601.18023: *3*  << define LeoQtBaseTextWidget class >>
-class LeoQtBaseTextWidget (leoFrame.baseTextWidget):
+class LeoQtBaseTextWidget (leoFrame.BaseTextWidget):
 
     #@+others
     #@+node:ekr.20110605121601.18024: *4*  Birth
@@ -475,7 +475,7 @@ class LeoQtBaseTextWidget (leoFrame.baseTextWidget):
         self.c = c or self.widget.leo_c
         # g.trace('(LeoQtBaseTextWidget)',name,self.widget,g.callers(2))
         # Init the base class.
-        leoFrame.baseTextWidget.__init__(
+        leoFrame.BaseTextWidget.__init__(
             self,c,baseClassName='LeoQtBaseTextWidget',
             name=name,widget=widget,)
         # Init ivars.
@@ -584,7 +584,7 @@ class LeoQtBaseTextWidget (leoFrame.baseTextWidget):
     # Important: LeoQtBaseTextWidget is **not** a subclass of HighLevelInterface.
     # 
     # Indeed, the redirection methods of HighLevelInterface redirect calls
-    # from leoBody & leoLog to *this* class.
+    # from LeoBody & LeoLog to *this* class.
     # 
     # Do not delete: HighLevelInterface calls these methods.
     #@+node:ekr.20110605121601.18032: *5* Focus (LeoQtBaseTextWidget)
@@ -699,7 +699,7 @@ class LeoQtBaseTextWidget (leoFrame.baseTextWidget):
     #@+node:ekr.20110605121601.18050: *5* HighLevelInterface (LeoQtBaseTextWidget)
     # Do not delete.
     # The redirection methods of HighLevelInterface redirect calls
-    # from leoBody & leoLog to *this* class.
+    # from LeoBody & LeoLog to *this* class.
 
     # Essential methods...
     def getName (self):
@@ -1634,7 +1634,7 @@ class LeoQScintillaWidget (LeoQtBaseTextWidget):
 class LeoQtHeadlineWidget (LeoQtBaseTextWidget):
     '''A wrapper class for QLineEdit widgets in QTreeWidget's.
 
-    This wrapper must appear to be a leoFrame.baseTextWidget to Leo's core.
+    This wrapper must appear to be a leoFrame.BaseTextWidget to Leo's core.
     '''
 
     #@+others
@@ -3293,8 +3293,8 @@ class LeoBaseTabWidget (QtGui.QTabWidget):
         # Fix bug 844953: tell Unity which menu to use.
         c.enableMenuBar()
     #@-others
-#@+node:ekr.20110605121601.18180: *3* class LeoQtBody (subclass of leoBody)
-class LeoQtBody (leoFrame.leoBody):
+#@+node:ekr.20110605121601.18180: *3* class LeoQtBody (subclass of LeoBody)
+class LeoQtBody (leoFrame.LeoBody):
 
     """A class that represents the body pane of a Qt window."""
 
@@ -3308,7 +3308,7 @@ class LeoQtBody (leoFrame.leoBody):
 
         trace = False and not g.unitTesting
         # Call the base class constructor.
-        leoFrame.leoBody.__init__(self,frame,parentFrame)
+        leoFrame.LeoBody.__init__(self,frame,parentFrame)
         c = self.c
         assert c.frame == frame and frame.c == c
         self.useScintilla = c.config.getBool('qt-use-scintilla')
@@ -8366,7 +8366,7 @@ class LeoQtGui(leoGui.LeoGui):
         '''Insert the key given by event in location i of widget event.w.'''
         
         import leo.core.leoGui as leoGui
-        assert isinstance(event,leoGui.leoKeyEvent)
+        assert isinstance(event,leoGui.LeoKeyEvent)
         qevent = event.event
         assert isinstance(qevent,QtGui.QKeyEvent)
         qw = hasattr(event.w,'widget') and event.w.widget or None
@@ -8392,7 +8392,7 @@ class LeoQtGui(leoGui.LeoGui):
         if not w: return False
 
         val = (
-            isinstance(w,leoFrame.baseTextWidget) or
+            isinstance(w,leoFrame.BaseTextWidget) or
             isinstance(w,LeoQtBody) or
             isinstance(w,LeoQtLog) or
             isinstance(w,LeoQtBaseTextWidget)
@@ -8888,7 +8888,7 @@ class LeoQtEventFilter(QtCore.QObject):
         if trace and verbose: g.trace('ch: %s, shortcut: %s printable: %s' % (
             repr(ch),repr(shortcut),ch in string.printable))
 
-        return leoGui.leoKeyEvent(c,char,event,shortcut,w,x,y,x_root,y_root)
+        return leoGui.LeoKeyEvent(c,char,event,shortcut,w,x,y,x_root,y_root)
     #@+node:ekr.20120204061120.10088: *3* Key construction (LeoQtEventFilter)
     #@+node:ekr.20110605121601.18543: *4* toTkKey & helpers (must not change!)
     def toTkKey (self,event):

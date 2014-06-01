@@ -40,18 +40,18 @@ normcase    = g.os_path_normcase
 split       = g.os_path_split
 
 #@+others
-#@+node:ekr.20100208062523.5885: ** class cacher
-class cacher:
+#@+node:ekr.20100208062523.5885: ** class Cacher
+class Cacher:
 
     '''A class that encapsulates all aspects of Leo's file caching.'''
 
     #@+others
-    #@+node:ekr.20100208082353.5919: *3*  Birth (cacher)
-    #@+node:ekr.20100208062523.5886: *4*  ctor (cacher)
+    #@+node:ekr.20100208082353.5919: *3*  Birth (Cacher)
+    #@+node:ekr.20100208062523.5886: *4*  ctor (Cacher)
     def __init__ (self,c=None):
 
         trace = False and not g.unitTesting
-        if trace: g.trace('cacher','c',c)
+        if trace: g.trace('Cacher','c',c)
 
         self.c = c
 
@@ -104,12 +104,12 @@ class cacher:
             return db
         except Exception:
             return {} # Use a plain dict as a dummy.
-    #@+node:ekr.20100210163813.5747: *4* save (cacher)
+    #@+node:ekr.20100210163813.5747: *4* save (Cacher)
     def save (self,fn,changeName):
 
         if changeName or not self.inited:
             self.initFileDB(fn)
-    #@+node:ekr.20100209160132.5759: *3* clear/AllCache(s) (cacher)
+    #@+node:ekr.20100209160132.5759: *3* clear/AllCache(s) (Cacher)
     def clearCache (self):
         if self.db:
             # 2011/07/30: Be careful about calling db.clear.
@@ -124,7 +124,7 @@ class cacher:
 
     def clearAllCaches (self):
 
-        # Clear the cachers *only* for all open windows.
+        # Clear the Cachers *only* for all open windows.
         # This is much safer than tryting to Kill all db's.
         for frame in g.windows():
             c = frame.c
@@ -152,7 +152,7 @@ class cacher:
         m.update(content)
         return "fcache/" + m.hexdigest()
     #@+node:ekr.20100208082353.5925: *3* Reading
-    #@+node:ekr.20100208071151.5910: *4* cacher.createOutlineFromCacheList & helpers
+    #@+node:ekr.20100208071151.5910: *4* Cacher.createOutlineFromCacheList & helpers
     def createOutlineFromCacheList(self,parent_v,aList,fileName,top=True):
 
         """ Create outline structure from recursive aList
@@ -312,7 +312,7 @@ class cacher:
             d = {}
         if trace: g.trace(fn,key,data)
         return d
-    #@+node:ekr.20100208071151.5905: *4* readFile (cacher)
+    #@+node:ekr.20100208071151.5905: *4* readFile (Cacher)
     def readFile (self,fileName,root):
 
         trace = False and not g.unitTesting
@@ -396,7 +396,7 @@ class cacher:
         self.db['current_position_%s' % key] = str_pos
 
         if trace: g.trace(str_pos,key)
-    #@+node:ekr.20100208071151.5903: *4* writeFile (cacher)
+    #@+node:ekr.20100208071151.5903: *4* writeFile (Cacher)
     # Was AtFile.writeCachedTree
 
     def writeFile(self,p,fileKey):
@@ -414,7 +414,7 @@ class cacher:
         else:
             if trace: g.trace('caching ',p.h,fileKey)
             self.db[fileKey] = self.makeCacheList(p)
-    #@+node:ekr.20100208065621.5890: *3* test (cacher)
+    #@+node:ekr.20100208065621.5890: *3* test (Cacher)
     def test(self):
 
         if g.app.gui.guiName() == 'nullGui':

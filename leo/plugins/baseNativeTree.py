@@ -45,8 +45,8 @@ class BaseNativeTreeWidget (leoFrame.LeoTree):
         self.auto_edit = c.config.getBool('single_click_auto_edits_headline',False)
 
         # Subclasses should define headline wrappers to
-        # be a subclass of leoFrame.baseTextWidget.
-        self.headlineWrapper = leoFrame.baseTextWidget
+        # be a subclass of leoFrame.BaseTextWidget.
+        self.headlineWrapper = leoFrame.BaseTextWidget
 
         # Subclasses should define .treeWidget to be the underlying
         # native tree widget.

@@ -20,7 +20,7 @@ def choose(cond, a, b): # warning: evaluates all arguments
 #@+node:ekr.20031218072017.3632: ** go
 def go ():
 
-    compare = leoCompare(
+    compare = LeoCompare(
         commands = None,
 
         appendOutput = True,
@@ -54,12 +54,12 @@ def go ():
         name1 = "c:\\prog\\test\\compare1.txt"
         name2 = "c:\\prog\\test\\compare2.txt"
         compare.compare_files(name1,name2)
-#@+node:ekr.20031218072017.3633: ** class leoCompare
+#@+node:ekr.20031218072017.3633: ** class LeoCompare
 class BaseLeoCompare:
     """The base class for Leo's compare code."""
     #@+others
     #@+node:ekr.20031218072017.3634: *3* compare.__init__
-    # All these ivars are known to the leoComparePanel class.
+    # All these ivars are known to the LeoComparePanel class.
 
     def __init__ (self,
 
@@ -86,7 +86,7 @@ class BaseLeoCompare:
 
         outputFileName = None ):
 
-        # It is more convenient for the leoComparePanel to set these directly.
+        # It is more convenient for the LeoComparePanel to set these directly.
         self.c = commands
 
         self.appendOutput = appendOutput
@@ -459,7 +459,7 @@ class BaseLeoCompare:
                 self.outputFile = None
                 self.show("exception opening output file")
                 g.es_exception()
-    #@+node:ekr.20031218072017.3650: *4* show (leoCompare) (not changed)
+    #@+node:ekr.20031218072017.3650: *4* show (LeoCompare) (not changed)
     def show (self,s):
 
         # g.pr(s)
@@ -495,7 +495,7 @@ class BaseLeoCompare:
         self.show("printTrailingMismatches:" + str(self.printTrailingMismatches))
     #@-others
 
-class leoCompare (BaseLeoCompare):
+class LeoCompare (BaseLeoCompare):
     """A class containing Leo's compare code."""
     pass
 #@-others

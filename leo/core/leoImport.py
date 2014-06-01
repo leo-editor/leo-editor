@@ -184,8 +184,8 @@ class LeoImportCommands (ScanUtility):
             '.otl':     VimoutlinerScanner,
             '.php':     PhpScanner,
             '.pas':     PascalScanner,
-            '.py':      pythonScanner,
-            '.pyw':     pythonScanner,
+            '.py':      PythonScanner,
+            '.pyw':     PythonScanner,
             # '.txt':     RstScanner, # A reasonable default.
             # '.rest':    RstScanner,
             # '.rst':     RstScanner,
@@ -1669,7 +1669,7 @@ class BaseScanner (ScanUtility):
         self.atAutoWarnsAboutLeadingWhitespace = c.config.getBool(
             'at_auto_warns_about_leading_whitespace')
         self.atAutoSeparateNonDefNodes = c.config.getBool(
-            'at_auto_separate_non_def_nodes',default=False)
+            'at_auto_separate_non_DefNodes',default=False)
         self.classId = None
             # The identifier containing the class tag:
             # 'class', 'interface', 'namespace', etc.
@@ -4409,11 +4409,11 @@ class PhpScanner (BaseScanner):
 
         return ids and ids[1]
     #@-others
-#@+node:ekr.20070703122141.100: *3* class pythonScanner
-class pythonScanner (BaseScanner):
+#@+node:ekr.20070703122141.100: *3* class PythonScanner
+class PythonScanner (BaseScanner):
 
     #@+others
-    #@+node:ekr.20070703122141.101: *4*  __init__ (pythonScanner)
+    #@+node:ekr.20070703122141.101: *4*  __init__ (PythonScanner)
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
@@ -4428,7 +4428,7 @@ class pythonScanner (BaseScanner):
             # Suppress the check for the block delim.
             # The check is done in skipSigTail.
         self.strict = True
-    #@+node:ekr.20071201073102.1: *4* adjustDefStart (pythonScanner)
+    #@+node:ekr.20071201073102.1: *4* adjustDefStart (PythonScanner)
     def adjustDefStart (self,s,i):
         '''A hook to allow the Python importer to adjust the 
         start of a class or function to include decorators.
@@ -4479,7 +4479,7 @@ class pythonScanner (BaseScanner):
                     return j + 1
 
         return i
-    #@+node:ekr.20101103093942.5935: *4* findClass (pythonScanner)
+    #@+node:ekr.20101103093942.5935: *4* findClass (PythonScanner)
     def findClass(self,p):
 
         '''Return the index end of the class or def in a node, or -1.'''
@@ -4504,7 +4504,7 @@ class pythonScanner (BaseScanner):
             assert progress < i,'i: %d, ch: %s' % (i,repr(s[i]))
 
         return None,-1,-1
-    #@+node:ekr.20070712090019.1: *4* skipCodeBlock (pythonScanner) & helpers
+    #@+node:ekr.20070712090019.1: *4* skipCodeBlock (PythonScanner) & helpers
     def skipCodeBlock (self,s,i,kind):
 
         trace = False ; verbose = True
@@ -4652,7 +4652,7 @@ class NewPythonScanner (BaseScanner):
     '''A line-oriented scanner for Python.'''
     # Important: this probably will never be used.
     #@+others
-    #@+node:ekr.20131219090550.16575: *4*  __init__ (pythonScanner)
+    #@+node:ekr.20131219090550.16575: *4*  __init__ (PythonScanner)
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
@@ -5789,7 +5789,7 @@ def headToPrevNode(event):
     c = event.get('c')
     if not c: return
     p = c.p
-    scanner = pythonScanner(c.importCommands,atAuto=False)
+    scanner = PythonScanner(c.importCommands,atAuto=False)
     kind,i,junk = scanner.findClass(p)
     p2 = p.back()
 
@@ -5815,7 +5815,7 @@ def tailToNextNode(event=None):
     c = event.get('c')
     if not c: return
     p = c.p
-    scanner = pythonScanner(c.importCommands,atAuto=False)
+    scanner = PythonScanner(c.importCommands,atAuto=False)
     kind,junk,j = scanner.findClass(p)
     p2 = p.next()
 

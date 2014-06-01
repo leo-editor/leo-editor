@@ -221,13 +221,13 @@ def printGcRefs (verbose=True):
             g.pr(type(ref))
     else:
         g.pr("%d referrers" % len(refs))
-#@+node:ekr.20051104075904.70: ** class editBodyTestCase
-class editBodyTestCase(unittest.TestCase):
+#@+node:ekr.20051104075904.70: ** class EditBodyTestCase
+class EditBodyTestCase(unittest.TestCase):
 
     """Data-driven unit tests for Leo's edit body commands."""
 
     #@+others
-    #@+node:ekr.20051104075904.71: *3*  __init__(editBodyTestCase)
+    #@+node:ekr.20051104075904.71: *3*  __init__(EditBodyTestCase)
     def __init__ (self,c,parent,before,after,sel,ins,tempNode):
 
         # Init the base class.
@@ -245,7 +245,7 @@ class editBodyTestCase(unittest.TestCase):
         # g.trace('parent',parent.h)
         # g.trace('before',before.h)
         # g.trace('after',after.h)
-    #@+node:ekr.20051104075904.72: *3*  fail (editBodyTestCase)
+    #@+node:ekr.20051104075904.72: *3*  fail (EditBodyTestCase)
     def fail (self,msg=None):
 
         """Mark a unit test as having failed."""
@@ -324,10 +324,10 @@ class editBodyTestCase(unittest.TestCase):
     def shortDescription (self):
 
         try:
-            return "editBodyTestCase: %s" % (self.parent.h)
+            return "EditBodyTestCase: %s" % (self.parent.h)
         except Exception:
             g.es_print_exception()
-            return "editBodyTestCase"
+            return "EditBodyTestCase"
     #@+node:ekr.20051104075904.76: *3* tearDown
     def tearDown (self):
 
@@ -423,7 +423,7 @@ class GeneralTestCase(unittest.TestCase):
         return s + '\n'
     #@-others
 #@+node:ekr.20051104075904.79: ** class importExportTestCase
-class importExportTestCase(unittest.TestCase):
+class ImportExportTestCase(unittest.TestCase):
 
     """Data-driven unit tests for Leo's edit body commands."""
 
@@ -489,7 +489,7 @@ class importExportTestCase(unittest.TestCase):
         c.selectPosition(child)
 
         # Get the dialog name and the fileName from the dialog node.
-        # This is used below to set up the dialog dict for nullGui.simulateDialog.
+        # This is used below to set up the dialog dict for NullGui.simulateDialog.
         s = d.bodyString()
         lines = s.split('\n')
         name = lines[0]
@@ -503,10 +503,10 @@ class importExportTestCase(unittest.TestCase):
         except AttributeError:
             fileName = g.os_path_normpath(fileName)
         self.fileName = fileName = g.os_path_finalize_join(g.app.loadDir,"..",fileName)
-        if trace: g.trace('(importExportTestCase',fileName)
+        if trace: g.trace('(ImportExportTestCase',fileName)
         
-        # Set the dict for UnitTestGui, a subclass of nullGui.
-        # nullGui.simulateDialog uses this dict to return values for dialogs.
+        # Set the dict for UnitTestGui, a subclass of NullGui.
+        # NullGui.simulateDialog uses this dict to return values for dialogs.
         if self.doImport:
             theDict = {name: [fileName]}
         else:
@@ -517,9 +517,9 @@ class importExportTestCase(unittest.TestCase):
     def shortDescription (self):
 
         try:
-            return "importExportTestCase: %s %s" % (self.p.h,self.fileName)
+            return "ImportExportTestCase: %s %s" % (self.p.h,self.fileName)
         except Exception:
-            return "importExportTestCase"
+            return "ImportExportTestCase"
     #@+node:ekr.20051104075904.86: *3* tearDown
     def tearDown (self):
 
@@ -1012,7 +1012,7 @@ class TestManager:
             sel    = tm.findNodeInTree(p,"selection")
             ins    = tm.findNodeInTree(p,"insert")
             if before and after:
-                test = editBodyTestCase(c,p,before,after,sel,ins,temp_p)
+                test = EditBodyTestCase(c,p,before,after,sel,ins,temp_p)
                 suite.addTest(test)
             else:
                 g.pr('missing "before" or "after" for', p.h)
@@ -1038,7 +1038,7 @@ class TestManager:
                 p2 = p.copy()
                 dialog = tm.findNodeInTree(p2,"dialog")
                 assert(dialog)
-                test = importExportTestCase(c,p2,dialog,temp,doImport)
+                test = ImportExportTestCase(c,p2,dialog,temp,doImport)
                 suite.addTest(test)
         return suite
     #@+node:ekr.20051104075904.44: *4* TM.runAtFileTest

@@ -1135,7 +1135,7 @@ class KeyHandlerClass:
         self.inited = False         # Set at end of finishCreate.
         self.swap_mac_keys = False  #### How to init this ????
         self.w = None
-                # Note: will be None for nullGui.
+                # Note: will be None for NullGui.
 
         # Generalize...
         self.x_hasNumeric = ['sort-lines','sort-fields']
@@ -1244,7 +1244,7 @@ class KeyHandlerClass:
         k = self
 
         k.multiLineCommandList = [
-            # editCommandsClass
+            # EditCommandsClass
             'add-space-to-lines',
             'add-tab-to-lines',
             'back-page',
@@ -1317,7 +1317,7 @@ class KeyHandlerClass:
             # QueryReplaceCommandsClass
             'query-replace',
             'query-replace-regex',
-            # RectangleCommandsClass
+            # RecTangleCommandsClass
             'clear-rectangle',
             'close-rectangle',
             'delete-rectangle',
@@ -1378,7 +1378,7 @@ class KeyHandlerClass:
 
         # These commands can be executed in the minibuffer.
         k.singleLineCommandList = [
-            # editCommandsClass
+            # EditCommandsClass
             'back-to-indentation',
             'back-to-home', # 2010/02/01
             'back-char',
@@ -1592,7 +1592,7 @@ class KeyHandlerClass:
 
         k = self ; c = k.c
         self.w = c.frame.miniBufferWidget
-            # Will be None for nullGui.
+            # Will be None for NullGui.
 
         k.createInverseCommandsDict()
         k.makeAllBindings()

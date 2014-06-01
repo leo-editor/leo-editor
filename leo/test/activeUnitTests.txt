@@ -1253,7 +1253,7 @@ import leo.core.leoFrame as leoFrame
 if g.app.isExternalUnitTest:
     pass
 else:
-    assert not isinstance(c.frame,leoFrame.nullFrame)
+    assert not isinstance(c.frame,leoFrame.NullFrame)
     
     # These commands are implemented by qtGui.py
     def closeEnough(f1,f2):
@@ -10760,7 +10760,7 @@ if 0:
 #@+node:ekr.20111113194727.3869: *4* @test bastTextWidget methods
 import leo.core.leoFrame as leoFrame
 
-w = leoFrame.baseTextWidget(c,'base-name','class-name',widget=None)
+w = leoFrame.BaseTextWidget(c,'base-name','class-name',widget=None)
 
 def check(expected):
     s = w.getAllText()
@@ -13882,10 +13882,10 @@ for f,s in table:
         assert i == len(s),'expected i==%s, got i==%s' % (len(s),i)
         assert result == expected,'expected...\n%s\ngot...\n%s' % (
             repr(expected),repr(result))
-#@+node:ekr.20111104112332.3956: *4* @test ic.skip...Token (pythonScanner)
+#@+node:ekr.20111104112332.3956: *4* @test ic.skip...Token (PythonScanner)
 import leo.core.leoImport as leoImport
 ic = c.importCommands
-scanner = leoImport.pythonScanner(importCommands=ic,atAuto=True)
+scanner = leoImport.PythonScanner(importCommands=ic,atAuto=True)
     
 tails = (
     '+ abc', # don't concatenate with id or whitespace.

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:ekr.20031218072017.3719: * @file LeoGui.py
+#@+node:ekr.20031218072017.3719: * @file leoGui.py
 #@@first
 
 """A module containing the base LeoGui class.
@@ -17,32 +17,31 @@ Plugins may define their own gui classes by setting g.app.gui."""
 #@+<< imports >>
 #@+node:ekr.20120219194520.10466: ** << imports >> (LeoGui.py)
 import leo.core.leoGlobals as g
-# import leo.core.LeoFind as LeoFind # for nullFindTab.
-import leo.core.leoFrame as leoFrame # for nullGui and StringTextWidget.
+import leo.core.leoFrame as leoFrame # for NullGui and StringTextWidget.
 #@-<< imports >>
 
 #@+others
-#@+node:ekr.20070228160107: ** class leoKeyEvent (LeoGui.py)
-class leoKeyEvent:
+#@+node:ekr.20070228160107: ** class LeoKeyEvent (LeoGui.py)
+class LeoKeyEvent:
 
     '''A gui-independent wrapper for gui events.'''
 
     #@+others
-    #@+node:ekr.20110605121601.18846: *3* ctor (leoKeyEvent)
+    #@+node:ekr.20110605121601.18846: *3* ctor (LeoKeyEvent)
     def __init__ (self,c,char,event,shortcut,w,x,y,x_root,y_root):
 
         trace = False and not g.unitTesting
 
         if g.isStroke(shortcut):
-            g.trace('***** (leoKeyEvent) oops: already a stroke',shortcut,g.callers())
+            g.trace('***** (LeoKeyEvent) oops: already a stroke',shortcut,g.callers())
             stroke = shortcut
         else:
             stroke = g.KeyStroke(shortcut) if shortcut else None
 
-        assert g.isStrokeOrNone(stroke),'(leoKeyEvent) %s %s' % (
+        assert g.isStrokeOrNone(stroke),'(LeoKeyEvent) %s %s' % (
             repr(stroke),g.callers())
 
-        if trace: g.trace('(leoKeyEvent) stroke',stroke)
+        if trace: g.trace('(LeoKeyEvent) stroke',stroke)
 
         self.c = c
         self.char = char or ''
@@ -61,11 +60,11 @@ class leoKeyEvent:
 
     def __repr__ (self):
 
-        return 'leoKeyEvent: stroke: %s, char: %s, w: %s' % (
+        return 'LeoKeyEvent: stroke: %s, char: %s, w: %s' % (
             repr(self.stroke),repr(self.char),repr(self.w))
 
     def type(self):
-        return 'leoKeyEvent'
+        return 'LeoKeyEvent'
 #@+node:ekr.20031218072017.3720: ** class LeoGui
 class LeoGui:
 
@@ -104,7 +103,7 @@ class LeoGui:
         # For example, this would wrongly convert Ctrl-C to Ctrl-c,
         # in effect, converting a user binding from Ctrl-Shift-C to Ctrl-C.
 
-        return leoKeyEvent(c,char,event,stroke,w,x,y,x_root,y_root)
+        return LeoKeyEvent(c,char,event,stroke,w,x,y,x_root,y_root)
     #@+node:ekr.20031218072017.3740: *4* guiName
     def guiName(self):
 
@@ -314,14 +313,14 @@ class LeoGui:
         """E.g. if commanders are in tabs, make sure c's tab is visible"""
         pass
     #@-others
-#@+node:ekr.20031218072017.2223: ** class nullGui (LeoGui)
-class nullGui(LeoGui):
+#@+node:ekr.20031218072017.2223: ** class NullGui (LeoGui)
+class NullGui(LeoGui):
     """Null gui class."""
     #@+others
-    #@+node:ekr.20031218072017.2224: *3* Birth & death (nullGui)
-    #@+node:ekr.20031218072017.2225: *4*  nullGui.__init__
+    #@+node:ekr.20031218072017.2224: *3* Birth & death (NullGui)
+    #@+node:ekr.20031218072017.2225: *4*  NullGui.__init__
     def __init__ (self,guiName='nullGui'):
-        '''ctor for the nullGui class.'''
+        '''ctor for the NullGui class.'''
         LeoGui.__init__ (self,guiName)
             # init the base class.
         self.clipboardContents = ''
@@ -334,7 +333,7 @@ class nullGui(LeoGui):
         self.isNullGui = True
         self.bodyTextWidget  = leoFrame.StringTextWidget
         self.plainTextWidget = leoFrame.StringTextWidget
-    #@+node:ekr.20031218072017.2229: *4* nullGui.runMainLoop
+    #@+node:ekr.20031218072017.2229: *4* NullGui.runMainLoop
     def runMainLoop(self):
 
         """Run the gui's main loop."""
@@ -346,27 +345,27 @@ class nullGui(LeoGui):
             self.lastFrame.c.executeScript(script=self.script)
             # g.es("\nend of batch script")
         else:
-            print('**** nullGui.runMainLoop: terminating Leo.')
+            print('**** NullGui.runMainLoop: terminating Leo.')
 
         # Getting here will terminate Leo.
-    #@+node:ekr.20070228155807: *3* isTextWidget (nullGui)
+    #@+node:ekr.20070228155807: *3* isTextWidget (NullGui)
     def isTextWidget (self,w):
 
         '''Return True if w is a Text widget suitable for text-oriented commands.'''
 
-        return w and isinstance(w,leoFrame.baseTextWidget)
-    #@+node:ekr.20031218072017.2230: *3* oops (nullGui)
+        return w and isinstance(w,leoFrame.BaseTextWidget)
+    #@+node:ekr.20031218072017.2230: *3* oops (NullGui)
     def oops(self):
 
-        """Default do-nothing method for nullGui class.
+        """Default do-nothing method for NullGui class.
 
         It is NOT an error to use this method."""
 
         # It is not usually an error to call methods of this class.
         # However, this message is useful when writing gui plugins.
         if 1:
-            g.trace("nullGui",g.callers(4))
-    #@+node:ekr.20070301171901: *3* do nothings (nullGui)
+            g.trace("NullGui",g.callers(4))
+    #@+node:ekr.20070301171901: *3* do nothings (NullGui)
     def add_border(self,c,w):
         pass
     def alert (self,message):
@@ -398,7 +397,7 @@ class nullGui(LeoGui):
         self.clipboardContents = s
     def set_focus(self,commander,widget):
         self.focusWidget = widget
-    #@+node:ekr.20070301172456: *3* app.gui panels (nullGui)
+    #@+node:ekr.20070301172456: *3* app.gui panels (NullGui)
     def createComparePanel(self,c):
         """Create Compare panel."""
         self.oops()
@@ -410,9 +409,9 @@ class nullGui(LeoGui):
     def createLeoFrame(self,c,title):
         """Create a null Leo Frame."""
         gui = self
-        self.lastFrame = leoFrame.nullFrame(c,title,gui)
+        self.lastFrame = leoFrame.NullFrame(c,title,gui)
         return self.lastFrame
-    #@+node:ekr.20031218072017.3744: *3* dialogs (nullGui)
+    #@+node:ekr.20031218072017.3744: *3* dialogs (NullGui)
     def runAboutLeoDialog(self,c,version,theCopyright,url,email):
         return self.simulateDialog("aboutLeoDialog")
 
@@ -444,7 +443,7 @@ class nullGui(LeoGui):
     def runAskYesNoCancelDialog(self,c,title,
         message=None,yesMessage="Yes",noMessage="No",yesToAllMessage=None,defaultButton="Yes"):
         return self.simulateDialog("yesNoCancelDialog","cancel")
-    #@+node:ekr.20100521090440.5893: *3* onActivateEvent/onDeactivateEvent (nullGui)
+    #@+node:ekr.20100521090440.5893: *3* onActivateEvent/onDeactivateEvent (NullGui)
     def onActivateEvent (self,*args,**keys):
         pass
 
@@ -476,8 +475,8 @@ class NullScriptingControllerClass:
 
         pass
 
-#@+node:ekr.20031218072017.3742: ** class UnitTestGui (nullGui)
-class UnitTestGui(nullGui):
+#@+node:ekr.20031218072017.3742: ** class UnitTestGui (NullGui)
+class UnitTestGui(NullGui):
     '''A gui class for use by unit tests.'''
     # Presently used only by the import/export unit tests.
     #@+others
@@ -486,7 +485,7 @@ class UnitTestGui(nullGui):
         '''ctor for the UnitTestGui class.'''
         self.oldGui = g.app.gui
         # Init the base class
-        nullGui.__init__ (self,"UnitTestGui")
+        NullGui.__init__ (self,"UnitTestGui")
         # Use the same kind of widgets as the old gui.
         self.bodyTextWidget = self.oldGui.bodyTextWidget
         self.plainTextWidget = self.oldGui.plainTextWidget

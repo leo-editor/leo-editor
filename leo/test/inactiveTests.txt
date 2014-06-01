@@ -6031,7 +6031,7 @@ def two():
 # tree = c.importCommands.pythonUnitTest(p,s=s,showTree=True)
 
 expected = s.find('# This is a comment')
-scanner = leoImport.pythonScanner(importCommands=ic,atAuto=False)
+scanner = leoImport.PythonScanner(importCommands=ic,atAuto=False)
 i = s.find('import a')
 assert i > -1
 i = scanner.skipToTheNextClassOrFunction(s,i,lastIndent=0)
@@ -6063,7 +6063,7 @@ def two():
 # tree = c.importCommands.pythonUnitTest(p,s=s,showTree=True)
 
 expected = s.find('# This is a comment')
-scanner = leoImport.pythonScanner(importCommands=ic,atAuto=False)
+scanner = leoImport.PythonScanner(importCommands=ic,atAuto=False)
 i = s.find('import a')
 assert i > -1
 i = scanner.skipToTheNextClassOrFunction(s,i,lastIndent=0)
@@ -6097,7 +6097,7 @@ if __name__ == '__main__':
 
 lastLine = 'pass\n'
 expected = s.find(lastLine) + len(lastLine) + 1
-scanner = leoImport.pythonScanner(importCommands=ic,atAuto=False)
+scanner = leoImport.PythonScanner(importCommands=ic,atAuto=False)
 i = s.find('import a')
 assert i > -1
 i = scanner.skipToTheNextClassOrFunction(s,i,lastIndent=0)
@@ -6124,7 +6124,7 @@ if __name__ == '__main__':
 
 '''
 
-scanner = leoImport.pythonScanner(importCommands=ic,atAuto=False)
+scanner = leoImport.PythonScanner(importCommands=ic,atAuto=False)
 expected = i = s.find('import a')
 assert i > -1
 i = scanner.skipToTheNextClassOrFunction(s,i,lastIndent=0)
@@ -7644,8 +7644,8 @@ else:
     import leo.core.leoGui as leoGui
     
     # Important: external unit tests should execute in this environment.
-    nullGui   = leoGui.nullGui('null gui')
-    nullFrame = leoFrame.nullFrame(title='nullFrame title',gui=nullGui)
+    nullGui   = leoGui.NullGui('null gui')
+    nullFrame = leoFrame.NullFrame(title='nullFrame title',gui=nullGui)
     c2 = leoCommands.Commands(nullFrame,fileName='<empty fileName>')
     nullFrame.c = c2
     body = leoFrame.nullBody(frame=nullFrame,parentFrame=None)

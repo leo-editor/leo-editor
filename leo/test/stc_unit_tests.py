@@ -256,22 +256,33 @@ replace = False # True: actually make the replacements.
 aList = [
 #@+<< non-pep8 class names >>
 #@+node:ekr.20140528102444.19375: *3* << non-pep8 class names >>
-# These are the classes the "survived" the first run of this script.
+# These survived the second run of this script:
+# They were fixed by hand.
+
+# 'nullFrame',
+# 'nullGui',
+# 'leoKeyEvent',
+# 'leoBody',
+# 'leoLog',
+
+# These survived the first run of this script:
+# Most of these problems were due to a bug in check_new_name.
+
 # 'atFile',
-'baseTextWidget',
-'bridgeController',
-'bufferCommandsClass',
-'cacher',
-'def_node',
-'editBodyTestCase',
-'editCommandsClass',
-'fileCommands',
-'htmlParserClass',
-'importExportTestCase',
-'leoCompare',
-'pythonScanner',
-'searchWidget',
-'tangleCommands',
+# 'baseTextWidget',
+# 'bridgeController',
+# 'bufferCommandsClass',
+# 'cacher',
+# 'def_node',
+# 'editBodyTestCase',
+# 'editCommandsClass',
+# 'fileCommands',
+# 'htmlParserClass',
+# 'importExportTestCase',
+# 'leoCompare',
+# 'pythonScanner',
+# 'searchWidget',
+# 'tangleCommands',
 #@-<< non-pep8 class names >>
 ]
 if 0: # not needed when @testsetup exists.

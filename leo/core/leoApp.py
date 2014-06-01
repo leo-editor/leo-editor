@@ -138,8 +138,8 @@ class LeoApp:
         # Global types.
         import leo.core.leoFrame as leoFrame
         import leo.core.leoGui as leoGui
-        self.nullGui = leoGui.nullGui()
-        self.NullLog = leoFrame.NullLog()
+        self.nullGui = leoGui.NullGui()
+        self.nullLog = leoFrame.NullLog()
 
         #### To be moved to OpenWithManager.
 
@@ -994,10 +994,9 @@ class LeoApp:
             g.app.db['hello'] = [1,2,5]
 
         """
-
         # Fixes bug 670108.
         import leo.core.leoCache as leoCache
-        g.app.db = leoCache.cacher().initGlobalDB()
+        g.app.db = leoCache.Cacher().initGlobalDB()
     #@+node:ekr.20031218072017.1978: *3* app.setLeoID
     def setLeoID (self,verbose=True):
 
@@ -2497,7 +2496,7 @@ class LoadManager:
         '''Completely read a file, creating the corresonding outline.
 
         1. If fn is an existing .leo file (possibly zipped), read it twice:
-        the first time with a nullGui to discover settings,
+        the first time with a NullGui to discover settings,
         the second time with the requested gui to create the outline.
 
         2. If fn is an external file:

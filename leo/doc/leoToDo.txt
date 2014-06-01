@@ -1428,7 +1428,7 @@ def loadLocalFile (self,fn,gui,old_c):
     '''Completely read a file, creating the corresonding outline.
 
     1. If fn is an existing .leo file (possibly zipped), read it twice:
-    the first time with a nullGui to discover settings,
+    the first time with a NullGui to discover settings,
     the second time with the requested gui to create the outline.
 
     2. If fn is an external file:
@@ -5081,7 +5081,7 @@ https://groups.google.com/forum/#!topic/leo-editor/rTN1S9u74RQ
 The reason the *exact* example above works is that:
 
 a) c.atFileCommands.write is *already* a valid completion and
-b) c.atFileCommands.write is *also* a prefix of other at.FileCommands methods.
+b) c.atFileCommands.write is *also* a prefix of other at.fileCommands methods.
 
 In that case, ​
  
@@ -9442,11 +9442,11 @@ def makeImportExportSuite(self,parentHeadline,doImport):
             p2 = p.copy()
             dialog = tm.findNodeInTree(p2,"dialog")
             assert(dialog)
-            test = importExportTestCase(c,p2,dialog,temp,doImport)
+            test = ImportExportTestCase(c,p2,dialog,temp,doImport)
             suite.addTest(test)
     return suite
 .. @+node:ekr.20051104075904.79: *5* class importExportTestCase
-class importExportTestCase(unittest.TestCase):
+class ImportExportTestCase(unittest.TestCase):
 
     """Data-driven unit tests for Leo's edit body commands."""
 
@@ -9512,7 +9512,7 @@ def setUp(self):
     c.selectPosition(child)
 
     # Get the dialog name and the fileName from the dialog node.
-    # This is used below to set up the dialog dict for nullGui.simulateDialog.
+    # This is used below to set up the dialog dict for NullGui.simulateDialog.
     s = d.bodyString()
     lines = s.split('\n')
     name = lines[0]
@@ -9526,10 +9526,10 @@ def setUp(self):
     except AttributeError:
         fileName = g.os_path_normpath(fileName)
     self.fileName = fileName = g.os_path_finalize_join(g.app.loadDir,"..",fileName)
-    if trace: g.trace('(importExportTestCase',fileName)
+    if trace: g.trace('(ImportExportTestCase',fileName)
     
-    # Set the dict for UnitTestGui, a subclass of nullGui.
-    # nullGui.simulateDialog uses this dict to return values for dialogs.
+    # Set the dict for UnitTestGui, a subclass of NullGui.
+    # NullGui.simulateDialog uses this dict to return values for dialogs.
     if self.doImport:
         theDict = {name: [fileName]}
     else:
@@ -9540,9 +9540,9 @@ def setUp(self):
 def shortDescription (self):
 
     try:
-        return "importExportTestCase: %s %s" % (self.p.h,self.fileName)
+        return "ImportExportTestCase: %s %s" % (self.p.h,self.fileName)
     except Exception:
-        return "importExportTestCase"
+        return "ImportExportTestCase"
 .. @+node:ekr.20051104075904.86: *6* tearDown
 def tearDown (self):
 

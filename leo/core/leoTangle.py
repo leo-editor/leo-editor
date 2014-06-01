@@ -246,10 +246,10 @@ class UstNode:
             s += "\nupdate_flag: %s" % repr(part.update_flag)
         return s
     #@-others
-#@+node:ekr.20031218072017.3458: *3* class def_node
-class def_node:
+#@+node:ekr.20031218072017.3458: *3* class DefNode
+class DefNode:
     #@+others
-    #@+node:ekr.20031218072017.3459: *4* def_node.__init__
+    #@+node:ekr.20031218072017.3459: *4* DefNode.__init__
     #@+at
     # The text has been masssaged so that 1) it contains no leading
     # indentation and 2) all code arising from section references have been
@@ -260,7 +260,7 @@ class def_node:
     def __init__ (self,name,indent,part,of,nl_flag,code):
 
         if 0:
-            g.trace("def_node.__init__:",
+            g.trace("DefNode.__init__:",
                 "name:",name," part:",part," of:",of," indent:",indent)
         self.name = name
         self.indent = indent
@@ -269,10 +269,10 @@ class def_node:
         self.part = part
         self.of = of
         self.nl_flag = nl_flag
-    #@+node:ekr.20031218072017.3460: *4* def_node.__repr__
+    #@+node:ekr.20031218072017.3460: *4* DefNode.__repr__
     def __repr__ (self):
 
-        return "def_node:" + self.name
+        return "DefNode:" + self.name
     #@-others
 #@+node:ekr.20031218072017.3461: *3* class RootAttributes (Stephen P. Schaefer)
 #@+at Stephen P. Schaefer, 9/2/2002
@@ -312,7 +312,7 @@ class RootAttributes:
         self.use_header_flag = tangle_state.use_header_flag
         self.print_mode = tangle_state.print_mode
 
-        # of all the state variables, this one isn't set in tangleCommands.__init__
+        # of all the state variables, this one isn't set in TangleCommands.__init__
         # peculiar
         try:
             self.path = tangle_state.path
@@ -334,7 +334,7 @@ class RootAttributes:
             # Stephen P. Schaefer 9/13/2002
             ", first_lines: " + self.first_lines)
     #@-others
-#@+node:ekr.20031218072017.3465: ** class tangleCommands methods
+#@+node:ekr.20031218072017.3465: ** class TangleCommands methods
 class BaseTangleCommands:
     """The base class for Leo's tangle and untangle commands."""
     #@+others
@@ -460,7 +460,7 @@ class BaseTangleCommands:
         self.language = c.target_language
         if 0: # debug
             import sys
-            g.es("tangleCommands.languague: %s at header %s"%(self.language,repr(self.p)))
+            g.es("TangleCommands.languague: %s at header %s"%(self.language,repr(self.p)))
             f = sys._getframe(1)
             g.es("caller: "+f.f_code.co_name)
             f = sys._getframe(2)
@@ -2513,7 +2513,7 @@ class BaseTangleCommands:
                 i = g.skip_to_end_of_line(s,i)
         #@-<< Skip the header line output by tangle >>
         # The top level of the stack represents the root.
-        self.push_new_def_node(self.root_name,indent,1,1,True)
+        self.push_new_DefNode(self.root_name,indent,1,1,True)
         while i < len(s):
             if 0:
                 eol = g.skip_to_end_of_line(s,i)
@@ -2592,7 +2592,7 @@ class BaseTangleCommands:
                     # Skip to the first character of the new section definition.
                     i = g.skip_to_end_of_line(s,i)
                     # Start the new section.
-                    self.push_new_def_node(name,indent,part,of,nl_flag)
+                    self.push_new_DefNode(name,indent,part,of,nl_flag)
                     self.select_next_sentinel()
                 else:
                     assert(kind == end_sentinel_line)
@@ -3174,13 +3174,13 @@ class BaseTangleCommands:
                     lang_dict['language'] = lang
                     if not lang_dict['delims']:
                         lang_dict['delims'] = (d1, d2, d3)
-    #@+node:ekr.20031218072017.3592: *4* push_new_def_node
-    # This function pushes a new def_node on the top of the section stack.
+    #@+node:ekr.20031218072017.3592: *4* push_new_DefNode
+    # This function pushes a new DefNode on the top of the section stack.
 
-    def push_new_def_node (self,name,indent,part,of,nl_flag):
+    def push_new_DefNode (self,name,indent,part,of,nl_flag):
 
         # g.trace(name,part)
-        node = def_node(name,indent,part,of,nl_flag,None)
+        node = DefNode(name,indent,part,of,nl_flag,None)
         self.def_stack.append(node)
     #@+node:ekr.20031218072017.3593: *4* scan_short_val
     # This function scans a positive integer.
@@ -3454,7 +3454,7 @@ class BaseTangleCommands:
         return kind, end
     #@-others
 
-class tangleCommands (BaseTangleCommands):
+class TangleCommands (BaseTangleCommands):
     """A class that implements Leo' tangle and untangle commands."""
     pass
 #@-others

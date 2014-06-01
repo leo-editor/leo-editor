@@ -60,7 +60,7 @@ class NodeIndices (object):
         # This should never throw an exception.
         return gnx1 == gnx2
     #@+node:ekr.20031218072017.1994: *3* get/setDefaultId
-    # These are used by the fileCommands read/write code.
+    # These are used by the FileCommands read/write code.
 
     def getDefaultId (self):
 

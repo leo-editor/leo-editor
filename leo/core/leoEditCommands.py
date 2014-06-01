@@ -245,8 +245,8 @@ class EditCommandsManager:
 
         self.classesList = (
             ('abbrevCommands',      AbbrevCommandsClass),
-            ('bufferCommands',      bufferCommandsClass),
-            ('editCommands',        editCommandsClass),
+            ('bufferCommands',      BufferCommandsClass),
+            ('editCommands',        EditCommandsClass),
             ('chapterCommands',     ChapterCommandsClass),
             ('controlCommands',     ControlCommandsClass),
             ('debugCommands',       DebugCommandsClass),
@@ -257,7 +257,7 @@ class EditCommandsManager:
             ('leoCommands',         LeoCommandsClass),
             ('macroCommands',       MacroCommandsClass),
             # ('queryReplaceCommands',QueryReplaceCommandsClass),
-            ('rectangleCommands',   RectangleCommandsClass),
+            ('recTangleCommands',   RecTangleCommandsClass),
             ('registerCommands',    RegisterCommandsClass),
             ('searchCommands',      SearchCommandsClass),
             ('spellCommands',       SpellCommandsClass),
@@ -997,7 +997,7 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
         except IOError:
             g.es('can not create',fileName)
     #@-others
-#@+node:ekr.20050920084036.31: ** bufferCommandsClass
+#@+node:ekr.20050920084036.31: ** BufferCommandsClass
 #@+at
 # An Emacs instance does not have knowledge of what is considered a
 # buffer in the environment.
@@ -1005,10 +1005,10 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
 # The call to setBufferInteractionMethods calls the buffer configuration methods.
 #@@c
 
-class bufferCommandsClass (BaseEditCommandsClass):
+class BufferCommandsClass (BaseEditCommandsClass):
 
     #@+others
-    #@+node:ekr.20050920084036.32: *3*  ctor (bufferCommandsClass)
+    #@+node:ekr.20050920084036.32: *3*  ctor (BufferCommandsClass)
     def __init__ (self,c):
 
         BaseEditCommandsClass.__init__(self,c) # init the base class.
@@ -1699,14 +1699,14 @@ class DebugCommandsClass (BaseEditCommandsClass):
         Tests are run in an external process, so tests *cannot* change the outline.'''
         self.c.testManager.runTestsExternally(all=False,marked=False)
     #@-others
-#@+node:ekr.20050920084036.53: ** editCommandsClass
-class editCommandsClass (BaseEditCommandsClass):
+#@+node:ekr.20050920084036.53: ** EditCommandsClass
+class EditCommandsClass (BaseEditCommandsClass):
 
     '''Contains editing commands with little or no state.'''
 
     #@+others
     #@+node:ekr.20050929155208: *3*  birth
-    #@+node:ekr.20050920084036.54: *4*  ctor (editCommandsClass)
+    #@+node:ekr.20050920084036.54: *4*  ctor (EditCommandsClass)
     def __init__ (self,c):
 
         BaseEditCommandsClass.__init__(self,c) # init the base class.
@@ -1738,7 +1738,7 @@ class editCommandsClass (BaseEditCommandsClass):
         self.closeBracketsList      = cf.getString('close_flash_brackets') or ')]}'
 
         self.initBracketMatcher(c)
-    #@+node:ekr.20050920084036.55: *4*  getPublicCommands (editCommandsClass)
+    #@+node:ekr.20050920084036.55: *4*  getPublicCommands (EditCommandsClass)
     def getPublicCommands (self):        
 
         c = self.c
@@ -3619,8 +3619,8 @@ class editCommandsClass (BaseEditCommandsClass):
             w.setSelectionRange(ins,ins,insert=ins)
 
         self.endCommand(changed=changed,setLabel=True)
-    #@+node:ekr.20051022142249: *3* clicks and focus (editCommandsClass)
-    #@+node:ekr.20060211100905: *4* activate-x-menu & activateMenu (editCommandsClass)
+    #@+node:ekr.20051022142249: *3* clicks and focus (EditCommandsClass)
+    #@+node:ekr.20060211100905: *4* activate-x-menu & activateMenu (EditCommandsClass)
     def activateCmdsMenu    (self,event=None):
         '''Activate Leo's Cmnds menu.'''
         self.activateMenu('Cmds')
@@ -3685,7 +3685,7 @@ class editCommandsClass (BaseEditCommandsClass):
         c.widgetWantsFocusNow(pane)
         k.newMinibufferWidget = pane
         k.showStateAndMode()
-    #@+node:ekr.20060613090701: *4* cycleAllFocus (editCommandsClass)
+    #@+node:ekr.20060613090701: *4* cycleAllFocus (EditCommandsClass)
     editWidgetCount = 0
 
     def cycleAllFocus (self,event):
@@ -8274,7 +8274,7 @@ class HelpCommandsClass (BaseEditCommandsClass):
         Here is a partial list of the **official ivars** of any LeoFrame f::
 
             f.c                     is the frame’s commander.
-            f.body                  is a leoBody instance.
+            f.body                  is a LeoBody instance.
             f.body.bodyCtl          is a LeoQTextEditWidget instance.
             f.body.bodyCtrl.widget  is a LeoQTextBrowser(QTextBrowser) instance.
             f.log                   is a LeoLog instance.
@@ -9411,11 +9411,11 @@ class MacroCommandsClass (BaseEditCommandsClass):
         else:
             g.trace('can not happen: no event')
     #@-others
-#@+node:ekr.20050920084036.221: ** RectangleCommandsClass
-class RectangleCommandsClass (BaseEditCommandsClass):
+#@+node:ekr.20050920084036.221: ** RecTangleCommandsClass
+class RecTangleCommandsClass (BaseEditCommandsClass):
 
     #@+others
-    #@+node:ekr.20050920084036.222: *3*  Birth (RectangleCommandsClass)
+    #@+node:ekr.20050920084036.222: *3*  Birth (RecTangleCommandsClass)
     def __init__ (self,c):
 
         BaseEditCommandsClass.__init__(self,c) # init the base class.
@@ -9471,7 +9471,7 @@ class RectangleCommandsClass (BaseEditCommandsClass):
         w = BaseEditCommandsClass.beginCommandWithEvent(self,event,undoType)
         r1,r2,r3,r4 = self.getRectanglePoints(w)
         return w,r1,r2,r3,r4
-    #@+node:ekr.20050920084036.224: *3* Entries (RectangleCommandsClass)
+    #@+node:ekr.20050920084036.224: *3* Entries (RecTangleCommandsClass)
     #@+node:ekr.20050920084036.225: *4* clearRectangle
     def clearRectangle (self,event):
 
@@ -9892,7 +9892,7 @@ class RegisterCommandsClass (BaseEditCommandsClass):
                 val = self.registers.get(key)
                 if val:
                     if type(val)==type([]):
-                        c.rectangleCommands.yankRectangle(val)
+                        c.recTangleCommands.yankRectangle(val)
                     else:
                         i = w.getInsertPoint()
                         w.insert(i,val)

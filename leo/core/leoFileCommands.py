@@ -529,13 +529,13 @@ if sys.platform != 'cli':
     #@-<< define sax classes >>
 
 class BaseFileCommands:
-    """A base class for the fileCommands subcommander."""
+    """A base class for the FileCommands subcommander."""
     #@+others
     #@+node:ekr.20090218115025.4: ** Birth (leoFileCommands)
     #@+node:ekr.20031218072017.3019: *3* leoFileCommands._init_
     def __init__(self,c):
 
-        # g.trace("__init__", "fileCommands.__init__")
+        # g.trace("__init__", "FileCommands.__init__")
         self.c = c
         self.frame = c.frame
 
@@ -1458,7 +1458,7 @@ class BaseFileCommands:
         return p
     #@+node:ekr.20031218072017.3032: ** Writing
     #@+node:ekr.20070413045221.2: *3*  Top-level  (leoFileCommands)
-    #@+node:ekr.20031218072017.1720: *4* save (fileCommands)
+    #@+node:ekr.20031218072017.1720: *4* save (FileCommands)
     def save(self,fileName,silent=False):
 
         c = self.c ; v = c.currentVnode()
@@ -2168,7 +2168,7 @@ class BaseFileCommands:
         theFile = zipfile.ZipFile(fileName,'w',zipfile.ZIP_DEFLATED)
         theFile.writestr(contentsName,s)
         theFile.close()
-    #@+node:ekr.20031218072017.2012: *3* writeAtFileNodes (fileCommands)
+    #@+node:ekr.20031218072017.2012: *3* writeAtFileNodes (FileCommands)
     def writeAtFileNodes (self,event=None):
 
         '''Write all @file nodes in the selected outline.'''
@@ -2178,7 +2178,7 @@ class BaseFileCommands:
         c.init_error_dialogs()
         c.atFileCommands.writeAll(writeAtFileNodesFlag=True)
         c.raise_error_dialogs(kind='write')
-    #@+node:ekr.20080801071227.5: *3* writeAtShadowNodes (fileCommands)
+    #@+node:ekr.20080801071227.5: *3* writeAtShadowNodes (FileCommands)
     def writeAtShadowNodes (self,event=None):
 
         '''Write all @file nodes in the selected outline.'''
@@ -2188,7 +2188,7 @@ class BaseFileCommands:
         c.init_error_dialogs()
         c.atFileCommands.writeAll(writeAtFileNodesFlag=True)
         c.raise_error_dialogs(kind='write')
-    #@+node:ekr.20031218072017.1666: *3* writeDirtyAtFileNodes (fileCommands)
+    #@+node:ekr.20031218072017.1666: *3* writeDirtyAtFileNodes (FileCommands)
     def writeDirtyAtFileNodes (self,event=None):
 
         '''Write all changed @file Nodes.'''
@@ -2198,7 +2198,7 @@ class BaseFileCommands:
         c.init_error_dialogs()
         c.atFileCommands.writeAll(writeDirtyAtFileNodesFlag=True)
         c.raise_error_dialogs(kind='write')
-    #@+node:ekr.20080801071227.6: *3* writeDirtyAtShadowNodes (fileCommands)
+    #@+node:ekr.20080801071227.6: *3* writeDirtyAtShadowNodes (FileCommands)
     def writeDirtyAtShadowNodes (self,event=None):
 
         '''Write all changed @shadow Nodes.'''
@@ -2402,7 +2402,7 @@ class BaseFileCommands:
         # g.trace('c.fixed',c.fixed)
     #@-others
 
-class fileCommands (BaseFileCommands):
-    """A class creating the fileCommands subcommander."""
+class FileCommands (BaseFileCommands):
+    """A class creating the FileCommands subcommander."""
     pass
 #@-leo

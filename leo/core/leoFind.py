@@ -66,17 +66,17 @@ import re
 #@-<< Theory of operation of find/change >>
 
 #@+others
-#@+node:ekr.20070105092022.1: ** class searchWidget
-class searchWidget:
+#@+node:ekr.20070105092022.1: ** class SearchWidget
+class SearchWidget:
     '''A class to simulating high-level interface widget.'''
     # This could be a StringTextWidget, but this code is simple and good.
     def __init__ (self,*args,**keys):
-        # g.trace ('searchWidget',g.callers())
+        # g.trace ('SearchWidget',g.callers())
         self.s = ''    # The widget text
         self.i = 0     # The insert point
         self.sel = 0,0 # The selection range
     def __repr__(self):
-        return 'searchWidget id: %s' % (id(self))
+        return 'SearchWidget id: %s' % (id(self))
 
     #@+others
     #@+node:ekr.20070105093138: *3* getters (LeoFind)
@@ -157,7 +157,7 @@ class LeoFind:
         self.changeTextList = []
         # Widget ivars.
         self.change_ctrl = None
-        self.s_ctrl = searchWidget() # For searches.
+        self.s_ctrl = SearchWidget() # For searches.
         self.find_text = ""
         self.change_text = ""
         self.radioButtonsChanged = False # Set by ftm.radio_button_callback

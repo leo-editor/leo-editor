@@ -56,16 +56,16 @@ def controller(gui='nullGui',loadPlugins=True,readSettings=True,silent=False,ver
     global gBridgeController
 
     if not gBridgeController:
-        gBridgeController = bridgeController(gui,loadPlugins,readSettings,silent,verbose)
+        gBridgeController = BridgeController(gui,loadPlugins,readSettings,silent,verbose)
 
     return gBridgeController
-#@+node:ekr.20070227092442.2: ** class bridgeController
-class bridgeController:
+#@+node:ekr.20070227092442.2: ** class BridgeController
+class BridgeController:
 
     '''Creates a way for host programs to access Leo.'''
 
     #@+others
-    #@+node:ekr.20070227092442.3: *3* ctor (bridgeController)
+    #@+node:ekr.20070227092442.3: *3* ctor (BridgeController)
     def __init__ (self,guiName,loadPlugins,readSettings,silent,verbose):
 
         self.g = None
@@ -85,7 +85,7 @@ class bridgeController:
         '''Return a fully initialized leoGlobals module.'''
 
         return self.isOpen() and self.g
-    #@+node:ekr.20070227093530: *3* initLeo & helpers (bridgeController)
+    #@+node:ekr.20070227093530: *3* initLeo & helpers (BridgeController)
     def initLeo (self):
 
         '''Init the Leo app to which this class gives access.
@@ -186,14 +186,14 @@ class bridgeController:
             path = g.os_path_finalize_join(g.app.loadDir,'..',theDir)
             if path not in sys.path:
                 sys.path.append(path)
-    #@+node:ekr.20070227095743: *4* createGui (bridgeController)
+    #@+node:ekr.20070227095743: *4* createGui (BridgeController)
     def createGui (self):
 
         g = self.g
 
         if self.guiName == 'nullGui':
             g.app.gui = g.app.nullGui
-            g.app.log = g.app.gui.log = log = g.app.NullLog
+            g.app.log = g.app.gui.log = log = g.app.nullLog
             log.isNull = False
             log.enabled = True # Allow prints from NullLog.
             log.logInited = True # Bug fix: 2012/10/17.
@@ -321,7 +321,7 @@ class bridgeController:
         g = self.g
 
         return bool(g and g.app and g.app.gui)
-    #@+node:ekr.20070227092442.5: *3* openLeoFile & helpers (bridgeController)
+    #@+node:ekr.20070227092442.5: *3* openLeoFile & helpers (BridgeController)
     def openLeoFile (self,fileName):
 
         '''Open a .leo file, or create a new Leo frame if no fileName is given.'''

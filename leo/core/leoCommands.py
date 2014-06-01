@@ -264,7 +264,7 @@ class Commands (object):
         self.macroCommands = None
         self.miniBufferWidget = None
         self.queryReplaceCommands = None
-        self.rectangleCommands = None
+        self.recTangleCommands = None
         self.registerCommands = None
         self.searchCommands = None
         self.spellCommands = None
@@ -309,18 +309,18 @@ class Commands (object):
         self.keyHandler = self.k = leoKeys.KeyHandlerClass(c)
         self.chapterController  = leoChapters.ChapterController(c)
         self.shadowController   = leoShadow.ShadowController(c)
-        self.fileCommands       = leoFileCommands.fileCommands(c)
+        self.fileCommands       = leoFileCommands.FileCommands(c)
         self.findCommands       = leoFind.LeoFind(c)
         self.atFileCommands     = leoAtFile.AtFile(c)
         self.importCommands     = leoImport.LeoImportCommands(c)
         self.rstCommands        = leoRst.RstCommands(c)
-        self.tangleCommands     = leoTangle.tangleCommands(c)
+        self.tangleCommands     = leoTangle.TangleCommands(c)
         self.testManager        = leoTest.TestManager(c)
         self.viewController     = leoViews.ViewController(c)
         self.vimCommands        = leoVim.VimCommands(c)
         self.editCommandsManager = leoEditCommands.EditCommandsManager(c)
         self.editCommandsManager.createEditCommanders()
-        self.cacher = leoCache.cacher(c)
+        self.cacher = leoCache.Cacher(c)
         self.cacher.initFileDB(self.mFileName)
         self.undoer = leoUndo.Undoer(self)
         import leo.plugins.free_layout as free_layout
@@ -650,7 +650,7 @@ class Commands (object):
         if not event:
             return
 
-        isLeoKeyEvent = isinstance(event,leoGui.leoKeyEvent)
+        isLeoKeyEvent = isinstance(event,leoGui.LeoKeyEvent)
         stroke = event.stroke
         got = event.char
 
@@ -1835,7 +1835,7 @@ class Commands (object):
                 g.app.recentFilesManager.updateRecentFiles(c.mFileName)
                 g.chdir(c.mFileName)
 
-        # Done in fileCommands.save.
+        # Done in FileCommands.save.
         # c.redraw_after_icons_changed()
         c.raise_error_dialogs(kind='write')
         # *Safely* restore focus, without using the old w directly.
@@ -1903,7 +1903,7 @@ class Commands (object):
             c.fileCommands.saveAs(c.mFileName)
             g.app.recentFilesManager.updateRecentFiles(c.mFileName)
             g.chdir(c.mFileName)
-        # Done in fileCommands.saveAs.
+        # Done in FileCommands.saveAs.
         # c.redraw_after_icons_changed()
         c.raise_error_dialogs(kind='write')
         # *Safely* restore focus, without using the old w directly.
@@ -4206,7 +4206,7 @@ class Commands (object):
     # everything. This is expensive, but foolproof.
     # 
     # The alternative is to try to remember the 'before' values of nodes in the
-    # fileCommands read logic. Several experiments failed, and the code is very ugly.
+    # FileCommands read logic. Several experiments failed, and the code is very ugly.
     # In short, it seems wise to do things the foolproof way.
     # 
     #@@c

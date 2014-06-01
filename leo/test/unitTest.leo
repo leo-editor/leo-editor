@@ -738,7 +738,7 @@ print s ; g.es(s)</t>
     import inspect
 
     baseClass = leoFrame.leoFrame
-    subClasses  = (tkGui.leoTkinterFrame,leoFrame.nullFrame)
+    subClasses  = (tkGui.leoTkinterFrame,leoFrame.NullFrame)
     baseObject = c.frame
 
     methods = inspect.getmembers(baseClass,inspect.ismethod)
