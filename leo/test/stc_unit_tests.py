@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:ekr.20140527083058.16707: * @file ../test/stc_unit_tests.py
+#@+node:ekr.20140527115626.17955: * @file ../test/stc_unit_tests.py
 #@@first
 #@+others
 #@+node:ekr.20140527073639.16704: ** @testsetup
@@ -28,154 +28,6 @@ if trace:
         (do_gc,g.timeSince(t2))))
 #@+node:ekr.20140527073639.16706: ** @test DataTraverser
 #@+others
-#@+node:ekr.20140527125017.17956: *3* check_class_names
-def check_class_names(defs_d,refs_d):
-    aList = [ 
-    #@+<< non-pep8 class names >>
-    #@+node:ekr.20140528065727.17958: *4* << non-pep8 class names >>
-    # This list was created with find-all: ^class ([a-z]\w+)
-    # It should test for underscores, but doesn't.
-
-    'abbrevCommandsClass',
-    'anchor_htmlParserClass',
-    # 'atFile',
-    'atShadowTestCase',
-    'baseEditCommandsClass',
-    'baseFileCommands',
-    'baseLeoCompare',
-    'baseLeoPlugin',
-    'baseNativeTreeWidget',
-    'baseTangleCommands',
-    'baseTextWidget',
-    'bridgeController',
-    'bufferCommandsClass',
-    'cScanner',
-    'cSharpScanner',
-    'cacher',
-    'chapterCommandsClass',
-    'controlCommandsClass',
-    'debugCommandsClass',
-    'def_node',
-    'editBodyTestCase',
-    'editCommandsClass',
-    'editFileCommandsClass',
-    'elispScanner',
-    'emergencyDialog',
-    'fileCommands',
-    'fileLikeObject',
-    'goToLineNumber',
-    'helpCommandsClass',
-    'htmlParserClass',
-    'htmlScanner',
-    'importExportTestCase',
-    'iniScanner',
-    'invalidPaste',
-    'jEditColorizer',
-    'javaScanner',
-    'keyHandlerClass',
-    'keyHandlerCommandsClass',
-    'killBufferCommandsClass',
-    'killBuffer_iter_class',
-    'leoBody',
-    'leoCommandsClass',
-    'leoCompare',
-    'leoFind',
-    'leoGui',
-    'leoImportCommands',
-    'leoKeyEvent',
-    'leoMenu',
-    'leoQLineEditWidget',
-    'leoQScintillaWidget',
-    'leoQTextEditWidget',
-    'leoQtBaseTextWidget',
-    'leoQtBody',
-    'leoQtColorizer',
-    'leoQtEventFilter',
-    'leoQtFrame',
-    'leoQtGui',
-    'leoQtHeadlineWidget',
-    'leoQtLog',
-    'leoQtMenu',
-    'leoQtMinibuffer',
-    'leoQtSpellTab',
-    'leoQtSyntaxHighlighter',
-    'leoQtTree',
-    'leoQtTreeTab',
-    'leoTree',
-    'leoTreeTab',
-    'linkAnchorParserClass',
-    'link_htmlparserClass',
-    'macroCommandsClass',
-    'markerClass',
-    'nodeHistory',
-    'nullBody',
-    'nullColorizer',
-    'nullFrame',
-    'nullGui',
-    'nullIconBarClass',
-    'nullLog',
-    'nullMenu',
-    'nullObject',
-    'nullScriptingControllerClass',
-    'nullStatusLineClass',
-    'nullTree',
-    'part_node',
-    'pascalScanner',
-    'phpScanner',
-    'posList',
-    'poslist',
-    'pythonScanner',
-    'qtIconBarClass',
-    'qtMenuWrapper',
-    'qtSearchWidget',
-    'qtStatusLineClass',
-    'qtTabBarWrapper',
-    'readLinesClass',
-    'rectangleCommandsClass',
-    'recursiveImportController',
-    'redirectClass',
-    'registerCommandsClass',
-    'root_attributes',
-    'rstCommands',
-    'rstScanner',
-    'runTestExternallyHelperClass',
-    'saxContentHandler',
-    'saxNodeClass',
-    'scanUtility',
-    'searchCommandsClass',
-    'searchWidget',
-    'sourcereader',
-    'sourcewriter',
-    'spellCommandsClass',
-    'spellTabHandler',
-    'stringTextWidget',
-    'tangleCommands',
-    'tst_node',
-    'undoer',
-    'unitTestGui',
-    'ust_node',
-    'vimoutlinerScanner',
-    'xmlScanner',
-    #@-<< non-pep8 class names >>
-    ]
-    ambiguous,undefined = [],[]
-    for s in aList:
-        aSet = defs_d.get(s,set())
-        n = len(sorted(aSet))
-        if n == 0:
-            undefined.append(s)
-        elif n > 1:
-            ambiguous.append(s)
-        s2 = g.pep8_class_name(s)
-        aSet = defs_d.get(s2,set())
-        if len(sorted(aSet)) > 1:
-            g.trace('conflict',s,s2)
-    print('undefined...\n  %s' % '\n  '.join(sorted(undefined)))
-    print('ambiguous...\n')
-    for s in sorted(ambiguous):
-        aSet = defs_d.get(s,set())
-        # print('%20s %s' % (s,sorted(aSet)))
-        print('%3s %s' % (len(sorted(aSet)),s))
 #@+node:ekr.20140527083058.16708: *3* report
 def report():
     '''Report ambiguous symbols.'''
@@ -187,6 +39,178 @@ def report():
             n += 1
             # g.trace('multiple defs',s)
     return n
+#@+node:ekr.20140527125017.17956: *3* check_class_names
+def check_class_names(defs_d,refs_d):
+    aList = [ 
+    #@+<< non-pep8 class names >>
+    #@+node:ekr.20140528065727.17958: *4* << non-pep8 class names >>
+    # This list was created with find-all: ^class ([a-z]\w+)
+    # It should test for underscores, but doesn't.
+
+    # Fixed by hand:
+    # 'anchor_htmlParserClass', # AnchorHtmlParserClass
+    # 'atFile',
+    # 'htmlParserClass',
+    # 'link_htmlParserClass', # -> LinHtmlParserClass
+    # 'posList',
+    # 'poslist',
+
+    # new list:
+    'cacher',
+    'bridgeController',
+    'bufferCommandsClass',
+    'editCommandsClass',
+    'fileCommands',
+    'pythonScanner',
+    'def_node',
+    'tangleCommands',
+    'leoCompare',
+    'searchWidget',
+    'baseTextWidget',
+    'editBodyTestCase',
+    'importExportTestCase',
+
+    # Original list:
+    # 'abbrevCommandsClass',
+    # 'anchor_htmlParserClass',
+    # 'atShadowTestCase',
+    # 'baseEditCommandsClass',
+    # 'baseFileCommands',
+    # 'baseLeoCompare',
+    # 'baseLeoPlugin',
+    # 'baseNativeTreeWidget',
+    # 'baseTangleCommands',
+    # 'baseTextWidget',
+    # 'bridgeController',
+    # 'bufferCommandsClass',
+    # 'cScanner',
+    # 'cSharpScanner',
+    # 'cacher',
+    # 'chapterCommandsClass',
+    # 'controlCommandsClass',
+    # 'debugCommandsClass',
+    # 'def_node',
+    # 'editBodyTestCase',
+    # 'editCommandsClass',
+    # 'editFileCommandsClass',
+    # 'elispScanner',
+    # 'emergencyDialog',
+    # 'fileCommands',
+    # 'fileLikeObject',
+    # 'goToLineNumber',
+    # 'helpCommandsClass',
+    # 'htmlParserClass',
+    # 'htmlScanner',
+    # 'importExportTestCase',
+    # 'iniScanner',
+    # 'invalidPaste',
+    # 'jEditColorizer',
+    # 'javaScanner',
+    # 'keyHandlerClass',
+    # 'keyHandlerCommandsClass',
+    # 'killBufferCommandsClass',
+    # 'killBuffer_iter_class',
+    # 'leoBody',
+    # 'leoCommandsClass',
+    # 'leoCompare',
+    # 'leoFind',
+    # 'leoGui',
+    # 'leoImportCommands',
+    # 'leoKeyEvent',
+    # 'leoMenu',
+    # 'leoQLineEditWidget',
+    # 'leoQScintillaWidget',
+    # 'leoQTextEditWidget',
+    # 'leoQtBaseTextWidget',
+    # 'leoQtBody',
+    # 'leoQtColorizer',
+    # 'leoQtEventFilter',
+    # 'leoQtFrame',
+    # 'leoQtGui',
+    # 'leoQtHeadlineWidget',
+    # 'leoQtLog',
+    # 'leoQtMenu',
+    # 'leoQtMinibuffer',
+    # 'leoQtSpellTab',
+    # 'leoQtSyntaxHighlighter',
+    # 'leoQtTree',
+    # 'leoQtTreeTab',
+    # 'leoTree',
+    # 'leoTreeTab',
+    # 'linkAnchorParserClass',
+    # 'link_htmlparserClass',
+    # 'macroCommandsClass',
+    # 'markerClass',
+    # 'nodeHistory',
+    # 'nullBody',
+    # 'nullColorizer',
+    # 'nullFrame',
+    # 'nullGui',
+    # 'nullIconBarClass',
+    # 'nullLog',
+    # 'nullMenu',
+    # 'nullObject',
+    # 'nullScriptingControllerClass',
+    # 'nullStatusLineClass',
+    # 'nullTree',
+    # 'part_node',
+    # 'pascalScanner',
+    # 'phpScanner',
+    # 'pythonScanner',
+    # 'qtIconBarClass',
+    # 'qtMenuWrapper',
+    # 'qtSearchWidget',
+    # 'qtStatusLineClass',
+    # 'qtTabBarWrapper',
+    # 'readLinesClass',
+    # 'rectangleCommandsClass',
+    # 'recursiveImportController',
+    # 'redirectClass',
+    # 'registerCommandsClass',
+    # 'root_attributes',
+    # 'rstCommands',
+    # 'rstScanner',
+    # 'runTestExternallyHelperClass',
+    # 'saxContentHandler',
+    # 'saxNodeClass',
+    # 'scanUtility',
+    # 'searchCommandsClass',
+    # 'searchWidget',
+    # 'sourcereader',
+    # 'sourcewriter',
+    # 'spellCommandsClass',
+    # 'spellTabHandler',
+    # 'stringTextWidget',
+    # 'tangleCommands',
+    # 'tst_node',
+    # 'undoer',
+    # 'unitTestGui',
+    # 'ust_node',
+    # 'vimoutlinerScanner',
+    # 'xmlScanner',
+    #@-<< non-pep8 class names >>
+    ]
+    ambiguous,replace,undefined = [],[],[]
+    for s in aList:
+        aSet = defs_d.get(s,set())
+        n = len(sorted(aSet))
+        if n == 0:
+            undefined.append(s)
+        elif n > 1:
+            ambiguous.append(s)
+        else:
+            replace.append(s)
+        s2 = g.pep8_class_name(s)
+        aSet = defs_d.get(s2,set())
+        if len(sorted(aSet)) > 1:
+            g.trace('conflict',s,s2)
+    print('undefined...\n  %s' % '\n  '.join(sorted(undefined)))
+    print('ambiguous...\n')
+    for s in sorted(ambiguous):
+        aSet = defs_d.get(s,set())
+        # print('%20s %s' % (s,sorted(aSet)))
+        print('%3s %s' % (len(sorted(aSet)),s))
+    print('replace...\n  %s' % '\n  '.join(sorted(replace)))
 #@-others
 project_name = 'leo'
 flags = (
@@ -216,6 +240,7 @@ dt_time = u.diff_time(t)
 if 'check' in flags:
     check_class_names(defs_d,refs_d)
 if 'print' in flags:
+    print('files: %s' % len(files))
     print('parse: %s' % p0_time)
     print('   DT: %s' % dt_time)
     print('defs: %s refs: %s: ambiguous: %s' % (
@@ -233,21 +258,20 @@ aList = [
 #@+node:ekr.20140528102444.19375: *3* << non-pep8 class names >>
 # These are the classes the "survived" the first run of this script.
 # 'atFile',
-'cacher',
+'baseTextWidget',
 'bridgeController',
 'bufferCommandsClass',
+'cacher',
+'def_node',
+'editBodyTestCase',
 'editCommandsClass',
 'fileCommands',
-'pythonScanner',
 'htmlParserClass',
-'link_htmlParserClass',
-'def_node',
-'tangleCommands',
-'leoCompare',
-'searchWidget',
-'baseTextWidget',
-'editBodyTestCase',
 'importExportTestCase',
+'leoCompare',
+'pythonScanner',
+'searchWidget',
+'tangleCommands',
 #@-<< non-pep8 class names >>
 ]
 if 0: # not needed when @testsetup exists.
@@ -268,15 +292,36 @@ class ReplaceController:
         self.files = sorted(files) # List of full paths.
     #@+node:ekr.20140528102444.19379: *4* check_new_name
     def check_new_name(self,old_name,new_name):
-        '''Verify that s is found nowhere in Leo.'''
+        '''Verify that new_name is found nowhere in Leo.'''
         for fn in sorted(self.files_d.keys()):
             s = self.files_d.get(fn)
-            if s.count(new_name) > 0 and s.count(old_name) > 0:
-                g.trace('%20s -> %20s exists in %s' % (
+            if self.find_word(s,old_name) and self.find_word(s,new_name):
+                print('***** %20s -> %-20s exists in %s' % (
                     old_name,new_name,g.shortFileName(fn)))
                 return False
         return True
-            
+
+    #@+node:ekr.20140601073705.17614: *4* find_word
+    def find_word(self,s,word):
+        '''Return True if word is found anywhere in s.'''
+        i = 0
+        while True:
+            progress = i
+            i = s.find(word,i)
+            if i == -1:
+                return False
+            # Make sure we are at the start of a word.
+            if i > 0:
+                ch = s[i-1]
+                if ch == '_' or ch.isalnum():
+                    i += len(word)
+                    continue
+            if g.match_word(s,i,word):
+                # g.trace(i,word,s[i-10:i+10])
+                return True
+            else:
+                i += len(word)
+            assert progress < i
     #@+node:ekr.20140528102444.19380: *4* load_files
     def load_files(self):
         for fn in self.files:

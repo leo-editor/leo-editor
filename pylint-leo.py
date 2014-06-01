@@ -235,12 +235,12 @@ def getTable(scope):
             (recentCoreList,'core'),
             (recentPluginsList,'plugins'),
         ),
-        'stc': (
-            (['statictypechecking',],r'c:\leo.repo\static-type-checking'),
-        ),
-        'stc-test': (
-            (['pylint_test.py',],r'c:\leo.repo\static-type-checking\test\pylint'),
-        ),
+        # 'stc': (
+            # (['statictypechecking',],r'c:\leo.repo\static-type-checking'),
+        # ),
+        # 'stc-test': (
+            # (['pylint_test.py',],r'c:\leo.repo\static-type-checking\test\pylint'),
+        # ),
     }
     tables_table = d.get(scope)
     if not tables_table:
@@ -522,8 +522,8 @@ def scanOptions():
     add('-p', action='store_true', help = 'plugins')
     add('-r', action='store_true', help = 'recent')
     #add('-s', action='store_true', help = 'suppressions')
-    add('-t', action='store_true', help = 'static type checking')
-    add('--tt',action='store_true', help = 'stc test')
+    # add('-t', action='store_true', help = 'stc')
+    # add('--tt',action='store_true', help = 'stc test')
     add('-v',action='store_true',  help = 'report pylint version')
 
     # Parse the options.
@@ -540,8 +540,8 @@ def scanOptions():
     elif options.p: return 'plugins'
     elif options.r: return 'recent'
     # elif options.s: return 'suppressions'
-    elif options.t: return 'stc'
-    elif options.tt:return 'stc-test'
+    # elif options.t: return 'stc'
+    # elif options.tt:return 'stc-test'
     elif options.v: return 'version'
     else:           return 'all'
 #@-others

@@ -156,7 +156,7 @@ class HighLevelInterface(object):
         return g.toPythonIndex(s,index)
 
     toGuiIndex = toPythonIndex
-    #@+node:ekr.20111114102224.9945: *4* toPythonIndexRowCol (BaseTextWidget)
+    #@+node:ekr.20111114102224.9945: *4* toPythonIndexRowCol (HighLevelInterface)
     def toPythonIndexRowCol(self,index):
 
         # This works, but is much slower that the LeoQTextEditWidget method.

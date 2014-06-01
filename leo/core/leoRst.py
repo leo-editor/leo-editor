@@ -1614,7 +1614,7 @@ class RstCommands:
     def set_initial_http_attributes (self,filename):
 
         f = open(filename)
-        parser = htmlParserClass(self)
+        parser = HtmlParserClass(self)
 
         for line in f.readlines():
             parser.feed(line)
@@ -2072,7 +2072,7 @@ class RstCommands:
 #     1. In the first phase, the html code for each node is identified.
 #     2. The second phase identifies all links and checks if these links need to be modified.
 # The first phase of scanning is done by the anchor_hmlParserClass. The second phase of this algorithm is
-# done with the link_htmlParserClass.
+# done with the LinkHtmlParserClass.
 #@@c
 
 #@+<< class LinkAnchorParserClass >>
@@ -2137,8 +2137,8 @@ class LinkAnchorParserClass (HTMLParser.HTMLParser):
         return result
     #@-others
 #@-<< class LinkAnchorParserClass >>
-#@+node:ekr.20120219194520.10450: *3* class htmlParserClass (LinkAnchorParserClass)
-class htmlParserClass (LinkAnchorParserClass):
+#@+node:ekr.20120219194520.10450: *3* class HtmlParserClass (LinkAnchorParserClass)
+class HtmlParserClass (LinkAnchorParserClass):
 
     '''
     The responsibility of the html parser is:
@@ -2298,7 +2298,7 @@ class AnchorHtmlParserClass (LinkAnchorParserClass):
                     if bwm_file: print >> bwm_file, "anchor(2):", value, self.p
                     self.anchor_map[value] = (self.current_file, self.p.copy())
     #@-others
-#@+node:ekr.20120219194520.10459: *3* class link_htmlParserClass (LinkAnchorParserClass)
+#@+node:ekr.20120219194520.10459: *3* class LinkHtmlParserClass (LinkAnchorParserClass)
 class LinkHtmlparserClass (LinkAnchorParserClass):
 
     '''This html parser does the second step of relocating links:

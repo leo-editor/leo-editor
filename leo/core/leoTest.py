@@ -324,10 +324,10 @@ class editBodyTestCase(unittest.TestCase):
     def shortDescription (self):
 
         try:
-            return "EditBodyTestCase: %s" % (self.parent.h)
+            return "editBodyTestCase: %s" % (self.parent.h)
         except Exception:
             g.es_print_exception()
-            return "EditBodyTestCase"
+            return "editBodyTestCase"
     #@+node:ekr.20051104075904.76: *3* tearDown
     def tearDown (self):
 
@@ -517,9 +517,9 @@ class importExportTestCase(unittest.TestCase):
     def shortDescription (self):
 
         try:
-            return "ImportExportTestCase: %s %s" % (self.p.h,self.fileName)
+            return "importExportTestCase: %s %s" % (self.p.h,self.fileName)
         except Exception:
-            return "ImportExportTestCase"
+            return "importExportTestCase"
     #@+node:ekr.20051104075904.86: *3* tearDown
     def tearDown (self):
 
