@@ -160,13 +160,6 @@
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e382e3771017d71025808000000616e6e6f7461746571037d7104735508302e372e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e372e31342e3671097d710a5808000000616e6e6f74617465710b7d710c735508302e372e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
-<v t="ekr.20140206132559.4567"><vh>@test parse-body (fails)</vh>
-<v t="ekr.20140206132559.4560"><vh>before</vh></v>
-<v t="ekr.20140206132559.4564"><vh>expected</vh>
-<v t="ekr.20140206132559.4565"><vh>__init__</vh></v>
-<v t="ekr.20140206132559.4566"><vh>spam</vh></v>
-</v>
-</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1240,34 +1233,6 @@ char f
 char t
 </t>
 <t tx="ekr.20140103103143.4095"></t>
-<t tx="ekr.20140206132559.4560">class aClass:
-    def __init__(self):
-        pass
-    def spam(self):
-        pass
-bClass = aClass</t>
-<t tx="ekr.20140206132559.4564">class aClass:
-    @others
-bClass = aClass</t>
-<t tx="ekr.20140206132559.4565">def __init__(self):
-    pass
-</t>
-<t tx="ekr.20140206132559.4566">def spam(self):
-    pass
-</t>
-<t tx="ekr.20140206132559.4567">tm = c.testManager
-before   = g.findNodeInTree(c,p,'before')
-expected = g.findNodeInTree(c,p,'expecterd')
-assert before,expected
-try:
-    c.selectPosition(before)
-    c.importCommands.parseBody()
-    # compare tree.
-    tm.compareOutlines(before,expected,compareHeadlines=True,tag='',report=True)
-    c.undoer.undo()
-finally:
-    c.redraw()
-</t>
 <t tx="ekr.20140217055617.4231"># For a unit test.</t>
 </tnodes>
 </leo_file>

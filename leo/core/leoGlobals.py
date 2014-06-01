@@ -3203,7 +3203,7 @@ class PosList(list):
     #@+node:ekr.20090130114732.2: *4* << docstring for PosList >>
     '''A subclass of list for creating and selecting lists of positions.
 
-        This is deprecated, use leoNodes.Poslist instead!
+        This is deprecated, use leoNodes.PosList instead!
 
         aList = g.PosList(c)
             # Creates a PosList containing all positions in c.
@@ -3223,6 +3223,8 @@ class PosList(list):
             # Prints p.h, or repr(p) if verbose is True.
     '''
     #@-<< docstring for PosList >>
+    #@+others
+    #@+node:ekr.20140531104908.17611: *4* ctor
     def __init__ (self,c,aList=None):
         self.c = c
         list.__init__(self) # Init the base class
@@ -3232,11 +3234,13 @@ class PosList(list):
         else:
             for p in aList:
                 self.append(p.copy())
-
+    #@+node:ekr.20140531104908.17612: *4* dump
     def dump (self,sort=False,verbose=False):
-        if verbose: return g.listToString(self,sort=sort)
-        else: return g.listToString([p.h for p in self],sort=sort)
-
+        if verbose:
+            return g.listToString(self,sort=sort)
+        else:
+            return g.listToString([p.h for p in self],sort=sort)
+    #@+node:ekr.20140531104908.17613: *4* select
     def select(self,pat,regex=False,removeClones=True):
         '''Return a new PosList containing all positions
         in self that match the given pattern.'''
@@ -3252,7 +3256,7 @@ class PosList(list):
         if removeClones:
             aList = self.removeClones(aList)
         return PosList(c,aList)
-
+    #@+node:ekr.20140531104908.17614: *4* removeClones
     def removeClones(self,aList):
         seen = {} ; aList2 = []
         for p in aList:
@@ -3260,6 +3264,7 @@ class PosList(list):
                 seen[p.v] = p.v
                 aList2.append(p)
         return aList2
+    #@-others
 #@+node:ekr.20080710101653.1: *3* g.pr
 # see: http://www.diveintopython.org/xml_processing/unicode.html
 

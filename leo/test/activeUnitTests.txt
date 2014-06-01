@@ -13746,6 +13746,40 @@ for func,s,expected in table:
     result = s[0:i]
     assert result == expected,'expected %s got %s' % (
         repr(expected),repr(result))
+#@+node:ekr.20140206132559.4567: *4* @test ic.parse-body
+tm = c.testManager
+before   = g.findNodeInTree(c,p,'before')
+expected = g.findNodeInTree(c,p,'expected')
+assert before,expected
+try:
+    c.selectPosition(before)
+    before.h = 'expected' # To make the compare work.
+    c.importCommands.parse_body(before)
+    # compare tree.
+    tm.compareOutlines(before,expected,compareHeadlines=True,tag='',report=True)
+    c.undoer.undo()
+finally:
+    before.h = 'before'
+    c.redraw()
+#@+node:ekr.20140206132559.4560: *5* before
+class aClass:
+    def __init__(self):
+        pass
+    def spam(self):
+        pass
+bClass = aClass
+#@+node:ekr.20140206132559.4564: *5* expected
+@others
+bClass = aClass
+#@+node:ekr.20140531190926.4382: *6* class aClass
+class aClass:
+    @others
+#@+node:ekr.20140531190926.4383: *7* __init__
+def __init__(self):
+    pass
+#@+node:ekr.20140531190926.4384: *7* spam
+def spam(self):
+    pass
 #@+node:ekr.20100131180007.5393: *4* @test ic.reportMismatch
 import leo.core.leoImport as leoImport
 

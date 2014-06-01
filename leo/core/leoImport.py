@@ -1458,7 +1458,24 @@ class LeoImportCommands (ScanUtility):
                     found = True ; result = s
                     # g.es("replacing",target,"with",s)
         return result
-    #@+node:ekr.20071127175948.1: *3* Import scanners
+    #@+node:ekr.20071127175948.1: *3* Import scanners (leoImport)
+    #@+node:ekr.20140531104908.18833: *4* parse_body
+    def parse_body(self,p):
+        '''The parse-body command.'''
+        if not p: return
+        c,ic = self.c,self
+        language = g.scanForAtLanguage(c,p)
+        ext = '.' + g.app.language_extension_dict.get(language)
+        parser = self.body_parser_for_ext(ext)
+        # g.trace(language,ext,parser)
+        if parser:
+            bunch = c.undoer.beforeChangeTree(p)
+            s = p.b
+            p.b = ''
+            parser(p,s)
+            c.undoer.afterChangeTree(p,'parse-body',bunch)
+            p.expand()
+            c.redraw()
     #@+node:ekr.20140205074001.16365: *4* body_parser_for_ext
     def body_parser_for_ext(self,ext):
         '''A factory returning a body parser function for the given file extension.'''
@@ -1477,13 +1494,9 @@ class LeoImportCommands (ScanUtility):
         return scanner_for_class if aClass else None
     #@+node:ekr.20080811174246.1: *4* languageForExtension
     def languageForExtension (self,ext):
-
         '''Return the language corresponding to the extension ext.'''
-
         unknown = 'unknown_language'
-
         if ext.startswith('.'): ext = ext[1:]
-
         if ext:
             z = g.app.extra_extension_dict.get(ext)
             if z not in (None,'none','None'):
@@ -1494,9 +1507,7 @@ class LeoImportCommands (ScanUtility):
                 language = unknown
         else:
             language = unknown
-
         # g.trace(ext,repr(language))
-
         # Return the language even if there is no colorizer mode for it.
         return language
     #@+node:ekr.20090501095634.48: *4* scanRstText
@@ -1774,7 +1785,6 @@ class BaseScanner (ScanUtility):
 
         Return True if the nodes are equivalent to the original file.
         '''
-
         # Note: running full checks on all unit tests is slow.
         if g.app.suppressImportChecks:
             return True
@@ -5769,7 +5779,7 @@ def parse_body_command(event):
     '''The parse-body command.'''
     c = event.get('c')
     if c and c.p:
-        c.importCommands.parseBody(c.p)
+        c.importCommands.parse_body(c.p)
 #@+node:ekr.20101103093942.5941: *3* @g.command(head-to-prev-node)
 @g.command('head-to-prev-node')
 def headToPrevNode(event):
