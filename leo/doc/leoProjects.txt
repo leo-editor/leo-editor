@@ -242,6 +242,7 @@ aList = [x for x in globalDirectiveList if z != 'others']
 aList.sort(lambda a,b: len(b)-len(a))
     # Sort by length, longest first
 pat = "^@(%s)(?=( |\t|\n)+)" % "|".join(aList)
+.. @+node:ekr.20140531073052.16701: *3* find-all now uses exising find pattern
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.

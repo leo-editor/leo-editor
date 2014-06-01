@@ -79,7 +79,7 @@ class searchWidget:
         return 'searchWidget id: %s' % (id(self))
 
     #@+others
-    #@+node:ekr.20070105093138: *3* getters
+    #@+node:ekr.20070105093138: *3* getters (LeoFind)
     def getAllText (self):          return self.s
     def getInsertPoint (self):      return self.i       # Returns Python index.
     def getSelectionRange(self):    return self.sel     # Returns Python indices.
@@ -634,6 +634,7 @@ class LeoFind:
             if not w: return
             self.setupArgs(forward=True,regexp=False,word=True)
             k.setLabelBlue('Find All: ',protect=True)
+            self.addFindStringToLabel(protect=False)
             k.getArg(event,'find-all',1,self.minibufferFindAll)
         else:
             k.clearState()
@@ -651,6 +652,7 @@ class LeoFind:
             # None denotes that we use the present value of the option.
             self.setupArgs(forward=None,regexp=None,word=None)
             k.setLabelBlue('Replace All From: ',protect=True)
+            self.addFindStringToLabel(protect=False)
             k.getArg(event,tag,1,self.minibufferReplaceAll)
         elif state == 1:
             self._sString = k.arg
