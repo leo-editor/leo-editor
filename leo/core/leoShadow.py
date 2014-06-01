@@ -936,7 +936,7 @@ class ShadowController:
             return self.p and self.p.h or '@test-shadow: no self.p'
         #@-others
 
-    #@+node:ekr.20090529061522.5727: *3* class marker
+    #@+node:ekr.20090529061522.5727: *3* class MarkerClass
     class MarkerClass:
 
         '''A class representing comment delims in @shadow files.'''

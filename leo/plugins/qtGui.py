@@ -1482,7 +1482,7 @@ class LeoQTextEditWidget (LeoQtBaseTextWidget):
 # Define all other text classes, in any order.
 
 #@+others
-#@+node:ekr.20110605121601.18103: *3* class leoQScintilla
+#@+node:ekr.20110605121601.18103: *3* LeoQScintillaWidget
 class LeoQScintillaWidget (LeoQtBaseTextWidget):
 
     #@+others
@@ -9934,7 +9934,7 @@ if PYTHON_COLORER:
             if trace:
                 g.trace('%2.3f sec %s' % (time.time()-t1))
         #@-others
-#@+node:ekr.20110605121601.18569: *3* class jeditColorizer
+#@+node:ekr.20110605121601.18569: *3* JEditColorizer
 # This is c.frame.body.colorizer.highlighter.colorer
 
 class JEditColorizer:

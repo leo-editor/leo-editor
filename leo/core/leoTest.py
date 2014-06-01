@@ -422,7 +422,7 @@ class GeneralTestCase(unittest.TestCase):
 
         return s + '\n'
     #@-others
-#@+node:ekr.20051104075904.79: ** class importExportTestCase
+#@+node:ekr.20051104075904.79: ** class ImportExportTestCase
 class ImportExportTestCase(unittest.TestCase):
 
     """Data-driven unit tests for Leo's edit body commands."""

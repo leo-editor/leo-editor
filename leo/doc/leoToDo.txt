@@ -9445,7 +9445,7 @@ def makeImportExportSuite(self,parentHeadline,doImport):
             test = ImportExportTestCase(c,p2,dialog,temp,doImport)
             suite.addTest(test)
     return suite
-.. @+node:ekr.20051104075904.79: *5* class importExportTestCase
+.. @+node:ekr.20051104075904.79: *5* class ImportExportTestCase
 class ImportExportTestCase(unittest.TestCase):
 
     """Data-driven unit tests for Leo's edit body commands."""
