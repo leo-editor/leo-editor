@@ -9576,10 +9576,10 @@ def newPutBody (self,p,oneNodeOnly=False,fromString=''):
         # g.trace('ignoring',p.h)
     else:
         self.old_putBody(p,oneNodeOnly,fromString)
-.. @+node:ekr.20061031131434.66: *4* class classScannerClass (not used)
+.. @+node:ekr.20061031131434.66: *4* class ClassScannerClass (not used)
 # Called by completeSelf, which is not used.
 
-class classScannerClass:
+class ClassScannerClass:
 
     '''A class to find class definitions in a node or its parents.'''
 
@@ -9764,7 +9764,7 @@ def getExternalCompletions (self,s,p=None,language='python'):
     self.exit() # Not called from the autocompleter itself.
     return theObject,tabList
 .. @+node:ekr.20131111105746.16556: *3* class VimTestCase (not used)
-class editBodyTestCase(unittest.TestCase):
+class VimTestCase(unittest.TestCase):
 
     """Data-driven unit tests for vim commands commands."""
 
