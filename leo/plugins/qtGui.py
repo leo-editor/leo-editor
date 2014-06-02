@@ -4601,29 +4601,38 @@ class LeoQtFrame (leoFrame.LeoFrame):
                 gts.connect(gts, QtCore.SIGNAL("triggered()"), goto_command)
                 # 20100519 - TNB also, scan @button's following sibs and childs
                 #   for @rclick nodes
-                rclicks = []  # list of (rclick_node, action_container)
+                rclicks = []  # list of (rclick_node, action_container, offset)
                 if '@others' not in command_p.b:
                     rclicks.extend([
-                        (i.copy(), b)
+                        (i.copy(), b, -2)  
+                        # -2 for top level entries, i.e. before "Remove button"
                         for i in command_p.children()
                         if i.h.startswith('@rclick ')
                     ])
                 for i in command_p.following_siblings():
                     if i.h.startswith('@rclick '):
-                        rclicks.append((i.copy(), b))
+                        rclicks.append((i.copy(), b, -2))
                     else:
                         break
+                need_divider = False
                 if rclicks:
                     b.setText(
                         g.u(b.text()) + 
                         (command.c.config.getString('mod_scripting_subtext') or '')
                     )
+                    need_divider = True
+                    
                 while rclicks:
-                    rclick, action_container = rclicks.pop(0)
+                    rclick, action_container, offset = rclicks.pop(0)
                     headline = rclick.h[8:]
-                    rc = QtGui.QAction(headline.strip(),b)
+                    rc = QtGui.QAction(headline.strip(),action_container)
                     if '---' in headline and headline.strip().strip('-') == '':
                         rc.setSeparator(True)
+                    elif not rclick.b.strip():  # organizer i.e. submenu
+                        sub_menu = QtGui.QMenu()
+                        rc.setMenu(sub_menu)
+                        for child in rclick.children():
+                            rclicks.append((child.copy(), sub_menu, 0))
                     else:
                         def cb(event=None, ctrl=command.controller, p=rclick, 
                                c=command.c, b=command.b, t=rclick.h[8:]):
@@ -4635,8 +4644,13 @@ class LeoQtFrame (leoFrame.LeoFrame):
                     # docstring = g.getDocString(rclick.b).strip()
                     # if docstring:
                         # rc.setToolTip(docstring)
-                    b.insertAction(b.actions()[-2],rc)  # insert rc before Remove Button
-                if rclicks:
+                    if offset:
+                        action_container.insertAction(b.actions()[offset],rc)  
+                        # insert rc before Remove Button
+                    else:
+                        action_container.addAction(rc)  
+                        
+                if need_divider:
                     rc = QtGui.QAction('---',b)
                     rc.setSeparator(True)
                     b.insertAction(b.actions()[-2],rc)
