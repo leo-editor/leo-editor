@@ -59,6 +59,7 @@ def getRecentPluginsList ():
         # 'free_layout',
         # 'internal_ipkernel',
         # 'leo_interface',
+        # 'leoOPML',
         # 'mod_scripting',
         # 'nested_splitter',
         # 'qtGui',
@@ -168,6 +169,7 @@ def getPluginsList():
         'mod_scripting',
             # E0611:489:scriptingController.runDebugScriptCommand:
             # No name 'leoScriptModule' in module 'leo.core'
+        'leoOPML',
         'nested_splitter',
         'qtGui',
             # E1101:7584:leoQtGui.embed_ipython: Module 'IPython' has no 'ipapi' member
