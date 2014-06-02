@@ -205,7 +205,6 @@ class LeoFind:
     #@+node:ekr.20031218072017.3060: *4* find.findAllButton
     def findAllButton(self,event=None):
         '''Handle Find All button.'''
-        c = self.c
         self.setup_button()
         self.findAll()
     #@+node:ekr.20031218072017.3059: *4* find.findButton
@@ -1182,7 +1181,7 @@ class LeoFind:
         skip = {} # Nodes that should be skipped.
             # Keys are vnodes, values not important.
         count,found = 0,None
-        if trace: g.trace(self.p and self.p.h)
+        if trace: g.trace(self.find_text)
         # 2014/04/24: Init suboutline-only for clone-find-all commands
         if clone_find_all or clone_find_all_flattened:
             self.p = c.p.copy()
@@ -1222,7 +1221,7 @@ class LeoFind:
         else:
             self.restore(data)
         c.redraw()
-        g.es("found",count,"matches")
+        g.es("found",count,"matches for",self.find_text)
     #@+node:ekr.20051113110735: *5* createCloneFindAllNode
     def createCloneFindAllNode(self,flattened):
         '''Create a node, but do *not* link it into the outline yet.'''
