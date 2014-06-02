@@ -141,10 +141,12 @@ def onStart2 (tag,keys):
     leoFileCommands.fileCommands = opmlFileCommandsClass
 #@+node:ekr.20060919172012.1: ** class opmlFileCommandsClass (fileCommands)
 class opmlFileCommandsClass (leoFileCommands.FileCommands):
-
-    '''An subclass of Leo's core fileCommands class that
-    should do *nothing* other than override putToOPML.'''
-
+    '''
+    An subclass of Leo's core fileCommands class that
+    should do *nothing* other than override putToOPML.
+    '''
+    # pylint:disable=no-member
+    # setattr creates the various opml_xxx members
     #@+others
     #@+node:ekr.20060919172012.2: *3* putToOPML & helpers
     # All elements and attributes prefixed by 'leo:' are leo-specific.
@@ -368,10 +370,9 @@ class opmlController:
         def createVnodeTree (self,node,parent_v):
 
             v = self.createVnode(node,parent_v)
-
+            c = v.context
             # To do: create the children only if v is not a clone.
-            self.createChildren(node,v)
-
+            self.createChildren(c,node,v)
             return v
         #@+node:ekr.20060914174806: *4* linkParentAndChildren
         def linkParentAndChildren (self, parent_v, children):
@@ -413,6 +414,7 @@ class opmlController:
                 g.trace('can not open %s' % path)
                 return None
             try:
+                # pylint:disable=catching-non-exception
                 try:
                     node = None
                     parser = xml.sax.make_parser()
@@ -426,14 +428,14 @@ class opmlController:
                 except xml.sax.SAXParseException:
                     g.error('Error parsing %s' % (inputFileName))
                     g.es_exception()
-                    return None
+                    node = None
                 except Exception:
                     g.error('Unexpected exception parsing %s' % (inputFileName))
                     g.es_exception()
-                    return None
+                    node = None
             finally:
                 f.close()
-                return node
+            return node
         #@-others
         
     #@+node:ekr.20060914163456: *3* createVnodes & helpers
@@ -528,13 +530,12 @@ class opmlController:
             s = self.cleanSaxInputString(s)
         except IOError:
             return g.trace('can not open %s' % path)
-
+        # pylint:disable=catching-non-exception
         try:
             if g.isPython3:
                 theFile = BytesIO(s)
             else:
                 theFile = cStringIO.StringIO(s)
-
             parser = xml.sax.make_parser()
             parser.setFeature(xml.sax.handler.feature_external_ges,1)
             # Do not include external general entities.
@@ -568,7 +569,7 @@ class opmlController:
 
         flatten = ''.join(badchars)
         pad = ' ' * len(flatten)
-
+        # pylint:disable=no-member
         if g.isPython3:
             flatten = bytes(flatten,'utf-8')
             pad = bytes(pad,'utf-8')
@@ -845,7 +846,7 @@ class SaxContentHandler (xml.sax.saxutils.XMLGenerator):
         return g.toEncodedString(s,"ascii")
     #@+node:ekr.20060904134958.174: *3*  Do nothing...
     #@+node:ekr.20060904134958.175: *4* other methods
-    def ignorableWhitespace(self):
+    def ignorableWhitespace(self,ws):
         g.trace()
 
     def processingInstruction (self,target,data):
