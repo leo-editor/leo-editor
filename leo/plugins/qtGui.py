@@ -4601,18 +4601,25 @@ class LeoQtFrame (leoFrame.LeoFrame):
                 gts.connect(gts, QtCore.SIGNAL("triggered()"), goto_command)
                 # 20100519 - TNB also, scan @button's following sibs and childs
                 #   for @rclick nodes
-                rclicks = []
+                rclicks = []  # list of (rclick_node, action_container)
                 if '@others' not in command_p.b:
-                    rclicks.extend([i.copy() for i in command_p.children()
-                      if i.h.startswith('@rclick ')])
+                    rclicks.extend([
+                        (i.copy(), b)
+                        for i in command_p.children()
+                        if i.h.startswith('@rclick ')
+                    ])
                 for i in command_p.following_siblings():
                     if i.h.startswith('@rclick '):
-                        rclicks.append(i.copy())
+                        rclicks.append((i.copy(), b))
                     else:
                         break
                 if rclicks:
-                    b.setText(g.u(b.text())+(command.c.config.getString('mod_scripting_subtext') or ''))
-                for rclick in rclicks:
+                    b.setText(
+                        g.u(b.text()) + 
+                        (command.c.config.getString('mod_scripting_subtext') or '')
+                    )
+                while rclicks:
+                    rclick, action_container = rclicks.pop(0)
                     headline = rclick.h[8:]
                     rc = QtGui.QAction(headline.strip(),b)
                     if '---' in headline and headline.strip().strip('-') == '':
