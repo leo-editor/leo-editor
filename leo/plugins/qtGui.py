@@ -4629,7 +4629,7 @@ class LeoQtFrame (leoFrame.LeoFrame):
                     if '---' in headline and headline.strip().strip('-') == '':
                         rc.setSeparator(True)
                     elif not rclick.b.strip():  # organizer i.e. submenu
-                        sub_menu = QtGui.QMenu()
+                        sub_menu = QtGui.QMenu(b)
                         rc.setMenu(sub_menu)
                         for child in rclick.children():
                             rclicks.append((child.copy(), sub_menu, 0))
