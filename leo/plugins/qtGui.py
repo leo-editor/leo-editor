@@ -2564,12 +2564,12 @@ class DynamicWindow(QtGui.QMainWindow):
             return '%s%s' % (kind,name)
         # Create Buttons in column 2 (Leo 4.11.1.)
         table = (
-            (0,2,'findNextCommand','Find Next','find-next'),
-            (1,2,'findPrevCommand','Find Previous','find-prev'),
-            (2,2,'findAll','Find All','find-all'),
-            (3,2,'changeCommand', 'Replace','replace'),
-            (4,2,'changeThenFind','Replace Then Find','replace-then-find'),
-            (5,2,'changeAll','Replace All','replace-all'),
+            (0,2,'findButton','Find Next','find-next'),
+            (1,2,'findPreviousButton','Find Previous','find-prev'),
+            (2,2,'findAllButton','Find All','find-all'),
+            (3,2,'changeButton', 'Replace','replace'),
+            (4,2,'changeThenFindButton','Replace Then Find','replace-then-find'),
+            (5,2,'changeAllButton','Replace All','replace-all'),
             # (6,2,'helpForFindCommands','Help','help-for-find-commands'),
         )
         # findTabHandler does not exist yet.
