@@ -140,7 +140,7 @@ def onStart2 (tag,keys):
     # Override the fileCommands class by opmlFileCommandsClass.
     leoFileCommands.fileCommands = opmlFileCommandsClass
 #@+node:ekr.20060919172012.1: ** class opmlFileCommandsClass (fileCommands)
-class opmlFileCommandsClass (leoFileCommands.fileCommands):
+class opmlFileCommandsClass (leoFileCommands.FileCommands):
 
     '''An subclass of Leo's core fileCommands class that
     should do *nothing* other than override putToOPML.'''
