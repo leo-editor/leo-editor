@@ -3733,7 +3733,37 @@ if 0: # Testing:
     for s in aList:
         print(pep8_class_name(s))
 #@+node:ekr.20031218072017.3151: ** Scanning... (leoGlobals.py)
-#@+node:ekr.20031218072017.3156: *3* scanError
+#@+node:ekr.20140602083643.17659: *3* g.find_word
+def find_word(s,word,i=0):
+    '''
+    Return the index of the first occurance of word in s, or -1 if not found.
+    
+    g.find_word is *not* the same as s.find(i,word);
+    g.find_word ensures that only word-matches are reported.
+    '''
+    while i < len(s):
+        progress = i
+        i = s.find(word,i)
+        if i == -1:
+            return -1
+        # Make sure we are at the start of a word.
+        if i > 0:
+            ch = s[i-1]
+            if ch == '_' or ch.isalnum():
+                i += len(word)
+                continue
+        if g.match_word(s,i,word):
+            return i
+        else:
+            i += len(word)
+        assert progress < i
+    return -1
+    
+if 0: # testing
+    print(find_word('abc a bc x','bc',0))
+    print(find_word('abc a bc x','bc',1))
+    print(find_word('abc a x','bc',0))
+#@+node:ekr.20031218072017.3156: *3* g.scanError
 # It is dubious to bump the Tangle error count here, but it really doesn't hurt.
 
 def scanError(s):
@@ -3743,7 +3773,7 @@ def scanError(s):
     # New in Leo 4.4b1: just set this global.
     g.app.scanErrors +=1
     g.es('',s)
-#@+node:ekr.20031218072017.3157: *3* scanf
+#@+node:ekr.20031218072017.3157: *3* g.scanf
 # A quick and dirty sscanf.  Understands only %s and %d.
 
 def scanf (s,pat):
@@ -3761,6 +3791,26 @@ def scanf (s,pat):
 
 if 0: # testing
     g.scanf("1.0","%d.%d",)
+#@+node:ekr.20031218072017.3195: *3* g.splitLines & g.joinLines
+def splitLines (s):
+
+    '''Split s into lines, preserving the number of lines and
+    the endings of all lines, including the last line.'''
+
+    # g.stat()
+
+    if s:
+        return s.splitlines(True) # This is a Python string function!
+    else:
+        return []
+
+splitlines = splitLines
+
+def joinLines (aList):
+
+    return ''.join(aList)
+
+joinlines = joinLines
 #@+node:ekr.20031218072017.3158: *3* Scanners: calling scanError
 #@+at These scanners all call g.scanError() directly or indirectly, so they
 # will call g.es if they find an error. g.scanError() also bumps
@@ -4426,26 +4476,6 @@ def skip_ws_and_nl(s,i):
     while i < n and (g.is_ws(s[i]) or g.is_nl(s,i)):
         i += 1
     return i
-#@+node:ekr.20031218072017.3195: *3* splitLines & joinLines
-def splitLines (s):
-
-    '''Split s into lines, preserving the number of lines and
-    the endings of all lines, including the last line.'''
-
-    # g.stat()
-
-    if s:
-        return s.splitlines(True) # This is a Python string function!
-    else:
-        return []
-
-splitlines = splitLines
-
-def joinLines (aList):
-
-    return ''.join(aList)
-
-joinlines = joinLines
 #@+node:ekr.20040327103735.2: ** Script Tools (leoGlobals.py)
 #@+node:ekr.20050503112513.7: *3* g.executeFile
 def executeFile(filename, options= ''):
