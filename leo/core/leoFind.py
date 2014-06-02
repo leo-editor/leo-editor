@@ -213,7 +213,7 @@ class LeoFind:
         '''Handle pressing the "Find" button in the find panel.'''
         self.setup_button()
         self.findNext()
-    #@+node:ekr.20131117054619.16688: *4* find.findPreviousButton (new in 4.11.1)
+    #@+node:ekr.20131117054619.16688: *4* find.findPreviousButton
     def findPreviousButton(self,event=None):
         '''Handle the Find Previous button.'''
         self.setup_button()
@@ -242,17 +242,17 @@ class LeoFind:
         '''Handle the replace-then-find command.'''
         self.setup_command()
         self.changeThenFind()
-    #@+node:ekr.20131122231705.16463: *4* find.cloneFindAllCommand (4.11.1)
+    #@+node:ekr.20131122231705.16463: *4* find.cloneFindAllCommand
     def cloneFindAllCommand(self,event=None):
      
         self.setup_command()
         self.findAll(clone_find_all=True)
-    #@+node:ekr.20131122231705.16464: *4* find.cloneFindAllFlattenedCommand (4.11.1)
+    #@+node:ekr.20131122231705.16464: *4* find.cloneFindAllFlattenedCommand
     def cloneFindAllFlattenedCommand(self,event=None):
         
         self.setup_command()
         self.findAll(clone_find_all=True,clone_find_all_flattened=True)
-    #@+node:ekr.20131122231705.16465: *4* find.findAllCommand (4.11.1)
+    #@+node:ekr.20131122231705.16465: *4* find.findAllCommand
     def findAllCommand(self,event=None):
         
         self.setup_command()
@@ -288,7 +288,7 @@ class LeoFind:
     def openFindTab (self,event=None,show=True):
         '''Open the Find tab in the log pane.'''
         self.c.frame.log.selectTab('Find')
-    #@+node:ekr.20131117164142.17016: *4* find.changeAllCommand (4.11.1)
+    #@+node:ekr.20131117164142.17016: *4* find.changeAllCommand
     def changeAllCommand(self,event=None):
         
         self.setup_command()
@@ -302,7 +302,7 @@ class LeoFind:
             self.c.endEditing()
         # Fix bug 
         self.update_ivars()
-    #@+node:ekr.20131119060731.22452: *4* find.startSearch (4.11.1)
+    #@+node:ekr.20131119060731.22452: *4* find.startSearch
     def startSearch(self,event):
         
         if self.minibuffer_mode:
@@ -599,7 +599,7 @@ class LeoFind:
         if state == 0:
             w = self.editWidget(event) # sets self.w
             if not w: return
-            self.setupArgs(forward=None,regexp=None,word=None)
+            # self.setupArgs(forward=None,regexp=None,word=None)
             # Init the pattern from the search pattern.
             self.stateZeroHelper(event,tag,'Clone Find All: ',self.minibufferCloneFindAll)
         else:
@@ -616,7 +616,7 @@ class LeoFind:
         if state == 0:
             w = self.editWidget(event) # sets self.w
             if not w: return
-            self.setupArgs(forward=None,regexp=None,word=None)
+            # self.setupArgs(forward=None,regexp=None,word=None)
             # Init the pattern from the search pattern.
             self.stateZeroHelper(
                 event,tag,'Clone Find All Flattened: ',self.minibufferCloneFindAllFlattened)
@@ -626,7 +626,7 @@ class LeoFind:
             k.showStateAndMode()
             self.generalSearchHelper(k.arg,cloneFindAllFlattened=True)
             c.treeWantsFocus()
-    #@+node:ekr.20131117164142.16998: *4* find.minibufferFindAll (Changed)
+    #@+node:ekr.20131117164142.16998: *4* find.minibufferFindAll
     def minibufferFindAll (self,event=None):
         '''handle the find-all command.'''
         self.ftm.clear_focus()
@@ -785,7 +785,7 @@ class LeoFind:
             self.updateFindList(k.arg)
             self.lastStateHelper()
             self.generalSearchHelper(k.arg)
-    #@+node:ekr.20131117164142.17002: *4* find.setReplaceString (Changed)
+    #@+node:ekr.20131117164142.17002: *4* find.setReplaceString
     def setReplaceString (self,event):
         '''A state handler to get the replacement string.'''
         trace = False and not g.unitTesting
@@ -793,7 +793,7 @@ class LeoFind:
         prompt = 'Replace ' + 'Regex' if self.pattern_match else 'String'
         if trace: g.trace(state)
         if state == 0:
-            self.setupArgs(forward=None,regexp=None,word=None)
+            # self.setupArgs(forward=None,regexp=None,word=None)
             prefix = '%s: ' % prompt
             self.stateZeroHelper(event,tag,prefix,self.setReplaceString)
         elif state == 1:
@@ -807,7 +807,7 @@ class LeoFind:
             self.updateChangeList(k.arg)
             self.lastStateHelper()
             self.generalChangeHelper(self._sString,k.arg,changeAll=self.changeAllFlag)
-    #@+node:ekr.20131117164142.17005: *4* find.searchWithPresentOptions (Changed)
+    #@+node:ekr.20131117164142.17005: *4* find.searchWithPresentOptions
     def searchWithPresentOptions (self,event,findAllFlag=False,changeAllFlag=False):
         '''Open the search pane and get the search string.'''
         trace = False and not g.unitTesting
@@ -819,7 +819,7 @@ class LeoFind:
             self.changeAllFlag = changeAllFlag
             self.findAllFlag = findAllFlag
             self.ftm.set_entry_focus()
-            self.setupArgs(forward=None,regexp=None,word=None)
+            # self.setupArgs(forward=None,regexp=None,word=None)
             self.stateZeroHelper(
                 event,tag,'Search: ',self.searchWithPresentOptions,
                 escapes=['\t']) # The Tab Easter Egg.
@@ -935,9 +935,12 @@ class LeoFind:
     def setFindScope(self,where):
         '''Set the radio buttons to the given scope'''
         self.ftm.set_radio_button(where)
-    #@+node:ekr.20131117164142.16989: *4* LeoFind.showFindOptions (to be removed)
+    #@+node:ekr.20131117164142.16989: *4* LeoFind.showFindOptions
     def showFindOptions (self,event=None):
-        '''Show the present find options in the status line.'''
+        '''
+        Show the present find options in the status line.
+        This is useful for commands like search-forward that do not show the Find Panel.
+        '''
         frame = self.c.frame ; z = []
         # Set the scope field.
         head = self.search_headline
@@ -1687,10 +1690,13 @@ class LeoFind:
                     i += 1 # Skip the escaped character.
             i += 1
         return s
-    #@+node:ekr.20131117164142.17006: *4* find.setupArgs (to be removed)
+    #@+node:ekr.20131117164142.17006: *4* find.setupArgs
     def setupArgs (self,forward=False,regexp=False,word=False):
-        
-        # g.trace('**** to be eliminated',forward,regexp,word,g.callers())
+        '''
+        Set up args for commands that force various values for commands
+        (re-/word-/search-backward/forward)
+        that force one or more of these values to be a spefic value.
+        '''
         if forward is not None: self.reverse = not forward
         if regexp  is not None: self.patern_match = True
         if word    is not None: self.whole_word = True
