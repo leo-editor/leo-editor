@@ -142,7 +142,7 @@ Changed find.findAll and helpers as follows:
   in various places.
 .. @+node:ekr.20031218072017.3073: *4* find.findAll & helper
 def findAll(self,clone_find_all=False,clone_find_all_flattened=False):
-    trace = False and not g.unitTesting
+    trace = True and not g.unitTesting
     c = self.c ; w = self.s_ctrl ; u = c.undoer
     if clone_find_all_flattened:
         undoType = 'Clone Find All Flattened'
@@ -160,7 +160,7 @@ def findAll(self,clone_find_all=False,clone_find_all_flattened=False):
     skip = {} # Nodes that should be skipped.
         # Keys are vnodes, values not important.
     count,found = 0,None
-    if trace: g.trace(self.p and self.p.h)
+    if trace: g.trace(self.find_text)
     # 2014/04/24: Init suboutline-only for clone-find-all commands
     if clone_find_all or clone_find_all_flattened:
         self.p = c.p.copy()
@@ -200,7 +200,7 @@ def findAll(self,clone_find_all=False,clone_find_all_flattened=False):
     else:
         self.restore(data)
     c.redraw()
-    g.es("found",count,"matches")
+    g.es("found",count,"matches for",self.find_text)
 .. @+node:ekr.20051113110735: *5* createCloneFindAllNode
 def createCloneFindAllNode(self,flattened):
     '''Create a node, but do *not* link it into the outline yet.'''
@@ -243,6 +243,23 @@ aList.sort(lambda a,b: len(b)-len(a))
     # Sort by length, longest first
 pat = "^@(%s)(?=( |\t|\n)+)" % "|".join(aList)
 .. @+node:ekr.20140531073052.16701: *3* find-all now uses exising find pattern
+.. @+node:ekr.20140426105101.16868: *3* Converted all class names to pep8 style
+Capitalized, no underscores.
+.. @+node:ekr.20140601151054.17620: *3* Improved find/replace-all commands
+@nocolor-node
+
+These commands now get their arguments from the Find Panel.
+
+Changed the following methods:
+
+generalChangeHelper,
+minibufferFind/ReplaceAll,
+searchWithPresentOptions,
+setReplaceString,
+
+Also fixed the bindings in create_find_buttons so buttons
+are bound to the proper button-related methods. As a result,
+the find-all and change-all buttons now work as expected.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
