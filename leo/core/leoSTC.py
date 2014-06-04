@@ -1064,7 +1064,7 @@ class AstFormatter(AstFullTraverser):
             for z in node.decorator_list:
                 result.append('@%s\n' % self.visit(z))
         name = node.name # Only a plain string is valid.
-        args = self.visit(node.args) if node.args else ''
+        args = self.visit(node.args) if node.args else '()'
         result.append(self.indent('def %s(%s):\n' % (name,args)))
         for z in node.body:
             self.level += 1
@@ -3529,6 +3529,323 @@ if 0:
             return self.d.get(name)
         #@-others
     #@-others
+#@+node:ekr.20140601151054.17640: ** class Data2
+class Data2(AstFullTraverser):
+    '''
+    Traversal to create global data dict d.
+    
+    Like P1, this class injects stc_parent and stc_context links.
+    Unlike P1, this class does not inject stc_symbol_table links.
+    '''
+    #@+others
+    #@+node:ekr.20140601151054.17642: *3*  d2.ctor & __call__
+    def __init__(self):
+        AstFullTraverser.__init__(self)
+        self.defs_d = {}
+        self.refs_d = {}
+        # State vars
+        self.arg_node = None # The enclosing argument expression.
+        self.assign_node = None # Enclosing Assign node.
+        self.aug_assign_node = None # Enclosing AugAssign node.
+        self.u = Utils()
+
+    def __call__(self,fn,node):
+        self.run(fn,node)
+    #@+node:ekr.20140601151054.17643: *3*  d2.run (entry point)
+    def run (self,fn,root):
+        '''Run the prepass: init, then visit the root.'''
+        # pylint: disable=arguments-differ
+        # Init all ivars.
+        self.context = None
+        self.fn = fn
+        self.n_attributes = 0
+        self.n_contexts = 0
+        self.n_nodes = 0
+        self.parent = DummyNode()
+        self.visit(root)
+        # Undo references to DummyNode objects.
+        root.stc_parent = None
+        root.stc_context = None
+    #@+node:ekr.20140601151054.17644: *3*  d2.visit
+    def visit(self,node):
+        '''Inject node references in all nodes.'''
+        assert isinstance(node,ast.AST),node.__class__.__name__
+        self.n_nodes += 1
+        node.stc_context = self.context
+        node.stc_parent = self.parent
+        # g.trace(node,node.stc_parent)
+        # Visit the children with the new parent.
+        self.parent = node
+        method = getattr(self,'do_' + node.__class__.__name__)
+        method(node)
+        # Restore the context & parent.
+        self.context = node.stc_context
+        self.parent = node.stc_parent
+    #@+node:ekr.20140601151054.17645: *3* d2.define_name
+    def define_name(self,cx,name,node):
+        '''Called when name is defined in the given context.'''
+        # Note: cx (an AST node) is hashable.
+        trace = True
+        aSet = self.defs_d.get(name,set())
+        if trace:
+            # g.trace(node.__class__.__name__)
+            if isinstance(node,ast.Name):
+                if trace: 
+                    parent = node.stc_parent
+                    if isinstance(parent,ast.arguments):
+                         g.trace('%-10s parent: args = [%s]' % (
+                            name,self.u.format(parent)))
+                    else:
+                        g.trace('%-10s parent: %s (parent = %s)' % (
+                            name,self.u.format(parent),parent.__class__.__name__))
+            else:
+                if trace: g.trace('%-10s node  : %s' % (name,self.u.format(node)))
+        # Sets don't work all that well here.
+        aSet.add(cx)
+        self.defs_d[name] = aSet
+    #@+node:ekr.20140601151054.17646: *3* d2.print_stats
+    def print_stats (self):
+        '''Print values of all vars starting with 'n_'.'''
+        table = [z for z in sorted(dir(self)) 
+            if z.startswith('n_')]
+        max_n = 5
+        for s in table:
+            max_n = max(max_n,len(s))
+        print('\nStatistics...\n')
+        for s in table:
+            pad = ' ' * (max_n - len(s))
+            pad = ' ' * (max_n-len(s))
+            val = getattr(self,s)
+            print('%s%s: %s' % (pad,s,val))
+        print('')
+        # for d,name in self.distribution_table:
+            # self.print_distribution(d,name)
+        # print('')
+    #@+node:ekr.20140601151054.17647: *3* d2.reference_name
+    def reference_name(self,cx,name,node):
+        '''Called whenever a name is referenced in the given context.'''
+        # Note: cx (an AST node) is hashable.
+        aSet = self.refs_d.get(name,set())
+        aSet.add(cx)
+        self.refs_d[name] = aSet
+    #@+node:ekr.20140601151054.17648: *3* d2.visitors
+    #@+node:ekr.20140604072301.17676: *4* d2.arguments & arg
+    # arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
+
+    def do_arguments(self,node):
+        '''The arguments to a function def.'''
+        for z in node.args:
+            self.arg_node = z
+            self.visit(z)
+            self.arg_node = None
+        for z in node.defaults:
+            self.visit(z)
+            
+    # Python 3:
+    # arg = (identifier arg, expr? annotation)
+
+    def do_arg(self,node):
+        g.trace('*****',node)
+        if node.annotation:
+            self.visit(node.annotation)
+    #@+node:ekr.20140604072301.17672: *4* d2.Assign
+    # Assign(expr* targets, expr value)
+
+    def do_Assign(self,node):
+
+        for z in node.targets:
+            assert not self.assign_node,self.assign_node
+            self.assign_node = node
+            self.visit(z)
+            self.assign_node = None
+        self.visit(node.value)
+    #@+node:ekr.20140601151054.17649: *4* d2.Attribute
+    # Attribute(expr value, identifier attr, expr_context ctx)
+
+    def do_Attribute(self,node):
+        
+        self.n_attributes += 1
+        self.visit(node.value)
+        cx = node.stc_context
+        name = node.attr
+        if self.assign_node:
+            self.define_name(cx,name,self.assign_node)
+        else:
+            self.reference_name(cx,name,node)
+        if 0: # Old code
+            cx = node.stc_context
+            st = cx.stc_symbol_table
+            d = st.attrs_d
+            key = node.attr
+            val = node.value
+            # The following lines are expensive!
+            # For Leo d2: 2.0 sec -> 2.5 sec.
+            if d.has_key(key):
+                d.get(key).add(val)
+            else:
+                aSet = set()
+                aSet.add(val)
+                d[key] = aSet
+            # self.visit(node.ctx)
+            if isinstance(node.ctx,(ast.Param,ast.Store)):
+                st.defined_attrs.add(key)
+    #@+node:ekr.20140601151054.17650: *4* d2.AugAssign
+    # AugAssign(expr target, operator op, expr value)
+
+    def do_AugAssign(self,node):
+
+        assert not self.aug_assign_node,self.aug_assign_node
+        self.aug_assign_node = node
+        self.visit(node.target)
+        self.aug_assign = None
+        self.visit(node.value)
+    #@+node:ekr.20140604072301.17674: *4* d2.Call (To do)
+    # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
+
+    def do_Call(self,node):
+        
+        self.visit(node.func)
+        for z in node.args:
+            # These are the **values** of the actual arguments, not their names.
+            # g.trace(self.u.format(z))
+            self.visit(z)
+        for z in node.keywords:
+            self.visit(z)
+        if getattr(node,'starargs',None):
+            self.visit(node.starargs)
+        if getattr(node,'kwargs',None):
+            self.visit(node.kwargs)
+    #@+node:ekr.20140601151054.17651: *4* d2.ClassDef
+    # ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
+
+    def do_ClassDef (self,node):
+
+        self.n_contexts += 1
+        parent_cx = self.context
+        assert parent_cx == node.stc_context
+        # Define the function name itself in the enclosing context.
+        self.define_name(parent_cx,node.name,node)
+        # Visit the children in a new context.
+        self.context = node
+        for z in node.bases:
+            self.visit(z)
+        for z in node.body:
+            self.visit(z)
+        for z in node.decorator_list:
+            self.visit(z)
+        self.context = parent_cx
+    #@+node:ekr.20140601151054.17652: *4* d2.FunctionDef
+    # FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
+
+    def do_FunctionDef (self,node):
+        
+        self.n_contexts += 1
+        parent_cx = self.context
+        assert parent_cx == node.stc_context
+        # Define the function name itself in the enclosing context.
+        self.define_name(parent_cx,node.name,node)
+        # Visit the children in a new context.
+        self.context = node
+        # Visit the formal arg list.
+        self.visit(node.args)
+        for z in node.body:
+            self.visit(z)
+        for z in node.decorator_list:
+            self.visit(z)
+        self.context = parent_cx
+    #@+node:ekr.20140601151054.17653: *4* d2.Global
+    # Global(identifier* names)
+
+    def do_Global(self,node):
+        
+        cx = self.u.compute_module_cx(node)
+        node.stc_scope = cx
+        for name in node.names:
+            self.define_name(cx,name,node)
+    #@+node:ekr.20140601151054.17654: *4* d2.Import & ImportFrom
+    # Import(alias* names)
+    def do_Import(self,node):
+        self.alias_helper(node)
+                
+    # ImportFrom(identifier? module, alias* names, int? level)
+    def do_ImportFrom(self,node):
+        self.alias_helper(node)
+
+    # alias (identifier name, identifier? asname)
+    def alias_helper(self,node):
+        cx = node.stc_context
+        assert cx
+        for alias in node.names:
+            name = alias.asname if alias.asname else alias.name.split('.')[0]
+            # if alias.asname: g.trace('%s as %s' % (alias.name,alias.asname))
+            # A hack: we treat imports as *references*.
+            # Otherwise, all imports will be "ambigous" with the real class definitions.
+            self.reference_name(cx,name,node)
+    #@+node:ekr.20140601151054.17655: *4* d2.Lambda
+    # Lambda(arguments args, expr body)
+
+    def do_Lambda(self,node):
+        
+        self.n_contexts += 1
+        parent_cx = self.context
+        assert parent_cx == node.stc_context
+        # Handle the lambda args.
+        for arg in node.args.args:
+            if isinstance(arg,ast.Name):
+                # Python 2.x.
+                assert isinstance(arg.ctx,ast.Param),arg.ctx
+                # Define the arg in the lambda context.
+                self.define_name(node,arg.id,node)
+            elif isinstance(arg,ast.Tuple):
+                pass
+            else:
+                # Python 3.x.
+                g.trace('===============',self.u.format(node))
+                # assert isinstance(arg,ast.arg),arg
+                # assert isinstance(arg,ast.arg),arg
+                # self.define_name(node,arg.arg,node)
+            arg.stc_scope = node
+        # Visit the children in the new context.
+        self.context = node
+        # self.visit(node.args)
+        self.visit(node.body)
+        self.context = parent_cx
+    #@+node:ekr.20140601151054.17656: *4* d2.Module
+    def do_Module (self,node):
+
+        self.n_contexts += 1
+        assert self.context is None
+        assert node.stc_context is None
+        # Visit the children in the new context.
+        self.context = node
+        for z in node.body:
+            self.visit(z)
+        self.context = None
+    #@+node:ekr.20140601151054.17657: *4* d2.Name
+    # Name(identifier id, expr_context ctx)
+
+    def do_Name(self,node):
+
+        # self.visit(node.ctx)
+        # g.trace(self.u.format(node))
+        cx = node.stc_context
+        if isinstance(node.ctx,(ast.Param,ast.Store)):
+            # The scope is unambigously cx, **even for AugAssign**.
+            # If there is no binding, we will get an UnboundLocalError at run time.
+            # However, AugAssigns do not actually assign to the var.
+            if self.assign_node:
+                self.define_name(cx,node.id,self.assign_node)
+            elif self.arg_node:
+                assert hasattr(self.arg_node,'stc_parent')
+                self.define_name(cx,node.id,self.arg_node)
+            node.stc_scope = cx
+        else:
+            # ast.Store does *not* necessarily define the scope.
+            # For example, a += 1 generates a Store, but does not defined the symbol.
+            # Instead, only ast.Assign nodes really define a symbol.
+            node.stc_scope = None
+    #@+node:ekr.20140603074103.17645: *4* d2.operators (to do)
+    #@-others
 #@+node:ekr.20140527071205.16687: ** class DataTraverser
 class DataTraverser(AstFullTraverser):
     '''
@@ -3540,13 +3857,6 @@ class DataTraverser(AstFullTraverser):
     def __call__(self,fn,node):
         self.run(fn,node)
     #@+others
-    #@+node:ekr.20140527071205.16688: *3* class Dummy_Node
-    class Dummy_Node:
-        '''A class containing only injected links.'''
-        def __init__(self):
-            self.stc_parent = None
-            self.stc_context = None
-
     #@+node:ekr.20140527121225.17044: *3*  dt.ctor
     def __init__(self,d_defs,d_refs):
         AstFullTraverser.__init__(self)
@@ -3565,9 +3875,9 @@ class DataTraverser(AstFullTraverser):
         self.n_attributes = 0
         self.n_contexts = 0
         self.n_nodes = 0
-        self.parent = self.Dummy_Node()
+        self.parent = DummyNode()
         self.visit(root)
-        # Undo references to Dummy_Node objects.
+        # Undo references to DummyNode objects.
         root.stc_parent = None
         root.stc_context = None
     #@+node:ekr.20140527071205.16690: *3*  dt.visit
@@ -3789,6 +4099,13 @@ class DataTraverser(AstFullTraverser):
             # Instead, only ast.Assign nodes really define a symbol.
             node.stc_scope = None
     #@-others
+#@+node:ekr.20140601151054.17641: ** class DummyNode
+class DummyNode:
+    '''A class containing only injected links.'''
+    def __init__(self):
+        self.stc_parent = None
+        self.stc_context = None
+
 #@+node:ekr.20140526082700.18100: ** class HTMLReportTraverser
 class HTMLReportTraverser (AstFullTraverser):
     
@@ -5562,17 +5879,24 @@ class Utils:
         
         '''Parse an input string.'''
         u = self
+        s = g.adjustTripleString(s,-4)
         t = time.time()
         node = ast.parse(s,filename='<string>',mode='exec')
         p0_time = u.diff_time(t)
         if report:
             u.p0_report(1,p0_time)
-        return node
+        if 1:
+            # The caller creates root_d.
+            return node
+        else:
+            # Return a root_d,.
+            return {'string-file':node}
     #@+node:ekr.20140526082700.17481: *4* u.p01s
     def p01s(self,s,report=True):
         
         '''Parse and run P1 on an input string.'''
         u = self
+        s = g.adjustTripleString(s,-4)
         t0 = time.time()
         node = ast.parse(s,filename='<string>',mode='exec')
         p0_time = u.diff_time(t0)
@@ -5582,12 +5906,18 @@ class Utils:
         tot_time = u.diff_time(t0)
         if report:
             u.p01_report(1,p0_time,p1_time,tot_time)
-        return node
+        if 1:
+            return node
+        else:
+            # Return a root_d
+            return {'string-file':node}
+
     #@+node:ekr.20140526082700.17482: *4* u.p012s (not used)
     # def p012s(self,s,report=True):
         
         # '''Parse and run P1 and TypeInferrer on an input string.'''
         # u = self
+        # s = g.adjustTripleString(s,-4)
         # t0 = time.time()
         # node = ast.parse(s,filename='<string>',mode='exec')
         # p0_time = u.diff_time(t0)
@@ -5600,7 +5930,8 @@ class Utils:
         # tot_time = u.diff_time(t0)
         # if report:
             # u.p012_report(None,1,p0_time,p1_time,p2_time,tot_time)
-        # return node
+        # # New: return a root_d, not node.
+        # return {'string-file':node}
     #@+node:ekr.20140526082700.17483: *3* u.dump_ast & helpers
     # Adapted from Python's ast.dump.
 

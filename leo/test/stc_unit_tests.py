@@ -28,17 +28,6 @@ if trace:
         (do_gc,g.timeSince(t2))))
 #@+node:ekr.20140527073639.16706: ** @test DataTraverser
 #@+others
-#@+node:ekr.20140527083058.16708: *3* report
-def report():
-    '''Report ambiguous symbols.'''
-    n = 0
-    for s in sorted(defs_d.keys()):
-        aSet = defs_d.get(s)
-        aList = sorted(aSet)
-        if len(aList) > 1:
-            n += 1
-            # g.trace('multiple defs',s)
-    return n
 #@+node:ekr.20140527125017.17956: *3* check_class_names
 def check_class_names(defs_d,refs_d):
     aList = [ 
@@ -211,6 +200,17 @@ def check_class_names(defs_d,refs_d):
         # print('%20s %s' % (s,sorted(aSet)))
         print('%3s %s' % (len(sorted(aSet)),s))
     print('replace...\n  %s' % '\n  '.join(sorted(replace)))
+#@+node:ekr.20140527083058.16708: *3* report
+def report():
+    '''Report ambiguous symbols.'''
+    n = 0
+    for s in sorted(defs_d.keys()):
+        aSet = defs_d.get(s)
+        aList = sorted(aSet)
+        if len(aList) > 1:
+            n += 1
+            # g.trace('multiple defs',s)
+    return n
 #@-others
 project_name = 'leo'
 flags = (
@@ -380,6 +380,97 @@ class ReplaceController:
 #@-others
 files = u.project_files('leo')
 ReplaceController(c,files).run(aList)
+#@+node:ekr.20140601151054.17619: ** @test Data2
+#@+others
+#@+node:ekr.20140603074103.17640: *3* pass0
+def pass0():
+    '''Do all p0 processing.'''
+    t = time.time()
+    if 's' in flags:
+        if 'src' in flags:
+            print(s)
+        node1 = u.p0s(s,report=False)
+        if 'dump_ast1' in flags:
+            print('ast for s1...\n%s\n' % (u.dump_ast(node1)))
+        node2 = u.p0s(s2,report=False)
+        root_d = {'s': node1, 's2': node2,}
+        files = root_d.keys()
+    else:
+        files = [
+            # r'c:\leo.repo\leo-editor\leo\core\leoApp.py',
+            # r'c:\leo.repo\leo-editor\leo\core\leoFileCommands.py',
+        ] or u.project_files(project_name)
+        root_d = u.p0(files,project_name,report=False)
+    p0_time = u.diff_time(t)
+    return files,p0_time,root_d
+#@+node:ekr.20140603074103.17642: *3* pass1
+def pass1():
+    '''Apply dt to all files.'''
+    t = time.time()
+    for fn in sorted(files):
+        dt(fn,root_d.get(fn))
+    dt_time = u.diff_time(t)
+    return dt_time
+#@+node:ekr.20140603074103.17641: *3* report
+def report():
+    '''Print final report.'''
+    print('')
+    print('nfiles: %s' % len(files))
+    print('parse: %s' % p0_time)
+    print('   DT: %s' % dt_time)
+    print('defs: %s refs: %s: ambiguous: %s' % (
+        len(sorted(dt.defs_d.keys())),
+        len(sorted(dt.refs_d.keys())),
+        report_ambiguous(dt),
+    ))
+    if 'stats' in flags:
+        dt.print_stats()
+#@+node:ekr.20140601151054.17660: *4* report_ambiguous
+def report_ambiguous(dt):
+    '''Report ambiguous symbols.'''
+    d = dt.defs_d
+    n = 0
+    for s in sorted(d.keys()):
+        aSet = d.get(s)
+        aList = sorted(aSet)
+        if len(aList) > 1:
+            n += 1
+    return n
+#@-others
+project_name = 'leo'
+flags = (
+    'dump_ast1', # Dump s1
+    # 'report',
+    'stats',
+    's',
+    'src',
+    'self_alias', # detect aliases to self.
+)
+#@+<< define s for Data2 test >>
+#@+node:ekr.20140603074103.17639: *3* << define s for Data2 test >>
+s = '''
+# module s
+class aClass:
+    def aDef(arg):
+        print(arg)
+a = aClass()
+a.b = 2
+a.aDef(5)
+'''
+
+#@-<< define s for Data2 test >>
+#@+<< define s2 for Data2 test >>
+#@+node:ekr.20140603074103.17644: *3* << define s2 for Data2 test >>
+s2 = '''
+# module s2
+import s
+'''
+#@-<< define s2 for Data2 test >>
+dt = stc.Data2()
+files,p0_time,root_d = pass0()
+dt_time = pass1()
+if 'report' in flags:
+    report()
 #@-others
 #@@language python
 #@@tabwidth -4
