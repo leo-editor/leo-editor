@@ -382,6 +382,14 @@ files = u.project_files('leo')
 ReplaceController(c,files).run(aList)
 #@+node:ekr.20140601151054.17619: ** @test Data2
 #@+others
+#@+node:ekr.20140604135104.17796: *3* dump_global_d
+def dump_global_d(dt):
+    d = dt.global_d
+    for name in sorted(d.keys()):
+        aList = d.get(name)
+        print('%s:\n%s' % (
+            name,
+            '  \n'.join(['  %r' % (z) for z in aList])))
 #@+node:ekr.20140603074103.17640: *3* pass0
 def pass0():
     '''Do all p0 processing.'''
@@ -440,6 +448,7 @@ def report_ambiguous(dt):
 project_name = 'leo'
 flags = (
     'dump_ast1', # Dump s1
+    'dump_global_d',
     # 'report',
     'stats',
     's',
@@ -469,6 +478,8 @@ import s
 dt = stc.Data2()
 files,p0_time,root_d = pass0()
 dt_time = pass1()
+if 'dump_global_d' in flags:
+    dump_global_d(dt)
 if 'report' in flags:
     report()
 #@-others

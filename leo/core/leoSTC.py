@@ -3538,9 +3538,24 @@ class Data2(AstFullTraverser):
     Unlike P1, this class does not inject stc_symbol_table links.
     '''
     #@+others
+    #@+node:ekr.20140604135104.17795: *3*  class d2.NameData
+    class NameData:
+        '''A class holding all data related to a name (spelling).'''
+        def __init__(self,cx,kind,node):
+            self.cx = cx # The context in which the data appears.
+            self.kind = kind # in ('def','ref','import')
+            self.node = node # The ast.node at which the datum occurs.
+            
+        def __repr__(self):
+            u = Utils()
+            return 'NameData(%4s,cx: %20s, node: %s)' % (
+                self.kind,u.format(self.cx),u.format(self.node))
+                
+        __str__ = __repr__
     #@+node:ekr.20140601151054.17642: *3*  d2.ctor & __call__
     def __init__(self):
         AstFullTraverser.__init__(self)
+        self.global_d = {} # Keys are names; values are NameData objects.
         self.defs_d = {}
         self.refs_d = {}
         # State vars
@@ -3586,7 +3601,6 @@ class Data2(AstFullTraverser):
         '''Called when name is defined in the given context.'''
         # Note: cx (an AST node) is hashable.
         trace = True
-        aSet = self.defs_d.get(name,set())
         if trace:
             # g.trace(node.__class__.__name__)
             if isinstance(node,ast.Name):
@@ -3601,8 +3615,12 @@ class Data2(AstFullTraverser):
             else:
                 if trace: g.trace('%-10s node  : %s' % (name,self.u.format(node)))
         # Sets don't work all that well here.
+        aSet = self.defs_d.get(name,set())
         aSet.add(cx)
         self.defs_d[name] = aSet
+        aList = self.global_d.get(name,[])
+        aList.append(self.NameData(cx,'def',node))
+        self.global_d[name] = aList
     #@+node:ekr.20140601151054.17646: *3* d2.print_stats
     def print_stats (self):
         '''Print values of all vars starting with 'n_'.'''
@@ -3628,6 +3646,9 @@ class Data2(AstFullTraverser):
         aSet = self.refs_d.get(name,set())
         aSet.add(cx)
         self.refs_d[name] = aSet
+        aList = self.global_d.get(name,[])
+        aList.append(self.NameData(cx,'ref',node))
+        self.global_d[name] = aList
     #@+node:ekr.20140601151054.17648: *3* d2.visitors
     #@+node:ekr.20140604072301.17676: *4* d2.arguments & arg
     # arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
