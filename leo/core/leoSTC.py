@@ -881,6 +881,8 @@ class AstFullTraverser(AstBaseTraverser):
         self.visit(node.args)
         self.visit(node.body)
     #@+node:ekr.20140526082700.17216: *5* ft.Module
+    # Module(stmt* body)
+
     def do_Module (self,node):
         
         for z in node.body:
@@ -1081,7 +1083,9 @@ class AstFormatter(AstFullTraverser):
     def do_Module (self,node):
         
         assert 'body' in node._fields
-        return 'module:\n%s' % (''.join([self.visit(z) for z in  node.body]))
+        return 'module:%s\n%s' % (
+            node.stc_fn if hasattr(node,'stc_fn') else '<unknown>',
+            ''.join([self.visit(z) for z in  node.body]))
     #@+node:ekr.20140526082700.17237: *5* f.Lambda
     def do_Lambda (self,node):
             
@@ -5896,13 +5900,13 @@ class Utils:
             print('  tot: %s' % tot_t)
 
     #@+node:ekr.20140526082700.17480: *4* u.p0s
-    def p0s(self,s,report=True):
-        
+    def p0s(self,s,report=True,tag='<string>'):
         '''Parse an input string.'''
         u = self
         s = g.adjustTripleString(s,-4)
         t = time.time()
-        node = ast.parse(s,filename='<string>',mode='exec')
+        node = ast.parse(s,filename=tag,mode='exec')
+        node.stc_fn = tag
         p0_time = u.diff_time(t)
         if report:
             u.p0_report(1,p0_time)
@@ -5913,16 +5917,17 @@ class Utils:
             # Return a root_d,.
             return {'string-file':node}
     #@+node:ekr.20140526082700.17481: *4* u.p01s
-    def p01s(self,s,report=True):
+    def p01s(self,s,report=True,tag='<string>'):
         
         '''Parse and run P1 on an input string.'''
         u = self
         s = g.adjustTripleString(s,-4)
         t0 = time.time()
-        node = ast.parse(s,filename='<string>',mode='exec')
+        node = ast.parse(s,filename=tag,mode='exec')
+        node.stc_fn = tag
         p0_time = u.diff_time(t0)
         t = time.time()
-        P1().run('<string>',node)
+        P1().run(tag,node)
         p1_time = u.diff_time(t)
         tot_time = u.diff_time(t0)
         if report:
@@ -5934,16 +5939,17 @@ class Utils:
             return {'string-file':node}
 
     #@+node:ekr.20140526082700.17482: *4* u.p012s (not used)
-    # def p012s(self,s,report=True):
+    # def p012s(self,s,report=True,tag='<string>'):
         
         # '''Parse and run P1 and TypeInferrer on an input string.'''
         # u = self
         # s = g.adjustTripleString(s,-4)
         # t0 = time.time()
-        # node = ast.parse(s,filename='<string>',mode='exec')
+        # node = ast.parse(s,filename=tag,mode='exec')
+        # node.stc_fn = tag
         # p0_time = u.diff_time(t0)
         # t = time.time()
-        # P1().run('<string>',node)
+        # P1().run(tag,node)
         # p1_time = u.diff_time(t)
         # t = time.time()
         # TypeInferrer().run(node)
@@ -6299,11 +6305,15 @@ class Utils:
         s = self.get_source(fn)
         if not s:
             g.trace('*** not found',fn)
-        return ast.parse(s,filename=fn,mode='exec')
+        node = ast.parse(s,filename=fn,mode='exec')
+        node.stc_fn = fn # Inject file name for dumps.
+        return node
 
     def parse_string(self,fn,s):
-        
-        return ast.parse(s,filename=fn,mode='exec')
+
+        node = ast.parse(s,filename=fn,mode='exec')
+        node.stc_fn = '<string>' # Inject file name for dumps.
+        return node
         
     def parse_files_in_list(self,aList):
         

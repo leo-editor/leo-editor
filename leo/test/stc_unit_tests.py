@@ -397,10 +397,10 @@ def pass0():
     if 's' in flags:
         if 'src' in flags:
             print(s)
-        node1 = u.p0s(s,report=False)
+        node1 = u.p0s(s,report=False,tag='s')
         if 'dump_ast1' in flags:
             print('ast for s1...\n%s\n' % (u.dump_ast(node1)))
-        node2 = u.p0s(s2,report=False)
+        node2 = u.p0s(s2,report=False,tag='s2')
         root_d = {'s': node1, 's2': node2,}
         files = root_d.keys()
     else:
