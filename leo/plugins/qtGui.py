@@ -6186,7 +6186,10 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
     #@+node:ekr.20110605121601.18370: *7* doFileUrl & helper
     def doFileUrl (self,p,url):
 
-        fn = str(url.path())
+        # 2014/06/06: Work around a possible bug in QUrl class.  str(aUrl) fails here.
+        # fn = str(url.path())
+        e = sys.getfilesystemencoding()
+        fn = g.toUnicode(url.path(),encoding=e)
         if sys.platform.lower().startswith('win'):
             if fn.startswith('/'):
                 fn = fn[1:]
@@ -6386,8 +6389,10 @@ class LeoQTreeWidget(QtGui.QTreeWidget):
         '''Insert the url in an @url node after p.'''
 
         c = self.c ; u = c.undoer ; undoType = 'Drag Url'
-
         s = str(url.toString()).strip()
+        # 2014/06/06: this code may be necessary.  More testing is needed.
+        # e = sys.getfilesystemencoding()
+        # s = g.toUnicode(url.toString(),encoding=e)
         if not s: return False
 
         undoData = u.beforeInsertNode(p,pasteAsClone=False,copiedBunchList=[])
