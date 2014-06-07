@@ -586,6 +586,12 @@ class QuickSearchController:
             tgt()
         elif len(tgt) == 2:            
             p, pos = tgt
+            if not c.positionExists(p):
+                g.es(
+                    "Node moved or deleted.\nMaybe re-do search.",
+                    color='red'
+                )
+                return
             c.selectPosition(p)
             if pos is not None:
                 st, en = pos
