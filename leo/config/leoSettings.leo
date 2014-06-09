@@ -39,6 +39,11 @@
 <v t="ekr.20060112104333.1"><vh>checkSets</vh></v>
 <v t="ekr.20060112104823"><vh>main</vh></v>
 </v>
+<v t="tbrown.20140609102412.32431"><vh>Tools</vh>
+<v t="tbrown.20140609102412.32426"><vh>@button pick-date</vh></v>
+<v t="tbrown.20140609102412.32428"><vh>@button pick-color</vh></v>
+<v t="tbrown.20140609102412.32430"><vh>@button pick-font</vh></v>
+</v>
 <v t="ekr.20111017082630.16086"><vh>Disabled/old</vh>
 <v t="ekr.20111017082630.16080"><vh>@@button check-bindings</vh>
 <v t="ekr.20111017082630.16081"><vh>defineSetNames</vh></v>
@@ -6471,6 +6476,52 @@ than none, below.  'solid' works.</t>
 <t tx="tbrown.20140514191846.42170"></t>
 <t tx="tbrown.20140514191846.42171"></t>
 <t tx="tbrown.20140514191846.42173"></t>
+<t tx="tbrown.20140609102412.32426">from PyQt4 import QtGui
+
+date = g.app.gui.runAskDateTimeDialog(
+    c, "Select date, will be copied to clipboard")
+if date:
+    text = date.strftime("%Y-%m-%d %I:%M:%S %p")
+    QtGui.QApplication.clipboard().setText(text)
+    g.es("%s\ncopied to clipboard"%text)
+else:
+    g.es("No date selected")
+</t>
+<t tx="tbrown.20140609102412.32428">from PyQt4 import QtGui, QtCore
+
+picker = QtGui.QColorDialog()
+text = QtGui.QApplication.clipboard().text()
+try:
+    color = QtGui.QColor(text)
+    picker.setCurrentColor(color)
+except ValueError:
+    pass
+
+if not picker.exec_():
+    g.es("No color selected")
+else:
+    text = picker.selectedColor().name()
+    g.es("%s\ncopied to clipboard"%text)
+    QtGui.QApplication.clipboard().setText(text)
+</t>
+<t tx="tbrown.20140609102412.32430">from PyQt4 import QtGui, QtCore
+
+picker = QtGui.QFontDialog()
+text = QtGui.QApplication.clipboard().text()
+try:
+    font = QtGui.QFont(text)
+    picker.setCurrentFont(font)
+except ValueError:
+    pass
+
+if not picker.exec_():
+    g.es("No font selected")
+else:
+    text = picker.selectedFont().family()
+    g.es("%s\ncopied to clipboard"%text)
+    QtGui.QApplication.clipboard().setText(text)
+</t>
+<t tx="tbrown.20140609102412.32431"></t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 # cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,
