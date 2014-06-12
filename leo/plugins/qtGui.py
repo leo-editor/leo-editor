@@ -55,18 +55,15 @@ try:
     import PyQt5.QtCore as QtCore
     import PyQt5.QtGui as QtGui
     from PyQt5 import QtWidgets
-    # QtGui2 = QtGui
     try:
         from PyQt5 import Qsci
     except ImportError:
         Qsci = None
     from PyQt5 import uic
     isQt5 = True
-
 except ImportError:
     import PyQt4.QtCore as QtCore
     import PyQt4.QtGui as QtGui
-    # QtGui2 = QtGui # For moved classes.
     QtWidgets = QtGui
     try:
         from PyQt4 import Qsci
