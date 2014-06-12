@@ -36,14 +36,21 @@ corresponding paragraph of text is deleted.
 #@+<< includes >>
 #@+node:ekr.20130701072841.12674: ** << includes >>
 import leo.core.leoGlobals as g
-from PyQt4 import QtGui, QtCore, Qt
-from PyQt4.QtCore import Qt as QtConst
+
+try:
+    from PyQt5 import QtGui,QtCore,Qt
+    from PyQt5.QtCore import Qt as QtConst
+except ImportError:
+    from PyQt4 import QtGui, QtCore, Qt
+    from PyQt4.QtCore import Qt as QtConst
+    QtWidgets = QtGui
+
 import time
 #@-<< includes >>
 
-class LeoUserData(QtGui.QTextBlockUserData):
+class LeoUserData(QtWidgets.QTextBlockUserData):
     def __init__(self):
-        QtGui.QTextBlockUserData.__init__(self)
+        QtWidgets.QTextBlockUserData.__init__(self)
         self.gen = None
 
 class LeoSyntaxHighlighter:
@@ -95,7 +102,7 @@ class LeoSyntaxHighlighter:
         if d:
             d.disconnect(d,Qt.SIGNAL('contentsChange(int,int,int)'),
                 self._q_reformatBlocks)
-            cursor = QtGui.QTextCursor(self.doc)
+            cursor = QtWidgets.QTextCursor(self.doc)
             cursor.beginEditBlock()
             blk = self.doc.begin()
             while blk.isValid(): 
@@ -122,8 +129,8 @@ class LeoSyntaxHighlighter:
             self.recolorAll = True
             self.generation += 1
             self._clearDelayedFormat()
-            cursor = QtGui.QTextCursor(self.doc)
-            self._rehighlightCursor(cursor,QtGui.QTextCursor.End)
+            cursor = QtWidgets.QTextCursor(self.doc)
+            self._rehighlightCursor(cursor,QtWidgets.QTextCursor.End)
             
     # base_rehighlight = rehighlight
     #@+node:ekr.20130701072841.12686: ** rehighlightBlock
@@ -132,8 +139,8 @@ class LeoSyntaxHighlighter:
         '''Reapplies the highlighting to the given QTextBlock block.'''
         
         if self.doc and block and block.isValid and block.document == self.doc:
-            cursor = QtGui.QTextCursor(block)
-            self._rehighlightCursor(cursor,QtGui.QTextCursor.EndOfBlock)
+            cursor = QtWidgets.QTextCursor(block)
+            self._rehighlightCursor(cursor,QtWidgets.QTextCursor.EndOfBlock)
     #@+node:ekr.20130701072841.12688: ** setFormat
     #@+at
     # Apply a format to the the syntax highlighter's current text block (i.e. the
@@ -163,7 +170,7 @@ class LeoSyntaxHighlighter:
         if 0 <= pos < len(self.formatChanges):
             return self.formatChanges[pos]
         else:
-            return QtGui.QTextCharFormat()
+            return QtWidgets.QTextCharFormat()
     #@+node:ekr.20130701072841.12699: ** getters/setters for blocks
     #@+node:ekr.20130701072841.12695: *3* currentBlock
     def currentBlock(self):
@@ -243,8 +250,8 @@ class LeoSyntaxHighlighter:
         elif ranges:
             ranges = []
             formatsChanged = True
-        emptyFormat = QtGui.QTextCharFormat()
-        FormatRange = QtGui.QTextLayout.FormatRange
+        emptyFormat = QtWidgets.QTextCharFormat()
+        FormatRange = QtWidgets.QTextLayout.FormatRange
         r = FormatRange()
         r.start = -1
         i = 0
@@ -406,7 +413,7 @@ class LeoSyntaxHighlighter:
             g.trace('can not happen: recursive call to _reformatBlock')
         else:
             self._currentBlock = block
-            self.formatChanges = [QtGui.QTextFormat()] * (block.length())
+            self.formatChanges = [QtWidgets.QTextFormat()] * (block.length())
             self.highlightBlock(block.text())
                 # Calls the Leo-specifc coloring code, which calls setFormat.
             if block and block.isValid():
@@ -414,7 +421,7 @@ class LeoSyntaxHighlighter:
                 data.generation = self.generation
             block.setUserData(data)
             self._applyFormatChanges()
-            self._currentBlock = QtGui.QTextBlock()
+            self._currentBlock = QtWidgets.QTextBlock()
     #@+node:ekr.20130701072841.12697: *4* _rehighlightCursor
     # This was the rehighlight method of the private class.
 

@@ -17,11 +17,11 @@ import leo.core.leoFrame as leoFrame
 import leo.core.leoNodes as leoNodes
 
 try:
-    import PyQt5.QtCore as QtCore
+    from PyQt5 import QtCore
     from PyQt5 import QtWidgets
-    QtGui = QtWidgets
 except ImportError:
     import PyQt4.QtGui as QtGui
+    QtWidgets = QtGui
     import PyQt4.QtCore as QtCore
 #@-<< imports >>
 
@@ -1084,7 +1084,7 @@ class BaseNativeTreeWidget (leoFrame.LeoTree):
         '''A wretched kludge for MacOs k.masterMenuHandler.'''
         c = self.c
 
-        if isinstance(w,QtGui.QLineEdit):
+        if isinstance(w,QtWidgets.QLineEdit):
             wrapper = self.edit_widget(c.p)
         else:
             wrapper = w

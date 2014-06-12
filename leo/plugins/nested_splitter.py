@@ -14,15 +14,14 @@ except ImportError:
 import sys
 # from inspect import isclass
 try:
-    from PyQt5 import QtCore, Qt # QtGui
+    from PyQt5 import QtCore, Qt
     from PyQt5.QtCore import Qt as QtConst
     from PyQt5 import QtWidgets
-    QtGui = QtWidgets
     isQt5 = True
 except ImportError:
     from PyQt4 import QtGui, QtCore, Qt
     from PyQt4.QtCore import Qt as QtConst
-    QWidget = QtGui.QWidget
+    QtWidgets = QtGui
     isQt5 = False
 #@-<< imports >>
 # pylint: disable=cell-var-from-loop
@@ -35,7 +34,7 @@ def init():
 
     return True
 #@+node:ekr.20110605121601.17957: ** class DemoWidget
-class DemoWidget(QtGui.QWidget):
+class DemoWidget(QtWidgets.QWidget):
 
     count = 0
 
@@ -46,30 +45,30 @@ class DemoWidget(QtGui.QWidget):
         # pylint: disable=E1101
         # E1101: DemoWidget.__init__: Module 'PyQt4.QtCore' has no 'QMargins' member
 
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
 
-        self.setLayout(QtGui.QVBoxLayout())
+        self.setLayout(QtWidgets.QVBoxLayout())
         self.layout().setContentsMargins(QtCore.QMargins(0,0,0,0))
         self.layout().setSpacing(0)
 
-        text = QtGui.QTextEdit()
+        text = QtWidgets.QTextEdit()
         self.layout().addWidget(text)
         DemoWidget.count += 1
         text.setPlainText("#%d" % DemoWidget.count)
 
-        button_layout = QtGui.QHBoxLayout()
+        button_layout = QtWidgets.QHBoxLayout()
         button_layout.setContentsMargins(QtCore.QMargins(5,5,5,5))
         self.layout().addLayout(button_layout)
 
 
-        button_layout.addWidget(QtGui.QPushButton("Go"))
-        button_layout.addWidget(QtGui.QPushButton("Stop"))
+        button_layout.addWidget(QtWidgets.QPushButton("Go"))
+        button_layout.addWidget(QtWidgets.QPushButton("Stop"))
 
         if color:
             self.setStyleSheet("background-color: %s;"%color)
     #@-others
 #@+node:tbrown.20120418121002.25711: ** class NestedSplitterTopLevel (QWidget)
-class NestedSplitterTopLevel(QtGui.QWidget):
+class NestedSplitterTopLevel(QtWidgets.QWidget):
     """A QWidget to wrap a NestedSplitter to allow it to live in a top
     level window and handle close events properly.
 
@@ -92,7 +91,7 @@ class NestedSplitterTopLevel(QtGui.QWidget):
         del kargs['owner']
         window_title = kargs.get('window_title')
         del kargs['window_title']
-        QtGui.QWidget.__init__(self, *args, **kargs)
+        QtWidgets.QWidget.__init__(self, *args, **kargs)
         if window_title:
             self.setWindowTitle(window_title)
     #@+node:tbrown.20120418121002.25714: *3* closeEvent
@@ -133,7 +132,7 @@ class NestedSplitterTopLevel(QtGui.QWidget):
             event.ignore()
     #@-others
 #@+node:ekr.20110605121601.17959: ** class NestedSplitterChoice (QWidget)
-class NestedSplitterChoice(QtGui.QWidget):
+class NestedSplitterChoice(QtWidgets.QWidget):
     """When a new pane is opened in a nested splitter layout, this widget
     presents a button, labled 'Action', which provides a popup menu
     for the user to select what to do in the new pane"""
@@ -141,11 +140,11 @@ class NestedSplitterChoice(QtGui.QWidget):
     #@+node:ekr.20110605121601.17960: *3* __init__ (NestedSplitterChoice)
     def __init__(self,parent=None):
 
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
 
-        self.setLayout(QtGui.QVBoxLayout())
+        self.setLayout(QtWidgets.QVBoxLayout())
 
-        button = QtGui.QPushButton("Action",self) # EKR: 2011/03/15
+        button = QtWidgets.QPushButton("Action",self) # EKR: 2011/03/15
         self.layout().addWidget(button)
 
         button.setContextMenuPolicy(QtConst.CustomContextMenu)
@@ -160,7 +159,7 @@ class NestedSplitterChoice(QtGui.QWidget):
             lambda: self.parent().choice_menu(self,button.pos()))
     #@-others
 #@+node:ekr.20110605121601.17961: ** class NestedSplitterHandle (QSplitterHandle)
-class NestedSplitterHandle(QtGui.QSplitterHandle):
+class NestedSplitterHandle(QtWidgets.QSplitterHandle):
     """Show the context menu on a NestedSplitter splitter-handle to access
     NestedSplitter's special features"""
     #@+others
@@ -168,7 +167,7 @@ class NestedSplitterHandle(QtGui.QSplitterHandle):
     def __init__(self, owner):
         '''Ctor for NestedSplitterHandle class.'''
         # g.trace('NestedSplitterHandle')
-        QtGui.QSplitterHandle.__init__(self, owner.orientation(), owner)
+        QtWidgets.QSplitterHandle.__init__(self, owner.orientation(), owner)
         self.setStyleSheet("background-color: green;")
         self.setContextMenuPolicy(QtConst.CustomContextMenu)
         if isQt5:
@@ -187,7 +186,7 @@ class NestedSplitterHandle(QtGui.QSplitterHandle):
     #@+node:ekr.20110605121601.17964: *3* add_item
     def add_item (self,func,menu,name,tooltip=None):
         """helper for splitter_menu menu building"""
-        act = QtGui.QAction(name, self)
+        act = QtWidgets.QAction(name, self)
         act.setObjectName(name.lower().replace(' ','-'))
         act.connect(act, Qt.SIGNAL('triggered()'),func)
         if tooltip:
@@ -207,11 +206,11 @@ class NestedSplitterHandle(QtGui.QSplitterHandle):
             tip = ""
         else:
             tip = action.toolTip()
-        pos = QtGui.QCursor.pos()
+        pos = QtWidgets.QCursor.pos()
         x = pos.x()
         y = pos.y()
         rect = QtCore.QRect(x-5, y-5, x+5, y+5)
-        QtGui.QToolTip.showText(pos, tip, action.parentWidget(), rect)
+        QtWidgets.QToolTip.showText(pos, tip, action.parentWidget(), rect)
     #@+node:ekr.20110605121601.17965: *3* splitter_menu
     def splitter_menu(self, pos):
         """build the context menu for NestedSplitter"""
@@ -234,7 +233,7 @@ class NestedSplitterHandle(QtGui.QSplitterHandle):
         for i in 0,1:
             sheet.append(widget[i].styleSheet())
             widget[i].setStyleSheet(sheet[-1]+"\nborder: 2px solid %s;"%color[i])
-        menu = QtGui.QMenu()
+        menu = QtWidgets.QMenu()
         menu.hovered.connect(self.show_tip)
         def pl(n):
             return 's' if n > 1 else ''
@@ -344,7 +343,7 @@ class NestedSplitterHandle(QtGui.QSplitterHandle):
 
         if True:
             submenu = menu.addMenu('Debug')
-            act = QtGui.QAction("Print splitter layout", self)
+            act = QtWidgets.QAction("Print splitter layout", self)
 
             # E0102: function already defined.
             def cb(splitter=splitter): # pylint: disable=E0102
@@ -362,7 +361,7 @@ class NestedSplitterHandle(QtGui.QSplitterHandle):
                     title, id_ = i
                     def cb(id_=id_):
                         splitter.context_cb(id_, index)
-                    act = QtGui.QAction(title, self)
+                    act = QtWidgets.QAction(title, self)
                     act.connect(act, Qt.SIGNAL('triggered()'), cb)
                     menu.addAction(act)              
 
@@ -376,7 +375,7 @@ class NestedSplitterHandle(QtGui.QSplitterHandle):
             widget[i].setStyleSheet(sheet[i])
     #@-others
 #@+node:ekr.20110605121601.17966: ** class NestedSplitter (QSplitter)
-class NestedSplitter(QtGui.QSplitter): 
+class NestedSplitter(QtWidgets.QSplitter): 
 
     enabled = True
         # allow special behavior to be turned of at import stage
@@ -392,7 +391,7 @@ class NestedSplitter(QtGui.QSplitter):
     #@+node:ekr.20110605121601.17967: *3* __init__ (NestedSplitter)
     def __init__(self,parent=None,orientation=QtConst.Horizontal,root=None):
 
-        QtGui.QSplitter.__init__(self,orientation,parent)
+        QtWidgets.QSplitter.__init__(self,orientation,parent)
             # This creates a NestedSplitterHandle.
 
         trace = False and g and not g.unitTesting
@@ -438,7 +437,7 @@ class NestedSplitter(QtGui.QSplitter):
         unless it was the last panel in a separate window, in which
         case close the window"""
 
-        QtGui.QSplitter.childEvent(self, event)
+        QtWidgets.QSplitter.childEvent(self, event)
 
         if not event.removed():
             return
@@ -537,13 +536,13 @@ class NestedSplitter(QtGui.QSplitter):
             """Recursively look for this widget"""
             for n,i in enumerate(layout['content']):
                 if (i == id_ or
-                        (isinstance(i, QtGui.QWidget) and
+                        (isinstance(i, QtWidgets.QWidget) and
                         (i.objectName() == id_ or i.__class__.__name__ == id_)
                     )
                 ):
                     return layout, n
 
-                if not isinstance(i, QtGui.QWidget):
+                if not isinstance(i, QtWidgets.QWidget):
                     # then it must be a layout dict
                     x = hunter(i, id_)
                     if x:
@@ -582,7 +581,7 @@ class NestedSplitter(QtGui.QSplitter):
             else:
                 ns = NestedSplitter(orientation=vertical,root=self.root)
             old = layout['content'][pos]
-            if not isinstance(old, QtGui.QWidget):  # see get_layout()
+            if not isinstance(old, QtWidgets.QWidget):  # see get_layout()
                 old = layout['splitter']
             # put new thing, what, in new splitter, no impact on anything else
             ns.insert(0, what)
@@ -597,14 +596,14 @@ class NestedSplitter(QtGui.QSplitter):
     #@+node:ekr.20110605121601.17972: *3* choice_menu
     def choice_menu(self, button, pos):
         """build menu on Action button"""
-        menu = QtGui.QMenu()
+        menu = QtWidgets.QMenu()
 
         index=self.indexOf(button)
 
         if (self.root.marked and 
             not self.invalid_swap(button, self.root.marked[3]) and
             self.top().max_count() > 2):
-            act = QtGui.QAction("Move marked here", self)
+            act = QtWidgets.QAction("Move marked here", self)
             act.connect(act, Qt.SIGNAL('triggered()'), 
                 lambda: self.replace_widget(button, self.root.marked[3]))
             menu.addAction(act)        
@@ -614,12 +613,12 @@ class NestedSplitter(QtGui.QSplitter):
                 for title, id_ in provider.ns_provides():
                     def cb(id_=id_):
                         self.place_provided(id_, index)
-                    act = QtGui.QAction(title, self)
+                    act = QtWidgets.QAction(title, self)
                     act.connect(act, Qt.SIGNAL('triggered()'), cb)
                     menu.addAction(act)        
 
         if menu.isEmpty():
-            act = QtGui.QAction("Nothing marked, and no options", self)
+            act = QtWidgets.QAction("Nothing marked, and no options", self)
             menu.addAction(act)
 
         menu.exec_(button.mapToGlobal(pos))
@@ -785,7 +784,7 @@ class NestedSplitter(QtGui.QSplitter):
         window = NestedSplitterTopLevel(owner=self.root, window_title=ns.get_title(action))
         # window.setStyleSheet(
         #     '\n'.join(self.c.config.getData('qt-gui-plugin-style-sheet')))
-        hbox = QtGui.QHBoxLayout()
+        hbox = QtWidgets.QHBoxLayout()
         window.setLayout(hbox)
         hbox.setContentsMargins(0,0,0,0)
         window.resize(400,300)
@@ -1266,8 +1265,8 @@ def main():
 
     # pylint: disable=E1101
     # E1101:main: Module 'PyQt4.QtCore' has no 'QMargins' member
-    holder = QtGui.QWidget()
-    holder.setLayout(QtGui.QVBoxLayout())
+    holder = QtWidgets.QWidget()
+    holder.setLayout(QtWidgets.QVBoxLayout())
     holder.layout().setContentsMargins(QtCore.QMargins(0,0,0,0))
     holder.layout().addWidget(splitter)
     holder.show()

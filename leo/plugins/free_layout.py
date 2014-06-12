@@ -37,10 +37,9 @@ import leo.core.leoGlobals as g
 # g.assertUi('qt')
 
 try:
-    # import PyQt5.QtCore as QtCore
-    import PyQt5.QtGui as QtGui
+    from PyQt5 import QtGui
     from PyQt5 import QtWidgets
-    QtGui2 = QtGui
+    # QtGui2 = QtGui
     QtGui = QtWidgets
     try:
         from PyQt5 import Qsci
@@ -49,9 +48,8 @@ try:
     isQt5 = True
 
 except ImportError:
-    # import PyQt4.QtCore as QtCore
     import PyQt4.QtGui as QtGui
-    QtGui2 = QtGui # For moved classes
+    QtWidgets = QtGui
     isQt5 = False
 
 from leo.plugins.nested_splitter import NestedSplitter # , NestedSplitterChoice
@@ -220,27 +218,27 @@ class FreeLayoutController:
         # them, or move them to another designated widget.  Here we set
         # up two designated widgets
 
-        logTabWidget = splitter.findChild(QtGui.QWidget, "logTabWidget")
+        logTabWidget = splitter.findChild(QtWidgets.QWidget, "logTabWidget")
         splitter.root.holders['_is_from_tab'] = logTabWidget
         splitter.root.holders['_is_permanent'] = 'TOP'
 
         # allow body and tree widgets to be "removed" to tabs on the log tab panel    
-        bodyWidget = splitter.findChild(QtGui.QFrame, "bodyFrame")
+        bodyWidget = splitter.findChild(QtWidgets.QFrame, "bodyFrame")
         bodyWidget._is_from_tab = "Body"
 
-        treeWidget = splitter.findChild(QtGui.QFrame, "outlineFrame")
+        treeWidget = splitter.findChild(QtWidgets.QFrame, "outlineFrame")
         treeWidget._is_from_tab = "Tree"
         # also the other tabs will have _is_from_tab set on them by the
         # offer_tabs menu callback above
 
         # if the log tab panel is removed, move it back to the top splitter
-        logWidget = splitter.findChild(QtGui.QFrame, "logFrame")
+        logWidget = splitter.findChild(QtWidgets.QFrame, "logFrame")
         logWidget._is_permanent = True
 
         # tag core Leo components (see ns_provides)
-        splitter.findChild(QtGui.QWidget, "outlineFrame")._ns_id = '_leo_pane:outlineFrame'
-        splitter.findChild(QtGui.QWidget, "logFrame")._ns_id = '_leo_pane:logFrame'
-        splitter.findChild(QtGui.QWidget, "bodyFrame")._ns_id = '_leo_pane:bodyFrame'
+        splitter.findChild(QtWidgets.QWidget, "outlineFrame")._ns_id = '_leo_pane:outlineFrame'
+        splitter.findChild(QtWidgets.QWidget, "logFrame")._ns_id = '_leo_pane:logFrame'
+        splitter.findChild(QtWidgets.QWidget, "bodyFrame")._ns_id = '_leo_pane:bodyFrame'
 
         splitter.register_provider(self)
     #@+node:tbrown.20110621120042.22914: *3* get_top_splitter
@@ -310,7 +308,7 @@ class FreeLayoutController:
         ans = []
 
         # list of things in tab widget
-        logTabWidget = self.get_top_splitter().find_child(QtGui.QWidget, "logTabWidget")
+        logTabWidget = self.get_top_splitter().find_child(QtWidgets.QWidget, "logTabWidget")
 
         for n in range(logTabWidget.count()):
             text = str(logTabWidget.tabText(n))  # not QString
@@ -333,7 +331,7 @@ class FreeLayoutController:
 
             id_ = id_.split(':', 1)[1]
 
-            logTabWidget = self.get_top_splitter().find_child(QtGui.QWidget, "logTabWidget")
+            logTabWidget = self.get_top_splitter().find_child(QtWidgets.QWidget, "logTabWidget")
 
             for n in range(logTabWidget.count()):
                 if logTabWidget.tabText(n) == id_:
@@ -349,7 +347,7 @@ class FreeLayoutController:
         if id_.startswith('_leo_pane:'):
 
             id_ = id_.split(':', 1)[1]
-            w = self.get_top_splitter().find_child(QtGui.QWidget, id_)
+            w = self.get_top_splitter().find_child(QtWidgets.QWidget, id_)
             if w:
                 w.setHidden(False)  # may be from Tab holder
                 w.setMinimumSize(20,20)
@@ -514,7 +512,7 @@ def free_layout_load(kwargs):
     """
     c = kwargs['c']
     d = g.app.db.get('ns_layouts', {})
-    menu = QtGui.QMenu(c.frame.top)
+    menu = QtWidgets.QMenu(c.frame.top)
     for k in d:
         menu.addAction(k)
     pos = c.frame.top.window().frameGeometry().center()
