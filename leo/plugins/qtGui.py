@@ -7149,7 +7149,14 @@ class LeoQtTreeTab:
         tt.setNames()
         tt.iconBar.addWidget(w)
         def onIndexChanged(s,tt=tt):
-            if s:
+            if isQt5:
+                if s != -1:
+                    tt.cc.selectChapterLockout = True
+                    try:
+                        tt.selectTab(s)
+                    finally:
+                        tt.cc.selectChapterLockout = False
+            elif s:
                 tt.cc.selectChapterLockout = True
                 try:
                     s = g.u(s)
@@ -7157,7 +7164,7 @@ class LeoQtTreeTab:
                 finally:
                     tt.cc.selectChapterLockout = False
         if isQt5:
-            pass ### w.currentIndexChanged.connect(onIndexChanged)
+            w.currentIndexChanged.connect(onIndexChanged)
         else:
             w.connect(w,QtCore.SIGNAL("currentIndexChanged(QString)"),
                 onIndexChanged)

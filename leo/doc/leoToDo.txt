@@ -273,10 +273,6 @@ http://qt-project.org/wiki/Transition_from_Qt_4.x_to_Qt5
 - Uninstalled PyQt4 using uninstall script.
 - Installed PyQt5 in Python 3.4.
 - Now e34 fails as expected. e3 (Using Python 33 still works).
-
-There are two possible strategies:
-    - Common leoQT module.
-    - Adjust all imports by hand.
 .. @+node:ekr.20140611061834.17705: *4* Changes to imports
 try:
     from PyQt5 import QtCore, Qt # QtGui

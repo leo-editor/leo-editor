@@ -208,13 +208,16 @@ class ChapterController:
     def createChapterByName (self,name,p,undoType='Create Chapter'):
 
         cc,c = self,self.c
+        if type(name) == type(9):
+            return cc.note('PyQt5 chapters not supported yet.')
         if not name:
             return cc.note('no name')
         oldChapter = cc.getSelectedChapter()
         theChapter = cc.chaptersDict.get(name)
         if theChapter:
             return cc.note('duplicate chapter name: %s' % (name),killUnitTest=True)
-        bunch = cc.beforeCreateChapter(c.p,oldChapter.name,name,undoType)
+        oldName = oldChapter.name if oldChapter else ''
+        bunch = cc.beforeCreateChapter(c.p,oldName,name,undoType)
         if undoType == 'Convert Node To Chapter':
             root = p.insertAfter()
             root.initHeadString('@chapter %s' % name)
@@ -424,8 +427,10 @@ class ChapterController:
 
         '''Select a chapter.  Return True if a redraw is needed.'''
 
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         cc,c = self,self.c
+        if type(name) == type(9):
+            return cc.note('PyQt5 chapaters not supported')
         chapter = cc.chaptersDict.get(name)
         if chapter:
             cc.selectChapterByNameHelper(chapter,collapse=collapse)
