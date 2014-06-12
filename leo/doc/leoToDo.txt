@@ -245,12 +245,48 @@ import rope.base.project as project
 print(project)
 
 # myproject = project.Project('/path/to/myproject')
-.. @+node:ekr.20140427131738.16870: *3* Add support for qt5
-Unfortunately it is not possible to use both the PyQt4 and PyQt5 installers
-at the same time. If you wish to have both PyQt4 and PyQt5 installed at the
-same time you will need to build them yourself from the source packages.
-.. @+node:ekr.20140216071333.16644: *4* leo.core.qt module to handle Qt5
-Must convert QtGui to QtWidgets.
+.. @+node:ekr.20140427131738.16870: *3* Added support for qt5
+@language rest
+
+To do:
+
+- Connect signals again: (search for isQt5)
+- Fix visual problems.
+- Convert plugins.
+
+
+It is not possible to use both the PyQt4 and PyQt5 installers at the same
+time. But this is no big deal on Windows: just install PyQt5 for Python 3.4
+only.
+.. @+node:ekr.20140612115800.17705: *4* Qt5 migration
+@language rest
+
+.. @+node:ekr.20140611061834.17703: *4* pyqt install log
+@language rest
+
+http://qt-project.org/wiki/Transition_from_Qt_4.x_to_Qt5
+
+- Installed Python 3.4
+- Installed PyQt4 for Python 3.4.
+- Created /scripts/e34.bat and /bin/python34.bat.
+- e34 works with PyQt4.
+- Uninstalled PyQt4 using uninstall script.
+- Installed PyQt5 in Python 3.4.
+- Now e34 fails as expected. e3 (Using Python 33 still works).
+
+There are two possible strategies:
+    - Common leoQT module.
+    - Adjust all imports by hand.
+.. @+node:ekr.20140611061834.17705: *4* Changes to imports
+try:
+    from PyQt5 import QtCore, Qt # QtGui
+    from PyQt5.QtCore import Qt as QtConst
+    from PyQt5 import QtWidgets
+    QtGui = QtWidgets
+except ImportError:
+    from PyQt4 import QtGui, QtCore, Qt
+    from PyQt4.QtCore import Qt as QtConst
+    QWidget = QtGui.QWidget
 .. @+node:ekr.20140115052524.16699: *3* Allow clones *anywhere* in @file nodes
 ​https://groups.google.com/d/msg/leo-editor/YjJdWjNSM9o/SDL7Nb__OUcJ
 

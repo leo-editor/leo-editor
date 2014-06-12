@@ -771,7 +771,7 @@ class VimCommands:
         for z in range(vc.n):
             vc.c.editCommands.backCharacter(vc.event)
 
-    #@+node:ekr.20140222064735.16618: *5* vim_i 
+    #@+node:ekr.20140222064735.16618: *5* vim_i
     def vim_i(self):
         '''Insert text before the cursor N times.'''
         return self.begin_insert_mode()

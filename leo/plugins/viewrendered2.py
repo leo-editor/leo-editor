@@ -660,7 +660,7 @@ def update_rendering_pane (event):
         if vr:
             vr.update(tag='view',keywords={'c':c,'force':True})
 #@+node:ekr.20140226075611.16792: ** class WebViewPlus (QWidget)
-class WebViewPlus(QtGui.QWidget):
+class WebViewPlus(QtWidgets.QWidget):
     #@+others
     #@+node:ekr.20140226075611.16793: *3* ctor (WebViewPlus) & helpers
     def __init__(self, pc):
@@ -687,9 +687,9 @@ class WebViewPlus(QtGui.QWidget):
         mf = view.page().mainFrame()
         mf.contentsSizeChanged.connect(self.restore_scroll_position)
         # ToolBar parts
-        self.export_button = QtGui.QPushButton('Export')
+        self.export_button = QtWidgets.QPushButton('Export')
         self.export_button.clicked.connect(self.export)
-        self.toolbar = QtGui.QToolBar()
+        self.toolbar = QtWidgets.QToolBar()
         self.toolbar.setIconSize(QtCore.QSize(16,16))
         for a in (QtWebKit.QWebPage.Back, QtWebKit.QWebPage.Forward):
             self.toolbar.addAction(view.pageAction(a))
@@ -712,9 +712,9 @@ class WebViewPlus(QtGui.QWidget):
         self.toolbar.addAction(self.reload_action)
         #self.reload_action.clicked.connect(self.render)
         # Create the "Mode" toolbutton
-        self.toolbutton = QtGui.QToolButton()
+        self.toolbutton = QtWidgets.QToolButton()
         self.toolbutton.setText('Options')
-        self.toolbutton.setPopupMode(QtGui.QToolButton.InstantPopup)
+        self.toolbutton.setPopupMode(QtWidgets.QToolButton.InstantPopup)
         self.toolbutton.setToolTip(self.tooltip_text(
             """
             Options:
@@ -728,11 +728,11 @@ class WebViewPlus(QtGui.QWidget):
             Code output reST - Assume code execution text output is reStructuredText."""))
         self.toolbar.addWidget(self.toolbutton)
         # Add a progress bar
-        self.pbar = QtGui.QProgressBar()
+        self.pbar = QtWidgets.QProgressBar()
         self.pbar.setMaximumWidth(120)
-        menu = QtGui.QMenu()
+        menu = QtWidgets.QMenu()
         def action(label):
-            action = QtGui.QAction(label,self,checkable=True,triggered=self.state_change)
+            action = QtWidgets.QAction(label,self,checkable=True,triggered=self.state_change)
             menu.addAction(action)
             return action
         self.tree_mode_action = action('Whole tree')
@@ -753,8 +753,8 @@ class WebViewPlus(QtGui.QWidget):
             #self.toolbar.addSeparator()
             #self.toolbar.addWidget(self.export_button)
         # Create the 'Export' toolbutton
-        self.export_button = QtGui.QToolButton()
-        self.export_button.setPopupMode(QtGui.QToolButton.InstantPopup)
+        self.export_button = QtWidgets.QToolButton()
+        self.export_button.setPopupMode(QtWidgets.QToolButton.InstantPopup)
         self.export_button.setToolTip(self.tooltip_text(
             """
             Show this in the default web-browser.
@@ -771,10 +771,10 @@ class WebViewPlus(QtGui.QWidget):
         self.pbar_action.setVisible(False)
         # Document title in toolbar
         #self.toolbar.addSeparator()
-        #        spacer = QtGui.QWidget() 
+        #        spacer = QtWidgets.QWidget() 
         #        spacer.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding) 
         #        self.toolbar.addWidget(spacer)
-        self.title = QtGui.QLabel()
+        self.title = QtWidgets.QLabel()
         self.title.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding) 
         self.title.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
         self.title.setTextFormat(1)  # Set to rich text interpretation
@@ -786,11 +786,11 @@ class WebViewPlus(QtGui.QWidget):
         #font.setWeight(75)
         self.toolbar.addWidget(self.title)  # if needed, use 'title_action =' 
         #title_action.setFont(font)  # Set font of 'QAction' rather than widget
-        spacer = QtGui.QWidget() 
+        spacer = QtWidgets.QWidget() 
         spacer.setMinimumWidth(5) 
         self.toolbar.addWidget(spacer)
         # Layouts
-        vlayout = QtGui.QVBoxLayout()
+        vlayout = QtWidgets.QVBoxLayout()
         vlayout.setContentsMargins(0,0,0,0)  # Remove the default 11px margins
         vlayout.addWidget(self.toolbar)
         vlayout.addWidget(view)

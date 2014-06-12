@@ -7766,12 +7766,6 @@ this is the last sentence.
 This is the first sentence.  This
 is the  sentence.  And
 this is the last sentence.
-#@+node:ekr.20081111084046.3: *5* @test zz restore the screen
-# This is **not** a real unit test.
-# It simply restores the screen to a more convenient state.
-
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
 #@+node:ekr.20110610122533.3369: *5* goto-global-line tests
 #@+node:ekr.20110610122533.3388: *6* Tests with @auto as the root
 #@+node:ekr.20110610122533.3389: *7* @test goto-line-number @auto 1
@@ -7999,6 +7993,12 @@ c.GoToLineNumber(c).showResults(
 
 
 #@+node:ekr.20110610122533.3405: *6* @test zz restore the screen
+# This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+c.contractParent()
+g.app.unitTestDict['restoreSelectedNode']=False
+#@+node:ekr.20081111084046.3: *5* @test zz restore the screen
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.
 
@@ -10830,7 +10830,12 @@ The proper keyword argument is insert=i.
 
 c.frame.body.updateEditors()
 #@+node:ekr.20111121142012.4030: *4* @test c.frame.log relationships
-import PyQt4.QtGui as QtGui
+try:
+    import PyQt5.QtGui as QtGui
+    import PyQt5.QtWidgets as QtWidgets
+except ImportError:
+    import PyQt4.QtGui as QtGui
+    QtWidgets = QtGui
 
 log = c.frame.log
 name = log.__class__.__name__
@@ -10840,7 +10845,7 @@ if g.app.isExternalUnitTest:
 else:
     assert name == 'LeoQtLog',name
     assert log.widget.__class__.__name__ == 'LeoQTextEditWidget' 
-    assert not issubclass(log.widget.__class__,QtGui.QWidget.__class__)
+    assert not issubclass(log.widget.__class__,QtWidgets.QWidget.__class__)
         # leoQTextEditWidget us a poor name: it is not a Qt widget.
     assert log.widget.widget.__class__.__name__ == 'LeoQTextBrowser'
     assert hasattr(log.widget,'widget') and log.widget.widget
@@ -11397,6 +11402,8 @@ end = g.os_path_normpath(r'leo/test')
 
 assert s.endswith(end),repr(s)
 #@+node:ekr.20080917151620.23: *5* @thin ../test/unittest/at-path-test1.py
+@language python
+# unittest/at-path-test1.py 
 #@+node:ekr.20080917151620.27: *4* @test g.scanAtPathDirectives @path ../test @path unittest @thin at-path-test3.py
 greatGrandChild = p.firstChild().firstChild().firstChild()
 aList = g.get_directives_dict_list(greatGrandChild)
@@ -11407,6 +11414,8 @@ assert s.endswith(end),repr(s)
 #@+node:ekr.20080917151620.28: *5* @path ../test
 #@+node:ekr.20080917151620.29: *6* @path unittest
 #@+node:ekr.20080917151620.30: *7* @thin at-path-test3.py
+@language python
+# unittest/at-path-test3.py 
 #@+node:ekr.20080917151620.24: *4* @test g.scanAtPathDirectives @path ../test/unittest @thin at-path-test2.py
 grandChild = p.firstChild().firstChild()
 aList = g.get_directives_dict_list(grandChild)
@@ -11416,6 +11425,8 @@ end = g.os_path_normpath(r'leo/test/unittest')
 assert s.endswith(end),repr(s)
 #@+node:ekr.20080917151620.25: *5* @path ../test/unittest
 #@+node:ekr.20080917151620.26: *6* @thin at-path-test2.py
+@language python
+# unittest/at-path-test2.py
 #@+node:ekr.20080917151620.31: *4* @test g.scanAtTabwidthDirectives +6
 @tabwidth 6
 
@@ -11658,8 +11669,15 @@ g.app.unitTestDict['restoreSelectedNode']=False
 # print('\nEnd of leoGlobals tests.')
 #@+node:ekr.20100131171342.5599: *3* leoGui & leoQtGui
 #@+node:ekr.20111120124051.3992: *4* @test Ctrl-I inserts only one headline
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+try:
+    import PyQt5.QtCore as QtCore
+    import PyQt5.QtGui as QtGui
+    from PyQt5 import QtWidgets
+except ImportError:
+    import PyQt4.QtCore as QtCore
+    import PyQt4.QtGui as QtGui
+    QtWidgets = QtGui
+
 import leo.plugins.qtGui as leoQtGui
 
 if g.app.isExternalUnitTest:
@@ -11676,10 +11694,10 @@ else:
             p.firstChild().doDelete()
     
     app = g.app.gui.qtApp
-    assert issubclass(app.__class__,QtGui.QApplication)
+    assert issubclass(app.__class__,QtWidgets.QApplication)
     
     w = c.frame.body.bodyCtrl.widget
-    assert issubclass(w.__class__,QtGui.QTextEdit)
+    assert issubclass(w.__class__,QtWidgets.QTextEdit)
     w_name = w.__class__.__name__
     assert w_name == 'LeoQTextBrowser',w_name
     
@@ -11769,15 +11787,22 @@ if g.app.gui.guiName() == 'tkinter':
     aTuple = w.tag_ranges('test')
     assert aTuple == (4,6),'tag_add failed: %s' % aTuple
 #@+node:ekr.20111123214629.3941: *4* @test unbound Alt-N key is completely ignored
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
+try:
+    import PyQt5.QtCore as QtCore
+    import PyQt5.QtGui as QtGui
+    from PyQt5 import QtWidgets
+except ImportError:
+    import PyQt4.QtCore as QtCore
+    import PyQt4.QtGui as QtGui
+    QtWidgets = QtGui
+
 import leo.plugins.qtGui as leoQtGui
 
 if g.app.isExternalUnitTest:
     pass
 else:
     w = c.frame.body.bodyCtrl.widget
-    assert issubclass(w.__class__,QtGui.QTextEdit)
+    assert issubclass(w.__class__,QtWidgets.QTextEdit)
     
     filter_obj = leoQtGui.LeoQtEventFilter(c,w=w)
     g.app.unitTestDict[p.h] = filter_obj # keep a pointer to the filter.
@@ -14473,9 +14498,9 @@ if 1:
     v2.h = 'insertAsNthChild(1)'
 p.expand()
 c.redraw()
-#@+node:ekr.20140211085929.5491: *5* insertAsFirstChild
-#@+node:ekr.20140211085929.5493: *5* insertAsNthChild(1)
-#@+node:ekr.20140211085929.5492: *5* insertAsLastChild
+#@+node:ekr.20140612165420.7397: *5* insertAsFirstChild
+#@+node:ekr.20140612165420.7399: *5* insertAsNthChild(1)
+#@+node:ekr.20140612165420.7398: *5* insertAsLastChild
 #@+node:ekr.20080310073711.1: *4* @test nodeIndices.toString(None) allocates a new index
 gnx = g.app.nodeIndices.toString(None)
 assert(gnx not in (None,'None'))
@@ -14868,14 +14893,6 @@ import leo.core.leoNodes as leoNodes
 
 if leoNodes.use_zodb:
     p.v.__hash__()
-#@+node:ekr.20071113202452: *4* @test zz restore the screen
-# This is **not** a real unit test.
-# It simply restores the screen to a more convenient state.
-
-c.contractParent()
-g.app.unitTestDict['restoreSelectedNode']=False
-
-print('\nEnd of leoNodes tests.')
 #@+node:ekr.20080501121449.1: *4* Fundamental node operations (undo operations fail)
 #@+node:ekr.20080423110627.2: *5* @test at most one VNode has str_leo_pos attribute
 n = 0
@@ -15450,6 +15467,14 @@ finally:
         while root.hasChildren():
             root.firstChild().doDelete(newNode = None)
     c.redraw_now()
+#@+node:ekr.20071113202452: *4* @test zz restore the screen
+# This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+c.contractParent()
+g.app.unitTestDict['restoreSelectedNode']=False
+
+print('\nEnd of leoNodes tests.')
 #@+node:ekr.20100131171342.5610: *3* leoPlugins
 #@+node:ekr.20100131171342.5611: *4* @test getHandlersForTag
 pc = g.app.pluginsController

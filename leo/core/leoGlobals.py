@@ -1677,10 +1677,14 @@ def pdb (message=''):
 
     if app and not app.useIpython:
         try:
-            import PyQt4.QtCore as QtCore
-            QtCore.pyqtRemoveInputHook()
+            import PyQt5.QtCore as QtCore
         except ImportError:
-            pass
+            try:
+                import PyQt4.QtCore as QtCore
+            except ImportError:
+                QtCore = None
+        if QtCore:
+            QtCore.pyqtRemoveInputHook()
     if message:
         print(message)
     pdb.set_trace()

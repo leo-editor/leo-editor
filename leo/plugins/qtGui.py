@@ -105,7 +105,7 @@ class LeoQTextBrowser (QtWidgets.QTextBrowser):
         # This event handler is the easy way to keep track of the vertical scroll position.
         self.leo_vsb = vsb = self.verticalScrollBar()
         if isQt5:
-            pass ### Not ready yet.
+            vsb.valueChanged.connect(self.onSliderChanged)
         else:
             vsb.connect(vsb,QtCore.SIGNAL("valueChanged(int)"),
                 self.onSliderChanged)
@@ -127,29 +127,27 @@ class LeoQTextBrowser (QtWidgets.QTextBrowser):
         #@+others
         #@+node:ekr.20110605121601.18010: *6* ctor (LeoQListWidget)
         def __init__(self,c):
-
-
+            '''ctor for LeoQListWidget class'''
             QtWidgets.QListWidget.__init__(self)
             self.setWindowFlags(QtCore.Qt.Popup | self.windowFlags())
             # Make this window a modal window.
             # Calling this does not fix the Ubuntu-specific modal behavior.
             # self.setWindowModality(QtCore.Qt.NonModal) # WindowModal)
-
             if 0:
                 # embed the window in a splitter.
                 splitter2 = c.frame.top.splitter_2
                 splitter2.insertWidget(1,self)
-
             # Inject the ivars
             self.leo_w = c.frame.body.bodyCtrl.widget
                 # A LeoQTextBrowser, a subclass of QtWidgets.QTextBrowser.
             self.leo_c = c
-
             # A weird hack.
             self.leo_geom_set = False # When true, self.geom returns global coords!
-
-            self.connect(self,QtCore.SIGNAL(
-                "itemClicked(QListWidgetItem *)"),self.select_callback)
+            if isQt5:
+                self.itemClicked.connect(self.select_callback)
+            else:
+                self.connect(self,QtCore.SIGNAL(
+                    "itemClicked(QListWidgetItem *)"),self.select_callback)
         #@+node:ekr.20110605121601.18011: *6* closeEvent
         def closeEvent(self,event):
 
@@ -442,22 +440,19 @@ class LeoQTextBrowser (QtWidgets.QTextBrowser):
 
     #@+node:ekr.20120925061642.13506: *4* onSliderChanged (LeoQTextBrowser)
     def onSliderChanged(self,arg):
-
+        '''Handle a Qt onSliderChanged event.'''
         trace = False and not g.unitTesting
         c = self.leo_c
         p = c.p
-
         # Careful: changing nodes changes the scrollbars.
         if hasattr(c.frame.tree,'tree_select_lockout'):
             if c.frame.tree.tree_select_lockout:
                 if trace: g.trace('locked out: c.frame.tree.tree_select_lockout')
                 return
-
         # Only scrolling in the body pane should set v.scrollBarSpot.
         if not c.frame.body or self != c.frame.body.bodyCtrl.widget:
             if trace: g.trace('**** wrong pane')
             return
-
         if p:
             if trace: g.trace(arg,c.p.v.h,g.callers())
             p.v.scrollBarSpot = arg
@@ -512,12 +507,14 @@ class LeoQtBaseTextWidget (leoFrame.BaseTextWidget):
                 self.ev_filter = LeoQtEventFilter(c,w=self,tag=name)
                 self.widget.installEventFilter(self.ev_filter)
         if name == 'body':
+            w = self.widget
             if isQt5:
-                pass ### Not ready yet.
+                w.textChanged.connect(self.onTextChanged)
+                w.cursorPositionChanged.connect(self.onCursorPositionChanged)
             else:
-                self.widget.connect(self.widget,
+                w.connect(w,
                     QtCore.SIGNAL("textChanged()"),self.onTextChanged)
-                self.widget.connect(self.widget,
+                w.connect(w,
                     QtCore.SIGNAL("cursorPositionChanged()"),self.onCursorPositionChanged)
         if name in ('body','log'):
             # Monkey patch the event handler.
@@ -1019,9 +1016,7 @@ class LeoQTextEditWidget (LeoQtBaseTextWidget):
         w.setTabStopWidth(24)
     #@+node:ekr.20110605121601.18077: *4* leoMoveCursorHelper & helper (LeoQTextEditWidget)
     def leoMoveCursorHelper (self,kind,extend=False,linesPerPage=15):
-
         '''Move the cursor in a QTextEdit.'''
-
         trace = False and not g.unitTesting
         verbose = True
         w = self.widget
@@ -1029,8 +1024,7 @@ class LeoQTextEditWidget (LeoQtBaseTextWidget):
             g.trace(kind,'extend',extend)
             if verbose:
                 g.trace(len(w.toPlainText()))
-
-        tc = QtWidgets.QTextCursor
+        tc = QtGui.QTextCursor
         d = {
             'exchange': True, # Dummy.
             'down':tc.Down,'end':tc.End,'end-line':tc.EndOfLine,
@@ -1041,10 +1035,8 @@ class LeoQTextEditWidget (LeoQtBaseTextWidget):
         kind = kind.lower()
         op = d.get(kind)
         mode = tc.KeepAnchor if extend else tc.MoveAnchor
-
         if not op:
             return g.trace('can not happen: bad kind: %s' % kind)
-
         if kind in ('page-down','page-up'):
             self.pageUpDown(op, mode)
         elif kind == 'exchange': # exchange-point-and-mark
@@ -1061,7 +1053,6 @@ class LeoQTextEditWidget (LeoQtBaseTextWidget):
                 cursor.clearSelection()
                 w.setTextCursor(cursor)
             w.moveCursor(op,mode)
-
         # 2012/03/25.  Add this common code.
         self.seeInsertPoint()
         self.rememberSelectionAndScroll()
@@ -1088,7 +1079,7 @@ class LeoQTextEditWidget (LeoQtBaseTextWidget):
             moved = cursor.movePosition(op, moveMode)
             if (not moved or distance >= control.height()):
                 break
-        tc = QtWidgets.QTextCursor
+        tc = QtGui.QTextCursor
         sb = control.verticalScrollBar()
         if moved:
             if (op == tc.Up):
@@ -1742,7 +1733,7 @@ class LeoQtHeadlineWidget (LeoQtBaseTextWidget):
         # g.trace('(LeoQtHeadlineWidget)',bg,fg)
 
         def check(color,kind,default):
-            if not QtWidgets.QColor(color).isValid():
+            if not QtGui.QColor(color).isValid():
                 if color not in self.badFocusColors:
                     self.badFocusColors.append(color)
                     g.warning('invalid head %s color: %s' % (kind,color))
@@ -2150,7 +2141,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         splitter2.setOrientation(QtCore.Qt.Vertical)
         splitter2.setObjectName("splitter_2")
         if isQt5:
-            pass ### Not ready yet.
+            splitter2.splitterMoved.connect(self.onSplitter2Moved)
         else:
             splitter2.connect(splitter2,
                 QtCore.SIGNAL("splitterMoved(int,int)"),
@@ -2159,7 +2150,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         splitter.setOrientation(QtCore.Qt.Horizontal)
         splitter.setObjectName("splitter")
         if isQt5:
-            pass ### Not ready yet.
+            splitter.splitterMoved.connect(self.onSplitter1Moved)
         else:
             splitter.connect(splitter,
                 QtCore.SIGNAL("splitterMoved(int,int)"),
@@ -2292,7 +2283,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
 
         w = QtWidgets.QGridLayout(parent)
         if isQt5:
-            pass # setMargin does not exist
+            w.setContentsMargins(QtCore.QMargins(0,0,0,0))
         else:
             w.setMargin(margin)
         w.setSpacing(spacing)
@@ -2304,7 +2295,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         hLayout = QtWidgets.QHBoxLayout(parent)
         hLayout.setSpacing(spacing)
         if isQt5:
-            pass # setMargin does not exist.
+            hLayout.setContentsMargins(QtCore.QMargins(0,0,0,0))
         else:
             hLayout.setMargin(margin)
         self.setName(hLayout,name)
@@ -2315,7 +2306,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         vLayout = QtWidgets.QVBoxLayout(parent)
         vLayout.setSpacing(spacing)
         if isQt5:
-            pass # setMargin does not exist.
+            vLayout.setContentsMargins(QtCore.QMargins(0,0,0,0))
         else:
             vLayout.setMargin(margin)
         self.setName(vLayout,name)
@@ -2425,7 +2416,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             grid.addWidget(button,row,col)
             func = getattr(self,'do_leo_spell_btn_%s' % ivar)
             if isQt5:
-                pass ### Not ready yet.
+                button.clicked.connect(func)
             else:
                 QtCore.QObject.connect(button,QtCore.SIGNAL("clicked()"),func)
             # This name is significant.
@@ -2450,7 +2441,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         vLayout2.addLayout(grid)
         vLayout.addWidget(spellFrame)
         if isQt5:
-            pass ### Not ready yet.
+            listBox.itemDoubleClicked.connect(self.do_leo_spell_btn_FindChange)
         else:
             QtCore.QObject.connect(listBox,
                 QtCore.SIGNAL("itemDoubleClicked(QListWidgetItem*)"),
@@ -2629,7 +2620,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 grid.addWidget(frame,row+row2,col)
             # Connect the button with the command.
             if isQt5:
-                pass ### Not ready yet.
+                w.clicked.connect(find_tab_button_callback)
             else:
                 QtCore.QObject.connect(w,QtCore.SIGNAL("clicked()"),
                     find_tab_button_callback)
@@ -3097,7 +3088,7 @@ class FindTabManager:
                 ### Put focus in minibuffer if minibuffer find is in effect.
                 c.bodyWantsFocusNow()
             if isQt5:
-                pass ### Not ready yet.
+                w.stateChanged.connect(check_box_callback)
             else:
                 QtCore.QObject.connect(
                     w,QtCore.SIGNAL("stateChanged(int)"),
@@ -3124,7 +3115,7 @@ class FindTabManager:
                     assert hasattr(find,ivar),ivar
                     setattr(find,ivar,val)
             if isQt5:
-                pass ### Not ready yet.
+                w.toggled.connect(radio_button_callback)
             else:
                 QtCore.QObject.connect(w,QtCore.SIGNAL("toggled(bool)"),
                     radio_button_callback)
@@ -3190,24 +3181,39 @@ class LeoBaseTabWidget (QtWidgets.QTabWidget):
             menu = QtWidgets.QMenu()
             if self.count() > 1:
                 a = menu.addAction("Detach")
-                a.connect(a, QtCore.SIGNAL("triggered()"),
-                    lambda: self.detach(index))
+                if isQt5:
+                    a.triggered.connect(lambda: self.detach(index))
+                else:
+                    a.connect(a, QtCore.SIGNAL("triggered()"),
+                        lambda: self.detach(index))
                 a = menu.addAction("Horizontal tile")
-                a.connect(a, QtCore.SIGNAL("triggered()"),
-                    lambda: self.tile(index, orientation='H'))
+                if isQt5:
+                    a.triggered.connect(
+                        lambda: self.tile(index, orientation='H'))
+                else:
+                    a.connect(a, QtCore.SIGNAL("triggered()"),
+                        lambda: self.tile(index, orientation='H'))
                 a = menu.addAction("Vertical tile")
-                a.connect(a, QtCore.SIGNAL("triggered()"),
-                    lambda: self.tile(index, orientation='V'))
+                if isQt5:
+                    a.triggered.connect(
+                        lambda: self.tile(index, orientation='V'))
+                else:
+                    a.connect(a, QtCore.SIGNAL("triggered()"),
+                        lambda: self.tile(index, orientation='V'))
             if self.detached:
                 a = menu.addAction("Re-attach All")
-                a.connect(a, QtCore.SIGNAL("triggered()"), self.reattach_all)
+                if isQt5:
+                    a.triggered.connect(self.reattach_all)
+                else:
+                    a.connect(a, QtCore.SIGNAL("triggered()"), self.reattach_all)
             menu.exec_(self.mapToGlobal(point))
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         if isQt5:
-            pass ### Not ready yet.
+            self.customContextMenuRequested.connect(tabContextMenu)
         else:
             self.connect(self,
-                QtCore.SIGNAL("customContextMenuRequested(QPoint)"), tabContextMenu)
+                QtCore.SIGNAL("customContextMenuRequested(QPoint)"),
+                tabContextMenu)
     #@+node:ekr.20131115120119.17391: *4* detach
     def detach(self, index):
         """detach tab (from tab's context menu)"""
@@ -4538,7 +4544,7 @@ class LeoQtFrame (leoFrame.LeoFrame):
             b.leo_removeAction = rb = QtWidgets.QAction('Remove Button' ,b)
             b.addAction(rb)
             if isQt5:
-                pass ### not ready yet.
+                rb.triggered.connect(delete_callback)
             else:
                 rb.connect(rb, QtCore.SIGNAL("triggered()"), delete_callback)
             if command:
@@ -4550,7 +4556,7 @@ class LeoQtFrame (leoFrame.LeoFrame):
                         c.outerUpdate()
                     return val
                 if isQt5:
-                    pass ### not ready yet.
+                    b.clicked.connect(button_callback)
                 else:
                     self.w.connect(b,
                         QtCore.SIGNAL("clicked()"),
@@ -4608,7 +4614,7 @@ class LeoQtFrame (leoFrame.LeoFrame):
             if command:
                 # button is a leoIconBarButton.
                 if isQt5:
-                    pass # not ready yet.
+                    button.button.clicked.connect(command)
                 else:
                     QtCore.QObject.connect(button.button,
                         QtCore.SIGNAL("clicked()"),command)
@@ -4635,7 +4641,7 @@ class LeoQtFrame (leoFrame.LeoFrame):
                 b.goto_script = gts = QtWidgets.QAction('Goto Script', b)
                 b.addAction(gts)
                 if isQt5:
-                    pass # Not ready yet.
+                    gts.triggered.connect(goto_command)
                 else:
                     gts.connect(gts, QtCore.SIGNAL("triggered()"), goto_command)
                 # 20100519 - TNB also, scan @button's following sibs and childs
@@ -4678,7 +4684,10 @@ class LeoQtFrame (leoFrame.LeoFrame):
                             ctrl.executeScriptFromButton(b,t,p.gnx)
                             if c.exists:
                                 c.outerUpdate()
-                        rc.connect(rc, QtCore.SIGNAL("triggered()"), cb)
+                        if isQt5:
+                            rc.triggered.connect(cb)
+                        else:
+                            rc.connect(rc, QtCore.SIGNAL("triggered()"), cb)
                     # This code has no effect.
                     # docstring = g.getDocString(rclick.b).strip()
                     # if docstring:
@@ -5353,7 +5362,7 @@ class LeoQtLog (leoFrame.LeoLog):
             # The Qt.QTabWidget that holds all the tabs.
         # Fixes bug 917814: Switching Log Pane tabs is done incompletely.
         if isQt5:
-            pass ### Not ready yet.
+            tw.currentChanged.connect(self.onCurrentChanged)
         else:
             tw.connect(tw,QtCore.SIGNAL('currentChanged(int)'),self.onCurrentChanged)
         self.wrap = True if c.config.getBool('log_pane_wraps') else False
@@ -5769,10 +5778,9 @@ class LeoQtMenu (leoMenu.LeoMenu):
         action.leo_command_name = commandName
         if command:
             def qt_add_command_callback(label=label,command=command):
-                # g.trace(command)
                 return command()
             if isQt5:
-                pass ### not ready yet.
+                action.triggered.connect(qt_add_command_callback)
             else:
                 QtCore.QObject.connect(action,
                     QtCore.SIGNAL("triggered()"),qt_add_command_callback)
@@ -5834,8 +5842,11 @@ class LeoQtMenu (leoMenu.LeoMenu):
             if command:
                 def insert_callback(label=label,command=command):
                     command()
-                QtCore.QObject.connect(
-                    action,QtCore.SIGNAL("triggered()"),insert_callback)
+                if isQt5:
+                    action.triggered.connect(insert_callback)
+                else:
+                    QtCore.QObject.connect(
+                        action,QtCore.SIGNAL("triggered()"),insert_callback)
     #@+node:ekr.20110605121601.18352: *6* insert_cascade (LeoQtMenu)
     def insert_cascade (self,parent,index,label,menu,underline):
 
@@ -6671,34 +6682,38 @@ class LeoQtTree (baseNativeTree.BaseNativeTreeWidget):
         c = self.c
         w = c.frame.top
         tw = self.treeWidget
-
         if not LeoQtTree.callbacksInjected:
             LeoQtTree.callbacksInjected = True
             self.injectCallbacks() # A base class method.
-            
         if isQt5:
-            pass # Not ready yet.
+            tw.itemDoubleClicked.connect(self.onItemDoubleClicked)
+            tw.itemClicked.connect(self.onItemClicked)
+            tw.itemSelectionChanged.connect(self.onTreeSelect)
+            tw.itemCollapsed.connect(self.onItemCollapsed)
+            tw.itemExpanded.connect(self.onItemExpanded)
+            tw.customContextMenuRequested.connect(self.onContextMenu)
+            # tw.onItemChanged.connect(self.onItemChanged)
         else:
-            w.connect(self.treeWidget,QtCore.SIGNAL(
+            w.connect(tw,QtCore.SIGNAL(
                     "itemDoubleClicked(QTreeWidgetItem*, int)"),
                 self.onItemDoubleClicked)
-            w.connect(self.treeWidget,QtCore.SIGNAL(
+            w.connect(tw,QtCore.SIGNAL(
                     "itemClicked(QTreeWidgetItem*, int)"),
                 self.onItemClicked)
-            w.connect(self.treeWidget,QtCore.SIGNAL(
+            w.connect(tw,QtCore.SIGNAL(
                     "itemSelectionChanged()"),
                 self.onTreeSelect)
             # We don't need this.  Hooray!
             # w.connect(self.treeWidget,QtCore.SIGNAL(
                     # "itemChanged(QTreeWidgetItem*, int)"),
                 # self.onItemChanged)
-            w.connect(self.treeWidget,QtCore.SIGNAL(
+            w.connect(tw,QtCore.SIGNAL(
                     "itemCollapsed(QTreeWidgetItem*)"),
                 self.onItemCollapsed)
-            w.connect(self.treeWidget,QtCore.SIGNAL(
+            w.connect(tw,QtCore.SIGNAL(
                     "itemExpanded(QTreeWidgetItem*)"),
                 self.onItemExpanded)
-            w.connect(self.treeWidget, QtCore.SIGNAL(
+            w.connect(tw, QtCore.SIGNAL(
                     "customContextMenuRequested(QPoint)"),
                 self.onContextMenu)
         if newFilter:
@@ -6833,8 +6848,8 @@ class LeoQtTree (baseNativeTree.BaseNativeTreeWidget):
     #@+node:ekr.20110605121601.18418: *6* connectEditorWidget & helper
     def connectEditorWidget(self,e,item):
 
-        if not e: return g.trace('can not happen: no e')
-
+        if not e:
+            return g.trace('can not happen: no e')
         # Hook up the widget.
         wrapper = self.getWrapper(e,item)
 
@@ -6845,9 +6860,12 @@ class LeoQtTree (baseNativeTree.BaseNativeTreeWidget):
             self.onHeadChanged(p=c.p,e=e)
             w.setCurrentItem(item)
 
-        e.connect(e,QtCore.SIGNAL(
-            "editingFinished()"),
-            editingFinishedCallback)
+        if isQt5:
+            e.editingFinished.connect(editingFinishedCallback)
+        else:
+            e.connect(e,QtCore.SIGNAL(
+                "editingFinished()"),
+                editingFinishedCallback)
         return wrapper # 2011/02/12
     #@+node:ekr.20110605121601.18419: *6* contractItem & expandItem
     def contractItem (self,item):
@@ -7138,8 +7156,11 @@ class LeoQtTreeTab:
                     tt.selectTab(s)
                 finally:
                     tt.cc.selectChapterLockout = False
-        w.connect(w,QtCore.SIGNAL("currentIndexChanged(QString)"),
-            onIndexChanged)
+        if isQt5:
+            pass ### w.currentIndexChanged.connect(onIndexChanged)
+        else:
+            w.connect(w,QtCore.SIGNAL("currentIndexChanged(QString)"),
+                onIndexChanged)
     #@+node:ekr.20110605121601.18442: *4* Tabs...
     #@+node:ekr.20110605121601.18443: *5* tt.createTab
     def createTab (self,tabName,select=True):
@@ -7240,7 +7261,7 @@ class QtMenuWrapper (LeoQtMenu,QtWidgets.QMenu): ### Reversed order.
             action.leo_menu_label = label
         # g.trace('(qtMenuWrappter)',label)
         if isQt5:
-            pass ### Not ready yet.
+            self.aboutToShow.connect(self.onAboutToShow)
         else:
             self.connect(self,QtCore.SIGNAL(
                 "aboutToShow ()"),self.onAboutToShow)
@@ -7420,13 +7441,16 @@ class TabbedFrameFactory:
         tabbar = mf.tabBar()
         try:
             tabbar.setTabsClosable(True)
-            tabbar.connect(tabbar,
-                QtCore.SIGNAL('tabCloseRequested(int)'),
-                self.slotCloseRequest)
+            if isQt5:
+                tabbar.tabCloseRequested.connect(self.slotCloseRequest)
+            else:
+                tabbar.connect(tabbar,
+                    QtCore.SIGNAL('tabCloseRequested(int)'),
+                    self.slotCloseRequest)
         except AttributeError:
             pass # Qt 4.4 does not support setTabsClosable
         if isQt5:
-            pass ### Not ready yet.
+            mf.currentChanged.connect(self.slotCurrentChanged)
         else:
             mf.connect(mf,
                 QtCore.SIGNAL('currentChanged(int)'),
@@ -7867,11 +7891,15 @@ class LeoQtGui(leoGui.LeoGui):
                 QtWidgets.QDialogButtonBox.Ok
                     | QtWidgets.QDialogButtonBox.Cancel)
                 layout.addWidget(buttonBox)
-
-                self.connect(buttonBox, QtCore.SIGNAL("accepted()"),
-                    self, QtCore.SLOT("accept()"))
-                self.connect(buttonBox, QtCore.SIGNAL("rejected()"),
-                    self, QtCore.SLOT("reject()"))
+                if isQt5:
+                    ### Enough??
+                    buttonBox.accepted.connect(self)
+                    buttonBox.regected.connect(self)
+                else:
+                    self.connect(buttonBox, QtCore.SIGNAL("accepted()"),
+                        self, QtCore.SLOT("accept()"))
+                    self.connect(buttonBox, QtCore.SIGNAL("rejected()"),
+                        self, QtCore.SLOT("reject()"))
 
         if g.unitTesting: return None
 
@@ -8231,7 +8259,7 @@ class LeoQtGui(leoGui.LeoGui):
         if not family:
             family = 'DejaVu Sans Mono'
         try:
-            font = QtWidgets.QFont(family,size,weight_val,italic)
+            font = QtGui.QFont(family,size,weight_val,italic)
             if trace: g.trace(family,size,g.callers())
             return font
         except:
@@ -8394,17 +8422,19 @@ class LeoQtGui(leoGui.LeoGui):
         '''Queue up idle-time processing.'''
         # if self.root:
             # self.root.after_idle(idleTimeHookHandler)
-        if not self.timer:
-            if isQt5:
-                return ### not ready
-            self.timer = timer = QtCore.QTimer()
-            def timerCallBack(self=self,handler=idleTimeHookHandler):
-                # g.trace(self,idleTimeHookHandler)
-                idleTimeHookHandler()
+        if self.timer:
+            return
+        self.timer = timer = QtCore.QTimer()
+        def timerCallBack(self=self,handler=idleTimeHookHandler):
+            # g.trace(self,idleTimeHookHandler)
+            idleTimeHookHandler()
+        if isQt5:
+            timer.timeout.connect(timerCallBack)
+        else:
             timer.connect(timer,QtCore.SIGNAL("timeout()"),timerCallBack)
-            # To make your application perform idle processing, use a QTimer with 0 timeout.
-            # More advanced idle processing schemes can be achieved using processEvents().
-            timer.start(1000)
+        # To make your application perform idle processing, use a QTimer with 0 timeout.
+        # More advanced idle processing schemes can be achieved using processEvents().
+        timer.start(1000)
 
     setIdleTimeHookAfterDelay = setIdleTimeHook
     #@+node:ekr.20110605121601.18521: *5* qtGui.runAtIdle
@@ -8733,8 +8763,11 @@ class QuickHeadlines:
         tabw = c.frame.top.tabWidget
         self.listWidget = QtWidgets.QListWidget(tabw)
         tabw.addTab(self.listWidget, "Headlines")
-        c.frame.top.connect(c.frame.top.treeWidget,
-          QtCore.SIGNAL("itemSelectionChanged()"), self.req_update)
+        if isQt5:
+            c.frame.top.treeWidget.itemSelectionChanged.connect(self.req_update)
+        else:
+            c.frame.top.connect(c.frame.top.treeWidget,
+            QtCore.SIGNAL("itemSelectionChanged()"), self.req_update)
         self.requested = False
     def req_update(self):
         """ prevent too frequent updates (only one/100 msec) """

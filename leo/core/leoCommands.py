@@ -1148,12 +1148,11 @@ class Commands (object):
         doc = "commander current position property")
     #@+node:ekr.20110530082209.18250: *3* c.putHelpFor
     def putHelpFor(self,s,short_title=''):
-
+        '''Helper for various help commands.'''
         c = self
         s = g.adjustTripleString(s.rstrip(),c.tab_width)
         if s.startswith('<') and not s.startswith('<<'):
             pass # how to do selective replace??
-
         pc = g.app.pluginsController
         if pc.isLoaded('viewrendered2.py'):
             vr = pc.loadOnePlugin('viewrendered2.py')

@@ -182,7 +182,6 @@ __version__ = '1.0'
 #@+<< imports >>
 #@+node:tbrown.20100318101414.5993: ** << imports >>
 import leo.core.leoGlobals as g
-import PyQt4.QtCore as QtCore
 import leo.plugins.qtGui as qtGui
 g.assertUi('qt')
 import os
@@ -213,17 +212,25 @@ try:
     got_markdown = True
 except ImportError:
     got_markdown = False
-    
+
 try:
     import PyQt4.phonon as phonon
     phonon = phonon.Phonon
 except ImportError:
     phonon = None
 
-import PyQt4.QtCore as QtCore
-import PyQt4.QtGui as QtGui
-import PyQt4.QtSvg as QtSvg
-import PyQt4.QtWebKit as QtWebKit
+try:
+    import PyQt5.QtCore as QtCore
+    import PyQt5.QtGui as QtGui
+    import PyQt5.QtWidgets as QtWidgets
+    import PyQt5.QtSvg as QtSvg
+    import PyQt5.QtWebKitWidgets as QtWebKitWidgets
+except ImportError:
+    import PyQt4.QtCore as QtCore
+    import PyQt4.QtGui as QtGui
+    import PyQt4.QtSvg as QtSvg
+    import PyQt4.QtWebKit as QtWebKitWidgets
+    QtWidgets = QtGui
 #@-<< imports >>
 
 #@+<< define stylesheet >>
@@ -349,7 +356,7 @@ def contract_rendering_pane(event):
 
     c = event.get('c')
     if c:
-        vr = c.frame.top.findChild(QtGui.QWidget,'viewrendered_pane')
+        vr = c.frame.top.findChild(QtWidgets.QWidget,'viewrendered_pane')
         if vr:
             vr.contract()
         else:
@@ -363,7 +370,7 @@ def expand_rendering_pane(event):
 
     c = event.get('c')
     if c:
-        vr = c.frame.top.findChild(QtGui.QWidget,'viewrendered_pane')
+        vr = c.frame.top.findChild(QtWidgets.QWidget,'viewrendered_pane')
         if not vr:
             vr = viewrendered(event)
         if vr:
@@ -377,7 +384,7 @@ def hide_rendering_pane(event):
     global controllers
     c = event.get('c')
     if c:
-        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
+        vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
         if vr:
             vr.deactivate()
             vr.deleteLater()
@@ -401,7 +408,7 @@ def lock_rendering_pane(event):
 
     c = event.get('c')
     if c:
-        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
+        vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
         if vr and not vr.locked:
             vr.lock()
 #@+node:ekr.20110320233639.5777: *3* g.command('vr-pause-play')
@@ -412,7 +419,7 @@ def pause_play_movie(event):
 
     c = event.get('c')
     if c:
-        vr = c.frame.top.findChild(QtGui.QWidget,'viewrendered_pane')
+        vr = c.frame.top.findChild(QtWidgets.QWidget,'viewrendered_pane')
         if not vr:
             vr = viewrendered(event)
         if vr and vr.vp:
@@ -429,7 +436,7 @@ def show_rendering_pane(event):
 
     c = event.get('c')
     if c:
-        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
+        vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
         if vr:
             pass # hide_rendering_pane(event)
         else:
@@ -442,7 +449,7 @@ def toggle_rendering_pane(event):
 
     c = event.get('c')
     if c:
-        vr = c.frame.top.findChild(QtGui.QWidget,'viewrendered_pane')
+        vr = c.frame.top.findChild(QtWidgets.QWidget,'viewrendered_pane')
         if vr:
             hide_rendering_pane(event)
         else:
@@ -455,7 +462,7 @@ def unlock_rendering_pane(event):
 
     c = event.get('c')
     if c:
-        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
+        vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
         if vr and vr.locked:
             vr.unlock()
 #@+node:ekr.20110321151523.14464: *3* g.command('vr-update')
@@ -466,7 +473,7 @@ def update_rendering_pane (event):
 
     c = event.get('c')
     if c:
-        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
+        vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
         if not vr:
             vr = viewrendered(event)
         if vr:
@@ -497,7 +504,7 @@ class ViewRenderedProvider:
             return vr
     #@-others
 #@+node:ekr.20110317024548.14375: ** class ViewRenderedController (QWidget)
-class ViewRenderedController(QtGui.QWidget):
+class ViewRenderedController(QtWidgets.QWidget):
     
     '''A class to control rendering in a rendering pane.'''
     
@@ -505,9 +512,9 @@ class ViewRenderedController(QtGui.QWidget):
     #@+node:ekr.20110317080650.14380: *3* ctor & helpers
     def __init__ (self, c, parent=None):
         
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         self.setObjectName('viewrendered_pane')
-        self.setLayout(QtGui.QVBoxLayout())
+        self.setLayout(QtWidgets.QVBoxLayout())
         self.layout().setContentsMargins(0,0,0,0)
         
         self.active = False
@@ -525,9 +532,9 @@ class ViewRenderedController(QtGui.QWidget):
         self.sizes = [] # Saved splitter sizes.
         self.splitter_index = None # The index of the rendering pane in the splitter.
         self.svg_class = QtSvg.QSvgWidget
-        self.text_class = QtGui.QTextBrowser # QtGui.QTextEdit # qtGui.LeoQTextBrowser 
-        self.html_class = QtWebKit.QWebView
-        self.graphics_class = QtGui.QGraphicsWidget
+        self.text_class = QtWidgets.QTextBrowser # QtWidgets.QTextEdit # QtWidgets.LeoQTextBrowser 
+        self.html_class = QtWebKitWidgets.QWebView
+        self.graphics_class = QtWidgets.QGraphicsWidget
         self.vp = None # The present video player.
         self.w = None # The present widget in the rendering pane.
         self.title = None
@@ -761,8 +768,8 @@ class ViewRenderedController(QtGui.QWidget):
                 return
 
             # Create the widgets.
-            pc.gs = QtGui.QGraphicsScene(splitter)
-            pc.gv = QtGui.QGraphicsView(pc.gs)
+            pc.gs = QtWidgets.QGraphicsScene(splitter)
+            pc.gv = QtWidgets.QGraphicsView(pc.gs)
             w = pc.gv.viewport() # A QWidget
             
             # Embed the widgets.
@@ -1056,7 +1063,7 @@ class ViewRenderedController(QtGui.QWidget):
                     event2 = {'c':self.c,'w':w.leo_wrapper}
                     g.openUrlOnClick(event2)
                 else:
-                    QtGui.QTextBrowser.mouseReleaseEvent(w,event)
+                    QtWidgets.QTextBrowser.mouseReleaseEvent(w,event)
             
             # Monkey patch a click handler.
             # 2012/04/10: Use the same pattern for mouseReleaseEvents

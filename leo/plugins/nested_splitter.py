@@ -139,24 +139,26 @@ class NestedSplitterChoice(QtWidgets.QWidget):
     #@+others
     #@+node:ekr.20110605121601.17960: *3* __init__ (NestedSplitterChoice)
     def __init__(self,parent=None):
-
+        '''ctor for NestedSplitterChoice class.'''
         QtWidgets.QWidget.__init__(self, parent)
-
         self.setLayout(QtWidgets.QVBoxLayout())
-
         button = QtWidgets.QPushButton("Action",self) # EKR: 2011/03/15
         self.layout().addWidget(button)
-
         button.setContextMenuPolicy(QtConst.CustomContextMenu)
-
-        button.connect(button,
-            Qt.SIGNAL('customContextMenuRequested(QPoint)'),
-            lambda pnt: self.parent().choice_menu(self,
-                button.mapToParent(pnt)))
-
-        button.connect(button,
-            Qt.SIGNAL('clicked()'),
-            lambda: self.parent().choice_menu(self,button.pos()))
+        if isQt5:
+            button.customContextMenuRequested.connect(
+                lambda pnt: self.parent().choice_menu(self,
+                    button.mapToParent(pnt)))
+            button.clicked.connect(
+                lambda: self.parent().choice_menu(self,button.pos()))
+        else:
+            button.connect(button,
+                Qt.SIGNAL('customContextMenuRequested(QPoint)'),
+                lambda pnt: self.parent().choice_menu(self,
+                    button.mapToParent(pnt)))
+            button.connect(button,
+                Qt.SIGNAL('clicked()'),
+                lambda: self.parent().choice_menu(self,button.pos()))
     #@-others
 #@+node:ekr.20110605121601.17961: ** class NestedSplitterHandle (QSplitterHandle)
 class NestedSplitterHandle(QtWidgets.QSplitterHandle):
@@ -171,12 +173,11 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
         self.setStyleSheet("background-color: green;")
         self.setContextMenuPolicy(QtConst.CustomContextMenu)
         if isQt5:
-            pass ### Not ready yet.
+            self.customContextMenuRequested.connect(self.splitter_menu)
         else:
             self.connect(self,
                 Qt.SIGNAL('customContextMenuRequested(QPoint)'),
                 self.splitter_menu)
-        
     #@+node:ekr.20110605121601.17963: *3* __repr__
     def __repr__ (self):
 
@@ -188,7 +189,10 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
         """helper for splitter_menu menu building"""
         act = QtWidgets.QAction(name, self)
         act.setObjectName(name.lower().replace(' ','-'))
-        act.connect(act, Qt.SIGNAL('triggered()'),func)
+        if isQt5:
+            act.triggered.connect(func)
+        else:
+            act.connect(act, Qt.SIGNAL('triggered()'),func)
         if tooltip:
             act.setToolTip(tooltip)
         menu.addAction(act)
@@ -349,7 +353,10 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
             def cb(splitter=splitter): # pylint: disable=E0102
                 print("\n%s\n" % 
                     splitter.layout_to_text(splitter.top().get_layout()))
-            act.connect(act, Qt.SIGNAL('triggered()'), cb)
+            if isQt5:
+                act.triggered.connect(cb)
+            else:
+                act.connect(act, Qt.SIGNAL('triggered()'), cb)
             submenu.addAction(act)  
 
         def load_items(menu, items):
@@ -362,7 +369,10 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
                     def cb(id_=id_):
                         splitter.context_cb(id_, index)
                     act = QtWidgets.QAction(title, self)
-                    act.connect(act, Qt.SIGNAL('triggered()'), cb)
+                    if isQt5:
+                        act.triggered.connect(cb)
+                    else:
+                        act.connect(act, Qt.SIGNAL('triggered()'), cb)
                     menu.addAction(act)              
 
         for provider in splitter.root.providers:
@@ -604,8 +614,12 @@ class NestedSplitter(QtWidgets.QSplitter):
             not self.invalid_swap(button, self.root.marked[3]) and
             self.top().max_count() > 2):
             act = QtWidgets.QAction("Move marked here", self)
-            act.connect(act, Qt.SIGNAL('triggered()'), 
-                lambda: self.replace_widget(button, self.root.marked[3]))
+            if isQt5:
+                act.triggered.connect(
+                    lambda: self.replace_widget(button, self.root.marked[3]))
+            else:
+                act.connect(act, Qt.SIGNAL('triggered()'), 
+                    lambda: self.replace_widget(button, self.root.marked[3]))
             menu.addAction(act)        
 
         for provider in self.root.providers:
@@ -614,7 +628,10 @@ class NestedSplitter(QtWidgets.QSplitter):
                     def cb(id_=id_):
                         self.place_provided(id_, index)
                     act = QtWidgets.QAction(title, self)
-                    act.connect(act, Qt.SIGNAL('triggered()'), cb)
+                    if isQt5:
+                        act.triggered.connect(cb)
+                    else:
+                        act.connect(act, Qt.SIGNAL('triggered()'), cb)
                     menu.addAction(act)        
 
         if menu.isEmpty():
