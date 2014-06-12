@@ -3611,7 +3611,7 @@ class Data2(AstFullTraverser):
                 if trace: 
                     parent = node.stc_parent
                     if isinstance(parent,ast.arguments):
-                         g.trace('%-10s parent: args = [%s]' % (
+                        g.trace('%-10s parent: args = [%s]' % (
                             name,self.u.format(parent)))
                     else:
                         g.trace('%-10s parent: %s (parent = %s)' % (
