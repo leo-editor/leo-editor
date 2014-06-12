@@ -11,7 +11,11 @@
 
 import string
 import leo.core.leoGlobals as g
-import PyQt4.QtCore as QtCore
+
+try:
+    import PyQt5.QtCore as QtCore
+except ImportError:
+    import PyQt4.QtCore as QtCore
 
 #@+others
 #@+node:ekr.20131113045621.16547: ** class VimCommands

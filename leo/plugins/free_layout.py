@@ -36,7 +36,23 @@ import leo.core.leoGlobals as g
 
 # g.assertUi('qt')
 
-from PyQt4 import QtGui # Qt, QtCore, 
+try:
+    # import PyQt5.QtCore as QtCore
+    import PyQt5.QtGui as QtGui
+    from PyQt5 import QtWidgets
+    QtGui2 = QtGui
+    QtGui = QtWidgets
+    try:
+        from PyQt5 import Qsci
+    except ImportError:
+        Qsci = None
+    isQt5 = True
+
+except ImportError:
+    # import PyQt4.QtCore as QtCore
+    import PyQt4.QtGui as QtGui
+    QtGui2 = QtGui # For moved classes
+    isQt5 = False
 
 from leo.plugins.nested_splitter import NestedSplitter # , NestedSplitterChoice
 

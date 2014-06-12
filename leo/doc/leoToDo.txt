@@ -84,6 +84,151 @@ import leo.core.leoRope as leoRope
 imp.reload(leoRope)
 leoRope.test(c)
 .. @+node:ekr.20140602083643.17657: *3* Create unit tests for g.find_word
+.. @+node:ekr.20140610063815.17693: *3* Sentinel files
+.. @+node:ekr.20140611055007.17696: *4* original post
+https://groups.google.com/forum/#!topic/leo-editor/1uw1llvuYBQ
+
+@language rest
+
+For the last several days I have been thinking about the new-@auto project
+that I worked on in February while in Florida.
+
+As always, the real problems involve sentinels: It's essential that Leo's
+sentinels not be visible in projects that do not use Leo.
+
+The fundamental problem is that operating systems do not support additional
+(hidden) data in text files. (Old versions of MacOS did support such data
+in the so-called "resource fork").
+
+A new set of thoughts has now appeared. These are quite different from the
+thoughts I have explored for the past 20 years.
+
+===== The idea
+
+We want a way of Leo users to share outline structure in a way that is
+completely invisible to non-Leo users. This is *not* the same thing as
+doing without sentinels! It puts the focus on "back-channel" communication
+of sentinels between Leo users as follows:
+
+0. Let's use the same terminology as with @shadow: **private** files
+   contain sentinels; **public** files do not.
+
+1. Instead of writing sentinels *within* external files, Leo's file-write
+   logic could easily create separate **sentinel files**. Sentinel files
+   would contain:
+
+- a header with data such as sha1-hash for the corresponding public file,
+  and a gnx-like author/timestamp field.
+
+- a list of sentinel lines themselves. Each sentinel line would be preceded
+  by a relative offset of the sentinel within the corresponding public
+  file. Using relative offsets means that most offsets would not change if
+  a line were inserted/deleted from the public file.
+
+2. Leo's file-read logic for public files would "shuffle" the sentinels
+   into the public file (using the relative offset of each sentinel). After
+   the sentinels have been restored, the read logic would be identical to
+   the present @file read logic.
+
+3. We want this scheme to be completely invisible to non-Leonine users, so
+   sentinel files must be kept *away* from project files, say in the
+   ~/.leo/sentinels directory. Call this the user's **sentinels
+   directory**.
+
+The obvious way to associate sentinel files with the corresponding public
+file would be with the sha1 hash. The files in the sentinels directory
+would have names that are the sha1 hash of the corresponding public file.
+
+4. Leo users can *share outline structure* by sharing sentinels files.
+
+At first, this sharing would have to be done "by hand" each time a public
+file is committed. Later, perhaps more automatic ways of sharing sentinels
+files could be created. Say by using git hooks, for example.
+
+5. Because sharing sentinels files may not always be automatic (and might
+   not ever be automatic), Leonine users will need ways of "recovering"
+   when a public file changes without the corresponding sentinel files
+   being available. This leads us to...
+
+===== Doing without sentinels files
+
+Suppose Alice has committed the new public file f.py, and suppose Alice has
+*not* committed the corresponding sentinel file. Suppose Bob wants to use
+the new version of f.py in Leo. Bob has two options:
+
+1. Use @auto to create the outline for f.py.
+
+2. Use the @shadow algorithm as follows. Using git (say) Bob recovers some
+   previous version V of f.py (without sentinels) for which Bob *does* have
+   a corresponding sentinel file. Bob (using Leo) recreates the *private*
+   copy of version V of f.py by shuffling the sentinels into f.py. Bob then
+   runs the @shadow algorithm on the old private copy to create the new
+   version of f.py *with* sentinels.
+
+**Important**: the choice between @auto and @shadow would be a personal
+preference. I've gone into detail here to show how Leo could do the
+recovery for Bob automatically using the @shadow idea.
+
+===== Pros and cons
+
+As with all ways of doing without sentinels, this scheme has plusses and
+minuses.
+
+On the plus side:
+
+- It is completely invisible and imposes *zero* cost on non-Leonine users
+  and projects. Costs accrue only to Leo users.
+
+- When the proper sentinel file is available, Leo uses the simplest
+  possible algorithm to reconstruct outlines, namely shuffling sentinels
+  into the public file followed by running the @file read code. This
+  requires neither parsing (as @auto does) nor any complicated diffing (as
+  @shadow does). I think of the @file read code as a simple, deterministic
+  finite automaton.
+
+- When the proper sentinel file is available, Leo will provide all the
+  advantages of @file nodes, including the conservation of gnx's and all
+  that implies, especially rock-solid clone links.
+
+- It will be easy to prototype. A simple script will test the **round trip** criterion.
+
+  The script will create a sentinel file from a *private* file and verify
+  that shuffling the sentinels from the sentinels file back into the
+  corresponding *public* file results in the original *private* file.
+
+On the minus side:
+
+- Most importantly, no matter how good (or how automatic) the connection
+  between public files and the corresponding sentinel files, that
+  connection can *never* be as solid as embedding sentinels in external
+  files. Thus, the opportunity for problems will always be greater when
+  using this scheme compared to using files with embedded sentinels.
+
+- Leo's users will be responsible for sharing sentinels files. This will be
+  an extra step, even if it is eventually done automatically.
+
+- When the proper sentinel file does not exist for a public file, Leo users
+  will have to live with either @auto-based recovery or @shadow-based
+  recovery.
+
+- There is no advantage for a lone Leonine user within a project to use
+  this scheme: she may as well use @shadow or @auto. Similarly, if *all*
+  the users of the project use Leo, they may as well just use @file. So
+  this scheme is only useful if a project contains two or more Leonine
+  programmers and one or more non-Leonine programmers.
+
+===== Summary
+
+- This scheme puts more emphasis on sharing data *among Leo users* than on
+  "magically" recreating sentinels.
+
+- This scheme's implementation advantages (using the @file read logic) is
+  offset (in part) by the inconvenience of having to share and synchronize
+  sentinels files.
+
+- This scheme is only useful when multiple Leonine programmers work in a
+  non-Leonine project. Solo Leonine programmers in a non-Leonine project
+  may as well use @shadow or @auto.
 .. @+node:ekr.20140521095206.16728: ** Important
 .. @+node:ekr.20140402091953.16865: *3* add pylint commands
 @language rest

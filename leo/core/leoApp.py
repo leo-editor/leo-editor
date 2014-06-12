@@ -810,15 +810,20 @@ class LeoApp:
         """A convenience routines for plugins to create the Qt gui class."""
         app = self
         try:
-            # Work around pylint/qt problem: import QtGui before QtCore:
-            # http://lists.logilab.org/pipermail/python-projects/2013-January/003383.html
-            # Take care to try the same imports as in qtGui.py.
-            import PyQt4.QtGui
-            import PyQt4.QtCore    
+            import PyQt5.QtGui
+            import PyQt5.QtCore    
             import leo.plugins.qtGui as qtGui
-            if 0: g.trace(PyQt4) # To remove a pyflakes warning.
         except ImportError:
-            qtGui = None
+            try:
+                # Work around pylint/qt problem: import QtGui before QtCore:
+                # http://lists.logilab.org/pipermail/python-projects/2013-January/003383.html
+                # Take care to try the same imports as in qtGui.py.
+                import PyQt4.QtGui
+                import PyQt4.QtCore    
+                import leo.plugins.qtGui as qtGui
+                if 0: g.trace(PyQt4) # To remove a pyflakes warning.
+            except ImportError:
+                qtGui = None
         if qtGui:
             qtGui.init()
             if app.gui and fileName and verbose:

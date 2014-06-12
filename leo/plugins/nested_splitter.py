@@ -12,12 +12,18 @@ except ImportError:
         # this import should be removed anyway
 
 import sys
-
 # from inspect import isclass
-
-from PyQt4 import QtGui, QtCore, Qt
-
-from PyQt4.QtCore import Qt as QtConst
+try:
+    from PyQt5 import QtCore, Qt # QtGui
+    from PyQt5.QtCore import Qt as QtConst
+    from PyQt5 import QtWidgets
+    QtGui = QtWidgets
+    isQt5 = True
+except ImportError:
+    from PyQt4 import QtGui, QtCore, Qt
+    from PyQt4.QtCore import Qt as QtConst
+    QWidget = QtGui.QWidget
+    isQt5 = False
 #@-<< imports >>
 # pylint: disable=cell-var-from-loop
 #@+others
@@ -62,7 +68,7 @@ class DemoWidget(QtGui.QWidget):
         if color:
             self.setStyleSheet("background-color: %s;"%color)
     #@-others
-#@+node:tbrown.20120418121002.25711: ** class NestedSplitterTopLevel
+#@+node:tbrown.20120418121002.25711: ** class NestedSplitterTopLevel (QWidget)
 class NestedSplitterTopLevel(QtGui.QWidget):
     """A QWidget to wrap a NestedSplitter to allow it to live in a top
     level window and handle close events properly.
@@ -160,19 +166,18 @@ class NestedSplitterHandle(QtGui.QSplitterHandle):
     #@+others
     #@+node:ekr.20110605121601.17962: *3* __init__ (NestedSplitterHandle)
     def __init__(self, owner):
-
+        '''Ctor for NestedSplitterHandle class.'''
         # g.trace('NestedSplitterHandle')
-
         QtGui.QSplitterHandle.__init__(self, owner.orientation(), owner)
-
         self.setStyleSheet("background-color: green;")
-
         self.setContextMenuPolicy(QtConst.CustomContextMenu)
-
-        self.connect(self,
-            Qt.SIGNAL('customContextMenuRequested(QPoint)'),
-            self.splitter_menu)
-
+        if isQt5:
+            pass ### Not ready yet.
+        else:
+            self.connect(self,
+                Qt.SIGNAL('customContextMenuRequested(QPoint)'),
+                self.splitter_menu)
+        
     #@+node:ekr.20110605121601.17963: *3* __repr__
     def __repr__ (self):
 
