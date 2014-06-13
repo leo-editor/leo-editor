@@ -77,5 +77,4 @@ else:
         import PyQt4.QtWebKit as QtWebKitWidgets # Name change.
     except ImportError:
         QtWebKitWidgets = None
-
 #@-leo

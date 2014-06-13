@@ -101,6 +101,7 @@ def getCoreList():
         'leoMenu',
             # W0108: Lambda may not be necessary (it is).
         'leoNodes',
+        'leoQt',
         'leoPlugins',
         'leoRope',
         'leoRst', 
