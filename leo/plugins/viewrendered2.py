@@ -193,9 +193,7 @@ See the viewrendered.py plugin for additional acknowledgments.
 
 '''
 #@-<< docstring >>
-
 __version__ = '1.1' # EKR: Move class WebViewPlus into it's own subtree.
-
 #@+<< imports >>
 #@+node:ekr.20140226074510.4188: ** << imports >>
 import leo.core.leoGlobals as g
@@ -222,7 +220,7 @@ else:
     g.es_print('viewrendered2.py: docutils not found',color='red')
     got_docutils = False
 
-## markdown support, non-vital
+# markdown support, non-vital
 try:
     from markdown import markdown
     got_markdown = True
@@ -233,15 +231,9 @@ try:
     import pygments
 except ImportError:
     pygments = None
-   
-# PyQt... 
-from PyQt4 import QtCore, QtGui, QtSvg, QtWebKit
-from PyQt4.QtCore import QUrl
-try:
-    import PyQt4.phonon as phonon
-    phonon = phonon.Phonon
-except ImportError:
-    phonon = None
+    
+from leo.core.leoQt import isQt5,QtCore,QtGui,QtWidgets
+from leo.core.leoQt import phonon,QtSvg,QtWebKitWidgets,QUrl
 
 import os
 
@@ -269,7 +261,7 @@ QPlainTextEdit {
 }
 """
 #@-<< define stylesheet >>
-
+# pylint: disable=fixme
 #@+at
 # To do:
 # 
@@ -460,13 +452,10 @@ def decorate_window(w):
     w.resize(600, 300)
 #@+node:ekr.20140226074510.4192: *3* init
 def init():
-    
+    '''top-level init function for viewrendered2.py.'''
     g.plugin_signon(__name__)
-
     g.registerHandler('after-create-leo-frame', onCreate)
-    
     g.registerHandler('scrolledMessage', show_scrolled_message)
-
     return True
 #@+node:ekr.20140226074510.4193: *3* onCreate
 def onCreate(tag, keys):
@@ -537,7 +526,7 @@ def contract_rendering_pane(event):
 
     c = event.get('c')
     if c:
-        vr = c.frame.top.findChild(QtGui.QWidget,'viewrendered_pane')
+        vr = c.frame.top.findChild(QtWidgets.QWidget,'viewrendered_pane')
         if vr:
             vr.contract()
         else:
@@ -551,7 +540,7 @@ def expand_rendering_pane(event):
 
     c = event.get('c')
     if c:
-        vr = c.frame.top.findChild(QtGui.QWidget,'viewrendered_pane')
+        vr = c.frame.top.findChild(QtWidgets.QWidget,'viewrendered_pane')
         if not vr:
             vr = viewrendered(event)
         if vr:
@@ -565,7 +554,7 @@ def hide_rendering_pane(event):
     global controllers
     c = event.get('c')
     if c:
-        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
+        vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
         if vr:
             vr.deactivate()
             vr.deleteLater()
@@ -589,7 +578,7 @@ def lock_rendering_pane(event):
 
     c = event.get('c')
     if c:
-        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
+        vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
         if vr and not vr.locked:
             vr.lock()
 #@+node:ekr.20140226074510.4202: *3* g.command('vr-pause-play')
@@ -600,7 +589,7 @@ def pause_play_movie(event):
 
     c = event.get('c')
     if c:
-        vr = c.frame.top.findChild(QtGui.QWidget,'viewrendered_pane')
+        vr = c.frame.top.findChild(QtWidgets.QWidget,'viewrendered_pane')
         if not vr:
             vr = viewrendered(event)
         if vr and vr.vp:
@@ -617,7 +606,7 @@ def show_rendering_pane(event):
 
     c = event.get('c')
     if c:
-        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
+        vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
         if vr:
             pass # hide_rendering_pane(event)
         else:
@@ -630,7 +619,7 @@ def toggle_rendering_pane(event):
 
     c = event.get('c')
     if c:
-        vr = c.frame.top.findChild(QtGui.QWidget,'viewrendered_pane')
+        vr = c.frame.top.findChild(QtWidgets.QWidget,'viewrendered_pane')
         if vr:
             hide_rendering_pane(event)
         else:
@@ -643,7 +632,7 @@ def unlock_rendering_pane(event):
 
     c = event.get('c')
     if c:
-        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
+        vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
         if vr and vr.locked:
             vr.unlock()
 #@+node:ekr.20140226074510.4206: *3* g.command('vr-update')
@@ -654,7 +643,7 @@ def update_rendering_pane (event):
 
     c = event.get('c')
     if c:
-        vr = c.frame.top.findChild(QtGui.QWidget, 'viewrendered_pane')
+        vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
         if not vr:
             vr = viewrendered(event)
         if vr:
@@ -683,7 +672,7 @@ class WebViewPlus(QtWidgets.QWidget):
     def init_view(self):
         '''Init the vr pane.'''
             # QWebView parts, including progress bar
-        view = QtWebKit.QWebView()
+        view = QtWebKitWidgets.QWebView()
         mf = view.page().mainFrame()
         mf.contentsSizeChanged.connect(self.restore_scroll_position)
         # ToolBar parts
@@ -691,7 +680,7 @@ class WebViewPlus(QtWidgets.QWidget):
         self.export_button.clicked.connect(self.export)
         self.toolbar = QtWidgets.QToolBar()
         self.toolbar.setIconSize(QtCore.QSize(16,16))
-        for a in (QtWebKit.QWebPage.Back, QtWebKit.QWebPage.Forward):
+        for a in (QtWebKitWidgets.QWebPage.Back, QtWebKitWidgets.QWebPage.Forward):
             self.toolbar.addAction(view.pageAction(a))
         self.toolbar.setToolTip(self.tooltip_text(
             """
@@ -707,7 +696,7 @@ class WebViewPlus(QtWidgets.QWidget):
             Ctl--  Zoom out
             Ctl-=  Zoom to original size"""))
         # Handle reload separately since this is used to re-render everything
-        self.reload_action = view.pageAction(QtWebKit.QWebPage.Reload)
+        self.reload_action = view.pageAction(QtWebKitWidgets.QWebPage.Reload)
         self.reload_action.triggered.connect(self.render_delegate)
         self.toolbar.addAction(self.reload_action)
         #self.reload_action.clicked.connect(self.render)
@@ -771,11 +760,11 @@ class WebViewPlus(QtWidgets.QWidget):
         self.pbar_action.setVisible(False)
         # Document title in toolbar
         #self.toolbar.addSeparator()
-        #        spacer = QtWidgets.QWidget() 
-        #        spacer.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding) 
-        #        self.toolbar.addWidget(spacer)
+        #   spacer = QtWidgets.QWidget() 
+        #   spacer.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding) 
+        #   self.toolbar.addWidget(spacer)
         self.title = QtWidgets.QLabel()
-        self.title.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding) 
+        self.title.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding) 
         self.title.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
         self.title.setTextFormat(1)  # Set to rich text interpretation
         # None of this font stuff works! - instead I've gone for rich text above
@@ -797,12 +786,15 @@ class WebViewPlus(QtWidgets.QWidget):
         self.setLayout(vlayout)
         # Key shortcuts - zoom
         view.setZoomFactor(1.0)  # smallish panes demand small zoom
-        self.zoomIn = QtGui.QShortcut("Ctrl++", self, activated = lambda: view.setZoomFactor(view.zoomFactor()+.2))
-        self.zoomOut = QtGui.QShortcut("Ctrl+-", self, activated = lambda: view.setZoomFactor(view.zoomFactor()-.2))
-        self.zoomOne = QtGui.QShortcut("Ctrl+0", self, activated = lambda: view.setZoomFactor(0.8))
+        self.zoomIn = QtWidgets.QShortcut("Ctrl++", self, activated = lambda: view.setZoomFactor(view.zoomFactor()+.2))
+        self.zoomOut = QtWidgets.QShortcut("Ctrl+-", self, activated = lambda: view.setZoomFactor(view.zoomFactor()-.2))
+        self.zoomOne = QtWidgets.QShortcut("Ctrl+0", self, activated = lambda: view.setZoomFactor(0.8))
         # Some QWebView settings
         # setMaximumPagesInCache setting prevents caching of images etc.
-        view.settings().setAttribute(QtWebKit.QWebSettings.PluginsEnabled,True)
+        if isQt5:
+            pass # not ready yet.
+        else:
+            view.settings().setAttribute(QtWebKitWidgets.QWebSettings.PluginsEnabled,True)
         # Prevent caching, especially of images
         view.settings().setMaximumPagesInCache(0)
         view.settings().setObjectCacheCapacities(0, 0, 0)
@@ -917,7 +909,7 @@ class WebViewPlus(QtWidgets.QWidget):
         self.getUIconfig()
         self.s = keywords.get('s') if 's' in keywords else ''
         show_scrolled_message = keywords.get('show-scrolled-message', False)
-        if show_scrolled_message:
+        if show_scrolled_message and got_docutils:
             c = self.c
             html = publish_string(s, writer_name='html', settings_overrides=self.docutils_settings)
             html = g.toUnicode(html)
@@ -929,8 +921,7 @@ class WebViewPlus(QtWidgets.QWidget):
             f.write(html.encode('utf8'))
             f.close()
             self.view.setUrl(QUrl.fromLocalFile(pathname))
-            return   
-        if self.auto: 
+        elif self.auto: 
             self.timer.start()
     #@+node:peckj.20140228095134.6379: *4* render_md
     def render_md(self, s, keywords):
@@ -944,7 +935,7 @@ class WebViewPlus(QtWidgets.QWidget):
             mdext = [x.strip() for x in mdext.split(',')]
             if pygments:
                 mdext.append('codehilite')
-            html = markdown(html, mdext)
+            html = markdown(s, mdext)
             html = g.toUnicode(html)
             self.html = html
             self.path = c.getNodePath(c.rootPosition())
@@ -1016,7 +1007,7 @@ class WebViewPlus(QtWidgets.QWidget):
         d = self.c.scanAllDirectives(p)
         # Put temporary or output files in location given by path directives
         self.path = d['path']
-        g.trace(pc.default_kind)
+        # g.trace(pc.default_kind)
         if pc.default_kind in ('big','rst','html', 'md'):
             # Trial of rendering to file and have QWebView load this without blocking
             ext = 'html'
@@ -1227,7 +1218,7 @@ class WebViewPlus(QtWidgets.QWidget):
         return result, code
     #@+node:ekr.20140226075611.16795: *7* underline2
     def underline2(self, p):
-        """
+        r"""
         Use the given string and convert it to an reST headline for display
         The most unused underline characters are used here, so as not to clash
         with headings used in the reST.  These characters must not be used for
@@ -1541,7 +1532,7 @@ class ViewRenderedProvider:
             return vr
     #@-others
 #@+node:ekr.20140226074510.4211: ** class ViewRenderedController (QWidget)
-class ViewRenderedController(QtGui.QWidget):
+class ViewRenderedController(QtWidgets.QWidget):
     
     '''A class to control rendering in a rendering pane.'''
 
@@ -1549,9 +1540,9 @@ class ViewRenderedController(QtGui.QWidget):
     #@+node:ekr.20140226074510.4212: *3* ctor & helpers
     def __init__ (self, c, parent=None):
         
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         self.setObjectName('viewrendered_pane')
-        self.setLayout(QtGui.QVBoxLayout())
+        self.setLayout(QtWidgets.QVBoxLayout())
         self.layout().setContentsMargins(0,0,0,0)
         
         self.active = False
@@ -1569,9 +1560,9 @@ class ViewRenderedController(QtGui.QWidget):
         self.sizes = [] # Saved splitter sizes.
         self.splitter_index = None # The index of the rendering pane in the splitter.
         self.svg_class = QtSvg.QSvgWidget
-        self.text_class = QtGui.QTextBrowser # QtGui.QTextEdit # qtGui.LeoQTextBrowser 
-        self.html_class = WebViewPlus #QtWebKit.QWebView
-        self.graphics_class = QtGui.QGraphicsWidget
+        self.text_class = QtWidgets.QTextBrowser # QtWidgets.QTextEdit # qtGui.LeoQTextBrowser 
+        self.html_class = WebViewPlus #QtWebKitWidgets.QWebView
+        self.graphics_class = QtWidgets.QGraphicsWidget
         self.vp = None # The present video player.
         self.w = None # The present widget in the rendering pane.
         self.title = None
@@ -1758,10 +1749,10 @@ class ViewRenderedController(QtGui.QWidget):
             
             # Create the standard Leo bindings.
             wrapper_name = 'rendering-pane-wrapper'
-            wrapper = qtGui.leoQTextEditWidget(w,wrapper_name,c)
+            wrapper = qtGui.LeoQTextEditWidget(w,wrapper_name,c)
             w.leo_wrapper = wrapper
             c.k.completeAllBindingsForWidget(wrapper)
-            w.setWordWrapMode(QtGui.QTextOption.WrapAtWordBoundaryOrAnywhere)
+            w.setWordWrapMode(QtWidgets.QTextOption.WrapAtWordBoundaryOrAnywhere)
               
         return
     #@+node:ekr.20140226074510.4222: *5* setBackgroundColor
@@ -1830,8 +1821,8 @@ class ViewRenderedController(QtGui.QWidget):
                 return
 
             # Create the widgets.
-            pc.gs = QtGui.QGraphicsScene(splitter)
-            pc.gv = QtGui.QGraphicsView(pc.gs)
+            pc.gs = QtWidgets.QGraphicsScene(splitter)
+            pc.gv = QtWidgets.QGraphicsView(pc.gs)
             w = pc.gv.viewport() # A QWidget
             
             # Embed the widgets.
@@ -2105,7 +2096,7 @@ class ViewRenderedController(QtGui.QWidget):
                     event2 = {'c':self.c,'w':w.leo_wrapper}
                     g.openUrlOnClick(event2)
                 else:
-                    QtGui.QTextBrowser.mouseReleaseEvent(w,event)
+                    QtWidgets.QTextBrowser.mouseReleaseEvent(w,event)
             
             # Monkey patch a click handler.
             # 2012/04/10: Use the same pattern for mouseReleaseEvents
@@ -2197,4 +2188,6 @@ class ViewRenderedController(QtGui.QWidget):
         return ''.join(result)
     #@-others
 #@-others
+
+print('vr2 imported correctly')
 #@-leo

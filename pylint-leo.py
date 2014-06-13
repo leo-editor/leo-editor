@@ -38,6 +38,7 @@ def getRecentCoreList():
         # 'leoMenu',
         # 'leoNodes',
         # 'leoPlugins',
+        # 'leoQt',
         # 'leoRope',
         # 'leoRst',
         # 'leoSessions',
