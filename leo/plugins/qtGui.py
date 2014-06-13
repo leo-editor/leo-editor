@@ -458,19 +458,17 @@ class LeoQTextBrowser (QtWidgets.QTextBrowser):
             p.v.scrollBarSpot = arg
     #@+node:tbrown.20130411145310.18855: *4* wheelEvent
     def wheelEvent(self, event):
-        
+        '''Handle a wheel event.'''
         if QtCore.Qt.ControlModifier & event.modifiers():
-            
-            if event.delta() < 0:
-                zoom_out({'c': self.leo_c})
+            d = {'c':self.leo_c}
+            delta = event.angleDelta() if isQt5 else event.delta()
+            if delta < 0:
+                zoom_out(d)
             else:
-                zoom_in({'c': self.leo_c})
-            
+                zoom_in(d)
             event.accept()
-            
             return
-        
-        QtWidgets.QTextBrowser.wheelEvent(self, event)
+        QtWidgets.QTextBrowser.wheelEvent(self,event)
     #@-others
 #@-<< define LeoQTextBrowser >>
 #@+<< define LeoQtBaseTextWidget class >>
@@ -7149,17 +7147,13 @@ class LeoQtTreeTab:
         tt.setNames()
         tt.iconBar.addWidget(w)
         def onIndexChanged(s,tt=tt):
-            if isQt5:
-                if s != -1:
-                    tt.cc.selectChapterLockout = True
-                    try:
-                        tt.selectTab(s)
-                    finally:
-                        tt.cc.selectChapterLockout = False
-            elif s:
+            if isQt5: # s is the tab index.
+                s = '' if s == -1 else tt.w.currentText()
+            else: # s is the tab name.
+                s = g.u(s)
+            if s:
                 tt.cc.selectChapterLockout = True
                 try:
-                    s = g.u(s)
                     tt.selectTab(s)
                 finally:
                     tt.cc.selectChapterLockout = False
@@ -7168,8 +7162,7 @@ class LeoQtTreeTab:
         else:
             w.connect(w,QtCore.SIGNAL("currentIndexChanged(QString)"),
                 onIndexChanged)
-    #@+node:ekr.20110605121601.18442: *4* Tabs...
-    #@+node:ekr.20110605121601.18443: *5* tt.createTab
+    #@+node:ekr.20110605121601.18443: *4* tt.createTab
     def createTab (self,tabName,select=True):
 
         tt = self
@@ -7177,14 +7170,14 @@ class LeoQtTreeTab:
         if tabName != 'main' and tabName not in tt.tabNames:
             tt.tabNames.append(tabName)
             tt.setNames()
-    #@+node:ekr.20110605121601.18444: *5* tt.destroyTab
+    #@+node:ekr.20110605121601.18444: *4* tt.destroyTab
     def destroyTab (self,tabName):
 
         tt = self
         if tabName in tt.tabNames:
             tt.tabNames.remove(tabName)
             tt.setNames()
-    #@+node:ekr.20110605121601.18445: *5* tt.selectTab
+    #@+node:ekr.20110605121601.18445: *4* tt.selectTab
     def selectTab (self,tabName):
 
         tt,c,cc = self,self.c,self.cc
@@ -7195,14 +7188,14 @@ class LeoQtTreeTab:
             cc.selectChapterByName(tabName)
             c.redraw()
             c.outerUpdate()
-    #@+node:ekr.20110605121601.18446: *5* tt.setTabLabel
+    #@+node:ekr.20110605121601.18446: *4* tt.setTabLabel
     def setTabLabel (self,tabName):
 
         tt,w = self,self.w
         i = w.findText (tabName)
         if i > -1:
             w.setCurrentIndex(i)
-    #@+node:ekr.20110605121601.18447: *5* tt.setNames
+    #@+node:ekr.20110605121601.18447: *4* tt.setNames
     def setNames (self):
 
         '''Recreate the list of items.'''
