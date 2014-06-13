@@ -67,24 +67,18 @@ __version__ = '0.0'
 #@+<< imports >>
 #@+node:ville.20090314215508.7: ** << imports >>
 import leo.core.leoGlobals as g
-
 g.assertUi('qt')
 
 from leo.core import leoNodes
-    # Uses leoNodes.posList.
-
-from PyQt4.QtGui import QListWidget, QListWidgetItem
-from PyQt4 import QtCore
-from PyQt4 import QtGui
-from PyQt4.QtCore import Qt
+    # Uses leoNodes.PosList.
+    
+from leo.core.leoQt import QtCore,QtConst,QtGui,QtWidgets
 
 import fnmatch, re
 
 from leo.plugins import threadutil
     # Bug fix. See: https://groups.google.com/forum/?fromgroups=#!topic/leo-editor/PAZloEsuk7g
 from leo.plugins import qt_quicksearch
-
-global qsWidget
 #@-<< imports >>
 
 #@+others
@@ -195,7 +189,6 @@ def install_qt_quicksearch_tab(c):
         #c.frame.log.selectTab('Nav')
         wdg.scon.doShowMarked()
 
-
     @g.command('go-anywhere')
     def find_popout_f(event):
         c = event['c']
@@ -204,14 +197,12 @@ def install_qt_quicksearch_tab(c):
         wid = topgeo.width()
         w.setGeometry(wid/2,0, wid/2, 500)
         #w.setParent(c.frame.top)
-        #w.setWindowFlags(Qt.FramelessWindowHint)
+        #w.setWindowFlags(QtConst.FramelessWindowHint)
         w.show()
-        w.setFocus(Qt.OtherFocusReason)
+        w.setFocus(QtConst.OtherFocusReason)
         #w.setGeometry(100,0,800,500)
         c._popout = w
-        
-        
-        
+
     c.frame.nav = wdg            
 
     # make activating this tab activate the input box
@@ -257,18 +248,15 @@ class QuickSearchEventFilter(QtCore.QObject):
             lw = self.listWidget
             k = event.key()
             moved = False
-            if k == Qt.Key_Up:
+            if k == QtConst.Key_Up:
                 lw.setCurrentRow(lw.currentRow()-1)
                 moved = True            
-            if k == Qt.Key_Down:
+            if k == QtConst.Key_Down:
                 lw.setCurrentRow(lw.currentRow()+1)
                 moved = True
-
-            if k == Qt.Key_Return:
+            if k == QtConst.Key_Return:
                 lw.setCurrentRow(lw.currentRow()+1)
                 moved = True
-
-                
                 
             if moved:
                 self.lineEdit.setFocus(True)
@@ -462,7 +450,7 @@ class QuickSearchController:
     def addBodyMatches(self, poslist):
                 
         for p in poslist:
-            it = QListWidgetItem(p.h, self.lw)
+            it = QtWidgets.QListWidgetItem(p.h, self.lw)
             f = it.font()
             f.setBold(True)
             it.setFont(f)
@@ -471,21 +459,19 @@ class QuickSearchController:
             ms = matchlines(p.b, p.matchiter)
             for ml, pos in ms:
                 #print "ml",ml,"pos",pos
-                it = QListWidgetItem(ml, self.lw)   
+                it = QtWidgets.QListWidgetItem(ml, self.lw)   
                 self.its[id(it)] = (p,pos)
     #@+node:ekr.20111015194452.15690: *3* addGeneric
     def addGeneric(self, text, f):
-        
         """ Add generic callback """
-
-        it = id(QListWidgetItem(text, self.lw))
+        it = id(QtWidgets.QListWidgetItem(text, self.lw))
         self.its[id(it)] = f
         return it
     #@+node:ekr.20111015194452.15688: *3* addHeadlineMatches
     def addHeadlineMatches(self, poslist):
 
         for p in poslist:
-            it = QListWidgetItem(p.h, self.lw)   
+            it = QtWidgets.QListWidgetItem(p.h, self.lw)   
             f = it.font()
             f.setBold(True)
             it.setFont(f)
@@ -499,7 +485,7 @@ class QuickSearchController:
     #@+node:ekr.20111015194452.15693: *3* doNodeHistory
     def doNodeHistory(self):
 
-        nh = leoNodes.poslist(po[0] for po in self.c.nodeHistory.beadList)
+        nh = leoNodes.PosList(po[0] for po in self.c.nodeHistory.beadList)
         nh.reverse()
         self.clear()
         self.addHeadlineMatches(nh)
@@ -566,7 +552,7 @@ class QuickSearchController:
 
         self.clear()
         c = self.c
-        pl = leoNodes.poslist()
+        pl = leoNodes.PosList()
         for p in c.all_positions():
             if p.isMarked():
                 pl.append(p.copy())

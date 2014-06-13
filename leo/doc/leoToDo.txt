@@ -48,7 +48,7 @@ def getRecentPluginsList ():
 
     return (
         # 'baseNativeTree', # Crashes pylint.
-        # 'contextmenu',
+        # 'contextmenu', # Crashes pylint.
         # 'codewisecompleter',
         # 'free_layout',
         # 'internal_ipkernel',
@@ -58,7 +58,9 @@ def getRecentPluginsList ():
         # 'nested_splitter',
         # 'qtGui',
         # 'plugins_menu',
+        # 'quicksearch',
         # 'screencast',
+        # 'todo',
         # 'viewrendered',
         # 'viewrendered2',
     )

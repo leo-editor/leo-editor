@@ -58,10 +58,9 @@ todo_calendar_cols
 
 
 #@-<< docstring >>
-
 #@@language python
 #@@tabwidth -4
-
+# pylint: disable=unnecessary-lambda
 #@+<< imports >>
 #@+node:tbrown.20090119215428.4: ** << imports >>
 import leo.core.leoGlobals as g
@@ -199,7 +198,6 @@ if g.app.gui.guiName() == "qt":
                 "butPri3"]:
 
                 w = getattr(u, but)
-
                 # w.property() seems to give QVariant in python 2.x and int in 3.x!?
                 try:
                     pri = int(w.property('priority'))
@@ -428,38 +426,34 @@ class todoController:
     #@+node:tbrown.20090630144958.5319: *3* addPopupMenu
     def addPopupMenu(self,c,p,menu):
 
-        def rnd(x): return re.sub('.0$', '', '%.1f' % x)
-
+        def rnd(x):
+            return re.sub('.0$', '', '%.1f' % x)
         taskmenu = menu.addMenu("Task")
-
         submenu = taskmenu.addMenu("Status")
-
         iconlist = [(menu, i) for i in self.recentIcons]
         iconlist.extend([(submenu, i) for i in self.priorities])
-
         for m,i in iconlist:
             icon = self.menuicon(i)
             a = m.addAction(icon, self.priorities[i]["long"])
             a.setIconVisibleInMenu(True)
-            def func(pri=i):
+            def icon_cb(pri=i):
                 self.setPri(pri)
-            a.connect(a, QtCore.SIGNAL("triggered()"), func)
-
+            a.triggered.connect(icon_cb)
+            # a.connect(a,QtCore.SIGNAL("triggered()"), icon_cb)
         submenu = taskmenu.addMenu("Progress")
         for i in range(11):
             icon = self.menuicon(10*i, progress=True)
             a = submenu.addAction(icon, "%d%%" % (i*10))
             a.setIconVisibleInMenu(True)
-            def func(prog=i):
+            def progress_cb(prog=i):
                 self.set_progress(val=10*prog)
-            a.connect(a, QtCore.SIGNAL("triggered()"), func)
-
+            a.triggered.connect(progress_cb)
+            # a.connect(a, QtCore.SIGNAL("triggered()"), progress_cb)
         prog = self.getat(p.v, 'progress')
         if isinstance(prog,int):
             a = taskmenu.addAction("(%d%% complete)"%prog)
             a.setIconVisibleInMenu(True)
             a.enabled = False
-
         time_ = self.getat(p.v, 'time_req')
         if isinstance(time_,float):
             if isinstance(prog,int):
@@ -469,8 +463,6 @@ class todoController:
             else:
                 a = taskmenu.addAction("(%s %s)"%(rnd(time_), self.time_name))
             a.enabled = False
-
-
         cleoQtUI.populateMenu(taskmenu, self)
     #@+node:tbrown.20090630144958.5320: *3* menuicon
     def menuicon(self, pri, progress=False):
@@ -501,10 +493,8 @@ class todoController:
                 ans = fn(self,*args, **kargs)
             finally:
                 self.redrawLevels -= 1
-
                 if self.redrawLevels == 0:
                     self.redraw()
-
             return ans
         return new
     #@+node:tbrown.20090119215428.14: *3* projectChanger
@@ -622,13 +612,12 @@ class todoController:
         )
     #@+node:tbrown.20090119215428.22: *4* getat
     def getat(self, node, attrib):
-        "new attrbiute getter"
+        "new attrbibute getter"
 
         if (not hasattr(node,'unknownAttributes') or
             "annotate" not in node.unknownAttributes or
             not type(node.unknownAttributes["annotate"]) == type({}) or
             attrib not in node.unknownAttributes["annotate"]):
-
             if attrib == "priority":
                 return 9999
             else:
@@ -767,11 +756,9 @@ class todoController:
         if p is None:
             p = self.c.currentPosition()
         v = p.v
-
-        if val == None: return
-
+        if val == None:
+            return
         self.setat(v, 'time_req', val)
-
         if self.getat(v, 'progress') == '':
             self.setat(v, 'progress', 0)
     #@+node:tbrown.20090119215428.34: *4* show_times
@@ -1189,8 +1176,8 @@ class todoController:
         self.ui.setDueTime(self.getat(v, 'duetime'))
         self.ui.setNextWorkDate(self.getat(v, 'nextworkdate'))
         self.ui.setNextWorkTime(self.getat(v, 'nextworktime'))
-
-        created = self.getat(v, 'created')
+        # pylint: disable=maybe-no-member
+        created = self.getat(v,'created')
         if created:
             got_created = True
             self.ui.UI.createdTxt.setText(created.strftime("%d %b %y"))

@@ -53,14 +53,15 @@ __version__ = '0.0'
 
 #@+<< imports >>
 #@+node:ville.20090630210947.5462: ** << imports >>
-import leo.core.leoGlobals as g
+from leo.core.leoQt import QtCore
+    # Crashes pylint.
 
+import os
+import subprocess
+
+import leo.core.leoGlobals as g
 g.assertUi('qt')
 
-from PyQt4 import QtCore
-import subprocess, os
-
-# Whatever other imports your plugins uses.
 #@-<< imports >>
 
 #@+others
@@ -79,109 +80,88 @@ def guess_file_type(fname):
             
 #@+node:ville.20090630210947.5465: ** openwith_rclick
 def openwith_rclick(c,p, menu):
-    """ Show "Edit with" in context menu for external file root nodes (@thin, @auto...) 
+    """
+    Show "Edit with" in context menu for external file root nodes (@thin, @auto...) 
 
     This looks like "Edit contextmenu.py in scite"
 
     """
-
-    h = p.h
-    parts = h.split(None, 1)
-    if len(parts) < 2:
-        return
-
-    fname = None        
-    # argh, we need g.getAbsFileName(c,p)
-    head, bname = parts
-    fname = p.anyAtFileNodeName()
-
-    if not fname and head != "@path":
-        return
-
-    path = g.scanAllAtPathDirectives(c,p)
-    editor = g.guessExternalEditor()
-
-
-
-    # g.trace(repr(path),repr(fname))
-
-    absp = g.os_path_finalize_join(path, fname)
-    
-    exists = os.path.exists(absp)    
-    
+    # define callbacks 
+    #@+others
+    #@+node:ekr.20140613141207.17666: *3* openwith_rclick_cb
     def openwith_rclick_cb():
-        #print "Editing", path, fname        
-        if not editor:
-            return
         
-        cmd = '%s "%s"' % (editor, absp)
-        g.es('Edit: %s' % cmd)
-        p = subprocess.Popen(cmd, shell=True)
-
-
+        #print "Editing", path, fname        
+        if editor:
+            cmd = '%s "%s"' % (editor, absp)
+            g.es('Edit: %s' % cmd)
+            p = subprocess.Popen(cmd, shell=True)
+    #@+node:ekr.20140613141207.17667: *3* openfolder_rclick_cb
     def openfolder_rclick_cb():
+
         g.os_startfile(path)
 
+    #@+node:ekr.20140613141207.17668: *3* create_rclick_cb
     def create_rclick_cb():
+
         os.makedirs(absp)
         g.es("Created " + absp)
-
-    if not exists and head == "@path":
-        action = menu.addAction("Create dir " + absp + "/" )
-        action.triggered.connect(create_rclick_cb)
-        
-
+    #@+node:ekr.20140613141207.17669: *3* importfiles_rclick_cb
     def importfiles_rclick_cb():
-        aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList) + "/"
-
-        table = [("All files","*"),
-            ("Python files","*.py"),]
-        fnames = g.app.gui.runOpenFileDialog(
-            title = "Import files",filetypes = table, 
-            defaultextension = '.notused',
-            multiple=True, startpath = path)
-        
         
         def shorten(pth, prefix):
             if not pth.startswith(prefix):
                 return pth
             return pth[len(prefix):]
-            
+        
+        aList = g.get_directives_dict_list(p)
+        path = c.scanAtPathDirectives(aList) + "/"
+        table = [
+            ("All files","*"),
+            ("Python files","*.py"),
+        ]
+        fnames = g.app.gui.runOpenFileDialog(
+            title = "Import files",filetypes = table, 
+            defaultextension = '.notused',
+            multiple=True, startpath = path)
         adds = [guess_file_type(pth) + " " + shorten(pth, path) for pth in fnames]
         for a in adds:
             chi = p.insertAsLastChild()
             chi.h = a
-            
         c.readAtFileNodes()
-
-        
+    #@-others
+    h = p.h
+    parts = h.split(None, 1)
+    if len(parts) < 2:
+        return
+    fname = None        
+    # argh, we need g.getAbsFileName(c,p)
+    head, bname = parts
+    fname = p.anyAtFileNodeName()
+    if not fname and head != "@path":
+        return
+    path = g.scanAllAtPathDirectives(c,p)
+    editor = g.guessExternalEditor()
+    # g.trace(repr(path),repr(fname))
+    absp = g.os_path_finalize_join(path, fname)
+    exists = os.path.exists(absp)
+    if not exists and head == "@path":
+        action = menu.addAction("Create dir " + absp + "/" )
+        action.triggered.connect(create_rclick_cb)
     if exists and head == "@path":
         action = menu.addAction("Import files")
         action.triggered.connect(importfiles_rclick_cb)
-        
-        
-
-    if exists and head != "@path":
-        if editor:
-            action = menu.addAction("Edit " + bname + " in " + os.path.basename(editor))
-            action.connect(action, QtCore.SIGNAL("triggered()"), openwith_rclick_cb)
-    
+    if editor and exists and head != "@path":
+        action = menu.addAction("Edit " + bname + " in " + os.path.basename(editor))
+        action.triggered.connect(openwith_rclick_cb)
     action = menu.addAction("Open " + path)
-    action.connect(action, QtCore.SIGNAL("triggered()"), openfolder_rclick_cb)
+    action.triggered.connect(openfolder_rclick_cb)
 #@+node:ville.20090630221949.5462: ** refresh_rclick
-   
 def refresh_rclick(c,p, menu):
-    h = p.h
-    split = h.split(None,1)
-    if len(split) < 2:
-        return
-    fname = p.anyAtFileNodeName()
-    if not fname:
-        return
-    typ = split[0]        
-    action = menu.addAction("Refresh from disk")
-
+    
+    # define callback.
+    #@+others
+    #@+node:ekr.20140613141207.17671: *3* refresh_rclick_cb
     def refresh_rclick_cb():
         
         # Try to fix bug 1090950 refresh from disk: cut node ressurection.
@@ -231,98 +211,86 @@ def refresh_rclick(c,p, menu):
                 # UNSUPPORTED            
                 #if typ =='@edit':
                 #    c.readAtEditNodes()
-
-    action.connect(action, QtCore.SIGNAL("triggered()"), refresh_rclick_cb)
+    #@-others
+    split = p.h.split(None,1)
+    if len(split) >= 2 and p.anyAtFileNodeName():
+        typ = split[0]        
+        action = menu.addAction("Refresh from disk")
+        action.triggered.connect(refresh_rclick_cb)
+        # action.connect(action, Qt.SIGNAL("triggered()"), refresh_rclick_cb)
 #@+node:ville.20090701110830.10215: ** editnode_rclick
 def editnode_rclick(c,p, menu):
     """ Provide "edit in EDITOR" context menu item """
 
     editor = g.guessExternalEditor()
-    if not editor:
-        return
-    action = menu.addAction("Edit in " + editor)
-
-    def editnode_rclick_cb():
-        # c.openWith(data = ('subprocess.Popen', [editor], None))
-        d = {'kind':'subprocess.Popen','args':[editor],'ext':None}
-        c.openWith(d=d)
-
-    action.connect(action, QtCore.SIGNAL("triggered()"), editnode_rclick_cb)
+    if editor:
+        
+        def editnode_rclick_cb():
+            d = {'kind':'subprocess.Popen','args':[editor],'ext':None}
+            c.openWith(d=d)
+      
+        action = menu.addAction("Edit in " + editor)
+        action.triggered.connect(editnode_rclick_cb)
+        # action.connect(action, Qt.SIGNAL("triggered()"), editnode_rclick_cb)
 #@+node:ville.20090702171015.5480: ** nextclone_rclick
 def nextclone_rclick(c,p, menu):
     """ Go to next clone """
 
-    if not p.isCloned():
-        return
+    if p.isCloned():
 
-    def nextclone_rclick_cb():
-        c.goToNextClone()
-
-    action = menu.addAction("Go to clone")
-    action.connect(action, QtCore.SIGNAL("triggered()"), nextclone_rclick_cb)
-
-
-
-
+        def nextclone_rclick_cb():
+            c.goToNextClone()
+    
+        action = menu.addAction("Go to clone")
+        action.triggered.connect(nextclone_rclick_cb)
+        # action.connect(action, Qt.SIGNAL("triggered()"), nextclone_rclick_cb)
 #@+node:ville.20090719202132.5248: ** marknodes_rclick
 def marknodes_rclick(c,p, menu):
     """ Mark selected nodes """
-
     pl = c.getSelectedPositions()
-
-    have_mark = False
-    have_unmark = False
-    if any(p.isMarked() for p in pl):
-        have_unmark = True
-
     if any(not p.isMarked() for p in pl):
-        have_mark = True
-
-    def marknodes_rclick_cb():
-        for p in pl:
-            p.setMarked()
-        c.redraw_after_icons_changed()            
-
-    def unmarknodes_rclick_cb():
-        for p in pl:
-            p.v.clearMarked()
-        c.redraw_after_icons_changed()                        
-
-
-    if have_mark:
-        markaction = menu.addAction("Mark")
-        markaction.connect(markaction, QtCore.SIGNAL("triggered()"), marknodes_rclick_cb)
-
-    if have_unmark:
-        unmarkaction = menu.addAction("Unmark")
-        unmarkaction.connect(unmarkaction, QtCore.SIGNAL("triggered()"), unmarknodes_rclick_cb)
+        def marknodes_rclick_cb():
+            for p in pl:
+                p.v.setMarked()
+            c.redraw_after_icons_changed()      
+        action = menu.addAction("Mark")
+        action.triggered.connect(marknodes_rclick_cb)
+        # markaction.connect(action, Qt.SIGNAL("triggered()"), marknodes_rclick_cb)
+    if any(p.isMarked() for p in pl):
+        def unmarknodes_rclick_cb():
+            for p in pl:
+                p.v.clearMarked()
+            c.redraw_after_icons_changed()                        
+        action = menu.addAction("Unmark")
+        action.triggered.connect(unmarknodes_rclick_cb)
+        # unmarkaction.connect(action, Qt.SIGNAL("triggered()"), unmarknodes_rclick_cb)
 #@+node:ekr.20120311191905.9900: ** openurl_rclick
 def openurl_rclick(c,p, menu):
     """ open an url """
     
     url = g.getUrlFromNode(p)
-    if not url: return
+    if url:
 
-    def openurl_rclick_cb():
-        if not g.doHook("@url1",c=c,p=p,v=p,url=url):
-            g.handleUrl(url,c=c,p=p)
-        g.doHook("@url2",c=c,p=p,v=p)
-
-    a = menu.addAction("Open URL")
-    a.connect(a,QtCore.SIGNAL("triggered()"),openurl_rclick_cb)
+        def openurl_rclick_cb():
+            if not g.doHook("@url1",c=c,p=p,v=p,url=url):
+                g.handleUrl(url,c=c,p=p)
+            g.doHook("@url2",c=c,p=p,v=p)
+    
+        action = menu.addAction("Open URL")
+        action.triggered.connect(openurl_rclick_cb)
+        # action.connect(action,Qt.SIGNAL("triggered()"),openurl_rclick_cb)
 #@+node:tbrown.20091203121808.15818: ** deletenodes_rclick
 def deletenodes_rclick(c,p, menu):
     """ Delete selected nodes """
 
+    u = c.undoer
     pl = c.getSelectedPositions()
-
     undoType = 'Delete Node'
     if len(pl) > 1:
         undoType += 's'
-
-    current = p
-    u = c.undoer
-
+    current = p.copy()
+    #@+<< define deletenodes_rclick_cb >>
+    #@+node:ekr.20140613141207.17673: *3* << define deletenodes_rclick_cb >>
     def deletenodes_rclick_cb():
         
         if len(pl) == 1:
@@ -330,10 +298,8 @@ def deletenodes_rclick(c,p, menu):
             # convenient place than the generalized case below
             c.deleteOutline()  # handles undo, redraw, etc.
             return
-
         c.endEditing()
         cull = []
-
         # try and find the best node to select when this is done
         nextviz = []
         tmp = pl[0].copy().moveToVisBack(c)
@@ -342,7 +308,6 @@ def deletenodes_rclick(c,p, menu):
         tmp = pl[-1].copy().moveToVisNext(c)
         if tmp:
             nextviz.append(tmp.v)
-
         for nd in pl:
             cull.append((nd.v, nd.parent().v or None))
         u.beforeChangeGroup(current,undoType)
@@ -355,7 +320,6 @@ def deletenodes_rclick(c,p, menu):
                     c.setChanged(True)
                     break
         u.afterChangeGroup(current,undoType)
-
         # move to a node that still exists
         for v in nextviz:
             pos = c.vnode2position(v)
@@ -365,27 +329,25 @@ def deletenodes_rclick(c,p, menu):
         else:
             # c.selectPosition(c.allNodes_iter().next())
             c.selectPosition(c.rootPosition())
-
-        c.redraw()                        
-
+        c.redraw()         
+    #@-<< define deletenodes_rclick_cb >>
     action = menu.addAction("Delete")
-    action.connect(action, QtCore.SIGNAL("triggered()"), deletenodes_rclick_cb)
+    action.triggered.connect(deletenodes_rclick_cb)
+    # action.connect(action, Qt.SIGNAL("triggered()"), deletenodes_rclick_cb)
 #@+node:ville.20091008192104.7691: ** configuredcommands_rclick
 def configuredcommands_rclick(c,p, menu):
     """ Provide "edit in EDITOR" context menu item """
-
     config = c.config.getData('contextmenu_commands')
-    if not config:
-        return
-    cmds = [el.split(None,1) for el in config]
-    for cmd, desc in cmds:
-        desc = desc.strip()
-        action = menu.addAction(desc)
-        #action.setToolTip(cmd)
-        def configcmd_rclick_cb(cm = cmd):
-            c.k.simulateCommand(cm)
-        action.connect(action,
-            QtCore.SIGNAL("triggered()"), configcmd_rclick_cb)
+    if config:
+        cmds = [el.split(None,1) for el in config]
+        for cmd, desc in cmds:
+            desc = desc.strip()
+            action = menu.addAction(desc)
+            #action.setToolTip(cmd)
+            def configcmd_rclick_cb(cm = cmd):
+                c.k.simulateCommand(cm)
+            action.triggered.connect(configcmd_rclick_cb)
+            # action.connect(action,Qt.SIGNAL("triggered()"), configcmd_rclick_cb)
 #@+node:ville.20090630210947.10189: ** install_handlers
 def install_handlers():
     """ Install all the wanted handlers (menu creators) """
@@ -434,9 +396,6 @@ def install_handlers():
 
 def editnode_on_idle (tag,keywords):
 
-    #g.trace(tag,keywords)
-
-    import os
     a = g.app
     if a.killed: return
     # g.trace('open with plugin')
