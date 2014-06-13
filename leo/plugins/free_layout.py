@@ -34,8 +34,7 @@ __version__ = '0.1'
 #@+node:tbrown.20110203111907.5520: ** << imports >>
 import leo.core.leoGlobals as g
 
-from leo.core.leoQt import isQt5,QtCore,QtGui,QtWidgets
-from leo.core.leoQt import Qsci
+from leo.core.leoQt import QtWidgets
 from leo.plugins.nested_splitter import NestedSplitter # , NestedSplitterChoice
 
 import json

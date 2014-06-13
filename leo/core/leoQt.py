@@ -10,22 +10,24 @@ Callers are expected to use the *PyQt5* spellings of modules:
 - Use QtGui, not QtWidgets, for all other classes in the *PyQt4* QtGui module.
 - Similarly, use QtWebKitWidgets rather than QtWebKit.
 '''
+# import leo.core.leoGlobals as g
+    # Warning: importing leoGlobals can crash pylint!
+
 # pylint: disable=unused-import
 # Define isQt,Qt,QtConst,QtCore,QtGui,QtWidgets,QUrl
-import leo.core.leoGlobals as g
 try:
     from PyQt5 import Qt
-    import PyQt5.QtCore as QtCore
-    from PyQt5.QtCore import QUrl
-    import PyQt5.QtGui as QtGui
+    from PyQt5 import QtGui
+    from PyQt5 import QtCore
     from PyQt5 import QtWidgets
+    from PyQt5.QtCore import QUrl
     QtConst = QtCore.Qt
     isQt5 = True
 except ImportError:
     from PyQt4 import Qt
+    from PyQt4 import QtGui
+    from PyQt4 import QtCore
     from PyQt4.QtCore import QUrl
-    import PyQt4.QtCore as QtCore
-    import PyQt4.QtGui as QtGui
     QtConst = QtCore.Qt
     QtWidgets = QtGui
     isQt5 = False

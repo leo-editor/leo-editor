@@ -16,7 +16,18 @@ import leo.core.leoGlobals as g
 import leo.core.leoFrame as leoFrame
 import leo.core.leoNodes as leoNodes
 
-from leo.core.leoQt import isQt5,QtCore,QtGui,QtWidgets
+# Sheesh: this crashes pylint.
+# from leo.core.leoQt import QtConst,QtWidgets
+
+try:
+    from PyQt5 import QtCore
+    from PyQt5 import QtWidgets
+    QtConst = QtCore.Qt
+except ImportError:
+    import PyQt4.QtGui as QtGui
+    import PyQt4.QtCore as QtCore
+    QtConst = QtCore.Qt
+    QtWidgets = QtGui
 #@-<< imports >>
 
 class BaseNativeTreeWidget (leoFrame.LeoTree):
@@ -496,7 +507,6 @@ class BaseNativeTreeWidget (leoFrame.LeoTree):
         verbose = False
         if self.busy(): return
         c = self.c
-        qt = QtCore.Qt
         # if trace: g.trace(self.traceItem(item),g.callers(4))
         try:
             self.selecting = True
@@ -506,9 +516,9 @@ class BaseNativeTreeWidget (leoFrame.LeoTree):
                 self.prev_v = p.v
                 event = None
                 mods = g.app.gui.qtApp.keyboardModifiers()
-                isCtrl = bool(mods & qt.ControlModifier)
+                isCtrl = bool(mods & QtConst.ControlModifier)
                 if trace: g.trace('auto_edit',auto_edit,'ctrl',isCtrl,p.h)
-                # We could also add support for qt.ShiftModifier, qt.AltModifier	& qt.MetaModifier.
+                # We could also add support for QtConst.ShiftModifier, QtConst.AltModifier	& QtConst.MetaModifier.
                 if isCtrl:
                     if g.doHook("iconctrlclick1",c=c,p=p,v=p,event=event) is None:
                         c.frame.tree.OnIconCtrlClick(p) # Call the base class method.

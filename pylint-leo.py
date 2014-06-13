@@ -54,7 +54,7 @@ def getRecentCoreList():
 def getRecentPluginsList ():
 
     return (
-        # 'baseNativeTree',
+        # 'baseNativeTree', # Crashes pylint.
         # 'contextmenu',
         # 'codewisecompleter',
         # 'free_layout',
@@ -127,6 +127,7 @@ def getGuiPluginsList ():
 
     return (
         'baseNativeTree',
+        'free_layout',
         'nested_splitter',
         'qtGui',
     )

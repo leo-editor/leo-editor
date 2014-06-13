@@ -11,21 +11,11 @@ except ImportError:
         # This will fail when run from main function.
         # this import should be removed anyway
 
-from leo.core.leoQt import isQt5,Qt,QtCore,QtWidgets
+from leo.core.leoQt import isQt5,Qt,QtCore,QtConst,QtWidgets
 
 import sys
-# from inspect import isclass
 
-# try:
-    # from PyQt5 import QtCore, Qt
-    # from PyQt5.QtCore import Qt as QtConst
-    # from PyQt5 import QtWidgets
-    # isQt5 = True
-# except ImportError:
-    # from PyQt4 import QtGui, QtCore, Qt
-    # from PyQt4.QtCore import Qt as QtConst
-    # QtWidgets = QtGui
-    # isQt5 = False
+# from inspect import isclass
 #@-<< imports >>
 # pylint: disable=cell-var-from-loop
 #@+others
@@ -147,7 +137,7 @@ class NestedSplitterChoice(QtWidgets.QWidget):
         self.setLayout(QtWidgets.QVBoxLayout())
         button = QtWidgets.QPushButton("Action",self) # EKR: 2011/03/15
         self.layout().addWidget(button)
-        button.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        button.setContextMenuPolicy(QtConst.CustomContextMenu)
         if isQt5:
             button.customContextMenuRequested.connect(
                 lambda pnt: self.parent().choice_menu(self,
