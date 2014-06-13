@@ -12,20 +12,21 @@ Callers are expected to use the *PyQt5* spellings of modules:
 '''
 # pylint: disable=unused-import
 # Define isQt,Qt,QtConst,QtCore,QtGui,QtWidgets,QUrl
+import leo.core.leoGlobals as g
 try:
     from PyQt5 import Qt
-    from PyQt5.QtCore import Qt as QtConst
-    from PyQt5.QtCore import QUrl
     import PyQt5.QtCore as QtCore
+    from PyQt5.QtCore import QUrl
     import PyQt5.QtGui as QtGui
     from PyQt5 import QtWidgets
+    QtConst = QtCore.Qt
     isQt5 = True
 except ImportError:
     from PyQt4 import Qt
-    from PyQt4.QtCore import Qt as QtConst
     from PyQt4.QtCore import QUrl
     import PyQt4.QtCore as QtCore
     import PyQt4.QtGui as QtGui
+    QtConst = QtCore.Qt
     QtWidgets = QtGui
     isQt5 = False
 # print('leo.core.leoQt: isQt5: %s' % isQt5)

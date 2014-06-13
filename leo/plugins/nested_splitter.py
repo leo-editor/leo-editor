@@ -10,8 +10,8 @@ except ImportError:
     g = None
         # This will fail when run from main function.
         # this import should be removed anyway
-        
-from leo.core.leoQt import isQt5,Qt,QtConst,QtWidgets
+
+from leo.core.leoQt import isQt5,Qt,QtCore,QtWidgets
 
 import sys
 # from inspect import isclass
@@ -147,7 +147,7 @@ class NestedSplitterChoice(QtWidgets.QWidget):
         self.setLayout(QtWidgets.QVBoxLayout())
         button = QtWidgets.QPushButton("Action",self) # EKR: 2011/03/15
         self.layout().addWidget(button)
-        button.setContextMenuPolicy(QtConst.CustomContextMenu)
+        button.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         if isQt5:
             button.customContextMenuRequested.connect(
                 lambda pnt: self.parent().choice_menu(self,
@@ -174,7 +174,7 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
         # g.trace('NestedSplitterHandle')
         QtWidgets.QSplitterHandle.__init__(self, owner.orientation(), owner)
         self.setStyleSheet("background-color: green;")
-        self.setContextMenuPolicy(QtConst.CustomContextMenu)
+        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         if isQt5:
             self.customContextMenuRequested.connect(self.splitter_menu)
         else:
@@ -231,7 +231,7 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
         lr = 'Left', 'Right'
         ab = 'Above', 'Below'
         split_dir = 'Vertically'
-        if self.orientation() == QtConst.Vertical:
+        if self.orientation() == QtCore.Qt.Vertical:
             lr, ab = ab, lr
             split_dir = 'Horizontally'
         # blue/orange - color-blind friendly
@@ -396,13 +396,15 @@ class NestedSplitter(QtWidgets.QSplitter):
         # other code can re-enable
 
     other_orientation = {
-        QtConst.Vertical: QtConst.Horizontal,
-        QtConst.Horizontal: QtConst.Vertical
+        QtCore.Qt.Vertical: QtCore.Qt.Horizontal,
+        QtCore.Qt.Horizontal: QtCore.Qt.Vertical
+        # QtConst.Vertical: QtConst.Horizontal,
+        # QtConst.Horizontal: QtConst.Vertical
     }
 
     #@+others
     #@+node:ekr.20110605121601.17967: *3* __init__ (NestedSplitter)
-    def __init__(self,parent=None,orientation=QtConst.Horizontal,root=None):
+    def __init__(self,parent=None,orientation=QtCore.Qt.Horizontal,root=None):
 
         QtWidgets.QSplitter.__init__(self,orientation,parent)
             # This creates a NestedSplitterHandle.
@@ -542,7 +544,7 @@ class NestedSplitter(QtWidgets.QSplitter):
         """add a widget relative to another already present widget"""
 
         trace = False and g and not g.unitTesting
-        horizontal,vertical = QtConst.Horizontal,QtConst.Vertical
+        horizontal,vertical = QtCore.Qt.Horizontal,QtCore.Qt.Vertical
         layout = self.top().get_layout()
 
         def hunter(layout, id_):
@@ -955,10 +957,10 @@ class NestedSplitter(QtWidgets.QSplitter):
         """
 
         for i in self.top().self_and_descendants():
-            if i.orientation() == QtConst.Vertical:
-                i.setOrientation(QtConst.Horizontal)
+            if i.orientation() == QtCore.Qt.Vertical:
+                i.setOrientation(QtCore.Qt.Horizontal)
             else:
-                i.setOrientation(QtConst.Vertical)
+                i.setOrientation(QtCore.Qt.Vertical)
     #@+node:ekr.20110605121601.17984: *3* self_and_descendants
     def self_and_descendants(self):
 
@@ -1205,7 +1207,7 @@ class NestedSplitter(QtWidgets.QSplitter):
             _ans = []
 
         orientation = 'vertical'
-        if layout['orientation'] == QtConst.Horizontal:
+        if layout['orientation'] == QtCore.Qt.Horizontal:
             orientation = 'horizontal'
 
         _ans.append("%s%s (%s) - %s" % (

@@ -73,9 +73,7 @@ import datetime
 NO_TIME = datetime.date(3000, 1, 1)
 
 if g.app.gui.guiName() == "qt":
-
-    from PyQt4 import QtCore, QtGui, uic
-    Qt = QtCore.Qt
+    from leo.core.leoQt import isQt5,QtConst,QtCore,QtGui,QtWidgets,uic
 #@-<< imports >>
 __version__ = "0.30"
 #@+<< version history >>
@@ -116,18 +114,15 @@ def popup_entry(c,p,menu):
     c.cleo.addPopupMenu(c,p,menu)
 #@+node:tbrown.20090119215428.8: ** class todoQtUI
 if g.app.gui.guiName() == "qt":
-    class cleoQtUI(QtGui.QWidget):
+    class cleoQtUI(QtWidgets.QWidget):
         #@+others
         #@+node:ekr.20111118104929.10204: *3* ctor
         def __init__(self, owner, logTab=True):
 
             self.owner = owner
-
-            QtGui.QWidget.__init__(self)
+            QtWidgets.QWidget.__init__(self)
             uiPath = g.os_path_join(g.app.leoDir, 'plugins', 'ToDo.ui')
-            
             # change dir to get themed icons
-            
             theme = g.app.config.getString('color_theme')
             if theme:
                 testPath = g.os_path_join(
@@ -143,38 +138,40 @@ if g.app.gui.guiName() == "qt":
                         iconPath = g.os_path_join(g.app.leoDir, 'Icons') 
             else:
                 iconPath = g.os_path_join(g.app.leoDir, 'Icons')
-            
             os.chdir(iconPath)
-            
             form_class, base_class = uic.loadUiType(uiPath)
-            
             if logTab:
                 self.owner.c.frame.log.createTab('Task', widget = self) 
             self.UI = form_class()
             self.UI.setupUi(self)
-
             u = self.UI
             o = self.owner
-
-            self.menu = QtGui.QMenu()
+            self.menu = QtWidgets.QMenu()
             self.populateMenu(self.menu, o)
-
             u.butMenu.setMenu(self.menu)
-
-            self.connect(u.butHelp, QtCore.SIGNAL("clicked()"), o.showHelp)
-
-            self.connect(u.butClrProg, QtCore.SIGNAL("clicked()"),
-                o.progress_clear)
-            self.connect(u.butClrTime, QtCore.SIGNAL("clicked()"),
-                o.clear_time_req)
-            self.connect(u.butPriClr, QtCore.SIGNAL("clicked()"),
-                o.priority_clear)
-
-            # if live update is too slow change valueChanged(*) to editingFinished()
-            self.connect(u.spinTime, QtCore.SIGNAL("valueChanged(double)"),
-                lambda v: o.set_time_req(val=u.spinTime.value()))
-            self.connect(u.spinProg, QtCore.SIGNAL("valueChanged(int)"),
-                lambda v: o.set_progress(val=u.spinProg.value()))
+            if isQt5:
+                u.butHelp.clicked.connect(o.showHelp)
+                u.butClrProg.clicked.connect(o.progress_clear)
+                u.butClrTime.clicked.connect(o.clear_time_req)
+                u.butPriClr.clicked.connect(o.priority_clear)
+                # if live update is too slow change valueChanged(*) to editingFinished()
+                u.spinTime.valueChanged.connect(
+                    lambda v: o.set_time_req(val=u.spinTime.value()))
+                u.spinProg.valueChanged.connect(
+                    lambda v: o.set_progress(val=u.spinProg.value()))
+            else:
+                self.connect(u.butHelp, QtCore.SIGNAL("clicked()"), o.showHelp)
+                self.connect(u.butClrProg, QtCore.SIGNAL("clicked()"),
+                    o.progress_clear)
+                self.connect(u.butClrTime, QtCore.SIGNAL("clicked()"),
+                    o.clear_time_req)
+                self.connect(u.butPriClr, QtCore.SIGNAL("clicked()"),
+                    o.priority_clear)
+                # if live update is too slow change valueChanged(*) to editingFinished()
+                self.connect(u.spinTime, QtCore.SIGNAL("valueChanged(double)"),
+                    lambda v: o.set_time_req(val=u.spinTime.value()))
+                self.connect(u.spinProg, QtCore.SIGNAL("valueChanged(int)"),
+                    lambda v: o.set_progress(val=u.spinProg.value()))
 
             u.dueDateEdit.dateChanged.connect(
                 lambda v: o.set_due_date(val=u.dueDateEdit.date()))
@@ -212,8 +209,12 @@ if g.app.gui.guiName() == "qt":
                     except (TypeError, ValueError):
                         pri = -1
 
-                def setter(pri=pri): o.setPri(pri)
-                self.connect(w, QtCore.SIGNAL("clicked()"), setter)
+                def setter(pri=pri):
+                    o.setPri(pri)
+                if isQt5:
+                    w.clicked.connect(setter)
+                else:
+                    self.connect(w, QtCore.SIGNAL("clicked()"), setter)
 
             offsets = self.owner.c.config.getData('todo_due_date_offsets')
             if not offsets:
@@ -223,12 +224,21 @@ if g.app.gui.guiName() == "qt":
             offsets = sorted(set(offsets), key=lambda x: (x[0],int(x[1:].strip('>').replace('<', '-'))))
             u.dueDateOffset.addItems(offsets)
             u.dueDateOffset.setCurrentIndex(self.date_offset_default)
-            self.connect(self.UI.dueDateOffset, QtCore.SIGNAL("activated(int)"),
-                lambda v: o.set_date_offset(field='duedate'))
+            if isQt5:
+                self.UI.dueDateOffset.activated.connect(
+                    lambda v: o.set_date_offset(field='duedate'))
+            else:
+                self.connect(self.UI.dueDateOffset, QtCore.SIGNAL("activated(int)"),
+                    lambda v: o.set_date_offset(field='duedate'))
             u.nxtwkDateOffset.addItems(offsets)
             u.nxtwkDateOffset.setCurrentIndex(self.date_offset_default)
-            self.connect(self.UI.nxtwkDateOffset, QtCore.SIGNAL("activated(int)"),
-                lambda v: o.set_date_offset(field='nextworkdate'))
+            
+            if isQt5:
+                self.UI.nxtwkDateOffset.activated.connect(
+                    lambda v: o.set_date_offset(field='nextworkdate'))
+            else:
+                self.connect(self.UI.nxtwkDateOffset, QtCore.SIGNAL("activated(int)"),
+                    lambda v: o.set_date_offset(field='nextworkdate'))
 
             self.setDueDate = self.make_func(self.UI.dueDateEdit,
                 self.UI.dueDateToggle, 'setDate',
@@ -246,30 +256,39 @@ if g.app.gui.guiName() == "qt":
                 self.UI.nxtwkTimeToggle, 'setTime',
                 datetime.datetime.now().time())
                 
-            self.connect(self.UI.butDetails, QtCore.SIGNAL("clicked()"),
-                lambda: self.UI.frmDetails.setVisible(not self.UI.frmDetails.isVisible()))
+            if isQt5:
+                self.UI.butDetails.clicked.connect(
+                    lambda: self.UI.frmDetails.setVisible(not self.UI.frmDetails.isVisible()))
+            else:
+                self.connect(self.UI.butDetails, QtCore.SIGNAL("clicked()"),
+                    lambda: self.UI.frmDetails.setVisible(not self.UI.frmDetails.isVisible()))
             if self.owner.c.config.getBool("todo_compact_interface"):
                 self.UI.frmDetails.setVisible(False) 
 
-            self.connect(self.UI.butNext, QtCore.SIGNAL("clicked()"),
-                lambda: self.owner.c.selectVisNext())
-                
-            self.connect(self.UI.butNextTodo, QtCore.SIGNAL("clicked()"),
-                self.owner.find_todo)
-                
-            self.connect(self.UI.butApplyDueOffset, QtCore.SIGNAL("clicked()"),
-                lambda: o.set_date_offset(field='duedate'))
-            self.connect(self.UI.butApplyOffset, QtCore.SIGNAL("clicked()"),
-                lambda: o.set_date_offset(field='nextworkdate'))
+            if isQt5:
+                self.UI.butNext.clicked.connect(
+                    lambda: self.owner.c.selectVisNext())
+                self.UI.butNextTodo.clicked.connect(
+                    self.owner.find_todo)
+                self.UI.butApplyDueOffset.clicked.connect(
+                    lambda: o.set_date_offset(field='duedate'))
+                self.UI.butApplyOffset.clicked.connect(
+                    lambda: o.set_date_offset(field='nextworkdate'))
+            else:
+                self.connect(self.UI.butNext, QtCore.SIGNAL("clicked()"),
+                    lambda: self.owner.c.selectVisNext())
+                self.connect(self.UI.butNextTodo, QtCore.SIGNAL("clicked()"),
+                    self.owner.find_todo)
+                self.connect(self.UI.butApplyDueOffset, QtCore.SIGNAL("clicked()"),
+                    lambda: o.set_date_offset(field='duedate'))
+                self.connect(self.UI.butApplyOffset, QtCore.SIGNAL("clicked()"),
+                    lambda: o.set_date_offset(field='nextworkdate'))
             
             n = g.app.config.getInt("todo_calendar_n")  
             cols = g.app.config.getInt("todo_calendar_cols")  
             if n or cols:
                 self.UI.dueDateEdit.calendarWidget().build(n or 3, cols or 3)
                 self.UI.nxtwkDateEdit.calendarWidget().build(n or 3, cols or 3)
-                
-            
-
         #@+node:ekr.20111118104929.10203: *3* make_func
         def make_func(self, edit, toggle, method, default):
 
@@ -278,19 +297,16 @@ if g.app.gui.guiName() == "qt":
                          
                 edit.blockSignals(True)
                 toggle.blockSignals(True)
-                
                 if value:
                     getattr(edit, method)(value)
                     # edit.setEnabled(True)
-                    toggle.setChecked(Qt.Checked)
+                    toggle.setChecked(QtConst.Checked)
                 else:
                     getattr(edit, method)(default)
-                    # edit.setEnabled(False)
-                    toggle.setChecked(Qt.Unchecked)
-                    
+                    toggle.setChecked(QtConst.Unchecked)
                 edit.blockSignals(False)
                 toggle.blockSignals(False)
-                
+
             return func
                     
         #@+node:ekr.20111118104929.10205: *3* populateMenu
@@ -893,12 +909,12 @@ class todoController:
             toggle = self.ui.UI.nxtwkDateToggle
         
         if mode == 'check':
-            if toggle.checkState() == Qt.Unchecked:
+            if toggle.checkState() == QtConst.Unchecked:
                 self.setat(v, field, "")
             else:
                 self.setat(v, field, val.toPyDate())
         else:
-            toggle.setCheckState(Qt.Checked)
+            toggle.setCheckState(QtConst.Checked)
             self.setat(v, field, val.toPyDate())
         
         if (field == 'nextworkdate' and 
@@ -922,12 +938,12 @@ class todoController:
             toggle = self.ui.UI.nxtwkTimeToggle
 
         if mode == 'check':
-            if toggle.checkState() == Qt.Unchecked:
+            if toggle.checkState() == QtConst.Unchecked:
                 self.setat(v, field, "")
             else:
                 self.setat(v, field, val.toPyTime())
         else:
-            toggle.setCheckState(Qt.Checked)
+            toggle.setCheckState(QtConst.Checked)
             self.setat(v, field, val.toPyTime())
         self.loadIcons(p)
 
@@ -1079,8 +1095,8 @@ class todoController:
         self.showDist()
         dat = {}
         for end in 'from', 'to':
-            if Qt:
-                x0,ok = QtGui.QInputDialog.getText(None, 'Reclassify priority' ,'%s priorities (1-9,19)'%end)
+            if QtConst:
+                x0,ok = QtWidgets.QInputDialog.getText(None, 'Reclassify priority' ,'%s priorities (1-9,19)'%end)
                 if not ok:
                     x0 = None
                 else:

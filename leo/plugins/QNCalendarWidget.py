@@ -11,12 +11,13 @@ import os
 import sys
 import datetime
 
-from PyQt4 import QtGui, QtCore
+# from PyQt4 import QtGui, QtCore
+from leo.core.leoQt import QtCore,QtWidgets
 
 def init():
     return True # For unit tests.
 
-class QNCalendarWidget(QtGui.QCalendarWidget):
+class QNCalendarWidget(QtWidgets.QCalendarWidget):
     def __init__(self, n=3, columns=3, year=None, month=None):
         """set up
     
@@ -28,7 +29,7 @@ class QNCalendarWidget(QtGui.QCalendarWidget):
         - `month`: month of first calendar
         """
     
-        QtGui.QCalendarWidget.__init__(self)
+        QtWidgets.QCalendarWidget.__init__(self)
         
         self.build(n, columns, year=year, month=month)
         
@@ -41,7 +42,7 @@ class QNCalendarWidget(QtGui.QCalendarWidget):
         if month is None:
             month = datetime.date.today().month
 
-        layout = QtGui.QGridLayout()
+        layout = QtWidgets.QGridLayout()
         while self.layout().count():
             self.layout().removeItem(self.layout().itemAt(0))
         self.layout().addLayout(layout)
@@ -52,7 +53,7 @@ class QNCalendarWidget(QtGui.QCalendarWidget):
         self.setMinimumSize(QtCore.QSize(x, y) )       
 
         for i in range(n):
-            calendar = QtGui.QCalendarWidget()
+            calendar = QtWidgets.QCalendarWidget()
             calendar.i = i
             calendar.setCurrentPage(year, month)
             month += 1
@@ -107,7 +108,7 @@ class QNCalendarWidget(QtGui.QCalendarWidget):
             i.blockSignals(old)
         self.activated.emit(date)
         
-class QNDateEdit(QtGui.QDateEdit):
+class QNDateEdit(QtWidgets.QDateEdit):
     def __init__(self, parent=None, n=3, columns=3):
         """set up
     
@@ -117,18 +118,18 @@ class QNDateEdit(QtGui.QDateEdit):
         - `columns`: months to display before start a new row
         """
         
-        QtGui.QDateEdit.__init__(self, parent)
+        QtWidgets.QDateEdit.__init__(self, parent)
         self.setCalendarPopup(True)
         self.cw = QNCalendarWidget(n=n, columns=columns)
         self.setCalendarWidget(self.cw)
 
 def main():
-    app = QtGui.QApplication(sys.argv)
-    win = QtGui.QWidget()
-    l = QtGui.QVBoxLayout()
+    app = QtWidgets.QApplication(sys.argv)
+    win = QtWidgets.QWidget()
+    l = QtWidgets.QVBoxLayout()
     win.setLayout(l)
     
-    w = QtGui.QDateEdit()
+    w = QtWidgets.QDateEdit()
     w.setCalendarPopup(True)
     l.addWidget(w)
     l.addWidget(QNDateEdit())
