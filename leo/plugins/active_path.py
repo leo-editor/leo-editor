@@ -73,10 +73,8 @@ sub-folders more automatically.
 
 '''
 #@-<< docstring >>
-
-#@@language python
-#@@tabwidth -4
-
+#@+<< imports >>
+#@+node:ekr.20140612210500.17669: ** << imports >>
 import leo.core.leoGlobals as g
 
 import leo.core.leoPlugins as leoPlugins
@@ -89,10 +87,21 @@ import time # for recursion bailout
 
 from leo.plugins.plugins_menu import PlugIn
 
+if g.app.gui.guiName() == "qt":
+    # for the right click context menu
+    try:
+        from PyQt5 import QtCore
+        isQt5 = True
+    except ImportError:
+        from PyQt4 import QtCore
+        isQt5 = False
+#@-<< imports >>
+
+#@@language python
+#@@tabwidth -4
+
 testing = False
-
 __version__ = "0.2"
-
 #@+<< version history >>
 #@+node:ekr.20090120065737.1: ** << version history >>
 #@@nocolor-node
@@ -100,22 +109,14 @@ __version__ = "0.2"
 # 
 # 0.2 EKR: replaced begin/endUpdate with c.redraw(p)
 #@-<< version history >>
-
 #@+others
 #@+node:tbrown.20091128094521.15048: ** init
-if g.app.gui.guiName() == "qt":
-    # for the right click context menu
-    from PyQt4 import QtCore
-
 def init():
     g.registerHandler('after-create-leo-frame', attachToCommander)
     g.act_on_node.add(active_path_act_on_node, priority = 90)
-
     g.plugin_signon(__name__)
-
     if g.app.gui.guiName() == "qt":
         g.tree_popup_handlers.append(popup_entry)
-
     return True
 #@+node:tbrown.20091128094521.15047: ** attachToCommander
 # defer binding event until c exists
@@ -156,19 +157,19 @@ def mkCmd(cmd, c):
 
     def f():
         return cmd(c)
-
     return f
 
 def popup_entry(c,p,menu):
 
     pathmenu = menu.addMenu("Path")
-
     for i in globals():
         if i.startswith('cmd_'):
-
             a = pathmenu.addAction(PlugIn.niceMenuName(i))
             CMD = globals()[i]
-            a.connect(a, QtCore.SIGNAL("triggered()"), mkCmd(CMD,c))
+            if isQt5:
+                a.triggered.connect(mkCmd(CMD,c))
+            else:
+                a.connect(a, QtCore.SIGNAL("triggered()"), mkCmd(CMD,c))
 #@+node:tbrown.20091128094521.15037: ** isDirNode
 def isDirNode(p):
 

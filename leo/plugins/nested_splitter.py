@@ -10,19 +10,22 @@ except ImportError:
     g = None
         # This will fail when run from main function.
         # this import should be removed anyway
+        
+from leo.core.leoQt import isQt5,Qt,QtConst,QtWidgets
 
 import sys
 # from inspect import isclass
-try:
-    from PyQt5 import QtCore, Qt
-    from PyQt5.QtCore import Qt as QtConst
-    from PyQt5 import QtWidgets
-    isQt5 = True
-except ImportError:
-    from PyQt4 import QtGui, QtCore, Qt
-    from PyQt4.QtCore import Qt as QtConst
-    QtWidgets = QtGui
-    isQt5 = False
+
+# try:
+    # from PyQt5 import QtCore, Qt
+    # from PyQt5.QtCore import Qt as QtConst
+    # from PyQt5 import QtWidgets
+    # isQt5 = True
+# except ImportError:
+    # from PyQt4 import QtGui, QtCore, Qt
+    # from PyQt4.QtCore import Qt as QtConst
+    # QtWidgets = QtGui
+    # isQt5 = False
 #@-<< imports >>
 # pylint: disable=cell-var-from-loop
 #@+others

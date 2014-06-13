@@ -33,21 +33,9 @@ __version__ = '0.1'
 #@+<< imports >>
 #@+node:tbrown.20110203111907.5520: ** << imports >>
 import leo.core.leoGlobals as g
-# g.assertUi('qt')
-try:
-    from PyQt5 import QtGui
-    from PyQt5 import QtWidgets
-    QtGui = QtWidgets
-    try:
-        from PyQt5 import Qsci
-    except ImportError:
-        Qsci = None
-    isQt5 = True
-except ImportError:
-    import PyQt4.QtGui as QtGui
-    QtWidgets = QtGui
-    isQt5 = False
 
+from leo.core.leoQt import isQt5,QtCore,QtGui,QtWidgets
+from leo.core.leoQt import Qsci
 from leo.plugins.nested_splitter import NestedSplitter # , NestedSplitterChoice
 
 import json

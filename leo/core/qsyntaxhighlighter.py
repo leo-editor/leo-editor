@@ -37,13 +37,7 @@ corresponding paragraph of text is deleted.
 #@+node:ekr.20130701072841.12674: ** << includes >>
 import leo.core.leoGlobals as g
 
-try:
-    from PyQt5 import QtGui,QtCore,Qt
-    from PyQt5.QtCore import Qt as QtConst
-except ImportError:
-    from PyQt4 import QtGui, QtCore, Qt
-    from PyQt4.QtCore import Qt as QtConst
-    QtWidgets = QtGui
+from leo.core.leoQt import isQt5,Qt,QtConst,QtCore,QtGui,QtWidgets
 
 import time
 #@-<< includes >>

@@ -51,26 +51,8 @@ from collections import defaultdict
     # import urllib2 as urllib
     # import urlparse
 
-try:
-    import PyQt5.QtCore as QtCore
-    import PyQt5.QtGui as QtGui
-    from PyQt5 import QtWidgets
-    try:
-        from PyQt5 import Qsci
-    except ImportError:
-        Qsci = None
-    from PyQt5 import uic
-    isQt5 = True
-except ImportError:
-    import PyQt4.QtCore as QtCore
-    import PyQt4.QtGui as QtGui
-    QtWidgets = QtGui
-    try:
-        from PyQt4 import Qsci
-    except ImportError:
-        Qsci = None
-    from PyQt4 import uic
-    isQt5 = False
+from leo.core.leoQt import isQt5,QtCore,QtGui,QtWidgets
+from leo.core.leoQt import Qsci,uic
 
 try:
     import leo.plugins.nested_splitter as nested_splitter

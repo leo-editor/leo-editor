@@ -16,13 +16,7 @@ import leo.core.leoGlobals as g
 import leo.core.leoFrame as leoFrame
 import leo.core.leoNodes as leoNodes
 
-try:
-    from PyQt5 import QtCore
-    from PyQt5 import QtWidgets
-except ImportError:
-    import PyQt4.QtGui as QtGui
-    QtWidgets = QtGui
-    import PyQt4.QtCore as QtCore
+from leo.core.leoQt import isQt5,QtCore,QtGui,QtWidgets
 #@-<< imports >>
 
 class BaseNativeTreeWidget (leoFrame.LeoTree):

@@ -212,25 +212,9 @@ try:
     got_markdown = True
 except ImportError:
     got_markdown = False
-
-try:
-    import PyQt4.phonon as phonon
-    phonon = phonon.Phonon
-except ImportError:
-    phonon = None
-
-try:
-    import PyQt5.QtCore as QtCore
-    import PyQt5.QtGui as QtGui
-    import PyQt5.QtWidgets as QtWidgets
-    import PyQt5.QtSvg as QtSvg
-    import PyQt5.QtWebKitWidgets as QtWebKitWidgets
-except ImportError:
-    import PyQt4.QtCore as QtCore
-    import PyQt4.QtGui as QtGui
-    import PyQt4.QtSvg as QtSvg
-    import PyQt4.QtWebKit as QtWebKitWidgets
-    QtWidgets = QtGui
+    
+from leo.core.leoQt import QtCore,QtGui,QtWidgets
+from leo.core.leoQt import phonon,QtSvg,QtWebKitWidgets
 #@-<< imports >>
 
 #@+<< define stylesheet >>
