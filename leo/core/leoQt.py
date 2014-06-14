@@ -30,11 +30,11 @@ except ImportError:
     QtConst = QtCore.Qt
     QtWidgets = QtGui
     isQt5 = False
-if 1:
+qt_version = QtCore.QT_VERSION_STR
+if 0:
     import leo.core.leoGlobals as g
-    qt_version = Qt.QT_VERSION_STR
     isNewQt = g.CheckVersion(qt_version,'4.5.0')
-    print(qt_version,isNewQt)
+    # print(qt_version,isNewQt)
        
 # print('leo.core.leoQt: isQt5: %s' % isQt5)
 

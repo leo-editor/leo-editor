@@ -54,8 +54,8 @@ def getRecentCoreList():
 def getRecentPluginsList ():
 
     return (
-        # 'baseNativeTree', # Crashes pylint.
-        # 'contextmenu', # Crashes pylint.
+        # 'baseNativeTree',
+        # 'contextmenu',
         # 'codewisecompleter',
         # 'free_layout',
         # 'internal_ipkernel',
@@ -70,6 +70,38 @@ def getRecentPluginsList ():
         # 'todo',
         # 'viewrendered',
         # 'viewrendered2',
+    )
+#@+node:ekr.20100221142603.5642: *3* getPluginsList
+def getPluginsList():
+
+    return (
+        'baseNativeTree',
+        'bookmarks',
+        'contextmenu',
+            # Crashes pylint.
+        # 'internal_ipkernel.py',
+        'leoOPML',
+        # 'mod_http',
+        'mod_scripting',
+            # E0611:489:scriptingController.runDebugScriptCommand:
+            # No name 'leoScriptModule' in module 'leo.core'
+        'nav_qt',
+        'nested_splitter',
+        'qtGui',
+            # E1101:7584:leoQtGui.embed_ipython: Module 'IPython' has no 'ipapi' member
+            # E0611: No name 'xxx' in module 'urllib'
+            # W0233: __init__ method from a non direct base class 'QDateTimeEdit' is called
+            # R0923: Interface not implemented
+        'quicksearch',
+        'todo',
+        # 'toolbar',
+            # Dangerous: many erroneous E1101 errors
+            # Harmless: W0221: Arguments number differs from overridden method
+            # Harmless: W0511: Fixme and to-do.
+        'vim.py',
+        'viewrendered.py',
+            # Dangerous: PyQt4.phonon has no x member.
+        'xemacs.py',
     )
 #@-others
 #@-<< pylint recent files >>
@@ -170,6 +202,7 @@ def getPluginsList():
         'baseNativeTree',
         'bookmarks',
         'contextmenu',
+            # Crashes pylint.
         # 'internal_ipkernel.py',
         'leoOPML',
         # 'mod_http',

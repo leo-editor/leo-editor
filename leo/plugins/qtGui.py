@@ -8251,14 +8251,13 @@ class LeoQtGui(leoGui.LeoGui):
             return g.app.config.defaultFont
     #@+node:ekr.20110605121601.18511: *4* getFullVersion
     def getFullVersion (self,c=None):
-
+        '''Return the PyQt version (for signon)'''
         try:
             qtLevel = 'version %s' % QtCore.QT_VERSION_STR
         except Exception:
             # g.es_exception()
             qtLevel = '<qtLevel>'
-
-        return 'qt %s' % (qtLevel)
+        return 'PyQt %s' % (qtLevel)
     #@+node:ekr.20110605121601.18514: *4* Icons
     #@+node:ekr.20110605121601.18515: *5* attachLeoIcon (qtGui)
     def attachLeoIcon (self,window):
