@@ -913,6 +913,8 @@ class Chapter:
                 name,c.positionExists(self.p),self.p))
         cc.selectedChapter = self
         root = self.findRootNode()
+        if not root:
+            return # New. Might happen during unit testing or startup.
         if self.p and not c.positionExists(self.p):
             self.p = root.copy()
             if trace: g.trace('*** switching to root',self.p)
@@ -1014,11 +1016,11 @@ class Chapter:
 
         trace = False and not g.unitTesting
         c = self.c
-        if self.name != 'main':
+        if self.name != 'main' and c.hoistStack:
             try:
                 c.hoistStack.pop()
             except Exception:
-                g.trace('c.hoistStack underflow')
+                g.trace('c.hoistStack underflow',g.callers())
         self.p = c.p
         if trace: g.trace('*** %s, p: %s' % (self.name,self.p.h))
     #@-others

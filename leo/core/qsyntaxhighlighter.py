@@ -105,7 +105,7 @@ class LeoSyntaxHighlighter:
             cursor.endEditBlock()
         self.doc = d = doc
         if d:
-            if isQt5:
+            if True or isQt5:
                 d.contentsChange.connect(self._q_reformatBlocks)
             else:
                 d.connect(d,Qt.SIGNAL('contentsChange(int,int,int)'),

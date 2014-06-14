@@ -138,7 +138,7 @@ class NestedSplitterChoice(QtWidgets.QWidget):
         button = QtWidgets.QPushButton("Action",self) # EKR: 2011/03/15
         self.layout().addWidget(button)
         button.setContextMenuPolicy(QtConst.CustomContextMenu)
-        if isQt5:
+        if True or isQt5:
             button.customContextMenuRequested.connect(
                 lambda pnt: self.parent().choice_menu(self,
                     button.mapToParent(pnt)))
@@ -165,7 +165,7 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
         QtWidgets.QSplitterHandle.__init__(self, owner.orientation(), owner)
         self.setStyleSheet("background-color: green;")
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        if isQt5:
+        if True or isQt5:
             self.customContextMenuRequested.connect(self.splitter_menu)
         else:
             self.connect(self,
@@ -182,7 +182,7 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
         """helper for splitter_menu menu building"""
         act = QtWidgets.QAction(name, self)
         act.setObjectName(name.lower().replace(' ','-'))
-        if isQt5:
+        if True or isQt5:
             act.triggered.connect(func)
         else:
             act.connect(act, Qt.SIGNAL('triggered()'),func)
@@ -346,7 +346,7 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
             def cb(splitter=splitter): # pylint: disable=E0102
                 print("\n%s\n" % 
                     splitter.layout_to_text(splitter.top().get_layout()))
-            if isQt5:
+            if True or isQt5:
                 act.triggered.connect(cb)
             else:
                 act.connect(act, Qt.SIGNAL('triggered()'), cb)
@@ -362,7 +362,7 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
                     def cb(id_=id_):
                         splitter.context_cb(id_, index)
                     act = QtWidgets.QAction(title, self)
-                    if isQt5:
+                    if True or isQt5:
                         act.triggered.connect(cb)
                     else:
                         act.connect(act, Qt.SIGNAL('triggered()'), cb)
@@ -609,7 +609,7 @@ class NestedSplitter(QtWidgets.QSplitter):
             not self.invalid_swap(button, self.root.marked[3]) and
             self.top().max_count() > 2):
             act = QtWidgets.QAction("Move marked here", self)
-            if isQt5:
+            if True or isQt5:
                 act.triggered.connect(
                     lambda: self.replace_widget(button, self.root.marked[3]))
             else:
@@ -623,7 +623,7 @@ class NestedSplitter(QtWidgets.QSplitter):
                     def cb(id_=id_):
                         self.place_provided(id_, index)
                     act = QtWidgets.QAction(title, self)
-                    if isQt5:
+                    if True or isQt5:
                         act.triggered.connect(cb)
                     else:
                         act.connect(act, Qt.SIGNAL('triggered()'), cb)
