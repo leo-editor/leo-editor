@@ -12,7 +12,6 @@ Callers are expected to use the *PyQt5* spellings of modules:
 '''
 # import leo.core.leoGlobals as g
     # Warning: importing leoGlobals can crash pylint!
-
 # pylint: disable=unused-import
 # Define isQt,Qt,QtConst,QtCore,QtGui,QtWidgets,QUrl
 try:
@@ -31,6 +30,12 @@ except ImportError:
     QtConst = QtCore.Qt
     QtWidgets = QtGui
     isQt5 = False
+if 1:
+    import leo.core.leoGlobals as g
+    qt_version = Qt.QT_VERSION_STR
+    isNewQt = g.CheckVersion(qt_version,'4.5.0')
+    print(qt_version,isNewQt)
+       
 # print('leo.core.leoQt: isQt5: %s' % isQt5)
 
 # Define phonon,Qsci,QtSvg,QtWebKitWidgets,uic.
