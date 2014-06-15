@@ -1295,8 +1295,13 @@ class BaseFileCommands:
             # g.trace('v.3 val:',val2)
             return val2
         except (pickle.UnpicklingError,ImportError,AttributeError,ValueError,TypeError):
-            g.trace('can not unpickle %s=%s' % (attr,val))
-            return val
+            try:
+                # for python 2.7 in python 3.4
+                val2 = pickle.loads(binString, encoding='bytes')
+                return val2
+            except (pickle.UnpicklingError,ImportError,AttributeError,ValueError,TypeError):
+                g.trace('can not unpickle %s=%s' % (attr,val))
+                return val
     #@+node:ekr.20060919110638.14: *4* parse_leo_file
     def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
 

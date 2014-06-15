@@ -545,7 +545,7 @@ class todoController:
 
                 prog = self.getat(p.v, 'progress')
                 if prog is not '':
-                    prog = int(prog)
+                    prog = int(prog or 0)
                     use = prog//10*10
                     use = 'prg%03d.png' % use
 
