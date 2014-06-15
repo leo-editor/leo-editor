@@ -8049,9 +8049,13 @@ class LeoQtGui(leoGui.LeoGui):
 
             if multiple:
                 lst = QtWidgets.QFileDialog.getOpenFileNames(parent,title,startpath,filter)
+                if isQt5:  # this is a *Py*Qt change rather than a Qt change
+                    lst, selected_filter = lst
                 return [g.u(s) for s in lst]
             else:
                 s = QtWidgets.QFileDialog.getOpenFileName(parent,title,startpath,filter)
+                if isQt5:
+                    s, selected_filter = s
                 return g.u(s)
     #@+node:ekr.20110605121601.18501: *5* runPropertiesDialog (qtGui)
     def runPropertiesDialog(self,
@@ -8390,7 +8394,7 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20110605121601.18518: *5* getTreeImage (test)
     def getTreeImage (self,c,path):
 
-        image = QtWidgets.QPixmap(path)
+        image = QtGui.QPixmap(path)
 
         if image.height() > 0 and image.width() > 0:
             return image,image.height()
