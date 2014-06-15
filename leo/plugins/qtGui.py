@@ -2147,6 +2147,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
 
         MainWindow = self
         w = QtWidgets.QMenuBar(MainWindow)
+        w.setNativeMenuBar(False)
         w.setGeometry(QtCore.QRect(0, 0, 957, 22))
         w.setObjectName("menubar")
         MainWindow.setMenuBar(w)
