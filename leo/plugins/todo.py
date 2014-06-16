@@ -612,7 +612,7 @@ class todoController:
         )
     #@+node:tbrown.20090119215428.22: *4* getat
     def getat(self, node, attrib):
-        "new attrbibute getter"
+        "new attribute getter"
 
         if (not hasattr(node,'unknownAttributes') or
             "annotate" not in node.unknownAttributes or
