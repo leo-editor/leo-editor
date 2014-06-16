@@ -6765,12 +6765,7 @@ class LeoQtTree (baseNativeTree.BaseNativeTreeWidget):
         width = sum([i.width() for i in images])
         height = max([i.height() for i in images])
         pix = QtGui.QPixmap(width,height)
-        pix.fill(QtGui.QColor(None))
-            # transparent fill, default it random noise
-        if isQt5:
-            pass ### Not ready yet.
-        else:
-            pix.setAlphaChannel(pix)
+        pix.fill(QtGui.QColor(0,0,0,0))  # transparent fill, rgbA
         painter = QtGui.QPainter(pix)
         x = 0
         for i in images:

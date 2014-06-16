@@ -1249,6 +1249,37 @@ class BaseFileCommands:
             root.dump()
         for child in root.children:
             self.dumpSaxTree(child,dummy=False)
+    #@+node:tbrown.20140615093933.89639: *4* bytes_to_unicode
+    def bytes_to_unicode(self, ob):
+        """recursively convert bytes objects in strings / lists / dicts to str
+        objects, thanks to TNT
+        http://stackoverflow.com/questions/22840092/unpickling-data-from-python-2-with-unicode-strings-in-python-3
+        
+        Needed for reading Python 2.7 pickles in Python 3.4 in getSaxUa()
+        """
+        t = type(ob)
+        if t in (list, tuple):
+            l = [str(i, 'utf-8') if type(i) is bytes else i for i in ob]
+            l = [bytes_to_unicode(i) if type(i) in (list, tuple, dict) else i for i in l]
+            ro = tuple(l) if t is tuple else l
+        elif t is dict:
+            byte_keys = [i for i in ob if type(i) is bytes]
+            for bk in byte_keys:
+                v = ob[bk]
+                del(ob[bk])
+                ob[str(bk,'utf-8')] = v
+            for k in ob:
+                if type(ob[k]) is bytes:
+                    ob[k] = str(ob[k], 'utf-8')
+                elif type(ob[k]) in (list, tuple, dict):
+                    ob[k] = bytes_to_unicode(ob[k])
+            ro = ob
+        elif t is bytes:  # TNB added this clause
+            ro = str(ob, 'utf-8')
+        else:
+            ro = ob
+            # print("unprocessed object: {0} {1}".format(t, ob))
+        return ro
     #@+node:ekr.20061003093021: *4* getSaxUa
     def getSaxUa(self,attr,val,kind=None): # Kind is for unit testing.
 
@@ -1298,6 +1329,7 @@ class BaseFileCommands:
             try:
                 # for python 2.7 in python 3.4
                 val2 = pickle.loads(binString, encoding='bytes')
+                val2 = self.bytes_to_unicode(val2)
                 return val2
             except (pickle.UnpicklingError,ImportError,AttributeError,ValueError,TypeError):
                 g.trace('can not unpickle %s=%s' % (attr,val))

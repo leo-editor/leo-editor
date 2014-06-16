@@ -149,10 +149,10 @@ if g.app.gui.guiName() == "qt":
             self.populateMenu(self.menu, o)
             u.butMenu.setMenu(self.menu)
             if isQt5:
-                u.butHelp.clicked.connect(lambda clicked: o.showHelp())
-                u.butClrProg.clicked.connect(lambda clicked: o.progress_clear())
-                u.butClrTime.clicked.connect(lambda clicked: o.clear_time_req())
-                u.butPriClr.clicked.connect(lambda clicked: o.priority_clear())
+                u.butHelp.clicked.connect(lambda checked: o.showHelp())
+                u.butClrProg.clicked.connect(lambda checked: o.progress_clear())
+                u.butClrTime.clicked.connect(lambda checked: o.clear_time_req())
+                u.butPriClr.clicked.connect(lambda checked: o.priority_clear())
                 # if live update is too slow change valueChanged(*) to editingFinished()
                 u.spinTime.valueChanged.connect(
                     lambda v: o.set_time_req(val=u.spinTime.value()))
@@ -210,7 +210,7 @@ if g.app.gui.guiName() == "qt":
                 def setter(pri=pri):
                     o.setPri(pri)
                 if isQt5:
-                    w.clicked.connect(lambda clicked, setter=setter: setter())
+                    w.clicked.connect(lambda checked, setter=setter: setter())
                 else:
                     self.connect(w, QtCore.SIGNAL("clicked()"), setter)
 
@@ -256,7 +256,7 @@ if g.app.gui.guiName() == "qt":
                 
             if isQt5:
                 self.UI.butDetails.clicked.connect(
-                    lambda clicked: self.UI.frmDetails.setVisible(not self.UI.frmDetails.isVisible()))
+                    lambda checked: self.UI.frmDetails.setVisible(not self.UI.frmDetails.isVisible()))
             else:
                 self.connect(self.UI.butDetails, QtCore.SIGNAL("clicked()"),
                     lambda: self.UI.frmDetails.setVisible(not self.UI.frmDetails.isVisible()))
@@ -265,13 +265,13 @@ if g.app.gui.guiName() == "qt":
 
             if isQt5:
                 self.UI.butNext.clicked.connect(
-                    lambda clicked: self.owner.c.selectVisNext())
+                    lambda checked: self.owner.c.selectVisNext())
                 self.UI.butNextTodo.clicked.connect(
-                    lambda clicked: self.owner.find_todo())
+                    lambda checked: self.owner.find_todo())
                 self.UI.butApplyDueOffset.clicked.connect(
-                    lambda clicked: o.set_date_offset(field='duedate'))
+                    lambda checked: o.set_date_offset(field='duedate'))
                 self.UI.butApplyOffset.clicked.connect(
-                    lambda clicked: o.set_date_offset(field='nextworkdate'))
+                    lambda checked: o.set_date_offset(field='nextworkdate'))
             else:
                 self.connect(self.UI.butNext, QtCore.SIGNAL("clicked()"),
                     lambda: self.owner.c.selectVisNext())
@@ -612,7 +612,7 @@ class todoController:
         )
     #@+node:tbrown.20090119215428.22: *4* getat
     def getat(self, node, attrib):
-        "new attrbibute getter"
+        "new attribute getter"
 
         if (not hasattr(node,'unknownAttributes') or
             "annotate" not in node.unknownAttributes or
