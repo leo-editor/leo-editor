@@ -344,8 +344,9 @@ def configuredcommands_rclick(c,p, menu):
             desc = desc.strip()
             action = menu.addAction(desc)
             #action.setToolTip(cmd)
-            def configcmd_rclick_cb(cm = cmd):
-                c.k.simulateCommand(cm)
+            def create_callback(cm):
+                return lambda: c.k.simulateCommand(cm)
+            configcmd_rclick_cb = create_callback(cmd)
             action.triggered.connect(configcmd_rclick_cb)
             # action.connect(action,Qt.SIGNAL("triggered()"), configcmd_rclick_cb)
 #@+node:ville.20090630210947.10189: ** install_handlers
