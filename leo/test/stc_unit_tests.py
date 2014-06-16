@@ -382,6 +382,16 @@ files = u.project_files('leo')
 ReplaceController(c,files).run(aList)
 #@+node:ekr.20140601151054.17619: ** @test Data2
 #@+others
+#@+node:ekr.20140616055519.17771: *3* dump_contexts_d
+def dump_contexts_d(dt):
+    d = dt.contexts_d
+    print('Dump of contexts_d...')
+    for name in sorted(d.keys()):
+        cx = d.get(name)
+        print(cx.full_name())
+        # for child in cx.child_contexts:
+            # print('  %s' % child.full_name())
+    print('')
 #@+node:ekr.20140604135104.17796: *3* dump_global_d
 def dump_global_d(dt):
     d = dt.global_d
@@ -449,6 +459,7 @@ project_name = 'leo'
 flags = (
     'dump_ast1', # Dump s1
     'dump_global_d',
+    'dump_contexts_d',
     # 'report',
     'stats',
     's',
@@ -478,6 +489,8 @@ import s
 dt = stc.Data2()
 files,p0_time,root_d = pass0()
 dt_time = pass1()
+if 'dump_contexts_d' in flags:
+    dump_contexts_d(dt)
 if 'dump_global_d' in flags:
     dump_global_d(dt)
 if 'report' in flags:
