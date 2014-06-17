@@ -410,7 +410,7 @@ def pass0():
         node1 = u.p0s(s,report=False,tag='s')
         if 'dump_ast1' in flags:
             print('ast for s1...\n%s\n' % (u.dump_ast(node1)))
-        node2 = u.p0s(s2,report=False,tag='s2')
+        node2 = u.p0s(s2,report=False,tag='s2') if s2 else None
         root_d = {'s': node1, 's2': node2,}
         files = root_d.keys()
     else:
@@ -422,13 +422,26 @@ def pass0():
     p0_time = u.diff_time(t)
     return files,p0_time,root_d
 #@+node:ekr.20140603074103.17642: *3* pass1
-def pass1():
+def pass1(files,root_d):
     '''Apply dt to all files.'''
     t = time.time()
     for fn in sorted(files):
         dt(fn,root_d.get(fn))
     dt_time = u.diff_time(t)
     return dt_time
+#@+node:ekr.20140616202104.17702: *3* pickle
+def pickle(root_d):
+    import pickle
+    import pprint
+    t = time.time()
+    for fn in sorted(root_d.keys()):
+        node = root_d.get(fn)
+        f = g.fileLikeObject()
+        pickle.dump(node,f)
+        s = f.read()
+        # g.trace(pprint.pformat(s))
+        g.trace('%7s %s' % (len(s),g.shortFileName(fn)))
+    g.trace('%s' % u.diff_time(t))
 #@+node:ekr.20140603074103.17641: *3* report
 def report():
     '''Print final report.'''
@@ -457,12 +470,13 @@ def report_ambiguous(dt):
 #@-others
 project_name = 'leo'
 flags = (
-    'dump_ast1', # Dump s1
-    'dump_global_d',
-    'dump_contexts_d',
-    # 'report',
+    # 'dump_ast1', # Dump s1
+    # 'dump_global_d',
+    # 'dump_contexts_d',
+    # 'pickle',
+    'report',
     'stats',
-    's',
+    # 's',
     'src',
     'self_alias', # detect aliases to self.
 )
@@ -488,7 +502,9 @@ import s
 #@-<< define s2 for Data2 test >>
 dt = stc.Data2()
 files,p0_time,root_d = pass0()
-dt_time = pass1()
+dt_time = pass1(files,root_d)
+if 'pickle' in flags:
+    pickle(root_d)
 if 'dump_contexts_d' in flags:
     dump_contexts_d(dt)
 if 'dump_global_d' in flags:

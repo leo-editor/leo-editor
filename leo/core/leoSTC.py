@@ -3405,24 +3405,31 @@ class Data2(AstFullTraverser):
                 self.kind,u.format(self.cx),u.format(self.node))
                 
         __str__ = __repr__
-    #@+node:ekr.20140601151054.17642: *3*  d2.ctor & __call__
+    #@+node:ekr.20140601151054.17642: *3*  d2.ctor & init & __call__
     def __init__(self):
         AstFullTraverser.__init__(self)
         self.global_d = {} # Keys are names; values are NameData objects.
         self.contexts_d = {}
             # Keys are full context names; values are Context objects.
         self.defs_d = {}
-        self.module_cx = None
-        self.module_cx_obj = None
         self.refs_d = {}
         self.u = Utils()
-        # State vars
+        self.init()
+        
+    def init(self):
+        '''(Re)init all non-global ivars.'''
+        self.module_cx = None
+        self.module_cx_obj = None
         self.arg_node = None # The enclosing argument expression.
         self.assign_node = None # Enclosing Assign node.
         self.aug_assign_node = None # Enclosing AugAssign node.
         self.context_node = None
         self.context_obj = None
         self.lambdas = 0 # Number of lambda's seen in module.
+        # self.n_attributes = 0
+        # self.n_contexts = 0
+        # self.n_nodes = 0
+        self.parent = None
 
     def __call__(self,fn,node):
         self.run(fn,node)
@@ -3431,14 +3438,9 @@ class Data2(AstFullTraverser):
         '''Run the prepass: init, then visit the root.'''
         # pylint: disable=arguments-differ
         # Init all ivars.
-        self.context_node = None
-        self.context_obj = None
+        self.init()
         self.fn = fn
-        self.parent = None
         self.visit(root)
-        # self.n_attributes = 0
-        # self.n_contexts = 0
-        # self.n_nodes = 0
     #@+node:ekr.20140601151054.17644: *3*  d2.visit
     def visit(self,node):
         '''Visit a node and all its descendants, creating the dictionaries of this class.'''
@@ -3455,7 +3457,7 @@ class Data2(AstFullTraverser):
     def define_name(self,cx,cx_obj,name,node,parent):
         '''Called when name is defined in the given context.'''
         # Note: cx (an AST node) is hashable.
-        trace = True
+        trace = False
         if trace:
             u = self.u
             # g.trace(node.__class__.__name__)
@@ -3570,7 +3572,7 @@ class Data2(AstFullTraverser):
         self.lambdas += 1
         name = 'lambda %s' % self.lambdas
         new_cx = Context('lambda',name,node,parent_cx,parent_cx_obj)
-        self.new_context(new_cx)
+        self.new_context(new_cx,parent_cx_obj)
         # Handle the lambda args.
         for arg in node.args.args:
             if isinstance(arg,ast.Name):
@@ -3588,7 +3590,7 @@ class Data2(AstFullTraverser):
                 # self.define_name(node,parent_cx_obj,arg.arg,node,self.parent)
             arg.stc_scope = node
         # Visit the children in the new context.
-        self.context_node,self.context_obj = node
+        self.context_node,self.context_obj = node,new_cx
         # self.visit(node.args)
         self.visit(node.body)
         # Restore the context.
@@ -3664,7 +3666,7 @@ class Data2(AstFullTraverser):
         assert not self.aug_assign_node,self.aug_assign_node
         self.aug_assign_node = node
         self.visit(node.target)
-        self.aug_assign = None
+        self.aug_assign_node = None
         self.visit(node.value)
     #@+node:ekr.20140604072301.17674: *4* d2.Call (To do)
     # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
