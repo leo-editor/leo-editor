@@ -3383,10 +3383,8 @@ class Context:
 #@+node:ekr.20140601151054.17640: ** class Data2
 class Data2(AstFullTraverser):
     '''
-    Traversal to create global data dict d.
-    
-    Like P1, this class injects stc_parent and stc_context links.
-    Unlike P1, this class does not inject stc_symbol_table links.
+    Traversal to create global data dictionaries.
+    Injects stc_cx_node, stc_cx_obj and stc_parent links into all visited nodes.
     '''
     #@+others
     #@+node:ekr.20140604135104.17795: *3*  class d2.NameData
@@ -3449,13 +3447,13 @@ class Data2(AstFullTraverser):
         node.stc_cx_node = self.cx_node
         node.stc_cx_obj = self.cx_obj
         node.stc_parent = self.parent
-        # Save the previous context and parent.
+        # Save the previous state.
         old_cx_node,old_cx_obj,old_parent = self.cx_node,self.cx_obj,self.parent
         # Visit the node with the new parent.
         self.parent = node
         method = getattr(self,'do_' + node.__class__.__name__)
         method(node)
-        # Restore the previous context and parent.
+        # Restore the previous state.
         self.cx_node,self.cx_obj,self.parent = old_cx_node,old_cx_obj,old_parent
     #@+node:ekr.20140601151054.17645: *3* d2.define_name
     def define_name(self,name,node):
