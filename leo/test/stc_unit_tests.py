@@ -401,7 +401,7 @@ def dump_global_d(dt):
             name,
             '  \n'.join(['  %r' % (z) for z in aList])))
 #@+node:ekr.20140603074103.17640: *3* pass0
-def pass0():
+def pass0(files):
     '''Do all p0 processing.'''
     t = time.time()
     if 's' in flags:
@@ -414,11 +414,9 @@ def pass0():
         root_d = {'s': node1, 's2': node2,}
         files = root_d.keys()
     else:
-        files = [
-            # r'c:\leo.repo\leo-editor\leo\core\leoApp.py',
-            # r'c:\leo.repo\leo-editor\leo\core\leoFileCommands.py',
-        ] or u.project_files(project_name)
-        root_d = u.p0(files,project_name,report=False)
+        root_d = u.p0(
+            files or u.project_files(project_name),
+            project_name,report=False)
     p0_time = u.diff_time(t)
     return files,p0_time,root_d
 #@+node:ekr.20140603074103.17642: *3* pass1
@@ -480,6 +478,10 @@ flags = (
     'src',
     'self_alias', # detect aliases to self.
 )
+files = [
+    # 'c:\leo.repo\leo-editor\leo\core\leoApp.py',
+    # r'c:\leo.repo\leo-editor\leo\core\leoFileCommands.py',
+]
 #@+<< define s for Data2 test >>
 #@+node:ekr.20140603074103.17639: *3* << define s for Data2 test >>
 s = '''
@@ -501,7 +503,7 @@ import s
 '''
 #@-<< define s2 for Data2 test >>
 dt = stc.Data2()
-files,p0_time,root_d = pass0()
+files,p0_time,root_d = pass0(files)
 dt_time = pass1(files,root_d)
 if 'pickle' in flags:
     pickle(root_d)
