@@ -3418,14 +3418,14 @@ class Data2(AstFullTraverser):
         
     def init(self):
         '''(Re)init all non-global ivars.'''
-        self.module_cx = None
-        self.module_cx_obj = None
         self.arg_node = None # The enclosing argument expression.
         self.assign_node = None # Enclosing Assign node.
         self.aug_assign_node = None # Enclosing AugAssign node.
-        self.context_node = None
-        self.context_obj = None
+        self.cx_node = None
+        self.cx_obj = None
         self.lambdas = 0 # Number of lambda's seen in module.
+        self.module_cx = None
+        self.module_cx_obj = None
         # self.n_attributes = 0
         # self.n_contexts = 0
         # self.n_nodes = 0
@@ -3446,18 +3446,24 @@ class Data2(AstFullTraverser):
         '''Visit a node and all its descendants, creating the dictionaries of this class.'''
         assert isinstance(node,ast.AST),node.__class__.__name__
         # self.n_nodes += 1
-        # Visit the children with the new parent.
-        old_parent = self.parent
+        # Patch the node.
+        node.stc_cx_node = self.cx_node
+        node.stc_cx_obj = self.cx_obj
+        node.stc_parent = self.parent
+        # Save the previous context and parent.
+        old_cx_node,old_cx_obj,old_parent = self.cx_node,self.cx_obj,self.parent
+        # Visit the node with the new parent.
         self.parent = node
         method = getattr(self,'do_' + node.__class__.__name__)
         method(node)
-        # Restore the parent.
-        self.parent = old_parent
+        # Restore the previous context and parent.
+        self.cx_node,self.cx_obj,self.parent = old_cx_node,old_cx_obj,old_parent
     #@+node:ekr.20140601151054.17645: *3* d2.define_name
-    def define_name(self,cx,cx_obj,name,node,parent):
+    def define_name(self,name,node):
         '''Called when name is defined in the given context.'''
         # Note: cx (an AST node) is hashable.
         trace = False
+        cx_node,cx_obj,parent = self.cx_node,self.cx_obj,self.parent
         if trace:
             u = self.u
             # g.trace(node.__class__.__name__)
@@ -3473,17 +3479,21 @@ class Data2(AstFullTraverser):
                 if trace: g.trace('%-10s node  : %s' % (name,u.format(node)))
         # Sets don't work all that well here.
         aSet = self.defs_d.get(name,set())
-        aSet.add(cx)
+        aSet.add(cx_node)
         self.defs_d[name] = aSet
         aList = self.global_d.get(name,[])
-        aList.append(self.NameData(cx,cx_obj,'def',node,parent))
+        aList.append(self.NameData(cx_node,cx_obj,'def',node,parent))
         self.global_d[name] = aList
     #@+node:ekr.20140616055519.17781: *3* d2.new_context
-    def new_context(self,new_cx,parent_cx_obj):
-        '''Make entries for a new context.'''
+    def new_context(self,kind,name,node):
+        '''Define a new context in the *existing* context.'''
+        new_cx = Context(kind,name,node,self.cx_node,self.cx_obj)
         self.contexts_d[new_cx.full_name()] = new_cx
-        if parent_cx_obj:
-            parent_cx_obj.child_contexts.append(new_cx)
+        if self.cx_obj:
+            self.cx_obj.child_contexts.append(new_cx)
+        if kind != 'lambda':
+            self.define_name(name,node)
+        return new_cx
     #@+node:ekr.20140601151054.17646: *3* d2.print_stats
     def print_stats (self):
         '''Print values of all vars starting with 'n_'.'''
@@ -3503,14 +3513,15 @@ class Data2(AstFullTraverser):
             # self.print_distribution(d,name)
         # print('')
     #@+node:ekr.20140601151054.17647: *3* d2.reference_name
-    def reference_name(self,cx,cx_obj,name,node,parent):
+    def reference_name(self,name,node):
         '''Called whenever a name is referenced in the given context.'''
         # Note: cx (an AST node) is hashable.
+        cx_node,cx_obj,parent = self.cx_node,self.cx_obj,self.parent
         aSet = self.refs_d.get(name,set())
-        aSet.add(cx)
+        aSet.add(cx_node)
         self.refs_d[name] = aSet
         aList = self.global_d.get(name,[])
-        aList.append(self.NameData(cx,cx_obj,'ref',node,parent))
+        aList.append(self.NameData(cx_node,cx_obj,'ref',node,parent))
         self.global_d[name] = aList
     #@+node:ekr.20140601151054.17648: *3* d2.visitors
     #@+node:ekr.20140616055519.17780: *4*  d2.contexts
@@ -3520,15 +3531,11 @@ class Data2(AstFullTraverser):
     def do_ClassDef (self,node):
 
         # self.n_contexts += 1
-        parent_cx = self.context_node
-        parent_cx_obj = self.context_obj
-        # Create the new context and remember it.
-        new_cx = Context('class',node.name,node,parent_cx,parent_cx_obj)
-        self.new_context(new_cx,parent_cx_obj)
-        # Define the function name itself in the enclosing context.
-        self.define_name(parent_cx,parent_cx_obj,node.name,node,self.parent)
+        old_cx_node,old_cx_obj = self.cx_node,self.cx_obj
+        # Create the new Context.
+        new_cx = self.new_context('class',node.name,node)
         # Visit the children in the new context.
-        self.context_node,self.context_obj = node,new_cx
+        self.cx_node,self.cx_obj = node,new_cx
         for z in node.bases:
             self.visit(z)
         for z in node.body:
@@ -3536,22 +3543,18 @@ class Data2(AstFullTraverser):
         for z in node.decorator_list:
             self.visit(z)
         # Restore the context.
-        self.context_node,self.context_obj = parent_cx,parent_cx_obj
+        self.cx_node,self.cx_obj = old_cx_node,old_cx_obj
     #@+node:ekr.20140601151054.17652: *5* d2.FunctionDef
     # FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
 
     def do_FunctionDef (self,node):
         
         # self.n_contexts += 1
-        parent_cx = self.context_node
-        parent_cx_obj = self.context_obj
+        old_cx_node,old_cx_obj = self.cx_node,self.cx_obj
         # Create the new context and remember it.
-        new_cx = Context('def',node.name,node,parent_cx,parent_cx_obj)
-        self.new_context(new_cx,parent_cx_obj)
-        # Define the function name itself in the enclosing context.
-        self.define_name(parent_cx,parent_cx_obj,node.name,node,self.parent)
+        new_cx = self.new_context('def',node.name,node)
         # Visit the children in the new context.
-        self.context_node,self.context_obj = node,new_cx
+        self.cx_node,self.cx_obj = node,new_cx
         # Visit the formal arg list.
         self.visit(node.args)
         for z in node.body:
@@ -3559,27 +3562,25 @@ class Data2(AstFullTraverser):
         for z in node.decorator_list:
             self.visit(z)
         # Restore the context.
-        self.context_node,self.context_obj = parent_cx,parent_cx_obj
+        self.cx_node,self.cx_obj = old_cx_node,old_cx_obj
     #@+node:ekr.20140601151054.17655: *5* d2.Lambda
     # Lambda(arguments args, expr body)
 
     def do_Lambda(self,node):
 
         # self.n_contexts += 1
-        parent_cx = self.context_node
-        parent_cx_obj = self.context_obj
+        old_cx_node,old_cx_obj = self.cx_node,self.cx_obj
         # Remember the new context.
         self.lambdas += 1
         name = 'lambda %s' % self.lambdas
-        new_cx = Context('lambda',name,node,parent_cx,parent_cx_obj)
-        self.new_context(new_cx,parent_cx_obj)
+        new_cx = self.new_context('lambda',name,node)
         # Handle the lambda args.
         for arg in node.args.args:
             if isinstance(arg,ast.Name):
                 # Python 2.x.
                 assert isinstance(arg.ctx,ast.Param),arg.ctx
                 # Define the arg in the lambda context.
-                self.define_name(node,parent_cx_obj,arg.id,node,self.parent)
+                self.define_name(arg.id,node)
             elif isinstance(arg,ast.Tuple):
                 pass
             else:
@@ -3590,31 +3591,30 @@ class Data2(AstFullTraverser):
                 # self.define_name(node,parent_cx_obj,arg.arg,node,self.parent)
             arg.stc_scope = node
         # Visit the children in the new context.
-        self.context_node,self.context_obj = node,new_cx
+        self.cx_node,self.cx_obj = node,new_cx
         # self.visit(node.args)
         self.visit(node.body)
         # Restore the context.
-        self.context_node,self.context_obj = parent_cx,parent_cx_obj
+        self.cx_node,self.cx_obj = old_cx_node,old_cx_obj
     #@+node:ekr.20140601151054.17656: *5* d2.Module
     def do_Module (self,node):
 
         # self.n_contexts += 1
         # Create the Module context and remember it.
         name = g.shortFileName(self.fn)
-        assert self.context_node is None
-        assert self.context_obj is None
-        new_cx = Context('module',name,node,None,None)
-        self.new_context(new_cx,None)
+        assert self.cx_node is None
+        assert self.cx_obj is None
+        new_cx = self.new_context('module',name,node)
         # Set ivars to remember the global context.
         self.module_cx = node
         self.module_cx_obj = new_cx
         # Visit the children in the new context.
-        self.context_node = node
-        self.context_obj = new_cx
+        self.cx_node = node
+        self.cx_obj = new_cx
         for z in node.body:
             self.visit(z)
         # Restore the context.
-        self.context_node,self.context_obj = None,None
+        self.cx_node,self.cx_obj = None,None
     #@+node:ekr.20140604072301.17676: *4* d2.arguments & arg
     # arguments = (expr* args, identifier? vararg, identifier? kwarg, expr* defaults)
 
@@ -3652,12 +3652,11 @@ class Data2(AstFullTraverser):
         
         # self.n_attributes += 1
         self.visit(node.value)
-        cx,cx_obj,parent = self.context_node,self.context_obj,self.parent
         name = node.attr
         if self.assign_node:
-            self.define_name(cx,cx_obj,name,self.assign_node,parent)
+            self.define_name(name,self.assign_node)
         else:
-            self.reference_name(cx,cx_obj,name,node,parent)
+            self.reference_name(name,node)
     #@+node:ekr.20140601151054.17650: *4* d2.AugAssign
     # AugAssign(expr target, operator op, expr value)
 
@@ -3689,9 +3688,13 @@ class Data2(AstFullTraverser):
 
     def do_Global(self,node):
 
-        cx,cx_obj = self.module_cx,self.module_cx_obj
+        # A hack: switch to module context to define the name.
+        old_cx_node,old_cx_obj = self.cx_node,self.cx_obj
+        self.cx_node,self.cx_obj = self.module_cx,self.module_cx_obj
         for name in node.names:
-            self.define_name(cx,cx_obj,name,node,self.parent)
+            self.define_name(name,node)
+        # Restore the real context.
+        self.cx_node,self.cx_obj = old_cx_node,old_cx_obj
     #@+node:ekr.20140601151054.17654: *4* d2.Import & ImportFrom
     # Import(alias* names)
     def do_Import(self,node):
@@ -3703,32 +3706,26 @@ class Data2(AstFullTraverser):
 
     # alias (identifier name, identifier? asname)
     def alias_helper(self,node):
-        cx = self.context_node
-        cx_obj = self.context_obj
-        assert cx
         for alias in node.names:
             name = alias.asname if alias.asname else alias.name.split('.')[0]
             # if alias.asname: g.trace('%s as %s' % (alias.name,alias.asname))
             # A hack: we treat imports as *references*.
             # Otherwise, all imports will be "ambigous" with the real class definitions.
-            self.reference_name(cx,cx_obj,name,node,self.parent)
+            self.reference_name(name,node)
     #@+node:ekr.20140601151054.17657: *4* d2.Name
     # Name(identifier id, expr_context ctx)
 
     def do_Name(self,node):
 
         # self.visit(node.ctx)
-        # g.trace(self.u.format(node))
-        cx = self.context_node
-        cx_obj = self.context_obj
         if isinstance(node.ctx,(ast.Param,ast.Store)):
             # The scope is unambigously cx, **even for AugAssign**.
             # If there is no binding, we will get an UnboundLocalError at run time.
             # However, AugAssigns do not actually assign to the var.
             if self.assign_node:
-                self.define_name(cx,cx_obj,node.id,self.assign_node,self.parent)
+                self.define_name(node.id,self.assign_node)
             elif self.arg_node:
-                self.define_name(cx,cx_obj,node.id,self.arg_node,self.parent)
+                self.define_name(node.id,self.arg_node)
         else:
             # ast.Store does *not* necessarily define the scope.
             # For example, a += 1 generates a Store, but does not defined the symbol.

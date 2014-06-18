@@ -446,7 +446,7 @@ def pickle(root_d):
 def report():
     '''Print final report.'''
     print('')
-    print('nfiles: %s' % len(files))
+    print('files: %s' % len(files))
     print('parse: %s' % p0_time)
     print('   DT: %s' % dt_time)
     print('defs: %s refs: %s: ambiguous: %s' % (
