@@ -3467,7 +3467,8 @@ class Data2(AstFullTraverser):
             u = self.u
             # g.trace(node.__class__.__name__)
             if isinstance(node,ast.Name):
-                if trace: 
+                if trace:
+                    parent = self.parent
                     if isinstance(parent,ast.arguments):
                         g.trace('%-10s parent: args = [%s]' % (
                             name,u.format(parent)))
@@ -5378,34 +5379,38 @@ class SymbolTableEntry:
     '''A class representing the symbol table information for one name.'''
     #@+others
     #@+node:ekr.20140616055519.17768: *3*   not used
-    #@+node:ekr.20140526082700.18321: *4* e.add_chain
-    def add_chain (self,base,op):
-        '''Add op to the e.chains list, where e is the STE for base.'''
-        e = self
-        d = e.chains.get(base,{})
-        s = repr(op)
-        # g.trace('base: %s chain: %s' % (base,s))
-        chain = d.get(s)
-        if chain:
-            assert repr(chain) == repr(op)
-        else:
-            d [s] = op
-            e.chains [base] = d
-    #@+node:ekr.20140526082700.18323: *4* e.dump_chains
-    def dump_chains(self,level):
-        
-        result,u = [],Utils()
-        def put(s):
-            result.append(u.indent(level,s))
-        # self.chains is a dict of dicts.
-        keys = list(self.chains.keys())
-        for key in keys:
-            d = self.chains.get(key,{})
-            for key2 in list(d.keys()):
-                chain = d.get(key2)
-                put(repr(chain))
-        result.sort()
-        return '\n'.join(result)
+    if 0:
+        # pylint: disable=no-member
+        #@+others
+        #@+node:ekr.20140526082700.18321: *4* e.add_chain
+        def add_chain (self,base,op):
+            '''Add op to the e.chains list, where e is the STE for base.'''
+            e = self
+            d = e.chains.get(base,{})
+            s = repr(op)
+            # g.trace('base: %s chain: %s' % (base,s))
+            chain = d.get(s)
+            if chain:
+                assert repr(chain) == repr(op)
+            else:
+                d [s] = op
+                e.chains [base] = d
+        #@+node:ekr.20140526082700.18323: *4* e.dump_chains
+        def dump_chains(self,level):
+            
+            result,u = [],Utils()
+            def put(s):
+                result.append(u.indent(level,s))
+            # self.chains is a dict of dicts.
+            keys = list(self.chains.keys())
+            for key in keys:
+                d = self.chains.get(key,{})
+                for key2 in list(d.keys()):
+                    chain = d.get(key2)
+                    put(repr(chain))
+            result.sort()
+            return '\n'.join(result)
+        #@-others
     #@+node:ekr.20140526082700.18319: *3*  e.ctor
     def __init__ (self,name,st):
 
@@ -5434,7 +5439,7 @@ class SymbolTableEntry:
         
         e,result,u = self,[],Utils()
         def put(s):
-            result.append(self.u.indent(level,s))
+            result.append(u.indent(level,s))
         put('STE cx: %s name: %s defined: %s' % (e.cx,e.name,e.defined))
         # if e.chains:
             # n = self.st.max_name_length - len(self.name)
