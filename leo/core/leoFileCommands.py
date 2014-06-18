@@ -1260,7 +1260,7 @@ class BaseFileCommands:
         t = type(ob)
         if t in (list, tuple):
             l = [str(i, 'utf-8') if type(i) is bytes else i for i in ob]
-            l = [bytes_to_unicode(i) if type(i) in (list, tuple, dict) else i for i in l]
+            l = [self.bytes_to_unicode(i) if type(i) in (list, tuple, dict) else i for i in l]
             ro = tuple(l) if t is tuple else l
         elif t is dict:
             byte_keys = [i for i in ob if type(i) is bytes]
@@ -1272,7 +1272,7 @@ class BaseFileCommands:
                 if type(ob[k]) is bytes:
                     ob[k] = str(ob[k], 'utf-8')
                 elif type(ob[k]) in (list, tuple, dict):
-                    ob[k] = bytes_to_unicode(ob[k])
+                    ob[k] = self.bytes_to_unicode(ob[k])
             ro = ob
         elif t is bytes:  # TNB added this clause
             ro = str(ob, 'utf-8')
@@ -1328,7 +1328,8 @@ class BaseFileCommands:
         except (pickle.UnpicklingError,ImportError,AttributeError,ValueError,TypeError):
             try:
                 # for python 2.7 in python 3.4
-                val2 = pickle.loads(binString, encoding='bytes')
+                # pylint: disable=unexpected-keyword-arg
+                val2 = pickle.loads(binString,encoding='bytes')
                 val2 = self.bytes_to_unicode(val2)
                 return val2
             except (pickle.UnpicklingError,ImportError,AttributeError,ValueError,TypeError):
