@@ -3392,17 +3392,16 @@ class Data2(AstFullTraverser):
     #@+node:ekr.20140604135104.17795: *3*  class d2.NameData
     class NameData:
         '''A class holding all data related to a name (spelling).'''
-        def __init__(self,cx,cx_obj,kind,node,parent):
-            self.cx = cx # The context ast node in which the data appears.
+        def __init__(self,cx_node,cx_obj,kind,node):
+            self.cx_node = cx_node # The context ast node in which the data appears.
             self.cx_obj = cx_obj # The Context object in which the data appears.
             self.kind = kind # in ('def','ref','import')
             self.node = node # The ast.node at which the datum occurs.
-            self.parent = parent # The parent ast.
             
         def __repr__(self):
             u = Utils()
             return 'NameData(%4s,cx: %20s, node: %s)' % (
-                self.kind,u.format(self.cx),u.format(self.node))
+                self.kind,u.format(self.cx_node),u.format(self.node))
                 
         __str__ = __repr__
     #@+node:ekr.20140601151054.17642: *3*  d2.ctor & init & __call__
@@ -3463,7 +3462,7 @@ class Data2(AstFullTraverser):
         '''Called when name is defined in the given context.'''
         # Note: cx (an AST node) is hashable.
         trace = False
-        cx_node,cx_obj,parent = self.cx_node,self.cx_obj,self.parent
+        cx_node,cx_obj = self.cx_node,self.cx_obj
         if trace:
             u = self.u
             # g.trace(node.__class__.__name__)
@@ -3482,7 +3481,7 @@ class Data2(AstFullTraverser):
         aSet.add(cx_node)
         self.defs_d[name] = aSet
         aList = self.global_d.get(name,[])
-        aList.append(self.NameData(cx_node,cx_obj,'def',node,parent))
+        aList.append(self.NameData(cx_node,cx_obj,'def',node))
         self.global_d[name] = aList
     #@+node:ekr.20140616055519.17781: *3* d2.new_context
     def new_context(self,kind,name,node):
@@ -3521,7 +3520,7 @@ class Data2(AstFullTraverser):
         aSet.add(cx_node)
         self.refs_d[name] = aSet
         aList = self.global_d.get(name,[])
-        aList.append(self.NameData(cx_node,cx_obj,'ref',node,parent))
+        aList.append(self.NameData(cx_node,cx_obj,'ref',node))
         self.global_d[name] = aList
     #@+node:ekr.20140601151054.17648: *3* d2.visitors
     #@+node:ekr.20140616055519.17780: *4*  d2.contexts
