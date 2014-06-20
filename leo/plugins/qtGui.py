@@ -1896,6 +1896,27 @@ def zoom_out(event=None):
     requires that @font-size-body is being used in stylesheet
     """
     zoom_in(event=event, delta=-1)
+#@+node:tbrown.20140620095406.40066: *3* show/hide icon/menu/status bar
+# create the commands gui-<menu|iconbar|statusbar|minibuffer>-<hide|show>
+widgets = [
+    ('menu', lambda c: c.frame.top.menuBar()),
+    ('iconbar', lambda c: c.frame.top.iconBar),
+    ('statusbar', lambda c: c.frame.top.statusBar),
+    ('minibuffer', lambda c: c.frame.miniBufferWidget.widget.parent()),
+]
+for vis in 'hide', 'show':
+    for name, widget in widgets:
+        def dovis(event, widget=widget, vis=vis):
+            c = event['c']
+            w = widget(c)
+            getattr(w, vis)()
+        g.command("gui-%s-%s"%(name, vis))(dovis)
+    def doall(event, vis=vis):
+        c = event['c']
+        for name, widget in widgets:
+            w = widget(c)
+            getattr(w, vis)()
+    g.command("gui-all-%s"%vis)(doall)
 #@+node:ekr.20110605121601.18136: ** Frame and component classes...
 #@+node:ekr.20110605121601.18137: *3* class  DynamicWindow (QtWidgets.QMainWindow)
 class DynamicWindow(QtWidgets.QMainWindow):
@@ -2162,7 +2183,11 @@ class DynamicWindow(QtWidgets.QMainWindow):
             vPolicy = QtWidgets.QSizePolicy.Fixed)
         frame.setMinimumSize(QtCore.QSize(100, 0))
         label = self.createLabel(frame,'minibufferLabel','Minibuffer:')
-        lineEdit = QtWidgets.QLineEdit(frame)
+        class VisLineEdit(QtWidgets.QLineEdit):
+            """In case user has hidden minibuffer with gui-minibuffer-hide"""
+            def focusInEvent(self, event):
+                self.parent().show()
+        lineEdit = VisLineEdit(frame)
         lineEdit.setObjectName('lineEdit') # name important.
 
         # Pack.
