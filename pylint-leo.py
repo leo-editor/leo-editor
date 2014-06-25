@@ -81,6 +81,7 @@ def getPluginsList():
             # Crashes pylint.
         # 'internal_ipkernel.py',
         'leoOPML',
+        'lineNumbers',
         # 'mod_http',
         'mod_scripting',
             # E0611:489:scriptingController.runDebugScriptCommand:
@@ -205,6 +206,7 @@ def getPluginsList():
             # Crashes pylint.
         # 'internal_ipkernel.py',
         'leoOPML',
+        'lineNumbers',
         # 'mod_http',
         'mod_scripting',
             # E0611:489:scriptingController.runDebugScriptCommand:
