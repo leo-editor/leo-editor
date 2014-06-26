@@ -1903,6 +1903,7 @@ widgets = [
     ('iconbar', lambda c: c.frame.top.iconBar),
     ('statusbar', lambda c: c.frame.top.statusBar),
     ('minibuffer', lambda c: c.frame.miniBufferWidget.widget.parent()),
+    ('tabbar', lambda c: g.app.gui.frameFactory.masterFrame.tabBar()),
 ]
 for vis in 'hide', 'show':
     for name, widget in widgets:
