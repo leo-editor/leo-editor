@@ -183,7 +183,7 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
         act = QtWidgets.QAction(name, self)
         act.setObjectName(name.lower().replace(' ','-'))
         if True or isQt5:
-            act.triggered.connect(func)
+            act.triggered.connect(lambda checked: func())
         else:
             act.connect(act, Qt.SIGNAL('triggered()'),func)
         if tooltip:
