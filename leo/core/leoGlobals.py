@@ -5882,7 +5882,7 @@ def expand_css_constants(c, sheet, font_size_delta=None):
         if deltas[delta] and (val is not None):
             size = ''.join(i for i in val if i in '01234567890.')
             units = ''.join(i for i in val if i not in '01234567890.')
-            size = min(250, max(1, int(size) + deltas[delta]))
+            size = max(1, int(size) + deltas[delta])
             constants["@"+delta] = "%s%s" % (size, units)
 
     passes = 10
