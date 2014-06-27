@@ -5791,7 +5791,7 @@ class LeoQtMenu (leoMenu.LeoMenu):
         # so that it can be enabled/disabled dynamically.
         action.leo_command_name = commandName
         if command:
-            def qt_add_command_callback(label=label,command=command):
+            def qt_add_command_callback(event,label=label,command=command):
                 return command()
             if True or isQt5:
                 action.triggered.connect(qt_add_command_callback)
@@ -5854,7 +5854,7 @@ class LeoQtMenu (leoMenu.LeoMenu):
                 label = label[:n] + '&' + label[n:]
             action = menu.addAction(label)
             if command:
-                def insert_callback(label=label,command=command):
+                def insert_callback(evemt.label=label,command=command):
                     command()
                 if True or isQt5:
                     action.triggered.connect(insert_callback)
