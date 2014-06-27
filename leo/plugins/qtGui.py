@@ -2611,7 +2611,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         )
         # findTabHandler does not exist yet.
         for row2,col,func_name,label,cmd_name in table:
-            def find_tab_button_callback(c=c,func_name=func_name):
+            def find_tab_button_callback(event,c=c,func_name=func_name):
                 # h will exist when the Find Tab is open.
                 fc = c.findCommands
                 func = getattr(fc,func_name,None)
@@ -4562,7 +4562,7 @@ class LeoQtFrame (leoFrame.LeoFrame):
             else:
                 rb.connect(rb, QtCore.SIGNAL("triggered()"), delete_callback)
             if command:
-                def button_callback(c=c,command=command):
+                def button_callback(event,c=c,command=command):
                     # g.trace('command',command.__name__)
                     val = command()
                     if c.exists:

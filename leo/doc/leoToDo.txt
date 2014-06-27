@@ -171,6 +171,27 @@ On the minus side:
 - This scheme is only useful when multiple Leonine programmers work in a
   non-Leonine project. Solo Leonine programmers in a non-Leonine project
   may as well use @shadow or @auto.
+.. @+node:ekr.20140531073052.16702: *3* existing non-pep8 class names
+# class atFile:
+class baseTextWidget(object):
+class bridgeController:
+class bufferCommandsClass (BaseEditCommandsClass):
+class cacher:
+class classScannerClass:
+class def_node:
+class editBodyTestCase(unittest.TestCase):
+class editCommandsClass (BaseEditCommandsClass):
+class fileCommands (BaseFileCommands):
+class htmlParserClass (LinkAnchorParserClass):
+class importExportTestCase(unittest.TestCase):
+class leoBody (HighLevelInterface):
+class leoCompare (BaseLeoCompare):
+class leoKeyEvent:
+class nullFrame (LeoFrame):
+class nullGui(LeoGui):
+class pythonScanner (BaseScanner):
+class searchWidget:
+class tangleCommands (BaseTangleCommands):
 .. @+node:ekr.20140521095206.16728: ** Important
 .. @+node:ekr.20140402091953.16865: *3* add pylint commands
 @language rest
