@@ -5854,7 +5854,7 @@ class LeoQtMenu (leoMenu.LeoMenu):
                 label = label[:n] + '&' + label[n:]
             action = menu.addAction(label)
             if command:
-                def insert_callback(evemt.label=label,command=command):
+                def insert_callback(event,label=label,command=command):
                     command()
                 if True or isQt5:
                     action.triggered.connect(insert_callback)
