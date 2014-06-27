@@ -1905,17 +1905,24 @@ widgets = [
     ('minibuffer', lambda c: c.frame.miniBufferWidget.widget.parent()),
     ('tabbar', lambda c: g.app.gui.frameFactory.masterFrame.tabBar()),
 ]
-for vis in 'hide', 'show':
+for vis in 'hide', 'show', 'toggle':
     for name, widget in widgets:
         def dovis(event, widget=widget, vis=vis):
             c = event['c']
             w = widget(c)
+            if vis == 'toggle':
+                vis = 'hide' if w.isVisible() else 'show'
             getattr(w, vis)()
         g.command("gui-%s-%s"%(name, vis))(dovis)
     def doall(event, vis=vis):
+        
         c = event['c']
         for name, widget in widgets:
             w = widget(c)
+            if vis == 'toggle':
+                # note, this *intentionally* toggles all to on/off
+                # based on the state of the first
+                vis = 'hide' if w.isVisible() else 'show'
             getattr(w, vis)()
     g.command("gui-all-%s"%vis)(doall)
 #@+node:ekr.20110605121601.18136: ** Frame and component classes...
