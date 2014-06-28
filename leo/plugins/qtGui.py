@@ -1776,7 +1776,6 @@ class LeoQtMinibuffer (LeoQLineEditWidget):
         self.c = c
         w = c.frame.top.leo_ui.lineEdit # QLineEdit
         # g.trace('(LeoQtMinibuffer)',w)
-
         # Init the base class.
         LeoQLineEditWidget.__init__(self,widget=w,name='minibuffer',c=c)
         if newFilter:
@@ -1789,34 +1788,30 @@ class LeoQtMinibuffer (LeoQLineEditWidget):
         #@+<< define mouseReleaseEvent >>
         #@+node:ekr.20110605121601.18132: *4* << define mouseReleaseEvent >> (LeoQtMinibuffer)
         def mouseReleaseEvent (*args,**keys):
-
             '''Override QLineEdit.mouseReleaseEvent.
 
-            Simulate alt-x if we are not in an input state.'''
-            
-            # g.trace('(LeoQtMinibuffer)')
-
+            Simulate alt-x if we are not in an input state.
+            '''
+            g.trace('(LeoQtMinibuffer)',args,keys)
             # Important: c and w must be unbound here.
             k = c.k
-
             # Call the base class method.
             if len(args) == 1:
                 event = args[0]
                 QtWidgets.QLineEdit.mouseReleaseEvent(w,event)
-
             elif len(args) == 2:
                 event = args[1]
-                #QtWidgets.QTextBrowser.mouseReleaseEvent(*args)
                 QtWidgets.QLineEdit.mouseReleaseEvent(*args)
             else:
                 g.trace('can not happen')
                 return
-
             # g.trace('state',k.state.kind,k.state.n)
             if not k.state.kind:
+                # c.widgetWantsFocusNow(w) # Doesn't work.
                 event2 = g.app.gui.create_key_event(c,
                     char='',stroke='',w=c.frame.body.bodyCtrl)
                 k.fullCommand(event2)
+                # c.outerUpdate() # Doesn't work.
         #@-<< define mouseReleaseEvent >>
         w.mouseReleaseEvent = mouseReleaseEvent
 
@@ -8231,13 +8226,12 @@ class LeoQtGui(leoGui.LeoGui):
         return w
 
     def set_focus(self,c,w):
-
         """Put the focus on the widget."""
-
         trace = False and not g.unitTesting
         gui = self
         if w:
-            if trace: g.trace('(qtGui)',w,g.callers())
+            if hasattr(w,'widget'): w = w.widget
+            if trace: g.trace('(qtGui)',w)
             w.setFocus()
 
     def ensure_commander_visible(self, c1):
@@ -8863,8 +8857,8 @@ class LeoQtEventFilter(QtCore.QObject):
     def eventFilter(self, obj, event):
 
         trace = False and not g.unitTesting
-        verbose = False
-        traceEvent = False # True: call self.traceEvent.
+        verbose = True
+        traceEvent = True # True: call self.traceEvent.
         traceKey = True
         c = self.c ; k = c.k
         eventType = event.type()
