@@ -7303,11 +7303,11 @@ class Commands (object):
         trace = False and not g.unitTesting
         c = self
         if w and g.app.gui:
-            if trace: print('c.set_focus:',g.app.gui.widget_name(w),w,g.callers())
-                # w,c.shortFileName())
+            if trace: g.trace('(c)',
+                g.app.gui.widget_name(w),w)
             g.app.gui.set_focus(c,w)
         else:
-            if trace: print('c.set_focus: no w')
+            if trace: g.trace('(c) no w')
 
         c.requestedFocusWidget = None
     #@+node:ekr.20080514131122.10: *4* c.invalidateFocus
