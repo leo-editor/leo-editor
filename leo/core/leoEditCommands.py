@@ -970,23 +970,17 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
             g.es('Abbreviations are ' + 'on' if k.abbrevOn else 'off')
     #@+node:ekr.20050920084036.24: *4* writeAbbreviation
     def writeAbbreviations (self,event):
-
         '''Write abbreviations to a file.'''
-
         fileName = g.app.gui.runSaveFileDialog(
             initialfile = None,
             title='Write Abbreviations',
             filetypes = [("Text","*.txt"), ("All files","*")],
             defaultextension = ".txt")
-
         if not fileName: return
-
         try:
             d = self.abbrevs
             f = open(fileName,'w')
-            keys = list(d.keys)
-            keys.sort()
-            for name in keys:
+            for name in sorted(d.keys()):
                 val,tag = self.abbrevs.get(name)
                 val=val.replace('\n','\\n')
                 s = '%s=%s\n' % (name,val)
@@ -994,6 +988,7 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
                     s = g.toEncodedString(s,reportErrors=True)
                 f.write(s)
             f.close()
+            g.es_print('wrote: %s' % fileName)
         except IOError:
             g.es('can not create',fileName)
     #@-others
