@@ -1792,7 +1792,7 @@ class LeoQtMinibuffer (LeoQLineEditWidget):
 
             Simulate alt-x if we are not in an input state.
             '''
-            g.trace('(LeoQtMinibuffer)',args,keys)
+            # g.trace('(LeoQtMinibuffer)',args,keys)
             # Important: c and w must be unbound here.
             k = c.k
             # Call the base class method.
@@ -2190,6 +2190,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
             """In case user has hidden minibuffer with gui-minibuffer-hide"""
             def focusInEvent(self, event):
                 self.parent().show()
+                QtWidgets.QLineEdit.focusInEvent(self,event)
+                    # EKR: 2014/06/28: Call the base class method.
         lineEdit = VisLineEdit(frame)
         lineEdit.setObjectName('lineEdit') # name important.
 
