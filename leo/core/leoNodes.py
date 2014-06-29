@@ -172,7 +172,7 @@ class Position (object):
     #@+others
     #@+node:ekr.20040228094013: *3*  p.ctor & other special methods...
     #@+node:ekr.20080416161551.190: *4*  p.__init__
-    def __init__ (self,v,childIndex=0,stack=None,trace=False):
+    def __init__ (self,v,childIndex=0,stack=None):
         '''Create a new position with the given childIndex and parent stack.'''
         # To support ZODB the code must set v._p_changed = 1
         # whenever any mutable VNode object changes.
@@ -309,13 +309,9 @@ class Position (object):
         aList.reverse()
         return aList
     #@+node:ekr.20040117171654: *4* p.copy
-    # Using this routine can generate huge numbers of temporary positions during a tree traversal.
-
     def copy (self):
-
         """"Return an independent copy of a position."""
-
-        return Position(self.v,self._childIndex,self.stack,trace=False)
+        return Position(self.v,self._childIndex,self.stack)
     #@+node:ekr.20040310153624: *4* p.dump
     def dumpLink (self,link):
 
