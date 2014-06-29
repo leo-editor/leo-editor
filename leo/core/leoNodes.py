@@ -978,9 +978,7 @@ class Position (object):
     #@+node:ekr.20091001141621.6060: *3* p.generators
     #@+node:ekr.20091001141621.6055: *4* p.children
     def children(self):
-
-        '''Return all children of p.'''
-
+        '''Yield all child positions of p.'''
         p = self
         p = p.firstChild()
         while p:
@@ -992,12 +990,10 @@ class Position (object):
     children_iter = children
     #@+node:ekr.20091002083910.6102: *4* p.following_siblings
     def following_siblings(self):
-        '''
-        Return all siblings that follow p, not including p.
-        '''
-
+        '''Yield all siblings positions that follow p, not including p.'''
         p = self
-        p = p.copy() # Always include the original node.
+        # 2014/06/29: This extra copy is not needed: p.next() creates a copy.
+        # p = p.copy() # Always include the original node.
         p = p.next()
         while p:
             yield p
@@ -1008,7 +1004,7 @@ class Position (object):
     following_siblings_iter = following_siblings
     #@+node:ekr.20091002083910.6104: *4* p.nodes
     def nodes (self):
-
+        '''Yield p.v and all vnodes in p's subtree.'''
         p = self
         p = p.copy()
         after = p.nodeAfterTree()
@@ -1021,9 +1017,7 @@ class Position (object):
     vnodes_iter = nodes
     #@+node:ekr.20091001141621.6058: *4* p.parents
     def parents(self):
-
-        '''Return all parents of p.'''
-
+        '''Yield all parent positions of p.'''
         p = self
         p = p.parent()
         while p:
@@ -1035,9 +1029,7 @@ class Position (object):
     parents_iter = parents
     #@+node:ekr.20091002083910.6099: *4* p.self_and_parents
     def self_and_parents(self):
-
-        '''Return p and all parents of p.'''
-
+        '''Yield p and all parent positions of p.'''
         p = self
         p = p.copy()
         while p:
@@ -1049,9 +1041,7 @@ class Position (object):
     self_and_parents_iter = self_and_parents
     #@+node:ekr.20091001141621.6057: *4* p.self_and_siblings
     def self_and_siblings(self):
-        '''Return all siblings of p including p.
-        '''
-
+        '''Yield all sibling positions of p including p.'''
         p = self
         p = p.copy()
         while p.hasBack():
@@ -1065,9 +1055,7 @@ class Position (object):
     self_and_siblings_iter = self_and_siblings
     #@+node:ekr.20091001141621.6066: *4* p.self_and_subtree
     def self_and_subtree(self):
-
-        '''Return p's entire subtree, including p.'''
-
+        '''Yield p and all positions in p's subtree.'''
         p = self
         p = p.copy()
         after = p.nodeAfterTree()
@@ -1080,9 +1068,7 @@ class Position (object):
     self_and_subtree_iter = self_and_subtree
     #@+node:ekr.20091001141621.6056: *4* p.subtree
     def subtree(self):
-
-        '''Return all descendants of p, not including p.'''
-
+        '''Yield all positions in p's subtree, but not p.'''
         p = self
         p = p.copy()
         after = p.nodeAfterTree()
@@ -1096,7 +1082,7 @@ class Position (object):
     subtree_iter = subtree
     #@+node:ekr.20091002083910.6105: *4* p.unique_nodes
     def unique_nodes (self):
-        
+        '''Yield p.v and all unique vnodes in p's subtree.'''
         p = self
         seen = set()
         for p in p.self_and_subtree():
@@ -1109,8 +1095,7 @@ class Position (object):
     unique_vnodes_iter = unique_nodes
     #@+node:ekr.20091002083910.6103: *4* p.unique_subtree
     def unique_subtree (self):
-        '''Return unique positions in p's entire subtree, including p.'''
-
+        '''Yield p and all other unique positions in p's subtree.'''
         p = self
         seen = set()
         for p in p.subtree():
