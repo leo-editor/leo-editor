@@ -3677,10 +3677,6 @@ def os_path_splitext(path):
 #@+node:ekr.20090829140232.6036: *3* g.os_startfile
 def os_startfile(fname):
 
-    if g.unitTesting:
-        g.app.unitTestDict['os_startfile']=fname
-        return
-
     if fname.find('"') > -1:
         quoted_fname = "'%s'" % fname
     else:
@@ -5419,7 +5415,10 @@ def handleUrl(url,c=None,p=None):
         # isHtml = leo_path.endswith('.html') or leo_path.endswith('.htm')
         # Use g.os_startfile for *all* files.
         if scheme in ('', 'file'):
-            if g.os_path_exists(leo_path):
+            if g.unitTesting:
+                leo_path = unquote(leo_path)
+                g.app.unitTestDict['os_startfile']=leo_path
+            elif g.os_path_exists(leo_path):
                 if trace: g.trace('g.os_startfile(%s)' % (leo_path))
                 leo_path = unquote(leo_path)
                 g.os_startfile(leo_path)
@@ -5427,7 +5426,6 @@ def handleUrl(url,c=None,p=None):
                 g.es("File '%s' does not exist"%leo_path)
         else:
             import webbrowser
-
             if trace: g.trace('webbrowser.open(%s)' % (url))
             if g.unitTesting:
                 g.app.unitTestDict['browser']=url

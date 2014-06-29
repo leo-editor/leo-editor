@@ -4,7 +4,7 @@
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.48" body_secondary_ratio="0.63">
-	<global_window_position top="34" left="486" height="1026" width="1176"/>
+	<global_window_position top="46" left="65" height="750" width="1033"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -158,8 +158,9 @@
 <v t="ekr.20101220161557.6014"><vh>@file inactiveTests.txt</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285805000000302e382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e372e31342e3671057d71065808000000616e6e6f7461746571077d7108735808000000302e372e31362e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e372e31302e39710d7d710e5809000000756e69745f74657374710f580400000061626364711073752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285805000000302e382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e372e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e372e31342e3671097d710a5808000000616e6e6f74617465710b7d710c735808000000302e372e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
+<v t="ekr.20120307133953.3947"><vh>@test g.handleUrl</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -575,7 +576,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="8"></t>
+<t tx="ekr.20070417092935" str_leo_pos="9"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -961,6 +962,24 @@ finally:
 <t tx="ekr.20120229082711.3935"># node 1 text A.
 </t>
 <t tx="ekr.20120229082711.3936"># node 2 text B.
+</t>
+<t tx="ekr.20120307133953.3947">import sys
+if sys.platform.startswith('win'):
+    fn1 = g.os_path_finalize_join(g.app.loadDir,'..','doc','LeoDocs.leo')
+    assert g.os_path_exists(fn1),fn1
+    url1 = 'file://' + fn1 + '#Leo 4.10 Release notes'
+    table = (
+        (r'file://C:/prog/test.sh',             ['os_startfile']),
+        (r'file://C:/prog',                     ['os_startfile']),
+        (r'http://writemonkey.com/index.php',   ['browser']),
+        (url1,                                  ['g.openWithFileName']), # ,'g.recursiveUNLSearch']),
+        (r'#--&gt;Before 4.10 b1',                 ['g.recursiveUNLSearch']),
+    )
+    for url,aList in table:
+        g.handleUrl(c=c,p=c.p,url=url)
+        for kind in aList:
+            assert g.app.unitTestDict.get(kind),'kind: %s url: %s' % (
+                kind,url)
 </t>
 <t tx="ekr.20131111155830.4249"></t>
 <t tx="ekr.20131111155830.4250"># Not yet...

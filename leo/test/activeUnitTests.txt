@@ -11216,8 +11216,6 @@ if sys.platform.startswith('win'):
         for kind in aList:
             assert g.app.unitTestDict.get(kind),'kind: %s url: %s' % (
                 kind,url)
-    
-    
 #@+node:ekr.20111103213154.3824: *4* @test g.importFromPath
 '''Make sure that trying to import a non-existent file does not crash g.importFromPath.'''
 
