@@ -9,103 +9,6 @@ import optparse
 import os
 import sys
 import time
-#@+<< pylint recent files >>
-#@+node:ekr.20140521095206.16729: ** << pylint recent files >>
-#@@language python
-
-#@+others
-#@+node:ekr.20120225032124.17089: *3* getRecentCoreList (pylint-leo.py)
-def getRecentCoreList():
-    '''Return the list of core files processed by the -r option.'''
-    return (
-        # 'runLeo',
-        # 'leoApp',
-        # 'leoAtFile',
-        # 'leoBridge',
-        # 'leoCache',
-        # 'leoChapters',
-        # 'leoCommands',
-        # 'leoConfig',
-        # 'leoEditCommands',
-        # 'leoFileCommands',
-        # 'leoFind',
-        # 'leoFrame',
-        # 'leoGlobals',
-        # 'leoGui',
-        # 'leoImport',
-        # 'leoIPython',
-        # 'leoKeys',
-        # 'leoMenu',
-        # 'leoNodes',
-        # 'leoPlugins',
-        # 'leoQt',
-        # 'leoRope',
-        # 'leoRst',
-        # 'leoSessions',
-        # 'leoShadow',
-        # 'leoSTC',
-        # 'leoTangle',
-        # 'leoTest',
-        # 'leoUndo',
-        # 'leoViews',
-        # 'leoVim',
-)
-#@+node:ekr.20120528063627.10137: *3* getRecentPluginsList
-def getRecentPluginsList ():
-
-    return (
-        # 'baseNativeTree',
-        # 'contextmenu',
-        # 'codewisecompleter',
-        # 'free_layout',
-        # 'internal_ipkernel',
-        # 'leo_interface',
-        # 'leoOPML',
-        # 'mod_scripting',
-        # 'nested_splitter',
-        # 'qtGui',
-        # 'plugins_menu',
-        # 'quicksearch',
-        # 'screencast',
-        # 'todo',
-        # 'viewrendered',
-        # 'viewrendered2',
-    )
-#@+node:ekr.20100221142603.5642: *3* getPluginsList
-def getPluginsList():
-
-    return (
-        'baseNativeTree',
-        'bookmarks',
-        'contextmenu',
-            # Crashes pylint.
-        # 'internal_ipkernel.py',
-        'leoOPML',
-        'lineNumbers',
-        # 'mod_http',
-        'mod_scripting',
-            # E0611:489:scriptingController.runDebugScriptCommand:
-            # No name 'leoScriptModule' in module 'leo.core'
-        'nav_qt',
-        'nested_splitter',
-        'qtGui',
-            # E1101:7584:leoQtGui.embed_ipython: Module 'IPython' has no 'ipapi' member
-            # E0611: No name 'xxx' in module 'urllib'
-            # W0233: __init__ method from a non direct base class 'QDateTimeEdit' is called
-            # R0923: Interface not implemented
-        'quicksearch',
-        'todo',
-        # 'toolbar',
-            # Dangerous: many erroneous E1101 errors
-            # Harmless: W0221: Arguments number differs from overridden method
-            # Harmless: W0511: Fixme and to-do.
-        'vim.py',
-        'viewrendered.py',
-            # Dangerous: PyQt4.phonon has no x member.
-        'xemacs.py',
-    )
-#@-others
-#@-<< pylint recent files >>
 #@+others
 #@+node:ekr.20100221142603.5640: ** getCoreList
 def getCoreList():
@@ -229,26 +132,63 @@ def getPluginsList():
             # Dangerous: PyQt4.phonon has no x member.
         'xemacs.py',
     )
-#@+node:ekr.20100221142603.5643: ** getTkPass
-def getTkPass():
+#@+node:ekr.20120225032124.17089: ** getRecentCoreList (pylint-leo.py)
+def getRecentCoreList():
+    '''Return the list of core files processed by the -r option.'''
+    return (
+        # 'runLeo',
+        # 'leoApp',
+        # 'leoAtFile',
+        # 'leoBridge',
+        # 'leoCache',
+        # 'leoChapters',
+        # 'leoCommands',
+        # 'leoConfig',
+        # 'leoEditCommands',
+        # 'leoFileCommands',
+        # 'leoFind',
+        # 'leoFrame',
+        # 'leoGlobals',
+        # 'leoGui',
+        'leoImport',
+        # 'leoIPython',
+        # 'leoKeys',
+        # 'leoMenu',
+        # 'leoNodes',
+        # 'leoPlugins',
+        # 'leoQt',
+        # 'leoRope',
+        # 'leoRst',
+        # 'leoSessions',
+        # 'leoShadow',
+        # 'leoSTC',
+        'leoTangle',
+        # 'leoTest',
+        # 'leoUndo',
+        # 'leoViews',
+        # 'leoVim',
+)
+#@+node:ekr.20120528063627.10137: ** getRecentPluginsList
+def getRecentPluginsList ():
 
     return (
-        # 'EditAttributes','Library',
-        # 'URLloader','UniversalScrolling','UASearch',
-        # 'autotrees','chapter_hoist','cleo','dump_globals',
-        # 'expfolder','geotag','graphed','groupOperations',
-        # 'hoist','import_cisco_config',
-        # 'keybindings','leoupdate',
-        # 'maximizeNewWindows', 'mnplugins','mod_labels',
-        # 'mod_read_dir_outline','mod_tempfname','multifile',
-        # 'newButtons','nodeActions','nodenavigator',
-        # 'open_with','pie_menus','pluginsTest',
-        # 'read_only_nodes','rClick',
-        # 'scheduler','searchbar','searchbox','shortcut_button',
-        # 'script_io_to_body',
-        # 'templates','textnode','tkGui','toolbar',
-        # 'xcc_nodes',
-   )
+        # 'baseNativeTree',
+        # 'contextmenu',
+        # 'codewisecompleter',
+        # 'free_layout',
+        # 'internal_ipkernel',
+        # 'leo_interface',
+        # 'leoOPML',
+        # 'mod_scripting',
+        # 'nested_splitter',
+        # 'qtGui',
+        # 'plugins_menu',
+        # 'quicksearch',
+        # 'screencast',
+        # 'todo',
+        # 'viewrendered',
+        # 'viewrendered2',
+    )
 #@+node:ekr.20140331201252.16861: ** getTable
 def getTable(scope):
     
@@ -340,6 +280,26 @@ def getTable(scope):
     # else:
         # print('bad scope',scope)
         # tables_table = ()
+#@+node:ekr.20100221142603.5643: ** getTkPass
+def getTkPass():
+
+    return (
+        # 'EditAttributes','Library',
+        # 'URLloader','UniversalScrolling','UASearch',
+        # 'autotrees','chapter_hoist','cleo','dump_globals',
+        # 'expfolder','geotag','graphed','groupOperations',
+        # 'hoist','import_cisco_config',
+        # 'keybindings','leoupdate',
+        # 'maximizeNewWindows', 'mnplugins','mod_labels',
+        # 'mod_read_dir_outline','mod_tempfname','multifile',
+        # 'newButtons','nodeActions','nodenavigator',
+        # 'open_with','pie_menus','pluginsTest',
+        # 'read_only_nodes','rClick',
+        # 'scheduler','searchbar','searchbox','shortcut_button',
+        # 'script_io_to_body',
+        # 'templates','textnode','tkGui','toolbar',
+        # 'xcc_nodes',
+   )
 #@+node:ekr.20140331201252.16859: ** main
 def main(tables_table):
     
