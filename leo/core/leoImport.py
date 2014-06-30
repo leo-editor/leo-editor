@@ -193,132 +193,107 @@ class LeoImportCommands (ScanUtility):
             '.xml':     XmlScanner,
         }
     #@+node:ekr.20031218072017.3289: *3* Export
-    #@+node:ekr.20031218072017.3290: *4* ic.convertCodePartToWeb
-    # Headlines not containing a section reference are ignored in noweb and generate index index in cweb.
-
-    def convertCodePartToWeb (self,s,i,v,result):
-
+    #@+node:ekr.20031218072017.3290: *4* ic.convertCodePartToWeb & helpers
+    def convertCodePartToWeb (self,s,i,p,result):
+        '''
+        # Headlines not containing a section reference are ignored in noweb 
+        and generate index index in cweb.
+        '''
         # g.trace(g.get_line(s,i))
-        c = self.c ; nl = self.output_newline
-        lb = "@<" if self.webType=="cweb" else "<<"
-        rb = "@>" if self.webType=="cweb" else ">>"
-        h = v.headString().strip()
-        #@+<< put v's headline ref in head_ref >>
-        #@+node:ekr.20031218072017.3291: *5* << put v's headline ref in head_ref>>
-        #@+at We look for either noweb or cweb brackets. head_ref does not include these brackets.
-        #@@c
-
-        head_ref = None
-        j = 0
-        if g.match(h,j,"<<"):
-            k = h.find(">>",j)
-        elif g.match(h,j,"<@"):
-            k = h.find("@>",j)
-        else:
-            k = -1
-
-        if k > -1:
-            head_ref = h[j+2:k].strip()
-            if len(head_ref) == 0:
-                head_ref = None
-        #@-<< put v's headline ref in head_ref >>
-        #@+<< put name following @root or @file in file_name >>
-        #@+node:ekr.20031218072017.3292: *5* << put name following @root or @file in file_name >>
-        if g.match(h,0,"@file") or g.match(h,0,"@root"):
-            line = h[5:].strip()
-            #@+<< set file_name >>
-            #@+node:ekr.20031218072017.3293: *6* << Set file_name >>
-            # set j & k so line[j:k] is the file name.
-            # g.trace(line)
-
-            if g.match(line,0,"<"):
-                j = 1 ; k = line.find(">",1)
-            elif g.match(line,0,'"'):
-                j = 1 ; k = line.find('"',1)
-            else:
-                j = 0 ; k = line.find(" ",0)
-            if k == -1:
-                k = len(line)
-
-            file_name = line[j:k].strip()
-            if file_name and len(file_name) == 0:
-                file_name = None
-            #@-<< set file_name >>
-        else:
-            file_name = line = None
-        #@-<< put name following @root or @file in file_name >>
+        ic = self
+        nl = ic.output_newline
+        head_ref = ic.getHeadRef(p)
+        file_name = ic.getFileName(p)
         if g.match_word(s,i,"@root"):
             i = g.skip_line(s,i)
-            #@+<< append ref to file_name >>
-            #@+node:ekr.20031218072017.3294: *5* << append ref to file_name >>
-            if self.webType == "cweb":
-                if not file_name:
-                    result += "@<root@>=" + nl
-                else:
-                    result += "@(" + file_name + "@>" + nl # @(...@> denotes a file.
-            else:
-                if not file_name:
-                    file_name = "*"
-                result += lb + file_name + rb + "=" + nl
-            #@-<< append ref to file_name >>
+            ic.appendRefToFileName(file_name,result)
         elif g.match_word(s,i,"@c") or g.match_word(s,i,"@code"):
             i = g.skip_line(s,i)
-            #@+<< append head_ref >>
-            #@+node:ekr.20031218072017.3295: *5* << append head_ref >>
-            if self.webType == "cweb":
-                if not head_ref:
-                    result += "@^" + h + "@>" + nl # Convert the headline to an index entry.
-                    result += "@c" + nl # @c denotes a new section.
-                else: 
-                    escaped_head_ref = head_ref.replace("@","@@")
-                    result += "@<" + escaped_head_ref + "@>=" + nl
-            else:
-                if not head_ref:
-                    if v == c.currentVnode():
-                        head_ref = file_name if file_name else "*"
-                    else:
-                        head_ref = "@others"
-
-                result += lb + head_ref + rb + "=" + nl
-            #@-<< append head_ref >>
-        elif g.match_word(h,0,"@file"):
+            ic.appendHeadRef(p,file_name,head_ref,result)
+        elif g.match_word(p.h,0,"@file"):
             # Only do this if nothing else matches.
-            #@+<< append ref to file_name >>
-            #@+node:ekr.20031218072017.3294: *5* << append ref to file_name >>
-            if self.webType == "cweb":
-                if not file_name:
-                    result += "@<root@>=" + nl
-                else:
-                    result += "@(" + file_name + "@>" + nl # @(...@> denotes a file.
-            else:
-                if not file_name:
-                    file_name = "*"
-                result += lb + file_name + rb + "=" + nl
-            #@-<< append ref to file_name >>
+            ic.appendRefToFileName(file_name,result)
             i = g.skip_line(s,i) # 4/28/02
         else:
-            #@+<< append head_ref >>
-            #@+node:ekr.20031218072017.3295: *5* << append head_ref >>
-            if self.webType == "cweb":
-                if not head_ref:
-                    result += "@^" + h + "@>" + nl # Convert the headline to an index entry.
-                    result += "@c" + nl # @c denotes a new section.
-                else: 
-                    escaped_head_ref = head_ref.replace("@","@@")
-                    result += "@<" + escaped_head_ref + "@>=" + nl
-            else:
-                if not head_ref:
-                    if v == c.currentVnode():
-                        head_ref = file_name if file_name else "*"
-                    else:
-                        head_ref = "@others"
-
-                result += lb + head_ref + rb + "=" + nl
-            #@-<< append head_ref >>
-        i,result = self.copyPart(s,i,result)
+            ic.appendHeadRef(p,file_name,head_ref,result)
+        i,result = ic.copyPart(s,i,result)
         return i, result.strip() + nl
 
     #@+at %defs a b c
+    #@+node:ekr.20140630085837.16720: *5* ic.appendHeadRef
+    def appendHeadRef(self,p,file_name,head_ref,result):
+        
+        ic = self
+        nl = ic.output_newline
+        if ic.webType == "cweb":
+            if head_ref:
+                escaped_head_ref = head_ref.replace("@","@@")
+                result += "@<" + escaped_head_ref + "@>=" + nl
+            else:
+                result += "@^" + p.h.strip() + "@>" + nl
+                    # Convert the headline to an index entry.
+                result += "@c" + nl
+                    # @c denotes a new section.
+        else:
+            if head_ref:
+                pass
+            elif p == ic.c.p:
+                head_ref = file_name or "*"
+            else:
+                head_ref = "@others"
+            result += ("<<" + head_ref + 
+                ">>" + "=" + nl)
+                # Must be on separate lines.
+    #@+node:ekr.20140630085837.16719: *5* ic.appendRefToFileName
+    def appendRefToFileName(self,file_name,result):
+        
+        ic = self
+        nl = ic.output_newline
+        if ic.webType == "cweb":
+            if not file_name:
+                result += "@<root@>=" + nl
+            else:
+                result += "@(" + file_name + "@>" + nl
+                    # @(...@> denotes a file.
+        else:
+            if not file_name:
+                file_name = "*"
+            result += ("<<" + file_name + 
+                ">>" + "=" + nl)
+                # Must be on separate lines.
+    #@+node:ekr.20140630085837.16721: *5* ic.getHeadRef
+    def getHeadRef(self,p):
+        '''
+        Look for either noweb or cweb brackets.
+        Return everything between those brackets.
+        '''
+        h = p.h.strip()
+        if g.match(h,0,"<<"):
+            i = h.find(">>",2)
+        elif g.match(h,0,"<@"):
+            i = h.find("@>",2)
+        else:
+            return h
+        return h[2:i].strip()
+    #@+node:ekr.20031218072017.3292: *5* ic.getFileName
+    def getFileName(self,p):
+        '''Return the file name from an @file or @root node.'''
+        h = p.h.strip()
+        if g.match(h,0,"@file") or g.match(h,0,"@root"):
+            line = h[5:].strip()
+            # set j & k so line[j:k] is the file name.
+            if g.match(line,0,"<"):
+                j,k = 1,line.find(">",1)
+            elif g.match(line,0,'"'):
+                j,k = 1,line.find('"',1)
+            else:
+                j,k = 0,line.find(" ",0)
+            if k == -1:
+                k = len(line)
+            file_name = line[j:k].strip()
+        else:
+            file_name = ''
+        return file_name
     #@+node:ekr.20031218072017.3296: *4* ic.convertDocPartToWeb (handle @ %def)
     def convertDocPartToWeb (self,s,i,result):
 
