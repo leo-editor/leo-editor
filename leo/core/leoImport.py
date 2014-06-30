@@ -343,24 +343,24 @@ class LeoImportCommands (ScanUtility):
             result += nl+"@ " if self.webType=="cweb" else nl+"@"+nl
         return i, result
     #@+node:ekr.20031218072017.3297: *4* ic.convertVnodeToWeb
-    #@+at This code converts a VNode to noweb text as follows:
-    # 
-    # Convert @doc to @
-    # Convert @root or @code to < < name > >=, assuming the headline contains < < name > >
-    # Ignore other directives
-    # Format doc parts so they fit in pagewidth columns.
-    # Output code parts as is.
-    #@@c
-
     def convertVnodeToWeb (self,v):
+        '''
+        This code converts a VNode to noweb text as follows:
 
+        Convert @doc to @
+        Convert @root or @code to < < name > >=, assuming the headline contains < < name > >
+        Ignore other directives
+        Format doc parts so they fit in pagewidth columns.
+        Output code parts as is.
+        '''
         c = self.c
         if not v or not c: return ""
         startInCode = not c.config.at_root_bodies_start_in_doc_mode
         nl = self.output_newline
+        docstart = nl+"@ " if self.webType=="cweb" else nl+"@"+nl
         s = v.b
         lb = "@<" if self.webType=="cweb" else "<<"
-        i = 0 ; result = "" ; docSeen = False
+        i,result,docSeen = 0,"",False
         while i < len(s):
             progress = i
             # g.trace(g.get_line(s,i))
@@ -370,20 +370,14 @@ class LeoImportCommands (ScanUtility):
                 docSeen = True
             elif (g.match_word(s,i,"@code") or g.match_word(s,i,"@root") or
                 g.match_word(s,i,"@c") or g.match(s,i,lb)):
-                #@+<< Supply a missing doc part >>
-                #@+node:ekr.20031218072017.3298: *5* << Supply a missing doc part >>
                 if not docSeen:
                     docSeen = True
-                    result += nl+"@ " if self.webType=="cweb" else nl+"@"+nl
-                #@-<< Supply a missing doc part >>
+                    result += docstart
                 i,result = self.convertCodePartToWeb(s,i,v,result)
             elif self.treeType == "@file" or startInCode:
-                #@+<< Supply a missing doc part >>
-                #@+node:ekr.20031218072017.3298: *5* << Supply a missing doc part >>
                 if not docSeen:
                     docSeen = True
-                    result += nl+"@ " if self.webType=="cweb" else nl+"@"+nl
-                #@-<< Supply a missing doc part >>
+                    result += docstart
                 i,result = self.convertCodePartToWeb(s,i,v,result)
             else:
                 i,result = self.convertDocPartToWeb(s,i,result)
