@@ -3030,7 +3030,7 @@ class AtFile:
                 g.error('openForWrite: exception opening file: %s' % (open_file_name))
                 g.es_exception()
             return 'error',None
-    #@+node:ekr.20041005105605.144: *4* at.write & helper
+    #@+node:ekr.20041005105605.144: *4* at.write & helpers
     def write (self,root,
         kind = '@unknown', # Should not happen.
         nosentinels = False,
@@ -3045,20 +3045,7 @@ class AtFile:
         trace = False and not g.unitTesting
         at = self ; c = at.c
         c.endEditing() # Capture the current headline.
-        #@+<< set at.targetFileName >>
-        #@+node:ekr.20041005105605.145: *5* << set at.targetFileName >>
-        if toString:
-            at.targetFileName = "<string-file>"
-        elif nosentinels:
-            at.targetFileName = root.atNoSentFileNodeName()
-        elif thinFile:
-            at.targetFileName = root.atThinFileNodeName()
-            if not at.targetFileName:
-                # We have an @file node.
-                at.targetFileName = root.atFileNodeName()
-        else:
-            at.targetFileName = root.atFileNodeName()
-        #@-<< set at.targetFileName >>
+        at.setTargetFileName(nosentinels,root,thinFile,toString)
         at.initWriteIvars(root,at.targetFileName,
             perfectImportFlag = perfectImportFlag,
             nosentinels = nosentinels,
@@ -3083,19 +3070,7 @@ class AtFile:
                     at.rememberReadPath(eventualFileName,root)
                 else:
                     g.es("not written:",eventualFileName)
-                    #@+<< set dirty and orphan bits >>
-                    #@+node:ekr.20041005105605.146: *5* << set dirty and orphan bits >>
-                    # Setting the orphan and dirty flags tells Leo to write the tree.
-                    # However, the dirty bits get cleared if we are called from the save command.
-                    root.setOrphan()
-                    root.setDirty()
-                    # Delete the temp file.
-                    if at.outputFileName:
-                        self.remove(at.outputFileName) 
-
-                    #@-<< set dirty and orphan bits >>
-                    #@afterref
- # 2010/10/21.
+                    at.setDirtyOrphanBits(root)
                     return
         if not at.openFileForWriting(root,at.targetFileName,toString):
             # openFileForWriting calls root.setDirty() if there are errors.
@@ -3115,17 +3090,7 @@ class AtFile:
             else:
                 at.closeWriteFile()
                 if at.errors > 0 or root.isOrphan():
-                    #@+<< set dirty and orphan bits >>
-                    #@+node:ekr.20041005105605.146: *5* << set dirty and orphan bits >>
-                    # Setting the orphan and dirty flags tells Leo to write the tree.
-                    # However, the dirty bits get cleared if we are called from the save command.
-                    root.setOrphan()
-                    root.setDirty()
-                    # Delete the temp file.
-                    if at.outputFileName:
-                        self.remove(at.outputFileName) 
-
-                    #@-<< set dirty and orphan bits >>
+                    at.setDirtyOrphanBits(root)
                     g.es("not written:",g.shortFileName(at.targetFileName))
                 else:
                     # Fix bug 889175: Remember the full fileName.
@@ -3140,6 +3105,33 @@ class AtFile:
                 root.v._p_changed = True
             else:
                 at.writeException() # Sets dirty and orphan bits.
+    #@+node:ekr.20140630081820.16722: *5* at.setTargetFileName
+    def setTargetFileName(self,nosentinels,root,thinFile,toString):
+        '''Set the target file name for at.write.'''
+        at = self
+        if toString:
+            at.targetFileName = "<string-file>"
+        elif nosentinels:
+            at.targetFileName = root.atNoSentFileNodeName()
+        elif thinFile:
+            at.targetFileName = root.atThinFileNodeName()
+            if not at.targetFileName:
+                # We have an @file node.
+                at.targetFileName = root.atFileNodeName()
+        else:
+            at.targetFileName = root.atFileNodeName()
+    #@+node:ekr.20140630081820.16723: *5* at.setDirtyOrphanBits
+    def setDirtyOrphanBits(self,root):
+        '''
+        Setting the orphan and dirty flags tells Leo to write the tree.
+        However, the dirty bits get cleared if we are called from the save command.
+        '''
+        at = self
+        root.setOrphan()
+        root.setDirty()
+        # Delete the temp file.
+        if at.outputFileName:
+            self.remove(at.outputFileName) 
     #@+node:ekr.20041005105605.147: *4* at.writeAll & helper
     def writeAll(self,
         writeAtFileNodesFlag=False,
