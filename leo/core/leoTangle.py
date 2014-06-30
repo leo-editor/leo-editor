@@ -1758,23 +1758,19 @@ class BaseTangleCommands:
                         name = name.rstrip()
                         if part.delims[0]:
                             self.os(part.delims[0]) ; self.oblank() ; self.os(name)
-                            #@+<< put (n of m) >>
-                            #@+node:ekr.20031218072017.3524: *8* << put ( n of m ) >>
+                            # put (n of m)
                             if sections > 1:
                                 self.oblank()
                                 self.os("(%d of %d)" % (count,sections))
-                            #@-<< put (n of m) >>
                         else:
                             assert(
                                 part.delims[1] and len(part.delims[1]) > 0 and
                                 part.delims[2] and len(part.delims[2])> 0)
                             self.os(part.delims[1]) ; self.oblank() ; self.os(name)
-                            #@+<< put (n of m) >>
-                            #@+node:ekr.20031218072017.3524: *8* << put ( n of m ) >>
+                            # put (n of m)
                             if sections > 1:
                                 self.oblank()
                                 self.os("(%d of %d)" % (count,sections))
-                            #@-<< put (n of m) >>
                             self.oblank() ; self.os(part.delims[2])
 
                         self.onl() # Always output a newline.
