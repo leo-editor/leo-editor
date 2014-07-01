@@ -2841,21 +2841,21 @@ def printGcVerbose(tag=''):
 #@+node:ekr.20031218072017.3139: ** Hooks & plugins (leoGlobals)
 #@+node:ekr.20031218072017.1315: *3* idle time functions (leoGlobals)
 #@+node:EKR.20040602125018: *4* g.enableIdleTimeHook
-def enableIdleTimeHook(idleTimeDelay=500):
+def enableIdleTimeHook(idleTimeDelay=500,idleTimeHandler=None):
     '''
     Enable idle-time processing: Leo will call the *global* "idle" hook
     about every g.idleTimeDelay milliseconds.
     '''
     trace = g.app.trace_idle_time and not g.unitTesting
-    if not g.app.idleTimeHook:
-        if trace:
-            g.trace('start g.idleTimeHookHandler: %d msec.' % idleTimeDelay)
-        # Start idle-time processing only after the first idle-time event.
-        g.app.gui.setIdleTimeHook(g.idleTimeHookHandler)
-        g.app.afterHandler = g.idleTimeHookHandler
-    # Enable idle-time processing.
-    g.app.idleTimeHook = True
+    if not idleTimeHandler:
+        idleTimeHandler = g.idleTimeHookHandler
+    # Set the global ivars.
+    g.app.idleTimeHook = idleTimeHandler
     g.app.idleTimeDelay = idleTimeDelay # Delay in msec.
+    # Init the underlying timer and callback.
+    if trace: g.trace('start handler: %s: delay: %d msec.' % (
+        idleTimeHandler.__name__,idleTimeDelay))
+    g.app.gui.setIdleTimeHook()
 #@+node:EKR.20040602125018.1: *4* g.disableIdleTimeHook
 def disableIdleTimeHook():
     '''Disable the global idle-time hook.'''
@@ -2871,8 +2871,8 @@ def idleTimeHookHandler(*args,**keys):
     It calls c.doHook('idle') for each commander.
     '''
     global trace_count
+    trace_count += 1
     trace = g.app.trace_idle_time and not g.unitTesting
-    if trace: trace_count += 1
     # New for Python 2.3: may be called during shutdown.
     if g.app.killed: return
     for frame in g.app.windowList:

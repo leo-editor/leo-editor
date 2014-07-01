@@ -152,11 +152,10 @@ class LeoApp:
         #### To be moved to to the pluginsController.
 
         # Plugins and event handlers...
-        self.afterHandler = None
         self.hookError = False      # True: suppress further calls to hooks.
         self.hookFunction = None    # Application wide hook function.
         self.idle_imported = False  # True: we have done an import idle
-        self.idleTimeDelay = 100    # Delay in msec between calls to "idle time" hook.
+        self.idleTimeDelay = 500    # Delay in msec between calls to "idle time" hook.
         self.idleTimeHook = None    # The global idle time event handler.
         self.trace_idle_time = False # True: enable a trace in g.idleTimeHookHandler
 
@@ -923,8 +922,7 @@ class LeoApp:
             # Disable all further hooks and events.
             # Alas, "idle" events can still be called
             # even after the following code.
-        if g.app.afterHandler:
-            g.app.afterHandler = None
+        g.app.idleTimeHook = None
     #@+node:ekr.20031218072017.2616: *3* app.forceShutdown
     def forceShutdown (self):
 

@@ -8227,28 +8227,34 @@ class LeoQtGui(leoGui.LeoGui):
     timer = None
     last_timer_callback_time = 0.0
 
-    def setIdleTimeHook (self,handler):
-        '''Queue up idle-time processing.'''
+    def setIdleTimeHook(self):
+        '''
+        Define a callback that executes g.app.gui.idleTimeHook and start a
+        timer that fires at idle time.
+        '''
         # Always define the callback so handler may be rebound.
         #@+<< define timerCallBack >>
         #@+node:ekr.20140701055615.16735: *6* << define timerCallBack >>
         def timerCallBack():
             '''
-            The idle time callback.
-            Call handler, but never more than once every g.app.idleTimeDelay msec.
+            This is the idle time callback. It calls g.app.gui.idleTimeHook not
+            more than once every g.app.idleTimeDelay msec.
             '''
+            trace = False and g.app.trace_idle_time
             if g.app.idleTimeHook:
                 # Idle-time processing is enabled.
                 t = time.time()
                 delta = t - self.last_timer_callback_time
                 delay = float(g.app.idleTimeDelay)/1000.0
                 if delta > delay:
+                    # Call the handler and reset the time interval.
                     self.last_timer_callback_time = t
-                    if False and g.app.trace_idle_time:
-                        g.trace(delay,delta,handler.__name__)
-                    handler() # usually g.idleTimeHookHanlder.
+                    if trace:
+                        g.trace(delay,delta,g.app.idleTimeHook.__name__)
+                    g.app.idleTimeHook() # usually g.idleTimeHookHanlder.
             elif self.timer:
                 # Idle-time processing is disabled.  Stop the timer.
+                if trace: g.trace('Null g.app.idleTimeHook: stopping timer.')
                 self.timer.stop()
         #@-<< define timerCallBack >>
         if not self.timer:
