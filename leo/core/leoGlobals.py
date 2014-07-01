@@ -1409,7 +1409,19 @@ def startTracer(limit=0,trace=False,verbose=False):
     t = g.Tracer(limit=limit,trace=trace,verbose=verbose)
     sys.settrace(t.tracer)
     return t
-#@+node:ekr.20031218072017.3108: *3* Dumps
+#@+node:ekr.20031218072017.3105: *3* g.alert
+def alert(message,c=None):
+
+    '''Raise an alert.
+
+    This method is deprecated: use c.alert instead.
+    '''
+
+    # The unit tests just tests the args.
+    if not g.unitTesting:
+        g.es(message)
+        g.app.gui.alert(c,message)
+#@+node:ekr.20031218072017.3108: *3* g.Dumps
 #@+node:ekr.20031218072017.3109: *4* dump
 def dump(s):
 
@@ -1588,7 +1600,7 @@ def printLeoModules(message=None):
     for m in mods:
         g.pr(m,newline=False)
     g.pr('')
-#@+node:ekr.20031218072017.1317: *3* file/module/plugin_date
+#@+node:ekr.20031218072017.1317: *3* g.file/module/plugin_date
 def module_date (mod,format=None):
     theFile = g.os_path_join(app.loadDir,mod.__file__)
     root,ext = g.os_path_splitext(theFile) 
@@ -1609,18 +1621,6 @@ def file_date (theFile,format=None):
         except (ImportError,NameError):
             pass # Time module is platform dependent.
     return ""
-#@+node:ekr.20031218072017.3105: *3* g.alert
-def alert(message,c=None):
-
-    '''Raise an alert.
-
-    This method is deprecated: use c.alert instead.
-    '''
-
-    # The unit tests just tests the args.
-    if not g.unitTesting:
-        g.es(message)
-        g.app.gui.alert(c,message)
 #@+node:ekr.20031218072017.3127: *3* g.get_line & get_line__after
 # Very useful for tracing.
 
@@ -1668,6 +1668,14 @@ def checkUnchangedIvars(obj,d,exceptions=None):
                     key,repr(d.get(key)),repr(getattr(obj,key))))
                 ok = False
     return ok
+#@+node:ekr.20031218072017.3128: *3* g.pause
+def pause (s):
+
+    g.pr(s)
+
+    i = 0 ; n = long(1000) * long(1000)
+    while i < n:
+        i += 1
 #@+node:ekr.20041105091148: *3* g.pdb
 def pdb (message=''):
 
@@ -1688,14 +1696,99 @@ def pdb (message=''):
     if message:
         print(message)
     pdb.set_trace()
-#@+node:ekr.20031218072017.3128: *3* g.pause
-def pause (s):
+#@+node:ekr.20140401054342.16844: *3* g.run_pylint
+def run_pylint(fn,rc,
+    dots=True, # Show level dots in Sherlock traces.
+    patterns=None, # List of Sherlock trace patterns.
+    sherlock=False, # Enable Sherlock tracing.
+    show_return=True, # Show returns in Sherlock traces.
+    stats_patterns=None, # Patterns for Sherlock statistics.
+    verbose=True, # Show filenames in Sherlock traces.
+):
+    '''
+    Run pylint with the given args, with Sherlock tracing if requested.
+    Do not assume g.app exists.
+    '''
+    try:
+        from pylint import lint
+    except ImportError:
+        return g.trace('can not import pylint')
+    if not g.os_path_exists(fn):
+        return g.trace('does not exist:',fn)
+    if not g.os_path_exists(rc):
+        return g.trace('does not exist',rc)
+    args = ['--rcfile=%s' % (rc)]
+    args.append(fn)
+    if sherlock:
+        sherlock = g.SherlockTracer(
+                dots=dots,
+                show_return=show_return,
+                verbose=True, # verbose: show filenames.
+                patterns=patterns or [],
+            )
+        try:
+            sherlock.run()
+            lint.Run(args)
+        finally:
+            sherlock.stop()
+            sherlock.print_stats(patterns=stats_patterns or [])
+    else:
+        lint.Run(args)
+#@+node:ekr.20031218072017.3133: *3* g.Statistics
+#@+node:ekr.20031218072017.3134: *4* clear_stats
+def clear_stats():
 
-    g.pr(s)
+    g.trace()
 
-    i = 0 ; n = long(1000) * long(1000)
-    while i < n:
-        i += 1
+    g.app.statsDict = {}
+
+clearStats = clear_stats
+#@+node:ekr.20031218072017.3135: *4* print_stats
+def print_stats (name=None):
+
+    if name:
+        if type(name) != type(""):
+            name = repr(name)
+    else:
+        name = g._callerName(n=2) # Get caller name 2 levels back.
+
+    g.printDict(g.app.statsDict,tag='statistics at %s' % name)
+
+printStats = print_stats
+#@+node:ekr.20031218072017.3136: *4* stat
+def stat (name=None):
+
+    """Increments the statistic for name in g.app.statsDict
+    The caller's name is used by default.
+    """
+
+    d = g.app.statsDict
+
+    if name:
+        if type(name) != type(""):
+            name = repr(name)
+    else:
+        name = g._callerName(n=2) # Get caller name 2 levels back.
+
+    # g.trace(name)
+
+    d [name] = 1 + d.get(name,0)
+#@+node:ekr.20031218072017.3137: *3* g.Timing
+def getTime():
+    return time.clock()
+
+def esDiffTime(message, start):
+    delta = time.clock()-start
+    g.es('',"%s %6.3f sec." % (message,delta))
+    return time.clock()
+
+def printDiffTime(message, start):
+    delta = time.clock()-start
+    g.pr("%s %6.3f sec." % (message,delta))
+    return time.clock()
+
+def timeSince(start):
+    return "%6.3f sec." % (time.clock()-start)
 #@+node:ekr.20041224080039: *3* print_dict & dictToString
 def print_dict(d,tag='',verbose=True,indent=''):
 
@@ -1903,99 +1996,6 @@ def rawPrint(s):
     redirectStdOutObj.rawPrint(s)
 #@-others
 #@-<< define convenience methods for redirecting streams >>
-#@+node:ekr.20140401054342.16844: *3* g.run_pylint
-def run_pylint(fn,rc,
-    dots=True, # Show level dots in Sherlock traces.
-    patterns=None, # List of Sherlock trace patterns.
-    sherlock=False, # Enable Sherlock tracing.
-    show_return=True, # Show returns in Sherlock traces.
-    stats_patterns=None, # Patterns for Sherlock statistics.
-    verbose=True, # Show filenames in Sherlock traces.
-):
-    '''
-    Run pylint with the given args, with Sherlock tracing if requested.
-    Do not assume g.app exists.
-    '''
-    try:
-        from pylint import lint
-    except ImportError:
-        return g.trace('can not import pylint')
-    if not g.os_path_exists(fn):
-        return g.trace('does not exist:',fn)
-    if not g.os_path_exists(rc):
-        return g.trace('does not exist',rc)
-    args = ['--rcfile=%s' % (rc)]
-    args.append(fn)
-    if sherlock:
-        sherlock = g.SherlockTracer(
-                dots=dots,
-                show_return=show_return,
-                verbose=True, # verbose: show filenames.
-                patterns=patterns or [],
-            )
-        try:
-            sherlock.run()
-            lint.Run(args)
-        finally:
-            sherlock.stop()
-            sherlock.print_stats(patterns=stats_patterns or [])
-    else:
-        lint.Run(args)
-#@+node:ekr.20031218072017.3133: *3* Statistics
-#@+node:ekr.20031218072017.3134: *4* clear_stats
-def clear_stats():
-
-    g.trace()
-
-    g.app.statsDict = {}
-
-clearStats = clear_stats
-#@+node:ekr.20031218072017.3135: *4* print_stats
-def print_stats (name=None):
-
-    if name:
-        if type(name) != type(""):
-            name = repr(name)
-    else:
-        name = g._callerName(n=2) # Get caller name 2 levels back.
-
-    g.printDict(g.app.statsDict,tag='statistics at %s' % name)
-
-printStats = print_stats
-#@+node:ekr.20031218072017.3136: *4* stat
-def stat (name=None):
-
-    """Increments the statistic for name in g.app.statsDict
-    The caller's name is used by default.
-    """
-
-    d = g.app.statsDict
-
-    if name:
-        if type(name) != type(""):
-            name = repr(name)
-    else:
-        name = g._callerName(n=2) # Get caller name 2 levels back.
-
-    # g.trace(name)
-
-    d [name] = 1 + d.get(name,0)
-#@+node:ekr.20031218072017.3137: *3* Timing
-def getTime():
-    return time.clock()
-
-def esDiffTime(message, start):
-    delta = time.clock()-start
-    g.es('',"%s %6.3f sec." % (message,delta))
-    return time.clock()
-
-def printDiffTime(message, start):
-    delta = time.clock()-start
-    g.pr("%s %6.3f sec." % (message,delta))
-    return time.clock()
-
-def timeSince(start):
-    return "%6.3f sec." % (time.clock()-start)
 #@+node:ekr.20031218072017.3116: ** Files & Directories...
 #@+node:ekr.20120222084734.10287: *3*  Redirection to LoadManager methods
 # For compatibility with old code.
@@ -2840,38 +2840,37 @@ def printGcVerbose(tag=''):
 #@-others
 #@+node:ekr.20031218072017.3139: ** Hooks & plugins (leoGlobals)
 #@+node:ekr.20031218072017.1315: *3* idle time functions (leoGlobals)
-#@+node:EKR.20040602125018: *4* enableIdleTimeHook
-#@+at Enables the "idle" hook.
-# After enableIdleTimeHook is called, Leo will call the "idle" hook
-# approximately every g.idleTimeDelay milliseconds.
-#@@c
-
+#@+node:EKR.20040602125018: *4* g.enableIdleTimeHook
 def enableIdleTimeHook(idleTimeDelay=500):
-
-    # g.trace(idleTimeDelay)
-
+    '''
+    Enables idle-time processing: Leo will call the "idle" hook
+    about every g.idleTimeDelay milliseconds.
+    '''
+    trace = True and not g.unitTesting
     if not g.app.idleTimeHook:
-        # g.trace('start idle-time hook: %d msec.' % idleTimeDelay)
+        if trace:
+            g.trace('start g.idleTimeHookHandler: %d msec.' % idleTimeDelay)
         # Start idle-time processing only after the first idle-time event.
         g.app.gui.setIdleTimeHook(g.idleTimeHookHandler)
         g.app.afterHandler = g.idleTimeHookHandler
-
-    # 1/4/05: Always update these.
+    # Enable idle-time processing.
     g.app.idleTimeHook = True
     g.app.idleTimeDelay = idleTimeDelay # Delay in msec.
-#@+node:EKR.20040602125018.1: *4* disableIdleTimeHook
+#@+node:EKR.20040602125018.1: *4* g.disableIdleTimeHook
 # Disables the "idle" hook.
 def disableIdleTimeHook():
 
     g.app.idleTimeHook = False
-#@+node:EKR.20040602125018.2: *4* idleTimeHookHandler
+#@+node:EKR.20040602125018.2: *4* g.idleTimeHookHandler
 # An internal routine used to dispatch the "idle" hook.
 trace_count = 0
 
 def idleTimeHookHandler(*args,**keys):
-
+    '''
+    The default idle-time event handler.
+    Calls frame.c.doHook('idle') for all frames in g.app.windowList.
+    '''
     trace = False and not g.unitTesting
-
     if trace: # Do not use g.trace here!
         global trace_count ; trace_count += 1
         if 0:
@@ -2881,16 +2880,12 @@ def idleTimeHookHandler(*args,**keys):
                 for z in g.app.windowList:
                     c = z.c
                     g.pr("idleTimeHookHandler",trace_count,c.shortFileName())
-
     # New for Python 2.3: may be called during shutdown.
     if g.app.killed: return
-
-    for z in g.app.windowList:
-        c = z.c
+    for frame in g.app.windowList:
         # Do NOT compute c.currentPosition.
         # This would be a MAJOR leak of positions.
-        g.doHook("idle",c=c)
-
+        g.doHook("idle",c=frame.c)
     # Requeue this routine after g.app.idleTimeDelay msec.
     # (This delay is set by g.enableIdleTimeHook.)
     # Faster requeues overload the system.

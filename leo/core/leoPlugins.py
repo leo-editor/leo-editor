@@ -304,15 +304,38 @@ class LeoPluginsController:
         self.warn_on_failure = g.app.config.getBool(
             setting='warn_when_plugins_fail_to_load',
             default=True)
-    #@+node:ekr.20100909065501.5952: *3* Event handlers
-    #@+node:ekr.20100908125007.6016: *4* callTagHandler
-    def callTagHandler (self,bunch,tag,keywords):
-
+    #@+node:ekr.20100909065501.5952: *3* Event handlers (leoPlugins)
+    #@+node:ekr.20100908125007.6017: *4* doHandlersForTag & helper
+    def doHandlersForTag (self,tag,keywords):
+        """
+        Execute all handlers for a given tag, in alphabetical order.
+        The caller, doHook, catches all exceptions.
+        """
         trace = False and not g.unitTesting
-        traceIdle = False
+        traceIdle = True
+        if g.app.killed:
+            return None
+        if trace and (traceIdle or tag != 'idle'):
+            event_p = keywords.get('new_p') or keywords.get('p')
+            g.trace(tag,event_p.h if event_p else '')
+        # Execute hooks in some random order.
+        # Return if one of them returns a non-None result.
+        for bunch in self.handlers.get(tag,[]):
+            val = self.callTagHandler(bunch,tag,keywords)
+            if val is not None:
+                return val
+        if 'all' in self.handlers:
+            bunches = self.handlers.get('all')
+            for bunch in bunches:
+                self.callTagHandler(bunch,tag,keywords)
 
-        handler = bunch.fn ; moduleName = bunch.moduleName
-
+        return None
+    #@+node:ekr.20100908125007.6016: *5* callTagHandler
+    def callTagHandler (self,bunch,tag,keywords):
+        '''Call the event handler.'''
+        trace = False and not g.unitTesting
+        traceIdle = True
+        handler,moduleName = bunch.fn,bunch.moduleName
         if trace and (traceIdle or tag != 'idle'):
             c = keywords.get('c')
             name = moduleName ; tag2 = 'leo.plugins.'
@@ -320,7 +343,6 @@ class LeoPluginsController:
             g.trace('c: %s %23s : %s . %s' % (
                 c and c.shortFileName() or '<no c>',
                 tag,handler.__name__,name))
-
         # Make sure the new commander exists.
         for key in ('c','new_c'):
             c = keywords.get(key)
@@ -329,7 +351,6 @@ class LeoPluginsController:
                 if not c.exists or not hasattr(c,'frame'):
                     # g.pr('skipping tag %s: c does not exist or does not have a frame.' % tag)
                     return None
-
         # Calls to registerHandler from inside the handler belong to moduleName.
         self.loadingModuleNameStack.append(moduleName)
         try:
@@ -340,51 +361,16 @@ class LeoPluginsController:
             result = None
         self.loadingModuleNameStack.pop()
         return result
-    #@+node:ekr.20100908125007.6017: *4* doHandlersForTag
-    def doHandlersForTag (self,tag,keywords):
-
-        """Execute all handlers for a given tag, in alphabetical order.
-
-        All exceptions are caught by the caller, doHook."""
-
-        trace = False and not g.unitTesting
-        traceIdle = False
-
-        if g.app.killed:
-            return None
-
-        if trace and (traceIdle or tag != 'idle'):
-            event_p = keywords.get('new_p') or keywords.get('p')
-            g.trace(tag,event_p.h if event_p else '')
-
-        if tag in self.handlers:
-            bunches = self.handlers.get(tag)
-            # Execute hooks in some random order.
-            # Return if one of them returns a non-None result.
-            for bunch in bunches:
-                val = self.callTagHandler(bunch,tag,keywords)
-                if val is not None:
-                    return val
-
-        if 'all' in self.handlers:
-            bunches = self.handlers.get('all')
-            for bunch in bunches:
-                self.callTagHandler(bunch,tag,keywords)
-
-        return None
-    #@+node:ekr.20100908125007.6018: *4* doPlugins
-    # This is the default g.app.hookFunction.
-
+    #@+node:ekr.20100908125007.6018: *4* doPlugins (g.app.hookFunction)
     def doPlugins(self,tag,keywords):
-
+        '''The default g.app.hookFunction.'''
+        trace = False and not g.unitTesting
         if g.app.killed:
             return
-
-        # g.trace(tag,g.callers())
-
+        if trace and tag != 'idle':
+             g.trace(tag)
         if tag in ('start1','open0'):
             self.loadHandlers(tag,keywords)
-
         return self.doHandlersForTag(tag,keywords)
     #@+node:ekr.20100909065501.5950: *3* Information
     #@+node:ekr.20100908125007.6019: *4* getHandlersForTag

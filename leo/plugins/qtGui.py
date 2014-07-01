@@ -8230,28 +8230,41 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20110605121601.18519: *4* Idle Time (qtGui)
     #@+node:ekr.20110605121601.18520: *5* qtGui.setIdleTimeHook & setIdleTimeHookAfterDelay
     timer = None
+    last_timer_callback_time = 0.0
 
-    def setIdleTimeHook (self,idleTimeHookHandler):
+    def setIdleTimeHook (self,handler):
         '''Queue up idle-time processing.'''
-        # if self.root:
-            # self.root.after_idle(idleTimeHookHandler)
-        if self.timer:
-            return
-        self.timer = timer = QtCore.QTimer()
-        def timerCallBack(self=self,handler=idleTimeHookHandler):
-            # g.trace(self,idleTimeHookHandler)
-            idleTimeHookHandler()
-        timer.timeout.connect(timerCallBack)
-        # To make your application perform idle processing, use a QTimer with 0 timeout.
-        # More advanced idle processing schemes can be achieved using processEvents().
-        timer.start(1000)
+        # Always define the callback so handler may be rebound.
+        #@+<< define timerCallBack >>
+        #@+node:ekr.20140701055615.16735: *6* << define timerCallBack >>
+        def timerCallBack():
+            '''
+            The idle time callback.
+            Call handler, but never more than once every g.app.idleTimeDelay msec.
+            '''
+            if g.app.idleTimeHook:
+                # Idle-time processing is enabled.
+                t = time.time()
+                delta = t - self.last_timer_callback_time
+                delay = float(g.app.idleTimeDelay)/1000.0
+                if delta > delay:
+                    self.last_timer_callback_time = t
+                    # g.trace(delay,delta)
+                    handler() # usually g.idleTimeHookHanlder.
+            elif self.timer:
+                # Idle-time processing is disabled.  Stop the timer.
+                self.timer.stop()
+        #@-<< define timerCallBack >>
+        if not self.timer:
+            self.timer = QtCore.QTimer()
+            self.timer.timeout.connect(timerCallBack)
+        # Fire the timer at idle time.
+        self.timer.start(0)
 
     setIdleTimeHookAfterDelay = setIdleTimeHook
     #@+node:ekr.20110605121601.18521: *5* qtGui.runAtIdle
     def runAtIdle (self,aFunc):
-
         '''This can not be called in some contexts.'''
-
         QtCore.QTimer.singleShot(0,aFunc)
     #@+node:ekr.20131007055150.17608: *4* insertKeyEvent (qtGui) (New in 4.11)
     def insertKeyEvent (self,event,i):
