@@ -8244,7 +8244,8 @@ class LeoQtGui(leoGui.LeoGui):
                 delay = float(g.app.idleTimeDelay)/1000.0
                 if delta > delay:
                     self.last_timer_callback_time = t
-                    # g.trace(delay,delta)
+                    if False and g.app.trace_idle_time:
+                        g.trace(delay,delta,handler.__name__)
                     handler() # usually g.idleTimeHookHanlder.
             elif self.timer:
                 # Idle-time processing is disabled.  Stop the timer.

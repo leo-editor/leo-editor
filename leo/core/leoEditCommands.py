@@ -211,6 +211,18 @@ def ctrlClickAtCursor(event):
     c = event.get('c')
     if c:
         g.openUrlOnClick(event)
+#@+node:ekr.20140701093157.16738: *3* enable/disable/toggle-idle-time-tracing
+@g.command('disable-idle-time-tracing')
+def disable_idle_time_tracing(event):
+    g.app.trace_idle_time = False
+    
+@g.command('enable-idle-time-tracing')
+def enable_idle_time_tracing(event):
+    g.app.trace_idle_time = True
+    
+@g.command('toggle-idle-time-tracing')
+def enable_idle_time_tracing(event):
+    g.app.trace_idle_time = not g.app.trace_idle_time
 #@+node:ekr.20131120115900.16323: *3* join-leo-irc
 @g.command('join-leo-irc')
 def join_leo_irc(event=None):

@@ -157,7 +157,8 @@ class LeoApp:
         self.hookFunction = None    # Application wide hook function.
         self.idle_imported = False  # True: we have done an import idle
         self.idleTimeDelay = 100    # Delay in msec between calls to "idle time" hook.
-        self.idleTimeHook = False   # True: the global idleTimeHookHandler will reshedule itself.
+        self.idleTimeHook = None    # The global idle time event handler.
+        self.trace_idle_time = False # True: enable a trace in g.idleTimeHookHandler
 
         # Support for scripting...
         self.searchDict = {}          # For communication between find/change scripts.
