@@ -211,6 +211,21 @@ def ctrlClickAtCursor(event):
     c = event.get('c')
     if c:
         g.openUrlOnClick(event)
+#@+node:ekr.20140701101218.16740: *3* enable/disable/toggle-idle-time-events
+@g.command('disable-idle-time-events')
+def disable_idle_time_events(event):
+    g.disableIdleTimeHook()
+    
+@g.command('enable-idle-time-events')
+def enable_idle_time_events(event):
+    g.enableIdleTimeHook()
+    
+@g.command('toggle-idle-time-events')
+def enable_idle_time_events(event):
+    if g.app.idleTimeHook:
+        g.disableIdleTimeHook()
+    else:
+        g.enableIdleTimeHook()
 #@+node:ekr.20140701093157.16738: *3* enable/disable/toggle-idle-time-tracing
 @g.command('disable-idle-time-tracing')
 def disable_idle_time_tracing(event):

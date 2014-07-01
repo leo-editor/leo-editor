@@ -2839,7 +2839,7 @@ def printGcVerbose(tag=''):
     g.pr('-' * 40)
 #@-others
 #@+node:ekr.20031218072017.3139: ** Hooks & plugins (leoGlobals)
-#@+node:ekr.20031218072017.1315: *3* idle time functions/commands (leoGlobals)
+#@+node:ekr.20031218072017.1315: *3* idle time functions (leoGlobals)
 #@+node:EKR.20040602125018: *4* g.enableIdleTimeHook
 def enableIdleTimeHook(idleTimeDelay=500):
     '''
