@@ -2863,37 +2863,26 @@ def disableIdleTimeHook():
     if trace: g.trace()
     g.app.idleTimeHook = False
 #@+node:EKR.20040602125018.2: *4* g.idleTimeHookHandler
-# An internal routine used to dispatch the "idle" hook.
 trace_count = 0
 
 def idleTimeHookHandler(*args,**keys):
     '''
-    The default **global** idle-time event handler.
-    Calls frame.c.doHook('idle') for all frames in g.app.windowList.
+    This is the default **global** idle-time event handler.
+    It calls c.doHook('idle') for each commander.
     '''
     global trace_count
     trace = g.app.trace_idle_time and not g.unitTesting
-    if trace:
-        trace_count += 1
+    if trace: trace_count += 1
     # New for Python 2.3: may be called during shutdown.
     if g.app.killed: return
     for frame in g.app.windowList:
         c = frame.c
         # Do NOT compute c.currentPosition.
         # This would be a MAJOR leak of positions.
-        if trace:
-            g.pr('%3s calling g.doHook(c=%s)' % (
-                trace_count,c.shortFileName()))
+        if trace: g.pr('%3s calling g.doHook(c=%s)' % (
+            trace_count,c.shortFileName()))
         g.doHook("idle",c=c)
-    # Requeue this routine after g.app.idleTimeDelay msec.
-    # (This delay is set by g.enableIdleTimeHook.)
-    # Faster requeues overload the system.
-    if 0:
-        if g.app.idleTimeHook:
-            g.app.gui.setIdleTimeHookAfterDelay(g.idleTimeHookHandler)
-            g.app.afterHandler = g.idleTimeHookHandler
-        else:
-            g.app.afterHandler = None
+    # qtGui.setIdleTimeHook now manages the idle-time timer
 #@+node:ekr.20101028131948.5860: *3* g.act_on_node
 def dummy_act_on_node(c,p,event):
     pass
