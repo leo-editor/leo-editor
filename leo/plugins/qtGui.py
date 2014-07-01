@@ -3127,16 +3127,16 @@ class LeoBaseTabWidget (QtWidgets.QTabWidget):
             menu = QtWidgets.QMenu()
             if self.count() > 1:
                 a = menu.addAction("Detach")
-                a.triggered.connect(lambda: self.detach(index))
+                a.triggered.connect(lambda checked: self.detach(index))
                 a = menu.addAction("Horizontal tile")
                 a.triggered.connect(
-                    lambda: self.tile(index, orientation='H'))
+                    lambda checked: self.tile(index, orientation='H'))
                 a = menu.addAction("Vertical tile")
                 a.triggered.connect(
-                    lambda: self.tile(index, orientation='V'))
+                    lambda checked: self.tile(index, orientation='V'))
             if self.detached:
                 a = menu.addAction("Re-attach All")
-                a.triggered.connect(self.reattach_all)
+                a.triggered.connect(lambda checked: self.reattach_all())
             menu.exec_(self.mapToGlobal(point))
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(tabContextMenu)
@@ -4465,7 +4465,7 @@ class LeoQtFrame (leoFrame.LeoFrame):
             b.setObjectName(button_name)
             if trace: g.trace(button_name)
             b.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
-            def delete_callback(action=action,):
+            def delete_callback(checked, action=action,):
                 self.w.removeAction(action)
             b.leo_removeAction = rb = QtWidgets.QAction('Remove Button' ,b)
             b.addAction(rb)
@@ -4542,7 +4542,7 @@ class LeoQtFrame (leoFrame.LeoFrame):
                     return
                 # 20100518 - TNB command is instance of callable class with
                 #   c and gnx attributes, so we can add a context menu item...
-                def goto_command(command = command):
+                def goto_command(checked, command = command):
                     c = command.c
                     p = command.controller.find_gnx(command.gnx)
                     if p:
@@ -4590,7 +4590,7 @@ class LeoQtFrame (leoFrame.LeoFrame):
                         for child in rclick.children():
                             rclicks.append((child.copy(), sub_menu, 0))
                     else:
-                        def cb(event=None, ctrl=command.controller, p=rclick, 
+                        def cb(checked, ctrl=command.controller, p=rclick, 
                                c=command.c, b=command.b, t=rclick.h[8:]):
                             ctrl.executeScriptFromButton(b,t,p.gnx)
                             if c.exists:
@@ -5664,7 +5664,7 @@ class LeoQtMenu (leoMenu.LeoMenu):
         # so that it can be enabled/disabled dynamically.
         action.leo_command_name = commandName
         if command:
-            def qt_add_command_callback(event,label=label,command=command):
+            def qt_add_command_callback(checked, label=label,command=command):
                 return command()
             action.triggered.connect(qt_add_command_callback)
     #@+node:ekr.20110605121601.18346: *6* add_separator (LeoQtMenu)
@@ -5723,7 +5723,7 @@ class LeoQtMenu (leoMenu.LeoMenu):
                 label = label[:n] + '&' + label[n:]
             action = menu.addAction(label)
             if command:
-                def insert_callback(event,label=label,command=command):
+                def insert_callback(checked,label=label,command=command):
                     command()
                 action.triggered.connect(insert_callback)
     #@+node:ekr.20110605121601.18352: *6* insert_cascade (LeoQtMenu)

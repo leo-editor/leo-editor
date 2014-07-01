@@ -324,7 +324,7 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
         submenu = menu.addMenu('Debug')
         act = QtWidgets.QAction("Print splitter layout", self)
         # E0102: function already defined.
-        def cb(splitter=splitter): # pylint: disable=E0102
+        def cb(checked, splitter=splitter): # pylint: disable=E0102
             print("\n%s\n" % 
                 splitter.layout_to_text(splitter.top().get_layout()))
         act.triggered.connect(cb)
@@ -337,7 +337,7 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
                         load_items(menu.addMenu(k), i[k])
                 else:
                     title, id_ = i
-                    def cb(id_=id_):
+                    def cb(checked, id_=id_):
                         splitter.context_cb(id_, index)
                     act = QtWidgets.QAction(title, self)
                     act.triggered.connect(cb)
@@ -582,12 +582,12 @@ class NestedSplitter(QtWidgets.QSplitter):
         ):
             act = QtWidgets.QAction("Move marked here", self)
             act.triggered.connect(
-                lambda: self.replace_widget(button, self.root.marked[3]))
+                lambda checked: self.replace_widget(button, self.root.marked[3]))
             menu.addAction(act)        
         for provider in self.root.providers:
             if hasattr(provider, 'ns_provides'):
                 for title, id_ in provider.ns_provides():
-                    def cb(id_=id_):
+                    def cb(checked, id_=id_):
                         self.place_provided(id_, index)
                     act = QtWidgets.QAction(title, self)
                     act.triggered.connect(cb)
