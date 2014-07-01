@@ -7703,14 +7703,9 @@ class LeoQtGui(leoGui.LeoGui):
                 QtWidgets.QDialogButtonBox.Ok
                     | QtWidgets.QDialogButtonBox.Cancel)
                 layout.addWidget(buttonBox)
-                ### Enough??
-                buttonBox.accepted.connect(self)
-                buttonBox.regected.connect(self)
-                ### Was:
-                    # self.connect(buttonBox, QtCore.SIGNAL("accepted()"),
-                        # self, QtCore.SLOT("accept()"))
-                    # self.connect(buttonBox, QtCore.SIGNAL("rejected()"),
-                        # self, QtCore.SLOT("reject()"))
+
+                buttonBox.accepted.connect(self.accept)
+                buttonBox.rejected.connect(self.reject)
 
         if g.unitTesting: return None
 
