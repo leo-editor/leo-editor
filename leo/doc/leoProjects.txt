@@ -229,6 +229,11 @@ if g.app.idleTimeHook:
     g.disableIdleTimeHook()
 else:
     g.enableIdleTimeHook(1000,h.h1)
+.. @+node:ekr.20140702124615.16727: *3* Added support for html handlebar syntax coloring
+These are colored with the previously unused literal3 tag,
+so you specify the color with:
+
+    @color html_literal3_color = pink
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
