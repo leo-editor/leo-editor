@@ -221,7 +221,7 @@ def enable_idle_time_events(event):
     g.enableIdleTimeHook()
     
 @g.command('toggle-idle-time-events')
-def enable_idle_time_events(event):
+def toggle_idle_time_events(event):
     if g.app.idleTimeHook:
         g.disableIdleTimeHook()
     else:
@@ -236,7 +236,7 @@ def enable_idle_time_tracing(event):
     g.app.trace_idle_time = True
     
 @g.command('toggle-idle-time-tracing')
-def enable_idle_time_tracing(event):
+def toggle_idle_time_tracing(event):
     g.app.trace_idle_time = not g.app.trace_idle_time
 #@+node:ekr.20131120115900.16323: *3* join-leo-irc
 @g.command('join-leo-irc')

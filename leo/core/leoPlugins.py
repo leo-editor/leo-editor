@@ -368,7 +368,7 @@ class LeoPluginsController:
         if g.app.killed:
             return
         if trace and tag != 'idle':
-             g.trace(tag)
+            g.trace(tag)
         if tag in ('start1','open0'):
             self.loadHandlers(tag,keywords)
         return self.doHandlersForTag(tag,keywords)
