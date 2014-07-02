@@ -8261,7 +8261,7 @@ class LeoQtGui(leoGui.LeoGui):
             self.timer = QtCore.QTimer()
             self.timer.timeout.connect(timerCallBack)
         # Fire the timer at idle time.
-        self.timer.start(0)
+        self.timer.start(100)
 
     setIdleTimeHookAfterDelay = setIdleTimeHook
     #@+node:ekr.20110605121601.18521: *5* qtGui.runAtIdle
