@@ -8230,7 +8230,7 @@ class LeoQtGui(leoGui.LeoGui):
     def setIdleTimeHook(self):
         '''
         Define a timer and its callback so that:
-        a) g.app.idleTimeHook() actually get called at idle-time,
+        a) g.app.idleTimeHook() actually gets called at idle-time,
         b) avoids busy waiting and,
         c) waits at least g.app.idleTimeDelay msec. between calls to g.app.idleTimeHook()
         '''
