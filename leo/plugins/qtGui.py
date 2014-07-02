@@ -8229,10 +8229,11 @@ class LeoQtGui(leoGui.LeoGui):
 
     def setIdleTimeHook(self):
         '''
-        Define a callback that executes g.app.gui.idleTimeHook and start a
-        timer that fires at idle time.
+        Define a timer and its callback so that:
+        a) g.app.idleTimeHook() actually get called at idle-time,
+        b) avoids busy waiting and,
+        c) waits at least g.app.idleTimeDelay msec. between calls to g.app.idleTimeHook()
         '''
-        # Always define the callback so handler may be rebound.
         #@+<< define timerCallBack >>
         #@+node:ekr.20140701055615.16735: *6* << define timerCallBack >>
         def timerCallBack():
