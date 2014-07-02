@@ -180,6 +180,12 @@ setReplaceString,
 Also fixed the bindings in create_find_buttons so buttons
 are bound to the proper button-related methods. As a result,
 the find-all and change-all buttons now work as expected.
+.. @+node:ekr.20140427131738.16870: *3* Added support for qt5
+@language rest
+
+It is not possible to use both the PyQt4 and PyQt5 installers at the same
+time. But this is no big deal on Windows: just install PyQt5 for Python 3.4
+only.
 .. @+node:ekr.20140702091137.16754: *3* Improved idle-time handling and added new commands
 @language rest
 

@@ -20,157 +20,7 @@ failed find focus fails
 
 https://bugs.launchpad.net/leo-editor/+bug/1254861
 ctrl-f doesn't ensure find input field visible
-.. @+node:ekr.20140526130147.16669: *3* run rope
-import imp
-import leo.core.leoRope as leoRope
-imp.reload(leoRope)
-leoRope.test(c)
-.. @+node:ekr.20140610063815.17693: *3* Sentinel files
-.. @+node:ekr.20140611055007.17696: *4* original post
-https://groups.google.com/forum/#!topic/leo-editor/1uw1llvuYBQ
-
-@language rest
-
-For the last several days I have been thinking about the new-@auto project
-that I worked on in February while in Florida.
-
-As always, the real problems involve sentinels: It's essential that Leo's
-sentinels not be visible in projects that do not use Leo.
-
-The fundamental problem is that operating systems do not support additional
-(hidden) data in text files. (Old versions of MacOS did support such data
-in the so-called "resource fork").
-
-A new set of thoughts has now appeared. These are quite different from the
-thoughts I have explored for the past 20 years.
-
-===== The idea
-
-We want a way of Leo users to share outline structure in a way that is
-completely invisible to non-Leo users. This is *not* the same thing as
-doing without sentinels! It puts the focus on "back-channel" communication
-of sentinels between Leo users as follows:
-
-0. Let's use the same terminology as with @shadow: **private** files
-   contain sentinels; **public** files do not.
-
-1. Instead of writing sentinels *within* external files, Leo's file-write
-   logic could easily create separate **sentinel files**. Sentinel files
-   would contain:
-
-- a header with data such as sha1-hash for the corresponding public file,
-  and a gnx-like author/timestamp field.
-
-- a list of sentinel lines themselves. Each sentinel line would be preceded
-  by a relative offset of the sentinel within the corresponding public
-  file. Using relative offsets means that most offsets would not change if
-  a line were inserted/deleted from the public file.
-
-2. Leo's file-read logic for public files would "shuffle" the sentinels
-   into the public file (using the relative offset of each sentinel). After
-   the sentinels have been restored, the read logic would be identical to
-   the present @file read logic.
-
-3. We want this scheme to be completely invisible to non-Leonine users, so
-   sentinel files must be kept *away* from project files, say in the
-   ~/.leo/sentinels directory. Call this the user's **sentinels
-   directory**.
-
-The obvious way to associate sentinel files with the corresponding public
-file would be with the sha1 hash. The files in the sentinels directory
-would have names that are the sha1 hash of the corresponding public file.
-
-4. Leo users can *share outline structure* by sharing sentinels files.
-
-At first, this sharing would have to be done "by hand" each time a public
-file is committed. Later, perhaps more automatic ways of sharing sentinels
-files could be created. Say by using git hooks, for example.
-
-5. Because sharing sentinels files may not always be automatic (and might
-   not ever be automatic), Leonine users will need ways of "recovering"
-   when a public file changes without the corresponding sentinel files
-   being available. This leads us to...
-
-===== Doing without sentinels files
-
-Suppose Alice has committed the new public file f.py, and suppose Alice has
-*not* committed the corresponding sentinel file. Suppose Bob wants to use
-the new version of f.py in Leo. Bob has two options:
-
-1. Use @auto to create the outline for f.py.
-
-2. Use the @shadow algorithm as follows. Using git (say) Bob recovers some
-   previous version V of f.py (without sentinels) for which Bob *does* have
-   a corresponding sentinel file. Bob (using Leo) recreates the *private*
-   copy of version V of f.py by shuffling the sentinels into f.py. Bob then
-   runs the @shadow algorithm on the old private copy to create the new
-   version of f.py *with* sentinels.
-
-**Important**: the choice between @auto and @shadow would be a personal
-preference. I've gone into detail here to show how Leo could do the
-recovery for Bob automatically using the @shadow idea.
-
-===== Pros and cons
-
-As with all ways of doing without sentinels, this scheme has plusses and
-minuses.
-
-On the plus side:
-
-- It is completely invisible and imposes *zero* cost on non-Leonine users
-  and projects. Costs accrue only to Leo users.
-
-- When the proper sentinel file is available, Leo uses the simplest
-  possible algorithm to reconstruct outlines, namely shuffling sentinels
-  into the public file followed by running the @file read code. This
-  requires neither parsing (as @auto does) nor any complicated diffing (as
-  @shadow does). I think of the @file read code as a simple, deterministic
-  finite automaton.
-
-- When the proper sentinel file is available, Leo will provide all the
-  advantages of @file nodes, including the conservation of gnx's and all
-  that implies, especially rock-solid clone links.
-
-- It will be easy to prototype. A simple script will test the **round trip** criterion.
-
-  The script will create a sentinel file from a *private* file and verify
-  that shuffling the sentinels from the sentinels file back into the
-  corresponding *public* file results in the original *private* file.
-
-On the minus side:
-
-- Most importantly, no matter how good (or how automatic) the connection
-  between public files and the corresponding sentinel files, that
-  connection can *never* be as solid as embedding sentinels in external
-  files. Thus, the opportunity for problems will always be greater when
-  using this scheme compared to using files with embedded sentinels.
-
-- Leo's users will be responsible for sharing sentinels files. This will be
-  an extra step, even if it is eventually done automatically.
-
-- When the proper sentinel file does not exist for a public file, Leo users
-  will have to live with either @auto-based recovery or @shadow-based
-  recovery.
-
-- There is no advantage for a lone Leonine user within a project to use
-  this scheme: she may as well use @shadow or @auto. Similarly, if *all*
-  the users of the project use Leo, they may as well just use @file. So
-  this scheme is only useful if a project contains two or more Leonine
-  programmers and one or more non-Leonine programmers.
-
-===== Summary
-
-- This scheme puts more emphasis on sharing data *among Leo users* than on
-  "magically" recreating sentinels.
-
-- This scheme's implementation advantages (using the @file read logic) is
-  offset (in part) by the inconvenience of having to share and synchronize
-  sentinels files.
-
-- This scheme is only useful when multiple Leonine programmers work in a
-  non-Leonine project. Solo Leonine programmers in a non-Leonine project
-  may as well use @shadow or @auto.
-.. @+node:ekr.20140531073052.16702: *3* existing non-pep8 class names
+.. @+node:ekr.20140531073052.16702: *3* Change existing non-pep8 class names
 # class atFile:
 class baseTextWidget(object):
 class bridgeController:
@@ -192,7 +42,7 @@ class pythonScanner (BaseScanner):
 class searchWidget:
 class tangleCommands (BaseTangleCommands):
 .. @+node:ekr.20140521095206.16728: ** Important
-.. @+node:ekr.20140402091953.16865: *3* add pylint commands
+.. @+node:ekr.20140402091953.16865: *3* * add pylint commands
 @language rest
 
 pylint-check-all     @data pylint-all-files
@@ -200,52 +50,14 @@ pylint-check-core    @data pylint-core-files
 pylint-check-custom  @data pylint-custom-files
 pylint-check-plugins @data pylint-plugins-files
 pylint-check-recent  @data pylint-recent-files
-.. @+node:ekr.20140402091953.16863: *3* Add rope to Leo
+.. @+node:ekr.20140402091953.16863: *3* * Add rope to Leo
 # http://rope.sourceforge.net/library.html
 
 import rope.base.project as project
 print(project)
 
 # myproject = project.Project('/path/to/myproject')
-.. @+node:ekr.20140427131738.16870: *3* Added support for qt5
-@language rest
-
-To do:
-
-- Connect signals again: (search for isQt5)
-- Fix visual problems.
-- Convert plugins.
-
-
-It is not possible to use both the PyQt4 and PyQt5 installers at the same
-time. But this is no big deal on Windows: just install PyQt5 for Python 3.4
-only.
-.. @+node:ekr.20140612115800.17705: *4* Qt5 migration
-@language rest
-
-.. @+node:ekr.20140611061834.17703: *4* pyqt install log
-@language rest
-
-http://qt-project.org/wiki/Transition_from_Qt_4.x_to_Qt5
-
-- Installed Python 3.4
-- Installed PyQt4 for Python 3.4.
-- Created /scripts/e34.bat and /bin/python34.bat.
-- e34 works with PyQt4.
-- Uninstalled PyQt4 using uninstall script.
-- Installed PyQt5 in Python 3.4.
-- Now e34 fails as expected. e3 (Using Python 33 still works).
-.. @+node:ekr.20140611061834.17705: *4* Changes to imports
-try:
-    from PyQt5 import QtCore, Qt # QtGui
-    from PyQt5.QtCore import Qt as QtConst
-    from PyQt5 import QtWidgets
-    QtGui = QtWidgets
-except ImportError:
-    from PyQt4 import QtGui, QtCore, Qt
-    from PyQt4.QtCore import Qt as QtConst
-    QWidget = QtGui.QWidget
-.. @+node:ekr.20140115052524.16699: *3* Allow clones *anywhere* in @file nodes
+.. @+node:ekr.20140115052524.16699: *3* * Allow clones *anywhere* in @file nodes
 ​https://groups.google.com/d/msg/leo-editor/YjJdWjNSM9o/SDL7Nb__OUcJ
 
 There is a way to allow clones *anywhere* in @file nodes and simplify Leo's
@@ -263,25 +75,7 @@ Another example of generality arising from simplicity...
 I can tell you why I *did* think of doing this now: the new @auto read
 logic uses a new p._relinkAsCloneOf method, exactly what the @file read
 post pass will use!
-.. @+node:ekr.20140215092923.16407: *3* git stuff
-@language rest
-
-Handle newlines: .gitattributes.
-    Use "recommended" .gitattributes?
-    
-What to do abouit bzr-manifest?
-.. @+node:ekr.20140306114536.16869: *3* Handle multiple selections
-@language rest
-
-They work from the rclick menu, but not from the minibuffer.
-    - Should hanlde clone and delete and move, at least.
-.. @+node:ekr.20140218130540.18727: *3* improve parse-body
-.. @+node:ekr.20140520054818.17967: *3* Move Launchpad bugs to github
-https://groups.google.com/forum/#!topic/leo-editor/Bpc67qPNeJA
-
-Apparently, there are problems with importing launchpand bug tracker items.
-.. @+node:ekr.20140426030229.16869: *3* prototype of sentinel files
-.. @+node:ekr.20140104063158.16448: *3* reload-abbreviations and reload-key-bindings commands
+.. @+node:ekr.20140104063158.16448: *3* * reload-abbreviations and reload-key-bindings commands
 reload-abbreviations and reload-key-bindings commands.
     Use regex replace to replace settings ivars with @property defs.
 
@@ -342,41 +136,7 @@ abbrevCommandsClass
     init_abbrev
 .. @+node:ekr.20140104063158.17235: *4* Found: \w*\.\w*\s*=\s*c.config.get
 # About 65-70 matches.
-.. @+node:ekr.20140322090829.16832: *3* Sherlock to do:
-@language rest
-
-* Improve traces for __init__:
-
-* Optionally print g.callers.
-
-* Distinguish between calls & returns.
-    ? Just print return trace if it immediate follows the call trace.
-    - Have a return-only trace list.
-
-? Allow stops at each trace: drop into pdb??
-
-.. @+node:ekr.20140402091953.16864: *3* stc big picture
-Focus on big data:
-- What are all the definitions of symbol x?
-    - In a particular class, module, etc.
-- What are all the definitions of callable x?
-    - In a particualr class, module, etc.
-    - Compatible with a particular call.
-- What are all uses of symbol x?
-.. @+node:ekr.20131225061403.16375: *3* Support @bookmark-view
-@nocolor-node
-
-- Choosing bookmarks-show with a large tree selected kills performance.
-- view-pack will create sorted list of unl's.
-- view-unpack will sort list of unl's.
-.. @+node:ekr.20131225061403.16377: *4* g.command(view-pack)
-@g.command('view-pack')
-def viewPack(event):
-    c = event.get('c')
-    if not c: return
-    result = [g.unl(p) for p in c.p.self_and_subtree()]
-    # What to do about c.p.b and c.p.h?
-.. @+node:ekr.20131111061547.16464: *3* vim project
+.. @+node:ekr.20131111061547.16464: *3* * vim project
 @language rest
 
 Bug: word-only screws up regex searches.
@@ -1935,6 +1695,182 @@ Less important:
 ]x  go...
 - up line to first non-blank char
 + down line to first non-blank char
+.. @+node:ekr.20140306114536.16869: *3* Handle multiple selections
+@language rest
+
+They work from the rclick menu, but not from the minibuffer.
+- Should handle clone and delete and move, at least.
+.. @+node:ekr.20140520054818.17967: *3* Move Launchpad bugs to github
+https://groups.google.com/forum/#!topic/leo-editor/Bpc67qPNeJA
+
+Apparently, there are problems with importing launchpand bug tracker items.
+.. @+node:ekr.20140610063815.17693: *3* Sentinel files
+.. @+node:ekr.20140426030229.16869: *4* prototype of sentinel files
+.. @+node:ekr.20140611055007.17696: *4* original post
+https://groups.google.com/forum/#!topic/leo-editor/1uw1llvuYBQ
+
+@language rest
+
+For the last several days I have been thinking about the new-@auto project
+that I worked on in February while in Florida.
+
+As always, the real problems involve sentinels: It's essential that Leo's
+sentinels not be visible in projects that do not use Leo.
+
+The fundamental problem is that operating systems do not support additional
+(hidden) data in text files. (Old versions of MacOS did support such data
+in the so-called "resource fork").
+
+A new set of thoughts has now appeared. These are quite different from the
+thoughts I have explored for the past 20 years.
+
+===== The idea
+
+We want a way of Leo users to share outline structure in a way that is
+completely invisible to non-Leo users. This is *not* the same thing as
+doing without sentinels! It puts the focus on "back-channel" communication
+of sentinels between Leo users as follows:
+
+0. Let's use the same terminology as with @shadow: **private** files
+   contain sentinels; **public** files do not.
+
+1. Instead of writing sentinels *within* external files, Leo's file-write
+   logic could easily create separate **sentinel files**. Sentinel files
+   would contain:
+
+- a header with data such as sha1-hash for the corresponding public file,
+  and a gnx-like author/timestamp field.
+
+- a list of sentinel lines themselves. Each sentinel line would be preceded
+  by a relative offset of the sentinel within the corresponding public
+  file. Using relative offsets means that most offsets would not change if
+  a line were inserted/deleted from the public file.
+
+2. Leo's file-read logic for public files would "shuffle" the sentinels
+   into the public file (using the relative offset of each sentinel). After
+   the sentinels have been restored, the read logic would be identical to
+   the present @file read logic.
+
+3. We want this scheme to be completely invisible to non-Leonine users, so
+   sentinel files must be kept *away* from project files, say in the
+   ~/.leo/sentinels directory. Call this the user's **sentinels
+   directory**.
+
+The obvious way to associate sentinel files with the corresponding public
+file would be with the sha1 hash. The files in the sentinels directory
+would have names that are the sha1 hash of the corresponding public file.
+
+4. Leo users can *share outline structure* by sharing sentinels files.
+
+At first, this sharing would have to be done "by hand" each time a public
+file is committed. Later, perhaps more automatic ways of sharing sentinels
+files could be created. Say by using git hooks, for example.
+
+5. Because sharing sentinels files may not always be automatic (and might
+   not ever be automatic), Leonine users will need ways of "recovering"
+   when a public file changes without the corresponding sentinel files
+   being available. This leads us to...
+
+===== Doing without sentinels files
+
+Suppose Alice has committed the new public file f.py, and suppose Alice has
+*not* committed the corresponding sentinel file. Suppose Bob wants to use
+the new version of f.py in Leo. Bob has two options:
+
+1. Use @auto to create the outline for f.py.
+
+2. Use the @shadow algorithm as follows. Using git (say) Bob recovers some
+   previous version V of f.py (without sentinels) for which Bob *does* have
+   a corresponding sentinel file. Bob (using Leo) recreates the *private*
+   copy of version V of f.py by shuffling the sentinels into f.py. Bob then
+   runs the @shadow algorithm on the old private copy to create the new
+   version of f.py *with* sentinels.
+
+**Important**: the choice between @auto and @shadow would be a personal
+preference. I've gone into detail here to show how Leo could do the
+recovery for Bob automatically using the @shadow idea.
+
+===== Pros and cons
+
+As with all ways of doing without sentinels, this scheme has plusses and
+minuses.
+
+On the plus side:
+
+- It is completely invisible and imposes *zero* cost on non-Leonine users
+  and projects. Costs accrue only to Leo users.
+
+- When the proper sentinel file is available, Leo uses the simplest
+  possible algorithm to reconstruct outlines, namely shuffling sentinels
+  into the public file followed by running the @file read code. This
+  requires neither parsing (as @auto does) nor any complicated diffing (as
+  @shadow does). I think of the @file read code as a simple, deterministic
+  finite automaton.
+
+- When the proper sentinel file is available, Leo will provide all the
+  advantages of @file nodes, including the conservation of gnx's and all
+  that implies, especially rock-solid clone links.
+
+- It will be easy to prototype. A simple script will test the **round trip** criterion.
+
+  The script will create a sentinel file from a *private* file and verify
+  that shuffling the sentinels from the sentinels file back into the
+  corresponding *public* file results in the original *private* file.
+
+On the minus side:
+
+- Most importantly, no matter how good (or how automatic) the connection
+  between public files and the corresponding sentinel files, that
+  connection can *never* be as solid as embedding sentinels in external
+  files. Thus, the opportunity for problems will always be greater when
+  using this scheme compared to using files with embedded sentinels.
+
+- Leo's users will be responsible for sharing sentinels files. This will be
+  an extra step, even if it is eventually done automatically.
+
+- When the proper sentinel file does not exist for a public file, Leo users
+  will have to live with either @auto-based recovery or @shadow-based
+  recovery.
+
+- There is no advantage for a lone Leonine user within a project to use
+  this scheme: she may as well use @shadow or @auto. Similarly, if *all*
+  the users of the project use Leo, they may as well just use @file. So
+  this scheme is only useful if a project contains two or more Leonine
+  programmers and one or more non-Leonine programmers.
+
+===== Summary
+
+- This scheme puts more emphasis on sharing data *among Leo users* than on
+  "magically" recreating sentinels.
+
+- This scheme's implementation advantages (using the @file read logic) is
+  offset (in part) by the inconvenience of having to share and synchronize
+  sentinels files.
+
+- This scheme is only useful when multiple Leonine programmers work in a
+  non-Leonine project. Solo Leonine programmers in a non-Leonine project
+  may as well use @shadow or @auto.
+.. @+node:ekr.20140402091953.16864: *3* stc big picture
+Focus on big data:
+- What are all the definitions of symbol x?
+    - In a particular class, module, etc.
+- What are all the definitions of callable x?
+    - In a particualr class, module, etc.
+    - Compatible with a particular call.
+- What are all uses of symbol x?
+.. @+node:ekr.20131225061403.16375: *3* Support @bookmark-view
+@nocolor-node
+
+- Choosing bookmarks-show with a large tree selected kills performance.
+- view-pack will create sorted list of unl's.
+- view-unpack will sort list of unl's.
+.. @+node:ekr.20131225061403.16377: *4* g.command(view-pack)
+@g.command('view-pack')
+def viewPack(event):
+    c = event.get('c')
+    if not c: return
+    result = [g.unl(p) for p in c.p.self_and_subtree()]
+    # What to do about c.p.b and c.p.h?
 .. @+node:ekr.20131102044158.16568: ** For 4.11.2
 - Create myLeoSettings and workbook automatically if they do not exist.
 - Add templates to help menu?
@@ -1995,6 +1931,19 @@ There is no quick fix for this.  Probably a new command is needed.
 .. @+node:ekr.20131219102947.16571: *4* Weird clone bug
 I got bit by the cloned-headline not updated bug
 .. @+node:ekr.20140216071333.16639: *3* Features
+.. @+node:ekr.20140322090829.16832: *4* Improve Sherlock
+@language rest
+
+* Improve traces for __init__:
+
+* Optionally print g.callers.
+
+* Distinguish between calls & returns.
+    ? Just print return trace if it immediate follows the call trace.
+    - Have a return-only trace list.
+
+? Allow stops at each trace: drop into pdb??
+
 .. @+node:ekr.20140216071333.16643: *4* An Emacs gui?
 .. @+node:ekr.20131104103309.16513: *4* Add key bindings to status line
 .. @+node:ekr.20131121211048.16378: *4* More screenshots!
