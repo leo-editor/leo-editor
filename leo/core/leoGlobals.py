@@ -3742,11 +3742,6 @@ def find_word(s,word,i=0):
             i += len(word)
         assert progress < i
     return -1
-    
-if 0: # testing
-    print(find_word('abc a bc x','bc',0))
-    print(find_word('abc a bc x','bc',1))
-    print(find_word('abc a x','bc',0))
 #@+node:ekr.20031218072017.3156: *3* g.scanError
 # It is dubious to bump the Tangle error count here, but it really doesn't hurt.
 

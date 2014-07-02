@@ -25,7 +25,6 @@ import imp
 import leo.core.leoRope as leoRope
 imp.reload(leoRope)
 leoRope.test(c)
-.. @+node:ekr.20140602083643.17657: *3* Create unit tests for g.find_word
 .. @+node:ekr.20140610063815.17693: *3* Sentinel files
 .. @+node:ekr.20140611055007.17696: *4* original post
 https://groups.google.com/forum/#!topic/leo-editor/1uw1llvuYBQ
