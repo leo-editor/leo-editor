@@ -11121,6 +11121,15 @@ try:
 
 finally:
     sys.stdout = sys.__stdout__
+#@+node:ekr.20140702101937.4245: *4* @test g.find_word
+table = (
+    ('abc a bc x','bc',0,6),
+    ('abc a bc x','bc',1,6),
+    ('abc a x','bc',0,-1),
+)
+for s,word,i,expected in table:
+    actual = g.find_word(s,word,i)
+    assert actual == expected
 #@+node:ekr.20071113090055.5: *4* @test g.get_directives_dict
 # This will work regardless of where this method is.
 @language python
