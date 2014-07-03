@@ -646,13 +646,6 @@
 <v t="EKR.20040524104904.115"><vh>Creating nodes from body text</vh></v>
 <v t="EKR.20040524104904.116"><vh>Converting leading blanks and tabs in body text</vh></v>
 <v t="EKR.20040524104904.117"><vh>Executing Python scripts in body text</vh></v>
-<v t="EKR.20040524104904.118"><vh>Finding and replacing text</vh>
-<v t="ekr.20120319065417.8790"><vh>Basic searches</vh></v>
-<v t="ekr.20120319065417.8798"><vh>Incremental find commands</vh></v>
-<v t="ekr.20120319065417.8795"><vh>Word search and regex search commands</vh></v>
-<v t="ekr.20120319065417.8788"><vh>Check boxes and their commands</vh></v>
-<v t="ekr.20131122055946.16388"><vh>Radio buttons and their commands</vh></v>
-</v>
 <v t="EKR.20040524104904.134"><vh>Go To Line Number</vh></v>
 <v t="EKR.20040524104904.136"><vh>Inserting the date and time</vh></v>
 <v t="EKR.20040524104904.137"><vh>Reformatting paragraphs in body text</vh></v>
@@ -660,6 +653,13 @@
 <v t="ekr.20120319170934.6104"><vh>Indenting body text automatically</vh></v>
 <v t="ekr.20120319170934.6105"><vh>Creating and destroying multiple body editors</vh></v>
 <v t="ekr.20120319170934.6110"><vh>Using chapters</vh></v>
+</v>
+<v t="EKR.20040524104904.118"><vh>Search commands</vh>
+<v t="ekr.20120319065417.8790"><vh>Basic searches</vh></v>
+<v t="ekr.20120319065417.8798"><vh>Incremental find commands</vh></v>
+<v t="ekr.20120319065417.8795"><vh>Word search and regex search commands</vh></v>
+<v t="ekr.20120319065417.8788"><vh>Check boxes and their commands</vh></v>
+<v t="ekr.20131122055946.16388"><vh>Radio buttons and their commands</vh></v>
 </v>
 <v t="EKR.20040524104904.143"><vh>Outline commands</vh>
 <v t="ekr.20120319170934.6096"><vh>Creating and destroying nodes</vh></v>
@@ -672,7 +672,6 @@
 <v t="ekr.20120319170934.6101"><vh>Dragging nodes</vh></v>
 <v t="EKR.20040524104904.148"><vh>Hoisting &amp; De-hoisting nodes</vh></v>
 <v t="EKR.20040524104904.144"><vh>Checking outlines</vh></v>
-<v t="ekr.20120319170934.6108"><vh>Resizing panes</vh></v>
 </v>
 <v t="EKR.20040524104904.151"><vh>Window commands</vh></v>
 <v t="EKR.20040524104904.157"><vh>Help commands</vh></v>
@@ -15569,10 +15568,6 @@ shows the content of the selected outline node; the other body editors
 continue to show the node contents they last had when they had the body
 editor focus.
 </t>
-<t tx="ekr.20120319170934.6108">You can change the relative sizes of the outline and body panes by dragging
-the splitter bar. The ``equal-sized-panes`` command resizes the panes so
-that each fills half of the main window.
-</t>
 <t tx="ekr.20120319170934.6109">Leo checks that the URL is valid before attempting to open it. A valid
 URL is:
 
@@ -16049,9 +16044,11 @@ in the minibuffer. |br|
 operations. |br|
 You control those operations from the minibuffer.
 
-**Note**: You can toggle the radio buttons and check boxes in the Find Tab
-with Ctrl-Alt keys. For example, Ctrl-Alt-X (toggle-find-regex-option)
-toggles the Regexp checkbox.
+**Note**: You can select radio buttons and toggle check boxes in the
+Find Tab with Ctrl-Alt keys. The capitalized words of the radio
+buttons or check boxes indicate which Ctrl-Alt key to use. For
+example, Ctrl-Alt-X (toggle-find-regex-option) toggles the Regexp
+checkbox.
 
 After typing Ctrl-F, type the search string, say "def", in the minibuffer.
 
