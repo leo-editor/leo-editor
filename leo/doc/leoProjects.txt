@@ -117,6 +117,10 @@ https://bugs.launchpad.net/leo-editor/+bug/1228452
 https://bugs.launchpad.net/leo-editor/+bug/1254861
 
 The fix was to LeoQtLog.selectHelper.
+.. @+node:ekr.20131124060912.16477: *4* Cleared bug 1228713: Find-backward skips headlines under some conditions
+https://bugs.launchpad.net/leo-editor/+bug/1228713
+
+This appears to have been fixed at some time in the past, possibly as the result of fixing another bug.
 .. @+node:ekr.20140702131031.16727: *3* Features
 .. @+node:ekr.20131105020211.18059: *4* Added per-node expansions!
 @language rest

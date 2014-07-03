@@ -23,30 +23,6 @@ always begin Find-backward at the end of the body.
 If the focus is in the body of the currently selected node, then Find
 should begin at the cursor. This is what everyone expects based on other
 editors.
-.. @+node:ekr.20131124060912.16477: *4* Bug 1228713: Find-backward skips headlines under some conditions
-https://bugs.launchpad.net/leo-editor/+bug/1228713
-
-If a headline is open for editing when Find-backwards is initiated or
-continued, the headline is NOT searched, the search skips to the node body
-and then to the previous node (if any).
-
-This problem with Find-backwards is particularly serious because every time
-Find-backwards or Find-forward finds a string in a headline it opens the
-headline for editing, then continuing by hitting F2 skips the rest of the
-headline.
-
-This bug also affects "Replace backwards".
-
-Corollary to this bug:
-
-Find-forward finds any number of instances in one headline, but
-Find-backward only finds the rightmost instance in the headline.
-----
-
-Find-forward searches from the current cursor position in the currently
-open-for-edit entity (either headline or body). Find-backward searches from
-the current cursor position only if the currently open-for-edit entity is a
-body. This is a serious lack of consistency.
 .. @+node:ekr.20140702131031.16723: *4* Bug 1254864: Can't search from current cursor position downward in body text 
 https://bugs.launchpad.net/leo-editor/+bug/1254864
 can't search from current cursor position downward in body text
