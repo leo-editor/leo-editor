@@ -5,36 +5,6 @@
 .. @+all
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
-.. @+node:ekr.20140531073052.16702: *3* Change existing non-pep8 class names
-# class atFile:
-class baseTextWidget(object):
-class bridgeController:
-class bufferCommandsClass (BaseEditCommandsClass):
-class cacher:
-class classScannerClass:
-class def_node:
-class editBodyTestCase(unittest.TestCase):
-class editCommandsClass (BaseEditCommandsClass):
-class fileCommands (BaseFileCommands):
-class htmlParserClass (LinkAnchorParserClass):
-class importExportTestCase(unittest.TestCase):
-class leoBody (HighLevelInterface):
-class leoCompare (BaseLeoCompare):
-class leoKeyEvent:
-class nullFrame (LeoFrame):
-class nullGui(LeoGui):
-class pythonScanner (BaseScanner):
-class searchWidget:
-class tangleCommands (BaseTangleCommands):
-.. @+node:ekr.20140702131031.16724: *3* Fix bug 1258373: Failed find focus fails
-https://bugs.launchpad.net/leo-editor/+bug/1258373
-failed find focus fails
-
-rev 6391
-
-ctrl-f somthing<return>
-not found 'somthing'
-ctrl-f something... whoops, focus in in body, so 'something' ends up there...
 .. @+node:ekr.20140521095206.16728: ** Important
 .. @+node:ekr.20140402091953.16865: *3* * add pylint commands
 @language rest
@@ -6109,6 +6079,15 @@ comparison I've ever seen. I wonder if a greater bit of integration between
 meld and leo is possible, and in which ways. Undoubtedly calling it as an
 external process is better than anything.
 .. @+node:ekr.20120523092521.9907: *3* Minor bugs
+.. @+node:ekr.20140702131031.16724: *4* Fix bug 1258373: Failed find focus fails
+https://bugs.launchpad.net/leo-editor/+bug/1258373
+failed find focus fails
+
+rev 6391
+
+ctrl-f somthing<return>
+not found 'somthing'
+ctrl-f something... whoops, focus in in body, so 'something' ends up there...
 .. @+node:ekr.20111125072438.10214: *4* Fix bug: Another @shadow bug (test4.leo) (maybe)
 email:
 http://mail.google.com/mail/#label/Leo%2FBugs/133ac31add8b2c6c
