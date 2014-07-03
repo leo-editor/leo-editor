@@ -206,7 +206,7 @@ if g.app.gui.guiName() == "qt":
                         pri, ok = w.property('priority').toInt()
                     except (TypeError, ValueError):
                         pri = -1
-
+                # pylint: disable=cell-var-from-loop
                 def setter(pri=pri):
                     o.setPri(pri)
                 if isQt5:
@@ -487,9 +487,11 @@ class todoController:
     #@+node:tbrown.20090119215428.13: *3* redrawer
     def redrawer(fn):
         """decorator for methods which create the need for a redraw"""
+        # pylint: disable=no-self-argument
         def new(self, *args, **kargs):
             self.redrawLevels += 1
             try:
+                # pylint: disable=not-callable
                 ans = fn(self,*args, **kargs)
             finally:
                 self.redrawLevels -= 1
@@ -500,7 +502,9 @@ class todoController:
     #@+node:tbrown.20090119215428.14: *3* projectChanger
     def projectChanger(fn):
         """decorator for methods which change projects"""
+        # pylint: disable=no-self-argument
         def new(self, *args, **kargs):
+            # pylint: disable=not-callable
             ans = fn(self,*args, **kargs)
             self.update_project()
             return ans
