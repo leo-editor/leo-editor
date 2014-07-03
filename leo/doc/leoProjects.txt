@@ -90,7 +90,7 @@ aList.sort(lambda a,b: len(b)-len(a))
     # Sort by length, longest first
 pat = "^@(%s)(?=( |\t|\n)+)" % "|".join(aList)
 .. @+node:ekr.20140531073052.16701: *4* find-all now uses exising find pattern
-.. @+node:ekr.20131124060334.16469: *4* Fixed Bug 1228458: Inconsistency between Find-forward and Find-backward
+.. @+node:ekr.20131124060334.16469: *4* Fixed bug 1228458: Inconsistency between Find-forward and Find-backward
 https://bugs.launchpad.net/leo-editor/+bug/1228458
 
 The fix was made to firstSearchPane:
@@ -99,7 +99,7 @@ In a Leo-Editor file containing exactly one node, there is no way to search
 the headline.
 
 Suggested fix: Backward search should search the body and then the headline.
-.. @+node:ekr.20131124060912.16474: *4* Fixed Bug 1228312: Find tab selected in log pane disables Minibuffer
+.. @+node:ekr.20131124060912.16474: *4* Fixed bug 1228312: Find tab selected in log pane disables Minibuffer
 https://bugs.launchpad.net/leo-editor/+bug/1228312
 
 When the find tab is selected in the log pane, Alt-X complements the Regexp
@@ -110,9 +110,13 @@ complements the Regexp flag.
 Fixed at rev 6351.
 
 This was the so-called "greedy checkbox bug".
-.. @+node:ekr.20131124060912.16476: *4* Fixed doc Bug 1228452: related to the radio buttons in the Find pane
+.. @+node:ekr.20131124060912.16476: *4* Fixed doc bug 1228452: related to the radio buttons in the Find pane
 https://bugs.launchpad.net/leo-editor/+bug/1228452
 
+.. @+node:ekr.20140702131031.16725: *4* Fixed bug 1254861: Ctrl-f doesn't ensure find input field visible
+https://bugs.launchpad.net/leo-editor/+bug/1254861
+
+The fix was to LeoQtLog.selectHelper.
 .. @+node:ekr.20140702131031.16727: *3* Features
 .. @+node:ekr.20131105020211.18059: *4* Added per-node expansions!
 @language rest

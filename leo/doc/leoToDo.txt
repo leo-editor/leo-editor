@@ -54,9 +54,12 @@ can't search from current cursor position downward in body text
 .. @+node:ekr.20140702131031.16724: *4* Bug 1258373: Failed find focus fails
 https://bugs.launchpad.net/leo-editor/+bug/1258373
 failed find focus fails
-.. @+node:ekr.20140702131031.16725: *4* Bug 1254861: Ctrl-f doesn't ensure find input field visible
-https://bugs.launchpad.net/leo-editor/+bug/1254861
-ctrl-f doesn't ensure find input field visible
+
+rev 6391
+
+ctrl-f somthing<return>
+not found 'somthing'
+ctrl-f something... whoops, focus in in body, so 'something' ends up there...
 .. @+node:ekr.20140531073052.16702: *3* Change existing non-pep8 class names
 # class atFile:
 class baseTextWidget(object):
