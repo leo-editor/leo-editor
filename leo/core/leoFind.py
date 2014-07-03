@@ -16,11 +16,8 @@ import re
 #@+at
 # 
 # LeoFind.py contains the gui-independant part of all of Leo's
-# find/change code.
-# 
-# Such code is tricky, which is why it should be gui-independent code!
-# 
-# Here are the governing principles:
+# find/change code. Such code is tricky, which is why it should be
+# gui-independent code! Here are the governing principles:
 # 
 # 1. Find and Change commands initialize themselves using only the state
 #    of the present Leo window. In particular, the Find class must not
@@ -56,12 +53,14 @@ import re
 # window. Using the same kind of text widget for both headlines and body
 # text results in a huge simplification of the code.
 # 
-# Indeed, the searching code does not know whether it is searching
-# headline or body text. The search code knows only that self.s_text is
-# a text widget that contains the text to be searched or changed and the
-# insert and sel attributes of self.search_text indicate the range of
-# text to be searched. Searching headline and body text simultaneously
-# is complicated. The selectNextVnode() method handles the many details
+# The searching code does not know whether it is searching headline or
+# body text. The search code knows only that self.s_text is a text
+# widget that contains the text to be searched or changed and the insert
+# and sel attributes of self.search_text indicate the range of text to
+# be searched.
+# 
+# Searching headline and body text simultaneously is complicated. The
+# findNextMatch() method and its helpers handle the many details
 # involved by setting self.s_text and its insert and sel attributes.
 #@-<< Theory of operation of find/change >>
 
@@ -1270,7 +1269,7 @@ class LeoFind:
         set_first_batch_search.
         '''
         trace = False and not g.unitTesting
-        verbose = False
+        verbose = True
         c = self.c ; p = self.p
         if trace:
             g.trace('*** entry','p',p,'\n',
@@ -1294,7 +1293,8 @@ class LeoFind:
             if self.errors:
                 g.trace('find errors')
                 break # Abort the search.
-            if trace and verbose: g.trace('pos: %s p: %s head: %s' % (pos,p.h,self.in_headline))
+            if trace and verbose:
+                g.trace('pos: %s p: %s head: %s' % (pos,p.h,self.in_headline))
             if pos is not None:
                 # Success.
                 if self.mark_finds:
@@ -1454,7 +1454,6 @@ class LeoFind:
     #@+node:ekr.20131124060912.16472: *5* find.shouldStayInNode
     def shouldStayInNode (self,p):
         '''Return True if the find should simply switch panes.'''
-        
         # Errors here cause the find command to fail badly.
         # Switch only if:
         #   a) searching both panes and,
@@ -1463,8 +1462,8 @@ class LeoFind:
         # So simple in retrospect, so difficult to see.
         return (
             self.search_headline and self.search_body and (
-                (self.reverse and not self.in_headline) or
-                (not self.reverse and self.in_headline)))
+            (self.reverse and not self.in_headline) or
+            (not self.reverse and self.in_headline)))
     #@+node:ekr.20031218072017.3076: *4* find.resetWrap
     def resetWrap (self,event=None):
 

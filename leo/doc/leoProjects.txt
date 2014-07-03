@@ -240,6 +240,15 @@ These are colored with the previously unused literal3 tag,
 so you specify the color with:
 
     @color html_literal3_color = pink
+.. @+node:ekr.20131124060334.16469: *3* Fixed Bug 1228458: Inconsistency between Find-forward and Find-backward
+https://bugs.launchpad.net/leo-editor/+bug/1228458
+
+The fix was made to firstSearchPane:
+
+In a Leo-Editor file containing exactly one node, there is no way to search
+the headline.
+
+Suggested fix: Backward search should search the body and then the headline.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.
