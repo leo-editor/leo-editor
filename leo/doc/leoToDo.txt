@@ -1869,7 +1869,6 @@ Apart from this glitch, getting Leo running on Mac is much easier than I
 remembered (just use homebrew to install PyQt).
 
 @language python
-.. @+node:ekr.20131102044158.16569: *4* fix find bugs
 .. @+node:ekr.20131027064821.18715: *4* Autocompleter ? usually doesn't work
 https://groups.google.com/forum/#!topic/leo-editor/rTN1S9u74RQ
 
