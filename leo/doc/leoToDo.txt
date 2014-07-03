@@ -7,17 +7,6 @@
 @language rest
 .. @+node:ekr.20131124060334.16468: *3* Fix Find-related bugs
 @language rest
-.. @+node:ekr.20131124060912.16474: *4* Bug 1228312: Find tab selected in log pane disables Minibuffer
-https://bugs.launchpad.net/leo-editor/+bug/1228312
-
-When the find tab is selected in the log pane, Alt-X complements the Regexp
-flag--instead of enabling use of the Minibuffer. It doesn't matter where
-focus is. Focus can be in the outline pane or body pane, Alt-X still just
-complements the Regexp flag.
-
-Fixed at rev 6351.
-
-This was the so-called "greedy checkbox bug".
 .. @+node:ekr.20131124060912.16475: *4* Bug 1228457: Beginning find at the current node's body cursor when that cursor is not displayed
 https://bugs.launchpad.net/leo-editor/+bug/1228457
 
@@ -34,20 +23,6 @@ always begin Find-backward at the end of the body.
 If the focus is in the body of the currently selected node, then Find
 should begin at the cursor. This is what everyone expects based on other
 editors.
-.. @+node:ekr.20131124060912.16476: *4* Bug 1228452: Documentation bug: "Entire Outline" "Subroutine Only" and "Node Only" are a set
-https://bugs.launchpad.net/leo-editor/+bug/1228452
-
-The documentation shown by help-for-find-commands says:
-
-The Find Tab shows the present settings.
-Underlined characters are keyboard hints:
-Alt-Ctrl-W toggles the Whole Word checkbox, and so on.
-
-This is seriously misleading and unhelpful when it comes to "Entire
-Outline" "Subroutine Only" and "Node Only". They are a set. Exactly one
-must be on at any one time. So Alt-Ctrl-? can only be used to toggle an off
-to on with the side-effect of toggling the one that was previously on to
-off.
 .. @+node:ekr.20131124060912.16477: *4* Bug 1228713: Find-backward skips headlines under some conditions
 https://bugs.launchpad.net/leo-editor/+bug/1228713
 
