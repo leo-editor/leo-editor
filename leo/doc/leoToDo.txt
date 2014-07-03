@@ -5,37 +5,6 @@
 .. @+all
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
-.. @+node:ekr.20131124060334.16468: *3* Fix Find-related bugs
-@language rest
-.. @+node:ekr.20131124060912.16475: *4* Bug 1228457: Beginning find at the current node's body cursor when that cursor is not displayed
-https://bugs.launchpad.net/leo-editor/+bug/1228457
-
-Every node has a current cursor position. Suppose the user changes nodes by
-clicking on a node in the outline pane and then starts a Find. The focus is
-in the outline pane. The body cursor is not displayed. The user has no idea
-where in the body the search begins. The user is all too likely to think
-that the whole body is searched.
-
-Suggestion: If the body cursor is not displayed (i.e., the focus is not in
-the body), then always begin Find-forward at the beginning of the body and
-always begin Find-backward at the end of the body.
-
-If the focus is in the body of the currently selected node, then Find
-should begin at the cursor. This is what everyone expects based on other
-editors.
-.. @+node:ekr.20140702131031.16723: *4* Bug 1254864: Can't search from current cursor position downward in body text 
-https://bugs.launchpad.net/leo-editor/+bug/1254864
-can't search from current cursor position downward in body text
-
-.. @+node:ekr.20140702131031.16724: *4* Bug 1258373: Failed find focus fails
-https://bugs.launchpad.net/leo-editor/+bug/1258373
-failed find focus fails
-
-rev 6391
-
-ctrl-f somthing<return>
-not found 'somthing'
-ctrl-f something... whoops, focus in in body, so 'something' ends up there...
 .. @+node:ekr.20140531073052.16702: *3* Change existing non-pep8 class names
 # class atFile:
 class baseTextWidget(object):
@@ -57,6 +26,15 @@ class nullGui(LeoGui):
 class pythonScanner (BaseScanner):
 class searchWidget:
 class tangleCommands (BaseTangleCommands):
+.. @+node:ekr.20140702131031.16724: *3* Fix bug 1258373: Failed find focus fails
+https://bugs.launchpad.net/leo-editor/+bug/1258373
+failed find focus fails
+
+rev 6391
+
+ctrl-f somthing<return>
+not found 'somthing'
+ctrl-f something... whoops, focus in in body, so 'something' ends up there...
 .. @+node:ekr.20140521095206.16728: ** Important
 .. @+node:ekr.20140402091953.16865: *3* * add pylint commands
 @language rest
