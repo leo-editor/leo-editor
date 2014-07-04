@@ -162,14 +162,10 @@
 </v>
 </v>
 <v t="ekr.20130812034101.12556"><vh>By Matt Wilkie</vh>
+<v t="ekr.20140704052551.17948"><vh>Console script: Install Leo from scratch on Windows</vh></v>
 <v t="ekr.20130812034101.12558"><vh>Script: Add docutils to python3 </vh></v>
-<v t="ekr.20130812034101.12566"><vh>Leo script to register .leo files with Windows</vh>
-<v t="ekr.20130812034101.12567"><vh>Re: Leo script to register .leo files with Windows</vh></v>
-</v>
-<v t="ekr.20130812034101.12568"><vh>Leo script to set .leo association (Windows)</vh>
-<v t="ekr.20130812034101.12569"><vh>Re: Leo script to set .leo association (Windows)</vh></v>
-</v>
-<v t="ekr.20130812034101.12570"><vh>Leo script to (almost) set .leo filetype icon</vh></v>
+<v t="ekr.20140704052551.17941"><vh>Script: Add Windows handler for .leo files</vh></v>
+<v t="ekr.20140704052551.17946"><vh>Set icon for .leo files</vh></v>
 </v>
 </v>
 </vnodes>
@@ -2114,162 +2110,6 @@ package.
 ::    =================
 ::: ...snip...
 </t>
-<t tx="ekr.20130812034101.12566">From: Matt Wilkie &lt;maphew@gmail.com&gt;
-
-http://bazaar.launchpad.net/~maphew/leo-editor/pypi-packaging/view/head:/register-leo.leos
-
-QQQQ
-Tell Windows how to handle .leo files, enables double clicking on them to
-open.
-
-To run: in Leo make this the active node and press [Ctrl-B] (execute-script)
-
-Requires elevated User Account Control (UAC) privileges.
-QQQQ
-
-It is only lightly tested (one machine), but it seems to work. If
-successful, it takes over the need for the assoc and ftype commands and
-batch files which have been bobbing about lately (mostly be myself
-admittedly).
-
-It's stored in an @file instead of .leo in order to make it easier to track
-in bazaar. Is there a naming convention for leo script files? I used .leos
-for "leo script", but it occurs to me that .leox might be better (leo
-executable) as it sidesteps the inadvertent pluralizing association.
-</t>
-<t tx="ekr.20130812034101.12567">From: "Edward K. Ream" &lt;edreamleo@gmail.com&gt;
-
---001a11c1a67459191904dc5b8b8c
-
-
-On Fri, May 10, 2013 at 4:03 AM, Matt Wilkie &lt;maphew@gmail.com&gt; wrote:
-
-It's stored in an @file instead of .leo in order to make it easier to track
-&gt; in bazaar.
-&gt;
-
-which .leo file?
-
-Edward
-
---001a11c1a67459191904dc5b8b8c
-
-
-&lt;div dir="ltr"&gt;On Fri, May 10, 2013 at 4:03 AM, Matt Wilkie &lt;span dir="ltr"&gt;&amp;lt;&lt;a href="mailto:maphew@gmail.com" target="_blank"&gt;maphew@gmail.com&lt;/a&gt;&amp;gt;&lt;/span&gt; wrote:&lt;br&gt;&lt;br&gt;&lt;div class="gmail_extra"&gt;&lt;div class="gmail_quote"&gt;
-&lt;blockquote class="gmail_quote" style="margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex"&gt;&lt;div dir="ltr"&gt;&lt;div&gt;It&amp;#39;s stored in an @file instead of .leo in order to make it easier to track in bazaar. &lt;/div&gt;&lt;/div&gt;
-&lt;/blockquote&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;which .leo file?&lt;br&gt;&lt;br&gt;Edward&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
-
---001a11c1a67459191904dc5b8b8c--
-</t>
-<t tx="ekr.20130812034101.12568">From: Matt Wilkie &lt;maphew@gmail.com&gt;
-
-Here is a Leo script which attempts to tell Windows how to handle .leo
-files, enabling 2x-click "some-workbook.leo" to start. On win7+ it requires
-Leo be started with elevated admin privileges.
-
-
-{{{
-&lt;?xml version="1.0" encoding="utf-8"?&gt;
-&lt;!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) --&gt;
-&lt;?xml-stylesheet ekr_test?&gt;
-&lt;leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" &gt;
-&lt;leo_header file_format="2"/&gt;
-&lt;vnodes&gt;
-&lt;v t="maphew.20130429234409.2286"&gt;&lt;vh&gt;assoc leo&lt;/vh&gt;&lt;/v&gt;
-&lt;/vnodes&gt;
-&lt;tnodes&gt;
-&lt;t tx="maphew.20130429234409.2286"&gt;pyexe = g.sys.executable
-tmp = g.os.environ['TEMP']
-
-assoc_cmd = 'assoc .leo=Leo.File'
-ftype_cmd = 'ftype Leo.File="{0}" "%1" %*'.format(pyexe)
-
-#g.es(pyexe)
-#g.es(tmp)
-g.es(assoc_cmd)
-g.es(ftype_cmd)
-
-from subprocess import Popen
-Popen('start "Shell from Leo" cmd.exe /k %s &amp;amp;&amp;amp; %s' % (assoc_cmd,
-ftype_cmd),
-    cwd=tmp, shell=True)
-&lt;/t&gt;
-&lt;/tnodes&gt;
-&lt;/leo_file&gt;
-}}}
-
-</t>
-<t tx="ekr.20130812034101.12569">From: Matt Wilkie &lt;maphew@gmail.com&gt;
-
-whups, sent before ready!
-
-to use select and copy text between braces, {{{  }}}, into a Leo outline,
-select the new node and press Ctrl-B.
-
-adapted from
-http://stackoverflow.com/questions/8985925/how-to-control-what-version-of-python-is-run-when-double-clicking-a-file/
-
--matt
-
-</t>
-<t tx="ekr.20130812034101.12570">From: Matt Wilkie &lt;maphew@gmail.com&gt;
-
-The leo script below _almost_ adds an icon to .leo files in Windows. I say
-almost in that on my system it runs without error, the associated registry
-key is created and contains the right path, but Windows still doesn't know
-what to do with the file.
-
-It's intended to be run after "create-leobat" has been run and the Leo.File
-filetype is already present.
-
-Anyone else have some ideas how to improve it?
-
-thanks!
-
--matt
-
-
-{{{
-&lt;?xml version="1.0" encoding="utf-8"?&gt;
-&lt;!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) --&gt;
-&lt;?xml-stylesheet ekr_test?&gt;
-&lt;leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" &gt;
-&lt;leo_header file_format="2"/&gt;
-&lt;vnodes&gt;
-&lt;v t="maphew.20130509185752.1607"&gt;&lt;vh&gt;Set icon for .leo files&lt;/vh&gt;&lt;/v&gt;
-&lt;/vnodes&gt;
-&lt;tnodes&gt;
-&lt;t tx="maphew.20130509185752.1607"&gt;from _winreg import *
-def register_leo_icon():
-    '''Tell Windows what icon to use for the  Leo.File filetype (.leo)
-
-    Resources:
-
-http://stackoverflow.com/questions/2331690/how-to-set-a-icon-file-while-creating-file
-
-http://stackoverflow.com/questions/771689/how-can-i-set-an-icon-for-my-own-file-extension
-    '''
-
-    icon = "%s\\Icons\\LeoDoc.ico" % g.computeLeoDir()
-
-    g.es("\\nAttempting to register leo icon with .leo files...")
-
-    if g.os_path_exists(icon):
-        g.es("Found:", icon)
-        myTestKey = OpenKey(HKEY_CLASSES_ROOT, "Leo.File")
-        iconKey= CreateKey(myTestKey, "DefaultIcon")
-        CloseKey(myTestKey)
-
-        SetValue(iconKey, None, REG_SZ, icon)
-        CloseKey(iconKey)
-        g.es("Registered!")
-    else:
-        g.es("LeoDoc.ico not in expected location, can't continue.")
-&lt;/t&gt;
-&lt;/tnodes&gt;
-&lt;/leo_file&gt;
-}}}
-</t>
 <t tx="ekr.20130816100419.23046">@language python
 
 &lt;&lt; docstring &gt;&gt;
@@ -2580,6 +2420,105 @@ Controller().run(c,p,replace)
         s3 = s[:i] + s2 + s[j:]
         j = i + len(s2)
         return s3,j
+</t>
+<t tx="ekr.20140704052551.17941"># https://groups.google.com/forum/?fromgroups=#!searchin/leo-editor/leo$20script/leo-editor/ANPuhuEIU9c/8lgid9MNKkAJ
+
+@language python
+@tabwidth -4
+
+'''Tell Windows how to handle .leo files, enables double clicking on them to open.
+
+To run: in Leo make this the active node and press [Ctrl-B] (execute-script)
+
+It opens a command shell and uses `assoc` and `ftype` commands to inform Windows
+where python.exe and the Leo launch script is. It's the equivalent of:
+
+    assoc .leo=Leo.File
+    ftype Leo.File="B:\Python27\pythonw.exe" "B:\apps\leo-editor\launchLeo.py" "%1" %*   
+       
+Requires elevated User Account Control (UAC) priviliges.
+See http://superuser.com/questions/88491/force-cmd-exe-to-run-as-admin/
+'''
+
+pyexe = g.sys.executable
+leo = g.os_path_finalize_join(g.computeLeoDir(), '../launchLeo.py')
+
+tmp = g.os.environ['TEMP']
+
+assoc_cmd = 'assoc .leo=Leo.File'
+ftype_cmd = 'ftype Leo.File="{0}" "{1}" "%1" %*'.format(pyexe, leo)
+
+g.es(leo)
+g.es(pyexe)
+
+g.es(tmp)
+g.es(assoc_cmd)
+g.es(ftype_cmd)
+
+from subprocess import Popen
+Popen('start "Shell from Leo" cmd.exe /k "{0} &amp;&amp; {1}" '.format(assoc_cmd, ftype_cmd),
+
+    cwd=tmp, shell=True)
+</t>
+<t tx="ekr.20140704052551.17946">'''
+This leo script _almost_ adds an icon to .leo files in Windows. I say
+almost in that on my system it runs without error, the associated registry
+key is created and contains the right path, but Windows still doesn't know
+what to do with the file.
+
+It's intended to be run after "create-leobat" has been run and the Leo.File
+filetype is already present.
+
+Anyone else have some ideas how to improve it?
+'''
+
+from _winreg import *
+def register_leo_icon():
+    '''Tell Windows what icon to use for the  Leo.File filetype (.leo)
+
+    Resources:
+
+http://stackoverflow.com/questions/2331690/how-to-set-a-icon-file-while-creating-file
+
+http://stackoverflow.com/questions/771689/how-can-i-set-an-icon-for-my-own-file-extension
+    '''
+
+    icon = "%s\\Icons\\LeoDoc.ico" % g.computeLeoDir()
+
+    g.es("\\nAttempting to register leo icon with .leo files...")
+
+    if g.os_path_exists(icon):
+        g.es("Found:", icon)
+        myTestKey = OpenKey(HKEY_CLASSES_ROOT, "Leo.File")
+        iconKey= CreateKey(myTestKey, "DefaultIcon")
+        CloseKey(myTestKey)
+
+        SetValue(iconKey, None, REG_SZ, icon)
+        CloseKey(iconKey)
+        g.es("Registered!")
+    else:
+        g.es("LeoDoc.ico not in expected location, can't continue.")
+</t>
+<t tx="ekr.20140704052551.17948">@language batch
+
+mkdir X:\testing
+pushd X:\testing
+
+wget -O apt.exe --no-clobber http://download.osgeo.org/osgeo4w/release/apt/apt-r1193M.exe
+SET OSGEO4W_ROOT=%~dp0\root
+apt setup
+apt update
+apt install pyqt4 sip
+
+call root\osgeo4w.bat
+
+wget --no-check-certificate http://gist.github.com/maphew/5393935/raw/install-pip.py
+python install-pip.py GO
+python install-pip.py GO
+
+pip install -i https://testpypi.python.org/pypi leo-editor
+
+python apps\Python27\Scripts\leo
 </t>
 <t tx="maphew.20130612230051.2793">Scripts only of interest when on Microsoft Windows platform.</t>
 </tnodes>
