@@ -121,12 +121,21 @@ The fix was to LeoQtLog.selectHelper.
 https://bugs.launchpad.net/leo-editor/+bug/1228713
 
 This appears to have been fixed at some time in the past, possibly as the result of fixing another bug.
-.. @+node:ekr.20140702131031.16723: *4* Cleared bug 1254864: Can't search from current cursor position downward in body text 
+.. @+node:ekr.20140702131031.16723: *4* Cleared bug 1254864: Can't search from current cursor position downward in body text
 https://bugs.launchpad.net/leo-editor/+bug/1254864
 .. @+node:ekr.20131124060912.16475: *4* Cleared bug 1228457: Beginning find at the current node's body cursor when that cursor is not displayed
 https://bugs.launchpad.net/leo-editor/+bug/1228457
 
 This appears to have been fixed.
+.. @+node:ekr.20130502102046.10578: *4* Fixed Crash deleting body editor
+# Trying to delete a second body editor.
+
+Traceback (most recent call last):
+  File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 560, in doCommand
+    val = command(event)
+  File "c:\leo.repo\trunk\leo\plugins\qtGui.py", line 2980, in deleteEditor
+    name = w.leo_name
+AttributeError: 'LeoQTextBrowser' object has no attribute 'leo_name'
 .. @+node:ekr.20140702131031.16727: *3* Features
 .. @+node:ekr.20131105020211.18059: *4* Added per-node expansions!
 @language rest

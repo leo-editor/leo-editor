@@ -3554,9 +3554,7 @@ class LeoQtBody (leoFrame.LeoBody):
 
     #@+node:ekr.20110605121601.18199: *6* deleteEditor (qtBody)
     def deleteEditor (self,event=None):
-
         '''Delete the presently selected body text editor.'''
-
         trace = False and not g.unitTesting
         c = self.c ; d = self.editorWidgets
         wrapper = c.frame.body.bodyCtrl
@@ -3565,20 +3563,16 @@ class LeoQtBody (leoFrame.LeoBody):
         # assert wrapper == d.get(name),'wrong wrapper'
         assert isinstance(wrapper,LeoQTextEditWidget),wrapper
         assert isinstance(w,QtWidgets.QTextEdit),w
-        name = w.leo_name
-        assert name
-
         if len(list(d.keys())) <= 1: return
-
+        name = w.leo_name if hasattr(w,'leo_name') else '1'
+            # Defensive programming.
         # At present, can not delete the first column.
         if name == '1':
             g.warning('can not delete leftmost editor')
             return
-
         # Actually delete the widget.
         if trace: g.trace('**delete name %s id(wrapper) %s id(w) %s' % (
             name,id(wrapper),id(w)))
-
         del d [name]
         f = c.frame.top.leo_ui.leo_body_inner_frame
         layout = f.layout()
@@ -3586,7 +3580,6 @@ class LeoQtBody (leoFrame.LeoBody):
             if z: # 2011/11/12
                 self.unpackWidget(layout,z)
         w.leo_label = None # 2011/11/12
-
         # Select another editor.
         new_wrapper = list(d.values())[0]
         if trace: g.trace(wrapper,new_wrapper)
@@ -3596,7 +3589,6 @@ class LeoQtBody (leoFrame.LeoBody):
             if w.leo_label: # 2011/11/12
                 self.unpackWidget(layout,w.leo_label)
                 w.leo_label = None # 2011/11/12
-
         self.selectEditor(new_wrapper)
     #@+node:ekr.20110605121601.18200: *6* findEditorForChapter (qtBody)
     def findEditorForChapter (self,chapter,p):

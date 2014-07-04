@@ -5009,15 +5009,6 @@ https://groups.google.com/forum/#!topic/leo-editor/nIl3ud7Tbig
 .. @+node:ekr.20130908104426.11232: *3* Bug-tracker: High priority
 https://bugs.launchpad.net/leo-editor/+bug/nnn
 .. @+node:ekr.20130530110446.12450: *4* Fix syntax coloring bug involving multiple body editors
-.. @+node:ekr.20130502102046.10578: *4* Crash deleting body editor
-# Trying to delete a second body editor.
-
-Traceback (most recent call last):
-  File "c:\leo.repo\trunk\leo\core\leoCommands.py", line 560, in doCommand
-    val = command(event)
-  File "c:\leo.repo\trunk\leo\plugins\qtGui.py", line 2980, in deleteEditor
-    name = w.leo_name
-AttributeError: 'LeoQTextBrowser' object has no attribute 'leo_name'
 .. @+node:ekr.20130908104426.11233: *4* 1022140 scroll problem in the body pane
 https://bugs.launchpad.net/leo-editor/+bug/1022140
 .. @+node:ekr.20130908104426.11234: *4* 1041906 underlying C/C++ object has been deleted
