@@ -62,47 +62,8 @@ class PersistenceDataController:
         Init all ivars of this class.
         Unit tests may call this method to ensure that this class is re-inited properly.
         '''
-        self.all_ods = []
-            # List of all od nodes.
-        self.anchors_d = {}
-            # Keys are anchoring positions, values are sorted lists of ods.
-        self.anchor_offset_d = {}
-            # Keys are anchoring positions, values are ints.
-        self.existing_ods = []
-            # List of od instances corresponding to @existing-organizer: nodes.
-        self.global_bare_organizer_node_list = []
-            # List of organizers that have no parent organizer node.
-            # This list excludes existing organizer nodes.
         self.headlines_dict = {}
             # Keys are vnodes; values are list of child headlines.
-        self.imported_organizers_list = []
-            # The list of nodes that have children on entry, such as class nodes.
-        self.n_nodes_scanned = 0
-            # Number of nodes scanned by demote.
-        self.organizer_ods = []
-            # List of od instances corresponding to @organizer: nodes.
-        self.organizer_unls = []
-            # The list of od.unl for all od instances in self.organizer_ods.
-        self.root = None
-            # The position of the @auto node.
-        self.pending = []
-            # The list of nodes pending to be added to an organizer.
-        self.stack = []
-            # The stack containing real and virtual parent nodes during the main loop.
-        self.temp_node = None
-            # The parent position of all holding cells.
-        self.trail_write_1 = None
-            # The trial write on entry.
-        self.views_node = None
-            # The position of the @persistence node.
-        self.work_list = []
-            # A gloal list of (parent,child) tuples for all nodes that are
-            # to be moved to **non-existing** organizer nodes.
-            # **Important**: Nodes are moved in the order they appear in this list:
-            # the tuples contain no childIndex component!
-            # This list is the "backbone" of this class:
-            # - The front end (demote and its helpers) adds items to this list.
-            # - The back end (move_nodes and its helpers) moves nodes using this list.
     #@+node:ekr.20140711111623.17793: *3* pd.Entry points
     #@+node:ekr.20140711111623.17794: *4* pd.convert_at_file_to_at_auto
     def convert_at_file_to_at_auto(self,root):
@@ -417,7 +378,6 @@ class PersistenceDataController:
             return # Not an error: it might be and @auto-rst node.
         changed,old_changed = False,c.isChanged()
         pd.init()
-        pd.root = root.copy()
         t1 = time.clock()
         # Create clone links from @gnxs node
         at_gnxs = pd.has_at_gnxs_node(root)
@@ -792,17 +752,6 @@ class PersistenceDataController:
         '''Return True if a clone of p exists outside the tree of p.parent().'''
         return len(list(set(p.v.parents))) > 1
     #@+node:ekr.20140711111623.17879: *4* pd.unls...
-    #@+node:ekr.20140711111623.17880: *5* pd.drop_all_organizers_in_unl
-    def drop_all_organizers_in_unl(self,organizer_unls,unl):
-        '''Drop all organizer unl's in unl, recreating the imported unl.'''
-        pd = self
-        def unl_sort_key(s):
-            return s.count('-->')
-        for s in reversed(sorted(organizer_unls,key=unl_sort_key)):
-            if unl.startswith(s):
-                s2 = pd.drop_unl_tail(s)
-                unl = s2 + unl[len(s):]
-        return unl[3:] if unl.startswith('-->') else unl
     #@+node:ekr.20140711111623.17881: *5* pd.drop_unl_tail & pd.drop_unl_parent
     def drop_unl_tail(self,unl):
         '''Drop the last part of the unl.'''
@@ -840,11 +789,6 @@ class PersistenceDataController:
             getattr(p.v,pd.headline_ivar,p.h)
                 for p in p.self_and_parents()]))
         # return '-->'.join(reversed([p.h for p in p.self_and_parents()]))
-    #@+node:ekr.20140711111623.17884: *5* pd.source_unl
-    def source_unl(self,organizer_unls,organizer_unl):
-        '''Return the unl of the source node for the given organizer_unl.'''
-        pd = self
-        return pd.drop_all_organizers_in_unl(organizer_unls,organizer_unl)
     #@+node:ekr.20140711111623.17885: *5* pd.unl_tail
     def unl_tail(self,unl):
         '''Return the last part of a unl.'''
