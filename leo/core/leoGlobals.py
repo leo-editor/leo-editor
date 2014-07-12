@@ -133,51 +133,27 @@ else:
     # import traceback
     # import types
 #@-<< imports >>
-#@+<< define globalDirectiveList >>
-#@+node:EKR.20040610094819: ** << define globalDirectiveList >>
+#@+<< define g.globalDirectiveList >>
+#@+node:EKR.20040610094819: ** << define g.globalDirectiveList >>
 # Visible externally so plugins may add to the list of directives.
 
 globalDirectiveList = [
 
     # *** Longer prefixes must appear before shorter.
     'all',
-    'colorcache', # 2012/10/03.
-    'code','color', 'comment','c',
-    'delims','doc','encoding','end_raw',
+    'colorcache','code','color', 'comment','c',
+    'delims','doc',
+    'encoding','end_raw',
     'first','header','ignore','killcolor',
     'language','last','lineending',
-    'markup', # Make this an official directive,
+    'markup',
     'nocolor-node','nocolor','noheader','nowrap',
     'others','pagewidth','path','quiet',
     'raw','root-code','root-doc','root','silent',
     'tabwidth', 'terse',
     'unit','verbose', 'wrap',
 ]
-#@-<< define globalDirectiveList >>
-#@+<< define the NullObject class >>
-#@+node:ekr.20090521175848.5881: ** << define the NullObject class >>
-# From the Python cookbook, recipe 5.23
-
-class NullObject:
-
-    """An object that does nothing, and does it very well."""
-
-    def __init__   (self,*args,**keys): pass
-    def __call__   (self,*args,**keys): return self
-    # def __len__    (self): return 0 # Debatable.
-    def __repr__   (self): return "NullObject"
-    def __str__    (self): return "NullObject"
-    if isPython3:
-        def __bool__(self): return False
-    else:
-        def __nonzero__(self): return 0
-    def __delattr__(self,attr):     return self
-    def __getattr__(self,attr):     return self
-    def __setattr__(self,attr,val): return self
-    
-nullObject = NullObject
-    # For compatibility
-#@-<< define the NullObject class >>
+#@-<< define g.globalDirectiveList >>
 tree_popup_handlers = [] # Set later.
 user_dict = {}
     # Non-persistent dictionary for free use by scripts and plugins.
@@ -188,7 +164,7 @@ inScript = False # A synonym for app.inScript
 unitTesting = False # A synonym for app.unitTesting.
 #@+others
 #@+node:ekr.20140711071454.17644: ** g.Classes
-#@+node:ekr.20031218072017.3098: *3* class g.Bunch
+#@+node:ekr.20031218072017.3098: *3* class g.Bunch (Python Cookbook)
 #@+at From The Python Cookbook: Often we want to just collect a bunch of
 # stuff together, naming each item of the bunch; a dictionary's OK for
 # that, but a small do-nothing class is even handier, and prettier to
@@ -460,11 +436,30 @@ def isStroke(obj):
 
 def isStrokeOrNone(obj):
     return obj is None or isinstance(obj,KeyStroke)
-#@+node:ekr.20031219074948.1: *3* class g.NullObject
+#@+node:ekr.20031219074948.1: *3* class g.NullObject (Python Cookbook)
 # From the Python cookbook, recipe 5.23
 
-# This is now defined at the start of this file.
-#@+node:ekr.20090128083459.82: *3* class g.PosList
+class NullObject:
+    """
+    An object that does nothing, and does it very well.
+    From the Python cookbook, recipe 5.23
+    """
+    def __init__   (self,*args,**keys): pass
+    def __call__   (self,*args,**keys): return self
+    # def __len__    (self): return 0 # Debatable.
+    def __repr__   (self): return "NullObject"
+    def __str__    (self): return "NullObject"
+    if isPython3:
+        def __bool__(self): return False
+    else:
+        def __nonzero__(self): return 0
+    def __delattr__(self,attr):     return self
+    def __getattr__(self,attr):     return self
+    def __setattr__(self,attr,val): return self
+    
+nullObject = NullObject
+    # For compatibility
+#@+node:ekr.20090128083459.82: *3* class g.PosList (deprecated)
 class PosList(list):
     #@+<< docstring for PosList >>
     #@+node:ekr.20090130114732.2: *4* << docstring for PosList >>
