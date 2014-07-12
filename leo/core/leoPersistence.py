@@ -499,13 +499,20 @@ class PersistenceDataController:
             p = auto_view.insertAsLastChild()
             p.h = h
         return p
-    #@+node:ekr.20140712105818.16753: *5* pd.find_at_persistence_node
-    def find_at_persistence_node(pd,root):
-        '''Find the @persistence node, creating it if it does not exist.'''
-        h = '@persistence'
-        p = g.findNodeAnywhere(pd.c,h)
+    #@+node:ekr.20140711111623.17863: *5* pd.find_at_persistence_node
+    def find_at_persistence_node(pd):
+        '''
+        Find the first @persistence node in the outline.
+        If it does not exist, create it as the *last* top-level node,
+        so that no existing positions become invalid.
+        '''
+        c,h = pd.c,'@persistence'
+        p = g.findNodeAnywhere(c,h)
         if not p:
-            p = auto_view.insertAsLastChild()
+            last = c.rootPosition()
+            while last.hasNext():
+                last.moveToNext()
+            p = last.insertAfter()
             p.h = h
         return p
     #@+node:ekr.20140711111623.17891: *5* pd.find_at_uas_node
@@ -663,22 +670,6 @@ class PersistenceDataController:
                 p.moveToThreadNext()
         g.trace('no representative node for:',target,'parent:',target.parent())
         return None
-    #@+node:ekr.20140711111623.17863: *5* pd.find_at_persistence_node
-    def find_at_persistence_node(pd):
-        '''
-        Find the first @persistence node in the outline.
-        If it does not exist, create it as the *last* top-level node,
-        so that no existing positions become invalid.
-        '''
-        c,h = pd.c,'@persistence'
-        p = g.findNodeAnywhere(c,h)
-        if not p:
-            last = c.rootPosition()
-            while last.hasNext():
-                last.moveToNext()
-            p = last.insertAfter()
-            p.h = h
-        return p
     #@+node:ekr.20140712105818.16751: *4* pd.foreign_file_name
     def foreign_file_name(pd,p):
         '''Return the file name for p, a foreign file node.'''
