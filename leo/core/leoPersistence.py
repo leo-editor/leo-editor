@@ -40,6 +40,8 @@ class PersistenceDataController:
         - @gnxs
         - @uas
             @ua unl
+            
+    Terminology: a **foreign node** is an @auto, @org-mode or @vim-outline node.
         
     Old:
         The body text of @clones nodes consists of unl's, one per line.
@@ -329,7 +331,7 @@ class PersistenceDataController:
     #@+node:ekr.20140711111623.17804: *4* pd.update_before_write_foreign_file
     def update_before_write_foreign_file(self,root):
         '''
-        Update the @data node for root, an @auto, @org-mode or @vim-outline node.
+        Update the @data node for root, a foreign node.
         Create @gnxs nodes and @uas trees as needed.
         '''
         trace = False and not g.unitTesting
@@ -370,7 +372,7 @@ class PersistenceDataController:
     def update_after_read_foreign_file(self,root):
         '''
         Link clones and restore uAs from the @gnxs node and @uas tree for root,
-        an @auto, @org-mode or @vim-outline node.
+        a foreign node.
         '''
         trace = True and not g.unitTesting
         c,pd = self.c,self
@@ -401,8 +403,8 @@ class PersistenceDataController:
     #@+node:ekr.20140711111623.17809: *5* pd.create_clone_link
     def create_clone_link(self,gnx,root,unl):
         '''
-        Replace the node in the @auto tree with the given unl by a
-        clone of the node outside the @auto tree with the given gnx.
+        Replace the node in a foreign tree with the given unl by a
+        clone of the node outside the foreign tree with the given gnx.
         '''
         trace = False and not g.unitTesting
         pd = self
@@ -490,7 +492,7 @@ class PersistenceDataController:
     #@+node:ekr.20140711111623.17856: *5* pd.find_at_data_node & helper
     def find_at_data_node (self,root):
         '''
-        Return the @data node for root, an @auto, @org-mode or @vim-outline node.
+        Return the @data node for root, a foreign node.
         Create the node if it does not exist.
         '''
         pd = self
@@ -505,7 +507,7 @@ class PersistenceDataController:
     #@+node:ekr.20140711111623.17857: *5* pd.find_at_gnxs_node
     def find_at_gnxs_node(self,root):
         '''
-        Find the @gnxs node for root, an @auto node.
+        Find the @gnxs node for root, a foreign node.
         Create the @gnxs node if it does not exist.
         '''
         pd = self
@@ -520,7 +522,7 @@ class PersistenceDataController:
     #@+node:ekr.20140711111623.17891: *5* pd.find_at_uas_node
     def find_at_uas_node(self,root):
         '''
-        Find the @uas node for root, an @auto node.
+        Find the @uas node for root, a foreign node.
         Create the @uas node if it does not exist.
         '''
         pd = self
@@ -642,7 +644,7 @@ class PersistenceDataController:
     #@+node:ekr.20140711111623.17862: *5* pd.find_representative_node
     def find_representative_node (self,root,target):
         '''
-        root is an @auto node. target is a clones node within root's tree.
+        root is a foreign node. target is a clones node within root's tree.
         
         Return a node *outside* of root's tree that is cloned to target,
         preferring nodes outside any @<file> tree.
@@ -701,7 +703,7 @@ class PersistenceDataController:
     #@+node:ekr.20140711111623.17865: *5* pd.has_at_data_node
     def has_at_data_node(self,root):
         '''
-        Return the @data node corresponding to root, an @auto, @org-mode or @vim-outline node.
+        Return the @data node corresponding to root, a foreign node.
         Return None if no such node exists.
         '''
         pd = self
