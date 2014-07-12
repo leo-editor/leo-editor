@@ -299,12 +299,13 @@ class Commands (object):
         import leo.core.leoKeys as leoKeys
         import leo.core.leoFileCommands as leoFileCommands
         import leo.core.leoImport as leoImport
+        import leo.core.leoPersistence as leoPersistence
         import leo.core.leoRst as leoRst
         import leo.core.leoShadow as leoShadow
         import leo.core.leoTangle as leoTangle
         import leo.core.leoTest as leoTest
         import leo.core.leoUndo as leoUndo
-        import leo.core.leoViews as leoViews
+        # import leo.core.leoViews as leoViews
         import leo.core.leoVim as leoVim
         self.keyHandler = self.k = leoKeys.KeyHandlerClass(c)
         self.chapterController  = leoChapters.ChapterController(c)
@@ -313,10 +314,11 @@ class Commands (object):
         self.findCommands       = leoFind.LeoFind(c)
         self.atFileCommands     = leoAtFile.AtFile(c)
         self.importCommands     = leoImport.LeoImportCommands(c)
+        self.persistenceController = leoPersistence.PersistenceDataController(c)
         self.rstCommands        = leoRst.RstCommands(c)
         self.tangleCommands     = leoTangle.TangleCommands(c)
         self.testManager        = leoTest.TestManager(c)
-        self.viewController     = leoViews.ViewController(c)
+        # self.viewController     = leoViews.ViewController(c)
         self.vimCommands        = leoVim.VimCommands(c)
         self.editCommandsManager = leoEditCommands.EditCommandsManager(c)
         self.editCommandsManager.createEditCommanders()
