@@ -448,8 +448,8 @@ class PersistenceDataController:
         '''
         Return a node matching the given absolute unl.
         
-        If priority_header == True and the node is not found, it will return
-        the longest matching UNL starting from the tail
+        If priority_header == True and the node is not found, return the
+        longest matching UNL starting from the tail.
         '''
         import re
         pos_pattern = re.compile(r':(\d+),?(\d+)?$')
@@ -470,7 +470,7 @@ class PersistenceDataController:
                                 parent,rest,priority_header=priority_header)
                         else:
                             return parent
-                    count = count+1
+                    count += 1
             # Here we could find and return the nth_sib if an exact header match was not found
         return None
     #@+node:ekr.20140711111623.17856: *5* pd.find_at_data_node & helper
@@ -499,6 +499,15 @@ class PersistenceDataController:
             p = auto_view.insertAsLastChild()
             p.h = h
         return p
+    #@+node:ekr.20140712105818.16753: *5* pd.find_at_persistence_node
+    def find_at_persistence_node(pd,root):
+        '''Find the @persistence node, creating it if it does not exist.'''
+        h = '@persistence'
+        p = g.findNodeAnywhere(pd.c,h)
+        if not p:
+            p = auto_view.insertAsLastChild()
+            p.h = h
+        return p
     #@+node:ekr.20140711111623.17891: *5* pd.find_at_uas_node
     def find_at_uas_node(pd,root):
         '''
@@ -521,17 +530,16 @@ class PersistenceDataController:
             if p.v.gnx == gnx:
                 return p
         return None
-    #@+node:ekr.20140711111623.17861: *5* pd.find_position_for_relative_unl
+    #@+node:ekr.20140711111623.17861: *5* pd.find_position_for_relative_unl (rewritten)
     def find_position_for_relative_unl(pd,parent,unl,priority_header=False):
         '''
         Return the node in parent's subtree matching the given unl.
         The unl is relative to the parent position.
-        If priority_header == True and the node is not found, it will return the longest matching UNL starting from the tail
+        If priority_header == True and the node is not found, 
+        return the longest matching UNL starting from the tail.
         '''
-        # This is called from finish_create_organizers & compute_all_organized_positions.
         trace = False # and not g.unitTesting
-        trace_loop = True
-        trace_success = False
+        trace_loop = True ; trace_success = False
         if not unl:
             if trace and trace_success:
                 g.trace('return parent for empty unl:',parent.h)
@@ -662,10 +670,10 @@ class PersistenceDataController:
         If it does not exist, create it as the *last* top-level node,
         so that no existing positions become invalid.
         '''
-        h = '@persistence'
-        p = g.findNodeAnywhere(pd.c,h)
+        c,h = pd.c,'@persistence'
+        p = g.findNodeAnywhere(c,h)
         if not p:
-            last = pd.c.rootPosition()
+            last = c.rootPosition()
             while last.hasNext():
                 last.moveToNext()
             p = last.insertAfter()
