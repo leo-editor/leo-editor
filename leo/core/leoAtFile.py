@@ -829,7 +829,7 @@ class AtFile:
     #@+node:ekr.20070909100252: *4* at.readOneAtAutoNode
     def readOneAtAutoNode (self,fileName,p):
         '''Read an @auto file into p.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         at,c,ic = self,self.c,self.c.importCommands
         oldChanged = c.isChanged()
         at.default_directory = g.setDefaultDirectory(c,p,importing=True)
