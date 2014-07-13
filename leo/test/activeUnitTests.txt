@@ -15482,6 +15482,272 @@ c.contractParent()
 g.app.unitTestDict['restoreSelectedNode']=False
 
 print('\nEnd of leoNodes tests.')
+#@+node:ekr.20140712142620.4458: *3* leoPersistence
+#@+node:ekr.20140712143924.4332: *4* Passed
+#@+node:ekr.20140712142620.4503: *5* @test p.sort_key
+aList = [p.copy() for p in c.all_positions()]
+aList2 = sorted(reversed(aList),key=p.sort_key)
+i = 0
+for p in aList2:
+    p2 = aList[i]
+    i += 1
+    assert p == p2,'\n%s:%s\n%s:%s' % (
+        p.sort_key(p),p.h,p2.sort_key(p2),p2.h)
+#@+node:ekr.20140712142620.4507: *5* @test pd.create_clone_links
+pd = c.persistenceController
+gnxs = g.findNodeInTree(c,p,'@gnxs')
+root = g.findNodeInTree(c,p,'root')
+node1 = g.findNodeInTree(c,p,'node1')
+assert gnxs and root and node1
+root.deleteAllChildren()
+new_node1 = root.insertAsLastChild()
+new_node1.h = 'node1'
+gnxs.b = 'gnx: %s\nunl: %s\n' % (node1.v.gnx,'node1')
+try:
+    ok = pd.create_clone_links(gnxs,root)
+    assert ok
+    # Important: p._relinkAsCloneOf leaves new_node1 unchanged,
+    # but new_node1 should not be used.
+finally:
+    c.redraw()
+#@+node:ekr.20140712142620.4508: *6* @gnxs
+gnx: ekr.20140712205739.4347
+unl: node1
+#@+node:ekr.20140712205739.4364: *6* node1
+#@+node:ekr.20140712142620.4510: *6* root
+#@+node:ekr.20140712205739.4364: *7* node1
+#@+node:ekr.20140712142620.4537: *5* @test pd.find_absolute_unl_node
+pd = c.persistenceController
+root = c.rootPosition().insertAfter()
+root.h = 'root'
+child1 = root.insertAsLastChild()
+child1.h = 'child1'
+child2 = child1.insertAfter()
+child2.h = 'child2'
+child11 = child1.insertAsLastChild()
+child11.h = 'child11'
+try:
+    for unl in ('root','root-->child1','root-->child2','root-->child1-->child11'):
+        p = pd.find_absolute_unl_node(unl)
+        parts = unl.split('-->')
+        assert p,unl
+        assert p.h == parts[-1],p.h
+finally:
+    root.doDelete()
+    c.selectPosition(p)
+    c.redraw()
+#@+node:ekr.20140712142620.4550: *5* @test pd.find_at_...
+# Also a test of find_at_views_node, find_at_organizers_node and find_at_clones_node.
+pd = c.persistenceController
+root = g.findNodeInTree(c,p,'root')
+assert root
+try:
+    persistence = pd.find_at_persistence_node()
+    assert persistence
+    persistence.deleteAllChildren()
+    root.h = '@auto root' # Make root look like an @auto node.
+    assert pd.find_at_data_node(root)
+    assert pd.find_at_gnxs_node(root)
+finally:
+    root.h = 'root' # Make sure root is *not* an @auto node.
+    # views.deleteAllChildren()
+    c.selectPosition(p)
+    c.redraw()
+#@+node:ekr.20140712142620.4551: *6* root
+#@+node:ekr.20140712142620.4552: *7* aClass
+class aClass:
+    @others
+#@+node:ekr.20140712142620.4556: *8* clone
+#@+node:ekr.20140712142620.4556: *6* clone
+#@+node:ekr.20140712142620.4538: *5* @test pd.find_at_persistence_node
+pd = c.persistenceController
+h = '@persistence'
+p1 = pd.find_at_persistence_node()
+assert p1
+p2 = pd.has_at_persistence_node()
+assert p1 == p2,(p1,p2)
+#@+node:ekr.20140712142620.4546: *5* @test pd.find_representative_node
+pd = c.persistenceController
+root = g.findNodeInTree(c,p,'root')
+assert root
+root.h = '@auto root'
+try:
+    clone = root.next()
+    assert clone and clone.h == 'clone'
+    inner_clone = root.firstChild()
+    assert inner_clone
+    assert clone.v == inner_clone.v
+    rep = pd.find_representative_node(root,inner_clone)
+    # Careful: cloning this test can cause problems.
+    oops = '\n  rep: %s\nparent:%s\nclone: %s\nparent:%s\ninner: %s\nparent: %s' % (
+        rep,rep.parent(),clone,clone.parent(),inner_clone,inner_clone.parent())
+    if True: ### p.isCloned():
+        assert rep.v == clone.v and rep.parent().v == clone.parent().v,oops
+    else:
+        assert rep == clone
+finally:
+    root.h = 'root' # root must not be an @auto node.
+    c.redraw()
+#@+node:ekr.20140712142620.4547: *6* root
+#@+node:ekr.20140712142620.4549: *7* clone
+#@+node:ekr.20140712142620.4549: *6* clone
+#@+node:ekr.20140712142620.4557: *5* @test pd.has_..._node
+# Test pd.has_at_auto_view_node, pd.has_at_clones_node and pd.has_at_organizers_node.
+pd = c.persistenceController
+persistence = g.findNodeAnywhere(c,'@persistence')
+if persistence:
+    assert pd.has_at_persistence_node()
+    persistence.deleteAllChildren()
+else:
+    assert not pd.has_at_persistence_node()
+    persistence = pd.find_at_views_node()
+assert persistence
+root = g.findNodeInTree(c,p,'root')
+assert root
+# The representative of clone_test node must appear outside of root's tree.
+clone_test = g.findNodeInTree(c,p,'clone-test')
+assert clone_test
+assert clone_test.v == root.next().v,(clone_test.v,root.next().v)
+try:
+    root.h = '@auto root' # Make root look like an @auto node.
+    pd.update_before_write_foreign_file(root)
+    data = g.findNodeInTree(c,persistence,'@data:@auto root')
+    assert data
+    data2 = pd.has_at_data_node(root)
+    assert data2
+    assert data == data2,(data,data2)
+    gnxs = g.findNodeInTree(c,persistence,'@gnxs')
+    assert gnxs
+    gnxs2 = pd.has_at_gnxs_node(root)
+    assert gnxs2
+    assert gnxs == gnxs2,(gnxs,gnxs2)
+finally:
+    root.h = 'root' # Make the root *not* an @auto node.
+    c.redraw()
+#@+node:ekr.20140712142620.4558: *6* root
+@others
+#@+node:ekr.20140712142620.4559: *7* aClass
+class aClass:
+    @others
+#@+node:ekr.20140712142620.4563: *8* clone-test
+def clone_test():
+    pass
+#@+node:ekr.20140712142620.4561: *8* organizer node
+#@+node:ekr.20140712142620.4562: *9* child2
+def spam():
+    pass
+#@+node:ekr.20140712142620.4563: *6* clone-test
+def clone_test():
+    pass
+#@+node:ekr.20140712142620.4564: *5* @test pd.is_at_auto_node
+pd = c.persistenceController
+p.deleteAllChildren()
+auto = p.insertAsLastChild()
+auto.h = '@auto test.py'
+auto2 = p.insertAsLastChild()
+auto2.h = '@auto-rst test2.py'
+try:
+    assert pd.is_at_auto_node(auto)
+    assert not pd.is_at_auto_node(auto2)
+finally:
+    # This is required.
+    p.deleteAllChildren()
+    c.redraw()
+#@+node:ekr.20140712142620.4583: *5* @test pd.pack & pd.unpack
+pd = c.persistenceController
+persistence = pd.find_at_persistence_node()
+assert persistence
+persistence.deleteAllChildren()
+view = g.findNodeInTree(c,p,'@view test')
+assert view
+assert c.positionExists(view)
+try:
+    c.selectPosition(view)
+    v_b = view.b
+    pd.pack()
+    assert c.p.v == view.v
+    pd.unpack()
+    assert view.b == v_b,view.b
+    assert view.lastChild().isCloned()
+finally:
+    # views.deleteAllChildren()
+    c.undoer.clearUndoState()
+    c.redraw()
+#@+node:ekr.20140712142620.4587: *6* clone
+clone body
+#@+node:ekr.20140712142620.4585: *6* @view test
+view body
+#@+node:ekr.20140712142620.4586: *7* not a clone
+not a clone text
+#@+node:ekr.20140712142620.4587: *7* clone
+clone body
+#@+node:ekr.20140712142620.4574: *5* @test pd.unl
+pd = c.persistenceController
+unl = pd.unl(p)
+assert unl.endswith('-->'+p.h),repr(unl)
+#@+node:ekr.20140712142620.4575: *5* @test pd.update_before_write_foreign_file
+pd = c.persistenceController
+root = g.findNodeInTree(c,p,'root')
+assert root
+persistence = pd.find_at_persistence_node()
+assert persistence
+persistence.deleteAllChildren()
+try:
+    root.h = '@auto root' # Make root look like an @auto node.
+    pd.update_before_write_foreign_file(root)
+    data = g.findNodeAnywhere(c,'@data:@auto root')
+    assert data
+    gnxs = g.findNodeInTree(c,data,'@gnxs')
+    assert gnxs
+finally:
+    root.h = 'root' # Make root *not* an @auto node.
+    # persistence.deleteAllChildren()
+    c.redraw()
+#@+node:ekr.20140712142620.4576: *6* root
+#@+node:ekr.20140712142620.4577: *7* aClass
+class aClass:
+    @others
+#@+node:ekr.20140712142620.4582: *8* clone
+#@+node:ekr.20140712142620.4579: *7* organizer node
+#@+node:ekr.20140712142620.4580: *8* child1
+#@+node:ekr.20140712142620.4581: *8* child2
+def spam():
+    pass
+#@+node:ekr.20140712142620.4582: *6* clone
+#@+node:ekr.20140712142620.4539: *4* @@@test pd.find_position_for_relative_unl (fails)
+pd = c.persistenceController
+parent = p.copy()
+node1 = p.firstChild()
+node2 = node1.next()
+assert node1 and node2
+child11 = node1.firstChild()
+child12 = child11.next()
+assert child11 and child12
+child21 = node2.firstChild()
+child22 = child21.next()
+assert child21 and child22
+table = (
+    # # ('node1',node1),
+    # ('',parent), # This special case is important.
+    # ('node1-->child11',child11),
+    # ('node1-->child12',child12),
+    # ('node2',node2),
+    # ('node2-->child21',child21),
+    # ('node2-->child22',child22),
+    ('node3',None), # Fails
+    ('node1-->childx',None),
+    ('node3-->childx',None),
+)
+for unl,expected in table:
+    got = pd.find_position_for_relative_unl(parent,unl)
+    assert got == expected,'unl: %s expected: %s got: %s' % (
+        unl,expected and expected.h,got and got.h)
+#@+node:ekr.20140712142620.4540: *5* node1
+#@+node:ekr.20140712142620.4541: *6* child11
+#@+node:ekr.20140712142620.4542: *6* child12
+#@+node:ekr.20140712142620.4543: *5* node2
+#@+node:ekr.20140712142620.4544: *6* child21
+#@+node:ekr.20140712142620.4545: *6* child22
 #@+node:ekr.20100131171342.5610: *3* leoPlugins
 #@+node:ekr.20100131171342.5611: *4* @test getHandlersForTag
 pc = g.app.pluginsController

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:ekr.20140712105428.16698: * @file leoPersistence.py
+#@+node:ekr.20140711111623.17787: * @file leoPersistence.py
 #@@first
 '''Support for persistent clones, gnx's and uA's using @persistence trees.'''
 #@@language python
@@ -330,7 +330,12 @@ class PersistenceDataController:
         if at_data.hasChildren():
             at_data.deleteAllChildren()
         # Create the data for the @gnxs and @uas trees.
-        aList = list(set([(p.h,p.v.gnx,p.v.u) for p in root.self_and_subtree()]))
+        aList,seen = [],[]
+        for p in root.self_and_subtree():
+            gnx = p.v.gnx
+            if gnx not in seen:
+                seen.append(gnx)
+                aList.append((p.h,gnx,p.v.u),)
         # Create the @gnxs node
         at_gnxs = pd.find_at_gnxs_node(root)
         gnxs = [(h,gnx) for (h,gnx,ua) in aList if gnx]
@@ -483,7 +488,7 @@ class PersistenceDataController:
         p = pd.has_at_data_node(root)
         if not p:
             p = views.insertAsLastChild()
-            p.h = '@data:' + pd.foreign_file_name(root)
+            p.h = '@data:' + root.h # pd.foreign_file_name(root)
             p.b = pd.at_data_body(root)
         return p
     #@+node:ekr.20140711111623.17857: *5* pd.find_at_gnxs_node
@@ -493,10 +498,10 @@ class PersistenceDataController:
         Create the @gnxs node if it does not exist.
         '''
         h = '@gnxs'
-        auto_view = pd.find_at_data_node(root)
-        p = g.findNodeInTree(pd.c,auto_view,h)
+        data = pd.find_at_data_node(root)
+        p = g.findNodeInTree(pd.c,data,h)
         if not p:
-            p = auto_view.insertAsLastChild()
+            p = data.insertAsLastChild()
             p.h = h
         return p
     #@+node:ekr.20140711111623.17863: *5* pd.find_at_persistence_node
@@ -537,7 +542,7 @@ class PersistenceDataController:
             if p.v.gnx == gnx:
                 return p
         return None
-    #@+node:ekr.20140711111623.17861: *5* pd.find_position_for_relative_unl (rewritten)
+    #@+node:ekr.20140711111623.17861: *5* pd.find_position_for_relative_unl (buggy)
     def find_position_for_relative_unl(pd,parent,unl,priority_header=False):
         '''
         Return the node in parent's subtree matching the given unl.
@@ -546,7 +551,7 @@ class PersistenceDataController:
         return the longest matching UNL starting from the tail.
         '''
         trace = False # and not g.unitTesting
-        trace_loop = True ; trace_success = False
+        trace_loop = True ; trace_success = True
         if not unl:
             if trace and trace_success:
                 g.trace('return parent for empty unl:',parent.h)
@@ -577,12 +582,12 @@ class PersistenceDataController:
                         p = p.nthChild(n)
                         found = True
                     elif len(indices)>0:
-                        #Then we try any node with same header
+                        # Try any node with same header
                         n = indices[-1]
                         p = p.nthChild(n)
                         found = True
                     elif not priority_header:
-                        #Then we go for the child index if return_pos is true
+                        # Go for the child index if return_pos is true
                         if len(aList)>nth_sib:
                             n = nth_sib
                         else:

@@ -3,8 +3,8 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.69" body_secondary_ratio="0.72">
-	<global_window_position top="46" left="65" height="750" width="1033"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.64">
+	<global_window_position top="46" left="480" height="993" width="1028"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -45,7 +45,12 @@
 </v>
 </v>
 <v t="ekr.20111112092813.4154"><vh>@command cls</vh></v>
-<v t="ekr.20140712144020.4334"><vh>@persistence</vh></v>
+<v t="ekr.20140712144020.4334"><vh>@persistence</vh>
+<v t="ekr.20140712142620.4585"><vh>@view test</vh>
+<v t="ekr.20140712142620.4586"><vh>not a clone</vh></v>
+<v t="ekr.20140712142620.4587"><vh>clone</vh></v>
+</v>
+</v>
 </v>
 <v t="ekr.20111123042627.6654"></v>
 <v t="ekr.20111112093605.4679"></v>
@@ -159,31 +164,27 @@
 <v t="ekr.20101220161557.6014"><vh>@file inactiveTests.txt</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285805000000302e382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e372e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e372e31342e3671097d710a5808000000616e6e6f74617465710b7d710c735808000000302e372e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e382e3771017d71025808000000616e6e6f7461746571037d7104735508302e372e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e372e31342e3671097d710a5808000000616e6e6f74617465710b7d710c735508302e372e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
-<v t="ekr.20140712142620.4458"><vh>leoPersistence.py</vh>
-<v t="ekr.20140712144020.4339"><vh>Failed</vh>
-<v t="ekr.20140712142620.4507"><vh>@@@test pd.create_clone_links</vh>
-<v t="ekr.20140712142620.4508"><vh>@clones</vh></v>
-<v t="ekr.20140712142620.4511"><vh>node1</vh></v>
-<v t="ekr.20140712142620.4510"><vh>root</vh>
-<v t="ekr.20140712142620.4511"></v>
-</v>
-</v>
-<v t="ekr.20140712142620.4539"><vh>@@@test pd.find_position_for_relative_unl</vh>
-<v t="ekr.20140712142620.4540"><vh>node1</vh>
-<v t="ekr.20140712142620.4541"><vh>child11</vh></v>
-<v t="ekr.20140712142620.4542"><vh>child12</vh></v>
-</v>
-<v t="ekr.20140712142620.4543"><vh>node2</vh>
-<v t="ekr.20140712142620.4544"><vh>child21</vh></v>
-<v t="ekr.20140712142620.4545"><vh>child22</vh></v>
-</v>
-</v>
-</v>
+<v t="ekr.20140712142620.4458"><vh>leoPersistence</vh>
 <v t="ekr.20140712143924.4332"><vh>Passed</vh>
 <v t="ekr.20140712142620.4503"><vh>@test p.sort_key</vh></v>
+<v t="ekr.20140712142620.4507"><vh>@test pd.create_clone_links</vh>
+<v t="ekr.20140712142620.4508"><vh>@gnxs</vh></v>
+<v t="ekr.20140712205739.4364"><vh>node1</vh></v>
+<v t="ekr.20140712142620.4510"><vh>root</vh>
+<v t="ekr.20140712205739.4364"></v>
+</v>
+</v>
 <v t="ekr.20140712142620.4537"><vh>@test pd.find_absolute_unl_node</vh></v>
+<v t="ekr.20140712142620.4550"><vh>@test pd.find_at_...</vh>
+<v t="ekr.20140712142620.4551"><vh>root</vh>
+<v t="ekr.20140712142620.4552"><vh>aClass</vh>
+<v t="ekr.20140712142620.4556"><vh>clone</vh></v>
+</v>
+</v>
+<v t="ekr.20140712142620.4556"></v>
+</v>
 <v t="ekr.20140712142620.4538"><vh>@test pd.find_at_persistence_node</vh></v>
 <v t="ekr.20140712142620.4546"><vh>@test pd.find_representative_node</vh>
 <v t="ekr.20140712142620.4547"><vh>root</vh>
@@ -191,22 +192,7 @@
 </v>
 <v t="ekr.20140712142620.4549"></v>
 </v>
-<v t="ekr.20140712142620.4564"><vh>@test pd.is_at_auto_node</vh></v>
-<v t="ekr.20140712142620.4574"><vh>@test pd.unl</vh></v>
-</v>
-<v t="ekr.20140712144020.4342"><vh>To do</vh>
-<v t="ekr.20140712142620.4550"><vh>@test pd.find_views/clones/organizers_node</vh>
-<v t="ekr.20140712142620.4551"><vh>root</vh>
-<v t="ekr.20140712142620.4552"><vh>aClass</vh>
-<v t="ekr.20140712142620.4556"><vh>clone</vh></v>
-</v>
-<v t="ekr.20140712142620.4554"><vh>organizer node</vh>
-<v t="ekr.20140712142620.4555"><vh>child2</vh></v>
-</v>
-</v>
-<v t="ekr.20140712142620.4556"></v>
-</v>
-<v t="ekr.20140712142620.4557"><vh>@test pd.has_*_node</vh>
+<v t="ekr.20140712142620.4557"><vh>@test pd.has_..._node</vh>
 <v t="ekr.20140712142620.4558"><vh>root</vh>
 <v t="ekr.20140712142620.4559"><vh>aClass</vh>
 <v t="ekr.20140712142620.4563"><vh>clone-test</vh></v>
@@ -217,7 +203,13 @@
 </v>
 <v t="ekr.20140712142620.4563"></v>
 </v>
-<v t="ekr.20140712142620.4575"><vh>@test pd.update_before_write_at_auto_file</vh>
+<v t="ekr.20140712142620.4564"><vh>@test pd.is_at_auto_node</vh></v>
+<v t="ekr.20140712142620.4583"><vh>@test pd.pack &amp; pd.unpack</vh>
+<v t="ekr.20140712142620.4587"></v>
+<v t="ekr.20140712142620.4585"></v>
+</v>
+<v t="ekr.20140712142620.4574"><vh>@test pd.unl</vh></v>
+<v t="ekr.20140712142620.4575"><vh>@test pd.update_before_write_foreign_file</vh>
 <v t="ekr.20140712142620.4576"><vh>root</vh>
 <v t="ekr.20140712142620.4577"><vh>aClass</vh>
 <v t="ekr.20140712142620.4582"><vh>clone</vh></v>
@@ -229,12 +221,15 @@
 </v>
 <v t="ekr.20140712142620.4582"></v>
 </v>
-<v t="ekr.20140712142620.4583"><vh>@test view-pack &amp; view_unpack</vh>
-<v t="ekr.20140712142620.4587"><vh>clone</vh></v>
-<v t="ekr.20140712142620.4585"><vh>@view test</vh>
-<v t="ekr.20140712142620.4586"><vh>not a clone</vh></v>
-<v t="ekr.20140712142620.4587"></v>
 </v>
+<v t="ekr.20140712142620.4539"><vh>@@@test pd.find_position_for_relative_unl (fails)</vh>
+<v t="ekr.20140712142620.4540"><vh>node1</vh>
+<v t="ekr.20140712142620.4541"><vh>child11</vh></v>
+<v t="ekr.20140712142620.4542"><vh>child12</vh></v>
+</v>
+<v t="ekr.20140712142620.4543"><vh>node2</vh>
+<v t="ekr.20140712142620.4544"><vh>child21</vh></v>
+<v t="ekr.20140712142620.4545"><vh>child22</vh></v>
 </v>
 </v>
 </v>
@@ -653,7 +648,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="9,2"></t>
+<t tx="ekr.20070417092935" str_leo_pos="9"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1323,27 +1318,26 @@ for p in aList2:
         p.sort_key(p),p.h,p2.sort_key(p2),p2.h)
 </t>
 <t tx="ekr.20140712142620.4507">pd = c.persistenceController
-clones = g.findNodeInTree(c,p,'@clones')
+gnxs = g.findNodeInTree(c,p,'@gnxs')
 root = g.findNodeInTree(c,p,'root')
 node1 = g.findNodeInTree(c,p,'node1')
-assert clones and root and node1
+assert gnxs and root and node1
 root.deleteAllChildren()
 new_node1 = root.insertAsLastChild()
 new_node1.h = 'node1'
-clones.b = 'gnx: %s\nunl: %s\n' % (node1.v.gnx,'node1')
+gnxs.b = 'gnx: %s\nunl: %s\n' % (node1.v.gnx,'node1')
 try:
-    ok = pd.create_clone_links(clones,root)
+    ok = pd.create_clone_links(gnxs,root)
     assert ok
     # Important: p._relinkAsCloneOf leaves new_node1 unchanged,
     # but new_node1 should not be used.
 finally:
     c.redraw()
 </t>
-<t tx="ekr.20140712142620.4508">gnx: ekr.20140211085929.5552
+<t tx="ekr.20140712142620.4508">gnx: ekr.20140712205739.4347
 unl: node1
 </t>
 <t tx="ekr.20140712142620.4510"></t>
-<t tx="ekr.20140712142620.4511"></t>
 <t tx="ekr.20140712142620.4537">pd = c.persistenceController
 root = c.rootPosition().insertAfter()
 root.h = 'root'
@@ -1383,14 +1377,14 @@ child21 = node2.firstChild()
 child22 = child21.next()
 assert child21 and child22
 table = (
-    # ('node1',node1),
-    ('',parent), # This special case is important.
-    ('node1--&gt;child11',child11),
-    ('node1--&gt;child12',child12),
-    ('node2',node2),
-    ('node2--&gt;child21',child21),
-    ('node2--&gt;child22',child22),
-    ('node3',None),
+    # # ('node1',node1),
+    # ('',parent), # This special case is important.
+    # ('node1--&gt;child11',child11),
+    # ('node1--&gt;child12',child12),
+    # ('node2',node2),
+    # ('node2--&gt;child21',child21),
+    # ('node2--&gt;child22',child22),
+    ('node3',None), # Fails
     ('node1--&gt;childx',None),
     ('node3--&gt;childx',None),
 )
@@ -1433,18 +1427,13 @@ finally:
 pd = c.persistenceController
 root = g.findNodeInTree(c,p,'root')
 assert root
-views = g.findNodeAnywhere(c,'@views')
-assert views,'1'
-if views:
-    views.deleteAllChildren()
 try:
-    root.h = '@auto root' # root must look like an @auto node.
-    views = pd.find_at_views_node()
-    assert views,'2'
-    views2 = pd.find_at_views_node()
-    assert views2 == views
-    assert pd.find_at_clones_node(root)
-    assert pd.find_at_organizers_node(root)
+    persistence = pd.find_at_persistence_node()
+    assert persistence
+    persistence.deleteAllChildren()
+    root.h = '@auto root' # Make root look like an @auto node.
+    assert pd.find_at_data_node(root)
+    assert pd.find_at_gnxs_node(root)
 finally:
     root.h = 'root' # Make sure root is *not* an @auto node.
     # views.deleteAllChildren()
@@ -1455,21 +1444,17 @@ finally:
 <t tx="ekr.20140712142620.4552">class aClass:
     @others
 </t>
-<t tx="ekr.20140712142620.4554"></t>
-<t tx="ekr.20140712142620.4555">def spam():
-    pass
-</t>
 <t tx="ekr.20140712142620.4556"></t>
 <t tx="ekr.20140712142620.4557"># Test pd.has_at_auto_view_node, pd.has_at_clones_node and pd.has_at_organizers_node.
 pd = c.persistenceController
-views = g.findNodeAnywhere(c,'@views')
-if views:
-    assert pd.has_at_views_node()
-    views.deleteAllChildren()
+persistence = g.findNodeAnywhere(c,'@persistence')
+if persistence:
+    assert pd.has_at_persistence_node()
+    persistence.deleteAllChildren()
 else:
-    assert not pd.has_at_views_node()
-    views = pd.find_at_views_node()
-assert views
+    assert not pd.has_at_persistence_node()
+    persistence = pd.find_at_views_node()
+assert persistence
 root = g.findNodeInTree(c,p,'root')
 assert root
 # The representative of clone_test node must appear outside of root's tree.
@@ -1477,25 +1462,20 @@ clone_test = g.findNodeInTree(c,p,'clone-test')
 assert clone_test
 assert clone_test.v == root.next().v,(clone_test.v,root.next().v)
 try:
-    root.h = '@auto root' # root must look like an @auto node.
-    pd.update_before_write_at_auto_file(root)
-    auto_view = g.findNodeInTree(c,views,'@auto-view:root')
-    assert auto_view
-    auto_view2 = pd.has_at_auto_view_node(root)
-    assert auto_view2
-    assert auto_view2 == auto_view,(auto_view,auto_view2)
-    clones = g.findNodeInTree(c,auto_view,'@clones')
-    assert clones
-    clones2 = pd.has_at_clones_node(root)
-    assert clones2
-    assert clones2 == clones
-    organizers = g.findNodeInTree(c,auto_view,'@organizers')
-    assert organizers
-    organizers2 = pd.has_at_organizers_node(root)
-    assert organizers2
-    assert organizers2 == organizers
+    root.h = '@auto root' # Make root look like an @auto node.
+    pd.update_before_write_foreign_file(root)
+    data = g.findNodeInTree(c,persistence,'@data:@auto root')
+    assert data
+    data2 = pd.has_at_data_node(root)
+    assert data2
+    assert data == data2,(data,data2)
+    gnxs = g.findNodeInTree(c,persistence,'@gnxs')
+    assert gnxs
+    gnxs2 = pd.has_at_gnxs_node(root)
+    assert gnxs2
+    assert gnxs == gnxs2,(gnxs,gnxs2)
 finally:
-    root.h = 'root' # Make sure root is *not* an @auto node.
+    root.h = 'root' # Make the root *not* an @auto node.
     c.redraw()
 </t>
 <t tx="ekr.20140712142620.4558">@others
@@ -1531,26 +1511,19 @@ assert unl.endswith('--&gt;'+p.h),repr(unl)
 <t tx="ekr.20140712142620.4575">pd = c.persistenceController
 root = g.findNodeInTree(c,p,'root')
 assert root
-views = g.findNodeAnywhere(c,'@views')
-if views:
-    views.deleteAllChildren()
+persistence = pd.find_at_persistence_node()
+assert persistence
+persistence.deleteAllChildren()
 try:
-    root.h = '@auto root' # root must look like an @auto node.
-    pd.update_before_write_at_auto_file(root)
-    views = g.findNodeAnywhere(c,'@views')
-    assert views
-    clones = g.findNodeInTree(c,views,'@clones')
-    assert clones
-    assert clones.b.endswith('aClass--&gt;clone\n'),repr(clones.b)
-    organizer = g.findNodeInTree(c,views,'@organizer: organizer node')
-    assert organizer
-    s1 = 'unl: organizer node--&gt;child1'
-    s2 = 'unl: organizer node--&gt;child2'
-    assert organizer.b == '\n'.join([s1,s2]),organizer.b
+    root.h = '@auto root' # Make root look like an @auto node.
+    pd.update_before_write_foreign_file(root)
+    data = g.findNodeAnywhere(c,'@data:@auto root')
+    assert data
+    gnxs = g.findNodeInTree(c,data,'@gnxs')
+    assert gnxs
 finally:
-    root.h = 'root' # Make sure root is *not* an @auto node.
-    if False and views:
-        views.deleteAllChildren()
+    root.h = 'root' # Make root *not* an @auto node.
+    # persistence.deleteAllChildren()
     c.redraw()
 </t>
 <t tx="ekr.20140712142620.4576"></t>
@@ -1564,9 +1537,9 @@ finally:
 </t>
 <t tx="ekr.20140712142620.4582"></t>
 <t tx="ekr.20140712142620.4583">pd = c.persistenceController
-views = g.findNodeAnywhere(c,'@views')
-assert views
-views.deleteAllChildren()
+persistence = pd.find_at_persistence_node()
+assert persistence
+persistence.deleteAllChildren()
 view = g.findNodeInTree(c,p,'@view test')
 assert view
 assert c.positionExists(view)
@@ -1591,7 +1564,6 @@ finally:
 </t>
 <t tx="ekr.20140712143924.4332"></t>
 <t tx="ekr.20140712144020.4334"></t>
-<t tx="ekr.20140712144020.4339"></t>
-<t tx="ekr.20140712144020.4342"></t>
+<t tx="ekr.20140712205739.4364"></t>
 </tnodes>
 </leo_file>
