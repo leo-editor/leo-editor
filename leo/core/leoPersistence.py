@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:ekr.20140711111623.17787: * @file leoPersistence.py
+#@+node:ekr.20140712105428.16698: * @file leoPersistence.py
 #@@first
 '''Support for persistent clones, gnx's and uA's using @persistence trees.'''
 #@@language python
@@ -179,23 +179,18 @@ class PersistenceDataController:
     #@+<< docstring >>
     #@+node:ekr.20140711111623.17791: *3*  << docstring >> (class persistenceController)
     '''
-    A class to handle @persistence trees and related operations.
-    Such trees have the following structure:
+    A class to handle persistence in **foreign files**, files created by @auto,
+    @org-mode or @vim-outline node.
 
-    - @persistence
-      - @data <unl of @auto, @org-mode or @vim-outline node>
-        - @gnxs
-        - @uas
-            @ua unl
-            
-    Terminology: a **foreign node** is an @auto, @org-mode or @vim-outline node.
-        
-    Old:
-        The body text of @clones nodes consists of unl's, one per line.
-    New:
-        The body text of @gnxs nodes consists of pairs of lines.
-            @gnxs nodes contain pairs of lines (gnx:<gnx>,unl:<unl>)
-        The body text of @ua nodes consists of the pickled ua.
+    All required data are held in nodes having the following structure::
+
+        - @persistence
+          - @data <headline of foreign node>
+            - @gnxs
+               body text: pairs of lines: gnx:<gnx><newline>unl:<unl>
+            - @uas
+                @ua <gnx>
+                    body text: the pickled uA
     '''
     #@-<< docstring >>
     #@+others
@@ -542,7 +537,7 @@ class PersistenceDataController:
             if p.v.gnx == gnx:
                 return p
         return None
-    #@+node:ekr.20140711111623.17861: *5* pd.find_position_for_relative_unl (buggy)
+    #@+node:ekr.20140711111623.17861: *5* pd.find_position_for_relative_unl (rewritten)
     def find_position_for_relative_unl(pd,parent,unl,priority_header=False):
         '''
         Return the node in parent's subtree matching the given unl.
