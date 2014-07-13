@@ -7,6 +7,8 @@
 #@@tabwidth -4
 from __future__ import print_function
 import leo.core.leoGlobals as g
+import binascii
+import pickle
 import time
 #@+others
 #@+node:ekr.20140713062552.17735: ** unused
@@ -311,111 +313,121 @@ class PersistenceDataController:
             ConvertController(pd.c,root).run()
         else:
             g.es_print('not an @file node:',root.h)
-    #@+node:ekr.20140711111623.17804: *4* pd.update_before_write_foreign_file (todo: pickle)
+    #@+node:ekr.20140711111623.17804: *4* pd.update_before_write_foreign_file
     def update_before_write_foreign_file(pd,root):
         '''
         Update the @data node for root, a foreign node.
         Create @gnxs nodes and @uas trees as needed.
         '''
-        trace = False and not g.unitTesting
-        t1 = time.clock()
+        trace = True and not g.unitTesting
         # Delete all children of the @data node.
         at_data = pd.find_at_data_node(root)
         if at_data.hasChildren():
             at_data.deleteAllChildren()
         # Create the data for the @gnxs and @uas trees.
         aList,seen = [],[]
-        for p in root.self_and_subtree():
+        for p in root.subtree():
             gnx = p.v.gnx
+            assert gnx
             if gnx not in seen:
                 seen.append(gnx)
-                aList.append((p.h,gnx,p.v.u),)
+                aList.append(p.copy())
         # Create the @gnxs node
         at_gnxs = pd.find_at_gnxs_node(root)
-        gnxs = [(h,gnx) for (h,gnx,ua) in aList if gnx]
         at_gnxs.b = ''.join(
-            ['gnx: %s\nunl: %s\n' % (gnx,h) for (h,gnx) in gnxs])
+            ['gnx: %s\nunl: %s\n' % (p.v.gnx,p.h) for p in aList])
         # Create the @uas tree.
-        uas = [(h,ua) for (h,gnx,ua) in aList if ua]
+        uas = [p for p in aList if p.v.u]
         if uas:
             at_uas = pd.find_at_uas_node(root)
             if at_uas.hasChildren():
                 at_uas.deleteAllChildren()
-            for z in uas:
-                h,ua = z
-                p = at_uas.insertAsLastChild()
-                p.h = '@ua:' + h.strip()
-                try:
-                    p.b = str(ua) ### To do: pickle this
-                except Exception:
-                    g.trace('can not stringize',ua)
-                    p.b = ''
-        if not g.unitTesting:
-            g.es_print('updated @data %s node in %4.2f sec.' % (
-                root.h,time.clock()-t1))
+            for p in uas:
+                p2 = at_uas.insertAsLastChild()
+                p2.h = '@ua:' + p.v.gnx
+                p2.b = pd.pickle(p)
+        if trace:
+            g.es_print('updated @data:%s ' % (root.h))
         pd.c.redraw()
         return at_data # For at-file-to-at-auto command.
+    #@+node:ekr.20140713062552.17737: *5* pd.pickle
+    def pickle (pd,p):
+        '''Pickle val and return the hexlified result.'''
+        trace = False and g.unitTesting
+        try:
+            ua = p.v.u
+            s = pickle.dumps(ua,protocol=1)
+            s2 = binascii.hexlify(s)
+            s3 = g.ue(s2,'utf-8')
+            if trace: g.trace('\n',
+                type(ua),ua,'\n',type(s),repr(s),'\n',
+                type(s2),s2,'\n',type(s3),s3)
+            return s3
+        except pickle.PicklingError:
+            g.warning("ignoring non-pickleable value",ua,"in",p.h)
+            return ''
+        except Exception:
+            g.error("pd.pickle: unexpected exception in",p.h)
+            g.es_exception()
+            return ''
     #@+node:ekr.20140711111623.17807: *4* pd.update_after_read_foreign_file & helpers
     def update_after_read_foreign_file(pd,root):
+        '''Restore gnx's, uAs and clone links using @gnxs nodes and @uas trees.'''
+        trace = True and not g.unitTesting
+        if pd.is_foreign_file(root):
+            # Create clone links from @gnxs node
+            at_gnxs = pd.has_at_gnxs_node(root)
+            if at_gnxs:
+                pd.restore_gnxs(at_gnxs,root)
+            # Create uas from @uas tree.
+            at_uas = pd.has_at_uas_node(root)
+            if at_uas:
+                pd.create_uas(at_uas,root)
+            c = pd.c
+            c.selectPosition(root)
+            c.redraw()
+        return True
+    #@+node:ekr.20140711111623.17810: *5* pd.restore_gnxs & helper
+    def restore_gnxs(pd,at_gnxs,root):
         '''
-        Link clones and restore uAs from the @gnxs node and @uas tree for root,
-        a foreign node.
+        Recreate gnx's and clone links from an @gnxs node.
+        @gnxs nodes contain pairs of lines:
+            gnx:<gnx>
+            unl:<unl>
         '''
         trace = True and not g.unitTesting
-        c = pd.c
-        if not pd.is_foreign_file(root):
-            return # Not an error: it might be and @auto-rst node.
-        t1 = time.clock()
-        # Create clone links from @gnxs node
-        at_gnxs = pd.has_at_gnxs_node(root)
-        if at_gnxs:
-            changed = pd.create_clone_links(at_gnxs,root)
-        t2 = time.clock()
-        # Create uas from @uas tree.
-        at_uas = pd.has_at_uas_node(root)
-        if at_uas:
-            pd.create_uas(at_uas,root)
-        t3 = time.clock()
-        if trace: g.trace(
-            '\n  link_clones: %4.2f sec' % (t2-t1),
-            '\n  create_uas:  %4.2f sec' % (t3-t2),
-            '\n  total:       %4.2f sec' % (t3-t1))
-        c.selectPosition(root)
-        c.redraw()
-        return True
-    #@+node:ekr.20140711111623.17809: *5* pd.create_clone_link
-    def create_clone_link(pd,gnx,root,unl):
+        lines = g.splitLines(at_gnxs.b)
+        gnxs = [s[4:].strip() for s in lines if s.startswith('gnx:')]
+        unls = [s[4:].strip() for s in lines if s.startswith('unl:')]
+        if len(gnxs) == len(unls):
+            pd.headlines_dict = {} # May be out of date.
+            for gnx,unl in zip(gnxs,unls):
+                pd.restore_gnx(gnx,root,unl)
+        else:
+            g.trace('bad @gnxs contents',gnxs,unls)
+    #@+node:ekr.20140711111623.17809: *6* pd.restore_gnx
+    def restore_gnx(pd,gnx,root,unl):
         '''
+        Set the gnx of the node in root's tree with the given unl.
+        
         Replace the node in a foreign tree with the given unl by a
         clone of the node outside the foreign tree with the given gnx.
         '''
         trace = False and not g.unitTesting
         p1 = pd.find_position_for_relative_unl(root,unl)
-        p2 = pd.find_gnx_node(gnx)
-        if p1 and p2:
-            if trace: g.trace('relink',gnx,p2.h,'->',p1.h)
-            if p1.b == p2.b:
-                p2._relinkAsCloneOf(p1)
+        if p1:
+            p2 = pd.find_gnx_node(gnx)
+            if p2:
+                if p1.h == p2.h and p1.b == p2.b:
+                    if trace: g.trace('imported:',p1.v.gnx,'-> cloned:',gnx,unl)
+                    p2._relinkAsCloneOf(p1)
+                else:
+                    g.es_print('mismatch in cloned node',p1.h)
             else:
-                g.es('body text mismatch in relinked node',p1.h)
-        elif trace:
-            g.trace('relink failed',gnx,root.h,unl)
-    #@+node:ekr.20140711111623.17810: *5* pd.create_clone_links
-    def create_clone_links(pd,at_gnxs,root):
-        '''
-        Recreate clone links from an @gnxs node.
-        @gnxs nodes contain pairs of lines (gnx:<gnx>,unl:<unl>)
-        '''
-        lines = g.splitLines(at_gnxs.b)
-        gnxs = [s[4:].strip() for s in lines if s.startswith('gnx:')]
-        unls = [s[4:].strip() for s in lines if s.startswith('unl:')]
-        # g.trace('at_clones.b',at_clones.b)
-        if len(gnxs) == len(unls):
-            pd.headlines_dict = {} # May be out of date.
-            for gnx,unl in zip(gnxs,unls):
-                pd.create_clone_link(gnx,root,unl)
+                if trace: g.trace('imported:',p1.v.gnx,'-> saved: ',gnx,unl)
+                p1.v.fileIndex = g.app.nodeIndices.scanGnx(gnx)
         else:
-            g.trace('bad @gnxs contents',gnxs,unls)
+            if trace: g.trace('unl not found: %s' % unl)
     #@+node:ekr.20140711111623.17892: *5* pd.create_uas (To do)
     def create_uas(pd,at_uas,root):
         
@@ -521,8 +533,8 @@ class PersistenceDataController:
     #@+node:ekr.20140711111623.17859: *5* pd.find_gnx_node
     def find_gnx_node(pd,gnx):
         '''Return the first position having the given gnx.'''
-        # This is part of the read logic, so newly-imported
-        # nodes will never have the given gnx.
+        # Newly-imported nodes never have the given gnx initially,
+        # but their gnx's may be changed while reading.
         for p in pd.c.all_unique_positions():
             if p.v.gnx == gnx:
                 return p
@@ -548,7 +560,7 @@ class PersistenceDataController:
         pos_pattern = re.compile(r':(\d+),?(\d+)?$')
         for s in unl.split('-->'):
             found = False # The last part must match.
-            if 1:
+            if 0: # New code.
                 # Create the list of children on the fly.
                 aList = pd.headlines_dict.get(p.v)
                 if aList is None:

@@ -15493,7 +15493,7 @@ for p in aList2:
     i += 1
     assert p == p2,'\n%s:%s\n%s:%s' % (
         p.sort_key(p),p.h,p2.sort_key(p2),p2.h)
-#@+node:ekr.20140712142620.4507: *5* @test pd.create_clone_links
+#@+node:ekr.20140712142620.4507: *5* @test pd.restore_gnxs
 pd = c.persistenceController
 gnxs = g.findNodeInTree(c,p,'@gnxs')
 root = g.findNodeInTree(c,p,'root')
@@ -15504,18 +15504,17 @@ new_node1 = root.insertAsLastChild()
 new_node1.h = 'node1'
 gnxs.b = 'gnx: %s\nunl: %s\n' % (node1.v.gnx,'node1')
 try:
-    ok = pd.create_clone_links(gnxs,root)
-    assert ok
+    pd.restore_gnxs(gnxs,root)
     # Important: p._relinkAsCloneOf leaves new_node1 unchanged,
     # but new_node1 should not be used.
 finally:
     c.redraw()
 #@+node:ekr.20140712142620.4508: *6* @gnxs
-gnx: ekr.20140712205739.4347
+gnx: ekr.20140713135130.4350
 unl: node1
-#@+node:ekr.20140712205739.4364: *6* node1
+#@+node:ekr.20140713135130.4351: *6* node1
 #@+node:ekr.20140712142620.4510: *6* root
-#@+node:ekr.20140712205739.4364: *7* node1
+#@+node:ekr.20140713135130.4351: *7* node1
 #@+node:ekr.20140712142620.4537: *5* @test pd.find_absolute_unl_node
 pd = c.persistenceController
 root = c.rootPosition().insertAfter()
@@ -15653,7 +15652,8 @@ finally:
     # This is required.
     p.deleteAllChildren()
     c.redraw()
-#@+node:ekr.20140712142620.4583: *5* @test pd.pack & pd.unpack
+#@+node:ekr.20140712142620.4583: *5* @@@test pd.pack & pd.unpack
+# At present, neither the pack nor the unpack commands exist.
 pd = c.persistenceController
 persistence = pd.find_at_persistence_node()
 assert persistence

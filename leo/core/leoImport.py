@@ -655,19 +655,14 @@ class LeoImportCommands (ScanUtility):
                 c.setChanged(True)
     #@+node:ekr.20031218072017.3306: *4* createHeadline (leoImport)
     def createHeadline (self,parent,body,headline):
-
-        # g.trace('*** parent: %s headline: %s' % (parent.h,headline))
-
-        # Create the VNode.
+        '''Create a new VNode as the last child of parent position.'''
         p = parent.insertAsLastChild()
-
         body = g.u(body)
         headline = g.u(headline)
-
         p.initHeadString(headline)
         if len(body) > 0:
             self.setBodyString(p,body)
-
+        # g.trace(p.v.gnx,p.h)
         return p
     #@+node:ekr.20031218072017.3307: *4* error
     def error (self,s):

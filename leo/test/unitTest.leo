@@ -46,9 +46,8 @@
 </v>
 <v t="ekr.20111112092813.4154"><vh>@command cls</vh></v>
 <v t="ekr.20140712144020.4334"><vh>@persistence</vh>
-<v t="ekr.20140712142620.4585"><vh>@view test</vh>
-<v t="ekr.20140712142620.4586"><vh>not a clone</vh></v>
-<v t="ekr.20140712142620.4587"><vh>clone</vh></v>
+<v t="ekr.20140713135130.4362"><vh>@data:@auto root</vh>
+<v t="ekr.20140713135130.4363"><vh>@gnxs</vh></v>
 </v>
 </v>
 </v>
@@ -164,16 +163,16 @@
 <v t="ekr.20101220161557.6014"><vh>@file inactiveTests.txt</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e382e3771017d71025808000000616e6e6f7461746571037d7104735508302e372e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e372e31342e3671097d710a5808000000616e6e6f74617465710b7d710c735508302e372e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285808000000302e372e31302e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e372e31342e3671057d71065808000000616e6e6f7461746571077d7108735805000000302e382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e372e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20140712142620.4458"><vh>leoPersistence</vh>
 <v t="ekr.20140712143924.4332"><vh>Passed</vh>
 <v t="ekr.20140712142620.4503"><vh>@test p.sort_key</vh></v>
-<v t="ekr.20140712142620.4507"><vh>@test pd.create_clone_links</vh>
+<v t="ekr.20140712142620.4507"><vh>@test pd.restore_gnxs</vh>
 <v t="ekr.20140712142620.4508"><vh>@gnxs</vh></v>
-<v t="ekr.20140712205739.4364"><vh>node1</vh></v>
+<v t="ekr.20140713135130.4351"><vh>node1</vh></v>
 <v t="ekr.20140712142620.4510"><vh>root</vh>
-<v t="ekr.20140712205739.4364"></v>
+<v t="ekr.20140713135130.4351"></v>
 </v>
 </v>
 <v t="ekr.20140712142620.4537"><vh>@test pd.find_absolute_unl_node</vh></v>
@@ -204,9 +203,12 @@
 <v t="ekr.20140712142620.4563"></v>
 </v>
 <v t="ekr.20140712142620.4564"><vh>@test pd.is_at_auto_node</vh></v>
-<v t="ekr.20140712142620.4583"><vh>@test pd.pack &amp; pd.unpack</vh>
+<v t="ekr.20140712142620.4583"><vh>@@@test pd.pack &amp; pd.unpack</vh>
+<v t="ekr.20140712142620.4587"><vh>clone</vh></v>
+<v t="ekr.20140712142620.4585"><vh>@view test</vh>
+<v t="ekr.20140712142620.4586"><vh>not a clone</vh></v>
 <v t="ekr.20140712142620.4587"></v>
-<v t="ekr.20140712142620.4585"></v>
+</v>
 </v>
 <v t="ekr.20140712142620.4574"><vh>@test pd.unl</vh></v>
 <v t="ekr.20140712142620.4575"><vh>@test pd.update_before_write_foreign_file</vh>
@@ -648,7 +650,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="9"></t>
+<t tx="ekr.20070417092935" str_leo_pos="8"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1327,14 +1329,13 @@ new_node1 = root.insertAsLastChild()
 new_node1.h = 'node1'
 gnxs.b = 'gnx: %s\nunl: %s\n' % (node1.v.gnx,'node1')
 try:
-    ok = pd.create_clone_links(gnxs,root)
-    assert ok
+    pd.restore_gnxs(gnxs,root)
     # Important: p._relinkAsCloneOf leaves new_node1 unchanged,
     # but new_node1 should not be used.
 finally:
     c.redraw()
 </t>
-<t tx="ekr.20140712142620.4508">gnx: ekr.20140712205739.4347
+<t tx="ekr.20140712142620.4508">gnx: ekr.20140713135130.4350
 unl: node1
 </t>
 <t tx="ekr.20140712142620.4510"></t>
@@ -1536,7 +1537,8 @@ finally:
     pass
 </t>
 <t tx="ekr.20140712142620.4582"></t>
-<t tx="ekr.20140712142620.4583">pd = c.persistenceController
+<t tx="ekr.20140712142620.4583"># At present, neither the pack nor the unpack commands exist.
+pd = c.persistenceController
 persistence = pd.find_at_persistence_node()
 assert persistence
 persistence.deleteAllChildren()
@@ -1564,6 +1566,19 @@ finally:
 </t>
 <t tx="ekr.20140712143924.4332"></t>
 <t tx="ekr.20140712144020.4334"></t>
-<t tx="ekr.20140712205739.4364"></t>
+<t tx="ekr.20140713135130.4351"></t>
+<t tx="ekr.20140713135130.4362">gnx: ekr.20140712142620.4576
+</t>
+<t tx="ekr.20140713135130.4363">gnx: ekr.20140712142620.4577
+unl: aClass
+gnx: ekr.20140712142620.4582
+unl: clone
+gnx: ekr.20140712142620.4579
+unl: organizer node
+gnx: ekr.20140712142620.4580
+unl: child1
+gnx: ekr.20140712142620.4581
+unl: child2
+</t>
 </tnodes>
 </leo_file>

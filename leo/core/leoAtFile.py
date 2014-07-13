@@ -10,9 +10,9 @@
 #@+<< leoAtFile switches >>
 #@+node:ekr.20140108081031.16613: ** << leoAtFile switches >>
 new_auto = False
-    # True: enable calls to c.viewController.
+    # True: enable calls to c.persistenceController.
 if new_auto:
-    print('==== new_auto: %s' % new_auto)
+    print('\n==== new_auto: True')
 allow_cloned_sibs = True
     # True: allow cloned siblings in @file nodes.
 #@-<< leoAtFile switches >>
@@ -829,6 +829,7 @@ class AtFile:
     #@+node:ekr.20070909100252: *4* at.readOneAtAutoNode
     def readOneAtAutoNode (self,fileName,p):
         '''Read an @auto file into p.'''
+        trace = True and not g.unitTesting
         at,c,ic = self,self.c,self.c.importCommands
         oldChanged = c.isChanged()
         at.default_directory = g.setDefaultDirectory(c,p,importing=True)
@@ -841,9 +842,10 @@ class AtFile:
         at.rememberReadPath(fileName,p)
         s,ok,fileKey = c.cacher.readFile(fileName,p)
         if ok:
-            # Even if the file is in the cache, the @views node may be different.
+            if trace: g.trace('***** using cached nodes',p.h)
+            # Even if the file is in the cache, the @persistence node may be different.
             if new_auto:
-                c.viewController.update_after_read_at_auto_file(p)
+                c.persistenceController.update_after_read_foreign_file(p)
             g.doHook('after-auto',c=c,p=p)
                 # call after-auto callbacks
                 # 2011/09/30: added call to g.doHook here.
@@ -861,9 +863,8 @@ class AtFile:
             if 0:
                 g.es_print('reading entire file into @auto node.')
                 at.readOneAtEditNode(fileName,p)
-        else:
-            if new_auto:
-                c.viewController.update_after_read_at_auto_file(p)
+        elif new_auto:
+            c.persistenceController.update_after_read_foreign_file(p)
         if ic.errors or not g.os_path_exists(fileName):
             p.clearDirty()
             c.setChanged(oldChanged)
@@ -3337,7 +3338,7 @@ class AtFile:
             toString=toString)
         if new_auto:
             if not trialWrite:
-                c.viewController.update_before_write_at_auto_file(root)
+                c.persistenceController.update_before_write_foreign_file(root)
         ok = at.openFileForWriting (root,fileName=fileName,toString=toString)
         if ok:
             isAtAutoOtl = root.isAtAutoOtlNode() # For traces.

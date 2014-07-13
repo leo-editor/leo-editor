@@ -88,16 +88,12 @@ class NodeIndices (object):
         except Exception:
             return False
     #@+node:ekr.20031218072017.1997: *3* scanGnx
-    def scanGnx (self,s,i):
-
+    def scanGnx (self,s,i=0):
         """Create a gnx from its string representation"""
-
         if not g.isString(s):
             g.error("scanGnx: unexpected index type:",type(s),'',s)
             return None,None,None
-
         s = s.strip()
-
         theId,t,n = None,None,None
         i,theId = g.skip_to_char(s,i,'.')
         if g.match(s,i,'.'):
@@ -111,7 +107,6 @@ class NodeIndices (object):
         if n:
             try: n = int(n)
             except Exception: pass
-
         return theId,t,n
     #@+node:ekr.20031218072017.1998: *3* setTimeStamp
     def setTimestamp (self):
