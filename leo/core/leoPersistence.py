@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:ekr.20140712105428.16698: * @file leoPersistence.py
+#@+node:ekr.20140711111623.17787: * @file leoPersistence.py
 #@@first
 '''Support for persistent clones, gnx's and uA's using @persistence trees.'''
 #@@language python
@@ -9,18 +9,122 @@ from __future__ import print_function
 import leo.core.leoGlobals as g
 import time
 #@+others
+#@+node:ekr.20140713062552.17735: ** unused
+if 0:
+    #@+others
+    #@+node:ekr.20140711111623.17801: *3* pd.pack & helper
+    def pack(pd):
+        '''
+        Undoably convert c.p to a packed @view node, replacing all cloned
+        children of c.p by unl lines in c.p.b.
+        '''
+        c,u = pd.c,pd.c.undoer
+        changed = False
+        root = c.p
+        # Create an undo group to handle changes to root and @persistence nodes.
+        # Important: creating the @persistence node does *not* invalidate any positions.'''
+        u.beforeChangeGroup(root,'view-pack')
+        if not pd.has_at_persistence_node():
+            changed = True
+            bunch = u.beforeInsertNode(c.rootPosition())
+            persistence = pd.find_at_persistence_node()
+                # Creates the @persistence node as the *last* top-level node
+                # so that no positions become invalid as a result.
+            u.afterInsertNode(persistence,'create-views-node',bunch)
+        # Prepend @data node if need.
+        if not root.h.strip().startswith('@'):
+            changed = True
+            bunch = u.beforeChangeNodeContents(root)
+            root.h = '@data:' + root.h.strip()
+            u.afterChangeNodeContents(root,'view-pack-update-headline',bunch)
+        # Create an @view node as a clone of the @persistence node.
+        bunch = u.beforeInsertNode(c.rootPosition())
+        new_clone = pd.create_view_node(root)
+        if new_clone:
+            changed = True
+            u.afterInsertNode(new_clone,'create-view-node',bunch)
+        # Create a list of clones that have a representative node
+        # outside of the root's tree.
+        reps = [pd.find_representative_node(root,p)
+            for p in root.children()
+                if pd.is_cloned_outside_parent_tree(p)]
+        reps = [z for z in reps if z is not None]
+        if reps:
+            changed = True
+            bunch = u.beforeChangeTree(root)
+            c.setChanged(True)
+            # Prepend a unl: line for each cloned child.
+            unls = ['unl: %s\n' % (pd.unl(p)) for p in reps]
+            root.b = ''.join(unls) + root.b
+            # Delete all child clones in the reps list.
+            v_reps = set([p.v for p in reps])
+            while True:
+                for child in root.children():
+                    if child.v in v_reps:
+                        child.doDelete()
+                        break
+                else: break
+            u.afterChangeTree(root,'view-pack-tree',bunch)
+        if changed:
+            u.afterChangeGroup(root,'view-pack')
+            c.selectPosition(root)
+            c.redraw()
+    #@+node:ekr.20140711111623.17802: *4* pd.create_view_node ???
+    def create_view_node(pd,root):
+        '''
+        Create a clone of root as a child of the @persistence node.
+        Return the *newly* cloned node, or None if it already exists.
+        '''
+        # Create a cloned child of the @persistence node if it doesn't exist.
+        c = pd.c
+        persistence = pd.find_at_persistence_node()
+        for p in persistence.children():
+            if p.v == c.p.v:
+                return None
+        p = root.clone()
+        p.moveToLastChildOf(persistence)
+        return p
+    #@+node:ekr.20140711111623.17803: *3* pd.unpack
+    def unpack(pd):
+        '''
+        Undoably unpack nodes corresponding to leading unl lines in c.p to child clones.
+        Return True if the outline has, in fact, been changed.
+        '''
+        c,root,u = pd.c,pd.c.p,pd.c.undoer
+        pd.init()
+        # Find the leading unl: lines.
+        i,lines,tag = 0,g.splitLines(root.b),'unl:'
+        for s in lines:
+            if s.startswith(tag): i += 1
+            else: break
+        changed = i > 0
+        if changed:
+            bunch = u.beforeChangeTree(root)
+            # Restore the body
+            root.b = ''.join(lines[i:])
+            # Create clones for each unique unl.
+            unls = list(set([s[len(tag):].strip() for s in lines[:i]]))
+            for unl in unls:
+                p = pd.find_absolute_unl_node(unl)
+                if p: p.clone().moveToLastChildOf(root)
+                else: g.trace('not found: %s' % (unl))
+            c.setChanged(True)
+            c.undoer.afterChangeTree(root,'view-unpack',bunch)
+            c.redraw()
+        return changed
+    #@-others
 #@+node:ekr.20140711111623.17886: ** pd.Commands
-@g.command('persistence-pack')
-def view_pack_command(event):
-    c = event.get('c')
-    if c and c.persistenceController:
-        c.persistenceController.pack()
+# @g.command('persistence-pack')
+# def view_pack_command(event):
+    # c = event.get('c')
+    # if c and c.persistenceController:
+        # c.persistenceController.pack()
 
-@g.command('persistence-unpack')
-def view_unpack_command(event):
-    c = event.get('c')
-    if c and c.persistenceController:
-        c.persistenceController.unpack()
+# @g.command('persistence-unpack')
+# def view_unpack_command(event):
+    # c = event.get('c')
+    # if c and c.persistenceController:
+        # c.persistenceController.unpack()
 
 @g.command('at-file-to-at-auto')
 def at_file_to_at_auto_command(event):
@@ -54,7 +158,6 @@ class ConvertController:
         root = cc.root
         language = g.scanForAtLanguage(c,root) 
         ext = '.'+g.app.language_extension_dict.get(language)
-        ### scanner = ic.importDispatchDict.get(ext)
         scanner = ic.scanner_for_ext(ext)
         # g.trace(language,ext,scanner.__name__)
         p = root.insertAfter()
@@ -175,6 +278,7 @@ class ConvertController:
     #@-others
 #@+node:ekr.20140711111623.17790: ** class PersistenceDataController
 class PersistenceDataController:
+    # The first argument of very method must pd instead of self.
     # pylint: disable=no-self-argument
     #@+<< docstring >>
     #@+node:ekr.20140711111623.17791: *3*  << docstring >> (class persistenceController)
@@ -194,16 +298,12 @@ class PersistenceDataController:
     '''
     #@-<< docstring >>
     #@+others
-    #@+node:ekr.20140711111623.17792: *3* pd.ctor & pd.init
+    #@+node:ekr.20140711111623.17792: *3* pd.ctor
     def __init__ (pd,c):
         '''Ctor for persistenceController class.'''
         pd.c = c
-        pd.init()
-        
-    def init(pd):
-        '''Init all mutable ivars of this class. Called by unit tests.'''
         pd.headlines_dict = {}
-            # Keys are vnodes; values are list of child headlines.
+            # Inited afresh for each foreign file.
     #@+node:ekr.20140711111623.17793: *3* pd.Entry points
     #@+node:ekr.20140711111623.17794: *4* pd.convert_at_file_to_at_auto
     def convert_at_file_to_at_auto(pd,root):
@@ -211,108 +311,7 @@ class PersistenceDataController:
             ConvertController(pd.c,root).run()
         else:
             g.es_print('not an @file node:',root.h)
-    #@+node:ekr.20140711111623.17801: *4* pd.pack & helper (revise)
-    def pack(pd):
-        '''
-        Undoably convert c.p to a packed @view node, replacing all cloned
-        children of c.p by unl lines in c.p.b.
-        '''
-        c,u = pd.c,pd.c.undoer
-        pd.init()
-        changed = False
-        root = c.p
-        # Create an undo group to handle changes to root and @persistence nodes.
-        # Important: creating the @persistence node does *not* invalidate any positions.'''
-        u.beforeChangeGroup(root,'view-pack')
-        if not pd.has_at_persistence_node():
-            changed = True
-            bunch = u.beforeInsertNode(c.rootPosition())
-            views = pd.find_at_persistence_node()
-                # Creates the @persistence node as the *last* top-level node
-                # so that no positions become invalid as a result.
-            u.afterInsertNode(views,'create-views-node',bunch)
-        # Prepend @view if need.
-        if not root.h.strip().startswith('@'):
-            changed = True
-            bunch = u.beforeChangeNodeContents(root)
-            root.h = '@view ' + root.h.strip()
-            u.afterChangeNodeContents(root,'view-pack-update-headline',bunch)
-        # Create an @view node as a clone of the @persistence node.
-        bunch = u.beforeInsertNode(c.rootPosition())
-        new_clone = pd.create_view_node(root)
-        if new_clone:
-            changed = True
-            u.afterInsertNode(new_clone,'create-view-node',bunch)
-        # Create a list of clones that have a representative node
-        # outside of the root's tree.
-        reps = [pd.find_representative_node(root,p)
-            for p in root.children()
-                if pd.is_cloned_outside_parent_tree(p)]
-        reps = [z for z in reps if z is not None]
-        if reps:
-            changed = True
-            bunch = u.beforeChangeTree(root)
-            c.setChanged(True)
-            # Prepend a unl: line for each cloned child.
-            unls = ['unl: %s\n' % (pd.unl(p)) for p in reps]
-            root.b = ''.join(unls) + root.b
-            # Delete all child clones in the reps list.
-            v_reps = set([p.v for p in reps])
-            while True:
-                for child in root.children():
-                    if child.v in v_reps:
-                        child.doDelete()
-                        break
-                else: break
-            u.afterChangeTree(root,'view-pack-tree',bunch)
-        if changed:
-            u.afterChangeGroup(root,'view-pack')
-            c.selectPosition(root)
-            c.redraw()
-    #@+node:ekr.20140711111623.17802: *5* pd.create_view_node ???
-    def create_view_node(pd,root):
-        '''
-        Create a clone of root as a child of the @persistence node.
-        Return the *newly* cloned node, or None if it already exists.
-        '''
-        # Create a cloned child of the @persistence node if it doesn't exist.
-        c = pd.c
-        views = pd.find_at_persistence_node()
-        for p in views.children():
-            if p.v == c.p.v:
-                return None
-        p = root.clone()
-        p.moveToLastChildOf(views)
-        return p
-    #@+node:ekr.20140711111623.17803: *4* pd.unpack (revise)
-    def unpack(pd):
-        '''
-        Undoably unpack nodes corresponding to leading unl lines in c.p to child clones.
-        Return True if the outline has, in fact, been changed.
-        '''
-        c,root,u = pd.c,pd.c.p,pd.c.undoer
-        pd.init()
-        # Find the leading unl: lines.
-        i,lines,tag = 0,g.splitLines(root.b),'unl:'
-        for s in lines:
-            if s.startswith(tag): i += 1
-            else: break
-        changed = i > 0
-        if changed:
-            bunch = u.beforeChangeTree(root)
-            # Restore the body
-            root.b = ''.join(lines[i:])
-            # Create clones for each unique unl.
-            unls = list(set([s[len(tag):].strip() for s in lines[:i]]))
-            for unl in unls:
-                p = pd.find_absolute_unl_node(unl)
-                if p: p.clone().moveToLastChildOf(root)
-                else: g.trace('not found: %s' % (unl))
-            c.setChanged(True)
-            c.undoer.afterChangeTree(root,'view-unpack',bunch)
-            c.redraw()
-        return changed
-    #@+node:ekr.20140711111623.17804: *4* pd.update_before_write_foreign_file
+    #@+node:ekr.20140711111623.17804: *4* pd.update_before_write_foreign_file (todo: pickle)
     def update_before_write_foreign_file(pd,root):
         '''
         Update the @data node for root, a foreign node.
@@ -347,7 +346,7 @@ class PersistenceDataController:
                 p = at_uas.insertAsLastChild()
                 p.h = '@ua:' + h.strip()
                 try:
-                    p.b = str(ua) ### Probably should pickle this
+                    p.b = str(ua) ### To do: pickle this
                 except Exception:
                     g.trace('can not stringize',ua)
                     p.b = ''
@@ -364,10 +363,8 @@ class PersistenceDataController:
         '''
         trace = True and not g.unitTesting
         c = pd.c
-        if not pd.is_at_auto_node(root):
+        if not pd.is_foreign_file(root):
             return # Not an error: it might be and @auto-rst node.
-        changed,old_changed = False,c.isChanged()
-        pd.init()
         t1 = time.clock()
         # Create clone links from @gnxs node
         at_gnxs = pd.has_at_gnxs_node(root)
@@ -377,10 +374,8 @@ class PersistenceDataController:
         # Create uas from @uas tree.
         at_uas = pd.has_at_uas_node(root)
         if at_uas:
-            changed |= pd.create_uas(at_uas,root)
+            pd.create_uas(at_uas,root)
         t3 = time.clock()
-        c.setChanged(old_changed or changed)
-            ### To do: revert if not ok.
         if trace: g.trace(
             '\n  link_clones: %4.2f sec' % (t2-t1),
             '\n  create_uas:  %4.2f sec' % (t3-t2),
@@ -401,13 +396,10 @@ class PersistenceDataController:
             if trace: g.trace('relink',gnx,p2.h,'->',p1.h)
             if p1.b == p2.b:
                 p2._relinkAsCloneOf(p1)
-                return True
             else:
                 g.es('body text mismatch in relinked node',p1.h)
-                return False
-        else:
-            if trace: g.trace('relink failed',gnx,root.h,unl)
-            return False
+        elif trace:
+            g.trace('relink failed',gnx,root.h,unl)
     #@+node:ekr.20140711111623.17810: *5* pd.create_clone_links
     def create_clone_links(pd,at_gnxs,root):
         '''
@@ -420,15 +412,13 @@ class PersistenceDataController:
         # g.trace('at_clones.b',at_clones.b)
         if len(gnxs) == len(unls):
             pd.headlines_dict = {} # May be out of date.
-            ok = True
             for gnx,unl in zip(gnxs,unls):
-                ok = ok and pd.create_clone_link(gnx,root,unl)
-            return ok
+                pd.create_clone_link(gnx,root,unl)
         else:
             g.trace('bad @gnxs contents',gnxs,unls)
-            return False
     #@+node:ekr.20140711111623.17892: *5* pd.create_uas (To do)
     def create_uas(pd,at_uas,root):
+        
         return False ### To do.
     #@+node:ekr.20140712105818.16750: *3* pd.Helpers
     #@+node:ekr.20140711111623.17845: *4* pd.at_data_body
@@ -537,7 +527,7 @@ class PersistenceDataController:
             if p.v.gnx == gnx:
                 return p
         return None
-    #@+node:ekr.20140711111623.17861: *5* pd.find_position_for_relative_unl (rewritten)
+    #@+node:ekr.20140711111623.17861: *5* pd.find_position_for_relative_unl (buggy)
     def find_position_for_relative_unl(pd,parent,unl,priority_header=False):
         '''
         Return the node in parent's subtree matching the given unl.
