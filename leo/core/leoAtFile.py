@@ -9,7 +9,7 @@
 #@@pagewidth 60
 #@+<< leoAtFile switches >>
 #@+node:ekr.20140108081031.16613: ** << leoAtFile switches >>
-new_auto = False
+new_auto = True
     # True: enable calls to c.persistenceController.
 if new_auto:
     print('\n==== new_auto: True')

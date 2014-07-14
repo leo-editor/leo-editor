@@ -319,7 +319,7 @@ class PersistenceDataController:
         Update the @data node for root, a foreign node.
         Create @gnxs nodes and @uas trees as needed.
         '''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         # Delete all children of the @data node.
         at_data = pd.find_at_data_node(root)
         if at_data.hasChildren():
@@ -335,7 +335,8 @@ class PersistenceDataController:
         # Create the @gnxs node
         at_gnxs = pd.find_at_gnxs_node(root)
         at_gnxs.b = ''.join(
-            ['gnx: %s\nunl: %s\n' % (p.v.gnx,p.h) for p in aList])
+            ['gnx: %s\nunl: %s\n' % (p.v.gnx,pd.relative_unl(p,root))
+                for p in aList])
         # Create the @uas tree.
         uas = [p for p in aList if p.v.u]
         if uas:
@@ -348,28 +349,8 @@ class PersistenceDataController:
                 p2.b = pd.pickle(p)
         if trace:
             g.es_print('updated @data:%s ' % (root.h))
-        pd.c.redraw()
+        # pd.c.redraw()
         return at_data # For at-file-to-at-auto command.
-    #@+node:ekr.20140713062552.17737: *5* pd.pickle
-    def pickle (pd,p):
-        '''Pickle val and return the hexlified result.'''
-        trace = False and g.unitTesting
-        try:
-            ua = p.v.u
-            s = pickle.dumps(ua,protocol=1)
-            s2 = binascii.hexlify(s)
-            s3 = g.ue(s2,'utf-8')
-            if trace: g.trace('\n',
-                type(ua),ua,'\n',type(s),repr(s),'\n',
-                type(s2),s2,'\n',type(s3),s3)
-            return s3
-        except pickle.PicklingError:
-            g.warning("ignoring non-pickleable value",ua,"in",p.h)
-            return ''
-        except Exception:
-            g.error("pd.pickle: unexpected exception in",p.h)
-            g.es_exception()
-            return ''
     #@+node:ekr.20140711111623.17807: *4* pd.update_after_read_foreign_file & helpers
     def update_after_read_foreign_file(pd,root):
         '''Restore gnx's, uAs and clone links using @gnxs nodes and @uas trees.'''
@@ -384,8 +365,8 @@ class PersistenceDataController:
             if at_uas:
                 pd.create_uas(at_uas,root)
             c = pd.c
-            c.selectPosition(root)
-            c.redraw()
+            ### c.selectPosition(root)
+            ### c.redraw()
         return True
     #@+node:ekr.20140711111623.17810: *5* pd.restore_gnxs & helper
     def restore_gnxs(pd,at_gnxs,root):
@@ -428,10 +409,31 @@ class PersistenceDataController:
                 p1.v.fileIndex = g.app.nodeIndices.scanGnx(gnx)
         else:
             if trace: g.trace('unl not found: %s' % unl)
-    #@+node:ekr.20140711111623.17892: *5* pd.create_uas (To do)
+    #@+node:ekr.20140711111623.17892: *5* pd.create_uas & helper
     def create_uas(pd,at_uas,root):
-        
-        return False ### To do.
+        '''Recreate uA's from the @ua nodes in the @uas tree.'''
+        trace = False and not g.unitTesting
+        # Create a dict associating gnx's with vnodes.
+        d = {}
+        for p in root.self_and_subtree():
+            d[p.v.gnx] = p.copy()
+        # Recreate the uA's for the gnx's given by each @ua node.
+        for at_ua in at_uas.children():
+            h,uA = at_ua.h,at_ua.b
+            gnx = h[4:].strip()
+            if uA and gnx and g.match_word(h,0,'@ua'):
+                p = d.get(gnx)
+                if p:
+                    uA = pd.unpickle(uA)
+                    if uA:
+                        if trace: g.trace('set',p.h,uA)
+                        p.v.u = uA
+                    else:
+                        g.trace('Can not unpickle uA in',p.h,type(uA),uA[:40])
+                elif trace:
+                    g.trace('no match for gnx:',repr(gnx))
+            elif trace:
+                g.trace('unexpected child of @uas node',at_ua)
     #@+node:ekr.20140712105818.16750: *3* pd.Helpers
     #@+node:ekr.20140711111623.17845: *4* pd.at_data_body
     # Note: the unl of p relative to p is simply p.h,
@@ -687,7 +689,8 @@ class PersistenceDataController:
         Return the @data node corresponding to root, a foreign node.
         Return None if no such node exists.
         '''
-        assert pd.is_at_auto_node(root) or pd.is_at_file_node(root),root
+        if not g.unitTesting:
+            assert pd.is_at_auto_node(root) or pd.is_at_file_node(root),root
         views = g.findNodeAnywhere(pd.c,'@persistence')
         if views:
             # Find a direct child of views with matching headline and body.
@@ -736,6 +739,37 @@ class PersistenceDataController:
             pd.is_at_auto_node(p) or
             g.match_word(p.h,0,'@org-mode') or
             g.match_word(p.h,0,'@vim-outline'))
+    #@+node:ekr.20140713135856.17745: *4* pd.Pickling
+    #@+node:ekr.20140713062552.17737: *5* pd.pickle
+    def pickle (pd,p):
+        '''Pickle val and return the hexlified result.'''
+        trace = False and g.unitTesting
+        try:
+            ua = p.v.u
+            s = pickle.dumps(ua,protocol=1)
+            s2 = binascii.hexlify(s)
+            s3 = g.ue(s2,'utf-8')
+            if trace: g.trace('\n',
+                type(ua),ua,'\n',type(s),repr(s),'\n',
+                type(s2),s2,'\n',type(s3),s3)
+            return s3
+        except pickle.PicklingError:
+            g.warning("ignoring non-pickleable value",ua,"in",p.h)
+            return ''
+        except Exception:
+            g.error("pd.pickle: unexpected exception in",p.h)
+            g.es_exception()
+            return ''
+    #@+node:ekr.20140713135856.17744: *5* pd.unpickle
+    def unpickle (pd,s):
+        '''Unhexlify and unpickle string s into p.'''
+        try:
+            bin = binascii.unhexlify(g.toEncodedString(s))
+                # Throws TypeError if s is not a hex string.
+            return pickle.loads(bin)
+        except Exception:
+            g.es_exception()
+            return None
     #@+node:ekr.20140711111623.17879: *4* pd.unls...
     #@+node:ekr.20140711111623.17881: *5* pd.drop_unl_parent/tail
     def drop_unl_parent(pd,unl):
