@@ -40,6 +40,7 @@ def getCoreList():
             # W0108: Lambda may not be necessary (it is).
         'leoNodes',
         'leoQt',
+        'leoPersistence',
         'leoPlugins',
         'leoRope',
         'leoRst', 
@@ -50,7 +51,8 @@ def getCoreList():
         'leoTest',
         'leoUndo',
             # WO511: TODO 
-        'leoViews',
+        # 'leoViews',
+            # No longer used.
     )
 #@+node:ekr.20140528065727.17960: ** getExternalList
 def getExternalList():
