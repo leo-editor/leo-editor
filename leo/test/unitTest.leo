@@ -46,8 +46,8 @@
 </v>
 <v t="ekr.20111112092813.4154"><vh>@command cls</vh></v>
 <v t="ekr.20140712144020.4334"><vh>@persistence</vh>
-<v t="ekr.20140715074511.4352"><vh>@data:@auto root</vh>
-<v t="ekr.20140715074511.4353"><vh>@gnxs</vh></v>
+<v t="ekr.20140715083217.4352"><vh>@data:@auto root</vh>
+<v t="ekr.20140715083217.4353"><vh>@gnxs</vh></v>
 </v>
 </v>
 </v>
@@ -163,8 +163,7 @@
 <v t="ekr.20101220161557.6014"><vh>@file inactiveTests.txt</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e382e3771017d71025808000000616e6e6f7461746571037d7104735508302e372e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e372e31342e3671097d710a5808000000616e6e6f74617465710b7d710c735508302e372e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"
-expanded="ekr.20140712142620.4543,"><vh>@file activeUnitTests.txt</vh></v>
+<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e382e3771017d71025808000000616e6e6f7461746571037d7104735508302e372e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e372e31342e3671097d710a5808000000616e6e6f74617465710b7d710c735508302e372e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20140712142620.4458"><vh>leoPersistence</vh>
 <v t="ekr.20140712142620.4537"><vh>@@@test pd.find_absolute_unl_node</vh></v>
@@ -194,6 +193,11 @@ expanded="ekr.20140712142620.4543,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20140712142620.4544"><vh>child21</vh></v>
 <v t="ekr.20140712142620.4545"><vh>child22</vh></v>
 </v>
+<v t="ekr.20140715080507.4340"><vh>node3</vh>
+<v t="ekr.20140715080507.4341"><vh>node3_child1</vh>
+<v t="ekr.20140715080507.4339"><vh>child21</vh></v>
+</v>
+</v>
 </v>
 <v t="ekr.20140712142620.4546"><vh>@test pd.find_representative_node</vh>
 <v t="ekr.20140712142620.4547"><vh>root</vh>
@@ -215,9 +219,9 @@ expanded="ekr.20140712142620.4543,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20140712142620.4564"><vh>@test pd.is_at_auto_node</vh></v>
 <v t="ekr.20140712142620.4507"><vh>@test pd.restore_gnxs</vh>
 <v t="ekr.20140712142620.4508"><vh>@gnxs</vh></v>
-<v t="ekr.20140715074511.4351"><vh>node1</vh></v>
+<v t="ekr.20140715083217.4351"><vh>node1</vh></v>
 <v t="ekr.20140712142620.4510"><vh>root</vh>
-<v t="ekr.20140715074511.4351"></v>
+<v t="ekr.20140715083217.4351"></v>
 </v>
 </v>
 <v t="ekr.20140712142620.4574"><vh>@test pd.unl</vh></v>
@@ -649,7 +653,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="9,5"></t>
+<t tx="ekr.20070417092935" str_leo_pos="9"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1334,7 +1338,7 @@ try:
 finally:
     c.redraw()
 </t>
-<t tx="ekr.20140712142620.4508">gnx: ekr.20140713135130.4351
+<t tx="ekr.20140712142620.4508">gnx: ekr.20140715074511.4351
 unl: node1
 </t>
 <t tx="ekr.20140712142620.4510"></t>
@@ -1369,13 +1373,18 @@ assert p1 == p2,(p1,p2)
 parent = p.copy()
 node1 = p.firstChild()
 node2 = node1.next()
-assert node1 and node2
+node3 = node2.next()
+assert node1 and node2 and node3
 child11 = node1.firstChild()
 child12 = child11.next()
 assert child11 and child12
 child21 = node2.firstChild()
 child22 = child21.next()
 assert child21 and child22
+node3_child1 = node3.firstChild()
+assert node3_child1
+node3_child1_child21 = node3_child1.firstChild()
+assert node3_child1_child21
 table = (
     ('node1',node1),
     ('',parent), # This special case is important.
@@ -1385,10 +1394,12 @@ table = (
     ('node2--&gt;child21',child21),
     ('node2--&gt;child22',child22),
     # Partial matches...
-    ('child21',child21),
-    ('xxx--&gt;child21',child21),
+    ('node3--&gt;child1--&gt;child21',node3_child1_child21),
+    ('child1--&gt;child21',node3_child1_child21),
+    ('xxx--&gt;child21',node3_child1_child21),
+        # This is ambiguous.
     # No matches.
-    ('node3',None),
+    ('nodex',None),
     ('node1--&gt;childx',None),
     ('node3--&gt;childx',None),
 )
@@ -1568,10 +1579,13 @@ finally:
 <t tx="ekr.20140712142620.4587">clone body
 </t>
 <t tx="ekr.20140712144020.4334"></t>
-<t tx="ekr.20140715074511.4351"></t>
-<t tx="ekr.20140715074511.4352">gnx: ekr.20140712142620.4576
+<t tx="ekr.20140715080507.4339"></t>
+<t tx="ekr.20140715080507.4340"></t>
+<t tx="ekr.20140715080507.4341"></t>
+<t tx="ekr.20140715083217.4351"></t>
+<t tx="ekr.20140715083217.4352">gnx: ekr.20140712142620.4576
 </t>
-<t tx="ekr.20140715074511.4353">gnx: ekr.20140712142620.4577
+<t tx="ekr.20140715083217.4353">gnx: ekr.20140712142620.4577
 unl: aClass
 gnx: ekr.20140712142620.4582
 unl: aClass--&gt;clone

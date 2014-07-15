@@ -15576,13 +15576,18 @@ pd = c.persistenceController
 parent = p.copy()
 node1 = p.firstChild()
 node2 = node1.next()
-assert node1 and node2
+node3 = node2.next()
+assert node1 and node2 and node3
 child11 = node1.firstChild()
 child12 = child11.next()
 assert child11 and child12
 child21 = node2.firstChild()
 child22 = child21.next()
 assert child21 and child22
+node3_child1 = node3.firstChild()
+assert node3_child1
+node3_child1_child21 = node3_child1.firstChild()
+assert node3_child1_child21
 table = (
     ('node1',node1),
     ('',parent), # This special case is important.
@@ -15592,10 +15597,12 @@ table = (
     ('node2-->child21',child21),
     ('node2-->child22',child22),
     # Partial matches...
-    ('child21',child21),
-    ('xxx-->child21',child21),
+    ('node3-->child1-->child21',node3_child1_child21),
+    ('child1-->child21',node3_child1_child21),
+    ('xxx-->child21',node3_child1_child21),
+        # This is ambiguous.
     # No matches.
-    ('node3',None),
+    ('nodex',None),
     ('node1-->childx',None),
     ('node3-->childx',None),
 )
@@ -15609,6 +15616,9 @@ for unl,expected in table:
 #@+node:ekr.20140712142620.4543: *5* node2
 #@+node:ekr.20140712142620.4544: *6* child21
 #@+node:ekr.20140712142620.4545: *6* child22
+#@+node:ekr.20140715080507.4340: *5* node3
+#@+node:ekr.20140715080507.4341: *6* node3_child1
+#@+node:ekr.20140715080507.4339: *7* child21
 #@+node:ekr.20140712142620.4546: *4* @test pd.find_representative_node
 pd = c.persistenceController
 root = g.findNodeInTree(c,p,'root')

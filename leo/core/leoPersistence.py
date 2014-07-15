@@ -530,11 +530,12 @@ class PersistenceDataController:
                 # Compute the partial unl.
                 parents = 0
                 for parent2 in p.parents():
+                    # g.trace('parent2',parent2.h,unl,unl_list[-2-parents:-1-parents])
                     if parent2 == parent:
                         break
-                    elif parents+2 >= len(unl_list):
+                    elif parents+2 > len(unl_list):
                         break
-                    elif parent2.h != unl_list[-(parents+2)]:
+                    elif parent2.h != unl_list[-2-parents]:
                         break
                     else:
                         parents += 1
@@ -543,8 +544,9 @@ class PersistenceDataController:
             # Take the match with the greatest number of parents.
             def key(aTuple):
                 return aTuple[0]
-            n,p = list(reversed(sorted(matches,key=key)))[0]
+            n,p = list(sorted(matches,key=key))[-1]
             if trace:
+                g.trace('\n'.join(['%s: %s' % (z[0],z[1].h) for z in matches]))
                 g.trace('found:','n:',n,'-->'.join(unl_list[:-n]),p.h)
             return p
         else:
