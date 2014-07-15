@@ -524,7 +524,11 @@ class BookMarkDisplay:
         nd = p.insertAsNthChild(0)
         new_url = self.get_unl()
         nd.b = new_url
-        nd.h = self.fix_text(self.c.p.h)
+        nd.h = (
+            self.c.frame.body.hasSelection() and  
+            self.c.frame.body.getSelectedText() or
+            self.fix_text(self.c.p.h)
+        )
         c.redraw()
         self.current = nd.v
         self.show_list(self.get_list())
@@ -861,7 +865,12 @@ class BookMarkDisplay:
         new_url = self.get_unl()
         nd = p.insertAsNthChild(0)
         nd.b = new_url
-        nd.h = self.fix_text(self.c.p.h)
+        nd.h = (
+            self.c.frame.body.hasSelection() and  
+            self.c.frame.body.getSelectedText() or
+            self.fix_text(self.c.p.h)
+        )    
+        
         c.redraw()
         self.current = nd.v
         self.show_list(self.get_list())
