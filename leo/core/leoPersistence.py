@@ -511,7 +511,7 @@ class PersistenceDataController:
             if p.v.gnx == gnx:
                 return p
         return None
-    #@+node:ekr.20140711111623.17861: *5* pd.find_position_for_relative_unl (new)
+    #@+node:ekr.20140711111623.17861: *5* pd.find_position_for_relative_unl
     def find_position_for_relative_unl(pd,parent,unl):
         '''
         Given a unl relative to parent, return the node whose
@@ -522,7 +522,7 @@ class PersistenceDataController:
         if not unl_list or len(unl_list) == 1 and not unl_list[0]:
             if trace: g.trace('return parent for empty unl:',parent.h)
             return parent
-        # Find all partial matches of the tail in the tree
+        # Find all partial matches of the tail in the tree.
         tail = unl_list[-1]
         matches = []
         for p in parent.self_and_subtree():

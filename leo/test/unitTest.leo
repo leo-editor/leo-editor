@@ -219,10 +219,8 @@
 <v t="ekr.20140712142620.4564"><vh>@test pd.is_at_auto_node</vh></v>
 <v t="ekr.20140712142620.4507"><vh>@test pd.restore_gnxs</vh>
 <v t="ekr.20140712142620.4508"><vh>@gnxs</vh></v>
-<v t="ekr.20140715083217.4351"><vh>node1</vh></v>
-<v t="ekr.20140712142620.4510"><vh>root</vh>
-<v t="ekr.20140715083217.4351"></v>
-</v>
+<v t="ekr.20140715074511.4351"><vh>node1</vh></v>
+<v t="ekr.20140712142620.4510"><vh>root</vh></v>
 </v>
 <v t="ekr.20140712142620.4574"><vh>@test pd.unl</vh></v>
 <v t="ekr.20140712142620.4575"><vh>@test pd.update_before_write_foreign_file</vh>
@@ -653,7 +651,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="9"></t>
+<t tx="ekr.20070417092935" str_leo_pos="8"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1338,7 +1336,7 @@ try:
 finally:
     c.redraw()
 </t>
-<t tx="ekr.20140712142620.4508">gnx: ekr.20140715074511.4351
+<t tx="ekr.20140712142620.4508">gnx: ekr.20140713135130.4351
 unl: node1
 </t>
 <t tx="ekr.20140712142620.4510"></t>
@@ -1579,10 +1577,10 @@ finally:
 <t tx="ekr.20140712142620.4587">clone body
 </t>
 <t tx="ekr.20140712144020.4334"></t>
+<t tx="ekr.20140715074511.4351"></t>
 <t tx="ekr.20140715080507.4339"></t>
 <t tx="ekr.20140715080507.4340"></t>
 <t tx="ekr.20140715080507.4341"></t>
-<t tx="ekr.20140715083217.4351"></t>
 <t tx="ekr.20140715083217.4352">gnx: ekr.20140712142620.4576
 </t>
 <t tx="ekr.20140715083217.4353">gnx: ekr.20140712142620.4577

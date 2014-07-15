@@ -15727,7 +15727,6 @@ gnx: ekr.20140713135130.4351
 unl: node1
 #@+node:ekr.20140715074511.4351: *5* node1
 #@+node:ekr.20140712142620.4510: *5* root
-#@+node:ekr.20140715074511.4351: *6* node1
 #@+node:ekr.20140712142620.4574: *4* @test pd.unl
 pd = c.persistenceController
 unl = pd.unl(p)
