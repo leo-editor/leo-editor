@@ -304,7 +304,11 @@ def cmd_bookmark(c, child=False):
     bc = container.context
     bp = bc.vnode2position(container)
     nd = bp.insertAsNthChild(0)
-    nd.h = bm.fix_text(c.p.h)
+    nd.h = (
+        c.frame.body.hasSelection() and  
+        c.frame.body.getSelectedText() or
+        bm.fix_text(c.p.h)
+    )
     nd.b = bm.get_unl()
     
     bm.current = nd.v
