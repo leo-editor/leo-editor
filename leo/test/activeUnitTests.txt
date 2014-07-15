@@ -15483,39 +15483,7 @@ g.app.unitTestDict['restoreSelectedNode']=False
 
 print('\nEnd of leoNodes tests.')
 #@+node:ekr.20140712142620.4458: *3* leoPersistence
-#@+node:ekr.20140712143924.4332: *4* Passed
-#@+node:ekr.20140712142620.4503: *5* @test p.sort_key
-aList = [p.copy() for p in c.all_positions()]
-aList2 = sorted(reversed(aList),key=p.sort_key)
-i = 0
-for p in aList2:
-    p2 = aList[i]
-    i += 1
-    assert p == p2,'\n%s:%s\n%s:%s' % (
-        p.sort_key(p),p.h,p2.sort_key(p2),p2.h)
-#@+node:ekr.20140712142620.4507: *5* @test pd.restore_gnxs
-pd = c.persistenceController
-gnxs = g.findNodeInTree(c,p,'@gnxs')
-root = g.findNodeInTree(c,p,'root')
-node1 = g.findNodeInTree(c,p,'node1')
-assert gnxs and root and node1
-root.deleteAllChildren()
-new_node1 = root.insertAsLastChild()
-new_node1.h = 'node1'
-gnxs.b = 'gnx: %s\nunl: %s\n' % (node1.v.gnx,'node1')
-try:
-    pd.restore_gnxs(gnxs,root)
-    # Important: p._relinkAsCloneOf leaves new_node1 unchanged,
-    # but new_node1 should not be used.
-finally:
-    c.redraw()
-#@+node:ekr.20140712142620.4508: *6* @gnxs
-gnx: ekr.20140713135130.4350
-unl: node1
-#@+node:ekr.20140713135130.4351: *6* node1
-#@+node:ekr.20140712142620.4510: *6* root
-#@+node:ekr.20140713135130.4351: *7* node1
-#@+node:ekr.20140712142620.4537: *5* @test pd.find_absolute_unl_node
+#@+node:ekr.20140712142620.4537: *4* @@@test pd.find_absolute_unl_node
 pd = c.persistenceController
 root = c.rootPosition().insertAfter()
 root.h = 'root'
@@ -15535,7 +15503,45 @@ finally:
     root.doDelete()
     c.selectPosition(p)
     c.redraw()
-#@+node:ekr.20140712142620.4550: *5* @test pd.find_at_...
+#@+node:ekr.20140712142620.4583: *4* @@@test pd.pack & pd.unpack
+# At present, neither the pack nor the unpack commands exist.
+pd = c.persistenceController
+persistence = pd.find_at_persistence_node()
+assert persistence
+persistence.deleteAllChildren()
+view = g.findNodeInTree(c,p,'@view test')
+assert view
+assert c.positionExists(view)
+try:
+    c.selectPosition(view)
+    v_b = view.b
+    pd.pack()
+    assert c.p.v == view.v
+    pd.unpack()
+    assert view.b == v_b,view.b
+    assert view.lastChild().isCloned()
+finally:
+    # views.deleteAllChildren()
+    c.undoer.clearUndoState()
+    c.redraw()
+#@+node:ekr.20140712142620.4587: *5* clone
+clone body
+#@+node:ekr.20140712142620.4585: *5* @view test
+view body
+#@+node:ekr.20140712142620.4586: *6* not a clone
+not a clone text
+#@+node:ekr.20140712142620.4587: *6* clone
+clone body
+#@+node:ekr.20140712142620.4503: *4* @test p.sort_key
+aList = [p.copy() for p in c.all_positions()]
+aList2 = sorted(reversed(aList),key=p.sort_key)
+i = 0
+for p in aList2:
+    p2 = aList[i]
+    i += 1
+    assert p == p2,'\n%s:%s\n%s:%s' % (
+        p.sort_key(p),p.h,p2.sort_key(p2),p2.h)
+#@+node:ekr.20140712142620.4550: *4* @test pd.find_at_...
 # Also a test of find_at_views_node, find_at_organizers_node and find_at_clones_node.
 pd = c.persistenceController
 root = g.findNodeInTree(c,p,'root')
@@ -15552,20 +15558,58 @@ finally:
     # views.deleteAllChildren()
     c.selectPosition(p)
     c.redraw()
-#@+node:ekr.20140712142620.4551: *6* root
-#@+node:ekr.20140712142620.4552: *7* aClass
+#@+node:ekr.20140712142620.4551: *5* root
+#@+node:ekr.20140712142620.4552: *6* aClass
 class aClass:
     @others
-#@+node:ekr.20140712142620.4556: *8* clone
-#@+node:ekr.20140712142620.4556: *6* clone
-#@+node:ekr.20140712142620.4538: *5* @test pd.find_at_persistence_node
+#@+node:ekr.20140712142620.4556: *7* clone
+#@+node:ekr.20140712142620.4556: *5* clone
+#@+node:ekr.20140712142620.4538: *4* @test pd.find_at_persistence_node
 pd = c.persistenceController
 h = '@persistence'
 p1 = pd.find_at_persistence_node()
 assert p1
 p2 = pd.has_at_persistence_node()
 assert p1 == p2,(p1,p2)
-#@+node:ekr.20140712142620.4546: *5* @test pd.find_representative_node
+#@+node:ekr.20140712142620.4539: *4* @test pd.find_position_for_relative_unl
+pd = c.persistenceController
+parent = p.copy()
+node1 = p.firstChild()
+node2 = node1.next()
+assert node1 and node2
+child11 = node1.firstChild()
+child12 = child11.next()
+assert child11 and child12
+child21 = node2.firstChild()
+child22 = child21.next()
+assert child21 and child22
+table = (
+    ('node1',node1),
+    ('',parent), # This special case is important.
+    ('node1-->child11',child11),
+    ('node1-->child12',child12),
+    ('node2',node2),
+    ('node2-->child21',child21),
+    ('node2-->child22',child22),
+    # Partial matches...
+    ('child21',child21),
+    ('xxx-->child21',child21),
+    # No matches.
+    ('node3',None),
+    ('node1-->childx',None),
+    ('node3-->childx',None),
+)
+for unl,expected in table:
+    got = pd.find_position_for_relative_unl(parent,unl)
+    assert got == expected,'unl: %s expected: %s got: %s' % (
+        unl,expected and expected.h,got and got.h)
+#@+node:ekr.20140712142620.4540: *5* node1
+#@+node:ekr.20140712142620.4541: *6* child11
+#@+node:ekr.20140712142620.4542: *6* child12
+#@+node:ekr.20140712142620.4543: *5* node2
+#@+node:ekr.20140712142620.4544: *6* child21
+#@+node:ekr.20140712142620.4545: *6* child22
+#@+node:ekr.20140712142620.4546: *4* @test pd.find_representative_node
 pd = c.persistenceController
 root = g.findNodeInTree(c,p,'root')
 assert root
@@ -15587,10 +15631,10 @@ try:
 finally:
     root.h = 'root' # root must not be an @auto node.
     c.redraw()
-#@+node:ekr.20140712142620.4547: *6* root
-#@+node:ekr.20140712142620.4549: *7* clone
+#@+node:ekr.20140712142620.4547: *5* root
 #@+node:ekr.20140712142620.4549: *6* clone
-#@+node:ekr.20140712142620.4557: *5* @test pd.has_..._node
+#@+node:ekr.20140712142620.4549: *5* clone
+#@+node:ekr.20140712142620.4557: *4* @test pd.has_..._node
 # Test pd.has_at_auto_view_node, pd.has_at_clones_node and pd.has_at_organizers_node.
 pd = c.persistenceController
 persistence = g.findNodeAnywhere(c,'@persistence')
@@ -15623,22 +15667,22 @@ try:
 finally:
     root.h = 'root' # Make the root *not* an @auto node.
     c.redraw()
-#@+node:ekr.20140712142620.4558: *6* root
+#@+node:ekr.20140712142620.4558: *5* root
 @others
-#@+node:ekr.20140712142620.4559: *7* aClass
+#@+node:ekr.20140712142620.4559: *6* aClass
 class aClass:
     @others
-#@+node:ekr.20140712142620.4563: *8* clone-test
+#@+node:ekr.20140712142620.4563: *7* clone-test
 def clone_test():
     pass
-#@+node:ekr.20140712142620.4561: *8* organizer node
-#@+node:ekr.20140712142620.4562: *9* child2
+#@+node:ekr.20140712142620.4561: *7* organizer node
+#@+node:ekr.20140712142620.4562: *8* child2
 def spam():
     pass
-#@+node:ekr.20140712142620.4563: *6* clone-test
+#@+node:ekr.20140712142620.4563: *5* clone-test
 def clone_test():
     pass
-#@+node:ekr.20140712142620.4564: *5* @test pd.is_at_auto_node
+#@+node:ekr.20140712142620.4564: *4* @test pd.is_at_auto_node
 pd = c.persistenceController
 p.deleteAllChildren()
 auto = p.insertAsLastChild()
@@ -15652,40 +15696,33 @@ finally:
     # This is required.
     p.deleteAllChildren()
     c.redraw()
-#@+node:ekr.20140712142620.4583: *5* @@@test pd.pack & pd.unpack
-# At present, neither the pack nor the unpack commands exist.
+#@+node:ekr.20140712142620.4507: *4* @test pd.restore_gnxs
 pd = c.persistenceController
-persistence = pd.find_at_persistence_node()
-assert persistence
-persistence.deleteAllChildren()
-view = g.findNodeInTree(c,p,'@view test')
-assert view
-assert c.positionExists(view)
+gnxs = g.findNodeInTree(c,p,'@gnxs')
+root = g.findNodeInTree(c,p,'root')
+node1 = g.findNodeInTree(c,p,'node1')
+assert gnxs and root and node1
+root.deleteAllChildren()
+new_node1 = root.insertAsLastChild()
+new_node1.h = 'node1'
+gnxs.b = 'gnx: %s\nunl: %s\n' % (node1.v.gnx,'node1')
 try:
-    c.selectPosition(view)
-    v_b = view.b
-    pd.pack()
-    assert c.p.v == view.v
-    pd.unpack()
-    assert view.b == v_b,view.b
-    assert view.lastChild().isCloned()
+    pd.restore_gnxs(gnxs,root)
+    # Important: p._relinkAsCloneOf leaves new_node1 unchanged,
+    # but new_node1 should not be used.
 finally:
-    # views.deleteAllChildren()
-    c.undoer.clearUndoState()
     c.redraw()
-#@+node:ekr.20140712142620.4587: *6* clone
-clone body
-#@+node:ekr.20140712142620.4585: *6* @view test
-view body
-#@+node:ekr.20140712142620.4586: *7* not a clone
-not a clone text
-#@+node:ekr.20140712142620.4587: *7* clone
-clone body
-#@+node:ekr.20140712142620.4574: *5* @test pd.unl
+#@+node:ekr.20140712142620.4508: *5* @gnxs
+gnx: ekr.20140713135130.4351
+unl: node1
+#@+node:ekr.20140715074511.4351: *5* node1
+#@+node:ekr.20140712142620.4510: *5* root
+#@+node:ekr.20140715074511.4351: *6* node1
+#@+node:ekr.20140712142620.4574: *4* @test pd.unl
 pd = c.persistenceController
 unl = pd.unl(p)
 assert unl.endswith('-->'+p.h),repr(unl)
-#@+node:ekr.20140712142620.4575: *5* @test pd.update_before_write_foreign_file
+#@+node:ekr.20140712142620.4575: *4* @test pd.update_before_write_foreign_file
 pd = c.persistenceController
 root = g.findNodeInTree(c,p,'root')
 assert root
@@ -15703,51 +15740,17 @@ finally:
     root.h = 'root' # Make root *not* an @auto node.
     # persistence.deleteAllChildren()
     c.redraw()
-#@+node:ekr.20140712142620.4576: *6* root
-#@+node:ekr.20140712142620.4577: *7* aClass
+#@+node:ekr.20140712142620.4576: *5* root
+#@+node:ekr.20140712142620.4577: *6* aClass
 class aClass:
     @others
-#@+node:ekr.20140712142620.4582: *8* clone
-#@+node:ekr.20140712142620.4579: *7* organizer node
-#@+node:ekr.20140712142620.4580: *8* child1
-#@+node:ekr.20140712142620.4581: *8* child2
+#@+node:ekr.20140712142620.4582: *7* clone
+#@+node:ekr.20140712142620.4579: *6* organizer node
+#@+node:ekr.20140712142620.4580: *7* child1
+#@+node:ekr.20140712142620.4581: *7* child2
 def spam():
     pass
-#@+node:ekr.20140712142620.4582: *6* clone
-#@+node:ekr.20140712142620.4539: *4* @@@test pd.find_position_for_relative_unl (fails)
-pd = c.persistenceController
-parent = p.copy()
-node1 = p.firstChild()
-node2 = node1.next()
-assert node1 and node2
-child11 = node1.firstChild()
-child12 = child11.next()
-assert child11 and child12
-child21 = node2.firstChild()
-child22 = child21.next()
-assert child21 and child22
-table = (
-    # # ('node1',node1),
-    # ('',parent), # This special case is important.
-    # ('node1-->child11',child11),
-    # ('node1-->child12',child12),
-    # ('node2',node2),
-    # ('node2-->child21',child21),
-    # ('node2-->child22',child22),
-    ('node3',None), # Fails
-    ('node1-->childx',None),
-    ('node3-->childx',None),
-)
-for unl,expected in table:
-    got = pd.find_position_for_relative_unl(parent,unl)
-    assert got == expected,'unl: %s expected: %s got: %s' % (
-        unl,expected and expected.h,got and got.h)
-#@+node:ekr.20140712142620.4540: *5* node1
-#@+node:ekr.20140712142620.4541: *6* child11
-#@+node:ekr.20140712142620.4542: *6* child12
-#@+node:ekr.20140712142620.4543: *5* node2
-#@+node:ekr.20140712142620.4544: *6* child21
-#@+node:ekr.20140712142620.4545: *6* child22
+#@+node:ekr.20140712142620.4582: *5* clone
 #@+node:ekr.20100131171342.5610: *3* leoPlugins
 #@+node:ekr.20100131171342.5611: *4* @test getHandlersForTag
 pc = g.app.pluginsController

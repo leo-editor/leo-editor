@@ -5,6 +5,8 @@
 .. @+all
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
+.. @+node:ekr.20140714090832.17762: *3* ** Fix refresh-from-disk bug
+https://github.com/leo-editor/leo-editor/issues/9
 .. @+node:ekr.20140704052551.17952: *3* Look at github/launchpad bugs
 .. @+node:ekr.20140707060759.17644: *3* * Do @org-mode
 @language rest

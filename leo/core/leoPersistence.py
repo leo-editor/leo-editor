@@ -447,36 +447,6 @@ class PersistenceDataController:
         return getattr(p.v,'_imported_headline',p.h)
     #@+node:ekr.20140711111623.17854: *4* pd.find...
     # The find commands create the node if not found.
-    #@+node:ekr.20140711111623.17855: *5* pd.find_absolute_unl_node (modified)
-    def find_absolute_unl_node(pd,unl,priority_header=False):
-        '''
-        Return a node matching the given absolute unl.
-        
-        If priority_header == True and the node is not found, return the
-        longest matching UNL starting from the tail.
-        '''
-        import re
-        pos_pattern = re.compile(r':(\d+),?(\d+)?$')
-        aList = unl.split('-->')
-        if aList:
-            first,rest = aList[0],'-->'.join(aList[1:])
-            count = 0
-            pos = re.findall(pos_pattern,first)
-            nth_sib,pos = pos[0] if pos else (0,0)
-            pos = int(pos) if pos else 0
-            nth_sib = int(nth_sib)
-            first = re.sub(pos_pattern,"",first).replace('--%3E','-->')
-            for parent in pd.c.rootPosition().self_and_siblings():
-                if parent.h.strip() == first.strip():
-                    if pos == count:
-                        if rest:
-                            return pd.find_position_for_relative_unl(
-                                parent,rest,priority_header=priority_header)
-                        else:
-                            return parent
-                    count += 1
-            # Here we could find and return the nth_sib if an exact header match was not found
-        return None
     #@+node:ekr.20140711111623.17856: *5* pd.find_at_data_node & helper
     def find_at_data_node (pd,root):
         '''
@@ -541,101 +511,45 @@ class PersistenceDataController:
             if p.v.gnx == gnx:
                 return p
         return None
-    #@+node:ekr.20140711111623.17861: *5* pd.find_position_for_relative_unl (buggy)
-    def find_position_for_relative_unl(pd,parent,unl,priority_header=False):
+    #@+node:ekr.20140711111623.17861: *5* pd.find_position_for_relative_unl (new)
+    def find_position_for_relative_unl(pd,parent,unl):
         '''
-        Return the node in parent's subtree matching the given unl.
-        The unl is relative to the parent position.
-        If priority_header == True and the node is not found, 
-        return the longest matching UNL starting from the tail.
+        Given a unl relative to parent, return the node whose
+        unl matches the longest suffix of the given unl.
         '''
         trace = False # and not g.unitTesting
-        trace_loop = True ; trace_success = True
-        if not unl:
-            if trace and trace_success:
-                g.trace('return parent for empty unl:',parent.h)
+        unl_list = unl.split('-->')
+        if not unl_list or len(unl_list) == 1 and not unl_list[0]:
+            if trace: g.trace('return parent for empty unl:',parent.h)
             return parent
-        # The new, simpler way: drop components of the unl automatically.
-        drop,p = [],parent # for debugging.
-        # if trace: g.trace('p:',p.h,'unl:',unl)
-        import re
-        pos_pattern = re.compile(r':(\d+),?(\d+)?$')
-        for s in unl.split('-->'):
-            found = False # The last part must match.
-            if 0: # New code.
-                # Create the list of children on the fly.
-                aList = pd.headlines_dict.get(p.v)
-                if aList is None:
-                    aList = [z.h for z in p.children()]
-                    pd.headlines_dict[p.v] = aList
-                try:
-                    pos = re.findall(pos_pattern,s)
-                    nth_sib,pos = pos[0] if pos else (0,0)
-                    pos = int(pos) if pos else 0
-                    nth_sib = int(nth_sib)
-                    s = re.sub(pos_pattern,"",s).replace('--%3E','-->')
-                    indices = [i for i, x in enumerate(aList) if x == s]
-                    if len(indices)>pos:
-                        #First we try the nth node with same header
-                        n = indices[pos]
-                        p = p.nthChild(n)
-                        found = True
-                    elif len(indices)>0:
-                        # Try any node with same header
-                        n = indices[-1]
-                        p = p.nthChild(n)
-                        found = True
-                    elif not priority_header:
-                        # Go for the child index if return_pos is true
-                        if len(aList)>nth_sib:
-                            n = nth_sib
-                        else:
-                            n = len(aList)-1
-                        if n>-1:
-                            p = p.nthChild(n)
-                        else:
-                            g.es('Partial UNL match: Referenced level is higher than '+str(p.level()))
-                        found = True
-                    if trace and trace_loop: g.trace('match:',s)
-                except ValueError: # s not in aList.
-                    if trace and trace_loop: g.trace('drop:',s)
-                    drop.append(s)
-            else: # old code.
-                for child in p.children():
-                    if child.h == s:
-                        p = child
-                        found = True
-                        if trace and trace_loop: g.trace('match:',s)
+        # Find all partial matches of the tail in the tree
+        tail = unl_list[-1]
+        matches = []
+        for p in parent.self_and_subtree():
+            if p.h == tail: # A match
+                # Compute the partial unl.
+                parents = 0
+                for parent2 in p.parents():
+                    if parent2 == parent:
                         break
-                    # elif trace and trace_loop: g.trace('no match:',child.h)
-                else:
-                    if trace and trace_loop: g.trace('drop:',s)
-                    drop.append(s)
-        if not found and priority_header:
-            aList = []
-            for p in pd.c.all_unique_positions():
-                if p.h.replace('--%3E','-->') in unl:
-                    aList.append((p.copy(),p.get_UNL(False,False,True)))
-            unl_list = [re.sub(pos_pattern,"",x).replace('--%3E','-->') for x in unl.split('-->')]
-            for iter_unl in aList:
-                maxcount = 0
-                count = 0
-                compare_list = unl_list[:]
-                for header in reversed(iter_unl[1].split('-->')):
-                    if re.sub(pos_pattern,"",header).replace('--%3E','-->') == compare_list[-1]:
-                        count = count+1
-                        compare_list.pop(-1)
+                    elif parents+2 >= len(unl_list):
+                        break
+                    elif parent2.h != unl_list[-(parents+2)]:
+                        break
                     else:
-                        break
-                if count > maxcount:
-                    p = iter_unl[0]
-                    found = True
-        if found:
-            if trace and trace_success:
-                g.trace('found unl:',unl,'parent:',p.h,'drop',drop)
+                        parents += 1
+                matches.append((parents,p.copy()),)
+        if matches:
+            # Take the match with the greatest number of parents.
+            def key(aTuple):
+                return aTuple[0]
+            n,p = list(reversed(sorted(matches,key=key)))[0]
+            if trace:
+                g.trace('found:','n:',n,'-->'.join(unl_list[:-n]),p.h)
+            return p
         else:
-            if trace: g.trace('===== unl not found:',unl,'parent:',p.h,'drop',drop)
-        return p if found else None
+            if trace: g.trace('tail not found',unl,'parent',parent.h)
+            return None
     #@+node:ekr.20140711111623.17862: *5* pd.find_representative_node
     def find_representative_node (pd,root,target):
         '''
