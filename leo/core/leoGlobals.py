@@ -3104,7 +3104,36 @@ def find_word(s,word,i=0):
             i += len(word)
         assert progress < i
     return -1
-#@+node:ekr.20140711071454.17654: *3* g.recureiveUNLFind
+#@+node:tbrown.20140311095634.15188: *3* g.recursiveUNLSearch & helper
+def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
+                       soft_idx=False, hard_idx=False):
+    """try and move to unl in the commander c
+    
+    All parameters passed on to recursiveUNLFind(), see that for docs.
+
+    NOTE: maxdepth is max depth seen in recursion so far, not a limit on
+          how far we will recurse.  So it should default to 0 (zero).
+    """
+
+    if g.unitTesting:
+        g.app.unitTestDict['g.recursiveUNLSearch']=True
+        return True, maxdepth, maxp
+
+    def moveToP(c, p):
+        c.expandAllAncestors(p)
+        c.selectPosition(p)
+        c.redraw()
+        c.frame.bringToFront()
+
+    found, maxdepth, maxp = recursiveUNLFind(unlList, c, depth, p, maxdepth, maxp,
+                                             soft_idx=soft_idx, hard_idx=hard_idx)
+
+    if maxp:
+        moveToP(c, maxp)
+
+    return found, maxdepth, maxp
+
+#@+node:ekr.20140711071454.17654: *4* g.recureiveUNLFind
 def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
                      soft_idx=False, hard_idx=False):
     """
@@ -3216,35 +3245,6 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
             maxp = p
             maxdepth = p.level()
     return False, maxdepth, maxp
-#@+node:tbrown.20140311095634.15188: *3* g.recursiveUNLSearch
-def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
-                       soft_idx=False, hard_idx=False):
-    """try and move to unl in the commander c
-    
-    All parameters passed on to recursiveUNLFind(), see that for docs.
-
-    NOTE: maxdepth is max depth seen in recursion so far, not a limit on
-          how far we will recurse.  So it should default to 0 (zero).
-    """
-
-    if g.unitTesting:
-        g.app.unitTestDict['g.recursiveUNLSearch']=True
-        return True, maxdepth, maxp
-
-    def moveToP(c, p):
-        c.expandAllAncestors(p)
-        c.selectPosition(p)
-        c.redraw()
-        c.frame.bringToFront()
-
-    found, maxdepth, maxp = recursiveUNLFind(unlList, c, depth, p, maxdepth, maxp,
-                                             soft_idx=soft_idx, hard_idx=hard_idx)
-
-    if maxp:
-        moveToP(c, maxp)
-
-    return found, maxdepth, maxp
-
 #@+node:ekr.20031218072017.3156: *3* g.scanError
 # It is dubious to bump the Tangle error count here, but it really doesn't hurt.
 
