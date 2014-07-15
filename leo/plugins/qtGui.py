@@ -8025,7 +8025,7 @@ class LeoQtGui(leoGui.LeoGui):
         trace = False and not g.unitTesting
         gui = self
         if w:
-            if hasattr(w,'widget'): w = w.widget
+            if hasattr(w,'widget') and w.widget: w = w.widget
             if trace: g.trace('(qtGui)',w)
             w.setFocus()
 
