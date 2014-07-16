@@ -280,7 +280,7 @@ class ConvertController:
     #@-others
 #@+node:ekr.20140711111623.17790: ** class PersistenceDataController
 class PersistenceDataController:
-    # The first argument of very method must pd instead of self.
+    # The first argument of every method must pd instead of self.
     # pylint: disable=no-self-argument
     #@+<< docstring >>
     #@+node:ekr.20140711111623.17791: *3*  << docstring >> (class persistenceController)
@@ -320,6 +320,7 @@ class PersistenceDataController:
         Create @gnxs nodes and @uas trees as needed.
         '''
         trace = False and not g.unitTesting
+        # Delete all children of the @data node except the first @recovery node.
         at_data = pd.find_at_data_node(root)
         pd.delete_at_data_children(at_data,root)
         # Create the data for the @gnxs and @uas trees.
@@ -344,10 +345,10 @@ class PersistenceDataController:
             for p in uas:
                 p2 = at_uas.insertAsLastChild()
                 p2.h = '@ua:' + p.v.gnx
-                p2.b = pd.pickle(p)
+                p2.b = 'unl:%s\nua:%s' % (
+                    pd.relative_unl(p,root),pd.pickle(p))
         if trace:
             g.es_print('updated @data:%s ' % (root.h))
-        # pd.c.redraw()
         return at_data # For at-file-to-at-auto command.
     #@+node:ekr.20140716021139.17773: *5* pd.delete_at_data_children
     def delete_at_data_children(pd,at_data,root):
@@ -382,8 +383,6 @@ class PersistenceDataController:
             if at_uas:
                 pd.create_uas(at_uas,root)
             c = pd.c
-            ### c.selectPosition(root)
-            ### c.redraw()
         return True
     #@+node:ekr.20140711111623.17810: *5* pd.restore_gnxs & helper
     def restore_gnxs(pd,at_gnxs,root):
@@ -426,8 +425,8 @@ class PersistenceDataController:
                 p1.v.fileIndex = g.app.nodeIndices.scanGnx(gnx)
         else:
             if trace: g.trace('unl not found: %s' % unl)
-            pd.recover_ua_for_gnx(gnx,unl)
-    #@+node:ekr.20140711111623.17892: *5* pd.create_uas & helper
+            pd.recover_ua_for_gnx(gnx,root,unl)
+    #@+node:ekr.20140711111623.17892: *5* pd.create_uas
     def create_uas(pd,at_uas,root):
         '''Recreate uA's from the @ua nodes in the @uas tree.'''
         trace = False and not g.unitTesting
@@ -437,27 +436,54 @@ class PersistenceDataController:
             d[p.v.gnx] = p.copy()
         # Recreate the uA's for the gnx's given by each @ua node.
         for at_ua in at_uas.children():
-            h,uA = at_ua.h,at_ua.b
+            h,b = at_ua.h,at_ua.b
             gnx = h[4:].strip()
-            if uA and gnx and g.match_word(h,0,'@ua'):
+            if b and gnx and g.match_word(h,0,'@ua'):
                 p = d.get(gnx)
                 if p:
-                    uA = pd.unpickle(uA)
-                    if uA:
-                        if trace: g.trace('set',p.h,uA)
-                        p.v.u = uA
+                    # Handle all recent variants of the node.
+                    lines = g.splitLines(b)
+                    if b.startswith('unl:') and len(lines) == 2:
+                        # pylint: disable=unbalanced-tuple-unpacking
+                        unl,ua = lines
                     else:
-                        g.trace('Can not unpickle uA in',p.h,type(uA),uA[:40])
+                        unl,ua = None,b
+                    if ua.startswith('ua:'):
+                        ua = ua[3:]
+                    if ua:
+                        ua = pd.unpickle(ua)
+                        if trace: g.trace('set',p.h,ua)
+                        p.v.u = ua
+                    else:
+                        g.trace('Can not unpickle uA in',p.h,type(ua),ua[:40])
                 elif trace:
-                    g.trace('no match for gnx:',repr(gnx))
+                    g.trace('no match for gnx:',repr(gnx),'unl:',unl)
             elif trace:
                 g.trace('unexpected child of @uas node',at_ua)
     #@+node:ekr.20140716021139.17767: *5* pd.recover_ua_for_gnx
-    def recover_ua_for_gnx(pd,gnx,unl):
+    def recover_ua_for_gnx(pd,gnx,root,unl):
         '''
         No gnx was found for unl. If an @ua:<gnx> node exists,
-        create a recovery node that preserves the uA in that node.
+        copy that node as a child of the @recovery node.
         '''
+        at_uas = pd.has_at_uas_node(root)
+        if at_uas:
+            # Find the @ua:<gnx> node in root's @uas node.
+            h = '@ua:'+gnx
+            for at_ua in at_uas.children():
+                if at_ua.h == h:
+                    break
+            else:
+                g.trace('no @ua node for gnx:',gnx)
+                return
+            # Copy that node as a child of the @recovery node,
+            # creating the @recovery node if necessary.
+            recovery = pd.find_at_recovery_node(root)
+            p = recovery.insertAsLastChild()
+            p.h = at_ua.h
+            p.b = at_ua.b
+        else:
+            g.trace('no @uas node for:',root.h)
     #@+node:ekr.20140712105818.16750: *3* pd.Helpers
     #@+node:ekr.20140711111623.17845: *4* pd.at_data_body
     # Note: the unl of p relative to p is simply p.h,

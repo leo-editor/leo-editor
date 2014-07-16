@@ -46,10 +46,11 @@
 </v>
 <v t="ekr.20111112092813.4154"><vh>@command cls</vh></v>
 <v t="ekr.20140712144020.4334"><vh>@persistence</vh>
-<v t="ekr.20140716075135.4352"><vh>@data:@auto root</vh>
-<v t="ekr.20140716075135.4353"><vh>@gnxs</vh></v>
+<v t="ekr.20140716132327.4376"><vh>@data:@auto root</vh>
+<v t="ekr.20140716132327.4377"><vh>@gnxs</vh></v>
 </v>
 </v>
+<v t="ekr.20140716121225.4354"><vh>@@button print-gnx</vh></v>
 </v>
 <v t="ekr.20111123042627.6654"></v>
 <v t="ekr.20111112093605.4679"></v>
@@ -217,12 +218,12 @@
 <v t="ekr.20140712142620.4563"></v>
 </v>
 <v t="ekr.20140712142620.4564"><vh>@test pd.is_at_auto_node</vh></v>
+<v t="ekr.20140716115306.4345"><vh>@test pd.recover_ua_for_gnx</vh></v>
+<v t="ekr.20140716115306.4345"></v>
 <v t="ekr.20140712142620.4507"><vh>@test pd.restore_gnxs</vh>
 <v t="ekr.20140712142620.4508"><vh>@gnxs</vh></v>
-<v t="ekr.20140716075135.4351"><vh>node1</vh></v>
-<v t="ekr.20140712142620.4510"><vh>root</vh>
-<v t="ekr.20140716075135.4351"></v>
-</v>
+<v t="ekr.20140716125439.4403"><vh>node1</vh></v>
+<v t="ekr.20140712142620.4510"><vh>root</vh></v>
 </v>
 <v t="ekr.20140712142620.4574"><vh>@test pd.unl</vh></v>
 <v t="ekr.20140712142620.4575"><vh>@test pd.update_before_write_foreign_file</vh>
@@ -653,7 +654,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="8"></t>
+<t tx="ekr.20070417092935" str_leo_pos="9"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1338,7 +1339,7 @@ try:
 finally:
     c.redraw()
 </t>
-<t tx="ekr.20140712142620.4508">gnx: ekr.20140715074511.4351
+<t tx="ekr.20140712142620.4508">gnx: ekr.20140716125439.4357
 unl: node1
 </t>
 <t tx="ekr.20140712142620.4510"></t>
@@ -1582,10 +1583,35 @@ finally:
 <t tx="ekr.20140715080507.4339"></t>
 <t tx="ekr.20140715080507.4340"></t>
 <t tx="ekr.20140715080507.4341"></t>
-<t tx="ekr.20140716075135.4351"></t>
-<t tx="ekr.20140716075135.4352">gnx: ekr.20140712142620.4576
+<t tx="ekr.20140716115306.4345">pd = c.persistenceController
+at_persistence = pd.find_at_persistence_node()
+assert at_persistence
+at_persistence.deleteAllChildren()
+root = at_persistence.insertAsLastChild()
+root.h = 'test root'
+root.b = root.gnx
+at_data = pd.find_at_data_node(root)
+assert at_data
+at_uas = at_data.insertAsLastChild()
+at_uas.h = '@uas'
+at_ua = at_uas.insertAsLastChild()
+at_ua.h = '@ua:dummy-gnx'
+at_ua.b = 'unl:dummy-unl\nua:dummy-ua'
+at_recovery = pd.find_at_recovery_node(root)
+if at_recovery:
+    at_recovery.deleteAllChildren()
+pd.recover_ua_for_gnx('dummy-gnx',root,'dummy-unl')
+assert at_recovery
+at_ua2 = g.findNodeInTree(c,at_recovery,'@ua:dummy-gnx')
+assert at_ua2
+assert at_ua2.h == at_ua.h
+assert at_ua2.b == at_ua.b,repr(at_ua2.b)
 </t>
-<t tx="ekr.20140716075135.4353">gnx: ekr.20140712142620.4577
+<t tx="ekr.20140716121225.4354">print(p.v.gnx)</t>
+<t tx="ekr.20140716125439.4403"></t>
+<t tx="ekr.20140716132327.4376">gnx: ekr.20140712142620.4576
+</t>
+<t tx="ekr.20140716132327.4377">gnx: ekr.20140712142620.4577
 unl: aClass
 gnx: ekr.20140712142620.4582
 unl: aClass--&gt;clone
