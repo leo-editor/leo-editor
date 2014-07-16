@@ -511,27 +511,34 @@ class PersistenceDataController:
             if p.v.gnx == gnx:
                 return p
         return None
-    #@+node:ekr.20140711111623.17861: *5* pd.find_position_for_relative_unl
-    def find_position_for_relative_unl(pd,parent,unl):
+    #@+node:ekr.20140711111623.17861: *5* pd.find_position_for_relative_unl & helpers
+    def find_position_for_relative_unl(pd,root,unl):
         '''
-        Given a unl relative to parent, return the node whose
+        Given a unl relative to root, return the node whose
         unl matches the longest suffix of the given unl.
         '''
         trace = False # and not g.unitTesting
         unl_list = unl.split('-->')
         if not unl_list or len(unl_list) == 1 and not unl_list[0]:
-            if trace: g.trace('return parent for empty unl:',parent.h)
-            return parent
-        # Find all partial matches of the tail in the tree.
+            if trace: g.trace('return root for empty unl:',root.h)
+            return root
+        if 1:
+            return pd.find_exact_match(root,unl_list)
+        else:
+            return pd.find_best_match(root,unl_list)
+    #@+node:ekr.20140716021139.17764: *6* pd.find_best_match
+    def find_best_match(pd,root,unl_list):
+        '''Find the best partial matches of the tail in root's tree.'''
+        trace = False # and not g.unitTesting
         tail = unl_list[-1]
         matches = []
-        for p in parent.self_and_subtree():
+        for p in root.self_and_subtree():
             if p.h == tail: # A match
                 # Compute the partial unl.
                 parents = 0
                 for parent2 in p.parents():
                     # g.trace('parent2',parent2.h,unl,unl_list[-2-parents:-1-parents])
-                    if parent2 == parent:
+                    if parent2 == root:
                         break
                     elif parents+2 > len(unl_list):
                         break
@@ -550,8 +557,29 @@ class PersistenceDataController:
                 g.trace('found:','n:',n,'-->'.join(unl_list[:-n]),p.h)
             return p
         else:
-            if trace: g.trace('tail not found',unl,'parent',parent.h)
+            if trace: g.trace('tail not found','-->'.join(unl_list),'root',root.h)
             return None
+    #@+node:ekr.20140716021139.17765: *6* pd.find_exact_match
+    def find_exact_match(pd,root,unl_list):
+        '''
+        Find an exact match of the unl_list in root's tree.
+        The root does not appear in the unl_list.
+        '''
+        trace = False # and not g.unitTesting
+        full_unl = '-->'.join(unl_list)
+        parent = root
+        for unl in unl_list:
+            for child in parent.children():
+                if child.h.strip() == unl.strip():
+                    # if trace: g.trace('match unl',unl,'in:',full_unl,'=',child.h)
+                    parent = child
+                    break
+            else:
+                if trace: g.trace('match failed:',unl,'in:',full_unl)
+                return None
+        if trace: g.trace('full match',full_unl,'=',parent.h)
+        return parent
+        
     #@+node:ekr.20140711111623.17862: *5* pd.find_representative_node
     def find_representative_node (pd,root,target):
         '''

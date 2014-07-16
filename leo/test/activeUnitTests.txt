@@ -15596,10 +15596,10 @@ table = (
     ('node2',node2),
     ('node2-->child21',child21),
     ('node2-->child22',child22),
-    # Partial matches...
-    ('node3-->child1-->child21',node3_child1_child21),
-    ('child1-->child21',node3_child1_child21),
-    ('xxx-->child21',node3_child1_child21),
+    # Partial matches.
+    ### ('node3-->child1-->child21',node3_child1_child21),
+    ### ('child1-->child21',node3_child1_child21),
+    ### ('xxx-->child21',node3_child1_child21),
         # This is ambiguous.
     # No matches.
     ('nodex',None),
@@ -15723,10 +15723,11 @@ try:
 finally:
     c.redraw()
 #@+node:ekr.20140712142620.4508: *5* @gnxs
-gnx: ekr.20140713135130.4351
+gnx: ekr.20140715074511.4351
 unl: node1
-#@+node:ekr.20140715074511.4351: *5* node1
+#@+node:ekr.20140716075135.4351: *5* node1
 #@+node:ekr.20140712142620.4510: *5* root
+#@+node:ekr.20140716075135.4351: *6* node1
 #@+node:ekr.20140712142620.4574: *4* @test pd.unl
 pd = c.persistenceController
 unl = pd.unl(p)
