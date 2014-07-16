@@ -456,7 +456,8 @@ class PersistenceDataController:
                 p = at_recovery.insertAsLastChild()
                 p.h = at_ua.h
                 p.b = at_ua.b
-                g.trace('created recovered node',p.h)
+                if not g.unitTesting:
+                    g.trace('created recovered node',p.h)
         elif trace:
             g.trace('no @uas node for:',root.h)
     #@+node:ekr.20140711111623.17892: *5* pd.create_uas
