@@ -7396,8 +7396,8 @@ class TabbedFrameFactory:
         if f:
             if trace: g.trace(f.title)
             tabw.setWindowTitle(f.title)
-            # g.app.selectLeoWindow(f.c) would break --minimize
-            # 2012/03/04: Set the frame now.
+            g.app.selectLeoWindow(f.c)
+                # 2012/03/04: Set the frame now.
     #@-others
 #@+node:ekr.20110605121601.18474: ** Gui wrapper
 #@+node:ekr.20110605121601.18475: *3* class LeoQtGui
@@ -8381,7 +8381,7 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20110605121601.18479: *5* createSplashScreen (qtGui)
     def createSplashScreen (self):
 
-        from leo.core.leoQt import QtCore
+        # from leo.core.leoQt import QtCore
         qt = QtCore.Qt
         splash = None
         for name in (
@@ -8393,7 +8393,7 @@ class LeoQtGui(leoGui.LeoGui):
                 splash = QtWidgets.QSplashScreen(
                     pm,(qt.SplashScreen | qt.WindowStaysOnTopHint))
                 splash.show()
-                QtCore.QThread.msleep(500)
+                # QtCore.QThread.msleep(500)
                 # splash.repaint()
                 # self.qtApp.processEvents()
                 break
