@@ -8381,6 +8381,7 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20110605121601.18479: *5* createSplashScreen (qtGui)
     def createSplashScreen (self):
 
+        from leo.core.leoQt import QtCore
         qt = QtCore.Qt
         splash = None
         for name in (
@@ -8392,6 +8393,7 @@ class LeoQtGui(leoGui.LeoGui):
                 splash = QtWidgets.QSplashScreen(
                     pm,(qt.SplashScreen | qt.WindowStaysOnTopHint))
                 splash.show()
+                QtCore.QThread.msleep(500)
                 # splash.repaint()
                 # self.qtApp.processEvents()
                 break
