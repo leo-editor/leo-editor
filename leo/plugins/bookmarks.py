@@ -474,7 +474,7 @@ class BookMarkDisplay:
         self.upwards = False  # moving upwards through hierarchy
         
         self.already = -1  # used to indicate existing link when same link added again
-           
+        
         self.w = QtGui.QWidget()
         
         self.dark = c.config.getBool("color_theme_is_dark")
@@ -916,7 +916,12 @@ class BookMarkDisplayProvider:
                         file_, UNL = None, gnx
                         other_c = c
                     if other_c != c:
-                        c.bringToFront()
+                        # don't use c.bringToFront(), it breaks --minimize
+                        if hasattr(g.app.gui,'frameFactory'):
+                            factory = g.app.gui.frameFactory
+                            if factory and hasattr(factory,'setTabForCommander'):
+                                factory.setTabForCommander(c)
+
                         g.es("NOTE: bookmarks for this outline\nare in a different outline:\n  '%s'"%file_)
                     
                     ok, depth, other_p = g.recursiveUNLFind(UNL.split('-->'), other_c)
