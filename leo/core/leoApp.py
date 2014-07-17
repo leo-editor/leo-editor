@@ -2254,6 +2254,12 @@ class LoadManager:
             # When using tabs, the first tab has no menu, so
             # create a temp tab during loading and then delete it.
             kludge = sys.platform.lower().startswith('linux') and g.app.qt_use_tabs
+            
+            if kludge:
+                # TNB 20140716 - the kludge breaks --minimize
+                # possibly ...menuBar().setNativeMenuBar(False) is the right way
+                kludge = False
+
             c1 = None
             if kludge:
                 c0 = g.app.newCommander(fileName='loading...',gui=g.app.gui,
@@ -2614,7 +2620,7 @@ class LoadManager:
         for frame in g.app.windowList:
             c = frame.c
             if g.os_path_realpath(munge(fn)) == g.os_path_realpath(munge(c.mFileName)):
-                frame.bringToFront()
+                # don't frame.bringToFront(), it breaks --minimize
                 c.setLog()
                 # 2011/11/21: selecting the new tab ensures focus is set.
                 master = hasattr(frame.top,'leo_master') and frame.top.leo_master
