@@ -1886,7 +1886,7 @@ class VNode (BaseVnode):
     #@+node:ekr.20031218072017.3345: *4* v.__repr__ & v.__str__
     def __repr__ (self):
 
-        return "<VNode %7x:'%s'>" % (id(self),self.cleanHeadString())
+        return "<VNode %7x %s>" % (id(self),self.cleanHeadString())
 
     __str__ = __repr__
     #@+node:ekr.20040312145256: *4* v.dump
