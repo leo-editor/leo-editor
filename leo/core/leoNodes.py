@@ -51,14 +51,7 @@ class NodeIndices (object):
         # A Major simplification: Only assign the timestamp once.
         self.setTimeStamp()
         self.lastIndex = 0
-    #@+node:ekr.20031218072017.1993: *3* areEqual (no longer used)
-    if 0:
-        def areEqual (self,gnx1,gnx2):
-            """Return True if all fields of gnx1 and gnx2 are equal"""
-            # works whatever the format of gnx1 and gnx2.
-            # This should never throw an exception.
-            return gnx1 == gnx2
-    #@+node:ekr.20031218072017.1994: *3* get/setDefaultId
+    #@+node:ekr.20031218072017.1994: *3* x.get/setDefaultId
     # These are used by the FileCommands read/write code.
 
     def getDefaultId (self):
@@ -79,14 +72,6 @@ class NodeIndices (object):
             return g.toUnicode("%s.%s.%d" % d)
         else:
             return d
-    #@+node:ekr.20031218072017.1996: *3* isGnx (not used)
-    if 0:
-        def isGnx (self,gnx):
-            try:
-                theId,t,n = gnx
-                return t != None
-            except Exception:
-                return False
     #@+node:ekr.20031218072017.1997: *3* x.scanGnx
     def scanGnx (self,s,i=0):
         """Create a gnx from its string representation"""
@@ -108,7 +93,7 @@ class NodeIndices (object):
             try: n = int(n)
             except Exception: pass
         return theId,t,n
-    #@+node:ekr.20031218072017.1998: *3* setTimeStamp
+    #@+node:ekr.20031218072017.1998: *3* x.setTimeStamp
     def setTimestamp (self):
 
         """Set the timestamp string to be used by getNewIndex until further notice"""

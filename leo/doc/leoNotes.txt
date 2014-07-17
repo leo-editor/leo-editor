@@ -17322,5 +17322,20 @@ class GeneralTest: ### (StcTest):
     '''A general test class.'''
     
     @others
+.. @+node:ekr.20031218072017.1993: *3* x.areEqual (no longer used)
+if 0:
+    def areEqual (self,gnx1,gnx2):
+        """Return True if all fields of gnx1 and gnx2 are equal"""
+        # works whatever the format of gnx1 and gnx2.
+        # This should never throw an exception.
+        return gnx1 == gnx2
+.. @+node:ekr.20031218072017.1996: *3* isGnx (not used)
+if 0:
+    def isGnx (self,gnx):
+        try:
+            theId,t,n = gnx
+            return t != None
+        except Exception:
+            return False
 .. @-all
 .. @-leo
