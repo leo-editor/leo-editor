@@ -424,7 +424,11 @@ class PersistenceDataController:
                     g.es_print('mismatch in cloned node',p1.h)
             else:
                 if trace: g.trace('imported:',p1.v.gnx,'-> saved: ',gnx,unl)
-                p1.v.fileIndex = g.app.nodeIndices.scanGnx(gnx)
+                x = g.app.nodeIndices
+                if g.new_gnxs:
+                    p1.v.fileIndex = g.toUnicode(gnx)
+                else:
+                    p1.v.fileIndex = x.scanGnx(gnx)
         else:
             if trace: g.trace('unl not found: %s' % unl)
             pd.recover_ua_for_gnx(gnx,root,unl)

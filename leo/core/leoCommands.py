@@ -1176,6 +1176,21 @@ class Commands (object):
                 vr.close_rendering_pane(event={'c':c})
         else:
             g.es(s)
+    #@+node:ekr.20140717074441.17770: *3* c.recreateGnxDict
+    def recreateGnxDict(self):
+        '''Recreate the gnx dict prior to refreshing nodes from disk.'''
+        c = self
+        d = c.fileCommands.gnxDict
+        x = g.app.nodeIndices
+        for v in c.all_unique_nodes():
+            gnx = v.fileIndex
+            if g.new_gnxs:
+                assert g.isUnicode(gnx)
+                gnxString = gnx
+            else:
+                gnxString = x.toString(gnx)
+            d[gnxString] = v
+        # g.trace('\n'.join(sorted([str(z) for z in d.keys()])))
     #@+node:ekr.20130823083943.12559: *3* c.recursiveImport
     def recursiveImport(self,dir_,
         one_file=False,
@@ -1769,6 +1784,9 @@ class Commands (object):
             g.error('exception creating temp file')
             g.es_exception()
             return None
+    #@+node:ekr.20140717074441.17772: *6* c.refreshFromDisk
+    def refreshFromDisk(self):
+        '''Refresh and @<file> node from disk.'''
     #@+node:ekr.20031218072017.2834: *6* c.save
     def save (self,event=None,fileName=None):
 
@@ -2783,15 +2801,17 @@ class Commands (object):
             return p,-1,effective_lines,False # i does not matter.
         #@+node:ekr.20100216141722.5626: *7* findGnx
         def findGnx (self,delim,root,gnx,vnodeName):
-
-            '''Scan root's tree for a node with the given gnx and vnodeName.
-
-            return (p,found)'''
-
+            '''
+            Scan root's tree for a node with the given gnx and vnodeName.
+            return (p,found)
+            '''
             trace = False and not g.unitTesting
-
             if delim and gnx:
-                gnx = g.app.nodeIndices.scanGnx(gnx,0)
+                if g.new_gnxs:
+                    assert g.isString(gnx)
+                    gnx = g.toUnicode(gnx)
+                else:
+                    gnx = g.app.nodeIndices.scanGnx(gnx,0)
                 for p in root.self_and_subtree():
                     if p.matchHeadline(vnodeName):
                         if p.v.fileIndex == gnx:

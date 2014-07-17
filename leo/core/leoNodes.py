@@ -52,13 +52,12 @@ class NodeIndices (object):
         self.setTimeStamp()
         self.lastIndex = 0
     #@+node:ekr.20031218072017.1993: *3* areEqual (no longer used)
-    def areEqual (self,gnx1,gnx2):
-
-        """Return True if all fields of gnx1 and gnx2 are equal"""
-
-        # works whatever the format of gnx1 and gnx2.
-        # This should never throw an exception.
-        return gnx1 == gnx2
+    if 0:
+        def areEqual (self,gnx1,gnx2):
+            """Return True if all fields of gnx1 and gnx2 are equal"""
+            # works whatever the format of gnx1 and gnx2.
+            # This should never throw an exception.
+            return gnx1 == gnx2
     #@+node:ekr.20031218072017.1994: *3* get/setDefaultId
     # These are used by the FileCommands read/write code.
 
@@ -71,23 +70,24 @@ class NodeIndices (object):
 
         """Set the id to be used by default in all gnx's"""
         self.defaultId = theId
-    #@+node:ekr.20031218072017.1995: *3* getNewIndex
+    #@+node:ekr.20031218072017.1995: *3* x.getNewIndex
     def getNewIndex (self):
-
         '''Create a new gnx.'''
-
         self.lastIndex += 1
         d = (self.userId,self.timeString,self.lastIndex)
-        # g.trace(d)
-        return d
+        if g.new_gnxs:
+            return g.toUnicode("%s.%s.%d" % d)
+        else:
+            return d
     #@+node:ekr.20031218072017.1996: *3* isGnx (not used)
-    def isGnx (self,gnx):
-        try:
-            theId,t,n = gnx
-            return t != None
-        except Exception:
-            return False
-    #@+node:ekr.20031218072017.1997: *3* scanGnx
+    if 0:
+        def isGnx (self,gnx):
+            try:
+                theId,t,n = gnx
+                return t != None
+            except Exception:
+                return False
+    #@+node:ekr.20031218072017.1997: *3* x.scanGnx
     def scanGnx (self,s,i=0):
         """Create a gnx from its string representation"""
         if not g.isString(s):
@@ -120,29 +120,31 @@ class NodeIndices (object):
         # g.trace(self.timeString,self.lastIndex,g.callers(4))
 
     setTimeStamp = setTimestamp
-    #@+node:ekr.20031218072017.1999: *3* toString
+    #@+node:ekr.20031218072017.1999: *3* x.toString (changed)
     def toString (self,index):
-
         """Convert a gnx (a tuple) to its string representation"""
-
+        if g.isString(index): # New for g.new_gnxs.
+            return g.toUnicode(index)
+        elif index is None:
+            return self.getNewIndex() # New for g.new_gnxs.
         try:
             theId,t,n = index
             if n in (None,0,'',):
-                return "%s.%s" % (theId,t)
+                return g.toUnicode("%s.%s" % (theId,t))
             else:
-                return "%s.%s.%d" % (theId,t,n)
+                return g.toUnicode("%s.%s.%d" % (theId,t,n))
         except Exception:
             if not g.app.unitTesting:
                 g.trace('unusual gnx',repr(index),g.callers()) 
             try:
                 theId,t,n = self.getNewIndex()
                 if n in (None,0,'',):
-                    return "%s.%s" % (theId,t)
+                    return g.toUnicode("%s.%s" % (theId,t))
                 else:
-                    return "%s.%s.%d" % (theId,t,n)
+                    return g.toUnicode("%s.%s.%d" % (theId,t,n))
             except Exception:
                 g.trace('double exception: returning original index')
-                return repr(index)
+                return g.toUnicode(repr(index))
     #@-others
 #@+node:ekr.20031218072017.889: ** class Position
 #@+<< about the position class >>
@@ -373,7 +375,10 @@ class Position (object):
     #@+node:ekr.20090215165030.3: *4* p.gnx property
     def __get_gnx(self):
         p = self
-        return g.app.nodeIndices.toString(p.v.fileIndex)
+        if g.new_gnxs:
+            return p.v.fileIndex
+        else:
+            return g.app.nodeIndices.toString(p.v.fileIndex)
 
     gnx = property(
         __get_gnx, # __set_gnx,
@@ -1896,7 +1901,7 @@ class VNode (BaseVnode):
     #@+node:ekr.20031218072017.3345: *4* v.__repr__ & v.__str__
     def __repr__ (self):
 
-        return "<VNode %d:'%s'>" % (id(self),self.cleanHeadString())
+        return "<VNode %7x:'%s'>" % (id(self),self.cleanHeadString())
 
     __str__ = __repr__
     #@+node:ekr.20040312145256: *4* v.dump
@@ -2594,7 +2599,10 @@ class VNode (BaseVnode):
     #@+node:ekr.20090215165030.1: *4* v.gnx Property
     def __get_gnx(self):
         v = self
-        return g.app.nodeIndices.toString(v.fileIndex)
+        if g.new_gnxs:
+            return v.fileIndex
+        else:
+            return g.app.nodeIndices.toString(v.fileIndex)
 
     gnx = property(
         __get_gnx, # __set_gnx,

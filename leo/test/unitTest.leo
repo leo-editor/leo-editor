@@ -4,7 +4,7 @@
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.50" body_secondary_ratio="0.64">
-	<global_window_position top="46" left="480" height="993" width="1028"/>
+	<global_window_position top="82" left="833" height="993" width="1028"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -164,7 +164,7 @@
 <v t="ekr.20101220161557.6014"><vh>@file inactiveTests.txt</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e382e3771017d71025808000000616e6e6f7461746571037d7104735508302e372e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e372e31342e3671097d710a5808000000616e6e6f74617465710b7d710c735508302e372e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285805000000302e382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e372e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e372e31342e3671097d710a5808000000616e6e6f74617465710b7d710c735808000000302e372e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20140712142620.4458"><vh>leoPersistence</vh>
 <v t="ekr.20140712142620.4537"><vh>@@@test pd.find_absolute_unl_node</vh></v>
@@ -239,6 +239,8 @@
 <v t="ekr.20140712142620.4582"></v>
 </v>
 </v>
+<v t="ekr.20090507084947.5152"><vh>@test t.fileIndex remains the same</vh></v>
+<v t="ekr.20080310073711.1"><vh>@test nodeIndices.toString(None) allocates a new index</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -654,7 +656,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="9"></t>
+<t tx="ekr.20070417092935" str_leo_pos="8"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -684,6 +686,10 @@ for h in sorted(d2.keys()):
     if not d1.get(h):
         print(h)</t>
 <t tx="ekr.20071113203234"></t>
+<t tx="ekr.20080310073711.1">gnx = g.app.nodeIndices.toString(None)
+assert(gnx not in (None,'None'))
+assert(len(gnx) &gt; 1)
+</t>
 <t tx="ekr.20080324133327.2">True: allow linux-like pastes using a mouse's middle button.
 
 Important: this may cause crashes on some platforms.
@@ -701,6 +707,15 @@ Important: this may cause crashes on some platforms.
 #
 #
 #
+</t>
+<t tx="ekr.20090507084947.5152"># print(p.v.fileIndex)
+
+if g.app.isExternalUnitTest:
+    pass # Not a valid test when run externally.
+elif g.new_gnxs:
+    assert p.v.fileIndex == 'ekr.20090507084947.5152',p.v.fileIndex
+else:
+    assert p.v.fileIndex == ('ekr', '20090507084947', 5152)
 </t>
 <t tx="ekr.20090704085350.5028">@language python
 @others</t>

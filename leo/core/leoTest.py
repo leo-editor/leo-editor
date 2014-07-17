@@ -1846,22 +1846,22 @@ class TestManager:
         output.scriptSetBodyString (s)
     #@+node:ekr.20051104075904.39: *4* TM.writeNodeToString
     def writeNodeToString (self,c,input,sentinels):
-
         """Return an AtFile.write of the input tree to a string."""
-
         df = c.atFileCommands
         nodeIndices = g.app.nodeIndices
-
-        for p in input.self_and_subtree():
-            try:
-                theId,time,n = p.v.fileIndex
-            except TypeError:
-                p.v.fileIndex = nodeIndices.getNewIndex()
-
+        if g.new_gnxs:
+            for p in input.self_and_subtree():
+                if not p.v.fileIndex:
+                    p.v.fileIndex = nodeIndices.getNewIndex()
+        else:
+            for p in input.self_and_subtree():
+                try:
+                    theId,time,n = p.v.fileIndex
+                except TypeError:
+                    p.v.fileIndex = nodeIndices.getNewIndex()
         # Write the file to a string.
         df.write(input,thinFile=True,nosentinels= not sentinels,toString=True)
         s = df.stringOutput
-
         return s
     #@-others
 #@-others

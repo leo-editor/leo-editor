@@ -1471,17 +1471,19 @@ class AtFile:
         return v
     #@+node:ekr.20130121075058.10245: *8* at.old_createThinChild4
     def old_createThinChild4 (self,gnxString,headline):
-
-        """Find or create a new *VNode* whose parent (also a VNode)
-        is at.lastThinNode. This is called only for @thin trees."""
-
+        """
+        Find or create a new *VNode* whose parent (also a VNode)
+        is at.lastThinNode. This is called only for @thin trees.
+        """
         trace = False and not g.unitTesting
         verbose = True
         at = self ; c = at.c
         indices = g.app.nodeIndices
-        gnx = indices.scanGnx(gnxString,0)
+        if g.new_gnxs:
+            gnx = gnxString = g.toUnicode(gnxString)
+        else:
+            gnx = indices.scanGnx(gnxString,0)
         gnxDict = c.fileCommands.gnxDict
-
         last = at.lastThinNode # A VNode.
         lastIndex = last.fileIndex
         if trace and verbose: g.trace("last %s, gnx %s %s" % (
@@ -1526,10 +1528,8 @@ class AtFile:
                 v._headString = headline # Allowed use of v._headString.
                 v.fileIndex = gnx
                 gnxDict[gnxString] = v
-
             child = v
             child._linkAsNthChild(parent,parent.numberOfChildren())
-
         if trace: g.trace('new node: %s' % child.h)
         child.setVisited() # Supress warning/deletion of unvisited nodes.
         return child
@@ -1543,8 +1543,10 @@ class AtFile:
         at = self ; c = at.c ; indices = g.app.nodeIndices
         if trace: g.trace(n,len(parent.children),parent.h,' -> ',headline)
             # at.thinChildIndexStack,[z.h for z in at.thinNodeStack],
-            
-        gnx = indices.scanGnx(gnxString,0)
+        if g.new_gnxs:
+            gnx = gnxString = g.toUnicode(gnxString)
+        else:
+            gnx = indices.scanGnx(gnxString,0)
         gnxDict = c.fileCommands.gnxDict
         v = gnxDict.get(gnxString)
         if v:
@@ -1559,7 +1561,10 @@ class AtFile:
                 else:
                     if trace: g.trace('DUP n: %s parent: %s -> %s\n' % (n,parent.h,child.h))
             else:
-                gnx_s = g.app.nodeIndices.toString(gnx)
+                if g.new_gnxs:
+                    gnx_s = gnx
+                else:
+                    gnx_s = g.app.nodeIndices.toString(gnx)
                 g.internalError('v.fileIndex: %s gnx: %s' % (v.fileIndex,gnx_s))
                 return None
         else:
@@ -4368,7 +4373,10 @@ class AtFile:
         #@-<< remove comment delims from h if necessary >>
 
         if at.thinFile:
-            gnx = g.app.nodeIndices.toString(p.v.fileIndex)
+            if g.new_gnxs:
+                gnx = p.v.fileIndex
+            else:
+                gnx = g.app.nodeIndices.toString(p.v.fileIndex)
             if at.writeVersion5:
                 level = 1 + p.level() - self.root.level()
                 stars = '*' * level
