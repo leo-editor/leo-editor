@@ -8380,23 +8380,30 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20111215193352.10220: *4* Splash Screen (qtGui)
     #@+node:ekr.20110605121601.18479: *5* createSplashScreen (qtGui)
     def createSplashScreen (self):
-
-        # from leo.core.leoQt import QtCore
+        '''Put up a splash screen with the Leo logo.'''
+        trace = False and not g.unitTesting
+        from leo.core.leoQt import QtCore
         qt = QtCore.Qt
         splash = None
-        for name in (
-            'SplashScreen.jpg','SplashScreen.png','SplashScreen.ico',
-        ):
+        if sys.platform.startswith('win'):
+            table = ('SplashScreen.jpg','SplashScreen.png','SplashScreen.ico')
+        else:
+            table = ('SplashScreen.xpm',)
+        for name in table:
             fn = g.os_path_finalize_join(g.app.loadDir,'..','Icons',name)
             if g.os_path_exists(fn):
                 pm = QtGui.QPixmap(fn)
-                splash = QtWidgets.QSplashScreen(
-                    pm,(qt.SplashScreen | qt.WindowStaysOnTopHint))
-                splash.show()
-                # QtCore.QThread.msleep(500)
-                # splash.repaint()
-                # self.qtApp.processEvents()
-                break
+                if not pm.isNull():
+                    if trace: g.trace(fn)
+                    splash = QtWidgets.QSplashScreen(pm,
+                        qt.WindowStaysOnTopHint)
+                    splash.show()
+                    # This sleep is required to do the repaint.
+                    QtCore.QThread.msleep(10)
+                    splash.repaint()
+                    break
+            else:
+                if trace: g.trace('no splash screen icon')
         return splash
     #@+node:ekr.20110613103140.16424: *5* dismiss_splash_screen (qtGui)
     def dismiss_splash_screen (self):
