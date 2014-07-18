@@ -11,7 +11,7 @@
 #@+node:ekr.20140108081031.16613: ** << leoAtFile switches >>
 new_auto = True
     # True: enable calls to c.persistenceController.
-if new_auto:
+if False and new_auto:
     print('\n==== new_auto: True')
 allow_cloned_sibs = True
     # True: allow cloned siblings in @file nodes.
@@ -1528,6 +1528,7 @@ class AtFile:
                 v._headString = headline # Allowed use of v._headString.
                 v.fileIndex = gnx
                 gnxDict[gnxString] = v
+                if g.trace_gnxDict: g.trace(c.shortFileName(),gnxString,v)
             child = v
             child._linkAsNthChild(parent,parent.numberOfChildren())
         if trace: g.trace('new node: %s' % child.h)
@@ -1572,6 +1573,7 @@ class AtFile:
             v._headString = headline # Allowed use of v._headString.
             v.fileIndex = gnx
             gnxDict[gnxString] = v
+            if g.trace_gnxDict: g.trace(c.shortFileName(),gnxString,v)
             child = v
             child._linkAsNthChild(parent,n)
             if trace: g.trace('NEW n: %s parent: %s -> %s\n' % (n,parent.h,child.h))

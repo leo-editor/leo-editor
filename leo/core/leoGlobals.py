@@ -18,10 +18,12 @@ isPython3 = sys.version_info >= (3,0,0)
 trace_startup = False
     # These traces use print instead of g.trace so that
     # the traces can add class info to the method name.
+trace_gnxDict = False
+    # True: trace assignments to fc.gnxDict & related.
 new_gnxs = True
     # True: always use unicode strings for gnx's (v.fileIndex)
     # False: use a weird mix of tuples, bytes & strings.
-if new_gnxs:
+if False and new_gnxs:
     print('\n***** new_gnxs')
 new_modes = False
     # True: use ModeController and ModeInfo classes.
