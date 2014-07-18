@@ -23,12 +23,11 @@ trace = False
 import os
 import time
 
-# bzr_version.py should always exist: it is part of the bzr repository.
-if 0: # The bzr_version stuff just causes problems.
-    try:
-        import leo.core.bzr_version as bzr_version
-    except ImportError:
-        bzr_version = None
+# The bzr_version stuff now just causes problems.
+    # try:
+        # import leo.core.bzr_version as bzr_version
+    # except ImportError:
+        # bzr_version = None
 #@-<< imports >>
 use_git = True # False = bzr
 static_version = 6240

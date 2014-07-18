@@ -1,9 +1,8 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20100221142603.5638: * @file ../../pylint-leo.py
 #@@language python
-
-# import these *after* clearing the screen.
-    # from pylint import lint
+# pylint: disable=invalid-name
+    # pylint-leo isn't a valid module name, but it isn't a module.
 import leo.core.leoGlobals as g
 import optparse
 import os
@@ -50,13 +49,10 @@ def getCoreList():
         'leoTangle',
         'leoTest',
         'leoUndo',
-            # WO511: TODO 
-        # 'leoViews',
-            # No longer used.
     )
 #@+node:ekr.20140528065727.17960: ** getExternalList
 def getExternalList():
-    '''Return list of files in leo\external'''
+    '''Return list of files in leo/external'''
     return [
         # 'ipy_leo',
         'leosax',
@@ -146,7 +142,7 @@ def getRecentCoreList():
         # 'leoChapters',
         # 'leoCommands',
         # 'leoConfig',
-        # 'leoEditCommands',
+        'leoEditCommands',
         # 'leoFileCommands',
         # 'leoFind',
         # 'leoFrame',
@@ -309,19 +305,13 @@ def main(tables_table):
     if tables_table and sys.platform.startswith('win'):
         if False and scope != 'file':
             g.cls()
-            # os.system('cls')
-
     # Do these imports **after** clearing the screen.
     from pylint import lint
         # in pythonN/Lib/site-packages.
-    
     t1 = time.clock()
     for table,theDir in tables_table:
         for fn in table:
             run(theDir,fn)
-    if 0:
-        print('astroid.bases.ekr_infer_stmts_items: %s' %
-            astroid.bases.ekr_infer_stmts_items)
     print('time: %s' % g.timeSince(t1))
 #@+node:ekr.20140526142452.17594: ** report_version
 def report_version():

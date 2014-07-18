@@ -2,6 +2,12 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140527115626.17955: * @file ../test/stc_unit_tests.py
 #@@first
+# pylint: disable=undefined-variable
+    # c and p appear undefined.
+# pylint: disable=pointless-string-statement
+    # allow docstrings in @test nodes.
+# pylint: disable=function-redefined
+    # Various tests define an report function.
 #@+others
 #@+node:ekr.20140527073639.16704: ** @testsetup
 # Common setup code for all unit tests.
@@ -12,7 +18,7 @@ do_gc = True
     # Can be done at end of test.
 if c.isChanged():
     c.save()
-import ast
+# import ast
 import gc
 import leo.core.leoSTC as stc
 import time
@@ -516,4 +522,5 @@ if 'report' in flags:
 #@-others
 #@@language python
 #@@tabwidth -4
+
 #@-leo

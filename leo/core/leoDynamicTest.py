@@ -28,29 +28,24 @@ import leo.core.leoBridge as leoBridge
 #@+others
 #@+node:ekr.20080730161153.6: ** main & helpers (leoDynamicTest.py)
 def main ():
-
+    '''Run a dynamic test using the Leo bridge.'''
     trace = False
     readSettings = True 
     tag = 'leoDynamicTests.leo'
     if trace: t1 = time.time()
-
     # Setting verbose=True prints messages that would be sent to the log pane.
     path,gui,readSettings,silent = scanOptions()
-
-    # print('(leoDynamicTest.py:main)','readSettings',readSettings)
-    # print('(leoDynamicTest.py:main)','silent',silent)
-
+        # print('(leoDynamicTest.py:main)','readSettings',readSettings)
+        # print('(leoDynamicTest.py:main)','silent',silent)
     # Not loading plugins and not reading settings speeds things up considerably.
     bridge = leoBridge.controller(gui=gui,
         loadPlugins=False, # Must be False: plugins will fail when run externally.
         readSettings=True, # True: adds about 0.3 seconds.  Very useful for some tests.
         silent=True,
         verbose=False)
-
     if trace:
-         t2 = time.time()
-         print('%s open bridge:  %0.2fsec' % (tag,t2-t1))
-
+        t2 = time.time()
+        print('%s open bridge:  %0.2fsec' % (tag,t2-t1))
     if bridge.isOpen():
         g = bridge.globals()
         g.app.silentMode = silent

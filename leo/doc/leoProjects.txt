@@ -321,6 +321,10 @@ These are colored with the previously unused literal3 tag,
 so you specify the color with:
 
     @color html_literal3_color = pink
+.. @+node:ekr.20140402091953.16865: *4* Added pylint command
+@language rest
+
+It checks all the @<file> nodes in the selected tree.
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.

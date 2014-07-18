@@ -254,6 +254,82 @@ def openUrl(event=None):
 @g.command('open-url-under-cursor')
 def openUrlUnderCursor(event=None):
     return g.openUrlOnClick(event)
+#@+node:ekr.20140718105559.17735: *3* pylint command
+@g.command('pylint')
+def pylint_command(event):
+    #@+<< class PylintCommand >>
+    #@+node:ekr.20140718105559.17736: *4* << class PylintCommand >>
+    class PylintCommand:
+        '''A class to run pylint on all Python @<file> nodes in c.p's tree.'''
+        def __init__(self,c):
+            '''ctor for PylintCommand class.'''
+            self.c = c
+            self.wait = True
+                # The no-wait code doesn't seem to work.
+        #@+others
+        #@+node:ekr.20140718114031.17742: *5* check
+        def check(self,p):
+            '''Check a single node.  Return True if it is a Python @<file> node.'''
+            found = False
+            if p.isAnyAtFileNode():
+                fn = p.anyAtFileNodeName()
+                if fn.endswith('.py'):
+                    theDir = g.os_path_dirname(c.fileName())
+                    fn = g.os_path_finalize_join(theDir,fn)
+                    self.run_pylint(fn)
+                    found = True
+            return found
+        #@+node:ekr.20140718105559.17737: *5* run
+        def run(self):
+            '''Run Pylint on all Python @<file> nodes in c.p's tree.'''
+            c,root = self.c,self.c.p
+            try:
+                from pylint import lint
+                # in pythonN/Lib/site-packages.
+            except ImportError:
+                g.warning('can not import pylint')
+                return
+            # Run lint on all Python @<file> nodes in root's tree.
+            found = False
+            for p in root.self_and_subtree():
+                found |= self.check(p)
+            # Look up the tree if no @<file> nodes were found.
+            if not found:
+                for p in root.parents():
+                    if self.check(p):
+                        break
+            if self.wait:
+                g.es_print('pylint: done')
+        #@+node:ekr.20140718105559.17741: *5* run_pylint
+        def run_pylint(self,fn):
+            '''Run pylint on fn.'''
+            rc_fn = g.os_path_abspath(g.os_path_join('leo','test','pylint-leo-rc.txt'))
+            # print('run:scope:%s' % scope)
+            if not os.path.exists(rc_fn):
+                print('pylint rc file not found:',rc_fn)
+                return
+            if not os.path.exists(fn):
+                print('file not found:',fn)
+                return
+            # Report the file name.
+            if self.wait:
+                print('pylint: %s' % (g.shortFileName(fn)))
+            # Create the required args.
+            args = ','.join([
+                "fn=r'%s'" % (fn),
+                "rc=r'%s'" % (rc_fn),
+            ])
+            # Execute the command in a separate process.
+            command = '%s -c "import leo.core.leoGlobals as g; g.run_pylint(%s)"' % (
+                sys.executable,args)
+            if not self.wait:
+                command = '&' + command
+            g.execute_shell_commands(command)   
+        #@-others
+    #@-<< class PylintCommand >>
+    c = event.get('c')
+    if c:
+        PylintCommand(c).run()
 #@+node:ekr.20120211121736.10817: ** class EditCommandsManager
 class EditCommandsManager:
 

@@ -1631,14 +1631,6 @@ import rope.base.project as project
 print(project)
 
 # myproject = project.Project('/path/to/myproject')
-.. @+node:ekr.20140402091953.16865: *3* * add pylint commands
-@language rest
-
-pylint-check-all     @data pylint-all-files
-pylint-check-core    @data pylint-core-files
-pylint-check-custom  @data pylint-custom-files
-pylint-check-plugins @data pylint-plugins-files
-pylint-check-recent  @data pylint-recent-files
 .. @+node:ekr.20140711071454.17640: ** Next
 .. @+node:ekr.20130806072439.21203: *3* Recent wishlist
 @language rest
