@@ -137,8 +137,6 @@ Traceback (most recent call last):
     name = w.leo_name
 AttributeError: 'LeoQTextBrowser' object has no attribute 'leo_name'
 .. @+node:ekr.20140714090832.17762: *4* Fixed bug 1090950: refresh from disk - cut node resurrection
-@language rest
-
 Fixed bug 1090950: refresh from disk - cut node resurrection.
 https://bugs.launchpad.net/leo-editor/+bug/1090950
 
@@ -146,9 +144,31 @@ refresh_rclick_cb in contextmenu.py now just calls c.refreshFromDisk,
 which calls c.recreateGnxDict() before reading any file.
 
 Also created the new refresh-from-disk command and the corresponding item in the File menu.
-
+.. @+node:ekr.20140718092511.17736: *5* print gnxs & gnxDict
 @language python
-
+'''A script used while investigating this bug.'''
+# g.cls()
+d = {}
+x = g.app.nodeIndices
+result = []
+for v in c.all_unique_nodes():
+    gnx = v.fileIndex
+    assert g.isUnicode(gnx),gnx
+    d [gnx] = v
+    result.append('%s %s' % (gnx,v))
+print('%s v.fileIndex\'s...' % len(result))
+print('\n'.join(sorted(result)))
+if 1:
+    d = c.fileCommands.gnxDict
+    print('old: %s fc.gnxDict keys...' % len(list(d.keys())))
+    for key in sorted(d.keys()): 
+        print('%s %s' % (key,d.get(key)))
+if 1:
+    c.recreateGnxDict()
+    d = c.fileCommands.gnxDict
+    print('new: %s fc.gnxDict keys...' % len(list(d.keys())))
+    for key in sorted(d.keys()): 
+        print('%s %s' % (key,d.get(key)))
 .. @+node:ekr.20140702131031.16727: *3* Features
 .. @+node:ekr.20131105020211.18059: *4* Added per-node expansions!
 @language rest
