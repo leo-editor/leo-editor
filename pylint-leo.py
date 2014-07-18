@@ -142,7 +142,7 @@ def getRecentCoreList():
         # 'leoChapters',
         # 'leoCommands',
         # 'leoConfig',
-        'leoEditCommands',
+        # 'leoEditCommands',
         # 'leoFileCommands',
         # 'leoFind',
         # 'leoFrame',
