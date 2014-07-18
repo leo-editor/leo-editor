@@ -1,5 +1,9 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20100221142603.5638: * @file ../../pylint-leo.py
+'''
+This file is deprecated: it runs pylint on given lists.
+Instead, Leo's new pylint command runs pylint on all Python @<file> nodes in a given tree.
+'''
 #@@language python
 # pylint: disable=invalid-name
     # pylint-leo isn't a valid module name, but it isn't a module.
