@@ -164,30 +164,7 @@ def refresh_rclick(c,p, menu):
     #@+node:ekr.20140613141207.17671: *3* refresh_rclick_cb
     def refresh_rclick_cb():
         
-        # Try to fix bug 1090950 refresh from disk: cut node ressurection.
-        # This doesn't work--seems safer than previous code.
-        at = c.atFileCommands
-        p = c.p
-        fn = p.anyAtFileNodeName()
-        if fn:
-            c.recreateGnxDict()
-            i = g.skip_id(p.h,0,chars='@')
-            word=p.h[0:i]
-            if word == '@auto':
-                p.deleteAllChildren()
-                at.readOneAtAutoNode(fn,p)
-            elif word in ('@thin','@file'):
-                p.deleteAllChildren()
-                at.read(p,force=True)
-            elif word == '@shadow ':
-                p.deleteAllChildren()
-                at.read(p,force=True,atShadow=True)
-            elif word == '@edit':
-                p.deleteAllChildren()
-                at.readOneAtEditNode(fn,p)
-            else:
-                g.trace('unknown:',word)
-            c.redraw()
+        c.refreshFromDisk()
     #@-others
     split = p.h.split(None,1)
     if len(split) >= 2 and p.anyAtFileNodeName():

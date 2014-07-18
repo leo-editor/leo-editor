@@ -5,8 +5,6 @@
 .. @+all
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
-.. @+node:ekr.20140714090832.17762: *3* ** Fix refresh-from-disk bug
-https://github.com/leo-editor/leo-editor/issues/9
 .. @+node:ekr.20140716021139.17768: *3* ** create clean-persistence command
 .. @+node:ekr.20140716091544.17775: *3* ** make sure the @auto node is marked clean
 This looks like an interaction problem with the bookmarks plugin.

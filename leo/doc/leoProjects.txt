@@ -136,6 +136,19 @@ Traceback (most recent call last):
   File "c:\leo.repo\trunk\leo\plugins\qtGui.py", line 2980, in deleteEditor
     name = w.leo_name
 AttributeError: 'LeoQTextBrowser' object has no attribute 'leo_name'
+.. @+node:ekr.20140714090832.17762: *4* Fixed bug 1090950: refresh from disk - cut node resurrection
+@language rest
+
+Fixed bug 1090950: refresh from disk - cut node resurrection.
+https://bugs.launchpad.net/leo-editor/+bug/1090950
+
+refresh_rclick_cb in contextmenu.py now just calls c.refreshFromDisk,
+which calls c.recreateGnxDict() before reading any file.
+
+Also created the new refresh-from-disk command and the corresponding item in the File menu.
+
+@language python
+
 .. @+node:ekr.20140702131031.16727: *3* Features
 .. @+node:ekr.20131105020211.18059: *4* Added per-node expansions!
 @language rest

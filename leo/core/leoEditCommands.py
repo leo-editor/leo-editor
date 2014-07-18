@@ -9099,6 +9099,7 @@ class LeoCommandsClass (BaseEditCommandsClass):
             'reformat-paragraph':           c.reformatParagraph,
             'remove-sentinels':             c.removeSentinels,
             'resize-to-screen':             f.resizeToScreen,
+            'refresh-from-disk':            c.refreshFromDisk,
             'revert':                       c.revert,
             'save-all':                     c.saveAll,
             'save-file':                    c.save,

@@ -1785,8 +1785,36 @@ class Commands (object):
             g.es_exception()
             return None
     #@+node:ekr.20140717074441.17772: *6* c.refreshFromDisk
-    def refreshFromDisk(self):
+    def refreshFromDisk(self,event=None):
         '''Refresh and @<file> node from disk.'''
+        c,p = self,self.p
+        fn = p.anyAtFileNodeName()
+        if fn:
+            at = c.atFileCommands
+            c.recreateGnxDict()
+                # Fix bug 1090950 refresh from disk: cut node ressurection.
+            i = g.skip_id(p.h,0,chars='@')
+            word=p.h[0:i]
+            if word == '@auto':
+                p.deleteAllChildren()
+                at.readOneAtAutoNode(fn,p)
+                c.redraw()
+            elif word in ('@thin','@file'):
+                p.deleteAllChildren()
+                at.read(p,force=True)
+                c.redraw()
+            elif word == '@shadow ':
+                p.deleteAllChildren()
+                at.read(p,force=True,atShadow=True)
+                c.redraw()
+            elif word == '@edit':
+                p.deleteAllChildren()
+                at.readOneAtEditNode(fn,p)
+                c.redraw()
+            else:
+                g.trace('can not refresh from disk:',p.h)
+        else:
+            g.warning('not an @<file> node:\n%s' % (p.h))
     #@+node:ekr.20031218072017.2834: *6* c.save
     def save (self,event=None,fileName=None):
 

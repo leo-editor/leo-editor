@@ -362,6 +362,8 @@
 <v t="ekr.20131213135427.21836"><vh>@item save-file-as-unzipped</vh></v>
 <v t="ekr.20131213135427.21837"><vh>@item save-file-as-zipped</vh></v>
 <v t="ekr.20131213135427.21838"><vh>@item save-file-to</vh></v>
+<v t="ekr.20140718064506.18998"><vh>@item -</vh></v>
+<v t="ekr.20140718064506.18999"><vh>@item refresh-from-disk</vh></v>
 <v t="ekr.20131213135427.21839"><vh>@item revert</vh></v>
 <v t="ekr.20131213135427.21840"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21841"><vh>@menu &amp;Read/Write</vh>
@@ -5451,7 +5453,7 @@ Leo's init code populates this menu as a special case.</t>
 <t tx="ekr.20131213135427.21836">Save As &amp;Unzipped...</t>
 <t tx="ekr.20131213135427.21837">Save As &amp;Zipped...</t>
 <t tx="ekr.20131213135427.21838">Save &amp;To...</t>
-<t tx="ekr.20131213135427.21839">Re&amp;vert To Saved</t>
+<t tx="ekr.20131213135427.21839">&amp;Revert To Saved</t>
 <t tx="ekr.20131213135427.21840"></t>
 <t tx="ekr.20131213135427.21841"></t>
 <t tx="ekr.20131213135427.21842"></t>
@@ -5953,6 +5955,8 @@ Alt+Ctrl+S set-find-suboutline-only</t>
 <t tx="ekr.20131215083347.18147"></t>
 <t tx="ekr.20131215083347.18148"></t>
 <t tx="ekr.20131215083347.18154"></t>
+<t tx="ekr.20140718064506.18998"></t>
+<t tx="ekr.20140718064506.18999">&amp;Refresh From Disk</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>

@@ -239,8 +239,6 @@
 <v t="ekr.20140712142620.4582"></v>
 </v>
 </v>
-<v t="ekr.20090507084947.5152"><vh>@test t.fileIndex remains the same</vh></v>
-<v t="ekr.20080310073711.1"><vh>@test nodeIndices.toString(None) allocates a new index</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -686,10 +684,6 @@ for h in sorted(d2.keys()):
     if not d1.get(h):
         print(h)</t>
 <t tx="ekr.20071113203234"></t>
-<t tx="ekr.20080310073711.1">gnx = g.app.nodeIndices.toString(None)
-assert(gnx not in (None,'None'))
-assert(len(gnx) &gt; 1)
-</t>
 <t tx="ekr.20080324133327.2">True: allow linux-like pastes using a mouse's middle button.
 
 Important: this may cause crashes on some platforms.
@@ -707,15 +701,6 @@ Important: this may cause crashes on some platforms.
 #
 #
 #
-</t>
-<t tx="ekr.20090507084947.5152"># print(p.v.fileIndex)
-
-if g.app.isExternalUnitTest:
-    pass # Not a valid test when run externally.
-elif g.new_gnxs:
-    assert p.v.fileIndex == 'ekr.20090507084947.5152',p.v.fileIndex
-else:
-    assert p.v.fileIndex == ('ekr', '20090507084947', 5152)
 </t>
 <t tx="ekr.20090704085350.5028">@language python
 @others</t>
