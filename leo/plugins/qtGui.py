@@ -7396,8 +7396,8 @@ class TabbedFrameFactory:
         if f:
             if trace: g.trace(f.title)
             tabw.setWindowTitle(f.title)
-            g.app.selectLeoWindow(f.c)
-                # 2012/03/04: Set the frame now.
+            # g.app.selectLeoWindow(f.c)
+                # would break --minimize
     #@-others
 #@+node:ekr.20110605121601.18474: ** Gui wrapper
 #@+node:ekr.20110605121601.18475: *3* class LeoQtGui
