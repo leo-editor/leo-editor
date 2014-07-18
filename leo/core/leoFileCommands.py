@@ -656,7 +656,7 @@ class BaseFileCommands:
                 else:
                     index = x.toString(v.fileIndex)
                 self.gnxDict[index] = v
-                if g.trace_gnxDict: g.trace(c.shortFileName(),gnxString,v)
+                if g.trace_gnxDict: g.trace(c.shortFileName(),index,v)
         self.usingClipboard = True
         try:
             # This encoding must match the encoding used in putLeoOutline.
