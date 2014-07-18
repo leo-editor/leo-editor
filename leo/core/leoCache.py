@@ -213,6 +213,7 @@ class Cacher:
                     gnx = indices.scanGnx(gnxString,0)
                 v.fileIndex = gnx
                 gnxDict[gnxString] = v
+                if g.trace_gnxDict: g.trace(c.shortFileName(),gnxString,v)
             else:
                 g.trace('**** no gnx for',v)
         child_v = v

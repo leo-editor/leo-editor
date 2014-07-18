@@ -1179,9 +1179,8 @@ class Commands (object):
     #@+node:ekr.20140717074441.17770: *3* c.recreateGnxDict
     def recreateGnxDict(self):
         '''Recreate the gnx dict prior to refreshing nodes from disk.'''
-        c = self
-        d = c.fileCommands.gnxDict
-        x = g.app.nodeIndices
+        trace = False and not g.unitTesting
+        c,d,x = self,{},g.app.nodeIndices
         for v in c.all_unique_nodes():
             gnx = v.fileIndex
             if g.new_gnxs:
@@ -1190,7 +1189,8 @@ class Commands (object):
             else:
                 gnxString = x.toString(gnx)
             d[gnxString] = v
-        # g.trace('\n'.join(sorted([str(z) for z in d.keys()])))
+            if trace or g.trace_gnxDict: g.trace(c.shortFileName(),gnxString,v)
+        c.fileCommands.gnxDict = d
     #@+node:ekr.20130823083943.12559: *3* c.recursiveImport
     def recursiveImport(self,dir_,
         one_file=False,
@@ -4171,7 +4171,13 @@ class Commands (object):
     #@+node:ekr.20031218072017.1551: *7* c.pasteOutline
     # To cut and paste between apps, just copy into an empty body first, then copy to Leo's clipboard.
 
-    def pasteOutline(self,event=None,reassignIndices=True,redrawFlag=True,s=None,undoFlag=True):
+    def pasteOutline(self,event=None,
+        reassignIndices=True,
+        redrawFlag=True,
+        s=None,
+        tempOutline=False, # True: don't make entries in the gnxDict.
+        undoFlag=True
+    ):
         '''
         Paste an outline into the present outline from the clipboard.
         Nodes do *not* retain their original identify.
@@ -4188,7 +4194,7 @@ class Commands (object):
         vnodeInfoDict = c.computeVnodeInfoDict() if pasteAsClone else {}
         # create a *position* to be pasted.
         if isLeo:
-            pasted = c.fileCommands.getLeoOutlineFromClipboard(s,reassignIndices)
+            pasted = c.fileCommands.getLeoOutlineFromClipboard(s,reassignIndices,tempOutline)
         else:
             pasted = c.importCommands.convertMoreStringToOutlineAfter(s,c.p)
         if not pasted: return None

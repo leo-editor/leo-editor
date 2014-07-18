@@ -51,19 +51,17 @@ class NodeIndices (object):
         # A Major simplification: Only assign the timestamp once.
         self.setTimeStamp()
         self.lastIndex = 0
-    #@+node:ekr.20031218072017.1994: *3* x.get/setDefaultId
+    #@+node:ekr.20031218072017.1994: *3* ni.get/setDefaultId
     # These are used by the FileCommands read/write code.
 
     def getDefaultId (self):
-
         """Return the id to be used by default in all gnx's"""
         return self.defaultId
 
     def setDefaultId (self,theId):
-
         """Set the id to be used by default in all gnx's"""
         self.defaultId = theId
-    #@+node:ekr.20031218072017.1995: *3* x.getNewIndex
+    #@+node:ekr.20031218072017.1995: *3* ni.getNewIndex
     def getNewIndex (self):
         '''Create a new gnx.'''
         self.lastIndex += 1
@@ -72,9 +70,9 @@ class NodeIndices (object):
             return g.toUnicode("%s.%s.%d" % d)
         else:
             return d
-    #@+node:ekr.20031218072017.1997: *3* x.scanGnx
+    #@+node:ekr.20031218072017.1997: *3* ni.scanGnx
     def scanGnx (self,s,i=0):
-        """Create a gnx from its string representation"""
+        """Create a gnx from its string representation."""
         if not g.isString(s):
             g.error("scanGnx: unexpected index type:",type(s),'',s)
             return None,None,None
@@ -93,7 +91,7 @@ class NodeIndices (object):
             try: n = int(n)
             except Exception: pass
         return theId,t,n
-    #@+node:ekr.20031218072017.1998: *3* x.setTimeStamp
+    #@+node:ekr.20031218072017.1998: *3* ni.setTimeStamp
     def setTimestamp (self):
 
         """Set the timestamp string to be used by getNewIndex until further notice"""
@@ -105,9 +103,13 @@ class NodeIndices (object):
         # g.trace(self.timeString,self.lastIndex,g.callers(4))
 
     setTimeStamp = setTimestamp
-    #@+node:ekr.20031218072017.1999: *3* x.toString (changed)
+    #@+node:ekr.20031218072017.1999: *3* ni.toString
     def toString (self,index):
-        """Convert a gnx (a tuple) to its string representation"""
+        '''
+        Convert a tuple, string or None to its string representation.
+        *Important* the present sax code and earlier versions of Leo
+        use various kinds of tuples.  Do *not* change the tuple-related code!
+        '''
         if g.isString(index): # New for g.new_gnxs.
             return g.toUnicode(index)
         elif index is None:
@@ -115,21 +117,22 @@ class NodeIndices (object):
         try:
             theId,t,n = index
             if n in (None,0,'',):
-                return g.toUnicode("%s.%s" % (theId,t))
+                s = "%s.%s" % (theId,t)
             else:
-                return g.toUnicode("%s.%s.%d" % (theId,t,n))
+                s = "%s.%s.%d" % (theId,t,n)
         except Exception:
             if not g.app.unitTesting:
                 g.trace('unusual gnx',repr(index),g.callers()) 
             try:
                 theId,t,n = self.getNewIndex()
                 if n in (None,0,'',):
-                    return g.toUnicode("%s.%s" % (theId,t))
+                    s = "%s.%s" % (theId,t)
                 else:
-                    return g.toUnicode("%s.%s.%d" % (theId,t,n))
+                    s = "%s.%s.%d" % (theId,t,n)
             except Exception:
-                g.trace('double exception: returning original index')
-                return g.toUnicode(repr(index))
+                s = repr(index)
+                g.trace('double exception: returning repr(index)',s)
+        return g.toUnicode(s)
     #@-others
 #@+node:ekr.20031218072017.889: ** class Position
 #@+<< about the position class >>

@@ -477,7 +477,7 @@ class AbbrevCommandsClass (BaseEditCommandsClass):
             return
         c.fileCommands.leo_file_encoding='utf-8'
         old_p = c.p.copy()
-        p = c.pasteOutline(s=tree_s,redrawFlag=False,undoFlag=False)
+        p = c.pasteOutline(s=tree_s,redrawFlag=False,undoFlag=False,tempOutline=True)
         if not p: return g.trace('no pasted node')
         for s in g.splitLines(p.b):
             if s.strip() and not s.startswith('#'):

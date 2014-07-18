@@ -626,7 +626,7 @@ class BaseFileCommands:
             self.checking = False
             c.loading = False # reenable c.changed
     #@+node:ekr.20031218072017.1559: *4* fc.getLeoOutlineFromClipboard & helpers
-    def getLeoOutlineFromClipboard (self,s,reassignIndices=True):
+    def getLeoOutlineFromClipboard (self,s,reassignIndices=True,tempOutline=False):
         '''Read a Leo outline from string s in clipboard format.'''
         trace = False and not g.unitTesting
         verbose = False
@@ -644,7 +644,7 @@ class BaseFileCommands:
             # self.gnxDict = {}
         # 2011/12/12: save and clear gnxDict.
         # This ensures that new indices will be used for all nodes.
-        if reassignIndices:
+        if reassignIndices or tempOutline:
             oldGnxDict = self.gnxDict
             self.gnxDict = {}
         else:
@@ -656,6 +656,7 @@ class BaseFileCommands:
                 else:
                     index = x.toString(v.fileIndex)
                 self.gnxDict[index] = v
+                if g.trace_gnxDict: g.trace(c.shortFileName(),gnxString,v)
         self.usingClipboard = True
         try:
             # This encoding must match the encoding used in putLeoOutline.
@@ -685,13 +686,15 @@ class BaseFileCommands:
             if check and not self.checkPaste(current.parent(),p):
                 return None
             p._linkAfter(current,adjust=False)
-        if reassignIndices:
+        if tempOutline:
             self.gnxDict = oldGnxDict
-                # 2011/12/12: restore gnxDict.
+        elif reassignIndices:
+            self.gnxDict = oldGnxDict
             for p2 in p.self_and_subtree():
                 v = p2.v
                 v.fileIndex = index = g.app.nodeIndices.getNewIndex()
                 self.gnxDict[index] = v
+                if g.trace_gnxDict: g.trace(c.shortFileName(),'**restoring**',index,v)
         if trace and verbose:
             g.trace('**** dumping outline...')
             c.dumpOutline()
@@ -1001,9 +1004,8 @@ class BaseFileCommands:
     def restoreDescendentAttributes (self):
 
         trace = False and not g.unitTesting
-        verbose = False
+        verbose = True
         c = self.c
-
         for resultDict in self.descendentTnodeUaDictList:
             if trace and verbose: g.trace('t.dict',resultDict)
             for gnx in resultDict:
@@ -1016,7 +1018,6 @@ class BaseFileCommands:
                     g.error(
                         'restoreDescendantAttributes: '
                         'can not find VNode (duA): gnx = %s' % (gnx))
-
         # New in Leo 4.5: keys are archivedPositions, values are attributes.
         for root_v,resultDict in self.descendentVnodeUaDictList:
             if trace and verbose: g.trace('v.dict',resultDict)
@@ -1042,7 +1043,6 @@ class BaseFileCommands:
                 g.error(
                     'restoreDescendantAttributes: '
                     'can not find VNode (expanded): gnx = %s, tref: %s' % (gnx,tref))
-
         for gnx in self.descendentMarksList:
             tref = self.canonicalTnodeIndex(gnx)
             v = self.gnxDict.get(gnx)
@@ -1051,7 +1051,6 @@ class BaseFileCommands:
                 g.error(
                     'restoreDescendantAttributes: '
                     'can not find VNode (marks): gnx = %s tref: %s' % (gnx,tref))
-
         if marks or expanded:
             # g.trace('marks',len(marks),'expanded',len(expanded))
             for p in c.all_unique_positions():
@@ -1145,6 +1144,7 @@ class BaseFileCommands:
         if g.new_gnxs:
             index = g.toUnicode(index)
         self.gnxDict [index] = v
+        if g.trace_gnxDict: g.trace(c.shortFileName(),index,v)
         if trace and verbose: g.trace(
             'tnx','%-22s' % (index),'v',id(v),
             'len(body)','%-4d' % (len(b)),h)
