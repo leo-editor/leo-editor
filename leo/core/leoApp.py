@@ -162,6 +162,7 @@ class LeoApp:
         # Support for scripting...
         self.searchDict = {}          # For communication between find/change scripts.
         self.scriptDict = {}          # For use by scripts. Cleared before running each script.
+        self.scriptResult = None      # For use by leoPymacs.
         self.permanentScriptDict = {} # For use by scrips. Never cleared automatically.
 
         # Unit testing...

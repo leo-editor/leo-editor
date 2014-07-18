@@ -2,7 +2,7 @@
 #@+node:ekr.20130701072841.12673: * @file qsyntaxhighlighter.py
 #@+<< docstring >>
 #@+node:ekr.20130701072841.12681: ** << docstring >>
-'''
+r'''
 
 To provide your own syntax highlighting, you must subclass
 QSyntaxHighlighter and reimplement highlightBlock().
@@ -33,14 +33,10 @@ QTextBlock keeps that value until it is set set again or until the
 corresponding paragraph of text is deleted.
 '''
 #@-<< docstring >>
-#@+<< includes >>
-#@+node:ekr.20130701072841.12674: ** << includes >>
+
 import leo.core.leoGlobals as g
-
-from leo.core.leoQt import isQt5,Qt,QtConst,QtCore,QtGui,QtWidgets
-
+from leo.core.leoQt import Qt,QtWidgets # isQt5,QtConst,QtCore,QtGui
 import time
-#@-<< includes >>
 
 class LeoUserData(QtWidgets.QTextBlockUserData):
     def __init__(self):
@@ -128,10 +124,8 @@ class LeoSyntaxHighlighter:
             
     # base_rehighlight = rehighlight
     #@+node:ekr.20130701072841.12686: ** rehighlightBlock
-    def rehighlightBlock(self,block):
-        
+    def highlightBlock(self,block):
         '''Reapplies the highlighting to the given QTextBlock block.'''
-        
         if self.doc and block and block.isValid and block.document == self.doc:
             cursor = QtWidgets.QTextCursor(block)
             self._rehighlightCursor(cursor,QtWidgets.QTextCursor.EndOfBlock)
@@ -251,7 +245,7 @@ class LeoSyntaxHighlighter:
         i = 0
         while i < len(formatChanges):
             while i < len(formatChanges) and formatChanges[i] == emptyFormat:
-                ++i
+                i += 1
             if i >= len(formatChanges):
                 break
             r.start = i
@@ -287,7 +281,7 @@ class LeoSyntaxHighlighter:
                     g.trace(z.start,z.length,z.format.foreground().color().getRgb())
             layout.setAdditionalFormats(ranges)
             self.doc.markContentsDirty(cb.position(),cb.length())
-    #@+node:ekr.20130701072841.12677: *3* _q_reformatBlocks *
+    #@+node:ekr.20130701072841.12677: *3* _q_reformatBlocks
     def _q_reformatBlocks(self,pos1,charsRemoved,charsAdded):
         
         '''The actual contentsChange event handler.'''

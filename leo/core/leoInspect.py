@@ -27,10 +27,10 @@ import ast
 import glob
 import imp
 import os
-import string
+# import string
 # import sys
 import time
-import types
+# import types
 
 if isPython3:
     import io
@@ -101,6 +101,7 @@ class AstTraverser(object):
         self.fn = fn or '<AstTraverser>'
         self.level = 0 # The indentation level (not the context level).
             # The number of parents a node has.
+        self.lines = []
         self.parents = [None]
 
         self.init_dispatch_table()
@@ -210,6 +211,7 @@ class AstTraverser(object):
         }
 
         if isPython3:
+            # pylint: disable=no-member
             d [a.arg]   = self.do_arg
             d [a.Bytes] = self.do_Bytes
         else:
@@ -219,95 +221,95 @@ class AstTraverser(object):
             d [a.Repr]  = self.do_Repr
     #@+node:ekr.20111116103733.10283: *3*  a.Do-nothings
     # Don't delete these. They might be useful in a subclass.
-    if 0:
-        def do_arg(self,tree,tag=''): pass
-        def do_arguments(self,tree,tag=''): pass
-        def do_Add(self,tree,tag=''): pass
-        def do_And(self,tree,tag=''): pass
-        def do_Assert(self,tree,tag=''): pass
-        def do_Assign(self,tree,tag=''): pass
-        def do_Attribute(self,tree,tag=''): pass
-        def do_AugAssign(self,tree,tag=''): pass
-        def do_AugLoad(self,tree,tag=''): pass
-        def do_AugStore(self,tree,tag=''): pass
-        def do_BinOp(self,tree,tag=''): pass
-        def do_BitAnd(self,tree,tag=''): pass
-        def do_BitOr(self,tree,tag=''): pass
-        def do_BitXor(self,tree,tag=''): pass
-        def do_BoolOp(self,tree,tag=''): pass
-        def do_Break(self,tree,tag=''): pass
-        def do_Bytes(self,tree,tag=''): pass
-        def do_Call(self,tree,tag=''): pass
-        def do_ClassDef(self,tree,tag=''): pass
-        def do_Compare(self,tree,tag=''): pass
-        def do_Continue(self,tree,tag=''): pass
-        def do_Del(self,tree,tag=''): pass
-        def do_Delete(self,tree,tag=''): pass
-        def do_Dict(self,tree,tag=''): pass
-        def do_Div(self,tree,tag=''): pass
-        def do_Ellipsis(self,tree,tag=''): pass
-        def do_Eq(self,tree,tag=''): pass
-        def do_Exec(self,tree,tag=''): pass
-        def do_Expr(self,tree,tag=''): pass
-        def do_Expression(self,tree,tag=''): pass
-        def do_ExtSlice (self,tree,tag=''): pass
-        def do_FloorDiv(self,tree,tag=''): pass
-        def do_For(self,tree,tag=''): pass
-        def do_FunctionDef(self,tree,tag=''): pass
-        def do_GeneratorExp(self,tree,tag=''): pass
-        def do_Global(self,tree,tag=''): pass
-        def do_Gt(self,tree,tag=''): pass
-        def do_GtE(self,tree,tag=''): pass
-        def do_If(self,tree,tag=''): pass
-        def do_IfExp(self,tree,tag=''): pass
-        def do_Import(self,tree,tag=''): pass
-        def do_ImportFrom(self,tree,tag=''): pass
-        def do_In(self,tree,tag=''): pass
-        def do_Index (self,tree,tag=''): pass
-        def do_Interactive(self,tree,tag=''): pass
-        def do_Invert(self,tree,tag=''): pass
-        def do_Is(self,tree,tag=''): pass
-        def do_IsNot(self,tree,tag=''): pass
-        def do_Keyword(self,tree,tag=''): pass
-        def do_LShift (self,tree,tag=''): pass
-        def do_Lambda(self,tree,tag=''): pass
-        def do_List (self,tree,tag=''): pass
-        def do_ListComp(self,tree,tag=''): pass
-        def do_Load(self,tree,tag=''): pass
-        def do_Lt(self,tree,tag=''): pass
-        def do_LtE(self,tree,tag=''): pass
-        def do_Mod(self,tree,tag=''): pass
-        def do_Module(self,tree,tag=''): pass
-        def do_Mult(self,tree,tag=''): pass
-        def do_Name(self,tree,tag=''): pass
-        def do_Not(self,tree,tag=''): pass
-        def do_NotEq(self,tree,tag=''): pass
-        def do_NotIn(self,tree,tag=''): pass
-        def do_Num(self,tree,tag=''): pass
-        def do_Or (self,tree,tag=''): pass
-        def do_Param(self,tree,tag=''): pass
-        def do_Pass(self,tree,tag=''): pass
-        def do_Pow(self,tree,tag=''): pass
-        ## def do_Print(self,tree,tag=''): pass
-        def do_RShift(self,tree,tag=''): pass
-        def do_Raise(self,tree,tag=''): pass
-        ## def do_Repr(self,tree,tag=''): pass
-        def do_Return(self,tree,tag=''): pass
-        def do_Slice (self,tree,tag=''): pass
-        def do_Store(self,tree,tag=''): pass
-        def do_Str(self,tree,tag=''): pass
-        def do_Sub(self,tree,tag=''): pass
-        def do_Subscript(self,tree,tag=''): pass
-        def do_Suite(self,tree,tag=''): pass
-        def do_TryExcept(self,tree,tag=''): pass
-        def do_TryFinally(self,tree,tag=''): pass
-        def do_Tuple(self,tree,tag=''): pass
-        def do_UAdd(self,tree,tag=''): pass
-        def do_USub(self,tree,tag=''): pass
-        def do_UnaryOp(self,tree,tag=''): pass
-        def do_While(self,tree,tag=''): pass
-        def do_With(self,tree,tag=''): pass
-        def do_Yield(self,tree,tag=''): pass
+    #
+        # def do_arg(self,tree,tag=''): pass
+        # def do_arguments(self,tree,tag=''): pass
+        # def do_Add(self,tree,tag=''): pass
+        # def do_And(self,tree,tag=''): pass
+        # def do_Assert(self,tree,tag=''): pass
+        # def do_Assign(self,tree,tag=''): pass
+        # def do_Attribute(self,tree,tag=''): pass
+        # def do_AugAssign(self,tree,tag=''): pass
+        # def do_AugLoad(self,tree,tag=''): pass
+        # def do_AugStore(self,tree,tag=''): pass
+        # def do_BinOp(self,tree,tag=''): pass
+        # def do_BitAnd(self,tree,tag=''): pass
+        # def do_BitOr(self,tree,tag=''): pass
+        # def do_BitXor(self,tree,tag=''): pass
+        # def do_BoolOp(self,tree,tag=''): pass
+        # def do_Break(self,tree,tag=''): pass
+        # def do_Bytes(self,tree,tag=''): pass
+        # def do_Call(self,tree,tag=''): pass
+        # def do_ClassDef(self,tree,tag=''): pass
+        # def do_Compare(self,tree,tag=''): pass
+        # def do_Continue(self,tree,tag=''): pass
+        # def do_Del(self,tree,tag=''): pass
+        # def do_Delete(self,tree,tag=''): pass
+        # def do_Dict(self,tree,tag=''): pass
+        # def do_Div(self,tree,tag=''): pass
+        # def do_Ellipsis(self,tree,tag=''): pass
+        # def do_Eq(self,tree,tag=''): pass
+        # def do_Exec(self,tree,tag=''): pass
+        # def do_Expr(self,tree,tag=''): pass
+        # def do_Expression(self,tree,tag=''): pass
+        # def do_ExtSlice (self,tree,tag=''): pass
+        # def do_FloorDiv(self,tree,tag=''): pass
+        # def do_For(self,tree,tag=''): pass
+        # def do_FunctionDef(self,tree,tag=''): pass
+        # def do_GeneratorExp(self,tree,tag=''): pass
+        # def do_Global(self,tree,tag=''): pass
+        # def do_Gt(self,tree,tag=''): pass
+        # def do_GtE(self,tree,tag=''): pass
+        # def do_If(self,tree,tag=''): pass
+        # def do_IfExp(self,tree,tag=''): pass
+        # def do_Import(self,tree,tag=''): pass
+        # def do_ImportFrom(self,tree,tag=''): pass
+        # def do_In(self,tree,tag=''): pass
+        # def do_Index (self,tree,tag=''): pass
+        # def do_Interactive(self,tree,tag=''): pass
+        # def do_Invert(self,tree,tag=''): pass
+        # def do_Is(self,tree,tag=''): pass
+        # def do_IsNot(self,tree,tag=''): pass
+        # def do_Keyword(self,tree,tag=''): pass
+        # def do_LShift (self,tree,tag=''): pass
+        # def do_Lambda(self,tree,tag=''): pass
+        # def do_List (self,tree,tag=''): pass
+        # def do_ListComp(self,tree,tag=''): pass
+        # def do_Load(self,tree,tag=''): pass
+        # def do_Lt(self,tree,tag=''): pass
+        # def do_LtE(self,tree,tag=''): pass
+        # def do_Mod(self,tree,tag=''): pass
+        # def do_Module(self,tree,tag=''): pass
+        # def do_Mult(self,tree,tag=''): pass
+        # def do_Name(self,tree,tag=''): pass
+        # def do_Not(self,tree,tag=''): pass
+        # def do_NotEq(self,tree,tag=''): pass
+        # def do_NotIn(self,tree,tag=''): pass
+        # def do_Num(self,tree,tag=''): pass
+        # def do_Or (self,tree,tag=''): pass
+        # def do_Param(self,tree,tag=''): pass
+        # def do_Pass(self,tree,tag=''): pass
+        # def do_Pow(self,tree,tag=''): pass
+        # ## def do_Print(self,tree,tag=''): pass
+        # def do_RShift(self,tree,tag=''): pass
+        # def do_Raise(self,tree,tag=''): pass
+        # ## def do_Repr(self,tree,tag=''): pass
+        # def do_Return(self,tree,tag=''): pass
+        # def do_Slice (self,tree,tag=''): pass
+        # def do_Store(self,tree,tag=''): pass
+        # def do_Str(self,tree,tag=''): pass
+        # def do_Sub(self,tree,tag=''): pass
+        # def do_Subscript(self,tree,tag=''): pass
+        # def do_Suite(self,tree,tag=''): pass
+        # def do_TryExcept(self,tree,tag=''): pass
+        # def do_TryFinally(self,tree,tag=''): pass
+        # def do_Tuple(self,tree,tag=''): pass
+        # def do_UAdd(self,tree,tag=''): pass
+        # def do_USub(self,tree,tag=''): pass
+        # def do_UnaryOp(self,tree,tag=''): pass
+        # def do_While(self,tree,tag=''): pass
+        # def do_With(self,tree,tag=''): pass
+        # def do_Yield(self,tree,tag=''): pass
     #@+node:ekr.20111128103520.10427: *3*  a.do_default
     def do_default (self,tree,tag=''):
 
@@ -370,7 +372,7 @@ class AstTraverser(object):
     #@+node:ekr.20111116103733.10289: *4* dump(AstTraverser)
     def dump (self,tree,asString=True,brief=False,outStream=None):
 
-        AstDumper(brief=brief).dump(tree,outStream=outStream)
+        AstDumper(brief=brief).dumpTreeAsString(tree,outStream=outStream)
 
     #@+node:ekr.20111116103733.10291: *4* string_dump
     def string_dump (self,tree):
@@ -448,14 +450,14 @@ class AstTraverser(object):
             self.visit(z)
         if hasattr(tree,'starargs') and tree.starargs:
             if self.kind(tree.starargs) == 'Name':
-                 self.visit(tree.starargs)
+                self.visit(tree.starargs)
             elif self.isiterable(tree.starargs):
                 for z in tree.starargs:
                     self.visit(z)
             else: g.trace('** unknown starargs kind',tree)
         if hasattr(tree,'kwargs') and tree.kwargs:
             if self.kind(tree.kwargs) == 'Name':
-                 self.visit(tree.kwargs)
+                self.visit(tree.kwargs)
             elif self.isiterable(tree.kwargs):
                 for z in tree.kwargs:
                     self.visit(z)
@@ -868,26 +870,6 @@ class AstTraverser(object):
         }
 
         return d.get(op,'<unknown op %s>' % (op))
-    #@+node:ekr.20111116103733.10307: *4* a.parents (not used)
-    def parents (self,tree):
-
-        '''A generator yielding all the parents of a node.'''
-
-        assert tree == self.parentsList[-1]
-        n = len(self.parentsList)-1 # Ignore tree.
-        while n > 0:
-            n -= 1
-            yield self.parentsList[n]
-
-    def self_and_parents (self,tree):
-
-        '''A generator yielding tree and then all the parents of a node.'''
-
-        assert tree == self.parentsList[-1]
-        n = len(self.parentsList)
-        while n > 0:
-            n -= 1
-            yield self.parentsList[n]
     #@+node:ekr.20111116103733.10308: *4* a.the_class, info & kind
     def the_class (self,tree):
 
@@ -1446,18 +1428,16 @@ def g_dump(obj):
         return '***g_dump: %s' % repr(obj)
 #@+node:ekr.20120625075849.10256: *3* g_files_in_dir
 def g_files_in_dir (theDir,recursive=True,extList=None,excludeDirs=None):
-
-    '''Return a list of all Python files in the directory.
+    '''
+    Return a list of all Python files in the directory.
 
     Include all descendants if recursiveFlag is True.
 
     Include all file types if extList is None.
     '''
-
     # if extList is None: extList = ['.py']
     if excludeDirs is None: excludeDirs = []
     result = []
-
     if recursive:
         for root, dirs, files in os.walk(theDir):
             for z in files:
@@ -1471,7 +1451,7 @@ def g_files_in_dir (theDir,recursive=True,extList=None,excludeDirs=None):
                         dirs.remove(z)
     else:
         for ext in extList:
-            result.extend(glob.glob(theDir,'*%s' % (ext)))
+            result.extend(glob.glob('%s%s*%s' % (theDir,os.sep,ext)))
 
     return sorted(list(set(result)))
 #@+node:ekr.20120611094414.10582: *3* g_find_function_call
@@ -1580,17 +1560,13 @@ def g_node_after_tree (tree):
 
     trace = False
     tree1 = tree # For tracing
-
     if not isinstance(tree,ast.AST):
         return None
-
     def children(tree):
         return [z for z in ast.iter_child_nodes(tree)]
-
     def parent(tree):
         if not hasattr(tree,'_parent'): g.trace('***no _parent: %s' % repr(tree))
         return hasattr(tree,'_parent') and tree._parent
-
     def next(tree):
         if parent(tree):
             sibs = children(parent(tree))
@@ -1599,7 +1575,6 @@ def g_node_after_tree (tree):
                 if i + 1 < len(sibs):
                     return sibs[i+1]
         return None
-
     result = None
     while tree:
         result = next(tree)
@@ -1607,15 +1582,6 @@ def g_node_after_tree (tree):
             break
         else:
             tree = parent(tree)
-
-    if trace:
-        info = self.info # A bug found by stc.ScopeBinder!
-        for z in (ast.Module,ast.ClassDef,ast.FunctionDef):
-            if isinstance(tree1,z):
-                g.trace('node: %22s, parent: %22s, after: %22s' % (
-                    info(tree1),info(parent(tree1)),info(result)))
-                break
-
     return result
 #@+node:ekr.20111116103733.10257: ** class AstDumper
 class AstDumper(object):
@@ -1645,10 +1611,10 @@ class AstDumper(object):
         outStream = None
     ):
 
-       self.annotate_fields = annotate_fields
-       self.include_attributes = include_attributes
-       self.stripBody = stripBody
-       self.outStream = False
+        self.annotate_fields = annotate_fields
+        self.include_attributes = include_attributes
+        self.stripBody = stripBody
+        self.outStream = False
     #@+node:ekr.20111116103733.10259: *3* Top level (AstDumper)
     #@+node:ekr.20111116103733.10260: *4* dumpFileAsNodes/String
     def dumpFileAsNodes (self,fn,brief=False,outStream=None):
@@ -2012,8 +1978,7 @@ class AstDumper(object):
                 return i+1
             else:
                 i += 1
-        else:
-            return len(s)
+        return len(s)
     #@+node:ekr.20111116103733.10275: *4* _writeAndClose
     def _writeAndClose (self,s,outStream=None):
 
@@ -2043,14 +2008,13 @@ class AstDumper(object):
     #@-others
 #@+node:ekr.20111117031039.10133: ** class AstFormatter (AstTraverser)
 class AstFormatter(AstTraverser):
-
     '''A class to recreate source code from an AST.
 
     This does not have to be perfect, but it should be close.
 
     Also supports optional annotations such as line numbers, file names, etc.
     '''
-
+    # pylint: disable=arguments-differ
     #@+others
     #@+node:ekr.20111125131712.10297: *3*  f.ctor
     def __init__ (self,fn=None,options=None):
@@ -2677,16 +2641,12 @@ class AstFormatter(AstTraverser):
     def do_Print(self,tree):
 
         vals = []
-
         for z in tree.values:
-           vals.append(self.visit(z))
-
+            vals.append(self.visit(z))
         if hasattr(tree,'dest') and tree.dest:
             vals.append('dest=%s' % self.visit(tree.dest))
-
         if hasattr(tree,'nl') and tree.nl:
             vals.append('nl=%s' % self.visit(tree.nl))
-
         return self.indent('print(%s)\n' % (
             ','.join(vals)))
     #@+node:ekr.20120614011356.10090: *4* f.Raise
@@ -3168,8 +3128,8 @@ class Chain(object):
     #@-others
 #@+node:ekr.20111116103733.10345: ** class InspectTraverser (AstTraverser)
 class InspectTraverser (AstTraverser):
-
     '''A class to create inpect semantic data structures.'''
+    # pylint: disable=arguments-differ
 
     #@+others
     #@+node:ekr.20111116103733.10346: *3*  it.ctor
@@ -3307,7 +3267,7 @@ class InspectTraverser (AstTraverser):
     # do_Attribute
     do_bool         = format_tree
     do_Bytes        = format_tree
-    do_Call         = format_tree
+    # do_Call         = format_tree
     do_comprehension= format_tree
     do_Dict         = format_tree
     do_Ellipsis     = format_tree
@@ -3316,7 +3276,7 @@ class InspectTraverser (AstTraverser):
     do_int          = format_tree
     do_Keyword      = format_tree
     do_List         = format_tree
-    do_ListComp     = format_tree
+    # do_ListComp     = format_tree
     # do_Name
     do_Num          = format_tree
     do_Slice        = format_tree
