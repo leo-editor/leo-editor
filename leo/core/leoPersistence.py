@@ -11,128 +11,19 @@ import binascii
 import pickle
 import time
 #@+others
-#@+node:ekr.20140713062552.17735: ** unused
-if 0:
-    #@+others
-    #@+node:ekr.20140711111623.17801: *3* pd.pack & helper
-    def pack(pd):
-        '''
-        Undoably convert c.p to a packed @view node, replacing all cloned
-        children of c.p by unl lines in c.p.b.
-        '''
-        c,u = pd.c,pd.c.undoer
-        changed = False
-        root = c.p
-        # Create an undo group to handle changes to root and @persistence nodes.
-        # Important: creating the @persistence node does *not* invalidate any positions.'''
-        u.beforeChangeGroup(root,'view-pack')
-        if not pd.has_at_persistence_node():
-            changed = True
-            bunch = u.beforeInsertNode(c.rootPosition())
-            persistence = pd.find_at_persistence_node()
-                # Creates the @persistence node as the *last* top-level node
-                # so that no positions become invalid as a result.
-            u.afterInsertNode(persistence,'create-views-node',bunch)
-        # Prepend @data node if need.
-        if not root.h.strip().startswith('@'):
-            changed = True
-            bunch = u.beforeChangeNodeContents(root)
-            root.h = '@data:' + root.h.strip()
-            u.afterChangeNodeContents(root,'view-pack-update-headline',bunch)
-        # Create an @view node as a clone of the @persistence node.
-        bunch = u.beforeInsertNode(c.rootPosition())
-        new_clone = pd.create_view_node(root)
-        if new_clone:
-            changed = True
-            u.afterInsertNode(new_clone,'create-view-node',bunch)
-        # Create a list of clones that have a representative node
-        # outside of the root's tree.
-        reps = [pd.find_representative_node(root,p)
-            for p in root.children()
-                if pd.is_cloned_outside_parent_tree(p)]
-        reps = [z for z in reps if z is not None]
-        if reps:
-            changed = True
-            bunch = u.beforeChangeTree(root)
-            c.setChanged(True)
-            # Prepend a unl: line for each cloned child.
-            unls = ['unl: %s\n' % (pd.unl(p)) for p in reps]
-            root.b = ''.join(unls) + root.b
-            # Delete all child clones in the reps list.
-            v_reps = set([p.v for p in reps])
-            while True:
-                for child in root.children():
-                    if child.v in v_reps:
-                        child.doDelete()
-                        break
-                else: break
-            u.afterChangeTree(root,'view-pack-tree',bunch)
-        if changed:
-            u.afterChangeGroup(root,'view-pack')
-            c.selectPosition(root)
-            c.redraw()
-    #@+node:ekr.20140711111623.17802: *4* pd.create_view_node ???
-    def create_view_node(pd,root):
-        '''
-        Create a clone of root as a child of the @persistence node.
-        Return the *newly* cloned node, or None if it already exists.
-        '''
-        # Create a cloned child of the @persistence node if it doesn't exist.
-        c = pd.c
-        persistence = pd.find_at_persistence_node()
-        for p in persistence.children():
-            if p.v == c.p.v:
-                return None
-        p = root.clone()
-        p.moveToLastChildOf(persistence)
-        return p
-    #@+node:ekr.20140711111623.17803: *3* pd.unpack
-    def unpack(pd):
-        '''
-        Undoably unpack nodes corresponding to leading unl lines in c.p to child clones.
-        Return True if the outline has, in fact, been changed.
-        '''
-        c,root,u = pd.c,pd.c.p,pd.c.undoer
-        pd.init()
-        # Find the leading unl: lines.
-        i,lines,tag = 0,g.splitLines(root.b),'unl:'
-        for s in lines:
-            if s.startswith(tag): i += 1
-            else: break
-        changed = i > 0
-        if changed:
-            bunch = u.beforeChangeTree(root)
-            # Restore the body
-            root.b = ''.join(lines[i:])
-            # Create clones for each unique unl.
-            unls = list(set([s[len(tag):].strip() for s in lines[:i]]))
-            for unl in unls:
-                p = pd.find_absolute_unl_node(unl)
-                if p: p.clone().moveToLastChildOf(root)
-                else: g.trace('not found: %s' % (unl))
-            c.setChanged(True)
-            c.undoer.afterChangeTree(root,'view-unpack',bunch)
-            c.redraw()
-        return changed
-    #@-others
 #@+node:ekr.20140711111623.17886: ** pd.Commands
-# @g.command('persistence-pack')
-# def view_pack_command(event):
-    # c = event.get('c')
-    # if c and c.persistenceController:
-        # c.persistenceController.pack()
-
-# @g.command('persistence-unpack')
-# def view_unpack_command(event):
-    # c = event.get('c')
-    # if c and c.persistenceController:
-        # c.persistenceController.unpack()
-
 @g.command('at-file-to-at-auto')
 def at_file_to_at_auto_command(event):
     c = event.get('c')
     if c and c.persistenceController:
         c.persistenceController.convert_at_file_to_at_auto(c.p)
+        
+@g.command('clean-persistence')
+def view_pack_command(event):
+    c = event.get('c')
+    if c and c.persistenceController:
+        c.persistenceController.clean()
+
 #@+node:ekr.20140711111623.17795: ** class ConvertController
 class ConvertController:
     '''A class to convert @file trees to @auto trees.'''
@@ -307,6 +198,31 @@ class PersistenceDataController:
         pd.headlines_dict = {}
             # Inited afresh for each foreign file.
     #@+node:ekr.20140711111623.17793: *3* pd.Entry points
+    #@+node:ekr.20140718153519.17731: *4* pd.clean
+    def clean(pd):
+        '''Remove all @data nodes that do not correspond to an existing foreign file.'''
+        trace = False and not g.unitTesting
+        c = pd.c
+        at_persistence = pd.has_at_persistence_node()
+        if at_persistence:
+            foreign_list = [
+                p.h.strip() for p in c.all_unique_positions()
+                    if pd.is_foreign_file(p)]
+            if trace: g.trace('foreign_list...\n%s' % ('\n'.join(foreign_list)))
+            delete_list = []
+            tag = '@data:'
+            for child in at_persistence.children():
+                if child.h.startswith(tag):
+                    name = child.h[len(tag):].strip()
+                    if name not in foreign_list:
+                        delete_list.append(child.copy())
+            if delete_list:
+                at_persistence.setDirty()
+                c.setChanged(True)
+                for p in delete_list:
+                    g.es_print('deleting:',p.h)
+                c.deletePositionsInList(delete_list)
+                c.redraw()
     #@+node:ekr.20140711111623.17794: *4* pd.convert_at_file_to_at_auto
     def convert_at_file_to_at_auto(pd,root):
         if root.isAtFileNode():

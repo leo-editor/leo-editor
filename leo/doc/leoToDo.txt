@@ -5,7 +5,6 @@
 .. @+all
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
-.. @+node:ekr.20140716021139.17768: *3* ** create clean-persistence command
 .. @+node:ekr.20140716091544.17775: *3* ** make sure the @auto node is marked clean
 This looks like an interaction problem with the bookmarks plugin.
 .. @+node:ekr.20140704052551.17952: *3* Look at github/launchpad bugs
@@ -13,6 +12,8 @@ This looks like an interaction problem with the bookmarks plugin.
 @language rest
 File format:
 http://home.fnal.gov/~neilsen/notebook/orgExamples/org-examples.html#sec-1
+
+http://orgmode.org/manual/Working-With-Source-Code.html
 
 http://www.emacswiki.org/emacs/OutlineMode
 
@@ -65,6 +66,10 @@ Uses the following regex to determine headlines & levels:
     " *\\(def \\|clas\\|#hea\\)"
     
     
+.. @+node:ekr.20140718153519.17730: *3* * Do @vimoutline
+- Tabs indent the text
+- Lines starting with a colon and space are body text.
+- .otl files are outline files
 .. @+node:ekr.20131111061547.16464: *3* * vim project
 @language rest
 
