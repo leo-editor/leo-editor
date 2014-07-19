@@ -874,10 +874,16 @@ class AutoCompleterClass:
         
         put(prefix)
         
+        
         try:
             argspec = inspect.getargspec(obj)
+            
+            # uses None instead of empty list
+            argn = argspec.args and len(argspec.args) or 0
+            defn = argspec.defaults and len(argspec.defaults) or 0
+            
             put("args:")
-            simple_args = argspec.args[:len(argspec.args)-len(argspec.defaults)]
+            simple_args = argspec.args[:argn - defn]
             if not simple_args:
                 put('    (none)')
             else:
@@ -886,8 +892,8 @@ class AutoCompleterClass:
 
             if not argspec.defaults:
                 put('    (none)')
-            for i in range(len(argspec.defaults)):
-                arg = argspec.args[-len(argspec.defaults)+i]
+            for i in range(defn):
+                arg = argspec.args[-defn+i]
                 put("    %s = %s" % 
                          (arg, repr(argspec.defaults[i])))
                          
