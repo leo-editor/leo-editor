@@ -220,10 +220,10 @@ def getTable(scope):
             (pluginsList,'plugins'),
             # (passList,'plugins'),
         ),
-        'recent': (
-            (recentCoreList,'core'),
-            (recentPluginsList,'plugins'),
-        ),
+        # 'recent': (
+            # (recentCoreList,'core'),
+            # (recentPluginsList,'plugins'),
+        # ),
         # 'stc': (
             # (['statictypechecking',],r'c:\leo.repo\static-type-checking'),
         # ),
@@ -523,8 +523,8 @@ def scanOptions():
     add('-f', dest='filename',     help = 'filename',)
     add('-g', action='store_true', help = 'gui plugins')
     add('-p', action='store_true', help = 'plugins')
-    add('-r', action='store_true', help = 'recent')
-    #add('-s', action='store_true', help = 'suppressions')
+    # add('-r', action='store_true', help = 'recent')
+    # add('-s', action='store_true', help = 'suppressions')
     # add('-t', action='store_true', help = 'stc')
     # add('--tt',action='store_true', help = 'stc test')
     add('-v',action='store_true',  help = 'report pylint version')
@@ -555,8 +555,8 @@ externalList        = getExternalList()
 guiPluginsList      = getGuiPluginsList()
 passList            = getPassList()
 pluginsList         = getPluginsList()
-recentCoreList      = getRecentCoreList()
-recentPluginsList   = getRecentPluginsList()
+# recentCoreList      = getRecentCoreList()
+# recentPluginsList   = getRecentPluginsList()
 tkPass              = getTkPass()
 if scope == 'version':
     report_version()
