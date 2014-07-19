@@ -864,13 +864,44 @@ class AutoCompleterClass:
 
         obj,prefix = self.get_object()
 
+        c.frame.log.clearTab('Info',wrap='word')
+        
+        put = lambda s: self.put('', s, tabName='Info')
+        
+        put(prefix)
+        
+        try:
+            argspec = inspect.getargspec(obj)
+            put("args:")
+            simple_args = argspec.args[:len(argspec.args)-len(argspec.defaults)]
+            if not simple_args:
+                put('    (none)')
+            else:
+                put('    '+', '.join(' '+i for i in simple_args))
+            put("keyword args:")
+
+            if not argspec.defaults:
+                put('    (none)')
+            for i in range(len(argspec.defaults)):
+                arg = argspec.args[-len(argspec.defaults)+i]
+                put("    %s = %s" % 
+                         (arg, repr(argspec.defaults[i])))
+                         
+            if argspec.varargs:
+                put("varargs: *"+argspec.varargs)
+            if argspec.keywords:
+                put("keywords: **"+argspec.keywords)
+                         
+            put('\n')  # separate docstring
+        except TypeError:    
+            put('\n')  # not a callable
+        
         doc = inspect.getdoc(obj)
 
         if doc:
-            c.frame.log.clearTab('Info',wrap='word')
-            self.put('',doc,tabName='Info')
+            put(doc)
         else:
-            g.warning('no docstring for',repr(prefix))
+            put("No docstring for "+repr(prefix))
     #@+node:ekr.20110510071925.14586: *4* init_qcompleter
     def init_qcompleter (self,event=None):
 
