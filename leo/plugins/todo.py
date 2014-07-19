@@ -341,6 +341,7 @@ if g.app.gui.guiName() == "qt":
             self.UI.spinTime.setValue(timeReq)
             self.UI.spinTime.blockSignals(False)
         #@-others
+
 #@+node:tbrown.20090119215428.9: ** class todoController
 class todoController:
 
@@ -371,7 +372,7 @@ class todoController:
     todo_priorities = 1,2,3,4,5,6,7,8,9,10,19
     #@+node:tbrown.20090119215428.11: *3* __init__
     def __init__ (self,c):
-
+        '''ctor for todoController class.'''
         self.c = c
         c.cleo = self
         self.donePriority = 100
@@ -379,11 +380,8 @@ class todoController:
         self.recentIcons = []
         #X self.smiley = None
         self.redrawLevels = 0
-        
-        self.iconDir = g.os_path_abspath(
-            g.os_path_normpath(
-                g.os_path_join(g.app.loadDir,"..","Icons")))
-
+        self.iconDir = g.os_path_abspath(g.os_path_normpath(
+            g.os_path_join(g.app.loadDir,"..","Icons")))
         #@+<< set / read default values >>
         #@+node:tbrown.20090119215428.12: *4* << set / read default values >>
         self.time_name = 'days'
@@ -402,23 +400,19 @@ class todoController:
         if c.config.getString('todo_icon_order'):
             self.icon_order = c.config.getString('todo_icon_order')
         #@-<< set / read default values >>
-
         self.handlers = [
            ("close-frame",self.close),
            ('select3', self.updateUI),
            ('save2', self.loadAllIcons),
         ]
-
         # chdir so the Icons can be located
         owd = os.getcwd()
         os.chdir(os.path.split(__file__)[0])
         self.ui = cleoQtUI(self)
         os.chdir(owd)
-
         for i in self.handlers:
             g.registerHandler(i[0], i[1])
-
-        self.loadAllIcons()
+        self.loadAllIcons(setDirty=False)
     #@+node:tbrown.20090522142657.7894: *3* __del__
     def __del__(self):
         for i in self.handlers:
@@ -509,31 +503,25 @@ class todoController:
         return new
     #@+node:tbrown.20090119215428.15: *3* loadAllIcons
     @redrawer
-    def loadAllIcons(self, tag=None, k=None, clear=None):
+    def loadAllIcons(self,tag=None,k=None,clear=None,setDirty=True):
         """Load icons to represent cleo state"""
-
         for p in self.c.all_positions():
-            self.loadIcons(p, clear=clear)
+            self.loadIcons(p,clear=clear,setDirty=setDirty)
     #@+node:tbrown.20090119215428.16: *3* loadIcons
     @redrawer
-    def loadIcons(self, p, clear=False):
+    def loadIcons(self, p,clear=False,setDirty=True):
 
         com = self.c.editCommands
         allIcons = com.getIconList(p)
         icons = [i for i in allIcons if 'cleoIcon' not in i]
-
         if self.icon_order == 'pri-first':
             iterations = ['priority', 'progress', 'duedate']
         else:
             iterations = ['progress', 'priority', 'duedate']
-
         if clear:
             iterations = []
-
         today = datetime.date.today()
-
         for which in iterations:
-
             if which == 'priority':
                 pri = self.getat(p.v, 'priority')
                 if pri: pri = int(pri)
@@ -544,39 +532,29 @@ class todoController:
                         # Icon location defaults to 'beforeIcon' unless cleo_icon_location global defined.
                         # Example: @strings[beforeIcon,beforeHeadline] cleo_icon_location = beforeHeadline
             elif which == 'progress':
-
                 prog = self.getat(p.v, 'progress')
                 if prog is not '':
                     prog = int(prog or 0)
                     use = prog//10*10
                     use = 'prg%03d.png' % use
-
                     com.appendImageDictToList(icons, self.iconDir,
                         g.os_path_join('cleo',use),
                         2, on='vnode', cleoIcon='1', where=self.prog_location)
-                    
             elif which == 'duedate':
-             
                 duedate = self.getat(p.v, 'duedate')
                 nextworkdate = self.getat(p.v, 'nextworkdate')
-                
                 icondate = min(duedate or NO_TIME, nextworkdate or NO_TIME)
-                
                 if icondate != NO_TIME:
-                    
                     if icondate < today:
                         icon = "date_past.png"
                     elif icondate == today:
                         icon = "date_today.png"
                     else:
                         icon = "date_future.png"
-                    
                     com.appendImageDictToList(icons, self.iconDir,
                         g.os_path_join('cleo', icon),
                         2, on='vnode', cleoIcon='1', where=self.prog_location)
-
-        com.setIconList(p, icons)
-
+        com.setIconList(p,icons,setDirty)
 
     #@+node:tbrown.20090119215428.17: *3* close
     def close(self, tag, key):

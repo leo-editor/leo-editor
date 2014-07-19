@@ -4418,11 +4418,9 @@ class EditCommandsClass (BaseEditCommandsClass):
 
         return fromVnode
     #@+node:tbrown.20080119085249.1: *5* setIconList & helpers
-    def setIconList(self, p, l):
+    def setIconList(self,p,l,setDirty=True):
         """Set list of icons for position p to l"""
-
         trace = False and not g.unitTesting
-
         current = self.getIconList(p)
         if not l and not current: return  # nothing to do
         lHash = ''.join([self.dHash(i) for i in l])
@@ -4432,21 +4430,18 @@ class EditCommandsClass (BaseEditCommandsClass):
         if lHash == cHash:
             # no difference between original and current list of dictionaries
             return
-
-        if trace: g.trace(l)
-
-        self._setIconListHelper(p, l, p.v)
+        if trace: g.trace(l,g.callers(6))
+        self._setIconListHelper(p,l,p.v,setDirty)
 
     #@+node:ekr.20090701125429.6012: *6* _setIconListHelper
-    def _setIconListHelper(self, p, subl, uaLoc):
+    def _setIconListHelper(self,p,subl,uaLoc,setDirty):
         """icon setting code common between v and t nodes
 
         p - postion
         subl - list of icons for the v or t node
-        uaLoc - the v or t node"""
-
+        uaLoc - the v or t node
+        """
         trace = False and not g.unitTesting
-
         if subl: # Update the uA.
             if not hasattr(uaLoc,'unknownAttributes'):
                 uaLoc.unknownAttributes = {}
@@ -4454,7 +4449,8 @@ class EditCommandsClass (BaseEditCommandsClass):
             # g.es((p.h,uaLoc.unknownAttributes['icons']))
             uaLoc.unknownAttributes["lineYOffset"] = 3
             uaLoc._p_changed = 1
-            p.setDirty()
+            if setDirty:
+                p.setDirty()
             if trace: g.trace('uA',uaLoc.u,uaLoc)
         else: # delete the uA.
             if hasattr(uaLoc,'unknownAttributes'):
@@ -4462,7 +4458,8 @@ class EditCommandsClass (BaseEditCommandsClass):
                     del uaLoc.unknownAttributes['icons']
                     uaLoc.unknownAttributes["lineYOffset"] = 0
                     uaLoc._p_changed = 1
-                    p.setDirty()
+                    if setDirty:
+                        p.setDirty()
             if trace: g.trace('del uA[icons]',uaLoc)
     #@+node:ekr.20071114082418: *4* deleteFirstIcon
     def deleteFirstIcon (self,event=None):

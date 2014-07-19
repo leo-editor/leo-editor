@@ -5,8 +5,6 @@
 .. @+all
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
-.. @+node:ekr.20140716091544.17775: *3* ** make sure the @auto node is marked clean
-This looks like an interaction problem with the bookmarks plugin.
 .. @+node:ekr.20140704052551.17952: *3* Look at github/launchpad bugs
 .. @+node:ekr.20140707060759.17644: *3* * Do @org-mode
 @language rest

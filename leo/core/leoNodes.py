@@ -885,23 +885,18 @@ class Position (object):
         return dirtyVnodeList
     #@+node:ekr.20040303163330: *5* p.setDirty
     def setDirty (self,setDescendentsDirty=True):
-
         '''Mark a node and all ancestor @file nodes dirty.'''
-
+        trace = False and not g.unitTesting
         p = self ; dirtyVnodeList = []
-
-        # g.trace('dirty: %s, setDescendentsDirty: %s' % (
-            # p.v.isDirty(),setDescendentsDirty),p.h)
-
+        if trace and p.h.startswith('@auto'):
+            g.trace('(p) %5s %30s' % (p.isDirty(),p.h))
         if not p.v.isDirty():
             p.v.setDirty()
             dirtyVnodeList.append(p.v)
-
         # Important: this must be called even if p.v is already dirty.
         # Typing can change the @ignore state!
         dirtyVnodeList2 = p.setAllAncestorAtFileNodesDirty(setDescendentsDirty)
         dirtyVnodeList.extend(dirtyVnodeList2)
-
         return dirtyVnodeList
     #@+node:ekr.20040315023430: *3* p.File Conversion
     #@+at
@@ -2262,7 +2257,8 @@ class VNode (BaseVnode):
         return dirtyVnodeList
     #@+node:ekr.20080429053831.12: *5* v.setDirty
     def setDirty (self):
-
+        # if self.h.startswith('@auto'):
+            # g.trace('(v) %5s %30s' % (self.isDirty(),self.h),g.callers())
         self.statusBits |= self.dirtyBit
     #@+node:ekr.20031218072017.3386: *4*  v.Status bits
     #@+node:ekr.20031218072017.3389: *5* v.clearClonedBit
