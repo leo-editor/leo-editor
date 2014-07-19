@@ -268,7 +268,7 @@ def pylint_command(event):
                 # The no-wait code doesn't seem to work.
         #@+others
         #@+node:ekr.20140718114031.17742: *5* check
-        def check(self,p):
+        def check(self,p,rc_fn):
             '''Check a single node.  Return True if it is a Python @<file> node.'''
             found = False
             if p.isAnyAtFileNode():
@@ -276,9 +276,28 @@ def pylint_command(event):
                 if fn.endswith('.py'):
                     theDir = g.os_path_dirname(c.fileName())
                     fn = g.os_path_finalize_join(theDir,fn)
-                    self.run_pylint(fn)
+                    self.run_pylint(fn,rc_fn)
                     found = True
             return found
+        #@+node:ekr.20140719051145.17727: *5* get_rc_file
+        def get_rc_file(self):
+            '''Return the path to the pylint configuration file.'''
+            trace = False and not g.unitTesting
+            base = 'pylint-leo-rc.txt'
+            table = (
+                g.os_path_finalize_join(g.app.homeDir,'.leo',base),
+                    # In ~/.leo
+                g.os_path_finalize_join(g.app.loadDir,'..','leo','test',base),
+                    # In leo/test
+            )
+            for fn in table:
+                fn = g.os_path_abspath(fn)
+                if g.os_path_exists(fn):
+                    if trace: g.trace('found:',fn)
+                    return fn
+            g.es_print('no pylint configuration file found in\n%s' % (
+                '\n'.join(table)))
+            return None
         #@+node:ekr.20140718105559.17737: *5* run
         def run(self):
             '''Run Pylint on all Python @<file> nodes in c.p's tree.'''
@@ -289,25 +308,23 @@ def pylint_command(event):
             except ImportError:
                 g.warning('can not import pylint')
                 return
+            rc_fn = self.get_rc_file()
+            if not rc_fn:
+                return
             # Run lint on all Python @<file> nodes in root's tree.
             found = False
             for p in root.self_and_subtree():
-                found |= self.check(p)
+                found |= self.check(p,rc_fn)
             # Look up the tree if no @<file> nodes were found.
             if not found:
                 for p in root.parents():
-                    if self.check(p):
+                    if self.check(p,rc_fn):
                         break
             if self.wait:
                 g.es_print('pylint: done')
         #@+node:ekr.20140718105559.17741: *5* run_pylint
-        def run_pylint(self,fn):
-            '''Run pylint on fn.'''
-            rc_fn = g.os_path_abspath(g.os_path_join('leo','test','pylint-leo-rc.txt'))
-            # print('run:scope:%s' % scope)
-            if not os.path.exists(rc_fn):
-                print('pylint rc file not found:',rc_fn)
-                return
+        def run_pylint(self,fn,rc_fn):
+            '''Run pylint on fn with the given pylint configuration file.'''
             if not os.path.exists(fn):
                 print('file not found:',fn)
                 return
