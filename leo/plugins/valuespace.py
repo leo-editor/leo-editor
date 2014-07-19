@@ -449,11 +449,15 @@ class ValueSpaceController:
             self.d = {}
         else:
             self.d = ns
-        
+
         self.reset()    
         self.trace = False
         self.verbose = False
         
+        if c:
+            # important this come after self.reset()
+            c.keyHandler.autoCompleter.namespaces.append(self.d)
+
         # changed g.vs.__dict__ to self.d
         # Not strictly necessary, but allows cross-commander communication.
         #g.vs [c.hash()] = self.d

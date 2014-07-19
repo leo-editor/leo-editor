@@ -166,6 +166,8 @@ class AutoCompleterClass:
         self.w = None # The widget that gets focus after autocomplete is done.
         self.warnings = {} # Keys are language names.
         self.klass = None
+        self.namespaces = [] # additional namespaces to search for objects, other code
+                             # can append namespaces to this to extend scope of search
 
         # Codewise pre-computes...
         self.codewiseSelfList = []
@@ -790,10 +792,11 @@ class AutoCompleterClass:
         trace = False and not g.unitTesting
         verbose = False
 
-        d = self.get_leo_namespace(prefix)
-        if trace: g.trace(list(d.keys()))
-
-        aList = self.attr_matches(prefix,d)
+        aList = []
+        for d in self.namespaces + [self.get_leo_namespace(prefix)]:
+            if trace: g.trace(list(d.keys()))
+            aList.extend(self.attr_matches(prefix,d))
+        
         aList.sort()
 
         if trace:
@@ -842,19 +845,20 @@ class AutoCompleterClass:
 
         if trace: g.trace(repr(prefix))
 
-        try:
-            d = self.get_leo_namespace(prefix)
-            safe_prefix = self.strip_brackets(prefix)
-            obj = eval(safe_prefix,d)
-        except AttributeError:
-            obj = None
-        except NameError:
-            obj = None
-        except SyntaxError:
-            obj = None
-        except Exception:
-            g.es_exception()
-            obj = None
+        safe_prefix = self.strip_brackets(prefix)
+        for d in self.namespaces + [self.get_leo_namespace(prefix)]:
+            try:
+                obj = eval(safe_prefix,d)
+                break  # only reached if none of the exceptions below occur
+            except AttributeError:
+                obj = None
+            except NameError:
+                obj = None
+            except SyntaxError:
+                obj = None
+            except Exception:
+                g.es_exception()
+                obj = None
 
         return obj,prefix
     #@+node:ekr.20061031131434.38: *4* info
