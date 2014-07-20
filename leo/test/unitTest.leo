@@ -3,7 +3,7 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.64">
+<globals body_outline_ratio="0.58" body_secondary_ratio="0.64">
 	<global_window_position top="82" left="833" height="993" width="1028"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -46,8 +46,14 @@
 </v>
 <v t="ekr.20111112092813.4154"><vh>@command cls</vh></v>
 <v t="ekr.20140712144020.4334"><vh>@persistence</vh>
-<v t="ekr.20140716132327.4376"><vh>@data:@auto root</vh>
-<v t="ekr.20140716132327.4377"><vh>@gnxs</vh></v>
+<v t="ekr.20140720085428.4360"><vh>test root</vh></v>
+<v t="ekr.20140720085428.4361"><vh>@data:test root</vh>
+<v t="ekr.20140720085428.4362"><vh>@uas</vh>
+<v t="ekr.20140720085428.4363"><vh>@ua:dummy-gnx</vh></v>
+</v>
+</v>
+<v t="ekr.20140720085428.4364"><vh>@data:test root</vh>
+<v t="ekr.20140720085428.4365"><vh>@recovery</vh></v>
 </v>
 </v>
 <v t="ekr.20140716121225.4354"><vh>@@button print-gnx</vh></v>
@@ -164,8 +170,9 @@
 <v t="ekr.20101220161557.6014"><vh>@file inactiveTests.txt</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285805000000302e382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e372e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e372e31342e3671097d710a5808000000616e6e6f74617465710b7d710c735808000000302e372e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e382e3771017d71025808000000616e6e6f7461746571037d7104735508302e372e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e372e31342e3671097d710a5808000000616e6e6f74617465710b7d710c735508302e372e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
+<v t="ekr.20140712144020.4334"></v>
 <v t="ekr.20140712142620.4458"><vh>leoPersistence</vh>
 <v t="ekr.20140712142620.4537"><vh>@@@test pd.find_absolute_unl_node</vh></v>
 <v t="ekr.20140712142620.4583"><vh>@@@test pd.pack &amp; pd.unpack</vh>
@@ -217,13 +224,14 @@
 </v>
 <v t="ekr.20140712142620.4563"></v>
 </v>
-<v t="ekr.20140712142620.4564"><vh>@test pd.is_at_auto_node</vh></v>
-<v t="ekr.20140716115306.4345"><vh>@test pd.recover_ua_for_gnx</vh></v>
-<v t="ekr.20140716115306.4345"></v>
+<v t="ekr.20140712142620.4564"><vh>@auto-rst test_rst.py</vh></v>
+<v t="ekr.20140716115306.4345"><vh>@test pd.recovery_ua_for_gnx (fails)</vh></v>
 <v t="ekr.20140712142620.4507"><vh>@test pd.restore_gnxs</vh>
 <v t="ekr.20140712142620.4508"><vh>@gnxs</vh></v>
-<v t="ekr.20140716125439.4403"><vh>node1</vh></v>
-<v t="ekr.20140712142620.4510"><vh>root</vh></v>
+<v t="ekr.20140720085428.4351"><vh>node1</vh></v>
+<v t="ekr.20140712142620.4510"><vh>root</vh>
+<v t="ekr.20140720085428.4351"></v>
+</v>
 </v>
 <v t="ekr.20140712142620.4574"><vh>@test pd.unl</vh></v>
 <v t="ekr.20140712142620.4575"><vh>@test pd.update_before_write_foreign_file</vh>
@@ -239,6 +247,7 @@
 <v t="ekr.20140712142620.4582"></v>
 </v>
 </v>
+<v t="ekr.20140716115306.4345"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -654,7 +663,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="8"></t>
+<t tx="ekr.20070417092935" str_leo_pos="11"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1339,7 +1348,7 @@ try:
 finally:
     c.redraw()
 </t>
-<t tx="ekr.20140712142620.4508">gnx: ekr.20140716125439.4357
+<t tx="ekr.20140712142620.4508">gnx: ekr.20140716125439.4403
 unl: node1
 </t>
 <t tx="ekr.20140712142620.4510"></t>
@@ -1506,20 +1515,6 @@ finally:
 <t tx="ekr.20140712142620.4563">def clone_test():
     pass
 </t>
-<t tx="ekr.20140712142620.4564">pd = c.persistenceController
-p.deleteAllChildren()
-auto = p.insertAsLastChild()
-auto.h = '@auto test.py'
-auto2 = p.insertAsLastChild()
-auto2.h = '@auto-rst test2.py'
-try:
-    assert pd.is_at_auto_node(auto)
-    assert not pd.is_at_auto_node(auto2)
-finally:
-    # This is required.
-    p.deleteAllChildren()
-    c.redraw()
-</t>
 <t tx="ekr.20140712142620.4574">pd = c.persistenceController
 unl = pd.unl(p)
 assert unl.endswith('--&gt;'+p.h),repr(unl)
@@ -1608,19 +1603,15 @@ assert at_ua2.h == at_ua.h
 assert at_ua2.b == at_ua.b,repr(at_ua2.b)
 </t>
 <t tx="ekr.20140716121225.4354">print(p.v.gnx)</t>
-<t tx="ekr.20140716125439.4403"></t>
-<t tx="ekr.20140716132327.4376">gnx: ekr.20140712142620.4576
+<t tx="ekr.20140720085428.4351"></t>
+<t tx="ekr.20140720085428.4360">ekr.20140720085428.4360</t>
+<t tx="ekr.20140720085428.4361">gnx: ekr.20140720085428.4360
 </t>
-<t tx="ekr.20140716132327.4377">gnx: ekr.20140712142620.4577
-unl: aClass
-gnx: ekr.20140712142620.4582
-unl: aClass--&gt;clone
-gnx: ekr.20140712142620.4579
-unl: organizer node
-gnx: ekr.20140712142620.4580
-unl: organizer node--&gt;child1
-gnx: ekr.20140712142620.4581
-unl: organizer node--&gt;child2
+<t tx="ekr.20140720085428.4362"></t>
+<t tx="ekr.20140720085428.4363">unl:dummy-unl
+ua:dummy-ua</t>
+<t tx="ekr.20140720085428.4364">gnx: ekr.20140720085428.4360
 </t>
+<t tx="ekr.20140720085428.4365"></t>
 </tnodes>
 </leo_file>

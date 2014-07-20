@@ -1930,16 +1930,22 @@ class VNode (BaseVnode):
         """Return the file name following an @file node or an empty string."""
 
         names = (
-            "@auto",
-            "@auto-otl",
+            # longer prefixes must preceded shorter.
+            "@asis",   
+            "@auto-org-mode", "@auto-org",
+            "@auto-otl", "@auto-vim-outline",
             "@auto-rst",
+            "@auto",
             "@edit",
+            "@file-asis","@file-thin","@file-nosent",
             "@file",
-            "@thin",   "@file-thin",   "@thinfile",
-            "@asis",   "@file-asis",   "@silentfile",
-            "@nosent", "@file-nosent", "@nosentinelsfile",
-            "@shadow",)
-
+            "@nosent",
+            # "@nosentinelsfile",
+            # "@silentfile",
+            "@shadow",
+            # "@thinfile", 
+            "@thin", 
+            )
         return self.findAtFileName(names)
     #@+node:ekr.20031218072017.3348: *4* at...FileNodeName
     # These return the filename following @xxx, in v.headString.
