@@ -1948,7 +1948,12 @@ class VNode (BaseVnode):
     def atAutoNodeName (self,h=None):
         # # Prevent conflicts with autotrees plugin: don't allow @auto-whatever to match.
         # return g.match_word(h,0,tag) and not g.match(h,0,tag+'-') and h[len(tag):].strip()
-        names = ("@auto","@auto-otl","@auto-rst",)
+        names = (
+            "@auto",
+            "@auto-org","@auto-org-mode", # synonyms
+            "@auto-otl","@auto-vim-outline", # synonyms
+            "@auto-rst",
+        )
         return self.findAtFileName(names,h=h)
 
     def atAutoOtlNodeName (self,h=None):

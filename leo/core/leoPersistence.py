@@ -626,8 +626,8 @@ class PersistenceDataController:
         Return the @data node corresponding to root, a foreign node.
         Return None if no such node exists.
         '''
-        if not g.unitTesting:
-            assert pd.is_at_auto_node(root) or pd.is_at_file_node(root),root
+        if not (pd.is_at_auto_node(root) or pd.is_at_file_node(root)):
+            return None
         views = g.findNodeAnywhere(pd.c,'@persistence')
         if views:
             # Find a direct child of views with matching headline and body.
@@ -667,9 +667,12 @@ class PersistenceDataController:
     #@+node:ekr.20140711111623.17870: *4* pd.is...
     #@+node:ekr.20140711111623.17871: *5* pd.is_at_auto_node
     def is_at_auto_node(pd,p):
-        '''Return True if p is an @auto node.'''
-        return g.match_word(p.h,0,'@auto') and not g.match(p.h,0,'@auto-')
-            # Does not match @auto-rst, etc.
+        '''
+        Return True if p is *any* kind of @auto node,
+        including @auto-otl and @auto-rst.
+        '''
+        return p.isAtAutoNode()
+            # The safe way: it tracks changes to p.isAtAutoNode.
     #@+node:ekr.20140711111623.17897: *5* pd.is_at_file_node
     def is_at_file_node(pd,p):
         '''Return True if p is an @file node.'''

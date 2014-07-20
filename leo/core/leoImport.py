@@ -5168,29 +5168,26 @@ class TypeScriptScanner (JavaScriptScanner):
     #@-others
 #@+node:ekr.20120517124200.9983: *3* class VimoutlinerScanner
 class VimoutlinerScanner(BaseScanner):
-
+    
     def __init__ (self,importCommands,atAuto):
-
+        '''ctor for VimoutlinerScanner class.'''
         # Init the base class.
         BaseScanner.__init__(self,
             importCommands,atAuto=atAuto,language='plain')
                 # Use @language plain.
-
         # Overrides of base-class ivars.
         self.fullChecks = False
         self.hasDecls = False
-
-        # The stack of valid parents at each level.
         self.parents = []
+        # Note: self.tab_width only affects tabs in body text.
+        # The read/write code uses hard tabs to write leading identation.
 
     #@+others
     #@+node:ekr.20120519091649.10016: *4* scanHelper & helpers
     # Override BaseScanner.scanHelper.
 
     def scanHelper(self,s,i,end,parent,kind):
-
         '''Create Leo nodes for all vimoutliner lines.'''
-
         assert kind == 'outer' and end == len(s)
         while i < len(s):
             # Set k to the end of the line.

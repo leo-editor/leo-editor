@@ -830,6 +830,7 @@ class AtFile:
     def readOneAtAutoNode (self,fileName,p):
         '''Read an @auto file into p.'''
         trace = False and not g.unitTesting
+        if trace: g.trace(fileName)
         at,c,ic = self,self.c,self.c.importCommands
         oldChanged = c.isChanged()
         at.default_directory = g.setDefaultDirectory(c,p,importing=True)
@@ -3670,9 +3671,7 @@ class AtFile:
             at.warnAboutOrphandAndIgnoredNodes()
     #@+node:ekr.20120518080359.10006: *4* at.writeAtAutoOtlFile
     def writeAtAutoOtlFile (self,root):
-
         """Write all the *descendants* of an @auto-otl node."""
-
         at = self
 
         def put(s):
@@ -3687,7 +3686,6 @@ class AtFile:
                 put('%s%s' % (indent,p.h))
                 for s in p.b.splitlines(False):
                     put('%s: %s' % (indent,s))
-
         root.setVisited()
         return True
     #@+node:ekr.20041005105605.160: *3* Writing 4.x
