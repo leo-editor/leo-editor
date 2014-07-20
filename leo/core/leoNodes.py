@@ -410,6 +410,7 @@ class Position (object):
     def isAnyAtFileNode         (self): return self.v.isAnyAtFileNode()
     def isAtAllNode             (self): return self.v.isAtAllNode()
     def isAtAutoNode            (self): return self.v.isAtAutoNode()
+    def isAtAutoOrgModeNode     (self): return self.v.isAtAutoOrgModeNode()
     def isAtAutoOtlNode         (self): return self.v.isAtAutoOtlNode()
     def isAtAutoRstNode         (self): return self.v.isAtAutoRstNode()
     def isAtEditNode            (self): return self.v.isAtEditNode()
@@ -1961,9 +1962,13 @@ class VNode (BaseVnode):
             "@auto-rst",
         )
         return self.findAtFileName(names,h=h)
+        
+    def atAutoOrgModeNodeName (self,h=None):
+        names = ("@auto-org-mode","@auto-org",)
+        return self.findAtFileName(names,h=h)
 
     def atAutoOtlNodeName (self,h=None):
-        names = ("@auto-otl",)
+        names = ("@auto-otl","@auto-vim-outline",)
         return self.findAtFileName(names,h=h)
 
     def atAutoRstNodeName (self,h=None):
@@ -1979,7 +1984,7 @@ class VNode (BaseVnode):
         return self.findAtFileName(names)
 
     def atNoSentinelsFileNodeName (self):
-        names = ("@nosent", "@file-nosent", "@nosentinelsfile")
+        names = ("@nosent", "@file-nosent",) # "@nosentinelsfile")
         return self.findAtFileName(names)
 
     def atShadowFileNodeName (self):
@@ -1987,11 +1992,11 @@ class VNode (BaseVnode):
         return self.findAtFileName(names)
 
     def atSilentFileNodeName (self):
-        names = ("@asis", "@file-asis", "@silentfile")
+        names = ("@asis", "@file-asis",) # "@silentfile")
         return self.findAtFileName(names)
 
     def atThinFileNodeName (self):
-        names = ("@thin", "@file-thin", "@thinfile")
+        names = ("@thin", "@file-thin",) # "@thinfile")
         return self.findAtFileName(names)
 
     # New names, less confusing
@@ -2017,6 +2022,9 @@ class VNode (BaseVnode):
     #@+node:ekr.20040325073709: *4* isAt...FileNode (VNode)
     def isAtAutoNode (self):
         return True if self.atAutoNodeName() else False
+        
+    def isAtAutoOrgModeNode (self):
+        return True if self.atAutoOrgModeNodeName() else False
 
     def isAtAutoOtlNode (self):
         return True if self.atAutoOtlNodeName() else False

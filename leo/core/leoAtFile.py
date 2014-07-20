@@ -826,7 +826,7 @@ class AtFile:
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
-    #@+node:ekr.20070909100252: *4* at.readOneAtAutoNode
+    #@+node:ekr.20070909100252: *4* at.readOneAtAutoNode (change)
     def readOneAtAutoNode (self,fileName,p):
         '''Read an @auto file into p.'''
         trace = False and not g.unitTesting
@@ -3349,10 +3349,14 @@ class AtFile:
                 c.persistenceController.update_before_write_foreign_file(root)
         ok = at.openFileForWriting (root,fileName=fileName,toString=toString)
         if ok:
-            isAtAutoOtl = root.isAtAutoOtlNode() # For traces.
-            isAtAutoRst = root.isAtAutoRstNode() # For traces.
+            isAtAutoOrgMode = root.isAtAutoOrgModeNode() # For traces.
+            isAtAutoOtl     = root.isAtAutoOtlNode() # For traces.
+            isAtAutoRst     = root.isAtAutoRstNode() # For traces.
             if isAtAutoRst:
                 ok2 = c.rstCommands.writeAtAutoFile(root,fileName,at.outputFile)
+                if not ok2: at.errors += 1
+            elif isAtAutoOrgMode:
+                ok2 = at.writeAtAutoOrgModeFile(root)
                 if not ok2: at.errors += 1
             elif isAtAutoOtl:
                 ok2 = at.writeAtAutoOtlFile(root)
@@ -3686,6 +3690,22 @@ class AtFile:
                 put('%s%s' % (indent,p.h))
                 for s in p.b.splitlines(False):
                     put('%s: %s' % (indent,s))
+        root.setVisited()
+        return True
+    #@+node:ekr.20140720065949.17741: *4* at.writeAtAutoOrgModeFile (test)
+    def writeAtAutoOrgModeFile (self,root):
+        """Write all the *descendants* of an @auto-otl node."""
+        at = self
+        def put(s):
+            '''Take care with output newlines.'''
+            at.os(s[:-1] if s.endswith('\n') else s)
+            at.onl()
+        root_level = root.level()
+        for p in root.subtree():
+            indent = p.level()-root_level
+            put('%s %s' % ('*'*indent,p.h))
+            for s in p.b.splitlines(False):
+                put(s)
         root.setVisited()
         return True
     #@+node:ekr.20041005105605.160: *3* Writing 4.x
