@@ -826,7 +826,7 @@ class AtFile:
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
-    #@+node:ekr.20070909100252: *4* at.readOneAtAutoNode (change)
+    #@+node:ekr.20070909100252: *4* at.readOneAtAutoNode
     def readOneAtAutoNode (self,fileName,p):
         '''Read an @auto file into p.'''
         trace = False and not g.unitTesting
@@ -3692,7 +3692,7 @@ class AtFile:
                     put('%s: %s' % (indent,s))
         root.setVisited()
         return True
-    #@+node:ekr.20140720065949.17741: *4* at.writeAtAutoOrgModeFile (test)
+    #@+node:ekr.20140720065949.17741: *4* at.writeAtAutoOrgModeFile
     def writeAtAutoOrgModeFile (self,root):
         """Write all the *descendants* of an @auto-otl node."""
         at = self
