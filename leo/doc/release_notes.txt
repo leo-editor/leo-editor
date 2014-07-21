@@ -19947,28 +19947,16 @@ https://bugs.launchpad.net/leo-editor/+bug/711158
   
 - Added the three methods in app.Detecting already-open files.
 #@+node:ekr.20131105110107.16943: *6* New languages and importers
-#@+node:ekr.20131105110107.16944: *7* Added importer .otl files
+#@+node:ekr.20131105110107.16944: *7* Added importer for .otl files
 Leo now supports @auto-otl, along with imports of .otl files.
 
-**Warning**: the new code is simply a prototype.  Play with these
-features *only* on files you can afford to be corrupted.
+There are two ways to create @auto-otl nodes:
 
-To use @auto-otl:
+1.  Use Leo's import-file command to create and populate an @auto-otl
+node. Save the .leo file.
 
-1.  The easy, and relatively safe way:
-
-- Use Leo's import-file command to create and populate an @auto-otl
-node.
-- Save the .leo file.
-
-2. The manual, less safe way:
-
-- Create a node called @auto-otl x.y
-  x can be an absolute path or a path relative to the directory
-containing the .leo file.
-
-- Save the .leo file, but **do not** overwrite the existing .otl file
-when prompted.
+2. Create an @auto-otl <path to the .otl file>.  Use the refresh-from-disk command
+to populate the node *before* saving the .leo file.
 
 Either way, you should now have an @auto-otl node whose **children**
 represent the contents of the external .otl file.  (The actual @auto-
@@ -19977,64 +19965,6 @@ put Leo directives in the node.) Changing the children in Leo will
 change the external file.  Changing the external file outside of Leo
 will update the outline the next time you restart the .leo file
 containing the @auto-otl node.
-
-**Important**: as with all kinds of @auto nodes, clone links will
-break the next time you load Leo if the @auto-otl tree contains any
-kind of cloned nodes.  This is pretty much a fundamental limitation of
-@auto trees.
-
-However, if the VO people wanted to *retain* gnx's when editing in
-vim, it would, in theory, be possible to retain clone links when Leo
-read the external .otl file.  I don't plan to do this any time soon,
-and it would require and extension to the VO file format, but I wanted
-to point out the possibilities.
-
-
-> **Important**: as with all kinds of @auto nodes, clone links will
-> break the next time you load Leo if the @auto-otl tree contains any
-> kind of cloned nodes.  This is pretty much a fundamental limitation of
-> @auto trees.
-
-I'd like to add two points to this discussion:
-
-1. This limitation instantly disappears when you convert from (any
-kind of) @auto to @file.  The reason is that the sentinels that Leo
-writes "carry" both outline structure *and* node identity.  It is this
-unique, immutable node identity which provides for robust linking of
-clones.
-
-I hinted in another thread that a smallish addition to the otl format
-would allow .otl files to carry identity.  For example, suppose that
-headlines were optionally represented in the file format as::
-
-    <indentation: hard tabs> :: gnx :: headline
-
-The VO folks could do this in an upward compatible manner without
-changing vim's core in any way.  True, it doesn't give VO Leo's clone
-capabilities, but it *retains* the information necessary to use clones
-*in Leo*.
-
-2. Unlike .otl, the external files produced by Leo can be used
-*unchanged* as program source files.  Indeed, all of Leo's Python
-source files contain outline structure and node identity--Leo
-sentinels are simply comment lines in the appropriate language.  In
-contrast, the format of .otl files ensures that body text can not be
-used untranslated as source code.  It is the ability to *be* source
-code, even more than cloning, that makes Leo's external file format so
-useful.
-
-> As of rev 5309 of the trunk, Leo now supports @auto-otl, along with
-> imports of .otl files.
-
-Rev 5310 contains a rewrite of the scanHelper method.  As before, this
-code should be considered experimental.
-
-The scanHelper method now parses each line of the .otl independently:
-any combination of headline and body lines should now be valid,
-regardless of indentation level.  If necessary, the parser will insert
-intermediate nodes so as to allow lines that are indented more than
-one more than the previous node. This is the most general scheme that
-I can imagine.
 #@+node:ekr.20131105110107.16945: *7* Added importer for .ipynb importer
 Rev 5488 contains a prototype for importing IPython notebook (.ipynb) files 
 into Leo.  In theory, this would allow two-way interchanges between Leo 

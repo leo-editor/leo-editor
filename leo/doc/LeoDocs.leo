@@ -429,7 +429,7 @@
 </v>
 </v>
 <v t="ekr.20131008041326.16080"><vh>Users Guide</vh>
-<v t="ekr.20131008041326.16082"><vh>@rst html/usersguide.html</vh></v>
+<v t="ekr.20131008041326.16082"><vh>@rst html/usersguide.html</vh>
 <v t="EKR.20040524104904.211"><vh>Customizing Leo</vh>
 <v t="ekr.20050901101608.4"><vh>@rst html\customizing.html</vh>
 <v t="ekr.20050901102055"><vh>@rst-no-head links</vh></v>
@@ -678,14 +678,27 @@
 </v>
 </v>
 </v>
+</v>
 <v t="ekr.20101025080245.5798"><vh>Leo and Other Programs</vh>
 <v t="ekr.20131008041326.16100"><vh>@rst html/leoandotherprograms.html</vh></v>
 <v t="ekr.20061025065357"><vh>Leo and Emacs</vh>
 <v t="ekr.20061025065357.1"><vh>@rst html\emacs.html</vh>
 <v t="ekr.20061025065357.2"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20140720203932.17747"><vh>Using org-mode (.org) files in Leo</vh></v>
 <v t="ekr.20061025081359"><vh>Controlling Leo from Emacs using Pymacs</vh></v>
 <v t="ekr.20061025070825.1"><vh>Functions in leoPymacs.py</vh></v>
 <v t="ekr.20061025142434"><vh>The minibuffer</vh></v>
+</v>
+</v>
+<v t="TL.20080804095315.1"><vh>Leo and Vim</vh>
+<v t="TL.20080804095315.2"><vh>@rst html\vimBindings.html</vh>
+<v t="ekr.20140720203932.17748"><vh>Using vimoutline (.otl) files in Leo</vh></v>
+<v t="TL.20080804095315.4"><vh>Installing vim bindings</vh></v>
+<v t="TL.20080804095315.5"><vh>General commands</vh></v>
+<v t="TL.20080804095315.6"><vh>Body pane commands</vh></v>
+<v t="TL.20080804095315.7"><vh>Outline commands</vh></v>
+<v t="TL.20080804095315.8"><vh>Commands not supported</vh></v>
+<v t="TL.20080804095315.9"><vh>Avoiding changes to 'tag' files</vh></v>
 </v>
 </v>
 <v t="ekr.20080203101507"><vh>ILeo - the IPython bridge</vh>
@@ -707,17 +720,7 @@
 <v t="ekr.20071210094621"><vh>Running leoBridge from within Leo</vh></v>
 </v>
 </v>
-<v t="TL.20080804095315.1"><vh>Using Vim with Leo</vh>
-<v t="TL.20080804095315.2"><vh>@rst html\vimBindings.html</vh>
-<v t="TL.20080804095315.4"><vh>Installing vim bindings</vh></v>
-<v t="TL.20080804095315.5"><vh>General commands</vh></v>
-<v t="TL.20080804095315.6"><vh>Body pane commands</vh></v>
-<v t="TL.20080804095315.7"><vh>Outline commands</vh></v>
-<v t="TL.20080804095315.8"><vh>Commands not supported</vh></v>
-<v t="TL.20080804095315.9"><vh>Avoiding changes to 'tag' files</vh></v>
-</v>
-</v>
-<v t="ekr.20060913164304"><vh>Using ZODB with Leo</vh>
+<v t="ekr.20060913164304"><vh>Leo and ZODB</vh>
 <v t="ekr.20060913164304.1"><vh>@rst html\zodb.html</vh>
 <v t="ekr.20060913164311"><vh>@rst-no-head links</vh></v>
 <v t="ekr.20060913170145"><vh>Configuring Leo to use zodb</vh></v>
@@ -1083,8 +1086,7 @@
 </v>
 </v>
 <v t="ekr.20101026082911.5536"><vh>Release notes</vh>
-<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d7100285509302e302e312e302e3071017d710258090000007374725f6174696d657103580c000000313337363431323837322e30710473550b302e302e332e312e312e3371057d71066803580c000000313337363431323838392e30710773550c302e302e31322e302e302e3771087d710958090000007374725f6174696d65710a580c000000313337363431323238302e30710b735510302e302e31322e302e302e372e302e31710c7d710d58090000007374725f6174696d65710e580c000000313337363431323238382e30710f73550b302e302e332e302e322e3371107d71116803580c000000313337363431323838382e30711273752e"
-expanded="edream.110203163054.117,ekr.20090717084250.10704,ekr.20090718092032.10405,ekr.20090718092032.10464,ekr.20090718092032.10465,ekr.20090718092032.10470,"><vh>@file release_notes.txt</vh></v>
+<v t="ekr.20100805165051.7177" descendentVnodeUnknownAttributes="7d7100285509302e302e312e302e3071017d710258090000007374725f6174696d657103580c000000313337363431323837322e30710473550b302e302e332e312e312e3371057d71066803580c000000313337363431323838392e30710773550c302e302e31322e302e302e3771087d710958090000007374725f6174696d65710a580c000000313337363431323238302e30710b735510302e302e31322e302e302e372e302e31710c7d710d58090000007374725f6174696d65710e580c000000313337363431323238382e30710f73550b302e302e332e302e322e3371107d71116803580c000000313337363431323838382e30711273752e"><vh>@file release_notes.txt</vh></v>
 </v>
 </v>
 <v t="ekr.20131220065609.16614"><vh>4.11.1 Release notes</vh>
@@ -1904,11 +1906,13 @@ g.toUnicode.
 </t>
 <t tx="EKR.20040524104904.99"></t>
 <t tx="TL.20080804095315.1"></t>
-<t tx="TL.20080804095315.2">###########################
-Using Vim Bindings with Leo
-###########################
+<t tx="TL.20080804095315.2">###################
+Using Vim with Leo
+###################
 
-This chapter describes Leo's vim-like bindings, including how to install them.
+This chapter describes how to import and export vim's .otl files. This
+chapter also discusses how to install and use vim-like bindings within
+Leo.
 
 .. contents::
     :depth: 3
@@ -16993,9 +16997,9 @@ Leo and Other Programs
    :maxdepth: 2
 
    emacs
-   IPythonBridge
-   leoBridge
    vimBindings
+   leoBridge
+   IPythonBridge
    zodb
 
 </t>
@@ -19804,6 +19808,53 @@ requires 'markdown' if one wishes to use markdown rendering, but it is
 optional. rss.py will not function without 'feedparser'. Etc.
 </t>
 <t tx="ekr.20140216125129.16666"></t>
+<t tx="ekr.20140720203932.17747">Leo can automatically import and export Emacs org-mode (.org) files. Nodes like::
+
+    @auto-org-mode &lt;path to .org file&gt;
+
+or equivalently::
+
+    @auto-org &lt;path to .org file&gt;
+    
+import the org-mode file as a Leo outline. 
+
+These nodes work like other @auto nodes: when Leo loads an outline, Leo
+reads the .org file into the @auto-org-mode tree. When Leo writes an
+outline, Leo writes any @auto-org-mode tree back to the org-mode file.
+
+After creating an @auto-org-mode node by hand, be sure to use Leo's
+refresh-from-disk command to populate the node. Do this *before* saving the
+.leo file. If you try to save an empty @auto-org-mode node Leo will warn
+you that you are about to overwrite the file.
+
+The refresh-from-disck command creates an @auto-otl node whose **children**
+represent the contents of the external .org file. Leo does *not* write the
+\@auto-org-mode node itself. This allows you to put Leo directives in the
+node.
+</t>
+<t tx="ekr.20140720203932.17748">Leo can automatically import and export vimoutline (.otl) files. Nodes like::
+
+    @auto-otl &lt;path to .otl file&gt;
+
+or equivalently::
+
+    @auto-vimoutline &lt;path to .otl file&gt;
+    
+import the .otl as a Leo outline.
+
+These nodes work like other @auto nodes: when Leo loads an outline, Leo
+reads the .otl file into the @auto-otl tree. When Leo writes an outline,
+Leo writes any @auto-otl tree back to the .otl file.
+
+After creating an @auto-otl node by hand, be sure to use Leo's
+refresh-from-disk command to populate the node. Do this *before* saving the
+.leo file. If you try to save an empty @auto-otl node Leo will warn you
+that you are about to overwrite the file.
+
+The refresh-from-disck command creates an @auto-otl node whose **children**
+represent the contents of the external .otl file. Leo does *not* write the
+\@auto-otl node itself. This allows you to put Leo directives in the node.
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand
 and use the features they add. To that effect, there are a few
 documentation steps that should not be overlooked.

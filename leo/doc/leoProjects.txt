@@ -325,6 +325,17 @@ so you specify the color with:
 @language rest
 
 It checks all the @<file> nodes in the selected tree.
+.. @+node:ekr.20140720065949.17739: *4* Created @auto-org-mode
+@language rest
+
+Note: persistence applies to @auto-vimoutline-mode and @auto-org-mode
+
+Done:
+- Added @auto-org-mode to list of valid @auto nodes.
+- Created org-mode importer.
+- Create at.writeOneOrgModeNode, called from at.writeOneAtAutoNode
+
+@language python
 .. @-all
 
 # Put this @language after the @all as a kind of permanent unit test.

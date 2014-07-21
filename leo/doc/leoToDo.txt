@@ -6,72 +6,8 @@
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 .. @+node:ekr.20140704052551.17952: *3* Look at github/launchpad bugs
-.. @+node:ekr.20140707060759.17644: *3* * Do @org-mode
-@language rest
-File format:
-http://home.fnal.gov/~neilsen/notebook/orgExamples/org-examples.html#sec-1
-
-http://orgmode.org/manual/Working-With-Source-Code.html
-
-http://www.emacswiki.org/emacs/OutlineMode
-
-Customizing Heading Definition
-
-You can also customize ‘outline-regexp’ which indicates which lines are
-considered heading. It is a regular expression to match the beginning of a
-heading. The smaller the match, the higher the level of the heading.
-
-The default value matches asterisks and page breaks:
-
- "[*\f]+"
-
-For lisp-modes, the value matches comments starting with three semicolons
-and opening parens on the first column.
-
- ";;; \\|(...."
- "^;;; | ^\(" EKR
-
-For man pages, something like this might be useful:
-
- " *[A-Z ]+"
-
-For Wikipedia or txt2tags style headers:
-
- "^[=]+"
-
-JohanBockgård uses
-
-“[A-Z]\\|\\s-+[-+]”
-"[A-Z]|\s-+[-+]"
-
-to give this result
-
-OPTIONS…
-
-     -help   This causes xterm to print  out  a  verbose  message...
-
-     -132    Normally, the VT102  DECCOLM  escape  sequence  that...
-     
-Using Roman Numerals as headings:
-     
-" *\\([A-Za-z]\\|[IVXivx0-9]+\\)\\. *"
-"\*([A-Za-z]|[IVXivx0-9]+). \*"  EKR
-
-
-http://www.emacswiki.org/emacs/EasyCodeOutline
-Python outline mode:
-Uses the following regex to determine headlines & levels:
-    " *\\(def \\|clas\\|#hea\\)"
-    
-    
-.. @+node:ekr.20140718153519.17730: *3* * Do @vimoutline
-- Tabs indent the text
-- Lines starting with a colon and space are body text.
-- .otl files are outline files
 .. @+node:ekr.20131111061547.16464: *3* * vim project
 @language rest
-
-Bug: word-only screws up regex searches.
 
 First:
 * Fix the widget mess.
