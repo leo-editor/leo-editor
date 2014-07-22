@@ -339,6 +339,206 @@
 <v t="ekr.20131003040744.17561"><vh>@shortcuts Plugin-related commands </vh></v>
 <v t="ekr.20060925060533.4"><vh>@shortcuts Text operations</vh></v>
 </v>
+<v t="ekr.20140721165014.19146"><vh>@ignore Unused key bindings</vh>
+<v t="ekr.20140721165014.19313"><vh>Vim emulation</vh>
+<v t="ekr.20140721165014.19147"><vh>@strings  [ignore,insert, overwrite] top_level_unbound_key_action = ignore</vh></v>
+<v t="ekr.20140721165014.19159"><vh>@keys Vim bindings</vh>
+<v t="ekr.20140721165014.19160"><vh>Vim User Documentation</vh></v>
+<v t="ekr.20140721165014.19161"><vh>Vim History</vh></v>
+<v t="ekr.20140721165014.19162"><vh>Vim Developer Documentation</vh></v>
+<v t="ekr.20140721165014.19163"><vh>Vim settings</vh>
+<v t="ekr.20140721165014.19164"><vh>@strings [command,insert, overwrite] top_level_unbound_key_action = command</vh></v>
+<v t="ekr.20140721165014.19165"><vh>@bool stayInTreeAfterEditHeadline = True</vh></v>
+<v t="ekr.20140721165014.19166"><vh>@bool outline_pane_has_initial_focus = True</vh></v>
+<v t="ekr.20140721165014.19167"><vh>@bool stayInTreeAfterSelect = True</vh></v>
+</v>
+<v t="ekr.20140721165014.19168"><vh>@shortcuts - vi miscellaneous</vh>
+<v t="ekr.20140721165014.19169"><vh>@mode tree-undo</vh></v>
+<v t="ekr.20140721165014.19170"><vh>@mode tree-redo</vh></v>
+<v t="ekr.20140721165014.19171"><vh>@mode focus-to-tree</vh></v>
+<v t="ekr.20140721165014.19172"><vh>@mode focus-to-body</vh></v>
+<v t="ekr.20140721165014.19173"><vh>@mode body-command-line</vh>
+<v t="ekr.20140721165014.19174"><vh>@mode body-command-revert</vh></v>
+<v t="ekr.20140721165014.19175"><vh>@mode body-command-save</vh>
+<v t="ekr.20140721165014.19176"><vh>@mode body-command-save-quit</vh>
+<v t="ekr.20140721165014.19177"><vh>@mode body-command-save-quit-return</vh></v>
+</v>
+</v>
+<v t="ekr.20140721165014.19178"><vh>@mode body-command-quit</vh></v>
+</v>
+<v t="ekr.20140721165014.19179"><vh>@mode tree-command-line</vh>
+<v t="ekr.20140721165014.19180"><vh>@mode tree-command-revert</vh></v>
+<v t="ekr.20140721165014.19181"><vh>@mode tree-command-save</vh>
+<v t="ekr.20140721165014.19182"><vh>@mode tree-command-save-only</vh></v>
+<v t="ekr.20140721165014.19183"><vh>@mode tree-command-save-quit</vh>
+<v t="ekr.20140721165014.19184"><vh>@mode tree-command-save-quit-return</vh></v>
+</v>
+</v>
+<v t="ekr.20140721165014.19185"><vh>@mode tree-command-quit</vh></v>
+</v>
+<v t="ekr.20140721165014.19186"><vh>@mode body-shift-z</vh>
+<v t="ekr.20140721165014.19187"><vh>@mode body-shift-z-save-quit</vh></v>
+</v>
+</v>
+<v t="ekr.20140721165014.19188"><vh>@shortcuts - vi in Outline pane</vh>
+<v t="ekr.20140721165014.19189"><vh>@mode tree-yank-object</vh></v>
+<v t="ekr.20140721165014.19190"><vh>@mode tree-change-object</vh></v>
+<v t="ekr.20140721165014.19191"><vh>@mode tree-delete-text-object</vh></v>
+<v t="ekr.20140721165014.19192"><vh>@mode tree-copy-node</vh></v>
+<v t="ekr.20140721165014.19193"><vh>@mode tree-paste-node</vh></v>
+<v t="ekr.20140721165014.19194"><vh>@mode tree-delete-node</vh></v>
+<v t="ekr.20140721165014.19195"><vh>@mode tree-goto-last-node</vh></v>
+<v t="ekr.20140721165014.19196"><vh>@mode tree-goto</vh>
+<v t="ekr.20140721165014.19197"><vh>@mode node-goto-first-node</vh></v>
+</v>
+<v t="ekr.20140721165014.19198"><vh>@mode tree-goto-next-visible</vh></v>
+<v t="ekr.20140721165014.19199"><vh>@mode tree-goto-prev-visible</vh></v>
+<v t="ekr.20140721165014.19200"><vh>@mode tree-search-forward</vh></v>
+<v t="ekr.20140721165014.19201"><vh>@mode tree-replace-string</vh></v>
+<v t="ekr.20140721165014.19202"><vh>@mode tree-contract-or-go-left</vh></v>
+<v t="ekr.20140721165014.19203"><vh>@mode tree-contract-node</vh></v>
+<v t="ekr.20140721165014.19204"><vh>@mode tree-expand-and-go-right</vh></v>
+<v t="ekr.20140721165014.19205"><vh>@mode tree-move-outline-up</vh></v>
+<v t="ekr.20140721165014.19206"><vh>@mode tree-move-outline-down</vh></v>
+<v t="ekr.20140721165014.19207"><vh>@mode tree-move-outline-left</vh></v>
+<v t="ekr.20140721165014.19208"><vh>@mode tree-move-outline-right</vh></v>
+<v t="ekr.20140721165014.19209"><vh>@mode tree-clone-node</vh></v>
+<v t="ekr.20140721165014.19210"><vh>@mode tree-goto-next-clone-node</vh></v>
+<v t="ekr.20140721165014.19211"><vh>@mode tree-mark-node</vh></v>
+<v t="ekr.20140721165014.19212"><vh>@mode tree-goto-next-marked-node</vh></v>
+<v t="ekr.20140721165014.19213"><vh>@mode tree-unmark-all-nodes</vh></v>
+<v t="ekr.20140721165014.19214"><vh>Body actions from Tree pane</vh>
+<v t="ekr.20140721165014.19215"><vh>@mode tree-goto-next-line</vh></v>
+<v t="ekr.20140721165014.19216"><vh>@mode tree-goto-prev-line</vh></v>
+</v>
+</v>
+<v t="ekr.20140721165014.19217"><vh>@shortcuts - vi in Body pane</vh>
+<v t="ekr.20140721165014.19218"><vh>@mode body-search-forward</vh></v>
+<v t="ekr.20140721165014.19219"><vh>@mode body-search-backward</vh></v>
+<v t="ekr.20140721165014.19220"><vh>@mode body-search-everywhere</vh></v>
+<v t="ekr.20140721165014.19221"><vh>@mode body-search-options</vh>
+<v t="ekr.20140721165014.19222"><vh>@mode body-search-all-nodes</vh></v>
+<v t="ekr.20140721165014.19223"><vh>@mode body-search-toggle-headline</vh></v>
+<v t="ekr.20140721165014.19224"><vh>@mode body-search-toggle-body</vh></v>
+<v t="ekr.20140721165014.19225"><vh>@mode body-search-toggle-mark</vh>
+<v t="ekr.20140721165014.19226"><vh>@mode body-search-toggle-mark-finds</vh></v>
+<v t="ekr.20140721165014.19227"><vh>@mode body-search-toggle-mark-changes</vh></v>
+</v>
+<v t="ekr.20140721165014.19228"><vh>@mode body-search-toggle-regex</vh></v>
+</v>
+<v t="ekr.20140721165014.19229"><vh>@mode body-replace-string</vh></v>
+<v t="ekr.20140721165014.19230"><vh>@mode body-paste-then-find</vh></v>
+<v t="ekr.20140721165014.19231"><vh>@mode body-goto-end-of-buffer</vh></v>
+<v t="ekr.20140721165014.19232"><vh>@mode body-g</vh>
+<v t="ekr.20140721165014.19233"><vh>@mode body-g-beginning-of-buffer</vh>
+<v t="ekr.20140721165014.19234"><vh>@mode body-g-q</vh></v>
+<v t="ekr.20140721165014.19235"><vh>@mode body-g-w</vh>
+<v t="ekr.20140721165014.19236"><vh>@mode body-g-wq-a</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20140721165014.19237"><vh>@mode body-new-line-below</vh></v>
+<v t="ekr.20140721165014.19238"><vh>@mode body-new-line-above</vh></v>
+<v t="ekr.20140721165014.19239"><vh>@mode body-append</vh></v>
+<v t="ekr.20140721165014.19240"><vh>@mode body-insert-at-indent</vh></v>
+<v t="ekr.20140721165014.19241"><vh>@mode body-delete-to-end-of-line</vh></v>
+<v t="ekr.20140721165014.19242"><vh>@mode body-delete-object</vh>
+<v t="ekr.20140721165014.19243"><vh>@mode body-delete-line</vh></v>
+<v t="ekr.20140721165014.19244"><vh>@mode body-delete-to-end-of-word</vh></v>
+<v t="ekr.20140721165014.19245"><vh>@mode body-delete-to-begin-of-word</vh></v>
+<v t="ekr.20140721165014.19246"><vh>@mode body-delete-to-end-of-sentence</vh></v>
+<v t="ekr.20140721165014.19247"><vh>@mode body-delete-to-beginning-of-sentence</vh></v>
+<v t="ekr.20140721165014.19248"><vh>@mode body-delete-to-end-of-paragraph</vh></v>
+<v t="ekr.20140721165014.19249"><vh>@mode body-delete-to-beginning-of-paragraph</vh></v>
+<v t="ekr.20140721165014.19250"><vh>@mode body-delete-to-g-object</vh>
+<v t="ekr.20140721165014.19251"><vh>@mode body-delete-to-beginning-of-buffer</vh></v>
+</v>
+<v t="ekr.20140721165014.19252"><vh>@mode body-delete-to-end-of-buffer</vh></v>
+<v t="ekr.20140721165014.19253"><vh>@mode body-delete-section</vh></v>
+<v t="ekr.20140721165014.19254"><vh>@mode body-delete-to-char</vh></v>
+<v t="ekr.20140721165014.19255"><vh>@mode body-delete-selected</vh></v>
+</v>
+<v t="ekr.20140721165014.19256"><vh>@mode body-yank-to-end-of-line</vh></v>
+<v t="ekr.20140721165014.19257"><vh>@mode body-yank-object</vh>
+<v t="ekr.20140721165014.19258"><vh>@mode body-yank-line</vh></v>
+<v t="ekr.20140721165014.19259"><vh>@mode body-yank-to-beginning-of-next-word</vh></v>
+<v t="ekr.20140721165014.19260"><vh>@mode body-yank-to-beginning-of-current-word</vh></v>
+<v t="ekr.20140721165014.19261"><vh>@mode body-yank-to-end-of-sentence</vh></v>
+<v t="ekr.20140721165014.19262"><vh>@mode body-yank-to-beginning-of-sentence</vh></v>
+<v t="ekr.20140721165014.19263"><vh>@mode body-yank-to-end-of-paragraph</vh></v>
+<v t="ekr.20140721165014.19264"><vh>@mode body-yank-to-beginning-of-paragraph</vh></v>
+<v t="ekr.20140721165014.19265"><vh>@mode body-yank-to-g-object</vh>
+<v t="ekr.20140721165014.19266"><vh>@mode body-yank-to-beginning-of-buffer</vh></v>
+</v>
+<v t="ekr.20140721165014.19267"><vh>@mode body-yank-to-end-of-buffer</vh></v>
+<v t="ekr.20140721165014.19268"><vh>@mode body-yank-section</vh></v>
+<v t="ekr.20140721165014.19269"><vh>@mode body-yank-selected</vh></v>
+</v>
+<v t="ekr.20140721165014.19270"><vh>@mode body-change-to-end-of-line</vh></v>
+<v t="ekr.20140721165014.19271"><vh>@mode body-change-object</vh>
+<v t="ekr.20140721165014.19272"><vh>@mode body-change-line</vh></v>
+<v t="ekr.20140721165014.19273"><vh>@mode body-change-to-end-of-word</vh></v>
+<v t="ekr.20140721165014.19274"><vh>@mode body-change-to-beginning-of-word</vh></v>
+<v t="ekr.20140721165014.19275"><vh>@mode body-change-to-end-of-sentence</vh></v>
+<v t="ekr.20140721165014.19276"><vh>@mode body-change-to-beginning-of-sentence</vh></v>
+<v t="ekr.20140721165014.19277"><vh>@mode body-change-to-end-of-paragraph</vh></v>
+<v t="ekr.20140721165014.19278"><vh>@mode body-change-to-beginning-of-paragraph</vh></v>
+<v t="ekr.20140721165014.19279"><vh>@mode body-change-to-g-object</vh>
+<v t="ekr.20140721165014.19280"><vh>@mode body-change-to-beginning-of-buffer</vh></v>
+</v>
+<v t="ekr.20140721165014.19281"><vh>@mode body-change-to-end-of-buffer</vh></v>
+<v t="ekr.20140721165014.19282"><vh>@mode body-change-section</vh></v>
+<v t="ekr.20140721165014.19283"><vh>@mode body-change-selected</vh></v>
+</v>
+<v t="ekr.20140721165014.19284"><vh>@mode body-substitute-char</vh></v>
+<v t="ekr.20140721165014.19285"><vh>@mode body-substitute-line</vh></v>
+<v t="ekr.20140721165014.19286"><vh>@mode body-indent</vh>
+<v t="ekr.20140721165014.19287"><vh>@mode body-indent-line</vh></v>
+<v t="ekr.20140721165014.19288"><vh>@mode body-indent-to-end-of-sentence</vh></v>
+<v t="ekr.20140721165014.19289"><vh>@mode body-indent-to-beginning-of-sentence</vh></v>
+<v t="ekr.20140721165014.19290"><vh>@mode body-indent-to-end-of-paragraph</vh></v>
+<v t="ekr.20140721165014.19291"><vh>@mode body-indent-to-beginning-of-paragraph</vh></v>
+<v t="ekr.20140721165014.19292"><vh>@mode body-indent-to-beginning-of-buffer</vh></v>
+<v t="ekr.20140721165014.19293"><vh>@mode body-indent-to-end-of-buffer</vh></v>
+</v>
+<v t="ekr.20140721165014.19294"><vh>@mode body-unindent</vh>
+<v t="ekr.20140721165014.19295"><vh>@mode body-unindent-less</vh></v>
+<v t="ekr.20140721165014.19296"><vh>@mode body-unindent-to-end-of-paragraph</vh></v>
+<v t="ekr.20140721165014.19297"><vh>@mode body-unindent-to-beginning-of-paragraph</vh></v>
+<v t="ekr.20140721165014.19298"><vh>@mode body-unindent-to-end-of-sentence</vh></v>
+<v t="ekr.20140721165014.19299"><vh>@mode body-unindent-to-beginning-of-sentence</vh></v>
+<v t="ekr.20140721165014.19300"><vh>@mode body-unindent-to-end-of-buffer</vh></v>
+<v t="ekr.20140721165014.19301"><vh>@mode body-unindent-to-beginning-of-buffer</vh></v>
+</v>
+<v t="ekr.20140721165014.19302"><vh>@mode body-goto-indent-previous-line</vh></v>
+<v t="ekr.20140721165014.19303"><vh>@mode body-goto-after-paragraph</vh></v>
+<v t="ekr.20140721165014.19304"><vh>@mode body-goto-before-paragraph</vh></v>
+<v t="ekr.20140721165014.19305"><vh>@mode body-join</vh></v>
+<v t="ekr.20140721165014.19306"><vh>@mode body-match</vh></v>
+<v t="ekr.20140721165014.19307"><vh>Tree actions from Body pane</vh>
+<v t="ekr.20140721165014.19308"><vh>@mode body-goto-next-visible</vh></v>
+<v t="ekr.20140721165014.19309"><vh>@mode body-goto-prev-visible</vh></v>
+<v t="ekr.20140721165014.19310"><vh>@mode body-expand-and-go-right</vh></v>
+<v t="ekr.20140721165014.19311"><vh>@mode body-contract-or-go-left</vh></v>
+</v>
+<v t="ekr.20140721165014.19312"><vh>@mode vim-window-commands</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20140721165014.19148"><vh>@keys Default Emacs shortcuts</vh>
+<v t="ekr.20140721165014.19149"><vh>@shortcuts Emacs: A-E</vh></v>
+<v t="ekr.20140721165014.19150"><vh>@shortcuts Emacs: F-M</vh></v>
+<v t="ekr.20140721165014.19151"><vh>@shortcuts Emacs: N-Z</vh></v>
+<v t="ekr.20140721165014.19152"><vh>@shortcuts Emacs: missing</vh></v>
+<v t="ekr.20140721165014.19153"><vh>@shortcuts shift-f-keys</vh></v>
+</v>
+<v t="ekr.20140721165014.19154"><vh>@keys No bindings</vh>
+<v t="ekr.20140721165014.19155"><vh>@shortcuts No bindings: A-E</vh></v>
+<v t="ekr.20140721165014.19156"><vh>@shortcuts No bindings: F-M</vh></v>
+<v t="ekr.20140721165014.19157"><vh>@shortcuts No bindings: N-Z</vh></v>
+<v t="ekr.20140721165014.19158"><vh>@shortcuts shift-f-keys</vh></v>
+</v>
+</v>
 </v>
 <v t="ekr.20110611092035.16491"><vh>Leo Directives</vh>
 <v t="ekr.20041119034357.32"><vh>@int page_width = 80</vh></v>
@@ -1415,7 +1615,6 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline_tabs_show_close = True</vh></v>
 </v>
 </v>
-<v t="ekr.20060603215208"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -2163,6 +2362,8 @@ optionalCommandNames = [
     'prev-slide-command','prev-slide-show-command',
     # The ipython plugin.
     'start-ipython','get-ipython-results','push-to-ipython',
+    # The viewrendered plugin.
+    'vr-toggle',
 ]
 
 setNames = []
@@ -5957,6 +6158,3031 @@ Alt+Ctrl+S set-find-suboutline-only</t>
 <t tx="ekr.20131215083347.18154"></t>
 <t tx="ekr.20140718064506.18998"></t>
 <t tx="ekr.20140718064506.18999">&amp;Refresh From Disk</t>
+<t tx="ekr.20140721165014.19146">This node contains unused key bindings. To make them active, copy them to
+your copy of myLeoSettings.leo.
+</t>
+<t tx="ekr.20140721165014.19147">@nocolor
+
+This setting determines the initial binding for otherwise-unbound keystrokes
+when no mode is in effect.  Note: the keyboard-quit command exits all modes.
+
+The valid values are::
+
+ignore:  Leo ignores the key (like Vim).
+insert:  Leo inserts the key at the cursor (like Emacs)
+overwrite: Leo replaces the character at the cursor.</t>
+<t tx="ekr.20140721165014.19148"></t>
+<t tx="ekr.20140721165014.19149">abbrev-list                         = None
+abbrev-read                         = None
+abbrev-write                        = None
+abort-edit-headline                 = Shift-Esc
+about-leo                           = None
+add-comments                        = Ctrl-(
+abbrev-add-global                   = None
+abbrev-kill-all                     = None
+advertised-undo                     = Ctrl-underscore
+auto-complete                       = None
+back-char                           = Ctrl-b
+back-char-extend-selection          = None
+back-paragraph                      = Alt-braceleft
+back-paragraph-extend-selection     = None
+back-sentence                       = Alt-a
+back-sentence-extend-selection      = None
+back-to-indentation                 = Alt-m
+back-word                           = Alt-b          
+back-word                           = Ctrl-Left
+back-word-extend-selection          = None
+backward-delete-char                = Delete
+backward-delete-char                = Shift-Delete
+backward-kill-paragraph             = None
+backward-kill-sentence              = None
+backward-kill-word                  = Alt-Delete
+beginning-of-buffer                 ! text =  Alt-less
+beginning-of-buffer                 ! text = Ctrl-Home
+beginning-of-buffer-extend-selection= None
+beginning-of-line                   = Alt-Up        
+beginning-of-line                   = Ctrl-a
+beginning-of-line-extend-selection  = None
+buffer-append-to                    = None
+buffer-kill                         = None
+buffer-prepend-to                   = None
+buffer-switch-to                    = None
+buffers-list                        = None
+buffers-list-alphabetically         = None
+capitalize-word                     = Alt-c
+cascade-windows                     = None
+center-line                         = Alt-s
+center-region                       = None
+#check-all-python-code              = None
+check-outline                       = None
+# check-python-code                 = None
+clear-extend-mode                   = None
+clear-kill-ring                     = None
+clear-recent-files                  = None
+clone-node                          = Ctrl-`
+close-window                        = Ctrl-F4   # (was Alt-F4) Fixes bug 824087: Alt+F4 is not the same as Alt+F, c
+contract-all                        = None      # Alt-- conflicts with negative-arg.
+contract-node                       = Alt-[
+contract-or-go-left                 = Alt-LtArrow
+contract-parent                     = None
+convert-all-blanks                  = None
+convert-all-tabs                    = None
+convert-blanks                      = Shift-Ctrl-B
+convert-tabs                        = Shift-Ctrl-J
+copy-node                           = Shift-Ctrl-C
+copy-text                           = None      # Ctrl-C conflicts with quick-command.
+count-region                        = Alt-equal
+cut-node                            = Shift-Ctrl-X
+cut-text                            = None      # Ctrl-X (possible)
+cycle-focus                         = None
+dabbrev-completion                  = Alt-Ctrl-slash
+dabbrev-expands                     = Alt-slash
+de-hoist                            = None
+delete-char                         = Ctrl-d
+delete-comments                     = Ctrl-)
+delete-indentation                  = Alt-asciicircum
+delete-node                         = Shift-Ctrl-BkSp
+delete-spaces                       = Alt-backslash
+demote                              = Ctrl-}
+digit-argument                      = None
+directory-make                      = None
+directory-remove                    = None
+downcase-region                     = None
+downcase-word                       = Alt-l
+dump-outline                        = None
+edit-headline                       = Ctrl-H
+end-edit-headline                   = None             # Esc conflicts with watch-escape.
+end-of-buffer                       ! text = Alt-greater
+end-of-buffer                       ! text = Ctrl-End
+end-of-buffer-extend-selection      ! text = Ctrl-Shift-End
+end-of-line                         = Alt-Down      
+end-of-line                         = Ctrl-e
+end-of-line-extend-selection        = None
+equal-sized-panes                   = Alt-Shift-E
+escape                              = Escape
+eval-expression                     = Alt-colon
+eval-expression                     = None
+exchange-point-mark                 = None  # Should be Ctrl-X Ctrl-X.
+execute-script                      = None             # Ctrl-e conflicts with end-of-line
+exit-leo                            = Ctrl-Q
+exit-named-mode                     = None
+expand-all                          = None
+expand-and-go-right                 = None
+expand-next-level                   = None
+expand-node                         = Alt-]
+expand-or-go-right                  = Alt-RtArrow
+expand-prev-level                   = None
+# expand-region-abbrevs             = None
+expand-to-level-1                   = None
+expand-to-level-2                   = None
+expand-to-level-3                   = None
+expand-to-level-4                   = None
+expand-to-level-5                   = None
+expand-to-level-6                   = None
+expand-to-level-7                   = None
+expand-to-level-8                   = None
+expand-to-level-9                   = None
+export-headlines                    = None
+extend-to-paragraph                 = Alt-h
+extract                             = Shift-Ctrl-D
+extract-names                       = Shift-Ctrl-N
+# extract-python-method               = None
+# extract-section                     = Shift-Ctrl-E</t>
+<t tx="ekr.20140721165014.19150">file-delete                         = None
+file-diff-files                     = None
+file-insert                         = None
+fill-paragraph                      = Alt-q
+fill-region                         = None
+fill-region-as-paragraph            = None
+find-tab-hide                       = None
+replace                             = Ctrl-=
+replace-all                         = None  # Not recommended to bind this to a shortcut.
+replace-then-find                   = Ctrl--
+find-next                           = F3
+find-prev                           = F2
+find-tab-open                       = None
+flatten-outline                     = None
+flush-lines                         = None
+focus-to-body                       = None
+focus-to-log                        = None
+focus-to-minibuffer                 = None
+focus-to-tree                       = None
+forward-char                        = Ctrl-f
+forward-char-extend-selection       = None
+forward-paragraph                   = Alt-braceright
+forward-paragraph-extend-selection  = None
+forward-sentence                    = Alt-e
+forward-sentence-extend-selection   = None
+forward-word                        = Alt-f
+forward-word                        = Ctrl-Right
+forward-word-extend-selection       = None
+full-command                        = Alt-x
+go-back                             = None
+go-forward                          = None
+goto-char                           = None
+goto-first-node                     = Alt-Shift-G
+goto-first-sibling                  = None
+goto-last-node                      = Alt-Shift-H
+goto-last-sibling                   = None
+goto-last-visible-node              = None
+goto-line                           = Alt-g
+goto-line                           = None         # Emacs version is less powerful than Leo version
+goto-next-changed                   = None         # Alt-D conflicts with kill-word
+goto-next-clone                     = None         # Removed Alt-N: not useful enough.
+goto-next-marked                    = None         # Alt-M conflicts with back-to-indentation.
+goto-next-node                      = Alt-Shift-DnArrow
+goto-next-sibling                   = Alt-Shift-S
+goto-next-visible                   = None         # Alt-DnArrow conflicts with end-of-line.
+goto-parent                         = Alt-Shift-P
+goto-prev-node                      = Alt-Shift-UpArrow
+goto-prev-sibling                   = Alt-Shift-R
+goto-prev-visible                   = None         # Alt-UpArrow conflicts with beginning-of-line.
+help-for-minibuffer                 = None
+hide-spell-tab                      = None
+hoist                               = None
+how-many                            = None
+iconify-frame                       = Ctrl-z
+import-file                         = None
+# import-at-file                      = None         # Removed Shift-Ctrl-F: not useful enough.
+# import-at-root                      = None
+# import-cweb-files                   = None
+# import-derived-file                 = None
+# import-flattened-outline            = None
+# import-noweb-files                  = None
+indent-region                       = Alt-Ctrl-backslash
+indent-region                       = Ctrl-]
+indent-relative                     = None
+indent-rigidly                      = None
+indent-to-comment-column            = Alt-semicolon
+insert-body-time                    = None         # Removed Shift-Ctrl-G: not useful enough.
+insert-child                        = None
+insert-headline-time                = None         # Removed Shift-Ctrl-H: not useful enough.
+insert-newline                      = Ctrl-o
+insert-node                         = Ctrl-I
+insert-node                         = Insert
+insert-node                         = Shift-Insert
+insert-parentheses                  = Alt-parenleft
+abbrev-inverse-add-global           = None
+isearch-backward                    = Ctrl-R
+isearch-backward-regexp             = Alt-Ctrl-r
+isearch-forward                     = Ctrl-S
+isearch-forward-regexp              = Alt-Ctrl-s
+keep-lines                          = None
+keyboard-quit                       = Ctrl-g
+kill-line                           = Ctrl-k
+kill-paragraph                      = None
+kill-region                         = Ctrl-w
+kill-region-save                    = Alt-w
+kill-sentence                       = Alt-k
+kill-word                           = Alt-d
+line-number                         = None
+mode-help                           = None
+move-past-close-extend-selection    = None</t>
+<t tx="ekr.20140721165014.19151">mark                            = Ctrl-M
+mark-changed-items              = None         # Alt-C: now quick-command.
+mark-subheads                   = None         # Alt-S conflicts with center-line.
+match-brackets                  = None         # Ctrl-K conflicts with kill-line.
+minimize-all                    = None
+move-outline-down               = None         # Removed Ctrl-D: no point if other moves are not defined.
+move-outline-left               = None         # Removed Ctrl-L: no point if other moves are not defined.
+move-outline-right              = None         # Ctrl-R conflicts with search-backward.
+move-outline-up                 = None         # Ctrl-U confllicts with universal-argument.
+move-past-close                 = Alt-parenright
+negative-argument               = Alt-minus
+new                             = None         # Ctrl-n conflicts with next-line.
+newline-and-indent              = Ctrl-j
+next-line                       = Ctrl-n
+next-line-extend-selection      = None
+number-command                  = None
+number-command-0                = Alt-0
+number-command-1                = Alt-1
+number-command-2                = Alt-2
+number-command-3                = Alt-3
+number-command-4                = Alt-4
+number-command-5                = Alt-5
+number-command-6                = Alt-6
+number-command-7                = Alt-7
+number-command-8                = Alt-8
+number-command-9                = Alt-9 
+# open-compare-window             = None
+open-leoDocs-leo                = None
+open-leoPlugins-leo             = None
+open-leoSettings-leo            = None
+open-scripts-leo                = None
+open-offline-tutorial           = None
+open-online-home                = None
+# open-online-tutorial            = None
+open-outline                    = None         # Ctrl-O conflicts with insert-newline
+open-python-window              = None         # Removed Alt-P: not useful enough.
+open-spell-tab                  = None
+open-with                       = None
+outline-to-cweb                 = None
+outline-to-noweb                = None
+paste-node                      = Shift-Ctrl-V
+paste-retaining-clones          = None
+paste-text                      = None      # Ctrl-V conflicts with scroll-down-page
+pretty-print-all-python-code    = None
+pretty-print-python-code        = None
+previous-line                   = Ctrl-p
+previous-line-extend-selection  = None
+print-bindings                  = None
+print-commands                  = None
+promote                         = Ctrl-{            
+# query-replace                   = Alt-percent
+# query-replace-regex             = None
+quick-command                   = Ctrl-c
+register-append-to              = None
+re-search-backward              = None
+re-search-forward               = None
+read-at-file-nodes              = None
+read-outline-only               = None         # Removed Shift-Ctrl-R: not useful enough.
+redo                            = None         # Ctrl-Z not defined, so Shift-Ctrl-Z less useful.
+rectangle-clear                 = None
+rectangle-close                 = None
+rectangle-delete                = None
+rectangle-kill                  = None
+rectangle-open                  = None
+rectangle-string                = None
+rectangle-yank                  = None
+reformat-paragraph              = Shift-Ctrl-P
+register-copy-to                = None
+register-copy-rectangle-to      = None
+register-jump-to                = None
+register-increment              = None
+register-insert                 = None
+register-point-to               = None
+register-prepend-to             = None
+register-view                   = None
+remove-blank-lines              = None
+remove-sentinels                = None
+repeat-complex-command          = None
+# replace-string                  = None
+resize-to-screen                = None
+reverse-region                  = None
+revert                          = None
+save-buffers-kill-leo           = None # Should be Ctrl-x Ctrl-c
+save-file                       = None         # Ctrl-s conflicts with isearch-forward.
+save-file-as                    = Shift-Ctrl-S
+save-file-to                    = None
+scroll-down-half-page           = None
+scroll-down-line                = None
+scroll-down-page                = Ctrl-v
+scroll-up-half-page             = None
+scroll-up-line                  = None
+scroll-up-page                  = Alt-v
+search-backward                 = None
+search-forward                  = None
+# select-all                    = Ctrl-a # Was beginning-of-line.
+set-colors                      = None
+set-comment-column              = None
+set-extend-mode                 = None
+set-fill-column                 = None
+set-fill-prefix                 = None
+set-find-everywhere                 = None
+set-find-node-only                  = None
+set-find-suboutline-only            = None
+set-font                        = None
+set-command-state               = None
+set-insert-state                = None
+# set-mark-command              = Ctrl-Shift-at
+set-overwrite-state             = None
+settings                        = None  # Ctrl-Y conflicts with yank.
+shell-command                   = Alt-exclam
+shell-command-on-region         = Alt-bar
+show-colors                     = None
+show-fonts                      = None
+# show-invisibles                 = Alt-V
+show-invisibles                 = None  # Alt-V conflicts with scroll-up-page .
+sort-children                   = None
+sort-columns                    = None
+sort-fields                     = None
+sort-lines                      = None
+sort-siblings                   = Shift-Alt-A  # Alt-A conflicts with back-sentence.
+spell-change                    = None
+spell-change-then-find          = None
+spell-find                      = None
+spell-ignore                    = None
+split-line                      = Alt-Ctrl-o
+suspend                         = None
+tabify                          = None
+tangle                          = None      
+tangle-all                      = None
+tangle-marked                   = None
+toggle-abbrev-mode              = None
+toggle-active-pane              = None      # Ctrl-T conflicts with swap-characters.
+toggle-angle-brackets           = None
+toggle-extend-mode              = None
+toggle-find-ignore-case-option      = None
+toggle-find-in-body-option          = None
+toggle-find-in-headline-option      = None
+toggle-find-mark-changes-option     = None
+toggle-find-mark-finds-option       = None
+toggle-find-regex-option            = None
+# toggle-find-reverse-option          = None
+toggle-find-word-option             = None
+toggle-find-wrap-around-option      = None
+toggle-split-direction          = None
+transpose-chars                 = Ctrl-t
+transpose-lines                 = None
+transpose-words                 = Alt-t
+undo                            = None         # Ctrl-Z conflicts with suspend.
+unindent-region                 = None
+universal-argument              = Ctrl-u
+unmark-all                      = None         # Alt-U: conflicts with upcase-word.
+untabify                        = None
+untangle                        = None         # Removed Shift-Ctrl-U: not useful enough
+untangle-all                    = None
+untangle-marked                 = None
+upcase-region                   = None
+upcase-word                     = Alt-u
+view-lossage                    = None
+weave                           = None
+what-line                       = None
+word-search-backward            = None
+word-search-forward             = None
+write-at-file-nodes             = Shift-Ctrl-W
+write-dirty-at-file-nodes       = None
+write-missing-at-file-nodes     = None
+write-outline-only              = None 
+yank                            = Ctrl-y
+yank-pop                        = Alt-y
+zap-to-character                = Alt-z
+</t>
+<t tx="ekr.20140721165014.19152"></t>
+<t tx="ekr.20140721165014.19153">do-nothing = Shift-F1
+do-nothing = Shift-F2
+do-nothing = Shift-F3
+do-nothing = Shift-F4
+do-nothing = Shift-F5
+do-nothing = Shift-F6
+do-nothing = Shift-F7
+do-nothing = Shift-F8
+do-nothing = Shift-F9
+do-nothing = Shift-F10
+do-nothing = Shift-F11
+do-nothing = Shift-F12
+</t>
+<t tx="ekr.20140721165014.19154">These are no options for this keyset: we assume other options sets will also be in effect.
+
+**Important**:
+    
+- With this keyset in effect other binding sets need only specify the commands
+that actually have bindings.
+    
+- These definitions do not interfere with other settings, and do not cause
+warnings about duplicate bindings.
+
+- The Check Bindings script only checks for missing bindings in this set.
+</t>
+<t tx="ekr.20140721165014.19155">abbrev-kill-all                     = None
+abbrev-list                         = None
+abbrev-read                         = None
+abbrev-write                        = None
+abort-edit-headline                 = None
+about-leo                           = None
+activate-cmds-menu                  = None
+activate-edit-menu                  = None
+activate-file-menu                  = None
+activate-help-menu                  = None
+activate-outline-menu               = None
+activate-plugins-menu               = None
+activate-window-menu                = None
+add-comments                        = None
+add-editor                          = None
+abbrev-add-global                   = None
+add-space-to-lines                  = None
+add-tab-to-lines                    = None
+advertised-undo                     = None
+auto-complete                       = None
+auto-complete-force                 = None
+back-char                           = None
+back-char-extend-selection          = None
+back-page                           = None
+back-page-extend-selection          = None
+back-paragraph                      = None
+back-paragraph-extend-selection     = None
+back-sentence                       = None
+back-sentence-extend-selection      = None
+back-to-home                        = None
+back-to-indentation                 = None
+back-word                           = None
+back-word-extend-selection          = None
+backward-delete-char                = None
+backward-delete-word                = None
+backward-find-character                     = None
+backward-find-character-extend-selection    = None
+backward-kill-paragraph             = None
+backward-kill-sentence              = None
+backward-kill-word                  = None
+beginning-of-buffer                 = None
+beginning-of-buffer-extend-selection= None
+beginning-of-line                   = None
+beginning-of-line-extend-selection  = None
+buffer-append-to                    = None
+buffer-kill                         = None
+buffer-prepend-to                   = None
+buffer-switch-to                    = None
+buffers-list                        = None
+buffers-list-alphabetically         = None
+capitalize-word                     = None
+cascade-windows                     = None
+center-line                         = None
+center-region                       = None
+chapter-clone-node-to               = None
+chapter-copy-node-to                = None
+chapter-create                      = None
+chapter-move-node-to                = None
+chapter-remove                      = None
+chapter-select                      = None
+# check-all-python-code             = None
+check-outline                       = None
+# check-python-code                 = None
+# check-spelling                    = None
+clean-all-lines                     = None
+clean-lines                         = None
+clean-recent-files                  = None
+clear-extend-mode                   = None
+clear-kill-ring                     = None
+clear-recent-files                  = None
+clear-selected-text                 = None
+click-click-box                     = None
+click-headline                      = None
+click-icon-box                      = None
+clone-find-all                      = None
+clone-node                          = None
+close-window                        = None
+# cm-external-editor                  = None
+contract-all                        = None
+contract-node                       = None
+contract-or-go-left                 = None
+contract-body-pane                  = None
+contract-log-pane                   = None
+contract-outline-pane               = None
+contract-pane                       = None
+contract-parent                     = None
+convert-all-blanks                  = None
+convert-all-tabs                    = None
+convert-blanks                      = None
+convert-tabs                        = None
+copy-node                           = None
+copy-text                           = None
+# copy-to-buffer                      = None
+count-region                        = None
+cut-node                            = None
+cut-text                            = None
+cycle-all-focus                     = None
+cycle-focus                         = None
+cycle-editor-focus                  = None
+dabbrev-completion                  = None
+dabbrev-expands                     = None
+debug                               = None
+de-hoist                            = None
+delete-char                         = None
+delete-comments                     = None
+delete-editor                       = None
+delete-first-icon                   = None
+delete-indentation                  = None
+delete-last-icon                    = None
+delete-node                         = None
+delete-spaces                       = None
+delete-word                         = None
+demote                              = None
+digit-argument                      = None
+directory-make                      = None
+directory-remove                    = None
+disable-autocompleter               = None
+disable-calltips                    = None
+do-nothing                          = None
+downcase-region                     = None
+downcase-word                       = None
+double-click-headline               = None
+double-click-icon-box               = None
+dump-outline                        = None
+edit-headline                       = None
+enable-autocompleter                = None
+enable-calltips                     = None
+end-edit-headline                   = None
+# end-kbd-macro                     = None
+end-of-buffer                       = None
+end-of-buffer-extend-selection      = None
+end-of-line                         = None
+end-of-line-extend-selection        = None
+equal-sized-panes                   = None
+escape                              = None
+eval-expression                     = None
+exchange-point-mark                 = None
+push-to-ipython                     = None
+execute-script                      = None
+exit-leo                            = None
+exit-named-mode                     = None
+expand-all                          = None
+expand-and-go-right                 = None
+expand-next-level                   = None
+expand-node                         = None
+expand-or-go-right                  = None
+expand-body-pane                    = None
+expand-log-pane                     = None
+expand-outline-pane                 = None
+expand-pane                         = None
+expand-prev-level                   = None
+# expand-region-abbrevs             = None
+expand-to-level-1                   = None
+expand-to-level-2                   = None
+expand-to-level-3                   = None
+expand-to-level-4                   = None
+expand-to-level-5                   = None
+expand-to-level-6                   = None
+expand-to-level-7                   = None
+expand-to-level-8                   = None
+expand-to-level-9                   = None
+export-headlines                    = None
+extend-to-line                      = None
+extend-to-paragraph                 = None
+extend-to-sentence                  = None
+extend-to-word                      = None
+extract                             = None
+extract-names                       = None
+# extract-python-method               = None
+# extract-section                     = None
+</t>
+<t tx="ekr.20140721165014.19156">file-delete                         = None
+file-diff-files                     = None
+file-insert                         = None
+fill-paragraph                      = None
+fill-region                         = None
+fill-region-as-paragraph            = None
+find-character                      = None
+find-character-extend-selection     = None
+find-clone-all                      = None
+find-next-clone                     = None
+find-next                           = None
+find-all                            = None
+find-prev                           = None
+find-tab-hide                       = None
+find-tab-open                       = None
+find-word                           = None
+find-word-in-line                   = None
+flatten-outline                     = None
+flush-lines                         = None
+focus-to-body                       = None
+focus-to-log                        = None
+focus-to-minibuffer                 = None
+focus-to-tree                       = None
+forward-char                        = None
+forward-char-extend-selection       = None
+forward-end-word                    = None
+forward-end-word-extend-selection   = None
+forward-page                        = None
+forward-page-extend-selection       = None
+forward-paragraph                   = None
+forward-paragraph-extend-selection  = None
+forward-sentence                    = None
+forward-sentence-extend-selection   = None
+forward-word                        = None
+forward-word-extend-selection       = None
+full-command                        = None
+fully-expand-body-pane              = None
+fully-expand-log-pane               = None
+fully-expand-outline-pane           = None
+fully-expand-pane                   = None
+gc-collect-garbage                  = None
+gc-dump-all-objects                 = None
+gc-dump-new-objects                 = None
+gc-dump-objects-verbose             = None
+gc-print-summary                    = None
+gc-trace-disable                    = None
+gc-trace-enable                     = None
+get-ipython-results                 = None
+go-back                             = None
+go-forward                          = None
+goto-char                           = None
+goto-first-node                     = None
+goto-first-visible-node             = None
+goto-first-sibling                  = None
+goto-global-line                    = None
+goto-last-node                      = None
+goto-last-sibling                   = None
+goto-last-visible-node              = None
+goto-line                           = None # Leo's goto-line is better.
+goto-next-changed                   = None
+goto-next-clone                     = None
+goto-next-marked                    = None
+goto-next-node                      = None
+goto-next-sibling                   = None
+goto-next-visible                   = None
+goto-parent                         = None
+goto-prev-node                      = None
+goto-prev-sibling                   = None
+goto-prev-visible                   = None
+group-operations-clear-marked       = None
+group-operations-mark-for-clone     = None
+group-operations-mark-for-copy      = None
+group-operations-mark-for-move      = None
+group-operations-mark-target        = None
+group-operations-operate-on-marked  = None
+group-operations-transfer           = None
+toggle-input-state                  = None
+help                                = None
+help-for-autocompletion             = None
+help-for-bindings                   = None
+help-for-command                    = None
+help-for-find-commands              = None
+help-for-minibuffer                 = None
+help-for-python                     = None
+hide-body-pane                      = None
+hide-log-pane                       = None
+hide-pane                           = None
+hide-outline-pane                   = None
+hide-spell-tab                      = None
+hoist                               = None
+how-many                            = None
+iconify-frame                       = None
+import-file                         = None
+# import-at-file                      = None
+# import-at-root                      = None
+# import-cweb-files                   = None
+# import-derived-file                 = None
+# import-flattened-outline            = None
+# import-noweb-files                  = None
+indent-region                       = None
+indent-relative                     = None
+indent-rigidly                      = None
+indent-to-comment-column            = None
+insert-body-time                    = None
+insert-child                        = None
+insert-icon                         = None
+insert-headline-time                = None
+# insert-kbd-macro                  = None
+insert-newline                      = None
+insert-node                         = None
+insert-parentheses                  = None
+# insert-to-buffer                  = None
+abbrev-inverse-add-global           = None
+isearch-backward                    = None
+isearch-backward-regexp             = None
+isearch-forward                     = None
+isearch-forward-regexp              = None
+isearch-with-present-options        = None
+keep-lines                          = None
+keyboard-quit                       = None
+kill-line                           = None
+kill-paragraph                      = None
+kill-region                         = None
+kill-region-save                    = None
+kill-sentence                       = None
+kill-to-end-of-line                 = None
+kill-word                           = None
+line-number                         = None
+macro-call-last                     = None
+macro-end-recording                 = None
+macro-name-last                     = None
+macro-start-recording               = None
+mark                                = None
+mark-changed-items                  = None
+mark-subheads                       = None
+match-brackets                      = None
+menu-shortcut                       = None
+minimize-all                        = None
+mode-help                           = None
+move-lines-down                     = None
+move-lines-up                       = None
+move-outline-down                   = None
+move-outline-left                   = None
+move-outline-right                  = None
+move-outline-up                     = None
+move-past-close                     = None
+move-past-close-extend-selection    = None
+</t>
+<t tx="ekr.20140721165014.19157">negative-argument                   = None
+new                                 = None
+newline-and-indent                  = None
+next-line                           = None
+next-line-extend-selection          = None
+number-command                      = None
+number-command-0                    = None
+number-command-1                    = None
+number-command-2                    = None
+number-command-3                    = None
+number-command-4                    = None
+number-command-5                    = None
+number-command-6                    = None
+number-command-7                    = None
+number-command-8                    = None
+number-command-9                    = None
+# number-to-register                = None
+# open-compare-window               = None
+# open-find-dialog                  = None
+open-leoDocs-leo                    = None
+open-leoPlugins-leo                 = None
+open-leoSettings-leo                = None
+open-scripts-leo                    = None
+open-offline-tutorial               = None
+open-online-home                    = None
+# open-online-tutorial              = None
+open-outline                        = None
+open-python-window                  = None
+open-spell-tab                      = None
+open-with                           = None
+outline-to-cweb                     = None
+outline-to-noweb                    = None
+paste-node                          = None
+paste-retaining-clones              = None
+paste-text                          = None
+pretty-print-all-python-code        = None
+pretty-print-python-code            = None
+previous-line                       = None
+previous-line-extend-selection      = None
+print-bindings                      = None
+print-commands                      = None
+print-focus                         = None
+promote                             = None
+# propagate-key-event               = None
+# query-replace                     = None
+# query-replace-regex               = None
+quick-command                       = None
+re-search-backward                  = None
+re-search-forward                   = None
+read-at-file-nodes                  = None
+read-outline-only                   = None
+rectangle-clear                     = None
+rectangle-close                     = None
+rectangle-delete                    = None
+rectangle-kill                      = None
+rectangle-open                      = None
+rectangle-string                    = None
+rectangle-yank                      = None
+redo                                = None
+reformat-paragraph                  = None
+register-append-to                  = None
+register-copy-to                    = None
+register-copy-rectangle-to          = None
+register-jump-to                    = None
+register-increment                  = None
+register-insert                     = None
+register-point-to                   = None
+register-prepend-to                 = None
+register-view                       = None
+remove-blank-lines                  = None
+remove-sentinels                    = None
+remove-space-from-lines             = None
+remove-tab-from-lines               = None
+repeat-complex-command              = None
+replace                             = None
+replace-all                         = None
+# replace-string                    = None
+replace-then-find                   = None
+resize-to-screen                    = None
+reverse-region                      = None
+reverse-sort-lines                  = None
+reverse-sort-lines-ignoring-case    = None
+revert                              = None
+run-all-unit-tests-externally       = None
+run-all-unit-tests-locally          = None
+run-marked-unit-tests-externally    = None
+run-marked-unit-tests-locally       = None
+run-selected-unit-tests-externally  = None
+run-selected-unit-tests-locally     = None
+save-buffers-kill-leo               = None
+save-file                           = None
+save-file-as                        = None
+save-file-to                        = None
+# scan-for-autocompleter            = None
+scroll-down-half-page               = None
+scroll-down-line                    = None
+scroll-down-page                    = None
+scroll-outline-down-line            = None
+scroll-outline-down-page            = None
+scroll-outline-left                 = None
+scroll-outline-right                = None
+scroll-outline-up-line              = None
+scroll-outline-up-page              = None
+scroll-up-half-page                 = None
+scroll-up-line                      = None
+scroll-up-page                      = None
+search-backward                     = None
+search-forward                      = None
+search-with-present-options         = None
+select-all                          = None
+set-colors                          = None
+set-comment-column                  = None
+set-extend-mode                     = None
+set-fill-column                     = None
+set-fill-prefix                     = None
+set-find-everywhere                 = None
+set-find-node-only                  = None
+set-find-suboutline-only            = None
+set-font                            = None
+set-command-state                   = None
+set-insert-state                    = None
+# set-mark-command                  = None
+set-overwrite-state                 = None
+set-replace-string                  = None
+settings                            = None
+shell-command                       = None
+shell-command-on-region             = None
+show-calltips                       = None
+show-calltips-force                 = None
+show-colors                         = None
+show-find-options                   = None
+show-fonts                          = None
+show-invisibles                     = None
+simulate-begin-drag                 = None
+simulate-end-drag                   = None
+sort-children                       = None
+sort-columns                        = None
+sort-fields                         = None
+sort-lines                          = None
+sort-lines-ignoring-case            = None
+sort-recent-files                   = None
+sort-siblings                       = None
+spell-change                        = None
+spell-change-then-find              = None
+spell-find                          = None
+spell-ignore                        = None
+split-line                          = None
+start-ipython                       = None
+start-search                        = None
+suspend                             = None
+tab-cycle-next                      = None
+tab-cycle-previous                  = None
+tabify                              = None
+tangle                              = None
+tangle-all                          = None
+tangle-marked                       = None
+toggle-abbrev-mode                  = None
+toggle-active-pane                  = None
+toggle-angle-brackets               = None
+toggle-autocompleter                = None
+toggle-calltips                     = None
+toggle-extend-mode                  = None
+toggle-find-ignore-case-option      = None
+toggle-find-in-body-option          = None
+toggle-find-in-headline-option      = None
+toggle-find-mark-changes-option     = None
+toggle-find-mark-finds-option       = None
+toggle-find-regex-option            = None
+# toggle-find-reverse-option          = None
+toggle-find-word-option             = None
+toggle-find-wrap-around-option      = None
+toggle-split-direction              = None
+transpose-chars                     = None
+transpose-lines                     = None
+transpose-words                     = None
+undo                                = None
+unindent-region                     = None
+universal-argument                  = None
+unmark-all                          = None
+untabify                            = None
+untangle                            = None
+untangle-all                        = None
+untangle-marked                     = None
+upcase-region                       = None
+upcase-word                         = None
+view-lossage                        = None
+vr-toggle                           = None
+weave                               = None
+what-line                           = None
+word-search-backward                = None
+word-search-forward                 = None
+write-at-file-nodes                 = None
+write-dirty-at-file-nodes           = None
+write-missing-at-file-nodes         = None
+write-outline-only                  = None
+yank                                = None
+yank-pop                            = None
+zap-to-character                    = None</t>
+<t tx="ekr.20140721165014.19158">do-nothing = Shift-F1
+do-nothing = Shift-F2
+do-nothing = Shift-F3
+do-nothing = Shift-F4
+do-nothing = Shift-F5
+do-nothing = Shift-F6
+do-nothing = Shift-F7
+do-nothing = Shift-F8
+do-nothing = Shift-F9
+do-nothing = Shift-F10
+do-nothing = Shift-F11
+do-nothing = Shift-F12
+</t>
+<t tx="ekr.20140721165014.19159">To enable vim emulation, place a copy of this node (and its sub-nodes) into
+your myLeoSettings.leo file under the "@settings" node.
+</t>
+<t tx="ekr.20140721165014.19160">Vi emulation - User documentation:
+	Installation
+	| Place a copy of the "@keys Vim bindings" node and its sub-nodes,
+	| located in the leoSettings.leo file, under the "@settings" node
+	| in the myLeoSettings.leo file
+	|
+	| The same procedure is performed to upgrade to a new version.
+	| Note: Place any local customized key bindings in a "@keys My Vi" node
+	|       below (not underneath) the "@keys Vim bindings" node in the
+	|       myLeoSettings.leo file.
+
+	Commands supported
+	| Documentation of the supported vi commands is provided in Chapter 22 of
+	| Leo's User Guide (http://webpages.charter.net/edreamleo/vimBindings.html).
+
+	Commands not supported
+	| Most unsupported Vi commands are either due to a Leo architecture problem
+	| or the lack of an equivelent Leo function.
+	| (See the Vim Developer Documentation for a detailed list of open issues)
+	|
+	| Most extensions to the Vi editor implemented in Vim are not supported
+	| by Leo's Vi/Vim emulation at this time.
+
+	Vi emulation in the Outline pane:
+		Editing the headline text:
+		| Only Vi commands that operate on a single line of text are supported.
+		| Some workarounds were required due to the current Leo implementation.
+		| Problems associated with editing a node's headline text are documented
+		| in the "Open issues" section in the Vim Developer Documentation node.
+
+		Traversing and reorganizing the outline:
+		| Outline navigation and manipulation are mapped to keys based on Vi's
+		| use of the H, J, K, and L key to move left, down, up, and right.  Refer
+		| to Leo's User Guide for details on the operation's supported and their
+		| key mappings.
+
+		Outline traversing from the Body pane:
+		| Outline navigation commands can also be invoked while in the body
+		| panes' command mode.  This reduces the keystrokes necessary to switch
+		| to Outline pane, select another node, and switch back to the body pane.
+		| (Refer to Chapter 22 of the Leo User Guide for more details)
+</t>
+<t tx="ekr.20140721165014.19161">History
+	Version 03-07-10
+		Assigned line scroll by one line to 'j' and 'k' keys when the
+		   focus is in the outline 
+		Fixed unexpected switch from Body to Outline focus when inserting
+			character into 1st column of 1st row.
+		Removed duplicate key bindings
+			'p' and 'P' commands in "@shortcuts - vi in Outline pane" node
+	Version 10-06-09
+		Restored buffer 'scroll' by page in body pane (works in Tk GUI)
+			(Moves cursor, scrolling to keep cursor visible)
+		Added buffer 'scroll' by half-page and line in body pane
+			(Moves cursor, scrolling to keep cursor visible)
+		Added paragraph reformating using 'gqq' and 'gqap' commands
+			Also added 'gww' and 'gwap' (should not move cursor but does)
+		Mapped period key to repeat-complex-command.
+			Repeats Leo's command line. Should repeat key commands.
+		Removed mapping of Ctrl-[ to "Promote" function.
+			Using Ctrl-[ to exit a search string entry was promoting the node.
+	Version 12-Jul-09
+		Fixed commands using beginning-of-line and end-of-line.  Functions
+			in leoEditCommands.py were updated in past months to stay on
+			current line when called when cursor at beginning/end of line.
+		Effected commands:
+			beginning-of-line function (&lt;vi command&gt; - &lt;node changed&gt;)
+				|   - @mode body-beginning-of-line-mode
+				O   - @mode body-new-line-above
+				dd  - @mode body-delete-line
+				dG  - @mode body-delete-to-end-of-buffer
+				yy  - @mode body-yank-line
+				yG  - @mode body-yank-to-end-of-buffer
+				cc  - @mode body-change-line
+				cG  - @mode body-change-to-end-of-buffer
+				-   - @mode body-goto-indent-previous-line
+			end-of-line function (&lt;vi command&gt; - &lt;node changed&gt;)
+				o   - @mode body-new-line-below
+				A   - @mode body-append
+				dgg - @mode body-delete-to-beginning-of-buffer
+				ygg - @mode body-yank-to-beginning-of-buffer
+				cgg - @mode body-change-to-beginning-of-buffer
+				$   - @mode body-end-of-line
+				J   - @mode body-join
+	Version 07-Mar-09
+		Added "Vim Settings" node containing the Leo settings needed/used to
+			support Vim emulation.
+		Removed binding of '=' key to "double-click-icon-box" function
+		| It is not a Vi/Vim related function
+		| Re-enable it by placing the following bindings in an "@keys" node
+		|   double-click-icon-box  ! body = equal
+		|   enter-tree-double-click-node-mode ! tree = equal        
+		Corrected installation procedure in the Vim User Documentation node
+		Clarified descriptions in the User and Developer documentation nodes.
+	Version 21-Oct-08
+		Split the "Vim documentation" node into "Vim User Documentation"
+			and "Vim Developer Documentation" nodes.
+		Updated User and Developer documentation.
+		Fixed '|' to not go to previous line if key pressed while at column 1
+		Fixed '-' to go to previous line (Goes to column 1 instead of indent)
+	Version 06-Aug-08
+		Removed mapping of 'Ctrl-v' in the outline to toggle select mode.
+			'Ctrl-v' already assigned to paste a node into the outline.
+	Version 05-Aug-08
+		Updated Vim documentation in the Users Guide.
+		Changed key mapped to insert-node from 'Ctrl-o' to 'o'.
+		Added mapping of 'Ctrl-v' in addition to 'v' to toggle select mode.
+		Fixed unindent, now shifts one tab width instead of all.
+		Added unindent by sentence, paragraph, and buffer support.
+		Removed 'Ctrl-n' and 'Alt-n' as alternatives for 'n'.
+		Removed '' and `` to go to last edit, use Undo/Redo (Leo limitation)
+	Version 23-Jul-08
+		Updated Vim documentation in the Users Guide.
+		Added '^' key to move to the first column when in the outline pane.
+		Modified 'Ctrl-/' to set one of multiple search options (see User Guide).
+		Fixed move backward to beginning of word in headline text ('b' key).
+		Fixed yank to end of paragraph to not yank trailing blank line ("y}" key).
+		Removed selecting of text when using W,B,E keys in outline.
+		Removed binding of "goto-line" to Ctrl-G as "&lt;num&gt;G" replacement (broken).
+	Version 22-Jul-08
+		Updated Vim documentation in the Users Guide.
+		Added support for vi's Mark and Go To Mark commands in body pane.
+		Added support for deleting selected text in body pane ("d&lt;cr&gt;").
+		Added support for changing selected text in body pane ("c&lt;cr&gt;").
+		Modified yank-selected-text ("y&lt;cr&gt;"), now exits select mode (body pane).
+		Modified searches in outline to limit search to node and its subnodes.
+		Modified searches in node's body to limit search to node's body.
+		Added command to set search scope to "everything" ('Ctrl-/')
+		Added command to "paste from clipboard then find next" ('Ctrl-p')
+		Added command to prompt user for search and replace strings ('Alt-/')
+		Added command to "replace then search" using 'Alt-/' strings ('Alt-p')
+		Fixed ':w' (tree pane) and ':wq' (tree and body panes) commands
+	Version 22-Jun-08
+		Updated Vim documentation in the Users Guide.
+		Improved "dd" command (handles blank lines correctly)
+		added "'." and "`." commands to go to location of last edit.
+		Added y&lt;cr&gt; mapping to yank selected text (removed Alt-Y).
+		Added paste text support for node headlines.
+		Added Delete,Yank,Change to beginning and end of buffer.
+		Added &lt;cr&gt; to :wq command.
+		Added text selection workaround for yt&lt;char&gt; and ct&lt;char&gt;.
+		Added j and k to move to next/previous node when outline in focus.
+		Added Ctrl-w j and Crl-w k to switch active view in a split window.
+		Added Alt-G support when outline in focus.
+		Removed binding of Ctrl-s to save-file (Not Vi, done by default).
+		Removed all arrow key bindings (see open issues section) 
+	Version 27-May-08
+		Newly found commands
+			| Additional commands were found that are available for mapping to
+			| keys.  The "@shortcuts - unbind all commands" node has been
+			| updated.
+		Added Vim's window support (basic) to the body pane (Leo's editors)
+			| 'Ctrl-w s' or 'Ctrl-w n' will add another editing window.
+			| 'Ctrl-w w' or 'Ctrl-w p' will cycle focus between editor windows.
+			| 'Ctrl-w c' or 'Ctrl-w q' will close the editor window with focus.
+		Fixed Arrow mappings
+			| All arrows were mapped to a goto-node command in outline pane.
+			| Left and right arrows in outline pane move cursor one character.
+		Added Ctrl-Arrow support in Outline and Body pane.
+			| Ctrl-Arrow keys are also mapped to the goto-node commands
+		Added Ctrl-Shift-Arrow support in Outline pane
+			| Ctrl-Shift-Arrow keys are also mapped to the move-node commands
+		Added vi's 'e' key mapping to move to the end of the current word.
+			| Made possible by the newly found forward-end-word command.
+		Added 'Shift-e' key mapping to select to the end of the current word.
+			| Not-vi but useful until text editing commands work in headlines.
+			| Made possible by the newly found forward-end-word-extend-select
+		Added vi's Shift-f key mapping to go backwards to a character.
+			| Made possible by the newly found backward-to-character command.
+		Mapped '=' to double-click-icon-box command (Not Vi/Vim)
+			| Use open-with plug-in to invoke external Vim editor without
+			| mouse. Made possible by the newly found double-click-icon-box
+			| command.
+		Added vi's Ctrl-y and Ctrl-e to scroll outline up and down by lines.
+			| Made possible by newly found scroll-outline-up/down-line commands
+			| Also mapped vi's Ctrl-d,-u,-f,-b to same (until implemented).
+		Removed Ctrl-y,Ctrl-d,Ctrl-p in outline to copy,delete,paste nodes.
+			| Keys are used in vi for other functions. Use Ctrl-c,Ctrl-x,Ctrl-v
+		Remapped copy-text to Alt-y to avoid use of vi key mappings
+			| copy-text yanks the currently selected text into the clipboard.
+			| Vi doesn't have a concept of "selected text" but it is useful.
+		Mapped vi's Ctrl-d,-u,-e,-y to Ctrl-f,-b in body (until implemented)
+		Fixed missing @mode node mapped to Ctrl-Shift-l
+	Version 26-May-08
+		Body pane key mappings - added and corrected
+		Outline pane key mappings - initial release
+		non-vi support key mappings - merged into Body and Outline mappings
+		Documentation - Added
+	Version 22-May-08
+		Body pane key mappings - Released
+		non-vi support key mappings - Released
+	Version 18-May-08
+		Body pane key mappings - Updated
+		non-vi support key mappings - Updated
+
+Vim Modeline (used by Vim for file specific settings)
+	| vim: noet filetype=otl foldcolumn=1
+</t>
+<t tx="ekr.20140721165014.19162">Vi emulation - Developer documentation:
+	Realization:
+		Leo Configuration:
+		| The following configuration was used for all testing:
+			@strings top_level_unbound_key_action = command
+			@bool stayInTreeAfterEditHeadline = True
+			@bool stayInTreeAfterSelect = True
+			@bool outline_pane_has_initial_focus = True
+		
+		Leo's Panes:
+		| A "pane" is a area of the screen containing a user interface dedicated
+		| to supporting a common set of tasks.  Vi key mappings are associated
+		| with the Outline pane, the Body pane, or to the entire Leo program.
+		| (See the "Leo's @mode nodes" section bellow)
+		
+		Leo's Command/Insert States:
+			Command state - Denoted by a blue background color (Outline,Body pane)
+			| Keys are mapped to commands.
+			Insert state - Denoted by a red background color (Outline,Body pane)
+			| Keys pressed are inserted into the text.
+			Grayed state - Denoted by a gray background color (Outline pane)
+			| Keys pressed will cause the next node with a headline starting with
+			| that key to be selected.  This "select node by first character"
+			| feature is built into Leo. It is not part of the vi support.
+			| 
+			| This state is intentionally avoided in the vi based outline key
+			| mappings. If in the "Grayed" state, enter Ctrl-i to switch to the
+			| "Command" state.  The "Grayed" state can be entered from the
+			| outline's "Command" state by pressing the Ctrl-] key.
+		
+		Leo's @mode nodes:
+		| Most vi commands are implemented using Leo's @mode nodes to execute
+		| macros or to implement Vi's multi-key commands.
+		| 
+		| Functions that act on the Outline pane are implemented in the
+		| "@shortcuts - vi in Outline pane" node and its sub-nodes.
+		| Modes associated with functions invoked when the Outline pane has
+		| focus begin with "tree-".
+		| Modes associated with functions invoked when the Body pane has
+		| focus begin with "body-".
+		|
+		| Functions that act on the Body pane are implemented in the
+		| "@shortcuts - vi in Body pane" node and its sub-nodes.
+		|
+		| Functions with both an Outline and a Body pane component are
+		| implemented in the "@shortcuts - vi miscellaneous" node and
+		| its sub-nodes.
+
+			Multi-key Vi commands:
+			| Vi has many commands that require multiple keys to invoke.
+			| Each key except the last in the command are assigned to an
+			| @mode node that, when executed, maps the subsequent allowed
+			| keys in the command sequence.
+			| The last key in the sequence is mapped directly to a Leo
+			| command or to a "Macro" mode (see below). Any modes mapped
+			| to a key by another mode are located in a child node of the
+			| @mode node doing the mapping.
+			| 
+			| Example:
+			| The "dtw" key sequence, which performs a "Delete To the 'W'
+			| character" command (note the capital letters) has the following
+			| key bindings:
+			|   The 'd' key is mapped to the "vi-delete-object" @mode node.
+			|   The "vi-delete-object" node binds the 't' key to the
+			|       "vi-delete-to-char" @mode node.
+			|   The "vi-delete-to-char" contains the Leo commands to emulate
+			|       the vi "Delete to &lt;character&gt;" command.
+
+			Macros
+			| Many vi commands do not have an equivalent Leo command.
+			| Instead, an @mode node is used to store a macro containing
+			| a series of Leo commands that, when executed, emulates the
+			| Vi functionality.
+
+	Open issues
+		Current character:
+		| Vi normally uses two different "current character" designators
+		| depending on the current state.
+
+			Insert state:
+			| In the Insert state, a vertical bar is placed between two
+			| characters to indicate where the next key will be inserted.
+			| Leo's cursor is of this type.
+
+			Command state: 
+			| In the Command state, vi expects that the cursor is highlighting
+			| a current character and provides commands to enter the insert
+			| state or paste text either before or after that current
+			| character.  Leo's vi emulation currently does not support a
+			| "current character" cursor. As a result, inserting and pasting
+			| before or after is replaced by inserting or pasting "at" the
+			| current cursor location.  For example, the 'i' and 'a' command
+			| are both mapped to enter the insert state at the current cursor
+			| location.
+
+		Commands requesting user input:
+		| Commands requesting user input must be the last command executed within
+		| an @mode node.  This prevents the implementation of commands such as
+		| "yank to &lt;character&gt;" that requires a "copy to clipboard" operation
+		| after the "find-character" command.
+
+		Editing node headlines using @mode nodes:
+		| Commands modifying or selecting headline text do not work correctly
+		| within a @mode node.  This eliminates accurate implementation of
+		| vi's delete/change/substitute/yank object commands.  As a workaround,
+		| the commands are currently written to only select the text.  The user
+		| must perform the subsequent delete, change, substitute, and yank.
+
+		Repeat last editing command:
+		| The ability to repeat the last editing related command by pressing the
+		| period key is not supported and there is no workaround in place.
+
+		Repeat last cursor movement command:
+		| The ability to repeat the last "To character" or "Find character"
+		| command by selecting the ";" key is not supported and there is no
+		| workaround in place.
+
+		Range prefix to commands:
+		| The ability to specify a numeric range prefix is not supported.  For
+		| example, entering "3dd" will not delete the next three lines and "20G"
+		| will not move the cursor to the 20th line in the file.
+
+		Range prefix to objects:
+		| The ability to specify a numeric range prefix to an object is not
+		| supported.  For example, the "d2fx" command should Delete up to and
+		| including the 2nd Found "x" character.
+
+		Binding numeric keys:
+		| Mapping a number to a command or an @mode node works but can not be
+		| used as it prevents the number from being entered as text while in Vi's
+		| insert state.
+
+		Binding Arrow keys:
+		| Binding arrow keys, with or without Shift, Ctrl, Alt, and their
+		| combinations, to commands or @mode nodes have no effect. 
+
+		Binding 'bksp' key:
+		| Binding 'bksp' key to back-char to move back a character in command
+		| mode prevents 'bksp' from deleting characters in text edit mode.
+
+		Undo command:
+		| Using the "undo" command (key 'u') to undo a change to a node's
+		| headline text only works correctly after another node has been
+		| selected.  It appears that changes made to a node's headline text are
+		| not recorded in Leo's change history until the edited node has lost
+		| focus.
+
+		Functions missing or require changes:
+			Toggle case:
+			| Leo provides support for switching to upper or lower case but no
+			| method exists to toggle between cases (used by Vi's "~" command).
+
+			Replace current character:
+			| Vi's "r" command allows user to replace the current character with
+			| the next entered character.
+
+			Move current line:
+			| Vi has a collection of "z&lt;movement&gt;" commands that will move the
+			| current line to the top, middle, and bottom of the screen.  They are
+			| not supported in Leo.
+
+			Move buffer up/down:
+			| Vi maps keys to scroll the text up/down one line and by half the
+			| number of visible lines.  Leo does not support this.
+
+			Word related commands:
+			| Vi supports two types of words in its commands: Words that consist
+			| of only a subset of the character set and words that considers all
+			| characters except the space and tab characters as part of a word.
+			|
+			| Leo's always considers a word to consist of a subset of characters
+			| although some word related commands include different characters
+			| than others.
+
+			Forward and backward by sentences:
+			| Leo's sentence related functions do not stop at empty lines nor do
+			| they skip over periods within words nor do they stop at sentences
+			| ending in non-periods nor do they stop at the end or beginning of
+			| the buffer. Note: see forwardSentenceHelper and backSentenceHelper
+			| functions.
+
+			Focus to Body pane:
+			| Leo functions exist which unconditionally set focus to the body pane
+			| regardless of the active pane.
+			|
+			| For example, bracket matching commands ("%" key) do not work within
+			| a node's headline text.  Instead, the command is performed on the
+			| node's body text.
+
+			Displaying mode help:
+			| The "--&gt; mode-help" command has the following issues related to the
+			| display of the "Help" tab:
+				Key label always capitalized:
+				| Vim commands are mapped to both lower-case and upper-case keys
+				| but always appear mapped to upper-case keys within the "Help"
+				| tab.
+				Layout of tab's contents:
+				| To improve readability and better support narrow tab cards,
+				| display the mode's label without the "enter-" and "-mode" text
+				| and place the key label before the mode label.
+				|
+				| For example, the following entries would change from:
+				| 		enter-vi-delete-line-mode d
+				| 		enter-vi-delete-to-begin-of-word-mode b
+				| to:
+				| 		d : vi-delete-line
+				| 		b : vi-delete-to-begin-of-word
+
+	Notes:
+		Yank vs. Yank:
+		| Vi's "yank" commands copy the selected text TO the clipboard.
+		| Leo's "yank" commands insert text FROM the clipboard.
+
+		copy-text in modes:
+		| Leo's copy-text command does not work within a mode.  As a result,
+		| all "copy to clipboard" capability is being implemented using the
+		| kill-&lt;object&gt; command followed by Leo's "yank" command to put the
+		| text back.
+
+		paste-text in modes:
+		| The paste-text command does not work within an @mode node.  Leo's
+		| "yank" command is used instead.
+
+		delete-node does not copy node to clipboard:
+		| A copy-node command is issued to copy the node to the clipboard
+		| followed by the delete-node command.
+
+Vim Modeline (used by Vim for file specific settings)
+	| vim: noet filetype=otl foldcolumn=1
+</t>
+<t tx="ekr.20140721165014.19163"></t>
+<t tx="ekr.20140721165014.19164">@nocolor
+
+This setting determines the initial binding for otherwise-unbound keystrokes
+when no mode is in effect.  Note: the keyboard-quit command exits all modes.
+
+The valid values are::
+
+command:  Leo ignores the key (like Vim).
+insert:  Leo inserts the key at the cursor (like Emacs)
+overwrite: Leo replaces the character at the cursor.</t>
+<t tx="ekr.20140721165014.19165">This allows the newline character to switch from the outline pane to the body pane.</t>
+<t tx="ekr.20140721165014.19166">True:  Outline gets focus when a new window is opened.
+False: Body pane gets focus when a new window is opened.</t>
+<t tx="ekr.20140721165014.19167">True: (Recommended) Selecting an outline node leaves the focus in the outline pane.
+
+If this is False it will be harder to use the arrow keys in the headline.
+    
+False: (Legacy) Selecting an outline node transfers focus to the body pane.</t>
+<t tx="ekr.20140721165014.19168">#Miscellaneous vi commands
+#---------------------------------
+
+#Prevent Ctrl-[ (= Esc) from promoting node when invoked to exit entry of search string
+promote                           ! kill = Ctrl-[
+
+enter-focus-to-tree-mode          ! body = Tab      #Focus to Outline pane
+enter-focus-to-body-mode          ! tree = Tab
+
+enter-body-command-line-mode      ! body = colon    #Enter vi's command line
+enter-tree-command-line-mode      ! tree = colon
+full-command                      = Ctrl-colon      #Enter Leo's command mode
+
+#undo/redo commands (vim commands using multiple Leo commands will need multiple undo commands)
+undo                              = u               #Undo last command
+enter-tree-undo-mode              ! tree = u
+redo                              ! body = Ctrl-r   #Re-do undone command
+enter-tree-redo-mode              ! tree = Ctrl-r
+repeat-complex-command            = period          #Re-do last command
+
+goto-global-line                  = Alt-g           #Goto line (in derived file)
+
+enter-body-shift-z-mode           = Shift-z         #ZZ command - Save file and exit
+</t>
+<t tx="ekr.20140721165014.19169">#Undo last headline edit
+#Bind: u
+#Note: undo only seems to work from body pane
+--&gt; focus-to-body
+--&gt; undo
+--&gt; edit-headline
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19170">#Redo last headline edit
+#Bind: Ctrl-r
+#Note: redo only seems to work from body pane
+--&gt; focus-to-body
+--&gt; redo
+--&gt; edit-headline
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19171">#Focus to Outline pane
+#Bind: &lt;Tab&gt;
+
+--&gt; focus-to-tree
+--&gt; edit-headline
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19172">#Focus to Body pane
+#Bind: &lt;Tab&gt;
+
+--&gt; end-edit-headline
+--&gt; focus-to-body
+#   exit-named-mode: Prevents focus returning to outline
+#                    when inserting character in 1st row/col.
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19173">#Enter vi's command line
+#Bind: :
+
+--&gt; set-silent-mode
+#--&gt; mode-help
+
+enter-body-command-revert-mode = e
+enter-body-command-save-mode = w
+enter-body-command-quit-mode = q
+</t>
+<t tx="ekr.20140721165014.19174">#Reload current file
+#Bind: :e&lt;cr&gt;
+#Note: Vi command is :e!&lt;cr&gt;.
+#      '!' not used since Leo prompts to save file changes.
+
+revert = return</t>
+<t tx="ekr.20140721165014.19175">#Save current file (and maybe quit)
+#Bind: :w[q]&lt;cr&gt;
+
+--&gt; set-silent-mode
+#--&gt; mode-help
+
+save-file                           = return
+enter-body-command-save-quit-mode   = q</t>
+<t tx="ekr.20140721165014.19176">#Save file and exit Leo
+#Bind: :wq&lt;cr&gt;
+
+enter-body-command-save-quit-return-mode = return
+</t>
+<t tx="ekr.20140721165014.19177">#Save file and exit Leo
+#Bind: :wq&lt;cr&gt;
+
+--&gt; save-file
+--&gt; exit-leo
+</t>
+<t tx="ekr.20140721165014.19178">#Exit Leo
+#Bind: :q&lt;cr&gt;
+
+exit-leo = return</t>
+<t tx="ekr.20140721165014.19179">#Enter vi's command line
+#Bind: :
+
+--&gt; set-silent-mode
+#--&gt; mode-help
+
+--&gt; focus-to-body
+enter-tree-command-revert-mode   = e
+enter-tree-command-save-mode     = w
+enter-tree-command-quit-mode     = q
+</t>
+<t tx="ekr.20140721165014.19180">#Reload current file
+#Bind: :e&lt;cr&gt;
+#Note: Vi command is :e!&lt;cr&gt;.
+#      '!' not used since Leo prompts to save file changes.
+
+revert = return</t>
+<t tx="ekr.20140721165014.19181">#Save current file (and maybe quit)
+#Bind: :w[q]&lt;cr&gt;
+
+--&gt; set-silent-mode
+#--&gt; mode-help
+
+enter-tree-command-save-only-mode      = return
+enter-tree-command-save-quit-mode   = q
+</t>
+<t tx="ekr.20140721165014.19182">#Not in use, see "@mode tree-comm#Save file
+#Bind: :w&lt;cr&gt;
+
+--&gt; save-file
+--&gt; edit-headline
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19183">#Save file and exit Leo
+#Bind: :wq&lt;cr&gt;
+
+enter-tree-command-save-quit-return-mode = return
+</t>
+<t tx="ekr.20140721165014.19184">#Save file and exit Leo
+#Bind: :wq&lt;cr&gt;
+
+--&gt; save-file
+--&gt; exit-leo
+</t>
+<t tx="ekr.20140721165014.19185">#Exit Leo
+#Bind: :q&lt;cr&gt;
+
+exit-leo = return</t>
+<t tx="ekr.20140721165014.19186">#Save buffers and exit Leo
+#Bind: ZZ
+
+enter-body-shift-z-save-quit-mode = Shift-Z</t>
+<t tx="ekr.20140721165014.19187">#Save file and exit Leo
+#Bind: ZZ
+
+--&gt; save-file
+--&gt; exit-leo
+</t>
+<t tx="ekr.20140721165014.19188"># vi key bindings - Outline pane #
+ ################################
+
+#State change commands
+#--------------------------------
+set-insert-state                 ! tree = i        #To insert from command state
+set-insert-state                 ! tree = a        #To insert from command state
+
+edit-headline                    ! tree = Ctrl-i   #To command from grayed state
+#end-edit-headline                ! tree = Ctrl-]   #To grayed from command state
+
+set-command-state                ! tree = Ctrl-[   #To command from insert state
+set-command-state                ! tree = Esc      #To command from insert state
+set-command-state                ! tree = return   #To command from insert state
+
+#Yank text commands
+#--------------------------------
+end-of-line-extend-selection     ! tree = Shift-y  #Select to end of line
+enter-tree-yank-object-mode      ! tree = y        #'yy' selects line, 'y&lt;return&gt;' yanks selected text
+toggle-extend-mode               ! tree = v        #select characters on/off (Vim selects lines)
+#toggle-extend-mode              ! tree = Ctrl-v   #Not used. Leo uses Ctrl-v to paste nodes.
+
+#Change text commands
+#--------------------------------
+end-of-line-extend-selection     ! tree = Shift-c  #Select to end of line
+enter-tree-change-object-mode    ! tree = c        #Only 'cc' supported, follow with 'i'
+
+#Substitute text commands
+#--------------------------------
+forward-char-extend-selection    ! tree = s
+#kill-line                        ! tree = Shift-s #kill-line seems to only work within @mode
+
+#Delete text commands
+#--------------------------------
+end-of-line-extend-selection     ! tree = Shift-d  #Temporary workaround, follow with 'i'
+enter-tree-delete-text-object-mode ! tree = d      #Only 'dd' supported
+
+delete-char                      ! tree = x
+delete-char                      ! tree = delete
+
+#Scroll commands
+#--------------------------------
+scroll-outline-up-page           ! tree = Ctrl-b   #Scroll full window
+scroll-outline-down-page         ! tree = Ctrl-f
+
+scroll-outline-up-page           ! tree = Ctrl-u   #Should scroll 1/2 window
+scroll-outline-down-page         ! tree = Ctrl-d
+
+scroll-outline-up-line           ! tree = Ctrl-y   #Scroll 1 line
+scroll-outline-down-line         ! tree = Ctrl-e
+
+#Move within line commands
+#--------------------------------
+forward-char                     ! tree = RtArrow
+forward-char                     ! tree = l
+back-char                        ! tree = Left     #LtArrow
+back-char                        ! tree = h
+
+forward-word                     ! tree = w
+forward-word                     ! tree = Shift-w  #no before/after support.
+back-word                        ! tree = b
+back-word                        ! tree = Shift-b  #no before/after support.
+forward-end-word                 ! tree = e        #no before/after support.
+forward-end-word                 ! tree = Shift-e
+
+beginning-of-line                ! tree = bar      #beginning-of-line (Vi style)
+beginning-of-line                ! tree = ^        #beginning-of-line (Vi style)
+end-of-line                      ! tree = $        #end-of-line (Vi style)
+
+match-brackets                   ! tree = %        #Go to matching bracket
+
+#Move within tree commands
+#--------------------------------
+enter-tree-goto-mode                ! tree = g        #gg command (go to first)
+enter-tree-goto-last-node-mode      ! tree = Shift-g
+
+enter-tree-goto-next-visible-mode   ! tree = Ctrl-j
+enter-tree-goto-next-visible-mode   ! tree = DnArrow
+enter-tree-goto-next-visible-mode   ! tree = Ctrl-DnArrow
+
+enter-tree-goto-prev-visible-mode   ! tree = Ctrl-k
+enter-tree-goto-prev-visible-mode   ! tree = UpArrow
+enter-tree-goto-prev-visible-mode   ! tree = Ctrl-UpArrow
+
+enter-tree-contract-or-go-left-mode ! tree = Ctrl-h
+enter-tree-contract-or-go-left-mode ! tree = Ctrl-LtArrow
+enter-tree-expand-and-go-right-mode ! tree = Ctrl-l
+enter-tree-expand-and-go-right-mode ! tree = Ctrl-RtArrow
+
+#Move with body pane (focus remains in tree pane)
+#------------------------------------------------
+enter-tree-goto-next-line-mode      ! tree = j
+enter-tree-goto-prev-line-mode      ! tree = k
+
+#Find character commands
+#-----------------------
+find-character                      ! tree = f
+backward-find-character             ! tree = Shift-f
+
+#search text commands (limited to node and subnodes unless stated otherwise)
+#  Note: Backward searches ('?') not supported. They do not go beyond current node's body pane.
+#---------------------------
+enter-tree-search-forward-mode      ! tree = /        #Search forward within node and subnodes
+do-nothing                          ! tree = ?        #Does not work, scope only current body
+do-nothing                          ! tree = Ctrl-?   #Does not work, scope only current body
+find-next                           ! tree = n        #Find next (same scope, same direction)
+find-prev                           ! tree = Shift-n  #Find next (same scope, other direction)
+enter-body-search-options-mode      ! tree = Ctrl-/   #Change search options
+#Note: changing options puts cursor in body and exits @mode macro. Use &lt;tab&gt; to go to headline.
+
+#Replace [and find next (scope set by search command)] using paste buffer (clipboard)
+#  Note: Scope and direction set by last search command '/', '?' or 'Ctrl-/'(scope only)
+#  Note: Same replace commands implemented for both "tree" and "body" panes
+#--------------------------------
+paste-text                          ! tree = p        #Paste text before cursor.
+paste-text                          ! tree = Shift-p  #Paste after not supported
+do-nothing                          ! tree = Ctrl-p   #Does not work in headlines, use 'pn'
+
+#Replace and find next (user prompted) (search direction taken from last use of '/' or '?')
+enter-tree-replace-string-mode      ! tree = Alt-/    #Prompt for search &amp; replace string
+replace-then-find                   ! tree = Alt-p    #Replace then search (use after Alt-/)
+
+#Node create/delete/copy/paste commands
+#--------------------------------------
+insert-node                      ! tree = o
+
+enter-tree-copy-node-mode        ! tree = Ctrl-c
+enter-tree-delete-node-mode      ! tree = Ctrl-x
+enter-tree-paste-node-mode       ! tree = Ctrl-v
+
+#Move nodes
+#--------------------------------
+enter-tree-move-outline-down-mode   ! tree = Ctrl-Shift-j
+enter-tree-move-outline-left-mode   ! tree = Ctrl-Shift-h
+enter-tree-move-outline-right-mode  ! tree = Ctrl-Shift-l
+enter-tree-move-outline-up-mode     ! tree = Ctrl-Shift-k
+
+enter-tree-move-outline-down-mode   ! tree = Ctrl-Shift-DnArrow
+enter-tree-move-outline-left-mode   ! tree = Ctrl-Shift-LtArrow
+enter-tree-move-outline-right-mode  ! tree = Ctrl-Shift-RtArrow
+enter-tree-move-outline-up-mode     ! tree = Ctrl-Shift-UpArrow
+
+#Transclude nodes commands
+#--------------------------------
+enter-tree-clone-node-mode             ! tree = t        #Clone current node
+enter-tree-goto-next-clone-node-mode   ! tree = Ctrl-t
+
+#Mark nodes commands
+#--------------------------------
+enter-tree-mark-node-mode              ! tree = m
+enter-tree-goto-next-marked-node-mode  ! tree = Ctrl-m
+enter-tree-unmark-all-nodes-mode       ! tree = Alt-m
+</t>
+<t tx="ekr.20140721165014.19189">#Yank &lt;obj&gt; (vi's yank is the same as Leo's copy-text)
+#Bind: y&lt;obj&gt;
+#Note: Problem, all comamnds that select text switch to body pane.
+      
+--&gt; set-silent-mode
+
+copy-text   = return
+select-all  = y
+</t>
+<t tx="ekr.20140721165014.19190">#Change &lt;object&gt;
+#Bind: c&lt;obj&gt;
+#Note: Problem, any select text commands switches focus to body pane.
+
+--&gt; set-silent-mode
+
+kill-line = c	   #follow with 'i' to enter text
+</t>
+<t tx="ekr.20140721165014.19191">--&gt; set-silent-mode
+kill-line = d
+</t>
+<t tx="ekr.20140721165014.19192">--&gt; end-edit-headline
+--&gt; copy-node
+--&gt; edit-headline
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19193">#Paste node
+#Bind: Ctrl-v
+
+--&gt; end-edit-headline
+--&gt; paste-node
+--&gt; edit-headline
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19194">--&gt; end-edit-headline
+--&gt; copy-node
+--&gt; delete-node         #Does not copy to clipboard
+--&gt; edit-headline
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19195">#Go to first node
+#Bind: gg 
+
+--&gt; set-silent-mode
+--&gt; goto-last-node
+--&gt; edit-headline
+
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19196">#Go to specified node location
+#Bind: g&lt;location&gt;
+
+--&gt; set-silent-mode
+#--&gt; mode-help
+
+enter-node-goto-first-node-mode     = g</t>
+<t tx="ekr.20140721165014.19197">#Go to first node
+#Bind: gg 
+
+--&gt; set-silent-mode
+--&gt; goto-first-node
+--&gt; edit-headline
+
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19198">--&gt; goto-next-visible
+--&gt; edit-headline
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19199">--&gt; goto-prev-visible
+--&gt; edit-headline
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19200">#Search forward within suboutline
+#Bind: /
+--&gt; set-find-suboutline-only
+--&gt; search-forward</t>
+<t tx="ekr.20140721165014.19201">#Specify search and replace string
+#  then Search in direction of last '/', '?' command within suboutline
+#  (follow with 'p' to replace or 'Ctrl-p' to replace and search)
+#Bind: Ctrl-/
+
+--&gt; set-find-suboutline-only
+--&gt; replace-string</t>
+<t tx="ekr.20140721165014.19202">--&gt; contract-or-go-left
+--&gt; edit-headline
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19203">--&gt; contract-node
+--&gt; edit-headline
+
+--&gt; exit-named-mode 
+</t>
+<t tx="ekr.20140721165014.19204">--&gt; expand-and-go-right
+--&gt; edit-headline
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19205">--&gt; move-outline-up
+--&gt; edit-headline
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19206">--&gt; move-outline-down
+--&gt; edit-headline
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19207">--&gt; move-outline-left
+--&gt; edit-headline
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19208">--&gt; move-outline-right
+--&gt; edit-headline
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19209">#Clone current node
+#Bind: t
+
+--&gt; clone-node
+--&gt; edit-headline
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19210">#Go to next cloned node
+#Bind: ctrl-t
+
+--&gt; goto-next-clone
+--&gt; edit-headline
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19211">#Mark current node
+#Bind: m
+
+--&gt; mark
+--&gt; edit-headline
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19212">#Go to next marked node
+#Bind: ctrl-m
+
+--&gt; goto-next-marked
+--&gt; edit-headline
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19213">#Unmark all nodes
+#Bind: Alt-m
+
+--&gt; unmark-all
+--&gt; edit-headline
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19214"></t>
+<t tx="ekr.20140721165014.19215">#Scroll body up one page when focus is in the outline pane
+#Bind: j
+
+#--&gt; focus-to-body
+--&gt; next-line
+--&gt; focus-to-tree
+--&gt; edit-headline
+--&gt; exit-named-mode   #Runs faster when used
+</t>
+<t tx="ekr.20140721165014.19216">#Scroll body up one line when focus is in the outline pane
+#Bind: k
+
+#--&gt; focus-to-body
+--&gt; previous-line
+--&gt; focus-to-tree
+--&gt; edit-headline
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19217"># vi key bindings - body pane #
+ ##############################
+
+#State change commands
+#--------------------------------
+set-insert-state                 ! body = i        #Insert at cursor
+set-insert-state                 ! body = a        #Insert at cursor
+enter-body-insert-at-indent-mode ! body = Shift-i  #Insert at first non-space
+enter-body-append-mode           ! body = Shift-a  #Insert at end of line
+set-overwrite-state              ! body = Shift-r  #Overwrite text
+enter-body-new-line-below-mode   ! body = o        #Open new line below
+enter-body-new-line-above-mode   ! body = Shift-o  #Open new line above
+keyboard-quit                    ! body = Ctrl-[   #Exit insert state
+keyboard-quit                    ! body = esc      #Exit insert state
+
+#Change commands
+#--------------------------------
+enter-body-change-to-end-of-line-mode ! body = Shift-c
+enter-body-change-object-mode         ! body = c        #Supports 'cd','cw','cb'
+
+#Substitute commands
+#--------------------------------
+enter-body-substitute-char-mode    ! body = s        #Replace current character
+enter-body-substitute-line-mode    ! body = Shift-s  #Replace current line
+
+#Delete commands
+#--------------------------------
+enter-body-delete-object-mode    ! body = d        #Supports 'dd','dw','db'
+enter-body-delete-to-end-of-line-mode ! body = Shift-d
+delete-char                      ! body = x
+delete-char                      ! body = delete
+
+#Yank text commands
+#--------------------------------
+enter-body-yank-to-end-of-line-mode   ! body = Shift-y
+enter-body-yank-object-mode      ! body = y        #Yank objects
+toggle-extend-mode               ! body = Ctrl-v   #select characters-on/off
+toggle-extend-mode               ! body = v        #select characters-on/off (Vim selects lines)
+
+#Indent line commands
+#--------------------------------
+enter-body-indent-mode           ! body = greater  #&gt;&lt;obj&gt; commands
+enter-body-unindent-mode         ! body = less     #&lt;&lt;obj&gt; command
+
+#Join lines
+#--------------------------------
+enter-body-join-mode             ! body = Shift-j
+
+#Move within line commands
+#--------------------------------
+back-char                        ! body = h
+back-char                        ! body = LtArrow
+#back-char                       ! body = bksp     #Prob: Effects bksp in edit
+forward-char                     ! body = l
+forward-char                     ! body = RtArrow
+
+forward-word                     ! body = w        #no before/after support.
+forward-word                     ! body = Shift-w
+back-word                        ! body = b        #no before/after support.
+back-word                        ! body = Shift-b  #
+forward-end-word                 ! body = e        #no before/after support.
+forward-end-word                 ! body = Shift-e
+
+beginning-of-line											  ! body = |
+back-to-indentation                ! body = ^
+end-of-line									        ! body = $
+enter-body-goto-indent-previous-line-mode   !body = minus
+
+#Move within tree commands (while focus is in body pane)
+#-------------------------------------------------------
+enter-body-goto-prev-visible-mode   ! body = Ctrl-k
+enter-body-goto-prev-visible-mode   ! body = Ctrl-UpArrow
+enter-body-contract-or-go-left-mode ! body = Ctrl-h
+enter-body-contract-or-go-left-mode ! body = Ctrl-LtArrow
+enter-body-expand-and-go-right-mode ! body = Ctrl-l
+enter-body-expand-and-go-right-mode ! body = Ctrl-RtArrow
+enter-body-goto-next-visible-mode   ! body = Ctrl-j
+enter-body-goto-next-visible-mode   ! body = Ctrl-DnArrow
+
+#Move within buffer commands
+#--------------------------------
+next-line                         ! body = j
+next-line                         ! body = DnArrow
+previous-line                     ! body = k
+previous-line                     ! body = UpArrow
+
+forward-sentence                  ! body = )
+back-sentence                     ! body = (
+enter-body-goto-after-paragraph-mode  ! body = }
+enter-body-goto-before-paragraph-mode ! body = {
+
+enter-body-g-mode                   ! body = g        #g commands - Goto line, reformat text)
+enter-body-goto-end-of-buffer-mode  ! body = Shift-g
+
+enter-body-match-mode               ! body = %
+
+#Scroll commands
+#--------------------------------
+scroll-up-page                           ! body = Ctrl-b   #Scrolls full window
+scroll-down-page                         ! body = Ctrl-f
+
+scroll-up-half-page                      ! body = Ctrl-u   #should scroll 1/2
+scroll-down-half-page                    ! body = Ctrl-d
+
+scroll-up-line                           ! body = Ctrl-y   #should scroll 1 line
+scroll-down-line                         ! body = Ctrl-e
+
+#Find character commands
+#--------------------------------
+find-character                      ! body = f
+backward-find-character             ! body = Shift-f
+
+#search text commands (limited to current node's body text unless stated otherwise)
+#---------------------------
+enter-body-search-forward-mode      ! body = /        #Search forward within node's body text
+enter-body-search-backward-mode     ! body = ?        #Search backward within node's body text
+find-next                           ! body = n        #Find next (same scope, same direction)
+find-prev                           ! body = Shift-n  #Find next (same scope, other direction)
+enter-body-search-options-mode      ! body = Ctrl-/   #Change search options
+
+#Replace [and find next] using paste buffer (clipboard)
+#  Note: Scope and direction set by last search command '/', '?' or 'Ctrl-/'(scope only)
+#--------------------------------
+paste-text                          ! body = p        #To paste a line before current: use '|p'
+paste-text                          ! body = Shift-p  #Paste text before cursor.
+enter-body-paste-then-find-mode     ! body = Ctrl-p   #Replace then find next from last /,?
+
+#Replace and find next 'simple' string (search direction taken from last use of '/' or '?')
+enter-body-replace-string-mode      ! body = Alt-/    #Prompt for search &amp; replace string
+replace-then-find                   ! body = Alt-p    #Replace then search (use after Alt-/)
+
+#Mark and go to mark commands
+#----------------------------
+# point-to-register    ! body = m
+# jump-to-register     ! body = quoteright  # '
+# jump-to-register     ! body = quoteleft   # `
+
+#Window commands
+#--------------------------------
+enter-vim-window-commands-mode      ! body = Ctrl-w
+</t>
+<t tx="ekr.20140721165014.19218">#Search forward within node
+#Bind: /
+
+--&gt; set-find-node-only
+--&gt; search-forward
+</t>
+<t tx="ekr.20140721165014.19219">#Search forward within node
+#Bind: /
+
+--&gt; set-find-node-only
+--&gt; search-backward
+</t>
+<t tx="ekr.20140721165014.19220">#Search forward within node
+#Bind: /
+
+--&gt; set-find-node-only
+--&gt; search-forward
+</t>
+<t tx="ekr.20140721165014.19221">#Set search scope to search all nodes in current direction
+#Bind: Ctrl-/
+
+--&gt; set-silent-mode
+--&gt; mode-help
+
+enter-body-search-all-nodes-mode          = return
+enter-body-search-all-nodes-mode          = a
+
+enter-body-search-toggle-headline-mode    = h
+enter-body-search-toggle-headline-mode    = o
+enter-body-search-toggle-body-mode        = b
+enter-body-search-toggle-mark-mode        = m
+enter-body-search-toggle-regex-mode       = r
+</t>
+<t tx="ekr.20140721165014.19222">#Set search scope to search all nodes in current direction
+#Bind: Ctrl-/ &lt;cr&gt;
+
+--&gt; set-find-everywhere
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19223">#Set search scope to search all nodes in current direction
+#Bind: Ctrl-/ h
+#      Ctrl-/ o
+
+--&gt; toggle-find-in-headline-option
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19224">#Set search scope to search all nodes in current direction
+#Bind: Ctrl-/ b
+
+--&gt; toggle-find-in-body-option
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19225">#Set search scope to search all nodes in current direction
+#Bind: Ctrl-/ m
+
+enter-body-search-toggle-mark-finds-mode   = f
+enter-body-search-toggle-mark-changes-mode = c
+</t>
+<t tx="ekr.20140721165014.19226">#Set search scope to search all nodes in current direction
+#Bind: Ctrl-/ m f
+
+--&gt; toggle-find-mark-finds-option
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19227">#Set search scope to search all nodes in current direction
+#Bind: Ctrl-/ m c
+
+--&gt; toggle-find-mark-changes-option
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19228">#Set search scope to search all nodes in current direction
+#Bind: Ctrl-/ r
+
+--&gt; toggle-find-regex-option
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19229">#Specify search and replace string
+#  then search in direction of last '/', '?' command within node
+#  (follow with 'p' to replace or 'Ctrl-p' to replace and search)
+#Bind: Alt-/
+
+--&gt; set-find-node-only
+--&gt; replace-string
+</t>
+<t tx="ekr.20140721165014.19230">#Paste then search in current direction
+#  (Preceeded by '/' or '?' to find first occurance)
+#Bind: Alt-p
+
+--&gt; yank
+--&gt; find-next
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19231">#Go to end of buffer
+#Bind: G
+
+--&gt; set-silent-mode
+--&gt; end-of-buffer
+--&gt; beginning-of-line   #vi puts curser in first column of last row
+
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19232">#Go to &lt;object&gt;
+#Bind: g&lt;obj&gt;
+
+--&gt; set-silent-mode
+#--&gt; mode-help
+
+enter-body-g-beginning-of-buffer-mode   ! body = g
+
+#Reformat text - cursor moved to end of formated text
+enter-body-g-q-mode                        ! body = q
+
+#Reformat text - cursor remains at current location (not supported)
+enter-body-g-w-mode                        ! body = w
+</t>
+<t tx="ekr.20140721165014.19233">#Go to top of buffer
+#Bind: gg (Vim)
+#Note: Vi key binding of '1G' not used. Bound numbers are not entered when editing.
+#Note: Vim also supports 'gg' to go to top of buffer.
+--&gt; set-silent-mode
+--&gt; beginning-of-buffer
+
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19234">#Format text &lt;object&gt; (Moving cursor to end of formatted text)
+#Bind: gq&lt;obj&gt;
+
+fill-paragraph ! body = q		       #gqq - Format the entire paragraph
+#Note: reformat-paragraph also exists; Seems to do the same thing
+
+enter-body-g-wq-a-mode ! body = a		#gqa&lt;obj&gt; - Format all of the specified scope</t>
+<t tx="ekr.20140721165014.19235">#Format text &lt;object&gt; - Keeping cursor at same location (not supported yet)
+#Bind: gw&lt;obj&gt;
+
+fill-paragraph ! body = w	#gww - Format the entire paragraph
+#Note: reformat-paragraph also exists; Seems to do the same thing
+
+enter-body-g-wq-a-mode ! body = a		#gqa&lt;obj&gt; - Format all of the specified scope</t>
+<t tx="ekr.20140721165014.19236">#Format paragraph
+#Bind: gqap
+
+fill-paragraph ! body = p		#Format the entire paragraph
+#Note: reformat-paragraph also exists; Seems to do the same thing
+</t>
+<t tx="ekr.20140721165014.19237">#Open new line below current line
+#Bind: o
+
+--&gt; set-silent-mode
+--&gt; end-of-line
+--&gt; insert-newline   #Enter insert mode
+
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19238">#Open new line above current line
+#Bind: O
+
+--&gt; set-silent-mode
+--&gt; beginning-of-line
+--&gt; insert-newline
+--&gt; keyboard-quit
+--&gt; previous-line
+--&gt; set-insert-state
+
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19239">#Append text to end of current line
+#Bind: A
+
+--&gt; set-silent-mode
+--&gt; end-of-line      #Delete the &lt;cr&gt;&lt;lf&gt; at the end of the line
+--&gt; set-insert-state
+
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19240">#Insert text at first non-blank character in current line
+#Bind: I
+
+--&gt; set-silent-mode
+--&gt; back-char        #Move cursor to cancel any selected text.
+--&gt; forward-char     #  otherwise insert will replace selected text.
+--&gt; back-to-indentation #cursor to beginning of first word in line
+--&gt; set-insert-state
+
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19241">#Delete to the end of the current line
+#Bind: D
+#Note: If cursor at end of line, command will delete next line
+
+--&gt; set-silent-mode
+--&gt; end-of-line-extend-selection
+--&gt; kill-region
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19242">#Delete &lt;obj&gt; command
+#Bind: d&lt;obj&gt;
+
+--&gt; set-silent-mode
+#--&gt; mode-help
+
+enter-body-delete-line-mode      = d
+enter-body-delete-selected-mode  = return       #Delete selected text(exit select mode)
+
+
+enter-body-delete-to-end-of-word-mode           = w
+enter-body-delete-to-end-of-word-mode           = Shift-w
+enter-body-delete-to-begin-of-word-mode         = b
+enter-body-delete-to-begin-of-word-mode         = Shift-b
+enter-body-delete-to-end-of-sentence-mode       = )
+enter-body-delete-to-beginning-of-sentence-mode = (
+enter-body-delete-to-end-of-paragraph-mode      = }
+enter-body-delete-to-beginning-of-paragraph-mode  = {
+enter-body-delete-section-mode                  = %
+enter-body-delete-to-g-object-mode              = g
+enter-body-delete-to-end-of-buffer-mode         = shift-g
+
+enter-body-delete-to-char-mode     = t</t>
+<t tx="ekr.20140721165014.19243">#Deleted current line
+#Bind: dd
+#Note: Last line in file will not be deleted.
+
+--&gt; set-silent-mode
+
+--&gt; beginning-of-line               #   on beginning of current line
+
+--&gt; next-line-extend-selection      #Select line and the &lt;cr&gt;
+--&gt; kill-region                     #Remove text, place in paste buffer
+
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19244">#Deleted to end of word
+#Bind: dw
+#Note: Travels past end of line.
+#Note: Forward-word-extend-selection not used, it consumes all
+#      trailing non-alpha-numeric characters.
+
+--&gt; set-silent-mode
+--&gt; split-line       #Split word (kill-word only deletes whole words)
+--&gt; kill-word        #Delete to end of word, copies text into paste-buffer
+--&gt; back-char        #Restore split line
+--&gt; delete-char      #
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19245">#Delete to beginning of word.i
+#Bind: db
+#Note: Travels past beginning of line.
+
+--&gt; set-silent-mode
+--&gt; split-line
+--&gt; back-word        #Problem: doesn't stop at beginning of line
+--&gt; kill-word
+--&gt; delete-char      #Restore split line
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19246">#Delete to end of sentence
+#Bind: d)
+
+--&gt; set-silent-mode
+--&gt; forward-sentence-extend-selection
+--&gt; kill-region
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19247">#Delete to beginning of sentence
+#Bind: d(
+
+--&gt; set-silent-mode
+--&gt; back-sentence-extend-selection
+--&gt; kill-region
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19248">#Delete to end of paragraph
+#Bind: d}
+
+--&gt; set-silent-mode
+--&gt; forward-paragraph-extend-selection
+--&gt; back-char-extend-selection
+--&gt; back-char-extend-selection
+--&gt; kill-region
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19249">#Delete to beginning of paragraph
+#Bind: d{
+
+--&gt; set-silent-mode
+--&gt; back-paragraph-extend-selection
+--&gt; forward-char-extend-selection
+--&gt; kill-region
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19250">#Delete to 'g' type object (ex: gg is 1st line in buffer)
+#Bind: dg
+
+enter-body-delete-to-beginning-of-buffer-mode     = g
+</t>
+<t tx="ekr.20140721165014.19251">#Delete to beginning of buffer (including all of current line)
+#Bind: dgg
+
+--&gt; set-silent-mode
+
+--&gt; end-of-line
+--&gt; forward-char
+#--&gt; beginning-of-line
+
+--&gt; beginning-of-buffer-extend-selection
+--&gt; kill-region
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19252">#Delete to end of buffer
+#Bind: dG
+
+--&gt; set-silent-mode
+
+--&gt; beginning-of-line
+--&gt; back-char
+
+--&gt; end-of-buffer-extend-selection
+--&gt; kill-region
+--&gt; beginning-of-line
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19253">#Delete from current bracket type to its apposing bracket
+#Bind: d%
+
+--&gt; set-silent-mode
+
+--&gt; set-extend-mode
+--&gt; match-brackets
+--&gt; clear-extend-mode
+
+--&gt; kill-region
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19254">#Delete to character
+#Bind: dt&lt;character&gt;
+#Note: Character search not limited to current line.
+
+--&gt; set-silent-mode
+--&gt; zap-to-character
+
+</t>
+<t tx="ekr.20140721165014.19255">#Delete selected text
+#Bind: d&lt;cr&gt;
+
+
+#Copy to clipboard (copy-text doesn't work in modes)
+--&gt; kill-region
+
+#Turn off select mode
+--&gt; clear-extend-mode
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19256">#Yank text to the end of the current line
+#Bind: Y
+
+--&gt; set-silent-mode
+--&gt; end-of-line-extend-selection
+--&gt; kill-region
+--&gt; yank
+--&gt; back-char
+--&gt; forward-char
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19257">#Yank &lt;obj&gt; (Leo's copy-text)
+#Bind: y&lt;obj&gt;
+#Note: yank-to-character not supported.  Can not issue yank command.
+      #Leo's zap-to-character must be last command (needs user input)
+      #Issue 'dt&lt;char&gt;' followed by 'p'
+      
+--&gt; set-silent-mode
+#--&gt; mode-help
+
+enter-body-yank-selected-mode                     = return #Yank selected text(exit select mode)
+enter-body-yank-line-mode                         = y
+enter-body-yank-to-beginning-of-next-word-mode    = w
+enter-body-yank-to-beginning-of-current-word-mode = b
+enter-body-yank-to-end-of-sentence-mode           = )
+enter-body-yank-to-beginning-of-sentence-mode     = (
+enter-body-yank-to-end-of-paragraph-mode          = }
+enter-body-yank-to-beginning-of-paragraph-mode    = {
+enter-body-yank-to-g-object-mode                  = g
+enter-body-yank-to-end-of-buffer-mode             = Shift-g
+enter-body-yank-section-mode                      = %
+
+#Yank to user specified character
+#Workaround used until @mode's execute commands after
+#command requesting user input.
+#follow command with "y&lt;cr&gt;" to yank &amp; "v" to unselect
+find-character-extend-selection                 = t
+backward-find-character-extend-selection        = Shift-t
+</t>
+<t tx="ekr.20140721165014.19258">#Yank current line
+#Bind: yy
+#Note: Problem yanking empty line. Also yanks line below it.
+#Note: Problem yanking last line.  Does not yank a trailing &lt;cr&gt;
+
+--&gt; set-silent-mode
+
+#body-delete-line macro
+--&gt; set-silent-mode
+--&gt; beginning-of-line
+--&gt; end-of-line-extend-selection    #Select all text on current line and
+--&gt; forward-char-extend-selection   #  select the &lt;cr&gt;
+--&gt; kill-region                     #Remove text, place in paste buffer
+
+#Put text back
+--&gt; yank
+#Clear selection
+--&gt; back-char
+--&gt; beginning-of-line
+#--&gt; forward-char
+
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19259">#Yank to beginning of next word
+#Bind: dw
+#Note: Travels past end of line.
+#Note: Forward-word-extend-selection not used, it consumes all
+#      trailing non-alpha-numeric characters.
+
+--&gt; set-silent-mode
+--&gt; split-line
+--&gt; kill-word        #Delete to beginning of next word, copies text into paste-buffer
+--&gt; back-char        #Restore split line
+--&gt; delete-char      #
+
+#Put text back
+--&gt; yank
+#Clear selection
+--&gt; back-char
+--&gt; forward-char
+
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19260">#Yank to beginning of current word.
+#Bind: yb
+#Note: Travels past beginning of line.
+#Note: AlphaNumeric word in contact with a non-alphanumeric word
+      #is not handled correctly. Can cause text to be deleted or replicated.
+
+--&gt; set-silent-mode
+--&gt; split-line
+--&gt; back-word        #Problem: doesn't stop at beginning of line
+--&gt; kill-word
+--&gt; delete-char      #Restore split line
+
+#Put text back
+--&gt; yank
+#Clear selection
+--&gt; back-char
+--&gt; forward-char
+
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19261">#Yank to end of sentence
+#Bind: y)
+
+--&gt; set-silent-mode
+--&gt; forward-sentence-extend-selection
+--&gt; kill-region
+#Put text back
+--&gt; yank
+#Clear selection
+--&gt; back-char
+--&gt; forward-char
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19262">#Yank to beginning of sentence
+#Bind: y(
+
+--&gt; set-silent-mode
+--&gt; back-sentence-extend-selection
+--&gt; kill-region
+#Put text back
+--&gt; yank
+#Clear selection
+--&gt; back-char
+--&gt; forward-char
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19263">#Yank to end of paragraph
+#Bind: y}
+#Note: Yanking paragraph at end of body will not yank 1 or
+#      two characters (Characters after final cursor position)
+
+--&gt; set-silent-mode
+--&gt; forward-paragraph-extend-selection
+--&gt; back-char-extend-selection
+--&gt; back-char-extend-selection
+--&gt; kill-region
+#Put text back
+--&gt; yank
+#Clear selection
+--&gt; back-char
+--&gt; forward-char
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19264">#Yank to beginning of paragraph
+#Bind: y{
+
+--&gt; set-silent-mode
+--&gt; back-paragraph-extend-selection
+--&gt; forward-char-extend-selection
+--&gt; kill-region
+#Put text back
+--&gt; yank
+#Clear selection
+--&gt; back-char
+--&gt; forward-char
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19265">#Yank to 'g' type object (ex: gg is 1st line in buffer)
+#Bind: yg
+
+enter-body-yank-to-beginning-of-buffer-mode     = g
+</t>
+<t tx="ekr.20140721165014.19266">#Yank to beginning of buffer
+#Bind: ygg
+
+--&gt; set-silent-mode
+
+--&gt; end-of-line
+--&gt; forward-char
+#--&gt; beginning-of-line
+
+--&gt; beginning-of-buffer-extend-selection
+--&gt; kill-region
+--&gt; yank
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19267">#Yank to end of buffer
+#Bind: yG
+
+--&gt; set-silent-mode
+
+--&gt; beginning-of-line
+--&gt; back-char
+
+--&gt; end-of-buffer-extend-selection
+--&gt; kill-region
+--&gt; yank                #Put text back
+--&gt; beginning-of-line
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19268">#Yank from current bracket type to its opposing bracket
+#Bind: y%
+
+--&gt; set-silent-mode
+
+--&gt; set-extend-mode
+--&gt; match-brackets
+--&gt; clear-extend-mode
+
+#Copy to clipboard (copy-text doesn't work in modes)
+--&gt; kill-region
+--&gt; yank
+
+#Remove highlighting of selection
+--&gt; back-char
+--&gt; forward-char
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19269">#Yank selected text
+#Bind: y&lt;cr&gt;
+
+
+#Copy to clipboard (copy-text doesn't work in modes)
+--&gt; kill-region
+--&gt; yank
+
+#Turn off select mode
+--&gt; clear-extend-mode
+
+#Remove highlighting of selection
+--&gt; back-char
+--&gt; forward-char
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19270">#Change to end of line
+#Bind: C
+#Note: If cursor at end of line, command will delete next line and enter insert mode
+#      Use 'i' command instead (enter insert mode)
+
+--&gt; set-silent-mode
+--&gt; end-of-line-extend-selection
+--&gt; kill-region
+
+--&gt; set-insert-state           #Enter insert mode</t>
+<t tx="ekr.20140721165014.19271">#Change &lt;object&gt;
+#Bind: c&lt;obj&gt;
+#Note: change-to-character not supported.  Can not issue set-insert-state.
+      #Leo's zap-to-character must be last command (needs user input)
+      #Emulate command by issuing 'dt&lt;char&gt;' followed by 'i'
+
+--&gt; set-silent-mode
+#--&gt; mode-help
+
+enter-body-change-selected-mode                     = return #Change selected text(exit select mode)
+enter-body-change-line-mode                         = c
+enter-body-change-to-end-of-word-mode               = w
+enter-body-change-to-beginning-of-word-mode         = b
+enter-body-change-to-end-of-sentence-mode           = )
+enter-body-change-to-beginning-of-sentence-mode     = (
+enter-body-change-to-end-of-paragraph-mode          = }
+enter-body-change-to-beginning-of-paragraph-mode    = {
+enter-body-change-to-g-object-mode                  = g
+enter-body-change-to-end-of-buffer-mode             = Shift-g
+enter-body-change-section-mode                      = %
+
+#Change to specified character
+#Workaround used until @mode's execute commands after
+#command requesting user input.
+#follow command with "i" to change the text.
+find-character-extend-selection                 = t
+backward-find-character-extend-selection        = Shift-t
+</t>
+<t tx="ekr.20140721165014.19272">#Change to end of line
+#Bind: cc
+#Note: Performs body-delete-line followed by a an insert-newline
+
+#Note: Problem deleting empty line. Also deletes line below it.
+      #Use Join function instead (key 'J')
+#Note: Problem deleting last line.  Also deletes line above it.
+      #Invoke undo one time to restore line ('u' key)
+
+--&gt; set-silent-mode
+--&gt; beginning-of-line
+--&gt; end-of-line-extend-selection    #Select all text on current line and
+--&gt; forward-char-extend-selection   #  select the &lt;cr&gt;
+--&gt; kill-region                     #Remove text, place in paste buffer
+
+--&gt; set-insert-state</t>
+<t tx="ekr.20140721165014.19273">#Change to end of word
+#Bind: cw
+#Note: Travels past end of line.
+#Note: forward-word-extend-selection not used,
+#      it skips non-alphanumeric characters.
+
+--&gt; set-silent-mode
+--&gt; split-line
+--&gt; kill-word        #Delete to end of word, copies text into paste-buffer
+--&gt; back-char        #Restore split line
+--&gt; delete-char      #
+
+--&gt; set-insert-state</t>
+<t tx="ekr.20140721165014.19274">#Change to beginning of word
+#Bind: cb
+
+--&gt; set-silent-mode
+--&gt; split-line
+--&gt; back-word        #Problem: doesn't stop at beginning of line
+--&gt; kill-word
+--&gt; delete-char      #Restore split line
+
+--&gt; set-insert-state</t>
+<t tx="ekr.20140721165014.19275">#Delete to end of sentence
+#Bind: d)
+
+--&gt; set-silent-mode
+--&gt; forward-sentence-extend-selection
+--&gt; kill-region
+--&gt; set-insert-state
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19276">#Delete to beginning of sentence
+#Bind: d(
+
+--&gt; set-silent-mode
+--&gt; back-sentence-extend-selection
+--&gt; kill-region
+--&gt; set-insert-state
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19277">#Delete to end of paragraph
+#Bind: d}
+
+--&gt; set-silent-mode
+--&gt; forward-paragraph-extend-selection
+--&gt; back-char-extend-selection
+--&gt; back-char-extend-selection
+--&gt; kill-region
+--&gt; set-insert-state
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19278">#Delete to beginning of paragraph
+#Bind: d{
+
+--&gt; set-silent-mode
+--&gt; back-paragraph-extend-selection
+--&gt; forward-char-extend-selection
+--&gt; kill-region
+--&gt; set-insert-state
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19279">#Change to 'g' type object (ex: gg is 1st line in buffer)
+#Bind: cg
+
+enter-body-change-to-beginning-of-buffer-mode     = g
+</t>
+<t tx="ekr.20140721165014.19280">#Change to beginning of buffer
+#Bind: cgg
+
+--&gt; set-silent-mode
+
+--&gt; end-of-line
+--&gt; forward-char
+#--&gt; beginning-of-line
+
+--&gt; beginning-of-buffer-extend-selection
+--&gt; kill-region
+--&gt; set-insert-state
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19281">#Delete to end of buffer
+#Bind: cG
+
+--&gt; set-silent-mode
+
+--&gt; beginning-of-line
+--&gt; back-char
+
+--&gt; end-of-buffer-extend-selection
+--&gt; kill-region
+
+--&gt; insert-newline   #Enter insert mode
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19282">#Change from current bracket type its matching bracket type
+#Bind: c%
+
+--&gt; set-silent-mode
+
+--&gt; set-extend-mode
+--&gt; match-brackets
+--&gt; clear-extend-mode
+
+--&gt; kill-region
+--&gt; yank             #Show what text will be replaced
+
+--&gt; set-insert-state
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19283">#Yank selected text
+#Bind: c&lt;cr&gt;
+
+
+#Delete selected text (keeping copy in paste buffer)
+--&gt; kill-region
+
+#Turn off select mode
+--&gt; clear-extend-mode
+
+--&gt; set-insert-state
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19284">#Substitute character
+#Bind: s
+
+--&gt; set-silent-mode
+--&gt; delete-char
+--&gt; set-insert-state           #Enter insert mode</t>
+<t tx="ekr.20140721165014.19285">#Substitute line
+#Bind: S
+
+--&gt; set-silent-mode
+--&gt; kill-line
+--&gt; set-insert-state           #Enter insert mode</t>
+<t tx="ekr.20140721165014.19286">#Indent &lt;object&gt;
+#Bind: &gt;&lt;obj&gt;
+
+--&gt; set-silent-mode
+
+enter-body-indent-line-mode = greater
+enter-body-indent-to-end-of-sentence-mode = )
+enter-body-indent-to-beginning-of-sentence-mode = (
+enter-body-indent-to-end-of-paragraph-mode = }
+enter-body-indent-to-beginning-of-paragraph-mode = {
+enter-body-indent-to-beginning-of-buffer-mode = g
+enter-body-indent-to-end-of-buffer-mode = Shift-g
+</t>
+<t tx="ekr.20140721165014.19287">#Indent line
+#Bind: &gt;&gt;
+
+--&gt; set-silent-mode
+--&gt; back-to-indentation #cursor to beginning of first word in line
+--&gt; forward-char-extend-selection
+
+--&gt; indent-region
+--&gt; back-char
+--&gt; forward-char
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19288">#Indent to beginning of sentence
+#Bind: &gt;(
+
+--&gt; forward-sentence-extend-selection
+--&gt; indent-region
+--&gt; back-char
+--&gt; forward-char
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19289">#Indent to beginning of sentence
+#Bind: &gt;)
+
+--&gt; back-sentence-extend-selection
+--&gt; indent-region
+--&gt; back-char
+--&gt; forward-char
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19290">#Indent to end of paragraph
+#Bind: &gt;}
+
+--&gt; forward-paragraph-extend-selection
+--&gt; back-char-extend-selection
+--&gt; indent-region
+--&gt; back-char
+--&gt; forward-char
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19291">#Indent to beginning of paragraph
+#Bind: &gt;{
+
+--&gt; back-paragraph-extend-selection
+--&gt; forward-char-extend-selection
+--&gt; indent-region
+--&gt; back-char
+--&gt; forward-char
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19292">#Indent to end of buffer
+#Bind: &gt;G
+
+--&gt; set-silent-mode
+--&gt; beginning-of-buffer-extend-selection
+--&gt; indent-region
+--&gt; back-char
+--&gt; forward-char
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19293">#Indent to end of buffer
+#Bind: &gt;G
+
+--&gt; set-silent-mode
+--&gt; end-of-buffer-extend-selection
+--&gt; indent-region
+--&gt; back-char
+--&gt; forward-char
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19294">#Unindent object
+#Bind: &lt;&lt;obj&gt;
+
+--&gt; set-silent-mode
+
+enter-body-unindent-less-mode = less
+
+enter-body-unindent-to-end-of-sentence-mode = )
+enter-body-unindent-to-beginning-of-sentence-mode = (
+enter-body-unindent-to-end-of-paragraph-mode = }
+enter-body-unindent-to-beginning-of-paragraph-mode = {
+enter-body-unindent-to-beginning-of-buffer-mode = g
+enter-body-unindent-to-end-of-buffer-mode = Shift-g
+</t>
+<t tx="ekr.20140721165014.19295">#Unindent current line
+#Bind: &lt;&lt;
+#Note: Unindents to first column instead of previous tab stop
+
+#--&gt; set-silent-mode
+#--&gt; back-to-indentation #cursor to beginning of first word in line
+
+--&gt; unindent-region
+#--&gt; delete-indentation
+--&gt; back-char
+--&gt; forward-char
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19296">#Indent to end of paragraph
+#Bind: &lt;}
+
+--&gt; forward-paragraph-extend-selection
+--&gt; back-char-extend-selection
+--&gt; unindent-region
+--&gt; back-char
+--&gt; forward-char
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19297">#Indent to beginning of paragraph
+#Bind: &lt;{
+
+--&gt; back-paragraph-extend-selection
+--&gt; forward-char-extend-selection
+--&gt; unindent-region
+--&gt; back-char
+--&gt; forward-char
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19298">#Indent to end of sentence
+#Bind: &lt;)
+
+--&gt; forward-sentence-extend-selection
+--&gt; unindent-region
+--&gt; back-char
+--&gt; forward-char
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19299">#Indent to beginning of sentence
+#Bind: &lt;(
+
+--&gt; back-sentence-extend-selection
+--&gt; unindent-region
+--&gt; back-char
+--&gt; forward-char
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19300">#Unindent to end of buffer
+#Bind: &lt;G
+
+--&gt; set-silent-mode
+--&gt; end-of-buffer-extend-selection
+--&gt; unindent-region
+--&gt; back-char
+--&gt; forward-char
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19301">#Unindent to end of buffer
+#Bind: &lt;G
+
+--&gt; set-silent-mode
+--&gt; beginning-of-buffer-extend-selection
+--&gt; unindent-region
+--&gt; back-char
+--&gt; forward-char
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19302">#Goto first visible charecter on previous line
+#Bind: -
+#Note: No indent performed, using back-char, forward-word will
+#      not skip over blank lines, goes to 2nd word on first line.
+
+--&gt; set-silent-mode
+--&gt; beginning-of-line		#Now at beginning of current line.
+
+--&gt; previous-line
+# --&gt; back-char
+# --&gt; forward-word			#Skips over visible non-alpha-numeric characters
+
+
+--&gt; exit-named-mode
+
+</t>
+<t tx="ekr.20140721165014.19303">#Go to end of paragraph
+#Bind: }
+
+--&gt; set-silent-mode
+
+--&gt; forward-char        #Be sure cursor in a paragraph
+--&gt; forward-paragraph
+--&gt; back-char
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19304">#Go to beginning of paragraph
+#Bind: {
+
+--&gt; set-silent-mode
+
+--&gt; back-char        #Be sure cursor in a paragraph
+--&gt; back-paragraph
+--&gt; forward-char
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19305">#Join next line to end of current line
+#Bind: J
+
+--&gt; set-silent-mode
+--&gt; end-of-line      #Delete the &lt;cr&gt;&lt;lf&gt; at the end of the line
+--&gt; delete-char
+
+--&gt; exit-named-mode
+
+</t>
+<t tx="ekr.20140721165014.19306">#Goto matching bracket: () [] {}
+#Bind: %
+
+--&gt; set-silent-mode
+--&gt; match-brackets
+--&gt; forward-char
+--&gt; back-char
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19307"></t>
+<t tx="ekr.20140721165014.19308">--&gt; focus-to-tree
+--&gt; goto-next-visible
+--&gt; edit-headline
+--&gt; focus-to-body
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19309">--&gt; focus-to-tree
+--&gt; goto-prev-visible
+--&gt; edit-headline
+--&gt; focus-to-body
+--&gt; exit-named-mode
+</t>
+<t tx="ekr.20140721165014.19310">--&gt; focus-to-tree
+--&gt; expand-and-go-right
+--&gt; edit-headline
+--&gt; focus-to-body
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19311">--&gt; focus-to-tree
+--&gt; contract-or-go-left
+--&gt; edit-headline
+--&gt; focus-to-body
+
+--&gt; exit-named-mode</t>
+<t tx="ekr.20140721165014.19312">#Window commands
+#Bind: Ctrl-w
+
+add-editor           = s   #Open another view to current node
+add-editor           = n   #Open another view to current node
+
+cycle-editor-focus   = w   #Vim goes to next below-right window (wraps)
+cycle-editor-focus   = p   #Vim goes to previous window with focus
+cycle-editor-focus   = k   #Vim goes to window above current window
+cycle-editor-focus   = j   #Vim goes to window below current window
+
+delete-editor        = c   #Close current window (if more than one)
+delete-editor        = q   #Close current window (if more than one)
+</t>
+<t tx="ekr.20140721165014.19313">This node and its descendants contains settings that make Leo work somewhat
+like vim.
+
+To enable vim emulation, place a copy this "@keys Vim bindings" node and
+its sub-nodes into your myLeoSettings.leo file under the "@settings" node.
+</t>
 <t tx="leohag.20081204085551.13"></t>
 <t tx="nh910.20110621123823.3423"></t>
 <t tx="peckj.20130514082859.5599"></t>
