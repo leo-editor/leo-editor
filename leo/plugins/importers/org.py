@@ -81,6 +81,7 @@ class OrgModeScanner(BaseScanner):
     #@-others
 #@-others
 importer_dict = {
+    '@auto': ['@auto-org','@auto-org-mode',],
     'class': OrgModeScanner,
     'extensions': ['.org',],
     'name': 'org-mode',
