@@ -433,10 +433,10 @@ class PersistenceDataController:
         Return the @data node for root, a foreign node.
         Create the node if it does not exist.
         '''
-        views = pd.find_at_persistence_node()
+        at_persistence = pd.find_at_persistence_node()
         p = pd.has_at_data_node(root)
         if not p:
-            p = views.insertAsLastChild()
+            p = at_persistence.insertAsLastChild()
             p.h = '@data:' + root.h # pd.foreign_file_name(root)
             p.b = pd.at_data_body(root)
         return p
@@ -476,10 +476,10 @@ class PersistenceDataController:
         Create the @recovery node if it does not exist.
         '''
         h = '@recovery'
-        auto_view = pd.find_at_data_node(root)
-        p = g.findNodeInTree(pd.c,auto_view,h)
+        at_data = pd.find_at_data_node(root)
+        p = g.findNodeInTree(pd.c,at_data,h)
         if not p:
-            p = auto_view.insertAsLastChild()
+            p = at_data.insertAsLastChild()
             p.h = h
         return p
     #@+node:ekr.20140711111623.17891: *5* pd.find_at_uas_node
@@ -626,7 +626,9 @@ class PersistenceDataController:
         Return the @data node corresponding to root, a foreign node.
         Return None if no such node exists.
         '''
-        if not (pd.is_at_auto_node(root) or pd.is_at_file_node(root)):
+        if g.unitTesting:
+            pass
+        elif not pd.is_at_auto_node(root): # or pd.is_at_file_node(root):
             return None
         views = g.findNodeAnywhere(pd.c,'@persistence')
         if views:

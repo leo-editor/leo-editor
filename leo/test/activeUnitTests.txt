@@ -15484,7 +15484,7 @@ c.contractParent()
 g.app.unitTestDict['restoreSelectedNode']=False
 
 print('\nEnd of leoNodes tests.')
-#@+node:ekr.20140712142620.4458: *3* leoPersistence
+#@+node:ekr.20140712142620.4458: *3* leoPersistence tests
 #@+node:ekr.20140712142620.4537: *4* @@@test pd.find_absolute_unl_node
 pd = c.persistenceController
 root = c.rootPosition().insertAfter()
@@ -15723,20 +15723,24 @@ root.h = 'test root'
 root.b = root.gnx
 at_data = pd.find_at_data_node(root)
 assert at_data
-at_uas = at_data.insertAsLastChild()
-at_uas.h = '@uas'
-at_ua = at_uas.insertAsLastChild()
-at_ua.h = '@ua:dummy-gnx'
-at_ua.b = 'unl:dummy-unl\nua:dummy-ua'
-at_recovery = pd.find_at_recovery_node(root)
-if at_recovery:
-    at_recovery.deleteAllChildren()
-pd.recover_ua_for_gnx('dummy-gnx',root,'dummy-unl')
-assert at_recovery
-at_ua2 = g.findNodeInTree(c,at_recovery,'@ua:dummy-gnx')
-assert at_ua2
-assert at_ua2.h == at_ua.h
-assert at_ua2.b == at_ua.b,repr(at_ua2.b)
+try:
+    at_uas = at_data.insertAsLastChild()
+    at_uas.h = '@uas'
+    at_ua = at_uas.insertAsLastChild()
+    at_ua.h = '@ua:dummy-gnx'
+    at_ua.b = 'unl:dummy-unl\nua:dummy-ua'
+    at_recovery = pd.find_at_recovery_node(root)
+    if at_recovery:
+        at_recovery.deleteAllChildren()
+    pd.recover_ua_for_gnx('dummy-gnx',root,'dummy-unl')
+    assert at_recovery
+    at_ua2 = g.findNodeInTree(c,at_recovery,'@ua:dummy-gnx')
+    assert at_ua2
+    assert at_ua2.h == at_ua.h
+    assert at_ua2.b == at_ua.b,repr(at_ua2.b)
+finally:
+    pass # root.doDelete()
+
 #@+node:ekr.20140712142620.4507: *4* @test pd.restore_gnxs
 pd = c.persistenceController
 gnxs = g.findNodeInTree(c,p,'@gnxs')
@@ -15754,11 +15758,11 @@ try:
 finally:
     c.redraw()
 #@+node:ekr.20140712142620.4508: *5* @gnxs
-gnx: ekr.20140716125439.4403
+gnx: ekr.20140720085428.4351
 unl: node1
-#@+node:ekr.20140720085428.4351: *5* node1
+#@+node:ekr.20140723122604.4531: *5* node1
 #@+node:ekr.20140712142620.4510: *5* root
-#@+node:ekr.20140720085428.4351: *6* node1
+#@+node:ekr.20140723122604.4531: *6* node1
 #@+node:ekr.20140712142620.4574: *4* @test pd.unl
 pd = c.persistenceController
 unl = pd.unl(p)

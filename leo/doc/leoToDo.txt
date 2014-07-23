@@ -6,8 +6,17 @@
 .. @+node:ekr.20131114124839.16664: ** First
 @language rest
 .. @+node:ekr.20140704052551.17952: *3* Look at github/launchpad bugs
+.. @+node:ekr.20140722103132.17915: *3* * Create plugin architecture for @auto
+.. @+node:ekr.20140721091741.17746: *3* * Add @auto-md
+Create an importer for markdown.
 .. @+node:ekr.20131111061547.16464: *3* * vim project
 @language rest
+
+Principles:
+- Use as many of vim's *plain* keys as possible.
+- Use Leo's control keys as possible.
+- Use Alt-Keys to switch to outline
+- <Enter> works in the outine as before.
 
 First:
 * Fix the widget mess.
@@ -26,8 +35,6 @@ Later:
 @language python
 .. @+node:ekr.20140218130540.18726: *4* vim notes (do not delete)
 @language rest
-
-- Document: use separate .leo file to test vim (ekr-vim.leo)
 
 https://groups.google.com/forum/#!topic/leo-editor/OSe0_D5tmJQ
 
