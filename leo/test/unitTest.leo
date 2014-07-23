@@ -3,7 +3,7 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.42" body_secondary_ratio="0.64">
+<globals body_outline_ratio="0.42" body_secondary_ratio="0.40">
 	<global_window_position top="82" left="724" height="993" width="1137"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -166,6 +166,7 @@
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
 <v t="ekr.20070114140212" descendentVnodeUnknownAttributes="7d7100285505302e382e3771017d71025808000000616e6e6f7461746571037d7104735508302e372e31302e3971057d71065809000000756e69745f7465737471075804000000616263647108735508302e372e31342e3671097d710a5808000000616e6e6f74617465710b7d710c735508302e372e31362e37710d7d710e5808000000616e6e6f74617465710f7d711073752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
+<v t="ekr.20140723134017.4464"><vh>@test @auto importers</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -581,7 +582,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="8"></t>
+<t tx="ekr.20070417092935" str_leo_pos="9"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1255,5 +1256,12 @@ unl: organizer node--&gt;child1
 gnx: ekr.20140712142620.4581
 unl: organizer node--&gt;child2
 </t>
+<t tx="ekr.20140723134017.4464">import glob
+path = g.os_path_finalize_join(g.app.loadDir,'..','plugins','importers')
+pattern = g.os_path_finalize_join(path,'*.py')
+for fn in glob.glob(pattern):
+    sfn = g.shortFileName(fn)
+    m = g.importFromPath(sfn,path,pluginName=fn,verbose=True)
+    assert m,sfn</t>
 </tnodes>
 </leo_file>

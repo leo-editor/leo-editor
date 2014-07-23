@@ -4225,7 +4225,7 @@ def importFromPath (name,path,pluginName=None,verbose=False):
             theFile,pathname,description = data
             module = imp.load_module(moduleName,theFile,pathname,description)
         except ImportError:
-            if trace: # or verbose:
+            if trace or verbose:
                 g.error("exception in g.importFromPath")
                 g.es_exception()
         except UiTypeException:

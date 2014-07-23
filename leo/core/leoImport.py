@@ -816,6 +816,7 @@ class LeoImportCommands (ScanUtility):
             elif atAuto: kind = '@auto '
             else: kind = ''
             s,e = g.readFileIntoString(fileName,encoding=self.encoding,kind=kind)
+                # Kind is used only for messages.
             if s is None: return None
             if e: self.encoding = e
         if ext == '.otl':
