@@ -7,6 +7,9 @@
 #@@tabwidth -4
 #@@pagewidth 70
 #@@encoding utf-8
+new_importers = False
+if new_importers:
+    print('===== new_importers =====')
 #@+<< how to write a new importer >>
 #@+node:ekr.20100728074713.5840: ** << how to write a new importer >>
 #@@nocolor-node
@@ -99,6 +102,9 @@
 import leo.core.leoGlobals as g
 
 docutils = g.importExtension('docutils',pluginName='leoImport.py')
+
+import glob
+import importlib
 import os
 import string
 if g.isPython3:
@@ -141,7 +147,7 @@ class ScanUtility:
 class LeoImportCommands (ScanUtility):
 
     #@+others
-    #@+node:ekr.20031218072017.3207: *3* import.__init__ & helper
+    #@+node:ekr.20031218072017.3207: *3* import.__init__ & helpers
     def __init__ (self,c):
         '''ctor for LeoImportCommands class.'''
         self.c = c
@@ -158,13 +164,17 @@ class LeoImportCommands (ScanUtility):
         self.treeType = "@file" # None or "@file"
         self.webType = "@noweb" # "cweb" or "noweb"
         self.web_st = [] # noweb symbol table.
-        self.createClassDispatchDict()
+        if new_importers:
+            self.createImporterData()
+        else:
+            self.createClassDispatchDict()
+
     #@+node:ekr.20140125141655.10473: *4* ic.createClassDispatchDict
     def createClassDispatchDict(self):
         '''
         Create a dict whose keys are file extensions and whose values are the
         corresponding subclass of BaseScanner.
-        ''' 
+        '''
         self.classDispatchDict = {
             '.c':       CScanner,
             '.h':       CScanner,
@@ -193,6 +203,30 @@ class LeoImportCommands (ScanUtility):
             '.ts':      TypeScriptScanner,
             '.xml':     XmlScanner,
         }
+    #@+node:ekr.20140724064952.18037: *4* ic.createImporterData & helper
+    def createImporterData(self):
+        '''Create the data structures describing importer plugins.'''
+        d = {}
+        path = g.os_path_finalize_join(g.app.loadDir,'..','plugins','importers')
+        pattern = g.os_path_finalize_join(path,'*.py')
+        for fn in glob.glob(pattern):
+            sfn = g.shortFileName(fn)
+            try:
+                # Important: use importlib to give imported modules their fully qualified names.
+                m = importlib.import_module('leo.plugins.importers.%s' % sfn[:-3])
+            except ImportError:
+                g.warning('can not import leo.plugins,importers.%s' % sfn)
+    #@+node:ekr.20140723140445.18076: *5* ic.parse_importer_dict
+    def parse_importer_dict(self,sfn,m):
+        
+        d = getattr(m,'importer_dict',None)
+        if d:
+            at_auto = d.get('@auto',[])
+            scanner_class = d.get('class',None)
+            extensions = d.get('extensions',[])
+            name = d.get('name','<no name>')
+        else:
+            g.warning('leo/plugins/importers/%s has no importer_dict' % sfn)
     #@+node:ekr.20031218072017.3289: *3* Export
     #@+node:ekr.20031218072017.3290: *4* ic.convertCodePartToWeb & helpers
     def convertCodePartToWeb (self,s,i,p,result):
@@ -789,41 +823,49 @@ class LeoImportCommands (ScanUtility):
 
         # g.trace(self.encoding)
     #@+node:ekr.20031218072017.3209: *3* Import (leoImport)
-    #@+node:ekr.20031218072017.3210: *4* ic.createOutline
+    #@+node:ekr.20031218072017.3210: *4* ic.createOutline & helpers
     def createOutline (self,fileName,parent,
         atAuto=False,atShadow=False,s=None,ext=None
     ):
         '''Create an outline by importing a file or string.'''
-        c = self.c ; u = c.undoer
-        w = c.frame.body
-        at = c.atFileCommands
-        self.default_directory = g.setDefaultDirectory(c,parent,importing=False)
-        fileName = c.os_path_finalize_join(self.default_directory,fileName)
-        fileName = fileName.replace('\\','/') # 2011/11/25
-        # Fix bug 1185409 importing binary files puts binary content in body editor.
+        c = self.c
+        fileName = self.get_import_filename(fileName,parent)
         if g.is_binary_external_file(fileName):
+            # Fix bug 1185409 importing binary files puts binary content in body editor.
             # Create an @url node.
             p = parent.insertAsLastChild()
             p.h = '@url file://%s' % fileName
             return
-        junk,self.fileName = g.os_path_split(fileName)
-        self.methodName,self.fileType = g.os_path_splitext(self.fileName)
+        # Init ivars.
         self.setEncoding(p=parent,atAuto=atAuto)
-        if not ext: ext = self.fileType
-        ext = ext.lower()
-        if not s:
-            if atShadow: kind = '@shadow '
-            elif atAuto: kind = '@auto '
-            else: kind = ''
-            s,e = g.readFileIntoString(fileName,encoding=self.encoding,kind=kind)
-                # Kind is used only for messages.
-            if s is None: return None
-            if e: self.encoding = e
-        if ext == '.otl':
-            self.treeType = '@auto-otl'
-            # atAuto = True
-            # kind = '@auto-otl'
+        ext,s = self.init_import(atAuto,atShadow,ext,fileName,s)
+        if not s: return
         # Create the top-level headline.
+        p = self.create_top_node(atAuto,fileName,parent)
+        if new_importers:
+            func = self.dispatch(ext,p)
+        else:
+            func = self.static_dispatch(ext,p)
+        if func and not c.config.getBool('suppress_import_parsing',default=False):
+            s = s.replace('\r','')
+            func(atAuto=atAuto,parent=p,s=s)
+        else:
+            # Just copy the file to the parent node.
+            s = s.replace('\r','')
+            self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
+        if atAuto:
+            # Fix bug 488894: unsettling dialog when saving Leo file
+            # Fix bug 889175: Remember the full fileName.
+            c.atFileCommands.rememberReadPath(fileName,p)
+        p.contract()
+        w = c.frame.body
+        w.setInsertPoint(0)
+        w.seeInsertPoint()
+        return p
+    #@+node:ekr.20140724175458.18053: *5* ic.create_top_node
+    def create_top_node(self,atAuto,fileName,parent):
+        '''Create the top node.'''
+        u = self.c.undoer
         if atAuto:
             p = parent.copy()
             p.setBodyString('')
@@ -840,10 +882,43 @@ class LeoImportCommands (ScanUtility):
             else:
                 p.initHeadString(fileName)
             u.afterInsertNode(p,'Import',undoData)
+        return p
+    #@+node:ekr.20140724064952.18038: *5* ic.dispatch
+    def dispatch(self,ext,p):
+        '''Return the correct dispatch function for p.'''
+        g.trace(ext,p)
+    #@+node:ekr.20140724073946.18050: *5* ic.get_import_filename
+    def get_import_filename(self,fileName,parent):
+        c = self.c
+        self.default_directory = g.setDefaultDirectory(c,parent,importing=False)
+        fileName = c.os_path_finalize_join(self.default_directory,fileName)
+        fileName = fileName.replace('\\','/') # 2011/11/25
+        return fileName
+    #@+node:ekr.20140724175458.18052: *5* ic.init_import
+    def init_import(self,atAuto,atShadow,ext,fileName,s):
+        '''Init ivars & vars for imports.'''
+        junk,self.fileName = g.os_path_split(fileName)
+        self.methodName,self.fileType = g.os_path_splitext(self.fileName)
+        if not ext: ext = self.fileType
+        ext = ext.lower()
+        if not s:
+            if atShadow: kind = '@shadow '
+            elif atAuto: kind = '@auto '
+            else: kind = ''
+            s,e = g.readFileIntoString(fileName,encoding=self.encoding,kind=kind)
+                # Kind is used only for messages.
+            if s is None: return None,None
+            if e: self.encoding = e
+        if ext == '.otl':
+            self.treeType = '@auto-otl'
         if self.treeType == '@root': # 2010/09/29.
             self.rootLine = "@root-code "+self.fileName+'\n'
         else:
             self.rootLine = ''
+        return ext,s
+    #@+node:ekr.20140724064952.18039: *5* ic.static_dispatch
+    def static_dispatch(self,ext,p):
+        '''Return the func associated ext and p.'''
         if p.isAtAutoRstNode():
             # @auto-rst is independent of file extension.
             func = self.scanRstText
@@ -853,21 +928,7 @@ class LeoImportCommands (ScanUtility):
             func = self.scanVimoutlinerText
         else:
             func = self.scanner_for_ext(ext)
-        if func and not c.config.getBool('suppress_import_parsing',default=False):
-            s = s.replace('\r','')
-            func(atAuto=atAuto,parent=p,s=s)
-        else:
-            # Just copy the file to the parent node.
-            s = s.replace('\r','')
-            self.scanUnknownFileType(s,p,ext,atAuto=atAuto)
-        if atAuto:
-            # Fix bug 488894: unsettling dialog when saving Leo file
-            # Fix bug 889175: Remember the full fileName.
-            at.rememberReadPath(fileName,p)
-        p.contract()
-        w.setInsertPoint(0)
-        w.seeInsertPoint()
-        return p
+        return func
     #@+node:ekr.20070806111212: *4* ic.readAtAutoNodes
     def readAtAutoNodes (self):
 

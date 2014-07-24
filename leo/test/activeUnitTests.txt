@@ -998,9 +998,9 @@ files = []
 for theDir,aList in table:
     for z in aList:
         if not z.endswith('.py'): z = z + '.py'
-        fn = os.path.abspath(os.path.join('leo',theDir,z))
+        fn = os.path.abspath(os.path.join(g.app.loadDir,'..',theDir,z))
         if os.path.exists(fn): files.append(fn)
-        else: print('*** file not found: %s' % (fn))
+        else: print('*** (%s) file not found: %s' % (p.h,fn))
 
 failed = []
 for z in files:
@@ -13650,6 +13650,18 @@ for ext in g.app.extension_dict.keys():
     if 0:
         if language is None:
             print('no language for ext=%s' % (ext))
+#@+node:ekr.20140723134017.4464: *4* @test @auto importers
+# This causes problems!
+import glob
+import importlib
+path = g.os_path_finalize_join(g.app.loadDir,'..','plugins','importers')
+# print('path: %s' % path)
+assert g.os_path_exists(path)
+pattern = g.os_path_finalize_join(path,'*.py')
+for fn in glob.glob(pattern):
+    sfn = g.shortFileName(fn)
+    m = importlib.import_module('leo.plugins.importers.%s' % sfn[:-3])
+    assert m
 #@+node:ekr.20111228125719.3909: *4* @test ic.BaseScanner.insertIgnoreDirective
 import leo.core.leoImport as leoImport
 
@@ -14021,6 +14033,14 @@ expected = [
     ('other', '>', 4),
     ('nl', '\n', 4),
 ]
+#@+node:ekr.20140724164600.4590: *4* @test zz restore the screen
+# This is **not** a real unit test.
+# It simply restores the screen to a more convenient state.
+
+c.contractParent()
+g.app.unitTestDict['restoreSelectedNode']=False
+
+print('\nEnd of leoImport tests.')
 #@+node:ekr.20100131171342.5604: *3* leoKeys
 #@+node:ekr.20100131171342.5606: *4* @@test k.autoCompleterClass.calltip
 # This test is difficult to get right on all platforms.
@@ -14507,9 +14527,9 @@ if 1:
     v2.h = 'insertAsNthChild(1)'
 p.expand()
 c.redraw()
-#@+node:ekr.20140612165420.7397: *5* insertAsFirstChild
-#@+node:ekr.20140612165420.7399: *5* insertAsNthChild(1)
-#@+node:ekr.20140612165420.7398: *5* insertAsLastChild
+#@+node:ekr.20140724164208.5505: *5* insertAsFirstChild
+#@+node:ekr.20140724164208.5507: *5* insertAsNthChild(1)
+#@+node:ekr.20140724164208.5506: *5* insertAsLastChild
 #@+node:ekr.20080310073711.1: *4* @test nodeIndices.toString(None) allocates a new index
 gnx = g.app.nodeIndices.toString(None)
 assert(gnx not in (None,'None'))
@@ -15758,11 +15778,11 @@ try:
 finally:
     c.redraw()
 #@+node:ekr.20140712142620.4508: *5* @gnxs
-gnx: ekr.20140720085428.4351
+gnx: ekr.20140724163840.5572
 unl: node1
-#@+node:ekr.20140723122604.4531: *5* node1
+#@+node:ekr.20140724164208.5572: *5* node1
 #@+node:ekr.20140712142620.4510: *5* root
-#@+node:ekr.20140723122604.4531: *6* node1
+#@+node:ekr.20140724164208.5572: *6* node1
 #@+node:ekr.20140712142620.4574: *4* @test pd.unl
 pd = c.persistenceController
 unl = pd.unl(p)
