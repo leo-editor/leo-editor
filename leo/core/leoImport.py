@@ -2253,9 +2253,9 @@ class BaseScanner (ScanUtility):
             '''Return a dummy under/over line for rst under/overlines.'''
             if len(s) < 4: return s
             nl = '\n' if s[-1] == '\n' else ''
-            dummy_line = ('~' * 5) + nl
-            s = s.rstrip() + nl
             ch1 = s[0]
+            dummy_line = (ch1*10) + nl
+            s = s.rstrip() + nl
             if ch1.isalnum(): return s
             for ch in s.rstrip():
                 if ch == '\n': return dummy_line
