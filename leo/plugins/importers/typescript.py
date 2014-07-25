@@ -1,7 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18152: * @file importers/typescript.py
 '''The @auto importer for TypeScript.'''
-import leo.core.leoImport as leoImport
 import leo.plugins.importers.javascript as javascript
 JavaScriptScanner = javascript.JavaScriptScanner
 #@+others

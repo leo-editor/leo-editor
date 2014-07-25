@@ -1,7 +1,9 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18137: * @file importers/xml.py
 '''The @auto importer for XML.'''
+import leo.core.leoGlobals as g
 import leo.core.leoImport as leoImport
+BaseScanner = leoImport.BaseScanner
 #@+others
 #@+node:ekr.20140723122936.18119: ** class XmlScanner (BaseScanner)
 class XmlScanner (leoImport.BaseScanner):

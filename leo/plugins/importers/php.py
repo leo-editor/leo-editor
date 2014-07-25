@@ -1,8 +1,10 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18148: * @file importers/php.py
 '''The @auto importer for PHP.'''
+import leo.core.leoGlobals as g
 import leo.core.leoImport as leoImport
 BaseScanner = leoImport.BaseScanner
+import string
 #@+others
 #@+node:ekr.20140723122936.18083: ** class PhpScanner
 class PhpScanner (BaseScanner):

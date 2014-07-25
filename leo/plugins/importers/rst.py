@@ -1,6 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18151: * @file importers/rst.py
 '''The @auto importer for restructured text.'''
+import leo.core.leoGlobals as g
 import leo.core.leoImport as leoImport
 BaseScanner = leoImport.BaseScanner
 #@+others

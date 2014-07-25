@@ -1,6 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18147: * @file importers/pascal.py
 '''The @auto importer for Pascal.'''
+import leo.core.leoGlobals as g
 import leo.core.leoImport as leoImport
 BaseScanner = leoImport.BaseScanner
 #@+others
