@@ -3,7 +3,7 @@
 <?xml-stylesheet ekr_test?>
 <leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.54" body_secondary_ratio="0.40">
+<globals body_outline_ratio="0.54" body_secondary_ratio="0.62">
 	<global_window_position top="82" left="724" height="993" width="1137"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -286,6 +286,7 @@
 </v>
 <v t="ekr.20090529141856.4793"><vh>@@test test imports for modes</vh></v>
 <v t="ekr.20140723134017.4464"><vh>@test @auto importers</vh></v>
+<v t="ekr.20140724220921.5199"><vh> Tests of individual methods</vh>
 <v t="ekr.20111228125719.3909"><vh>@test ic.BaseScanner.insertIgnoreDirective</vh></v>
 <v t="ekr.20111110095252.3845"><vh>@test ic.compareTokens: mismatched length</vh>
 <v t="ekr.20111110095252.3846"><vh>&lt;&lt; define tokens &gt;&gt;</vh></v>
@@ -310,8 +311,10 @@
 <v t="ekr.20111104114406.3833"><vh>@test ic.tokenize (HtmlScanner)</vh>
 <v t="ekr.20111104114406.3834"><vh>&lt;&lt; define expected &gt;&gt;</vh></v>
 </v>
+</v>
 <v t="ekr.20140724164600.4590"><vh>@test zz restore the screen</vh></v>
 </v>
+<v t="ekr.20090529141856.4784"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -727,7 +730,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="8"></t>
+<t tx="ekr.20070417092935" str_leo_pos="9"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -2300,7 +2303,12 @@ for tag,aList in table:
 <t tx="ekr.20100131180007.5393">import leo.core.leoImport as leoImport
 
 ic = c.importCommands
-scanner = leoImport.RstScanner(importCommands=ic,atAuto=True)
+# scanner = leoImport.RstScanner(importCommands=ic,atAuto=True)
+if leoImport.new_importers:
+    import leo.plugins.importers.rst as rst
+    scanner = rst.RstScanner(importCommands=ic,atAuto=True)
+else:
+    scanner = leoImport.RstScanner(importCommands=ic,atAuto=True)
 scanner.root = p
 s1 = ["abc","xyz",]
 s2 = ["xyz",]
@@ -2550,7 +2558,12 @@ c.importCommands.htmlUnitTest(p,s=s,showTree=False)
 </t>
 <t tx="ekr.20111104112332.3954">import leo.core.leoImport as leoImport
 ic = c.importCommands
-hs = leoImport.HtmlScanner(importCommands=ic,atAuto=True)
+
+if leoImport.new_importers:
+    import leo.plugins.importers.html as html
+    hs = html.HtmlScanner(importCommands=ic,atAuto=True)
+else:
+    hs = leoImport.HtmlScanner(importCommands=ic,atAuto=True)
 
 s = '''
 &lt;aTag&gt;  @others
@@ -2566,7 +2579,12 @@ assert result == expected,'expected...\n%s\ngot...\n%s' % (
 </t>
 <t tx="ekr.20111104112332.3955">import leo.core.leoImport as leoImport
 ic = c.importCommands
-scanner = leoImport.HtmlScanner(importCommands=ic,atAuto=True)
+# scanner = leoImport.HtmlScanner(importCommands=ic,atAuto=True)
+if leoImport.new_importers:
+    import leo.plugins.importers.html as html
+    scanner = html.HtmlScanner(importCommands=ic,atAuto=True)
+else:
+    scanner = leoImport.HtmlScanner(importCommands=ic,atAuto=True)
 
 tails = (
     '&lt;whatever&gt;',
@@ -2605,7 +2623,11 @@ for f,s in table:
 </t>
 <t tx="ekr.20111104112332.3956">import leo.core.leoImport as leoImport
 ic = c.importCommands
-scanner = leoImport.PythonScanner(importCommands=ic,atAuto=True)
+if leoImport.new_importers:
+    import leo.plugins.importers.python as python
+    scanner = python.PythonScanner(importCommands=ic,atAuto=True)
+else:
+    scanner = leoImport.PythonScanner(importCommands=ic,atAuto=True)
     
 tails = (
     '+ abc', # don't concatenate with id or whitespace.
@@ -2638,7 +2660,11 @@ for f,s in table:
 </t>
 <t tx="ekr.20111104114406.3833">import leo.core.leoImport as leoImport
 ic = c.importCommands
-hs = leoImport.HtmlScanner(importCommands=ic,atAuto=True)
+if leoImport.new_importers:
+    import leo.plugins.importers.html as html
+    hs = html.HtmlScanner(importCommands=ic,atAuto=True)
+else:
+    hs = leoImport.HtmlScanner(importCommands=ic,atAuto=True)
 
 s = '''
 &lt;!-- a comment --&gt;
@@ -2710,8 +2736,12 @@ expected = [
 </t>
 <t tx="ekr.20111105065243.3837"># Important: at present only the RstScanner sets ignoreBlankLines == True
 import leo.core.leoImport as leoImport
-sc = leoImport.RstScanner(c.importCommands,atAuto=False)
-
+#sc = leoImport.RstScanner(c.importCommands,atAuto=False)
+if leoImport.new_importers:
+    import leo.plugins.importers.rst as rst
+    sc = rst.RstScanner(importCommands=c.importCommands,atAuto=True)
+else:
+    sc = leoImport.RstScanner(importCommands=c.importCommands,atAuto=True)
 assert sc.ignoreBlankLines,'fail0'
 
 def strip(tokens):
@@ -2909,7 +2939,11 @@ tokens22 = ()
 </t>
 <t tx="ekr.20111111074026.3972">import leo.core.leoImport as leoImport
 ic = c.importCommands
-hs = leoImport.HtmlScanner(importCommands=ic,atAuto=True)
+if leoImport.new_importers:
+    import leo.plugins.importers.html as html
+    hs = html.HtmlScanner(importCommands=ic,atAuto=True)
+else:
+    hs = leoImport.HtmlScanner(importCommands=ic,atAuto=True)
 
 table = (
     # Yes, both single and double quotes are valid in html.
@@ -3580,5 +3614,6 @@ g.app.unitTestDict['restoreSelectedNode']=False
 
 print('\nEnd of leoImport tests.')
 </t>
+<t tx="ekr.20140724220921.5199"></t>
 </tnodes>
 </leo_file>
