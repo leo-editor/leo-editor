@@ -4200,51 +4200,41 @@ def importExtension (moduleName,pluginName=None,verbose=False,required=False):
             pluginName,moduleName))
     return module
 #@+node:ekr.20031218072017.2278: *3* g.importFromPath
-def importFromPath (name,path,pluginName=None,verbose=False):
-
+def importFromPath (moduleName,path,verbose=False):
+    '''
+    Import a module whose name is given from the directory given by path.
+    
+    **Warning**: This is a thin wrapper for imp.load_module, which is
+    equivalent to reload! Reloading Leo files while running will crash Leo.
+    '''
     trace = False and not g.unitTesting
-    fn = g.shortFileName(name)
-    moduleName,ext = g.os_path_splitext(fn)
     path = g.os_path_normpath(path)
     if g.isPython3:
         assert g.isString(path)
     else:
         path = g.toEncodedString(path)
-    # g.trace(type(path),repr(path))
-
-    if 0: # Bug fix 2011/10/28: Always import the path from the specified path!
-        module = sys.modules.get(moduleName)
-        if module:
-            if trace: g.trace('already loaded',moduleName,module)
-            return module
-
+    # Bug fix 2011/10/28: Always import the path from the specified path!
     try:
         module,theFile = None,None
         try:
             data = imp.find_module(moduleName,[path]) # This can open the file.
             theFile,pathname,description = data
             module = imp.load_module(moduleName,theFile,pathname,description)
+            if trace: g.trace('loaded',moduleName,'from',path)
         except ImportError:
             if trace or verbose:
-                g.error("exception in g.importFromPath")
-                g.es_exception()
+                g.error('no module %s in path %s' % (moduleName,path))
         except UiTypeException:
             if not g.unitTesting and not g.app.batchMode:
                 g.es_print('Plugin %s does not support %s gui' % (
-                    name,g.app.gui.guiName()))          
+                    moduleName,g.app.gui.guiName()))          
         except Exception:
             g.error("unexpected exception in g.importFromPath(%s)" %
-                (name))
+                (moduleName))
             g.es_exception()
     # Put no return statements before here!
     finally: 
         if theFile: theFile.close()
-
-    if module:
-        if trace: g.trace('loaded',moduleName)
-    else:
-        g.cantImport(moduleName,pluginName=pluginName,verbose=verbose)
-
     return module
 #@+node:ekr.20140711071454.17650: ** g.Indices, Lists, Strings, Unicode & Whitespace
 #@+node:ekr.20140711071454.17647: *3* g.Indices

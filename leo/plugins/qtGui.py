@@ -10361,9 +10361,7 @@ class JEditColorizer:
         self.configure_hard_tab_width() # 2011/10/04
     #@+node:ekr.20110605121601.18581: *5* init_mode & helpers
     def init_mode (self,name):
-
         '''Name may be a language name or a delegate name.'''
-
         trace = False and not g.unitTesting
         if not name: return False
         language,rulesetName = self.nameToRulesetName(name)
@@ -10379,11 +10377,12 @@ class JEditColorizer:
                 return True
         else:
             if trace: g.trace(language,rulesetName)
-            path = g.os_path_join(g.app.loadDir,'..','modes')
             # Bug fix: 2008/2/10: Don't try to import a non-existent language.
-            fileName = g.os_path_join(path,'%s.py' % (language))
-            if g.os_path_exists(fileName):
-                mode = g.importFromPath (language,path)
+            path = g.os_path_join(g.app.loadDir,'..','modes')
+            fn = g.os_path_join(path,'%s.py' % (language))
+            if g.os_path_exists(fn):
+                mode = g.importFromPath(moduleName=language,path=path)
+                if trace: g.trace(mode)
             else:
                 mode = None
             return self.init_mode_from_module(name,mode)
@@ -10394,8 +10393,7 @@ class JEditColorizer:
            Mode is a python module or class containing all
            coloring rule attributes for the mode.
         '''
-
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         language,rulesetName = self.nameToRulesetName(name)
         if mode:
             # A hack to give modes/forth.py access to c.
