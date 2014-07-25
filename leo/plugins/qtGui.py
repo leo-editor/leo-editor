@@ -10393,7 +10393,7 @@ class JEditColorizer:
            Mode is a python module or class containing all
            coloring rule attributes for the mode.
         '''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         language,rulesetName = self.nameToRulesetName(name)
         if mode:
             # A hack to give modes/forth.py access to c.
