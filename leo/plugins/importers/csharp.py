@@ -29,7 +29,7 @@ class CSharpScanner (BaseScanner):
 #@-others
 importer_dict = {
     'class': CSharpScanner,
-    'extensions': ['.cs',],
+    'extensions': ['.cs','.c#',],
     'name': 'C#',
 }
 #@-leo

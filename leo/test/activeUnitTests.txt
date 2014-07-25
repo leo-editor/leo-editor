@@ -13539,7 +13539,23 @@ section 3.1.1, line 1
 g.app.unitTestDict ['expectedErrors'] = None
 g.app.unitTestDict ['expectedMismatchLine'] = None
 c.importCommands.rstUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20090529141856.4786: *5* @test rST import test (no double-underlines)
+#@+node:ekr.20140725132959.4593: *5* @test rST import test: simple
+s = '''\
+.. toc
+
+.. The section name contains trailing whitespace.
+
+=======
+Chapter 
+=======
+
+The top chapter.
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.rstUnitTest(p,s=s,showTree=False)
+#@+node:ekr.20090529141856.4786: *5* @test rST import test: no double-underlines
 s = '''\
 .. toc
 

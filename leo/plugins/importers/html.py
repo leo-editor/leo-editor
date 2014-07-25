@@ -16,7 +16,7 @@ class HtmlScanner (xml.XmlScanner):
 #@-others
 importer_dict = {
     'class': HtmlScanner,
-    'extensions': ['.html',],
+    'extensions': ['.html','.htm',],
     'name': 'HTML',
 }
 #@-leo

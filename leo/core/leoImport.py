@@ -7,7 +7,7 @@
 #@@tabwidth -4
 #@@pagewidth 70
 #@@encoding utf-8
-new_importers = False
+new_importers = True
 if new_importers:
     print('===== new_importers =====')
 #@+<< how to write a new importer >>
@@ -147,7 +147,7 @@ class ScanUtility:
 class LeoImportCommands (ScanUtility):
 
     #@+others
-    #@+node:ekr.20031218072017.3207: *3* import.__init__ & helpers
+    #@+node:ekr.20031218072017.3207: *3* ic.__init__ & helpers
     def __init__ (self,c):
         '''ctor for LeoImportCommands class.'''
         self.c = c
@@ -164,7 +164,7 @@ class LeoImportCommands (ScanUtility):
         self.treeType = "@file" # None or "@file"
         self.webType = "@noweb" # "cweb" or "noweb"
         self.web_st = [] # noweb symbol table.
-        if True or new_importers:
+        if new_importers:
             self.createImporterData()
         else:
             self.createClassDispatchDict()
@@ -203,7 +203,7 @@ class LeoImportCommands (ScanUtility):
             '.ts':      TypeScriptScanner,
             '.xml':     XmlScanner,
         }
-    #@+node:ekr.20140724064952.18037: *4* ic.createImporterData & helper
+    #@+node:ekr.20140724064952.18037: *4* ic.createImporterData
     def createImporterData(self):
         '''Create the data structures describing importer plugins.'''
         self.classDispatchDict = {}
@@ -218,7 +218,7 @@ class LeoImportCommands (ScanUtility):
                     self.parse_importer_dict(sfn,m)
                 except ImportError:
                     g.warning('can not import leo.plugins,importers.%s' % sfn)
-    #@+node:ekr.20140723140445.18076: *5* ic.parse_importer_dict
+    #@+node:ekr.20140723140445.18076: *4* ic.parse_importer_dict
     def parse_importer_dict(self,sfn,m):
         '''
         Set entries in self.classDispatchDict and self.atAutoDict using entries
@@ -241,9 +241,9 @@ class LeoImportCommands (ScanUtility):
                             aClass,scanner_class)
                     else:
                         d[s] = scanner_class
-            ### if extensions:
             ### These shouldn't be mutually exclusive, but for now they are...
-            else:
+            if extensions:
+            ### else:
                 # Make entries for each extension.
                 d = self.classDispatchDict
                 for ext in extensions:
@@ -255,7 +255,7 @@ class LeoImportCommands (ScanUtility):
                         d[ext] = scanner_class
         else:
             g.warning('leo/plugins/importers/%s has no importer_dict' % sfn)
-    #@+node:ekr.20031218072017.3289: *3* Export
+    #@+node:ekr.20031218072017.3289: *3* ic.Export
     #@+node:ekr.20031218072017.3290: *4* ic.convertCodePartToWeb & helpers
     def convertCodePartToWeb (self,s,i,p,result):
         '''
@@ -680,177 +680,7 @@ class LeoImportCommands (ScanUtility):
                 f.write(s.rstrip() + nl)
         f.flush()
         f.close()
-    #@+node:ekr.20031218072017.3305: *3* Utilities
-    #@+node:ekr.20090122201952.4: *4* appendStringToBody & setBodyString (leoImport)
-    def appendStringToBody (self,p,s):
-
-        '''Similar to c.appendStringToBody,
-        but does not recolor the text or redraw the screen.'''
-
-        if s:
-            body = p.b
-            assert(g.isUnicode(body))
-            s = g.toUnicode(s,self.encoding)
-            self.setBodyString(p,body + s)
-
-    def setBodyString (self,p,s):
-
-        '''Similar to c.setBodyString,
-        but does not recolor the text or redraw the screen.'''
-
-        c = self.c ; v = p.v
-        if not c or not p: return
-
-        s = g.toUnicode(s,self.encoding)
-        current = c.p
-        if current and p.v==current.v:
-            c.frame.body.setSelectionAreas(s,None,None)
-            w = c.frame.body.bodyCtrl
-            i = w.getInsertPoint()
-            w.setSelectionRange(i,i)
-
-        # Keep the body text up-to-date.
-        if v.b != s:
-            v.setBodyString(s)
-            v.setSelection(0,0)
-            p.setDirty()
-            if not c.isChanged():
-                c.setChanged(True)
-    #@+node:ekr.20031218072017.3306: *4* createHeadline (leoImport)
-    def createHeadline (self,parent,body,headline):
-        '''Create a new VNode as the last child of parent position.'''
-        p = parent.insertAsLastChild()
-        body = g.u(body)
-        headline = g.u(headline)
-        p.initHeadString(headline)
-        if len(body) > 0:
-            self.setBodyString(p,body)
-        # g.trace(p.v.gnx,p.h)
-        return p
-    #@+node:ekr.20031218072017.3307: *4* error
-    def error (self,s):
-        g.es('',s)
-    #@+node:ekr.20041126042730: *4* getTabWidth
-    def getTabWidth (self,p=None):
-
-        c = self.c
-        if 1:
-            # Faster, more self-contained.
-            val = g.scanAllAtTabWidthDirectives(c,p)
-            return val
-        else:
-            d = c.scanAllDirectives(p)
-            w = d.get("tabwidth")
-            if w not in (0,None):
-                return w
-            else:
-                return self.c.tab_width
-    #@+node:ekr.20031218072017.3309: *4* isDocStart and isModuleStart
-    # The start of a document part or module in a noweb or cweb file.
-    # Exporters may have to test for @doc as well.
-
-    def isDocStart (self,s,i):
-
-        if not g.match(s,i,"@"):
-            return False
-
-        j = g.skip_ws(s,i+1)
-        if g.match(s,j,"%defs"):
-            return False
-        elif self.webType == "cweb" and g.match(s,i,"@*"):
-            return True
-        else:
-            return g.match(s,i,"@ ") or g.match(s,i,"@\t") or g.match(s,i,"@\n")
-
-    def isModuleStart (self,s,i):
-
-        if self.isDocStart(s,i):
-            return True
-        else:
-            return self.webType == "cweb" and (
-                g.match(s,i,"@c") or g.match(s,i,"@p") or
-                g.match(s,i,"@d") or g.match(s,i,"@f"))
-    #@+node:ekr.20031218072017.3312: *4* massageWebBody
-    def massageWebBody (self,s):
-
-        theType = self.webType
-        lb = "@<" if theType=="cweb" else "<<"
-        rb = "@>" if theType=="cweb" else ">>"
-        #@+<< Remove most newlines from @space and @* sections >>
-        #@+node:ekr.20031218072017.3313: *5* << Remove most newlines from @space and @* sections >>
-        i = 0
-        while i < len(s):
-            progress = i
-            i = g.skip_ws_and_nl(s,i)
-            if self.isDocStart(s,i):
-                # Scan to end of the doc part.
-                if g.match(s,i,"@ %def"):
-                    # Don't remove the newline following %def
-                    i = g.skip_line(s,i) ; start = end = i
-                else:
-                    start = end = i ; i += 2
-                while i < len(s):
-                    progress2 = i
-                    i = g.skip_ws_and_nl(s,i)
-                    if self.isModuleStart(s,i) or g.match(s,i,lb):
-                        end = i ; break
-                    elif theType == "cweb": i += 1
-                    else: i = g.skip_to_end_of_line(s,i)
-                    assert (i > progress2)
-                # Remove newlines from start to end.
-                doc = s[start:end]
-                doc = doc.replace("\n"," ")
-                doc = doc.replace("\r","")
-                doc = doc.strip()
-                if doc and len(doc) > 0:
-                    if doc == "@":
-                        doc = "@ " if self.webType=="cweb" else "@\n"
-                    else:
-                        doc += "\n\n"
-                    # g.trace("new doc:",doc)
-                    s = s[:start] + doc + s[end:]
-                    i = start + len(doc)
-            else: i = g.skip_line(s,i)
-            assert (i > progress)
-        #@-<< Remove most newlines from @space and @* sections >>
-        #@+<< Replace abbreviated names with full names >>
-        #@+node:ekr.20031218072017.3314: *5* << Replace abbreviated names with full names >>
-        i = 0
-        while i < len(s):
-            progress = i
-            # g.trace(g.get_line(s,i))
-            if g.match(s,i,lb):
-                i += 2 ; j = i ; k = g.find_on_line(s,j,rb)
-                if k > -1:
-                    name = s[j:k]
-                    name2 = self.cstLookup(name)
-                    if name != name2:
-                        # Replace name by name2 in s.
-                        # g.trace("replacing %s by %s" % (name,name2))
-                        s = s[:j] + name2 + s[k:]
-                        i = j + len(name2)
-            i = g.skip_line(s,i)
-            assert (i > progress)
-        #@-<< Replace abbreviated names with full names >>
-        s = s.rstrip()
-        return s
-    #@+node:ekr.20031218072017.1463: *4* setEncoding (leoImport)
-    def setEncoding (self,p=None,atAuto=False):
-
-        # c.scanAllDirectives checks the encoding: may return None.
-        c = self.c
-        if p is None: p = c.p
-        theDict = c.scanAllDirectives(p)
-        encoding = theDict.get("encoding")
-        if encoding and g.isValidEncoding(encoding):
-            self.encoding = encoding
-        elif atAuto:
-            self.encoding = c.config.default_at_auto_file_encoding
-        else:
-            self.encoding = 'utf-8'
-
-        # g.trace(self.encoding)
-    #@+node:ekr.20031218072017.3209: *3* Import (leoImport)
+    #@+node:ekr.20031218072017.3209: *3* ic.Import
     #@+node:ekr.20031218072017.3210: *4* ic.createOutline & helpers
     def createOutline (self,fileName,parent,
         atAuto=False,atShadow=False,s=None,ext=None
@@ -876,6 +706,8 @@ class LeoImportCommands (ScanUtility):
         else:
             func = self.static_dispatch(ext,p)
         # Call the scanning function.
+        if g.unitTesting and ext not in ('.w','.xxx'):
+            assert func,(ext,p.h)
         if func and not c.config.getBool('suppress_import_parsing',default=False):
             s = s.replace('\r','')
             func(atAuto=atAuto,parent=p,s=s)
@@ -915,23 +747,21 @@ class LeoImportCommands (ScanUtility):
         return p
     #@+node:ekr.20140724064952.18038: *5* ic.dispatch
     def dispatch(self,ext,p):
-        '''Return the correct dispatch function for p.'''
+        '''Return the correct scanner function for p.'''
         d = self.atAutoDict
         for key in d.keys():
             if g.match_word(p.h,0,key):
                 aClass = d.get(key)
                 if aClass:
-                    # g.trace(p.h,aClass)
-                    def scanner_for_class(atAuto,parent,s,prepass=False):
+                    def scanner_for_class_cb(atAuto,parent,s,prepass=False):
                         scanner = aClass(importCommands=self,atAuto=atAuto)
+                        # print('******** ic.dispatch',aClass.__name__)
                         return scanner.run(s,parent,prepass=prepass)
-                    scanner = scanner_for_class
-                else:
-                    scanner = None
-                break
+                    scanner = scanner_for_class_cb
+                    break
         else:
             scanner = self.scanner_for_ext(ext)
-        # g.trace(ext,scanner)
+            # if not scanner: g.trace('**** no scanner for',ext)
         return scanner
     #@+node:ekr.20140724073946.18050: *5* ic.get_import_filename
     def get_import_filename(self,fileName,parent):
@@ -966,6 +796,7 @@ class LeoImportCommands (ScanUtility):
     #@+node:ekr.20140724064952.18039: *5* ic.static_dispatch
     def static_dispatch(self,ext,p):
         '''Return the func associated ext and p.'''
+        # g.trace(p.h,p.isAtAutoRstNode())
         if p.isAtAutoRstNode():
             # @auto-rst is independent of file extension.
             func = self.scanRstText
@@ -1002,7 +833,7 @@ class LeoImportCommands (ScanUtility):
             g.blue(message)
         c.redraw()
 
-    #@+node:ekr.20031218072017.1810: *4* importDerivedFiles
+    #@+node:ekr.20031218072017.1810: *4* ic.importDerivedFiles
     def importDerivedFiles (self,parent=None,paths=None,command='Import'):
         # Not a command.  It must *not* have an event arg.
         # command is None when this is called to import a file from the command line.
@@ -1042,7 +873,7 @@ class LeoImportCommands (ScanUtility):
         if command: u.afterChangeGroup(p,command)
         c.redraw(current)
         return p
-    #@+node:ekr.20031218072017.3212: *4* importFilesCommand & helper
+    #@+node:ekr.20031218072017.3212: *4* ic.importFilesCommand & helper
     def importFilesCommand (self,files=None,treeType=None,redrawFlag=True):
         # Not a command.  It must *not* have an event arg.
         c = self.c ; current = c.p
@@ -1079,7 +910,7 @@ class LeoImportCommands (ScanUtility):
             current.initHeadString(name)
 
         return current
-    #@+node:ekr.20031218072017.3214: *4* importFlattenedOutline & allies
+    #@+node:ekr.20031218072017.3214: *4* ic.importFlattenedOutline & allies
     #@+node:ekr.20031218072017.3215: *5* convertMoreString/StringsToOutlineAfter
     # Used by paste logic.
 
@@ -1243,7 +1074,7 @@ class LeoImportCommands (ScanUtility):
                     lastLevel = level
                     plusFlag = newFlag
         return True
-    #@+node:ekr.20031218072017.3224: *4* importWebCommand & allies
+    #@+node:ekr.20031218072017.3224: *4* ic.importWebCommand & allies
     #@+node:ekr.20031218072017.3225: *5* createOutlineFromWeb
     def createOutlineFromWeb (self,path,parent):
 
@@ -1534,8 +1365,8 @@ class LeoImportCommands (ScanUtility):
                     found = True ; result = s
                     # g.es("replacing",target,"with",s)
         return result
-    #@+node:ekr.20071127175948.1: *3* Import scanners (leoImport)
-    #@+node:ekr.20140205074001.16365: *4* body_parser_for_ext
+    #@+node:ekr.20071127175948.1: *3* ic.Import scanners
+    #@+node:ekr.20140205074001.16365: *4* ic.body_parser_for_ext
     def body_parser_for_ext(self,ext):
         '''A factory returning a body parser function for the given file extension.'''
         aClass = ext and self.classDispatchDict.get(ext)
@@ -1543,7 +1374,7 @@ class LeoImportCommands (ScanUtility):
             obj = aClass(importCommands=self,atAuto=True)
             return obj.run(s,parent,parse_body=True)
         return body_parser_for_class if aClass else None
-    #@+node:ekr.20080811174246.1: *4* languageForExtension
+    #@+node:ekr.20080811174246.1: *4* ic.languageForExtension
     def languageForExtension (self,ext):
         '''Return the language corresponding to the extension ext.'''
         unknown = 'unknown_language'
@@ -1561,7 +1392,7 @@ class LeoImportCommands (ScanUtility):
         # g.trace(ext,repr(language))
         # Return the language even if there is no colorizer mode for it.
         return language
-    #@+node:ekr.20140531104908.18833: *4* parse_body
+    #@+node:ekr.20140531104908.18833: *4* ic.parse_body
     def parse_body(self,p):
         '''The parse-body command.'''
         if not p: return
@@ -1578,25 +1409,25 @@ class LeoImportCommands (ScanUtility):
             c.undoer.afterChangeTree(p,'parse-body',bunch)
             p.expand()
             c.redraw()
-    #@+node:ekr.20140130172810.15471: *4* scanner_for_ext
+    #@+node:ekr.20140130172810.15471: *4* ic.scanner_for_ext
     def scanner_for_ext(self,ext):
         '''A factory returning a scanner function for the given file extension.'''
         aClass = ext and self.classDispatchDict.get(ext)
-        def scanner_for_class(atAuto,parent,s,prepass=False):
+        def scanner_for_ext_cb(atAuto,parent,s,prepass=False):
             scanner = aClass(importCommands=self,atAuto=atAuto)
             return scanner.run(s,parent,prepass=prepass)
-        return scanner_for_class if aClass else None
-    #@+node:ekr.20140720065949.17751: *4* scanOrgModeText
+        return scanner_for_ext_cb if aClass else None
+    #@+node:ekr.20140720065949.17751: *4* ic.scanOrgModeText
     def scanOrgModeText(self,s,parent,atAuto=False):
         '''Scan org-mode text.'''
         scanner = OrgModeScanner(importCommands=self,atAuto=atAuto)
         return scanner.run(s,parent)
-    #@+node:ekr.20090501095634.48: *4* scanRstText
+    #@+node:ekr.20090501095634.48: *4* ic.scanRstText
     def scanRstText (self,s,parent,atAuto=False):
         '''Scan reStructuredText.'''
         scanner = RstScanner(importCommands=self,atAuto=atAuto)
         return scanner.run(s,parent)
-    #@+node:ekr.20070713075352: *4* scanUnknownFileType (default scanner) & helper
+    #@+node:ekr.20070713075352: *4* ic.scanUnknownFileType (default scanner) & helper
     def scanUnknownFileType (self,s,p,ext,atAuto=False):
         '''Scan the text of an unknown file type.'''
         c = self.c
@@ -1615,12 +1446,12 @@ class LeoImportCommands (ScanUtility):
                 c.setChanged(False)
         g.app.unitTestDict = {'result':True}
         return True
-    #@+node:ekr.20120517155536.10124: *4* scanVimoutlinerText
+    #@+node:ekr.20120517155536.10124: *4* ic.scanVimoutlinerText
     def scanVimoutlinerText(self,s,parent,atAuto=False):
         '''Scan vim outliner text.'''
         scanner = VimoutlinerScanner(importCommands=self,atAuto=atAuto)
         return scanner.run(s,parent)
-    #@+node:ekr.20070713075450: *3* Unit tests (leoImport)
+    #@+node:ekr.20070713075450: *3* ic.Unit tests
     # atAuto must be False for unit tests: otherwise the test gets wiped out.
 
     def cUnitTest(self,p,fileName=None,s=None,showTree=False):
@@ -1670,12 +1501,12 @@ class LeoImportCommands (ScanUtility):
 
     def defaultImporterUnitTest(self,p,fileName=None,s=None,showTree=False):
         return self.scannerUnitTest (p,atAuto=False,fileName=fileName,s=s,showTree=showTree,ext='.xxx')
-    #@+node:ekr.20070713082220: *4* scannerUnitTest
+    #@+node:ekr.20070713082220: *4* ic.scannerUnitTest
     def scannerUnitTest (self,p,atAuto=False,ext=None,fileName=None,s=None,showTree=False):
-
-        '''Run a unit test of an import scanner,
-        i.e., create a tree from string s at location p.'''
-
+        '''
+        Run a unit test of an import scanner,
+        i.e., create a tree from string s at location p.
+        '''
         c = self.c ; h = p.h ; old_root = p.copy()
         oldChanged = c.changed
         d = g.app.unitTestDict
@@ -1690,10 +1521,8 @@ class LeoImportCommands (ScanUtility):
         if not fileName: fileName = p.h
         if not s: s = self.removeSentinelsCommand([fileName],toString=True)
         title = h[5:] if h.startswith('@test') else h
-
         # Run the actual test.
         self.createOutline(title.strip(),p.copy(),atAuto=atAuto,s=s,ext=ext)
-
         # Set ok.
         d = g.app.unitTestDict
         ok = ((d.get('result') and expectedErrors in (None,0)) or
@@ -1706,19 +1535,18 @@ class LeoImportCommands (ScanUtility):
                     d.get('actualErrorMessage') == d.get('expectedErrorMessage')
                 )
             ))
-
         # Clean up.
         if not showTree:
             while old_root.hasChildren():
                 old_root.firstChild().doDelete()
             c.setChanged(oldChanged)
-
         c.redraw(old_root)
-
         if g.app.unitTesting:
             # Put all the info in the assertion message.
             table = (
                 '',
+                # 'p.h:                  %s' % (p.h),
+                'ext:                  %s' % (ext),
                 'fileName:             %s' % (fileName),
                 'result:               %s' % (d.get('result')),
                 'actual errors:        %s' % (d.get('actualErrors')),
@@ -1729,8 +1557,177 @@ class LeoImportCommands (ScanUtility):
                 'expectedErrorMessage: %s' % (repr(d.get('expectedErrorMessage'))),
             )
             assert ok,'\n'.join(table)
-
         return ok
+    #@+node:ekr.20031218072017.3305: *3* ic.Utilities
+    #@+node:ekr.20090122201952.4: *4* ic.appendStringToBody & setBodyString (leoImport)
+    def appendStringToBody (self,p,s):
+
+        '''Similar to c.appendStringToBody,
+        but does not recolor the text or redraw the screen.'''
+
+        if s:
+            body = p.b
+            assert(g.isUnicode(body))
+            s = g.toUnicode(s,self.encoding)
+            self.setBodyString(p,body + s)
+
+    def setBodyString (self,p,s):
+
+        '''Similar to c.setBodyString,
+        but does not recolor the text or redraw the screen.'''
+
+        c = self.c ; v = p.v
+        if not c or not p: return
+
+        s = g.toUnicode(s,self.encoding)
+        current = c.p
+        if current and p.v==current.v:
+            c.frame.body.setSelectionAreas(s,None,None)
+            w = c.frame.body.bodyCtrl
+            i = w.getInsertPoint()
+            w.setSelectionRange(i,i)
+
+        # Keep the body text up-to-date.
+        if v.b != s:
+            v.setBodyString(s)
+            v.setSelection(0,0)
+            p.setDirty()
+            if not c.isChanged():
+                c.setChanged(True)
+    #@+node:ekr.20031218072017.3306: *4* ic.createHeadline
+    def createHeadline (self,parent,body,headline):
+        '''Create a new VNode as the last child of parent position.'''
+        p = parent.insertAsLastChild()
+        body = g.u(body)
+        headline = g.u(headline)
+        p.initHeadString(headline)
+        if len(body) > 0:
+            self.setBodyString(p,body)
+        # g.trace(p.v.gnx,p.h)
+        return p
+    #@+node:ekr.20031218072017.3307: *4* ic.error
+    def error (self,s):
+        g.es('',s)
+    #@+node:ekr.20041126042730: *4* ic.getTabWidth
+    def getTabWidth (self,p=None):
+
+        c = self.c
+        if 1:
+            # Faster, more self-contained.
+            val = g.scanAllAtTabWidthDirectives(c,p)
+            return val
+        else:
+            d = c.scanAllDirectives(p)
+            w = d.get("tabwidth")
+            if w not in (0,None):
+                return w
+            else:
+                return self.c.tab_width
+    #@+node:ekr.20031218072017.3309: *4* ic.isDocStart & isModuleStart
+    # The start of a document part or module in a noweb or cweb file.
+    # Exporters may have to test for @doc as well.
+
+    def isDocStart (self,s,i):
+
+        if not g.match(s,i,"@"):
+            return False
+
+        j = g.skip_ws(s,i+1)
+        if g.match(s,j,"%defs"):
+            return False
+        elif self.webType == "cweb" and g.match(s,i,"@*"):
+            return True
+        else:
+            return g.match(s,i,"@ ") or g.match(s,i,"@\t") or g.match(s,i,"@\n")
+
+    def isModuleStart (self,s,i):
+
+        if self.isDocStart(s,i):
+            return True
+        else:
+            return self.webType == "cweb" and (
+                g.match(s,i,"@c") or g.match(s,i,"@p") or
+                g.match(s,i,"@d") or g.match(s,i,"@f"))
+    #@+node:ekr.20031218072017.3312: *4* ic.massageWebBody
+    def massageWebBody (self,s):
+
+        theType = self.webType
+        lb = "@<" if theType=="cweb" else "<<"
+        rb = "@>" if theType=="cweb" else ">>"
+        #@+<< Remove most newlines from @space and @* sections >>
+        #@+node:ekr.20031218072017.3313: *5* << Remove most newlines from @space and @* sections >>
+        i = 0
+        while i < len(s):
+            progress = i
+            i = g.skip_ws_and_nl(s,i)
+            if self.isDocStart(s,i):
+                # Scan to end of the doc part.
+                if g.match(s,i,"@ %def"):
+                    # Don't remove the newline following %def
+                    i = g.skip_line(s,i) ; start = end = i
+                else:
+                    start = end = i ; i += 2
+                while i < len(s):
+                    progress2 = i
+                    i = g.skip_ws_and_nl(s,i)
+                    if self.isModuleStart(s,i) or g.match(s,i,lb):
+                        end = i ; break
+                    elif theType == "cweb": i += 1
+                    else: i = g.skip_to_end_of_line(s,i)
+                    assert (i > progress2)
+                # Remove newlines from start to end.
+                doc = s[start:end]
+                doc = doc.replace("\n"," ")
+                doc = doc.replace("\r","")
+                doc = doc.strip()
+                if doc and len(doc) > 0:
+                    if doc == "@":
+                        doc = "@ " if self.webType=="cweb" else "@\n"
+                    else:
+                        doc += "\n\n"
+                    # g.trace("new doc:",doc)
+                    s = s[:start] + doc + s[end:]
+                    i = start + len(doc)
+            else: i = g.skip_line(s,i)
+            assert (i > progress)
+        #@-<< Remove most newlines from @space and @* sections >>
+        #@+<< Replace abbreviated names with full names >>
+        #@+node:ekr.20031218072017.3314: *5* << Replace abbreviated names with full names >>
+        i = 0
+        while i < len(s):
+            progress = i
+            # g.trace(g.get_line(s,i))
+            if g.match(s,i,lb):
+                i += 2 ; j = i ; k = g.find_on_line(s,j,rb)
+                if k > -1:
+                    name = s[j:k]
+                    name2 = self.cstLookup(name)
+                    if name != name2:
+                        # Replace name by name2 in s.
+                        # g.trace("replacing %s by %s" % (name,name2))
+                        s = s[:j] + name2 + s[k:]
+                        i = j + len(name2)
+            i = g.skip_line(s,i)
+            assert (i > progress)
+        #@-<< Replace abbreviated names with full names >>
+        s = s.rstrip()
+        return s
+    #@+node:ekr.20031218072017.1463: *4* ic.setEncoding (leoImport)
+    def setEncoding (self,p=None,atAuto=False):
+
+        # c.scanAllDirectives checks the encoding: may return None.
+        c = self.c
+        if p is None: p = c.p
+        theDict = c.scanAllDirectives(p)
+        encoding = theDict.get("encoding")
+        if encoding and g.isValidEncoding(encoding):
+            self.encoding = encoding
+        elif atAuto:
+            self.encoding = c.config.default_at_auto_file_encoding
+        else:
+            self.encoding = 'utf-8'
+
+        # g.trace(self.encoding)
     #@-others
 #@-<< class LeoImportCommands (ScanUtility) >>
 #@+<< class BaseScanner (ScanUtility) >>
@@ -1901,6 +1898,8 @@ class BaseScanner (ScanUtility):
                 outputFile = StringIO()
                 c.rstCommands.writeAtAutoFile(self.root,self.fileName,outputFile,trialWrite=True)
                 s1,s2 = self.file_s,outputFile.getvalue()
+                s1,s2 = self.stripRstLines(s1),self.stripRstLines(s2)
+                # if g.unitTesting: g.pdb()
             elif self.atAuto:
                 # Special case for @auto.
                 at.writeOneAtAutoNode(self.root,toString=True,force=True,trialWrite=True)
@@ -1940,6 +1939,7 @@ class BaseScanner (ScanUtility):
             lines2 = self.adjustTestLines(lines2)
             s1 = ''.join(lines1)
             s2 = ''.join(lines2)
+        # if g.unitTesting: g.pdb()
         if self.compare_tokens: # Token-based comparison.
             bad_i1,bad_i2,ok = self.scanAndCompare(s1,s2)
             if ok:
@@ -2127,8 +2127,8 @@ class BaseScanner (ScanUtility):
     #@+node:ekr.20111101092301.16729: *5* compareTokens
     def compareTokens(self,tokens1,tokens2):
 
-        trace = False # and not g.unitTesting
-        verbose = False
+        trace = False and not g.unitTesting
+        verbose = True
         i,n1,n2 = 0,len(tokens1),len(tokens2)
         fail_n1,fail_n2 = -1,-1
         while i < max(n1,n2):
@@ -2245,6 +2245,24 @@ class BaseScanner (ScanUtility):
         '''Remove the line_number from all tokens.'''
 
         return [(kind,val) for (kind,val,line_number) in tokens]
+    #@+node:ekr.20140725155131.18142: *4* stripRstLines (BaseScanner)
+    def stripRstLines(self,s):
+        '''Replace rst under/overlines with a dummy line for comparison.'''
+        
+        def mungeRstLine(s):
+            '''Return a dummy under/over line for rst under/overlines.'''
+            if len(s) < 4: return s
+            nl = '\n' if s[-1] == '\n' else ''
+            dummy_line = ('~' * 5) + nl
+            s = s.rstrip() + nl
+            ch1 = s[0]
+            if ch1.isalnum(): return s
+            for ch in s.rstrip():
+                if ch == '\n': return dummy_line
+                if ch != ch1: return s
+            return dummy_line
+
+        return ''.join([mungeRstLine(z) for z in g.splitLines(s)])
     #@+node:ekr.20070706084535: *3* Code generation (BaseScanner)
     #@+at None of these methods should ever need to be overridden in subclasses.
     # 

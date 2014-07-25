@@ -279,7 +279,8 @@
 </v>
 <v t="ekr.20090529141856.4784"><vh> Tests of @auto-rst</vh>
 <v t="ekr.20090529141856.4785"><vh>@test rST import test</vh></v>
-<v t="ekr.20090529141856.4786"><vh>@test rST import test (no double-underlines)</vh></v>
+<v t="ekr.20140725132959.4593"><vh>@test rST import test: simple</vh></v>
+<v t="ekr.20090529141856.4786"><vh>@test rST import test: no double-underlines</vh></v>
 <v t="ekr.20090529141856.4787"><vh>@test rST import test: long underlines</vh></v>
 <v t="ekr.20090529141856.4788"><vh>@test rST import test: long overlines</vh></v>
 <v t="ekr.20090529141856.4789"><vh>@test rST import test: trailing whitespace</vh></v>
@@ -314,7 +315,6 @@
 </v>
 <v t="ekr.20140724164600.4590"><vh>@test zz restore the screen</vh></v>
 </v>
-<v t="ekr.20090529141856.4784"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -730,7 +730,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="9"></t>
+<t tx="ekr.20070417092935" str_leo_pos="8"></t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -3615,5 +3615,21 @@ g.app.unitTestDict['restoreSelectedNode']=False
 print('\nEnd of leoImport tests.')
 </t>
 <t tx="ekr.20140724220921.5199"></t>
+<t tx="ekr.20140725132959.4593">s = '''\
+.. toc
+
+.. The section name contains trailing whitespace.
+
+=======
+Chapter 
+=======
+
+The top chapter.
+'''
+
+g.app.unitTestDict ['expectedErrors'] = None
+g.app.unitTestDict ['expectedMismatchLine'] = None
+c.importCommands.rstUnitTest(p,s=s,showTree=False)
+</t>
 </tnodes>
 </leo_file>
