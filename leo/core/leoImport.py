@@ -229,8 +229,6 @@ class LeoImportCommands (ScanUtility):
             at_auto = d.get('@auto',[])
             scanner_class = d.get('class',None)
             extensions = d.get('extensions',[])
-            name = d.get('name','<no name>')
-            # g.trace(scanner_class.__name__,at_auto,extensions)
             if at_auto:
                 # Make entries for each @auto type.
                 d = self.atAutoDict
@@ -241,9 +239,7 @@ class LeoImportCommands (ScanUtility):
                             aClass,scanner_class)
                     else:
                         d[s] = scanner_class
-            ### These shouldn't be mutually exclusive, but for now they are...
             if extensions:
-            ### else:
                 # Make entries for each extension.
                 d = self.classDispatchDict
                 for ext in extensions:
@@ -706,8 +702,8 @@ class LeoImportCommands (ScanUtility):
         else:
             func = self.static_dispatch(ext,p)
         # Call the scanning function.
-        if g.unitTesting and ext not in ('.w','.xxx'):
-            assert func,(ext,p.h)
+        if g.unitTesting:
+            assert func or ext in ('.w','.xxx'),(ext,p.h)
         if func and not c.config.getBool('suppress_import_parsing',default=False):
             s = s.replace('\r','')
             func(atAuto=atAuto,parent=p,s=s)
@@ -788,6 +784,8 @@ class LeoImportCommands (ScanUtility):
             if e: self.encoding = e
         if ext == '.otl':
             self.treeType = '@auto-otl'
+        if ext == '.org':
+            self.treeType = '@auto-org'
         if self.treeType == '@root': # 2010/09/29.
             self.rootLine = "@root-code "+self.fileName+'\n'
         else:
@@ -2701,7 +2699,7 @@ class BaseScanner (ScanUtility):
         trace = False and not g.unitTesting
         # From scan: parse the decls.s
         s = p.b
-        if False: ### and self.n_decls == 0 and self.hasDecls:
+        if False: # and self.n_decls == 0 and self.hasDecls:
             i = self.skipDecls(s,0,len(s),inClass=False)
             decls = s[:i]
             if decls:

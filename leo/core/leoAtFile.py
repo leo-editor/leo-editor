@@ -1243,7 +1243,7 @@ class AtFile:
         if trace: g.trace('filename:',fileName)
         try:
             while at.errors == 0 and not at.done:
-                s = at.readLine() ### theFile)
+                s = at.readLine()
                 if trace and verbose: g.trace(repr(s))
                 at.lineNumber += 1
                 if len(s) == 0:
@@ -1875,7 +1875,7 @@ class AtFile:
         # Ignore everything after @-leo.
         # Such lines were presumably written by @last.
         while 1:
-            s = at.readLine() ### at.inputFile)
+            s = at.readLine()
             if len(s) == 0: break
             at.lastLines.append(s) # Capture all trailing lines, even if empty.
 
@@ -2037,7 +2037,7 @@ class AtFile:
         assert g.match(s,i,"afterref"),'missing afterref'
 
         # Append the next line to the text.
-        s = at.readLine() ### at.inputFile)
+        s = at.readLine()
 
         v = at.lastRefNode
         hasList = hasattr(v,'tempBodyList')
@@ -2260,7 +2260,7 @@ class AtFile:
         assert g.match(s,i,"verbatim"),'missing verbatim sentinel'
 
         # Append the next line to the text.
-        s = at.readLine() ### at.inputFile) 
+        s = at.readLine()
         i = at.skipIndent(s,0,at.indent)
         # Do **not** insert the verbatim line itself!
             # at.appendToOut("@verbatim\n")
@@ -2643,14 +2643,11 @@ class AtFile:
         self.root.setOrphan()
 
     #@+node:ekr.20041005105605.128: *4* at.readLine (unused args when new_read is True)
-    # theFile & fileName not used when new_read is True.
-        
-    def readLine (self): ### ,theFile,fileName=None):
-
-        """Reads one line from file using the present encoding.
+    def readLine (self):
+        """
+        Read one line from file using the present encoding.
         Returns at.read_lines[at.read_i++]
         """
-
         trace = False and not g.unitTesting
         at = self
         if at.read_i < len(at.read_lines):
@@ -2692,11 +2689,11 @@ class AtFile:
         # at-first lines are written "verbatim", so nothing more needs to be done!
         #@@c
 
-        s = at.readLine() ### theFile,fileName)
+        s = at.readLine()
         if trace: g.trace(fileName,'first line',repr(s))
         while s and s.find(tag) == -1:
             firstLines.append(s) # Queue the line
-            s = at.readLine() ### theFile,fileName)
+            s = at.readLine()
 
         n = len(s)
         valid = n > 0
@@ -3349,9 +3346,9 @@ class AtFile:
                 c.persistenceController.update_before_write_foreign_file(root)
         ok = at.openFileForWriting (root,fileName=fileName,toString=toString)
         if ok:
-            isAtAutoOrgMode = root.isAtAutoOrgModeNode() # For traces.
-            isAtAutoOtl     = root.isAtAutoOtlNode() # For traces.
-            isAtAutoRst     = root.isAtAutoRstNode() # For traces.
+            isAtAutoOrgMode = root.isAtAutoOrgModeNode()
+            isAtAutoOtl     = root.isAtAutoOtlNode()
+            isAtAutoRst     = root.isAtAutoRstNode()
             if isAtAutoRst:
                 ok2 = c.rstCommands.writeAtAutoFile(root,fileName,at.outputFile)
                 if not ok2: at.errors += 1
