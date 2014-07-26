@@ -31,6 +31,5 @@ class CScanner (BaseScanner):
 importer_dict = {
     'class': CScanner,
     'extensions': ['.c','.cc','.c++','.cpp','.cxx','.h','.h++',],
-    'name': 'C',
 }
 #@-leo

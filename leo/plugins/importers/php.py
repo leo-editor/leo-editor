@@ -71,6 +71,5 @@ class PhpScanner (BaseScanner):
 importer_dict = {
     'class': PhpScanner,
     'extensions': ['.php',],
-    'name': 'PHP',
 }
 #@-leo

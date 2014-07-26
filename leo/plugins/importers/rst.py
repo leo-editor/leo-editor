@@ -293,6 +293,5 @@ importer_dict = {
     '@auto': ['@auto-rst',],
     'class': RstScanner,
     'extensions': ['.rst','.rest',],
-    'name': 'rST',
 }
 #@-leo

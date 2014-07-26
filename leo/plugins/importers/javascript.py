@@ -120,6 +120,5 @@ class JavaScriptScanner (BaseScanner):
 importer_dict = {
     'class': JavaScriptScanner,
     'extensions': ['.js',],
-    'name': 'JavaScript',
 }
 #@-leo

@@ -94,6 +94,5 @@ importer_dict = {
     '@auto': ['@auto-otl','@auto-vim-outline',],
     'class': VimoutlinerScanner,
     'extensions': ['.otl',],
-    'name': 'vim-outline',
 }
 #@-leo

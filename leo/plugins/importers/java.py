@@ -45,6 +45,5 @@ class JavaScanner (BaseScanner):
 importer_dict = {
     'class': JavaScanner,
     'extensions': ['.java',],
-    'name': 'Java',
 }
 #@-leo

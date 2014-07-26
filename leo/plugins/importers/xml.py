@@ -468,6 +468,5 @@ class XmlScanner (leoImport.BaseScanner):
 importer_dict = {
     'class': XmlScanner,
     'extensions': ['.xml',],
-    'name': 'XML',
 }
 #@-leo

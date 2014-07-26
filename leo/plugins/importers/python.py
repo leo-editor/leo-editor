@@ -247,6 +247,5 @@ class PythonScanner (BaseScanner):
 importer_dict = {
     'class': PythonScanner,
     'extensions': ['.py',],
-    'name': 'Python',
 }
 #@-leo

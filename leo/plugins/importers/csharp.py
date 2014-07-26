@@ -30,6 +30,5 @@ class CSharpScanner (BaseScanner):
 importer_dict = {
     'class': CSharpScanner,
     'extensions': ['.cs','.c#',],
-    'name': 'C#',
 }
 #@-leo

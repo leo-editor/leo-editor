@@ -39,6 +39,5 @@ class TypeScriptScanner (JavaScriptScanner):
 importer_dict = {
     'class': TypeScriptScanner,
     'extensions': ['.ts',],
-    'name': 'TypeScript',
 }
 #@-leo

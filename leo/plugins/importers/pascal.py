@@ -195,6 +195,5 @@ class PascalScanner (BaseScanner):
 importer_dict = {
     'class': PascalScanner,
     'extensions': ['.pas',],
-    'name': 'Pascal',
 }
 #@-leo

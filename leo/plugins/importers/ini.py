@@ -84,6 +84,5 @@ class IniScanner (BaseScanner):
 importer_dict = {
     'class': IniScanner,
     'extensions': ['.ini',],
-    'name': 'ini',
 }
 #@-leo

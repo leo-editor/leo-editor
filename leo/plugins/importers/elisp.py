@@ -92,6 +92,5 @@ class ElispScanner (BaseScanner):
 importer_dict = {
     'class': ElispScanner,
     'extensions': ['.el',],
-    'name': 'ELisp',
 }
 #@-leo
