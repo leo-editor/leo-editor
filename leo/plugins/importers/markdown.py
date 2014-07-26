@@ -3,13 +3,12 @@
 '''The @auto importer for markdown.'''
 import leo.core.leoGlobals as g
 import leo.core.leoImport as leoImport
-BaseScanner = leoImport.BaseScanner
 #@+others
 #@+node:ekr.20140725190808.18067: ** class MarkdownScanner
 class MarkdownScanner (leoImport.BaseScanner):
 
     #@+others
-    #@+node:ekr.20140725190808.18068: *3* mds.__init__  (revise)
+    #@+node:ekr.20140725190808.18068: *3* mds.__init__  (test)
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
@@ -20,24 +19,19 @@ class MarkdownScanner (leoImport.BaseScanner):
         self.blockDelim1 = self.blockDelim2 = None
         self.classTags = []
         self.escapeSectionRefs = False
-        self.functionSpelling = 'section'
+        ### self.functionSpelling = 'section'
         self.functionTags = []
         self.hasClasses = False
         self.ignoreBlankLines = True
-        self.isRst = True
+        self.isRst = False
         self.lineCommentDelim = '..'
         self.outerBlockDelim1 = None
         self.sigFailTokens = []
         self.strict = False # Mismatches in leading whitespace are irrelevant.
-
-        # Ivars unique to rst scanning & code generation.
+        # Ivars unique to markdown scanning & code generation.
         self.lastParent = None # The previous parent.
         self.lastSectionLevel = 0 # The section level of previous section.
         self.sectionLevel = 0 # The section level of the just-parsed section.
-        ### self.underlineCh = '' # The underlining character of the last-parsed section.
-        self.underlines = "=-" # valid markdown underlines.
-        ### self.underlines1 = [] # Underlining characters for underlines.
-        ### self.underlines2 = [] # Underlining characters for over/underlines.
     #@+node:ekr.20140725190808.18069: *3* mds.adjustParent
     def adjustParent (self,parent,headline):
         '''Return the proper parent of the new node.'''
@@ -85,60 +79,36 @@ class MarkdownScanner (leoImport.BaseScanner):
         # Don't warn about missing tail newlines: they will be added.
         if trace: g.trace('body: %s' % repr(body))
         return body1,body2
-    #@+node:ekr.20140725190808.18071: *3* mds.computeSectionLevel
-    def computeSectionLevel (self,ch,kind):
-        '''Return the section level of the underlining character ch.'''
-        if kind == 'over':
-            assert ch in self.underlines2
-            level = 0
-        else:
-            level = 1 + self.underlines1.index(ch)
-        if 0:
-            g.trace('level: %s kind: %s ch: %s under2: %s under1: %s' % (
-                level,kind,ch,self.underlines2,self.underlines1))
-        return level
-    #@+node:ekr.20140725190808.18072: *3* mds.createDeclsNode (revise)
-    def createDeclsNode (self,parent,s):
-        '''Create a child node of parent containing s.'''
-        # Create the node for the decls.
-        headline = '@rst-no-head %s declarations' % self.methodName
-        body = self.undentBody(s)
-        self.createHeadline(parent,body,headline)
-    #@+node:ekr.20140725190808.18073: *3* mds.endGen (revise)
+    #@+node:ekr.20140725190808.18072: *3* mds.createDeclsNode (to be deleted)
+    # def createDeclsNode (self,parent,s):
+        # '''Create a child node of parent containing s.'''
+        # headline = '@rst-no-head %s declarations' % self.methodName
+        # body = self.undentBody(s)
+        # self.createHeadline(parent,body,headline)
+    #@+node:ekr.20140725190808.18073: *3* mds.endGen
     def endGen (self,s):
-        '''Remember the underlining characters in the root's uA.'''
-        trace = False and not g.unitTesting
-        p = self.root
-        if p:
-            tag = 'markdown-import'
-            d = p.v.u.get(tag,{})
-            underlines1 = ''.join([str(z) for z in self.underlines1])
-            underlines2 = ''.join([str(z) for z in self.underlines2])
-            d ['underlines1'] = underlines1
-            d ['underlines2'] = underlines2
-            self.underlines1 = underlines1
-            self.underlines2 = underlines2
-            if trace: g.trace(repr(underlines1),repr(underlines2),g.callers(4))
-            p.v.u [tag] = d
-
+        '''End code generation.'''
+        # Unlike, rST, there is no need to remember underlining characters.
         # Append a warning to the root node.
-        warningLines = (
-            'Warning: this node is ignored when writing this file.'
-        )
-        lines = ['.. %s' % (z) for z in warningLines]
-        warning = '\n%s\n' % '\n'.join(lines)
+        warning = '\nWarning: this node is ignored when writing this file.'
         self.root.b = self.root.b + warning
-    #@+node:ekr.20140725190808.18074: *3* mds.isUnderLine
-    def isUnderLine(self,s):
-        '''Return True if s consists of only the same underline character.'''
-        if not s: return False
+    #@+node:ekr.20140725190808.18074: *3* mds.isUnderline
+    def isUnderline(self,s):
+        '''
+        Return 1 if s is all '=' characters.
+        Return 2 if s is all '-' characters.
+        Return 0 otherwise.
+        '''
+        if not s: return 0
         ch1 = s[0]
-        if not ch1 in self.underlines:
+        if not ch1 in '=-':
             return False
         for ch in s:
-            if ch != ch1:
-                return False
-        return True
+            if ch == '\n':
+                break
+            elif ch != ch1:
+                return 0
+        return 1 if ch1 == '=' else 2
     #@+node:ekr.20140725190808.18075: *3* mds.startsComment/ID/String
     # These do not affect parsing.
     def startsComment (self,s,i):
@@ -149,7 +119,7 @@ class MarkdownScanner (leoImport.BaseScanner):
 
     def startsString (self,s,i):
         return False
-    #@+node:ekr.20140725190808.18076: *3* mds.startsHelper (revise)
+    #@+node:ekr.20140725190808.18076: *3* mds.startsHelper (test)
     def startsHelper(self,s,i,kind,tags,tag=None):
         '''
         return True if s[i:] starts an markdown section.
@@ -157,26 +127,22 @@ class MarkdownScanner (leoImport.BaseScanner):
         '''
         trace = False and not g.unitTesting
         verbose = True
-        kind,name,next,ch = self.startsSection(s,i)
-        if kind == 'plain':
+        level,name,i = self.startsSection(s,i)
+        if level == 0:
             return False
-        self.underlineCh = ch
         self.lastSectionLevel = self.sectionLevel
-        self.sectionLevel = self.computeSectionLevel(ch,kind)
+        self.sectionLevel = level
         self.sigStart = g.find_line_start(s,i)
-        self.sigEnd = next
+        self.sigEnd = i
         self.sigId = name
-        i = next + 1
+        i += 1
         if trace: g.trace('sigId',self.sigId,'next',next)
         while i < len(s):
             progress = i
             i,j = g.getLine(s,i)
-            kind,name,next,ch = self.startsSection(s,i)
-            if trace and verbose: g.trace(kind,repr(s[i:j]))
-            if kind in ('over','under'):
-                break
-            else:
-                i = j
+            level,name,j = self.startsSection(s,i)
+            if level > 0: break
+            else: i = j
             assert i > progress
         self.codeEnd = i
         if trace:
@@ -185,74 +151,31 @@ class MarkdownScanner (leoImport.BaseScanner):
             else:
                 g.trace('level %s %s' % (self.sectionLevel,self.sigId))
         return True
-    #@+node:ekr.20140725190808.18077: *3* mds.startsSection & helper (revise)
+    #@+node:ekr.20140725190808.18077: *3* mds.startsSection & helper (test)
     def startsSection (self,s,i):
         '''
-        Scan a line looking for an underlined name or a line starting with n '#'s.
-
-        Return (kind,name,i):
-            kind: in ('under','plain')
-            name: the name of the underlined or section line.
-            i: the following character if kind is not 'plain'
-            ch: the underlining character, in ('#=-')
+        Scan one or two lines looking for the start of a section.
+        Sections are an underlined name or a line starting with '#'s.
+        Return (level,name,i):
+            level: 0 for plain lines, n > 0 for section lines.
+            name: the section name or None.
+            i: the new i.
         '''
-        trace = False and not g.unitTesting
-        verbose = False
-        # Underlines can not begin with whitespace.
-        i1,j,nows,line = self.getLine(s,i)
-        ch,kind = '','plain' # defaults.
-        # if nows and self.isUnderLine(line): # an overline.
-            # name_i = g.skip_line(s,i1)
-            # name_i,name_j = g.getLine(s,name_i)
-            # name = s[name_i:name_j].strip()
-            # next_i = g.skip_line(s,name_i)
-            # i,j,nows,line2 = self.getLine(s,next_i)
-            # n1,n2,n3 = len(line),len(name),len(line2)
-            # ch1,ch3 = line[0],line2 and line2[0]
-            # ok = (nows and self.isUnderLine(line2) and
-                # n1 >= n2 and n2 > 0 and n3 >= n2 and ch1 == ch3)
-            # if ok:
-                # i += n3
-                # ch,kind = ch1,'over'
-                # if ch1 not in self.underlines2:
-                    # self.underlines2.append(ch1)
-                    # if trace: g.trace('*** underlines2',self.underlines2,name)
-                # if trace and verbose:
-                    # g.trace('\nline  %s\nname  %s\nline2 %s' % (
-                        # repr(line),repr(name),repr(line2))) #,'\n',g.callers(4))
-        # else:
-        name = line.strip()
-        i = g.skip_line(s,i1)
-        i,j,nows2,line2 = self.getLine(s,i)
-        n1,n2 = len(name),len(line2)
-        # look ahead two lines.
-        i3,j3 = g.getLine(s,j)
-        name2 = s[i3:j3].strip()
-        i4,j4,nows4,line4 = self.getLine(s,j3)
-        n3,n4 = len(name2),len(line4)
-        overline = (
-            nows2 and self.isUnderLine(line2) and
-            nows4 and self.isUnderLine(line4) and
-            n3 > 0 and n2 >= n3 and n4 >= n3)
-        ok = (not overline and nows2 and self.isUnderLine(line2) and
-            n1 > 0 and n2 >= n1)
-        if ok:
-            i += n2
-            ch,kind = line2[0],'under'
-            if ch not in self.underlines1:
-                self.underlines1.append(ch)
-                if trace: g.trace('*** underlines1',self.underlines1,name)
-            if trace and verbose: g.trace('\nname  %s\nline2 %s' % (
-                repr(name),repr(line2)))
-        return kind,name,i,ch
-    #@+node:ekr.20140725190808.18078: *4* mds.getLine
-    def getLine (self,s,i):
-
-        i,j = g.getLine(s,i)
-        line = s[i:j]
-        nows = i == g.skip_ws(s,i)
-        line = line.strip()
-        return i,j,nows,line
+        i2,j2 = g.getLine(s,i)
+        line = s[i2:j2]
+        if line.startswith('#'):
+            # Found a section line.
+            level = 0
+            while level < len(line) and line[level] == '#':
+                level += 1
+            name = line[level:].strip()
+        else:
+            # Look ahead if the next line is an underline.
+            i2,j2 = g.getLine(s,j2)
+            line2 = s[i2:j2]
+            level = self.isUnderline(line2)
+            name = line.strip() if level > 0 else None
+        return level,name,j2
     #@-others
 #@-others
 importer_dict = {
