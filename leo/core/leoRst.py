@@ -1132,7 +1132,7 @@ class RstCommands:
         after = p.nodeAfterTree()
         while p and p != after:
             self.writeNode(p) # Side effect: advances p.
-    #@+node:ekr.20090502071837.67: *4* writeNodeToString
+    #@+node:ekr.20090502071837.67: *4* rst.writeNodeToString
     def writeNodeToString (self,p=None,ext=None):
 
         '''Scan p's tree (defaults to presently selected tree) looking for @rst nodes.
@@ -1151,7 +1151,7 @@ class RstCommands:
             if p.h.startswith('@rst'):
                 return self.processTree(p,ext=ext,toString=True,justOneFile=True)
         return self.processTree(current,ext=ext,toString=True,justOneFile=True)
-    #@+node:ekr.20090512153903.5803: *4* writeAtAutoFile
+    #@+node:ekr.20090512153903.5803: *4* rst.writeAtAutoFile & helpers
     def writeAtAutoFile (self,p,fileName,outputFile,trialWrite=False):
 
         '''Write an @auto tree containing imported rST code.
@@ -1172,7 +1172,7 @@ class RstCommands:
         finally:
             self.atAutoWrite = False
         return ok
-    #@+node:ekr.20090513073632.5733: *5* initAtAutoWrite (RstCommands)
+    #@+node:ekr.20090513073632.5733: *5* rst.initAtAutoWrite (RstCommands)
     def initAtAutoWrite(self,p,fileName,outputFile):
 
         # Set up for a standard write.
@@ -1204,7 +1204,7 @@ class RstCommands:
         self.atAutoWriteUnderlines   = underlines2 + underlines1
         self.underlines1 = underlines1
         self.underlines2 = underlines2
-    #@+node:ekr.20091228080620.6499: *5* isSafeWrite
+    #@+node:ekr.20091228080620.6499: *5* rst.isSafeWrite
     def isSafeWrite (self,p):
 
         '''Return True if node p contributes nothing but

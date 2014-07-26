@@ -8,8 +8,8 @@
 #@@pagewidth 70
 #@@encoding utf-8
 new_importers = True
-if new_importers:
-    print('===== new_importers =====')
+# if new_importers:
+#     print('===== new_importers =====')
 #@+<< how to write a new importer >>
 #@+node:ekr.20100728074713.5840: ** << how to write a new importer >>
 #@@nocolor-node

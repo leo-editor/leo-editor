@@ -410,6 +410,7 @@ class Position (object):
     def isAnyAtFileNode         (self): return self.v.isAnyAtFileNode()
     def isAtAllNode             (self): return self.v.isAtAllNode()
     def isAtAutoNode            (self): return self.v.isAtAutoNode()
+    def isAtAutoMarkdownNode    (self): return self.v.isAtAutoMarkdownNode()
     def isAtAutoOrgModeNode     (self): return self.v.isAtAutoOrgModeNode()
     def isAtAutoOtlNode         (self): return self.v.isAtAutoOtlNode()
     def isAtAutoRstNode         (self): return self.v.isAtAutoRstNode()
@@ -1963,6 +1964,10 @@ class VNode (BaseVnode):
         )
         return self.findAtFileName(names,h=h)
         
+    def atAutoMarkdownNodeName(self,h=None):
+        names = ("@auto-markdown",)
+        return self.findAtFileName(names,h=h)
+        
     def atAutoOrgModeNodeName (self,h=None):
         names = ("@auto-org-mode","@auto-org",)
         return self.findAtFileName(names,h=h)
@@ -2022,6 +2027,9 @@ class VNode (BaseVnode):
     #@+node:ekr.20040325073709: *4* isAt...FileNode (VNode)
     def isAtAutoNode (self):
         return True if self.atAutoNodeName() else False
+        
+    def isAtAutoMarkdownNode (self):
+        return True if self.atAutoMarkdownNodeName() else False
         
     def isAtAutoOrgModeNode (self):
         return True if self.atAutoOrgModeNodeName() else False

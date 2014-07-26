@@ -3268,6 +3268,22 @@ class AtFile:
                 # Write old @file nodes using @thin format.
                 at.write(p,kind='@file',thinFile=True,toString=toString)
                 writtenFiles.append(p.v)
+    #@+node:ekr.20140726091031.18070: *4* at.writeAtAutoMarkdownFile
+    def writeAtAutoMarkdownFile (self,root):
+        """Write all the *descendants* of an @auto-markdown node."""
+        at = self
+        def put(s):
+            '''Take care with output newlines.'''
+            at.os(s[:-1] if s.endswith('\n') else s)
+            at.onl()
+        root_level = root.level()
+        for p in root.subtree():
+            indent = p.level()-root_level
+            put('%s%s' % ('#'*indent,p.h))
+            for s in p.b.splitlines(False):
+                put(s)
+        root.setVisited()
+        return True
     #@+node:ekr.20070806105859: *4* at.writeAtAutoNodes & writeDirtyAtAutoNodes & helpers
     def writeAtAutoNodes (self,event=None):
 
@@ -3346,10 +3362,14 @@ class AtFile:
                 c.persistenceController.update_before_write_foreign_file(root)
         ok = at.openFileForWriting (root,fileName=fileName,toString=toString)
         if ok:
+            isAtAutoMarkdown= root.isAtAutoMarkdownNode()
             isAtAutoOrgMode = root.isAtAutoOrgModeNode()
             isAtAutoOtl     = root.isAtAutoOtlNode()
             isAtAutoRst     = root.isAtAutoRstNode()
-            if isAtAutoRst:
+            if isAtAutoMarkdown:
+                ok2 = at.writeAtAutoMarkdownFile(root)
+                if not ok2: at.errors += 1
+            elif isAtAutoRst:
                 ok2 = c.rstCommands.writeAtAutoFile(root,fileName,at.outputFile)
                 if not ok2: at.errors += 1
             elif isAtAutoOrgMode:
@@ -3375,6 +3395,41 @@ class AtFile:
             root.setOrphan() # 2010/10/22.
             g.es("not written:",fileName)
         return ok
+    #@+node:ekr.20140720065949.17741: *4* at.writeAtAutoOrgModeFile
+    def writeAtAutoOrgModeFile (self,root):
+        """Write all the *descendants* of an @auto-org-mode node."""
+        at = self
+        def put(s):
+            '''Take care with output newlines.'''
+            at.os(s[:-1] if s.endswith('\n') else s)
+            at.onl()
+        root_level = root.level()
+        for p in root.subtree():
+            indent = p.level()-root_level
+            put('%s %s' % ('*'*indent,p.h))
+            for s in p.b.splitlines(False):
+                put(s)
+        root.setVisited()
+        return True
+    #@+node:ekr.20120518080359.10006: *4* at.writeAtAutoOtlFile
+    def writeAtAutoOtlFile (self,root):
+        """Write all the *descendants* of an @auto-otl node."""
+        at = self
+
+        def put(s):
+            '''Take care with output newlines.'''
+            at.os(s[:-1] if s.endswith('\n') else s)
+            at.onl()
+
+        for child in root.children():
+            n = child.level()
+            for p in child.self_and_subtree():
+                indent = '\t'*(p.level()-n)
+                put('%s%s' % (indent,p.h))
+                for s in p.b.splitlines(False):
+                    put('%s: %s' % (indent,s))
+        root.setVisited()
+        return True
     #@+node:ekr.20080711093251.3: *4* at.writeAtShadowNodes & writeDirtyAtShadowNodes & helpers
     def writeAtShadowNodes (self,event=None):
 
@@ -3670,41 +3725,6 @@ class AtFile:
         at.putAtLastLines(s)
         if not toString:
             at.warnAboutOrphandAndIgnoredNodes()
-    #@+node:ekr.20120518080359.10006: *4* at.writeAtAutoOtlFile
-    def writeAtAutoOtlFile (self,root):
-        """Write all the *descendants* of an @auto-otl node."""
-        at = self
-
-        def put(s):
-            '''Take care with output newlines.'''
-            at.os(s[:-1] if s.endswith('\n') else s)
-            at.onl()
-
-        for child in root.children():
-            n = child.level()
-            for p in child.self_and_subtree():
-                indent = '\t'*(p.level()-n)
-                put('%s%s' % (indent,p.h))
-                for s in p.b.splitlines(False):
-                    put('%s: %s' % (indent,s))
-        root.setVisited()
-        return True
-    #@+node:ekr.20140720065949.17741: *4* at.writeAtAutoOrgModeFile
-    def writeAtAutoOrgModeFile (self,root):
-        """Write all the *descendants* of an @auto-otl node."""
-        at = self
-        def put(s):
-            '''Take care with output newlines.'''
-            at.os(s[:-1] if s.endswith('\n') else s)
-            at.onl()
-        root_level = root.level()
-        for p in root.subtree():
-            indent = p.level()-root_level
-            put('%s %s' % ('*'*indent,p.h))
-            for s in p.b.splitlines(False):
-                put(s)
-        root.setVisited()
-        return True
     #@+node:ekr.20041005105605.160: *3* Writing 4.x
     #@+node:ekr.20041005105605.161: *4* at.putBody
     # oneNodeOnly is no longer used, but it might be used in the future?

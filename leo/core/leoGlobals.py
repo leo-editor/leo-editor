@@ -23,8 +23,6 @@ trace_gnxDict = False
 new_gnxs = True
     # True: always use unicode strings for gnx's (v.fileIndex)
     # False: use a weird mix of tuples, bytes & strings.
-if False and new_gnxs:
-    print('\n***** new_gnxs')
 new_modes = False
     # True: use ModeController and ModeInfo classes.
 if new_modes:
@@ -43,19 +41,18 @@ no_scroll = False
     # True: disable all calls to w.setYScrollPosition.
 no_see = False
     # True: disable all calls to w.see and w.seeInsertPoint.
-
-# Tracing options...
-trace_scroll = False
-    # Trace calls to get/setYScrollPosition
-trace_see = False
-    # Trace calls to see and setInsertPoint.
-
+    
 # Switches to trace the garbage collector.
 trace_gc = False           
 trace_gc_calls = False    
 trace_gc_verbose = False
 trace_gc_inited = False
 
+# Other tracing options...
+trace_scroll = False
+    # Trace calls to get/setYScrollPosition
+trace_see = False
+    # Trace calls to see and setInsertPoint.
 trace_minibuffer = False
 trace_modes = False
 
