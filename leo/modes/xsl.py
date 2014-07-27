@@ -1,6 +1,8 @@
 # Leo colorizer control file for xsl mode.
 # This file is in the public domain.
 
+# pylint: disable=fixme
+
 # Properties for xsl mode.
 properties = {
 	"commentEnd": "-->",

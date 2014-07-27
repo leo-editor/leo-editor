@@ -500,13 +500,13 @@ def perl_rule31(colorer, s, i):
 
 def perl_rule32(colorer, s, i):
     return 0 # too complicated
-    return colorer.match_seq_regexp(s, i, kind="markup", regexp="s\\s*\\{(?:.*?[^\\\\])*?\\}\\s*\\{(?:.*?[^\\\\])*?\\}[sgiexom]*",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    # return colorer.match_seq_regexp(s, i, kind="markup", regexp="s\\s*\\{(?:.*?[^\\\\])*?\\}\\s*\\{(?:.*?[^\\\\])*?\\}[sgiexom]*",
+    #    at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
 def perl_rule33(colorer, s, i):
     return 0 # too complicated
-    return colorer.match_seq_regexp(s, i, kind="markup", regexp="s([[:punct:]])(?:.*?[^\\\\])*?\\1(?:.*?[^\\\\])*?\\1[sgiexom]*",
-        at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
+    #return colorer.match_seq_regexp(s, i, kind="markup", regexp="s([[:punct:]])(?:.*?[^\\\\])*?\\1(?:.*?[^\\\\])*?\\1[sgiexom]*",
+    #    at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
 def perl_rule34(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="markup", regexp="/[^[:blank:]]*?/",

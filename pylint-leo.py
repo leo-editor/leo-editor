@@ -72,6 +72,13 @@ def getGuiPluginsList ():
         'nested_splitter',
         'qtGui',
     )
+#@+node:ekr.20140727180847.17983: ** getModesList
+def getModesList():
+    pattern = g.os_path_finalize_join('.','leo','modes','*.py')
+    return [
+        g.shortFileName(fn)
+            for fn in glob.glob(pattern)
+                if g.shortFileName(fn) != '__init__.py']
 #@+node:ekr.20100221142603.5641: ** getPassList
 def getPassList():
 
@@ -225,6 +232,9 @@ def getTable(scope):
         ),
         'gui': (
             (guiPluginsList,'plugins'),
+        ),
+        'modes': (
+            (modesList,'modes'),
         ),
         'plugins': (
             (pluginsList,'plugins'),
@@ -533,8 +543,9 @@ def scanOptions():
     add('-a', action='store_true', help = 'all')
     add('-c', action='store_true', help = 'core')
     add('-e', action='store_true', help = 'external')
-    add('-f', dest='filename',     help = 'filename',)
+    add('-f', dest='filename',     help = 'filename')
     add('-g', action='store_true', help = 'gui plugins')
+    add('-m', action='store_true', help = 'modes')
     add('-p', action='store_true', help = 'plugins')
     # add('-r', action='store_true', help = 'recent')
     # add('-s', action='store_true', help = 'suppressions')
@@ -553,6 +564,7 @@ def scanOptions():
         g_option_fn = fn.strip('"')
         return 'file'
     elif options.g: return 'gui'
+    elif options.m: return 'modes'
     elif options.p: return 'plugins'
     elif options.r: return 'recent'
     # elif options.s: return 'suppressions'
@@ -566,6 +578,7 @@ scope = scanOptions()
 coreList            = getCoreList()
 externalList        = getExternalList()
 guiPluginsList      = getGuiPluginsList()
+modesList           = getModesList()
 passList            = getPassList()
 pluginsList         = getPluginsList()
 # recentCoreList      = getRecentCoreList()

@@ -266,7 +266,7 @@ class extendForth:
                 if extras:
                     if self.verbose:
                         if not g.app.unitTesting and not g.app.batchMode:
-                            g.pr("Found extra forth %s" % message + ": " + " ".join(extras))
+                            g.pr("Found extra forth: %s" % " ".join(extras))
                     ivarList.extend(extras)
 
         # Create brackets1/2 and stringwords1/2 lists.
@@ -340,7 +340,7 @@ class extendForth:
                 kind1="keyword2", # defining word
                 word=word,
                 kind2="keyword3", # bold
-                pattern='(\s)*(\S)+',
+                pattern=r'(\s)*(\S)+',
                 at_line_start=False, at_whitespace_end=False, at_word_start=False,
                 exclude_match=False)
 
@@ -351,8 +351,8 @@ class extendForth:
         '''Create the mode keyword table and
         entries in the rulesDict for the forth_keyword_rule'''
 
-        global forth_main_keywords_dict
-        global forth_keyword_rule
+        # global forth_main_keywords_dict
+        # global forth_keyword_rule
 
         table = (
             (self.keywords,         'keyword1'),
