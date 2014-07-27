@@ -8,6 +8,7 @@ Instead, Leo's new pylint command runs pylint on all Python @<file> nodes in a g
 # pylint: disable=invalid-name
     # pylint-leo isn't a valid module name, but it isn't a module.
 import leo.core.leoGlobals as g
+import glob
 import optparse
 import os
 import sys
@@ -103,8 +104,16 @@ def getPassList():
     )
 #@+node:ekr.20100221142603.5642: ** getPluginsList
 def getPluginsList():
-
-    return (
+    '''Return a list of all important plugins.'''
+    aList = []
+    # g.app.loadDir does not exist: use '.' instead.
+    for theDir in ('importers','writers'):
+        pattern = g.os_path_finalize_join('.','leo','plugins',theDir,'*.py')
+        for fn in glob.glob(pattern):
+            sfn = g.shortFileName(fn)
+            if sfn != '__init__.py':
+                aList.append(os.sep.join([theDir,sfn]))
+    aList.extend([
         'baseNativeTree',
         'bookmarks',
         'contextmenu',
@@ -133,7 +142,8 @@ def getPluginsList():
         'viewrendered.py',
             # Dangerous: PyQt4.phonon has no x member.
         'xemacs.py',
-    )
+    ])
+    return aList
 #@+node:ekr.20120225032124.17089: ** getRecentCoreList (pylint-leo.py)
 def getRecentCoreList():
     '''Return the list of core files processed by the -r option.'''
@@ -340,8 +350,11 @@ def run(theDir,fn,rpython=False):
     if not os.path.exists(fn):
         print('file not found:',fn)
         return
-    # Report the file name.
-    print('pylint-leo.py: %s' % (g.shortFileName(fn)))
+    # Report the file name and one level of directory.
+    path = g.os_path_dirname(fn)
+    dirs = path.split(os.sep)
+    theDir = dirs and dirs[-1] or ''
+    print('pylint-leo.py: %s%s%s' % (theDir,os.sep,g.shortFileName(fn)))
     # Create the required args.
     args = ','.join([
         "fn=r'%s'" % (fn),
