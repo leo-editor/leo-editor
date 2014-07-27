@@ -169,6 +169,23 @@ if 1:
     print('new: %s fc.gnxDict keys...' % len(list(d.keys())))
     for key in sorted(d.keys()): 
         print('%s %s' % (key,d.get(key)))
+.. @+node:ekr.20140727055826.18129: *4* Fixed annoyance: shift-ctrl-w leaves .leo file as dirty
+@language rest
+  
+- pd.update_before_write_foreign_file tells when an @data node has been
+  changed. This explains why the .leo file is now dirty.
+- at.saveOutlineIfPossible automatically saves the .leo file if only
+  unchanged persistence nodes remain.
+  
+at.saveOutlineIfPossible makes the following hacks unnecessary:
+    
+- at.writeAllHelper writes an unchanged @auto file only if it is
+  selected explicitly.
+- Changed at.writeAll so that the no @<file> node written message now says
+  that you must selected an unchanged @auto node directly in order to write
+  it with the write-at-files-nodes command.
+
+@language python
 .. @+node:ekr.20140702131031.16727: *3* Features
 .. @+node:ekr.20131105020211.18059: *4* Added per-node expansions!
 @language rest
