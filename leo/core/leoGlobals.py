@@ -20,9 +20,6 @@ trace_startup = False
     # the traces can add class info to the method name.
 trace_gnxDict = False
     # True: trace assignments to fc.gnxDict & related.
-new_gnxs = True
-    # True: always use unicode strings for gnx's (v.fileIndex)
-    # False: use a weird mix of tuples, bytes & strings.
 new_modes = False
     # True: use ModeController and ModeInfo classes.
 if new_modes:

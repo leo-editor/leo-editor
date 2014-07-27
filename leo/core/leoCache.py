@@ -193,8 +193,7 @@ class Cacher:
         trace = False and not g.unitTesting
         c = self.c
         indices = g.app.nodeIndices
-        if g.new_gnxs:
-            gnxString = g.toUnicode(gnxString)
+        gnxString = g.toUnicode(gnxString)
         gnxDict = c.fileCommands.gnxDict
         if gnxString is None: v = None
         else:                 v = gnxDict.get(gnxString)
@@ -207,11 +206,11 @@ class Cacher:
         else:
             v = leoNodes.VNode(context=c)
             if gnxString:
-                if g.new_gnxs:
-                    gnx = g.toUnicode(gnxString)
-                else:
-                    gnx = indices.scanGnx(gnxString,0)
-                v.fileIndex = gnx
+                # new gnxs:
+                assert g.isUnicode(gnxString)
+                # old gnxs: retain for reference
+                # gnxString = indices.scanGnx(gnxString,0)
+                v.fileIndex = gnxString
                 gnxDict[gnxString] = v
                 if g.trace_gnxDict: g.trace(c.shortFileName(),gnxString,v)
             else:

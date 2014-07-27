@@ -10662,10 +10662,11 @@ finally:
 
 if g.app.isExternalUnitTest:
     pass # Not a valid test when run externally.
-elif g.new_gnxs:
-    assert p.v.fileIndex == 'ekr.20090507084947.5152',p.v.fileIndex
 else:
-    assert p.v.fileIndex == ('ekr', '20090507084947', 5152)
+    # new_gnxs:
+    assert p.v.fileIndex == 'ekr.20090507084947.5152',p.v.fileIndex
+    # old gnxs:
+    # assert p.v.fileIndex == ('ekr', '20090507084947', 5152)
 #@+node:ekr.20071113202045: *4* @test zz restore the screen
 # This is **not** a real unit test.
 # It simply restores the screen to a more convenient state.

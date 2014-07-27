@@ -1480,10 +1480,10 @@ class AtFile:
         verbose = True
         at = self ; c = at.c
         indices = g.app.nodeIndices
-        if g.new_gnxs:
-            gnx = gnxString = g.toUnicode(gnxString)
-        else:
-            gnx = indices.scanGnx(gnxString,0)
+        # new gnxs:
+        gnx = gnxString = g.toUnicode(gnxString)
+        # old gnxs: retain for reference.
+        # gnx = indices.scanGnx(gnxString,0)
         gnxDict = c.fileCommands.gnxDict
         last = at.lastThinNode # A VNode.
         lastIndex = last.fileIndex
@@ -1496,7 +1496,6 @@ class AtFile:
                 break
         else:
             child = None
-
         if at.cloneSibCount > 1:
             n = at.cloneSibCount ; at.cloneSibCount = 0
             if child: clonedSibs,junk = at.scanForClonedSibs(parent,child)
@@ -1515,7 +1514,6 @@ class AtFile:
                 if trace: g.trace('found child',child)
                 return child
             copies = 1 # Create exactly one copy.
-
         while copies > 0:
             copies -= 1
             # Create the VNode only if it does not already exist.
@@ -1537,18 +1535,18 @@ class AtFile:
         return child
     #@+node:ekr.20130121075058.10246: *8* at.new_createThinChild4
     def new_createThinChild4 (self,gnxString,headline,n,parent):
-
-        """Find or create a new *VNode* whose parent (also a VNode)
-        is at.lastThinNode. This is called only for @thin trees."""
-
+        """
+        Find or create a new *VNode* whose parent (also a VNode)
+        is at.lastThinNode. This is called only for @thin trees.
+        """
         trace = False and not g.unitTesting
         at = self ; c = at.c ; indices = g.app.nodeIndices
         if trace: g.trace(n,len(parent.children),parent.h,' -> ',headline)
             # at.thinChildIndexStack,[z.h for z in at.thinNodeStack],
-        if g.new_gnxs:
-            gnx = gnxString = g.toUnicode(gnxString)
-        else:
-            gnx = indices.scanGnx(gnxString,0)
+        # new gnxs:
+        gnx = gnxString = g.toUnicode(gnxString)
+        # old gnxs: retain for reference.
+        # gnx = indices.scanGnx(gnxString,0)
         gnxDict = c.fileCommands.gnxDict
         v = gnxDict.get(gnxString)
         if v:
@@ -1563,11 +1561,7 @@ class AtFile:
                 else:
                     if trace: g.trace('DUP n: %s parent: %s -> %s\n' % (n,parent.h,child.h))
             else:
-                if g.new_gnxs:
-                    gnx_s = gnx
-                else:
-                    gnx_s = g.app.nodeIndices.toString(gnx)
-                g.internalError('v.fileIndex: %s gnx: %s' % (v.fileIndex,gnx_s))
+                g.internalError('v.fileIndex: %s gnx: %s' % (v.fileIndex,gnx))
                 return None
         else:
             v = leoNodes.VNode(context=c)
@@ -1578,7 +1572,6 @@ class AtFile:
             child = v
             child._linkAsNthChild(parent,n)
             if trace: g.trace('NEW n: %s parent: %s -> %s\n' % (n,parent.h,child.h))
-
         return child
     #@+node:ekr.20100625184546.5979: *7* at.parseNodeSentinel & helpers
     def parseNodeSentinel (self,s,i,middle):
@@ -4410,10 +4403,10 @@ class AtFile:
         #@-<< remove comment delims from h if necessary >>
 
         if at.thinFile:
-            if g.new_gnxs:
-                gnx = p.v.fileIndex
-            else:
-                gnx = g.app.nodeIndices.toString(p.v.fileIndex)
+            # new gnxs:
+            gnx = p.v.fileIndex
+            # old gnxs: retain for reference.
+            # gnx = g.app.nodeIndices.toString(p.v.fileIndex)
             if at.writeVersion5:
                 level = 1 + p.level() - self.root.level()
                 stars = '*' * level

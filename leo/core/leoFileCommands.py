@@ -651,12 +651,12 @@ class BaseFileCommands:
             # Make sure all pasted nodes are entered into the gnxDict.
             x = g.app.nodeIndices
             for v in c.all_unique_nodes():
-                if g.new_gnxs:
-                    index = v.fileIndex
-                else:
-                    index = x.toString(v.fileIndex)
-                self.gnxDict[index] = v
-                if g.trace_gnxDict: g.trace(c.shortFileName(),index,v)
+                # new gnxs:
+                gnxString = v.fileIndex
+                # old gnxs: retain for reference.
+                # gnxString = x.toString(v.fileIndex)
+                self.gnxDict[gnxString] = v
+                if g.trace_gnxDict: g.trace(c.shortFileName(),gnxString,v)
         self.usingClipboard = True
         try:
             # This encoding must match the encoding used in putLeoOutline.
@@ -1136,13 +1136,14 @@ class BaseFileCommands:
             v.setHeadString(h)
             if sax_node.tnx:
                 x = g.app.nodeIndices
-                if g.new_gnxs:
-                    v.fileIndex = x.toString(x.scanGnx(sax_node.tnx,0))
-                else:
-                    v.fileIndex = x.scanGnx(sax_node.tnx,0)
+                # new gnxs:
+                # Important: this should retain compatibility with old .leo files.
+                v.fileIndex = x.toString(x.scanGnx(sax_node.tnx,0))
+                # old gnxs: retain for reference.
+                # v.fileIndex = x.scanGnx(sax_node.tnx,0)
         index = self.canonicalTnodeIndex(sax_node.tnx)
-        if g.new_gnxs:
-            index = g.toUnicode(index)
+        # new gnxs:
+        index = g.toUnicode(index)
         self.gnxDict [index] = v
         if g.trace_gnxDict: g.trace(c.shortFileName(),index,v)
         if trace and verbose: g.trace(
@@ -1404,8 +1405,8 @@ class BaseFileCommands:
                 result = []
                 for tnx in p.v.tempTnodeList:
                     index = self.canonicalTnodeIndex(tnx)
-                    if g.new_gnxs:
-                        index = g.toUnicode(index)
+                    # new gnxs:
+                    index = g.toUnicode(index)
                     v = self.gnxDict.get(index)
                     if v:
                         if trace: g.trace(tnx,v)
@@ -1772,17 +1773,13 @@ class BaseFileCommands:
     def putTnode (self,v):
 
         # Call put just once.
-        if g.new_gnxs:
-            gnx = v.fileIndex
-        else:
-            gnx = g.app.nodeIndices.toString(v.fileIndex)
+        # new gnxs:
+        gnx = v.fileIndex
+        # old gnxs: retain for reference.
+        # gnx = g.app.nodeIndices.toString(v.fileIndex)
         ua = hasattr(v,'unknownAttributes') and self.putUnknownAttributes(v) or ''
         b = v.b
-        if b:
-            body = xml.sax.saxutils.escape(b)
-        else:
-            body = ''
-
+        body = xml.sax.saxutils.escape(b) if b else ''
         self.put('<t tx="%s"%s>%s</t>\n' % (gnx,ua,body))
     #@+node:ekr.20031218072017.1575: *4* putTnodes
     def putTnodes (self):
@@ -1804,24 +1801,25 @@ class BaseFileCommands:
         for p in theIter:
             # Make *sure* the file index has the proper form.
             # pylint: disable=unbalanced-tuple-unpacking
-            if g.new_gnxs:
-                index = p.v.fileIndex
-            else:
-                try:
-                    theId,t,n = p.v.fileIndex
-                except ValueError:
-                    try:
-                        theId,t,n = p.v.fileIndex,''
-                    except Exception:
-                        raise BadLeoFile('bad p.v.fileIndex: %s' % repr(p.v.fileIndex))
-                if n is None:
-                    n = g.u('0')
-                elif g.isPython3:
-                    n = str(n)
-                else:
-                    n = unicode(n)
-                index = theId,t,n
+            # new gnxs:
+            index = p.v.fileIndex
             tnodes[index] = p.v
+            # old gnxs: retain for reference.
+                # try:
+                    # theId,t,n = p.v.fileIndex
+                # except ValueError:
+                    # try:
+                        # theId,t,n = p.v.fileIndex,''
+                    # except Exception:
+                        # raise BadLeoFile('bad p.v.fileIndex: %s' % repr(p.v.fileIndex))
+                # if n is None:
+                    # n = g.u('0')
+                # elif g.isPython3:
+                    # n = str(n)
+                # else:
+                    # n = unicode(n)
+                # index = theId,t,n
+                # tnodes[index] = p.v
 
         # Put all tnodes in index order.
         for index in sorted(tnodes):
@@ -1866,10 +1864,10 @@ class BaseFileCommands:
 
         #@+<< Set gnx = VNode index >>
         #@+node:ekr.20031218072017.1864: *5* << Set gnx = VNode index >>
-        if g.new_gnxs:
-            gnx = v.fileIndex
-        else:
-            gnx = g.app.nodeIndices.toString(v.fileIndex)
+        # new gnxs:
+        gnx = v.fileIndex
+        # old gnxs: retain for reference.
+        # gnx = g.app.nodeIndices.toString(v.fileIndex)
         if forceWrite or self.usingClipboard:
             v.setWriteBit() # 4.2: Indicate we wrote the body text.
         #@-<< Set gnx = VNode index >>
@@ -2350,10 +2348,10 @@ class BaseFileCommands:
             if theList:
                 sList = []
                 for v in theList:
-                    if g.new_gnxs:
-                        sList.append("%s," % v.fileIndex)
-                    else:
-                        sList.append("%s," % nodeIndices.toString(v.fileIndex))
+                    # new gnxs:
+                    sList.append("%s," % v.fileIndex)
+                    # old gnxs: retain for reference.
+                    # sList.append("%s," % nodeIndices.toString(v.fileIndex))
                 s = ''.join(sList)
                 # g.trace(tag,[str(p.h) for p in theList])
                 result.append('\n%s="%s"' % (tag,s))

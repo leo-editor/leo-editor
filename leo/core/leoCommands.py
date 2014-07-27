@@ -1182,12 +1182,12 @@ class Commands (object):
         trace = False and not g.unitTesting
         c,d,x = self,{},g.app.nodeIndices
         for v in c.all_unique_nodes():
-            gnx = v.fileIndex
-            if g.new_gnxs:
-                assert g.isUnicode(gnx)
-                gnxString = gnx
-            else:
-                gnxString = x.toString(gnx)
+            # new gnxs:
+            gnxString = v.fileIndex
+            assert g.isUnicode(gnxString)
+            # old gnxs: retain for reference.
+            # gnx = v.fileIndex
+            # gnxString = x.toString(gnx)
             d[gnxString] = v
             if trace or g.trace_gnxDict: g.trace(c.shortFileName(),gnxString,v)
         c.fileCommands.gnxDict = d
@@ -2835,16 +2835,15 @@ class Commands (object):
             '''
             trace = False and not g.unitTesting
             if delim and gnx:
-                if g.new_gnxs:
-                    assert g.isString(gnx)
-                    gnx = g.toUnicode(gnx)
-                else:
-                    gnx = g.app.nodeIndices.scanGnx(gnx,0)
+                # new gnxs:
+                assert g.isString(gnx)
+                gnx = g.toUnicode(gnx)
+                # old gnxs: retain for reference.
+                # gnx = g.app.nodeIndices.scanGnx(gnx,0)
                 for p in root.self_and_subtree():
                     if p.matchHeadline(vnodeName):
                         if p.v.fileIndex == gnx:
                             return p.copy(),True
-
                 if trace: g.trace('not found! %s, %s' % (gnx,repr(vnodeName)))
                 return None,False
             else:

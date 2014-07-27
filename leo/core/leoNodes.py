@@ -66,10 +66,10 @@ class NodeIndices (object):
         '''Create a new gnx.'''
         self.lastIndex += 1
         d = (self.userId,self.timeString,self.lastIndex)
-        if g.new_gnxs:
-            return g.toUnicode("%s.%s.%d" % d)
-        else:
-            return d
+        # new gnxs:
+        return g.toUnicode("%s.%s.%d" % d)
+        # old gnxs: retain for reference:
+        # return d
     #@+node:ekr.20031218072017.1997: *3* ni.scanGnx
     def scanGnx (self,s,i=0):
         """Create a gnx from its string representation."""
@@ -110,10 +110,10 @@ class NodeIndices (object):
         *Important* the present sax code and earlier versions of Leo
         use various kinds of tuples.  Do *not* change the tuple-related code!
         '''
-        if g.isString(index): # New for g.new_gnxs.
+        if g.isString(index): # new gnxs:
             return g.toUnicode(index)
-        elif index is None:
-            return self.getNewIndex() # New for g.new_gnxs.
+        elif index is None: # new gnxs:
+            return self.getNewIndex() 
         try:
             theId,t,n = index
             if n in (None,0,'',):
@@ -363,10 +363,10 @@ class Position (object):
     #@+node:ekr.20090215165030.3: *4* p.gnx property
     def __get_gnx(self):
         p = self
-        if g.new_gnxs:
-            return p.v.fileIndex
-        else:
-            return g.app.nodeIndices.toString(p.v.fileIndex)
+        # new gnxs:
+        return p.v.fileIndex
+        # old gnxs: retain for reference.
+        # return g.app.nodeIndices.toString(p.v.fileIndex)
 
     gnx = property(
         __get_gnx, # __set_gnx,
@@ -2610,10 +2610,10 @@ class VNode (BaseVnode):
     #@+node:ekr.20090215165030.1: *4* v.gnx Property
     def __get_gnx(self):
         v = self
-        if g.new_gnxs:
-            return v.fileIndex
-        else:
-            return g.app.nodeIndices.toString(v.fileIndex)
+        # new gnxs:
+        return v.fileIndex
+        # old gnxs: retain for reference.
+        # return g.app.nodeIndices.toString(v.fileIndex)
 
     gnx = property(
         __get_gnx, # __set_gnx,
