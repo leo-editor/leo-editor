@@ -531,8 +531,8 @@ if sys.platform != 'cli':
 class BaseFileCommands:
     """A base class for the FileCommands subcommander."""
     #@+others
-    #@+node:ekr.20090218115025.4: ** Birth (leoFileCommands)
-    #@+node:ekr.20031218072017.3019: *3* leoFileCommands._init_
+    #@+node:ekr.20090218115025.4: ** fc.Birth
+    #@+node:ekr.20031218072017.3019: *3* fc.ctor
     def __init__(self,c):
 
         # g.trace("__init__", "FileCommands.__init__")
@@ -594,8 +594,8 @@ class BaseFileCommands:
             # 2011/12/10: This dict is never re-inited.
         self.vnodesDict = {}
             # keys are gnx strings; values are ignored
-    #@+node:ekr.20031218072017.3020: ** Reading
-    #@+node:ekr.20060919104836: *3*  Top-level
+    #@+node:ekr.20031218072017.3020: ** fc.Reading
+    #@+node:ekr.20060919104836: *3*  fc.Reading Top-level
     #@+node:ekr.20070919133659.1: *4* fc.checkLeoFile
     def checkLeoFile (self,event=None):
 
@@ -916,7 +916,7 @@ class BaseFileCommands:
             frame.resizePanesToRatio(ratio,frame.secondary_ratio)
 
         return ok
-    #@+node:ekr.20031218072017.3030: *4* readOutlineOnly
+    #@+node:ekr.20031218072017.3030: *4* fc.readOutlineOnly
     def readOutlineOnly (self,theFile,fileName):
 
         c = self.c
@@ -942,7 +942,7 @@ class BaseFileCommands:
         c.frame.resizePanesToRatio(ratio,secondary_ratio)
 
         return ok
-    #@+node:ekr.20060919133249: *3* Common
+    #@+node:ekr.20060919133249: *3* fc.Reading Common
     # Methods common to both the sax and non-sax code.
     #@+node:ekr.20031218072017.2004: *4* fc.canonicalTnodeIndex
     def canonicalTnodeIndex(self,index):
@@ -1061,8 +1061,8 @@ class BaseFileCommands:
                 if expanded.get(p.v):
                     p.expand()
                     # if trace: g.trace('expand',p.h)
-    #@+node:ekr.20060919104530: *3* Sax (reading)
-    #@+node:ekr.20090525144314.6526: *4* cleanSaxInputString
+    #@+node:ekr.20060919104530: *3* fc.Reading Sax
+    #@+node:ekr.20090525144314.6526: *4* fc.cleanSaxInputString
     def cleanSaxInputString(self,s):
 
         '''Clean control characters from s.
@@ -1152,7 +1152,7 @@ class BaseFileCommands:
         self.handleVnodeSaxAttributes(sax_node,v)
         self.handleTnodeSaxAttributes(sax_node,v)
         return v
-    #@+node:ekr.20060919110638.8: *6* handleTnodeSaxAttributes
+    #@+node:ekr.20060919110638.8: *6* fc.handleTnodeSaxAttributes
     def handleTnodeSaxAttributes (self,sax_node,v):
 
         trace = False and not g.unitTesting
@@ -1169,7 +1169,7 @@ class BaseFileCommands:
         if aDict:
             if trace: g.trace('uA',v,list(aDict.keys()))
             v.unknownAttributes = aDict
-    #@+node:ekr.20061004053644: *6* handleVnodeSaxAttributes
+    #@+node:ekr.20061004053644: *6* fc.handleVnodeSaxAttributes
     # The native attributes of <v> elements are a, t, vtag, tnodeList,
     # marks, expanded, and descendentTnodeUnknownAttributes.
     # New in Leo 4.5: added descendentVnodeUnknownAttributes to native attributes.
@@ -1239,7 +1239,7 @@ class BaseFileCommands:
         if aDict:
             # if trace: g.trace('uA',v,aDict)
             v.unknownAttributes = aDict
-    #@+node:ekr.20060919110638.2: *4* dumpSaxTree
+    #@+node:ekr.20060919110638.2: *4* fc.dumpSaxTree
     def dumpSaxTree (self,root,dummy):
 
         if not root:
@@ -1249,7 +1249,7 @@ class BaseFileCommands:
             root.dump()
         for child in root.children:
             self.dumpSaxTree(child,dummy=False)
-    #@+node:tbrown.20140615093933.89639: *4* bytes_to_unicode
+    #@+node:tbrown.20140615093933.89639: *4* fc.bytes_to_unicode
     def bytes_to_unicode(self, ob):
         """recursively convert bytes objects in strings / lists / dicts to str
         objects, thanks to TNT
@@ -1280,7 +1280,7 @@ class BaseFileCommands:
             ro = ob
             # print("unprocessed object: {0} {1}".format(t, ob))
         return ro
-    #@+node:ekr.20061003093021: *4* getSaxUa
+    #@+node:ekr.20061003093021: *4* fc.getSaxUa
     def getSaxUa(self,attr,val,kind=None): # Kind is for unit testing.
 
         """Parse an unknown attribute in a <v> or <t> element.
@@ -1335,7 +1335,7 @@ class BaseFileCommands:
             except (pickle.UnpicklingError,ImportError,AttributeError,ValueError,TypeError):
                 g.trace('can not unpickle %s=%s' % (attr,val))
                 return val
-    #@+node:ekr.20060919110638.14: *4* parse_leo_file
+    #@+node:ekr.20060919110638.14: *4* fc.parse_leo_file
     def parse_leo_file (self,theFile,inputFileName,silent,inClipboard,s=None):
 
         c = self.c
@@ -1372,7 +1372,7 @@ class BaseFileCommands:
             sax_node = None
 
         return sax_node
-    #@+node:ekr.20060919110638.3: *4* readSaxFile
+    #@+node:ekr.20060919110638.3: *4* fc.readSaxFile
     def readSaxFile (self,theFile,fileName,silent,inClipboard,reassignIndices,s=None):
 
         dump = False and not g.unitTesting
@@ -1393,7 +1393,7 @@ class BaseFileCommands:
             return v
         else:
             return None
-    #@+node:ekr.20060919110638.11: *4* resolveTnodeLists
+    #@+node:ekr.20060919110638.11: *4* fc.resolveTnodeLists
     def resolveTnodeLists (self):
 
         trace = False and not g.unitTesting
@@ -1417,7 +1417,7 @@ class BaseFileCommands:
                     p.v.tnodeList = result
                     # g.trace('*** tnodeList for',p.h,result)
                 delattr(p.v,'tempTnodeList')
-    #@+node:ekr.20080805132422.3: *4* resolveArchivedPosition
+    #@+node:ekr.20080805132422.3: *4* fc.resolveArchivedPosition
     def resolveArchivedPosition(self,archivedPosition,root_v):
 
         '''Return a VNode corresponding to the archived position relative to root node root_v.'''
@@ -1449,7 +1449,7 @@ class BaseFileCommands:
                 return oops('bad index="%s", len(children)="%s"' % (n,len(children)))
 
         return last_v
-    #@+node:ekr.20060919110638.13: *4* setPositionsFromVnodes & helper (sax read)
+    #@+node:ekr.20060919110638.13: *4* fc.setPositionsFromVnodes & helper (sax read)
     def setPositionsFromVnodes (self):
 
         trace = False and not g.unitTesting
@@ -1469,7 +1469,7 @@ class BaseFileCommands:
             current = self.archivedPositionToPosition(str_pos)
 
         c.setCurrentPosition(current or c.rootPosition())
-    #@+node:ekr.20061006104837.1: *5* archivedPositionToPosition
+    #@+node:ekr.20061006104837.1: *5* fc.archivedPositionToPosition
     def archivedPositionToPosition (self,s):
 
         c = self.c
@@ -1496,9 +1496,9 @@ class BaseFileCommands:
                 p.moveToFirstChild()
                 # g.trace('level',level,'index',aList[level],p.h)
         return p
-    #@+node:ekr.20031218072017.3032: ** Writing
-    #@+node:ekr.20070413045221.2: *3*  Top-level  (leoFileCommands)
-    #@+node:ekr.20031218072017.1720: *4* save (FileCommands)
+    #@+node:ekr.20031218072017.3032: ** fc.Writing
+    #@+node:ekr.20070413045221.2: *3*  fc.Top-level
+    #@+node:ekr.20031218072017.1720: *4* fc.save
     def save(self,fileName,silent=False):
 
         c = self.c ; v = c.currentVnode()
@@ -1525,7 +1525,7 @@ class BaseFileCommands:
 
         g.doHook("save2",c=c,p=v,v=v,fileName=fileName)
         return ok
-    #@+node:ekr.20031218072017.3043: *4* saveAs (leoFileCommands)
+    #@+node:ekr.20031218072017.3043: *4* fc.saveAs
     def saveAs(self,fileName):
 
         c = self.c ; p = c.p
@@ -1543,7 +1543,7 @@ class BaseFileCommands:
                 c.ignoreChangedPaths = True
             c.redraw_after_icons_changed()
         g.doHook("save2",c=c,p=p,v=p,fileName=fileName)
-    #@+node:ekr.20031218072017.3044: *4* saveTo (leoFileCommands)
+    #@+node:ekr.20031218072017.3044: *4* fc.saveTo
     def saveTo (self,fileName):
 
         c = self.c ; p = c.p
@@ -1562,7 +1562,7 @@ class BaseFileCommands:
             c.redraw_after_icons_changed()
 
         g.doHook("save2",c=c,p=p,v=p,fileName=fileName)
-    #@+node:ekr.20070413061552: *4* putSavedMessage
+    #@+node:ekr.20070413061552: *4* fc.putSavedMessage
     def putSavedMessage (self,fileName):
 
         c = self.c
@@ -1570,7 +1570,7 @@ class BaseFileCommands:
         zipMark = '[zipped] ' if c.isZipped else ''
 
         g.es("saved:","%s%s" % (zipMark,g.shortFileName(fileName)))
-    #@+node:ekr.20050404190914.2: *3* deleteFileWithMessage (leoFileCommands)
+    #@+node:ekr.20050404190914.2: *3* fc.deleteFileWithMessage
     def deleteFileWithMessage(self,fileName,unused_kind):
 
         try:
@@ -1583,7 +1583,7 @@ class BaseFileCommands:
                 g.error("exception deleting backup file:",fileName)
                 g.es_exception(full=False)
             return False
-    #@+node:ekr.20031218072017.1470: *3* put (leoFileCommands)
+    #@+node:ekr.20031218072017.1470: *3* fc.put
     def put (self,s):
 
         '''Put string s to self.outputFile. All output eventually comes here.'''
@@ -1623,12 +1623,12 @@ class BaseFileCommands:
         while n > 0:
             self.put("\t")
             n -= 1
-    #@+node:ekr.20031218072017.1971: *3* putClipboardHeader
+    #@+node:ekr.20031218072017.1971: *3* fc.putClipboardHeader
     def putClipboardHeader (self):
 
         # Put the minimum header for sax.
         self.put('<leo_header file_format="2"/>\n')
-    #@+node:ekr.20040324080819.1: *3* putLeoFile & helpers
+    #@+node:ekr.20040324080819.1: *3* fc.putLeoFile & helpers
     def putLeoFile (self):
 
         self.updateFixedStatus()
@@ -1643,13 +1643,13 @@ class BaseFileCommands:
         self.putTnodes()
         #start = g.printDiffTime("tnodes ",start)
         self.putPostlog()
-    #@+node:ekr.20031218072017.3035: *4* putFindSettings
+    #@+node:ekr.20031218072017.3035: *4* fc.putFindSettings
     def putFindSettings (self):
 
         # New in 4.3:  These settings never get written to the .leo file.
         self.put("<find_panel_settings/>")
         self.put_nl()
-    #@+node:ekr.20031218072017.3037: *4* putGlobals
+    #@+node:ekr.20031218072017.3037: *4* fc.putGlobals
     # Changed for Leo 4.0.
 
     def putGlobals (self):
@@ -1715,7 +1715,7 @@ class BaseFileCommands:
         self.put("/>") ; self.put_nl()
         #@-<< put the position of the log window >>
         self.put("</globals>") ; self.put_nl()
-    #@+node:ekr.20031218072017.3041: *4* putHeader
+    #@+node:ekr.20031218072017.3041: *4* fc.putHeader
     def putHeader (self):
 
         tnodes = 0 ; clone_windows = 0 # Always zero in Leo2.
@@ -1730,17 +1730,17 @@ class BaseFileCommands:
 
         else:
             self.put('<leo_header file_format="2"/>\n')
-    #@+node:ekr.20031218072017.3042: *4* putPostlog
+    #@+node:ekr.20031218072017.3042: *4* fc.putPostlog
     def putPostlog (self):
 
         self.put("</leo_file>") ; self.put_nl()
-    #@+node:ekr.20031218072017.2066: *4* putPrefs
+    #@+node:ekr.20031218072017.2066: *4* fc.putPrefs
     def putPrefs (self):
 
         # New in 4.3:  These settings never get written to the .leo file.
         self.put("<preferences/>")
         self.put_nl()
-    #@+node:ekr.20031218072017.1246: *4* putProlog
+    #@+node:ekr.20031218072017.1246: *4* fc.putProlog
     def putProlog (self):
 
         c = self.c
@@ -1759,7 +1759,7 @@ class BaseFileCommands:
         self.put('<leo_file xmlns:leo="http://www.leo-editor.org/2011/leo" >')
         # self.put("<leo_file>")
         self.put_nl()
-    #@+node:ekr.20031218072017.1248: *4* putStyleSheetLine
+    #@+node:ekr.20031218072017.1248: *4* fc.putStyleSheetLine
     def putStyleSheetLine (self):
 
         c = self.c
@@ -1769,7 +1769,7 @@ class BaseFileCommands:
         self.put(c.frame.stylesheet or c.config.stylesheet)
         self.put("?>")
         self.put_nl()
-    #@+node:ekr.20031218072017.1577: *4* putTnode
+    #@+node:ekr.20031218072017.1577: *4* fc.putTnode
     def putTnode (self,v):
 
         # Call put just once.
@@ -1781,7 +1781,7 @@ class BaseFileCommands:
         b = v.b
         body = xml.sax.saxutils.escape(b) if b else ''
         self.put('<t tx="%s"%s>%s</t>\n' % (gnx,ua,body))
-    #@+node:ekr.20031218072017.1575: *4* putTnodes
+    #@+node:ekr.20031218072017.1575: *4* fc.putTnodes
     def putTnodes (self):
 
         """Puts all tnodes as required for copy or save commands"""
@@ -1835,7 +1835,7 @@ class BaseFileCommands:
                 raise BadLeoFile('no VNode for %s' % repr(index))
         #@-<< write only those tnodes that were referenced >>
         self.put("</tnodes>\n")
-    #@+node:ekr.20031218072017.1863: *4* putVnode
+    #@+node:ekr.20031218072017.1863: *4* fc.putVnode
     def putVnode (self,p,isIgnore=False):
 
         """Write a <v> element corresponding to a VNode."""
@@ -1946,7 +1946,7 @@ class BaseFileCommands:
                 fc.put('</v>\n')
             else:
                 fc.put('%s</v>\n' % v_head) # Call put only once.
-    #@+node:ekr.20031218072017.1579: *4* putVnodes
+    #@+node:ekr.20031218072017.1579: *4* fc.putVnodes
     def putVnodes (self):
 
         """Puts all <v> elements in the order in which they appear in the outline."""
@@ -1970,7 +1970,7 @@ class BaseFileCommands:
                 self.putVnode(p,isIgnore=p.isAtIgnoreNode()) # Write the next top-level node.
 
         self.put("</vnodes>\n")
-    #@+node:ekr.20031218072017.1247: *4* putXMLLine
+    #@+node:ekr.20031218072017.1247: *4* fc.putXMLLine
     def putXMLLine (self):
 
         '''Put the **properly encoded** <?xml> element.'''
@@ -1980,7 +1980,7 @@ class BaseFileCommands:
             g.app.prolog_prefix_string,
             self.leo_file_encoding,
             g.app.prolog_postfix_string))
-    #@+node:ekr.20031218072017.1573: *3* putLeoOutline (to clipboard)
+    #@+node:ekr.20031218072017.1573: *3* fc.putLeoOutline (to clipboard)
     def putLeoOutline (self):
 
         '''Return a string, *not unicode*, encoded with self.leo_file_encoding,
@@ -2001,7 +2001,7 @@ class BaseFileCommands:
         self.outputFile = None
         self.usingClipboard = False
         return s
-    #@+node:ekr.20060919064401: *3* putToOPML
+    #@+node:ekr.20060919064401: *3* fc.putToOPML
     # All elements and attributes prefixed by ':' are leo-specific.
     # All other elements and attributes are specified by the OPML 1 spec.
 
@@ -2010,7 +2010,7 @@ class BaseFileCommands:
         '''Should be overridden by the opml plugin.'''
 
         return None
-    #@+node:ekr.20031218072017.3046: *3* write_Leo_file & helpers
+    #@+node:ekr.20031218072017.3046: *3* fc.write_Leo_file & helpers
     def write_Leo_file(self,fileName,outlineOnlyFlag,toString=False,toOPML=False):
 
         c = self.c
@@ -2033,7 +2033,7 @@ class BaseFileCommands:
         return ok
 
     write_LEO_file = write_Leo_file # For compatibility with old plugins.
-    #@+node:ekr.20100119145629.6109: *4* checkOutline
+    #@+node:ekr.20100119145629.6109: *4* fc.checkOutline
     def checkOutline (self):
 
         c = self.c
@@ -2046,7 +2046,7 @@ class BaseFileCommands:
             g.error('outline not written')
 
         return ok
-    #@+node:ekr.20040324080359.1: *4* isReadOnly
+    #@+node:ekr.20040324080359.1: *4* fc.isReadOnly
     def isReadOnly (self,fileName):
 
         # self.read_only is not valid for Save As and Save To commands.
@@ -2060,7 +2060,7 @@ class BaseFileCommands:
                 pass # os.access() may not exist on all platforms.
 
         return False
-    #@+node:ekr.20100119145629.6114: *4* writeAllAtFileNodesHelper
+    #@+node:ekr.20100119145629.6114: *4* fc.writeAllAtFileNodesHelper
     def writeAllAtFileNodesHelper (self):
 
         '''Write all @<file> nodes and set orphan bits.
@@ -2077,7 +2077,7 @@ class BaseFileCommands:
             g.es_error("exception writing external files")
             g.es_exception()
             return False
-    #@+node:ekr.20100119145629.6111: *4* writeToFileHelper & helpers
+    #@+node:ekr.20100119145629.6111: *4* fc.writeToFileHelper & helpers
     def writeToFileHelper (self,fileName,toOPML):
 
         c = self.c ; toZip = c.isZipped
@@ -2112,7 +2112,7 @@ class BaseFileCommands:
             self.handleWriteLeoFileException(
                 fileName,backupName,theActualFile)
             return False
-    #@+node:ekr.20100119145629.6106: *5* createActualFile
+    #@+node:ekr.20100119145629.6106: *5* fc.createActualFile
     def createActualFile (self,fileName,toOPML,toZip):
 
         if toOPML and not self.mFileName.endswith('opml'):
@@ -2130,7 +2130,7 @@ class BaseFileCommands:
                 theActualFile = None
 
         return fileName,theActualFile
-    #@+node:ekr.20031218072017.3047: *5* createBackupFile
+    #@+node:ekr.20031218072017.3047: *5* fc.createBackupFile
     def createBackupFile (self,fileName):
 
         '''
@@ -2158,7 +2158,7 @@ class BaseFileCommands:
         else:
             ok,backupName = True,None
         return ok,backupName
-    #@+node:ekr.20100119145629.6108: *5* handleWriteLeoFileException
+    #@+node:ekr.20100119145629.6108: *5* fc.handleWriteLeoFileException
     def handleWriteLeoFileException(self,fileName,backupName,theActualFile):
 
         c = self.c
@@ -2181,7 +2181,7 @@ class BaseFileCommands:
             g.utils_rename(c,backupName,fileName)
         else:
             g.error('backup file does not exist!',repr(backupName))
-    #@+node:ekr.20100119145629.6110: *4* writeToStringHelper
+    #@+node:ekr.20100119145629.6110: *4* fc.writeToStringHelper
     def writeToStringHelper (self,fileName):
 
         try:
@@ -2196,7 +2196,7 @@ class BaseFileCommands:
             g.es_exception(full=True)
             g.app.write_Leo_file_string = ''
             return False
-    #@+node:ekr.20070412095520: *4* writeZipFile
+    #@+node:ekr.20070412095520: *4* fc.writeZipFile
     def writeZipFile (self,s):
 
         # The name of the file in the archive.
@@ -2213,7 +2213,7 @@ class BaseFileCommands:
         theFile = zipfile.ZipFile(fileName,'w',zipfile.ZIP_DEFLATED)
         theFile.writestr(contentsName,s)
         theFile.close()
-    #@+node:ekr.20031218072017.2012: *3* writeAtFileNodes (FileCommands)
+    #@+node:ekr.20031218072017.2012: *3* fc.writeAtFileNodes
     def writeAtFileNodes (self,event=None):
 
         '''Write all @file nodes in the selected outline.'''
@@ -2223,7 +2223,7 @@ class BaseFileCommands:
         c.init_error_dialogs()
         c.atFileCommands.writeAll(writeAtFileNodesFlag=True)
         c.raise_error_dialogs(kind='write')
-    #@+node:ekr.20080801071227.5: *3* writeAtShadowNodes (FileCommands)
+    #@+node:ekr.20080801071227.5: *3* fc.writeAtShadowNodes
     def writeAtShadowNodes (self,event=None):
 
         '''Write all @file nodes in the selected outline.'''
@@ -2233,7 +2233,7 @@ class BaseFileCommands:
         c.init_error_dialogs()
         c.atFileCommands.writeAll(writeAtFileNodesFlag=True)
         c.raise_error_dialogs(kind='write')
-    #@+node:ekr.20031218072017.1666: *3* writeDirtyAtFileNodes (FileCommands)
+    #@+node:ekr.20031218072017.1666: *3* fc.writeDirtyAtFileNodes
     def writeDirtyAtFileNodes (self,event=None):
 
         '''Write all changed @file Nodes.'''
@@ -2243,14 +2243,14 @@ class BaseFileCommands:
         c.init_error_dialogs()
         c.atFileCommands.writeAll(writeDirtyAtFileNodesFlag=True)
         c.raise_error_dialogs(kind='write')
-    #@+node:ekr.20080801071227.6: *3* writeDirtyAtShadowNodes (FileCommands)
+    #@+node:ekr.20080801071227.6: *3* fc.writeDirtyAtShadowNodes
     def writeDirtyAtShadowNodes (self,event=None):
 
         '''Write all changed @shadow Nodes.'''
 
         self.c.atFileCommands.writeDirtyAtShadowNodes()
 
-    #@+node:ekr.20031218072017.2013: *3* writeMissingAtFileNodes
+    #@+node:ekr.20031218072017.2013: *3* fc.writeMissingAtFileNodes
     def writeMissingAtFileNodes (self,event=None):
 
         '''Write all missing @file nodes.'''
@@ -2259,7 +2259,7 @@ class BaseFileCommands:
 
         if c.p:
             c.atFileCommands.writeMissing(c.p)
-    #@+node:ekr.20031218072017.3050: *3* writeOutlineOnly
+    #@+node:ekr.20031218072017.3050: *3* fc.writeOutlineOnly
     def writeOutlineOnly (self,event=None):
 
         '''Write the entire outline without writing any derived files.'''
@@ -2268,7 +2268,7 @@ class BaseFileCommands:
         c.endEditing()
         self.write_Leo_file(self.mFileName,outlineOnlyFlag=True)
         g.blue('done')
-    #@+node:ekr.20080805114146.2: ** Utils
+    #@+node:ekr.20080805114146.2: ** fc.Utils
     #@+node:ekr.20031218072017.1570: *3* fc.assignFileIndices & compactFileIndices
     def assignFileIndices (self):
 
