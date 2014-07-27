@@ -2,20 +2,19 @@
 #@+node:ekr.20140723122936.18144: * @file importers/javascript.py
 '''The @auto importer for JavaScript.'''
 import leo.core.leoGlobals as g
-import leo.core.leoImport as leoImport
-BaseScanner = leoImport.BaseScanner
+import leo.plugins.importers.basescanner as basescanner
 #@+others
 #@+node:ekr.20140723122936.18049: ** class JavaScriptScanner
 # The syntax for patterns causes all kinds of problems...
 
-class JavaScriptScanner (BaseScanner):
+class JavaScriptScanner (basescanner.BaseScanner):
 
     #@+others
     #@+node:ekr.20140723122936.18050: *3* JavaScriptScanner.__init__
     def __init__ (self,importCommands,atAuto,language='javascript',alternate_language=None):
         '''The ctor for the JavaScriptScanner class.'''
         # Init the base class.
-        BaseScanner.__init__(self,importCommands,
+        basescanner.BaseScanner.__init__(self,importCommands,
             atAuto=atAuto,
             language=language,
                 # The language is used to set comment delims.

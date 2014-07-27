@@ -2,11 +2,10 @@
 #@+node:ekr.20140723122936.18147: * @file importers/pascal.py
 '''The @auto importer for Pascal.'''
 import leo.core.leoGlobals as g
-import leo.core.leoImport as leoImport
-BaseScanner = leoImport.BaseScanner
+import leo.plugins.importers.basescanner as basescanner
 #@+others
 #@+node:ekr.20140723122936.18076: ** class PascalScanner
-class PascalScanner (BaseScanner):
+class PascalScanner (basescanner.BaseScanner):
 
     #@+others
     #@+node:ekr.20140723122936.18077: *3* skipArgs
@@ -35,7 +34,7 @@ class PascalScanner (BaseScanner):
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
-        BaseScanner.__init__(self,importCommands,atAuto=atAuto,language='pascal')
+        basescanner.BaseScanner.__init__(self,importCommands,atAuto=atAuto,language='pascal')
 
         # Set the parser overrides.
         self.anonymousClasses = ['interface']

@@ -2,18 +2,17 @@
 #@+node:ekr.20140723122936.18141: * @file importers/elisp.py
 '''The @auto importer for elisp.'''
 import leo.core.leoGlobals as g
-import leo.core.leoImport as leoImport
-BaseScanner = leoImport.BaseScanner
+import leo.plugins.importers.basescanner as basescanner
 #@+others
 #@+node:ekr.20140723122936.18036: ** class ElispScanner
-class ElispScanner (BaseScanner):
+class ElispScanner (basescanner.BaseScanner):
 
     #@+others
     #@+node:ekr.20140723122936.18037: *3*  __init__ (ElispScanner)
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
-        BaseScanner.__init__(self,importCommands,atAuto=atAuto,language='lisp')
+        basescanner.BaseScanner.__init__(self,importCommands,atAuto=atAuto,language='lisp')
 
         # Set the parser delims.
         self.atAutoWarnsAboutLeadingWhitespace = False # 2010/09/29.
@@ -71,7 +70,7 @@ class ElispScanner (BaseScanner):
     def skipBlock(self,s,i,delim1=None,delim2=None):
 
         # Call the base class
-        i = BaseScanner.skipBlock(self,s,i,delim1,delim2)
+        i = basescanner.BaseScanner.skipBlock(self,s,i,delim1,delim2)
 
         # Skip the closing parens of enclosing constructs.
         # This prevents the "does not end in a newline error.

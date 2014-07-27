@@ -1,18 +1,17 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.18143: * @file importers/java.py
 '''The @auto importer for Java.'''
-import leo.core.leoImport as leoImport
-BaseScanner = leoImport.BaseScanner
+import leo.plugins.importers.basescanner as basescanner
 #@+others
 #@+node:ekr.20140723122936.18046: ** class JavaScanner
-class JavaScanner (BaseScanner):
+class JavaScanner (basescanner.BaseScanner):
 
     #@+others
     #@+node:ekr.20140723122936.18047: *3* JavaScanner.__init__
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
-        BaseScanner.__init__(self,importCommands,atAuto=atAuto,language='java')
+        basescanner.BaseScanner.__init__(self,importCommands,atAuto=atAuto,language='java')
 
         # Set the parser delims.
         self.blockCommentDelim1 = '/*'

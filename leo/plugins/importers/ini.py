@@ -2,16 +2,15 @@
 #@+node:ekr.20140723122936.18142: * @file importers/ini.py
 '''The @auto importer for .ini files.'''
 import leo.core.leoGlobals as g
-import leo.core.leoImport as leoImport
-BaseScanner = leoImport.BaseScanner
+import leo.plugins.importers.basescanner as basescanner
 #@+others
 #@+node:ekr.20140723122936.18043: ** class IniScanner
-class IniScanner (BaseScanner):
+class IniScanner (basescanner.BaseScanner):
 
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
-        BaseScanner.__init__(self,
+        basescanner.BaseScanner.__init__(self,
             importCommands,atAuto=atAuto,language='ini')
 
         # Override defaults defined in the base class.

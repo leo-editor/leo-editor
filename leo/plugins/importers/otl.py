@@ -2,16 +2,15 @@
 #@+node:ekr.20140723122936.18150: * @file importers/otl.py
 '''The @auto importer for vim-outline files.'''
 import leo.core.leoGlobals as g
-import leo.core.leoImport as leoImport
-BaseScanner = leoImport.BaseScanner
+import leo.plugins.importers.basescanner as basescanner
 #@+others
 #@+node:ekr.20140723122936.18114: ** class VimoutlinerScanner
-class VimoutlinerScanner(BaseScanner):
+class VimoutlinerScanner(basescanner.BaseScanner):
     
     def __init__ (self,importCommands,atAuto):
         '''ctor for VimoutlinerScanner class.'''
         # Init the base class.
-        BaseScanner.__init__(self,
+        basescanner.BaseScanner.__init__(self,
             importCommands,atAuto=atAuto,language='plain')
                 # Use @language plain.
         # Overrides of base-class ivars.

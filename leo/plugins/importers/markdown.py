@@ -2,17 +2,17 @@
 #@+node:ekr.20140725190808.18066: * @file importers/markdown.py
 '''The @auto importer for markdown.'''
 import leo.core.leoGlobals as g
-import leo.core.leoImport as leoImport
+import leo.plugins.importers.basescanner as basescanner
 #@+others
 #@+node:ekr.20140725190808.18067: ** class MarkdownScanner
-class MarkdownScanner (leoImport.BaseScanner):
+class MarkdownScanner (basescanner.BaseScanner):
 
     #@+others
     #@+node:ekr.20140725190808.18068: *3* mds.__init__  (test)
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
-        leoImport.BaseScanner.__init__(self,importCommands,
+        basescanner.BaseScanner.__init__(self,importCommands,
             atAuto=atAuto,language='markdown')
         # Scanner overrides
         self.atAutoWarnsAboutLeadingWhitespace = True

@@ -2,18 +2,17 @@
 #@+node:ekr.20140723122936.18137: * @file importers/xml.py
 '''The @auto importer for XML.'''
 import leo.core.leoGlobals as g
-import leo.core.leoImport as leoImport
-BaseScanner = leoImport.BaseScanner
+import leo.plugins.importers.basescanner as basescanner
 #@+others
 #@+node:ekr.20140723122936.18119: ** class XmlScanner (BaseScanner)
-class XmlScanner (leoImport.BaseScanner):
+class XmlScanner (basescanner.BaseScanner):
 
     #@+others
     #@+node:ekr.20140723122936.18120: *3*  ctor_(XmlScanner)
     def __init__ (self,importCommands,atAuto,tags_setting='import_xml_tags'):
 
         # Init the base class.
-        BaseScanner.__init__(self,importCommands,atAuto=atAuto,language='xml')
+        basescanner.BaseScanner.__init__(self,importCommands,atAuto=atAuto,language='xml')
             # sets self.c
 
         # Set the parser delims.

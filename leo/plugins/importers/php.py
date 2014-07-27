@@ -2,19 +2,18 @@
 #@+node:ekr.20140723122936.18148: * @file importers/php.py
 '''The @auto importer for PHP.'''
 import leo.core.leoGlobals as g
-import leo.core.leoImport as leoImport
-BaseScanner = leoImport.BaseScanner
+import leo.plugins.importers.basescanner as basescanner
 import string
 #@+others
 #@+node:ekr.20140723122936.18083: ** class PhpScanner
-class PhpScanner (BaseScanner):
+class PhpScanner (basescanner.BaseScanner):
 
     #@+others
     #@+node:ekr.20140723122936.18084: *3*  __init__(PhpScanner)
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
-        BaseScanner.__init__(self,importCommands,atAuto=atAuto,language='php')
+        basescanner.BaseScanner.__init__(self,importCommands,atAuto=atAuto,language='php')
 
         # Set the parser delims.
         self.blockCommentDelim1 = '/*'

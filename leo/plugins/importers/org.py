@@ -2,16 +2,15 @@
 #@+node:ekr.20140723122936.18146: * @file importers/org.py
 '''The @auto importer for Emacs org-mode.'''
 import leo.core.leoGlobals as g
-import leo.core.leoImport as leoImport
-BaseScanner = leoImport.BaseScanner
+import leo.plugins.importers.basescanner as basescanner
 #@+others
 #@+node:ekr.20140723122936.18072: ** class OrgModeScanner
-class OrgModeScanner(BaseScanner):
+class OrgModeScanner(basescanner.BaseScanner):
     '''A class to scan Emacs org-mode files.'''
     def __init__ (self,importCommands,atAuto):
         '''ctor for OrgModeScanner class.'''
         # Init the base class.
-        BaseScanner.__init__(self,
+        basescanner.BaseScanner.__init__(self,
             importCommands,atAuto=atAuto,language='plain')
                 # Use @language plain.
         # Overrides of base-class ivars.

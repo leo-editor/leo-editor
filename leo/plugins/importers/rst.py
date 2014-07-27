@@ -2,18 +2,17 @@
 #@+node:ekr.20140723122936.18151: * @file importers/rst.py
 '''The @auto importer for restructured text.'''
 import leo.core.leoGlobals as g
-import leo.core.leoImport as leoImport
-BaseScanner = leoImport.BaseScanner
+import leo.plugins.importers.basescanner as basescanner
 #@+others
 #@+node:ekr.20140723122936.18099: ** class RstScanner
-class RstScanner (BaseScanner):
+class RstScanner (basescanner.BaseScanner):
 
     #@+others
     #@+node:ekr.20140723122936.18100: *3*  __init__ (RstScanner)
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
-        BaseScanner.__init__(self,importCommands,atAuto=atAuto,language='rest')
+        basescanner.BaseScanner.__init__(self,importCommands,atAuto=atAuto,language='rest')
 
         # Scanner overrides
         self.atAutoWarnsAboutLeadingWhitespace = True

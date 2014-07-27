@@ -1,16 +1,15 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140723122936.17926: * @file importers/c.py
 '''The @auto importer for the C language and other related languages.'''
-import leo.core.leoImport as leoImport
-BaseScanner = leoImport.BaseScanner
+import leo.plugins.importers.basescanner as basescanner
 #@+others
 #@+node:ekr.20140723122936.17928: ** class CScanner
-class CScanner (BaseScanner):
+class CScanner (basescanner.BaseScanner):
 
     def __init__ (self,importCommands,atAuto):
 
         # Init the base class.
-        BaseScanner.__init__(self,importCommands,atAuto=atAuto,language='c')
+        basescanner.BaseScanner.__init__(self,importCommands,atAuto=atAuto,language='c')
 
         # Set the parser delims.
         self.blockCommentDelim1 = '/*'
