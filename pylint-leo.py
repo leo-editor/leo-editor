@@ -256,53 +256,6 @@ def getTable(scope):
         print('bad scope',scope)
         tables_table = ()
     return tables_table
-    
-    # if scope == 'all':
-        # tables_table = (
-            # (coreList,'core'),
-            # # (guiPluginsList,'plugins'),
-            # (pluginsList,'plugins'),
-            # (externalList,'external'),
-        # )
-    # elif scope == 'core':
-        # tables_table =  (
-            # (coreList,'core'),
-            # (guiPluginsList,'plugins'),
-            # (externalList,'external'),
-        # )
-    # elif scope == 'external':
-        # tables_table = (
-            # (externalList,'external'),
-        # )
-    # elif scope == 'file':
-        # tables_table = (
-            # ([g_option_fn],'core'), # Default is a core file.
-        # )
-    # elif scope == 'gui':
-        # tables_table = (
-            # (guiPluginsList,'plugins'),
-    # )
-    # elif scope == 'plugins':
-        # tables_table = (
-            # (pluginsList,'plugins'),
-            # # (passList,'plugins'),
-        # )
-    # elif scope == 'recent':
-        # tables_table = (
-            # (recentCoreList,'core'),
-            # (recentPluginsList,'plugins'),
-        # )
-    # elif scope == 'stc':
-        # tables_table = (
-            # (['statictypechecking',],r'c:\leo.repo\static-type-checking'),
-        # )
-    # elif scope == 'stc-test':
-        # tables_table = (
-            # (['pylint_test.py',],r'c:\leo.repo\static-type-checking\test\pylint'),
-        # )
-    # else:
-        # print('bad scope',scope)
-        # tables_table = ()
 #@+node:ekr.20100221142603.5643: ** getTkPass
 def getTkPass():
 
@@ -566,7 +519,7 @@ def scanOptions():
     elif options.g: return 'gui'
     elif options.m: return 'modes'
     elif options.p: return 'plugins'
-    elif options.r: return 'recent'
+    # elif options.r: return 'recent'
     # elif options.s: return 'suppressions'
     # elif options.t: return 'stc'
     # elif options.tt:return 'stc-test'
